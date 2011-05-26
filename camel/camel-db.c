@@ -1573,21 +1573,44 @@ camel_db_prepare_message_info_table (CamelDB *cdb,
                                      GError **error)
 {
 	gint ret, current_version;
+	GError *err = NULL;
 
 	/* Make sure we have the table already */
-	ret = camel_db_create_message_info_table (cdb, folder_name, error);
+	camel_db_begin_transaction (cdb, &err);
+	ret = camel_db_create_message_info_table (cdb, folder_name, &err);
+	if (err)
+		goto exit;
+
+	camel_db_end_transaction (cdb, &err);
 
 	/* Migration stage zero: version fetch */
-	current_version = camel_db_get_folder_version (cdb, folder_name, error);
+	current_version = camel_db_get_folder_version (cdb, folder_name, &err);
 
+	camel_db_begin_transaction (cdb, &err);
+	
 	/* Migration stage one: storing the old data if necessary */
-	ret = camel_db_migrate_folder_prepare (cdb, folder_name, current_version, error);
+	ret = camel_db_migrate_folder_prepare (cdb, folder_name, current_version, &err);
+	if (err)
+		goto exit;
 
 	/* Migration stage two: rewriting the old data if necessary */
-	ret = camel_db_migrate_folder_recreate (cdb, folder_name, current_version, error);
+	ret = camel_db_migrate_folder_recreate (cdb, folder_name, current_version, &err);
+	if (err)
+		goto exit;
 
 	/* Final step: (over)write the current version label */
-	ret = camel_db_write_folder_version (cdb, folder_name, current_version, error);
+	ret = camel_db_write_folder_version (cdb, folder_name, current_version, &err);
+	if (err)
+		goto exit;
+	
+	camel_db_end_transaction (cdb, &err);
+
+exit:
+	if (err && cdb->priv->transaction_is_on)
+		camel_db_abort_transaction (cdb, NULL);
+	
+	if (err)
+		g_propagate_error (error, err);
 
 	return ret;
 }

@@ -2146,11 +2146,15 @@ save_message_infos_to_db (CamelFolderSummary *s,
 		return -1;
 
 	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	
 	/* Push MessageInfo-es */
+	camel_db_begin_transaction (cdb, NULL);
 	g_hash_table_foreach (s->loaded_infos, save_to_db_cb, &args);
+	camel_db_end_transaction (cdb, NULL);
+	
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-/* FIXME[disk-summary] make sure we free the message infos that are loaded
- * are freed if not used anymore or should we leave that to the timer? */
+	/* FIXME[disk-summary] make sure we free the message infos that are loaded
+	 * are freed if not used anymore or should we leave that to the timer? */
 
 	return 0;
 }
@@ -2190,12 +2194,14 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 
 	d(printf ("\ncamel_folder_summary_save_to_db called \n"));
 	if (s->priv->need_preview && g_hash_table_size (s->priv->preview_updates)) {
-		camel_db_begin_transaction (parent_store->cdb_w, NULL);
 		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		
+		camel_db_begin_transaction (parent_store->cdb_w, NULL);
 		g_hash_table_foreach (s->priv->preview_updates, (GHFunc) msg_save_preview, s->folder);
 		g_hash_table_remove_all (s->priv->preview_updates);
-		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		camel_db_end_transaction (parent_store->cdb_w, NULL);
+		
+		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	}
 
 	s->flags &= ~CAMEL_SUMMARY_DIRTY;
@@ -2204,11 +2210,8 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 	if (!count)
 		return camel_folder_summary_header_save_to_db (s, error);
 
-	camel_db_begin_transaction (cdb, NULL);
-
 	ret = save_message_infos_to_db (s, FALSE, error);
 	if (ret != 0) {
-		camel_db_abort_transaction (cdb, NULL);
 		/* Failed, so lets reset the flag */
 		s->flags |= CAMEL_SUMMARY_DIRTY;
 		return -1;
@@ -2220,24 +2223,20 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 		strstr ((*error)->message, "26 columns but 28 values") != NULL) {
 		const gchar *full_name;
 
-		/* This is an error is previous migration. Let remigrate this folder alone. */
-		camel_db_abort_transaction (cdb, NULL);
 		full_name = camel_folder_get_full_name (s->folder);
-		camel_db_reset_folder_version (cdb, full_name, 0, NULL);
 		g_warning ("Fixing up a broken summary migration on %s\n", full_name);
+		
 		/* Begin everything again. */
 		camel_db_begin_transaction (cdb, NULL);
+		camel_db_reset_folder_version (cdb, full_name, 0, NULL);
+		camel_db_end_transaction (cdb, NULL);
 
 		ret = save_message_infos_to_db (s, FALSE, error);
 		if (ret != 0) {
-			camel_db_abort_transaction (cdb, NULL);
-			/* Failed, so lets reset the flag */
 			s->flags |= CAMEL_SUMMARY_DIRTY;
 			return -1;
 		}
 	}
-
-	camel_db_end_transaction (cdb, NULL);
 
 	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_to_db (s, error);
 	if (!record) {
