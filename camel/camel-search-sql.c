@@ -144,7 +144,7 @@ static Node elements[] =  { { (gchar *) "header-contains", (gchar *) "LIKE", 3, 
 			    { (gchar *) "header-starts-with", (gchar *) "LIKE", 3, ' ', '%', 0, 0, 0, 1, 0, 0, 0, 0, 0},
 			    { (gchar *) "get-sent-date", (gchar *) "dsent", 2, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 },
 			    { (gchar *) "get-received-date", (gchar *) "dreceived", 2, ' ', ' ', 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 },
-			    { (gchar *) "get-size", (gchar *) "size", 2, ' ', ' ', ' ', 0, 1, 1, 0, 0, 0, 0, 1},
+			    { (gchar *) "get-size", (gchar *) "size/1024", 2, ' ', ' ', ' ', 0, 1, 1, 0, 0, 0, 0, 1},
 			    { (gchar *) "match-threads", (gchar *) "", 0, ' ', ' ', 0, 0, 0, 1, 0, 0, 0, 0, 0},
 };
 #if 0
