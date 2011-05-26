@@ -6,3 +6,11 @@ ContactName.given owned
 ContactName.additional owned
 ContactName.prefixes owned
 ContactName.suffixes owned
+ContactAddress.address_format owned
+ContactAddress.code owned
+ContactAddress.country owned
+ContactAddress.ext owned
+ContactAddress.locality owned
+ContactAddress.po owned
+ContactAddress.region owned
+ContactAddress.street owned
