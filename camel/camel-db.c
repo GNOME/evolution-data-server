@@ -1530,25 +1530,26 @@ camel_db_write_folder_version (CamelDB *cdb,
 }
 
 static gint
+read_version_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
+{
+	gint *version = (gint *) ref;
+
+	if (cols [0])
+		*version = strtoul (cols [0], NULL, 10);
+
+	return 0;
+}
+
+static gint
 camel_db_get_folder_version (CamelDB *cdb,
                              const gchar *folder_name,
                              GError **error)
 {
 	gint version = -1, ret;
 	gchar *query;
-	sqlite3_stmt *stmt = NULL;
 
 	query = sqlite3_mprintf ("SELECT version FROM '%q_version'", folder_name);
-
-	ret = sqlite3_prepare_v2 (cdb->db, query, -1, &stmt, NULL);
-
-	if (ret == SQLITE_OK)
-		ret = sqlite3_step (stmt);
-	if (ret == SQLITE_ROW || ret == SQLITE_OK)
-		version = sqlite3_column_int (stmt, 0);
-
-	sqlite3_finalize (stmt);
-
+	ret = camel_db_select (cdb, query, read_version_callback, &version, error);
 	sqlite3_free (query);
 
 	return version;
