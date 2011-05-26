@@ -34,13 +34,13 @@ E_BOOK_BACKEND_FACTORY_SIMPLE (ldap, LDAP, e_book_backend_ldap_new)
 static GType ldap_type;
 
 void
-eds_module_initialize (GTypeModule *module)
+eds_module_initialize (GTypeModule *type_module)
 {
-	ldap_type = _ldap_factory_get_type (module);
+	ldap_type = _ldap_factory_get_type (type_module);
 }
 
 void
-eds_module_shutdown   (void)
+eds_module_shutdown (void)
 {
 }
 

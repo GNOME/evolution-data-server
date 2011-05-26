@@ -40,6 +40,7 @@
 #include <string.h>
 #include <glib-object.h>
 #include <glib/gi18n-lib.h>
+#include <gconf/gconf-client.h>
 #include <libedataserver/e-data-server-util.h>
 #include "e-book.h"
 #include "e-error.h"
@@ -3210,10 +3211,10 @@ e_book_set_default_addressbook (EBook *book, GError **error)
 
 /**
  * e_book_set_default_source:
- * @source: An #ESource pointer
- * @error: A #GError pointer
+ * @source: an #ESource
+ * @error: return location for a #GError, or %NULL
  *
- * sets @source as the "default" addressbook.  This is the source that
+ * Sets @source as the default address book.  This is the source that
  * will be loaded in the e_book_get_default_addressbook call.
  *
  * Returns: %TRUE if the setting was stored in libebook's ESourceList, otherwise %FALSE.
@@ -3221,7 +3222,8 @@ e_book_set_default_addressbook (EBook *book, GError **error)
  * Deprecated: 3.2: Use e_book_client_set_default_source() instead.
  */
 gboolean
-e_book_set_default_source (ESource *source, GError **error)
+e_book_set_default_source (ESource *source,
+                           GError **error)
 {
 	ESourceList *sources;
 	const gchar *uid;
@@ -3303,10 +3305,10 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
 
 /**
  * e_book_new:
- * @source: An #ESource pointer
- * @error: A #GError pointer
+ * @source: an #ESource
+ * @error: return location for a #GError, or %NULL
  *
- * Creates a new #EBook corresponding to the given source.  There are
+ * Creates a new #EBook corresponding to the given @source.  There are
  * only two operations that are valid on this book at this point:
  * e_book_open(), and e_book_remove().
  *
@@ -3315,11 +3317,13 @@ e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
  * Deprecated: 3.2: Use e_book_client_new() instead.
  */
 EBook *
-e_book_new (ESource *source, GError **error)
+e_book_new (ESource *source,
+            GError **error)
 {
 	GError *err = NULL;
 	EBook *book;
-	gchar *path = NULL, *xml, *gdbus_xml = NULL;
+	gchar *path = NULL;
+	gchar *xml, *gdbus_xml = NULL;
 	GDBusConnection *connection;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
@@ -3533,9 +3537,8 @@ check_system (ESource *source, gpointer data)
  * e_book_new_system_addressbook:
  * @error: A #GError pointer
  *
- * Creates a new #EBook corresponding to the user's system
- * addressbook.  See the documentation for e_book_new for further
- * information.
+ * Creates a new #EBook corresponding to the user's system address book.
+ * See the documentation for e_book_new() for further information.
  *
  * Returns: a new but unopened #EBook.
  *
@@ -3588,9 +3591,8 @@ e_book_new_system_addressbook (GError **error)
  * e_book_new_default_addressbook:
  * @error: return location for a #GError, or %NULL
  *
- * Creates a new #EBook corresponding to the user's default
- * address book.  See the documentation for e_book_new() for
- * further information.
+ * Creates a new #EBook corresponding to the user's default address book.
+ * See the documentation for e_book_new() for further information.
  *
  * Returns: a new but unopened #EBook
  *

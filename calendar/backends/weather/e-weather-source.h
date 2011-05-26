@@ -28,6 +28,25 @@
 #include <libgweather/weather.h>
 #undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
 
+/* Standard GObject macros */
+#define E_TYPE_WEATHER_SOURCE \
+	(e_weather_source_get_type ())
+#define E_WEATHER_SOURCE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_WEATHER_SOURCE, EWeatherSource))
+#define E_WEATHER_SOURCE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_WEATHER_SOURCE, EWeatherSourceClass))
+#define E_IS_WEATHER_SOURCE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_WEATHER_SOURCE))
+#define E_IS_WEATHER_SOURCE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_WEATHER_SOURCE))
+#define E_WEATHER_SOURCE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_WEATHER_SOURCE, EWeatherSourceClass))
+
 G_BEGIN_DECLS
 
 typedef enum {
@@ -60,12 +79,6 @@ typedef enum {
 
 typedef void (*EWeatherSourceFinished)(WeatherInfo *result, gpointer data);
 
-#define E_TYPE_WEATHER_SOURCE            (e_weather_source_get_type ())
-#define E_WEATHER_SOURCE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_WEATHER_SOURCE, EWeatherSource))
-#define E_WEATHER_SOURCE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_WEATHER_SOURCE, EWeatherSource))
-#define E_IS_WEATHER_SOURCE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_WEATHER_SOURCE))
-#define E_IS_WEATHER_SOURCE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_WEATHER_SOURCE))
-
 typedef struct _EWeatherSource EWeatherSource;
 typedef struct _EWeatherSourceClass EWeatherSourceClass;
 
@@ -73,7 +86,7 @@ typedef struct _EWeatherSourceClass EWeatherSourceClass;
  * All the URL fetching is handled outside of this, and all this has
  * to know how to do is parse the specific format. */
 struct _EWeatherSource {
-	GObject object;
+	GObject parent;
 };
 
 struct _EWeatherSourceClass {
@@ -81,13 +94,17 @@ struct _EWeatherSourceClass {
 
 	/* Returns a list of WeatherForecast objects containing the
 	 * data for the forecast. */
-	void (*parse)	(EWeatherSource *source, EWeatherSourceFinished done, gpointer data);
+	void		(*parse)	(EWeatherSource *source,
+					 EWeatherSourceFinished done,
+					 gpointer data);
 };
 
-EWeatherSource*	e_weather_source_new (const gchar *uri);
-GType	e_weather_source_get_type (void);
-void	e_weather_source_parse (EWeatherSource *source, EWeatherSourceFinished done, gpointer data);
+GType		e_weather_source_get_type	(void);
+EWeatherSource *e_weather_source_new		(const gchar *uri);
+void		e_weather_source_parse		(EWeatherSource *source,
+						 EWeatherSourceFinished done,
+						 gpointer data);
 
 G_END_DECLS
 
-#endif
+#endif /* E_WEATHER_SOURCE_H */

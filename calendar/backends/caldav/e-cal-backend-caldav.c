@@ -114,7 +114,7 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* Authentication info */
 	ECredentials *credentials;
-	gboolean need_auth;
+	gboolean auth_required;
 
 	/* object cleanup */
 	gboolean disposed;
@@ -531,7 +531,7 @@ status_code_to_result (SoupMessage *message, ECalBackendCalDAVPrivate  *priv, GE
 		break;
 
 	case 401:
-		if (priv && priv->need_auth)
+		if (priv && priv->auth_required)
 			g_propagate_error (perror, EDC_ERROR (AuthenticationFailed));
 		else
 			g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
@@ -2289,7 +2289,7 @@ initialize_backend (ECalBackendCalDAV *cbdav, GError **perror)
 	}
 
 	os_val = e_source_get_property (source, "auth");
-	priv->need_auth = os_val != NULL;
+	priv->auth_required = os_val != NULL;
 
 	os_val = e_source_get_property(source, "ssl");
 	uri = e_cal_backend_get_uri (backend);

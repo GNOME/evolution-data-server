@@ -456,15 +456,18 @@ void
 e_destination_set_book (EDestination *dest, EBook *book)
 {
 	ESource *source;
+	const gchar *uid;
 
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 	g_return_if_fail (book && E_IS_BOOK (book));
 
 	source = e_book_get_source (book);
+	uid = e_source_peek_uid (source);
+	g_return_if_fail (uid != NULL);
 
-	if (!dest->priv->source_uid || strcmp (e_source_peek_uid (source), dest->priv->source_uid)) {
+	if (!dest->priv->source_uid || strcmp (uid, dest->priv->source_uid)) {
 		e_destination_clear (dest);
-		dest->priv->source_uid = g_strdup (e_source_peek_uid (source));
+		dest->priv->source_uid = g_strdup (uid);
 
 		g_signal_emit (dest, signals[CHANGED], 0);
 	}

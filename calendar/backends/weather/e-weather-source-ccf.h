@@ -30,13 +30,26 @@
 #include <libgweather/weather.h>
 #undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
 
-G_BEGIN_DECLS
+/* Standard GObject macros */
+#define E_TYPE_WEATHER_SOURCE_CCF \
+	(e_weather_source_ccf_get_type ())
+#define E_WEATHER_SOURCE_CCF(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_WEATHER_SOURCE_CCF, EWeatherSourceCCF))
+#define E_WEATHER_SOURCE_CCF_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_WEATHER_SOURCE_CCF, EWeatherSourceCCF))
+#define E_IS_WEATHER_SOURCE_CCF(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_WEATHER_SOURCE_CCF))
+#define E_IS_WEATHER_SOURCE_CCF_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_WEATHER_SOURCE_CCF))
+#define E_WEATHER_SOURCE_CCF_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_WEATHER_SOURCE_CCF, EWeatherSourceCCF))
 
-#define E_TYPE_WEATHER_SOURCE_CCF            (e_weather_source_ccf_get_type ())
-#define E_WEATHER_SOURCE_CCF(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_WEATHER_SOURCE_CCF, EWeatherSourceCCF))
-#define E_WEATHER_SOURCE_CCF_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_WEATHER_SOURCE_CCF, EWeatherSourceCCF))
-#define E_IS_WEATHER_SOURCE_CCF(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_WEATHER_SOURCE_CCF))
-#define E_IS_WEATHER_SOURCE_CCF_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_WEATHER_SOURCE_CCF))
+G_BEGIN_DECLS
 
 typedef struct _EWeatherSourceCCF EWeatherSourceCCF;
 typedef struct _EWeatherSourceCCFClass EWeatherSourceCCFClass;
@@ -55,9 +68,9 @@ struct _EWeatherSourceCCFClass {
 	EWeatherSourceClass parent_class;
 };
 
-EWeatherSource*	e_weather_source_ccf_new (const gchar *uri);
-GType		e_weather_source_ccf_get_type (void);
+GType		e_weather_source_ccf_get_type	(void);
+EWeatherSource *e_weather_source_ccf_new	(const gchar *uri);
 
 G_END_DECLS
 
-#endif
+#endif /* E_WEATHER_SOURCE_CCF_H */

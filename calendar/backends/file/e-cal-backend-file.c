@@ -1265,14 +1265,16 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *
 
 	if (!err) {
 		if (!priv->read_only) {
-			ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
+			ESource *source;
 
-			if (source) {
-				g_signal_connect (source, "changed", G_CALLBACK (source_changed_cb), backend);
+			source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
 
-				if (e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
-					priv->read_only = TRUE;
-			}
+			g_signal_connect (
+				source, "changed",
+				G_CALLBACK (source_changed_cb), backend);
+
+			if (e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
+				priv->read_only = TRUE;
 		}
 	}
 
@@ -1298,7 +1300,8 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable
 	gchar *full_path = NULL;
 	const gchar *fname;
 	GDir *dir = NULL;
-	GError *error = NULL, *err = NULL;
+	GError *local_error = NULL;
+	GError *err = NULL;
 
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
@@ -1317,9 +1320,10 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable
 
 	/* remove all files in the directory */
 	dirname = g_path_get_dirname (str_uri);
-	dir = g_dir_open (dirname, 0, &error);
+	dir = g_dir_open (dirname, 0, &local_error);
 	if (!dir) {
-		err = e_data_cal_create_error (PermissionDenied, error ? error->message : NULL);
+		err = e_data_cal_create_error (
+			PermissionDenied, local_error->message);
 		goto done;
 	}
 
@@ -1362,8 +1366,8 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
-	if (error)
-		g_error_free (error);
+	if (local_error)
+		g_error_free (local_error);
 }
 
 /* Set_mode handler for the file backend */
@@ -3152,9 +3156,11 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile, GError **perror)
 	g_free (str_uri);
 
 	if (!err && !priv->read_only) {
-		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbfile));
+		ESource *source;
 
-		if (source && e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
+		source = e_cal_backend_get_source (E_CAL_BACKEND (cbfile));
+
+		if (e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
 			priv->read_only = TRUE;
 	}
   done:

@@ -29,6 +29,7 @@
 #include <string.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n-lib.h>
+#include <gconf/gconf-client.h>
 #include <libedataserverui/e-source-combo-box.h>
 #include <libedataserverui/e-destination-store.h>
 #include <libedataserverui/e-contact-store.h>

@@ -207,15 +207,16 @@ setup_dialog (GtkWindow *parent, ESourceSelectorDialog *dialog, ESourceList *sou
 
 /**
  * e_source_selector_dialog_new:
- * @parent: Parent window.
- * @source_list: A source list.
+ * @parent: a parent window
+ * @source_list: an #ESourceList
  *
  * Create a new source selector dialog for the given @list.
  *
- * Returns: The newly created widget.
- */
+ * Returns: a new #ESourceSelectorDialog
+ **/
 GtkWidget *
-e_source_selector_dialog_new (GtkWindow *parent, ESourceList *source_list)
+e_source_selector_dialog_new (GtkWindow *parent,
+                              ESourceList *source_list)
 {
 	ESourceSelectorDialog *dialog;
 
@@ -228,11 +229,11 @@ e_source_selector_dialog_new (GtkWindow *parent, ESourceList *source_list)
 
 /**
  * e_source_selector_dialog_select_default_source:
- * @dialog: An #ESourceSelectorDialog widget.
+ * @dialog: an #ESourceSelectorDialog
  *
- * Selects default source in the dialog.
+ * Selects the default source in the dialog.
  *
- * Returns: Whether found any default source.
+ * Returns: %TRUE if a default source was selected
  *
  * Since: 2.28
  **/
@@ -276,19 +277,16 @@ e_source_selector_dialog_select_default_source (ESourceSelectorDialog *dialog)
 
 /**
  * e_source_selector_dialog_peek_primary_selection:
- * @dialog: An #ESourceSelectorDialog widget.
+ * @dialog: an #ESourceSelectorDialog
  *
  * Peek the currently selected source in the given @dialog.
  *
- * Returns: the selected ESource.
+ * Returns: the selected #ESource
  */
 ESource *
 e_source_selector_dialog_peek_primary_selection (ESourceSelectorDialog *dialog)
 {
-	ESourceSelectorDialogPrivate *priv;
-
 	g_return_val_if_fail (E_IS_SOURCE_SELECTOR_DIALOG (dialog), NULL);
 
-	priv = dialog->priv;
-	return priv->selected_source;
+	return dialog->priv->selected_source;
 }

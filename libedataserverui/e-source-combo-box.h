@@ -63,19 +63,19 @@ struct _ESourceComboBoxClass {
 GType		e_source_combo_box_get_type	(void);
 GtkWidget *	e_source_combo_box_new		(ESourceList *source_list);
 ESourceList *	e_source_combo_box_get_source_list
-						(ESourceComboBox *source_combo_box);
+						(ESourceComboBox *combo_box);
 void		e_source_combo_box_set_source_list
-						(ESourceComboBox *source_combo_box,
+						(ESourceComboBox *combo_box,
 						 ESourceList *source_list);
 ESource *	e_source_combo_box_get_active
-						(ESourceComboBox *source_combo_box);
+						(ESourceComboBox *combo_box);
 void		e_source_combo_box_set_active
-						(ESourceComboBox *source_combo_box,
+						(ESourceComboBox *combo_box,
 						 ESource *source);
 const gchar *	e_source_combo_box_get_active_uid
-						(ESourceComboBox *source_combo_box);
+						(ESourceComboBox *combo_box);
 gboolean	e_source_combo_box_set_active_uid
-						(ESourceComboBox *source_combo_box,
+						(ESourceComboBox *combo_box,
 						 const gchar *uid);
 
 G_END_DECLS

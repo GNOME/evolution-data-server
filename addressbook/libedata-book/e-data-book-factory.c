@@ -300,13 +300,17 @@ last_client_gone_cb (EBookBackend *backend, EDataBookFactory *factory)
 }
 
 static gboolean
-impl_BookFactory_getBook (EGdbusBookFactory *object, GDBusMethodInvocation *invocation, const gchar *in_source, EDataBookFactory *factory)
+impl_BookFactory_getBook (EGdbusBookFactory *object,
+                          GDBusMethodInvocation *invocation,
+                          const gchar *in_source,
+                          EDataBookFactory *factory)
 {
 	EDataBook *book;
 	EBookBackend *backend;
 	EDataBookFactoryPrivate *priv = factory->priv;
 	ESource *source;
-	gchar *uri, *path;
+	gchar *path;
+	gchar *uri;
 	const gchar *sender;
 	GList *list;
 	GError *error = NULL;
@@ -358,12 +362,14 @@ impl_BookFactory_getBook (EGdbusBookFactory *object, GDBusMethodInvocation *invo
 			backend = e_book_backend_factory_new_backend (backend_factory);
 
 		if (backend != NULL) {
-			gchar *uri_key = g_strdup (uri);
-
 			g_hash_table_insert (
-				priv->backends, uri_key, backend);
-			g_object_weak_ref (G_OBJECT (backend), (GWeakNotify) backend_gone_cb, factory);
-			g_signal_connect (backend, "last-client-gone", G_CALLBACK (last_client_gone_cb), factory);
+				priv->backends, g_strdup (uri), backend);
+			g_object_weak_ref (
+				G_OBJECT (backend), (GWeakNotify)
+				backend_gone_cb, factory);
+			g_signal_connect (
+				backend, "last-client-gone",
+				G_CALLBACK (last_client_gone_cb), factory);
 			e_book_backend_set_online (backend, priv->is_online);
 		}
 	}
@@ -375,7 +381,10 @@ impl_BookFactory_getBook (EGdbusBookFactory *object, GDBusMethodInvocation *invo
 		g_mutex_unlock (priv->books_lock);
 		g_mutex_unlock (priv->backends_lock);
 
-		error = g_error_new (E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_NO_SUCH_BOOK, _("Invalid source"));
+		error = g_error_new (
+			E_DATA_BOOK_ERROR,
+			E_DATA_BOOK_STATUS_NO_SUCH_BOOK,
+			_("Invalid source"));
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_error_free (error);
 
@@ -665,7 +674,8 @@ main (gint argc, gchar **argv)
 		eol, "changed",
 		G_CALLBACK (offline_state_changed_cb), factory);
 
-	owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
+	owner_id = g_bus_own_name (
+		G_BUS_TYPE_SESSION,
 		ADDRESS_BOOK_DBUS_SERVICE_NAME,
 		G_BUS_NAME_OWNER_FLAGS_NONE,
 		on_bus_acquired,

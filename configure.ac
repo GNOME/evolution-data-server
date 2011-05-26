@@ -319,7 +319,6 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	libsoup-2.4 >= libsoup_minimum_version
 	libgdata >= libgdata_minimum_version])
 
-
 if test x$os_win32 = xno; then
   dnl ***********************************
   dnl Check for GNOME Keyring.

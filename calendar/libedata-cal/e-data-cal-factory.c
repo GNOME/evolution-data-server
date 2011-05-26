@@ -36,12 +36,11 @@
 #endif
 #endif
 
-#include "libedataserver/e-url.h"
-#include "libedataserver/e-source.h"
-#include "libedataserver/e-source-list.h"
-#include "libebackend/e-data-server-module.h"
+#include <libedataserver/e-url.h>
+#include <libedataserver/e-source-list.h>
+#include <libebackend/e-data-server-module.h>
 #include <libebackend/e-offline-listener.h>
-#include "libecal/e-cal.h"
+#include <libecal/e-cal.h>
 #include "e-cal-backend.h"
 #include "e-cal-backend-factory.h"
 #include "e-data-cal.h"
@@ -341,12 +340,15 @@ find_backend_cb (gpointer key, gpointer value, gpointer data)
 }
 
 static gboolean
-impl_CalFactory_getCal (EGdbusCalFactory *object, GDBusMethodInvocation *invocation, const gchar * const *in_source_type, EDataCalFactory *factory)
+impl_CalFactory_getCal (EGdbusCalFactory *object,
+                        GDBusMethodInvocation *invocation,
+                        const gchar * const *in_source_type,
+                        EDataCalFactory *factory)
 {
 	EDataCal *calendar;
+	ECalBackend *backend;
 	EDataCalFactoryPrivate *priv = factory->priv;
 	ECalBackendFactory *backend_factory;
-	ECalBackend *backend;
 	ESource *source;
 	gchar *str_uri;
 	EUri *uri;
@@ -489,7 +491,9 @@ impl_CalFactory_getCal (EGdbusCalFactory *object, GDBusMethodInvocation *invocat
 		g_hash_table_insert (
 			priv->backends, g_strdup (uid_type_string), backend);
 
-		g_signal_connect (backend, "last-client-gone", G_CALLBACK (last_client_gone_cb), factory);
+		g_signal_connect (
+			backend, "last-client-gone",
+			G_CALLBACK (last_client_gone_cb), factory);
 		e_cal_backend_set_online (backend, priv->is_online);
 	} else if (!e_source_equal (source, e_cal_backend_get_source (backend))) {
 		/* source changed, update it in a backend */
@@ -1009,7 +1013,8 @@ main (gint argc, gchar **argv)
 		eol, "changed",
 		G_CALLBACK (offline_state_changed_cb), factory);
 
-	owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
+	owner_id = g_bus_own_name (
+		G_BUS_TYPE_SESSION,
 		CALENDAR_DBUS_SERVICE_NAME,
 		G_BUS_NAME_OWNER_FLAGS_NONE,
 		on_bus_acquired,

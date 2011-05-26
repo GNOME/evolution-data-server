@@ -25,7 +25,7 @@
 #define E_SOURCE_SELECTOR_H
 
 #include <gtk/gtk.h>
-#include "libedataserver/e-source-list.h"
+#include <libedataserver/e-source-list.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_SELECTOR \
@@ -93,12 +93,15 @@ gboolean	e_source_selector_source_is_selected
 						(ESourceSelector *selector,
 						 ESource *source);
 GSList *	e_source_selector_get_selection	(ESourceSelector *selector);
-void		e_source_selector_free_selection (GSList *list);
-void		e_source_selector_show_selection (ESourceSelector *selector,
+void		e_source_selector_free_selection
+						(GSList *list);
+void		e_source_selector_show_selection
+						(ESourceSelector *selector,
 						 gboolean show);
 gboolean	e_source_selector_selection_shown
 						(ESourceSelector *selector);
-void		e_source_selector_set_select_new (ESourceSelector *selector,
+void		e_source_selector_set_select_new
+						(ESourceSelector *selector,
 						 gboolean state);
 void		e_source_selector_edit_primary_selection
 						(ESourceSelector *selector);

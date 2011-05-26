@@ -56,9 +56,7 @@ book_backend_set_default_cache_dir (EBookBackend *backend)
 	gchar *filename;
 
 	user_cache_dir = e_get_user_cache_dir ();
-
 	source = e_book_backend_get_source (backend);
-	g_return_if_fail (source != NULL);
 
 	/* Mangle the URI to not contain invalid characters. */
 	mangled_uri = g_strdelimit (e_source_get_uri (source), ":/", '_');

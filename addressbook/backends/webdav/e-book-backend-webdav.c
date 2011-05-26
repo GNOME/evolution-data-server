@@ -189,7 +189,7 @@ download_contact (EBookBackendWebdav *webdav, const gchar *uri)
 static guint
 upload_contact (EBookBackendWebdav *webdav, EContact *contact, gchar **reason)
 {
-	ESource     *source = e_book_backend_get_source (E_BOOK_BACKEND (webdav));
+	ESource     *source;
 	SoupMessage *message;
 	gchar       *uri;
 	gchar       *etag;
@@ -198,6 +198,8 @@ upload_contact (EBookBackendWebdav *webdav, EContact *contact, gchar **reason)
 	guint        status;
 	const gchar  *property;
 	gboolean     avoid_ifmatch;
+
+	source = e_book_backend_get_source (E_BOOK_BACKEND (webdav));
 
 	uri = e_contact_get (contact, E_CONTACT_UID);
 	if (uri == NULL) {
@@ -1159,7 +1161,7 @@ e_book_backend_webdav_open (EBookBackend *backend, EDataBook *book, guint opid, 
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
-	ESource			  *source = e_book_backend_get_source (backend);
+	ESource			  *source;
 	gchar                     *uri;
 	const gchar               *cache_dir;
 	const gchar               *offline;
@@ -1172,6 +1174,7 @@ e_book_backend_webdav_open (EBookBackend *backend, EDataBook *book, guint opid, 
 	/* will try fetch ctag for the first time, if it fails then sets this to FALSE */
 	priv->supports_getctag = TRUE;
 
+	source = e_book_backend_get_source (backend);
 	cache_dir = e_book_backend_get_cache_dir (backend);
 
 	uri = e_source_get_uri (source);

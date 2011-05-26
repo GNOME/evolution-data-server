@@ -24,9 +24,8 @@
 
 #ifndef E_CAL_DISABLE_DEPRECATED
 
-#include <glib-object.h>
-#include "libedataserver/e-source-list.h"
-#include "libedataserver/e-source.h"
+#include <libedataserver/e-source-list.h>
+#include <libedataserver/e-source.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-view.h>

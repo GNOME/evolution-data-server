@@ -32,16 +32,15 @@
 
 #include <glib/gi18n-lib.h>
 #include <gconf/gconf-client.h>
-#include "libedataserver/e-xml-hash-utils.h"
-#include "libedataserver/e-flag.h"
+#include <libedataserver/e-xml-hash-utils.h>
+#include <libedataserver/e-source-list.h>
+#include <libedataserver/e-flag.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
-
 #include <libebook/e-book.h>
 
-#include "libedataserver/e-source-list.h"
 
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 
@@ -60,11 +59,11 @@ typedef enum
 struct _ECalBackendContactsPrivate {
         ESourceList  *addressbook_sources;
 
-        GHashTable   *addressbooks;       /* UID -> BookRecord */
-        gboolean      addressbook_loaded;
+	GHashTable   *addressbooks;       /* UID -> BookRecord */
+	gboolean      addressbook_loaded;
 
-        EBookView    *book_view;
-        GHashTable   *tracked_contacts;   /* UID -> ContactRecord */
+	EBookView    *book_view;
+	GHashTable   *tracked_contacts;   /* UID -> ContactRecord */
 
 	GHashTable *zones;
 
@@ -83,15 +82,15 @@ struct _ECalBackendContactsPrivate {
 
 typedef struct _BookRecord {
 	ECalBackendContacts *cbc;
-        EBook     *book;
-        EBookView *book_view;
+	EBook     *book;
+	EBookView *book_view;
 } BookRecord;
 
 typedef struct _ContactRecord {
-        ECalBackendContacts *cbc;
-	EBook               *book; /* where it comes from */
-        EContact            *contact;
-        ECalComponent       *comp_birthday, *comp_anniversary;
+	ECalBackendContacts *cbc;
+	EBook	       *book; /* where it comes from */
+	EContact	    *contact;
+	ECalComponent       *comp_birthday, *comp_anniversary;
 } ContactRecord;
 
 #define d(x)
@@ -121,19 +120,20 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
 
 	book = e_book_new (source, &error);
 	if (!book || !e_book_open (book, TRUE, &error) || error) {
-		g_warning ("%s: Failed to open book '%s': %s", G_STRFUNC, e_source_peek_name (source), error ? error->message : "Unknown error");
 		if (book)
 			g_object_unref (book);
-		if (error)
+		if (error) {
+			g_warning ("%s: Failed to open book: %s", G_STRFUNC, error->message);
 			g_error_free (error);
+		}
 		return NULL;
 	}
 
-        /* Create book view */
+	/* Create book view */
 	fields = g_list_append (fields, (gchar *) e_contact_field_name (E_CONTACT_FILE_AS));
 	fields = g_list_append (fields, (gchar *) e_contact_field_name (E_CONTACT_BIRTH_DATE));
 	fields = g_list_append (fields, (gchar *) e_contact_field_name (E_CONTACT_ANNIVERSARY));
-        query = e_book_query_any_field_contains ("");
+	query = e_book_query_any_field_contains ("");
 
 	if (!e_book_get_book_view (book, query, fields, -1, &book_view, &error)) {
 		g_warning ("%s: Failed to get book view on '%s': %s", G_STRFUNC, e_source_peek_name (source), error ? error->message : "Unknown error");
@@ -150,9 +150,9 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
 	e_book_query_unref (query);
 	g_list_free (fields);
 
-        g_signal_connect (book_view, "contacts_added", G_CALLBACK (contacts_added_cb), cbc);
-        g_signal_connect (book_view, "contacts_removed", G_CALLBACK (contacts_removed_cb), cbc);
-        g_signal_connect (book_view, "contacts_changed", G_CALLBACK (contacts_changed_cb), cbc);
+	g_signal_connect (book_view, "contacts_added", G_CALLBACK (contacts_added_cb), cbc);
+	g_signal_connect (book_view, "contacts_removed", G_CALLBACK (contacts_removed_cb), cbc);
+	g_signal_connect (book_view, "contacts_changed", G_CALLBACK (contacts_changed_cb), cbc);
 
 	e_book_view_start (book_view);
 
@@ -433,7 +433,7 @@ contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_
 		const gchar *uid = e_contact_get_const (contact, E_CONTACT_UID);
 		EContactDate *birthday, *anniversary;
 
-                /* Because this is a change of contact, then always remove old tracked data
+		/* Because this is a change of contact, then always remove old tracked data
 		   and if possible, add with (possibly) new values.
 		*/
 		g_hash_table_remove (cbc->priv->tracked_contacts, (gchar *) uid);
@@ -458,7 +458,7 @@ contacts_added_cb (EBookView *book_view, const GList *contacts, gpointer user_da
 	EBook *book = e_book_view_get_book (book_view);
 	const GList *i;
 
-        /* See if any new contacts have BIRTHDAY or ANNIVERSARY fields */
+	/* See if any new contacts have BIRTHDAY or ANNIVERSARY fields */
 	for (i = contacts; i; i = i->next)
 	{
 		EContact *contact = E_CONTACT (i->data);
@@ -485,7 +485,7 @@ contacts_removed_cb (EBookView *book_view, const GList *contact_ids, gpointer us
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 	const GList *i;
 
-        /* Stop tracking these */
+	/* Stop tracking these */
 	for (i = contact_ids; i; i = i->next)
 		g_hash_table_remove (cbc->priv->tracked_contacts, i->data);
 }
@@ -683,7 +683,7 @@ create_component (ECalBackendContacts *cbc, const gchar *uid, EContactDate *cdat
 
 	ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
 
-        /* Create the event object */
+	/* Create the event object */
 	cal_comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (cal_comp, ical_comp);
 
@@ -691,7 +691,7 @@ create_component (ECalBackendContacts *cbc, const gchar *uid, EContactDate *cdat
 	d(g_message ("Creating UID: %s", uid));
 	e_cal_component_set_uid (cal_comp, uid);
 
-        /* Set all-day event's date from contact data */
+	/* Set all-day event's date from contact data */
 	itt = cdate_to_icaltime (cdate);
 	dt.value = &itt;
 	dt.tzid = NULL;
@@ -704,7 +704,7 @@ create_component (ECalBackendContacts *cbc, const gchar *uid, EContactDate *cdat
 	/* We have to add 1 day to DTEND, as it is not inclusive. */
 	e_cal_component_set_dtend (cal_comp, &dt);
 
-        /* Create yearly recurrence */
+	/* Create yearly recurrence */
 	icalrecurrencetype_clear (&r);
 	r.freq = ICAL_YEARLY_RECURRENCE;
 	r.interval = 1;
@@ -712,7 +712,7 @@ create_component (ECalBackendContacts *cbc, const gchar *uid, EContactDate *cdat
 	recur_list.next = NULL;
 	e_cal_component_set_rrule_list (cal_comp, &recur_list);
 
-        /* Create summary */
+	/* Create summary */
 	comp_summary.value = summary;
 	comp_summary.altrep = NULL;
 	e_cal_component_set_summary (cal_comp, &comp_summary);
@@ -731,7 +731,7 @@ create_component (ECalBackendContacts *cbc, const gchar *uid, EContactDate *cdat
 	/* setup alarms if required */
 	setup_alarm (cbc, cal_comp);
 
-        /* Don't forget to call commit()! */
+	/* Don't forget to call commit()! */
 	e_cal_component_commit_sequence (cal_comp);
 
 	return cal_comp;
@@ -750,7 +750,7 @@ create_birthday (ECalBackendContacts *cbc, EContact *contact)
 	name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
 
 	uid = g_strdup_printf ("%s%s", (gchar *) e_contact_get_const (contact, E_CONTACT_UID), BIRTHDAY_UID_EXT);
-        summary = g_strdup_printf (_("Birthday: %s"), name);
+	summary = g_strdup_printf (_("Birthday: %s"), name);
 
 	cal_comp = create_component (cbc, uid, cdate, summary);
 
@@ -774,7 +774,7 @@ create_anniversary (ECalBackendContacts *cbc, EContact *contact)
 	name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
 
 	uid = g_strdup_printf ("%s%s", (gchar *) e_contact_get_const (contact, E_CONTACT_UID), ANNIVERSARY_UID_EXT);
-        summary = g_strdup_printf (_("Anniversary: %s"), name);
+	summary = g_strdup_printf (_("Anniversary: %s"), name);
 
 	cal_comp = create_component (cbc, uid, cdate, summary);
 
@@ -853,14 +853,14 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend, EDataCal *cal, GCan
 	}
 
 	if (record->comp_birthday && g_str_has_suffix (uid, BIRTHDAY_UID_EXT)) {
-                *object = e_cal_component_get_as_string (record->comp_birthday);
+		*object = e_cal_component_get_as_string (record->comp_birthday);
 
 		d(g_message ("Return birthday: %s", *object));
 		return;
 	}
 
 	if (record->comp_anniversary && g_str_has_suffix (uid, ANNIVERSARY_UID_EXT)) {
-                *object = e_cal_component_get_as_string (record->comp_anniversary);
+		*object = e_cal_component_get_as_string (record->comp_anniversary);
 
 		d(g_message ("Return anniversary: %s", *object));
 		return;

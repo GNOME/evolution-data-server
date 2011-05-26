@@ -1114,7 +1114,9 @@ e_cal_new (ESource *source, ECalSourceType type)
 {
 	ECal *ecal;
 	ECalPrivate *priv;
-	gchar *path, *xml, **strv;
+	gchar *path;
+	gchar *xml;
+	gchar **strv;
 	GError *error = NULL;
 	GDBusConnection *connection;
 
@@ -4463,12 +4465,14 @@ e_cal_open_default (ECal **ecal,
 		return FALSE;
 	}
 
-	/* XXX This can fail but doesn't take a GError!? */
+	/* XXX So this can fail, but doesn't take a GError!? */
 	client = e_cal_new (source, type);
-	if (!client) {
-		g_set_error_literal (error, E_CALENDAR_ERROR,
-			     E_CALENDAR_STATUS_OTHER_ERROR,
-			     e_cal_get_error_message (E_CALENDAR_STATUS_OTHER_ERROR));
+
+	if (client == NULL) {
+		g_set_error_literal (
+			error, E_CALENDAR_ERROR,
+			E_CALENDAR_STATUS_OTHER_ERROR,
+			e_cal_get_error_message (E_CALENDAR_STATUS_OTHER_ERROR));
 		g_object_unref (source_list);
 		return FALSE;
 	}
@@ -4489,10 +4493,10 @@ e_cal_open_default (ECal **ecal,
 
 /**
  * e_cal_set_default:
- * @ecal: A calendar client.
- * @error: Placeholder for error information.
+ * @ecal: an #ECal
+ * @error: return location for a #GError, or %NULL
  *
- * Sets a calendar as the default one.
+ * Sets the #ESource in @ecal as default.
  *
  * Returns: TRUE if the operation was successful, FALSE otherwise.
  *
@@ -4502,18 +4506,14 @@ gboolean
 e_cal_set_default (ECal *ecal, GError **error)
 {
 	ESource *source;
+	ECalSourceType source_type;
 
-	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
+	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
 
 	source = e_cal_get_source (ecal);
-	if (!source) {
-		g_set_error_literal (error, E_CALENDAR_ERROR,
-			     E_CALENDAR_STATUS_NO_SUCH_CALENDAR,
-			     e_cal_get_error_message (E_CALENDAR_STATUS_NO_SUCH_CALENDAR));
-		return FALSE;
-	}
+	source_type = e_cal_get_source_type (ecal);
 
-	return e_cal_set_default_source (source, ecal->priv->type, error);
+	return e_cal_set_default_source (source, source_type, error);
 }
 
 static gboolean
@@ -4559,18 +4559,20 @@ set_default_source (ESourceList *sources, ESource *source, GError **error)
 
 /**
  * e_cal_set_default_source:
- * @source: An #ESource.
- * @type: Type of the source.
- * @error: Placeholder for error information.
+ * @source: an #ESource
+ * @type: type of the source
+ * @error: return location for a #GError, or %NULL
  *
- * Sets the default source for the specified @type.
+ * Sets @source as the default source for the specified @type.
  *
  * Returns: TRUE if the operation was successful, FALSE otherwise.
  *
  * Deprecated: 3.2: Use e_cal_client_set_default_source() instead.
  */
 gboolean
-e_cal_set_default_source (ESource *source, ECalSourceType type, GError **error)
+e_cal_set_default_source (ESource *source,
+                          ECalSourceType type,
+                          GError **error)
 {
 	ESourceList *sources;
 	GError *err = NULL;

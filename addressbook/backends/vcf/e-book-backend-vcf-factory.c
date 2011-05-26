@@ -34,13 +34,13 @@ E_BOOK_BACKEND_FACTORY_SIMPLE (vcf, VCF, e_book_backend_vcf_new)
 static GType  vcf_type;
 
 void
-eds_module_initialize (GTypeModule *module)
+eds_module_initialize (GTypeModule *type_module)
 {
-	vcf_type = _vcf_factory_get_type (module);
+	vcf_type = _vcf_factory_get_type (type_module);
 }
 
 void
-eds_module_shutdown   (void)
+eds_module_shutdown (void)
 {
 }
 

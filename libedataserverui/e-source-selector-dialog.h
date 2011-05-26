@@ -25,7 +25,7 @@
 #define E_SOURCE_SELECTOR_DIALOG_H
 
 #include <gtk/gtk.h>
-#include "libedataserver/e-source-list.h"
+#include <libedataserver/e-source-list.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_SELECTOR_DIALOG \

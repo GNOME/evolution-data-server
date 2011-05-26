@@ -416,7 +416,9 @@ parse_done (WeatherInfo *info, gpointer data)
 }
 
 static void
-e_weather_source_ccf_parse (EWeatherSource *source, EWeatherSourceFinished done, gpointer data)
+e_weather_source_ccf_parse (EWeatherSource *source,
+                            EWeatherSourceFinished done,
+                            gpointer data)
 {
 	EWeatherSourceCCF *ccfsource = (EWeatherSourceCCF*) source;
 	WeatherPrefs prefs;
@@ -446,8 +448,7 @@ e_weather_source_ccf_class_init (EWeatherSourceCCFClass *class)
 {
 	EWeatherSourceClass *source_class;
 
-	source_class = (EWeatherSourceClass *) class;
-
+	source_class = E_WEATHER_SOURCE_CLASS (class);
 	source_class->parse = e_weather_source_ccf_parse;
 }
 

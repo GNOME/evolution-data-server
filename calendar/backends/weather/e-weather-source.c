@@ -26,11 +26,17 @@
 G_DEFINE_TYPE (EWeatherSource, e_weather_source, G_TYPE_OBJECT)
 
 void
-e_weather_source_parse (EWeatherSource *source, EWeatherSourceFinished done, gpointer data)
+e_weather_source_parse (EWeatherSource *source,
+                        EWeatherSourceFinished done,
+                        gpointer data)
 {
 	EWeatherSourceClass *class;
+
 	g_return_if_fail (source != NULL);
-	class = (EWeatherSourceClass*) G_OBJECT_GET_CLASS (source);
+
+	class = E_WEATHER_SOURCE_GET_CLASS (source);
+	g_return_if_fail (class->parse != NULL);
+
 	class->parse (source, done, data);
 }
 
@@ -46,7 +52,8 @@ e_weather_source_init (EWeatherSource *source)
 	/* nothing to do here */
 }
 
-EWeatherSource*	e_weather_source_new (const gchar *uri)
+EWeatherSource *
+e_weather_source_new (const gchar *uri)
 {
 	const gchar *base = uri + 10; /* skip weather:// */
 

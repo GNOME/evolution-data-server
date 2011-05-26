@@ -1366,8 +1366,6 @@ e_source_selector_init (ESourceSelector *selector)
 	gtk_tree_view_set_headers_visible (tree_view, FALSE);
 }
 
-/* Public API.  */
-
 /**
  * e_source_selector_new:
  * @list: A source list.

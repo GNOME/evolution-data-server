@@ -350,26 +350,26 @@ e_source_combo_box_new (ESourceList *source_list)
 
 /**
  * e_source_combo_box_get_source_list:
- * @source_combo_box: an #ESourceComboBox
+ * @combo_box: an #ESourceComboBox
  *
  * Returns the #ESourceList which is acting as a data source for
- * @source_combo_box.
+ * @combo_box.
  *
  * Returns: an #ESourceList
  *
  * Since: 2.22
  **/
 ESourceList *
-e_source_combo_box_get_source_list (ESourceComboBox *source_combo_box)
+e_source_combo_box_get_source_list (ESourceComboBox *combo_box)
 {
-	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (source_combo_box), NULL);
+	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), NULL);
 
-	return source_combo_box->priv->source_list;
+	return combo_box->priv->source_list;
 }
 
 /**
  * e_source_combo_box_set_source_list:
- * @source_combo_box: an #ESourceComboBox
+ * @combo_box: an #ESourceComboBox
  * @source_list: an #ESourceList
  *
  * Sets the source list used by @source_combo_box to be @source_list.  This
@@ -378,44 +378,44 @@ e_source_combo_box_get_source_list (ESourceComboBox *source_combo_box)
  * Since: 2.22
  **/
 void
-e_source_combo_box_set_source_list (ESourceComboBox *source_combo_box,
+e_source_combo_box_set_source_list (ESourceComboBox *combo_box,
                                     ESourceList *source_list)
 {
-	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (source_combo_box));
+	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box));
 
 	if (source_list != NULL) {
 		g_return_if_fail (E_IS_SOURCE_LIST (source_list));
 		g_object_ref (source_list);
 	}
 
-	if (source_combo_box->priv->source_list != NULL) {
+	if (combo_box->priv->source_list != NULL) {
 		g_signal_handler_disconnect (
-			source_combo_box->priv->source_list,
-			source_combo_box->priv->handler_id);
-		g_object_unref (source_combo_box->priv->source_list);
-		source_combo_box->priv->handler_id = 0;
+			combo_box->priv->source_list,
+			combo_box->priv->handler_id);
+		g_object_unref (combo_box->priv->source_list);
+		combo_box->priv->handler_id = 0;
 	}
 
-	source_combo_box->priv->source_list = source_list;
+	combo_box->priv->source_list = source_list;
 
 	/* Reset the tree store. */
-	source_list_changed_cb (source_list, source_combo_box);
+	source_list_changed_cb (source_list, combo_box);
 
 	/* Watch for source list changes. */
 	if (source_list != NULL) {
-		source_combo_box->priv->handler_id =
+		combo_box->priv->handler_id =
 			g_signal_connect_object (
 				source_list, "changed",
 				G_CALLBACK (source_list_changed_cb),
-				source_combo_box, 0);
+				combo_box, 0);
 	}
 
-	g_object_notify (G_OBJECT (source_combo_box), "source-list");
+	g_object_notify (G_OBJECT (combo_box), "source-list");
 }
 
 /**
  * e_source_combo_box_get_active:
- * @source_combo_box: an #ESourceComboBox
+ * @combo_box: an #ESourceComboBox
  *
  * Returns the #ESource corresponding to the currently active item, or %NULL
  * if there is no active item.
@@ -425,21 +425,21 @@ e_source_combo_box_set_source_list (ESourceComboBox *source_combo_box,
  * Since: 2.22
  **/
 ESource *
-e_source_combo_box_get_active (ESourceComboBox *source_combo_box)
+e_source_combo_box_get_active (ESourceComboBox *combo_box)
 {
-	GtkComboBox *combo_box;
+	GtkComboBox *gtk_combo_box;
 	GtkTreeIter iter;
 	ESource *source;
 
-	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (source_combo_box), NULL);
+	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), NULL);
 
-	combo_box = GTK_COMBO_BOX (source_combo_box);
+	gtk_combo_box = GTK_COMBO_BOX (combo_box);
 
-	if (!gtk_combo_box_get_active_iter (combo_box, &iter))
+	if (!gtk_combo_box_get_active_iter (gtk_combo_box, &iter))
 		return NULL;
 
 	gtk_tree_model_get (
-		gtk_combo_box_get_model (combo_box),
+		gtk_combo_box_get_model (gtk_combo_box),
 		&iter, COLUMN_SOURCE, &source, -1);
 
 	return source;
@@ -447,7 +447,7 @@ e_source_combo_box_get_active (ESourceComboBox *source_combo_box)
 
 /**
  * e_source_combo_box_set_active:
- * @source_combo_box: an #ESourceComboBox
+ * @combo_box: an #ESourceComboBox
  * @source: an #ESource
  *
  * Sets the active item to the one corresponding to @source.
@@ -455,19 +455,19 @@ e_source_combo_box_get_active (ESourceComboBox *source_combo_box)
  * Since: 2.22
  **/
 void
-e_source_combo_box_set_active (ESourceComboBox *source_combo_box,
+e_source_combo_box_set_active (ESourceComboBox *combo_box,
                                ESource *source)
 {
-	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (source_combo_box));
+	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box));
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	e_source_combo_box_set_active_uid (
-		source_combo_box, e_source_peek_uid (source));
+		combo_box, e_source_peek_uid (source));
 }
 
 /**
  * e_source_combo_box_get_active_uid:
- * @source_combo_box: an #ESourceComboBox
+ * @combo_box: an #ESourceComboBox
  *
  * Returns the unique ID of the #ESource corresponding to the currently
  * active item, or %NULL if there is no active item.
@@ -477,13 +477,13 @@ e_source_combo_box_set_active (ESourceComboBox *source_combo_box,
  * Since: 2.22
  **/
 const gchar *
-e_source_combo_box_get_active_uid (ESourceComboBox *source_combo_box)
+e_source_combo_box_get_active_uid (ESourceComboBox *combo_box)
 {
 	ESource *source;
 
-	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (source_combo_box), NULL);
+	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), NULL);
 
-	source = e_source_combo_box_get_active (source_combo_box);
+	source = e_source_combo_box_get_active (combo_box);
 	if (source == NULL)
 		return NULL;
 
@@ -492,7 +492,7 @@ e_source_combo_box_get_active_uid (ESourceComboBox *source_combo_box)
 
 /**
  * e_source_combo_box_set_active_uid:
- * @source_combo_box: an #ESourceComboBox
+ * @combo_box: an #ESourceComboBox
  * @uid: a unique ID of an #ESource
  *
  * Sets the active item to the one corresponding to @uid.
@@ -502,20 +502,20 @@ e_source_combo_box_get_active_uid (ESourceComboBox *source_combo_box)
  * Since: 2.22
  **/
 gboolean
-e_source_combo_box_set_active_uid (ESourceComboBox *source_combo_box,
+e_source_combo_box_set_active_uid (ESourceComboBox *combo_box,
                                    const gchar *uid)
 {
 	ESourceComboBoxPrivate *priv;
 	GtkTreeRowReference *reference;
-	GtkComboBox *combo_box;
+	GtkComboBox *gtk_combo_box;
 	GtkTreeIter iter;
 	gboolean iter_was_set;
 
-	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (source_combo_box), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	priv = source_combo_box->priv;
-	combo_box = GTK_COMBO_BOX (source_combo_box);
+	priv = combo_box->priv;
+	gtk_combo_box = GTK_COMBO_BOX (combo_box);
 
 	reference = g_hash_table_lookup (priv->uid_index, uid);
 	if (!reference)
@@ -524,11 +524,11 @@ e_source_combo_box_set_active_uid (ESourceComboBox *source_combo_box,
 	g_return_val_if_fail (gtk_tree_row_reference_valid (reference), FALSE);
 
 	iter_was_set = gtk_tree_model_get_iter (
-		gtk_combo_box_get_model (combo_box), &iter,
+		gtk_combo_box_get_model (gtk_combo_box), &iter,
 		gtk_tree_row_reference_get_path (reference));
 	g_return_val_if_fail (iter_was_set, FALSE);
 
-	gtk_combo_box_set_active_iter (combo_box, &iter);
+	gtk_combo_box_set_active_iter (gtk_combo_box, &iter);
 
 	return TRUE;
 }

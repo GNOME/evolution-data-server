@@ -268,7 +268,9 @@ begin_retrieval_cb (ECalBackendWeather *cbw)
 
 	priv->is_loading = TRUE;
 
-	e_weather_source_parse (priv->source, (EWeatherSourceFinished) finished_retrieval_cb, cbw);
+	e_weather_source_parse (
+		priv->source, (EWeatherSourceFinished)
+		finished_retrieval_cb, cbw);
 
 	return FALSE;
 }

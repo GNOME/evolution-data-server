@@ -19,11 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
+#include <stdlib.h>
 #include <string.h>
+
 #include <libedataserver/e-data-server-util.h>
 #include "e-book-backend-db-cache.h"
 #include "e-book-backend.h"

@@ -117,7 +117,6 @@ cal_backend_set_default_cache_dir (ECalBackend *backend)
 
 	kind = e_cal_backend_get_kind (backend);
 	source = e_cal_backend_get_source (backend);
-	g_return_if_fail (source != NULL);
 
 	switch (kind) {
 		case ICAL_VEVENT_COMPONENT:
