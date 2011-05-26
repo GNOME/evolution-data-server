@@ -31,6 +31,7 @@ libedataserver-1.2.vapi: $(top_builddir)/libedataserver/EDataServer-1.2.gir
 libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedataserver-1.2.vapi
 	$(VAPIGEN_V)$(VAPIGEN) \
 		--vapidir=. \
+		--girdir=$(top_builddir)/libedataserver \
 		--pkg libedataserver-1.2 \
 		--library libebook-1.2 \
 		--metadatadir=. \
