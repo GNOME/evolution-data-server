@@ -543,7 +543,7 @@ get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data
 	d(printf("executing get-size\n"));
 
 	r = e_sexp_result_new (f, ESEXP_RES_STRING);
-	r->value.string = g_strdup("size");
+	r->value.string = g_strdup("size/1024");
 
 	return r;
 }
@@ -638,6 +638,7 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 
 	e_sexp_result_free (sexp, r);
 	e_sexp_unref (sexp);
+
 	return res;
 }
 
