@@ -181,6 +181,26 @@ compare_name (EContact *contact, const gchar *str,
 }
 
 static gboolean
+compare_photo_uri (EContact *contact, const gchar *str,
+		  gchar *(*compare)(const gchar *, const gchar *))
+{
+	EContactPhoto *photo;
+	gboolean ret_val = FALSE;
+
+	photo = e_contact_get (contact, E_CONTACT_PHOTO);
+
+	if (photo) {
+		/* Compare the photo uri with the string */
+		if ((photo->type == E_CONTACT_PHOTO_TYPE_URI) 
+		     && compare(photo->data.uri, str)) {
+			ret_val = TRUE;	
+		}
+		e_contact_photo_free (photo);
+	}
+	return ret_val;
+}
+
+static gboolean
 compare_address (EContact *contact, const gchar *str,
 		 gchar *(*compare)(const gchar *, const gchar *))
 {
@@ -255,6 +275,7 @@ static struct prop_info {
 	NORMAL_PROP ( E_CONTACT_FILE_AS, "file_as" ),
 	NORMAL_PROP ( E_CONTACT_UID, "id" ),
 	LIST_PROP ( "full_name", compare_name), /* not really a list, but we need to compare both full and surname */
+	LIST_PROP ( "photo", compare_photo_uri ), /* not really a list, but we need to compare the uri in the struct */
 	NORMAL_PROP ( E_CONTACT_GIVEN_NAME, "given_name"),
 	NORMAL_PROP ( E_CONTACT_FAMILY_NAME, "family_name"),
 	NORMAL_PROP ( E_CONTACT_HOMEPAGE_URL, "url"),
