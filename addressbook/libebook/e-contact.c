@@ -1355,7 +1355,6 @@ e_contact_field_id (const gchar *field_name)
 			return field_info[i].field_id;
 	}
 
-	g_warning ("unknown field name `%s'", field_name);
 	return 0;
 }
 
