@@ -908,6 +908,10 @@ e_book_backend_file_open (EBookBackendSync       *backend,
 	time_t db_mtime;
 	struct stat sb;
 
+#ifdef CREATE_DEFAULT_VCARD
+	gboolean create_default_vcard = FALSE;
+#endif
+
 	dirname = e_book_backend_file_extract_path_from_source (source);
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 
@@ -1055,12 +1059,7 @@ e_book_backend_file_open (EBookBackendSync       *backend,
 			}
 			else {
 #ifdef CREATE_DEFAULT_VCARD
-				EContact *contact = NULL;
-
-				if (!do_create (bf, XIMIAN_VCARD, &contact, NULL))
-					g_warning ("Cannot create default contact");
-				if (contact)
-					g_object_unref (contact);
+				create_default_vcard = TRUE;
 #endif
 
 				readonly = FALSE;
@@ -1077,6 +1076,17 @@ e_book_backend_file_open (EBookBackendSync       *backend,
 		db_error_to_gerror (db_error, perror);
 		return;
 	}
+
+#ifdef CREATE_DEFAULT_VCARD
+	if (create_default_vcard) {
+		EContact *contact = NULL;
+
+		if (!do_create (bf, XIMIAN_VCARD, &contact, NULL))
+			g_warning ("Cannot create default contact");
+		if (contact)
+			g_object_unref (contact);
+	}
+#endif
 
 	if (!e_book_backend_file_maybe_upgrade_db (bf)) {
 		db->close (db, 0);
