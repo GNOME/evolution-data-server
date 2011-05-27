@@ -368,16 +368,21 @@ entry_compare (SearchContext *ctx, struct _ESExp *f,
 			} else {
 				/* it is not direct EContact known field, so try to find
 				   it in EVCard attributes */
-				EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (ctx->contact), propname);
-				GList *l, *values = attr ? e_vcard_attribute_get_values (attr) : NULL;
+				GList *a, *attrs = e_vcard_get_attributes (E_VCARD (ctx->contact));
+				for (a = attrs; a && !truth; a = a->next) {
+					EVCardAttribute *attr = (EVCardAttribute *) a->data;
+                			if (g_ascii_strcasecmp (e_vcard_attribute_get_name (attr), propname) == 0) {
+						GList *l, *values = e_vcard_attribute_get_values (attr);
 
-				for (l = values; l && !truth; l = l->next) {
-					const gchar *value = l->data;
+						for (l = values; l && !truth; l = l->next) {
+							const gchar *value = l->data;
 
-					if (value && compare (value, argv[1]->value.string)) {
-						truth = TRUE;
-					} else if ((!value) && compare ("", argv[1]->value.string)) {
-						truth = TRUE;
+							if (value && compare (value, argv[1]->value.string)) {
+								truth = TRUE;
+							} else if ((!value) && compare ("", argv[1]->value.string)) {
+								truth = TRUE;
+							}
+						}
 					}
 				}
 			}
