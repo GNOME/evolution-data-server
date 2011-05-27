@@ -255,9 +255,26 @@ compare_category (EContact *contact, const gchar *str,
 	return ret_val;
 }
 
+static gboolean
+compare_date (EContactDate *date, const gchar *str,
+		  gchar *(*compare)(const gchar *, const gchar *))
+{
+	gchar *date_str = e_contact_date_to_string (date);
+	gboolean ret_val = FALSE;
+
+	if (date_str) {
+		if (compare(date_str, str)) {
+			ret_val = TRUE;
+		}
+		g_free (date_str);
+	}
+	return ret_val;
+}
+
 enum prop_type {
 	PROP_TYPE_NORMAL,
-	PROP_TYPE_LIST
+	PROP_TYPE_LIST,
+	PROP_TYPE_DATE
 };
 
 static struct prop_info {
@@ -270,12 +287,15 @@ static struct prop_info {
 } prop_info_table[] = {
 #define NORMAL_PROP(f,q) {f, q, PROP_TYPE_NORMAL, NULL}
 #define LIST_PROP(q,c) {0, q, PROP_TYPE_LIST, c}
+#define DATE_PROP(f,q) {f, q, PROP_TYPE_DATE, NULL}
 
 	/* query prop,   type,              list compare function */
 	NORMAL_PROP ( E_CONTACT_FILE_AS, "file_as" ),
 	NORMAL_PROP ( E_CONTACT_UID, "id" ),
 	LIST_PROP ( "full_name", compare_name), /* not really a list, but we need to compare both full and surname */
 	LIST_PROP ( "photo", compare_photo_uri ), /* not really a list, but we need to compare the uri in the struct */
+	DATE_PROP ( E_CONTACT_BIRTH_DATE, "birth_date" ),
+	DATE_PROP ( E_CONTACT_ANNIVERSARY, "anniversary" ),
 	NORMAL_PROP ( E_CONTACT_GIVEN_NAME, "given_name"),
 	NORMAL_PROP ( E_CONTACT_FAMILY_NAME, "family_name"),
 	NORMAL_PROP ( E_CONTACT_HOMEPAGE_URL, "url"),
@@ -359,6 +379,17 @@ entry_compare(SearchContext *ctx, struct _ESExp *f,
 				else if (info->prop_type == PROP_TYPE_LIST) {
 					/* the special searches that match any of the list elements */
 					truth = info->list_compare (ctx->contact, argv[1]->value.string, compare);
+				}
+				else if (info->prop_type == PROP_TYPE_DATE) {
+					/* the special searches that match dates */
+					EContactDate *date;
+					
+					date = e_contact_get (ctx->contact, info->field_id);
+
+					if (date) {
+						truth = compare_date (date, argv[1]->value.string, compare);
+						e_contact_date_free (date);	
+					}
 				}
 
 				/* if we're looking at all fields and find a match,
