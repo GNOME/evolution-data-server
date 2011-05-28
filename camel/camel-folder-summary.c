@@ -32,7 +32,6 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include <glib-object.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 

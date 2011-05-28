@@ -14,8 +14,6 @@
 /* e-book deprecated since 3.2, use e-book-client instead */
 #ifndef E_BOOK_DISABLE_DEPRECATED
 
-#include <glib-object.h>
-
 #include "libedataserver/e-list.h"
 #include "libedataserver/e-source.h"
 #include "libedataserver/e-source-list.h"

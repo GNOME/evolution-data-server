@@ -24,7 +24,6 @@
 #include <config.h>
 #endif
 
-#include <glib-object.h>
 #include <glib/gi18n-lib.h>
 
 #include "e-book-client.h"

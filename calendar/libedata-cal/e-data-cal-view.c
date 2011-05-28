@@ -27,7 +27,6 @@
 
 #include <string.h>
 
-#include <glib-object.h>
 #include <libedataserver/e-debug-log.h>
 #include "libedataserver/e-data-server-util.h"
 #include "e-cal-backend-sexp.h"

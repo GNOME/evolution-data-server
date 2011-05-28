@@ -38,7 +38,6 @@
 #include <config.h>
 #include <unistd.h>
 #include <string.h>
-#include <glib-object.h>
 #include <glib/gi18n-lib.h>
 #include <gconf/gconf-client.h>
 #include <libedataserver/e-data-server-util.h>

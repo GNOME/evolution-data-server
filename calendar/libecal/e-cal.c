@@ -45,8 +45,6 @@
 #include <libedataserver/e-credentials.h>
 #include <libedataserver/e-data-server-util.h>
 
-#include <glib-object.h>
-
 #include "libedata-cal/e-data-cal-types.h"
 
 #include "e-cal-check-timezones.h"

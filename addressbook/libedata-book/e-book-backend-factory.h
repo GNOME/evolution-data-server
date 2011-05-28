@@ -23,7 +23,6 @@
 #ifndef _E_BOOK_BACKEND_FACTORY_H_
 #define _E_BOOK_BACKEND_FACTORY_H_
 
-#include <glib-object.h>
 #include "e-book-backend.h"
 
 G_BEGIN_DECLS

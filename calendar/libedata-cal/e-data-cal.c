@@ -30,7 +30,6 @@
 #include <glib/gi18n-lib.h>
 #include <unistd.h>
 
-#include <glib-object.h>
 #include <libedataserver/e-credentials.h>
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-operation-pool.h>

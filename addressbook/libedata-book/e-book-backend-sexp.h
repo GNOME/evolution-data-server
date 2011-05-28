@@ -24,7 +24,6 @@
 #ifndef __E_BOOK_BACKEND_SEXP_H__
 #define __E_BOOK_BACKEND_SEXP_H__
 
-#include <glib-object.h>
 #include <libebook/e-contact.h>
 #include <libedata-book/e-data-book-types.h>
 

@@ -25,7 +25,6 @@
 #ifndef E_CAL_BACKEND_CALDAV_FACTORY_H
 #define E_CAL_BACKEND_CALDAV_FACTORY_H
 
-#include <glib-object.h>
 #include "libedata-cal/e-cal-backend-factory.h"
 
 G_BEGIN_DECLS

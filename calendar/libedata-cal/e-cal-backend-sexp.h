@@ -24,7 +24,6 @@
 #ifndef __E_CAL_BACKEND_SEXP_H__
 #define __E_CAL_BACKEND_SEXP_H__
 
-#include <glib-object.h>
 #include <libecal/e-cal-component.h>
 #include <libedata-cal/e-cal-backend.h>
 #include <libedataserver/e-sexp.h>

@@ -28,7 +28,6 @@
 #ifndef __E_DESTINATION_H__
 #define __E_DESTINATION_H__
 
-#include <glib-object.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-book.h>
 #include <libxml/tree.h>

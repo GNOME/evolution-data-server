@@ -22,7 +22,6 @@
 #ifndef E_CAL_BACKEND_FILE_STORE_H
 #define E_CAL_BACKEND_FILE_STORE_H
 
-#include <glib-object.h>
 #include "e-cal-backend-store.h"
 
 /* Standard GObject macros */

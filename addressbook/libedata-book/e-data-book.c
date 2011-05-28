@@ -23,7 +23,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <glib/gi18n.h>
-#include <glib-object.h>
 #include <gio/gio.h>
 
 #include <libedataserver/e-credentials.h>

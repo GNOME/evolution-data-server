@@ -10,7 +10,6 @@
 #define __E_CONTACT_H__
 
 #include <time.h>
-#include <glib-object.h>
 #include <stdio.h>
 #include <libebook/e-vcard.h>
 

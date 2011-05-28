@@ -23,7 +23,6 @@
 #ifndef _E_CAL_BACKEND_HTTP_FACTORY_H_
 #define _E_CAL_BACKEND_HTTP_FACTORY_H_
 
-#include <glib-object.h>
 #include "libedata-cal/e-cal-backend-factory.h"
 
 G_BEGIN_DECLS

@@ -20,8 +20,6 @@
  * Author: Ross Burton <ross@linux.intel.com>
  */
 
-#include <glib-object.h>
-
 #include "e-book.h"
 #include "e-book-view.h"
 #include "e-book-view-private.h"

@@ -24,7 +24,6 @@
 #ifndef __E_DATA_BOOK_VIEW_H__
 #define __E_DATA_BOOK_VIEW_H__
 
-#include <glib-object.h>
 #include <gio/gio.h>
 #include <libebook/e-contact.h>
 #include <libedata-book/e-data-book-types.h>

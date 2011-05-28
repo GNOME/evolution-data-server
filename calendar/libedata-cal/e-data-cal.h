@@ -23,7 +23,6 @@
 #ifndef E_DATA_CAL_H
 #define E_DATA_CAL_H
 
-#include <glib-object.h>
 #include <gio/gio.h>
 #include <libedata-cal/e-data-cal-common.h>
 #include <libedata-cal/e-data-cal-view.h>

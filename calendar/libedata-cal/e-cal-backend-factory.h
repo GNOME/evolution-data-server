@@ -23,7 +23,6 @@
 #ifndef _E_CAL_BACKEND_FACTORY_H_
 #define _E_CAL_BACKEND_FACTORY_H_
 
-#include <glib-object.h>
 #include "e-cal-backend.h"
 
 G_BEGIN_DECLS

@@ -26,7 +26,6 @@
 #endif
 
 #include <glib/gi18n-lib.h>
-#include <glib-object.h>
 #include "e-source-selector.h"
 #include "e-source-selector-dialog.h"
 

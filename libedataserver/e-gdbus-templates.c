@@ -19,7 +19,6 @@
  *
  */
 
-#include <glib-object.h>
 #include <gio/gio.h>
 
 #include <stdio.h>

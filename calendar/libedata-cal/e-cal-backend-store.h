@@ -22,7 +22,6 @@
 #ifndef E_CAL_BACKEND_STORE_H
 #define E_CAL_BACKEND_STORE_H
 
-#include <glib-object.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal.h>
 

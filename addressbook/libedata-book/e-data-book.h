@@ -23,7 +23,6 @@
 #ifndef E_DATA_BOOK_H
 #define E_DATA_BOOK_H
 
-#include <glib-object.h>
 #include <gio/gio.h>
 
 #include <libedataserver/e-credentials.h>

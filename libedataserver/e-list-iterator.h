@@ -11,7 +11,6 @@
 
 #include <stdio.h>
 #include <time.h>
-#include <glib-object.h>
 
 #include <libedataserver/e-list.h>
 #include <libedataserver/e-iterator.h>
