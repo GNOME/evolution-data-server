@@ -21,7 +21,6 @@
 #ifndef E_BOOK_CLIENT_VIEW_H
 #define E_BOOK_CLIENT_VIEW_H
 
-#include <glib.h>
 #include <glib-object.h>
 
 #define E_TYPE_BOOK_CLIENT_VIEW           (e_book_client_view_get_type ())

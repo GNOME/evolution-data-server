@@ -12,7 +12,6 @@
 #ifndef __E_BOOK_TYPES_H__
 #define __E_BOOK_TYPES_H__
 
-#include <glib.h>
 #include <libebook/e-contact.h>
 
 G_BEGIN_DECLS

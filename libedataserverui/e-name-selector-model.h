@@ -23,7 +23,6 @@
 #ifndef E_NAME_SELECTOR_MODEL_H
 #define E_NAME_SELECTOR_MODEL_H
 
-#include <glib.h>
 #include <libedataserverui/e-tree-model-generator.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-destination-store.h>

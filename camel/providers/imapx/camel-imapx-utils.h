@@ -21,7 +21,6 @@
 #define CAMEL_IMAPX_UTILS_H
 
 #include <camel/camel.h>
-#include <glib.h>
 
 struct _CamelIMAPXStream;
 struct _CamelFlag;

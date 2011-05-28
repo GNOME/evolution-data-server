@@ -27,8 +27,6 @@
 #include <string.h>
 #include <sys/types.h>
 
-#include <glib.h>
-
 #include "camel-utf8.h"
 
 /**

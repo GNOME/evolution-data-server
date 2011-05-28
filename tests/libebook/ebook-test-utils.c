@@ -1,7 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 #include <stdlib.h>
-#include <glib.h>
 #include <gio/gio.h>
 #include <libebook/e-book.h>
 

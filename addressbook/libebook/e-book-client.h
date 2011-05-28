@@ -22,7 +22,6 @@
 #ifndef E_BOOK_CLIENT_H
 #define E_BOOK_CLIENT_H
 
-#include <glib.h>
 #include <gio/gio.h>
 
 #include <libedataserver/e-client.h>

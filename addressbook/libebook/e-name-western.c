@@ -13,7 +13,6 @@
 
 #include <ctype.h>
 #include <string.h>
-#include <glib.h>
 
 #include "e-name-western.h"
 #include "e-name-western-tables.h"

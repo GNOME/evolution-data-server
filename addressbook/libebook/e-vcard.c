@@ -24,7 +24,6 @@
  * http://www.imc.org/pdi/vcard-21.txt
  */
 
-#include <glib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>

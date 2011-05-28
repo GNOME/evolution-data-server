@@ -23,7 +23,6 @@
 #ifndef _EVCARD_H
 #define _EVCARD_H
 
-#include <glib.h>
 #include <glib-object.h>
 
 G_BEGIN_DECLS

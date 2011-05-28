@@ -23,7 +23,6 @@
 #ifndef _E_PASSWORD_H_
 #define _E_PASSWORD_H_
 
-#include <glib.h>
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS

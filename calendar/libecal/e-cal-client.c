@@ -23,7 +23,6 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 

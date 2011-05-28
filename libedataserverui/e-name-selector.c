@@ -25,7 +25,6 @@
 #endif
 
 #include <string.h>
-#include <glib.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
 #include <libebook/e-book.h>

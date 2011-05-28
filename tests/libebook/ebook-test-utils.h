@@ -22,7 +22,6 @@
 #ifndef _EBOOK_TEST_UTILS_H
 #define _EBOOK_TEST_UTILS_H
 
-#include <glib.h>
 #include <libebook/e-book.h>
 
 #define EBOOK_TEST_UTILS_DATA_DIR "data"

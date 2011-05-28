@@ -41,7 +41,6 @@
 #include <string.h>
 #include <libebook/e-book.h>
 
-#include <glib.h>
 #include <libxml/xmlmemory.h>
 #include <glib/gi18n-lib.h>
 #include <camel/camel.h>

@@ -20,7 +20,6 @@
  */
 
 #include <stdlib.h>
-#include <glib.h>
 #include <gio/gio.h>
 #include <libecal/e-cal.h>
 

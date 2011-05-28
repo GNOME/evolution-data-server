@@ -25,7 +25,6 @@
 #ifndef CAMEL_MSGPORT_H
 #define CAMEL_MSGPORT_H
 
-#include <glib.h>
 #include "camel-list-utils.h"
 
 G_BEGIN_DECLS

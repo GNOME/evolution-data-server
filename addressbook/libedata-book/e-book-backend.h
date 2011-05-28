@@ -22,7 +22,6 @@
 #ifndef __E_BOOK_BACKEND_H__
 #define __E_BOOK_BACKEND_H__
 
-#include <glib.h>
 #include <glib-object.h>
 #include <gio/gio.h>
 

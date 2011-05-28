@@ -21,7 +21,6 @@
 #include <config.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 #include "libedataserver/e-data-server-util.h"

@@ -3172,7 +3172,6 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile, GError **perror)
 }
 
 #ifdef TEST_QUERY_RESULT
-#include <glib.h>
 
 static void
 test_query_by_scanning_all_objects (ECalBackendFile* cbfile, const gchar *sexp, GSList **objects)

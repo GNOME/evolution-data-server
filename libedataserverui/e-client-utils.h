@@ -22,7 +22,6 @@
 #ifndef E_CLIENT_UTILS_H
 #define E_CLIENT_UTILS_H
 
-#include <glib.h>
 #include <gtk/gtk.h>
 
 #include <libedataserver/e-client.h>

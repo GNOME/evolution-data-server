@@ -9,7 +9,6 @@
 
 #include <string.h>
 #include <ctype.h>
-#include <glib.h>
 #include "e-cal-time-util.h"
 
 

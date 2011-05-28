@@ -39,7 +39,6 @@
 #include <sys/socket.h>
 #endif
 
-#include <glib.h>
 #include <glib-object.h>
 
 #include <gconf/gconf.h>

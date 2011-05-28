@@ -21,7 +21,6 @@
 #ifndef E_DATA_CAL_VIEW_H
 #define E_DATA_CAL_VIEW_H
 
-#include <glib.h>
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <libedata-cal/e-data-cal-common.h>

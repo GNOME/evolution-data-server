@@ -24,6 +24,8 @@
 #ifndef __E_DATA_BOOK_TYPES_H__
 #define __E_DATA_BOOK_TYPES_H__
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 typedef struct _EDataBookView        EDataBookView;

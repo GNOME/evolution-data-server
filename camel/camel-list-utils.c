@@ -24,8 +24,6 @@
 #include <config.h>
 #endif
 
-#include <glib.h>
-
 #include "camel-list-utils.h"
 
 /**

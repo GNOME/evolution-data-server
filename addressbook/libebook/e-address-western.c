@@ -11,7 +11,6 @@
 
 #include <ctype.h>
 #include <string.h>
-#include <glib.h>
 
 #include "e-address-western.h"
 #include "libedataserver/e-data-server-util.h"

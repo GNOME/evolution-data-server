@@ -1,7 +1,6 @@
 #ifndef CLIENT_TEST_UTILS_H
 #define CLIENT_TEST_UTILS_H
 
-#include <glib.h>
 #include <libecal/e-cal-client.h>
 
 void print_ecomp (ECalComponent *ecalcomp);

@@ -22,7 +22,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 #include "e-cal-component.h"

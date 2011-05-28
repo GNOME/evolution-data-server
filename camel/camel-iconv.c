@@ -31,8 +31,6 @@
 #include <string.h>
 #include <errno.h>
 
-#include <glib.h>
-
 #include <locale.h>
 
 #ifdef HAVE_CODESET

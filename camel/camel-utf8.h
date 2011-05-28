@@ -27,6 +27,8 @@
 #ifndef CAMEL_UTF8_H
 #define CAMEL_UTF8_H
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 void camel_utf8_putc (guchar **ptr, guint32 c);

@@ -1,7 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
-#include <glib.h>
-
 #include <libedataserver/e-source-group.h>
 #include <libedataserverui/e-client-utils.h>
 #include <libedataserverui/e-passwords.h>

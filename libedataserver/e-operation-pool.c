@@ -19,8 +19,6 @@
  *
  */
 
-#include <glib.h>
-
 #include "e-operation-pool.h"
 
 struct _EOperationPool {

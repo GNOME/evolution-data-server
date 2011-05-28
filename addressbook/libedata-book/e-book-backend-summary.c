@@ -32,7 +32,6 @@
 #include <utime.h>
 #include <errno.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 
 #include "libedataserver/e-sexp.h"

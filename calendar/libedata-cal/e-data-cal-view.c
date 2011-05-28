@@ -26,7 +26,6 @@
 #endif
 
 #include <string.h>
-#include <glib.h>
 
 #include <glib-object.h>
 #include <libedataserver/e-debug-log.h>

@@ -36,7 +36,6 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 

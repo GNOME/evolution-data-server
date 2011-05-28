@@ -21,7 +21,6 @@
  */
 #include <stdlib.h>
 #include <unistd.h>
-#include <glib.h>
 #include <string.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-component.h>

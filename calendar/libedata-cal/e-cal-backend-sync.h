@@ -5,7 +5,6 @@
 #ifndef __E_CAL_BACKEND_SYNC_H__
 #define __E_CAL_BACKEND_SYNC_H__
 
-#include <glib.h>
 #include <libedata-cal/e-cal-backend.h>
 
 G_BEGIN_DECLS

@@ -22,7 +22,6 @@
 #ifndef E_CLIENT_PRIVATE_H
 #define E_CLIENT_PRIVATE_H
 
-#include <glib.h>
 #include <gio/gio.h>
 
 #include "libedataserver/e-credentials.h"

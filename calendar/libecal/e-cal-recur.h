@@ -23,7 +23,6 @@
 #ifndef E_CAL_RECUR_H
 #define E_CAL_RECUR_H
 
-#include <glib.h>
 #include <libecal/e-cal-component.h>
 
 G_BEGIN_DECLS

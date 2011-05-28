@@ -1,7 +1,6 @@
 #ifndef CLIENT_TEST_UTILS_H
 #define CLIENT_TEST_UTILS_H
 
-#include <glib.h>
 #include <libebook/e-book-client.h>
 #include <libebook/e-contact.h>
 

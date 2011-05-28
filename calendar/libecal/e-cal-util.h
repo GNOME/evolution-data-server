@@ -23,7 +23,6 @@
 
 #include <libical/ical.h>
 #include <time.h>
-#include <glib.h>
 #include <libecal/e-cal-component.h>
 #include <libecal/e-cal-recur.h>
 

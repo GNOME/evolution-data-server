@@ -22,7 +22,6 @@
 #ifndef _ECAL_TEST_UTILS_H
 #define _ECAL_TEST_UTILS_H
 
-#include <glib.h>
 #include <libecal/e-cal.h>
 
 typedef struct {

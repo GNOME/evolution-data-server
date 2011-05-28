@@ -22,7 +22,6 @@
 #ifndef E_OPERATION_POOL_H
 #define E_OPERATION_POOL_H
 
-#include <glib.h>
 #include <gio/gio.h>
 
 typedef struct _EOperationPool EOperationPool;

@@ -24,7 +24,6 @@
 #ifndef __E_BOOK_BACKEND_SUMMARY_H__
 #define __E_BOOK_BACKEND_SUMMARY_H__
 
-#include <glib.h>
 #include <glib-object.h>
 #include <libedata-book/e-data-book-types.h>
 #include <libebook/e-contact.h>

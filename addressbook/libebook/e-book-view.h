@@ -13,7 +13,6 @@
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
 
-#include <glib.h>
 #include <glib-object.h>
 #include "e-book-types.h"
 

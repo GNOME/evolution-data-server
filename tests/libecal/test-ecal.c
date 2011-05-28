@@ -22,7 +22,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <glib.h>
 #include <glib/gi18n.h>
 #include <libecal/e-cal.h>
 #include <libecal/e-cal-component.h>

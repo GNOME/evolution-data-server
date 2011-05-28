@@ -27,7 +27,6 @@
 #include <libxml/tree.h>
 #include <libxml/xmlmemory.h>
 
-#include <glib.h>
 #include <glib/gstdio.h>
 
 #include "e-xml-hash-utils.h"

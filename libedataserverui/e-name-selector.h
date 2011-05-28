@@ -23,8 +23,6 @@
 #ifndef E_NAME_SELECTOR_H
 #define E_NAME_SELECTOR_H
 
-#include <glib.h>
-
 #include <libedataserver/e-source-list.h>
 #include <libedataserverui/e-name-selector-model.h>
 #include <libedataserverui/e-name-selector-dialog.h>
