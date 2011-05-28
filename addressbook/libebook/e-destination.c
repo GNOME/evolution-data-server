@@ -178,7 +178,7 @@ e_destination_new (void)
  *
  * Creates a new #EDestination identical to @dest.
  *
- * Returns: A newly created #EDestination, identical to @dest.
+ * Returns: (transfer full): A newly created #EDestination, identical to @dest.
  */
 EDestination*
 e_destination_copy (const EDestination *dest)
@@ -646,7 +646,7 @@ e_destination_set_auto_recipient (EDestination *dest, gboolean value)
  *
  * Gets the contact @dest is pointing to, if any.
  *
- * Returns: An #EContact, or %NULL if none was set.
+ * Returns: (transfer none): An #EContact, or %NULL if none was set.
  **/
 EContact *
 e_destination_get_contact (const EDestination *dest)
@@ -1420,7 +1420,8 @@ e_destination_export (const EDestination *dest)
  *
  * Creates an #EDestination from an XML document.
  *
- * Returns: An #EDestination, or %NULL if the document was not well-formed.
+ * Returns: (transfer full): An #EDestination, or %NULL if the document was not
+ * well-formed.
  **/
 EDestination *
 e_destination_import (const gchar *str)
@@ -1492,7 +1493,8 @@ e_destination_exportv (EDestination **destv)
  * Creates an array of pointers to #EDestination elements
  * from an XML document.
  *
- * Returns: A %NULL-terminated array of pointers to #EDestination elements.
+ * Returns: (transfer full):A %NULL-terminated array of pointers to
+ * #EDestination elements.
  **/
 EDestination **
 e_destination_importv (const gchar *str)

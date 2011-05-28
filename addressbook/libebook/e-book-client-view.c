@@ -180,7 +180,7 @@ _e_book_client_view_new (EBookClient *book_client, EGdbusBookView *gdbus_bookvie
  *
  * Returns the #EBookClient that this book view is monitoring.
  *
- * Returns: an #EBookClient.
+ * Returns: (transfer none): an #EBookClient.
  **/
 EBookClient *
 e_book_client_view_get_client (EBookClientView *view)
