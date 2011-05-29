@@ -1867,7 +1867,7 @@ complete_get_view (EBookClient *client, gboolean res, gchar *view_path, EBookCli
  * e_book_client_get_view_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @view: (out) an #EBookClientView
+ * @view: (out): an #EBookClientView
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_view().
