@@ -1581,7 +1581,7 @@ e_book_client_get_contact (EBookClient *client, const gchar *uid, GCancellable *
  * e_book_client_get_contact_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @contact: (out) an #EContact for previously given uid
+ * @contact: (out): an #EContact for previously given uid
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_contact().
