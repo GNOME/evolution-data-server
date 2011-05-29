@@ -33,6 +33,7 @@ libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedatase
 		--vapidir=. \
 		--girdir=$(top_builddir)/libedataserver \
 		--pkg libedataserver-1.2 \
+		--pkg gio-2.0 \
 		--library libebook-1.2 \
 		--metadatadir=. \
 		$< \
