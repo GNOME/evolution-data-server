@@ -112,7 +112,7 @@ introspection_sources = \
 	$(libedataserver_1_2_la_SOURCES))
 
 EDataServer-1.2.gir: libedataserver-1.2.la
-EDataServer_1_2_gir_INCLUDES = GObject-2.0 libxml2-2.0
+EDataServer_1_2_gir_INCLUDES = GObject-2.0 libxml2-2.0 Gio-2.0
 EDataServer_1_2_gir_CFLAGS = -I$(top_srcdir) $(E_DATA_SERVER_CFLAGS) \
 	$(SOUP_CFLAGS)
 EDataServer_1_2_gir_LIBS = libedataserver-1.2.la

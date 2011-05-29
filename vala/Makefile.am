@@ -17,6 +17,7 @@ pkgconfigdir = ${libdir}/pkgconfig
 
 libedataserver-1.2.vapi: $(top_builddir)/libedataserver/EDataServer-1.2.gir
 	$(VAPIGEN_V)$(VAPIGEN) \
+		--pkg gio-2.0 \
 		--library libedataserver-1.2 \
 		$< \
 		$(NULL)
