@@ -423,7 +423,7 @@ client_set_source (EClient *client, ESource *source)
  *
  * Get the #ESource that this client has assigned.
  *
- * Returns: The source.
+ * Returns: (transfer none): The source.
  *
  * Since: 3.2
  **/
@@ -1362,7 +1362,7 @@ e_client_refresh_sync (EClient *client, GCancellable *cancellable, GError **erro
  *
  * Convert list of strings into NULL-terminates array of strings.
  *
- * Returns: Newly allocated NULL-terminated array of strings.
+ * Returns: (transfer full): Newly allocated NULL-terminated array of strings.
  * Returned pointer should be freed with g_strfreev().
  *
  * Note: Pair function for this is e_client_util_strv_to_slist().
@@ -1396,7 +1396,7 @@ e_client_util_slist_to_strv (const GSList *strings)
  *
  * Convert NULL-terminated array of strings to a list of strings.
  *
- * Returns: Newly allocated #GSList of newly allocated strings.
+ * Returns: (transfer full): Newly allocated #GSList of newly allocated strings.
  * Returned pointer should be freed with e_client_util_free_string_slist().
  *
  * Note: Pair function for this is e_client_util_slist_to_strv().
@@ -1426,7 +1426,7 @@ e_client_util_strv_to_slist (const gchar * const *strv)
  *
  * Copies GSList of strings at the end of @copy_to.
  *
- * Returns: New head of @copy_to.
+ * Returns: (transfer full): New head of @copy_to.
  * Returned pointer can be freed with e_client_util_free_string_slist().
  *
  * Since: 3.2
@@ -1451,7 +1451,7 @@ e_client_util_copy_string_slist	(GSList *copy_to, const GSList *strings)
  *
  * Copies GSList of GObject-s at the end of @copy_to.
  *
- * Returns: New head of @copy_to.
+ * Returns: (transfer full): New head of @copy_to.
  * Returned pointer can be freed with e_client_util_free_object_slist().
  *
  * Since: 3.2
@@ -1512,7 +1512,7 @@ e_client_util_free_object_slist (GSList *objects)
  *
  * Parses comma-separated list of values into #GSList.
  *
- * Returns: Newly allocated #GSList of newly allocated strings
+ * Returns: (transfer full): Newly allocated #GSList of newly allocated strings
  * corresponding to values parsed from @strings.
  * Free returned pointer with e_client_util_free_string_slist().
  *
