@@ -1616,7 +1616,7 @@ e_book_client_get_contact_finish (EBookClient *client, GAsyncResult *result, ECo
  * e_book_client_get_contact_sync:
  * @client: an #EBookClient
  * @uid: a unique string ID specifying the contact
- * @contact: (out) an #EContact for given @uid
+ * @contact: (out): an #EContact for given @uid
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
