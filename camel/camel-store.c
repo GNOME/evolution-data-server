@@ -2073,14 +2073,15 @@ camel_store_get_folder_sync (CamelStore *store,
 
 	class = CAMEL_STORE_GET_CLASS (store);
 
-	/* O_EXCL doesn't make sense if we aren't requesting to also create the folder if it doesn't exist */
+	/* O_EXCL doesn't make sense if we aren't requesting
+	 * to also create the folder if it doesn't exist. */
 	if (!(flags & CAMEL_STORE_FOLDER_CREATE))
 		flags &= ~CAMEL_STORE_FOLDER_EXCL;
 
-	if (store->folders) {
+	if (store->folders != NULL) {
 		/* Try cache first. */
 		folder = camel_object_bag_reserve (store->folders, folder_name);
-		if (folder && (flags & CAMEL_STORE_FOLDER_EXCL)) {
+		if (folder != NULL && (flags & CAMEL_STORE_FOLDER_EXCL)) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot create folder '%s': folder exists"),
@@ -2091,18 +2092,37 @@ camel_store_get_folder_sync (CamelStore *store,
 		}
 	}
 
-	if (!folder) {
+	if (folder == NULL) {
+		CamelVeeFolder *vjunk = NULL;
+		CamelVeeFolder *vtrash = NULL;
+		gboolean folder_name_is_vjunk;
+		gboolean folder_name_is_vtrash;
+		gboolean store_uses_vjunk;
+		gboolean store_uses_vtrash;
+
+		store_uses_vjunk =
+			((store->flags & CAMEL_STORE_VJUNK) != 0);
+		store_uses_vtrash =
+			((store->flags & CAMEL_STORE_VTRASH) != 0);
+		folder_name_is_vjunk =
+			store_uses_vjunk &&
+			(strcmp (folder_name, CAMEL_VJUNK_NAME) == 0);
+		folder_name_is_vtrash =
+			store_uses_vtrash &&
+			(strcmp (folder_name, CAMEL_VTRASH_NAME) == 0);
 
 		if (flags & CAMEL_STORE_IS_MIGRATING) {
-			if ((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0) {
-				if (store->folders)
-					camel_object_bag_abort (store->folders, folder_name);
+			if (folder_name_is_vtrash) {
+				if (store->folders != NULL)
+					camel_object_bag_abort (
+						store->folders, folder_name);
 				return NULL;
 			}
 
-			if ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0) {
-				if (store->folders)
-						camel_object_bag_abort (store->folders, folder_name);
+			if (folder_name_is_vjunk) {
+				if (store->folders != NULL)
+					camel_object_bag_abort (
+						store->folders, folder_name);
 				return NULL;
 			}
 		}
@@ -2110,44 +2130,68 @@ camel_store_get_folder_sync (CamelStore *store,
 		camel_operation_push_message (
 			cancellable, _("Opening folder '%s'"), folder_name);
 
-		if ((store->flags & CAMEL_STORE_VTRASH) && strcmp (folder_name, CAMEL_VTRASH_NAME) == 0) {
-			folder = class->get_trash_folder_sync (store, cancellable, error);
-			CAMEL_CHECK_GERROR (store, get_trash_folder_sync, folder != NULL, error);
-		} else if ((store->flags & CAMEL_STORE_VJUNK) && strcmp (folder_name, CAMEL_VJUNK_NAME) == 0) {
-			folder = class->get_junk_folder_sync (store, cancellable, error);
-			CAMEL_CHECK_GERROR (store, get_junk_folder_sync, folder != NULL, error);
+		if (folder_name_is_vtrash) {
+			folder = class->get_trash_folder_sync (
+				store, cancellable, error);
+			CAMEL_CHECK_GERROR (
+				store, get_trash_folder_sync,
+				folder != NULL, error);
+
+		} else if (folder_name_is_vjunk) {
+			folder = class->get_junk_folder_sync (
+				store, cancellable, error);
+			CAMEL_CHECK_GERROR (
+				store, get_junk_folder_sync,
+				folder != NULL, error);
+
 		} else {
 			folder = class->get_folder_sync (
-				store, folder_name, flags, cancellable, error);
-			CAMEL_CHECK_GERROR (store, get_folder_sync, folder != NULL, error);
+				store, folder_name, flags,
+				cancellable, error);
+			CAMEL_CHECK_GERROR (
+				store, get_folder_sync,
+				folder != NULL, error);
 
-			if (folder) {
-				CamelVeeFolder *vfolder;
+			if (folder != NULL && store_uses_vjunk)
+				vjunk = camel_object_bag_get (
+					store->folders, CAMEL_VJUNK_NAME);
 
-				if ((store->flags & CAMEL_STORE_VTRASH)
-				    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VTRASH_NAME))) {
-					camel_vee_folder_add_folder (vfolder, folder);
-					g_object_unref (vfolder);
-				}
+			if (folder != NULL && store_uses_vtrash)
+				vtrash = camel_object_bag_get (
+					store->folders, CAMEL_VTRASH_NAME);
+		}
 
-				if ((store->flags & CAMEL_STORE_VJUNK)
-				    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VJUNK_NAME))) {
-					camel_vee_folder_add_folder (vfolder, folder);
-					g_object_unref (vfolder);
-				}
-			}
+		/* Release the folder name reservation before adding the
+		 * folder to the virtual Junk and Trash folders, just to
+		 * reduce the chance of deadlock. */
+		if (store->folders != NULL) {
+			if (folder != NULL)
+				camel_object_bag_add (
+					store->folders, folder_name, folder);
+			else
+				camel_object_bag_abort (
+					store->folders, folder_name);
+		}
+
+		/* If this is a normal folder and the store uses a
+		 * virtual Junk folder, let the virtual Junk folder
+		 * track this folder. */
+		if (vjunk != NULL) {
+			camel_vee_folder_add_folder (vjunk, folder);
+			g_object_unref (vjunk);
+		}
+
+		/* If this is a normal folder and the store uses a
+		 * virtual Trash folder, let the virtual Trash folder
+		 * trash this folder. */
+		if (vtrash != NULL) {
+			camel_vee_folder_add_folder (vtrash, folder);
+			g_object_unref (vtrash);
 		}
 
 		camel_operation_pop_message (cancellable);
 
-		if (store->folders) {
-			if (folder)
-				camel_object_bag_add (store->folders, folder_name, folder);
-			else
-				camel_object_bag_abort (store->folders, folder_name);
-		}
-
-		if (folder)
+		if (folder != NULL)
 			camel_store_folder_opened (store, folder);
 	}
 
