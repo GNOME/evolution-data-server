@@ -63,6 +63,7 @@ struct _update_data {
 	CamelVeeFolder *folder_unmatched;
 	GHashTable *unmatched_uids;
 	gboolean rebuilt, correlating;
+	GQueue *message_uids;
 };
 
 struct _FolderChangedData {
@@ -707,36 +708,40 @@ folder_added_uid (gchar *uidin, gpointer value, struct _update_data *u)
 	CamelVeeMessageInfo *mi;
 	gchar *oldkey;
 	gpointer oldval;
+	const gchar *uid;
 	gint n;
 
-	if ((mi = vee_folder_add_uid (u->vee_folder, u->source, uidin, u->hash)) != NULL) {
-		camel_folder_change_info_add_uid (u->vee_folder->changes, camel_message_info_uid (mi));
-		/* FIXME[disk-summary] Handle exceptions */
-		/* FIXME[disk-summary] Make all these as transactions, just
-		 * testing atm */
-		if (u->rebuilt && !u->correlating) {
-			CamelStore *parent_store;
-			const gchar *full_name;
+	mi = vee_folder_add_uid (u->vee_folder, u->source, uidin, u->hash);
+	if (mi == NULL)
+		return;
 
-			full_name = camel_folder_get_full_name (
-				CAMEL_FOLDER (u->vee_folder));
-			parent_store = camel_folder_get_parent_store (
-				CAMEL_FOLDER (u->vee_folder));
-			camel_db_add_to_vfolder_transaction (
-				parent_store->cdb_w, full_name,
-				camel_message_info_uid (mi), NULL);
-		}
-		if (!CAMEL_IS_VEE_FOLDER (u->source) && u->unmatched_uids != NULL) {
-			if (g_hash_table_lookup_extended (u->unmatched_uids, camel_message_info_uid (mi), (gpointer *)&oldkey, &oldval)) {
-				n = GPOINTER_TO_INT (oldval);
-				g_hash_table_insert (u->unmatched_uids, oldkey, GINT_TO_POINTER (n+1));
-			} else {
-				g_hash_table_insert (u->unmatched_uids, g_strdup (camel_message_info_uid (mi)), GINT_TO_POINTER (1));
-			}
-		}
+	uid = camel_message_info_uid (mi);
 
-		camel_message_info_free ((CamelMessageInfo *) mi);
+	if (u->message_uids != NULL)
+		g_queue_push_tail (u->message_uids, g_strdup (uid));
+
+	camel_folder_change_info_add_uid (u->vee_folder->changes, uid);
+
+	if (!CAMEL_IS_VEE_FOLDER (u->source) && u->unmatched_uids != NULL) {
+		gboolean found_uid;
+
+		found_uid = g_hash_table_lookup_extended (
+			u->unmatched_uids, uid,
+			(gpointer *) &oldkey, &oldval);
+
+		if (found_uid) {
+			n = GPOINTER_TO_INT (oldval);
+			g_hash_table_insert (
+				u->unmatched_uids,
+				oldkey, GINT_TO_POINTER (n + 1));
+		} else {
+			g_hash_table_insert (
+				u->unmatched_uids,
+				g_strdup (uid), GINT_TO_POINTER (1));
+		}
 	}
+
+	camel_message_info_free ((CamelMessageInfo *) mi);
 }
 
 static gint
@@ -1775,21 +1780,34 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
 	if (last != -1)
 		camel_folder_summary_remove_range (folder->summary, start, last);
 
+	if (rebuilded && !correlating)
+		u.message_uids = g_queue_new ();
+	else
+		u.message_uids = NULL;
+
 	/* now matchhash contains any new uid's, add them, etc */
-	if (rebuilded && !correlating) {
-		CamelStore *parent_store;
-
-		parent_store = camel_folder_get_parent_store (folder);
-		camel_db_begin_transaction (parent_store->cdb_w, NULL);
-	}
-
 	g_hash_table_foreach (matchhash, (GHFunc) folder_added_uid, &u);
 
-	if (rebuilded && !correlating) {
+	if (u.message_uids != NULL) {
 		CamelStore *parent_store;
+		const gchar *full_name;
+		gchar *uid;
 
+		full_name = camel_folder_get_full_name (folder);
 		parent_store = camel_folder_get_parent_store (folder);
+
+		camel_db_begin_transaction (parent_store->cdb_w, NULL);
+
+		while ((uid = g_queue_pop_head (u.message_uids)) != NULL) {
+			camel_db_add_to_vfolder_transaction (
+				parent_store->cdb_w, full_name, uid, NULL);
+			g_free (uid);
+		}
+
 		camel_db_end_transaction (parent_store->cdb_w, NULL);
+
+		g_queue_free (u.message_uids);
+		u.message_uids = NULL;
 	}
 
 	if (folder_unmatched != NULL) {
