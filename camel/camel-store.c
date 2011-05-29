@@ -2183,7 +2183,7 @@ camel_store_get_folder_sync (CamelStore *store,
 
 		/* If this is a normal folder and the store uses a
 		 * virtual Trash folder, let the virtual Trash folder
-		 * trash this folder. */
+		 * track this folder. */
 		if (vtrash != NULL) {
 			camel_vee_folder_add_folder (vtrash, folder);
 			g_object_unref (vtrash);
