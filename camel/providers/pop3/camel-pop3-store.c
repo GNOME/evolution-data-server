@@ -156,6 +156,11 @@ connect_to_server (CamelService *service,
 		return FALSE;
 	}
 
+	if (camel_url_get_param (service->url, "disable_autofetch"))
+		store->auto_fetch = FALSE;
+	else
+		store->auto_fetch = TRUE;
+		
 	if (camel_url_get_param (service->url, "disable_extensions"))
 		flags |= CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS;
 

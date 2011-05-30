@@ -651,7 +651,7 @@ pop3_get_message (CamelFolder *folder, const gchar *uid, GError **error)
 		pcr = camel_pop3_engine_command_new(pop3_store->engine, CAMEL_POP3_COMMAND_MULTI, cmd_tocache, fi, "RETR %u\r\n", fi->id);
 
 		/* Also initiate retrieval of some of the following messages, assume we'll be receiving them */
-		if (pop3_store->cache != NULL) {
+		if (pop3_store->auto_fetch && pop3_store->cache != NULL) {
 			/* This should keep track of the last one retrieved, also how many are still
 			   oustanding incase of random access on large folders */
 			i = fi->index+1;
