@@ -2013,6 +2013,114 @@ e_contact_photo_copy (EContactPhoto *photo)
 	return photo2;
 }
 
+/**
+ * e_contact_photo_get_inlined:
+ * @photo: an #EContactPhoto
+ * @len: (out caller-allocates) (transfer none): the length of the inlined data
+ *
+ * Gets the @photo's data.
+ *
+ * Returns: (transfer none) (array length=len): the inlined image in the
+ * #EContactPhoto.
+ **/
+const guchar *
+e_contact_photo_get_inlined (EContactPhoto *photo, gsize *len)
+{
+	g_return_val_if_fail (photo != NULL, NULL);
+	g_return_val_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_INLINED, NULL);
+
+	*len = photo->data.inlined.length;
+	return photo->data.inlined.data;
+}
+
+/**
+ * e_contact_photo_set_inlined:
+ * @photo: an #EContactPhoto
+ * @data: (transfer none) (array length=len): the inlined image data
+ * @len: the length of @data
+ *
+ * Sets the @photo's inlined data.
+ **/
+void
+e_contact_photo_set_inlined (EContactPhoto *photo,
+			     const guchar *data, gsize len)
+{
+	g_return_if_fail (photo != NULL);
+	g_return_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_INLINED);
+
+	photo->data.inlined.data = g_malloc (len);
+	memcpy (photo->data.inlined.data, data, len);
+	photo->data.inlined.length = len;
+}
+
+/**
+ * e_contact_photo_get_mime_type:
+ * @photo: an #EContactPhoto
+ *
+ * Gets the @photo's mime type.
+ *
+ * Returns: (transfer none): the mime type of the image
+ **/
+const gchar *
+e_contact_photo_get_mime_type (EContactPhoto *photo)
+{
+	g_return_val_if_fail (photo != NULL, NULL);
+	g_return_val_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_INLINED, NULL);
+
+	return photo->data.inlined.mime_type;
+}
+
+/**
+ * e_contact_photo_set_mime_type:
+ * @photo: an #EContactPhoto
+ * @mime_type: the mime type
+ *
+ * Sets the @photo's mime type.
+ **/
+void
+e_contact_photo_set_mime_type (EContactPhoto *photo, const gchar *mime_type)
+{
+	g_return_if_fail (photo != NULL);
+	g_return_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_INLINED);
+
+	g_free (photo->data.inlined.mime_type);
+	photo->data.inlined.mime_type = g_strdup (mime_type);
+}
+
+/**
+ * e_contact_photo_get_uri:
+ * @photo: an #EContactPhoto
+ *
+ * Gets the @photo's URI.
+ *
+ * Returns: (transfer none): the URI of the image
+ **/
+const gchar *
+e_contact_photo_get_uri (EContactPhoto *photo)
+{
+	g_return_val_if_fail (photo != NULL, NULL);
+	g_return_val_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_URI, NULL);
+
+	return photo->data.uri;
+}
+
+/**
+ * e_contact_photo_set_uri:
+ * @photo: an #EContactPhoto
+ * @uri: the @photo's URI
+ *
+ * Sets the @photo's URI.
+ **/
+void
+e_contact_photo_set_uri (EContactPhoto *photo, const gchar *uri)
+{
+	g_return_if_fail (photo != NULL);
+	g_return_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_URI);
+
+	g_free (photo->data.uri);
+	photo->data.uri = g_strdup (uri);
+}
+
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_photo, "EContactPhoto")
 
 /**

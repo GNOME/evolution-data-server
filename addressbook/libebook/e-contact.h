@@ -331,8 +331,14 @@ EContactName           *e_contact_name_from_string (const gchar *name_str);
 EContactName           *e_contact_name_copy        (EContactName *n);
 void                    e_contact_name_free        (EContactName *name);
 
-GType                   e_contact_photo_get_type   (void);
-void                    e_contact_photo_free       (EContactPhoto *photo);
+GType                   e_contact_photo_get_type      (void);
+void                    e_contact_photo_free          (EContactPhoto *photo);
+const guchar *          e_contact_photo_get_inlined   (EContactPhoto *photo, gsize *len);
+void                    e_contact_photo_set_inlined   (EContactPhoto *photo, const guchar *data, gsize len);
+const gchar *           e_contact_photo_get_mime_type (EContactPhoto *photo);
+void                    e_contact_photo_set_mime_type (EContactPhoto *photo, const gchar *mime_type);
+const gchar *           e_contact_photo_get_uri       (EContactPhoto *photo);
+void                    e_contact_photo_set_uri       (EContactPhoto *photo, const gchar *uri);
 
 GType			e_contact_geo_get_type	   (void);
 void			e_contact_geo_free	   (EContactGeo *geo);

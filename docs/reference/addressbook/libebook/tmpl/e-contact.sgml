@@ -1010,6 +1010,59 @@ The URI of the contact's calendar.
 
 @photo: 
 
+ 
+<!-- ##### FUNCTION e_contact_photo_get_inlined ##### -->
+<para>
+
+</para>
+
+@photo:
+@len:
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_photo_set_inlined ##### -->
+<para>
+
+</para>
+
+@photo:
+@data:
+@len:
+
+<!-- ##### FUNCTION e_contact_photo_get_mime_type ##### -->
+<para>
+
+</para>
+
+@photo:
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_photo_set_mime_type ##### -->
+<para>
+
+</para>
+
+@photo:
+@mime_type:
+
+<!-- ##### FUNCTION e_contact_photo_get_uri ##### -->
+<para>
+
+</para>
+
+@photo:
+@Returns: 
+
+
+<!-- ##### FUNCTION e_contact_photo_set_uri ##### -->
+<para>
+
+</para>
+
+@photo:
+@uri:
 
 <!-- ##### FUNCTION e_contact_geo_free ##### -->
 <para>
