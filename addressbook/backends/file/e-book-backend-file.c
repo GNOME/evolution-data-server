@@ -868,6 +868,14 @@ e_book_backend_file_get_changes (EBookBackendSync *backend,
 		e_dbhash_write (ehash);
 
 		*changes_out = changes;
+
+		/* Free the lists */
+		g_list_free (ctx.add_ids);
+		g_list_free (ctx.mod_ids);
+		g_list_free (ctx.del_ids);
+		g_list_free (ctx.add_cards);
+		g_list_free (ctx.mod_cards);
+		g_list_free (ctx.del_cards);
 	}
 
 	e_dbhash_destroy (ehash);
