@@ -34,6 +34,13 @@ e_dbhash_new (const gchar *filename)
 
 	rv = (*db->open) (db, NULL, filename, NULL, DB_HASH, 0, 0666);
 	if (rv != 0) {
+		/* Close and re-create the db handle to avoid memory leak */
+		db->close (db, 0);
+		rv = db_create (&db, NULL, 0);
+		if (rv != 0) {
+			return NULL;
+		}
+
 		rv = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_CREATE, 0666);
 
 		if (rv != 0) {
