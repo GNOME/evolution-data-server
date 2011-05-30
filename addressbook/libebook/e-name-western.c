@@ -650,8 +650,10 @@ e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 	 * last name.
 	 */
 	comma = g_utf8_strchr (name->full, -1, ',');
-	if (comma == NULL)
+	if (comma == NULL) {
+		g_free (prefix);
 		return;
+	}
 
 	p = name->full + (prefix == NULL ? 0 : strlen (prefix));
 
