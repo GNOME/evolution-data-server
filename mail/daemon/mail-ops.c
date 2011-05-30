@@ -353,10 +353,12 @@ fetch_mail_exec (struct _fetch_mail_msg *m)
 					/* need to copy this, sigh */
 					fm->source_uids = uids = g_ptr_array_new ();
 					g_ptr_array_set_size (uids, cache_uids->len);
-					for (i = 0; i < cache_uids->len; i++)
-						uids->pdata[i] = g_strdup (cache_uids->pdata[i]);
-					camel_uid_cache_free_uids (cache_uids);
 
+					/* Reverse it so that we fetch the latest as first, while fetching POP  */
+					for (i = 0; i < cache_uids->len; i++)
+						uids->pdata[cache_uids->len-i-1] = g_strdup (cache_uids->pdata[i]);
+
+					camel_uid_cache_free_uids (cache_uids);
 					fm->cache = cache;
 					em_filter_folder_element_exec (fm);
 
