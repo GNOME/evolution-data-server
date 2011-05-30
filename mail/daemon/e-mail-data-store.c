@@ -6,6 +6,7 @@
 #include "e-gdbus-emailstore.h"
 #include "mail-ops.h"
 #include "utils.h"
+#include <glib/gi18n.h>
 
 #define micro(x) if (mail_debug_log(EMAIL_DEBUG_STORE|EMAIL_DEBUG_MICRO)) x;
 #define ipc(x) if (mail_debug_log(EMAIL_DEBUG_STORE|EMAIL_DEBUG_IPC)) x;
@@ -150,9 +151,13 @@ handle_get_folder_info_cb (CamelStore *store, CamelFolderInfo *info, gpointer da
 	GVariant *variant;
 
 	if (!info) {
-		g_warning ("Unable to get folder info on Store %p: %s\n", store, error->message);
-		g_dbus_method_invocation_return_gerror (gfi_data->invocation, error);
-		ipc (printf("EMailDataStore: get folder info failed : %s - %s\n", priv->object_path, error->message));
+		g_warning ("Unable to get folder info on Store %p: %s\n", store, error ? error->message: "");
+		if (error)
+			g_dbus_method_invocation_return_gerror (gfi_data->invocation, error);
+		else
+			g_dbus_method_invocation_return_error (gfi_data->invocation, CAMEL_ERROR, CAMEL_STORE_ERROR_NO_FOLDER, _("Unable to fetch requested folder info"));
+			
+		ipc (printf("EMailDataStore: get folder info failed : %s - %s\n", priv->object_path, error ? error->message : ""));
 
 		return FALSE;
 	}
