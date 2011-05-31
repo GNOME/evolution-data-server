@@ -1082,6 +1082,7 @@ auto_account_removed(EAccountList *eal, EAccount *ea, gpointer dummy)
 		g_source_remove(info->timeout_id);
 		info->timeout_id = 0;
 	}
+	e_mail_session_emit_account_removed (data_session, ea->uid);
 }
 
 static void
@@ -1125,6 +1126,8 @@ auto_account_added(EAccountList *eal, EAccount *ea, gpointer dummy)
 		G_OBJECT (ea), "mail-autoreceive", info,
 		(GDestroyNotify) auto_account_finalised);
 	auto_account_commit (info);
+	if (data_session)
+		e_mail_session_emit_account_added (data_session, ea->uid);
 }
 
 static void
@@ -1135,6 +1138,7 @@ auto_account_changed(EAccountList *eal, EAccount *ea, gpointer dummy)
 	g_return_if_fail(info != NULL);
 
 	auto_account_commit(info);
+	e_mail_session_emit_account_changed (data_session, ea->uid);
 }
 
 static void

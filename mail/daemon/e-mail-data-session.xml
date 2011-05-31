@@ -46,6 +46,15 @@
     </method>    
     <signal name="sendReceiveComplete">
     </signal>
+    <signal name="AccountAdded">
+      <arg name="uid" type="s"/>
+    </signal>
+    <signal name="AccountRemoved">
+      <arg name="uid" type="s"/>    
+    </signal>
+    <signal name="AccountChanged">
+      <arg name="uid" type="s"/>    
+    </signal>
 
     <signal name="GetPassword">
       <arg name="title" type="s"/>

@@ -537,3 +537,33 @@ e_mail_session_emit_send_receive_completed (EMailDataSession *msession)
 	ipc(printf("Emitting Send/Receive completed signal\n"));
 	egdbus_session_cs_emit_send_receive_complete (priv->gdbus_object);
 }
+
+void
+e_mail_session_emit_account_added (EMailDataSession *msession, const char *uid)
+{
+	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
+	
+	ipc(printf("Emitting Account added signal\n"));
+	egdbus_session_cs_emit_account_added (priv->gdbus_object, uid);
+}
+
+void
+e_mail_session_emit_account_removed (EMailDataSession *msession, const char *uid)
+{
+	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
+	
+	ipc(printf("Emitting Account removed signal\n"));
+	egdbus_session_cs_emit_account_removed (priv->gdbus_object, uid);
+}
+
+void
+e_mail_session_emit_account_changed (EMailDataSession *msession, const char *uid)
+{
+	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
+	
+	ipc(printf("Emitting Account changed signal\n"));
+	egdbus_session_cs_emit_account_changed (priv->gdbus_object, uid);
+}
+
+
+

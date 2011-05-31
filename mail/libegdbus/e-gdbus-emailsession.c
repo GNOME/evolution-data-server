@@ -597,6 +597,90 @@ static const _ExtendedGDBusSignalInfo _egdbus_session_cs_signal_info_send_receiv
   "send-receive-complete"
 };
 
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_signal_info_account_added_ARG_uid =
+{
+  {
+    -1,
+    "uid",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_signal_info_account_added_ARG_pointers[] =
+{
+  &_egdbus_session_cs_signal_info_account_added_ARG_uid,
+  NULL
+};
+
+static const _ExtendedGDBusSignalInfo _egdbus_session_cs_signal_info_account_added =
+{
+  {
+    -1,
+    "AccountAdded",
+    (GDBusArgInfo **) &_egdbus_session_cs_signal_info_account_added_ARG_pointers,
+    NULL
+  },
+  "account-added"
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_signal_info_account_removed_ARG_uid =
+{
+  {
+    -1,
+    "uid",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_signal_info_account_removed_ARG_pointers[] =
+{
+  &_egdbus_session_cs_signal_info_account_removed_ARG_uid,
+  NULL
+};
+
+static const _ExtendedGDBusSignalInfo _egdbus_session_cs_signal_info_account_removed =
+{
+  {
+    -1,
+    "AccountRemoved",
+    (GDBusArgInfo **) &_egdbus_session_cs_signal_info_account_removed_ARG_pointers,
+    NULL
+  },
+  "account-removed"
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_signal_info_account_changed_ARG_uid =
+{
+  {
+    -1,
+    "uid",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_signal_info_account_changed_ARG_pointers[] =
+{
+  &_egdbus_session_cs_signal_info_account_changed_ARG_uid,
+  NULL
+};
+
+static const _ExtendedGDBusSignalInfo _egdbus_session_cs_signal_info_account_changed =
+{
+  {
+    -1,
+    "AccountChanged",
+    (GDBusArgInfo **) &_egdbus_session_cs_signal_info_account_changed_ARG_pointers,
+    NULL
+  },
+  "account-changed"
+};
+
 static const _ExtendedGDBusArgInfo _egdbus_session_cs_signal_info_get_password_ARG_title =
 {
   {
@@ -652,6 +736,9 @@ static const _ExtendedGDBusSignalInfo _egdbus_session_cs_signal_info_get_passwor
 static const _ExtendedGDBusSignalInfo * const _egdbus_session_cs_signal_info_pointers[] =
 {
   &_egdbus_session_cs_signal_info_send_receive_complete,
+  &_egdbus_session_cs_signal_info_account_added,
+  &_egdbus_session_cs_signal_info_account_removed,
+  &_egdbus_session_cs_signal_info_account_changed,
   &_egdbus_session_cs_signal_info_get_password,
   NULL
 };
@@ -781,6 +868,36 @@ egdbus_session_cs_default_init (EGdbusSessionCSIface *iface)
     G_TYPE_NONE,
     0);
 
+  g_signal_new ("account-added",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusSessionCSIface, account_added),
+    NULL,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_NONE,
+    1, G_TYPE_STRING);
+
+  g_signal_new ("account-removed",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusSessionCSIface, account_removed),
+    NULL,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_NONE,
+    1, G_TYPE_STRING);
+
+  g_signal_new ("account-changed",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusSessionCSIface, account_changed),
+    NULL,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_NONE,
+    1, G_TYPE_STRING);
+
   g_signal_new ("get-password",
     G_TYPE_FROM_INTERFACE (iface),
     G_SIGNAL_RUN_LAST,
@@ -803,6 +920,30 @@ egdbus_session_cs_emit_send_receive_complete (
     EGdbusSessionCS *object)
 {
   g_signal_emit_by_name (object, "send-receive-complete");
+}
+
+void
+egdbus_session_cs_emit_account_added (
+    EGdbusSessionCS *object,
+    const gchar *uid)
+{
+  g_signal_emit_by_name (object, "account-added", uid);
+}
+
+void
+egdbus_session_cs_emit_account_removed (
+    EGdbusSessionCS *object,
+    const gchar *uid)
+{
+  g_signal_emit_by_name (object, "account-removed", uid);
+}
+
+void
+egdbus_session_cs_emit_account_changed (
+    EGdbusSessionCS *object,
+    const gchar *uid)
+{
+  g_signal_emit_by_name (object, "account-changed", uid);
 }
 
 void
@@ -1784,6 +1925,48 @@ _egdbus_session_cs_on_signal_send_receive_complete (
 }
 
 static void
+_egdbus_session_cs_on_signal_account_added (
+    EGdbusSessionCS *object,
+    const gchar *uid)
+{
+  EGdbusSessionCSStub *stub = EGDBUS_SESSION_CS_STUB (object);
+  if (stub->priv->connection == NULL)
+    return;
+  g_dbus_connection_emit_signal (stub->priv->connection,
+    NULL, stub->priv->object_path, "org.gnome.evolution.dataserver.mail.Session", "AccountAdded",
+    g_variant_new ("(s)",
+                   uid), NULL);
+}
+
+static void
+_egdbus_session_cs_on_signal_account_removed (
+    EGdbusSessionCS *object,
+    const gchar *uid)
+{
+  EGdbusSessionCSStub *stub = EGDBUS_SESSION_CS_STUB (object);
+  if (stub->priv->connection == NULL)
+    return;
+  g_dbus_connection_emit_signal (stub->priv->connection,
+    NULL, stub->priv->object_path, "org.gnome.evolution.dataserver.mail.Session", "AccountRemoved",
+    g_variant_new ("(s)",
+                   uid), NULL);
+}
+
+static void
+_egdbus_session_cs_on_signal_account_changed (
+    EGdbusSessionCS *object,
+    const gchar *uid)
+{
+  EGdbusSessionCSStub *stub = EGDBUS_SESSION_CS_STUB (object);
+  if (stub->priv->connection == NULL)
+    return;
+  g_dbus_connection_emit_signal (stub->priv->connection,
+    NULL, stub->priv->object_path, "org.gnome.evolution.dataserver.mail.Session", "AccountChanged",
+    g_variant_new ("(s)",
+                   uid), NULL);
+}
+
+static void
 _egdbus_session_cs_on_signal_get_password (
     EGdbusSessionCS *object,
     const gchar *title,
@@ -1805,6 +1988,9 @@ static void
 egdbus_session_cs_stub_iface_init (EGdbusSessionCSIface *iface)
 {
   iface->send_receive_complete = _egdbus_session_cs_on_signal_send_receive_complete;
+  iface->account_added = _egdbus_session_cs_on_signal_account_added;
+  iface->account_removed = _egdbus_session_cs_on_signal_account_removed;
+  iface->account_changed = _egdbus_session_cs_on_signal_account_changed;
   iface->get_password = _egdbus_session_cs_on_signal_get_password;
 }
 

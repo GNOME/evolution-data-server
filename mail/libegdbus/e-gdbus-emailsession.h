@@ -72,6 +72,18 @@ struct _EGdbusSessionCSIface
   void (*send_receive_complete) (
     EGdbusSessionCS *object);
 
+  void (*account_added) (
+    EGdbusSessionCS *object,
+    const gchar *uid);
+
+  void (*account_removed) (
+    EGdbusSessionCS *object,
+    const gchar *uid);
+
+  void (*account_changed) (
+    EGdbusSessionCS *object,
+    const gchar *uid);
+
   void (*get_password) (
     EGdbusSessionCS *object,
     const gchar *title,
@@ -123,6 +135,18 @@ void egdbus_session_cs_complete_cancel_operations (
 /* D-Bus signal emissions functions: */
 void egdbus_session_cs_emit_send_receive_complete (
     EGdbusSessionCS *object);
+
+void egdbus_session_cs_emit_account_added (
+    EGdbusSessionCS *object,
+    const gchar *uid);
+
+void egdbus_session_cs_emit_account_removed (
+    EGdbusSessionCS *object,
+    const gchar *uid);
+
+void egdbus_session_cs_emit_account_changed (
+    EGdbusSessionCS *object,
+    const gchar *uid);
 
 void egdbus_session_cs_emit_get_password (
     EGdbusSessionCS *object,
