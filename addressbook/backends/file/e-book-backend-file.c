@@ -499,6 +499,101 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	*contacts = contact_list;
 }
 
+static void
+e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
+					   EDataBook *book,
+					   GCancellable *cancellable,
+					   const gchar *query,
+					   GSList **contacts_uids,
+					   GError **perror)
+{
+	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
+	DB             *db = bf->priv->file_db;
+	DBC            *dbc;
+	gint            db_error;
+	DBT  id_dbt, vcard_dbt;
+	EBookBackendSExp *card_sexp = NULL;
+	gboolean search_needed;
+	const gchar *search = query;
+	GSList *uids = NULL;
+
+	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
+	if (e_book_backend_summary_is_summary_query (bf->priv->summary, search)) {
+		/* do a summary query */
+		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, search);
+		gint i;
+
+		if (!ids) {
+			g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
+			return;
+		}
+
+		for (i = 0; i < ids->len; i++) {
+			gchar *id = g_ptr_array_index (ids, i);
+
+			uids = g_slist_prepend (uids, g_strdup (id));
+		}
+
+		g_ptr_array_free (ids, TRUE);
+	} else {
+		search_needed = TRUE;
+		if (!strcmp (search, "(contains \"x-evolution-any-field\" \"\")"))
+			search_needed = FALSE;
+
+		card_sexp = e_book_backend_sexp_new (search);
+		if (!card_sexp) {
+			g_propagate_error (perror, EDB_ERROR (INVALID_QUERY));
+			return;
+		}
+
+		db_error = db->cursor (db, NULL, &dbc, 0);
+
+		if (db_error != 0) {
+			g_warning (G_STRLOC ": db->cursor failed with %s", db_strerror (db_error));
+			/* XXX this needs to be some CouldNotOpen error */
+			db_error_to_gerror (db_error, perror);
+			return;
+		}
+
+		memset (&vcard_dbt, 0, sizeof (vcard_dbt));
+		vcard_dbt.flags = DB_DBT_MALLOC;
+		memset (&id_dbt, 0, sizeof (id_dbt));
+		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_FIRST);
+
+		while (db_error == 0) {
+
+			/* don't include the version in the list of cards */
+			if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
+			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
+
+				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
+					uids = g_slist_prepend (uids, g_strdup (id_dbt.data));
+				}
+			}
+
+			g_free (vcard_dbt.data);
+
+			db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
+
+		}
+		g_object_unref (card_sexp);
+
+		if (db_error == DB_NOTFOUND) {
+			/* Success */
+		} else {
+			g_warning (G_STRLOC ": dbc->c_get failed with %s", db_strerror (db_error));
+			db_error_to_gerror (db_error, perror);
+		}
+
+		db_error = dbc->c_close (dbc);
+		if (db_error != 0) {
+			g_warning (G_STRLOC ": dbc->c_close failed with %s", db_strerror (db_error));
+		}
+	}
+
+	*contacts_uids = g_slist_reverse (uids);
+}
+
 typedef struct {
 	EBookBackendFile *bf;
 	GThread *thread;
@@ -1370,6 +1465,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	sync_class->modify_contact_sync		= e_book_backend_file_modify_contact;
 	sync_class->get_contact_sync		= e_book_backend_file_get_contact;
 	sync_class->get_contact_list_sync	= e_book_backend_file_get_contact_list;
+	sync_class->get_contact_list_uids_sync	= e_book_backend_file_get_contact_list_uids;
 	sync_class->authenticate_user_sync	= e_book_backend_file_authenticate_user;
 
 	object_class->dispose = e_book_backend_file_dispose;

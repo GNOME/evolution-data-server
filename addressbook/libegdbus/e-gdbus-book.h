@@ -134,6 +134,9 @@ struct _EGdbusBookIface
 	gboolean (*handle_get_contact_list)	(EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_query);
 	void	 (*get_contact_list_done)	(EGdbusBook *object, guint arg_opid, const GError *arg_error, gchar ***out_vcards);
 
+	gboolean (*handle_get_contact_list_uids)(EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_query);
+	void	 (*get_contact_list_uids_done)	(EGdbusBook *object, guint arg_opid, const GError *arg_error, gchar ***out_uids);
+
 	gboolean (*handle_add_contact)		(EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_vcard);
 	void	 (*add_contact_done)		(EGdbusBook *object, guint arg_opid, const GError *arg_error, gchar **out_uid);
 
@@ -181,6 +184,10 @@ gboolean	e_gdbus_book_call_get_contact_sync (GDBusProxy *proxy, const gchar *in_
 void		e_gdbus_book_call_get_contact_list (GDBusProxy *proxy, const gchar *in_query, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_gdbus_book_call_get_contact_list_finish (GDBusProxy *proxy, GAsyncResult *result, gchar ***out_vcards, GError **error);
 gboolean	e_gdbus_book_call_get_contact_list_sync (GDBusProxy *proxy, const gchar *in_query, gchar ***out_vcards, GCancellable *cancellable, GError **error);
+
+void		e_gdbus_book_call_get_contact_list_uids (GDBusProxy *proxy, const gchar *in_query, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_gdbus_book_call_get_contact_list_uids_finish (GDBusProxy *proxy, GAsyncResult *result, gchar ***out_uids, GError **error);
+gboolean	e_gdbus_book_call_get_contact_list_uids_sync (GDBusProxy *proxy, const gchar *in_query, gchar ***out_uids, GCancellable *cancellable, GError **error);
 
 void		e_gdbus_book_call_add_contact (GDBusProxy *proxy, const gchar *in_vcard, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_gdbus_book_call_add_contact_finish (GDBusProxy *proxy, GAsyncResult *result, gchar **out_uid, GError **error);
@@ -230,6 +237,7 @@ gboolean	e_gdbus_book_call_close_sync (GDBusProxy *proxy, GCancellable *cancella
 #define e_gdbus_book_complete_refresh				e_gdbus_complete_async_method
 #define e_gdbus_book_complete_get_contact			e_gdbus_complete_async_method
 #define e_gdbus_book_complete_get_contact_list			e_gdbus_complete_async_method
+#define e_gdbus_book_complete_get_contact_list_uids		e_gdbus_complete_async_method
 #define e_gdbus_book_complete_add_contact			e_gdbus_complete_async_method
 #define e_gdbus_book_complete_remove_contacts			e_gdbus_complete_async_method
 #define e_gdbus_book_complete_modify_contact			e_gdbus_complete_async_method
@@ -246,6 +254,7 @@ void e_gdbus_book_emit_remove_done			(EGdbusBook *object, guint arg_opid, const 
 void e_gdbus_book_emit_refresh_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_book_emit_get_contact_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error, const gchar *out_vcard);
 void e_gdbus_book_emit_get_contact_list_done		(EGdbusBook *object, guint arg_opid, const GError *arg_error, const gchar * const *out_vcards);
+void e_gdbus_book_emit_get_contact_list_uids_done	(EGdbusBook *object, guint arg_opid, const GError *arg_error, const gchar * const *out_uids);
 void e_gdbus_book_emit_add_contact_done			(EGdbusBook *object, guint arg_opid, const GError *arg_error, const gchar *out_uid);
 void e_gdbus_book_emit_remove_contacts_done		(EGdbusBook *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_book_emit_modify_contact_done		(EGdbusBook *object, guint arg_opid, const GError *arg_error);

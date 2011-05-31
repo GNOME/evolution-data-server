@@ -1794,6 +1794,138 @@ e_book_client_get_contacts_sync (EBookClient *client, const gchar *sexp, GSList 
 }
 
 /**
+ * e_book_client_get_contacts_uids:
+ * @client: an #EBookClient
+ * @sexp: an S-expression representing the query
+ * @cancellable: a #GCancellable; can be %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * Query @client with @sexp, receiving a list of contacts UIDs which
+ * matched. The call is finished by e_book_client_get_contacts_uids_finish()
+ * from the @callback.
+ *
+ * Note: @sexp can be obtained through #EBookQuery, by converting it
+ * to a string with e_book_query_to_string().
+ *
+ * Since: 3.2
+ **/
+void
+e_book_client_get_contacts_uids (EBookClient *client, const gchar *sexp, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+	gchar *gdbus_sexp = NULL;
+
+	g_return_if_fail (sexp != NULL);
+
+	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), cancellable, callback, user_data, e_book_client_get_contacts_uids,
+			e_gdbus_book_call_get_contact_list_uids,
+			NULL, NULL, NULL, e_gdbus_book_call_get_contact_list_uids_finish, NULL);
+
+	g_free (gdbus_sexp);
+}
+
+/**
+ * e_book_client_get_contacts_uids_finish:
+ * @client: an #EBookClient
+ * @result: a #GAsyncResult
+ * @contacts_uids: (out) a #GSList of matched contacts UIDs stored as strings
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Finishes previous call of e_book_client_get_contacts_uids().
+ * If successful, then the @contacts_uids is set to newly allocated list
+ * of UID strings, which should be freed with e_client_util_free_string_slist().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.2
+ **/
+gboolean
+e_book_client_get_contacts_uids_finish (EBookClient *client, GAsyncResult *result, GSList **contacts_uids, GError **error)
+{
+	gboolean res;
+	gchar **uids = NULL;
+
+	g_return_val_if_fail (contacts_uids != NULL, FALSE);
+
+	res = e_client_proxy_call_finish_strv (E_CLIENT (client), result, &uids, error, e_book_client_get_contacts_uids);
+
+	if (uids && res) {
+		gint ii;
+		GSList *slist = NULL;
+
+		for (ii = 0; uids[ii]; ii++) {
+			slist = g_slist_prepend (slist, g_strdup (uids[ii]));
+		}
+
+		*contacts_uids = g_slist_reverse (slist);
+	} else {
+		*contacts_uids = NULL;
+	}
+
+	g_strfreev (uids);
+
+	return res;
+}
+
+/**
+ * e_book_client_get_contacts_uids_sync:
+ * @client: an #EBookClient
+ * @sexp: an S-expression representing the query
+ * @contacts_uids: (out) a #GSList of matched contacts UIDs stored as strings
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Query @client with @sexp, receiving a list of contacts UIDs which matched.
+ * If successful, then the @contacts_uids is set to newly allocated list
+ * of UID strings, which should be freed with e_client_util_free_string_slist().
+ *
+ * Note: @sexp can be obtained through #EBookQuery, by converting it
+ * to a string with e_book_query_to_string().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.2
+ **/
+gboolean
+e_book_client_get_contacts_uids_sync (EBookClient *client, const gchar *sexp, GSList **contacts_uids, GCancellable *cancellable, GError **error)
+{
+	gboolean res;
+	gchar *gdbus_sexp = NULL;
+	gchar **uids = NULL;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (client->priv != NULL, FALSE);
+	g_return_val_if_fail (sexp != NULL, FALSE);
+	g_return_val_if_fail (contacts_uids != NULL, FALSE);
+
+	if (!client->priv->gdbus_book) {
+		set_proxy_gone_error (error);
+		return FALSE;
+	}
+
+	res = e_client_proxy_call_sync_string__strv (E_CLIENT (client), e_util_ensure_gdbus_string (sexp, &gdbus_sexp), &uids, cancellable, error, e_gdbus_book_call_get_contact_list_uids_sync);
+
+	if (uids && res) {
+		gint ii;
+		GSList *slist = NULL;
+
+		for (ii = 0; uids[ii]; ii++) {
+			slist = g_slist_prepend (slist, g_strdup (uids[ii]));
+		}
+
+		*contacts_uids = g_slist_reverse (slist);
+	} else {
+		*contacts_uids = NULL;
+	}
+
+	g_free (gdbus_sexp);
+	g_strfreev (uids);
+
+	return res;
+}
+
+/**
  * e_book_client_get_view:
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query

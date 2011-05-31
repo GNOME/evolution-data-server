@@ -1095,6 +1095,43 @@ e_book_backend_webdav_get_contact_list (EBookBackend *backend, EDataBook *book, 
 }
 
 static void
+e_book_backend_webdav_get_contact_list_uids (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query)
+{
+	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
+	EBookBackendWebdavPrivate *priv   = webdav->priv;
+	GList                     *contact_list;
+	GSList                    *uids_list;
+	GList                     *c;
+
+	if (priv->is_online) {
+		/* make sure the cache is up to date */
+		GError *error = download_contacts (webdav, NULL, NULL);
+
+		if (error) {
+			e_data_book_respond_get_contact_list_uids (book, opid, error, NULL);
+			return;
+		}
+	}
+
+	/* answer query from cache */
+	contact_list = e_book_backend_cache_get_contacts (priv->cache, query);
+	uids_list   = NULL;
+	for (c = contact_list; c != NULL; c = g_list_next (c)) {
+		EContact *contact = c->data;
+
+		uids_list = g_slist_append (uids_list, e_contact_get (contact, E_CONTACT_UID));
+
+		g_object_unref (contact);
+	}
+	g_list_free (contact_list);
+
+	e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR (SUCCESS), uids_list);
+
+	g_slist_foreach (uids_list, (GFunc) g_free, NULL);
+	g_slist_free (uids_list);
+}
+
+static void
 e_book_backend_webdav_authenticate_user (EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
@@ -1377,6 +1414,7 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *klass)
 	backend_class->modify_contact		= e_book_backend_webdav_modify_contact;
 	backend_class->get_contact		= e_book_backend_webdav_get_contact;
 	backend_class->get_contact_list		= e_book_backend_webdav_get_contact_list;
+	backend_class->get_contact_list_uids	= e_book_backend_webdav_get_contact_list_uids;
 	backend_class->start_book_view		= e_book_backend_webdav_start_book_view;
 	backend_class->stop_book_view		= e_book_backend_webdav_stop_book_view;
 	backend_class->authenticate_user	= e_book_backend_webdav_authenticate_user;

@@ -2696,6 +2696,209 @@ e_book_backend_ldap_get_contact_list (EBookBackend *backend,
 	}
 }
 
+typedef struct {
+	LDAPOp op;
+	GSList *uids;
+} LDAPGetContactListUIDsOp;
+
+static void
+contact_list_uids_handler (LDAPOp *op, LDAPMessage *res)
+{
+	LDAPGetContactListUIDsOp *contact_list_uids_op = (LDAPGetContactListUIDsOp *) op;
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
+	LDAPMessage *e;
+	gint msg_type;
+	GTimeVal start, end;
+	gulong diff;
+
+	if (enable_debug) {
+		printf ("contact_list_uids_handler ...\n");
+		g_get_current_time (&start);
+	}
+
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (!bl->priv->ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+		e_data_book_respond_get_contact_list_uids (op->book, op->opid, EDB_ERROR_NOT_CONNECTED (), NULL);
+		ldap_op_finished (op);
+		if (enable_debug)
+			printf ("contact_list_uids_handler ... ldap handler is NULL \n");
+		return;
+	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	msg_type = ldap_msgtype (res);
+	if (msg_type == LDAP_RES_SEARCH_ENTRY) {
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+		e = ldap_first_entry (bl->priv->ldap, res);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+		while (NULL != e) {
+			EContact *contact;
+			gchar *uid = NULL;
+
+			contact = build_contact_from_entry (bl, e, NULL, &uid);
+			g_object_unref (contact);
+
+			if (enable_debug)
+				printf ("uid = %s\n", uid);
+
+			contact_list_uids_op->uids = g_slist_append (contact_list_uids_op->uids, uid);
+
+			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+			e = ldap_next_entry (bl->priv->ldap, e);
+			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+		}
+	}
+	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
+		gchar *ldap_error_msg;
+		gint ldap_error;
+
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+		ldap_parse_result (bl->priv->ldap, res, &ldap_error,
+				   NULL, &ldap_error_msg, NULL, NULL, 0);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+		if (ldap_error != LDAP_SUCCESS) {
+			g_warning ("contact_list_uids_handler: %02X (%s), additional info: %s",
+				   ldap_error,
+				   ldap_err2string (ldap_error), ldap_error_msg);
+		}
+		ldap_memfree (ldap_error_msg);
+
+		g_warning ("search returned %d\n", ldap_error);
+
+		if (ldap_error == LDAP_TIMELIMIT_EXCEEDED)
+			e_data_book_respond_get_contact_list_uids (op->book, op->opid, EDB_ERROR (SEARCH_TIME_LIMIT_EXCEEDED), contact_list_uids_op->uids);
+		else if (ldap_error == LDAP_SIZELIMIT_EXCEEDED)
+			e_data_book_respond_get_contact_list_uids (op->book, op->opid, EDB_ERROR (SEARCH_SIZE_LIMIT_EXCEEDED), contact_list_uids_op->uids);
+		else if (ldap_error == LDAP_SUCCESS)
+			e_data_book_respond_get_contact_list_uids (op->book, op->opid, EDB_ERROR (SUCCESS), contact_list_uids_op->uids);
+		else
+			e_data_book_respond_get_contact_list_uids (op->book, op->opid, ldap_error_to_response (ldap_error), contact_list_uids_op->uids);
+
+		ldap_op_finished (op);
+		if (enable_debug) {
+			printf ("contact_list_uids_handler success ");
+			g_get_current_time (&end);
+			diff = end.tv_sec * 1000 + end.tv_usec/1000;
+			diff -= start.tv_sec * 1000 + start.tv_usec/1000;
+			printf("and took %ld.%03ld seconds\n", diff/1000, diff%1000);
+		}
+	}
+	else {
+		g_warning ("unhandled search result type %d returned", msg_type);
+		e_data_book_respond_get_contact_list_uids (op->book, op->opid,
+						           e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+							      "%s: Unhandled search result type %d returned", G_STRFUNC, msg_type),
+							   NULL);
+		ldap_op_finished (op);
+	}
+}
+
+static void
+contact_list_uids_dtor (LDAPOp *op)
+{
+	LDAPGetContactListUIDsOp *contact_list_uids_op = (LDAPGetContactListUIDsOp *) op;
+
+	g_slist_foreach (contact_list_uids_op->uids, (GFunc) g_free, NULL);
+	g_slist_free (contact_list_uids_op->uids);
+
+	g_free (contact_list_uids_op);
+}
+
+static void
+e_book_backend_ldap_get_contact_list_uids (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query)
+{
+	LDAPGetContactListUIDsOp *contact_list_uids_op;
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
+	gint contact_list_uids_msgid;
+	EDataBookView *book_view;
+	gint ldap_error;
+	gchar *ldap_query;
+	GTimeVal start, end;
+	gulong diff;
+
+	if (enable_debug) {
+		printf ("e_book_backend_ldap_get_contact_list_uids ... \n");
+		g_get_current_time (&start);
+	}
+
+	if (!bl->priv->is_online) {
+		if (bl->priv->marked_for_offline && bl->priv->cache) {
+			GList *contacts;
+			GSList *uids = NULL;
+			GList *l;
+
+			contacts = e_book_backend_cache_get_contacts (bl->priv->cache, query);
+
+			for (l = contacts; l; l = g_list_next (l)) {
+				EContact *contact = l->data;
+				uids = g_slist_prepend (uids, e_contact_get (contact, E_CONTACT_UID));
+				g_object_unref (contact);
+			}
+
+			g_list_free (contacts);
+			e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR (SUCCESS), uids);
+			g_slist_foreach (uids, (GFunc) g_free, NULL);
+			g_slist_free (uids);
+			return;
+		}
+
+		e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		return;
+	}
+
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (!bl->priv->ldap) {
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+		e_data_book_respond_get_contact_list_uids (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
+		if (enable_debug)
+			printf ("e_book_backend_ldap_get_contact_list_uids... ldap handler is NULL\n");
+		return;
+	}
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+
+	contact_list_uids_op = g_new0 (LDAPGetContactListUIDsOp, 1);
+	book_view = find_book_view (bl);
+
+	ldap_query = e_book_backend_ldap_build_query (bl, query);
+
+	if (enable_debug)
+		printf ("getting contact list uids with filter: %s\n", ldap_query);
+
+	do {
+		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+		ldap_error = ldap_search_ext (bl->priv->ldap,
+					      bl->priv->ldap_rootdn,
+					      bl->priv->ldap_scope,
+					      ldap_query,
+					      NULL, 0, NULL, NULL,
+					      NULL, /* XXX timeout */
+					      LDAP_NO_LIMIT, &contact_list_uids_msgid);
+		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+	} while (e_book_backend_ldap_reconnect (bl, book_view, ldap_error));
+
+	g_free (ldap_query);
+
+	if (ldap_error == LDAP_SUCCESS) {
+		ldap_op_add ((LDAPOp*) contact_list_uids_op, backend, book,
+			     book_view, opid, contact_list_uids_msgid,
+			     contact_list_uids_handler, contact_list_uids_dtor);
+		if (enable_debug) {
+			g_get_current_time (&end);
+
+			diff = end.tv_sec * 1000 + end.tv_usec/1000;
+			diff -= start.tv_sec * 1000 + start.tv_usec/1000;
+
+			printf ("e_book_backend_ldap_get_contact_list_uids invoked contact_list_uids_handler ");
+			printf ("and took %ld.%03ld seconds\n", diff/1000, diff%1000);
+		}
+	} else {
+		e_data_book_respond_get_contact_list_uids (book, opid, ldap_error_to_response (ldap_error), NULL);
+		contact_list_uids_dtor ((LDAPOp *) contact_list_uids_op);
+	}
+}
+
 static EContactField email_ids[4] = {
 	E_CONTACT_EMAIL_1,
 	E_CONTACT_EMAIL_2,
@@ -5347,6 +5550,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	parent_class->modify_contact		= e_book_backend_ldap_modify_contact;
 	parent_class->get_contact		= e_book_backend_ldap_get_contact;
 	parent_class->get_contact_list		= e_book_backend_ldap_get_contact_list;
+	parent_class->get_contact_list_uids	= e_book_backend_ldap_get_contact_list_uids;
 	parent_class->start_book_view		= e_book_backend_ldap_start_book_view;
 	parent_class->stop_book_view		= e_book_backend_ldap_stop_book_view;
 	parent_class->authenticate_user		= e_book_backend_ldap_authenticate_user;

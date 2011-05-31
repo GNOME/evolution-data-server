@@ -7,9 +7,39 @@
 #include "client-test-utils.h"
 
 static void
+print_all_uids_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+{
+	EBookClient *book_client;
+	GSList *uids = NULL, *u;
+	GError *error = NULL;
+
+	book_client = E_BOOK_CLIENT (source_object);
+	g_return_if_fail (book_client != NULL);
+
+	if (!e_book_client_get_contacts_uids_finish (book_client, result, &uids, &error)) {
+		report_error ("get contacts uids finish", &error);
+		stop_main_loop (1);
+		return;
+	}
+
+	for (u = uids; u; u = u->next) {
+		const gchar *uid = u->data;
+
+		g_print ("   uid:'%s'\n", uid);
+	}
+
+	g_slist_foreach (uids, (GFunc) g_free, NULL);
+	g_slist_free (uids);
+
+	stop_main_loop (0);
+}
+
+static void
 print_all_emails_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
 {
 	EBookClient *book_client;
+	EBookQuery *query;
+	gchar *sexp;
 	GSList *contacts = NULL, *c;
 	GError *error = NULL;
 
@@ -31,7 +61,13 @@ print_all_emails_cb (GObject *source_object, GAsyncResult *result, gpointer user
 	g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
 	g_slist_free (contacts);
 
-	stop_main_loop (0);
+	query = e_book_query_field_exists (E_CONTACT_FULL_NAME);
+	sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
+
+	e_book_client_get_contacts_uids (book_client, sexp, NULL, print_all_uids_cb, NULL);
+
+	g_free (sexp);
 }
 
 static void

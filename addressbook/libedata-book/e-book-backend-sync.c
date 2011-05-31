@@ -304,6 +304,72 @@ e_book_backend_sync_get_contact_list (EBookBackendSync *backend,
 }
 
 /**
+ * e_book_backend_sync_get_contact_list_uids:
+ * @backend: an #EBookBackendSync
+ * @book: an #EDataBook
+ * @cancellable: a #GCancellable for the operation
+ * @query: an s-expression of the query to perform
+ * @contacts_uids: a pointer to a location to store the resulting list of UID strings
+ * @error: #GError to set, when something fails
+ *
+ * Gets a list of contact UIDS from @book. The list and its elements must be freed
+ * by the caller.
+ *
+ * Since: 3.2
+ **/
+void
+e_book_backend_sync_get_contact_list_uids (EBookBackendSync *backend,
+					   EDataBook *book,
+					   GCancellable *cancellable,
+					   const gchar *query,
+					   GSList **contacts_uids,
+					   GError **error)
+{
+	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
+	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
+	e_return_data_book_error_if_fail (query, E_DATA_BOOK_STATUS_INVALID_ARG);
+	e_return_data_book_error_if_fail (contacts_uids, E_DATA_BOOK_STATUS_INVALID_ARG);
+
+	if (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_contact_list_uids_sync != NULL) {
+		(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->get_contact_list_uids_sync) (backend, book, cancellable, query, contacts_uids, error);
+	} else {
+		/* inefficient fallback code */
+		GSList *vcards = NULL;
+		GError *local_error = NULL;
+
+		e_book_backend_sync_get_contact_list_uids (backend, book, cancellable, query, &vcards, &local_error);
+
+		if (local_error) {
+			g_propagate_error (error, local_error);
+		} else {
+			GSList *v;
+
+			*contacts_uids = NULL;
+
+			for (v = vcards; v; v = v->next) {
+				EVCard *card = e_vcard_new_from_string (v->data);
+				EVCardAttribute *attr;
+
+				if (!card)
+					continue;
+
+				attr = e_vcard_get_attribute (card, EVC_UID);
+
+				if (attr)
+					*contacts_uids = g_slist_prepend (*contacts_uids, e_vcard_attribute_get_value (attr));
+
+				g_object_unref (card);
+			}
+
+			*contacts_uids = g_slist_reverse (*contacts_uids);
+		}
+
+		g_slist_foreach (vcards, (GFunc) g_free, NULL);
+		g_slist_free (vcards);
+	}
+}
+
+/**
  * e_book_backend_sync_authenticate_user:
  * @backend: an #EBookBackendSync
  * @cancellable: a #GCancellable for the operation
@@ -480,6 +546,24 @@ book_backend_get_contact_list (EBookBackend *backend,
 }
 
 static void
+book_backend_get_contact_list_uids (EBookBackend *backend,
+				    EDataBook    *book,
+				    guint32       opid,
+				    GCancellable *cancellable,
+				    const gchar   *query)
+{
+	GError *error = NULL;
+	GSList *uids = NULL;
+
+	e_book_backend_sync_get_contact_list_uids (E_BOOK_BACKEND_SYNC (backend), book, cancellable, query, &uids, &error);
+
+	e_data_book_respond_get_contact_list_uids (book, opid, error, uids);
+
+	g_slist_foreach (uids, (GFunc) g_free, NULL);
+	g_slist_free (uids);
+}
+
+static void
 book_backend_authenticate_user (EBookBackend *backend,
 				GCancellable *cancellable,
 				ECredentials *credentials)
@@ -553,6 +637,7 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
 	backend_class->modify_contact		= book_backend_modify_contact;
 	backend_class->get_contact		= book_backend_get_contact;
 	backend_class->get_contact_list		= book_backend_get_contact_list;
+	backend_class->get_contact_list_uids	= book_backend_get_contact_list_uids;
 
 	klass->get_backend_property_sync	= book_backend_sync_get_backend_property;
 	klass->set_backend_property_sync	= book_backend_sync_set_backend_property;

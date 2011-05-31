@@ -1151,6 +1151,38 @@ e_book_backend_google_get_contact_list (EBookBackend *backend, EDataBook *book, 
 	g_slist_free (filtered_contacts);
 }
 
+static void
+e_book_backend_google_get_contact_list_uids (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query)
+{
+	EBookBackendSExp *sexp;
+	GList *all_contacts;
+	GSList *filtered_uids = NULL;
+
+	__debug__ (G_STRFUNC);
+
+	/* Get all contacts */
+	sexp = e_book_backend_sexp_new (query);
+	all_contacts = cache_get_contacts (backend);
+
+	for (; all_contacts; all_contacts = g_list_delete_link (all_contacts, all_contacts)) {
+		EContact *contact = all_contacts->data;
+
+		/* If the search expression matches the contact, include it in the search results */
+		if (e_book_backend_sexp_match_contact (sexp, contact)) {
+			filtered_uids = g_slist_append (filtered_uids, e_contact_get (contact, E_CONTACT_UID));
+		}
+
+		g_object_unref (contact);
+	}
+
+	g_object_unref (sexp);
+
+	e_data_book_respond_get_contact_list_uids (book, opid, NULL, filtered_uids);
+
+	g_slist_foreach (filtered_uids, (GFunc) g_free, NULL);
+	g_slist_free (filtered_uids);
+}
+
 static gboolean
 on_refresh_idle (EBookBackend *backend)
 {
@@ -1687,6 +1719,7 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *klass)
 	backend_class->modify_contact		= e_book_backend_google_modify_contact;
 	backend_class->get_contact		= e_book_backend_google_get_contact;
 	backend_class->get_contact_list		= e_book_backend_google_get_contact_list;
+	backend_class->get_contact_list_uids	= e_book_backend_google_get_contact_list_uids;
 	backend_class->authenticate_user	= e_book_backend_google_authenticate_user;
 
 	object_class->dispose  = e_book_backend_google_dispose;

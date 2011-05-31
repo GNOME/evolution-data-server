@@ -591,6 +591,38 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 }
 
 /**
+ * e_book_backend_get_contact_list_uids:
+ * @backend: an #EBookBackend
+ * @book: an #EDataBook
+ * @opid: the ID to use for this operation
+ * @cancellable: a #GCancellable for the operation
+ * @query: the s-expression to match
+ *
+ * Executes a 'get contact list uids' request specified by @opid on @book
+ * using @backend.
+ * This might be finished with e_data_book_respond_get_contact_list_uids().
+ *
+ * Since: 3.2
+ **/
+void
+e_book_backend_get_contact_list_uids (EBookBackend *backend,
+				      EDataBook    *book,
+				      guint32       opid,
+				      GCancellable *cancellable,
+				      const gchar   *query)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (E_IS_DATA_BOOK (book));
+	g_return_if_fail (query);
+	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list_uids);
+
+	if (e_book_backend_is_opening (backend))
+		e_data_book_respond_get_contact_list_uids (book, opid, EDB_OPENING_ERROR, NULL);
+	else
+		(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list_uids) (backend, book, opid, cancellable, query);
+}
+
+/**
  * e_book_backend_start_book_view:
  * @backend: an #EBookBackend
  * @book_view: the #EDataBookView to start

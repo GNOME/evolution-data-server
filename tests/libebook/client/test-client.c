@@ -7,6 +7,40 @@
 #include "client-test-utils.h"
 
 static void
+print_all_uids (EBookClient *book)
+{
+	GError *error = NULL;
+	EBookQuery *query;
+	gchar *sexp;
+	gboolean result;
+	GSList *uids, *u;
+
+	query = e_book_query_field_exists (E_CONTACT_FULL_NAME);
+	sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
+
+	result = e_book_client_get_contacts_uids_sync (book, sexp, &uids, NULL, &error);
+
+	g_free (sexp);
+
+	if (!result) {
+		fprintf (stderr, "Error getting uid list: %s\n", error ? error->message : "Unknown error");
+		if (error)
+			g_error_free (error);
+		exit (1);
+	}
+
+	for (u = uids; u; u = u->next) {
+		const gchar *uid = u->data;
+
+		g_print ("   uid:'%s'\n", uid);
+	}
+
+	g_slist_foreach (uids, (GFunc) g_free, NULL);
+	g_slist_free (uids);
+}
+
+static void
 print_all_emails (EBookClient *book)
 {
 	GError *error = NULL;
@@ -75,6 +109,9 @@ main (gint argc, gchar **argv)
 
 	printf ("printing all contacts\n");
 	print_all_emails (book_client);
+
+	printf ("printing all uids\n");
+	print_all_uids (book_client);
 
 	g_object_unref (book_client);
 

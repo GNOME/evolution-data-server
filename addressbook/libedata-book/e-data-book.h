@@ -142,6 +142,7 @@ void		e_data_book_respond_remove_contacts		(EDataBook *book, guint32 opid, GErro
 void		e_data_book_respond_modify			(EDataBook *book, guint32 opid, GError *error, const EContact *contact);
 void		e_data_book_respond_get_contact			(EDataBook *book, guint32 opid, GError *error, const gchar *vcard);
 void		e_data_book_respond_get_contact_list		(EDataBook *book, guint32 opid, GError *error, const GSList *cards);
+void		e_data_book_respond_get_contact_list_uids	(EDataBook *book, guint32 opid, GError *error, const GSList *uids);
 
 void		e_data_book_report_error			(EDataBook *book, const gchar *message);
 void		e_data_book_report_readonly			(EDataBook *book, gboolean readonly);

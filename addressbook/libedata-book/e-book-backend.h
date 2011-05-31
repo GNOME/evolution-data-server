@@ -74,6 +74,7 @@ struct _EBookBackendClass {
 	void	(* modify_contact)		(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard);
 	void	(* get_contact)			(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *id);
 	void	(* get_contact_list)		(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
+	void	(* get_contact_list_uids)	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
 
 	void	(* start_book_view)		(EBookBackend *backend, EDataBookView *book_view);
 	void	(* stop_book_view)		(EBookBackend *backend, EDataBookView *book_view);
@@ -112,6 +113,7 @@ void		e_book_backend_remove_contacts	(EBookBackend *backend, EDataBook *book, gu
 void		e_book_backend_modify_contact	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard);
 void		e_book_backend_get_contact	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *id);
 void		e_book_backend_get_contact_list	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
+void		e_book_backend_get_contact_list_uids(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
 
 void		e_book_backend_start_book_view	(EBookBackend *backend, EDataBookView *view);
 void		e_book_backend_stop_book_view	(EBookBackend *backend, EDataBookView *view);
