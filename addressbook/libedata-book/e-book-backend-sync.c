@@ -337,7 +337,7 @@ e_book_backend_sync_get_contact_list_uids (EBookBackendSync *backend,
 		GSList *vcards = NULL;
 		GError *local_error = NULL;
 
-		e_book_backend_sync_get_contact_list_uids (backend, book, cancellable, query, &vcards, &local_error);
+		e_book_backend_sync_get_contact_list (backend, book, cancellable, query, &vcards, &local_error);
 
 		if (local_error) {
 			g_propagate_error (error, local_error);
