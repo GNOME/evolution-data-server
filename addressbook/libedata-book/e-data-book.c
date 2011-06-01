@@ -117,7 +117,7 @@ construct_bookview_path (void)
 
 	return g_strdup_printf ("/org/gnome/evolution/dataserver/AddressBookView/%d/%d",
 				getpid (),
-				g_atomic_int_exchange_and_add ((int*)&counter, 1));
+				g_atomic_int_add ((int*)&counter, 1));
 }
 
 static void

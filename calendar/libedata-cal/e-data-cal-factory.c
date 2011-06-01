@@ -250,7 +250,7 @@ construct_cal_factory_path (void)
 
 	return g_strdup_printf (
 		"/org/gnome/evolution/dataserver/Calendar/%d/%u",
-		getpid (), g_atomic_int_exchange_and_add (&counter, 1));
+		getpid (), g_atomic_int_add (&counter, 1));
 }
 
 static gboolean

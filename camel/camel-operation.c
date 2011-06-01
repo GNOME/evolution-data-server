@@ -98,7 +98,7 @@ status_node_unref (StatusNode *node)
 	g_return_if_fail (node != NULL);
 	g_return_if_fail (node->ref_count > 0);
 
-	if (g_atomic_int_exchange_and_add (&node->ref_count, -1) > 1)
+	if (g_atomic_int_add (&node->ref_count, -1) > 1)
 		return;
 
 	if (node->operation != NULL)
