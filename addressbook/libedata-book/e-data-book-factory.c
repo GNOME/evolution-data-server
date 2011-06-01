@@ -233,9 +233,11 @@ construct_book_factory_path (void)
 {
 	static volatile gint counter = 1;
 
+	g_atomic_int_inc (&counter);
+
 	return g_strdup_printf (
 		"/org/gnome/evolution/dataserver/AddressBook/%d/%u",
-		getpid (), g_atomic_int_add (&counter, 1));
+		getpid (), counter);
 }
 
 static gboolean

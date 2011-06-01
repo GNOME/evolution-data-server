@@ -113,11 +113,13 @@ typedef struct {
 static gchar *
 construct_bookview_path (void)
 {
-	static volatile guint counter = 1;
+	static volatile gint counter = 1;
 
-	return g_strdup_printf ("/org/gnome/evolution/dataserver/AddressBookView/%d/%d",
-				getpid (),
-				g_atomic_int_add ((int*)&counter, 1));
+	g_atomic_int_inc (&counter);
+
+	return g_strdup_printf (
+		"/org/gnome/evolution/dataserver/AddressBookView/%d/%d",
+		getpid (), counter);
 }
 
 static void

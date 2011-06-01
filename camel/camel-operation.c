@@ -87,7 +87,7 @@ status_node_ref (StatusNode *node)
 	g_return_val_if_fail (node != NULL, NULL);
 	g_return_val_if_fail (node->ref_count > 0, node);
 
-	g_atomic_int_add (&node->ref_count, 1);
+	g_atomic_int_inc (&node->ref_count);
 
 	return node;
 }
@@ -98,18 +98,18 @@ status_node_unref (StatusNode *node)
 	g_return_if_fail (node != NULL);
 	g_return_if_fail (node->ref_count > 0);
 
-	if (g_atomic_int_add (&node->ref_count, -1) > 1)
-		return;
+	if (g_atomic_int_dec_and_test (&node->ref_count)) {
 
-	if (node->operation != NULL)
-		g_object_unref (node->operation);
+		if (node->operation != NULL)
+			g_object_unref (node->operation);
 
-	if (node->source_id > 0)
-		g_source_remove (node->source_id);
+		if (node->source_id > 0)
+			g_source_remove (node->source_id);
 
-	g_free (node->message);
+		g_free (node->message);
 
-	g_slice_free (StatusNode, node);
+		g_slice_free (StatusNode, node);
+	}
 }
 
 static gboolean
