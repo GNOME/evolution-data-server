@@ -25,6 +25,7 @@
 
 #include <gtk/gtk.h>
 #include <camel/camel.h>
+#include <libedataserver/e-account.h>
 
 G_BEGIN_DECLS
 
@@ -39,6 +40,7 @@ void		mail_send			(void);
 
 /* setup auto receive stuff */
 void		mail_autoreceive_init		(CamelSession *session);
+void		mail_fetch_account 		(EAccount *account);
 
 G_END_DECLS
 

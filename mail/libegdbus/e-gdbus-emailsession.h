@@ -63,6 +63,11 @@ struct _EGdbusSessionCSIface
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation);
 
+  gboolean (*handle_fetch_account) (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation,
+    const gchar *uid);
+
   gboolean (*handle_cancel_operations) (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation);
@@ -123,6 +128,10 @@ void egdbus_session_cs_complete_get_folder_from_uri (
     const gchar *folder);
 
 void egdbus_session_cs_complete_send_receive (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation);
+
+void egdbus_session_cs_complete_fetch_account (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation);
 
@@ -270,6 +279,24 @@ gboolean egdbus_session_cs_call_send_receive_finish (
 
 gboolean egdbus_session_cs_call_send_receive_sync (
     EGdbusSessionCS *proxy,
+    GCancellable *cancellable,
+    GError **error);
+
+void egdbus_session_cs_call_fetch_account (
+    EGdbusSessionCS *proxy,
+    const gchar *uid,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean egdbus_session_cs_call_fetch_account_finish (
+    EGdbusSessionCS *proxy,
+    GAsyncResult *res,
+    GError **error);
+
+gboolean egdbus_session_cs_call_fetch_account_sync (
+    EGdbusSessionCS *proxy,
+    const gchar *uid,
     GCancellable *cancellable,
     GError **error);
 

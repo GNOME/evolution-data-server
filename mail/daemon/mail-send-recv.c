@@ -1052,20 +1052,26 @@ struct _auto_data {
 
 static GHashTable *auto_active;
 
+void
+mail_fetch_account (EAccount *account)
+{
+	const gchar *uri;
+	gboolean keep_on_server;
+
+	uri = e_account_get_string (
+		account, E_ACCOUNT_SOURCE_URL);
+	keep_on_server = e_account_get_bool (
+		account, E_ACCOUNT_SOURCE_KEEP_ON_SERVER);
+	mail_receive_uri (uri, keep_on_server);
+}
+
 static gboolean
 auto_timeout(gpointer data)
 {
 	struct _auto_data *info = data;
 
 	if (camel_session_get_online (session)) {
-		const gchar *uri;
-		gboolean keep_on_server;
-
-		uri = e_account_get_string (
-			info->account, E_ACCOUNT_SOURCE_URL);
-		keep_on_server = e_account_get_bool (
-			info->account, E_ACCOUNT_SOURCE_KEEP_ON_SERVER);
-		mail_receive_uri (uri, keep_on_server);
+		mail_fetch_account (info->account);
 	}
 
 	return TRUE;

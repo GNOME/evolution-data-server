@@ -42,6 +42,10 @@
 
     <method name="sendReceive">
     </method>
+    <method name="fetchAccount">
+      <arg name="uid" type="s" direction="in"/>	    
+    </method>
+
     <method name="cancelOperations">
     </method>    
     <signal name="sendReceiveComplete">
