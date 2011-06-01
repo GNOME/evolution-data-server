@@ -14,6 +14,7 @@
 #define micro(x) if (mail_debug_log(EMAIL_DEBUG_FOLDER|EMAIL_DEBUG_MICRO)) x;
 #define ipc(x) if (mail_debug_log(EMAIL_DEBUG_FOLDER|EMAIL_DEBUG_IPC)) x;
 
+extern EMailDataSession *data_session;
 
 G_DEFINE_TYPE (EMailDataFolder, e_mail_data_folder, G_TYPE_OBJECT)
 
@@ -94,14 +95,11 @@ handle_refresh_info_done (CamelFolder *folder, gpointer sdata, GError *error)
 	if (error && error->message) {
 		g_warning ("Unable to refresh folder: %s\n", error->message);
 
-		g_dbus_method_invocation_return_gerror (data->invocation, error);
 		ipc(printf("Refresh info failed %s : %s \n", priv->path, error->message));
-
 		return;
 	}
 	ipc(printf("Refresh info success: %s \n", priv->path));
-
-	egdbus_folder_cf_complete_refresh_info (data->object, data->invocation, TRUE);
+	e_mail_session_emit_send_receive_completed (data_session);
 	g_free (data);
 }
 
@@ -119,6 +117,7 @@ impl_Mail_refreshInfo (EGdbusFolderCF *object, GDBusMethodInvocation *invocation
 	ipc(printf("Mail refresh info %s\n", priv->path));
 
 	mail_refresh_folder (priv->folder, handle_refresh_info_done, data);
+	egdbus_folder_cf_complete_refresh_info (object, invocation, TRUE);
 
 	return TRUE;
 }
