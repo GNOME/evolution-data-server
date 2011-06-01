@@ -69,13 +69,13 @@ e_gdbus_book_factory_default_init (EGdbusBookFactoryIface *iface)
 	_method_name_to_id = g_hash_table_new (g_str_hash, g_str_equal);
 	_method_name_to_type = g_hash_table_new (g_str_hash, g_str_equal);
 
-	E_INIT_GDBUS_METHOD_STRING (EGdbusBookFactoryIface, "getBook", get_book, __GET_BOOK_METHOD)
+	E_INIT_GDBUS_METHOD_STRING (EGdbusBookFactoryIface, "get_book", get_book, __GET_BOOK_METHOD)
 }
 
 void
 e_gdbus_book_factory_call_get_book (GDBusProxy *proxy, const gchar *in_source, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_method_call_string ("getBook", proxy, in_source, cancellable, callback, user_data);
+	e_gdbus_proxy_method_call_string ("get_book", proxy, in_source, cancellable, callback, user_data);
 }
 
 gboolean
@@ -87,7 +87,7 @@ e_gdbus_book_factory_call_get_book_finish (GDBusProxy *proxy, GAsyncResult *resu
 gboolean
 e_gdbus_book_factory_call_get_book_sync (GDBusProxy *proxy, const gchar *in_source, gchar **out_path, GCancellable *cancellable, GError **error)
 {
-	return e_gdbus_proxy_method_call_sync_string__string ("getBook", proxy, in_source, out_path, cancellable, error);
+	return e_gdbus_proxy_method_call_sync_string__string ("get_book", proxy, in_source, out_path, cancellable, error);
 }
 
 void
@@ -96,11 +96,11 @@ e_gdbus_book_factory_complete_get_book (EGdbusBookFactory *object, GDBusMethodIn
 	e_gdbus_complete_sync_method_string (object, invocation, out_path, error);
 }
 
-E_DECLARE_GDBUS_SYNC_METHOD_1_WITH_RETURN (book_factory, getBook, source, "s", path, "s")
+E_DECLARE_GDBUS_SYNC_METHOD_1_WITH_RETURN (book_factory, get_book, source, "s", path, "s")
 
 static const GDBusMethodInfo * const e_gdbus_book_factory_method_info_pointers[] =
 {
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book_factory, getBook),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book_factory, get_book),
 	NULL
 };
 

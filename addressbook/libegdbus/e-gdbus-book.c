@@ -152,18 +152,18 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
 	E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__VOID	(EGdbusBookIface, "open",			open, __OPEN_METHOD, __OPEN_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID	(EGdbusBookIface, "remove",			remove, __REMOVE_METHOD, __REMOVE_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID	(EGdbusBookIface, "refresh",			refresh, __REFRESH_METHOD, __REFRESH_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "getContact",			get_contact, __GET_CONTACT_METHOD, __GET_CONTACT_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV	(EGdbusBookIface, "getContactList",		get_contact_list, __GET_CONTACT_LIST_METHOD, __GET_CONTACT_LIST_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "get_contact",		get_contact, __GET_CONTACT_METHOD, __GET_CONTACT_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV	(EGdbusBookIface, "get_contact_list",		get_contact_list, __GET_CONTACT_LIST_METHOD, __GET_CONTACT_LIST_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV	(EGdbusBookIface, "get_contact_list_uids",	get_contact_list_uids, __GET_CONTACT_LIST_UIDS_METHOD, __GET_CONTACT_LIST_UIDS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "addContact",			add_contact, __ADD_CONTACT_METHOD, __ADD_CONTACT_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "removeContacts",		remove_contacts, __REMOVE_CONTACTS_METHOD, __REMOVE_CONTACTS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__VOID	(EGdbusBookIface, "modifyContact",		modify_contact, __MODIFY_CONTACT_METHOD, __MODIFY_CONTACT_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "getBackendProperty",		get_backend_property, __GET_BACKEND_PROPERTY_METHOD, __GET_BACKEND_PROPERTY_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "setBackendProperty",		set_backend_property, __SET_BACKEND_PROPERTY_METHOD, __SET_BACKEND_PROPERTY_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "getView",			get_view, __GET_VIEW_METHOD, __GET_VIEW_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_STRV		(EGdbusBookIface, "authenticateUser",		authenticate_user, __AUTHENTICATE_USER_METHOD)
-	E_INIT_GDBUS_METHOD_UINT		(EGdbusBookIface, "cancelOperation",		cancel_operation, __CANCEL_OPERATION_METHOD)
-	E_INIT_GDBUS_METHOD_VOID		(EGdbusBookIface, "cancelAll",			cancel_all, __CANCEL_ALL_METHOD)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "add_contact",		add_contact, __ADD_CONTACT_METHOD, __ADD_CONTACT_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "remove_contacts",		remove_contacts, __REMOVE_CONTACTS_METHOD, __REMOVE_CONTACTS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__VOID	(EGdbusBookIface, "modify_contact",		modify_contact, __MODIFY_CONTACT_METHOD, __MODIFY_CONTACT_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "get_backend_property",	get_backend_property, __GET_BACKEND_PROPERTY_METHOD, __GET_BACKEND_PROPERTY_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "set_backend_property",	set_backend_property, __SET_BACKEND_PROPERTY_METHOD, __SET_BACKEND_PROPERTY_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "get_view",			get_view, __GET_VIEW_METHOD, __GET_VIEW_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_STRV		(EGdbusBookIface, "authenticate_user",		authenticate_user, __AUTHENTICATE_USER_METHOD)
+	E_INIT_GDBUS_METHOD_UINT		(EGdbusBookIface, "cancel_operation",		cancel_operation, __CANCEL_OPERATION_METHOD)
+	E_INIT_GDBUS_METHOD_VOID		(EGdbusBookIface, "cancel_all",			cancel_all, __CANCEL_ALL_METHOD)
 	E_INIT_GDBUS_METHOD_VOID		(EGdbusBookIface, "close",			close, __CLOSE_METHOD)
 }
 
@@ -230,7 +230,7 @@ e_gdbus_book_call_refresh_sync (GDBusProxy *proxy, GCancellable *cancellable, GE
 void
 e_gdbus_book_call_get_contact (GDBusProxy *proxy, const gchar *in_uid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_call_string ("getContact", e_gdbus_book_call_get_contact, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_uid, cancellable, callback, user_data);
+	e_gdbus_proxy_call_string ("get_contact", e_gdbus_book_call_get_contact, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_uid, cancellable, callback, user_data);
 }
 
 gboolean
@@ -250,7 +250,7 @@ e_gdbus_book_call_get_contact_sync (GDBusProxy *proxy, const gchar *in_uid, gcha
 void
 e_gdbus_book_call_get_contact_list (GDBusProxy *proxy, const gchar *in_query, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_call_string ("getContactList", e_gdbus_book_call_get_contact_list, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_query, cancellable, callback, user_data);
+	e_gdbus_proxy_call_string ("get_contact_list", e_gdbus_book_call_get_contact_list, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_query, cancellable, callback, user_data);
 }
 
 gboolean
@@ -290,7 +290,7 @@ e_gdbus_book_call_get_contact_list_uids_sync (GDBusProxy *proxy, const gchar *in
 void
 e_gdbus_book_call_add_contact (GDBusProxy *proxy, const gchar *in_vcard, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_call_string ("addContact", e_gdbus_book_call_add_contact, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_vcard, cancellable, callback, user_data);
+	e_gdbus_proxy_call_string ("add_contact", e_gdbus_book_call_add_contact, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_vcard, cancellable, callback, user_data);
 }
 
 gboolean
@@ -310,7 +310,7 @@ e_gdbus_book_call_add_contact_sync (GDBusProxy *proxy, const gchar *in_vcard, gc
 void
 e_gdbus_book_call_remove_contacts (GDBusProxy *proxy, const gchar * const *in_list, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_call_strv ("removeContacts", e_gdbus_book_call_remove_contacts, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_list, cancellable, callback, user_data);
+	e_gdbus_proxy_call_strv ("remove_contacts", e_gdbus_book_call_remove_contacts, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_list, cancellable, callback, user_data);
 }
 
 gboolean
@@ -330,7 +330,7 @@ e_gdbus_book_call_remove_contacts_sync (GDBusProxy *proxy, const gchar * const *
 void
 e_gdbus_book_call_modify_contact (GDBusProxy *proxy, const gchar *in_vcard, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_call_string ("modifyContact", e_gdbus_book_call_modify_contact, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_vcard, cancellable, callback, user_data);
+	e_gdbus_proxy_call_string ("modify_contact", e_gdbus_book_call_modify_contact, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_vcard, cancellable, callback, user_data);
 }
 
 gboolean
@@ -350,7 +350,7 @@ e_gdbus_book_call_modify_contact_sync (GDBusProxy *proxy, const gchar *in_vcard,
 void
 e_gdbus_book_call_get_backend_property (GDBusProxy *proxy, const gchar *in_prop_name, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_call_string ("getBackendProperty", e_gdbus_book_call_get_backend_property, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_prop_name, cancellable, callback, user_data);
+	e_gdbus_proxy_call_string ("get_backend_property", e_gdbus_book_call_get_backend_property, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_prop_name, cancellable, callback, user_data);
 }
 
 gboolean
@@ -401,7 +401,7 @@ e_gdbus_book_decode_set_backend_property (const gchar * const *in_strv, gchar **
 void
 e_gdbus_book_call_set_backend_property (GDBusProxy *proxy, const gchar * const *in_prop_name_value, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_call_strv ("setBackendProperty", e_gdbus_book_call_set_backend_property, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_prop_name_value, cancellable, callback, user_data);
+	e_gdbus_proxy_call_strv ("set_backend_property", e_gdbus_book_call_set_backend_property, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_prop_name_value, cancellable, callback, user_data);
 }
 
 gboolean
@@ -421,7 +421,7 @@ e_gdbus_book_call_set_backend_property_sync (GDBusProxy *proxy, const gchar * co
 void
 e_gdbus_book_call_get_view (GDBusProxy *proxy, const gchar *in_query, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_call_string ("getView", e_gdbus_book_call_get_view, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_query, cancellable, callback, user_data);
+	e_gdbus_proxy_call_string ("get_view", e_gdbus_book_call_get_view, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_query, cancellable, callback, user_data);
 }
 
 gboolean
@@ -441,7 +441,7 @@ e_gdbus_book_call_get_view_sync (GDBusProxy *proxy, const gchar *in_query, gchar
 void
 e_gdbus_book_call_authenticate_user (GDBusProxy *proxy, const gchar * const *in_credentials, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_method_call_strv ("authenticateUser", proxy, in_credentials, cancellable, callback, user_data);
+	e_gdbus_proxy_method_call_strv ("authenticate_user", proxy, in_credentials, cancellable, callback, user_data);
 }
 
 gboolean
@@ -453,13 +453,13 @@ e_gdbus_book_call_authenticate_user_finish (GDBusProxy *proxy, GAsyncResult *res
 gboolean
 e_gdbus_book_call_authenticate_user_sync (GDBusProxy *proxy, const gchar * const *in_credentials, GCancellable *cancellable, GError **error)
 {
-	return e_gdbus_proxy_method_call_sync_strv__void ("authenticateUser", proxy, in_credentials, cancellable, error);
+	return e_gdbus_proxy_method_call_sync_strv__void ("authenticate_user", proxy, in_credentials, cancellable, error);
 }
 
 void
 e_gdbus_book_call_cancel_operation (GDBusProxy *proxy, guint in_opid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_method_call_uint ("cancelOperation", proxy, in_opid, cancellable, callback, user_data);
+	e_gdbus_proxy_method_call_uint ("cancel_operation", proxy, in_opid, cancellable, callback, user_data);
 }
 
 gboolean
@@ -471,13 +471,13 @@ e_gdbus_book_call_cancel_operation_finish (GDBusProxy *proxy, GAsyncResult *resu
 gboolean
 e_gdbus_book_call_cancel_operation_sync (GDBusProxy *proxy, guint in_opid, GCancellable *cancellable, GError **error)
 {
-	return e_gdbus_proxy_method_call_sync_uint__void ("cancelOperation", proxy, in_opid, cancellable, error);
+	return e_gdbus_proxy_method_call_sync_uint__void ("cancel_operation", proxy, in_opid, cancellable, error);
 }
 
 void
 e_gdbus_book_call_cancel_all (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_method_call_void ("cancelAll", proxy, cancellable, callback, user_data);
+	e_gdbus_proxy_method_call_void ("cancel_all", proxy, cancellable, callback, user_data);
 }
 
 gboolean
@@ -489,7 +489,7 @@ e_gdbus_book_call_cancel_all_finish (GDBusProxy *proxy, GAsyncResult *result, GE
 gboolean
 e_gdbus_book_call_cancel_all_sync (GDBusProxy *proxy, GCancellable *cancellable, GError **error)
 {
-	return e_gdbus_proxy_method_call_sync_void__void ("cancelAll", proxy, cancellable, error);
+	return e_gdbus_proxy_method_call_sync_void__void ("cancel_all", proxy, cancellable, error);
 }
 
 void
@@ -579,19 +579,19 @@ E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, opened, error, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, open, only_if_exists, "b")
 E_DECLARE_GDBUS_ASYNC_METHOD_0			(book, remove)
 E_DECLARE_GDBUS_ASYNC_METHOD_0			(book, refresh)
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, getContact, uid, "s", vcard, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, getContactList, query, "s", vcards, "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_contact, uid, "s", vcard, "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_contact_list, query, "s", vcards, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_contact_list_uids, query, "s", uids, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, addContact, vcard, "s", uid, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, removeContacts, list, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, modifyContact, vcard, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, getBackendProperty, prop_name, "s", prop_value, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, setBackendProperty, prop_name_value, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, getView, query, "s", view, "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, add_contact, vcard, "s", uid, "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, remove_contacts, list, "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, modify_contact, vcard, "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_backend_property, prop_name, "s", prop_value, "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, set_backend_property, prop_name_value, "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_view, query, "s", view, "s")
 
-E_DECLARE_GDBUS_SYNC_METHOD_1			(book, authenticateUser, credentials, "as")
-E_DECLARE_GDBUS_SYNC_METHOD_1			(book, cancelOperation, opid, "u")
-E_DECLARE_GDBUS_SYNC_METHOD_0			(book, cancelAll)
+E_DECLARE_GDBUS_SYNC_METHOD_1			(book, authenticate_user, credentials, "as")
+E_DECLARE_GDBUS_SYNC_METHOD_1			(book, cancel_operation, opid, "u")
+E_DECLARE_GDBUS_SYNC_METHOD_0			(book, cancel_all)
 E_DECLARE_GDBUS_SYNC_METHOD_0			(book, close)
 
 static const GDBusMethodInfo * const e_gdbus_book_method_info_pointers[] =
@@ -599,18 +599,18 @@ static const GDBusMethodInfo * const e_gdbus_book_method_info_pointers[] =
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, open),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, remove),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, refresh),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, getContact),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, getContactList),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_contact),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_contact_list),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_contact_list_uids),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, addContact),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, removeContacts),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, modifyContact),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, getBackendProperty),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, setBackendProperty),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, getView),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, authenticateUser),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, cancelOperation),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, cancelAll),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, add_contact),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, remove_contacts),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, modify_contact),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_backend_property),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, set_backend_property),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_view),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, authenticate_user),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, cancel_operation),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, cancel_all),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, close),
 	NULL
 };
@@ -626,15 +626,15 @@ static const GDBusSignalInfo * const e_gdbus_book_signal_info_pointers[] =
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, open_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, remove_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, refresh_done),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, getContact_done),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, getContactList_done),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_contact_done),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_contact_list_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_contact_list_uids_done),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, addContact_done),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, removeContacts_done),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, modifyContact_done),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, getBackendProperty_done),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, setBackendProperty_done),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, getView_done),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, add_contact_done),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, remove_contacts_done),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, modify_contact_done),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_backend_property_done),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, set_backend_property_done),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_view_done),
 	NULL
 };
 

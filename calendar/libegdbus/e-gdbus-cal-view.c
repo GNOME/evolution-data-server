@@ -101,17 +101,17 @@ e_gdbus_cal_view_default_init (EGdbusCalViewIface *iface)
 
 	
 	/* GObject signals definitions for D-Bus signals: */
-	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusCalViewIface, "ObjectsAdded",	objects_added, __OBJECTS_ADDED_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusCalViewIface, "ObjectsModified",	objects_modified, __OBJECTS_MODIFIED_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusCalViewIface, "ObjectsRemoved",	objects_removed, __OBJECTS_REMOVED_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_UINT_STRING	(EGdbusCalViewIface, "Progress",	progress, __PROGRESS_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusCalViewIface, "Complete",	complete, __COMPLETE_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusCalViewIface, "objects_added",	objects_added, __OBJECTS_ADDED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusCalViewIface, "objects_modified",objects_modified, __OBJECTS_MODIFIED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusCalViewIface, "objects_removed",	objects_removed, __OBJECTS_REMOVED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_UINT_STRING	(EGdbusCalViewIface, "progress",	progress, __PROGRESS_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusCalViewIface, "complete",	complete, __COMPLETE_SIGNAL)
 
 	/* GObject signals definitions for D-Bus methods: */
 	E_INIT_GDBUS_METHOD_VOID	(EGdbusCalViewIface, "start",			start, __START_METHOD)
 	E_INIT_GDBUS_METHOD_VOID	(EGdbusCalViewIface, "stop",			stop, __STOP_METHOD)
 	E_INIT_GDBUS_METHOD_VOID	(EGdbusCalViewIface, "dispose",			dispose, __DISPOSE_METHOD)
-	E_INIT_GDBUS_METHOD_STRV	(EGdbusCalViewIface, "setFieldsOfInterest",	set_fields_of_interest, __SET_FIELDS_OF_INTEREST_METHOD)
+	E_INIT_GDBUS_METHOD_STRV	(EGdbusCalViewIface, "set_fields_of_interest",	set_fields_of_interest, __SET_FIELDS_OF_INTEREST_METHOD)
 }
 
 void
@@ -171,7 +171,7 @@ e_gdbus_cal_view_call_dispose_sync (GDBusProxy *proxy, GCancellable *cancellable
 void
 e_gdbus_cal_view_call_set_fields_of_interest (GDBusProxy *proxy, const gchar * const *in_only_fields, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_gdbus_proxy_method_call_strv ("setFieldsOfInterest", proxy, in_only_fields, cancellable, callback, user_data);
+	e_gdbus_proxy_method_call_strv ("set_fields_of_interest", proxy, in_only_fields, cancellable, callback, user_data);
 }
 
 gboolean
@@ -183,7 +183,7 @@ e_gdbus_cal_view_call_set_fields_of_interest_finish (GDBusProxy *proxy, GAsyncRe
 gboolean
 e_gdbus_cal_view_call_set_fields_of_interest_sync (GDBusProxy *proxy, const gchar * const *in_only_fields, GCancellable *cancellable, GError **error)
 {
-	return e_gdbus_proxy_method_call_sync_strv__void ("setFieldsOfInterest", proxy, in_only_fields, cancellable, error);
+	return e_gdbus_proxy_method_call_sync_strv__void ("set_fields_of_interest", proxy, in_only_fields, cancellable, error);
 }
 
 void
@@ -216,33 +216,33 @@ e_gdbus_cal_view_emit_complete (EGdbusCalView *object, const gchar * const *arg_
 	g_signal_emit (object, signals[__COMPLETE_SIGNAL], 0, arg_error);
 }
 
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal_view, ObjectsAdded, objects, "as")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal_view, ObjectsModified, objects, "as")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal_view, ObjectsRemoved, uids, "as")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_2 (cal_view, Progress, percent, "u", message, "s")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal_view, Complete, error, "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal_view, objects_added, objects, "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal_view, objects_modified, objects, "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal_view, objects_removed, uids, "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_2 (cal_view, progress, percent, "u", message, "s")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal_view, complete, error, "as")
 
 E_DECLARE_GDBUS_SYNC_METHOD_0	(cal_view, start)
 E_DECLARE_GDBUS_SYNC_METHOD_0	(cal_view, stop)
 E_DECLARE_GDBUS_SYNC_METHOD_0	(cal_view, dispose)
-E_DECLARE_GDBUS_SYNC_METHOD_1	(cal_view, setFieldsOfInterest, fields_of_interest, "as")
+E_DECLARE_GDBUS_SYNC_METHOD_1	(cal_view, set_fields_of_interest, fields_of_interest, "as")
 
 static const GDBusMethodInfo * const e_gdbus_cal_view_method_info_pointers[] =
 {
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal_view, start),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal_view, stop),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal_view, dispose),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal_view, setFieldsOfInterest),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal_view, set_fields_of_interest),
 	NULL
 };
 
 static const GDBusSignalInfo * const e_gdbus_cal_view_signal_info_pointers[] =
 {
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal_view, ObjectsAdded),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal_view, ObjectsModified),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal_view, ObjectsRemoved),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal_view, Progress),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal_view, Complete),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal_view, objects_added),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal_view, objects_modified),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal_view, objects_removed),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal_view, progress),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal_view, complete),
 	NULL
 };
 

@@ -284,7 +284,7 @@ notify_add (EDataBookView *view, const gchar *id, const gchar *vcard)
 }
 
 static gboolean
-impl_DataBookView_setFieldsOfInterest (EGdbusBookView *object, GDBusMethodInvocation *invocation, const gchar * const *in_fields_of_interest, EDataBookView *view)
+impl_DataBookView_set_fields_of_interest (EGdbusBookView *object, GDBusMethodInvocation *invocation, const gchar * const *in_fields_of_interest, EDataBookView *view)
 {
 	EDataBookViewPrivate *priv;
 	gint ii;
@@ -672,7 +672,7 @@ e_data_book_view_init (EDataBookView *book_view)
 	g_signal_connect (priv->gdbus_object, "handle-start", G_CALLBACK (impl_DataBookView_start), book_view);
 	g_signal_connect (priv->gdbus_object, "handle-stop", G_CALLBACK (impl_DataBookView_stop), book_view);
 	g_signal_connect (priv->gdbus_object, "handle-dispose", G_CALLBACK (impl_DataBookView_dispose), book_view);
-	g_signal_connect (priv->gdbus_object, "handle-set-fields-of-interest", G_CALLBACK (impl_DataBookView_setFieldsOfInterest), book_view);
+	g_signal_connect (priv->gdbus_object, "handle-set-fields-of-interest", G_CALLBACK (impl_DataBookView_set_fields_of_interest), book_view);
 
 	priv->fields_of_interest = NULL;
 	priv->running = FALSE;

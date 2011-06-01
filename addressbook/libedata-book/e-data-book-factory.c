@@ -300,10 +300,10 @@ last_client_gone_cb (EBookBackend *backend, EDataBookFactory *factory)
 }
 
 static gboolean
-impl_BookFactory_getBook (EGdbusBookFactory *object,
-                          GDBusMethodInvocation *invocation,
-                          const gchar *in_source,
-                          EDataBookFactory *factory)
+impl_BookFactory_get_book (EGdbusBookFactory *object,
+                           GDBusMethodInvocation *invocation,
+                           const gchar *in_source,
+                           EDataBookFactory *factory)
 {
 	EDataBook *book;
 	EBookBackend *backend;
@@ -454,7 +454,7 @@ e_data_book_factory_init (EDataBookFactory *factory)
 		factory, E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryPrivate);
 
 	factory->priv->gdbus_object = e_gdbus_book_factory_stub_new ();
-	g_signal_connect (factory->priv->gdbus_object, "handle-get-book", G_CALLBACK (impl_BookFactory_getBook), factory);
+	g_signal_connect (factory->priv->gdbus_object, "handle-get-book", G_CALLBACK (impl_BookFactory_get_book), factory);
 
 	factory->priv->factories = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 

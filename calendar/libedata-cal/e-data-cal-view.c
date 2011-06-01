@@ -387,7 +387,7 @@ impl_DataCalView_dispose (EGdbusCalView *object, GDBusMethodInvocation *invocati
 }
 
 static gboolean
-impl_DataCalView_setFieldsOfInterest (EGdbusCalView *object, GDBusMethodInvocation *invocation, const gchar * const *in_fields_of_interest, EDataCalView *view)
+impl_DataCalView_set_fields_of_interest (EGdbusCalView *object, GDBusMethodInvocation *invocation, const gchar * const *in_fields_of_interest, EDataCalView *view)
 {
 	EDataCalViewPrivate *priv;
 	gint ii;
@@ -474,7 +474,7 @@ e_data_cal_view_init (EDataCalView *view)
 	g_signal_connect (priv->gdbus_object, "handle-start", G_CALLBACK (impl_DataCalView_start), view);
 	g_signal_connect (priv->gdbus_object, "handle-stop", G_CALLBACK (impl_DataCalView_stop), view);
 	g_signal_connect (priv->gdbus_object, "handle-dispose", G_CALLBACK (impl_DataCalView_dispose), view);
-	g_signal_connect (priv->gdbus_object, "handle-set-fields-of-interest", G_CALLBACK (impl_DataCalView_setFieldsOfInterest), view);
+	g_signal_connect (priv->gdbus_object, "handle-set-fields-of-interest", G_CALLBACK (impl_DataCalView_set_fields_of_interest), view);
 
 	priv->backend = NULL;
 	priv->started = FALSE;

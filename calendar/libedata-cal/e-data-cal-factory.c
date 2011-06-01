@@ -340,10 +340,10 @@ find_backend_cb (gpointer key, gpointer value, gpointer data)
 }
 
 static gboolean
-impl_CalFactory_getCal (EGdbusCalFactory *object,
-                        GDBusMethodInvocation *invocation,
-                        const gchar * const *in_source_type,
-                        EDataCalFactory *factory)
+impl_CalFactory_get_cal (EGdbusCalFactory *object,
+                         GDBusMethodInvocation *invocation,
+                         const gchar * const *in_source_type,
+                         EDataCalFactory *factory)
 {
 	EDataCal *calendar;
 	ECalBackend *backend;
@@ -570,7 +570,7 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 		factory, E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate);
 
 	factory->priv->gdbus_object = e_gdbus_cal_factory_stub_new ();
-	g_signal_connect (factory->priv->gdbus_object, "handle-get-cal", G_CALLBACK (impl_CalFactory_getCal), factory);
+	g_signal_connect (factory->priv->gdbus_object, "handle-get-cal", G_CALLBACK (impl_CalFactory_get_cal), factory);
 
 	factory->priv->methods = g_hash_table_new_full (
 		g_str_hash, g_str_equal,

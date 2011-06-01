@@ -70,7 +70,7 @@ e_gdbus_cal_factory_default_init (EGdbusCalFactoryIface *iface)
 	_method_name_to_id = g_hash_table_new (g_str_hash, g_str_equal);
 	_method_name_to_type = g_hash_table_new (g_str_hash, g_str_equal);
 
-	E_INIT_GDBUS_METHOD_STRV (EGdbusCalFactoryIface, "getCal", get_cal, __GET_CAL_METHOD)
+	E_INIT_GDBUS_METHOD_STRV (EGdbusCalFactoryIface, "get_cal", get_cal, __GET_CAL_METHOD)
 }
 
 /* encodes source and source type into a strv usable for a wire transfer;
@@ -121,7 +121,7 @@ e_gdbus_cal_factory_call_get_cal (GDBusProxy *proxy, const gchar * const *in_sou
 	g_return_if_fail (in_source_type[1] != NULL);
 	g_return_if_fail (in_source_type[2] == NULL);
 
-	e_gdbus_proxy_method_call_strv ("getCal", proxy, in_source_type, cancellable, callback, user_data);
+	e_gdbus_proxy_method_call_strv ("get_cal", proxy, in_source_type, cancellable, callback, user_data);
 }
 
 gboolean
@@ -141,7 +141,7 @@ e_gdbus_cal_factory_call_get_cal_sync (GDBusProxy *proxy, const gchar * const *i
 	g_return_val_if_fail (in_source_type[1] != NULL, FALSE);
 	g_return_val_if_fail (in_source_type[2] == NULL, FALSE);
 
-	return e_gdbus_proxy_method_call_sync_strv__string ("getCal", proxy, in_source_type, out_path, cancellable, error);
+	return e_gdbus_proxy_method_call_sync_strv__string ("get_cal", proxy, in_source_type, out_path, cancellable, error);
 }
 
 void
@@ -150,11 +150,11 @@ e_gdbus_cal_factory_complete_get_cal (EGdbusCalFactory *object, GDBusMethodInvoc
 	e_gdbus_complete_sync_method_string (object, invocation, out_path, error);
 }
 
-E_DECLARE_GDBUS_SYNC_METHOD_1_WITH_RETURN (cal_factory, getCal, source_type, "as", path, "s")
+E_DECLARE_GDBUS_SYNC_METHOD_1_WITH_RETURN (cal_factory, get_cal, source_type, "as", path, "s")
 
 static const GDBusMethodInfo * const e_gdbus_cal_factory_method_info_pointers[] =
 {
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal_factory, getCal),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal_factory, get_cal),
 	NULL
 };
 
