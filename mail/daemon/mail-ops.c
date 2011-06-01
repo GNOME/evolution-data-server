@@ -226,10 +226,17 @@ uid_cachename_hack (CamelStore *store)
 	gchar *encoded_url, *filename;
 	const gchar *data_dir;
 
-	encoded_url = g_strdup_printf ("%s%s%s@%s", url->user,
-				       url->authmech ? ";auth=" : "",
-				       url->authmech ? url->authmech : "",
-				       url->host);
+	if (!url->port)
+		encoded_url = g_strdup_printf ("%s%s%s@%s", url->user,
+					       url->authmech ? ";auth=" : "",
+					       url->authmech ? url->authmech : "",
+					       url->host);
+	else
+		encoded_url = g_strdup_printf ("%s%s%s@%s:%d", url->user,
+					       url->authmech ? ";auth=" : "",
+					       url->authmech ? url->authmech : "",
+					       url->host, url->port);
+		
 	e_filename_make_safe (encoded_url);
 
 	data_dir = mail_session_get_data_dir ();
