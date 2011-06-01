@@ -1198,6 +1198,153 @@ camel_filter_driver_flush (CamelFilterDriver *driver,
 		g_propagate_error (error, data.error);
 }
 
+static gint
+decode_flags_from_xev (const gchar *xev, CamelMessageInfoBase *mi)
+{
+	guint32 uid, flags = 0;
+	gchar *header;
+
+	/* check for uid/flags */
+	header = camel_header_token_decode (xev);
+	if (!(header && strlen (header) == strlen ("00000000-0000")
+	    && sscanf (header, "%08x-%04x", &uid, &flags) == 2)) {
+		g_free (header);
+		return 0;
+	}
+	g_free (header);
+
+	mi->flags = flags;
+	return 0;
+}
+
+/**
+ * camel_filter_driver_filter_mbox:
+ * @driver: CamelFilterDriver
+ * @mbox: mbox filename to be filtered
+ * @original_source_url:
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Filters an mbox file based on rules defined in the FilterDriver
+ * object. Is more efficient as it doesn't need to open the folder
+ * through Camel directly.
+ *
+ * Returns: -1 if errors were encountered during filtering,
+ * otherwise returns 0.
+ *
+ **/
+gint
+camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
+                                 const gchar *mbox,
+                                 const gchar *original_source_url,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	CamelFilterDriverPrivate *p = driver->priv;
+	CamelMimeParser *mp = NULL;
+	gchar *source_url = NULL;
+	gint fd = -1;
+	gint i = 0;
+	struct stat st;
+	gint status;
+	goffset last = 0;
+	gint ret = -1;
+
+	fd = g_open (mbox, O_RDONLY|O_BINARY, 0);
+	if (fd == -1) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Unable to open spool folder"));
+		goto fail;
+	}
+	/* to get the filesize */
+	fstat (fd, &st);
+
+	mp = camel_mime_parser_new ();
+	camel_mime_parser_scan_from (mp, TRUE);
+	if (camel_mime_parser_init_with_fd (mp, fd) == -1) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Unable to process spool folder"));
+		goto fail;
+	}
+	fd = -1;
+
+	source_url = g_filename_to_uri (mbox, NULL, NULL);
+
+	while (camel_mime_parser_step (mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM) {
+		CamelMessageInfo *info;
+		CamelMimeMessage *message;
+		CamelMimePart *mime_part;
+		gint pc = 0;
+		const gchar *xev;
+		GError *local_error = NULL;
+
+		if (st.st_size > 0)
+			pc = (gint)(100.0 * ((double)camel_mime_parser_tell (mp) / (double)st.st_size));
+
+		report_status (driver, CAMEL_FILTER_STATUS_START, pc, _("Getting message %d (%d%%)"), i, pc);
+
+		message = camel_mime_message_new ();
+		mime_part = CAMEL_MIME_PART (message);
+
+		if (!camel_mime_part_construct_from_parser_sync (
+			mime_part, mp, cancellable, error)) {
+			report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Failed on message %d"), i);
+			g_object_unref (message);
+			goto fail;
+		}
+
+		info = camel_message_info_new_from_header (NULL, mime_part->headers);
+		/* Try and see if it has X-Evolution headers */
+		xev = camel_header_raw_find(&mime_part->headers, "X-Evolution", NULL);
+		if (xev)
+			decode_flags_from_xev (xev, (CamelMessageInfoBase *)info);
+
+		((CamelMessageInfoBase *)info)->size = camel_mime_parser_tell (mp) - last;
+
+		last = camel_mime_parser_tell (mp);
+		status = camel_filter_driver_filter_message (
+			driver, message, info, NULL, NULL, source_url,
+			original_source_url ? original_source_url :
+			source_url, cancellable, &local_error);
+		g_object_unref (message);
+		if (local_error != NULL || status == -1) {
+			report_status (
+				driver, CAMEL_FILTER_STATUS_END, 100,
+				_("Failed on message %d"), i);
+			camel_message_info_free (info);
+			g_propagate_error (error, local_error);
+			goto fail;
+		}
+
+		i++;
+
+		/* skip over the FROM_END state */
+		camel_mime_parser_step (mp, NULL, NULL);
+
+		camel_message_info_free (info);
+	}
+
+	if (p->defaultfolder) {
+		report_status(driver, CAMEL_FILTER_STATUS_PROGRESS, 100, _("Syncing folder"));
+		camel_folder_synchronize_sync (
+			p->defaultfolder, FALSE, cancellable, NULL);
+	}
+
+	report_status (driver, CAMEL_FILTER_STATUS_END, 100, _("Complete"));
+
+	ret = 0;
+fail:
+	g_free (source_url);
+	if (fd != -1)
+		close (fd);
+	if (mp)
+		g_object_unref (mp);
+
+	return ret;
+}
+
 /**
  * camel_filter_driver_filter_folder:
  * @driver: CamelFilterDriver

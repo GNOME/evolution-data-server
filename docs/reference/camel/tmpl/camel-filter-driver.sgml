@@ -162,6 +162,19 @@ CamelFilterDriver
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_filter_driver_filter_mbox ##### -->
+<para>
+
+</para>
+
+@driver: 
+@mbox: 
+@original_source_url: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_filter_driver_filter_folder ##### -->
 <para>
 
