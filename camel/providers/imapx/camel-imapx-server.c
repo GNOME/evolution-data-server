@@ -368,20 +368,19 @@ G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
 static guint
 get_batch_fetch_count (CamelIMAPXServer *is)
 {
-	static guint count = 0;
 	const gchar *fetch_count;
 	
-	if (count)
-		return count;
-	
+	if (is->batch_count)
+		return is->batch_count;
+
 	fetch_count = camel_url_get_param (is->url, "batch-fetch-count");
 	if (fetch_count)
-		count = strtoul (fetch_count, NULL, 10);
+		is->batch_count = strtoul (fetch_count, NULL, 10);
 	
-	if (count <= 0)
-		count = BATCH_FETCH_COUNT;
+	if (is->batch_count <= 0)
+		is->batch_count = BATCH_FETCH_COUNT;
 
-	return count;
+	return is->batch_count;
 }
 
 /*
@@ -1525,8 +1524,11 @@ imapx_untagged(CamelIMAPXServer *imap, GError **error)
 
 							mid = (min + max)/2;
 							r = &g_array_index(infos, struct _refresh_info, mid);
-							cmp = imapx_refresh_info_uid_cmp (finfo->uid, r->uid, !imap->descending);
-
+							if (job->type == IMAPX_JOB_FETCH_NEW_MESSAGES)
+								cmp = imapx_refresh_info_uid_cmp (finfo->uid, r->uid, !imap->descending);
+							else
+								cmp = imapx_refresh_info_uid_cmp (finfo->uid, r->uid, TRUE);
+ 
 							if (cmp > 0)
 								min = mid + 1;
 							else if (cmp < 0)
@@ -4991,6 +4993,7 @@ camel_imapx_server_new(CamelStore *store, CamelURL *url)
 	is->session = g_object_ref (CAMEL_SERVICE (store)->session);
 	is->store = store;
 	is->url = camel_url_copy(url);
+	is->batch_count = 0;
 
 	/* order in which new messages should be fetched */
 	order = camel_url_get_param (url, "fetch-order");

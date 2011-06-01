@@ -126,6 +126,7 @@ struct _CamelIMAPXServer {
 	GCond *fetch_cond;
 	GMutex *fetch_mutex;
 	int fetch_count;
+	int batch_count;
 };
 
 struct _CamelIMAPXServerClass {
