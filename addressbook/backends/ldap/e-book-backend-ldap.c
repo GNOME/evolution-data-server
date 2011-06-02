@@ -5094,6 +5094,9 @@ e_book_backend_ldap_load_source (EBookBackend             *backend,
 		return;
 	}
 
+	if (bl->priv->ldap_port == LDAPS_PORT)
+		bl->priv->use_tls = E_BOOK_BACKEND_LDAP_TLS_ALWAYS;
+
 	if (bl->priv->cache) {
 		g_object_unref (bl->priv->cache);
 		bl->priv->cache = NULL;
