@@ -460,24 +460,14 @@ get_current_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Filte
 	return r;
 }
 
-static ESExpResult *
-header_source (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms)
+static CamelService *
+get_service_for_source (CamelSession *session, const gchar *src)
 {
-	CamelMimeMessage *message;
 	CamelService *service = NULL;
-	ESExpResult *r;
-	const gchar *src;
-
-	if (fms->source) {
-		src = fms->source;
-	} else {
-		message = camel_filter_search_get_message (fms, f);
-		src = camel_mime_message_get_source (message);
-	}
 
 	/* Source strings are now CamelService UIDs. */
 	if (src != NULL)
-		service = camel_session_get_service (fms->session, src);
+		service = camel_session_get_service (session, src);
 
 	/* For backward-compability, also handle CamelService URLs. */
 	if (service == NULL && src != NULL) {
@@ -487,18 +477,50 @@ header_source (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMe
 
 		if (service == NULL && url != NULL)
 			service = camel_session_get_service_by_url (
-				fms->session, url, CAMEL_PROVIDER_STORE);
+				session, url, CAMEL_PROVIDER_STORE);
 
 		if (service == NULL && url != NULL)
 			service = camel_session_get_service_by_url (
-				fms->session, url, CAMEL_PROVIDER_TRANSPORT);
+				session, url, CAMEL_PROVIDER_TRANSPORT);
 
 		if (url != NULL)
 			camel_url_free (url);
 	}
 
+	return service;
+}
+
+static ESExpResult *
+header_source (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms)
+{
+	CamelMimeMessage *message;
+	ESExpResult *r;
+	const gchar *src;
+	CamelService *msg_source = NULL;
+	gboolean truth = FALSE;
+
+	if (fms->source) {
+		src = fms->source;
+	} else {
+		message = camel_filter_search_get_message (fms, f);
+		src = camel_mime_message_get_source (message);
+	}
+
+	if (src)
+		msg_source = get_service_for_source (fms->session, src);
+
+	if (msg_source) {
+		gint ii;
+
+		for (ii = 0; ii < argc && !truth; ii++) {
+			if (argv[ii]->type == ESEXP_RES_STRING) {
+				truth = msg_source == get_service_for_source (fms->session, argv[ii]->value.string);
+			}
+		}
+	}
+
 	r = e_sexp_result_new (f, ESEXP_RES_BOOL);
-	r->value.boolean = (service != NULL);
+	r->value.boolean = truth;
 
 	return r;
 }
