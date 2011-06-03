@@ -2912,7 +2912,7 @@ camel_store_delete_folder_sync (CamelStore *store,
 {
 	CamelStoreClass *class;
 	gboolean success;
-	GError *local_error = NULL;
+	GError *local_error = NULL, **check_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
 	g_return_val_if_fail (folder_name != NULL, FALSE);
@@ -2941,7 +2941,9 @@ camel_store_delete_folder_sync (CamelStore *store,
 
 	success = class->delete_folder_sync (
 		store, folder_name, cancellable, &local_error);
-	CAMEL_CHECK_GERROR (store, delete_folder_sync, success, &local_error);
+	if (local_error)
+		check_error = &local_error;
+	CAMEL_CHECK_GERROR (store, delete_folder_sync, success, check_error);
 
 	/* ignore 'no such table' errors */
 	if (local_error != NULL &&

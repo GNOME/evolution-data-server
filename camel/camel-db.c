@@ -1552,11 +1552,11 @@ camel_db_get_folder_version (CamelDB *cdb,
                              const gchar *folder_name,
                              GError **error)
 {
-	gint version = -1, ret;
+	gint version = -1;
 	gchar *query;
 
 	query = sqlite3_mprintf ("SELECT version FROM '%q_version'", folder_name);
-	ret = camel_db_select (cdb, query, read_version_callback, &version, error);
+	camel_db_select (cdb, query, read_version_callback, &version, error);
 	sqlite3_free (query);
 
 	return version;
