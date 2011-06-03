@@ -3362,9 +3362,16 @@ check_uri (ESource *source, gpointer uri)
 		g_free (my_uri);
 
 		return res;
-	}
+	} else {
+		gboolean ret;
+		gchar *suri2;
 
-	return FALSE;
+		suri2 = e_source_get_uri (source);
+		ret = !g_ascii_strcasecmp (suri2, uri);
+		g_free (suri2);
+
+		return ret;
+	}
 }
 
 /**
@@ -3436,6 +3443,67 @@ check_system (ESource *source, gpointer data)
 	return FALSE;
 }
 
+static EBook *
+get_local_source (GError **error)
+{
+	ESourceGroup *on_this_computer;
+	ESourceList *sources;
+	GSList *local_sources, *iter;
+	ESource *personal = NULL;
+	const gchar *name;
+	gchar *source_uri = NULL;
+	EBook *book;
+
+	if (e_book_get_addressbooks (&sources, error)) {
+		on_this_computer = e_source_list_ensure_group (
+		        sources, _("On This Computer"), "local:", TRUE);
+
+		if (on_this_computer) {
+			local_sources = e_source_group_peek_sources (on_this_computer);
+
+			/* Make sure this group includes a "Personal" source. */
+			for (iter = local_sources; iter != NULL; iter = iter->next) {
+				ESource *source = iter->data;
+				const gchar *relative_uri;
+
+				relative_uri = e_source_peek_relative_uri (source);
+				if (g_strcmp0 (relative_uri, "system") == 0) {
+				        personal = source;
+				        break;
+				}
+			}
+
+			name = _("Personal");
+
+			if (personal == NULL) {
+				ESource *source;
+
+				/* Create the default Personal address book. */
+				source = e_source_new (name, "system");
+				e_source_group_add_source (on_this_computer, source, -1);
+				e_source_set_property (source, "completion", "true");
+
+				source_uri = e_source_get_uri (source);
+				g_object_unref(source);
+			} else {
+				/* Force the source name to the current locale. */
+				e_source_set_name (personal, name);
+
+				source_uri = e_source_get_uri (personal);
+			}
+
+			g_object_unref (on_this_computer);
+		}
+
+		g_object_unref (sources);
+	}
+
+	book = e_book_new_from_uri (source_uri?:"local:system", error);
+	g_free (source_uri);
+
+	return book;
+}
+
 /**
  * e_book_new_system_addressbook:
  * @error: A #GError pointer
@@ -3475,7 +3543,7 @@ e_book_new_system_addressbook (GError **error)
 		book = e_book_new (system_source, &err);
 		g_object_unref (system_source);
 	} else {
-		book = e_book_new_from_uri (csd.uri, &err);
+		book = get_local_source (&err);
 	}
 
 	if (csd.uri_source)
