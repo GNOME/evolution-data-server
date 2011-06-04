@@ -214,7 +214,7 @@ msgstr "Error desconocido"
 
 #: ../addressbook/libebook/e-book-client.c:156
 msgid "D-Bus book proxy gone"
-msgstr ""
+msgstr "El proxy de la libreta D-Bus ha desaparecido"
 
 #: ../addressbook/libebook/e-book-client.c:415
 msgid "Failed to run book factory"
@@ -254,19 +254,21 @@ msgstr "No se puede obtener conexión para ver"
 #: ../calendar/libecal/e-cal-client-view.c:455
 #, c-format
 msgid "Cannot start view, D-Bus proxy gone"
-msgstr ""
+msgstr "No se puede iniciar la vista, el proxy D-Bus ha desaparecido"
 
 #: ../addressbook/libebook/e-book-client-view.c:246
 #: ../calendar/libecal/e-cal-client-view.c:484
 #, c-format
 msgid "Cannot stop view, D-Bus proxy gone"
-msgstr ""
+msgstr "No se puede detener la vista, el proxy D-Bus ha desaparecido"
 
 #: ../addressbook/libebook/e-book-client-view.c:287
 #: ../calendar/libecal/e-cal-client-view.c:525
 #, c-format
 msgid "Cannot set fields of interest, D-Bus proxy gone"
 msgstr ""
+"No se pueden establecer los campos de interés, el proxy D-Bus ha "
+"desaparecido"
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:114
@@ -1158,7 +1160,7 @@ msgstr "Error desconocido"
 
 #: ../calendar/libecal/e-cal-client.c:194
 msgid "D-Bus calendar proxy gone"
-msgstr ""
+msgstr "El proxy del calendario de D-Bus ha desaparecido"
 
 #: ../calendar/libecal/e-cal-client.c:514
 msgid "Failed to run calendar factory"
@@ -1794,10 +1796,10 @@ msgid "Getting message %d (%d%%)"
 msgstr "Obteniendo mensaje %d (%d%%)"
 
 #: ../camel/camel-filter-driver.c:1293 ../camel/camel-filter-driver.c:1315
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed at message %d of %d"
 msgid "Failed on message %d"
-msgstr "Falló en el mensaje %d de %d"
+msgstr "Falló en el mensaje %d"
 
 #: ../camel/camel-filter-driver.c:1330 ../camel/camel-filter-driver.c:1431
 msgid "Syncing folder"
