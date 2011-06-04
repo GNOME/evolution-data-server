@@ -331,6 +331,7 @@ EContactName           *e_contact_name_from_string (const gchar *name_str);
 EContactName           *e_contact_name_copy        (EContactName *n);
 void                    e_contact_name_free        (EContactName *name);
 
+EContactPhoto*          e_contact_photo_new           (void);
 GType                   e_contact_photo_get_type      (void);
 void                    e_contact_photo_free          (EContactPhoto *photo);
 const guchar *          e_contact_photo_get_inlined   (EContactPhoto *photo, gsize *len);

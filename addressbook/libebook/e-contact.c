@@ -1955,6 +1955,19 @@ e_contact_date_new (void)
 }
 
 /**
+ * e_contact_photo_new:
+ *
+ * Creates a new #EContactPhoto struct.
+ *
+ * Returns: (transfer full): A new #EContactPhoto struct.
+ **/
+EContactPhoto*
+e_contact_photo_new (void)
+{
+	return g_new0 (EContactPhoto, 1);
+}
+
+/**
  * e_contact_photo_free:
  * @photo: an #EContactPhoto struct
  *

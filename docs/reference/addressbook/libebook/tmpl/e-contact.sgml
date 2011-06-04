@@ -1003,6 +1003,15 @@ The URI of the contact's calendar.
 @name: 
 
 
+<!-- ##### FUNCTION e_contact_photo_new ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+ 
 <!-- ##### FUNCTION e_contact_photo_free ##### -->
 <para>
 
