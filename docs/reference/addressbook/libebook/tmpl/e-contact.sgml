@@ -1081,6 +1081,14 @@ The URI of the contact's calendar.
 @geo: 
 
 
+<!-- ##### FUNCTION e_contact_photo_new ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
 <!-- ##### FUNCTION e_contact_address_free ##### -->
 <para>
 

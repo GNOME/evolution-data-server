@@ -347,6 +347,7 @@ void			e_contact_geo_free	   (EContactGeo *geo);
 GType                   e_contact_cert_get_type    (void);
 void                    e_contact_cert_free        (EContactCert *cert);
 
+EContactAddress*        e_contact_address_new      (void);
 GType                   e_contact_address_get_type (void);
 void                    e_contact_address_free     (EContactAddress *address);
 

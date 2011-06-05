@@ -2163,6 +2163,19 @@ e_contact_geo_copy (EContactGeo *geo)
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_geo, "EContactGeo")
 
 /**
+ * e_contact_address_new:
+ *
+ * Creates a new #EContactAddress struct.
+ *
+ * Returns: (transfer full): A new #EContactAddress struct.
+ **/
+EContactAddress*
+e_contact_address_new (void)
+{
+	return g_new0 (EContactAddress, 1);
+}
+
+/**
  * e_contact_address_free:
  * @address: an #EContactAddress
  *

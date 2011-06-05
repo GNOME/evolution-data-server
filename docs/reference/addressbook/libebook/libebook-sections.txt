@@ -154,6 +154,7 @@ e_contact_photo_get_uri
 e_contact_photo_set_uri
 e_contact_photo_free
 e_contact_geo_free
+e_contact_address_new
 e_contact_address_free
 e_contact_field_name
 e_contact_pretty_name
