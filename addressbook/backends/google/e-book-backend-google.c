@@ -44,6 +44,7 @@
 #define CLIENT_ID "evolution-client-0.1.0"
 
 #define URI_GET_CONTACTS "://www.google.com/m8/feeds/contacts/default/full"
+#define GDATA_PHOTO_ETAG_ATTR "X-GDATA-PHOTO-ETAG"
 
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
@@ -100,7 +101,7 @@ struct _EBookBackendGooglePrivate {
 gboolean __e_book_backend_google_debug__;
 #define __debug__(...) (__e_book_backend_google_debug__ ? g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, __VA_ARGS__) : (void) 0)
 
-static void data_book_error_from_gdata_error (GError **dest_err, GError *error);
+static void data_book_error_from_gdata_error (GError **dest_err, const GError *error);
 
 static GDataEntry *_gdata_entry_new_from_e_contact (EBookBackend *backend, EContact *contact);
 static gboolean _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EContact *contact);
@@ -525,7 +526,68 @@ finish_operation (EBookBackend *backend, guint32 opid)
 }
 
 static void
-process_subsequent_entry (GDataEntry *entry, guint entry_key, guint entry_count, EBookBackend *backend)
+process_contact_finish (EBookBackend *backend, GDataEntry *entry)
+{
+	EContact *new_contact;
+	gboolean was_cached;
+
+	__debug__ (G_STRFUNC);
+
+	was_cached = cache_has_contact (backend, gdata_entry_get_id (entry));
+	new_contact = cache_add_contact (backend, entry);
+
+	if (was_cached == TRUE) {
+		on_contact_changed (backend, new_contact);
+	} else {
+		on_contact_added (backend, new_contact);
+	}
+
+	g_object_unref (new_contact);
+}
+
+#ifdef HAVE_LIBGDATA_0_9
+static void
+process_contact_photo_cb (GDataContactsContact *gdata_contact, GAsyncResult *async_result, EBookBackend *backend)
+{
+	guint8 *photo_data = NULL;
+	gsize photo_length;
+	gchar *photo_content_type = NULL;
+	GError *error = NULL;
+
+	__debug__ (G_STRFUNC);
+
+	/* Finish downloading the photo */
+	photo_data = gdata_contacts_contact_get_photo_finish (gdata_contact, async_result, &photo_length, &photo_content_type, &error);
+
+	if (error == NULL) {
+		EContactPhoto *photo;
+
+		/* Success! Create an EContactPhoto and store it on the final GDataContactsContact object so it makes it into the cache. */
+		photo = e_contact_photo_new ();
+		photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
+		photo->data.inlined.data = (guchar *) photo_data;
+		photo->data.inlined.length = photo_length;
+		photo->data.inlined.mime_type = photo_content_type;
+
+		g_object_set_data_full (G_OBJECT (gdata_contact), "photo", photo, (GDestroyNotify) e_contact_photo_free);
+
+		photo_data = NULL;
+		photo_content_type = NULL;
+	} else {
+		/* Error. */
+		__debug__ ("Downloading contact photo for '%s' failed: %s", gdata_entry_get_id (GDATA_ENTRY (gdata_contact)), error->message);
+		g_error_free (error);
+	}
+
+	process_contact_finish (backend, GDATA_ENTRY (gdata_contact));
+
+	g_free (photo_data);
+	g_free (photo_content_type);
+}
+#endif /* HAVE_LIBGDATA_0_9 */
+
+static void
+process_contact_cb (GDataEntry *entry, guint entry_key, guint entry_count, EBookBackend *backend)
 {
 	gboolean is_deleted, is_cached;
 	const gchar *uid;
@@ -542,27 +604,53 @@ process_subsequent_entry (GDataEntry *entry, guint entry_key, guint entry_count,
 			on_contact_removed (backend, uid);
 		}
 	} else {
-		EContact *contact = cache_add_contact (backend, entry);
+#ifdef HAVE_LIBGDATA_0_9
+		gchar *old_photo_etag = NULL;
+		const gchar *new_photo_etag;
 
-		if (is_cached)
-			on_contact_changed (backend, contact);
-		else
-			on_contact_added (backend, contact);
+		/* Download the contact's photo first, if the contact's uncached or if the photo's been updated. */
+		if (is_cached == TRUE) {
+			EContact *old_contact;
+			EContactPhoto *photo;
+			EVCardAttribute *old_attr;
 
-		g_object_unref (contact);
+			old_contact = cache_get_contact (backend, uid, NULL);
+
+			/* Get the old ETag. */
+			old_attr = e_vcard_get_attribute (E_VCARD (old_contact), GDATA_PHOTO_ETAG_ATTR);
+			old_photo_etag = (old_attr != NULL) ? e_vcard_attribute_get_value (old_attr) : NULL;
+
+			/* Attach the old photo to the new contact. */
+			photo = e_contact_get (old_contact, E_CONTACT_PHOTO);
+
+			if (photo != NULL && photo->type == E_CONTACT_PHOTO_TYPE_INLINED) {
+				g_object_set_data_full (G_OBJECT (entry), "photo", photo, (GDestroyNotify) e_contact_photo_free);
+			} else if (photo != NULL) {
+				e_contact_photo_free (photo);
+			}
+
+			g_object_unref (old_contact);
+		}
+
+		new_photo_etag = gdata_contacts_contact_get_photo_etag (GDATA_CONTACTS_CONTACT (entry));
+
+		if ((old_photo_etag == NULL && new_photo_etag != NULL) ||
+		    (old_photo_etag != NULL && new_photo_etag != NULL && strcmp (old_photo_etag, new_photo_etag) != 0)) {
+			/* Download the photo. */
+			gdata_contacts_contact_get_photo_async (GDATA_CONTACTS_CONTACT (entry),
+			                                        GDATA_CONTACTS_SERVICE (E_BOOK_BACKEND_GOOGLE (backend)->priv->service), NULL,
+			                                        (GAsyncReadyCallback) process_contact_photo_cb, backend);
+			g_free (old_photo_etag);
+
+			return;
+		}
+
+		g_free (old_photo_etag);
+#endif /* HAVE_LIBGDATA_0_9 */
+
+		/* Since we're not downloading a photo, add the contact to the cache now. */
+		process_contact_finish (backend, entry);
 	}
-}
-
-static void
-process_initial_entry (GDataEntry *entry, guint entry_key, guint entry_count, EBookBackend *backend)
-{
-	EContact *contact;
-
-	__debug__ (G_STRFUNC);
-
-	contact = cache_add_contact (backend, entry);
-	on_contact_added (backend, contact);
-	g_object_unref (contact);
 }
 
 static void
@@ -630,8 +718,7 @@ get_new_contacts (EBookBackend *backend)
 		GDATA_CONTACTS_SERVICE (priv->service),
 		query,
 		cancellable,
-		(GDataQueryProgressCallback) (last_updated ?
-			process_subsequent_entry : process_initial_entry),
+		(GDataQueryProgressCallback) process_contact_cb,
 		backend,
 #ifdef HAVE_LIBGDATA_0_9
 		(GDestroyNotify) NULL,
@@ -961,42 +1048,173 @@ typedef struct {
 	EBookBackend *backend;
 	EDataBook *book;
 	guint32 opid;
+#ifdef HAVE_LIBGDATA_0_9
+	GCancellable *cancellable;
+	GDataContactsContact *new_contact;
+	EContactPhoto *photo;
+#endif /* HAVE_LIBGDATA_0_9 */
 } CreateContactData;
+
+static void
+create_contact_finish (CreateContactData *data, GDataContactsContact *new_contact, const GError *gdata_error)
+{
+	EContact *e_contact;
+
+	__debug__ (G_STRFUNC);
+
+	if (gdata_error == NULL) {
+		/* Add the new contact to the cache. If uploading the photo was successful, the photo's data is stored on the contact as the "photo"
+		 * key, which the cache will pick up and store. */
+		e_contact = cache_add_contact (data->backend, GDATA_ENTRY (new_contact));
+		e_data_book_respond_create (data->book, data->opid, NULL, e_contact);
+		g_object_unref (e_contact);
+	} else {
+		GError *book_error = NULL;
+
+		/* Report the error. */
+		data_book_error_from_gdata_error (&book_error, gdata_error);
+		e_data_book_respond_create (data->book, data->opid, book_error, NULL);
+	}
+
+	finish_operation (data->backend, data->opid);
+
+#ifdef HAVE_LIBGDATA_0_9
+	if (data->photo != NULL) {
+		e_contact_photo_free (data->photo);
+	}
+
+	if (data->new_contact != NULL) {
+		g_object_unref (data->new_contact);
+	}
+
+	g_object_unref (data->cancellable);
+#endif /* HAVE_LIBGDATA_0_9 */
+	g_object_unref (data->book);
+	g_object_unref (data->backend);
+	g_slice_free (CreateContactData, data);
+}
+
+#ifdef HAVE_LIBGDATA_0_9
+static void
+create_contact_photo_query_cb (GDataService *service, GAsyncResult *async_result, CreateContactData *data)
+{
+	GDataEntry *queried_contact;
+	EContactPhoto *photo;
+	GError *gdata_error = NULL;
+
+	__debug__ (G_STRFUNC);
+
+	queried_contact = gdata_service_query_single_entry_finish (service, async_result, &gdata_error);
+
+	if (gdata_error != NULL) {
+		__debug__ ("Querying for created contact failed: %s", gdata_error->message);
+		goto finish;
+	}
+
+	/* Output debug XML */
+	if (__e_book_backend_google_debug__) {
+		gchar *xml = gdata_parsable_get_xml (GDATA_PARSABLE (queried_contact));
+		__debug__ ("After re-querying:\n%s", xml);
+		g_free (xml);
+	}
+
+	/* Copy the photo from the previous contact to the new one so that it makes it into the cache. */
+	photo = g_object_steal_data (G_OBJECT (data->new_contact), "photo");
+
+	if (photo != NULL) {
+		g_object_set_data_full (G_OBJECT (queried_contact), "photo", photo, (GDestroyNotify) e_contact_photo_free);
+	}
+
+finish:
+	create_contact_finish (data, GDATA_CONTACTS_CONTACT (queried_contact), gdata_error);
+
+	g_clear_error (&gdata_error);
+
+	if (queried_contact != NULL) {
+		g_object_unref (queried_contact);
+	}
+}
+
+static void
+create_contact_photo_cb (GDataContactsContact *contact, GAsyncResult *async_result, CreateContactData *data)
+{
+	GError *gdata_error = NULL;
+
+	__debug__ (G_STRFUNC);
+
+	gdata_contacts_contact_set_photo_finish (contact, async_result, &gdata_error);
+
+	if (gdata_error == NULL) {
+		/* Success! Store the photo on the final GDataContactsContact object so it makes it into the cache. */
+		g_object_set_data_full (G_OBJECT (contact), "photo", data->photo, (GDestroyNotify) e_contact_photo_free);
+		data->photo = NULL;
+
+		/* We now have to re-query for the contact, since setting its photo changes the contact's ETag. */
+		gdata_service_query_single_entry_async (E_BOOK_BACKEND_GOOGLE (data->backend)->priv->service,
+		                                        gdata_contacts_service_get_primary_authorization_domain (),
+		                                        gdata_entry_get_id (GDATA_ENTRY (contact)), NULL, GDATA_TYPE_CONTACTS_CONTACT,
+		                                        data->cancellable, (GAsyncReadyCallback) create_contact_photo_query_cb, data);
+		return;
+	} else {
+		/* Error. */
+		__debug__ ("Uploading initial contact photo for '%s' failed: %s", gdata_entry_get_id (GDATA_ENTRY (contact)), gdata_error->message);
+	}
+
+	/* Respond to the initial create contact operation. */
+	create_contact_finish (data, contact, gdata_error);
+
+	g_clear_error (&gdata_error);
+}
+#endif /* HAVE_LIBGDATA_0_9 */
 
 static void
 create_contact_cb (GDataService *service, GAsyncResult *result, CreateContactData *data)
 {
 	GError *gdata_error = NULL;
 	GDataEntry *new_contact;
-	EContact *contact;
 
 	__debug__ (G_STRFUNC);
 
 	new_contact = gdata_service_insert_entry_finish (service, result, &gdata_error);
-	finish_operation (data->backend, data->opid);
 
 	if (!new_contact) {
-		GError *book_error = NULL;
-		data_book_error_from_gdata_error (&book_error, gdata_error);
 		__debug__ ("Creating contact failed: %s", gdata_error->message);
-		g_error_free (gdata_error);
-
-		e_data_book_respond_create (data->book, data->opid, book_error, NULL);
 		goto finish;
 	}
 
-	/* Add the new contact to the cache */
-	contact = cache_add_contact (data->backend, new_contact);
-	e_data_book_respond_create (data->book, data->opid, NULL, contact);
-	g_object_unref (contact);
-	g_object_unref (new_contact);
+#ifdef HAVE_LIBGDATA_0_9
+	data->new_contact = g_object_ref (new_contact);
+
+	/* Add a photo for the new contact, if appropriate. This has to be done before we respond to the contact creation operation so that
+	 * we can update the EContact with the photo data and ETag. */
+	if (data->photo != NULL) {
+		gdata_contacts_contact_set_photo_async (GDATA_CONTACTS_CONTACT (new_contact), GDATA_CONTACTS_SERVICE (service),
+		                                        (const guint8 *) data->photo->data.inlined.data, data->photo->data.inlined.length,
+		                                        data->photo->data.inlined.mime_type, data->cancellable,
+		                                        (GAsyncReadyCallback) create_contact_photo_cb, data);
+		return;
+	}
+#endif /* HAVE_LIBGDATA_0_9 */
 
 finish:
-	g_object_unref (data->book);
-	g_object_unref (data->backend);
-	g_slice_free (CreateContactData, data);
+	create_contact_finish (data, GDATA_CONTACTS_CONTACT (new_contact), gdata_error);
+
+	g_clear_error (&gdata_error);
+
+	if (new_contact != NULL) {
+		g_object_unref (new_contact);
+	}
 }
 
+/*
+ * Creating a contact happens in either one request or three, depending on whether the contact's photo needs to be set. If the photo doesn't
+ * need to be set, a single request is made to insert the contact's other data, and finished and responded to in create_contact_cb().
+ *
+ * If the photo does need to be set, one request is made to insert the contact's other data, which is finished in create_contact_cb(). This then
+ * makes another request to upload the photo, which is finished in create_contact_photo_cb(). This then makes another request to re-query
+ * the contact so that we have the latest version of its ETag (which changes when the contact's photo is set); this is finished and the creation
+ * operation responded to in create_contact_photo_query_cb().
+ */
 static void
 e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard_str)
 {
@@ -1028,14 +1246,21 @@ e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, gu
 	g_free (xml);
 
 	/* Insert the entry on the server asynchronously */
+	cancellable = start_operation (backend, opid, cancellable, _("Creating new contact…"));
+
 	data = g_slice_new (CreateContactData);
 	data->backend = g_object_ref (backend);
 	data->book = g_object_ref (book);
 	data->opid = opid;
+#ifdef HAVE_LIBGDATA_0_9
+	data->cancellable = g_object_ref (cancellable);
+	data->new_contact = NULL;
+	data->photo = g_object_steal_data (G_OBJECT (entry), "photo");
+#endif /* HAVE_LIBGDATA_0_9 */
 
-	cancellable = start_operation (backend, opid, cancellable, _("Creating new contact…"));
 	gdata_contacts_service_insert_contact_async (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry), cancellable,
 						     (GAsyncReadyCallback) create_contact_cb, data);
+
 	g_object_unref (cancellable);
 	g_object_unref (entry);
 }
@@ -1136,31 +1361,154 @@ e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, g
 	g_object_unref (entry);
 }
 
+#ifdef HAVE_LIBGDATA_0_9
+typedef enum {
+	LEAVE_PHOTO,
+	ADD_PHOTO,
+	REMOVE_PHOTO,
+	UPDATE_PHOTO,
+} PhotoOperation;
+#endif /* HAVE_LIBGDATA_0_9 */
+
 typedef struct {
 	EBookBackend *backend;
 	EDataBook *book;
 	guint32 opid;
+#ifdef HAVE_LIBGDATA_0_9
+	GCancellable *cancellable;
+	GDataContactsContact *new_contact;
+	EContactPhoto *photo;
+	PhotoOperation photo_operation;
+#endif /* HAVE_LIBGDATA_0_9 */
 } ModifyContactData;
+
+static void
+modify_contact_finish (ModifyContactData *data, GDataContactsContact *new_contact, const GError *gdata_error)
+{
+	EContact *e_contact;
+
+	__debug__ (G_STRFUNC);
+
+	if (gdata_error == NULL) {
+		/* Add the new entry to the cache */
+		e_contact = cache_add_contact (data->backend, GDATA_ENTRY (new_contact));
+		e_data_book_respond_modify (data->book, data->opid, NULL, e_contact);
+		g_object_unref (e_contact);
+	} else {
+		GError *book_error = NULL;
+
+		/* Report the error. */
+		data_book_error_from_gdata_error (&book_error, gdata_error);
+		e_data_book_respond_modify (data->book, data->opid, book_error, NULL);
+	}
+
+	finish_operation (data->backend, data->opid);
+
+#ifdef HAVE_LIBGDATA_0_9
+	if (data->photo != NULL) {
+		e_contact_photo_free (data->photo);
+	}
+
+	if (data->new_contact != NULL) {
+		g_object_unref (data->new_contact);
+	}
+
+	g_object_unref (data->cancellable);
+#endif /* HAVE_LIBGDATA_0_9 */
+	g_object_unref (data->book);
+	g_object_unref (data->backend);
+	g_slice_free (ModifyContactData, data);
+}
+
+#ifdef HAVE_LIBGDATA_0_9
+static void
+modify_contact_photo_query_cb (GDataService *service, GAsyncResult *async_result, ModifyContactData *data)
+{
+	GDataEntry *queried_contact;
+	EContactPhoto *photo;
+	GError *gdata_error = NULL;
+
+	__debug__ (G_STRFUNC);
+
+	queried_contact = gdata_service_query_single_entry_finish (service, async_result, &gdata_error);
+
+	if (gdata_error != NULL) {
+		__debug__ ("Querying for modified contact failed: %s", gdata_error->message);
+		goto finish;
+	}
+
+	/* Output debug XML */
+	if (__e_book_backend_google_debug__) {
+		gchar *xml = gdata_parsable_get_xml (GDATA_PARSABLE (queried_contact));
+		__debug__ ("After re-querying:\n%s", xml);
+		g_free (xml);
+	}
+
+	/* Copy the photo from the previous contact to the new one so that it makes it into the cache. */
+	photo = g_object_steal_data (G_OBJECT (data->new_contact), "photo");
+
+	if (photo != NULL) {
+		g_object_set_data_full (G_OBJECT (queried_contact), "photo", photo, (GDestroyNotify) e_contact_photo_free);
+	}
+
+finish:
+	modify_contact_finish (data, GDATA_CONTACTS_CONTACT (queried_contact), gdata_error);
+
+	g_clear_error (&gdata_error);
+
+	if (queried_contact != NULL) {
+		g_object_unref (queried_contact);
+	}
+}
+
+static void
+modify_contact_photo_cb (GDataContactsContact *contact, GAsyncResult *async_result, ModifyContactData *data)
+{
+	GError *gdata_error = NULL;
+
+	__debug__ (G_STRFUNC);
+
+	gdata_contacts_contact_set_photo_finish (contact, async_result, &gdata_error);
+
+	if (gdata_error == NULL) {
+		/* Success! Store the photo on the final GDataContactsContact object so it makes it into the cache. */
+		if (data->photo != NULL) {
+			g_object_set_data_full (G_OBJECT (contact), "photo", data->photo, (GDestroyNotify) e_contact_photo_free);
+			data->photo = NULL;
+		} else {
+			g_object_set_data (G_OBJECT (contact), "photo", NULL);
+		}
+
+		/* We now have to re-query for the contact, since setting its photo changes the contact's ETag. */
+		gdata_service_query_single_entry_async (E_BOOK_BACKEND_GOOGLE (data->backend)->priv->service,
+		                                        gdata_contacts_service_get_primary_authorization_domain (),
+		                                        gdata_entry_get_id (GDATA_ENTRY (contact)), NULL, GDATA_TYPE_CONTACTS_CONTACT,
+		                                        data->cancellable, (GAsyncReadyCallback) modify_contact_photo_query_cb, data);
+		return;
+	} else {
+		/* Error. */
+		__debug__ ("Uploading modified contact photo for '%s' failed: %s", gdata_entry_get_id (GDATA_ENTRY (contact)), gdata_error->message);
+	}
+
+	/* Respond to the initial modify contact operation. */
+	modify_contact_finish (data, contact, gdata_error);
+
+	g_clear_error (&gdata_error);
+}
+#endif /* HAVE_LIBGDATA_0_9 */
 
 static void
 modify_contact_cb (GDataService *service, GAsyncResult *result, ModifyContactData *data)
 {
-	GError *gdata_error = NULL;
 	GDataEntry *new_contact;
-	EContact *contact;
+	GError *gdata_error = NULL;
 
 	__debug__ (G_STRFUNC);
 
 	new_contact = gdata_service_update_entry_finish (service, result, &gdata_error);
-	finish_operation (data->backend, data->opid);
 
 	if (!new_contact) {
-		GError *book_error = NULL;
-		data_book_error_from_gdata_error (&book_error, gdata_error);
 		__debug__ ("Modifying contact failed: %s", gdata_error->message);
-		g_error_free (gdata_error);
-
-		e_data_book_respond_modify (data->book, data->opid, book_error, NULL);
 		goto finish;
 	}
 
@@ -1171,23 +1519,62 @@ modify_contact_cb (GDataService *service, GAsyncResult *result, ModifyContactDat
 		g_free (xml);
 	}
 
-	/* Add the new entry to the cache */
-	contact = cache_add_contact (data->backend, new_contact);
-	e_data_book_respond_modify (data->book, data->opid, NULL, contact);
-	g_object_unref (contact);
-	g_object_unref (new_contact);
+#ifdef HAVE_LIBGDATA_0_9
+	data->new_contact = g_object_ref (new_contact);
+
+	/* Add a photo for the new contact, if appropriate. This has to be done before we respond to the contact creation operation so that
+	 * we can update the EContact with the photo data and ETag. */
+	switch (data->photo_operation) {
+		case LEAVE_PHOTO:
+			/* Do nothing. */
+			break;
+		case ADD_PHOTO:
+		case UPDATE_PHOTO:
+			/* Set the photo. */
+			g_return_if_fail (data->photo != NULL);
+			gdata_contacts_contact_set_photo_async (GDATA_CONTACTS_CONTACT (new_contact), GDATA_CONTACTS_SERVICE (service),
+			                                        (const guint8 *) data->photo->data.inlined.data, data->photo->data.inlined.length,
+			                                        data->photo->data.inlined.mime_type, data->cancellable,
+			                                        (GAsyncReadyCallback) modify_contact_photo_cb, data);
+			return;
+		case REMOVE_PHOTO:
+			/* Unset the photo. */
+			g_return_if_fail (data->photo == NULL);
+			gdata_contacts_contact_set_photo_async (GDATA_CONTACTS_CONTACT (new_contact), GDATA_CONTACTS_SERVICE (service),
+			                                        NULL, 0, NULL, data->cancellable, (GAsyncReadyCallback) modify_contact_photo_cb, data);
+			return;
+		default:
+			g_assert_not_reached ();
+	}
+#endif /* HAVE_LIBGDATA_0_9 */
 
 finish:
-	g_object_unref (data->book);
-	g_object_unref (data->backend);
-	g_slice_free (ModifyContactData, data);
+	modify_contact_finish (data, GDATA_CONTACTS_CONTACT (new_contact), gdata_error);
+
+	g_clear_error (&gdata_error);
+
+	if (new_contact != NULL) {
+		g_object_unref (new_contact);
+	}
 }
 
+/*
+ * Modifying a contact happens in either one request or three, depending on whether the contact's photo needs to be updated. If the photo doesn't
+ * need to be updated, a single request is made to update the contact's other data, and finished and responded to in modify_contact_cb().
+ *
+ * If the photo does need to be updated, one request is made to update the contact's other data, which is finished in modify_contact_cb(). This then
+ * makes another request to upload the updated photo, which is finished in modify_contact_photo_cb(). This then makes another request to re-query
+ * the contact so that we have the latest version of its ETag (which changes when the contact's photo is set); this is finished and the modification
+ * operation responded to in modify_contact_photo_query_cb().
+ */
 static void
 e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard_str)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact, *cached_contact;
+#ifdef HAVE_LIBGDATA_0_9
+	EContactPhoto *old_photo, *new_photo;
+#endif /* HAVE_LIBGDATA_0_9 */
 	GDataEntry *entry = NULL;
 	const gchar *uid;
 	ModifyContactData *data;
@@ -1218,11 +1605,8 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 		return;
 	}
 
-	g_object_unref (cached_contact);
-
 	/* Update the old GDataEntry from the new contact */
 	_gdata_entry_update_from_e_contact (backend, entry, contact);
-	g_object_unref (contact);
 
 	/* Output debug XML */
 	if (__e_book_backend_google_debug__) {
@@ -1232,12 +1616,49 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 	}
 
 	/* Update the contact on the server asynchronously */
+	cancellable = start_operation (backend, opid, cancellable, _("Modifying contact…"));
+
 	data = g_slice_new (ModifyContactData);
 	data->backend = g_object_ref (backend);
 	data->book = g_object_ref (book);
 	data->opid = opid;
 
-	cancellable = start_operation (backend, opid, cancellable, _("Modifying contact…"));
+#ifdef HAVE_LIBGDATA_0_9
+	data->cancellable = g_object_ref (cancellable);
+	data->new_contact = NULL;
+	data->photo = g_object_steal_data (G_OBJECT (entry), "photo");
+
+	/* Update the contact's photo. We can't rely on the ETags at this point, as the ETag in @ontact may be out of sync with the photo in the
+	 * EContact (since the photo may have been updated). Consequently, after updating @entry its ETag may also be out of sync with its attached
+	 * photo data. This means that we have to detect whether the photo has changed by comparing the photo data itself, which is guaranteed to
+	 * be in sync between @contact and @entry. */
+	old_photo = e_contact_get (cached_contact, E_CONTACT_PHOTO);
+	new_photo = e_contact_get (contact, E_CONTACT_PHOTO);
+
+	if ((old_photo == NULL || old_photo->type != E_CONTACT_PHOTO_TYPE_INLINED) && new_photo != NULL) {
+		/* Adding a photo */
+		data->photo_operation = ADD_PHOTO;
+	} else if (old_photo != NULL && (new_photo == NULL || new_photo->type != E_CONTACT_PHOTO_TYPE_INLINED)) {
+		/* Removing a photo */
+		data->photo_operation = REMOVE_PHOTO;
+	} else if (old_photo->data.inlined.length != new_photo->data.inlined.length ||
+	           memcmp (old_photo->data.inlined.data, new_photo->data.inlined.data, old_photo->data.inlined.length) != 0) {
+		/* Modifying the photo */
+		data->photo_operation = UPDATE_PHOTO;
+	} else {
+		/* Do nothing. */
+		data->photo_operation = LEAVE_PHOTO;
+	}
+
+	if (new_photo != NULL) {
+		e_contact_photo_free (new_photo);
+	}
+
+	if (old_photo != NULL) {
+		e_contact_photo_free (old_photo);
+	}
+#endif /* HAVE_LIBGDATA_0_9 */
+
 	#ifdef HAVE_LIBGDATA_0_9
 	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
 					  entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
@@ -1245,6 +1666,9 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
 	#endif
 	g_object_unref (cancellable);
+
+	g_object_unref (cached_contact);
+	g_object_unref (contact);
 	g_object_unref (entry);
 }
 
@@ -1754,6 +2178,9 @@ e_book_backend_google_get_backend_property (EBookBackend *backend, EDataBook *bo
 			E_CONTACT_BIRTH_DATE,
 			E_CONTACT_ANNIVERSARY,
 			E_CONTACT_NOTE,
+#ifdef HAVE_LIBGDATA_0_9
+			E_CONTACT_PHOTO,
+#endif /* HAVE_LIBGDATA_0_9 */
 			E_CONTACT_CATEGORIES,
 			E_CONTACT_CATEGORY_LIST
 		};
@@ -1940,7 +2367,7 @@ e_book_backend_google_new (void)
 }
 
 static void
-data_book_error_from_gdata_error (GError **dest_err, GError *error)
+data_book_error_from_gdata_error (GError **dest_err, const GError *error)
 {
 	if (!error || !dest_err)
 		return;
@@ -2109,6 +2536,9 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EC
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GList *attributes, *iter, *category_names;
 	EContactName *name_struct = NULL;
+#ifdef HAVE_LIBGDATA_0_9
+	EContactPhoto *photo;
+#endif /* HAVE_LIBGDATA_0_9 */
 	gboolean have_email_primary = FALSE;
 	gboolean have_im_primary = FALSE;
 	gboolean have_phone_primary = FALSE;
@@ -2181,8 +2611,9 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EC
 		    0 == g_ascii_strcasecmp (name, EVC_TITLE) ||
 		    0 == g_ascii_strcasecmp (name, EVC_ROLE) ||
 		    0 == g_ascii_strcasecmp (name, EVC_NOTE) ||
-		    0 == g_ascii_strcasecmp (name, EVC_CATEGORIES)) {
-			/* Ignore UID, VERSION, X-EVOLUTION-FILE-AS, N, FN, LABEL, TITLE, ROLE, NOTE, CATEGORIES */
+		    0 == g_ascii_strcasecmp (name, EVC_CATEGORIES) ||
+		    0 == g_ascii_strcasecmp (name, EVC_PHOTO)) {
+			/* Ignore UID, VERSION, X-EVOLUTION-FILE-AS, N, FN, LABEL, TITLE, ROLE, NOTE, CATEGORIES, PHOTO */
 		} else if (0 == g_ascii_strcasecmp (name, EVC_EMAIL)) {
 			/* EMAIL */
 			GDataGDEmailAddress *email;
@@ -2341,6 +2772,21 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EC
 		g_free (category_id);
 	}
 
+#ifdef HAVE_LIBGDATA_0_9
+	/* PHOTO */
+	photo = e_contact_get (contact, E_CONTACT_PHOTO);
+
+	if (photo != NULL && photo->type == E_CONTACT_PHOTO_TYPE_INLINED) {
+		g_object_set_data_full (G_OBJECT (entry), "photo", photo, (GDestroyNotify) e_contact_photo_free);
+	} else {
+		g_object_set_data (G_OBJECT (entry), "photo", NULL);
+
+		if (photo != NULL) {
+			e_contact_photo_free (photo);
+		}
+	}
+#endif /* HAVE_LIBGDATA_0_9 */
+
 	return TRUE;
 }
 
@@ -2359,6 +2805,10 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry)
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EVCard *vcard;
 	EVCardAttribute *attr;
+#ifdef HAVE_LIBGDATA_0_9
+	EContactPhoto *photo;
+	const gchar *photo_etag;
+#endif /* HAVE_LIBGDATA_0_9 */
 	GList *email_addresses, *im_addresses, *phone_numbers, *postal_addresses, *orgs, *category_names, *category_ids;
 	const gchar *uid, *note;
 	GList *itr;
@@ -2577,6 +3027,24 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry)
 
 		break;
 	}
+
+#ifdef HAVE_LIBGDATA_0_9
+	/* PHOTO */
+	photo = g_object_get_data (G_OBJECT (entry), "photo");
+	photo_etag = gdata_contacts_contact_get_photo_etag (GDATA_CONTACTS_CONTACT (entry));
+
+	g_return_val_if_fail ((photo == NULL) == (photo_etag == NULL), NULL);
+
+	if (photo != NULL) {
+		/* Photo */
+		e_contact_set (E_CONTACT (vcard), E_CONTACT_PHOTO, photo);
+
+		/* ETag */
+		attr = e_vcard_attribute_new ("", GDATA_PHOTO_ETAG_ATTR);
+		e_vcard_attribute_add_value (attr, photo_etag);
+		e_vcard_add_attribute (vcard, attr);
+	}
+#endif /* HAVE_LIBGDATA_0_9 */
 
 	return E_CONTACT (vcard);
 }
