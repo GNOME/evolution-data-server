@@ -319,6 +319,10 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	libsoup-2.4 >= libsoup_minimum_version
 	libgdata >= libgdata_minimum_version])
 
+if `$PKG_CONFIG --atleast-version=0.9 libgdata`; then
+	AC_MSG_ERROR([libgdata-0.9 is not yet supported.  Use 0.8 instead.])
+fi
+
 if test x$os_win32 = xno; then
   dnl ***********************************
   dnl Check for GNOME Keyring.
