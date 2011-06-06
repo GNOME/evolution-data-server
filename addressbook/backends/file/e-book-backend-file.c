@@ -476,7 +476,11 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 
 				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
 					contact_list = g_list_prepend (contact_list, vcard_dbt.data);
+				} else {
+					free (vcard_dbt.data);
 				}
+			} else {
+				free (vcard_dbt.data);
 			}
 
 			db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
