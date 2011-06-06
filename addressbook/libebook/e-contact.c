@@ -1744,11 +1744,12 @@ e_contact_name_to_string (const EContactName *name)
 EContactName*
 e_contact_name_from_string (const gchar *name_str)
 {
-	EContactName *name = e_contact_name_new ();
+	EContactName *name;
 	ENameWestern *western;
 
 	g_return_val_if_fail (name_str != NULL, NULL);
 
+	name = e_contact_name_new ();
 	western = e_name_western_parse (name_str ? name_str : "");
 
 	name->prefixes   = g_strdup (western->prefix);
