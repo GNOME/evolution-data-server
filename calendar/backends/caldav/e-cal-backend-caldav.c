@@ -1988,6 +1988,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 			}
 
 			/* cache update done for fetched items */
+			g_free (up_sobjs);
 		}
 
 		/* do not free 'data' itself, it's part of 'sobjs' */
@@ -2018,6 +2019,8 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 	}
 
 	g_tree_destroy (c_uid2complist);
+	g_slist_free (hrefs_to_update);
+	g_free (sobjs);
 }
 
 static gboolean

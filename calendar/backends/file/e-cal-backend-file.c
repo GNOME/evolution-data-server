@@ -1822,7 +1822,6 @@ e_cal_backend_file_start_view (ECalBackend *backend, EDataCalView *query)
 		g_list_foreach (objs_occuring_in_tw, (GFunc) g_object_unref, NULL);
 		g_list_free (objs_occuring_in_tw);
 	}
-	g_object_unref (match_data.obj_sexp);
 
 	e_data_cal_view_notify_complete (query, NULL /* Success */);
 }

@@ -257,8 +257,8 @@ operation_thread (gpointer data, gpointer user_data)
 			}
 
 			view = e_data_cal_view_new (backend, obj_sexp);
+			g_object_unref (obj_sexp);
 			if (!view) {
-				g_object_unref (obj_sexp);
 				g_free (op->d.sexp);
 				e_data_cal_respond_get_view (op->cal, op->id, EDC_ERROR (OtherError), NULL);
 				break;

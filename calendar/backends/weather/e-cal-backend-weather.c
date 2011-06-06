@@ -727,7 +727,6 @@ e_cal_backend_weather_start_view (ECalBackend *backend, EDataCalView *query)
 	g_slist_free (components);
 	g_slist_foreach (objects, (GFunc) g_free, NULL);
 	g_slist_free (objects);
-	g_object_unref (sexp);
 
 	e_data_cal_view_notify_complete (query, NULL /* Success */);
 }
