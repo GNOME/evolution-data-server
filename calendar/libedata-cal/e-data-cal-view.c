@@ -269,7 +269,6 @@ notify_remove (EDataCalView *view, ECalComponentId *id)
 {
 	EDataCalViewPrivate *priv = view->priv;
 	gchar *ids;
-	gchar *uid, *rid;
 	size_t uid_len, rid_len;
 
 	send_pending_adds (view);
@@ -280,37 +279,16 @@ notify_remove (EDataCalView *view, ECalComponentId *id)
 	}
 
 	/* store ECalComponentId as <uid>[\n<rid>] (matches D-Bus API) */
-	if (id->uid) {
-		uid = e_util_utf8_make_valid (id->uid);
-		uid_len = strlen (uid);
-	} else {
-		uid = NULL;
-		uid_len = 0;
-	}
-	if (id->rid) {
-		rid = e_util_utf8_make_valid (id->rid);
-		rid_len = strlen (rid);
-	} else {
-		rid = NULL;
-		rid_len = 0;
-	}
-	if (uid_len && !rid_len) {
-		/* shortcut */
-		ids = uid;
-		uid = NULL;
-	} else {
-		/* concatenate */
-		ids = g_malloc (uid_len + rid_len + (rid_len ? 2 : 1));
-		if (uid_len)
-			strcpy (ids, uid);
-		if (rid_len) {
-			ids[uid_len] = '\n';
-			strcpy (ids + uid_len + 1, rid);
-		}
+	uid_len = id->uid ? strlen (id->uid) : 0;
+	rid_len = id->rid ? strlen (id->rid) : 0;
+	ids = g_malloc (uid_len + rid_len + (rid_len ? 2 : 1));
+	if (uid_len)
+		strcpy (ids, id->uid);
+	if (rid_len) {
+		ids[uid_len] = '\n';
+		strcpy (ids + uid_len + 1, id->rid);
 	}
 	g_array_append_val (priv->removes, ids);
-	g_free (uid);
-	g_free (rid);
 
 	g_hash_table_remove (priv->ids, id);
 
