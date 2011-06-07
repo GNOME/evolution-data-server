@@ -63,6 +63,9 @@ struct _update_data {
 	CamelVeeFolder *folder_unmatched;
 	GHashTable *unmatched_uids;
 	gboolean rebuilt, correlating;
+	
+	/* used for uids that needs to be updated in db later by unmatched_check_uid and
+	   folder_added_uid */
 	GQueue *message_uids;
 };
 
@@ -721,17 +724,11 @@ unmatched_check_uid (gchar *uidin, gpointer value, struct _update_data *u)
 	} else {
 		CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *) camel_folder_summary_uid (((CamelFolder *) u->folder_unmatched)->summary, uid);
 		if (mi) {
-			CamelStore *parent_store;
-			const gchar *full_name;
-
-			full_name = camel_folder_get_full_name (
-				CAMEL_FOLDER (u->folder_unmatched));
-			parent_store = camel_folder_get_parent_store (
-				CAMEL_FOLDER (u->folder_unmatched));
-
 			camel_folder_summary_update_counts_by_flags (CAMEL_FOLDER (u->folder_unmatched)->summary, mi->old_flags, TRUE);
-			camel_db_delete_uid_from_vfolder_transaction (
-				parent_store->cdb_w, full_name, uid, NULL);
+			
+			if (u->message_uids != NULL)
+				g_queue_push_tail (u->message_uids, g_strdup (uid));
+
 			camel_folder_summary_remove_uid_fast (
 				((CamelFolder *) u->folder_unmatched)->summary, uid);
 			camel_folder_change_info_remove_uid (
@@ -1877,8 +1874,33 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
 		}
 
 		/* now allhash contains all potentially new uid's for the unmatched folder, process */
-		if (!CAMEL_IS_VEE_FOLDER (source))
+		if (!CAMEL_IS_VEE_FOLDER (source)) {
+
+			u.message_uids = g_queue_new ();
 			g_hash_table_foreach (allhash, (GHFunc) unmatched_check_uid, &u);
+
+			if (!g_queue_is_empty (u.message_uids)) {
+				CamelStore *parent_store;
+				const gchar *full_name;
+				gchar *uid;
+				
+				full_name = camel_folder_get_full_name (CAMEL_FOLDER (u.folder_unmatched));
+				parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (u.folder_unmatched));
+				
+				camel_db_begin_transaction (parent_store->cdb_w, NULL);
+
+				while ((uid = g_queue_pop_head (u.message_uids)) != NULL) {
+					camel_db_add_to_vfolder_transaction (
+							parent_store->cdb_w, full_name, uid, NULL);
+					g_free (uid);
+				}
+
+				camel_db_end_transaction (parent_store->cdb_w, NULL);
+			}
+
+			g_queue_free (u.message_uids);
+			u.message_uids = NULL;
+		}
 
 		/* copy any changes so we can raise them outside the lock */
 		if (camel_folder_change_info_changed (folder_unmatched->changes)) {
