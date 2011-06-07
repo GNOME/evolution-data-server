@@ -202,6 +202,11 @@ struct _CamelFolderClass {
 						 GError **error);
 	void		(*search_free)		(CamelFolder *folder,
 						 GPtrArray *result);
+	gboolean	(*fetch_old_messages)   (CamelFolder *folder,
+						 int count,
+						 GError **error);
+        gboolean	(*purge_old_messages)   (CamelFolder *folder,
+						 GError **error);
 	CamelMessageInfo *
 			(*get_message_info)	(CamelFolder *folder,
 						 const gchar *uid);
@@ -331,6 +336,11 @@ gint		camel_folder_get_deleted_message_count
 GPtrArray *	camel_folder_get_summary	(CamelFolder *folder);
 void		camel_folder_free_summary	(CamelFolder *folder,
 						 GPtrArray *array);
+gboolean	camel_folder_fetch_old_messages (CamelFolder *folder,
+						 int count,
+                          			 GError **error);
+gboolean	camel_folder_purge_old_messages (CamelFolder *folder,
+						 GError **error);
 
 /* uid based access operations */
 CamelMimeMessage *

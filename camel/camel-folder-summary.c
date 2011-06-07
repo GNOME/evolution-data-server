@@ -1855,6 +1855,22 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s,
 	return ret == 0 ? 0 : -1;
 }
 
+/**
+ * camel_folder_summary_sort_uids
+ *
+ * Sort the summary UIDS as per the folder requirements. This is mostly for backends use. 
+ * They client would hardly have a need to call this function.
+ **/
+void
+camel_folder_summary_sort_uids (CamelFolderSummary *s)
+{
+	struct _CamelFolderSummaryPrivate *p = CAMEL_FOLDER_SUMMARY_GET_PRIVATE(s);
+
+	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_sort_uids (s->folder, s->uids);
+	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+}
+
 static void
 mir_from_cols (CamelMIRecord *mir, CamelFolderSummary *s, gint ncol, gchar ** cols, gchar ** name)
 {

@@ -1721,6 +1721,85 @@ camel_folder_has_summary_capability (CamelFolder *folder)
 	return folder->folder_flags & CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 }
 
+/**
+ * camel_folder_fetch_old_messages:
+ * @folder: a #CamelFolder
+ * @count: Number of messages to fetch
+ * @error: return location for a #GError, or %NULL
+ *
+ * Fetches more (old) messages if the Folder is operating in mobile mode.
+ *
+ * Returns: #gboolean TRUE if there are more messages to fetch, FALSE otherwise.
+ **/
+gboolean
+camel_folder_fetch_old_messages (CamelFolder *folder,
+				 int count,
+                          	 GError **error)
+{
+	CamelFolderClass *class;
+	gboolean ret;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	/* Backends that don't support mobile mode will always have all old messages. So lets return FALSE*/
+	if (class->fetch_old_messages == NULL)
+		return FALSE;
+
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	ret = class->fetch_old_messages (folder, count, error);
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	if (ret && camel_debug_start (":folder")) {
+		printf ("CamelFolder:fetch_old_message ('%s') = %d\n",
+			camel_folder_get_full_name (folder), ret);
+		camel_debug_end ();
+	}
+
+	return ret;
+}
+
+/**
+ * camel_folder_purge_old_messages:
+ * @folder: a #CamelFolder
+ * @error: return location for a #GError, or %NULL
+ *
+ * Purge old messages that are downloaded the oldest to conserve space.
+ *
+ * Returns: #gboolean TRUE if messages are purged, FALSE otherwise.
+ **/
+gboolean
+camel_folder_purge_old_messages (CamelFolder *folder,
+                          	 GError **error)
+{
+	CamelFolderClass *class;
+	gboolean ret;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+
+	if (class->purge_old_messages == NULL)
+		return FALSE;
+
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	ret = class->purge_old_messages (folder, error);
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	if (ret && camel_debug_start (":folder")) {
+		printf ("CamelFolder:purge_old_message ('%s') = %d\n",
+			camel_folder_get_full_name (folder), ret);
+		camel_debug_end ();
+	}
+
+	return ret;
+}
+
+
 /* UIDs stuff */
 
 /**

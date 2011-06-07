@@ -70,6 +70,11 @@ struct _CamelPOP3Folder {
 	GPtrArray *uids;
 	GHashTable *uids_uid;	/* messageinfo by uid */
 	GHashTable *uids_id;	/* messageinfo by id */
+	GKeyFile *key_file;
+	gboolean mobile;
+	int fetch_more;
+	int first_id;	
+
 };
 
 struct _CamelPOP3FolderClass {

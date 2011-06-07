@@ -362,6 +362,9 @@ void camel_folder_summary_touch(CamelFolderSummary *summary);
 /* add a new raw summary item */
 void camel_folder_summary_add (CamelFolderSummary *summary, CamelMessageInfo *info);
 
+/* Sort the uids within the summary to meet the backend's need. */
+void camel_folder_summary_sort_uids (CamelFolderSummary *s);
+
 /* Peek from mem only */
 CamelMessageInfo * camel_folder_summary_peek_info (CamelFolderSummary *s, const gchar *uid);
 

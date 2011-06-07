@@ -36,7 +36,8 @@
 #include "camel-pop3-folder.h"
 #include "camel-pop3-store.h"
 
-#define d(x)
+#define d(x) if (camel_debug("pop")) x;
+#define FIRST_TIME_DOWNLOAD 40
 
 static gboolean pop3_refresh_info (CamelFolder *folder, GError **error);
 static gboolean pop3_sync (CamelFolder *folder, gboolean expunge, GError **error);
@@ -45,6 +46,7 @@ static GPtrArray *pop3_get_uids (CamelFolder *folder);
 static CamelMimeMessage *pop3_get_message (CamelFolder *folder, const gchar *uid, GError **error);
 static gboolean pop3_set_message_flags (CamelFolder *folder, const gchar *uid, guint32 flags, guint32 set);
 static gchar * pop3_get_filename (CamelFolder *folder, const gchar *uid, GError **error);
+static gboolean pop3_fetch_old_messages (CamelFolder *folder, int count, GError **error);
 
 G_DEFINE_TYPE (CamelPOP3Folder, camel_pop3_folder, CAMEL_TYPE_FOLDER)
 
@@ -99,6 +101,7 @@ camel_pop3_folder_class_init (CamelPOP3FolderClass *class)
 	folder_class->free_uids = camel_folder_free_shallow;
 	folder_class->get_filename = pop3_get_filename;
 	folder_class->get_message = pop3_get_message;
+	folder_class->fetch_old_messages = pop3_fetch_old_messages;
 	folder_class->set_message_flags = pop3_set_message_flags;
 }
 
@@ -111,6 +114,9 @@ CamelFolder *
 camel_pop3_folder_new (CamelStore *parent, GError **error)
 {
 	CamelFolder *folder;
+	CamelURL *url;
+	CamelPOP3Folder *pop3_folder;
+	CamelService *service;
 
 	d(printf("opening pop3 INBOX folder\n"));
 
@@ -119,6 +125,30 @@ camel_pop3_folder_new (CamelStore *parent, GError **error)
 		"full-name", "inbox", "name", "inbox",
 		"parent-store", parent, NULL);
 
+	pop3_folder = (CamelPOP3Folder *)folder;
+	service = (CamelService *) parent;
+
+	/* This decides if the POP3 downloads entire content or a limited content. */
+	url = service->url;
+	if (camel_url_get_param(url, "mobile"))
+		pop3_folder->mobile = TRUE;
+	else
+		pop3_folder->mobile = FALSE;
+	pop3_folder->fetch_more = 0;
+
+	if (pop3_folder->mobile) {
+		/* Setup Keyfile */
+		char *path, *root;
+
+		pop3_folder->key_file = g_key_file_new();
+		root = camel_session_get_storage_path (camel_service_get_session(service), service, NULL);
+		path = g_build_filename (root, "uidconfig", NULL);
+		g_key_file_load_from_file (pop3_folder->key_file, path, G_KEY_FILE_NONE, NULL);
+
+		g_free (path);
+		g_free(root);
+		
+	}
 	/* mt-ok, since we dont have the folder-lock for new() */
 	if (!camel_folder_refresh_info (folder, error)) { /* mt-ok */
 		g_object_unref (folder);
@@ -184,9 +214,14 @@ cmd_list(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 	CamelStore *parent_store;
 	CamelPOP3Store *pop3_store;
 	CamelPOP3FolderInfo *fi;
+	int i=0, total, last_uid=-1;
+	CamelPOP3Folder *pop3_folder;
+	CamelService *service;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	pop3_store = CAMEL_POP3_STORE (parent_store);
+	pop3_folder = (CamelPOP3Folder *)folder;
+	service = (CamelService *) parent_store;
 
 	do {
 		ret = camel_pop3_stream_line(stream, &line, &len);
@@ -198,12 +233,94 @@ cmd_list(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 				fi->index = ((CamelPOP3Folder *)folder)->uids->len;
 				if ((pop3_store->engine->capa & CAMEL_POP3_CAP_UIDL) == 0)
 					fi->cmd = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_builduid, fi, "TOP %u 0\r\n", id);
-				g_ptr_array_add(((CamelPOP3Folder *)folder)->uids, fi);
-				g_hash_table_insert(((CamelPOP3Folder *)folder)->uids_id, GINT_TO_POINTER(id), fi);
+				g_ptr_array_add(pop3_folder->uids, fi);
+				g_hash_table_insert(pop3_folder->uids_id, GINT_TO_POINTER(id), fi);
 			}
 		}
 	} while (ret>0);
-}
+
+	/* Trim the list for mobile devices*/
+	if (pop3_folder->mobile) {
+		gboolean save_uid = FALSE;
+		
+		d(printf("*********** Mobile mode *************\n"));
+		d(printf("Total Count: %s: %d\n", service->url->host, pop3_folder->uids->len));
+
+		/* Preserve the first message's ID */
+		fi = pop3_folder->uids->pdata[0];
+		pop3_folder->first_id = fi->id;
+
+		total = pop3_folder->uids->len;
+		if (pop3_folder->key_file) {
+			last_uid = g_key_file_get_integer (pop3_folder->key_file, "UIDConfig", "last-saved-uid", NULL);
+			if (!last_uid) {
+				/* First time downloading the POP folder, lets just download only a batch. */
+				last_uid = -1;
+			}
+			d(printf("Last stored' first uid: %d\n", last_uid));
+		}
+
+		if (last_uid == -1)
+			save_uid = TRUE;
+
+		for (i=total-1; i >= 0; i--) {
+			fi = pop3_folder->uids->pdata[i];
+
+			if ((last_uid != -1 && last_uid >= fi->id) || (last_uid == -1 && i == total-FIRST_TIME_DOWNLOAD)) {
+				if (last_uid != -1 && last_uid < fi->id)
+					i++; /* if the last uid was deleted on the server, then we need the last but 1*/
+
+				
+				break;
+			} 
+			
+		}
+		if (i> 0 && pop3_folder->fetch_more) {
+			int k=0;
+			/* Lets pull another window of old messages */
+			save_uid = TRUE;
+			/* Decrement 'i' by another batch count or till we reach the first message */
+			d(printf("Fetch more (%d): from %d", pop3_folder->fetch_more, i));
+			for (k=0; k< pop3_folder->fetch_more && i>= 0; k++, i--);
+			d(printf(" to %d\n", i));
+				
+		}
+		
+		if (i > 0) {
+			int j=0;
+			/* i is the start of the last fetch UID, so remove everything else from 0 to i */
+			for (; j<i; j++) {
+				fi = pop3_folder->uids->pdata[j];
+				g_hash_table_remove (pop3_folder->uids_id, GINT_TO_POINTER(fi->id));
+			}
+			g_ptr_array_remove_range (pop3_folder->uids, 0, i);
+			d(printf("Removing %d uids that are old\n", i));
+			
+		} 
+
+		if (save_uid) {
+			char *contents;
+			gsize len;
+			char *root, *path;
+	
+			/* Save the last fetched UID */
+			fi = pop3_folder->uids->pdata[0];			
+			g_key_file_set_integer (pop3_folder->key_file, "UIDConfig", "last-saved-uid", fi->id);
+			contents = g_key_file_to_data (pop3_folder->key_file, &len, NULL);
+			root = camel_session_get_storage_path (camel_service_get_session(service), service, NULL);
+			path = g_build_filename (root, "uidconfig", NULL);
+			g_file_set_contents (path, contents, len, NULL);
+			g_key_file_load_from_file (pop3_folder->key_file, path, G_KEY_FILE_NONE, NULL);		
+			g_free (contents);
+			g_free (path);
+			g_free(root);
+			d(printf("Saving last uid %d\n", fi->id));
+			
+		}
+
+	}
+
+}	
 
 static void
 cmd_uidl(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
@@ -228,7 +345,7 @@ cmd_uidl(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 					fi->uid = g_strdup(uid);
 					g_hash_table_insert(folder->uids_uid, fi->uid, fi);
 				} else {
-					g_warning("ID %u (uid: %s) not in previous LIST output", id, uid);
+					//g_warning("ID %u (uid: %s) not in previous LIST output", id, uid);
 				}
 			}
 		}
@@ -300,6 +417,29 @@ pop3_refresh_info (CamelFolder *folder, GError **error)
 	camel_operation_end (NULL);
 
 	return success;
+}
+
+static gboolean
+pop3_fetch_old_messages (CamelFolder *folder, int count, GError **error)
+{
+	CamelPOP3FolderInfo *fi;
+	CamelPOP3Folder *pop3_folder = (CamelPOP3Folder *)folder;
+
+	/* If we have the first message already, then return FALSE */
+	fi = pop3_folder->uids->pdata[0];
+	if (fi->id == pop3_folder->first_id)
+		return FALSE;
+	
+	pop3_folder->fetch_more = count;
+	pop3_refresh_info (folder, error);
+	pop3_folder->fetch_more = 0;
+
+	/* Even if we downloaded the first/oldest message, just now, return TRUE so that we wont waste another cycle */
+	fi = pop3_folder->uids->pdata[0];
+	if (fi->id == pop3_folder->first_id)
+		return FALSE;
+
+	return TRUE;
 }
 
 static gboolean

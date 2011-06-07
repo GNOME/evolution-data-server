@@ -83,6 +83,25 @@ extern gchar *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
  **/
 #define CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER  (1 << 9)
 
+/** 
+ * CAMEL_PROVIDER_SUPPORTS_MOBILE_DEVICES
+ * Download limited set of emails instead of operating on full cache.
+ **/ 
+
+#define CAMEL_PROVIDER_SUPPORTS_MOBILE_DEVICES (1 << 10)
+/**
+ * CAMEL_PROVIDER_SUPPORTS_BATCH_FETCH
+ * Support to fetch messages in batch
+ **/ 
+
+#define CAMEL_PROVIDER_SUPPORTS_BATCH_FETCH (1 << 11)
+
+/**
+ * CAMEL_PROVIDER_SUPPORTS_PURGE_OLD_MESSAGES
+ * Support to remove oldest downloaded messages to conserve space.
+ **/
+#define CAMEL_PROVIDER_SUPPORTS_PURGE_OLD_MESSAGES (1 << 12)
+
 /* Flags for url_flags. "ALLOW" means the config dialog will let the
  * user configure it. "NEED" implies "ALLOW" but means the user must
  * configure it. Service code can assume that any url part for which

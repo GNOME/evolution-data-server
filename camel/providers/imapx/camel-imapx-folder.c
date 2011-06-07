@@ -530,6 +530,46 @@ imapx_search_by_expression (CamelFolder *folder, const gchar *expression, GError
 	return matches;
 }
 
+static gboolean
+imapx_fetch_old_messages (CamelFolder *folder, int count, GError **error)
+{
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+	CamelIMAPXServer *server;
+	gboolean ret = FALSE;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
+
+	if (CAMEL_OFFLINE_STORE (istore)->state == CAMEL_OFFLINE_STORE_NETWORK_UNAVAIL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
+	if (!camel_service_connect((CamelService *)istore, error))
+		return FALSE;
+
+	server = camel_imapx_store_get_server(istore, camel_folder_get_full_name (folder), error);
+	if (server != NULL) {
+		ret = camel_imapx_server_fetch_old_messages (server, folder, count, error);
+		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
+		g_object_unref(server);
+	}
+
+	return ret;
+
+}
+
+static gboolean
+imapx_purge_old_messages (CamelFolder *folder, GError **error)
+{
+	/* Not implemented now */
+	return FALSE;
+}
+
 static void
 camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 {
@@ -553,6 +593,8 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class->append_message = imapx_append_message;
 	folder_class->transfer_messages_to = imapx_transfer_messages_to;
 	folder_class->get_filename = imapx_get_filename;
+	folder_class->fetch_old_messages = imapx_fetch_old_messages;
+	folder_class->purge_old_messages = imapx_purge_old_messages;
 }
 
 static void
