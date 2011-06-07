@@ -130,6 +130,10 @@
       <arg name="uid" type="s" direction="in"/>	    	    	    	    	    
       <arg name="message" type="s" direction="out"/>	    	    	    	    
     </method>        
+    <method name="fetchOldMessages">
+      <arg name="count" type="i" direction="in"/>	    	    
+      <arg name="success" type="b" direction="out"/>	    	                
+    </method>
     <method name="searchByExpression">
       <arg name="expression" type="s" direction="in"/>	    	    	    	    	    
       <arg name="uids" type="as" direction="out"/>	    	    	    	    

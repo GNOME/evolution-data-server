@@ -45,6 +45,12 @@
     <method name="fetchAccount">
       <arg name="uid" type="s" direction="in"/>	    
     </method>
+    
+    <method name="fetchOldMessages">
+      <arg name="uid" type="s" direction="in"/>	 
+      <arg name="count" type="i" direction="in"/>	    	             
+      <arg name="success" type="b" direction="out"/>            
+    </method>
 
     <method name="cancelOperations">
     </method>    

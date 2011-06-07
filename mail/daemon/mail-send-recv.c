@@ -1018,7 +1018,7 @@ mail_send_receive (GtkWindow *parent)
 		case SEND_RECEIVE:
 			mail_fetch_mail(info->uri, info->keep_on_server,
 					E_FILTER_SOURCE_INCOMING,
-					info->cancel,
+					info->cancel, 0,
 					receive_get_folder, info,
 					receive_status, info,
 					receive_done, info);
@@ -1252,7 +1252,7 @@ mail_receive_uri (const gchar *uri, gboolean keep_on_server)
 	case SEND_RECEIVE:
 		mail_fetch_mail (info->uri, info->keep_on_server,
 				 E_FILTER_SOURCE_INCOMING,
-				 info->cancel,
+				 info->cancel, 0,
 				 receive_get_folder, info,
 				 receive_status, info,
 				 receive_done, info);

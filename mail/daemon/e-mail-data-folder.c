@@ -1617,6 +1617,64 @@ ps_done (gboolean success, gpointer sdata, GError *error)
 	g_free (data);
 }
 
+/* Fetch Old messages */
+typedef struct _email_folder_fetch_data {
+	EMailDataFolder *mfolder;
+	EGdbusFolderCF *object;
+	GDBusMethodInvocation *invocation;
+	gint count;
+}EMailFolderFetchData;
+
+
+static gboolean
+fetch_old_operate (CamelFolder *folder, gpointer sdata, GError **error)
+{
+	EMailFolderFetchData *data = (EMailFolderFetchData *)sdata;
+
+	return camel_folder_fetch_old_messages (folder, data->count, error);
+}
+
+static void
+fetch_old_done (gboolean success, gpointer sdata, GError *error)
+{
+	EMailFolderFetchData *data = (EMailFolderFetchData *)sdata;
+	EMailDataFolderPrivate *priv = DATA_FOLDER_PRIVATE(data->mfolder);	
+	
+	if (error && error->message) {
+		g_warning ("Fetch old messages failed: %s: %s\n", priv->path, error->message);
+		g_dbus_method_invocation_return_gerror (data->invocation, error);		
+		ipc(printf("Fetch old messages: %s failed: %s\n", priv->path, error->message));
+		return;
+	}
+
+
+	egdbus_folder_cf_complete_fetch_old_messages (data->object, data->invocation, success);
+
+	ipc(printf("Fetch old messages: %s success: %d\n", priv->path, success));
+
+	g_free (data);
+}
+
+
+
+static 
+gboolean
+impl_Mail_fetchOldMessages (EGdbusFolderCF *object, GDBusMethodInvocation *invocation, int count, EMailDataFolder *mfolder)
+{
+	EMailFolderFetchData *data;
+	EMailDataFolderPrivate *priv = DATA_FOLDER_PRIVATE(mfolder);	
+
+	data = g_new0 (EMailFolderFetchData, 1);
+	data->mfolder = mfolder;
+	data->invocation = invocation;
+	data->object = object;
+	data->count = count;
+
+	mail_operate_on_folder (priv->folder, fetch_old_operate, fetch_old_done, data);
+
+	return TRUE;
+}
+
 static gboolean
 impl_Mail_prepareSummary (EGdbusFolderCF *object, GDBusMethodInvocation *invocation, EMailDataFolder *mfolder)
 {
@@ -1674,6 +1732,7 @@ e_mail_data_folder_init (EMailDataFolder *self)
 	g_signal_connect (priv->gdbus_object, "handle-get-message-info", G_CALLBACK (impl_Mail_getMessageInfo), self);
 	g_signal_connect (priv->gdbus_object, "handle-transfer-messages-to", G_CALLBACK (impl_Mail_transferMessagesTo), self);
 	g_signal_connect (priv->gdbus_object, "handle-prepare-summary", G_CALLBACK (impl_Mail_prepareSummary), self);
+	g_signal_connect (priv->gdbus_object, "handle-fetch-old-messages", G_CALLBACK (impl_Mail_fetchOldMessages), self);
 	
 	
 }

@@ -139,7 +139,7 @@ void mail_send_queue (CamelFolder *queue, const gchar *destination,
 		      gpointer data);
 
 void mail_fetch_mail (const gchar *source, gint keep,
-		      const gchar *type, CamelOperation *cancel,
+		      const gchar *type, CamelOperation *cancel, gint more,
 		      CamelFilterGetFolderFunc get_folder, gpointer get_data,
 		      CamelFilterStatusFunc *status, gpointer status_data,
 		      void (*done)(const gchar *source, gpointer data),

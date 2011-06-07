@@ -49,6 +49,10 @@
 /* XXX Make this a preprocessor definition. */
 const gchar *x_mailer = "Evolution Mail Data Server 0.1 ";
 
+/* POP is a non storage store, and has to be sequential between same accounts. We'll use this to lock it*/
+static GStaticMutex pop3_hash_lock = G_STATIC_MUTEX_INIT;
+static GHashTable *pop3_hash = NULL;
+
 /* used for both just filtering a folder + uid's, and for filtering a whole folder */
 /* used both for fetching mail, and for filtering mail */
 struct _filter_mail_msg {
@@ -69,6 +73,8 @@ struct _fetch_mail_msg {
 
 	CamelOperation *cancel;	/* we have our own cancellation struct, the other should be empty */
 	gint keep;		/* keep on server? */
+	gint more;
+	gboolean still_more;
 
 	gchar *source_uri;
 
@@ -217,6 +223,54 @@ mail_filter_junk (CamelFolder *folder, GPtrArray *uids)
 #endif
 
 /* ********************************************************************** */
+static void
+my_mutex_free (GMutex *lock)
+{
+	g_mutex_free (lock);
+}
+
+static GHashTable *
+get_pop3_hash ()
+{
+	g_static_mutex_lock (&pop3_hash_lock);
+	if (!pop3_hash)
+		pop3_hash = g_hash_table_new_full ( g_str_hash, g_str_equal, (GDestroyNotify)g_free, (GDestroyNotify)my_mutex_free);
+
+	g_static_mutex_unlock (&pop3_hash_lock);	
+
+	return pop3_hash;
+}
+
+static void
+pop3_fetch_lock (const char *source)
+{
+	GMutex *lock;
+	GHashTable *hash = get_pop3_hash();
+
+	g_static_mutex_lock (&pop3_hash_lock);
+	lock = g_hash_table_lookup (hash, source);
+	if (!lock) {
+		lock = g_mutex_new();
+		g_hash_table_insert (hash, g_strdup(source), lock);
+	}
+	g_static_mutex_unlock (&pop3_hash_lock);
+
+	g_mutex_lock (lock);
+}
+
+static void
+pop3_fetch_unlock (const char *source)
+{
+	GMutex *lock;
+	GHashTable *hash = get_pop3_hash();
+
+	g_static_mutex_lock (&pop3_hash_lock);
+	/* lock can't disappear from hash */
+	lock = g_hash_table_lookup (hash, source);
+	g_static_mutex_unlock (&pop3_hash_lock);
+
+	g_mutex_unlock (lock);
+}
 
 /* Temporary workaround for various issues. Gone before 0.11 */
 static gchar *
@@ -332,6 +386,8 @@ fetch_mail_exec (struct _fetch_mail_msg *m)
 	} else {
 		CamelFolder *folder;
 
+		/* This is a account level lock to ensure that no two same accounts get fetched at the same time */
+		pop3_fetch_lock (m->source_uri);
 		folder = fm->source_folder =
 			mail_tool_get_inbox (m->source_uri, &fm->base.error);
 
@@ -341,6 +397,11 @@ fetch_mail_exec (struct _fetch_mail_msg *m)
 			CamelUIDCache *cache = NULL;
 			CamelStore *parent_store;
 			gchar *cachename;
+			
+			if (m->more) {
+				printf("Fetching %d old messages\n", m->more);
+				m->still_more = camel_folder_fetch_old_messages(folder, m->more, &fm->base.error);
+			}
 
 			parent_store = camel_folder_get_parent_store (folder);
 			cachename = uid_cachename_hack (parent_store);
@@ -356,6 +417,7 @@ fetch_mail_exec (struct _fetch_mail_msg *m)
 
 				folder_uids = camel_folder_get_uids (folder);
 				cache_uids = camel_uid_cache_get_new_uids (cache, folder_uids);
+				printf("Gonna cache uids: %d\n", cache_uids->len);
 				if (cache_uids) {
 					/* need to copy this, sigh */
 					fm->source_uids = uids = g_ptr_array_new ();
@@ -402,6 +464,8 @@ fetch_mail_exec (struct _fetch_mail_msg *m)
 			g_object_unref (fm->source_folder);
 			fm->source_folder = NULL;
 		}
+
+		pop3_fetch_unlock(m->source_uri);
 	}
 fail:
 	if (m->cancel)
@@ -419,8 +483,12 @@ fail:
 static void
 fetch_mail_done (struct _fetch_mail_msg *m)
 {
-	if (m->done)
-		m->done (m->source_uri, m->data);
+	if (m->done) {
+		if (m->more)
+			m->done (m->still_more, m->data);	
+		else
+			m->done (m->source_uri, m->data);
+	}
 }
 
 static void
@@ -443,7 +511,7 @@ static MailMsgInfo fetch_mail_info = {
 
 /* ouch, a 'do everything' interface ... */
 void
-mail_fetch_mail (const gchar *source, gint keep, const gchar *type, CamelOperation *cancel,
+mail_fetch_mail (const gchar *source, gint keep, const gchar *type, CamelOperation *cancel, gint more,
 		 CamelFilterGetFolderFunc get_folder, gpointer get_data,
 		 CamelFilterStatusFunc *status, gpointer status_data,
 		 void (*done)(const gchar *source, gpointer data), gpointer data)
@@ -452,6 +520,7 @@ mail_fetch_mail (const gchar *source, gint keep, const gchar *type, CamelOperati
 	struct _filter_mail_msg *fm;
 
 	m = mail_msg_new (&fetch_mail_info);
+	m->more  = more;
 	fm = (struct _filter_mail_msg *)m;
 	m->source_uri = g_strdup (source);
 	fm->delete = !keep;

@@ -7,6 +7,8 @@
 #include <camel/camel.h>
 #include <gio/gio.h>
 #include "mail-ops.h"
+#include "mail-tools.h"
+#include "mail-send-recv.h"
 #include "utils.h"
 #include <libedataserver/e-account-list.h>
 #include <libedataserverui/e-passwords.h>
@@ -381,6 +383,52 @@ impl_Mail_fetchAccount (EGdbusSessionCS *object, GDBusMethodInvocation *invocati
 	return TRUE;
 }
 
+static void
+fetch_old_messages_done (gboolean still_more, EMailGetStoreData *data)
+{
+	ipc(printf("Done: Fetch old messages in POP: %d\n", still_more));
+	egdbus_session_cs_complete_fetch_old_messages (data->object, data->invocation, still_more);
+
+	g_free (data);
+}
+
+static gboolean
+impl_Mail_fetchOldMessages (EGdbusSessionCS *object, GDBusMethodInvocation *invocation, char *uid, int count, EMailDataSession *msession)
+{
+	EIterator *iter;
+	EAccountList *accounts;
+	EAccount *account;
+	EMailGetStoreData *data = g_new0(EMailGetStoreData, 1);
+
+	data->invocation = invocation;
+	data->msession = msession;
+	data->object = object;
+	
+	accounts = e_get_account_list ();
+	for (iter = e_list_get_iterator ((EList *)accounts);
+	     e_iterator_is_valid (iter);
+	     e_iterator_next (iter)) {
+		account = (EAccount *) e_iterator_get (iter);
+		if (account->uid && strcmp (account->uid, uid) == 0) {
+			const gchar *uri;
+			gboolean keep_on_server;
+
+			uri = e_account_get_string (
+				account, E_ACCOUNT_SOURCE_URL);
+			keep_on_server = e_account_get_bool (
+				account, E_ACCOUNT_SOURCE_KEEP_ON_SERVER);
+			mail_fetch_mail (uri, keep_on_server,
+				 E_FILTER_SOURCE_INCOMING,
+				 NULL, count,
+				 NULL, NULL,
+				 NULL, NULL,
+				 (void (*)(const gchar *, void *)) fetch_old_messages_done, data);
+		}
+	}
+
+	return TRUE;
+}
+
 static gboolean
 impl_Mail_cancelOperations (EGdbusSessionCS *object, GDBusMethodInvocation *invocation, EMailDataSession *msession)
 {
@@ -453,6 +501,7 @@ e_mail_data_session_init (EMailDataSession *self)
 	g_signal_connect (priv->gdbus_object, "handle-add-password", G_CALLBACK (impl_Mail_addPassword), self);
 	g_signal_connect (priv->gdbus_object, "handle-send-receive", G_CALLBACK (impl_Mail_sendReceive), self);
 	g_signal_connect (priv->gdbus_object, "handle-fetch-account", G_CALLBACK (impl_Mail_fetchAccount), self);
+	g_signal_connect (priv->gdbus_object, "handle-fetch-old-messages", G_CALLBACK (impl_Mail_fetchOldMessages), self);
 	g_signal_connect (priv->gdbus_object, "handle-cancel-operations", G_CALLBACK (impl_Mail_cancelOperations), self);
 
 	priv->stores_lock = g_mutex_new ();
