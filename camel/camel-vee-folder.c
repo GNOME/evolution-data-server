@@ -572,7 +572,9 @@ folder_changed_change (CamelSession *session,
 
 		parent_store = camel_folder_get_parent_store (folder);
 		full_name = camel_folder_get_full_name (folder);
-		unm_full_name = camel_folder_get_full_name (CAMEL_FOLDER (folder_unmatched));
+		
+		if (folder_unmatched)
+			unm_full_name = camel_folder_get_full_name (CAMEL_FOLDER (folder_unmatched));
 		
 		camel_db_begin_transaction (parent_store->cdb_w, NULL);
 	
