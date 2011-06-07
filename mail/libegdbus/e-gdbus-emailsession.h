@@ -68,6 +68,12 @@ struct _EGdbusSessionCSIface
     GDBusMethodInvocation *invocation,
     const gchar *uid);
 
+  gboolean (*handle_fetch_old_messages) (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation,
+    const gchar *uid,
+    gint count);
+
   gboolean (*handle_cancel_operations) (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation);
@@ -134,6 +140,11 @@ void egdbus_session_cs_complete_send_receive (
 void egdbus_session_cs_complete_fetch_account (
     EGdbusSessionCS *object,
     GDBusMethodInvocation *invocation);
+
+void egdbus_session_cs_complete_fetch_old_messages (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation,
+    gboolean success);
 
 void egdbus_session_cs_complete_cancel_operations (
     EGdbusSessionCS *object,
@@ -297,6 +308,28 @@ gboolean egdbus_session_cs_call_fetch_account_finish (
 gboolean egdbus_session_cs_call_fetch_account_sync (
     EGdbusSessionCS *proxy,
     const gchar *uid,
+    GCancellable *cancellable,
+    GError **error);
+
+void egdbus_session_cs_call_fetch_old_messages (
+    EGdbusSessionCS *proxy,
+    const gchar *uid,
+    gint count,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean egdbus_session_cs_call_fetch_old_messages_finish (
+    EGdbusSessionCS *proxy,
+    gboolean *out_success,
+    GAsyncResult *res,
+    GError **error);
+
+gboolean egdbus_session_cs_call_fetch_old_messages_sync (
+    EGdbusSessionCS *proxy,
+    const gchar *uid,
+    gint count,
+    gboolean *out_success,
     GCancellable *cancellable,
     GError **error);
 

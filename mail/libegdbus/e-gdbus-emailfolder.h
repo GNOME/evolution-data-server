@@ -154,6 +154,11 @@ struct _EGdbusFolderCFIface
     GDBusMethodInvocation *invocation,
     const gchar *uid);
 
+  gboolean (*handle_fetch_old_messages) (
+    EGdbusFolderCF *object,
+    GDBusMethodInvocation *invocation,
+    gint count);
+
   gboolean (*handle_search_by_expression) (
     EGdbusFolderCF *object,
     GDBusMethodInvocation *invocation,
@@ -325,6 +330,11 @@ void egdbus_folder_cf_complete_get_message (
     EGdbusFolderCF *object,
     GDBusMethodInvocation *invocation,
     const gchar *message);
+
+void egdbus_folder_cf_complete_fetch_old_messages (
+    EGdbusFolderCF *object,
+    GDBusMethodInvocation *invocation,
+    gboolean success);
 
 void egdbus_folder_cf_complete_search_by_expression (
     EGdbusFolderCF *object,
@@ -849,6 +859,26 @@ gboolean egdbus_folder_cf_call_get_message_sync (
     EGdbusFolderCF *proxy,
     const gchar *uid,
     gchar **out_message,
+    GCancellable *cancellable,
+    GError **error);
+
+void egdbus_folder_cf_call_fetch_old_messages (
+    EGdbusFolderCF *proxy,
+    gint count,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean egdbus_folder_cf_call_fetch_old_messages_finish (
+    EGdbusFolderCF *proxy,
+    gboolean *out_success,
+    GAsyncResult *res,
+    GError **error);
+
+gboolean egdbus_folder_cf_call_fetch_old_messages_sync (
+    EGdbusFolderCF *proxy,
+    gint count,
+    gboolean *out_success,
     GCancellable *cancellable,
     GError **error);
 

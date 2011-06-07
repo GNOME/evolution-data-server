@@ -1285,6 +1285,52 @@ static const _ExtendedGDBusMethodInfo _egdbus_folder_cf_method_info_get_message 
   "handle-get-message"
 };
 
+static const _ExtendedGDBusArgInfo _egdbus_folder_cf_method_info_fetch_old_messages_IN_ARG_count =
+{
+  {
+    -1,
+    "count",
+    "i",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_folder_cf_method_info_fetch_old_messages_IN_ARG_pointers[] =
+{
+  &_egdbus_folder_cf_method_info_fetch_old_messages_IN_ARG_count,
+  NULL
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_folder_cf_method_info_fetch_old_messages_OUT_ARG_success =
+{
+  {
+    -1,
+    "success",
+    "b",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_folder_cf_method_info_fetch_old_messages_OUT_ARG_pointers[] =
+{
+  &_egdbus_folder_cf_method_info_fetch_old_messages_OUT_ARG_success,
+  NULL
+};
+
+static const _ExtendedGDBusMethodInfo _egdbus_folder_cf_method_info_fetch_old_messages =
+{
+  {
+    -1,
+    "fetchOldMessages",
+    (GDBusArgInfo **) &_egdbus_folder_cf_method_info_fetch_old_messages_IN_ARG_pointers,
+    (GDBusArgInfo **) &_egdbus_folder_cf_method_info_fetch_old_messages_OUT_ARG_pointers,
+    NULL
+  },
+  "handle-fetch-old-messages"
+};
+
 static const _ExtendedGDBusArgInfo _egdbus_folder_cf_method_info_search_by_expression_IN_ARG_expression =
 {
   {
@@ -1628,6 +1674,7 @@ static const _ExtendedGDBusMethodInfo * const _egdbus_folder_cf_method_info_poin
   &_egdbus_folder_cf_method_info_append_message,
   &_egdbus_folder_cf_method_info_get_uids,
   &_egdbus_folder_cf_method_info_get_message,
+  &_egdbus_folder_cf_method_info_fetch_old_messages,
   &_egdbus_folder_cf_method_info_search_by_expression,
   &_egdbus_folder_cf_method_info_search_sort_by_expression,
   &_egdbus_folder_cf_method_info_search_by_uids,
@@ -2018,6 +2065,17 @@ egdbus_folder_cf_default_init (EGdbusFolderCFIface *iface)
     G_TYPE_BOOLEAN,
     2,
     G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING);
+
+  g_signal_new ("handle-fetch-old-messages",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusFolderCFIface, handle_fetch_old_messages),
+    g_signal_accumulator_true_handled,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_BOOLEAN,
+    2,
+    G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_INT);
 
   g_signal_new ("handle-search-by-expression",
     G_TYPE_FROM_INTERFACE (iface),
@@ -3708,6 +3766,71 @@ _out:
 }
 
 void
+egdbus_folder_cf_call_fetch_old_messages (
+    EGdbusFolderCF *proxy,
+    gint count,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  g_dbus_proxy_call (G_DBUS_PROXY (proxy),
+    "fetchOldMessages",
+    g_variant_new ("(i)",
+                   count),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    callback,
+    user_data);
+}
+
+gboolean
+egdbus_folder_cf_call_fetch_old_messages_finish (
+    EGdbusFolderCF *proxy,
+    gboolean *out_success,
+    GAsyncResult *res,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "(b)",
+                 out_success);
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+gboolean
+egdbus_folder_cf_call_fetch_old_messages_sync (
+    EGdbusFolderCF *proxy,
+    gint count,
+    gboolean *out_success,
+    GCancellable *cancellable,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
+    "fetchOldMessages",
+    g_variant_new ("(i)",
+                   count),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "(b)",
+                 out_success);
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+void
 egdbus_folder_cf_call_search_by_expression (
     EGdbusFolderCF *proxy,
     const gchar *expression,
@@ -4374,6 +4497,17 @@ egdbus_folder_cf_complete_get_message (
   g_dbus_method_invocation_return_value (invocation,
     g_variant_new ("(s)",
                    message));
+}
+
+void
+egdbus_folder_cf_complete_fetch_old_messages (
+    EGdbusFolderCF *object,
+    GDBusMethodInvocation *invocation,
+    gboolean success)
+{
+  g_dbus_method_invocation_return_value (invocation,
+    g_variant_new ("(b)",
+                   success));
 }
 
 void

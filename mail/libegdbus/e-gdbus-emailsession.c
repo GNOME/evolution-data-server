@@ -591,6 +591,64 @@ static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_fetch_accou
   "handle-fetch-account"
 };
 
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_fetch_old_messages_IN_ARG_uid =
+{
+  {
+    -1,
+    "uid",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_fetch_old_messages_IN_ARG_count =
+{
+  {
+    -1,
+    "count",
+    "i",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_method_info_fetch_old_messages_IN_ARG_pointers[] =
+{
+  &_egdbus_session_cs_method_info_fetch_old_messages_IN_ARG_uid,
+  &_egdbus_session_cs_method_info_fetch_old_messages_IN_ARG_count,
+  NULL
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_fetch_old_messages_OUT_ARG_success =
+{
+  {
+    -1,
+    "success",
+    "b",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_method_info_fetch_old_messages_OUT_ARG_pointers[] =
+{
+  &_egdbus_session_cs_method_info_fetch_old_messages_OUT_ARG_success,
+  NULL
+};
+
+static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_fetch_old_messages =
+{
+  {
+    -1,
+    "fetchOldMessages",
+    (GDBusArgInfo **) &_egdbus_session_cs_method_info_fetch_old_messages_IN_ARG_pointers,
+    (GDBusArgInfo **) &_egdbus_session_cs_method_info_fetch_old_messages_OUT_ARG_pointers,
+    NULL
+  },
+  "handle-fetch-old-messages"
+};
+
 static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_cancel_operations =
 {
   {
@@ -612,6 +670,7 @@ static const _ExtendedGDBusMethodInfo * const _egdbus_session_cs_method_info_poi
   &_egdbus_session_cs_method_info_get_folder_from_uri,
   &_egdbus_session_cs_method_info_send_receive,
   &_egdbus_session_cs_method_info_fetch_account,
+  &_egdbus_session_cs_method_info_fetch_old_messages,
   &_egdbus_session_cs_method_info_cancel_operations,
   NULL
 };
@@ -886,6 +945,17 @@ egdbus_session_cs_default_init (EGdbusSessionCSIface *iface)
     G_TYPE_BOOLEAN,
     2,
     G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING);
+
+  g_signal_new ("handle-fetch-old-messages",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusSessionCSIface, handle_fetch_old_messages),
+    g_signal_accumulator_true_handled,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_BOOLEAN,
+    3,
+    G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING, G_TYPE_INT);
 
   g_signal_new ("handle-cancel-operations",
     G_TYPE_FROM_INTERFACE (iface),
@@ -1441,6 +1511,75 @@ _out:
 }
 
 void
+egdbus_session_cs_call_fetch_old_messages (
+    EGdbusSessionCS *proxy,
+    const gchar *uid,
+    gint count,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  g_dbus_proxy_call (G_DBUS_PROXY (proxy),
+    "fetchOldMessages",
+    g_variant_new ("(si)",
+                   uid,
+                   count),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    callback,
+    user_data);
+}
+
+gboolean
+egdbus_session_cs_call_fetch_old_messages_finish (
+    EGdbusSessionCS *proxy,
+    gboolean *out_success,
+    GAsyncResult *res,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "(b)",
+                 out_success);
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+gboolean
+egdbus_session_cs_call_fetch_old_messages_sync (
+    EGdbusSessionCS *proxy,
+    const gchar *uid,
+    gint count,
+    gboolean *out_success,
+    GCancellable *cancellable,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
+    "fetchOldMessages",
+    g_variant_new ("(si)",
+                   uid,
+                   count),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "(b)",
+                 out_success);
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+void
 egdbus_session_cs_call_cancel_operations (
     EGdbusSessionCS *proxy,
     GCancellable *cancellable,
@@ -1566,6 +1705,17 @@ egdbus_session_cs_complete_fetch_account (
 {
   g_dbus_method_invocation_return_value (invocation,
     g_variant_new ("()"));
+}
+
+void
+egdbus_session_cs_complete_fetch_old_messages (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation,
+    gboolean success)
+{
+  g_dbus_method_invocation_return_value (invocation,
+    g_variant_new ("(b)",
+                   success));
 }
 
 void
