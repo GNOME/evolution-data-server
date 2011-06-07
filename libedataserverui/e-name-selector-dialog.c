@@ -38,6 +38,7 @@
 #include "libedataserver/libedataserver-private.h"
 #include "e-name-selector-dialog.h"
 #include "e-name-selector-entry.h"
+#include "gtk-compat.h"
 
 #define E_NAME_SELECTOR_DIALOG_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
