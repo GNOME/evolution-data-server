@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.91.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-07 10:56+0200\n"
-"PO-Revision-Date: 2011-06-07 11:04+0200\n"
+"POT-Creation-Date: 2011-06-09 12:41+0200\n"
+"PO-Revision-Date: 2011-06-09 12:44+0200\n"
 "Last-Translator: Torstein Adolf Winterseth <kvikende@fsfe.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -130,7 +130,7 @@ msgstr "Laster ned kontakter (%d) …"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:519
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:548
 #: ../calendar/backends/http/e-cal-backend-http.c:422
-#: ../calendar/libecal/e-cal.c:4409
+#: ../calendar/libecal/e-cal.c:4454
 #: ../camel/providers/imap/camel-imap-command.c:492
 #: ../camel/providers/imap/camel-imap-store.c:436
 #: ../camel/providers/pop3/camel-pop3-store.c:513
@@ -206,7 +206,7 @@ msgstr "Ukjent feil"
 
 #: ../addressbook/libebook/e-book-client.c:156
 msgid "D-Bus book proxy gone"
-msgstr ""
+msgstr "D-Bus bokproxy ble borte"
 
 #: ../addressbook/libebook/e-book-client.c:415
 msgid "Failed to run book factory"
@@ -233,33 +233,32 @@ msgstr "Klarte ikke å finne bok for systemet"
 
 #: ../addressbook/libebook/e-book-client.c:668
 #: ../calendar/libecal/e-cal-client.c:780
-#, fuzzy, c-format
+#, c-format
 msgid "There was no source for UID '%s' stored in a source list."
-msgstr "%s: ingen kilde lagret i GConf for uid «%s»."
+msgstr "Ingen kilde lagret i en kildeliste for UID «%s»."
 
 #: ../addressbook/libebook/e-book-client.c:1991
 #: ../calendar/libecal/e-cal-client.c:3468
-#, fuzzy
 msgid "Cannot get connection to view"
-msgstr "Kan ikke hente kontaktliste: %s"
+msgstr "Kan ikke hente tilkobling som skal vises"
 
 #: ../addressbook/libebook/e-book-client-view.c:217
 #: ../calendar/libecal/e-cal-client-view.c:455
 #, c-format
 msgid "Cannot start view, D-Bus proxy gone"
-msgstr ""
+msgstr "Kan ikke starte visning. D-Bus proxy ble borte"
 
 #: ../addressbook/libebook/e-book-client-view.c:246
 #: ../calendar/libecal/e-cal-client-view.c:484
 #, c-format
 msgid "Cannot stop view, D-Bus proxy gone"
-msgstr ""
+msgstr "Kan ikke stoppe visning. D-Bus proxy ble borte"
 
 #: ../addressbook/libebook/e-book-client-view.c:287
 #: ../calendar/libecal/e-cal-client-view.c:525
 #, c-format
 msgid "Cannot set fields of interest, D-Bus proxy gone"
-msgstr ""
+msgstr "Kan ikke sette interessefelt. D-Bus proxy ble borte"
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:114
@@ -797,7 +796,7 @@ msgstr "Liste uten navn"
 
 #: ../addressbook/libedata-book/e-book-backend.c:19
 msgid "Cannot process, book backend is opening"
-msgstr ""
+msgstr "Kan ikke prosessere fordi bokmotoren er i ferd med å åpnes"
 
 #: ../addressbook/libedata-book/e-book-backend.c:91
 #, c-format
@@ -805,9 +804,9 @@ msgid "Unknown book property '%s'"
 msgstr "Ukjent egenskap «%s» for bok"
 
 #: ../addressbook/libedata-book/e-book-backend.c:103
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot change value of book property '%s'"
-msgstr "Kan ikke opprette mappe «%s»: %s"
+msgstr "Kan ikke endre verdi for bokegenskap «%s»"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:321
 #: ../addressbook/libedata-book/e-data-book-factory.c:348
@@ -829,7 +828,7 @@ msgid "Success"
 msgstr "Suksess"
 
 #: ../addressbook/libedata-book/e-data-book.c:300
-#: ../calendar/libecal/e-cal.c:4377 ../calendar/libedata-cal/e-data-cal.c:414
+#: ../calendar/libecal/e-cal.c:4422 ../calendar/libedata-cal/e-data-cal.c:414
 msgid "Backend is busy"
 msgstr "Motoren er opptatt"
 
@@ -839,7 +838,7 @@ msgid "Repository offline"
 msgstr "Lageret er frakoblet"
 
 #: ../addressbook/libedata-book/e-data-book.c:302
-#: ../calendar/libecal/e-cal.c:4391 ../calendar/libedata-cal/e-data-cal.c:416
+#: ../calendar/libecal/e-cal.c:4436 ../calendar/libedata-cal/e-data-cal.c:416
 msgid "Permission denied"
 msgstr "Tilgang nektet"
 
@@ -922,13 +921,13 @@ msgid "No space"
 msgstr "Ingen plass"
 
 #: ../addressbook/libedata-book/e-data-book.c:321
-#: ../calendar/libecal/e-cal.c:4375 ../calendar/libedata-cal/e-data-cal.c:437
+#: ../calendar/libecal/e-cal.c:4420 ../calendar/libedata-cal/e-data-cal.c:437
 msgid "Invalid argument"
 msgstr "Ugyldig argument"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:323
-#: ../calendar/libecal/e-cal.c:4414 ../calendar/libedata-cal/e-data-cal.c:439
+#: ../calendar/libecal/e-cal.c:4459 ../calendar/libedata-cal/e-data-cal.c:439
 msgid "Not supported"
 msgstr "Ikke støttet"
 
@@ -985,16 +984,14 @@ msgstr "Kan ikke oppdatere adressebok: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:832
-#, fuzzy
 msgid "Cannot get backend property: "
-msgstr "Kan ikke lage kalenderobjekt: %s"
+msgstr "Kan ikke hente egenskap for motor: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:848
 #: ../calendar/libedata-cal/e-data-cal.c:1000
-#, fuzzy
 msgid "Cannot set backend property: "
-msgstr "Kan ikke sende kalenderobjekter: %s"
+msgstr "Kan ikke sette egenskap for motor: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:879
@@ -1003,9 +1000,8 @@ msgstr "Kan ikke hente kontaktliste: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:903
-#, fuzzy
 msgid "Cannot get contact list uids: "
-msgstr "Kan ikke hente kontaktliste: %s"
+msgstr "Kan ikke hente UIDer for kontaktliste: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:967
@@ -1153,7 +1149,7 @@ msgstr "Ukjent feil"
 
 #: ../calendar/libecal/e-cal-client.c:194
 msgid "D-Bus calendar proxy gone"
-msgstr ""
+msgstr "D-Bus kalenderproxy ble borte"
 
 #: ../calendar/libecal/e-cal-client.c:514
 msgid "Failed to run calendar factory"
@@ -1333,64 +1329,64 @@ msgstr "Oppgi passord for %s (bruker %s)"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Oppgi passord for %s for å aktivere proxy for bruker %s"
 
-#: ../calendar/libecal/e-cal.c:4379
+#: ../calendar/libecal/e-cal.c:4424
 msgid "Repository is offline"
 msgstr "Lageret er frakoblet"
 
-#: ../calendar/libecal/e-cal.c:4381
+#: ../calendar/libecal/e-cal.c:4426
 msgid "No such calendar"
 msgstr "Ingen slik kalender"
 
-#: ../calendar/libecal/e-cal.c:4383 ../calendar/libedata-cal/e-data-cal.c:418
+#: ../calendar/libecal/e-cal.c:4428 ../calendar/libedata-cal/e-data-cal.c:418
 msgid "Object not found"
 msgstr "Objektet ble ikke funnet"
 
-#: ../calendar/libecal/e-cal.c:4385 ../calendar/libedata-cal/e-data-cal.c:419
+#: ../calendar/libecal/e-cal.c:4430 ../calendar/libedata-cal/e-data-cal.c:419
 msgid "Invalid object"
 msgstr "Ugyldig objekt"
 
-#: ../calendar/libecal/e-cal.c:4387
+#: ../calendar/libecal/e-cal.c:4432
 msgid "URI not loaded"
 msgstr "URI ble ikke lastet"
 
-#: ../calendar/libecal/e-cal.c:4389
+#: ../calendar/libecal/e-cal.c:4434
 msgid "URI already loaded"
 msgstr "URI allerede lastet"
 
-#: ../calendar/libecal/e-cal.c:4393
+#: ../calendar/libecal/e-cal.c:4438
 msgid "Unknown User"
 msgstr "Ukjent bruker"
 
-#: ../calendar/libecal/e-cal.c:4395 ../calendar/libedata-cal/e-data-cal.c:420
+#: ../calendar/libecal/e-cal.c:4440 ../calendar/libedata-cal/e-data-cal.c:420
 msgid "Object ID already exists"
 msgstr "Objekt-ID eksisterer allerede"
 
-#: ../calendar/libecal/e-cal.c:4397
+#: ../calendar/libecal/e-cal.c:4442
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke støttet"
 
-#: ../calendar/libecal/e-cal.c:4399
+#: ../calendar/libecal/e-cal.c:4444
 msgid "Operation has been canceled"
 msgstr "Operasjonen ble avbrutt"
 
-#: ../calendar/libecal/e-cal.c:4401
+#: ../calendar/libecal/e-cal.c:4446
 msgid "Could not cancel operation"
 msgstr "Kunne ikke avbryte operasjon"
 
-#: ../calendar/libecal/e-cal.c:4403
+#: ../calendar/libecal/e-cal.c:4448
 msgid "Authentication failed"
 msgstr "Autentisering feilet"
 
-#: ../calendar/libecal/e-cal.c:4405
+#: ../calendar/libecal/e-cal.c:4450
 #: ../camel/providers/smtp/camel-smtp-transport.c:802
 msgid "Authentication required"
 msgstr "Autentisering kreves"
 
-#: ../calendar/libecal/e-cal.c:4407
+#: ../calendar/libecal/e-cal.c:4452
 msgid "A D-Bus exception has occurred"
 msgstr "Et D-Bus-unntak har oppstått"
 
-#: ../calendar/libecal/e-cal.c:4411
+#: ../calendar/libecal/e-cal.c:4456
 msgid "No error"
 msgstr "Ingen feil"
 
@@ -1490,19 +1486,18 @@ msgstr ""
 "argument er den bolske verdien falsk (#f)"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:34
-#, fuzzy
 msgid "Cannot process, calendar backend is opening"
-msgstr "Kan ikke fjerne kalenderobjekt: %s"
+msgstr "Kan ikke prosessere fordi kalendermotoren er i ferd med å åpnes"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:206
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown calendar property '%s'"
-msgstr "Ukjent feil: %s"
+msgstr "Ukjent kalenderegenskap «%s»"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:218
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot change value of calendar property '%s'"
-msgstr "Kan ikke lage kalenderobjekt: %s"
+msgstr "Kan ikke lage endre verdi for kalenderegenskap «%s»"
 
 #: ../calendar/libedata-cal/e-data-cal.c:417
 msgid "Invalid range"
@@ -1533,9 +1528,8 @@ msgstr "Kan ikke oppdatere kalender: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:978
-#, fuzzy
 msgid "Cannot retrieve backend property: "
-msgstr "Kan ikke hente kalenderadresse: %s"
+msgstr "Kan ikke hente egenskap for motor: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1024
@@ -1589,9 +1583,8 @@ msgstr "Kan ikke forkaste alarm: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1278
-#, fuzzy
 msgid "Could not get calendar view path: "
-msgstr "Kunne ikke hente tidssone for kalender: %s"
+msgstr "Kunne ikke hente sti for kalendervisning: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1303
@@ -1907,7 +1900,7 @@ msgstr "Kopierer meldinger"
 #: ../camel/camel-folder.c:1128
 #, c-format
 msgid "Quota information not supported for folder '%s'"
-msgstr ""
+msgstr "Kvoteinformasjon er ikke støttet for mappe «%s»"
 
 #: ../camel/camel-folder.c:3235
 #, c-format
@@ -2878,17 +2871,17 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "Kunne ikke tolke URL «%s»"
 
-#: ../camel/camel-vee-folder.c:1242 ../camel/camel-vee-folder.c:1405
+#: ../camel/camel-vee-folder.c:1280 ../camel/camel-vee-folder.c:1443
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Kan ikke kopiere eller flytte meldinger inn i en virtuell mappe"
 
-#: ../camel/camel-vee-folder.c:1278
+#: ../camel/camel-vee-folder.c:1316
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Ingen slik melding %s i %s"
 
-#: ../camel/camel-vee-folder.c:1346
+#: ../camel/camel-vee-folder.c:1384
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Feil ved lagring av «%s»: "
