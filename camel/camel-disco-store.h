@@ -57,6 +57,7 @@ struct _CamelDiscoDiary;
 
 typedef struct _CamelDiscoStore CamelDiscoStore;
 typedef struct _CamelDiscoStoreClass CamelDiscoStoreClass;
+typedef struct _CamelDiscoStorePrivate CamelDiscoStorePrivate;
 
 typedef enum {
 	CAMEL_DISCO_STORE_ONLINE,
@@ -66,6 +67,7 @@ typedef enum {
 
 struct _CamelDiscoStore {
 	CamelStore parent;
+	CamelDiscoStorePrivate *priv;
 
 	CamelDiscoStoreStatus status;
 	struct _CamelDiscoDiary *diary;

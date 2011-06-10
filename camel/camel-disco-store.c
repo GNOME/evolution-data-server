@@ -32,6 +32,7 @@
 #include "camel-disco-diary.h"
 #include "camel-disco-folder.h"
 #include "camel-disco-store.h"
+#include "camel-offline-settings.h"
 #include "camel-session.h"
 
 #define d(x)
@@ -255,9 +256,14 @@ disco_store_set_status (CamelDiscoStore *disco_store,
                         GCancellable *cancellable,
                         GError **error)
 {
+	CamelStore *store;
 	CamelService *service;
 	CamelSession *session;
+	CamelSettings *settings;
+	gboolean going_offline;
 	gboolean network_available;
+	gboolean store_is_online;
+	gboolean sync_store;
 
 	if (disco_store->status == status)
 		return TRUE;
@@ -265,33 +271,45 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 	/* Sync the folder fully if we've been told to sync online
 	 * for this store or this folder and we're going offline. */
 
+	store = CAMEL_STORE (disco_store);
 	service = CAMEL_SERVICE (disco_store);
 	session = camel_service_get_session (service);
+	settings = camel_service_get_settings (service);
+
 	network_available = camel_session_get_network_available (session);
+	store_is_online = (disco_store->status == CAMEL_DISCO_STORE_ONLINE);
+	going_offline = (status == CAMEL_DISCO_STORE_OFFLINE);
+
+	sync_store = camel_offline_settings_get_stay_synchronized (
+		CAMEL_OFFLINE_SETTINGS (settings));
 
 	if (network_available) {
-		if (disco_store->status == CAMEL_DISCO_STORE_ONLINE
-		    && status == CAMEL_DISCO_STORE_OFFLINE) {
-			if (((CamelStore *) disco_store)->folders) {
-				GPtrArray *folders;
-				CamelFolder *folder;
-				CamelURL *url;
-				gint i, sync;
+		if (store_is_online && going_offline && store->folders != NULL) {
+			GPtrArray *folders;
+			gint ii;
 
-				url = camel_service_get_camel_url (service);
-				sync =  camel_url_get_param (url, "offline_sync") != NULL;
+			folders = camel_object_bag_list (store->folders);
 
-				folders = camel_object_bag_list (((CamelStore *) disco_store)->folders);
-				for (i=0;i<folders->len;i++) {
-					folder = folders->pdata[i];
-					if (G_TYPE_CHECK_INSTANCE_TYPE (folder, CAMEL_TYPE_DISCO_FOLDER)
-					    && (sync || camel_disco_folder_get_offline_sync (CAMEL_DISCO_FOLDER (folder)))) {
-						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "", cancellable, NULL);
-					}
-					g_object_unref (folder);
-				}
-				g_ptr_array_free (folders, TRUE);
+			for (ii = 0; ii < folders->len; ii++) {
+				CamelFolder *folder = folders->pdata[ii];
+				gboolean sync_folder;
+
+				if (!CAMEL_IS_DISCO_FOLDER (folder))
+					continue;
+
+				sync_folder =
+					camel_disco_folder_get_offline_sync (
+					CAMEL_DISCO_FOLDER (folder));
+
+				if (sync_store || sync_folder)
+					camel_disco_folder_prepare_for_offline (
+						CAMEL_DISCO_FOLDER (folder),
+						"", cancellable, NULL);
 			}
+
+			g_ptr_array_foreach (
+				folders, (GFunc) g_object_unref, NULL);
+			g_ptr_array_free (folders, TRUE);
 		}
 
 		camel_store_synchronize_sync (
@@ -319,6 +337,7 @@ camel_disco_store_class_init (CamelDiscoStoreClass *class)
 	object_class->constructed = disco_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->settings_type = CAMEL_TYPE_OFFLINE_SETTINGS;
 	service_class->cancel_connect = disco_store_cancel_connect;
 	service_class->connect_sync = disco_store_connect_sync;
 	service_class->disconnect_sync = disco_store_disconnect_sync;
@@ -443,43 +462,60 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
                                        GCancellable *cancellable,
                                        GError **error)
 {
+	CamelStore *store;
 	CamelService *service;
 	CamelSession *session;
+	CamelSettings *settings;
+	gboolean store_is_online;
+	gboolean sync_store;
 
 	g_return_if_fail (CAMEL_IS_DISCO_STORE (disco_store));
 
+	store = CAMEL_STORE (disco_store);
 	service = CAMEL_SERVICE (disco_store);
 	session = camel_service_get_session (service);
+	settings = camel_service_get_settings (service);
+
+	/* We can't prepare for offline if we're already offline. */
+	if (!camel_session_get_network_available (session))
+		return;
 
 	/* Sync the folder fully if we've been told to
-	 * sync online for this store or this folder. */
+	 * sync offline for this store or this folder. */
 
-	if (camel_session_get_network_available (session)) {
-		if (disco_store->status == CAMEL_DISCO_STORE_ONLINE) {
-			if (((CamelStore *) disco_store)->folders) {
-				GPtrArray *folders;
-				CamelFolder *folder;
-				CamelURL *url;
-				gint i, sync;
+	sync_store = camel_offline_settings_get_stay_synchronized (
+		CAMEL_OFFLINE_SETTINGS (settings));
 
-				url = camel_service_get_camel_url (service);
-				sync = camel_url_get_param (url, "offline_sync") != NULL;
+	store_is_online = (disco_store->status == CAMEL_DISCO_STORE_ONLINE);
 
-				folders = camel_object_bag_list (((CamelStore *) disco_store)->folders);
-				for (i=0;i<folders->len;i++) {
-					folder = folders->pdata[i];
-					if (G_TYPE_CHECK_INSTANCE_TYPE (folder, CAMEL_TYPE_DISCO_FOLDER)
-					    && (sync || camel_disco_folder_get_offline_sync (CAMEL_DISCO_FOLDER (folder)))) {
-						camel_disco_folder_prepare_for_offline((CamelDiscoFolder *)folder, "(match-all)", cancellable, NULL);
-					}
-					g_object_unref (folder);
-				}
-				g_ptr_array_free (folders, TRUE);
-			}
+	if (store_is_online && store->folders != NULL) {
+		GPtrArray *folders;
+		guint ii;
+
+		folders = camel_object_bag_list (store->folders);
+
+		for (ii = 0; ii < folders->len; ii++) {
+			CamelFolder *folder = folders->pdata[ii];
+			gboolean sync_folder;
+
+			if (!CAMEL_IS_DISCO_FOLDER (folder))
+				continue;
+
+			sync_folder =
+				camel_disco_folder_get_offline_sync (
+				CAMEL_DISCO_FOLDER (folder));
+
+			if (sync_store || sync_folder)
+				camel_disco_folder_prepare_for_offline (
+					CAMEL_DISCO_FOLDER (folder),
+					"(match-all)", cancellable, NULL);
 		}
 
-		camel_store_synchronize_sync (
-			CAMEL_STORE (disco_store),
-			FALSE, cancellable, NULL);
+		g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
+		g_ptr_array_free (folders, TRUE);
 	}
+
+	camel_store_synchronize_sync (
+		CAMEL_STORE (disco_store),
+		FALSE, cancellable, NULL);
 }

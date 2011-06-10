@@ -3262,6 +3262,12 @@ streams
 @CAMEL_DISCO_DIARY_ARG_UID: 
 @CAMEL_DISCO_DIARY_ARG_UID_LIST: 
 
+<!-- ##### ARG CamelDiscoStore:stay-synchronized ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT CamelException ##### -->
 <para>
 
@@ -4259,6 +4265,12 @@ streams
 @CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE: 
 @CAMEL_IMAP_JOURNAL_ENTRY_APPEND: 
 @CAMEL_IMAP_JOURNAL_ENTRY_TRANSFER: 
+
+<!-- ##### ARG CamelOfflineStore:stay-synchronized ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### USER_FUNCTION CamelOperationStatusFunc ##### -->
 <para>
@@ -5301,6 +5313,22 @@ streams
 </para>
 
 @Returns: 
+
+<!-- ##### FUNCTION camel_disco_store_get_stay_synchronized ##### -->
+<para>
+
+</para>
+
+@store: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_disco_store_set_stay_synchronized ##### -->
+<para>
+
+</para>
+
+@store: 
+@stay_synchronized: 
 
 <!-- ##### FUNCTION camel_exception_clear ##### -->
 <para>
@@ -8109,6 +8137,14 @@ streams
 @error: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_offline_store_get_stay_synchronized ##### -->
+<para>
+
+</para>
+
+@store: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_offline_store_prepare_for_offline ##### -->
 <para>
 
@@ -8129,6 +8165,14 @@ streams
 @cancellable: 
 @error: 
 @Returns: 
+
+<!-- ##### FUNCTION camel_offline_store_set_stay_synchronized ##### -->
+<para>
+
+</para>
+
+@store: 
+@stay_synchronized: 
 
 <!-- ##### FUNCTION camel_operation_cancel_block ##### -->
 <para>

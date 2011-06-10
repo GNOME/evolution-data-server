@@ -157,20 +157,27 @@ camel_imap_wrapper_init (CamelImapWrapper *imap_wrapper)
 
 CamelDataWrapper *
 camel_imap_wrapper_new (CamelImapFolder *imap_folder,
-			CamelContentType *type, CamelTransferEncoding encoding,
-			const gchar *uid, const gchar *part_spec,
-			CamelMimePart *part)
+                        CamelContentType *type,
+                        CamelTransferEncoding encoding,
+                        const gchar *uid,
+                        const gchar *part_spec,
+                        CamelMimePart *part)
 {
 	CamelImapWrapper *imap_wrapper;
 	CamelStore *store;
 	CamelStream *stream;
-	CamelURL *url;
+	CamelService *service;
+	CamelSettings *settings;
 	gboolean sync_offline = FALSE;
 
 	store = camel_folder_get_parent_store (CAMEL_FOLDER (imap_folder));
-	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
 	sync_offline =
-		camel_url_get_param (url, "sync_offline") != NULL ||
+		camel_offline_settings_get_stay_synchronized (
+			CAMEL_OFFLINE_SETTINGS (settings)) ||
 		camel_offline_folder_get_offline_sync (
 			CAMEL_OFFLINE_FOLDER (imap_folder));
 

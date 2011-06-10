@@ -51,6 +51,7 @@ camel_nntp_address_get_type
 camel_object_get_type
 camel_offline_folder_get_type
 camel_offline_journal_get_type
+camel_offline_settings_get_type
 camel_offline_store_get_type
 camel_partition_table_get_type
 camel_key_table_get_type

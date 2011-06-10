@@ -30,6 +30,7 @@
 #include "camel-debug.h"
 #include "camel-disco-folder.h"
 #include "camel-disco-store.h"
+#include "camel-offline-settings.h"
 #include "camel-session.h"
 
 struct _CamelDiscoFolderPrivate {
@@ -97,23 +98,26 @@ static void
 cdf_folder_changed (CamelFolder *folder,
                     CamelFolderChangeInfo *changes)
 {
-	CamelService *parent_service;
-	CamelStore *parent_store;
+	CamelService *service;
 	CamelSession *session;
-	CamelURL *url;
-	gboolean offline_sync;
+	CamelSettings *settings;
+	CamelStore *parent_store;
+	gboolean sync_folder;
+	gboolean sync_store;
 
 	parent_store = camel_folder_get_parent_store (folder);
 
-	parent_service = CAMEL_SERVICE (parent_store);
-	url = camel_service_get_camel_url (parent_service);
-	session = camel_service_get_session (parent_service);
+	service = CAMEL_SERVICE (parent_store);
+	session = camel_service_get_session (service);
+	settings = camel_service_get_settings (service);
 
-	offline_sync = camel_disco_folder_get_offline_sync (
+	sync_folder = camel_disco_folder_get_offline_sync (
 		CAMEL_DISCO_FOLDER (folder));
 
-	if (changes->uid_added->len > 0 && (offline_sync
-		|| camel_url_get_param (url, "offline_sync"))) {
+	sync_store = camel_offline_settings_get_stay_synchronized (
+		CAMEL_OFFLINE_SETTINGS (settings));
+
+	if (changes->uid_added->len > 0 && (sync_folder || sync_store)) {
 		struct _cdf_sync_data *data;
 
 		data = g_slice_new0 (struct _cdf_sync_data);

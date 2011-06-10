@@ -28,10 +28,10 @@
 
 #include "camel-debug.h"
 #include "camel-offline-folder.h"
+#include "camel-offline-settings.h"
+#include "camel-offline-store.h"
 #include "camel-operation.h"
-#include "camel-service.h"
 #include "camel-session.h"
-#include "camel-store.h"
 
 typedef struct _AsyncContext AsyncContext;
 typedef struct _OfflineDownsyncData OfflineDownsyncData;
@@ -123,19 +123,23 @@ offline_folder_changed (CamelFolder *folder,
 	CamelStore *parent_store;
 	CamelService *service;
 	CamelSession *session;
-	CamelURL *url;
-	gboolean offline_sync;
+	CamelSettings *settings;
+	gboolean sync_store;
+	gboolean sync_folder;
 
 	parent_store = camel_folder_get_parent_store (folder);
 
 	service = CAMEL_SERVICE (parent_store);
-	url = camel_service_get_camel_url (service);
 	session = camel_service_get_session (service);
+	settings = camel_service_get_settings (service);
 
-	offline_sync = camel_offline_folder_get_offline_sync (
+	sync_store = camel_offline_settings_get_stay_synchronized (
+		CAMEL_OFFLINE_SETTINGS (settings));
+
+	sync_folder = camel_offline_folder_get_offline_sync (
 		CAMEL_OFFLINE_FOLDER (folder));
 
-	if (changes->uid_added->len > 0 && (offline_sync || camel_url_get_param (url, "sync_offline"))) {
+	if (changes->uid_added->len > 0 && (sync_store || sync_folder)) {
 		OfflineDownsyncData *data;
 
 		data = g_slice_new0 (OfflineDownsyncData);

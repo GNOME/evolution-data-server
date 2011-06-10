@@ -385,6 +385,7 @@ CAMEL_IS_DISCO_STORE_CLASS
 CAMEL_DISCO_STORE_GET_CLASS
 CamelDiscoStoreClass
 <SUBSECTION Private>
+CamelDiscoStorePrivate
 camel_disco_store_get_type
 </SECTION>
 
@@ -1592,6 +1593,25 @@ CAMEL_OFFLINE_JOURNAL_GET_CLASS
 CamelOfflineJournalClass
 <SUBSECTION Private>
 camel_offline_journal_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-offline-settings</FILE>
+<TITLE>CamelOfflineSettings</TITLE>
+CamelOfflineSettings
+camel_offline_settings_get_stay_synchronized
+camel_offline_settings_set_stay_synchronized
+<SUBSECTION Standard>
+CAMEL_OFFLINE_SETTINGS
+CAMEL_IS_OFFLINE_SETTINGS
+CAMEL_TYPE_OFFLINE_SETTINGS
+CAMEL_OFFLINE_SETTINGS_CLASS
+CAMEL_IS_OFFLINE_SETTINGS_CLASS
+CAMEL_OFFLINE_SETTINGS_GET_CLASS
+CamelOfflineSettingsClass
+<SUBSECTION Private>
+CamelOfflineSettingsPrivate
+camel_offline_settings_get_type
 </SECTION>
 
 <SECTION>

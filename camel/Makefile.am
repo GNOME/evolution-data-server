@@ -67,6 +67,7 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-network-service.c			\
 	camel-offline-folder.c			\
 	camel-offline-journal.c			\
+	camel-offline-settings.c		\
 	camel-offline-store.c			\
 	camel-provider.c			\
 	camel-sasl-anonymous.c			\
@@ -118,6 +119,7 @@ libcamel_providerinclude_HEADERS =		\
 	camel-network-service.h			\
 	camel-offline-folder.h			\
 	camel-offline-journal.h			\
+	camel-offline-settings.h		\
 	camel-offline-store.h			\
 	camel-provider.h			\
 	camel-sasl-anonymous.h			\
