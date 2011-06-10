@@ -1553,7 +1553,7 @@ e_vcard_attribute_param_copy (EVCardAttributeParam *param)
 /**
  * e_vcard_attribute_add_param:
  * @attr: an #EVCardAttribute
- * @param: an #EVCardAttributeParam to add
+ * @param: (transfer full): an #EVCardAttributeParam to add
  *
  * Adds @param to @attr's list of parameters.
  * It tests for duplicities, only new parameters are added,
