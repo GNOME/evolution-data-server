@@ -102,7 +102,7 @@ camel_imapx_folder_new (CamelStore *store, const gchar *folder_dir, const gchar 
 	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
 		if ((istore->rec_options & IMAPX_FILTER_INBOX))
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
-		if ((istore->rec_options & IMAPX_FILTER_INBOX))
+		if ((istore->rec_options & IMAPX_FILTER_JUNK))
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
 	} else if ((istore->rec_options & (IMAPX_FILTER_JUNK | IMAPX_FILTER_JUNK_INBOX)) == IMAPX_FILTER_JUNK)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
