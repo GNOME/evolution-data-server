@@ -1481,7 +1481,7 @@ e_vcard_attribute_param_get_type (void)
 						      (GBoxedCopyFunc)
 						      e_vcard_attribute_param_copy,
 						      (GBoxedFreeFunc)
-						      e_vcard_attribute_free);
+						      e_vcard_attribute_param_free);
 
 		g_once_init_leave (&type_id__volatile, type_id);
 	}
