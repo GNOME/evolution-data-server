@@ -138,10 +138,14 @@ camel_spool_folder_new (CamelStore *parent_store,
                         GError **error)
 {
 	CamelFolder *folder;
-	CamelURL *url;
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean filter_inbox;
+	gboolean use_xstatus_headers;
 	gchar *basename;
 
-	url = camel_service_get_camel_url (CAMEL_SERVICE (parent_store));
+	use_xstatus_headers = camel_spool_store_get_use_xstatus_headers (
+		CAMEL_SPOOL_STORE (parent_store));
 
 	basename = g_path_get_basename (full_name);
 
@@ -150,8 +154,13 @@ camel_spool_folder_new (CamelStore *parent_store,
 		"display-name", basename, "full-name", full_name,
 		"parent-store", parent_store, NULL);
 
-	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
-	    && strcmp(full_name, "INBOX") == 0)
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+
+	filter_inbox = camel_store_settings_get_filter_inbox (
+		CAMEL_STORE_SETTINGS (settings));
+
+	if (filter_inbox && strcmp (full_name, "INBOX") == 0)
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 	flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
 

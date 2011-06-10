@@ -100,7 +100,17 @@ camel_imapx_folder_new (CamelStore *store, const gchar *folder_dir, const gchar 
 
 	istore = (CamelIMAPXStore *) store;
 	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
-		if ((istore->rec_options & IMAPX_FILTER_INBOX))
+		CamelService *service;
+		CamelSettings *settings;
+		gboolean filter_inbox;
+
+		service = CAMEL_SERVICE (store);
+		settings = camel_service_get_settings (service);
+
+		filter_inbox = camel_store_settings_get_filter_inbox (
+			CAMEL_STORE_SETTINGS (settings));
+
+		if (filter_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 		if ((istore->rec_options & IMAPX_FILTER_JUNK))
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;

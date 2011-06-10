@@ -1242,10 +1242,6 @@ imap_store_initable_init (GInitable *initable,
 		imap_store->parameters |= IMAP_PARAM_CHECK_ALL;
 	if (camel_url_get_param (url, "check_lsub"))
 		imap_store->parameters |= IMAP_PARAM_CHECK_LSUB;
-	if (camel_url_get_param (url, "filter")) {
-		imap_store->parameters |= IMAP_PARAM_FILTER_INBOX;
-		CAMEL_STORE (imap_store)->flags |= CAMEL_STORE_FILTER_INBOX;
-	}
 	if (camel_url_get_param (url, "filter_junk"))
 		imap_store->parameters |= IMAP_PARAM_FILTER_JUNK;
 	if (camel_url_get_param (url, "filter_junk_inbox"))

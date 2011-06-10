@@ -116,11 +116,6 @@ imapx_parse_receiving_options (CamelIMAPXStore *istore, CamelURL *url)
 	if (camel_url_get_param (url, "check_lsub"))
 		istore->rec_options |= IMAPX_CHECK_LSUB;
 
-	if (camel_url_get_param (url, "filter")) {
-		istore->rec_options |= IMAPX_FILTER_INBOX;
-		((CamelStore *) istore)->flags |= CAMEL_STORE_FILTER_INBOX;
-	}
-
 	if (camel_url_get_param (url, "filter_junk"))
 		istore->rec_options |= IMAPX_FILTER_JUNK;
 

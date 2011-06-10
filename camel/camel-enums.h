@@ -257,12 +257,11 @@ typedef enum {
 typedef enum { /*< flags >*/
 	CAMEL_STORE_SUBSCRIPTIONS    = 1 << 0,
 	CAMEL_STORE_VTRASH           = 1 << 1,
-	CAMEL_STORE_FILTER_INBOX     = 1 << 2,
-	CAMEL_STORE_VJUNK            = 1 << 3,
-	CAMEL_STORE_PROXY            = 1 << 4,
-	CAMEL_STORE_IS_MIGRATING     = 1 << 5,
-	CAMEL_STORE_ASYNC            = 1 << 6,
-	CAMEL_STORE_REAL_JUNK_FOLDER = 1 << 7
+	CAMEL_STORE_VJUNK            = 1 << 2,
+	CAMEL_STORE_PROXY            = 1 << 3,
+	CAMEL_STORE_IS_MIGRATING     = 1 << 4,
+	CAMEL_STORE_ASYNC            = 1 << 5,
+	CAMEL_STORE_REAL_JUNK_FOLDER = 1 << 6
 } CamelStoreFlags;
 
 /**

@@ -51,13 +51,12 @@
 
 #define IMAPX_OVERRIDE_NAMESPACE	(1 << 0)
 #define IMAPX_CHECK_ALL			(1 << 1)
-#define IMAPX_FILTER_INBOX		(1 << 2)
-#define IMAPX_FILTER_JUNK		(1 << 3)
-#define IMAPX_FILTER_JUNK_INBOX		(1 << 4)
-#define IMAPX_SUBSCRIPTIONS		(1 << 5)
-#define IMAPX_CHECK_LSUB		(1 << 6)
-#define IMAPX_USE_IDLE			(1 << 7)
-#define IMAPX_USE_QRESYNC		(1 << 8)
+#define IMAPX_FILTER_JUNK		(1 << 2)
+#define IMAPX_FILTER_JUNK_INBOX		(1 << 3)
+#define IMAPX_SUBSCRIPTIONS		(1 << 4)
+#define IMAPX_CHECK_LSUB		(1 << 5)
+#define IMAPX_USE_IDLE			(1 << 6)
+#define IMAPX_USE_QRESYNC		(1 << 7)
 
 G_BEGIN_DECLS
 

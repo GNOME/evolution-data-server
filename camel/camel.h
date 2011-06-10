@@ -113,6 +113,7 @@
 #include <camel/camel-settings.h>
 #include <camel/camel-smime-context.h>
 #include <camel/camel-store.h>
+#include <camel/camel-store-settings.h>
 #include <camel/camel-store-summary.h>
 #include <camel/camel-stream.h>
 #include <camel/camel-stream-buffer.h>

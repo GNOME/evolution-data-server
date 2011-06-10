@@ -426,6 +426,9 @@ camel_maildir_folder_new (CamelStore *parent_store,
                           GError **error)
 {
 	CamelFolder *folder;
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean filter_inbox;
 	gchar *basename;
 
 	d(printf("Creating maildir folder: %s\n", full_name));
@@ -440,8 +443,13 @@ camel_maildir_folder_new (CamelStore *parent_store,
 		"display-name", basename, "full-name", full_name,
 		"parent-store", parent_store, NULL);
 
-	if (parent_store->flags & CAMEL_STORE_FILTER_INBOX
-	    && strcmp(full_name, ".") == 0)
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+
+	filter_inbox = camel_store_settings_get_filter_inbox (
+		CAMEL_STORE_SETTINGS (settings));
+
+	if (filter_inbox && strcmp (full_name, ".") == 0)
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 
 	folder = (CamelFolder *) camel_local_folder_construct (

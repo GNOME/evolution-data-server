@@ -77,11 +77,10 @@ typedef enum {
 
 #define IMAP_PARAM_OVERRIDE_NAMESPACE		(1 << 0)
 #define IMAP_PARAM_CHECK_ALL			(1 << 1)
-#define IMAP_PARAM_FILTER_INBOX			(1 << 2)
-#define IMAP_PARAM_FILTER_JUNK			(1 << 3)
-#define IMAP_PARAM_FILTER_JUNK_INBOX		(1 << 4)
-#define IMAP_PARAM_SUBSCRIPTIONS		(1 << 5)
-#define IMAP_PARAM_CHECK_LSUB			(1 << 6) /* check for new messages in subscribed folders */
+#define IMAP_PARAM_FILTER_JUNK			(1 << 2)
+#define IMAP_PARAM_FILTER_JUNK_INBOX		(1 << 3)
+#define IMAP_PARAM_SUBSCRIPTIONS		(1 << 4)
+#define IMAP_PARAM_CHECK_LSUB			(1 << 5) /* check for new messages in subscribed folders */
 
 #define IMAP_FETCH_ALL_HEADERS 1
 #define IMAP_FETCH_MAILING_LIST_HEADERS 2 /* Fetches Minimal and Mailing List Headers. Default behavior */

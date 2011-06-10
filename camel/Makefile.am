@@ -85,8 +85,9 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-session.c				\
 	camel-settings.c			\
 	camel-smime-context.c			\
-	camel-store-summary.c			\
 	camel-store.c				\
+	camel-store-settings.c			\
+	camel-store-summary.c			\
 	camel-tcp-stream-raw.c			\
 	camel-tcp-stream-ssl.c			\
 	camel-tcp-stream.c			\
@@ -134,8 +135,9 @@ libcamel_providerinclude_HEADERS =		\
 	camel-session.h				\
 	camel-settings.h			\
 	camel-smime-context.h			\
-	camel-store-summary.h			\
 	camel-store.h				\
+	camel-store-settings.h			\
+	camel-store-summary.h			\
 	camel-tcp-stream-raw.h			\
 	camel-tcp-stream-ssl.h			\
 	camel-tcp-stream.h			\

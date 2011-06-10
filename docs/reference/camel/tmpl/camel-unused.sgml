@@ -4470,6 +4470,12 @@ streams
 
 @parent: 
 
+<!-- ##### ARG CamelStore:filter-inbox ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### STRUCT CamelStreamDataWrapper ##### -->
 <para>
 
@@ -8873,6 +8879,14 @@ streams
 @uri1: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_store_get_filter_inbox ##### -->
+<para>
+
+</para>
+
+@store: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_store_get_inbox ##### -->
 <para>
 
@@ -8902,6 +8916,14 @@ streams
 @cancellable: 
 @error: 
 @Returns: 
+
+<!-- ##### FUNCTION camel_store_set_filter_inbox ##### -->
+<para>
+
+</para>
+
+@store: 
+@filter_inbox: 
 
 <!-- ##### FUNCTION camel_store_sync ##### -->
 <para>

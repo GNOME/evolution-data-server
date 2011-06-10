@@ -40,6 +40,7 @@
 #include "camel-marshal.h"
 #include "camel-session.h"
 #include "camel-store.h"
+#include "camel-store-settings.h"
 #include "camel-vtrash-folder.h"
 
 #define d(x)
@@ -206,6 +207,45 @@ ignore_no_such_table_exception (GError **error)
 
 	if (g_ascii_strncasecmp ((*error)->message, "no such table", 13) == 0)
 		g_clear_error (error);
+}
+
+/* deletes folder/removes it from the folder cache, if it's there */
+static void
+cs_delete_cached_folder (CamelStore *store,
+                         const gchar *folder_name)
+{
+	CamelFolder *folder;
+	CamelVeeFolder *vfolder;
+
+	if (store->folders == NULL)
+		return;
+
+	folder = camel_object_bag_get (store->folders, folder_name);
+	if (folder == NULL)
+		return;
+
+	if (store->flags & CAMEL_STORE_VTRASH) {
+		vfolder = camel_object_bag_get (
+			store->folders, CAMEL_VTRASH_NAME);
+		if (vfolder != NULL) {
+			camel_vee_folder_remove_folder (vfolder, folder);
+			g_object_unref (vfolder);
+		}
+	}
+
+	if (store->flags & CAMEL_STORE_VJUNK) {
+		vfolder = camel_object_bag_get (
+			store->folders, CAMEL_VJUNK_NAME);
+		if (vfolder != NULL) {
+			camel_vee_folder_remove_folder (vfolder, folder);
+			g_object_unref (vfolder);
+		}
+	}
+
+	camel_folder_delete (folder);
+
+	camel_object_bag_remove (store->folders, folder);
+	g_object_unref (folder);
 }
 
 static CamelFolder *
@@ -1191,7 +1231,6 @@ store_initable_init (GInitable *initable,
 {
 	CamelStore *store;
 	CamelService *service;
-	CamelURL *url;
 	const gchar *user_data_dir;
 	gchar *filename;
 
@@ -1202,7 +1241,6 @@ store_initable_init (GInitable *initable,
 		return FALSE;
 
 	service = CAMEL_SERVICE (initable);
-	url = camel_service_get_camel_url (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
 	if (g_mkdir_with_parents (user_data_dir, S_IRWXU) == -1) {
@@ -1227,9 +1265,6 @@ store_initable_init (GInitable *initable,
 	/* keep cb_w to not break the ABI */
 	store->cdb_w = store->cdb_r;
 
-	if (camel_url_get_param (url, "filter"))
-		store->flags |= CAMEL_STORE_FILTER_INBOX;
-
 	return TRUE;
 }
 
@@ -1237,12 +1272,16 @@ static void
 camel_store_class_init (CamelStoreClass *class)
 {
 	GObjectClass *object_class;
+	CamelServiceClass *service_class;
 
 	g_type_class_add_private (class, sizeof (CamelStorePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = store_finalize;
 	object_class->constructed = store_constructed;
+
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->settings_type = CAMEL_TYPE_STORE_SETTINGS;
 
 	class->hash_folder_name = g_str_hash;
 	class->compare_folder_name = g_str_equal;
@@ -1372,37 +1411,6 @@ camel_store_error_quark (void)
 	}
 
 	return quark;
-}
-
-/* deletes folder/removes it from the folder cache, if it's there */
-static void
-cs_delete_cached_folder (CamelStore *store,
-                         const gchar *folder_name)
-{
-	CamelFolder *folder;
-
-	folder = camel_object_bag_get (store->folders, folder_name);
-
-	if (folder != NULL) {
-		CamelVeeFolder *vfolder;
-
-		if ((store->flags & CAMEL_STORE_VTRASH)
-		    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VTRASH_NAME))) {
-			camel_vee_folder_remove_folder (vfolder, folder);
-			g_object_unref (vfolder);
-		}
-
-		if ((store->flags & CAMEL_STORE_VJUNK)
-		    && (vfolder = camel_object_bag_get (store->folders, CAMEL_VJUNK_NAME))) {
-			camel_vee_folder_remove_folder (vfolder, folder);
-			g_object_unref (vfolder);
-		}
-
-		camel_folder_delete (folder);
-
-		camel_object_bag_remove (store->folders, folder);
-		g_object_unref (folder);
-	}
 }
 
 /**

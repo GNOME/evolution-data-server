@@ -38,6 +38,8 @@
 
 #include <libedataserver/e-time-utils.h>
 
+#include <camel/camel.h>
+
 #include "camel-imap-command.h"
 #include "camel-imap-folder.h"
 #include "camel-imap-journal.h"
@@ -409,8 +411,18 @@ camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 		return NULL;
 	}
 
-	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
-		if ((imap_store->parameters & IMAP_PARAM_FILTER_INBOX))
+	if (g_ascii_strcasecmp (folder_name, "INBOX") == 0) {
+		CamelService *service;
+		CamelSettings *settings;
+		gboolean filter_inbox;
+
+		service = CAMEL_SERVICE (parent);
+		settings = camel_service_get_settings (service);
+
+		filter_inbox = camel_store_settings_get_filter_inbox (
+			CAMEL_STORE_SETTINGS (settings));
+
+		if (filter_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 		if ((imap_store->parameters & IMAP_PARAM_FILTER_JUNK))
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
