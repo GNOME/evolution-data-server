@@ -1008,7 +1008,7 @@ e_vcard_dump_structure (EVCard *evc)
 
 /**
  * e_vcard_attribute_new:
- * @attr_group: a group name
+ * @attr_group: (allow-none): a group name
  * @attr_name: an attribute name
  *
  * Creates a new #EVCardAttribute with the specified group and
