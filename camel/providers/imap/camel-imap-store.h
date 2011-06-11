@@ -27,31 +27,6 @@
 #include <sys/time.h>
 #include <camel/camel.h>
 
-G_BEGIN_DECLS
-
-typedef struct _CamelImapStore CamelImapStore;
-typedef struct _CamelImapStoreClass CamelImapStoreClass;
-
-#ifdef ENABLE_THREADS
-
-typedef struct _CamelImapMsg CamelImapMsg;
-
-struct _CamelImapMsg {
-	CamelMsg msg;
-
-	void (*receive)(CamelImapStore *store, struct _CamelImapMsg *m);
-	void (*free)(CamelImapStore *store, struct _CamelImapMsg *m);
-};
-
-CamelImapMsg *camel_imap_msg_new (void (*receive)(CamelImapStore *store, struct _CamelImapMsg *m),
-				 void (*free)(CamelImapStore *store, struct _CamelImapMsg *m),
-				 gsize size);
-void camel_imap_msg_queue (CamelImapStore *store, CamelImapMsg *msg);
-
-#endif
-
-G_END_DECLS
-
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAP_STORE \
 	(camel_imap_store_get_type ())
@@ -73,24 +48,8 @@ G_END_DECLS
 
 G_BEGIN_DECLS
 
-/*enum {
-	CAMEL_IMAP_STORE_ARG_FIRST  = CAMEL_OFFLINE_STORE_ARG_FIRST + 100,
-	CAMEL_IMAP_STORE_ARG_NAMESPACE,
-	CAMEL_IMAP_STORE_ARG_OVERRIDE_NAMESPACE,
-	CAMEL_IMAP_STORE_ARG_CHECK_ALL,
-	CAMEL_IMAP_STORE_ARG_FILTER_INBOX,
-	CAMEL_IMAP_STORE_ARG_FILTER_JUNK,
-	CAMEL_IMAP_STORE_ARG_FILTER_JUNK_INBOX,
-	CAMEL_IMAP_STORE_ARG_CHECK_LSUB
-};*/
-
-#define CAMEL_IMAP_STORE_NAMESPACE           (CAMEL_IMAP_STORE_ARG_NAMESPACE | CAMEL_ARG_STR)
-#define CAMEL_IMAP_STORE_OVERRIDE_NAMESPACE  (CAMEL_IMAP_STORE_ARG_OVERRIDE_NAMESPACE | CAMEL_ARG_INT)
-#define CAMEL_IMAP_STORE_CHECK_ALL           (CAMEL_IMAP_STORE_ARG_CHECK_ALL | CAMEL_ARG_INT)
-#define CAMEL_IMAP_STORE_FILTER_INBOX        (CAMEL_IMAP_STORE_ARG_FILTER_INBOX | CAMEL_ARG_INT)
-#define CAMEL_IMAP_STORE_FILTER_JUNK         (CAMEL_IMAP_STORE_ARG_FILTER_JUNK | CAMEL_ARG_BOO)
-#define CAMEL_IMAP_STORE_FILTER_JUNK_INBOX   (CAMEL_IMAP_STORE_ARG_FILTER_JUNK_INBOX | CAMEL_ARG_BOO)
-#define CAMEL_IMAP_STORE_CHECK_LSUB          (CAMEL_IMAP_STORE_ARG_CHECK_LSUB | CAMEL_ARG_BOO)
+typedef struct _CamelImapStore CamelImapStore;
+typedef struct _CamelImapStoreClass CamelImapStoreClass;
 
 /* CamelFolderInfo flags */
 #define CAMEL_IMAP_FOLDER_MARKED	     (1 << 16)
@@ -168,11 +127,13 @@ struct _CamelImapStoreClass {
 	CamelOfflineStoreClass parent_class;
 };
 
-GType camel_imap_store_get_type (void);
-
-gboolean camel_imap_store_connected (CamelImapStore *store, GError **error);
-
-gssize camel_imap_store_readline (CamelImapStore *store, gchar **dest, GCancellable *cancellable, GError **error);
+GType		camel_imap_store_get_type	(void);
+gboolean	camel_imap_store_connected	(CamelImapStore *store,
+						 GError **error);
+gssize		camel_imap_store_readline	(CamelImapStore *store,
+						 gchar **dest,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 
