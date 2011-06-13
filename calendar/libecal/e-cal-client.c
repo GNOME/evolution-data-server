@@ -428,7 +428,6 @@ free_busy_data_cb (EGdbusCal *object, const gchar * const *free_busy_strv, ECalC
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (free_busy_strv != NULL);
 
-
 	for (ii = 0; free_busy_strv[ii]; ii++) {
 		ECalComponent *comp;
 		icalcomponent *icalcomp;

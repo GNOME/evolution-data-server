@@ -3564,8 +3564,8 @@ get_local_source (GError **error)
 
 				relative_uri = e_source_peek_relative_uri (source);
 				if (g_strcmp0 (relative_uri, "system") == 0) {
-				        personal = source;
-				        break;
+					personal = source;
+					break;
 				}
 			}
 
@@ -3580,7 +3580,7 @@ get_local_source (GError **error)
 				e_source_set_property (source, "completion", "true");
 
 				source_uri = e_source_get_uri (source);
-				g_object_unref(source);
+				g_object_unref (source);
 			} else {
 				/* Force the source name to the current locale. */
 				e_source_set_name (personal, name);

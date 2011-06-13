@@ -794,7 +794,7 @@ e_gdbus_book_register_object (EGdbusBook *object, GDBusConnection *connection, c
 	g_object_set_data_full (G_OBJECT (object), "gdbus-codegen-path", (gpointer) g_strdup (object_path), g_free);
 	g_object_set_data (G_OBJECT (object), "gdbus-codegen-connection", (gpointer) connection);
 	g_object_set_data_full (G_OBJECT (object), "gdbus-codegen-pvc", (gpointer) pvc, (GDestroyNotify) g_hash_table_unref);
-	
+
 	return g_dbus_connection_register_object (connection, object_path, (GDBusInterfaceInfo *) &_e_gdbus_book_interface_info,
 			&e_gdbus_book_interface_vtable, object, (GDestroyNotify) on_object_unregistered, error);
 }

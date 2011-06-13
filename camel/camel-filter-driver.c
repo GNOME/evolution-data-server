@@ -1281,7 +1281,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		GError *local_error = NULL;
 
 		if (st.st_size > 0)
-			pc = (gint)(100.0 * ((double)camel_mime_parser_tell (mp) / (double)st.st_size));
+			pc = (gint)(100.0 * ((double) camel_mime_parser_tell (mp) / (double) st.st_size));
 
 		report_status (driver, CAMEL_FILTER_STATUS_START, pc, _("Getting message %d (%d%%)"), i, pc);
 
@@ -1299,9 +1299,9 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		/* Try and see if it has X-Evolution headers */
 		xev = camel_header_raw_find(&mime_part->headers, "X-Evolution", NULL);
 		if (xev)
-			decode_flags_from_xev (xev, (CamelMessageInfoBase *)info);
+			decode_flags_from_xev (xev, (CamelMessageInfoBase *) info);
 
-		((CamelMessageInfoBase *)info)->size = camel_mime_parser_tell (mp) - last;
+		((CamelMessageInfoBase *) info)->size = camel_mime_parser_tell (mp) - last;
 
 		last = camel_mime_parser_tell (mp);
 		status = camel_filter_driver_filter_message (

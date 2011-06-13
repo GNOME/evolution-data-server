@@ -421,7 +421,7 @@ client_utils_opened_cb (EClient *client, const GError *error, EClientUtilsAsyncO
 
 	if (!async_data->open_finished) {
 		/* there can happen that the "opened" signal is received
-		   before the e_client_open() is finished, thus keep detailed
+		   before the e_client_open () is finished, thus keep detailed
 		   error for later use, if any */
 		if (error)
 			async_data->opened_cb_error = g_error_copy (error);
@@ -573,7 +573,6 @@ e_client_utils_open_new (ESource *source, EClientSourceType source_type, gboolea
 	if (auth_handler)
 		g_signal_connect (client, "authenticate", G_CALLBACK (client_utils_open_new_auth_cb), async_data);
 
-
 	/* wait till backend notifies about its opened state */
 	g_signal_connect (client, "opened", G_CALLBACK (client_utils_opened_cb), async_data);
 
@@ -654,7 +653,6 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 		reason = e_credentials_get (credentials, E_CREDENTIALS_KEY_PROMPT_REASON);
 		username_markup = g_markup_printf_escaped ("<b>%s</b>", e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME));
 		source_name_markup = g_markup_printf_escaped ("<b>%s</b>", e_source_peek_name (source));
-
 
 		if (reason && *reason)
 			prompt = g_strdup_printf (_("Enter password for %s (user %s)\nReason: %s"), source_name_markup, username_markup, reason);

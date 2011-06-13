@@ -336,7 +336,7 @@ e_book_client_view_class_init (EBookClientViewClass *klass)
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->dispose = book_client_view_dispose;
 
-	signals [OBJECTS_ADDED] =
+	signals[OBJECTS_ADDED] =
 		g_signal_new ("objects-added",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -345,7 +345,7 @@ e_book_client_view_class_init (EBookClientViewClass *klass)
 			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	signals [OBJECTS_MODIFIED] =
+	signals[OBJECTS_MODIFIED] =
 		g_signal_new ("objects-modified",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -354,7 +354,7 @@ e_book_client_view_class_init (EBookClientViewClass *klass)
 			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	signals [OBJECTS_REMOVED] =
+	signals[OBJECTS_REMOVED] =
 		g_signal_new ("objects-removed",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -363,7 +363,7 @@ e_book_client_view_class_init (EBookClientViewClass *klass)
 			      g_cclosure_marshal_VOID__POINTER,
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 
-	signals [PROGRESS] =
+	signals[PROGRESS] =
 		g_signal_new ("progress",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,
@@ -372,7 +372,7 @@ e_book_client_view_class_init (EBookClientViewClass *klass)
 			      e_gdbus_marshallers_VOID__UINT_STRING,
 			      G_TYPE_NONE, 2, G_TYPE_UINT, G_TYPE_STRING);
 
-	signals [COMPLETE] =
+	signals[COMPLETE] =
 		g_signal_new ("complete",
 			      G_OBJECT_CLASS_TYPE (object_class),
 			      G_SIGNAL_RUN_LAST,

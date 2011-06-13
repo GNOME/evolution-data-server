@@ -501,7 +501,6 @@ data_cal_return_error (GDBusMethodInvocation *invocation, const GError *perror, 
 	g_error_free (error);
 }
 
-
 EDataCal *
 e_data_cal_new (ECalBackend *backend, ESource *source)
 {

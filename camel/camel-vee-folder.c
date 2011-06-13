@@ -63,7 +63,7 @@ struct _update_data {
 	CamelVeeFolder *folder_unmatched;
 	GHashTable *unmatched_uids;
 	gboolean rebuilt, correlating;
-	
+
 	/* used for uids that needs to be updated in db later by unmatched_check_uid and
 	   folder_added_uid */
 	GQueue *message_uids;
@@ -135,10 +135,10 @@ expression_is_correlating (const gchar *expr)
 
 /* Hold all these with summary lock and unmatched summary lock held */
 static void
-folder_changed_add_uid (CamelFolder *sub, 
-			const gchar *uid, 
-			const gchar hash[8], 
-			CamelVeeFolder *vf, 
+folder_changed_add_uid (CamelFolder *sub,
+			const gchar *uid,
+			const gchar hash[8],
+			CamelVeeFolder *vf,
 			gboolean use_db,
 			GSList **m_added_l,
 			GSList **unm_added_l)
@@ -157,7 +157,7 @@ folder_changed_add_uid (CamelFolder *sub,
 
 	vuid = camel_pstring_strdup (camel_message_info_uid (vinfo));
 	camel_message_info_free ((CamelMessageInfo *) vinfo);
-	
+
 	if (use_db)
 		*m_added_l = g_slist_prepend (*m_added_l, (gpointer) camel_pstring_strdup (vuid));
 
@@ -174,9 +174,9 @@ folder_changed_add_uid (CamelFolder *sub,
 			camel_folder_summary_update_counts_by_flags (CAMEL_FOLDER (folder_unmatched)->summary, vinfo->old_flags, TRUE);
 			camel_folder_change_info_remove_uid (
 				folder_unmatched->changes, vuid);
-		
+
 			*unm_added_l = g_slist_prepend (*unm_added_l, (gpointer) camel_pstring_strdup (vuid));
-			
+
 			camel_folder_summary_remove_uid_fast (
 				CAMEL_FOLDER (folder_unmatched)->summary, vuid);
 			camel_folder_free_message_info (
@@ -189,16 +189,16 @@ folder_changed_add_uid (CamelFolder *sub,
 }
 
 static void
-folder_changed_remove_uid 	(CamelFolder *sub, 
-				 const gchar *uid, 
-				 const gchar hash[8], 
-				 gint keep, 
-				 CamelVeeFolder *vf, 
+folder_changed_remove_uid	(CamelFolder *sub,
+				 const gchar *uid,
+				 const gchar hash[8],
+				 gint keep,
+				 CamelVeeFolder *vf,
 				 gboolean use_db,
 				 GSList **m_removed_l,
 				 GSList **unm_removed_l)
 {
-	CamelFolder *folder = (CamelFolder *)vf;
+	CamelFolder *folder = (CamelFolder *) vf;
 	gchar *vuid, *oldkey;
 	gpointer oldval;
 	gint n;
@@ -249,9 +249,9 @@ folder_changed_remove_uid 	(CamelFolder *sub,
 				camel_folder_summary_update_counts_by_flags (CAMEL_FOLDER (folder_unmatched)->summary, vinfo->old_flags, TRUE);
 				camel_folder_change_info_remove_uid (
 					folder_unmatched->changes, vuid);
-		
+
 				*unm_removed_l = g_slist_prepend (*unm_removed_l, (gpointer) camel_pstring_strdup (vuid));
-				
+
 				camel_folder_summary_remove_uid_fast (
 					CAMEL_FOLDER (folder_unmatched)->summary, vuid);
 				camel_folder_free_message_info (
@@ -274,11 +274,11 @@ update_old_flags (CamelFolderSummary *summary, CamelVeeMessageInfo *vinfo)
 }
 
 static void
-folder_changed_change_uid	(CamelFolder *sub, 
-				 const gchar *uid, 
-				 const gchar hash[8], 
-				 CamelVeeFolder *vf, 
-				 gboolean use_db, 
+folder_changed_change_uid	(CamelFolder *sub,
+				 const gchar *uid,
+				 const gchar hash[8],
+				 CamelVeeFolder *vf,
+				 gboolean use_db,
 				 GSList **m_removed_l,
 				 GSList **unm_removed_l)
 {
@@ -314,7 +314,7 @@ folder_changed_change_uid	(CamelFolder *sub,
 		} else {
 			if (vinfo) {
 				folder_changed_remove_uid (sub, uid, hash, FALSE, vf, use_db, m_removed_l, unm_removed_l);
-				camel_message_info_free ((CamelMessageInfo *)vinfo);
+				camel_message_info_free ((CamelMessageInfo *) vinfo);
 			}
 			if (uinfo)
 				camel_message_info_free ((CamelMessageInfo *) uinfo);
@@ -322,22 +322,21 @@ folder_changed_change_uid	(CamelFolder *sub,
 	}
 }
 
-
 static void
 vfolder_add_remove_transaction	(CamelStore *parent_store, const gchar *full_name, GSList **uids, gboolean add, GError **error)
 {
 	GSList *l;
 
 	for (l = *uids; l != NULL; l = g_slist_next (l)) {
-		if (add)	
+		if (add)
 			 camel_db_add_to_vfolder_transaction	(parent_store->cdb_w, full_name,
-				                                (const gchar *) l->data, error);
+								(const gchar *) l->data, error);
 		else
-			camel_db_delete_uid_from_vfolder_transaction 	
-								(parent_store->cdb_w, full_name, 
+			camel_db_delete_uid_from_vfolder_transaction
+								(parent_store->cdb_w, full_name,
 								 (const gchar *) l->data, error);
 	}
-	
+
 	g_slist_foreach (*uids, (GFunc) camel_pstring_free, NULL);
 	g_slist_free (*uids);
 	*uids = NULL;
@@ -572,21 +571,21 @@ folder_changed_change (CamelSession *session,
 
 		parent_store = camel_folder_get_parent_store (folder);
 		full_name = camel_folder_get_full_name (folder);
-		
+
 		if (folder_unmatched)
 			unm_full_name = camel_folder_get_full_name (CAMEL_FOLDER (folder_unmatched));
-		
+
 		camel_db_begin_transaction (parent_store->cdb_w, NULL);
-	
-		if (m_added_l)	
+
+		if (m_added_l)
 			vfolder_add_remove_transaction (parent_store, full_name, &m_added_l, TRUE, NULL);
 		if (m_removed_l)
 			vfolder_add_remove_transaction (parent_store, full_name, &m_removed_l, FALSE, NULL);
-		if (unm_added_l)	
+		if (unm_added_l)
 			vfolder_add_remove_transaction (parent_store, unm_full_name, &unm_added_l, TRUE, NULL);
 		if (unm_removed_l)
 			vfolder_add_remove_transaction (parent_store, unm_full_name, &unm_removed_l, FALSE, NULL);
-		
+
 		camel_db_end_transaction (parent_store->cdb_w, NULL);
 	}
 
@@ -727,7 +726,7 @@ unmatched_check_uid (gchar *uidin, gpointer value, struct _update_data *u)
 		CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *) camel_folder_summary_uid (((CamelFolder *) u->folder_unmatched)->summary, uid);
 		if (mi) {
 			camel_folder_summary_update_counts_by_flags (CAMEL_FOLDER (u->folder_unmatched)->summary, mi->old_flags, TRUE);
-			
+
 			if (u->message_uids != NULL)
 				g_queue_push_tail (u->message_uids, g_strdup (uid));
 
@@ -985,7 +984,7 @@ vee_folder_dispose (GObject *object)
 			folder = CAMEL_FOLDER (vf);
 			parent_store = camel_folder_get_parent_store (folder);
 			record = summary_header_to_db (folder->summary, NULL);
-			
+
 			camel_db_begin_transaction (parent_store->cdb_w, NULL);
 			camel_db_write_folder_info_record (parent_store->cdb_w, record, NULL);
 			camel_db_end_transaction (parent_store->cdb_w, NULL);
@@ -1885,10 +1884,10 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
 				CamelStore *parent_store;
 				const gchar *full_name;
 				gchar *uid;
-				
+
 				full_name = camel_folder_get_full_name (CAMEL_FOLDER (u.folder_unmatched));
 				parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (u.folder_unmatched));
-				
+
 				camel_db_begin_transaction (parent_store->cdb_w, NULL);
 
 				while ((uid = g_queue_pop_head (u.message_uids)) != NULL) {

@@ -41,7 +41,6 @@
 #include <libedata-cal/e-cal-backend-sexp.h>
 #include <libebook/e-book.h>
 
-
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 
 G_DEFINE_TYPE (ECalBackendContacts, e_cal_backend_contacts, E_TYPE_CAL_BACKEND_SYNC)
@@ -872,7 +871,7 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend, EDataCal *cal, GCan
 }
 
 static void
-e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, 
+e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
 				      const GSList *users, time_t start, time_t end,
 				      GSList **freebusy, GError **perror)
 {

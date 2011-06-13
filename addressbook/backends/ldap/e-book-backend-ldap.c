@@ -2788,7 +2788,7 @@ contact_list_uids_handler (LDAPOp *op, LDAPMessage *res)
 	else {
 		g_warning ("unhandled search result type %d returned", msg_type);
 		e_data_book_respond_get_contact_list_uids (op->book, op->opid,
-						           e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+							   e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
 							      "%s: Unhandled search result type %d returned", G_STRFUNC, msg_type),
 							   NULL);
 		ldap_op_finished (op);

@@ -61,7 +61,7 @@ struct _EBookClientViewClass {
 GType			e_book_client_view_get_type		(void);
 struct _EBookClient *	e_book_client_view_get_client		(EBookClientView *view);
 gboolean		e_book_client_view_is_running		(EBookClientView *view);
-void			e_book_client_view_set_fields_of_interest(EBookClientView *view, const GSList *fields_of_interest, GError **error);
+void			e_book_client_view_set_fields_of_interest (EBookClientView *view, const GSList *fields_of_interest, GError **error);
 void			e_book_client_view_start		(EBookClientView *view, GError **error);
 void			e_book_client_view_stop			(EBookClientView *view, GError **error);
 

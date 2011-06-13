@@ -200,7 +200,7 @@ operation_thread (gpointer data, gpointer user_data)
 			}
 
 			path = construct_bookview_path ();
-			
+
 			book_view = e_data_book_view_new (op->book, op->d.query, card_sexp);
 			e_data_book_view_register_gdbus_object (book_view, e_gdbus_book_stub_get_connection (op->book->priv->gdbus_object), path, &error);
 
@@ -449,7 +449,7 @@ data_book_return_error (GDBusMethodInvocation *invocation, const GError *perror,
 }
 
 /* takes a list of strings and converts it to a comma-separated string of values;
-   free returned pointer with g_free() */
+   free returned pointer with g_free () */
 gchar *
 e_data_book_string_slist_to_comma_string (const GSList *strings)
 {

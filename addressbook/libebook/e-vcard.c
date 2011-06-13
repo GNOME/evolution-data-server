@@ -1095,7 +1095,6 @@ e_vcard_attribute_get_type (void)
 	return type_id__volatile;
 }
 
-
 /**
  * e_vcard_remove_attributes:
  * @evc: vcard object
@@ -1466,7 +1465,6 @@ e_vcard_attribute_remove_params (EVCardAttribute *attr)
 	attr->encoding_set = FALSE;
 	attr->encoding = EVC_ENCODING_RAW;
 }
-
 
 GType
 e_vcard_attribute_param_get_type (void)

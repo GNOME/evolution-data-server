@@ -100,7 +100,7 @@ gboolean	e_book_backend_is_opening	(EBookBackend *backend);
 gboolean	e_book_backend_is_readonly	(EBookBackend *backend);
 gboolean	e_book_backend_is_removed	(EBookBackend *backend);
 void		e_book_backend_set_online	(EBookBackend *backend, gboolean is_online);
-void		e_book_backend_authenticate_user(EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials);
+void		e_book_backend_authenticate_user (EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials);
 
 void		e_book_backend_get_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name);
 void		e_book_backend_set_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value);
@@ -113,7 +113,7 @@ void		e_book_backend_remove_contacts	(EBookBackend *backend, EDataBook *book, gu
 void		e_book_backend_modify_contact	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard);
 void		e_book_backend_get_contact	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *id);
 void		e_book_backend_get_contact_list	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
-void		e_book_backend_get_contact_list_uids(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
+void		e_book_backend_get_contact_list_uids (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
 
 void		e_book_backend_start_book_view	(EBookBackend *backend, EDataBookView *view);
 void		e_book_backend_stop_book_view	(EBookBackend *backend, EDataBookView *view);

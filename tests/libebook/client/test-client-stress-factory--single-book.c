@@ -48,7 +48,7 @@ main (gint argc, gchar **argv)
 		g_object_unref (book_client);
 		g_free (uri);
 		return 1;
-	} else 	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
+	} else	if (!e_client_remove_sync (E_CLIENT (book_client), NULL, &error)) {
 		report_error ("client remove sync", &error);
 		g_object_unref (book_client);
 		g_free (uri);

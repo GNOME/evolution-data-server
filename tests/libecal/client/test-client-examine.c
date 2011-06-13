@@ -81,7 +81,6 @@ print_each_property (gpointer prop_name, gpointer prop_value, gpointer user_data
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
 		GSList *values = e_client_util_parse_comma_strings (prop_value), *v;
 
-		
 		for (v = values; v; v = v->next) {
 			if (v != values)
 				g_print (", ");
@@ -335,7 +334,7 @@ client_opened_async (GObject *source_object, GAsyncResult *result, gpointer asyn
 	evals->async_data = async_data;
 	evals->todo_prop_names = get_known_prop_names ();
 	evals->retrieved_props = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
-	
+
 	e_cal_client_get_default_object (cal_client, NULL, client_got_default_object_async, evals);
 }
 

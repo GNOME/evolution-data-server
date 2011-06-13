@@ -308,7 +308,7 @@ notify_remove (EDataCalView *view, ECalComponentId *id)
 	EDataCalViewPrivate *priv = view->priv;
 	gchar *ids;
 	gchar *uid, *rid;
-	size_t uid_len, rid_len;
+	gsize uid_len, rid_len;
 
 	send_pending_adds (view);
 	send_pending_changes (view);

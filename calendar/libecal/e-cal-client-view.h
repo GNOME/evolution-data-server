@@ -59,7 +59,7 @@ struct _ECalClientViewClass {
 GType			e_cal_client_view_get_type		(void);
 struct _ECalClient *	e_cal_client_view_get_client		(ECalClientView *view);
 gboolean		e_cal_client_view_is_running		(ECalClientView *view);
-void			e_cal_client_view_set_fields_of_interest(ECalClientView *view, const GSList *fields_of_interest, GError **error);
+void			e_cal_client_view_set_fields_of_interest (ECalClientView *view, const GSList *fields_of_interest, GError **error);
 void			e_cal_client_view_start			(ECalClientView *view, GError **error);
 void			e_cal_client_view_stop			(ECalClientView *view, GError **error);
 

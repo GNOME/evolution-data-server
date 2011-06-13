@@ -69,7 +69,7 @@ e_operation_pool_free (EOperationPool *pool)
 }
 
 /* Reserves new operation ID, which is returned. This operation ID may
-   be released by e_operation_pool_release_opid() when the operation
+   be released by e_operation_pool_release_opid () when the operation
    is finished.
 */
 guint32
@@ -115,7 +115,7 @@ e_operation_pool_release_opid (EOperationPool *pool, guint32 opid)
 }
 
 /* Pushes operation to be processed. 'opdata' is passed to the function
-   provided in e_operation_pool_new().
+   provided in e_operation_pool_new ().
 */
 void
 e_operation_pool_push (EOperationPool *pool, gpointer opdata)

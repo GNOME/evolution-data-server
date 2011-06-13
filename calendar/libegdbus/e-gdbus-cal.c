@@ -880,7 +880,7 @@ e_gdbus_cal_call_close (GDBusProxy *proxy, GCancellable *cancellable, GAsyncRead
 {
 	e_gdbus_proxy_method_call_void ("close", proxy, cancellable, callback, user_data);
 }
-	
+
 gboolean
 e_gdbus_cal_call_close_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
 {

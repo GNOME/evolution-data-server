@@ -486,7 +486,7 @@ void
 e_book_backend_remove_contacts (EBookBackend *backend,
 				EDataBook    *book,
 				guint32       opid,
-			        GCancellable *cancellable,
+				GCancellable *cancellable,
 				const GSList *id_list)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));

@@ -87,7 +87,7 @@ test_sync (icalcomponent *icalcomp)
 
 	if (res) {
 		GSList *ecalcomps = NULL;
-	
+
 		if (!e_cal_client_get_objects_for_uid_sync (cal_client, uid, &ecalcomps, NULL, &error)) {
 			report_error ("get objects for uid sync", &error);
 			res = FALSE;

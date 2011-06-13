@@ -1569,7 +1569,7 @@ e_book_client_get_contact (EBookClient *client, const gchar *uid, GCancellable *
 
 	safe_uid = e_util_utf8_make_valid (uid);
 	g_return_if_fail (safe_uid != NULL);
-	
+
 	e_client_proxy_call_string (E_CLIENT (client), safe_uid, cancellable, callback, user_data, e_book_client_get_contact,
 			e_gdbus_book_call_get_contact,
 			NULL, NULL, e_gdbus_book_call_get_contact_finish, NULL, NULL);

@@ -47,7 +47,6 @@
 #define WRITER_LOCK(cdb) g_static_rw_lock_writer_lock (&cdb->priv->rwlock)
 #define WRITER_UNLOCK(cdb) g_static_rw_lock_writer_unlock (&cdb->priv->rwlock)
 
-
 static sqlite3_vfs *old_vfs = NULL;
 static GThreadPool *sync_pool = NULL;
 
@@ -366,7 +365,7 @@ struct _CamelDBPrivate {
 static gint
 cdb_sql_exec (sqlite3 *db,
               const gchar *stmt,
-	      gint (*callback)(void*,gint,gchar**,gchar**),
+	      gint (*callback)(gpointer ,gint,gchar **,gchar **),
 	      gpointer data,
               GError **error)
 {
@@ -579,15 +578,14 @@ camel_db_command (CamelDB *cdb,
 
 	if (!cdb)
 		return TRUE;
-	
+
 	WRITER_LOCK (cdb);
 
 	START (stmt);
 	ret = cdb_sql_exec (cdb->db, stmt, NULL, NULL, error);
 	END;
-	
-	WRITER_UNLOCK (cdb);
 
+	WRITER_UNLOCK (cdb);
 
 	return ret;
 }
@@ -627,7 +625,7 @@ camel_db_end_transaction (CamelDB *cdb,
 
 	ret = cdb_sql_exec (cdb->db, "COMMIT", NULL, NULL, error);
 	cdb->priv->transaction_is_on = FALSE;
-	
+
 	ENDTS;
 	WRITER_UNLOCK (cdb);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
@@ -738,9 +736,8 @@ camel_db_count_message_info (CamelDB *cdb,
 {
 	gint ret = -1;
 
-
 	READER_LOCK (cdb);
-	
+
 	START (query);
 	ret = cdb_sql_exec (cdb->db, query, count_cb, count, error);
 	END;
@@ -1541,7 +1538,7 @@ read_version_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
 {
 	gint *version = (gint *) ref;
 
-	if (cols [0])
+	if (cols[0])
 		*version = strtoul (cols [0], NULL, 10);
 
 	return 0;
@@ -1587,7 +1584,7 @@ camel_db_prepare_message_info_table (CamelDB *cdb,
 	current_version = camel_db_get_folder_version (cdb, folder_name, &err);
 
 	camel_db_begin_transaction (cdb, &err);
-	
+
 	/* Migration stage one: storing the old data if necessary */
 	ret = camel_db_migrate_folder_prepare (cdb, folder_name, current_version, &err);
 	if (err)
@@ -1602,13 +1599,13 @@ camel_db_prepare_message_info_table (CamelDB *cdb,
 	ret = camel_db_write_folder_version (cdb, folder_name, current_version, &err);
 	if (err)
 		goto exit;
-	
+
 	camel_db_end_transaction (cdb, &err);
 
 exit:
 	if (err && cdb->priv->transaction_is_on)
 		camel_db_abort_transaction (cdb, NULL);
-	
+
 	if (err)
 		g_propagate_error (error, err);
 

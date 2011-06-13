@@ -61,7 +61,7 @@ G_DEFINE_TYPE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
 static GHashTable *db_connections = NULL;
 static GStaticMutex dbcon_lock = G_STATIC_MUTEX_INIT;
 
-static int
+static gint
 store_data_to_vcard (gpointer ref, gint ncol, gchar **cols, gchar **name);
 
 static GQuark
@@ -127,12 +127,11 @@ e_book_backend_sqlitedb_class_init (EBookBackendSqliteDBClass *class)
 static void
 e_book_backend_sqlitedb_init (EBookBackendSqliteDB *ebsdb)
 {
-	ebsdb->priv = g_new0 (EBookBackendSqliteDBPrivate, 1) ;
+	ebsdb->priv = g_new0 (EBookBackendSqliteDBPrivate, 1);
 
 	ebsdb->priv->store_vcard = TRUE;
 	g_static_rw_lock_init (&ebsdb->priv->rwlock);
 }
-
 
 static void
 e_book_sqlitedb_match_func (sqlite3_context *ctx, gint nArgs, sqlite3_value **values)
@@ -186,7 +185,7 @@ e_book_sqlitedb_match_func (sqlite3_context *ctx, gint nArgs, sqlite3_value **va
 static gint
 book_backend_sql_exec	(sqlite3 *db,
 			 const gchar *stmt,
-			 gint (*callback)(void*,gint,gchar**,gchar**),
+			 gint (*callback)(gpointer ,gint,gchar **,gchar **),
 			 gpointer data,
 			 GError **error)
 {
@@ -263,7 +262,6 @@ create_folders_table	(EBookBackendSqliteDB *ebsdb,
 	if (!err)
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL , &err);
 
-
 	/* Create a child table to store key/value pairs for a folder */
 	if (!err) {
 		stmt =	"CREATE TABLE IF NOT EXISTS keys"
@@ -285,7 +283,6 @@ create_folders_table	(EBookBackendSqliteDB *ebsdb,
 
 	return;
 }
-
 
 static gint
 folder_found_cb (gpointer ref, gint col, gchar **cols, gchar **name)
@@ -333,7 +330,7 @@ add_folder_into_db	(EBookBackendSqliteDB *ebsdb,
 
 	if (!err) {
 		stmt = sqlite3_mprintf ("INSERT OR REPLACE INTO folders VALUES ( %Q, %Q, %Q, %d, %d, %d ) ",
-		                        folderid, folder_name, NULL, 0, 0, FOLDER_VERSION);
+					folderid, folder_name, NULL, 0, 0, FOLDER_VERSION);
 
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 
@@ -348,7 +345,6 @@ add_folder_into_db	(EBookBackendSqliteDB *ebsdb,
 
 	return;
 }
-
 
 /* The column names match the fields used in book-backend-sexp */
 static gint
@@ -375,7 +371,6 @@ create_contacts_table	(EBookBackendSqliteDB *ebsdb,
 	WRITER_LOCK (ebsdb);
 	ret = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL , &err);
 	sqlite3_free (stmt);
-
 
 	/* Create indexes on full_name and email_1 as autocompletion queries would mainly
 	   rely on this. Assuming that the frequency of matching on these would be higher than
@@ -633,7 +628,7 @@ e_book_backend_sqlitedb_add_contacts	(EBookBackendSqliteDB *ebsdb,
 		EContact *contact = (EContact *) l->data;
 
 		stmt = insert_stmt_from_contact (contact, partial_content, folderid,
-		 				 priv->store_vcard);
+						 priv->store_vcard);
 		book_backend_sql_exec (priv->db, stmt, NULL, NULL, &err);
 
 		sqlite3_free (stmt);
@@ -656,7 +651,7 @@ e_book_backend_sqlitedb_remove_contact	(EBookBackendSqliteDB *ebsdb,
 					 GError **error)
 {
 	GSList l;
-	l.data = (char*)uid; /* Won't modify it, I promise :) */
+	l.data = (gchar *) uid; /* Won't modify it, I promise :) */
 	l.next = NULL;
 	return e_book_backend_sqlitedb_remove_contacts (ebsdb, folderid, &l,
 							error);
@@ -723,7 +718,7 @@ contact_found_cb (gpointer ref, gint col, gchar **cols, gchar **name)
 	struct _contact_info *cinfo = ref;
 
 	cinfo->exists = TRUE;
-	cinfo->partial_content = cols [0] ? strtoul (cols [0], NULL, 10) : 0;
+	cinfo->partial_content = cols[0] ? strtoul (cols[0], NULL, 10) : 0;
 
 	return 0;
 }
@@ -763,7 +758,7 @@ get_vcard_cb (gpointer ref, gint col, gchar **cols, gchar **name)
 {
 	gchar **vcard_str = ref;
 
-	if (cols [0])
+	if (cols[0])
 		*vcard_str = g_strdup (cols [0]);
 
 	return 0;
@@ -773,13 +768,13 @@ EContact *
 e_book_backend_sqlitedb_get_contact	(EBookBackendSqliteDB *ebsdb,
 					 const gchar *folderid,
 					 const gchar *uid,
-					 GError **error) 
+					 GError **error)
 {
 	GError *err = NULL;
 	EContact *contact = NULL;
 	gchar *vcard = e_book_backend_sqlitedb_get_vcard_string (ebsdb, folderid, uid, &err);
 	if (!err) {
-		contact = e_contact_new_from_vcard(vcard);
+		contact = e_contact_new_from_vcard (vcard);
 		g_free (vcard);
 	} else
 		g_propagate_error (error, err);
@@ -800,7 +795,7 @@ e_book_backend_sqlitedb_get_vcard_string	(EBookBackendSqliteDB *ebsdb,
 
 	if (!ebsdb->priv->store_vcard) {
 		GSList *vcards = NULL;
-		
+
 		stmt = sqlite3_mprintf ("SELECT uid, nickname, full_name, given_name, family_name, file_as, email_1, email_2, " 
 					"email_3, is_list, list_show_addresses, wants_html FROM %Q WHERE uid = %Q", folderid, uid);
 		book_backend_sql_exec (ebsdb->priv->db, stmt, store_data_to_vcard, &vcards, error);
@@ -810,7 +805,7 @@ e_book_backend_sqlitedb_get_vcard_string	(EBookBackendSqliteDB *ebsdb,
 			EbSdbSearchData *s_data = (EbSdbSearchData *) vcards->data;
 
 			vcard_str = s_data->vcard;
-			
+
 			g_free (s_data->uid);
 			g_free (s_data->bdata);
 			g_free (s_data);
@@ -881,7 +876,7 @@ book_backend_sqlitedb_is_summary_query (const gchar *query)
 	for (i = 0; i < G_N_ELEMENTS (check_symbols); i++) {
 		if (check_symbols[i].type == 1) {
 			e_sexp_add_ifunction (sexp, 0, check_symbols[i].name,
-					     (ESExpIFunc *)check_symbols[i].func, NULL);
+					     (ESExpIFunc *) check_symbols[i].func, NULL);
 		} else {
 			e_sexp_add_function (sexp, 0, check_symbols[i].name,
 					    check_symbols[i].func, NULL);
@@ -932,7 +927,6 @@ func_or (ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
 	return r;
 }
 
-
 typedef enum {
 	MATCH_CONTAINS,
 	MATCH_IS,
@@ -953,7 +947,7 @@ convert_match_exp (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpoi
 		/* only a subset of headers are supported .. */
 		field = argv[0]->value.string;
 
-		if (argv[1]->type == ESEXP_RES_STRING && argv[1]->value.string [0] != 0) {
+		if (argv[1]->type == ESEXP_RES_STRING && argv[1]->value.string[0] != 0) {
 			gchar *value=NULL;
 
 			if (match == MATCH_CONTAINS) {
@@ -1042,7 +1036,7 @@ static struct {
 	{ "endswith", func_endswith, 0 },
 };
 
-static char *
+static gchar *
 sexp_to_sql_query (const gchar *query)
 {
 	ESExp *sexp;
@@ -1083,14 +1077,14 @@ addto_vcard_list_cb (gpointer ref, gint col, gchar **cols, gchar **name)
 	GSList **vcard_data = ref;
 	EbSdbSearchData *s_data = g_new0 (EbSdbSearchData, 1);
 
-	if (cols [0])
-		s_data->uid = g_strdup (cols [0]);
+	if (cols[0])
+		s_data->uid = g_strdup (cols[0]);
 
-	if (cols [1])
-		s_data->vcard = g_strdup (cols [1]);
-	
-	if (cols [2])
-		s_data->bdata = g_strdup (cols [1]);
+	if (cols[1])
+		s_data->vcard = g_strdup (cols[1]);
+
+	if (cols[2])
+		s_data->bdata = g_strdup (cols[1]);
 
 	*vcard_data = g_slist_prepend (*vcard_data, s_data);
 
@@ -1102,13 +1096,13 @@ addto_slist_cb (gpointer ref, gint col, gchar **cols, gchar **name)
 {
 	GSList **uids = ref;
 
-	if (cols [0])
+	if (cols[0])
 		*uids = g_slist_prepend (*uids, g_strdup (cols [0]));
 
 	return 0;
 }
 
-static int
+static gint
 store_data_to_vcard (gpointer ref, gint ncol, gchar **cols, gchar **name)
 {
 	GSList **vcard_data = ref;
@@ -1124,25 +1118,25 @@ store_data_to_vcard (gpointer ref, gint ncol, gchar **cols, gchar **name)
 			continue;
 
 		if (!strcmp (name [i], "uid")) {
-			e_contact_set (contact, E_CONTACT_UID, cols [i]);
-			
-			search_data->uid = g_strdup (cols [i]);
+			e_contact_set (contact, E_CONTACT_UID, cols[i]);
+
+			search_data->uid = g_strdup (cols[i]);
 		} else if (!strcmp (name [i], "nickname"))
-			e_contact_set (contact, E_CONTACT_NICKNAME, cols [i]);
+			e_contact_set (contact, E_CONTACT_NICKNAME, cols[i]);
 		else if (!strcmp (name [i], "full_name"))
-			e_contact_set (contact, E_CONTACT_FULL_NAME, cols [i]);
+			e_contact_set (contact, E_CONTACT_FULL_NAME, cols[i]);
 		else if (!strcmp (name [i], "given_name"))
-			e_contact_set (contact, E_CONTACT_GIVEN_NAME, cols [i]);
+			e_contact_set (contact, E_CONTACT_GIVEN_NAME, cols[i]);
 		else if (!strcmp (name [i], "family_name"))
-			e_contact_set (contact, E_CONTACT_FAMILY_NAME, cols [i]);
+			e_contact_set (contact, E_CONTACT_FAMILY_NAME, cols[i]);
 		else if (!strcmp (name [i], "file_as"))
-			e_contact_set (contact, E_CONTACT_FILE_AS, cols [i]);
+			e_contact_set (contact, E_CONTACT_FILE_AS, cols[i]);
 		else if (!strcmp (name [i], "email_1"))
-			e_contact_set (contact, E_CONTACT_EMAIL_1, cols [i]);
+			e_contact_set (contact, E_CONTACT_EMAIL_1, cols[i]);
 		else if (!strcmp (name [i], "email_2"))
-			e_contact_set (contact, E_CONTACT_EMAIL_2, cols [i]);
+			e_contact_set (contact, E_CONTACT_EMAIL_2, cols[i]);
 		else if (!strcmp (name [i], "email_3"))
-			e_contact_set (contact, E_CONTACT_EMAIL_3, cols [i]);
+			e_contact_set (contact, E_CONTACT_EMAIL_3, cols[i]);
 		else if (!strcmp (name [i], "is_list")) {
 			gint val = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 			e_contact_set (contact, E_CONTACT_IS_LIST, GINT_TO_POINTER (val));
@@ -1153,9 +1147,9 @@ store_data_to_vcard (gpointer ref, gint ncol, gchar **cols, gchar **name)
 			gint val = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 			e_contact_set (contact, E_CONTACT_WANTS_HTML, GINT_TO_POINTER (val));
 		} else if (!strcmp (name [i], "bdata")) {
-			search_data->bdata = g_strdup (cols [i]);
+			search_data->bdata = g_strdup (cols[i]);
 		}
-		
+
 	}
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
@@ -1167,10 +1161,10 @@ store_data_to_vcard (gpointer ref, gint ncol, gchar **cols, gchar **name)
 }
 
 static GSList *
-book_backend_sqlitedb_search_query	(EBookBackendSqliteDB *ebsdb, 
-			 		 const gchar *sql, 
-					 const gchar *folderid, 
-					 GSList *fields_of_interest, 
+book_backend_sqlitedb_search_query	(EBookBackendSqliteDB *ebsdb,
+					 const gchar *sql,
+					 const gchar *folderid,
+					 GSList *fields_of_interest,
 					 GError **error)
 {
 	GError *err = NULL;
@@ -1223,7 +1217,7 @@ book_backend_sqlitedb_search_full (EBookBackendSqliteDB *ebsdb, const gchar *sex
 
 		for (l = all; l != NULL; l = g_slist_next (l)) {
 			EbSdbSearchData *s_data = (EbSdbSearchData *) l->data;
-			
+
 			if (e_book_backend_sexp_match_vcard (bsexp, s_data->vcard)) {
 				if (!return_uids)
 					r_list = g_slist_prepend (r_list, s_data);
@@ -1285,20 +1279,20 @@ e_book_backend_sqlitedb_search	(EBookBackendSqliteDB *ebsdb,
 	return search_contacts;
 }
 
-GSList *		
+GSList *
 e_book_backend_sqlitedb_search_uids	(EBookBackendSqliteDB *ebsdb,
 					 const gchar *folderid,
 					 const gchar *sexp,
 					 GError **error)
 {
 	GSList *uids = NULL;
-	
+
 	if (book_backend_sqlitedb_is_summary_query (sexp)) {
 		gchar *stmt;
 		gchar *sql_query = sexp_to_sql_query (sexp);
 
 		READER_LOCK (ebsdb);
-		
+
 		stmt = sqlite3_mprintf ("SELECT uid FROM %Q WHERE %s", folderid, sql_query);
 		book_backend_sql_exec (ebsdb->priv->db, stmt, addto_slist_cb, &uids, error);
 		sqlite3_free (stmt);
@@ -1345,7 +1339,6 @@ e_book_backend_sqlitedb_get_is_populated	(EBookBackendSqliteDB *ebsdb,
 	return ret;
 
 }
-
 
 gboolean
 e_book_backend_sqlitedb_set_is_populated	(EBookBackendSqliteDB *ebsdb,
@@ -1432,7 +1425,7 @@ e_book_backend_sqlitedb_set_has_partial_content	(EBookBackendSqliteDB *ebsdb,
 	return !err;
 }
 
-static int
+static gint
 get_string_cb (gpointer ref, gint col, gchar **cols, gchar **name)
 {
 	gchar **ret = ref;
@@ -1442,8 +1435,7 @@ get_string_cb (gpointer ref, gint col, gchar **cols, gchar **name)
 	return 0;
 }
 
-
-gchar *                
+gchar *
 e_book_backend_sqlitedb_get_contact_bdata	(EBookBackendSqliteDB *ebsdb,
 						 const gchar *folderid,
 						 const gchar *uid,
@@ -1462,7 +1454,7 @@ e_book_backend_sqlitedb_get_contact_bdata	(EBookBackendSqliteDB *ebsdb,
 	return ret;
 }
 
-gboolean	
+gboolean
 e_book_backend_sqlitedb_set_contact_bdata	(EBookBackendSqliteDB *ebsdb,
 						 const gchar *folderid,
 						 const gchar *uid,
@@ -1647,7 +1639,7 @@ e_book_backend_sqlitedb_delete_addressbook	(EBookBackendSqliteDB *ebsdb,
 	return !err;
 }
 
-void	
+void
 e_book_backend_sqlitedb_search_data_free	(EbSdbSearchData *s_data)
 {
 	if (s_data) {
@@ -1658,7 +1650,7 @@ e_book_backend_sqlitedb_search_data_free	(EbSdbSearchData *s_data)
 	}
 }
 
-gboolean       
+gboolean
 e_book_backend_sqlitedb_remove          (EBookBackendSqliteDB *ebsdb,
                                          GError **error)
 {
@@ -1669,7 +1661,7 @@ e_book_backend_sqlitedb_remove          (EBookBackendSqliteDB *ebsdb,
 	priv = ebsdb->priv;
 
 	WRITER_LOCK (ebsdb);
-	
+
 	sqlite3_close (priv->db);
 	filename = g_build_filename (priv->path, DB_FILENAME, NULL);
 	ret = g_unlink (filename);

@@ -71,12 +71,12 @@ void		e_credentials_set	(      ECredentials *credentials, const gchar *key, cons
 gchar *		e_credentials_get	(const ECredentials *credentials, const gchar *key);
 const gchar *	e_credentials_peek	(      ECredentials *credentials, const gchar *key);
 gboolean	e_credentials_equal	(const ECredentials *credentials1, const ECredentials *credentials2);
-gboolean	e_credentials_equal_keys(const ECredentials *credentials1, const ECredentials *credentials2, const gchar *key1, ...) G_GNUC_NULL_TERMINATED;
+gboolean	e_credentials_equal_keys (const ECredentials *credentials1, const ECredentials *credentials2, const gchar *key1, ...) G_GNUC_NULL_TERMINATED;
 gboolean	e_credentials_has_key	(const ECredentials *credentials, const gchar *key);
 guint		e_credentials_keys_size	(const ECredentials *credentials);
 GSList *	e_credentials_list_keys	(const ECredentials *credentials);
 void		e_credentials_clear	(      ECredentials *credentials);
-void		e_credentials_clear_peek(      ECredentials *credentials);
+void		e_credentials_clear_peek (      ECredentials *credentials);
 
 void		e_credentials_util_safe_free_string (gchar *str);
 gchar *		e_credentials_util_prompt_flags_to_string (guint prompt_flags); /* bit-or of ECredentialsPromptFlags */

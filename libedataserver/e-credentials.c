@@ -62,7 +62,7 @@ e_credentials_new (void)
 }
 
 /* Expects @keys as NULL terminate list of strings "key:encoded_value".
-   The same can be returned from e_credentials_to_strv().
+   The same can be returned from e_credentials_to_strv ().
 */
 ECredentials *
 e_credentials_new_strv (const gchar * const *keys)
@@ -163,8 +163,8 @@ add_to_array_cb (gpointer key, gpointer value, gpointer ptr_array)
 }
 
 /* Returns NULL-terminated array of strings with keys and encoded values;
-   To read them back pass this pointer to e_credentials_new(). As it returns
-   newly allocated string then this should be freed with g_strfreev()
+   To read them back pass this pointer to e_credentials_new (). As it returns
+   newly allocated string then this should be freed with g_strfreev ()
    when no longer needed.
 */
 gchar **
@@ -286,7 +286,7 @@ e_credentials_get (const ECredentials *credentials, const gchar *key)
 
 /* peeks value for a key, in a clear form. The value is valid until free
    of the @credentials structure or until the key value is rewritten
-   by e_credentials_set()
+   by e_credentials_set ()
 */
 const gchar *
 e_credentials_peek (ECredentials *credentials, const gchar *key)
@@ -386,7 +386,7 @@ e_credentials_equal_keys (const ECredentials *credentials1, const ECredentials *
 	va_end (va);
 
 	return equal;
-}	
+}
 
 /**
  * Returns whether @credentials contains @key.
@@ -427,7 +427,7 @@ gather_key_names (gpointer key, gpointer value, gpointer pslist)
 
 /* Returns newly allocated list of key names stored in the credentials strucutre;
    strings are internal credentials values, only the list is newly allocated.
-   Free the list with g_slist_free() when no longer needed.
+   Free the list with g_slist_free () when no longer needed.
 */
 GSList *
 e_credentials_list_keys	(const ECredentials *credentials)
@@ -495,7 +495,7 @@ static struct _PromptFlags {
 };
 
 /* Returned pointer can be passed to e_credentials_util_string_to prompt_flags()
-   to decode it back to flags. Free returned pointer with g_free().
+   to decode it back to flags. Free returned pointer with g_free ().
 */
 gchar *
 e_credentials_util_prompt_flags_to_string (guint prompt_flags)

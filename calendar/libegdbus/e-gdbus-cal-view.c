@@ -99,7 +99,6 @@ e_gdbus_cal_view_default_init (EGdbusCalViewIface *iface)
 	_signal_name_to_id = g_hash_table_new (g_str_hash, g_str_equal);
 	_signal_name_to_type = g_hash_table_new (g_str_hash, g_str_equal);
 
-	
 	/* GObject signals definitions for D-Bus signals: */
 	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusCalViewIface, "objects_added",	objects_added, __OBJECTS_ADDED_SIGNAL)
 	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusCalViewIface, "objects_modified",objects_modified, __OBJECTS_MODIFIED_SIGNAL)

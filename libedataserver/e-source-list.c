@@ -405,7 +405,6 @@ e_source_list_peek_groups (ESourceList *list)
 	return list->priv->groups;
 }
 
-
 /**
  * e_source_list_peek_group_by_uid:
  *

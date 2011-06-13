@@ -287,7 +287,7 @@ data_cache_expire (CamelDataCache *cdc, const gchar *path, const gchar *keep, ti
 		if (g_stat (dpath, &st) == 0
 		    && S_ISREG (st.st_mode)
 		    && (expire_all
-		        || (cdc->priv->expire_age != -1 && st.st_mtime + cdc->priv->expire_age < now)
+			|| (cdc->priv->expire_age != -1 && st.st_mtime + cdc->priv->expire_age < now)
 			|| (cdc->priv->expire_access != -1 && st.st_atime + cdc->priv->expire_access < now))) {
 			g_unlink (dpath);
 			stream = camel_object_bag_get (cdc->priv->busy_bag, dpath);

@@ -337,7 +337,6 @@ e_client_class_init (EClientClass *klass)
 		G_TYPE_NONE, 1,
 		G_TYPE_ERROR);
 
-
 	signals[BACKEND_ERROR] = g_signal_new (
 		"backend-error",
 		G_OBJECT_CLASS_TYPE (klass),
@@ -838,7 +837,7 @@ client_handle_authentication (EClient *client, const ECredentials *credentials)
 /* Processes authentication request in a new thread. Usual steps are:
    a) backend sends an auth-required signal
    b) EClient implementation calls this function
-   c) a new thread is run which emits authenticate signal by e_client_emit_authenticate()
+   c) a new thread is run which emits authenticate signal by e_client_emit_authenticate ()
    d) if anyone responds (returns true), the EClient::handle_authentication
       is called from the same extra thread with new credentials
    e) EClient implementation passes results to backend in the EClient::handle_authentication

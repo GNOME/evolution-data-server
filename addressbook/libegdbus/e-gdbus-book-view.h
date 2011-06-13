@@ -107,7 +107,7 @@ struct _EGdbusBookViewIface
 	void (*objects_added)		(EGdbusBookView *object, const gchar * const *arg_objects);
 	void (*objects_modified)	(EGdbusBookView *object, const gchar * const *arg_objects);
 	void (*objects_removed)		(EGdbusBookView *object, const gchar * const *arg_uids);
-  
+
 	void (*progress)		(EGdbusBookView *object, guint arg_percent, const gchar *arg_message);
 	void (*complete)		(EGdbusBookView *object, const gchar * const *arg_error);
 
@@ -140,7 +140,6 @@ gboolean	e_gdbus_book_view_call_set_fields_of_interest_sync	(GDBusProxy *proxy, 
 #define e_gdbus_book_view_complete_stop				e_gdbus_complete_sync_method_void
 #define e_gdbus_book_view_complete_dispose			e_gdbus_complete_sync_method_void
 #define e_gdbus_book_view_complete_set_fields_of_interest	e_gdbus_complete_sync_method_void
-
 
 /* D-Bus Signal Emission Helpers */
 void	e_gdbus_book_view_emit_objects_added	(EGdbusBookView *object, const gchar * const *arg_objects);

@@ -28,7 +28,7 @@ print_email (EContact *contact)
 	for (e = emails; e; e = e->next) {
 		g_print ("\t%s\n",  (gchar *)e->data);
 	}
-	g_list_foreach (emails, (GFunc)g_free, NULL);
+	g_list_foreach (emails, (GFunc) g_free, NULL);
 	g_list_free (emails);
 
 	g_print ("\n");
@@ -125,8 +125,8 @@ do_start (GThreadFunc func, gpointer data)
 }
 
 /* Starts new main-loop, but just before that calls 'func'.
-   Main-loop is kept running, and this function blocks, 
-   until call of stop_main_loop().
+   Main-loop is kept running, and this function blocks,
+   until call of stop_main_loop ().
 */
 void
 start_main_loop (GThreadFunc func, gpointer data)
@@ -137,8 +137,8 @@ start_main_loop (GThreadFunc func, gpointer data)
 }
 
 /* Starts new main-loop and then invokes func in a new thread.
-   Main-loop is kept running, and this function blocks, 
-   until call of stop_main_loop().
+   Main-loop is kept running, and this function blocks,
+   until call of stop_main_loop ().
 */
 void
 start_in_thread_with_main_loop (GThreadFunc func, gpointer data)
@@ -161,8 +161,8 @@ start_in_thread_with_main_loop (GThreadFunc func, gpointer data)
 }
 
 /* Starts new main-loop and then invokes func in an idle callback.
-   Main-loop is kept running, and this function blocks, 
-   until call of stop_main_loop().
+   Main-loop is kept running, and this function blocks,
+   until call of stop_main_loop ().
 */
 void
 start_in_idle_with_main_loop (GThreadFunc func, gpointer data)

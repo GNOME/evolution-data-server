@@ -257,7 +257,7 @@ e_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const gchar *zPath, sqlite3_file *pFile,
 	g_return_val_if_fail (old_vfs != NULL, -1);
 	g_return_val_if_fail (pFile != NULL, -1);
 
-	cFile = (ESqlite3File *)pFile;
+	cFile = (ESqlite3File *) pFile;
 	cFile->old_vfs_file = g_malloc0 (old_vfs->szOsFile);
 
 	res = old_vfs->xOpen (old_vfs, zPath, cFile->old_vfs_file, flags, pOutFlags);

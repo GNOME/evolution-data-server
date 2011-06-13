@@ -361,13 +361,12 @@ static gboolean imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolea
 
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
 
-
 static guint
 get_batch_fetch_count (CamelIMAPXServer *is)
 {
 	static guint count = 0;
 	const gchar *fetch_count;
-	
+
 	if (count)
 		return count;
 
@@ -375,7 +374,7 @@ get_batch_fetch_count (CamelIMAPXServer *is)
 	fetch_count = camel_url_get_param (is->url, "batch-fetch-count");
 	if (fetch_count)
 		count = strtoul (fetch_count, NULL, 10);
-	
+
 	if (count <= 0)
 		count = BATCH_FETCH_COUNT;
 
@@ -4076,7 +4075,7 @@ exception:
 
 static void
 imapx_command_fetch_new_uids_done	(CamelIMAPXServer *is,
-	                                 CamelIMAPXCommand *ic)
+					 CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
 	GArray *infos = job->u.refresh_info.infos;
@@ -4119,10 +4118,10 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
 		imapx_uidset_init (&job->u.refresh_info.uidset, get_batch_fetch_count (is), 0);
 		job->u.refresh_info.infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 		ic->pri = job->pri;
-		
+
 		if (is->descending)
 			ic->complete = imapx_command_fetch_new_uids_done;
-		else 
+		else
 			ic->complete = imapx_command_step_fetch_done;
 	} else {
 		ic = camel_imapx_command_new (

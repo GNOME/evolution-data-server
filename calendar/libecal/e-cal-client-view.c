@@ -74,7 +74,7 @@ build_object_list (const gchar * const *seq)
 	for (i = 0; seq[i]; i++) {
 		icalcomponent *comp;
 
-		comp = icalcomponent_new_from_string ((gchar *)seq[i]);
+		comp = icalcomponent_new_from_string ((gchar *) seq[i]);
 		if (!comp)
 			continue;
 

@@ -2451,7 +2451,7 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 	if (rid) {
 		/* remove recurrence */
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
-		                                  (gpointer *)&hash_rid, (gpointer *)&comp)) {
+						  (gpointer *)&hash_rid, (gpointer *)&comp)) {
 			/* Removing without parent or not modifying parent?
 			   Report removal to caller. */
 			if (old_object &&
@@ -2466,8 +2466,8 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 				   instead rely on the view detecting
 				   whether it contains the id */
 				ECalComponentId id;
-				id.uid = (gchar *)uid;
-				id.rid = (gchar *)rid;
+				id.uid = (gchar *) uid;
+				id.rid = (gchar *) rid;
 				e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbfile), &id, NULL, NULL);
 			}
 

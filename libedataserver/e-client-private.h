@@ -45,7 +45,7 @@ void		e_client_emit_backend_died	(EClient *client);
 
 ESource *	e_client_util_get_system_source	(ESourceList *source_list);
 gboolean	e_client_util_set_default	(ESourceList *source_list, ESource *source);
-ESource *	e_client_util_get_source_for_uri(ESourceList *source_list, const gchar *uri);
+ESource *	e_client_util_get_source_for_uri (ESourceList *source_list, const gchar *uri);
 
 /* protected functions simplifying sync/async calls */
 GDBusProxy *	e_client_get_dbus_proxy		(EClient *client);

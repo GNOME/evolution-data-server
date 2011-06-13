@@ -63,7 +63,6 @@ print_each_property (gpointer prop_name, gpointer prop_value, gpointer user_data
 	    g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS)) {
 		GSList *values = e_client_util_parse_comma_strings (prop_value), *v;
 
-		
 		for (v = values; v; v = v->next) {
 			if (v != values)
 				g_print (", ");

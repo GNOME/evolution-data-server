@@ -628,8 +628,8 @@ e_gdbus_async_op_keeper_default_init (EGdbusAsyncOpKeeperInterface *iface)
 }
 
 /* Created hash table of pending async operations. This can be freed
-   with g_hash_table_destroy() in dispose. Interface asks for this
-   ponter by call of e_gdbus_async_op_keeper_create_pending_ops().
+   with g_hash_table_destroy () in dispose. Interface asks for this
+   ponter by call of e_gdbus_async_op_keeper_create_pending_ops ().
 */
 GHashTable *
 e_gdbus_async_op_keeper_create_pending_ops (EGdbusAsyncOpKeeper *object)
@@ -641,7 +641,7 @@ e_gdbus_async_op_keeper_create_pending_ops (EGdbusAsyncOpKeeper *object)
 }
 
 /* Returns hash table of pending async operations previously created
-   by e_gdbus_async_op_keeper_create_pending_ops().
+   by e_gdbus_async_op_keeper_create_pending_ops ().
 */
 GHashTable *
 e_gdbus_async_op_keeper_get_pending_ops (EGdbusAsyncOpKeeper *object)
@@ -745,7 +745,6 @@ typedef struct _AsyncOpData
 		guint out_uint;
 	} result;
 } AsyncOpData;
-
 
 static void
 async_op_data_free (AsyncOpData *op_data)
@@ -907,7 +906,7 @@ gdbus_proxy_async_method_done (guint e_gdbus_type, gconstpointer out_value, EGdb
 		case E_GDBUS_TYPE_VOID:
 			break;
 		case E_GDBUS_TYPE_BOOLEAN:
-			op_data->result.out_boolean = * ((const gboolean *)out_value);
+			op_data->result.out_boolean = * ((const gboolean *) out_value);
 			break;
 		case E_GDBUS_TYPE_STRING:
 			op_data->result.out_string = g_strdup ((const gchar *) out_value);
@@ -1459,7 +1458,7 @@ proxy_method_call (const gchar *method_name, guint param_type, gconstpointer par
 		g_variant_builder_unref (builder);
 	}
 
-	g_dbus_proxy_call (G_DBUS_PROXY (proxy), method_name, params, G_DBUS_CALL_FLAGS_NONE, e_data_server_util_get_dbus_call_timeout (), cancellable, callback, user_data);	
+	g_dbus_proxy_call (G_DBUS_PROXY (proxy), method_name, params, G_DBUS_CALL_FLAGS_NONE, e_data_server_util_get_dbus_call_timeout (), cancellable, callback, user_data);
 }
 
 void

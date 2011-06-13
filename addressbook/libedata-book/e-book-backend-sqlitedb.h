@@ -115,7 +115,7 @@ GSList *		e_book_backend_sqlitedb_search	(EBookBackendSqliteDB *ebsdb,
 							 const gchar *sexp,
 							 GSList *fields_of_interest,
 							 GError **error);
-GSList *		e_book_backend_sqlitedb_search_uids	
+GSList *		e_book_backend_sqlitedb_search_uids
 							(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 const gchar *sexp,
@@ -182,7 +182,7 @@ gboolean	e_book_backend_sqlitedb_delete_addressbook
 							 GError **error);
 gboolean	e_book_backend_sqlitedb_remove		(EBookBackendSqliteDB *ebsdb,
 							 GError **error);
-void		e_book_backend_sqlitedb_search_data_free	
+void		e_book_backend_sqlitedb_search_data_free
 							(EbSdbSearchData *s_data);
 
 G_END_DECLS

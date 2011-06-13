@@ -2145,12 +2145,12 @@ save_message_infos_to_db (CamelFolderSummary *s,
 		return -1;
 
 	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	
+
 	/* Push MessageInfo-es */
 	camel_db_begin_transaction (cdb, NULL);
 	g_hash_table_foreach (s->loaded_infos, save_to_db_cb, &args);
 	camel_db_end_transaction (cdb, NULL);
-	
+
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	/* FIXME[disk-summary] make sure we free the message infos that are loaded
 	 * are freed if not used anymore or should we leave that to the timer? */
@@ -2194,12 +2194,12 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 	d(printf ("\ncamel_folder_summary_save_to_db called \n"));
 	if (s->priv->need_preview && g_hash_table_size (s->priv->preview_updates)) {
 		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-		
+
 		camel_db_begin_transaction (parent_store->cdb_w, NULL);
 		g_hash_table_foreach (s->priv->preview_updates, (GHFunc) msg_save_preview, s->folder);
 		g_hash_table_remove_all (s->priv->preview_updates);
 		camel_db_end_transaction (parent_store->cdb_w, NULL);
-		
+
 		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	}
 
@@ -2224,7 +2224,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 
 		full_name = camel_folder_get_full_name (s->folder);
 		g_warning ("Fixing up a broken summary migration on %s\n", full_name);
-		
+
 		/* Begin everything again. */
 		camel_db_begin_transaction (cdb, NULL);
 		camel_db_reset_folder_version (cdb, full_name, 0, NULL);

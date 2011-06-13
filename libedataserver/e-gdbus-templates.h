@@ -464,7 +464,7 @@ enum {
 	g_hash_table_insert (_method_name_to_type, (gpointer) _dbus_sig_name_str, GUINT_TO_POINTER (E_GDBUS_TYPE_ ## _gtype | E_GDBUS_TYPE_IS_ASYNC));
 
 #define E_INIT_GDBUS_METHOD_VOID(_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)				\
-	E_INIT_GDBUS_METHOD_CALL_TMPL_VOID(_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)			\
+	E_INIT_GDBUS_METHOD_CALL_TMPL_VOID (_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)			\
 	g_hash_table_insert (_method_name_to_type, (gpointer) _dbus_sig_name_str, GUINT_TO_POINTER (E_GDBUS_TYPE_VOID));
 
 #define E_INIT_GDBUS_METHOD_BOOLEAN(_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)				\
@@ -484,7 +484,7 @@ enum {
 	g_hash_table_insert (_method_name_to_type, (gpointer) _dbus_sig_name_str, GUINT_TO_POINTER (E_GDBUS_TYPE_UINT));
 
 #define E_INIT_GDBUS_METHOD_CALL_VOID(_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)				\
-	E_INIT_GDBUS_METHOD_CALL_TMPL_VOID(_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)			\
+	E_INIT_GDBUS_METHOD_CALL_TMPL_VOID (_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)			\
 	g_hash_table_insert (_method_name_to_type, (gpointer) _dbus_sig_name_str, GUINT_TO_POINTER (E_GDBUS_TYPE_VOID | E_GDBUS_TYPE_IS_ASYNC));
 
 #define E_INIT_GDBUS_METHOD_CALL_BOOLEAN(_iface_struct, _dbus_sig_name_str, _sig_name_var, _method_sig_id)			\

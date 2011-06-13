@@ -74,7 +74,7 @@ e_gdbus_cal_factory_default_init (EGdbusCalFactoryIface *iface)
 }
 
 /* encodes source and source type into a strv usable for a wire transfer;
-   Free returned pointer with g_strfreev() */
+   Free returned pointer with g_strfreev () */
 gchar **
 e_gdbus_cal_factory_encode_get_cal (const gchar *in_source, guint in_type)
 {
@@ -91,7 +91,7 @@ e_gdbus_cal_factory_encode_get_cal (const gchar *in_source, guint in_type)
 }
 
 /* decodes source and source type from a strv recevied from a wire transfer;
-   free out_source with g_free(); returns TRUE is successful. */
+   free out_source with g_free (); returns TRUE is successful. */
 gboolean
 e_gdbus_cal_factory_decode_get_cal (const gchar * const * in_strv, gchar **out_source, guint *out_type)
 {

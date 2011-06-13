@@ -191,9 +191,9 @@ compare_photo_uri (EContact *contact, const gchar *str,
 
 	if (photo) {
 		/* Compare the photo uri with the string */
-		if ((photo->type == E_CONTACT_PHOTO_TYPE_URI) 
-		     && compare(photo->data.uri, str)) {
-			ret_val = TRUE;	
+		if ((photo->type == E_CONTACT_PHOTO_TYPE_URI)
+		     && compare (photo->data.uri, str)) {
+			ret_val = TRUE;
 		}
 		e_contact_photo_free (photo);
 	}
@@ -263,7 +263,7 @@ compare_date (EContactDate *date, const gchar *str,
 	gboolean ret_val = FALSE;
 
 	if (date_str) {
-		if (compare(date_str, str)) {
+		if (compare (date_str, str)) {
 			ret_val = TRUE;
 		}
 		g_free (date_str);
@@ -383,12 +383,12 @@ entry_compare (SearchContext *ctx, struct _ESExp *f,
 				else if (info->prop_type == PROP_TYPE_DATE) {
 					/* the special searches that match dates */
 					EContactDate *date;
-					
+
 					date = e_contact_get (ctx->contact, info->field_id);
 
 					if (date) {
 						truth = compare_date (date, argv[1]->value.string, compare);
-						e_contact_date_free (date);	
+						e_contact_date_free (date);
 					}
 				}
 
@@ -423,7 +423,7 @@ entry_compare (SearchContext *ctx, struct _ESExp *f,
 				GList *a, *attrs = e_vcard_get_attributes (E_VCARD (ctx->contact));
 				for (a = attrs; a && !truth; a = a->next) {
 					EVCardAttribute *attr = (EVCardAttribute *) a->data;
-                			if (g_ascii_strcasecmp (e_vcard_attribute_get_name (attr), propname) == 0) {
+					if (g_ascii_strcasecmp (e_vcard_attribute_get_name (attr), propname) == 0) {
 						GList *l, *values = e_vcard_attribute_get_values (attr);
 
 						for (l = values; l && !truth; l = l->next) {

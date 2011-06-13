@@ -811,7 +811,7 @@ e_book_backend_file_extract_path_from_source (ESource *source)
 		if (!g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
 			g_free (filename);
 			filename = NULL;
- 		}
+		}
 	}
 
 	if (!filename) {
