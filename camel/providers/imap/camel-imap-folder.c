@@ -46,6 +46,7 @@
 #include "camel-imap-message-cache.h"
 #include "camel-imap-private.h"
 #include "camel-imap-search.h"
+#include "camel-imap-settings.h"
 #include "camel-imap-store.h"
 #include "camel-imap-store-summary.h"
 #include "camel-imap-summary.h"
@@ -357,7 +358,6 @@ CamelFolder *
 camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 		       const gchar *folder_dir, GError **error)
 {
-	CamelImapStore *imap_store = CAMEL_IMAP_STORE (parent);
 	CamelFolder *folder;
 	CamelImapFolder *imap_folder;
 	const gchar *short_name;
@@ -415,28 +415,70 @@ camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 		CamelService *service;
 		CamelSettings *settings;
 		gboolean filter_inbox;
+		gboolean filter_junk;
+		gboolean filter_junk_inbox;
 
 		service = CAMEL_SERVICE (parent);
 		settings = camel_service_get_settings (service);
 
-		filter_inbox = camel_store_settings_get_filter_inbox (
-			CAMEL_STORE_SETTINGS (settings));
+		g_object_get (
+			settings,
+			"filter-inbox", &filter_inbox,
+			"filter-junk", &filter_junk,
+			"filter-junk-inbox", &filter_junk_inbox,
+			NULL);
 
 		if (filter_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
-		if ((imap_store->parameters & IMAP_PARAM_FILTER_JUNK))
+		if (filter_junk)
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+		if (filter_junk_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
 	} else {
-		if ((imap_store->parameters & (IMAP_PARAM_FILTER_JUNK|IMAP_PARAM_FILTER_JUNK_INBOX)) == (IMAP_PARAM_FILTER_JUNK))
+		CamelService *service;
+		CamelSettings *settings;
+		const gchar *junk_path;
+		const gchar *trash_path;
+		gboolean filter_junk;
+		gboolean folder_is_junk;
+		gboolean folder_is_trash;
+
+		service = CAMEL_SERVICE (parent);
+		settings = camel_service_get_settings (service);
+
+		junk_path = camel_imap_settings_get_real_junk_path (
+			CAMEL_IMAP_SETTINGS (settings));
+
+		/* So we can safely compare strings. */
+		if (junk_path == NULL)
+			junk_path = "";
+
+		trash_path = camel_imap_settings_get_real_trash_path (
+			CAMEL_IMAP_SETTINGS (settings));
+
+		/* So we can safely compare strings. */
+		if (trash_path == NULL)
+			trash_path = "";
+
+		filter_junk = camel_imap_settings_get_filter_junk (
+			CAMEL_IMAP_SETTINGS (settings));
+
+		if (filter_junk)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
 
-		if ((parent->flags & CAMEL_STORE_VTRASH) == 0 && imap_store->real_trash_path && g_ascii_strcasecmp (imap_store->real_trash_path, folder_name) == 0) {
-			folder->folder_flags |= CAMEL_FOLDER_IS_TRASH;
-		}
+		folder_is_trash =
+			(parent->flags & CAMEL_STORE_VTRASH) == 0 &&
+			g_ascii_strcasecmp (trash_path, folder_name) == 0;
 
-		if ((parent->flags & CAMEL_STORE_VJUNK) == 0 && imap_store->real_junk_path && g_ascii_strcasecmp (imap_store->real_junk_path, folder_name) == 0) {
+		if (folder_is_trash)
+			folder->folder_flags |= CAMEL_FOLDER_IS_TRASH;
+
+		folder_is_junk =
+			(parent->flags & CAMEL_STORE_VJUNK) == 0 &&
+		 	g_ascii_strcasecmp (junk_path, folder_name) == 0;
+
+		if (folder_is_junk)
 			folder->folder_flags |= CAMEL_FOLDER_IS_JUNK;
-		}
 	}
 
 	imap_folder->search = camel_imap_search_new (folder_dir);
@@ -1563,6 +1605,8 @@ imap_synchronize_sync (CamelFolder *folder,
                        GCancellable *cancellable,
                        GError **error)
 {
+	CamelService *service;
+	CamelSettings *settings;
 	CamelStore *parent_store;
 	CamelImapStore *store;
 	CamelImapMessageInfo *info;
@@ -1570,6 +1614,7 @@ imap_synchronize_sync (CamelFolder *folder,
 	gboolean success, is_gmail;
 	CamelFolder *real_junk = NULL;
 	CamelFolder *real_trash = NULL;
+	const gchar *folder_path;
 	GError *local_error = NULL;
 
 	GPtrArray *matches, *summary, *deleted_uids = NULL, *junked_uids = NULL;
@@ -1580,6 +1625,9 @@ imap_synchronize_sync (CamelFolder *folder,
 	store = CAMEL_IMAP_STORE (parent_store);
 	is_gmail = is_google_account (parent_store);
 
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+
 	if (folder->permanent_flags == 0 || !camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
 		if (expunge) {
 			if (!imap_expunge_sync (folder, cancellable, error))
@@ -1588,7 +1636,7 @@ imap_synchronize_sync (CamelFolder *folder,
 		return imap_sync_offline (folder, error);
 	}
 
-	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	/* write local changes first */
 	replay_offline_journal (store, imap_folder, cancellable, NULL);
@@ -1602,16 +1650,17 @@ imap_synchronize_sync (CamelFolder *folder,
 	max = summary->len;
 
 	/* deleted_uids is NULL when not using real trash */
-	if (store->real_trash_path && *store->real_trash_path) {
+	folder_path = camel_imap_settings_get_real_trash_path (
+		CAMEL_IMAP_SETTINGS (settings));
+	if (folder_path != NULL) {
 		if ((folder->folder_flags & CAMEL_FOLDER_IS_TRASH) != 0) {
 			/* syncing the trash, expunge deleted when found any */
-			real_trash = folder;
-			g_object_ref (real_trash);
+			real_trash = g_object_ref (folder);
 		} else {
 			real_trash = camel_store_get_trash_folder_sync (
 				parent_store, cancellable, NULL);
 
-			if (!store->real_trash_path && real_trash) {
+			if (folder_path == NULL && real_trash) {
 				/* failed to open real trash */
 				g_object_unref (real_trash);
 				real_trash = NULL;
@@ -1623,15 +1672,18 @@ imap_synchronize_sync (CamelFolder *folder,
 		deleted_uids = g_ptr_array_new ();
 
 	/* junked_uids is NULL when not using real junk */
-	if (store->real_junk_path && *store->real_junk_path) {
+	folder_path = camel_imap_settings_get_real_junk_path (
+		CAMEL_IMAP_SETTINGS (settings));
+	if (folder_path != NULL) {
 		if ((folder->folder_flags & CAMEL_FOLDER_IS_JUNK) != 0) {
-			/* syncing the junk, but cannot move messages to itself, thus do nothing */
+			/* syncing the junk, but cannot move
+			 * messages to itself, thus do nothing */
 			real_junk = NULL;
 		} else {
 			real_junk = camel_store_get_junk_folder_sync (
 				parent_store, cancellable, NULL);
 
-			if (!store->real_junk_path && real_junk) {
+			if (folder_path == NULL && real_junk) {
 				/* failed to open real junk */
 				g_object_unref (real_junk);
 				real_junk = NULL;
@@ -1753,7 +1805,7 @@ imap_synchronize_sync (CamelFolder *folder,
 		g_ptr_array_free (matches, TRUE);
 
 		/* We unlock here so that other threads can have a chance to grab the connect_lock */
-		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+		camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 		/* check for an exception */
 		if (local_error != NULL) {
@@ -1774,7 +1826,7 @@ imap_synchronize_sync (CamelFolder *folder,
 		}
 
 		/* Re-lock the connect_lock */
-		camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+		camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 	}
 
 	if (local_error == NULL)
@@ -1811,7 +1863,7 @@ imap_synchronize_sync (CamelFolder *folder,
 	/* Save the summary */
 	success = imap_sync_offline (folder, error);
 
-	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
 }
@@ -2765,9 +2817,12 @@ do_copy (CamelFolder *source,
          GCancellable *cancellable,
          GError **error)
 {
+	CamelService *service;
+	CamelSettings *settings;
 	CamelStore *parent_store;
 	CamelImapStore *store;
 	CamelImapResponse *response;
+	const gchar *trash_path;
 	const gchar *full_name;
 	gchar *uidset;
 	gint uid = 0, last=0, i;
@@ -2776,7 +2831,14 @@ do_copy (CamelFolder *source,
 
 	parent_store = camel_folder_get_parent_store (source);
 	store = CAMEL_IMAP_STORE (parent_store);
-	mark_moved = is_google_account (parent_store) && store && store->real_trash_path && *store->real_trash_path;
+
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+
+	trash_path = camel_imap_settings_get_real_trash_path (
+		CAMEL_IMAP_SETTINGS (settings));
+
+	mark_moved = is_google_account (parent_store) && trash_path != NULL;
 
 	full_name = camel_folder_get_full_name (destination);
 
@@ -3916,9 +3978,12 @@ imap_update_summary (CamelFolder *folder,
 {
 	CamelStore *parent_store;
 	CamelService *service;
+	CamelSettings *settings;
 	CamelImapStore *store;
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	GPtrArray *fetch_data = NULL, *messages = NULL, *needheaders;
+	CamelFetchHeadersType fetch_headers;
+	const gchar * const *extra_headers;
 	guint32 flags, uidval;
 	gint i, seq, first, size, got;
 	CamelImapResponseType type;
@@ -3931,25 +3996,40 @@ imap_update_summary (CamelFolder *folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 	store = CAMEL_IMAP_STORE (parent_store);
-	service = CAMEL_SERVICE (store);
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+
+	fetch_headers = camel_imap_settings_get_fetch_headers (
+		CAMEL_IMAP_SETTINGS (settings));
+
+	extra_headers = camel_imap_settings_get_fetch_headers_extra (
+		CAMEL_IMAP_SETTINGS (settings));
 
 	if (store->server_level >= IMAP_LEVEL_IMAP4REV1) {
-		if (store->headers == IMAP_FETCH_ALL_HEADERS)
+		if (fetch_headers == CAMEL_FETCH_HEADERS_ALL)
 			header_spec = g_string_new ("HEADER");
 		else {
 			gchar *temp;
 			header_spec = g_string_new ("HEADER.FIELDS (");
-			header_spec = g_string_append (header_spec, CAMEL_MESSAGE_INFO_HEADERS);
-			if (store->headers == IMAP_FETCH_MAILING_LIST_HEADERS)
-				header_spec = g_string_append (header_spec, MAILING_LIST_HEADERS);
-			if (store->custom_headers)
-				header_spec = g_string_append (header_spec, store->custom_headers);
+			g_string_append (header_spec, CAMEL_MESSAGE_INFO_HEADERS);
+			if (fetch_headers == CAMEL_FETCH_HEADERS_BASIC_AND_MAILING_LIST)
+				g_string_append (header_spec, MAILING_LIST_HEADERS);
+			if (extra_headers != NULL) {
+				guint length, ii;
+
+				length = g_strv_length ((gchar **) extra_headers);
+				for (ii = 0; ii < length; ii++) {
+					g_string_append (header_spec, extra_headers[ii]);
+					if (ii + 1 < length)
+						g_string_append_c (header_spec, ' ');
+				}
+			}
 
 			temp = g_string_free (header_spec, FALSE);
 			temp = g_strstrip (temp);
 			header_spec = g_string_new (temp);
 			g_free (temp);
-			header_spec = g_string_append (header_spec, ")");
+			g_string_append (header_spec, ")");
 		}
 	} else
 		header_spec = g_string_new ("0");

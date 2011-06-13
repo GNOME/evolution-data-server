@@ -18,6 +18,7 @@ libcamelimap_la_SOURCES = 			\
 	camel-imap-message-cache.c		\
 	camel-imap-provider.c			\
 	camel-imap-search.c			\
+	camel-imap-settings.c			\
 	camel-imap-store.c			\
 	camel-imap-store-summary.c		\
 	camel-imap-summary.c			\
@@ -30,6 +31,7 @@ noinst_HEADERS =			\
 	camel-imap-folder.h			\
 	camel-imap-message-cache.h		\
 	camel-imap-search.h			\
+	camel-imap-settings.h			\
 	camel-imap-store.h			\
 	camel-imap-store-summary.h		\
 	camel-imap-summary.h			\

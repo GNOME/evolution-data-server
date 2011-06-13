@@ -50,6 +50,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelImapStore CamelImapStore;
 typedef struct _CamelImapStoreClass CamelImapStoreClass;
+typedef struct _CamelImapStorePrivate CamelImapStorePrivate;
 
 /* CamelFolderInfo flags */
 #define CAMEL_IMAP_FOLDER_MARKED	     (1 << 16)
@@ -75,19 +76,9 @@ typedef enum {
 #define IMAP_CAPABILITY_LOGINDISABLED		(1 << 11)
 #define IMAP_CAPABILITY_QUOTA			(1 << 12)
 
-#define IMAP_PARAM_OVERRIDE_NAMESPACE		(1 << 0)
-#define IMAP_PARAM_CHECK_ALL			(1 << 1)
-#define IMAP_PARAM_FILTER_JUNK			(1 << 2)
-#define IMAP_PARAM_FILTER_JUNK_INBOX		(1 << 3)
-#define IMAP_PARAM_SUBSCRIPTIONS		(1 << 4)
-#define IMAP_PARAM_CHECK_LSUB			(1 << 5) /* check for new messages in subscribed folders */
-
-#define IMAP_FETCH_ALL_HEADERS 1
-#define IMAP_FETCH_MAILING_LIST_HEADERS 2 /* Fetches Minimal and Mailing List Headers. Default behavior */
-#define IMAP_FETCH_MINIMAL_HEADERS 3
-
 struct _CamelImapStore {
 	CamelOfflineStore parent;
+	CamelImapStorePrivate *priv;
 
 	CamelStream *istream;
 	CamelStream *ostream;
@@ -110,16 +101,11 @@ struct _CamelImapStore {
 
 	/* Information about the server */
 	CamelImapServerLevel server_level;
-	guint32 capabilities, parameters;
-	gchar *users_namespace, dir_sep, *base_url;
+	guint32 capabilities;
+	gchar dir_sep, *base_url;
 	GHashTable *authtypes;
 
 	time_t refresh_stamp;
-
-	guint32 headers;
-	gchar *custom_headers;
-
-	gchar *real_trash_path, *real_junk_path;
 };
 
 struct _CamelImapStoreClass {

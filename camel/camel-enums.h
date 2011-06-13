@@ -125,6 +125,25 @@ typedef enum { /*< flags >*/
 	CAMEL_STORE_INFO_FOLDER_LAST          = 1 << 24  /*< skip >*/
 } CamelStoreInfoFlags;
 
+/**
+ * CamelFetchHeadersType:
+ * @CAMEL_FETCH_HEADERS_BASIC:
+ *     Fetch only basic headers (Date, From, To, Subject, etc.).
+ * @CAMEL_FETCH_HEADERS_BASIC_AND_MAILING_LIST:
+ *     Fetch all basic headers and mailing list headers.
+ * @CAMEL_FETCH_HEADERS_ALL:
+ *     Fetch all available message headers.
+ *
+ * Describes what headers to fetch when downloading message summaries.
+ *
+ * Since: 3.2
+ **/
+typedef enum {
+	CAMEL_FETCH_HEADERS_BASIC,
+	CAMEL_FETCH_HEADERS_BASIC_AND_MAILING_LIST,
+	CAMEL_FETCH_HEADERS_ALL
+} CamelFetchHeadersType;
+
 typedef enum {
 	CAMEL_JUNK_STATUS_INCONCLUSIVE,
 	CAMEL_JUNK_STATUS_MESSAGE_IS_JUNK,

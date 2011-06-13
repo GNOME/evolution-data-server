@@ -370,7 +370,9 @@ camel_imap_store_summary_namespace_set_main (CamelImapStoreSummary *s, const gch
 	CamelImapStoreNamespace *ns;
 
 	g_return_if_fail (s != NULL);
-	g_return_if_fail (full_name != NULL);
+
+	if (full_name == NULL)
+		full_name = "";
 
 	ns = namespace_find (s->namespace, full_name, dir_sep);
 

@@ -38,6 +38,7 @@
 #include "camel-imap-command.h"
 #include "camel-imap-folder.h"
 #include "camel-imap-message-cache.h"
+#include "camel-imap-settings.h"
 #include "camel-imap-store-summary.h"
 #include "camel-imap-store.h"
 #include "camel-imap-summary.h"
@@ -108,13 +109,6 @@ static struct {
 	{ "LOGINDISABLED",      IMAP_CAPABILITY_LOGINDISABLED },
 	{ "QUOTA",              IMAP_CAPABILITY_QUOTA },
 	{ NULL, 0 }
-};
-
-enum {
-	PROP_0,
-	PROP_DEFAULT_PORT,
-	PROP_SECURITY_METHOD,
-	PROP_SERVICE_NAME
 };
 
 extern CamelServiceAuthType camel_imap_password_authtype;
@@ -209,6 +203,7 @@ connect_to_server (CamelService *service,
                    GError **error)
 {
 	CamelImapStore *store = (CamelImapStore *) service;
+	CamelSettings *settings;
 	CamelURL *url;
 	CamelImapResponse *response;
 	CamelStream *tcp_stream;
@@ -225,6 +220,9 @@ connect_to_server (CamelService *service,
 		return FALSE;
 
 	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
+
+	g_object_get (settings, "security-method", &method, NULL);
 
 	store->ostream = tcp_stream;
 	store->istream = camel_stream_buffer_new (tcp_stream, CAMEL_STREAM_BUFFER_READ);
@@ -313,9 +311,6 @@ connect_to_server (CamelService *service,
 		store->capabilities &= ~IMAP_CAPABILITY_IMAP4REV1;
 		store->server_level = IMAP_LEVEL_IMAP4;
 	}
-
-	method = camel_network_service_get_security_method (
-		CAMEL_NETWORK_SERVICE (service));
 
 	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT)
 		return TRUE;  /* we're done */
@@ -567,18 +562,20 @@ connect_to_server_wrapper (CamelService *service,
                            GCancellable *cancellable,
                            GError **error)
 {
-	CamelURL *url;
-
 #ifndef G_OS_WIN32
-	const gchar *command;
-#endif
+	CamelSettings *settings;
+	const gchar *shell_command;
+	gboolean use_shell_command;
 
-	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
+	shell_command = camel_imap_settings_get_shell_command (
+		CAMEL_IMAP_SETTINGS (settings));
+	use_shell_command = camel_imap_settings_get_use_shell_command (
+		CAMEL_IMAP_SETTINGS (settings));
 
-#ifndef G_OS_WIN32
-	if (camel_url_get_param (url, "use_command")
-	    && (command = camel_url_get_param (url, "command")))
-		return connect_to_server_process (service, command, cancellable, error);
+	if (use_shell_command && shell_command != NULL)
+		return connect_to_server_process (
+			service, shell_command, cancellable, error);
 #endif
 
 	return connect_to_server (service, cancellable, error);
@@ -806,55 +803,6 @@ free_key (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-imap_store_set_property (GObject *object,
-                         guint property_id,
-                         const GValue *value,
-                         GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_SECURITY_METHOD:
-			camel_network_service_set_security_method (
-				CAMEL_NETWORK_SERVICE (object),
-				g_value_get_uint (value));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-imap_store_get_property (GObject *object,
-                         guint property_id,
-                         GValue *value,
-                         GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_DEFAULT_PORT:
-			g_value_set_uint (
-				value,
-				camel_network_service_get_default_port (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-
-		case PROP_SECURITY_METHOD:
-			g_value_set_uint (
-				value,
-				camel_network_service_get_security_method (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-
-		case PROP_SERVICE_NAME:
-			g_value_set_string (
-				value,
-				camel_network_service_get_service_name (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
 imap_store_dispose (GObject *object)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (object);
@@ -879,39 +827,9 @@ imap_store_finalize (GObject *object)
 	camel_service_disconnect_sync (CAMEL_SERVICE (imap_store), TRUE, NULL);
 
 	g_free (imap_store->base_url);
-	g_free (imap_store->users_namespace);
-	g_free (imap_store->custom_headers);
-	g_free (imap_store->real_trash_path);
-	g_free (imap_store->real_junk_path);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imap_store_parent_class)->finalize (object);
-}
-
-static void
-imap_store_constructed (GObject *object)
-{
-	CamelURL *url;
-	const gchar *use_ssl;
-
-	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (camel_imap_store_parent_class)->constructed (object);
-
-	url = camel_service_get_camel_url (CAMEL_SERVICE (object));
-	use_ssl = camel_url_get_param (url, "use_ssl");
-
-	if (g_strcmp0 (use_ssl, "never") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_NONE);
-	else if (g_strcmp0 (use_ssl, "always") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT);
-	else if (g_strcmp0 (use_ssl, "when-possible") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
 }
 
 static gchar *
@@ -938,9 +856,15 @@ imap_store_connect_sync (CamelService *service,
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
 	CamelImapResponse *response;
+	CamelSettings *settings;
+	CamelImapSettings *imap_settings;
 	gchar *result, *name;
 	gsize len;
+	const gchar *namespace;
 	GError *local_error = NULL;
+
+	settings = camel_service_get_settings (service);
+	imap_settings = CAMEL_IMAP_SETTINGS (settings);
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
 		return TRUE;
@@ -956,6 +880,7 @@ imap_store_connect_sync (CamelService *service,
 	/* Get namespace and hierarchy separator */
 	if (store->capabilities & IMAP_CAPABILITY_NAMESPACE) {
 		struct _namespaces *namespaces;
+		const gchar *namespace;
 
 		response = camel_imap_command (store, NULL, cancellable, &local_error, "NAMESPACE");
 		if (!response)
@@ -967,12 +892,12 @@ imap_store_connect_sync (CamelService *service,
 
 		namespaces = imap_parse_namespace_response (result);
 
-		if (!(store->parameters & IMAP_PARAM_OVERRIDE_NAMESPACE)) {
-			g_free (store->users_namespace);
-			store->users_namespace = NULL;
-		}
+		if (!camel_imap_settings_get_use_namespace (imap_settings))
+			camel_imap_settings_set_namespace (imap_settings, NULL);
 
-		if (namespaces && !store->users_namespace) {
+		namespace = camel_imap_settings_get_namespace (imap_settings);
+
+		if (namespaces != NULL && namespace == NULL) {
 			struct _namespace *np = NULL;
 
 			if (namespaces->personal)
@@ -982,9 +907,9 @@ imap_store_connect_sync (CamelService *service,
 			else if (namespaces->shared)
 				np = namespaces->shared;
 
-			if (np) {
-				store->users_namespace = g_strdup (np->prefix);
-			}
+			if (np != NULL)
+				camel_imap_settings_set_namespace (
+					imap_settings, np->prefix);
 		}
 
 		if (namespaces) {
@@ -1008,14 +933,20 @@ imap_store_connect_sync (CamelService *service,
 
 		imap_namespaces_destroy (namespaces);
 
-		if (!store->users_namespace) {
+		if (camel_imap_settings_get_namespace (imap_settings) == NULL) {
 			/* fallback for a broken result */
 			name = camel_strstrcase (result, "NAMESPACE ((");
 			if (name) {
+				gchar *ns;
 				gchar *sep;
 
 				name += 12;
-				store->users_namespace = imap_parse_string ((const gchar **) &name, &len);
+				ns = imap_parse_string (
+					(const gchar **) &name, &len);
+				camel_imap_settings_set_namespace (
+					imap_settings, ns);
+				g_free (ns);
+
 				if (name && *name++ == ' ') {
 					sep = imap_parse_string ((const gchar **) &name, &len);
 					if (sep) {
@@ -1028,30 +959,34 @@ imap_store_connect_sync (CamelService *service,
 		g_free (result);
 	}
 
-	if (!store->users_namespace)
-		store->users_namespace = g_strdup ("");
-
 	if (!store->dir_sep) {
-		const gchar *use_namespace = store->summary->namespace ? store->summary->namespace->full_name : NULL;
+		const gchar *use_namespace = NULL;
 
-		if (!use_namespace)
-			use_namespace = store->users_namespace;
+		if (store->summary->namespace != NULL)
+			use_namespace = store->summary->namespace->full_name;
+
+		if (use_namespace == NULL)
+			use_namespace = camel_imap_settings_get_namespace (
+				imap_settings);
+
+		if (use_namespace == NULL)
+			use_namespace = "";
 
 		if (store->server_level >= IMAP_LEVEL_IMAP4REV1) {
 			/* This idiom means "tell me the hierarchy separator
 			 * for the given path, even if that path doesn't exist.
 			 */
-			response = camel_imap_command (store, NULL, cancellable, &local_error,
-						       "LIST %G \"\"",
-						       use_namespace);
+			response = camel_imap_command (
+				store, NULL, cancellable, &local_error,
+				"LIST %G \"\"", use_namespace);
 		} else {
 			/* Plain IMAP4 doesn't have that idiom, so we fall back
 			 * to "tell me about this folder", which will fail if
 			 * the folder doesn't exist (eg, if namespace is "").
 			 */
-			response = camel_imap_command (store, NULL, cancellable, &local_error,
-						       "LIST \"\" %G",
-						       use_namespace);
+			response = camel_imap_command (
+				store, NULL, cancellable, &local_error,
+				"LIST \"\" %G", use_namespace);
 		}
 		if (!response)
 			goto done;
@@ -1068,14 +1003,21 @@ imap_store_connect_sync (CamelService *service,
 	}
 
 	/* canonicalize the namespace to not end with dir_sep */
-	len = strlen (store->users_namespace);
-	if (len && store->users_namespace[len - 1] == store->dir_sep)
-		store->users_namespace[len - 1] = 0;
+	namespace = camel_imap_settings_get_namespace (imap_settings);
+	len = (namespace != NULL) ? strlen (namespace) : 0;
+	if (len && namespace[len - 1] == store->dir_sep) {
+		gchar *tmp = g_strdup (namespace);
+		tmp[len - 1] = '\0';
+		camel_imap_settings_set_namespace (imap_settings, tmp);
+		namespace = camel_imap_settings_get_namespace (imap_settings);
+		g_free (tmp);
+	}
 
-	camel_imap_store_summary_namespace_set_main (store->summary, store->users_namespace, store->dir_sep);
+	camel_imap_store_summary_namespace_set_main (
+		store->summary, namespace, store->dir_sep);
 
-	if ((store->parameters & IMAP_PARAM_SUBSCRIPTIONS)
-	    && camel_store_summary_count ((CamelStoreSummary *) store->summary) == 0) {
+	if (camel_imap_settings_get_use_subscriptions (imap_settings) &&
+	    camel_store_summary_count ((CamelStoreSummary *) store->summary) == 0) {
 		CamelStoreInfo *si;
 
 		/* look in all namespaces */
@@ -1121,6 +1063,11 @@ imap_store_disconnect_sync (CamelService *service,
                             GError **error)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
+	CamelSettings *settings;
+	CamelImapSettings *imap_settings;
+
+	settings = camel_service_get_settings (service);
+	imap_settings = CAMEL_IMAP_SETTINGS (settings);
 
 	if (camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)) && clean) {
 		CamelImapResponse *response;
@@ -1154,10 +1101,8 @@ imap_store_disconnect_sync (CamelService *service,
 		store->authtypes = NULL;
 	}
 
-	if (store->users_namespace && !(store->parameters & IMAP_PARAM_OVERRIDE_NAMESPACE)) {
-		g_free (store->users_namespace);
-		store->users_namespace = NULL;
-	}
+	if (camel_imap_settings_get_use_namespace (imap_settings))
+		camel_imap_settings_set_namespace (imap_settings, NULL);
 
 	return TRUE;
 }
@@ -1210,9 +1155,12 @@ imap_store_initable_init (GInitable *initable,
 {
 	CamelImapStore *imap_store;
 	CamelService *service;
+	CamelSettings *settings;
 	CamelURL *summary_url;
 	CamelURL *url;
 	const gchar *user_data_dir;
+	const gchar *real_path;
+	gboolean use_real_path;
 	gchar *tmp;
 
 	imap_store = CAMEL_IMAP_STORE (initable);
@@ -1223,6 +1171,7 @@ imap_store_initable_init (GInitable *initable,
 
 	service = CAMEL_SERVICE (initable);
 	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
 	/* FIXME */
@@ -1230,53 +1179,33 @@ imap_store_initable_init (GInitable *initable,
 		url, CAMEL_URL_HIDE_PASSWORD |
 		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
 
-	imap_store->parameters = 0;
-	if (camel_url_get_param (url, "use_lsub"))
-		imap_store->parameters |= IMAP_PARAM_SUBSCRIPTIONS;
-	if (camel_url_get_param (url, "override_namespace") && camel_url_get_param (url, "namespace")) {
-		imap_store->parameters |= IMAP_PARAM_OVERRIDE_NAMESPACE;
-		g_free (imap_store->users_namespace);
-		imap_store->users_namespace = g_strdup (camel_url_get_param (url, "namespace"));
-	}
-	if (camel_url_get_param (url, "check_all"))
-		imap_store->parameters |= IMAP_PARAM_CHECK_ALL;
-	if (camel_url_get_param (url, "check_lsub"))
-		imap_store->parameters |= IMAP_PARAM_CHECK_LSUB;
-	if (camel_url_get_param (url, "filter_junk"))
-		imap_store->parameters |= IMAP_PARAM_FILTER_JUNK;
-	if (camel_url_get_param (url, "filter_junk_inbox"))
-		imap_store->parameters |= IMAP_PARAM_FILTER_JUNK_INBOX;
+	/* XXX Using CamelStoreFlags like this is suboptimal because they're
+	 *     only set once during initialization.  Subsequent changes to the
+	 *     CamelSettings are not propagated to the flags -- a restart
+	 *     is required.  Probably should define interfaces for this. */
 
-	imap_store->headers = IMAP_FETCH_MAILING_LIST_HEADERS;
-	if (camel_url_get_param (url, "all_headers"))
-		imap_store->headers = IMAP_FETCH_ALL_HEADERS;
-	else if (camel_url_get_param (url, "basic_headers"))
-		imap_store->headers = IMAP_FETCH_MINIMAL_HEADERS;
+	real_path = camel_imap_settings_get_real_junk_path (
+		CAMEL_IMAP_SETTINGS (settings));
+	use_real_path = camel_imap_settings_get_use_real_junk_path (
+		CAMEL_IMAP_SETTINGS (settings));
 
-	if (camel_url_get_param (url, "imap_custom_headers")) {
-		imap_store->custom_headers = g_strdup(camel_url_get_param (url, "imap_custom_headers"));
+	if (use_real_path && real_path != NULL) {
+		CAMEL_STORE (service)->flags &= ~CAMEL_STORE_VJUNK;
+		CAMEL_STORE (service)->flags |= CAMEL_STORE_REAL_JUNK_FOLDER;
+	} else {
+		CAMEL_STORE (service)->flags &= CAMEL_STORE_REAL_JUNK_FOLDER;
+		CAMEL_STORE (service)->flags |= CAMEL_STORE_VJUNK;
 	}
 
-	imap_store->real_trash_path = g_strdup (camel_url_get_param (url, "real_trash_path"));
-	imap_store->real_junk_path = g_strdup (camel_url_get_param (url, "real_junk_path"));
+	real_path = camel_imap_settings_get_real_trash_path (
+		CAMEL_IMAP_SETTINGS (settings));
+	use_real_path = camel_imap_settings_get_use_real_trash_path (
+		CAMEL_IMAP_SETTINGS (settings));
 
-	if (imap_store->real_trash_path && !*imap_store->real_trash_path) {
-		g_free (imap_store->real_trash_path);
-		imap_store->real_trash_path = NULL;
-	}
-
-	if (imap_store->real_trash_path && *imap_store->real_trash_path)
-		CAMEL_STORE (imap_store)->flags &= ~CAMEL_STORE_VTRASH;
-
-	if (imap_store->real_junk_path && !*imap_store->real_junk_path) {
-		g_free (imap_store->real_junk_path);
-		imap_store->real_junk_path = NULL;
-	}
-
-	if (imap_store->real_junk_path && *imap_store->real_junk_path) {
-		CAMEL_STORE (imap_store)->flags &= ~CAMEL_STORE_VJUNK;
-		CAMEL_STORE (imap_store)->flags |= CAMEL_STORE_REAL_JUNK_FOLDER;
-	}
+	if (use_real_path && real_path != NULL)
+		CAMEL_STORE (service)->flags &= ~CAMEL_STORE_VTRASH;
+	else
+		CAMEL_STORE (service)->flags |= CAMEL_STORE_VTRASH;
 
 	/* setup/load the store summary */
 	tmp = alloca (strlen (user_data_dir) + 32);
@@ -1290,10 +1219,14 @@ imap_store_initable_init (GInitable *initable,
 		CamelImapStoreSummary *is = imap_store->summary;
 
 		if (is->namespace) {
+			const gchar *namespace;
+
+			namespace = camel_imap_settings_get_namespace (
+				CAMEL_IMAP_SETTINGS (settings));
+
 			/* if namespace has changed, clear folder list */
-			if (imap_store->users_namespace && strcmp (imap_store->users_namespace, is->namespace->full_name) != 0) {
+			if (g_strcmp0 (namespace, is->namespace->full_name) != 0)
 				camel_store_summary_clear ((CamelStoreSummary *) is);
-			}
 		}
 
 		imap_store->capabilities = is->capabilities;
@@ -1304,12 +1237,10 @@ imap_store_initable_init (GInitable *initable,
 }
 
 static const gchar *
-imap_store_get_service_name (CamelNetworkService *service)
+imap_store_get_service_name (CamelNetworkService *service,
+                             CamelNetworkSecurityMethod method)
 {
-	CamelNetworkSecurityMethod method;
 	const gchar *service_name;
-
-	method = camel_network_service_get_security_method (service);
 
 	switch (method) {
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
@@ -1325,12 +1256,10 @@ imap_store_get_service_name (CamelNetworkService *service)
 }
 
 static guint16
-imap_store_get_default_port (CamelNetworkService *service)
+imap_store_get_default_port (CamelNetworkService *service,
+                             CamelNetworkSecurityMethod method)
 {
-	CamelNetworkSecurityMethod method;
 	guint16 default_port;
-
-	method = camel_network_service_get_security_method (service);
 
 	switch (method) {
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
@@ -1353,13 +1282,11 @@ camel_imap_store_class_init (CamelImapStoreClass *class)
 	CamelStoreClass *store_class;
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->set_property = imap_store_set_property;
-	object_class->get_property = imap_store_get_property;
 	object_class->dispose = imap_store_dispose;
 	object_class->finalize = imap_store_finalize;
-	object_class->constructed = imap_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->settings_type = CAMEL_TYPE_IMAP_SETTINGS;
 	service_class->get_name = imap_store_get_name;
 	service_class->connect_sync = imap_store_connect_sync;
 	service_class->disconnect_sync = imap_store_disconnect_sync;
@@ -1381,24 +1308,6 @@ camel_imap_store_class_init (CamelImapStoreClass *class)
 	store_class->subscribe_folder_sync = imap_store_subscribe_folder_sync;
 	store_class->unsubscribe_folder_sync = imap_store_unsubscribe_folder_sync;
 	store_class->noop_sync = imap_store_noop_sync;
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_DEFAULT_PORT,
-		"default-port");
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SECURITY_METHOD,
-		"security-method");
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SERVICE_NAME,
-		"service-name");
 }
 
 static void
@@ -1651,18 +1560,24 @@ imap_store_get_trash_folder_sync (CamelStore *store,
                                   GCancellable *cancellable,
                                   GError **error)
 {
+	CamelService *service;
+	CamelSettings *settings;
 	CamelFolder *folder = NULL;
-	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
+	const gchar *trash_path;
+	const gchar *user_data_dir;
 
-	if (imap_store->real_trash_path && *imap_store->real_trash_path) {
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+	user_data_dir = camel_service_get_user_data_dir (service);
+
+	trash_path = camel_imap_settings_get_real_trash_path (
+		CAMEL_IMAP_SETTINGS (settings));
+	if (trash_path != NULL) {
 		folder = camel_store_get_folder_sync (
-			store, imap_store->real_trash_path, 0,
-			cancellable, NULL);
-		if (!folder) {
-			/* cannot find configured folder, just report on console and unset in a store structure to not try again */
-			g_free (imap_store->real_trash_path);
-			imap_store->real_trash_path = NULL;
-		}
+			store, trash_path, 0, cancellable, NULL);
+		if (folder == NULL)
+			camel_imap_settings_set_real_trash_path (
+				CAMEL_IMAP_SETTINGS (settings), NULL);
 	}
 
 	if (folder)
@@ -1673,12 +1588,7 @@ imap_store_get_trash_folder_sync (CamelStore *store,
 
 	if (folder) {
 		CamelObject *object = CAMEL_OBJECT (folder);
-		CamelService *service;
-		const gchar *user_data_dir;
 		gchar *state;
-
-		service = CAMEL_SERVICE (store);
-		user_data_dir = camel_service_get_user_data_dir (service);
 
 		state = g_build_filename (
 			user_data_dir, "system", "Trash.cmeta", NULL);
@@ -1697,18 +1607,24 @@ imap_store_get_junk_folder_sync (CamelStore *store,
                                  GCancellable *cancellable,
                                  GError **error)
 {
+	CamelService *service;
+	CamelSettings *settings;
 	CamelFolder *folder = NULL;
-	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
+	const gchar *junk_path;
+	const gchar *user_data_dir;
 
-	if (imap_store->real_junk_path && *imap_store->real_junk_path) {
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+	user_data_dir = camel_service_get_user_data_dir (service);
+
+	junk_path = camel_imap_settings_get_real_junk_path (
+		CAMEL_IMAP_SETTINGS (settings));
+	if (junk_path != NULL) {
 		folder = camel_store_get_folder_sync (
-			store, imap_store->real_junk_path, 0,
-			cancellable, NULL);
-		if (!folder) {
-			/* cannot find configured folder, just report on console and unset in a store structure to not try again */
-			g_free (imap_store->real_junk_path);
-			imap_store->real_junk_path = NULL;
-		}
+			store, junk_path, 0, cancellable, NULL);
+		if (folder == NULL)
+			camel_imap_settings_set_real_junk_path (
+				CAMEL_IMAP_SETTINGS (settings), NULL);
 	}
 
 	if (folder)
@@ -1719,12 +1635,7 @@ imap_store_get_junk_folder_sync (CamelStore *store,
 
 	if (folder) {
 		CamelObject *object = CAMEL_OBJECT (folder);
-		CamelService *service;
-		const gchar *user_data_dir;
 		gchar *state;
-
-		service = CAMEL_SERVICE (store);
-		user_data_dir = camel_service_get_user_data_dir (service);
 
 		state = g_build_filename (
 			user_data_dir, "system", "Junk.cmeta", NULL);
@@ -2265,12 +2176,18 @@ imap_store_rename_folder_sync (CamelStore *store,
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	CamelImapResponse *response;
 	CamelService *service;
+	CamelSettings *settings;
 	const gchar *user_data_dir;
 	gchar *oldpath, *newpath, *storage_path;
+	gboolean use_subscriptions;
 	gboolean success = TRUE;
 
 	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
+
+	use_subscriptions = camel_imap_settings_get_use_subscriptions (
+		CAMEL_IMAP_SETTINGS (settings));
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
@@ -2295,13 +2212,13 @@ imap_store_rename_folder_sync (CamelStore *store,
 	imap_store->current_folder = NULL;
 
 	imap_store->renaming = TRUE;
-	if (imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS)
+	if (use_subscriptions)
 		manage_subscriptions (
 			store, old_name, FALSE, cancellable);
 
 	response = camel_imap_command (imap_store, NULL, cancellable, error, "RENAME %F %F", old_name, new_name_in);
 	if (!response) {
-		if (imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS)
+		if (use_subscriptions)
 			manage_subscriptions (
 				store, old_name, TRUE, cancellable);
 		success = FALSE;
@@ -2313,7 +2230,7 @@ imap_store_rename_folder_sync (CamelStore *store,
 	/* rename summary, and handle broken server */
 	rename_folder_info (imap_store, old_name, new_name_in);
 
-	if (imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS)
+	if (use_subscriptions)
 		manage_subscriptions (
 			store, new_name_in, TRUE, cancellable);
 
@@ -2814,13 +2731,23 @@ refresh_refresh (CamelSession *session,
                  CamelImapStore *store,
                  GError **error)
 {
+	CamelService *service;
+	CamelSettings *settings;
+	const gchar *namespace;
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	namespace = camel_imap_settings_get_namespace (
+		CAMEL_IMAP_SETTINGS (settings));
+
 	camel_service_lock (
 		CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (!camel_imap_store_connected (store, error))
 		goto done;
 
-	if (store->users_namespace && store->users_namespace[0]) {
+	if (namespace != NULL) {
 		if (!get_folders_sync (store, "INBOX", cancellable, error))
 			goto done;
 	} else {
@@ -2947,13 +2874,38 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
 	gboolean include_inbox = FALSE;
 	CamelFolderInfo *fi;
+	CamelService *service;
+	CamelSettings *settings;
 	GPtrArray *folders;
 	gchar *pattern, *name;
 	gint i;
 	CamelImapStoreNamespace *main_ns, *ns;
+	gboolean use_subscriptions;
+	const gchar *junk_path;
+	const gchar *trash_path;
 
 	if (camel_debug("imap:folder_info"))
 		printf("get folder info offline\n");
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	use_subscriptions = camel_imap_settings_get_use_subscriptions (
+		CAMEL_IMAP_SETTINGS (settings));
+
+	junk_path = camel_imap_settings_get_real_junk_path (
+		CAMEL_IMAP_SETTINGS (settings));
+
+	/* So we can safely compare strings. */
+	if (junk_path == NULL)
+		junk_path = "";
+
+	trash_path = camel_imap_settings_get_real_trash_path (
+		CAMEL_IMAP_SETTINGS (settings));
+
+	/* So we can safely compare strings. */
+	if (trash_path == NULL)
+		trash_path = "";
 
 	/* FIXME: obey other flags */
 
@@ -2984,6 +2936,8 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 	for (i=0;i<camel_store_summary_count ((CamelStoreSummary *) imap_store->summary);i++) {
 		CamelStoreInfo *si = camel_store_summary_index ((CamelStoreSummary *) imap_store->summary, i);
 		const gchar *full_name;
+		gboolean folder_is_junk;
+		gboolean folder_is_trash;
 
 		if (si == NULL)
 			continue;
@@ -3000,7 +2954,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 		     || imap_match_pattern (ns, pattern, full_name)
 		     || (include_inbox && !g_ascii_strcasecmp (full_name, "INBOX")))
 		    && ((ns == main_ns &&
-			((imap_store->parameters & IMAP_PARAM_SUBSCRIPTIONS) == 0
+			(!use_subscriptions
 			   || (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0))
 			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)
 			|| (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) != 0)) {
@@ -3019,16 +2973,21 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 			if (!g_ascii_strcasecmp(fi->full_name, "inbox"))
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_INBOX;
 
-			if ((fi->flags & CAMEL_FOLDER_TYPE_MASK) == 0 &&
-			    imap_store->real_trash_path && *imap_store->real_trash_path &&
-			    g_ascii_strcasecmp (fi->full_name, imap_store->real_trash_path) == 0) {
-				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_TRASH;
+			folder_is_trash =
+				(fi->flags & CAMEL_FOLDER_TYPE_MASK) == 0 &&
+				g_ascii_strcasecmp (fi->full_name, trash_path) == 0;
+			if (folder_is_trash) {
+				fi->flags &= ~CAMEL_FOLDER_TYPE_MASK;
+				fi->flags |= CAMEL_FOLDER_TYPE_TRASH;
 			}
 
-			if ((fi->flags & CAMEL_FOLDER_TYPE_MASK) == 0 &&
-			    imap_store->real_junk_path && *imap_store->real_junk_path &&
-			    g_ascii_strcasecmp (fi->full_name, imap_store->real_junk_path) == 0) {
-				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_JUNK;
+			folder_is_junk =
+				(fi->flags & CAMEL_FOLDER_TYPE_MASK) == 0 &&
+				g_ascii_strcasecmp (fi->full_name, junk_path) == 0;
+
+			if (folder_is_junk) {
+				fi->flags &= ~CAMEL_FOLDER_TYPE_MASK;
+				fi->flags |= CAMEL_FOLDER_TYPE_JUNK;
 			}
 
 			if (!(si->flags & CAMEL_FOLDER_NOSELECT))
@@ -3277,17 +3236,28 @@ imap_can_refresh_folder (CamelStore *store,
                          CamelFolderInfo *info,
                          GError **error)
 {
-	CamelURL *url;
+	CamelService *service;
+	CamelSettings *settings;
 	gboolean res;
+	gboolean check_all;
+	gboolean check_subscribed;
+	gboolean subscribed;
 	GError *local_error = NULL;
 
-	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	check_all = camel_imap_settings_get_check_all (
+		CAMEL_IMAP_SETTINGS (settings));
+
+	check_subscribed = camel_imap_settings_get_check_subscribed (
+		CAMEL_IMAP_SETTINGS (settings));
+
+	subscribed = ((info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
 
 	res = CAMEL_STORE_CLASS (camel_imap_store_parent_class)->
 		can_refresh_folder (store, info, &local_error) ||
-		(camel_url_get_param (url, "check_all") != NULL) ||
-		(camel_url_get_param (url, "check_lsub") != NULL &&
-		(info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
+		check_all || (check_subscribed && subscribed);
 
 	if (!res && local_error == NULL && CAMEL_IS_IMAP_STORE (store)) {
 		CamelStoreInfo *si;
