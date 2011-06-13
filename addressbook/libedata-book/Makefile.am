@@ -18,6 +18,7 @@ libedata_book_1_2_la_CPPFLAGS =				\
 	-I$(top_builddir)				\
 	-I$(top_builddir)/addressbook			\
 	$(DB_CFLAGS)					\
+	$(SQLITE3_CFLAGS)					\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 libedata_book_1_2_la_SOURCES =				\
@@ -26,6 +27,7 @@ libedata_book_1_2_la_SOURCES =				\
 	e-book-backend-summary.c			\
 	e-book-backend-cache.c                          \
 	e-book-backend-db-cache.c                       \
+	e-book-backend-sqlitedb.c			\
 	e-book-backend-sync.c				\
 	e-book-backend.c				\
 	e-data-book-view.c				\
@@ -39,6 +41,7 @@ libedata_book_1_2_la_LIBADD =					\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 	$(top_builddir)/libebackend/libebackend-1.2.la	\
 	$(DB_LIBS) \
+	$(SQLITE3_LIBS) \
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 libedata_book_1_2_la_LDFLAGS = \
@@ -57,9 +60,18 @@ libedata_bookinclude_HEADERS =				\
 	e-data-book-view.h				\
 	e-data-book.h                                   \
 	e-book-backend-cache.h 				\
+	e-book-backend-sqlitedb.h			\
 	e-book-backend-db-cache.h
 
 factorydir = $(libexecdir)
+
+noinst_PROGRAMS = e-book-backend-sqlitedb-test
+
+e_book_backend_sqlitedb_test_CPPFLAGS =					\
+	$(libedata_book_1_2_la_CPPFLAGS)
+e_book_backend_sqlitedb_test_SOURCES =	e-book-backend-sqlitedb-test.c
+e_book_backend_sqlitedb_test_LDADD = 					\
+	libedata-book-1.2.la					
 
 factory_PROGRAMS = e-addressbook-factory
 
