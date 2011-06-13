@@ -240,7 +240,7 @@ cmd_list(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 	} while (ret>0);
 
 	/* Trim the list for mobile devices*/
-	if (pop3_folder->mobile) {
+	if (pop3_folder->mobile && pop3_folder->uids->len) {
 		gboolean save_uid = FALSE;
 		
 		d(printf("*********** Mobile mode *************\n"));
@@ -296,7 +296,9 @@ cmd_list(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 			g_ptr_array_remove_range (pop3_folder->uids, 0, i);
 			d(printf("Removing %d uids that are old\n", i));
 			
-		} 
+		} else /* We are the first uid. Nothing more to fetch */
+			pop3_folder->fetch_more = -1;
+
 
 		if (save_uid) {
 			char *contents;
@@ -315,6 +317,8 @@ cmd_list(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 			g_free (path);
 			g_free(root);
 			d(printf("Saving last uid %d\n", fi->id));
+			if (fi->id == pop3_folder->first_id)
+				pop3_folder->fetch_more = -1;
 			
 		}
 
@@ -425,20 +429,13 @@ pop3_fetch_old_messages (CamelFolder *folder, int count, GError **error)
 	CamelPOP3FolderInfo *fi;
 	CamelPOP3Folder *pop3_folder = (CamelPOP3Folder *)folder;
 
-	/* If we have the first message already, then return FALSE */
-	fi = pop3_folder->uids->pdata[0];
-	if (fi->id == pop3_folder->first_id)
-		return FALSE;
-	
 	pop3_folder->fetch_more = count;
 	pop3_refresh_info (folder, error);
-	pop3_folder->fetch_more = 0;
 
 	/* Even if we downloaded the first/oldest message, just now, return TRUE so that we wont waste another cycle */
-	fi = pop3_folder->uids->pdata[0];
-	if (fi->id == pop3_folder->first_id)
+	if (pop3_folder->fetch_more == -1)
 		return FALSE;
-
+	
 	return TRUE;
 }
 

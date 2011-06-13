@@ -4024,7 +4024,7 @@ imapx_job_fetch_old_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		unsigned long long uidl;
 		start_uid = camel_folder_summary_uid_from_index (folder->summary, 0);
 		uidl = strtoull(start_uid, NULL, 10);
-		end_uid = g_strdup_printf("%lld", (uidl-job->u.refresh_info.fetch_old_msg_count > 0) ? (uidl-job->u.refresh_info.fetch_old_msg_count) : 1);
+		end_uid = g_strdup_printf("%lld", ((((int)uidl)-job->u.refresh_info.fetch_old_msg_count) > 0) ? (uidl-job->u.refresh_info.fetch_old_msg_count) : 1);
 	} else {
 		/* */
 		g_error("Shouldn't call fetch old messages without anything. ");
@@ -5425,8 +5425,13 @@ camel_imapx_server_fetch_old_messages (CamelIMAPXServer *is,
                                        GError **error)
 {
 	CamelIMAPXJob *job;
-	gboolean success;
+	unsigned long long firstuid, newfirstuid;
+	gchar *uid;
 
+	uid = camel_folder_summary_uid_from_index (folder->summary, 0);
+	firstuid = strtoull(uid, NULL, 10);
+	g_free (uid);
+	
 	job = g_malloc0(sizeof(*job));
 	job->type = IMAPX_JOB_FETCH_OLD_MESSAGES;
 	job->start = imapx_job_fetch_old_messages_start;
@@ -5437,11 +5442,15 @@ camel_imapx_server_fetch_old_messages (CamelIMAPXServer *is,
 	job->u.refresh_info.fetch_old_msg_count = count;
 	job->op = camel_operation_registered ();
 
-	success = imapx_submit_job (is, job, error);
+	imapx_submit_job (is, job, error);
+
+	uid = camel_folder_summary_uid_from_index (folder->summary, 0);
+	newfirstuid = strtoull(uid, NULL, 10);
+	g_free (uid);
 
 	g_free (job);
 
-	return success;
+	return firstuid != newfirstuid;
 }
 
 static void
