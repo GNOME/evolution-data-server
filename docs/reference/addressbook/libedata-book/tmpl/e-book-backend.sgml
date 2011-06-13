@@ -293,6 +293,7 @@ EBookBackend
 @modify_contact: 
 @get_contact: 
 @get_contact_list: 
+@get_contact_list_uids: 
 @start_book_view: 
 @stop_book_view: 
 @last_client_gone: 

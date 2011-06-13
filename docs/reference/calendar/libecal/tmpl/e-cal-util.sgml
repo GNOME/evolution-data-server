@@ -45,6 +45,7 @@ Various utility functions.
 @CALOBJ_MOD_THIS: 
 @CALOBJ_MOD_THISANDPRIOR: 
 @CALOBJ_MOD_THISANDFUTURE: 
+@CALOBJ_MOD_ONLY_THIS: 
 @CALOBJ_MOD_ALL: 
 
 <!-- ##### ENUM CalMode ##### -->

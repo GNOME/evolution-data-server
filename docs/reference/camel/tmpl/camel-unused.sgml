@@ -5497,6 +5497,14 @@ streams
 @summary: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_folder_summary_header_load ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_folder_summary_load ##### -->
 <para>
 

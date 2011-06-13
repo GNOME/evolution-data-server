@@ -1011,22 +1011,14 @@ The URI of the contact's calendar.
 @void: 
 @Returns: 
 
- 
-<!-- ##### FUNCTION e_contact_photo_free ##### -->
-<para>
 
-</para>
-
-@photo: 
-
- 
 <!-- ##### FUNCTION e_contact_photo_get_inlined ##### -->
 <para>
 
 </para>
 
-@photo:
-@len:
+@photo: 
+@len: 
 @Returns: 
 
 
@@ -1035,16 +1027,17 @@ The URI of the contact's calendar.
 
 </para>
 
-@photo:
-@data:
-@len:
+@photo: 
+@data: 
+@len: 
+
 
 <!-- ##### FUNCTION e_contact_photo_get_mime_type ##### -->
 <para>
 
 </para>
 
-@photo:
+@photo: 
 @Returns: 
 
 
@@ -1053,15 +1046,16 @@ The URI of the contact's calendar.
 
 </para>
 
-@photo:
-@mime_type:
+@photo: 
+@mime_type: 
+
 
 <!-- ##### FUNCTION e_contact_photo_get_uri ##### -->
 <para>
 
 </para>
 
-@photo:
+@photo: 
 @Returns: 
 
 
@@ -1070,8 +1064,17 @@ The URI of the contact's calendar.
 
 </para>
 
-@photo:
-@uri:
+@photo: 
+@uri: 
+
+
+<!-- ##### FUNCTION e_contact_photo_free ##### -->
+<para>
+
+</para>
+
+@photo: 
+
 
 <!-- ##### FUNCTION e_contact_geo_free ##### -->
 <para>
@@ -1081,13 +1084,14 @@ The URI of the contact's calendar.
 @geo: 
 
 
-<!-- ##### FUNCTION e_contact_photo_new ##### -->
+<!-- ##### FUNCTION e_contact_address_new ##### -->
 <para>
 
 </para>
 
 @void: 
 @Returns: 
+
 
 <!-- ##### FUNCTION e_contact_address_free ##### -->
 <para>

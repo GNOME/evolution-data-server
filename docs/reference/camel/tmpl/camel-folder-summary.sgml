@@ -238,15 +238,6 @@ CamelFolderSummary
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_folder_summary_header_load ##### -->
-<para>
-
-</para>
-
-@summary: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_folder_summary_header_load_from_db ##### -->
 <para>
 
