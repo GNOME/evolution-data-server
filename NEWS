@@ -1,3 +1,92 @@
+Evolution-Data-Server 3.1.2 2011-06-13
+--------------------------------------
+
+Bug Fixes:
+	Bug 550414 - Corruption of mailbox and can't expunge trash (Milan Crha)
+	Bug 589495 - Search folder by Size (KB) counts bytes, not KB
+	             (Milan Crha)
+	Bug 633948 - Try harder to use -lresolv in LDAP_LIBS
+	             (Mathieu Trudel-Lapierre)
+	Bug 640054 - CamelDB: do not read the db while a trasaction is in
+	             progress (Chenthill Palanisamy)
+	Bug 640083 - Force secured connection when using LDAPS port (Milan Crha)
+	Bug 646898 - IMAPX should invalidated cache when uidvalidity changes
+	             (Milan Crha)
+	Bug 648454 - Subfolders disappear when moving a folder (Milan Crha)
+	Bug 648736 - Crash when adding default vcard for newly created DB
+	             (Matthew Barnes)
+	Bug 649433 - e-calendar-factory SIGSEGV while reading hash_table
+	             (David Woodhouse)
+	Bug 649757 - Filtering based on a source account always succeeded
+	             (Milan Crha)
+	Bug 649757 - Return back camel_filter_driver_filter_mbox() (Milan Crha)
+	Bug 649761 - Add gobject-introspection build system to libebook
+	             (Raul Gutierrez Segales)
+	Bug 649762 - Add support for Vala bindings (Raul Gutierrez Segales)
+	Bug 650105 - Deadlock in GroupWise connector (Matthew Barnes)
+	Bug 650524 - Use g_unix_signal_add_watch_full() for SIGTERM
+	             (Matthew Barnes)
+	Bug 650950 - entry_compare() should iterate over attributes with
+	             the same name (Christophe Dumez)
+	Bug 650952 - Remove unknown EContact field name runtime warning
+	             (Christophe Dumez)
+	Bug 651054 - Support queries based on "photo" contact field
+	             (Christophe Dumez)
+	Bug 651113 - [libebook] Querying date fields is not supported
+	             (Christophe Dumez)
+	Bug 651147 - EBook/ECal done signals ignored due to wrong name
+	             (Milan Crha)
+	Bug 651226 - e_book_new_system_addressbook() should create source
+	             in GConf (Christophe Dumez)
+	Bug 651446 - Implement e_book_client_get_contacts_uids() (Milan Crha)
+	Bug 651458 - Add getters/settrs for EContactPhoto
+	             (Raul Gutierrez Segales)
+
+Other Changes:
+	* New asynchronous APIs to replace EBook/ECal (Milan Crha)
+	* Improved introspection annotations (Raul Gutierrez Segales)
+	* Improved Vala bindings (Raul Gutierrez Segales)
+	* Various calendar file backend improvements (Patrick Ohly)
+	* Camel: Fetch quota information asynchronously. (Matthew Barnes)
+	* addressbook file backend: libdb must be initialized for concurrent
+	  read/write (Patrick Ohly)
+	* CamelService: Add async query_auth_types() functions (Matthew Barnes)
+	* IMAPX: optionally download the messages in descending order
+	  (Chenthill Palanisamy)
+	* Handle SIGTERM instead of SIGQUIT. (Matthew Barnes)
+	* CamelDB: use a RW lock to prevent reads while write is in progress
+	  (Chenthill Palanisamy)
+	* CamelVeeFolder: Fix a deadlock. (Matthew Barnes)
+	* Replace deprecated g_atomic_int_exchange_and_add() (Milan Crha)
+	* Limit libgdata to 0.7 or 0.8. (Matthew Barnes)
+	* e_name_western_reorder_asshole: Fix possible memory leak
+	  (Christophe Dumez)
+	* e_dbhash_new: Close and reopen db handle to avoid memory leak
+	  (Christophe Dumez)
+	* e_contact_name_from_string(): Fix possible memory leak
+	  (Christophe Dumez)
+	* e_book_backend_file_get_contact_list: Fix memory leak
+	  (Christophe Dumez)
+	* CamelVeeFolder: Fix a hang in folder_change_change.
+	  (Chenthill Palanisamy)
+	* Use the right free function in the boxed type for
+	  EVCardAttributeParam (Alexander Larsson)
+	* CamelIMAPXFolder: Fix handling of "filter_junk" option.
+	  (Matthew Barnes)
+	* EBookBackendSqliteDB: Add sqlitedb cache for addressbook
+	  (Chenthill Palanisamy)
+
+Translations:
+	Carles Ferrando (ca@valencia)
+	Jorge González (es)
+	Daniel Mustieles (es)
+	Seán de Búrca (ga)
+	Fran Diéguez (gl)
+	Kjartan Maraas (nb)
+	Matej Urbančič (sl)
+	Abduxukur Abdurixit (ug)
+
+
 Evolution-Data-Server 3.1.1 2011-05-09
 --------------------------------------
 
