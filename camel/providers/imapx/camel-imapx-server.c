@@ -3865,7 +3865,8 @@ imapx_job_scan_changes_done(CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 
 	/* There's no sane way to get the server-side unseen count on the
 	   select mailbox. So just work it out from the flags */
-	((CamelIMAPXFolder *)job->folder)->unread_on_server = job->folder->summary->unread_count;
+	if (!is->mobile)
+		((CamelIMAPXFolder *)job->folder)->unread_on_server = job->folder->summary->unread_count;
 
 	g_array_free(job->u.refresh_info.infos, TRUE);
 	imapx_job_done (is, job);
@@ -4141,6 +4142,32 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
 		    folder->summary->unread_count != ifolder->unread_on_server ||
 		    (!is_selected && isum->modseq != ifolder->modseq_on_server))
 			need_rescan = TRUE;
+
+	} else if (is->mobile) {
+		/* We need to issue Status command to get the total unread count */
+		CamelIMAPXCommand *ic;
+
+		ic = camel_imapx_command_new (is, "STATUS", NULL, "STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT)", folder);
+
+		ic->job = job;
+		ic->pri = job->pri;
+
+		imapx_command_run_sync (is, ic);
+
+		if (ic->error != NULL || ic->status->result != IMAPX_OK) {
+			if (ic->error == NULL)
+				g_set_error (
+					&job->error, CAMEL_IMAPX_ERROR, 1,
+					"Error refreshing folder: %s", ic->status->text);
+			else {
+				g_propagate_error (&job->error, ic->error);
+				ic->error = NULL;
+			}
+
+			camel_imapx_command_free (ic);
+			goto done;
+		}
+		camel_imapx_command_free (ic);
 
 	}
 
@@ -4627,7 +4654,8 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 			if (si) {
 				if (si->total != job->folder->summary->saved_count || si->unread != job->folder->summary->unread_count) {
 					si->total = job->folder->summary->saved_count;
-					si->unread = job->folder->summary->unread_count;
+					if (!is->mobile) /* Don't mess with server's unread count */
+						si->unread = job->folder->summary->unread_count;
 					camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
 				}
 

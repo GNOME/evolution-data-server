@@ -407,7 +407,10 @@ imapx_update_store_summary (CamelFolder *folder)
 		unread = folder->summary->unread_count;
 
 		if (si->unread != unread || si->total != total) {
-			si->unread = unread;
+			if (!camel_url_get_param (((CamelService *)parent_store)->url, "mobile"))
+				si->unread = unread;
+			else
+				si->unread = ((CamelIMAPXFolder *)folder)->unread_on_server;
 			si->total = total;
 
 			camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
