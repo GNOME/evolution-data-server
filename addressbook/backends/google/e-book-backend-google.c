@@ -71,6 +71,9 @@ struct _EBookBackendGooglePrivate {
 	/* Time when the groups were last queried */
 	GTimeVal last_groups_update;
 
+	#ifdef HAVE_LIBGDATA_0_9
+	GDataAuthorizer *authorizer;
+	#endif
 	GDataService *service;
 	EProxy *proxy;
 	guint refresh_interval;
@@ -570,7 +573,11 @@ get_new_contacts (EBookBackend *backend)
 	GCancellable *cancellable;
 
 	__debug__ (G_STRFUNC);
+	#ifdef HAVE_LIBGDATA_0_9
+	g_return_if_fail (priv->service && gdata_service_is_authorized (priv->service));
+	#else
 	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
+	#endif
 
 	/* Sort out update times */
 	last_updated = cache_get_last_update (backend);
@@ -696,7 +703,11 @@ get_groups (EBookBackend *backend)
 	GCancellable *cancellable;
 
 	__debug__ (G_STRFUNC);
+	#ifdef HAVE_LIBGDATA_0_9
+	g_return_if_fail (priv->service && gdata_service_is_authorized (priv->service));
+	#else
 	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
+	#endif
 
 	/* Build our query */
 	query = GDATA_QUERY (gdata_contacts_query_new_with_limits (NULL, 0, G_MAXINT));
@@ -770,7 +781,11 @@ cache_refresh_if_needed (EBookBackend *backend)
 
 	__debug__ (G_STRFUNC);
 
+	#ifdef HAVE_LIBGDATA_0_9
+	if (!priv->is_online || !priv->service || !gdata_service_is_authorized (priv->service)) {
+	#else
 	if (!priv->is_online || !priv->service || !gdata_service_is_authenticated (priv->service)) {
+	#endif
 		__debug__ ("We are not connected to Google%s.", (!priv->is_online) ? " (offline mode)" : "");
 		return TRUE;
 	}
@@ -871,7 +886,11 @@ e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, gu
 		return;
 	}
 
+	#ifdef HAVE_LIBGDATA_0_9
+	g_return_if_fail (priv->service && gdata_service_is_authorized (priv->service));
+	#else
 	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
+	#endif
 
 	/* Build the GDataEntry from the vCard */
 	contact = e_contact_new_from_vcard (vcard_str);
@@ -953,7 +972,11 @@ e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, g
 		return;
 	}
 
+	#ifdef HAVE_LIBGDATA_0_9
+	g_return_if_fail (priv->service && gdata_service_is_authorized (priv->service));
+	#else
 	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
+	#endif
 
 	/* We make the assumption that the ID list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
 	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
@@ -982,7 +1005,12 @@ e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, g
 	data->uid = g_strdup (uid);
 
 	cancellable = start_operation (backend, opid, cancellable, _("Deleting contact…"));
+	#ifdef HAVE_LIBGDATA_0_9
+	gdata_service_delete_entry_async (GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                  entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
+	#else
 	gdata_service_delete_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
+	#endif
 	g_object_unref (cancellable);
 	g_object_unref (entry);
 }
@@ -1052,7 +1080,11 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 		return;
 	}
 
+	#ifdef HAVE_LIBGDATA_0_9
+	g_return_if_fail (priv->service && gdata_service_is_authorized (priv->service));
+	#else
 	g_return_if_fail (priv->service && gdata_service_is_authenticated (priv->service));
+	#endif
 
 	/* Get the new contact and its UID */
 	contact = e_contact_new_from_vcard (vcard_str);
@@ -1089,7 +1121,12 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 	data->opid = opid;
 
 	cancellable = start_operation (backend, opid, cancellable, _("Modifying contact…"));
+	#ifdef HAVE_LIBGDATA_0_9
+	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
+	                                  entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
+	#else
 	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
+	#endif
 	g_object_unref (cancellable);
 	g_object_unref (entry);
 }
@@ -1237,7 +1274,11 @@ e_book_backend_google_start_book_view (EBookBackend *backend, EDataBookView *boo
 
 	/* Update the cache if necessary */
 	if (cache_needs_update (backend, NULL)) {
+		#ifdef HAVE_LIBGDATA_0_9
+		if (!priv->service || !gdata_service_is_authorized (priv->service)) {
+		#else
 		if (!priv->service || !gdata_service_is_authenticated (priv->service)) {
+		#endif
 			/* We need authorization first */
 			e_book_backend_notify_auth_required (backend, TRUE, NULL);
 		} else {
@@ -1306,7 +1347,11 @@ typedef struct {
 } AuthenticateUserData;
 
 static void
+#ifdef HAVE_LIBGDATA_0_9
+authenticate_user_cb (GDataClientLoginAuthorizer *authorizer, GAsyncResult *result, AuthenticateUserData *data)
+#else
 authenticate_user_cb (GDataService *service, GAsyncResult *result, AuthenticateUserData *data)
+#endif
 {
 	GError *gdata_error = NULL;
 	GError *book_error = NULL;
@@ -1314,7 +1359,11 @@ authenticate_user_cb (GDataService *service, GAsyncResult *result, AuthenticateU
 	__debug__ (G_STRFUNC);
 
 	/* Finish authenticating */
+	#ifdef HAVE_LIBGDATA_0_9
+	if (!gdata_client_login_authorizer_authenticate_finish (authorizer, result, &gdata_error)) {
+	#else
 	if (!gdata_service_authenticate_finish (service, result, &gdata_error)) {
+	#endif
 		data_book_error_from_gdata_error (&book_error, gdata_error);
 		__debug__ ("Authentication failed: %s", gdata_error->message);
 		g_error_free (gdata_error);
@@ -1344,7 +1393,11 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, GCancellable *ca
 		return;
 	}
 
+	#ifdef HAVE_LIBGDATA_0_9
+	if (priv->service && gdata_service_is_authorized (priv->service)) {
+	#else
 	if (priv->service && gdata_service_is_authenticated (priv->service)) {
+	#endif
 		g_warning ("Connection to Google already established.");
 		e_book_backend_notify_readonly (backend, FALSE);
 		e_book_backend_notify_opened (backend, NULL);
@@ -1356,9 +1409,17 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, GCancellable *ca
 		return;
 	}
 
+	#ifdef HAVE_LIBGDATA_0_9
+	/* Set up the service, authorizer and proxy */
+	if (!priv->service) {
+		priv->authorizer = GDATA_AUTHORIZER (gdata_client_login_authorizer_new ("evolution-client-0.1.0", GDATA_TYPE_CONTACTS_SERVICE));
+		priv->service = GDATA_SERVICE (gdata_contacts_service_new (priv->authorizer));
+	}
+	#else
 	/* Set up the service and proxy */
 	if (!priv->service)
 		priv->service = GDATA_SERVICE (gdata_contacts_service_new ("evolution-client-0.1.0"));
+	#endif
 
 	if (!priv->proxy) {
 		priv->proxy = e_proxy_new ();
@@ -1378,7 +1439,14 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, GCancellable *ca
 	data->opid = opid;
 
 	cancellable = start_operation (backend, opid, cancellable, _("Authenticating with the server…"));
+	#ifdef HAVE_LIBGDATA_0_9
+	gdata_client_login_authorizer_authenticate_async (GDATA_CLIENT_LOGIN_AUTHORIZER (priv->authorizer),
+	                                                  e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME),
+	                                                  e_credentials_peek (credentials, E_CREDENTIALS_KEY_PASSWORD),
+	                                                  cancellable, (GAsyncReadyCallback) authenticate_user_cb, data);
+	#else
 	gdata_service_authenticate_async (priv->service, e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME), e_credentials_peek (credentials, E_CREDENTIALS_KEY_PASSWORD), cancellable, (GAsyncReadyCallback) authenticate_user_cb, data);
+	#endif
 	g_object_unref (cancellable);
 }
 
@@ -1644,6 +1712,12 @@ e_book_backend_google_set_online (EBookBackend *backend, gboolean is_online)
 			g_object_unref (priv->service);
 		priv->service = NULL;
 
+		#ifdef HAVE_LIBGDATA_0_9
+		if (priv->authorizer != NULL)
+			g_object_unref (priv->authorizer);
+		priv->authorizer = NULL;
+		#endif
+
 		if (priv->proxy)
 			g_object_unref (priv->proxy);
 		priv->proxy = NULL;
@@ -1673,6 +1747,12 @@ e_book_backend_google_dispose (GObject *object)
 	if (priv->service)
 		g_object_unref (priv->service);
 	priv->service = NULL;
+
+	#ifdef HAVE_LIBGDATA_0_9
+	if (priv->authorizer != NULL)
+		g_object_unref (priv->authorizer);
+	priv->authorizer = NULL;
+	#endif
 
 	if (priv->proxy)
 		g_object_unref (priv->proxy);
@@ -1757,20 +1837,40 @@ data_book_error_from_gdata_error (GError **dest_err, GError *error)
 	/* only last error is used */
 	g_clear_error (dest_err);
 
+	#ifdef HAVE_LIBGDATA_0_9
+	if (error->domain == GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR) {
+	#else
 	if (error->domain == GDATA_AUTHENTICATION_ERROR) {
+	#endif
 		/* Authentication errors */
 		switch (error->code) {
+		#ifdef HAVE_LIBGDATA_0_9
+		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_BAD_AUTHENTICATION:
+		#else
 		case GDATA_AUTHENTICATION_ERROR_BAD_AUTHENTICATION:
+		#endif
 			g_propagate_error (dest_err, EDB_ERROR (AUTHENTICATION_FAILED));
 			return;
+		#ifdef HAVE_LIBGDATA_0_9
+		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_NOT_VERIFIED:
+		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_TERMS_NOT_AGREED:
+		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_CAPTCHA_REQUIRED:
+		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_ACCOUNT_DELETED:
+		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_ACCOUNT_DISABLED:
+		#else
 		case GDATA_AUTHENTICATION_ERROR_NOT_VERIFIED:
 		case GDATA_AUTHENTICATION_ERROR_TERMS_NOT_AGREED:
 		case GDATA_AUTHENTICATION_ERROR_CAPTCHA_REQUIRED:
 		case GDATA_AUTHENTICATION_ERROR_ACCOUNT_DELETED:
 		case GDATA_AUTHENTICATION_ERROR_ACCOUNT_DISABLED:
+		#endif
 			g_propagate_error (dest_err, EDB_ERROR (PERMISSION_DENIED));
 			return;
+		#ifdef HAVE_LIBGDATA_0_9
+		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_SERVICE_DISABLED:
+		#else
 		case GDATA_AUTHENTICATION_ERROR_SERVICE_DISABLED:
+		#endif
 			g_propagate_error (dest_err, EDB_ERROR (REPOSITORY_OFFLINE));
 			return;
 		default:
