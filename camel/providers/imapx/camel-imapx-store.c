@@ -485,7 +485,8 @@ static void
 fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 {
 	CamelFolder *folder;
-
+	CamelService *service = (CamelService *)store;
+	
 	folder = camel_object_bag_peek(store->folders, fi->full_name);
 	if (folder) {
 		CamelIMAPXSummary *ims;
@@ -495,7 +496,11 @@ fill_fi(CamelStore *store, CamelFolderInfo *fi, guint32 flags)
 		else
 			ims = (CamelIMAPXSummary *) camel_imapx_summary_new (folder, NULL);
 
-		fi->unread = ((CamelFolderSummary *)ims)->unread_count;
+		if (camel_url_get_param (service->url, "mobile"))
+			fi->unread = ((CamelIMAPXFolder *) folder)->unread_on_server;
+		else
+			fi->unread = ((CamelFolderSummary *)ims)->unread_count;
+
 		fi->total = ((CamelFolderSummary *)ims)->saved_count;
 
 		if (!folder->summary)
