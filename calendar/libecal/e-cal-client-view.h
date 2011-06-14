@@ -52,7 +52,7 @@ struct _ECalClientViewClass {
 	void (* objects_modified)	(ECalClientView *view, const GSList *objects);
 	void (* objects_removed)	(ECalClientView *view, const GSList *uids);
 
-	void (* progress)		(ECalClientView *view, gint percent, const gchar *message);
+	void (* progress)		(ECalClientView *view, guint percent, const gchar *message);
 	void (* complete)		(ECalClientView *view, const GError *error);
 };
 

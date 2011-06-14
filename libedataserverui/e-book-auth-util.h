@@ -26,16 +26,16 @@
 #ifndef E_BOOK_AUTH_UTIL_H
 #define E_BOOK_AUTH_UTIL_H
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
+
 #include <gtk/gtk.h>
 #include <libebook/e-book.h>
 
 G_BEGIN_DECLS
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 EBook *		e_load_book_source		(ESource *source,
 						 EBookCallback open_func,
 						 gpointer user_data);
-#endif
 
 void		e_load_book_source_async	(ESource *source,
 						 GtkWindow *parent,
@@ -45,7 +45,8 @@ void		e_load_book_source_async	(ESource *source,
 EBook *		e_load_book_source_finish	(ESource *source,
 						 GAsyncResult *result,
 						 GError **error);
-
 G_END_DECLS
+
+#endif /* E_BOOK_DISABLE_DEPRECATED */
 
 #endif /* E_BOOK_AUTH_UTIL_H */

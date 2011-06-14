@@ -54,7 +54,7 @@ struct _EBookClientViewClass {
 	void (* objects_modified)	(EBookClientView *view, const GSList *objects);
 	void (* objects_removed)	(EBookClientView *view, const GSList *uids);
 
-	void (* progress)		(EBookClientView *view, const gchar *message);
+	void (* progress)		(EBookClientView *view, guint percent, const gchar *message);
 	void (* complete)		(EBookClientView *view, const GError *error);
 };
 

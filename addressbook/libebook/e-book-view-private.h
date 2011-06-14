@@ -26,9 +26,14 @@
 #include "e-book-client.h"
 #include "e-book-view.h"
 
+G_BEGIN_DECLS
+
+#ifndef E_BOOK_DISABLE_DEPRECATED
 struct _EGdbusBookView;
 
 EBookView *_e_book_view_new (EBook *book, struct _EGdbusBookView *gdbus_bookview);
+
+#endif /* E_BOOK_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

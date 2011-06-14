@@ -64,7 +64,7 @@ start_test (const gchar *gconf_path)
 	GtkWidget *box;
 	GtkWidget *entry;
 	GtkTreeViewColumn *column;
-	EBook *book;
+	EBookClient *book_client;
 	EBookQuery *book_query;
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -94,10 +94,10 @@ start_test (const gchar *gconf_path)
 
 	gtk_container_add (GTK_CONTAINER (scrolled_window), tree_view);
 
-	book = e_book_new_default_addressbook (NULL);
-	e_book_open (book, TRUE, NULL);
-	e_contact_store_add_book (contact_store, book);
-	g_object_unref (book);
+	book_client = e_book_client_new_default (NULL);
+	e_client_open_sync (E_CLIENT (book_client), TRUE, NULL, NULL);
+	e_contact_store_add_client (contact_store, book_client);
+	g_object_unref (book_client);
 
 	book_query = e_book_query_any_field_contains ("");
 	e_contact_store_set_query (contact_store, book_query);

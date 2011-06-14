@@ -50,14 +50,12 @@ typedef enum {
 	E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK,
 	E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
 	E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS,
-	E_BOOK_CLIENT_ERROR_TLS_NOT_AVAILABLE,
 	E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE,
-	E_BOOK_CLIENT_ERROR_OFFLINE_UNAVAILABLE,
-	E_BOOK_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD,
 	E_BOOK_CLIENT_ERROR_NO_SPACE
 } EBookClientError;
 
-const gchar *e_book_client_error_to_string (EBookClientError code);
+const gchar *	e_book_client_error_to_string (EBookClientError code);
+GError *	e_book_client_error_create (EBookClientError code, const gchar *custom_msg);
 
 typedef struct _EBookClient        EBookClient;
 typedef struct _EBookClientClass   EBookClientClass;

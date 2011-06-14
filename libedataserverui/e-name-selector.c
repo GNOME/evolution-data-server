@@ -27,11 +27,12 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
-#include <libebook/e-book.h>
+#include <libebook/e-book-client.h>
 #include <libebook/e-contact.h>
-#include <libedataserverui/e-contact-store.h>
-#include <libedataserverui/e-destination-store.h>
-#include <libedataserverui/e-book-auth-util.h>
+
+#include "e-contact-store.h"
+#include "e-destination-store.h"
+#include "e-client-utils.h"
 #include "e-name-selector.h"
 
 typedef struct {
@@ -40,7 +41,7 @@ typedef struct {
 } Section;
 
 typedef struct {
-	EBook *book;
+	EBookClient *client;
 	guint is_completion_book : 1;
 } SourceBook;
 
@@ -78,17 +79,20 @@ reset_pointer_cb (gpointer data, GObject *where_was)
 }
 
 static void
-name_selector_book_loaded_cb (ESource *source,
+name_selector_book_loaded_cb (GObject *source_object,
                               GAsyncResult *result,
-                              ENameSelector *name_selector)
+                              gpointer user_data)
 {
-	EBook *book;
+	ENameSelector *name_selector = user_data;
+	ESource *source = E_SOURCE (source_object);
+	EBookClient *book_client;
+	EClient *client = NULL;
 	GArray *sections;
 	SourceBook source_book;
 	guint ii;
 	GError *error = NULL;
 
-	book = e_load_book_source_finish (source, result, &error);
+	e_client_utils_open_new_finish (source, result, &client, &error);
 
 	if (error != NULL) {
 		g_warning (
@@ -98,9 +102,10 @@ name_selector_book_loaded_cb (ESource *source,
 		goto exit;
 	}
 
-	g_return_if_fail (E_IS_BOOK (book));
+	book_client = E_BOOK_CLIENT (client);
+	g_return_if_fail (E_IS_BOOK_CLIENT (book_client));
 
-	source_book.book = book;
+	source_book.client = book_client;
 	source_book.is_completion_book = TRUE;
 
 	g_array_append_val (name_selector->priv->source_books, source_book);
@@ -118,7 +123,7 @@ name_selector_book_loaded_cb (ESource *source,
 		store = e_name_selector_entry_peek_contact_store (
 			section->entry);
 		if (store != NULL)
-			e_contact_store_add_book (store, book);
+			e_contact_store_add_client (store, book_client);
 	}
 
 exit:
@@ -132,7 +137,7 @@ name_selector_load_books (ENameSelector *name_selector)
 	GSList *groups;
 	GSList *iter1;
 
-	if (!e_book_get_addressbooks (&source_list, NULL)) {
+	if (!e_book_client_get_sources (&source_list, NULL)) {
 		g_warning ("ENameSelector can't find any addressbooks!");
 		return;
 	}
@@ -170,11 +175,10 @@ name_selector_load_books (ENameSelector *name_selector)
 				continue;
 
 			/* XXX Should we allow for cancellation? */
-			e_load_book_source_async (
-				source, NULL, NULL,
-				(GAsyncReadyCallback)
-				name_selector_book_loaded_cb,
-				g_object_ref (name_selector));
+			e_client_utils_open_new (
+				source, E_CLIENT_SOURCE_TYPE_CONTACTS, TRUE, NULL,
+				e_client_utils_authenticate_handler, NULL,
+				name_selector_book_loaded_cb, g_object_ref (name_selector));
 		}
 	}
 }
@@ -197,8 +201,8 @@ name_selector_dispose (GObject *object)
 
 		source_book = &g_array_index (
 			priv->source_books, SourceBook, ii);
-		if (source_book->book != NULL)
-			g_object_unref (source_book->book);
+		if (source_book->client != NULL)
+			g_object_unref (source_book->client);
 	}
 
 	for (ii = 0; ii < priv->sections->len; ii++) {
@@ -449,8 +453,8 @@ e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *n
 		for (i = 0; i < priv->source_books->len; i++) {
 			SourceBook *source_book = &g_array_index (priv->source_books, SourceBook, i);
 
-			if (source_book->is_completion_book && source_book->book)
-				e_contact_store_add_book (contact_store, source_book->book);
+			if (source_book->is_completion_book && source_book->client)
+				e_contact_store_add_client (contact_store, source_book->client);
 		}
 
 		e_name_selector_entry_set_contact_store (section->entry, contact_store);
@@ -516,8 +520,8 @@ e_name_selector_peek_section_list (ENameSelector *name_selector, const gchar *na
 		for (i = 0; i < priv->source_books->len; i++) {
 			SourceBook *source_book = &g_array_index (priv->source_books, SourceBook, i);
 
-			if (source_book->is_completion_book && source_book->book)
-				e_contact_store_add_book (contact_store, source_book->book);
+			if (source_book->is_completion_book && source_book->client)
+				e_contact_store_add_client (contact_store, source_book->client);
 		}
 
 		e_name_selector_entry_set_contact_store (section->entry, contact_store);
@@ -526,4 +530,3 @@ e_name_selector_peek_section_list (ENameSelector *name_selector, const gchar *na
 
 	return (ENameSelectorList *) section->entry;
 }
-

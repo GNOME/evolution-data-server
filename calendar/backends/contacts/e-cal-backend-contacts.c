@@ -39,7 +39,9 @@
 #include <libecal/e-cal-util.h>
 #include <libedata-cal/e-cal-backend-util.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
-#include <libebook/e-book.h>
+#include <libebook/e-book-client.h>
+#include <libebook/e-book-query.h>
+#include <libebook/e-contact.h>
 
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 
@@ -61,7 +63,7 @@ struct _ECalBackendContactsPrivate {
 	GHashTable   *addressbooks;       /* UID -> BookRecord */
 	gboolean      addressbook_loaded;
 
-	EBookView    *book_view;
+	EBookClientView *book_view;
 	GHashTable   *tracked_contacts;   /* UID -> ContactRecord */
 
 	GHashTable *zones;
@@ -81,13 +83,13 @@ struct _ECalBackendContactsPrivate {
 
 typedef struct _BookRecord {
 	ECalBackendContacts *cbc;
-	EBook     *book;
-	EBookView *book_view;
+	EBookClient *book_client;
+	EBookClientView *book_view;
 } BookRecord;
 
 typedef struct _ContactRecord {
 	ECalBackendContacts *cbc;
-	EBook	       *book; /* where it comes from */
+	EBookClient *book_client; /* where it comes from */
 	EContact	    *contact;
 	ECalComponent       *comp_birthday, *comp_anniversary;
 } ContactRecord;
@@ -100,9 +102,9 @@ typedef struct _ContactRecord {
 static ECalComponent * create_birthday (ECalBackendContacts *cbc, EContact *contact);
 static ECalComponent * create_anniversary (ECalBackendContacts *cbc, EContact *contact);
 
-static void contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_data);
-static void contacts_added_cb   (EBookView *book_view, const GList *contacts, gpointer user_data);
-static void contacts_removed_cb (EBookView *book_view, const GList *contact_ids, gpointer user_data);
+static void contacts_modified_cb (EBookClientView *book_view, const GSList *contacts, gpointer user_data);
+static void contacts_added_cb   (EBookClientView *book_view, const GSList *contacts, gpointer user_data);
+static void contacts_removed_cb (EBookClientView *book_view, const GSList *contact_ids, gpointer user_data);
 static void e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
 static void setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp);
 
@@ -110,17 +112,17 @@ static void setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp);
 static BookRecord *
 book_record_new (ECalBackendContacts *cbc, ESource *source)
 {
-	EBook      *book;
-	GList      *fields = NULL;
+	EBookClient *book_client;
 	EBookQuery *query;
-	EBookView  *book_view;
+	EBookClientView *book_view;
 	BookRecord *br;
-	GError     *error = NULL;
+	GError *error = NULL;
+	gchar *query_sexp;
 
-	book = e_book_new (source, &error);
-	if (!book || !e_book_open (book, TRUE, &error) || error) {
-		if (book)
-			g_object_unref (book);
+	book_client = e_book_client_new (source, &error);
+	if (!book_client || !e_client_open_sync (E_CLIENT (book_client), TRUE, NULL, &error) || error) {
+		if (book_client)
+			g_object_unref (book_client);
 		if (error) {
 			g_warning ("%s: Failed to open book: %s", G_STRFUNC, error->message);
 			g_error_free (error);
@@ -128,36 +130,38 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
 		return NULL;
 	}
 
-	/* Create book view */
-	fields = g_list_append (fields, (gchar *) e_contact_field_name (E_CONTACT_FILE_AS));
-	fields = g_list_append (fields, (gchar *) e_contact_field_name (E_CONTACT_BIRTH_DATE));
-	fields = g_list_append (fields, (gchar *) e_contact_field_name (E_CONTACT_ANNIVERSARY));
-	query = e_book_query_any_field_contains ("");
+	query = e_book_query_andv (
+		e_book_query_field_exists (E_CONTACT_FILE_AS),
+		e_book_query_orv (
+			e_book_query_field_exists (E_CONTACT_BIRTH_DATE),
+			e_book_query_field_exists (E_CONTACT_ANNIVERSARY),
+			NULL),
+		NULL);
+	query_sexp = e_book_query_to_string (query);
+	e_book_query_unref (query);
 
-	if (!e_book_get_book_view (book, query, fields, -1, &book_view, &error)) {
+	if (!e_book_client_get_view_sync (book_client, query_sexp, &book_view, NULL, &error)) {
 		g_warning ("%s: Failed to get book view on '%s': %s", G_STRFUNC, e_source_peek_name (source), error ? error->message : "Unknown error");
 
-		e_book_query_unref (query);
-		g_object_unref (book);
-		g_list_free (fields);
+		g_free (query_sexp);
+		g_object_unref (book_client);
 
 		if (error)
 			g_error_free (error);
 
 		return NULL;
 	}
-	e_book_query_unref (query);
-	g_list_free (fields);
+	g_free (query_sexp);
 
-	g_signal_connect (book_view, "contacts_added", G_CALLBACK (contacts_added_cb), cbc);
-	g_signal_connect (book_view, "contacts_removed", G_CALLBACK (contacts_removed_cb), cbc);
-	g_signal_connect (book_view, "contacts_changed", G_CALLBACK (contacts_changed_cb), cbc);
+	g_signal_connect (book_view, "objects-added", G_CALLBACK (contacts_added_cb), cbc);
+	g_signal_connect (book_view, "objects-removed", G_CALLBACK (contacts_removed_cb), cbc);
+	g_signal_connect (book_view, "objects-modified", G_CALLBACK (contacts_modified_cb), cbc);
 
-	e_book_view_start (book_view);
+	e_book_client_view_start (book_view, NULL);
 
 	br = g_new (BookRecord, 1);
 	br->cbc = cbc;
-	br->book = book;
+	br->book_client = book_client;
 	br->book_view = book_view;
 
 	return br;
@@ -167,9 +171,9 @@ static gboolean
 remove_by_book (gpointer key, gpointer value, gpointer user_data)
 {
 	ContactRecord *cr = value;
-	EBook *book = user_data;
+	EBookClient *book_client = user_data;
 
-	return (cr && cr->book == book);
+	return (cr && cr->book_client == book_client);
 }
 
 static void
@@ -178,38 +182,35 @@ book_record_free (BookRecord *br)
 	if (!br)
 		return;
 
-	g_hash_table_foreach_remove (br->cbc->priv->tracked_contacts, remove_by_book, br->book);
+	g_hash_table_foreach_remove (br->cbc->priv->tracked_contacts, remove_by_book, br->book_client);
 	g_object_unref (br->book_view);
-	g_object_unref (br->book);
+	g_object_unref (br->book_client);
 
 	g_free (br);
 }
 
 /* ContactRecord methods */
 static ContactRecord *
-contact_record_new (ECalBackendContacts *cbc, EBook *book, EContact *contact)
+contact_record_new (ECalBackendContacts *cbc, EBookClient *book_client, EContact *contact)
 {
 	ContactRecord *cr = g_new0 (ContactRecord, 1);
 	gchar *comp_str;
 
 	cr->cbc = cbc;
-	cr->book = book;
+	cr->book_client = book_client;
 	cr->contact = contact;
 	cr->comp_birthday = create_birthday (cbc, contact);
 	cr->comp_anniversary = create_anniversary (cbc, contact);
 
 	if (cr->comp_birthday) {
 		comp_str = e_cal_component_get_as_string (cr->comp_birthday);
-		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbc),
-						     comp_str);
+		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbc), comp_str);
 		g_free (comp_str);
 	}
 
 	if (cr->comp_anniversary) {
-
 		comp_str = e_cal_component_get_as_string (cr->comp_anniversary);
-		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbc),
-						     comp_str);
+		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbc), comp_str);
 		g_free (comp_str);
 	}
 
@@ -421,14 +422,14 @@ source_group_removed_cb (ESourceList *source_list, ESourceGroup *group, gpointer
 /************************************************************************************/
 
 static void
-contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_data)
+contacts_modified_cb (EBookClientView *book_view, const GSList *contacts, gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
-	EBook *book = e_book_view_get_book (book_view);
-	const GList *i;
+	EBookClient *book_client = e_book_client_view_get_client (book_view);
+	const GSList *ii;
 
-	for (i = contacts; i; i = i->next) {
-		EContact *contact = E_CONTACT (i->data);
+	for (ii = contacts; ii; ii = ii->next) {
+		EContact *contact = E_CONTACT (ii->data);
 		const gchar *uid = e_contact_get_const (contact, E_CONTACT_UID);
 		EContactDate *birthday, *anniversary;
 
@@ -441,7 +442,7 @@ contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_
 		anniversary = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
 
 		if (birthday || anniversary) {
-			ContactRecord *cr = contact_record_new (cbc, book, contact);
+			ContactRecord *cr = contact_record_new (cbc, book_client, contact);
 			g_hash_table_insert (cbc->priv->tracked_contacts, g_strdup (uid), cr);
 		}
 
@@ -451,23 +452,22 @@ contacts_changed_cb (EBookView *book_view, const GList *contacts, gpointer user_
 }
 
 static void
-contacts_added_cb (EBookView *book_view, const GList *contacts, gpointer user_data)
+contacts_added_cb (EBookClientView *book_view, const GSList *contacts, gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
-	EBook *book = e_book_view_get_book (book_view);
-	const GList *i;
+	EBookClient *book_client = e_book_client_view_get_client (book_view);
+	const GSList *ii;
 
 	/* See if any new contacts have BIRTHDAY or ANNIVERSARY fields */
-	for (i = contacts; i; i = i->next)
-	{
-		EContact *contact = E_CONTACT (i->data);
+	for (ii = contacts; ii; ii = ii->next) {
+		EContact *contact = E_CONTACT (ii->data);
 		EContactDate *birthday, *anniversary;
 
 		birthday = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
 		anniversary = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
 
 		if (birthday || anniversary) {
-			ContactRecord *cr = contact_record_new (cbc, book, contact);
+			ContactRecord *cr = contact_record_new (cbc, book_client, contact);
 			const gchar    *uid = e_contact_get_const (contact, E_CONTACT_UID);
 
 			g_hash_table_insert (cbc->priv->tracked_contacts, g_strdup (uid), cr);
@@ -479,14 +479,14 @@ contacts_added_cb (EBookView *book_view, const GList *contacts, gpointer user_da
 }
 
 static void
-contacts_removed_cb (EBookView *book_view, const GList *contact_ids, gpointer user_data)
+contacts_removed_cb (EBookClientView *book_view, const GSList *contact_ids, gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
-	const GList *i;
+	const GSList *ii;
 
 	/* Stop tracking these */
-	for (i = contact_ids; i; i = i->next)
-		g_hash_table_remove (cbc->priv->tracked_contacts, i->data);
+	for (ii = contact_ids; ii; ii = ii->next)
+		g_hash_table_remove (cbc->priv->tracked_contacts, ii->data);
 }
 
 /************************************************************************************/
@@ -1144,7 +1144,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 
 	priv = g_new0 (ECalBackendContactsPrivate, 1);
 
-	e_book_get_addressbooks (&priv->addressbook_sources, NULL);
+	e_book_client_get_sources (&priv->addressbook_sources, NULL);
 
 	priv->addressbooks = g_hash_table_new_full (g_str_hash, g_str_equal,
 						    g_free, (GDestroyNotify) book_record_free);

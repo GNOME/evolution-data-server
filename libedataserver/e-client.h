@@ -54,15 +54,23 @@ typedef enum {
 	E_CLIENT_ERROR_AUTHENTICATION_FAILED,
 	E_CLIENT_ERROR_AUTHENTICATION_REQUIRED,
 	E_CLIENT_ERROR_REPOSITORY_OFFLINE,
+	E_CLIENT_ERROR_OFFLINE_UNAVAILABLE,
 	E_CLIENT_ERROR_PERMISSION_DENIED,
 	E_CLIENT_ERROR_CANCELLED,
 	E_CLIENT_ERROR_COULD_NOT_CANCEL,
 	E_CLIENT_ERROR_NOT_SUPPORTED,
+	E_CLIENT_ERROR_TLS_NOT_AVAILABLE,
+	E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD,
+	E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED,
+	E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED,
+	E_CLIENT_ERROR_INVALID_QUERY,
+	E_CLIENT_ERROR_QUERY_REFUSED,
 	E_CLIENT_ERROR_DBUS_ERROR,
 	E_CLIENT_ERROR_OTHER_ERROR
 } EClientError;
 
-const gchar *e_client_error_to_string (EClientError code);
+const gchar *	e_client_error_to_string (EClientError code);
+GError *	e_client_error_create (EClientError code, const gchar *custom_msg);
 
 typedef struct _EClient        EClient;
 typedef struct _EClientClass   EClientClass;
@@ -122,6 +130,7 @@ gboolean	e_client_check_refresh_supported	(EClient *client);
 gboolean	e_client_is_readonly			(EClient *client);
 gboolean	e_client_is_online			(EClient *client);
 gboolean	e_client_is_opened			(EClient *client);
+void		e_client_unwrap_dbus_error		(EClient *client, GError *dbus_error, GError **out_error);
 
 void		e_client_cancel_all			(EClient *client);
 
@@ -152,7 +161,7 @@ GSList *	e_client_util_copy_string_slist		(GSList *copy_to, const GSList *string
 GSList *	e_client_util_copy_object_slist		(GSList *copy_to, const GSList *objects);
 void		e_client_util_free_string_slist		(GSList *strings);
 void		e_client_util_free_object_slist		(GSList *objects);
-GSList *	e_client_util_parse_comma_strings	(const gchar *capabilities);
+GSList *	e_client_util_parse_comma_strings	(const gchar *strings);
 
 struct EClientErrorsList {
 	const gchar *name;

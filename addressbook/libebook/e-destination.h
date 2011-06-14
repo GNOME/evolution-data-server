@@ -29,8 +29,12 @@
 #define __E_DESTINATION_H__
 
 #include <libebook/e-contact.h>
-#include <libebook/e-book.h>
+#include <libebook/e-book-client.h>
 #include <libxml/tree.h>
+
+#ifndef E_BOOK_DISABLE_DEPRECATED
+#include <libebook/e-book.h>
+#endif /* E_BOOK_DISABLE_DEPRECATED */
 
 #define E_TYPE_DESTINATION           (e_destination_get_type ())
 #define E_DESTINATION(o)             (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_DESTINATION, EDestination))
@@ -74,7 +78,10 @@ gboolean       e_destination_equal              (const EDestination *a, const ED
 /* for use with EDestinations that wrap a particular contact */
 void           e_destination_set_contact        (EDestination *dest, EContact *contact, gint email_num);
 void           e_destination_set_contact_uid    (EDestination *dest, const gchar *uid, gint email_num);
+#ifndef E_BOOK_DISABLE_DEPRECATED
 void           e_destination_set_book           (EDestination *dest, EBook *book);
+#endif
+void		e_destination_set_client	(EDestination *dest, EBookClient *client);
 EContact      *e_destination_get_contact        (const EDestination *dest);
 const gchar    *e_destination_get_source_uid     (const EDestination *dest);
 const gchar    *e_destination_get_contact_uid    (const EDestination *dest);
@@ -123,4 +130,3 @@ void          e_destination_export_to_vcard_attribute   (EDestination *dest, EVC
 void           e_destination_freev              (EDestination **destv);
 
 #endif /* __E_DESTINATION_H__ */
-

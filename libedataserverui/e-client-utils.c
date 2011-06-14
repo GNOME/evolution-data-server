@@ -270,6 +270,7 @@ typedef struct _EClientUtilsAsyncOpData
 	GAsyncReadyCallback async_cb;
 	gpointer async_cb_user_data;
 	GCancellable *cancellable;
+	ESource *source;
 	EClient *client;
 	ECredentials *used_credentials;
 	gboolean open_finished;
@@ -292,6 +293,7 @@ free_client_utils_async_op_data (EClientUtilsAsyncOpData *async_data)
 		g_error_free (async_data->opened_cb_error);
 	g_object_unref (async_data->cancellable);
 	g_object_unref (async_data->client);
+	g_object_unref (async_data->source);
 	g_free (async_data);
 }
 
@@ -318,28 +320,28 @@ complete_async_op_in_idle_cb (gpointer user_data)
 	return FALSE;
 }
 
-#define return_async_error_if_fail(expr, async_cb, async_cb_user_data, source_tag) G_STMT_START {	\
+#define return_async_error_if_fail(expr, async_cb, async_cb_user_data, src, source_tag) G_STMT_START {	\
 	if (G_LIKELY ((expr))) { } else {								\
 		GError *error;										\
 													\
 		error = g_error_new (E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG,			\
 				"%s: assertion '%s' failed", G_STRFUNC, #expr);				\
 													\
-		return_async_error (error, async_cb, async_cb_user_data, source_tag);			\
+		return_async_error (error, async_cb, async_cb_user_data, src, source_tag);		\
 		g_error_free (error);									\
 		return;											\
 	}												\
 	} G_STMT_END
 
 static void
-return_async_error (const GError *error, GAsyncReadyCallback async_cb, gpointer async_cb_user_data, gpointer source_tag)
+return_async_error (const GError *error, GAsyncReadyCallback async_cb, gpointer async_cb_user_data, ESource *source, gpointer source_tag)
 {
 	GSimpleAsyncResult *simple;
 
 	g_return_if_fail (error != NULL);
 	g_return_if_fail (source_tag != NULL);
 
-	simple = g_simple_async_result_new (NULL, async_cb, async_cb_user_data, source_tag);
+	simple = g_simple_async_result_new (G_OBJECT (source), async_cb, async_cb_user_data, source_tag);
 	g_simple_async_result_set_from_error (simple, error);
 
 	g_object_set_data (G_OBJECT (simple), "run-main-depth", GINT_TO_POINTER (g_main_depth ()));
@@ -360,7 +362,7 @@ client_utils_open_new_done (EClientUtilsAsyncOpData *async_data)
 	if (async_data->auth_handler)
 		g_signal_connect (async_data->client, "authenticate", G_CALLBACK (async_data->auth_handler), async_data->auth_handler_user_data);
 
-	simple = g_simple_async_result_new (NULL, async_data->async_cb, async_data->async_cb_user_data, e_client_utils_open_new);
+	simple = g_simple_async_result_new (G_OBJECT (async_data->source), async_data->async_cb, async_data->async_cb_user_data, e_client_utils_open_new);
 	g_simple_async_result_set_op_res_gpointer (simple, g_object_ref (async_data->client), g_object_unref);
 
 	g_object_set_data (G_OBJECT (simple), "run-main-depth", GINT_TO_POINTER (g_main_depth ()));
@@ -379,7 +381,7 @@ client_utils_open_new_cancelled_cb (GCancellable *cancellable, EClientUtilsAsync
 	g_return_if_fail (async_data->cancellable == cancellable);
 	g_return_if_fail (g_cancellable_set_error_if_cancelled (cancellable, &error));
 
-	return_async_error (error, async_data->async_cb, async_data->async_cb_user_data, e_client_utils_open_new);
+	return_async_error (error, async_data->async_cb, async_data->async_cb_user_data, async_data->source, e_client_utils_open_new);
 	free_client_utils_async_op_data (async_data);
 	g_error_free (error);
 }
@@ -405,7 +407,7 @@ finish_or_retry_open (EClientUtilsAsyncOpData *async_data, const GError *error)
 
 		e_client_process_authentication (async_data->client, async_data->used_credentials);
 	} else if (error) {
-		return_async_error (error, async_data->async_cb, async_data->async_cb_user_data, e_client_utils_open_new);
+		return_async_error (error, async_data->async_cb, async_data->async_cb_user_data, async_data->source, e_client_utils_open_new);
 		free_client_utils_async_op_data (async_data);
 	} else {
 		client_utils_open_new_done (async_data);
@@ -521,9 +523,9 @@ client_utils_open_new_auth_cb (EClient *client, ECredentials *credentials, gpoin
  * @source: an #ESource to be opened
  * @source_type: an #EClientSourceType of the @source
  * @only_if_exists: if %TRUE, fail if this client doesn't already exist, otherwise create it first
+ * @cancellable: a #GCancellable; can be %NULL
  * @auth_handler: authentication handler, to be used; the e_client_utils_authenticate_handler() is usually sufficient
  * @auth_handler_user_data: user data for @auth_handler function
- * @cancellable: a #GCancellable; can be %NULL
  * @async_cb: callback to call when a result is ready
  * @async_cb_user_data: user data for the @async_cb
  *
@@ -539,21 +541,21 @@ client_utils_open_new_auth_cb (EClient *client, ECredentials *credentials, gpoin
  * Since: 3.2
  **/
 void
-e_client_utils_open_new (ESource *source, EClientSourceType source_type, gboolean only_if_exists,
+e_client_utils_open_new (ESource *source, EClientSourceType source_type, gboolean only_if_exists, GCancellable *cancellable,
 			 EClientUtilsAuthenticateHandler auth_handler, gpointer auth_handler_user_data,
-			 GCancellable *cancellable, GAsyncReadyCallback async_cb, gpointer async_cb_user_data)
+			 GAsyncReadyCallback async_cb, gpointer async_cb_user_data)
 {
 	EClient *client;
 	GError *error = NULL;
 	EClientUtilsAsyncOpData *async_data;
 
 	g_return_if_fail (async_cb != NULL);
-	return_async_error_if_fail (source != NULL, async_cb, async_cb_user_data, e_client_utils_open_new);
-	return_async_error_if_fail (E_IS_SOURCE (source), async_cb, async_cb_user_data, e_client_utils_open_new);
+	return_async_error_if_fail (source != NULL, async_cb, async_cb_user_data, source, e_client_utils_open_new);
+	return_async_error_if_fail (E_IS_SOURCE (source), async_cb, async_cb_user_data, source, e_client_utils_open_new);
 
 	client = e_client_utils_new (source, source_type, &error);
 	if (!client) {
-		return_async_error (error, async_cb, async_cb_user_data, e_client_utils_open_new);
+		return_async_error (error, async_cb, async_cb_user_data, source, e_client_utils_open_new);
 		g_error_free (error);
 		return;
 	}
@@ -563,6 +565,7 @@ e_client_utils_open_new (ESource *source, EClientSourceType source_type, gboolea
 	async_data->auth_handler_user_data = auth_handler_user_data;
 	async_data->async_cb = async_cb;
 	async_data->async_cb_user_data = async_cb_user_data;
+	async_data->source = g_object_ref (source);
 	async_data->client = client;
 	async_data->open_finished = FALSE;
 	if (cancellable)
@@ -581,8 +584,9 @@ e_client_utils_open_new (ESource *source, EClientSourceType source_type, gboolea
 
 /**
  * e_client_utils_open_new_finish:
+ * @source: an #ESource on which the e_client_utils_open_new() was invoked
  * @result: a #GAsyncResult
- * @client: (out): Return value for an #EClient.
+ * @client: (out): Return value for an #EClient
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_client_utils_open_new() and
@@ -594,13 +598,14 @@ e_client_utils_open_new (ESource *source, EClientSourceType source_type, gboolea
  * Since: 3.2
  **/
 gboolean
-e_client_utils_open_new_finish (GAsyncResult *result, EClient **client, GError **error)
+e_client_utils_open_new_finish (ESource *source, GAsyncResult *result, EClient **client, GError **error)
 {
 	GSimpleAsyncResult *simple;
 
+	g_return_val_if_fail (source != NULL, FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (client != NULL, FALSE);
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, NULL, e_client_utils_open_new), FALSE);
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (source), e_client_utils_open_new), FALSE);
 
 	*client = NULL;
 	simple = G_SIMPLE_ASYNC_RESULT (result);
@@ -613,13 +618,62 @@ e_client_utils_open_new_finish (GAsyncResult *result, EClient **client, GError *
 	return *client != NULL;
 }
 
+/* free returned pointer with g_free() */
+static gchar *
+get_auth_domain (EClient *client)
+{
+	ESource *source;
+	const gchar *auth_domain;
+
+	g_return_val_if_fail (client != NULL, NULL);
+
+	source = e_client_get_source (client);
+	g_return_val_if_fail (source != NULL, NULL);
+
+	auth_domain = e_source_get_property (source, "auth-domain");
+	if (auth_domain && *auth_domain)
+		return g_strdup (auth_domain);
+
+	if (E_IS_BOOK_CLIENT (client))
+		return g_strdup (E_CREDENTIALS_AUTH_DOMAIN_ADDRESSBOOK);
+	if (E_IS_CAL_CLIENT (client))
+		return g_strdup (E_CREDENTIALS_AUTH_DOMAIN_CALENDAR);
+
+	g_return_val_if_reached (NULL);
+}
+
+/* free returned pointer with g_free() */
+static gchar *
+get_prompt_key (EClient *client, const gchar *user_name)
+{
+	SoupURI *suri;
+	gchar *uri_str;
+
+	g_return_val_if_fail (client != NULL, NULL);
+
+	suri = soup_uri_new (e_client_get_uri (client));
+	g_return_val_if_fail (suri != NULL, NULL);
+
+	soup_uri_set_user (suri, user_name);
+	soup_uri_set_password (suri, NULL);
+	soup_uri_set_fragment (suri, NULL);
+
+	uri_str = soup_uri_to_string (suri, FALSE);
+	soup_uri_free (suri);
+
+	return uri_str;
+}
+
 /* This function is suitable as a handler for EClient::authenticate signal.
    It takes care of all the password prompt and such and returns TRUE if
    credentials (password) were provided. Thus just connect it to that signal
    and it'll take care of everything else.
+
+   gtk_window_parent is user_data passed into the callback. It can be a pointer
+   to GtkWindow, used as a parent for a pasword prompt dialog.
 */
 gboolean
-e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials, gpointer unused_user_data)
+e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials, gpointer gtk_window_parent)
 {
 	ESource *source;
 	gboolean is_book, is_cal, res, remember_password = FALSE;
@@ -643,8 +697,21 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 			return FALSE;
 	}
 
-	if (!e_credentials_has_key (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN))
-		e_credentials_set (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN, is_book ? E_CREDENTIALS_AUTH_DOMAIN_ADDRESSBOOK : E_CREDENTIALS_AUTH_DOMAIN_CALENDAR);
+	if (!e_credentials_has_key (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN)) {
+		gchar *auth_domain = get_auth_domain (client);
+
+		e_credentials_set (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN, auth_domain);
+
+		g_free (auth_domain);
+	}
+
+	if (!e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_KEY)) {
+		gchar *prompt_key = get_prompt_key (client, e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME));
+
+		e_credentials_set (credentials, E_CREDENTIALS_KEY_PROMPT_KEY, prompt_key);
+
+		g_free (prompt_key);
+	}
 
 	if (!e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_TEXT)) {
 		gchar *prompt, *reason;
@@ -667,28 +734,9 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 		g_free (prompt);
 	}
 
-	if (!e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_KEY)) {
-		SoupURI *suri;
-		gchar *uri_str;
-
-		suri = soup_uri_new (e_client_get_uri (client));
-		g_return_val_if_fail (suri != NULL, FALSE);
-
-		soup_uri_set_user (suri, e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME));
-		soup_uri_set_password (suri, NULL);
-		soup_uri_set_fragment (suri, NULL);
-
-		uri_str = soup_uri_to_string (suri, FALSE);
-
-		e_credentials_set (credentials, E_CREDENTIALS_KEY_PROMPT_KEY, uri_str);
-
-		g_free (uri_str);
-		soup_uri_free (suri);
-	}
-
 	remember_password = g_strcmp0 (e_source_get_property (source, "remember_password"), "true") == 0;
 
-	res = e_credentials_authenticate_helper (credentials, NULL, &remember_password);
+	res = e_credentials_authenticate_helper (credentials, gtk_window_parent, &remember_password);
 
 	if (res)
 		e_source_set_property (source, "remember_password", remember_password ? "true" : NULL);
@@ -698,12 +746,41 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 	return res;
 }
 
+/**
+ * e_client_utils_forget_password:
+ * @client: An #EClient
+ *
+ * Forgets stored password for the given @client.
+ *
+ * Since: 3.2
+ **/
+void
+e_client_utils_forget_password (EClient *client)
+{
+	gchar *auth_domain, *prompt_key;
+	ESource *source;
+
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_CLIENT (client));
+
+	source = e_client_get_source (client);
+	g_return_if_fail (source != NULL);
+	
+	auth_domain = get_auth_domain (client);
+	prompt_key = get_prompt_key (client, e_source_get_property (source, "username"));
+
+	e_passwords_forget_password (auth_domain, prompt_key);
+
+	g_free (auth_domain);
+	g_free (prompt_key);
+}
+
 /* Asks for a password based on the provided credentials information.
    Credentials should have set following keys:
       E_CREDENTIALS_KEY_USERNAME
       E_CREDENTIALS_KEY_AUTH_DOMAIN
-      E_CREDENTIALS_KEY_PROMPT_TEXT
       E_CREDENTIALS_KEY_PROMPT_KEY
+      E_CREDENTIALS_KEY_PROMPT_TEXT
    all other keys are optional. If also E_CREDENTIALS_KEY_PASSWORD key is provided,
    then it implies a reprompt.
 
@@ -721,8 +798,8 @@ e_credentials_authenticate_helper (ECredentials *credentials, GtkWindow *parent,
 	g_return_val_if_fail (credentials != NULL, FALSE);
 	g_return_val_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_USERNAME), FALSE);
 	g_return_val_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN), FALSE);
-	g_return_val_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_TEXT), FALSE);
 	g_return_val_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_KEY), FALSE);
+	g_return_val_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_TEXT), FALSE);
 
 	if (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_FLAGS)) {
 		prompt_flags = e_credentials_util_string_to_prompt_flags (e_credentials_peek (credentials, E_CREDENTIALS_KEY_PROMPT_FLAGS));
@@ -767,4 +844,31 @@ e_credentials_authenticate_helper (ECredentials *credentials, GtkWindow *parent,
 	e_credentials_clear_peek (credentials);
 
 	return res;
+}
+
+/**
+ * e_credentials_forget_password:
+ * @credentials: an #ECredentials
+ *
+ * Forgets stored password for given @credentials, which should contain
+ * E_CREDENTIALS_KEY_AUTH_DOMAIN and E_CREDENTIALS_KEY_PROMPT_KEY.
+ *
+ * Since: 3.2
+ **/
+void
+e_credentials_forget_password (const ECredentials *credentials)
+{
+	gchar *auth_domain, *prompt_key;
+
+	g_return_if_fail (credentials != NULL);
+	g_return_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN));
+	g_return_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_KEY));
+
+	auth_domain = e_credentials_get (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN);
+	prompt_key = e_credentials_get (credentials, E_CREDENTIALS_KEY_PROMPT_KEY);
+
+	e_passwords_forget_password (auth_domain, prompt_key);
+
+	g_free (auth_domain);
+	g_free (prompt_key);
 }

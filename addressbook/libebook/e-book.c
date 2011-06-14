@@ -2027,7 +2027,7 @@ e_book_get_book_view (EBook       *book,
 		*book_view = _e_book_view_new (book, gdbus_bookview);
 	} else {
 		*book_view = NULL;
-		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_DBUS_EXCEPTION,
+		g_set_error_literal (error, E_BOOK_ERROR, E_BOOK_ERROR_DBUS_EXCEPTION,
 			     "Cannot get connection to view");
 		ret = FALSE;
 	}

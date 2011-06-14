@@ -118,6 +118,8 @@ e_client_error_to_string (EClientError code)
 		return C_("ClientError", "Authentication required");
 	case E_CLIENT_ERROR_REPOSITORY_OFFLINE:
 		return C_("ClientError", "Repository offline");
+	case E_CLIENT_ERROR_OFFLINE_UNAVAILABLE:
+		return C_("ClientError", "Offline unavailable");
 	case E_CLIENT_ERROR_PERMISSION_DENIED:
 		return C_("ClientError", "Permission denied");
 	case E_CLIENT_ERROR_CANCELLED:
@@ -126,6 +128,18 @@ e_client_error_to_string (EClientError code)
 		return C_("ClientError", "Could not cancel");
 	case E_CLIENT_ERROR_NOT_SUPPORTED:
 		return C_("ClientError", "Not supported");
+	case E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD:
+		return C_("ClientError", "Unsupported authentication method");
+	case E_CLIENT_ERROR_TLS_NOT_AVAILABLE:
+		return C_("ClientError", "TLS not available");
+	case E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED:
+		return C_("ClientError", "Search size limit exceeded");
+	case E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED:
+		return C_("ClientError", "Search time limit exceeded");
+	case E_CLIENT_ERROR_INVALID_QUERY:
+		return C_("ClientError", "Invalid query");
+	case E_CLIENT_ERROR_QUERY_REFUSED:
+		return C_("ClientError", "Query refused");
 	case E_CLIENT_ERROR_DBUS_ERROR:
 		return C_("ClientError", "D-Bus error");
 	case E_CLIENT_ERROR_OTHER_ERROR:
@@ -133,6 +147,24 @@ e_client_error_to_string (EClientError code)
 	}
 
 	return C_("ClientError", "Unknown error");
+}
+
+/**
+ * e_client_error_create:
+ * @code: an #EClientError code to create
+ * @custom_msg: custom message to use for the error; can be %NULL
+ *
+ * Returns: a new #GError containing an E_CLIENT_ERROR of the given
+ * @code. If the @custom_msg is NULL, then the error message is
+ * the one returned from e_client_error_to_string() for the @code,
+ * otherwise the given message is used.
+ *
+ * Returned pointer should be freed with g_error_free().
+ **/
+GError *
+e_client_error_create (EClientError code, const gchar *custom_msg)
+{
+	return g_error_new_literal (E_CLIENT_ERROR, code, custom_msg ? custom_msg : e_client_error_to_string (code));
 }
 
 static void client_set_source (EClient *client, ESource *source);
@@ -387,7 +419,7 @@ client_operation_thread (gpointer data, gpointer user_data)
 		} else {
 			GError *error;
 
-			error = g_error_new_literal (E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_REQUIRED, e_client_error_to_string (E_CLIENT_ERROR_AUTHENTICATION_REQUIRED));
+			error = e_client_error_create (E_CLIENT_ERROR_AUTHENTICATION_REQUIRED, NULL);
 			e_client_emit_opened (op_data->client, error);
 			g_error_free (error);
 		}
@@ -1737,8 +1769,13 @@ e_client_get_dbus_proxy (EClient *client)
 }
 
 /**
- * Unwraps D-Bus error to local error. dbus_error is automatically freed.
- * dbus_erorr and out_error can point to the same variable.
+ * e_client_unwrap_dbus_error:
+ * @client: an #EClient
+ * @dbus_error: a #GError returned bu D-Bus
+ * @out_error: a #GError variable where to store the result
+ *
+ * Unwraps D-Bus error to local error. @dbus_error is automatically freed.
+ * @dbus_erorr and @out_error can point to the same variable.
  **/
 void
 e_client_unwrap_dbus_error (EClient *client, GError *dbus_error, GError **out_error)

@@ -133,9 +133,29 @@ e_cal_client_error_to_string (ECalClientError code)
 		return C_("CalClientError", "Unknown user");
 	case E_CAL_CLIENT_ERROR_OBJECT_ID_ALREADY_EXISTS:
 		return C_("CalClientError", "Object ID already exists");
+	case E_CAL_CLIENT_ERROR_INVALID_RANGE:
+		return C_("CalClientError", "Invalid range");
 	}
 
 	return C_("CalClientError", "Unknown error");
+}
+
+/**
+ * e_cal_client_error_create:
+ * @code: an #ECalClientError code to create
+ * @custom_msg: custom message to use for the error; can be %NULL
+ *
+ * Returns: a new #GError containing an E_CAL_CLIENT_ERROR of the given
+ * @code. If the @custom_msg is NULL, then the error message is
+ * the one returned from e_cal_client_error_to_string() for the @code,
+ * otherwise the given message is used.
+ *
+ * Returned pointer should be freed with g_error_free().
+ **/
+GError *
+e_cal_client_error_create (ECalClientError code, const gchar *custom_msg)
+{
+	return g_error_new_literal (E_CAL_CLIENT_ERROR, code, custom_msg ? custom_msg : e_cal_client_error_to_string (code));
 }
 
 /**
@@ -155,25 +175,25 @@ unwrap_dbus_error (GError *error, GError **client_error)
 		{ err ("ObjectIdAlreadyExists",			E_CAL_CLIENT_ERROR_OBJECT_ID_ALREADY_EXISTS) },
 		{ err ("NoSuchCal",				E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR) },
 		{ err ("UnknownUser",				E_CAL_CLIENT_ERROR_UNKNOWN_USER) },
+		{ err ("InvalidRange",				E_CAL_CLIENT_ERROR_INVALID_RANGE) },
 	}, cl_errors[] = {
 		{ err ("Busy",					E_CLIENT_ERROR_BUSY) },
 		{ err ("InvalidArg",				E_CLIENT_ERROR_INVALID_ARG) },
 		{ err ("RepositoryOffline",			E_CLIENT_ERROR_REPOSITORY_OFFLINE) },
+		{ err ("OfflineUnavailable",			E_CLIENT_ERROR_OFFLINE_UNAVAILABLE) },
 		{ err ("PermissionDenied",			E_CLIENT_ERROR_PERMISSION_DENIED) },
 		{ err ("AuthenticationFailed",			E_CLIENT_ERROR_AUTHENTICATION_FAILED) },
 		{ err ("AuthenticationRequired",		E_CLIENT_ERROR_AUTHENTICATION_REQUIRED) },
 		{ err ("CouldNotCancel",			E_CLIENT_ERROR_COULD_NOT_CANCEL) },
 		{ err ("NotSupported",				E_CLIENT_ERROR_NOT_SUPPORTED) },
-		{ err ("InvalidRange",				E_CLIENT_ERROR_OTHER_ERROR) },
+		{ err ("UnsupportedAuthenticationMethod",	E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD) },
+		{ err ("TLSNotAvailable",			E_CLIENT_ERROR_TLS_NOT_AVAILABLE) },
+		{ err ("SearchSizeLimitExceeded",		E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED) },
+		{ err ("SearchTimeLimitExceeded",		E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED) },
+		{ err ("InvalidQuery",				E_CLIENT_ERROR_INVALID_QUERY) },
+		{ err ("QueryRefused",				E_CLIENT_ERROR_QUERY_REFUSED) },
 		{ err ("UnsupportedField",			E_CLIENT_ERROR_OTHER_ERROR) },
 		{ err ("UnsupportedMethod",			E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("UnsupportedAuthenticationMethod",	E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("TLSNotAvailable",			E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("OfflineUnavailable",			E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("SearchSizeLimitExceeded",		E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("SearchTimeLimitExceeded",		E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("InvalidQuery",				E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("QueryRefused",				E_CLIENT_ERROR_OTHER_ERROR) },
 		{ err ("InvalidServerVersion",			E_CLIENT_ERROR_OTHER_ERROR) },
 		{ err ("OtherError",				E_CLIENT_ERROR_OTHER_ERROR) }
 	};
@@ -1469,7 +1489,7 @@ generate_instances (ECalClient *client, time_t start, time_t end, const gchar *u
 }
 
 /**
- * e_cal_generate_instances:
+ * e_cal_client_generate_instances:
  * @client: A calendar client.
  * @start: Start time for query.
  * @end: End time for query.
@@ -1926,7 +1946,7 @@ complete_string_exchange (gboolean res, gchar *out_string, gchar **result, GErro
 		res = FALSE;
 
 		if (error && !*error)
-			g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG, e_client_error_to_string (E_CLIENT_ERROR_INVALID_ARG));
+			g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_INVALID_ARG, NULL));
 	}
 
 	return res;
@@ -1961,7 +1981,7 @@ complete_get_object (gboolean res, gchar *out_string, icalcomponent **icalcomp, 
 	if (res && out_string) {
 		*icalcomp = icalparser_parse_string (out_string);
 		if (!*icalcomp) {
-			g_set_error_literal (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_INVALID_OBJECT, e_cal_client_error_to_string (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
+			g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 			res = FALSE;
 		}
 	} else {
@@ -3096,13 +3116,13 @@ complete_send_objects (gboolean res, gchar **out_strv, GSList **users, icalcompo
 		if (e_gdbus_cal_decode_send_objects ((const gchar * const *) out_strv, &calobj, users)) {
 			*modified_icalcomp = icalparser_parse_string (calobj);
 			if (!*modified_icalcomp) {
-				g_set_error_literal (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_INVALID_OBJECT, e_cal_client_error_to_string (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
+				g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 				e_client_util_free_string_slist (*users);
 				*users = NULL;
 				res = FALSE;
 			}
 		} else {
-			g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG, e_client_error_to_string (E_CLIENT_ERROR_INVALID_ARG));
+			g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_INVALID_ARG, NULL));
 			e_client_util_free_string_slist (*users);
 			*users = NULL;
 			res = FALSE;
@@ -3709,7 +3729,7 @@ complete_get_timezone (ECalClient *client, gboolean res, gchar *out_string, ical
 				icaltimezone_free (*zone, 1);
 				icalcomponent_free (icalcomp);
 				res = FALSE;
-				g_set_error_literal (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_INVALID_OBJECT, e_cal_client_error_to_string (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
+				g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 			} else {
 				g_mutex_lock (client->priv->zone_cache_lock);
 				g_hash_table_insert (client->priv->zone_cache, g_strdup (icaltimezone_get_tzid (*zone)), *zone);
@@ -3717,7 +3737,7 @@ complete_get_timezone (ECalClient *client, gboolean res, gchar *out_string, ical
 			}
 		} else {
 			res = FALSE;
-			g_set_error_literal (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_INVALID_OBJECT, e_cal_client_error_to_string (E_CAL_CLIENT_ERROR_INVALID_OBJECT));
+			g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 		}
 	} else {
 		res = FALSE;
@@ -3890,7 +3910,7 @@ e_cal_client_add_timezone_sync (ECalClient *client, /* const */ icaltimezone *zo
 
 	icalcomp = icaltimezone_get_component (zone);
 	if (!icalcomp) {
-		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG, e_client_error_to_string (E_CLIENT_ERROR_INVALID_ARG));
+		g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_INVALID_ARG, NULL));
 		return FALSE;
 	}
 

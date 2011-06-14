@@ -44,6 +44,16 @@ struct _EContactStorePrivate {
 	GArray *contact_sources;
 };
 
+/* Signals */
+
+enum {
+	START_CLIENT_VIEW,
+	STOP_CLIENT_VIEW,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
 static void e_contact_store_tree_model_init (GtkTreeModelIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -82,19 +92,19 @@ static gboolean     e_contact_store_iter_parent     (GtkTreeModel       *tree_mo
 
 typedef struct
 {
-	EBook     *book;
+	EBookClient *book_client;
 
-	EBookView *book_view;
+	EBookClientView *client_view;
 	GPtrArray *contacts;
 
-	EBookView *book_view_pending;
+	EBookClientView *client_view_pending;
 	GPtrArray *contacts_pending;
 }
 ContactSource;
 
 static void free_contact_ptrarray (GPtrArray *contacts);
 static void clear_contact_source  (EContactStore *contact_store, ContactSource *source);
-static void stop_view             (EContactStore *contact_store, EBookView *view);
+static void stop_view             (EContactStore *contact_store, EBookClientView *view);
 
 static void
 contact_store_dispose (GObject *object)
@@ -114,7 +124,7 @@ contact_store_dispose (GObject *object)
 
 		clear_contact_source (E_CONTACT_STORE (object), source);
 		free_contact_ptrarray (source->contacts);
-		g_object_unref (source->book);
+		g_object_unref (source->book_client);
 	}
 	g_array_set_size (priv->contact_sources, 0);
 
@@ -150,6 +160,24 @@ e_contact_store_class_init (EContactStoreClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = contact_store_dispose;
 	object_class->finalize = contact_store_finalize;
+
+	signals[START_CLIENT_VIEW] =
+		g_signal_new ("start-client-view",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EContactStoreClass, start_client_view),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, E_TYPE_BOOK_CLIENT_VIEW);
+
+	signals[STOP_CLIENT_VIEW] =
+		g_signal_new ("stop-client-view",
+			      G_OBJECT_CLASS_TYPE (object_class),
+			      G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (EContactStoreClass, stop_client_view),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, E_TYPE_BOOK_CLIENT_VIEW);
 }
 
 static void
@@ -245,7 +273,7 @@ row_changed (EContactStore *contact_store, gint n)
  * ---------------------- */
 
 static gint
-find_contact_source_by_book (EContactStore *contact_store, EBook *book)
+find_contact_source_by_client (EContactStore *contact_store, EBookClient *book_client)
 {
 	GArray *array;
 	gint i;
@@ -256,32 +284,15 @@ find_contact_source_by_book (EContactStore *contact_store, EBook *book)
 		ContactSource *source;
 
 		source = &g_array_index (array, ContactSource, i);
-		if (source->book == book)
+		if (source->book_client == book_client)
 			return i;
 	}
 
 	return -1;
 }
 
-EBookView *
-find_contact_source_by_book_return_view (EContactStore *contact_store, EBook *book)
-{
-	ContactSource *source = NULL;
-	GArray *array;
-	gint i;
-
-	array = contact_store->priv->contact_sources;
-
-	for (i = 0; i < array->len; i++) {
-		source = &g_array_index (array, ContactSource, i);
-		if (source->book == book)
-			break;
-	}
-	return source->book_view;;
-}
-
 static gint
-find_contact_source_by_view (EContactStore *contact_store, EBookView *book_view)
+find_contact_source_by_view (EContactStore *contact_store, EBookClientView *client_view)
 {
 	GArray *array;
 	gint i;
@@ -292,8 +303,8 @@ find_contact_source_by_view (EContactStore *contact_store, EBookView *book_view)
 		ContactSource *source;
 
 		source = &g_array_index (array, ContactSource, i);
-		if (source->book_view         == book_view ||
-		    source->book_view_pending == book_view)
+		if (source->client_view == client_view ||
+		    source->client_view_pending == client_view)
 			return i;
 	}
 
@@ -378,7 +389,7 @@ count_contacts (EContactStore *contact_store)
 }
 
 static gint
-find_contact_by_view_and_uid (EContactStore *contact_store, EBookView *find_view, const gchar *find_uid)
+find_contact_by_view_and_uid (EContactStore *contact_store, EBookClientView *find_view, const gchar *find_uid)
 {
 	GArray *array;
 	ContactSource *source;
@@ -395,7 +406,7 @@ find_contact_by_view_and_uid (EContactStore *contact_store, EBookView *find_view
 	array = contact_store->priv->contact_sources;
 	source = &g_array_index (array, ContactSource, source_index);
 
-	if (find_view == source->book_view)
+	if (find_view == source->client_view)
 		contacts = source->contacts;          /* Current view */
 	else
 		contacts = source->contacts_pending;  /* Pending view */
@@ -435,7 +446,7 @@ find_contact_by_uid (EContactStore *contact_store, const gchar *find_uid)
 	return -1;
 }
 
-static EBook *
+static EBookClient *
 get_book_at_row (EContactStore *contact_store, gint row)
 {
 	GArray *array;
@@ -449,7 +460,7 @@ get_book_at_row (EContactStore *contact_store, gint row)
 	array = contact_store->priv->contact_sources;
 	source = &g_array_index (array, ContactSource, source_index);
 
-	return source->book;
+	return source->book_client;
 }
 
 static EContact *
@@ -475,13 +486,13 @@ get_contact_at_row (EContactStore *contact_store, gint row)
 }
 
 static gboolean
-find_contact_source_details_by_view (EContactStore *contact_store, EBookView *book_view,
+find_contact_source_details_by_view (EContactStore *contact_store, EBookClientView *client_view,
 				     ContactSource **contact_source, gint *offset)
 {
 	GArray *array;
 	gint source_index;
 
-	source_index = find_contact_source_by_view (contact_store, book_view);
+	source_index = find_contact_source_by_view (contact_store, client_view);
 	if (source_index < 0)
 		return FALSE;
 
@@ -497,23 +508,23 @@ find_contact_source_details_by_view (EContactStore *contact_store, EBookView *bo
  * ------------------------- */
 
 static void
-view_contacts_added (EContactStore *contact_store, const GList *contacts, EBookView *book_view)
+view_contacts_added (EContactStore *contact_store, const GSList *contacts, EBookClientView *client_view)
 {
 	ContactSource *source;
 	gint           offset;
-	const GList   *l;
+	const GSList  *l;
 
-	if (!find_contact_source_details_by_view (contact_store, book_view, &source, &offset)) {
+	if (!find_contact_source_details_by_view (contact_store, client_view, &source, &offset)) {
 		g_warning ("EContactStore got 'contacts_added' signal from unknown EBookView!");
 		return;
 	}
 
-	for (l = contacts; l; l = g_list_next (l)) {
+	for (l = contacts; l; l = g_slist_next (l)) {
 		EContact *contact = l->data;
 
 		g_object_ref (contact);
 
-		if (book_view == source->book_view) {
+		if (client_view == source->client_view) {
 			/* Current view */
 			g_ptr_array_add (source->contacts, contact);
 			row_inserted (contact_store, offset + source->contacts->len - 1);
@@ -525,20 +536,20 @@ view_contacts_added (EContactStore *contact_store, const GList *contacts, EBookV
 }
 
 static void
-view_contacts_removed (EContactStore *contact_store, const GList *uids, EBookView *book_view)
+view_contacts_removed (EContactStore *contact_store, const GSList *uids, EBookClientView *client_view)
 {
 	ContactSource *source;
 	gint           offset;
-	const GList   *l;
+	const GSList  *l;
 
-	if (!find_contact_source_details_by_view (contact_store, book_view, &source, &offset)) {
+	if (!find_contact_source_details_by_view (contact_store, client_view, &source, &offset)) {
 		g_warning ("EContactStore got 'contacts_removed' signal from unknown EBookView!");
 		return;
 	}
 
-	for (l = uids; l; l = g_list_next (l)) {
+	for (l = uids; l; l = g_slist_next (l)) {
 		const gchar *uid = l->data;
-		gint         n   = find_contact_by_view_and_uid (contact_store, book_view, uid);
+		gint         n   = find_contact_by_view_and_uid (contact_store, client_view, uid);
 		EContact    *contact;
 
 		if (n < 0) {
@@ -546,7 +557,7 @@ view_contacts_removed (EContactStore *contact_store, const GList *uids, EBookVie
 			continue;
 		}
 
-		if (book_view == source->book_view) {
+		if (client_view == source->client_view) {
 			/* Current view */
 			contact = g_ptr_array_index (source->contacts, n);
 			g_object_unref (contact);
@@ -562,28 +573,28 @@ view_contacts_removed (EContactStore *contact_store, const GList *uids, EBookVie
 }
 
 static void
-view_contacts_changed (EContactStore *contact_store, const GList *contacts, EBookView *book_view)
+view_contacts_modified (EContactStore *contact_store, const GSList *contacts, EBookClientView *client_view)
 {
 	GPtrArray     *cached_contacts;
 	ContactSource *source;
 	gint           offset;
-	const GList   *l;
+	const GSList  *l;
 
-	if (!find_contact_source_details_by_view (contact_store, book_view, &source, &offset)) {
+	if (!find_contact_source_details_by_view (contact_store, client_view, &source, &offset)) {
 		g_warning ("EContactStore got 'contacts_changed' signal from unknown EBookView!");
 		return;
 	}
 
-	if (book_view == source->book_view)
+	if (client_view == source->client_view)
 		cached_contacts = source->contacts;
 	else
 		cached_contacts = source->contacts_pending;
 
-	for (l = contacts; l; l = g_list_next (l)) {
+	for (l = contacts; l; l = g_slist_next (l)) {
 		EContact    *cached_contact;
 		EContact    *contact = l->data;
 		const gchar *uid     = e_contact_get_const (contact, E_CONTACT_UID);
-		gint         n       = find_contact_by_view_and_uid (contact_store, book_view, uid);
+		gint         n       = find_contact_by_view_and_uid (contact_store, client_view, uid);
 
 		if (n < 0) {
 			g_warning ("EContactStore got change notification on unknown contact!");
@@ -599,30 +610,30 @@ view_contacts_changed (EContactStore *contact_store, const GList *contacts, EBoo
 		}
 
 		/* Emit changes for current view only */
-		if (book_view == source->book_view)
+		if (client_view == source->client_view)
 			row_changed (contact_store, offset + n);
 	}
 }
 
 static void
-view_complete (EContactStore *contact_store, EBookViewStatus status, const gchar *error_msg, EBookView *book_view)
+view_complete (EContactStore *contact_store, const GError *error, EBookClientView *client_view)
 {
 	ContactSource *source;
 	gint           offset;
 	gint           i;
 
-	if (!find_contact_source_details_by_view (contact_store, book_view, &source, &offset)) {
-		g_warning ("EContactStore got 'sequence_complete' signal from unknown EBookView!");
+	if (!find_contact_source_details_by_view (contact_store, client_view, &source, &offset)) {
+		g_warning ("EContactStore got 'complete' signal from unknown EBookClientView!");
 		return;
 	}
 
 	/* If current view finished, do nothing */
-	if (book_view == source->book_view) {
-		stop_view (contact_store, source->book_view);
+	if (client_view == source->client_view) {
+		stop_view (contact_store, source->client_view);
 		return;
 	}
 
-	g_assert (book_view == source->book_view_pending);
+	g_assert (client_view == source->client_view_pending);
 
 	/* However, if it was a pending view, calculate and emit the differences between that
 	 * and the current view, and move the pending view up to current.
@@ -635,7 +646,7 @@ view_complete (EContactStore *contact_store, EBookViewStatus status, const gchar
 		const gchar *old_uid     = e_contact_get_const (old_contact, E_CONTACT_UID);
 		gint         result;
 
-		result = find_contact_by_view_and_uid (contact_store, source->book_view_pending, old_uid);
+		result = find_contact_by_view_and_uid (contact_store, source->client_view_pending, old_uid);
 		if (result < 0) {
 			/* Contact is not in new view; removed */
 			g_object_unref (old_contact);
@@ -651,7 +662,7 @@ view_complete (EContactStore *contact_store, EBookViewStatus status, const gchar
 		const gchar *new_uid     = e_contact_get_const (new_contact, E_CONTACT_UID);
 		gint         result;
 
-		result = find_contact_by_view_and_uid (contact_store, source->book_view, new_uid);
+		result = find_contact_by_view_and_uid (contact_store, source->client_view, new_uid);
 		if (result < 0) {
 			/* Contact is not in old view; inserted */
 			g_ptr_array_add (source->contacts, new_contact);
@@ -663,10 +674,10 @@ view_complete (EContactStore *contact_store, EBookViewStatus status, const gchar
 	}
 
 	/* Move pending view up to current */
-	stop_view (contact_store, source->book_view);
-	g_object_unref (source->book_view);
-	source->book_view = source->book_view_pending;
-	source->book_view_pending = NULL;
+	stop_view (contact_store, source->client_view);
+	g_object_unref (source->client_view);
+	source->client_view = source->client_view_pending;
+	source->client_view_pending = NULL;
 
 	/* Free array of pending contacts (members have been either moved or unreffed) */
 	g_ptr_array_free (source->contacts_pending, TRUE);
@@ -678,27 +689,31 @@ view_complete (EContactStore *contact_store, EBookViewStatus status, const gchar
  * --------------------- */
 
 static void
-start_view (EContactStore *contact_store, EBookView *view)
+start_view (EContactStore *contact_store, EBookClientView *view)
 {
-	g_signal_connect_swapped (view, "contacts_added",
+	g_signal_emit (contact_store, signals[START_CLIENT_VIEW], 0, view);
+
+	g_signal_connect_swapped (view, "objects-added",
 				  G_CALLBACK (view_contacts_added), contact_store);
-	g_signal_connect_swapped (view, "contacts_removed",
+	g_signal_connect_swapped (view, "objects-removed",
 				  G_CALLBACK (view_contacts_removed), contact_store);
-	g_signal_connect_swapped (view, "contacts_changed",
-				  G_CALLBACK (view_contacts_changed), contact_store);
-	g_signal_connect_swapped (view, "view_complete",
+	g_signal_connect_swapped (view, "objects-modified",
+				  G_CALLBACK (view_contacts_modified), contact_store);
+	g_signal_connect_swapped (view, "complete",
 				  G_CALLBACK (view_complete), contact_store);
 
-	e_book_view_start (view);
+	e_book_client_view_start (view, NULL);
 }
 
 static void
-stop_view (EContactStore *contact_store, EBookView *view)
+stop_view (EContactStore *contact_store, EBookClientView *view)
 {
-	e_book_view_stop (view);
+	e_book_client_view_stop (view, NULL);
 
 	g_signal_handlers_disconnect_matched (view, G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL, NULL, contact_store);
+
+	g_signal_emit (contact_store, signals[STOP_CLIENT_VIEW], 0, view);
 }
 
 static void
@@ -756,60 +771,103 @@ clear_contact_source (EContactStore *contact_store, ContactSource *source)
 
 	/* Free main and pending views, clear cached contacts */
 
-	if (source->book_view) {
-		stop_view (contact_store, source->book_view);
-		g_object_unref (source->book_view);
+	if (source->client_view) {
+		stop_view (contact_store, source->client_view);
+		g_object_unref (source->client_view);
 
-		source->book_view = NULL;
+		source->client_view = NULL;
 	}
 
-	if (source->book_view_pending) {
-		stop_view (contact_store, source->book_view_pending);
-		g_object_unref (source->book_view_pending);
+	if (source->client_view_pending) {
+		stop_view (contact_store, source->client_view_pending);
+		g_object_unref (source->client_view_pending);
 		free_contact_ptrarray (source->contacts_pending);
 
-		source->book_view_pending = NULL;
+		source->client_view_pending = NULL;
 		source->contacts_pending  = NULL;
 	}
 }
 
 static void
+client_view_ready_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+{
+	EContactStore *contact_store = user_data;
+	gint source_idx;
+	EBookClient *book_client;
+	EBookClientView *client_view = NULL;
+
+	g_return_if_fail (contact_store != NULL);
+	g_return_if_fail (source_object != NULL);
+
+	book_client = E_BOOK_CLIENT (source_object);
+	g_return_if_fail (book_client != NULL);
+
+	if (!e_book_client_get_view_finish (book_client, result, &client_view, NULL))
+		client_view = NULL;
+
+	source_idx = find_contact_source_by_client (contact_store, book_client);
+	if (source_idx >= 0) {
+		ContactSource *source;
+
+		source = &g_array_index (contact_store->priv->contact_sources, ContactSource, source_idx);
+		
+		if (source->client_view) {
+			if (source->client_view_pending) {
+				stop_view (contact_store, source->client_view_pending);
+				g_object_unref (source->client_view_pending);
+				free_contact_ptrarray (source->contacts_pending);
+			}
+
+			source->client_view_pending = client_view;
+
+			if (source->client_view_pending) {
+				source->contacts_pending = g_ptr_array_new ();
+				start_view (contact_store, client_view);
+			} else {
+				source->contacts_pending = NULL;
+			}
+		} else {
+			source->client_view = client_view;
+
+			if (source->client_view) {
+				start_view (contact_store, client_view);
+			}
+		}
+	}
+
+	g_object_unref (contact_store);
+}
+
+static void
 query_contact_source (EContactStore *contact_store, ContactSource *source)
 {
-	EBookView *view;
+	gboolean is_opened;
 
-	g_assert (source->book != NULL);
+	g_assert (source->book_client != NULL);
 
 	if (!contact_store->priv->query) {
 		clear_contact_source (contact_store, source);
 		return;
 	}
 
-	if (!e_book_is_opened (source->book) ||
-	    !e_book_get_book_view (source->book, contact_store->priv->query, NULL, -1, &view, NULL))
-		view = NULL;
+	is_opened = e_client_is_opened (E_CLIENT (source->book_client));
 
-	if (source->book_view) {
-		if (source->book_view_pending) {
-			stop_view (contact_store, source->book_view_pending);
-			g_object_unref (source->book_view_pending);
+	if (source->client_view) {
+		if (source->client_view_pending) {
+			stop_view (contact_store, source->client_view_pending);
+			g_object_unref (source->client_view_pending);
 			free_contact_ptrarray (source->contacts_pending);
-		}
-
-		source->book_view_pending = view;
-
-		if (source->book_view_pending) {
-			source->contacts_pending = g_ptr_array_new ();
-			start_view (contact_store, view);
-		} else {
+			source->client_view_pending = NULL;
 			source->contacts_pending = NULL;
 		}
-	} else {
-		source->book_view = view;
+	}
 
-		if (source->book_view) {
-			start_view (contact_store, view);
-		}
+	if (is_opened) {
+		gchar *query_str;
+
+		query_str = e_book_query_to_string (contact_store->priv->query);
+		e_book_client_get_view (source->book_client, query_str, NULL, client_view_ready_cb, g_object_ref (contact_store));
+		g_free (query_str);
 	}
 }
 
@@ -818,16 +876,16 @@ query_contact_source (EContactStore *contact_store, ContactSource *source)
  * ----------------- */
 
 /**
- * e_contact_store_get_book:
+ * e_contact_store_get_client:
  * @contact_store: an #EContactStore
  * @iter: a #GtkTreeIter from @contact_store
  *
- * Gets the #EBook that provided the contact at @iter.
+ * Gets the #EBookClient that provided the contact at @iter.
  *
- * Returns: An #EBook.
+ * Returns: An #EBookClient.
  **/
-EBook *
-e_contact_store_get_book (EContactStore *contact_store, GtkTreeIter *iter)
+EBookClient *
+e_contact_store_get_client (EContactStore *contact_store, GtkTreeIter *iter)
 {
 	gint index;
 
@@ -889,19 +947,19 @@ e_contact_store_find_contact (EContactStore *contact_store, const gchar *uid,
 }
 
 /**
- * e_contact_store_get_books:
+ * e_contact_store_get_clients:
  * @contact_store: an #EContactStore
  *
- * Gets the list of books that provide contacts for @contact_store.
+ * Gets the list of book clients that provide contacts for @contact_store.
  *
- * Returns: A #GList of pointers to #EBook. The caller owns the list,
- * but not the books.
+ * Returns: A #GSList of pointers to #EBookClient. The caller owns the list,
+ * but not the book clients.
  **/
-GList *
-e_contact_store_get_books (EContactStore *contact_store)
+GSList *
+e_contact_store_get_clients (EContactStore *contact_store)
 {
 	GArray *array;
-	GList *book_list = NULL;
+	GSList *client_list = NULL;
 	gint i;
 
 	g_return_val_if_fail (E_IS_CONTACT_STORE (contact_store), NULL);
@@ -912,38 +970,39 @@ e_contact_store_get_books (EContactStore *contact_store)
 		ContactSource *source;
 
 		source = &g_array_index (array, ContactSource, i);
-		book_list = g_list_prepend (book_list, source->book);
+		client_list = g_slist_prepend (client_list, source->book_client);
 	}
 
-	return book_list;
+	return client_list;
 }
 
 /**
- * e_contact_store_add_book:
+ * e_contact_store_add_client:
  * @contact_store: an #EContactStore
- * @book: an #EBook
+ * @book_client: an #EBookClient
  *
- * Adds @book to the list of books that provide contacts for @contact_store.
+ * Adds @book_client to the list of book clients that provide contacts for @contact_store.
+ * The @contact_store adds a reference to @book_client, if added.
  **/
 void
-e_contact_store_add_book (EContactStore *contact_store, EBook *book)
+e_contact_store_add_client (EContactStore *contact_store, EBookClient *book_client)
 {
 	GArray *array;
 	ContactSource source;
 	ContactSource *indexed_source;
 
 	g_return_if_fail (E_IS_CONTACT_STORE (contact_store));
-	g_return_if_fail (E_IS_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_CLIENT (book_client));
 
-	if (find_contact_source_by_book (contact_store, book) >= 0) {
-		g_warning ("Same book added more than once to EContactStore!");
+	if (find_contact_source_by_client (contact_store, book_client) >= 0) {
+		g_warning ("Same book client added more than once to EContactStore!");
 		return;
 	}
 
 	array = contact_store->priv->contact_sources;
 
 	memset (&source, 0, sizeof (ContactSource));
-	source.book     = g_object_ref (book);
+	source.book_client = g_object_ref (book_client);
 	source.contacts = g_ptr_array_new ();
 	g_array_append_val (array, source);
 
@@ -953,25 +1012,25 @@ e_contact_store_add_book (EContactStore *contact_store, EBook *book)
 }
 
 /**
- * e_contact_store_remove_book:
+ * e_contact_store_remove_client:
  * @contact_store: an #EContactStore
- * @book: an #EBook
+ * @book_client: an #EBookClient
  *
- * Removes @book from the list of books that provide contacts for @contact_store.
+ * Removes @book from the list of book clients that provide contacts for @contact_store.
  **/
 void
-e_contact_store_remove_book (EContactStore *contact_store, EBook *book)
+e_contact_store_remove_client (EContactStore *contact_store, EBookClient *book_client)
 {
 	GArray *array;
 	ContactSource *source;
 	gint source_index;
 
 	g_return_if_fail (E_IS_CONTACT_STORE (contact_store));
-	g_return_if_fail (E_IS_BOOK (book));
+	g_return_if_fail (E_IS_BOOK_CLIENT (book_client));
 
-	source_index = find_contact_source_by_book (contact_store, book);
+	source_index = find_contact_source_by_client (contact_store, book_client);
 	if (source_index < 0) {
-		g_warning ("Tried to remove unknown book from EContactStore!");
+		g_warning ("Tried to remove unknown book client from EContactStore!");
 		return;
 	}
 
@@ -980,7 +1039,7 @@ e_contact_store_remove_book (EContactStore *contact_store, EBook *book)
 	source = &g_array_index (array, ContactSource, source_index);
 	clear_contact_source (contact_store, source);
 	free_contact_ptrarray (source->contacts);
-	g_object_unref (book);
+	g_object_unref (book_client);
 
 	g_array_remove_index (array, source_index);  /* Preserve order */
 }

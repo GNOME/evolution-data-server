@@ -26,9 +26,13 @@
 
 G_BEGIN_DECLS
 
+#ifndef E_CAL_DISABLE_DEPRECATED
+
 struct _EGdbusCalView;
 
 ECalView *_e_cal_view_new (struct _ECal *client,  struct _EGdbusCalView *gdbus_calview);
+
+#endif /* E_CAL_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

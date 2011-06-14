@@ -1,5 +1,7 @@
 SUBDIRS = client
 
+if !HAVE_E_CAL_DISABLE_DEPRECATED
+
 noinst_LTLIBRARIES = libecal-test-utils.la
 libecal_test_utils_la_SOURCES = ecal-test-utils.c ecal-test-utils.h
 
@@ -23,14 +25,6 @@ TEST_ECAL_LIBS = \
 	$(libecal_test_utils_la_LIBADD) \
 	libecal-test-utils.la           \
 	$(NULL)
-
-EXTRA_DIST =                          \
-	$(test_scripts)               \
-	testdata.ics
-
-test_scripts =                         \
-	test-runner.sh                 \
-	cleanup.sh
 
 # ordered by relative complexity
 TESTS = \
@@ -153,5 +147,15 @@ test_search_LDADD =							\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(LIBICAL_LIBS)							\
 	$(EVOLUTION_CALENDAR_LIBS)
+
+endif
+
+EXTRA_DIST =			\
+	$(test_scripts)		\
+	testdata.ics
+
+test_scripts =			\
+	test-runner.sh		\
+	cleanup.sh
 
 -include $(top_srcdir)/git.mk

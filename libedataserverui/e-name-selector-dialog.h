@@ -25,7 +25,6 @@
 #define E_NAME_SELECTOR_DIALOG_H
 
 #include <gtk/gtk.h>
-#include <libebook/e-book.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-name-selector-model.h>
 

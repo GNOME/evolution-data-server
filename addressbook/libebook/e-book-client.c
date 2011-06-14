@@ -87,19 +87,31 @@ e_book_client_error_to_string (EBookClientError code)
 		return C_("BookClientError", "Contact not found");
 	case E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS:
 		return C_("BookClientError", "Contact ID already exists");
-	case E_BOOK_CLIENT_ERROR_TLS_NOT_AVAILABLE:
-		return C_("BookClientError", "TLS not available");
 	case E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE:
 		return C_("BookClientError", "No such source");
-	case E_BOOK_CLIENT_ERROR_OFFLINE_UNAVAILABLE:
-		return C_("BookClientError", "Offline unavailable");
-	case E_BOOK_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD:
-		return C_("BookClientError", "Unsupported authentication method");
 	case E_BOOK_CLIENT_ERROR_NO_SPACE:
 		return C_("BookClientError", "No space");
 	}
 
 	return C_("BookClientError", "Unknown error");
+}
+
+/**
+ * e_book_client_error_create:
+ * @code: an #EBookClientError code to create
+ * @custom_msg: custom message to use for the error; can be %NULL
+ *
+ * Returns: a new #GError containing an E_BOOK_CLIENT_ERROR of the given
+ * @code. If the @custom_msg is NULL, then the error message is
+ * the one returned from e_book_client_error_to_string() for the @code,
+ * otherwise the given message is used.
+ *
+ * Returned pointer should be freed with g_error_free().
+ **/
+GError *
+e_book_client_error_create (EBookClientError code, const gchar *custom_msg)
+{
+	return g_error_new_literal (E_BOOK_CLIENT_ERROR, code, custom_msg ? custom_msg : e_book_client_error_to_string (code));
 }
 
 /**
@@ -116,26 +128,26 @@ unwrap_dbus_error (GError *error, GError **client_error)
 		{ err ("Success",				-1) },
 		{ err ("ContactNotFound",			E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND) },
 		{ err ("ContactIDAlreadyExists",		E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS) },
-		{ err ("UnsupportedAuthenticationMethod",	E_BOOK_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD) },
-		{ err ("TLSNotAvailable",			E_BOOK_CLIENT_ERROR_TLS_NOT_AVAILABLE) },
 		{ err ("NoSuchBook",				E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK) },
 		{ err ("BookRemoved",				E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE) },
-		{ err ("OfflineUnavailable",			E_BOOK_CLIENT_ERROR_OFFLINE_UNAVAILABLE) },
 		{ err ("NoSpace",				E_BOOK_CLIENT_ERROR_NO_SPACE) }
 	}, cl_errors[] = {
 		{ err ("Busy",					E_CLIENT_ERROR_BUSY) },
 		{ err ("RepositoryOffline",			E_CLIENT_ERROR_REPOSITORY_OFFLINE) },
+		{ err ("OfflineUnavailable",			E_CLIENT_ERROR_OFFLINE_UNAVAILABLE) },
 		{ err ("PermissionDenied",			E_CLIENT_ERROR_PERMISSION_DENIED) },
 		{ err ("AuthenticationFailed",			E_CLIENT_ERROR_AUTHENTICATION_FAILED) },
 		{ err ("AuthenticationRequired",		E_CLIENT_ERROR_AUTHENTICATION_REQUIRED) },
 		{ err ("CouldNotCancel",			E_CLIENT_ERROR_COULD_NOT_CANCEL) },
 		{ err ("InvalidArg",				E_CLIENT_ERROR_INVALID_ARG) },
 		{ err ("NotSupported",				E_CLIENT_ERROR_NOT_SUPPORTED) },
+		{ err ("UnsupportedAuthenticationMethod",	E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD) },
+		{ err ("TLSNotAvailable",			E_CLIENT_ERROR_TLS_NOT_AVAILABLE) },
+		{ err ("SearchSizeLimitExceeded",		E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED) },
+		{ err ("SearchTimeLimitExceeded",		E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED) },
+		{ err ("InvalidQuery",				E_CLIENT_ERROR_INVALID_QUERY) },
+		{ err ("QueryRefused",				E_CLIENT_ERROR_QUERY_REFUSED) },
 		{ err ("UnsupportedField",			E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("SearchSizeLimitExceeded",		E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("SearchTimeLimitExceeded",		E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("InvalidQuery",				E_CLIENT_ERROR_OTHER_ERROR) },
-		{ err ("QueryRefused",				E_CLIENT_ERROR_OTHER_ERROR) },
 		{ err ("InvalidServerVersion",			E_CLIENT_ERROR_OTHER_ERROR) },
 		{ err ("OtherError",				E_CLIENT_ERROR_OTHER_ERROR) }
 	};

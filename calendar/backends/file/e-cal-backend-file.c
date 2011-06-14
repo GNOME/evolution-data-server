@@ -3055,10 +3055,11 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCa
 
         /* check and patch timezones */
 	if (!err) {
-	    if (!e_cal_check_timezones (toplevel_comp,
+		if (!e_cal_client_check_timezones (toplevel_comp,
 				       NULL,
-				       e_cal_tzlookup_icomp,
+				       e_cal_client_tzlookup_icomp,
 				       priv->icalcomp,
+				       NULL,
 				       &err)) {
                 /*
                  * This makes assumptions about what kind of

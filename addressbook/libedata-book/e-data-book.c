@@ -65,7 +65,7 @@ typedef enum {
 	OP_MODIFY_CONTACT,
 	OP_GET_BACKEND_PROPERTY,
 	OP_SET_BACKEND_PROPERTY,
-	OP_GET_BOOK_VIEW,
+	OP_GET_VIEW,
 	OP_CANCEL_OPERATION,
 	OP_CANCEL_ALL,
 	OP_CLOSE
@@ -89,7 +89,7 @@ typedef struct {
 		/* OP_ADD_CONTACT */
 		/* OP_MODIFY_CONTACT */
 		gchar *vcard;
-		/* OP_GET_BOOK_VIEW */
+		/* OP_GET_VIEW */
 		/* OP_GET_CONTACTS */
 		/* OP_GET_CONTACTS_UIDS */
 		gchar *query;
@@ -182,7 +182,7 @@ operation_thread (gpointer data, gpointer user_data)
 		g_free (op->d.sbp.prop_name);
 		g_free (op->d.sbp.prop_value);
 		break;
-	case OP_GET_BOOK_VIEW:
+	case OP_GET_VIEW:
 		if (op->d.query) {
 			EBookBackendSExp *card_sexp;
 			EDataBookView *book_view;
@@ -695,7 +695,7 @@ impl_Book_get_view (EGdbusBook *object, GDBusMethodInvocation *invocation, const
 		return TRUE;
 	}
 
-	op = op_new (OP_GET_BOOK_VIEW, book);
+	op = op_new (OP_GET_VIEW, book);
 	op->d.query = g_strdup (in_query);
 
 	e_gdbus_book_complete_get_view (book->priv->gdbus_object, invocation, op->id);

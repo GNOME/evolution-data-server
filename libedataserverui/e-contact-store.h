@@ -25,9 +25,9 @@
 
 #include <gtk/gtk.h>
 #include <libebook/e-contact.h>
-#include <libebook/e-book.h>
+#include <libebook/e-book-client.h>
+#include <libebook/e-book-client-view.h>
 #include <libebook/e-book-query.h>
-#include <libebook/e-book-types.h>
 
 /* Standard GObject macros */
 #define E_TYPE_CONTACT_STORE \
@@ -61,12 +61,16 @@ struct _EContactStore {
 
 struct _EContactStoreClass {
 	GObjectClass parent_class;
+
+	/* signals */
+	void (*start_client_view) (EContactStore *contact_store, EBookClientView *client_view);
+	void (*stop_client_view)  (EContactStore *contact_store, EBookClientView *client_view);
 };
 
 GType		e_contact_store_get_type	(void);
 EContactStore *	e_contact_store_new		(void);
 
-EBook *		e_contact_store_get_book	(EContactStore *contact_store,
+EBookClient *	e_contact_store_get_client	(EContactStore *contact_store,
 						 GtkTreeIter *iter);
 EContact *	e_contact_store_get_contact	(EContactStore *contact_store,
 						 GtkTreeIter *iter);
@@ -75,17 +79,14 @@ gboolean	e_contact_store_find_contact	(EContactStore *contact_store,
 						 GtkTreeIter *iter);
 
 /* Returns a shallow copy; free the list when done, but don't unref elements */
-GList *		e_contact_store_get_books	(EContactStore *contact_store);
-void		e_contact_store_add_book	(EContactStore *contact_store,
-						 EBook *book);
-void		e_contact_store_remove_book	(EContactStore *contact_store,
-						 EBook *book);
+GSList *	e_contact_store_get_clients	(EContactStore *contact_store);
+void		e_contact_store_add_client	(EContactStore *contact_store,
+						 EBookClient *book_client);
+void		e_contact_store_remove_client	(EContactStore *contact_store,
+						 EBookClient *book_client);
 void		e_contact_store_set_query	(EContactStore *contact_store,
 						 EBookQuery *book_query);
 EBookQuery *	e_contact_store_peek_query	(EContactStore *contact_store);
-EBookView *	find_contact_source_by_book_return_view
-						(EContactStore *contact_store,
-						 EBook *book);
 
 G_END_DECLS
 

@@ -25,6 +25,8 @@
 #include <config.h>
 #endif
 
+#ifndef E_CAL_DISABLE_DEPRECATED
+
 #include <string.h>
 #include "e-cal-marshal.h"
 #include "e-cal.h"
@@ -489,3 +491,5 @@ e_cal_view_stop (ECalView *view)
 		g_error_free (error);
 	}
 }
+
+#endif /* E_CAL_DISABLE_DEPRECATED */

@@ -121,7 +121,7 @@ ep_keyring_uri_new (const gchar *string,
 
 	/* Make sure the URI has the required components. */
 	if (uri->user == NULL && uri->host == NULL) {
-		g_set_error (
+		g_set_error_literal (
 			error, EP_KEYRING_ERROR,
 			GNOME_KEYRING_RESULT_BAD_ARGUMENTS,
 			_("Keyring key is unusable: no user or host name"));

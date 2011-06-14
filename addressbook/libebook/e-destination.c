@@ -122,6 +122,9 @@ e_destination_dispose (GObject *object)
 	if (dest->priv) {
 		e_destination_clear (dest);
 
+		g_free (dest->priv->source_uid);
+		dest->priv->source_uid = NULL;
+
 		g_free (dest->priv);
 		dest->priv = NULL;
 	}
@@ -218,9 +221,6 @@ e_destination_copy (const EDestination *dest)
 static void
 e_destination_clear (EDestination *dest)
 {
-	g_free (dest->priv->source_uid);
-	dest->priv->source_uid = NULL;
-
 	g_free (dest->priv->contact_uid);
 	dest->priv->contact_uid = NULL;
 
@@ -443,6 +443,7 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 
 }
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_destination_set_book:
  * @dest: an #EDestination
@@ -450,6 +451,8 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
  *
  * Specify the source @dest's contact comes from. This is useful
  * if you need to update the contact later.
+ *
+ * Deprecated: 3.2: Use e_destination_set_client() instead.
  **/
 void
 e_destination_set_book (EDestination *dest, EBook *book)
@@ -465,7 +468,37 @@ e_destination_set_book (EDestination *dest, EBook *book)
 	g_return_if_fail (uid != NULL);
 
 	if (!dest->priv->source_uid || strcmp (uid, dest->priv->source_uid)) {
-		e_destination_clear (dest);
+		g_free (dest->priv->source_uid);
+		dest->priv->source_uid = g_strdup (uid);
+
+		g_signal_emit (dest, signals[CHANGED], 0);
+	}
+}
+#endif /* E_BOOK_DISABLE_DEPRECATED */
+
+/**
+ * e_destination_set_client:
+ * @dest: an #EDestination
+ * @client: an #EBookClient
+ *
+ * Specify the source @dest's contact comes from. This is useful
+ * if you need to update the contact later.
+ **/
+void
+e_destination_set_client (EDestination *dest, EBookClient *client)
+{
+	ESource *source;
+	const gchar *uid;
+
+	g_return_if_fail (dest && E_IS_DESTINATION (dest));
+	g_return_if_fail (client && E_IS_BOOK_CLIENT (client));
+
+	source = e_client_get_source (E_CLIENT (client));
+	uid = e_source_peek_uid (source);
+	g_return_if_fail (uid != NULL);
+
+	if (!dest->priv->source_uid || strcmp (uid, dest->priv->source_uid)) {
+		g_free (dest->priv->source_uid);
 		dest->priv->source_uid = g_strdup (uid);
 
 		g_signal_emit (dest, signals[CHANGED], 0);

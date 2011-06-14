@@ -34,9 +34,9 @@ EBookQuery* e_book_query_ref          (EBookQuery *q);
 void        e_book_query_unref        (EBookQuery *q);
 
 EBookQuery* e_book_query_and          (gint nqs, EBookQuery **qs, gboolean unref);
-EBookQuery* e_book_query_andv         (EBookQuery *q, ...);
+EBookQuery* e_book_query_andv         (EBookQuery *q, ...) G_GNUC_NULL_TERMINATED;
 EBookQuery* e_book_query_or           (gint nqs, EBookQuery **qs, gboolean unref);
-EBookQuery* e_book_query_orv          (EBookQuery *q, ...);
+EBookQuery* e_book_query_orv          (EBookQuery *q, ...) G_GNUC_NULL_TERMINATED;
 
 EBookQuery* e_book_query_not          (EBookQuery *q, gboolean unref);
 

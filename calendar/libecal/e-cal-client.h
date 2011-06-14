@@ -60,10 +60,12 @@ typedef enum {
 	E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND,
 	E_CAL_CLIENT_ERROR_INVALID_OBJECT,
 	E_CAL_CLIENT_ERROR_UNKNOWN_USER,
-	E_CAL_CLIENT_ERROR_OBJECT_ID_ALREADY_EXISTS
+	E_CAL_CLIENT_ERROR_OBJECT_ID_ALREADY_EXISTS,
+	E_CAL_CLIENT_ERROR_INVALID_RANGE
 } ECalClientError;
 
-const gchar *e_cal_client_error_to_string (ECalClientError code);
+const gchar *	e_cal_client_error_to_string (ECalClientError code);
+GError *	e_cal_client_error_create (ECalClientError code, const gchar *custom_msg);
 
 typedef struct _ECalClient        ECalClient;
 typedef struct _ECalClientClass   ECalClientClass;
@@ -122,10 +124,6 @@ gchar *		e_cal_client_get_component_as_string		(ECalClient *client, icalcomponen
 void		e_cal_client_get_default_object			(ECalClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_cal_client_get_default_object_finish		(ECalClient *client, GAsyncResult *result, icalcomponent **icalcomp, GError **error);
 gboolean	e_cal_client_get_default_object_sync		(ECalClient *client, icalcomponent **icalcomp, GCancellable *cancellable, GError **error);
-
-void		e_cal_client_refresh				(ECalClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-gboolean	e_cal_client_refresh_finish			(ECalClient *client, GAsyncResult *result, GError **error);
-gboolean	e_cal_client_refresh_sync			(ECalClient *client, GCancellable *cancellable, GError **error);
 
 void		e_cal_client_get_object				(ECalClient *client, const gchar *uid, const gchar *rid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_cal_client_get_object_finish			(ECalClient *client, GAsyncResult *result, icalcomponent **icalcomp, GError **error);

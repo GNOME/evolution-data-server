@@ -22,8 +22,11 @@
 
 #include <libical/ical.h>
 #include <glib.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
+
+#ifndef E_CAL_DISABLE_DEPRECATED
 
 gboolean e_cal_check_timezones (icalcomponent *comp,
                                GList *comps,
@@ -37,9 +40,35 @@ icaltimezone *e_cal_tzlookup_ecal (const gchar *tzid,
                                   gconstpointer custom,
                                   GError **error);
 
-icaltimezone *e_cal_tzlookup_icomp (const gchar *tzid,
-                                   gconstpointer custom,
-                                   GError **error);
+icaltimezone *e_cal_tzlookup_icomp
+				(const gchar *tzid,
+				 gconstpointer custom,
+				 GError **error);
+
+#endif /* E_CAL_DISABLE_DEPRECATED */
+
+gboolean e_cal_client_check_timezones
+				(icalcomponent *comp,
+				 GList *comps,
+				 icaltimezone *(*tzlookup) (const gchar *tzid,
+							    gconstpointer ecalclient,
+							    GCancellable *cancellable,
+                                                            GError **error),
+				 gconstpointer ecalclient,
+				 GCancellable *cancellable,
+				 GError **error);
+
+icaltimezone *e_cal_client_tzlookup
+				(const gchar *tzid,
+				 gconstpointer ecalclient,
+				 GCancellable *cancellable,
+				 GError **error);
+
+icaltimezone *e_cal_client_tzlookup_icomp
+				(const gchar *tzid,
+				 gconstpointer custom,
+				 GCancellable *cancellable,
+				 GError **error);
 
 const gchar *e_cal_match_tzid (const gchar *tzid);
 

@@ -36,6 +36,8 @@
 #include <config.h>
 #endif
 
+#ifndef E_CAL_DISABLE_DEPRECATED
+
 #include <unistd.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
@@ -4679,3 +4681,5 @@ e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error)
 		     e_cal_get_error_message (E_CALENDAR_STATUS_NO_SUCH_CALENDAR));
 	return FALSE;
 }
+
+#endif /* E_CAL_DISABLE_DEPRECATED */

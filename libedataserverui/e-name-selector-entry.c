@@ -27,10 +27,10 @@
 #include <gconf/gconf-client.h>
 
 #include <camel/camel.h>
-#include <libebook/e-book.h>
+#include <libebook/e-book-client.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-destination.h>
-#include <libedataserverui/e-book-auth-util.h>
+#include <libedataserverui/e-client-utils.h>
 #include <libedataserver/e-sexp.h>
 
 #include "e-name-selector-entry.h"
@@ -49,12 +49,12 @@ struct _ENameSelectorEntryPrivate {
 
 	EDestination *popup_destination;
 
-	gpointer	(*contact_editor_func)	(EBook *,
+	gpointer	(*contact_editor_func)	(EBookClient *,
 						 EContact *,
 						 gboolean,
 						 gboolean);
 	gpointer	(*contact_list_editor_func)
-						(EBook *,
+						(EBookClient *,
 						 EContact *,
 						 gboolean,
 						 gboolean);
@@ -778,12 +778,13 @@ contact_match_cue (EContact *contact, const gchar *cue_str,
 
 static gboolean
 find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *cue_str,
-			  EContact **contact, gchar **text, EContactField *matched_field)
+			  EContact **contact, gchar **text, EContactField *matched_field, EBookClient **book_client)
 {
 	GtkTreeIter    iter;
 	EContact      *best_contact    = NULL;
 	gint           best_field_rank = G_MAXINT;
 	EContactField  best_field = 0;
+	EBookClient   *best_book_client = NULL;
 
 	g_assert (cue_str);
 
@@ -810,6 +811,7 @@ find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *
 			best_contact    = current_contact;
 			best_field_rank = current_field_rank;
 			best_field      = current_field;
+			best_book_client = e_contact_store_get_client (name_selector_entry->priv->contact_store, &iter);
 		}
 	} while (gtk_tree_model_iter_next (GTK_TREE_MODEL (name_selector_entry->priv->contact_store), &iter));
 
@@ -822,6 +824,8 @@ find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *
 		*text = build_textrep_for_contact (best_contact, best_field);
 	if (matched_field)
 		*matched_field = best_field;
+	if (book_client)
+		*book_client = best_book_client;
 
 	return TRUE;
 }
@@ -887,6 +891,7 @@ static void
 type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 {
 	EContact      *contact;
+	EBookClient   *book_client = NULL;
 	EContactField  matched_field;
 	EDestination  *destination;
 	gint           cursor_pos;
@@ -917,7 +922,7 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 
 	cue_str = get_entry_substring (name_selector_entry, range_start, range_end);
 	if (!find_existing_completion (name_selector_entry, cue_str, &contact,
-				       &textrep, &matched_field)) {
+				       &textrep, &matched_field, &book_client)) {
 		g_free (cue_str);
 		return;
 	}
@@ -956,6 +961,8 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 			email_n = matched_field - E_CONTACT_FIRST_EMAIL_ID;
 
 		e_destination_set_contact (destination, contact, email_n);
+		if (book_client)
+			e_destination_set_client (destination, book_client);
 		generate_attribute_list (name_selector_entry);
 	}
 
@@ -1523,6 +1530,7 @@ completion_match_selected (ENameSelectorEntry *name_selector_entry, ETreeModelGe
 			   GtkTreeIter *generator_iter)
 {
 	EContact      *contact;
+	EBookClient   *book_client;
 	EDestination  *destination;
 	gint           cursor_pos;
 	GtkTreeIter    contact_iter;
@@ -1538,12 +1546,15 @@ completion_match_selected (ENameSelectorEntry *name_selector_entry, ETreeModelGe
 							   generator_iter);
 
 	contact = e_contact_store_get_contact (name_selector_entry->priv->contact_store, &contact_iter);
+	book_client = e_contact_store_get_client (name_selector_entry->priv->contact_store, &contact_iter);
 	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
 
 	/* Set the contact in the model's destination */
 
 	destination = find_destination_at_position (name_selector_entry, cursor_pos);
 	e_destination_set_contact (destination, contact, email_n);
+	if (book_client)
+		e_destination_set_client (destination, book_client);
 	sync_destination_at_position (name_selector_entry, cursor_pos, &cursor_pos);
 
 	g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
@@ -1972,33 +1983,38 @@ setup_contact_store (ENameSelectorEntry *name_selector_entry)
 }
 
 static void
-book_loaded_cb (ESource *source,
+book_loaded_cb (GObject *source_object,
                 GAsyncResult *result,
-                EContactStore *contact_store)
+                gpointer user_data)
 {
-	EBook *book;
+	EContactStore *contact_store = user_data;
+	ESource *source = E_SOURCE (source_object);
+	EBookClient *book_client;
+	EClient *client = NULL;
 	GError *error = NULL;
 
-	book = e_load_book_source_finish (source, result, &error);
+	e_client_utils_open_new_finish (source, result, &client, &error);
 
 	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-		g_warn_if_fail (book == NULL);
+		g_warn_if_fail (client == NULL);
 		g_error_free (error);
 		goto exit;
 	}
 
 	if (error != NULL) {
 		g_warning ("%s", error->message);
-		g_warn_if_fail (book == NULL);
+		g_warn_if_fail (client == NULL);
 		g_error_free (error);
 		goto exit;
 	}
 
-	g_return_if_fail (E_IS_BOOK (book));
-	e_contact_store_add_book (contact_store, book);
-	g_object_unref (book);
+	book_client = E_BOOK_CLIENT (client);
 
-exit:
+	g_return_if_fail (E_IS_BOOK_CLIENT (book_client));
+	e_contact_store_add_client (contact_store, book_client);
+	g_object_unref (book_client);
+
+ exit:
 	g_object_unref (contact_store);
 }
 
@@ -2038,10 +2054,10 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 				&name_selector_entry->priv->cancellables,
 				cancellable);
 
-			e_load_book_source_async (
-				source, NULL, cancellable,
-				(GAsyncReadyCallback) book_loaded_cb,
-				g_object_ref (contact_store));
+			e_client_utils_open_new (
+				source, E_CLIENT_SOURCE_TYPE_CONTACTS, TRUE, cancellable,
+				e_client_utils_authenticate_handler, NULL,
+				book_loaded_cb, g_object_ref (contact_store));
 		}
 	}
 
@@ -2280,22 +2296,36 @@ prepare_popup_destination (ENameSelectorEntry *name_selector_entry, GdkEventButt
 	return FALSE;
 }
 
-static EBook *
-find_book_by_contact (GList *books, const gchar *contact_uid)
+static EBookClient *
+find_client_by_contact (GSList *clients, const gchar *contact_uid, const gchar *source_uid)
 {
-	GList *l;
+	GSList *l;
 
-	for (l = books; l; l = g_list_next (l)) {
-		EBook    *book = l->data;
+	if (source_uid && source_uid) {
+		/* this is much quicket than asking each client for an existence */
+		for (l = clients; l; l = g_slist_next (l)) {
+			EBookClient *client = l->data;
+			ESource *source = e_client_get_source (E_CLIENT (client));
+
+			if (!source)
+				continue;
+
+			if (g_strcmp0 (source_uid, e_source_peek_uid (source)) == 0)
+				return client;
+		}
+	}
+
+	for (l = clients; l; l = g_slist_next (l)) {
+		EBookClient *client = l->data;
 		EContact *contact = NULL;
 		gboolean  result;
 
-		result = e_book_get_contact (book, contact_uid, &contact, NULL);
+		result = e_book_client_get_contact_sync (client, contact_uid, &contact, NULL, NULL);
 		if (contact)
 			g_object_unref (contact);
 
 		if (result)
-			return book;
+			return client;
 	}
 
 	return NULL;
@@ -2307,35 +2337,47 @@ editor_closed_cb (GtkWidget *editor, gpointer data)
 	EContact *contact;
 	gchar *contact_uid;
 	EDestination *destination;
-	GList *books;
-	EBook *book;
+	GSList *clients;
+	EBookClient *book_client;
 	gint email_num;
 	ENameSelectorEntry *name_selector_entry = E_NAME_SELECTOR_ENTRY (data);
 
 	destination = name_selector_entry->priv->popup_destination;
 	contact = e_destination_get_contact (destination);
-	if (!contact)
+	if (!contact) {
+		g_object_unref (name_selector_entry);
 		return;
+	}
+
 	contact_uid = e_contact_get (contact, E_CONTACT_UID);
-	if (!contact_uid)
+	if (!contact_uid) {
+		g_object_unref (contact);
+		g_object_unref (name_selector_entry);
 		return;
+	}
 
 	if (name_selector_entry->priv->contact_store) {
-		books = e_contact_store_get_books (name_selector_entry->priv->contact_store);
-		book = find_book_by_contact (books, contact_uid);
-		g_list_free (books);
+		clients = e_contact_store_get_clients (name_selector_entry->priv->contact_store);
+		book_client = find_client_by_contact (clients, contact_uid, e_destination_get_source_uid (destination));
+		g_slist_free (clients);
 	} else {
-		book = NULL;
+		book_client = NULL;
 	}
-	if (!book)
-		return;
 
-	e_book_get_contact (book, contact_uid, &contact, NULL);
-	email_num = e_destination_get_email_num (destination);
-	e_destination_set_contact (destination, contact, email_num);
+	if (book_client) {
+		contact = NULL;
+
+		e_book_client_get_contact_sync (book_client, contact_uid, &contact, NULL, NULL);
+		email_num = e_destination_get_email_num (destination);
+		e_destination_set_contact (destination, contact, email_num);
+		e_destination_set_client (destination, book_client);
+	} else {
+		contact = NULL;
+	}
 
 	g_free (contact_uid);
-	g_object_unref (contact);
+	if (contact)
+		g_object_unref (contact);
 	g_object_unref (name_selector_entry);
 }
 
@@ -2388,8 +2430,8 @@ popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget
 static void
 popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
 {
-	EBook        *book;
-	GList        *books;
+	EBookClient  *book_client;
+	GSList       *clients;
 	EDestination *destination;
 	EContact     *contact;
 	gchar        *contact_uid;
@@ -2405,17 +2447,17 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 	contact_uid = e_contact_get (contact, E_CONTACT_UID);
 	if (!contact_uid)
 		return;
+
 	if (name_selector_entry->priv->contact_store) {
-		books = e_contact_store_get_books (name_selector_entry->priv->contact_store);
-		/*FIXME: read URI from contact and get the book ?*/
-		book = find_book_by_contact (books, contact_uid);
-		g_list_free (books);
+		clients = e_contact_store_get_clients (name_selector_entry->priv->contact_store);
+		book_client = find_client_by_contact (clients, contact_uid, e_destination_get_source_uid (destination));
+		g_slist_free (clients);
 		g_free (contact_uid);
 	} else {
-		book = NULL;
+		book_client = NULL;
 	}
 
-	if (!book)
+	if (!book_client)
 		return;
 
 	if (e_destination_is_evolution_list (destination)) {
@@ -2424,7 +2466,7 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 		if (!name_selector_entry->priv->contact_list_editor_func)
 			return;
 
-		contact_list_editor = (*name_selector_entry->priv->contact_list_editor_func) (book, contact, FALSE, TRUE);
+		contact_list_editor = (*name_selector_entry->priv->contact_list_editor_func) (book_client, contact, FALSE, TRUE);
 		g_object_ref (name_selector_entry);
 		g_signal_connect (contact_list_editor, "editor_closed",
 				  G_CALLBACK (editor_closed_cb), name_selector_entry);
@@ -2434,7 +2476,7 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 		if (!name_selector_entry->priv->contact_editor_func)
 			return;
 
-		contact_editor = (*name_selector_entry->priv->contact_editor_func) (book, contact, FALSE, TRUE);
+		contact_editor = (*name_selector_entry->priv->contact_editor_func) (book_client, contact, FALSE, TRUE);
 		g_object_ref (name_selector_entry);
 		g_signal_connect (contact_editor, "editor_closed",
 				  G_CALLBACK (editor_closed_cb), name_selector_entry);
@@ -2831,17 +2873,17 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
 	/* Source list */
 
-	if (!e_book_get_addressbooks (&name_selector_entry->priv->source_list, NULL)) {
-	  g_warning ("ENameSelectorEntry can't find any addressbooks!");
-	  return;
+	if (!e_book_client_get_sources (&name_selector_entry->priv->source_list, NULL)) {
+		g_warning ("ENameSelectorEntry can't find any addressbooks!");
+		return;
 	}
 
 	/* read minimum_query_length from gconf*/
 	gconf = gconf_client_get_default ();
 	if (COMPLETION_CUE_MIN_LEN == 0) {
-	  if ((COMPLETION_CUE_MIN_LEN = gconf_client_get_int (gconf, MINIMUM_QUERY_LENGTH, NULL)))
-		;
-	  else COMPLETION_CUE_MIN_LEN = 3;
+		if ((COMPLETION_CUE_MIN_LEN = gconf_client_get_int (gconf, MINIMUM_QUERY_LENGTH, NULL)))
+			;
+		else COMPLETION_CUE_MIN_LEN = 3;
 	}
 	COMPLETION_FORCE_SHOW_ADDRESS = gconf_client_get_bool (gconf, FORCE_SHOW_ADDRESS, NULL);
 	name_selector_entry->priv->user_query_fields = gconf_client_get_list (

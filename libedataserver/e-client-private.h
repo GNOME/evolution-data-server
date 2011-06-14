@@ -49,7 +49,6 @@ ESource *	e_client_util_get_source_for_uri (ESourceList *source_list, const gcha
 
 /* protected functions simplifying sync/async calls */
 GDBusProxy *	e_client_get_dbus_proxy		(EClient *client);
-void		e_client_unwrap_dbus_error	(EClient *client, GError *dbus_error, GError **out_error);
 
 void		e_client_proxy_return_async_error	(EClient *client, const GError *error, GAsyncReadyCallback callback, gpointer user_data, gpointer source_tag);
 

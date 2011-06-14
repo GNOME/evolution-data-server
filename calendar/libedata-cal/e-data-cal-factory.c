@@ -40,7 +40,7 @@
 #include <libedataserver/e-source-list.h>
 #include <libebackend/e-data-server-module.h>
 #include <libebackend/e-offline-listener.h>
-#include <libecal/e-cal.h>
+#include <libecal/e-cal-client.h>
 #include "e-cal-backend.h"
 #include "e-cal-backend-factory.h"
 #include "e-data-cal.h"
@@ -73,11 +73,11 @@ static gboolean opt_keep_running = FALSE;
 
 /* Convenience macro to test and set a GError/return on failure */
 #define g_set_error_val_if_fail(test, returnval, error, domain, code) G_STMT_START{ \
-		if G_LIKELY (test) {} else {				\
-			g_set_error (error, domain, code, #test);	\
-			g_warning(#test " failed");			\
-			return (returnval);				\
-		}							\
+		if G_LIKELY (test) {} else {					\
+			g_set_error_literal (error, domain, code, #test);	\
+			g_warning(#test " failed");				\
+			return (returnval);					\
+		}								\
 	} G_STMT_END
 
 G_DEFINE_TYPE (EDataCalFactory, e_data_cal_factory, G_TYPE_OBJECT);
@@ -99,10 +99,10 @@ struct _EDataCalFactoryPrivate {
 	gboolean is_online;
 
 	/* this is for notifications of source changes */
-	ESourceList *lists[E_CAL_SOURCE_TYPE_LAST];
+	ESourceList *lists[E_CAL_CLIENT_SOURCE_TYPE_LAST];
 
 	/* backends divided by their type */
-	GSList *backends_by_type[E_CAL_SOURCE_TYPE_LAST];
+	GSList *backends_by_type[E_CAL_CLIENT_SOURCE_TYPE_LAST];
 
 	guint exit_timeout;
 };
@@ -154,21 +154,21 @@ calobjtype_to_string (const EDataCalObjType type)
 	return "UNKNOWN COMPONENT";
 }
 
-static ECalSourceType
-icalkind_to_ecalsourcetype (const icalcomponent_kind kind)
+static ECalClientSourceType
+icalkind_to_ecalclientsourcetype (const icalcomponent_kind kind)
 {
 	switch (kind) {
 	case ICAL_VEVENT_COMPONENT:
-		return E_CAL_SOURCE_TYPE_EVENT;
+		return E_CAL_CLIENT_SOURCE_TYPE_EVENTS;
 	case ICAL_VTODO_COMPONENT:
-		return E_CAL_SOURCE_TYPE_TODO;
+		return E_CAL_CLIENT_SOURCE_TYPE_TASKS;
 	case ICAL_VJOURNAL_COMPONENT:
-		return E_CAL_SOURCE_TYPE_JOURNAL;
+		return E_CAL_CLIENT_SOURCE_TYPE_MEMOS;
 	default:
 		break;
 	}
 
-	return E_CAL_SOURCE_TYPE_LAST;
+	return E_CAL_CLIENT_SOURCE_TYPE_LAST;
 }
 
 static void
@@ -203,7 +203,7 @@ source_list_changed_cb (ESourceList *list,
 
 	g_mutex_lock (priv->backends_mutex);
 
-	for (i = 0; i < E_CAL_SOURCE_TYPE_LAST; i++) {
+	for (i = 0; i < E_CAL_CLIENT_SOURCE_TYPE_LAST; i++) {
 		GSList *iter;
 
 		if (list != priv->lists[i])
@@ -452,7 +452,7 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 	}
 
 	if (!backend) {
-		ECalSourceType st;
+		ECalClientSourceType st;
 
 		/* There was no existing backend, create a new one */
 		if (E_IS_CAL_BACKEND_LOADER_FACTORY (backend_factory)) {
@@ -473,11 +473,9 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 			goto cleanup;
 		}
 
-		st = icalkind_to_ecalsourcetype (
-			e_cal_backend_get_kind (backend));
-		if (st != E_CAL_SOURCE_TYPE_LAST) {
-			if (!priv->lists[st] && e_cal_get_sources (
-					&(priv->lists[st]), st, NULL)) {
+		st = icalkind_to_ecalclientsourcetype (e_cal_backend_get_kind (backend));
+		if (st != E_CAL_CLIENT_SOURCE_TYPE_LAST) {
+			if (!priv->lists[st] && e_cal_client_get_sources (&(priv->lists[st]), st, NULL)) {
 				g_signal_connect (
 					priv->lists[st], "changed",
 					G_CALLBACK (source_list_changed_cb),
@@ -630,7 +628,7 @@ e_data_cal_factory_finalize (GObject *object)
 
 	g_mutex_free (factory->priv->backends_mutex);
 
-	for (ii = 0; ii < E_CAL_SOURCE_TYPE_LAST; ii++) {
+	for (ii = 0; ii < E_CAL_CLIENT_SOURCE_TYPE_LAST; ii++) {
 		if (factory->priv->lists[ii]) {
 			g_object_unref (factory->priv->lists[ii]);
 			factory->priv->lists[ii] = NULL;

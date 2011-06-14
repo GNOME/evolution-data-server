@@ -23,7 +23,12 @@
  * Mostly taken from Evolution's addressbook/gui/component/addressbook.c
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
+#ifndef E_BOOK_DISABLE_DEPRECATED
+
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
@@ -571,6 +576,8 @@ exit:
  * then call e_load_book_source_finish() to obtain the resulting #EBook.
  *
  * Since: 2.32
+ *
+ * Deprecated: 3.2: Use e_client_utils_open_new(), e_client_utils_open_new_finish() instead.
  **/
 void
 e_load_book_source_async (ESource *source,
@@ -637,6 +644,8 @@ e_load_book_source_async (ESource *source,
  * Returns: a ready-to-use #EBook, or %NULL or error
  *
  * Since: 2.32
+ *
+ * Deprecated: 3.2: Use e_client_utils_open_new(), e_client_utils_open_new_finish() instead.
  **/
 EBook *
 e_load_book_source_finish (ESource *source,
@@ -681,3 +690,5 @@ e_load_book_source_finish (ESource *source,
 
 	return g_object_ref (context->book);
 }
+
+#endif /* E_BOOK_DISABLE_DEPRECATED */

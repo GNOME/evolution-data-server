@@ -30,13 +30,18 @@
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n-lib.h>
 #include <gconf/gconf-client.h>
-#include <libedataserverui/e-source-combo-box.h>
-#include <libedataserverui/e-destination-store.h>
-#include <libedataserverui/e-contact-store.h>
-#include <libedataserverui/e-book-auth-util.h>
-#include "libedataserver/e-sexp.h"
-#include "libedataserver/e-categories.h"
-#include "libedataserver/libedataserver-private.h"
+
+#include <libedataserver/e-sexp.h>
+#include <libedataserver/e-categories.h>
+
+#include <libebook/e-book-client.h>
+#include <libebook/e-book-client-view.h>
+#include <libebook/e-book-query.h>
+
+#include "e-source-combo-box.h"
+#include "e-destination-store.h"
+#include "e-contact-store.h"
+#include "e-client-utils.h"
 #include "e-name-selector-dialog.h"
 #include "e-name-selector-entry.h"
 
@@ -304,7 +309,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	/* Get addressbook sources */
 
-	if (!e_book_get_addressbooks (&source_list, NULL)) {
+	if (!e_book_client_get_sources (&source_list, NULL)) {
 		g_warning ("ENameSelectorDialog can't find any addressbooks!");
 		return;
 	}
@@ -507,7 +512,7 @@ sort_iter_to_contact_store_iter (ENameSelectorDialog *name_selector_dialog, GtkT
 }
 
 static void
-add_destination (ENameSelectorModel *name_selector_model, EDestinationStore *destination_store, EContact *contact, gint email_n)
+add_destination (ENameSelectorModel *name_selector_model, EDestinationStore *destination_store, EContact *contact, gint email_n, EBookClient *client)
 {
 	EDestination *destination;
 	GList *email_list, *nth;
@@ -524,6 +529,8 @@ add_destination (ENameSelectorModel *name_selector_model, EDestinationStore *des
 
 	destination = e_destination_new ();
 	e_destination_set_contact (destination, contact, email_n);
+	if (client)
+		e_destination_set_client (destination, client);
 	e_destination_store_append_destination (destination_store, destination);
 	g_object_unref (destination);
 }
@@ -532,8 +539,7 @@ static void
 remove_books (ENameSelectorDialog *name_selector_dialog)
 {
 	EContactStore *contact_store;
-	GList         *books;
-	GList         *l;
+	GSList        *clients, *l;
 
 	if (!name_selector_dialog->priv->name_selector_model)
 		return;
@@ -542,12 +548,12 @@ remove_books (ENameSelectorDialog *name_selector_dialog)
 		name_selector_dialog->priv->name_selector_model);
 
 	/* Remove books (should be just one) being viewed */
-	books = e_contact_store_get_books (contact_store);
-	for (l = books; l; l = g_list_next (l)) {
-		EBook *book = l->data;
-		e_contact_store_remove_book (contact_store, book);
+	clients = e_contact_store_get_clients (contact_store);
+	for (l = clients; l; l = g_slist_next (l)) {
+		EBookClient *client = l->data;
+		e_contact_store_remove_client (contact_store, client);
 	}
-	g_list_free (books);
+	g_slist_free (clients);
 
 	/* See if we have a book pending; stop loading it if so */
 	if (name_selector_dialog->priv->cancellable != NULL) {
@@ -852,7 +858,7 @@ model_section_removed (ENameSelectorDialog *name_selector_dialog, const gchar *n
  * -------------------- */
 
 static void
-status_message (EBookView *view, const gchar *message, ENameSelectorDialog *dialog)
+view_progress (EBookClientView *view, guint percent, const gchar *message, ENameSelectorDialog *dialog)
 {
 	if (message == NULL)
 		gtk_label_set_text (dialog->priv->status_label, "");
@@ -861,26 +867,46 @@ status_message (EBookView *view, const gchar *message, ENameSelectorDialog *dial
 }
 
 static void
-view_complete (EBookView *view, EBookViewStatus status, const gchar *error_msg, ENameSelectorDialog *dialog)
+view_complete (EBookClientView *view, const GError *error, ENameSelectorDialog *dialog)
 {
-	status_message (view, NULL, dialog);
+	view_progress (view, -1, NULL, dialog);
 }
 
 static void
-book_loaded_cb (ESource *source,
-                GAsyncResult *result,
-                ENameSelectorDialog *name_selector_dialog)
+start_client_view_cb (EContactStore *store, EBookClientView *client_view, ENameSelectorDialog *name_selector_dialog)
 {
-	EBook *book;
-	EBookView *view;
+	g_signal_connect (
+		client_view, "progress",
+		G_CALLBACK (view_progress), name_selector_dialog);
+
+	g_signal_connect (
+		client_view, "complete",
+		G_CALLBACK (view_complete), name_selector_dialog);
+}
+
+static void
+stop_client_view_cb (EContactStore *store, EBookClientView *client_view, ENameSelectorDialog *name_selector_dialog)
+{
+	g_signal_handlers_disconnect_by_func (client_view, view_progress, name_selector_dialog);
+	g_signal_handlers_disconnect_by_func (client_view, view_complete, name_selector_dialog);
+}
+
+static void
+book_loaded_cb (GObject *source_object,
+                GAsyncResult *result,
+                gpointer user_data)
+{
+	ENameSelectorDialog *name_selector_dialog = user_data;
+	EClient *client = NULL;
+	EBookClient *book_client;
 	EContactStore *store;
 	ENameSelectorModel *model;
 	GError *error = NULL;
 
-	book = e_load_book_source_finish (source, result, &error);
+	e_client_utils_open_new_finish (E_SOURCE (source_object), result, &client, &error);
 
 	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
-		g_warn_if_fail (book == NULL);
+		g_warn_if_fail (client == NULL);
 		g_error_free (error);
 		goto exit;
 	}
@@ -894,28 +920,23 @@ book_loaded_cb (ESource *source,
 			name_selector_dialog->priv->status_label, message);
 		g_free (message);
 
-		g_warn_if_fail (book == NULL);
+		g_warn_if_fail (client == NULL);
 		g_error_free (error);
+		goto exit;
+	}
+
+	book_client = E_BOOK_CLIENT (client);
+	if (!book_client) {
+		g_warn_if_fail (book_client != NULL);
 		goto exit;
 	}
 
 	model = name_selector_dialog->priv->name_selector_model;
 	store = e_name_selector_model_peek_contact_store (model);
-	e_contact_store_add_book (store, book);
+	e_contact_store_add_client (store, book_client);
+	g_object_unref (book_client);
 
-	view = find_contact_source_by_book_return_view (store, book);
-
-	g_signal_connect (
-		view, "status-message",
-		G_CALLBACK (status_message), name_selector_dialog);
-
-	g_signal_connect (
-		view, "view-complete",
-		G_CALLBACK (view_complete), name_selector_dialog);
-
-	g_object_unref (book);
-
-exit:
+ exit:
 	g_object_unref (name_selector_dialog);
 }
 
@@ -939,10 +960,10 @@ source_changed (ENameSelectorDialog *name_selector_dialog,
 	name_selector_dialog->priv->cancellable = cancellable;
 
 	/* Start loading selected book */
-	e_load_book_source_async (
-		source, parent, cancellable,
-		(GAsyncReadyCallback) book_loaded_cb,
-		g_object_ref (name_selector_dialog));
+	e_client_utils_open_new (
+		source, E_CLIENT_SOURCE_TYPE_CONTACTS, TRUE, cancellable,
+		e_client_utils_authenticate_handler, parent,
+		book_loaded_cb, g_object_ref (name_selector_dialog));
 }
 
 /* --------------- *
@@ -1000,7 +1021,6 @@ search_changed (ENameSelectorDialog *name_selector_dialog)
 	contact_store = e_name_selector_model_peek_contact_store (
 		name_selector_dialog->priv->name_selector_model);
 	e_contact_store_set_query (contact_store, book_query);
-
 	e_book_query_unref (book_query);
 
 	g_free (query_string);
@@ -1075,7 +1095,8 @@ contact_activated (ENameSelectorDialog *name_selector_dialog, GtkTreePath *path)
 
 	add_destination (
 		name_selector_dialog->priv->name_selector_model,
-		destination_store, contact, email_n);
+		destination_store, contact, email_n,
+		e_contact_store_get_client (contact_store, &iter));
 }
 
 static void
@@ -1265,7 +1286,8 @@ transfer_button_clicked (ENameSelectorDialog *name_selector_dialog, GtkButton *t
 
 		add_destination (
 			name_selector_dialog->priv->name_selector_model,
-			destination_store, contact, email_n);
+			destination_store, contact, email_n,
+			e_contact_store_get_client (contact_store, &iter));
 	}
 	g_list_free (rows);
 }
@@ -1278,6 +1300,7 @@ static void
 setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 {
 	ETreeModelGenerator *contact_filter;
+	EContactStore       *contact_store;
 	GList               *new_sections;
 	GList               *l;
 
@@ -1331,6 +1354,12 @@ setup_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 		name_selector_dialog->priv->contact_view,
 		GTK_TREE_MODEL (name_selector_dialog->priv->contact_sort));
 
+	contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->priv->name_selector_model);
+	if (contact_store) {
+		g_signal_connect (contact_store, "start-client-view", G_CALLBACK (start_client_view_cb), name_selector_dialog);
+		g_signal_connect (contact_store, "stop-client-view", G_CALLBACK (stop_client_view_cb), name_selector_dialog);
+	}
+
 	/* Make sure UI is consistent */
 
 	search_changed (name_selector_dialog);
@@ -1359,6 +1388,14 @@ shutdown_name_selector_model (ENameSelectorDialog *name_selector_dialog)
 	/* Free backend model */
 
 	if (name_selector_dialog->priv->name_selector_model) {
+		EContactStore *contact_store;
+
+		contact_store = e_name_selector_model_peek_contact_store (name_selector_dialog->priv->name_selector_model);
+		if (contact_store) {
+			g_signal_handlers_disconnect_by_func (contact_store, start_client_view_cb, name_selector_dialog);
+			g_signal_handlers_disconnect_by_func (contact_store, stop_client_view_cb, name_selector_dialog);
+		}
+
 		g_signal_handlers_disconnect_matched (
 			name_selector_dialog->priv->name_selector_model,
 			G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, name_selector_dialog);

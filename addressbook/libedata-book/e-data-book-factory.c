@@ -61,11 +61,11 @@ static gboolean opt_keep_running = FALSE;
 
 /* Convenience macro to test and set a GError/return on failure */
 #define g_set_error_val_if_fail(test, returnval, error, domain, code) G_STMT_START{ \
-		if G_LIKELY (test) {} else {				\
-			g_set_error (error, domain, code, #test);	\
-			g_warning(#test " failed");			\
-			return (returnval);				\
-		}							\
+		if G_LIKELY (test) {} else {					\
+			g_set_error_literal (error, domain, code, #test);	\
+			g_warning (#test " failed");				\
+			return (returnval);					\
+		}								\
 	}G_STMT_END
 
 G_DEFINE_TYPE (EDataBookFactory, e_data_book_factory, G_TYPE_OBJECT);

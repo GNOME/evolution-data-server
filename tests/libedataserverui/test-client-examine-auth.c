@@ -148,9 +148,9 @@ continue_next_source (gpointer async_data)
 
 	while (async_data && foreach_configured_source_async_next (&async_data, &source)) {
 		identify_source (source);
-		e_client_utils_open_new (source, source_type, TRUE,
+		e_client_utils_open_new (source, source_type, TRUE, NULL,
 			e_client_utils_authenticate_handler, NULL,
-			NULL, client_opened_async, async_data);
+			client_opened_async, async_data);
 		break;
 	}
 
@@ -236,7 +236,7 @@ client_opened_async (GObject *source_object, GAsyncResult *result, gpointer asyn
 	g_return_if_fail (source_object == NULL);
 	g_return_if_fail (async_data != NULL);
 
-	if (!e_client_utils_open_new_finish (result, &client, &error)) {
+	if (!e_client_utils_open_new_finish (E_SOURCE (source_object), result, &client, &error)) {
 		report_error ("client utils open new finish", &error);
 		continue_next_source (async_data);
 		return;
@@ -265,9 +265,9 @@ foreach_async (void)
 	running_async++;
 
 	identify_source (source);
-	e_client_utils_open_new (source, source_type, TRUE,
+	e_client_utils_open_new (source, source_type, TRUE, NULL,
 		e_client_utils_authenticate_handler, NULL,
-		NULL, client_opened_async, async_data);
+		client_opened_async, async_data);
 
 	return TRUE;
 }

@@ -27,6 +27,8 @@
 #include "libedata-book/e-data-book-types.h"
 #include "e-gdbus-book-view.h"
 
+#ifndef E_BOOK_DISABLE_DEPRECATED
+
 G_DEFINE_TYPE (EBookView, e_book_view, G_TYPE_OBJECT);
 
 struct _EBookViewPrivate {
@@ -350,3 +352,5 @@ e_book_view_class_init (EBookViewClass *klass)
 
 	object_class->dispose = e_book_view_dispose;
 }
+
+#endif /* E_BOOK_DISABLE_DEPRECATED */
