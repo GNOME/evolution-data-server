@@ -3512,6 +3512,7 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 	}
 
 	switch (mod) {
+	case CALOBJ_MOD_ONLY_THIS:
 	case CALOBJ_MOD_THIS:
 		if (e_cal_component_is_instance (comp)) {
 			icalcomponent *new_comp = e_cal_component_get_icalcomponent (comp);
@@ -3635,10 +3636,11 @@ do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, 
 	}
 
 	switch (mod) {
+	case CALOBJ_MOD_ONLY_THIS:
 	case CALOBJ_MOD_THIS:
 		if (rid && *rid) {
 			/* remove one instance from the component */
-			if (remove_instance (cbdav, cache_comp, icaltime_from_string (rid), mod, TRUE)) {
+			if (remove_instance (cbdav, cache_comp, icaltime_from_string (rid), mod, mod != CALOBJ_MOD_ONLY_THIS)) {
 				if (object) {
 					icalcomponent *master = get_master_comp (cbdav, cache_comp);
 
