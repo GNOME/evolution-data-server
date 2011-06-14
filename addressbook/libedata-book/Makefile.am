@@ -71,7 +71,8 @@ e_book_backend_sqlitedb_test_CPPFLAGS =					\
 	$(libedata_book_1_2_la_CPPFLAGS)
 e_book_backend_sqlitedb_test_SOURCES =	e-book-backend-sqlitedb-test.c
 e_book_backend_sqlitedb_test_LDADD = 					\
-	libedata-book-1.2.la					
+	libedata-book-1.2.la                                    \
+	$(libedata_book_1_2_la_LIBADD)
 
 factory_PROGRAMS = e-addressbook-factory
 
