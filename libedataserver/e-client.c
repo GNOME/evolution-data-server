@@ -920,6 +920,7 @@ e_client_emit_opened (EClient *client, const GError *dbus_error)
 		e_client_unwrap_dbus_error (client, local_error, &local_error);
 	}
 
+	g_object_notify (G_OBJECT (client), "opened");
 	g_signal_emit (client, signals[OPENED], 0, local_error);
 
 	if (local_error)
