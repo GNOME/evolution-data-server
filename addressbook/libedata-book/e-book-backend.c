@@ -1263,8 +1263,8 @@ e_book_backend_notify_opened (EBookBackend *backend, GError *error)
  *
  * This is a replacement for e_data_book_respond_open() for cases where
  * the finish of 'open' method call also finishes backend opening phase.
- * This function covers calling of both e_data_book_respond_open() and
- * e_book_backend_notify_opened() with the same @error.
+ * This function covers calling of both e_book_backend_notify_opened()
+ * and e_data_book_respond_open() with the same @error.
  *
  * See e_book_backend_open() for more details how the opening phase works.
  **/
@@ -1281,6 +1281,6 @@ e_book_backend_respond_opened (EBookBackend *backend, EDataBook *book, guint32 o
 	if (error)
 		copy = g_error_copy (error);
 
-	e_data_book_respond_open (book, opid, error);
 	e_book_backend_notify_opened (backend, copy);
+	e_data_book_respond_open (book, opid, error);
 }

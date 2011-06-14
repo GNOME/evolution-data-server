@@ -1765,8 +1765,8 @@ e_cal_backend_notify_opened (ECalBackend *backend, GError *error)
  *
  * This is a replacement for e_data_cal_respond_open() for cases where
  * the finish of 'open' method call also finishes backend opening phase.
- * This function covers calling of both e_data_cal_respond_open() and
- * e_cal_backend_notify_opened() with the same @error.
+ * This function covers calling of both e_cal_backend_notify_opened() and
+ * e_data_cal_respond_open() with the same @error.
  *
  * See e_cal_backend_open() for more details how the opening phase works.
  **/
@@ -1783,8 +1783,8 @@ e_cal_backend_respond_opened (ECalBackend *backend, EDataCal *cal, guint32 opid,
 	if (error)
 		copy = g_error_copy (error);
 
-	e_data_cal_respond_open (cal, opid, error);
 	e_cal_backend_notify_opened (backend, copy);
+	e_data_cal_respond_open (cal, opid, error);
 }
 
 /**
