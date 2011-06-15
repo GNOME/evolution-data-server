@@ -1425,12 +1425,15 @@ generate_instances (ECalClient *client, time_t start, time_t end, const gchar *u
 			}
 		} else {
 			ECalComponentDateTime datetime;
-			icaltimezone *start_zone;
+			icaltimezone *start_zone = NULL;
 			struct instances_info *instances_hold;
 
 			/* Get the start timezone */
 			e_cal_component_get_dtstart (comp, &datetime);
-			e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, NULL, NULL);
+			if (datetime.tzid)
+				e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, NULL, NULL);
+			else
+				start_zone = NULL;
 			e_cal_component_free_datetime (&datetime);
 
 			instances_hold = g_new0 (struct instances_info, 1);
@@ -1543,7 +1546,7 @@ e_cal_client_generate_instances_for_object (ECalClient *client, icalcomponent *i
 	gboolean result;
 	GSList *instances = NULL;
 	ECalComponentDateTime datetime;
-	icaltimezone *start_zone;
+	icaltimezone *start_zone = NULL;
 	struct instances_info *instances_hold;
 	gboolean is_single_instance = FALSE;
 
@@ -1576,7 +1579,10 @@ e_cal_client_generate_instances_for_object (ECalClient *client, icalcomponent *i
 
 	/* Get the start timezone */
 	e_cal_component_get_dtstart (comp, &datetime);
-	e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, NULL, NULL);
+	if (datetime.tzid)
+		e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, NULL, NULL);
+	else
+		start_zone = NULL;
 	e_cal_component_free_datetime (&datetime);
 
 	instances_hold = g_new0 (struct instances_info, 1);

@@ -3196,12 +3196,15 @@ try_again:
 			}
 		} else {
 			ECalComponentDateTime datetime;
-			icaltimezone *start_zone;
+			icaltimezone *start_zone = NULL;
 			struct instances_info *instances_hold;
 
 			/* Get the start timezone */
 			e_cal_component_get_dtstart (comp, &datetime);
-			e_cal_get_timezone (ecal, datetime.tzid, &start_zone, NULL);
+			if (datetime.tzid)
+				e_cal_get_timezone (ecal, datetime.tzid, &start_zone, NULL);
+			else
+				start_zone = NULL;
 			e_cal_component_free_datetime (&datetime);
 
 			instances_hold = g_new0 (struct instances_info, 1);
@@ -3326,7 +3329,7 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 	gboolean result;
 	GList *instances = NULL;
 	ECalComponentDateTime datetime;
-	icaltimezone *start_zone;
+	icaltimezone *start_zone = NULL;
 	struct instances_info *instances_hold;
 	gboolean is_single_instance = FALSE;
 
@@ -3357,7 +3360,10 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 
 	/* Get the start timezone */
 	e_cal_component_get_dtstart (comp, &datetime);
-	e_cal_get_timezone (ecal, datetime.tzid, &start_zone, NULL);
+	if (datetime.tzid)
+		e_cal_get_timezone (ecal, datetime.tzid, &start_zone, NULL);
+	else
+		start_zone = NULL;
 	e_cal_component_free_datetime (&datetime);
 
 	instances_hold = g_new0 (struct instances_info, 1);
@@ -3631,7 +3637,7 @@ foreach_tzid_callback (icalparameter *param, gpointer cbdata)
 	ForeachTZIDCallbackData *data = cbdata;
 	ECalPrivate *priv;
 	const gchar *tzid;
-	icaltimezone *zone;
+	icaltimezone *zone = NULL;
 	icalcomponent *vtimezone_comp;
 	gchar *vtimezone_as_string;
 
