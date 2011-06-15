@@ -346,7 +346,10 @@ impl_Mail_findPassword (EGdbusSessionCS *object, GDBusMethodInvocation *invocati
 	ipc(printf("Finding Password for: %s\n", key));
 	password = e_passwords_get_password ("Mail", key);
 
-	egdbus_session_cs_complete_find_password (object, invocation, password);
+	if (g_getenv("EDS_SHOW_PASSWORDS")) {
+		printf("findPass: %s: %s\n", key, password ? password : "EMPTY");
+	}
+	egdbus_session_cs_complete_find_password (object, invocation, password ? password : "");
 	g_free (password);
 
 	return TRUE;
@@ -359,6 +362,9 @@ impl_Mail_addPassword (EGdbusSessionCS *object, GDBusMethodInvocation *invocatio
 	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
 
 	ipc(printf("Adding Password for: %s (remember: %d)\n", key, remember));
+	if (g_getenv("EDS_SHOW_PASSWORDS")) {
+		printf("Adding password: %s : %s\n", key, password);
+	}
 	e_passwords_add_password (key, password);
 	if (remember)
 		e_passwords_remember_password ("Mail", key);
