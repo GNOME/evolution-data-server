@@ -1014,6 +1014,7 @@ imap_rescan (CamelFolder *folder,
 		return FALSE;
 	}
 
+	resp = NULL;
 	new = g_malloc0 (summary_len * sizeof (*new));
 	summary_got = 0;
 	while ((type = camel_imap_command_response (store, &resp, cancellable, error)) == CAMEL_IMAP_RESPONSE_UNTAGGED && !camel_application_is_exiting) {
@@ -1023,6 +1024,7 @@ imap_rescan (CamelFolder *folder,
 
 		data = parse_fetch_response (imap_folder, resp);
 		g_free (resp);
+		resp = NULL;
 		if (!data)
 			continue;
 
@@ -1048,6 +1050,8 @@ imap_rescan (CamelFolder *folder,
 		camel_operation_pop_message (cancellable);
 		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		g_free (new);
+		g_free (resp);
+
 		return TRUE;
 	}
 
@@ -1059,6 +1063,7 @@ imap_rescan (CamelFolder *folder,
 			g_free (new[i].custom_flags);
 		}
 		g_free (new);
+		g_free (resp);
 
 		if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
 			camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -3932,7 +3937,7 @@ imap_update_summary (CamelFolder *folder,
 			if (store->custom_headers)
 				header_spec = g_string_append (header_spec, store->custom_headers);
 
-			temp = g_strdup (header_spec->str);
+			temp = g_string_free (header_spec, FALSE);
 			temp = g_strstrip (temp);
 			header_spec = g_string_new (temp);
 			g_free (temp);
@@ -4022,6 +4027,7 @@ imap_update_summary (CamelFolder *folder,
 		if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
 			camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
+		g_string_free (header_spec, TRUE);
 		goto lose;
 	}
 
@@ -4090,6 +4096,7 @@ imap_update_summary (CamelFolder *folder,
 
 			if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
 				g_ptr_array_free (needheaders, TRUE);
+				g_string_free (header_spec, TRUE);
 				camel_operation_pop_message (cancellable);
 
 				if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
@@ -4098,10 +4105,11 @@ imap_update_summary (CamelFolder *folder,
 				goto lose;
 			}
 		}
-		g_string_free (header_spec, TRUE);
-		g_ptr_array_free (needheaders, TRUE);
 		camel_operation_pop_message (cancellable);
 	}
+
+	g_ptr_array_free (needheaders, TRUE);
+	g_string_free (header_spec, TRUE);
 
 	/* Now finish up summary entries (fix UIDs, set flags and size) */
 	for (i = 0; i < fetch_data->len; i++) {

@@ -2602,9 +2602,9 @@ get_folders_sync (CamelImapStore *imap_store,
 
 			if (!ppattern) {
 				if (!ns->full_name || !*ns->full_name) {
-					tmp = g_strdup ("*");
 					if (k == 1)
 						break;
+					tmp = g_strdup ("*");
 				} else if (k == 0)
 					tmp = g_strdup_printf ("%s%c", ns->full_name, ns->sep);
 				else
@@ -2618,6 +2618,7 @@ get_folders_sync (CamelImapStore *imap_store,
 								pattern);
 				if (!response) {
 					success = FALSE;
+					g_free (tmp);
 					goto fail;
 				}
 
