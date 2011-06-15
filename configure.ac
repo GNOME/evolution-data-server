@@ -1456,6 +1456,7 @@ addressbook/backends/webdav/Makefile
 addressbook/tests/Makefile
 addressbook/tests/ebook/Makefile
 addressbook/tests/vcard/Makefile
+addressbook/tests/tools/Makefile
 art/Makefile
 calendar/Makefile
 calendar/libecal/Makefile

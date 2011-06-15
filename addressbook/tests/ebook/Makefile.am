@@ -22,6 +22,13 @@ TEST_LIBS =							\
 	libebook-test-utils.la	         \
 	$(NULL)
 
+RUN_WITH_PRIVATE_BUS = $(top_srcdir)/addressbook/tests/tools/with-session-bus-eds.sh
+
+TESTS_ENVIRONMENT = \
+	$(RUN_WITH_PRIVATE_BUS) \
+	--session \
+	--
+
 # Should be kept ordered approximately from least to most difficult/complex
 TESTS = \
 	test-ebook-remove			     \
