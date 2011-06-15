@@ -458,6 +458,52 @@ static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_add_passwor
   "handle-add-password"
 };
 
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_find_password_IN_ARG_key =
+{
+  {
+    -1,
+    "key",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_method_info_find_password_IN_ARG_pointers[] =
+{
+  &_egdbus_session_cs_method_info_find_password_IN_ARG_key,
+  NULL
+};
+
+static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_find_password_OUT_ARG_password =
+{
+  {
+    -1,
+    "password",
+    "s",
+    NULL
+  },
+  FALSE
+};
+
+static const _ExtendedGDBusArgInfo * const _egdbus_session_cs_method_info_find_password_OUT_ARG_pointers[] =
+{
+  &_egdbus_session_cs_method_info_find_password_OUT_ARG_password,
+  NULL
+};
+
+static const _ExtendedGDBusMethodInfo _egdbus_session_cs_method_info_find_password =
+{
+  {
+    -1,
+    "findPassword",
+    (GDBusArgInfo **) &_egdbus_session_cs_method_info_find_password_IN_ARG_pointers,
+    (GDBusArgInfo **) &_egdbus_session_cs_method_info_find_password_OUT_ARG_pointers,
+    NULL
+  },
+  "handle-find-password"
+};
+
 static const _ExtendedGDBusArgInfo _egdbus_session_cs_method_info_get_local_folder_IN_ARG_type =
 {
   {
@@ -666,6 +712,7 @@ static const _ExtendedGDBusMethodInfo * const _egdbus_session_cs_method_info_poi
   &_egdbus_session_cs_method_info_get_store,
   &_egdbus_session_cs_method_info_get_local_store,
   &_egdbus_session_cs_method_info_add_password,
+  &_egdbus_session_cs_method_info_find_password,
   &_egdbus_session_cs_method_info_get_local_folder,
   &_egdbus_session_cs_method_info_get_folder_from_uri,
   &_egdbus_session_cs_method_info_send_receive,
@@ -901,6 +948,17 @@ egdbus_session_cs_default_init (EGdbusSessionCSIface *iface)
     G_TYPE_BOOLEAN,
     4,
     G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_BOOLEAN);
+
+  g_signal_new ("handle-find-password",
+    G_TYPE_FROM_INTERFACE (iface),
+    G_SIGNAL_RUN_LAST,
+    G_STRUCT_OFFSET (EGdbusSessionCSIface, handle_find_password),
+    g_signal_accumulator_true_handled,
+    NULL,
+    _cclosure_marshal_generic,
+    G_TYPE_BOOLEAN,
+    2,
+    G_TYPE_DBUS_METHOD_INVOCATION, G_TYPE_STRING);
 
   g_signal_new ("handle-get-local-folder",
     G_TYPE_FROM_INTERFACE (iface),
@@ -1257,6 +1315,71 @@ egdbus_session_cs_call_add_password_sync (
     goto _out;
   g_variant_get (_ret,
                  "()");
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+void
+egdbus_session_cs_call_find_password (
+    EGdbusSessionCS *proxy,
+    const gchar *key,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  g_dbus_proxy_call (G_DBUS_PROXY (proxy),
+    "findPassword",
+    g_variant_new ("(s)",
+                   key),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    callback,
+    user_data);
+}
+
+gboolean
+egdbus_session_cs_call_find_password_finish (
+    EGdbusSessionCS *proxy,
+    gchar **out_password,
+    GAsyncResult *res,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_finish (G_DBUS_PROXY (proxy), res, error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "(s)",
+                 out_password);
+  g_variant_unref (_ret);
+_out:
+  return _ret != NULL;
+}
+
+gboolean
+egdbus_session_cs_call_find_password_sync (
+    EGdbusSessionCS *proxy,
+    const gchar *key,
+    gchar **out_password,
+    GCancellable *cancellable,
+    GError **error)
+{
+  GVariant *_ret;
+  _ret = g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy),
+    "findPassword",
+    g_variant_new ("(s)",
+                   key),
+    G_DBUS_CALL_FLAGS_NONE,
+    -1,
+    cancellable,
+    error);
+  if (_ret == NULL)
+    goto _out;
+  g_variant_get (_ret,
+                 "(s)",
+                 out_password);
   g_variant_unref (_ret);
 _out:
   return _ret != NULL;
@@ -1665,6 +1788,17 @@ egdbus_session_cs_complete_add_password (
 {
   g_dbus_method_invocation_return_value (invocation,
     g_variant_new ("()"));
+}
+
+void
+egdbus_session_cs_complete_find_password (
+    EGdbusSessionCS *object,
+    GDBusMethodInvocation *invocation,
+    const gchar *password)
+{
+  g_dbus_method_invocation_return_value (invocation,
+    g_variant_new ("(s)",
+                   password));
 }
 
 void

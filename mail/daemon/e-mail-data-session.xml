@@ -27,6 +27,10 @@
       <arg name="password" type="s" direction="in"/>
       <arg name="remember" type="b" direction="in"/>      
     </method>
+    <method name="findPassword">
+      <arg name="key" type="s" direction="in"/>	    
+      <arg name="password" type="s" direction="out"/>
+    </method>
 
     <!-- 
     FolderType should be a string "inbox" "draft" "outbox" "sent" "templates"

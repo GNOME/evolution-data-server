@@ -338,6 +338,22 @@ impl_Mail_getFolderFromUri (EGdbusSessionCS *object, GDBusMethodInvocation *invo
 }
 
 static gboolean
+impl_Mail_findPassword (EGdbusSessionCS *object, GDBusMethodInvocation *invocation, const char *key, EMailDataSession *msession)
+{
+	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
+	char *password;
+
+	ipc(printf("Finding Password for: %s\n", key));
+	password = e_passwords_get_password ("Mail", key);
+
+	egdbus_session_cs_complete_find_password (object, invocation, password);
+	g_free (password);
+
+	return TRUE;
+}
+
+
+static gboolean
 impl_Mail_addPassword (EGdbusSessionCS *object, GDBusMethodInvocation *invocation, const char *key, const char *password, gboolean remember, EMailDataSession *msession)
 {
 	EMailDataSessionPrivate *priv = DATA_SESSION_PRIVATE(msession);
@@ -499,6 +515,7 @@ e_mail_data_session_init (EMailDataSession *self)
 	g_signal_connect (priv->gdbus_object, "handle-get-local-folder", G_CALLBACK (impl_Mail_getLocalFolder), self);
 	g_signal_connect (priv->gdbus_object, "handle-get-folder-from-uri", G_CALLBACK (impl_Mail_getFolderFromUri), self);
 	g_signal_connect (priv->gdbus_object, "handle-add-password", G_CALLBACK (impl_Mail_addPassword), self);
+	g_signal_connect (priv->gdbus_object, "handle-find-password", G_CALLBACK (impl_Mail_findPassword), self);
 	g_signal_connect (priv->gdbus_object, "handle-send-receive", G_CALLBACK (impl_Mail_sendReceive), self);
 	g_signal_connect (priv->gdbus_object, "handle-fetch-account", G_CALLBACK (impl_Mail_fetchAccount), self);
 	g_signal_connect (priv->gdbus_object, "handle-fetch-old-messages", G_CALLBACK (impl_Mail_fetchOldMessages), self);
