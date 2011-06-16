@@ -1403,8 +1403,11 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 			camel_folder_set_message_flags (folder, uids->pdata[i],
 							CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_SEEN, ~0);
 
-		if (cache)
+		if (cache) {
 			camel_uid_cache_save_uid (cache, uids->pdata[i]);
+			if (i%10 == 0)
+				camel_uid_cache_save (cache); /* Save list every 10 mails */
+		}
 	}
 
 	if (p->defaultfolder) {
