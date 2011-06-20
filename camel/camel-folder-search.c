@@ -84,6 +84,7 @@ static ESExpResult *search_system_flag (struct _ESExp *f, gint argc, struct _ESE
 static ESExpResult *search_get_sent_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 static ESExpResult *search_get_received_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 static ESExpResult *search_get_current_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static ESExpResult *search_get_relative_months (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 static ESExpResult *search_get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 static ESExpResult *search_uid (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 static ESExpResult *search_message_location (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
@@ -149,6 +150,7 @@ camel_folder_search_class_init (CamelFolderSearchClass *class)
 	class->get_sent_date = search_get_sent_date;
 	class->get_received_date = search_get_received_date;
 	class->get_current_date = search_get_current_date;
+	class->get_relative_months = search_get_relative_months;
 	class->get_size = search_get_size;
 	class->uid = search_uid;
 	class->message_location = search_message_location;
@@ -196,6 +198,7 @@ static struct {
 	{ "get-sent-date", G_STRUCT_OFFSET(CamelFolderSearchClass, get_sent_date), 1 },
 	{ "get-received-date", G_STRUCT_OFFSET(CamelFolderSearchClass, get_received_date), 1 },
 	{ "get-current-date", G_STRUCT_OFFSET(CamelFolderSearchClass, get_current_date), 1 },
+	{ "get-relative-months", G_STRUCT_OFFSET(CamelFolderSearchClass, get_relative_months), 1 },
 	{ "get-size", G_STRUCT_OFFSET(CamelFolderSearchClass, get_size), 1 },
 	{ "uid", G_STRUCT_OFFSET(CamelFolderSearchClass, uid), 1 },
 	{ "message-location", G_STRUCT_OFFSET(CamelFolderSearchClass, message_location), 1 },
@@ -1761,6 +1764,26 @@ search_get_current_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv
 }
 
 static ESExpResult *
+search_get_relative_months (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s)
+{
+	ESExpResult *r;
+
+	r(printf("executing get-relative-months\n"));
+
+	if (argc != 1 || argv[0]->type != ESEXP_RES_INT) {
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+		r->value.boolean = FALSE;
+
+		g_debug ("%s: Expecting 1 argument, an integer, but got %d arguments", G_STRFUNC, argc);
+	} else {
+		r = e_sexp_result_new (f, ESEXP_RES_INT);
+		r->value.number = camel_folder_search_util_add_months (time (NULL), argv[0]->value.number);
+	}
+
+	return r;
+}
+
+static ESExpResult *
 search_get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s)
 {
 	ESExpResult *r;
@@ -1871,4 +1894,31 @@ search_message_location (struct _ESExp *f, gint argc, struct _ESExpResult **argv
 	}
 
 	return r;
+}
+
+/* add or subtract given number of months to given time */
+time_t
+camel_folder_search_util_add_months (time_t t, gint months)
+{
+	GDateTime *dt, *dt2;
+	time_t res;
+
+	if (!months)
+		return t;
+
+	dt = g_date_time_new_from_unix_utc (t);
+
+	/* just for issues, to return something inaccurate, but sane */
+	res = t + (60 * 60 * 24 * 30 * months);
+
+	g_return_val_if_fail (dt != NULL, res);
+
+	dt2 = g_date_time_add_months (dt, months);
+	g_date_time_unref (dt);
+	g_return_val_if_fail (dt2 != NULL, res);
+
+	res = g_date_time_to_unix (dt2);
+	g_date_time_unref (dt2);
+
+	return res;
 }

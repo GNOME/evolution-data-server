@@ -536,6 +536,26 @@ get_current_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpoin
 }
 
 static ESExpResult *
+get_relative_months (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+{
+	ESExpResult *r;
+
+	d(printf("executing get-relative-months\n"));
+
+	if (argc != 1 || argv[0]->type != ESEXP_RES_INT) {
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+		r->value.boolean = FALSE;
+
+		g_debug ("%s: Expecting 1 argument, an integer, but got %d arguments", G_STRFUNC, argc);
+	} else {
+		r = e_sexp_result_new (f, ESEXP_RES_INT);
+		r->value.number = camel_folder_search_util_add_months (time (NULL), argv[0]->value.number);
+	}
+
+	return r;
+}
+
+static ESExpResult *
 get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 {
 	ESExpResult *r;
@@ -595,6 +615,7 @@ static struct {
 	{ "get-sent-date", get_sent_date, 0},
 	{ "get-received-date", get_received_date, 0},
 	{ "get-current-date", get_current_date, 0},
+	{ "get-relative-months", get_relative_months, 0},
 	{ "get-size", get_size, 0},
 	{ "sql-exp", sql_exp, 0},
 

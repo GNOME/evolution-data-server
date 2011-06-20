@@ -88,6 +88,7 @@ static ESExpResult *system_flag (struct _ESExp *f, gint argc, struct _ESExpResul
 static ESExpResult *get_sent_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
 static ESExpResult *get_received_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
 static ESExpResult *get_current_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
+static ESExpResult *get_relative_months (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
 static ESExpResult *header_source (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
 static ESExpResult *get_size (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
 static ESExpResult *pipe_message (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms);
@@ -117,6 +118,7 @@ static struct {
 	{ "get-sent-date",      (ESExpFunc *) get_sent_date,      0 },
 	{ "get-received-date",  (ESExpFunc *) get_received_date,  0 },
 	{ "get-current-date",   (ESExpFunc *) get_current_date,   0 },
+	{ "get-relative-months",(ESExpFunc *) get_relative_months,0 },
 	{ "header-source",      (ESExpFunc *) header_source,      0 },
 	{ "get-size",           (ESExpFunc *) get_size,           0 },
 	{ "pipe-message",       (ESExpFunc *) pipe_message,       0 },
@@ -456,6 +458,24 @@ get_current_date (struct _ESExp *f, gint argc, struct _ESExpResult **argv, Filte
 
 	r = e_sexp_result_new (f, ESEXP_RES_INT);
 	r->value.number = time (NULL);
+
+	return r;
+}
+
+static ESExpResult *
+get_relative_months (struct _ESExp *f, gint argc, struct _ESExpResult **argv, FilterMessageSearch *fms)
+{
+	ESExpResult *r;
+
+	if (argc != 1 || argv[0]->type != ESEXP_RES_INT) {
+		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+		r->value.boolean = FALSE;
+
+		g_debug ("%s: Expecting 1 argument, an integer, but got %d arguments", G_STRFUNC, argc);
+	} else {
+		r = e_sexp_result_new (f, ESEXP_RES_INT);
+		r->value.number = camel_folder_search_util_add_months (time (NULL), argv[0]->value.number);
+	}
 
 	return r;
 }

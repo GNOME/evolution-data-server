@@ -137,6 +137,9 @@ struct _CamelFolderSearchClass {
 	/* (get-current-date) Retrieve 'now' as a time_t */
 	ESExpResult * (*get_current_date)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 
+	/* (get-relative-months) Retrieve relative seconds from 'now' and specified number of months as a time_t */
+	ESExpResult * (*get_relative_months)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+
 	/* (get-size) Retrieve message size as an gint (in kilobytes) */
 	ESExpResult * (*get_size)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
 
@@ -162,6 +165,8 @@ GPtrArray *camel_folder_search_execute_expression (CamelFolderSearch *search, co
 GPtrArray *camel_folder_search_search (CamelFolderSearch *search, const gchar *expr, GPtrArray *uids, GError **error);
 guint32 camel_folder_search_count (CamelFolderSearch *search, const gchar *expr, GError **error);
 void camel_folder_search_free_result (CamelFolderSearch *search, GPtrArray *);
+
+time_t camel_folder_search_util_add_months (time_t t, gint months);
 
 G_END_DECLS
 
