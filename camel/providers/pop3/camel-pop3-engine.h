@@ -146,7 +146,7 @@ void              camel_pop3_engine_command_free (CamelPOP3Engine *pe, CamelPOP3
 
 gint		  camel_pop3_engine_iterate	(CamelPOP3Engine *pe, CamelPOP3Command *pc);
 
-CamelPOP3Command *camel_pop3_engine_command_new	(CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, gpointer data, const gchar *fmt, ...);
+CamelPOP3Command *camel_pop3_engine_command_new	(CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, gpointer data, GCancellable *cancellable, GError **error, const gchar *fmt, ...);
 
 G_END_DECLS
 

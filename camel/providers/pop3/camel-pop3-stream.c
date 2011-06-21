@@ -72,6 +72,7 @@ stream_fill (CamelPOP3Stream *is,
              GError **error)
 {
 	gint left = 0;
+	GError *local_error = NULL;
 
 	if (is->source) {
 		left = is->end - is->ptr;
@@ -81,7 +82,12 @@ stream_fill (CamelPOP3Stream *is,
 		left = camel_stream_read (
 			is->source, (gchar *) is->end,
 			CAMEL_POP3_STREAM_SIZE - (is->end - is->buf),
-			cancellable, error);
+			cancellable, &local_error);
+		if (local_error) {
+			dd (printf ("POP3_STREAM_FILL: Failed to read bytes: %s\n", local_error->message));
+			g_propagate_error (error, local_error);
+		}
+
 		if (left > 0) {
 			is->end += left;
 			is->end[0] = '\n';

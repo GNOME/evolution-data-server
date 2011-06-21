@@ -201,7 +201,7 @@ connect_to_server (CamelService *service,
 		goto stls_exception;
 	}
 
-	pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, "STLS\r\n");
+	pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, cancellable, error, "STLS\r\n");
 	while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
 		;
 
@@ -250,7 +250,7 @@ connect_to_server (CamelService *service,
  stls_exception:
 	if (clean_quit) {
 		/* try to disconnect cleanly */
-		pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, "QUIT\r\n");
+		pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, NULL, NULL, "QUIT\r\n");
 		while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (store->engine, pc);
@@ -422,8 +422,8 @@ pop3_try_authenticate (CamelService *service,
 
 	if (!service->url->authmech) {
 		/* pop engine will take care of pipelining ability */
-		pcu = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, "USER %s\r\n", service->url->user);
-		pcp = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, "PASS %s\r\n", service->url->passwd);
+		pcu = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, cancellable, error, "USER %s\r\n", service->url->user);
+		pcp = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, cancellable, error, "PASS %s\r\n", service->url->passwd);
 	} else if (strcmp(service->url->authmech, "+APOP") == 0 && store->engine->apop) {
 		gchar *secret, *md5asc, *d;
 
@@ -449,8 +449,8 @@ pop3_try_authenticate (CamelService *service,
 		secret = g_alloca (strlen (store->engine->apop)+strlen (service->url->passwd)+1);
 		sprintf(secret, "%s%s",  store->engine->apop, service->url->passwd);
 		md5asc = g_compute_checksum_for_string (G_CHECKSUM_MD5, secret, -1);
-		pcp = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, "APOP %s %s\r\n",
-						    service->url->user, md5asc);
+		pcp = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, cancellable, error,
+						    "APOP %s %s\r\n", service->url->user, md5asc);
 		g_free (md5asc);
 	} else {
 		CamelServiceAuthType *auth;
@@ -642,11 +642,12 @@ pop3_store_disconnect_sync (CamelService *service,
 {
 	CamelServiceClass *service_class;
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
+	gboolean success;
 
 	if (clean) {
 		CamelPOP3Command *pc;
 
-		pc = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, "QUIT\r\n");
+		pc = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, cancellable, error, "QUIT\r\n");
 		while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (store->engine, pc);
@@ -654,13 +655,13 @@ pop3_store_disconnect_sync (CamelService *service,
 
 	/* Chain up to parent's disconnect() method. */
 	service_class = CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class);
-	if (!service_class->disconnect_sync (service, clean, cancellable, error))
-		return FALSE;
+
+	success = service_class->disconnect_sync (service, clean, cancellable, error);
 
 	g_object_unref (store->engine);
 	store->engine = NULL;
 
-	return TRUE;
+	return success;
 }
 
 static GList *
@@ -792,7 +793,7 @@ camel_pop3_store_expunge (CamelPOP3Store *store,
 	CamelPOP3Command *pc;
 
 	pc = camel_pop3_engine_command_new (
-		store->engine, 0, NULL, NULL, "QUIT\r\n");
+		store->engine, 0, NULL, NULL, NULL, error, "QUIT\r\n");
 
 	while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
 		;

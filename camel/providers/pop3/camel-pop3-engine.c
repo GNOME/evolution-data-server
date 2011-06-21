@@ -221,14 +221,14 @@ get_capabilities (CamelPOP3Engine *pe)
 	CamelPOP3Command *pc;
 
 	if (!(pe->flags & CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS)) {
-		pc = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, "CAPA\r\n");
+		pc = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, NULL, NULL, "CAPA\r\n");
 		while (camel_pop3_engine_iterate (pe, pc) > 0)
 			;
 		camel_pop3_engine_command_free (pe, pc);
 
 		if (pe->state == CAMEL_POP3_ENGINE_TRANSACTION && !(pe->capa & CAMEL_POP3_CAP_UIDL)) {
 			/* check for UIDL support manually */
-			pc = camel_pop3_engine_command_new (pe, CAMEL_POP3_COMMAND_SIMPLE, NULL, NULL, "UIDL 1\r\n");
+			pc = camel_pop3_engine_command_new (pe, CAMEL_POP3_COMMAND_SIMPLE, NULL, NULL, NULL, NULL, "UIDL 1\r\n");
 			while (camel_pop3_engine_iterate (pe, pc) > 0)
 				;
 
@@ -241,8 +241,8 @@ get_capabilities (CamelPOP3Engine *pe)
 }
 
 /* returns true if the command was sent, false if it was just queued */
-static gint
-engine_command_queue (CamelPOP3Engine *pe, CamelPOP3Command *pc)
+static gboolean
+engine_command_queue (CamelPOP3Engine *pe, CamelPOP3Command *pc, GCancellable *cancellable, GError **error)
 {
 	if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen (pc->data)) > CAMEL_POP3_SEND_LIMIT)
 	    && pe->current != NULL) {
@@ -251,7 +251,7 @@ engine_command_queue (CamelPOP3Engine *pe, CamelPOP3Command *pc)
 	}
 
 	/* ??? */
-	if (camel_stream_write ((CamelStream *)pe->stream, pc->data, strlen (pc->data), NULL, NULL) == -1) {
+	if (camel_stream_write ((CamelStream *)pe->stream, pc->data, strlen (pc->data), cancellable, error) == -1) {
 		camel_dlist_addtail (&pe->queue, (CamelDListNode *)pc);
 		return FALSE;
 	}
@@ -377,7 +377,7 @@ ioerror:
 }
 
 CamelPOP3Command *
-camel_pop3_engine_command_new (CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, gpointer data, const gchar *fmt, ...)
+camel_pop3_engine_command_new (CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, gpointer data, GCancellable *cancellable, GError **error, const gchar *fmt, ...)
 {
 	CamelPOP3Command *pc;
 	va_list ap;
@@ -392,7 +392,7 @@ camel_pop3_engine_command_new (CamelPOP3Engine *pe, guint32 flags, CamelPOP3Comm
 	pc->state = CAMEL_POP3_COMMAND_IDLE;
 
 	/* TODO: what about write errors? */
-	engine_command_queue (pe, pc);
+	engine_command_queue (pe, pc, cancellable, error);
 
 	return pc;
 }

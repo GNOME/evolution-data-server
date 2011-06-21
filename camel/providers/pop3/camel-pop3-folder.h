@@ -68,7 +68,7 @@ struct _CamelPOP3Folder {
 	CamelFolder parent;
 
 	GPtrArray *uids;
-	GHashTable *uids_uid;	/* messageinfo by uid */
+	GHashTable *uids_fi;	/* messageinfo uid to CamelPOP3FolderInfo *, which is stored in uids array */
 	GHashTable *uids_id;	/* messageinfo by id */
 };
 
