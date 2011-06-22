@@ -37,7 +37,7 @@
 #include "camel-pop3-store.h"
 
 #define d(x) if (camel_debug("pop")) x;
-#define FIRST_TIME_DOWNLOAD 40
+#define FIRST_TIME_DOWNLOAD 20
 
 static gboolean pop3_refresh_info (CamelFolder *folder, GError **error);
 static gboolean pop3_sync (CamelFolder *folder, gboolean expunge, GError **error);
