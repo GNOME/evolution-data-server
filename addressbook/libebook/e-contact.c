@@ -87,6 +87,8 @@ static gpointer  fn_getter (EContact *contact, EVCardAttribute *attr);
 static void fn_setter (EContact *contact, EVCardAttribute *attr, gpointer data);
 static gpointer  n_getter (EContact *contact, EVCardAttribute *attr);
 static void n_setter (EContact *contact, EVCardAttribute *attr, gpointer data);
+static gpointer  fileas_getter (EContact *contact, EVCardAttribute *attr);
+static void fileas_setter (EContact *contact, EVCardAttribute *attr, gpointer data);
 static gpointer  adr_getter (EContact *contact, EVCardAttribute *attr);
 static void adr_setter (EContact *contact, EVCardAttribute *attr, gpointer data);
 static gpointer  date_getter (EContact *contact, EVCardAttribute *attr);
@@ -112,7 +114,9 @@ static void cert_setter (EContact *contact, EVCardAttribute *attr, gpointer data
 static const EContactFieldInfo field_info[] = {
 	{0,}, /* Dummy row as EContactField starts from 1 */
 	STRING_FIELD (E_CONTACT_UID,        EVC_UID,       "id",         N_("Unique ID"),  FALSE),
-	STRING_FIELD (E_CONTACT_FILE_AS,    EVC_X_FILE_AS, "file_as",    N_("File Under"),    FALSE),
+	/* FILE_AS is not really a structured field - we use a getter/setter
+           so we can generate its value if necessary in the getter */
+	GETSET_FIELD (E_CONTACT_FILE_AS,    EVC_X_FILE_AS, "file_as",    N_("File Under"),    FALSE, fileas_getter, fileas_setter),
 	/* URI of the book to which the contact belongs to */
 	STRING_FIELD (E_CONTACT_BOOK_URI, EVC_X_BOOK_URI, "book_uri", N_("Book URI"), FALSE),
 
@@ -538,6 +542,68 @@ fn_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 
 		e_contact_name_free (name);
 	}
+}
+
+static gpointer
+fileas_getter (EContact *contact, EVCardAttribute *attr)
+{
+	if (!attr) {
+		/* Generate a FILE_AS field */
+		EContactName *name;
+		gchar* new_file_as = NULL;
+
+		name = e_contact_get (contact, E_CONTACT_NAME);
+
+		/* Use name if available */
+		if (name) {
+			gchar *strings[3], **stringptr;
+
+			stringptr = strings;
+			if (name->family && *name->family)
+				*(stringptr++) = name->family;
+			if (name->given && *name->given)
+				*(stringptr++) = name->given;
+			if (stringptr != strings) {
+				*stringptr = NULL;
+				new_file_as = g_strjoinv (", ", strings);
+			}
+
+			e_contact_name_free (name);
+		}
+
+		/* Use org as fallback */
+		if (!new_file_as) {
+			const gchar *org = e_contact_get_const (contact, E_CONTACT_ORG);
+
+			if (org && *org) {
+				new_file_as = g_strdup (org);
+			}
+		}
+
+		/* Add the FILE_AS attribute to the vcard */
+		if (new_file_as) {
+			attr = e_vcard_attribute_new (NULL, EVC_X_FILE_AS);
+			e_vcard_add_attribute_with_value (E_VCARD (contact), attr, new_file_as);
+
+			g_free (new_file_as);
+		}
+	}
+
+	if (attr) {
+		GList *p = e_vcard_attribute_get_values (attr);
+
+		return p && p->data ? p->data : (gpointer) "";
+	} else {
+		return NULL;
+	}
+}
+
+static void
+fileas_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
+{
+	/* Default implementation */
+	const gchar* file_as = data;
+	e_vcard_attribute_add_value (attr, file_as ? : "");
 }
 
 
@@ -1214,48 +1280,10 @@ EContact*
 e_contact_new_from_vcard  (const gchar *vcard)
 {
 	EContact *contact;
-	const gchar *file_as;
-
 	g_return_val_if_fail (vcard != NULL, NULL);
 
 	contact = g_object_new (E_TYPE_CONTACT, NULL);
 	e_vcard_construct (E_VCARD (contact), vcard);
-
-	/* Generate a FILE_AS field if needed */
-
-	file_as = e_contact_get_const (contact, E_CONTACT_FILE_AS);
-	if (!file_as || !*file_as) {
-		EContactName *name;
-		const gchar *org;
-		gchar *file_as_new = NULL;
-		gchar *strings[4];
-		gchar **strings_p = strings;
-
-		name = e_contact_get (contact, E_CONTACT_NAME);
-		org = e_contact_get_const (contact, E_CONTACT_ORG);
-
-		if (name) {
-			if (name->family && *name->family)
-				*(strings_p++) = name->family;
-			if (name->given && *name->given)
-				*(strings_p++) = name->given;
-
-			if (strings_p != strings) {
-				*strings_p = NULL;
-				file_as_new = g_strjoinv (", ", strings);
-			}
-
-			e_contact_name_free (name);
-		}
-
-		if (!file_as_new && org && *org)
-			file_as_new = g_strdup (org);
-
-		if (file_as_new) {
-			e_contact_set (contact, E_CONTACT_FILE_AS, file_as_new);
-			g_free (file_as_new);
-		}
-	}
 
 	return contact;
 }
@@ -1488,15 +1516,14 @@ e_contact_get (EContact *contact, EContactField field_id)
 		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
 		gpointer rv = NULL;
 
-		if (attr)
-			rv = info->struct_getter (contact, attr);
+		rv = info->struct_getter (contact, attr);
 
 		if (info->t & E_CONTACT_FIELD_TYPE_STRUCT)
 			return (gpointer) info->boxed_type_getter ();
 		else if (!rv)
 			return NULL;
 		else
-			return g_strstrip (g_strdup (rv));
+			return rv ? g_strstrip (g_strdup (rv)) : NULL;
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_SYNTHETIC) {
 		switch (info->field_id) {

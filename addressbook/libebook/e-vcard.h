@@ -159,6 +159,8 @@ void    e_vcard_construct                    (EVCard *evc, const gchar *str);
 EVCard* e_vcard_new                          (void);
 EVCard* e_vcard_new_from_string              (const gchar *str);
 
+gboolean e_vcard_is_parsed (EVCard *evc);
+
 gchar *   e_vcard_to_string                    (EVCard *evc, EVCardFormat format);
 
 /* mostly for debugging */
