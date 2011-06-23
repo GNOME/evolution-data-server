@@ -1523,7 +1523,7 @@ e_contact_get (EContact *contact, EContactField field_id)
 		else if (!rv)
 			return NULL;
 		else
-			return rv ? g_strstrip (g_strdup (rv)) : NULL;
+			return g_strstrip (g_strdup (rv));
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_SYNTHETIC) {
 		switch (info->field_id) {
