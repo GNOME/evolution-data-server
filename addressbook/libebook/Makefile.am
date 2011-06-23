@@ -16,6 +16,7 @@ libebook_1_2_la_CPPFLAGS = \
 	-I$(top_srcdir)/addressbook/libegdbus		\
 	-I$(top_builddir)				\
 	-I$(top_builddir)/addressbook			\
+	-I$(top_builddir)/addressbook/libegdbus		\
 	-I$(top_builddir)/addressbook/libebook		\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
 	$(CAMEL_CFLAGS)
@@ -90,11 +91,13 @@ EBook_1_2_gir_INCLUDES = GObject-2.0 EDataServer-1.2 GLib-2.0 libxml2-2.0 \
 libxml_include = `$(PKG_CONFIG) --cflags libxml-2.0`
 gconf_include = `$(PKG_CONFIG) --cflags gconf-2.0`
 EBook_1_2_gir_CFLAGS = $(INCLUDES) \
-		       -I$(top_srcdir) \
 		       $(libxml_include) \
 		       $(gconf_include) \
+		       -I$(top_srcdir) \
 		       -I$(top_builddir) \
+		       -I$(top_srcdir)/addressbook/ \
 		       -I$(top_builddir)/addressbook/ \
+		       -I$(top_srcdir)/addressbook/libebook \
 		       -I$(top_builddir)/addressbook/libebook \
 			$(NULL)
 EBook_1_2_gir_LIBS = \
