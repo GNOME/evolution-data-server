@@ -52,7 +52,8 @@ struct _ENameSelectorPrivate {
 	GArray *sections;
 	ESourceList *source_list;
 
-	gboolean load_cancelled;
+	gboolean books_loaded;
+	GCancellable *cancellable;
 	GArray *source_books;
 };
 
@@ -95,9 +96,13 @@ name_selector_book_loaded_cb (GObject *source_object,
 	e_client_utils_open_new_finish (source, result, &client, &error);
 
 	if (error != NULL) {
-		g_warning (
-			"ENameSelector: Could not load \"%s\": %s",
-			e_source_peek_name (source), error->message);
+		if (!g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE)
+		    && !g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_OFFLINE_UNAVAILABLE)
+		    && !g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_CANCELLED)
+		    && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+			g_warning (
+				"ENameSelector: Could not load \"%s\": %s",
+				e_source_peek_name (source), error->message);
 		g_error_free (error);
 		goto exit;
 	}
@@ -126,16 +131,33 @@ name_selector_book_loaded_cb (GObject *source_object,
 			e_contact_store_add_client (store, book_client);
 	}
 
-exit:
+ exit:
 	g_object_unref (name_selector);
 }
 
-static void
-name_selector_load_books (ENameSelector *name_selector)
+/**
+ * e_name_selector_load_books:
+ * @name_selector: an #ENameSelector
+ *
+ * Loads address books available for the @name_selector.
+ * This can be called only once and it can be cancelled
+ * by e_name_selector_cancel_loading().
+ *
+ * Since: 3.2
+ **/
+void
+e_name_selector_load_books (ENameSelector *name_selector)
 {
 	ESourceList *source_list;
 	GSList *groups;
 	GSList *iter1;
+
+	g_return_if_fail (name_selector != NULL);
+	g_return_if_fail (E_IS_NAME_SELECTOR (name_selector));
+	g_return_if_fail (name_selector->priv != NULL);
+	g_return_if_fail (!name_selector->priv->books_loaded);
+
+	name_selector->priv->books_loaded = TRUE;
 
 	if (!e_book_client_get_sources (&source_list, NULL)) {
 		g_warning ("ENameSelector can't find any addressbooks!");
@@ -174,13 +196,32 @@ name_selector_load_books (ENameSelector *name_selector)
 			if (g_ascii_strcasecmp (property, "true") != 0)
 				continue;
 
-			/* XXX Should we allow for cancellation? */
 			e_client_utils_open_new (
-				source, E_CLIENT_SOURCE_TYPE_CONTACTS, TRUE, NULL,
+				source, E_CLIENT_SOURCE_TYPE_CONTACTS, TRUE, name_selector->priv->cancellable,
 				e_client_utils_authenticate_handler, NULL,
 				name_selector_book_loaded_cb, g_object_ref (name_selector));
 		}
 	}
+}
+
+/**
+ * e_name_selector_cancel_loading:
+ * @name_selector: an #ENameSelector
+ *
+ * Cancels any pending address book load operations. This might be called
+ * before an owner unrefs this @name_selector.
+ *
+ * Since: 3.2
+ **/
+void
+e_name_selector_cancel_loading (ENameSelector *name_selector)
+{
+	g_return_if_fail (name_selector != NULL);
+	g_return_if_fail (E_IS_NAME_SELECTOR (name_selector));
+	g_return_if_fail (name_selector->priv != NULL);
+	g_return_if_fail (name_selector->priv->cancellable != NULL);
+
+	g_cancellable_cancel (name_selector->priv->cancellable);
 }
 
 static void
@@ -190,6 +231,12 @@ name_selector_dispose (GObject *object)
 	guint ii;
 
 	priv = E_NAME_SELECTOR (object)->priv;
+
+	if (priv->cancellable) {
+		g_cancellable_cancel (priv->cancellable);
+		g_object_unref (priv->cancellable);
+		priv->cancellable = NULL;
+	}
 
 	if (priv->source_list != NULL) {
 		g_object_unref (priv->source_list);
@@ -261,8 +308,8 @@ e_name_selector_init (ENameSelector *name_selector)
 	name_selector->priv->sections = sections;
 	name_selector->priv->model = e_name_selector_model_new ();
 	name_selector->priv->source_books = source_books;
-
-	name_selector_load_books (name_selector);
+	name_selector->priv->cancellable = g_cancellable_new ();
+	name_selector->priv->books_loaded = FALSE;
 }
 
 /**
