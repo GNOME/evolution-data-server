@@ -1022,7 +1022,7 @@ app_getmsg_operate (CamelFolder *folder, gpointer sdata, GError **error)
 	GByteArray *array;
 	CamelStream *filter_stream = NULL;
 	CamelMimeFilter *charenc = NULL;
-	static char *charset = NULL;
+	static const char *charset = NULL;
 	GConfClient *gconf;
 
 	msg = camel_folder_get_message (folder, data->uid, error);
@@ -1034,9 +1034,14 @@ app_getmsg_operate (CamelFolder *folder, gpointer sdata, GError **error)
 	filter_stream = camel_stream_filter_new (stream);
 
 	if (!charset)  {
+		gboolean ret = FALSE;
 		gconf = gconf_client_get_default ();
 		charset = gconf_client_get_string (gconf, "/apps/evolution/mail/display/charset",NULL);
 		g_object_unref (gconf);
+		if (!charset || !*charset) {
+			ret = g_get_charset (&charset);
+		}
+		micro(printf("Got Charset? %d: %s\n", ret, charset ? charset : ""));
 	}
 	
 	charenc = camel_mime_filter_charset_new (charset, "UTF-8");
