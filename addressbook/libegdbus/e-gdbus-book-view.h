@@ -114,6 +114,7 @@ struct _EGdbusBookViewIface
 	/* Signal handlers for handling D-Bus method calls: */
 	gboolean (*handle_start)		(EGdbusBookView *object, GDBusMethodInvocation *invocation);
 	gboolean (*handle_stop)			(EGdbusBookView *object, GDBusMethodInvocation *invocation);
+        gboolean (*handle_set_flags)            (EGdbusBookView *object, GDBusMethodInvocation *invocation, guint in_flags);
 	gboolean (*handle_dispose)		(EGdbusBookView *object, GDBusMethodInvocation *invocation);
 	gboolean (*handle_set_fields_of_interest)(EGdbusBookView *object, GDBusMethodInvocation *invocation, const gchar * const *in_only_fields);
 };
@@ -127,6 +128,19 @@ void		e_gdbus_book_view_call_stop		(GDBusProxy *proxy, GCancellable *cancellable
 gboolean	e_gdbus_book_view_call_stop_finish	(GDBusProxy *proxy, GAsyncResult *result, GError **error);
 gboolean	e_gdbus_book_view_call_stop_sync	(GDBusProxy *proxy, GCancellable *cancellable, GError **error);
 
+void            e_gdbus_book_view_call_set_flags        (GDBusProxy         *proxy, 
+							 guint               in_flags,
+							 GCancellable       *cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer            user_data);
+gboolean        e_gdbus_book_view_call_set_flags_finish (GDBusProxy         *proxy,
+							 GAsyncResult       *res,
+							 GError            **error);
+gboolean        e_gdbus_book_view_call_set_flags_sync   (GDBusProxy         *proxy,
+							 guint               in_flags,
+							 GCancellable       *cancellable,
+							 GError            **error);
+
 void		e_gdbus_book_view_call_dispose		(GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_gdbus_book_view_call_dispose_finish	(GDBusProxy *proxy, GAsyncResult *result, GError **error);
 gboolean	e_gdbus_book_view_call_dispose_sync	(GDBusProxy *proxy, GCancellable *cancellable, GError **error);
@@ -138,6 +152,7 @@ gboolean	e_gdbus_book_view_call_set_fields_of_interest_sync	(GDBusProxy *proxy, 
 /* D-Bus Methods Completion Helpers */
 #define e_gdbus_book_view_complete_start			e_gdbus_complete_sync_method_void
 #define e_gdbus_book_view_complete_stop				e_gdbus_complete_sync_method_void
+#define e_gdbus_book_view_complete_set_flags			e_gdbus_complete_sync_method_void
 #define e_gdbus_book_view_complete_dispose			e_gdbus_complete_sync_method_void
 #define e_gdbus_book_view_complete_set_fields_of_interest	e_gdbus_complete_sync_method_void
 

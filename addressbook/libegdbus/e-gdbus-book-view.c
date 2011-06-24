@@ -42,6 +42,7 @@ enum
 	__COMPLETE_SIGNAL,
 	__START_METHOD,
 	__STOP_METHOD,
+	__SET_FLAGS_METHOD,
 	__DISPOSE_METHOD,
 	__SET_FIELDS_OF_INTEREST_METHOD,
 	__LAST_SIGNAL
@@ -112,9 +113,10 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
 	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusBookViewIface, "complete",		complete, __COMPLETE_SIGNAL)
 
 	/* GObject signals definitions for D-Bus methods: */
-	E_INIT_GDBUS_METHOD_VOID	(EGdbusBookViewIface, "start",			start, __START_METHOD)
-	E_INIT_GDBUS_METHOD_VOID	(EGdbusBookViewIface, "stop",			stop, __STOP_METHOD)
-	E_INIT_GDBUS_METHOD_VOID	(EGdbusBookViewIface, "dispose",		dispose, __DISPOSE_METHOD)
+	E_INIT_GDBUS_METHOD_VOID        (EGdbusBookViewIface, "start",                  start, __START_METHOD)
+	E_INIT_GDBUS_METHOD_VOID        (EGdbusBookViewIface, "stop",                   stop, __STOP_METHOD)
+	E_INIT_GDBUS_METHOD_VOID        (EGdbusBookViewIface, "dispose",                dispose, __DISPOSE_METHOD)
+	E_INIT_GDBUS_METHOD_UINT	(EGdbusBookViewIface, "set_flags",	        set_flags, __SET_FLAGS_METHOD)
 	E_INIT_GDBUS_METHOD_STRV	(EGdbusBookViewIface, "set_fields_of_interest",	set_fields_of_interest, __SET_FIELDS_OF_INTEREST_METHOD)
 }
 
@@ -169,10 +171,37 @@ e_gdbus_book_view_call_stop_sync (GDBusProxy *proxy,
 }
 
 void
+e_gdbus_book_view_call_set_flags (GDBusProxy *proxy,
+				  guint in_flags,
+				  GCancellable *cancellable,
+				  GAsyncReadyCallback callback,
+				  gpointer user_data)
+{
+        e_gdbus_proxy_method_call_uint ("set_flags", proxy, in_flags, cancellable, callback, user_data);
+}
+
+gboolean
+e_gdbus_book_view_call_set_flags_finish (GDBusProxy *proxy,
+					 GAsyncResult *result,
+					 GError **error)
+{
+	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
+}
+
+gboolean
+e_gdbus_book_view_call_set_flags_sync (GDBusProxy *proxy,
+				       guint in_flags,
+				       GCancellable *cancellable,
+				       GError **error)
+{
+	return e_gdbus_proxy_method_call_sync_uint__void ("set_flags", proxy, in_flags, cancellable, error);
+}
+
+void
 e_gdbus_book_view_call_dispose (GDBusProxy *proxy,
-                                GCancellable *cancellable,
-                                GAsyncReadyCallback callback,
-                                gpointer user_data)
+				GCancellable *cancellable,
+				GAsyncReadyCallback callback,
+				gpointer user_data)
 {
 	e_gdbus_proxy_method_call_void ("dispose", proxy, cancellable, callback, user_data);
 }
@@ -268,12 +297,14 @@ E_DECLARE_GDBUS_SYNC_METHOD_0 (book_view,
                                stop)
 E_DECLARE_GDBUS_SYNC_METHOD_0 (book_view,
                                dispose)
+E_DECLARE_GDBUS_SYNC_METHOD_1 (book_view, set_flags, flags, "u")
 E_DECLARE_GDBUS_SYNC_METHOD_1	(book_view, set_fields_of_interest, fields_of_interest, "as")
 
 static const GDBusMethodInfo * const e_gdbus_book_view_method_info_pointers[] =
 {
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book_view, start),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book_view, stop),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book_view, set_flags),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book_view, dispose),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book_view, set_fields_of_interest),
 	NULL

@@ -266,6 +266,40 @@ e_book_client_view_stop (EBookClientView *view,
 }
 
 /**
+ * e_book_client_view_set_flags:
+ * @view: an #EBookClientView
+ * @flags: the #EBookClientViewFlags for @view.
+ * @error: a return location for a #GError, or %NULL.
+ *
+ * Sets the @flags which control the behaviour of @view.
+ *
+ * Since: 3.4
+ */
+void
+e_book_client_view_set_flags (EBookClientView      *view,
+			      EBookClientViewFlags  flags, 
+			      GError              **error)
+{
+	EBookClientViewPrivate *priv;
+
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
+
+	priv = view->priv;
+
+	if (priv->gdbus_bookview) {
+		GError *local_error = NULL;
+
+		e_gdbus_book_view_call_set_flags_sync (priv->gdbus_bookview, flags, NULL, &local_error);
+
+		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
+	} else {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR,
+				     "Cannot set flags on view, D-Bus proxy gone");
+	}
+}
+
+/**
  * e_book_client_view_set_fields_of_interest:
  * @view: An #EBookClientView object
  * @fields_of_interest: (element-type utf8): List of field names in which the client is interested

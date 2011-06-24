@@ -58,7 +58,7 @@ EDS_MICRO_VERSION=eds_micro_version
 dnl ******************************
 dnl D-Bus versioning
 dnl ******************************
-ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook2"
+ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook3"
 CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar1"
 
 AC_DEFINE_UNQUOTED(
@@ -93,7 +93,7 @@ LIBEDATACAL_CURRENT=14
 LIBEDATACAL_REVISION=0
 LIBEDATACAL_AGE=0
 
-LIBEDATABOOK_CURRENT=12
+LIBEDATABOOK_CURRENT=13
 LIBEDATABOOK_REVISION=0
 LIBEDATABOOK_AGE=0
 

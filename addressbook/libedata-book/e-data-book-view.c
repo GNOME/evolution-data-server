@@ -47,8 +47,10 @@ struct _EDataBookViewPrivate {
 
 	gchar * card_query;
 	EBookBackendSExp *card_sexp;
+	EBookClientViewFlags flags;
 
 	gboolean running;
+	gboolean complete;
 	GMutex *pending_mutex;
 
 	GArray *adds;
@@ -150,6 +152,7 @@ book_destroyed_cb (gpointer data,
 	if (priv->running) {
 		e_book_backend_stop_book_view (priv->backend, view);
 		priv->running = FALSE;
+		priv->complete = FALSE;
 	}
 }
 
@@ -278,25 +281,34 @@ notify_add (EDataBookView *view,
             const gchar *id,
             const gchar *vcard)
 {
+	EBookClientViewFlags flags;
 	EDataBookViewPrivate *priv = view->priv;
 	gchar *utf8_vcard, *utf8_id;
 
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	if (priv->adds->len == THRESHOLD_ITEMS * 2) {
-		send_pending_adds (view);
-	}
-
-	utf8_vcard = e_util_utf8_make_valid (vcard);
 	utf8_id = e_util_utf8_make_valid (id);
 
-	g_array_append_val (priv->adds, utf8_vcard);
-	g_array_append_val (priv->adds, utf8_id);
-	g_hash_table_insert (priv->ids, g_strdup (utf8_id),
-			     GUINT_TO_POINTER (1));
+	/* Do not send contact add notifications during initial stage */
+	flags = e_data_book_view_get_flags (view);
+	if (priv->complete || (flags & E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL) != 0) {
+		gchar *utf8_id_copy = g_strdup (utf8_id);
 
-	ensure_pending_flush_timeout (view);
+		if (priv->adds->len == THRESHOLD_ITEMS) {
+			send_pending_adds (view);
+		}
+
+		utf8_vcard = e_util_utf8_make_valid (vcard);
+
+		g_array_append_val (priv->adds, utf8_vcard);
+		g_array_append_val (priv->adds, utf8_id_copy);
+
+		ensure_pending_flush_timeout (view);
+	}
+
+	g_hash_table_insert (priv->ids, utf8_id,
+			     GUINT_TO_POINTER (1));
 }
 
 static gboolean
@@ -550,6 +562,8 @@ e_data_book_view_notify_complete (EDataBookView *book_view,
 
 	if (!priv->running)
 		return;
+	/* View is complete */
+	priv->complete = TRUE;
 
 	g_mutex_lock (priv->pending_mutex);
 
@@ -628,6 +642,7 @@ bookview_idle_start (gpointer data)
 	EDataBookView *book_view = data;
 
 	book_view->priv->running = TRUE;
+	book_view->priv->complete = FALSE;
 	book_view->priv->idle_id = 0;
 
 	e_book_backend_start_book_view (book_view->priv->backend, book_view);
@@ -655,6 +670,7 @@ bookview_idle_stop (gpointer data)
 	e_book_backend_stop_book_view (book_view->priv->backend, book_view);
 
 	book_view->priv->running = FALSE;
+	book_view->priv->complete = FALSE;
 	book_view->priv->idle_id = 0;
 
 	return FALSE;
@@ -671,6 +687,19 @@ impl_DataBookView_stop (EGdbusBookView *object,
 	book_view->priv->idle_id = g_idle_add (bookview_idle_stop, book_view);
 
 	e_gdbus_book_view_complete_stop (object, invocation, NULL);
+
+	return TRUE;
+}
+
+static gboolean
+impl_DataBookView_setFlags (EGdbusBookView        *object, 
+			    GDBusMethodInvocation *invocation, 
+			    EBookClientViewFlags   flags, 
+			    EDataBookView         *book_view)
+{
+	book_view->priv->flags = flags;
+
+	e_gdbus_book_view_complete_set_flags (object, invocation, NULL);
 
 	return TRUE;
 }
@@ -698,14 +727,18 @@ e_data_book_view_init (EDataBookView *book_view)
 
 	book_view->priv = priv;
 
+	priv->flags = E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL;
+
 	priv->gdbus_object = e_gdbus_book_view_stub_new ();
 	g_signal_connect (priv->gdbus_object, "handle-start", G_CALLBACK (impl_DataBookView_start), book_view);
 	g_signal_connect (priv->gdbus_object, "handle-stop", G_CALLBACK (impl_DataBookView_stop), book_view);
+	g_signal_connect (priv->gdbus_object, "handle-set-flags", G_CALLBACK (impl_DataBookView_setFlags), book_view);
 	g_signal_connect (priv->gdbus_object, "handle-dispose", G_CALLBACK (impl_DataBookView_dispose), book_view);
 	g_signal_connect (priv->gdbus_object, "handle-set-fields-of-interest", G_CALLBACK (impl_DataBookView_set_fields_of_interest), book_view);
 
 	priv->fields_of_interest = NULL;
 	priv->running = FALSE;
+	priv->complete = FALSE;
 	priv->pending_mutex = g_mutex_new ();
 
 	/* THRESHOLD_ITEMS * 2 because we store UID and vcard */
@@ -830,6 +863,24 @@ e_data_book_view_get_backend (EDataBookView *book_view)
 	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), NULL);
 
 	return book_view->priv->backend;
+}
+
+/**
+ * e_data_book_view_get_flags:
+ * @book_view: an #EDataBookView
+ *
+ * Gets the #EBookClientViewFlags that control the behaviour of @book_view.
+ *
+ * Returns: the flags for @book_view.
+ *
+ * Since: 3.4
+ **/
+EBookClientViewFlags
+e_data_book_view_get_flags (EDataBookView *book_view)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), 0);
+
+	return book_view->priv->flags;
 }
 
 /**

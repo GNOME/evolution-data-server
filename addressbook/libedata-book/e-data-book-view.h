@@ -26,6 +26,7 @@
 
 #include <gio/gio.h>
 #include <libebook/e-contact.h>
+#include <libebook/e-book-client-view.h>
 #include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-book-backend.h>
 #include <libedata-book/e-book-backend-sexp.h>
@@ -57,6 +58,7 @@ guint			e_data_book_view_register_gdbus_object	(EDataBookView *query, GDBusConne
 const gchar *		e_data_book_view_get_card_query		(EDataBookView *book_view);
 EBookBackendSExp *	e_data_book_view_get_card_sexp		(EDataBookView *book_view);
 EBookBackend *		e_data_book_view_get_backend		(EDataBookView *book_view);
+EBookClientViewFlags    e_data_book_view_get_flags              (EDataBookView *book_view);
 void			e_data_book_view_notify_update		(EDataBookView *book_view, const EContact *contact);
 
 void			e_data_book_view_notify_update_vcard	(EDataBookView *book_view, const gchar *id, const gchar *vcard);
