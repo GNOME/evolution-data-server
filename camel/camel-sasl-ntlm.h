@@ -63,8 +63,6 @@ struct _CamelSaslNTLMClass {
 
 GType camel_sasl_ntlm_get_type (void);
 
-extern CamelServiceAuthType camel_sasl_ntlm_authtype;
-
 G_END_DECLS
 
 #endif /* CAMEL_SASL_NTLM_H */

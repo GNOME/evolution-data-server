@@ -31,7 +31,7 @@
 #include "camel-internet-address.h"
 #include "camel-sasl-anonymous.h"
 
-CamelServiceAuthType camel_sasl_anonymous_authtype = {
+static CamelServiceAuthType sasl_anonymous_auth_type = {
 	N_("Anonymous"),
 
 	N_("This option will connect to the server using an anonymous login."),
@@ -125,6 +125,7 @@ camel_sasl_anonymous_class_init (CamelSaslAnonymousClass *class)
 	object_class->finalize = sasl_anonymous_finalize;
 
 	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->auth_type = &sasl_anonymous_auth_type;
 	sasl_class->challenge_sync = sasl_anonymous_challenge_sync;
 }
 

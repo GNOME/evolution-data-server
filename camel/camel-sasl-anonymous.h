@@ -75,8 +75,6 @@ GType camel_sasl_anonymous_get_type (void);
 /* public methods */
 CamelSasl *camel_sasl_anonymous_new (CamelSaslAnonTraceType type, const gchar *trace_info);
 
-extern CamelServiceAuthType camel_sasl_anonymous_authtype;
-
 G_END_DECLS
 
 #endif /* CAMEL_SASL_ANONYMOUS_H */

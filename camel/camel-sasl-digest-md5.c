@@ -50,7 +50,7 @@
 
 /* Implements rfc2831 */
 
-CamelServiceAuthType camel_sasl_digest_md5_authtype = {
+static CamelServiceAuthType sasl_digest_md5_auth_type = {
 	N_("DIGEST-MD5"),
 
 	N_("This option will connect to the server using a "
@@ -938,6 +938,7 @@ camel_sasl_digest_md5_class_init (CamelSaslDigestMd5Class *class)
 	object_class->finalize = sasl_digest_md5_finalize;
 
 	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->auth_type = &sasl_digest_md5_auth_type;
 	sasl_class->challenge_sync = sasl_digest_md5_challenge_sync;
 }
 

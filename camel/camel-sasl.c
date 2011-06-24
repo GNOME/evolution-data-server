@@ -28,6 +28,7 @@
 
 #include "camel-debug.h"
 #include "camel-mime-utils.h"
+#include "camel-sasl-anonymous.h"
 #include "camel-sasl-cram-md5.h"
 #include "camel-sasl-digest-md5.h"
 #include "camel-sasl-gssapi.h"
@@ -86,6 +87,72 @@ async_context_free (AsyncContext *async_context)
 	g_free (async_context->base64_response);
 
 	g_slice_free (AsyncContext, async_context);
+}
+
+static void
+sasl_build_class_table_rec (GType type,
+                            GHashTable *class_table)
+{
+	GType *children;
+	guint n_children, ii;
+
+	children = g_type_children (type, &n_children);
+
+	for (ii = 0; ii < n_children; ii++) {
+		GType type = children[ii];
+		CamelSaslClass *sasl_class;
+		gpointer key;
+
+		/* Recurse over the child's children. */
+		sasl_build_class_table_rec (type, class_table);
+
+		/* Skip abstract types. */
+		if (G_TYPE_IS_ABSTRACT (type))
+			continue;
+
+		sasl_class = g_type_class_ref (type);
+
+		if (sasl_class->auth_type == NULL) {
+			g_critical (
+				"%s has an empty CamelServiceAuthType",
+				G_OBJECT_CLASS_NAME (sasl_class));
+			g_type_class_unref (sasl_class);
+			continue;
+		}
+
+		key = (gpointer) sasl_class->auth_type->authproto;
+		g_hash_table_insert (class_table, key, sasl_class);
+	}
+
+	g_free (children);
+}
+
+static GHashTable *
+sasl_build_class_table (void)
+{
+	GHashTable *class_table;
+
+	/* Register known types. */
+	CAMEL_TYPE_SASL_ANONYMOUS;
+	CAMEL_TYPE_SASL_CRAM_MD5;
+	CAMEL_TYPE_SASL_DIGEST_MD5;
+#ifdef HAVE_KRB5
+	CAMEL_TYPE_SASL_GSSAPI;
+#endif
+	CAMEL_TYPE_SASL_LOGIN;
+	CAMEL_TYPE_SASL_NTLM;
+	CAMEL_TYPE_SASL_PLAIN;
+	CAMEL_TYPE_SASL_POPB4SMTP;
+
+	class_table = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) NULL,
+		(GDestroyNotify) g_type_class_unref);
+
+	sasl_build_class_table_rec (CAMEL_TYPE_SASL, class_table);
+
+	return class_table;
 }
 
 static void
@@ -430,36 +497,28 @@ camel_sasl_new (const gchar *service_name,
                 const gchar *mechanism,
                 CamelService *service)
 {
-	GType type;
+	GHashTable *class_table;
+	CamelSaslClass *sasl_class;
+	CamelSasl *sasl = NULL;
 
 	g_return_val_if_fail (service_name != NULL, NULL);
 	g_return_val_if_fail (mechanism != NULL, NULL);
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
-	/* We don't do ANONYMOUS here, because it's a little bit weird. */
+	class_table = sasl_build_class_table ();
+	sasl_class = g_hash_table_lookup (class_table, mechanism);
 
-	if (!strcmp (mechanism, "CRAM-MD5"))
-		type = CAMEL_TYPE_SASL_CRAM_MD5;
-	else if (!strcmp (mechanism, "DIGEST-MD5"))
-		type = CAMEL_TYPE_SASL_DIGEST_MD5;
-#ifdef HAVE_KRB5
-	else if (!strcmp (mechanism, "GSSAPI"))
-		type = CAMEL_TYPE_SASL_GSSAPI;
-#endif
-	else if (!strcmp (mechanism, "PLAIN"))
-		type = CAMEL_TYPE_SASL_PLAIN;
-	else if (!strcmp (mechanism, "LOGIN"))
-		type = CAMEL_TYPE_SASL_LOGIN;
-	else if (!strcmp (mechanism, "POPB4SMTP"))
-		type = CAMEL_TYPE_SASL_POPB4SMTP;
-	else if (!strcmp (mechanism, "NTLM"))
-		type = CAMEL_TYPE_SASL_NTLM;
-	else
-		return NULL;
+	if (sasl_class != NULL)
+		sasl = g_object_new (
+			G_OBJECT_CLASS_TYPE (sasl_class),
+			"mechanism", mechanism,
+			"service", service,
+			"service-name", service_name,
+			NULL);
 
-	return g_object_new (
-		type, "mechanism", mechanism, "service",
-		service, "service-name", service_name, NULL);
+	g_hash_table_destroy (class_table);
+
+	return sasl;
 }
 
 /**
@@ -914,16 +973,43 @@ camel_sasl_challenge_base64_finish (CamelSasl *sasl,
 GList *
 camel_sasl_authtype_list (gboolean include_plain)
 {
+	CamelSaslClass *sasl_class;
+	GHashTable *class_table;
 	GList *types = NULL;
 
-	types = g_list_prepend (types, &camel_sasl_cram_md5_authtype);
-	types = g_list_prepend (types, &camel_sasl_digest_md5_authtype);
+	/* XXX I guess these are supposed to be common SASL auth types,
+	 *     since this is called by the IMAP, POP and SMTP providers.
+	 *     The returned list can be extended with other auth types
+	 *     by way of camel_sasl_authtype(), so maybe we should just
+	 *     drop the ad-hoc "include_plain" parameter? */
+
+	class_table = sasl_build_class_table ();
+
+	sasl_class = g_hash_table_lookup (class_table, "CRAM-MD5");
+	g_return_val_if_fail (sasl_class != NULL, types);
+	types = g_list_prepend (types, sasl_class->auth_type);
+
+	sasl_class = g_hash_table_lookup (class_table, "DIGEST-MD5");
+	g_return_val_if_fail (sasl_class != NULL, types);
+	types = g_list_prepend (types, sasl_class->auth_type);
+
 #ifdef HAVE_KRB5
-	types = g_list_prepend (types, &camel_sasl_gssapi_authtype);
+	sasl_class = g_hash_table_lookup (class_table, "GSSAPI");
+	g_return_val_if_fail (sasl_class != NULL, types);
+	types = g_list_prepend (types, sasl_class->auth_type);
 #endif
-	types = g_list_prepend (types, &camel_sasl_ntlm_authtype);
-	if (include_plain)
-		types = g_list_prepend (types, &camel_sasl_plain_authtype);
+
+	sasl_class = g_hash_table_lookup (class_table, "NTLM");
+	g_return_val_if_fail (sasl_class != NULL, types);
+	types = g_list_prepend (types, sasl_class->auth_type);
+
+	if (include_plain) {
+		sasl_class = g_hash_table_lookup (class_table, "PLAIN");
+		g_return_val_if_fail (sasl_class != NULL, types);
+		types = g_list_prepend (types, sasl_class->auth_type);
+	}
+
+	g_hash_table_destroy (class_table);
 
 	return types;
 }
@@ -938,22 +1024,16 @@ camel_sasl_authtype_list (gboolean include_plain)
 CamelServiceAuthType *
 camel_sasl_authtype (const gchar *mechanism)
 {
-	if (!strcmp (mechanism, "CRAM-MD5"))
-		return &camel_sasl_cram_md5_authtype;
-	else if (!strcmp (mechanism, "DIGEST-MD5"))
-		return &camel_sasl_digest_md5_authtype;
-#ifdef HAVE_KRB5
-	else if (!strcmp (mechanism, "GSSAPI"))
-		return &camel_sasl_gssapi_authtype;
-#endif
-	else if (!strcmp (mechanism, "PLAIN"))
-		return &camel_sasl_plain_authtype;
-	else if (!strcmp (mechanism, "LOGIN"))
-		return &camel_sasl_login_authtype;
-	else if (!strcmp(mechanism, "POPB4SMTP"))
-		return &camel_sasl_popb4smtp_authtype;
-	else if (!strcmp (mechanism, "NTLM"))
-		return &camel_sasl_ntlm_authtype;
-	else
-		return NULL;
+	GHashTable *class_table;
+	CamelSaslClass *sasl_class;
+	CamelServiceAuthType *auth_type;
+
+	g_return_val_if_fail (mechanism != NULL, NULL);
+
+	class_table = sasl_build_class_table ();
+	sasl_class = g_hash_table_lookup (class_table, mechanism);
+	auth_type = (sasl_class != NULL) ? sasl_class->auth_type : NULL;
+	g_hash_table_destroy (class_table);
+
+	return auth_type;
 }

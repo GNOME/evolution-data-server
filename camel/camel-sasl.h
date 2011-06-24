@@ -63,6 +63,9 @@ struct _CamelSasl {
 struct _CamelSaslClass {
 	CamelObjectClass parent_class;
 
+	/* Auth Mechanism Details */
+	CamelServiceAuthType *auth_type;
+
 	/* Synchronous I/O Methods */
 	gboolean	(*try_empty_password_sync)
 						(CamelSasl *sasl,

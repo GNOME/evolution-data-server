@@ -66,8 +66,6 @@ struct _CamelSaslGssapiClass {
 
 GType camel_sasl_gssapi_get_type (void);
 
-extern CamelServiceAuthType camel_sasl_gssapi_authtype;
-
 G_END_DECLS
 
 #endif /* CAMEL_SASL_GSSAPI_H */

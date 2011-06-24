@@ -65,8 +65,6 @@ struct _CamelSaslCramMd5Class {
 
 GType camel_sasl_cram_md5_get_type (void);
 
-extern CamelServiceAuthType camel_sasl_cram_md5_authtype;
-
 G_END_DECLS
 
 #endif /* CAMEL_SASL_CRAM_MD5_H */

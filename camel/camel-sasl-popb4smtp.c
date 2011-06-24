@@ -38,7 +38,7 @@ struct _CamelSaslPOPB4SMTPPrivate {
 	gint placeholder;  /* allow for future expansion */
 };
 
-CamelServiceAuthType camel_sasl_popb4smtp_authtype = {
+static CamelServiceAuthType sasl_popb4smtp_auth_type = {
 	N_("POP before SMTP"),
 
 	N_("This option will authorise a POP connection before attempting SMTP"),
@@ -160,6 +160,7 @@ camel_sasl_popb4smtp_class_init (CamelSaslPOPB4SMTPClass *class)
 	g_type_class_add_private (class, sizeof (CamelSaslPOPB4SMTPPrivate));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->auth_type = &sasl_popb4smtp_auth_type;
 	sasl_class->challenge_sync = sasl_popb4smtp_challenge_sync;
 
 	poplast = g_hash_table_new (g_str_hash, g_str_equal);

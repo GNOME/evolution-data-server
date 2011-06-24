@@ -38,7 +38,7 @@ struct _CamelSaslNTLMPrivate {
 #endif
 };
 
-CamelServiceAuthType camel_sasl_ntlm_authtype = {
+static CamelServiceAuthType sasl_ntlm_auth_type = {
 	N_("NTLM / SPA"),
 
 	N_("This option will connect to a Windows-based server using "
@@ -921,6 +921,7 @@ camel_sasl_ntlm_class_init (CamelSaslNTLMClass *class)
 	object_class->finalize = sasl_ntlm_finalize;
 
 	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->auth_type = &sasl_ntlm_auth_type;
 	sasl_class->challenge_sync = sasl_ntlm_challenge_sync;
 	sasl_class->try_empty_password_sync = sasl_ntlm_try_empty_password_sync;
 }

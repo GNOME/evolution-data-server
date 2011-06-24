@@ -65,8 +65,6 @@ struct _CamelSaslPOPB4SMTPClass {
 
 GType camel_sasl_popb4smtp_get_type (void);
 
-extern CamelServiceAuthType camel_sasl_popb4smtp_authtype;
-
 G_END_DECLS
 
 #endif /* CAMEL_SASL_POPB4SMTP_H */

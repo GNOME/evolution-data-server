@@ -35,7 +35,7 @@ struct _CamelSaslPlainPrivate {
 	gint placeholder;  /* allow for future expansion */
 };
 
-CamelServiceAuthType camel_sasl_plain_authtype = {
+static CamelServiceAuthType sasl_plain_auth_type = {
 	N_("PLAIN"),
 
 	N_("This option will connect to the server using a "
@@ -82,6 +82,7 @@ camel_sasl_plain_class_init (CamelSaslPlainClass *class)
 	g_type_class_add_private (class, sizeof (CamelSaslPlainPrivate));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->auth_type = &sasl_plain_auth_type;
 	sasl_class->challenge_sync = sasl_plain_challenge_sync;
 }
 

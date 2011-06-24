@@ -37,7 +37,7 @@ struct _CamelSaslCramMd5Private {
 	gint placeholder;  /* allow for future expansion */
 };
 
-CamelServiceAuthType camel_sasl_cram_md5_authtype = {
+static CamelServiceAuthType sasl_cram_md5_auth_type = {
 	N_("CRAM-MD5"),
 
 	N_("This option will connect to the server using a "
@@ -139,6 +139,7 @@ camel_sasl_cram_md5_class_init (CamelSaslCramMd5Class *class)
 	g_type_class_add_private (class, sizeof (CamelSaslCramMd5Private));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->auth_type = &sasl_cram_md5_auth_type;
 	sasl_class->challenge_sync = sasl_cram_md5_challenge_sync;
 }
 

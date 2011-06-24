@@ -65,8 +65,6 @@ struct _CamelSaslLoginClass {
 
 GType camel_sasl_login_get_type (void);
 
-extern CamelServiceAuthType camel_sasl_login_authtype;
-
 G_END_DECLS
 
 #endif /* CAMEL_SASL_LOGIN_H */

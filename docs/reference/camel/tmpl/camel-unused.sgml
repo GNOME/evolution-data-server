@@ -8432,6 +8432,12 @@ streams
 @pid: 
 @Returns: 
 
+<!-- ##### VARIABLE camel_sasl_anonymous_authtype ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### FUNCTION camel_sasl_authenticated ##### -->
 <para>
 
@@ -8439,6 +8445,48 @@ streams
 
 @sasl: 
 @Returns: 
+
+<!-- ##### VARIABLE camel_sasl_cram_md5_authtype ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### VARIABLE camel_sasl_digest_md5_authtype ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### VARIABLE camel_sasl_gssapi_authtype ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### VARIABLE camel_sasl_login_authtype ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### VARIABLE camel_sasl_ntlm_authtype ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### VARIABLE camel_sasl_plain_authtype ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### VARIABLE camel_sasl_popb4smtp_authtype ##### -->
+<para>
+
+</para>
+
 
 <!-- ##### FUNCTION camel_search_build_match_regex ##### -->
 <para>

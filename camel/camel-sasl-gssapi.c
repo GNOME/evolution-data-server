@@ -82,7 +82,7 @@ extern gss_OID gss_nt_service_name;
 #define DBUS_INTERFACE		"org.gnome.KrbAuthDialog"
 #define DBUS_METHOD		"org.gnome.KrbAuthDialog.acquireTgt"
 
-CamelServiceAuthType camel_sasl_gssapi_authtype = {
+static CamelServiceAuthType sasl_gssapi_auth_type = {
 	N_("GSSAPI"),
 
 	N_("This option will connect to the server using "
@@ -440,6 +440,7 @@ camel_sasl_gssapi_class_init (CamelSaslGssapiClass *class)
 	object_class->finalize = sasl_gssapi_finalize;
 
 	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->auth_type = &sasl_gssapi_auth_type;
 	sasl_class->challenge_sync = sasl_gssapi_challenge_sync;
 #endif /* HAVE_KRB5 */
 }

@@ -1690,7 +1690,6 @@ CAMEL_PROVIDER_IS_REMOTE
 CamelSaslAnonymous
 CamelSaslAnonTraceType
 camel_sasl_anonymous_new
-camel_sasl_anonymous_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_ANONYMOUS
 CAMEL_IS_SASL_ANONYMOUS
@@ -1707,7 +1706,6 @@ camel_sasl_anonymous_get_type
 <FILE>camel-sasl-cram-md5</FILE>
 <TITLE>CamelSaslCramMd5</TITLE>
 CamelSaslCramMd5
-camel_sasl_cram_md5_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_CRAM_MD5
 CAMEL_IS_SASL_CRAM_MD5
@@ -1725,7 +1723,6 @@ camel_sasl_cram_md5_get_type
 <FILE>camel-sasl-digest-md5</FILE>
 <TITLE>CamelSaslDigestMd5</TITLE>
 CamelSaslDigestMd5
-camel_sasl_digest_md5_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_DIGEST_MD5
 CAMEL_IS_SASL_DIGEST_MD5
@@ -1743,7 +1740,6 @@ camel_sasl_digest_md5_get_type
 <FILE>camel-sasl-gssapi</FILE>
 <TITLE>CamelSaslGssapi</TITLE>
 CamelSaslGssapi
-camel_sasl_gssapi_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_GSSAPI
 CAMEL_IS_SASL_GSSAPI
@@ -1761,7 +1757,6 @@ camel_sasl_gssapi_get_type
 <FILE>camel-sasl-login</FILE>
 <TITLE>CamelSaslLogin</TITLE>
 CamelSaslLogin
-camel_sasl_login_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_LOGIN
 CAMEL_IS_SASL_LOGIN
@@ -1779,7 +1774,6 @@ camel_sasl_login_get_type
 <FILE>camel-sasl-ntlm</FILE>
 <TITLE>CamelSaslNTLM</TITLE>
 CamelSaslNTLM
-camel_sasl_ntlm_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_NTLM
 CAMEL_IS_SASL_NTLM
@@ -1797,7 +1791,6 @@ camel_sasl_ntlm_get_type
 <FILE>camel-sasl-plain</FILE>
 <TITLE>CamelSaslPlain</TITLE>
 CamelSaslPlain
-camel_sasl_plain_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_PLAIN
 CAMEL_IS_SASL_PLAIN
@@ -1815,7 +1808,6 @@ camel_sasl_plain_get_type
 <FILE>camel-sasl-popb4smtp</FILE>
 <TITLE>CamelSaslPOPB4SMTP</TITLE>
 CamelSaslPOPB4SMTP
-camel_sasl_popb4smtp_authtype
 <SUBSECTION Standard>
 CAMEL_SASL_POPB4SMTP
 CAMEL_IS_SASL_POPB4SMTP

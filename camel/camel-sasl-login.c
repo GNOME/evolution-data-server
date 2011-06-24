@@ -31,7 +31,7 @@
 #include "camel-sasl-login.h"
 #include "camel-service.h"
 
-CamelServiceAuthType camel_sasl_login_authtype = {
+static CamelServiceAuthType sasl_login_auth_type = {
 	N_("Login"),
 
 	N_("This option will connect to the server using a "
@@ -105,6 +105,7 @@ camel_sasl_login_class_init (CamelSaslLoginClass *class)
 	g_type_class_add_private (class, sizeof (CamelSaslLoginPrivate));
 
 	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->auth_type = &sasl_login_auth_type;
 	sasl_class->challenge_sync = sasl_login_challenge_sync;
 }
 

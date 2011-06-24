@@ -65,8 +65,6 @@ struct _CamelSaslPlainClass {
 
 GType camel_sasl_plain_get_type (void);
 
-extern CamelServiceAuthType camel_sasl_plain_authtype;
-
 G_END_DECLS
 
 #endif /* CAMEL_SASL_PLAIN_H */
