@@ -1210,6 +1210,10 @@ smtp_auth (CamelSmtpTransport *transport,
 			goto lose;
 		}
 
+		/* the server may have accepted our initial response */
+		if (strncmp (respbuf, "235", 3) == 0)
+			break;
+
 		/* the server challenge/response should follow a 334 code */
 		if (strncmp (respbuf, "334", 3) != 0) {
 			smtp_set_error (
