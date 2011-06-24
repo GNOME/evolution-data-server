@@ -38,6 +38,10 @@
 #include "camel-sasl.h"
 #include "camel-service.h"
 
+#define CAMEL_SASL_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL, CamelSaslPrivate))
+
 #define w(x)
 
 typedef struct _AsyncContext AsyncContext;
@@ -189,7 +193,7 @@ sasl_dispose (GObject *object)
 {
 	CamelSaslPrivate *priv;
 
-	priv = CAMEL_SASL (object)->priv;
+	priv = CAMEL_SASL_GET_PRIVATE (object);
 
 	if (priv->service != NULL) {
 		g_object_unref (priv->service);
@@ -205,7 +209,7 @@ sasl_finalize (GObject *object)
 {
 	CamelSaslPrivate *priv;
 
-	priv = CAMEL_SASL (object)->priv;
+	priv = CAMEL_SASL_GET_PRIVATE (object);
 
 	g_free (priv->mechanism);
 	g_free (priv->service_name);
@@ -289,13 +293,14 @@ sasl_challenge_finish (CamelSasl *sasl,
 
 static void
 sasl_try_empty_password_thread (GSimpleAsyncResult *simple,
-				GObject *object,
-				GCancellable *cancellable)
+                                GObject *object,
+                                GCancellable *cancellable)
 {
 	gboolean res;
 	GError *error = NULL;
 
-	res = camel_sasl_try_empty_password_sync (CAMEL_SASL (object), cancellable, &error);
+	res = camel_sasl_try_empty_password_sync (
+		CAMEL_SASL (object), cancellable, &error);
 	g_simple_async_result_set_op_res_gboolean (simple, res);
 
 	if (error != NULL) {
@@ -306,10 +311,10 @@ sasl_try_empty_password_thread (GSimpleAsyncResult *simple,
 
 static void
 sasl_try_empty_password (CamelSasl *sasl,
-			 gint io_priority,
-			 GCancellable *cancellable,
-			 GAsyncReadyCallback callback,
-			 gpointer user_data)
+                         gint io_priority,
+                         GCancellable *cancellable,
+                         GAsyncReadyCallback callback,
+                         gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 
@@ -317,15 +322,16 @@ sasl_try_empty_password (CamelSasl *sasl,
 		G_OBJECT (sasl), callback, user_data, sasl_try_empty_password);
 
 	g_simple_async_result_run_in_thread (
-		simple, sasl_try_empty_password_thread, io_priority, cancellable);
+		simple, sasl_try_empty_password_thread,
+		io_priority, cancellable);
 
 	g_object_unref (simple);
 }
 
 static gboolean
 sasl_try_empty_password_finish (CamelSasl *sasl,
-				GAsyncResult *result,
-				GError **error)
+                                GAsyncResult *result,
+                                GError **error)
 {
 	GSimpleAsyncResult *simple;
 
@@ -406,8 +412,7 @@ camel_sasl_class_init (CamelSaslClass *class)
 static void
 camel_sasl_init (CamelSasl *sasl)
 {
-	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		sasl, CAMEL_TYPE_SASL, CamelSaslPrivate);
+	sasl->priv = CAMEL_SASL_GET_PRIVATE (sasl);
 }
 
 /**
@@ -489,8 +494,9 @@ camel_sasl_get_authenticated (CamelSasl *sasl)
  * Since: 3.2
  **/
 gboolean
-camel_sasl_try_empty_password_sync (CamelSasl *sasl, GCancellable *cancellable,
-				    GError **error)
+camel_sasl_try_empty_password_sync (CamelSasl *sasl,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	CamelSaslClass *class;
 
@@ -523,10 +529,10 @@ camel_sasl_try_empty_password_sync (CamelSasl *sasl, GCancellable *cancellable,
  **/
 void
 camel_sasl_try_empty_password (CamelSasl *sasl,
-			       gint io_priority,
-			       GCancellable *cancellable,
-			       GAsyncReadyCallback callback,
-			       gpointer user_data)
+                               gint io_priority,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
 	CamelSaslClass *class;
 
@@ -553,8 +559,8 @@ camel_sasl_try_empty_password (CamelSasl *sasl,
  **/
 gboolean
 camel_sasl_try_empty_password_finish (CamelSasl *sasl,
-				      GAsyncResult *result,
-				      GError **error)
+                                      GAsyncResult *result,
+                                      GError **error)
 {
 	CamelSaslClass *class;
 
