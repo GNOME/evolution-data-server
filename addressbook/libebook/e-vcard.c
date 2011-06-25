@@ -1259,7 +1259,7 @@ e_vcard_append_attribute_with_values (EVCard *evcard, EVCardAttribute *attr, ...
 /**
  * e_vcard_add_attribute:
  * @evc: an #EVCard
- * @attr: an #EVCardAttribute to add
+ * @attr: (transfer full): an #EVCardAttribute to add
  *
  * Adds @attr to @evc. It's added to the beginning of a list of attributes.
  **/
