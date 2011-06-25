@@ -1852,7 +1852,7 @@ e_vcard_get_attributes (EVCard *evcard)
  * @evcard and should not be freed. If the attribute does not exist, #NULL is
  * returned.
  *
- * Returns: An #EVCardAttribute if found, or #NULL.
+ * Returns: (transfer none): An #EVCardAttribute if found, or #NULL.
  **/
 EVCardAttribute *
 e_vcard_get_attribute (EVCard     *evc,
