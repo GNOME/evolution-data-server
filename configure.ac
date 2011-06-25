@@ -1192,12 +1192,6 @@ EVO_MARSHAL_RULE=$srcdir/marshal.mk
 AC_SUBST_FILE(EVO_MARSHAL_RULE)
 
 dnl ******************************
-dnl Posix thread support
-dnl ******************************
-
-AC_DEFINE(ENABLE_THREADS,1,[Required])
-
-dnl ******************************
 dnl Utility macro to set compiler flags for a specific lib.
 dnl EVO_SET_COMPILE_FLAGS(VAR-PREFIX, DEPS, EXTRA-CFLAGS, EXTRA-LIBS)
 dnl ******************************
