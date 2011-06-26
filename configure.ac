@@ -35,10 +35,12 @@ dnl Required Package Versions
 m4_define([glib_minimum_version], [2.28])
 m4_define([gtk_minimum_version], [3.0])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
+m4_define([gnome_keyring_minimum_version], [2.20.1])
+m4_define([goa_minimum_version], [3.1.1])
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.31.2])
 m4_define([libgdata_minimum_version], [0.7.0])
-m4_define([gnome_keyring_minimum_version], [2.20.1])
+m4_define([oauth_minimum_version], [0.9.4])
 m4_define([sqlite_minimum_version], [3.5])
 m4_define([libical_minimum_version], [0.43])
 m4_define([gweather_minimum_version], [2.90.0])
@@ -341,6 +343,37 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 if `$PKG_CONFIG --atleast-version=0.9 libgdata`; then
 	AC_DEFINE(HAVE_LIBGDATA_0_9,1,[libgdata is 0.9 or higher])
 fi
+
+dnl *******************************
+dnl Check for GNOME Online Accounts
+dnl *******************************
+AC_ARG_ENABLE([goa],
+	[AS_HELP_STRING([--enable-goa],
+	[enable GNOME Online Accounts support (default=yes)])],
+	[enable_goa=$enableval], [enable_goa=yes])
+AC_MSG_CHECKING([if GNOME Online Accounts support is enabled])
+AC_MSG_RESULT([$enable_goa])
+if test "x$enable_goa" = xyes; then
+	PKG_CHECK_MODULES([GOA], [goa-1.0 >= goa_minimum_version],,
+	[AC_MSG_ERROR([goa-1.0 not found (or version < goa_minimum_version),
+	If you want to disable GNOME Online Accounts support,
+	please append --disable-goa to configure.])])
+
+	PKG_CHECK_MODULES([OAUTH], [oauth >= oauth_minimum_version],,
+	[AC_MSG_ERROR([oauth not found (or version < oauth_minimum_version),
+	If you want to disable GNOME Online Accounts support,
+	please append --disable-goa to configure.])])
+
+	if `$PKG_CONFIG --atleast-version=0.9 libgdata`; then
+		AC_DEFINE(HAVE_GOA,1,[Have goa-1.0 and libgdata >= 0.9])
+	else
+		AC_MSG_ERROR([
+	libgdata 0.9 is required for GNOME Online Accounts support.
+	If you want to disable GNOME Online Accounts support, please
+	append --disable-goa to configure.])
+	fi
+fi
+AM_CONDITIONAL(HAVE_GOA, [test x$enable_goa = xyes])
 
 if test x$os_win32 = xno; then
   dnl ***********************************
@@ -1567,4 +1600,5 @@ echo "
 	Gtk Doc:		$enable_gtk_doc
 	Introspection:		$enable_introspection
 	Vala bindings:		$enable_vala_bindings
+	GNOME Online Accounts	$enable_goa
 "

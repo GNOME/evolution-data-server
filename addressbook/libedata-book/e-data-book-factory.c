@@ -32,6 +32,15 @@
 #endif
 #endif
 
+#if HAVE_GOA
+#define GOA_API_IS_SUBJECT_TO_CHANGE
+#include <goa/goa.h>
+
+/* This is the property name or URL parameter under which we
+ * embed the GoaAccount ID into an EAccount or ESource object. */
+#define GOA_KEY "goa-account-id"
+#endif
+
 #include <libebackend/e-data-server-module.h>
 #include <libebackend/e-offline-listener.h>
 #include "e-book-backend-factory.h"
@@ -98,6 +107,11 @@ struct _EDataBookFactoryPrivate {
 
 	/* whether should be online */
 	gboolean is_online;
+
+#ifdef HAVE_GOA
+	GoaClient *goa_client;
+	GHashTable *goa_accounts;
+#endif
 };
 
 /* Forward Declarations */
@@ -425,6 +439,27 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 		priv->exit_timeout = 0;
 	}
 
+#ifdef HAVE_GOA
+	{
+		GoaObject *goa_object = NULL;
+		const gchar *goa_account_id;
+
+		/* Embed the corresponding GoaObject in the EBookBackend
+		 * so the backend can retrieve it.  We're not ready to add
+		 * formal API for this to EBookBackend just yet. */
+		goa_account_id = e_source_get_property (source, GOA_KEY);
+		if (goa_account_id != NULL)
+			goa_object = g_hash_table_lookup (
+				factory->priv->goa_accounts, goa_account_id);
+		if (GOA_IS_OBJECT (goa_object))
+			g_object_set_data_full (
+				G_OBJECT (backend),
+				"GNOME Online Account",
+				g_object_ref (goa_object),
+				(GDestroyNotify) g_object_unref);
+	}
+#endif
+
 	path = construct_book_factory_path ();
 	book = e_data_book_new (backend, source);
 	g_hash_table_insert (priv->books, g_strdup (path), book);
@@ -485,6 +520,15 @@ e_data_book_factory_dispose (GObject *object)
 		priv->gdbus_object = NULL;
 	}
 
+#ifdef HAVE_GOA
+	if (priv->goa_client != NULL) {
+		g_object_unref (priv->goa_client);
+		priv->goa_client = NULL;
+	}
+
+	g_hash_table_remove_all (priv->goa_accounts);
+#endif
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_factory_parent_class)->dispose (object);
 }
@@ -504,6 +548,10 @@ e_data_book_factory_finalize (GObject *object)
 	g_mutex_free (priv->backends_lock);
 	g_mutex_free (priv->books_lock);
 	g_mutex_free (priv->connections_lock);
+
+#ifdef HAVE_GOA
+	g_hash_table_destroy (priv->goa_accounts);
+#endif
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_factory_parent_class)->finalize (object);
@@ -560,6 +608,44 @@ e_data_book_factory_init (EDataBookFactory *factory)
 		g_error ("%s", error->message);
 
 	e_data_book_factory_register_backends (factory);
+
+#ifdef HAVE_GOA
+	factory->priv->goa_accounts = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) g_object_unref);
+
+	/* Failure here is non-fatal, just emit a terminal warning. */
+	factory->priv->goa_client = goa_client_new_sync (NULL, &error);
+
+	if (factory->priv->goa_client != NULL) {
+		GList *list, *iter;
+
+		list = goa_client_get_accounts (factory->priv->goa_client);
+
+		for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+			GoaObject *goa_object;
+			GoaAccount *goa_account;
+			const gchar *goa_account_id;
+
+			goa_object = GOA_OBJECT (iter->data);
+			goa_account = goa_object_peek_account (goa_object);
+			goa_account_id = goa_account_get_id (goa_account);
+
+			/* Takes ownership of the GoaObject. */
+			g_hash_table_insert (
+				factory->priv->goa_accounts,
+				g_strdup (goa_account_id), goa_object);
+		}
+
+		g_list_free (list);
+
+	} else if (error != NULL) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+	}
+#endif
 }
 
 static guint
