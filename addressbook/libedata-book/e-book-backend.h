@@ -79,6 +79,8 @@ struct _EBookBackendClass {
 	void	(* start_book_view)		(EBookBackend *backend, EDataBookView *book_view);
 	void	(* stop_book_view)		(EBookBackend *backend, EDataBookView *book_view);
 
+	void    (* notify_update)               (EBookBackend *backend, const EContact *contact);
+
 	/* Notification signals */
 	void	(* last_client_gone)		(EBookBackend *backend);
 	void	(* sync)			(EBookBackend *backend);

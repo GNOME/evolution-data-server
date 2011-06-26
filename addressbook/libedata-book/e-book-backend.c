@@ -177,6 +177,20 @@ book_backend_finalize (GObject *object)
 	G_OBJECT_CLASS (e_book_backend_parent_class)->finalize (object);
 }
 
+static gboolean
+view_notify_update (EDataBookView *view, gpointer contact)
+{
+	e_data_book_view_notify_update (view, contact);
+
+	return TRUE;
+}
+
+static void
+book_backend_notify_update (EBookBackend *backend, const EContact *contact)
+{
+	e_book_backend_foreach_view (backend, view_notify_update, (gpointer) contact);
+}
+
 static void
 e_book_backend_class_init (EBookBackendClass *klass)
 {
@@ -192,6 +206,7 @@ e_book_backend_class_init (EBookBackendClass *klass)
 
 	klass->get_backend_property = book_backend_get_backend_property;
 	klass->set_backend_property = book_backend_set_backend_property;
+	klass->notify_update        = book_backend_notify_update;
 
 	g_object_class_install_property (
 		object_class,
@@ -1039,15 +1054,6 @@ e_book_backend_sync (EBookBackend *backend)
 	g_object_unref (backend);
 }
 
-
-
-static gboolean
-view_notify_update (EDataBookView *view, gpointer contact)
-{
-	e_data_book_view_notify_update (view, contact);
-
-	return TRUE;
-}
 
 /**
  * e_book_backend_notify_update:
@@ -1064,7 +1070,7 @@ view_notify_update (EDataBookView *view, gpointer contact)
 void
 e_book_backend_notify_update (EBookBackend *backend, const EContact *contact)
 {
-	e_book_backend_foreach_view (backend, view_notify_update, (gpointer) contact);
+	E_BOOK_BACKEND_GET_CLASS (backend)->notify_update (backend, contact);
 }
 
 static gboolean

@@ -48,7 +48,7 @@
 #include "libebook/e-contact.h"
 
 #include "libedata-book/e-book-backend-sexp.h"
-#include "libedata-book/e-book-backend-summary.h"
+#include "libedata-book/e-book-backend-sqlitedb.h"
 #include "libedata-book/e-data-book.h"
 #include "libedata-book/e-data-book-view.h"
 
@@ -62,7 +62,11 @@
 #define E_BOOK_BACKEND_FILE_VERSION "0.2"
 
 #define PAS_ID_PREFIX "pas-id-"
-#define SUMMARY_FLUSH_TIMEOUT 5000
+
+#define SQLITEDB_EMAIL_ID    "addressbook@localbackend.com"
+#define SQLITEDB_FOLDER_ID   "folder_id"
+#define SQLITEDB_FOLDER_NAME "folder"
+
 
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
@@ -73,10 +77,11 @@ G_DEFINE_TYPE (EBookBackendFile, e_book_backend_file, E_TYPE_BOOK_BACKEND_SYNC)
 struct _EBookBackendFilePrivate {
 	gchar     *dirname;
 	gchar     *filename;
-	gchar     *summary_filename;
-	DB       *file_db;
-	DB_ENV   *env;
-	EBookBackendSummary *summary;
+	DB        *file_db;
+	DB_ENV    *env;
+
+	EBookBackendSqliteDB *sqlitedb;
+
 	/* for future use */
 	gpointer reserved1;
 	gpointer reserved2;
@@ -121,7 +126,7 @@ string_to_dbt (const gchar *str, DBT *dbt)
 }
 
 static EContact*
-create_contact (gchar *uid, const gchar *vcard)
+create_contact (const gchar *uid, const gchar *vcard)
 {
 	EContact *contact = e_contact_new_from_vcard (vcard);
 	if (!e_contact_get_const (contact, E_CONTACT_UID))
@@ -131,12 +136,14 @@ create_contact (gchar *uid, const gchar *vcard)
 }
 
 static gboolean
-build_summary (EBookBackendFilePrivate *bfpriv)
+build_sqlitedb (EBookBackendFilePrivate *bfpriv)
 {
 	DB             *db = bfpriv->file_db;
 	DBC            *dbc;
 	gint            db_error;
-	DBT  id_dbt, vcard_dbt;
+	DBT             id_dbt, vcard_dbt;
+	GSList         *contacts = NULL;
+	GError         *error = NULL;
 
 	if (!db) {
 		g_warning (G_STRLOC ": Not openend yet");
@@ -160,8 +167,8 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 		if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
 		    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 			EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
-			e_book_backend_summary_add_contact (bfpriv->summary, contact);
-			g_object_unref (contact);
+
+			contacts = g_slist_prepend (contacts, contact);
 		}
 
 		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
@@ -169,6 +176,25 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 	}
 
 	dbc->c_close (dbc);
+
+	contacts = g_slist_reverse (contacts);
+
+	if (!e_book_backend_sqlitedb_add_contacts (bfpriv->sqlitedb,
+						   SQLITEDB_FOLDER_ID,
+						   contacts, FALSE, &error)) {
+		g_warning ("Failed to build contact summary: %s", error->message);
+		g_error_free (error);
+		return FALSE;
+	}
+
+	g_slist_foreach (contacts, (GFunc)g_object_unref, NULL);
+	g_slist_free (contacts);
+
+	if (!e_book_backend_sqlitedb_set_is_populated (bfpriv->sqlitedb, SQLITEDB_FOLDER_ID, TRUE, &error)) {
+		g_warning ("Failed to set the sqlitedb populated flag: %s", error->message);
+		g_error_free (error);
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -266,7 +292,14 @@ e_book_backend_file_create_contact (EBookBackendSync *backend,
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 
 	if (do_create (bf, vcard, contact, perror)) {
-		e_book_backend_summary_add_contact (bf->priv->summary, *contact);
+		GError *error = NULL;
+
+		if (!e_book_backend_sqlitedb_add_contact (bf->priv->sqlitedb,
+							  SQLITEDB_FOLDER_ID,
+							  *contact, FALSE, &error)) {
+			g_warning ("Failed to add contact to summary: %s", error->message);
+			g_error_free (error);
+		}
 	}
 }
 
@@ -279,12 +312,13 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 				     GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	DB             *db = bf->priv->file_db;
-	DBT            id_dbt;
-	gint            db_error;
-	const gchar    *id;
-	const GSList   *l;
-	GSList         *removed_cards = NULL;
+	DB               *db = bf->priv->file_db;
+	DBT               id_dbt;
+	gint              db_error;
+	const gchar      *id;
+	GSList           *removed_cards = NULL;
+	const GSList     *l;
+	GError           *error = NULL;
 
 	if (!db) {
 		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
@@ -313,12 +347,14 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 			g_warning (G_STRLOC ": db->sync failed with %s", db_strerror (db_error));
 	}
 
-	*ids = removed_cards;
-
-	for (l = removed_cards; l; l = l->next) {
-		id = l->data;
-		e_book_backend_summary_remove_contact (bf->priv->summary, id);
+	if (!e_book_backend_sqlitedb_remove_contacts (bf->priv->sqlitedb,
+						      SQLITEDB_FOLDER_ID,
+						      removed_cards, &error)) {
+		g_warning ("Failed to remove contacts from the summary: %s", error->message);
+		g_error_free (error);
 	}
+
+	*ids = removed_cards;
 }
 
 static void
@@ -374,8 +410,19 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 		if (db_error != 0) {
 			g_warning (G_STRLOC ": db->sync failed with %s", db_strerror (db_error));
 		} else {
-			e_book_backend_summary_remove_contact (bf->priv->summary, id);
-			e_book_backend_summary_add_contact (bf->priv->summary, *contact);
+			GError *error = NULL;
+
+			if (!e_book_backend_sqlitedb_remove_contact (bf->priv->sqlitedb,
+								     SQLITEDB_FOLDER_ID,
+								     id, &error)) {
+				g_warning ("Failed to remove contact from the summary: %s", error->message);
+				g_error_free (error);
+			} else if (!e_book_backend_sqlitedb_add_contact (bf->priv->sqlitedb,
+									 SQLITEDB_FOLDER_ID,
+									 *contact, FALSE, &error)) {
+				g_warning ("Failed to add contact to summary: %s", error->message);
+				g_error_free (error);
+			}
 		}
 	} else {
 		g_warning (G_STRLOC ": db->put failed with %s", db_strerror(db_error));
@@ -438,7 +485,8 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	EBookBackendSExp *card_sexp = NULL;
 	gboolean search_needed;
 	const gchar *search = query;
-	GSList *contact_list = NULL;
+	GSList *contact_list = NULL, *l;
+	GSList *summary_list = NULL;
 
 	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
 
@@ -447,33 +495,22 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 		return;
 	}
 
-	if (e_book_backend_summary_is_summary_query (bf->priv->summary, search)) {
+	summary_list = e_book_backend_sqlitedb_search (bf->priv->sqlitedb,
+						       SQLITEDB_FOLDER_ID,
+						       search, NULL, NULL);
 
-		/* do a summary query */
-		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, search);
-		gint i;
+	if (summary_list) {
 
-		if (!ids) {
-			g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
-			return;
+		for (l = summary_list; l; l = l->next) {
+			EbSdbSearchData *data = l->data;
+
+			contact_list = g_slist_prepend (contact_list, data->vcard);
+			data->vcard  = NULL;
 		}
 
-		for (i = 0; i < ids->len; i++) {
-			gchar *id = g_ptr_array_index (ids, i);
-			string_to_dbt (id, &id_dbt);
-			memset (&vcard_dbt, 0, sizeof (vcard_dbt));
-			vcard_dbt.flags = DB_DBT_MALLOC;
+		g_slist_foreach (summary_list, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+		g_slist_free (summary_list);
 
-			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
-			if (db_error == 0) {
-				contact_list = g_slist_prepend (contact_list, vcard_dbt.data);
-			} else {
-				g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
-				db_error_to_gerror (db_error, perror);
-				break;
-			}
-		}
-		g_ptr_array_free (ids, TRUE);
 	} else {
 		search_needed = TRUE;
 		if (!strcmp (search, "(contains \"x-evolution-any-field\" \"\")"))
@@ -560,24 +597,11 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 		return;
 	}
 
-	if (e_book_backend_summary_is_summary_query (bf->priv->summary, search)) {
-		/* do a summary query */
-		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, search);
-		gint i;
+	uids = e_book_backend_sqlitedb_search_uids (bf->priv->sqlitedb,
+						    SQLITEDB_FOLDER_ID,
+						    search, NULL);
 
-		if (!ids) {
-			g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
-			return;
-		}
-
-		for (i = 0; i < ids->len; i++) {
-			gchar *id = g_ptr_array_index (ids, i);
-
-			uids = g_slist_prepend (uids, g_strdup (id));
-		}
-
-		g_ptr_array_free (ids, TRUE);
-	} else {
+	if (!uids) {
 		search_needed = TRUE;
 		if (!strcmp (search, "(contains \"x-evolution-any-field\" \"\")"))
 			search_needed = FALSE;
@@ -671,6 +695,18 @@ get_closure (EDataBookView *book_view)
 	return g_object_get_data (G_OBJECT (book_view), "EBookBackendFile.BookView::closure");
 }
 
+static void
+notify_update_vcard (EDataBookView *book_view,
+		     gboolean       prefiltered,
+		     const gchar   *id,
+		     gchar         *vcard)
+{
+	if (prefiltered)
+		e_data_book_view_notify_update_prefiltered_vcard (book_view, id, vcard);
+	else
+		e_data_book_view_notify_update_vcard (book_view, vcard);
+}
+
 static gpointer
 book_view_thread (gpointer data)
 {
@@ -682,6 +718,8 @@ book_view_thread (gpointer data)
 	DBT id_dbt, vcard_dbt;
 	gint db_error;
 	gboolean allcontacts;
+	GSList *summary_list, *l;
+	GHashTable *fields_of_interest;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (data), NULL);
 
@@ -699,14 +737,15 @@ book_view_thread (gpointer data)
 	   when/if it's stopped */
 	e_data_book_view_ref (book_view);
 
-	db = bf->priv->file_db;
+	db                 = bf->priv->file_db;
+	query              = e_data_book_view_get_card_query (book_view);
+	fields_of_interest = e_data_book_view_get_fields_of_interest (book_view);
+
 	if (!db) {
 		e_data_book_view_notify_complete (book_view, EDB_NOT_OPENED_ERROR);
 		e_data_book_view_unref (book_view);
 		return NULL;
 	}
-
-	query = e_data_book_view_get_card_query (book_view);
 
 	if ( !strcmp (query, "(contains \"x-evolution-any-field\" \"\")")) {
 		e_data_book_view_notify_progress (book_view, -1, _("Loading..."));
@@ -719,37 +758,21 @@ book_view_thread (gpointer data)
 	d(printf ("signalling parent thread\n"));
 	e_flag_set (closure->running);
 
-	if (e_book_backend_summary_is_summary_query (bf->priv->summary, query)) {
-		/* do a summary query */
-		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, e_data_book_view_get_card_query (book_view));
-		gint i;
+	summary_list = e_book_backend_sqlitedb_search (bf->priv->sqlitedb,
+						       SQLITEDB_FOLDER_ID,
+						       query, fields_of_interest, NULL);
+	if (summary_list) {
 
-		if (!ids)
-			goto done;
+		for (l = summary_list; l; l = l->next) {
+			EbSdbSearchData *data = l->data;
 
-		for (i = 0; i < ids->len; i++) {
-			gchar *id = g_ptr_array_index (ids, i);
-
-			if (!e_flag_is_set (closure->running))
-				break;
-
-			string_to_dbt (id, &id_dbt);
-			memset (&vcard_dbt, 0, sizeof (vcard_dbt));
-			vcard_dbt.flags = DB_DBT_MALLOC;
-
-			db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
-
-			if (db_error == 0) {
-				e_data_book_view_notify_update_prefiltered_vcard (book_view, id, vcard_dbt.data);
-			}
-			else {
-				g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
-			}
+			notify_update_vcard (book_view, TRUE, data->uid, data->vcard);
+			data->vcard = NULL;
 		}
 
-		g_ptr_array_free (ids, TRUE);
-	}
-	else {
+		g_slist_foreach (summary_list, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+		g_slist_free (summary_list);
+	} else {
 		/* iterate over the db and do the query there */
 		DBC    *dbc;
 
@@ -768,10 +791,8 @@ book_view_thread (gpointer data)
 
 				/* don't include the version in the list of cards */
 				if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
-					if (allcontacts)
-						e_data_book_view_notify_update_prefiltered_vcard (book_view, id_dbt.data, vcard_dbt.data);
-					else
-						e_data_book_view_notify_update_vcard (book_view, vcard_dbt.data);
+					notify_update_vcard (book_view, allcontacts, 
+							     id_dbt.data, vcard_dbt.data);
 				} else {
 					g_free (vcard_dbt.data);
 				}
@@ -791,7 +812,7 @@ book_view_thread (gpointer data)
 		}
 
 	}
-done:
+
 	if (e_flag_is_set (closure->running))
 		e_data_book_view_notify_complete (book_view, NULL /* Success */);
 
@@ -1049,14 +1070,13 @@ e_book_backend_file_open (EBookBackendSync       *backend,
 			  GError	       **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	gchar           *dirname, *filename;
-	gboolean        readonly = TRUE;
-	ESource *source = e_book_backend_get_source (E_BOOK_BACKEND (backend));
-	gint             db_error;
-	DB *db;
-	DB_ENV *env;
-	time_t db_mtime;
-	struct stat sb;
+	gchar            *dirname, *filename;
+	gboolean          readonly = TRUE;
+	ESource          *source = e_book_backend_get_source (E_BOOK_BACKEND (backend));
+	gint              db_error;
+	DB               *db;
+	DB_ENV           *env;
+	GError           *local_error = NULL;
 
 #ifdef CREATE_DEFAULT_VCARD
 	gboolean create_default_vcard = FALSE;
@@ -1252,23 +1272,25 @@ e_book_backend_file_open (EBookBackendSync       *backend,
 	bf->priv->dirname = dirname;
 	bf->priv->filename = filename;
 
-	if (g_stat (bf->priv->filename, &sb) == -1) {
-		db->close (db, 0);
-		bf->priv->file_db = NULL;
-		g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "stat(%s) failed", bf->priv->filename));
+	bf->priv->sqlitedb = e_book_backend_sqlitedb_new (bf->priv->dirname,
+							  SQLITEDB_EMAIL_ID,
+							  SQLITEDB_FOLDER_ID,
+							  SQLITEDB_FOLDER_NAME,
+							  FALSE,
+							  perror);
+	if (!bf->priv->sqlitedb)
 		return;
-	}
-	db_mtime = sb.st_mtime;
 
-	g_free (bf->priv->summary_filename);
-	bf->priv->summary_filename = g_strconcat (bf->priv->filename, ".summary", NULL);
-	bf->priv->summary = e_book_backend_summary_new (bf->priv->summary_filename, SUMMARY_FLUSH_TIMEOUT);
-
-	if (e_book_backend_summary_is_up_to_date (bf->priv->summary, db_mtime) == FALSE
-	    || e_book_backend_summary_load (bf->priv->summary) == FALSE ) {
-		if (!bf->priv->summary || !build_summary (bf->priv)) {
-			g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to build summary for an address book %s", bf->priv->filename));
+	if (!e_book_backend_sqlitedb_get_is_populated (bf->priv->sqlitedb,
+						       SQLITEDB_FOLDER_ID,
+						       &local_error)) {
+		if (local_error) {
+			g_propagate_error (perror, local_error);
 			return;
+		} else if (!build_sqlitedb (bf->priv)) {
+			g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+                                    "Failed to build summary for an address book %s",
+                                     bf->priv->filename));
 		}
 	}
 
@@ -1313,11 +1335,12 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 		return;
 	}
 
-	/* unref the summary before we remove the file so it's not written out again */
-	g_object_unref (bf->priv->summary);
-	bf->priv->summary = NULL;
-	if (-1 == g_unlink (bf->priv->summary_filename))
-		g_warning ("failed to remove summary file `%s`: %s", bf->priv->summary_filename, g_strerror (errno));
+	if (!e_book_backend_sqlitedb_remove (bf->priv->sqlitedb, perror))
+		return;
+
+	/* unref the sqlitedb before we remove the file so it's not written out again */
+	g_object_unref (bf->priv->sqlitedb);
+	bf->priv->sqlitedb = NULL;
 
 	dir = g_dir_open (bf->priv->dirname, 0, NULL);
 	if (dir) {
@@ -1400,6 +1423,47 @@ e_book_backend_file_sync (EBookBackend *backend)
 	}
 }
 
+typedef struct {
+	EContact         *contact;
+	EBookBackendFile *bf;
+} NotifyData;
+
+static gboolean
+view_notify_update (EDataBookView *view, gpointer data)
+{
+	NotifyData *ndata    = data;
+	GHashTable *fields   = e_data_book_view_get_fields_of_interest (view);
+	gboolean    notified = FALSE;
+
+	if (e_book_backend_sqlitedb_is_summary_query (e_data_book_view_get_card_query (view), fields)) {
+
+		const gchar *uid = e_contact_get_const (ndata->contact, E_CONTACT_UID);
+		gchar       *vcard;
+
+		vcard = e_book_backend_sqlitedb_get_vcard_string (ndata->bf->priv->sqlitedb,
+								  SQLITEDB_FOLDER_ID, uid,
+								  fields, NULL);
+
+		if (vcard) {
+			e_data_book_view_notify_update_prefiltered_vcard (view, uid, vcard);
+			notified = TRUE;
+		}
+	}
+
+	if (!notified)
+		e_data_book_view_notify_update (view, ndata->contact);
+
+	return TRUE;
+}
+
+static void
+e_book_backend_file_notify_update (EBookBackend *backend, const EContact *contact)
+{
+	NotifyData data = { (EContact *)contact, E_BOOK_BACKEND_FILE (backend) };
+
+	e_book_backend_foreach_view (backend, view_notify_update, &data);
+}
+
 /**
  * e_book_backend_file_new:
  */
@@ -1429,9 +1493,9 @@ e_book_backend_file_dispose (GObject *object)
 	}
 	G_UNLOCK (global_env);
 
-	if (bf->priv->summary) {
-		g_object_unref (bf->priv->summary);
-		bf->priv->summary = NULL;
+	if (bf->priv->sqlitedb) {
+		g_object_unref (bf->priv->sqlitedb);
+		bf->priv->sqlitedb = NULL;
 	}
 
 	G_OBJECT_CLASS (e_book_backend_file_parent_class)->dispose (object);
@@ -1446,7 +1510,6 @@ e_book_backend_file_finalize (GObject *object)
 
 	g_free (bf->priv->filename);
 	g_free (bf->priv->dirname);
-	g_free (bf->priv->summary_filename);
 
 	g_free (bf->priv);
 
@@ -1512,6 +1575,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	backend_class->stop_book_view		= e_book_backend_file_stop_book_view;
 	backend_class->set_online		= e_book_backend_file_set_online;
 	backend_class->sync			= e_book_backend_file_sync;
+	backend_class->notify_update            = e_book_backend_file_notify_update;
 
 	sync_class->open_sync			= e_book_backend_file_open;
 	sync_class->remove_sync			= e_book_backend_file_remove;
