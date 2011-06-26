@@ -596,9 +596,18 @@ get_new_contacts (EBookBackend *backend)
 
 	/* Query for new contacts asynchronously */
 	cancellable = start_operation (backend, 0, NULL, _("Querying for updated contacts…"));
-	gdata_contacts_service_query_contacts_async (GDATA_CONTACTS_SERVICE (priv->service), query, cancellable,
-						     (GDataQueryProgressCallback) (last_updated ? process_subsequent_entry : process_initial_entry),
-						     backend, (GAsyncReadyCallback) get_new_contacts_cb, backend);
+	gdata_contacts_service_query_contacts_async (
+		GDATA_CONTACTS_SERVICE (priv->service),
+		query,
+		cancellable,
+		(GDataQueryProgressCallback) (last_updated ?
+			process_subsequent_entry : process_initial_entry),
+		backend,
+#if HAVE_LIBGDATA_0_9
+		(GDestroyNotify) NULL,
+#endif
+		(GAsyncReadyCallback) get_new_contacts_cb,
+		backend);
 
 	g_object_unref (cancellable);
 	g_object_unref (query);
@@ -718,8 +727,17 @@ get_groups (EBookBackend *backend)
 
 	/* Run the query asynchronously */
 	cancellable = start_operation (backend, 1, NULL, _("Querying for updated groups…"));
-	gdata_contacts_service_query_groups_async (GDATA_CONTACTS_SERVICE (priv->service), query, cancellable,
-						   (GDataQueryProgressCallback) process_group, backend, (GAsyncReadyCallback) get_groups_cb, backend);
+	gdata_contacts_service_query_groups_async (
+		GDATA_CONTACTS_SERVICE (priv->service),
+		query,
+		cancellable,
+		(GDataQueryProgressCallback) process_group,
+		backend,
+#ifdef HAVE_LIBGDATA_0_9
+		(GDestroyNotify) NULL,
+#endif
+		(GAsyncReadyCallback) get_groups_cb,
+		backend);
 
 	g_object_unref (cancellable);
 	g_object_unref (query);
