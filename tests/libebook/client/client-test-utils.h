@@ -21,6 +21,7 @@ gboolean foreach_configured_source_async_next (gpointer *foreach_async_data, ESo
 
 EBookClient *new_temp_client (gchar **uri);
 gboolean add_contact_from_test_case_verify (EBookClient *book_client, const gchar *case_name, EContact **contact);
+gboolean add_contact_verify (EBookClient *book_client, EContact *contact);
 gchar *new_vcard_from_test_case (const gchar *case_name);
 
 #endif /* CLIENT_TEST_UTILS_H */

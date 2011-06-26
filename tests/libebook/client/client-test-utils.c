@@ -431,3 +431,32 @@ add_contact_from_test_case_verify (EBookClient *book_client, const gchar *case_n
 
 	return TRUE;
 }
+
+gboolean
+add_contact_verify (EBookClient *book_client, EContact *contact)
+{
+	EContact *contact_final;
+	gchar *uid;
+	GError *error = NULL;
+
+	if (!e_book_client_add_contact_sync (book_client, contact, &uid, NULL, &error)) {
+		report_error ("add contact sync", &error);
+		return FALSE;
+	}
+
+	e_contact_set (contact, E_CONTACT_UID, uid);
+
+	if (!e_book_client_get_contact_sync (book_client, uid, &contact_final, NULL, &error)) {
+		report_error ("get contact sync", &error);
+		g_free (uid);
+		return FALSE;
+	}
+
+        /* verify the contact was added "successfully" (not thorough) */
+	g_assert (contacts_are_equal_shallow (contact, contact_final));
+
+	g_object_unref (contact_final);
+	g_free (uid);
+
+	return TRUE;
+}
