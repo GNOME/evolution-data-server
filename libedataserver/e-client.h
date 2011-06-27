@@ -90,6 +90,10 @@ struct _EClientClass {
 	GDBusProxy *	(* get_dbus_proxy) (EClient *client);
 	void		(* unwrap_dbus_error) (EClient *client, GError *dbus_error, GError **out_error);
 
+	void		(* retrieve_capabilities) (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+	gboolean	(* retrieve_capabilities_finish) (EClient *client, GAsyncResult *result, gchar **capabilities, GError **error);
+	gboolean	(* retrieve_capabilities_sync) (EClient *client, gchar **capabilities, GCancellable *cancellable, GError **error);
+
 	void		(* get_backend_property) (EClient *client, const gchar *prop_name, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 	gboolean	(* get_backend_property_finish) (EClient *client, GAsyncResult *result, gchar **prop_value, GError **error);
 	gboolean	(* get_backend_property_sync) (EClient *client, const gchar *prop_name, gchar **prop_value, GCancellable *cancellable, GError **error);
@@ -111,7 +115,6 @@ struct _EClientClass {
 	gboolean	(* refresh_sync) (EClient *client, GCancellable *cancellable, GError **error);
 
 	void		(* handle_authentication) (EClient *client, const ECredentials *credentials);
-	gchar *		(* retrieve_capabilities) (EClient *client);
 
 	/* signals */
 	gboolean	(* authenticate) (EClient *client, ECredentials *credentials);
@@ -153,6 +156,10 @@ gboolean	e_client_remove_sync			(EClient *client, GCancellable *cancellable, GEr
 void		e_client_refresh			(EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_client_refresh_finish			(EClient *client, GAsyncResult *result, GError **error);
 gboolean	e_client_refresh_sync			(EClient *client, GCancellable *cancellable, GError **error);
+
+void		e_client_retrieve_capabilities		(EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_client_retrieve_capabilities_finish	(EClient *client, GAsyncResult *result, gchar **capabilities, GError **error);
+gboolean	e_client_retrieve_capabilities_sync	(EClient *client, gchar **capabilities, GCancellable *cancellable, GError **error);
 
 /* utility functions */
 gchar **	e_client_util_slist_to_strv		(const GSList *strings);

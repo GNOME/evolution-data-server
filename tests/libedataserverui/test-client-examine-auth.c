@@ -18,10 +18,10 @@ get_known_prop_names (void)
 {
 	GSList *prop_names = NULL;
 
+	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_READONLY);
+	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_ONLINE);
 	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_OPENED);
 	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_OPENING);
-	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_ONLINE);
-	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_READONLY);
 	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_CACHE_DIR);
 	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_CAPABILITIES);
 
@@ -233,7 +233,8 @@ client_opened_async (GObject *source_object, GAsyncResult *result, gpointer asyn
 	GError *error = NULL;
 	EClient *client = NULL;
 
-	g_return_if_fail (source_object == NULL);
+	g_return_if_fail (source_object != NULL);
+	g_return_if_fail (E_IS_SOURCE (source_object));
 	g_return_if_fail (async_data != NULL);
 
 	if (!e_client_utils_open_new_finish (E_SOURCE (source_object), result, &client, &error)) {

@@ -417,7 +417,9 @@ e_book_client_new (ESource *source, GError **error)
 	g_return_val_if_fail (source != NULL, NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
+	LOCK_FACTORY ();
 	if (!gdbus_book_factory_activate (&err)) {
+		UNLOCK_FACTORY ();
 		if (err) {
 			unwrap_dbus_error (err, &err);
 			g_warning ("%s: Failed to run book factory: %s", G_STRFUNC, err->message);
@@ -432,12 +434,14 @@ e_book_client_new (ESource *source, GError **error)
 
 	xml = e_source_to_standalone_xml (source);
 	if (!xml || !*xml) {
+		UNLOCK_FACTORY ();
 		g_free (xml);
 		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG, _("Invalid source"));
 		return NULL;
 	}
 
 	client = g_object_new (E_TYPE_BOOK_CLIENT, "source", source, NULL);
+	UNLOCK_FACTORY ();
 
 	if (!e_gdbus_book_factory_call_get_book_sync (G_DBUS_PROXY (book_factory_proxy), e_util_ensure_gdbus_string (xml, &gdbus_xml), &path, NULL, &err)) {
 		unwrap_dbus_error (err, &err);
@@ -2129,30 +2133,46 @@ book_client_handle_authentication (EClient *client, const ECredentials *credenti
 	}
 }
 
-static gchar *
-book_client_retrieve_capabilities (EClient *client)
+static void
+book_client_retrieve_capabilities (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
 	EBookClient *book_client;
-	GError *error = NULL;
-	gchar *capabilities = NULL;
 
-	g_return_val_if_fail (client != NULL, NULL);
+	g_return_if_fail (client != NULL);
 
 	book_client = E_BOOK_CLIENT (client);
-	g_return_val_if_fail (book_client != NULL, NULL);
-	g_return_val_if_fail (book_client->priv != NULL, NULL);
+	g_return_if_fail (book_client != NULL);
+	g_return_if_fail (book_client->priv != NULL);
 
-	if (!book_client->priv->gdbus_book)
-		return NULL;
+	book_client_get_backend_property (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, cancellable, callback, user_data);
+}
 
-	e_gdbus_book_call_get_backend_property_sync (book_client->priv->gdbus_book, CLIENT_BACKEND_PROPERTY_CAPABILITIES, &capabilities, NULL, &error);
+static gboolean
+book_client_retrieve_capabilities_finish (EClient *client, GAsyncResult *result, gchar **capabilities, GError **error)
+{
+	EBookClient *book_client;
 
-	if (error) {
-		g_debug ("%s: Failed to retrieve capabilitites: %s", G_STRFUNC, error->message);
-		g_error_free (error);
-	}
+	g_return_val_if_fail (client != NULL, FALSE);
 
-	return capabilities;
+	book_client = E_BOOK_CLIENT (client);
+	g_return_val_if_fail (book_client != NULL, FALSE);
+	g_return_val_if_fail (book_client->priv != NULL, FALSE);
+
+	return book_client_get_backend_property_finish (client, result, capabilities, error);
+}
+
+static gboolean
+book_client_retrieve_capabilities_sync (EClient *client, gchar **capabilities, GCancellable *cancellable, GError **error)
+{
+	EBookClient *book_client;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+
+	book_client = E_BOOK_CLIENT (client);
+	g_return_val_if_fail (book_client != NULL, FALSE);
+	g_return_val_if_fail (book_client->priv != NULL, FALSE);
+
+	return book_client_get_backend_property_sync (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, capabilities, cancellable, error);
 }
 
 static void
@@ -2218,6 +2238,8 @@ e_book_client_class_init (EBookClientClass *klass)
 	client_class->unwrap_dbus_error			= book_client_unwrap_dbus_error;
 	client_class->handle_authentication		= book_client_handle_authentication;
 	client_class->retrieve_capabilities		= book_client_retrieve_capabilities;
+	client_class->retrieve_capabilities_finish	= book_client_retrieve_capabilities_finish;
+	client_class->retrieve_capabilities_sync	= book_client_retrieve_capabilities_sync;
 	client_class->get_backend_property		= book_client_get_backend_property;
 	client_class->get_backend_property_finish	= book_client_get_backend_property_finish;
 	client_class->get_backend_property_sync		= book_client_get_backend_property_sync;

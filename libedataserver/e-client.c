@@ -494,26 +494,20 @@ e_client_get_uri (EClient *client)
 static void
 client_ensure_capabilities (EClient *client)
 {
-	EClientClass *klass;
 	gchar *capabilities;
 
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (client->priv != NULL);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_if_fail (klass != NULL);
-	g_return_if_fail (klass->retrieve_capabilities != NULL);
-
 	if (client->priv->capabilities_retrieved || client->priv->capabilities)
 		return;
 
 	g_static_rec_mutex_lock (&client->priv->prop_mutex);
 
-	capabilities = klass->retrieve_capabilities (client);
-
-	e_client_set_capabilities (client, capabilities);
-
+	capabilities = NULL;
+	e_client_retrieve_capabilities_sync (client, &capabilities, NULL, NULL);
+	/* e_client_set_capabilities is called inside the previous function */
 	g_free (capabilities);
 
 	client->priv->capabilities_retrieved = TRUE;
@@ -944,6 +938,115 @@ e_client_emit_backend_died (EClient *client)
 	g_return_if_fail (E_IS_CLIENT (client));
 
 	g_signal_emit (client, signals[BACKEND_DIED], 0);
+}
+
+/**
+ * e_client_retrieve_capabilities:
+ * @client: an #EClient
+ * @cancellable: a #GCancellable; can be %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * Initiates retrieval of capabilities on the @client. This is usually
+ * required only once, after the @client is opened. The returned value
+ * is cached and any subsequent call of e_client_get_capabilities() and
+ * e_client_check_capability() is using the cached value.
+ * The call is finished by e_client_retrieve_capabilities_finish()
+ * from the @callback.
+ *
+ * Since: 3.2
+ **/
+void
+e_client_retrieve_capabilities (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+{
+	EClientClass *klass;
+
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_CLIENT (client));
+	g_return_if_fail (client->priv != NULL);
+	g_return_if_fail (callback != NULL);
+
+	klass = E_CLIENT_GET_CLASS (client);
+	g_return_if_fail (klass != NULL);
+	g_return_if_fail (klass->retrieve_capabilities != NULL);
+
+	klass->retrieve_capabilities (client, cancellable, callback, user_data);
+}
+
+/**
+ * e_client_retrieve_capabilities_finish:
+ * @client: an #EClient
+ * @result: a #GAsyncResult
+ * @capabilities: (out): Comma-separated list of capabilities of the @client
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Finishes previous call of e_client_retrieve_capabilities().
+ * Returned value of @capabilities should be freed with g_free(),
+ * when no longer needed.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.2
+ **/
+gboolean
+e_client_retrieve_capabilities_finish (EClient *client, GAsyncResult *result, gchar **capabilities, GError **error)
+{
+	EClientClass *klass;
+	gboolean res;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
+	g_return_val_if_fail (client->priv != NULL, FALSE);
+	g_return_val_if_fail (capabilities != NULL, FALSE);
+
+	klass = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->retrieve_capabilities_finish != NULL, FALSE);
+
+	*capabilities = NULL;
+	res = klass->retrieve_capabilities_finish (client, result, capabilities, error);
+
+	e_client_set_capabilities (client, res ? *capabilities : NULL);
+
+	return res;
+}
+
+/**
+ * e_client_retrieve_capabilities_sync:
+ * @client: an #EClient
+ * @capabilities: (out): Comma-separated list of capabilities of the @client
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Initiates retrieval of capabilities on the @client. This is usually
+ * required only once, after the @client is opened. The returned value
+ * is cached and any subsequent call of e_client_get_capabilities() and
+ * e_client_check_capability() is using the cached value. Returned value
+ * of @capabilities should be freed with g_free(), when no longer needed.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.2
+ **/
+gboolean
+e_client_retrieve_capabilities_sync (EClient *client, gchar **capabilities, GCancellable *cancellable, GError **error)
+{
+	EClientClass *klass;
+	gboolean res = FALSE;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (capabilities != NULL, FALSE);
+
+	klass = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->retrieve_capabilities_sync != NULL, FALSE);
+
+	*capabilities = NULL;
+	res = klass->retrieve_capabilities_sync (client, capabilities, cancellable, error);
+
+	e_client_set_capabilities (client, res ? *capabilities : NULL);
+
+	return res;
 }
 
 /**

@@ -354,12 +354,19 @@ return_async_error (const GError *error, GAsyncReadyCallback async_cb, gpointer 
 }
 
 static void
-client_utils_open_new_done (EClientUtilsAsyncOpData *async_data)
+client_utils_capabilities_retrieved_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
 {
+	EClient *client = E_CLIENT (source_object);
+	EClientUtilsAsyncOpData *async_data = user_data;
+	gchar *capabilities = NULL;
 	GSimpleAsyncResult *simple;
 
 	g_return_if_fail (async_data != NULL);
 	g_return_if_fail (async_data->client != NULL);
+	g_return_if_fail (async_data->client == client);
+
+	e_client_retrieve_capabilities_finish (client, result, &capabilities, NULL);
+	g_free (capabilities);
 
 	/* keep the initial auth_handler connected directly, thus it will be able
 	   to answer any later authentication requests, for reconnection, for example
@@ -374,6 +381,16 @@ client_utils_open_new_done (EClientUtilsAsyncOpData *async_data)
 	g_idle_add (complete_async_op_in_idle_cb, simple);
 
 	free_client_utils_async_op_data (async_data);
+}
+
+static void
+client_utils_open_new_done (EClientUtilsAsyncOpData *async_data)
+{
+	g_return_if_fail (async_data != NULL);
+	g_return_if_fail (async_data->client != NULL);
+
+	/* retrieve capabilities just to have them cached on #EClient for later use */
+	e_client_retrieve_capabilities (async_data->client, async_data->cancellable, client_utils_capabilities_retrieved_cb, async_data);
 }
 
 static void
@@ -414,7 +431,7 @@ finish_or_retry_open (EClientUtilsAsyncOpData *async_data, const GError *error)
 
 		e_client_process_authentication (async_data->client, async_data->used_credentials);
 	} else if (error && g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY)) {
-		/* postpone for few 1/4 of a second, backend is busy now */
+		/* postpone for 1/2 of a second, backend is busy now */
 		async_data->retry_open_id = g_timeout_add (500, client_utils_retry_open_timeout_cb, async_data);
 	} else if (error) {
 		return_async_error (error, async_data->async_cb, async_data->async_cb_user_data, async_data->source, e_client_utils_open_new);
@@ -559,6 +576,7 @@ client_utils_open_new_auth_cb (EClient *client, ECredentials *credentials, gpoin
  * Begins asynchronous opening of a new #EClient corresponding
  * to the @source of type @source_type. The resulting #EClient
  * is fully opened and authenticated client, ready to be used.
+ * The opened client has also fetched capabilities.
  * This call is finished by e_client_utils_open_new_finish()
  * from the @async_cb.
  *

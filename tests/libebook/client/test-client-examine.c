@@ -14,10 +14,10 @@ get_known_prop_names (void)
 {
 	GSList *prop_names = NULL;
 
-	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_OPENED);
-	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_OPENING);
-	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_ONLINE);
 	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_READONLY);
+	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_ONLINE);
+	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_OPENING);
+	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_OPENED);
 	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_CACHE_DIR);
 	prop_names = g_slist_append (prop_names, (gpointer) CLIENT_BACKEND_PROPERTY_CAPABILITIES);
 	prop_names = g_slist_append (prop_names, (gpointer) BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS);

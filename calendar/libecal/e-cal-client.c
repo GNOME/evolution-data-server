@@ -523,7 +523,9 @@ e_cal_client_new (ESource *source, ECalClientSourceType source_type, GError **er
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 	g_return_val_if_fail (source_type == E_CAL_CLIENT_SOURCE_TYPE_EVENTS || source_type == E_CAL_CLIENT_SOURCE_TYPE_TASKS || source_type == E_CAL_CLIENT_SOURCE_TYPE_MEMOS, NULL);
 
+	LOCK_FACTORY ();
 	if (!gdbus_cal_factory_activate (&err)) {
+		UNLOCK_FACTORY ();
 		if (err) {
 			unwrap_dbus_error (err, &err);
 			g_warning ("%s: Failed to run calendar factory: %s", G_STRFUNC, err->message);
@@ -538,6 +540,7 @@ e_cal_client_new (ESource *source, ECalClientSourceType source_type, GError **er
 
 	xml = e_source_to_standalone_xml (source);
 	if (!xml || !*xml) {
+		UNLOCK_FACTORY ();
 		g_free (xml);
 		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG, _("Invalid source"));
 		return NULL;
@@ -545,6 +548,7 @@ e_cal_client_new (ESource *source, ECalClientSourceType source_type, GError **er
 
 	strv = e_gdbus_cal_factory_encode_get_cal (xml, convert_type (source_type));
 	if (!strv) {
+		UNLOCK_FACTORY ();
 		g_free (xml);
 		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR, _("Other error"));
 		return NULL;
@@ -552,6 +556,8 @@ e_cal_client_new (ESource *source, ECalClientSourceType source_type, GError **er
 
 	client = g_object_new (E_TYPE_CAL_CLIENT, "source", source, NULL);
 	client->priv->source_type = source_type;
+
+	UNLOCK_FACTORY ();
 
 	if (!e_gdbus_cal_factory_call_get_cal_sync (G_DBUS_PROXY (cal_factory_proxy), (const gchar * const *) strv, &path, NULL, &err)) {
 		unwrap_dbus_error (err, &err);
@@ -3985,30 +3991,46 @@ cal_client_handle_authentication (EClient *client, const ECredentials *credentia
 	}
 }
 
-static gchar *
-cal_client_retrieve_capabilities (EClient *client)
+static void
+cal_client_retrieve_capabilities (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
 	ECalClient *cal_client;
-	GError *error = NULL;
-	gchar *capabilities = NULL;
 
-	g_return_val_if_fail (client != NULL, NULL);
+	g_return_if_fail (client != NULL);
 
 	cal_client = E_CAL_CLIENT (client);
-	g_return_val_if_fail (cal_client != NULL, NULL);
-	g_return_val_if_fail (cal_client->priv != NULL, NULL);
+	g_return_if_fail (cal_client != NULL);
+	g_return_if_fail (cal_client->priv != NULL);
 
-	if (!cal_client->priv->gdbus_cal)
-		return NULL;
+	cal_client_get_backend_property (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, cancellable, callback, user_data);
+}
 
-	e_gdbus_cal_call_get_backend_property_sync (cal_client->priv->gdbus_cal, CLIENT_BACKEND_PROPERTY_CAPABILITIES, &capabilities, NULL, &error);
+static gboolean
+cal_client_retrieve_capabilities_finish (EClient *client, GAsyncResult *result, gchar **capabilities, GError **error)
+{
+	ECalClient *cal_client;
 
-	if (error) {
-		g_debug ("%s: Failed to retrieve capabilitites: %s", G_STRFUNC, error->message);
-		g_error_free (error);
-	}
+	g_return_val_if_fail (client != NULL, FALSE);
 
-	return capabilities;
+	cal_client = E_CAL_CLIENT (client);
+	g_return_val_if_fail (cal_client != NULL, FALSE);
+	g_return_val_if_fail (cal_client->priv != NULL, FALSE);
+
+	return cal_client_get_backend_property_finish (client, result, capabilities, error);
+}
+
+static gboolean
+cal_client_retrieve_capabilities_sync (EClient *client, gchar **capabilities, GCancellable *cancellable, GError **error)
+{
+	ECalClient *cal_client;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+
+	cal_client = E_CAL_CLIENT (client);
+	g_return_val_if_fail (cal_client != NULL, FALSE);
+	g_return_val_if_fail (cal_client->priv != NULL, FALSE);
+
+	return cal_client_get_backend_property_sync (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, capabilities, cancellable, error);
 }
 
 static void
@@ -4102,6 +4124,8 @@ e_cal_client_class_init (ECalClientClass *klass)
 	client_class->unwrap_dbus_error			= cal_client_unwrap_dbus_error;
 	client_class->handle_authentication		= cal_client_handle_authentication;
 	client_class->retrieve_capabilities		= cal_client_retrieve_capabilities;
+	client_class->retrieve_capabilities_finish	= cal_client_retrieve_capabilities_finish;
+	client_class->retrieve_capabilities_sync	= cal_client_retrieve_capabilities_sync;
 	client_class->get_backend_property		= cal_client_get_backend_property;
 	client_class->get_backend_property_finish	= cal_client_get_backend_property_finish;
 	client_class->get_backend_property_sync		= cal_client_get_backend_property_sync;
