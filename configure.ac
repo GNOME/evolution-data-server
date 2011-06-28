@@ -1614,6 +1614,7 @@ tests/libecal/client/Makefile
 tests/libedata-cal/Makefile
 tests/libedataserver/Makefile
 tests/libedataserverui/Makefile
+tests/tools/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/addressbook/Makefile

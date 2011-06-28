@@ -1,4 +1,4 @@
-SUBDIRS = libedataserver libedataserverui libebook libecal libedata-cal
+SUBDIRS = libedataserver libedataserverui libebook libecal libedata-cal tools
 
 @GNOME_CODE_COVERAGE_RULES@
 

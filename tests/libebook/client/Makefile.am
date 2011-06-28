@@ -63,6 +63,13 @@ TEST_LIBS =							\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)				\
 	$(NULL)
+	
+RUN_WITH_PRIVATE_BUS = $(top_srcdir)/tests/tools/with-session-bus-eds.sh
+
+TESTS_ENVIRONMENT = \
+	$(RUN_WITH_PRIVATE_BUS) \
+	--session \
+	--
 
 test_client_LDADD=$(TEST_LIBS)
 test_client_CPPFLAGS=$(TEST_CPPFLAGS)
