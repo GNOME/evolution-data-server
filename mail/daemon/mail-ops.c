@@ -330,7 +330,7 @@ fetch_pop3_folder (const char *uri)
 
 	destination = camel_store_get_folder (local, folder_name, 0, NULL);
 	if (!destination) {
-		/* If its first time, create that folder. */
+		/* If its first time, create that folder & Draft/Sent. */
 		CamelFolderInfo *info;
 
 		info = camel_store_create_folder (local, NULL, folder_name, NULL);
@@ -338,6 +338,14 @@ fetch_pop3_folder (const char *uri)
 			g_warning ("Unable to create POP3 folder: %s\n", folder_name);
 		else {
 			destination = camel_store_get_folder (local, folder_name, 0, NULL);
+			g_free (folder_name);
+			folder_name = g_strdup_printf ("%s/Drafts", email);
+
+			info = camel_store_create_folder (local, NULL, folder_name, NULL);
+			g_free (folder_name);
+			folder_name = g_strdup_printf ("%s/Sent", email);
+	
+			info = camel_store_create_folder (local, NULL, folder_name, NULL);
 		}
 	}
 	g_free (folder_name);
