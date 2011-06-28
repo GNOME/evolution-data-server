@@ -66,6 +66,7 @@ struct _EDestinationPrivate {
 	gboolean ignored;
 
 	GList *list_dests;
+	GList *list_alldests;
 
 	guint html_mail_override : 1;
 	guint wants_html_mail : 1;
@@ -85,6 +86,12 @@ static void           e_destination_clear              (EDestination *dest);
 enum {
 	CHANGED,
 	LAST_SIGNAL
+};
+
+enum CONTACT_TYPE {
+	NONE,
+	CONTACT,
+	CONTACT_LIST
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -159,6 +166,8 @@ e_destination_init (EDestination *dest)
 
 	dest->priv->auto_recipient = FALSE;
 	dest->priv->ignored = FALSE;
+	dest->priv->list_dests = NULL;
+	dest->priv->list_alldests = NULL;
 }
 
 /**
@@ -248,6 +257,8 @@ e_destination_clear (EDestination *dest)
 	g_list_foreach (dest->priv->list_dests, (GFunc) g_object_unref, NULL);
 	g_list_free (dest->priv->list_dests);
 	dest->priv->list_dests = NULL;
+	g_list_free (dest->priv->list_alldests);
+	dest->priv->list_alldests = NULL;
 }
 
 static gboolean
@@ -357,11 +368,10 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 	g_return_if_fail (contact && E_IS_CONTACT (contact));
 
 	if (dest->priv->contact != contact ) {
-		g_object_ref (contact);
 
 		e_destination_clear (dest);
 
-		dest->priv->contact = contact;
+		dest->priv->contact = e_contact_duplicate (contact);
 
 		dest->priv->contact_uid = e_contact_get (dest->priv->contact, E_CONTACT_UID);
 
@@ -371,56 +381,144 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 
 		/* handle the mailing list case */
 		if (e_contact_get (dest->priv->contact, E_CONTACT_IS_LIST)) {
-			GList *email = e_contact_get_attributes (dest->priv->contact, E_CONTACT_EMAIL);
+			gint list_length;
+			GList *attr, *attrs;
+			GHashTable *hash_table;
+			gint list_iterations = 0;
+			gint lists_count = 0;
 
-			if (email) {
-				GList *iter;
+			hash_table = g_hash_table_new_full (g_str_hash, g_str_equal,
+						(GDestroyNotify) g_free, NULL);
 
-				for (iter = email; iter; iter = iter->next) {
-					EVCardAttribute *attr = iter->data;
-					GList *p;
-					EDestination *list_dest = e_destination_new ();
-					gchar *contact_uid = NULL;
-					gchar *value;
-					gint email_num = -1;
-					gboolean html_pref = FALSE;
+			g_hash_table_insert (hash_table, g_strdup ("0"), dest);
 
-					for (p = e_vcard_attribute_get_params (attr); p; p = p->next) {
-						EVCardAttributeParam *param = p->data;
-						const gchar *param_name = e_vcard_attribute_param_get_name (param);
-						if (!g_ascii_strcasecmp (param_name,
-									 EVC_X_DEST_CONTACT_UID)) {
-							GList *v = e_vcard_attribute_param_get_values (param);
-							contact_uid = v ? g_strdup (v->data) : NULL;
-						}
-						else if (!g_ascii_strcasecmp (param_name,
-									      EVC_X_DEST_EMAIL_NUM)) {
-							GList *v = e_vcard_attribute_param_get_values (param);
-							email_num = v ? atoi (v->data) : -1;
-						}
-						else if (!g_ascii_strcasecmp (param_name,
-									      EVC_X_DEST_HTML_MAIL)) {
-							GList *v = e_vcard_attribute_param_get_values (param);
-							html_pref = v ? !g_ascii_strcasecmp (v->data, "true") : FALSE;
+			e_destination_set_name (dest,
+				e_contact_get_const (dest->priv->contact, E_CONTACT_FILE_AS));
+
+			attrs = g_list_copy (e_vcard_get_attributes (E_VCARD (dest->priv->contact)));
+			list_length = g_list_length (attrs);
+
+			attr = attrs;
+			while (list_length) {
+				EDestination *parent_dest;
+				gint type;
+				gboolean remove = FALSE; /* Can item be removed from attrs list? */
+
+				GList *params, *param, *value;
+				const gchar *parent_id;
+
+				param = e_vcard_attribute_get_param (attr->data, EVC_PARENT_CL);
+				if (param)
+					parent_id = param->data;
+				else
+					parent_id = "0";
+
+				/* This is so just that we don't have to call g_ascii_strcasecmp more times */
+				if (g_ascii_strcasecmp (EVC_CONTACT_LIST, e_vcard_attribute_get_name (attr->data)) == 0) {
+					lists_count++;
+					type = CONTACT_LIST;
+				} else if (g_ascii_strcasecmp (EVC_EMAIL, e_vcard_attribute_get_name (attr->data)) == 0) {
+			    		type = CONTACT;
+				} else {
+					type = NONE;
+					remove = TRUE;
+				}
+
+				/* Is parent of current attribute already in the tree? */
+				parent_dest = g_hash_table_lookup (hash_table, parent_id);
+				/* Make sure that when parent with parent_id does not exist the item will be appended to root
+				   destination. */
+				if (parent_dest == NULL && lists_count == 0 && list_iterations > 0) {
+					parent_id = "0";
+					parent_dest = dest;
+				}
+				if (type != NONE && parent_dest) {
+					gchar *id = NULL;
+					gint email_num = 0;
+					EDestination *s_dest;
+
+					s_dest = e_destination_new ();
+					s_dest->priv->ignored = FALSE;
+
+					params = e_vcard_attribute_get_params (attr->data);
+					for (param = params; param; param = param->next) {
+						const gchar *param_name = e_vcard_attribute_param_get_name (param->data);
+						if ((g_ascii_strcasecmp (param_name, EVC_CL_UID) == 0) ||
+						    (g_ascii_strcasecmp (param_name, EVC_X_DEST_CONTACT_UID) == 0)) {
+							value = e_vcard_attribute_param_get_values (param->data);
+							id = value ? g_strdup (value->data) : NULL;
+						} else if (g_ascii_strcasecmp (param_name, EVC_X_DEST_EMAIL_NUM) == 0) {
+							value = e_vcard_attribute_param_get_values (param->data);
+							email_num = value ? atoi (value->data) : -1;
+						} else if (!g_ascii_strcasecmp (param_name, EVC_X_DEST_HTML_MAIL)) {
+							value = e_vcard_attribute_param_get_values (param->data);
+							e_destination_set_html_mail_pref (s_dest, value ? !g_ascii_strcasecmp (value->data, "true") : FALSE);
 						}
 					}
 
-					if (contact_uid) e_destination_set_contact_uid (list_dest, contact_uid, email_num);
-					e_destination_set_html_mail_pref (list_dest, html_pref);
-					list_dest->priv->ignored = FALSE;
-					value = e_vcard_attribute_get_value (attr);
-					if (value)
-						e_destination_set_raw (list_dest, value);
-					g_free (value);
+					if (type == CONTACT) {
+						CamelInternetAddress *addr;
+						const gchar *name, *email;
+						gchar *raw;
 
-					dest->priv->list_dests = g_list_append (dest->priv->list_dests, list_dest);
+						raw = e_vcard_attribute_get_value (attr->data);
+						addr = camel_internet_address_new ();
+						camel_address_unformat (CAMEL_ADDRESS (addr), raw);
+						camel_internet_address_get (addr, 0, &name, &email);
+
+						e_destination_set_name (s_dest, name);
+						e_destination_set_email (s_dest, email);
+
+						dest->priv->list_alldests = g_list_append (dest->priv->list_alldests, s_dest);
+
+						g_object_unref (addr);
+						g_free (raw);
+					} else {
+						gchar *name = e_vcard_attribute_get_value (attr->data);
+						e_destination_set_name (s_dest, name);
+						g_free (name);
+
+						g_hash_table_insert (hash_table, g_strdup (id), s_dest);
+						lists_count--;
+					}
+
+					if (id) {
+						e_destination_set_contact_uid (s_dest, id, email_num);
+						g_free (id);
+					}
+
+					parent_dest->priv->list_dests = g_list_append (parent_dest->priv->list_dests, s_dest);
+
+					remove = TRUE;
 				}
 
-				g_list_foreach (email, (GFunc) e_vcard_attribute_free, NULL);
-				g_list_free (email);
+				/* Go to next attribute */
+				if (attr->next) {
+					attr = attr->next;
+					if (remove) {
+						attrs = g_list_remove_link (attrs, attr->prev);
+						list_length--;
+					}
+					continue;
+				/* Or return to first attribute */
+				} else if (attrs) {
+					if (remove) {
+						attrs = g_list_remove_link (attrs, attr);
+						list_length--;
+					}
+					attr = attrs;
+					list_iterations++;
+					continue;
+				/* When all attribute are processed, leave. */
+				} else {
+					break;
+				}
 			}
-		}
-		else {
+
+			g_hash_table_unref (hash_table);
+			g_list_free (attrs);
+
+		} else {
 			/* handle the normal contact case */
 			/* is there anything to do here? */
 		}
@@ -428,11 +526,10 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 		g_signal_emit (dest, signals[CHANGED], 0);
 	} else if (dest->priv->email_num != email_num) {
 		/* Splitting here would help the contact lists not rebuiding, so that it remembers ignored values */
-		g_object_ref (contact);
 
 		e_destination_clear (dest);
 
-		dest->priv->contact = contact;
+		dest->priv->contact = e_contact_duplicate (contact);
 
 		dest->priv->contact_uid = e_contact_get (dest->priv->contact, E_CONTACT_UID);
 
@@ -440,7 +537,6 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 
 		g_signal_emit (dest, signals[CHANGED], 0);
 	}
-
 }
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
@@ -873,6 +969,38 @@ e_destination_get_email (const EDestination *dest)
 	return priv->email;
 }
 
+
+/* Helper function to e_destination_get_address capable of recursively
+ * iterating through structured destinations list */
+static void
+destination_get_address (const EDestination *dest,
+			 CamelInternetAddress *addr)
+{
+	const GList *iter;
+
+	if (e_destination_is_evolution_list (dest)) {
+
+		for (iter = dest->priv->list_dests; iter; iter = iter->next) {
+			EDestination *list_dest = E_DESTINATION (iter->data);
+
+			destination_get_address (list_dest, addr);
+		}
+
+	} else {
+		const gchar *name, *email;
+		name = e_destination_get_name (dest);
+		email = e_destination_get_email (dest);
+
+		if (nonempty (name) && nonempty (email))
+			camel_internet_address_add (addr, name, email);
+		else if (nonempty (email))
+			camel_address_decode (CAMEL_ADDRESS (addr), email);
+		else /* this case loses i suppose, but there's
+			nothing we can do here */
+			camel_address_decode (CAMEL_ADDRESS (addr), name);
+	}
+}
+
 /**
  * e_destination_get_address:
  * @dest: an #EDestination
@@ -894,46 +1022,22 @@ e_destination_get_address (const EDestination *dest)
 
 	priv = (struct _EDestinationPrivate *) dest->priv; /* cast out const */
 
+	if (priv->addr) {
+		g_free (priv->addr);
+		priv->addr = NULL;
+	}
+
 	if (e_destination_is_evolution_list (dest)) {
-		GList *iter = dest->priv->list_dests;
-
-		while (iter) {
-			EDestination *list_dest = E_DESTINATION (iter->data);
-
-			if (!e_destination_empty (list_dest) && !list_dest->priv->ignored) {
-				const gchar *name, *email;
-				name = e_destination_get_name (list_dest);
-				email = e_destination_get_email (list_dest);
-
-				if (nonempty (name) && nonempty (email))
-					camel_internet_address_add (addr, name, email);
-				else if (nonempty (email))
-					camel_address_decode (CAMEL_ADDRESS (addr), email);
-				else /* this case loses i suppose, but there's
-					nothing we can do here */
-					camel_address_decode (CAMEL_ADDRESS (addr), name);
-			}
-			iter = g_list_next (iter);
-		}
+		destination_get_address (dest, addr);
 		priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 	} else if (priv->raw) {
 		if (camel_address_unformat (CAMEL_ADDRESS (addr), priv->raw))
 			priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 	} else {
-		const gchar *name, *email;
-		name = e_destination_get_name (dest);
-		email = e_destination_get_email (dest);
-
-		if (nonempty (name) && nonempty (email))
-			camel_internet_address_add (addr, name, email);
-		else if (nonempty (email))
-			camel_address_decode (CAMEL_ADDRESS (addr), email);
-		else /* this case loses i suppose, but there's
-			nothing we can do here */
-			camel_address_decode (CAMEL_ADDRESS (addr), name);
-
+		destination_get_address (dest, addr);
 		priv->addr = camel_address_encode (CAMEL_ADDRESS (addr));
 	}
+
 	g_object_unref (addr);
 
 	return priv->addr;
@@ -1044,16 +1148,17 @@ e_destination_list_show_addresses (const EDestination *dest)
 }
 
 /**
- * e_destination_list_get_dests:
+ * e_destination_list_get_root_dests:
  * @dest: an #EDestination
  *
- * If @dest is a list, gets the list of destinations. The list
- * and its elements belong to @dest, and should not be freed.
+ * If @dest is a list, gets the list of EDestinations assigned directly
+ * to @dest.
+ * The list and its elements belong to @dest, and should not be freed.
  *
  * Returns: A list of elements of type #EDestination, or %NULL.
  **/
 const GList *
-e_destination_list_get_dests (const EDestination *dest)
+e_destination_list_get_root_dests (const EDestination *dest)
 {
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
 
@@ -1061,6 +1166,41 @@ e_destination_list_get_dests (const EDestination *dest)
 		return NULL;
 
 	return dest->priv->list_dests;
+}
+
+/**
+ * e_destination_list_get_dests:
+ * @dest: an #EDestination
+ *
+ * If @dest is a list, gets recursively list of all destinations.
+ * Everything returned from this function belongs to @dest and
+ * thus should not be freed.
+ *
+ * Returns: A list of elements of type #EDestination, or %NULL.
+ *
+ * Since: 3.2
+ **/
+const GList *
+e_destination_list_get_dests (const EDestination *dest)
+{
+ 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
+
+	if (!e_destination_is_evolution_list (dest))
+		return NULL;
+
+	if (!dest->priv->list_alldests) {
+		GList *iter;
+		for (iter = dest->priv->list_dests; iter; iter = iter->next) {
+			if (e_destination_is_evolution_list (iter->data)) {
+				GList *l = g_list_copy ((GList*)e_destination_list_get_dests (iter->data));
+				dest->priv->list_alldests = g_list_concat (dest->priv->list_alldests, l);
+			} else {
+				dest->priv->list_alldests = g_list_append (dest->priv->list_alldests, iter->data);
+			}
+		}
+	}
+
+	return dest->priv->list_alldests;
 }
 
 /**
