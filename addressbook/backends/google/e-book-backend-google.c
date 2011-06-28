@@ -603,7 +603,7 @@ get_new_contacts (EBookBackend *backend)
 		(GDataQueryProgressCallback) (last_updated ?
 			process_subsequent_entry : process_initial_entry),
 		backend,
-#if HAVE_LIBGDATA_0_9
+#ifdef HAVE_LIBGDATA_0_9
 		(GDestroyNotify) NULL,
 #endif
 		(GAsyncReadyCallback) get_new_contacts_cb,
