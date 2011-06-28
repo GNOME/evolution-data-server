@@ -151,23 +151,6 @@ e_cal_backend_file_store_get_type
 </SECTION>
 
 <SECTION>
-<FILE>e-cal-backend-loader-factory</FILE>
-<TITLE>ECalBackendLoaderFactory</TITLE>
-ECalBackendLoaderFactory
-<SUBSECTION Standard>
-E_CAL_BACKEND_LOADER_FACTORY
-E_IS_CAL_BACKEND_LOADER_FACTORY
-E_TYPE_CAL_BACKEND_LOADER_FACTORY
-E_CAL_BACKEND_LOADER_FACTORY_CLASS
-E_IS_CAL_BACKEND_LOADER_FACTORY_CLASS
-E_CAL_BACKEND_LOADER_FACTORY_GET_CLASS
-ECalBackendLoaderFactoryClass
-<SUBSECTION Private>
-ECalBackendLoaderFactoryPrivate
-e_cal_backend_loader_factory_get_type
-</SECTION>
-
-<SECTION>
 <FILE>e-cal-backend-store</FILE>
 <TITLE>ECalBackendStore</TITLE>
 ECalBackendStore

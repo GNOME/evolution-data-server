@@ -92,9 +92,7 @@ factory_PROGRAMS = e-calendar-factory
 e_calendar_factory_SOURCES =		\
 	e-data-cal-factory.c		\
 	e-data-cal-factory.h		\
-	e-data-cal-migrate-basedir.c	\
-	e-cal-backend-loader-factory.c	\
-	e-cal-backend-loader-factory.h
+	e-data-cal-migrate-basedir.c
 
 e_calendar_factory_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\
@@ -113,7 +111,7 @@ e_calendar_factory_CPPFLAGS = \
 e_calendar_factory_LDADD =						\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
 	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la		\
-	libedata-cal-1.2.la						\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 		\
 	$(top_builddir)/libebackend/libebackend-1.2.la
 

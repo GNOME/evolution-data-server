@@ -45,7 +45,7 @@ struct _EDataCalFactory {
 };
 
 struct _EDataCalFactoryClass {
-	GObjectClass parent;
+	GObjectClass parent_class;
 };
 
 typedef enum {
@@ -57,11 +57,13 @@ GQuark e_data_cal_factory_error_quark (void);
 
 GType	e_data_cal_factory_get_type        (void);
 
-void	e_data_cal_factory_register_backend	(EDataCalFactory *factory, ECalBackendFactory *backend_factory);
+void	e_data_cal_factory_register_backend	(EDataCalFactory *factory,
+						 ECalBackendFactory *backend_factory);
 void	e_data_cal_factory_register_backends	(EDataCalFactory *factory);
-gint	e_data_cal_factory_get_n_backends	(EDataCalFactory *factory);
+guint	e_data_cal_factory_get_n_backends	(EDataCalFactory *factory);
 void	e_data_cal_factory_dump_active_backends	(EDataCalFactory *factory);
-void	e_data_cal_factory_set_backend_online	(EDataCalFactory *factory, gboolean is_online);
+void	e_data_cal_factory_set_backend_online	(EDataCalFactory *factory,
+						 gboolean is_online);
 
 G_END_DECLS
 
