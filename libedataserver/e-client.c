@@ -27,7 +27,6 @@
 #include <gio/gio.h>
 
 #include "e-gdbus-marshallers.h"
-#include "e-operation-pool.h"
 
 #include "e-client.h"
 #include "e-client-private.h"
@@ -67,7 +66,6 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
-static EOperationPool *ops_pool = NULL;
 
 G_DEFINE_ABSTRACT_TYPE (EClient, e_client, G_TYPE_OBJECT)
 
@@ -168,7 +166,6 @@ e_client_error_create (EClientError code, const gchar *custom_msg)
 }
 
 static void client_set_source (EClient *client, ESource *source);
-static void client_operation_thread (gpointer data, gpointer user_data);
 static void client_handle_authentication (EClient *client, const ECredentials *credentials);
 
 static void
@@ -387,48 +384,6 @@ e_client_class_init (EClientClass *klass)
 		NULL, NULL,
 		g_cclosure_marshal_VOID__VOID,
 		G_TYPE_NONE, 0);
-
-	if (!ops_pool)
-		ops_pool = e_operation_pool_new (2, client_operation_thread, NULL);
-}
-
-typedef enum {
-	E_CLIENT_OP_AUTHENTICATE
-} EClientOp;
-
-typedef struct _EClientOpData {
-	EClient *client;
-	EClientOp op;
-
-	union {
-		ECredentials *credentials;
-	} d;
-} EClientOpData;
-
-static void
-client_operation_thread (gpointer data, gpointer user_data)
-{
-	EClientOpData *op_data = data;
-
-	g_return_if_fail (op_data != NULL);
-
-	switch (op_data->op) {
-	case E_CLIENT_OP_AUTHENTICATE:
-		if (e_client_emit_authenticate (op_data->client, op_data->d.credentials)) {
-			client_handle_authentication (op_data->client, op_data->d.credentials);
-		} else {
-			GError *error;
-
-			error = e_client_error_create (E_CLIENT_ERROR_AUTHENTICATION_REQUIRED, NULL);
-			e_client_emit_opened (op_data->client, error);
-			g_error_free (error);
-		}
-		e_credentials_free (op_data->d.credentials);
-		break;
-	}
-
-	g_object_unref (op_data->client);
-	g_free (op_data);
 }
 
 static void
@@ -860,28 +815,56 @@ client_handle_authentication (EClient *client, const ECredentials *credentials)
 	return klass->handle_authentication (client, credentials);
 }
 
-/* Processes authentication request in a new thread. Usual steps are:
+struct EClientAuthData {
+	EClient *client;
+	ECredentials *credentials;
+};
+
+static gboolean
+client_process_authentication_idle_cb (gpointer user_data)
+{
+	struct EClientAuthData *auth_data = user_data;
+
+	g_return_val_if_fail (auth_data != NULL, FALSE);
+
+	if (e_client_emit_authenticate (auth_data->client, auth_data->credentials)) {
+		client_handle_authentication (auth_data->client, auth_data->credentials);
+	} else {
+		GError *error;
+
+		error = e_client_error_create (E_CLIENT_ERROR_AUTHENTICATION_REQUIRED, NULL);
+		e_client_emit_opened (auth_data->client, error);
+		g_error_free (error);
+	}
+
+	e_credentials_free (auth_data->credentials);
+	g_object_unref (auth_data->client);
+	g_free (auth_data);
+
+	return FALSE;
+}
+
+/* Processes authentication request in idle callback. Usual steps are:
    a) backend sends an auth-required signal
    b) EClient implementation calls this function
-   c) a new thread is run which emits authenticate signal by e_client_emit_authenticate ()
+   c) a new idle callback is run which emits authenticate signal by e_client_emit_authenticate ()
    d) if anyone responds (returns true), the EClient::handle_authentication
-      is called from the same extra thread with new credentials
+      is called from the same idle callback with new credentials
    e) EClient implementation passes results to backend in the EClient::handle_authentication
 */
 void
 e_client_process_authentication (EClient *client, const ECredentials *credentials)
 {
-	EClientOpData *op_data;
+	struct EClientAuthData *auth_data;
 
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 
-	op_data = g_new0 (EClientOpData, 1);
-	op_data->client = g_object_ref (client);
-	op_data->op = E_CLIENT_OP_AUTHENTICATE;
-	op_data->d.credentials = credentials ? e_credentials_new_clone (credentials) : e_credentials_new ();
+	auth_data = g_new0 (struct EClientAuthData, 1);
+	auth_data->client = g_object_ref (client);
+	auth_data->credentials = credentials ? e_credentials_new_clone (credentials) : e_credentials_new ();
 
-	e_operation_pool_push (ops_pool, op_data);
+	g_idle_add (client_process_authentication_idle_cb, auth_data);
 }
 
 gboolean

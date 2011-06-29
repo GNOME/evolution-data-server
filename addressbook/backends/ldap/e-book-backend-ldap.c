@@ -997,7 +997,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 		} else if (ldap_error == LDAP_UNWILLING_TO_PERFORM) {
 			e_book_backend_notify_auth_required (E_BOOK_BACKEND (bl), TRUE, NULL);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-			return EDB_ERROR (AUTHENTICATION_REQUIRED);
+			return EDB_ERROR (SUCCESS);
 		} else {
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			g_warning ("Failed to perform root dse query anonymously, (ldap_error 0x%02x)", ldap_error);
@@ -4948,6 +4948,12 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 		printf ("e_book_backend_ldap_authenticate_user ... \n");
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (!auth_method || !*auth_method) {
+		ESource *source = e_book_backend_get_source (backend);
+
+		auth_method = e_source_get_property (source, "auth");
+	}
+
 	if (!bl->priv->is_online) {
 		e_book_backend_notify_readonly (backend, TRUE);
 		e_book_backend_notify_online (backend, FALSE);
@@ -5005,7 +5011,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 				return;
 			}
 		}
-		else if (!strcmp (auth_method, "ldap/simple-binddn")) {
+		else if (!g_strcmp0 (auth_method, "ldap/simple-binddn")) {
 			dn = g_strdup (user);
 		}
 
@@ -5258,7 +5264,7 @@ e_book_backend_ldap_open (EBookBackend	*backend,
 			e_book_backend_notify_auth_required (backend, TRUE, NULL);
 		else
 			e_book_backend_notify_opened (backend, NULL);
-		e_book_backend_respond_opened (backend, book, opid, NULL /* Success */);
+		e_data_book_respond_open (book, opid, NULL /* Success */);
 		return;
 	}
 

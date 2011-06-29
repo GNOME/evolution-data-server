@@ -737,7 +737,23 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 	g_return_val_if_fail (source != NULL, FALSE);
 
 	if (!e_credentials_has_key (credentials, E_CREDENTIALS_KEY_USERNAME)) {
-		e_credentials_set (credentials, E_CREDENTIALS_KEY_USERNAME, e_source_get_property (source, "username"));
+		const gchar *username;
+
+		username = e_source_get_property (source, "username");
+		if (!username) {
+			const gchar *auth;
+
+			auth = e_source_get_property (source, "auth");
+			if (g_strcmp0 (auth, "ldap/simple-binddn") == 0)
+				username = e_source_get_property (source, "binddn");
+			else
+				username = e_source_get_property (source, "email_addr");
+
+			if (!username)
+				username = "";
+		}
+
+		e_credentials_set (credentials, E_CREDENTIALS_KEY_USERNAME, username);
 
 		/* no username set on the source - deny authentication request until
 		   username will be also enterable with e-passwords */
