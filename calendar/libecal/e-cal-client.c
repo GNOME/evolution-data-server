@@ -2071,6 +2071,73 @@ e_cal_client_get_default_object_sync (ECalClient *client, icalcomponent **icalco
 	return complete_get_object (res, out_string, icalcomp, error);
 }
 
+static gboolean
+complete_get_object_master (ECalClientSourceType source_type, gboolean res, gchar *out_string, icalcomponent **icalcomp, GError **error)
+{
+	g_return_val_if_fail (icalcomp != NULL, FALSE);
+
+	if (res && out_string) {
+		icalcomponent *tmp_comp = icalparser_parse_string (out_string);
+		if (!tmp_comp) {
+			*icalcomp = NULL;
+			g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
+			res = FALSE;
+		} else {
+			icalcomponent_kind kind;
+			icalcomponent *master_comp = NULL;
+
+			switch (source_type) {
+			case E_CAL_CLIENT_SOURCE_TYPE_EVENTS:
+				kind = ICAL_VEVENT_COMPONENT;
+				break;
+			case E_CAL_CLIENT_SOURCE_TYPE_TASKS:
+				kind = ICAL_VTODO_COMPONENT;
+				break;
+			case E_CAL_CLIENT_SOURCE_TYPE_MEMOS:
+				kind = ICAL_VJOURNAL_COMPONENT;
+				break;
+			default:
+				icalcomponent_free (tmp_comp);
+				*icalcomp = NULL;
+				res = FALSE;
+
+				g_warn_if_reached ();
+			}
+
+			if (res && icalcomponent_isa (tmp_comp) == kind) {
+				*icalcomp = tmp_comp;
+				tmp_comp = NULL;
+			} else if (res && icalcomponent_isa (tmp_comp) == ICAL_VCALENDAR_COMPONENT) {
+				for (master_comp = icalcomponent_get_first_component (tmp_comp, kind);
+				     master_comp;
+				     master_comp = icalcomponent_get_next_component (tmp_comp, kind)) {
+					if (!icalcomponent_get_uid (master_comp))
+						continue;
+
+					if (icaltime_is_valid_time (icalcomponent_get_recurrenceid (master_comp)) &&
+					    !icaltime_is_null_time (icalcomponent_get_recurrenceid (master_comp)))
+						break;
+				}
+
+				if (!master_comp)
+					master_comp = icalcomponent_get_first_component (tmp_comp, kind);
+
+				*icalcomp = master_comp ? icalcomponent_new_clone (master_comp) : NULL;
+			}
+
+			if (tmp_comp)
+				icalcomponent_free (tmp_comp);
+		}
+	} else {
+		*icalcomp = NULL;
+		res = FALSE;
+	}
+
+	g_free (out_string);
+
+	return res && *icalcomp;
+}
+
 /**
  * e_cal_client_get_object:
  * @client: an #ECalClient
@@ -2083,6 +2150,10 @@ e_cal_client_get_default_object_sync (ECalClient *client, icalcomponent **icalco
  * Queries a calendar for a calendar component object based on its unique
  * identifier. The call is finished by e_cal_client_get_object_finish()
  * from the @callback.
+ *
+ * Use e_cal_client_get_objects_for_uid() to get list of all
+ * objects for the given uid, which includes master object and
+ * all detached instances.
  *
  * Since: 3.2
  **/
@@ -2110,8 +2181,13 @@ e_cal_client_get_object (ECalClient *client, const gchar *uid, const gchar *rid,
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_object() and
- * sets @icalcomp to queried component.
+ * sets @icalcomp to queried component. This function always returns
+ * master object for a case of @rid being NULL or an empty string.
  * This component should be freed with icalcomponent_free().
+ *
+ * Use e_cal_client_get_objects_for_uid() to get list of all
+ * objects for the given uid, which includes master object and
+ * all detached instances.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -2127,7 +2203,7 @@ e_cal_client_get_object_finish (ECalClient *client, GAsyncResult *result, icalco
 
 	res = e_client_proxy_call_finish_string (E_CLIENT (client), result, &out_string, error, e_cal_client_get_object);
 
-	return complete_get_object (res, out_string, icalcomp, error);;
+	return complete_get_object_master (e_cal_client_get_source_type (client), res, out_string, icalcomp, error);
 }
 
 /**
@@ -2140,8 +2216,13 @@ e_cal_client_get_object_finish (ECalClient *client, GAsyncResult *result, icalco
  * @error: (out): a #GError to set an error, if any
  *
  * Queries a calendar for a calendar component object based
- * on its unique identifier.
+ * on its unique identifier. This function always returns
+ * master object for a case of @rid being NULL or an empty string.
  * This component should be freed with icalcomponent_free().
+ *
+ * Use e_cal_client_get_objects_for_uid_sync() to get list of all
+ * objects for the given uid, which includes master object and
+ * all detached instances.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -2168,7 +2249,7 @@ e_cal_client_get_object_sync (ECalClient *client, const gchar *uid, const gchar 
 	res = e_client_proxy_call_sync_strv__string (E_CLIENT (client), (const gchar * const *) strv, &out_string, cancellable, error, e_gdbus_cal_call_get_object_sync);
 	g_strfreev (strv);
 
-	return complete_get_object (res, out_string, icalcomp, error);
+	return complete_get_object_master (e_cal_client_get_source_type (client), res, out_string, icalcomp, error);
 }
 
 /**
