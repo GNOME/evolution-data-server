@@ -32,7 +32,7 @@
 #endif
 #endif
 
-#if HAVE_GOA
+#ifdef HAVE_GOA
 #define GOA_API_IS_SUBJECT_TO_CHANGE
 #include <goa/goa.h>
 
