@@ -986,7 +986,7 @@ destination_get_address (const EDestination *dest,
 			destination_get_address (list_dest, addr);
 		}
 
-	} else {
+	} else if (!dest->priv->ignored) {
 		const gchar *name, *email;
 		name = e_destination_get_name (dest);
 		email = e_destination_get_email (dest);
