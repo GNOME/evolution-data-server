@@ -73,6 +73,7 @@ struct _ENameSelectorDialogPrivate {
 	GtkEntry *search_entry;
 	GtkSizeGroup *button_size_group;
 	GtkWidget *category_combobox;
+	GtkWidget *contact_window;
 
 	GArray *sections;
 
@@ -161,6 +162,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkWidget *label36;
 	GtkWidget *hbox3;
 	GtkWidget *label38;
+	GtkWidget *scrolledwindow0;
 	GtkWidget *scrolledwindow1;
 	AtkRelationSet *tmp_relation_set;
 	AtkRelationType tmp_relationship;
@@ -255,9 +257,19 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	gtk_misc_set_alignment (GTK_MISC (label36), 0, 0.5);
 	g_free (tmp_str);
 
+	scrolledwindow0 = gtk_scrolled_window_new (NULL, NULL);
+	name_selector_dialog->priv->contact_window = scrolledwindow0;
+	gtk_widget_show (scrolledwindow0);
+	gtk_box_pack_start (GTK_BOX (name_selector_box), scrolledwindow0,
+			    TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow0),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+
 	hbox3 = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox3);
-	gtk_box_pack_start (GTK_BOX (name_selector_box), hbox3, TRUE, TRUE, 0);
+	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW
+					       (scrolledwindow0), hbox3);
 
 	label38 = gtk_label_new ("");
 	gtk_widget_show (label38);
@@ -1534,4 +1546,24 @@ e_name_selector_dialog_set_destination_index (ENameSelectorDialog *name_selector
 		return;
 
 	name_selector_dialog->priv->destination_index = index;
+}
+
+/**
+ * e_name_selector_dialog_set_scrolling_policy:
+ * @name_selector_dialog: an #ENameSelectorDialog
+ * @hscrollbar_policy: scrolling policy for horizontal bar of the contacts window.
+ * @vscrollbar_policy: scrolling policy for vertical bar of the contacts window.
+ *
+ * Sets the scrolling policy for the contacts section.
+ *
+ * Since: 3.2
+ **/
+void
+e_name_selector_dialog_set_scrolling_policy (ENameSelectorDialog *name_selector_dialog,
+					      GtkPolicyType hscrollbar_policy,
+					      GtkPolicyType vscrollbar_policy)
+{
+	GtkScrolledWindow *win = GTK_SCROLLED_WINDOW (name_selector_dialog->priv->contact_window);
+
+	gtk_scrolled_window_set_policy (win, hscrollbar_policy, vscrollbar_policy);
 }

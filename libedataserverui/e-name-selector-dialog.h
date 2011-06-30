@@ -73,6 +73,10 @@ void		e_name_selector_dialog_set_model (ENameSelectorDialog *name_selector_dialo
 void		e_name_selector_dialog_set_destination_index
 						(ENameSelectorDialog *name_selector_dialog,
 						 guint index);
+void		e_name_selector_dialog_set_scrolling_policy
+						(ENameSelectorDialog *name_selector_dialog,
+						 GtkPolicyType hscrollbar_policy,
+						 GtkPolicyType vscrollbar_policy);
 
 G_END_DECLS
 
