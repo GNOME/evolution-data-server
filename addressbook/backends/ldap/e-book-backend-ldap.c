@@ -870,6 +870,10 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 #if defined (LDAP_OPT_X_TLS_HARD) && defined (LDAP_OPT_X_TLS)
 				gint tls_level = LDAP_OPT_X_TLS_HARD;
 				ldap_set_option (blpriv->ldap, LDAP_OPT_X_TLS, &tls_level);
+
+				/* setup this on the global option set */
+				tls_level = LDAP_OPT_X_TLS_ALLOW;
+				ldap_set_option (NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &tls_level);
 #elif defined (G_OS_WIN32)
 				ldap_set_option (blpriv->ldap, LDAP_OPT_SSL, LDAP_OPT_ON);
 #else
