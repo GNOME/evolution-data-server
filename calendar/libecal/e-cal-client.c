@@ -916,6 +916,33 @@ e_cal_client_get_local_attachment_store (ECalClient *client)
 	return client->priv->cache_dir;
 }
 
+/* icaltimezone_copy does a shallow copy while icaltimezone_free tries to free the entire 
+   the contents inside the structure with libical 0.43. Use this, till eds allows older libical.
+*/
+static icaltimezone *
+copy_timezone (icaltimezone *ozone)
+{
+	icaltimezone *zone = NULL;
+	const gchar *tzid;
+	
+	tzid = icaltimezone_get_tzid (ozone);
+	
+	if (g_strcmp0 (tzid, "UTC") != 0) {
+		icalcomponent *comp;
+
+		comp = icaltimezone_get_component (ozone);
+		if (comp) {
+			zone = icaltimezone_new ();
+			icaltimezone_set_component (zone, icalcomponent_new_clone (comp));
+		}
+	}
+
+	if (!zone)
+		zone = icaltimezone_get_utc_timezone ();
+
+	return zone;
+}
+
 /**
  * e_cal_client_set_default_timezone:
  * @client: A calendar client.
@@ -935,8 +962,13 @@ e_cal_client_set_default_timezone (ECalClient *client, /* const */ icaltimezone 
 	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (zone != NULL);
 
-	icaltimezone_free (client->priv->default_zone, 1);
-	client->priv->default_zone = icaltimezone_copy (zone);
+	if (client->priv->default_zone != icaltimezone_get_utc_timezone ())
+		icaltimezone_free (client->priv->default_zone, 1);
+
+	if (zone == icaltimezone_get_utc_timezone ())
+		client->priv->default_zone = zone;
+	else
+		client->priv->default_zone = copy_timezone (zone);
 }
 
 /**
@@ -4129,7 +4161,7 @@ e_cal_client_init (ECalClient *client)
 
 	client->priv = G_TYPE_INSTANCE_GET_PRIVATE (client, E_TYPE_CAL_CLIENT, ECalClientPrivate);
 	client->priv->source_type = E_CAL_CLIENT_SOURCE_TYPE_LAST;
-	client->priv->default_zone = icaltimezone_copy (icaltimezone_get_utc_timezone ());
+	client->priv->default_zone = icaltimezone_get_utc_timezone ();
 	client->priv->cache_dir = NULL;
 	client->priv->zone_cache_lock = g_mutex_new ();
 	client->priv->zone_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone_cb);
@@ -4167,7 +4199,7 @@ cal_client_finalize (GObject *object)
 	g_free (priv->cache_dir);
 	priv->cache_dir = NULL;
 
-	if (priv->default_zone)
+	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ())
 		icaltimezone_free (priv->default_zone, 1);
 	priv->default_zone = NULL;
 
