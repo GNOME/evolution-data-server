@@ -340,8 +340,8 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	libsoup-2.4 >= libsoup_minimum_version
 	libgdata >= libgdata_minimum_version])
 
-if `$PKG_CONFIG --atleast-version=0.9 libgdata`; then
-	AC_DEFINE(HAVE_LIBGDATA_0_9,1,[libgdata is 0.9 or higher])
+if `$PKG_CONFIG --atleast-version=0.9.1 libgdata`; then
+	AC_DEFINE(HAVE_LIBGDATA_0_9, 1, [libgdata is 0.9.1 or higher])
 fi
 
 dnl *******************************
@@ -364,11 +364,11 @@ if test "x$enable_goa" = xyes; then
 	If you want to disable GNOME Online Accounts support,
 	please append --disable-goa to configure.])])
 
-	if `$PKG_CONFIG --atleast-version=0.9 libgdata`; then
-		AC_DEFINE(HAVE_GOA,1,[Have goa-1.0 and libgdata >= 0.9])
+	if `$PKG_CONFIG --atleast-version=0.9.1 libgdata`; then
+		AC_DEFINE(HAVE_GOA,1,[Have goa-1.0 and libgdata >= 0.9.1])
 	else
 		AC_MSG_ERROR([
-	libgdata 0.9 is required for GNOME Online Accounts support.
+	libgdata >= 0.9.1 is required for GNOME Online Accounts support.
 	If you want to disable GNOME Online Accounts support, please
 	append --disable-goa to configure.])
 	fi
