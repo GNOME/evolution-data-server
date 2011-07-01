@@ -154,6 +154,27 @@ operation_flush_msgport (CamelOperation *operation)
 }
 
 static void
+operation_cancelled (GCancellable *cancellable)
+{
+	CamelOperation *operation;
+	CamelMsg *msg;
+
+	g_return_if_fail (cancellable != NULL);
+	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
+
+	operation = CAMEL_OPERATION (cancellable);
+	g_return_if_fail (operation != NULL);
+	g_return_if_fail (operation->priv != NULL);
+
+	LOCK ();
+
+	msg = g_malloc0 (sizeof (CamelMsg));
+	camel_msgport_push (operation->priv->cancel_port, msg);
+
+	UNLOCK ();
+}
+
+static void
 operation_finalize (GObject *object)
 {
 	CamelOperationPrivate *priv;
@@ -182,11 +203,15 @@ static void
 camel_operation_class_init (CamelOperationClass *class)
 {
 	GObjectClass *object_class;
+	GCancellableClass *cancellable_class;
 
 	g_type_class_add_private (class, sizeof (CamelOperationPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = operation_finalize;
+
+	cancellable_class = G_CANCELLABLE_CLASS (class);
+	cancellable_class->cancelled = operation_cancelled;
 
 	signals[STATUS] = g_signal_new (
 		"status",
@@ -242,19 +267,9 @@ void
 camel_operation_cancel (CamelOperation *operation)
 {
 	if (operation != NULL) {
-		CamelMsg *msg;
-
 		g_return_if_fail (CAMEL_IS_OPERATION (operation));
 
-		LOCK ();
-
-		msg = g_malloc0 (sizeof (CamelMsg));
-		camel_msgport_push (operation->priv->cancel_port, msg);
-
-		UNLOCK ();
-
 		g_cancellable_cancel (G_CANCELLABLE (operation));
-
 	} else {
 		GList *link;
 
