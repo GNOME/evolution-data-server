@@ -103,7 +103,7 @@ gdata_goa_authorizer_get_parameters (SoupMessage *message,
 	string = oauth_gen_nonce ();
 	key = (gpointer) "oauth_nonce";
 	g_hash_table_insert (parameters, key, g_strdup (string));
-	free (string);  /* do not use g_free() */
+	free (string);  /* do not use g_free () */
 
 	key = (gpointer) "oauth_timestamp";
 	string = g_strdup_printf ("%" G_GINT64_FORMAT, (gint64) time (NULL));
@@ -167,7 +167,7 @@ gdata_goa_authorizer_get_parameters (SoupMessage *message,
 	key = (gpointer) "oauth_signature";
 	string = oauth_sign_hmac_sha1 (base_string->str, signing_key->str);
 	g_hash_table_insert (parameters, key, g_strdup (string));
-	free (string);  /* do not use g_free() */
+	free (string);  /* do not use g_free () */
 
 	g_free (request_uri);
 

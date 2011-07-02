@@ -829,7 +829,7 @@ e_client_utils_forget_password (EClient *client)
 
 	source = e_client_get_source (client);
 	g_return_if_fail (source != NULL);
-	
+
 	auth_domain = get_auth_domain (client);
 	prompt_key = get_prompt_key (client, e_source_get_property (source, "username"));
 

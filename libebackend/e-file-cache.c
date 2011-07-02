@@ -54,7 +54,10 @@ enum {
 G_DEFINE_TYPE (EFileCache, e_file_cache, G_TYPE_OBJECT)
 
 static void
-e_file_cache_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+e_file_cache_set_property (GObject *object,
+                           guint property_id,
+                           const GValue *value,
+                           GParamSpec *pspec)
 {
 	EFileCache *cache;
 	EFileCachePrivate *priv;
@@ -89,8 +92,9 @@ e_file_cache_set_property (GObject *object, guint property_id, const GValue *val
 			g_unlink (g_value_get_string (value));
 			priv->xml_hash = e_xmlhash_new (g_value_get_string (value));
 			if (priv->xml_hash) {
-				g_message (G_STRLOC ": could not open not re-create cache file %s",
-					   g_value_get_string (value));
+				g_message (
+					"%s: could not re-create cache file %s",
+					G_STRFUNC, g_value_get_string (value));
 			}
 		}
 		break;
@@ -100,7 +104,10 @@ e_file_cache_set_property (GObject *object, guint property_id, const GValue *val
 }
 
 static void
-e_file_cache_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+e_file_cache_get_property (GObject *object,
+                           guint property_id,
+                           GValue *value,
+                           GParamSpec *pspec)
 {
 	EFileCache *cache;
 	EFileCachePrivate *priv;
@@ -145,11 +152,11 @@ e_file_cache_finalize (GObject *object)
 }
 
 static void
-e_file_cache_class_init (EFileCacheClass *klass)
+e_file_cache_class_init (EFileCacheClass *class)
 {
 	GObjectClass *object_class;
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = e_file_cache_finalize;
 	object_class->set_property = e_file_cache_set_property;
 	object_class->get_property = e_file_cache_get_property;
@@ -159,10 +166,16 @@ e_file_cache_class_init (EFileCacheClass *klass)
 	 *
 	 * The filename of the cache.
 	 **/
-	g_object_class_install_property (object_class, PROP_FILENAME,
-					 g_param_spec_string ("filename", NULL, NULL, "",
-							      G_PARAM_READABLE | G_PARAM_WRITABLE
-							      | G_PARAM_CONSTRUCT_ONLY));
+	g_object_class_install_property (
+		object_class, PROP_FILENAME,
+		g_param_spec_string (
+			"filename",
+			NULL,
+			NULL,
+			"",
+			G_PARAM_READABLE |
+			G_PARAM_WRITABLE |
+			G_PARAM_CONSTRUCT_ONLY));
 }
 
 static void

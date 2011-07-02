@@ -810,7 +810,7 @@ client_view_ready_cb (GObject *source_object, GAsyncResult *result, gpointer use
 		ContactSource *source;
 
 		source = &g_array_index (contact_store->priv->contact_sources, ContactSource, source_idx);
-		
+
 		if (source->client_view) {
 			if (source->client_view_pending) {
 				stop_view (contact_store, source->client_view_pending);

@@ -418,7 +418,7 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 					lists_count++;
 					type = CONTACT_LIST;
 				} else if (g_ascii_strcasecmp (EVC_EMAIL, e_vcard_attribute_get_name (attr->data)) == 0) {
-			    		type = CONTACT;
+					type = CONTACT;
 				} else {
 					type = NONE;
 					remove = TRUE;
@@ -969,7 +969,6 @@ e_destination_get_email (const EDestination *dest)
 	return priv->email;
 }
 
-
 /* Helper function to e_destination_get_address capable of recursively
  * iterating through structured destinations list */
 static void
@@ -1183,7 +1182,7 @@ e_destination_list_get_root_dests (const EDestination *dest)
 const GList *
 e_destination_list_get_dests (const EDestination *dest)
 {
- 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
+	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
 
 	if (!e_destination_is_evolution_list (dest))
 		return NULL;
@@ -1192,7 +1191,7 @@ e_destination_list_get_dests (const EDestination *dest)
 		GList *iter;
 		for (iter = dest->priv->list_dests; iter; iter = iter->next) {
 			if (e_destination_is_evolution_list (iter->data)) {
-				GList *l = g_list_copy ((GList*)e_destination_list_get_dests (iter->data));
+				GList *l = g_list_copy ((GList*) e_destination_list_get_dests (iter->data));
 				dest->priv->list_alldests = g_list_concat (dest->priv->list_alldests, l);
 			} else {
 				dest->priv->list_alldests = g_list_append (dest->priv->list_alldests, iter->data);

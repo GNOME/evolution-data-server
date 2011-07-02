@@ -42,14 +42,27 @@
 
 #include "libedataserver/libedataserver-private.h"
 
-#define E_DATA_SERVER_TYPE_MODULE		(e_data_server_module_get_type ())
-#define E_DATA_SERVER_MODULE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), E_DATA_SERVER_TYPE_MODULE, EDataServerModule))
-#define E_DATA_SERVER_MODULE_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), E_DATA_SERVER_TYPE_MODULE, EDataServerModule))
-#define E_DATA_SERVER_IS_MODULE(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_DATA_SERVER_TYPE_MODULE))
-#define E_DATA_SERVER_IS_MODULE_CLASS(klass)	(G_TYPE_CLASS_CHECK_CLASS_TYPE ((klass), E_DATA_SERVER_TYPE_MODULE))
+/* Standard GObject macros */
+#define E_DATA_SERVER_TYPE_MODULE \
+	(e_data_server_module_get_type ())
+#define E_DATA_SERVER_MODULE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_DATA_SERVER_TYPE_MODULE, EDataServerModule))
+#define E_DATA_SERVER_MODULE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_DATA_SERVER_TYPE_MODULE, EDataServerModuleClass))
+#define E_DATA_SERVER_IS_MODULE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_DATA_SERVER_TYPE_MODULE))
+#define E_DATA_SERVER_IS_MODULE_CLASS(cls) \
+	(G_TYPE_CLASS_CHECK_CLASS_TYPE \
+	((cls), E_DATA_SERVER_TYPE_MODULE))
+#define E_DATA_SERVER_MODULE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_DATA_SERVER_TYPE_MODULE, EDataServerModuleClass))
 
-typedef struct _EDataServerModule        EDataServerModule;
-typedef struct _EDataServerModuleClass   EDataServerModuleClass;
+typedef struct _EDataServerModule EDataServerModule;
+typedef struct _EDataServerModuleClass EDataServerModuleClass;
 
 struct _EDataServerModule {
 	GTypeModule parent;

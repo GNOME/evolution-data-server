@@ -924,9 +924,9 @@ copy_timezone (icaltimezone *ozone)
 {
 	icaltimezone *zone = NULL;
 	const gchar *tzid;
-	
+
 	tzid = icaltimezone_get_tzid (ozone);
-	
+
 	if (g_strcmp0 (tzid, "UTC") != 0) {
 		icalcomponent *comp;
 

@@ -550,7 +550,7 @@ fileas_getter (EContact *contact, EVCardAttribute *attr)
 	if (!attr) {
 		/* Generate a FILE_AS field */
 		EContactName *name;
-		gchar* new_file_as = NULL;
+		gchar *new_file_as = NULL;
 
 		name = e_contact_get (contact, E_CONTACT_NAME);
 
@@ -602,7 +602,7 @@ static void
 fileas_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 {
 	/* Default implementation */
-	const gchar* file_as = data;
+	const gchar *file_as = data;
 	e_vcard_attribute_add_value (attr, file_as ? : "");
 }
 

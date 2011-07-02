@@ -658,20 +658,19 @@ parse (EVCard *evc, const gchar *str)
 static GList*
 e_vcard_ensure_attributes (EVCard *evc)
 {
-        if (evc->priv->vcard) {
-                gchar *vcs = evc->priv->vcard;
+	if (evc->priv->vcard) {
+		gchar *vcs = evc->priv->vcard;
 
-                /* detach vCard to avoid loops */
-                evc->priv->vcard = NULL;
+		/* detach vCard to avoid loops */
+		evc->priv->vcard = NULL;
 
-                /* Parse the vCard */
-                parse (evc, vcs);
-                g_free (vcs);
-        }
+		/* Parse the vCard */
+		parse (evc, vcs);
+		g_free (vcs);
+	}
 
-        return evc->priv->attributes;
+	return evc->priv->attributes;
 }
-
 
 /**
  * e_vcard_escape_string:
@@ -975,7 +974,7 @@ e_vcard_to_string (EVCard *evc, EVCardFormat format)
 
 	/* If the vcard is not parsed yet, return it directly */
 	/* XXX: The format is ignored but it does not really matter
-           since only 3.0 is supported at the moment */
+	 * since only 3.0 is supported at the moment */
 	if (evc->priv->vcard)
 		return g_strdup (evc->priv->vcard);
 
@@ -1178,8 +1177,9 @@ e_vcard_remove_attribute (EVCard *evc, EVCardAttribute *attr)
 	g_return_if_fail (E_IS_VCARD (evc));
 	g_return_if_fail (attr != NULL);
 
-	/* No need to call e_vcard_ensure_attributes() here. It has already been
-           called if this is a valid call and attr is among our attributes */
+	/* No need to call e_vcard_ensure_attributes() here. It has
+	 * already been called if this is a valid call and attr is among
+	 * our attributes. */
 	evc->priv->attributes = g_list_remove (evc->priv->attributes, attr);
 	e_vcard_attribute_free (attr);
 }
@@ -2136,10 +2136,10 @@ e_vcard_attribute_get_param (EVCardAttribute *attr, const gchar *name)
 gboolean
 e_vcard_is_parsed (EVCard *evc)
 {
-        g_return_val_if_fail (E_IS_VCARD (evc), FALSE);
-        return (!evc->priv->vcard && evc->priv->attributes);
-}
+	g_return_val_if_fail (E_IS_VCARD (evc), FALSE);
 
+	return (!evc->priv->vcard && evc->priv->attributes);
+}
 
 /**
  * e_vcard_attribute_param_get_name:

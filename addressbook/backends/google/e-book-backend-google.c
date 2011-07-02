@@ -1128,7 +1128,7 @@ e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, g
 	cancellable = start_operation (backend, opid, cancellable, _("Deleting contact…"));
 	#ifdef HAVE_LIBGDATA_0_9
 	gdata_service_delete_entry_async (GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
-	                                  entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
+					  entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
 	#else
 	gdata_service_delete_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
 	#endif
@@ -1240,7 +1240,7 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 	cancellable = start_operation (backend, opid, cancellable, _("Modifying contact…"));
 	#ifdef HAVE_LIBGDATA_0_9
 	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
-	                                  entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
+					  entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
 	#else
 	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
 	#endif
