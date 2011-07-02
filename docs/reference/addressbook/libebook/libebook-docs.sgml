@@ -10,15 +10,21 @@
 
   <chapter>
     <title>Evolution-Data-Server Manual: Address Book Client (libebook)</title>
-    <xi:include href="xml/e-book.xml"/>
+    <xi:include href="xml/e-book-client.xml"/>
+    <xi:include href="xml/e-book-client-view.xml"/>
     <xi:include href="xml/e-book-query.xml"/>
     <xi:include href="xml/e-book-types.xml"/>
-    <xi:include href="xml/e-book-view.xml"/>
     <xi:include href="xml/e-vcard.xml"/>
     <xi:include href="xml/e-contact.xml"/>
     <xi:include href="xml/e-destination.xml"/>
     <xi:include href="xml/e-address-western.xml"/>
     <xi:include href="xml/e-name-western.xml"/>
+  </chapter>
+
+  <chapter>
+    <title>Deprecated Classes</title>
+    <xi:include href="xml/e-book.xml"/>
+    <xi:include href="xml/e-book-view.xml"/>
   </chapter>
 
   <index id="api-index-full">

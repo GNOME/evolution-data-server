@@ -62,3 +62,13 @@ ENameSelectorDialog
 @index: 
 
 
+<!-- ##### FUNCTION e_name_selector_dialog_set_scrolling_policy ##### -->
+<para>
+
+</para>
+
+@name_selector_dialog: 
+@hscrollbar_policy: 
+@vscrollbar_policy: 
+
+

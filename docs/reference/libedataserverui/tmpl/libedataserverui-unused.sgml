@@ -94,6 +94,39 @@ ESourceOptionMenu
 </para>
 
 
+<!-- ##### FUNCTION e_contact_store_add_book ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@book: 
+
+<!-- ##### FUNCTION e_contact_store_get_book ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@iter: 
+@Returns: 
+
+<!-- ##### FUNCTION e_contact_store_get_books ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@Returns: 
+
+<!-- ##### FUNCTION e_contact_store_remove_book ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@book: 
+
 <!-- ##### FUNCTION e_data_server_ui_marshal_BOOLEAN__BOXED_OBJECT_FLAGS_UINT ##### -->
 <para>
 
@@ -175,4 +208,13 @@ ESourceOptionMenu
 
 @menu: 
 @source: 
+
+<!-- ##### FUNCTION find_contact_source_by_book_return_view ##### -->
+<para>
+
+</para>
+
+@contact_store: 
+@book: 
+@Returns: 
 

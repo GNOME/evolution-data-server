@@ -38,6 +38,69 @@ EBookBackend
 
 </para>
 
+<!-- ##### MACRO CLIENT_BACKEND_PROPERTY_OPENED ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CLIENT_BACKEND_PROPERTY_OPENING ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CLIENT_BACKEND_PROPERTY_ONLINE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CLIENT_BACKEND_PROPERTY_READONLY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CLIENT_BACKEND_PROPERTY_CACHE_DIR ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO CLIENT_BACKEND_PROPERTY_CAPABILITIES ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION e_book_backend_get_cache_dir ##### -->
 <para>
 
@@ -84,6 +147,42 @@ EBookBackend
 @book: 
 
 
+<!-- ##### FUNCTION e_book_backend_is_online ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_is_opened ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_is_opening ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_is_readonly ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_book_backend_is_removed ##### -->
 <para>
 
@@ -91,6 +190,50 @@ EBookBackend
 
 @backend: 
 @Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_set_online ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_online: 
+
+
+<!-- ##### FUNCTION e_book_backend_authenticate_user ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cancellable: 
+@credentials: 
+
+
+<!-- ##### FUNCTION e_book_backend_get_backend_property ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@cancellable: 
+@prop_name: 
+
+
+<!-- ##### FUNCTION e_book_backend_set_backend_property ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@cancellable: 
+@prop_name: 
+@prop_value: 
 
 
 <!-- ##### FUNCTION e_book_backend_open ##### -->
@@ -106,6 +249,17 @@ EBookBackend
 
 
 <!-- ##### FUNCTION e_book_backend_remove ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@cancellable: 
+
+
+<!-- ##### FUNCTION e_book_backend_refresh ##### -->
 <para>
 
 </para>
@@ -176,6 +330,18 @@ EBookBackend
 @query: 
 
 
+<!-- ##### FUNCTION e_book_backend_get_contact_list_uids ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@cancellable: 
+@query: 
+
+
 <!-- ##### FUNCTION e_book_backend_authenticate_user ##### -->
 <para>
 
@@ -222,6 +388,22 @@ EBookBackend
 @view: 
 
 
+<!-- ##### FUNCTION e_book_backend_foreach_view ##### -->
+<para>
+
+</para>
+
+@backend: 
+@EDataBookView *view, gpointer user_data:
+@EDataBookView *view, gpointer user_data:
+@EDataBookView *view, gpointer user_data:
+@EDataBookView *view, gpointer user_data:
+@EDataBookView *view, gpointer user_data:
+@EDataBookView *view, gpointer user_data:
+@EDataBookView *view, gpointer user_data: 
+@user_data: 
+
+
 <!-- ##### FUNCTION e_book_backend_notify_update ##### -->
 <para>
 
@@ -248,6 +430,33 @@ EBookBackend
 @backend: 
 
 
+<!-- ##### FUNCTION e_book_backend_notify_error ##### -->
+<para>
+
+</para>
+
+@backend: 
+@message: 
+
+
+<!-- ##### FUNCTION e_book_backend_notify_readonly ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_readonly: 
+
+
+<!-- ##### FUNCTION e_book_backend_notify_online ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_online: 
+
+
 <!-- ##### FUNCTION e_book_backend_notify_auth_required ##### -->
 <para>
 
@@ -256,6 +465,15 @@ EBookBackend
 @backend: 
 @is_self: 
 @credentials: 
+
+
+<!-- ##### FUNCTION e_book_backend_notify_opened ##### -->
+<para>
+
+</para>
+
+@backend: 
+@error: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync ##### -->
@@ -273,6 +491,17 @@ EBookBackend
 
 @backend: 
 @is_removed: 
+
+
+<!-- ##### FUNCTION e_book_backend_respond_opened ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@error: 
 
 
 <!-- ##### STRUCT EBookBackendClass ##### -->

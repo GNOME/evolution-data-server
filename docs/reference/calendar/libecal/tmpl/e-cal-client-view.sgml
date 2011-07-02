@@ -1,0 +1,125 @@
+<!-- ##### SECTION Title ##### -->
+ECalClientView
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT ECalClientView ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL ECalClientView::complete ##### -->
+<para>
+
+</para>
+
+@ecalclientview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalClientView::objects-added ##### -->
+<para>
+
+</para>
+
+@ecalclientview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalClientView::objects-modified ##### -->
+<para>
+
+</para>
+
+@ecalclientview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalClientView::objects-removed ##### -->
+<para>
+
+</para>
+
+@ecalclientview: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL ECalClientView::progress ##### -->
+<para>
+
+</para>
+
+@ecalclientview: the object which received the signal.
+@arg1: 
+@arg2: 
+
+<!-- ##### ARG ECalClientView:client ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG ECalClientView:view ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION e_cal_client_view_get_client ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_client_view_is_running ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_client_view_set_fields_of_interest ##### -->
+<para>
+
+</para>
+
+@view: 
+@fields_of_interest: 
+@error: 
+
+
+<!-- ##### FUNCTION e_cal_client_view_start ##### -->
+<para>
+
+</para>
+
+@view: 
+@error: 
+
+
+<!-- ##### FUNCTION e_cal_client_view_stop ##### -->
+<para>
+
+</para>
+
+@view: 
+@error: 
+
+

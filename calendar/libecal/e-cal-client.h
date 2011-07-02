@@ -102,7 +102,7 @@ gboolean		e_cal_client_get_sources		(ESourceList **sources, ECalClientSourceType
 ECalClientSourceType	e_cal_client_get_source_type		(ECalClient *client);
 const gchar *		e_cal_client_get_local_attachment_store	(ECalClient *client);
 void			e_cal_client_set_default_timezone	(ECalClient *client, /* const */ icaltimezone *zone);
-/*const*/ icaltimezone *e_cal_client_get_default_timezone	(ECalClient *client);
+icaltimezone *		e_cal_client_get_default_timezone	(ECalClient *client);
 
 /* Check predefined capabilities */
 gboolean		e_cal_client_check_one_alarm_only	(ECalClient *client);

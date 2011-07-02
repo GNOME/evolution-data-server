@@ -79,7 +79,25 @@ Implementation of the calendar CORBA search interface.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_data_cal_view_is_completed ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_data_cal_view_is_stopped ##### -->
+<para>
+
+</para>
+
+@view: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_get_fields_of_interest ##### -->
 <para>
 
 </para>
@@ -150,5 +168,14 @@ Implementation of the calendar CORBA search interface.
 @view: 
 @percent: 
 @message: 
+
+
+<!-- ##### FUNCTION e_data_cal_view_notify_complete ##### -->
+<para>
+
+</para>
+
+@view: 
+@error: 
 
 

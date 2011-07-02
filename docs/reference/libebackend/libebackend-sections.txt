@@ -80,3 +80,8 @@ EOfflineListenerClass
 EOfflineListenerPrivate
 e_offline_listener_get_type
 </SECTION>
+
+<SECTION>
+<FILE>e-sqlite3-vfs</FILE>
+e_sqlite3_vfs_init
+</SECTION>

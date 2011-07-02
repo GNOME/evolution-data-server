@@ -304,6 +304,13 @@ Various utility functions.
 
 
 
+<!-- ##### MACRO CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY ##### -->
 <para>
 

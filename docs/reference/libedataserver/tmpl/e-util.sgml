@@ -227,3 +227,36 @@ Miscellaneous utility functions for evolution-data-server.
 @timeout_msec: 
 
 
+<!-- ##### MACRO e_pointer_tracker_track ##### -->
+<para>
+
+</para>
+
+@ptr: 
+
+
+<!-- ##### FUNCTION e_pointer_tracker_track_with_info ##### -->
+<para>
+
+</para>
+
+@ptr: 
+@info: 
+
+
+<!-- ##### FUNCTION e_pointer_tracker_untrack ##### -->
+<para>
+
+</para>
+
+@ptr: 
+
+
+<!-- ##### FUNCTION e_pointer_tracker_dump ##### -->
+<para>
+
+</para>
+
+@void: 
+
+

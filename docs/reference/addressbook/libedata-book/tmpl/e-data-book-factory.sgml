@@ -42,3 +42,12 @@ EDataBookFactory
 @parent: 
 @priv: 
 
+<!-- ##### FUNCTION e_data_book_factory_set_backend_online ##### -->
+<para>
+
+</para>
+
+@factory: 
+@is_online: 
+
+

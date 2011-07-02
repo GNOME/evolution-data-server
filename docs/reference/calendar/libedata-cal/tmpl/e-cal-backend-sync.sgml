@@ -47,6 +47,17 @@ Base class for synchronous backends.
 @error: 
 
 
+<!-- ##### FUNCTION e_cal_backend_sync_remove ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@cancellable: 
+@error: 
+
+
 <!-- ##### FUNCTION e_cal_backend_sync_refresh ##### -->
 <para>
 
@@ -58,7 +69,7 @@ Base class for synchronous backends.
 @error: 
 
 
-<!-- ##### FUNCTION e_cal_backend_sync_remove ##### -->
+<!-- ##### FUNCTION e_cal_backend_sync_get_backend_property ##### -->
 <para>
 
 </para>
@@ -66,6 +77,65 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @cancellable: 
+@prop_name: 
+@prop_value: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_set_backend_property ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@cancellable: 
+@prop_name: 
+@prop_value: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_object ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@cancellable: 
+@uid: 
+@rid: 
+@calobj: 
+@error: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_object_list ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@cancellable: 
+@sexp: 
+@calobjs: 
+@error: 
+
+
+<!-- ##### FUNCTION e_cal_backend_sync_get_free_busy ##### -->
+<para>
+
+</para>
+
+@backend: 
+@cal: 
+@cancellable: 
+@users: 
+@start: 
+@end: 
+@freebusyobjs: 
 @error: 
 
 
@@ -114,20 +184,6 @@ Base class for synchronous backends.
 @error: 
 
 
-<!-- ##### FUNCTION e_cal_backend_sync_discard_alarm ##### -->
-<para>
-
-</para>
-
-@backend: 
-@cal: 
-@cancellable: 
-@uid: 
-@rid: 
-@auid: 
-@error: 
-
-
 <!-- ##### FUNCTION e_cal_backend_sync_receive_objects ##### -->
 <para>
 
@@ -154,7 +210,7 @@ Base class for synchronous backends.
 @error: 
 
 
-<!-- ##### FUNCTION e_cal_backend_sync_get_object ##### -->
+<!-- ##### FUNCTION e_cal_backend_sync_get_attachment_uris ##### -->
 <para>
 
 </para>
@@ -164,11 +220,11 @@ Base class for synchronous backends.
 @cancellable: 
 @uid: 
 @rid: 
-@calobj: 
+@attachments: 
 @error: 
 
 
-<!-- ##### FUNCTION e_cal_backend_sync_get_object_list ##### -->
+<!-- ##### FUNCTION e_cal_backend_sync_discard_alarm ##### -->
 <para>
 
 </para>
@@ -176,8 +232,9 @@ Base class for synchronous backends.
 @backend: 
 @cal: 
 @cancellable: 
-@sexp: 
-@calobjs: 
+@uid: 
+@rid: 
+@auid: 
 @error: 
 
 
@@ -206,18 +263,14 @@ Base class for synchronous backends.
 @error: 
 
 
-<!-- ##### FUNCTION e_cal_backend_sync_get_free_busy ##### -->
+<!-- ##### FUNCTION e_cal_backend_sync_authenticate_user ##### -->
 <para>
 
 </para>
 
 @backend: 
-@cal: 
 @cancellable: 
-@users: 
-@start: 
-@end: 
-@freebusyobjs: 
+@credentials: 
 @error: 
 
 

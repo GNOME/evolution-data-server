@@ -5247,16 +5247,6 @@ streams
 @error: 
 @Returns: 
 
-<!-- ##### FUNCTION camel_data_cache_clear ##### -->
-<para>
-
-</para>
-
-@cache: 
-@path: 
-@ex: 
-@Returns: 
-
 <!-- ##### FUNCTION camel_data_cache_rename ##### -->
 <para>
 

@@ -1,5 +1,6 @@
 #include <libedataserver/e-account.h>
 #include <libedataserver/e-account-list.h>
+#include <libedataserver/e-client.h>
 #include <libedataserver/e-iterator.h>
 #include <libedataserver/e-list.h>
 #include <libedataserver/e-list-iterator.h>
@@ -10,6 +11,7 @@
 
 e_account_get_type
 e_account_list_get_type
+e_client_get_type
 e_iterator_get_type
 e_list_get_type
 e_list_iterator_get_type

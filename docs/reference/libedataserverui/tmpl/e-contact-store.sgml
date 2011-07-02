@@ -26,6 +26,22 @@ EContactStore
 </para>
 
 
+<!-- ##### SIGNAL EContactStore::start-client-view ##### -->
+<para>
+
+</para>
+
+@econtactstore: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EContactStore::stop-client-view ##### -->
+<para>
+
+</para>
+
+@econtactstore: the object which received the signal.
+@arg1: 
+
 <!-- ##### FUNCTION e_contact_store_new ##### -->
 <para>
 
@@ -35,7 +51,7 @@ EContactStore
 @Returns: 
 
 
-<!-- ##### FUNCTION e_contact_store_get_book ##### -->
+<!-- ##### FUNCTION e_contact_store_get_client ##### -->
 <para>
 
 </para>
@@ -66,7 +82,7 @@ EContactStore
 @Returns: 
 
 
-<!-- ##### FUNCTION e_contact_store_get_books ##### -->
+<!-- ##### FUNCTION e_contact_store_get_clients ##### -->
 <para>
 
 </para>
@@ -75,22 +91,22 @@ EContactStore
 @Returns: 
 
 
-<!-- ##### FUNCTION e_contact_store_add_book ##### -->
+<!-- ##### FUNCTION e_contact_store_add_client ##### -->
 <para>
 
 </para>
 
 @contact_store: 
-@book: 
+@book_client: 
 
 
-<!-- ##### FUNCTION e_contact_store_remove_book ##### -->
+<!-- ##### FUNCTION e_contact_store_remove_client ##### -->
 <para>
 
 </para>
 
 @contact_store: 
-@book: 
+@book_client: 
 
 
 <!-- ##### FUNCTION e_contact_store_set_query ##### -->
@@ -108,16 +124,6 @@ EContactStore
 </para>
 
 @contact_store: 
-@Returns: 
-
-
-<!-- ##### FUNCTION find_contact_source_by_book_return_view ##### -->
-<para>
-
-</para>
-
-@contact_store: 
-@book: 
 @Returns: 
 
 

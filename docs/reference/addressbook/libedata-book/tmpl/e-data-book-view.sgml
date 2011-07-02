@@ -122,6 +122,16 @@ EDataBookView
 @error: 
 
 
+<!-- ##### FUNCTION e_data_book_view_notify_progress ##### -->
+<para>
+
+</para>
+
+@book_view: 
+@percent: 
+@message: 
+
+
 <!-- ##### FUNCTION e_data_book_view_ref ##### -->
 <para>
 

@@ -72,6 +72,15 @@ EDataBook
 @_code: 
 
 
+<!-- ##### MACRO e_return_data_book_error_val_if_fail ##### -->
+<para>
+
+</para>
+
+@expr: 
+@_code: 
+
+
 <!-- ##### FUNCTION e_data_book_new ##### -->
 <para>
 
@@ -79,18 +88,6 @@ EDataBook
 
 @backend: 
 @source: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_book_register_gdbus_object ##### -->
-<para>
-
-</para>
-
-@cal: 
-@connection: 
-@object_path: 
-@error: 
 @Returns: 
 
 
@@ -112,6 +109,18 @@ EDataBook
 @Returns: 
 
 
+<!-- ##### FUNCTION e_data_book_register_gdbus_object ##### -->
+<para>
+
+</para>
+
+@cal: 
+@connection: 
+@object_path: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_data_book_respond_open ##### -->
 <para>
 
@@ -123,6 +132,37 @@ EDataBook
 
 
 <!-- ##### FUNCTION e_data_book_respond_remove ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_refresh ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_get_backend_property ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+@prop_value: 
+
+
+<!-- ##### FUNCTION e_data_book_respond_set_backend_property ##### -->
 <para>
 
 </para>
@@ -187,6 +227,44 @@ EDataBook
 @cards: 
 
 
+<!-- ##### FUNCTION e_data_book_respond_get_contact_list_uids ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+@uids: 
+
+
+<!-- ##### FUNCTION e_data_book_report_error ##### -->
+<para>
+
+</para>
+
+@book: 
+@message: 
+
+
+<!-- ##### FUNCTION e_data_book_report_readonly ##### -->
+<para>
+
+</para>
+
+@book: 
+@readonly: 
+
+
+<!-- ##### FUNCTION e_data_book_report_online ##### -->
+<para>
+
+</para>
+
+@book: 
+@is_online: 
+
+
 <!-- ##### FUNCTION e_data_book_report_auth_required ##### -->
 <para>
 
@@ -194,5 +272,23 @@ EDataBook
 
 @book: 
 @credentials: 
+
+
+<!-- ##### FUNCTION e_data_book_report_opened ##### -->
+<para>
+
+</para>
+
+@book: 
+@error: 
+
+
+<!-- ##### FUNCTION e_data_book_string_slist_to_comma_string ##### -->
+<para>
+
+</para>
+
+@strings: 
+@Returns: 
 
 

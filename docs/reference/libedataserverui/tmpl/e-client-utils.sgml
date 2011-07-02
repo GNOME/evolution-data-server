@@ -1,0 +1,184 @@
+<!-- ##### SECTION Title ##### -->
+EClient Utilities
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### ENUM EClientSourceType ##### -->
+<para>
+
+</para>
+
+@E_CLIENT_SOURCE_TYPE_CONTACTS: 
+@E_CLIENT_SOURCE_TYPE_EVENTS: 
+@E_CLIENT_SOURCE_TYPE_MEMOS: 
+@E_CLIENT_SOURCE_TYPE_TASKS: 
+@E_CLIENT_SOURCE_TYPE_LAST: 
+
+<!-- ##### USER_FUNCTION EClientUtilsAuthenticateHandler ##### -->
+<para>
+
+</para>
+
+@client: 
+@credentials: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_client_utils_new ##### -->
+<para>
+
+</para>
+
+@source: 
+@source_type: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_client_utils_new_from_uri ##### -->
+<para>
+
+</para>
+
+@uri: 
+@source_type: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_client_utils_new_system ##### -->
+<para>
+
+</para>
+
+@source_type: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_client_utils_new_default ##### -->
+<para>
+
+</para>
+
+@source_type: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_client_utils_set_default ##### -->
+<para>
+
+</para>
+
+@client: 
+@source_type: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_client_utils_set_default_source ##### -->
+<para>
+
+</para>
+
+@source: 
+@source_type: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_client_utils_get_sources ##### -->
+<para>
+
+</para>
+
+@sources: 
+@source_type: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_client_utils_open_new ##### -->
+<para>
+
+</para>
+
+@source: 
+@source_type: 
+@only_if_exists: 
+@cancellable: 
+@auth_handler: 
+@auth_handler_user_data: 
+@async_cb: 
+@async_cb_user_data: 
+
+
+<!-- ##### FUNCTION e_client_utils_open_new_finish ##### -->
+<para>
+
+</para>
+
+@source: 
+@result: 
+@client: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_client_utils_authenticate_handler ##### -->
+<para>
+
+</para>
+
+@client: 
+@credentials: 
+@gtk_window_parent: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_client_utils_forget_password ##### -->
+<para>
+
+</para>
+
+@client: 
+
+
+<!-- ##### FUNCTION e_credentials_authenticate_helper ##### -->
+<para>
+
+</para>
+
+@credentials: 
+@parent: 
+@remember_password: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_credentials_forget_password ##### -->
+<para>
+
+</para>
+
+@credentials: 
+
+

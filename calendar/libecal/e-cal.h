@@ -71,13 +71,11 @@ typedef enum {
 	E_CAL_LOAD_LOADED
 } ECalLoadState;
 
-#ifndef E_CAL_DISABLE_DEPRECATED
 typedef enum {
 	Local = 1 << 0,
 	Remote = 1 << 1,
 	AnyMode = 0x07
 } EDataCalMode;
-#endif
 
 struct _ECal {
 	GObject object;

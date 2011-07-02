@@ -27,98 +27,99 @@
 
 G_BEGIN_DECLS
 
-#define EVC_ADR             "ADR"
-#define EVC_BDAY            "BDAY"
-#define EVC_CALURI          "CALURI"
-#define EVC_CATEGORIES      "CATEGORIES"
-#define EVC_EMAIL           "EMAIL"
-#define EVC_ENCODING        "ENCODING"
-#define EVC_FBURL           "FBURL"
-#define EVC_FN              "FN"
+#define EVC_ADR				"ADR"
+#define EVC_BDAY			"BDAY"
+#define EVC_CALURI			"CALURI"
+#define EVC_CATEGORIES			"CATEGORIES"
+#define EVC_EMAIL			"EMAIL"
+#define EVC_ENCODING			"ENCODING"
+#define EVC_FBURL			"FBURL"
+#define EVC_FN				"FN"
 
 /**
  * EVC_GEO:
  *
  * Since: 1.12
  **/
-#define EVC_GEO		    "GEO"
+#define EVC_GEO				"GEO"
 
-#define EVC_ICSCALENDAR     "ICSCALENDAR" /* XXX should this be X-EVOLUTION-ICSCALENDAR? */
-#define EVC_KEY             "KEY"
-#define EVC_LABEL           "LABEL"
-#define EVC_LOGO            "LOGO"
-#define EVC_MAILER          "MAILER"
-#define EVC_NICKNAME        "NICKNAME"
-#define EVC_N               "N"
-#define EVC_NOTE            "NOTE"
-#define EVC_ORG             "ORG"
-#define EVC_PHOTO           "PHOTO"
-#define EVC_PRODID          "PRODID"
-#define EVC_QUOTEDPRINTABLE "QUOTED-PRINTABLE"
-#define EVC_REV             "REV"
-#define EVC_ROLE            "ROLE"
-#define EVC_TEL             "TEL"
-#define EVC_TITLE           "TITLE"
-#define EVC_TYPE            "TYPE"
-#define EVC_UID             "UID"
-#define EVC_URL             "URL"
-#define EVC_VALUE           "VALUE"
-#define EVC_VERSION         "VERSION"
+/* XXX should this be X-EVOLUTION-ICSCALENDAR? */
+#define EVC_ICSCALENDAR			"ICSCALENDAR"
+#define EVC_KEY				"KEY"
+#define EVC_LABEL			"LABEL"
+#define EVC_LOGO			"LOGO"
+#define EVC_MAILER			"MAILER"
+#define EVC_NICKNAME			"NICKNAME"
+#define EVC_N				"N"
+#define EVC_NOTE			"NOTE"
+#define EVC_ORG				"ORG"
+#define EVC_PHOTO			"PHOTO"
+#define EVC_PRODID			"PRODID"
+#define EVC_QUOTEDPRINTABLE		"QUOTED-PRINTABLE"
+#define EVC_REV				"REV"
+#define EVC_ROLE			"ROLE"
+#define EVC_TEL				"TEL"
+#define EVC_TITLE			"TITLE"
+#define EVC_TYPE			"TYPE"
+#define EVC_UID				"UID"
+#define EVC_URL				"URL"
+#define EVC_VALUE			"VALUE"
+#define EVC_VERSION			"VERSION"
 
-#define EVC_X_AIM              "X-AIM"
-#define EVC_X_ANNIVERSARY      "X-EVOLUTION-ANNIVERSARY"
-#define EVC_X_ASSISTANT        "X-EVOLUTION-ASSISTANT"
-#define EVC_X_BIRTHDAY         "X-EVOLUTION-BIRTHDAY"
-#define EVC_X_BLOG_URL         "X-EVOLUTION-BLOG-URL"
-#define EVC_X_CALLBACK         "X-EVOLUTION-CALLBACK"
-#define EVC_X_COMPANY          "X-EVOLUTION-COMPANY"
-#define EVC_X_DEST_CONTACT_UID "X-EVOLUTION-DEST-CONTACT-UID"
-#ifndef EDS_DISABLE_DEPRECATED
-#define EVC_X_DEST_EMAIL       "X-EVOLUTION-DEST-EMAIL"
-#define EVC_X_DEST_NAME        "X-EVOLUTION-DEST-NAME"
-#endif /* EDS_DISABLE_DEPRECATED */
-#define EVC_X_DEST_EMAIL_NUM   "X-EVOLUTION-DEST-EMAIL-NUM"
-#define EVC_X_DEST_HTML_MAIL   "X-EVOLUTION-DEST-HTML-MAIL"
-#define EVC_X_DEST_SOURCE_UID  "X-EVOLUTION-DEST-SOURCE-UID"
-#define EVC_X_FILE_AS          "X-EVOLUTION-FILE-AS"
-#define EVC_X_ICQ              "X-ICQ"
-#define EVC_X_JABBER           "X-JABBER"
-#define EVC_X_LIST_SHOW_ADDRESSES "X-EVOLUTION-LIST-SHOW-ADDRESSES"
-#define EVC_X_LIST		"X-EVOLUTION-LIST"
-#define EVC_X_LIST_NAME		"X-EVOLUTION-LIST-NAME"
-#define EVC_X_MANAGER		"X-EVOLUTION-MANAGER"
-#define EVC_X_MSN		"X-MSN"
-
-/* Constants for Evo contact lists only */
-#define EVC_CONTACT_LIST	"X-EVOLUTION-CONTACT-LIST-INFO"
-#define EVC_PARENT_CL		"X-EVOLUTION-PARENT-UID"
-#define EVC_CL_UID		"X-EVOLUTION-CONTACT-LIST-UID"
+#define EVC_X_AIM			"X-AIM"
+#define EVC_X_ANNIVERSARY		"X-EVOLUTION-ANNIVERSARY"
+#define EVC_X_ASSISTANT			"X-EVOLUTION-ASSISTANT"
+#define EVC_X_BIRTHDAY			"X-EVOLUTION-BIRTHDAY"
+#define EVC_X_BLOG_URL			"X-EVOLUTION-BLOG-URL"
+#define EVC_X_CALLBACK			"X-EVOLUTION-CALLBACK"
+#define EVC_X_COMPANY			"X-EVOLUTION-COMPANY"
+#define EVC_X_DEST_CONTACT_UID		"X-EVOLUTION-DEST-CONTACT-UID"
+#define EVC_X_DEST_EMAIL_NUM		"X-EVOLUTION-DEST-EMAIL-NUM"
+#define EVC_X_DEST_HTML_MAIL		"X-EVOLUTION-DEST-HTML-MAIL"
+#define EVC_X_DEST_SOURCE_UID		"X-EVOLUTION-DEST-SOURCE-UID"
+#define EVC_X_FILE_AS			"X-EVOLUTION-FILE-AS"
+#define EVC_X_GADUGADU			"X-GADUGADU"
+#define EVC_X_GROUPWISE			"X-GROUPWISE"
+#define EVC_X_ICQ			"X-ICQ"
+#define EVC_X_JABBER			"X-JABBER"
+#define EVC_X_LIST_SHOW_ADDRESSES	"X-EVOLUTION-LIST-SHOW-ADDRESSES"
+#define EVC_X_LIST			"X-EVOLUTION-LIST"
+#define EVC_X_LIST_NAME			"X-EVOLUTION-LIST-NAME"
+#define EVC_X_MANAGER			"X-EVOLUTION-MANAGER"
+#define EVC_X_MSN			"X-MSN"
+#define EVC_X_RADIO			"X-EVOLUTION-RADIO"
 
 /**
  * EVC_X_SKYPE:
  *
  * Since: 2.26
  **/
-#define EVC_X_SKYPE		"X-SKYPE"
-
-#define EVC_X_RADIO		"X-EVOLUTION-RADIO"
+#define EVC_X_SKYPE			"X-SKYPE"
 
 /**
  * EVC_X_SIP:
  *
  * Since: 2.26
  **/
-#define EVC_X_SIP		"X-SIP"
+#define EVC_X_SIP			"X-SIP"
 
-#define EVC_X_SPOUSE		"X-EVOLUTION-SPOUSE"
-#define EVC_X_TELEX		"X-EVOLUTION-TELEX"
-#define EVC_X_TTYTDD		"X-EVOLUTION-TTYTDD"
-#define EVC_X_VIDEO_URL	"X-EVOLUTION-VIDEO-URL"
-#define EVC_X_WANTS_HTML	"X-MOZILLA-HTML"
-#define EVC_X_YAHOO		"X-YAHOO"
-#define EVC_X_GADUGADU          "X-GADUGADU"
-#define EVC_X_GROUPWISE	"X-GROUPWISE"
-#define EVC_X_BOOK_URI	"X-EVOLUTION-BOOK-URI"
+#define EVC_X_SPOUSE			"X-EVOLUTION-SPOUSE"
+#define EVC_X_TELEX			"X-EVOLUTION-TELEX"
+#define EVC_X_TTYTDD			"X-EVOLUTION-TTYTDD"
+#define EVC_X_VIDEO_URL			"X-EVOLUTION-VIDEO-URL"
+#define EVC_X_WANTS_HTML		"X-MOZILLA-HTML"
+#define EVC_X_YAHOO			"X-YAHOO"
+#define EVC_X_BOOK_URI			"X-EVOLUTION-BOOK-URI"
+
+/* Constants for Evo contact lists only */
+#define EVC_CONTACT_LIST		"X-EVOLUTION-CONTACT-LIST-INFO"
+#define EVC_PARENT_CL			"X-EVOLUTION-PARENT-UID"
+#define EVC_CL_UID			"X-EVOLUTION-CONTACT-LIST-UID"
+
+#ifndef EDS_DISABLE_DEPRECATED
+#define EVC_X_DEST_EMAIL		"X-EVOLUTION-DEST-EMAIL"
+#define EVC_X_DEST_NAME			"X-EVOLUTION-DEST-NAME"
+#endif /* EDS_DISABLE_DEPRECATED */
 
 typedef enum {
 	EVC_FORMAT_VCARD_21,

@@ -26,12 +26,12 @@
 
 G_BEGIN_DECLS
 
+typedef struct _ECredentials ECredentials;
 typedef struct _ECredentialsPrivate ECredentialsPrivate;
 
-typedef struct _ECredentials
-{
+struct _ECredentials {
 	ECredentialsPrivate *priv;
-} ECredentials;
+};
 
 #define E_CREDENTIALS_KEY_USERNAME	"username"
 #define E_CREDENTIALS_KEY_PASSWORD	"password"

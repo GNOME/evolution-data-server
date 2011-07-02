@@ -10,15 +10,21 @@
 
   <chapter>
     <title>Evolution-Data-Server Manual: Calendar Client (libecal)</title>
-    <xi:include href="xml/e-cal.xml"/>
+    <xi:include href="xml/e-cal-client.xml"/>
+    <xi:include href="xml/e-cal-client-view.xml"/>
     <xi:include href="xml/e-cal-component.xml"/>
-    <xi:include href="xml/e-cal-view.xml"/>
     <xi:include href="xml/e-cal-recur.xml"/>
     <xi:include href="xml/e-cal-time-util.xml"/>
     <xi:include href="xml/e-cal-types.xml"/>
     <xi:include href="xml/e-cal-util.xml"/>
     <xi:include href="xml/e-cal-system-timezone.xml"/>
     <xi:include href="xml/e-cal-check-timezones.xml"/>
+  </chapter>
+
+  <chapter>
+    <title>Deprecated Classes</title>
+    <xi:include href="xml/e-cal.xml"/>
+    <xi:include href="xml/e-cal-view.xml"/>
   </chapter>
 
   <index id="api-index-full">

@@ -55,7 +55,7 @@ gboolean		e_data_cal_view_object_matches			(EDataCalView *view, const gchar *obj
 gboolean		e_data_cal_view_is_started			(EDataCalView *view);
 gboolean		e_data_cal_view_is_completed			(EDataCalView *view);
 gboolean		e_data_cal_view_is_stopped			(EDataCalView *view);
-/* const */ GHashTable *e_data_cal_view_get_fields_of_interest		(EDataCalView *view);
+GHashTable *		e_data_cal_view_get_fields_of_interest		(EDataCalView *view);
 
 void			e_data_cal_view_notify_objects_added		(EDataCalView *view, const GSList *objects);
 void			e_data_cal_view_notify_objects_added_1		(EDataCalView *view, const gchar *object);

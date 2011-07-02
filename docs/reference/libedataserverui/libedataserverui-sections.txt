@@ -128,19 +128,38 @@ e_cell_renderer_color_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-client-utils</FILE>
+<TITLE>EClient Utilities</TITLE>
+EClientSourceType
+EClientUtilsAuthenticateHandler
+e_client_utils_new
+e_client_utils_new_from_uri
+e_client_utils_new_system
+e_client_utils_new_default
+e_client_utils_set_default
+e_client_utils_set_default_source
+e_client_utils_get_sources
+e_client_utils_open_new
+e_client_utils_open_new_finish
+e_client_utils_authenticate_handler
+e_client_utils_forget_password
+e_credentials_authenticate_helper
+e_credentials_forget_password
+</SECTION>
+
+<SECTION>
 <FILE>e-contact-store</FILE>
 <TITLE>EContactStore</TITLE>
 EContactStore
 e_contact_store_new
-e_contact_store_get_book
+e_contact_store_get_client
 e_contact_store_get_contact
 e_contact_store_find_contact
-e_contact_store_get_books
-e_contact_store_add_book
-e_contact_store_remove_book
+e_contact_store_get_clients
+e_contact_store_add_client
+e_contact_store_remove_client
 e_contact_store_set_query
 e_contact_store_peek_query
-find_contact_source_by_book_return_view
 <SUBSECTION Standard>
 E_CONTACT_STORE
 E_IS_CONTACT_STORE
@@ -192,6 +211,8 @@ e_name_selector_peek_dialog
 e_name_selector_peek_section_entry
 e_name_selector_peek_section_list
 e_name_selector_show_dialog
+e_name_selector_load_books
+e_name_selector_cancel_loading
 <SUBSECTION Standard>
 E_NAME_SELECTOR
 E_IS_NAME_SELECTOR
@@ -213,6 +234,7 @@ e_name_selector_dialog_new
 e_name_selector_dialog_peek_model
 e_name_selector_dialog_set_model
 e_name_selector_dialog_set_destination_index
+e_name_selector_dialog_set_scrolling_policy
 <SUBSECTION Standard>
 E_NAME_SELECTOR_DIALOG
 E_IS_NAME_SELECTOR_DIALOG

@@ -104,7 +104,7 @@ const gchar *e_data_book_status_to_string (EDataBookStatus status);
 	} G_STMT_END
 
 /**
- * e_return_data_book_error_if_fail:
+ * e_return_data_book_error_val_if_fail:
  *
  * Same as e_return_data_book_error_if_fail(), only returns FALSE on a failure
  *

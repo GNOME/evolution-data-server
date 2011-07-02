@@ -170,12 +170,14 @@ void		e_client_util_free_string_slist		(GSList *strings);
 void		e_client_util_free_object_slist		(GSList *objects);
 GSList *	e_client_util_parse_comma_strings	(const gchar *strings);
 
-struct EClientErrorsList {
+typedef struct _EClientErrorsList EClientErrorsList;
+
+struct _EClientErrorsList {
 	const gchar *name;
 	gint err_code;
 };
 
-gboolean	e_client_util_unwrap_dbus_error		(GError *dbus_error, GError **client_error, const struct EClientErrorsList *known_errors, guint known_errors_count, GQuark known_errors_domain, gboolean fail_when_none_matched);
+gboolean	e_client_util_unwrap_dbus_error		(GError *dbus_error, GError **client_error, const EClientErrorsList *known_errors, guint known_errors_count, GQuark known_errors_domain, gboolean fail_when_none_matched);
 
 G_END_DECLS
 

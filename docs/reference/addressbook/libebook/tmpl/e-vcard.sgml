@@ -74,6 +74,15 @@ Does the low-level parsing work for contact information. This data is more conve
 @Returns: 
 
 
+<!-- ##### FUNCTION e_vcard_is_parsed ##### -->
+<para>
+
+</para>
+
+@evc: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_vcard_dump_structure ##### -->
 <para>
 
@@ -731,6 +740,48 @@ Blog URL
 
 
 
+<!-- ##### MACRO EVC_X_CALLBACK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_COMPANY ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_CONTACT_UID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_EMAIL_NUM ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_HTML_MAIL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_SOURCE_UID ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO EVC_X_FILE_AS ##### -->
 <para>
 File As
@@ -739,6 +790,13 @@ File As
 
 
 <!-- ##### MACRO EVC_X_GADUGADU ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_GROUPWISE ##### -->
 <para>
 
 </para>
@@ -773,6 +831,13 @@ Jabber ID
 
 
 
+<!-- ##### MACRO EVC_X_LIST_NAME ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### MACRO EVC_X_MANAGER ##### -->
 <para>
 Mananger
@@ -787,98 +852,14 @@ MSN ID
 
 
 
-<!-- ##### MACRO EVC_X_SKYPE ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_WANTS_HTML ##### -->
-<para>
-Wants HTML mail
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_YAHOO ##### -->
-<para>
-Yahoo ID
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_BOOK_URI ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_CALLBACK ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_COMPANY ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_DEST_CONTACT_UID ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_DEST_EMAIL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_DEST_EMAIL_NUM ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_DEST_HTML_MAIL ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_DEST_NAME ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_DEST_SOURCE_UID ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### MACRO EVC_X_GROUPWISE ##### -->
-<para>
-
-</para>
-
-
-
 <!-- ##### MACRO EVC_X_RADIO ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_SKYPE ##### -->
 <para>
 
 </para>
@@ -914,6 +895,62 @@ Spouse
 
 
 <!-- ##### MACRO EVC_X_VIDEO_URL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_WANTS_HTML ##### -->
+<para>
+Wants HTML mail
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_YAHOO ##### -->
+<para>
+Yahoo ID
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_BOOK_URI ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_CONTACT_LIST ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_PARENT_CL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_CL_UID ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_EMAIL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO EVC_X_DEST_NAME ##### -->
 <para>
 
 </para>

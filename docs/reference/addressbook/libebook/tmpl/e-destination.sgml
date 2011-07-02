@@ -33,6 +33,15 @@ EDestination
 
 @edestination: the object which received the signal.
 
+<!-- ##### FUNCTION e_destination_new ##### -->
+<para>
+
+</para>
+
+@void: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_destination_copy ##### -->
 <para>
 
@@ -61,96 +70,36 @@ EDestination
 @Returns: 
 
 
-<!-- ##### FUNCTION e_destination_export ##### -->
+<!-- ##### FUNCTION e_destination_set_contact ##### -->
 <para>
 
 </para>
 
 @dest: 
-@Returns: 
+@contact: 
+@email_num: 
 
 
-<!-- ##### FUNCTION e_destination_export_to_vcard_attribute ##### -->
+<!-- ##### FUNCTION e_destination_set_contact_uid ##### -->
 <para>
 
 </para>
 
 @dest: 
-@attr: 
+@uid: 
+@email_num: 
 
 
-<!-- ##### FUNCTION e_destination_exportv ##### -->
-<para>
-
-</para>
-
-@destv: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_freev ##### -->
-<para>
-
-</para>
-
-@destv: 
-
-
-<!-- ##### FUNCTION e_destination_get_address ##### -->
+<!-- ##### FUNCTION e_destination_set_client ##### -->
 <para>
 
 </para>
 
 @dest: 
-@Returns: 
+@client: 
 
 
 <!-- ##### FUNCTION e_destination_get_contact ##### -->
-<para>
-
-</para>
-
-@dest: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_get_contact_uid ##### -->
-<para>
-
-</para>
-
-@dest: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_get_email ##### -->
-<para>
-
-</para>
-
-@dest: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_get_email_num ##### -->
-<para>
-
-</para>
-
-@dest: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_get_html_mail_pref ##### -->
-<para>
-
-</para>
-
-@dest: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_get_name ##### -->
 <para>
 
 </para>
@@ -168,6 +117,168 @@ EDestination
 @Returns: 
 
 
+<!-- ##### FUNCTION e_destination_get_contact_uid ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_get_email_num ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_set_name ##### -->
+<para>
+
+</para>
+
+@dest: 
+@name: 
+
+
+<!-- ##### FUNCTION e_destination_set_email ##### -->
+<para>
+
+</para>
+
+@dest: 
+@email: 
+
+
+<!-- ##### FUNCTION e_destination_get_name ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_get_email ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_get_address ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_is_evolution_list ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_list_show_addresses ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_list_get_dests ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_list_get_root_dests ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_is_ignored ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_set_ignored ##### -->
+<para>
+
+</para>
+
+@dest: 
+@ignored: 
+
+
+<!-- ##### FUNCTION e_destination_set_html_mail_pref ##### -->
+<para>
+
+</para>
+
+@dest: 
+@flag: 
+
+
+<!-- ##### FUNCTION e_destination_get_html_mail_pref ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_is_auto_recipient ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_set_auto_recipient ##### -->
+<para>
+
+</para>
+
+@dest: 
+@value: 
+
+
+<!-- ##### FUNCTION e_destination_set_raw ##### -->
+<para>
+
+</para>
+
+@dest: 
+@raw: 
+
+
 <!-- ##### FUNCTION e_destination_get_textrep ##### -->
 <para>
 
@@ -179,6 +290,24 @@ EDestination
 
 
 <!-- ##### FUNCTION e_destination_get_textrepv ##### -->
+<para>
+
+</para>
+
+@destv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_export ##### -->
+<para>
+
+</para>
+
+@dest: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_destination_exportv ##### -->
 <para>
 
 </para>
@@ -205,67 +334,21 @@ EDestination
 @Returns: 
 
 
-<!-- ##### FUNCTION e_destination_is_auto_recipient ##### -->
+<!-- ##### FUNCTION e_destination_export_to_vcard_attribute ##### -->
 <para>
 
 </para>
 
 @dest: 
-@Returns: 
+@attr: 
 
 
-<!-- ##### FUNCTION e_destination_is_evolution_list ##### -->
+<!-- ##### FUNCTION e_destination_freev ##### -->
 <para>
 
 </para>
 
-@dest: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_is_ignored ##### -->
-<para>
-
-</para>
-
-@dest: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_list_get_dests ##### -->
-<para>
-
-</para>
-
-@dest: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_list_show_addresses ##### -->
-<para>
-
-</para>
-
-@dest: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_new ##### -->
-<para>
-
-</para>
-
-@void: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_destination_set_auto_recipient ##### -->
-<para>
-
-</para>
-
-@dest: 
-@value: 
+@destv: 
 
 
 <!-- ##### FUNCTION e_destination_set_book ##### -->
@@ -275,70 +358,5 @@ EDestination
 
 @dest: 
 @book: 
-
-
-<!-- ##### FUNCTION e_destination_set_contact ##### -->
-<para>
-
-</para>
-
-@dest: 
-@contact: 
-@email_num: 
-
-
-<!-- ##### FUNCTION e_destination_set_contact_uid ##### -->
-<para>
-
-</para>
-
-@dest: 
-@uid: 
-@email_num: 
-
-
-<!-- ##### FUNCTION e_destination_set_email ##### -->
-<para>
-
-</para>
-
-@dest: 
-@email: 
-
-
-<!-- ##### FUNCTION e_destination_set_html_mail_pref ##### -->
-<para>
-
-</para>
-
-@dest: 
-@flag: 
-
-
-<!-- ##### FUNCTION e_destination_set_ignored ##### -->
-<para>
-
-</para>
-
-@dest: 
-@ignored: 
-
-
-<!-- ##### FUNCTION e_destination_set_name ##### -->
-<para>
-
-</para>
-
-@dest: 
-@name: 
-
-
-<!-- ##### FUNCTION e_destination_set_raw ##### -->
-<para>
-
-</para>
-
-@dest: 
-@raw: 
 
 

@@ -198,6 +198,7 @@ camel_data_cache_add
 camel_data_cache_get
 camel_data_cache_remove
 camel_data_cache_get_filename
+camel_data_cache_clear
 <SUBSECTION Standard>
 CAMEL_DATA_CACHE
 CAMEL_IS_DATA_CACHE
@@ -545,6 +546,7 @@ camel_folder_search_execute_expression
 camel_folder_search_search
 camel_folder_search_count
 camel_folder_search_free_result
+camel_folder_search_util_add_months
 <SUBSECTION Standard>
 CAMEL_FOLDER_SEARCH
 CAMEL_IS_FOLDER_SEARCH
@@ -582,7 +584,6 @@ camel_folder_summary_next_uid_string
 camel_folder_summary_set_uid
 camel_folder_summary_save_to_db
 camel_folder_summary_load_from_db
-camel_folder_summary_header_load
 camel_folder_summary_header_load_from_db
 camel_folder_summary_header_save_to_db
 camel_folder_summary_touch

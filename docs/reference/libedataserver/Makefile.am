@@ -13,7 +13,11 @@ DOC_SOURCE_DIR = $(top_srcdir)/libedataserver
 # Used for dependencies. The docs will be rebuilt if any of these change.
 HFILE_GLOB = $(top_srcdir)/libedataserver/*.h
 CFILE_GLOB = $(top_srcdir)/libedataserver/*.c
-IGNORE_HFILES = 			\
+
+IGNORE_HFILES = 					\
+	e-client-private.h				\
+	e-gdbus-marshallers.h				\
+	e-gdbus-templates.h				\
 	libedataserver-private.h
 
 GTKDOC_CFLAGS  =					\

@@ -113,3 +113,13 @@ CamelFolderSearch
 @Param2: 
 
 
+<!-- ##### FUNCTION camel_folder_search_util_add_months ##### -->
+<para>
+
+</para>
+
+@t: 
+@months: 
+@Returns: 
+
+

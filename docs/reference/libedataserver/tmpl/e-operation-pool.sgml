@@ -1,0 +1,68 @@
+<!-- ##### SECTION Title ##### -->
+EOperationPool
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### FUNCTION e_operation_pool_new ##### -->
+<para>
+
+</para>
+
+@max_threads: 
+@thread_func: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_operation_pool_free ##### -->
+<para>
+
+</para>
+
+@pool: 
+
+
+<!-- ##### FUNCTION e_operation_pool_reserve_opid ##### -->
+<para>
+
+</para>
+
+@pool: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_operation_pool_release_opid ##### -->
+<para>
+
+</para>
+
+@pool: 
+@opid: 
+
+
+<!-- ##### FUNCTION e_operation_pool_push ##### -->
+<para>
+
+</para>
+
+@pool: 
+@data: 
+
+

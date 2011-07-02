@@ -35,6 +35,18 @@ EBookBackendSync
 @Returns: 
 
 
+<!-- ##### FUNCTION e_book_backend_sync_open ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@cancellable: 
+@only_if_exists: 
+@error: 
+
+
 <!-- ##### FUNCTION e_book_backend_sync_remove ##### -->
 <para>
 
@@ -44,6 +56,45 @@ EBookBackendSync
 @book: 
 @cancellable: 
 @error: 
+
+
+<!-- ##### FUNCTION e_book_backend_sync_refresh ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@cancellable: 
+@error: 
+
+
+<!-- ##### FUNCTION e_book_backend_sync_get_backend_property ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@cancellable: 
+@prop_name: 
+@prop_value: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_sync_set_backend_property ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@cancellable: 
+@prop_name: 
+@prop_value: 
+@error: 
+@Returns: 
 
 
 <!-- ##### FUNCTION e_book_backend_sync_create_contact ##### -->
@@ -108,6 +159,19 @@ EBookBackendSync
 @cancellable: 
 @query: 
 @contacts: 
+@error: 
+
+
+<!-- ##### FUNCTION e_book_backend_sync_get_contact_list_uids ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@cancellable: 
+@query: 
+@contacts_uids: 
 @error: 
 
 

@@ -125,3 +125,12 @@ CamelDataCache
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_data_cache_clear ##### -->
+<para>
+
+</para>
+
+@cdc: 
+@path: 
+
+
