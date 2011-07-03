@@ -1907,7 +1907,7 @@ e_client_unwrap_dbus_error (EClient *client, GError *dbus_error, GError **out_er
  * Note: The @dbus_error is automatically freed if returned %TRUE.
  **/
 gboolean
-e_client_util_unwrap_dbus_error (GError *dbus_error, GError **client_error, const struct EClientErrorsList *known_errors, guint known_errors_count, GQuark known_errors_domain, gboolean fail_when_none_matched)
+e_client_util_unwrap_dbus_error (GError *dbus_error, GError **client_error, const EClientErrorsList *known_errors, guint known_errors_count, GQuark known_errors_domain, gboolean fail_when_none_matched)
 {
 	if (!client_error) {
 		if (dbus_error)

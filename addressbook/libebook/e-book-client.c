@@ -123,8 +123,7 @@ static gboolean
 unwrap_dbus_error (GError *error, GError **client_error)
 {
 	#define err(a,b) "org.gnome.evolution.dataserver.AddressBook." a, b
-	static struct EClientErrorsList
-	book_errors[] = {
+	static EClientErrorsList book_errors[] = {
 		{ err ("Success",				-1) },
 		{ err ("ContactNotFound",			E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND) },
 		{ err ("ContactIDAlreadyExists",		E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS) },

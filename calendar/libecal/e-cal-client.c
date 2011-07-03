@@ -167,8 +167,7 @@ static gboolean
 unwrap_dbus_error (GError *error, GError **client_error)
 {
 	#define err(a,b) "org.gnome.evolution.dataserver.Calendar." a, b
-	static struct EClientErrorsList
-	cal_errors[] = {
+	static EClientErrorsList cal_errors[] = {
 		{ err ("Success",				-1) },
 		{ err ("ObjectNotFound",			E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND) },
 		{ err ("InvalidObject",				E_CAL_CLIENT_ERROR_INVALID_OBJECT) },
