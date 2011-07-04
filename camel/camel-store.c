@@ -2001,7 +2001,7 @@ camel_store_can_refresh_folder (CamelStore *store,
  * @store: a #CamelStore
  * @lock: lock type to lock
  *
- * Locks #store's #lock. Unlock it with camel_store_unlock().
+ * Locks @store's @lock. Unlock it with camel_store_unlock().
  *
  * Since: 2.32
  **/
@@ -2025,7 +2025,7 @@ camel_store_lock (CamelStore *store,
  * @store: a #CamelStore
  * @lock: lock type to unlock
  *
- * Unlocks #store's #lock, previously locked with camel_store_lock().
+ * Unlocks @store's @lock, previously locked with camel_store_lock().
  *
  * Since: 2.32
  **/

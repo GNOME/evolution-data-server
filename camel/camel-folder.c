@@ -2923,7 +2923,7 @@ camel_folder_free_deep (CamelFolder *folder,
  * @folder: a #CamelFolder
  * @lock: lock type to lock
  *
- * Locks #folder's #lock. Unlock it with camel_folder_unlock().
+ * Locks @folder's @lock. Unlock it with camel_folder_unlock().
  *
  * Since: 2.32
  **/
@@ -2951,7 +2951,7 @@ camel_folder_lock (CamelFolder *folder,
  * @folder: a #CamelFolder
  * @lock: lock type to unlock
  *
- * Unlocks #folder's #lock, previously locked with camel_folder_lock().
+ * Unlocks @folder's @lock, previously locked with camel_folder_lock().
  *
  * Since: 2.32
  **/

@@ -981,7 +981,7 @@ camel_mime_part_set_content (CamelMimePart *mime_part,
  * @mime_part: a #CamelMimePart
  *
  * Get the disposition of the MIME part as a structure.
- * Returned pointer is owned by #mime_part.
+ * Returned pointer is owned by @mime_part.
  *
  * Returns: the disposition structure
  *

@@ -2529,7 +2529,7 @@ camel_vee_folder_set_unread_vfolder (CamelVeeFolder *folder,
  * @folder: a #CamelVeeFolder
  * @lock: lock type to lock
  *
- * Locks #folder's #lock. Unlock it with camel_vee_folder_unlock().
+ * Locks @folder's @lock. Unlock it with camel_vee_folder_unlock().
  *
  * Since: 2.32
  **/
@@ -2559,7 +2559,7 @@ camel_vee_folder_lock (CamelVeeFolder *folder,
  * @folder: a #CamelVeeFolder
  * @lock: lock type to unlock
  *
- * Unlocks #folder's #lock, previously locked with camel_vee_folder_lock().
+ * Unlocks @folder's @lock, previously locked with camel_vee_folder_lock().
  *
  * Since: 2.32
  **/

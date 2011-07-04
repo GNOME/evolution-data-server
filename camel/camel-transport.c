@@ -171,7 +171,7 @@ camel_transport_init (CamelTransport *transport)
  * @transport: a #CamelTransport
  * @lock: lock type to lock
  *
- * Locks #transport's #lock. Unlock it with camel_transport_unlock().
+ * Locks %transport's %lock. Unlock it with camel_transport_unlock().
  *
  * Since: 2.32
  **/
@@ -195,7 +195,7 @@ camel_transport_lock (CamelTransport *transport,
  * @transport: a #CamelTransport
  * @lock: lock type to unlock
  *
- * Unlocks #transport's #lock, previously locked with camel_transport_lock().
+ * Unlocks %transport's %lock, previously locked with camel_transport_lock().
  *
  * Since: 2.32
  **/

@@ -1081,7 +1081,7 @@ camel_store_info_set_string (CamelStoreSummary *summary,
  * @summary: a #CamelStoreSummary
  * @lock: lock type to lock
  *
- * Locks #summary's #lock. Unlock it with camel_store_summary_unlock().
+ * Locks @summary's @lock. Unlock it with camel_store_summary_unlock().
  *
  * Since: 2.32
  **/
@@ -1111,7 +1111,7 @@ camel_store_summary_lock (CamelStoreSummary *summary,
  * @summary: a #CamelStoreSummary
  * @lock: lock type to unlock
  *
- * Unlocks #summary's #lock, previously locked with camel_store_summary_lock().
+ * Unlocks @summary's @lock, previously locked with camel_store_summary_lock().
  *
  * Since: 2.32
  **/

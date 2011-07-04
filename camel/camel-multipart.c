@@ -462,7 +462,7 @@ camel_multipart_remove_part (CamelMultipart *multipart,
  *
  * Remove the indicated part from the multipart object.
  *
- * Returns: the removed part. Note that it is #g_object_unref'ed
+ * Returns: the removed part. Note that it is g_object_unref()'ed
  * before being returned, which may cause it to be destroyed.
  **/
 CamelMimePart *

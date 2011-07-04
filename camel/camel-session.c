@@ -1120,7 +1120,7 @@ camel_session_forward_to (CamelSession *session,
  * @session: a #CamelSession
  * @lock: lock type to lock
  *
- * Locks #session's #lock. Unlock it with camel_session_unlock().
+ * Locks @session's @lock. Unlock it with camel_session_unlock().
  *
  * Since: 2.32
  **/
@@ -1147,7 +1147,7 @@ camel_session_lock (CamelSession *session,
  * @session: a #CamelSession
  * @lock: lock type to unlock
  *
- * Unlocks #session's #lock, previously locked with camel_session_lock().
+ * Unlocks @session's @lock, previously locked with camel_session_lock().
  *
  * Since: 2.32
  **/
@@ -1172,7 +1172,7 @@ camel_session_unlock (CamelSession *session,
 /**
  * camel_session_set_socks_proxy:
  * @session: A #CamelSession
- * @socks_host: Hostname of the SOCKS proxy, or #NULL for none.
+ * @socks_host: Hostname of the SOCKS proxy, or %NULL for none.
  * @socks_port: Port number of the SOCKS proxy
  *
  * Sets a SOCKS proxy that will be used throughout the @session for
@@ -1204,7 +1204,7 @@ camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, g
  * @port_ret: Location to return the SOCKS proxy port
  *
  * Queries the SOCKS proxy that is configured for a @session.  This will
- * put #NULL in @hosts_ret if there is no proxy configured.
+ * put %NULL in @hosts_ret if there is no proxy configured.
  *
  * Since: 2.32
  */

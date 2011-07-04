@@ -282,7 +282,7 @@ camel_mime_filter_reset (CamelMimeFilter *filter)
 
 /**
  * camel_mime_filter_backup:
- * @filter: a #camelMimeFilter object
+ * @filter: a #CamelMimeFilter object
  * @data: data buffer to backup
  * @length: length of @data
  *
@@ -306,7 +306,7 @@ camel_mime_filter_backup (CamelMimeFilter *filter, const gchar *data, gsize leng
 
 /**
  * camel_mime_filter_set_size:
- * @filter: a #camelMimeFilter object
+ * @filter: a #CamelMimeFilter object
  * @size: requested amount of storage space
  * @keep: %TRUE to keep existing buffered data or %FALSE otherwise
  *

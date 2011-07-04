@@ -927,7 +927,7 @@ camel_service_get_connection_status (CamelService *service)
  * @service: a #CamelService
  * @lock: lock type to lock
  *
- * Locks #service's #lock. Unlock it with camel_service_unlock().
+ * Locks @service's @lock. Unlock it with camel_service_unlock().
  *
  * Since: 2.32
  **/
@@ -954,7 +954,7 @@ camel_service_lock (CamelService *service,
  * @service: a #CamelService
  * @lock: lock type to unlock
  *
- * Unlocks #service's #lock, previously locked with camel_service_lock().
+ * Unlocks @service's @lock, previously locked with camel_service_lock().
  *
  * Since: 2.32
  **/

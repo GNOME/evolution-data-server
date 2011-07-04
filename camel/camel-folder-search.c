@@ -314,7 +314,7 @@ camel_folder_search_set_body_index (CamelFolderSearch *search, CamelIndex *index
  * all matches as a GPtrArray of uid's of matching messages.
  *
  * Note that any settings such as set_body_index(), set_folder(),
- * and so on are reset to #NULL once the search has completed.
+ * and so on are reset to %NULL once the search has completed.
  *
  * TODO: The interface should probably return summary items instead
  * (since they are much more useful to any client).

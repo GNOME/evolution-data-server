@@ -4822,7 +4822,7 @@ camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType 
  * @summary: a #CamelFolderSummary
  * @lock: lock type to lock
  *
- * Locks #summary's #lock. Unlock it with camel_folder_summary_unlock().
+ * Locks @summary's @lock. Unlock it with camel_folder_summary_unlock().
  *
  * Since: 2.32
  **/
@@ -4858,7 +4858,7 @@ camel_folder_summary_lock (CamelFolderSummary *summary,
  * @summary: a #CamelFolderSummary
  * @lock: lock type to unlock
  *
- * Unlocks #summary's #lock, previously locked with camel_folder_summary_lock().
+ * Unlocks @summary's @lock, previously locked with camel_folder_summary_lock().
  *
  * Since: 2.32
  **/

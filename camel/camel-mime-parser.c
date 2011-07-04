@@ -470,7 +470,7 @@ camel_mime_parser_init_with_stream (CamelMimeParser *parser,
 /**
  * camel_mime_parser_scan_from:
  * @parser: MIME parser object
- * @scan_from: #TRUE if the scanner should scan From lines.
+ * @scan_from: %TRUE if the scanner should scan From lines.
  *
  * Tell the scanner if it should scan "^From " lines or not.
  *
@@ -494,7 +494,7 @@ camel_mime_parser_scan_from (CamelMimeParser *parser, gboolean scan_from)
 /**
  * camel_mime_parser_scan_pre_from:
  * @parser: MIME parser object
- * @scan_pre_from: #TRUE if we want to get pre-from data.
+ * @scan_pre_from: %TRUE if we want to get pre-from data.
  *
  * Tell the scanner whether we want to know abou the pre-from
  * data during a scan.  If we do, then we may get an additional
@@ -574,7 +574,7 @@ camel_mime_parser_drop_step (CamelMimeParser *parser)
  * camel_mime_parser_step:
  * @parser: MIME parser object
  * @databuffer: Pointer to accept a pointer to the data
- * associated with this step (if any).  May be #NULL,
+ * associated with this step (if any).  May be %NULL,
  * in which case datalength is also ingored.
  * @datalength: Pointer to accept a pointer to the data
  * length associated with this step (if any).

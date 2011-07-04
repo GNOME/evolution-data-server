@@ -678,7 +678,7 @@ camel_cert_set_trust (CamelCertDB *certdb, CamelCert *cert, CamelCertTrust trust
  * @certdb: a #CamelCertDB
  * @lock: lock type to lock
  *
- * Locks #certdb's #lock. Unlock it with camel_certdb_unlock().
+ * Locks @certdb's @lock. Unlock it with camel_certdb_unlock().
  *
  * Since: 2.32
  **/
@@ -712,7 +712,7 @@ camel_certdb_lock (CamelCertDB *certdb, CamelCertDBLock lock)
  * @certdb: a #CamelCertDB
  * @lock: lock type to unlock
  *
- * Unlocks #certdb's #lock, previously locked with camel_certdb_lock().
+ * Unlocks @certdb's @lock, previously locked with camel_certdb_lock().
  *
  * Since: 2.32
  **/

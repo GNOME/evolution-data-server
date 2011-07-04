@@ -164,7 +164,7 @@ camel_mempool_strdup (CamelMemPool *pool,
  *
  * Flush used memory and mark allocated blocks as free.
  *
- * If @freeall is #TRUE, then all allocated blocks are free'd
+ * If @freeall is %TRUE, then all allocated blocks are free'd
  * as well.  Otherwise only blocks above the threshold are
  * actually freed, and the others are simply marked as empty.
  *

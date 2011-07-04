@@ -611,7 +611,7 @@ camel_data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
  * @data_wrapper: a #CamelDataWrapper
  * @lock: lock type to lock
  *
- * Locks #data_wrapper's #lock. Unlock it with camel_data_wrapper_unlock().
+ * Locks @data_wrapper's @lock. Unlock it with camel_data_wrapper_unlock().
  *
  * Since: 2.32
  **/
@@ -635,7 +635,7 @@ camel_data_wrapper_lock (CamelDataWrapper *data_wrapper,
  * @data_wrapper: a #CamelDataWrapper
  * @lock: lock type to unlock
  *
- * Unlocks #data_wrapper's #lock, previously locked with
+ * Unlocks @data_wrapper's @lock, previously locked with
  * camel_data_wrapper_lock().
  *
  * Since: 2.32

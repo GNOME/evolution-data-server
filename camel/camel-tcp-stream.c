@@ -165,7 +165,7 @@ camel_tcp_stream_setsockopt (CamelTcpStream *stream,
  * Get the local address of @stream.
  *
  * Returns: the stream's local address (which must be freed with
- * #g_free) if the stream is connected, or %NULL if not
+ * g_free()) if the stream is connected, or %NULL if not
  *
  * Since: 2.22
  **/
@@ -192,7 +192,7 @@ camel_tcp_stream_get_local_address (CamelTcpStream *stream,
  * Get the remote address of @stream.
  *
  * Returns: the stream's remote address (which must be freed with
- * #g_free) if the stream is connected, or %NULL if not.
+ * g_free()) if the stream is connected, or %NULL if not.
  *
  * Since: 2.22
  **/
@@ -266,7 +266,7 @@ camel_tcp_stream_set_socks_proxy (CamelTcpStream *stream,
  * @socks_port_ret: location to return the port number in the SOCKS host
  *
  * Queries the SOCKS proxy that is configured for a @stream.  This will
- * return #NULL in @socks_host_ret if no proxy is configured.
+ * return %NULL in @socks_host_ret if no proxy is configured.
  *
  * Since: 2.32
  */
