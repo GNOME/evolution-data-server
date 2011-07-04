@@ -20,6 +20,7 @@
  */
 
 #include "camel-imapx-conn-manager.h"
+#include "camel-imapx-settings.h"
 #include "camel-imapx-utils.h"
 
 #define c(...) camel_imapx_debug(conman, __VA_ARGS__)
@@ -38,7 +39,6 @@ G_DEFINE_TYPE (
 
 struct _CamelIMAPXConnManagerPrivate {
 	GSList *connections;
-	guint n_connections;
 	gpointer store;  /* weak pointer */
 	GStaticRecMutex con_man_lock;
 	gboolean clearing_connections;
@@ -194,8 +194,6 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 {
 	con_man->priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (con_man);
 
-	/* default is 1 connection */
-	con_man->priv->n_connections = 1;
 	g_static_rec_mutex_init (&con_man->priv->con_man_lock);
 
 	con_man->priv->clearing_connections = FALSE;
@@ -281,9 +279,19 @@ imapx_find_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name)
 	guint i = 0, prev_len = -1, n = -1;
 	GSList *l;
 	CamelIMAPXServer *conn = NULL;
+	CamelService *service;
+	CamelSettings *settings;
 	ConnectionInfo *cinfo = NULL;
+	guint concurrent_connections;
 
 	CON_LOCK (con_man);
+
+	service = CAMEL_SERVICE (con_man->priv->store);
+	settings = camel_service_get_settings (service);
+
+	concurrent_connections =
+		camel_imapx_settings_get_concurrent_connections (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	/* Have a dedicated connection for INBOX ? */
 	for (l = con_man->priv->connections, i = 0; l != NULL; l = g_slist_next (l), i++) {
@@ -312,7 +320,7 @@ imapx_find_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name)
 		}
 	}
 
-	if (!conn && n != -1 && (!folder_name || con_man->priv->n_connections == g_slist_length (con_man->priv->connections))) {
+	if (!conn && n != -1 && (!folder_name || concurrent_connections == g_slist_length (con_man->priv->connections))) {
 		cinfo = g_slist_nth_data (con_man->priv->connections, n);
 		conn = g_object_ref (cinfo->conn);
 
@@ -323,7 +331,7 @@ imapx_find_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name)
 	}
 
 	if (camel_debug_flag (conman))
-		g_assert (!(con_man->priv->n_connections == g_slist_length (con_man->priv->connections) && !conn));
+		g_assert (!(concurrent_connections == g_slist_length (con_man->priv->connections) && !conn));
 
 	CON_UNLOCK (con_man);
 
@@ -399,14 +407,6 @@ camel_imapx_conn_manager_get_store (CamelIMAPXConnManager *con_man)
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), NULL);
 
 	return CAMEL_STORE (con_man->priv->store);
-}
-
-void
-camel_imapx_conn_manager_set_n_connections (CamelIMAPXConnManager *con_man, guint n_connections)
-{
-	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
-
-	con_man->priv->n_connections = n_connections;
 }
 
 CamelIMAPXServer *

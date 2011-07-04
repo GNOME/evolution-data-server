@@ -273,6 +273,22 @@ typedef enum {
 	CAMEL_SESSION_ALERT_ERROR
 } CamelSessionAlertType;
 
+/**
+ * CamelSortType:
+ * @CAMEL_SORT_ASCENDING:
+ *   Sorting is in ascending order.
+ * @CAMEL_SORT_DESCENDING:
+ *   Sorting is in descending order.
+ *
+ * Determines the direction of a sort.
+ *
+ * Since: 3.2
+ **/
+typedef enum {
+	CAMEL_SORT_ASCENDING,
+	CAMEL_SORT_DESCENDING
+} CamelSortType;
+
 typedef enum { /*< flags >*/
 	CAMEL_STORE_SUBSCRIPTIONS    = 1 << 0,
 	CAMEL_STORE_VTRASH           = 1 << 1,

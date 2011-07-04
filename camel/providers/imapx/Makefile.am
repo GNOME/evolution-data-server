@@ -11,24 +11,26 @@ libcamelimapx_la_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"camel-imapx\"
 
 libcamelimapx_la_SOURCES =			\
-	camel-imapx-stream.c			\
-	camel-imapx-utils.c			\
-	camel-imapx-provider.c			\
-	camel-imapx-store-summary.c		\
-	camel-imapx-summary.c			\
-	camel-imapx-store.c			\
+	camel-imapx-conn-manager.c		\
 	camel-imapx-folder.c			\
+	camel-imapx-provider.c			\
 	camel-imapx-server.c			\
-	camel-imapx-conn-manager.c
+	camel-imapx-settings.c			\
+	camel-imapx-store-summary.c		\
+	camel-imapx-store.c			\
+	camel-imapx-stream.c			\
+	camel-imapx-summary.c			\
+	camel-imapx-utils.c
 
 noinst_HEADERS =				\
-	camel-imapx-stream.h			\
-	camel-imapx-store-summary.h		\
-	camel-imapx-summary.h			\
-	camel-imapx-folder.h			\
-	camel-imapx-store.h			\
-	camel-imapx-server.h			\
 	camel-imapx-conn-manager.h		\
+	camel-imapx-folder.h			\
+	camel-imapx-server.h			\
+	camel-imapx-settings.h			\
+	camel-imapx-store-summary.h		\
+	camel-imapx-store.h			\
+	camel-imapx-stream.h			\
+	camel-imapx-summary.h			\
 	camel-imapx-utils.h
 
 camel-imapx-tokenise.h: camel-imapx-tokens.txt

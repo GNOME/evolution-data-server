@@ -1,0 +1,1112 @@
+/*
+ * camel-imapx-settings.c
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
+ *
+ */
+
+#include "camel-imapx-settings.h"
+
+#define MIN_CONCURRENT_CONNECTIONS 1
+#define MAX_CONCURRENT_CONNECTIONS 7
+
+#define CAMEL_IMAPX_SETTINGS_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_IMAPX_SETTINGS, CamelIMAPXSettingsPrivate))
+
+struct _CamelIMAPXSettingsPrivate {
+	gchar *namespace;
+	gchar *shell_command;
+
+	guint batch_fetch_count;
+	guint concurrent_connections;
+
+	gboolean check_all;
+	gboolean check_subscribed;
+	gboolean filter_junk;
+	gboolean filter_junk_inbox;
+	gboolean use_idle;
+	gboolean use_namespace;
+	gboolean use_qresync;
+	gboolean use_shell_command;
+	gboolean use_subscriptions;
+
+	CamelSortType fetch_order;
+};
+
+enum {
+	PROP_0,
+	PROP_BATCH_FETCH_COUNT,
+	PROP_CHECK_ALL,
+	PROP_CHECK_SUBSCRIBED,
+	PROP_CONCURRENT_CONNECTIONS,
+	PROP_FETCH_ORDER,
+	PROP_FILTER_JUNK,
+	PROP_FILTER_JUNK_INBOX,
+	PROP_NAMESPACE,
+	PROP_SECURITY_METHOD,
+	PROP_SHELL_COMMAND,
+	PROP_USE_IDLE,
+	PROP_USE_NAMESPACE,
+	PROP_USE_QRESYNC,
+	PROP_USE_SHELL_COMMAND,
+	PROP_USE_SUBSCRIPTIONS
+};
+
+G_DEFINE_TYPE_WITH_CODE (
+	CamelIMAPXSettings,
+	camel_imapx_settings,
+	CAMEL_TYPE_OFFLINE_SETTINGS,
+	G_IMPLEMENT_INTERFACE (
+		CAMEL_TYPE_NETWORK_SETTINGS, NULL))
+
+static void
+imapx_settings_set_property (GObject *object,
+                             guint property_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_BATCH_FETCH_COUNT:
+			camel_imapx_settings_set_batch_fetch_count (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_uint (value));
+			return;
+
+		case PROP_CHECK_ALL:
+			camel_imapx_settings_set_check_all (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_CHECK_SUBSCRIBED:
+			camel_imapx_settings_set_check_subscribed (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_CONCURRENT_CONNECTIONS:
+			camel_imapx_settings_set_concurrent_connections (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_uint (value));
+			return;
+
+		case PROP_FETCH_ORDER:
+			camel_imapx_settings_set_fetch_order (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_enum (value));
+			return;
+
+		case PROP_FILTER_JUNK:
+			camel_imapx_settings_set_filter_junk (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_FILTER_JUNK_INBOX:
+			camel_imapx_settings_set_filter_junk_inbox (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_NAMESPACE:
+			camel_imapx_settings_set_namespace (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_SECURITY_METHOD:
+			camel_network_settings_set_security_method (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_enum (value));
+			return;
+
+		case PROP_SHELL_COMMAND:
+			camel_imapx_settings_set_shell_command (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_USE_IDLE:
+			camel_imapx_settings_set_use_idle (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_USE_NAMESPACE:
+			camel_imapx_settings_set_use_namespace (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_USE_QRESYNC:
+			camel_imapx_settings_set_use_qresync (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_USE_SHELL_COMMAND:
+			camel_imapx_settings_set_use_shell_command (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_USE_SUBSCRIPTIONS:
+			camel_imapx_settings_set_use_subscriptions (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+imapx_settings_get_property (GObject *object,
+                             guint property_id,
+                             GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_BATCH_FETCH_COUNT:
+			g_value_set_uint (
+				value,
+				camel_imapx_settings_get_batch_fetch_count (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_CHECK_ALL:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_check_all (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_CHECK_SUBSCRIBED:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_check_subscribed (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_CONCURRENT_CONNECTIONS:
+			g_value_set_uint (
+				value,
+				camel_imapx_settings_get_concurrent_connections (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_FETCH_ORDER:
+			g_value_set_enum (
+				value,
+				camel_imapx_settings_get_fetch_order (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_FILTER_JUNK:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_filter_junk (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_FILTER_JUNK_INBOX:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_filter_junk_inbox (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_NAMESPACE:
+			g_value_set_string (
+				value,
+				camel_imapx_settings_get_namespace (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_SECURITY_METHOD:
+			g_value_set_enum (
+				value,
+				camel_network_settings_get_security_method (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
+		case PROP_SHELL_COMMAND:
+			g_value_set_string (
+				value,
+				camel_imapx_settings_get_shell_command (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_USE_IDLE:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_use_idle (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_USE_NAMESPACE:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_use_namespace (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_USE_QRESYNC:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_use_qresync (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_USE_SHELL_COMMAND:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_use_shell_command (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_USE_SUBSCRIPTIONS:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_use_subscriptions (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+imapx_settings_finalize (GObject *object)
+{
+	CamelIMAPXSettingsPrivate *priv;
+
+	priv = CAMEL_IMAPX_SETTINGS_GET_PRIVATE (object);
+
+	g_free (priv->namespace);
+	g_free (priv->shell_command);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imapx_settings_parent_class)->finalize (object);
+}
+
+static void
+camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelIMAPXSettingsPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = imapx_settings_set_property;
+	object_class->get_property = imapx_settings_get_property;
+	object_class->finalize = imapx_settings_finalize;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_BATCH_FETCH_COUNT,
+		g_param_spec_uint (
+			"batch-fetch-count",
+			"Batch Fetch Count",
+			"Number of envelopes to fetch at once",
+			0,
+			G_MAXUINT,
+			500,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CHECK_ALL,
+		g_param_spec_boolean (
+			"check-all",
+			"Check All",
+			"Check all folders for new messages",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CHECK_SUBSCRIBED,
+		g_param_spec_boolean (
+			"check-subscribed",
+			"Check Subscribed",
+			"Check only subscribed folders for new messages",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CONCURRENT_CONNECTIONS,
+		g_param_spec_uint (
+			"concurrent-connections",
+			"Concurrent Connections",
+			"Number of concurrent IMAP connections to use",
+			MIN_CONCURRENT_CONNECTIONS,
+			MAX_CONCURRENT_CONNECTIONS,
+			5,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_FETCH_ORDER,
+		g_param_spec_enum (
+			"fetch-order",
+			"Fetch Order",
+			"Order in which new messages should be fetched",
+			CAMEL_TYPE_SORT_TYPE,
+			CAMEL_SORT_ASCENDING,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_FILTER_JUNK,
+		g_param_spec_boolean (
+			"filter-junk",
+			"Filter Junk",
+			"Whether to filter junk from all folders",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_FILTER_JUNK_INBOX,
+		g_param_spec_boolean (
+			"filter-junk-inbox",
+			"Filter Junk Inbox",
+			"Whether to filter junk from Inbox only",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_NAMESPACE,
+		g_param_spec_string (
+			"namespace",
+			"Namespace",
+			"Custom IMAP namespace",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_SECURITY_METHOD,
+		"security-method");
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SHELL_COMMAND,
+		g_param_spec_string (
+			"shell-command",
+			"Shell Command",
+			"Shell command for connecting to the server",
+			"ssh -C -l %u %h exec /usr/sbin/imapd",
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_USE_IDLE,
+		g_param_spec_boolean (
+			"use-idle",
+			"Use IDLE",
+			"Whether to use the IDLE IMAP extension",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_USE_NAMESPACE,
+		g_param_spec_boolean (
+			"use-namespace",
+			"Use Namespace",
+			"Whether to use a custom IMAP namespace",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_USE_QRESYNC,
+		g_param_spec_boolean (
+			"use-qresync",
+			"Use QRESYNC",
+			"Whether to use the QRESYNC IMAP extension",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_USE_SHELL_COMMAND,
+		g_param_spec_boolean (
+			"use-shell-command",
+			"Use Shell Command",
+			"Whether to use a custom shell "
+			"command to connect to the server",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_USE_SUBSCRIPTIONS,
+		g_param_spec_boolean (
+			"use-subscriptions",
+			"Use Subscriptions",
+			"Whether to honor folder subscriptions",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+}
+
+static void
+camel_imapx_settings_init (CamelIMAPXSettings *settings)
+{
+	settings->priv = CAMEL_IMAPX_SETTINGS_GET_PRIVATE (settings);
+}
+
+/**
+ * camel_imapx_settings_get_batch_fetch_count:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns the number of message envelopes to fetch at once.
+ *
+ * This is a tunable performance parameter and probably should not be
+ * exposed in a graphical user interface.
+ *
+ * Returns: number of message envelopes to fetch at once
+ *
+ * Since: 3.2
+ **/
+guint
+camel_imapx_settings_get_batch_fetch_count (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), 0);
+
+	return settings->priv->batch_fetch_count;
+}
+
+/**
+ * camel_imapx_settings_set_batch_fetch_count:
+ * @settings: a #CamelIMAPXSettings
+ * @batch_fetch_count: number of message envelopes to fetch at once
+ *
+ * Sets the number of message envelopes to fetch at once.
+ *
+ * This is a tunable performance parameter and probably should not be
+ * exposed in a graphical user interface.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_batch_fetch_count (CamelIMAPXSettings *settings,
+                                            guint batch_fetch_count)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->batch_fetch_count = batch_fetch_count;
+
+	g_object_notify (G_OBJECT (settings), "batch-fetch-count");
+}
+
+/**
+ * camel_imapx_settings_get_check_all:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to check all folders for new messages.
+ *
+ * Returns: whether to check all folders for new messages
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_imapx_settings_get_check_all (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->check_all;
+}
+
+/**
+ * camel_imapx_settings_set_check_all:
+ * @settings: a #CamelIMAPXSettings
+ * @check_all: whether to check all folders for new messages
+ *
+ * Sets whether to check all folders for new messages.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_check_all (CamelIMAPXSettings *settings,
+                                    gboolean check_all)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->check_all = check_all;
+
+	g_object_notify (G_OBJECT (settings), "check-all");
+}
+
+/**
+ * camel_imapx_settings_get_check_subscribed:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to check only subscribed folders for new messages.
+ * Note that #CamelIMAPXSettings:check-all, if %TRUE, overrides this setting.
+ *
+ * Returns: whether to check only subscribed folders for new messages
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_imapx_settings_get_check_subscribed (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->check_subscribed;
+}
+
+/**
+ * camel_imapx_settings_set_check_subscribed:
+ * @settings: a #CamelIMAPXSettings
+ * @check_subscribed: whether to check only subscribed folders for new messages
+ *
+ * Sets whether to check only subscribed folders for new messages.  Note
+ * that #CamelIMAPXSettings:check-all, if %TRUE, overrides this setting.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_check_subscribed (CamelIMAPXSettings *settings,
+                                           gboolean check_subscribed)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->check_subscribed = check_subscribed;
+
+	g_object_notify (G_OBJECT (settings), "check-subscribed");
+}
+
+/**
+ * camel_imapx_settings_get_concurrent_connections:
+ * @settings: a #CamelIMAPXSettings
+ * 
+ * Returns the number of concurrent network connections to the IMAP server
+ * to use for faster command/response processing.
+ *
+ * Returns: the number of concurrent connections to use
+ *
+ * Since: 3.2
+ **/
+guint
+camel_imapx_settings_get_concurrent_connections (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), 1);
+
+	return settings->priv->concurrent_connections;
+}
+
+/**
+ * camel_imapx_settings_set_concurrent_connections:
+ * @settings: a #CamelIMAPXSettings
+ * @concurrent_connections: the number of concurrent connections to use
+ *
+ * Sets the number of concurrent network connections to the IMAP server to
+ * use for faster command/response processing.
+ *
+ * The minimum number of connections is 1, the maximum is 7.  The
+ * @concurrent_connections value will be clamped to these limits if
+ * necessary.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_concurrent_connections (CamelIMAPXSettings *settings,
+                                                 guint concurrent_connections)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	concurrent_connections = CLAMP (
+		concurrent_connections,
+		MIN_CONCURRENT_CONNECTIONS,
+		MAX_CONCURRENT_CONNECTIONS);
+
+	settings->priv->concurrent_connections = concurrent_connections;
+
+	g_object_notify (G_OBJECT (settings), "concurrent-connections");
+}
+
+/**
+ * camel_imapx_settings_get_fetch_order:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns the order in which new messages should be fetched.
+ *
+ * Returns: the order in which new messages should be fetched
+ *
+ * Since: 3.2
+ **/
+CamelSortType
+camel_imapx_settings_get_fetch_order (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (
+		CAMEL_IS_IMAPX_SETTINGS (settings),
+		CAMEL_SORT_ASCENDING);
+
+	return settings->priv->fetch_order;
+}
+
+/**
+ * camel_imapx_settings_set_fetch_order:
+ * @settings: a #CamelIMAPXSettings
+ * @fetch_order: the order in which new messages should be fetched
+ *
+ * Sets the order in which new messages should be fetched.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_fetch_order (CamelIMAPXSettings *settings,
+                                      CamelSortType fetch_order)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->fetch_order = fetch_order;
+
+	g_object_notify (G_OBJECT (settings), "fetch-order");
+}
+
+/**
+ * camel_imapx_settings_get_filter_junk:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to automatically find and tag junk messages amongst new
+ * messages in all folders.
+ *
+ * Returns: whether to filter junk in all folders
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_imapx_settings_get_filter_junk (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->filter_junk;
+}
+
+/**
+ * camel_imapx_settings_set_filter_junk:
+ * @settings: a #CamelIMAPXSettings
+ * @filter_junk: whether to filter junk in all folders
+ *
+ * Sets whether to automatically find and tag junk messages amongst new
+ * messages in all folders.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_filter_junk (CamelIMAPXSettings *settings,
+                                      gboolean filter_junk)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->filter_junk = filter_junk;
+
+	g_object_notify (G_OBJECT (settings), "filter-junk");
+}
+
+/**
+ * camel_imapx_settings_get_filter_junk_inbox:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to automatically find and tag junk messages amongst new
+ * messages in the Inbox folder only.
+ *
+ * Returns: whether to filter junk in Inbox only
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_imapx_settings_get_filter_junk_inbox (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->filter_junk_inbox;
+}
+
+/**
+ * camel_imapx_settings_set_filter_junk_inbox:
+ * @settings: a #CamelIMAPXSettings
+ * @filter_junk_inbox: whether to filter junk in Inbox only
+ *
+ * Sets whether to automatically find and tag junk messages amongst new
+ * messages in the Inbox folder only.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_filter_junk_inbox (CamelIMAPXSettings *settings,
+                                            gboolean filter_junk_inbox)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->filter_junk_inbox = filter_junk_inbox;
+
+	g_object_notify (G_OBJECT (settings), "filter-junk-inbox");
+}
+
+/**
+ * camel_imapx_settings_get_namespace:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns the custom IMAP namespace in which to find folders.
+ *
+ * Returns: the custom IMAP namespace, or %NULL
+ *
+ * Since: 3.2
+ **/
+const gchar *
+camel_imapx_settings_get_namespace (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), NULL);
+
+	return settings->priv->namespace;
+}
+
+/**
+ * camel_imapx_settings_set_namespace:
+ * @settings: a #CamelIMAPXSettings
+ * @namespace: an IMAP namespace, or %NULL
+ *
+ * Sets the custom IMAP namespace in which to find folders.  If @namespace
+ * is %NULL, the default namespace is used.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_namespace (CamelIMAPXSettings *settings,
+                                    const gchar *namespace)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	/* The default namespace is an empty string. */
+	if (namespace == NULL)
+		namespace = "";
+
+	g_free (settings->priv->namespace);
+	settings->priv->namespace = g_strdup (namespace);
+
+	g_object_notify (G_OBJECT (settings), "namespace");
+}
+
+/**
+ * camel_imapx_settings_get_shell_command:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns an optional shell command used to establish an input/output
+ * stream with an IMAP server.  Normally the input/output stream is
+ * established through a network socket.
+ *
+ * This option is useful only to a select few advanced users who likely
+ * administer their own IMAP server.  Most users will not understand what
+ * this option menas or how to use it.  Probably not worth exposing in a
+ * graphical interface.
+ *
+ * Returns: shell command for connecting to the server, or %NULL
+ *
+ * Since: 3.2
+ **/
+const gchar *
+camel_imapx_settings_get_shell_command (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), NULL);
+
+	return settings->priv->shell_command;
+}
+
+/**
+ * camel_imapx_settings_set_shell_command:
+ * @settings: a #CamelIMAPXSettings
+ * @shell_command: shell command for connecting to the server, or %NULL
+ *
+ * Sets an optional shell command used to establish an input/output stream
+ * with an IMAP server.  Normally the input/output stream is established
+ * through a network socket.
+ *
+ * This option is useful only to a select few advanced users who likely
+ * administer their own IMAP server.  Most users will not understand what
+ * this option means or how to use it.  Probably not worth exposing in a
+ * graphical interface.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_shell_command (CamelIMAPXSettings *settings,
+                                        const gchar *shell_command)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	/* An empty string is equivalent to NULL. */
+	if (shell_command != NULL && *shell_command == '\0')
+		shell_command = NULL;
+
+	g_free (settings->priv->shell_command);
+	settings->priv->shell_command = g_strdup (shell_command);
+
+	g_object_notify (G_OBJECT (settings), "shell-command");
+}
+
+/**
+ * camel_imapx_settings_get_use_idle:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to use the IMAP IDLE extension if the server supports
+ * it.  See RFC 2177 for more details.
+ *
+ * Returns: whether to use the IDLE extension
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_imapx_settings_get_use_idle (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->use_idle;
+}
+
+/**
+ * camel_imapx_settings_set_use_idle:
+ * @settings: a #CamelIMAPXSettings
+ * @use_idle: whether to use the IDLE extension
+ *
+ * Sets whether to use the IMAP IDLE extension if the server supports it.
+ * See RFC 2177 for more details.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_use_idle (CamelIMAPXSettings *settings,
+                                   gboolean use_idle)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->use_idle = use_idle;
+
+	g_object_notify (G_OBJECT (settings), "use-idle");
+}
+
+/**
+ * camel_imapx_settings_get_use_namespace:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to use a custom IMAP namespace to find folders.  The
+ * namespace itself is given by the #CamelIMAPStore:namespace property.
+ *
+ * Returns: whether to use a custom IMAP namespace
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_imapx_settings_get_use_namespace (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->use_namespace;
+}
+
+/**
+ * camel_imapx_settings_set_use_namespace:
+ * @settings: a #CamelIMAPXSettings
+ * @use_namespace: whether to use a custom IMAP namespace
+ *
+ * Sets whether to use a custom IMAP namespace to find folders.  The
+ * namespace itself is given by the #CamelIMAPXSettings:namespace property.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_use_namespace (CamelIMAPXSettings *settings,
+                                        gboolean use_namespace)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->use_namespace = use_namespace;
+
+	g_object_notify (G_OBJECT (settings), "use-namespace");
+}
+
+/**
+ * camel_imapx_settings_get_use_qresync:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to use the Quick Mailbox Resynchronization (QRESYNC)
+ * IMAP extension if the server supports it.  See RFC 5162 for more
+ * details.
+ *
+ * Returns: whether to use the QRESYNC extension
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_imapx_settings_get_use_qresync (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->use_qresync;
+}
+
+/**
+ * camel_imapx_settings_set_use_qresync:
+ * @settings: a #CamelIMAPXSettings
+ * @use_qresync: whether to use the QRESYNC extension
+ *
+ * Sets whether to use the Quick Mailbox Resynchronization (QRESYNC)
+ * IMAP extension if the server supports it.  See RFC 5162 for more
+ * details.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_use_qresync (CamelIMAPXSettings *settings,
+                                      gboolean use_qresync)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->use_qresync = use_qresync;
+
+	g_object_notify (G_OBJECT (settings), "use-qresync");
+}
+
+/**
+ * camel_imapx_settings_get_use_shell_command:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to use a custom shell command to establish an input/output
+ * stream with an IMAP server, instead of the more common method of opening a
+ * network socket.  The shell command itself is given by the
+ * #CamelIMAPXSettings:shell-command property.
+ *
+ * This option is useful only to a select few advanced users who likely
+ * administer their own IMAP server.  Most users will not understand what
+ * this option means or how to use it.  Probably not worth exposing in a
+ * graphical interface.
+ *
+ * Returns: whether to use a custom shell command to connect to the server
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_imapx_settings_get_use_shell_command (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->use_shell_command;
+}
+
+/**
+ * camel_imapx_settings_set_use_shell_command:
+ * @settings: a #CamelIMAPXSettings
+ * @use_shell_command: whether to use a custom shell command to connect
+ *                     to the server
+ *
+ * Sets whether to use a custom shell command to establish an input/output
+ * stream with an IMAP server, instead of the more common method of opening
+ * a network socket.  The shell command itself is given by the
+ * #CamelIMAPXSettings:shell-command property.
+ *
+ * This option is useful only to a select few advanced users who likely
+ * administer their own IMAP server.  Most users will not understand what
+ * this option means or how to use it.  Probably not worth exposing in a
+ * graphical interface.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_use_shell_command (CamelIMAPXSettings *settings,
+                                            gboolean use_shell_command)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->use_shell_command = use_shell_command;
+
+	g_object_notify (G_OBJECT (settings), "use-shell-command");
+}
+
+/**
+ * camel_imapx_settings_get_use_subscriptions:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to list and operate only on subscribed folders, or to
+ * list and operate on all available folders regardless of subscriptions.
+ *
+ * Returns: whether to honor folder subscriptions
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_imapx_settings_get_use_subscriptions (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->use_subscriptions;
+}
+
+/**
+ * camel_imapx_settings_set_use_subscriptions:
+ * @settings: a #CamelIMAPXSettings
+ * @use_subscriptions: whether to honor folder subscriptions
+ *
+ * Sets whether to list and operate only on subscribed folders, or to
+ * list and operate on all available folders regardless of subscriptions.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_use_subscriptions (CamelIMAPXSettings *settings,
+                                            gboolean use_subscriptions)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->use_subscriptions = use_subscriptions;
+
+	g_object_notify (G_OBJECT (settings), "use-subscriptions");
+}
+

@@ -49,27 +49,20 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_IMAPX_STORE, CamelIMAPXStoreClass))
 
-#define IMAPX_OVERRIDE_NAMESPACE	(1 << 0)
-#define IMAPX_CHECK_ALL			(1 << 1)
-#define IMAPX_FILTER_JUNK		(1 << 2)
-#define IMAPX_FILTER_JUNK_INBOX		(1 << 3)
-#define IMAPX_SUBSCRIPTIONS		(1 << 4)
-#define IMAPX_CHECK_LSUB		(1 << 5)
-#define IMAPX_USE_IDLE			(1 << 6)
-#define IMAPX_USE_QRESYNC		(1 << 7)
-
 G_BEGIN_DECLS
 
 typedef struct _CamelIMAPXStore CamelIMAPXStore;
 typedef struct _CamelIMAPXStoreClass CamelIMAPXStoreClass;
+typedef struct _CamelIMAPXStorePrivate CamelIMAPXStorePrivate;
 
 struct _CamelIMAPXStore {
 	CamelOfflineStore parent;
+	CamelIMAPXStorePrivate *priv;
 
 	CamelIMAPXConnManager *con_man;
 
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
-	gchar *namespace, dir_sep, *base_url;
+	gchar dir_sep, *base_url;
 
 	guint32 rec_options;
 
@@ -91,14 +84,15 @@ struct _CamelIMAPXStoreClass {
 	CamelOfflineStoreClass parent_class;
 };
 
-GType			camel_imapx_store_get_type	(void);
-CamelIMAPXServer *	camel_imapx_store_get_server	(CamelIMAPXStore *store,
-							const gchar *folder_name,
-							GCancellable *cancellable,
-							GError **error);
-void			camel_imapx_store_op_done	(CamelIMAPXStore *istore,
-							CamelIMAPXServer *server,
-							const gchar *folder_name);
+GType		camel_imapx_store_get_type	(void);
+CamelIMAPXServer *
+		camel_imapx_store_get_server	(CamelIMAPXStore *store,
+						const gchar *folder_name,
+						GCancellable *cancellable,
+						GError **error);
+void		camel_imapx_store_op_done	(CamelIMAPXStore *istore,
+						CamelIMAPXServer *server,
+						const gchar *folder_name);
 
 G_END_DECLS
 

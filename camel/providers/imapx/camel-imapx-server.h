@@ -119,9 +119,6 @@ struct _CamelIMAPXServer {
 
 	gboolean use_qresync;
 
-	/* order in which new messages would be fetched */
-	gboolean descending;
-
 	/* used to synchronize duplicate get_message requests */
 	GCond *fetch_cond;
 	GMutex *fetch_mutex;

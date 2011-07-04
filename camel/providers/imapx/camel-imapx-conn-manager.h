@@ -60,9 +60,6 @@ CamelIMAPXConnManager *
 		camel_imapx_conn_manager_new	(CamelStore *store);
 CamelStore *	camel_imapx_conn_manager_get_store
 						(CamelIMAPXConnManager *con_man);
-void		camel_imapx_conn_manager_set_n_connections
-						(CamelIMAPXConnManager *con_man,
-						 guint n_connections);
 CamelIMAPXServer *
 		camel_imapx_conn_manager_get_connection
 						(CamelIMAPXConnManager *con_man,

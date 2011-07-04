@@ -44,12 +44,26 @@ CamelFolder *
 camel_imapx_folder_new (CamelStore *store, const gchar *folder_dir, const gchar *folder_name, GError **error)
 {
 	CamelFolder *folder;
+	CamelService *service;
+	CamelSettings *settings;
 	CamelIMAPXFolder *ifolder;
 	const gchar *short_name;
 	gchar *summary_file, *state_file;
-	CamelIMAPXStore *istore;
+	gboolean filter_inbox;
+	gboolean filter_junk;
+	gboolean filter_junk_inbox;
 
 	d("opening imap folder '%s'\n", folder_dir);
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	g_object_get (
+		settings,
+		"filter-inbox", &filter_inbox,
+		"filter-junk", &filter_junk,
+		"filter-junk-inbox", &filter_junk_inbox,
+		NULL);
 
 	short_name = strrchr (folder_name, '/');
 	if (short_name)
@@ -98,23 +112,12 @@ camel_imapx_folder_new (CamelStore *store, const gchar *folder_dir, const gchar 
 	ifolder->modseq_on_server = 0;
 	ifolder->uidnext_on_server = 0;
 
-	istore = (CamelIMAPXStore *) store;
 	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
-		CamelService *service;
-		CamelSettings *settings;
-		gboolean filter_inbox;
-
-		service = CAMEL_SERVICE (store);
-		settings = camel_service_get_settings (service);
-
-		filter_inbox = camel_store_settings_get_filter_inbox (
-			CAMEL_STORE_SETTINGS (settings));
-
 		if (filter_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
-		if ((istore->rec_options & IMAPX_FILTER_JUNK))
+		if (filter_junk)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
-	} else if ((istore->rec_options & (IMAPX_FILTER_JUNK | IMAPX_FILTER_JUNK_INBOX)) == IMAPX_FILTER_JUNK)
+	} else if (filter_junk && !filter_junk_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
 
 	g_free (summary_file);

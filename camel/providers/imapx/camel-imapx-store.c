@@ -39,11 +39,12 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
-#include "camel-imapx-store.h"
 #include "camel-imapx-folder.h"
-#include "camel-imapx-utils.h"
 #include "camel-imapx-server.h"
+#include "camel-imapx-settings.h"
+#include "camel-imapx-store.h"
 #include "camel-imapx-summary.h"
+#include "camel-imapx-utils.h"
 
 /* Specified in RFC 2060 section 2.1 */
 #define IMAP_PORT 143
@@ -68,13 +69,6 @@ G_DEFINE_TYPE_WITH_CODE (
 		CAMEL_TYPE_NETWORK_SERVICE,
 		camel_network_service_init))
 
-enum {
-	PROP_0,
-	PROP_DEFAULT_PORT,
-	PROP_SECURITY_METHOD,
-	PROP_SERVICE_NAME
-};
-
 static guint
 imapx_name_hash (gconstpointer key)
 {
@@ -97,91 +91,26 @@ imapx_name_equal (gconstpointer a, gconstpointer b)
 }
 
 static void
-imapx_parse_receiving_options (CamelIMAPXStore *istore, CamelURL *url)
+imapx_store_dispose (GObject *object)
 {
-	const gchar *val;
+	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
 
-	if (camel_url_get_param (url, "use_lsub"))
-		istore->rec_options |= IMAPX_SUBSCRIPTIONS;
-
-	if (camel_url_get_param (url, "override_namespace") && camel_url_get_param (url, "namespace")) {
-		istore->rec_options |= IMAPX_OVERRIDE_NAMESPACE;
-		g_free (istore->namespace);
-		istore->namespace = g_strdup (camel_url_get_param (url, "namespace"));
+	/* Force disconnect so we dont have it run later,
+	 * after we've cleaned up some stuff. */
+	if (imapx_store->con_man != NULL) {
+		camel_service_disconnect_sync (
+			CAMEL_SERVICE (imapx_store), TRUE, NULL);
+		g_object_unref (imapx_store->con_man);
+		imapx_store->con_man = NULL;
 	}
 
-	if (camel_url_get_param (url, "check_all"))
-		istore->rec_options |= IMAPX_CHECK_ALL;
-
-	if (camel_url_get_param (url, "check_lsub"))
-		istore->rec_options |= IMAPX_CHECK_LSUB;
-
-	if (camel_url_get_param (url, "filter_junk"))
-		istore->rec_options |= IMAPX_FILTER_JUNK;
-
-	if (camel_url_get_param (url, "filter_junk_inbox"))
-		istore->rec_options |= IMAPX_FILTER_JUNK_INBOX;
-
-	if (camel_url_get_param (url, "use_idle"))
-		istore->rec_options |= IMAPX_USE_IDLE;
-
-	if (camel_url_get_param (url, "use_qresync"))
-		istore->rec_options |= IMAPX_USE_QRESYNC;
-
-	val = camel_url_get_param (url, "cachedconn");
-	if (val) {
-		guint n = strtod (val, NULL);
-		camel_imapx_conn_manager_set_n_connections (istore->con_man, n);
-	}
-}
-
-static void
-imapx_store_set_property (GObject *object,
-                          guint property_id,
-                          const GValue *value,
-                          GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_SECURITY_METHOD:
-			camel_network_service_set_security_method (
-				CAMEL_NETWORK_SERVICE (object),
-				g_value_get_enum (value));
-			return;
+	if (imapx_store->summary != NULL) {
+		g_object_unref (imapx_store->summary);
+		imapx_store->summary = NULL;
 	}
 
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-imapx_store_get_property (GObject *object,
-                          guint property_id,
-                          GValue *value,
-                          GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_DEFAULT_PORT:
-			g_value_set_uint (
-				value,
-				camel_network_service_get_default_port (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-
-		case PROP_SECURITY_METHOD:
-			g_value_set_enum (
-				value,
-				camel_network_service_get_security_method (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-
-		case PROP_SERVICE_NAME:
-			g_value_set_string (
-				value,
-				camel_network_service_get_service_name (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_imapx_store_parent_class)->dispose (object);
 }
 
 static void
@@ -189,50 +118,12 @@ imapx_store_finalize (GObject *object)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
 
-	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
-	/* SIGH */
-
-	camel_service_disconnect_sync (
-		(CamelService *) imapx_store, TRUE, NULL);
-	if (imapx_store->con_man) {
-		g_object_unref (imapx_store->con_man);
-		imapx_store->con_man = NULL;
-	}
 	g_mutex_free (imapx_store->get_finfo_lock);
 
 	g_free (imapx_store->base_url);
 
-	if (imapx_store->summary)
-		g_object_unref (imapx_store->summary);
-
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->finalize (object);
-}
-
-static void
-imapx_store_constructed (GObject *object)
-{
-	CamelURL *url;
-	const gchar *use_ssl;
-
-	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (camel_imapx_store_parent_class)->constructed (object);
-
-	url = camel_service_get_camel_url (CAMEL_SERVICE (object));
-	use_ssl = camel_url_get_param (url, "use_ssl");
-
-	if (g_strcmp0 (use_ssl, "never") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_NONE);
-	else if (g_strcmp0 (use_ssl, "always") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT);
-	else if (g_strcmp0 (use_ssl, "when-possible") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
 }
 
 static gchar *
@@ -717,11 +608,24 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 			 guint32 flags, GError **error)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (store);
+	CamelService *service;
+	CamelSettings *settings;
 	gboolean include_inbox = FALSE;
 	CamelFolderInfo *fi;
 	GPtrArray *folders;
 	gchar *pattern, *name;
+	gboolean use_namespace;
+	gboolean use_subscriptions;
 	gint i;
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	use_namespace = camel_imapx_settings_get_use_namespace (
+		CAMEL_IMAPX_SETTINGS (settings));
+
+	use_subscriptions = camel_imapx_settings_get_use_subscriptions (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	/* FIXME: obey other flags */
 
@@ -734,7 +638,13 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 
 	/* get starting point */
 	if (top[0] == 0) {
-		if (imapx_store->namespace && imapx_store->namespace[0]) {
+		const gchar *namespace = NULL;
+
+		if (use_namespace)
+			namespace = camel_imapx_settings_get_namespace (
+				CAMEL_IMAPX_SETTINGS (settings));
+
+		if (namespace != NULL) {
 			name = g_strdup (imapx_store->summary->namespaces->personal->full_name);
 			top = imapx_store->summary->namespaces->personal->path;
 		} else
@@ -772,7 +682,7 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 		if ((g_str_equal (name, full_name)
 		     || imapx_match_pattern (ns, pattern, full_name)
 		     || (include_inbox && !g_ascii_strcasecmp (full_name, "INBOX")))
-		    && ( ((imapx_store->rec_options & IMAPX_SUBSCRIPTIONS) == 0
+		    && ( (!use_subscriptions
 			    || (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) == 0)
 			|| (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)
 			|| (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) != 0)) {
@@ -1108,19 +1018,30 @@ imapx_can_refresh_folder (CamelStore *store,
                           CamelFolderInfo *info,
                           GError **error)
 {
+	CamelService *service;
+	CamelSettings *settings;
 	CamelStoreClass *store_class;
-	CamelURL *url;
+	gboolean check_all;
+	gboolean check_subscribed;
+	gboolean subscribed;
 	gboolean res;
 	GError *local_error = NULL;
 
 	store_class = CAMEL_STORE_CLASS (camel_imapx_store_parent_class);
 
-	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	check_all = camel_imapx_settings_get_check_all (
+		CAMEL_IMAPX_SETTINGS (settings));
+
+	check_subscribed = camel_imapx_settings_get_check_subscribed (
+		CAMEL_IMAPX_SETTINGS (settings));
+
+	subscribed = ((info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
 
 	res = store_class->can_refresh_folder (store, info, &local_error) ||
-		(camel_url_get_param (url, "check_all") != NULL) ||
-		(camel_url_get_param (url, "check_lsub") != NULL &&
-		(info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
+		check_all || (check_subscribed && subscribed);
 
 	if (!res && local_error == NULL && CAMEL_IS_IMAPX_STORE (store)) {
 		CamelStoreInfo *si;
@@ -1190,11 +1111,19 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
 	CamelFolderInfo * fi= NULL;
+	CamelService *service;
 	CamelSession *session;
+	CamelSettings *settings;
 	gboolean initial_setup = FALSE;
+	gboolean use_subscriptions;
 	gchar *pattern;
 
-	session = camel_service_get_session (CAMEL_SERVICE (store));
+	service = CAMEL_SERVICE (store);
+	session = camel_service_get_session (service);
+	settings = camel_service_get_settings (service);
+
+	use_subscriptions = camel_imapx_settings_get_use_subscriptions (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	if (top == NULL)
 		top = "";
@@ -1265,7 +1194,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	camel_store_summary_save ((CamelStoreSummary *) istore->summary);
 
 	/* ensure the INBOX is subscribed if lsub was preferred*/
-	if (initial_setup && istore->rec_options & IMAPX_SUBSCRIPTIONS)
+	if (initial_setup && use_subscriptions)
 		discover_inbox (store, cancellable);
 
 	fi = get_folder_info_offline (store, top, flags, error);
@@ -1474,12 +1403,18 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
 	CamelIMAPXServer *server;
 	CamelService *service;
+	CamelSettings *settings;
 	const gchar *user_data_dir;
 	gchar *oldpath, *newpath, *storage_path;
+	gboolean use_subscriptions;
 	gboolean success = FALSE;
 
 	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
+
+	use_subscriptions = camel_imapx_settings_get_use_subscriptions (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
 		g_set_error (
@@ -1489,7 +1424,7 @@ imapx_store_rename_folder_sync (CamelStore *store,
 		return FALSE;
 	}
 
-	if (istore->rec_options & IMAPX_SUBSCRIPTIONS)
+	if (use_subscriptions)
 		imapx_unsubscribe_folder (store, old, FALSE, cancellable, NULL);
 
 	/* Use INBOX connection as the implementation would try to select inbox to ensure
@@ -1509,7 +1444,7 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	/* rename summary, and handle broken server */
 	rename_folder_info (istore, old, new);
 
-	if (istore->rec_options & IMAPX_SUBSCRIPTIONS)
+	if (use_subscriptions)
 		success = imapx_subscribe_folder (
 			store, new, FALSE, cancellable, error);
 
@@ -1601,7 +1536,6 @@ imapx_store_initable_init (GInitable *initable,
 	store->base_url = camel_url_to_string (
 		url, CAMEL_URL_HIDE_PASSWORD |
 		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
-	imapx_parse_receiving_options (store, url);
 
 	store->summary = camel_imapx_store_summary_new ();
 
@@ -1618,12 +1552,10 @@ imapx_store_initable_init (GInitable *initable,
 }
 
 static const gchar *
-imapx_store_get_service_name (CamelNetworkService *service)
+imapx_store_get_service_name (CamelNetworkService *service,
+                              CamelNetworkSecurityMethod method)
 {
-	CamelNetworkSecurityMethod method;
 	const gchar *service_name;
-
-	method = camel_network_service_get_security_method (service);
 
 	switch (method) {
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
@@ -1639,12 +1571,10 @@ imapx_store_get_service_name (CamelNetworkService *service)
 }
 
 static guint16
-imapx_store_get_default_port (CamelNetworkService *service)
+imapx_store_get_default_port (CamelNetworkService *service,
+                              CamelNetworkSecurityMethod method)
 {
-	CamelNetworkSecurityMethod method;
 	guint16 default_port;
-
-	method = camel_network_service_get_security_method (service);
 
 	switch (method) {
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
@@ -1667,12 +1597,11 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	CamelStoreClass *store_class;
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->set_property = imapx_store_set_property;
-	object_class->get_property = imapx_store_get_property;
+	object_class->dispose = imapx_store_dispose;
 	object_class->finalize = imapx_store_finalize;
-	object_class->constructed = imapx_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->settings_type = CAMEL_TYPE_IMAPX_SETTINGS;
 	service_class->get_name = imapx_get_name;
 	service_class->connect_sync = imapx_connect_sync;
 	service_class->disconnect_sync = imapx_disconnect_sync;
@@ -1694,24 +1623,6 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	store_class->subscribe_folder_sync = imapx_store_subscribe_folder_sync;
 	store_class->unsubscribe_folder_sync = imapx_store_unsubscribe_folder_sync;
 	store_class->noop_sync = imapx_store_noop_sync;
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_DEFAULT_PORT,
-		"default-port");
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SECURITY_METHOD,
-		"security-method");
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SERVICE_NAME,
-		"service-name");
 }
 
 static void
@@ -1740,3 +1651,4 @@ camel_imapx_store_init (CamelIMAPXStore *istore)
 	istore->dir_sep = '/';
 	istore->con_man = camel_imapx_conn_manager_new (store);
 }
+

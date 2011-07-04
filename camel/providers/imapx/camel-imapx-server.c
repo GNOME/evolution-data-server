@@ -41,6 +41,7 @@
 #include "camel-imapx-stream.h"
 #include "camel-imapx-server.h"
 #include "camel-imapx-folder.h"
+#include "camel-imapx-settings.h"
 #include "camel-imapx-store.h"
 #include "camel-imapx-summary.h"
 
@@ -67,9 +68,6 @@
 
 /* How many outstanding commands do we allow before we just queue them? */
 #define MAX_COMMANDS (10)
-
-/* How many message headers to fetch at a time update summary for new messages*/
-#define BATCH_FETCH_COUNT 500
 
 #define MAX_COMMAND_LEN 1000
 
@@ -360,26 +358,6 @@ enum {
 static gboolean imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean force, GCancellable *cancellable, GError **error);
 
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
-
-static guint
-get_batch_fetch_count (CamelIMAPXServer *is)
-{
-	static guint count = 0;
-	const gchar *fetch_count;
-
-	if (count)
-		return count;
-
-	/* TODO document all the param's in some common place */
-	fetch_count = camel_url_get_param (is->url, "batch-fetch-count");
-	if (fetch_count)
-		count = strtoul (fetch_count, NULL, 10);
-
-	if (count <= 0)
-		count = BATCH_FETCH_COUNT;
-
-	return count;
-}
 
 /*
   this creates a uid (or sequence number) set directly into a command,
@@ -1326,11 +1304,20 @@ imapx_untagged (CamelIMAPXServer *imap,
                 GCancellable *cancellable,
                 GError **error)
 {
+	CamelService *service;
+	CamelSettings *settings;
+	CamelSortType fetch_order;
 	guint id, len;
 	guchar *token, *p, c;
 	gint tok;
 	gboolean lsub = FALSE;
 	struct _status_info *sinfo;
+
+	service = CAMEL_SERVICE (imap->store);
+	settings = camel_service_get_settings (service);
+
+	fetch_order = camel_imapx_settings_get_fetch_order (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	e(imap->tagprefix, "got untagged response\n");
 	id = 0;
@@ -1597,7 +1584,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 
 							mid = (min + max)/2;
 							r = &g_array_index (infos, struct _refresh_info, mid);
-							cmp = imapx_refresh_info_uid_cmp (finfo->uid, r->uid, !imap->descending);
+							cmp = imapx_refresh_info_uid_cmp (finfo->uid, r->uid, fetch_order == CAMEL_SORT_ASCENDING);
 
 							if (cmp > 0)
 								min = mid + 1;
@@ -2860,10 +2847,11 @@ imapx_connect_to_server (CamelIMAPXServer *is,
                          GCancellable *cancellable,
                          GError **error)
 {
-	CamelNetworkService *network_service;
 	CamelNetworkSecurityMethod method;
 	CamelStream * tcp_stream = NULL;
 	CamelSockOptData sockopt;
+	CamelSettings *settings;
+	CamelService *service;
 	guint len;
 	guchar *token;
 	gint tok;
@@ -2871,19 +2859,30 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	GError *local_error = NULL;
 
 #ifndef G_OS_WIN32
-	const gchar *command;
+	gboolean use_shell_command;
+	const gchar *command = NULL;
+#endif
 
-	if (camel_url_get_param(is->url, "use_command") &&
-	    (command = camel_url_get_param(is->url, "command"))) {
+	service = CAMEL_SERVICE (is->store);
+	settings = camel_service_get_settings (service);
+
+	g_object_get (settings, "security-method", &method, NULL);
+
+#ifndef G_OS_WIN32
+	use_shell_command = camel_imapx_settings_get_use_shell_command (
+		CAMEL_IMAPX_SETTINGS (settings));
+
+	if (use_shell_command)
+		command = camel_imapx_settings_get_shell_command (
+			CAMEL_IMAPX_SETTINGS (settings));
+
+	if (command != NULL) {
 		if (!connect_to_server_process (is, command, &local_error))
 			goto exit;
 		else
 			goto connected;
 	}
 #endif
-
-	network_service = CAMEL_NETWORK_SERVICE (is->store);
-	method = camel_network_service_get_security_method (network_service);
 
 	tcp_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (is->store), cancellable, error);
@@ -3049,14 +3048,24 @@ imapx_reconnect (CamelIMAPXServer *is,
 	CamelIMAPXCommand *ic;
 	gchar *errbuf = NULL;
 	CamelService *service;
+	CamelSettings *settings;
 	CamelURL *url;
 	gboolean authenticated = FALSE;
 	CamelServiceAuthType *authtype = NULL;
 	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
 	gboolean need_password = FALSE;
+	gboolean use_idle;
+	gboolean use_qresync;
 
 	service = CAMEL_SERVICE (is->store);
 	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
+
+	use_idle = camel_imapx_settings_get_use_idle (
+		CAMEL_IMAPX_SETTINGS (settings));
+
+	use_qresync = camel_imapx_settings_get_use_qresync (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	while (!authenticated) {
 		CamelSasl *sasl = NULL;
@@ -3210,10 +3219,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 	is->state = IMAPX_AUTHENTICATED;
 
  preauthed:
-	if (((CamelIMAPXStore *) is->store)->rec_options & IMAPX_USE_IDLE)
-		is->use_idle = TRUE;
-	else
-		is->use_idle = FALSE;
+	is->use_idle = use_idle;
 
 	if (imapx_idle_supported (is))
 		imapx_init_idle (is);
@@ -3233,8 +3239,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		camel_imapx_command_free (ic);
 	}
 
-	if (((CamelIMAPXStore *) is->store)->rec_options & IMAPX_USE_QRESYNC &&
-	    is->cinfo->capa & IMAPX_CAPABILITY_QRESYNC) {
+	if (use_qresync && is->cinfo->capa & IMAPX_CAPABILITY_QRESYNC) {
 		ic = camel_imapx_command_new (
 			is, "ENABLE", NULL, cancellable,
 			"ENABLE CONDSTORE QRESYNC");
@@ -3808,8 +3813,17 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
                              CamelIMAPXCommand *ic)
 {
 	CamelIMAPXJob *job = ic->job;
+	CamelService *service;
+	CamelSettings *settings;
 	gint i;
 	GArray *infos = job->u.refresh_info.infos;
+	guint uidset_size;
+
+	service = CAMEL_SERVICE (is->store);
+	settings = camel_service_get_settings (service);
+
+	uidset_size = camel_imapx_settings_get_batch_fetch_count (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	if (ic->error == NULL && ic->status->result == IMAPX_OK) {
 		GCompareDataFunc uid_cmp = imapx_uid_cmp;
@@ -3939,7 +3953,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 				job->cancellable,
 				_("Fetching summary information for new messages in %s"),
 				camel_folder_get_display_name (job->folder));
-			imapx_uidset_init (&job->u.refresh_info.uidset, get_batch_fetch_count (is), 0);
+			imapx_uidset_init (&job->u.refresh_info.uidset, uidset_size, 0);
 			/* These are new messages which arrived since we last knew the unseen count;
 			   update it as they arrive. */
 			job->u.refresh_info.update_unseen = TRUE;
@@ -4062,8 +4076,21 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder = job->folder;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
+	CamelService *service;
+	CamelSettings *settings;
+	CamelSortType fetch_order;
 	guint32 total, diff;
+	guint uidset_size;
 	gchar *uid = NULL;
+
+	service = CAMEL_SERVICE (is->store);
+	settings = camel_service_get_settings (service);
+
+	fetch_order = camel_imapx_settings_get_fetch_order (
+		CAMEL_IMAPX_SETTINGS (settings));
+
+	uidset_size = camel_imapx_settings_get_batch_fetch_count (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	total = camel_folder_summary_count (folder->summary);
 	diff = ifolder->exists_on_server - total;
@@ -4082,15 +4109,15 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
 		_("Fetching summary information for new messages in %s"),
 		camel_folder_get_display_name (folder));
 
-	if (diff > get_batch_fetch_count (is) || is->descending) {
+	if (diff > uidset_size || fetch_order == CAMEL_SORT_DESCENDING) {
 		ic = camel_imapx_command_new (
 			is, "FETCH", job->folder, job->cancellable,
 			"UID FETCH %s:* (UID FLAGS)", uid);
-		imapx_uidset_init (&job->u.refresh_info.uidset, get_batch_fetch_count (is), 0);
+		imapx_uidset_init (&job->u.refresh_info.uidset, uidset_size, 0);
 		job->u.refresh_info.infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 		ic->pri = job->pri;
 
-		if (is->descending)
+		if (fetch_order == CAMEL_SORT_DESCENDING)
 			ic->complete = imapx_command_fetch_new_uids_done;
 		else
 			ic->complete = imapx_command_step_fetch_done;
@@ -5173,7 +5200,6 @@ camel_imapx_server_new (CamelStore *store, CamelURL *url)
 	CamelService *service;
 	CamelSession *session;
 	CamelIMAPXServer *is;
-	const gchar *order;
 
 	service = CAMEL_SERVICE (store);
 	session = camel_service_get_session (service);
@@ -5182,14 +5208,6 @@ camel_imapx_server_new (CamelStore *store, CamelURL *url)
 	is->session = g_object_ref (session);
 	is->store = store;
 	is->url = camel_url_copy (url);
-
-	/* TODO add UI options in advanced window */
-	/* order in which new messages should be fetched */
-	order = camel_url_get_param (url, "fetch-order");
-	if (order && !strcmp (order, "descending"))
-		is->descending = TRUE;
-	else
-		is->descending = FALSE;
 
 	return is;
 }

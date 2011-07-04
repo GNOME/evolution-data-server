@@ -36,57 +36,57 @@ static guint imapx_url_hash (gconstpointer key);
 static gint  imapx_url_equal (gconstpointer a, gconstpointer b);
 
 CamelProviderConfEntry imapx_conf_entries[] = {
-		{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
+	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
 	  N_("Checking for New Mail") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_qresync", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-qresync", NULL,
 	  N_("Use _Quick Resync if the server supports it"), "1" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_idle", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-idle", NULL,
 	  N_("Use I_dle if the server supports it"), "1" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_all", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check-all", NULL,
 	  N_("C_heck for new messages in all folders"), "1" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check_lsub", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check-subscribed", NULL,
 	  N_("Ch_eck for new messages in subscribed folders"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 #ifndef G_OS_WIN32
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "cmdsection", NULL,
 	  N_("Connection to Server") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_command", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-shell-command", NULL,
 	  N_("_Use custom command to connect to server"), "0" },
-	{ CAMEL_PROVIDER_CONF_ENTRY, "command", "use_command",
+	{ CAMEL_PROVIDER_CONF_ENTRY, "shell-command", "use-shell-command",
 	  N_("Command:"), "ssh -C -l %u %h exec /usr/sbin/dovecot --exec-mail imap" },
-	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "cachedconn", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "concurrent-connections", NULL,
 	  N_("Numbe_r of cached connections to use"), "y:1:5:7" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 #endif
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
 	  N_("Folders") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use_lsub", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-subscriptions", NULL,
 	  N_("_Show only subscribed folders"), "1" },
 #if 0
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "override_namespace", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-namespace", NULL,
 	  N_("O_verride server-supplied folder namespace"), "0" },
-	{ CAMEL_PROVIDER_CONF_ENTRY, "namespace", "override_namespace",
+	{ CAMEL_PROVIDER_CONF_ENTRY, "namespace", "use-namespace",
 	  N_("Namespace:") },
 #endif
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
 	  N_("_Apply filters to new messages in Inbox on this server"), "1" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter_junk", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk", NULL,
 	  N_("Check new messages for Jun_k contents"), "0" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter_junk_inbox", "filter_junk",
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk-inbox", "filter-junk",
 	  N_("Only check for Junk messages in the IN_BOX folder"), "0" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "sync_offline", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "stay-synchronized", NULL,
 	  N_("Automatically synchroni_ze remote mail locally"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
 
 CamelProviderPortEntry imapx_port_entries[] = {
-						{ 143, N_("Default IMAP port"), FALSE },
-						{ 993, N_("IMAP over SSL"), TRUE },
-						{ 0, NULL, 0 }
-					      };
+	{ 143, N_("Default IMAP port"), FALSE },
+	{ 993, N_("IMAP over SSL"), TRUE },
+	{ 0, NULL, 0 }
+};
 
 static CamelProvider imapx_provider = {
 	"imapx",
