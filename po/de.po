@@ -2483,7 +2483,7 @@ msgstr "POP-vor-SMTP-Legitimierung mit einem unbekannten Übertragungsverfahren"
 #: ../camel/camel-sasl-popb4smtp.c:104 ../camel/camel-sasl-popb4smtp.c:114
 #, c-format
 msgid "POP Before SMTP authentication attempted with a %s service"
-msgstr "POP-vor-SMTP-Legitimierung wurde mit einem %-Dienst versucht"
+msgstr "POP-vor-SMTP-Legitimierung wurde mit einem %s-Dienst versucht"
 
 #: ../camel/camel-search-private.c:112
 #, c-format
