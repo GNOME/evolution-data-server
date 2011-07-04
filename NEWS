@@ -1,3 +1,51 @@
+Evolution-Data-Server 3.1.3 2011-07-04
+--------------------------------------
+
+Bug Fixes:
+	Bug #650671 - Service connect/disconnect not cancelled properly (Milan Crha)
+	Bug #653476 - icaltimezone not copied completely with libical 0.43 (Milan Crha)
+	Bug #650126 - Add API to set the scroll policy of the Contacts container (Raul Gutierrez Segales)
+	Bug #653385 - ldaps fails with server using self-signed certificate (Milan Crha)
+	Bug #224687 - Skip ignored destinations in destination_get_address() (Dan Vrátil)
+	Bug #224687 - Create lists of lists (Dan Vrátil)
+	Bug #652173 - libebook: Delay client-side vCard parsing (Christophe Dumez)
+	Bug #648468 - POP3 doesn't recover or claim error after lost connection (Milan Crha)
+	Bug #269413 - Search treats "4 weeks" and "1 month" as synonymous (Milan Crha)
+	Bug #565961 - Crash with recurring all-day event (Milan Crha)
+	Bug #652530 - EClient - Notify about opening phase result first (Milan Crha)
+
+Miscellaneous Fixes:
+	Require libgdata >= 0.9.1 for GNOME Online Accounts support. (Matthew Barnes)
+	Bump the required version of Vala for the bindings. (Travis Reitter)
+	e_cal_client_get_object() should not return VCALENDAR components (Milan Crha)
+	Fix LDAP authentication and process authentication requests on idle (Milan Crha)
+	Add OAuth support to Google Contacts backend. (Matthew Barnes)
+	libedata-book cleanups. (Matthew Barnes)
+	Minor compiler warning fix (change #if to #ifdef) (Milan Crha)
+	Vala bindings: we depend on gio-2.0 (Raul Gutierrez Segales)
+	Allow asynchronous retrieval of EClient capabilities for easier caching (Milan Crha)
+	Fix build breaks when using libgdata 0.9. (Matthew Barnes)
+	Remove pointless ENABLE_THREADS define. (Matthew Barnes)
+	Introspection: fix annotation in e_vcard_get_attribute (Raul Gutierrez Segales)
+	SMTP: Handle 235 code after initial AUTH command. (Matthew Barnes)
+	Make Camel's SASL framework more extensible. (Matthew Barnes)
+	Fix a few srcdir != builddir issues (Colin Walters)
+	Keep opening EClient-s till they report busy error (Milan Crha)
+	Make loading of ENameSelector on demand and cancellable (Milan Crha)
+	Reverting one line I added to Christophe's commit on my own (Milan Crha)
+	Fix few memory leaks (Milan Crha)
+	Emit notification for EClient::opened property (Raul Gutierrez Segales)
+	Fix sqlitedb-test build error. (Travis Reitter)
+	EBookBackendSqliteDD: Fix a missing comma in search contacts. (Chenthill Palanisamy)
+
+Translations:
+	Fran Dieguez (gl)
+	Hannie Dumoleyn (nl)
+	Daniel Nylander (sv)
+	Fran Diéguez (gl)
+	Matej Urbančič (sl)
+	Daniel Mustieles (es)
+
 Evolution-Data-Server 3.1.2 2011-06-13
 --------------------------------------
 
