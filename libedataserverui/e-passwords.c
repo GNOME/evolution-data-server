@@ -62,7 +62,6 @@ struct _EPassMsg {
 
 	/* input */
 	GtkWindow *parent;
-	const gchar *component;
 	const gchar *key;
 	const gchar *title;
 	const gchar *prompt;
@@ -658,8 +657,7 @@ pass_response (GtkDialog *dialog, gint response, gpointer data)
 		if ((pending->dispatch == ep_forget_password
 		     || pending->dispatch == ep_get_password
 		     || pending->dispatch == ep_ask_password)
-		    && (strcmp (pending->component, msg->component) == 0
-			&& strcmp (pending->key, msg->key) == 0)) {
+			&& strcmp (pending->key, msg->key) == 0) {
 
 			/* Satisfy the pending operation. */
 			pending->password = g_strdup (msg->password);
@@ -965,11 +963,10 @@ e_passwords_forget_passwords (void)
  * Forgets all disk cached passwords for the component.
  **/
 void
-e_passwords_clear_passwords (const gchar *component_name)
+e_passwords_clear_passwords (const gchar *unused)
 {
 	EPassMsg *msg = ep_msg_new (ep_clear_passwords);
 
-	msg->component = component_name;
 	ep_msg_send (msg);
 	ep_msg_free (msg);
 }
@@ -981,15 +978,14 @@ e_passwords_clear_passwords (const gchar *component_name)
  * Saves the password associated with @key to disk.
  **/
 void
-e_passwords_remember_password (const gchar *component_name, const gchar *key)
+e_passwords_remember_password (const gchar *unused,
+                               const gchar *key)
 {
 	EPassMsg *msg;
 
-	g_return_if_fail (component_name != NULL);
 	g_return_if_fail (key != NULL);
 
 	msg = ep_msg_new (ep_remember_password);
-	msg->component = component_name;
 	msg->key = key;
 
 	ep_msg_send (msg);
@@ -1003,15 +999,14 @@ e_passwords_remember_password (const gchar *component_name, const gchar *key)
  * Forgets the password associated with @key, in memory and on disk.
  **/
 void
-e_passwords_forget_password (const gchar *component_name, const gchar *key)
+e_passwords_forget_password (const gchar *unused,
+                             const gchar *key)
 {
 	EPassMsg *msg;
 
-	g_return_if_fail (component_name != NULL);
 	g_return_if_fail (key != NULL);
 
 	msg = ep_msg_new (ep_forget_password);
-	msg->component = component_name;
 	msg->key = key;
 
 	ep_msg_send (msg);
@@ -1026,16 +1021,15 @@ e_passwords_forget_password (const gchar *component_name, const gchar *key)
  * must free the returned password.
  **/
 gchar *
-e_passwords_get_password (const gchar *component_name, const gchar *key)
+e_passwords_get_password (const gchar *unused,
+                          const gchar *key)
 {
 	EPassMsg *msg;
 	gchar *passwd;
 
-	g_return_val_if_fail (component_name != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
 	msg = ep_msg_new (ep_get_password);
-	msg->component = component_name;
 	msg->key = key;
 
 	ep_msg_send (msg);
@@ -1074,8 +1068,7 @@ e_passwords_add_password (const gchar *key, const gchar *passwd)
 /**
  * e_passwords_ask_password:
  * @title: title for the password dialog
- * @component_name: the name of the component for which we're storing
- * the password (e.g. Mail, Addressbook, etc.)
+ * @unused: this argument is no longer used
  * @key: key to store the password under
  * @prompt: prompt string
  * @type: whether or not to offer to remember the password,
@@ -1092,7 +1085,8 @@ e_passwords_add_password (const gchar *key, const gchar *passwd)
  * E_PASSWORDS_DO_NOT_REMEMBER.
  **/
 gchar *
-e_passwords_ask_password (const gchar *title, const gchar *component_name,
+e_passwords_ask_password (const gchar *title,
+                          const gchar *unused,
                           const gchar *key,
                           const gchar *prompt,
                           EPasswordsRememberType type,
@@ -1102,7 +1096,6 @@ e_passwords_ask_password (const gchar *title, const gchar *component_name,
 	gchar *passwd;
 	EPassMsg *msg;
 
-	g_return_val_if_fail (component_name != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
 	if ((type & E_PASSWORDS_ONLINE) && !ep_online_state)
@@ -1110,7 +1103,6 @@ e_passwords_ask_password (const gchar *title, const gchar *component_name,
 
 	msg = ep_msg_new (ep_ask_password);
 	msg->title = title;
-	msg->component = component_name;
 	msg->key = key;
 	msg->prompt = prompt;
 	msg->flags = type;

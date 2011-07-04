@@ -486,7 +486,7 @@ smtp_connect_sync (CamelService *service,
 					full_prompt = g_strdup (base_prompt);
 
 				url->passwd = camel_session_get_password (
-					session, service, NULL, full_prompt,
+					session, service, full_prompt,
 					"password", password_flags, error);
 
 				g_free (base_prompt);

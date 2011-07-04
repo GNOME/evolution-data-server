@@ -671,7 +671,6 @@ camel_session_list_services (CamelSession *session)
  * camel_session_get_password:
  * @session: a #CamelSession
  * @service: the #CamelService this query is being made by
- * @domain: domain of password request.  May be null to use the default.
  * @prompt: prompt to provide to user
  * @item: an identifier, unique within this service, for the information
  * @flags: %CAMEL_SESSION_PASSWORD_REPROMPT, the prompt should force a reprompt
@@ -702,7 +701,6 @@ camel_session_list_services (CamelSession *session)
 gchar *
 camel_session_get_password (CamelSession *session,
                             CamelService *service,
-                            const gchar *domain,
                             const gchar *prompt,
                             const gchar *item,
                             guint32 flags,
@@ -719,7 +717,7 @@ camel_session_get_password (CamelSession *session,
 	g_return_val_if_fail (class->get_password != NULL, NULL);
 
 	password = class->get_password (
-		session, service, domain, prompt, item, flags, error);
+		session, service, prompt, item, flags, error);
 	CAMEL_CHECK_GERROR (session, get_password, password != NULL, error);
 
 	return password;
@@ -746,7 +744,6 @@ camel_session_get_password (CamelSession *session,
 gboolean
 camel_session_forget_password (CamelSession *session,
                                CamelService *service,
-                               const gchar *domain,
                                const gchar *item,
                                GError **error)
 {
@@ -759,7 +756,7 @@ camel_session_forget_password (CamelSession *session,
 	class = CAMEL_SESSION_GET_CLASS (session);
 	g_return_val_if_fail (class->forget_password, FALSE);
 
-	success = class->forget_password (session, service, domain, item, error);
+	success = class->forget_password (session, service, item, error);
 	CAMEL_CHECK_GERROR (session, forget_password, success, error);
 
 	return success;

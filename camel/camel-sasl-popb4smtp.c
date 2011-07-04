@@ -77,7 +77,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 	camel_sasl_set_authenticated (sasl, FALSE);
 
 	pop_uid = camel_session_get_password (
-		session, service, NULL, _("POP Source UID"),
+		session, service, _("POP Source UID"),
 		"popb4smtp_uid", 0, error);
 
 	if (pop_uid != NULL)

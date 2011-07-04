@@ -748,11 +748,9 @@ imap_auth_loop (CamelService *service,
 	CamelURL *url;
 	gchar *errbuf = NULL;
 	gboolean authenticated = FALSE;
-	const gchar *auth_domain;
 	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
 
 	url = camel_service_get_camel_url (service);
-	auth_domain = camel_url_get_param (url, "auth-domain");
 
 	if (store->preauthed) {
 		if (camel_verbose_debug)
@@ -824,7 +822,7 @@ imap_auth_loop (CamelService *service,
 				full_prompt = g_strdup (base_prompt);
 
 			url->passwd = camel_session_get_password (
-				session, service, auth_domain, full_prompt,
+				session, service, full_prompt,
 				"password", prompt_flags, error);
 
 			g_free (base_prompt);

@@ -111,13 +111,9 @@ load_source_auth_cb (EBook *book, const GError *error, gpointer closure)
 		{
 			const gchar *uri = e_book_get_uri (book);
 			gchar *stripped_uri = remove_parameters_from_uri (uri);
-			const gchar *auth_domain = e_source_get_property (data->source, "auth-domain");
-			const gchar *component_name;
-
-			component_name = auth_domain ? auth_domain : "Addressbook";
 
 			if (error->code == E_BOOK_ERROR_AUTHENTICATION_FAILED)
-				e_passwords_forget_password (component_name, stripped_uri);
+				e_passwords_forget_password (NULL, stripped_uri);
 
 			addressbook_authenticate (book, TRUE, data->source, load_source_auth_cb, closure);
 
@@ -165,16 +161,13 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 {
 	const gchar *auth;
 	const gchar *user;
-	const gchar *component_name;
 	gchar *password = NULL;
 	const gchar *uri = e_book_get_uri (book);
 	gchar *stripped_uri = remove_parameters_from_uri (uri);
-	const gchar *auth_domain = e_source_get_property (source, "auth-domain");
 
-	component_name = auth_domain ? auth_domain : "Addressbook";
 	uri = stripped_uri;
 
-	password = e_passwords_get_password (component_name, uri);
+	password = e_passwords_get_password (NULL, uri);
 
 	auth = e_source_get_property (source, "auth");
 
@@ -215,7 +208,7 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 		g_free (password_prompt);
 
 		remember = get_remember_password (source);
-		password = e_passwords_ask_password (prompt, component_name, uri, prompt,
+		password = e_passwords_ask_password (prompt, NULL, uri, prompt,
 						     flags, &remember,
 						     NULL);
 		if (remember != get_remember_password (source))
@@ -339,7 +332,6 @@ typedef struct {
 	gchar *auth_uri;
 	gchar *auth_method;
 	gchar *auth_username;
-	gchar *auth_component;
 	gboolean auth_remember;
 } LoadContext;
 
@@ -358,7 +350,6 @@ load_book_source_context_free (LoadContext *context)
 	g_free (context->auth_uri);
 	g_free (context->auth_method);
 	g_free (context->auth_username);
-	g_free (context->auth_component);
 
 	g_slice_free (LoadContext, context);
 }
@@ -403,15 +394,6 @@ load_book_source_get_auth_details (ESource *source,
 
 	context->auth_username = g_strdup (property);
 
-	/* auth_component */
-
-	property = e_source_get_property (source, "auth-domain");
-
-	if (property == NULL)
-		property = "Addressbook";
-
-	context->auth_component = g_strdup (property);
-
 	/* auth_remember */
 
 	property = e_source_get_property (source, "remember_password");
@@ -449,9 +431,8 @@ load_book_source_password_prompt (EBook *book,
 	title = "";
 
 	password = e_passwords_ask_password (
-		title, context->auth_component,
-		context->auth_uri, string->str, flags,
-		&context->auth_remember, context->parent);
+		title, NULL, context->auth_uri, string->str,
+		flags, &context->auth_remember, context->parent);
 
 	g_string_free (string, TRUE);
 
@@ -503,8 +484,7 @@ load_book_source_thread (GSimpleAsyncResult *simple,
 	if (context->auth_method == NULL)
 		goto exit;
 
-	password = e_passwords_get_password (
-		context->auth_component, context->auth_uri);
+	password = e_passwords_get_password (NULL, context->auth_uri);
 
 prompt:
 	if (g_cancellable_set_error_if_cancelled (cancellable, &error)) {
@@ -545,8 +525,7 @@ prompt:
 	/* If authentication failed, forget the password and reprompt. */
 	if (g_error_matches (
 		error, E_BOOK_ERROR, E_BOOK_ERROR_AUTHENTICATION_FAILED)) {
-		e_passwords_forget_password (
-			context->auth_component, context->auth_uri);
+		e_passwords_forget_password (NULL, context->auth_uri);
 		g_clear_error (&error);
 		goto prompt;
 

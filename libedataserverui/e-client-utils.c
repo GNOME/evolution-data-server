@@ -417,14 +417,13 @@ finish_or_retry_open (EClientUtilsAsyncOpData *async_data, const GError *error)
 
 	if (async_data->auth_handler && error && g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_FAILED)) {
 		if (async_data->used_credentials) {
-			const gchar *auth_domain, *prompt_key;
+			const gchar *prompt_key;
 
-			auth_domain = e_credentials_peek (async_data->used_credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN);
 			prompt_key = e_credentials_peek (async_data->used_credentials, E_CREDENTIALS_KEY_PROMPT_KEY);
 
 			/* make sure the old password is forgotten when authentication failed */
-			if (auth_domain && prompt_key)
-				e_passwords_forget_password (auth_domain, prompt_key);
+			if (prompt_key)
+				e_passwords_forget_password (NULL, prompt_key);
 
 			e_credentials_set (async_data->used_credentials, E_CREDENTIALS_KEY_PROMPT_REASON, error->message);
 		}
@@ -668,30 +667,6 @@ e_client_utils_open_new_finish (ESource *source, GAsyncResult *result, EClient *
 
 /* free returned pointer with g_free() */
 static gchar *
-get_auth_domain (EClient *client)
-{
-	ESource *source;
-	const gchar *auth_domain;
-
-	g_return_val_if_fail (client != NULL, NULL);
-
-	source = e_client_get_source (client);
-	g_return_val_if_fail (source != NULL, NULL);
-
-	auth_domain = e_source_get_property (source, "auth-domain");
-	if (auth_domain && *auth_domain)
-		return g_strdup (auth_domain);
-
-	if (E_IS_BOOK_CLIENT (client))
-		return g_strdup (E_CREDENTIALS_AUTH_DOMAIN_ADDRESSBOOK);
-	if (E_IS_CAL_CLIENT (client))
-		return g_strdup (E_CREDENTIALS_AUTH_DOMAIN_CALENDAR);
-
-	g_return_val_if_reached (NULL);
-}
-
-/* free returned pointer with g_free() */
-static gchar *
 get_prompt_key (EClient *client, const gchar *user_name)
 {
 	SoupURI *suri;
@@ -761,14 +736,6 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 			return FALSE;
 	}
 
-	if (!e_credentials_has_key (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN)) {
-		gchar *auth_domain = get_auth_domain (client);
-
-		e_credentials_set (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN, auth_domain);
-
-		g_free (auth_domain);
-	}
-
 	if (!e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_KEY)) {
 		gchar *prompt_key = get_prompt_key (client, e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME));
 
@@ -821,7 +788,7 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 void
 e_client_utils_forget_password (EClient *client)
 {
-	gchar *auth_domain, *prompt_key;
+	gchar *prompt_key;
 	ESource *source;
 
 	g_return_if_fail (client != NULL);
@@ -830,19 +797,16 @@ e_client_utils_forget_password (EClient *client)
 	source = e_client_get_source (client);
 	g_return_if_fail (source != NULL);
 
-	auth_domain = get_auth_domain (client);
 	prompt_key = get_prompt_key (client, e_source_get_property (source, "username"));
 
-	e_passwords_forget_password (auth_domain, prompt_key);
+	e_passwords_forget_password (NULL, prompt_key);
 
-	g_free (auth_domain);
 	g_free (prompt_key);
 }
 
 /* Asks for a password based on the provided credentials information.
    Credentials should have set following keys:
       E_CREDENTIALS_KEY_USERNAME
-      E_CREDENTIALS_KEY_AUTH_DOMAIN
       E_CREDENTIALS_KEY_PROMPT_KEY
       E_CREDENTIALS_KEY_PROMPT_TEXT
    all other keys are optional. If also E_CREDENTIALS_KEY_PASSWORD key is provided,
@@ -857,11 +821,10 @@ e_credentials_authenticate_helper (ECredentials *credentials, GtkWindow *parent,
 	gboolean res, fake_remember_password = FALSE;
 	guint prompt_flags;
 	gchar *password = NULL;
-	const gchar *title, *auth_domain, *prompt_key;
+	const gchar *title, *prompt_key;
 
 	g_return_val_if_fail (credentials != NULL, FALSE);
 	g_return_val_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_USERNAME), FALSE);
-	g_return_val_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN), FALSE);
 	g_return_val_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_KEY), FALSE);
 	g_return_val_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_TEXT), FALSE);
 
@@ -888,14 +851,13 @@ e_credentials_authenticate_helper (ECredentials *credentials, GtkWindow *parent,
 	else
 		title = _("Enter Password");
 
-	auth_domain = e_credentials_peek (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN);
 	prompt_key = e_credentials_peek (credentials, E_CREDENTIALS_KEY_PROMPT_KEY);
 
 	if (!(prompt_flags & E_CREDENTIALS_PROMPT_FLAG_REPROMPT))
-		password = e_passwords_get_password (auth_domain, prompt_key);
+		password = e_passwords_get_password (NULL, prompt_key);
 
 	if (!password)
-		password = e_passwords_ask_password (title, auth_domain, prompt_key,
+		password = e_passwords_ask_password (title, NULL, prompt_key,
 				e_credentials_peek (credentials, E_CREDENTIALS_KEY_PROMPT_TEXT),
 				prompt_flags, remember_password, parent);
 
@@ -915,24 +877,21 @@ e_credentials_authenticate_helper (ECredentials *credentials, GtkWindow *parent,
  * @credentials: an #ECredentials
  *
  * Forgets stored password for given @credentials, which should contain
- * E_CREDENTIALS_KEY_AUTH_DOMAIN and E_CREDENTIALS_KEY_PROMPT_KEY.
+ * E_CREDENTIALS_KEY_PROMPT_KEY.
  *
  * Since: 3.2
  **/
 void
 e_credentials_forget_password (const ECredentials *credentials)
 {
-	gchar *auth_domain, *prompt_key;
+	gchar *prompt_key;
 
 	g_return_if_fail (credentials != NULL);
-	g_return_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN));
 	g_return_if_fail (e_credentials_has_key (credentials, E_CREDENTIALS_KEY_PROMPT_KEY));
 
-	auth_domain = e_credentials_get (credentials, E_CREDENTIALS_KEY_AUTH_DOMAIN);
 	prompt_key = e_credentials_get (credentials, E_CREDENTIALS_KEY_PROMPT_KEY);
 
-	e_passwords_forget_password (auth_domain, prompt_key);
+	e_passwords_forget_password (NULL, prompt_key);
 
-	g_free (auth_domain);
 	g_free (prompt_key);
 }

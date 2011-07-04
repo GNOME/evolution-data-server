@@ -119,14 +119,12 @@ struct _CamelSessionClass {
 						 GError **error);
 	gchar *		(*get_password)		(CamelSession *session,
 						 CamelService *service,
-						 const gchar *domain,
 						 const gchar *prompt,
 						 const gchar *item,
 						 guint32 flags,
 						 GError **error);
 	gboolean	(*forget_password)	(CamelSession *session,
 						 CamelService *service,
-						 const gchar *domain,
 						 const gchar *item,
 						 GError **error);
 	gboolean	(*alert_user)		(CamelSession *session,
@@ -175,14 +173,12 @@ CamelService *	camel_session_get_service_by_url
 GList *		camel_session_list_services	(CamelSession *session);
 gchar *		camel_session_get_password	(CamelSession *session,
 						 CamelService *service,
-						 const gchar *domain,
 						 const gchar *prompt,
 						 const gchar *item,
 						 guint32 flags,
 						 GError **error);
 gboolean	camel_session_forget_password	(CamelSession *session,
 						 CamelService *service,
-						 const gchar *domain,
 						 const gchar *item,
 						 GError **error);
 gboolean	camel_session_alert_user	(CamelSession *session,

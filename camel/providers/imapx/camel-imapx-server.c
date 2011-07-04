@@ -3076,7 +3076,6 @@ imapx_reconnect (CamelIMAPXServer *is,
 	gchar *errbuf = NULL;
 	CamelService *service;
 	CamelURL *url;
-	const gchar *auth_domain = NULL;
 	gboolean authenticated = FALSE;
 	CamelServiceAuthType *authtype = NULL;
 	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
@@ -3154,11 +3153,9 @@ imapx_reconnect (CamelIMAPXServer *is,
 			else
 				full_prompt = g_strdup (base_prompt);
 
-			auth_domain = camel_url_get_param (url, "auth-domain");
 			url->passwd = camel_session_get_password (
 				is->session, (CamelService *) is->store,
-				auth_domain, full_prompt, "password",
-				prompt_flags, error);
+				full_prompt, "password", prompt_flags, error);
 
 			g_free (base_prompt);
 			g_free (full_prompt);

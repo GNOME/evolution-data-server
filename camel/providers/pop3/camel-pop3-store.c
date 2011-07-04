@@ -425,7 +425,7 @@ pop3_try_authenticate (CamelService *service,
 
 		url->passwd = camel_session_get_password (
 			camel_service_get_session (service), service,
-			NULL, full_prompt, "password", flags, error);
+			full_prompt, "password", flags, error);
 
 		g_free (base_prompt);
 		g_free (full_prompt);

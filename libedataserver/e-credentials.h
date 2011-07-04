@@ -36,16 +36,11 @@ struct _ECredentials {
 #define E_CREDENTIALS_KEY_USERNAME	"username"
 #define E_CREDENTIALS_KEY_PASSWORD	"password"
 #define E_CREDENTIALS_KEY_AUTH_METHOD	"auth-method"
-#define E_CREDENTIALS_KEY_AUTH_DOMAIN	"auth-domain"
 #define E_CREDENTIALS_KEY_PROMPT_TITLE	"prompt-title"
 #define E_CREDENTIALS_KEY_PROMPT_TEXT	"prompt-text"
 #define E_CREDENTIALS_KEY_PROMPT_REASON	"prompt-reason"
 #define E_CREDENTIALS_KEY_PROMPT_KEY	"prompt-key"
 #define E_CREDENTIALS_KEY_PROMPT_FLAGS	"prompt-flags"
-
-#define E_CREDENTIALS_AUTH_DOMAIN_ADDRESSBOOK	"Addressbook"
-#define E_CREDENTIALS_AUTH_DOMAIN_CALENDAR	"Calendar"
-#define E_CREDENTIALS_AUTH_DOMAIN_MAIL		"Mail"
 
 /* this is 1:1 with EPasswordsRememberType */
 typedef enum {

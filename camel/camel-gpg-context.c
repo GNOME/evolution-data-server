@@ -803,7 +803,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		}
 
 		flags = CAMEL_SESSION_PASSWORD_SECRET | CAMEL_SESSION_PASSPHRASE;
-		if ((passwd = camel_session_get_password (gpg->session, NULL, NULL, prompt, gpg->need_id, flags, &local_error))) {
+		if ((passwd = camel_session_get_password (gpg->session, NULL, prompt, gpg->need_id, flags, &local_error))) {
 			if (!gpg->utf8) {
 				gchar *opasswd = passwd;
 
@@ -837,7 +837,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 	} else if (!strncmp ((gchar *) status, "BAD_PASSPHRASE", 14)) {
 		gpg->bad_passwds++;
 
-		camel_session_forget_password (gpg->session, NULL, NULL, gpg->need_id, error);
+		camel_session_forget_password (gpg->session, NULL, gpg->need_id, error);
 
 		if (gpg->bad_passwds == 3) {
 			g_set_error (

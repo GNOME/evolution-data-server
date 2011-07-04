@@ -151,7 +151,6 @@ CamelSession
 
 @session: 
 @service: 
-@domain: 
 @prompt: 
 @item: 
 @flags: 
@@ -166,7 +165,6 @@ CamelSession
 
 @session: 
 @service: 
-@domain: 
 @item: 
 @error: 
 @Returns: 

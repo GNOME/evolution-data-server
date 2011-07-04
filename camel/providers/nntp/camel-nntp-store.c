@@ -105,8 +105,12 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
 		}
 
 		url->passwd =
-			camel_session_get_password (session, service, NULL,
-						    prompt, "password", CAMEL_SESSION_PASSWORD_SECRET | (store->password_reprompt ? CAMEL_SESSION_PASSWORD_REPROMPT : 0), error);
+			camel_session_get_password (
+				session, service, prompt, "password",
+				CAMEL_SESSION_PASSWORD_SECRET |
+				(store->password_reprompt ?
+					CAMEL_SESSION_PASSWORD_REPROMPT : 0),
+				error);
 		g_free (prompt);
 		g_free (base);
 
