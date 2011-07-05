@@ -99,20 +99,10 @@ imap_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 
 		datastream = camel_imap_folder_fetch_data (
 			imap_wrapper->folder, imap_wrapper->uid,
-			imap_wrapper->part_spec, FALSE, cancellable, NULL);
+			imap_wrapper->part_spec, FALSE, cancellable, error);
 
 		if (!datastream) {
 			CAMEL_IMAP_WRAPPER_UNLOCK (imap_wrapper, lock);
-#ifdef ENETUNREACH
-			errno = ENETUNREACH;
-#else
-/* FIXME[disk-summary] what errno to use if no ENETUNREACH */
-			errno = EINVAL;
-#endif
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				"%s", g_strerror (errno));
 			return -1;
 		}
 
