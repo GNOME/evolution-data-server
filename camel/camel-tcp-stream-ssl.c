@@ -831,13 +831,15 @@ camel_tcp_stream_ssl_new_raw (CamelSession *session,
 /**
  * camel_tcp_stream_ssl_enable_ssl:
  * @ssl: a #CamelTcpStreamSSL object
+ * @error: return location for a #GError, or %NULL
  *
  * Toggles an ssl-capable stream into ssl mode (if it isn't already).
  *
  * Returns: %0 on success or %-1 on fail
  **/
 gint
-camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
+camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl,
+                                 GError **error)
 {
 	PRFileDesc *fd, *ssl_fd;
 
@@ -848,13 +850,14 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl)
 	if (fd && !ssl->priv->ssl_mode) {
 		if (!(ssl_fd = enable_ssl (ssl, fd))) {
 			_set_errno_from_pr_error (PR_GetError ());
+			_set_g_error_from_errno (error, FALSE);
 			return -1;
 		}
 
 		_camel_tcp_stream_raw_replace_file_desc (CAMEL_TCP_STREAM_RAW (ssl), ssl_fd);
 		ssl->priv->ssl_mode = TRUE;
 
-		if (!rehandshake_ssl (ssl_fd, NULL)) /* NULL-GError */
+		if (!rehandshake_ssl (ssl_fd, error))
 			return -1;
 	}
 

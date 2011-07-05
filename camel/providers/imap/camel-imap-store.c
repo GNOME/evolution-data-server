@@ -395,11 +395,11 @@ connect_to_server (CamelService *service,
 	camel_imap_response_free_without_processing (store, response);
 
 	/* Okay, now toggle SSL/TLS mode */
-	if (camel_tcp_stream_ssl_enable_ssl (CAMEL_TCP_STREAM_SSL (tcp_stream)) == -1) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Failed to connect to IMAP server %s in secure mode: %s"),
-			url->host, _("SSL negotiations failed"));
+	if (camel_tcp_stream_ssl_enable_ssl (CAMEL_TCP_STREAM_SSL (tcp_stream), error) == -1) {
+		g_prefix_error (
+			error,
+			_("Failed to connect to IMAP server %s in secure mode: "),
+			url->host);
 		goto exception;
 	}
 #else

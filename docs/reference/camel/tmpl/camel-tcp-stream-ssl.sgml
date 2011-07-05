@@ -65,6 +65,7 @@ CamelTcpStreamSSL
 </para>
 
 @ssl: 
+@error: 
 @Returns: 
 
 

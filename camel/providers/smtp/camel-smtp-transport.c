@@ -273,12 +273,11 @@ connect_to_server (CamelService *service,
 	} while (*(respbuf+3) == '-'); /* if we got "220-" then loop again */
 
 	/* Okay, now toggle SSL/TLS mode */
-	if (camel_tcp_stream_ssl_enable_ssl (CAMEL_TCP_STREAM_SSL (tcp_stream)) == -1) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			_("Failed to connect to SMTP server %s in secure mode: %s"),
-			url->host, g_strerror (errno));
+	if (camel_tcp_stream_ssl_enable_ssl (CAMEL_TCP_STREAM_SSL (tcp_stream), error) == -1) {
+		g_prefix_error (
+			error,
+			_("Failed to connect to SMTP server %s in secure mode: "),
+			url->host);
 		goto exception_cleanup;
 	}
 #else
