@@ -57,7 +57,10 @@ folders_update (const gchar *root,
 {
 	gchar *tmp, *tmpnew, *line = NULL;
 	CamelStream *stream, *in = NULL, *out = NULL;
+	gchar *folder_newline;
 	gint flen = strlen (folder);
+
+	folder_newline = g_strdup_printf ("%s\n", folder);
 
 	tmpnew = g_alloca (strlen (root) + 16);
 	sprintf (tmpnew, "%s.folders~", root);
@@ -75,8 +78,15 @@ folders_update (const gchar *root,
 		g_object_unref (stream);
 	}
 	if (in == NULL || stream == NULL) {
-		if (mode == UPDATE_ADD && camel_stream_printf (out, "%s\n", folder) == -1)
-			goto fail;
+		if (mode == UPDATE_ADD) {
+			gint ret;
+
+			ret = camel_stream_write_string (
+				out, folder_newline, cancellable, NULL);
+
+			if (ret == -1)
+				goto fail;
+		}
 		goto done;
 	}
 
@@ -102,8 +112,13 @@ folders_update (const gchar *root,
 			gint cmp = strcmp (line, folder);
 
 			if (cmp > 0) {
+				gint ret;
+
 				/* found insertion point */
-				if (camel_stream_printf(out, "%s\n", folder) == -1)
+				ret = camel_stream_write_string (
+					out, folder_newline, cancellable, NULL);
+
+				if (ret == -1)
 					goto fail;
 				mode = UPDATE_NONE;
 			} else if (tmp == NULL) {
@@ -115,16 +130,33 @@ folders_update (const gchar *root,
 			break;
 		}
 
-		if (copy && camel_stream_printf(out, "%s\n", line) == -1)
-			goto fail;
+		if (copy) {
+			gchar *string;
+			gint ret;
+
+			string = g_strdup_printf ("%s\n", line);
+			ret = camel_stream_write_string (
+				out, string, cancellable, NULL);
+			g_free (string);
+
+			if (ret == -1)
+				goto fail;
+		}
 
 		g_free (line);
 		line = NULL;
 	}
 
 	/* add to end? */
-	if (mode == UPDATE_ADD && camel_stream_printf(out, "%s\n", folder) == -1)
-		goto fail;
+	if (mode == UPDATE_ADD) {
+		gint ret;
+
+		ret = camel_stream_write_string (
+			out, folder_newline, cancellable, NULL);
+
+		if (ret == -1)
+			goto fail;
+	}
 
 	if (camel_stream_close (out, cancellable, NULL) == -1)
 		goto fail;
@@ -139,6 +171,8 @@ fail:
 		g_object_unref (in);
 	if (out)
 		g_object_unref (out);
+
+	g_free (folder_newline);
 }
 
 static void

@@ -702,9 +702,13 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 			}
 			return ret;
 		} else {
-			gchar *type2 = g_base64_encode (token->data, token->len);
-			if (camel_stream_printf (priv->helper_stream, "TT %s\n",
-						 type2) >= 0 &&
+			gchar *type2;
+			gchar *string;
+
+			type2 = g_base64_encode (token->data, token->len);
+			string = g_strdup_printf ("TT %s\n", type2);
+			if (camel_stream_write_string (
+				priv->helper_stream, string, NULL, NULL) >= 0 &&
 			   (s = camel_stream_read (priv->helper_stream, buf,
 				   sizeof (buf), cancellable, NULL)) > 4 &&
 			   buf[0] == 'K' && buf[1] == 'K' && buf[2] == ' ' &&
@@ -716,6 +720,7 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 			} else
 				g_warning ("Didn't get valid response from ntlm_auth helper");
 
+			g_free (string);
 			g_free (type2);
 		}
 		/* On failure, we just return an empty string. Setting the
@@ -868,7 +873,7 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 		g_object_unref (stream);
 		return FALSE;
 	}
-	if (camel_stream_printf (stream, "YR\n") < 0) {
+	if (camel_stream_write_string (stream, "YR\n", cancellable, error) < 0) {
 		g_object_unref (stream);
 		return FALSE;
 	}

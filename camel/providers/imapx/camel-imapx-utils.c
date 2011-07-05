@@ -1434,6 +1434,7 @@ void
 imapx_dump_fetch (struct _fetch_info *finfo)
 {
 	CamelStream *sout;
+	gchar *string;
 	gint fd;
 
 	d('?', "Fetch info:\n");
@@ -1445,46 +1446,64 @@ imapx_dump_fetch (struct _fetch_info *finfo)
 	fd = dup (1);
 	sout = camel_stream_fs_new_with_fd (fd);
 	if (finfo->body) {
-		camel_stream_printf(sout, "Body content:\n");
+		camel_stream_write_string (sout, "Body content:\n", NULL, NULL);
 		camel_stream_write_to_stream (finfo->body, sout, NULL, NULL);
 		g_seekable_seek (
 			G_SEEKABLE (finfo->body),
 			0, G_SEEK_SET, NULL, NULL);
 	}
 	if (finfo->text) {
-		camel_stream_printf(sout, "Text content:\n");
+		camel_stream_write_string (sout, "Text content:\n", NULL, NULL);
 		camel_stream_write_to_stream (finfo->text, sout, NULL, NULL);
 		g_seekable_seek (
 			G_SEEKABLE (finfo->text),
 			0, G_SEEK_SET, NULL, NULL);
 	}
 	if (finfo->header) {
-		camel_stream_printf(sout, "Header content:\n");
+		camel_stream_write_string (sout, "Header content:\n", NULL, NULL);
 		camel_stream_write_to_stream (finfo->header, sout, NULL, NULL);
 		g_seekable_seek (
 			G_SEEKABLE (finfo->header),
 			0, G_SEEK_SET, NULL, NULL);
 	}
 	if (finfo->minfo) {
-		camel_stream_printf(sout, "Message Info:\n");
+		camel_stream_write_string (sout, "Message Info:\n", NULL, NULL);
 		camel_message_info_dump (finfo->minfo);
 	}
 	if (finfo->cinfo) {
-		camel_stream_printf(sout, "Content Info:\n");
+		camel_stream_write_string (sout, "Content Info:\n", NULL, NULL);
 		//camel_content_info_dump (finfo->cinfo, 0);
 	}
-	if (finfo->got & FETCH_SIZE)
-		camel_stream_printf(sout, "Size: %d\n", (gint)finfo->size);
-	if (finfo->got & FETCH_BODY)
-		camel_stream_printf(sout, "Offset: %d\n", (gint)finfo->offset);
-	if (finfo->got & FETCH_FLAGS)
-		camel_stream_printf(sout, "Flags: %08x\n", (gint)finfo->flags);
-	if (finfo->date)
-		camel_stream_printf(sout, "Date: '%s'\n", finfo->date);
-	if (finfo->section)
-		camel_stream_printf(sout, "Section: '%s'\n", finfo->section);
-	if (finfo->date)
-		camel_stream_printf(sout, "UID: '%s'\n", finfo->uid);
+	if (finfo->got & FETCH_SIZE) {
+		string = g_strdup_printf ("Size: %d\n", (gint) finfo->size);
+		camel_stream_write_string (sout, string, NULL, NULL);
+		g_free (string);
+	}
+	if (finfo->got & FETCH_BODY) {
+		string = g_strdup_printf ("Offset: %d\n", (gint) finfo->offset);
+		camel_stream_write_string (sout, string, NULL, NULL);
+		g_free (string);
+	}
+	if (finfo->got & FETCH_FLAGS) {
+		string = g_strdup_printf ("Flags: %08x\n", (gint) finfo->flags);
+		camel_stream_write_string (sout, string, NULL, NULL);
+		g_free (string);
+	}
+	if (finfo->date) {
+		string = g_strdup_printf ("Data: '%s'\n", finfo->date);
+		camel_stream_write_string (sout, string, NULL, NULL);
+		g_free (string);
+	}
+	if (finfo->section) {
+		string = g_strdup_printf ("Section: '%s'\n", finfo->section);
+		camel_stream_write_string (sout, string, NULL, NULL);
+		g_free (string);
+	}
+	if (finfo->date) {
+		string = g_strdup_printf ("UID: '%s'\n", finfo->uid);
+		camel_stream_write_string (sout, string, NULL, NULL);
+		g_free (string);
+	}
 	g_object_unref (sout);
 }
 

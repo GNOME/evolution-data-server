@@ -91,9 +91,10 @@ multipart_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 {
 	CamelMultipart *multipart = CAMEL_MULTIPART (data_wrapper);
 	const gchar *boundary;
+	GList *node;
+	gchar *content;
 	gssize total = 0;
 	gssize count;
-	GList *node;
 
 	/* get the bundary text */
 	boundary = camel_multipart_get_boundary (multipart);
@@ -120,10 +121,12 @@ multipart_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	 */
 	node = multipart->parts;
 	while (node) {
-		count = camel_stream_printf (
-			stream, "\n--%s\n", boundary);
+		content = g_strdup_printf ("\n--%s\n", boundary);
+		count = camel_stream_write_string (
+			stream, content, cancellable, error);
+		g_free (content);
 		if (count == -1)
-			goto file_error;
+			return -1;
 		total += count;
 
 		count = camel_data_wrapper_write_to_stream_sync (
@@ -136,10 +139,12 @@ multipart_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	}
 
 	/* write the terminating boudary delimiter */
-	count = camel_stream_printf (
-		stream, "\n--%s--\n", boundary);
+	content = g_strdup_printf ("\n--%s--\n", boundary);
+	count = camel_stream_write_string (
+		stream, content, cancellable, error);
+	g_free (content);
 	if (count == -1)
-		goto file_error;
+		return -1;
 	total += count;
 
 	/* and finally the postface */
@@ -152,14 +157,6 @@ multipart_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	}
 
 	return total;
-
-file_error:
-	g_set_error (
-		error, G_IO_ERROR,
-		g_io_error_from_errno (errno),
-		"%s", g_strerror (errno));
-
-	return -1;
 }
 
 static void

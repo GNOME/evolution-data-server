@@ -314,6 +314,7 @@ try_sasl (CamelPOP3Store *store,
 	CamelURL *url;
 	guchar *line, *resp;
 	CamelSasl *sasl;
+	gchar *string;
 	guint len;
 	gint ret;
 
@@ -331,7 +332,12 @@ try_sasl (CamelPOP3Store *store,
 		return -1;
 	}
 
-	if (camel_stream_printf((CamelStream *)stream, "AUTH %s\r\n", mech) == -1)
+	string = g_strdup_printf ("AUTH %s\r\n", mech);
+	ret = camel_stream_write_string (
+		CAMEL_STREAM (stream), string, cancellable, error);
+	g_free (string);
+
+	if (ret == -1)
 		goto ioerror;
 
 	while (1) {
@@ -359,7 +365,8 @@ try_sasl (CamelPOP3Store *store,
 		if (strncmp((gchar *) line, "+ ", 2) != 0
 		    || camel_sasl_get_authenticated (sasl)
 		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line+2, cancellable, NULL)) == NULL) {
-			camel_stream_printf((CamelStream *)stream, "*\r\n");
+			camel_stream_write_string (
+				CAMEL_STREAM (stream), "*\r\n", NULL, NULL);
 			camel_pop3_stream_line (stream, &line, &len, NULL, NULL);
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
@@ -370,8 +377,13 @@ try_sasl (CamelPOP3Store *store,
 			goto done;
 		}
 
-		ret = camel_stream_printf((CamelStream *)stream, "%s\r\n", resp);
+		string = g_strdup_printf ("%s\r\n", resp);
+		ret = camel_stream_write_string (
+			CAMEL_STREAM (stream), string, cancellable, error);
+		g_free (string);
+
 		g_free (resp);
+
 		if (ret == -1)
 			goto ioerror;
 

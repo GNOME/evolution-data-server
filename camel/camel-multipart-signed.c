@@ -307,6 +307,7 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	const gchar *boundary;
 	gssize total = 0;
 	gssize count;
+	gchar *content;
 
 	/* we have 3 basic cases:
 	   1. constructed, we write out the data wrapper stream we got
@@ -352,9 +353,12 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	}
 
 	/* first boundary */
-	count = camel_stream_printf (stream, "\n--%s\n", boundary);
+	content = g_strdup_printf ("\n--%s\n", boundary);
+	count = camel_stream_write_string (
+		stream, content, cancellable, error);
+	g_free (content);
 	if (count == -1)
-		goto file_error;
+		return -1;
 	total += count;
 
 	/* output content part */
@@ -369,9 +373,12 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	total += count;
 
 	/* boundary */
-	count = camel_stream_printf (stream, "\n--%s\n", boundary);
+	content = g_strdup_printf ("\n--%s\n", boundary);
+	count = camel_stream_write_string (
+		stream, content, cancellable, error);
+	g_free (content);
 	if (count == -1)
-		goto file_error;
+		return -1;
 	total += count;
 
 	/* signature */
@@ -383,9 +390,12 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	total += count;
 
 	/* write the terminating boudary delimiter */
-	count = camel_stream_printf (stream, "\n--%s--\n", boundary);
+	content = g_strdup_printf ("\n--%s--\n", boundary);
+	count = camel_stream_write_string (
+		stream, content, cancellable, error);
+	g_free (content);
 	if (count == -1)
-		goto file_error;
+		return -1;
 	total += count;
 
 	/* and finally the postface */
@@ -398,14 +408,6 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	}
 
 	return total;
-
-file_error:
-	g_set_error (
-		error, G_IO_ERROR,
-		g_io_error_from_errno (errno),
-		"%s", g_strerror (errno));
-
-	return -1;
 }
 
 static gboolean

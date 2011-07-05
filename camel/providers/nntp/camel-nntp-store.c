@@ -1479,6 +1479,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store,
                          const gchar *fmt,
                          va_list ap)
 {
+	CamelStream *stream;
 	GByteArray *byte_array;
 	const guchar *p, *ps;
 	guchar c;
@@ -1493,54 +1494,69 @@ camel_nntp_raw_commandv (CamelNNTPStore *store,
 	p = (const guchar *) fmt;
 	ps = (const guchar *) p;
 
+	stream = CAMEL_STREAM (store->mem);
+
 	while ((c = *p++)) {
+		gchar *strval;
+
 		switch (c) {
 		case '%':
 			c = *p++;
-			camel_stream_write ((CamelStream *) store->mem, (const gchar *) ps, p - ps - (c == '%' ? 1 : 2), NULL, NULL);
+			camel_stream_write (
+				stream, (const gchar *) ps,
+				p - ps - (c == '%' ? 1 : 2),
+				NULL, NULL);
 			ps = p;
 			switch (c) {
 			case 's':
 				s = va_arg (ap, gchar *);
-				camel_stream_write ((CamelStream *) store->mem, s, strlen (s), NULL, NULL);
+				strval = g_strdup (s);
 				break;
 			case 'd':
 				d = va_arg (ap, gint);
-				camel_stream_printf((CamelStream *)store->mem, "%d", d);
+				strval = g_strdup_printf ("%d", d);
 				break;
 			case 'u':
 				u = va_arg (ap, guint);
-				camel_stream_printf((CamelStream *)store->mem, "%u", u);
+				strval = g_strdup_printf ("%u", u);
 				break;
 			case 'm':
 				s = va_arg (ap, gchar *);
-				camel_stream_printf((CamelStream *)store->mem, "<%s>", s);
+				strval = g_strdup_printf ("<%s>", s);
 				break;
 			case 'r':
 				u = va_arg (ap, guint);
 				u2 = va_arg (ap, guint);
 				if (u == u2)
-					camel_stream_printf((CamelStream *)store->mem, "%u", u);
+					strval = g_strdup_printf ("%u", u);
 				else
-					camel_stream_printf((CamelStream *)store->mem, "%u-%u", u, u2);
+					strval = g_strdup_printf ("%u-%u", u, u2);
 				break;
 			default:
 				g_warning("Passing unknown format to nntp_command: %c\n", c);
 				g_assert (0);
 			}
+
+			camel_stream_write_string (stream, strval, NULL, NULL);
+
+			g_free (strval);
+			strval = NULL;
 		}
 	}
 
-	camel_stream_write ((CamelStream *) store->mem, (const gchar *) ps, p-ps-1, NULL, NULL);
-	camel_stream_write ((CamelStream *) store->mem, "\r\n", 2, NULL, NULL);
+	camel_stream_write (stream, (const gchar *) ps, p-ps-1, NULL, NULL);
+	camel_stream_write (stream, "\r\n", 2, NULL, NULL);
 
 	byte_array = camel_stream_mem_get_byte_array (store->mem);
 
-	if (camel_stream_write ((CamelStream *) store->stream, (const gchar *) byte_array->data, byte_array->len, cancellable, error) == -1)
+	if (camel_stream_write (
+		(CamelStream *) store->stream,
+		(const gchar *) byte_array->data,
+		byte_array->len, cancellable, error) == -1)
 		goto ioerror;
 
 	/* FIXME: hack */
-	g_seekable_seek (G_SEEKABLE (store->mem), 0, G_SEEK_SET, NULL, NULL);
+	g_seekable_seek (G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
 	g_byte_array_set_size (byte_array, 0);
 
 	if (camel_nntp_stream_line (store->stream, (guchar **) line, &u, cancellable, error) == -1)

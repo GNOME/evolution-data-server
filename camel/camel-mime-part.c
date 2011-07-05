@@ -592,6 +592,8 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 		}
 
 		if (mp->priv->encoding != content->encoding) {
+			gchar *content;
+
 			switch (mp->priv->encoding) {
 			case CAMEL_TRANSFER_ENCODING_BASE64:
 				filter = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_BASE64_ENC);
@@ -601,16 +603,18 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 				break;
 			case CAMEL_TRANSFER_ENCODING_UUENCODE:
 				filename = camel_mime_part_get_filename (mp);
-				count = camel_stream_printf (
-					ostream, "begin 644 %s\n",
-					filename ? filename : "untitled");
-				if (count == -1) {
-					g_set_error (
-						error, G_IO_ERROR,
-						g_io_error_from_errno (errno),
-						"%s", g_strerror (errno));
+				if (filename == NULL)
+					filename = "untitled";
+
+				content = g_strdup_printf (
+					"begin 644 %s\n", filename);
+				count = camel_stream_write_string (
+					ostream, content, cancellable, error);
+				g_free (content);
+
+				if (count == -1)
 					return -1;
-				}
+
 				total += count;
 				filter = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_UU_ENC);
 				break;

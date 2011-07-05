@@ -188,6 +188,7 @@ imap_command_start (CamelImapStore *store,
                     GCancellable *cancellable,
                     GError **error)
 {
+	gchar *content;
 	gssize nwritten;
 
 	if (!store->ostream) {
@@ -243,25 +244,16 @@ imap_command_start (CamelImapStore *store,
 		fprintf (stderr, "sending : %c%.5u %s\r\n", store->tag_prefix, store->command, mask);
 	}
 
-	nwritten = camel_stream_printf (
-		store->ostream, "%c%.5u %s\r\n",
+	content = g_strdup_printf (
+		"%c%.5u %s\r\n",
 		store->tag_prefix, store->command++, cmd);
+	nwritten = camel_stream_write_string (
+		store->ostream, content, cancellable, error);
+	g_free (content);
 
 	if (nwritten == -1) {
-		if (errno == EINTR)
-			g_set_error (
-				error, G_IO_ERROR,
-				G_IO_ERROR_CANCELLED,
-				_("Operation cancelled"));
-		else
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				"%s", g_strerror (errno));
-
 		camel_service_disconnect_sync (
 			CAMEL_SERVICE (store), FALSE, NULL);
-
 		return FALSE;
 	}
 

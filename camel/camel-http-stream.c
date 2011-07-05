@@ -130,8 +130,12 @@ http_method_invoke (CamelHttpStream *http,
                     GCancellable *cancellable,
                     GError **error)
 {
+	GString *buffer;
 	const gchar *method = NULL, *use_url;
+	const gchar *user_agent;
 	gchar *url;
+
+	buffer = g_string_sized_new (1024);
 
 	switch (http->method) {
 	case CAMEL_HTTP_METHOD_GET:
@@ -154,62 +158,43 @@ http_method_invoke (CamelHttpStream *http,
 		use_url = http->url->path;
 	}
 
-	d(printf("HTTP Stream Sending: %s %s HTTP/1.0\r\nUser-Agent: %s\r\nHost: %s\r\n",
-		 method,
-		 use_url,
-		 http->user_agent ? http->user_agent : "CamelHttpStream/1.0",
-		 http->url->host));
-	if (camel_stream_printf (
-		http->raw,
-		"%s %s HTTP/1.0\r\nUser-Agent: %s\r\nHost: %s\r\n",
-		method, use_url, http->user_agent ? http->user_agent :
-		"CamelHttpStream/1.0", http->url->host) == -1) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			"%s", g_strerror (errno));
-		http_disconnect (http);
-		g_free (url);
-		return -1;
-	}
+	user_agent = http->user_agent;
+	if (user_agent == NULL)
+		user_agent = "CamelHttpStream/1.0";
+
+	g_string_append_printf (
+		buffer, "%s %s HTTP/1.0\r\n", method, use_url);
+
+	g_string_append_printf (
+		buffer, "User-Agent: %s\r\n", user_agent);
+
+	g_string_append_printf (
+		buffer, "Host: %s\r\n", http->url->host);
+
 	g_free (url);
 
-	if (http->authrealm) {
-		d(printf("HTTP Stream Sending: WWW-Authenticate: %s\n", http->authrealm));
-	}
+	if (http->authrealm != NULL)
+		g_string_append_printf (
+			buffer, "WWW-Authenticate: %s\r\n",
+			http->authrealm);
 
-	if (http->authrealm && camel_stream_printf (
-		http->raw, "WWW-Authenticate: %s\r\n",
-		http->authrealm) == -1) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			"%s", g_strerror (errno));
-		http_disconnect (http);
-		return -1;
-	}
+	if (http->authpass != NULL && http->proxy != NULL)
+		g_string_append_printf (
+			buffer, "Proxy-Authorization: Basic %s\r\n",
+			http->authpass);
 
-	if (http->authpass && http->proxy) {
-		d(printf("HTTP Stream Sending: Proxy-Aurhorization: Basic %s\n", http->authpass));
-	}
-
-	if (http->authpass && http->proxy && camel_stream_printf (
-		http->raw, "Proxy-Authorization: Basic %s\r\n",
-		http->authpass) == -1) {
-		g_set_error (
-			error, G_IO_ERROR,
-			g_io_error_from_errno (errno),
-			"%s", g_strerror (errno));
-		http_disconnect (http);
-		return -1;
-	}
+	g_string_append (buffer, "\r\n");
 
 	/* end the headers */
-	if (camel_stream_write (http->raw, "\r\n", 2, cancellable, error) == -1 ||
+	if (camel_stream_write (
+		http->raw, buffer->str, buffer->len, cancellable, error) == -1 ||
 		camel_stream_flush (http->raw, cancellable, error) == -1) {
+		g_string_free (buffer, TRUE);
 		http_disconnect (http);
 		return -1;
 	}
+
+	g_string_free (buffer, TRUE);
 
 	return 0;
 }

@@ -496,7 +496,10 @@ imapx_command_add_part (CamelIMAPXCommand *ic, camel_imapx_command_part_t type, 
 
 		/* we presume we'll need to get additional data only if we're not authenticated yet */
 		g_object_ref (ob);
-		camel_stream_printf((CamelStream *)ic->mem, "%s", camel_sasl_get_mechanism (CAMEL_SASL (ob)));
+		camel_stream_write_string (
+			(CamelStream *)ic->mem,
+			camel_sasl_get_mechanism (CAMEL_SASL (ob)),
+			NULL, NULL);
 		if (!camel_sasl_get_authenticated ((CamelSasl *) ob))
 			type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
 		break;
@@ -524,13 +527,19 @@ imapx_command_add_part (CamelIMAPXCommand *ic, camel_imapx_command_part_t type, 
 	}
 
 	if (type & CAMEL_IMAPX_COMMAND_LITERAL_PLUS) {
+		gchar *string;
+
 		if (ic->is->cinfo && ic->is->cinfo->capa & IMAPX_CAPABILITY_LITERALPLUS) {
-			camel_stream_printf((CamelStream *)ic->mem, "{%u+}", ob_size);
+			string = g_strdup_printf ("{%u+}", ob_size);
 		} else {
 			type &= ~CAMEL_IMAPX_COMMAND_LITERAL_PLUS;
 			type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
-			camel_stream_printf((CamelStream *)ic->mem, "{%u}", ob_size);
+			string = g_strdup_printf ("{%u}", ob_size);
 		}
+
+		camel_stream_write_string ((CamelStream *)ic->mem, string, NULL, NULL);
+
+		g_free (string);
 	}
 
 	byte_array = camel_stream_mem_get_byte_array (ic->mem);
@@ -706,23 +715,32 @@ imapx_command_addv (CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 				case 'd': /* int/unsigned */
 				case 'u':
 					if (llong == 1) {
+						gchar *string;
 						l = va_arg (ap, glong);
 						c(ic->is->tagprefix, "got glong '%d'\n", (gint)l);
 						memcpy (buffer, start, p-start);
 						buffer[p-start] = 0;
-						camel_stream_printf ((CamelStream *) ic->mem, buffer, l);
+						string = g_strdup_printf (buffer, l);
+						camel_stream_write_string ((CamelStream *) ic->mem, string, ic->cancellable, NULL);
+						g_free (string);
 					} else if (llong == 2) {
+						gchar *string;
 						guint64 i64 = va_arg (ap, guint64);
 						c(ic->is->tagprefix, "got guint64 '%d'\n", (gint)i64);
 						memcpy (buffer, start, p-start);
 						buffer[p-start] = 0;
-						camel_stream_printf ((CamelStream *) ic->mem, buffer, i64);
+						string = g_strdup_printf (buffer, i64);
+						camel_stream_write_string ((CamelStream *) ic->mem, string, ic->cancellable, NULL);
+						g_free (string);
 					} else {
+						gchar *string;
 						d = va_arg (ap, gint);
 						c(ic->is->tagprefix, "got gint '%d'\n", d);
 						memcpy (buffer, start, p-start);
 						buffer[p-start] = 0;
-						camel_stream_printf ((CamelStream *) ic->mem, buffer, d);
+						string = g_strdup_printf (buffer, d);
+						camel_stream_write_string ((CamelStream *) ic->mem, string, ic->cancellable, NULL);
+						g_free (string);
 					}
 					break;
 				}
@@ -849,6 +867,7 @@ static gboolean
 imapx_command_start (CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 {
 	CamelIMAPXCommandPart *cp;
+	gint retval;
 
 	camel_imapx_command_close (ic);
 	cp = (CamelIMAPXCommandPart *) ic->parts.head;
@@ -866,7 +885,15 @@ imapx_command_start (CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 	g_static_rec_mutex_lock (&imap->ostream_lock);
 
 	c(imap->tagprefix, "Starting command (active=%d,%s) %c%05u %s\r\n", camel_dlist_length(&imap->active), imap->literal?" literal":"", imap->tagprefix, ic->tag, cp->data);
-	if (!imap->stream || camel_stream_printf((CamelStream *)imap->stream, "%c%05u %s\r\n", imap->tagprefix, ic->tag, cp->data) == -1) {
+	if (imap->stream != NULL) {
+		gchar *string;
+
+		string = g_strdup_printf ("%c%05u %s\r\n", imap->tagprefix, ic->tag, cp->data);
+		retval = camel_stream_write_string ((CamelStream *) imap->stream, string, ic->cancellable, NULL);
+		g_free (string);
+	} else
+		retval = -1;
+	if (retval == -1) {
 		g_set_error (
 			&ic->error, CAMEL_IMAPX_ERROR, 1,
 			"Failed to issue the command");
@@ -1918,7 +1945,8 @@ imapx_continuation (CamelIMAPXServer *imap,
 	if (cp->next) {
 		ic->current = cp;
 		c(imap->tagprefix, "next part of command \"%c%05u: %s\"\n", imap->tagprefix, ic->tag, cp->data);
-		camel_stream_printf((CamelStream *)imap->stream, "%s\r\n", cp->data);
+		camel_stream_write_string ((CamelStream *) imap->stream, cp->data, cancellable, NULL);
+		camel_stream_write_string ((CamelStream *) imap->stream, "\r\n", cancellable, NULL);
 		if (cp->type & (CAMEL_IMAPX_COMMAND_CONTINUATION|CAMEL_IMAPX_COMMAND_LITERAL_PLUS)) {
 			newliteral = ic;
 		} else {
@@ -1926,7 +1954,7 @@ imapx_continuation (CamelIMAPXServer *imap,
 		}
 	} else {
 		c(imap->tagprefix, "%p: queueing continuation\n", ic);
-		camel_stream_printf((CamelStream *)imap->stream, "\r\n");
+		camel_stream_write_string((CamelStream *)imap->stream, "\r\n", cancellable, NULL);
 	}
 
 	QUEUE_LOCK (imap);
@@ -2199,7 +2227,7 @@ imapx_submit_job (CamelIMAPXServer *is,
 static gboolean
 imapx_command_idle_stop (CamelIMAPXServer *is, GError **error)
 {
-	if (!is->stream || camel_stream_printf((CamelStream *)is->stream, "%s", "DONE\r\n") == -1) {
+	if (!is->stream || camel_stream_write_string ((CamelStream *)is->stream, "DONE\r\n", NULL, NULL) == -1) {
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
 			"Unable to issue DONE");
