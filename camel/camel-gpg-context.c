@@ -1546,7 +1546,9 @@ gpg_sign_sync (CamelCipherContext *context,
 		if (out) {
 			printf("Writing gpg signing data to '%s'\n", name);
 			camel_stream_write_to_stream (istream, out);
-			camel_stream_reset (istream);
+			g_seekable_seek (
+				G_SEEKABLE (istream), 0,
+				G_SEEK_SET, NULL, NULL);
 			g_object_unref (out);
 		}
 		g_free (name);
@@ -1587,7 +1589,7 @@ gpg_sign_sync (CamelCipherContext *context,
 	success = TRUE;
 
 	dw = camel_data_wrapper_new ();
-	camel_stream_reset (ostream, NULL);
+	g_seekable_seek (G_SEEKABLE (ostream), 0, G_SEEK_SET, NULL, NULL);
 	camel_data_wrapper_construct_from_stream_sync (
 		dw, ostream, NULL, NULL);
 
@@ -1611,9 +1613,8 @@ gpg_sign_sync (CamelCipherContext *context,
 	camel_multipart_set_boundary ((CamelMultipart *) mps, NULL);
 
 	mps->signature = sigpart;
-	mps->contentraw = istream;
-	camel_stream_reset (istream, NULL);
-	g_object_ref (istream);
+	mps->contentraw = g_object_ref (istream);
+	g_seekable_seek (G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
 
 	camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) mps);
 fail:
@@ -1688,7 +1689,8 @@ gpg_verify_sync (CamelCipherContext *context,
 		if (!camel_data_wrapper_decode_to_stream_sync (
 			content, istream, cancellable, error))
 			goto exception;
-		camel_stream_reset (istream, NULL);
+		g_seekable_seek (
+			G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
 		sigpart = NULL;
 	} else {
 		/* Invalid Mimetype */
@@ -1710,7 +1712,9 @@ gpg_verify_sync (CamelCipherContext *context,
 		if (out) {
 			printf("Writing gpg verify data to '%s'\n", name);
 			camel_stream_write_to_stream (istream, out);
-			camel_stream_reset (istream);
+			g_seekable_seek (
+				G_SEEKABLE (istream),
+				0, G_SEEK_SET, NULL, NULL);
 			g_object_unref (out);
 		}
 
@@ -1739,7 +1743,8 @@ gpg_verify_sync (CamelCipherContext *context,
 		}
 	}
 
-	camel_stream_reset (istream, NULL);
+	g_seekable_seek (G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
+
 	canon_stream = camel_stream_mem_new ();
 
 	/* strip trailing white-spaces */
@@ -1751,9 +1756,10 @@ gpg_verify_sync (CamelCipherContext *context,
 	camel_stream_write_to_stream (istream, filter, NULL, NULL);
 
 	g_object_unref (filter);
-	camel_stream_reset (istream, NULL);
 
-	camel_stream_reset (canon_stream, NULL);
+	g_seekable_seek (G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
+
+	g_seekable_seek (G_SEEKABLE (canon_stream), 0, G_SEEK_SET, NULL, NULL);
 
 	gpg = gpg_ctx_new (context);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_VERIFY);
@@ -1912,7 +1918,7 @@ gpg_encrypt_sync (CamelCipherContext *context,
 
 	vstream = camel_stream_mem_new ();
 	camel_stream_write_string (vstream, "Version: 1\n", NULL, NULL);
-	camel_stream_reset (vstream, NULL);
+	g_seekable_seek (G_SEEKABLE (vstream), 0, G_SEEK_SET, NULL, NULL);
 
 	verpart = camel_mime_part_new ();
 	dw = camel_data_wrapper_new ();
@@ -2008,7 +2014,8 @@ gpg_decrypt_sync (CamelCipherContext *context,
 		g_object_unref (istream);
 		return NULL;
 	}
-	camel_stream_reset (istream, NULL);
+
+	g_seekable_seek (G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
 
 	ostream = camel_stream_mem_new ();
 	camel_stream_mem_set_secure ((CamelStreamMem *) ostream);
@@ -2039,7 +2046,8 @@ gpg_decrypt_sync (CamelCipherContext *context,
 		goto fail;
 	}
 
-	camel_stream_reset (ostream, NULL);
+	g_seekable_seek (G_SEEKABLE (ostream), 0, G_SEEK_SET, NULL, NULL);
+
 	if (camel_content_type_is(ct, "multipart", "encrypted")) {
 		CamelDataWrapper *dw;
 		CamelStream *null = camel_stream_null_new ();

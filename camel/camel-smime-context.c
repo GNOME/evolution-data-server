@@ -850,7 +850,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 	success = TRUE;
 
 	dw = camel_data_wrapper_new ();
-	camel_stream_reset (ostream, NULL);
+	g_seekable_seek (G_SEEKABLE (ostream), 0, G_SEEK_SET, NULL, NULL);
 	camel_data_wrapper_construct_from_stream_sync (
 		dw, ostream, cancellable, NULL);
 	dw->encoding = CAMEL_TRANSFER_ENCODING_BINARY;
@@ -880,9 +880,11 @@ smime_context_sign_sync (CamelCipherContext *context,
 		camel_multipart_set_boundary ((CamelMultipart *) mps, NULL);
 
 		mps->signature = sigpart;
-		mps->contentraw = istream;
-		camel_stream_reset (istream, NULL);
-		g_object_ref (istream);
+		mps->contentraw = g_object_ref (istream);
+
+		g_seekable_seek (
+			G_SEEKABLE (istream), 0,
+			G_SEEK_SET, NULL, NULL);
 
 		camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) mps);
 	} else {
@@ -1214,7 +1216,8 @@ smime_context_decrypt_sync (CamelCipherContext *context,
 		g_object_unref (istream);
 		goto fail;
 	}
-	camel_stream_reset (istream, NULL);
+
+	g_seekable_seek (G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
 
 	dec = NSS_CMSDecoder_Start (NULL,
 				   sm_write_stream, ostream, /* content callback     */
@@ -1243,13 +1246,16 @@ smime_context_decrypt_sync (CamelCipherContext *context,
 	}
 #endif
 
-	camel_stream_reset (ostream, NULL);
+	g_seekable_seek (G_SEEKABLE (ostream), 0, G_SEEK_SET, NULL, NULL);
+
 	camel_data_wrapper_construct_from_stream_sync (
 		CAMEL_DATA_WRAPPER (opart), ostream, NULL, NULL);
 
 	if (NSS_CMSMessage_IsSigned (cmsg)) {
-		camel_stream_reset (ostream, NULL);
-		valid = sm_verify_cmsg (context, cmsg, ostream, cancellable, error);
+		g_seekable_seek (
+			G_SEEKABLE (ostream), 0, G_SEEK_SET, NULL, NULL);
+		valid = sm_verify_cmsg (
+			context, cmsg, ostream, cancellable, error);
 	} else {
 		valid = camel_cipher_validity_new ();
 		valid->encrypt.description = g_strdup (_("Encrypted content"));
@@ -1357,11 +1363,14 @@ camel_smime_context_describe_part (CamelSMIMEContext *context, CamelMimePart *pa
 		/* FIXME: stream this to the decoder incrementally */
 		buffer = g_byte_array_new ();
 		istream = camel_stream_mem_new_with_byte_array (buffer);
+
 		/* FIXME Pass a GCancellable and GError here. */
 		camel_data_wrapper_decode_to_stream_sync (
 			camel_medium_get_content ((CamelMedium *) part),
 			istream, NULL, NULL);
-		camel_stream_reset (istream, NULL);
+
+		g_seekable_seek (
+			G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
 
 		dec = NSS_CMSDecoder_Start (NULL,
 					   NULL, NULL,

@@ -181,7 +181,9 @@ cmd_tocache (CamelPOP3Engine *pe,
 
 	/* it all worked, output a '#' to say we're a-ok */
 	if (error == NULL) {
-		camel_stream_reset (fi->stream, NULL);
+		g_seekable_seek (
+			G_SEEKABLE (fi->stream),
+			0, G_SEEK_SET, NULL, NULL);
 		camel_stream_write (fi->stream, "#", 1, NULL, &error);
 	}
 
@@ -407,7 +409,8 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 		/* getting error code? */
 		/*g_assert (pcr->state == CAMEL_POP3_COMMAND_DATA);*/
 		camel_pop3_engine_command_free (pop3_store->engine, pcr);
-		camel_stream_reset (stream, NULL);
+		g_seekable_seek (
+			G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
 
 		/* Check to see we have safely written flag set */
 		if (i == -1) {

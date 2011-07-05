@@ -481,9 +481,9 @@ imapx_command_add_part (CamelIMAPXCommand *ic, camel_imapx_command_part_t type, 
 		if ( (type & CAMEL_IMAPX_COMMAND_MASK) == CAMEL_IMAPX_COMMAND_DATAWRAPPER) {
 			camel_data_wrapper_write_to_stream_sync ((CamelDataWrapper *) ob, (CamelStream *) null, NULL, NULL);
 		} else {
-			camel_stream_reset ((CamelStream *) ob, NULL);
+			g_seekable_seek (G_SEEKABLE (ob), 0, G_SEEK_SET, NULL, NULL);
 			camel_stream_write_to_stream ((CamelStream *) ob, (CamelStream *) null, NULL, NULL);
-			camel_stream_reset ((CamelStream *) ob, NULL);
+			g_seekable_seek (G_SEEKABLE (ob), 0, G_SEEK_SET, NULL, NULL);
 		}
 		type |= CAMEL_IMAPX_COMMAND_LITERAL_PLUS;
 		g_object_ref (ob);
@@ -544,7 +544,8 @@ imapx_command_add_part (CamelIMAPXCommand *ic, camel_imapx_command_part_t type, 
 	memcpy (cp->data, byte_array->data, cp->data_size);
 	cp->data[cp->data_size] = 0;
 
-	camel_stream_reset ((CamelStream *) ic->mem, NULL);
+	g_seekable_seek (G_SEEKABLE (ic->mem), 0, G_SEEK_SET, NULL, NULL);
+
 	/* FIXME: hackish? */
 	g_byte_array_set_size (byte_array, 0);
 

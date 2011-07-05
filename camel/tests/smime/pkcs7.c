@@ -103,7 +103,7 @@ gint main (gint argc, gchar **argv)
 
 	stream1 = camel_stream_mem_new ();
 	camel_stream_write (stream1, "Hello, I am a test stream.", 25);
-	camel_stream_reset (stream1);
+	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
 
 	stream2 = camel_stream_mem_new ();
 
@@ -116,8 +116,8 @@ gint main (gint argc, gchar **argv)
 	camel_exception_clear (ex);
 
 	camel_test_push ("PKCS7 verify");
-	camel_stream_reset (stream1);
-	camel_stream_reset (stream2);
+	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
+	g_seekable_seek (G_SEEKABLE (stream2), 0, G_SEEK_SET, NULL, NULL);
 	valid = camel_smime_verify (ctx, CAMEL_CIPHER_HASH_SHA1, stream1, stream2, ex);
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
 	check_msg (camel_cipher_validity_get_valid (valid), "%s", camel_cipher_validity_get_description (valid));
@@ -132,7 +132,7 @@ gint main (gint argc, gchar **argv)
 	stream3 = camel_stream_mem_new ();
 
 	camel_stream_write (stream1, "Hello, I am a test of encryption/decryption.", 44);
-	camel_stream_reset (stream1);
+	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
 
 	camel_exception_clear (ex);
 
@@ -145,7 +145,7 @@ gint main (gint argc, gchar **argv)
 	g_ptr_array_free (recipients, TRUE);
 	camel_test_pull ();
 
-	camel_stream_reset (stream2);
+	g_seekable_seek (G_SEEKABLE (stream2), 0, G_SEEK_SET, NULL, NULL);
 	camel_exception_clear (ex);
 
 	camel_test_push ("PKCS7 decrypt");

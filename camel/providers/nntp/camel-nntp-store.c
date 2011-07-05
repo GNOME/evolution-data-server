@@ -1540,7 +1540,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store,
 		goto ioerror;
 
 	/* FIXME: hack */
-	camel_stream_reset ((CamelStream *) store->mem, NULL);
+	g_seekable_seek (G_SEEKABLE (store->mem), 0, G_SEEK_SET, NULL, NULL);
 	g_byte_array_set_size (byte_array, 0);
 
 	if (camel_nntp_stream_line (store->stream, (guchar **) line, &u, cancellable, error) == -1)

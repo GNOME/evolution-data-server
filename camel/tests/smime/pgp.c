@@ -130,7 +130,7 @@ gint main (gint argc, gchar **argv)
 	stream1 = camel_stream_mem_new ();
 	camel_stream_write (
 		stream1, "Hello, I am a test stream.\n", 27, NULL, NULL);
-	camel_stream_reset (stream1, NULL);
+	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
 
 	conpart = camel_mime_part_new ();
 	dw = camel_data_wrapper_new ();
@@ -169,11 +169,11 @@ gint main (gint argc, gchar **argv)
 	camel_stream_write (
 		stream1, "Hello, I am a test of encryption/decryption.",
 		44, NULL, NULL);
-	camel_stream_reset (stream1, NULL);
+	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
 
 	conpart = camel_mime_part_new ();
 	dw = camel_data_wrapper_new ();
-	camel_stream_reset (stream1, NULL);
+	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
 	camel_data_wrapper_construct_from_stream_sync (
 		dw, stream1, NULL, NULL);
 	camel_medium_set_content ((CamelMedium *) conpart, dw);

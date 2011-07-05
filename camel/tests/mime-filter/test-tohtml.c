@@ -69,7 +69,8 @@ test_filter (CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 	check_count (f, 1);
 	check_unref (in, 1);
 
-	check (camel_stream_reset (indisk, NULL) == 0);
+	check (g_seekable_seek (
+		G_SEEKABLE (indisk), 0, G_SEEK_SET, NULL, NULL));
 
 	camel_test_push("writing through filter stream");
 

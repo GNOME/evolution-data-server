@@ -471,7 +471,11 @@ camel_imapx_stream_nstring_stream (CamelIMAPXStream *is,
 				ret = -1;
 				break;
 			}
-			camel_stream_reset (mem, NULL);
+
+			g_seekable_seek (
+				G_SEEKABLE (mem), 0,
+				G_SEEK_SET, NULL, NULL);
+
 			*stream = mem;
 			break;
 		case IMAPX_TOK_TOKEN:

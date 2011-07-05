@@ -848,7 +848,8 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 	}
 
 	g_object_unref (stream);
-	camel_stream_reset (mem, NULL);
+
+	g_seekable_seek (G_SEEKABLE (mem), 0, G_SEEK_SET, NULL, NULL);
 
 	parser = camel_mime_parser_new ();
 	camel_mime_parser_init_with_stream (parser, mem, NULL);

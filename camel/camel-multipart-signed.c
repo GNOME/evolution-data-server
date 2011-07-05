@@ -151,7 +151,9 @@ multipart_signed_parse_content (CamelMultipartSigned *mps)
 	   This is so we can parse all cases properly, without altering the content.
 	   All we are doing is finding part offsets. */
 
-	camel_stream_reset (stream, NULL);
+	/* XXX Assumes data wrapper streams are always seekable. */
+	g_seekable_seek (G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
+
 	cmp = camel_mime_parser_new ();
 	camel_mime_parser_init_with_stream (cmp, stream, NULL);
 	camel_mime_parser_push_state (cmp, CAMEL_MIME_PARSER_STATE_MULTIPART, boundary);
@@ -315,7 +317,10 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	/* 1 */
 	/* FIXME: locking? */
 	if (data_wrapper->stream) {
-		camel_stream_reset (data_wrapper->stream, NULL);
+		/* XXX Assumes data wrapper streams are always seekable. */
+		g_seekable_seek (
+			G_SEEKABLE (data_wrapper->stream),
+			0, G_SEEK_SET, NULL, NULL);
 		return camel_stream_write_to_stream (
 			data_wrapper->stream, stream, cancellable, error);
 	}
@@ -353,7 +358,10 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	total += count;
 
 	/* output content part */
-	camel_stream_reset (mps->contentraw, NULL);
+	/* XXX Both CamelGpgContext and CamelSMIMEContext set this
+	 *     to a memory stream, so assume it's always seekable. */
+	g_seekable_seek (
+		G_SEEKABLE (mps->contentraw), 0, G_SEEK_SET, NULL, NULL);
 	count = camel_stream_write_to_stream (
 		mps->contentraw, stream, cancellable, error);
 	if (count == -1)
@@ -476,7 +484,10 @@ multipart_signed_get_part (CamelMultipart *multipart,
 			stream = multipart_signed_clip_stream (
 				mps, mps->start1, mps->end1, NULL, NULL);
 		}
-		camel_stream_reset (stream, NULL);
+		/* XXX The "contentraw" stream is safe to assume to
+		 *     be seekable.  Data wrapper streams less so. */
+		g_seekable_seek (
+			G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
 		mps->content = camel_mime_part_new ();
 		camel_data_wrapper_construct_from_stream_sync (
 			CAMEL_DATA_WRAPPER (mps->content), stream, NULL, NULL);
@@ -494,7 +505,9 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		}
 		stream = multipart_signed_clip_stream (
 			mps, mps->start2, mps->end2, NULL, NULL);
-		camel_stream_reset (stream, NULL);
+		/* XXX Assumes data wrapper streams are always seekable. */
+		g_seekable_seek (
+			G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
 		mps->signature = camel_mime_part_new ();
 		camel_data_wrapper_construct_from_stream_sync (
 			CAMEL_DATA_WRAPPER (mps->signature),
@@ -653,7 +666,8 @@ camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps,
 	if (mps->contentraw) {
 		constream = g_object_ref (mps->contentraw);
 	} else {
-		CamelStream *stream;
+		CamelStream *base_stream;
+		CamelStream *filter_stream;
 		CamelMimeFilter *canon_filter;
 
 		if (mps->start1 == -1 && multipart_signed_parse_content (mps) == -1) {
@@ -667,19 +681,29 @@ camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps,
 		/* first, prepare our parts */
 
 		/* FIXME Missing a GCancellable */
-		stream = multipart_signed_clip_stream (
+		base_stream = multipart_signed_clip_stream (
 			mps, mps->start1, mps->end1, NULL, error);
 
-		if (stream == NULL)
+		if (base_stream == NULL)
 			return NULL;
 
-		constream = camel_stream_filter_new (stream);
-		g_object_unref (stream);
+		filter_stream = camel_stream_filter_new (base_stream);
 
 		/* Note: see rfc2015 or rfc3156, section 5 */
-		canon_filter = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF);
-		camel_stream_filter_add ((CamelStreamFilter *) constream, (CamelMimeFilter *) canon_filter);
+		canon_filter = camel_mime_filter_canon_new (
+			CAMEL_MIME_FILTER_CANON_CRLF);
+		camel_stream_filter_add (
+			CAMEL_STREAM_FILTER (filter_stream), canon_filter);
 		g_object_unref (canon_filter);
+
+		/* We want to return a pure memory stream,
+		 * so apply the CRLF filter ahead of time. */
+		constream = camel_stream_mem_new ();
+		camel_stream_write_to_stream (
+			filter_stream, constream, NULL, NULL);
+
+		g_object_unref (filter_stream);
+		g_object_unref (base_stream);
 	}
 
 	return constream;

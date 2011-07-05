@@ -153,10 +153,18 @@ data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 		return -1;
 	}
 
-	if (camel_stream_reset (data_wrapper->stream, error) == -1) {
-		camel_data_wrapper_unlock (
-			data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
-		return -1;
+	if (G_IS_SEEKABLE (data_wrapper->stream)) {
+		gboolean success;
+
+		success = g_seekable_seek (
+			G_SEEKABLE (data_wrapper->stream),
+			0, G_SEEK_SET, cancellable, error);
+
+		if (!success) {
+			camel_data_wrapper_unlock (
+				data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+			return -1;
+		}
 	}
 
 	ret = camel_stream_write_to_stream (

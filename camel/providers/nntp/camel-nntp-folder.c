@@ -221,9 +221,15 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 	if (ret == 220) {
 		stream = camel_data_cache_add (nntp_store->cache, "cache", msgid, NULL);
 		if (stream) {
+			gboolean success;
+
 			if (camel_stream_write_to_stream ((CamelStream *) nntp_store->stream, stream, cancellable, error) == -1)
 				goto fail;
-			if (camel_stream_reset (stream, error) == -1)
+
+			success = g_seekable_seek (
+				G_SEEKABLE (stream), 0,
+				G_SEEK_SET, cancellable, error);
+			if (!success)
 				goto fail;
 		} else {
 			stream = g_object_ref (nntp_store->stream);

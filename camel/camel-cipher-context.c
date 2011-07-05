@@ -1831,7 +1831,12 @@ camel_cipher_canonical_to_stream (CamelMimePart *part,
 		res = 0;
 
 	g_object_unref (filter);
-	camel_stream_reset (ostream, NULL);
+
+	/* Reset stream position to beginning. */
+	if (G_IS_SEEKABLE (ostream))
+		g_seekable_seek (
+			G_SEEKABLE (ostream), 0,
+			G_SEEK_SET, NULL, NULL);
 
 	return res;
 }

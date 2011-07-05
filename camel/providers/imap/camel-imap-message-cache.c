@@ -349,7 +349,7 @@ insert_finish (CamelImapMessageCache *cache,
                CamelStream *stream)
 {
 	camel_stream_flush (stream, NULL, NULL);
-	camel_stream_reset (stream, NULL);
+	g_seekable_seek (G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
 	cache_put (cache, uid, key, stream);
 	g_free (path);
 
@@ -516,7 +516,9 @@ camel_imap_message_cache_get (CamelImapMessageCache *cache, const gchar *uid,
 
 	stream = g_hash_table_lookup (cache->parts, key);
 	if (stream) {
-		camel_stream_reset (CAMEL_STREAM (stream), NULL);
+		g_seekable_seek (
+			G_SEEKABLE (stream), 0,
+			G_SEEK_SET, NULL, NULL);
 		g_object_ref (stream);
 		g_free (path);
 		return stream;

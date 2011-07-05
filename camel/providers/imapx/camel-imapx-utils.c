@@ -1447,17 +1447,23 @@ imapx_dump_fetch (struct _fetch_info *finfo)
 	if (finfo->body) {
 		camel_stream_printf(sout, "Body content:\n");
 		camel_stream_write_to_stream (finfo->body, sout, NULL, NULL);
-		camel_stream_reset (finfo->body, NULL);
+		g_seekable_seek (
+			G_SEEKABLE (finfo->body),
+			0, G_SEEK_SET, NULL, NULL);
 	}
 	if (finfo->text) {
 		camel_stream_printf(sout, "Text content:\n");
 		camel_stream_write_to_stream (finfo->text, sout, NULL, NULL);
-		camel_stream_reset (finfo->text, NULL);
+		g_seekable_seek (
+			G_SEEKABLE (finfo->text),
+			0, G_SEEK_SET, NULL, NULL);
 	}
 	if (finfo->header) {
 		camel_stream_printf(sout, "Header content:\n");
 		camel_stream_write_to_stream (finfo->header, sout, NULL, NULL);
-		camel_stream_reset (finfo->header, NULL);
+		g_seekable_seek (
+			G_SEEKABLE (finfo->header),
+			0, G_SEEK_SET, NULL, NULL);
 	}
 	if (finfo->minfo) {
 		camel_stream_printf(sout, "Message Info:\n");

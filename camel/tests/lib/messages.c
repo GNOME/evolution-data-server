@@ -200,20 +200,20 @@ test_message_compare (CamelMimeMessage *msg)
 	check_msg (camel_data_wrapper_write_to_stream_sync (
 		CAMEL_DATA_WRAPPER (msg), stream1, NULL, NULL) != -1,
 		"write_to_stream 1 failed", NULL);
-	camel_stream_reset (stream1, NULL);
+	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
 
 	msg2 = camel_mime_message_new ();
 	check_msg (camel_data_wrapper_construct_from_stream_sync (
 		CAMEL_DATA_WRAPPER (msg2), stream1, NULL, NULL) != -1,
 		"construct_from_stream 1 failed");
-	camel_stream_reset (stream1, NULL);
+	g_seekable_seek (G_SEEKABLE (stream1), 0, G_SEEK_SET, NULL, NULL);
 
 	byte_array2 = g_byte_array_new ();
 	stream2 = camel_stream_mem_new_with_byte_array (byte_array2);
 	check_msg (camel_data_wrapper_write_to_stream_sync (
 		CAMEL_DATA_WRAPPER (msg2), stream2, NULL, NULL) != -1,
 		"write_to_stream 2 failed");
-	camel_stream_reset (stream2, NULL);
+	g_seekable_seek (G_SEEKABLE (stream2), 0, G_SEEK_SET, NULL, NULL);
 
 	if (byte_array1->len != byte_array2->len) {
 		CamelDataWrapper *content;
