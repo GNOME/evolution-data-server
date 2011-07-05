@@ -27,7 +27,6 @@
 #include <config.h>
 #endif
 
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -205,7 +204,7 @@ connect_to_server (CamelService *service,
 	}
 
 	pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, cancellable, error, "STLS\r\n");
-	while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
+	while (camel_pop3_engine_iterate (store->engine, NULL, NULL, NULL) > 0)
 		;
 
 	ret = pc->state == CAMEL_POP3_COMMAND_OK;
@@ -254,7 +253,7 @@ connect_to_server (CamelService *service,
 	if (clean_quit) {
 		/* try to disconnect cleanly */
 		pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, NULL, NULL, "QUIT\r\n");
-		while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
+		while (camel_pop3_engine_iterate (store->engine, NULL, NULL, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (store->engine, pc);
 	}
@@ -335,7 +334,7 @@ try_sasl (CamelPOP3Store *store,
 		goto ioerror;
 
 	while (1) {
-		if (camel_pop3_stream_line (stream, &line, &len) == -1)
+		if (camel_pop3_stream_line (stream, &line, &len, cancellable, error) == -1)
 			goto ioerror;
 		if (strncmp((gchar *) line, "+OK", 3) == 0)
 			break;
@@ -360,7 +359,7 @@ try_sasl (CamelPOP3Store *store,
 		    || camel_sasl_get_authenticated (sasl)
 		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line+2, cancellable, NULL)) == NULL) {
 			camel_stream_printf((CamelStream *)stream, "*\r\n");
-			camel_pop3_stream_line (stream, &line, &len);
+			camel_pop3_stream_line (stream, &line, &len, NULL, NULL);
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -494,24 +493,14 @@ pop3_try_authenticate (CamelService *service,
 		return 0;
 	}
 
-	while ((status = camel_pop3_engine_iterate (store->engine, pcp)) > 0)
+	while ((status = camel_pop3_engine_iterate (store->engine, pcp, cancellable, error)) > 0)
 		;
 
 	if (status == -1) {
-		if (errno == EINTR) {
-			g_set_error (
-				error, G_IO_ERROR,
-				G_IO_ERROR_CANCELLED,
-				_("Cancelled"));
-		} else {
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				_("Unable to connect to POP server %s.\n"
-				  "Error sending password: %s"),
-				url->host, errno ?
-				g_strerror (errno) : _("Unknown error"));
-		}
+		g_prefix_error (
+			error,
+			_("Unable to connect to POP server %s.\n"
+			  "Error sending password: "), url->host);
 	} else if (pcu && pcu->state != CAMEL_POP3_COMMAND_OK) {
 		gchar *tmp;
 
@@ -663,7 +652,7 @@ pop3_store_disconnect_sync (CamelService *service,
 		CamelPOP3Command *pc;
 
 		pc = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, cancellable, error, "QUIT\r\n");
-		while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
+		while (camel_pop3_engine_iterate (store->engine, NULL, NULL, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (store->engine, pc);
 	}
@@ -813,7 +802,7 @@ camel_pop3_store_expunge (CamelPOP3Store *store,
 	pc = camel_pop3_engine_command_new (
 		store->engine, 0, NULL, NULL, NULL, error, "QUIT\r\n");
 
-	while (camel_pop3_engine_iterate (store->engine, NULL) > 0)
+	while (camel_pop3_engine_iterate (store->engine, NULL, NULL, NULL) > 0)
 		;
 
 	camel_pop3_engine_command_free (store->engine, pc);

@@ -59,7 +59,6 @@ struct _CamelPOP3FolderInfo {
 	guint32 flags;
 	guint32 index;		/* index of request */
 	gchar *uid;
-	gint err;
 	struct _CamelPOP3Command *cmd;
 	struct _CamelStream *stream;
 };

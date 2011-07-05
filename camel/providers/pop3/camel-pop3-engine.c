@@ -24,7 +24,6 @@
 #include <config.h>
 #endif
 
-#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -100,7 +99,7 @@ read_greeting (CamelPOP3Engine *pe)
 	guint len;
 
 	/* first, read the greeting */
-	if (camel_pop3_stream_line (pe->stream, &line, &len) == -1
+	if (camel_pop3_stream_line (pe->stream, &line, &len, NULL, NULL) == -1
 	    || strncmp ((gchar *) line, "+OK", 3) != 0)
 		return -1;
 
@@ -187,7 +186,7 @@ cmd_capa (CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 	dd(printf("cmd_capa\n"));
 
 	do {
-		ret = camel_pop3_stream_line (stream, &line, &len);
+		ret = camel_pop3_stream_line (stream, &line, &len, NULL, NULL);
 		if (ret >= 0) {
 			if (strncmp((gchar *) line, "SASL ", 5) == 0) {
 				tok = line+5;
@@ -222,14 +221,14 @@ get_capabilities (CamelPOP3Engine *pe)
 
 	if (!(pe->flags & CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS)) {
 		pc = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, NULL, NULL, "CAPA\r\n");
-		while (camel_pop3_engine_iterate (pe, pc) > 0)
+		while (camel_pop3_engine_iterate (pe, pc, NULL, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (pe, pc);
 
 		if (pe->state == CAMEL_POP3_ENGINE_TRANSACTION && !(pe->capa & CAMEL_POP3_CAP_UIDL)) {
 			/* check for UIDL support manually */
 			pc = camel_pop3_engine_command_new (pe, CAMEL_POP3_COMMAND_SIMPLE, NULL, NULL, NULL, NULL, "UIDL 1\r\n");
-			while (camel_pop3_engine_iterate (pe, pc) > 0)
+			while (camel_pop3_engine_iterate (pe, pc, NULL, NULL) > 0)
 				;
 
 			if (pc->state == CAMEL_POP3_COMMAND_OK)
@@ -242,7 +241,10 @@ get_capabilities (CamelPOP3Engine *pe)
 
 /* returns true if the command was sent, false if it was just queued */
 static gboolean
-engine_command_queue (CamelPOP3Engine *pe, CamelPOP3Command *pc, GCancellable *cancellable, GError **error)
+engine_command_queue (CamelPOP3Engine *pe,
+                      CamelPOP3Command *pc,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen (pc->data)) > CAMEL_POP3_SEND_LIMIT)
 	    && pe->current != NULL) {
@@ -268,9 +270,12 @@ engine_command_queue (CamelPOP3Engine *pe, CamelPOP3Command *pc, GCancellable *c
 	return TRUE;
 }
 
-/* returns -1 on error (sets errno), 0 when no work to do, or >0 if work remaining */
+/* returns -1 on error, 0 when no work to do, or >0 if work remaining */
 gint
-camel_pop3_engine_iterate (CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
+camel_pop3_engine_iterate (CamelPOP3Engine *pe,
+                           CamelPOP3Command *pcwait,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	guchar *p;
 	guint len;
@@ -285,7 +290,7 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 
 	/* LOCK */
 
-	if (camel_pop3_stream_line (pe->stream, &pe->line, &pe->linelen) == -1)
+	if (camel_pop3_stream_line (pe->stream, &pe->line, &pe->linelen, cancellable, error) == -1)
 		goto ioerror;
 
 	p = pe->line;
@@ -300,7 +305,7 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe, CamelPOP3Command *pcwait)
 				pc->func (pe, pe->stream, pc->func_data);
 
 			/* Make sure we get all data before going back to command mode */
-			while (camel_pop3_stream_getd (pe->stream, &p, &len) > 0)
+			while (camel_pop3_stream_getd (pe->stream, &p, &len, NULL, NULL) > 0)
 				;
 			camel_pop3_stream_set_mode (pe->stream, CAMEL_POP3_STREAM_LINE);
 		} else {
@@ -377,7 +382,14 @@ ioerror:
 }
 
 CamelPOP3Command *
-camel_pop3_engine_command_new (CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, gpointer data, GCancellable *cancellable, GError **error, const gchar *fmt, ...)
+camel_pop3_engine_command_new (CamelPOP3Engine *pe,
+                               guint32 flags,
+                               CamelPOP3CommandFunc func,
+                               gpointer data,
+                               GCancellable *cancellable,
+                               GError **error,
+                               const gchar *fmt,
+                               ...)
 {
 	CamelPOP3Command *pc;
 	va_list ap;

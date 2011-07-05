@@ -73,14 +73,19 @@ struct _CamelPOP3StreamClass {
 };
 
 GType		 camel_pop3_stream_get_type	(void);
-
-CamelStream     *camel_pop3_stream_new		(CamelStream *source);
-
-void		 camel_pop3_stream_set_mode     (CamelPOP3Stream *is, camel_pop3_stream_mode_t mode);
-
-gint              camel_pop3_stream_line		(CamelPOP3Stream *is, guchar **data, guint *len);
-gint		 camel_pop3_stream_gets		(CamelPOP3Stream *is, guchar **start, guint *len);
-gint		 camel_pop3_stream_getd		(CamelPOP3Stream *is, guchar **start, guint *len);
+CamelStream *	camel_pop3_stream_new		(CamelStream *source);
+void		camel_pop3_stream_set_mode	(CamelPOP3Stream *is,
+						 camel_pop3_stream_mode_t mode);
+gint		camel_pop3_stream_line		(CamelPOP3Stream *is,
+						 guchar **data,
+						 guint *len,
+						 GCancellable *cancellable,
+						 GError **error);
+gint		camel_pop3_stream_getd		(CamelPOP3Stream *is,
+						 guchar **start,
+						 guint *len,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

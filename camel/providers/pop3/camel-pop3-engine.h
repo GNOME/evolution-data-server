@@ -136,17 +136,27 @@ struct _CamelPOP3EngineClass {
 	CamelObjectClass parent_class;
 };
 
-GType		  camel_pop3_engine_get_type	(void);
-
-CamelPOP3Engine  *camel_pop3_engine_new		(CamelStream *source, guint32 flags);
-
-void              camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine);
-
-void              camel_pop3_engine_command_free (CamelPOP3Engine *pe, CamelPOP3Command *pc);
-
-gint		  camel_pop3_engine_iterate	(CamelPOP3Engine *pe, CamelPOP3Command *pc);
-
-CamelPOP3Command *camel_pop3_engine_command_new	(CamelPOP3Engine *pe, guint32 flags, CamelPOP3CommandFunc func, gpointer data, GCancellable *cancellable, GError **error, const gchar *fmt, ...);
+GType		camel_pop3_engine_get_type	(void);
+CamelPOP3Engine *
+		camel_pop3_engine_new		(CamelStream *source,
+						 guint32 flags);
+void		camel_pop3_engine_reget_capabilities
+						(CamelPOP3Engine *engine);
+void		camel_pop3_engine_command_free	(CamelPOP3Engine *pe,
+						 CamelPOP3Command *pc);
+gint		camel_pop3_engine_iterate	(CamelPOP3Engine *pe,
+						 CamelPOP3Command *pc,
+						 GCancellable *cancellable,
+						 GError **error);
+CamelPOP3Command *
+		camel_pop3_engine_command_new	(CamelPOP3Engine *pe,
+						 guint32 flags,
+						 CamelPOP3CommandFunc func,
+						 gpointer data,
+						 GCancellable *cancellable,
+						 GError **error,
+						 const gchar *fmt,
+						 ...);
 
 G_END_DECLS
 

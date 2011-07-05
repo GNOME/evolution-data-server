@@ -27,7 +27,6 @@
 #include <config.h>
 #endif
 
-#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -281,7 +280,11 @@ camel_pop3_stream_new (CamelStream *source)
 
 /* Get one line from the pop3 stream */
 gint
-camel_pop3_stream_line (CamelPOP3Stream *is, guchar **data, guint *len)
+camel_pop3_stream_line (CamelPOP3Stream *is,
+                        guchar **data,
+                        guint *len,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	register guchar c, *p, *o, *oe;
 	gint newlen, oldlen;
@@ -303,7 +306,7 @@ camel_pop3_stream_line (CamelPOP3Stream *is, guchar **data, guint *len)
 		/* need at least 3 chars in buffer */
 		while (e-p < 3) {
 			is->ptr = p;
-			if (stream_fill (is, NULL, NULL) == -1)
+			if (stream_fill (is, cancellable, error) == -1)
 				return -1;
 			p = is->ptr;
 			e = is->end;
@@ -364,41 +367,20 @@ camel_pop3_stream_line (CamelPOP3Stream *is, guchar **data, guint *len)
 	return -1;
 }
 
-/* returns -1 on error, 0 if last lot of data, >0 if more remaining */
-gint camel_pop3_stream_gets (CamelPOP3Stream *is, guchar **start, guint *len)
-{
-	gint max;
-	guchar *end;
-
-	*len = 0;
-
-	max = is->end - is->ptr;
-	if (max == 0) {
-		max = stream_fill (is, NULL, NULL);
-		if (max <= 0)
-			return max;
-	}
-
-	*start = is->ptr;
-	end = memchr (is->ptr, '\n', max);
-	if (end)
-		max = (end - is->ptr) + 1;
-	*start = is->ptr;
-	*len = max;
-	is->ptr += max;
-
-	dd (printf ("POP3_STREAM_GETS (%s,%d): '%.*s'\n", end==NULL?"more":"last", *len, (gint)*len, *start));
-
-	return end == NULL?1:0;
-}
-
-void camel_pop3_stream_set_mode (CamelPOP3Stream *is, camel_pop3_stream_mode_t mode)
+void
+camel_pop3_stream_set_mode (CamelPOP3Stream *is,
+                            camel_pop3_stream_mode_t mode)
 {
 	is->mode = mode;
 }
 
 /* returns -1 on erorr, 0 if last data, >0 if more data left */
-gint camel_pop3_stream_getd (CamelPOP3Stream *is, guchar **start, guint *len)
+gint
+camel_pop3_stream_getd (CamelPOP3Stream *is,
+                        guchar **start,
+                        guint *len,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	guchar *p, *e, *s;
 	gint state;
@@ -419,7 +401,7 @@ gint camel_pop3_stream_getd (CamelPOP3Stream *is, guchar **start, guint *len)
 
 	while (e - p < 3) {
 		is->ptr = p;
-		if (stream_fill (is, NULL, NULL) == -1)
+		if (stream_fill (is, cancellable, error) == -1)
 			return -1;
 		p = is->ptr;
 		e = is->end;
