@@ -742,12 +742,6 @@ smtp_error_string (gint error)
 {
 	/* SMTP error codes grabbed from rfc821 */
 	switch (error) {
-	case 0:
-		/* looks like a read problem, check errno */
-		if (errno)
-			return g_strerror (errno);
-		else
-			return _("Unknown");
 	case 500:
 		return _("Syntax error, command unrecognized");
 	case 501:
@@ -956,80 +950,73 @@ smtp_set_error (CamelSmtpTransport *transport,
 	const gchar *token, *rbuf = respbuf;
 	gchar *buffer = NULL;
 	GString *string;
-	gint errnum;
 
-	if (!respbuf) {
-	fake_status_code:
-		errnum = respbuf ? atoi (respbuf) : 0;
-		if (errnum == 0 && errno == EINTR)
-			g_set_error (
-				error, G_IO_ERROR,
-				G_IO_ERROR_CANCELLED,
-				"%s", smtp_error_string (errnum));
+	g_return_if_fail (respbuf != NULL);
+
+	string = g_string_new ("");
+	do {
+		if (transport->flags & CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES)
+			token = smtp_next_token (rbuf + 4);
 		else
-			g_set_error (
-				error, CAMEL_ERROR,
-				CAMEL_ERROR_GENERIC,
-				"%s", smtp_error_string (errnum));
-	} else {
-		string = g_string_new ("");
-		do {
-			if (transport->flags & CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES)
-				token = smtp_next_token (rbuf + 4);
-			else
-				token = rbuf + 4;
+			token = rbuf + 4;
 
-			if (*token == '\0') {
-				g_free (buffer);
-				g_string_free (string, TRUE);
-				goto fake_status_code;
-			}
-
-			g_string_append (string, token);
-			if (*(rbuf + 3) == '-') {
-				g_free (buffer);
-				buffer = camel_stream_buffer_read_line (
-					CAMEL_STREAM_BUFFER (transport->istream),
-					cancellable, NULL);
-				g_string_append_c (string, '\n');
-			} else {
-				g_free (buffer);
-				buffer = NULL;
-			}
-
-			rbuf = buffer;
-		} while (rbuf);
-
-		convert_to_local (string);
-		if (!(transport->flags & CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES) && string->len) {
-			string->str = g_strstrip (string->str);
-			string->len = strlen (string->str);
-
-			if (!string->len) {
-				g_string_free (string, TRUE);
-				goto fake_status_code;
-			}
-
-			g_set_error (
-				error, CAMEL_ERROR,
-				CAMEL_ERROR_GENERIC,
-				"%s", string->str);
-
-			g_string_free (string, TRUE);
-		} else {
-			buffer = smtp_decode_status_code (string->str, string->len);
-			g_string_free (string, TRUE);
-			if (!buffer)
-				goto fake_status_code;
-
-			g_set_error (
-				error, CAMEL_ERROR,
-				CAMEL_ERROR_GENERIC,
-				"%s", buffer);
-
+		if (*token == '\0') {
 			g_free (buffer);
+			g_string_free (string, TRUE);
+			goto fake_status_code;
 		}
+
+		g_string_append (string, token);
+		if (*(rbuf + 3) == '-') {
+			g_free (buffer);
+			buffer = camel_stream_buffer_read_line (
+				CAMEL_STREAM_BUFFER (transport->istream),
+				cancellable, NULL);
+			g_string_append_c (string, '\n');
+		} else {
+			g_free (buffer);
+			buffer = NULL;
+		}
+
+		rbuf = buffer;
+	} while (rbuf);
+
+	convert_to_local (string);
+	if (!(transport->flags & CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES) && string->len) {
+		string->str = g_strstrip (string->str);
+		string->len = strlen (string->str);
+
+		if (!string->len) {
+			g_string_free (string, TRUE);
+			goto fake_status_code;
+		}
+
+		g_set_error (
+			error, CAMEL_ERROR,
+			CAMEL_ERROR_GENERIC,
+			"%s", string->str);
+
+		g_string_free (string, TRUE);
+	} else {
+		buffer = smtp_decode_status_code (string->str, string->len);
+		g_string_free (string, TRUE);
+		if (!buffer)
+			goto fake_status_code;
+
+		g_set_error (
+			error, CAMEL_ERROR,
+			CAMEL_ERROR_GENERIC,
+			"%s", buffer);
+
+		g_free (buffer);
 	}
+
+	return;
+
+fake_status_code:
+	g_set_error (
+		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+		"%s", smtp_error_string (atoi (respbuf)));
 }
 
 static gboolean
