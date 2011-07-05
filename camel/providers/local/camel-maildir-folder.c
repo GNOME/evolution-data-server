@@ -224,7 +224,7 @@ maildir_folder_append_message_sync (CamelFolder *folder,
 		name);
 
 	if (output_stream) {
-		g_object_unref (CAMEL_OBJECT (output_stream));
+		g_object_unref (output_stream);
 		unlink (name);
 	}
 

@@ -178,7 +178,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 	if (camel_data_wrapper_write_to_stream_sync (
 		CAMEL_DATA_WRAPPER (message), out, cancellable, error) == -1
 	    || camel_stream_close (out, cancellable, error) == -1) {
-		g_object_unref (CAMEL_OBJECT (out));
+		g_object_unref (out);
 		g_prefix_error (error, _("Could not send message: "));
 
 		/* Wait for sendmail to exit. */
@@ -193,7 +193,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 		return FALSE;
 	}
 
-	g_object_unref (CAMEL_OBJECT (out));
+	g_object_unref (out);
 
 	/* Wait for sendmail to exit. */
 	while (waitpid (pid, &wstat, 0) == -1 && errno == EINTR)

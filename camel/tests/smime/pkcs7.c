@@ -124,8 +124,8 @@ gint main (gint argc, gchar **argv)
 	camel_cipher_validity_free (valid);
 	camel_test_pull ();
 
-	g_object_unref (CAMEL_OBJECT (stream1));
-	g_object_unref (CAMEL_OBJECT (stream2));
+	g_object_unref (stream1);
+	g_object_unref (stream2);
 
 	stream1 = camel_stream_mem_new ();
 	stream2 = camel_stream_mem_new ();
@@ -160,8 +160,8 @@ gint main (gint argc, gchar **argv)
 	g_free (after);
 	camel_test_pull ();
 
-	g_object_unref (CAMEL_OBJECT (ctx));
-	g_object_unref (CAMEL_OBJECT (session));
+	g_object_unref (ctx);
+	g_object_unref (session);
 
 	camel_test_end ();
 

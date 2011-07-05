@@ -385,7 +385,7 @@ camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 	folder->summary = camel_imap_summary_new (folder, summary_file);
 	g_free (summary_file);
 	if (!folder->summary) {
-		g_object_unref (CAMEL_OBJECT (folder));
+		g_object_unref (folder);
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Could not load summary for %s"), folder_name);
@@ -405,7 +405,7 @@ camel_imap_folder_new (CamelStore *parent, const gchar *folder_name,
 
 	imap_folder->cache = camel_imap_message_cache_new (folder_dir, folder->summary, error);
 	if (!imap_folder->cache) {
-		g_object_unref (CAMEL_OBJECT (folder));
+		g_object_unref (folder);
 		return NULL;
 	}
 
@@ -2541,7 +2541,7 @@ imap_transfer_offline (CamelFolder *source,
 		if (message) {
 			camel_imap_summary_add_offline (
 				dest->summary, destuid, message, mi);
-			g_object_unref (CAMEL_OBJECT (message));
+			g_object_unref (message);
 		} else
 			camel_imap_summary_add_offline_uncached (
 				dest->summary, destuid, mi);
@@ -2946,7 +2946,7 @@ camel_imap_transfer_resyncing (CamelFolder *source,
 				dest, message, info,
 				NULL, cancellable, &local_error);
 			camel_folder_free_message_info (source, info);
-			g_object_unref (CAMEL_OBJECT (message));
+			g_object_unref (message);
 			if (delete_originals && local_error == NULL)
 				camel_folder_delete_message (source, uid);
 			i++;
@@ -3179,7 +3179,7 @@ get_content (CamelImapFolder *imap_folder,
 		if (stream) {
 			success = camel_data_wrapper_construct_from_stream_sync (
 				CAMEL_DATA_WRAPPER (body_mp), stream, cancellable, error);
-			g_object_unref (CAMEL_OBJECT (stream));
+			g_object_unref (stream);
 			if (!success) {
 				g_object_unref ( body_mp);
 				return NULL;
@@ -3220,10 +3220,10 @@ get_content (CamelImapFolder *imap_folder,
 				part = camel_mime_part_new ();
 				success = camel_data_wrapper_construct_from_stream_sync (
 					CAMEL_DATA_WRAPPER (part), stream, cancellable, error);
-				g_object_unref (CAMEL_OBJECT (stream));
+				g_object_unref (stream);
 				if (!success) {
-					g_object_unref (CAMEL_OBJECT (part));
-					g_object_unref (CAMEL_OBJECT (body_mp));
+					g_object_unref (part);
+					g_object_unref (body_mp);
 					g_free (child_spec);
 					return NULL;
 				}
@@ -3232,7 +3232,7 @@ get_content (CamelImapFolder *imap_folder,
 			}
 
 			if (!stream || !content) {
-				g_object_unref (CAMEL_OBJECT (body_mp));
+				g_object_unref (body_mp);
 				g_free (child_spec);
 				return NULL;
 			}
@@ -3325,15 +3325,15 @@ get_message (CamelImapFolder *imap_folder,
 	msg = camel_mime_message_new ();
 	success = camel_data_wrapper_construct_from_stream_sync (
 		CAMEL_DATA_WRAPPER (msg), stream, cancellable, error);
-	g_object_unref (CAMEL_OBJECT (stream));
+	g_object_unref (stream);
 	if (!success) {
-		g_object_unref (CAMEL_OBJECT (msg));
+		g_object_unref (msg);
 		return NULL;
 	}
 
 	content = get_content (imap_folder, uid, CAMEL_MIME_PART (msg), ci, TRUE, cancellable, error);
 	if (!content) {
-		g_object_unref (CAMEL_OBJECT (msg));
+		g_object_unref (msg);
 		return NULL;
 	}
 
@@ -3348,7 +3348,7 @@ get_message (CamelImapFolder *imap_folder,
 
 	camel_data_wrapper_set_mime_type_field (content, camel_mime_part_get_content_type ((CamelMimePart *) msg));
 	camel_medium_set_content (CAMEL_MEDIUM (msg), content);
-	g_object_unref (CAMEL_OBJECT (content));
+	g_object_unref (content);
 
 	return msg;
 }
@@ -3375,10 +3375,10 @@ get_message_simple (CamelImapFolder *imap_folder,
 	msg = camel_mime_message_new ();
 	success = camel_data_wrapper_construct_from_stream_sync (
 		CAMEL_DATA_WRAPPER (msg), stream, cancellable, error);
-	g_object_unref (CAMEL_OBJECT (stream));
+	g_object_unref (stream);
 	if (!success) {
 		g_prefix_error (error, _("Unable to retrieve message: "));
-		g_object_unref (CAMEL_OBJECT (msg));
+		g_object_unref (msg);
 		return NULL;
 	}
 
@@ -3656,7 +3656,7 @@ imap_cache_message (CamelDiscoFolder *disco_folder, const gchar *uid,
 
 	stream = camel_imap_folder_fetch_data (imap_folder, uid, "", FALSE, ex);
 	if (stream)
-		g_object_unref (CAMEL_OBJECT (stream));
+		g_object_unref (stream);
 }
 */
 
@@ -3793,7 +3793,7 @@ add_message_from_data (CamelFolder *folder,
 	msg = camel_mime_message_new ();
 	if (!camel_data_wrapper_construct_from_stream_sync (
 		CAMEL_DATA_WRAPPER (msg), stream, cancellable, NULL)) {
-		g_object_unref (CAMEL_OBJECT (msg));
+		g_object_unref (msg);
 		return;
 	}
 
@@ -3802,7 +3802,7 @@ add_message_from_data (CamelFolder *folder,
 	mi = (CamelImapMessageInfo *)
 		camel_folder_summary_info_new_from_message (
 		folder->summary, msg, bodystructure);
-	g_object_unref (CAMEL_OBJECT (msg));
+	g_object_unref (msg);
 
 	if ((idate = g_datalist_get_data (&data, "INTERNALDATE")))
 		mi->info.date_received = decode_internaldate ((const guchar *) idate);
@@ -4430,7 +4430,7 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("Could not find message body in FETCH response."));
 	} else {
-		g_object_ref (CAMEL_OBJECT (stream));
+		g_object_ref (stream);
 		g_datalist_clear (&fetch_data);
 	}
 

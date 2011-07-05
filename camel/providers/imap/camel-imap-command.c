@@ -444,7 +444,7 @@ imap_read_response (CamelImapStore *store,
 	response = g_new0 (CamelImapResponse, 1);
 /*FIXME	if (store->current_folder && camel_disco_store_status (CAMEL_DISCO_STORE (store)) != CAMEL_DISCO_STORE_RESYNCING) {
 		response->folder = store->current_folder;
-		g_object_ref (CAMEL_OBJECT (response->folder));
+		g_object_ref (response->folder);
 	} */
 
 	response->untagged = g_ptr_array_new ();
@@ -705,7 +705,7 @@ camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
 				g_array_free (expunged, TRUE);
 		}
 
-		g_object_unref (CAMEL_OBJECT (response->folder));
+		g_object_unref (response->folder);
 	}
 
 	g_free (response);
@@ -728,7 +728,7 @@ camel_imap_response_free_without_processing (CamelImapStore *store,
 		return;
 
 	if (response->folder) {
-		g_object_unref (CAMEL_OBJECT (response->folder));
+		g_object_unref (response->folder);
 		response->folder = NULL;
 	}
 	camel_imap_response_free (store, response);

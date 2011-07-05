@@ -316,7 +316,7 @@ insert_setup (CamelImapMessageCache *cache, const gchar *uid, const gchar *part_
 	*key = strrchr (*path, '/') + 1;
 	stream = g_hash_table_lookup (cache->parts, *key);
 	if (stream)
-		g_object_unref (CAMEL_OBJECT (stream));
+		g_object_unref (stream);
 
 	fd = g_open (*path, O_RDWR | O_CREAT | O_TRUNC | O_BINARY, 0600);
 	if (fd == -1) {
@@ -337,7 +337,7 @@ insert_abort (gchar *path, CamelStream *stream)
 {
 	g_unlink (path);
 	g_free (path);
-	g_object_unref (CAMEL_OBJECT (stream));
+	g_object_unref (stream);
 	return NULL;
 }
 
@@ -421,7 +421,7 @@ camel_imap_message_cache_insert_stream (CamelImapMessageCache *cache,
 		insert_abort (path, stream);
 	} else {
 		insert_finish (cache, uid, path, key, stream);
-		g_object_unref (CAMEL_OBJECT (stream));
+		g_object_unref (stream);
 	}
 }
 
@@ -452,7 +452,7 @@ camel_imap_message_cache_insert_wrapper (CamelImapMessageCache *cache,
 		insert_abort (path, stream);
 	} else {
 		insert_finish (cache, uid, path, key, stream);
-		g_object_unref (CAMEL_OBJECT (stream));
+		g_object_unref (stream);
 	}
 }
 

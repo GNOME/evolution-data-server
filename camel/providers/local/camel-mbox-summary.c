@@ -546,7 +546,7 @@ summary_update (CamelLocalSummary *cls,
 		g_assert (camel_mime_parser_step (mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM_END);
 	}
 
-	g_object_unref (CAMEL_OBJECT (mp));
+	g_object_unref (mp);
 
 	count = camel_folder_summary_count (s);
 	for (i=0;i<count;i++) {

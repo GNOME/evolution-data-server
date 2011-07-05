@@ -259,8 +259,8 @@ connect_to_server (CamelService *service,
 		camel_pop3_engine_command_free (store->engine, pc);
 	}
 
-	g_object_unref (CAMEL_OBJECT (store->engine));
-	g_object_unref (CAMEL_OBJECT (tcp_stream));
+	g_object_unref (store->engine);
+	g_object_unref (tcp_stream);
 	store->engine = NULL;
 
 	return FALSE;

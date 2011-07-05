@@ -5215,7 +5215,7 @@ imapx_disconnect (CamelIMAPXServer *is)
 		if (camel_stream_close (is->stream->source, NULL, NULL) == -1)
 			ret = FALSE;
 
-		g_object_unref (CAMEL_OBJECT (is->stream));
+		g_object_unref (is->stream);
 		is->stream = NULL;
 	}
 

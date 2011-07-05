@@ -35,7 +35,7 @@ static void check_msg (gint truth, gchar *fmt, ...)
 
 #define check_unref(object, expected) do { \
 	check_count (object, expected); \
-	g_object_unref (CAMEL_OBJECT (object)); \
+	g_object_unref (object); \
 	if (expected == 1) { \
 		object = NULL; \
 	} \

@@ -131,8 +131,8 @@ main (gint argc, gchar **argv)
 		/* inefficient */
 		camel_test_push ("Cleaning up");
 		g_object_unref (stream);
-		g_object_unref (CAMEL_OBJECT (correct));
-		g_object_unref (CAMEL_OBJECT (source));
+		g_object_unref (correct);
+		g_object_unref (source);
 		camel_test_pull ();
 
 		camel_test_end ();

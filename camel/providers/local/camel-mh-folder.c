@@ -96,7 +96,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
 		goto fail_write;
 
 	/* close this? */
-	g_object_unref (CAMEL_OBJECT (output_stream));
+	g_object_unref (output_stream);
 
 	g_free (name);
 
@@ -115,7 +115,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
 		error, _("Cannot append message to mh folder: %s: "), name);
 
 	if (output_stream) {
-		g_object_unref (CAMEL_OBJECT (output_stream));
+		g_object_unref (output_stream);
 		unlink (name);
 	}
 

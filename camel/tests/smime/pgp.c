@@ -227,8 +227,8 @@ gint main (gint argc, gchar **argv)
 
 	camel_test_pull ();
 
-	g_object_unref (CAMEL_OBJECT (ctx));
-	g_object_unref (CAMEL_OBJECT (session));
+	g_object_unref (ctx);
+	g_object_unref (session);
 
 	camel_test_end ();
 

@@ -614,7 +614,7 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 		    camel_local_summary_check ((CamelLocalSummary *) folder->summary, lf->changes, cancellable, error) == 0) {
 			/* we sync here so that any hard work setting up the folder isn't lost */
 			if (camel_local_summary_sync ((CamelLocalSummary *) folder->summary, FALSE, lf->changes, cancellable, error) == -1) {
-				g_object_unref (CAMEL_OBJECT (folder));
+				g_object_unref (folder);
 				return NULL;
 			}
 		}
