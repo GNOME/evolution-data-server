@@ -179,14 +179,6 @@ imapx_stream_eos (CamelStream *stream)
 	return is->literal == 0;
 }
 
-static gint
-imapx_stream_reset (CamelStream *stream,
-                    GError **error)
-{
-	/* nop?  reset literal mode? */
-	return 0;
-}
-
 static void
 camel_imapx_stream_class_init (CamelIMAPXStreamClass *class)
 {
@@ -203,7 +195,6 @@ camel_imapx_stream_class_init (CamelIMAPXStreamClass *class)
 	stream_class->close = imapx_stream_close;
 	stream_class->flush = imapx_stream_flush;
 	stream_class->eos = imapx_stream_eos;
-	stream_class->reset = imapx_stream_reset;
 }
 
 static void

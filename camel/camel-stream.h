@@ -83,8 +83,6 @@ struct _CamelStreamClass {
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*eos)			(CamelStream *stream);
-	gint		(*reset)		(CamelStream *stream,
-						 GError **error);
 };
 
 GType		camel_stream_get_type		(void);
@@ -105,8 +103,6 @@ gint		camel_stream_close		(CamelStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_stream_eos		(CamelStream *stream);
-gint		camel_stream_reset		(CamelStream *stream,
-						 GError **error);
 
 /* utility macros and funcs */
 gssize		camel_stream_write_string	(CamelStream *stream,

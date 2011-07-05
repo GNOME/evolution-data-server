@@ -2117,7 +2117,6 @@ camel_stream_write
 camel_stream_flush
 camel_stream_close
 camel_stream_eos
-camel_stream_reset
 camel_stream_write_string
 camel_stream_printf
 camel_stream_vprintf

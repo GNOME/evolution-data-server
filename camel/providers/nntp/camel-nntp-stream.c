@@ -218,14 +218,6 @@ nntp_stream_eos (CamelStream *stream)
 	return is->mode != CAMEL_NNTP_STREAM_DATA;
 }
 
-static gint
-nntp_stream_reset (CamelStream *stream,
-                   GError **error)
-{
-	/* nop?  reset literal mode? */
-	return 0;
-}
-
 static void
 camel_nntp_stream_class_init (CamelNNTPStreamClass *class)
 {
@@ -242,7 +234,6 @@ camel_nntp_stream_class_init (CamelNNTPStreamClass *class)
 	stream_class->close = nntp_stream_close;
 	stream_class->flush = nntp_stream_flush;
 	stream_class->eos = nntp_stream_eos;
-	stream_class->reset = nntp_stream_reset;
 }
 
 static void

@@ -288,28 +288,6 @@ stream_filter_eos (CamelStream *stream)
 	return camel_stream_eos (priv->source);
 }
 
-static gint
-stream_filter_reset (CamelStream *stream,
-                     GError **error)
-{
-	CamelStreamFilterPrivate *priv;
-	struct _filter *f;
-
-	priv = CAMEL_STREAM_FILTER (stream)->priv;
-
-	priv->filteredlen = 0;
-	priv->flushed = FALSE;
-
-	/* and reset filters */
-	f = priv->filters;
-	while (f) {
-		camel_mime_filter_reset (f->filter);
-		f = f->next;
-	}
-
-	return camel_stream_reset (priv->source, error);
-}
-
 static void
 camel_stream_filter_class_init (CamelStreamFilterClass *class)
 {
@@ -327,7 +305,6 @@ camel_stream_filter_class_init (CamelStreamFilterClass *class)
 	stream_class->flush = stream_filter_flush;
 	stream_class->close = stream_filter_close;
 	stream_class->eos = stream_filter_eos;
-	stream_class->reset = stream_filter_reset;
 }
 
 static void

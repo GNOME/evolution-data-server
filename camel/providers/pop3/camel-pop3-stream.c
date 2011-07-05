@@ -217,14 +217,6 @@ stream_eos (CamelStream *stream)
 	return is->mode != CAMEL_POP3_STREAM_DATA;
 }
 
-static gint
-stream_reset (CamelStream *stream,
-              GError **error)
-{
-	/* nop?  reset literal mode? */
-	return 0;
-}
-
 static void
 camel_pop3_stream_class_init (CamelPOP3StreamClass *class)
 {
@@ -241,7 +233,6 @@ camel_pop3_stream_class_init (CamelPOP3StreamClass *class)
 	stream_class->close = stream_close;
 	stream_class->flush = stream_flush;
 	stream_class->eos = stream_eos;
-	stream_class->reset = stream_reset;
 }
 
 static void

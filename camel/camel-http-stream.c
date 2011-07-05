@@ -527,18 +527,6 @@ http_stream_close (CamelStream *stream,
 	return 0;
 }
 
-static gint
-http_stream_reset (CamelStream *stream,
-                   GError **error)
-{
-	CamelHttpStream *http = CAMEL_HTTP_STREAM (stream);
-
-	if (http->raw)
-		http_disconnect (http);
-
-	return 0;
-}
-
 static void
 camel_http_stream_class_init (CamelHttpStreamClass *class)
 {
@@ -554,7 +542,6 @@ camel_http_stream_class_init (CamelHttpStreamClass *class)
 	stream_class->write = http_stream_write;
 	stream_class->flush = http_stream_flush;
 	stream_class->close = http_stream_close;
-	stream_class->reset = http_stream_reset;
 }
 
 static void

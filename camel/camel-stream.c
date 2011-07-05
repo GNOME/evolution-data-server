@@ -76,19 +76,6 @@ stream_eos (CamelStream *stream)
 	return stream->eos;
 }
 
-static gint
-stream_reset (CamelStream *stream,
-              GError **error)
-{
-	gboolean success = TRUE;
-
-	if (G_IS_SEEKABLE (stream))
-		success = g_seekable_seek (
-			G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, error);
-
-	return success ? 0 : -1;
-}
-
 static void
 camel_stream_class_init (CamelStreamClass *class)
 {
@@ -97,7 +84,6 @@ camel_stream_class_init (CamelStreamClass *class)
 	class->close = stream_close;
 	class->flush = stream_flush;
 	class->eos = stream_eos;
-	class->reset = stream_reset;
 }
 
 static void
@@ -253,35 +239,6 @@ camel_stream_eos (CamelStream *stream)
 	g_return_val_if_fail (class->eos != NULL, TRUE);
 
 	return class->eos (stream);
-}
-
-/**
- * camel_stream_reset:
- * @stream: a #CamelStream object
- * @error: return location for a #GError, or %NULL
- *
- * Resets the stream. That is, put it in a state where it can be read
- * from the beginning again. Not all streams in Camel are seekable,
- * but they must all be resettable.
- *
- * Returns: %0 on success or %-1 on error along with setting @error.
- **/
-gint
-camel_stream_reset (CamelStream *stream,
-                    GError **error)
-{
-	CamelStreamClass *class;
-	gint retval;
-
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
-	class = CAMEL_STREAM_GET_CLASS (stream);
-	g_return_val_if_fail (class->reset != NULL, -1);
-
-	retval = class->reset (stream, error);
-	CAMEL_CHECK_GERROR (stream, reset, retval == 0, error);
-
-	return retval;
 }
 
 /***************** Utility functions ********************/

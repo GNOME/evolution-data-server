@@ -83,16 +83,6 @@ CamelStream
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_stream_reset ##### -->
-<para>
-
-</para>
-
-@stream: 
-@error: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_stream_write_string ##### -->
 <para>
 

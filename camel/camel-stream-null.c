@@ -48,15 +48,6 @@ stream_null_eos (CamelStream *stream)
 	return TRUE;
 }
 
-static gint
-stream_null_reset (CamelStream *stream,
-                   GError **error)
-{
-	CAMEL_STREAM_NULL (stream)->written = 0;
-
-	return 0;
-}
-
 static void
 camel_stream_null_class_init (CamelStreamNullClass *class)
 {
@@ -65,7 +56,6 @@ camel_stream_null_class_init (CamelStreamNullClass *class)
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->write = stream_null_write;
 	stream_class->eos = stream_null_eos;
-	stream_class->reset = stream_null_reset;
 }
 
 static void
