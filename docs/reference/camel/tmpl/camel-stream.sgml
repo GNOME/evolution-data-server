@@ -106,17 +106,6 @@ CamelStream
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_stream_vprintf ##### -->
-<para>
-
-</para>
-
-@stream: 
-@fmt: 
-@ap: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_stream_write_to_stream ##### -->
 <para>
 
