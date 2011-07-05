@@ -549,29 +549,19 @@ connect_to_server_process (CamelService *service,
 
 	cmd_stream = camel_stream_process_new ();
 
-	ret = camel_stream_process_connect (CAMEL_STREAM_PROCESS (cmd_stream),
-					    full_cmd, (const gchar **) child_env);
+	ret = camel_stream_process_connect (
+		CAMEL_STREAM_PROCESS (cmd_stream),
+		full_cmd, (const gchar **) child_env, error);
 
 	while (i)
 		g_free (child_env[--i]);
 
 	if (ret == -1) {
-		if (errno == EINTR)
-			g_set_error (
-				error, G_IO_ERROR,
-				G_IO_ERROR_CANCELLED,
-				_("Connection cancelled"));
-		else
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				_("Could not connect with command \"%s\": %s"),
-				full_cmd, g_strerror (errno));
-
 		g_object_unref (cmd_stream);
 		g_free (full_cmd);
 		return FALSE;
 	}
+
 	g_free (full_cmd);
 
 	store->ostream = cmd_stream;

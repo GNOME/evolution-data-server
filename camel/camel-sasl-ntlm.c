@@ -862,7 +862,7 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 			NTLM_AUTH_HELPER, url->user);
 	}
 	ret = camel_stream_process_connect (
-		CAMEL_STREAM_PROCESS (stream), command, NULL);
+		CAMEL_STREAM_PROCESS (stream), command, NULL, error);
 	g_free (command);
 	if (ret) {
 		g_object_unref (stream);

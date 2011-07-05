@@ -39,6 +39,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#include <glib/gi18n-lib.h>
+
 #include "camel-file-utils.h"
 #include "camel-stream-process.h"
 
@@ -226,7 +228,8 @@ do_exec_command (gint fd, const gchar *command, gchar **env)
 gint
 camel_stream_process_connect (CamelStreamProcess *stream,
                               const gchar *command,
-                              const gchar **env)
+                              const gchar **env,
+                              GError **error)
 {
 	gint sockfds[2];
 
@@ -237,7 +240,7 @@ camel_stream_process_connect (CamelStreamProcess *stream,
 		camel_stream_close (CAMEL_STREAM (stream), NULL, NULL);
 
 	if (socketpair (AF_UNIX, SOCK_STREAM, 0, sockfds))
-		return -1;
+		goto fail;
 
 	stream->childpid = fork ();
 	if (!stream->childpid) {
@@ -246,11 +249,26 @@ camel_stream_process_connect (CamelStreamProcess *stream,
 		close (sockfds[0]);
 		close (sockfds[1]);
 		stream->sockfd = -1;
-		return -1;
+		goto fail;
 	}
 
 	close (sockfds[1]);
 	stream->sockfd = sockfds[0];
 
 	return 0;
+
+fail:
+	if (errno == EINTR)
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_CANCELLED,
+			_("Connection cancelled"));
+	else
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not connect with command \"%s\": %s"),
+			command, g_strerror (errno));
+
+	return -1;
 }

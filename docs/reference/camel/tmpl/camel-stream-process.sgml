@@ -43,6 +43,7 @@ CamelStreamProcess
 @stream: 
 @command: 
 @env: 
+@error: 
 @Returns: 
 
 

@@ -67,7 +67,8 @@ GType		camel_stream_process_get_type	(void);
 CamelStream *	camel_stream_process_new	(void);
 gint		camel_stream_process_connect	(CamelStreamProcess *stream,
 						 const gchar *command,
-						 const gchar **env);
+						 const gchar **env,
+						 GError **error);
 
 G_END_DECLS
 
