@@ -400,6 +400,7 @@ EBookBackend
 @EDataBookView *view, gpointer user_data:
 @EDataBookView *view, gpointer user_data:
 @EDataBookView *view, gpointer user_data:
+@EDataBookView *view, gpointer user_data:
 @EDataBookView *view, gpointer user_data: 
 @user_data: 
 

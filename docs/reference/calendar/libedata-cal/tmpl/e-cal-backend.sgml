@@ -254,6 +254,7 @@ Base class for calendar/tasks backend implementations.
 @EDataCalView *view, gpointer user_data:
 @EDataCalView *view, gpointer user_data:
 @EDataCalView *view, gpointer user_data:
+@EDataCalView *view, gpointer user_data:
 @EDataCalView *view, gpointer user_data: 
 @user_data: 
 

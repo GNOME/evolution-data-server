@@ -71,7 +71,7 @@ e_book_backend_sqlitedb_test_CPPFLAGS = \
 	$(libedata_book_1_2_la_CPPFLAGS)
 e_book_backend_sqlitedb_test_SOURCES =	e-book-backend-sqlitedb-test.c
 e_book_backend_sqlitedb_test_LDADD = \
-	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
+	libedata-book-1.2.la \
 	$(libedata_book_1_2_la_LIBADD)
 
 factory_PROGRAMS = e-addressbook-factory
@@ -95,7 +95,7 @@ e_addressbook_factory_SOURCES = \
 	e-data-book-migrate-basedir.c
 
 e_addressbook_factory_LDADD = \
-	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
+	libedata-book-1.2.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(EVOLUTION_ADDRESSBOOK_LIBS) \
