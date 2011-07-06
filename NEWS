@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.1.3.1 2011-07-06
+--------------------------------------
+
+Bug Fixes:
+	Bug#654054 Fix eds build failure (Akhil Laddha)
+
+Miscellaneous Fixes:
+	camel_stream_vprintf() doesn't exist. (Matthew Barnes)
+	Remove camel_stream_reset(). (Matthew Barnes)
+	Prefer g_seekable_seek() over camel_stream_reset(). (Matthew Barnes)
+	Camel: Remove some unnecessary type casts. (Matthew Barnes)
+	CamelImapWrapper: Use GError instead of errno. (Matthew Barnes)
+	camel_stream_process_connect(): Add GError parameter. (Matthew Barnes)
+
+Translations:
+	Wylmer Wang (zh_CN)
+	Daniel Mustieles (es)
+
 Evolution-Data-Server 3.1.3 2011-07-04
 --------------------------------------
 

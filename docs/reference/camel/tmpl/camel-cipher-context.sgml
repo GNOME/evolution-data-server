@@ -764,7 +764,9 @@ CamelCipherContext
 @gpointer cert_data: 
 @gpointer cert_data:
 @gpointer cert_data: 
-@gpointer cert_data: 
+@gpointer cert_data:
+@cert_data_free: 
+@cert_data_clone: 
 
 
 <!-- ##### FUNCTION camel_cipher_validity_envelope ##### -->

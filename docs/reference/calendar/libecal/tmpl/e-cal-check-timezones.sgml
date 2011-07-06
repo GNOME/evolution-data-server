@@ -31,7 +31,8 @@ e-cal-check-timezones
 @const gchar *tzid, gconstpointer ecalclient, GCancellable *cancellable, GError **error:
 @const gchar *tzid, gconstpointer ecalclient, GCancellable *cancellable, GError **error:
 @const gchar *tzid, gconstpointer ecalclient, GCancellable *cancellable, GError **error:
-@const gchar *tzid, gconstpointer ecalclient, GCancellable *cancellable, GError **error: 
+@const gchar *tzid, gconstpointer ecalclient, GCancellable *cancellable, GError **error:
+@tzlookup: 
 @ecalclient: 
 @cancellable: 
 @error: 
@@ -131,7 +132,8 @@ e-cal-check-timezones
 @const gchar *tzid, gconstpointer custom, GError **error:
 @const gchar *tzid, gconstpointer custom, GError **error:
 @const gchar *tzid, gconstpointer custom, GError **error:
-@const gchar *tzid, gconstpointer custom, GError **error: 
+@const gchar *tzid, gconstpointer custom, GError **error:
+@tzlookup: 
 @custom: 
 @error: 
 @Returns: 

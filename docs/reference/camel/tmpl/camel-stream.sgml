@@ -102,7 +102,7 @@ CamelStream
 
 @stream: 
 @fmt: 
-@Varargs: 
+@...: 
 @Returns: 
 
 

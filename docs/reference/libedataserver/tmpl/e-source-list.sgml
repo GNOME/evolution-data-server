@@ -113,7 +113,7 @@ ESourceList
 
 @list: 
 @property_name: 
-@Varargs: 
+@...: 
 @Returns: 
 
 

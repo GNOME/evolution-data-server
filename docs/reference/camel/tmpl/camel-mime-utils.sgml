@@ -84,15 +84,14 @@ camel-mime-utils
 @next: 
 @id: 
 
-<!-- ##### FUNCTION camel_header_param ##### -->
+<!-- ##### STRUCT camel_header_param ##### -->
 <para>
 
 </para>
 
-@params: 
+@next: 
 @name: 
-@Returns: 
-
+@value: 
 
 <!-- ##### STRUCT CamelContentType ##### -->
 <para>
@@ -303,15 +302,14 @@ camel-mime-utils
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_header_param ##### -->
+<!-- ##### STRUCT camel_header_param ##### -->
 <para>
 
 </para>
 
-@params: 
+@next: 
 @name: 
-@Returns: 
-
+@value: 
 
 <!-- ##### FUNCTION camel_header_set_param ##### -->
 <para>

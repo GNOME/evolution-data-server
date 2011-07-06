@@ -63,7 +63,7 @@ CamelDiscoDiary
 
 @diary: 
 @action: 
-@Varargs: 
+@...: 
 
 
 <!-- ##### FUNCTION camel_disco_diary_replay ##### -->
