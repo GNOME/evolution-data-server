@@ -1,7 +1,7 @@
 dnl Evolution-Data-Server version
 m4_define([eds_major_version], [3])
 m4_define([eds_minor_version], [1])
-m4_define([eds_micro_version], [3])
+m4_define([eds_micro_version], [4])
 
 m4_define([eds_version],
 	[eds_major_version.eds_minor_version.eds_micro_version])
@@ -19,7 +19,7 @@ m4_define([api_version], [1.2])
 
 dnl Autoconf / Automake Initialization
 AC_PREREQ(2.62)
-AC_INIT([evolution-data-server],[eds_version].1,[http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server])
+AC_INIT([evolution-data-server],[eds_version],[http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server])
 AM_INIT_AUTOMAKE([gnu 1.10 tar-ustar -Wall -Wno-portability -Werror foreign])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR(README)
