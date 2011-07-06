@@ -109,9 +109,6 @@ gssize		camel_stream_write_string	(CamelStream *stream,
 						 const gchar *string,
 						 GCancellable *cancellable,
 						 GError **error);
-gssize		camel_stream_printf		(CamelStream *stream,
-						 const gchar *fmt,
-						 ...) G_GNUC_PRINTF (2, 3);
 
 /* Write a whole stream to another stream, until eof or error on
  * either stream.  */

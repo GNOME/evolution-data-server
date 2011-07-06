@@ -267,43 +267,6 @@ camel_stream_write_string (CamelStream *stream,
 }
 
 /**
- * camel_stream_printf:
- * @stream: a #CamelStream object
- * @fmt: a printf-style format string
- *
- * Write formatted output to a stream.
- *
- * Returns: the number of characters written or %-1 on error.
- **/
-gssize
-camel_stream_printf (CamelStream *stream,
-                     const gchar *fmt,
-                     ...)
-{
-	va_list args;
-	gchar *string;
-	gssize ret;
-
-	/* XXX This function needs to die.  Use a GString to
-	 *     assemble formatted output. */
-
-	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
-
-	va_start (args, fmt);
-	string = g_strdup_vprintf (fmt, args);
-	va_end (args);
-
-	if (string == NULL)
-		return -1;
-
-	ret = camel_stream_write (
-		stream, string, strlen (string), NULL, NULL);
-	g_free (string);
-
-	return ret;
-}
-
-/**
  * camel_stream_write_to_stream:
  * @stream: source #CamelStream object
  * @output_stream: destination #CamelStream object
