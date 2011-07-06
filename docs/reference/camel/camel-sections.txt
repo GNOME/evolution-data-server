@@ -217,6 +217,7 @@ camel_data_cache_get_type
 <TITLE>CamelDataWrapper</TITLE>
 CamelDataWrapper
 camel_data_wrapper_new
+camel_data_wrapper_get_byte_array
 camel_data_wrapper_set_mime_type
 camel_data_wrapper_get_mime_type
 camel_data_wrapper_get_mime_type_field

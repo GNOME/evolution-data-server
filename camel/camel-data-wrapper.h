@@ -75,7 +75,6 @@ struct _CamelDataWrapper {
 	CamelTransferEncoding encoding;
 
 	CamelContentType *mime_type;
-	CamelStream *stream;
 
 	guint offline:1;
 };
@@ -145,9 +144,13 @@ struct _CamelDataWrapperClass {
 GType		camel_data_wrapper_get_type	(void);
 CamelDataWrapper *
 		camel_data_wrapper_new		(void);
-void		camel_data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
+GByteArray *	camel_data_wrapper_get_byte_array
+						(CamelDataWrapper *data_wrapper);
+void		camel_data_wrapper_set_mime_type
+						(CamelDataWrapper *data_wrapper,
 						 const gchar *mime_type);
-gchar *		camel_data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper);
+gchar *		camel_data_wrapper_get_mime_type
+						(CamelDataWrapper *data_wrapper);
 CamelContentType *
 		camel_data_wrapper_get_mime_type_field
 						(CamelDataWrapper *data_wrapper);

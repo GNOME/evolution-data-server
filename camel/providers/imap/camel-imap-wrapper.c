@@ -40,21 +40,30 @@ struct _CamelImapWrapperPrivate {
 
 G_DEFINE_TYPE (CamelImapWrapper, camel_imap_wrapper, CAMEL_TYPE_DATA_WRAPPER)
 
-static void
+static gboolean
 imap_wrapper_hydrate (CamelImapWrapper *imap_wrapper,
-                      CamelStream *stream)
+                      CamelStream *stream,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	CamelDataWrapper *data_wrapper = (CamelDataWrapper *) imap_wrapper;
+	gboolean success;
 
-	data_wrapper->stream = g_object_ref (stream);
-	data_wrapper->offline = FALSE;
+	success = camel_data_wrapper_construct_from_stream_sync (
+		data_wrapper, stream, cancellable, error);
 
-	g_object_unref (imap_wrapper->folder);
-	imap_wrapper->folder = NULL;
-	g_free (imap_wrapper->uid);
-	imap_wrapper->uid = NULL;
-	g_free (imap_wrapper->part_spec);
-	imap_wrapper->part_spec = NULL;
+	if (success) {
+		data_wrapper->offline = FALSE;
+
+		g_object_unref (imap_wrapper->folder);
+		imap_wrapper->folder = NULL;
+		g_free (imap_wrapper->uid);
+		imap_wrapper->uid = NULL;
+		g_free (imap_wrapper->part_spec);
+		imap_wrapper->part_spec = NULL;
+	}
+
+	return success;
 }
 
 static void
@@ -92,6 +101,7 @@ imap_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
                                    GError **error)
 {
 	CamelImapWrapper *imap_wrapper = CAMEL_IMAP_WRAPPER (data_wrapper);
+	gboolean success = TRUE;
 
 	CAMEL_IMAP_WRAPPER_LOCK (imap_wrapper, lock);
 	if (data_wrapper->offline) {
@@ -106,10 +116,15 @@ imap_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 			return -1;
 		}
 
-		imap_wrapper_hydrate (imap_wrapper, datastream);
+		success = imap_wrapper_hydrate (
+			imap_wrapper, datastream, cancellable, error);
+
 		g_object_unref (datastream);
 	}
 	CAMEL_IMAP_WRAPPER_UNLOCK (imap_wrapper, lock);
+
+	if (!success)
+		return -1;
 
 	return CAMEL_DATA_WRAPPER_CLASS (camel_imap_wrapper_parent_class)->
 		write_to_stream_sync (data_wrapper, stream, cancellable, error);
@@ -176,7 +191,7 @@ camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 			!sync_offline, NULL, NULL);
 
 	if (stream) {
-		imap_wrapper_hydrate (imap_wrapper, stream);
+		imap_wrapper_hydrate (imap_wrapper, stream, NULL, NULL);
 		g_object_unref (stream);
 	}
 

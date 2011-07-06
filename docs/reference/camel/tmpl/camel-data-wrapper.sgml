@@ -35,6 +35,15 @@ CamelDataWrapper
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_data_wrapper_get_byte_array ##### -->
+<para>
+
+</para>
+
+@data_wrapper: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_data_wrapper_set_mime_type ##### -->
 <para>
 

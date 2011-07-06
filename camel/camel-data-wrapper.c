@@ -32,14 +32,19 @@
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-crlf.h"
 #include "camel-stream-filter.h"
-#include "camel-stream.h"
+#include "camel-stream-mem.h"
 
 #define d(x)
+
+#define CAMEL_DATA_WRAPPER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_DATA_WRAPPER, CamelDataWrapperPrivate))
 
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelDataWrapperPrivate {
 	GStaticMutex stream_lock;
+	GByteArray *byte_array;
 };
 
 struct _AsyncContext {
@@ -71,11 +76,6 @@ data_wrapper_dispose (GObject *object)
 		data_wrapper->mime_type = NULL;
 	}
 
-	if (data_wrapper->stream != NULL) {
-		g_object_unref (data_wrapper->stream);
-		data_wrapper->stream = NULL;
-	}
-
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_data_wrapper_parent_class)->dispose (object);
 }
@@ -83,9 +83,12 @@ data_wrapper_dispose (GObject *object)
 static void
 data_wrapper_finalize (GObject *object)
 {
-	CamelDataWrapper *data_wrapper = CAMEL_DATA_WRAPPER (object);
+	CamelDataWrapperPrivate *priv;
 
-	g_static_mutex_free (&data_wrapper->priv->stream_lock);
+	priv = CAMEL_DATA_WRAPPER_GET_PRIVATE (object);
+
+	g_static_mutex_free (&priv->stream_lock);
+	g_byte_array_free (priv->byte_array, TRUE);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_data_wrapper_parent_class)->finalize (object);
@@ -135,16 +138,11 @@ data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
                                    GCancellable *cancellable,
                                    GError **error)
 {
+	CamelStream *memory_stream;
 	gssize ret;
 
-	if (data_wrapper->stream == NULL) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("No stream available"));
-		return -1;
-	}
-
-	camel_data_wrapper_lock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+	camel_data_wrapper_lock (
+		data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
@@ -153,24 +151,20 @@ data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 		return -1;
 	}
 
-	if (G_IS_SEEKABLE (data_wrapper->stream)) {
-		gboolean success;
+	memory_stream = camel_stream_mem_new ();
 
-		success = g_seekable_seek (
-			G_SEEKABLE (data_wrapper->stream),
-			0, G_SEEK_SET, cancellable, error);
-
-		if (!success) {
-			camel_data_wrapper_unlock (
-				data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
-			return -1;
-		}
-	}
+	/* We retain ownership of the byte array. */
+	camel_stream_mem_set_byte_array (
+		CAMEL_STREAM_MEM (memory_stream),
+		data_wrapper->priv->byte_array);
 
 	ret = camel_stream_write_to_stream (
-		data_wrapper->stream, stream, cancellable, error);
+		memory_stream, stream, cancellable, error);
 
-	camel_data_wrapper_unlock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+	g_object_unref (memory_stream);
+
+	camel_data_wrapper_unlock (
+		data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 
 	return ret;
 }
@@ -229,12 +223,37 @@ data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
                                          GCancellable *cancellable,
                                          GError **error)
 {
-	if (data_wrapper->stream)
-		g_object_unref (data_wrapper->stream);
+	CamelStream *memory_stream;
+	gssize bytes_written;
 
-	data_wrapper->stream = g_object_ref (stream);
+	camel_data_wrapper_lock (
+		data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 
-	return TRUE;
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_data_wrapper_unlock (
+			data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+		return FALSE;
+	}
+
+	/* Wipe any previous contents from our byte array. */
+	g_byte_array_set_size (data_wrapper->priv->byte_array, 0);
+
+	memory_stream = camel_stream_mem_new ();
+
+	/* We retain ownership of the byte array. */
+	camel_stream_mem_set_byte_array (
+		CAMEL_STREAM_MEM (memory_stream),
+		data_wrapper->priv->byte_array);
+
+	/* Transfer incoming contents to our byte array. */
+	bytes_written = camel_stream_write_to_stream (
+		stream, memory_stream, cancellable, error);
+
+	camel_data_wrapper_unlock (
+		data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+
+	return (bytes_written >= 0);
 }
 
 static void
@@ -479,11 +498,10 @@ camel_data_wrapper_class_init (CamelDataWrapperClass *class)
 static void
 camel_data_wrapper_init (CamelDataWrapper *data_wrapper)
 {
-	data_wrapper->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		data_wrapper, CAMEL_TYPE_DATA_WRAPPER,
-		CamelDataWrapperPrivate);
+	data_wrapper->priv = CAMEL_DATA_WRAPPER_GET_PRIVATE (data_wrapper);
 
 	g_static_mutex_init (&data_wrapper->priv->stream_lock);
+	data_wrapper->priv->byte_array = g_byte_array_new ();
 
 	data_wrapper->mime_type = camel_content_type_new (
 		"application", "octet-stream");
@@ -502,6 +520,26 @@ CamelDataWrapper *
 camel_data_wrapper_new (void)
 {
 	return g_object_new (CAMEL_TYPE_DATA_WRAPPER, NULL);
+}
+
+/**
+ * camel_data_wrapper_get_byte_array:
+ * @data_wrapper: a #CamelDataWrapper
+ *
+ * Returns the #GByteArray being used to hold the contents of @data_wrapper.
+ *
+ * Note, it's up to the caller to use this in a thread-safe manner.
+ *
+ * Returns: the #GByteArray for @data_wrapper
+ *
+ * Since: 3.2
+ **/
+GByteArray *
+camel_data_wrapper_get_byte_array (CamelDataWrapper *data_wrapper)
+{
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), NULL);
+
+	return data_wrapper->priv->byte_array;
 }
 
 /**
