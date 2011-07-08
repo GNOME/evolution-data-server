@@ -48,9 +48,11 @@ G_BEGIN_DECLS
 
 typedef struct _CamelLocalStore CamelLocalStore;
 typedef struct _CamelLocalStoreClass CamelLocalStoreClass;
+typedef struct _CamelLocalStorePrivate CamelLocalStorePrivate;
 
 struct _CamelLocalStore {
 	CamelStore parent;
+	CamelLocalStorePrivate *priv;
 
 	gchar *toplevel_dir;
 	gboolean is_main_store;
@@ -59,23 +61,25 @@ struct _CamelLocalStore {
 struct _CamelLocalStoreClass {
 	CamelStoreClass parent_class;
 
-	gchar *(*get_full_path)(CamelLocalStore *ls, const gchar *full_name);
-	gchar *(*get_meta_path)(CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
+	gchar *		(*get_full_path)	(CamelLocalStore *ls,
+						 const gchar *full_name);
+	gchar *		(*get_meta_path)	(CamelLocalStore *ls,
+						 const gchar *full_name,
+						 const gchar *ext);
 };
 
-GType camel_local_store_get_type (void);
-
-const gchar *camel_local_store_get_toplevel_dir (CamelLocalStore *store);
-
-gboolean camel_local_store_is_main_store (CamelLocalStore *store);
-guint32 camel_local_store_get_folder_type_by_full_name (CamelLocalStore *store, const gchar *full_name);
-
-#define camel_local_store_get_full_path(ls, name) \
-	(CAMEL_LOCAL_STORE_GET_CLASS (ls)->get_full_path \
-	(CAMEL_LOCAL_STORE (ls), (name)))
-#define camel_local_store_get_meta_path(ls, name, ext) \
-	(CAMEL_LOCAL_STORE_GET_CLASS (ls)->get_meta_path \
-	(CAMEL_LOCAL_STORE (ls), (name), (ext)))
+GType		camel_local_store_get_type	(void);
+const gchar *	camel_local_store_get_toplevel_dir
+						(CamelLocalStore *store);
+gboolean	camel_local_store_is_main_store	(CamelLocalStore *store);
+gchar *		camel_local_store_get_full_path	(CamelLocalStore *store,
+						 const gchar *full_name);
+gchar *		camel_local_store_get_meta_path	(CamelLocalStore *store,
+						 const gchar *full_name,
+						 const gchar *ext);
+guint32		camel_local_store_get_folder_type_by_full_name
+						(CamelLocalStore *store,
+						 const gchar *full_name);
 
 G_END_DECLS
 

@@ -112,12 +112,17 @@ fill_fi (CamelStore *store,
 		fi->total = camel_folder_get_message_count (folder);
 		g_object_unref (folder);
 	} else {
+		CamelLocalStore *local_store;
 		gchar *path, *folderpath;
 		CamelMboxSummary *mbs;
 
+		local_store = CAMEL_LOCAL_STORE (store);
+
 		/* This should be fast enough not to have to test for INFO_FAST */
-		path = camel_local_store_get_meta_path(store, fi->full_name, ".ev-summary");
-		folderpath = camel_local_store_get_full_path (store, fi->full_name);
+		path = camel_local_store_get_meta_path (
+			local_store, fi->full_name, ".ev-summary");
+		folderpath = camel_local_store_get_full_path (
+			local_store, fi->full_name);
 
 		mbs = (CamelMboxSummary *) camel_mbox_summary_new (NULL, path, folderpath, NULL);
 		/* FIXME[disk-summary] track exception */
@@ -321,6 +326,7 @@ mbox_store_get_folder_sync (CamelStore *store,
                             GError **error)
 {
 	CamelStoreClass *store_class;
+	CamelLocalStore *local_store;
 	struct stat st;
 	gchar *name;
 
@@ -329,7 +335,8 @@ mbox_store_get_folder_sync (CamelStore *store,
 	if (!store_class->get_folder_sync (store, folder_name, flags, cancellable, error))
 		return NULL;
 
-	name = camel_local_store_get_full_path (store, folder_name);
+	local_store = CAMEL_LOCAL_STORE (store);
+	name = camel_local_store_get_full_path (local_store, folder_name);
 
 	if (g_stat (name, &st) == -1) {
 		gchar *basename;
@@ -423,6 +430,7 @@ mbox_store_get_folder_info_sync (CamelStore *store,
                                  GCancellable *cancellable,
                                  GError **error)
 {
+	CamelLocalStore *local_store;
 	GHashTable *visited;
 #ifndef G_OS_WIN32
 	struct _inode *inode;
@@ -432,8 +440,11 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 	gchar *basename;
 	struct stat st;
 
-	top = top ? top : "";
-	path = camel_local_store_get_full_path (store, top);
+	if (top == NULL)
+		top = "";
+
+	local_store = CAMEL_LOCAL_STORE (store);
+	path = camel_local_store_get_full_path (local_store, top);
 
 	if (*top == '\0') {
 		/* requesting root dir scan */
@@ -506,11 +517,15 @@ mbox_store_create_folder_sync (CamelStore *store,
 {
 	/* FIXME: this is almost an exact copy of CamelLocalStore::create_folder() except that we use
 	 * different path schemes... need to find a way to share parent's code? */
-	const gchar *toplevel_dir =((CamelLocalStore *) store)->toplevel_dir;
+	CamelLocalStore *local_store;
 	CamelFolderInfo *info = NULL;
+	const gchar *toplevel_dir;
 	gchar *path, *name, *dir;
 	CamelFolder *folder;
 	struct stat st;
+
+	local_store = CAMEL_LOCAL_STORE (store);
+	toplevel_dir = local_store->toplevel_dir;
 
 	if (!g_path_is_absolute (toplevel_dir)) {
 		g_set_error (
@@ -529,11 +544,11 @@ mbox_store_create_folder_sync (CamelStore *store,
 	}
 
 	if (parent_name && *parent_name)
-		name = g_strdup_printf("%s/%s", parent_name, folder_name);
+		name = g_strdup_printf ("%s/%s", parent_name, folder_name);
 	else
 		name = g_strdup (folder_name);
 
-	path = camel_local_store_get_full_path (store, name);
+	path = camel_local_store_get_full_path (local_store, name);
 
 	dir = g_path_get_dirname (path);
 	if (g_mkdir_with_parents (dir, 0777) == -1 && errno != EEXIST) {
@@ -587,12 +602,14 @@ mbox_store_delete_folder_sync (CamelStore *store,
                                GCancellable *cancellable,
                                GError **error)
 {
+	CamelLocalStore *local_store;
 	CamelFolderInfo *fi;
 	CamelFolder *lf;
 	gchar *name, *path;
 	struct stat st;
 
-	name = camel_local_store_get_full_path (store, folder_name);
+	local_store = CAMEL_LOCAL_STORE (store);
+	name = camel_local_store_get_full_path (local_store, folder_name);
 	path = g_strdup_printf("%s.sbd", name);
 
 	if (g_rmdir (path) == -1 && errno != ENOENT) {
@@ -652,7 +669,8 @@ mbox_store_delete_folder_sync (CamelStore *store,
 	 * naming convention is different. Need to find a way for
 	 * CamelLocalStore to be able to construct the folder & meta
 	 * paths itself */
-	path = camel_local_store_get_meta_path(store, folder_name, ".ev-summary");
+	path = camel_local_store_get_meta_path (
+		local_store, folder_name, ".ev-summary");
 	if (g_unlink (path) == -1 && errno != ENOENT) {
 		g_set_error (
 			error, G_IO_ERROR,
@@ -666,7 +684,8 @@ mbox_store_delete_folder_sync (CamelStore *store,
 
 	g_free (path);
 
-	path = camel_local_store_get_meta_path(store, folder_name, ".ev-summary-meta");
+	path = camel_local_store_get_meta_path (
+		local_store, folder_name, ".ev-summary-meta");
 	if (g_unlink (path) == -1 && errno != ENOENT) {
 		g_set_error (
 			error, G_IO_ERROR,
@@ -680,7 +699,8 @@ mbox_store_delete_folder_sync (CamelStore *store,
 
 	g_free (path);
 
-	path = camel_local_store_get_meta_path(store, folder_name, ".ibex");
+	path = camel_local_store_get_meta_path (
+		local_store, folder_name, ".ibex");
 	if (camel_text_index_remove (path) == -1 && errno != ENOENT) {
 		g_set_error (
 			error, G_IO_ERROR,
@@ -708,7 +728,8 @@ mbox_store_delete_folder_sync (CamelStore *store,
 	}
 
 	if (path == NULL)
-		path = camel_local_store_get_meta_path(store, folder_name, ".cmeta");
+		path = camel_local_store_get_meta_path (
+			local_store, folder_name, ".cmeta");
 
 	if (g_unlink (path) == -1 && errno != ENOENT) {
 		g_set_error (
@@ -743,6 +764,7 @@ mbox_store_rename_folder_sync (CamelStore *store,
                                GCancellable *cancellable,
                                GError **error)
 {
+	CamelLocalStore *local_store;
 	CamelLocalFolder *folder = NULL;
 	gchar *oldibex, *newibex, *newdir;
 	gint errnosav;
@@ -756,8 +778,9 @@ mbox_store_rename_folder_sync (CamelStore *store,
 
 	/* try to rollback failures, has obvious races */
 
-	oldibex = camel_local_store_get_meta_path (store, old, ".ibex");
-	newibex = camel_local_store_get_meta_path (store, new, ".ibex");
+	local_store = CAMEL_LOCAL_STORE (store);
+	oldibex = camel_local_store_get_meta_path (local_store, old, ".ibex");
+	newibex = camel_local_store_get_meta_path (local_store, new, ".ibex");
 
 	newdir = g_path_get_dirname (newibex);
 	if (g_mkdir_with_parents (newdir, 0700) == -1) {
