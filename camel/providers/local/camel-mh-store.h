@@ -47,6 +47,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMhStore CamelMhStore;
 typedef struct _CamelMhStoreClass CamelMhStoreClass;
+typedef struct _CamelMhStorePrivate CamelMhStorePrivate;
 
 enum {
 	CAMEL_MH_DOTFOLDERS = (1 << 0) /* update/use .folders file */
@@ -54,15 +55,14 @@ enum {
 
 struct _CamelMhStore {
 	CamelLocalStore parent;
-
-	guint32 flags;
+	CamelMhStorePrivate *priv;
 };
 
 struct _CamelMhStoreClass {
 	CamelLocalStoreClass parent_class;
 };
 
-GType camel_mh_store_get_type (void);
+GType		camel_mh_store_get_type		(void);
 
 G_END_DECLS
 
