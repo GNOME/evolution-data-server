@@ -40,7 +40,7 @@
 static CamelProviderConfEntry mh_conf_entries[] = {
 	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "dotfolders", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-dot-folders", NULL,
 	  N_("_Use the '.folders' folder summary file (exmh)"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
@@ -82,7 +82,7 @@ static CamelProvider mbox_provider = {
 static CamelProviderConfEntry maildir_conf_entries[] = {
 	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
 	  N_("_Apply filters to new messages in INBOX"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
@@ -103,8 +103,9 @@ static CamelProvider maildir_provider = {
 static CamelProviderConfEntry spool_conf_entries[] = {
 	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter", NULL, N_("_Apply filters to new messages in INBOX"), "0" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "xstatus", NULL, N_("_Store status headers in Elm/Pine/Mutt format"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
+	  N_("_Apply filters to new messages in INBOX"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-xstatus-headers", NULL, N_("_Store status headers in Elm/Pine/Mutt format"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };

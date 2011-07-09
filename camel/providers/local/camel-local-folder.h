@@ -56,7 +56,6 @@ struct _CamelLocalFolder {
 	CamelLocalFolderPrivate *priv;
 
 	guint32 flags;		/* open mode flags */
-	gboolean need_summary_check;
 
 	gint locked;		/* lock counter */
 	CamelLockType locktype;	/* what type of lock we have */

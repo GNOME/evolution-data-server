@@ -39,6 +39,19 @@
 
 #define d(x)
 
+#define CAMEL_LOCAL_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_LOCAL_STORE, CamelLocalStorePrivate))
+
+struct _CamelLocalStorePrivate {
+	gboolean need_summary_check;
+};
+
+enum {
+	PROP_0,
+	PROP_NEED_SUMMARY_CHECK
+};
+
 G_DEFINE_TYPE (CamelLocalStore, camel_local_store, CAMEL_TYPE_STORE)
 
 static gint
@@ -83,6 +96,41 @@ xrename (const gchar *oldp,
 	g_free (old);
 	g_free (new);
 	return ret;
+}
+
+static void
+local_store_set_property (GObject *object,
+                          guint property_id,
+                          const GValue *value,
+                          GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_NEED_SUMMARY_CHECK:
+			camel_local_store_set_need_summary_check (
+				CAMEL_LOCAL_STORE (object),
+				g_value_get_boolean (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+local_store_get_property (GObject *object,
+                          guint property_id,
+                          GValue *value,
+                          GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_NEED_SUMMARY_CHECK:
+			g_value_set_boolean (
+				value,
+				camel_local_store_get_need_summary_check (
+				CAMEL_LOCAL_STORE (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -532,7 +580,11 @@ camel_local_store_class_init (CamelLocalStoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
+	g_type_class_add_private (class, sizeof (CamelLocalStorePrivate));
+
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = local_store_set_property;
+	object_class->get_property = local_store_get_property;
 	object_class->finalize = local_store_finalize;
 	object_class->constructed = local_store_constructed;
 
@@ -553,11 +605,24 @@ camel_local_store_class_init (CamelLocalStoreClass *class)
 
 	class->get_full_path = local_store_get_full_path;
 	class->get_meta_path = local_store_get_meta_path;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_NEED_SUMMARY_CHECK,
+		g_param_spec_boolean (
+			"need-summary-check",
+			"Need Summary Check",
+			"Whether to check for unexpected file changes",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
 camel_local_store_init (CamelLocalStore *local_store)
 {
+	local_store->priv = CAMEL_LOCAL_STORE_GET_PRIVATE (local_store);
 }
 
 const gchar *
@@ -625,4 +690,48 @@ camel_local_store_get_folder_type_by_full_name (CamelLocalStore *store,
 		return CAMEL_FOLDER_TYPE_SENT;
 
 	return CAMEL_FOLDER_TYPE_NORMAL;
+}
+
+/**
+ * camel_local_store_get_need_summary_check:
+ * @store: a #CamelLocalStore
+ *
+ * Returns whether local mail files for @store should be check for
+ * consistency and the summary database synchronized with them.  This
+ * is necessary to handle another mail application altering the files,
+ * such as local mail delivery using fetchmail.
+ *
+ * Returns: whether to check for changes in local mail files
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_local_store_get_need_summary_check (CamelLocalStore *store)
+{
+	g_return_val_if_fail (CAMEL_IS_LOCAL_STORE (store), FALSE);
+
+	return store->priv->need_summary_check;
+}
+
+/**
+ * camel_local_store_set_need_summary_check:
+ * @store: a #CamelLocalStore
+ * @need_summary_check: whether to check for changes in local mail files
+ *
+ * Sets whether local mail files for @store should be checked for
+ * consistency and the summary database synchronized with them.  This
+ * is necessary to handle another mail application altering the files,
+ * such as local mail delivery using fetchmail.
+ *
+ * Since: 3.2
+ **/
+void
+camel_local_store_set_need_summary_check (CamelLocalStore *store,
+                                          gboolean need_summary_check)
+{
+	g_return_if_fail (CAMEL_IS_LOCAL_STORE (store));
+
+	store->priv->need_summary_check = need_summary_check;
+
+	g_object_notify (G_OBJECT (store), "need-summary-check");
 }

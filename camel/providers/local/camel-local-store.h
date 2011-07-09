@@ -80,6 +80,11 @@ gchar *		camel_local_store_get_meta_path	(CamelLocalStore *store,
 guint32		camel_local_store_get_folder_type_by_full_name
 						(CamelLocalStore *store,
 						 const gchar *full_name);
+gboolean	camel_local_store_get_need_summary_check
+						(CamelLocalStore *store);
+void		camel_local_store_set_need_summary_check
+						(CamelLocalStore *store,
+						 gboolean need_summary_check);
 
 G_END_DECLS
 
