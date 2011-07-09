@@ -33,18 +33,11 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-mh-folder.h"
+#include "camel-mh-settings.h"
 #include "camel-mh-store.h"
 #include "camel-mh-summary.h"
 
-#define CAMEL_MH_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_MH_STORE, CamelMhStorePrivate))
-
 #define d(x)
-
-struct _CamelMhStorePrivate {
-	guint32 flags;
-};
 
 G_DEFINE_TYPE (CamelMhStore, camel_mh_store, CAMEL_TYPE_LOCAL_STORE)
 
@@ -470,25 +463,6 @@ inode_free (gpointer k, gpointer v, gpointer d)
 	g_free (k);
 }
 
-static void
-mh_store_constructed (GObject *object)
-{
-	CamelMhStore *mh_store;
-	CamelService *service;
-	CamelURL *url;
-
-	mh_store = CAMEL_MH_STORE (object);
-
-	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (camel_mh_store_parent_class)->constructed (object);
-
-	service = CAMEL_SERVICE (object);
-	url = camel_service_get_camel_url (service);
-
-	if (camel_url_get_param(url, "dotfolders"))
-		mh_store->priv->flags |= CAMEL_MH_DOTFOLDERS;
-}
-
 static CamelFolder *
 mh_store_get_folder_sync (CamelStore *store,
                           const gchar *folder_name,
@@ -498,12 +472,19 @@ mh_store_get_folder_sync (CamelStore *store,
 {
 	CamelStoreClass *store_class;
 	CamelLocalStore *local_store;
-	CamelMhStore *mh_store;
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean use_dot_folders;
 	gchar *name;
 	struct stat st;
 
-	mh_store = CAMEL_MH_STORE (store);
 	local_store = CAMEL_LOCAL_STORE (store);
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	use_dot_folders = camel_mh_settings_get_use_dot_folders (
+		CAMEL_MH_SETTINGS (settings));
 
 	/* Chain up to parent's get_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
@@ -546,7 +527,7 @@ mh_store_get_folder_sync (CamelStore *store,
 
 		/* add to .folders if we are supposed to */
 		/* FIXME: throw exception on error */
-		if (mh_store->priv->flags & CAMEL_MH_DOTFOLDERS)
+		if (use_dot_folders)
 			folders_update (
 				local_store->toplevel_dir,
 				UPDATE_ADD, folder_name, NULL, cancellable);
@@ -582,16 +563,21 @@ mh_store_get_folder_info_sync (CamelStore *store,
                                GCancellable *cancellable,
                                GError **error)
 {
-	CamelMhStore *mh_store;
+	CamelService *service;
+	CamelSettings *settings;
 	CamelFolderInfo *fi = NULL;
 	CamelURL *url;
+	gboolean use_dot_folders;
 
-	mh_store = CAMEL_MH_STORE (store);
+	service = CAMEL_SERVICE (store);
+	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
 
-	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
+	use_dot_folders = camel_mh_settings_get_use_dot_folders (
+		CAMEL_MH_SETTINGS (settings));
 
 	/* use .folders if we are supposed to */
-	if (mh_store->priv->flags & CAMEL_MH_DOTFOLDERS) {
+	if (use_dot_folders) {
 		folders_scan (
 			store, url->path, top, &fi, flags, cancellable);
 	} else {
@@ -641,11 +627,18 @@ mh_store_delete_folder_sync (CamelStore *store,
 {
 	CamelStoreClass *store_class;
 	CamelLocalStore *local_store;
-	CamelMhStore *mh_store;
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean use_dot_folders;
 	gchar *name;
 
-	mh_store = CAMEL_MH_STORE (store);
 	local_store = CAMEL_LOCAL_STORE (store);
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	use_dot_folders = camel_mh_settings_get_use_dot_folders (
+		CAMEL_MH_SETTINGS (settings));
 
 	/* remove folder directory - will fail if not empty */
 	name = g_strconcat (local_store->toplevel_dir, folder_name, NULL);
@@ -661,7 +654,7 @@ mh_store_delete_folder_sync (CamelStore *store,
 	g_free (name);
 
 	/* remove from .folders if we are supposed to */
-	if (mh_store->priv->flags & CAMEL_MH_DOTFOLDERS)
+	if (use_dot_folders)
 		folders_update (
 			local_store->toplevel_dir,
 			UPDATE_REMOVE, folder_name, NULL, cancellable);
@@ -681,10 +674,17 @@ mh_store_rename_folder_sync (CamelStore *store,
 {
 	CamelStoreClass *store_class;
 	CamelLocalStore *local_store;
-	CamelMhStore *mh_store;
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean use_dot_folders;
 
-	mh_store = CAMEL_MH_STORE (store);
 	local_store = CAMEL_LOCAL_STORE (store);
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	use_dot_folders = camel_mh_settings_get_use_dot_folders (
+		CAMEL_MH_SETTINGS (settings));
 
 	/* Chain up to parent's rename_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
@@ -692,7 +692,7 @@ mh_store_rename_folder_sync (CamelStore *store,
 		store, old, new, cancellable, error))
 		return FALSE;
 
-	if (mh_store->priv->flags & CAMEL_MH_DOTFOLDERS) {
+	if (use_dot_folders) {
 		/* yeah this is messy, but so is mh! */
 		folders_update (
 			local_store->toplevel_dir,
@@ -705,13 +705,11 @@ mh_store_rename_folder_sync (CamelStore *store,
 static void
 camel_mh_store_class_init (CamelMhStoreClass *class)
 {
-	GObjectClass *object_class;
+	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	g_type_class_add_private (class, sizeof (CamelMhStorePrivate));
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->constructed = mh_store_constructed;
+	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->settings_type = CAMEL_TYPE_MH_SETTINGS;
 
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->get_folder_sync = mh_store_get_folder_sync;
@@ -724,6 +722,5 @@ camel_mh_store_class_init (CamelMhStoreClass *class)
 static void
 camel_mh_store_init (CamelMhStore *mh_store)
 {
-	mh_store->priv = CAMEL_MH_STORE_GET_PRIVATE (mh_store);
 }
 

@@ -49,10 +49,6 @@ typedef struct _CamelMhStore CamelMhStore;
 typedef struct _CamelMhStoreClass CamelMhStoreClass;
 typedef struct _CamelMhStorePrivate CamelMhStorePrivate;
 
-enum {
-	CAMEL_MH_DOTFOLDERS = (1 << 0) /* update/use .folders file */
-};
-
 struct _CamelMhStore {
 	CamelLocalStore parent;
 	CamelMhStorePrivate *priv;

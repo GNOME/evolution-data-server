@@ -27,6 +27,7 @@ libcamellocal_la_SOURCES = 			\
 	camel-mbox-store.c			\
 	camel-mbox-summary.c			\
 	camel-mh-folder.c			\
+	camel-mh-settings.c			\
 	camel-mh-store.c			\
 	camel-mh-summary.c			\
 	camel-maildir-folder.c			\
@@ -39,6 +40,7 @@ noinst_HEADERS =				\
 	camel-local-store.h			\
 	camel-local-summary.h			\
 	camel-mh-folder.h			\
+	camel-mh-settings.h			\
 	camel-mh-store.h			\
 	camel-mh-summary.h			\
 	camel-mbox-folder.h			\
