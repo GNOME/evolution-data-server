@@ -36,6 +36,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-spool-folder.h"
+#include "camel-spool-settings.h"
 #include "camel-spool-store.h"
 
 #define CAMEL_SPOOL_STORE_GET_PRIVATE(obj) \
@@ -610,6 +611,7 @@ camel_spool_store_class_init (CamelSpoolStoreClass *class)
 	g_type_class_add_private (class, sizeof (CamelSpoolStorePrivate));
 
 	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->settings_type = CAMEL_TYPE_SPOOL_SETTINGS;
 	service_class->get_name = spool_store_get_name;
 
 	store_class = CAMEL_STORE_CLASS (class);
@@ -638,4 +640,3 @@ camel_spool_store_init (CamelSpoolStore *spool_store)
 {
 	spool_store->priv = CAMEL_SPOOL_STORE_GET_PRIVATE (spool_store);
 }
-

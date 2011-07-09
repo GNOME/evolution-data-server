@@ -35,6 +35,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-spool-folder.h"
+#include "camel-spool-settings.h"
 #include "camel-spool-store.h"
 #include "camel-spool-summary.h"
 
@@ -144,8 +145,14 @@ camel_spool_folder_new (CamelStore *parent_store,
 	gboolean use_xstatus_headers;
 	gchar *basename;
 
-	use_xstatus_headers = camel_spool_store_get_use_xstatus_headers (
-		CAMEL_SPOOL_STORE (parent_store));
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+
+	filter_inbox = camel_store_settings_get_filter_inbox (
+		CAMEL_STORE_SETTINGS (settings));
+
+	use_xstatus_headers = camel_spool_settings_get_use_xstatus_headers (
+		CAMEL_SPOOL_SETTINGS (settings));
 
 	basename = g_path_get_basename (full_name);
 
@@ -154,22 +161,16 @@ camel_spool_folder_new (CamelStore *parent_store,
 		"display-name", basename, "full-name", full_name,
 		"parent-store", parent_store, NULL);
 
-	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
-
-	filter_inbox = camel_store_settings_get_filter_inbox (
-		CAMEL_STORE_SETTINGS (settings));
-
 	if (filter_inbox && strcmp (full_name, "INBOX") == 0)
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 	flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
 
 	folder = (CamelFolder *) camel_local_folder_construct (
 		(CamelLocalFolder *) folder, flags, cancellable, error);
-	if (folder) {
-		if (camel_url_get_param (url, "xstatus"))
-			camel_mbox_summary_xstatus ((CamelMboxSummary *) folder->summary, TRUE);
-	}
+
+	if (folder != NULL && use_xstatus_headers)
+		camel_mbox_summary_xstatus (
+			CAMEL_MBOX_SUMMARY (folder->summary), TRUE);
 
 	g_free (basename);
 

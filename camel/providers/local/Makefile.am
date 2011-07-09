@@ -6,6 +6,7 @@ SYSDEP_PROVIDER_SOURCES =
 else
 SYSDEP_PROVIDER_SOURCES = \
 	camel-spool-folder.c			\
+	camel-spool-settings.c			\
 	camel-spool-store.c			\
 	camel-spool-summary.c
 endif
@@ -50,6 +51,7 @@ noinst_HEADERS =				\
 	camel-maildir-store.h			\
 	camel-maildir-summary.h			\
 	camel-spool-folder.h			\
+	camel-spool-settings.h			\
 	camel-spool-store.h			\
 	camel-spool-summary.h			\
 	camel-local-private.h
