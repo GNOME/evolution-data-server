@@ -172,7 +172,7 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-iconv.c				\
 	camel-index.c				\
 	camel-internet-address.c		\
-	camel-junk-plugin.c			\
+	camel-junk-filter.c			\
 	camel-list-utils.c			\
 	camel-lock.c				\
 	camel-medium.c				\
@@ -240,7 +240,7 @@ libcamelinclude_HEADERS =			\
 	camel-iconv.h				\
 	camel-index.h				\
 	camel-internet-address.h		\
-	camel-junk-plugin.h			\
+	camel-junk-filter.h			\
 	camel-list-utils.h			\
 	camel-lock-client.h			\
 	camel-lock.h				\

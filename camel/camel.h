@@ -51,7 +51,7 @@
 #include <camel/camel-iconv.h>
 #include <camel/camel-index.h>
 #include <camel/camel-internet-address.h>
-#include <camel/camel-junk-plugin.h>
+#include <camel/camel-junk-filter.h>
 #include <camel/camel-list-utils.h>
 #include <camel/camel-lock.h>
 #include <camel/camel-lock-client.h>

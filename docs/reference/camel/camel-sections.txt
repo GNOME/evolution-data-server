@@ -840,6 +840,27 @@ camel_internet_address_get_type
 </SECTION>
 
 <SECTION>
+<FILE>camel-junk-filter</FILE>
+<TITLE>CamelJunkFilter</TITLE>
+CamelJunkFilter
+CamelJunkStatus
+camel_junk_filter_classify
+camel_junk_filter_learn_junk
+camel_junk_filter_learn_not_junk
+camel_junk_filter_synchronize
+<SUBSECTION Standard>
+CAMEL_JUNK_FILTER
+CAMEL_IS_JUNK_FILTER
+CAMEL_TYPE_JUNK_FILTER
+CAMEL_JUNK_FILTER_INTERFACE
+CAMEL_IS_JUNK_FILTER_INTERFACE
+CAMEL_JUNK_FILTER_GET_INTERFACE
+CamelJunkFilterInterface
+<SUBSECTION Private>
+camel_junk_filter_get_type
+</SECTION>
+
+<SECTION>
 <FILE>camel-medium</FILE>
 <TITLE>CamelMedium</TITLE>
 CamelMedium
@@ -1927,6 +1948,8 @@ camel_session_set_online
 camel_session_get_filter_driver
 camel_session_get_check_junk
 camel_session_set_check_junk
+camel_session_get_junk_filter
+camel_session_set_junk_filter
 CamelSessionCallback
 camel_session_submit_job
 camel_session_get_network_available
@@ -2606,18 +2629,6 @@ camel_iconv_charset_language
 camel_iconv_open
 camel_iconv
 camel_iconv_close
-</SECTION>
-
-<SECTION>
-<FILE>camel-junk-plugin</FILE>
-CAMEL_JUNK_PLUGIN
-CamelJunkPlugin
-camel_junk_plugin_get_name
-camel_junk_plugin_check_junk
-camel_junk_plugin_report_junk
-camel_junk_plugin_report_notjunk
-camel_junk_plugin_commit_reports
-camel_junk_plugin_init
 </SECTION>
 
 <SECTION>

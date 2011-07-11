@@ -31,7 +31,7 @@
 #define CAMEL_SESSION_H
 
 #include <camel/camel-filter-driver.h>
-#include <camel/camel-junk-plugin.h>
+#include <camel/camel-junk-filter.h>
 #include <camel/camel-msgport.h>
 #include <camel/camel-provider.h>
 #include <camel/camel-service.h>
@@ -87,8 +87,6 @@ typedef enum {
 struct _CamelSession {
 	CamelObject parent;
 	CamelSessionPrivate *priv;
-
-	CamelJunkPlugin *junk_plugin;
 };
 
 /**
@@ -196,6 +194,10 @@ CamelFilterDriver *
 		camel_session_get_filter_driver	(CamelSession *session,
 						 const gchar *type,
 						 GError **error);
+CamelJunkFilter *
+		camel_session_get_junk_filter	(CamelSession *session);
+void		camel_session_set_junk_filter	(CamelSession *session,
+						 CamelJunkFilter *junk_filter);
 gboolean	camel_session_get_check_junk	(CamelSession *session);
 void		camel_session_set_check_junk	(CamelSession *session,
 						 gboolean check_junk);

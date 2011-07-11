@@ -21,6 +21,7 @@ camel_index_cursor_get_type
 camel_index_name_get_type
 camel_index_get_type
 camel_internet_address_get_type
+camel_junk_filter_get_type
 camel_medium_get_type
 camel_mime_filter_basic_get_type
 camel_mime_filter_bestenc_get_type

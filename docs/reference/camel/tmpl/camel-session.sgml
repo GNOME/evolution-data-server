@@ -48,6 +48,11 @@ CamelSession
 
 </para>
 
+<!-- ##### ARG CamelSession:junk-filter ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG CamelSession:network-available ##### -->
 <para>
 
@@ -238,6 +243,24 @@ CamelSession
 
 @session: 
 @check_junk: 
+
+
+<!-- ##### FUNCTION camel_session_get_junk_filter ##### -->
+<para>
+
+</para>
+
+@session: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_session_set_junk_filter ##### -->
+<para>
+
+</para>
+
+@session: 
+@junk_filter: 
 
 
 <!-- ##### USER_FUNCTION CamelSessionCallback ##### -->

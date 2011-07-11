@@ -221,14 +221,21 @@ folder_filter (CamelSession *session,
 	CamelMessageInfo *info;
 	CamelStore *parent_store;
 	gint i, status = 0;
-	CamelJunkPlugin *csp;
+	CamelJunkFilter *junk_filter;
+	gboolean synchronize = FALSE;
 	const gchar *full_name;
 
 	full_name = camel_folder_get_full_name (data->folder);
 	parent_store = camel_folder_get_parent_store (data->folder);
-	csp = session->junk_plugin;
+	junk_filter = camel_session_get_junk_filter (session);
+
+	/* Keep the junk filter alive until we're done. */
+	if (junk_filter != NULL)
+		g_object_ref (junk_filter);
 
 	if (data->junk) {
+		gboolean success = TRUE;
+
 		/* Translators: The %s is replaced with the
 		 * folder name where the operation is running. */
 		camel_operation_push_message (
@@ -237,7 +244,7 @@ folder_filter (CamelSession *session,
 			"Learning new spam messages in '%s'",
 			data->junk->len), full_name);
 
-		for (i = 0; i < data->junk->len; i++) {
+		for (i = 0; success && i < data->junk->len; i++) {
 			CamelMimeMessage *message;
 			gint pc = 100 * i / data->junk->len;
 
@@ -253,17 +260,22 @@ folder_filter (CamelSession *session,
 				break;
 
 			camel_operation_progress (cancellable, pc);
-			camel_junk_plugin_report_junk (csp, message);
+			success = camel_junk_filter_learn_junk (
+				junk_filter, message, cancellable, error);
 			g_object_unref (message);
+
+			synchronize |= success;
 		}
 
 		camel_operation_pop_message (cancellable);
 	}
 
 	if (*error != NULL)
-		return;
+		goto exit;
 
 	if (data->notjunk) {
+		gboolean success = TRUE;
+
 		/* Translators: The %s is replaced with the
 		 * folder name where the operation is running. */
 		camel_operation_push_message (
@@ -272,7 +284,7 @@ folder_filter (CamelSession *session,
 			"Learning new ham messages in '%s'",
 			data->notjunk->len), full_name);
 
-		for (i = 0; i < data->notjunk->len; i++) {
+		for (i = 0; success && i < data->notjunk->len; i++) {
 			CamelMimeMessage *message;
 			gint pc = 100 * i / data->notjunk->len;
 
@@ -288,18 +300,25 @@ folder_filter (CamelSession *session,
 				break;
 
 			camel_operation_progress (cancellable, pc);
-			camel_junk_plugin_report_notjunk (csp, message);
+			success = camel_junk_filter_learn_not_junk (
+				junk_filter, message, cancellable, error);
 			g_object_unref (message);
+
+			synchronize |= success;
 		}
 
 		camel_operation_pop_message (cancellable);
 	}
 
 	if (*error != NULL)
-		return;
+		goto exit;
 
-	if (data->junk || data->notjunk)
-		camel_junk_plugin_commit_reports (csp);
+	if (synchronize)
+		camel_junk_filter_synchronize (
+			junk_filter, cancellable, error);
+
+	if (*error != NULL)
+		goto exit;
 
 	if (data->driver && data->recents) {
 		CamelService *service;
@@ -342,6 +361,10 @@ folder_filter (CamelSession *session,
 
 		camel_filter_driver_flush (data->driver, error);
 	}
+
+exit:
+	if (junk_filter != NULL)
+		g_object_unref (junk_filter);
 }
 
 static gint
@@ -1456,6 +1479,7 @@ folder_changed (CamelFolder *folder,
 	struct _CamelFolderChangeInfoPrivate *p = info->priv;
 	CamelSession *session;
 	CamelFilterDriver *driver = NULL;
+	CamelJunkFilter *junk_filter;
 	GPtrArray *junk = NULL;
 	GPtrArray *notjunk = NULL;
 	GPtrArray *recents = NULL;
@@ -1465,6 +1489,7 @@ folder_changed (CamelFolder *folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
+	junk_filter = camel_session_get_junk_filter (session);
 
 	camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 	if (folder->priv->frozen) {
@@ -1475,7 +1500,7 @@ folder_changed (CamelFolder *folder,
 	}
 	camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 
-	if (session->junk_plugin && info->uid_changed->len) {
+	if (junk_filter != NULL && info->uid_changed->len) {
 		CamelMessageFlags flags;
 
 		for (i = 0; i < info->uid_changed->len; i++) {

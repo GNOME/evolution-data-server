@@ -66,6 +66,7 @@ struct _CamelSessionPrivate {
 
 	GHashTable *services;
 	GHashTable *junk_headers;
+	CamelJunkFilter *junk_filter;
 
 	GMainContext *context;
 
@@ -88,6 +89,7 @@ struct _JobData {
 enum {
 	PROP_0,
 	PROP_CHECK_JUNK,
+	PROP_JUNK_FILTER,
 	PROP_NETWORK_AVAILABLE,
 	PROP_ONLINE,
 	PROP_USER_DATA_DIR,
@@ -204,6 +206,12 @@ session_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_JUNK_FILTER:
+			camel_session_set_junk_filter (
+				CAMEL_SESSION (object),
+				g_value_get_object (value));
+			return;
+
 		case PROP_NETWORK_AVAILABLE:
 			camel_session_set_network_available (
 				CAMEL_SESSION (object),
@@ -239,6 +247,12 @@ session_get_property (GObject *object,
 				CAMEL_SESSION (object)));
 			return;
 
+		case PROP_JUNK_FILTER:
+			g_value_set_object (
+				value, camel_session_get_junk_filter (
+				CAMEL_SESSION (object)));
+			return;
+
 		case PROP_NETWORK_AVAILABLE:
 			g_value_set_boolean (
 				value, camel_session_get_network_available (
@@ -269,6 +283,11 @@ session_dispose (GObject *object)
 	priv = CAMEL_SESSION_GET_PRIVATE (object);
 
 	g_hash_table_remove_all (priv->services);
+
+	if (priv->junk_filter != NULL) {
+		g_object_unref (priv->junk_filter);
+		priv->junk_filter = NULL;
+	}
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_session_parent_class)->dispose (object);
@@ -396,6 +415,17 @@ camel_session_class_init (CamelSessionClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_JUNK_FILTER,
+		g_param_spec_object (
+			"junk-filter",
+			"Junk Filter",
+			"Classifies messages as junk or not junk",
+			CAMEL_TYPE_JUNK_FILTER,
+			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -917,6 +947,62 @@ camel_session_get_filter_driver (CamelSession *session,
 	CAMEL_CHECK_GERROR (session, get_filter_driver, driver != NULL, error);
 
 	return driver;
+}
+
+/**
+ * camel_session_get_junk_filter:
+ * @session: a #CamelSession
+ *
+ * Returns the #CamelJunkFilter instance used to classify messages as
+ * junk or not junk during filtering.
+ *
+ * Note that #CamelJunkFilter itself is just an interface.  The application
+ * must implement the interface and install a #CamelJunkFilter instance for
+ * junk filtering to take place.
+ *
+ * Returns: a #CamelJunkFilter, or %NULL
+ *
+ * Since: 3.2
+ **/
+CamelJunkFilter *
+camel_session_get_junk_filter (CamelSession *session)
+{
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+
+	return session->priv->junk_filter;
+}
+
+/**
+ * camel_session_set_junk_filter:
+ * @session: a #CamelSession
+ * @junk_filer: a #CamelJunkFilter, or %NULL
+ *
+ * Installs the #CamelJunkFilter instance used to classify messages as
+ * junk or not junk during filtering.
+ *
+ * Note that #CamelJunkFilter itself is just an interface.  The application
+ * must implement the interface and install a #CamelJunkFilter instance for
+ * junk filtering to take place.
+ *
+ * Since: 3.2
+ **/
+void
+camel_session_set_junk_filter (CamelSession *session,
+                               CamelJunkFilter *junk_filter)
+{
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+
+	if (junk_filter != NULL) {
+		g_return_if_fail (CAMEL_IS_JUNK_FILTER (junk_filter));
+		g_object_ref (junk_filter);
+	}
+
+	if (session->priv->junk_filter != NULL)
+		g_object_unref (session->priv->junk_filter);
+
+	session->priv->junk_filter = junk_filter;
+
+	g_object_notify (G_OBJECT (session), "junk-filter");
 }
 
 /**
