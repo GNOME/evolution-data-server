@@ -1,3 +1,4 @@
+
 dnl Evolution-Data-Server version
 m4_define([eds_major_version], [3])
 m4_define([eds_minor_version], [1])
@@ -186,15 +187,6 @@ AM_CPPFLAGS="$WARNING_FLAGS -fno-strict-aliasing"
 AC_SUBST(AM_CPPFLAGS)
 
 
-case "$host" in
-*openbsd*|*freebsd*)
-	dnl Do not set '-Wl,--no-undefined' on freebsd/openbsd
-	;;
-*)
-	LDFLAGS="$LDFLAGS -Wl,--no-undefined"
-	;;
-esac
-
 dnl define disable deprecated for EBook and ECal .am files
 case "$WARNING_FLAGS" in
 *E_BOOK_DISABLE_DEPRECATED*)
@@ -285,6 +277,16 @@ dnl Gtk Doc stuff
 dnl ******************************
 GTK_DOC_CHECK(1.9)
 
+dnl This must appear after AC_CANONICAL_HOST, which defines $host.
+case "$host" in
+*openbsd*|*freebsd*)
+	dnl Do not set '-Wl,--no-undefined' on freebsd/openbsd
+	;;
+*)
+	LDFLAGS="$LDFLAGS -Wl,--no-undefined"
+	;;
+esac
+
 dnl ******************************
 dnl Check for Win32
 dnl ******************************
@@ -298,6 +300,13 @@ case "$host" in
 	LIBEXECDIR_IN_SERVER_FILE='../../../libexec'
 	AC_CACHE_VAL(ac_cv_have_addrinfo, [ac_cv_have_addrinfo=yes])
 	AC_DEFINE(_WIN32_WINNT, 0x501, [To get getaddrinfo etc declarations])
+	;;
+*openbsd*|*freebsd*)
+	os_win32='no'
+	NO_UNDEFINED=''
+	SOCKET_LIBS=''
+	DL_LIB=''
+	LIBEXECDIR_IN_SERVER_FILE="$libexecdir"
 	;;
 *)
 	os_win32='no'
