@@ -33,21 +33,18 @@
 
 #include <glib/gi18n-lib.h>
 
-#include "camel-nntp-summary.h"
-#include "camel-nntp-store.h"
-#include "camel-nntp-store-summary.h"
 #include "camel-nntp-folder.h"
 #include "camel-nntp-private.h"
 #include "camel-nntp-resp-codes.h"
+#include "camel-nntp-settings.h"
+#include "camel-nntp-store-summary.h"
+#include "camel-nntp-store.h"
+#include "camel-nntp-summary.h"
 
 #ifdef G_OS_WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #endif
-
-#define CAMEL_NNTP_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_NNTP_STORE, CamelNNTPStorePrivate))
 
 #define w(x)
 #define dd(x) (camel_debug("nntp")?(x):0)
@@ -56,17 +53,6 @@
 #define NNTPS_PORT 563
 
 #define DUMP_EXTENSIONS
-
-struct _CamelNNTPStorePrivate {
-	gint placeholder;
-};
-
-enum {
-	PROP_0,
-	PROP_DEFAULT_PORT,
-	PROP_SECURITY_METHOD,
-	PROP_SERVICE_NAME
-};
 
 static GInitableIface *parent_initable_interface;
 
@@ -167,55 +153,6 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
 }
 
 static void
-nntp_store_set_property (GObject *object,
-                         guint property_id,
-                         const GValue *value,
-                         GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_SECURITY_METHOD:
-			camel_network_service_set_security_method (
-				CAMEL_NETWORK_SERVICE (object),
-				g_value_get_uint (value));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-nntp_store_get_property (GObject *object,
-                         guint property_id,
-                         GValue *value,
-                         GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_DEFAULT_PORT:
-			g_value_set_uint (
-				value,
-				camel_network_service_get_default_port (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-
-		case PROP_SECURITY_METHOD:
-			g_value_set_uint (
-				value,
-				camel_network_service_get_security_method (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-
-		case PROP_SERVICE_NAME:
-			g_value_set_string (
-				value,
-				camel_network_service_get_service_name (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
 nntp_store_dispose (GObject *object)
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (object);
@@ -274,32 +211,6 @@ nntp_store_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_nntp_store_parent_class)->finalize (object);
-}
-
-static void
-nntp_store_constructed (GObject *object)
-{
-	CamelURL *url;
-	const gchar *use_ssl;
-
-	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (camel_nntp_store_parent_class)->constructed (object);
-
-	url = camel_service_get_camel_url (CAMEL_SERVICE (object));
-	use_ssl = camel_url_get_param (url, "use_ssl");
-
-	if (g_strcmp0 (use_ssl, "never") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_NONE);
-	else if (g_strcmp0 (use_ssl, "always") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT);
-	else if (g_strcmp0 (use_ssl, "when-possible") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
 }
 
 static gboolean
@@ -797,13 +708,22 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store,
                                        GCancellable *cancellable,
                                        GError **error)
 {
-	gint i;
+	CamelService *service;
+	CamelSettings *settings;
 	CamelStoreInfo *si;
 	CamelFolderInfo *first = NULL, *last = NULL, *fi = NULL;
+	gboolean short_folder_names;
+	gint i;
 
 	/* since we do not do a tree, any request that is not for root is sure to give no results */
 	if (top != NULL && top[0] != 0)
 		return NULL;
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	short_folder_names = camel_nntp_settings_get_short_folder_names (
+		CAMEL_NNTP_SETTINGS (settings));
 
 	for (i=0;(si = camel_store_summary_index ((CamelStoreSummary *) store->summary, i));i++) {
 		if (si == NULL)
@@ -837,7 +757,7 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store,
 					g_object_unref (folder);
 				}
 			}
-			fi = nntp_folder_info_from_store_info (store, store->do_short_folder_notation, si);
+			fi = nntp_folder_info_from_store_info (store, short_folder_names, si);
 			fi->flags |= CAMEL_FOLDER_NOINFERIORS | CAMEL_FOLDER_NOCHILDREN | CAMEL_FOLDER_SYSTEM;
 			if (last)
 				last->next = fi;
@@ -935,6 +855,8 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
                                    guint flags,
                                    GError **error)
 {
+	CamelService *service;
+	CamelSettings *settings;
 	gint i;
 	gint subscribed_or_flag = (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ? 0 : 1,
 	    root_or_flag = (orig_top == NULL || orig_top[0] == '\0') ? 1 : 0,
@@ -943,9 +865,17 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 	CamelStoreInfo *si;
 	CamelFolderInfo *first = NULL, *last = NULL, *fi = NULL;
 	GHashTable *known; /* folder name to folder info */
+	gboolean folder_hierarchy_relative;
 	gchar *tmpname;
 	gchar *top = g_strconcat(orig_top?orig_top:"", ".", NULL);
 	gint toplen = strlen (top);
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	folder_hierarchy_relative =
+		camel_nntp_settings_get_folder_hierarchy_relative (
+		CAMEL_NNTP_SETTINGS (settings));
 
 	known = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -957,7 +887,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 				fi = nntp_folder_info_from_store_info (store, FALSE, si);
 				if (!fi)
 					continue;
-				if (store->folder_hierarchy_relative) {
+				if (folder_hierarchy_relative) {
 					g_free (fi->display_name);
 					fi->display_name = g_strdup (si->path + ((toplen == 1) ? 0 : toplen));
 				}
@@ -975,7 +905,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 						continue;
 
 					fi->flags |= CAMEL_FOLDER_NOSELECT;
-					if (store->folder_hierarchy_relative) {
+					if (folder_hierarchy_relative) {
 						g_free (fi->display_name);
 						fi->display_name = g_strdup (tmpname + ((toplen==1) ? 0 : toplen));
 					}
@@ -1220,9 +1150,18 @@ nntp_store_subscribe_folder_sync (CamelStore *store,
                                   GError **error)
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
+	CamelService *service;
+	CamelSettings *settings;
 	CamelStoreInfo *si;
 	CamelFolderInfo *fi;
+	gboolean short_folder_names;
 	gboolean success = TRUE;
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	short_folder_names = camel_nntp_settings_get_short_folder_names (
+		CAMEL_NNTP_SETTINGS (settings));
 
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
@@ -1238,7 +1177,7 @@ nntp_store_subscribe_folder_sync (CamelStore *store,
 	} else {
 		if (!(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
 			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			fi = nntp_folder_info_from_store_info (nntp_store, nntp_store->do_short_folder_notation, si);
+			fi = nntp_folder_info_from_store_info (nntp_store, short_folder_names, si);
 			fi->flags |= CAMEL_FOLDER_NOINFERIORS | CAMEL_FOLDER_NOCHILDREN;
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
@@ -1261,9 +1200,18 @@ nntp_store_unsubscribe_folder_sync (CamelStore *store,
                                     GError **error)
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
+	CamelService *service;
+	CamelSettings *settings;
 	CamelFolderInfo *fi;
 	CamelStoreInfo *fitem;
+	gboolean short_folder_names;
 	gboolean success = TRUE;
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	short_folder_names = camel_nntp_settings_get_short_folder_names (
+		CAMEL_NNTP_SETTINGS (settings));
 
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
@@ -1279,7 +1227,7 @@ nntp_store_unsubscribe_folder_sync (CamelStore *store,
 	} else {
 		if (fitem->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
 			fitem->flags &= ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			fi = nntp_folder_info_from_store_info (nntp_store, nntp_store->do_short_folder_notation, fitem);
+			fi = nntp_folder_info_from_store_info (nntp_store, short_folder_names, fitem);
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
 			camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -1389,16 +1337,6 @@ nntp_store_initable_init (GInitable *initable,
 	camel_url_free (summary_url);
 	camel_store_summary_load ((CamelStoreSummary *) nntp_store->summary);
 
-	/* get options */
-	if (camel_url_get_param (url, "show_short_notation"))
-		nntp_store->do_short_folder_notation = TRUE;
-	else
-		nntp_store->do_short_folder_notation = FALSE;
-	if (camel_url_get_param (url, "folder_hierarchy_relative"))
-		nntp_store->folder_hierarchy_relative = TRUE;
-	else
-		nntp_store->folder_hierarchy_relative = FALSE;
-
 	/* setup store-wide cache */
 	nntp_store->cache = camel_data_cache_new (user_data_dir, error);
 	if (nntp_store->cache == NULL)
@@ -1412,12 +1350,10 @@ nntp_store_initable_init (GInitable *initable,
 }
 
 static const gchar *
-nntp_store_get_service_name (CamelNetworkService *service)
+nntp_store_get_service_name (CamelNetworkService *service,
+                             CamelNetworkSecurityMethod method)
 {
-	CamelNetworkSecurityMethod method;
 	const gchar *service_name;
-
-	method = camel_network_service_get_security_method (service);
 
 	switch (method) {
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
@@ -1433,12 +1369,10 @@ nntp_store_get_service_name (CamelNetworkService *service)
 }
 
 static guint16
-nntp_store_get_default_port (CamelNetworkService *service)
+nntp_store_get_default_port (CamelNetworkService *service,
+                             CamelNetworkSecurityMethod method)
 {
-	CamelNetworkSecurityMethod method;
 	guint16 default_port;
-
-	method = camel_network_service_get_security_method (service);
 
 	switch (method) {
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
@@ -1461,16 +1395,12 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 	CamelStoreClass *store_class;
 	CamelDiscoStoreClass *disco_store_class;
 
-	g_type_class_add_private (class, sizeof (CamelNNTPStorePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
-	object_class->set_property = nntp_store_set_property;
-	object_class->get_property = nntp_store_get_property;
 	object_class->dispose = nntp_store_dispose;
 	object_class->finalize = nntp_store_finalize;
-	object_class->constructed = nntp_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->settings_type = CAMEL_TYPE_NNTP_SETTINGS;
 	service_class->get_name = nntp_store_get_name;
 	service_class->query_auth_types_sync = nntp_store_query_auth_types_sync;
 
@@ -1496,24 +1426,6 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 	disco_store_class->get_folder_info_online = nntp_get_folder_info_online;
 	disco_store_class->get_folder_info_resyncing = nntp_get_folder_info_online;
 	disco_store_class->get_folder_info_offline = nntp_get_folder_info_offline;
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_DEFAULT_PORT,
-		"default-port");
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SECURITY_METHOD,
-		"security-method");
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SERVICE_NAME,
-		"service-name");
 }
 
 static void
@@ -1535,8 +1447,6 @@ static void
 camel_nntp_store_init (CamelNNTPStore *nntp_store)
 {
 	CamelStore *store = CAMEL_STORE (nntp_store);
-
-	nntp_store->priv = CAMEL_NNTP_STORE_GET_PRIVATE (nntp_store);
 
 	store->flags = CAMEL_STORE_SUBSCRIPTIONS;
 

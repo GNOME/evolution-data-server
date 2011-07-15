@@ -40,19 +40,19 @@ static gint nntp_url_equal (gconstpointer a, gconstpointer b);
 static CamelProviderConfEntry nntp_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
 	  N_("Folders") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "show_short_notation", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "short-folder-names", NULL,
 	  N_("_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"), "1" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "folder_hierarchy_relative", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "folder-hierarchy-relative", NULL,
 	  N_("In the subscription _dialog, show relative folder names"), "1" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
 
 CamelProviderPortEntry nntp_port_entries[] = {
-						  { 119, N_("Default NNTP port"), FALSE },
-						  { 563, N_("NNTP over SSL"), TRUE },
-						  { 0, NULL, 0 }
-					     };
+	{ 119, N_("Default NNTP port"), FALSE },
+	{ 563, N_("NNTP over SSL"), TRUE },
+	{ 0, NULL, 0 }
+};
 
 static CamelProvider news_provider = {
 	"nntp",
