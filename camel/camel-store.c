@@ -260,13 +260,13 @@ store_constructed (GObject *object)
 	store = CAMEL_STORE (object);
 	class = CAMEL_STORE_GET_CLASS (store);
 
-	if (class->hash_folder_name != NULL)
-		store->folders = camel_object_bag_new (
-			class->hash_folder_name,
-			class->compare_folder_name,
-			(CamelCopyFunc) g_strdup, g_free);
-	else
-		store->folders = NULL;
+	g_return_if_fail (class->hash_folder_name != NULL);
+	g_return_if_fail (class->compare_folder_name != NULL);
+
+	store->folders = camel_object_bag_new (
+		class->hash_folder_name,
+		class->compare_folder_name,
+		(CamelCopyFunc) g_strdup, g_free);
 }
 
 static gboolean
@@ -320,9 +320,6 @@ store_synchronize_sync (CamelStore *store,
 	gboolean success = TRUE;
 	gint i;
 	GError *local_error = NULL;
-
-	if (store->folders == NULL)
-		return TRUE;
 
 	if (expunge) {
 		/* ensure all folders are used when expunging */
@@ -1384,8 +1381,9 @@ cs_delete_cached_folder (CamelStore *store,
 {
 	CamelFolder *folder;
 
-	if (store->folders
-	    && (folder = camel_object_bag_get (store->folders, folder_name))) {
+	folder = camel_object_bag_get (store->folders, folder_name);
+
+	if (folder != NULL) {
 		CamelVeeFolder *vfolder;
 
 		if ((store->flags & CAMEL_STORE_VTRASH)
@@ -2078,18 +2076,16 @@ camel_store_get_folder_sync (CamelStore *store,
 	if (!(flags & CAMEL_STORE_FOLDER_CREATE))
 		flags &= ~CAMEL_STORE_FOLDER_EXCL;
 
-	if (store->folders != NULL) {
-		/* Try cache first. */
-		folder = camel_object_bag_reserve (store->folders, folder_name);
-		if (folder != NULL && (flags & CAMEL_STORE_FOLDER_EXCL)) {
-			g_set_error (
-				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Cannot create folder '%s': folder exists"),
-				folder_name);
-			camel_object_bag_abort (store->folders, folder_name);
-			g_object_unref (folder);
-			return NULL;
-		}
+	/* Try cache first. */
+	folder = camel_object_bag_reserve (store->folders, folder_name);
+	if (folder != NULL && (flags & CAMEL_STORE_FOLDER_EXCL)) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Cannot create folder '%s': folder exists"),
+			folder_name);
+		camel_object_bag_abort (store->folders, folder_name);
+		g_object_unref (folder);
+		return NULL;
 	}
 
 	if (folder == NULL) {
@@ -2164,14 +2160,12 @@ camel_store_get_folder_sync (CamelStore *store,
 		/* Release the folder name reservation before adding the
 		 * folder to the virtual Junk and Trash folders, just to
 		 * reduce the chance of deadlock. */
-		if (store->folders != NULL) {
-			if (folder != NULL)
-				camel_object_bag_add (
-					store->folders, folder_name, folder);
-			else
-				camel_object_bag_abort (
-					store->folders, folder_name);
-		}
+		if (folder != NULL)
+			camel_object_bag_add (
+				store->folders, folder_name, folder);
+		else
+			camel_object_bag_abort (
+				store->folders, folder_name);
 
 		/* If this is a normal folder and the store uses a
 		 * virtual Junk folder, let the virtual Junk folder
@@ -3087,27 +3081,26 @@ camel_store_rename_folder_sync (CamelStore *store,
 	}
 
 	/* If the folder is open (or any subfolders of the open folder)
-	   We need to rename them atomically with renaming the actual folder path */
-	if (store->folders) {
-		folders = camel_object_bag_list (store->folders);
-		for (i=0;i<folders->len;i++) {
-			const gchar *full_name;
+	 * We need to rename them atomically with renaming the actual
+	 * folder path. */
+	folders = camel_object_bag_list (store->folders);
+	for (i=0;i<folders->len;i++) {
+		const gchar *full_name;
 
-			folder = folders->pdata[i];
-			full_name = camel_folder_get_full_name (folder);
+		folder = folders->pdata[i];
+		full_name = camel_folder_get_full_name (folder);
 
-			namelen = strlen (full_name);
-			if ((namelen == oldlen &&
-			     strcmp (full_name, old_name) == 0)
-			    || ((namelen > oldlen)
-				&& strncmp (full_name, old_name, oldlen) == 0
-				&& full_name[oldlen] == '/')) {
-				camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
-			} else {
-				g_ptr_array_remove_index_fast (folders, i);
-				i--;
-				g_object_unref (folder);
-			}
+		namelen = strlen (full_name);
+		if ((namelen == oldlen &&
+		     strcmp (full_name, old_name) == 0)
+		    || ((namelen > oldlen)
+			&& strncmp (full_name, old_name, oldlen) == 0
+			&& full_name[oldlen] == '/')) {
+			camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+		} else {
+			g_ptr_array_remove_index_fast (folders, i);
+			i--;
+			g_object_unref (folder);
 		}
 	}
 
