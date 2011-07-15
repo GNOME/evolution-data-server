@@ -5066,39 +5066,6 @@ imapx_parser_thread (gpointer d)
 	return NULL;
 }
 
-static void
-imapx_server_finalize (GObject *object)
-{
-	CamelIMAPXServer *is = CAMEL_IMAPX_SERVER (object);
-
-	camel_url_free (is->url);
-
-	g_static_rec_mutex_free (&is->queue_lock);
-	g_static_rec_mutex_free (&is->ostream_lock);
-	g_mutex_free (is->fetch_mutex);
-	g_cond_free (is->fetch_cond);
-
-	camel_folder_change_info_free (is->changes);
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
-}
-
-static void
-imapx_server_constructed (GObject *object)
-{
-	CamelIMAPXServer *server;
-	CamelIMAPXServerClass *class;
-
-	server = CAMEL_IMAPX_SERVER (object);
-	class = CAMEL_IMAPX_SERVER_GET_CLASS (server);
-
-	server->tagprefix = class->tagprefix;
-	class->tagprefix++;
-	if (class->tagprefix > 'Z')
-		class->tagprefix = 'A';
-}
-
 static gboolean
 join_helper (gpointer thread)
 {
@@ -5136,8 +5103,46 @@ imapx_server_dispose (GObject *object)
 
 	imapx_disconnect (server);
 
+	if (server->session != NULL) {
+		g_object_unref (server->session);
+		server->session = NULL;
+	}
+
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->dispose (object);
+}
+
+static void
+imapx_server_finalize (GObject *object)
+{
+	CamelIMAPXServer *is = CAMEL_IMAPX_SERVER (object);
+
+	camel_url_free (is->url);
+
+	g_static_rec_mutex_free (&is->queue_lock);
+	g_static_rec_mutex_free (&is->ostream_lock);
+	g_mutex_free (is->fetch_mutex);
+	g_cond_free (is->fetch_cond);
+
+	camel_folder_change_info_free (is->changes);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
+}
+
+static void
+imapx_server_constructed (GObject *object)
+{
+	CamelIMAPXServer *server;
+	CamelIMAPXServerClass *class;
+
+	server = CAMEL_IMAPX_SERVER (object);
+	class = CAMEL_IMAPX_SERVER_GET_CLASS (server);
+
+	server->tagprefix = class->tagprefix;
+	class->tagprefix++;
+	if (class->tagprefix > 'Z')
+		class->tagprefix = 'A';
 }
 
 static void
