@@ -55,18 +55,27 @@ struct _CamelIMAPXConnManagerClass {
 	CamelObjectClass cclass;
 };
 
-GType			camel_imapx_conn_manager_get_type		(void);
-CamelIMAPXConnManager *	camel_imapx_conn_manager_new			(CamelStore *store);
-void			camel_imapx_conn_manager_set_n_connections	(CamelIMAPXConnManager *con_man,
-									guint n_connections);
-CamelIMAPXServer *	camel_imapx_conn_manager_get_connection		(CamelIMAPXConnManager *con_man,
-									const gchar *folder_name,
-									GCancellable *cancellable,
-									GError **error);
-void			camel_imapx_conn_manager_close_connections	(CamelIMAPXConnManager *con_man);
-GSList *		camel_imapx_conn_manager_get_connections	(CamelIMAPXConnManager *con_man);
-void			camel_imapx_conn_manager_update_con_info	(CamelIMAPXConnManager *con_man,
-									CamelIMAPXServer *server,
-									const gchar *folder_name);
+GType		camel_imapx_conn_manager_get_type (void);
+CamelIMAPXConnManager *
+		camel_imapx_conn_manager_new	(CamelStore *store);
+CamelStore *	camel_imapx_conn_manager_get_store
+						(CamelIMAPXConnManager *con_man);
+void		camel_imapx_conn_manager_set_n_connections
+						(CamelIMAPXConnManager *con_man,
+						 guint n_connections);
+CamelIMAPXServer *
+		camel_imapx_conn_manager_get_connection
+						(CamelIMAPXConnManager *con_man,
+						 const gchar *folder_name,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_imapx_conn_manager_close_connections
+						(CamelIMAPXConnManager *con_man);
+GSList *	camel_imapx_conn_manager_get_connections
+						(CamelIMAPXConnManager *con_man);
+void		camel_imapx_conn_manager_update_con_info
+						(CamelIMAPXConnManager *con_man,
+						 CamelIMAPXServer *server,
+						 const gchar *folder_name);
 
 #endif /* _CAMEL_IMAPX_SERVER_H */

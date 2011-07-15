@@ -27,12 +27,19 @@
 #define CON_LOCK(x) (g_static_rec_mutex_lock(&(x)->priv->con_man_lock))
 #define CON_UNLOCK(x) (g_static_rec_mutex_unlock(&(x)->priv->con_man_lock))
 
-G_DEFINE_TYPE (CamelIMAPXConnManager, camel_imapx_conn_manager, CAMEL_TYPE_OBJECT)
+#define CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_IMAPX_CONN_MANAGER, CamelIMAPXConnManagerPrivate))
+
+G_DEFINE_TYPE (
+	CamelIMAPXConnManager,
+	camel_imapx_conn_manager,
+	CAMEL_TYPE_OBJECT)
 
 struct _CamelIMAPXConnManagerPrivate {
 	GSList *connections;
 	guint n_connections;
-	CamelStore *store;
+	gpointer store;  /* weak pointer */
 	GStaticRecMutex con_man_lock;
 	gboolean clearing_connections;
 };
@@ -42,6 +49,11 @@ typedef struct {
 	CamelIMAPXServer *conn;
 	gchar *selected_folder;
 } ConnectionInfo;
+
+enum {
+	PROP_0,
+	PROP_STORE
+};
 
 static void
 free_connection (gpointer data, gpointer user_data)
@@ -72,13 +84,83 @@ imapx_prune_connections (CamelIMAPXConnManager *con_man)
 }
 
 static void
+imapx_conn_manager_set_store (CamelIMAPXConnManager *con_man,
+                              CamelStore *store)
+{
+	g_return_if_fail (CAMEL_IS_STORE (store));
+	g_return_if_fail (con_man->priv->store == NULL);
+
+	con_man->priv->store = store;
+
+	g_object_add_weak_pointer (
+		G_OBJECT (store), &con_man->priv->store);
+}
+
+static void
+imapx_conn_manager_set_property (GObject *object,
+                                 guint property_id,
+                                 const GValue *value,
+                                 GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_STORE:
+			imapx_conn_manager_set_store (
+				CAMEL_IMAPX_CONN_MANAGER (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+imapx_conn_manager_get_property (GObject *object,
+                                 guint property_id,
+                                 GValue *value,
+                                 GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_STORE:
+			g_value_set_object (
+				value,
+				camel_imapx_conn_manager_get_store (
+				CAMEL_IMAPX_CONN_MANAGER (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+imapx_conn_manager_dispose (GObject *object)
+{
+	CamelIMAPXConnManagerPrivate *priv;
+
+	priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (object);
+
+	imapx_prune_connections (CAMEL_IMAPX_CONN_MANAGER (object));
+
+	if (priv->store != NULL) {
+		g_object_remove_weak_pointer (
+			G_OBJECT (priv->store), &priv->store);
+		priv->store = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (camel_imapx_conn_manager_parent_class)->dispose (object);
+}
+
+static void
 imapx_conn_manager_finalize (GObject *object)
 {
-	CamelIMAPXConnManager *con_man = CAMEL_IMAPX_CONN_MANAGER (object);
+	CamelIMAPXConnManagerPrivate *priv;
 
-	imapx_prune_connections (con_man);
-	g_static_rec_mutex_free (&con_man->priv->con_man_lock);
-	g_object_unref (con_man->priv->store);
+	priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (object);
+
+	g_static_rec_mutex_free (&priv->con_man_lock);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imapx_conn_manager_parent_class)->finalize (object);
 }
 
 static void
@@ -89,14 +171,28 @@ camel_imapx_conn_manager_class_init (CamelIMAPXConnManagerClass *class)
 	g_type_class_add_private (class, sizeof (CamelIMAPXConnManagerPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = imapx_conn_manager_set_property;
+	object_class->get_property = imapx_conn_manager_get_property;
+	object_class->dispose = imapx_conn_manager_dispose;
 	object_class->finalize = imapx_conn_manager_finalize;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_STORE,
+		g_param_spec_object (
+			"store",
+			"Store",
+			"The CamelStore to which we belong",
+			CAMEL_TYPE_STORE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
 camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 {
-	con_man->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		con_man, CAMEL_TYPE_OBJECT, CamelIMAPXConnManagerPrivate);
+	con_man->priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (con_man);
 
 	/* default is 1 connection */
 	con_man->priv->n_connections = 1;
@@ -291,12 +387,18 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man,
 CamelIMAPXConnManager *
 camel_imapx_conn_manager_new (CamelStore *store)
 {
-	CamelIMAPXConnManager *con_man;
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
 
-	con_man = g_object_new (CAMEL_TYPE_IMAPX_CONN_MANAGER, NULL);
-	con_man->priv->store = g_object_ref (store);
+	return g_object_new (
+		CAMEL_TYPE_IMAPX_CONN_MANAGER, "store", store, NULL);
+}
 
-	return con_man;
+CamelStore *
+camel_imapx_conn_manager_get_store (CamelIMAPXConnManager *con_man)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), NULL);
+
+	return CAMEL_STORE (con_man->priv->store);
 }
 
 void
