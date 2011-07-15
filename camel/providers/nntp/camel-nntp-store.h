@@ -85,7 +85,6 @@ enum nntp_capabilities {
 
 struct _CamelNNTPStore {
 	CamelDiscoStore parent;
-
 	CamelNNTPStorePrivate *priv;
 
 	guint32 extensions;
@@ -110,15 +109,34 @@ struct _CamelNNTPStore {
 
 struct _CamelNNTPStoreClass {
 	CamelDiscoStoreClass parent_class;
-
 };
 
-GType camel_nntp_store_get_type (void);
-
-gint camel_nntp_raw_commandv (CamelNNTPStore *store, GCancellable *cancellable, GError **error, gchar **line, const gchar *fmt, va_list ap);
-gint camel_nntp_raw_command (CamelNNTPStore *store, GCancellable *cancellable, GError **error, gchar **line, const gchar *fmt, ...);
-gint camel_nntp_raw_command_auth (CamelNNTPStore *store, GCancellable *cancellable, GError **error, gchar **line, const gchar *fmt, ...);
-gint camel_nntp_command (CamelNNTPStore *store, GCancellable *cancellable, GError **error, struct _CamelNNTPFolder *folder, gchar **line, const gchar *fmt, ...);
+GType		camel_nntp_store_get_type	(void);
+gint		camel_nntp_raw_commandv		(CamelNNTPStore *store,
+						 GCancellable *cancellable,
+						 GError **error,
+						 gchar **line,
+						 const gchar *fmt,
+						 va_list ap);
+gint		camel_nntp_raw_command		(CamelNNTPStore *store,
+						 GCancellable *cancellable,
+						 GError **error,
+						 gchar **line,
+						 const gchar *fmt,
+						 ...);
+gint		camel_nntp_raw_command_auth	(CamelNNTPStore *store,
+						 GCancellable *cancellable,
+						 GError **error,
+						 gchar **line,
+						 const gchar *fmt,
+						 ...);
+gint		camel_nntp_command		(CamelNNTPStore *store,
+						 GCancellable *cancellable,
+						 GError **error,
+						 struct _CamelNNTPFolder *folder,
+						 gchar **line,
+						 const gchar *fmt,
+						 ...);
 
 G_END_DECLS
 

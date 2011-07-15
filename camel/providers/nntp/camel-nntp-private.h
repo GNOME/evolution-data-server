@@ -32,10 +32,6 @@
 
 G_BEGIN_DECLS
 
-struct _CamelNNTPStorePrivate {
-	gint dummy;
-};
-
 #define CAMEL_NNTP_STORE_LOCK(f, l) (e_mutex_lock(((CamelNNTPStore *)f)->priv->l))
 #define CAMEL_NNTP_STORE_UNLOCK(f, l) (e_mutex_unlock(((CamelNNTPStore *)f)->priv->l))
 

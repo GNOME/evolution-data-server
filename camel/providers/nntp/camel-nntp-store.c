@@ -45,6 +45,10 @@
 #include <ws2tcpip.h>
 #endif
 
+#define CAMEL_NNTP_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_NNTP_STORE, CamelNNTPStorePrivate))
+
 #define w(x)
 #define dd(x) (camel_debug("nntp")?(x):0)
 
@@ -52,6 +56,10 @@
 #define NNTPS_PORT 563
 
 #define DUMP_EXTENSIONS
+
+struct _CamelNNTPStorePrivate {
+	gint placeholder;
+};
 
 static GInitableIface *parent_initable_interface;
 
@@ -1462,12 +1470,11 @@ camel_nntp_store_init (CamelNNTPStore *nntp_store)
 {
 	CamelStore *store = CAMEL_STORE (nntp_store);
 
+	nntp_store->priv = CAMEL_NNTP_STORE_GET_PRIVATE (nntp_store);
+
 	store->flags = CAMEL_STORE_SUBSCRIPTIONS;
 
 	nntp_store->mem = (CamelStreamMem *) camel_stream_mem_new ();
-
-	nntp_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		nntp_store, CAMEL_TYPE_NNTP_STORE, CamelNNTPStorePrivate);
 }
 
 /* Enter owning lock */
