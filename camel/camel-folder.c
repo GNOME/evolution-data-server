@@ -57,7 +57,7 @@ struct _CamelFolderPrivate {
 	struct _CamelFolderChangeInfo *changed_frozen; /* queues changed events */
 	gboolean skip_folder_lock;
 
-	CamelStore *parent_store;
+	gpointer parent_store;  /* weak pointer */
 
 	gchar *full_name;
 	gchar *display_name;
@@ -433,7 +433,10 @@ folder_set_parent_store (CamelFolder *folder,
 	g_return_if_fail (CAMEL_IS_STORE (parent_store));
 	g_return_if_fail (folder->priv->parent_store == NULL);
 
-	folder->priv->parent_store = g_object_ref (parent_store);
+	folder->priv->parent_store = parent_store;
+
+	g_object_add_weak_pointer (
+		G_OBJECT (parent_store), &folder->priv->parent_store);
 }
 
 static void
@@ -514,7 +517,9 @@ folder_dispose (GObject *object)
 	folder = CAMEL_FOLDER (object);
 
 	if (folder->priv->parent_store != NULL) {
-		g_object_unref (folder->priv->parent_store);
+		g_object_remove_weak_pointer (
+			G_OBJECT (folder->priv->parent_store),
+			&folder->priv->parent_store);
 		folder->priv->parent_store = NULL;
 	}
 
@@ -1927,7 +1932,7 @@ camel_folder_get_parent_store (CamelFolder *folder)
 {
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
-	return folder->priv->parent_store;
+	return CAMEL_STORE (folder->priv->parent_store);
 }
 
 /**
