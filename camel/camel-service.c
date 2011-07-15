@@ -197,7 +197,7 @@ service_set_session (CamelService *service,
 	service->priv->session = session;
 
 	g_object_add_weak_pointer (
-		G_OBJECT (service), &service->priv->session);
+		G_OBJECT (session), &service->priv->session);
 }
 
 static void
