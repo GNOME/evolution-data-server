@@ -52,8 +52,9 @@
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelServicePrivate {
+	gpointer session;  /* weak pointer */
+
 	CamelProvider *provider;
-	CamelSession *session;
 	CamelURL *url;
 
 	gchar *user_data_dir;
@@ -193,7 +194,10 @@ service_set_session (CamelService *service,
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (service->priv->session == NULL);
 
-	service->priv->session = g_object_ref (session);
+	service->priv->session = session;
+
+	g_object_add_weak_pointer (
+		G_OBJECT (service), &service->priv->session);
 }
 
 static void
@@ -294,7 +298,8 @@ service_dispose (GObject *object)
 	priv = CAMEL_SERVICE_GET_PRIVATE (object);
 
 	if (priv->session != NULL) {
-		g_object_unref (priv->session);
+		g_object_remove_weak_pointer (
+			G_OBJECT (priv->session), &priv->session);
 		priv->session = NULL;
 	}
 
@@ -732,7 +737,7 @@ camel_service_get_session (CamelService *service)
 {
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
-	return service->priv->session;
+	return CAMEL_SESSION (service->priv->session);
 }
 
 /**
