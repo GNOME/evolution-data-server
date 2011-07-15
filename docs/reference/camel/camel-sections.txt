@@ -1939,6 +1939,7 @@ camel_session_add_service
 camel_session_get_service
 camel_session_get_service_by_url
 camel_session_list_services
+camel_session_remove_services
 camel_session_get_password
 camel_session_forget_password
 camel_session_alert_user

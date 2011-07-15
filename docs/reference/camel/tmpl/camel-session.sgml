@@ -149,6 +149,14 @@ CamelSession
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_session_remove_services ##### -->
+<para>
+
+</para>
+
+@session: 
+
+
 <!-- ##### FUNCTION camel_session_get_password ##### -->
 <para>
 

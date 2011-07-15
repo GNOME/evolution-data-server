@@ -698,6 +698,30 @@ camel_session_list_services (CamelSession *session)
 }
 
 /**
+ * camel_session_remove_services:
+ * @session: a #CamelSession
+ *
+ * Removes all #CamelService instances added by camel_session_add_service().
+ *
+ * This can be useful during application shutdown to ensure all #CamelService
+ * instances are freed properly, especially since #CamelSession instances are
+ * prone to reference cycles.
+ *
+ * Since: 3.2
+ **/
+void
+camel_session_remove_services (CamelSession *session)
+{
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+
+	camel_session_lock (session, CAMEL_SESSION_SESSION_LOCK);
+
+	g_hash_table_remove_all (session->priv->services);
+
+	camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
+}
+
+/**
  * camel_session_get_password:
  * @session: a #CamelSession
  * @service: the #CamelService this query is being made by

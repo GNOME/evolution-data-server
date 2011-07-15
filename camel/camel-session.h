@@ -169,6 +169,7 @@ CamelService *	camel_session_get_service_by_url
 						 CamelURL *url,
 						 CamelProviderType type);
 GList *		camel_session_list_services	(CamelSession *session);
+void		camel_session_remove_services	(CamelSession *session);
 gchar *		camel_session_get_password	(CamelSession *session,
 						 CamelService *service,
 						 const gchar *prompt,
