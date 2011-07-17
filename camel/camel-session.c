@@ -39,6 +39,7 @@
 
 #include "camel-debug.h"
 #include "camel-file-utils.h"
+#include "camel-junk-filter.h"
 #include "camel-marshal.h"
 #include "camel-session.h"
 #include "camel-store.h"

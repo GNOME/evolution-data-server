@@ -48,6 +48,7 @@
 #include "camel-debug.h"
 #include "camel-filter-search.h"
 #include "camel-iconv.h"
+#include "camel-junk-filter.h"
 #include "camel-mime-message.h"
 #include "camel-multipart.h"
 #include "camel-provider.h"

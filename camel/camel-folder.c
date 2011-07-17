@@ -34,6 +34,7 @@
 #include "camel-debug.h"
 #include "camel-filter-driver.h"
 #include "camel-folder.h"
+#include "camel-junk-filter.h"
 #include "camel-mempool.h"
 #include "camel-mime-message.h"
 #include "camel-operation.h"
