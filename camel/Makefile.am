@@ -57,7 +57,6 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-folder.c				\
 	camel-gpg-context.c			\
 	camel-http-stream.c			\
-	camel-junk-filter.c			\
 	camel-offline-folder.c			\
 	camel-offline-journal.c			\
 	camel-offline-store.c			\
@@ -104,7 +103,6 @@ libcamel_providerinclude_HEADERS =		\
 	camel-gpg-context.h			\
 	camel-http-stream.h			\
 	camel-html-parser.h			\
-	camel-junk-filter.h			\
 	camel-lock-helper.h			\
 	camel-movemail.h			\
 	camel-offline-folder.h			\
