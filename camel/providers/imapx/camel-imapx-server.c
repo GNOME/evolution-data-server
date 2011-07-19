@@ -2860,20 +2860,13 @@ imapx_connect_to_server (CamelIMAPXServer *is,
                          GCancellable *cancellable,
                          GError **error)
 {
+	CamelNetworkService *network_service;
+	CamelNetworkSecurityMethod method;
 	CamelStream * tcp_stream = NULL;
-	gchar *socks_host;
-	gint socks_port;
 	CamelSockOptData sockopt;
-	gint ret, ssl_mode = 0;
-
-#ifdef CAMEL_HAVE_SSL
-	const gchar *mode;
-#endif
 	guint len;
 	guchar *token;
 	gint tok;
-	const gchar *serv;
-	gint fallback_port;
 	CamelIMAPXCommand *ic;
 	GError *local_error = NULL;
 
@@ -2888,51 +2881,15 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 			goto connected;
 	}
 #endif
-	if (is->url->port) {
-		serv = g_alloca (16);
-		sprintf((gchar *) serv, "%d", is->url->port);
-		fallback_port = 0;
-	} else {
-		serv = "imap";
-		fallback_port = 143;
-	}
-#ifdef CAMEL_HAVE_SSL
-	mode = camel_url_get_param(is->url, "use_ssl");
-	if (mode && strcmp(mode, "never") != 0) {
-		if (!strcmp(mode, "when-possible")) {
-			tcp_stream = camel_tcp_stream_ssl_new_raw (is->session, is->url->host, STARTTLS_FLAGS);
-			ssl_mode = 2;
-		} else {
-			if (is->url->port == 0) {
-				serv = "imaps";
-				fallback_port = 993;
-			}
-			tcp_stream = camel_tcp_stream_ssl_new (is->session, is->url->host, SSL_PORT_FLAGS);
-		}
-	} else {
-		tcp_stream = camel_tcp_stream_raw_new ();
-	}
-#else
-	tcp_stream = camel_tcp_stream_raw_new ();
-#endif /* CAMEL_HAVE_SSL */
 
-	camel_session_get_socks_proxy (is->session, &socks_host, &socks_port);
+	network_service = CAMEL_NETWORK_SERVICE (is->store);
+	method = camel_network_service_get_security_method (network_service);
 
-	if (socks_host) {
-		camel_tcp_stream_set_socks_proxy ((CamelTcpStream *) tcp_stream, socks_host, socks_port);
-		g_free (socks_host);
-	}
+	tcp_stream = camel_network_service_connect_sync (
+		CAMEL_NETWORK_SERVICE (is->store), cancellable, error);
 
-	ret = camel_tcp_stream_connect (
-		CAMEL_TCP_STREAM (tcp_stream), is->url->host, serv,
-		fallback_port, cancellable, error);
-	if (ret == -1) {
-		g_prefix_error (
-			error, _("Could not connect to %s (port %s): "),
-			is->url->host, serv);
-		g_object_unref (tcp_stream);
+	if (tcp_stream == NULL)
 		return FALSE;
-	}
 
 	is->stream = (CamelIMAPXStream *) camel_imapx_stream_new (tcp_stream);
 	g_object_unref (tcp_stream);
@@ -2998,8 +2955,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	}
 
 #ifdef CAMEL_HAVE_SSL
-	if (ssl_mode == 2)
-	{
+	if (method == CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
 
 		if (!(is->cinfo->capa & IMAPX_CAPABILITY_STARTTLS)) {
 			g_set_error (

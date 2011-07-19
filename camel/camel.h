@@ -89,6 +89,7 @@
 #include <camel/camel-multipart-encrypted.h>
 #include <camel/camel-multipart-signed.h>
 #include <camel/camel-net-utils.h>
+#include <camel/camel-network-service.h>
 #include <camel/camel-nntp-address.h>
 #include <camel/camel-object.h>
 #include <camel/camel-object-bag.h>

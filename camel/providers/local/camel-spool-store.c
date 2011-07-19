@@ -59,9 +59,12 @@ static GInitableIface *parent_initable_interface;
 static void camel_spool_store_initable_init (GInitableIface *interface);
 
 G_DEFINE_TYPE_WITH_CODE (
-	CamelSpoolStore, camel_spool_store, CAMEL_TYPE_MBOX_STORE,
+	CamelSpoolStore,
+	camel_spool_store,
+	CAMEL_TYPE_MBOX_STORE,
 	G_IMPLEMENT_INTERFACE (
-		G_TYPE_INITABLE, camel_spool_store_initable_init))
+		G_TYPE_INITABLE,
+		camel_spool_store_initable_init))
 
 /* partially copied from mbox */
 static void

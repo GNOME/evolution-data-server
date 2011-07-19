@@ -88,45 +88,32 @@ static void		smtp_set_error		(CamelSmtpTransport *transport,
 						 GError **error);
 
 enum {
-	MODE_CLEAR,
-	MODE_SSL,
-	MODE_TLS
+	PROP_0,
+	PROP_DEFAULT_PORT,
+	PROP_SECURITY_METHOD,
+	PROP_SERVICE_NAME
 };
 
-#ifdef CAMEL_HAVE_SSL
-#define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
-#define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
-#endif
+/* Forward Declarations */
+static void camel_network_service_init (CamelNetworkServiceInterface *interface);
 
-static struct {
-	const gchar *value;
-	const gchar *serv;
-	gint fallback_port;
-	gint mode;
-} ssl_options[] = {
-	{ "",              "smtps", SMTPS_PORT, MODE_SSL  },  /* really old (1.x) */
-	{ "always",        "smtps", SMTPS_PORT, MODE_SSL  },
-	{ "when-possible", "smtp",  SMTP_PORT, MODE_TLS   },
-	{ "never",         "smtp",  SMTP_PORT, MODE_CLEAR },
-	{ NULL,            "smtp",  SMTP_PORT, MODE_CLEAR }
-};
-
-G_DEFINE_TYPE (CamelSmtpTransport, camel_smtp_transport, CAMEL_TYPE_TRANSPORT)
+G_DEFINE_TYPE_WITH_CODE (
+	CamelSmtpTransport,
+	camel_smtp_transport,
+	CAMEL_TYPE_TRANSPORT,
+	G_IMPLEMENT_INTERFACE (
+		CAMEL_TYPE_NETWORK_SERVICE,
+		camel_network_service_init))
 
 static gboolean
 connect_to_server (CamelService *service,
-                   const gchar *host,
-                   const gchar *serv,
-                   gint fallback_port,
-                   gint ssl_mode,
                    GCancellable *cancellable,
                    GError **error)
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
-	CamelSession *session;
+	CamelNetworkService *network_service;
+	CamelNetworkSecurityMethod method;
 	CamelURL *url;
-	gchar *socks_host;
-	gint socks_port;
 	CamelStream *tcp_stream;
 	gchar *respbuf = NULL;
 
@@ -139,43 +126,15 @@ connect_to_server (CamelService *service,
 	transport->authtypes = NULL;
 
 	url = camel_service_get_camel_url (service);
-	session = camel_service_get_session (service);
 
-	if (ssl_mode != MODE_CLEAR) {
-#ifdef CAMEL_HAVE_SSL
-		if (ssl_mode == MODE_TLS) {
-			tcp_stream = camel_tcp_stream_ssl_new_raw (session, url->host, STARTTLS_FLAGS);
-		} else {
-			tcp_stream = camel_tcp_stream_ssl_new (session, url->host, SSL_PORT_FLAGS);
-		}
-#else
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("Could not connect to %s: %s"),
-			url->host, _("SSL unavailable"));
+	network_service = CAMEL_NETWORK_SERVICE (service);
+	method = camel_network_service_get_security_method (network_service);
 
+	tcp_stream = camel_network_service_connect_sync (
+		CAMEL_NETWORK_SERVICE (service), cancellable, error);
+
+	if (tcp_stream == NULL)
 		return FALSE;
-#endif /* CAMEL_HAVE_SSL */
-	} else {
-		tcp_stream = camel_tcp_stream_raw_new ();
-	}
-
-	camel_session_get_socks_proxy (session, &socks_host, &socks_port);
-
-	if (socks_host) {
-		camel_tcp_stream_set_socks_proxy (
-			CAMEL_TCP_STREAM (tcp_stream),
-			socks_host, socks_port);
-		g_free (socks_host);
-	}
-
-	if (camel_tcp_stream_connect (
-		CAMEL_TCP_STREAM (tcp_stream), host, serv,
-		fallback_port, cancellable, error) == -1) {
-		g_object_unref (tcp_stream);
-		return FALSE;
-	}
 
 	transport->connected = TRUE;
 
@@ -228,10 +187,8 @@ connect_to_server (CamelService *service,
 	/* clear any EHLO/HELO exception and assume that any SMTP errors encountered were non-fatal */
 	g_clear_error (error);
 
-	if (ssl_mode != MODE_TLS) {
-		/* we're done */
-		return TRUE;
-	}
+	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT)
+		return TRUE;  /* we're done */
 
 #ifdef CAMEL_HAVE_SSL
 	if (!(transport->flags & CAMEL_SMTP_TRANSPORT_STARTTLS)) {
@@ -311,51 +268,89 @@ connect_to_server (CamelService *service,
 	return FALSE;
 }
 
-static gboolean
-connect_to_server_wrapper (CamelService *service,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	CamelURL *url;
-	const gchar *ssl_mode;
-	gint mode, i;
-	gchar *serv;
-	gint fallback_port;
-
-	url = camel_service_get_camel_url (service);
-
-	if ((ssl_mode = camel_url_get_param (url, "use_ssl"))) {
-		for (i = 0; ssl_options[i].value; i++)
-			if (!strcmp (ssl_options[i].value, ssl_mode))
-				break;
-		mode = ssl_options[i].mode;
-		serv = (gchar *) ssl_options[i].serv;
-		fallback_port = ssl_options[i].fallback_port;
-	} else {
-		mode = MODE_CLEAR;
-		serv = (gchar *) "smtp";
-		fallback_port = SMTP_PORT;
-	}
-
-	if (url->port) {
-		serv = g_alloca (16);
-		sprintf (serv, "%d", url->port);
-		fallback_port = 0;
-	}
-
-	return connect_to_server (
-		service, url->host, serv,
-		fallback_port, mode, cancellable, error);
-}
-
 static void
 authtypes_free (gpointer key, gpointer value, gpointer data)
 {
 	g_free (value);
 }
 
+static void
+smtp_transport_set_property (GObject *object,
+                             guint property_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SECURITY_METHOD:
+			camel_network_service_set_security_method (
+				CAMEL_NETWORK_SERVICE (object),
+				g_value_get_enum (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+smtp_transport_get_property (GObject *object,
+                             guint property_id,
+                             GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_DEFAULT_PORT:
+			g_value_set_uint (
+				value,
+				camel_network_service_get_default_port (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+
+		case PROP_SECURITY_METHOD:
+			g_value_set_enum (
+				value,
+				camel_network_service_get_security_method (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+
+		case PROP_SERVICE_NAME:
+			g_value_set_string (
+				value,
+				camel_network_service_get_service_name (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+smtp_transport_constructed (GObject *object)
+{
+	CamelURL *url;
+	const gchar *use_ssl;
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_smtp_transport_parent_class)->constructed (object);
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (object));
+	use_ssl = camel_url_get_param (url, "use_ssl");
+
+	if (g_strcmp0 (use_ssl, "never") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_NONE);
+	else if (g_strcmp0 (use_ssl, "always") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT);
+	else if (g_strcmp0 (use_ssl, "when-possible") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
+}
+
 static gchar *
-smtp_get_name (CamelService *service, gboolean brief)
+smtp_transport_get_name (CamelService *service, gboolean brief)
 {
 	CamelURL *url;
 
@@ -372,9 +367,9 @@ smtp_get_name (CamelService *service, gboolean brief)
 }
 
 static gboolean
-smtp_connect_sync (CamelService *service,
-                   GCancellable *cancellable,
-                   GError **error)
+smtp_transport_connect_sync (CamelService *service,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
 	CamelSasl *sasl = NULL;
@@ -399,10 +394,10 @@ smtp_connect_sync (CamelService *service,
 		if (!truth)
 			return FALSE;
 
-		return connect_to_server_wrapper (service, cancellable, error);
+		return connect_to_server (service, cancellable, error);
 	}
 
-	if (!connect_to_server_wrapper (service, cancellable, error))
+	if (!connect_to_server (service, cancellable, error))
 		return FALSE;
 
 	/* check to see if AUTH is required, if so...then AUTH ourselves */
@@ -536,10 +531,10 @@ smtp_connect_sync (CamelService *service,
 }
 
 static gboolean
-smtp_disconnect_sync (CamelService *service,
-                      gboolean clean,
-                      GCancellable *cancellable,
-                      GError **error)
+smtp_transport_disconnect_sync (CamelService *service,
+                                gboolean clean,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	CamelServiceClass *service_class;
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
@@ -583,20 +578,21 @@ smtp_disconnect_sync (CamelService *service,
 }
 
 static GList *
-smtp_query_auth_types_sync (CamelService *service,
-                            GCancellable *cancellable,
-                            GError **error)
+smtp_transport_query_auth_types_sync (CamelService *service,
+                                      GCancellable *cancellable,
+                                      GError **error)
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
 	CamelServiceAuthType *authtype;
 	CamelProvider *provider;
 	GList *types, *t, *next;
 
-	if (!connect_to_server_wrapper (service, cancellable, error))
+	if (!connect_to_server (service, cancellable, error))
 		return NULL;
 
 	if (!transport->authtypes) {
-		smtp_disconnect_sync (service, TRUE, cancellable, NULL);
+		smtp_transport_disconnect_sync (
+			service, TRUE, cancellable, NULL);
 		return NULL;
 	}
 
@@ -613,18 +609,18 @@ smtp_query_auth_types_sync (CamelService *service,
 		}
 	}
 
-	smtp_disconnect_sync (service, TRUE, cancellable, NULL);
+	smtp_transport_disconnect_sync (service, TRUE, cancellable, NULL);
 
 	return types;
 }
 
 static gboolean
-smtp_send_to_sync (CamelTransport *transport,
-                   CamelMimeMessage *message,
-                   CamelAddress *from,
-                   CamelAddress *recipients,
-                   GCancellable *cancellable,
-                   GError **error)
+smtp_transport_send_to_sync (CamelTransport *transport,
+                             CamelMimeMessage *message,
+                             CamelAddress *from,
+                             CamelAddress *recipients,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	CamelSmtpTransport *smtp_transport = CAMEL_SMTP_TRANSPORT (transport);
 	CamelInternetAddress *cia;
@@ -713,20 +709,93 @@ smtp_send_to_sync (CamelTransport *transport,
 	return TRUE;
 }
 
+static const gchar *
+smtp_transport_get_service_name (CamelNetworkService *service)
+{
+	CamelNetworkSecurityMethod method;
+	const gchar *service_name;
+
+	method = camel_network_service_get_security_method (service);
+
+	switch (method) {
+		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
+			service_name = "smtps";
+			break;
+
+		default:
+			service_name = "smtp";
+			break;
+	}
+
+	return service_name;
+}
+
+static guint16
+smtp_transport_get_default_port (CamelNetworkService *service)
+{
+	CamelNetworkSecurityMethod method;
+	guint16 default_port;
+
+	method = camel_network_service_get_security_method (service);
+
+	switch (method) {
+		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
+			default_port = SMTPS_PORT;
+			break;
+
+		default:
+			default_port = SMTP_PORT;
+			break;
+	}
+
+	return default_port;
+}
+
 static void
 camel_smtp_transport_class_init (CamelSmtpTransportClass *class)
 {
-	CamelTransportClass *transport_class;
+	GObjectClass *object_class;
 	CamelServiceClass *service_class;
+	CamelTransportClass *transport_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = smtp_transport_set_property;
+	object_class->get_property = smtp_transport_get_property;
+	object_class->constructed = smtp_transport_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
-	service_class->get_name = smtp_get_name;
-	service_class->connect_sync = smtp_connect_sync;
-	service_class->disconnect_sync = smtp_disconnect_sync;
-	service_class->query_auth_types_sync = smtp_query_auth_types_sync;
+	service_class->get_name = smtp_transport_get_name;
+	service_class->connect_sync = smtp_transport_connect_sync;
+	service_class->disconnect_sync = smtp_transport_disconnect_sync;
+	service_class->query_auth_types_sync = smtp_transport_query_auth_types_sync;
 
 	transport_class = CAMEL_TRANSPORT_CLASS (class);
-	transport_class->send_to_sync = smtp_send_to_sync;
+	transport_class->send_to_sync = smtp_transport_send_to_sync;
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_DEFAULT_PORT,
+		"default-port");
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_SECURITY_METHOD,
+		"security-method");
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_SERVICE_NAME,
+		"service-name");
+}
+
+static void
+camel_network_service_init (CamelNetworkServiceInterface *interface)
+{
+	interface->get_service_name = smtp_transport_get_service_name;
+	interface->get_default_port = smtp_transport_get_default_port;
 }
 
 static void

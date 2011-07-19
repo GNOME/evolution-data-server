@@ -88,6 +88,7 @@ camel/camel-movemail.c
 camel/camel-multipart.c
 camel/camel-multipart-encrypted.c
 camel/camel-multipart-signed.c
+camel/camel-network-service.c
 camel/camel-net-utils.c
 camel/camel-object.c
 camel/camel-offline-folder.c

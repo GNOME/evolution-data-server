@@ -90,6 +90,7 @@
       <xi:include href="xml/camel-session.xml"/>
       <xi:include href="xml/camel-provider.xml"/>
       <xi:include href="xml/camel-service.xml"/>
+      <xi:include href="xml/camel-network-service.xml"/>
       <xi:include href="xml/camel-store.xml"/>
       <xi:include href="xml/camel-store-summary.xml"/>
       <xi:include href="xml/camel-offline-store.xml"/>

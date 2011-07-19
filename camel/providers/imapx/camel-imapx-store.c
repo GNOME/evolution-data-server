@@ -47,6 +47,7 @@
 
 /* Specified in RFC 2060 section 2.1 */
 #define IMAP_PORT 143
+#define IMAPS_PORT 993
 
 #define FINFO_REFRESH_INTERVAL 60
 
@@ -54,11 +55,25 @@ static GInitableIface *parent_initable_interface;
 
 /* Forward Declarations */
 static void camel_imapx_store_initable_init (GInitableIface *interface);
+static void camel_network_service_init (CamelNetworkServiceInterface *interface);
 
 G_DEFINE_TYPE_WITH_CODE (
-	CamelIMAPXStore, camel_imapx_store, CAMEL_TYPE_OFFLINE_STORE,
+	CamelIMAPXStore,
+	camel_imapx_store,
+	CAMEL_TYPE_OFFLINE_STORE,
 	G_IMPLEMENT_INTERFACE (
-		G_TYPE_INITABLE, camel_imapx_store_initable_init))
+		G_TYPE_INITABLE,
+		camel_imapx_store_initable_init)
+	G_IMPLEMENT_INTERFACE (
+		CAMEL_TYPE_NETWORK_SERVICE,
+		camel_network_service_init))
+
+enum {
+	PROP_0,
+	PROP_DEFAULT_PORT,
+	PROP_SECURITY_METHOD,
+	PROP_SERVICE_NAME
+};
 
 static guint
 imapx_name_hash (gconstpointer key)
@@ -126,6 +141,55 @@ imapx_parse_receiving_options (CamelIMAPXStore *istore, CamelURL *url)
 }
 
 static void
+imapx_store_set_property (GObject *object,
+                          guint property_id,
+                          const GValue *value,
+                          GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SECURITY_METHOD:
+			camel_network_service_set_security_method (
+				CAMEL_NETWORK_SERVICE (object),
+				g_value_get_enum (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+imapx_store_get_property (GObject *object,
+                          guint property_id,
+                          GValue *value,
+                          GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_DEFAULT_PORT:
+			g_value_set_uint (
+				value,
+				camel_network_service_get_default_port (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+
+		case PROP_SECURITY_METHOD:
+			g_value_set_enum (
+				value,
+				camel_network_service_get_security_method (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+
+		case PROP_SERVICE_NAME:
+			g_value_set_string (
+				value,
+				camel_network_service_get_service_name (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 imapx_store_finalize (GObject *object)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (object);
@@ -148,6 +212,32 @@ imapx_store_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->finalize (object);
+}
+
+static void
+imapx_store_constructed (GObject *object)
+{
+	CamelURL *url;
+	const gchar *use_ssl;
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_imapx_store_parent_class)->constructed (object);
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (object));
+	use_ssl = camel_url_get_param (url, "use_ssl");
+
+	if (g_strcmp0 (use_ssl, "never") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_NONE);
+	else if (g_strcmp0 (use_ssl, "always") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT);
+	else if (g_strcmp0 (use_ssl, "when-possible") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
 }
 
 static gchar *
@@ -1533,6 +1623,48 @@ imapx_store_initable_init (GInitable *initable,
 	return TRUE;
 }
 
+static const gchar *
+imapx_store_get_service_name (CamelNetworkService *service)
+{
+	CamelNetworkSecurityMethod method;
+	const gchar *service_name;
+
+	method = camel_network_service_get_security_method (service);
+
+	switch (method) {
+		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
+			service_name = "imaps";
+			break;
+
+		default:
+			service_name = "imap";
+			break;
+	}
+
+	return service_name;
+}
+
+static guint16
+imapx_store_get_default_port (CamelNetworkService *service)
+{
+	CamelNetworkSecurityMethod method;
+	guint16 default_port;
+
+	method = camel_network_service_get_security_method (service);
+
+	switch (method) {
+		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
+			default_port = IMAPS_PORT;
+			break;
+
+		default:
+			default_port = IMAP_PORT;
+			break;
+	}
+
+	return default_port;
+}
+
 static void
 camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 {
@@ -1541,7 +1673,10 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	CamelStoreClass *store_class;
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = imapx_store_set_property;
+	object_class->get_property = imapx_store_get_property;
 	object_class->finalize = imapx_store_finalize;
+	object_class->constructed = imapx_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->get_name = imapx_get_name;
@@ -1565,6 +1700,24 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	store_class->subscribe_folder_sync = imapx_store_subscribe_folder_sync;
 	store_class->unsubscribe_folder_sync = imapx_store_unsubscribe_folder_sync;
 	store_class->noop_sync = imapx_store_noop_sync;
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_DEFAULT_PORT,
+		"default-port");
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_SECURITY_METHOD,
+		"security-method");
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_SERVICE_NAME,
+		"service-name");
 }
 
 static void
@@ -1573,6 +1726,13 @@ camel_imapx_store_initable_init (GInitableIface *interface)
 	parent_initable_interface = g_type_interface_peek_parent (interface);
 
 	interface->init = imapx_store_initable_init;
+}
+
+static void
+camel_network_service_init (CamelNetworkServiceInterface *interface)
+{
+	interface->get_service_name = imapx_store_get_service_name;
+	interface->get_default_port = imapx_store_get_default_port;
 }
 
 static void

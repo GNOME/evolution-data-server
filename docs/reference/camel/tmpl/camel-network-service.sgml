@@ -1,0 +1,84 @@
+<!-- ##### SECTION Title ##### -->
+CamelNetworkService
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT CamelNetworkService ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_network_service_get_default_port ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_network_service_get_service_name ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### ENUM CamelNetworkSecurityMethod ##### -->
+<para>
+
+</para>
+
+@CAMEL_NETWORK_SECURITY_METHOD_NONE: 
+@CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT: 
+@CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT: 
+
+<!-- ##### FUNCTION camel_network_service_get_security_method ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_network_service_set_security_method ##### -->
+<para>
+
+</para>
+
+@service: 
+@method: 
+
+
+<!-- ##### FUNCTION camel_network_service_connect_sync ##### -->
+<para>
+
+</para>
+
+@service: 
+@cancellable: 
+@error: 
+@Returns: 
+
+

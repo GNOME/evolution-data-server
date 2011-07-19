@@ -134,6 +134,26 @@ typedef enum {
 	CAMEL_MIME_FILTER_YENC_DIRECTION_DECODE
 } CamelMimeFilterYencDirection;
 
+/**
+ * CamelNetworkSecurityMethod:
+ * @CAMEL_NETWORK_SECURITY_METHOD_NONE:
+ *   Use an unencrypted network connection.
+ * @CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
+ *   Use SSL by connecting to an alternate port number.
+ * @CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT:
+ *   Use SSL or TLS by connecting to the standard port and invoking
+ *   STARTTLS before authenticating.  This is the recommended method.
+ *
+ * Methods for establishing an encrypted (or unencrypted) network connection.
+ *
+ * Since: 3.2
+ **/
+typedef enum {
+	CAMEL_NETWORK_SECURITY_METHOD_NONE,
+	CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT,
+	CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT
+} CamelNetworkSecurityMethod;
+
 typedef enum {
 	CAMEL_PROVIDER_CONF_END,
 	CAMEL_PROVIDER_CONF_SECTION_START,
@@ -146,7 +166,8 @@ typedef enum {
 	CAMEL_PROVIDER_CONF_OPTIONS
 } CamelProviderConfType;
 
-/* CamelProviderFlags;
+/**
+ * CamelProviderFlags;
  * @CAMEL_PROVIDER_IS_REMOTE:
  *   Provider works with remote data.
  * @CAMEL_PROVIDER_IS_LOCAL:
@@ -167,7 +188,7 @@ typedef enum {
  *   Provider may use a real trash folder instead of a virtual folder.
  * @CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER:
  *   Provider may use a real junk folder instead of a virtual folder.
- */
+ **/
 typedef enum { /*< flags >*/
 	CAMEL_PROVIDER_IS_REMOTE               = 1 << 0,
 	CAMEL_PROVIDER_IS_LOCAL                = 1 << 1,

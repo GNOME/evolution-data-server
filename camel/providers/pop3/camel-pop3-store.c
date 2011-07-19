@@ -52,33 +52,25 @@
 #define POP3_ERROR_SIZE_LIMIT 60
 
 enum {
-	MODE_CLEAR,
-	MODE_SSL,
-	MODE_TLS
-};
-
-#ifdef CAMEL_HAVE_SSL
-#define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
-#define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
-#endif
-
-static struct {
-	const gchar *value;
-	const gchar *serv;
-	gint fallback_port;
-	gint mode;
-} ssl_options[] = {
-	{ "",              "pop3s", POP3S_PORT, MODE_SSL   },  /* really old (1.x) */
-	{ "always",        "pop3s", POP3S_PORT, MODE_SSL   },
-	{ "when-possible", "pop3",  POP3_PORT,  MODE_TLS   },
-	{ "never",         "pop3",  POP3_PORT,  MODE_CLEAR },
-	{ NULL,            "pop3",  POP3_PORT,  MODE_CLEAR },
+	PROP_0,
+	PROP_DEFAULT_PORT,
+	PROP_SECURITY_METHOD,
+	PROP_SERVICE_NAME
 };
 
 extern CamelServiceAuthType camel_pop3_password_authtype;
 extern CamelServiceAuthType camel_pop3_apop_authtype;
 
-G_DEFINE_TYPE (CamelPOP3Store, camel_pop3_store, CAMEL_TYPE_STORE)
+/* Forward Declarations */
+static void camel_network_service_init (CamelNetworkServiceInterface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	CamelPOP3Store,
+	camel_pop3_store,
+	CAMEL_TYPE_STORE,
+	G_IMPLEMENT_INTERFACE (
+		CAMEL_TYPE_NETWORK_SERVICE,
+		camel_network_service_init))
 
 /* returns error message with ': ' as prefix */
 static gchar *
@@ -102,18 +94,13 @@ get_valid_utf8_error (const gchar *text)
 
 static gboolean
 connect_to_server (CamelService *service,
-                   const gchar *host,
-                   const gchar *serv,
-                   gint fallback_port,
-                   gint ssl_mode,
                    GCancellable *cancellable,
                    GError **error)
 {
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
-	CamelSession *session;
+	CamelNetworkService *network_service;
+	CamelNetworkSecurityMethod method;
 	CamelURL *url;
-	gchar *socks_host;
-	gint socks_port;
 	CamelStream *tcp_stream;
 	CamelPOP3Command *pc;
 	guint32 flags = 0;
@@ -122,42 +109,15 @@ connect_to_server (CamelService *service,
 	const gchar *param;
 
 	url = camel_service_get_camel_url (service);
-	session = camel_service_get_session (service);
 
-	if (ssl_mode != MODE_CLEAR) {
-#ifdef CAMEL_HAVE_SSL
-		if (ssl_mode == MODE_TLS) {
-			tcp_stream = camel_tcp_stream_ssl_new_raw (session, url->host, STARTTLS_FLAGS);
-		} else {
-			tcp_stream = camel_tcp_stream_ssl_new (session, url->host, SSL_PORT_FLAGS);
-		}
-#else
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("Could not connect to %s: %s"),
-			url->host, _("SSL unavailable"));
+	tcp_stream = camel_network_service_connect_sync (
+		CAMEL_NETWORK_SERVICE (service), cancellable, error);
 
+	if (tcp_stream == NULL)
 		return FALSE;
-#endif /* CAMEL_HAVE_SSL */
-	} else
-		tcp_stream = camel_tcp_stream_raw_new ();
 
-	camel_session_get_socks_proxy (session, &socks_host, &socks_port);
-
-	if (socks_host) {
-		camel_tcp_stream_set_socks_proxy (
-			CAMEL_TCP_STREAM (tcp_stream),
-			socks_host, socks_port);
-		g_free (socks_host);
-	}
-
-	if (camel_tcp_stream_connect (
-		CAMEL_TCP_STREAM (tcp_stream), host, serv,
-		fallback_port, cancellable, error) == -1) {
-		g_object_unref (tcp_stream);
-		return FALSE;
-	}
+	network_service = CAMEL_NETWORK_SERVICE (service);
+	method = camel_network_service_get_security_method (network_service);
 
 	/* parent class connect initialization */
 	if (CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class)->
@@ -186,7 +146,7 @@ connect_to_server (CamelService *service,
 		return FALSE;
 	}
 
-	if (ssl_mode != MODE_TLS) {
+	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
 		g_object_unref (tcp_stream);
 		return TRUE;
 	}
@@ -264,43 +224,6 @@ connect_to_server (CamelService *service,
 	store->engine = NULL;
 
 	return FALSE;
-}
-
-static gboolean
-connect_to_server_wrapper (CamelService *service,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	CamelURL *url;
-	const gchar *ssl_mode;
-	gint mode, i;
-	gchar *serv;
-	gint fallback_port;
-
-	url = camel_service_get_camel_url (service);
-
-	if ((ssl_mode = camel_url_get_param (url, "use_ssl"))) {
-		for (i = 0; ssl_options[i].value; i++)
-			if (!strcmp (ssl_options[i].value, ssl_mode))
-				break;
-		mode = ssl_options[i].mode;
-		serv = (gchar *) ssl_options[i].serv;
-		fallback_port = ssl_options[i].fallback_port;
-	} else {
-		mode = MODE_CLEAR;
-		serv = (gchar *) "pop3";
-		fallback_port = POP3S_PORT;
-	}
-
-	if (url->port) {
-		serv = g_alloca (16);
-		sprintf (serv, "%d", url->port);
-		fallback_port = 0;
-	}
-
-	return connect_to_server (
-		service, url->host, serv,
-		fallback_port, mode, cancellable, error);
 }
 
 static gint
@@ -549,6 +472,55 @@ pop3_try_authenticate (CamelService *service,
 }
 
 static void
+pop3_store_set_property (GObject *object,
+                         guint property_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SECURITY_METHOD:
+			camel_network_service_set_security_method (
+				CAMEL_NETWORK_SERVICE (object),
+				g_value_get_enum (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+pop3_store_get_property (GObject *object,
+                         guint property_id,
+                         GValue *value,
+                         GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_DEFAULT_PORT:
+			g_value_set_uint (
+				value,
+				camel_network_service_get_default_port (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+
+		case PROP_SECURITY_METHOD:
+			g_value_set_enum (
+				value,
+				camel_network_service_get_security_method (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+
+		case PROP_SERVICE_NAME:
+			g_value_set_string (
+				value,
+				camel_network_service_get_service_name (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 pop3_store_finalize (GObject *object)
 {
 	CamelPOP3Store *pop3_store = CAMEL_POP3_STORE (object);
@@ -565,6 +537,32 @@ pop3_store_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_pop3_store_parent_class)->finalize (object);
+}
+
+static void
+pop3_store_constructed (GObject *object)
+{
+	CamelURL *url;
+	const gchar *use_ssl;
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_pop3_store_parent_class)->constructed (object);
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (object));
+	use_ssl = camel_url_get_param (url, "use_ssl");
+
+	if (g_strcmp0 (use_ssl, "never") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_NONE);
+	else if (g_strcmp0 (use_ssl, "always") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT);
+	else if (g_strcmp0 (use_ssl, "when-possible") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
 }
 
 static gchar *
@@ -609,7 +607,7 @@ pop3_store_connect_sync (CamelService *service,
 		}
 	}
 
-	if (!connect_to_server_wrapper (service, cancellable, error))
+	if (!connect_to_server (service, cancellable, error))
 		return FALSE;
 
 	while (1) {
@@ -704,7 +702,7 @@ pop3_store_query_auth_types_sync (CamelService *service,
 
 	url = camel_service_get_camel_url (service);
 
-	if (connect_to_server_wrapper (service, cancellable, NULL)) {
+	if (connect_to_server (service, cancellable, NULL)) {
 		types = g_list_concat (types, g_list_copy (store->engine->auth));
 		pop3_store_disconnect_sync (service, TRUE, cancellable, NULL);
 	} else {
@@ -769,6 +767,48 @@ pop3_store_get_trash_folder_sync (CamelStore *store,
 	return NULL;
 }
 
+static const gchar *
+pop3_store_get_service_name (CamelNetworkService *service)
+{
+	CamelNetworkSecurityMethod method;
+	const gchar *service_name;
+
+	method = camel_network_service_get_security_method (service);
+
+	switch (method) {
+		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
+			service_name = "pop3s";
+			break;
+
+		default:
+			service_name = "pop3";
+			break;
+	}
+
+	return service_name;
+}
+
+static guint16
+pop3_store_get_default_port (CamelNetworkService *service)
+{
+	CamelNetworkSecurityMethod method;
+	guint16 default_port;
+
+	method = camel_network_service_get_security_method (service);
+
+	switch (method) {
+		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
+			default_port = POP3S_PORT;
+			break;
+
+		default:
+			default_port = POP3_PORT;
+			break;
+	}
+
+	return default_port;
+}
+
 static void
 camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 {
@@ -777,7 +817,10 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 	CamelStoreClass *store_class;
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = pop3_store_set_property;
+	object_class->get_property = pop3_store_get_property;
 	object_class->finalize = pop3_store_finalize;
+	object_class->constructed = pop3_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->get_name = pop3_store_get_name;
@@ -790,6 +833,31 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 	store_class->get_folder_sync = pop3_store_get_folder_sync;
 	store_class->get_folder_info_sync = pop3_store_get_folder_info_sync;
 	store_class->get_trash_folder_sync = pop3_store_get_trash_folder_sync;
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_DEFAULT_PORT,
+		"default-port");
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_SECURITY_METHOD,
+		"security-method");
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_SERVICE_NAME,
+		"service-name");
+}
+
+static void
+camel_network_service_init (CamelNetworkServiceInterface *interface)
+{
+	interface->get_service_name = pop3_store_get_service_name;
+	interface->get_default_port = pop3_store_get_default_port;
 }
 
 static void

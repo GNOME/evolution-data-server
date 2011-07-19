@@ -1474,6 +1474,27 @@ camel_multipart_get_type
 </SECTION>
 
 <SECTION>
+<FILE>camel-network-service</FILE>
+<TITLE>CamelNetworkService</TITLE>
+CamelNetworkService
+camel_network_service_get_default_port
+camel_network_service_get_service_name
+CamelNetworkSecurityMethod
+camel_network_service_get_security_method
+camel_network_service_set_security_method
+camel_network_service_connect_sync
+<SUBSECTION Standard>
+CAMEL_NETWORK_SERVICE
+CAMEL_IS_NETWORK_SERVICE
+CAMEL_TYPE_NETWORK_SERVICE
+CAMEL_NETWORK_SERVICE_INTERFACE
+CAMEL_IS_NETWORK_SERVICE_INTERFACE
+CAMEL_NETWORK_SERVICE_GET_INTERFACE
+CamelNetworkServiceInterface
+camel_network_service_get_type
+</SECTION>
+
+<SECTION>
 <FILE>camel-nntp-address</FILE>
 <TITLE>CamelNNTPAddress</TITLE>
 CamelNNTPAddress

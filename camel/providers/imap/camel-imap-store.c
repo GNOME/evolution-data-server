@@ -92,30 +92,6 @@ static CamelFolderInfo * imap_store_get_folder_info_sync (CamelStore *store, con
 static CamelFolder * get_folder_offline (CamelStore *store, const gchar *folder_name, guint32 flags, GError **error);
 static CamelFolderInfo * get_folder_info_offline (CamelStore *store, const gchar *top, guint32 flags, GError **error);
 
-enum {
-	MODE_CLEAR,
-	MODE_SSL,
-	MODE_TLS
-};
-
-#ifdef HAVE_SSL
-#define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
-#define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
-#endif
-
-static struct {
-	const gchar *value;
-	const gchar *serv;
-	gint fallback_port;
-	gint mode;
-} ssl_options[] = {
-	{ "",              "imaps", IMAPS_PORT, MODE_SSL   },  /* really old (1.x) */
-	{ "always",        "imaps", IMAPS_PORT, MODE_SSL   },
-	{ "when-possible", "imap",  IMAP_PORT,  MODE_TLS   },
-	{ "never",         "imap",  IMAP_PORT,  MODE_CLEAR },
-	{ NULL,            "imap",  IMAP_PORT,  MODE_CLEAR },
-};
-
 static struct {
 	const gchar *name;
 	guint32 flag;
@@ -134,17 +110,31 @@ static struct {
 	{ NULL, 0 }
 };
 
+enum {
+	PROP_0,
+	PROP_DEFAULT_PORT,
+	PROP_SECURITY_METHOD,
+	PROP_SERVICE_NAME
+};
+
 extern CamelServiceAuthType camel_imap_password_authtype;
 
 static GInitableIface *parent_initable_interface;
 
 /* Forward Declarations */
 static void camel_imap_store_initable_init (GInitableIface *interface);
+static void camel_network_service_init (CamelNetworkServiceInterface *interface);
 
 G_DEFINE_TYPE_WITH_CODE (
-	CamelImapStore, camel_imap_store, CAMEL_TYPE_OFFLINE_STORE,
+	CamelImapStore,
+	camel_imap_store,
+	CAMEL_TYPE_OFFLINE_STORE,
 	G_IMPLEMENT_INTERFACE (
-		G_TYPE_INITABLE, camel_imap_store_initable_init))
+		G_TYPE_INITABLE,
+		camel_imap_store_initable_init)
+	G_IMPLEMENT_INTERFACE (
+		CAMEL_TYPE_NETWORK_SERVICE,
+		camel_network_service_init))
 
 static void
 parse_capability (CamelImapStore *store, gchar *capa)
@@ -213,70 +203,28 @@ imap_get_capability (CamelService *service,
 	return TRUE;
 }
 
-#ifdef CAMEL_HAVE_SSL
-#define SSL_PORT_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 | CAMEL_TCP_STREAM_SSL_ENABLE_SSL3)
-#define STARTTLS_FLAGS (CAMEL_TCP_STREAM_SSL_ENABLE_TLS)
-#endif
-
 static gboolean
 connect_to_server (CamelService *service,
-                   const gchar *host,
-                   const gchar *serv,
-                   gint fallback_port,
-                   gint ssl_mode,
                    GCancellable *cancellable,
                    GError **error)
 {
 	CamelImapStore *store = (CamelImapStore *) service;
-	CamelSession *session;
 	CamelURL *url;
-	gchar *socks_host;
-	gint socks_port;
 	CamelImapResponse *response;
 	CamelStream *tcp_stream;
 	CamelSockOptData sockopt;
+	CamelNetworkSecurityMethod method;
 	gboolean force_imap4 = FALSE;
 	gboolean clean_quit = TRUE;
 	gchar *buf;
 
+	tcp_stream = camel_network_service_connect_sync (
+		CAMEL_NETWORK_SERVICE (service), cancellable, error);
+
+	if (tcp_stream == NULL)
+		return FALSE;
+
 	url = camel_service_get_camel_url (service);
-	session = camel_service_get_session (service);
-
-	if (ssl_mode != MODE_CLEAR) {
-#ifdef CAMEL_HAVE_SSL
-		if (ssl_mode == MODE_TLS)
-			tcp_stream = camel_tcp_stream_ssl_new_raw (session, url->host, STARTTLS_FLAGS);
-		else
-			tcp_stream = camel_tcp_stream_ssl_new (session, url->host, SSL_PORT_FLAGS);
-#else
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("Could not connect to %s: %s"),
-			url->host, _("SSL unavailable"));
-
-		return FALSE;
-
-#endif /* CAMEL_HAVE_SSL */
-	} else
-		tcp_stream = camel_tcp_stream_raw_new ();
-
-	camel_session_get_socks_proxy (session, &socks_host, &socks_port);
-
-	if (socks_host) {
-		camel_tcp_stream_set_socks_proxy ((CamelTcpStream *) tcp_stream, socks_host, socks_port);
-		g_free (socks_host);
-	}
-
-	if (camel_tcp_stream_connect (
-		CAMEL_TCP_STREAM (tcp_stream), host, serv,
-		fallback_port, cancellable, error) == -1) {
-		g_prefix_error (
-			error, _("Could not connect to %s: "),
-			url->host);
-		g_object_unref (tcp_stream);
-		return FALSE;
-	}
 
 	store->ostream = tcp_stream;
 	store->istream = camel_stream_buffer_new (tcp_stream, CAMEL_STREAM_BUFFER_READ);
@@ -366,10 +314,11 @@ connect_to_server (CamelService *service,
 		store->server_level = IMAP_LEVEL_IMAP4;
 	}
 
-	if (ssl_mode != MODE_TLS) {
-		/* we're done */
-		return TRUE;
-	}
+	method = camel_network_service_get_security_method (
+		CAMEL_NETWORK_SERVICE (service));
+
+	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT)
+		return TRUE;  /* we're done */
 
 #ifdef CAMEL_HAVE_SSL
 	/* as soon as we send a STARTTLS command, all hope is lost of a clean QUIT if problems arise */
@@ -619,10 +568,6 @@ connect_to_server_wrapper (CamelService *service,
                            GError **error)
 {
 	CamelURL *url;
-	const gchar *ssl_mode;
-	gint mode, i;
-	const gchar *serv;
-	gint fallback_port;
 
 #ifndef G_OS_WIN32
 	const gchar *command;
@@ -636,28 +581,7 @@ connect_to_server_wrapper (CamelService *service,
 		return connect_to_server_process (service, command, cancellable, error);
 #endif
 
-	if ((ssl_mode = camel_url_get_param (url, "use_ssl"))) {
-		for (i = 0; ssl_options[i].value; i++)
-			if (!strcmp (ssl_options[i].value, ssl_mode))
-				break;
-		mode = ssl_options[i].mode;
-		serv = (gchar *) ssl_options[i].serv;
-		fallback_port = ssl_options[i].fallback_port;
-	} else {
-		mode = MODE_CLEAR;
-		serv = (gchar *) "imap";
-		fallback_port = IMAP_PORT;
-	}
-
-	if (url->port) {
-		serv = g_alloca (16);
-		sprintf ((gchar *)serv, "%d", url->port);
-		fallback_port = 0;
-	}
-
-	return connect_to_server (
-		service, url->host, serv,
-		fallback_port, mode, cancellable, error);
+	return connect_to_server (service, cancellable, error);
 }
 
 static gboolean
@@ -882,6 +806,55 @@ free_key (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
+imap_store_set_property (GObject *object,
+                         guint property_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SECURITY_METHOD:
+			camel_network_service_set_security_method (
+				CAMEL_NETWORK_SERVICE (object),
+				g_value_get_enum (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+imap_store_get_property (GObject *object,
+                         guint property_id,
+                         GValue *value,
+                         GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_DEFAULT_PORT:
+			g_value_set_uint (
+				value,
+				camel_network_service_get_default_port (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+
+		case PROP_SECURITY_METHOD:
+			g_value_set_enum (
+				value,
+				camel_network_service_get_security_method (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+
+		case PROP_SERVICE_NAME:
+			g_value_set_string (
+				value,
+				camel_network_service_get_service_name (
+				CAMEL_NETWORK_SERVICE (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 imap_store_dispose (GObject *object)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (object);
@@ -913,6 +886,32 @@ imap_store_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imap_store_parent_class)->finalize (object);
+}
+
+static void
+imap_store_constructed (GObject *object)
+{
+	CamelURL *url;
+	const gchar *use_ssl;
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (camel_imap_store_parent_class)->constructed (object);
+
+	url = camel_service_get_camel_url (CAMEL_SERVICE (object));
+	use_ssl = camel_url_get_param (url, "use_ssl");
+
+	if (g_strcmp0 (use_ssl, "never") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_NONE);
+	else if (g_strcmp0 (use_ssl, "always") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT);
+	else if (g_strcmp0 (use_ssl, "when-possible") == 0)
+		camel_network_service_set_security_method (
+			CAMEL_NETWORK_SERVICE (object),
+			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
 }
 
 static gchar *
@@ -1308,6 +1307,48 @@ imap_store_initable_init (GInitable *initable,
 	return TRUE;
 }
 
+static const gchar *
+imap_store_get_service_name (CamelNetworkService *service)
+{
+	CamelNetworkSecurityMethod method;
+	const gchar *service_name;
+
+	method = camel_network_service_get_security_method (service);
+
+	switch (method) {
+		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
+			service_name = "imaps";
+			break;
+
+		default:
+			service_name = "imap";
+			break;
+	}
+
+	return service_name;
+}
+
+static guint16
+imap_store_get_default_port (CamelNetworkService *service)
+{
+	CamelNetworkSecurityMethod method;
+	guint16 default_port;
+
+	method = camel_network_service_get_security_method (service);
+
+	switch (method) {
+		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
+			default_port = IMAPS_PORT;
+			break;
+
+		default:
+			default_port = IMAP_PORT;
+			break;
+	}
+
+	return default_port;
+}
+
 static void
 camel_imap_store_class_init (CamelImapStoreClass *class)
 {
@@ -1316,8 +1357,11 @@ camel_imap_store_class_init (CamelImapStoreClass *class)
 	CamelStoreClass *store_class;
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = imap_store_set_property;
+	object_class->get_property = imap_store_get_property;
 	object_class->dispose = imap_store_dispose;
 	object_class->finalize = imap_store_finalize;
+	object_class->constructed = imap_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->get_name = imap_store_get_name;
@@ -1341,6 +1385,24 @@ camel_imap_store_class_init (CamelImapStoreClass *class)
 	store_class->subscribe_folder_sync = imap_store_subscribe_folder_sync;
 	store_class->unsubscribe_folder_sync = imap_store_unsubscribe_folder_sync;
 	store_class->noop_sync = imap_store_noop_sync;
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_DEFAULT_PORT,
+		"default-port");
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_SECURITY_METHOD,
+		"security-method");
+
+	/* Inherited from CamelNetworkService. */
+	g_object_class_override_property (
+		object_class,
+		PROP_SERVICE_NAME,
+		"service-name");
 }
 
 static void
@@ -1349,6 +1411,13 @@ camel_imap_store_initable_init (GInitableIface *interface)
 	parent_initable_interface = g_type_interface_peek_parent (interface);
 
 	interface->init = imap_store_initable_init;
+}
+
+static void
+camel_network_service_init (CamelNetworkServiceInterface *interface)
+{
+	interface->get_service_name = imap_store_get_service_name;
+	interface->get_default_port = imap_store_get_default_port;
 }
 
 static void
