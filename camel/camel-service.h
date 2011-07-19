@@ -29,6 +29,7 @@
 #ifndef CAMEL_SERVICE_H
 #define CAMEL_SERVICE_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-object.h>
 #include <camel/camel-url.h>
 #include <camel/camel-provider.h>
@@ -81,13 +82,6 @@ typedef enum {
 	CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 	CAMEL_SERVICE_ERROR_NOT_CONNECTED
 } CamelServiceError;
-
-typedef enum {
-	CAMEL_SERVICE_DISCONNECTED,
-	CAMEL_SERVICE_CONNECTING,
-	CAMEL_SERVICE_CONNECTED,
-	CAMEL_SERVICE_DISCONNECTING
-} CamelServiceConnectionStatus;
 
 /**
  * CamelServiceLock:

@@ -19,12 +19,12 @@
 	$(AM_V_GEN) glib-mkenums \
 	--fhead "#ifndef __$(glib_enum_define)_ENUM_TYPES_H__\n#define __$(glib_enum_define)_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
 	--fprod "/* enumerations from \"@filename@\" */\n" \
-	--vhead "GType @enum_name@_get_type (void);\n#define E_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
+	--vhead "GType @enum_name@_get_type (void);\n#define CAMEL_TYPE_@ENUMSHORT@ (@enum_name@_get_type())\n"         \
 	--ftail "G_END_DECLS\n\n#endif /* __$(glib_enum_define)_ENUM_TYPES_H__ */" \
 	$^ > $@
 
 %-enumtypes.c: $(glib_enum_headers)
-	@if test "x$(glib_enum_headers)" == "x"; then echo "ERROR: glib_enum_headers is empty, please fix Makefile"; exit 1; fi && \
+	@if test "x$(glib_enum_headers)" == "x"; then echo "ERROR: glib_enum_headers is empty, please fix Makefile"; exit 1; fi
 	$(AM_V_GEN) glib-mkenums \
 	--fhead "#include <$*.h>\n#include \"$*-enumtypes.h\"" \
 	--fprod "\n/* enumerations from \"@filename@\" */" \

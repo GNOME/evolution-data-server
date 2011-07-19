@@ -34,6 +34,7 @@
 /* for mode_t */
 #include <sys/types.h>
 
+#include <camel/camel-enums.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-service.h>
 
@@ -85,72 +86,6 @@ typedef enum {
 	CAMEL_STORE_FOLDER_LOCK
 } CamelStoreLock;
 
-#define CAMEL_FOLDER_TYPE_MASK (7 << 10)
-#define CAMEL_FOLDER_TYPE_BIT (10)
-
-/**
- * CamelFolderInfoFlags:
- * @CAMEL_FOLDER_NOSELECT:
- *    The folder cannot contain messages.
- * @CAMEL_FOLDER_NOINFERIORS:
- *    The folder cannot have child folders.
- * @CAMEL_FOLDER_CHILDREN:
- *    The folder has children (not yet fully implemented).
- * @CAMEL_FOLDER_NOCHILDREN:
- *    The folder does not have children (not yet fully implemented).
- * @CAMEL_FOLDER_SUBSCRIBED:
- *    The folder is subscribed.
- * @CAMEL_FOLDER_VIRTUAL:
- *    The folder is virtual.  Messages cannot be copied or moved to
- *    virtual folders since they are only queries of other folders.
- * @CAMEL_FOLDER_SYSTEM:
- *    The folder is a built-in "system" folder.  System folders
- *    cannot be renamed or deleted.
- * @CAMEL_FOLDER_VTRASH:
- *    The folder is a virtual trash folder.  It cannot be copied to,
- *    and can only be moved to if in an existing folder.
- * @CAMEL_FOLDER_SHARED_TO_ME:
- *    A folder being shared by someone else.
- * @CAMEL_FOLDER_SHARED_BY_ME:
- *    A folder being shared by the user.
- * @CAMEL_FOLDER_TYPE_NORMAL:
- *    The folder is a normal folder.
- * @CAMEL_FOLDER_TYPE_INBOX:
- *    The folder is an inbox folder.
- * @CAMEL_FOLDER_TYPE_OUTBOX:
- *    The folder is an outbox folder.
- * @CAMEL_FOLDER_TYPE_TRASH:
- *    The folder shows deleted messages.
- * @CAMEL_FOLDER_TYPE_JUNK:
- *    The folder shows junk messages.
- * @CAMEL_FOLDER_TYPE_SENT:
- *    The folder shows sent messages.
- *
- * These flags are abstractions.  It's up to the CamelProvider to give
- * them suitable interpretations.  Use #CAMEL_FOLDER_TYPE_MASK to isolate
- * the folder's type.
- **/
-typedef enum {
-	CAMEL_FOLDER_NOSELECT     = 1 << 0,
-	CAMEL_FOLDER_NOINFERIORS  = 1 << 1,
-	CAMEL_FOLDER_CHILDREN     = 1 << 2,
-	CAMEL_FOLDER_NOCHILDREN   = 1 << 3,
-	CAMEL_FOLDER_SUBSCRIBED   = 1 << 4,
-	CAMEL_FOLDER_VIRTUAL      = 1 << 5,
-	CAMEL_FOLDER_SYSTEM       = 1 << 6,
-	CAMEL_FOLDER_VTRASH       = 1 << 7,
-	CAMEL_FOLDER_SHARED_TO_ME = 1 << 8,
-	CAMEL_FOLDER_SHARED_BY_ME = 1 << 9,
-	CAMEL_FOLDER_TYPE_NORMAL  = 0 << CAMEL_FOLDER_TYPE_BIT,
-	CAMEL_FOLDER_TYPE_INBOX   = 1 << CAMEL_FOLDER_TYPE_BIT,
-	CAMEL_FOLDER_TYPE_OUTBOX  = 2 << CAMEL_FOLDER_TYPE_BIT,
-	CAMEL_FOLDER_TYPE_TRASH   = 3 << CAMEL_FOLDER_TYPE_BIT,
-	CAMEL_FOLDER_TYPE_JUNK    = 4 << CAMEL_FOLDER_TYPE_BIT,
-	CAMEL_FOLDER_TYPE_SENT    = 5 << CAMEL_FOLDER_TYPE_BIT
-} CamelFolderInfoFlags;
-
-/* next bit is 1 << 13 */
-
 typedef struct _CamelFolderInfo {
 	struct _CamelFolderInfo *next;
 	struct _CamelFolderInfo *parent;
@@ -163,24 +98,6 @@ typedef struct _CamelFolderInfo {
 	gint32 unread;
 	gint32 total;
 } CamelFolderInfo;
-
-/* Flags for store flags */
-typedef enum {
-	CAMEL_STORE_SUBSCRIPTIONS    = 1 << 0,
-	CAMEL_STORE_VTRASH           = 1 << 1,
-	CAMEL_STORE_FILTER_INBOX     = 1 << 2,
-	CAMEL_STORE_VJUNK            = 1 << 3,
-	CAMEL_STORE_PROXY            = 1 << 4,
-	CAMEL_STORE_IS_MIGRATING     = 1 << 5,
-	CAMEL_STORE_ASYNC            = 1 << 6,
-	CAMEL_STORE_REAL_JUNK_FOLDER = 1 << 7,
-} CamelStoreFlags;
-
-/* store premissions */
-typedef enum {
-	CAMEL_STORE_READ  = 1 << 0,
-	CAMEL_STORE_WRITE = 1 << 1
-} CamelStorePermissionFlags;
 
 struct _CamelDB;
 
@@ -201,27 +118,6 @@ typedef enum {
 
 #define CAMEL_STORE_FOLDER_CREATE_EXCL \
 	(CAMEL_STORE_FOLDER_CREATE | CAMEL_STORE_FOLDER_EXCL)
-
-/**
- * CamelStoreGetFolderInfoFlags:
- * @CAMEL_STORE_FOLDER_INFO_FAST:
- * @CAMEL_STORE_FOLDER_INFO_RECURSIVE:
- * @CAMEL_STORE_FOLDER_INFO_SUBSCRIBED:
- * @CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL:
- *   Do not include virtual trash or junk folders.
- * @CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST:
- *   Fetch only the subscription list. Clients should use this
- *   flag for requesting the list of folders available for
- *   subscription. Used in Exchange / IMAP connectors for public
- *   folder fetching.
- **/
-typedef enum {
-	CAMEL_STORE_FOLDER_INFO_FAST              = 1 << 0,
-	CAMEL_STORE_FOLDER_INFO_RECURSIVE         = 1 << 1,
-	CAMEL_STORE_FOLDER_INFO_SUBSCRIBED        = 1 << 2,
-	CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL        = 1 << 3,
-	CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST = 1 << 4
-} CamelStoreGetFolderInfoFlags;
 
 struct _CamelStore {
 	CamelService parent;

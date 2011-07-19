@@ -54,15 +54,6 @@
 
 G_BEGIN_DECLS
 
-/*
-enum {
-	CAMEL_MULTIPART_EMPTY,
-	CAMEL_MULTIPART_CONST,
-	CAMEL_MULTIPART_SIGN,
-	CAMEL_MULTIPART_ENCR,
-};
-*/
-
 /* 'handy' enums for getting the internal parts of the multipart */
 enum {
 	CAMEL_MULTIPART_SIGNED_CONTENT,

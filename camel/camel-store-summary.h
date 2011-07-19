@@ -28,6 +28,7 @@
 
 #include <stdio.h>
 
+#include <camel/camel-enums.h>
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-object.h>
 #include <camel/camel-url.h>
@@ -58,26 +59,6 @@ typedef struct _CamelStoreSummaryClass CamelStoreSummaryClass;
 typedef struct _CamelStoreSummaryPrivate CamelStoreSummaryPrivate;
 
 typedef struct _CamelStoreInfo CamelStoreInfo;
-
-/* FIXME: this needs to track the CAMEL_FOLDER_* flags in camel-store.h */
-typedef enum _CamelStoreInfoFlags {
-	CAMEL_STORE_INFO_FOLDER_NOSELECT = 1 << 0,
-	CAMEL_STORE_INFO_FOLDER_NOINFERIORS = 1 << 1,
-	CAMEL_STORE_INFO_FOLDER_CHILDREN = 1 << 2,
-	CAMEL_STORE_INFO_FOLDER_NOCHILDREN = 1 << 3,
-	CAMEL_STORE_INFO_FOLDER_SUBSCRIBED = 1 << 4,
-	CAMEL_STORE_INFO_FOLDER_VIRTUAL = 1 << 5,
-	CAMEL_STORE_INFO_FOLDER_SYSTEM = 1 << 6,
-	CAMEL_STORE_INFO_FOLDER_VTRASH = 1 << 7,
-	CAMEL_STORE_INFO_FOLDER_SHARED_BY_ME = 1 << 8,
-	CAMEL_STORE_INFO_FOLDER_SHARED_TO_ME = 1 << 9,
-
-	/* not in camle-store.h yet */
-	CAMEL_STORE_INFO_FOLDER_READONLY = 1 << 13,
-	CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW = 1 << 14,
-
-	CAMEL_STORE_INFO_FOLDER_FLAGGED = 1 << 31
-} CamelStoreInfoFlags;
 
 #define CAMEL_STORE_INFO_FOLDER_UNKNOWN (~0)
 

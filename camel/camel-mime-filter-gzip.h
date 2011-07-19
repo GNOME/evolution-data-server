@@ -27,6 +27,7 @@
 #ifndef CAMEL_MIME_FILTER_GZIP_H
 #define CAMEL_MIME_FILTER_GZIP_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-mime-filter.h>
 
 /* Standard GObject macros */
@@ -53,11 +54,6 @@ G_BEGIN_DECLS
 typedef struct _CamelMimeFilterGZip CamelMimeFilterGZip;
 typedef struct _CamelMimeFilterGZipClass CamelMimeFilterGZipClass;
 typedef struct _CamelMimeFilterGZipPrivate CamelMimeFilterGZipPrivate;
-
-typedef enum {
-	CAMEL_MIME_FILTER_GZIP_MODE_ZIP,
-	CAMEL_MIME_FILTER_GZIP_MODE_UNZIP
-} CamelMimeFilterGZipMode;
 
 struct _CamelMimeFilterGZip {
 	CamelMimeFilter parent;

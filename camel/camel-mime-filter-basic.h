@@ -26,6 +26,7 @@
 #ifndef CAMEL_MIME_FILTER_BASIC_H
 #define CAMEL_MIME_FILTER_BASIC_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-mime-filter.h>
 
 /* Standard GObject macros */
@@ -52,15 +53,6 @@ G_BEGIN_DECLS
 typedef struct _CamelMimeFilterBasic CamelMimeFilterBasic;
 typedef struct _CamelMimeFilterBasicClass CamelMimeFilterBasicClass;
 typedef struct _CamelMimeFilterBasicPrivate CamelMimeFilterBasicPrivate;
-
-typedef enum {
-	CAMEL_MIME_FILTER_BASIC_BASE64_ENC = 1,
-	CAMEL_MIME_FILTER_BASIC_BASE64_DEC,
-	CAMEL_MIME_FILTER_BASIC_QP_ENC,
-	CAMEL_MIME_FILTER_BASIC_QP_DEC,
-	CAMEL_MIME_FILTER_BASIC_UU_ENC,
-	CAMEL_MIME_FILTER_BASIC_UU_DEC
-} CamelMimeFilterBasicType;
 
 struct _CamelMimeFilterBasic {
 	CamelMimeFilter parent;

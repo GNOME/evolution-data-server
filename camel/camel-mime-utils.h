@@ -29,6 +29,7 @@
 
 #include <time.h>
 #include <glib.h>
+#include <camel/camel-enums.h>
 
 /* maximum recommended size of a line from camel_header_fold() */
 #define CAMEL_FOLD_SIZE (77)
@@ -41,18 +42,6 @@
 #define CAMEL_UUDECODE_STATE_MASK   (CAMEL_UUDECODE_STATE_BEGIN | CAMEL_UUDECODE_STATE_END)
 
 G_BEGIN_DECLS
-
-/* note, if you change this, make sure you change the 'encodings' array in camel-mime-part.c */
-typedef enum _CamelTransferEncoding {
-	CAMEL_TRANSFER_ENCODING_DEFAULT,
-	CAMEL_TRANSFER_ENCODING_7BIT,
-	CAMEL_TRANSFER_ENCODING_8BIT,
-	CAMEL_TRANSFER_ENCODING_BASE64,
-	CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE,
-	CAMEL_TRANSFER_ENCODING_BINARY,
-	CAMEL_TRANSFER_ENCODING_UUENCODE,
-	CAMEL_TRANSFER_NUM_ENCODINGS
-} CamelTransferEncoding;
 
 /* a list of references for this message */
 struct _camel_header_references {

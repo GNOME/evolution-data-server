@@ -27,6 +27,7 @@
 #ifndef CAMEL_MIME_FILTER_YENC_H
 #define CAMEL_MIME_FILTER_YENC_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-mime-filter.h>
 
 /* Standard GObject macros */
@@ -53,11 +54,6 @@ G_BEGIN_DECLS
 typedef struct _CamelMimeFilterYenc CamelMimeFilterYenc;
 typedef struct _CamelMimeFilterYencClass CamelMimeFilterYencClass;
 typedef struct _CamelMimeFilterYencPrivate CamelMimeFilterYencPrivate;
-
-typedef enum {
-	CAMEL_MIME_FILTER_YENC_DIRECTION_ENCODE,
-	CAMEL_MIME_FILTER_YENC_DIRECTION_DECODE
-} CamelMimeFilterYencDirection;
 
 #define CAMEL_MIME_YDECODE_STATE_INIT     (0)
 #define CAMEL_MIME_YENCODE_STATE_INIT     (0)

@@ -29,6 +29,7 @@
 
 #ifdef CAMEL_HAVE_SSL
 
+#include <camel/camel-enums.h>
 #include <camel/camel-session.h>
 #include <camel/camel-tcp-stream-raw.h>
 
@@ -65,12 +66,6 @@ struct _CamelTcpStreamSSL {
 struct _CamelTcpStreamSSLClass {
 	CamelTcpStreamRawClass parent_class;
 };
-
-typedef enum {
-	CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 = 1 << 0,
-	CAMEL_TCP_STREAM_SSL_ENABLE_SSL3 = 1 << 1,
-	CAMEL_TCP_STREAM_SSL_ENABLE_TLS  = 1 << 2
-} CamelTcpStreamSSLFlags;
 
 GType		camel_tcp_stream_ssl_get_type	(void);
 CamelStream *	camel_tcp_stream_ssl_new	(CamelSession *session,

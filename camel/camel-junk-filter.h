@@ -23,6 +23,7 @@
 #ifndef CAMEL_JUNK_FILTER_H
 #define CAMEL_JUNK_FILTER_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-mime-message.h>
 
 /* Standard GObject macros */
@@ -48,12 +49,6 @@ G_BEGIN_DECLS
 
 typedef struct _CamelJunkFilter CamelJunkFilter;
 typedef struct _CamelJunkFilterInterface CamelJunkFilterInterface;
-
-typedef enum {
-	CAMEL_JUNK_STATUS_INCONCLUSIVE,
-	CAMEL_JUNK_STATUS_MESSAGE_IS_JUNK,
-	CAMEL_JUNK_STATUS_MESSAGE_IS_NOT_JUNK
-} CamelJunkStatus;
 
 struct _CamelJunkFilterInterface {
 	GTypeInterface parent_interface;

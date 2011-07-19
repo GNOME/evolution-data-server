@@ -31,6 +31,7 @@
 #ifndef CAMEL_PROVIDER_H
 #define CAMEL_PROVIDER_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-object.h>
 #include <camel/camel-object-bag.h>
 #include <camel/camel-url.h>
@@ -39,48 +40,7 @@
 
 G_BEGIN_DECLS
 
-typedef enum {
-	CAMEL_PROVIDER_STORE,
-	CAMEL_PROVIDER_TRANSPORT,
-	CAMEL_NUM_PROVIDER_TYPES
-} CamelProviderType;
-
 extern gchar *camel_provider_type_name[CAMEL_NUM_PROVIDER_TYPES];
-
-/* CamelProviderFlags;
- * @CAMEL_PROVIDER_IS_REMOTE:
- *   Provider works with remote data.
- * @CAMEL_PROVIDER_IS_LOCAL:
- *   Provider can be used as a backend for local folder tree folders.
- *   (Not just the opposite of #CAMEL_PROVIDER_IS_REMOTE.)
- * @CAMEL_PROVIDER_IS_SOURCE:
- *   Mail arrives there, so it should be offered as an option in the
- *   mail config dialog.
- * @CAMEL_PROVIDER_IS_STORAGE:
- *   Mail is stored there.  It will appear in the folder tree.
- * @CAMEL_PROVIDER_IS_EXTERNAL:
- *   Provider appears in the folder tree but is not created by the
- *   mail component.
- * @CAMEL_PROVIDER_HAS_LICENSE:
- *   Provider configuration first needs the license to be accepted.
- *   (No longer used.)
- * @CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER:
- *   Provider may use a real trash folder instead of a virtual folder.
- * @CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER:
- *   Provider may use a real junk folder instead of a virtual folder.
- */
-typedef enum {
-	CAMEL_PROVIDER_IS_REMOTE		= 1 << 0,
-	CAMEL_PROVIDER_IS_LOCAL			= 1 << 1,
-	CAMEL_PROVIDER_IS_EXTERNAL		= 1 << 2,
-	CAMEL_PROVIDER_IS_SOURCE		= 1 << 3,
-	CAMEL_PROVIDER_IS_STORAGE		= 1 << 4,
-	CAMEL_PROVIDER_SUPPORTS_SSL		= 1 << 5,
-	CAMEL_PROVIDER_HAS_LICENSE		= 1 << 6,
-	CAMEL_PROVIDER_DISABLE_SENT_FOLDER	= 1 << 7,
-	CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER	= 1 << 8,
-	CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER	= 1 << 9
-} CamelProviderFlags;
 
 /* Flags for url_flags. "ALLOW" means the config dialog will let the
  * user configure it. "NEED" implies "ALLOW" but means the user must
@@ -139,17 +99,6 @@ typedef enum {
 #define CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT(prov) (prov->object_types[CAMEL_PROVIDER_STORE] && prov->object_types[CAMEL_PROVIDER_TRANSPORT])
 
 /* Generic extra config stuff */
-typedef enum {
-	CAMEL_PROVIDER_CONF_END,
-	CAMEL_PROVIDER_CONF_SECTION_START,
-	CAMEL_PROVIDER_CONF_SECTION_END,
-	CAMEL_PROVIDER_CONF_CHECKBOX,
-	CAMEL_PROVIDER_CONF_CHECKSPIN,
-	CAMEL_PROVIDER_CONF_ENTRY,
-	CAMEL_PROVIDER_CONF_LABEL,
-	CAMEL_PROVIDER_CONF_HIDDEN,
-	CAMEL_PROVIDER_CONF_OPTIONS
-} CamelProviderConfType;
 
 typedef struct {
 	CamelProviderConfType type;

@@ -29,6 +29,7 @@
 #ifndef CAMEL_STREAM_VFS_H
 #define CAMEL_STREAM_VFS_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-stream.h>
 
 /* Standard GObject macros */
@@ -66,23 +67,6 @@ struct _CamelStreamVFSClass {
 };
 
 GType camel_stream_vfs_get_type (void);
-
-/**
- * CamelStreamVFSOpenMethod:
- * CAMEL_STREAM_VFS_CREATE:
- *	Writable, creates new file or replaces old file.
- * CAMEL_STREAM_VFS_APPEND:
- *	Writable, creates new file or appends at the end of the old file.
- * CAMEL_STREAM_VFS_READ:
- *	Readable, opens existing file for reading.
- *
- * Since: 2.24
- **/
-typedef enum {
-	CAMEL_STREAM_VFS_CREATE,
-	CAMEL_STREAM_VFS_APPEND,
-	CAMEL_STREAM_VFS_READ
-} CamelStreamVFSOpenMethod;
 
 /* public methods */
 CamelStream * camel_stream_vfs_new_with_uri            (const gchar *uri, CamelStreamVFSOpenMethod mode);

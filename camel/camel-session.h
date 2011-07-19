@@ -30,6 +30,7 @@
 #ifndef CAMEL_SESSION_H
 #define CAMEL_SESSION_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-filter-driver.h>
 #include <camel/camel-junk-filter.h>
 #include <camel/camel-msgport.h>
@@ -60,12 +61,6 @@ G_BEGIN_DECLS
 typedef struct _CamelSession CamelSession;
 typedef struct _CamelSessionClass CamelSessionClass;
 typedef struct _CamelSessionPrivate CamelSessionPrivate;
-
-typedef enum {
-	CAMEL_SESSION_ALERT_INFO,
-	CAMEL_SESSION_ALERT_WARNING,
-	CAMEL_SESSION_ALERT_ERROR
-} CamelSessionAlertType;
 
 enum {
 	CAMEL_SESSION_PASSWORD_REPROMPT = 1 << 0,

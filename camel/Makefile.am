@@ -31,6 +31,13 @@ camellibexec_PROGRAMS =	$(LOCK_HELPER) camel-index-control-1.2
 
 lib_LTLIBRARIES = libcamel-1.2.la libcamel-provider-1.2.la
 
+include $(top_srcdir)/camel/glib-gen.mak
+glib_enum_headers=camel-enums.h
+glib_enum_define=CAMEL
+glib_enum_prefix=camel
+
+ENUM_GENERATED = camel-enumtypes.h camel-enumtypes.c
+
 libcamel_provider_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)						\
 	-I$(top_srcdir) 					\
@@ -158,6 +165,7 @@ libcamel_1_2_la_CPPFLAGS = \
 	$(CAMEL_CFLAGS)
 
 libcamel_1_2_la_SOURCES = 			\
+	$(ENUM_GENERATED)			\
 	$(MARSHAL_GENERATED)			\
 	camel-address.c				\
 	camel-block-file.c			\
@@ -236,6 +244,8 @@ libcamelinclude_HEADERS =			\
 	camel-data-wrapper.h			\
 	camel-db.h				\
 	camel-debug.h				\
+	camel-enums.h				\
+	camel-enumtypes.h			\
 	camel-file-utils.h			\
 	camel-iconv.h				\
 	camel-index.h				\
@@ -388,7 +398,10 @@ noinst_HEADERS =				\
 	camel-charset-map-private.h		\
 	camel-win32.h				
 
-BUILT_SOURCES = camel-mime-tables.c $(MARSHAL_GENERATED)
+BUILT_SOURCES =					\
+	camel-mime-tables.c			\
+	$(ENUM_GENERATED)			\
+	$(MARSHAL_GENERATED)
 
 EXTRA_DIST =					\
 	$(pkgconfig_in_files)	 		\

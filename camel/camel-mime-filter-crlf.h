@@ -27,6 +27,7 @@
 #ifndef CAMEL_MIME_FILTER_CRLF_H
 #define CAMEL_MIME_FILTER_CRLF_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-mime-filter.h>
 
 /* Standard GObject macros */
@@ -53,16 +54,6 @@ G_BEGIN_DECLS
 typedef struct _CamelMimeFilterCRLF CamelMimeFilterCRLF;
 typedef struct _CamelMimeFilterCRLFClass CamelMimeFilterCRLFClass;
 typedef struct _CamelMimeFilterCRLFPrivate CamelMimeFilterCRLFPrivate;
-
-typedef enum {
-	CAMEL_MIME_FILTER_CRLF_ENCODE,
-	CAMEL_MIME_FILTER_CRLF_DECODE
-} CamelMimeFilterCRLFDirection;
-
-typedef enum {
-	CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS,
-	CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY
-} CamelMimeFilterCRLFMode;
 
 struct _CamelMimeFilterCRLF {
 	CamelMimeFilter parent;

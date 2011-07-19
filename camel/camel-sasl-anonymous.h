@@ -27,6 +27,7 @@
 #ifndef CAMEL_SASL_ANONYMOUS_H
 #define CAMEL_SASL_ANONYMOUS_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-sasl.h>
 
 /* Standard GObject macros */
@@ -52,12 +53,6 @@ G_BEGIN_DECLS
 
 typedef struct _CamelSaslAnonymous CamelSaslAnonymous;
 typedef struct _CamelSaslAnonymousClass CamelSaslAnonymousClass;
-
-typedef enum {
-	CAMEL_SASL_ANON_TRACE_EMAIL,
-	CAMEL_SASL_ANON_TRACE_OPAQUE,
-	CAMEL_SASL_ANON_TRACE_EMPTY
-} CamelSaslAnonTraceType;
 
 struct _CamelSaslAnonymous {
 	CamelSasl parent;

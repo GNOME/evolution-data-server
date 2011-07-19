@@ -44,6 +44,7 @@ CFILE_GLOB=$(top_srcdir)/camel/*.c
 IGNORE_HFILES = 			\
 	broken-date-parser.h		\
 	camel-charset-map-private.h	\
+	camel-enumtypes.h		\
 	camel-groupwise-private.h	\
 	camel-i18n.h			\
 	camel-imap-private.h		\
