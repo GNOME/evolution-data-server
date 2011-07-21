@@ -37,6 +37,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-pop3-folder.h"
+#include "camel-pop3-settings.h"
 #include "camel-pop3-store.h"
 
 #ifdef G_OS_WIN32
@@ -44,27 +45,12 @@
 #include <ws2tcpip.h>
 #endif
 
-#define CAMEL_POP3_STORE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_POP3_STORE, CamelPOP3StorePrivate))
-
 /* Specified in RFC 1939 */
 #define POP3_PORT  110
 #define POP3S_PORT 995
 
 /* defines the length of the server error message we can display in the error dialog */
 #define POP3_ERROR_SIZE_LIMIT 60
-
-struct _CamelPOP3StorePrivate {
-	gint placeholder;
-};
-
-enum {
-	PROP_0,
-	PROP_DEFAULT_PORT,
-	PROP_SECURITY_METHOD,
-	PROP_SERVICE_NAME
-};
 
 extern CamelServiceAuthType camel_pop3_password_authtype;
 extern CamelServiceAuthType camel_pop3_apop_authtype;
@@ -106,26 +92,24 @@ connect_to_server (CamelService *service,
                    GError **error)
 {
 	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
-	CamelNetworkService *network_service;
 	CamelNetworkSecurityMethod method;
+	CamelSettings *settings;
 	CamelURL *url;
 	CamelStream *tcp_stream;
 	CamelPOP3Command *pc;
+	gboolean disable_extensions;
 	guint32 flags = 0;
 	gint clean_quit = TRUE;
 	gint ret;
-	const gchar *param;
 
 	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
 
 	tcp_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
 
 	if (tcp_stream == NULL)
 		return FALSE;
-
-	network_service = CAMEL_NETWORK_SERVICE (service);
-	method = camel_network_service_get_security_method (network_service);
 
 	/* parent class connect initialization */
 	if (CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class)->
@@ -134,16 +118,11 @@ connect_to_server (CamelService *service,
 		return FALSE;
 	}
 
-	if (camel_url_get_param (url, "disable_extensions"))
+	disable_extensions = camel_pop3_settings_get_disable_extensions (
+		CAMEL_POP3_SETTINGS (settings));
+
+	if (disable_extensions)
 		flags |= CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS;
-
-	store->keep_on_server = camel_url_get_param (url, "keep_on_server") != NULL;
-	store->delete_expunged = camel_url_get_param (url, "delete_expunged") != NULL;
-
-	if ((param = camel_url_get_param (url, "delete_after")))
-		store->delete_after = atoi (param);
-	else
-		store->delete_after = 0;
 
 	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags))) {
 		g_set_error (
@@ -153,6 +132,8 @@ connect_to_server (CamelService *service,
 		g_object_unref (tcp_stream);
 		return FALSE;
 	}
+
+	g_object_get (settings, "security-method", &method, NULL);
 
 	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
 		g_object_unref (tcp_stream);
@@ -480,55 +461,6 @@ pop3_try_authenticate (CamelService *service,
 }
 
 static void
-pop3_store_set_property (GObject *object,
-                         guint property_id,
-                         const GValue *value,
-                         GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_SECURITY_METHOD:
-			camel_network_service_set_security_method (
-				CAMEL_NETWORK_SERVICE (object),
-				g_value_get_enum (value));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-pop3_store_get_property (GObject *object,
-                         guint property_id,
-                         GValue *value,
-                         GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_DEFAULT_PORT:
-			g_value_set_uint (
-				value,
-				camel_network_service_get_default_port (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-
-		case PROP_SECURITY_METHOD:
-			g_value_set_enum (
-				value,
-				camel_network_service_get_security_method (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-
-		case PROP_SERVICE_NAME:
-			g_value_set_string (
-				value,
-				camel_network_service_get_service_name (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
 pop3_store_finalize (GObject *object)
 {
 	CamelPOP3Store *pop3_store = CAMEL_POP3_STORE (object);
@@ -545,32 +477,6 @@ pop3_store_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_pop3_store_parent_class)->finalize (object);
-}
-
-static void
-pop3_store_constructed (GObject *object)
-{
-	CamelURL *url;
-	const gchar *use_ssl;
-
-	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (camel_pop3_store_parent_class)->constructed (object);
-
-	url = camel_service_get_camel_url (CAMEL_SERVICE (object));
-	use_ssl = camel_url_get_param (url, "use_ssl");
-
-	if (g_strcmp0 (use_ssl, "never") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_NONE);
-	else if (g_strcmp0 (use_ssl, "always") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT);
-	else if (g_strcmp0 (use_ssl, "when-possible") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
 }
 
 static gchar *
@@ -776,12 +682,10 @@ pop3_store_get_trash_folder_sync (CamelStore *store,
 }
 
 static const gchar *
-pop3_store_get_service_name (CamelNetworkService *service)
+pop3_store_get_service_name (CamelNetworkService *service,
+                             CamelNetworkSecurityMethod method)
 {
-	CamelNetworkSecurityMethod method;
 	const gchar *service_name;
-
-	method = camel_network_service_get_security_method (service);
 
 	switch (method) {
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
@@ -797,12 +701,10 @@ pop3_store_get_service_name (CamelNetworkService *service)
 }
 
 static guint16
-pop3_store_get_default_port (CamelNetworkService *service)
+pop3_store_get_default_port (CamelNetworkService *service,
+                             CamelNetworkSecurityMethod method)
 {
-	CamelNetworkSecurityMethod method;
 	guint16 default_port;
-
-	method = camel_network_service_get_security_method (service);
 
 	switch (method) {
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
@@ -824,15 +726,11 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
 
-	g_type_class_add_private (class, sizeof (CamelPOP3StorePrivate));
-
 	object_class = G_OBJECT_CLASS (class);
-	object_class->set_property = pop3_store_set_property;
-	object_class->get_property = pop3_store_get_property;
 	object_class->finalize = pop3_store_finalize;
-	object_class->constructed = pop3_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->settings_type = CAMEL_TYPE_POP3_SETTINGS;
 	service_class->get_name = pop3_store_get_name;
 	service_class->connect_sync = pop3_store_connect_sync;
 	service_class->disconnect_sync = pop3_store_disconnect_sync;
@@ -843,24 +741,6 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 	store_class->get_folder_sync = pop3_store_get_folder_sync;
 	store_class->get_folder_info_sync = pop3_store_get_folder_info_sync;
 	store_class->get_trash_folder_sync = pop3_store_get_trash_folder_sync;
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_DEFAULT_PORT,
-		"default-port");
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SECURITY_METHOD,
-		"security-method");
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SERVICE_NAME,
-		"service-name");
 }
 
 static void
@@ -873,7 +753,6 @@ camel_network_service_init (CamelNetworkServiceInterface *interface)
 static void
 camel_pop3_store_init (CamelPOP3Store *pop3_store)
 {
-	pop3_store->priv = CAMEL_POP3_STORE_GET_PRIVATE (pop3_store);
 }
 
 /**

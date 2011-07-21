@@ -36,25 +36,25 @@ static gint pop3_url_equal (gconstpointer a, gconstpointer b);
 
 static CamelProviderConfEntry pop3_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "storage", NULL,
-	  N_("Message storage") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "keep_on_server", NULL,
+	  N_("Message Storage") },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "keep-on-server", NULL,
 	  N_("_Leave messages on server"), "0" },
-	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "delete_after", "keep_on_server",
+	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "delete-after-days", "keep-on-server",
 	  /* Translators: '%s' is replaced with a widget, where user can select how many days can be message left on the server */
 	  N_("_Delete after %s day(s)"), "0:1:7:365" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "delete_expunged", "keep_on_server",
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "delete-expunged", "keep-on-server",
 	  N_("Delete _expunged from local Inbox"), "0" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "disable_extensions", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "disable-extensions", NULL,
 	  N_("Disable _support for all POP3 extensions"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
 
 CamelProviderPortEntry pop3_port_entries[] = {
-						  { 110, N_("Default POP3 port"), FALSE },
-						  { 995, N_("POP3 over SSL"), TRUE },
-						  { 0, NULL, 0 }
-					     };
+	{ 110, N_("Default POP3 port"), FALSE },
+	{ 995, N_("POP3 over SSL"), TRUE },
+	{ 0, NULL, 0 }
+};
 
 static CamelProvider pop3_provider = {
 	"pop",

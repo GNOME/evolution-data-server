@@ -60,12 +60,7 @@ struct _CamelPOP3Store {
 	CamelPOP3StorePrivate *priv;
 
 	CamelPOP3Engine *engine; /* pop processing engine */
-
 	CamelDataCache *cache;
-
-	gboolean keep_on_server;
-	guint delete_after;
-	gboolean delete_expunged;
 };
 
 struct _CamelPOP3StoreClass {
@@ -74,15 +69,6 @@ struct _CamelPOP3StoreClass {
 
 GType		camel_pop3_store_get_type	(void);
 void		camel_pop3_store_expunge	(CamelPOP3Store *store,
-						 GError **error);
-gint		camel_pop3_command		(CamelPOP3Store *store,
-						 gchar **ret,
-						 GError **error,
-						 gchar *fmt,
-						 ...);
-gchar *		camel_pop3_command_get_additional_data
-						(CamelPOP3Store *store,
-						 gint total,
 						 GError **error);
 
 G_END_DECLS

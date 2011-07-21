@@ -524,33 +524,44 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
                               GCancellable *cancellable,
                               GError **error)
 {
+	CamelService *service;
+	CamelSettings *settings;
 	CamelStore *parent_store;
 	CamelPOP3Folder *pop3_folder;
 	CamelPOP3Store *pop3_store;
-	gint i;
 	CamelPOP3FolderInfo *fi;
+	gint delete_after_days;
+	gboolean delete_expunged;
+	gboolean keep_on_server;
+	gint i;
 
 	parent_store = camel_folder_get_parent_store (folder);
 
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (parent_store);
 
-	if (pop3_store->delete_after > 0 && !expunge) {
-		d(printf("%s(%d): pop3_store->delete_after = [%d], expunge=[%d]\n",
-			 __FILE__, __LINE__, pop3_store->delete_after, expunge));
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+
+	g_object_get (
+		settings,
+		"delete-after-days", &delete_after_days,
+		"delete-expunged", &delete_expunged,
+		"keep-on-server", &keep_on_server,
+		NULL);
+
+	if (delete_after_days > 0 && !expunge) {
 		camel_operation_push_message (
 			cancellable, _("Expunging old messages"));
 
 		camel_pop3_delete_old (
-			folder, pop3_store->delete_after,
-			cancellable, error);
+			folder, delete_after_days, cancellable, error);
 
 		camel_operation_pop_message (cancellable);
 	}
 
-	if (!expunge || (pop3_store->keep_on_server && !pop3_store->delete_expunged)) {
+	if (!expunge || (keep_on_server && !delete_expunged))
 		return TRUE;
-	}
 
 	camel_operation_push_message (
 		cancellable, _("Expunging deleted messages"));
