@@ -36,6 +36,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "camel-smtp-settings.h"
 #include "camel-smtp-transport.h"
 
 #ifdef G_OS_WIN32
@@ -87,13 +88,6 @@ static void		smtp_set_error		(CamelSmtpTransport *transport,
 						 GCancellable *cancellable,
 						 GError **error);
 
-enum {
-	PROP_0,
-	PROP_DEFAULT_PORT,
-	PROP_SECURITY_METHOD,
-	PROP_SERVICE_NAME
-};
-
 /* Forward Declarations */
 static void camel_network_service_init (CamelNetworkServiceInterface *interface);
 
@@ -111,8 +105,8 @@ connect_to_server (CamelService *service,
                    GError **error)
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
-	CamelNetworkService *network_service;
 	CamelNetworkSecurityMethod method;
+	CamelSettings *settings;
 	CamelURL *url;
 	CamelStream *tcp_stream;
 	gchar *respbuf = NULL;
@@ -126,9 +120,9 @@ connect_to_server (CamelService *service,
 	transport->authtypes = NULL;
 
 	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
 
-	network_service = CAMEL_NETWORK_SERVICE (service);
-	method = camel_network_service_get_security_method (network_service);
+	g_object_get (settings, "security-method", &method, NULL);
 
 	tcp_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
@@ -272,81 +266,6 @@ static void
 authtypes_free (gpointer key, gpointer value, gpointer data)
 {
 	g_free (value);
-}
-
-static void
-smtp_transport_set_property (GObject *object,
-                             guint property_id,
-                             const GValue *value,
-                             GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_SECURITY_METHOD:
-			camel_network_service_set_security_method (
-				CAMEL_NETWORK_SERVICE (object),
-				g_value_get_enum (value));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-smtp_transport_get_property (GObject *object,
-                             guint property_id,
-                             GValue *value,
-                             GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_DEFAULT_PORT:
-			g_value_set_uint (
-				value,
-				camel_network_service_get_default_port (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-
-		case PROP_SECURITY_METHOD:
-			g_value_set_enum (
-				value,
-				camel_network_service_get_security_method (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-
-		case PROP_SERVICE_NAME:
-			g_value_set_string (
-				value,
-				camel_network_service_get_service_name (
-				CAMEL_NETWORK_SERVICE (object)));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-smtp_transport_constructed (GObject *object)
-{
-	CamelURL *url;
-	const gchar *use_ssl;
-
-	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (camel_smtp_transport_parent_class)->constructed (object);
-
-	url = camel_service_get_camel_url (CAMEL_SERVICE (object));
-	use_ssl = camel_url_get_param (url, "use_ssl");
-
-	if (g_strcmp0 (use_ssl, "never") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_NONE);
-	else if (g_strcmp0 (use_ssl, "always") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT);
-	else if (g_strcmp0 (use_ssl, "when-possible") == 0)
-		camel_network_service_set_security_method (
-			CAMEL_NETWORK_SERVICE (object),
-			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT);
 }
 
 static gchar *
@@ -710,12 +629,10 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 }
 
 static const gchar *
-smtp_transport_get_service_name (CamelNetworkService *service)
+smtp_transport_get_service_name (CamelNetworkService *service,
+                                 CamelNetworkSecurityMethod method)
 {
-	CamelNetworkSecurityMethod method;
 	const gchar *service_name;
-
-	method = camel_network_service_get_security_method (service);
 
 	switch (method) {
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
@@ -731,12 +648,10 @@ smtp_transport_get_service_name (CamelNetworkService *service)
 }
 
 static guint16
-smtp_transport_get_default_port (CamelNetworkService *service)
+smtp_transport_get_default_port (CamelNetworkService *service,
+                                 CamelNetworkSecurityMethod method)
 {
-	CamelNetworkSecurityMethod method;
 	guint16 default_port;
-
-	method = camel_network_service_get_security_method (service);
 
 	switch (method) {
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
@@ -754,16 +669,11 @@ smtp_transport_get_default_port (CamelNetworkService *service)
 static void
 camel_smtp_transport_class_init (CamelSmtpTransportClass *class)
 {
-	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 	CamelTransportClass *transport_class;
 
-	object_class = G_OBJECT_CLASS (class);
-	object_class->set_property = smtp_transport_set_property;
-	object_class->get_property = smtp_transport_get_property;
-	object_class->constructed = smtp_transport_constructed;
-
 	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->settings_type = CAMEL_TYPE_SMTP_SETTINGS;
 	service_class->get_name = smtp_transport_get_name;
 	service_class->connect_sync = smtp_transport_connect_sync;
 	service_class->disconnect_sync = smtp_transport_disconnect_sync;
@@ -771,24 +681,6 @@ camel_smtp_transport_class_init (CamelSmtpTransportClass *class)
 
 	transport_class = CAMEL_TRANSPORT_CLASS (class);
 	transport_class->send_to_sync = smtp_transport_send_to_sync;
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_DEFAULT_PORT,
-		"default-port");
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SECURITY_METHOD,
-		"security-method");
-
-	/* Inherited from CamelNetworkService. */
-	g_object_class_override_property (
-		object_class,
-		PROP_SERVICE_NAME,
-		"service-name");
 }
 
 static void

@@ -10,6 +10,8 @@ libcamelsmtp_la_CPPFLAGS = \
 
 libcamelsmtp_la_SOURCES = 			\
 	camel-smtp-provider.c			\
+	camel-smtp-settings.c			\
+	camel-smtp-settings.h			\
 	camel-smtp-transport.c
 
 noinst_HEADERS =			\
