@@ -49,7 +49,7 @@ e-debug-log
 @is_milestone: 
 @domain: 
 @format: 
-@...: 
+@Varargs: 
 
 
 <!-- ##### FUNCTION e_debug_logv ##### -->

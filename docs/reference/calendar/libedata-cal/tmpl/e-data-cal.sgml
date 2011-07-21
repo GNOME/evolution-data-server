@@ -50,7 +50,7 @@ Implementation of the calendar CORBA client interface.
 
 @status: 
 @custom_msg_fmt: 
-@...: 
+@Varargs: 
 @Returns: 
 
 

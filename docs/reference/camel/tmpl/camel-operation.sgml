@@ -87,7 +87,7 @@ camel-operation
 
 @cancellable: 
 @format: 
-@...: 
+@Varargs: 
 
 
 <!-- ##### FUNCTION camel_operation_pop_message ##### -->

@@ -268,7 +268,7 @@ ESExp
 
 @f: 
 @why: 
-@...: 
+@Varargs: 
 
 
 <!-- ##### FUNCTION e_sexp_error ##### -->

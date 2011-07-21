@@ -163,7 +163,7 @@ Does the low-level parsing work for contact information. This data is more conve
 
 @evcard: 
 @attr: 
-@...: 
+@Varargs: 
 
 
 <!-- ##### FUNCTION e_vcard_add_attribute ##### -->
@@ -192,7 +192,7 @@ Does the low-level parsing work for contact information. This data is more conve
 
 @evcard: 
 @attr: 
-@...: 
+@Varargs: 
 
 
 <!-- ##### FUNCTION e_vcard_attribute_add_value ##### -->
@@ -220,7 +220,7 @@ Does the low-level parsing work for contact information. This data is more conve
 </para>
 
 @attr: 
-@...: 
+@Varargs: 
 
 
 <!-- ##### FUNCTION e_vcard_attribute_remove_values ##### -->
@@ -319,7 +319,7 @@ Does the low-level parsing work for contact information. This data is more conve
 
 @attr: 
 @param: 
-@...: 
+@Varargs: 
 
 
 <!-- ##### FUNCTION e_vcard_attribute_param_add_value ##### -->
@@ -337,7 +337,7 @@ Does the low-level parsing work for contact information. This data is more conve
 </para>
 
 @param: 
-@...: 
+@Varargs: 
 
 
 <!-- ##### FUNCTION e_vcard_attribute_param_remove_values ##### -->
