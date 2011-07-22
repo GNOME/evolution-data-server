@@ -29,7 +29,7 @@ static void check_msg (gint truth, gchar *fmt, ...)
 
 #define check_count(object, expected) do { \
 	if (G_OBJECT (object)->ref_count != expected) { \
-		camel_test_fail("%s->ref_count != %s\n\tref_count = %d", #object, #expected, G_OBJECT (object)->ref_count); \
+		camel_test_fail ("%s->ref_count != %s\n\tref_count = %d", #object, #expected, G_OBJECT (object)->ref_count); \
 	} \
 } while (0)
 
