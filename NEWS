@@ -1,20 +1,52 @@
-Evolution-Data-Server 3.1.3.1 2011-07-06
+Evolution-Data-Server 3.1.4 2011-07-25
 --------------------------------------
 
 Bug Fixes:
-	Bug#654054 Fix eds build failure (Akhil Laddha)
+	none
 
-Miscellaneous Fixes:
-	camel_stream_vprintf() doesn't exist. (Matthew Barnes)
-	Remove camel_stream_reset(). (Matthew Barnes)
-	Prefer g_seekable_seek() over camel_stream_reset(). (Matthew Barnes)
-	Camel: Remove some unnecessary type casts. (Matthew Barnes)
-	CamelImapWrapper: Use GError instead of errno. (Matthew Barnes)
-	camel_stream_process_connect(): Add GError parameter. (Matthew Barnes)
+Other Changes:
+	* Authorization domains are no longer used in password storage.
+	  (Matthew Barnes)
+	* POP3: Use GError instead of errno. (Matthew Barnes)
+	* NNTP: Remove unnecessary <errno.h> includes. (Matthew Barnes)
+	* SMTP: Use GError instead of errno. (Matthew Barnes)
+	* camel_tcp_stream_ssl_enable_ssl(): Add GError parameter.
+	  (Matthew Barnes)
+	* camel_stream_process_connect(): Add GError parameter.
+	  (Matthew Barnes)
+	* CamelImapWrapper: Use GError instead of errno. (Matthew Barnes)
+	* Prefer g_seekable_seek() over camel_stream_reset(). (Matthew Barnes)
+	* Remove camel_stream_reset(). (Matthew Barnes)
+	* Remove camel_stream_printf(). (Matthew Barnes)
+	* CamelDataWrapper: Keep contents in a GByteArray. (Matthew Barnes)
+	* Move the "$host" down when $host is actually set and don't set
+	  DL_LIB to libdl which is not available on OpenBSD/FreeBSD.
+	  (Antoine Jacoutot)
+	* Fix wakeups in imapx parser thread. (David Woodhouse)
+	* Rewrite Camel's junk plugin interface. (Matthew Barnes)
+	* Break reference cycle between CamelSession and CamelService.
+	  (Matthew Barnes)
+	* CamelIMAPXServer: Fix CamelSession reference leak. (Matthew Barnes)
+	* CamelSession: Add camel_session_remove_services() (Matthew Barnes)
+	* Break reference cycle between CamelStore and CamelFolder.
+	  (Matthew Barnes)
+	* CamelIMAPXConnManager: Keep a weak pointer to CamelStore.
+	  (Matthew Barnes)
+	* Generate GTypes for various Camel enums. (Matthew Barnes)
+	* Add CamelNetworkService interface. (Matthew Barnes)
 
 Translations:
-	Wylmer Wang (zh_CN)
+	Mario Blättermann (de)
 	Daniel Mustieles (es)
+	Fran Dieguez (gl)
+	Aurimas Černius (lt)
+	Rudolfs Mazurs (lv)
+	Kjartan Maraas (nb)
+	Matej Urbančič (sl)
+	Muhammet Kara (tr)
+	Abduxukur Abdurixit (ug)
+	Wylmer Wang (zh_CN)
+
 
 Evolution-Data-Server 3.1.3 2011-07-04
 --------------------------------------
