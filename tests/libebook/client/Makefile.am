@@ -31,6 +31,7 @@ TESTS =								\
 	test-client-remove-contact				\
 	test-client-remove-contact-by-uid			\
 	test-client-remove-contacts				\
+	test-client-photo-is-uri				\
 	test-client-stress-factory--serial			\
 	test-client-stress-factory--fifo			\
 	test-client-stress-factory--single-book			\
@@ -86,6 +87,8 @@ test_client_remove_contact_by_uid_LDADD=$(TEST_LIBS)
 test_client_remove_contact_by_uid_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_remove_contacts_LDADD=$(TEST_LIBS)
 test_client_remove_contacts_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_photo_is_uri_LDADD=$(TEST_LIBS)
+test_client_photo_is_uri_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_stress_factory__fifo_LDADD=$(TEST_LIBS)
 test_client_stress_factory__fifo_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_stress_factory__serial_LDADD=$(TEST_LIBS)
