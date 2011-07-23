@@ -349,6 +349,8 @@ const gchar *           e_contact_photo_get_mime_type (EContactPhoto *photo);
 void                    e_contact_photo_set_mime_type (EContactPhoto *photo, const gchar *mime_type);
 const gchar *           e_contact_photo_get_uri       (EContactPhoto *photo);
 void                    e_contact_photo_set_uri       (EContactPhoto *photo, const gchar *uri);
+gboolean                e_contact_inline_local_photos (EContact      *contact,
+						       GError       **error);
 
 GType			e_contact_geo_get_type	   (void);
 void			e_contact_geo_free	   (EContactGeo *geo);

@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <gio/gio.h>
 #include <glib/gi18n-lib.h>
 #include "e-contact.h"
 #include "e-book.h"
@@ -2250,6 +2251,136 @@ e_contact_photo_set_uri (EContactPhoto *photo,
 	g_free (photo->data.uri);
 	photo->data.uri = g_strdup (uri);
 }
+
+
+/* Try to unescape a mime type which was encoded into
+ * the filename, return the mime type if g_content_type_from_mime_type()
+ * returns something for the decoded filename extension.
+ */
+static gchar *
+mime_type_from_filename (const gchar *filename)
+{
+	gchar *extension;
+	gchar *mime_type;
+	gchar *content_type;
+
+	extension = strrchr (filename, '.');
+	if (extension)
+		extension++;
+
+	if (!extension)
+		return NULL;
+
+	mime_type    = g_uri_unescape_string (extension, NULL);
+	content_type = g_content_type_from_mime_type (mime_type);
+
+	if (!content_type) {
+		g_free (mime_type);
+		mime_type = NULL;
+	}
+
+	g_free (content_type);
+
+	return mime_type;
+}
+
+static gboolean
+e_contact_photo_make_inline (EContactPhoto  *photo,
+			     GError        **error)
+{
+	gchar *filename;
+	gchar *contents = NULL;
+	gsize  length;
+	gboolean success = FALSE;
+
+	/* Just a sanity check, this wont happen but return TRUE anyway */
+	if (photo->type != E_CONTACT_PHOTO_TYPE_URI)
+		return TRUE;
+
+	filename = g_filename_from_uri (photo->data.uri, NULL, error);
+	if (!filename)
+		return FALSE;
+
+	if (g_file_get_contents (filename, &contents, &length, error)) {
+		gchar *mime_type;
+
+		mime_type = mime_type_from_filename (filename);
+		if (!mime_type) {
+			gchar *content_type =
+				g_content_type_guess (NULL, (const guchar *)contents, length, NULL);
+
+			if (content_type)
+				mime_type = g_content_type_get_mime_type (content_type);
+
+			g_free (content_type);
+		}
+
+		g_free (photo->data.uri);
+
+		photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
+		photo->data.inlined.data      = (guchar *)contents;
+ 		photo->data.inlined.length    = length;
+		photo->data.inlined.mime_type = mime_type;
+
+		success = TRUE;
+	}
+
+	return success;
+}
+
+static gboolean
+e_contact_inline_photo_field (EContact       *contact,
+			      EContactField   field,
+			      GError        **error)
+{
+	EContactPhoto *photo;
+	gboolean       success = TRUE;
+
+	photo = e_contact_get (contact, field);
+	if (photo) {
+
+		if (photo->type == E_CONTACT_PHOTO_TYPE_URI &&
+		    g_str_has_prefix (photo->data.uri, "file://")) {
+			success = e_contact_photo_make_inline (photo, error);
+
+			if (success)
+				e_contact_set (contact, field, photo);
+		}
+		e_contact_photo_free (photo);
+	}
+
+	return success;
+}
+
+/**
+ * e_contact_inline_local_photos:
+ * @contact: an #EContact
+ * @error: the location to store any #GError which might occur
+ *
+ * Tries to modify any #EContactPhoto fields which are
+ * stored on the local file system as type %E_CONTACT_PHOTO_TYPE_URI
+ * to be inlined and stored as %E_CONTACT_PHOTO_TYPE_INLINED instead.
+ *
+ * Returns: %TRUE if there were no errors, upon error %FALSE is returned
+ *    and @error is set.
+ *
+ * Since: 3.4
+ */
+gboolean
+e_contact_inline_local_photos (EContact      *contact,
+			       GError       **error)
+{
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
+
+	success = e_contact_inline_photo_field (contact, E_CONTACT_PHOTO, error);
+	if (success)
+		success = e_contact_inline_photo_field (contact, E_CONTACT_LOGO, error);
+
+	return success;
+}
+
 
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_photo, "EContactPhoto")
 
