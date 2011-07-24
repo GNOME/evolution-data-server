@@ -252,7 +252,7 @@ imapx_update_user_flags (CamelMessageInfo *info, CamelFlag *server_user_flags)
 }
 
 gboolean
-imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, CamelFolder *folder, gboolean unsolicited)
+imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, guint32 permanent_flags, CamelFolder *folder, gboolean unsolicited)
 {
 	gboolean changed = FALSE;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
@@ -265,6 +265,12 @@ imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, C
 
 		server_set = server_flags & ~xinfo->server_flags;
 		server_cleared = xinfo->server_flags & ~server_flags;
+
+		/* Don't clear non-permanent server-side flags.
+		 * This avoids overwriting local flags that we
+		 * do store permanently, such as junk flags. */
+		if (permanent_flags > 0)
+			server_cleared &= permanent_flags;
 
 		if (server_set & CAMEL_MESSAGE_SEEN)
 			read = 1;

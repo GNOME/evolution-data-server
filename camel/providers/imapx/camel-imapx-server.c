@@ -1528,7 +1528,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 					if (mi) {
 						/* It's unsolicited _unless_ imap->select_pending (i.e. during
 						   a QRESYNC SELECT */
-						changed = imapx_update_message_info_flags (mi, finfo->flags, finfo->user_flags, folder, !imap->select_pending);
+						changed = imapx_update_message_info_flags (mi, finfo->flags, finfo->user_flags, imap->permanentflags, folder, !imap->select_pending);
 					} else {
 						/* This (UID + FLAGS for previously unknown message) might
 						   happen during a SELECT (QRESYNC). We should use it. */
@@ -3866,7 +3866,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 			if (s_minfo && uid_cmp (s_minfo->uid, r->uid, s) == 0) {
 				info = (CamelIMAPXMessageInfo *) s_minfo;
 
-				if (imapx_update_message_info_flags ((CamelMessageInfo *) info, r->server_flags, r->server_user_flags, job->folder, FALSE))
+				if (imapx_update_message_info_flags ((CamelMessageInfo *) info, r->server_flags, r->server_user_flags, is->permanentflags, job->folder, FALSE))
 					camel_folder_change_info_change_uid (job->u.refresh_info.changes, camel_message_info_uid (s_minfo));
 				r->exists = TRUE;
 			} else
