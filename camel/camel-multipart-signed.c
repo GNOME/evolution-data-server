@@ -63,7 +63,7 @@ multipart_signed_clip_stream (CamelMultipartSigned *mps,
 	src = camel_data_wrapper_get_byte_array (data_wrapper);
 	dst = g_byte_array_new ();
 
-	if (start + end <= src->len) {
+	if (start >= 0 && end < src->len) {
 		const guint8 *data = &src->data[start];
 		g_byte_array_append (dst, data, end - start);
 	}
