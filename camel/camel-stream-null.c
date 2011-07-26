@@ -26,9 +26,14 @@
 #include <config.h>
 #endif
 
+#include <glib/gi18n-lib.h>
+
 #include "camel-stream-null.h"
 
-G_DEFINE_TYPE (CamelStreamNull, camel_stream_null, CAMEL_TYPE_STREAM)
+static void camel_stream_null_seekable_init (GSeekableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (CamelStreamNull, camel_stream_null, CAMEL_TYPE_STREAM,
+	G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, camel_stream_null_seekable_init))
 
 static gssize
 stream_null_write (CamelStream *stream,
@@ -48,6 +53,57 @@ stream_null_eos (CamelStream *stream)
 	return TRUE;
 }
 
+static goffset
+stream_null_tell (GSeekable *seekable)
+{
+	return 0;
+}
+
+static gboolean
+stream_null_can_seek (GSeekable *seekable)
+{
+	return TRUE;
+}
+
+static gboolean
+stream_null_seek (GSeekable *seekable,
+		  goffset offset,
+		  GSeekType type,
+		  GCancellable *cancellable,
+		  GError **error)
+{
+	if (type != G_SEEK_SET || offset != 0) {
+		g_set_error_literal (
+			error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("Only reset to beginning is supported with CamelHttpStream"));
+		return FALSE;
+	}
+
+	CAMEL_STREAM_NULL (seekable)->written = 0;
+
+	return TRUE;
+}
+
+static gboolean
+stream_null_can_truncate (GSeekable *seekable)
+{
+	return FALSE;
+}
+
+static gboolean
+stream_null_truncate_fn (GSeekable *seekable,
+			 goffset offset,
+			 GCancellable *cancellable,
+			 GError **error)
+{
+	/* XXX Don't bother translating this.  Camel never calls it. */
+	g_set_error_literal (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		"Truncation is not supported");
+
+	return FALSE;
+}
+
 static void
 camel_stream_null_class_init (CamelStreamNullClass *class)
 {
@@ -56,6 +112,16 @@ camel_stream_null_class_init (CamelStreamNullClass *class)
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->write = stream_null_write;
 	stream_class->eos = stream_null_eos;
+}
+
+static void
+camel_stream_null_seekable_init (GSeekableIface *interface)
+{
+	interface->tell = stream_null_tell;
+	interface->can_seek = stream_null_can_seek;
+	interface->seek = stream_null_seek;
+	interface->can_truncate = stream_null_can_truncate;
+	interface->truncate_fn = stream_null_truncate_fn;
 }
 
 static void

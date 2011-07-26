@@ -30,6 +30,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <glib/gi18n-lib.h>
+
 #include "camel-http-stream.h"
 #include "camel-mime-utils.h"
 #include "camel-net-utils.h"
@@ -51,7 +53,10 @@
 
 #define d(x)
 
-G_DEFINE_TYPE (CamelHttpStream, camel_http_stream, CAMEL_TYPE_STREAM)
+static void camel_http_stream_seekable_init (GSeekableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (CamelHttpStream, camel_http_stream, CAMEL_TYPE_STREAM,
+	G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, camel_http_stream_seekable_init))
 
 static CamelStream *
 http_connect (CamelHttpStream *http,
@@ -512,6 +517,62 @@ http_stream_close (CamelStream *stream,
 	return 0;
 }
 
+static goffset
+http_stream_tell (GSeekable *seekable)
+{
+	return 0;
+}
+
+static gboolean
+http_stream_can_seek (GSeekable *seekable)
+{
+	return TRUE;
+}
+
+static gboolean
+http_stream_seek (GSeekable *seekable,
+		  goffset offset,
+		  GSeekType type,
+		  GCancellable *cancellable,
+		  GError **error)
+{
+	CamelHttpStream *http;
+
+	http = CAMEL_HTTP_STREAM (seekable);
+
+	if (type != G_SEEK_SET || offset != 0) {
+		g_set_error_literal (
+			error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("Only reset to beginning is supported with CamelHttpStream"));
+		return FALSE;
+	}
+
+	if (http->raw)
+		http_disconnect (http);
+
+	return TRUE;
+}
+
+static gboolean
+http_stream_can_truncate (GSeekable *seekable)
+{
+	return FALSE;
+}
+
+static gboolean
+http_stream_truncate_fn (GSeekable *seekable,
+			 goffset offset,
+			 GCancellable *cancellable,
+			 GError **error)
+{
+	/* XXX Don't bother translating this.  Camel never calls it. */
+	g_set_error_literal (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		"Truncation is not supported");
+
+	return FALSE;
+}
+
 static void
 camel_http_stream_class_init (CamelHttpStreamClass *class)
 {
@@ -527,6 +588,16 @@ camel_http_stream_class_init (CamelHttpStreamClass *class)
 	stream_class->write = http_stream_write;
 	stream_class->flush = http_stream_flush;
 	stream_class->close = http_stream_close;
+}
+
+static void
+camel_http_stream_seekable_init (GSeekableIface *interface)
+{
+	interface->tell = http_stream_tell;
+	interface->can_seek = http_stream_can_seek;
+	interface->seek = http_stream_seek;
+	interface->can_truncate = http_stream_can_truncate;
+	interface->truncate_fn = http_stream_truncate_fn;
 }
 
 static void

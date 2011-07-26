@@ -236,6 +236,13 @@ data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
 		return FALSE;
 	}
 
+	if (G_IS_SEEKABLE (stream)) {
+		if (!g_seekable_seek (G_SEEKABLE (stream), 0, G_SEEK_SET, cancellable, error)) {
+			camel_data_wrapper_unlock (data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
+			return FALSE;
+		}
+	}
+
 	/* Wipe any previous contents from our byte array. */
 	g_byte_array_set_size (data_wrapper->priv->byte_array, 0);
 

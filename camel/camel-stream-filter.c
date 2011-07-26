@@ -27,6 +27,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <glib/gi18n-lib.h>
+
 #include "camel-stream-filter.h"
 
 #define d(x)
@@ -61,7 +63,10 @@ struct _CamelStreamFilterPrivate {
 #define READ_PAD (128)		/* bytes padded before buffer */
 #define READ_SIZE (4096)
 
-G_DEFINE_TYPE (CamelStreamFilter, camel_stream_filter, CAMEL_TYPE_STREAM)
+static void camel_stream_filter_seekable_init (GSeekableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (CamelStreamFilter, camel_stream_filter, CAMEL_TYPE_STREAM,
+	G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, camel_stream_filter_seekable_init))
 
 static void
 stream_filter_finalize (GObject *object)
@@ -288,6 +293,75 @@ stream_filter_eos (CamelStream *stream)
 	return camel_stream_eos (priv->source);
 }
 
+static goffset
+stream_filter_tell (GSeekable *seekable)
+{
+	CamelStreamFilterPrivate *priv;
+
+	priv = CAMEL_STREAM_FILTER (seekable)->priv;
+
+	return priv->source && G_IS_SEEKABLE (priv->source) ? g_seekable_tell (G_SEEKABLE (priv->source)) : 0;
+}
+
+static gboolean
+stream_filter_can_seek (GSeekable *seekable)
+{
+	return TRUE;
+}
+
+static gboolean
+stream_filter_seek (GSeekable *seekable,
+		    goffset offset,
+		    GSeekType type,
+		    GCancellable *cancellable,
+		    GError **error)
+{
+	CamelStreamFilterPrivate *priv;
+	struct _filter *f;
+
+	priv = CAMEL_STREAM_FILTER (seekable)->priv;
+
+	if (type != G_SEEK_SET || offset != 0) {
+		g_set_error_literal (
+			error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("Only reset to beginning is supported with CamelStreamFilter"));
+		return FALSE;
+	}
+
+	priv->filteredlen = 0;
+	priv->flushed = FALSE;
+
+	f = priv->filters;
+	while (f) {
+		if (G_IS_SEEKABLE (f->filter) && !g_seekable_seek (G_SEEKABLE (f->filter), offset, type, cancellable, error))
+			return FALSE;
+
+		f = f->next;
+	}
+
+	return priv->source && G_IS_SEEKABLE (priv->source) ? g_seekable_seek (G_SEEKABLE (priv->source), offset, type, cancellable, error) : TRUE;
+}
+
+static gboolean
+stream_filter_can_truncate (GSeekable *seekable)
+{
+	return FALSE;
+}
+
+static gboolean
+stream_filter_truncate_fn (GSeekable *seekable,
+			   goffset offset,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	/* XXX Don't bother translating this.  Camel never calls it. */
+	g_set_error_literal (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		"Truncation is not supported");
+
+	return FALSE;
+}
+
 static void
 camel_stream_filter_class_init (CamelStreamFilterClass *class)
 {
@@ -305,6 +379,16 @@ camel_stream_filter_class_init (CamelStreamFilterClass *class)
 	stream_class->flush = stream_filter_flush;
 	stream_class->close = stream_filter_close;
 	stream_class->eos = stream_filter_eos;
+}
+
+static void
+camel_stream_filter_seekable_init (GSeekableIface *interface)
+{
+	interface->tell = stream_filter_tell;
+	interface->can_seek = stream_filter_can_seek;
+	interface->seek = stream_filter_seek;
+	interface->can_truncate = stream_filter_can_truncate;
+	interface->truncate_fn = stream_filter_truncate_fn;
 }
 
 static void
