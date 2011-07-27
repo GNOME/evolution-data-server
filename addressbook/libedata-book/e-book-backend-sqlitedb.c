@@ -1164,7 +1164,7 @@ static GSList *
 book_backend_sqlitedb_search_query	(EBookBackendSqliteDB *ebsdb,
 					 const gchar *sql,
 					 const gchar *folderid,
-					 GSList *fields_of_interest,
+					 /* const */ GHashTable *fields_of_interest,
 					 GError **error)
 {
 	GError *err = NULL;
@@ -1242,7 +1242,7 @@ book_backend_sqlitedb_search_full (EBookBackendSqliteDB *ebsdb, const gchar *sex
  * @ebsdb: 
  * @folderid: 
  * @sexp: search expression.
- * &fields_of_interest: a #GList containing the names of fields to return, or NULL for all. 
+ * @fields_of_interest: a #GHashTable containing the names of fields to return, or NULL for all. 
  *  At the moment if this is non-null, the vcard will be populated with summary fields, else it would return the 
  *  whole vcard if its stored in the db. [not implemented fully]
  * @error: 
@@ -1258,7 +1258,7 @@ GSList *
 e_book_backend_sqlitedb_search	(EBookBackendSqliteDB *ebsdb,
 				 const gchar *folderid,
 				 const gchar *sexp,
-				 GSList *fields_of_interest,
+				 /* const */ GHashTable *fields_of_interest,
 				 GError **error)
 {
 	GSList *search_contacts = NULL;
