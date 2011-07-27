@@ -257,8 +257,9 @@ e_gdbus_signal_emission_hook_async_void (GSignalInvocationHint *ihint, guint n_p
 		g_variant_builder_add_value (builder, item);
 		item = g_variant_new_string ("");
 		g_variant_builder_add_value (builder, item);
+
+		param_values++;
 	}
-	param_values++;
 	params = g_variant_builder_end (builder);
 	g_variant_builder_unref (builder);
 
@@ -301,16 +302,21 @@ e_gdbus_signal_emission_hook_async_boolean (GSignalInvocationHint *ihint, guint 
 		item = g_variant_new_string (arg_error->message);
 		g_variant_builder_add_value (builder, item);
 		g_free (dbus_error_name);
+
+		/* fake value for easier processing in e_gdbus_proxy_emit_signal() */
+		item = g_variant_new_boolean (FALSE);
+		g_variant_builder_add_value (builder, item);
 	} else {
 		item = g_variant_new_string ("");
 		g_variant_builder_add_value (builder, item);
 		item = g_variant_new_string ("");
 		g_variant_builder_add_value (builder, item);
+
+		param_values++;
+		item = g_variant_new_boolean (g_value_get_boolean (param_values));
+		g_variant_builder_add_value (builder, item);
+		param_values++;
 	}
-	param_values++;
-	item = g_variant_new_boolean (g_value_get_boolean (param_values));
-	g_variant_builder_add_value (builder, item);
-	param_values++;
 	params = g_variant_builder_end (builder);
 	g_variant_builder_unref (builder);
 
@@ -353,16 +359,21 @@ e_gdbus_signal_emission_hook_async_string (GSignalInvocationHint *ihint, guint n
 		item = g_variant_new_string (arg_error->message);
 		g_variant_builder_add_value (builder, item);
 		g_free (dbus_error_name);
+
+		/* fake value for easier processing in e_gdbus_proxy_emit_signal() */
+		item = g_variant_new_string ("");
+		g_variant_builder_add_value (builder, item);
 	} else {
 		item = g_variant_new_string ("");
 		g_variant_builder_add_value (builder, item);
 		item = g_variant_new_string ("");
 		g_variant_builder_add_value (builder, item);
+
+		param_values++;
+		item = g_variant_new_string (g_value_get_string (param_values));
+		g_variant_builder_add_value (builder, item);
+		param_values++;
 	}
-	param_values++;
-	item = g_variant_new_string (g_value_get_string (param_values));
-	g_variant_builder_add_value (builder, item);
-	param_values++;
 	params = g_variant_builder_end (builder);
 	g_variant_builder_unref (builder);
 
@@ -400,23 +411,30 @@ e_gdbus_signal_emission_hook_async_strv (GSignalInvocationHint *ihint, guint n_p
 	param_values++;
 	arg_error = g_value_get_boxed (param_values);
 	if (arg_error) {
+		const gchar *fake_strv;
 		gchar *dbus_error_name = g_dbus_error_encode_gerror (arg_error);
 		item = g_variant_new_string (dbus_error_name ? dbus_error_name : "");
 		g_variant_builder_add_value (builder, item);
 		item = g_variant_new_string (arg_error->message);
 		g_variant_builder_add_value (builder, item);
 		g_free (dbus_error_name);
+
+		/* fake value for easier processing in e_gdbus_proxy_emit_signal() */
+		fake_strv = NULL;
+		item = g_variant_new_strv (&fake_strv, -1);
+		g_variant_builder_add_value (builder, item);
 	} else {
 		item = g_variant_new_string ("");
 		g_variant_builder_add_value (builder, item);
 		item = g_variant_new_string ("");
 		g_variant_builder_add_value (builder, item);
+
+		param_values++;
+		arg_strv = g_value_get_boxed (param_values);
+		item = g_variant_new_strv (arg_strv, -1);
+		g_variant_builder_add_value (builder, item);
+		param_values++;
 	}
-	param_values++;
-	arg_strv = g_value_get_boxed (param_values);
-	item = g_variant_new_strv (arg_strv, -1);
-	g_variant_builder_add_value (builder, item);
-	param_values++;
 	params = g_variant_builder_end (builder);
 	g_variant_builder_unref (builder);
 
@@ -459,16 +477,21 @@ e_gdbus_signal_emission_hook_async_uint (GSignalInvocationHint *ihint, guint n_p
 		item = g_variant_new_string (arg_error->message);
 		g_variant_builder_add_value (builder, item);
 		g_free (dbus_error_name);
+
+		/* fake value for easier processing in e_gdbus_proxy_emit_signal() */
+		item = g_variant_new_uint32 (g_value_get_uint (0));
+		g_variant_builder_add_value (builder, item);
 	} else {
 		item = g_variant_new_string ("");
 		g_variant_builder_add_value (builder, item);
 		item = g_variant_new_string ("");
 		g_variant_builder_add_value (builder, item);
+
+		param_values++;
+		item = g_variant_new_uint32 (g_value_get_uint (param_values));
+		g_variant_builder_add_value (builder, item);
+		param_values++;
 	}
-	param_values++;
-	item = g_variant_new_uint32 (g_value_get_uint (param_values));
-	g_variant_builder_add_value (builder, item);
-	param_values++;
 	params = g_variant_builder_end (builder);
 	g_variant_builder_unref (builder);
 
