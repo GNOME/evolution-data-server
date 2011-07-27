@@ -1176,11 +1176,11 @@ book_backend_sqlitedb_search_query	(EBookBackendSqliteDB *ebsdb,
 	/* TODO enable return just the requested fields. */
 	if (!ebsdb->priv->store_vcard || fields_of_interest) {
 		stmt = sqlite3_mprintf ("SELECT uid, nickname, full_name, given_name, family_name, file_as, email_1, email_2, " 
-					"email_3, is_list, list_show_addresses, wants_html FROM %Q WHERE %s", folderid, sql);
+					"email_3, is_list, list_show_addresses, wants_html FROM %Q%s%s", folderid, sql ? " WHERE " : "", sql ? sql : "");
 		book_backend_sql_exec (ebsdb->priv->db, stmt, store_data_to_vcard, &vcard_data, &err);
 		sqlite3_free (stmt);
 	} else {
-		stmt = sqlite3_mprintf ("SELECT uid, vcard, bdata FROM %Q WHERE %s", folderid, sql);
+		stmt = sqlite3_mprintf ("SELECT uid, vcard, bdata FROM %Q%s%s", folderid, sql ? " WHERE " : "", sql ? sql : "");
 		book_backend_sql_exec (ebsdb->priv->db, stmt, addto_vcard_list_cb , &vcard_data, &err);
 		sqlite3_free (stmt);
 	}
@@ -1241,7 +1241,7 @@ book_backend_sqlitedb_search_full (EBookBackendSqliteDB *ebsdb, const gchar *sex
  * e_book_backend_sqlitedb_search 
  * @ebsdb: 
  * @folderid: 
- * @sexp: search expression.
+ * @sexp: search expression; use NULL or an empty string to get all stored contacts.
  * @fields_of_interest: a #GHashTable containing the names of fields to return, or NULL for all. 
  *  At the moment if this is non-null, the vcard will be populated with summary fields, else it would return the 
  *  whole vcard if its stored in the db. [not implemented fully]
@@ -1263,10 +1263,13 @@ e_book_backend_sqlitedb_search	(EBookBackendSqliteDB *ebsdb,
 {
 	GSList *search_contacts = NULL;
 
-	if (book_backend_sqlitedb_is_summary_query (sexp)) {
+	if (sexp && !*sexp)
+		sexp = NULL;
+
+	if (!sexp || book_backend_sqlitedb_is_summary_query (sexp)) {
 		gchar *sql_query;
 
-		sql_query = sexp_to_sql_query (sexp);
+		sql_query = sexp ? sexp_to_sql_query (sexp) : NULL;
 		search_contacts = book_backend_sqlitedb_search_query (ebsdb, sql_query, folderid, fields_of_interest, error);
 		g_free (sql_query);
 	} else if (ebsdb->priv->store_vcard)
@@ -1287,13 +1290,16 @@ e_book_backend_sqlitedb_search_uids	(EBookBackendSqliteDB *ebsdb,
 {
 	GSList *uids = NULL;
 
-	if (book_backend_sqlitedb_is_summary_query (sexp)) {
+	if (sexp && !*sexp)
+		sexp = NULL;
+
+	if (!sexp || book_backend_sqlitedb_is_summary_query (sexp)) {
 		gchar *stmt;
-		gchar *sql_query = sexp_to_sql_query (sexp);
+		gchar *sql_query = sexp ? sexp_to_sql_query (sexp) : NULL;
 
 		READER_LOCK (ebsdb);
 
-		stmt = sqlite3_mprintf ("SELECT uid FROM %Q WHERE %s", folderid, sql_query);
+		stmt = sqlite3_mprintf ("SELECT uid FROM %Q%s%s", folderid, sql_query ? " WHERE " : "", sql_query ? sql_query : "");
 		book_backend_sql_exec (ebsdb->priv->db, stmt, addto_slist_cb, &uids, error);
 		sqlite3_free (stmt);
 
