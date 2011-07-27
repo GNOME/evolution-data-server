@@ -815,7 +815,7 @@ imap_store_set_property (GObject *object,
 		case PROP_SECURITY_METHOD:
 			camel_network_service_set_security_method (
 				CAMEL_NETWORK_SERVICE (object),
-				g_value_get_enum (value));
+				g_value_get_uint (value));
 			return;
 	}
 
@@ -837,7 +837,7 @@ imap_store_get_property (GObject *object,
 			return;
 
 		case PROP_SECURITY_METHOD:
-			g_value_set_enum (
+			g_value_set_uint (
 				value,
 				camel_network_service_get_security_method (
 				CAMEL_NETWORK_SERVICE (object)));

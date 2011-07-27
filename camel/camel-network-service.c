@@ -21,7 +21,6 @@
 #include <config.h>
 #include <glib/gi18n-lib.h>
 
-#include <camel/camel-enumtypes.h>
 #include <camel/camel-service.h>
 #include <camel/camel-session.h>
 #include <camel/camel-tcp-stream-raw.h>
@@ -140,11 +139,12 @@ camel_network_service_default_init (CamelNetworkServiceInterface *interface)
 
 	g_object_interface_install_property (
 		interface,
-		g_param_spec_enum (
+		g_param_spec_uint (
 			"security-method",
 			"Security Method",
 			"Method used to establish a network connection",
-			CAMEL_TYPE_NETWORK_SECURITY_METHOD,
+			CAMEL_NETWORK_SECURITY_METHOD_NONE,
+			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT,
 			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
