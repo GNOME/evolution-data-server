@@ -839,10 +839,8 @@ add_folders_to_summary (CamelIMAPXStore *istore, CamelIMAPXServer *server, GPtrA
 		}
 
 		si = camel_imapx_store_summary_add_from_full (istore->summary, li->name, li->separator);
-		if (!si) {
-			g_object_unref (server);
+		if (!si)
 			continue;
-		}
 
 		new_flags = (si->info.flags & (CAMEL_STORE_INFO_FOLDER_SUBSCRIBED | CAMEL_STORE_INFO_FOLDER_CHECK_FOR_NEW)) |
 						(li->flags & ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED);
