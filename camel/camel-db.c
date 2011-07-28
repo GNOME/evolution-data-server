@@ -1432,7 +1432,7 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
 
-		table_creation_query = sqlite3_mprintf ("INSERT INTO 'mem.%q' SELECT uid , flags , msg_type , read , deleted , replied , important , junk , attachment , msg_security , size , dsent , dreceived , subject , mail_from , mail_to , mail_cc , mlist , followup_flag , followup_completed_on , followup_due_by , part , labels , usertags , cinfo , bdata , strftime(\"%%s\", 'now'), strftime(\"%%s\", 'now') FROM %Q", folder_name, folder_name);
+		table_creation_query = sqlite3_mprintf ("INSERT INTO 'mem.%q' SELECT uid , flags , msg_type , read , deleted , replied , important , junk , attachment , dirty , size , dsent , dreceived , subject , mail_from , mail_to , mail_cc , mlist , followup_flag , followup_completed_on , followup_due_by , part , labels , usertags , cinfo , bdata , strftime(\"%%s\", 'now'), strftime(\"%%s\", 'now') FROM %Q", folder_name, folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
 
