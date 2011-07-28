@@ -1711,7 +1711,7 @@ e_book_client_get_contacts (EBookClient *client, const gchar *sexp, GCancellable
  * e_book_client_get_contacts_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @contacts: (out) a #GSList of matched #EContact-s
+ * @contacts: (out): a #GSList of matched #EContact-s
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_contacts().
