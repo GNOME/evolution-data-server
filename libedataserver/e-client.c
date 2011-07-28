@@ -478,7 +478,7 @@ client_ensure_capabilities (EClient *client)
  * This list, together with inner strings, is owned by the @client.
  * To check for individual capabilities use e_client_check_capability().
  *
- * Returns: #GSList of const strings of capabilities
+ * Returns: (transfer none): #GSList of const strings of capabilities
  *
  * Since: 3.2
  **/
