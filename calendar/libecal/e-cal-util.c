@@ -674,11 +674,11 @@ e_cal_util_priority_to_string (gint priority)
 	if (priority <= 0)
 		retval = "";
 	else if (priority <= 4)
-		retval = _("High");
+		retval = C_("Priority", "High");
 	else if (priority == 5)
-		retval = _("Normal");
+		retval = C_("Priority", "Normal");
 	else if (priority <= 9)
-		retval = _("Low");
+		retval = C_("Priority", "Low");
 	else
 		retval = "";
 
@@ -699,13 +699,13 @@ e_cal_util_priority_from_string (const gchar *string)
 	gint priority;
 
 	/* An empty string is the same as 'None'. */
-	if (!string || !string[0] || !e_util_utf8_strcasecmp (string, _("Undefined")))
+	if (!string || !string[0] || !e_util_utf8_strcasecmp (string, C_("Priority", "Undefined")))
 		priority = 0;
-	else if (!e_util_utf8_strcasecmp (string, _("High")))
+	else if (!e_util_utf8_strcasecmp (string, C_("Priority", "High")))
 		priority = 3;
-	else if (!e_util_utf8_strcasecmp (string, _("Normal")))
+	else if (!e_util_utf8_strcasecmp (string, C_("Priority", "Normal")))
 		priority = 5;
-	else if (!e_util_utf8_strcasecmp (string, _("Low")))
+	else if (!e_util_utf8_strcasecmp (string, C_("Priority", "Low")))
 		priority = 7;
 	else
 		priority = -1;

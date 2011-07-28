@@ -840,6 +840,7 @@ search_match_all (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFo
 				r->value.boolean = r1->value.boolean;
 			} else {
 				g_warning("invalid syntax, matches require a single bool result");
+				/* Translators: The '%s' is an element type name, part of an expressing language */
 				error_msg = g_strdup_printf(_("(%s) requires a single bool result"), "match-all");
 				e_sexp_fatal_error (f, error_msg);
 				g_free (error_msg);
@@ -882,6 +883,7 @@ search_match_all (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFo
 					g_ptr_array_add (r->value.ptrarray, (gchar *) uid);
 			} else {
 				g_warning("invalid syntax, matches require a single bool result");
+				/* Translators: The '%s' is an element type name, part of an expressing language */
 				error_msg = g_strdup_printf(_("(%s) requires a single bool result"), "match-all");
 				e_sexp_fatal_error (f, error_msg);
 				g_free (error_msg);
@@ -935,12 +937,14 @@ search_match_threads (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, Cam
 
 	/* not supported in match-all */
 	if (search->current) {
+		/* Translators: Each '%s' is an element type name, part of an expressing language */
 		error_msg = g_strdup_printf(_("(%s) not allowed inside %s"), "match-threads", "match-all");
 		e_sexp_fatal_error (f, error_msg);
 		g_free (error_msg);
 	}
 
 	if (argc == 0) {
+		/* Translators: The '%s' is an element type name, part of an expressing language */
 		error_msg = g_strdup_printf(_("(%s) requires a match type string"), "match-threads");
 		e_sexp_fatal_error (f, error_msg);
 		g_free (error_msg);
@@ -948,6 +952,7 @@ search_match_threads (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, Cam
 
 	r = e_sexp_term_eval (f, argv[0]);
 	if (r->type != ESEXP_RES_STRING) {
+		/* Translators: The '%s' is an element type name, part of an expressing language */
 		error_msg = g_strdup_printf(_("(%s) requires a match type string"), "match-threads");
 		e_sexp_fatal_error (f, error_msg);
 		g_free (error_msg);
@@ -975,6 +980,7 @@ search_match_threads (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, Cam
 	}
 
 	if (r == NULL || r->type != ESEXP_RES_ARRAY_PTR) {
+		/* Translators: The '%s' is an element type name, part of an expressing language */
 		error_msg = g_strdup_printf(_("(%s) expects an array result"), "match-threads");
 		e_sexp_fatal_error (f, error_msg);
 		g_free (error_msg);
@@ -984,6 +990,7 @@ search_match_threads (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, Cam
 		return r;
 
 	if (search->folder == NULL) {
+		/* Translators: The '%s' is an element type name, part of an expressing language */
 		error_msg = g_strdup_printf(_("(%s) requires the folder set"), "match-threads");
 		e_sexp_fatal_error (f, error_msg);
 		g_free (error_msg);

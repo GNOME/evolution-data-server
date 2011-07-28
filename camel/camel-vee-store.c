@@ -32,6 +32,10 @@
 #include "camel-vee-folder.h"
 #include "camel-vee-store.h"
 
+/* Translators: 'Unmatched' is a folder name under Search folders where are shown
+   all messages not belonging into any other configured search folder */
+#define PRETTY_UNMATCHED_FOLDER_NAME _("Unmatched")
+
 #define d(x)
 
 /* flags
@@ -122,12 +126,12 @@ vee_store_constructed (GObject *object)
 	vee_store->folder_unmatched = g_object_new (
 		CAMEL_TYPE_VEE_FOLDER,
 		"full-name", CAMEL_UNMATCHED_NAME,
-		"display-name", _("Unmatched"),
+		"display-name", PRETTY_UNMATCHED_FOLDER_NAME,
 		"parent-store", vee_store, NULL);
 	camel_vee_folder_construct (
 		vee_store->folder_unmatched, CAMEL_STORE_FOLDER_PRIVATE);
 	camel_db_create_vfolder (
-		CAMEL_STORE (vee_store)->cdb_r, _("Unmatched"), NULL);
+		CAMEL_STORE (vee_store)->cdb_r, PRETTY_UNMATCHED_FOLDER_NAME, NULL);
 #endif
 
 }
@@ -294,7 +298,7 @@ vee_store_get_folder_info_sync (CamelStore *store,
 	if ((top == NULL || top[0] == 0 || strncmp (top, CAMEL_UNMATCHED_NAME, strlen (CAMEL_UNMATCHED_NAME)) == 0)) {
 		info = camel_folder_info_new ();
 		info->full_name = g_strdup (CAMEL_UNMATCHED_NAME);
-		info->display_name = g_strdup (_("Unmatched"));
+		info->display_name = g_strdup (PRETTY_UNMATCHED_FOLDER_NAME);
 		info->unread = -1;
 		info->flags =
 			CAMEL_FOLDER_NOCHILDREN |
