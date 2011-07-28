@@ -957,6 +957,8 @@ on_name_lost (GDBusConnection *connection,
 		g_list_foreach (copy, remove_data_cal_cb, NULL);
 		g_list_free (copy);
 	}
+	g_print ("Superseded...\n");
+	g_main_loop_quit (loop);
 }
 
 #ifdef G_OS_UNIX
@@ -1048,7 +1050,7 @@ main (gint argc, gchar **argv)
 	owner_id = g_bus_own_name (
 		G_BUS_TYPE_SESSION,
 		CALENDAR_DBUS_SERVICE_NAME,
-		G_BUS_NAME_OWNER_FLAGS_NONE,
+		G_BUS_NAME_OWNER_FLAGS_REPLACE | G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT,
 		on_bus_acquired,
 		on_name_acquired,
 		on_name_lost,

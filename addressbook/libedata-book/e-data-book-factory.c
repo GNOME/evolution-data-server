@@ -739,6 +739,8 @@ on_name_lost (GDBusConnection *connection,
 	}
 
 	g_mutex_unlock (factory->priv->connections_lock);
+	g_print ("Superseded...\n");
+	g_main_loop_quit (loop);
 }
 
 #ifdef G_OS_UNIX
@@ -822,7 +824,7 @@ main (gint argc, gchar **argv)
 	owner_id = g_bus_own_name (
 		G_BUS_TYPE_SESSION,
 		ADDRESS_BOOK_DBUS_SERVICE_NAME,
-		G_BUS_NAME_OWNER_FLAGS_NONE,
+		G_BUS_NAME_OWNER_FLAGS_REPLACE | G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT,
 		on_bus_acquired,
 		on_name_acquired,
 		on_name_lost,
