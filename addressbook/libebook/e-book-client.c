@@ -755,7 +755,7 @@ make_me_card (void)
 /**
  * e_book_client_get_self:
  * @contact: (out): an #EContact pointer to set
- * @client: an #EBookClient pointer to set
+ * @client: (out): an #EBookClient pointer to set
  * @error: a #GError to set on failure
  *
  * Get the #EContact referring to the user of the address book
