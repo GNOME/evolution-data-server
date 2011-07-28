@@ -915,7 +915,7 @@ static GHashTable *ptr_tracker = NULL;
 static void
 dump_left_ptrs_cb (gpointer ptr, gpointer info, gpointer user_data)
 {
-	g_print ("      %p %s%s%s", ptr, info ? "(" : "", info ? (const gchar *) info : "", info ? ")" : "");
+	g_print ("      %p %s%s%s\n", ptr, info ? "(" : "", info ? (const gchar *) info : "", info ? ")" : "");
 }
 
 static void
