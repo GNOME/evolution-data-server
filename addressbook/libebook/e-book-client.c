@@ -1754,7 +1754,7 @@ e_book_client_get_contacts_finish (EBookClient *client, GAsyncResult *result, GS
  * e_book_client_get_contacts_sync:
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query
- * @contacts: (out) a #GSList of matched #EContact-s
+ * @contacts: (out): a #GSList of matched #EContact-s
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
