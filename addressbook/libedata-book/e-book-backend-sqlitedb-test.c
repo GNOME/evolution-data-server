@@ -148,7 +148,7 @@ start_tests (gpointer data)
 
 	g_print ("Get Vcard string \n");
 	op = "get vcard string";
-	vcard_str = e_book_backend_sqlitedb_get_vcard_string (ebsdb, folderid, uid, &error);
+	vcard_str = e_book_backend_sqlitedb_get_vcard_string (ebsdb, folderid, uid, NULL, &error);
 	if (error)
 		goto exit;
 	g_print ("VCard: %s \n", vcard_str);

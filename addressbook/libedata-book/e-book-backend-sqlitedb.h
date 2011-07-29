@@ -104,12 +104,14 @@ EContact *	e_book_backend_sqlitedb_get_contact
 							(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 const gchar *uid,
-							 GError **error);
+							 GHashTable  *fields_of_interest,
+							 GError     **error);
 gchar *		e_book_backend_sqlitedb_get_vcard_string
 							(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 const gchar *uid,
-							 GError **error);
+							 GHashTable  *fields_of_interest,
+							 GError     **error);
 GSList *		e_book_backend_sqlitedb_search	(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 const gchar *sexp,
@@ -184,6 +186,9 @@ gboolean	e_book_backend_sqlitedb_remove		(EBookBackendSqliteDB *ebsdb,
 							 GError **error);
 void		e_book_backend_sqlitedb_search_data_free
 							(EbSdbSearchData *s_data);
+
+gboolean        e_book_backend_sqlitedb_is_summary_query (const gchar *query, 
+							  GHashTable  *fields_of_interest);
 
 G_END_DECLS
 
