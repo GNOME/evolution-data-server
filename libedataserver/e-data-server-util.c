@@ -921,6 +921,7 @@ G_LOCK_DEFINE_STATIC (ptr_tracker);
 static GHashTable *ptr_tracker = NULL;
 
 struct pt_data {
+	gpointer ptr;
 	gchar *info;
 	GString *backtrace;
 };
@@ -940,16 +941,87 @@ free_pt_data (gpointer ptr)
 }
 
 static void
-dump_left_ptrs_cb (gpointer ptr, gpointer info, gpointer user_data)
+dump_left_ptrs_cb (gpointer key, gpointer value, gpointer user_data)
 {
 	guint *left = user_data;
-	struct pt_data *ptd = info;
+	struct pt_data *ptd = value;
 	gboolean have_info = ptd && ptd->info;
 	gboolean have_bt = ptd && ptd->backtrace && ptd->backtrace->str && *ptd->backtrace->str;
 
 	*left = (*left) - 1;
-	g_print ("      %p %s%s%s%s%s%s\n", ptr, have_info ? "(" : "", have_info ? ptd->info : "", have_info ? ")" : "", have_bt ? "\n" : "", have_bt ? ptd->backtrace->str : "", have_bt && *left > 0 ? "\n" : "");
+	g_print ("      %p %s%s%s%s%s%s\n", key, have_info ? "(" : "", have_info ? ptd->info : "", have_info ? ")" : "", have_bt ? "\n" : "", have_bt ? ptd->backtrace->str : "", have_bt && *left > 0 ? "\n" : "");
 }
+
+#ifdef HAVE_BACKTRACE_SYMBOLS
+static guint
+by_backtrace_hash (gconstpointer ptr)
+{
+	const struct pt_data *ptd = ptr;
+
+	if (!ptd || !ptd->backtrace)
+		return 0;
+
+	return g_str_hash (ptd->backtrace->str);
+}
+
+static gboolean
+by_backtrace_equal (gconstpointer ptr1, gconstpointer ptr2)
+{
+	const struct pt_data *ptd1 = ptr1, *ptd2 = ptr2;
+
+	if ((!ptd1 || !ptd1->backtrace) && (!ptd2 || !ptd2->backtrace))
+		return TRUE;
+
+	return ptd1 && ptd1->backtrace && ptd2 && ptd2->backtrace && g_str_equal (ptd1->backtrace->str, ptd2->backtrace->str);
+}
+
+static void
+dump_by_backtrace_cb (gpointer key, gpointer value, gpointer user_data)
+{
+	guint *left = user_data;
+	struct pt_data *ptd = key;
+	guint count = GPOINTER_TO_UINT (value);
+
+	if (count == 1) {
+		dump_left_ptrs_cb (ptd->ptr, ptd, left);
+	} else {
+		gboolean have_info = ptd && ptd->info;
+		gboolean have_bt = ptd && ptd->backtrace && ptd->backtrace->str && *ptd->backtrace->str;
+
+		*left = (*left) - 1;
+
+		g_print ("      %d x %s%s%s%s%s%s\n", count, have_info ? "(" : "", have_info ? ptd->info : "", have_info ? ")" : "", have_bt ? "\n" : "", have_bt ? ptd->backtrace->str : "", have_bt && *left > 0 ? "\n" : "");
+	}
+}
+
+static void
+dump_by_backtrace (GHashTable *ptrs)
+{
+	GHashTable *by_bt = g_hash_table_new (by_backtrace_hash, by_backtrace_equal);
+	GHashTableIter iter;
+	gpointer key, value;
+	struct ptr_data *ptd;
+	guint count;
+
+	g_hash_table_iter_init (&iter, ptrs);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		guint cnt;
+
+		ptd = value;
+		if (!ptd)
+			continue;
+
+		cnt = GPOINTER_TO_UINT (g_hash_table_lookup (by_bt, ptd));
+		cnt++;
+
+		g_hash_table_insert (by_bt, ptd, GUINT_TO_POINTER (cnt));
+	}
+
+	count = g_hash_table_size (by_bt);
+	g_hash_table_foreach (by_bt, dump_by_backtrace_cb, &count);
+	g_hash_table_destroy (by_bt);
+}
+#endif /* HAVE_BACKTRACE_SYMBOLS */
 
 static void
 dump_tracked_ptrs (gboolean is_at_exit)
@@ -963,7 +1035,11 @@ dump_tracked_ptrs (gboolean is_at_exit)
 		} else {
 			guint count = g_hash_table_size (ptr_tracker);
 			g_print ("   Left %d tracked pointers:\n", count);
+			#ifdef HAVE_BACKTRACE_SYMBOLS
+			dump_by_backtrace (ptr_tracker);
+			#else
 			g_hash_table_foreach (ptr_tracker, dump_left_ptrs_cb, &count);
+			#endif
 		}
 		g_print ("----------------------------------------------------------\n");
 	} else if (!is_at_exit) {
@@ -1169,6 +1245,7 @@ e_pointer_tracker_track_with_info (gpointer ptr, const gchar *info)
 	}
 
 	ptd = g_new0 (struct pt_data, 1);
+	ptd->ptr = ptr;
 	ptd->info = g_strdup (info);
 	ptd->backtrace = get_current_backtrace ();
 
