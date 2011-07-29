@@ -26,6 +26,14 @@
 #include <time.h>
 #include <unistd.h>
 
+#ifdef HAVE_BACKTRACE_SYMBOLS
+#include <execinfo.h>
+#ifdef HAVE_ELFUTILS_LIBDWFL
+#include <elfutils/libdwfl.h>
+#include <errno.h>
+#endif
+#endif
+
 #ifdef G_OS_WIN32
 #include <mbstring.h>
 #endif
@@ -912,10 +920,35 @@ e_data_server_util_get_dbus_call_timeout (void)
 G_LOCK_DEFINE_STATIC (ptr_tracker);
 static GHashTable *ptr_tracker = NULL;
 
+struct pt_data {
+	gchar *info;
+	GString *backtrace;
+};
+
+static void
+free_pt_data (gpointer ptr)
+{
+	struct pt_data *ptd = ptr;
+
+	if (!ptd)
+		return;
+
+	g_free (ptd->info);
+	if (ptd->backtrace)
+		g_string_free (ptd->backtrace, TRUE);
+	g_free (ptd);
+}
+
 static void
 dump_left_ptrs_cb (gpointer ptr, gpointer info, gpointer user_data)
 {
-	g_print ("      %p %s%s%s\n", ptr, info ? "(" : "", info ? (const gchar *) info : "", info ? ")" : "");
+	guint *left = user_data;
+	struct pt_data *ptd = info;
+	gboolean have_info = ptd && ptd->info;
+	gboolean have_bt = ptd && ptd->backtrace && ptd->backtrace->str && *ptd->backtrace->str;
+
+	*left = (*left) - 1;
+	g_print ("      %p %s%s%s%s%s%s\n", ptr, have_info ? "(" : "", have_info ? ptd->info : "", have_info ? ")" : "", have_bt ? "\n" : "", have_bt ? ptd->backtrace->str : "", have_bt && *left > 0 ? "\n" : "");
 }
 
 static void
@@ -928,8 +961,9 @@ dump_tracked_ptrs (gboolean is_at_exit)
 		if (g_hash_table_size (ptr_tracker) == 0) {
 			g_print ("   All tracked pointers were properly removed\n");
 		} else {
-			g_print ("   Left %d tracked pointers:\n", g_hash_table_size (ptr_tracker));
-			g_hash_table_foreach (ptr_tracker, dump_left_ptrs_cb, NULL);
+			guint count = g_hash_table_size (ptr_tracker);
+			g_print ("   Left %d tracked pointers:\n", count);
+			g_hash_table_foreach (ptr_tracker, dump_left_ptrs_cb, &count);
 		}
 		g_print ("----------------------------------------------------------\n");
 	} else if (!is_at_exit) {
@@ -939,6 +973,173 @@ dump_tracked_ptrs (gboolean is_at_exit)
 	}
 
 	G_UNLOCK (ptr_tracker);
+}
+
+#ifdef HAVE_BACKTRACE_SYMBOLS
+
+#ifdef HAVE_ELFUTILS_LIBDWFL
+static Dwfl *
+dwfl_get (gboolean reload)
+{
+	static gchar *debuginfo_path = NULL;
+	static Dwfl *dwfl = NULL;
+	static gboolean checked_for_dwfl = FALSE;
+	static GStaticMutex dwfl_mutex = G_STATIC_MUTEX_INIT;
+	static const Dwfl_Callbacks proc_callbacks = {
+		.find_debuginfo = dwfl_standard_find_debuginfo,
+		.debuginfo_path = &debuginfo_path,
+		.find_elf = dwfl_linux_proc_find_elf
+	};
+
+	g_static_mutex_lock (&dwfl_mutex);
+
+	if (checked_for_dwfl) {
+		if (!reload) {
+			g_static_mutex_unlock (&dwfl_mutex);
+			return dwfl;
+		}
+
+		dwfl_end (dwfl);
+		dwfl = NULL;
+	}
+
+	checked_for_dwfl = TRUE;
+
+	dwfl = dwfl_begin (&proc_callbacks);
+	if (!dwfl) {
+		g_static_mutex_unlock (&dwfl_mutex);
+		return NULL;
+	}
+
+	errno = 0;
+	if (dwfl_linux_proc_report (dwfl, getpid ()) != 0 || dwfl_report_end (dwfl, NULL, NULL) != 0) {
+		dwfl_end (dwfl);
+		dwfl = NULL;
+	}
+
+	g_static_mutex_unlock (&dwfl_mutex);
+
+	return dwfl;
+}
+
+struct getmodules_callback_arg
+{
+	gpointer addr;
+	const gchar *func_name;
+	const gchar *file_path;
+	gint lineno;
+};
+
+static gint
+getmodules_callback (Dwfl_Module *module, gpointer *module_userdata_pointer, const gchar *module_name, Dwarf_Addr module_low_addr, gpointer arg_voidp)
+{
+	struct getmodules_callback_arg *arg = arg_voidp;
+	Dwfl_Line *line;
+
+	arg->func_name = dwfl_module_addrname (module, (GElf_Addr) arg->addr);
+	line = dwfl_module_getsrc (module, (GElf_Addr) arg->addr);
+	if (line) {
+		arg->file_path = dwfl_lineinfo (line, NULL, &arg->lineno, NULL, NULL, NULL);
+	} else {
+		arg->file_path = NULL;
+	}
+
+	return arg->func_name ? DWARF_CB_ABORT : DWARF_CB_OK;
+}
+#endif /* HAVE_ELFUTILS_LIBDWFL */
+
+static const gchar *
+addr_lookup (gpointer addr, const gchar **file_path, gint *lineno, const gchar *fallback)
+{
+#ifdef HAVE_ELFUTILS_LIBDWFL
+	Dwfl *dwfl = dwfl_get (FALSE);
+	struct getmodules_callback_arg arg;
+
+	if (!dwfl)
+		return NULL;
+
+	arg.addr = addr;
+	arg.func_name = NULL;
+	arg.file_path = NULL;
+	arg.lineno = -1;
+
+	dwfl_getmodules (dwfl, getmodules_callback, &arg, 0);
+
+	if (!arg.func_name && fallback && strstr (fallback, "/lib") != fallback && strstr (fallback, "/usr/lib") != fallback) {
+		dwfl = dwfl_get (TRUE);
+		if (dwfl)
+			dwfl_getmodules (dwfl, getmodules_callback, &arg, 0);
+	}
+
+	*file_path = arg.file_path;
+	*lineno = arg.lineno;
+
+	return arg.func_name;
+#else /* HAVE_ELFUTILS_LIBDWFL */
+	return NULL;
+#endif /* HAVE_ELFUTILS_LIBDWFL */
+}
+
+#endif /* HAVE_BACKTRACE_SYMBOLS */
+
+static GString *
+get_current_backtrace (void)
+{
+#ifdef HAVE_BACKTRACE_SYMBOLS
+	#define MAX_BT_DEPTH 50
+	gint nptrs, ii;
+	gpointer bt[MAX_BT_DEPTH + 1];
+	gchar **bt_syms;
+	GString *bt_str;
+
+	nptrs = backtrace (bt, MAX_BT_DEPTH + 1);
+	if (nptrs <= 2)
+		return NULL;
+
+	bt_syms = backtrace_symbols (bt, nptrs);
+	if (!bt_syms)
+		return NULL;
+
+	bt_str = g_string_new ("");
+	for (ii = 2; ii < nptrs; ii++) {
+		gint lineno = -1;
+		const gchar *file_path = NULL;
+		const gchar *str = addr_lookup (bt[ii], &file_path, &lineno, bt_syms[ii]);
+		if (!str) {
+			str = bt_syms[ii];
+			file_path = NULL;
+			lineno = -1;
+		}
+		if (!str)
+			continue;
+
+		if (bt_str->len)
+			g_string_append (bt_str, "\n\t   by ");
+		g_string_append (bt_str, str);
+		if (str != bt_syms[ii])
+			g_string_append (bt_str, "()");
+
+		if (file_path && lineno > 0) {
+			const gchar *lastsep = strrchr (file_path, G_DIR_SEPARATOR);
+			g_string_append_printf (bt_str, " at %s:%d", lastsep ? lastsep + 1 : file_path, lineno);
+		}
+	}
+
+	g_free (bt_syms);
+
+	if (bt_str->len == 0) {
+		g_string_free (bt_str, TRUE);
+		bt_str = NULL;
+	} else {
+		g_string_insert (bt_str, 0, "\t   at ");
+	}
+
+	return bt_str;
+
+	#undef MAX_BT_DEPTH
+#else /* HAVE_BACKTRACE_SYMBOLS */
+	return NULL;
+#endif /* HAVE_BACKTRACE_SYMBOLS */
 }
 
 static void
@@ -957,15 +1158,21 @@ dump_left_at_exit_cb (void)
 void
 e_pointer_tracker_track_with_info (gpointer ptr, const gchar *info)
 {
+	struct pt_data *ptd;
+
 	g_return_if_fail (ptr != NULL);
 
 	G_LOCK (ptr_tracker);
 	if (!ptr_tracker) {
-		ptr_tracker = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
+		ptr_tracker = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, free_pt_data);
 		g_atexit (dump_left_at_exit_cb);
 	}
 
-	g_hash_table_insert (ptr_tracker, ptr, g_strdup (info));
+	ptd = g_new0 (struct pt_data, 1);
+	ptd->info = g_strdup (info);
+	ptd->backtrace = get_current_backtrace ();
+
+	g_hash_table_insert (ptr_tracker, ptr, ptd);
 
 	G_UNLOCK (ptr_tracker);
 }

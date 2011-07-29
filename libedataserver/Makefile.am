@@ -48,11 +48,12 @@ libedataserver_1_2_la_SOURCES =		\
 	libedataserver-private.h	\
 	eds-version.c
 
-libedataserver_1_2_la_LIBADD = 				\
+libedataserver_1_2_la_LIBADD =				\
 	$(E_DATA_SERVER_LIBS)				\
 	$(ICONV_LIBS)					\
 	$(SOCKET_LIBS)					\
-	$(SOUP_LIBS)
+	$(SOUP_LIBS)					\
+	$(LIBDWFL_LIBS)
 
 libedataserver_1_2_la_LDFLAGS = \
 	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE) $(NO_UNDEFINED)

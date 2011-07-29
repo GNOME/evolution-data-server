@@ -539,6 +539,58 @@ AC_RUN_IFELSE([AC_LANG_SOURCE([[
 CFLAGS="$save_CFLAGS"
 LIBS="$save_LIBS"
 
+AC_ARG_ENABLE([backtraces],
+	[AS_HELP_STRING([--enable-backtraces],
+	[enable backtraces for e_ptr_tracker (default=no)])],
+	[enable_backtraces=$enableval], [enable_backtraces=no])
+
+if test "x$enable_backtraces" = xyes; then
+	dnl ****************************
+	dnl Check for backtrace_symbols function and dwfl from elfutils
+	dnl ****************************
+	AC_MSG_CHECKING([libc backtrace_symbols function])
+	AC_LINK_IFELSE([AC_LANG_PROGRAM(
+		[[#include <execinfo.h>]],
+		[[{ void *bt[1]; backtrace_symbols (bt, backtrace(bt, 1)); }]])],
+		[AC_DEFINE(HAVE_BACKTRACE_SYMBOLS, 1, [libc provides backtrace_symbols function]) ac_cv_have_bsf=yes],[ac_cv_have_bsf=no])
+	AC_MSG_RESULT([$ac_cv_have_bsf])
+
+	if test "x$ac_cv_have_bsf" = xyes; then
+		LIBS="$LIBS -ldw"
+
+		AC_MSG_CHECKING([elfutils/libdwfl])
+		AC_LINK_IFELSE([AC_LANG_PROGRAM(
+			[[#include <elfutils/libdwfl.h>]],
+			[[{
+				Dwfl *dwfl;
+				Dwfl_Module *module;
+				Dwarf_Addr module_low_addr;
+				Dwfl_Line *line;
+
+				dwfl_standard_find_debuginfo;
+				dwfl_linux_proc_find_elf;
+				dwfl_begin (NULL);
+				dwfl_linux_proc_report (NULL, 1);
+				dwfl_report_end (NULL, NULL, NULL);
+				dwfl_end (NULL);
+				dwfl_module_addrname (NULL, NULL);
+				dwfl_module_getsrc (NULL, NULL);
+				dwfl_lineinfo (NULL, NULL, NULL, NULL, NULL, NULL);
+				DWARF_CB_ABORT; DWARF_CB_OK;
+				dwfl_getmodules (NULL, NULL, NULL, 0);
+			}]])],
+			[AC_DEFINE(HAVE_ELFUTILS_LIBDWFL, 1, [have elfutils/libdwfl.h functions]) ac_cv_have_elfdwfl=yes],[ac_cv_have_elfdwfl=no])
+		AC_MSG_RESULT([$ac_cv_have_elfdwfl])
+
+		LIBS="$save_LIBS"
+
+		if test "x$ac_cv_have_elfdwfl" = xyes; then
+			LIBDWFL_LIBS="-ldw"
+			AC_SUBST(LIBDWFL_LIBS)
+		fi
+	fi
+fi
+
 dnl **********************************
 dnl Check for nl_langinfo and CODESET
 dnl **********************************
