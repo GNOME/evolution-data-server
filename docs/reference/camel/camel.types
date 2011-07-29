@@ -65,6 +65,7 @@ camel_sasl_plain_get_type
 camel_sasl_popb4smtp_get_type
 camel_service_get_type
 camel_session_get_type
+camel_settings_get_type
 camel_smime_context_get_type
 camel_store_get_type
 camel_store_summary_get_type

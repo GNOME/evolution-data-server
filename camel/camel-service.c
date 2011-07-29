@@ -54,6 +54,7 @@ typedef struct _AsyncContext AsyncContext;
 struct _CamelServicePrivate {
 	gpointer session;  /* weak pointer */
 
+	CamelSettings *settings;
 	CamelProvider *provider;
 	CamelURL *url;
 
@@ -75,6 +76,7 @@ enum {
 	PROP_0,
 	PROP_PROVIDER,
 	PROP_SESSION,
+	PROP_SETTINGS,
 	PROP_UID,
 	PROP_URL
 };
@@ -239,6 +241,12 @@ service_set_property (GObject *object,
 				g_value_get_object (value));
 			return;
 
+		case PROP_SETTINGS:
+			camel_service_set_settings (
+				CAMEL_SERVICE (object),
+				g_value_get_object (value));
+			return;
+
 		case PROP_UID:
 			service_set_uid (
 				CAMEL_SERVICE (object),
@@ -274,6 +282,12 @@ service_get_property (GObject *object,
 				CAMEL_SERVICE (object)));
 			return;
 
+		case PROP_SETTINGS:
+			g_value_set_object (
+				value, camel_service_get_settings (
+				CAMEL_SERVICE (object)));
+			return;
+
 		case PROP_UID:
 			g_value_set_string (
 				value, camel_service_get_uid (
@@ -301,6 +315,11 @@ service_dispose (GObject *object)
 		g_object_remove_weak_pointer (
 			G_OBJECT (priv->session), &priv->session);
 		priv->session = NULL;
+	}
+
+	if (priv->settings != NULL) {
+		g_object_unref (priv->settings);
+		priv->settings = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -549,6 +568,7 @@ camel_service_class_init (CamelServiceClass *class)
 	object_class->finalize = service_finalize;
 	object_class->constructed = service_constructed;
 
+	class->settings_type = CAMEL_TYPE_SETTINGS;
 	class->get_name = service_get_name;
 	class->cancel_connect = service_cancel_connect;
 	class->connect_sync = service_connect_sync;
@@ -579,6 +599,18 @@ camel_service_class_init (CamelServiceClass *class)
 			CAMEL_TYPE_SESSION,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SETTINGS,
+		g_param_spec_object (
+			"settings",
+			"Settings",
+			"A CamelSettings instance",
+			CAMEL_TYPE_SETTINGS,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -738,6 +770,73 @@ camel_service_get_session (CamelService *service)
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
 	return CAMEL_SESSION (service->priv->session);
+}
+
+/**
+ * camel_service_get_settings:
+ * @service: a #CamelService
+ *
+ * Returns the #CamelSettings instance associated with the service.
+ *
+ * Returns: the #CamelSettings
+ *
+ * Since: 3.2
+ **/
+CamelSettings *
+camel_service_get_settings (CamelService *service)
+{
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	/* Every service should have a settings object. */
+	g_warn_if_fail (service->priv->settings != NULL);
+
+	return service->priv->settings;
+}
+
+/**
+ * camel_service_set_settings:
+ * @service: a #CamelService
+ * @settings: an instance derviced from #CamelSettings, or %NULL
+ *
+ * Associates a new #CamelSettings instance with the service.
+ * The @settings instance must match the settings type defined in
+ * #CamelServiceClass.  If @settings is %NULL, a new #CamelSettings
+ * instance of the appropriate type is created with all properties
+ * set to defaults.
+ *
+ * Since: 3.2
+ **/
+void
+camel_service_set_settings (CamelService *service,
+                            CamelSettings *settings)
+{
+	CamelServiceClass *class;
+
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+
+	if (settings != NULL) {
+		g_return_if_fail (
+			g_type_is_a (
+				G_OBJECT_TYPE (settings),
+				class->settings_type));
+		g_object_ref (settings);
+
+	} else {
+		g_return_if_fail (
+			g_type_is_a (
+				class->settings_type,
+				CAMEL_TYPE_SETTINGS));
+		settings = g_object_new (class->settings_type, NULL);
+	}
+
+	if (service->priv->settings != NULL)
+		g_object_unref (service->priv->settings);
+
+	service->priv->settings = settings;
+
+	g_object_notify (G_OBJECT (service), "settings");
 }
 
 /**

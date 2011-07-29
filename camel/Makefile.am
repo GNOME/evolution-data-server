@@ -83,6 +83,7 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-search-sql-sexp.c			\
 	camel-service.c				\
 	camel-session.c				\
+	camel-settings.c			\
 	camel-smime-context.c			\
 	camel-store-summary.c			\
 	camel-store.c				\
@@ -131,6 +132,7 @@ libcamel_providerinclude_HEADERS =		\
 	camel-search-sql-sexp.h			\
 	camel-service.h				\
 	camel-session.h				\
+	camel-settings.h			\
 	camel-smime-context.h			\
 	camel-store-summary.h			\
 	camel-store.h				\

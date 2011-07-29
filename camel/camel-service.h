@@ -34,6 +34,7 @@
 #include <camel/camel-url.h>
 #include <camel/camel-provider.h>
 #include <camel/camel-operation.h>
+#include <camel/camel-settings.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_SERVICE \
@@ -101,6 +102,8 @@ struct _CamelService {
 struct _CamelServiceClass {
 	CamelObjectClass parent_class;
 
+	GType settings_type;
+
 	/* Non-Blocking Methods */
 	gchar *		(*get_name)		(CamelService *service,
 						 gboolean brief);
@@ -148,6 +151,9 @@ gchar *		camel_service_get_name		(CamelService *service,
 CamelProvider *	camel_service_get_provider	(CamelService *service);
 struct _CamelSession *
 		camel_service_get_session	(CamelService *service);
+CamelSettings *	camel_service_get_settings	(CamelService *service);
+void		camel_service_set_settings	(CamelService *service,
+						 CamelSettings *settings);
 const gchar *	camel_service_get_uid		(CamelService *service);
 CamelURL *	camel_service_get_camel_url	(CamelService *service);
 gchar *		camel_service_get_url		(CamelService *service);

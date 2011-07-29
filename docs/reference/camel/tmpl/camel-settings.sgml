@@ -1,0 +1,75 @@
+<!-- ##### SECTION Title ##### -->
+CamelSettings
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT CamelSettings ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_settings_class_list_settings ##### -->
+<para>
+
+</para>
+
+@klass: 
+@n_settings: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_settings_clone ##### -->
+<para>
+
+</para>
+
+@settings: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_settings_equal ##### -->
+<para>
+
+</para>
+
+@settings_a: 
+@settings_b: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_settings_load_from_url ##### -->
+<para>
+
+</para>
+
+@settings: 
+@url: 
+
+
+<!-- ##### FUNCTION camel_settings_save_to_url ##### -->
+<para>
+
+</para>
+
+@settings: 
+@url: 
+
+

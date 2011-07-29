@@ -1921,6 +1921,8 @@ camel_service_get_user_data_dir
 camel_service_get_name
 camel_service_get_provider
 camel_service_get_session
+camel_service_get_settings
+camel_service_set_settings
 camel_service_get_uid
 camel_service_get_camel_url
 camel_service_get_url
@@ -1995,6 +1997,28 @@ CamelSessionClass
 <SUBSECTION Private>
 CamelSessionPrivate
 camel_session_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-settings</FILE>
+<TITLE>CamelSettings</TITLE>
+CamelSettings
+camel_settings_class_list_settings
+camel_settings_clone
+camel_settings_equal
+camel_settings_load_from_url
+camel_settings_save_to_url
+<SUBSECTION Standard>
+CAMEL_SETTINGS
+CAMEL_IS_SETTINGS
+CAMEL_TYPE_SETTINGS
+CAMEL_SETTINGS_CLASS
+CAMEL_IS_SETTINGS_CLASS
+CAMEL_SETTINGS_GET_CLASS
+CamelSettingsClass
+<SUBSECTION Private>
+CamelSettingsPrivate
+camel_settings_get_type
 </SECTION>
 
 <SECTION>

@@ -95,6 +95,7 @@
       <xi:include href="xml/camel-store-summary.xml"/>
       <xi:include href="xml/camel-offline-store.xml"/>
       <xi:include href="xml/camel-transport.xml"/>
+      <xi:include href="xml/camel-settings.xml"/>
     </chapter>
 
     <chapter id="Filters">

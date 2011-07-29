@@ -36,6 +36,11 @@ CamelService
 
 </para>
 
+<!-- ##### ARG CamelService:settings ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG CamelService:uid ##### -->
 <para>
 
@@ -119,6 +124,24 @@ CamelService
 
 @service: 
 @Returns: 
+
+
+<!-- ##### FUNCTION camel_service_get_settings ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_set_settings ##### -->
+<para>
+
+</para>
+
+@service: 
+@settings: 
 
 
 <!-- ##### FUNCTION camel_service_get_uid ##### -->
