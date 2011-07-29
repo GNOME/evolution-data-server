@@ -1470,7 +1470,7 @@ e_book_client_remove_contact_by_uid_sync (EBookClient *client, const gchar *uid,
 /**
  * e_book_client_remove_contacts:
  * @client: an #EBookClient
- * @uids: a #GSList of UIDs to remove
+ * @uids: (element-type utf8): a #GSList of UIDs to remove
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
@@ -1522,7 +1522,7 @@ e_book_client_remove_contacts_finish (EBookClient *client, GAsyncResult *result,
 /**
  * e_book_client_remove_contacts_sync:
  * @client: an #EBookClient
- * @uids: a #GSList of UIDs to remove
+ * @uids: (element-type utf8): a #GSList of UIDs to remove
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -1711,7 +1711,7 @@ e_book_client_get_contacts (EBookClient *client, const gchar *sexp, GCancellable
  * e_book_client_get_contacts_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @contacts: (out): a #GSList of matched #EContact-s
+ * @contacts: (element-type EContact) (out): a #GSList of matched #EContact-s
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_contacts().
@@ -1754,7 +1754,7 @@ e_book_client_get_contacts_finish (EBookClient *client, GAsyncResult *result, GS
  * e_book_client_get_contacts_sync:
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query
- * @contacts: (out): a #GSList of matched #EContact-s
+ * @contacts: (element-type EContact) (out): a #GSList of matched #EContact-s
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -1843,7 +1843,7 @@ e_book_client_get_contacts_uids (EBookClient *client, const gchar *sexp, GCancel
  * e_book_client_get_contacts_uids_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @contacts_uids: (out) a #GSList of matched contacts UIDs stored as strings
+ * @contacts_uids: (element-type utf8) (out): a #GSList of matched contacts UIDs stored as strings
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_contacts_uids().
@@ -1886,7 +1886,7 @@ e_book_client_get_contacts_uids_finish (EBookClient *client, GAsyncResult *resul
  * e_book_client_get_contacts_uids_sync:
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query
- * @contacts_uids: (out) a #GSList of matched contacts UIDs stored as strings
+ * @contacts_uids: (element-type utf8) (out): a #GSList of matched contacts UIDs stored as strings
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
