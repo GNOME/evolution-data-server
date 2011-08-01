@@ -30,8 +30,9 @@
 #include "e-cal-backend.h"
 #include "e-cal-backend-cache.h"
 
-#define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
-#define EDC_OPENING_ERROR e_data_cal_create_error (Busy, _("Cannot process, calendar backend is opening"))
+#define EDC_ERROR(_code)	e_data_cal_create_error (_code, NULL)
+#define EDC_OPENING_ERROR	e_data_cal_create_error (Busy, _("Cannot process, calendar backend is opening"))
+#define EDC_NOT_OPENED_ERROR	e_data_cal_create_error (NotOpened, NULL)
 
 /* Private part of the CalBackend structure */
 struct _ECalBackendPrivate {
@@ -1005,6 +1006,8 @@ e_cal_backend_refresh (ECalBackend *backend, EDataCal *cal, guint32 opid, GCance
 		e_data_cal_respond_refresh (cal, opid, EDC_OPENING_ERROR);
 	else if (!E_CAL_BACKEND_GET_CLASS (backend)->refresh)
 		e_data_cal_respond_refresh (cal, opid, EDC_ERROR (UnsupportedMethod));
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_refresh (cal, opid, EDC_NOT_OPENED_ERROR);
 	else
 		(* E_CAL_BACKEND_GET_CLASS (backend)->refresh) (backend, cal, opid, cancellable);
 }
@@ -1032,6 +1035,8 @@ e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCa
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_get_object (cal, opid, EDC_OPENING_ERROR, NULL);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_get_object (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_CAL_BACKEND_GET_CLASS (backend)->get_object) (backend, cal, opid, cancellable, uid, rid);
 }
@@ -1056,6 +1061,8 @@ e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, guint32 opid
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_get_object_list (cal, opid, EDC_OPENING_ERROR, NULL);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_get_object_list (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_CAL_BACKEND_GET_CLASS (backend)->get_object_list) (backend, cal, opid, cancellable, sexp);
 }
@@ -1085,6 +1092,8 @@ e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, guint32 opid, 
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_get_free_busy (cal, opid, EDC_OPENING_ERROR);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_get_free_busy (cal, opid, EDC_NOT_OPENED_ERROR);
 	else
 		(* E_CAL_BACKEND_GET_CLASS (backend)->get_free_busy) (backend, cal, opid, cancellable, users, start, end);
 }
@@ -1109,10 +1118,12 @@ e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, guint32 opid, 
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_create_object (cal, opid, EDC_OPENING_ERROR, NULL, NULL);
-	else if (E_CAL_BACKEND_GET_CLASS (backend)->create_object)
-		(* E_CAL_BACKEND_GET_CLASS (backend)->create_object) (backend, cal, opid, cancellable, calobj);
-	else
+	else if (!E_CAL_BACKEND_GET_CLASS (backend)->create_object)
 		e_data_cal_respond_create_object (cal, opid, EDC_ERROR (UnsupportedMethod), NULL, NULL);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_create_object (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
+	else
+		(* E_CAL_BACKEND_GET_CLASS (backend)->create_object) (backend, cal, opid, cancellable, calobj);
 }
 
 /**
@@ -1136,10 +1147,12 @@ e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, guint32 opid, 
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_modify_object (cal, opid, EDC_OPENING_ERROR, NULL, NULL);
-	else if (E_CAL_BACKEND_GET_CLASS (backend)->modify_object)
-		(* E_CAL_BACKEND_GET_CLASS (backend)->modify_object) (backend, cal, opid, cancellable, calobj, mod);
-	else
+	else if (!E_CAL_BACKEND_GET_CLASS (backend)->modify_object)
 		e_data_cal_respond_modify_object (cal, opid, EDC_ERROR (UnsupportedMethod), NULL, NULL);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_modify_object (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
+	else
+		(* E_CAL_BACKEND_GET_CLASS (backend)->modify_object) (backend, cal, opid, cancellable, calobj, mod);
 }
 
 /**
@@ -1166,6 +1179,8 @@ e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, guint32 opid, 
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_remove_object (cal, opid, EDC_OPENING_ERROR, NULL, NULL, NULL);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_remove_object (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL, NULL);
 	else
 		(* E_CAL_BACKEND_GET_CLASS (backend)->remove_object) (backend, cal, opid, cancellable, uid, rid, mod);
 }
@@ -1191,6 +1206,8 @@ e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, guint32 opid
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_receive_objects (cal, opid, EDC_OPENING_ERROR);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_receive_objects (cal, opid, EDC_NOT_OPENED_ERROR);
 	else
 		(* E_CAL_BACKEND_GET_CLASS (backend)->receive_objects) (backend, cal, opid, cancellable, calobj);
 }
@@ -1216,6 +1233,8 @@ e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, guint32 opid, G
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_send_objects (cal, opid, EDC_OPENING_ERROR, NULL, NULL);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_send_objects (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
 	else
 		(* E_CAL_BACKEND_GET_CLASS (backend)->send_objects) (backend, cal, opid, cancellable, calobj);
 }
@@ -1243,6 +1262,8 @@ e_cal_backend_get_attachment_uris (ECalBackend *backend, EDataCal *cal, guint32 
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_get_attachment_uris (cal, opid, EDC_OPENING_ERROR, NULL);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_get_attachment_uris (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_CAL_BACKEND_GET_CLASS (backend)->get_attachment_uris) (backend, cal, opid, cancellable, uid, rid);
 }
@@ -1271,10 +1292,12 @@ e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, guint32 opid, 
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_discard_alarm (cal, opid, EDC_OPENING_ERROR);
-	else if (E_CAL_BACKEND_GET_CLASS (backend)->discard_alarm)
-		(* E_CAL_BACKEND_GET_CLASS (backend)->discard_alarm) (backend, cal, opid, cancellable, uid, rid, auid);
-	else
+	else if (!E_CAL_BACKEND_GET_CLASS (backend)->discard_alarm)
 		e_data_cal_respond_discard_alarm (cal, opid, e_data_cal_create_error (NotSupported, NULL));
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_discard_alarm (cal, opid, EDC_NOT_OPENED_ERROR);
+	else
+		(* E_CAL_BACKEND_GET_CLASS (backend)->discard_alarm) (backend, cal, opid, cancellable, uid, rid, auid);
 }
 
 /**
@@ -1300,6 +1323,8 @@ e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, guint32 opid, G
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_get_timezone (cal, opid, EDC_OPENING_ERROR, NULL);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_get_timezone (cal, opid, EDC_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_CAL_BACKEND_GET_CLASS (backend)->get_timezone) (backend, cal, opid, cancellable, tzid);
 }
@@ -1324,6 +1349,8 @@ e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, guint32 opid, G
 
 	if (e_cal_backend_is_opening (backend))
 		e_data_cal_respond_add_timezone (cal, opid, EDC_OPENING_ERROR);
+	else if (!e_cal_backend_is_opened (backend))
+		e_data_cal_respond_add_timezone (cal, opid, EDC_NOT_OPENED_ERROR);
 	else
 		(* E_CAL_BACKEND_GET_CLASS (backend)->add_timezone) (backend, cal, opid, cancellable, tzobject);
 }

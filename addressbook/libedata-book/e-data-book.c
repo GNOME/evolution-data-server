@@ -320,7 +320,8 @@ e_data_book_status_to_string (EDataBookStatus status)
 		{ E_DATA_BOOK_STATUS_NO_SPACE,				N_("No space") },
 		{ E_DATA_BOOK_STATUS_INVALID_ARG,			N_("Invalid argument") },
 		/* Translators: The string for NOT_SUPPORTED error */
-		{ E_DATA_BOOK_STATUS_NOT_SUPPORTED,			N_("Not supported") }
+		{ E_DATA_BOOK_STATUS_NOT_SUPPORTED,			N_("Not supported") },
+		{ E_DATA_BOOK_STATUS_NOT_OPENED,			N_("Backend is not opened yet") }
 	};
 
 	for (i = 0; i < G_N_ELEMENTS (statuses); i++) {
@@ -361,7 +362,8 @@ e_data_book_error_quark (void)
 		{ E_DATA_BOOK_STATUS_INVALID_SERVER_VERSION,		ERR_PREFIX "InvalidServerVersion" },
 		{ E_DATA_BOOK_STATUS_NO_SPACE,				ERR_PREFIX "NoSpace" },
 		{ E_DATA_BOOK_STATUS_INVALID_ARG,			ERR_PREFIX "InvalidArg" },
-		{ E_DATA_BOOK_STATUS_NOT_SUPPORTED,			ERR_PREFIX "NotSupported" }
+		{ E_DATA_BOOK_STATUS_NOT_SUPPORTED,			ERR_PREFIX "NotSupported" },
+		{ E_DATA_BOOK_STATUS_NOT_OPENED,			ERR_PREFIX "NotOpened" }
 	};
 
 	#undef ERR_PREFIX

@@ -146,6 +146,7 @@ unwrap_dbus_error (GError *error, GError **client_error)
 		{ err ("SearchTimeLimitExceeded",		E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED) },
 		{ err ("InvalidQuery",				E_CLIENT_ERROR_INVALID_QUERY) },
 		{ err ("QueryRefused",				E_CLIENT_ERROR_QUERY_REFUSED) },
+		{ err ("NotOpened",				E_CLIENT_ERROR_NOT_OPENED) },
 		{ err ("UnsupportedField",			E_CLIENT_ERROR_OTHER_ERROR) },
 		{ err ("InvalidServerVersion",			E_CLIENT_ERROR_OTHER_ERROR) },
 		{ err ("OtherError",				E_CLIENT_ERROR_OTHER_ERROR) }

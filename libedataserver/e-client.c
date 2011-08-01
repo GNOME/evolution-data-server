@@ -142,6 +142,8 @@ e_client_error_to_string (EClientError code)
 		return C_("ClientError", "D-Bus error");
 	case E_CLIENT_ERROR_OTHER_ERROR:
 		return C_("ClientError", "Other error");
+	case E_CLIENT_ERROR_NOT_OPENED:
+		return C_("ClientError", "Backend is not opened yet");
 	}
 
 	return C_("ClientError", "Unknown error");

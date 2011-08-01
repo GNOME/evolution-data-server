@@ -36,7 +36,8 @@ typedef enum {
 	OtherError,
 	InvalidServerVersion,
 	InvalidArg,
-	NotSupported
+	NotSupported,
+	NotOpened
 } EDataCalCallStatus;
 
 typedef enum {

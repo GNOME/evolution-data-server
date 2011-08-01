@@ -66,6 +66,7 @@
 
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
+#define EDB_NOT_OPENED_ERROR EDB_ERROR(NOT_OPENED)
 
 G_DEFINE_TYPE (EBookBackendFile, e_book_backend_file, E_TYPE_BOOK_BACKEND_SYNC)
 
@@ -136,6 +137,11 @@ build_summary (EBookBackendFilePrivate *bfpriv)
 	DBC            *dbc;
 	gint            db_error;
 	DBT  id_dbt, vcard_dbt;
+
+	if (!db) {
+		g_warning (G_STRLOC ": Not openend yet");
+		return FALSE;
+	}
 
 	db_error = db->cursor (db, NULL, &dbc, 0);
 
@@ -209,6 +215,11 @@ do_create (EBookBackendFile  *bf,
 	g_assert (vcard_req);
 	g_assert (contact);
 
+	if (!db) {
+		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
+		return FALSE;
+	}
+
 	id = e_book_backend_file_create_unique_id ();
 
 	string_to_dbt (id, &id_dbt);
@@ -275,6 +286,11 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 	const GSList   *l;
 	GSList         *removed_cards = NULL;
 
+	if (!db) {
+		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
+		return;
+	}
+
 	for (l = id_list; l; l = l->next) {
 		id = l->data;
 
@@ -319,6 +335,11 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	gint            db_error;
 	const gchar    *id, *lookup_id;
 	gchar          *vcard_with_rev;
+
+	if (!db) {
+		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
+		return;
+	}
 
 	*contact = e_contact_new_from_vcard (vcard);
 	id = e_contact_get_const (*contact, E_CONTACT_UID);
@@ -380,6 +401,11 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 	bf = E_BOOK_BACKEND_FILE (backend);
 	db = bf->priv->file_db;
 
+	if (!db) {
+		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
+		return;
+	}
+
 	string_to_dbt (id, &id_dbt);
 	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
 	vcard_dbt.flags = DB_DBT_MALLOC;
@@ -415,6 +441,12 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	GSList *contact_list = NULL;
 
 	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
+
+	if (!db) {
+		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
+		return;
+	}
+
 	if (e_book_backend_summary_is_summary_query (bf->priv->summary, search)) {
 
 		/* do a summary query */
@@ -522,6 +554,12 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 	GSList *uids = NULL;
 
 	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
+
+	if (!db) {
+		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
+		return;
+	}
+
 	if (e_book_backend_summary_is_summary_query (bf->priv->summary, search)) {
 		/* do a summary query */
 		GPtrArray *ids = e_book_backend_summary_search (bf->priv->summary, search);
@@ -662,6 +700,12 @@ book_view_thread (gpointer data)
 	e_data_book_view_ref (book_view);
 
 	db = bf->priv->file_db;
+	if (!db) {
+		e_data_book_view_notify_complete (book_view, EDB_NOT_OPENED_ERROR);
+		e_data_book_view_unref (book_view);
+		return NULL;
+	}
+
 	query = e_data_book_view_get_card_query (book_view);
 
 	if ( !strcmp (query, "(contains \"x-evolution-any-field\" \"\")")) {
@@ -751,8 +795,6 @@ done:
 	if (e_flag_is_set (closure->running))
 		e_data_book_view_notify_complete (book_view, NULL /* Success */);
 
-	/* unref the */
-	printf("book_view file uref \n");
 	e_data_book_view_unref (book_view);
 
 	d(printf ("finished population of book view\n"));
@@ -865,6 +907,11 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, gchar *old_version)
 	gint db_error;
 	DBT version_name_dbt, version_dbt;
 
+	if (!db) {
+		g_warning (G_STRLOC ": No DB opened");
+		return FALSE;
+	}
+
 	if (strcmp (old_version, "0.0")
 	    && strcmp (old_version, "0.1")) {
 		g_warning ("unsupported version '%s' found in PAS backend file\n",
@@ -952,6 +999,11 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 	gint  db_error;
 	gchar *version;
 	gboolean ret_val = TRUE;
+
+	if (!db) {
+		g_warning (G_STRLOC ": No DB opened");
+		return FALSE;
+	}
 
 	string_to_dbt (E_BOOK_BACKEND_FILE_VERSION_NAME, &version_name_dbt);
 	memset (&version_dbt, 0, sizeof (version_dbt));

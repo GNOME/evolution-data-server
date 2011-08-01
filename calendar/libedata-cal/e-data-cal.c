@@ -385,7 +385,8 @@ e_data_cal_error_quark (void)
 		{ OtherError,				ERR_PREFIX "OtherError" },
 		{ InvalidServerVersion,			ERR_PREFIX "InvalidServerVersion" },
 		{ InvalidArg,				ERR_PREFIX "InvalidArg" },
-		{ NotSupported,				ERR_PREFIX "NotSupported" }
+		{ NotSupported,				ERR_PREFIX "NotSupported" },
+		{ NotOpened,				ERR_PREFIX "NotOpened" }
 	};
 
 	#undef ERR_PREFIX
@@ -436,7 +437,8 @@ e_data_cal_status_to_string (EDataCalCallStatus status)
 		{ InvalidServerVersion,			N_("Invalid server version") },
 		{ InvalidArg,				N_("Invalid argument") },
 		/* Translators: The string for NOT_SUPPORTED error */
-		{ NotSupported,				N_("Not supported") }
+		{ NotSupported,				N_("Not supported") },
+		{ NotOpened,				N_("Backend is not opened yet") }
 	};
 
 	for (i = 0; i < G_N_ELEMENTS (statuses); i++) {

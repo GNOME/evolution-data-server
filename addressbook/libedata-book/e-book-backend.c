@@ -16,7 +16,8 @@
 #include "e-data-book.h"
 #include "e-book-backend.h"
 
-#define EDB_OPENING_ERROR e_data_book_create_error (E_DATA_BOOK_STATUS_BUSY, _("Cannot process, book backend is opening"))
+#define EDB_OPENING_ERROR	e_data_book_create_error (E_DATA_BOOK_STATUS_BUSY, _("Cannot process, book backend is opening"))
+#define EDB_NOT_OPENED_ERROR	e_data_book_create_error (E_DATA_BOOK_STATUS_NOT_OPENED, NULL)
 
 struct _EBookBackendPrivate {
 	GMutex *clients_mutex;
@@ -436,6 +437,8 @@ e_book_backend_refresh (EBookBackend *backend, EDataBook *book, guint32 opid, GC
 		e_data_book_respond_refresh (book, opid, EDB_OPENING_ERROR);
 	else if (!E_BOOK_BACKEND_GET_CLASS (backend)->refresh)
 		e_data_book_respond_refresh (book, opid, e_data_book_create_error (E_DATA_BOOK_STATUS_NOT_SUPPORTED, NULL));
+	else if (!e_book_backend_is_opened (backend))
+		e_data_book_respond_refresh (book, opid, EDB_NOT_OPENED_ERROR);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->refresh) (backend, book, opid, cancellable);
 }
@@ -466,6 +469,8 @@ e_book_backend_create_contact (EBookBackend *backend,
 
 	if (e_book_backend_is_opening (backend))
 		e_data_book_respond_create (book, opid, EDB_OPENING_ERROR, NULL);
+	else if (!e_book_backend_is_opened (backend))
+		e_data_book_respond_create (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->create_contact) (backend, book, opid, cancellable, vcard);
 }
@@ -496,6 +501,8 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 
 	if (e_book_backend_is_opening (backend))
 		e_data_book_respond_remove_contacts (book, opid, EDB_OPENING_ERROR, NULL);
+	else if (!e_book_backend_is_opened (backend))
+		e_data_book_respond_remove_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->remove_contacts) (backend, book, opid, cancellable, id_list);
 }
@@ -526,6 +533,8 @@ e_book_backend_modify_contact (EBookBackend *backend,
 
 	if (e_book_backend_is_opening (backend))
 		e_data_book_respond_modify (book, opid, EDB_OPENING_ERROR, NULL);
+	else if (!e_book_backend_is_opened (backend))
+		e_data_book_respond_modify (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->modify_contact) (backend, book, opid, cancellable, vcard);
 }
@@ -556,6 +565,8 @@ e_book_backend_get_contact (EBookBackend *backend,
 
 	if (e_book_backend_is_opening (backend))
 		e_data_book_respond_get_contact (book, opid, EDB_OPENING_ERROR, NULL);
+	else if (!e_book_backend_is_opened (backend))
+		e_data_book_respond_get_contact (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact) (backend, book, opid, cancellable, id);
 }
@@ -586,6 +597,8 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 
 	if (e_book_backend_is_opening (backend))
 		e_data_book_respond_get_contact_list (book, opid, EDB_OPENING_ERROR, NULL);
+	else if (!e_book_backend_is_opened (backend))
+		e_data_book_respond_get_contact_list (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list) (backend, book, opid, cancellable, query);
 }
@@ -618,6 +631,8 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
 
 	if (e_book_backend_is_opening (backend))
 		e_data_book_respond_get_contact_list_uids (book, opid, EDB_OPENING_ERROR, NULL);
+	else if (!e_book_backend_is_opened (backend))
+		e_data_book_respond_get_contact_list_uids (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
 		(* E_BOOK_BACKEND_GET_CLASS (backend)->get_contact_list_uids) (backend, book, opid, cancellable, query);
 }
