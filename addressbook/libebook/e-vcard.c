@@ -1127,8 +1127,8 @@ e_vcard_attribute_get_type (void)
 /**
  * e_vcard_remove_attributes:
  * @evc: vcard object
- * @attr_group: group name of attributes to be removed
- * @attr_name: name of the arributes to be removed
+ * @attr_group: (allow-none): group name of attributes to be removed
+ * @attr_name: (allow-none): name of the arributes to be removed
  *
  * Removes all the attributes with group name and attribute name equal to
  * passed in values. If @attr_group is %NULL or an empty string,
