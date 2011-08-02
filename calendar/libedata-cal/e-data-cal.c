@@ -1252,7 +1252,7 @@ e_data_cal_respond_discard_alarm (EDataCal *cal, guint32 opid, GError *error)
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
-	g_prefix_error (&error, "%s", _("Could not discard alarm: "));
+	g_prefix_error (&error, "%s", _("Could not discard reminder: "));
 
 	e_gdbus_cal_emit_discard_alarm_done (cal->priv->gdbus_object, opid, error);
 
