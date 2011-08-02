@@ -1586,10 +1586,8 @@ free_get_objects_async_data (struct get_objects_async_data *goad)
 	if (!goad)
 		return;
 
-	if (goad->cancellable) {
-		g_cancellable_cancel (goad->cancellable);
+	if (goad->cancellable)
 		g_object_unref (goad->cancellable);
-	}
 	if (goad->destroy_cb_data)
 		goad->destroy_cb_data (goad->cb_data);
 	if (goad->client)
