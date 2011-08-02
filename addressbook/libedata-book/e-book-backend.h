@@ -130,6 +130,7 @@ void		e_book_backend_notify_readonly	(EBookBackend *backend, gboolean is_readonl
 void		e_book_backend_notify_online	(EBookBackend *backend, gboolean is_online);
 void		e_book_backend_notify_auth_required (EBookBackend *backend, gboolean is_self, const ECredentials *credentials);
 void		e_book_backend_notify_opened	(EBookBackend *backend, GError *error);
+void		e_book_backend_notify_property_changed (EBookBackend *backend, const gchar *prop_name, const gchar *prop_value);
 
 void		e_book_backend_sync		(EBookBackend *backend);
 

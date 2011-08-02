@@ -42,6 +42,7 @@ enum
 	__AUTH_REQUIRED_SIGNAL,
 	__OPENED_SIGNAL,
 	__FREE_BUSY_DATA_SIGNAL,
+	__BACKEND_PROPERTY_CHANGED_SIGNAL,
 	__OPEN_METHOD,
 	__OPEN_DONE_SIGNAL,
 	__REMOVE_METHOD,
@@ -133,6 +134,7 @@ E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_BOOLEAN (GDBUS_CAL_INTERFACE_NAME, online)
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_CAL_INTERFACE_NAME, auth_required)
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_CAL_INTERFACE_NAME, opened)
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_CAL_INTERFACE_NAME, free_busy_data)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_CAL_INTERFACE_NAME, backend_property_changed)
 
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, open)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, remove)
@@ -169,6 +171,7 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
 	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusCalIface, "auth_required", 	auth_required,	__AUTH_REQUIRED_SIGNAL)
 	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusCalIface, "opened", 		opened,		__OPENED_SIGNAL)
 	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusCalIface, "free_busy_data", 	free_busy_data,	__FREE_BUSY_DATA_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusCalIface, "backend_property_changed", 	backend_property_changed,	__BACKEND_PROPERTY_CHANGED_SIGNAL)
 
 	/* GObject signals definitions for D-Bus methods: */
 	E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__VOID	(EGdbusCalIface, "open",			open, __OPEN_METHOD, __OPEN_DONE_SIGNAL)
@@ -193,35 +196,6 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
 	E_INIT_GDBUS_METHOD_UINT		(EGdbusCalIface, "cancel_operation",		cancel_operation, __CANCEL_OPERATION_METHOD)
 	E_INIT_GDBUS_METHOD_VOID		(EGdbusCalIface, "cancel_all",			cancel_all, __CANCEL_ALL_METHOD)
 	E_INIT_GDBUS_METHOD_VOID		(EGdbusCalIface, "close",			close, __CLOSE_METHOD)
-}
-
-static gchar **
-encode_string_string (const gchar *str1, const gchar *str2)
-{
-	gchar **strv;
-
-	strv = g_new0 (gchar *, 3);
-	strv[0] = e_util_utf8_make_valid (str1 ? str1 : "");
-	strv[1] = e_util_utf8_make_valid (str2 ? str2 : "");
-	strv[2] = NULL;
-
-	return strv;
-}
-
-static gboolean
-decode_string_string (const gchar * const *in_strv, gchar **out_str1, gchar **out_str2)
-{
-	g_return_val_if_fail (in_strv != NULL, FALSE);
-	g_return_val_if_fail (in_strv[0] != NULL, FALSE);
-	g_return_val_if_fail (in_strv[1] != NULL, FALSE);
-	g_return_val_if_fail (in_strv[2] == NULL, FALSE);
-	g_return_val_if_fail (out_str1 != NULL, FALSE);
-	g_return_val_if_fail (out_str2 != NULL, FALSE);
-
-	*out_str1 = g_strdup (in_strv[0]);
-	*out_str2 = g_strdup (in_strv[1]);
-
-	return TRUE;
 }
 
 void
@@ -308,14 +282,14 @@ e_gdbus_cal_call_get_backend_property_sync (GDBusProxy *proxy, const gchar *in_p
 gchar **
 e_gdbus_cal_encode_set_backend_property (const gchar *in_prop_name, const gchar *in_prop_value)
 {
-	return encode_string_string (in_prop_name, in_prop_value);
+	return e_gdbus_templates_encode_two_strings (in_prop_name, in_prop_value);
 }
 
 /* free out_prop_name and out_prop_value with g_free() */
 gboolean
 e_gdbus_cal_decode_set_backend_property (const gchar * const *in_strv, gchar **out_prop_name, gchar **out_prop_value)
 {
-	return decode_string_string (in_strv, out_prop_name, out_prop_value);
+	return e_gdbus_templates_decode_two_strings (in_strv, out_prop_name, out_prop_value);
 }
 
 void
@@ -342,14 +316,14 @@ e_gdbus_cal_call_set_backend_property_sync (GDBusProxy *proxy, const gchar * con
 gchar **
 e_gdbus_cal_encode_get_object (const gchar *in_uid, const gchar *in_rid)
 {
-	return encode_string_string (in_uid, in_rid);
+	return e_gdbus_templates_encode_two_strings (in_uid, in_rid);
 }
 
 /* free out_uid and out_rid with g_free() */
 gboolean
 e_gdbus_cal_decode_get_object (const gchar * const *in_strv, gchar **out_uid, gchar **out_rid)
 {
-	return decode_string_string (in_strv, out_uid, out_rid);
+	return e_gdbus_templates_decode_two_strings (in_strv, out_uid, out_rid);
 }
 
 void
@@ -676,14 +650,14 @@ e_gdbus_cal_call_send_objects_sync (GDBusProxy *proxy, const gchar *in_calobj, g
 gchar **
 e_gdbus_cal_encode_get_attachment_uris (const gchar *in_uid, const gchar *in_rid)
 {
-	return encode_string_string (in_uid, in_rid);
+	return e_gdbus_templates_encode_two_strings (in_uid, in_rid);
 }
 
 /* free out_uid and out_rid with g_free() */
 gboolean
 e_gdbus_cal_decode_get_attachment_uris (const gchar * const *in_strv, gchar **out_uid, gchar **out_rid)
 {
-	return decode_string_string (in_strv, out_uid, out_rid);
+	return e_gdbus_templates_decode_two_strings (in_strv, out_uid, out_rid);
 }
 
 void
@@ -965,12 +939,19 @@ e_gdbus_cal_emit_free_busy_data (EGdbusCal *object, const gchar * const *arg_fre
 	g_signal_emit (object, signals[__FREE_BUSY_DATA_SIGNAL], 0, arg_free_busy);
 }
 
+void
+e_gdbus_cal_emit_backend_property_changed (EGdbusCal *object, const gchar * const *arg_name_value)
+{
+	g_signal_emit (object, signals[__BACKEND_PROPERTY_CHANGED_SIGNAL], 0, arg_name_value);
+}
+
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, backend_error, message, "s")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, readonly, is_readonly, "b")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, online, is_online, "b")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, auth_required, credentials, "as")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, opened, error, "as")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, free_busy_data, free_busy_data, "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, backend_property_changed, name_value, "as")
 
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, open, only_if_exists, "b")
 E_DECLARE_GDBUS_ASYNC_METHOD_0			(cal, remove)
@@ -1031,6 +1012,7 @@ static const GDBusSignalInfo * const e_gdbus_cal_signal_info_pointers[] =
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, auth_required),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, opened),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, free_busy_data),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, backend_property_changed),
 
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, open_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, remove_done),

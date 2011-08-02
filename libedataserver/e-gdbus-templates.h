@@ -745,6 +745,9 @@ gboolean e_gdbus_proxy_method_call_sync_strv__string	(const gchar *method_name, 
 gchar ** e_gdbus_templates_encode_error	(const GError *in_error);
 gboolean e_gdbus_templates_decode_error	(const gchar * const *in_strv, GError **out_error);
 
+gchar ** e_gdbus_templates_encode_two_strings (const gchar *in_str1, const gchar *in_str2);
+gboolean e_gdbus_templates_decode_two_strings (const gchar * const *in_strv, gchar **out_str1, gchar **out_str2);
+
 G_END_DECLS
 
 #endif /* E_GDBUS_TEMPLATES_H */

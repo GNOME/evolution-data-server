@@ -1270,6 +1270,36 @@ e_book_backend_notify_opened (EBookBackend *backend, GError *error)
 }
 
 /**
+ * e_book_backend_notify_property_changed:
+ * @backend: an #EBookBackend
+ * @prop_name: property name, which changed
+ * @prop_value: new property value
+ *
+ * Notifies clients about property value change.
+ **/
+void
+e_book_backend_notify_property_changed (EBookBackend *backend, const gchar *prop_name, const gchar *prop_value)
+{
+	EBookBackendPrivate *priv;
+	GSList *clients;
+
+	g_return_if_fail (backend != NULL);
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (backend->priv != NULL);
+	g_return_if_fail (prop_name != NULL);
+	g_return_if_fail (*prop_name != '\0');
+	g_return_if_fail (prop_value != NULL);
+
+	priv = backend->priv;
+	g_mutex_lock (priv->clients_mutex);
+
+	for (clients = priv->clients; clients != NULL; clients = g_slist_next (clients))
+		e_data_book_report_backend_property_changed (E_DATA_BOOK (clients->data), prop_name, prop_value);
+
+	g_mutex_unlock (priv->clients_mutex);
+}
+
+/**
  * e_book_backend_respond_opened:
  * @backend: an #EBookBackend
  * @book: an #EDataBook

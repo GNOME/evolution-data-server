@@ -918,7 +918,8 @@ gdbus_proxy_async_method_done (guint e_gdbus_type, gconstpointer out_value, EGdb
 
 	op_data = g_hash_table_lookup (pending_ops, GUINT_TO_POINTER (arg_opid));
 	if (!op_data) {
-		g_debug ("%s: Operation %d gone before got done signal for it", G_STRFUNC, arg_opid);
+		/* it happens for cancelled operations, thus rather than track cancelled ops disable the debug warning */
+		/* g_debug ("%s: Operation %d gone before got done signal for it", G_STRFUNC, arg_opid); */
 		return;
 	}
 
@@ -1725,6 +1726,37 @@ e_gdbus_templates_decode_error (const gchar * const *in_strv, GError **out_error
 
 	if (error_name && *error_name && error_message)
 		*out_error = g_dbus_error_new_for_dbus_error (error_name, error_message);
+
+	return TRUE;
+}
+
+/* free returned pointer with g_strfreev() */
+gchar **
+e_gdbus_templates_encode_two_strings (const gchar *in_str1, const gchar *in_str2)
+{
+	gchar **strv;
+
+	strv = g_new0 (gchar *, 3);
+	strv[0] = e_util_utf8_make_valid (in_str1 ? in_str1 : "");
+	strv[1] = e_util_utf8_make_valid (in_str2 ? in_str2 : "");
+	strv[2] = NULL;
+
+	return strv;
+}
+
+/* free *out_str1 and *out_str2 with g_free() */
+gboolean
+e_gdbus_templates_decode_two_strings (const gchar * const *in_strv, gchar **out_str1, gchar **out_str2)
+{
+	g_return_val_if_fail (in_strv != NULL, FALSE);
+	g_return_val_if_fail (in_strv[0] != NULL, FALSE);
+	g_return_val_if_fail (in_strv[1] != NULL, FALSE);
+	g_return_val_if_fail (in_strv[2] == NULL, FALSE);
+	g_return_val_if_fail (out_str1 != NULL, FALSE);
+	g_return_val_if_fail (out_str2 != NULL, FALSE);
+
+	*out_str1 = g_strdup (in_strv[0]);
+	*out_str2 = g_strdup (in_strv[1]);
 
 	return TRUE;
 }

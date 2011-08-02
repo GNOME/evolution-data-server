@@ -149,6 +149,7 @@ void		e_data_book_report_readonly			(EDataBook *book, gboolean readonly);
 void		e_data_book_report_online			(EDataBook *book, gboolean is_online);
 void		e_data_book_report_auth_required		(EDataBook *book, const ECredentials *credentials);
 void		e_data_book_report_opened			(EDataBook *book, const GError *error);
+void		e_data_book_report_backend_property_changed	(EDataBook *book, const gchar *prop_name, const gchar *prop_value);
 
 gchar *		e_data_book_string_slist_to_comma_string	(const GSList *strings);
 

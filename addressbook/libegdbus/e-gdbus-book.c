@@ -40,6 +40,7 @@ enum
 	__ONLINE_SIGNAL,
 	__AUTH_REQUIRED_SIGNAL,
 	__OPENED_SIGNAL,
+	__BACKEND_PROPERTY_CHANGED_SIGNAL,
 	__OPEN_METHOD,
 	__OPEN_DONE_SIGNAL,
 	__REMOVE_METHOD,
@@ -118,6 +119,7 @@ E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_BOOLEAN (GDBUS_BOOK_INTERFACE_NAME, readonl
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_BOOLEAN (GDBUS_BOOK_INTERFACE_NAME, online)
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_BOOK_INTERFACE_NAME, auth_required)
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_BOOK_INTERFACE_NAME, opened)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_BOOK_INTERFACE_NAME, backend_property_changed)
 
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_BOOK_INTERFACE_NAME, open)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_BOOK_INTERFACE_NAME, remove)
@@ -147,6 +149,7 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
 	E_INIT_GDBUS_SIGNAL_BOOLEAN		(EGdbusBookIface, "online",		online,		__ONLINE_SIGNAL)
 	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusBookIface, "auth_required", 	auth_required,	__AUTH_REQUIRED_SIGNAL)
 	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusBookIface, "opened", 		opened,		__OPENED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusBookIface, "backend_property_changed", 	backend_property_changed,	__BACKEND_PROPERTY_CHANGED_SIGNAL)
 
 	/* GObject signals definitions for D-Bus methods: */
 	E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__VOID	(EGdbusBookIface, "open",			open, __OPEN_METHOD, __OPEN_DONE_SIGNAL)
@@ -371,31 +374,14 @@ e_gdbus_book_call_get_backend_property_sync (GDBusProxy *proxy, const gchar *in_
 gchar **
 e_gdbus_book_encode_set_backend_property (const gchar *in_prop_name, const gchar *in_prop_value)
 {
-	gchar **strv;
-
-	strv = g_new0 (gchar *, 3);
-	strv[0] = e_util_utf8_make_valid (in_prop_name ? in_prop_name : "");
-	strv[1] = e_util_utf8_make_valid (in_prop_value ? in_prop_value : "");
-	strv[2] = NULL;
-
-	return strv;
+	return e_gdbus_templates_encode_two_strings (in_prop_name, in_prop_value);
 }
 
 /* free out_prop_name and out_prop_value with g_free() */
 gboolean
 e_gdbus_book_decode_set_backend_property (const gchar * const *in_strv, gchar **out_prop_name, gchar **out_prop_value)
 {
-	g_return_val_if_fail (in_strv != NULL, FALSE);
-	g_return_val_if_fail (in_strv[0] != NULL, FALSE);
-	g_return_val_if_fail (in_strv[1] != NULL, FALSE);
-	g_return_val_if_fail (in_strv[2] == NULL, FALSE);
-	g_return_val_if_fail (out_prop_name != NULL, FALSE);
-	g_return_val_if_fail (out_prop_value != NULL, FALSE);
-
-	*out_prop_name = g_strdup (in_strv[0]);
-	*out_prop_value = g_strdup (in_strv[1]);
-
-	return TRUE;
+	return e_gdbus_templates_decode_two_strings (in_strv, out_prop_name, out_prop_value);
 }
 
 void
@@ -570,11 +556,18 @@ e_gdbus_book_emit_opened (EGdbusBook *object, const gchar * const *arg_error)
 	g_signal_emit (object, signals[__OPENED_SIGNAL], 0, arg_error);
 }
 
+void
+e_gdbus_book_emit_backend_property_changed (EGdbusBook *object, const gchar * const *arg_name_value)
+{
+	g_signal_emit (object, signals[__BACKEND_PROPERTY_CHANGED_SIGNAL], 0, arg_name_value);
+}
+
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, backend_error, message, "s")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, readonly, is_readonly, "b")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, online, is_online, "b")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, auth_required, credentials, "as")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, opened, error, "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, backend_property_changed, name_value, "as")
 
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, open, only_if_exists, "b")
 E_DECLARE_GDBUS_ASYNC_METHOD_0			(book, remove)
@@ -622,6 +615,7 @@ static const GDBusSignalInfo * const e_gdbus_book_signal_info_pointers[] =
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, online),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, auth_required),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, opened),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, backend_property_changed),
 
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, open_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, remove_done),

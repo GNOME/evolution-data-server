@@ -109,6 +109,7 @@ struct _EGdbusCalIface
 	void	(*auth_required)			(EGdbusCal *object, const gchar * const *arg_credentials);
 	void	(*opened)				(EGdbusCal *object, const gchar * const *arg_error);
 	void	(*free_busy_data)			(EGdbusCal *object, const gchar * const *arg_free_busy);
+	void	(*backend_property_changed)		(EGdbusCal *object, const gchar * const *arg_name_value);
 
 	/* Signal handlers for handling D-Bus method calls: */
 	gboolean (*handle_open)				(EGdbusCal *object, GDBusMethodInvocation *invocation, gboolean in_only_if_exists);
@@ -327,6 +328,7 @@ void e_gdbus_cal_emit_online		(EGdbusCal *object, gint arg_is_online);
 void e_gdbus_cal_emit_auth_required	(EGdbusCal *object, const gchar * const *arg_credentials);
 void e_gdbus_cal_emit_opened		(EGdbusCal *object, const gchar * const *arg_error);
 void e_gdbus_cal_emit_free_busy_data	(EGdbusCal *object, const gchar * const *arg_free_busy);
+void e_gdbus_cal_emit_backend_property_changed	(EGdbusCal *object, const gchar * const *arg_name_value);
 
 G_END_DECLS
 

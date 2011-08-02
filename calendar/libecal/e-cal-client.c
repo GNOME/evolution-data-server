@@ -479,6 +479,25 @@ free_busy_data_cb (EGdbusCal *object, const gchar * const *free_busy_strv, ECalC
 	e_client_util_free_object_slist (ecalcomps);
 }
 
+static void
+backend_property_changed_cb (EGdbusCal *object, const gchar * const *name_value_strv, ECalClient *client)
+{
+	gchar *prop_name = NULL, *prop_value = NULL;
+
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
+	g_return_if_fail (name_value_strv != NULL);
+	g_return_if_fail (e_gdbus_templates_decode_two_strings (name_value_strv, &prop_name, &prop_value));
+	g_return_if_fail (prop_name != NULL);
+	g_return_if_fail (*prop_name);
+	g_return_if_fail (prop_value != NULL);
+
+	e_client_emit_backend_property_changed (E_CLIENT (client), prop_name, prop_value);
+
+	g_free (prop_name);
+	g_free (prop_value);
+}
+
 static EDataCalObjType
 convert_type (ECalClientSourceType type)
 {
@@ -613,6 +632,7 @@ e_cal_client_new (ESource *source, ECalClientSourceType source_type, GError **er
 	g_signal_connect (client->priv->gdbus_cal, "auth-required", G_CALLBACK (auth_required_cb), client);
 	g_signal_connect (client->priv->gdbus_cal, "opened", G_CALLBACK (opened_cb), client);
 	g_signal_connect (client->priv->gdbus_cal, "free-busy-data", G_CALLBACK (free_busy_data_cb), client);
+	g_signal_connect (client->priv->gdbus_cal, "backend-property-changed", G_CALLBACK (backend_property_changed_cb), client);
 
 	return client;
 }
@@ -903,7 +923,9 @@ e_cal_client_get_local_attachment_store (ECalClient *client)
 	if (client->priv->cache_dir || !client->priv->gdbus_cal)
 		return client->priv->cache_dir;
 
-	e_gdbus_cal_call_get_backend_property_sync (client->priv->gdbus_cal, CLIENT_BACKEND_PROPERTY_CACHE_DIR, &cache_dir, NULL, &error);
+	cache_dir = e_client_get_backend_property_from_cache (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_CACHE_DIR);
+	if (!cache_dir)
+		e_gdbus_cal_call_get_backend_property_sync (client->priv->gdbus_cal, CLIENT_BACKEND_PROPERTY_CACHE_DIR, &cache_dir, NULL, &error);
 
 	if (error == NULL) {
 		client->priv->cache_dir = cache_dir;
@@ -1252,6 +1274,8 @@ process_detached_instances (GSList *instances, GSList *detached_instances)
 		ECalComponentRange recur_id, instance_recur_id;
 
 		processed = FALSE;
+		recur_id.type = E_CAL_COMPONENT_RANGE_SINGLE;
+		instance_recur_id.type = E_CAL_COMPONENT_RANGE_SINGLE;
 
 		cid = dl->data;
 		e_cal_component_get_uid (cid->comp, &uid);
@@ -1343,63 +1367,18 @@ process_detached_instances (GSList *instances, GSList *detached_instances)
 }
 
 static void
-generate_instances (ECalClient *client, time_t start, time_t end, const gchar *uid,
+generate_instances (ECalClient *client, time_t start, time_t end, GSList *objects, GCancellable *cancellable,
 		    ECalRecurInstanceFn cb, gpointer cb_data)
 {
-	GSList *objects = NULL;
 	GSList *instances, *detached_instances = NULL;
 	GSList *l;
-	gchar *query;
-	gchar *iso_start, *iso_end;
 	ECalClientPrivate *priv;
 
 	priv = client->priv;
 
-	/* Generate objects */
-	if (uid && *uid) {
-		GError *error = NULL;
-		gint tries = 0;
-
- try_again:
-		if (!e_cal_client_get_objects_for_uid_sync (client, uid, &objects, NULL, &error)) {
-			if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY) && tries >= 10) {
-				tries++;
-				g_usleep (500);
-				g_clear_error (&error);
-
-				goto try_again;
-			}
-
-			unwrap_dbus_error (error, &error);
-			g_message ("Failed to get recurrence objects for uid %s \n", error ? error->message : "Unknown error");
-			g_clear_error (&error);
-			return;
-		}
-	} else {
-		iso_start = isodate_from_time_t (start);
-		if (!iso_start)
-			return;
-
-		iso_end = isodate_from_time_t (end);
-		if (!iso_end) {
-			g_free (iso_start);
-			return;
-		}
-
-		query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
-					 iso_start, iso_end);
-		g_free (iso_start);
-		g_free (iso_end);
-		if (!e_cal_client_get_object_list_as_comps_sync (client, query, &objects, NULL, NULL)) {
-			g_free (query);
-			return;
-		}
-		g_free (query);
-	}
-
 	instances = NULL;
 
-	for (l = objects; l; l = l->next) {
+	for (l = objects; l && !g_cancellable_is_cancelled (cancellable); l = l->next) {
 		ECalComponent *comp;
 		icaltimezone *default_zone;
 
@@ -1416,7 +1395,7 @@ generate_instances (ECalClient *client, time_t start, time_t end, const gchar *u
 
 			/* keep the detached instances apart */
 			ci = g_new0 (struct comp_instance, 1);
-			ci->comp = comp;
+			ci->comp = g_object_ref (comp);
 
 			e_cal_component_get_dtstart (comp, &dtstart);
 			e_cal_component_get_dtend (comp, &dtend);
@@ -1469,7 +1448,7 @@ generate_instances (ECalClient *client, time_t start, time_t end, const gchar *u
 			/* Get the start timezone */
 			e_cal_component_get_dtstart (comp, &datetime);
 			if (datetime.tzid)
-				e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, NULL, NULL);
+				e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, cancellable, NULL);
 			else
 				start_zone = NULL;
 			e_cal_component_free_datetime (&datetime);
@@ -1483,18 +1462,20 @@ generate_instances (ECalClient *client, time_t start, time_t end, const gchar *u
 							default_zone);
 
 			g_free (instances_hold);
-			g_object_unref (comp);
 		}
 	}
 
+	g_slist_foreach (objects, (GFunc) g_object_unref, NULL);
 	g_slist_free (objects);
 
 	/* Generate instances and spew them out */
 
-	instances = g_slist_sort (instances, compare_comp_instance);
-	instances = process_detached_instances (instances, detached_instances);
+	if (!g_cancellable_is_cancelled (cancellable)) {
+		instances = g_slist_sort (instances, compare_comp_instance);
+		instances = process_detached_instances (instances, detached_instances);
+	}
 
-	for (l = instances; l; l = l->next) {
+	for (l = instances; l && !g_cancellable_is_cancelled (cancellable); l = l->next) {
 		struct comp_instance *ci;
 		gboolean result;
 
@@ -1529,8 +1510,302 @@ generate_instances (ECalClient *client, time_t start, time_t end, const gchar *u
 	g_slist_free (detached_instances);
 }
 
+static GSList *
+get_objects_sync (ECalClient *client, time_t start, time_t end, const gchar *uid)
+{
+	GSList *objects = NULL;
+
+	/* Generate objects */
+	if (uid && *uid) {
+		GError *error = NULL;
+		gint tries = 0;
+
+ try_again:
+		if (!e_cal_client_get_objects_for_uid_sync (client, uid, &objects, NULL, &error)) {
+			if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY) && tries >= 10) {
+				tries++;
+				g_usleep (500);
+				g_clear_error (&error);
+
+				goto try_again;
+			}
+
+			unwrap_dbus_error (error, &error);
+			g_message ("Failed to get recurrence objects for uid %s \n", error ? error->message : "Unknown error");
+			g_clear_error (&error);
+			return NULL;
+		}
+	} else {
+		gchar *iso_start, *iso_end;
+		gchar *query;
+
+		iso_start = isodate_from_time_t (start);
+		if (!iso_start)
+			return NULL;
+
+		iso_end = isodate_from_time_t (end);
+		if (!iso_end) {
+			g_free (iso_start);
+			return NULL;
+		}
+
+		query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))",
+					 iso_start, iso_end);
+		g_free (iso_start);
+		g_free (iso_end);
+		if (!e_cal_client_get_object_list_as_comps_sync (client, query, &objects, NULL, NULL)) {
+			g_free (query);
+			return NULL;
+		}
+		g_free (query);
+	}
+
+	return objects;
+}
+
+struct get_objects_async_data
+{
+	GCancellable *cancellable;
+	ECalClient *client;
+	time_t start;
+	time_t end;
+	ECalRecurInstanceFn cb;
+	gpointer cb_data;
+	GDestroyNotify destroy_cb_data;
+	gchar *uid;
+	gchar *query;
+	guint tries;
+	void (* ready_cb) (struct get_objects_async_data *goad, GSList *objects);
+	icaltimezone *start_zone;
+	ECalComponent *comp;
+};
+
+static void
+free_get_objects_async_data (struct get_objects_async_data *goad)
+{
+	if (!goad)
+		return;
+
+	if (goad->cancellable) {
+		g_cancellable_cancel (goad->cancellable);
+		g_object_unref (goad->cancellable);
+	}
+	if (goad->destroy_cb_data)
+		goad->destroy_cb_data (goad->cb_data);
+	if (goad->client)
+		g_object_unref (goad->client);
+	if (goad->comp)
+		g_object_unref (goad->comp);
+	g_free (goad->query);
+	g_free (goad->uid);
+	g_free (goad);
+}
+
+static gboolean repeat_get_objects_for_uid_timeout_cb (gpointer user_data);
+
+static void
+got_objects_for_uid_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+{
+	struct get_objects_async_data *goad = user_data;
+	GSList *objects = NULL;
+	GError *error = NULL;
+
+	g_return_if_fail (source_object != NULL);
+	g_return_if_fail (result != NULL);
+	g_return_if_fail (goad != NULL);
+	g_return_if_fail (goad->client == E_CAL_CLIENT (source_object));
+
+	if (!e_cal_client_get_objects_for_uid_finish (goad->client, result, &objects, &error)) {
+		if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_CANCELLED) ||
+		    g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+			free_get_objects_async_data (goad);
+			g_clear_error (&error);
+			return;
+		}
+
+		if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY) && goad->tries < 10) {
+			goad->tries++;
+			g_timeout_add (250, repeat_get_objects_for_uid_timeout_cb, goad);
+			g_clear_error (&error);
+			return;
+		}
+
+		g_clear_error (&error);
+		objects = NULL;
+	}
+
+	g_return_if_fail (goad->ready_cb != NULL);
+
+	/* takes care of the objects and goad */
+	goad->ready_cb (goad, objects);
+}
+
+static gboolean
+repeat_get_objects_for_uid_timeout_cb (gpointer user_data)
+{
+	struct get_objects_async_data *goad = user_data;
+
+	g_return_val_if_fail (goad != NULL, FALSE);
+
+	e_cal_client_get_objects_for_uid (goad->client, goad->uid, goad->cancellable, got_objects_for_uid_cb, goad);
+
+	return FALSE;
+}
+
+static gboolean repeat_get_object_list_as_comps_timeout_cb (gpointer user_data);
+
+static void
+got_object_list_as_comps_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+{
+	struct get_objects_async_data *goad = user_data;
+	GSList *objects = NULL;
+	GError *error = NULL;
+
+	g_return_if_fail (source_object != NULL);
+	g_return_if_fail (result != NULL);
+	g_return_if_fail (goad != NULL);
+	g_return_if_fail (goad->client == E_CAL_CLIENT (source_object));
+
+	if (!e_cal_client_get_object_list_as_comps_finish (goad->client, result, &objects, &error)) {
+		if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_CANCELLED) ||
+		    g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+			free_get_objects_async_data (goad);
+			g_clear_error (&error);
+			return;
+		}
+
+		if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY) && goad->tries < 10) {
+			goad->tries++;
+			g_timeout_add (250, repeat_get_object_list_as_comps_timeout_cb, goad);
+			g_clear_error (&error);
+			return;
+		}
+
+		g_clear_error (&error);
+		objects = NULL;
+	}
+
+	g_return_if_fail (goad->ready_cb != NULL);
+
+	/* takes care of the objects and goad */
+	goad->ready_cb (goad, objects);
+}
+
+static gboolean
+repeat_get_object_list_as_comps_timeout_cb (gpointer user_data)
+{
+	struct get_objects_async_data *goad = user_data;
+
+	g_return_val_if_fail (goad != NULL, FALSE);
+
+	e_cal_client_get_object_list_as_comps (goad->client, goad->query, goad->cancellable, got_object_list_as_comps_cb, goad);
+
+	return FALSE;
+}
+
+/* ready_cb may take care of both arguments, goad and objects; objects can be also NULL */
+static void
+get_objects_async (void (* ready_cb)(struct get_objects_async_data *goad, GSList *objects), struct get_objects_async_data *goad)
+{
+	g_return_if_fail (ready_cb != NULL);
+	g_return_if_fail (goad != NULL);
+
+	goad->ready_cb = ready_cb;
+
+	if (goad->uid && *goad->uid) {
+		e_cal_client_get_objects_for_uid (goad->client, goad->uid, goad->cancellable, got_objects_for_uid_cb, goad);
+	} else {
+		gchar *iso_start, *iso_end;
+
+		iso_start = isodate_from_time_t (goad->start);
+		if (!iso_start) {
+			free_get_objects_async_data (goad);
+			return;
+		}
+
+		iso_end = isodate_from_time_t (goad->end);
+		if (!iso_end) {
+			g_free (iso_start);
+			free_get_objects_async_data (goad);
+			return;
+		}
+
+		goad->query = g_strdup_printf ("(occur-in-time-range? (make-time \"%s\") (make-time \"%s\"))", iso_start, iso_end);
+
+		g_free (iso_start);
+		g_free (iso_end);
+
+		e_cal_client_get_object_list_as_comps (goad->client, goad->query, goad->cancellable, got_object_list_as_comps_cb, goad);
+	}
+}
+
+static void
+generate_instances_got_objects_cb (struct get_objects_async_data *goad, GSList *objects)
+{
+	g_return_if_fail (goad != NULL);
+
+	/* generate_instaces () frees 'objects' slist */
+	if (objects)
+		generate_instances (goad->client, goad->start, goad->end, objects, goad->cancellable, goad->cb, goad->cb_data);
+
+	free_get_objects_async_data (goad);
+}
+
 /**
  * e_cal_client_generate_instances:
+ * @client: A calendar client.
+ * @start: Start time for query.
+ * @end: End time for query.
+ * @cancellable: a #GCancellable; can be %NULL
+ * @cb: Callback for each generated instance.
+ * @cb_data: Closure data for the callback.
+ * @destroy_cb_data: Function to call when the processing is done, to free @cb_data; can be %NULL.
+ *
+ * Does a combination of #e_cal_client_get_object_list () and
+ * #e_cal_client_recur_generate_instances(). Unlike #e_cal_client_generate_instances_sync (),
+ * this returns immediately and the @cb callback is called asynchronously.
+ *
+ * The callback function should do a g_object_ref() of the calendar component
+ * it gets passed if it intends to keep it around, since it will be unref'ed
+ * as soon as the callback returns.
+ *
+ * Since: 3.2
+ **/
+void
+e_cal_client_generate_instances (ECalClient *client, time_t start, time_t end, GCancellable *cancellable, ECalRecurInstanceFn cb, gpointer cb_data, GDestroyNotify destroy_cb_data)
+{
+	struct get_objects_async_data *goad;
+	GCancellable *use_cancellable;
+
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
+	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
+
+	g_return_if_fail (start >= 0);
+	g_return_if_fail (end >= 0);
+	g_return_if_fail (cb != NULL);
+
+	use_cancellable = cancellable;
+	if (!use_cancellable)
+		use_cancellable = g_cancellable_new ();
+
+	goad = g_new0 (struct get_objects_async_data, 1);
+	goad->cancellable = g_object_ref (use_cancellable);
+	goad->client = g_object_ref (client);
+	goad->start = start;
+	goad->end = end;
+	goad->cb = cb;
+	goad->cb_data = cb_data;
+	goad->destroy_cb_data = destroy_cb_data;
+
+	get_objects_async (generate_instances_got_objects_cb, goad);
+
+	if (use_cancellable != cancellable)
+		g_object_unref (use_cancellable);
+}
+
+/**
+ * e_cal_client_generate_instances_sync:
  * @client: A calendar client.
  * @start: Start time for query.
  * @end: End time for query.
@@ -1543,10 +1818,14 @@ generate_instances (ECalClient *client, time_t start, time_t end, const gchar *u
  * The callback function should do a g_object_ref() of the calendar component
  * it gets passed if it intends to keep it around, since it will be unref'ed
  * as soon as the callback returns.
+ *
+ * Since: 3.2
  **/
 void
-e_cal_client_generate_instances (ECalClient *client, time_t start, time_t end, ECalRecurInstanceFn cb, gpointer cb_data)
+e_cal_client_generate_instances_sync (ECalClient *client, time_t start, time_t end, ECalRecurInstanceFn cb, gpointer cb_data)
 {
+	GSList *objects = NULL;
+
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
@@ -1555,82 +1834,26 @@ e_cal_client_generate_instances (ECalClient *client, time_t start, time_t end, E
 	g_return_if_fail (end >= 0);
 	g_return_if_fail (cb != NULL);
 
-	generate_instances (client, start, end, NULL, cb, cb_data);
+	objects = get_objects_sync (client, start, end, NULL);
+	if (!objects)
+		return;
+
+	/* generate_instaces frees 'objects' slist */
+	generate_instances (client, start, end, objects, NULL, cb, cb_data);
 }
 
-/**
- * e_cal_client_generate_instances_for_object:
- * @client: A calendar client.
- * @icalcomp: Object to generate instances from.
- * @start: Start time for query.
- * @end: End time for query.
- * @cb: Callback for each generated instance.
- * @cb_data: Closure data for the callback.
- *
- * Does a combination of #e_cal_client_get_object_list () and
- * #e_cal_client_recur_generate_instances(), like #e_cal_client_generate_instances(), but
- * for a single object.
- *
- * The callback function should do a g_object_ref() of the calendar component
- * it gets passed if it intends to keep it around, since it will be unref'ed
- * as soon as the callback returns.
- **/
-void
-e_cal_client_generate_instances_for_object (ECalClient *client, icalcomponent *icalcomp, time_t start, time_t end, ECalRecurInstanceFn cb, gpointer cb_data)
+/* also frees 'instances' GSList */
+static void
+process_instances (ECalComponent *comp, GSList *instances, ECalRecurInstanceFn cb, gpointer cb_data)
 {
-	ECalComponent *comp;
-	const gchar *uid;
 	gchar *rid;
 	gboolean result;
-	GSList *instances = NULL;
-	ECalComponentDateTime datetime;
-	icaltimezone *start_zone = NULL;
-	struct instances_info *instances_hold;
-	gboolean is_single_instance = FALSE;
 
-	g_return_if_fail (client != NULL);
-	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
-
-	g_return_if_fail (start >= 0);
-	g_return_if_fail (end >= 0);
+	g_return_if_fail (comp != NULL);
 	g_return_if_fail (cb != NULL);
 
-	comp = e_cal_component_new ();
-	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
-
-	if (!e_cal_component_has_recurrences (comp))
-		is_single_instance = TRUE;
-
-	/* If the backend stores it as individual instances and does not
-	 * have a master object - do not expand */
-	if (is_single_instance || e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
-		/* return the same instance */
-		result = (* cb)  (comp, icaltime_as_timet_with_zone (icalcomponent_get_dtstart (icalcomp), client->priv->default_zone),
-				icaltime_as_timet_with_zone (icalcomponent_get_dtend (icalcomp), client->priv->default_zone), cb_data);
-		g_object_unref (comp);
-		return;
-	}
-
-	e_cal_component_get_uid (comp, &uid);
 	rid = e_cal_component_get_recurid_as_string (comp);
 
-	/* Get the start timezone */
-	e_cal_component_get_dtstart (comp, &datetime);
-	if (datetime.tzid)
-		e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, NULL, NULL);
-	else
-		start_zone = NULL;
-	e_cal_component_free_datetime (&datetime);
-
-	instances_hold = g_new0 (struct instances_info, 1);
-	instances_hold->instances = &instances;
-	instances_hold->start_zone = start_zone;
-
-	/* generate all instances in the given time range */
-	generate_instances (client, start, end, uid, add_instance, instances_hold);
-
-	instances = *(instances_hold->instances);
 	/* now only return back the instances for the given object */
 	result = TRUE;
 	while (instances != NULL) {
@@ -1657,9 +1880,201 @@ e_cal_client_generate_instances_for_object (ECalClient *client, icalcomponent *i
 	}
 
 	/* clean up */
+	g_free (rid);
+}
+
+static void
+generate_instances_for_object_got_objects_cb (struct get_objects_async_data *goad, GSList *objects)
+{
+	struct instances_info *instances_hold;
+	GSList *instances = NULL;
+
+	g_return_if_fail (goad != NULL);
+
+	instances_hold = g_new0 (struct instances_info, 1);
+	instances_hold->instances = &instances;
+	instances_hold->start_zone = goad->start_zone;
+
+	/* generate all instances in the given time range */
+	generate_instances (goad->client, goad->start, goad->end, objects, goad->cancellable, add_instance, instances_hold);
+
+	/* it also frees 'instances' GSList */
+	process_instances (goad->comp, *(instances_hold->instances), goad->cb, goad->cb_data);
+
+	/* clean up */
+	free_get_objects_async_data (goad);
+	g_free (instances_hold);
+}
+
+/**
+ * e_cal_client_generate_instances_for_object:
+ * @client: A calendar client.
+ * @icalcomp: Object to generate instances from.
+ * @start: Start time for query.
+ * @end: End time for query.
+ * @cancellable: a #GCancellable; can be %NULL
+ * @cb: Callback for each generated instance.
+ * @cb_data: Closure data for the callback.
+ * @destroy_cb_data: Function to call when the processing is done, to free @cb_data; can be %NULL.
+ *
+ * Does a combination of #e_cal_client_get_object_list () and
+ * #e_cal_client_recur_generate_instances(), like #e_cal_client_generate_instances(), but
+ * for a single object. Unlike #e_cal_client_generate_instances_for_object_sync (),
+ * this returns immediately and the @cb callback is called asynchronously.
+ *
+ * The callback function should do a g_object_ref() of the calendar component
+ * it gets passed if it intends to keep it around, since it will be unref'ed
+ * as soon as the callback returns.
+ *
+ * Since: 3.2
+ **/
+void
+e_cal_client_generate_instances_for_object (ECalClient *client, icalcomponent *icalcomp, time_t start, time_t end, GCancellable *cancellable, ECalRecurInstanceFn cb, gpointer cb_data, GDestroyNotify destroy_cb_data)
+{
+	ECalComponent *comp;
+	const gchar *uid;
+	ECalComponentDateTime datetime;
+	icaltimezone *start_zone = NULL;
+	gboolean is_single_instance = FALSE;
+	struct get_objects_async_data *goad;
+	GCancellable *use_cancellable;
+
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
+	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
+
+	g_return_if_fail (start >= 0);
+	g_return_if_fail (end >= 0);
+	g_return_if_fail (cb != NULL);
+
+	comp = e_cal_component_new ();
+	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
+
+	if (!e_cal_component_has_recurrences (comp))
+		is_single_instance = TRUE;
+
+	/* If the backend stores it as individual instances and does not
+	 * have a master object - do not expand */
+	if (is_single_instance || e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
+		/* return the same instance */
+		(* cb)  (comp, icaltime_as_timet_with_zone (icalcomponent_get_dtstart (icalcomp), client->priv->default_zone),
+				icaltime_as_timet_with_zone (icalcomponent_get_dtend (icalcomp), client->priv->default_zone), cb_data);
+		g_object_unref (comp);
+
+		if (destroy_cb_data)
+			destroy_cb_data (cb_data);
+		return;
+	}
+
+	e_cal_component_get_uid (comp, &uid);
+
+	/* Get the start timezone */
+	e_cal_component_get_dtstart (comp, &datetime);
+	if (datetime.tzid)
+		e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, NULL, NULL);
+	else
+		start_zone = NULL;
+	e_cal_component_free_datetime (&datetime);
+
+	use_cancellable = cancellable;
+	if (!use_cancellable)
+		use_cancellable = g_cancellable_new ();
+
+	goad = g_new0 (struct get_objects_async_data, 1);
+	goad->cancellable = g_object_ref (use_cancellable);
+	goad->client = g_object_ref (client);
+	goad->start = start;
+	goad->end = end;
+	goad->cb = cb;
+	goad->cb_data = cb_data;
+	goad->destroy_cb_data = destroy_cb_data;
+	goad->start_zone = start_zone;
+	goad->comp = comp;
+	goad->uid = g_strdup (uid);
+
+	get_objects_async (generate_instances_for_object_got_objects_cb, goad);
+
+	if (use_cancellable != cancellable)
+		g_object_unref (use_cancellable);
+}
+
+/**
+ * e_cal_client_generate_instances_for_object_sync:
+ * @client: A calendar client.
+ * @icalcomp: Object to generate instances from.
+ * @start: Start time for query.
+ * @end: End time for query.
+ * @cb: Callback for each generated instance.
+ * @cb_data: Closure data for the callback.
+ *
+ * Does a combination of #e_cal_client_get_object_list () and
+ * #e_cal_client_recur_generate_instances(), like #e_cal_client_generate_instances_sync(), but
+ * for a single object.
+ *
+ * The callback function should do a g_object_ref() of the calendar component
+ * it gets passed if it intends to keep it around, since it will be unref'ed
+ * as soon as the callback returns.
+ *
+ * Since: 3.2
+ **/
+void
+e_cal_client_generate_instances_for_object_sync (ECalClient *client, icalcomponent *icalcomp, time_t start, time_t end, ECalRecurInstanceFn cb, gpointer cb_data)
+{
+	ECalComponent *comp;
+	const gchar *uid;
+	GSList *instances = NULL;
+	ECalComponentDateTime datetime;
+	icaltimezone *start_zone = NULL;
+	struct instances_info *instances_hold;
+	gboolean is_single_instance = FALSE;
+
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
+	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
+
+	g_return_if_fail (start >= 0);
+	g_return_if_fail (end >= 0);
+	g_return_if_fail (cb != NULL);
+
+	comp = e_cal_component_new ();
+	e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (icalcomp));
+
+	if (!e_cal_component_has_recurrences (comp))
+		is_single_instance = TRUE;
+
+	/* If the backend stores it as individual instances and does not
+	 * have a master object - do not expand */
+	if (is_single_instance || e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER)) {
+		/* return the same instance */
+		(* cb)  (comp, icaltime_as_timet_with_zone (icalcomponent_get_dtstart (icalcomp), client->priv->default_zone),
+				icaltime_as_timet_with_zone (icalcomponent_get_dtend (icalcomp), client->priv->default_zone), cb_data);
+		g_object_unref (comp);
+		return;
+	}
+
+	e_cal_component_get_uid (comp, &uid);
+
+	/* Get the start timezone */
+	e_cal_component_get_dtstart (comp, &datetime);
+	if (datetime.tzid)
+		e_cal_client_get_timezone_sync (client, datetime.tzid, &start_zone, NULL, NULL);
+	else
+		start_zone = NULL;
+	e_cal_component_free_datetime (&datetime);
+
+	instances_hold = g_new0 (struct instances_info, 1);
+	instances_hold->instances = &instances;
+	instances_hold->start_zone = start_zone;
+
+	/* generate all instances in the given time range */
+	generate_instances (client, start, end, get_objects_sync (client, start, end, uid), NULL, add_instance, instances_hold);
+
+	/* it also frees 'instances' GSList */
+	process_instances (comp, *(instances_hold->instances), cb, cb_data);
+
+	/* clean up */
 	g_object_unref (comp);
 	g_free (instances_hold);
-	g_free (rid);
 }
 
 typedef struct _ForeachTZIDCallbackData ForeachTZIDCallbackData;
@@ -1789,24 +2204,76 @@ e_cal_client_get_component_as_string (ECalClient *client, icalcomponent *icalcom
 	return obj_string;
 }
 
+static gboolean
+cal_client_get_backend_property_from_cache_finish (EClient *client, GAsyncResult *result, gchar **prop_value, GError **error)
+{
+	GSimpleAsyncResult *simple;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+	g_return_val_if_fail (result != NULL, FALSE);
+	g_return_val_if_fail (prop_value != NULL, FALSE);
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (client), cal_client_get_backend_property_from_cache_finish), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	if (g_simple_async_result_propagate_error (simple, &local_error)) {
+		e_client_unwrap_dbus_error (client, local_error, error);
+		return FALSE;
+	}
+
+	*prop_value = g_strdup (g_simple_async_result_get_op_res_gpointer (simple));
+
+	return *prop_value != NULL;
+}
+
 static void
 cal_client_get_backend_property (EClient *client, const gchar *prop_name, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_client_proxy_call_string (client, prop_name, cancellable, callback, user_data, cal_client_get_backend_property,
+	gchar *prop_value;
+
+	prop_value = e_client_get_backend_property_from_cache (client, prop_name);
+	if (prop_value) {
+		e_client_finish_async_without_dbus (client, cancellable, callback, user_data, cal_client_get_backend_property_from_cache_finish, prop_value, g_free);
+	} else {
+		e_client_proxy_call_string_with_res_op_data (client, prop_name, cancellable, callback, user_data, cal_client_get_backend_property, prop_name,
 			e_gdbus_cal_call_get_backend_property,
 			NULL, NULL, e_gdbus_cal_call_get_backend_property_finish, NULL, NULL);
+	}
 }
 
 static gboolean
 cal_client_get_backend_property_finish (EClient *client, GAsyncResult *result, gchar **prop_value, GError **error)
 {
-	return e_client_proxy_call_finish_string (client, result, prop_value, error, cal_client_get_backend_property);
+	gchar *str = NULL;
+	gboolean res;
+
+	g_return_val_if_fail (prop_value != NULL, FALSE);
+
+	if (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)) == cal_client_get_backend_property_from_cache_finish) {
+		res = cal_client_get_backend_property_from_cache_finish (client, result, &str, error);
+	} else {
+		res = e_client_proxy_call_finish_string (client, result, &str, error, cal_client_get_backend_property);
+		if (res && str) {
+			const gchar *prop_name = g_object_get_data (G_OBJECT (result), "res-op-data");
+
+			if (prop_name && *prop_name)
+				e_client_update_backend_property_cache (client, prop_name, str);
+		}
+	}
+
+	*prop_value = str;
+
+	return res;
 }
 
 static gboolean
 cal_client_get_backend_property_sync (EClient *client, const gchar *prop_name, gchar **prop_value, GCancellable *cancellable, GError **error)
 {
 	ECalClient *cal_client;
+	gchar *prop_val;
+	gboolean res;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
@@ -1820,7 +2287,21 @@ cal_client_get_backend_property_sync (EClient *client, const gchar *prop_name, g
 		return FALSE;
 	}
 
-	return e_client_proxy_call_sync_string__string (client, prop_name, prop_value, cancellable, error, e_gdbus_cal_call_get_backend_property_sync);
+	prop_val = e_client_get_backend_property_from_cache (client, prop_name);
+	if (prop_val) {
+		g_return_val_if_fail (prop_value != NULL, FALSE);
+
+		*prop_value = prop_val;
+
+		return TRUE;
+	}
+
+	res = e_client_proxy_call_sync_string__string (client, prop_name, prop_value, cancellable, error, e_gdbus_cal_call_get_backend_property_sync);
+
+	if (res && prop_value)
+		e_client_update_backend_property_cache (client, prop_name, *prop_value);
+
+	return res;
 }
 
 static void
@@ -3810,24 +4291,7 @@ e_cal_client_get_timezone (ECalClient *client, const gchar *tzid, GCancellable *
 
 	zone = cal_client_get_timezone_from_cache (client, tzid);
 	if (zone) {
-		GCancellable *use_cancellable = cancellable;
-		guint32 opid;
-
-		if (!use_cancellable)
-			use_cancellable = g_cancellable_new ();
-
-		opid = e_client_register_op (E_CLIENT (client), use_cancellable);
-		if (opid) {
-			GSimpleAsyncResult *simple;
-
-			simple = g_simple_async_result_new (G_OBJECT (client), callback, user_data, cal_client_get_timezone_from_cache);
-			g_simple_async_result_set_op_res_gpointer (simple, zone, NULL);
-			g_simple_async_result_complete_in_idle (simple);
-			g_object_unref (simple);
-		}
-
-		if (use_cancellable != cancellable)
-			g_object_unref (use_cancellable);
+		e_client_finish_async_without_dbus (E_CLIENT (client), cancellable, callback, user_data, cal_client_get_timezone_from_cache, zone, NULL);
 	} else {
 		e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (tzid, &gdbus_tzid), cancellable, callback, user_data, e_cal_client_get_timezone,
 				e_gdbus_cal_call_get_timezone,

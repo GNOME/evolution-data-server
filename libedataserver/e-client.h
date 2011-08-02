@@ -122,6 +122,7 @@ struct _EClientClass {
 	void		(* opened) (EClient *client, const GError *error);
 	void		(* backend_error) (EClient *client, const gchar *error_msg);
 	void		(* backend_died) (EClient *client);
+	void		(* backend_property_changed) (EClient *client, const gchar *prop_name, const gchar *prop_value);
 };
 
 GType		e_client_get_type			(void);

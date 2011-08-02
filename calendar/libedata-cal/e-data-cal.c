@@ -1409,6 +1409,25 @@ e_data_cal_report_free_busy_data (EDataCal *cal, const GSList *freebusy)
 	g_strfreev (strv_freebusy);
 }
 
+/* Notifies client about certain property value change */
+void
+e_data_cal_report_backend_property_changed (EDataCal *cal, const gchar *prop_name, const gchar *prop_value)
+{
+	gchar **strv;
+
+	g_return_if_fail (cal != NULL);
+	g_return_if_fail (prop_name != NULL);
+	g_return_if_fail (*prop_name != '\0');
+	g_return_if_fail (prop_value != NULL);
+
+	strv = e_gdbus_templates_encode_two_strings (prop_name, prop_value);
+	g_return_if_fail (strv != NULL);
+
+	e_gdbus_cal_emit_backend_property_changed (cal->priv->gdbus_object, (const gchar * const *) strv);
+
+	g_strfreev (strv);
+}
+
 /* Instance init */
 static void
 e_data_cal_init (EDataCal *ecal)

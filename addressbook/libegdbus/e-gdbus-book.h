@@ -117,6 +117,7 @@ struct _EGdbusBookIface
 	void	(*online)			(EGdbusBook *object, gboolean arg_is_online);
 	void	(*auth_required)		(EGdbusBook *object, const gchar * const *arg_credentials);
 	void	(*opened)			(EGdbusBook *object, const gchar * const *arg_error);
+	void	(*backend_property_changed)	(EGdbusBook *object, const gchar * const *arg_name_value);
 
 	/* Signal handlers for handling D-Bus method calls: */
 	gboolean (*handle_open)			(EGdbusBook *object, GDBusMethodInvocation *invocation, gboolean in_only_if_exists);
@@ -268,6 +269,7 @@ void e_gdbus_book_emit_readonly		(EGdbusBook *object, gboolean arg_is_readonly);
 void e_gdbus_book_emit_online		(EGdbusBook *object, gboolean arg_is_online);
 void e_gdbus_book_emit_auth_required	(EGdbusBook *object, const gchar * const *arg_credentials);
 void e_gdbus_book_emit_opened		(EGdbusBook *object, const gchar * const *arg_error);
+void e_gdbus_book_emit_backend_property_changed	(EGdbusBook *object, const gchar * const *arg_name_value);
 
 G_END_DECLS
 

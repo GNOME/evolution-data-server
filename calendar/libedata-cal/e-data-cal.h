@@ -154,6 +154,7 @@ void		e_data_cal_report_online			(EDataCal *cal, gboolean is_online);
 void		e_data_cal_report_auth_required			(EDataCal *cal, const ECredentials *credentials);
 void		e_data_cal_report_opened			(EDataCal *cal, const GError *error);
 void		e_data_cal_report_free_busy_data		(EDataCal *cal, const GSList *freebusy);
+void		e_data_cal_report_backend_property_changed	(EDataCal *cal, const gchar *prop_name, const gchar *prop_value);
 
 G_END_DECLS
 

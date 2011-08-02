@@ -1784,6 +1784,36 @@ e_cal_backend_notify_opened (ECalBackend *backend, GError *error)
 }
 
 /**
+ * e_cal_backend_notify_property_changed:
+ * @backend: an #ECalBackend
+ * @prop_name: property name, which changed
+ * @prop_value: new property value
+ *
+ * Notifies client about property value change.
+ **/
+void
+e_cal_backend_notify_property_changed (ECalBackend *backend, const gchar *prop_name, const gchar *prop_value)
+{
+	ECalBackendPrivate *priv;
+	GSList *clients;
+
+	g_return_if_fail (backend != NULL);
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (backend->priv != NULL);
+	g_return_if_fail (prop_name != NULL);
+	g_return_if_fail (*prop_name != '\0');
+	g_return_if_fail (prop_value != NULL);
+
+	priv = backend->priv;
+	g_mutex_lock (priv->clients_mutex);
+
+	for (clients = priv->clients; clients != NULL; clients = g_slist_next (clients))
+		e_data_cal_report_backend_property_changed (E_DATA_CAL (clients->data), prop_name, prop_value);
+
+	g_mutex_unlock (priv->clients_mutex);
+}
+
+/**
  * e_cal_backend_respond_opened:
  * @backend: an #ECalBackend
  * @cal: an #EDataCal

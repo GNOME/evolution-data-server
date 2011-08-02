@@ -159,6 +159,7 @@ void		e_cal_backend_notify_readonly		(ECalBackend *backend, gboolean is_readonly
 void		e_cal_backend_notify_online		(ECalBackend *backend, gboolean is_online);
 void		e_cal_backend_notify_auth_required	(ECalBackend *backend, gboolean is_self, const ECredentials *credentials);
 void		e_cal_backend_notify_opened		(ECalBackend *backend, GError *error);
+void		e_cal_backend_notify_property_changed	(ECalBackend *backend, const gchar *prop_name, const gchar *prop_value);
 
 void		e_cal_backend_empty_cache		(ECalBackend *backend, struct _ECalBackendCache *cache);
 

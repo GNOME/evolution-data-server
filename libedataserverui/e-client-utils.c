@@ -277,6 +277,7 @@ typedef struct _EClientUtilsAsyncOpData
 	GError *opened_cb_error;
 	guint retry_open_id;
 	gboolean only_if_exists;
+	guint pending_properties_count;
 } EClientUtilsAsyncOpData;
 
 static void
@@ -354,19 +355,26 @@ return_async_error (const GError *error, GAsyncReadyCallback async_cb, gpointer 
 }
 
 static void
-client_utils_capabilities_retrieved_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_utils_get_backend_property_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
 {
 	EClient *client = E_CLIENT (source_object);
 	EClientUtilsAsyncOpData *async_data = user_data;
-	gchar *capabilities = NULL;
 	GSimpleAsyncResult *simple;
 
 	g_return_if_fail (async_data != NULL);
 	g_return_if_fail (async_data->client != NULL);
 	g_return_if_fail (async_data->client == client);
 
-	e_client_retrieve_capabilities_finish (client, result, &capabilities, NULL);
-	g_free (capabilities);
+	if (result) {
+		gchar *prop_value = NULL;
+		
+		if (e_client_get_backend_property_finish (client, result, &prop_value, NULL))
+			g_free (prop_value);
+
+		async_data->pending_properties_count--;
+		if (async_data->pending_properties_count)
+			return;
+	}
 
 	/* keep the initial auth_handler connected directly, thus it will be able
 	   to answer any later authentication requests, for reconnection, for example
@@ -381,6 +389,49 @@ client_utils_capabilities_retrieved_cb (GObject *source_object, GAsyncResult *re
 	g_idle_add (complete_async_op_in_idle_cb, simple);
 
 	free_client_utils_async_op_data (async_data);
+}
+
+static void
+client_utils_capabilities_retrieved_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+{
+	EClient *client = E_CLIENT (source_object);
+	EClientUtilsAsyncOpData *async_data = user_data;
+	gchar *capabilities = NULL;
+	gboolean caps_res;
+
+	g_return_if_fail (async_data != NULL);
+	g_return_if_fail (async_data->client != NULL);
+	g_return_if_fail (async_data->client == client);
+
+	caps_res = e_client_retrieve_capabilities_finish (client, result, &capabilities, NULL);
+	g_free (capabilities);
+
+	if (caps_res) {
+		async_data->pending_properties_count = 1;
+
+		/* precache backend properties */
+		if (E_IS_CAL_CLIENT (client)) {
+			async_data->pending_properties_count += 3;
+
+			e_client_get_backend_property (async_data->client, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS, async_data->cancellable, client_utils_get_backend_property_cb, async_data);
+			e_client_get_backend_property (async_data->client, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS, async_data->cancellable, client_utils_get_backend_property_cb, async_data);
+			e_client_get_backend_property (async_data->client, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT, async_data->cancellable, client_utils_get_backend_property_cb, async_data);
+		} else if (E_IS_BOOK_CLIENT (client)) {
+			async_data->pending_properties_count += 3;
+
+			e_client_get_backend_property (async_data->client, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS, async_data->cancellable, client_utils_get_backend_property_cb, async_data);
+			e_client_get_backend_property (async_data->client, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS, async_data->cancellable, client_utils_get_backend_property_cb, async_data);
+			e_client_get_backend_property (async_data->client, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS, async_data->cancellable, client_utils_get_backend_property_cb, async_data);
+		} else {
+			g_warn_if_reached ();
+			client_utils_get_backend_property_cb (source_object, NULL, async_data);
+			return;
+		}
+
+		e_client_get_backend_property (async_data->client, CLIENT_BACKEND_PROPERTY_CACHE_DIR, async_data->cancellable, client_utils_get_backend_property_cb, async_data);
+	} else {
+		client_utils_get_backend_property_cb (source_object, NULL, async_data);
+	}
 }
 
 static void

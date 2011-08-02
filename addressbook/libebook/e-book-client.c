@@ -392,6 +392,25 @@ opened_cb (EGdbusBook *object, const gchar * const *error_strv, EBookClient *cli
 		g_error_free (error);
 }
 
+static void
+backend_property_changed_cb (EGdbusBook *object, const gchar * const *name_value_strv, EBookClient *client)
+{
+	gchar *prop_name = NULL, *prop_value = NULL;
+
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
+	g_return_if_fail (name_value_strv != NULL);
+	g_return_if_fail (e_gdbus_templates_decode_two_strings (name_value_strv, &prop_name, &prop_value));
+	g_return_if_fail (prop_name != NULL);
+	g_return_if_fail (*prop_name);
+	g_return_if_fail (prop_value != NULL);
+
+	e_client_emit_backend_property_changed (E_CLIENT (client), prop_name, prop_value);
+
+	g_free (prop_name);
+	g_free (prop_value);
+}
+
 /**
  * e_book_client_new:
  * @source: An #ESource pointer
@@ -496,6 +515,7 @@ e_book_client_new (ESource *source, GError **error)
 	g_signal_connect (client->priv->gdbus_book, "online", G_CALLBACK (online_cb), client);
 	g_signal_connect (client->priv->gdbus_book, "auth-required", G_CALLBACK (auth_required_cb), client);
 	g_signal_connect (client->priv->gdbus_book, "opened", G_CALLBACK (opened_cb), client);
+	g_signal_connect (client->priv->gdbus_book, "backend-property-changed", G_CALLBACK (backend_property_changed_cb), client);
 
 	return client;
 }
@@ -884,24 +904,76 @@ e_book_client_is_self (EContact *contact)
 	return is_self;
 }
 
+static gboolean
+book_client_get_backend_property_from_cache_finish (EClient *client, GAsyncResult *result, gchar **prop_value, GError **error)
+{
+	GSimpleAsyncResult *simple;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (result != NULL, FALSE);
+	g_return_val_if_fail (prop_value != NULL, FALSE);
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (client), book_client_get_backend_property_from_cache_finish), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	if (g_simple_async_result_propagate_error (simple, &local_error)) {
+		e_client_unwrap_dbus_error (client, local_error, error);
+		return FALSE;
+	}
+
+	*prop_value = g_strdup (g_simple_async_result_get_op_res_gpointer (simple));
+
+	return *prop_value != NULL;
+}
+
 static void
 book_client_get_backend_property (EClient *client, const gchar *prop_name, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_client_proxy_call_string (client, prop_name, cancellable, callback, user_data, book_client_get_backend_property,
+	gchar *prop_value;
+
+	prop_value = e_client_get_backend_property_from_cache (client, prop_name);
+	if (prop_value) {
+		e_client_finish_async_without_dbus (client, cancellable, callback, user_data, book_client_get_backend_property_from_cache_finish, prop_value, g_free);
+	} else {
+		e_client_proxy_call_string_with_res_op_data (client, prop_name, cancellable, callback, user_data, book_client_get_backend_property, prop_name,
 			e_gdbus_book_call_get_backend_property,
 			NULL, NULL, e_gdbus_book_call_get_backend_property_finish, NULL, NULL);
+	}
 }
 
 static gboolean
 book_client_get_backend_property_finish (EClient *client, GAsyncResult *result, gchar **prop_value, GError **error)
 {
-	return e_client_proxy_call_finish_string (client, result, prop_value, error, book_client_get_backend_property);
+	gchar *str = NULL;
+	gboolean res;
+
+	g_return_val_if_fail (prop_value != NULL, FALSE);
+
+	if (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)) == book_client_get_backend_property_from_cache_finish) {
+		res = book_client_get_backend_property_from_cache_finish (client, result, &str, error);
+	} else {
+		res = e_client_proxy_call_finish_string (client, result, &str, error, book_client_get_backend_property);
+		if (res && str) {
+			const gchar *prop_name = g_object_get_data (G_OBJECT (result), "res-op-data");
+
+			if (prop_name && *prop_name)
+				e_client_update_backend_property_cache (client, prop_name, str);
+		}
+	}
+
+	*prop_value = str;
+
+	return res;
 }
 
 static gboolean
 book_client_get_backend_property_sync (EClient *client, const gchar *prop_name, gchar **prop_value, GCancellable *cancellable, GError **error)
 {
 	EBookClient *book_client;
+	gchar *prop_val;
+	gboolean res;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -915,7 +987,21 @@ book_client_get_backend_property_sync (EClient *client, const gchar *prop_name, 
 		return FALSE;
 	}
 
-	return e_client_proxy_call_sync_string__string (client, prop_name, prop_value, cancellable, error, e_gdbus_book_call_get_backend_property_sync);
+	prop_val = e_client_get_backend_property_from_cache (client, prop_name);
+	if (prop_val) {
+		g_return_val_if_fail (prop_value != NULL, FALSE);
+
+		*prop_value = prop_val;
+
+		return TRUE;
+	}
+
+	res = e_client_proxy_call_sync_string__string (client, prop_name, prop_value, cancellable, error, e_gdbus_book_call_get_backend_property_sync);
+
+	if (res && prop_value)
+		e_client_update_backend_property_cache (client, prop_name, *prop_value);
+
+	return res;
 }
 
 static void

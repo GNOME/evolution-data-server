@@ -116,8 +116,10 @@ void		e_cal_client_free_icalcomp_slist		(GSList *icalcomps);
 void		e_cal_client_free_ecalcomp_slist		(GSList *ecalcomps);
 
 icaltimezone *	e_cal_client_resolve_tzid_cb			(const gchar *tzid, gpointer data);
-void		e_cal_client_generate_instances			(ECalClient *client, time_t start, time_t end, ECalRecurInstanceFn cb, gpointer cb_data);
-void		e_cal_client_generate_instances_for_object	(ECalClient *client, icalcomponent *icalcomp, time_t start, time_t end, ECalRecurInstanceFn cb, gpointer cb_data);
+void		e_cal_client_generate_instances			(ECalClient *client, time_t start, time_t end, GCancellable *cancellable, ECalRecurInstanceFn cb, gpointer cb_data, GDestroyNotify destroy_cb_data);
+void		e_cal_client_generate_instances_sync		(ECalClient *client, time_t start, time_t end, ECalRecurInstanceFn cb, gpointer cb_data);
+void		e_cal_client_generate_instances_for_object	(ECalClient *client, icalcomponent *icalcomp, time_t start, time_t end, GCancellable *cancellable, ECalRecurInstanceFn cb, gpointer cb_data, GDestroyNotify destroy_cb_data);
+void		e_cal_client_generate_instances_for_object_sync	(ECalClient *client, icalcomponent *icalcomp, time_t start, time_t end, ECalRecurInstanceFn cb, gpointer cb_data);
 gchar *		e_cal_client_get_component_as_string		(ECalClient *client, icalcomponent *icalcomp);
 
 /* Calendar methods */
