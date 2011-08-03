@@ -1480,9 +1480,6 @@ camel_multipart_get_type
 CamelNetworkService
 camel_network_service_get_default_port
 camel_network_service_get_service_name
-CamelNetworkSecurityMethod
-camel_network_service_get_security_method
-camel_network_service_set_security_method
 camel_network_service_connect_sync
 <SUBSECTION Standard>
 CAMEL_NETWORK_SERVICE
@@ -1493,6 +1490,24 @@ CAMEL_IS_NETWORK_SERVICE_INTERFACE
 CAMEL_NETWORK_SERVICE_GET_INTERFACE
 CamelNetworkServiceInterface
 camel_network_service_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-network-settings</FILE>
+<TITLE>CamelNetworkSettings</TITLE>
+CamelNetworkSettings
+CamelNetworkSecurityMethod
+camel_network_settings_get_security_method
+camel_network_settings_set_security_method
+<SUBSECTION Standard>
+CAMEL_NETWORK_SETTINGS
+CAMEL_IS_NETWORK_SETTINGS
+CAMEL_TYPE_NETWORK_SETTINGS
+CAMEL_NETWORK_SETTINGS_INTERFACE
+CAMEL_IS_NETWORK_SETTINGS_INTERFACE
+CAMEL_NETWORK_SETTINGS_GET_INTERFACE
+CamelNetworkSettingsInterface
+camel_network_settings_get_type
 </SECTION>
 
 <SECTION>

@@ -22,6 +22,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <camel/camel-enumtypes.h>
+#include <camel/camel-network-settings.h>
 #include <camel/camel-service.h>
 #include <camel/camel-session.h>
 #include <camel/camel-tcp-stream-raw.h>
@@ -41,6 +42,7 @@ network_service_connect_sync (CamelNetworkService *service,
                               GError **error)
 {
 	CamelNetworkSecurityMethod method;
+	CamelSettings *settings;
 	CamelSession *session;
 	CamelStream *stream;
 	CamelURL *url;
@@ -52,10 +54,15 @@ network_service_connect_sync (CamelNetworkService *service,
 
 	url = camel_service_get_camel_url (CAMEL_SERVICE (service));
 	session = camel_service_get_session (CAMEL_SERVICE (service));
+	settings = camel_service_get_settings (CAMEL_SERVICE (service));
 
-	method = camel_network_service_get_security_method (service);
-	service_name = camel_network_service_get_service_name (service);
-	default_port = camel_network_service_get_default_port (service);
+	if (CAMEL_IS_NETWORK_SETTINGS (settings))
+		g_object_get (settings, "security-method", &method, NULL);
+	else
+		method = CAMEL_NETWORK_SECURITY_METHOD_NONE;
+
+	service_name = camel_network_service_get_service_name (service, method);
+	default_port = camel_network_service_get_default_port (service, method);
 
 	/* If the URL explicitly gives a port number, make
 	 * it override the service name and default port. */
@@ -125,58 +132,25 @@ static void
 camel_network_service_default_init (CamelNetworkServiceInterface *interface)
 {
 	interface->connect_sync = network_service_connect_sync;
-
-	g_object_interface_install_property (
-		interface,
-		g_param_spec_uint (
-			"default-port",
-			"Default Port",
-			"Default IP port",
-			0,
-			G_MAXUINT16,
-			0,
-			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_interface_install_property (
-		interface,
-		g_param_spec_enum (
-			"security-method",
-			"Security Method",
-			"Method used to establish a network connection",
-			CAMEL_TYPE_NETWORK_SECURITY_METHOD,
-			CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_interface_install_property (
-		interface,
-		g_param_spec_string (
-			"service-name",
-			"Service Name",
-			"Network service name",
-			NULL,
-			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
 }
 
 /**
  * camel_network_service_get_service_name:
  * @service: a #CamelNetworkService
+ * @method: a #CamelNetworkSecurityMethod
  *
- * Returns the standard network service name for @service as defined
- * in /etc/services.  The service name may depend on the value of the
- * #CamelNetworkService:security-method property.  For example, the
- * service name for unencrypted IMAP or encrypted IMAP using STARTTLS
- * is "imap", but the service name for IMAP over SSL is "imaps".
+ * Returns the standard network service name for @service and the security
+ * method @method, as defined in /etc/services.  For example, the service
+ * name for unencrypted IMAP or encrypted IMAP using STARTTLS is "imap",
+ * but the service name for IMAP over SSL is "imaps".
  *
- * Returns: the network service name for @service, or %NULL
+ * Returns: the network service name for @service and @method, or %NULL
  *
  * Since: 3.2
  **/
 const gchar *
-camel_network_service_get_service_name (CamelNetworkService *service)
+camel_network_service_get_service_name (CamelNetworkService *service,
+                                        CamelNetworkSecurityMethod method)
 {
 	CamelNetworkServiceInterface *interface;
 	const gchar *service_name = NULL;
@@ -186,7 +160,7 @@ camel_network_service_get_service_name (CamelNetworkService *service)
 	interface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
 
 	if (interface->get_service_name != NULL)
-		service_name = interface->get_service_name (service);
+		service_name = interface->get_service_name (service, method);
 
 	return service_name;
 }
@@ -194,19 +168,20 @@ camel_network_service_get_service_name (CamelNetworkService *service)
 /**
  * camel_network_service_get_default_port:
  * @service: a #CamelNetworkService
+ * @method: a #CamelNetworkSecurityMethod
  *
- * Returns the default network port number of @service as defined
- * in /etc/services.  The default port may depend on the value of the
- * #CamelNetworkService:security-method property.  For example, the
- * default port for unencrypted IMAP or encrypted IMAP using STARTTLS
- * is 143, but the default port for IMAP over SSL is 993.
+ * Returns the default network port number for @service and the security
+ * method @method, as defined in /etc/services.  For example, the default
+ * port for unencrypted IMAP or encrypted IMAP using STARTTLS is 143, but
+ * the default port for IMAP over SSL is 993.
  *
- * Returns: the default port number for @service
+ * Returns: the default port number for @service and @method
  *
  * Since: 3.2
  **/
 guint16
-camel_network_service_get_default_port (CamelNetworkService *service)
+camel_network_service_get_default_port (CamelNetworkService *service,
+                                        CamelNetworkSecurityMethod method)
 {
 	CamelNetworkServiceInterface *interface;
 	guint16 default_port = 0;
@@ -216,67 +191,9 @@ camel_network_service_get_default_port (CamelNetworkService *service)
 	interface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
 
 	if (interface->get_default_port != NULL)
-		default_port = interface->get_default_port (service);
+		default_port = interface->get_default_port (service, method);
 
 	return default_port;
-}
-
-/**
- * camel_network_service_get_security_method:
- * @service: a #CamelNetworkService
- *
- * Return the method used to establish a secure (or unsecure) network
- * connection.
- *
- * Returns: the security method
- *
- * Since: 3.2
- **/
-CamelNetworkSecurityMethod
-camel_network_service_get_security_method (CamelNetworkService *service)
-{
-	gpointer data;
-
-	g_return_val_if_fail (
-		CAMEL_IS_NETWORK_SERVICE (service),
-		CAMEL_NETWORK_SECURITY_METHOD_NONE);
-
-	data = g_object_get_data (
-		G_OBJECT (service), "CamelNetworkService:security-method");
-
-	return (CamelNetworkSecurityMethod) GPOINTER_TO_INT (data);
-}
-
-/**
- * camel_network_service_set_security_method:
- * @service: a #CamelNetworkService
- * @method: the security method
- *
- * Sets the method used to establish a secure (or unsecure) network
- * connection.  Note that changing this setting has no effect on an
- * already-established network connection.
- *
- * Since: 3.2
- **/
-void
-camel_network_service_set_security_method (CamelNetworkService *service,
-                                           CamelNetworkSecurityMethod method)
-{
-	GObject *object;
-
-	g_return_if_fail (CAMEL_IS_NETWORK_SERVICE (service));
-
-	object = G_OBJECT (service);
-
-	g_object_set_data (
-		object, "CamelNetworkService:security-method",
-		GINT_TO_POINTER (method));
-
-	g_object_freeze_notify (object);
-	g_object_notify (object, "default-port");
-	g_object_notify (object, "security-method");
-	g_object_notify (object, "service-name");
-	g_object_thaw_notify (object);
 }
 
 /**
@@ -286,7 +203,7 @@ camel_network_service_set_security_method (CamelNetworkService *service,
  * @error: return location for a #GError, or %NULL
  *
  * Attempts to establish a network connection to the server described by
- * @service, using the preferred #CamelNetworkService:security-method to
+ * @service, using the preferred #CamelNetworkSettings:security-method to
  * secure the connection.  If a connection cannot be established, or the
  * connection attempt is cancelled, the function sets @error and returns
  * %NULL.

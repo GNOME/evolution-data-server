@@ -1,0 +1,60 @@
+<!-- ##### SECTION Title ##### -->
+CamelNetworkSettings
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT CamelNetworkSettings ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG CamelNetworkSettings:security-method ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM CamelNetworkSecurityMethod ##### -->
+<para>
+
+</para>
+
+@CAMEL_NETWORK_SECURITY_METHOD_NONE: 
+@CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT: 
+@CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT: 
+
+<!-- ##### FUNCTION camel_network_settings_get_security_method ##### -->
+<para>
+
+</para>
+
+@settings: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_network_settings_set_security_method ##### -->
+<para>
+
+</para>
+
+@settings: 
+@method: 
+
+

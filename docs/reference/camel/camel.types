@@ -47,6 +47,8 @@ camel_mime_part_get_type
 camel_multipart_encrypted_get_type
 camel_multipart_get_type
 camel_multipart_signed_get_type
+camel_network_service_get_type
+camel_network_settings_get_type
 camel_nntp_address_get_type
 camel_object_get_type
 camel_offline_folder_get_type

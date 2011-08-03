@@ -24,6 +24,7 @@
 #define CAMEL_NETWORK_SERVICE_H
 
 #include <camel/camel-enums.h>
+#include <camel/camel-network-settings.h>
 #include <camel/camel-stream.h>
 
 /* Standard GObject macros */
@@ -53,31 +54,31 @@ typedef struct _CamelNetworkServiceInterface CamelNetworkServiceInterface;
 struct _CamelNetworkServiceInterface {
 	GTypeInterface parent_interface;
 
-	const gchar *	(*get_service_name)	(CamelNetworkService *service);
-	guint16		(*get_default_port)	(CamelNetworkService *service);
+	const gchar *	(*get_service_name)
+					(CamelNetworkService *service,
+					 CamelNetworkSecurityMethod method);
+	guint16		(*get_default_port)
+					(CamelNetworkService *service,
+					 CamelNetworkSecurityMethod method);
 
-	CamelStream *	(*connect_sync)		(CamelNetworkService *service,
-						 GCancellable *cancellable,
-						 GError **error);
+	CamelStream *	(*connect_sync)	(CamelNetworkService *service,
+					 GCancellable *cancellable,
+					 GError **error);
 
 	gpointer reserved[16];
 };
 
 GType		camel_network_service_get_type	(void) G_GNUC_CONST;
 const gchar *	camel_network_service_get_service_name
-						(CamelNetworkService *service);
+					(CamelNetworkService *service,
+					 CamelNetworkSecurityMethod method);
 guint16		camel_network_service_get_default_port
-						(CamelNetworkService *service);
-CamelNetworkSecurityMethod
-		camel_network_service_get_security_method
-						(CamelNetworkService *service);
-void		camel_network_service_set_security_method
-						(CamelNetworkService *service,
-						 CamelNetworkSecurityMethod method);
+					(CamelNetworkService *service,
+					 CamelNetworkSecurityMethod method);
 CamelStream *	camel_network_service_connect_sync
-						(CamelNetworkService *service,
-						 GCancellable *cancellable,
-						 GError **error);
+					(CamelNetworkService *service,
+					 GCancellable *cancellable,
+					 GError **error);
 
 G_END_DECLS
 

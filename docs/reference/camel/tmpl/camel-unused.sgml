@@ -7500,6 +7500,22 @@ streams
 @name: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_network_service_get_security_method ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_network_service_set_security_method ##### -->
+<para>
+
+</para>
+
+@service: 
+@method: 
+
 <!-- ##### FUNCTION camel_news_address_new ##### -->
 <para>
 
