@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-01 18:32+0200\n"
-"PO-Revision-Date: 2011-08-01 18:43+0100\n"
+"POT-Creation-Date: 2011-08-03 08:44+0200\n"
+"PO-Revision-Date: 2011-08-03 08:45+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -21,63 +21,65 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:712
+#: ../addressbook/backends/file/e-book-backend-file.c:751
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:474
 msgid "Loading..."
 msgstr "Läser in..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:715
+#: ../addressbook/backends/file/e-book-backend-file.c:754
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4708
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:476
 msgid "Searching..."
 msgstr "Söker..."
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:628
+#: ../addressbook/backends/google/e-book-backend-google.c:716
 msgid "Querying for updated contacts…"
 msgstr "Frågar efter uppdaterade kontakter..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:672
+#: ../addressbook/backends/google/e-book-backend-google.c:759
 #: ../addressbook/libebook/e-book.c:3572
 #: ../calendar/libecal/e-cal.c:1331
-#: ../libedataserver/e-client.c:1779
+#: ../libedataserver/e-client.c:1851
 msgid "Personal"
 msgstr "Personligt"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:674
+#: ../addressbook/backends/google/e-book-backend-google.c:761
 msgid "Friends"
 msgstr "Vänner"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:676
+#: ../addressbook/backends/google/e-book-backend-google.c:763
 msgid "Family"
 msgstr "Familj"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:678
+#: ../addressbook/backends/google/e-book-backend-google.c:765
 msgid "Coworkers"
 msgstr "Kollegor"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:757
+#: ../addressbook/backends/google/e-book-backend-google.c:844
 msgid "Querying for updated groups…"
 msgstr "Frågar efter uppdaterade grupper..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1036
+#. Insert the entry on the server asynchronously
+#: ../addressbook/backends/google/e-book-backend-google.c:1249
 msgid "Creating new contact…"
 msgstr "Skapar ny kontakt..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1128
+#: ../addressbook/backends/google/e-book-backend-google.c:1353
 msgid "Deleting contact…"
 msgstr "Tar bort kontakt..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1240
+#. Update the contact on the server asynchronously
+#: ../addressbook/backends/google/e-book-backend-google.c:1619
 msgid "Modifying contact…"
 msgstr "Ändrar kontakt..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1387
+#: ../addressbook/backends/google/e-book-backend-google.c:1811
 msgid "Loading…"
 msgstr "Läser in..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1540
+#: ../addressbook/backends/google/e-book-backend-google.c:1964
 msgid "Authenticating with the server…"
 msgstr "Autentiserar mot servern..."
 
@@ -152,12 +154,12 @@ msgstr "%s: det finns ingen källa för UID \"%s\" lagrad i GConf."
 
 #: ../addressbook/libebook/e-book.c:3555
 #: ../calendar/libecal/e-cal.c:1311
-#: ../libedataserver/e-client.c:1774
+#: ../libedataserver/e-client.c:1846
 msgid "On This Computer"
 msgstr "På denna dator"
 
 #: ../addressbook/libebook/e-book.c:3681
-#: ../addressbook/libebook/e-book-client.c:614
+#: ../addressbook/libebook/e-book-client.c:634
 #: ../addressbook/libedata-book/e-data-book.c:310
 msgid "Address book does not exist"
 msgstr "Adressboken finns inte"
@@ -196,37 +198,37 @@ msgstr "Okänt fel"
 msgid "D-Bus book proxy gone"
 msgstr "D-Bus-bokproxy försvann"
 
-#: ../addressbook/libebook/e-book-client.c:429
+#: ../addressbook/libebook/e-book-client.c:448
 msgid "Failed to run book factory"
 msgstr "Misslyckades med att köra bokfabriken"
 
-#: ../addressbook/libebook/e-book-client.c:439
+#: ../addressbook/libebook/e-book-client.c:458
 #: ../addressbook/libedata-book/e-data-book-factory.c:371
 #: ../addressbook/libedata-book/e-data-book-factory.c:429
-#: ../calendar/libecal/e-cal-client.c:545
+#: ../calendar/libecal/e-cal-client.c:564
 #: ../calendar/libedata-cal/e-data-cal-factory.c:391
 #, c-format
 msgid "Invalid source"
 msgstr "Ogiltig källa"
 
-#: ../addressbook/libebook/e-book-client.c:539
-#: ../calendar/libecal/e-cal-client.c:657
+#: ../addressbook/libebook/e-book-client.c:559
+#: ../calendar/libecal/e-cal-client.c:677
 #, c-format
 msgid "Incorrect uri '%s'"
 msgstr "Felaktig uri \"%s\""
 
-#: ../addressbook/libebook/e-book-client.c:577
+#: ../addressbook/libebook/e-book-client.c:597
 msgid "Failed to find system book"
 msgstr "Misslyckades med att hitta systemboken"
 
-#: ../addressbook/libebook/e-book-client.c:684
-#: ../calendar/libecal/e-cal-client.c:805
+#: ../addressbook/libebook/e-book-client.c:704
+#: ../calendar/libecal/e-cal-client.c:825
 #, c-format
 msgid "There was no source for UID '%s' stored in a source list."
 msgstr "Det finns ingen källa för UID \"%s\" lagrad i en källista."
 
-#: ../addressbook/libebook/e-book-client.c:2007
-#: ../calendar/libecal/e-cal-client.c:3612
+#: ../addressbook/libebook/e-book-client.c:2093
+#: ../calendar/libecal/e-cal-client.c:4091
 msgid "Cannot get connection to view"
 msgstr "Kan inte hämta anslutning att visa"
 
@@ -795,7 +797,7 @@ msgstr "Okänd bokegenskap \"%s\""
 msgid "Cannot change value of book property '%s'"
 msgstr "Kan inte ändra värde för bokegenskapen \"%s\""
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:420
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:463
 #: ../camel/camel-db.c:470
 #, c-format
 msgid "Insufficient memory"
@@ -927,7 +929,7 @@ msgid "Backend is not opened yet"
 msgstr "Bakänden är inte öppnad än"
 
 #: ../addressbook/libedata-book/e-data-book.c:332
-#: ../calendar/libecal/e-cal-client.c:553
+#: ../calendar/libecal/e-cal-client.c:572
 #: ../calendar/libedata-cal/e-data-cal.c:449
 msgid "Other error"
 msgstr "Annat fel"
@@ -1122,7 +1124,7 @@ msgstr "Prognos"
 #: ../calendar/libecal/e-cal.c:860
 #: ../libedataserverui/e-book-auth-util.c:204
 #: ../libedataserverui/e-book-auth-util.c:427
-#: ../libedataserverui/e-client-utils.c:758
+#: ../libedataserverui/e-client-utils.c:809
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Ange lösenord för %s (användare %s)"
@@ -1239,20 +1241,20 @@ msgstr "Okänt fel"
 msgid "D-Bus calendar proxy gone"
 msgstr "D-Bus-kalenderproxyn försvann"
 
-#: ../calendar/libecal/e-cal-client.c:535
+#: ../calendar/libecal/e-cal-client.c:554
 msgid "Failed to run calendar factory"
 msgstr "Misslyckades med att köra kalenderfabriken"
 
-#: ../calendar/libecal/e-cal-client.c:696
+#: ../calendar/libecal/e-cal-client.c:716
 msgid "Failed to find system calendar"
 msgstr "Misslyckades med att hitta systemkalendern"
 
-#: ../calendar/libecal/e-cal-client.c:734
+#: ../calendar/libecal/e-cal-client.c:754
 #: ../calendar/libedata-cal/e-data-cal.c:428
 msgid "Calendar does not exist"
 msgstr "Kalendern finns inte"
 
-#: ../calendar/libecal/e-cal-client.c:844
+#: ../calendar/libecal/e-cal-client.c:864
 msgid "Invalid source type"
 msgstr "Ogiltig källtyp"
 
@@ -1586,8 +1588,8 @@ msgstr "Kunde inte hämta URIer för bilagor: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1255
-msgid "Could not discard alarm: "
-msgstr "Kan inte förkasta kalenderlarm: "
+msgid "Could not discard reminder: "
+msgstr "Kan inte förkasta påminnelse: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1279
@@ -4754,112 +4756,112 @@ msgctxt "CategoryName"
 msgid "Waiting"
 msgstr "Väntar"
 
-#: ../libedataserver/e-client.c:106
+#: ../libedataserver/e-client.c:109
 msgctxt "ClientError"
 msgid "Invalid argument"
 msgstr "Ogiltigt argument"
 
-#: ../libedataserver/e-client.c:108
+#: ../libedataserver/e-client.c:111
 msgctxt "ClientError"
 msgid "Backend is busy"
 msgstr "Bakänden är upptagen"
 
-#: ../libedataserver/e-client.c:110
+#: ../libedataserver/e-client.c:113
 msgctxt "ClientError"
 msgid "Source not loaded"
 msgstr "Källan är inte inläst"
 
-#: ../libedataserver/e-client.c:112
+#: ../libedataserver/e-client.c:115
 msgctxt "ClientError"
 msgid "Source already loaded"
 msgstr "Källan är redan inläst"
 
-#: ../libedataserver/e-client.c:114
+#: ../libedataserver/e-client.c:117
 msgctxt "ClientError"
 msgid "Authentication failed"
 msgstr "Autentisering misslyckades"
 
-#: ../libedataserver/e-client.c:116
+#: ../libedataserver/e-client.c:119
 msgctxt "ClientError"
 msgid "Authentication required"
 msgstr "Autentisering krävs"
 
-#: ../libedataserver/e-client.c:118
+#: ../libedataserver/e-client.c:121
 msgctxt "ClientError"
 msgid "Repository offline"
 msgstr "Lagret är frånkopplat"
 
-#: ../libedataserver/e-client.c:120
+#: ../libedataserver/e-client.c:123
 msgctxt "ClientError"
 msgid "Offline unavailable"
 msgstr "Frånkopplat läge är inte tillgängligt"
 
-#: ../libedataserver/e-client.c:122
+#: ../libedataserver/e-client.c:125
 msgctxt "ClientError"
 msgid "Permission denied"
 msgstr "Åtkomst nekas"
 
-#: ../libedataserver/e-client.c:124
+#: ../libedataserver/e-client.c:127
 msgctxt "ClientError"
 msgid "Cancelled"
 msgstr "Avbruten"
 
-#: ../libedataserver/e-client.c:126
+#: ../libedataserver/e-client.c:129
 msgctxt "ClientError"
 msgid "Could not cancel"
 msgstr "Kunde inte avbryta"
 
-#: ../libedataserver/e-client.c:128
+#: ../libedataserver/e-client.c:131
 msgctxt "ClientError"
 msgid "Not supported"
 msgstr "Stöds inte"
 
-#: ../libedataserver/e-client.c:130
+#: ../libedataserver/e-client.c:133
 msgctxt "ClientError"
 msgid "Unsupported authentication method"
 msgstr "Autentiseringsmetoden stöds inte"
 
-#: ../libedataserver/e-client.c:132
+#: ../libedataserver/e-client.c:135
 msgctxt "ClientError"
 msgid "TLS not available"
 msgstr "TLS är inte tillgängligt"
 
-#: ../libedataserver/e-client.c:134
+#: ../libedataserver/e-client.c:137
 msgctxt "ClientError"
 msgid "Search size limit exceeded"
 msgstr "Sökstorleksgräns överskreds"
 
-#: ../libedataserver/e-client.c:136
+#: ../libedataserver/e-client.c:139
 msgctxt "ClientError"
 msgid "Search time limit exceeded"
 msgstr "Söktidsgräns överskreds"
 
-#: ../libedataserver/e-client.c:138
+#: ../libedataserver/e-client.c:141
 msgctxt "ClientError"
 msgid "Invalid query"
 msgstr "Ogiltig frågesats"
 
-#: ../libedataserver/e-client.c:140
+#: ../libedataserver/e-client.c:143
 msgctxt "ClientError"
 msgid "Query refused"
 msgstr "Frågan nekades"
 
-#: ../libedataserver/e-client.c:142
+#: ../libedataserver/e-client.c:145
 msgctxt "ClientError"
 msgid "D-Bus error"
 msgstr "D-Bus-fel"
 
-#: ../libedataserver/e-client.c:144
+#: ../libedataserver/e-client.c:147
 msgctxt "ClientError"
 msgid "Other error"
 msgstr "Annat fel"
 
-#: ../libedataserver/e-client.c:146
+#: ../libedataserver/e-client.c:149
 msgctxt "ClientError"
 msgid "Backend is not opened yet"
 msgstr "Bakänden är inte öppnad än"
 
-#: ../libedataserver/e-client.c:149
+#: ../libedataserver/e-client.c:152
 msgctxt "ClientError"
 msgid "Unknown error"
 msgstr "Okänt fel"
@@ -5058,7 +5060,7 @@ msgstr "Kategoriegenskaper"
 msgid "There is already a category '%s' in the configuration. Please use another name"
 msgstr "Det finns redan en kategori med namnet \"%s\" i konfigurationen. Använd ett annat namn"
 
-#: ../libedataserverui/e-client-utils.c:756
+#: ../libedataserverui/e-client-utils.c:807
 #, c-format
 msgid ""
 "Enter password for %s (user %s)\n"
@@ -5067,11 +5069,11 @@ msgstr ""
 "Ange lösenord för %s (användare %s)\n"
 "Anledning: %s"
 
-#: ../libedataserverui/e-client-utils.c:850
+#: ../libedataserverui/e-client-utils.c:901
 msgid "Enter Passphrase"
 msgstr "Ange lösenfras"
 
-#: ../libedataserverui/e-client-utils.c:852
+#: ../libedataserverui/e-client-utils.c:903
 msgid "Enter Password"
 msgstr "Ange lösenord"
 
