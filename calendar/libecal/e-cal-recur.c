@@ -492,7 +492,7 @@ static void e_cal_recur_set_rule_end_date		(icalproperty	*prop,
 						 time_t		 end_date);
 
 #ifdef CAL_OBJ_DEBUG
-static gchar * cal_obj_time_to_string		(CalObjTime	*cotime);
+static const gchar * cal_obj_time_to_string		(CalObjTime	*cotime);
 #endif
 
 static ECalRecurVTable cal_obj_yearly_vtable = {
@@ -1433,7 +1433,9 @@ cal_object_get_rdate_end	(CalObjTime	*occ,
 
 	/* This should never happen. */
 	if (cmp == 0) {
-		g_warning ("Recurrence date not found");
+		#ifdef CAL_OBJ_DEBUG
+		g_debug ("%s: Recurrence date %s not found", G_STRFUNC, cal_obj_time_to_string (cc));
+		#endif
 		return FALSE;
 	}
 
@@ -3761,10 +3763,10 @@ cal_object_time_from_time	(CalObjTime	*cotime,
 /* Debugging function to convert a CalObjTime to a string. It uses a static
    buffer so beware. */
 #ifdef CAL_OBJ_DEBUG
-static gchar *
+static const gchar *
 cal_obj_time_to_string		(CalObjTime	*cotime)
 {
-	static gchar buffer[20];
+	static gchar buffer[50];
 	gchar *weekdays[] = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
 			     "   " };
 	gint weekday;
