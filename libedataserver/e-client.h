@@ -44,6 +44,8 @@
 
 #define E_CLIENT_ERROR		e_client_error_quark ()
 
+G_BEGIN_DECLS
+
 GQuark e_client_error_quark (void) G_GNUC_CONST;
 
 typedef enum {
