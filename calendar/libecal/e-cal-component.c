@@ -2775,8 +2775,10 @@ get_period_list (GSList *period_list,
 
 		p = g_new (ECalComponentPeriod, 1);
 
-		/* Get value parameter */
+		/* Get start and end/duration */
+		ip = (* get_prop_func) (period->prop);
 
+		/* Get value parameter */
 		if (period->value_param) {
 			icalparameter_value value_type;
 
@@ -2786,17 +2788,18 @@ get_period_list (GSList *period_list,
 				p->type = E_CAL_COMPONENT_PERIOD_DATETIME;
 			else if (value_type == ICAL_VALUE_DURATION)
 				p->type = E_CAL_COMPONENT_PERIOD_DURATION;
-			else {
+			else if (value_type == ICAL_VALUE_PERIOD) {
+				if (icaldurationtype_is_null_duration (ip.period.duration) || icaldurationtype_is_bad_duration (ip.period.duration))
+					p->type = E_CAL_COMPONENT_PERIOD_DATETIME;
+				else
+					p->type = E_CAL_COMPONENT_PERIOD_DURATION;
+			} else {
 				g_message ("get_period_list(): Unknown value for period %d; "
 					   "using DATETIME", value_type);
 				p->type = E_CAL_COMPONENT_PERIOD_DATETIME;
 			}
 		} else
 			p->type = E_CAL_COMPONENT_PERIOD_DATETIME;
-
-		/* Get start and end/duration */
-
-		ip = (* get_prop_func) (period->prop);
 
 		p->start = ip.period.start;
 
