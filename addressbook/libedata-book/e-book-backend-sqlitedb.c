@@ -1012,6 +1012,9 @@ e_book_backend_sqlitedb_is_summary_query (const gchar *query, GHashTable *fields
 	gint i;
 	gint esexp_error;
 
+	g_return_val_if_fail (query != NULL, FALSE);
+	g_return_val_if_fail (*query, FALSE);
+
 	fields_are_summary = 
 		(fields_of_interest && book_backend_sqlitedb_is_summary_fields (fields_of_interest));
 
@@ -1424,7 +1427,7 @@ e_book_backend_sqlitedb_search	(EBookBackendSqliteDB *ebsdb,
 	if (sexp && !*sexp)
 		sexp = NULL;
 
-	if (e_book_backend_sqlitedb_is_summary_query (sexp, fields_of_interest)) {
+	if (!sexp || e_book_backend_sqlitedb_is_summary_query (sexp, fields_of_interest)) {
 		gchar *sql_query;
 
 		sql_query = sexp ? sexp_to_sql_query (sexp) : NULL;
@@ -1451,7 +1454,7 @@ e_book_backend_sqlitedb_search_uids	(EBookBackendSqliteDB *ebsdb,
 	if (sexp && !*sexp)
 		sexp = NULL;
 
-	if (e_book_backend_sqlitedb_is_summary_query (sexp, NULL)) {
+	if (!sexp || e_book_backend_sqlitedb_is_summary_query (sexp, NULL)) {
 		gchar *stmt;
 		gchar *sql_query = sexp ? sexp_to_sql_query (sexp) : NULL;
 
