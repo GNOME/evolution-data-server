@@ -87,7 +87,8 @@ e_addressbook_factory_CPPFLAGS = \
 	-I$(top_builddir) \
 	-I$(top_builddir)/addressbook \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
-	$(GOA_CFLAGS)
+	$(GOA_CFLAGS) \
+	$(FACTORY_GTK_CFLAGS)
 
 e_addressbook_factory_SOURCES = \
 	e-data-book-factory.c \
@@ -99,7 +100,8 @@ e_addressbook_factory_LDADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(EVOLUTION_ADDRESSBOOK_LIBS) \
-	$(GOA_LIBS)
+	$(GOA_LIBS) \
+	$(FACTORY_GTK_LIBS)
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

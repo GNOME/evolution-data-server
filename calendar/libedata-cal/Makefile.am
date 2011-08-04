@@ -106,13 +106,15 @@ e_calendar_factory_CPPFLAGS = \
 	-I$(top_builddir)				\
 	-I$(top_builddir)/calendar			\
 	$(LIBICAL_CFLAGS)				\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)			\
+	$(FACTORY_GTK_CFLAGS)
 
 e_calendar_factory_LDADD =						\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
 	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la		\
 	libedata-cal-1.2.la						\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 		\
-	$(top_builddir)/libebackend/libebackend-1.2.la
+	$(top_builddir)/libebackend/libebackend-1.2.la			\
+	$(FACTORY_GTK_LIBS)
 
 -include $(top_srcdir)/git.mk

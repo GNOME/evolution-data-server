@@ -30,6 +30,10 @@
 #include <unistd.h>
 #include <glib/gi18n.h>
 
+#ifdef ENABLE_MAINTAINER_MODE
+#include <gtk/gtk.h>
+#endif
+
 #ifdef G_OS_UNIX
 #if GLIB_CHECK_VERSION(2,29,5)
 #include <glib-unix.h>
@@ -1022,6 +1026,11 @@ main (gint argc, gchar **argv)
 	g_type_init ();
 	g_set_prgname (E_PRGNAME);
 	if (!g_thread_supported ()) g_thread_init (NULL);
+
+	#ifdef ENABLE_MAINTAINER_MODE
+	/* only to load gtk-modules, like bug-buddy's gnomesegvhandler, if possible */
+	gtk_init_check (&argc, &argv);
+	#endif
 
 	context = g_option_context_new (NULL);
 	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);

@@ -211,6 +211,10 @@ dnl Initialize maintainer mode
 dnl ******************************
 AM_MAINTAINER_MODE
 
+if test "x$enable_maintainer_mode" = "xyes" ; then
+	AC_DEFINE(ENABLE_MAINTAINER_MODE, 1, [Configured with enabled maintainer mode])
+fi
+
 AC_PROG_CC
 AC_PROG_CPP
 AC_C_INLINE
@@ -541,7 +545,7 @@ LIBS="$save_LIBS"
 
 AC_ARG_ENABLE([backtraces],
 	[AS_HELP_STRING([--enable-backtraces],
-	[enable backtraces for e_ptr_tracker (default=no)])],
+	[enable backtraces for e_pointer_tracker (default=no)])],
 	[enable_backtraces=$enableval], [enable_backtraces=no])
 
 if test "x$enable_backtraces" = xyes; then
@@ -1316,6 +1320,13 @@ E_DATA_SERVER_UI_DEPS="gtk+-3.0 libxml-2.0 gconf-2.0"
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, , )
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
 AC_SUBST(E_DATA_SERVER_UI_LIBS)
+
+if test "x$enable_maintainer_mode" = "xyes" ; then
+	FACTORY_GTK_CFLAGS=$E_DATA_SERVER_UI_CFLAGS
+	FACTORY_GTK_LIBS=$E_DATA_SERVER_UI_LIBS
+	AC_SUBST(FACTORY_GTK_CFLAGS)
+	AC_SUBST(FACTORY_GTK_LIBS)
+fi
 
 E_BACKEND_DEPS="gio-2.0 libxml-2.0 gconf-2.0"
 
