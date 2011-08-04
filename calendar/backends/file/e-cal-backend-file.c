@@ -561,6 +561,9 @@ remove_component_from_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp
 /* Tries to add an icalcomponent to the file backend.  We only store the objects
  * of the types we support; all others just remain in the toplevel component so
  * that we don't lose them.
+ *
+ * The caller is responsible for ensuring that the component has a UID and that
+ * the UID is not in use already.
  */
 static void
 add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_toplevel)
@@ -600,11 +603,6 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 		g_hash_table_insert (obj_data->recurrences, rid, comp);
 		obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
 	} else {
-		/* Ensure that the UID is unique; some broken implementations spit
-		 * components with duplicated UIDs.
-		 */
-		check_dup_uid (cbfile, comp);
-
 		if (obj_data) {
 			if (obj_data->full_object) {
 				g_warning (G_STRLOC ": Tried to add an already existing object");
@@ -733,6 +731,8 @@ scan_vcalendar (ECalBackendFile *cbfile)
 
 		if (!e_cal_component_set_icalcomponent (comp, icalcomp))
 			continue;
+
+		check_dup_uid (cbfile, comp);
 
 		add_component (cbfile, comp, FALSE);
 	}
