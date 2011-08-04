@@ -3764,9 +3764,10 @@ e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
  * @uid: Unique identifier of the calendar component to remove.
  * @error: Placeholder for error information.
  *
- * Asks a calendar to remove a component.  If the server is able to remove the
- * component, all clients will be notified and they will emit the "obj_removed"
- * signal.
+ * Asks a calendar to remove all components with the given UID.
+ * If more control of the removal is desired, then use e_cal_remove_object_with_mod().
+ * If the server is able to remove the component(s), all clients will
+ * be notified and they will emit the "obj_removed" signal.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  **/
@@ -3776,7 +3777,7 @@ e_cal_remove_object (ECal *ecal, const gchar *uid, GError **error)
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
 
-	return e_cal_remove_object_with_mod (ecal, uid, NULL, CALOBJ_MOD_THIS, error);
+	return e_cal_remove_object_with_mod (ecal, uid, NULL, CALOBJ_MOD_ALL, error);
 }
 
 /**
