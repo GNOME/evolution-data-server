@@ -4,16 +4,16 @@ BookView.contacts_changed#signal.object type="GLib.List<weak void*>"
 BookClientView.objects_added#signal.object type="GLib.List<weak void*>"
 BookClientView.objects_removed#signal.object type="GLib.List<weak void*>"
 BookClientView.objects_modified#signal.object type="GLib.List<weak void*>"
-ContactName.family owned
-ContactName.given owned
-ContactName.additional owned
-ContactName.prefixes owned
-ContactName.suffixes owned
-ContactAddress.address_format owned
-ContactAddress.code owned
-ContactAddress.country owned
-ContactAddress.ext owned
-ContactAddress.locality owned
-ContactAddress.po owned
-ContactAddress.region owned
-ContactAddress.street owned
+ContactName.family unowned=false
+ContactName.given unowned=false
+ContactName.additional unowned=false
+ContactName.prefixes unowned=false
+ContactName.suffixes unowned=false
+ContactAddress.address_format unowned=false
+ContactAddress.code unowned=false
+ContactAddress.country unowned=false
+ContactAddress.ext unowned=false
+ContactAddress.locality unowned=false
+ContactAddress.po unowned=false
+ContactAddress.region unowned=false
+ContactAddress.street unowned=false
