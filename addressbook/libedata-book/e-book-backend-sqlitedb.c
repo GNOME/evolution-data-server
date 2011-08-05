@@ -79,9 +79,9 @@ static SummeryField summary_fields[] = {
 	{ E_CONTACT_EMAIL_2,             G_TYPE_STRING, "email_2" },
 	{ E_CONTACT_EMAIL_3,             G_TYPE_STRING, "email_3" },
 	{ E_CONTACT_EMAIL_4,             G_TYPE_STRING, "email_4" },
-	{ E_CONTACT_IS_LIST,             G_TYPE_INT,    "is_list" },
-	{ E_CONTACT_LIST_SHOW_ADDRESSES, G_TYPE_INT,    "list_show_addresses" },
-	{ E_CONTACT_WANTS_HTML,          G_TYPE_INT,    "wants_html" }
+	{ E_CONTACT_IS_LIST,             G_TYPE_BOOLEAN, "is_list" },
+	{ E_CONTACT_LIST_SHOW_ADDRESSES, G_TYPE_BOOLEAN, "list_show_addresses" },
+	{ E_CONTACT_WANTS_HTML,          G_TYPE_BOOLEAN, "wants_html" }
 };
 
 static const gchar *
@@ -401,7 +401,7 @@ create_contacts_table	(EBookBackendSqliteDB *ebsdb,
 
 		if (summary_fields[i].fundamental_type == G_TYPE_STRING)
 			g_string_append (string, "TEXT, ");
-		else if (summary_fields[i].fundamental_type == G_TYPE_INT)
+		else if (summary_fields[i].fundamental_type == G_TYPE_BOOLEAN)
 			g_string_append (string, "INTEGER, ");
 		else
 			g_assert_not_reached ();
@@ -589,11 +589,11 @@ insert_stmt_from_contact	(EContact *contact,
 			sqlite3_free (str);
 			g_free (val);
 
-		} else if (summary_fields[i].fundamental_type == G_TYPE_INT) {
-			gint val;
+		} else if (summary_fields[i].fundamental_type == G_TYPE_BOOLEAN) {
+			gboolean val;
 
-			val = GPOINTER_TO_INT (e_contact_get (contact, summary_fields[i].field));
-			g_string_append_printf (string, "%d", val);
+			val = e_contact_get (contact, summary_fields[i].field) ? TRUE : FALSE;
+			g_string_append_printf (string, "%d", val ? 1 : 0);
 
 		} else
 			g_assert_not_reached ();
@@ -1277,9 +1277,9 @@ store_data_to_vcard (gpointer ref, gint ncol, gchar **cols, gchar **name)
 
 				if (summary_fields[j].fundamental_type == G_TYPE_STRING)
 					e_contact_set (contact, summary_fields[j].field, cols[i]);
-				else if (summary_fields[j].fundamental_type == G_TYPE_INT) {
-					gint val = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-					e_contact_set (contact, summary_fields[j].field, GINT_TO_POINTER (val));
+				else if (summary_fields[j].fundamental_type == G_TYPE_BOOLEAN) {
+					gboolean val = cols[i] ? strtoul (cols[i], NULL, 10) != 0 : FALSE;
+					e_contact_set (contact, summary_fields[j].field, GINT_TO_POINTER (val ? TRUE : FALSE));
 				} else
 					g_assert_not_reached ();
 
