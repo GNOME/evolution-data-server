@@ -28,6 +28,7 @@ TESTS = 					\
 	test-client-remove-object		\
 	test-client-get-object-list		\
 	test-client-modify-object		\
+	test-client-get-revision		\
 	test-client-send-objects		\
 	test-client-receive-objects		\
 	test-client-get-attachment-uris		\
@@ -70,6 +71,8 @@ test_client_revision_view_LDADD=$(TEST_LIBS)
 test_client_revision_view_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_modify_object_LDADD=$(TEST_LIBS)
 test_client_modify_object_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_get_revision_LDADD=$(TEST_LIBS)
+test_client_get_revision_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_open_LDADD=$(TEST_LIBS)
 test_client_open_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_receive_objects_LDADD=$(TEST_LIBS)
