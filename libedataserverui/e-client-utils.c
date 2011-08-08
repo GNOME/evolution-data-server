@@ -367,7 +367,7 @@ client_utils_get_backend_property_cb (GObject *source_object, GAsyncResult *resu
 
 	if (result) {
 		gchar *prop_value = NULL;
-		
+
 		if (e_client_get_backend_property_finish (client, result, &prop_value, NULL))
 			g_free (prop_value);
 
@@ -444,21 +444,6 @@ client_utils_open_new_done (EClientUtilsAsyncOpData *async_data)
 	e_client_retrieve_capabilities (async_data->client, async_data->cancellable, client_utils_capabilities_retrieved_cb, async_data);
 }
 
-static void
-client_utils_open_new_cancelled_cb (GCancellable *cancellable, EClientUtilsAsyncOpData *async_data)
-{
-	GError *error = NULL;
-
-	g_return_if_fail (cancellable != NULL);
-	g_return_if_fail (async_data != NULL);
-	g_return_if_fail (async_data->cancellable == cancellable);
-	g_return_if_fail (g_cancellable_set_error_if_cancelled (cancellable, &error));
-
-	return_async_error (error, async_data->async_cb, async_data->async_cb_user_data, async_data->source, e_client_utils_open_new);
-	free_client_utils_async_op_data (async_data);
-	g_error_free (error);
-}
-
 static gboolean client_utils_retry_open_timeout_cb (gpointer user_data);
 
 static void
@@ -497,6 +482,8 @@ client_utils_opened_cb (EClient *client, const GError *error, EClientUtilsAsyncO
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (async_data != NULL);
 	g_return_if_fail (client == async_data->client);
+
+	g_signal_handlers_disconnect_by_func (client, G_CALLBACK (client_utils_opened_cb), async_data);
 
 	if (!async_data->open_finished) {
 		/* there can happen that the "opened" signal is received
@@ -541,7 +528,6 @@ client_utils_open_new_async_cb (GObject *source_object, GAsyncResult *result, gp
 	}
 
 	/* wait for 'opened' signal, which is received in client_utils_opened_cb */
-	g_signal_connect (async_data->cancellable, "cancelled", G_CALLBACK (client_utils_open_new_cancelled_cb), async_data);
 }
 
 static gboolean
