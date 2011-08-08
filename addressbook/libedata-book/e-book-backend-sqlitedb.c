@@ -277,7 +277,7 @@ create_folders_table	(EBookBackendSqliteDB *ebsdb,
 	/* sync_data points to syncronization data, it could be last_modified time
 	   or a sequence number or some text depending on the backend.
 
-	   parial_content says whether the contents are partially downloaded for
+	   partial_content says whether the contents are partially downloaded for
 	   auto-completion or if it has the complete content.
 
 	   Have not included a bdata here since the keys table should suffice any
@@ -813,12 +813,13 @@ e_book_backend_sqlitedb_get_contact	(EBookBackendSqliteDB *ebsdb,
 					 const gchar *folderid,
 					 const gchar *uid,
 					 GHashTable  *fields_of_interest,
-					 GError **error)
+					 gboolean    *with_all_required_fields,
+					 GError     **error)
 {
 	GError *err = NULL;
 	EContact *contact = NULL;
 	gchar *vcard = e_book_backend_sqlitedb_get_vcard_string (ebsdb, folderid, uid, 
-								 fields_of_interest, &err);
+								 fields_of_interest, with_all_required_fields, &err);
 	if (!err) {
 		contact = e_contact_new_from_vcard (vcard);
 		g_free (vcard);
@@ -852,28 +853,56 @@ accumulate_fields_select_stmt (const gchar *field_name,
 	g_string_append (string, dbname);
 }
 
+static void
+check_field_foreach (const gchar *field_name,
+		     gpointer     is_present,
+		     gboolean    *is_summary_query)
+{
+	EContactField field = e_contact_field_id (field_name);
+
+	if (!summary_dbname_from_field (field)) {
+		*is_summary_query = FALSE;
+	}
+}
+
+gboolean
+e_book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest)
+{
+	gboolean summary_fields = TRUE;
+
+	if (!fields_of_interest)
+		return FALSE;
+
+	g_hash_table_foreach (fields_of_interest, (GHFunc)check_field_foreach, &summary_fields);
+
+	return summary_fields;
+}
+
 /* free return value with g_free */
 static gchar *
 summary_select_stmt (const gchar *folderid,
-		     GHashTable  *fields_of_interest)
+		     GHashTable  *fields_of_interest,
+		     gboolean    *with_all_required_fields)
 {
 	GString   *string;
 	gchar     *str;
-	gint       i;
 
 	string = g_string_new ("SELECT uid");
 
-	/* If filtering by fields of interest, only query those and include the 'uid' */
-	if (fields_of_interest) {
-
+	/* If filtering by fields of interest, only query those and include the 'uid'
+	 *
+	 */
+	if (fields_of_interest && e_book_backend_sqlitedb_is_summary_fields (fields_of_interest)) {
 		g_hash_table_foreach (fields_of_interest, (GHFunc)accumulate_fields_select_stmt, string);
 
-	} else {
-		/* ... Otherwise just select all the summary information */
-		for (i = 1; i < G_N_ELEMENTS (summary_fields); i++) {
-			g_string_append (string, ", ");
-			g_string_append (string, summary_fields[i].dbname);
-		}
+		/* The query should return all the required information */
+		if (with_all_required_fields)
+			*with_all_required_fields = TRUE;
+	} else if (with_all_required_fields) {
+		/* If the fields of interest is null or contains fields that are not 
+		 * part of the summary then only the uids are returned.
+		 */
+		*with_all_required_fields = FALSE;
 	}
 
 	str = sqlite3_mprintf (" FROM %Q", folderid);
@@ -884,22 +913,44 @@ summary_select_stmt (const gchar *folderid,
 }
 
 
+/**
+ * e_book_backend_sqlitedb_get_vcard_string:
+ * @ebsdb: An #EBookBackendSqliteDB
+ * @folderid: The folder id
+ * @uid: The uid to fetch a vcard for
+ * @fields_of_interest: The required fields for this vcard, or %NULL to require all fields.
+ * @with_all_required_fields: (allow none) (out): Whether all the required fields are present in the returned vcard.
+ * @error: A location to store any error that may have occurred.
+ *
+ * Searches @ebsdb in the context of @folderid for @uid.
+ *
+ * If @ebsdb is configured to store the whole vcards, the whole vcard will be returned.
+ * Otherwise the summary cache will be searched and the virtual vcard will be built
+ * from the summary cache.
+ *
+ * In either case, @with_all_required_fields if specified, will be updated to reflect whether
+ * the returned vcard string satisfies the passed 'fields_of_interest' parameter.
+ * 
+ * Returns: (transfer full): The vcard string for @uid or %NULL if @uid was not found.
+ */
 gchar *
 e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
-					  const gchar *folderid,
-					  const gchar *uid,
-					  GHashTable  *fields_of_interest,
-					  GError **error)
+					  const gchar          *folderid,
+					  const gchar          *uid,
+					  GHashTable           *fields_of_interest,
+					  gboolean             *with_all_required_fields,
+					  GError              **error)
 {
 	gchar *stmt, *select_stmt;
 	gchar *vcard_str = NULL;
+	gboolean local_with_all_required_fields = FALSE;
 
 	READER_LOCK (ebsdb);
 
 	if (!ebsdb->priv->store_vcard) {
 		GSList *vcards = NULL;
 
-		select_stmt = summary_select_stmt (folderid, fields_of_interest);
+		select_stmt = summary_select_stmt (folderid, fields_of_interest, &local_with_all_required_fields);
 		stmt        = sqlite3_mprintf ("%s WHERE uid = %Q", select_stmt, uid);
 
 		book_backend_sql_exec (ebsdb->priv->db, stmt, store_data_to_vcard, &vcards, error);
@@ -922,9 +973,14 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 		stmt = sqlite3_mprintf ("SELECT vcard FROM %Q WHERE uid = %Q", folderid, uid);
 		book_backend_sql_exec (ebsdb->priv->db, stmt, get_vcard_cb , &vcard_str, error);
 		sqlite3_free (stmt);
+
+		local_with_all_required_fields = TRUE;
 	}
 
 	READER_UNLOCK (ebsdb);
+
+	if (with_all_required_fields)
+		*with_all_required_fields = local_with_all_required_fields;
 
 	return vcard_str;
 }
@@ -934,7 +990,6 @@ func_check (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 {
 	ESExpResult *r;
 	gint truth = FALSE;
-	gboolean fields = GPOINTER_TO_INT (data);
 
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
@@ -943,15 +998,9 @@ func_check (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer da
 		gchar *query_name = argv[0]->value.string;
 		gint   i;
 
-		/* The "contains x-evolution-any-field" query is the standard query 
-		 * with no query specified, in this case the query is indeed a summary
-		 * query if fields-of-interest have been specified as all summary fields.
-		 *
-		 * If no filtering is specified we assume that the special "any-field" means
-		 * that the client wants all the fields returned (thus it would not
-		 * be a summary query).
-		 */
-		if (fields && !strcmp ("x-evolution-any-field", query_name))
+		/* Special case, when testing the special symbolic 'any field' we can
+		 * consider it a summary query (it's similar to a 'no query'). */
+		if (!strcmp ("x-evolution-any-field", query_name))
 			truth = TRUE;
 
 		for (i = 0; truth == FALSE && i < G_N_ELEMENTS (summary_fields); i++) {
@@ -981,57 +1030,27 @@ static const struct {
 	{ "exists", func_check, 0 }
 };
 
-static void
-check_field_foreach (const gchar *field_name,
-		     gpointer     is_present,
-		     gboolean    *is_summary_query)
-{
-	EContactField field = e_contact_field_id (field_name);
-
-	if (!summary_dbname_from_field (field)) {
-		*is_summary_query = FALSE;
-	}
-}
-
-static gboolean
-book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest)
-{
-	gboolean summary_fields = TRUE;
-
-	g_hash_table_foreach (fields_of_interest, (GHFunc)check_field_foreach, &summary_fields);
-
-	return summary_fields;
-}
-
 gboolean
-e_book_backend_sqlitedb_is_summary_query (const gchar *query, GHashTable *fields_of_interest)
+e_book_backend_sqlitedb_is_summary_query (const gchar *query)
 {
 	ESExp *sexp;
 	ESExpResult *r;
-	gboolean retval, fields_are_summary;
+	gboolean retval;
 	gint i;
 	gint esexp_error;
 
 	g_return_val_if_fail (query != NULL, FALSE);
 	g_return_val_if_fail (*query, FALSE);
 
-	fields_are_summary = 
-		(fields_of_interest && book_backend_sqlitedb_is_summary_fields (fields_of_interest));
-
-	if (fields_of_interest && !fields_are_summary)
-		return FALSE;
-
 	sexp = e_sexp_new ();
 
 	for (i = 0; i < G_N_ELEMENTS (check_symbols); i++) {
 		if (check_symbols[i].type == 1) {
 			e_sexp_add_ifunction (sexp, 0, check_symbols[i].name,
-					      (ESExpIFunc *) check_symbols[i].func, 
-					      GINT_TO_POINTER (fields_are_summary));
+					      (ESExpIFunc *) check_symbols[i].func, NULL);
 		} else {
 			e_sexp_add_function (sexp, 0, check_symbols[i].name,
-					     check_symbols[i].func,
-					     GINT_TO_POINTER (fields_are_summary));
+					     check_symbols[i].func, NULL);
 		}
 	}
 
@@ -1311,17 +1330,19 @@ book_backend_sqlitedb_search_query	(EBookBackendSqliteDB *ebsdb,
 					 const gchar *sql,
 					 const gchar *folderid,
 					 /* const */ GHashTable *fields_of_interest,
-					 GError **error)
+					 gboolean    *with_all_required_fields,
+					 GError     **error)
 {
 	GError *err = NULL;
 	GSList *vcard_data = NULL;
 	gchar  *stmt, *select_stmt;
+	gboolean local_with_all_required_fields = FALSE;
 
 	READER_LOCK (ebsdb);
 
 	if (!ebsdb->priv->store_vcard) {
 
-		select_stmt = summary_select_stmt (folderid, fields_of_interest);
+		select_stmt = summary_select_stmt (folderid, fields_of_interest, &local_with_all_required_fields);
 
 		if (sql && sql[0]) {
 			stmt = sqlite3_mprintf ("%s WHERE %s", select_stmt, sql);
@@ -1344,6 +1365,7 @@ book_backend_sqlitedb_search_query	(EBookBackendSqliteDB *ebsdb,
 			book_backend_sql_exec (ebsdb->priv->db, stmt, addto_vcard_list_cb , &vcard_data, &err);
 			sqlite3_free (stmt);
 		}
+		local_with_all_required_fields = TRUE;
 	}
 
 	READER_UNLOCK (ebsdb);
@@ -1353,6 +1375,9 @@ book_backend_sqlitedb_search_query	(EBookBackendSqliteDB *ebsdb,
 
 	if (err)
 		g_propagate_error (error, err);
+
+	if (with_all_required_fields)
+		* with_all_required_fields = local_with_all_required_fields;
 
 	return vcard_data;
 }
@@ -1406,12 +1431,21 @@ book_backend_sqlitedb_search_full (EBookBackendSqliteDB *ebsdb, const gchar *sex
  * @fields_of_interest: a #GHashTable containing the names of fields to return, or NULL for all. 
  *  At the moment if this is non-null, the vcard will be populated with summary fields, else it would return the 
  *  whole vcard if its stored in the db. [not implemented fully]
+ * @searched: (allow none) (out): Whether @ebsdb was capable of searching for the provided query @sexp.
+ * @with_all_required_fields: (allow none) (out): Whether all the required fields are present in the returned vcards.
  * @error: 
- *  Search on summary fields is always supported. Search expression containing
- *  any other field is supported only if backend chooses to store the vcard inside the db.
  *
- * Summary fields - uid, nickname, given_name, family_name, file_as email_1, email_2, email_3, email_4, is_list, 
+ * Searching with summary fields is always supported. Search expressions containing
+ * any other field is supported only if backend chooses to store the vcard inside the db.
+ *
+ * Summary fields - uid, rev, nickname, given_name, family_name, file_as email_1, email_2, email_3, email_4, is_list, 
  * list_show_addresses, wants_html
+ *
+ * If @ebsdb was incapable of returning vcards with results that satisfy
+ * @fields_of_interest, then @with_all_required_fields will be updated to @FALSE
+ * and only uid fields will be present in the returned vcards. This can be useful
+ * when a summary query succeeds and the returned list can be used to iterate
+ * and fetch for full required data from another persistance.
  *
  * Returns: List of EbSdbSearchData.
  **/
@@ -1420,25 +1454,41 @@ e_book_backend_sqlitedb_search	(EBookBackendSqliteDB *ebsdb,
 				 const gchar *folderid,
 				 const gchar *sexp,
 				 /* const */ GHashTable *fields_of_interest,
+				 gboolean    *searched,
+				 gboolean    *with_all_required_fields,
 				 GError **error)
 {
 	GSList *search_contacts = NULL;
+	gboolean local_searched = FALSE;
+	gboolean local_with_all_required_fields = FALSE;
 
 	if (sexp && !*sexp)
 		sexp = NULL;
 
-	if (!sexp || e_book_backend_sqlitedb_is_summary_query (sexp, fields_of_interest)) {
+	if (!sexp || e_book_backend_sqlitedb_is_summary_query (sexp)) {
 		gchar *sql_query;
 
 		sql_query = sexp ? sexp_to_sql_query (sexp) : NULL;
-		search_contacts = book_backend_sqlitedb_search_query (ebsdb, sql_query, folderid, fields_of_interest, error);
+		search_contacts = book_backend_sqlitedb_search_query (ebsdb, sql_query, folderid, 
+								      fields_of_interest, 
+								      &local_with_all_required_fields, error);
 		g_free (sql_query);
-	} else if (ebsdb->priv->store_vcard)
+
+		local_searched = TRUE;
+
+	} else if (ebsdb->priv->store_vcard) {
 		search_contacts = book_backend_sqlitedb_search_full (ebsdb, sexp, folderid, FALSE, error);
-	else {
+		local_searched = TRUE;
+		local_with_all_required_fields = TRUE;
+	} else {
 		g_set_error (error, E_BOOK_SDB_ERROR,
 				0, "Full search_contacts are not stored in cache. Hence only summary query is supported.");
 	}
+
+	if (searched)
+		*searched = local_searched;
+	if (with_all_required_fields)
+		*with_all_required_fields = local_with_all_required_fields;
 
 	return search_contacts;
 }
@@ -1447,14 +1497,16 @@ GSList *
 e_book_backend_sqlitedb_search_uids	(EBookBackendSqliteDB *ebsdb,
 					 const gchar *folderid,
 					 const gchar *sexp,
-					 GError **error)
+					 gboolean    *searched,
+					 GError     **error)
 {
 	GSList *uids = NULL;
+	gboolean local_searched = FALSE;
 
 	if (sexp && !*sexp)
 		sexp = NULL;
 
-	if (!sexp || e_book_backend_sqlitedb_is_summary_query (sexp, NULL)) {
+	if (!sexp || e_book_backend_sqlitedb_is_summary_query (sexp)) {
 		gchar *stmt;
 		gchar *sql_query = sexp ? sexp_to_sql_query (sexp) : NULL;
 
@@ -1466,13 +1518,20 @@ e_book_backend_sqlitedb_search_uids	(EBookBackendSqliteDB *ebsdb,
 
 		READER_UNLOCK (ebsdb);
 
+		local_searched = TRUE;
+
 		g_free (sql_query);
-	} else if (ebsdb->priv->store_vcard)
+	} else if (ebsdb->priv->store_vcard) {
 		uids = book_backend_sqlitedb_search_full (ebsdb, sexp, folderid, TRUE, error);
-	else {
+
+		local_searched = TRUE;
+	} else {
 		g_set_error (error, E_BOOK_SDB_ERROR,
 				0, "Full vcards are not stored in cache. Hence only summary query is supported.");
 	}
+
+	if (searched)
+		*searched = local_searched;
 
 	return uids;
 }

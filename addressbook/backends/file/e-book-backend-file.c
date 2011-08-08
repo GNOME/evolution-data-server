@@ -125,6 +125,45 @@ string_to_dbt (const gchar *str, DBT *dbt)
 	dbt->flags = DB_DBT_USERMEM;
 }
 
+static gboolean
+remove_file (const gchar *filename, GError **error)
+{
+	if (-1 == g_unlink (filename)) {
+		if (errno == EACCES || errno == EPERM) {
+			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
+		} else {
+			g_propagate_error (error, e_data_book_create_error_fmt
+					   (E_DATA_BOOK_STATUS_OTHER_ERROR, 
+					    "Failed to remove file '%s': %s", 
+					    filename, g_strerror (errno)));
+		}
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
+create_directory (const gchar *dirname,
+		  GError     **error)
+{
+	gint rv;
+
+	rv = g_mkdir_with_parents (dirname, 0700);
+	if (rv == -1 && errno != EEXIST) {
+		g_warning ("failed to make directory %s: %s", dirname, g_strerror (errno));
+		if (errno == EACCES || errno == EPERM)
+			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
+		else
+			g_propagate_error (error, 
+					   e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+									 "Failed to make directory %s: %s", 
+									 dirname, g_strerror (errno)));
+		return FALSE;
+	}
+	return TRUE;
+}
+
 static EContact*
 create_contact (const gchar *uid, const gchar *vcard)
 {
@@ -133,6 +172,34 @@ create_contact (const gchar *uid, const gchar *vcard)
 		e_contact_set (contact, E_CONTACT_UID, uid);
 
 	return contact;
+}
+
+static gchar *
+load_vcard (EBookBackendFile *bf,
+	    const gchar      *uid,
+	    GError          **error)
+{
+	DB     *db = bf->priv->file_db;
+	DBT     id_dbt, vcard_dbt;
+	gchar  *vcard;
+	gint    db_error;
+
+	/* Get the old contact from the db and compare the photo fields */
+	string_to_dbt (uid, &id_dbt);
+	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
+	vcard_dbt.flags = DB_DBT_MALLOC;
+		
+	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
+
+	if (db_error == 0) {
+		vcard = vcard_dbt.data;
+	} else {
+		g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
+		g_propagate_error (error, EDB_ERROR (CONTACT_NOT_FOUND));
+		return NULL;
+	}
+
+	return vcard;
 }
 
 static gboolean
@@ -440,33 +507,17 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 				 gchar **vcard,
 				 GError **perror)
 {
-	EBookBackendFile *bf;
-	DB             *db;
-	DBT             id_dbt, vcard_dbt;
-	gint             db_error = 0;
+	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 
-	bf = E_BOOK_BACKEND_FILE (backend);
-	db = bf->priv->file_db;
-
-	if (!db) {
+	if (!bf || !bf->priv || !bf->priv->file_db) {
 		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
 		return;
 	}
 
-	string_to_dbt (id, &id_dbt);
-	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
-	vcard_dbt.flags = DB_DBT_MALLOC;
+	*vcard = load_vcard (bf, id, perror);
 
-	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
-
-	if (db_error == 0) {
-		*vcard = vcard_dbt.data;
-	} else {
-		g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
+	if (!*vcard)
 		*vcard = g_strdup ("");
-
-		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
-	}
 }
 
 static void
@@ -487,6 +538,8 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	const gchar *search = query;
 	GSList *contact_list = NULL, *l;
 	GSList *summary_list = NULL;
+	gboolean searched_summary = FALSE;
+	gboolean with_all_required_fields = FALSE;
 
 	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
 
@@ -497,15 +550,32 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 
 	summary_list = e_book_backend_sqlitedb_search (bf->priv->sqlitedb,
 						       SQLITEDB_FOLDER_ID,
-						       search, NULL, NULL);
+						       search, NULL,
+						       &searched_summary,
+						       &with_all_required_fields, NULL);
 
 	if (summary_list) {
 
 		for (l = summary_list; l; l = l->next) {
 			EbSdbSearchData *data = l->data;
 
-			contact_list = g_slist_prepend (contact_list, data->vcard);
-			data->vcard  = NULL;
+			if (with_all_required_fields) {
+				contact_list = g_slist_prepend (contact_list, data->vcard);
+				data->vcard  = NULL;
+			} else {
+				/* In this case the sqlitedb helped us with the query, but
+				 * the return information is incomplete so we need to load it up.
+				 */
+				gchar *vcard;
+
+				vcard = load_vcard (bf, data->uid, perror);
+
+				/* Break out on the first BDB error */
+				if (!vcard)
+					break;
+
+				contact_list = g_slist_prepend (contact_list, vcard);
+			}
 		}
 
 		g_slist_foreach (summary_list, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
@@ -589,6 +659,7 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 	gboolean search_needed;
 	const gchar *search = query;
 	GSList *uids = NULL;
+	gboolean searched = FALSE;
 
 	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
 
@@ -599,9 +670,9 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 
 	uids = e_book_backend_sqlitedb_search_uids (bf->priv->sqlitedb,
 						    SQLITEDB_FOLDER_ID,
-						    search, NULL);
+						    search, &searched, NULL);
 
-	if (!uids) {
+	if (!searched) {
 		search_needed = TRUE;
 		if (!strcmp (search, "(contains \"x-evolution-any-field\" \"\")"))
 			search_needed = FALSE;
@@ -720,6 +791,8 @@ book_view_thread (gpointer data)
 	gboolean allcontacts;
 	GSList *summary_list, *l;
 	GHashTable *fields_of_interest;
+	gboolean searched = FALSE;
+	gboolean with_all_required_fields = FALSE;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (data), NULL);
 
@@ -760,14 +833,37 @@ book_view_thread (gpointer data)
 
 	summary_list = e_book_backend_sqlitedb_search (bf->priv->sqlitedb,
 						       SQLITEDB_FOLDER_ID,
-						       query, fields_of_interest, NULL);
-	if (summary_list) {
+						       query, fields_of_interest, 
+						       &searched, &with_all_required_fields, NULL);
+
+	if (searched) {
 
 		for (l = summary_list; l; l = l->next) {
 			EbSdbSearchData *data = l->data;
+			gchar *vcard = NULL;
 
-			notify_update_vcard (book_view, TRUE, data->uid, data->vcard);
-			data->vcard = NULL;
+			if (with_all_required_fields) {
+				vcard = data->vcard;
+				data->vcard = NULL;
+			} else {
+				GError *error = NULL;
+
+				/* The sqlitedb summary did not satisfy 'fields-of-interest',
+				 * load the complete vcard here. */
+				vcard = load_vcard (bf, data->uid, &error);
+
+				if (error) {
+					g_warning ("Error loading contact %s: %s",
+						   data->uid, error->message);
+					g_error_free (error);
+				}
+
+				if (!vcard)
+					continue;
+
+			}
+
+			notify_update_vcard (book_view, TRUE, data->uid, vcard);
 		}
 
 		g_slist_foreach (summary_list, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
@@ -1196,18 +1292,12 @@ e_book_backend_file_open (EBookBackendSync       *backend,
 		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD, 0666);
 
 		if (db_error != 0 && !only_if_exists) {
-			gint rv;
 
 			/* the database didn't exist, so we create the
 			   directory then the .db */
 			db->close (db, 0);
-			rv = g_mkdir_with_parents (dirname, 0700);
-			if (rv == -1 && errno != EEXIST) {
-				g_warning ("failed to make directory %s: %s", dirname, g_strerror (errno));
-				if (errno == EACCES || errno == EPERM)
-					g_propagate_error (perror, EDB_ERROR (PERMISSION_DENIED));
-				else
-					g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to make directory %s: %s", dirname, g_strerror (errno)));
+
+			if (!create_directory (dirname, perror)) {
 				g_free (dirname);
 				g_free (filename);
 				return;
@@ -1326,14 +1416,8 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	GDir *dir;
 
-	if (-1 == g_unlink (bf->priv->filename)) {
-		if (errno == EACCES || errno == EPERM) {
-			g_propagate_error (perror, EDB_ERROR (PERMISSION_DENIED));
-		} else {
-			g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to remove file '%s': %s", bf->priv->filename, g_strerror (errno)));
-		}
+	if (!remove_file (bf->priv->filename, perror))
 		return;
-	}
 
 	if (!e_book_backend_sqlitedb_remove (bf->priv->sqlitedb, perror))
 		return;
@@ -1434,19 +1518,26 @@ view_notify_update (EDataBookView *view, gpointer data)
 	NotifyData *ndata    = data;
 	GHashTable *fields   = e_data_book_view_get_fields_of_interest (view);
 	gboolean    notified = FALSE;
+	gboolean    with_all_required_fields = FALSE;
 
-	if (e_book_backend_sqlitedb_is_summary_query (e_data_book_view_get_card_query (view), fields)) {
+	if (e_book_backend_sqlitedb_is_summary_query (e_data_book_view_get_card_query (view)) &&
+	    e_book_backend_sqlitedb_is_summary_fields (fields)) {
 
 		const gchar *uid = e_contact_get_const (ndata->contact, E_CONTACT_UID);
 		gchar       *vcard;
 
 		vcard = e_book_backend_sqlitedb_get_vcard_string (ndata->bf->priv->sqlitedb,
 								  SQLITEDB_FOLDER_ID, uid,
-								  fields, NULL);
+								  fields, &with_all_required_fields, NULL);
 
 		if (vcard) {
-			e_data_book_view_notify_update_prefiltered_vcard (view, uid, vcard);
-			notified = TRUE;
+
+			if (with_all_required_fields) {
+				e_data_book_view_notify_update_prefiltered_vcard (view, uid, vcard);
+				notified = TRUE;
+			} else {
+				g_free (vcard);
+			}
 		}
 	}
 
