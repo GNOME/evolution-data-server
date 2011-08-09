@@ -2625,8 +2625,8 @@ complete_get_object_master (ECalClientSourceType source_type, gboolean res, gcha
 					if (!icalcomponent_get_uid (master_comp))
 						continue;
 
-					if (icaltime_is_valid_time (icalcomponent_get_recurrenceid (master_comp)) &&
-					    !icaltime_is_null_time (icalcomponent_get_recurrenceid (master_comp)))
+					if (icaltime_is_null_time (icalcomponent_get_recurrenceid (master_comp)) ||
+					    !icaltime_is_valid_time (icalcomponent_get_recurrenceid (master_comp)))
 						break;
 				}
 
