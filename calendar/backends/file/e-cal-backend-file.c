@@ -389,9 +389,11 @@ e_cal_backend_file_finalize (GObject *object)
 
 
 
-/* Looks up a component by its UID on the backend's component hash table */
-static ECalComponent *
-lookup_component (ECalBackendFile *cbfile, const gchar *uid)
+/* Looks up an component by its UID on the backend's component hash table
+   and returns TRUE if any event (regardless whether it is the master or a child)
+   with that UID exists */
+static gboolean
+uid_in_use (ECalBackendFile *cbfile, const gchar *uid)
 {
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
@@ -399,7 +401,7 @@ lookup_component (ECalBackendFile *cbfile, const gchar *uid)
 	priv = cbfile->priv;
 
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
-	return obj_data ? obj_data->full_object : NULL;
+	return obj_data != NULL;
 }
 
 
@@ -2327,7 +2329,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, gchar
 	}
 
 	/* check the object is not in our cache */
-	if (lookup_component (cbfile, comp_uid)) {
+	if (uid_in_use (cbfile, comp_uid)) {
 		icalcomponent_free (icalcomp);
 		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 		g_propagate_error (error, EDC_ERROR (ObjectIdAlreadyExists));
