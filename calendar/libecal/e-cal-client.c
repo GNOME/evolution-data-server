@@ -3495,7 +3495,7 @@ e_cal_client_modify_object_sync (ECalClient *client, /* const */ icalcomponent *
  * This function allows the removal of instances of a recurrent
  * appointment. By using a combination of the @uid, @rid and @mod
  * arguments, you can remove specific instances. If what you want
- * is to remove all instances, use #NULL @rid and CALOBJ_MODE_THIS
+ * is to remove all instances, use #NULL @rid and CALOBJ_MOD_ALL
  * for the @mod.
  *
  * The call is finished by e_cal_client_remove_object_finish() from
