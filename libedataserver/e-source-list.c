@@ -191,6 +191,9 @@ sync_idle_callback (ESourceList *list)
 {
 	GError *error = NULL;
 
+	g_return_val_if_fail (list != NULL, FALSE);
+	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
+
 	g_object_ref (list);
 	if (!e_source_list_sync (list, &error)) {
 		g_warning ("Cannot update \"%s\": %s", list->priv->gconf_path, error ? error->message : "Unknown error");
@@ -207,6 +210,9 @@ static void
 group_changed_callback (ESourceGroup *group,
 			ESourceList *list)
 {
+	g_return_if_fail (list != NULL);
+	g_return_if_fail (E_IS_SOURCE_LIST (list));
+
 	g_object_ref (list);
 
 	if (!list->priv->ignore_group_changed)
@@ -224,6 +230,9 @@ conf_changed_callback (GConfClient *client,
 		       GConfEntry *entry,
 		       ESourceList *list)
 {
+	g_return_if_fail (list != NULL);
+	g_return_if_fail (E_IS_SOURCE_LIST (list));
+
 	g_object_ref (list);
 	load_from_gconf (list);
 	g_object_unref (list);
