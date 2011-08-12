@@ -192,7 +192,7 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 	if (xev) {
 		/* the x-ev header should match the 'current' flags, no problem, so store as much */
 		camel_medium_set_header((CamelMedium *)message, "X-Evolution", xev);
-		mi->flags &= ~ CAMEL_MESSAGE_FOLDER_NOXEV|CAMEL_MESSAGE_FOLDER_FLAGGED;
+		mi->flags &= ~ CAMEL_MESSAGE_FOLDER_NOXEV | CAMEL_MESSAGE_FOLDER_FLAGGED;
 		g_free (xev);
 	}
 #endif
@@ -335,9 +335,9 @@ retry:
 	camel_message_info_free ((CamelMessageInfo *) info);
 
 	/* we use an fd instead of a normal stream here - the reason is subtle, camel_mime_part will cache
-	   the whole message in memory if the stream is non-seekable (which it is when built from a parser
-	   with no stream).  This means we dont have to lock the mbox for the life of the message, but only
-	   while it is being created. */
+	 * the whole message in memory if the stream is non-seekable (which it is when built from a parser
+	 * with no stream).  This means we dont have to lock the mbox for the life of the message, but only
+	 * while it is being created. */
 
 	fd = g_open (lf->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
@@ -428,7 +428,7 @@ mbox_folder_lock (CamelLocalFolder *lf,
 	/* make sure we have matching unlocks for locks, camel-local-folder class should enforce this */
 	g_assert (mf->lockfd == -1);
 
-	mf->lockfd = open (lf->folder_path, O_RDWR|O_LARGEFILE, 0);
+	mf->lockfd = open (lf->folder_path, O_RDWR | O_LARGEFILE, 0);
 	if (mf->lockfd == -1) {
 		g_set_error (
 			error, G_IO_ERROR,

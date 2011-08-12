@@ -103,9 +103,9 @@ void           e_destination_set_html_mail_pref (EDestination *dest, gboolean fl
 gboolean       e_destination_get_html_mail_pref (const EDestination *dest);
 
 /* used by the evolution composer to manage automatic recipients
-
-   XXX should probably be implemented using a more neutral/extensible
-   approach instead of a hardcoded evolution-only flag. */
+ *
+ * XXX should probably be implemented using a more neutral/extensible
+ * approach instead of a hardcoded evolution-only flag. */
 gboolean       e_destination_is_auto_recipient  (const EDestination *dest);
 void           e_destination_set_auto_recipient (EDestination *dest, gboolean value);
 

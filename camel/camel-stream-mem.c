@@ -52,7 +52,8 @@ G_DEFINE_TYPE_WITH_CODE (
 
 /* could probably be a util method */
 static void
-clear_mem (gpointer p, gsize len)
+clear_mem (gpointer p,
+           gsize len)
 {
 	gchar *s = p;
 
@@ -77,7 +78,7 @@ stream_mem_finalize (GObject *object)
 
 	if (priv->buffer && priv->owner) {
 		/* TODO: we need our own bytearray type since we don't know
-		   the real size of the underlying buffer :-/ */
+		 * the real size of the underlying buffer :-/ */
 		if (priv->secure && priv->buffer->len)
 			clear_mem (priv->buffer->data, priv->buffer->len);
 		g_byte_array_free (priv->buffer, TRUE);

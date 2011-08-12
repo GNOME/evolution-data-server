@@ -156,7 +156,12 @@ e_cal_backend_http_finalize (GObject *object)
 /* Calendar backend methods */
 
 static gboolean
-e_cal_backend_http_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **perror)
+e_cal_backend_http_get_backend_property (ECalBackendSync *backend,
+                                         EDataCal *cal,
+                                         GCancellable *cancellable,
+                                         const gchar *prop_name,
+                                         gchar **prop_value,
+                                         GError **perror)
 {
 	gboolean processed = TRUE;
 
@@ -188,7 +193,8 @@ e_cal_backend_http_get_backend_property (ECalBackendSync *backend, EDataCal *cal
 }
 
 static gchar *
-webcal_to_http_method (const gchar *webcal_str, gboolean secure)
+webcal_to_http_method (const gchar *webcal_str,
+                       gboolean secure)
 {
 	if (secure && (strncmp ("http://", webcal_str, sizeof ("http://") - 1) == 0))
 		return g_strconcat ("https://", webcal_str + sizeof ("http://") - 1, NULL);
@@ -203,7 +209,9 @@ webcal_to_http_method (const gchar *webcal_str, gboolean secure)
 }
 
 static gboolean
-notify_and_remove_from_cache (gpointer key, gpointer value, gpointer user_data)
+notify_and_remove_from_cache (gpointer key,
+                              gpointer value,
+                              gpointer user_data)
 {
 	const gchar *calobj = value;
 	ECalBackendHttp *cbhttp = E_CAL_BACKEND_HTTP (user_data);
@@ -254,7 +262,8 @@ empty_cache (ECalBackendHttp *cbhttp)
 
 /* TODO Do not replicate this in every backend */
 static icaltimezone *
-resolve_tzid (const gchar *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid,
+              gpointer user_data)
 {
 	icaltimezone *zone;
 
@@ -270,7 +279,7 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
 
 static gboolean
 put_component_to_store (ECalBackendHttp *cb,
-			ECalComponent *comp)
+                        ECalComponent *comp)
 {
 	time_t time_start, time_end;
 	ECalBackendHttpPrivate *priv;
@@ -347,7 +356,9 @@ put_component_to_store (ECalBackendHttp *cb,
 }
 
 static void
-retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
+retrieval_done (SoupSession *session,
+                SoupMessage *msg,
+                ECalBackendHttp *cbhttp)
 {
 	ECalBackendHttpPrivate *priv;
 	icalcomponent *icalcomp, *subcomp;
@@ -539,11 +550,11 @@ retrieval_done (SoupSession *session, SoupMessage *msg, ECalBackendHttp *cbhttp)
 /* Authentication helpers for libsoup */
 
 static void
-soup_authenticate (SoupSession  *session,
-		   SoupMessage  *msg,
-		   SoupAuth     *auth,
-		   gboolean      retrying,
-		   gpointer      data)
+soup_authenticate (SoupSession *session,
+                   SoupMessage *msg,
+                   SoupAuth *auth,
+                   gboolean retrying,
+                   gpointer data)
 {
 	ECalBackendHttpPrivate *priv;
 	ECalBackendHttp        *cbhttp;
@@ -687,7 +698,8 @@ maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
 }
 
 static void
-source_changed_cb (ESource *source, ECalBackendHttp *cbhttp)
+source_changed_cb (ESource *source,
+                   ECalBackendHttp *cbhttp)
 {
 	ECalBackendHttpPrivate *priv;
 
@@ -723,7 +735,11 @@ source_changed_cb (ESource *source, ECalBackendHttp *cbhttp)
 
 /* Open handler for the file backend */
 static void
-e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, gboolean only_if_exists, GError **perror)
+e_cal_backend_http_open (ECalBackendSync *backend,
+                         EDataCal *cal,
+                         GCancellable *cancellable,
+                         gboolean only_if_exists,
+                         GError **perror)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -786,7 +802,10 @@ e_cal_backend_http_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *
 }
 
 static void
-e_cal_backend_http_authenticate_user (ECalBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error)
+e_cal_backend_http_authenticate_user (ECalBackendSync *backend,
+                                      GCancellable *cancellable,
+                                      ECredentials *credentials,
+                                      GError **error)
 {
 	ECalBackendHttp        *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -813,7 +832,10 @@ e_cal_backend_http_authenticate_user (ECalBackendSync *backend, GCancellable *ca
 }
 
 static void
-e_cal_backend_http_refresh (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
+e_cal_backend_http_refresh (ECalBackendSync *backend,
+                            EDataCal *cal,
+                            GCancellable *cancellable,
+                            GError **perror)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -834,7 +856,10 @@ e_cal_backend_http_refresh (ECalBackendSync *backend, EDataCal *cal, GCancellabl
 }
 
 static void
-e_cal_backend_http_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
+e_cal_backend_http_remove (ECalBackendSync *backend,
+                           EDataCal *cal,
+                           GCancellable *cancellable,
+                           GError **perror)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -850,7 +875,8 @@ e_cal_backend_http_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable
 
 /* Set_mode handler for the http backend */
 static void
-e_cal_backend_http_set_online (ECalBackend *backend, gboolean is_online)
+e_cal_backend_http_set_online (ECalBackend *backend,
+                               gboolean is_online)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -880,7 +906,13 @@ e_cal_backend_http_set_online (ECalBackend *backend, gboolean is_online)
 
 /* Get_object_component handler for the http backend */
 static void
-e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, gchar **object, GError **error)
+e_cal_backend_http_get_object (ECalBackendSync *backend,
+                               EDataCal *cal,
+                               GCancellable *cancellable,
+                               const gchar *uid,
+                               const gchar *rid,
+                               gchar **object,
+                               GError **error)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -908,7 +940,11 @@ e_cal_backend_http_get_object (ECalBackendSync *backend, EDataCal *cal, GCancell
 
 /* Add_timezone handler for the file backend */
 static void
-e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **error)
+e_cal_backend_http_add_timezone (ECalBackendSync *backend,
+                                 EDataCal *cal,
+                                 GCancellable *cancellable,
+                                 const gchar *tzobj,
+                                 GError **error)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -941,7 +977,12 @@ e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCance
 
 /* Get_objects_in_range handler for the file backend */
 static void
-e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *sexp, GSList **objects, GError **perror)
+e_cal_backend_http_get_object_list (ECalBackendSync *backend,
+                                    EDataCal *cal,
+                                    GCancellable *cancellable,
+                                    const gchar *sexp,
+                                    GSList **objects,
+                                    GError **perror)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -982,7 +1023,8 @@ e_cal_backend_http_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCa
 }
 
 static void
-e_cal_backend_http_start_view (ECalBackend *backend, EDataCalView *query)
+e_cal_backend_http_start_view (ECalBackend *backend,
+                               EDataCalView *query)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -1034,23 +1076,24 @@ e_cal_backend_http_start_view (ECalBackend *backend, EDataCalView *query)
 }
 
 /***** static icaltimezone *
-resolve_tzid (const gchar *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid,
+ *            gpointer user_data)
 {
 	icalcomponent *vcalendar_comp = user_data;
-
+ *
 	if (!tzid || !tzid[0])
 		return NULL;
-        else if (!strcmp (tzid, "UTC"))
+ *      else if (!strcmp (tzid, "UTC"))
 		return icaltimezone_get_utc_timezone ();
-
+ *
 	return icalcomponent_get_timezone (vcalendar_comp, tzid);
 } *****/
 
 static gboolean
 free_busy_instance (ECalComponent *comp,
-                    time_t        instance_start,
-                    time_t        instance_end,
-                    gpointer      data)
+                    time_t instance_start,
+                    time_t instance_end,
+                    gpointer data)
 {
 	icalcomponent *vfb = data;
 	icalproperty *prop;
@@ -1077,8 +1120,11 @@ free_busy_instance (ECalComponent *comp,
 }
 
 static icalcomponent *
-create_user_free_busy (ECalBackendHttp *cbhttp, const gchar *address, const gchar *cn,
-                       time_t start, time_t end)
+create_user_free_busy (ECalBackendHttp *cbhttp,
+                       const gchar *address,
+                       const gchar *cn,
+                       time_t start,
+                       time_t end)
 {
 	GSList *slist = NULL, *l;
 	icalcomponent *vfb;
@@ -1165,8 +1211,14 @@ create_user_free_busy (ECalBackendHttp *cbhttp, const gchar *address, const gcha
 
 /* Get_free_busy handler for the file backend */
 static void
-e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users,
-				time_t start, time_t end, GSList **freebusy, GError **error)
+e_cal_backend_http_get_free_busy (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const GSList *users,
+                                  time_t start,
+                                  time_t end,
+                                  GSList **freebusy,
+                                  GError **error)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
@@ -1210,24 +1262,41 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCanc
 }
 
 static void
-e_cal_backend_http_create_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, gchar **uid, gchar **new_calobj, GError **perror)
+e_cal_backend_http_create_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *calobj,
+                                  gchar **uid,
+                                  gchar **new_calobj,
+                                  GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 static void
-e_cal_backend_http_modify_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj,
-				CalObjModType mod, gchar **old_object, gchar **new_object, GError **perror)
+e_cal_backend_http_modify_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *calobj,
+                                  CalObjModType mod,
+                                  gchar **old_object,
+                                  gchar **new_object,
+                                  GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 /* Remove_object handler for the file backend */
 static void
-e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
-				const gchar *uid, const gchar *rid,
-				CalObjModType mod, gchar **old_object,
-				gchar **object, GError **perror)
+e_cal_backend_http_remove_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *uid,
+                                  const gchar *rid,
+                                  CalObjModType mod,
+                                  gchar **old_object,
+                                  gchar **object,
+                                  GError **perror)
 {
 	*old_object = *object = NULL;
 
@@ -1236,14 +1305,23 @@ e_cal_backend_http_remove_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 
 /* Update_objects handler for the file backend. */
 static void
-e_cal_backend_http_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **perror)
+e_cal_backend_http_receive_objects (ECalBackendSync *backend,
+                                    EDataCal *cal,
+                                    GCancellable *cancellable,
+                                    const gchar *calobj,
+                                    GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 static void
-e_cal_backend_http_send_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GSList **users,
-				 gchar **modified_calobj, GError **perror)
+e_cal_backend_http_send_objects (ECalBackendSync *backend,
+                                 EDataCal *cal,
+                                 GCancellable *cancellable,
+                                 const gchar *calobj,
+                                 GSList **users,
+                                 gchar **modified_calobj,
+                                 GError **perror)
 {
 	*users = NULL;
 	*modified_calobj = NULL;
@@ -1252,7 +1330,8 @@ e_cal_backend_http_send_objects (ECalBackendSync *backend, EDataCal *cal, GCance
 }
 
 static icaltimezone *
-e_cal_backend_http_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
+e_cal_backend_http_internal_get_timezone (ECalBackend *backend,
+                                          const gchar *tzid)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;

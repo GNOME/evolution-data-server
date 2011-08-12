@@ -63,7 +63,7 @@ spool_folder_lock (CamelLocalFolder *lf,
 	CamelSpoolFolder *sf = (CamelSpoolFolder *) lf;
 	GError *local_error = NULL;
 
-	mf->lockfd = open (lf->folder_path, O_RDWR|O_LARGEFILE, 0);
+	mf->lockfd = open (lf->folder_path, O_RDWR | O_LARGEFILE, 0);
 	if (mf->lockfd == -1) {
 		g_set_error (
 			error, G_IO_ERROR,

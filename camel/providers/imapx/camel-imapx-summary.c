@@ -52,7 +52,8 @@ static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, Ca
 G_DEFINE_TYPE (CamelIMAPXSummary, camel_imapx_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static CamelMessageInfo *
-imapx_message_info_clone (CamelFolderSummary *s, const CamelMessageInfo *mi)
+imapx_message_info_clone (CamelFolderSummary *s,
+                          const CamelMessageInfo *mi)
 {
 	CamelIMAPXMessageInfo *to;
 	CamelFolderSummaryClass *folder_summary_class;
@@ -99,22 +100,26 @@ camel_imapx_summary_init (CamelIMAPXSummary *obj)
 }
 
 static gint
-sort_uid_cmp (gpointer enc, gint len1, gpointer  data1, gint len2, gpointer data2)
+sort_uid_cmp (gpointer enc,
+              gint len1,
+              gpointer data1,
+              gint len2,
+              gpointer data2)
 {
-	static gchar *sa1=NULL, *sa2=NULL;
-	static gint l1=0, l2=0;
+	static gchar *sa1 = NULL, *sa2 = NULL;
+	static gint l1 = 0, l2 = 0;
 	gint a1, a2;
 
-	if (l1 < len1+1) {
-		sa1 = g_realloc (sa1, len1+1);
-		l1 = len1+1;
+	if (l1 < len1 + 1) {
+		sa1 = g_realloc (sa1, len1 + 1);
+		l1 = len1 + 1;
 	}
-	if (l2 < len2+1) {
-		sa2 = g_realloc (sa2, len2+1);
-		l2 = len2+1;
+	if (l2 < len2 + 1) {
+		sa2 = g_realloc (sa2, len2 + 1);
+		l2 = len2 + 1;
 	}
-	strncpy (sa1, data1, len1);sa1[len1] = 0;
-	strncpy (sa2, data2, len2);sa2[len2] = 0;
+	strncpy (sa1, data1, len1); sa1[len1] = 0;
+	strncpy (sa2, data2, len2); sa2[len2] = 0;
 
 	a1 = strtoul (sa1, NULL, 10);
 	a2 = strtoul (sa2, NULL, 10);
@@ -123,7 +128,8 @@ sort_uid_cmp (gpointer enc, gint len1, gpointer  data1, gint len2, gpointer data
 }
 
 static gint
-uid_compare (gconstpointer va, gconstpointer vb)
+uid_compare (gconstpointer va,
+             gconstpointer vb)
 {
 	const gchar **sa = (const gchar **) va, **sb = (const gchar **) vb;
 	gulong a, b;
@@ -149,7 +155,8 @@ uid_compare (gconstpointer va, gconstpointer vb)
  * Returns: A new CamelIMAPXSummary object.
  **/
 CamelFolderSummary *
-camel_imapx_summary_new (CamelFolder *folder, const gchar *filename)
+camel_imapx_summary_new (CamelFolder *folder,
+                         const gchar *filename)
 {
 	CamelStore *parent_store;
 	CamelFolderSummary *summary;
@@ -185,7 +192,8 @@ camel_imapx_summary_new (CamelFolder *folder, const gchar *filename)
 }
 
 static gint
-summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
+summary_header_from_db (CamelFolderSummary *s,
+                        CamelFIRecord *mir)
 {
 	CamelIMAPXSummary *ims = CAMEL_IMAPX_SUMMARY (s);
 	CamelFolderSummaryClass *folder_summary_class;
@@ -217,7 +225,8 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 }
 
 static gint
-summary_header_load (CamelFolderSummary *s, FILE *in)
+summary_header_load (CamelFolderSummary *s,
+                     FILE *in)
 {
 	CamelIMAPXSummary *ims = CAMEL_IMAPX_SUMMARY (s);
 	CamelFolderSummaryClass *folder_summary_class;
@@ -255,7 +264,7 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 	ims->validity = validity;
 
 	/* This is only used for migration; will never be asked to load newer
-	   versions of the store format */
+	 * versions of the store format */
 	if (ims->version > 3) {
 		g_warning("Unknown summary version\n");
 		errno = EINVAL;
@@ -266,7 +275,8 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 }
 
 static CamelFIRecord *
-summary_header_to_db (CamelFolderSummary *s, GError **error)
+summary_header_to_db (CamelFolderSummary *s,
+                      GError **error)
 {
 	CamelIMAPXSummary *ims = CAMEL_IMAPX_SUMMARY (s);
 	CamelFolderSummaryClass *folder_summary_class;
@@ -279,20 +289,22 @@ summary_header_to_db (CamelFolderSummary *s, GError **error)
 	if (!fir)
 		return NULL;
 	fir->bdata = g_strdup_printf ("%d %llu %u %llu", CAMEL_IMAPX_SUMMARY_VERSION,
-				      (unsigned long long) ims->validity, ims->uidnext,
-				      (unsigned long long) ims->modseq);
+				      (guint64) ims->validity, ims->uidnext,
+				      (guint64) ims->modseq);
 	return fir;
 }
 
 static gint
-summary_header_save (CamelFolderSummary *s, FILE *out)
+summary_header_save (CamelFolderSummary *s,
+                     FILE *out)
 {
 	g_warning("imapx %s called; should never happen!\n", __func__);
 	return -1;
 }
 
 static CamelMessageInfo *
-message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
+message_info_from_db (CamelFolderSummary *s,
+                      CamelMIRecord *mir)
 {
 	CamelMessageInfo *info;
 	CamelIMAPXMessageInfo *iinfo;
@@ -313,7 +325,8 @@ message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 }
 
 static CamelMessageInfo *
-message_info_migrate (CamelFolderSummary *s, FILE *in)
+message_info_migrate (CamelFolderSummary *s,
+                      FILE *in)
 {
 	CamelMessageInfo *info;
 	CamelIMAPXMessageInfo *iinfo;
@@ -337,7 +350,8 @@ error:
 }
 
 static CamelMIRecord *
-message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
+message_info_to_db (CamelFolderSummary *s,
+                    CamelMessageInfo *info)
 {
 	CamelIMAPXMessageInfo *iinfo = (CamelIMAPXMessageInfo *) info;
 	CamelFolderSummaryClass *folder_summary_class;
@@ -354,7 +368,9 @@ message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info)
 }
 
 static gboolean
-info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state)
+info_set_user_flag (CamelMessageInfo *info,
+                    const gchar *id,
+                    gboolean state)
 {
 	CamelFolderSummaryClass *folder_summary_class;
 	gboolean res;
@@ -372,11 +388,12 @@ info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state)
 }
 
 static CamelMessageContentInfo *
-content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
+content_info_from_db (CamelFolderSummary *s,
+                      CamelMIRecord *mir)
 {
 	CamelFolderSummaryClass *folder_summary_class;
 	gchar *part = mir->cinfo;
-	guint32 type=0;
+	guint32 type = 0;
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (
 		camel_imapx_summary_parent_class);
@@ -396,7 +413,8 @@ content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir)
 }
 
 static CamelMessageContentInfo *
-content_info_migrate (CamelFolderSummary *s, FILE *in)
+content_info_migrate (CamelFolderSummary *s,
+                      FILE *in)
 {
 	CamelFolderSummaryClass *folder_summary_class;
 
@@ -410,7 +428,9 @@ content_info_migrate (CamelFolderSummary *s, FILE *in)
 }
 
 static gint
-content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir)
+content_info_to_db (CamelFolderSummary *s,
+                    CamelMessageContentInfo *info,
+                    CamelMIRecord *mir)
 {
 	CamelFolderSummaryClass *folder_summary_class;
 	gchar *oldr;
@@ -432,9 +452,10 @@ content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelM
 }
 
 void
-camel_imapx_summary_add_offline (CamelFolderSummary *summary, const gchar *uid,
-				CamelMimeMessage *message,
-				const CamelMessageInfo *info)
+camel_imapx_summary_add_offline (CamelFolderSummary *summary,
+                                 const gchar *uid,
+                                 CamelMimeMessage *message,
+                                 const CamelMessageInfo *info)
 {
 	CamelIMAPXMessageInfo *mi;
 	const CamelFlag *flag;
@@ -464,8 +485,9 @@ camel_imapx_summary_add_offline (CamelFolderSummary *summary, const gchar *uid,
 }
 
 void
-camel_imapx_summary_add_offline_uncached (CamelFolderSummary *summary, const gchar *uid,
-					 const CamelMessageInfo *info)
+camel_imapx_summary_add_offline_uncached (CamelFolderSummary *summary,
+                                          const gchar *uid,
+                                          const CamelMessageInfo *info)
 {
 	CamelIMAPXMessageInfo *mi;
 

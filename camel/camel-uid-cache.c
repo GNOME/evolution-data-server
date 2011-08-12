@@ -115,7 +115,9 @@ camel_uid_cache_new (const gchar *filename)
 }
 
 static void
-maybe_write_uid (gpointer key, gpointer value, gpointer data)
+maybe_write_uid (gpointer key,
+                 gpointer value,
+                 gpointer data)
 {
 	CamelUIDCache *cache = data;
 	struct _uid_state *state = value;
@@ -228,7 +230,9 @@ camel_uid_cache_save (CamelUIDCache *cache)
 }
 
 static void
-free_uid (gpointer key, gpointer value, gpointer data)
+free_uid (gpointer key,
+          gpointer value,
+          gpointer data)
 {
 	g_free (key);
 	g_free (value);
@@ -261,7 +265,8 @@ camel_uid_cache_destroy (CamelUIDCache *cache)
  * camel_uid_cache_free_uids().
  **/
 GPtrArray *
-camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids)
+camel_uid_cache_get_new_uids (CamelUIDCache *cache,
+                              GPtrArray *uids)
 {
 	GPtrArray *new_uids;
 	gpointer old_uid;
@@ -275,7 +280,7 @@ camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids)
 		struct _uid_state *state;
 
 		uid = uids->pdata[i];
-		if (g_hash_table_lookup_extended (cache->uids, uid, (gpointer *)&old_uid, (gpointer *)&state)) {
+		if (g_hash_table_lookup_extended (cache->uids, uid, (gpointer *) &old_uid, (gpointer *) &state)) {
 			g_hash_table_remove (cache->uids, uid);
 			g_free (old_uid);
 		} else {
@@ -299,14 +304,15 @@ camel_uid_cache_get_new_uids (CamelUIDCache *cache, GPtrArray *uids)
  * Marks a uid for saving.
  **/
 void
-camel_uid_cache_save_uid (CamelUIDCache *cache, const gchar *uid)
+camel_uid_cache_save_uid (CamelUIDCache *cache,
+                          const gchar *uid)
 {
 	struct _uid_state *state;
 	gpointer old_uid;
 
 	g_return_if_fail (uid != NULL);
 
-	if (g_hash_table_lookup_extended (cache->uids, uid, (gpointer *)&old_uid, (gpointer *)&state)) {
+	if (g_hash_table_lookup_extended (cache->uids, uid, (gpointer *) &old_uid, (gpointer *) &state)) {
 		state->save = TRUE;
 		state->level = cache->level;
 	} else {

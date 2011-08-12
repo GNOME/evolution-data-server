@@ -36,12 +36,13 @@ eds_module_initialize (GTypeModule *module)
 }
 
 void
-eds_module_shutdown   (void)
+eds_module_shutdown (void)
 {
 }
 
 void
-eds_module_list_types (const GType **types, gint *num_types)
+eds_module_list_types (const GType **types,
+                       gint *num_types)
 {
     *types = &google_type;
     *num_types = 1;

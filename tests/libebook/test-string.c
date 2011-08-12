@@ -5,7 +5,8 @@
 #define TEST_ID "test-uid"
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EContact *contact;
 

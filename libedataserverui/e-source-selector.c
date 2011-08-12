@@ -85,13 +85,13 @@ GType e_cell_renderer_safe_toggle_get_type (void);
 G_DEFINE_TYPE (ECellRendererSafeToggle, e_cell_renderer_safe_toggle, GTK_TYPE_CELL_RENDERER_TOGGLE)
 
 static gboolean
-safe_toggle_activate (GtkCellRenderer      *cell,
-		      GdkEvent             *event,
-		      GtkWidget            *widget,
-		      const gchar          *path,
-		      const GdkRectangle   *background_area,
-		      const GdkRectangle   *cell_area,
-		      GtkCellRendererState  flags)
+safe_toggle_activate (GtkCellRenderer *cell,
+                      GdkEvent *event,
+                      GtkWidget *widget,
+                      const gchar *path,
+                      const GdkRectangle *background_area,
+                      const GdkRectangle *cell_area,
+                      GtkCellRendererState flags)
 {
 	if (event->type == GDK_BUTTON_PRESS && cell_area) {
 		cairo_region_t *region;
@@ -319,7 +319,8 @@ find_source (ESourceSelector *selector,
  * Compares sources by name.
  **/
 static gint
-compare_source_names (gconstpointer a, gconstpointer b)
+compare_source_names (gconstpointer a,
+                      gconstpointer b)
 {
 	const gchar *name_a;
 	const gchar *name_b;
@@ -362,8 +363,8 @@ rebuild_model (ESourceSelector *selector)
 		path = gtk_tree_row_reference_get_path (row_ref);
 		if (!path) {
 			/* skip this, if the reference is not valid any more, like when
-			   removing a group, which got removed in the previous iteration
-			   because it had no children */
+			 * removing a group, which got removed in the previous iteration
+			 * because it had no children */
 			continue;
 		}
 
@@ -506,7 +507,7 @@ on_idle_rebuild_model_callback (ESourceSelector *selector)
 
 static void
 list_changed_callback (ESourceList *list,
-		       ESourceSelector *selector)
+                       ESourceSelector *selector)
 {
 	ESourceSelectorPrivate *priv = selector->priv;
 
@@ -519,10 +520,10 @@ list_changed_callback (ESourceList *list,
 
 static void
 toggle_cell_data_func (GtkTreeViewColumn *column,
-		       GtkCellRenderer *renderer,
-		       GtkTreeModel *model,
-		       GtkTreeIter *iter,
-		       ESourceSelector *selector)
+                       GtkCellRenderer *renderer,
+                       GtkTreeModel *model,
+                       GtkTreeIter *iter,
+                       ESourceSelector *selector)
 {
 	gpointer data;
 
@@ -549,10 +550,10 @@ toggle_cell_data_func (GtkTreeViewColumn *column,
 
 static void
 text_cell_data_func (GtkTreeViewColumn *column,
-		     GtkCellRenderer *renderer,
-		     GtkTreeModel *model,
-		     GtkTreeIter *iter,
-		     ESourceSelector *selector)
+                     GtkCellRenderer *renderer,
+                     GtkTreeModel *model,
+                     GtkTreeIter *iter,
+                     ESourceSelector *selector)
 {
 	gpointer data;
 
@@ -586,10 +587,10 @@ text_cell_data_func (GtkTreeViewColumn *column,
 
 static void
 pixbuf_cell_data_func (GtkTreeViewColumn *column,
-		       GtkCellRenderer *renderer,
-		       GtkTreeModel *model,
-		       GtkTreeIter *iter,
-		       ESourceSelector *selector)
+                       GtkCellRenderer *renderer,
+                       GtkTreeModel *model,
+                       GtkTreeIter *iter,
+                       ESourceSelector *selector)
 {
 	gpointer data;
 
@@ -1483,7 +1484,7 @@ e_source_selector_free_selection (GSList *list)
  **/
 void
 e_source_selector_show_selection (ESourceSelector *selector,
-				  gboolean show)
+                                  gboolean show)
 {
 	GtkTreeModel *model;
 

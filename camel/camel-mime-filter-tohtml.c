@@ -118,7 +118,8 @@ append_string_verbatim (CamelMimeFilter *mime_filter,
 }
 
 static gint
-citation_depth (const gchar *in, const gchar *inend)
+citation_depth (const gchar *in,
+                const gchar *inend)
 {
 	register const gchar *inptr = in;
 	gint depth = 1;
@@ -477,7 +478,8 @@ camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
  * Returns: a new #CamelMimeFilterToHTML object
  **/
 CamelMimeFilter *
-camel_mime_filter_tohtml_new (guint32 flags, guint32 color)
+camel_mime_filter_tohtml_new (guint32 flags,
+                              guint32 color)
 {
 	CamelMimeFilter *filter;
 	CamelMimeFilterToHTMLPrivate *priv;
@@ -510,7 +512,9 @@ camel_mime_filter_tohtml_new (guint32 flags, guint32 color)
  * of @in
  **/
 gchar *
-camel_text_to_html (const gchar *in, guint32 flags, guint32 color)
+camel_text_to_html (const gchar *in,
+                    guint32 flags,
+                    guint32 color)
 {
 	CamelMimeFilter *filter;
 	gsize outlen, outpre;

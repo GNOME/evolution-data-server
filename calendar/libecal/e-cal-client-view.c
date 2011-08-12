@@ -113,7 +113,9 @@ build_id_list (const gchar * const *seq)
 }
 
 static void
-objects_added_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects, ECalClientView *view)
+objects_added_cb (EGdbusCalView *gdbus_calview,
+                  const gchar * const *objects,
+                  ECalClientView *view)
 {
 	GSList *list;
 
@@ -135,7 +137,9 @@ objects_added_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects, EC
 }
 
 static void
-objects_modified_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects, ECalClientView *view)
+objects_modified_cb (EGdbusCalView *gdbus_calview,
+                     const gchar * const *objects,
+                     ECalClientView *view)
 {
 	GSList *list;
 
@@ -157,7 +161,9 @@ objects_modified_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects,
 }
 
 static void
-objects_removed_cb (EGdbusCalView *gdbus_calview, const gchar * const *uids, ECalClientView *view)
+objects_removed_cb (EGdbusCalView *gdbus_calview,
+                    const gchar * const *uids,
+                    ECalClientView *view)
 {
 	GSList *list;
 
@@ -179,7 +185,10 @@ objects_removed_cb (EGdbusCalView *gdbus_calview, const gchar * const *uids, ECa
 }
 
 static void
-progress_cb (EGdbusCalView *gdbus_calview, guint percent, const gchar *message, ECalClientView *view)
+progress_cb (EGdbusCalView *gdbus_calview,
+             guint percent,
+             const gchar *message,
+             ECalClientView *view)
 {
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
@@ -190,7 +199,9 @@ progress_cb (EGdbusCalView *gdbus_calview, guint percent, const gchar *message, 
 }
 
 static void
-complete_cb (EGdbusCalView *gdbus_calview, const gchar * const *arg_error, ECalClientView *view)
+complete_cb (EGdbusCalView *gdbus_calview,
+             const gchar * const *arg_error,
+             ECalClientView *view)
 {
 	GError *error = NULL;
 
@@ -216,7 +227,10 @@ e_cal_client_view_init (ECalClientView *view)
 }
 
 static void
-cal_client_view_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+cal_client_view_set_property (GObject *object,
+                              guint property_id,
+                              const GValue *value,
+                              GParamSpec *pspec)
 {
 	ECalClientView *view;
 	ECalClientViewPrivate *priv;
@@ -246,7 +260,10 @@ cal_client_view_set_property (GObject *object, guint property_id, const GValue *
 }
 
 static void
-cal_client_view_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+cal_client_view_get_property (GObject *object,
+                              guint property_id,
+                              GValue *value,
+                              GParamSpec *pspec)
 {
 	ECalClientView *view;
 	ECalClientViewPrivate *priv;
@@ -394,7 +411,8 @@ e_cal_client_view_class_init (ECalClientViewClass *klass)
  * Returns: A newly-created view object, or NULL if the request failed.
  **/
 ECalClientView *
-_e_cal_client_view_new (ECalClient *client, EGdbusCalView *gdbus_calview)
+_e_cal_client_view_new (ECalClient *client,
+                        EGdbusCalView *gdbus_calview)
 {
 	ECalClientView *view;
 
@@ -445,7 +463,8 @@ e_cal_client_view_is_running (ECalClientView *view)
  * Starts a live query to the calendar/tasks backend.
  **/
 void
-e_cal_client_view_start (ECalClientView *view, GError **error)
+e_cal_client_view_start (ECalClientView *view,
+                         GError **error)
 {
 	ECalClientViewPrivate *priv;
 
@@ -476,7 +495,8 @@ e_cal_client_view_start (ECalClientView *view, GError **error)
  * Stops a live query to the calendar/tasks backend.
  */
 void
-e_cal_client_view_stop (ECalClientView *view, GError **error)
+e_cal_client_view_stop (ECalClientView *view,
+                        GError **error)
 {
 	ECalClientViewPrivate *priv;
 
@@ -516,7 +536,9 @@ e_cal_client_view_stop (ECalClientView *view, GError **error)
  * it will simply return object as is stored in the cache.
  **/
 void
-e_cal_client_view_set_fields_of_interest (ECalClientView *view, const GSList *fields_of_interest, GError **error)
+e_cal_client_view_set_fields_of_interest (ECalClientView *view,
+                                          const GSList *fields_of_interest,
+                                          GError **error)
 {
 	ECalClientViewPrivate *priv;
 

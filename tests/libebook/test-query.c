@@ -12,7 +12,8 @@ static const gchar * queries[] = {
 };
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gint i;
 	gboolean failure = FALSE;

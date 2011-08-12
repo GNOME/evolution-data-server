@@ -115,15 +115,15 @@ static const EContactFieldInfo field_info[] = {
 	{0,}, /* Dummy row as EContactField starts from 1 */
 	STRING_FIELD (E_CONTACT_UID,        EVC_UID,       "id",         N_("Unique ID"),  FALSE),
 	/* FILE_AS is not really a structured field - we use a getter/setter
-           so we can generate its value if necessary in the getter */
+ *         so we can generate its value if necessary in the getter */
 	GETSET_FIELD (E_CONTACT_FILE_AS,    EVC_X_FILE_AS, "file_as",    N_("File Under"),    FALSE, fileas_getter, fileas_setter),
 	/* URI of the book to which the contact belongs to */
 	STRING_FIELD (E_CONTACT_BOOK_URI, EVC_X_BOOK_URI, "book_uri", N_("Book URI"), FALSE),
 
 	/* Name fields */
 	/* FN isn't really a structured field - we use a getter/setter
-	   so we can set the N property (since evo 1.4 works fine with
-	   vcards that don't even have a N attribute.  *sigh*) */
+	 * so we can set the N property (since evo 1.4 works fine with
+	 * vcards that don't even have a N attribute.  *sigh*) */
 	GETSET_FIELD        (E_CONTACT_FULL_NAME,   EVC_FN,       "full_name",   N_("Full Name"),   FALSE, fn_getter, fn_setter),
 	LIST_ELEM_STR_FIELD (E_CONTACT_GIVEN_NAME,  EVC_N,        "given_name",  N_("Given Name"),  FALSE, 1),
 	LIST_ELEM_STR_FIELD (E_CONTACT_FAMILY_NAME, EVC_N,        "family_name", N_("Family Name"), FALSE, 0),
@@ -387,8 +387,9 @@ e_contact_init (EContact *ec)
 	ec->priv = g_new0 (EContactPrivate, 1);
 }
 
-static EVCardAttribute*
-e_contact_get_first_attr (EContact *contact, const gchar *attr_name)
+static EVCardAttribute *
+e_contact_get_first_attr (EContact *contact,
+                          const gchar *attr_name)
 {
 	GList *attrs, *l;
 
@@ -410,7 +411,8 @@ e_contact_get_first_attr (EContact *contact, const gchar *attr_name)
 
 
 static gpointer
-geo_getter (EContact *contact, EVCardAttribute *attr)
+geo_getter (EContact *contact,
+            EVCardAttribute *attr)
 {
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
@@ -426,7 +428,9 @@ geo_getter (EContact *contact, EVCardAttribute *attr)
 }
 
 static void
-geo_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
+geo_setter (EContact *contact,
+            EVCardAttribute *attr,
+            gpointer data)
 {
 	EContactGeo *geo = data;
 	gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
@@ -439,7 +443,8 @@ geo_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 }
 
 static gpointer
-photo_getter (EContact *contact, EVCardAttribute *attr)
+photo_getter (EContact *contact,
+              EVCardAttribute *attr)
 {
 	GList *values;
 
@@ -483,7 +488,9 @@ photo_getter (EContact *contact, EVCardAttribute *attr)
 }
 
 static void
-photo_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
+photo_setter (EContact *contact,
+              EVCardAttribute *attr,
+              gpointer data)
 {
 	EContactPhoto *photo = data;
 	const gchar *image_type, *p;
@@ -496,7 +503,7 @@ photo_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 							e_vcard_attribute_param_new (EVC_ENCODING),
 							"b");
 		if (photo->data.inlined.mime_type && (p = strchr (photo->data.inlined.mime_type, '/'))) {
-			image_type = p+1;
+			image_type = p + 1;
 		} else {
 			image_type = "X-EVOLUTION-UNKNOWN";
 		}
@@ -520,7 +527,8 @@ photo_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 
 
 static gpointer
-fn_getter (EContact *contact, EVCardAttribute *attr)
+fn_getter (EContact *contact,
+           EVCardAttribute *attr)
 {
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
@@ -532,7 +540,9 @@ fn_getter (EContact *contact, EVCardAttribute *attr)
 }
 
 static void
-fn_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
+fn_setter (EContact *contact,
+           EVCardAttribute *attr,
+           gpointer data)
 {
 	gchar *name_str = data;
 
@@ -553,7 +563,8 @@ fn_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 }
 
 static gpointer
-fileas_getter (EContact *contact, EVCardAttribute *attr)
+fileas_getter (EContact *contact,
+               EVCardAttribute *attr)
 {
 	if (!attr) {
 		/* Generate a FILE_AS field */
@@ -607,7 +618,9 @@ fileas_getter (EContact *contact, EVCardAttribute *attr)
 }
 
 static void
-fileas_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
+fileas_setter (EContact *contact,
+               EVCardAttribute *attr,
+               gpointer data)
 {
 	/* Default implementation */
 	const gchar *file_as = data;
@@ -617,7 +630,8 @@ fileas_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 
 
 static gpointer
-n_getter (EContact *contact, EVCardAttribute *attr)
+n_getter (EContact *contact,
+          EVCardAttribute *attr)
 {
 	EContactName *name = g_new0 (EContactName, 1);
 	EVCardAttribute *new_attr;
@@ -646,7 +660,9 @@ n_getter (EContact *contact, EVCardAttribute *attr)
 }
 
 static void
-n_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
+n_setter (EContact *contact,
+          EVCardAttribute *attr,
+          gpointer data)
 {
 	EContactName *name = data;
 
@@ -681,7 +697,8 @@ n_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 
 
 static gpointer
-adr_getter (EContact *contact, EVCardAttribute *attr)
+adr_getter (EContact *contact,
+            EVCardAttribute *attr)
 {
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
@@ -703,7 +720,9 @@ adr_getter (EContact *contact, EVCardAttribute *attr)
 }
 
 static void
-adr_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
+adr_setter (EContact *contact,
+            EVCardAttribute *attr,
+            gpointer data)
 {
 	EContactAddress *addr = data;
 
@@ -719,7 +738,8 @@ adr_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 
 
 static gpointer
-date_getter (EContact *contact, EVCardAttribute *attr)
+date_getter (EContact *contact,
+             EVCardAttribute *attr)
 {
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
@@ -737,7 +757,9 @@ date_getter (EContact *contact, EVCardAttribute *attr)
 }
 
 static void
-date_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
+date_setter (EContact *contact,
+             EVCardAttribute *attr,
+             gpointer data)
 {
 	EContactDate *date = data;
 	gchar *str;
@@ -751,11 +773,12 @@ date_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 
 
 static gpointer
-cert_getter (EContact *contact, EVCardAttribute *attr)
+cert_getter (EContact *contact,
+             EVCardAttribute *attr)
 {
 	if (attr) {
 		/* the certificate is stored in this vcard.  just
-		   return the data */
+		 * return the data */
 		GList *values = e_vcard_attribute_get_values_decoded (attr);
 
 		if (values && values->data) {
@@ -771,15 +794,17 @@ cert_getter (EContact *contact, EVCardAttribute *attr)
 	}
 
 	/* XXX if we stored a fingerprint in the cert we could look it
-	   up via NSS, but that would require the additional NSS dep
-	   here, and we'd have more than one process opening the
-	   certdb, which is bad.  *sigh* */
+	 * up via NSS, but that would require the additional NSS dep
+	 * here, and we'd have more than one process opening the
+	 * certdb, which is bad.  *sigh * */
 
 	return NULL;
 }
 
 static void
-cert_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
+cert_setter (EContact *contact,
+             EVCardAttribute *attr,
+             gpointer data)
 {
 	EContactCert *cert = data;
 
@@ -795,9 +820,9 @@ cert_setter (EContact *contact, EVCardAttribute *attr, gpointer data)
 /* Set_arg handler for the contact */
 static void
 e_contact_set_property (GObject *object,
-			guint prop_id,
-			const GValue *value,
-			GParamSpec *pspec)
+                        guint prop_id,
+                        const GValue *value,
+                        GParamSpec *pspec)
 {
 	EContact *contact = E_CONTACT (object);
 	const EContactFieldInfo *info = NULL;
@@ -814,8 +839,8 @@ e_contact_set_property (GObject *object,
 		GList *l;
 
 		/* first we remove all attributes of the type we're
-		   adding, then add new ones based on the values that
-		   are passed in */
+		 * adding, then add new ones based on the values that
+		 * are passed in */
 		e_vcard_remove_attributes (E_VCARD (contact), NULL, info->vcard_field_name);
 
 		for (l = new_values; l; l = l->next)
@@ -826,11 +851,11 @@ e_contact_set_property (GObject *object,
 	else if (info->t & E_CONTACT_FIELD_TYPE_SYNTHETIC) {
 		if (info->t & E_CONTACT_FIELD_TYPE_MULTI_ELEM) {
 			/* XXX this is kinda broken - we don't insert
-			   insert padding elements if, e.g. the user
-			   sets email 3 when email 1 and 2 don't
-			   exist.  But, if we *did* pad the lists we'd
-			   end up with empty items in the vcard.  I
-			   dunno which is worse. */
+			 * insert padding elements if, e.g. the user
+			 * sets email 3 when email 1 and 2 don't
+			 * exist.  But, if we *did* pad the lists we'd
+			 * end up with empty items in the vcard.  I
+			 * dunno which is worse. */
 			EVCardAttribute *attr = NULL;
 			gboolean found = FALSE;
 			gint num_left = info->list_elem;
@@ -881,11 +906,11 @@ e_contact_set_property (GObject *object,
 		}
 		else if (info->t & E_CONTACT_FIELD_TYPE_ATTR_TYPE) {
 			/* XXX this is kinda broken - we don't insert
-			   insert padding elements if, e.g. the user
-			   sets email 3 when email 1 and 2 don't
-			   exist.  But, if we *did* pad the lists we'd
-			   end up with empty items in the vcard.  I
-			   dunno which is worse. */
+			 * insert padding elements if, e.g. the user
+			 * sets email 3 when email 1 and 2 don't
+			 * exist.  But, if we *did* pad the lists we'd
+			 * end up with empty items in the vcard.  I
+			 * dunno which is worse. */
 			EVCardAttribute *attr = NULL;
 			gboolean found = FALSE;
 			gint num_left = info->list_elem;
@@ -932,9 +957,9 @@ e_contact_set_property (GObject *object,
 
 							if (!matches) {
 								/* this is to enforce that we find an attribute
-								   with *only* the TYPE='s we need.  This may seem like
-								   an odd restriction but it's the only way at present to
-								   implement the Other Fax and Other Phone attributes. */
+								 * with *only* the TYPE='s we need.  This may seem like
+								 * an odd restriction but it's the only way at present to
+								 * implement the Other Fax and Other Phone attributes. */
 								found_needed1 = FALSE;
 								break;
 							}
@@ -1065,7 +1090,7 @@ e_contact_set_property (GObject *object,
 			    || (data && *(gchar *) data)) {
 				d(printf ("overwriting existing %s\n", info->vcard_field_name));
 				/* remove all existing values and parameters.
-				   the setter will add the correct ones */
+				 * the setter will add the correct ones */
 				e_vcard_attribute_remove_values (attr);
 				e_vcard_attribute_remove_params (attr);
 
@@ -1158,7 +1183,11 @@ e_contact_set_property (GObject *object,
 }
 
 static EVCardAttribute *
-e_contact_find_attribute_with_types (EContact *contact, const gchar *attr_name, const gchar *type_needed1, const gchar *type_needed2, gint nth)
+e_contact_find_attribute_with_types (EContact *contact,
+                                     const gchar *attr_name,
+                                     const gchar *type_needed1,
+                                     const gchar *type_needed2,
+                                     gint nth)
 {
 	GList *l, *attrs;
 	gboolean found_needed1, found_needed2;
@@ -1203,9 +1232,9 @@ e_contact_find_attribute_with_types (EContact *contact, const gchar *attr_name, 
 
 					if (!matches) {
 						/* this is to enforce that we find an attribute
-						   with *only* the TYPE='s we need.  This may seem like
-						   an odd restriction but it's the only way at present to
-						   implement the Other Fax and Other Phone attributes. */
+						 * with *only* the TYPE='s we need.  This may seem like
+						 * an odd restriction but it's the only way at present to
+						 * implement the Other Fax and Other Phone attributes. */
 						found_needed1 = FALSE;
 						break;
 					}
@@ -1226,9 +1255,9 @@ e_contact_find_attribute_with_types (EContact *contact, const gchar *attr_name, 
 
 static void
 e_contact_get_property (GObject *object,
-			guint prop_id,
-			GValue *value,
-			GParamSpec *pspec)
+                        guint prop_id,
+                        GValue *value,
+                        GParamSpec *pspec)
 {
 	const EContactFieldInfo *info = NULL;
 	gpointer data;
@@ -1270,7 +1299,7 @@ e_contact_get_property (GObject *object,
  *
  * Returns: A new #EContact.
  **/
-EContact*
+EContact *
 e_contact_new (void)
 {
 	return e_contact_new_from_vcard ("");
@@ -1284,8 +1313,8 @@ e_contact_new (void)
  *
  * Returns: A new #EContact.
  **/
-EContact*
-e_contact_new_from_vcard  (const gchar *vcard)
+EContact *
+e_contact_new_from_vcard (const gchar *vcard)
 {
 	EContact *contact;
 	g_return_val_if_fail (vcard != NULL, NULL);
@@ -1304,7 +1333,7 @@ e_contact_new_from_vcard  (const gchar *vcard)
  *
  * Returns: (transfer full): A new #EContact identical to @contact.
  **/
-EContact*
+EContact *
 e_contact_duplicate (EContact *contact)
 {
 	gchar *vcard;
@@ -1366,7 +1395,7 @@ e_contact_pretty_name (EContactField field_id)
  * Returns: The vcard attribute corresponding to @field_id, or %NULL if it doesn't exist.
  **/
 const gchar *
-e_contact_vcard_attribute  (EContactField field_id)
+e_contact_vcard_attribute (EContactField field_id)
 {
 	g_return_val_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST, "");
 
@@ -1431,7 +1460,8 @@ e_contact_field_id_from_vcard (const gchar *vcard_field)
  * Returns: (transfer full): Depends on the field's type, owned by the caller.
  **/
 gpointer
-e_contact_get (EContact *contact, EContactField field_id)
+e_contact_get (EContact *contact,
+               EContactField field_id)
 {
 	const EContactFieldInfo *info = NULL;
 
@@ -1618,7 +1648,8 @@ e_contact_get (EContact *contact, EContactField field_id)
  * #EContact.
  **/
 gconstpointer
-e_contact_get_const (EContact *contact, EContactField field_id)
+e_contact_get_const (EContact *contact,
+                     EContactField field_id)
 {
 	gpointer value = NULL;
 
@@ -1645,7 +1676,9 @@ e_contact_get_const (EContact *contact, EContactField field_id)
  * Sets the value of @contact's field specified by @field_id to @value.
  **/
 void
-e_contact_set (EContact *contact, EContactField field_id, gconstpointer value)
+e_contact_set (EContact *contact,
+               EContactField field_id,
+               gconstpointer value)
 {
 	d(printf ("e_contact_set (%p, %d, %p)\n", contact, field_id, value));
 
@@ -1653,7 +1686,7 @@ e_contact_set (EContact *contact, EContactField field_id, gconstpointer value)
 	g_return_if_fail (field_id >= 1 && field_id <= E_CONTACT_FIELD_LAST);
 
 	/* set the cached slot to NULL so we'll re-get the new string
-	   if e_contact_get_const is called again */
+	 * if e_contact_get_const is called again */
 	contact->priv->cached_strings[field_id] = NULL;
 
 	g_object_set (contact,
@@ -1671,8 +1704,9 @@ e_contact_set (EContact *contact, EContactField field_id, gconstpointer value)
  * Returns: (transfer full) (element-type EVCardAttribute): A #GList of pointers
  * to #EVCardAttribute, owned by the caller.
  **/
-GList*
-e_contact_get_attributes (EContact *contact, EContactField field_id)
+GList *
+e_contact_get_attributes (EContact *contact,
+                          EContactField field_id)
 {
 	GList *l = NULL;
 	GList *attrs, *a;
@@ -1709,7 +1743,9 @@ e_contact_get_attributes (EContact *contact, EContactField field_id)
  * Attributes are added to the contact in the same order as they are in @attributes.
  **/
 void
-e_contact_set_attributes (EContact *contact, EContactField field_id, GList *attributes)
+e_contact_set_attributes (EContact *contact,
+                          EContactField field_id,
+                          GList *attributes)
 {
 	const EContactFieldInfo *info = NULL;
 	GList *l;
@@ -1723,7 +1759,7 @@ e_contact_set_attributes (EContact *contact, EContactField field_id, GList *attr
 
 	for (l = attributes; l; l = l->next)
 		e_vcard_append_attribute (E_VCARD (contact),
-				       e_vcard_attribute_copy ((EVCardAttribute*) l->data));
+				       e_vcard_attribute_copy ((EVCardAttribute *) l->data));
 }
 
 /**
@@ -1733,7 +1769,7 @@ e_contact_set_attributes (EContact *contact, EContactField field_id, GList *attr
  *
  * Returns: A new #EContactName struct.
  **/
-EContactName*
+EContactName *
 e_contact_name_new (void)
 {
 	return g_new0 (EContactName, 1);
@@ -1776,7 +1812,7 @@ e_contact_name_to_string (const EContactName *name)
  *
  * Returns: A new #EContactName struct.
  **/
-EContactName*
+EContactName *
 e_contact_name_from_string (const gchar *name_str)
 {
 	EContactName *name;
@@ -1806,7 +1842,7 @@ e_contact_name_from_string (const gchar *name_str)
  *
  * Returns: A new #EContactName identical to @n.
  **/
-EContactName*
+EContactName *
 e_contact_name_copy (EContactName *n)
 {
 	EContactName *name;
@@ -1874,10 +1910,10 @@ E_CONTACT_DEFINE_BOXED_TYPE (e_contact_name, "EContactName")
  *
  * Returns: A new #EContactDate struct.
  **/
-EContactDate*
+EContactDate *
 e_contact_date_from_string (const gchar *str)
 {
-	EContactDate* date;
+	EContactDate * date;
 	gint length;
 	gchar *t;
 
@@ -1934,7 +1970,8 @@ e_contact_date_to_string (EContactDate *dt)
  * Returns: %TRUE if @dt1 and @dt2 are equal, %FALSE otherwise.
  **/
 gboolean
-e_contact_date_equal (EContactDate *dt1, EContactDate *dt2)
+e_contact_date_equal (EContactDate *dt1,
+                      EContactDate *dt2)
 {
 	if (dt1 && dt2) {
 		return (dt1->year == dt2->year &&
@@ -1984,7 +2021,7 @@ E_CONTACT_DEFINE_BOXED_TYPE (e_contact_date, "EContactDate")
  *
  * Returns: A new #EContactDate struct.
  **/
-EContactDate*
+EContactDate *
 e_contact_date_new (void)
 {
 	return g_new0 (EContactDate, 1);
@@ -1997,7 +2034,7 @@ e_contact_date_new (void)
  *
  * Returns: (transfer full): A new #EContactPhoto struct.
  **/
-EContactPhoto*
+EContactPhoto *
 e_contact_photo_new (void)
 {
 	return g_new0 (EContactPhoto, 1);
@@ -2073,7 +2110,8 @@ e_contact_photo_copy (EContactPhoto *photo)
  * #EContactPhoto.
  **/
 const guchar *
-e_contact_photo_get_inlined (EContactPhoto *photo, gsize *len)
+e_contact_photo_get_inlined (EContactPhoto *photo,
+                             gsize *len)
 {
 	g_return_val_if_fail (photo != NULL, NULL);
 	g_return_val_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_INLINED, NULL);
@@ -2092,7 +2130,8 @@ e_contact_photo_get_inlined (EContactPhoto *photo, gsize *len)
  **/
 void
 e_contact_photo_set_inlined (EContactPhoto *photo,
-			     const guchar *data, gsize len)
+                             const guchar *data,
+                             gsize len)
 {
 	g_return_if_fail (photo != NULL);
 	g_return_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_INLINED);
@@ -2127,7 +2166,8 @@ e_contact_photo_get_mime_type (EContactPhoto *photo)
  * Sets the @photo's mime type.
  **/
 void
-e_contact_photo_set_mime_type (EContactPhoto *photo, const gchar *mime_type)
+e_contact_photo_set_mime_type (EContactPhoto *photo,
+                               const gchar *mime_type)
 {
 	g_return_if_fail (photo != NULL);
 	g_return_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_INLINED);
@@ -2161,7 +2201,8 @@ e_contact_photo_get_uri (EContactPhoto *photo)
  * Sets the @photo's URI.
  **/
 void
-e_contact_photo_set_uri (EContactPhoto *photo, const gchar *uri)
+e_contact_photo_set_uri (EContactPhoto *photo,
+                         const gchar *uri)
 {
 	g_return_if_fail (photo != NULL);
 	g_return_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_URI);
@@ -2205,7 +2246,7 @@ E_CONTACT_DEFINE_BOXED_TYPE (e_contact_geo, "EContactGeo")
  *
  * Returns: (transfer full): A new #EContactAddress struct.
  **/
-EContactAddress*
+EContactAddress *
 e_contact_address_new (void)
 {
 	return g_new0 (EContactAddress, 1);

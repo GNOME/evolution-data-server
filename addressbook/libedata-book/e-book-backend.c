@@ -71,7 +71,11 @@ book_backend_set_default_cache_dir (EBookBackend *backend)
 }
 
 static void
-book_backend_get_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name)
+book_backend_get_backend_property (EBookBackend *backend,
+                                   EDataBook *book,
+                                   guint32 opid,
+                                   GCancellable *cancellable,
+                                   const gchar *prop_name)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -94,7 +98,12 @@ book_backend_get_backend_property (EBookBackend *backend, EDataBook *book, guint
 }
 
 static void
-book_backend_set_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value)
+book_backend_set_backend_property (EBookBackend *backend,
+                                   EDataBook *book,
+                                   guint32 opid,
+                                   GCancellable *cancellable,
+                                   const gchar *prop_name,
+                                   const gchar *prop_value)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -178,7 +187,8 @@ book_backend_finalize (GObject *object)
 }
 
 static gboolean
-view_notify_update (EDataBookView *view, gpointer contact)
+view_notify_update (EDataBookView *view,
+                    gpointer contact)
 {
 	e_data_book_view_notify_update (view, contact);
 
@@ -186,7 +196,8 @@ view_notify_update (EDataBookView *view, gpointer contact)
 }
 
 static void
-book_backend_notify_update (EBookBackend *backend, const EContact *contact)
+book_backend_notify_update (EBookBackend *backend,
+                            const EContact *contact)
 {
 	e_book_backend_foreach_view (backend, view_notify_update, (gpointer) contact);
 }
@@ -358,10 +369,10 @@ e_book_backend_get_source (EBookBackend *backend)
  **/
 void
 e_book_backend_open (EBookBackend *backend,
-		     EDataBook    *book,
-		     guint32       opid,
-		     GCancellable *cancellable,
-		     gboolean      only_if_exists)
+                     EDataBook *book,
+                     guint32 opid,
+                     GCancellable *cancellable,
+                     gboolean only_if_exists)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -412,9 +423,9 @@ e_book_backend_open (EBookBackend *backend,
  **/
 void
 e_book_backend_remove (EBookBackend *backend,
-		       EDataBook    *book,
-		       guint32       opid,
-		       GCancellable *cancellable)
+                       EDataBook *book,
+                       guint32 opid,
+                       GCancellable *cancellable)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -443,7 +454,10 @@ e_book_backend_remove (EBookBackend *backend,
  * Since: 3.2
  **/
 void
-e_book_backend_refresh (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable)
+e_book_backend_refresh (EBookBackend *backend,
+                        EDataBook *book,
+                        guint32 opid,
+                        GCancellable *cancellable)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -472,10 +486,10 @@ e_book_backend_refresh (EBookBackend *backend, EDataBook *book, guint32 opid, GC
  **/
 void
 e_book_backend_create_contact (EBookBackend *backend,
-			       EDataBook    *book,
-			       guint32       opid,
-			       GCancellable *cancellable,
-			       const gchar   *vcard)
+                               EDataBook *book,
+                               guint32 opid,
+                               GCancellable *cancellable,
+                               const gchar *vcard)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -504,10 +518,10 @@ e_book_backend_create_contact (EBookBackend *backend,
  **/
 void
 e_book_backend_remove_contacts (EBookBackend *backend,
-				EDataBook    *book,
-				guint32       opid,
-				GCancellable *cancellable,
-				const GSList *id_list)
+                                EDataBook *book,
+                                guint32 opid,
+                                GCancellable *cancellable,
+                                const GSList *id_list)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -536,10 +550,10 @@ e_book_backend_remove_contacts (EBookBackend *backend,
  **/
 void
 e_book_backend_modify_contact (EBookBackend *backend,
-			       EDataBook    *book,
-			       guint32       opid,
-			       GCancellable *cancellable,
-			       const gchar   *vcard)
+                               EDataBook *book,
+                               guint32 opid,
+                               GCancellable *cancellable,
+                               const gchar *vcard)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -568,10 +582,10 @@ e_book_backend_modify_contact (EBookBackend *backend,
  **/
 void
 e_book_backend_get_contact (EBookBackend *backend,
-			    EDataBook    *book,
-			    guint32       opid,
-			    GCancellable *cancellable,
-			    const gchar   *id)
+                            EDataBook *book,
+                            guint32 opid,
+                            GCancellable *cancellable,
+                            const gchar *id)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -600,10 +614,10 @@ e_book_backend_get_contact (EBookBackend *backend,
  **/
 void
 e_book_backend_get_contact_list (EBookBackend *backend,
-				 EDataBook    *book,
-				 guint32       opid,
-				 GCancellable *cancellable,
-				 const gchar   *query)
+                                 EDataBook *book,
+                                 guint32 opid,
+                                 GCancellable *cancellable,
+                                 const gchar *query)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -634,10 +648,10 @@ e_book_backend_get_contact_list (EBookBackend *backend,
  **/
 void
 e_book_backend_get_contact_list_uids (EBookBackend *backend,
-				      EDataBook    *book,
-				      guint32       opid,
-				      GCancellable *cancellable,
-				      const gchar   *query)
+                                      EDataBook *book,
+                                      guint32 opid,
+                                      GCancellable *cancellable,
+                                      const gchar *query)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
@@ -661,8 +675,8 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
  * signals for matching contacts.
  **/
 void
-e_book_backend_start_book_view (EBookBackend  *backend,
-				EDataBookView *book_view)
+e_book_backend_start_book_view (EBookBackend *backend,
+                                EDataBookView *book_view)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
@@ -680,8 +694,8 @@ e_book_backend_start_book_view (EBookBackend  *backend,
  * no more signals.
  **/
 void
-e_book_backend_stop_book_view (EBookBackend  *backend,
-			       EDataBookView *book_view)
+e_book_backend_stop_book_view (EBookBackend *backend,
+                               EDataBookView *book_view)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
@@ -708,8 +722,8 @@ e_book_backend_stop_book_view (EBookBackend  *backend,
  **/
 void
 e_book_backend_authenticate_user (EBookBackend *backend,
-				  GCancellable *cancellable,
-				  ECredentials *credentials)
+                                  GCancellable *cancellable,
+                                  ECredentials *credentials)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (credentials != NULL);
@@ -736,7 +750,7 @@ last_client_gone (EBookBackend *backend)
  **/
 void
 e_book_backend_add_book_view (EBookBackend *backend,
-			      EDataBookView *view)
+                              EDataBookView *view)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
@@ -756,7 +770,7 @@ e_book_backend_add_book_view (EBookBackend *backend,
  **/
 void
 e_book_backend_remove_book_view (EBookBackend *backend,
-				 EDataBookView *view)
+                                 EDataBookView *view)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
@@ -777,8 +791,8 @@ e_book_backend_remove_book_view (EBookBackend *backend,
  * Returns: TRUE on success, FALSE on failure to add the client.
  */
 gboolean
-e_book_backend_add_client (EBookBackend      *backend,
-			   EDataBook         *book)
+e_book_backend_add_client (EBookBackend *backend,
+                           EDataBook *book)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
@@ -799,14 +813,14 @@ e_book_backend_add_client (EBookBackend      *backend,
  **/
 void
 e_book_backend_remove_client (EBookBackend *backend,
-			      EDataBook    *book)
+                              EDataBook *book)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
 	/* up our backend's refcount here so that last_client_gone
-	   doesn't end up unreffing us (while we're holding the
-	   lock) */
+	 * doesn't end up unreffing us (while we're holding the
+	 * lock) */
 	g_object_ref (backend);
 
 	/* Disconnect */
@@ -836,7 +850,10 @@ e_book_backend_remove_client (EBookBackend *backend,
  * @callback returns %FALSE to stop further processing.
  **/
 void
-e_book_backend_foreach_view (EBookBackend *backend, gboolean (* callback) (EDataBookView *view, gpointer user_data), gpointer user_data)
+e_book_backend_foreach_view (EBookBackend *backend,
+                             gboolean (*callback) (EDataBookView *view,
+                                                   gpointer user_data),
+                             gpointer user_data)
 {
 	const GSList *views;
 	EDataBookView *view;
@@ -876,7 +893,11 @@ e_book_backend_foreach_view (EBookBackend *backend, gboolean (* callback) (EData
  * Since: 3.2
  **/
 void
-e_book_backend_get_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name)
+e_book_backend_get_backend_property (EBookBackend *backend,
+                                     EDataBook *book,
+                                     guint32 opid,
+                                     GCancellable *cancellable,
+                                     const gchar *prop_name)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->get_backend_property);
@@ -902,7 +923,12 @@ e_book_backend_get_backend_property (EBookBackend *backend, EDataBook *book, gui
  * Since: 3.2
  **/
 void
-e_book_backend_set_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value)
+e_book_backend_set_backend_property (EBookBackend *backend,
+                                     EDataBook *book,
+                                     guint32 opid,
+                                     GCancellable *cancellable,
+                                     const gchar *prop_name,
+                                     const gchar *prop_value)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
@@ -1010,7 +1036,8 @@ e_book_backend_is_removed (EBookBackend *backend)
  * Meant to be used by backend implementations.
  **/
 void
-e_book_backend_set_is_removed (EBookBackend *backend, gboolean is_removed)
+e_book_backend_set_is_removed (EBookBackend *backend,
+                               gboolean is_removed)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
@@ -1025,7 +1052,8 @@ e_book_backend_set_is_removed (EBookBackend *backend, gboolean is_removed)
  * Sets @backend's online/offline mode to @is_online.
  **/
 void
-e_book_backend_set_online (EBookBackend *backend, gboolean is_online)
+e_book_backend_set_online (EBookBackend *backend,
+                           gboolean is_online)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->set_online);
@@ -1069,13 +1097,15 @@ e_book_backend_sync (EBookBackend *backend)
  * contacts are created or modified by another (non-PAS-using) client.
  **/
 void
-e_book_backend_notify_update (EBookBackend *backend, const EContact *contact)
+e_book_backend_notify_update (EBookBackend *backend,
+                              const EContact *contact)
 {
 	E_BOOK_BACKEND_GET_CLASS (backend)->notify_update (backend, contact);
 }
 
 static gboolean
-view_notify_remove (EDataBookView *view, gpointer id)
+view_notify_remove (EDataBookView *view,
+                    gpointer id)
 {
 	e_data_book_view_notify_remove (view, id);
 
@@ -1095,13 +1125,15 @@ view_notify_remove (EDataBookView *view, gpointer id)
  * another (non-PAS-using) client.
  **/
 void
-e_book_backend_notify_remove (EBookBackend *backend, const gchar *id)
+e_book_backend_notify_remove (EBookBackend *backend,
+                              const gchar *id)
 {
 	e_book_backend_foreach_view (backend, view_notify_remove, (gpointer) id);
 }
 
 static gboolean
-view_notify_complete (EDataBookView *view, gpointer unused)
+view_notify_complete (EDataBookView *view,
+                      gpointer unused)
 {
 	e_data_book_view_notify_complete (view, NULL /* SUCCESS */);
 
@@ -1133,7 +1165,8 @@ e_book_backend_notify_complete (EBookBackend *backend)
  * an issue.
  **/
 void
-e_book_backend_notify_error (EBookBackend *backend, const gchar *message)
+e_book_backend_notify_error (EBookBackend *backend,
+                             const gchar *message)
 {
 	EBookBackendPrivate *priv;
 	GSList *clients;
@@ -1156,7 +1189,8 @@ e_book_backend_notify_error (EBookBackend *backend, const gchar *message)
  * Notifies all backend's clients about the current readonly state.
  **/
 void
-e_book_backend_notify_readonly (EBookBackend *backend, gboolean is_readonly)
+e_book_backend_notify_readonly (EBookBackend *backend,
+                                gboolean is_readonly)
 {
 	EBookBackendPrivate *priv;
 	GSList *clients;
@@ -1181,7 +1215,8 @@ e_book_backend_notify_readonly (EBookBackend *backend, gboolean is_readonly)
  * Meant to be used by backend implementations.
  **/
 void
-e_book_backend_notify_online (EBookBackend *backend, gboolean is_online)
+e_book_backend_notify_online (EBookBackend *backend,
+                              gboolean is_online)
 {
 	EBookBackendPrivate *priv;
 	GSList *clients;
@@ -1219,7 +1254,9 @@ e_book_backend_notify_online (EBookBackend *backend, gboolean is_online)
  * Meant to be used by backend implementations.
  **/
 void
-e_book_backend_notify_auth_required (EBookBackend *backend, gboolean is_self, const ECredentials *credentials)
+e_book_backend_notify_auth_required (EBookBackend *backend,
+                                     gboolean is_self,
+                                     const ECredentials *credentials)
 {
 	EBookBackendPrivate *priv;
 	GSList *clients;
@@ -1256,7 +1293,8 @@ e_book_backend_notify_auth_required (EBookBackend *backend, gboolean is_self, co
  * Meant to be used by backend implementations.
  **/
 void
-e_book_backend_notify_opened (EBookBackend *backend, GError *error)
+e_book_backend_notify_opened (EBookBackend *backend,
+                              GError *error)
 {
 	EBookBackendPrivate *priv;
 	GSList *clients;
@@ -1285,7 +1323,9 @@ e_book_backend_notify_opened (EBookBackend *backend, GError *error)
  * Notifies clients about property value change.
  **/
 void
-e_book_backend_notify_property_changed (EBookBackend *backend, const gchar *prop_name, const gchar *prop_value)
+e_book_backend_notify_property_changed (EBookBackend *backend,
+                                        const gchar *prop_name,
+                                        const gchar *prop_value)
 {
 	EBookBackendPrivate *priv;
 	GSList *clients;
@@ -1321,7 +1361,10 @@ e_book_backend_notify_property_changed (EBookBackend *backend, const gchar *prop
  * See e_book_backend_open() for more details how the opening phase works.
  **/
 void
-e_book_backend_respond_opened (EBookBackend *backend, EDataBook *book, guint32 opid, GError *error)
+e_book_backend_respond_opened (EBookBackend *backend,
+                               EDataBook *book,
+                               guint32 opid,
+                               GError *error)
 {
 	GError *copy = NULL;
 

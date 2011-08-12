@@ -128,32 +128,57 @@ lookup_signal_type_from_signal_name (const gchar *signal_name)
 
 /* ------------------------------------------------------------------------- */
 
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRING  (GDBUS_CAL_INTERFACE_NAME, backend_error)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_BOOLEAN (GDBUS_CAL_INTERFACE_NAME, readonly)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_BOOLEAN (GDBUS_CAL_INTERFACE_NAME, online)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_CAL_INTERFACE_NAME, auth_required)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_CAL_INTERFACE_NAME, opened)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_CAL_INTERFACE_NAME, free_busy_data)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV    (GDBUS_CAL_INTERFACE_NAME, backend_property_changed)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRING (GDBUS_CAL_INTERFACE_NAME,
+                                             backend_error)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_BOOLEAN (GDBUS_CAL_INTERFACE_NAME,
+                                              readonly)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_BOOLEAN (GDBUS_CAL_INTERFACE_NAME,
+                                              online)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_CAL_INTERFACE_NAME,
+                                           auth_required)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_CAL_INTERFACE_NAME,
+                                           opened)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_CAL_INTERFACE_NAME,
+                                           free_busy_data)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_CAL_INTERFACE_NAME,
+                                           backend_property_changed)
 
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, open)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, remove)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, refresh)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING	(GDBUS_CAL_INTERFACE_NAME, get_backend_property)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, set_backend_property)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING	(GDBUS_CAL_INTERFACE_NAME, get_object)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRV	(GDBUS_CAL_INTERFACE_NAME, get_object_list)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, get_free_busy)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING	(GDBUS_CAL_INTERFACE_NAME, create_object)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, modify_object)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, remove_object)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, receive_objects)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRV	(GDBUS_CAL_INTERFACE_NAME, send_objects)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRV	(GDBUS_CAL_INTERFACE_NAME, get_attachment_uris)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, discard_alarm)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING	(GDBUS_CAL_INTERFACE_NAME, get_view)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING	(GDBUS_CAL_INTERFACE_NAME, get_timezone)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID	(GDBUS_CAL_INTERFACE_NAME, add_timezone)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
+                                                      open)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
+                                                      remove)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
+                                                      refresh)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING (GDBUS_CAL_INTERFACE_NAME,
+                                                        get_backend_property)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
+                                                      set_backend_property)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING (GDBUS_CAL_INTERFACE_NAME,
+                                                        get_object)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRV (GDBUS_CAL_INTERFACE_NAME,
+                                                      get_object_list)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
+                                                      get_free_busy)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING (GDBUS_CAL_INTERFACE_NAME,
+                                                        create_object)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
+                                                      modify_object)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
+                                                      remove_object)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
+                                                      receive_objects)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRV (GDBUS_CAL_INTERFACE_NAME,
+                                                      send_objects)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRV (GDBUS_CAL_INTERFACE_NAME,
+                                                      get_attachment_uris)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
+                                                      discard_alarm)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING (GDBUS_CAL_INTERFACE_NAME,
+                                                        get_view)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING (GDBUS_CAL_INTERFACE_NAME,
+                                                        get_timezone)
+E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
+                                                      add_timezone)
 
 static void
 e_gdbus_cal_default_init (EGdbusCalIface *iface)
@@ -199,19 +224,28 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
 }
 
 void
-e_gdbus_cal_call_open (GDBusProxy *proxy, gboolean in_only_if_exists, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_open (GDBusProxy *proxy,
+                       gboolean in_only_if_exists,
+                       GCancellable *cancellable,
+                       GAsyncReadyCallback callback,
+                       gpointer user_data)
 {
 	e_gdbus_proxy_call_boolean ("open", e_gdbus_cal_call_open, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_only_if_exists, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_open_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_open_finish (GDBusProxy *proxy,
+                              GAsyncResult *result,
+                              GError **error)
 {
 	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_open);
 }
 
 gboolean
-e_gdbus_cal_call_open_sync (GDBusProxy *proxy, gboolean in_only_if_exists, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_open_sync (GDBusProxy *proxy,
+                            gboolean in_only_if_exists,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	return e_gdbus_proxy_call_sync_boolean__void (proxy, in_only_if_exists, cancellable, error,
 		e_gdbus_cal_call_open,
@@ -219,19 +253,26 @@ e_gdbus_cal_call_open_sync (GDBusProxy *proxy, gboolean in_only_if_exists, GCanc
 }
 
 void
-e_gdbus_cal_call_remove (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_remove (GDBusProxy *proxy,
+                         GCancellable *cancellable,
+                         GAsyncReadyCallback callback,
+                         gpointer user_data)
 {
 	e_gdbus_proxy_call_void ("remove", e_gdbus_cal_call_remove, E_GDBUS_ASYNC_OP_KEEPER (proxy), cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_remove_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_remove_finish (GDBusProxy *proxy,
+                                GAsyncResult *result,
+                                GError **error)
 {
 	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_remove);
 }
 
 gboolean
-e_gdbus_cal_call_remove_sync (GDBusProxy *proxy, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_remove_sync (GDBusProxy *proxy,
+                              GCancellable *cancellable,
+                              GError **error)
 {
 	return e_gdbus_proxy_call_sync_void__void (proxy, cancellable, error,
 		e_gdbus_cal_call_remove,
@@ -239,19 +280,26 @@ e_gdbus_cal_call_remove_sync (GDBusProxy *proxy, GCancellable *cancellable, GErr
 }
 
 void
-e_gdbus_cal_call_refresh (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_refresh (GDBusProxy *proxy,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
 {
 	e_gdbus_proxy_call_void ("refresh", e_gdbus_cal_call_refresh, E_GDBUS_ASYNC_OP_KEEPER (proxy), cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_refresh_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_refresh_finish (GDBusProxy *proxy,
+                                 GAsyncResult *result,
+                                 GError **error)
 {
 	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_refresh);
 }
 
 gboolean
-e_gdbus_cal_call_refresh_sync (GDBusProxy *proxy, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_refresh_sync (GDBusProxy *proxy,
+                               GCancellable *cancellable,
+                               GError **error)
 {
 	return e_gdbus_proxy_call_sync_void__void (proxy, cancellable, error,
 		e_gdbus_cal_call_refresh,
@@ -259,19 +307,30 @@ e_gdbus_cal_call_refresh_sync (GDBusProxy *proxy, GCancellable *cancellable, GEr
 }
 
 void
-e_gdbus_cal_call_get_backend_property (GDBusProxy *proxy, const gchar *in_prop_name, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_get_backend_property (GDBusProxy *proxy,
+                                       const gchar *in_prop_name,
+                                       GCancellable *cancellable,
+                                       GAsyncReadyCallback callback,
+                                       gpointer user_data)
 {
 	e_gdbus_proxy_call_string ("get_backend_property", e_gdbus_cal_call_get_backend_property, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_prop_name, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_get_backend_property_finish (GDBusProxy *proxy, GAsyncResult *result, gchar **out_prop_value, GError **error)
+e_gdbus_cal_call_get_backend_property_finish (GDBusProxy *proxy,
+                                              GAsyncResult *result,
+                                              gchar **out_prop_value,
+                                              GError **error)
 {
 	return e_gdbus_proxy_finish_call_string (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, out_prop_value, error, e_gdbus_cal_call_get_backend_property);
 }
 
 gboolean
-e_gdbus_cal_call_get_backend_property_sync (GDBusProxy *proxy, const gchar *in_prop_name, gchar **out_prop_value, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_get_backend_property_sync (GDBusProxy *proxy,
+                                            const gchar *in_prop_name,
+                                            gchar **out_prop_value,
+                                            GCancellable *cancellable,
+                                            GError **error)
 {
 	return e_gdbus_proxy_call_sync_string__string (proxy, in_prop_name, out_prop_value, cancellable, error,
 		e_gdbus_cal_call_get_backend_property,
@@ -280,32 +339,44 @@ e_gdbus_cal_call_get_backend_property_sync (GDBusProxy *proxy, const gchar *in_p
 
 /* free returned pointer with g_strfreev() */
 gchar **
-e_gdbus_cal_encode_set_backend_property (const gchar *in_prop_name, const gchar *in_prop_value)
+e_gdbus_cal_encode_set_backend_property (const gchar *in_prop_name,
+                                         const gchar *in_prop_value)
 {
 	return e_gdbus_templates_encode_two_strings (in_prop_name, in_prop_value);
 }
 
 /* free out_prop_name and out_prop_value with g_free() */
 gboolean
-e_gdbus_cal_decode_set_backend_property (const gchar * const *in_strv, gchar **out_prop_name, gchar **out_prop_value)
+e_gdbus_cal_decode_set_backend_property (const gchar * const *in_strv,
+                                         gchar **out_prop_name,
+                                         gchar **out_prop_value)
 {
 	return e_gdbus_templates_decode_two_strings (in_strv, out_prop_name, out_prop_value);
 }
 
 void
-e_gdbus_cal_call_set_backend_property (GDBusProxy *proxy, const gchar * const *in_prop_name_value, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_set_backend_property (GDBusProxy *proxy,
+                                       const gchar * const *in_prop_name_value,
+                                       GCancellable *cancellable,
+                                       GAsyncReadyCallback callback,
+                                       gpointer user_data)
 {
 	e_gdbus_proxy_call_strv ("set_backend_property", e_gdbus_cal_call_set_backend_property, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_prop_name_value, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_set_backend_property_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_set_backend_property_finish (GDBusProxy *proxy,
+                                              GAsyncResult *result,
+                                              GError **error)
 {
 	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_set_backend_property);
 }
 
 gboolean
-e_gdbus_cal_call_set_backend_property_sync (GDBusProxy *proxy, const gchar * const *in_prop_name_value, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_set_backend_property_sync (GDBusProxy *proxy,
+                                            const gchar * const *in_prop_name_value,
+                                            GCancellable *cancellable,
+                                            GError **error)
 {
 	return e_gdbus_proxy_call_sync_strv__void (proxy, in_prop_name_value, cancellable, error,
 		e_gdbus_cal_call_set_backend_property,
@@ -314,32 +385,46 @@ e_gdbus_cal_call_set_backend_property_sync (GDBusProxy *proxy, const gchar * con
 
 /* free returned pointer with g_strfreev() */
 gchar **
-e_gdbus_cal_encode_get_object (const gchar *in_uid, const gchar *in_rid)
+e_gdbus_cal_encode_get_object (const gchar *in_uid,
+                               const gchar *in_rid)
 {
 	return e_gdbus_templates_encode_two_strings (in_uid, in_rid);
 }
 
 /* free out_uid and out_rid with g_free() */
 gboolean
-e_gdbus_cal_decode_get_object (const gchar * const *in_strv, gchar **out_uid, gchar **out_rid)
+e_gdbus_cal_decode_get_object (const gchar * const *in_strv,
+                               gchar **out_uid,
+                               gchar **out_rid)
 {
 	return e_gdbus_templates_decode_two_strings (in_strv, out_uid, out_rid);
 }
 
 void
-e_gdbus_cal_call_get_object (GDBusProxy *proxy, const gchar * const *in_uid_rid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_get_object (GDBusProxy *proxy,
+                             const gchar * const *in_uid_rid,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
 {
 	e_gdbus_proxy_call_strv ("get_object", e_gdbus_cal_call_get_object, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_uid_rid, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_get_object_finish (GDBusProxy *proxy, GAsyncResult *result, gchar **out_object, GError **error)
+e_gdbus_cal_call_get_object_finish (GDBusProxy *proxy,
+                                    GAsyncResult *result,
+                                    gchar **out_object,
+                                    GError **error)
 {
 	return e_gdbus_proxy_finish_call_string (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, out_object, error, e_gdbus_cal_call_get_object);
 }
 
 gboolean
-e_gdbus_cal_call_get_object_sync (GDBusProxy *proxy, const gchar * const *in_uid_rid, gchar **out_object, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_get_object_sync (GDBusProxy *proxy,
+                                  const gchar * const *in_uid_rid,
+                                  gchar **out_object,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	return e_gdbus_proxy_call_sync_strv__string (proxy, in_uid_rid, out_object, cancellable, error,
 		e_gdbus_cal_call_get_object,
@@ -347,19 +432,30 @@ e_gdbus_cal_call_get_object_sync (GDBusProxy *proxy, const gchar * const *in_uid
 }
 
 void
-e_gdbus_cal_call_get_object_list (GDBusProxy *proxy, const gchar *in_sexp, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_get_object_list (GDBusProxy *proxy,
+                                  const gchar *in_sexp,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
 {
 	e_gdbus_proxy_call_string ("get_object_list", e_gdbus_cal_call_get_object_list, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_sexp, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_get_object_list_finish (GDBusProxy *proxy, GAsyncResult *result, gchar ***out_objects, GError **error)
+e_gdbus_cal_call_get_object_list_finish (GDBusProxy *proxy,
+                                         GAsyncResult *result,
+                                         gchar ***out_objects,
+                                         GError **error)
 {
 	return e_gdbus_proxy_finish_call_strv (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, out_objects, error, e_gdbus_cal_call_get_object_list);
 }
 
 gboolean
-e_gdbus_cal_call_get_object_list_sync (GDBusProxy *proxy, const gchar *in_sexp, gchar ***out_objects, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_get_object_list_sync (GDBusProxy *proxy,
+                                       const gchar *in_sexp,
+                                       gchar ***out_objects,
+                                       GCancellable *cancellable,
+                                       GError **error)
 {
 	return e_gdbus_proxy_call_sync_string__strv (proxy, in_sexp, out_objects, cancellable, error,
 		e_gdbus_cal_call_get_object_list,
@@ -368,7 +464,9 @@ e_gdbus_cal_call_get_object_list_sync (GDBusProxy *proxy, const gchar *in_sexp, 
 
 /* free returned pointer with g_strfreev() */
 gchar **
-e_gdbus_cal_encode_get_free_busy (guint in_start, guint in_end, const GSList *in_users)
+e_gdbus_cal_encode_get_free_busy (guint in_start,
+                                  guint in_end,
+                                  const GSList *in_users)
 {
 	gchar **strv;
 	gint ii;
@@ -390,7 +488,10 @@ e_gdbus_cal_encode_get_free_busy (guint in_start, guint in_end, const GSList *in
 
 /* free out_users with g_slist_foreach (out_users, (GFunc) g_free, NULL), g_slist_free (out_users); */
 gboolean
-e_gdbus_cal_decode_get_free_busy (const gchar * const *in_strv, guint *out_start, guint *out_end, GSList **out_users)
+e_gdbus_cal_decode_get_free_busy (const gchar * const *in_strv,
+                                  guint *out_start,
+                                  guint *out_end,
+                                  GSList **out_users)
 {
 	gint ii;
 
@@ -415,19 +516,28 @@ e_gdbus_cal_decode_get_free_busy (const gchar * const *in_strv, guint *out_start
 }
 
 void
-e_gdbus_cal_call_get_free_busy (GDBusProxy *proxy, const gchar * const *in_start_end_userlist, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_get_free_busy (GDBusProxy *proxy,
+                                const gchar * const *in_start_end_userlist,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
 	e_gdbus_proxy_call_strv ("get_free_busy", e_gdbus_cal_call_get_free_busy, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_start_end_userlist, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_get_free_busy_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_get_free_busy_finish (GDBusProxy *proxy,
+                                       GAsyncResult *result,
+                                       GError **error)
 {
 	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_get_free_busy);
 }
 
 gboolean
-e_gdbus_cal_call_get_free_busy_sync (GDBusProxy *proxy, const gchar * const *in_start_end_userlist, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_get_free_busy_sync (GDBusProxy *proxy,
+                                     const gchar * const *in_start_end_userlist,
+                                     GCancellable *cancellable,
+                                     GError **error)
 {
 	return e_gdbus_proxy_call_sync_strv__void (proxy, in_start_end_userlist, cancellable, error,
 		e_gdbus_cal_call_get_free_busy,
@@ -435,19 +545,30 @@ e_gdbus_cal_call_get_free_busy_sync (GDBusProxy *proxy, const gchar * const *in_
 }
 
 void
-e_gdbus_cal_call_create_object (GDBusProxy *proxy, const gchar *in_calobj, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_create_object (GDBusProxy *proxy,
+                                const gchar *in_calobj,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
 	e_gdbus_proxy_call_string ("create_object", e_gdbus_cal_call_create_object, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_calobj, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_create_object_finish (GDBusProxy *proxy, GAsyncResult *result, gchar **out_uid, GError **error)
+e_gdbus_cal_call_create_object_finish (GDBusProxy *proxy,
+                                       GAsyncResult *result,
+                                       gchar **out_uid,
+                                       GError **error)
 {
 	return e_gdbus_proxy_finish_call_string (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, out_uid, error, e_gdbus_cal_call_create_object);
 }
 
 gboolean
-e_gdbus_cal_call_create_object_sync (GDBusProxy *proxy, const gchar *in_calobj, gchar **out_uid, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_create_object_sync (GDBusProxy *proxy,
+                                     const gchar *in_calobj,
+                                     gchar **out_uid,
+                                     GCancellable *cancellable,
+                                     GError **error)
 {
 	return e_gdbus_proxy_call_sync_string__string (proxy, in_calobj, out_uid, cancellable, error,
 		e_gdbus_cal_call_create_object,
@@ -456,7 +577,8 @@ e_gdbus_cal_call_create_object_sync (GDBusProxy *proxy, const gchar *in_calobj, 
 
 /* free returned pointer with g_strfreev() */
 gchar **
-e_gdbus_cal_encode_modify_object (const gchar *in_calobj, guint in_mod)
+e_gdbus_cal_encode_modify_object (const gchar *in_calobj,
+                                  guint in_mod)
 {
 	gchar **strv;
 
@@ -472,7 +594,9 @@ e_gdbus_cal_encode_modify_object (const gchar *in_calobj, guint in_mod)
 
 /* free out_calobj with g_free() */
 gboolean
-e_gdbus_cal_decode_modify_object (const gchar * const *in_strv, gchar **out_calobj, guint *out_mod)
+e_gdbus_cal_decode_modify_object (const gchar * const *in_strv,
+                                  gchar **out_calobj,
+                                  guint *out_mod)
 {
 	g_return_val_if_fail (in_strv != NULL, FALSE);
 	g_return_val_if_fail (in_strv[0] != NULL, FALSE);
@@ -488,19 +612,28 @@ e_gdbus_cal_decode_modify_object (const gchar * const *in_strv, gchar **out_calo
 }
 
 void
-e_gdbus_cal_call_modify_object (GDBusProxy *proxy, const gchar * const *in_calobj_mod, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_modify_object (GDBusProxy *proxy,
+                                const gchar * const *in_calobj_mod,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
 	e_gdbus_proxy_call_strv ("modify_object", e_gdbus_cal_call_modify_object, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_calobj_mod, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_modify_object_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_modify_object_finish (GDBusProxy *proxy,
+                                       GAsyncResult *result,
+                                       GError **error)
 {
 	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_modify_object);
 }
 
 gboolean
-e_gdbus_cal_call_modify_object_sync (GDBusProxy *proxy, const gchar * const *in_calobj_mod, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_modify_object_sync (GDBusProxy *proxy,
+                                     const gchar * const *in_calobj_mod,
+                                     GCancellable *cancellable,
+                                     GError **error)
 {
 	return e_gdbus_proxy_call_sync_strv__void (proxy, in_calobj_mod, cancellable, error,
 		e_gdbus_cal_call_modify_object,
@@ -509,7 +642,9 @@ e_gdbus_cal_call_modify_object_sync (GDBusProxy *proxy, const gchar * const *in_
 
 /* free returned pointer with g_strfreev() */
 gchar **
-e_gdbus_cal_encode_remove_object (const gchar *in_uid, const gchar *in_rid, guint in_mod)
+e_gdbus_cal_encode_remove_object (const gchar *in_uid,
+                                  const gchar *in_rid,
+                                  guint in_mod)
 {
 	gchar **strv;
 
@@ -526,7 +661,10 @@ e_gdbus_cal_encode_remove_object (const gchar *in_uid, const gchar *in_rid, guin
 
 /* free out_uid and out_rid with g_free() */
 gboolean
-e_gdbus_cal_decode_remove_object (const gchar * const *in_strv, gchar **out_uid, gchar **out_rid, guint *out_mod)
+e_gdbus_cal_decode_remove_object (const gchar * const *in_strv,
+                                  gchar **out_uid,
+                                  gchar **out_rid,
+                                  guint *out_mod)
 {
 	g_return_val_if_fail (in_strv != NULL, FALSE);
 	g_return_val_if_fail (in_strv[0] != NULL, FALSE);
@@ -545,19 +683,28 @@ e_gdbus_cal_decode_remove_object (const gchar * const *in_strv, gchar **out_uid,
 }
 
 void
-e_gdbus_cal_call_remove_object (GDBusProxy *proxy, const gchar * const *in_uid_rid_mod, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_remove_object (GDBusProxy *proxy,
+                                const gchar * const *in_uid_rid_mod,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
 	e_gdbus_proxy_call_strv ("remove_object", e_gdbus_cal_call_remove_object, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_uid_rid_mod, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_remove_object_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_remove_object_finish (GDBusProxy *proxy,
+                                       GAsyncResult *result,
+                                       GError **error)
 {
 	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_remove_object);
 }
 
 gboolean
-e_gdbus_cal_call_remove_object_sync (GDBusProxy *proxy, const gchar * const *in_uid_rid_mod, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_remove_object_sync (GDBusProxy *proxy,
+                                     const gchar * const *in_uid_rid_mod,
+                                     GCancellable *cancellable,
+                                     GError **error)
 {
 	return e_gdbus_proxy_call_sync_strv__void (proxy, in_uid_rid_mod, cancellable, error,
 		e_gdbus_cal_call_remove_object,
@@ -565,19 +712,28 @@ e_gdbus_cal_call_remove_object_sync (GDBusProxy *proxy, const gchar * const *in_
 }
 
 void
-e_gdbus_cal_call_receive_objects (GDBusProxy *proxy, const gchar *in_calobj, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_receive_objects (GDBusProxy *proxy,
+                                  const gchar *in_calobj,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
 {
 	e_gdbus_proxy_call_string ("receive_objects", e_gdbus_cal_call_receive_objects, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_calobj, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_receive_objects_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_receive_objects_finish (GDBusProxy *proxy,
+                                         GAsyncResult *result,
+                                         GError **error)
 {
 	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_receive_objects);
 }
 
 gboolean
-e_gdbus_cal_call_receive_objects_sync (GDBusProxy *proxy, const gchar *in_calobj, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_receive_objects_sync (GDBusProxy *proxy,
+                                       const gchar *in_calobj,
+                                       GCancellable *cancellable,
+                                       GError **error)
 {
 	return e_gdbus_proxy_call_sync_string__void (proxy, in_calobj, cancellable, error,
 		e_gdbus_cal_call_receive_objects,
@@ -586,7 +742,8 @@ e_gdbus_cal_call_receive_objects_sync (GDBusProxy *proxy, const gchar *in_calobj
 
 /* free returned pointer with g_strfreev() */
 gchar **
-e_gdbus_cal_encode_send_objects (const gchar *in_calobj, const GSList *in_users)
+e_gdbus_cal_encode_send_objects (const gchar *in_calobj,
+                                 const GSList *in_users)
 {
 	gint ii;
 	gchar **strv;
@@ -605,7 +762,9 @@ e_gdbus_cal_encode_send_objects (const gchar *in_calobj, const GSList *in_users)
 
 /* free out_calobj with g_free() and out_users with g_strfreev() */
 gboolean
-e_gdbus_cal_decode_send_objects (const gchar * const *in_strv, gchar **out_calobj, GSList **out_users)
+e_gdbus_cal_decode_send_objects (const gchar * const *in_strv,
+                                 gchar **out_calobj,
+                                 GSList **out_users)
 {
 	gint ii;
 
@@ -627,19 +786,30 @@ e_gdbus_cal_decode_send_objects (const gchar * const *in_strv, gchar **out_calob
 }
 
 void
-e_gdbus_cal_call_send_objects (GDBusProxy *proxy, const gchar *in_calobj, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_send_objects (GDBusProxy *proxy,
+                               const gchar *in_calobj,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
 	e_gdbus_proxy_call_string ("send_objects", e_gdbus_cal_call_send_objects, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_calobj, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_send_objects_finish (GDBusProxy *proxy, GAsyncResult *result, gchar ***out_calobj_users, GError **error)
+e_gdbus_cal_call_send_objects_finish (GDBusProxy *proxy,
+                                      GAsyncResult *result,
+                                      gchar ***out_calobj_users,
+                                      GError **error)
 {
 	return e_gdbus_proxy_finish_call_strv (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, out_calobj_users, error, e_gdbus_cal_call_send_objects);
 }
 
 gboolean
-e_gdbus_cal_call_send_objects_sync (GDBusProxy *proxy, const gchar *in_calobj, gchar ***out_calobj_users, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_send_objects_sync (GDBusProxy *proxy,
+                                    const gchar *in_calobj,
+                                    gchar ***out_calobj_users,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	return e_gdbus_proxy_call_sync_string__strv (proxy, in_calobj, out_calobj_users, cancellable, error,
 		e_gdbus_cal_call_send_objects,
@@ -648,32 +818,46 @@ e_gdbus_cal_call_send_objects_sync (GDBusProxy *proxy, const gchar *in_calobj, g
 
 /* free returned pointer with g_strfreev() */
 gchar **
-e_gdbus_cal_encode_get_attachment_uris (const gchar *in_uid, const gchar *in_rid)
+e_gdbus_cal_encode_get_attachment_uris (const gchar *in_uid,
+                                        const gchar *in_rid)
 {
 	return e_gdbus_templates_encode_two_strings (in_uid, in_rid);
 }
 
 /* free out_uid and out_rid with g_free() */
 gboolean
-e_gdbus_cal_decode_get_attachment_uris (const gchar * const *in_strv, gchar **out_uid, gchar **out_rid)
+e_gdbus_cal_decode_get_attachment_uris (const gchar * const *in_strv,
+                                        gchar **out_uid,
+                                        gchar **out_rid)
 {
 	return e_gdbus_templates_decode_two_strings (in_strv, out_uid, out_rid);
 }
 
 void
-e_gdbus_cal_call_get_attachment_uris (GDBusProxy *proxy, const gchar * const *in_uid_rid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_get_attachment_uris (GDBusProxy *proxy,
+                                      const gchar * const *in_uid_rid,
+                                      GCancellable *cancellable,
+                                      GAsyncReadyCallback callback,
+                                      gpointer user_data)
 {
 	e_gdbus_proxy_call_strv ("get_attachment_uris", e_gdbus_cal_call_get_attachment_uris, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_uid_rid, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_get_attachment_uris_finish (GDBusProxy *proxy, GAsyncResult *result, gchar ***out_attachments, GError **error)
+e_gdbus_cal_call_get_attachment_uris_finish (GDBusProxy *proxy,
+                                             GAsyncResult *result,
+                                             gchar ***out_attachments,
+                                             GError **error)
 {
 	return e_gdbus_proxy_finish_call_strv (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, out_attachments, error, e_gdbus_cal_call_get_attachment_uris);
 }
 
 gboolean
-e_gdbus_cal_call_get_attachment_uris_sync (GDBusProxy *proxy, const gchar * const *in_uid_rid, gchar ***out_attachments, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_get_attachment_uris_sync (GDBusProxy *proxy,
+                                           const gchar * const *in_uid_rid,
+                                           gchar ***out_attachments,
+                                           GCancellable *cancellable,
+                                           GError **error)
 {
 	return e_gdbus_proxy_call_sync_strv__strv (proxy, in_uid_rid, out_attachments, cancellable, error,
 		e_gdbus_cal_call_get_attachment_uris,
@@ -682,7 +866,9 @@ e_gdbus_cal_call_get_attachment_uris_sync (GDBusProxy *proxy, const gchar * cons
 
 /* free returned pointer with g_strfreev() */
 gchar **
-e_gdbus_cal_encode_discard_alarm (const gchar *in_uid, const gchar *in_rid, const gchar *in_auid)
+e_gdbus_cal_encode_discard_alarm (const gchar *in_uid,
+                                  const gchar *in_rid,
+                                  const gchar *in_auid)
 {
 	gchar **strv;
 
@@ -697,7 +883,10 @@ e_gdbus_cal_encode_discard_alarm (const gchar *in_uid, const gchar *in_rid, cons
 
 /* free out_uid, out_rid and out_auid with g_free() */
 gboolean
-e_gdbus_cal_decode_discard_alarm (const gchar * const *in_strv, gchar **out_uid, gchar **out_rid, gchar **out_auid)
+e_gdbus_cal_decode_discard_alarm (const gchar * const *in_strv,
+                                  gchar **out_uid,
+                                  gchar **out_rid,
+                                  gchar **out_auid)
 {
 	g_return_val_if_fail (in_strv != NULL, FALSE);
 	g_return_val_if_fail (in_strv[0] != NULL, FALSE);
@@ -716,19 +905,28 @@ e_gdbus_cal_decode_discard_alarm (const gchar * const *in_strv, gchar **out_uid,
 }
 
 void
-e_gdbus_cal_call_discard_alarm (GDBusProxy *proxy, const gchar * const *in_uid_rid_auid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_discard_alarm (GDBusProxy *proxy,
+                                const gchar * const *in_uid_rid_auid,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
 	e_gdbus_proxy_call_strv ("discard_alarm", e_gdbus_cal_call_discard_alarm, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_uid_rid_auid, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_discard_alarm_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_discard_alarm_finish (GDBusProxy *proxy,
+                                       GAsyncResult *result,
+                                       GError **error)
 {
 	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_discard_alarm);
 }
 
 gboolean
-e_gdbus_cal_call_discard_alarm_sync (GDBusProxy *proxy, const gchar * const *in_uid_rid_auid, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_discard_alarm_sync (GDBusProxy *proxy,
+                                     const gchar * const *in_uid_rid_auid,
+                                     GCancellable *cancellable,
+                                     GError **error)
 {
 	return e_gdbus_proxy_call_sync_strv__void (proxy, in_uid_rid_auid, cancellable, error,
 		e_gdbus_cal_call_discard_alarm,
@@ -736,19 +934,30 @@ e_gdbus_cal_call_discard_alarm_sync (GDBusProxy *proxy, const gchar * const *in_
 }
 
 void
-e_gdbus_cal_call_get_view (GDBusProxy *proxy, const gchar *in_sexp, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_get_view (GDBusProxy *proxy,
+                           const gchar *in_sexp,
+                           GCancellable *cancellable,
+                           GAsyncReadyCallback callback,
+                           gpointer user_data)
 {
 	e_gdbus_proxy_call_string ("get_view", e_gdbus_cal_call_get_view, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_sexp, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_get_view_finish (GDBusProxy *proxy, GAsyncResult *result, gchar **out_view_path, GError **error)
+e_gdbus_cal_call_get_view_finish (GDBusProxy *proxy,
+                                  GAsyncResult *result,
+                                  gchar **out_view_path,
+                                  GError **error)
 {
 	return e_gdbus_proxy_finish_call_string (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, out_view_path, error, e_gdbus_cal_call_get_view);
 }
 
 gboolean
-e_gdbus_cal_call_get_view_sync (GDBusProxy *proxy, const gchar *in_sexp, gchar **out_view_path, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_get_view_sync (GDBusProxy *proxy,
+                                const gchar *in_sexp,
+                                gchar **out_view_path,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	return e_gdbus_proxy_call_sync_string__string (proxy, in_sexp, out_view_path, cancellable, error,
 		e_gdbus_cal_call_get_view,
@@ -756,19 +965,30 @@ e_gdbus_cal_call_get_view_sync (GDBusProxy *proxy, const gchar *in_sexp, gchar *
 }
 
 void
-e_gdbus_cal_call_get_timezone (GDBusProxy *proxy, const gchar *in_tzid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_get_timezone (GDBusProxy *proxy,
+                               const gchar *in_tzid,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
 	e_gdbus_proxy_call_string ("get_timezone", e_gdbus_cal_call_get_timezone, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_tzid, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_get_timezone_finish (GDBusProxy *proxy, GAsyncResult *result, gchar **out_tzobject, GError **error)
+e_gdbus_cal_call_get_timezone_finish (GDBusProxy *proxy,
+                                      GAsyncResult *result,
+                                      gchar **out_tzobject,
+                                      GError **error)
 {
 	return e_gdbus_proxy_finish_call_string (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, out_tzobject, error, e_gdbus_cal_call_get_timezone);
 }
 
 gboolean
-e_gdbus_cal_call_get_timezone_sync (GDBusProxy *proxy, const gchar *in_tzid, gchar **out_tzobject, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_get_timezone_sync (GDBusProxy *proxy,
+                                    const gchar *in_tzid,
+                                    gchar **out_tzobject,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	return e_gdbus_proxy_call_sync_string__string (proxy, in_tzid, out_tzobject, cancellable, error,
 		e_gdbus_cal_call_get_timezone,
@@ -776,19 +996,28 @@ e_gdbus_cal_call_get_timezone_sync (GDBusProxy *proxy, const gchar *in_tzid, gch
 }
 
 void
-e_gdbus_cal_call_add_timezone (GDBusProxy *proxy, const gchar *in_tzobject, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_add_timezone (GDBusProxy *proxy,
+                               const gchar *in_tzobject,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
 	e_gdbus_proxy_call_string ("add_timezone", e_gdbus_cal_call_add_timezone, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_tzobject, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_add_timezone_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_add_timezone_finish (GDBusProxy *proxy,
+                                      GAsyncResult *result,
+                                      GError **error)
 {
 	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_add_timezone);
 }
 
 gboolean
-e_gdbus_cal_call_add_timezone_sync (GDBusProxy *proxy, const gchar *in_tzobject, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_add_timezone_sync (GDBusProxy *proxy,
+                                    const gchar *in_tzobject,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	return e_gdbus_proxy_call_sync_string__void (proxy, in_tzobject, cancellable, error,
 		e_gdbus_cal_call_add_timezone,
@@ -796,73 +1025,105 @@ e_gdbus_cal_call_add_timezone_sync (GDBusProxy *proxy, const gchar *in_tzobject,
 }
 
 void
-e_gdbus_cal_call_authenticate_user (GDBusProxy *proxy, const gchar * const *in_credentials, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_authenticate_user (GDBusProxy *proxy,
+                                    const gchar * const *in_credentials,
+                                    GCancellable *cancellable,
+                                    GAsyncReadyCallback callback,
+                                    gpointer user_data)
 {
 	e_gdbus_proxy_method_call_strv ("authenticate_user", proxy, in_credentials, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_authenticate_user_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_authenticate_user_finish (GDBusProxy *proxy,
+                                           GAsyncResult *result,
+                                           GError **error)
 {
 	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
 }
 
 gboolean
-e_gdbus_cal_call_authenticate_user_sync (GDBusProxy *proxy, const gchar * const *in_credentials, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_authenticate_user_sync (GDBusProxy *proxy,
+                                         const gchar * const *in_credentials,
+                                         GCancellable *cancellable,
+                                         GError **error)
 {
 	return e_gdbus_proxy_method_call_sync_strv__void ("authenticate_user", proxy, in_credentials, cancellable, error);
 }
 
 void
-e_gdbus_cal_call_cancel_operation (GDBusProxy *proxy, guint in_opid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_cancel_operation (GDBusProxy *proxy,
+                                   guint in_opid,
+                                   GCancellable *cancellable,
+                                   GAsyncReadyCallback callback,
+                                   gpointer user_data)
 {
 	e_gdbus_proxy_method_call_uint ("cancel_operation", proxy, in_opid, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_cancel_operation_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_cancel_operation_finish (GDBusProxy *proxy,
+                                          GAsyncResult *result,
+                                          GError **error)
 {
 	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
 }
 
 gboolean
-e_gdbus_cal_call_cancel_operation_sync (GDBusProxy *proxy, guint in_opid, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_cancel_operation_sync (GDBusProxy *proxy,
+                                        guint in_opid,
+                                        GCancellable *cancellable,
+                                        GError **error)
 {
 	return e_gdbus_proxy_method_call_sync_uint__void ("cancel_operation", proxy, in_opid, cancellable, error);
 }
 
 void
-e_gdbus_cal_call_cancel_all (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_cancel_all (GDBusProxy *proxy,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
 {
 	e_gdbus_proxy_method_call_void ("cancel_all", proxy, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_cancel_all_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_cancel_all_finish (GDBusProxy *proxy,
+                                    GAsyncResult *result,
+                                    GError **error)
 {
 	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
 }
 
 gboolean
-e_gdbus_cal_call_cancel_all_sync (GDBusProxy *proxy, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_cancel_all_sync (GDBusProxy *proxy,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	return e_gdbus_proxy_method_call_sync_void__void ("cancel_all", proxy, cancellable, error);
 }
 
 void
-e_gdbus_cal_call_close (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_call_close (GDBusProxy *proxy,
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
 {
 	e_gdbus_proxy_method_call_void ("close", proxy, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_cal_call_close_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_cal_call_close_finish (GDBusProxy *proxy,
+                               GAsyncResult *result,
+                               GError **error)
 {
 	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
 }
 
 gboolean
-e_gdbus_cal_call_close_sync (GDBusProxy *proxy, GCancellable *cancellable, GError **error)
+e_gdbus_cal_call_close_sync (GDBusProxy *proxy,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	return e_gdbus_proxy_method_call_sync_void__void ("close", proxy, cancellable, error);
 }
@@ -881,27 +1142,54 @@ e_gdbus_cal_emit_ ## _mname ## _done (EGdbusCal *object, guint arg_opid, const G
 	g_signal_emit (object, signals[_sig_id], 0, arg_opid, arg_error, out_par);					\
 }
 
-DECLARE_EMIT_DONE_SIGNAL_0 (open,			__OPEN_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_0 (remove,			__REMOVE_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_0 (refresh,			__REFRESH_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_1 (get_backend_property,	__GET_BACKEND_PROPERTY_DONE_SIGNAL, const gchar *)
-DECLARE_EMIT_DONE_SIGNAL_0 (set_backend_property,	__SET_BACKEND_PROPERTY_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_1 (get_object,			__GET_OBJECT_DONE_SIGNAL, const gchar *)
-DECLARE_EMIT_DONE_SIGNAL_1 (get_object_list,		__GET_OBJECT_LIST_DONE_SIGNAL, const gchar * const *)
-DECLARE_EMIT_DONE_SIGNAL_0 (get_free_busy,		__GET_FREE_BUSY_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_1 (create_object,		__CREATE_OBJECT_DONE_SIGNAL, const gchar *)
-DECLARE_EMIT_DONE_SIGNAL_0 (modify_object,		__MODIFY_OBJECT_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_0 (remove_object,		__REMOVE_OBJECT_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_0 (receive_objects,		__RECEIVE_OBJECTS_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_1 (send_objects,		__SEND_OBJECTS_DONE_SIGNAL, const gchar * const *)
-DECLARE_EMIT_DONE_SIGNAL_1 (get_attachment_uris,	__GET_ATTACHMENT_URIS_DONE_SIGNAL, const gchar * const *)
-DECLARE_EMIT_DONE_SIGNAL_0 (discard_alarm,		__DISCARD_ALARM_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_1 (get_view,			__GET_VIEW_DONE_SIGNAL, const gchar *)
-DECLARE_EMIT_DONE_SIGNAL_1 (get_timezone,		__GET_TIMEZONE_DONE_SIGNAL, const gchar *)
-DECLARE_EMIT_DONE_SIGNAL_0 (add_timezone,		__ADD_TIMEZONE_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_0 (open,
+                            __OPEN_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_0 (remove,
+                            __REMOVE_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_0 (refresh,
+                            __REFRESH_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_1 (get_backend_property,
+                            __GET_BACKEND_PROPERTY_DONE_SIGNAL,
+                            const gchar *)
+DECLARE_EMIT_DONE_SIGNAL_0 (set_backend_property,
+                            __SET_BACKEND_PROPERTY_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_1 (get_object,
+                            __GET_OBJECT_DONE_SIGNAL,
+                            const gchar *)
+DECLARE_EMIT_DONE_SIGNAL_1 (get_object_list,
+                            __GET_OBJECT_LIST_DONE_SIGNAL,
+                            const gchar * const *)
+DECLARE_EMIT_DONE_SIGNAL_0 (get_free_busy,
+                            __GET_FREE_BUSY_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_1 (create_object,
+                            __CREATE_OBJECT_DONE_SIGNAL,
+                            const gchar *)
+DECLARE_EMIT_DONE_SIGNAL_0 (modify_object,
+                            __MODIFY_OBJECT_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_0 (remove_object,
+                            __REMOVE_OBJECT_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_0 (receive_objects,
+                            __RECEIVE_OBJECTS_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_1 (send_objects,
+                            __SEND_OBJECTS_DONE_SIGNAL,
+                            const gchar * const *)
+DECLARE_EMIT_DONE_SIGNAL_1 (get_attachment_uris,
+                            __GET_ATTACHMENT_URIS_DONE_SIGNAL,
+                            const gchar * const *)
+DECLARE_EMIT_DONE_SIGNAL_0 (discard_alarm,
+                            __DISCARD_ALARM_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_1 (get_view,
+                            __GET_VIEW_DONE_SIGNAL,
+                            const gchar *)
+DECLARE_EMIT_DONE_SIGNAL_1 (get_timezone,
+                            __GET_TIMEZONE_DONE_SIGNAL,
+                            const gchar *)
+DECLARE_EMIT_DONE_SIGNAL_0 (add_timezone,
+                            __ADD_TIMEZONE_DONE_SIGNAL)
 
 void
-e_gdbus_cal_emit_backend_error (EGdbusCal *object, const gchar *arg_message)
+e_gdbus_cal_emit_backend_error (EGdbusCal *object,
+                                const gchar *arg_message)
 {
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (arg_message != NULL);
@@ -910,37 +1198,43 @@ e_gdbus_cal_emit_backend_error (EGdbusCal *object, const gchar *arg_message)
 }
 
 void
-e_gdbus_cal_emit_readonly (EGdbusCal *object, gboolean arg_is_readonly)
+e_gdbus_cal_emit_readonly (EGdbusCal *object,
+                           gboolean arg_is_readonly)
 {
 	g_signal_emit (object, signals[__READONLY_SIGNAL], 0, arg_is_readonly);
 }
 
 void
-e_gdbus_cal_emit_online (EGdbusCal *object, gboolean arg_is_online)
+e_gdbus_cal_emit_online (EGdbusCal *object,
+                         gboolean arg_is_online)
 {
 	g_signal_emit (object, signals[__ONLINE_SIGNAL], 0, arg_is_online);
 }
 
 void
-e_gdbus_cal_emit_auth_required (EGdbusCal *object, const gchar * const *arg_credentials)
+e_gdbus_cal_emit_auth_required (EGdbusCal *object,
+                                const gchar * const *arg_credentials)
 {
 	g_signal_emit (object, signals[__AUTH_REQUIRED_SIGNAL], 0, arg_credentials);
 }
 
 void
-e_gdbus_cal_emit_opened (EGdbusCal *object, const gchar * const *arg_error)
+e_gdbus_cal_emit_opened (EGdbusCal *object,
+                         const gchar * const *arg_error)
 {
 	g_signal_emit (object, signals[__OPENED_SIGNAL], 0, arg_error);
 }
 
 void
-e_gdbus_cal_emit_free_busy_data (EGdbusCal *object, const gchar * const *arg_free_busy)
+e_gdbus_cal_emit_free_busy_data (EGdbusCal *object,
+                                 const gchar * const *arg_free_busy)
 {
 	g_signal_emit (object, signals[__FREE_BUSY_DATA_SIGNAL], 0, arg_free_busy);
 }
 
 void
-e_gdbus_cal_emit_backend_property_changed (EGdbusCal *object, const gchar * const *arg_name_value)
+e_gdbus_cal_emit_backend_property_changed (EGdbusCal *object,
+                                           const gchar * const *arg_name_value)
 {
 	g_signal_emit (object, signals[__BACKEND_PROPERTY_CHANGED_SIGNAL], 0, arg_name_value);
 }
@@ -954,8 +1248,10 @@ E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, free_busy_data, free_busy_data, "as")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, backend_property_changed, name_value, "as")
 
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, open, only_if_exists, "b")
-E_DECLARE_GDBUS_ASYNC_METHOD_0			(cal, remove)
-E_DECLARE_GDBUS_ASYNC_METHOD_0			(cal, refresh)
+E_DECLARE_GDBUS_ASYNC_METHOD_0 (cal,
+                                remove)
+E_DECLARE_GDBUS_ASYNC_METHOD_0 (cal,
+                                refresh)
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_backend_property, propname, "s", propvalue, "s")
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, set_backend_property, propnamevalue, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_object, uid_rid, "as", object, "s")
@@ -974,8 +1270,10 @@ E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, add_timezone, tzobject, "s")
 
 E_DECLARE_GDBUS_SYNC_METHOD_1			(cal, authenticate_user, credentials, "as")
 E_DECLARE_GDBUS_SYNC_METHOD_1			(cal, cancel_operation, opid, "u")
-E_DECLARE_GDBUS_SYNC_METHOD_0			(cal, cancel_all)
-E_DECLARE_GDBUS_SYNC_METHOD_0			(cal, close)
+E_DECLARE_GDBUS_SYNC_METHOD_0 (cal,
+                               cancel_all)
+E_DECLARE_GDBUS_SYNC_METHOD_0 (cal,
+                               close)
 
 static const GDBusMethodInfo * const e_gdbus_cal_method_info_pointers[] =
 {
@@ -1045,14 +1343,14 @@ static const GDBusInterfaceInfo _e_gdbus_cal_interface_info =
 };
 
 static void
-handle_method_call (GDBusConnection       *connection,
-                    const gchar           *sender,
-                    const gchar           *object_path,
-                    const gchar           *interface_name,
-                    const gchar           *method_name,
-                    GVariant              *parameters,
+handle_method_call (GDBusConnection *connection,
+                    const gchar *sender,
+                    const gchar *object_path,
+                    const gchar *interface_name,
+                    const gchar *method_name,
+                    GVariant *parameters,
                     GDBusMethodInvocation *invocation,
-                    gpointer               user_data)
+                    gpointer user_data)
 {
 	guint method_id, method_type;
 
@@ -1066,14 +1364,27 @@ handle_method_call (GDBusConnection       *connection,
 }
 
 static GVariant *
-get_property (GDBusConnection *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *property_name, GError **error, gpointer user_data)
+get_property (GDBusConnection *connection,
+              const gchar *sender,
+              const gchar *object_path,
+              const gchar *interface_name,
+              const gchar *property_name,
+              GError **error,
+              gpointer user_data)
 {
 	g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_NOT_SUPPORTED, "This implementation does not support property `%s'", property_name);
 	return NULL;
 }
 
 static gboolean
-set_property (GDBusConnection *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *property_name, GVariant *value, GError **error, gpointer user_data)
+set_property (GDBusConnection *connection,
+              const gchar *sender,
+              const gchar *object_path,
+              const gchar *interface_name,
+              const gchar *property_name,
+              GVariant *value,
+              GError **error,
+              gpointer user_data)
 {
 	g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_NOT_SUPPORTED, "This implementation does not support property `%s'", property_name);
 	return FALSE;
@@ -1188,7 +1499,10 @@ on_object_unregistered (GObject *object)
  * Returns: 0 if @error is set, otherwise a registration id (never 0) that can be used with g_dbus_connection_unregister_object().
  */
 guint
-e_gdbus_cal_register_object (EGdbusCal *object, GDBusConnection *connection, const gchar *object_path, GError **error)
+e_gdbus_cal_register_object (EGdbusCal *object,
+                             GDBusConnection *connection,
+                             const gchar *object_path,
+                             GError **error)
 {
 	GHashTable *pvc;
 
@@ -1258,7 +1572,10 @@ e_gdbus_cal_proxy_init (EGdbusCalProxy *proxy)
 }
 
 static void
-g_signal (GDBusProxy *proxy, const gchar *sender_name, const gchar *signal_name, GVariant *parameters)
+g_signal (GDBusProxy *proxy,
+          const gchar *sender_name,
+          const gchar *signal_name,
+          GVariant *parameters)
 {
 	guint signal_id, signal_type;
 
@@ -1323,7 +1640,10 @@ gdbus_cal_get_pending_ops (EGdbusAsyncOpKeeper *object)
 }
 
 static gboolean
-gdbus_cal_call_cancel_operation_sync (EGdbusAsyncOpKeeper *object, guint in_opid, GCancellable *cancellable, GError **error)
+gdbus_cal_call_cancel_operation_sync (EGdbusAsyncOpKeeper *object,
+                                      guint in_opid,
+                                      GCancellable *cancellable,
+                                      GError **error)
 {
 	return e_gdbus_cal_call_cancel_operation_sync (G_DBUS_PROXY (object), in_opid, cancellable, error);
 }
@@ -1352,7 +1672,13 @@ async_op_keeper_iface_init (EGdbusAsyncOpKeeperInterface *iface)
  * This is a failable asynchronous constructor - when the proxy is ready, callback will be invoked and you can use e_gdbus_cal_proxy_new_finish() to get the result.
  */
 void
-e_gdbus_cal_proxy_new (GDBusConnection *connection, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_proxy_new (GDBusConnection *connection,
+                       GDBusProxyFlags flags,
+                       const gchar *name,
+                       const gchar *object_path,
+                       GCancellable *cancellable,
+                       GAsyncReadyCallback callback,
+                       gpointer user_data)
 {
 	g_async_initable_new_async (E_TYPE_GDBUS_CAL_PROXY,
 				G_PRIORITY_DEFAULT,
@@ -1377,7 +1703,8 @@ e_gdbus_cal_proxy_new (GDBusConnection *connection, GDBusProxyFlags flags, const
  * Returns: A #EGdbusCalProxy or %NULL if @error is set. Free with g_object_unref().
  */
 EGdbusCal *
-e_gdbus_cal_proxy_new_finish (GAsyncResult  *result, GError **error)
+e_gdbus_cal_proxy_new_finish (GAsyncResult *result,
+                              GError **error)
 {
 	GObject *object;
 	GObject *source_object;
@@ -1407,7 +1734,12 @@ e_gdbus_cal_proxy_new_finish (GAsyncResult  *result, GError **error)
  * Returns: A #EGdbusCalProxy or %NULL if error is set. Free with g_object_unref().
  */
 EGdbusCal *
-e_gdbus_cal_proxy_new_sync (GDBusConnection *connection, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GError **error)
+e_gdbus_cal_proxy_new_sync (GDBusConnection *connection,
+                            GDBusProxyFlags flags,
+                            const gchar *name,
+                            const gchar *object_path,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	GInitable *initable;
 	initable = g_initable_new (E_TYPE_GDBUS_CAL_PROXY,
@@ -1440,7 +1772,13 @@ e_gdbus_cal_proxy_new_sync (GDBusConnection *connection, GDBusProxyFlags flags, 
  * This is a failable asynchronous constructor - when the proxy is ready, callback will be invoked and you can use e_gdbus_cal_proxy_new_for_bus_finish() to get the result.
  */
 void
-e_gdbus_cal_proxy_new_for_bus (GBusType bus_type, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_proxy_new_for_bus (GBusType bus_type,
+                               GDBusProxyFlags flags,
+                               const gchar *name,
+                               const gchar *object_path,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
 	g_async_initable_new_async (E_TYPE_GDBUS_CAL_PROXY,
 				G_PRIORITY_DEFAULT,
@@ -1465,7 +1803,8 @@ e_gdbus_cal_proxy_new_for_bus (GBusType bus_type, GDBusProxyFlags flags, const g
  * Returns: A #EGdbusCalProxy or %NULL if @error is set. Free with g_object_unref().
  */
 EGdbusCal *
-e_gdbus_cal_proxy_new_for_bus_finish (GAsyncResult *result, GError **error)
+e_gdbus_cal_proxy_new_for_bus_finish (GAsyncResult *result,
+                                      GError **error)
 {
 	GObject *object;
 	GObject *source_object;
@@ -1495,7 +1834,12 @@ e_gdbus_cal_proxy_new_for_bus_finish (GAsyncResult *result, GError **error)
  * Returns: A #EGdbusCalProxy or %NULL if error is set. Free with g_object_unref().
  */
 EGdbusCal *
-e_gdbus_cal_proxy_new_for_bus_sync (GBusType bus_type, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GError **error)
+e_gdbus_cal_proxy_new_for_bus_sync (GBusType bus_type,
+                                    GDBusProxyFlags flags,
+                                    const gchar *name,
+                                    const gchar *object_path,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	GInitable *initable;
 	initable = g_initable_new (E_TYPE_GDBUS_CAL_PROXY,

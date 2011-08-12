@@ -59,7 +59,8 @@ typedef struct {
 } CamelSqlite3File;
 
 static gint
-call_old_file_Sync (CamelSqlite3File *cFile, gint flags)
+call_old_file_Sync (CamelSqlite3File *cFile,
+                    gint flags)
 {
 	g_return_val_if_fail (old_vfs != NULL, SQLITE_ERROR);
 	g_return_val_if_fail (cFile != NULL, SQLITE_ERROR);
@@ -76,7 +77,8 @@ struct SyncRequestData
 };
 
 static void
-sync_request_thread_cb (gpointer task_data, gpointer null_data)
+sync_request_thread_cb (gpointer task_data,
+                        gpointer null_data)
 {
 	struct SyncRequestData *sync_data = task_data;
 	EFlag *sync_op;
@@ -94,7 +96,8 @@ sync_request_thread_cb (gpointer task_data, gpointer null_data)
 }
 
 static void
-sync_push_request (CamelSqlite3File *cFile, gboolean wait_for_finish)
+sync_push_request (CamelSqlite3File *cFile,
+                   gboolean wait_for_finish)
 {
 	struct SyncRequestData *data;
 	EFlag *sync_op = NULL;
@@ -177,7 +180,8 @@ def_subclassed (xDeviceCharacteristics, (sqlite3_file *pFile), (cFile->old_vfs_f
 #undef def_subclassed
 
 static gint
-camel_sqlite3_file_xCheckReservedLock (sqlite3_file *pFile, gint *pResOut)
+camel_sqlite3_file_xCheckReservedLock (sqlite3_file *pFile,
+                                       gint *pResOut)
 {
 	CamelSqlite3File *cFile;
 
@@ -232,7 +236,8 @@ camel_sqlite3_file_xClose (sqlite3_file *pFile)
 }
 
 static gint
-camel_sqlite3_file_xSync (sqlite3_file *pFile, gint flags)
+camel_sqlite3_file_xSync (sqlite3_file *pFile,
+                          gint flags)
 {
 	CamelSqlite3File *cFile;
 
@@ -261,7 +266,11 @@ camel_sqlite3_file_xSync (sqlite3_file *pFile, gint flags)
 }
 
 static gint
-camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const gchar *zPath, sqlite3_file *pFile, gint flags, gint *pOutFlags)
+camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs,
+                         const gchar *zPath,
+                         sqlite3_file *pFile,
+                         gint flags,
+                         gint *pOutFlags)
 {
 	static GStaticRecMutex only_once_lock = G_STATIC_REC_MUTEX_INIT;
 	static sqlite3_io_methods io_methods = {0};
@@ -288,7 +297,7 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs, const gchar *zPath, sqlite3_file *pF
 		sync_pool = g_thread_pool_new (sync_request_thread_cb, NULL, 2, FALSE, NULL);
 
 	/* cFile->old_vfs_file->pMethods is NULL when open failed for some reason,
-	   thus do not initialize our structure when do not know the version */
+	 * thus do not initialize our structure when do not know the version */
 	if (io_methods.xClose == NULL && cFile->old_vfs_file->pMethods) {
 		/* initialize our subclass function only once */
 		io_methods.iVersion = cFile->old_vfs_file->pMethods->iVersion;
@@ -365,8 +374,8 @@ struct _CamelDBPrivate {
 static gint
 cdb_sql_exec (sqlite3 *db,
               const gchar *stmt,
-	      gint (*callback)(gpointer ,gint,gchar **,gchar **),
-	      gpointer data,
+              gint (*callback)(gpointer ,gint,gchar **,gchar **),
+              gpointer data,
               GError **error)
 {
 	gchar *errmsg = NULL;
@@ -402,10 +411,12 @@ cdb_sql_exec (sqlite3 *db,
 }
 
 /* checks whether string 'where' contains whole word 'what',
-   case insensitively (ascii, not utf8, same as 'LIKE' in SQLite3)
+ * case insensitively (ascii, not utf8, same as 'LIKE' in SQLite3)
 */
 static void
-cdb_match_func (sqlite3_context *ctx, gint nArgs, sqlite3_value **values)
+cdb_match_func (sqlite3_context *ctx,
+                gint nArgs,
+                sqlite3_value **values)
 {
 	gboolean matches = FALSE;
 	const gchar *what, *where;
@@ -548,7 +559,10 @@ camel_db_close (CamelDB *cdb)
  * Since: 2.24
  **/
 gint
-camel_db_set_collate (CamelDB *cdb, const gchar *col, const gchar *collate, CamelDBCollate func)
+camel_db_set_collate (CamelDB *cdb,
+                      const gchar *col,
+                      const gchar *collate,
+                      CamelDBCollate func)
 {
 		gint ret = 0;
 
@@ -710,11 +724,14 @@ end:
 }
 
 static gint
-count_cb (gpointer data, gint argc, gchar **argv, gchar **azColName)
+count_cb (gpointer data,
+          gint argc,
+          gchar **argv,
+          gchar **azColName)
 {
 	gint i;
 
-	for (i=0; i<argc; i++) {
+	for (i = 0; i < argc; i++) {
 		if (strstr(azColName[i], "COUNT")) {
 			*(guint32 *)data = argv [i] ? strtoul (argv [i], NULL, 10) : 0;
 		}
@@ -1053,7 +1070,10 @@ camel_db_delete_uid_from_vfolder_transaction (CamelDB *db,
 }
 
 static gint
-read_uids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
+read_uids_callback (gpointer ref,
+                    gint ncol,
+                    gchar **cols,
+                    gchar **name)
 {
 	GPtrArray *array = (GPtrArray *) ref;
 
@@ -1153,11 +1173,14 @@ camel_db_get_folder_deleted_uids (CamelDB *db,
 }
 
 static gint
-read_preview_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
+read_preview_callback (gpointer ref,
+                       gint ncol,
+                       gchar **cols,
+                       gchar **name)
 {
 	GHashTable *hash = (GHashTable *) ref;
-	const gchar *uid=NULL;
-	gchar *msg=NULL;
+	const gchar *uid = NULL;
+	gchar *msg = NULL;
 	gint i;
 
 	for (i = 0; i < ncol; ++i) {
@@ -1226,7 +1249,10 @@ camel_db_write_preview_record (CamelDB *db,
 }
 
 static gint
-read_vuids_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
+read_vuids_callback (gpointer ref,
+                     gint ncol,
+                     gchar **cols,
+                     gchar **name)
 {
 	GPtrArray *array = (GPtrArray *) ref;
 
@@ -1534,7 +1560,10 @@ camel_db_write_folder_version (CamelDB *cdb,
 }
 
 static gint
-read_version_callback (gpointer ref, gint ncol, gchar ** cols, gchar ** name)
+read_version_callback (gpointer ref,
+                       gint ncol,
+                       gchar **cols,
+                       gchar **name)
 {
 	gint *version = (gint *) ref;
 
@@ -1740,7 +1769,10 @@ camel_db_write_folder_info_record (CamelDB *cdb,
 }
 
 static gint
-read_fir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name)
+read_fir_callback (gpointer ref,
+                   gint ncol,
+                   gchar **cols,
+                   gchar **name)
 {
 	CamelFIRecord *record = *(CamelFIRecord **) ref;
 	gint i;

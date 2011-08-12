@@ -141,8 +141,8 @@ static void filter_run (CamelMimeFilter *f,
 	checkmem (f->backbuf);
 #endif
 	/*
-	  here we take a performance hit, if the input buffer doesn't
-	  have the pre-space required.  We make a buffer that does ...
+	 * here we take a performance hit, if the input buffer doesn't
+	 * have the pre-space required.  We make a buffer that does ...
 	*/
 	if (f->backlen > 0) {
 		struct _CamelMimeFilterPrivate *p;
@@ -154,8 +154,8 @@ static void filter_run (CamelMimeFilter *f,
 		if (p->inlen < newlen) {
 			/* NOTE: g_realloc copies data, we dont need that (slower) */
 			g_free (p->inbuf);
-			p->inbuf = g_malloc (newlen+PRE_HEAD);
-			p->inlen = newlen+PRE_HEAD;
+			p->inbuf = g_malloc (newlen + PRE_HEAD);
+			p->inlen = newlen + PRE_HEAD;
 		}
 
 		/* copy to end of structure */
@@ -292,13 +292,15 @@ camel_mime_filter_reset (CamelMimeFilter *filter)
  * Note: New calls replace old data.
  **/
 void
-camel_mime_filter_backup (CamelMimeFilter *filter, const gchar *data, gsize length)
+camel_mime_filter_backup (CamelMimeFilter *filter,
+                          const gchar *data,
+                          gsize length)
 {
 	if (filter->backsize < length) {
 		/* g_realloc copies data, unnecessary overhead */
 		g_free (filter->backbuf);
-		filter->backbuf = g_malloc (length+BACK_HEAD);
-		filter->backsize = length+BACK_HEAD;
+		filter->backbuf = g_malloc (length + BACK_HEAD);
+		filter->backsize = length + BACK_HEAD;
 	}
 	filter->backlen = length;
 	memcpy (filter->backbuf, data, length);
@@ -314,21 +316,23 @@ camel_mime_filter_backup (CamelMimeFilter *filter, const gchar *data, gsize leng
  * for filter output.
  **/
 void
-camel_mime_filter_set_size (CamelMimeFilter *filter, gsize size, gint keep)
+camel_mime_filter_set_size (CamelMimeFilter *filter,
+                            gsize size,
+                            gint keep)
 {
 	if (filter->outsize < size) {
 		gint offset = filter->outptr - filter->outreal;
 		if (keep) {
-			filter->outreal = g_realloc (filter->outreal, size + PRE_HEAD*4);
+			filter->outreal = g_realloc (filter->outreal, size + PRE_HEAD * 4);
 		} else {
 			g_free (filter->outreal);
-			filter->outreal = g_malloc (size + PRE_HEAD*4);
+			filter->outreal = g_malloc (size + PRE_HEAD * 4);
 		}
 		filter->outptr = filter->outreal + offset;
-		filter->outbuf = filter->outreal + PRE_HEAD*4;
+		filter->outbuf = filter->outreal + PRE_HEAD * 4;
 		filter->outsize = size;
 		/* this could be offset from the end of the structure, but
-		   this should be good enough */
-		filter->outpre = PRE_HEAD*4;
+		 * this should be good enough */
+		filter->outpre = PRE_HEAD * 4;
 	}
 }

@@ -106,7 +106,7 @@ stream_filter_read (CamelStream *stream,
 
 	g_check (priv->realbuffer);
 
-	if (priv->filteredlen<=0) {
+	if (priv->filteredlen <= 0) {
 		gsize presize = READ_PAD;
 
 		size = camel_stream_read (
@@ -165,8 +165,8 @@ stream_filter_read (CamelStream *stream,
 }
 
 /* Note: Since the caller expects to write out as much as they asked us to
-   write (for 'success'), we return what they asked us to write (for 'success')
-   rather than the true number of written bytes */
+ * write (for 'success'), we return what they asked us to write (for 'success')
+ * rather than the true number of written bytes */
 static gssize
 stream_filter_write (CamelStream *stream,
                      const gchar *buf,
@@ -177,7 +177,7 @@ stream_filter_write (CamelStream *stream,
 	CamelStreamFilterPrivate *priv;
 	struct _filter *f;
 	gsize presize, len, left = n;
-	gchar *buffer, realbuffer[READ_SIZE+READ_PAD];
+	gchar *buffer, realbuffer[READ_SIZE + READ_PAD];
 
 	priv = CAMEL_STREAM_FILTER (stream)->priv;
 
@@ -311,10 +311,10 @@ stream_filter_can_seek (GSeekable *seekable)
 
 static gboolean
 stream_filter_seek (GSeekable *seekable,
-		    goffset offset,
-		    GSeekType type,
-		    GCancellable *cancellable,
-		    GError **error)
+                    goffset offset,
+                    GSeekType type,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	CamelStreamFilterPrivate *priv;
 	struct _filter *f;
@@ -350,9 +350,9 @@ stream_filter_can_truncate (GSeekable *seekable)
 
 static gboolean
 stream_filter_truncate_fn (GSeekable *seekable,
-			   goffset offset,
-			   GCancellable *cancellable,
-			   GError **error)
+                           goffset offset,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	/* XXX Don't bother translating this.  Camel never calls it. */
 	g_set_error_literal (
@@ -471,7 +471,7 @@ camel_stream_filter_add (CamelStreamFilter *stream,
 	fn->filter = g_object_ref (filter);
 
 	/* sure, we could use a GList, but we wouldn't save much */
-	f = (struct _filter *)&priv->filters;
+	f = (struct _filter *) &priv->filters;
 	while (f->next)
 		f = f->next;
 	f->next = fn;
@@ -497,7 +497,7 @@ camel_stream_filter_remove (CamelStreamFilter *stream,
 
 	priv = stream->priv;
 
-	f = (struct _filter *)&priv->filters;
+	f = (struct _filter *) &priv->filters;
 	while (f && f->next) {
 		fn = f->next;
 		if (fn->id == id) {

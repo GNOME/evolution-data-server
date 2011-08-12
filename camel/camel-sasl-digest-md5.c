@@ -280,7 +280,8 @@ parse_param_list (const gchar *tokens)
 }
 
 static guint
-decode_data_type (DataType *dtype, const gchar *name)
+decode_data_type (DataType *dtype,
+                  const gchar *name)
 {
 	gint i;
 
@@ -297,7 +298,8 @@ decode_data_type (DataType *dtype, const gchar *name)
 #define decode_cipher(name)  decode_data_type (cipher_types, name)
 
 static const gchar *
-type_to_string (DataType *dtype, guint type)
+type_to_string (DataType *dtype,
+                guint type)
 {
 	gint i;
 
@@ -313,7 +315,8 @@ type_to_string (DataType *dtype, guint type)
 #define cipher_to_string(type) type_to_string (cipher_types, type)
 
 static void
-digest_abort (gboolean *have_type, gboolean *abort)
+digest_abort (gboolean *have_type,
+              gboolean *abort)
 {
 	if (*have_type)
 		*abort = TRUE;
@@ -321,7 +324,8 @@ digest_abort (gboolean *have_type, gboolean *abort)
 }
 
 static struct _DigestChallenge *
-parse_server_challenge (const gchar *tokens, gboolean *abort)
+parse_server_challenge (const gchar *tokens,
+                        gboolean *abort)
 {
 	struct _DigestChallenge *challenge = NULL;
 	GList *params, *p;
@@ -462,7 +466,10 @@ digest_uri_to_string (struct _DigestURI *uri)
 }
 
 static void
-compute_response (struct _DigestResponse *resp, const gchar *passwd, gboolean client, guchar out[33])
+compute_response (struct _DigestResponse *resp,
+                  const gchar *passwd,
+                  gboolean client,
+                  guchar out[33])
 {
 	GString *buffer;
 	GChecksum *checksum;
@@ -560,8 +567,11 @@ compute_response (struct _DigestResponse *resp, const gchar *passwd, gboolean cl
 }
 
 static struct _DigestResponse *
-generate_response (struct _DigestChallenge *challenge, const gchar *host,
-		   const gchar *protocol, const gchar *user, const gchar *passwd)
+generate_response (struct _DigestChallenge *challenge,
+                   const gchar *host,
+                   const gchar *protocol,
+                   const gchar *user,
+                   const gchar *passwd)
 {
 	struct _DigestResponse *resp;
 	struct _DigestURI *uri;

@@ -273,7 +273,8 @@ save (ECalBackendFile *cbfile)
 }
 
 static void
-free_calendar_components (GHashTable *comp_uid_hash, icalcomponent *top_icomp)
+free_calendar_components (GHashTable *comp_uid_hash,
+                          icalcomponent *top_icomp)
 {
 	if (comp_uid_hash)
 		g_hash_table_destroy (comp_uid_hash);
@@ -375,10 +376,11 @@ e_cal_backend_file_finalize (GObject *object)
 
 
 /* Looks up an component by its UID on the backend's component hash table
-   and returns TRUE if any event (regardless whether it is the master or a child)
-   with that UID exists */
+ * and returns TRUE if any event (regardless whether it is the master or a child)
+ * with that UID exists */
 static gboolean
-uid_in_use (ECalBackendFile *cbfile, const gchar *uid)
+uid_in_use (ECalBackendFile *cbfile,
+            const gchar *uid)
 {
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
@@ -395,7 +397,12 @@ uid_in_use (ECalBackendFile *cbfile, const gchar *uid)
 
 /* Get_email_address handler for the file backend */
 static gboolean
-e_cal_backend_file_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **perror)
+e_cal_backend_file_get_backend_property (ECalBackendSync *backend,
+                                         EDataCal *cal,
+                                         GCancellable *cancellable,
+                                         const gchar *prop_name,
+                                         gchar **prop_value,
+                                         GError **perror)
 {
 	gboolean processed = TRUE;
 
@@ -446,10 +453,11 @@ e_cal_backend_file_get_backend_property (ECalBackendSync *backend, EDataCal *cal
 
 /* function to resolve timezones */
 static icaltimezone *
-resolve_tzid (const gchar *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid,
+              gpointer user_data)
 {
 	icalcomponent *vcalendar_comp = user_data;
-	icaltimezone* zone;
+	icaltimezone * zone;
 
 	if (!tzid || !tzid[0])
 		return NULL;
@@ -466,7 +474,8 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
 
 /* Checks if the specified component has a duplicated UID and if so changes it */
 static void
-check_dup_uid (ECalBackendFile *cbfile, ECalComponent *comp)
+check_dup_uid (ECalBackendFile *cbfile,
+               ECalComponent *comp)
 {
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
@@ -517,7 +526,8 @@ get_rid_icaltime (ECalComponent *comp)
 /* Adds component to the interval tree
  */
 static gboolean
-add_component_to_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp)
+add_component_to_intervaltree (ECalBackendFile *cbfile,
+                               ECalComponent *comp)
 {
 	time_t time_start = -1, time_end = -1;
 	ECalBackendFilePrivate *priv;
@@ -540,7 +550,8 @@ add_component_to_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp)
 }
 
 static gboolean
-remove_component_from_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp)
+remove_component_from_intervaltree (ECalBackendFile *cbfile,
+                                    ECalComponent *comp)
 {
 	const gchar *uid = NULL;
 	gchar *rid;
@@ -568,7 +579,9 @@ remove_component_from_intervaltree (ECalBackendFile *cbfile, ECalComponent *comp
  * the UID is not in use already.
  */
 static void
-add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_toplevel)
+add_component (ECalBackendFile *cbfile,
+               ECalComponent *comp,
+               gboolean add_to_toplevel)
 {
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
@@ -638,7 +651,9 @@ add_component (ECalBackendFile *cbfile, ECalComponent *comp, gboolean add_to_top
 
 /* g_hash_table_foreach_remove() callback to remove recurrences from the calendar */
 static gboolean
-remove_recurrence_cb (gpointer key, gpointer value, gpointer data)
+remove_recurrence_cb (gpointer key,
+                      gpointer value,
+                      gpointer data)
 {
 	GList *l;
 	icalcomponent *icalcomp;
@@ -669,7 +684,9 @@ remove_recurrence_cb (gpointer key, gpointer value, gpointer data)
  * icalcomponent.
  */
 static void
-remove_component (ECalBackendFile *cbfile, const gchar *uid, ECalBackendFileObject *obj_data)
+remove_component (ECalBackendFile *cbfile,
+                  const gchar *uid,
+                  ECalBackendFileObject *obj_data)
 {
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp;
@@ -854,7 +871,11 @@ check_refresh_calendar_timeout (ECalBackendFilePrivate *priv)
 }
 
 static void
-custom_file_changed (GFileMonitor *monitor, GFile *file, GFile *other_file, GFileMonitorEvent event_type, ECalBackendFilePrivate *priv)
+custom_file_changed (GFileMonitor *monitor,
+                     GFile *file,
+                     GFile *other_file,
+                     GFileMonitorEvent event_type,
+                     ECalBackendFilePrivate *priv)
 {
 	if (priv->refresh_cond)
 		g_cond_signal (priv->refresh_cond);
@@ -950,7 +971,9 @@ free_refresh_data (ECalBackendFile *cbfile)
 
 /* Parses an open iCalendar file and loads it into the backend */
 static void
-open_cal (ECalBackendFile *cbfile, const gchar *uristr, GError **perror)
+open_cal (ECalBackendFile *cbfile,
+          const gchar *uristr,
+          GError **perror)
 {
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp;
@@ -997,7 +1020,9 @@ typedef struct
 BackendDeltaContext;
 
 static void
-notify_removals_cb (gpointer key, gpointer value, gpointer data)
+notify_removals_cb (gpointer key,
+                    gpointer value,
+                    gpointer data)
 {
 	BackendDeltaContext *context = data;
 	const gchar *uid = key;
@@ -1031,7 +1056,9 @@ notify_removals_cb (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-notify_adds_modifies_cb (gpointer key, gpointer value, gpointer data)
+notify_adds_modifies_cb (gpointer key,
+                         gpointer value,
+                         gpointer data)
 {
 	BackendDeltaContext *context = data;
 	const gchar *uid = key;
@@ -1077,7 +1104,9 @@ notify_adds_modifies_cb (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-notify_changes (ECalBackendFile *cbfile, GHashTable *old_uid_hash, GHashTable *new_uid_hash)
+notify_changes (ECalBackendFile *cbfile,
+                GHashTable *old_uid_hash,
+                GHashTable *new_uid_hash)
 {
 	BackendDeltaContext context;
 
@@ -1090,7 +1119,9 @@ notify_changes (ECalBackendFile *cbfile, GHashTable *old_uid_hash, GHashTable *n
 }
 
 static void
-reload_cal (ECalBackendFile *cbfile, const gchar *uristr, GError **perror)
+reload_cal (ECalBackendFile *cbfile,
+            const gchar *uristr,
+            GError **perror)
 {
 	ECalBackendFilePrivate *priv;
 	icalcomponent *icalcomp, *icalcomp_old;
@@ -1145,7 +1176,9 @@ reload_cal (ECalBackendFile *cbfile, const gchar *uristr, GError **perror)
 }
 
 static void
-create_cal (ECalBackendFile *cbfile, const gchar *uristr, GError **perror)
+create_cal (ECalBackendFile *cbfile,
+            const gchar *uristr,
+            GError **perror)
 {
 	gchar *dirname;
 	ECalBackendFilePrivate *priv;
@@ -1193,7 +1226,8 @@ get_uri_string (ECalBackend *backend)
 }
 
 static void
-source_changed_cb (ESource *source, ECalBackend *backend)
+source_changed_cb (ESource *source,
+                   ECalBackend *backend)
 {
 	const gchar *value;
 
@@ -1231,7 +1265,11 @@ source_changed_cb (ESource *source, ECalBackend *backend)
 
 /* Open handler for the file backend */
 static void
-e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, gboolean only_if_exists, GError **perror)
+e_cal_backend_file_open (ECalBackendSync *backend,
+                         EDataCal *cal,
+                         GCancellable *cancellable,
+                         gboolean only_if_exists,
+                         GError **perror)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1295,7 +1333,10 @@ e_cal_backend_file_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *
 }
 
 static void
-e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
+e_cal_backend_file_remove (ECalBackendSync *backend,
+                           EDataCal *cal,
+                           GCancellable *cancellable,
+                           GError **perror)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1375,13 +1416,16 @@ e_cal_backend_file_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable
 
 /* Set_mode handler for the file backend */
 static void
-e_cal_backend_file_set_online (ECalBackend *backend, gboolean is_online)
+e_cal_backend_file_set_online (ECalBackend *backend,
+                               gboolean is_online)
 {
 	e_cal_backend_notify_online (backend, TRUE);
 }
 
 static void
-add_detached_recur_to_vcalendar (gpointer key, gpointer value, gpointer user_data)
+add_detached_recur_to_vcalendar (gpointer key,
+                                 gpointer value,
+                                 gpointer user_data)
 {
 	ECalComponent *recurrence = value;
 	icalcomponent *vcalendar = user_data;
@@ -1393,7 +1437,13 @@ add_detached_recur_to_vcalendar (gpointer key, gpointer value, gpointer user_dat
 
 /* Get_object_component handler for the file backend */
 static void
-e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, gchar **object, GError **error)
+e_cal_backend_file_get_object (ECalBackendSync *backend,
+                               EDataCal *cal,
+                               GCancellable *cancellable,
+                               const gchar *uid,
+                               const gchar *rid,
+                               gchar **object,
+                               GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1473,7 +1523,11 @@ e_cal_backend_file_get_object (ECalBackendSync *backend, EDataCal *cal, GCancell
 
 /* Add_timezone handler for the file backend */
 static void
-e_cal_backend_file_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **error)
+e_cal_backend_file_add_timezone (ECalBackendSync *backend,
+                                 EDataCal *cal,
+                                 GCancellable *cancellable,
+                                 const gchar *tzobj,
+                                 GError **error)
 {
 	icalcomponent *tz_comp;
 	ECalBackendFile *cbfile;
@@ -1519,9 +1573,10 @@ typedef struct {
 } MatchObjectData;
 
 static void
-match_object_sexp_to_component (gpointer value, gpointer data)
+match_object_sexp_to_component (gpointer value,
+                                gpointer data)
 {
-	ECalComponent* comp = value;
+	ECalComponent * comp = value;
 	MatchObjectData *match_data = data;
 	const gchar *uid;
 	ECalBackendFile *cbfile;
@@ -1545,7 +1600,9 @@ match_object_sexp_to_component (gpointer value, gpointer data)
 }
 
 static void
-match_recurrence_sexp (gpointer key, gpointer value, gpointer data)
+match_recurrence_sexp (gpointer key,
+                       gpointer value,
+                       gpointer data)
 {
 	ECalComponent *comp = value;
 	MatchObjectData *match_data = data;
@@ -1557,7 +1614,9 @@ match_recurrence_sexp (gpointer key, gpointer value, gpointer data)
 }
 
 static void
-match_object_sexp (gpointer key, gpointer value, gpointer data)
+match_object_sexp (gpointer key,
+                   gpointer value,
+                   gpointer data)
 {
 	ECalBackendFileObject *obj_data = value;
 	MatchObjectData *match_data = data;
@@ -1577,14 +1636,19 @@ match_object_sexp (gpointer key, gpointer value, gpointer data)
 
 /* Get_objects_in_range handler for the file backend */
 static void
-e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *sexp, GSList **objects, GError **perror)
+e_cal_backend_file_get_object_list (ECalBackendSync *backend,
+                                    EDataCal *cal,
+                                    GCancellable *cancellable,
+                                    const gchar *sexp,
+                                    GSList **objects,
+                                    GError **perror)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	MatchObjectData match_data;
 	time_t occur_start = -1, occur_end = -1;
 	gboolean prunning_by_time;
-	GList* objs_occuring_in_tw;
+	GList * objs_occuring_in_tw;
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
@@ -1636,7 +1700,8 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCa
 }
 
 static void
-add_attach_uris (GSList **attachment_uris, icalcomponent *icalcomp)
+add_attach_uris (GSList **attachment_uris,
+                 icalcomponent *icalcomp)
 {
 	icalproperty *prop;
 
@@ -1670,7 +1735,9 @@ add_attach_uris (GSList **attachment_uris, icalcomponent *icalcomp)
 }
 
 static void
-add_detached_recur_attach_uris (gpointer key, gpointer value, gpointer user_data)
+add_detached_recur_attach_uris (gpointer key,
+                                gpointer value,
+                                gpointer user_data)
 {
 	ECalComponent *recurrence = value;
 	GSList **attachment_uris = user_data;
@@ -1680,7 +1747,13 @@ add_detached_recur_attach_uris (gpointer key, gpointer value, gpointer user_data
 
 /* Gets the list of attachments */
 static void
-e_cal_backend_file_get_attachment_uris (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, GSList **attachment_uris, GError **error)
+e_cal_backend_file_get_attachment_uris (ECalBackendSync *backend,
+                                        EDataCal *cal,
+                                        GCancellable *cancellable,
+                                        const gchar *uid,
+                                        const gchar *rid,
+                                        GSList **attachment_uris,
+                                        GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1752,14 +1825,15 @@ e_cal_backend_file_get_attachment_uris (ECalBackendSync *backend, EDataCal *cal,
 
 /* get_query handler for the file backend */
 static void
-e_cal_backend_file_start_view (ECalBackend *backend, EDataCalView *query)
+e_cal_backend_file_start_view (ECalBackend *backend,
+                               EDataCalView *query)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 	MatchObjectData match_data;
 	time_t occur_start = -1, occur_end = -1;
 	gboolean prunning_by_time;
-	GList* objs_occuring_in_tw;
+	GList * objs_occuring_in_tw;
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
@@ -1831,9 +1905,9 @@ e_cal_backend_file_start_view (ECalBackend *backend, EDataCalView *query)
 
 static gboolean
 free_busy_instance (ECalComponent *comp,
-		    time_t        instance_start,
-		    time_t        instance_end,
-		    gpointer      data)
+                    time_t instance_start,
+                    time_t instance_end,
+                    gpointer data)
 {
 	icalcomponent *vfb = data;
 	icalproperty *prop;
@@ -1860,8 +1934,11 @@ free_busy_instance (ECalComponent *comp,
 }
 
 static icalcomponent *
-create_user_free_busy (ECalBackendFile *cbfile, const gchar *address, const gchar *cn,
-		       time_t start, time_t end)
+create_user_free_busy (ECalBackendFile *cbfile,
+                       const gchar *address,
+                       const gchar *cn,
+                       time_t start,
+                       time_t end)
 {
 	ECalBackendFilePrivate *priv;
 	GList *l;
@@ -1940,8 +2017,14 @@ create_user_free_busy (ECalBackendFile *cbfile, const gchar *address, const gcha
 
 /* Get_free_busy handler for the file backend */
 static void
-e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users,
-				time_t start, time_t end, GSList **freebusy, GError **error)
+e_cal_backend_file_get_free_busy (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const GSList *users,
+                                time_t start,
+                                  time_t end,
+                                  GSList **freebusy,
+                                  GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -1987,7 +2070,8 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCanc
 }
 
 static icaltimezone *
-e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
+e_cal_backend_file_internal_get_timezone (ECalBackend *backend,
+                                          const gchar *tzid)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -2014,7 +2098,8 @@ e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const gchar *tzi
 }
 
 static void
-sanitize_component (ECalBackendFile *cbfile, ECalComponent *comp)
+sanitize_component (ECalBackendFile *cbfile,
+                    ECalComponent *comp)
 {
 	ECalComponentDateTime dt;
 	icaltimezone *zone;
@@ -2059,7 +2144,13 @@ sanitize_component (ECalBackendFile *cbfile, ECalComponent *comp)
 }
 
 static void
-e_cal_backend_file_create_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *in_calobj, gchar **uid, gchar **new_object, GError **error)
+e_cal_backend_file_create_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *in_calobj,
+                                  gchar **uid,
+                                  gchar **new_object,
+                                  GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -2152,7 +2243,9 @@ typedef struct {
 } RemoveRecurrenceData;
 
 static gboolean
-remove_object_instance_cb (gpointer key, gpointer value, gpointer user_data)
+remove_object_instance_cb (gpointer key,
+                           gpointer value,
+                           gpointer user_data)
 {
 	time_t fromtt, instancett;
 	ECalComponent *instance = value;
@@ -2179,8 +2272,14 @@ remove_object_instance_cb (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj,
-				  CalObjModType mod, gchar **old_object, gchar **new_object, GError **error)
+e_cal_backend_file_modify_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *calobj,
+                                  CalObjModType mod,
+                                  gchar **old_object,
+                                  gchar **new_object,
+                                  GError **error)
 {
 	RemoveRecurrenceData rrdata;
 	ECalBackendFile *cbfile;
@@ -2282,7 +2381,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 			return;
 		}
 
-		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (gpointer *)&real_rid, (gpointer *)&recurrence)) {
+		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (gpointer *) &real_rid, (gpointer *) &recurrence)) {
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (recurrence);
 
@@ -2296,7 +2395,6 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 			/* add exception for the modified instance */
 			e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object), icaltime_from_string (rid), CALOBJ_MOD_THIS);
 		}
-
 
 		/* add the detached instance */
 		g_hash_table_insert (obj_data->recurrences,
@@ -2332,7 +2430,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 
 		/* now deal with the detached recurrence */
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
-						  (gpointer *)&real_rid, (gpointer *)&recurrence)) {
+						  (gpointer *) &real_rid, (gpointer *) &recurrence)) {
 			if (old_object)
 				*old_object = e_cal_component_get_as_string (recurrence);
 
@@ -2354,8 +2452,8 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 		g_hash_table_foreach_remove (obj_data->recurrences, (GHRFunc) remove_object_instance_cb, &rrdata);
 
 		/* add the modified object to the beginning of the list,
-		   so that it's always before any detached instance we
-		   might have */
+		 * so that it's always before any detached instance we
+		 * might have */
 		if (obj_data->full_object) {
 			icalcomponent_add_component (priv->icalcomp,
 					     e_cal_component_get_icalcomponent (obj_data->full_object));
@@ -2440,11 +2538,14 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, GCanc
  * @return modified object or NULL if it got removed
  */
 static ECalBackendFileObject *
-remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
-		 const gchar *uid, const gchar *rid,
-		 CalObjModType mod,
-		 gchar **old_object, gchar **object,
-		 GError **error)
+remove_instance (ECalBackendFile *cbfile,
+                 ECalBackendFileObject *obj_data,
+                 const gchar *uid,
+                 const gchar *rid,
+                 CalObjModType mod,
+                 gchar **old_object,
+                 gchar **object,
+                 GError **error)
 {
 	gchar *hash_rid;
 	ECalComponent *comp;
@@ -2457,20 +2558,20 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 	if (rid) {
 		/* remove recurrence */
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
-						  (gpointer *)&hash_rid, (gpointer *)&comp)) {
+						  (gpointer *) &hash_rid, (gpointer *) &comp)) {
 			/* Removing without parent or not modifying parent?
-			   Report removal to caller. */
+			 * Report removal to caller. */
 			if (old_object &&
 			    (!obj_data->full_object || mod == CALOBJ_MOD_ONLY_THIS))
 				*old_object = e_cal_component_get_as_string (comp);
 
 			/* Reporting parent modification to caller?
-			   Report directly instead of going via caller. */
+			 * Report directly instead of going via caller. */
 			if (obj_data->full_object &&
 			    mod != CALOBJ_MOD_ONLY_THIS) {
 				/* old object string not provided,
-				   instead rely on the view detecting
-				   whether it contains the id */
+				 * instead rely on the view detecting
+				 * whether it contains the id */
 				ECalComponentId id;
 				id.uid = (gchar *) uid;
 				id.rid = (gchar *) rid;
@@ -2517,7 +2618,7 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 					     icaltime_from_string (rid), CALOBJ_MOD_THIS);
 
 		/* Since we are only removing one instance of recurrence
-		   event, update the last modified time on the component */
+		 * event, update the last modified time on the component */
 		current = icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ());
 		e_cal_component_set_last_modified (obj_data->full_object, &current);
 
@@ -2526,16 +2627,16 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 			*object = e_cal_component_get_as_string (obj_data->full_object);
 
 		/* add the modified object to the beginning of the list,
-		   so that it's always before any detached instance we
-		   might have */
+		 * so that it's always before any detached instance we
+		 * might have */
 		icalcomponent_add_component (cbfile->priv->icalcomp,
 					     e_cal_component_get_icalcomponent (obj_data->full_object));
 		cbfile->priv->comp = g_list_prepend (cbfile->priv->comp, obj_data->full_object);
 	} else {
 		if (!obj_data->full_object) {
 			/* Nothing to do, parent doesn't exist. Tell
-			   caller about this? Not an error with
-			   CALOBJ_MOD_THIS. */
+			 * caller about this? Not an error with
+			 * CALOBJ_MOD_THIS. */
 			if (mod == CALOBJ_MOD_ONLY_THIS && error)
 				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return obj_data;
@@ -2569,7 +2670,8 @@ remove_instance (ECalBackendFile *cbfile, ECalBackendFileObject *obj_data,
 }
 
 static gchar *
-get_object_string_from_fileobject (ECalBackendFileObject *obj_data, const gchar *rid)
+get_object_string_from_fileobject (ECalBackendFileObject *obj_data,
+                                   const gchar *rid)
 {
 	ECalComponent *comp = obj_data->full_object;
 	gchar *real_rid;
@@ -2580,11 +2682,11 @@ get_object_string_from_fileobject (ECalBackendFileObject *obj_data, const gchar 
 	if (!rid) {
 		return e_cal_component_get_as_string (comp);
 	} else {
-		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (gpointer *)&real_rid, (gpointer *)&comp))
+		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (gpointer *) &real_rid, (gpointer *) &comp))
 			return e_cal_component_get_as_string (comp);
 		else {
 			/* FIXME remove this once we delete an instance from master object through
-			   modify request by setting exception */
+			 * modify request by setting exception */
 			return e_cal_component_get_as_string (comp);
 		}
 	}
@@ -2593,7 +2695,8 @@ get_object_string_from_fileobject (ECalBackendFileObject *obj_data, const gchar 
 }
 
 static void
-notify_comp_removed_cb (gpointer pecalcomp, gpointer pbackend)
+notify_comp_removed_cb (gpointer pecalcomp,
+                        gpointer pbackend)
 {
 	ECalComponent *comp = pecalcomp;
 	ECalBackend *backend = pbackend;
@@ -2616,10 +2719,15 @@ notify_comp_removed_cb (gpointer pecalcomp, gpointer pbackend)
 
 /* Remove_object handler for the file backend */
 static void
-e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
-				  const gchar *uid, const gchar *rid,
-				  CalObjModType mod, gchar **old_object,
-				  gchar **object, GError **error)
+e_cal_backend_file_remove_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *uid,
+                                  const gchar *rid,
+                                  CalObjModType mod,
+                                  gchar **old_object,
+                                  gchar **object,
+                                  GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -2702,8 +2810,8 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 		g_hash_table_foreach_remove (obj_data->recurrences, (GHRFunc) remove_object_instance_cb, &rrdata);
 
 		/* add the modified object to the beginning of the list,
-		   so that it's always before any detached instance we
-		   might have */
+		 * so that it's always before any detached instance we
+		 * might have */
 		if (comp)
 			priv->comp = g_list_prepend (priv->comp, comp);
 
@@ -2718,7 +2826,10 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 }
 
 static gboolean
-cancel_received_object (ECalBackendFile *cbfile, icalcomponent *icalcomp, gchar **old_object, gchar **new_object)
+cancel_received_object (ECalBackendFile *cbfile,
+                        icalcomponent *icalcomp,
+                        gchar **old_object,
+                        gchar **new_object)
 {
 	ECalBackendFileObject *obj_data;
 	ECalBackendFilePrivate *priv;
@@ -2767,7 +2878,8 @@ typedef struct {
 } ECalBackendFileTzidData;
 
 static void
-check_tzids (icalparameter *param, gpointer data)
+check_tzids (icalparameter *param,
+             gpointer data)
 {
 	ECalBackendFileTzidData *tzdata = data;
 	const gchar *tzid;
@@ -2781,7 +2893,8 @@ check_tzids (icalparameter *param, gpointer data)
  * ../groupwise/e-cal-backend-groupwise.c
  */
 static void
-fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
+fetch_attachments (ECalBackendSync *backend,
+                   ECalComponent *comp)
 {
 	GSList *attach_list = NULL, *new_attach_list = NULL;
 	GSList *l;
@@ -2821,7 +2934,7 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 		g_free (filename);
 		dest_file = g_build_filename (attach_store, new_filename, NULL);
 		g_free (new_filename);
-		fd = g_open (dest_file, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
+		fd = g_open (dest_file, O_RDWR | O_CREAT | O_TRUNC | O_BINARY, 0600);
 		if (fd == -1) {
 			/* TODO handle error conditions */
 			g_message ("DEBUG: could not open %s for writing\n",
@@ -2850,7 +2963,11 @@ fetch_attachments (ECalBackendSync *backend, ECalComponent *comp)
 
 /* Update_objects handler for the file backend. */
 static void
-e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **error)
+e_cal_backend_file_receive_objects (ECalBackendSync *backend,
+                                    EDataCal *cal,
+                                    GCancellable *cancellable,
+                                    const gchar *calobj,
+                                    GError **error)
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
@@ -3103,7 +3220,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCa
 	}
 
 	/* Merge the iCalendar components with our existing VCALENDAR,
-	   resolving any conflicting TZIDs. */
+	 * resolving any conflicting TZIDs. */
 	icalcomponent_merge_component (priv->icalcomp, toplevel_comp);
 
 	save (cbfile);
@@ -3117,8 +3234,13 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCa
 }
 
 static void
-e_cal_backend_file_send_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GSList **users,
-				 gchar **modified_calobj, GError **perror)
+e_cal_backend_file_send_objects (ECalBackendSync *backend,
+                                 EDataCal *cal,
+                                 GCancellable *cancellable,
+                                 const gchar *calobj,
+                                 GSList **users,
+                                 gchar **modified_calobj,
+                                 GError **perror)
 {
 	*users = NULL;
 	*modified_calobj = g_strdup (calobj);
@@ -3246,7 +3368,8 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 }
 
 void
-e_cal_backend_file_set_file_name (ECalBackendFile *cbfile, const gchar *file_name)
+e_cal_backend_file_set_file_name (ECalBackendFile *cbfile,
+                                  const gchar *file_name)
 {
 	ECalBackendFilePrivate *priv;
 
@@ -3279,7 +3402,8 @@ e_cal_backend_file_get_file_name (ECalBackendFile *cbfile)
 }
 
 void
-e_cal_backend_file_reload (ECalBackendFile *cbfile, GError **perror)
+e_cal_backend_file_reload (ECalBackendFile *cbfile,
+                           GError **perror)
 {
 	ECalBackendFilePrivate *priv;
 	gchar *str_uri;
@@ -3323,7 +3447,9 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile, GError **perror)
 #ifdef TEST_QUERY_RESULT
 
 static void
-test_query_by_scanning_all_objects (ECalBackendFile* cbfile, const gchar *sexp, GSList **objects)
+test_query_by_scanning_all_objects (ECalBackendFile *cbfile,
+                                    const gchar *sexp,
+                                    GSList **objects)
 {
 	MatchObjectData match_data;
 	ECalBackendFilePrivate *priv;
@@ -3361,7 +3487,7 @@ test_query_by_scanning_all_objects (ECalBackendFile* cbfile, const gchar *sexp, 
 }
 
 static void
-write_list (GSList* list)
+write_list (GSList *list)
 {
 	GSList *l;
 
@@ -3376,7 +3502,9 @@ write_list (GSList* list)
 }
 
 static void
-get_difference_of_lists (ECalBackendFile* cbfile, GSList* smaller, GSList* bigger)
+get_difference_of_lists (ECalBackendFile *cbfile,
+                         GSList *smaller,
+                         GSList *bigger)
 {
 	GSList *l, *lsmaller;
 
@@ -3418,7 +3546,8 @@ get_difference_of_lists (ECalBackendFile* cbfile, GSList* smaller, GSList* bigge
 }
 
 static void
-test_query (ECalBackendFile* cbfile, const gchar * query)
+test_query (ECalBackendFile *cbfile,
+            const gchar *query)
 {
 	GSList *objects = NULL, *all_objects = NULL;
 
@@ -3455,7 +3584,8 @@ test_query (ECalBackendFile* cbfile, const gchar * query)
 }
 
 static void
-execute_query (ECalBackendFile* cbfile, const gchar * query)
+execute_query (ECalBackendFile *cbfile,
+               const gchar *query)
 {
 	GSList *objects = NULL;
 
@@ -3489,7 +3619,9 @@ static GOptionEntry entries[] =
 #define MIN_CHUNK 64
 
 static gint
-private_getline (gchar **lineptr, gsize *n, FILE *stream)
+private_getline (gchar **lineptr,
+                 gsize *n,
+                 FILE *stream)
 {
 	gint nchars_avail;
 	gchar *read_pos;
@@ -3544,15 +3676,16 @@ private_getline (gchar **lineptr, gsize *n, FILE *stream)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gchar * line = NULL;
 	gsize len = 0;
-	ECalBackendFile* cbfile;
+	ECalBackendFile * cbfile;
 	gint num = 0;
 	GError *error = NULL;
 	GOptionContext *context;
-	FILE* fin = NULL;
+	FILE * fin = NULL;
 
 	g_type_init ();
 	g_thread_init (NULL);

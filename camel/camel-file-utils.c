@@ -57,7 +57,8 @@
  * Returns: %0 on success, %-1 on error.
  **/
 gint
-camel_file_util_encode_uint32 (FILE *out, guint32 value)
+camel_file_util_encode_uint32 (FILE *out,
+                               guint32 value)
 {
 	gint i;
 
@@ -82,13 +83,14 @@ camel_file_util_encode_uint32 (FILE *out, guint32 value)
  * decoded value.
  **/
 gint
-camel_file_util_decode_uint32 (FILE *in, guint32 *dest)
+camel_file_util_decode_uint32 (FILE *in,
+                               guint32 *dest)
 {
 	guint32 value = 0;
 	gint v;
 
         /* until we get the last byte, keep decoding 7 bits at a time */
-	while ( ((v = fgetc (in)) & 0x80) == 0 && v!=EOF) {
+	while ( ((v = fgetc (in)) & 0x80) == 0 && v != EOF) {
 		value |= v;
 		value <<= 7;
 	}
@@ -112,7 +114,8 @@ camel_file_util_decode_uint32 (FILE *in, guint32 *dest)
  * Returns: %0 on success, %-1 on error.
  **/
 gint
-camel_file_util_encode_fixed_int32 (FILE *out, gint32 value)
+camel_file_util_encode_fixed_int32 (FILE *out,
+                                    gint32 value)
 {
 	guint32 save;
 
@@ -132,7 +135,8 @@ camel_file_util_encode_fixed_int32 (FILE *out, gint32 value)
  * Returns: %0 on success, %-1 on error.
  **/
 gint
-camel_file_util_decode_fixed_int32 (FILE *in, gint32 *dest)
+camel_file_util_decode_fixed_int32 (FILE *in,
+                                    gint32 *dest)
 {
 	guint32 save;
 
@@ -251,7 +255,8 @@ CFU_DECODE_T (gsize)
  * Returns: %0 on success, %-1 on error.
  **/
 gint
-camel_file_util_encode_string (FILE *out, const gchar *str)
+camel_file_util_encode_string (FILE *out,
+                               const gchar *str)
 {
 	register gint len;
 
@@ -261,7 +266,7 @@ camel_file_util_encode_string (FILE *out, const gchar *str)
 	if ((len = strlen (str)) > 65536)
 		len = 65536;
 
-	if (camel_file_util_encode_uint32 (out, len+1) == -1)
+	if (camel_file_util_encode_uint32 (out, len + 1) == -1)
 		return -1;
 	if (len == 0 || fwrite (str, len, 1, out) == 1)
 		return 0;
@@ -278,7 +283,8 @@ camel_file_util_encode_string (FILE *out, const gchar *str)
  * Returns: %0 on success, %-1 on error.
  **/
 gint
-camel_file_util_decode_string (FILE *in, gchar **str)
+camel_file_util_decode_string (FILE *in,
+                               gchar **str)
 {
 	guint32 len;
 	register gchar *ret;
@@ -294,7 +300,7 @@ camel_file_util_decode_string (FILE *in, gchar **str)
 		return -1;
 	}
 
-	ret = g_malloc (len+1);
+	ret = g_malloc (len + 1);
 	if (len > 0 && fread (ret, len, 1, in) != 1) {
 		g_free (ret);
 		*str = NULL;
@@ -319,7 +325,9 @@ camel_file_util_decode_string (FILE *in, gchar **str)
  * Returns: %0 on success, %-1 on error.
  **/
 gint
-camel_file_util_encode_fixed_string (FILE *out, const gchar *str, gsize len)
+camel_file_util_encode_fixed_string (FILE *out,
+                                     const gchar *str,
+                                     gsize len)
 {
 	gint retval = -1;
 
@@ -354,7 +362,9 @@ camel_file_util_encode_fixed_string (FILE *out, const gchar *str, gsize len)
  * Returns: %0 on success, %-1 on error.
  **/
 gint
-camel_file_util_decode_fixed_string (FILE *in, gchar **str, gsize len)
+camel_file_util_decode_fixed_string (FILE *in,
+                                     gchar **str,
+                                     gsize len)
 {
 	register gchar *ret;
 
@@ -363,7 +373,7 @@ camel_file_util_decode_fixed_string (FILE *in, gchar **str, gsize len)
 		return -1;
 	}
 
-	ret = g_malloc (len+1);
+	ret = g_malloc (len + 1);
 	if (len > 0 && fread (ret, len, 1, in) != 1) {
 		g_free (ret);
 		*str = NULL;

@@ -32,7 +32,8 @@
 
 #if 0
 static void
-dump_mime_struct (CamelMimePart *mime_part, gint depth)
+dump_mime_struct (CamelMimePart *mime_part,
+                  gint depth)
 {
 	CamelDataWrapper *content;
 	gchar *mime_type;

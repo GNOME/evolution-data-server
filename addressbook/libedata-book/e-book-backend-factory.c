@@ -51,7 +51,7 @@ e_book_backend_factory_get_protocol (EBookBackendFactory *factory)
  *
  * Returns: A new #EBookBackend.
  **/
-EBookBackend*
+EBookBackend *
 e_book_backend_factory_new_backend (EBookBackendFactory *factory)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_FACTORY (factory), NULL);

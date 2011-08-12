@@ -32,7 +32,7 @@ typedef gboolean (* ECalRecurInstanceFn) (ECalComponent *comp,
 					 time_t        instance_end,
 					 gpointer      data);
 
-typedef icaltimezone* (* ECalRecurResolveTimezoneFn)	(const gchar   *tzid,
+typedef icaltimezone * (* ECalRecurResolveTimezoneFn)	(const gchar   *tzid,
 							 gpointer      data);
 
 void	e_cal_recur_generate_instances	(ECalComponent		*comp,

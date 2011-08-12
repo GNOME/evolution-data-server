@@ -1,8 +1,8 @@
 /*
-  test-crlf.c
-
-  Test the CamelMimeFilterCharset class
-*/
+ * test-crlf.c
+ *
+ * Test the CamelMimeFilterCharset class
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -16,7 +16,8 @@
 #define CHUNK_SIZE 4096
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gssize comp_progress, comp_correct_chunk, comp_filter_chunk;
 	gchar comp_correct[CHUNK_SIZE], comp_filter[CHUNK_SIZE];

@@ -45,14 +45,14 @@ typedef struct {
 
 	icalcomponent_kind (*get_kind)     (ECalBackendFactory *factory);
 	const gchar *        (*get_protocol) (ECalBackendFactory *factory);
-	ECalBackend*       (*new_backend)  (ECalBackendFactory *factory, ESource *source);
+	ECalBackend *       (*new_backend)  (ECalBackendFactory *factory, ESource *source);
 } ECalBackendFactoryClass;
 
 GType               e_cal_backend_factory_get_type              (void);
 
 icalcomponent_kind  e_cal_backend_factory_get_kind              (ECalBackendFactory *factory);
 const gchar *         e_cal_backend_factory_get_protocol          (ECalBackendFactory *factory);
-ECalBackend*        e_cal_backend_factory_new_backend           (ECalBackendFactory *factory, ESource *source);
+ECalBackend *        e_cal_backend_factory_new_backend           (ECalBackendFactory *factory, ESource *source);
 
 G_END_DECLS
 

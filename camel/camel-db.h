@@ -57,7 +57,7 @@ typedef gint (*CamelDBCollate)(gpointer, gint, gconstpointer, gint, gconstpointe
 struct _CamelDB {
 	sqlite3 *db;
 	/* this lock has been replaced with a rw lock which sits inside priv. 
-	   This is currently unused. Keeping it, not to break the ABI */
+	 * This is currently unused. Keeping it, not to break the ABI */
 	GMutex *lock;
 	CamelDBPrivate *priv;
 };

@@ -59,11 +59,11 @@ enum {
 };
 
 /* _where is a target component name, like ' ## _where ## ' or 'cal'
-   _mname is method name, like 'open'
-   _mtype is method type, like 'method_in'
-   _param_name is parameter name, like 'only_if_exists'
-   _param_type is parameter type, as string, like "s"
-   all except _param_type are identificators, not strings
+ * _mname is method name, like 'open'
+ * _mtype is method type, like 'method_in'
+ * _param_name is parameter name, like 'only_if_exists'
+ * _param_type is parameter type, as string, like "s"
+ * all except _param_type are identificators, not strings
 */
 #define E_DECLARE_GDBUS_ARG(_where, _mname, _mtype, _param_name, _param_type)				\
 	static const GDBusArgInfo e_gdbus_ ## _where ## _ ## _mtype ## _mname ## _param_name =		\
@@ -328,7 +328,7 @@ enum {
 #define E_DECLARED_GDBUS_METHOD_INFO_NAME(_where, _mname) e_gdbus_ ## _where ## _method_ ## _mname
 
 /* this requires signal_emission_hook_cb_ ## _sig_name hook defined,
-   which can be created with one of E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_... macros */
+ * which can be created with one of E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_... macros */
 #define E_INIT_GDBUS_SIGNAL_VOID(_iface_struct, _dbus_sig_name_str, _sig_name_var, _sig_id)					\
 	signals[_sig_id] = g_signal_new (# _sig_name_var,									\
 			G_TYPE_FROM_INTERFACE (iface),										\
@@ -675,7 +675,7 @@ void e_gdbus_complete_sync_method_strv		(gpointer object, GDBusMethodInvocation 
 void e_gdbus_complete_sync_method_uint		(gpointer object, GDBusMethodInvocation *invocation, guint out_uint, const GError *error);
 
 /* callbacks on done signal handlers in the client proxy, which implements EGdbusAsyncOpKeeper interface;
-   functions take ownership of out parameters and are responsible for their freeing */
+ * functions take ownership of out parameters and are responsible for their freeing */
 void e_gdbus_proxy_async_method_done_void	(EGdbusAsyncOpKeeper *proxy, guint arg_opid, const GError *error);
 void e_gdbus_proxy_async_method_done_boolean	(EGdbusAsyncOpKeeper *proxy, guint arg_opid, const GError *error, gboolean out_boolean);
 void e_gdbus_proxy_async_method_done_string	(EGdbusAsyncOpKeeper *proxy, guint arg_opid, const GError *error, const gchar *out_string);

@@ -269,7 +269,9 @@ e_file_cache_remove (EFileCache *cache)
 }
 
 static void
-add_key_to_slist (const gchar *key, const gchar *value, gpointer user_data)
+add_key_to_slist (const gchar *key,
+                  const gchar *value,
+                  gpointer user_data)
 {
 	GSList **keys = user_data;
 
@@ -318,7 +320,9 @@ typedef struct {
 } CacheFindData;
 
 static void
-find_object_in_hash (gpointer key, gpointer value, gpointer user_data)
+find_object_in_hash (gpointer key,
+                     gpointer value,
+                     gpointer user_data)
 {
 	CacheFindData *find_data = user_data;
 
@@ -362,7 +366,9 @@ e_file_cache_get_object (EFileCache *cache,
 }
 
 static void
-add_object_to_slist (const gchar *key, const gchar *value, gpointer user_data)
+add_object_to_slist (const gchar *key,
+                     const gchar *value,
+                     gpointer user_data)
 {
 	GSList **list = user_data;
 

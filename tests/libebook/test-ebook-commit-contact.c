@@ -41,13 +41,14 @@ commit_verify_cb (EBookTestClosure *closure)
 	contact = ebook_test_utils_book_get_contact (book, uid);
 	verify_commit (contact);
 
-	g_main_loop_quit ((GMainLoop*) (closure->user_data));
+	g_main_loop_quit ((GMainLoop *) (closure->user_data));
 
 	return FALSE;
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	GMainLoop *loop;
 	EContact *contact;

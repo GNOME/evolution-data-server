@@ -45,11 +45,11 @@
 /* builds the regex into pattern */
 /* taken from camel-folder-search, with added isregex & exception parameter */
 /* Basically, we build a new regex, either based on subset regex's, or substrings,
-   that can be executed once over the whoel body, to match anything suitable.
-   This is more efficient than multiple searches, and probably most (naive) strstr
-   implementations, over long content.
-
-   A small issue is that case-insenstivity wont work entirely correct for utf8 strings. */
+ * that can be executed once over the whoel body, to match anything suitable.
+ * This is more efficient than multiple searches, and probably most (naive) strstr
+ * implementations, over long content.
+ *
+ * A small issue is that case-insenstivity wont work entirely correct for utf8 strings. */
 gint
 camel_search_build_match_regex (regex_t *pattern,
                                 camel_search_flags_t type,
@@ -58,12 +58,12 @@ camel_search_build_match_regex (regex_t *pattern,
                                 GError **error)
 {
 	GString *match = g_string_new("");
-	gint c, i, count=0, err;
+	gint c, i, count = 0, err;
 	gchar *word;
 	gint flags;
 
 	/* build a regex pattern we can use to match the words, we OR them together */
-	if (argc>1)
+	if (argc > 1)
 		g_string_append_c (match, '(');
 	for (i = 0; i < argc; i++) {
 		if (argv[i]->type == ESEXP_RES_STRING) {
@@ -94,7 +94,7 @@ camel_search_build_match_regex (regex_t *pattern,
 	}
 	if (argc > 1)
 		g_string_append_c (match, ')');
-	flags = REG_EXTENDED|REG_NOSUB;
+	flags = REG_EXTENDED | REG_NOSUB;
 	if (type & CAMEL_SEARCH_MATCH_ICASE)
 		flags |= REG_ICASE;
 	if (type & CAMEL_SEARCH_MATCH_NEWLINE)
@@ -102,7 +102,7 @@ camel_search_build_match_regex (regex_t *pattern,
 	err = regcomp (pattern, match->str, flags);
 	if (err != 0) {
 		/* regerror gets called twice to get the full error string
-		   length to do proper posix error reporting */
+		 * length to do proper posix error reporting */
 		gint len = regerror (err, pattern, NULL, 0);
 		gchar *buffer = g_malloc0 (len + 1);
 
@@ -140,7 +140,8 @@ static guchar soundex_table[256] = {
 };
 
 static void
-soundexify (const gchar *sound, gchar code[5])
+soundexify (const gchar *sound,
+            gchar code[5])
 {
 	guchar *c, last = '\0';
 	gint n;
@@ -160,7 +161,8 @@ soundexify (const gchar *sound, gchar code[5])
 }
 
 static gboolean
-header_soundex (const gchar *header, const gchar *match)
+header_soundex (const gchar *header,
+                const gchar *match)
 {
 	gchar mcode[5], hcode[5];
 	const gchar *p;
@@ -172,7 +174,7 @@ header_soundex (const gchar *header, const gchar *match)
 
 	/* split the header into words, and soundexify and compare each one */
 	/* FIXME: Should this convert to utf8, and split based on that, and what not?
-	   soundex only makes sense for us-ascii though ... */
+	 * soundex only makes sense for us-ascii though ... */
 
 	word = g_string_new("");
 	p = header;
@@ -194,7 +196,8 @@ header_soundex (const gchar *header, const gchar *match)
 }
 
 const gchar *
-camel_ustrstrcase (const gchar *haystack, const gchar *needle)
+camel_ustrstrcase (const gchar *haystack,
+                   const gchar *needle)
 {
 	gunichar *nuni, *puni;
 	gunichar u;
@@ -259,7 +262,8 @@ camel_ustrstrcase (const gchar *haystack, const gchar *needle)
 } G_STMT_END
 
 static gint
-camel_ustrcasecmp (const gchar *ps1, const gchar *ps2)
+camel_ustrcasecmp (const gchar *ps1,
+                   const gchar *ps2)
 {
 	gunichar u1, u2 = 0;
 	const guchar *s1 = (const guchar *) ps1;
@@ -291,7 +295,9 @@ camel_ustrcasecmp (const gchar *ps1, const gchar *ps2)
 }
 
 static gint
-camel_ustrncasecmp (const gchar *ps1, const gchar *ps2, gsize len)
+camel_ustrncasecmp (const gchar *ps1,
+                    const gchar *ps2,
+                    gsize len)
 {
 	gunichar u1, u2 = 0;
 	const guchar *s1 = (const guchar *) ps1;
@@ -328,7 +334,9 @@ camel_ustrncasecmp (const gchar *ps1, const gchar *ps2, gsize len)
 
 /* value is the match value suitable for exact match if required */
 static gint
-header_match (const gchar *value, const gchar *match, camel_search_match_t how)
+header_match (const gchar *value,
+              const gchar *match,
+              camel_search_match_t how)
 {
 	const guchar *p;
 	gint vlen, mlen;
@@ -343,7 +351,7 @@ header_match (const gchar *value, const gchar *match, camel_search_match_t how)
 		return FALSE;
 
 	/* from dan the man, if we have mixed case, perform a case-sensitive match,
-	   otherwise not */
+	 * otherwise not */
 	p = (const guchar *) match;
 	while ((c = camel_utf8_getc (&p))) {
 		if (g_unichar_isupper (c)) {
@@ -380,9 +388,13 @@ header_match (const gchar *value, const gchar *match, camel_search_match_t how)
 }
 
 /* searhces for match inside value, if match is mixed case, hten use case-sensitive,
-   else insensitive */
+ * else insensitive */
 gboolean
-camel_search_header_match (const gchar *value, const gchar *match, camel_search_match_t how, camel_search_t type, const gchar *default_charset)
+camel_search_header_match (const gchar *value,
+                           const gchar *match,
+                           camel_search_match_t how,
+                           camel_search_t type,
+                           const gchar *default_charset)
 {
 	const gchar *name, *addr;
 	const guchar *ptr;
@@ -403,20 +415,20 @@ camel_search_header_match (const gchar *value, const gchar *match, camel_search_
 		break;
 	case CAMEL_SEARCH_TYPE_MLIST:
 		/* Special mailing list old-version domain hack
-		   If one of the mailing list names doesn't have an @ in it, its old-style, so
-		   only match against the pre-domain part, which should be common */
+		 * If one of the mailing list names doesn't have an @ in it, its old-style, so
+		 * only match against the pre-domain part, which should be common */
 
 		vdom = strchr (value, '@');
 		mdom = strchr (match, '@');
 		if (mdom == NULL && vdom != NULL) {
-			v = g_alloca (vdom-value+1);
-			memcpy (v, value, vdom-value);
-			v[vdom-value] = 0;
+			v = g_alloca (vdom - value + 1);
+			memcpy (v, value, vdom - value);
+			v[vdom - value] = 0;
 			value = (gchar *) v;
 		} else if (mdom != NULL && vdom == NULL) {
-			v = g_alloca (mdom-match+1);
-			memcpy (v, match, mdom-match);
-			v[mdom-match] = 0;
+			v = g_alloca (mdom - match + 1);
+			memcpy (v, match, mdom - match);
+			v[mdom - match] = 0;
 			match = (gchar *) v;
 		}
 		/* Falls through */
@@ -436,7 +448,7 @@ camel_search_header_match (const gchar *value, const gchar *match, camel_search_
 		else
 			camel_address_unformat ((CamelAddress *) cia, value);
 
-		for (i=0; !truth && camel_internet_address_get (cia, i, &name, &addr);i++)
+		for (i = 0; !truth && camel_internet_address_get (cia, i, &name, &addr); i++)
 			truth = (name && header_match (name, match, how)) || (addr && header_match (addr, match, how));
 
 		g_object_unref (cia);
@@ -449,7 +461,8 @@ camel_search_header_match (const gchar *value, const gchar *match, camel_search_
 /* performs a 'slow' content-based match */
 /* there is also an identical copy of this in camel-filter-search.c */
 gboolean
-camel_search_message_body_contains (CamelDataWrapper *object, regex_t *pattern)
+camel_search_message_body_contains (CamelDataWrapper *object,
+                                    regex_t *pattern)
 {
 	CamelDataWrapper *containee;
 	gint truth = FALSE;
@@ -490,7 +503,9 @@ camel_search_message_body_contains (CamelDataWrapper *object, regex_t *pattern)
 }
 
 static void
-output_c (GString *w, guint32 c, gint *type)
+output_c (GString *w,
+          guint32 c,
+          gint *type)
 {
 	gint utf8len;
 	gchar utf8[8];
@@ -510,7 +525,9 @@ output_c (GString *w, guint32 c, gint *type)
 }
 
 static void
-output_w (GString *w, GPtrArray *list, gint type)
+output_w (GString *w,
+          GPtrArray *list,
+          gint type)
 {
 	struct _camel_search_word *word;
 
@@ -573,7 +590,7 @@ camel_search_words_split (const guchar *in)
 }
 
 /* takes an existing 'words' list, and converts it to another consisting of
-   only simple words, with any punctuation etc stripped */
+ * only simple words, with any punctuation etc stripped */
 struct _camel_search_words *
 camel_search_words_simple (struct _camel_search_words *wordin)
 {
@@ -587,7 +604,7 @@ camel_search_words_simple (struct _camel_search_words *wordin)
 
 	words = g_malloc0 (sizeof (*words));
 
-	for (i=0;i<wordin->len;i++) {
+	for (i = 0; i < wordin->len; i++) {
 		if ((wordin->words[i]->type & CAMEL_SEARCH_WORD_COMPLEX) == 0) {
 			word = g_malloc0 (sizeof (*word));
 			word->type = wordin->words[i]->type;
@@ -601,7 +618,7 @@ camel_search_words_simple (struct _camel_search_words *wordin)
 				if (c == 0 || !g_unichar_isalnum (c)) {
 					if (last > start) {
 						word = g_malloc0 (sizeof (*word));
-						word->word = g_strndup ((gchar *) start, last-start);
+						word->word = g_strndup ((gchar *) start, last - start);
 						word->type = type;
 						g_ptr_array_add (list, word);
 						all |= type;
@@ -629,7 +646,7 @@ camel_search_words_free (struct _camel_search_words *words)
 {
 	gint i;
 
-	for (i=0;i<words->len;i++) {
+	for (i = 0; i < words->len; i++) {
 		struct _camel_search_word *word = words->words[i];
 
 		g_free (word->word);

@@ -8,7 +8,8 @@
 #include "ecal-test-utils.h"
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECal *cal;
 	gchar *uri = NULL;

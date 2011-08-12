@@ -23,7 +23,9 @@ test_sync (EBookClient *book_client)
 
 /* asynchronous callback with a main-loop running */
 static void
-async_refresh_result_ready (GObject *source_object, GAsyncResult *result, gpointer user_data)
+async_refresh_result_ready (GObject *source_object,
+                            GAsyncResult *result,
+                            gpointer user_data)
 {
 	EBookClient *book_client;
 	GError *error = NULL;
@@ -75,7 +77,8 @@ test_sync_in_thread (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	GError *error = NULL;

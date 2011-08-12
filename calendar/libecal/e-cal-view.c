@@ -108,7 +108,9 @@ build_id_list (const gchar * const *seq)
 }
 
 static void
-objects_added_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects, ECalView *view)
+objects_added_cb (EGdbusCalView *gdbus_calview,
+                  const gchar * const *objects,
+                  ECalView *view)
 {
 	GList *list;
 
@@ -126,7 +128,9 @@ objects_added_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects, EC
 }
 
 static void
-objects_modified_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects, ECalView *view)
+objects_modified_cb (EGdbusCalView *gdbus_calview,
+                     const gchar * const *objects,
+                     ECalView *view)
 {
 	GList *list;
 
@@ -144,7 +148,9 @@ objects_modified_cb (EGdbusCalView *gdbus_calview, const gchar * const *objects,
 }
 
 static void
-objects_removed_cb (EGdbusCalView *gdbus_calview, const gchar * const *seq, ECalView *view)
+objects_removed_cb (EGdbusCalView *gdbus_calview,
+                    const gchar * const *seq,
+                    ECalView *view)
 {
 	GList *list;
 
@@ -162,7 +168,10 @@ objects_removed_cb (EGdbusCalView *gdbus_calview, const gchar * const *seq, ECal
 }
 
 static void
-progress_cb (EGdbusCalView *gdbus_calview, guint percent, const gchar *message, ECalView *view)
+progress_cb (EGdbusCalView *gdbus_calview,
+             guint percent,
+             const gchar *message,
+             ECalView *view)
 {
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 
@@ -170,7 +179,9 @@ progress_cb (EGdbusCalView *gdbus_calview, guint percent, const gchar *message, 
 }
 
 static void
-complete_cb (EGdbusCalView *gdbus_calview, const gchar * const *arg_error, ECalView *view)
+complete_cb (EGdbusCalView *gdbus_calview,
+             const gchar * const *arg_error,
+             ECalView *view)
 {
 	GError *error = NULL;
 
@@ -195,7 +206,10 @@ e_cal_view_init (ECalView *view)
 }
 
 static void
-e_cal_view_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+e_cal_view_set_property (GObject *object,
+                         guint property_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
 {
 	ECalView *view;
 	ECalViewPrivate *priv;
@@ -225,7 +239,10 @@ e_cal_view_set_property (GObject *object, guint property_id, const GValue *value
 }
 
 static void
-e_cal_view_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+e_cal_view_get_property (GObject *object,
+                         guint property_id,
+                         GValue *value,
+                         GParamSpec *pspec)
 {
 	ECalView *view;
 	ECalViewPrivate *priv;
@@ -384,7 +401,8 @@ e_cal_view_class_init (ECalViewClass *klass)
  * Deprecated: 3.2: Use #ECalClientView
  **/
 ECalView *
-_e_cal_view_new (ECal *ecal, EGdbusCalView *gdbus_calview)
+_e_cal_view_new (ECal *ecal,
+                 EGdbusCalView *gdbus_calview)
 {
 	ECalView *view;
 

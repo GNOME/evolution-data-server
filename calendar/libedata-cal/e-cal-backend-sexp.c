@@ -61,7 +61,10 @@ static ESExpResult *func_is_completed (ESExp *esexp, gint argc, ESExpResult **ar
  * Returns: The result of the function.
  */
 ESExpResult *
-e_cal_backend_sexp_func_time_now (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+e_cal_backend_sexp_func_time_now (ESExp *esexp,
+                                  gint argc,
+                                  ESExpResult **argv,
+                                  gpointer data)
 {
 	ESExpResult *result;
 
@@ -92,7 +95,10 @@ e_cal_backend_sexp_func_time_now (ESExp *esexp, gint argc, ESExpResult **argv, g
  * Returns: The result of the function.
  */
 ESExpResult *
-e_cal_backend_sexp_func_make_time (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+e_cal_backend_sexp_func_make_time (ESExp *esexp,
+                                   gint argc,
+                                   ESExpResult **argv,
+                                   gpointer data)
 {
 	const gchar *str;
 	time_t t;
@@ -152,7 +158,10 @@ e_cal_backend_sexp_func_make_time (ESExp *esexp, gint argc, ESExpResult **argv, 
  * Returns: The result of the function.
  */
 ESExpResult *
-e_cal_backend_sexp_func_time_add_day (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+e_cal_backend_sexp_func_time_add_day (ESExp *esexp,
+                                      gint argc,
+                                      ESExpResult **argv,
+                                      gpointer data)
 {
 	ESExpResult *result;
 	time_t t;
@@ -203,7 +212,10 @@ e_cal_backend_sexp_func_time_add_day (ESExp *esexp, gint argc, ESExpResult **arg
  * Returns: The result of the function.
  */
 ESExpResult *
-e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+e_cal_backend_sexp_func_time_day_begin (ESExp *esexp,
+                                        gint argc,
+                                        ESExpResult **argv,
+                                        gpointer data)
 {
 	time_t t;
 	ESExpResult *result;
@@ -245,7 +257,10 @@ e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, gint argc, ESExpResult **a
  * Returns: The result of the function.
  */
 ESExpResult *
-e_cal_backend_sexp_func_time_day_end (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+e_cal_backend_sexp_func_time_day_end (ESExp *esexp,
+                                      gint argc,
+                                      ESExpResult **argv,
+                                      gpointer data)
 {
 	time_t t;
 	ESExpResult *result;
@@ -277,7 +292,10 @@ e_cal_backend_sexp_func_time_day_end (ESExp *esexp, gint argc, ESExpResult **arg
  * Returns a boolean indicating whether the component has the given UID
  */
 static ESExpResult *
-func_uid (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_uid (ESExp *esexp,
+          gint argc,
+          ESExpResult **argv,
+          gpointer data)
 {
 	SearchContext *ctx = data;
 	const gchar *uid = NULL, *arg_uid;
@@ -318,7 +336,10 @@ func_uid (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 }
 
 static gboolean
-check_instance_time_range_cb (ECalComponent *comp, time_t instance_start, time_t instance_end, gpointer data)
+check_instance_time_range_cb (ECalComponent *comp,
+                              time_t instance_start,
+                              time_t instance_end,
+                              gpointer data)
 {
 	SearchContext *ctx = data;
 
@@ -329,7 +350,8 @@ check_instance_time_range_cb (ECalComponent *comp, time_t instance_start, time_t
 }
 
 static icaltimezone *
-resolve_tzid (const gchar *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid,
+              gpointer user_data)
 {
 	SearchContext *ctx = user_data;
 
@@ -350,7 +372,10 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
  * specified time range.
  */
 static ESExpResult *
-func_occur_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_occur_in_time_range (ESExp *esexp,
+                          gint argc,
+                          ESExpResult **argv,
+                          gpointer data)
 {
 	SearchContext *ctx = data;
 	time_t start, end;
@@ -397,7 +422,10 @@ func_occur_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer 
 }
 
 static ESExpResult *
-func_due_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_due_in_time_range (ESExp *esexp,
+                        gint argc,
+                        ESExpResult **argv,
+                        gpointer data)
 {
 	SearchContext *ctx = data;
 	time_t start, end;
@@ -458,7 +486,8 @@ func_due_in_time_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer da
 
 /* Returns whether a list of ECalComponentText items matches the specified string */
 static gboolean
-matches_text_list (GSList *text_list, const gchar *str)
+matches_text_list (GSList *text_list,
+                   const gchar *str)
 {
 	GSList *l;
 	gboolean matches;
@@ -482,7 +511,8 @@ matches_text_list (GSList *text_list, const gchar *str)
 
 /* Returns whether the comments in a component matches the specified string */
 static gboolean
-matches_comment (ECalComponent *comp, const gchar *str)
+matches_comment (ECalComponent *comp,
+                 const gchar *str)
 {
 	GSList *list;
 	gboolean matches;
@@ -496,7 +526,8 @@ matches_comment (ECalComponent *comp, const gchar *str)
 
 /* Returns whether the description in a component matches the specified string */
 static gboolean
-matches_description (ECalComponent *comp, const gchar *str)
+matches_description (ECalComponent *comp,
+                     const gchar *str)
 {
 	GSList *list;
 	gboolean matches;
@@ -509,7 +540,8 @@ matches_description (ECalComponent *comp, const gchar *str)
 }
 
 static gboolean
-matches_attendee (ECalComponent *comp, const gchar *str)
+matches_attendee (ECalComponent *comp,
+                  const gchar *str)
 {
 	GSList *a_list = NULL, *l;
 	gboolean matches = FALSE;
@@ -533,7 +565,8 @@ matches_attendee (ECalComponent *comp, const gchar *str)
 }
 
 static gboolean
-matches_organizer (ECalComponent *comp, const gchar *str)
+matches_organizer (ECalComponent *comp,
+                   const gchar *str)
 {
 
 	ECalComponentOrganizer org;
@@ -550,7 +583,8 @@ matches_organizer (ECalComponent *comp, const gchar *str)
 }
 
 static gboolean
-matches_classification (ECalComponent *comp, const gchar *str)
+matches_classification (ECalComponent *comp,
+                        const gchar *str)
 {
 	ECalComponentClassification classification;
 	ECalComponentClassification classification1;
@@ -574,7 +608,8 @@ matches_classification (ECalComponent *comp, const gchar *str)
 
 /* Returns whether the summary in a component matches the specified string */
 static gboolean
-matches_summary (ECalComponent *comp, const gchar *str)
+matches_summary (ECalComponent *comp,
+                 const gchar *str)
 {
 	ECalComponentText text;
 
@@ -591,7 +626,8 @@ matches_summary (ECalComponent *comp, const gchar *str)
 
 /* Returns whether the location in a component matches the specified string */
 static gboolean
-matches_location (ECalComponent *comp, const gchar *str)
+matches_location (ECalComponent *comp,
+                  const gchar *str)
 {
 	const gchar *location = NULL;
 
@@ -605,7 +641,8 @@ matches_location (ECalComponent *comp, const gchar *str)
 
 /* Returns whether any text field in a component matches the specified string */
 static gboolean
-matches_any (ECalComponent *comp, const gchar *str)
+matches_any (ECalComponent *comp,
+             const gchar *str)
 {
 	/* As an optimization, and to make life easier for the individual
 	 * predicate functions, see if we are looking for the empty string right
@@ -665,7 +702,10 @@ matches_status (ECalComponent *comp ,const gchar *str)
 }
 
 static ESExpResult *
-func_has_attachment (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_has_attachment (ESExp *esexp,
+                     gint argc,
+                     ESExpResult **argv,
+                     gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *result;
@@ -683,7 +723,10 @@ func_has_attachment (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
 }
 
 static ESExpResult *
-func_percent_complete (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_percent_complete (ESExp *esexp,
+                       gint argc,
+                       ESExpResult **argv,
+                       gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *result = NULL;
@@ -715,7 +758,10 @@ func_percent_complete (ESExp *esexp, gint argc, ESExpResult **argv, gpointer dat
  * specified string.
  */
 static ESExpResult *
-func_contains (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_contains (ESExp *esexp,
+               gint argc,
+               ESExpResult **argv,
+               gpointer data)
 {
 	SearchContext *ctx = data;
 	const gchar *field;
@@ -790,7 +836,10 @@ func_contains (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
  * Returns: a boolean indicating whether the component has start date/time filled or not.
  */
 static ESExpResult *
-func_has_start (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_has_start (ESExp *esexp,
+                gint argc,
+                ESExpResult **argv,
+                gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *result;
@@ -819,7 +868,10 @@ func_has_start (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
  * Returns: a boolean indicating whether the component has alarms or not.
  */
 static ESExpResult *
-func_has_alarms (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_has_alarms (ESExp *esexp,
+                 gint argc,
+                 ESExpResult **argv,
+                 gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *result;
@@ -847,7 +899,10 @@ func_has_alarms (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
  * time range or not.
  */
 static ESExpResult *
-func_has_alarms_in_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_has_alarms_in_range (ESExp *esexp,
+                          gint argc,
+                          ESExpResult **argv,
+                          gpointer data)
 {
 	time_t start, end;
 	ESExpResult *result;
@@ -908,7 +963,10 @@ func_has_alarms_in_range (ESExp *esexp, gint argc, ESExpResult **argv, gpointer 
  * categories.
  */
 static ESExpResult *
-func_has_categories (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_has_categories (ESExp *esexp,
+                     gint argc,
+                     ESExpResult **argv,
+                     gpointer data)
 {
 	SearchContext *ctx = data;
 	gboolean unfiled;
@@ -1010,7 +1068,10 @@ func_has_categories (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
  * Returns: a boolean indicating whether the component has recurrences or not.
  */
 static ESExpResult *
-func_has_recurrences (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_has_recurrences (ESExp *esexp,
+                      gint argc,
+                      ESExpResult **argv,
+                      gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *result;
@@ -1035,7 +1096,10 @@ func_has_recurrences (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data
  * a COMPLETED property. This is really only useful for TODO components.
  */
 static ESExpResult *
-func_is_completed (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_is_completed (ESExp *esexp,
+                   gint argc,
+                   ESExpResult **argv,
+                   gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *result;
@@ -1071,7 +1135,10 @@ func_is_completed (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
  * This is really only useful for TODO components.
  */
 static ESExpResult *
-func_completed_before (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data)
+func_completed_before (ESExp *esexp,
+                       gint argc,
+                       ESExpResult **argv,
+                       gpointer data)
 {
 	SearchContext *ctx = data;
 	ESExpResult *result;
@@ -1108,7 +1175,7 @@ func_completed_before (ESExp *esexp, gint argc, ESExpResult **argv, gpointer dat
 #endif
 
 		/* We want to return TRUE if before_time is after
-		   completed_time. */
+		 * completed_time. */
 		if (difftime (before_time, completed_time) > 0) {
 #if 0
 			g_print ("  Returning TRUE\n");
@@ -1167,9 +1234,11 @@ static struct prop_info {
 };
 
 static ESExpResult *
-entry_compare (SearchContext *ctx, struct _ESExp *f,
-	      gint argc, struct _ESExpResult **argv,
-	      gchar *(*compare)(const gchar *, const gchar *))
+entry_compare (SearchContext *ctx,
+               struct _ESExp *f,
+               gint argc,
+               struct _ESExpResult **argv,
+               gchar *(*compare)(const gchar *, const gchar *))
 {
 	ESExpResult *r;
 	gint truth = FALSE;
@@ -1193,7 +1262,7 @@ entry_compare (SearchContext *ctx, struct _ESExp *f,
 				if (info->prop_type == PROP_TYPE_NORMAL) {
 					gchar *prop = NULL;
 					/* searches where the query's property
-					   maps directly to an ecard property */
+					 * maps directly to an ecard property */
 
 					prop = e_card_simple_get (ctx->card, info->field_id);
 
@@ -1210,7 +1279,7 @@ entry_compare (SearchContext *ctx, struct _ESExp *f,
 				} else if (info->prop_type == PROP_TYPE_ID) {
 					const gchar *prop = NULL;
 					/* searches where the query's property
-					   maps directly to an ecard property */
+					 * maps directly to an ecard property */
 
 					prop = e_card_get_id (ctx->card->card);
 
@@ -1223,8 +1292,8 @@ entry_compare (SearchContext *ctx, struct _ESExp *f,
 				}
 
 				/* if we're looking at all fields and find a match,
-				   or if we're just looking at this one field,
-				   break. */
+				 * or if we're just looking at this one field,
+				 * break. */
 				if ((any_field && truth)
 				    || !any_field)
 					break;
@@ -1279,7 +1348,9 @@ static struct {
  * Since: 2.32
  */
 gboolean
-e_cal_backend_sexp_evaluate_occur_times (ECalBackendSExp *sexp, time_t *start, time_t *end)
+e_cal_backend_sexp_evaluate_occur_times (ECalBackendSExp *sexp,
+                                         time_t *start,
+                                         time_t *end)
 {
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (start != NULL, FALSE);
@@ -1299,7 +1370,9 @@ e_cal_backend_sexp_evaluate_occur_times (ECalBackendSExp *sexp, time_t *start, t
  * Returns: TRUE if the component matched the expression, FALSE if not.
  */
 gboolean
-e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp, ECalComponent *comp, ECalBackend *backend)
+e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp,
+                               ECalComponent *comp,
+                               ECalBackend *backend)
 {
 	ESExpResult *r;
 	gboolean retval;
@@ -1339,7 +1412,9 @@ e_cal_backend_sexp_match_comp (ECalBackendSExp *sexp, ECalComponent *comp, ECalB
  * Returns: TRUE if the object matches the expression, FALSE if not.
  */
 gboolean
-e_cal_backend_sexp_match_object (ECalBackendSExp *sexp, const gchar *object, ECalBackend *backend)
+e_cal_backend_sexp_match_object (ECalBackendSExp *sexp,
+                                 const gchar *object,
+                                 ECalBackend *backend)
 {
 	ECalComponent *comp;
 	icalcomponent *icalcomp;

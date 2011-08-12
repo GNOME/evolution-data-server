@@ -46,13 +46,17 @@
 G_DEFINE_TYPE (CamelDiscoDiary, camel_disco_diary, CAMEL_TYPE_OBJECT)
 
 static void
-unref_folder (gpointer key, gpointer value, gpointer data)
+unref_folder (gpointer key,
+              gpointer value,
+              gpointer data)
 {
 	g_object_unref (value);
 }
 
 static void
-free_uid (gpointer key, gpointer value, gpointer data)
+free_uid (gpointer key,
+          gpointer value,
+          gpointer data)
 {
 	g_free (key);
 	g_free (value);
@@ -97,7 +101,8 @@ camel_disco_diary_init (CamelDiscoDiary *diary)
 }
 
 static gint
-diary_encode_uids (CamelDiscoDiary *diary, GPtrArray *uids)
+diary_encode_uids (CamelDiscoDiary *diary,
+                   GPtrArray *uids)
 {
 	gint i, status;
 
@@ -108,8 +113,9 @@ diary_encode_uids (CamelDiscoDiary *diary, GPtrArray *uids)
 }
 
 void
-camel_disco_diary_log (CamelDiscoDiary *diary, CamelDiscoDiaryAction action,
-		       ...)
+camel_disco_diary_log (CamelDiscoDiary *diary,
+                       CamelDiscoDiaryAction action,
+                       ...)
 {
 	va_list ap;
 	gint status;
@@ -442,16 +448,17 @@ camel_disco_diary_new (CamelDiscoStore *store,
 	d(printf("diary log file '%s'\n", filename));
 
 	/* Note that the linux man page says:
-
-	   a+     Open for reading and appending (writing at end  of  file).   The
-		  file  is created if it does not exist.  The stream is positioned
-		  at the end of the file.
-	   However, c99 (which glibc uses?) says:
-	   a+     append; open or create text file for update, writing at
-		   end-of-file
-
-	   So we must seek ourselves.
-	*/
+	 *
+	 * a+     Open for reading and appending (writing at end of file).
+	 *        The file is created if it does not exist.  The stream is
+	 *        positioned at the end of the file.
+	 *
+	 * However, c99 (which glibc uses?) says:
+	 * a+     append; open or create text file for update, writing at
+	 *        end-of-file
+	 *
+	 * So we must seek ourselves.
+	 */
 
 	diary->file = g_fopen (filename, "a+b");
 	if (!diary->file) {
@@ -472,21 +479,23 @@ camel_disco_diary_new (CamelDiscoStore *store,
 }
 
 gboolean
-camel_disco_diary_empty  (CamelDiscoDiary *diary)
+camel_disco_diary_empty (CamelDiscoDiary *diary)
 {
 	return ftell (diary->file) == 0;
 }
 
 void
-camel_disco_diary_uidmap_add (CamelDiscoDiary *diary, const gchar *old_uid,
-			      const gchar *new_uid)
+camel_disco_diary_uidmap_add (CamelDiscoDiary *diary,
+                              const gchar *old_uid,
+                              const gchar *new_uid)
 {
 	g_hash_table_insert (diary->uidmap, g_strdup (old_uid),
 			     g_strdup (new_uid));
 }
 
 const gchar *
-camel_disco_diary_uidmap_lookup (CamelDiscoDiary *diary, const gchar *uid)
+camel_disco_diary_uidmap_lookup (CamelDiscoDiary *diary,
+                                 const gchar *uid)
 {
 	return g_hash_table_lookup (diary->uidmap, uid);
 }

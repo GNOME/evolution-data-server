@@ -114,7 +114,7 @@ mime_filter_pgp_run (CamelMimeFilter *mime_filter,
 			break;
 		case PGP_HEADER:
 			/* pgp headers (Hash: SHA1, etc) end with a blank (zero-length,
-			   or containing only whitespace) line; see RFC2440 */
+			 * or containing only whitespace) line; see RFC2440 */
 			if (blank)
 				priv->state++;
 			break;

@@ -82,7 +82,8 @@ static void e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal 
 G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT);
 
 static void
-source_changed_cb (ESource *source, ECalBackend *backend)
+source_changed_cb (ESource *source,
+                   ECalBackend *backend)
 {
 	ECalBackendPrivate *priv;
 	gchar *suri;
@@ -186,7 +187,11 @@ cal_backend_set_kind (ECalBackend *backend,
 }
 
 static void
-cal_backend_get_backend_property (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name)
+cal_backend_get_backend_property (ECalBackend *backend,
+                                  EDataCal *cal,
+                                  guint32 opid,
+                                  GCancellable *cancellable,
+                                  const gchar *prop_name)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -209,7 +214,12 @@ cal_backend_get_backend_property (ECalBackend *backend, EDataCal *cal, guint32 o
 }
 
 static void
-cal_backend_set_backend_property (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value)
+cal_backend_set_backend_property (ECalBackend *backend,
+                                  EDataCal *cal,
+                                  guint32 opid,
+                                  GCancellable *cancellable,
+                                  const gchar *prop_name,
+                                  const gchar *prop_value)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -549,7 +559,8 @@ e_cal_backend_is_removed (ECalBackend *backend)
  * Meant to be used by backend implementations.
  **/
 void
-e_cal_backend_set_is_removed (ECalBackend *backend, gboolean is_removed)
+e_cal_backend_set_is_removed (ECalBackend *backend,
+                              gboolean is_removed)
 {
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
@@ -618,7 +629,11 @@ e_cal_backend_set_cache_dir (ECalBackend *backend,
  * Since: 3.2
  **/
 void
-e_cal_backend_get_backend_property (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name)
+e_cal_backend_get_backend_property (ECalBackend *backend,
+                                    EDataCal *cal,
+                                    guint32 opid,
+                                    GCancellable *cancellable,
+                                    const gchar *prop_name)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -646,7 +661,12 @@ e_cal_backend_get_backend_property (ECalBackend *backend, EDataCal *cal, guint32
  * Since: 3.2
  **/
 void
-e_cal_backend_set_backend_property (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value)
+e_cal_backend_set_backend_property (ECalBackend *backend,
+                                    EDataCal *cal,
+                                    guint32 opid,
+                                    GCancellable *cancellable,
+                                    const gchar *prop_name,
+                                    const gchar *prop_value)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -658,7 +678,8 @@ e_cal_backend_set_backend_property (ECalBackend *backend, EDataCal *cal, guint32
 }
 
 static void
-cal_destroy_cb (gpointer data, GObject *where_cal_was)
+cal_destroy_cb (gpointer data,
+                GObject *where_cal_was)
 {
 	e_cal_backend_remove_client_private (E_CAL_BACKEND (data),
 					     (EDataCal *) where_cal_was, FALSE);
@@ -673,7 +694,8 @@ cal_destroy_cb (gpointer data, GObject *where_cal_was)
  * notify all clients added via this function.
  */
 void
-e_cal_backend_add_client (ECalBackend *backend, EDataCal *cal)
+e_cal_backend_add_client (ECalBackend *backend,
+                          EDataCal *cal)
 {
 	ECalBackendPrivate *priv;
 
@@ -692,13 +714,15 @@ e_cal_backend_add_client (ECalBackend *backend, EDataCal *cal)
 }
 
 static void
-e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal *cal, gboolean weak_unref)
+e_cal_backend_remove_client_private (ECalBackend *backend,
+                                     EDataCal *cal,
+                                     gboolean weak_unref)
 {
 	ECalBackendPrivate *priv;
 
 	/* XXX this needs a bit more thinking wrt the mutex - we
-	   should be holding it when we check to see if clients is
-	   NULL */
+	 * should be holding it when we check to see if clients is
+	 * NULL */
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (cal != NULL);
@@ -731,7 +755,8 @@ e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal *cal, gboole
  * Removes a client from the list of connected clients to the given backend.
  */
 void
-e_cal_backend_remove_client (ECalBackend *backend, EDataCal *cal)
+e_cal_backend_remove_client (ECalBackend *backend,
+                             EDataCal *cal)
 {
 	e_cal_backend_remove_client_private (backend, cal, TRUE);
 }
@@ -746,7 +771,8 @@ e_cal_backend_remove_client (ECalBackend *backend, EDataCal *cal)
  * change that affect the live view.
  */
 void
-e_cal_backend_add_view (ECalBackend *backend, EDataCalView *view)
+e_cal_backend_add_view (ECalBackend *backend,
+                        EDataCalView *view)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -768,7 +794,8 @@ e_cal_backend_add_view (ECalBackend *backend, EDataCalView *view)
  * Since: 2.24
  **/
 void
-e_cal_backend_remove_view (ECalBackend *backend, EDataCalView *view)
+e_cal_backend_remove_view (ECalBackend *backend,
+                           EDataCalView *view)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -790,7 +817,10 @@ e_cal_backend_remove_view (ECalBackend *backend, EDataCalView *view)
  * @callback returns %FALSE to stop further processing.
  **/
 void
-e_cal_backend_foreach_view (ECalBackend *backend, gboolean (* callback) (EDataCalView *view, gpointer user_data), gpointer user_data)
+e_cal_backend_foreach_view (ECalBackend *backend,
+                            gboolean (*callback) (EDataCalView *view,
+                                                  gpointer user_data),
+                            gpointer user_data)
 {
 	const GSList *views;
 	EDataCalView *view;
@@ -820,7 +850,8 @@ e_cal_backend_foreach_view (ECalBackend *backend, gboolean (* callback) (EDataCa
  * Sets the backend that will act as notification proxy for the given backend.
  */
 void
-e_cal_backend_set_notification_proxy (ECalBackend *backend, ECalBackend *proxy)
+e_cal_backend_set_notification_proxy (ECalBackend *backend,
+                                      ECalBackend *proxy)
 {
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
@@ -835,7 +866,8 @@ e_cal_backend_set_notification_proxy (ECalBackend *backend, ECalBackend *proxy)
  * Sets the online mode of the calendar
  */
 void
-e_cal_backend_set_online (ECalBackend *backend, gboolean is_online)
+e_cal_backend_set_online (ECalBackend *backend,
+                          gboolean is_online)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -901,7 +933,11 @@ e_cal_backend_set_online (ECalBackend *backend, gboolean is_online)
  * required, there is e_cal_backend_notify_auth_required() for this.
  **/
 void
-e_cal_backend_open (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, gboolean only_if_exists)
+e_cal_backend_open (ECalBackend *backend,
+                    EDataCal *cal,
+                    guint32 opid,
+                    GCancellable *cancellable,
+                    gboolean only_if_exists)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -945,9 +981,9 @@ e_cal_backend_open (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancella
  * how the opening phase works.
  **/
 void
-e_cal_backend_authenticate_user (ECalBackend  *backend,
-				 GCancellable *cancellable,
-				 ECredentials *credentials)
+e_cal_backend_authenticate_user (ECalBackend *backend,
+                                 GCancellable *cancellable,
+                                 ECredentials *credentials)
 {
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (credentials != NULL);
@@ -970,7 +1006,10 @@ e_cal_backend_authenticate_user (ECalBackend  *backend,
  * This might be finished with e_data_cal_respond_remove().
  **/
 void
-e_cal_backend_remove (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable)
+e_cal_backend_remove (ECalBackend *backend,
+                      EDataCal *cal,
+                      guint32 opid,
+                      GCancellable *cancellable)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -999,7 +1038,10 @@ e_cal_backend_remove (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancel
  * Since: 2.30
  **/
 void
-e_cal_backend_refresh (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable)
+e_cal_backend_refresh (ECalBackend *backend,
+                       EDataCal *cal,
+                       guint32 opid,
+                       GCancellable *cancellable)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1028,7 +1070,12 @@ e_cal_backend_refresh (ECalBackend *backend, EDataCal *cal, guint32 opid, GCance
  * This might be finished with e_data_cal_respond_get_object().
  **/
 void
-e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *uid, const gchar *rid)
+e_cal_backend_get_object (ECalBackend *backend,
+                          EDataCal *cal,
+                          guint32 opid,
+                          GCancellable *cancellable,
+                          const gchar *uid,
+                          const gchar *rid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1055,7 +1102,11 @@ e_cal_backend_get_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCa
  * This might be finished with e_data_cal_respond_get_object_list().
  **/
 void
-e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *sexp)
+e_cal_backend_get_object_list (ECalBackend *backend,
+                               EDataCal *cal,
+                               guint32 opid,
+                               GCancellable *cancellable,
+                               const gchar *sexp)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1084,7 +1135,13 @@ e_cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, guint32 opid
  * This might be finished with e_data_cal_respond_get_free_busy().
  **/
 void
-e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const GSList *users, time_t start, time_t end)
+e_cal_backend_get_free_busy (ECalBackend *backend,
+                             EDataCal *cal,
+                             guint32 opid,
+                             GCancellable *cancellable,
+                             const GSList *users,
+                             time_t start,
+                             time_t end)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1112,7 +1169,11 @@ e_cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, guint32 opid, 
  * This might be finished with e_data_cal_respond_create_object().
  **/
 void
-e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *calobj)
+e_cal_backend_create_object (ECalBackend *backend,
+                             EDataCal *cal,
+                             guint32 opid,
+                             GCancellable *cancellable,
+                             const gchar *calobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1141,7 +1202,12 @@ e_cal_backend_create_object (ECalBackend *backend, EDataCal *cal, guint32 opid, 
  * This might be finished with e_data_cal_respond_modify_object().
  **/
 void
-e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *calobj, CalObjModType mod)
+e_cal_backend_modify_object (ECalBackend *backend,
+                             EDataCal *cal,
+                             guint32 opid,
+                             GCancellable *cancellable,
+                             const gchar *calobj,
+                             CalObjModType mod)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1172,7 +1238,13 @@ e_cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, guint32 opid, 
  * This might be finished with e_data_cal_respond_remove_object().
  **/
 void
-e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *uid, const gchar *rid, CalObjModType mod)
+e_cal_backend_remove_object (ECalBackend *backend,
+                             EDataCal *cal,
+                             guint32 opid,
+                             GCancellable *cancellable,
+                             const gchar *uid,
+                             const gchar *rid,
+                             CalObjModType mod)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1199,7 +1271,11 @@ e_cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, guint32 opid, 
  * This might be finished with e_data_cal_respond_receive_objects().
  **/
 void
-e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *calobj)
+e_cal_backend_receive_objects (ECalBackend *backend,
+                               EDataCal *cal,
+                               guint32 opid,
+                               GCancellable *cancellable,
+                               const gchar *calobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1226,7 +1302,11 @@ e_cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, guint32 opid
  * This might be finished with e_data_cal_respond_send_objects().
  **/
 void
-e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *calobj)
+e_cal_backend_send_objects (ECalBackend *backend,
+                            EDataCal *cal,
+                            guint32 opid,
+                            GCancellable *cancellable,
+                            const gchar *calobj)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1255,7 +1335,12 @@ e_cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, guint32 opid, G
  * This might be finished with e_data_cal_respond_get_attachment_uris().
  **/
 void
-e_cal_backend_get_attachment_uris (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *uid, const gchar *rid)
+e_cal_backend_get_attachment_uris (ECalBackend *backend,
+                                   EDataCal *cal,
+                                   guint32 opid,
+                                   GCancellable *cancellable,
+                                   const gchar *uid,
+                                   const gchar *rid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1285,7 +1370,13 @@ e_cal_backend_get_attachment_uris (ECalBackend *backend, EDataCal *cal, guint32 
  * Default implementation of this method returns Not Supported error.
  **/
 void
-e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *uid, const gchar *rid, const gchar *auid)
+e_cal_backend_discard_alarm (ECalBackend *backend,
+                             EDataCal *cal,
+                             guint32 opid,
+                             GCancellable *cancellable,
+                             const gchar *uid,
+                             const gchar *rid,
+                             const gchar *auid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1316,7 +1407,11 @@ e_cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, guint32 opid, 
  * This might be finished with e_data_cal_respond_get_timezone().
  **/
 void
-e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *tzid)
+e_cal_backend_get_timezone (ECalBackend *backend,
+                            EDataCal *cal,
+                            guint32 opid,
+                            GCancellable *cancellable,
+                            const gchar *tzid)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1343,7 +1438,11 @@ e_cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, guint32 opid, G
  * This might be finished with e_data_cal_respond_add_timezone().
  **/
 void
-e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *tzobject)
+e_cal_backend_add_timezone (ECalBackend *backend,
+                            EDataCal *cal,
+                            guint32 opid,
+                            GCancellable *cancellable,
+                            const gchar *tzobject)
 {
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (tzobject != NULL);
@@ -1365,7 +1464,8 @@ e_cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, guint32 opid, G
  * Calls the internal_get_timezone method on the given backend.
  */
 icaltimezone *
-e_cal_backend_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
+e_cal_backend_internal_get_timezone (ECalBackend *backend,
+                                     const gchar *tzid)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
 	g_return_val_if_fail (tzid != NULL, NULL);
@@ -1382,7 +1482,8 @@ e_cal_backend_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
  * Starts a new live view on the given backend.
  */
 void
-e_cal_backend_start_view (ECalBackend *backend, EDataCalView *view)
+e_cal_backend_start_view (ECalBackend *backend,
+                          EDataCalView *view)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1401,7 +1502,8 @@ e_cal_backend_start_view (ECalBackend *backend, EDataCalView *view)
  * Since: 3.2
  */
 void
-e_cal_backend_stop_view (ECalBackend *backend, EDataCalView *view)
+e_cal_backend_stop_view (ECalBackend *backend,
+                         EDataCalView *view)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
@@ -1414,7 +1516,8 @@ e_cal_backend_stop_view (ECalBackend *backend, EDataCalView *view)
 }
 
 static gboolean
-object_created_cb (EDataCalView *view, gpointer calobj)
+object_created_cb (EDataCalView *view,
+                   gpointer calobj)
 {
 	if (e_data_cal_view_object_matches (view, calobj))
 		e_data_cal_view_notify_objects_added_1 (view, calobj);
@@ -1434,7 +1537,8 @@ object_created_cb (EDataCalView *view, gpointer calobj)
  * created by non-EDS clients.
  **/
 void
-e_cal_backend_notify_object_created (ECalBackend *backend, const gchar *calobj)
+e_cal_backend_notify_object_created (ECalBackend *backend,
+                                     const gchar *calobj)
 {
 	ECalBackendPrivate *priv;
 
@@ -1454,13 +1558,17 @@ e_cal_backend_notify_object_created (ECalBackend *backend, const gchar *calobj)
  * Since: 2.24
  **/
 void
-e_cal_backend_notify_objects_added (ECalBackend *backend, EDataCalView *view, const GSList *objects)
+e_cal_backend_notify_objects_added (ECalBackend *backend,
+                                    EDataCalView *view,
+                                    const GSList *objects)
 {
 	e_data_cal_view_notify_objects_added (view, objects);
 }
 
 static void
-match_view_and_notify (EDataCalView *view, const gchar *old_object, const gchar *object)
+match_view_and_notify (EDataCalView *view,
+                       const gchar *old_object,
+                       const gchar *object)
 {
 	gboolean old_match = FALSE, new_match = FALSE;
 
@@ -1494,7 +1602,8 @@ struct call_data {
 };
 
 static gboolean
-call_match_and_notify (EDataCalView *view, gpointer user_data)
+call_match_and_notify (EDataCalView *view,
+                       gpointer user_data)
 {
 	struct call_data *cd = user_data;
 
@@ -1518,7 +1627,9 @@ call_match_and_notify (EDataCalView *view, gpointer user_data)
  * modified by non-EDS clients.
  **/
 void
-e_cal_backend_notify_object_modified (ECalBackend *backend, const gchar *old_object, const gchar *object)
+e_cal_backend_notify_object_modified (ECalBackend *backend,
+                                      const gchar *old_object,
+                                      const gchar *object)
 {
 	ECalBackendPrivate *priv;
 	struct call_data cd;
@@ -1543,13 +1654,16 @@ e_cal_backend_notify_object_modified (ECalBackend *backend, const gchar *old_obj
  * Since: 2.24
  **/
 void
-e_cal_backend_notify_objects_modified (ECalBackend *backend, EDataCalView *view, const GSList *objects)
+e_cal_backend_notify_objects_modified (ECalBackend *backend,
+                                       EDataCalView *view,
+                                       const GSList *objects)
 {
 	e_data_cal_view_notify_objects_modified (view, objects);
 }
 
 static gboolean
-object_removed_cb (EDataCalView *view, gpointer user_data)
+object_removed_cb (EDataCalView *view,
+                   gpointer user_data)
 {
 	struct call_data *cd = user_data;
 
@@ -1557,7 +1671,7 @@ object_removed_cb (EDataCalView *view, gpointer user_data)
 
 	if (cd->object == NULL) {
 		/* if object == NULL, it means the object has been completely
-		   removed from the backend */
+		 * removed from the backend */
 		if (!cd->old_object || e_data_cal_view_object_matches (view, cd->old_object))
 			e_data_cal_view_notify_objects_removed_1 (view, cd->id);
 	} else
@@ -1582,8 +1696,10 @@ object_removed_cb (EDataCalView *view, gpointer user_data)
  * removed by non-EDS clients.
  **/
 void
-e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId *id,
-				     const gchar *old_object, const gchar *object)
+e_cal_backend_notify_object_removed (ECalBackend *backend,
+                                     const ECalComponentId *id,
+                                     const gchar *old_object,
+                                     const gchar *object)
 {
 	ECalBackendPrivate *priv;
 	struct call_data cd;
@@ -1608,7 +1724,9 @@ e_cal_backend_notify_object_removed (ECalBackend *backend, const ECalComponentId
  * Since: 2.24
  **/
 void
-e_cal_backend_notify_objects_removed (ECalBackend *backend, EDataCalView *view, const GSList *ids)
+e_cal_backend_notify_objects_removed (ECalBackend *backend,
+                                      EDataCalView *view,
+                                      const GSList *ids)
 {
 	e_data_cal_view_notify_objects_removed (view, ids);
 }
@@ -1621,7 +1739,8 @@ e_cal_backend_notify_objects_removed (ECalBackend *backend, EDataCalView *view, 
  * Notifies each of the backend's listeners about an error
  **/
 void
-e_cal_backend_notify_error (ECalBackend *backend, const gchar *message)
+e_cal_backend_notify_error (ECalBackend *backend,
+                            const gchar *message)
 {
 	ECalBackendPrivate *priv = backend->priv;
 	GSList *l;
@@ -1648,7 +1767,8 @@ e_cal_backend_notify_error (ECalBackend *backend, const gchar *message)
  * Meant to be used by backend implementations.
  **/
 void
-e_cal_backend_notify_readonly (ECalBackend *backend, gboolean is_readonly)
+e_cal_backend_notify_readonly (ECalBackend *backend,
+                               gboolean is_readonly)
 {
 	ECalBackendPrivate *priv;
 	GSList *l;
@@ -1678,7 +1798,8 @@ e_cal_backend_notify_readonly (ECalBackend *backend, gboolean is_readonly)
  * Meant to be used by backend implementations.
  **/
 void
-e_cal_backend_notify_online (ECalBackend *backend, gboolean is_online)
+e_cal_backend_notify_online (ECalBackend *backend,
+                             gboolean is_online)
 {
 	ECalBackendPrivate *priv;
 	GSList *clients;
@@ -1722,7 +1843,9 @@ e_cal_backend_notify_online (ECalBackend *backend, gboolean is_online)
  * Meant to be used by backend implementations.
  **/
 void
-e_cal_backend_notify_auth_required (ECalBackend *backend, gboolean is_self, const ECredentials *credentials)
+e_cal_backend_notify_auth_required (ECalBackend *backend,
+                                    gboolean is_self,
+                                    const ECredentials *credentials)
 {
 	ECalBackendPrivate *priv;
 	GSList *clients;
@@ -1765,7 +1888,8 @@ e_cal_backend_notify_auth_required (ECalBackend *backend, gboolean is_self, cons
  * Meant to be used by backend implementations.
  **/
 void
-e_cal_backend_notify_opened (ECalBackend *backend, GError *error)
+e_cal_backend_notify_opened (ECalBackend *backend,
+                             GError *error)
 {
 	ECalBackendPrivate *priv;
 	GSList *clients;
@@ -1794,7 +1918,9 @@ e_cal_backend_notify_opened (ECalBackend *backend, GError *error)
  * Notifies client about property value change.
  **/
 void
-e_cal_backend_notify_property_changed (ECalBackend *backend, const gchar *prop_name, const gchar *prop_value)
+e_cal_backend_notify_property_changed (ECalBackend *backend,
+                                       const gchar *prop_name,
+                                       const gchar *prop_value)
 {
 	ECalBackendPrivate *priv;
 	GSList *clients;
@@ -1830,7 +1956,10 @@ e_cal_backend_notify_property_changed (ECalBackend *backend, const gchar *prop_n
  * See e_cal_backend_open() for more details how the opening phase works.
  **/
 void
-e_cal_backend_respond_opened (ECalBackend *backend, EDataCal *cal, guint32 opid, GError *error)
+e_cal_backend_respond_opened (ECalBackend *backend,
+                              EDataCal *cal,
+                              guint32 opid,
+                              GError *error)
 {
 	GError *copy = NULL;
 
@@ -1857,7 +1986,8 @@ e_cal_backend_respond_opened (ECalBackend *backend, EDataCal *cal, guint32 opid,
  * Since: 2.28
  **/
 void
-e_cal_backend_empty_cache (ECalBackend *backend, ECalBackendCache *cache)
+e_cal_backend_empty_cache (ECalBackend *backend,
+                           ECalBackendCache *cache)
 {
 	GList *comps_in_cache;
 

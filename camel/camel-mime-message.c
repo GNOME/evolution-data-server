@@ -175,7 +175,9 @@ process_header (CamelMedium *medium,
 }
 
 static void
-unref_recipient (gpointer key, gpointer value, gpointer user_data)
+unref_recipient (gpointer key,
+                 gpointer value,
+                 gpointer user_data)
 {
 	g_object_unref (value);
 }
@@ -419,7 +421,9 @@ camel_mime_message_new (void)
  * Set the date on a message.
  **/
 void
-camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, gint offset)
+camel_mime_message_set_date (CamelMimeMessage *message,
+                             time_t date,
+                             gint offset)
 {
 	gchar *datestr;
 
@@ -431,7 +435,7 @@ camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, gint offse
 
 		date = time (NULL);
 		e_localtime_with_offset (date, &local, &tz);
-		offset = (((tz/60/60) * 100) + (tz/60 % 60));
+		offset = (((tz / 60 / 60) * 100) + (tz / 60 % 60));
 	}
 	message->date = date;
 	message->date_offset = offset;
@@ -451,7 +455,8 @@ camel_mime_message_set_date (CamelMimeMessage *message,  time_t date, gint offse
  * Returns: the date of the message
  **/
 time_t
-camel_mime_message_get_date (CamelMimeMessage *msg, gint *offset)
+camel_mime_message_get_date (CamelMimeMessage *msg,
+                             gint *offset)
 {
 	if (offset)
 		*offset = msg->date_offset;
@@ -469,7 +474,8 @@ camel_mime_message_get_date (CamelMimeMessage *msg, gint *offset)
  * Returns: the received date of the message
  **/
 time_t
-camel_mime_message_get_date_received (CamelMimeMessage *msg, gint *offset)
+camel_mime_message_get_date_received (CamelMimeMessage *msg,
+                                      gint *offset)
 {
 	if (msg->date_received == CAMEL_MESSAGE_DATE_CURRENT) {
 		const gchar *received;
@@ -497,7 +503,8 @@ camel_mime_message_get_date_received (CamelMimeMessage *msg, gint *offset)
  * Set the message-id on a message.
  **/
 void
-camel_mime_message_set_message_id (CamelMimeMessage *mime_message, const gchar *message_id)
+camel_mime_message_set_message_id (CamelMimeMessage *mime_message,
+                                   const gchar *message_id)
 {
 	gchar *id;
 
@@ -543,7 +550,8 @@ camel_mime_message_get_message_id (CamelMimeMessage *mime_message)
  * Set the Reply-To of a message.
  **/
 void
-camel_mime_message_set_reply_to (CamelMimeMessage *msg, CamelInternetAddress *reply_to)
+camel_mime_message_set_reply_to (CamelMimeMessage *msg,
+                                 CamelInternetAddress *reply_to)
 {
 	gchar *addr;
 
@@ -593,7 +601,8 @@ camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
  * Set the subject text of a message.
  **/
 void
-camel_mime_message_set_subject (CamelMimeMessage *message, const gchar *subject)
+camel_mime_message_set_subject (CamelMimeMessage *message,
+                                const gchar *subject)
 {
 	gchar *text;
 
@@ -632,8 +641,8 @@ camel_mime_message_get_subject (CamelMimeMessage *mime_message)
 /* *** From: */
 
 /* Thought: Since get_from/set_from are so rarely called, it is probably not useful
-   to cache the from (and reply_to) addresses as InternetAddresses internally, we
-   could just get it from the headers and reprocess every time. */
+ * to cache the from (and reply_to) addresses as InternetAddresses internally, we
+ * could just get it from the headers and reprocess every time. */
 
 /**
  * camel_mime_message_set_from:
@@ -643,7 +652,8 @@ camel_mime_message_get_subject (CamelMimeMessage *mime_message)
  * Set the from address of a message.
  **/
 void
-camel_mime_message_set_from (CamelMimeMessage *msg, CamelInternetAddress *from)
+camel_mime_message_set_from (CamelMimeMessage *msg,
+                             CamelInternetAddress *from)
 {
 	gchar *addr;
 
@@ -694,7 +704,9 @@ camel_mime_message_get_from (CamelMimeMessage *mime_message)
  * Set the recipients of a message.
  **/
 void
-camel_mime_message_set_recipients (CamelMimeMessage *mime_message, const gchar *type, CamelInternetAddress *r)
+camel_mime_message_set_recipients (CamelMimeMessage *mime_message,
+                                   const gchar *type,
+                                   CamelInternetAddress *r)
 {
 	gchar *text;
 	CamelInternetAddress *addr;
@@ -732,7 +744,8 @@ camel_mime_message_set_recipients (CamelMimeMessage *mime_message, const gchar *
  * Returns: the requested recipients
  **/
 CamelInternetAddress *
-camel_mime_message_get_recipients (CamelMimeMessage *mime_message, const gchar *type)
+camel_mime_message_get_recipients (CamelMimeMessage *mime_message,
+                                   const gchar *type)
 {
 	g_assert (mime_message);
 
@@ -789,7 +802,10 @@ camel_mime_message_get_source (CamelMimeMessage *mime_message)
 typedef gboolean (*CamelPartFunc)(CamelMimeMessage *, CamelMimePart *, gpointer data);
 
 static gboolean
-message_foreach_part_rec (CamelMimeMessage *msg, CamelMimePart *part, CamelPartFunc callback, gpointer data)
+message_foreach_part_rec (CamelMimeMessage *msg,
+                          CamelMimePart *part,
+                          CamelPartFunc callback,
+                          gpointer data)
 {
 	CamelDataWrapper *containee;
 	gint parts, i;
@@ -821,13 +837,17 @@ message_foreach_part_rec (CamelMimeMessage *msg, CamelMimePart *part, CamelPartF
 /* dont make this public yet, it might need some more thinking ... */
 /* MPZ */
 static void
-camel_mime_message_foreach_part (CamelMimeMessage *msg, CamelPartFunc callback, gpointer data)
+camel_mime_message_foreach_part (CamelMimeMessage *msg,
+                                 CamelPartFunc callback,
+                                 gpointer data)
 {
 	message_foreach_part_rec (msg, (CamelMimePart *) msg, callback, data);
 }
 
 static gboolean
-check_8bit (CamelMimeMessage *msg, CamelMimePart *part, gpointer data)
+check_8bit (CamelMimeMessage *msg,
+            CamelMimePart *part,
+            gpointer data)
 {
 	CamelTransferEncoding encoding;
 	gint *has8bit = data;
@@ -878,15 +898,15 @@ find_best_encoding (CamelMimePart *part,
 	gboolean istext;
 
 	/* we use all these weird stream things so we can do it with streams, and
-	   not have to read the whole lot into memory - although i have a feeling
-	   it would make things a fair bit simpler to do so ... */
+	 * not have to read the whole lot into memory - although i have a feeling
+	 * it would make things a fair bit simpler to do so ... */
 
 	d(printf("starting to check part\n"));
 
 	content = camel_medium_get_content ((CamelMedium *) part);
 	if (content == NULL) {
 		/* charset might not be right here, but it'll get the right stuff
-		   if it is ever set */
+		 * if it is ever set */
 		*charsetp = NULL;
 		return CAMEL_TRANSFER_ENCODING_DEFAULT;
 	}
@@ -947,8 +967,8 @@ find_best_encoding (CamelMimePart *part,
 		d(printf("have charset, trying conversion/etc\n"));
 
 		/* now that 'bestenc' has told us what the best encoding is, we can use that to create
-		   a charset conversion filter as well, and then re-add the bestenc to filter the
-		   result to find the best encoding to use as well */
+		 * a charset conversion filter as well, and then re-add the bestenc to filter the
+		 * result to find the best encoding to use as well */
 
 		charenc = camel_mime_filter_charset_new (charsetin, charset);
 		if (charenc != NULL) {
@@ -996,7 +1016,9 @@ struct _enc_data {
 };
 
 static gboolean
-best_encoding (CamelMimeMessage *msg, CamelMimePart *part, gpointer datap)
+best_encoding (CamelMimeMessage *msg,
+               CamelMimePart *part,
+               gpointer datap)
 {
 	struct _enc_data *data = datap;
 	CamelTransferEncoding encoding;
@@ -1011,7 +1033,7 @@ best_encoding (CamelMimeMessage *msg, CamelMimePart *part, gpointer datap)
 	if (!CAMEL_IS_MULTIPART (wrapper) && !CAMEL_IS_MIME_MESSAGE (wrapper)) {
 		encoding = find_best_encoding (part, data->required, data->enctype, &charset);
 		/* we always set the encoding, if we got this far.  GET_CHARSET implies
-		   also GET_ENCODING */
+		 * also GET_ENCODING */
 		camel_mime_part_set_encoding (part, encoding);
 
 		if ((data->required & CAMEL_BESTENC_GET_CHARSET) != 0) {
@@ -1058,7 +1080,7 @@ camel_mime_message_set_best_encoding (CamelMimeMessage *msg,
 {
 	struct _enc_data data;
 
-	if ((required & (CAMEL_BESTENC_GET_ENCODING|CAMEL_BESTENC_GET_CHARSET)) == 0)
+	if ((required & (CAMEL_BESTENC_GET_ENCODING | CAMEL_BESTENC_GET_CHARSET)) == 0)
 		return;
 
 	data.required = required;
@@ -1085,7 +1107,9 @@ struct _check_content_id {
 };
 
 static gboolean
-check_content_id (CamelMimeMessage *message, CamelMimePart *part, gpointer data)
+check_content_id (CamelMimeMessage *message,
+                  CamelMimePart *part,
+                  gpointer data)
 {
 	struct _check_content_id *check = (struct _check_content_id *) data;
 	const gchar *content_id;
@@ -1110,7 +1134,8 @@ check_content_id (CamelMimeMessage *message, CamelMimePart *part, gpointer data)
  * Returns: the MIME part with the requested id or %NULL if not found
  **/
 CamelMimePart *
-camel_mime_message_get_part_by_content_id (CamelMimeMessage *message, const gchar *id)
+camel_mime_message_get_part_by_content_id (CamelMimeMessage *message,
+                                           const gchar *id)
 {
 	struct _check_content_id check;
 
@@ -1201,7 +1226,9 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 }
 
 static gboolean
-find_attachment (CamelMimeMessage *msg, CamelMimePart *part, gpointer data)
+find_attachment (CamelMimeMessage *msg,
+                 CamelMimePart *part,
+                 gpointer data)
 {
 	const CamelContentDisposition *cd;
 	gboolean *found = (gboolean *) data;
@@ -1245,14 +1272,17 @@ camel_mime_message_has_attachment (CamelMimeMessage *message)
 }
 
 static void
-cmm_dump_rec (CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
+cmm_dump_rec (CamelMimeMessage *msg,
+              CamelMimePart *part,
+              gint body,
+              gint depth)
 {
 	CamelDataWrapper *containee;
 	gint parts, i;
 	gint go = TRUE;
 	gchar *s;
 
-	s = alloca (depth+1);
+	s = alloca (depth + 1);
 	memset (s, ' ', depth);
 	s[depth] = 0;
 	/* yes this leaks, so what its only debug stuff */
@@ -1273,10 +1303,10 @@ cmm_dump_rec (CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
 		for (i = 0; go && i < parts; i++) {
 			CamelMimePart *mpart = camel_multipart_get_part ((CamelMultipart *) containee, i);
 
-			cmm_dump_rec (msg, mpart, body, depth+2);
+			cmm_dump_rec (msg, mpart, body, depth + 2);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
-		cmm_dump_rec (msg, (CamelMimePart *) containee, body, depth+2);
+		cmm_dump_rec (msg, (CamelMimePart *) containee, body, depth + 2);
 	}
 }
 
@@ -1290,7 +1320,8 @@ cmm_dump_rec (CamelMimeMessage *msg, CamelMimePart *part, gint body, gint depth)
  * If body is TRUE, then dump body content of the message as well (currently unimplemented).
  **/
 void
-camel_mime_message_dump (CamelMimeMessage *msg, gint body)
+camel_mime_message_dump (CamelMimeMessage *msg,
+                         gint body)
 {
 	cmm_dump_rec (msg, (CamelMimePart *) msg, body, 0);
 }

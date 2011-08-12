@@ -272,7 +272,8 @@ remove_dead_calendar_cb (gpointer path,
 }
 
 static void
-calendar_freed_cb (EDataCalFactory *factory, GObject *dead)
+calendar_freed_cb (EDataCalFactory *factory,
+                   GObject *dead)
 {
 	EDataCalFactoryPrivate *priv = factory->priv;
 	GHashTableIter iter;
@@ -310,7 +311,8 @@ calendar_freed_cb (EDataCalFactory *factory, GObject *dead)
 }
 
 static void
-last_client_gone_cb (ECalBackend *backend, EDataCalFactory *factory)
+last_client_gone_cb (ECalBackend *backend,
+                     EDataCalFactory *factory)
 {
 	EDataCalFactoryPrivate *priv = factory->priv;
 
@@ -329,7 +331,9 @@ struct find_backend_data {
 };
 
 static void
-find_backend_cb (gpointer key, gpointer value, gpointer data)
+find_backend_cb (gpointer key,
+                 gpointer value,
+                 gpointer data)
 {
 	struct find_backend_data *fbd = data;
 
@@ -539,9 +543,9 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 
 cleanup:
 	/* The reason why the lock is held for such a long time is that there is
-	   a subtle race where e_cal_backend_add_client () can be called just
-	   before e_cal_backend_finalize () is called from the
-	   backend_last_client_gone_cb (), for details see bug 506457. */
+	 * a subtle race where e_cal_backend_add_client () can be called just
+	 * before e_cal_backend_finalize () is called from the
+	 * backend_last_client_gone_cb (), for details see bug 506457. */
 	g_mutex_unlock (priv->backends_mutex);
 
 cleanup2:
@@ -577,7 +581,9 @@ remove_data_cal_cb (gpointer data_cl,
 }
 
 static void
-unref_backend_cb (gpointer key, gpointer value, gpointer user_data)
+unref_backend_cb (gpointer key,
+                  gpointer value,
+                  gpointer user_data)
 {
 	ECalBackend *backend = value;
 
@@ -854,7 +860,9 @@ e_data_cal_factory_get_n_backends (EDataCalFactory *factory)
 
 /* Frees a uri/backend pair from the backends hash table */
 static void
-dump_backend (gpointer key, gpointer value, gpointer data)
+dump_backend (gpointer key,
+              gpointer value,
+              gpointer data)
 {
 	gchar *uri;
 	ECalBackend *backend;
@@ -989,7 +997,8 @@ static GOptionEntry entries[] = {
 };
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EOfflineListener *eol;
 	GOptionContext *context;
@@ -1014,7 +1023,7 @@ main (gint argc, gchar **argv)
 
 		p_SetProcessDEPPolicy = GetProcAddress (GetModuleHandle ("kernel32.dll"), "SetProcessDEPPolicy");
 		if (p_SetProcessDEPPolicy)
-			(*p_SetProcessDEPPolicy) (PROCESS_DEP_ENABLE|PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION);
+			(*p_SetProcessDEPPolicy) (PROCESS_DEP_ENABLE | PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION);
 	}
 #endif
 #endif

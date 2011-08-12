@@ -142,8 +142,8 @@ multipart_signed_parse_content (CamelMultipartSigned *mps)
 		CAMEL_STREAM_MEM (stream), byte_array);
 
 	/* This is all seriously complex.
-	   This is so we can parse all cases properly, without altering the content.
-	   All we are doing is finding part offsets. */
+	 * This is so we can parse all cases properly, without altering the content.
+	 * All we are doing is finding part offsets. */
 
 	cmp = camel_mime_parser_new ();
 	camel_mime_parser_init_with_stream (cmp, stream, NULL);
@@ -160,9 +160,9 @@ multipart_signed_parse_content (CamelMultipartSigned *mps)
 		} else if (mps->start2 == -1) {
 			mps->start2 = camel_mime_parser_tell_start_headers (cmp);
 			mps->end1 = camel_mime_parser_tell_start_boundary (cmp);
-			if (mps->end1 > mps->start1 && byte_array->data[mps->end1-1] == '\n')
+			if (mps->end1 > mps->start1 && byte_array->data[mps->end1 - 1] == '\n')
 				mps->end1--;
-			if (mps->end1 > mps->start1 && byte_array->data[mps->end1-1] == '\r')
+			if (mps->end1 > mps->start1 && byte_array->data[mps->end1 - 1] == '\r')
 				mps->end1--;
 		} else {
 			g_warning("multipart/signed has more than 2 parts, remaining parts ignored");
@@ -277,9 +277,9 @@ multipart_signed_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	byte_array = camel_data_wrapper_get_byte_array (data_wrapper);
 
 	/* we have 3 basic cases:
-	   1. constructed, we write out the data wrapper stream we got
-	   2. signed content, we create and write out a new stream
-	   3. invalid
+	 * 1. constructed, we write out the data wrapper stream we got
+	 * 2. signed content, we create and write out a new stream
+	 * 3. invalid
 	*/
 
 	/* 1 */
@@ -549,7 +549,7 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 	gsize len;
 
 	/* we *must not* be in multipart state, otherwise the mime parser will
-	   parse the headers which is a no no @#$@# stupid multipart/signed spec */
+	 * parse the headers which is a no no @#$@# stupid multipart/signed spec */
 	g_assert (camel_mime_parser_state (mp) == CAMEL_MIME_PARSER_STATE_HEADER);
 
 	/* All we do is copy it to a memstream */

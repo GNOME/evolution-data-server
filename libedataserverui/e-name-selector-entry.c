@@ -273,8 +273,10 @@ sanitize_string (const gchar *string)
 
 /* Called for each list store entry whenever the user types (but not on cut/paste) */
 static gboolean
-completion_match_cb (GtkEntryCompletion *completion, const gchar *key,
-		     GtkTreeIter *iter, gpointer user_data)
+completion_match_cb (GtkEntryCompletion *completion,
+                     const gchar *key,
+                     GtkTreeIter *iter,
+                     gpointer user_data)
 {
 	ENS_DEBUG (g_print ("completion_match_cb, key=%s\n", key));
 
@@ -285,7 +287,10 @@ completion_match_cb (GtkEntryCompletion *completion, const gchar *key,
  * and places them in array. If any positions would be outside the string, the
  * corresponding unichars are set to zero. */
 static void
-get_utf8_string_context (const gchar *string, gint position, gunichar *unichars, gint n_unichars)
+get_utf8_string_context (const gchar *string,
+                         gint position,
+                         gunichar *unichars,
+                         gint n_unichars)
 {
 	gchar *p = NULL;
 	gint   len;
@@ -316,7 +321,10 @@ get_utf8_string_context (const gchar *string, gint position, gunichar *unichars,
 }
 
 static gboolean
-get_range_at_position (const gchar *string, gint pos, gint *start_pos, gint *end_pos)
+get_range_at_position (const gchar *string,
+                       gint pos,
+                       gint *start_pos,
+                       gint *end_pos)
 {
 	const gchar *p;
 	gboolean     quoted          = FALSE;
@@ -360,7 +368,8 @@ get_range_at_position (const gchar *string, gint pos, gint *start_pos, gint *end
 }
 
 static gboolean
-is_quoted_at (const gchar *string, gint pos)
+is_quoted_at (const gchar *string,
+              gint pos)
 {
 	const gchar *p;
 	gboolean     quoted = FALSE;
@@ -377,7 +386,8 @@ is_quoted_at (const gchar *string, gint pos)
 }
 
 static gint
-get_index_at_position (const gchar *string, gint pos)
+get_index_at_position (const gchar *string,
+                       gint pos)
 {
 	const gchar *p;
 	gboolean     quoted = FALSE;
@@ -397,7 +407,10 @@ get_index_at_position (const gchar *string, gint pos)
 }
 
 static gboolean
-get_range_by_index (const gchar *string, gint index, gint *start_pos, gint *end_pos)
+get_range_by_index (const gchar *string,
+                    gint index,
+                    gint *start_pos,
+                    gint *end_pos)
 {
 	const gchar *p;
 	gboolean     quoted = FALSE;
@@ -420,7 +433,8 @@ get_range_by_index (const gchar *string, gint index, gint *start_pos, gint *end_
 }
 
 static gchar *
-get_address_at_position (const gchar *string, gint pos)
+get_address_at_position (const gchar *string,
+                         gint pos)
 {
 	gint         start_pos;
 	gint         end_pos;
@@ -438,7 +452,8 @@ get_address_at_position (const gchar *string, gint pos)
 
 /* Finds the destination in model */
 static EDestination *
-find_destination_by_index (ENameSelectorEntry *name_selector_entry, gint index)
+find_destination_by_index (ENameSelectorEntry *name_selector_entry,
+                           gint index)
 {
 	GtkTreePath  *path;
 	GtkTreeIter   iter;
@@ -460,7 +475,8 @@ find_destination_by_index (ENameSelectorEntry *name_selector_entry, gint index)
 
 /* Finds the destination in model */
 static EDestination *
-find_destination_at_position (ENameSelectorEntry *name_selector_entry, gint pos)
+find_destination_at_position (ENameSelectorEntry *name_selector_entry,
+                              gint pos)
 {
 	const gchar  *text;
 	gint          index;
@@ -473,7 +489,8 @@ find_destination_at_position (ENameSelectorEntry *name_selector_entry, gint pos)
 
 /* Builds destination from our text */
 static EDestination *
-build_destination_at_position (const gchar *string, gint pos)
+build_destination_at_position (const gchar *string,
+                               gint pos)
 {
 	EDestination *destination;
 	gchar        *address;
@@ -490,7 +507,8 @@ build_destination_at_position (const gchar *string, gint pos)
 }
 
 static gchar *
-name_style_query (const gchar *field, const gchar *value)
+name_style_query (const gchar *field,
+                  const gchar *value)
 {
 	gchar   *spaced_str;
 	gchar   *comma_str;
@@ -558,7 +576,9 @@ escape_sexp_string (const gchar *string)
  * Since: 2.24
  **/
 gchar *
-ens_util_populate_user_query_fields (GSList *user_query_fields, const gchar *cue_str, const gchar *encoded_cue_str)
+ens_util_populate_user_query_fields (GSList *user_query_fields,
+                                     const gchar *cue_str,
+                                     const gchar *encoded_cue_str)
 {
 	GString *user_fields;
 	GSList *s;
@@ -592,7 +612,8 @@ ens_util_populate_user_query_fields (GSList *user_query_fields, const gchar *cue
 }
 
 static void
-set_completion_query (ENameSelectorEntry *name_selector_entry, const gchar *cue_str)
+set_completion_query (ENameSelectorEntry *name_selector_entry,
+                      const gchar *cue_str)
 {
 	ENameSelectorEntryPrivate *priv;
 	EBookQuery *book_query;
@@ -644,7 +665,9 @@ set_completion_query (ENameSelectorEntry *name_selector_entry, const gchar *cue_
 }
 
 static gchar *
-get_entry_substring (ENameSelectorEntry *name_selector_entry, gint range_start, gint range_end)
+get_entry_substring (ENameSelectorEntry *name_selector_entry,
+                     gint range_start,
+                     gint range_end)
 {
 	const gchar *entry_text;
 	gchar       *p0, *p1;
@@ -658,7 +681,9 @@ get_entry_substring (ENameSelectorEntry *name_selector_entry, gint range_start, 
 }
 
 static gint
-utf8_casefold_collate_len (const gchar *str1, const gchar *str2, gint len)
+utf8_casefold_collate_len (const gchar *str1,
+                           const gchar *str2,
+                           gint len)
 {
 	gchar *s1 = g_utf8_casefold (str1, len);
 	gchar *s2 = g_utf8_casefold (str2, len);
@@ -673,7 +698,8 @@ utf8_casefold_collate_len (const gchar *str1, const gchar *str2, gint len)
 }
 
 static gchar *
-build_textrep_for_contact (EContact *contact, EContactField cue_field)
+build_textrep_for_contact (EContact *contact,
+                           EContactField cue_field)
 {
 	gchar *name  = NULL;
 	gchar *email = NULL;
@@ -714,8 +740,10 @@ build_textrep_for_contact (EContact *contact, EContactField cue_field)
 }
 
 static gboolean
-contact_match_cue (EContact *contact, const gchar *cue_str,
-		   EContactField *matched_field, gint *matched_field_rank)
+contact_match_cue (EContact *contact,
+                   const gchar *cue_str,
+                   EContactField *matched_field,
+                   gint *matched_field_rank)
 {
 	EContactField  fields[] = { E_CONTACT_FULL_NAME, E_CONTACT_NICKNAME, E_CONTACT_FILE_AS,
 				     E_CONTACT_EMAIL_1, E_CONTACT_EMAIL_2, E_CONTACT_EMAIL_3,
@@ -777,8 +805,12 @@ contact_match_cue (EContact *contact, const gchar *cue_str,
 }
 
 static gboolean
-find_existing_completion (ENameSelectorEntry *name_selector_entry, const gchar *cue_str,
-			  EContact **contact, gchar **text, EContactField *matched_field, EBookClient **book_client)
+find_existing_completion (ENameSelectorEntry *name_selector_entry,
+                          const gchar *cue_str,
+                          EContact **contact,
+                          gchar **text,
+                          EContactField *matched_field,
+                          EBookClient **book_client)
 {
 	GtkTreeIter    iter;
 	EContact      *best_contact    = NULL;
@@ -1031,7 +1063,8 @@ update_completions_on_timeout_cb (ENameSelectorEntry *name_selector_entry)
 }
 
 static void
-insert_destination_at_position (ENameSelectorEntry *name_selector_entry, gint pos)
+insert_destination_at_position (ENameSelectorEntry *name_selector_entry,
+                                gint pos)
 {
 	EDestination *destination;
 	const gchar  *text;
@@ -1053,7 +1086,8 @@ insert_destination_at_position (ENameSelectorEntry *name_selector_entry, gint po
 }
 
 static void
-modify_destination_at_position (ENameSelectorEntry *name_selector_entry, gint pos)
+modify_destination_at_position (ENameSelectorEntry *name_selector_entry,
+                                gint pos)
 {
 	EDestination *destination;
 	const gchar  *text;
@@ -1111,7 +1145,9 @@ get_destination_textrep (EDestination *destination)
 }
 
 static void
-sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint range_pos, gint *cursor_pos)
+sync_destination_at_position (ENameSelectorEntry *name_selector_entry,
+                              gint range_pos,
+                              gint *cursor_pos)
 {
 	EDestination *destination;
 	const gchar  *text;
@@ -1156,7 +1192,8 @@ sync_destination_at_position (ENameSelectorEntry *name_selector_entry, gint rang
 }
 
 static void
-remove_destination_by_index (ENameSelectorEntry *name_selector_entry, gint index)
+remove_destination_by_index (ENameSelectorEntry *name_selector_entry,
+                             gint index)
 {
 	EDestination *destination;
 
@@ -1197,7 +1234,9 @@ post_insert_update (ENameSelectorEntry *name_selector_entry,
 
 /* Returns the number of characters inserted */
 static gint
-insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
+insert_unichar (ENameSelectorEntry *name_selector_entry,
+                gint *pos,
+                gunichar c)
 {
 	const gchar *text;
 	gunichar     str_context[4];
@@ -1277,8 +1316,11 @@ insert_unichar (ENameSelectorEntry *name_selector_entry, gint *pos, gunichar c)
 }
 
 static void
-user_insert_text (ENameSelectorEntry *name_selector_entry, gchar *new_text,
-		  gint new_text_length, gint *position, gpointer user_data)
+user_insert_text (ENameSelectorEntry *name_selector_entry,
+                  gchar *new_text,
+                  gint new_text_length,
+                  gint *position,
+                  gpointer user_data)
 {
 	gint chars_inserted = 0;
 	gboolean fast_insert;
@@ -1329,8 +1371,10 @@ user_insert_text (ENameSelectorEntry *name_selector_entry, gchar *new_text,
 }
 
 static void
-user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint end_pos,
-		  gpointer user_data)
+user_delete_text (ENameSelectorEntry *name_selector_entry,
+                  gint start_pos,
+                  gint end_pos,
+                  gpointer user_data)
 {
 	const gchar *text;
 	gint         index_start, index_end;
@@ -1375,8 +1419,8 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		EDestination *destination = find_destination_by_index (name_selector_entry, i);
 		gint range_start, range_end;
 		gchar *ttext;
-		const gchar *email=NULL;
-		gboolean sel=FALSE;
+		const gchar *email = NULL;
+		gboolean sel = FALSE;
 
 		if (destination)
 			email = e_destination_get_textrep (destination, TRUE);
@@ -1391,7 +1435,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 
 		if ((selection_start < range_start && selection_end > range_start) ||
 		    (selection_end > range_start && selection_end < range_end))
-			sel=TRUE;
+			sel = TRUE;
 
 		if (!sel) {
 			g_signal_handlers_block_by_func (name_selector_entry, user_insert_text, name_selector_entry);
@@ -1418,19 +1462,19 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		gchar *c;
 
 		/* Get the actual deleted text */
-		c = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), start_pos, start_pos+1);
+		c = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), start_pos, start_pos + 1);
 
 		if ( c[0] == ' ') {
 			/* If we are at the beginning or removing junk space, let us ignore it */
 			del_space = TRUE;
 		}
 		g_free (c);
-	} else	if (end_pos == start_pos +1 &&  index_end == index_start+1) {
+	} else	if (end_pos == start_pos +1 &&  index_end == index_start + 1) {
 		/* We could be just deleting the empty text */
 		gchar *c;
 
 		/* Get the actual deleted text */
-		c = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), start_pos, start_pos+1);
+		c = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), start_pos, start_pos + 1);
 
 		if ( c[0] == ',' && !is_quoted_at (text, start_pos)) {
 			/* If we are at the beginning or removing junk space, let us ignore it */
@@ -1449,7 +1493,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 
 			EDestination *destination1  = find_destination_by_index (name_selector_entry, index_start);
 			gchar *ttext;
-			const gchar *email=NULL;
+			const gchar *email = NULL;
 
 			if (destination1)
 				email = e_destination_get_textrep (destination1, TRUE);
@@ -1476,7 +1520,7 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 
 			if (range_start != -1) {
 				start_pos = range_start;
-				end_pos = start_pos+1;
+				end_pos = start_pos + 1;
 				gtk_editable_set_position (GTK_EDITABLE (name_selector_entry),start_pos);
 			}
 		}
@@ -1493,10 +1537,10 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 		const gchar *p;
 		gint j;
 		p = text + end_pos;
-		for (p = text + (end_pos-1), j = end_pos - 1; *p && *p != '"' ; p = g_utf8_next_char (p), j++) {
+		for (p = text + (end_pos - 1), j = end_pos - 1; *p && *p != '"' ; p = g_utf8_next_char (p), j++) {
 			gunichar c = g_utf8_get_char (p);
 			if (c == ',') {
-				insert_destination_at_position (name_selector_entry, j+1);
+				insert_destination_at_position (name_selector_entry, j + 1);
 			}
 		}
 
@@ -1526,8 +1570,9 @@ user_delete_text (ENameSelectorEntry *name_selector_entry, gint start_pos, gint 
 }
 
 static gboolean
-completion_match_selected (ENameSelectorEntry *name_selector_entry, ETreeModelGenerator *email_generator_model,
-			   GtkTreeIter *generator_iter)
+completion_match_selected (ENameSelectorEntry *name_selector_entry,
+                           ETreeModelGenerator *email_generator_model,
+                           GtkTreeIter *generator_iter)
 {
 	EContact      *contact;
 	EBookClient   *book_client;
@@ -1615,9 +1660,9 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	get_range_at_position (text, cursor_pos, &range_start, &range_end);
 
 	if (priv->is_completing) {
-		gchar *str_context=NULL;
+		gchar *str_context = NULL;
 
-		str_context = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), range_end, range_end+1);
+		str_context = gtk_editable_get_chars (GTK_EDITABLE (name_selector_entry), range_end, range_end + 1);
 
 		if (str_context[0] != ',') {
 			/* At the end*/
@@ -1629,11 +1674,11 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
                         /* Doing this we can make sure that It wont ask for completion again. */
 			gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &newpos);
 			g_signal_handlers_block_by_func (name_selector_entry, user_delete_text, name_selector_entry);
-			gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), newpos-2, newpos);
+			gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), newpos - 2, newpos);
 			g_signal_handlers_unblock_by_func (name_selector_entry, user_delete_text, name_selector_entry);
 
 			/* Move it close to next destination*/
-			range_end = range_end+2;
+			range_end = range_end + 2;
 
 		}
 		g_free (str_context);
@@ -1647,7 +1692,8 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 }
 
 static void
-update_text (ENameSelectorEntry *name_selector_entry, const gchar *text)
+update_text (ENameSelectorEntry *name_selector_entry,
+             const gchar *text)
 {
 	gint start = 0, end = 0;
 	gboolean has_selection;
@@ -1707,7 +1753,8 @@ sanitize_entry (ENameSelectorEntry *name_selector_entry)
 }
 
 static gboolean
-user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_focus)
+user_focus_in (ENameSelectorEntry *name_selector_entry,
+               GdkEventFocus *event_focus)
 {
 	gint n;
 	GList *l, *known;
@@ -1754,7 +1801,8 @@ user_focus_in (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_foc
 }
 
 static gboolean
-user_focus_out (ENameSelectorEntry *name_selector_entry, GdkEventFocus *event_focus)
+user_focus_out (ENameSelectorEntry *name_selector_entry,
+                GdkEventFocus *event_focus)
 {
 	if (!event_focus->in) {
 		entry_activate (name_selector_entry);
@@ -1807,8 +1855,11 @@ entry_height (GtkWidget *widget)
 }
 
 static void
-contact_layout_pixbuffer (GtkCellLayout *cell_layout, GtkCellRenderer *cell, GtkTreeModel *model,
-			  GtkTreeIter *iter, ENameSelectorEntry *name_selector_entry)
+contact_layout_pixbuffer (GtkCellLayout *cell_layout,
+                          GtkCellRenderer *cell,
+                          GtkTreeModel *model,
+                          GtkTreeIter *iter,
+                          ENameSelectorEntry *name_selector_entry)
 {
 	EContact      *contact;
 	GtkTreeIter    generator_iter;
@@ -1878,8 +1929,11 @@ contact_layout_pixbuffer (GtkCellLayout *cell_layout, GtkCellRenderer *cell, Gtk
 }
 
 static void
-contact_layout_formatter (GtkCellLayout *cell_layout, GtkCellRenderer *cell, GtkTreeModel *model,
-			  GtkTreeIter *iter, ENameSelectorEntry *name_selector_entry)
+contact_layout_formatter (GtkCellLayout *cell_layout,
+                          GtkCellRenderer *cell,
+                          GtkTreeModel *model,
+                          GtkTreeIter *iter,
+                          ENameSelectorEntry *name_selector_entry)
 {
 	EContact      *contact;
 	GtkTreeIter    generator_iter;
@@ -1920,8 +1974,9 @@ contact_layout_formatter (GtkCellLayout *cell_layout, GtkCellRenderer *cell, Gtk
 }
 
 static gint
-generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
-		       ENameSelectorEntry *name_selector_entry)
+generate_contact_rows (EContactStore *contact_store,
+                       GtkTreeIter *iter,
+                       ENameSelectorEntry *name_selector_entry)
 {
 	EContact    *contact;
 	const gchar *contact_uid;
@@ -2065,7 +2120,9 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 }
 
 static void
-destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *path, GtkTreeIter *iter)
+destination_row_changed (ENameSelectorEntry *name_selector_entry,
+                         GtkTreePath *path,
+                         GtkTreeIter *iter)
 {
 	EDestination *destination;
 	const gchar  *entry_text;
@@ -2104,7 +2161,9 @@ destination_row_changed (ENameSelectorEntry *name_selector_entry, GtkTreePath *p
 }
 
 static void
-destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *path, GtkTreeIter *iter)
+destination_row_inserted (ENameSelectorEntry *name_selector_entry,
+                          GtkTreePath *path,
+                          GtkTreeIter *iter)
 {
 	EDestination *destination;
 	const gchar  *entry_text;
@@ -2158,7 +2217,8 @@ destination_row_inserted (ENameSelectorEntry *name_selector_entry, GtkTreePath *
 }
 
 static void
-destination_row_deleted (ENameSelectorEntry *name_selector_entry, GtkTreePath *path)
+destination_row_deleted (ENameSelectorEntry *name_selector_entry,
+                         GtkTreePath *path)
 {
 	const gchar *text;
 	gboolean     deleted_comma = FALSE;
@@ -2251,7 +2311,8 @@ setup_destination_store (ENameSelectorEntry *name_selector_entry)
 }
 
 static gboolean
-prepare_popup_destination (ENameSelectorEntry *name_selector_entry, GdkEventButton *event_button)
+prepare_popup_destination (ENameSelectorEntry *name_selector_entry,
+                           GdkEventButton *event_button)
 {
 	EDestination *destination;
 	PangoLayout  *layout;
@@ -2297,7 +2358,9 @@ prepare_popup_destination (ENameSelectorEntry *name_selector_entry, GdkEventButt
 }
 
 static EBookClient *
-find_client_by_contact (GSList *clients, const gchar *contact_uid, const gchar *source_uid)
+find_client_by_contact (GSList *clients,
+                        const gchar *contact_uid,
+                        const gchar *source_uid)
 {
 	GSList *l;
 
@@ -2332,7 +2395,8 @@ find_client_by_contact (GSList *clients, const gchar *contact_uid, const gchar *
 }
 
 static void
-editor_closed_cb (GtkWidget *editor, gpointer data)
+editor_closed_cb (GtkWidget *editor,
+                  gpointer data)
 {
 	EContact *contact;
 	gchar *contact_uid;
@@ -2386,30 +2450,33 @@ editor_closed_cb (GtkWidget *editor, gpointer data)
  * and return the decoded representation of name & email parts.
  * */
 static gboolean
-eab_parse_qp_email (const gchar *string, gchar **name, gchar **email)
+eab_parse_qp_email (const gchar *string,
+                    gchar **name,
+                    gchar **email)
 {
-        struct _camel_header_address *address;
-        gboolean res = FALSE;
+	struct _camel_header_address *address;
+	gboolean res = FALSE;
 
         address = camel_header_address_decode (string, "UTF-8");
 
-        if (!address)
-                return FALSE;
+	if (!address)
+		return FALSE;
 
         /* report success only when we have filled both name and email address */
-        if (address->type == CAMEL_HEADER_ADDRESS_NAME  && address->name && *address->name && address->v.addr && *address->v.addr) {
+	if (address->type == CAMEL_HEADER_ADDRESS_NAME  && address->name && *address->name && address->v.addr && *address->v.addr) {
                 *name = g_strdup (address->name);
                 *email = g_strdup (address->v.addr);
-                res = TRUE;
-        }
+		res = TRUE;
+	}
 
-        camel_header_address_unref (address);
+	camel_header_address_unref (address);
 
-        return res;
+	return res;
 }
 
 static void
-popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry,
+                              GtkWidget *menu_item)
 {
 	const gchar *text;
 	GString *sanitized_text = g_string_new ("");
@@ -2465,7 +2532,8 @@ popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget
 }
 
 static void
-popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+popup_activate_contact (ENameSelectorEntry *name_selector_entry,
+                        GtkWidget *menu_item)
 {
 	EBookClient  *book_client;
 	GSList       *clients;
@@ -2521,7 +2589,8 @@ popup_activate_contact (ENameSelectorEntry *name_selector_entry, GtkWidget *menu
 }
 
 static void
-popup_activate_email (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+popup_activate_email (ENameSelectorEntry *name_selector_entry,
+                      GtkWidget *menu_item)
 {
 	EDestination *destination;
 	EContact     *contact;
@@ -2540,7 +2609,8 @@ popup_activate_email (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_i
 }
 
 static void
-popup_activate_list (EDestination *destination, GtkWidget *item)
+popup_activate_list (EDestination *destination,
+                     GtkWidget *item)
 {
 	gboolean status = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
 
@@ -2548,7 +2618,8 @@ popup_activate_list (EDestination *destination, GtkWidget *item)
 }
 
 static void
-popup_activate_cut (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+popup_activate_cut (ENameSelectorEntry *name_selector_entry,
+                    GtkWidget *menu_item)
 {
 	EDestination *destination;
 	const gchar *contact_email;
@@ -2577,7 +2648,8 @@ popup_activate_cut (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_ite
 }
 
 static void
-popup_activate_copy (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+popup_activate_copy (ENameSelectorEntry *name_selector_entry,
+                     GtkWidget *menu_item)
 {
 	EDestination *destination;
 	const gchar *contact_email;
@@ -2602,7 +2674,8 @@ popup_activate_copy (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_it
 }
 
 static void
-destination_set_list (GtkWidget *item, EDestination *destination)
+destination_set_list (GtkWidget *item,
+                      EDestination *destination)
 {
 	EContact *contact;
 	gboolean status = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
@@ -2615,7 +2688,8 @@ destination_set_list (GtkWidget *item, EDestination *destination)
 }
 
 static void
-destination_set_email (GtkWidget *item, EDestination *destination)
+destination_set_email (GtkWidget *item,
+                       EDestination *destination)
 {
 	gint email_num;
 	EContact *contact;
@@ -2631,12 +2705,13 @@ destination_set_email (GtkWidget *item, EDestination *destination)
 }
 
 static void
-populate_popup (ENameSelectorEntry *name_selector_entry, GtkMenu *menu)
+populate_popup (ENameSelectorEntry *name_selector_entry,
+                GtkMenu *menu)
 {
 	EDestination *destination;
 	EContact     *contact;
 	GtkWidget    *menu_item;
-	GList        *email_list=NULL;
+	GList        *email_list = NULL;
 	GList        *l;
 	gint          i;
 	gchar	     *edit_label;
@@ -2883,14 +2958,16 @@ copy_or_cut_clipboard (ENameSelectorEntry *name_selector_entry,
 }
 
 static void
-copy_clipboard (GtkEntry *entry, ENameSelectorEntry *name_selector_entry)
+copy_clipboard (GtkEntry *entry,
+                ENameSelectorEntry *name_selector_entry)
 {
 	copy_or_cut_clipboard (name_selector_entry, FALSE);
 	g_signal_stop_emission_by_name (entry, "copy-clipboard");
 }
 
 static void
-cut_clipboard (GtkEntry *entry, ENameSelectorEntry *name_selector_entry)
+cut_clipboard (GtkEntry *entry,
+               ENameSelectorEntry *name_selector_entry)
 {
 	copy_or_cut_clipboard (name_selector_entry, TRUE);
 	g_signal_stop_emission_by_name (entry, "cut-clipboard");
@@ -3024,7 +3101,7 @@ e_name_selector_entry_peek_contact_store (ENameSelectorEntry *name_selector_entr
  **/
 void
 e_name_selector_entry_set_contact_store (ENameSelectorEntry *name_selector_entry,
-					 EContactStore *contact_store)
+                                         EContactStore *contact_store)
 {
 	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry));
 	g_return_if_fail (contact_store == NULL || E_IS_CONTACT_STORE (contact_store));
@@ -3066,8 +3143,8 @@ e_name_selector_entry_peek_destination_store (ENameSelectorEntry *name_selector_
  * destinations for @name_selector_entry.
  **/
 void
-e_name_selector_entry_set_destination_store  (ENameSelectorEntry *name_selector_entry,
-					      EDestinationStore *destination_store)
+e_name_selector_entry_set_destination_store (ENameSelectorEntry *name_selector_entry,
+                                             EDestinationStore *destination_store)
 {
 	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry));
 	g_return_if_fail (E_IS_DESTINATION_STORE (destination_store));
@@ -3100,7 +3177,8 @@ e_name_selector_entry_get_popup_destination (ENameSelectorEntry *name_selector_e
  * DO NOT USE.
  **/
 void
-e_name_selector_entry_set_contact_editor_func (ENameSelectorEntry *name_selector_entry, gpointer func)
+e_name_selector_entry_set_contact_editor_func (ENameSelectorEntry *name_selector_entry,
+                                               gpointer func)
 {
 	name_selector_entry->priv->contact_editor_func = func;
 }
@@ -3111,7 +3189,8 @@ e_name_selector_entry_set_contact_editor_func (ENameSelectorEntry *name_selector
  * DO NOT USE.
  **/
 void
-e_name_selector_entry_set_contact_list_editor_func (ENameSelectorEntry *name_selector_entry, gpointer func)
+e_name_selector_entry_set_contact_list_editor_func (ENameSelectorEntry *name_selector_entry,
+                                                    gpointer func)
 {
 	name_selector_entry->priv->contact_list_editor_func = func;
 }

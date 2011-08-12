@@ -54,18 +54,18 @@ mime_filter_from_filter (CamelMimeFilter *mime_filter,
 	const gchar *inptr, *inend;
 	gint left;
 	gint fromcount = 0;
-	struct fromnode *head = NULL, *tail = (struct fromnode *)&head, *node;
+	struct fromnode *head = NULL, *tail = (struct fromnode *) &head, *node;
 	gchar *outptr;
 
 	priv = CAMEL_MIME_FILTER_FROM (mime_filter)->priv;
 
 	inptr = in;
-	inend = inptr+len;
+	inend = inptr + len;
 
 	d(printf("Filtering '%.*s'\n", len, in));
 
 	/* first, see if we need to escape any from's */
-	while (inptr<inend) {
+	while (inptr < inend) {
 		register gint c = -1;
 
 		if (priv->midline)
@@ -73,7 +73,7 @@ mime_filter_from_filter (CamelMimeFilter *mime_filter,
 				;
 
 		if (c == '\n' || !priv->midline) {
-			left = inend-inptr;
+			left = inend - inptr;
 			if (left > 0) {
 				priv->midline = TRUE;
 				if (left < 5) {
@@ -87,7 +87,7 @@ mime_filter_from_filter (CamelMimeFilter *mime_filter,
 					if (!strncmp(inptr, "From ", 5)) {
 						fromcount++;
 						/* yes, we do alloc them on the stack ... at most we're going to get
-						   len / 7 of them anyway */
+						 * len / 7 of them anyway */
 						node = alloca (sizeof (*node));
 						node->pointer = inptr;
 						node->next = NULL;

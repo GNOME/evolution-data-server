@@ -113,17 +113,17 @@ struct _ECalPrivate {
 	gpointer auth_user_data;
 
 	/* A cache of timezones retrieved from the server, to avoid getting
-	   them repeatedly for each get_object () call. */
+	 * them repeatedly for each get_object () call. */
 	GHashTable *timezones;
 
 	/* The default timezone to use to resolve DATE and floating DATE-TIME
-	   values. */
+	 * values. */
 	icaltimezone *default_zone;
 
 	gchar *local_attachment_store;
 
 	/* For locking the operation while localling cache values like 
-	   static capabilities, cal address etc. */
+	 * static capabilities, cal address etc. */
 	GStaticRecMutex cache_lock;
 
 	GList **free_busy_data;
@@ -450,7 +450,10 @@ gdbus_cal_disconnect (ECal *ecal);
  * Called when the calendar server dies.
  */
 static void
-gdbus_cal_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, ECal *ecal)
+gdbus_cal_closed_cb (GDBusConnection *connection,
+                     gboolean remote_peer_vanished,
+                     GError *error,
+                     ECal *ecal)
 {
 	GError *err = NULL;
 
@@ -474,10 +477,16 @@ gdbus_cal_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished,
 }
 
 static void
-gdbus_cal_connection_gone_cb (GDBusConnection *connection, const gchar *sender_name, const gchar *object_path, const gchar *interface_name, const gchar *signal_name, GVariant *parameters, gpointer user_data)
+gdbus_cal_connection_gone_cb (GDBusConnection *connection,
+                              const gchar *sender_name,
+                              const gchar *object_path,
+                              const gchar *interface_name,
+                              const gchar *signal_name,
+                              GVariant *parameters,
+                              gpointer user_data)
 {
 	/* signal subscription takes care of correct parameters,
-	   thus just do what is to be done here */
+	 * thus just do what is to be done here */
 	gdbus_cal_closed_cb (connection, TRUE, NULL, user_data);
 }
 
@@ -521,10 +530,12 @@ e_cal_dispose (GObject *object)
 }
 
 static void
-free_timezone (gpointer key, gpointer value, gpointer data)
+free_timezone (gpointer key,
+               gpointer value,
+               gpointer data)
 {
 	/* Note that the key comes from within the icaltimezone value, so we
-	   don't free that. */
+	 * don't free that. */
 	icaltimezone_free (value, TRUE);
 }
 
@@ -670,7 +681,10 @@ e_cal_class_init (ECalClass *klass)
 }
 
 static void
-cal_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data)
+cal_factory_proxy_closed_cb (GDBusConnection *connection,
+                             gboolean remote_peer_vanished,
+                             GError *error,
+                             gpointer user_data)
 {
 	GError *err = NULL;
 
@@ -703,10 +717,16 @@ cal_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_v
 }
 
 static void
-cal_factory_connection_gone_cb (GDBusConnection *connection, const gchar *sender_name, const gchar *object_path, const gchar *interface_name, const gchar *signal_name, GVariant *parameters, gpointer user_data)
+cal_factory_connection_gone_cb (GDBusConnection *connection,
+                                const gchar *sender_name,
+                                const gchar *object_path,
+                                const gchar *interface_name,
+                                const gchar *signal_name,
+                                GVariant *parameters,
+                                gpointer user_data)
 {
 	/* signal subscription takes care of correct parameters,
-	   thus just do what is to be done here */
+	 * thus just do what is to be done here */
 	cal_factory_proxy_closed_cb (connection, TRUE, NULL, user_data);
 }
 
@@ -753,7 +773,8 @@ e_cal_activate (GError **error)
 }
 
 static gchar *
-build_proxy_pass_key (ECal *ecal, const gchar * parent_user)
+build_proxy_pass_key (ECal *ecal,
+                      const gchar *parent_user)
 {
 	gchar *euri_str;
 	const gchar *uri;
@@ -790,7 +811,9 @@ build_pass_key (ECal *ecal)
 static void async_open_report_result (ECal *ecal, const GError *error);
 
 static void
-authenticate_user_ready_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+authenticate_user_ready_cb (GObject *source_object,
+                            GAsyncResult *result,
+                            gpointer user_data)
 {
 	ECal *cal = user_data;
 	GError *error = NULL;
@@ -829,7 +852,9 @@ finish_backend_opening_phase (ECal *cal)
 }
 
 static gboolean
-call_authenticate_user (ECal *cal, gboolean async, GError **error)
+call_authenticate_user (ECal *cal,
+                        gboolean async,
+                        GError **error)
 {
 	gchar *username = NULL, *password = NULL;
 	ECredentials *credentials = NULL;
@@ -875,8 +900,8 @@ call_authenticate_user (ECal *cal, gboolean async, GError **error)
 			if (parent_user) {
 				key = build_proxy_pass_key (cal, parent_user);
 				/*
-				   This password prompt will be prompted rarely. Since the key that is passed to
-				   the auth_func corresponds to the parent user.
+				 * This password prompt will be prompted rarely. Since the key that is passed to
+				 * the auth_func corresponds to the parent user.
 				 */
 				prompt = g_strdup_printf (_("Enter password for %s to enable proxy for user %s"), e_source_peek_name (priv->source), parent_user);
 				g_free (parent_user);
@@ -958,7 +983,9 @@ reopen_with_auth (gpointer data)
 }
 
 static void
-auth_required_cb (EGdbusCal *gdbus_cal, const gchar * const *credentials_strv, ECal *cal)
+auth_required_cb (EGdbusCal *gdbus_cal,
+                  const gchar * const *credentials_strv,
+                  ECal *cal)
 {
 	ECalPrivate *priv;
 	g_return_if_fail (E_IS_CAL (cal));
@@ -972,7 +999,9 @@ auth_required_cb (EGdbusCal *gdbus_cal, const gchar * const *credentials_strv, E
 }
 
 static void
-free_busy_data_cb (EGdbusCal *gdbus_cal, const gchar * const *free_busy_strv, ECal *cal)
+free_busy_data_cb (EGdbusCal *gdbus_cal,
+                   const gchar * const *free_busy_strv,
+                   ECal *cal)
 {
 	ECalPrivate *priv;
 
@@ -1038,7 +1067,9 @@ backend_error_idle_cb (gpointer data)
 
 /* Handle the error_occurred signal from the listener */
 static void
-backend_error_cb (EGdbusCal *gdbus_cal, const gchar *message, ECal *ecal)
+backend_error_cb (EGdbusCal *gdbus_cal,
+                  const gchar *message,
+                  ECal *ecal)
 {
 	ECalErrorData *error_data;
 
@@ -1053,7 +1084,9 @@ backend_error_cb (EGdbusCal *gdbus_cal, const gchar *message, ECal *ecal)
 }
 
 static void
-readonly_cb (EGdbusCal *gdbus_cal, gboolean read_only, ECal *cal)
+readonly_cb (EGdbusCal *gdbus_cal,
+             gboolean read_only,
+             ECal *cal)
 {
 	ECalPrivate *priv;
 
@@ -1064,7 +1097,9 @@ readonly_cb (EGdbusCal *gdbus_cal, gboolean read_only, ECal *cal)
 }
 
 static void
-online_cb (EGdbusCal *gdbus_cal, gboolean is_online, ECal *cal)
+online_cb (EGdbusCal *gdbus_cal,
+           gboolean is_online,
+           ECal *cal)
 {
 	g_return_if_fail (E_IS_CAL (cal));
 
@@ -1074,11 +1109,12 @@ online_cb (EGdbusCal *gdbus_cal, gboolean is_online, ECal *cal)
 
 /*
 static void
-backend_died_cb (EComponentListener *cl, gpointer user_data)
+backend_died_cb (EComponentListener *cl,
+ *               gpointer user_data)
 {
 	ECalPrivate *priv;
 	ECal *ecal = (ECal *) user_data;
-
+ *
 	priv = ecal->priv;
 	priv->load_state = E_CAL_LOAD_NOT_LOADED;
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[BACKEND_DIED], 0);
@@ -1116,7 +1152,8 @@ set_local_attachment_store (ECal *ecal)
  * Deprecated: 3.2: Use e_cal_client_new() instead.
  **/
 ECal *
-e_cal_new (ESource *source, ECalSourceType type)
+e_cal_new (ESource *source,
+           ECalSourceType type)
 {
 	ECal *ecal;
 	ECalPrivate *priv;
@@ -1202,13 +1239,18 @@ e_cal_new (ESource *source, ECalSourceType type)
 }
 
 /* for each known source calls check_func, which should return TRUE if the required
-   source have been found. Function returns NULL or the source on which was returned
-   TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref.
-
-   'sources' is an output parameter and cannot be NULL. When returned non-NULL, then
-   should be freed with g_object_unref function. */
+ * source have been found. Function returns NULL or the source on which was returned
+ * TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref.
+ *
+ * 'sources' is an output parameter and cannot be NULL. When returned non-NULL, then
+ * should be freed with g_object_unref function. */
 static ESource *
-search_known_sources (ECalSourceType type, gboolean (*check_func)(ESource *source, gpointer user_data), gpointer user_data, ESourceList **sources, GError **error)
+search_known_sources (ECalSourceType type,
+                      gboolean (*check_func) (ESource *source,
+                                              gpointer user_data),
+                      gpointer user_data,
+                      ESourceList **sources,
+                      GError **error)
 {
 	ESource *res = NULL;
 	GSList *g;
@@ -1245,7 +1287,8 @@ search_known_sources (ECalSourceType type, gboolean (*check_func)(ESource *sourc
 }
 
 static gboolean
-check_uri (ESource *source, gpointer uri)
+check_uri (ESource *source,
+           gpointer uri)
 {
 	const gchar *suri;
 
@@ -1280,7 +1323,8 @@ check_uri (ESource *source, gpointer uri)
  * Deprecated: 3.2: Use e_cal_client_new_from_uri() instead.
  **/
 ECal *
-e_cal_new_from_uri (const gchar *uri, ECalSourceType type)
+e_cal_new_from_uri (const gchar *uri,
+                    ECalSourceType type)
 {
 	ESourceList *sources = NULL;
 	ESource *source;
@@ -1432,7 +1476,9 @@ e_cal_new_system_memos (void)
  * Deprecated: 3.2: Use EClient::authenticate() signal on an #ECalClient instead.
  */
 void
-e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
+e_cal_set_auth_func (ECal *ecal,
+                     ECalAuthFunc func,
+                     gpointer data)
 {
 	g_return_if_fail (ecal != NULL);
 	g_return_if_fail (E_IS_CAL (ecal));
@@ -1442,7 +1488,8 @@ e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
 }
 
 static void
-async_open_report_result (ECal *ecal, const GError *error)
+async_open_report_result (ECal *ecal,
+                          const GError *error)
 {
 	ECalendarStatus status;
 
@@ -1485,7 +1532,9 @@ reschedule_authenticate_cb (gpointer user_data)
 }
 
 static void
-async_open_ready_cb (GDBusProxy *gdbus_cal, GAsyncResult *res, ECal *ecal)
+async_open_ready_cb (GDBusProxy *gdbus_cal,
+                     GAsyncResult *res,
+                     ECal *ecal)
 {
 	GError *error = NULL;
 
@@ -1508,9 +1557,12 @@ async_open_ready_cb (GDBusProxy *gdbus_cal, GAsyncResult *res, ECal *ecal)
 }
 
 static gboolean
-open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
-	ECalendarStatus *status,
-	gboolean needs_auth, gboolean async)
+open_calendar (ECal *ecal,
+               gboolean only_if_exists,
+               GError **error,
+               ECalendarStatus *status,
+               gboolean needs_auth,
+               gboolean async)
 {
 	ECalPrivate *priv;
 
@@ -1586,7 +1638,9 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
  * Deprecated: 3.2: Use e_client_open_sync() on an #ECalClient object instead.
  **/
 gboolean
-e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
+e_cal_open (ECal *ecal,
+            gboolean only_if_exists,
+            GError **error)
 {
 	ECalendarStatus status;
 	GError *err = NULL;
@@ -1630,7 +1684,8 @@ idle_async_error_reply_cb (gpointer user_data)
 
 /* takes ownership of error */
 static void
-async_report_idle (ECal *ecal, GError *error)
+async_report_idle (ECal *ecal,
+                   GError *error)
 {
 	struct idle_async_error_reply_data *data;
 
@@ -1664,7 +1719,8 @@ async_report_idle (ECal *ecal, GError *error)
  * on an #ECalClient object instead.
  **/
 void
-e_cal_open_async (ECal *ecal, gboolean only_if_exists)
+e_cal_open_async (ECal *ecal,
+                  gboolean only_if_exists)
 {
 	ECalPrivate *priv;
 	GError *error = NULL;
@@ -1710,7 +1766,8 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
  * Deprecated: 3.2: Use e_cal_client_refresh_sync() instead.
  **/
 gboolean
-e_cal_refresh (ECal *ecal, GError **error)
+e_cal_refresh (ECal *ecal,
+               GError **error)
 {
 	ECalPrivate *priv;
 
@@ -1737,7 +1794,8 @@ e_cal_refresh (ECal *ecal, GError **error)
  * Deprecated: 3.2: Use e_client_remove_sync() on an #ECalClient object instead.
  */
 gboolean
-e_cal_remove (ECal *ecal, GError **error)
+e_cal_remove (ECal *ecal,
+              GError **error)
 {
 	ECalPrivate *priv;
 
@@ -1779,7 +1837,8 @@ build_uri_list (GNOME_Evolution_Calendar_StringSeq *seq)
  * Deprecated: 3.2: This function has been dropped completely.
  */
 GList *
-e_cal_uri_list (ECal *ecal, CalMode mode)
+e_cal_uri_list (ECal *ecal,
+                CalMode mode)
 {
 #if 0
 	ECalPrivate *priv;
@@ -1956,7 +2015,9 @@ e_cal_get_local_attachment_store (ECal *ecal)
  * Deprecated: 3.2: Use e_cal_client_is_readonly() on an #ECalClient object instead.
  */
 gboolean
-e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error)
+e_cal_is_read_only (ECal *ecal,
+                    gboolean *read_only,
+                    GError **error)
 {
 	ECalPrivate *priv;
 
@@ -1984,7 +2045,9 @@ e_cal_is_read_only (ECal *ecal, gboolean *read_only, GError **error)
  * with #CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS instead.
  **/
 gboolean
-e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error)
+e_cal_get_cal_address (ECal *ecal,
+                       gchar **cal_address,
+                       GError **error)
 {
 	ECalPrivate *priv;
 
@@ -2029,7 +2092,9 @@ e_cal_get_cal_address (ECal *ecal, gchar **cal_address, GError **error)
  * with #CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS instead.
  */
 gboolean
-e_cal_get_alarm_email_address (ECal *ecal, gchar **alarm_address, GError **error)
+e_cal_get_alarm_email_address (ECal *ecal,
+                               gchar **alarm_address,
+                               GError **error)
 {
 	ECalPrivate *priv;
 
@@ -2064,7 +2129,9 @@ e_cal_get_alarm_email_address (ECal *ecal, gchar **alarm_address, GError **error
  * Deprecated: 3.2: This function has been dropped completely.
  */
 gboolean
-e_cal_get_ldap_attribute (ECal *ecal, gchar **ldap_attribute, GError **error)
+e_cal_get_ldap_attribute (ECal *ecal,
+                          gchar **ldap_attribute,
+                          GError **error)
 {
 	ECalPrivate *priv;
 
@@ -2078,7 +2145,8 @@ e_cal_get_ldap_attribute (ECal *ecal, gchar **ldap_attribute, GError **error)
 }
 
 static gboolean
-load_capabilities (ECal *ecal, GError **error)
+load_capabilities (ECal *ecal,
+                   GError **error)
 {
 	ECalPrivate *priv;
 
@@ -2107,7 +2175,8 @@ load_capabilities (ECal *ecal, GError **error)
 }
 
 static gboolean
-check_capability (ECal *ecal, const gchar *cap)
+check_capability (ECal *ecal,
+                  const gchar *cap)
 {
 	ECalPrivate *priv;
 
@@ -2192,7 +2261,8 @@ e_cal_get_recurrences_no_master (ECal *ecal)
  * Deprecated: 3.2: Use e_client_check_capability() on an #ECalClient object instead.
  */
 gboolean
-e_cal_get_static_capability (ECal *ecal, const gchar *cap)
+e_cal_get_static_capability (ECal *ecal,
+                             const gchar *cap)
 {
 	g_return_val_if_fail (ecal != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
@@ -2273,7 +2343,8 @@ e_cal_get_refresh_supported (ECal *ecal)
  * Deprecated: 3.2: This function has been dropped completely.
  */
 gboolean
-e_cal_set_mode (ECal *ecal, CalMode mode)
+e_cal_set_mode (ECal *ecal,
+                CalMode mode)
 {
 	ECalPrivate *priv;
 
@@ -2291,13 +2362,13 @@ e_cal_set_mode (ECal *ecal, CalMode mode)
 }
 
 /* This is used in the callback which fetches all the timezones needed for an
-   object. */
+ * object. */
 typedef struct _ECalGetTimezonesData ECalGetTimezonesData;
 struct _ECalGetTimezonesData {
 	ECal *ecal;
 
 	/* This starts out at E_CALENDAR_STATUS_OK. If an error occurs this
-	   contains the last error. */
+	 * contains the last error. */
 	ECalendarStatus status;
 };
 
@@ -2315,7 +2386,9 @@ struct _ECalGetTimezonesData {
  * Deprecated: 3.2: Use e_cal_client_get_default_object_sync() instead.
  */
 gboolean
-e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
+e_cal_get_default_object (ECal *ecal,
+                          icalcomponent **icalcomp,
+                          GError **error)
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
@@ -2367,7 +2440,11 @@ e_cal_get_default_object (ECal *ecal, icalcomponent **icalcomp, GError **error)
  * Deprecated: 3.2: Use e_cal_client_get_attachment_uris_sync() instead.
  **/
 gboolean
-e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, GSList **list, GError **error)
+e_cal_get_attachments_for_comp (ECal *ecal,
+                                const gchar *uid,
+                                const gchar *rid,
+                                GSList **list,
+                                GError **error)
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
@@ -2423,7 +2500,11 @@ e_cal_get_attachments_for_comp (ECal *ecal, const gchar *uid, const gchar *rid, 
  * Deprecated: 3.2: Use e_cal_client_get_object_sync() instead.
  **/
 gboolean
-e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent **icalcomp, GError **error)
+e_cal_get_object (ECal *ecal,
+                  const gchar *uid,
+                  const gchar *rid,
+                  icalcomponent **icalcomp,
+                  GError **error)
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
@@ -2509,7 +2590,10 @@ e_cal_get_object (ECal *ecal, const gchar *uid, const gchar *rid, icalcomponent 
  * Deprecated: 3.2: Use e_cal_client_get_objects_for_uid_sync() instead.
  **/
 gboolean
-e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError **error)
+e_cal_get_objects_for_uid (ECal *ecal,
+                           const gchar *uid,
+                           GList **objects,
+                           GError **error)
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
@@ -2601,8 +2685,9 @@ e_cal_get_objects_for_uid (ECal *ecal, const gchar *uid, GList **objects, GError
  *
  * Deprecated: 3.2: Use e_cal_client_resolve_tzid_cb() instead.
  */
-icaltimezone*
-e_cal_resolve_tzid_cb (const gchar *tzid, gpointer data)
+icaltimezone *
+e_cal_resolve_tzid_cb (const gchar *tzid,
+                       gpointer data)
 {
 	ECal *ecal;
 	icaltimezone *zone = NULL;
@@ -2634,7 +2719,10 @@ e_cal_resolve_tzid_cb (const gchar *tzid, gpointer data)
  * Deprecated: 3.2: This function has been dropped completely.
  */
 gboolean
-e_cal_get_changes (ECal *ecal, const gchar *change_id, GList **changes, GError **error)
+e_cal_get_changes (ECal *ecal,
+                   const gchar *change_id,
+                   GList **changes,
+                   GError **error)
 {
 	ECalPrivate *priv;
 
@@ -2692,7 +2780,10 @@ e_cal_free_change_list (GList *list)
  * Deprecated: 3.2: Use e_cal_client_get_object_list_sync() instead.
  **/
 gboolean
-e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError **error)
+e_cal_get_object_list (ECal *ecal,
+                       const gchar *query,
+                       GList **objects,
+                       GError **error)
 {
 	ECalPrivate *priv;
 	gchar **object_array = NULL, *gdbus_query = NULL;
@@ -2749,7 +2840,10 @@ e_cal_get_object_list (ECal *ecal, const gchar *query, GList **objects, GError *
  * Deprecated: 3.2: Use e_cal_client_get_object_list_as_comps_sync() instead.
  */
 gboolean
-e_cal_get_object_list_as_comp (ECal *ecal, const gchar *query, GList **objects, GError **error)
+e_cal_get_object_list_as_comp (ECal *ecal,
+                               const gchar *query,
+                               GList **objects,
+                               GError **error)
 {
 	GList *ical_objects = NULL;
 	GList *l;
@@ -2811,8 +2905,12 @@ e_cal_free_object_list (GList *objects)
  * Deprecated: 3.2: Use e_cal_client_get_free_busy_sync() instead.
  */
 gboolean
-e_cal_get_free_busy (ECal *ecal, GList *users, time_t start, time_t end,
-		     GList **freebusy, GError **error)
+e_cal_get_free_busy (ECal *ecal,
+                     GList *users,
+                     time_t start,
+                     time_t end,
+                     GList **freebusy,
+                     GError **error)
 {
 	ECalPrivate *priv;
 	gchar **strv;
@@ -2872,7 +2970,10 @@ struct instances_info {
 
 /* Called from cal_recur_generate_instances(); adds an instance to the list */
 static gboolean
-add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
+add_instance (ECalComponent *comp,
+              time_t start,
+              time_t end,
+              gpointer data)
 {
 	GList **list;
 	struct comp_instance *ci;
@@ -2935,7 +3036,8 @@ add_instance (ECalComponent *comp, time_t start, time_t end, gpointer data)
 
 /* Used from g_list_sort(); compares two struct comp_instance structures */
 static gint
-compare_comp_instance (gconstpointer a, gconstpointer b)
+compare_comp_instance (gconstpointer a,
+                       gconstpointer b)
 {
 	const struct comp_instance *cia, *cib;
 	time_t diff;
@@ -2948,7 +3050,8 @@ compare_comp_instance (gconstpointer a, gconstpointer b)
 }
 
 static GList *
-process_detached_instances (GList *instances, GList *detached_instances)
+process_detached_instances (GList *instances,
+                            GList *detached_instances)
 {
 	struct comp_instance *ci, *cid;
 	GList *dl, *unprocessed_instances = NULL;
@@ -3051,8 +3154,12 @@ process_detached_instances (GList *instances, GList *detached_instances)
 }
 
 static void
-generate_instances (ECal *ecal, time_t start, time_t end, const gchar *uid,
-		    ECalRecurInstanceFn cb, gpointer cb_data)
+generate_instances (ECal *ecal,
+                    time_t start,
+                    time_t end,
+                    const gchar *uid,
+                    ECalRecurInstanceFn cb,
+                    gpointer cb_data)
 {
 	GList *objects = NULL;
 	GList *instances, *detached_instances = NULL;
@@ -3131,10 +3238,10 @@ try_again:
 			e_cal_component_get_dtend (comp, &dtend);
 
 			/* For DATE-TIME values with a TZID, we use
-			e_cal_resolve_tzid_cb to resolve the TZID.
-			For DATE values and DATE-TIME values without a
-			TZID (i.e. floating times) we use the default
-			timezone. */
+			 * e_cal_resolve_tzid_cb to resolve the TZID.
+			 * For DATE values and DATE-TIME values without a
+			 * TZID (i.e. floating times) we use the default
+			 * timezone. */
 			if (dtstart.tzid && !dtstart.value->is_date) {
 				start_zone = e_cal_resolve_tzid_cb (dtstart.tzid, ecal);
 				if (!start_zone)
@@ -3257,8 +3364,11 @@ try_again:
  * Deprecated: 3.2: Use e_cal_client_generate_instances() instead.
  **/
 void
-e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
-			  ECalRecurInstanceFn cb, gpointer cb_data)
+e_cal_generate_instances (ECal *ecal,
+                          time_t start,
+                          time_t end,
+                          ECalRecurInstanceFn cb,
+                          gpointer cb_data)
 {
 	ECalPrivate *priv;
 
@@ -3295,9 +3405,12 @@ e_cal_generate_instances (ECal *ecal, time_t start, time_t end,
  * Deprecated: 3.2: Use e_cal_client_generate_instances_for_object() instead.
  **/
 void
-e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
-				     time_t start, time_t end,
-				     ECalRecurInstanceFn cb, gpointer cb_data)
+e_cal_generate_instances_for_object (ECal *ecal,
+                                     icalcomponent *icalcomp,
+                                     time_t start,
+                                     time_t end,
+                                     ECalRecurInstanceFn cb,
+                                     gpointer cb_data)
 {
 	ECalComponent *comp;
 	const gchar *uid;
@@ -3383,7 +3496,10 @@ e_cal_generate_instances_for_object (ECal *ecal, icalcomponent *icalcomp,
 
 /* Builds a list of ECalComponentAlarms structures */
 static GSList *
-build_component_alarms_list (ECal *ecal, GList *object_list, time_t start, time_t end)
+build_component_alarms_list (ECal *ecal,
+                             GList *object_list,
+                             time_t start,
+                             time_t end)
 {
 	GSList *comp_alarms;
 	GList *l;
@@ -3427,7 +3543,9 @@ build_component_alarms_list (ECal *ecal, GList *object_list, time_t start, time_
  * Deprecated: 3.2: This function has been dropped completely.
  **/
 GSList *
-e_cal_get_alarms_in_range (ECal *ecal, time_t start, time_t end)
+e_cal_get_alarms_in_range (ECal *ecal,
+                           time_t start,
+                           time_t end)
 {
 	ECalPrivate *priv;
 	GSList *alarms;
@@ -3519,9 +3637,11 @@ e_cal_free_alarms (GSList *comp_alarms)
  * Deprecated: 3.2: This function has been dropped completely.
  **/
 gboolean
-e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
-			     time_t start, time_t end,
-			     ECalComponentAlarms **alarms)
+e_cal_get_alarms_for_object (ECal *ecal,
+                             const ECalComponentId *id,
+                             time_t start,
+                             time_t end,
+                             ECalComponentAlarms **alarms)
 {
 	ECalPrivate *priv;
 	icalcomponent *icalcomp;
@@ -3578,7 +3698,10 @@ e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
  * Deprecated: 3.2: Use e_cal_client_discard_alarm_sync() instead.
  */
 gboolean
-e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError **error)
+e_cal_discard_alarm (ECal *ecal,
+                     ECalComponent *comp,
+                     const gchar *auid,
+                     GError **error)
 {
 	ECalPrivate *priv;
 
@@ -3606,9 +3729,10 @@ struct _ForeachTZIDCallbackData {
 };
 
 /* This adds the VTIMEZONE given by the TZID parameter to the GHashTable in
-   data. */
+ * data. */
 static void
-foreach_tzid_callback (icalparameter *param, gpointer cbdata)
+foreach_tzid_callback (icalparameter *param,
+                       gpointer cbdata)
 {
 	ForeachTZIDCallbackData *data = cbdata;
 	ECalPrivate *priv;
@@ -3635,7 +3759,7 @@ foreach_tzid_callback (icalparameter *param, gpointer cbdata)
 		}
 	} else {
 		/* Check if it is in our cache. If it is, it must already be
-		   on the server so return. */
+		 * on the server so return. */
 		if (g_hash_table_lookup (priv->timezones, tzid))
 			return;
 
@@ -3658,7 +3782,9 @@ foreach_tzid_callback (icalparameter *param, gpointer cbdata)
 
 /* This appends the value string to the GString given in data. */
 static void
-append_timezone_string (gpointer key, gpointer value, gpointer data)
+append_timezone_string (gpointer key,
+                        gpointer value,
+                        gpointer data)
 {
 	GString *vcal_string = data;
 
@@ -3668,26 +3794,28 @@ append_timezone_string (gpointer key, gpointer value, gpointer data)
 
 /* This simply frees the hash values. */
 static void
-free_timezone_string (gpointer key, gpointer value, gpointer data)
+free_timezone_string (gpointer key,
+                      gpointer value,
+                      gpointer data)
 {
 	g_free (value);
 }
 
 /* This converts the VEVENT/VTODO to a string. If include_all_timezones is
-   TRUE, it includes all the VTIMEZONE components needed for the VEVENT/VTODO.
-   If not, it only includes builtin timezones that may not be on the server.
-
-   To do that we check every TZID in the component to see if it is a builtin
-   timezone. If it is, we see if it it in our cache. If it is in our cache,
-   then we know the server already has it and we don't need to send it.
-   If it isn't in our cache, then we need to send it to the server.
-   If we need to send any timezones to the server, then we have to create a
-   complete VCALENDAR object, otherwise we can just send a single VEVENT/VTODO
-   as before. */
+ * TRUE, it includes all the VTIMEZONE components needed for the VEVENT/VTODO.
+ * If not, it only includes builtin timezones that may not be on the server.
+ *
+ * To do that we check every TZID in the component to see if it is a builtin
+ * timezone. If it is, we see if it it in our cache. If it is in our cache,
+ * then we know the server already has it and we don't need to send it.
+ * If it isn't in our cache, then we need to send it to the server.
+ * If we need to send any timezones to the server, then we have to create a
+ * complete VCALENDAR object, otherwise we can just send a single VEVENT/VTODO
+ * as before. */
 static gchar *
 e_cal_get_component_as_string_internal (ECal *ecal,
-					icalcomponent *icalcomp,
-					gboolean include_all_timezones)
+                                        icalcomponent *icalcomp,
+                                        gboolean include_all_timezones)
 {
 	GHashTable *timezone_hash;
 	GString *vcal_string;
@@ -3698,7 +3826,7 @@ e_cal_get_component_as_string_internal (ECal *ecal,
 	timezone_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* Add any timezones needed to the hash. We use a hash since we only
-	   want to add each timezone once at most. */
+	 * want to add each timezone once at most. */
 	cbdata.ecal = ecal;
 	cbdata.timezone_hash = timezone_hash;
 	cbdata.include_all_timezones = include_all_timezones;
@@ -3711,7 +3839,7 @@ e_cal_get_component_as_string_internal (ECal *ecal,
 	}
 
 	/* Create the start of a VCALENDAR, to add the VTIMEZONES to,
-	   and remember its length so we know if any VTIMEZONEs get added. */
+	 * and remember its length so we know if any VTIMEZONEs get added. */
 	vcal_string = g_string_new (NULL);
 	g_string_append (vcal_string,
 			 "BEGIN:VCALENDAR\n"
@@ -3721,7 +3849,7 @@ e_cal_get_component_as_string_internal (ECal *ecal,
 	initial_vcal_string_len = vcal_string->len;
 
 	/* Now concatenate all the timezone strings. This also frees the
-	   timezone strings as it goes. */
+	 * timezone strings as it goes. */
 	g_hash_table_foreach (timezone_hash, append_timezone_string,
 			      vcal_string);
 
@@ -3729,7 +3857,7 @@ e_cal_get_component_as_string_internal (ECal *ecal,
 	obj_string = icalcomponent_as_ical_string_r (icalcomp);
 
 	/* If there were any timezones to send, create a complete VCALENDAR,
-	   else just send the VEVENT/VTODO string. */
+	 * else just send the VEVENT / VTODO string. */
 	if (!include_all_timezones
 	    && vcal_string->len == initial_vcal_string_len) {
 		g_string_free (vcal_string, TRUE);
@@ -3760,7 +3888,8 @@ e_cal_get_component_as_string_internal (ECal *ecal,
  * Deprecated: 3.2: Use e_cal_client_get_component_as_string() instead.
  **/
 gchar *
-e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp)
+e_cal_get_component_as_string (ECal *ecal,
+                               icalcomponent *icalcomp)
 {
 	return e_cal_get_component_as_string_internal (ecal, icalcomp, TRUE);
 }
@@ -3781,7 +3910,10 @@ e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp)
  * Deprecated: 3.2: Use e_cal_client_create_object_sync() instead.
  */
 gboolean
-e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **error)
+e_cal_create_object (ECal *ecal,
+                     icalcomponent *icalcomp,
+                     gchar **uid,
+                     GError **error)
 {
 	ECalPrivate *priv;
 	gchar *obj, *muid = NULL, *gdbus_obj = NULL;
@@ -3841,7 +3973,10 @@ e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **
  * Deprecated: 3.2: Use e_cal_client_modify_object_sync() instead.
  */
 gboolean
-e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GError **error)
+e_cal_modify_object (ECal *ecal,
+                     icalcomponent *icalcomp,
+                     CalObjModType mod,
+                     GError **error)
 {
 	ECalPrivate *priv;
 	gchar *obj, **strv;
@@ -3928,8 +4063,11 @@ e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GEr
  * Deprecated: 3.2: Use e_cal_client_remove_object_sync() instead.
  */
 gboolean
-e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
-			      const gchar *rid, CalObjModType mod, GError **error)
+e_cal_remove_object_with_mod (ECal *ecal,
+                              const gchar *uid,
+                              const gchar *rid,
+                              CalObjModType mod,
+                              GError **error)
 {
 	ECalPrivate *priv;
 	gchar **strv;
@@ -3981,7 +4119,9 @@ e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid,
  * Deprecated: 3.2: Use e_cal_client_remove_object_sync() instead, with rid set to NULL and mod set to CALOBJ_MOD_ALL.
  **/
 gboolean
-e_cal_remove_object (ECal *ecal, const gchar *uid, GError **error)
+e_cal_remove_object (ECal *ecal,
+                     const gchar *uid,
+                     GError **error)
 {
 	e_return_error_if_fail (ecal && E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
@@ -4004,7 +4144,9 @@ e_cal_remove_object (ECal *ecal, const gchar *uid, GError **error)
  * Deprecated: 3.2: Use e_cal_client_receive_objects_sync() instead.
  */
 gboolean
-e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
+e_cal_receive_objects (ECal *ecal,
+                       icalcomponent *icalcomp,
+                       GError **error)
 {
 	ECalPrivate *priv;
 	gchar *obj, *gdbus_obj = NULL;
@@ -4050,7 +4192,11 @@ e_cal_receive_objects (ECal *ecal, icalcomponent *icalcomp, GError **error)
  * Deprecated: 3.2: Use e_cal_client_send_objects_sync() instead.
  */
 gboolean
-e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomponent **modified_icalcomp, GError **error)
+e_cal_send_objects (ECal *ecal,
+                    icalcomponent *icalcomp,
+                    GList **users,
+                    icalcomponent **modified_icalcomp,
+                    GError **error)
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
@@ -4121,7 +4267,10 @@ e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users, icalcomp
  * Deprecated: 3.2: Use e_cal_client_get_timezone_sync() instead.
  */
 gboolean
-e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError **error)
+e_cal_get_timezone (ECal *ecal,
+                    const gchar *tzid,
+                    icaltimezone **zone,
+                    GError **error)
 {
 	ECalPrivate *priv;
 	ECalendarStatus status = E_CALENDAR_STATUS_OK;
@@ -4244,7 +4393,9 @@ e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError *
  * Deprecated: 3.2: Use e_cal_client_add_timezone_sync() instead.
  */
 gboolean
-e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
+e_cal_add_timezone (ECal *ecal,
+                    icaltimezone *izone,
+                    GError **error)
 {
 	ECalPrivate *priv;
 	gchar *tzobj, *gdbus_tzobj = NULL;
@@ -4302,7 +4453,10 @@ e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error)
  * Deprecated: 3.2: Use e_cal_client_get_view_sync() instead.
  **/
 gboolean
-e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error)
+e_cal_get_query (ECal *ecal,
+                 const gchar *sexp,
+                 ECalView **query,
+                 GError **error)
 {
 	ECalPrivate *priv;
 	ECalendarStatus status;
@@ -4364,7 +4518,9 @@ e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error
  * Deprecated: 3.2: Use e_cal_client_set_default_timezone() instead.
  */
 gboolean
-e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error)
+e_cal_set_default_timezone (ECal *ecal,
+                            icaltimezone *zone,
+                            GError **error)
 {
 	ECalPrivate *priv;
 
@@ -4531,7 +4687,8 @@ e_cal_open_default (ECal **ecal,
  * Deprecated: 3.2: Use e_cal_client_set_default() instead.
  */
 gboolean
-e_cal_set_default (ECal *ecal, GError **error)
+e_cal_set_default (ECal *ecal,
+                   GError **error)
 {
 	ESource *source;
 	ECalSourceType source_type;
@@ -4545,7 +4702,9 @@ e_cal_set_default (ECal *ecal, GError **error)
 }
 
 static gboolean
-set_default_source (ESourceList *sources, ESource *source, GError **error)
+set_default_source (ESourceList *sources,
+                    ESource *source,
+                    GError **error)
 {
 	const gchar *uid;
 	GError *err = NULL;
@@ -4554,7 +4713,7 @@ set_default_source (ESourceList *sources, ESource *source, GError **error)
 	uid = e_source_peek_uid (source);
 
 	/* make sure the source is actually in the ESourceList.  if
-	   it's not we don't bother adding it, just return an error */
+	 * it's not we don't bother adding it, just return an error */
 	source = e_source_list_peek_source_by_uid (sources, uid);
 	if (!source) {
 		g_set_error_literal (error, E_CALENDAR_ERROR,
@@ -4565,7 +4724,7 @@ set_default_source (ESourceList *sources, ESource *source, GError **error)
 	}
 
 	/* loop over all the sources clearing out any "default"
-	   properties we find */
+	 * properties we find */
 	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
 		GSList *s;
 		for (s = e_source_group_peek_sources (E_SOURCE_GROUP (g->data));
@@ -4614,7 +4773,9 @@ e_cal_set_default_source (ESource *source,
 }
 
 static gboolean
-get_sources (ESourceList **sources, const gchar *key, GError **error)
+get_sources (ESourceList **sources,
+             const gchar *key,
+             GError **error)
 {
 	GConfClient *gconf = gconf_client_get_default ();
 
@@ -4637,7 +4798,9 @@ get_sources (ESourceList **sources, const gchar *key, GError **error)
  * Deprecated: 3.2: Use e_cal_client_get_sources() instead.
  */
 gboolean
-e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error)
+e_cal_get_sources (ESourceList **sources,
+                   ECalSourceType type,
+                   GError **error)
 {
 	e_return_error_if_fail (sources != NULL, E_CALENDAR_STATUS_INVALID_ARG);
 	*sources = NULL;

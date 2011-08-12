@@ -76,7 +76,7 @@ struct _EPassMsg {
 	/* work variables */
 	GtkWidget *entry;
 	GtkWidget *check;
-	guint ismain:1;
+	guint ismain : 1;
 	guint noreply:1;	/* supress replies; when calling
 				 * dispatch functions from others */
 };
@@ -318,7 +318,7 @@ ep_idle_dispatch (gpointer data)
 	EPassMsg *msg;
 
 	/* As soon as a password window is up we stop; it will
-	   re-invoke us when it has been closed down */
+	 * re - invoke us when it has been closed down */
 	G_LOCK (passwords);
 	while (password_dialog == NULL && (msg = g_queue_pop_head (&message_queue)) != NULL) {
 		G_UNLOCK (passwords);
@@ -616,7 +616,9 @@ ep_add_password (EPassMsg *msg)
 static void ep_ask_password (EPassMsg *msg);
 
 static void
-pass_response (GtkDialog *dialog, gint response, gpointer data)
+pass_response (GtkDialog *dialog,
+               gint response,
+               gpointer data)
 {
 	EPassMsg *msg = data;
 	gint type = msg->flags & E_PASSWORDS_REMEMBER_MASK;
@@ -811,7 +813,7 @@ ep_ask_password (EPassMsg *msg)
 		G_CALLBACK (update_capslock_state), widget);
 
 	/* static password, shouldn't be remembered between sessions,
-	   but will be remembered within the session beyond our control */
+	 * but will be remembered within the session beyond our control */
 	if (type != E_PASSWORDS_REMEMBER_NEVER) {
 		if (msg->flags & E_PASSWORDS_PASSPHRASE) {
 			widget = gtk_check_button_new_with_mnemonic (
@@ -1050,7 +1052,8 @@ e_passwords_get_password (const gchar *unused,
  * hash.
  **/
 void
-e_passwords_add_password (const gchar *key, const gchar *passwd)
+e_passwords_add_password (const gchar *key,
+                          const gchar *passwd)
 {
 	EPassMsg *msg;
 

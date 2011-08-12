@@ -22,7 +22,8 @@
 #include <camel/camel.h>
 
 gint
-main (gint argc, gchar *argv[])
+main (gint argc,
+      gchar *argv[])
 {
 	CamelSession *session;
 	gchar *uri = NULL;

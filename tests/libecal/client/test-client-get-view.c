@@ -32,7 +32,9 @@ subtest_passed (SubTestId id)
 }
 
 static void
-objects_added_cb (GObject *object, const GSList *objects, gpointer data)
+objects_added_cb (GObject *object,
+                  const GSList *objects,
+                  gpointer data)
 {
 	const GSList *l;
 
@@ -43,7 +45,9 @@ objects_added_cb (GObject *object, const GSList *objects, gpointer data)
 }
 
 static void
-objects_modified_cb (GObject *object, const GSList *objects, gpointer data)
+objects_modified_cb (GObject *object,
+                     const GSList *objects,
+                     gpointer data)
 {
 	const GSList *l;
 
@@ -54,7 +58,9 @@ objects_modified_cb (GObject *object, const GSList *objects, gpointer data)
 }
 
 static void
-objects_removed_cb (GObject *object, const GSList *objects, gpointer data)
+objects_removed_cb (GObject *object,
+                    const GSList *objects,
+                    gpointer data)
 {
 	const GSList *l;
 
@@ -68,7 +74,9 @@ objects_removed_cb (GObject *object, const GSList *objects, gpointer data)
 }
 
 static void
-complete_cb (GObject *object, const GError *error, gpointer data)
+complete_cb (GObject *object,
+             const GError *error,
+             gpointer data)
 {
         g_print ("View complete (status: %d, error_msg:%s)\n", error ? error->code : 0, error ? error->message : "NULL");
 
@@ -125,7 +133,9 @@ alter_cal_client (gpointer user_data)
 }
 
 static void
-async_get_view_ready (GObject *source_object, GAsyncResult *result, gpointer user_data)
+async_get_view_ready (GObject *source_object,
+                      GAsyncResult *result,
+                      gpointer user_data)
 {
 	ECalClient *cal_client = E_CAL_CLIENT (source_object);
 	ECalClientView *view = NULL;
@@ -168,7 +178,8 @@ get_view_async (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECalClientView *view = NULL;
 	ECalClient *cal_client;

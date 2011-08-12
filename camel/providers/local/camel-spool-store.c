@@ -267,7 +267,8 @@ inode_hash (gconstpointer d)
 }
 
 static gboolean
-inode_equal (gconstpointer a, gconstpointer b)
+inode_equal (gconstpointer a,
+             gconstpointer b)
 {
 	const struct _inode *v1 = a, *v2 = b;
 
@@ -275,7 +276,9 @@ inode_equal (gconstpointer a, gconstpointer b)
 }
 
 static void
-inode_free (gpointer k, gpointer v, gpointer d)
+inode_free (gpointer k,
+            gpointer v,
+            gpointer d)
 {
 	g_free (k);
 }

@@ -78,10 +78,10 @@ struct _CamelIMAPXServer {
 	guint job_timeout;
 
 	gchar tagprefix;
-	gint state:4;
+	gint state : 4;
 
 	/* Current command/work queue.  All commands are stored in one list,
-	   all the time, so they can be cleaned up in exception cases */
+	 * all the time, so they can be cleaned up in exception cases */
 	GStaticRecMutex queue_lock;
 	CamelIMAPXCommand *literal;
 	CamelDList queue;
@@ -102,12 +102,12 @@ struct _CamelIMAPXServer {
 	guint32 mode;
 
 	/* any expunges that happened from the last command, they are
-	   processed after the command completes. */
+	 * processed after the command completes. */
 	GSList *expunged;
 
 	GThread *parser_thread;
 	/* Protects the output stream between parser thread (which can disconnect from server) and other threads that issue
-	   commands. Input stream does not require a lock since only parser_thread can operate on it */
+	 * commands. Input stream does not require a lock since only parser_thread can operate on it */
 	GStaticRecMutex ostream_lock;
 	/* Used for canceling operations as well as signaling parser thread to disconnnect/quit */
 	GCancellable *cancellable;

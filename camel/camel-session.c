@@ -590,7 +590,8 @@ camel_session_add_service (CamelSession *session,
  * Since: 3.2
  **/
 gboolean
-camel_session_remove_service (CamelSession *session, const gchar *uid)
+camel_session_remove_service (CamelSession *session,
+                              const gchar *uid)
 {
 	gboolean removed;
 
@@ -1203,7 +1204,7 @@ camel_session_set_junk_headers (CamelSession *session,
 
 	session->priv->junk_headers = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-	for (i=0; i<len; i++) {
+	for (i = 0; i < len; i++) {
 		g_hash_table_insert (session->priv->junk_headers, g_strdup (headers[i]), g_strdup (values[i]));
 	}
 }
@@ -1322,7 +1323,9 @@ camel_session_unlock (CamelSession *session,
  * Since: 2.32
  */
 void
-camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, gint socks_port)
+camel_session_set_socks_proxy (CamelSession *session,
+                               const gchar *socks_host,
+                               gint socks_port)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 
@@ -1350,7 +1353,9 @@ camel_session_set_socks_proxy (CamelSession *session, const gchar *socks_host, g
  * Since: 2.32
  */
 void
-camel_session_get_socks_proxy (CamelSession *session, gchar **host_ret, gint *port_ret)
+camel_session_get_socks_proxy (CamelSession *session,
+                               gchar **host_ret,
+                               gint *port_ret)
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 	g_return_if_fail (host_ret != NULL);

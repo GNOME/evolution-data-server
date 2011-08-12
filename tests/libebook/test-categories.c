@@ -3,7 +3,8 @@
 #include <libebook/e-contact.h>
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EContact *contact;
 	GList *category_list;

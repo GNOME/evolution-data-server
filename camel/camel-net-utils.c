@@ -80,8 +80,8 @@ gai_strerror (gint error_code)
 #endif
 
 /* gethostbyname emulation code for emulating getaddrinfo code ...
-
-This should probably go away */
+ *
+ * This should probably go away */
 
 #ifdef NEED_ADDRINFO
 
@@ -204,8 +204,11 @@ ai_to_herr (gint error)
 #endif /* ENABLE_IPv6 */
 
 static gint
-camel_gethostbyname_r (const gchar *name, struct hostent *host,
-		       gchar *buf, gsize buflen, gint *herr)
+camel_gethostbyname_r (const gchar *name,
+                       struct hostent *host,
+                       gchar *buf,
+                       gsize buflen,
+                       gint *herr)
 {
 #ifdef ENABLE_IPv6
 	struct addrinfo hints, *res;
@@ -315,8 +318,13 @@ camel_gethostbyname_r (const gchar *name, struct hostent *host,
 }
 
 static gint
-camel_gethostbyaddr_r (const gchar *addr, gint addrlen, gint type, struct hostent *host,
-		       gchar *buf, gsize buflen, gint *herr)
+camel_gethostbyaddr_r (const gchar *addr,
+                       gint addrlen,
+                       gint type,
+                       struct hostent *host,
+                       gchar *buf,
+                       gsize buflen,
+                       gint *herr)
 {
 #ifdef ENABLE_IPv6
 	gint retval, len;
@@ -407,7 +415,7 @@ camel_gethostbyaddr_r (const gchar *addr, gint addrlen, gint type, struct hosten
 /* ********************************************************************** */
 struct _addrinfo_msg {
 	CamelMsg msg;
-	guint cancelled:1;
+	guint cancelled : 1;
 
 	/* for host lookup */
 	const gchar *name;
@@ -515,7 +523,7 @@ cs_waitinfo (gpointer (worker)(gpointer),
 					_("Cancelled"));
 
 			/* We cancel so if the thread impl is decent it causes immediate exit.
-			   We check the reply port incase we had a reply in the mean time, which we free later */
+			 * We check the reply port incase we had a reply in the mean time, which we free later */
 			d(printf("Canceling lookup thread and leaving it\n"));
 			msg->cancelled = 1;
 			g_thread_join (thread);
@@ -654,7 +662,7 @@ cs_getaddrinfo (gpointer data)
 	info->result = getaddrinfo (info->name, info->service, info->hints, info->res);
 
 	/* On Solaris, the service name 'http' or 'https' is not defined.
-	   Use the port as the service name directly. */
+	 * Use the port as the service name directly. */
 	if (info->result && info->service) {
 		if (strcmp (info->service, "http") == 0)
 			info->result = getaddrinfo(info->name, "80", info->hints, info->res);
@@ -773,7 +781,7 @@ cs_getnameinfo (gpointer data)
 
 	/* FIXME: honour getnameinfo flags: do we care, not really */
 
-	while ((msg->result = camel_gethostbyaddr_r ((const gchar *)&sin->sin_addr, sizeof (sin->sin_addr), AF_INET, &h,
+	while ((msg->result = camel_gethostbyaddr_r ((const gchar *) &sin->sin_addr, sizeof (sin->sin_addr), AF_INET, &h,
 						    msg->hostbufmem, msg->hostbuflen, &herr)) == ERANGE) {
 		if (msg->cancelled)
 			break;
@@ -789,7 +797,7 @@ cs_getnameinfo (gpointer data)
 		if (msg->result == 0 && h.h_name && h.h_name[0]) {
 			msg->host = g_strdup (h.h_name);
 		} else {
-			guchar *in = (guchar *)&sin->sin_addr;
+			guchar *in = (guchar *) &sin->sin_addr;
 
 			/* sin_addr is always network order which is big-endian */
 			msg->host = g_strdup_printf("%u.%u.%u.%u", in[0], in[1], in[2], in[3]);

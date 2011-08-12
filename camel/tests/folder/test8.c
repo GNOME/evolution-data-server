@@ -20,7 +20,8 @@ static const gchar *local_providers[] = {
 };
 
 static void
-test_add_message (CamelFolder *folder, gint j)
+test_add_message (CamelFolder *folder,
+                  gint j)
 {
 	CamelMimeMessage *msg;
 	gchar *content;
@@ -64,8 +65,8 @@ worker (gpointer d)
 
 	/* we add a message, search for it, twiddle some flags, delete it */
 	/* and flat out */
-	for (i=0;i<MAX_MESSAGES;i++) {
-		test_add_message (info->folder, id+i);
+	for (i = 0; i < MAX_MESSAGES; i++) {
+		test_add_message (info->folder, id + i);
 
 		sub = g_strdup_printf ("(match-all (header-contains \"subject\" \"message %08x subject\"))", id+i);
 
@@ -90,8 +91,8 @@ worker (gpointer d)
 		pull ();
 
 		push ("deleting message, cleanup");
-		j=(100.0*rand ()/(RAND_MAX+1.0));
-		if (j<=70) {
+		j = (100.0 * rand () / (RAND_MAX + 1.0));
+		if (j <= 70) {
 			camel_folder_delete_message (info->folder, res->pdata[0]);
 		}
 
@@ -103,8 +104,8 @@ worker (gpointer d)
 		pull ();
 
 		/* about 1-in 100 calls will expunge */
-		j=(200.0*rand ()/(RAND_MAX+1.0));
-		if (j<=2) {
+		j = (200.0 * rand () / (RAND_MAX + 1.0));
+		if (j <= 2) {
 			push ("expunging folder");
 			camel_folder_expunge_sync (info->folder, NULL, &error);
 			check_msg (error == NULL, "%s", error->message);
@@ -137,7 +138,7 @@ gint main (gint argc, gchar **argv)
 	session = camel_test_session_new ("/tmp/camel-test");
 
 	for (j = 0; j < G_N_ELEMENTS (local_providers); j++) {
-		for (index=0;index<2;index++) {
+		for (index = 0; index < 2; index++) {
 			gchar *uid;
 
 			path = g_strdup_printf ("method %s %s", local_providers[j], index?"indexed":"nonindexed");
@@ -174,7 +175,7 @@ gint main (gint argc, gchar **argv)
 				GError *error = NULL;
 
 				info = g_malloc (sizeof (*info));
-				info->id = i*MAX_MESSAGES;
+				info->id = i * MAX_MESSAGES;
 				info->folder = folder;
 
 				threads[i] = g_thread_create (worker, info, TRUE, &error);
@@ -194,7 +195,7 @@ gint main (gint argc, gchar **argv)
 
 			push ("deleting remaining messages");
 			uids = camel_folder_get_uids (folder);
-			for (i=0;i<uids->len;i++) {
+			for (i = 0; i < uids->len; i++) {
 				camel_folder_delete_message (folder, uids->pdata[i]);
 			}
 			camel_folder_free_uids (folder, uids);

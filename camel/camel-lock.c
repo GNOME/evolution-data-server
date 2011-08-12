@@ -79,7 +79,7 @@ camel_lock_dot (const gchar *path,
 	struct stat st;
 
 	/* TODO: Is there a reliable way to refresh the lock, if we're still busy with it?
-	   Does it matter?  We will normally also use fcntl too ... */
+	 * Does it matter?  We will normally also use fcntl too ... */
 
 	/* use alloca, save cleaning up afterwards */
 	lock = alloca(strlen(path) + strlen(".lock") + 1);
@@ -193,10 +193,10 @@ camel_lock_fcntl (gint fd,
 	d(printf("fcntl locking %d\n", fd));
 
 	memset (&lock, 0, sizeof (lock));
-	lock.l_type = type==CAMEL_LOCK_READ?F_RDLCK:F_WRLCK;
+	lock.l_type = type == CAMEL_LOCK_READ ? F_RDLCK : F_WRLCK;
 	if (fcntl (fd, F_SETLK, &lock) == -1) {
 		/* If we get a 'locking not vailable' type error,
-		   we assume the filesystem doesn't support fcntl () locking */
+		 * we assume the filesystem doesn't support fcntl () locking */
 		/* this is somewhat system-dependent */
 		if (errno != EINVAL && errno != ENOLCK) {
 			g_set_error (
@@ -261,9 +261,9 @@ camel_lock_flock (gint fd,
 	d(printf("flock locking %d\n", fd));
 
 	if (type == CAMEL_LOCK_READ)
-		op = LOCK_SH|LOCK_NB;
+		op = LOCK_SH | LOCK_NB;
 	else
-		op = LOCK_EX|LOCK_NB;
+		op = LOCK_EX | LOCK_NB;
 
 	if (flock (fd, op) == -1) {
 		g_set_error (
@@ -315,7 +315,7 @@ camel_lock_folder (const gchar *path,
 
 	while (retry < CAMEL_LOCK_RETRY) {
 		if (retry > 0)
-			g_usleep (CAMEL_LOCK_DELAY*1000000);
+			g_usleep (CAMEL_LOCK_DELAY * 1000000);
 
 		if (camel_lock_fcntl (fd, type, error) == 0) {
 			if (camel_lock_flock (fd, type, error) == 0) {
@@ -339,7 +339,8 @@ camel_lock_folder (const gchar *path,
  * Free a lock on a folder.
  **/
 void
-camel_unlock_folder (const gchar *path, gint fd)
+camel_unlock_folder (const gchar *path,
+                     gint fd)
 {
 	camel_unlock_dot (path);
 	camel_unlock_flock (fd);
@@ -347,7 +348,9 @@ camel_unlock_folder (const gchar *path, gint fd)
 }
 
 #if 0
-gint main (gint argc, gchar **argv)
+gint
+main (gint argc,
+      gchar **argv)
 {
 	GError *error = NULL;
 	gint fd1, fd2;

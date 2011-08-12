@@ -81,7 +81,8 @@ typedef struct {
 } SecurityBuffer;
 
 static GString *
-ntlm_get_string (GByteArray *ba, gint offset)
+ntlm_get_string (GByteArray *ba,
+                 gint offset)
 {
 	SecurityBuffer *secbuf;
 	GString *string;
@@ -104,7 +105,10 @@ ntlm_get_string (GByteArray *ba, gint offset)
 }
 
 static void
-ntlm_set_string (GByteArray *ba, gint offset, const gchar *data, gint len)
+ntlm_set_string (GByteArray *ba,
+                 gint offset,
+                 const gchar *data,
+                 gint len)
 {
 	SecurityBuffer *secbuf;
 
@@ -135,7 +139,8 @@ static void setup_schedule        (const guchar *key_56, DES_KS ks);
 			  "\x00\x00\x00\x00\x00"
 
 static void
-ntlm_lanmanager_hash (const gchar *password, gchar hash[21])
+ntlm_lanmanager_hash (const gchar *password,
+                      gchar hash[21])
 {
 	guchar lm_password[15];
 	DES_KS ks;
@@ -157,7 +162,8 @@ ntlm_lanmanager_hash (const gchar *password, gchar hash[21])
 }
 
 static void
-ntlm_nt_hash (const gchar *password, gchar hash[21])
+ntlm_nt_hash (const gchar *password,
+              gchar hash[21])
 {
 	guchar *buf, *p;
 
@@ -175,12 +181,13 @@ ntlm_nt_hash (const gchar *password, gchar hash[21])
 }
 
 #define KEYBITS(k,s) \
-        (((k[(s)/8] << ((s)%8)) & 0xFF) | (k[(s)/8+1] >> (8-(s)%8)))
+        (((k[(s) / 8] << ((s) % 8)) & 0xFF) | (k[(s) / 8 + 1] >> (8 - (s) % 8)))
 
 /* DES utils */
 /* Set up a key schedule based on a 56bit key */
 static void
-setup_schedule (const guchar *key_56, DES_KS ks)
+setup_schedule (const guchar *key_56,
+                DES_KS ks)
 {
 	guchar key[8];
 	gint i, c, bit;
@@ -200,8 +207,9 @@ setup_schedule (const guchar *key_56, DES_KS ks)
 }
 
 static void
-ntlm_calc_response (const guchar key[21], const guchar plaintext[8],
-		    guchar results[24])
+ntlm_calc_response (const guchar key[21],
+                    const guchar plaintext[8],
+                    guchar results[24])
 {
 	DES_KS ks;
 
@@ -232,7 +240,9 @@ ntlm_calc_response (const guchar key[21], const guchar plaintext[8],
 #define ROT(val, n) ( ((val) << (n)) | ((val) >> (32 - (n))) )
 
 static void
-md4sum (const guchar *in, gint nbytes, guchar digest[16])
+md4sum (const guchar *in,
+        gint nbytes,
+        guchar digest[16])
 {
 	guchar *M;
 	guint32 A, B, C, D, AA, BB, CC, DD, X[16];
@@ -255,10 +265,10 @@ md4sum (const guchar *in, gint nbytes, guchar digest[16])
 
 	for (i = 0; i < nbytes + pbytes + 8; i += 64) {
 		for (j = 0; j < 16; j++) {
-			X[j] =  (M[i + j*4]) |
-				(M[i + j*4 + 1] << 8) |
-				(M[i + j*4 + 2] << 16) |
-				(M[i + j*4 + 3] << 24);
+			X[j] =  (M[i + j * 4]) |
+				(M[i + j * 4 + 1] << 8) |
+				(M[i + j * 4 + 2] << 16) |
+				(M[i + j * 4 + 3] << 24);
 		}
 
 		AA = A;
@@ -489,7 +499,8 @@ static guint32 Spbox[8][64] = {
 
 /* Encrypt or decrypt a block of data in ECB mode */
 static void
-des (guint32 ks[16][2], guchar block[8])
+des (guint32 ks[16][2],
+     guchar block[8])
 {
 	guint32 left, right, work;
 
@@ -622,7 +633,9 @@ static gint bytebit[] = {
  * depending on the value of "decrypt"
  */
 static void
-deskey (DES_KS k, guchar *key, gint decrypt)
+deskey (DES_KS k,
+        guchar *key,
+        gint decrypt)
 {
 	guchar pc1m[56];		/* place to modify pc1 into */
 	guchar pcr[56];		/* place to rotate pc1 into */
@@ -640,14 +653,14 @@ deskey (DES_KS k, guchar *key, gint decrypt)
 	for (i=0; i<16; i++) {		/* key chunk for each iteration */
 		memset (ks,0,sizeof (ks));	/* Clear key schedule */
 		for (j=0; j<56; j++)	/* rotate pc1 the right amount */
-			pcr[j] = pc1m[(l=j+totrot[decrypt? 15-i : i])<(j<28? 28 : 56) ? l: l-28];
+			pcr[j] = pc1m[(l = j + totrot[decrypt? 15 - i : i]) < (j < 28? 28 : 56) ? l: l - 28];
 			/* rotate left and right halves independently */
 		for (j=0; j<48; j++){	/* select bits individually */
 			/* check bit that goes to ks[j] */
 			if (pcr[pc2[j]-1]) {
 				/* mask it in if it's there */
 				l= j % 6;
-				ks[j/6] |= bytebit[l] >> 2;
+				ks[j / 6] |= bytebit[l] >> 2;
 			}
 		}
 		/* Now convert to packed odd/even interleaved form */
@@ -712,8 +725,8 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 			   (s = camel_stream_read (priv->helper_stream, buf,
 				   sizeof (buf), cancellable, NULL)) > 4 &&
 			   buf[0] == 'K' && buf[1] == 'K' && buf[2] == ' ' &&
-			   buf[s-1] == '\n') {
-				buf[s-1] = 0;
+			   buf[s - 1] == '\n') {
+				buf[s - 1] = 0;
 				data = g_base64_decode (buf + 3, &length);
 				g_byte_array_append (ret, data, length);
 				g_free (data);
@@ -724,9 +737,9 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 			g_free (type2);
 		}
 		/* On failure, we just return an empty string. Setting the
-		   GError would cause the providers to abort the whole
-		   connection, and we want them to ask the user for a password
-		   and continue. */
+		 * GError would cause the providers to abort the whole
+		 * connection, and we want them to ask the user for a password
+		 * and continue. */
 		g_object_unref (priv->helper_stream);
 		priv->helper_stream = NULL;
 		return ret;
@@ -760,8 +773,8 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 
 		/* Take MD5 of session nonce */
 		md5 = g_checksum_new (G_CHECKSUM_MD5);
-		g_checksum_update (md5, (gpointer)&sess_nonce, 16);
-		g_checksum_get_digest (md5, (gpointer)&digest, &digest_len);
+		g_checksum_update (md5, (gpointer) &sess_nonce, 16);
+		g_checksum_get_digest (md5, (gpointer) &digest, &digest_len);
 		g_checksum_get_digest (md5, digest, &digest_len);
 
 		g_checksum_free (md5);
@@ -882,12 +895,12 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 		g_object_unref (stream);
 		return FALSE;
 	}
-	if (buf[0] != 'Y' || buf[1] != 'R' || buf[2] != ' ' || buf[s-1] != '\n') {
+	if (buf[0] != 'Y' || buf[1] != 'R' || buf[2] != ' ' || buf[s - 1] != '\n') {
 		g_object_unref (stream);
 		return FALSE;
 	}
 
-	buf[s-1] = 0;
+	buf[s - 1] = 0;
 
 	priv->helper_stream = stream;
 	priv->type1_msg = g_strdup (buf + 3);

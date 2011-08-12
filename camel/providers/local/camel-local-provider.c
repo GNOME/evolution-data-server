@@ -138,7 +138,8 @@ static CamelProvider spool_directory_provider = {
 
 /* build a canonical 'path' */
 static gchar *
-make_can_path (gchar *p, gchar *o)
+make_can_path (gchar *p,
+               gchar *o)
 {
 	gchar c, last, *start = o;
 
@@ -146,12 +147,12 @@ make_can_path (gchar *p, gchar *o)
 
 	last = 0;
 	while ((c = *p++)) {
-		if (c!='/'
-		    || (c=='/' && last != '/'))
+		if (c != '/'
+		    || (c == '/' && last != '/'))
 			*o++ = c;
 		last = c;
 	}
-	if (o>start && o[-1] == '/')
+	if (o > start && o[-1] == '/')
 		o[-1] = 0;
 	else
 		*o = 0;
@@ -186,7 +187,8 @@ local_url_hash (gconstpointer v)
 }
 
 static gint
-check_equal (gchar *s1, gchar *s2)
+check_equal (gchar *s1,
+             gchar *s2)
 {
 	if (s1 == NULL || *s1 == 0) {
 		if (s2 == NULL || *s2 == 0)
@@ -202,7 +204,8 @@ check_equal (gchar *s1, gchar *s2)
 }
 
 static gint
-local_url_equal (gconstpointer v, gconstpointer v2)
+local_url_equal (gconstpointer v,
+                 gconstpointer v2)
 {
 	const CamelURL *u1 = v, *u2 = v2;
 	gchar *p1, *p2;

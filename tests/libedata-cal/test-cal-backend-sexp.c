@@ -1,7 +1,7 @@
 #include <libedata-cal/e-cal-backend-sexp.h>
 
 static void
-test_query (const gchar * query)
+test_query (const gchar *query)
 {
 	ECalBackendSExp *sexp = e_cal_backend_sexp_new (query);
 	time_t start, end;

@@ -109,13 +109,13 @@ e_data_server_module_load (GTypeModule *gmodule)
 
 	if (!g_module_symbol (module->library,
 			      "eds_module_initialize",
-			      (gpointer *)&module->initialize) ||
+			      (gpointer *) &module->initialize) ||
 	    !g_module_symbol (module->library,
 			      "eds_module_shutdown",
-			      (gpointer *)&module->shutdown) ||
+			      (gpointer *) &module->shutdown) ||
 	    !g_module_symbol (module->library,
 			      "eds_module_list_types",
-			      (gpointer *)&module->list_types)) {
+			      (gpointer *) &module->list_types)) {
 
 		g_warning ("%s", g_module_error ());
 		g_module_close (module->library);
@@ -171,7 +171,8 @@ e_data_server_module_class_init (EDataServerModuleClass *class)
 }
 
 static void
-module_object_weak_notify (gpointer user_data, GObject *object)
+module_object_weak_notify (gpointer user_data,
+                           GObject *object)
 {
 	module_objects = g_list_remove (module_objects, object);
 }

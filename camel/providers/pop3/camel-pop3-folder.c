@@ -54,13 +54,13 @@ cmd_uidl (CamelPOP3Engine *pe,
 
 	do {
 		ret = camel_pop3_stream_line (stream, &line, &len, NULL, NULL);
-		if (ret>=0) {
+		if (ret >= 0) {
 			if (strlen ((gchar *) line) > 1024)
 				line[1024] = 0;
 			if (sscanf((gchar *) line, "%u %s", &id, uid) == 2) {
 				fi = g_hash_table_lookup (folder->uids_id, GINT_TO_POINTER (id));
 				if (fi) {
-					camel_operation_progress (NULL, (fi->index+1) * 100 / folder->uids->len);
+					camel_operation_progress (NULL, (fi->index + 1) * 100 / folder->uids->len);
 					fi->uid = g_strdup (uid);
 					g_hash_table_insert (folder->uids_fi, fi->uid, fi);
 				} else {
@@ -68,7 +68,7 @@ cmd_uidl (CamelPOP3Engine *pe,
 				}
 			}
 		}
-	} while (ret>0);
+	} while (ret > 0);
 }
 
 /* create a uid from md5 of 'top' output */
@@ -88,7 +88,7 @@ cmd_builduid (CamelPOP3Engine *pe,
 	digest = g_alloca (length);
 
 	/* TODO; somehow work out the limit and use that for proper progress reporting
-	   We need a pointer to the folder perhaps? */
+	 * We need a pointer to the folder perhaps? */
 	camel_operation_progress (NULL, fi->id);
 
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
@@ -120,7 +120,9 @@ cmd_builduid (CamelPOP3Engine *pe,
 }
 
 static void
-cmd_list (CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
+cmd_list (CamelPOP3Engine *pe,
+          CamelPOP3Stream *stream,
+          gpointer data)
 {
 	gint ret;
 	guint len, id, size;
@@ -135,7 +137,7 @@ cmd_list (CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 
 	do {
 		ret = camel_pop3_stream_line (stream, &line, &len, NULL, NULL);
-		if (ret>=0) {
+		if (ret >= 0) {
 			if (sscanf((gchar *) line, "%u %u", &id, &size) == 2) {
 				fi = g_malloc0 (sizeof (*fi));
 				fi->size = size;
@@ -147,7 +149,7 @@ cmd_list (CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 				g_hash_table_insert (((CamelPOP3Folder *) folder)->uids_id, GINT_TO_POINTER (id), fi);
 			}
 		}
-	} while (ret>0);
+	} while (ret > 0);
 }
 
 static void
@@ -252,7 +254,7 @@ pop3_folder_get_uids (CamelFolder *folder)
 	CamelPOP3FolderInfo **fi = (CamelPOP3FolderInfo **) pop3_folder->uids->pdata;
 	gint i;
 
-	for (i=0;i<pop3_folder->uids->len;i++,fi++) {
+	for (i = 0; i < pop3_folder->uids->len; i++,fi++) {
 		if (fi[0]->uid)
 			g_ptr_array_add (uids, fi[0]->uid);
 	}
@@ -344,13 +346,13 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	}
 
 	/* Sigh, most of the crap in this function is so that the cancel button
-	   returns the proper exception code.  Sigh. */
+	 * returns the proper exception code.  Sigh. */
 
 	camel_operation_push_message (
 		cancellable, _("Retrieving POP message %d"), fi->id);
 
 	/* If we have an oustanding retrieve message running, wait for that to complete
-	   & then retrieve from cache, otherwise, start a new one, and similar */
+	 * & then retrieve from cache, otherwise, start a new one, and similar */
 
 	if (fi->cmd != NULL) {
 		while ((i = camel_pop3_engine_iterate (pop3_store->engine, fi->cmd, cancellable, error)) > 0)
@@ -386,10 +388,10 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 		/* Also initiate retrieval of some of the following messages, assume we'll be receiving them */
 		if (pop3_store->cache != NULL) {
 			/* This should keep track of the last one retrieved, also how many are still
-			   oustanding incase of random access on large folders */
-			i = fi->index+1;
-			last = MIN (i+10, pop3_folder->uids->len);
-			for (;i<last;i++) {
+			 * oustanding incase of random access on large folders */
+			i = fi->index + 1;
+			last = MIN (i + 10, pop3_folder->uids->len);
+			for (; i < last; i++) {
 				CamelPOP3FolderInfo *pfi = pop3_folder->uids->pdata[i];
 
 				if (pfi->uid && pfi->cmd == NULL) {
@@ -494,7 +496,7 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 	if (pcu) {
 		camel_pop3_engine_command_free (pop3_store->engine, pcu);
 	} else {
-		for (i=0;i<pop3_folder->uids->len;i++) {
+		for (i = 0; i < pop3_folder->uids->len; i++) {
 			CamelPOP3FolderInfo *fi = pop3_folder->uids->pdata[i];
 			if (fi->cmd) {
 				camel_pop3_engine_command_free (pop3_store->engine, fi->cmd);
@@ -601,7 +603,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 			fi->cmd = NULL;
 		}
 		camel_operation_progress (
-			cancellable, (i+1) * 100 / pop3_folder->uids->len);
+			cancellable, (i + 1) * 100 / pop3_folder->uids->len);
 	}
 
 	camel_operation_pop_message (cancellable);
@@ -662,7 +664,9 @@ camel_pop3_folder_new (CamelStore *parent,
 }
 
 static gboolean
-pop3_get_message_time_from_cache (CamelFolder *folder, const gchar *uid, time_t *message_time)
+pop3_get_message_time_from_cache (CamelFolder *folder,
+                                  const gchar *uid,
+                                  time_t *message_time)
 {
 	CamelStore *parent_store;
 	CamelPOP3Store *pop3_store;
@@ -761,7 +765,7 @@ camel_pop3_delete_old (CamelFolder *folder,
 
 		if (message_time) {
 			gdouble time_diff = difftime (temp,message_time);
-			gint day_lag = time_diff/(60*60*24);
+			gint day_lag = time_diff / (60 * 60 * 24);
 
 			d(printf("%s(%d): message_time= [%ld]\n", __FILE__, __LINE__, message_time));
 			d(printf("%s(%d): day_lag=[%d] \t days_to_delete=[%d]\n",
@@ -802,7 +806,7 @@ camel_pop3_delete_old (CamelFolder *folder,
 			fi->cmd = NULL;
 		}
 		camel_operation_progress (
-			cancellable, (i+1) * 100 / pop3_folder->uids->len);
+			cancellable, (i + 1) * 100 / pop3_folder->uids->len);
 	}
 
 	camel_pop3_store_expunge (pop3_store, error);

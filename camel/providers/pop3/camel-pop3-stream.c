@@ -21,7 +21,7 @@
  */
 
 /* This is *identical* to the camel-nntp-stream, so should probably
-   work out a way to merge them */
+ * work out a way to merge them */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -133,11 +133,11 @@ stream_read (CamelStream *stream,
 		}
 		if (p[0] == '.') {
 			if (p[1] == '\r' && p[2] == '\n') {
-				is->ptr = p+3;
+				is->ptr = p + 3;
 				is->mode = CAMEL_POP3_STREAM_EOD;
 				is->state = 0;
 				dd (printf ("POP3_STREAM_READ (%d):\n%.*s\n", (gint)(o-buffer), (gint)(o-buffer), buffer));
-				return o-buffer;
+				return o - buffer;
 			}
 			p++;
 		}
@@ -171,7 +171,7 @@ stream_read (CamelStream *stream,
 
 	dd (printf ("POP3_STREAM_READ (%d):\n%.*s\n", (gint)(o-buffer), (gint)(o-buffer), buffer));
 
-	return o-buffer;
+	return o - buffer;
 }
 
 static gssize
@@ -239,8 +239,8 @@ static void
 camel_pop3_stream_init (CamelPOP3Stream *is)
 {
 	/* +1 is room for appending a 0 if we need to for a line */
-	is->ptr = is->end = is->buf = g_malloc (CAMEL_POP3_STREAM_SIZE+1);
-	is->lineptr = is->linebuf = g_malloc (CAMEL_POP3_STREAM_LINE+1);
+	is->ptr = is->end = is->buf = g_malloc (CAMEL_POP3_STREAM_SIZE + 1);
+	is->lineptr = is->linebuf = g_malloc (CAMEL_POP3_STREAM_LINE + 1);
 	is->lineend = is->linebuf + CAMEL_POP3_STREAM_LINE;
 
 	/* init sentinal */
@@ -295,7 +295,7 @@ camel_pop3_stream_line (CamelPOP3Stream *is,
 	/* Data mode, convert leading '..' to '.', and stop when we reach a solitary '.' */
 	if (is->mode == CAMEL_POP3_STREAM_DATA) {
 		/* need at least 3 chars in buffer */
-		while (e-p < 3) {
+		while (e - p < 3) {
 			is->ptr = p;
 			if (stream_fill (is, cancellable, error) == -1)
 				return -1;
@@ -306,7 +306,7 @@ camel_pop3_stream_line (CamelPOP3Stream *is,
 		/* check for isolated '.\r\n' or begging of line '.' */
 		if (p[0] == '.') {
 			if (p[1] == '\r' && p[2] == '\n') {
-				is->ptr = p+3;
+				is->ptr = p + 3;
 				is->mode = CAMEL_POP3_STREAM_EOD;
 				*data = is->linebuf;
 				*len = 0;
@@ -406,7 +406,7 @@ camel_pop3_stream_getd (CamelPOP3Stream *is,
 			/* check leading '.', ... */
 			if (p[0] == '.') {
 				if (p[1] == '\r' && p[2] == '\n') {
-					is->ptr = p+3;
+					is->ptr = p + 3;
 					*len = p-s;
 					*start = s;
 					is->mode = CAMEL_POP3_STREAM_EOD;
@@ -422,7 +422,7 @@ camel_pop3_stream_getd (CamelPOP3Stream *is,
 					s++;
 					p++;
 				} else {
-					is->ptr = p+1;
+					is->ptr = p + 1;
 					*len = p-s;
 					*start = s;
 					is->state = 1;
@@ -435,7 +435,7 @@ camel_pop3_stream_getd (CamelPOP3Stream *is,
 			state = 1;
 		case 1:
 			/* Scan for sentinal */
-			while ((*p++)!='\n')
+			while ((*p++) != '\n')
 				;
 
 			if (p > e) {
@@ -445,7 +445,7 @@ camel_pop3_stream_getd (CamelPOP3Stream *is,
 			}
 			break;
 		}
-	} while ((e-p) >= 3);
+	} while ((e - p) >= 3);
 
 	is->state = state;
 	is->ptr = p;

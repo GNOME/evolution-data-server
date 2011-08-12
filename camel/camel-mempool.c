@@ -84,13 +84,13 @@ camel_mempool_new (gint blocksize,
 	switch (flags & CAMEL_MEMPOOL_ALIGN_MASK) {
 	case CAMEL_MEMPOOL_ALIGN_STRUCT:
 	default:
-		pool->align = G_MEM_ALIGN-1;
+		pool->align = G_MEM_ALIGN - 1;
 		break;
 	case CAMEL_MEMPOOL_ALIGN_WORD:
-		pool->align = 2-1;
+		pool->align = 2 - 1;
 		break;
 	case CAMEL_MEMPOOL_ALIGN_BYTE:
-		pool->align = 1-1;
+		pool->align = 1 - 1;
 	}
 	return pool;
 }
@@ -111,7 +111,7 @@ camel_mempool_alloc (CamelMemPool *pool,
                      register gint size)
 {
 	size = (size + pool->align) & (~(pool->align));
-	if (size>=pool->threshold) {
+	if (size >= pool->threshold) {
 		MemPoolThresholdNode *n;
 
 		n = g_malloc (ALIGNED_SIZEOF (*n) + size);
@@ -128,7 +128,7 @@ camel_mempool_alloc (CamelMemPool *pool,
 		}
 
 		/* maybe we could do some sort of the free blocks based on size, but
-		   it doubt its worth it at all */
+		 * it doubt its worth it at all */
 
 		n = g_malloc (ALIGNED_SIZEOF (*n) + pool->blocksize);
 		n->next = pool->blocks;

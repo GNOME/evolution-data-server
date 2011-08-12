@@ -6,14 +6,15 @@
 #include "ebook-test-utils.h"
 
 #define NEW_VCARD "BEGIN:VCARD\n\
-X-EVOLUTION-FILE-AS:Toshok, Chris\n\
-FN:Chris Toshok\n\
-EMAIL;INTERNET:toshok@ximian.com\n\
-ORG:Ximian, Inc.;\n\
-END:VCARD"
+X - EVOLUTION - FILE - AS : Toshok, Chris\n\
+FN : Chris Toshok\n\
+EMAIL; INTERNET : toshok@ximian.com\n\
+ORG : Ximian, Inc.;\n\
+END : VCARD"
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBook *book;
 	EContact *contact;

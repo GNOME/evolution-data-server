@@ -127,7 +127,7 @@ mh_summary_next_uid_string (CamelFolderSummary *s)
 	if (mhs->priv->current_uid) {
 		uidstr = g_strdup (mhs->priv->current_uid);
 		/* tell the summary of this, so we always append numbers to the end */
-		camel_folder_summary_set_uid (s, strtoul (uidstr, NULL, 10)+1);
+		camel_folder_summary_set_uid (s, strtoul (uidstr, NULL, 10) + 1);
 	} else {
 		/* else scan for one - and create it too, to make sure */
 		do {
@@ -136,7 +136,7 @@ mh_summary_next_uid_string (CamelFolderSummary *s)
 			uid = camel_folder_summary_next_uid (s);
 			name = g_strdup_printf("%s/%u", cls->folder_path, uid);
 			/* O_EXCL isn't guaranteed, sigh.  Oh well, bad luck, mh has problems anyway */
-			fd = open (name, O_WRONLY|O_CREAT|O_EXCL|O_LARGEFILE, 0600);
+			fd = open (name, O_WRONLY | O_CREAT | O_EXCL | O_LARGEFILE, 0600);
 			g_free (name);
 		} while (fd == -1 && errno == EEXIST);
 
@@ -162,7 +162,7 @@ camel_mh_summary_add (CamelLocalSummary *cls,
 
 	d(printf("summarising: %s\n", name));
 
-	fd = open (filename, O_RDONLY|O_LARGEFILE);
+	fd = open (filename, O_RDONLY | O_LARGEFILE);
 	if (fd == -1) {
 		g_warning ("Cannot summarise/index: %s: %s", filename, g_strerror (errno));
 		g_free (filename);
@@ -218,7 +218,7 @@ mh_summary_check (CamelLocalSummary *cls,
 	d(printf("checking summary ...\n"));
 
 	/* scan the directory, check for mail files not in the index, or index entries that
-	   no longer exist */
+	 * no longer exist */
 	dir = opendir (cls->folder_path);
 	if (dir == NULL) {
 		g_set_error (
@@ -234,7 +234,7 @@ mh_summary_check (CamelLocalSummary *cls,
 	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
 	count = camel_folder_summary_count ((CamelFolderSummary *) cls);
 	forceindex = count == 0;
-	for (i=0;i<count;i++) {
+	for (i = 0; i < count; i++) {
 		info = camel_folder_summary_index ((CamelFolderSummary *) cls, i);
 		if (info) {
 			g_hash_table_insert (left, (gchar *) camel_message_info_uid (info), info);
@@ -248,7 +248,7 @@ mh_summary_check (CamelLocalSummary *cls,
 			if (!isdigit (c))
 				break;
 		}
-		if (c==0) {
+		if (c == 0) {
 			info = camel_folder_summary_uid ((CamelFolderSummary *) cls, d->d_name);
 			if (info == NULL || (cls->index && (!camel_index_has_name (cls->index, d->d_name)))) {
 				/* need to add this file to the summary */
@@ -298,7 +298,7 @@ mh_summary_sync (CamelLocalSummary *cls,
 	d(printf("summary_sync(expunge=%s)\n", expunge?"true":"false"));
 
 	/* we could probably get away without this ... but why not use it, esp if we're going to
-	   be doing any significant io already */
+	 * be doing any significant io already */
 	if (camel_local_summary_check (cls, changes, cancellable, error) == -1)
 		return -1;
 
@@ -306,14 +306,14 @@ mh_summary_sync (CamelLocalSummary *cls,
 
 	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
 	count = camel_folder_summary_count ((CamelFolderSummary *) cls);
-	for (i=count-1;i>=0;i--) {
+	for (i = count - 1; i >= 0; i--) {
 		info = (CamelLocalMessageInfo *) camel_folder_summary_index ((CamelFolderSummary *) cls, i);
 		g_assert (info);
 		if (expunge && (info->info.flags & CAMEL_MESSAGE_DELETED)) {
 			uid = camel_message_info_uid (info);
 			name = g_strdup_printf("%s/%s", cls->folder_path, uid);
 			d(printf("deleting %s\n", name));
-			if (unlink (name) == 0 || errno==ENOENT) {
+			if (unlink (name) == 0 || errno == ENOENT) {
 
 				/* FIXME: put this in folder_summary::remove()? */
 				if (cls->index)
@@ -323,7 +323,7 @@ mh_summary_sync (CamelLocalSummary *cls,
 				camel_folder_summary_remove ((CamelFolderSummary *) cls, (CamelMessageInfo *) info);
 			}
 			g_free (name);
-		} else if (info->info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV|CAMEL_MESSAGE_FOLDER_FLAGGED)) {
+		} else if (info->info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV | CAMEL_MESSAGE_FOLDER_FLAGGED)) {
 			info->info.flags &= 0xffff;
 		}
 		camel_message_info_free (info);

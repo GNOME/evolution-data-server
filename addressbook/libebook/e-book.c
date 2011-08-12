@@ -117,7 +117,10 @@ gdbus_book_disconnect (EBook *book);
  * Called when the addressbook server dies.
  */
 static void
-gdbus_book_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, EBook *book)
+gdbus_book_closed_cb (GDBusConnection *connection,
+                      gboolean remote_peer_vanished,
+                      GError *error,
+                      EBook *book)
 {
 	GError *err = NULL;
 
@@ -139,10 +142,16 @@ gdbus_book_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished
 }
 
 static void
-gdbus_book_connection_gone_cb (GDBusConnection *connection, const gchar *sender_name, const gchar *object_path, const gchar *interface_name, const gchar *signal_name, GVariant *parameters, gpointer user_data)
+gdbus_book_connection_gone_cb (GDBusConnection *connection,
+                               const gchar *sender_name,
+                               const gchar *object_path,
+                               const gchar *interface_name,
+                               const gchar *signal_name,
+                               GVariant *parameters,
+                               gpointer user_data)
 {
 	/* signal subscription takes care of correct parameters,
-	   thus just do what is to be done here */
+	 * thus just do what is to be done here */
 	gdbus_book_closed_cb (connection, TRUE, NULL, user_data);
 }
 
@@ -273,7 +282,10 @@ e_book_init (EBook *book)
 }
 
 static void
-book_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data)
+book_factory_proxy_closed_cb (GDBusConnection *connection,
+                              gboolean remote_peer_vanished,
+                              GError *error,
+                              gpointer user_data)
 {
 	GError *err = NULL;
 
@@ -304,10 +316,16 @@ book_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_
 }
 
 static void
-book_factory_connection_gone_cb (GDBusConnection *connection, const gchar *sender_name, const gchar *object_path, const gchar *interface_name, const gchar *signal_name, GVariant *parameters, gpointer user_data)
+book_factory_connection_gone_cb (GDBusConnection *connection,
+                                 const gchar *sender_name,
+                                 const gchar *object_path,
+                                 const gchar *interface_name,
+                                 const gchar *signal_name,
+                                 GVariant *parameters,
+                                 gpointer user_data)
 {
 	/* signal subscription takes care of correct parameters,
-	   thus just do what is to be done here */
+	 * thus just do what is to be done here */
 	book_factory_proxy_closed_cb (connection, TRUE, NULL, user_data);
 }
 
@@ -354,7 +372,9 @@ e_book_activate (GError **error)
 }
 
 static void
-readonly_cb (EGdbusBook *object, gboolean readonly, EBook *book)
+readonly_cb (EGdbusBook *object,
+             gboolean readonly,
+             EBook *book)
 {
 	g_return_if_fail (E_IS_BOOK (book));
 
@@ -364,7 +384,9 @@ readonly_cb (EGdbusBook *object, gboolean readonly, EBook *book)
 }
 
 static void
-online_cb (EGdbusBook *object, gboolean is_online, EBook *book)
+online_cb (EGdbusBook *object,
+           gboolean is_online,
+           EBook *book)
 {
 	g_return_if_fail (E_IS_BOOK (book));
 
@@ -374,7 +396,9 @@ online_cb (EGdbusBook *object, gboolean is_online, EBook *book)
 }
 
 static void
-auth_required_cb (EGdbusBook *object, const ECredentials *credentials, EBook *book)
+auth_required_cb (EGdbusBook *object,
+                  const ECredentials *credentials,
+                  EBook *book)
 {
 	g_return_if_fail (E_IS_BOOK (book));
 
@@ -421,7 +445,9 @@ e_book_add_contact (EBook *book,
 }
 
 static void
-add_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+add_contact_reply (GObject *gdbus_book,
+                   GAsyncResult *res,
+                   gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
 	gchar *uid = NULL;
@@ -434,7 +460,7 @@ add_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	unwrap_gerror (error, &err);
 
 	/* If there is an error returned the GLib bindings currently return garbage
-	   for the OUT values. This is bad. */
+	 * for the OUT values. This is bad. */
 	if (error)
 		uid = NULL;
 
@@ -577,7 +603,9 @@ e_book_commit_contact (EBook *book,
 }
 
 static void
-modify_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+modify_contact_reply (GObject *gdbus_book,
+                      GAsyncResult *res,
+                      gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
@@ -735,7 +763,9 @@ e_book_get_required_fields (EBook *book,
 }
 
 static void
-get_required_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+get_required_fields_reply (GObject *gdbus_book,
+                           GAsyncResult *res,
+                           gpointer user_data)
 {
 	gchar **fields = NULL, *fields_str = NULL;
 	GError *err = NULL, *error = NULL;
@@ -857,9 +887,9 @@ e_book_get_required_fields_async (EBook *book,
  * an #EBookClient object with #BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS instead.
  **/
 gboolean
-e_book_get_supported_fields  (EBook *book,
-                              GList **fields,
-                              GError **error)
+e_book_get_supported_fields (EBook *book,
+                             GList **fields,
+                             GError **error)
 {
 	GError *err = NULL;
 	gchar **list = NULL, *list_str = NULL;
@@ -883,7 +913,9 @@ e_book_get_supported_fields  (EBook *book,
 }
 
 static void
-get_supported_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+get_supported_fields_reply (GObject *gdbus_book,
+                            GAsyncResult *res,
+                            gpointer user_data)
 {
 	gchar **fields = NULL, *fields_str = NULL;
 	GError *err = NULL, *error = NULL;
@@ -1034,7 +1066,9 @@ e_book_get_supported_auth_methods (EBook *book,
 }
 
 static void
-get_supported_auth_methods_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+get_supported_auth_methods_reply (GObject *gdbus_book,
+                                  GAsyncResult *res,
+                                  gpointer user_data)
 {
 	gchar **methods = NULL, *methods_str = NULL;
 	GError *err = NULL, *error = NULL;
@@ -1188,7 +1222,9 @@ e_book_authenticate_user (EBook *book,
 }
 
 static void
-authenticate_user_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+authenticate_user_reply (GObject *gdbus_book,
+                         GAsyncResult *res,
+                         gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
@@ -1372,7 +1408,9 @@ e_book_get_contact (EBook *book,
 }
 
 static void
-get_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+get_contact_reply (GObject *gdbus_book,
+                   GAsyncResult *res,
+                   gpointer user_data)
 {
 	gchar *vcard = NULL;
 	GError *err = NULL, *error = NULL;
@@ -1520,7 +1558,9 @@ e_book_remove_contact (EBook *book,
 }
 
 static void
-remove_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+remove_contact_reply (GObject *gdbus_book,
+                      GAsyncResult *res,
+                      gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
@@ -1670,7 +1710,9 @@ e_book_remove_contact_async (EBook *book,
 }
 
 static void
-remove_contact_by_id_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+remove_contact_by_id_reply (GObject *gdbus_book,
+                            GAsyncResult *res,
+                            gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
@@ -1782,7 +1824,9 @@ e_book_remove_contact_by_id_async (EBook *book,
 }
 
 static void
-remove_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+remove_contacts_reply (GObject *gdbus_book,
+                       GAsyncResult *res,
+                       gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
@@ -1926,12 +1970,12 @@ e_book_remove_contacts_async (EBook *book,
  * Deprecated: 3.2: Use e_book_client_get_view_sync() instead.
  **/
 gboolean
-e_book_get_book_view (EBook       *book,
-		      EBookQuery  *query,
-		      GList       *requested_fields,
-		      gint          max_results,
-		      EBookView  **book_view,
-		      GError     **error)
+e_book_get_book_view (EBook *book,
+                      EBookQuery *query,
+                      GList *requested_fields,
+                      gint max_results,
+                      EBookView **book_view,
+                      GError **error)
 {
 	GError *err = NULL;
 	EGdbusBookView *gdbus_bookview;
@@ -1977,7 +2021,9 @@ e_book_get_book_view (EBook       *book,
 }
 
 static void
-get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+get_book_view_reply (GObject *gdbus_book,
+                     GAsyncResult *res,
+                     gpointer user_data)
 {
 	gchar *view_path = NULL;
 	GError *err = NULL, *error = NULL;
@@ -2129,10 +2175,10 @@ e_book_get_book_view_async (EBook *book,
  * Deprecated: 3.2: Use e_book_client_get_contacts_sync() instead.
  **/
 gboolean
-e_book_get_contacts (EBook       *book,
-		     EBookQuery  *query,
-		     GList      **contacts,
-		     GError     **error)
+e_book_get_contacts (EBook *book,
+                     EBookQuery *query,
+                     GList **contacts,
+                     GError **error)
 {
 	GError *err = NULL;
 	gchar **list = NULL;
@@ -2165,7 +2211,9 @@ e_book_get_contacts (EBook       *book,
 }
 
 static void
-get_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+get_contacts_reply (GObject *gdbus_book,
+                    GAsyncResult *res,
+                    gpointer user_data)
 {
 	gchar **vcards = NULL;
 	GError *err = NULL, *error = NULL;
@@ -2337,10 +2385,10 @@ parse_changes_array (GVariant *var_changes)
  * Deprecated: 3.2: This function has been dropped completely.
  */
 gboolean
-e_book_get_changes (EBook       *book,
-		    const gchar *changeid,
-		    GList      **changes,
-		    GError     **error)
+e_book_get_changes (EBook *book,
+                    const gchar *changeid,
+                    GList **changes,
+                    GError **error)
 {
 	GError *err = NULL;
 	GVariant *var_changes = NULL;
@@ -2474,8 +2522,8 @@ e_book_free_change_list (GList *change_list)
  * Deprecated: 3.2: Use e_client_cancel_all() or e_client_cancel_op() on an #EBookClient object instead.
  **/
 gboolean
-e_book_cancel (EBook   *book,
-	       GError **error)
+e_book_cancel (EBook *book,
+               GError **error)
 {
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 
@@ -2496,7 +2544,8 @@ e_book_cancel (EBook   *book,
  * Deprecated: 3.2: Use e_client_cancel_all() or e_client_cancel_op() on an #EBookClient object instead.
  **/
 gboolean
-e_book_cancel_async_op (EBook *book, GError **error)
+e_book_cancel_async_op (EBook *book,
+                        GError **error)
 {
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 
@@ -2519,9 +2568,9 @@ e_book_cancel_async_op (EBook *book, GError **error)
  * Deprecated: 3.2: Use e_client_open_sync() on an #EBookClient object instead.
  */
 gboolean
-e_book_open (EBook     *book,
-	     gboolean   only_if_exists,
-	     GError   **error)
+e_book_open (EBook *book,
+             gboolean only_if_exists,
+             GError **error)
 {
 	GError *err = NULL;
 
@@ -2544,7 +2593,9 @@ e_book_open (EBook     *book,
 }
 
 static void
-open_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+open_reply (GObject *gdbus_book,
+            GAsyncResult *res,
+            gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
@@ -2658,8 +2709,8 @@ e_book_open_async (EBook *book,
  * Deprecated: 3.2: Use e_client_remove_sync() on an #EBookClient object instead.
  */
 gboolean
-e_book_remove (EBook   *book,
-	       GError **error)
+e_book_remove (EBook *book,
+               GError **error)
 {
 	GError *err = NULL;
 
@@ -2674,7 +2725,9 @@ e_book_remove (EBook   *book,
 }
 
 static void
-remove_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
+remove_reply (GObject *gdbus_book,
+              GAsyncResult *res,
+              gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
@@ -2749,7 +2802,7 @@ e_book_async_remove (EBook *book,
  **/
 gboolean
 e_book_remove_async (EBook *book,
-                     EBookAsyncCallback  cb,
+                     EBookAsyncCallback cb,
                      gpointer closure)
 {
 	AsyncData *data;
@@ -2976,7 +3029,9 @@ make_me_card (void)
  * Deprecated: 3.2: Use e_book_client_get_self() instead.
  **/
 gboolean
-e_book_get_self (EContact **contact, EBook **book, GError **error)
+e_book_get_self (EContact **contact,
+                 EBook **book,
+                 GError **error)
 {
 	GError *e = NULL;
 	GConfClient *gconf;
@@ -3045,7 +3100,9 @@ e_book_get_self (EContact **contact, EBook **book, GError **error)
  * Deprecated: 3.2: Use e_book_client_set_self() instead.
  **/
 gboolean
-e_book_set_self (EBook *book, EContact *contact, GError **error)
+e_book_set_self (EBook *book,
+                 EContact *contact,
+                 GError **error)
 {
 	GConfClient *gconf;
 
@@ -3077,7 +3134,7 @@ e_book_is_self (EContact *contact)
 	gboolean rv;
 
 	/* XXX this should probably be e_return_error_if_fail, but we
-	   need a GError arg for that */
+	 * need a GError arg for that */
 	g_return_val_if_fail (contact && E_IS_CONTACT (contact), FALSE);
 
 	gconf = gconf_client_get_default ();
@@ -3104,7 +3161,8 @@ e_book_is_self (EContact *contact)
  * Deprecated: 3.2: Use e_book_client_set_default_addressbook() instead.
  */
 gboolean
-e_book_set_default_addressbook (EBook *book, GError **error)
+e_book_set_default_addressbook (EBook *book,
+                                GError **error)
 {
 	ESource *source;
 
@@ -3151,7 +3209,7 @@ e_book_set_default_source (ESource *source,
 	}
 
 	/* make sure the source is actually in the ESourceList.  if
-	   it's not we don't bother adding it, just return an error */
+	 * it's not we don't bother adding it, just return an error */
 	source = e_source_list_peek_source_by_uid (sources, uid);
 	if (!source) {
 		g_set_error (error, E_BOOK_ERROR, E_BOOK_ERROR_NO_SUCH_SOURCE,
@@ -3161,7 +3219,7 @@ e_book_set_default_source (ESource *source,
 	}
 
 	/* loop over all the sources clearing out any "default"
-	   properties we find */
+	 * properties we find */
 	for (g = e_source_list_peek_groups (sources); g; g = g->next) {
 		GSList *s;
 		for (s = e_source_group_peek_sources (E_SOURCE_GROUP (g->data));
@@ -3200,7 +3258,8 @@ e_book_set_default_source (ESource *source,
  * Deprecated: 3.2: Use e_book_client_get_sources() instead.
  */
 gboolean
-e_book_get_addressbooks (ESourceList **addressbook_sources, GError **error)
+e_book_get_addressbooks (ESourceList **addressbook_sources,
+                         GError **error)
 {
 	GConfClient *gconf;
 
@@ -3305,10 +3364,14 @@ e_book_new (ESource *source,
 }
 
 /* for each known source calls check_func, which should return TRUE if the required
-   source have been found. Function returns NULL or the source on which was returned
-   TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref. */
+ * source have been found. Function returns NULL or the source on which was returned
+ * TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref. */
 static ESource *
-search_known_sources (gboolean (*check_func)(ESource *source, gpointer user_data), gpointer user_data, ESourceList **sources, GError **error)
+search_known_sources (gboolean (*check_func)(ESource *source,
+                                             gpointer user_data),
+                      gpointer user_data,
+                      ESourceList **sources,
+                      GError **error)
 {
 	ESource *res = NULL;
 	GSList *g;
@@ -3343,7 +3406,8 @@ search_known_sources (gboolean (*check_func)(ESource *source, gpointer user_data
 }
 
 static gboolean
-check_uri (ESource *source, gpointer uri)
+check_uri (ESource *source,
+           gpointer uri)
 {
 	const gchar *suri;
 
@@ -3392,7 +3456,8 @@ check_uri (ESource *source, gpointer uri)
  * Deprecated: 3.2: Use e_book_client_new_from_uri() instead.
  */
 EBook *
-e_book_new_from_uri (const gchar *uri, GError **error)
+e_book_new_from_uri (const gchar *uri,
+                     GError **error)
 {
 	ESourceList *sources = NULL;
 	ESource *source;
@@ -3430,7 +3495,8 @@ struct check_system_data
 };
 
 static gboolean
-check_system (ESource *source, gpointer data)
+check_system (ESource *source,
+              gpointer data)
 {
 	struct check_system_data *csd = data;
 
@@ -3664,7 +3730,7 @@ get_status_from_error (GError *error)
 		return error->code;
 	} else {
 		/* In this case the error was caused by DBus. Dump the message to the
-		   console as otherwise we have no idea what the problem is. */
+		 * console as otherwise we have no idea what the problem is. */
 		g_warning ("DBus error: %s", error->message);
 		return E_BOOK_ERROR_DBUS_EXCEPTION;
 	}
@@ -3676,7 +3742,8 @@ get_status_from_error (GError *error)
  * alone.
  */
 static gboolean
-unwrap_gerror (GError *error, GError **client_error)
+unwrap_gerror (GError *error,
+               GError **client_error)
 {
 	if (error == NULL)
 		return TRUE;

@@ -52,7 +52,8 @@ struct _ECalBackendSyncPrivate {
  * can happen at the same time.
  */
 void
-e_cal_backend_sync_set_lock (ECalBackendSync *backend, gboolean lock)
+e_cal_backend_sync_set_lock (ECalBackendSync *backend,
+                             gboolean lock)
 {
 	g_return_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend));
 
@@ -71,7 +72,11 @@ e_cal_backend_sync_set_lock (ECalBackendSync *backend, gboolean lock)
  * Calls the open_sync method on the given backend.
  */
 void
-e_cal_backend_sync_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, gboolean only_if_exists, GError **error)
+e_cal_backend_sync_open (ECalBackendSync *backend,
+                         EDataCal *cal,
+                         GCancellable *cancellable,
+                         gboolean only_if_exists,
+                         GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 
@@ -88,7 +93,10 @@ e_cal_backend_sync_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *
  * Authenticates @backend with given @credentials.
  **/
 void
-e_cal_backend_sync_authenticate_user (ECalBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error)
+e_cal_backend_sync_authenticate_user (ECalBackendSync *backend,
+                                      GCancellable *cancellable,
+                                      ECredentials *credentials,
+                                      GError **error)
 {
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (credentials, InvalidArg);
@@ -106,7 +114,10 @@ e_cal_backend_sync_authenticate_user (ECalBackendSync *backend, GCancellable *ca
  * Calls the remove_sync method on the given backend.
  */
 void
-e_cal_backend_sync_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **error)
+e_cal_backend_sync_remove (ECalBackendSync *backend,
+                           EDataCal *cal,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 
@@ -125,7 +136,10 @@ e_cal_backend_sync_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable
  * Since: 2.30
  */
 void
-e_cal_backend_sync_refresh  (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **error)
+e_cal_backend_sync_refresh (ECalBackendSync *backend,
+                            EDataCal *cal,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->refresh_sync != NULL, UnsupportedMethod);
@@ -151,7 +165,12 @@ e_cal_backend_sync_refresh  (ECalBackendSync *backend, EDataCal *cal, GCancellab
  * Since: 3.2
  **/
 gboolean
-e_cal_backend_sync_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **error)
+e_cal_backend_sync_get_backend_property (ECalBackendSync *backend,
+                                         EDataCal *cal,
+                                         GCancellable *cancellable,
+                                         const gchar *prop_name,
+                                         gchar **prop_value,
+                                         GError **error)
 {
 	gboolean res = FALSE;
 
@@ -182,7 +201,12 @@ e_cal_backend_sync_get_backend_property (ECalBackendSync *backend, EDataCal *cal
  * Since: 3.2
  **/
 gboolean
-e_cal_backend_sync_set_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value, GError **error)
+e_cal_backend_sync_set_backend_property (ECalBackendSync *backend,
+                                         EDataCal *cal,
+                                         GCancellable *cancellable,
+                                         const gchar *prop_name,
+                                         const gchar *prop_value,
+                                         GError **error)
 {
 	gboolean res = FALSE;
 
@@ -209,7 +233,13 @@ e_cal_backend_sync_set_backend_property (ECalBackendSync *backend, EDataCal *cal
  * Calls the get_object_sync method on the given backend.
  */
 void
-e_cal_backend_sync_get_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, gchar **calobj, GError **error)
+e_cal_backend_sync_get_object (ECalBackendSync *backend,
+                               EDataCal *cal,
+                               GCancellable *cancellable,
+                               const gchar *uid,
+                               const gchar *rid,
+                               gchar **calobj,
+                               GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (calobj, InvalidArg);
@@ -229,7 +259,12 @@ e_cal_backend_sync_get_object (ECalBackendSync *backend, EDataCal *cal, GCancell
  * Calls the get_object_list_sync method on the given backend.
  */
 void
-e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *sexp, GSList **calobjs, GError **error)
+e_cal_backend_sync_get_object_list (ECalBackendSync *backend,
+                                    EDataCal *cal,
+                                    GCancellable *cancellable,
+                                    const gchar *sexp,
+                                    GSList **calobjs,
+                                    GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (calobjs, InvalidArg);
@@ -251,7 +286,14 @@ e_cal_backend_sync_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCa
  * Calls the get_free_busy_sync method on the given backend.
  */
 void
-e_cal_backend_sync_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users, time_t start, time_t end, GSList **freebusyobjects, GError **error)
+e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const GSList *users,
+                                  time_t start,
+                                  time_t end,
+                                  GSList **freebusyobjects,
+                                  GError **error)
 {
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 
@@ -271,7 +313,13 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCanc
  * Calls the create_object_sync method on the given backend.
  */
 void
-e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, gchar **uid, gchar **new_object, GError **error)
+e_cal_backend_sync_create_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *calobj,
+                                  gchar **uid,
+                                  gchar **new_object,
+                                  GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->create_object_sync != NULL, UnsupportedMethod);
@@ -295,8 +343,14 @@ e_cal_backend_sync_create_object (ECalBackendSync *backend, EDataCal *cal, GCanc
  * Calls the modify_object_sync method on the given backend.
  */
 void
-e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj,
-				  CalObjModType mod, gchar **old_object, gchar **new_object, GError **error)
+e_cal_backend_sync_modify_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *calobj,
+                                  CalObjModType mod,
+                                  gchar **old_object,
+                                  gchar **new_object,
+                                  GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync != NULL, UnsupportedMethod);
@@ -323,8 +377,15 @@ e_cal_backend_sync_modify_object (ECalBackendSync *backend, EDataCal *cal, GCanc
  * Calls the remove_object_sync method on the given backend.
  */
 void
-e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid,
-				  CalObjModType mod, gchar **old_object, gchar **new_object, GError **error)
+e_cal_backend_sync_remove_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *uid,
+                                  const gchar *rid,
+                                  CalObjModType mod,
+                                  gchar **old_object,
+                                  gchar **new_object,
+                                  GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync != NULL, UnsupportedMethod);
@@ -343,7 +404,11 @@ e_cal_backend_sync_remove_object (ECalBackendSync *backend, EDataCal *cal, GCanc
  * Calls the receive_objects_sync method on the given backend.
  */
 void
-e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **error)
+e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
+                                    EDataCal *cal,
+                                    GCancellable *cancellable,
+                                    const gchar *calobj,
+                                    GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->receive_objects_sync != NULL, UnsupportedMethod);
@@ -364,8 +429,13 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCa
  * Calls the send_objects_sync method on the given backend.
  */
 void
-e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GSList **users,
-				 gchar **modified_calobj, GError **error)
+e_cal_backend_sync_send_objects (ECalBackendSync *backend,
+                                 EDataCal *cal,
+                                 GCancellable *cancellable,
+                                 const gchar *calobj,
+                                 GSList **users,
+                                 gchar **modified_calobj,
+                                 GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->send_objects_sync != NULL, UnsupportedMethod);
@@ -386,7 +456,13 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend, EDataCal *cal, GCance
  * Calls the get_attachment_uris_sync method on the given backend.
  */
 void
-e_cal_backend_sync_get_attachment_uris (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, GSList **attachments, GError **error)
+e_cal_backend_sync_get_attachment_uris (ECalBackendSync *backend,
+                                        EDataCal *cal,
+                                        GCancellable *cancellable,
+                                        const gchar *uid,
+                                        const gchar *rid,
+                                        GSList **attachments,
+                                        GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (attachments, InvalidArg);
@@ -407,7 +483,13 @@ e_cal_backend_sync_get_attachment_uris (ECalBackendSync *backend, EDataCal *cal,
  * Calls the discard_alarm_sync method on the given backend.
  **/
 void
-e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, const gchar *auid, GError **error)
+e_cal_backend_sync_discard_alarm (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *uid,
+                                  const gchar *rid,
+                                  const gchar *auid,
+                                  GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (uid, InvalidArg);
@@ -434,7 +516,12 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend, EDataCal *cal, GCanc
  * get_timezone_sync completely.
  */
 void
-e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzid, gchar **tzobject, GError **error)
+e_cal_backend_sync_get_timezone (ECalBackendSync *backend,
+                                 EDataCal *cal,
+                                 GCancellable *cancellable,
+                                 const gchar *tzid,
+                                 gchar **tzobject,
+                                 GError **error)
 {
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 
@@ -478,7 +565,11 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend, EDataCal *cal, GCance
  * Calls the add_timezone_sync method on the given backend.
  */
 void
-e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobject, GError **error)
+e_cal_backend_sync_add_timezone (ECalBackendSync *backend,
+                                 EDataCal *cal,
+                                 GCancellable *cancellable,
+                                 const gchar *tzobject,
+                                 GError **error)
 {
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 
@@ -486,7 +577,11 @@ e_cal_backend_sync_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCance
 }
 
 static void
-cal_backend_open (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, gboolean only_if_exists)
+cal_backend_open (ECalBackend *backend,
+                  EDataCal *cal,
+                  guint32 opid,
+                  GCancellable *cancellable,
+                  gboolean only_if_exists)
 {
 	GError *error = NULL;
 
@@ -496,7 +591,9 @@ cal_backend_open (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellabl
 }
 
 static void
-cal_backend_authenticate_user (ECalBackend *backend, GCancellable *cancellable, ECredentials *credentials)
+cal_backend_authenticate_user (ECalBackend *backend,
+                               GCancellable *cancellable,
+                               ECredentials *credentials)
 {
 	GError *error = NULL;
 
@@ -506,7 +603,10 @@ cal_backend_authenticate_user (ECalBackend *backend, GCancellable *cancellable, 
 }
 
 static void
-cal_backend_remove (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable)
+cal_backend_remove (ECalBackend *backend,
+                    EDataCal *cal,
+                    guint32 opid,
+                    GCancellable *cancellable)
 {
 	GError *error = NULL;
 
@@ -516,7 +616,10 @@ cal_backend_remove (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancella
 }
 
 static void
-cal_backend_refresh (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable)
+cal_backend_refresh (ECalBackend *backend,
+                     EDataCal *cal,
+                     guint32 opid,
+                     GCancellable *cancellable)
 {
 	GError *error = NULL;
 
@@ -526,7 +629,11 @@ cal_backend_refresh (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancell
 }
 
 static void
-cal_backend_get_backend_property (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name)
+cal_backend_get_backend_property (ECalBackend *backend,
+                                  EDataCal *cal,
+                                  guint32 opid,
+                                  GCancellable *cancellable,
+                                  const gchar *prop_name)
 {
 	GError *error = NULL;
 	gchar *prop_value = NULL;
@@ -540,7 +647,12 @@ cal_backend_get_backend_property (ECalBackend *backend, EDataCal *cal, guint32 o
 }
 
 static void
-cal_backend_set_backend_property (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value)
+cal_backend_set_backend_property (ECalBackend *backend,
+                                  EDataCal *cal,
+                                  guint32 opid,
+                                  GCancellable *cancellable,
+                                  const gchar *prop_name,
+                                  const gchar *prop_value)
 {
 	GError *error = NULL;
 
@@ -551,7 +663,12 @@ cal_backend_set_backend_property (ECalBackend *backend, EDataCal *cal, guint32 o
 }
 
 static void
-cal_backend_get_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *uid, const gchar *rid)
+cal_backend_get_object (ECalBackend *backend,
+                        EDataCal *cal,
+                        guint32 opid,
+                        GCancellable *cancellable,
+                        const gchar *uid,
+                        const gchar *rid)
 {
 	GError *error = NULL;
 	gchar *calobj = NULL;
@@ -564,7 +681,11 @@ cal_backend_get_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCanc
 }
 
 static void
-cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *sexp)
+cal_backend_get_object_list (ECalBackend *backend,
+                             EDataCal *cal,
+                             guint32 opid,
+                             GCancellable *cancellable,
+                             const gchar *sexp)
 {
 	GError *error = NULL;
 	GSList *calobjs = NULL;
@@ -578,7 +699,13 @@ cal_backend_get_object_list (ECalBackend *backend, EDataCal *cal, guint32 opid, 
 }
 
 static void
-cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const GSList *users, time_t start, time_t end)
+cal_backend_get_free_busy (ECalBackend *backend,
+                           EDataCal *cal,
+                           guint32 opid,
+                           GCancellable *cancellable,
+                           const GSList *users,
+                           time_t start,
+                           time_t end)
 {
 	GError *error = NULL;
 	GSList *freebusyobjs = NULL;
@@ -594,7 +721,11 @@ cal_backend_get_free_busy (ECalBackend *backend, EDataCal *cal, guint32 opid, GC
 }
 
 static void
-cal_backend_create_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *calobj)
+cal_backend_create_object (ECalBackend *backend,
+                           EDataCal *cal,
+                           guint32 opid,
+                           GCancellable *cancellable,
+                           const gchar *calobj)
 {
 	GError *error = NULL;
 	gchar *uid = NULL, *new_object = NULL;
@@ -608,7 +739,12 @@ cal_backend_create_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GC
 }
 
 static void
-cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *calobj, CalObjModType mod)
+cal_backend_modify_object (ECalBackend *backend,
+                           EDataCal *cal,
+                           guint32 opid,
+                           GCancellable *cancellable,
+                           const gchar *calobj,
+                           CalObjModType mod)
 {
 	GError *error = NULL;
 	gchar *old_object = NULL, *new_object = NULL;
@@ -622,7 +758,13 @@ cal_backend_modify_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GC
 }
 
 static void
-cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *uid, const gchar *rid, CalObjModType mod)
+cal_backend_remove_object (ECalBackend *backend,
+                           EDataCal *cal,
+                           guint32 opid,
+                           GCancellable *cancellable,
+                           const gchar *uid,
+                           const gchar *rid,
+                           CalObjModType mod)
 {
 	GError *error = NULL;
 	gchar *old_object = NULL, *new_object = NULL;
@@ -640,7 +782,11 @@ cal_backend_remove_object (ECalBackend *backend, EDataCal *cal, guint32 opid, GC
 }
 
 static void
-cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *calobj)
+cal_backend_receive_objects (ECalBackend *backend,
+                             EDataCal *cal,
+                             guint32 opid,
+                             GCancellable *cancellable,
+                             const gchar *calobj)
 {
 	GError *error = NULL;
 
@@ -650,7 +796,11 @@ cal_backend_receive_objects (ECalBackend *backend, EDataCal *cal, guint32 opid, 
 }
 
 static void
-cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *calobj)
+cal_backend_send_objects (ECalBackend *backend,
+                          EDataCal *cal,
+                          guint32 opid,
+                          GCancellable *cancellable,
+                          const gchar *calobj)
 {
 	GError *error = NULL;
 	GSList *users = NULL;
@@ -666,7 +816,12 @@ cal_backend_send_objects (ECalBackend *backend, EDataCal *cal, guint32 opid, GCa
 }
 
 static void
-cal_backend_get_attachment_uris (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *uid, const gchar *rid)
+cal_backend_get_attachment_uris (ECalBackend *backend,
+                                 EDataCal *cal,
+                                 guint32 opid,
+                                 GCancellable *cancellable,
+                                 const gchar *uid,
+                                 const gchar *rid)
 {
 	GError *error = NULL;
 	GSList *attachments = NULL;
@@ -680,7 +835,13 @@ cal_backend_get_attachment_uris (ECalBackend *backend, EDataCal *cal, guint32 op
 }
 
 static void
-cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *uid, const gchar *rid, const gchar *auid)
+cal_backend_discard_alarm (ECalBackend *backend,
+                           EDataCal *cal,
+                           guint32 opid,
+                           GCancellable *cancellable,
+                           const gchar *uid,
+                           const gchar *rid,
+                           const gchar *auid)
 {
 	GError *error = NULL;
 
@@ -690,7 +851,11 @@ cal_backend_discard_alarm (ECalBackend *backend, EDataCal *cal, guint32 opid, GC
 }
 
 static void
-cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *tzid)
+cal_backend_get_timezone (ECalBackend *backend,
+                          EDataCal *cal,
+                          guint32 opid,
+                          GCancellable *cancellable,
+                          const gchar *tzid)
 {
 	GError *error = NULL;
 	gchar *object = NULL;
@@ -749,7 +914,11 @@ cal_backend_get_timezone (ECalBackend *backend, EDataCal *cal, guint32 opid, GCa
 }
 
 static void
-cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *tzobject)
+cal_backend_add_timezone (ECalBackend *backend,
+                          EDataCal *cal,
+                          guint32 opid,
+                          GCancellable *cancellable,
+                          const gchar *tzobject)
 {
 	GError *error = NULL;
 
@@ -759,14 +928,15 @@ cal_backend_add_timezone (ECalBackend *backend, EDataCal *cal, guint32 opid, GCa
 }
 
 /* The default implementation is looking for timezone in the ical's builtin timezones,
-   and if that fails, then it tries to extract the location from the tzid and get the
-   timezone based on it. If even that fails, then it's returning UTC timezone.
-   That means, that any object deriving from ECalBackendSync is supposed to implement
-   this function for checking for a timezone in its own timezone cache, and if that
-   fails, then call parent's object internal_get_timezone, and that's all.
+ * and if that fails, then it tries to extract the location from the tzid and get the
+ * timezone based on it. If even that fails, then it's returning UTC timezone.
+ * That means, that any object deriving from ECalBackendSync is supposed to implement
+ * this function for checking for a timezone in its own timezone cache, and if that
+ * fails, then call parent's object internal_get_timezone, and that's all.
  */
 static icaltimezone *
-cal_backend_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
+cal_backend_internal_get_timezone (ECalBackend *backend,
+                                   const gchar *tzid)
 {
 	icaltimezone *zone = NULL;
 
@@ -799,14 +969,24 @@ cal_backend_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
 }
 
 static gboolean
-cal_backend_sync_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **error)
+cal_backend_sync_get_backend_property (ECalBackendSync *backend,
+                                       EDataCal *cal,
+                                       GCancellable *cancellable,
+                                       const gchar *prop_name,
+                                       gchar **prop_value,
+                                       GError **error)
 {
 	/* to indicate to pass to the ECalBackend parent class */
 	return FALSE;
 }
 
 static gboolean
-cal_backend_sync_set_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value, GError **error)
+cal_backend_sync_set_backend_property (ECalBackendSync *backend,
+                                       EDataCal *cal,
+                                       GCancellable *cancellable,
+                                       const gchar *prop_name,
+                                       const gchar *prop_value,
+                                       GError **error)
 {
 	/* to indicate to pass to the ECalBackend parent class */
 	return FALSE;

@@ -201,7 +201,7 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 				G_SEEKABLE (mstream), 0,
 				G_SEEK_SET, NULL, NULL);
 
-			bstream = camel_stream_buffer_new (mstream, CAMEL_STREAM_BUFFER_READ|CAMEL_STREAM_BUFFER_BUFFER);
+			bstream = camel_stream_buffer_new (mstream, CAMEL_STREAM_BUFFER_READ | CAMEL_STREAM_BUFFER_BUFFER);
 
 			/* We should fetch just 200 unquoted lines. */
 			while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *) bstream, NULL, NULL)) && str->len < 200) {

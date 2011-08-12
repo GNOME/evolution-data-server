@@ -9,7 +9,7 @@
 #include "camel-test.h"
 
 /* NB: We know which order the params will be decoded in, plain in the order they come,
-   and rfc2184 encoded following those, sorted lexigraphically */
+ * and rfc2184 encoded following those, sorted lexigraphically */
 struct {
 	const gchar *list;
 	gint count;
@@ -62,7 +62,8 @@ struct {
 };
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gint i, j;
 
@@ -77,10 +78,10 @@ main (gint argc, gchar **argv)
 		head = camel_header_param_list_decode (test1[i].list);
 		check (head != NULL);
 		node = head;
-		for (j=0;j<test1[i].count;j++) {
+		for (j = 0; j < test1[i].count; j++) {
 			check_msg(node != NULL, "didn't find all params");
-			check (strcmp (node->name, test1[i].params[j*2]) == 0);
-			check (strcmp (node->value, test1[i].params[j*2+1]) == 0);
+			check (strcmp (node->name, test1[i].params[j * 2]) == 0);
+			check (strcmp (node->value, test1[i].params[j * 2 + 1]) == 0);
 			node = node->next;
 		}
 		check_msg(node == NULL, "found more params than should have");
@@ -98,10 +99,10 @@ main (gint argc, gchar **argv)
 
 		camel_test_push("param encoding[%d]", i);
 
-		for (j=0;j<test2[i].count;j++)
-			camel_header_set_param (&head, test2[i].params[j*2], test2[i].params[j*2+1]);
+		for (j = 0; j < test2[i].count; j++)
+			camel_header_set_param (&head, test2[i].params[j * 2], test2[i].params[j * 2 + 1]);
 		scan = head;
-		for (j=0;scan;j++)
+		for (j = 0; scan; j++)
 			scan = scan->next;
 		check (j == test2[i].count);
 

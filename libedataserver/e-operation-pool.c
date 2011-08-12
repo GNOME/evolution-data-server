@@ -30,7 +30,9 @@ struct _EOperationPool {
 };
 
 EOperationPool *
-e_operation_pool_new (guint max_threads, GFunc thread_func, gpointer user_data)
+e_operation_pool_new (guint max_threads,
+                      GFunc thread_func,
+                      gpointer user_data)
 {
 	EOperationPool *pool;
 	GThreadPool *thread_pool;
@@ -69,8 +71,8 @@ e_operation_pool_free (EOperationPool *pool)
 }
 
 /* Reserves new operation ID, which is returned. This operation ID may
-   be released by e_operation_pool_release_opid () when the operation
-   is finished.
+ * be released by e_operation_pool_release_opid () when the operation
+ * is finished.
 */
 guint32
 e_operation_pool_reserve_opid (EOperationPool *pool)
@@ -103,7 +105,8 @@ e_operation_pool_reserve_opid (EOperationPool *pool)
 
 /* Releases operation ID previously reserved by e_operation_pool_reserve_opid(). */
 void
-e_operation_pool_release_opid (EOperationPool *pool, guint32 opid)
+e_operation_pool_release_opid (EOperationPool *pool,
+                               guint32 opid)
 {
 	g_return_if_fail (pool != NULL);
 	g_return_if_fail (pool->ops != NULL);
@@ -115,10 +118,11 @@ e_operation_pool_release_opid (EOperationPool *pool, guint32 opid)
 }
 
 /* Pushes operation to be processed. 'opdata' is passed to the function
-   provided in e_operation_pool_new ().
+ * provided in e_operation_pool_new ().
 */
 void
-e_operation_pool_push (EOperationPool *pool, gpointer opdata)
+e_operation_pool_push (EOperationPool *pool,
+                       gpointer opdata)
 {
 	GError *error = NULL;
 

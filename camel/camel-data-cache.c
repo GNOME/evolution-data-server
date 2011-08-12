@@ -46,7 +46,7 @@
 #define CAMEL_DATA_CACHE_MASK ((1 << CAMEL_DATA_CACHE_BITS)-1)
 
 /* timeout before a cache dir is checked again for expired entries,
-   once an hour should be enough */
+ * once an hour should be enough */
 #define CAMEL_DATA_CACHE_CYCLE_TIME (60*60)
 
 struct _CamelDataCachePrivate {
@@ -238,7 +238,8 @@ camel_data_cache_set_path (CamelDataCache *cdc,
  * age acts as a hard limit on cache entries.
  **/
 void
-camel_data_cache_set_expire_age (CamelDataCache *cdc, time_t when)
+camel_data_cache_set_expire_age (CamelDataCache *cdc,
+                                 time_t when)
 {
 	cdc->priv->expire_age = when;
 }
@@ -259,13 +260,18 @@ camel_data_cache_set_expire_age (CamelDataCache *cdc, time_t when)
  * age acts as a hard limit on cache entries.
  **/
 void
-camel_data_cache_set_expire_access (CamelDataCache *cdc, time_t when)
+camel_data_cache_set_expire_access (CamelDataCache *cdc,
+                                    time_t when)
 {
 	cdc->priv->expire_access = when;
 }
 
 static void
-data_cache_expire (CamelDataCache *cdc, const gchar *path, const gchar *keep, time_t now, gboolean expire_all)
+data_cache_expire (CamelDataCache *cdc,
+                   const gchar *path,
+                   const gchar *keep,
+                   time_t now,
+                   gboolean expire_all)
 {
 	GDir *dir;
 	const gchar *dname;
@@ -303,17 +309,20 @@ data_cache_expire (CamelDataCache *cdc, const gchar *path, const gchar *keep, ti
 }
 
 /* Since we have to stat the directory anyway, we use this opportunity to
-   lazily expire old data.
-   If it is this directories 'turn', and we haven't done it for CYCLE_TIME seconds,
-   then we perform an expiry run */
+ * lazily expire old data.
+ * If it is this directories 'turn', and we haven't done it for CYCLE_TIME seconds,
+ * then we perform an expiry run */
 static gchar *
-data_cache_path (CamelDataCache *cdc, gint create, const gchar *path, const gchar *key)
+data_cache_path (CamelDataCache *cdc,
+                 gint create,
+                 const gchar *path,
+                 const gchar *key)
 {
 	gchar *dir, *real, *tmp;
 	guint32 hash;
 
 	hash = g_str_hash (key);
-	hash = (hash>>5)&CAMEL_DATA_CACHE_MASK;
+	hash = (hash >> 5) &CAMEL_DATA_CACHE_MASK;
 	dir = alloca (strlen (cdc->priv->path) + strlen (path) + 8);
 	sprintf(dir, "%s/%s/%02x", cdc->priv->path, path, hash);
 
@@ -379,7 +388,7 @@ camel_data_cache_add (CamelDataCache *cdc,
 	} while (stream != NULL);
 
 	stream = camel_stream_fs_new_with_name (
-		real, O_RDWR|O_CREAT|O_TRUNC, 0600, error);
+		real, O_RDWR | O_CREAT | O_TRUNC, 0600, error);
 	if (stream)
 		camel_object_bag_add (cdc->priv->busy_bag, real, stream);
 	else
@@ -512,7 +521,8 @@ camel_data_cache_remove (CamelDataCache *cdc,
  * Clear cache's content in @path.
  **/
 void
-camel_data_cache_clear (CamelDataCache *cdc, const gchar *path)
+camel_data_cache_clear (CamelDataCache *cdc,
+                        const gchar *path)
 {
 	gchar *base_dir;
 	GDir *dir;

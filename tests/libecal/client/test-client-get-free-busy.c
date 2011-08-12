@@ -10,7 +10,9 @@
 #define USER_EMAIL "user@example.com"
 
 static void
-free_busy_data_cb (ECalClient *client, const GSList *free_busy, const gchar *func_name)
+free_busy_data_cb (ECalClient *client,
+                   const GSList *free_busy,
+                   const gchar *func_name)
 {
 	g_print ("   Received %d Free/Busy components from %s\n", g_slist_length ((GSList *) free_busy), func_name);
 }
@@ -66,7 +68,9 @@ test_sync (void)
 
 /* asynchronous get_free_busy callback with a main-loop running */
 static void
-async_get_free_busy_result_ready (GObject *source_object, GAsyncResult *result, gpointer user_data)
+async_get_free_busy_result_ready (GObject *source_object,
+                                  GAsyncResult *result,
+                                  gpointer user_data)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -147,7 +151,8 @@ test_sync_in_thread (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	main_initialize ();
 

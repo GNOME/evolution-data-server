@@ -44,13 +44,13 @@ typedef struct {
 	GObjectClass parent_class;
 
 	const gchar *   (*get_protocol) (EBookBackendFactory *factory);
-	EBookBackend* (*new_backend)  (EBookBackendFactory *factory);
+	EBookBackend * (*new_backend)  (EBookBackendFactory *factory);
 } EBookBackendFactoryClass;
 
 GType                e_book_backend_factory_get_type             (void);
 
 const gchar *          e_book_backend_factory_get_protocol         (EBookBackendFactory *factory);
-EBookBackend*        e_book_backend_factory_new_backend          (EBookBackendFactory *factory);
+EBookBackend *        e_book_backend_factory_new_backend          (EBookBackendFactory *factory);
 
 /* use this macro for simple, 1 factory modules */
 #define E_BOOK_BACKEND_FACTORY_SIMPLE(p,t,f) \
@@ -73,7 +73,7 @@ _ ## p ##_get_protocol (EBookBackendFactory *factory) \
 	return #p; \
 } \
 \
-static EBookBackend* \
+static EBookBackend * \
 _ ## p ##_new_backend (EBookBackendFactory *factory) \
 { \
 	return (f) (); \

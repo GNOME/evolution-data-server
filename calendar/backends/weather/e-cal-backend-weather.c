@@ -41,7 +41,7 @@ G_DEFINE_TYPE (ECalBackendWeather, e_cal_backend_weather, E_TYPE_CAL_BACKEND_SYN
 
 static gboolean reload_cb (ECalBackendWeather *cbw);
 static gboolean begin_retrieval_cb (ECalBackendWeather *cbw);
-static ECalComponent* create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_forecast);
+static ECalComponent * create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_forecast);
 static void e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
 
 /* Private part of the ECalBackendWeather structure */
@@ -93,7 +93,8 @@ reload_cb (ECalBackendWeather *cbw)
 }
 
 static void
-source_changed (ESource *source, ECalBackendWeather *cbw)
+source_changed (ESource *source,
+                ECalBackendWeather *cbw)
 {
 	/* FIXME
 	 * We should force a reload of the data when this gets called. Unfortunately,
@@ -138,7 +139,8 @@ maybe_start_reload_timeout (ECalBackendWeather *cbw)
 
 /* TODO Do not replicate this in every backend */
 static icaltimezone *
-resolve_tzid (const gchar *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid,
+              gpointer user_data)
 {
 	icaltimezone *zone;
 
@@ -154,7 +156,7 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
 
 static void
 put_component_to_store (ECalBackendWeather *cb,
-			ECalComponent *comp)
+                        ECalComponent *comp)
 {
 	time_t time_start, time_end;
 	ECalBackendWeatherPrivate *priv;
@@ -169,7 +171,8 @@ put_component_to_store (ECalBackendWeather *cb,
 }
 
 static void
-finished_retrieval_cb (WeatherInfo *info, ECalBackendWeather *cbw)
+finished_retrieval_cb (WeatherInfo *info,
+                       ECalBackendWeather *cbw)
 {
 	ECalBackendWeatherPrivate *priv;
 	ECalComponent *comp;
@@ -309,8 +312,10 @@ getCategory (WeatherInfo *report)
 	return NULL;
 }
 
-static ECalComponent*
-create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_forecast)
+static ECalComponent *
+create_weather (ECalBackendWeather *cbw,
+                WeatherInfo *report,
+                gboolean is_forecast)
 {
 	ECalBackendWeatherPrivate *priv;
 	ECalComponent             *cal_comp;
@@ -371,7 +376,7 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 		update_zone = icaltimezone_get_utc_timezone ();
 
 	/* Set all-day event's date from forecast data - cannot set is_date,
-	   because in that case no timezone conversion is done */
+	 * because in that case no timezone conversion is done */
 	itt = icaltime_from_timet_with_zone (update_time, 0, update_zone);
 	itt.hour = 0;
 	itt.minute = 0;
@@ -397,7 +402,7 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax) &&
 		    tmin != tmax) {
 			/* because weather_info_get_temp* uses one internal buffer, thus finally
-			   the last value is shown for both, which is obviously wrong */
+			 * the last value is shown for both, which is obviously wrong */
 			GString *str = g_string_new (priv->city);
 
 			g_string_append (str, " : ");
@@ -412,7 +417,7 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 	} else {
 		gdouble tmin = 0.0, tmax = 0.0;
 		/* because weather_info_get_temp* uses one internal buffer, thus finally
-		   the last value is shown for both, which is obviously wrong */
+		 * the last value is shown for both, which is obviously wrong */
 		GString *str = g_string_new (priv->city);
 
 		g_string_append (str, " : ");
@@ -455,7 +460,12 @@ create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_foreca
 }
 
 static gboolean
-e_cal_backend_weather_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **perror)
+e_cal_backend_weather_get_backend_property (ECalBackendSync *backend,
+                                            EDataCal *cal,
+                                            GCancellable *cancellable,
+                                            const gchar *prop_name,
+                                            gchar **prop_value,
+                                            GError **perror)
 {
 	gboolean processed = TRUE;
 
@@ -485,7 +495,11 @@ e_cal_backend_weather_get_backend_property (ECalBackendSync *backend, EDataCal *
 }
 
 static void
-e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, gboolean only_if_exists, GError **perror)
+e_cal_backend_weather_open (ECalBackendSync *backend,
+                            EDataCal *cal,
+                            GCancellable *cancellable,
+                            gboolean only_if_exists,
+                            GError **perror)
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
@@ -529,7 +543,10 @@ e_cal_backend_weather_open (ECalBackendSync *backend, EDataCal *cal, GCancellabl
 }
 
 static void
-e_cal_backend_weather_refresh (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
+e_cal_backend_weather_refresh (ECalBackendSync *backend,
+                               EDataCal *cal,
+                               GCancellable *cancellable,
+                               GError **perror)
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
@@ -550,7 +567,10 @@ e_cal_backend_weather_refresh (ECalBackendSync *backend, EDataCal *cal, GCancell
 }
 
 static void
-e_cal_backend_weather_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
+e_cal_backend_weather_remove (ECalBackendSync *backend,
+                              EDataCal *cal,
+                              GCancellable *cancellable,
+                              GError **perror)
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
@@ -568,13 +588,23 @@ e_cal_backend_weather_remove (ECalBackendSync *backend, EDataCal *cal, GCancella
 }
 
 static void
-e_cal_backend_weather_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **perror)
+e_cal_backend_weather_receive_objects (ECalBackendSync *backend,
+                                       EDataCal *cal,
+                                       GCancellable *cancellable,
+                                       const gchar *calobj,
+                                       GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 static void
-e_cal_backend_weather_get_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, gchar **object, GError **error)
+e_cal_backend_weather_get_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *uid,
+                                  const gchar *rid,
+                                  gchar **object,
+                                  GError **error)
 {
 	ECalBackendWeather *cbw = E_CAL_BACKEND_WEATHER (backend);
 	ECalBackendWeatherPrivate *priv = cbw->priv;
@@ -594,7 +624,12 @@ e_cal_backend_weather_get_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 }
 
 static void
-e_cal_backend_weather_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *sexp_string, GSList **objects, GError **perror)
+e_cal_backend_weather_get_object_list (ECalBackendSync *backend,
+                                       EDataCal *cal,
+                                       GCancellable *cancellable,
+                                       const gchar *sexp_string,
+                                       GSList **objects,
+                                       GError **perror)
 {
 	ECalBackendWeather *cbw = E_CAL_BACKEND_WEATHER (backend);
 	ECalBackendWeatherPrivate *priv = cbw->priv;
@@ -629,7 +664,11 @@ e_cal_backend_weather_get_object_list (ECalBackendSync *backend, EDataCal *cal, 
 }
 
 static void
-e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **error)
+e_cal_backend_weather_add_timezone (ECalBackendSync *backend,
+                                    EDataCal *cal,
+                                    GCancellable *cancellable,
+                                    const gchar *tzobj,
+                                    GError **error)
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
@@ -637,7 +676,7 @@ e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCa
 	icaltimezone *zone;
 	const gchar *tzid;
 
-	cbw = (ECalBackendWeather*) backend;
+	cbw = (ECalBackendWeather *) backend;
 
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), InvalidArg);
 	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
@@ -664,7 +703,14 @@ e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCa
 }
 
 static void
-e_cal_backend_weather_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users, time_t start, time_t end, GSList **freebusy, GError **perror)
+e_cal_backend_weather_get_free_busy (ECalBackendSync *backend,
+                                     EDataCal *cal,
+                                     GCancellable *cancellable,
+                                     const GSList *users,
+                                     time_t start,
+                                     time_t end,
+                                     GSList **freebusy,
+                                     GError **perror)
 {
 	/* Weather doesn't count as busy time */
 	icalcomponent *vfb = icalcomponent_new_vfreebusy ();
@@ -680,7 +726,8 @@ e_cal_backend_weather_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GC
 }
 
 static void
-e_cal_backend_weather_start_view (ECalBackend *backend, EDataCalView *query)
+e_cal_backend_weather_start_view (ECalBackend *backend,
+                                  EDataCalView *query)
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
@@ -732,7 +779,8 @@ e_cal_backend_weather_start_view (ECalBackend *backend, EDataCalView *query)
 }
 
 static void
-e_cal_backend_weather_set_online (ECalBackend *backend, gboolean is_online)
+e_cal_backend_weather_set_online (ECalBackend *backend,
+                                  gboolean is_online)
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
@@ -758,7 +806,8 @@ e_cal_backend_weather_set_online (ECalBackend *backend, gboolean is_online)
 }
 
 static icaltimezone *
-e_cal_backend_weather_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
+e_cal_backend_weather_internal_get_timezone (ECalBackend *backend,
+                                             const gchar *tzid)
 {
 	icaltimezone *zone;
 

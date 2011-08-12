@@ -174,7 +174,9 @@ static struct {
 G_DEFINE_TYPE (CamelFilterDriver, camel_filter_driver, CAMEL_TYPE_OBJECT)
 
 static void
-free_hash_strings (gpointer key, gpointer value, gpointer data)
+free_hash_strings (gpointer key,
+                   gpointer value,
+                   gpointer data)
 {
 	g_free (key);
 	g_free (value);
@@ -300,48 +302,60 @@ camel_filter_driver_new (CamelSession *session)
 }
 
 void
-camel_filter_driver_set_folder_func (CamelFilterDriver *d, CamelFilterGetFolderFunc get_folder, gpointer data)
+camel_filter_driver_set_folder_func (CamelFilterDriver *d,
+                                     CamelFilterGetFolderFunc get_folder,
+                                     gpointer data)
 {
 	d->priv->get_folder = get_folder;
 	d->priv->data = data;
 }
 
 void
-camel_filter_driver_set_logfile (CamelFilterDriver *d, FILE *logfile)
+camel_filter_driver_set_logfile (CamelFilterDriver *d,
+                                 FILE *logfile)
 {
 	d->priv->logfile = logfile;
 }
 
 void
-camel_filter_driver_set_status_func (CamelFilterDriver *d, CamelFilterStatusFunc *func, gpointer data)
+camel_filter_driver_set_status_func (CamelFilterDriver *d,
+                                     CamelFilterStatusFunc *func,
+                                     gpointer data)
 {
 	d->priv->statusfunc = func;
 	d->priv->statusdata = data;
 }
 
 void
-camel_filter_driver_set_shell_func (CamelFilterDriver *d, CamelFilterShellFunc *func, gpointer data)
+camel_filter_driver_set_shell_func (CamelFilterDriver *d,
+                                    CamelFilterShellFunc *func,
+                                    gpointer data)
 {
 	d->priv->shellfunc = func;
 	d->priv->shelldata = data;
 }
 
 void
-camel_filter_driver_set_play_sound_func (CamelFilterDriver *d, CamelFilterPlaySoundFunc *func, gpointer data)
+camel_filter_driver_set_play_sound_func (CamelFilterDriver *d,
+                                         CamelFilterPlaySoundFunc *func,
+                                         gpointer data)
 {
 	d->priv->playfunc = func;
 	d->priv->playdata = data;
 }
 
 void
-camel_filter_driver_set_system_beep_func (CamelFilterDriver *d, CamelFilterSystemBeepFunc *func, gpointer data)
+camel_filter_driver_set_system_beep_func (CamelFilterDriver *d,
+                                          CamelFilterSystemBeepFunc *func,
+                                          gpointer data)
 {
 	d->priv->beep = func;
 	d->priv->beepdata = data;
 }
 
 void
-camel_filter_driver_set_default_folder (CamelFilterDriver *d, CamelFolder *def)
+camel_filter_driver_set_default_folder (CamelFilterDriver *d,
+                                        CamelFolder *def)
 {
 	if (d->priv->defaultfolder) {
 		camel_folder_thaw (d->priv->defaultfolder);
@@ -357,7 +371,10 @@ camel_filter_driver_set_default_folder (CamelFilterDriver *d, CamelFolder *def)
 }
 
 void
-camel_filter_driver_add_rule (CamelFilterDriver *d, const gchar *name, const gchar *match, const gchar *action)
+camel_filter_driver_add_rule (CamelFilterDriver *d,
+                              const gchar *name,
+                              const gchar *match,
+                              const gchar *action)
 {
 	struct _filter_rule *node;
 
@@ -369,7 +386,8 @@ camel_filter_driver_add_rule (CamelFilterDriver *d, const gchar *name, const gch
 }
 
 gint
-camel_filter_driver_remove_rule_by_name (CamelFilterDriver *d, const gchar *name)
+camel_filter_driver_remove_rule_by_name (CamelFilterDriver *d,
+                                         const gchar *name)
 {
 	struct _filter_rule *node;
 
@@ -392,7 +410,11 @@ camel_filter_driver_remove_rule_by_name (CamelFilterDriver *d, const gchar *name
 }
 
 static void
-report_status (CamelFilterDriver *driver, enum camel_filter_status_t status, gint pc, const gchar *desc, ...)
+report_status (CamelFilterDriver *driver,
+               enum camel_filter_status_t status,
+               gint pc,
+               const gchar *desc,
+               ...)
 {
 	/* call user-defined status report function */
 	va_list ap;
@@ -408,11 +430,13 @@ report_status (CamelFilterDriver *driver, enum camel_filter_status_t status, gin
 
 #if 0
 void
-camel_filter_driver_set_global (CamelFilterDriver *d, const gchar *name, const gchar *value)
+camel_filter_driver_set_global (CamelFilterDriver *d,
+                                const gchar *name,
+                                const gchar *value)
 {
 	gchar *oldkey, *oldvalue;
 
-	if (g_hash_table_lookup_extended (d->priv->globals, name, (gpointer)&oldkey, (gpointer)&oldvalue)) {
+	if (g_hash_table_lookup_extended (d->priv->globals, name, (gpointer) &oldkey, (gpointer) &oldvalue)) {
 		g_free (oldvalue);
 		g_hash_table_insert (d->priv->globals, oldkey, g_strdup (value));
 	} else {
@@ -422,7 +446,10 @@ camel_filter_driver_set_global (CamelFilterDriver *d, const gchar *name, const g
 #endif
 
 static ESExpResult *
-do_delete (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_delete (struct _ESExp *f,
+           gint argc,
+           struct _ESExpResult **argv,
+           CamelFilterDriver *driver)
 {
 	d(fprintf (stderr, "doing delete\n"));
 	driver->priv->deleted = TRUE;
@@ -432,7 +459,10 @@ do_delete (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterD
 }
 
 static ESExpResult *
-do_forward_to (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_forward_to (struct _ESExp *f,
+               gint argc,
+               struct _ESExpResult **argv,
+               CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
@@ -458,7 +488,10 @@ do_forward_to (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFil
 }
 
 static ESExpResult *
-do_copy (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_copy (struct _ESExp *f,
+         gint argc,
+         struct _ESExpResult **argv,
+         CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 	gint i;
@@ -515,7 +548,10 @@ do_copy (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 }
 
 static ESExpResult *
-do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_move (struct _ESExp *f,
+         gint argc,
+         struct _ESExpResult **argv,
+         CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 	gint i;
@@ -537,7 +573,7 @@ do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 				break;
 
 			/* only delete on last folder (only 1 can ever be supplied by ui currently) */
-			last = (i == argc-1);
+			last = (i == argc - 1);
 
 			if (!p->modified && p->uid && p->source && camel_folder_has_summary_capability (p->source)) {
 				GPtrArray *uids;
@@ -594,7 +630,10 @@ do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 }
 
 static ESExpResult *
-do_stop (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_stop (struct _ESExp *f,
+         gint argc,
+         struct _ESExpResult **argv,
+         CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
@@ -606,14 +645,17 @@ do_stop (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 }
 
 static ESExpResult *
-do_label (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_label (struct _ESExp *f,
+          gint argc,
+          struct _ESExpResult **argv,
+          CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
 	d(fprintf (stderr, "setting label tag\n"));
 	if (argc > 0 && argv[0]->type == ESEXP_RES_STRING) {
 		/* This is a list of new labels, we should used these in case of passing in old names.
-		   This all is required only because backward compatibility. */
+		 * This all is required only because backward compatibility. */
 		const gchar *new_labels[] = { "$Labelimportant", "$Labelwork", "$Labelpersonal", "$Labeltodo", "$Labellater", NULL};
 		const gchar *label;
 		gint i;
@@ -638,7 +680,10 @@ do_label (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDr
 }
 
 static ESExpResult *
-do_color (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_color (struct _ESExp *f,
+          gint argc,
+          struct _ESExpResult **argv,
+          CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
@@ -655,7 +700,10 @@ do_color (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDr
 }
 
 static ESExpResult *
-do_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_score (struct _ESExp *f,
+          gint argc,
+          struct _ESExpResult **argv,
+          CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
@@ -673,7 +721,10 @@ do_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDr
 }
 
 static ESExpResult *
-do_adjust_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_adjust_score (struct _ESExp *f,
+                 gint argc,
+                 struct _ESExpResult **argv,
+                 CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
@@ -683,7 +734,7 @@ do_adjust_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelF
 		gint old;
 
 		value = (gchar *)camel_message_info_user_tag(p->info, "score");
-		old = value?atoi (value):0;
+		old = value ? atoi (value) : 0;
 		value = g_strdup_printf ("%d", old+argv[0]->value.number);
 		camel_message_info_set_user_tag(p->info, "score", value);
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Adjust score (%d) to %s", argv[0]->value.number, value);
@@ -694,7 +745,10 @@ do_adjust_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelF
 }
 
 static ESExpResult *
-set_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+set_flag (struct _ESExp *f,
+          gint argc,
+          struct _ESExpResult **argv,
+          CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 	guint32 flags;
@@ -716,7 +770,10 @@ set_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDr
 }
 
 static ESExpResult *
-unset_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+unset_flag (struct _ESExp *f,
+            gint argc,
+            struct _ESExpResult **argv,
+            CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 	guint32 flags;
@@ -753,9 +810,9 @@ typedef struct {
 } child_watch_data_t;
 
 static void
-child_watch (GPid     pid,
-	     gint     status,
-	     gpointer data)
+child_watch (GPid pid,
+             gint status,
+             gpointer data)
 {
 	child_watch_data_t *child_watch_data = data;
 
@@ -767,7 +824,10 @@ child_watch (GPid     pid,
 }
 
 static gint
-pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+pipe_to_system (struct _ESExp *f,
+                gint argc,
+                struct _ESExpResult **argv,
+                CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 	gint i, pipe_to_child, pipe_from_child;
@@ -899,7 +959,10 @@ pipe_to_system (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFi
 }
 
 static ESExpResult *
-pipe_message (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+pipe_message (struct _ESExp *f,
+              gint argc,
+              struct _ESExpResult **argv,
+              CamelFilterDriver *driver)
 {
 	gint i;
 
@@ -916,7 +979,10 @@ pipe_message (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilt
 }
 
 static ESExpResult *
-do_shell (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_shell (struct _ESExp *f,
+          gint argc,
+          struct _ESExpResult **argv,
+          CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 	GString *command;
@@ -957,7 +1023,10 @@ do_shell (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDr
 }
 
 static ESExpResult *
-do_beep (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_beep (struct _ESExp *f,
+         gint argc,
+         struct _ESExpResult **argv,
+         CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
@@ -972,7 +1041,10 @@ do_beep (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDri
 }
 
 static ESExpResult *
-play_sound (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+play_sound (struct _ESExp *f,
+            gint argc,
+            struct _ESExpResult **argv,
+            CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
@@ -987,7 +1059,10 @@ play_sound (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilter
 }
 
 static ESExpResult *
-do_only_once (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *driver)
+do_only_once (struct _ESExp *f,
+              gint argc,
+              struct _ESExpResult **argv,
+              CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
@@ -1001,7 +1076,8 @@ do_only_once (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilt
 }
 
 static CamelFolder *
-open_folder (CamelFilterDriver *driver, const gchar *folder_url)
+open_folder (CamelFilterDriver *driver,
+             const gchar *folder_url)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 	CamelFolder *camelfolder;
@@ -1009,12 +1085,12 @@ open_folder (CamelFilterDriver *driver, const gchar *folder_url)
 	/* we have a lookup table of currently open folders */
 	camelfolder = g_hash_table_lookup (p->folders, folder_url);
 	if (camelfolder)
-		return camelfolder == FOLDER_INVALID?NULL:camelfolder;
+		return camelfolder == FOLDER_INVALID ? NULL : camelfolder;
 
 	/* if we have a default folder, ignore exceptions.  This is so
-	   a bad filter rule on pop or local delivery doesn't result
-	   in duplicate mails, just mail going to inbox.  Otherwise,
-	   we want to know about exceptions and abort processing */
+	 * a bad filter rule on pop or local delivery doesn't result
+	 * in duplicate mails, just mail going to inbox.  Otherwise,
+	 * we want to know about exceptions and abort processing */
 	if (p->defaultfolder) {
 		camelfolder = p->get_folder (driver, folder_url, p->data, NULL);
 	} else {
@@ -1032,7 +1108,9 @@ open_folder (CamelFilterDriver *driver, const gchar *folder_url)
 }
 
 static void
-close_folder (gpointer key, gpointer value, gpointer data)
+close_folder (gpointer key,
+              gpointer value,
+              gpointer data)
 {
 	CamelFolder *folder = value;
 	CamelFilterDriver *driver = data;
@@ -1072,14 +1150,19 @@ close_folders (CamelFilterDriver *driver)
 
 #if 0
 static void
-free_key (gpointer key, gpointer value, gpointer user_data)
+free_key (gpointer key,
+          gpointer value,
+          gpointer user_data)
 {
 	g_free (key);
 }
 #endif
 
 static void
-camel_filter_driver_log (CamelFilterDriver *driver, enum filter_log_t status, const gchar *desc, ...)
+camel_filter_driver_log (CamelFilterDriver *driver,
+                         enum filter_log_t status,
+                         const gchar *desc,
+                         ...)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
@@ -1134,7 +1217,9 @@ struct _run_only_once {
 };
 
 static gboolean
-run_only_once (gpointer key, gchar *action, struct _run_only_once *data)
+run_only_once (gpointer key,
+               gchar *action,
+               struct _run_only_once *data)
 {
 	CamelFilterDriverPrivate *p = data->driver->priv;
 	ESExpResult *r;
@@ -1200,7 +1285,8 @@ camel_filter_driver_flush (CamelFilterDriver *driver,
 }
 
 static gint
-decode_flags_from_xev (const gchar *xev, CamelMessageInfoBase *mi)
+decode_flags_from_xev (const gchar *xev,
+                       CamelMessageInfoBase *mi)
 {
 	guint32 uid, flags = 0;
 	gchar *header;
@@ -1251,7 +1337,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 	goffset last = 0;
 	gint ret = -1;
 
-	fd = g_open (mbox, O_RDONLY|O_BINARY, 0);
+	fd = g_open (mbox, O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -1390,7 +1476,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 	}
 
 	for (i = 0; i < uids->len; i++) {
-		gint pc = (100 * i)/uids->len;
+		gint pc = (100 * i) / uids->len;
 		GError *local_error = NULL;
 
 		report_status (driver, CAMEL_FILTER_STATUS_START, pc, _("Getting message %d of %d"), i+1,
@@ -1412,7 +1498,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 			report_status (
 				driver, CAMEL_FILTER_STATUS_END, 100,
 				_("Failed at message %d of %d"),
-				i+1, uids->len);
+				i + 1, uids->len);
 			g_propagate_error (error, local_error);
 			status = -1;
 			break;
@@ -1449,7 +1535,8 @@ struct _get_message {
 };
 
 static CamelMimeMessage *
-get_message_cb (gpointer data, GError **error)
+get_message_cb (gpointer data,
+                GError **error)
 {
 	struct _get_message *msgdata = data;
 	CamelMimeMessage *message;

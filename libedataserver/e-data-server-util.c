@@ -751,7 +751,7 @@ e_filename_make_safe (gchar *string)
 		 * written?
 		 */
 		if (!g_unichar_isprint (c) || ( c < 0xff && strchr (unsafe_chars, c&0xff ))) {
-			while (ts<p)
+			while (ts < p)
 				*ts++ = '_';
 		}
 	}
@@ -780,8 +780,8 @@ BOOL WINAPI DllMain (HINSTANCE hinstDLL,
 /* Minimal DllMain that just tucks away the DLL's HMODULE */
 BOOL WINAPI
 DllMain (HINSTANCE hinstDLL,
-	 DWORD     fdwReason,
-	 LPVOID    lpvReserved)
+         DWORD fdwReason,
+         LPVOID lpvReserved)
 {
 	switch (fdwReason) {
 	case DLL_PROCESS_ATTACH:
@@ -941,7 +941,9 @@ free_pt_data (gpointer ptr)
 }
 
 static void
-dump_left_ptrs_cb (gpointer key, gpointer value, gpointer user_data)
+dump_left_ptrs_cb (gpointer key,
+                   gpointer value,
+                   gpointer user_data)
 {
 	guint *left = user_data;
 	struct pt_data *ptd = value;
@@ -965,7 +967,8 @@ by_backtrace_hash (gconstpointer ptr)
 }
 
 static gboolean
-by_backtrace_equal (gconstpointer ptr1, gconstpointer ptr2)
+by_backtrace_equal (gconstpointer ptr1,
+                    gconstpointer ptr2)
 {
 	const struct pt_data *ptd1 = ptr1, *ptd2 = ptr2;
 
@@ -976,7 +979,9 @@ by_backtrace_equal (gconstpointer ptr1, gconstpointer ptr2)
 }
 
 static void
-dump_by_backtrace_cb (gpointer key, gpointer value, gpointer user_data)
+dump_by_backtrace_cb (gpointer key,
+                      gpointer value,
+                      gpointer user_data)
 {
 	guint *left = user_data;
 	struct pt_data *ptd = key;
@@ -1107,7 +1112,11 @@ struct getmodules_callback_arg
 };
 
 static gint
-getmodules_callback (Dwfl_Module *module, gpointer *module_userdata_pointer, const gchar *module_name, Dwarf_Addr module_low_addr, gpointer arg_voidp)
+getmodules_callback (Dwfl_Module *module,
+                     gpointer *module_userdata_pointer,
+                     const gchar *module_name,
+                     Dwarf_Addr module_low_addr,
+                     gpointer arg_voidp)
 {
 	struct getmodules_callback_arg *arg = arg_voidp;
 	Dwfl_Line *line;
@@ -1125,7 +1134,10 @@ getmodules_callback (Dwfl_Module *module, gpointer *module_userdata_pointer, con
 #endif /* HAVE_ELFUTILS_LIBDWFL */
 
 static const gchar *
-addr_lookup (gpointer addr, const gchar **file_path, gint *lineno, const gchar *fallback)
+addr_lookup (gpointer addr,
+             const gchar **file_path,
+             gint *lineno,
+             const gchar *fallback)
 {
 #ifdef HAVE_ELFUTILS_LIBDWFL
 	Dwfl *dwfl = dwfl_get (FALSE);
@@ -1232,7 +1244,8 @@ dump_left_at_exit_cb (void)
 }
 
 void
-e_pointer_tracker_track_with_info (gpointer ptr, const gchar *info)
+e_pointer_tracker_track_with_info (gpointer ptr,
+                                   const gchar *info)
 {
 	struct pt_data *ptd;
 

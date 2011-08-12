@@ -76,7 +76,7 @@ struct _CamelDataWrapper {
 
 	CamelContentType *mime_type;
 
-	guint offline:1;
+	guint offline : 1;
 };
 
 struct _CamelDataWrapperClass {

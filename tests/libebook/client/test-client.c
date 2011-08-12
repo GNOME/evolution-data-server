@@ -92,7 +92,8 @@ print_one_email (EBookClient *book_client)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 

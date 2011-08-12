@@ -59,7 +59,7 @@ struct attachment {
 	icalattach *attach;
 
 	/* for inline attachments, where the file is stored;
-	   it unlinks it on attachment free. */
+	 * it unlinks it on attachment free. */
 	gchar *temporary_filename;
 };
 
@@ -123,10 +123,10 @@ struct _ECalComponentPrivate {
 	icalproperty *dtstamp;
 
 	/* The DURATION property can be used instead of the VEVENT DTEND or
-	   the VTODO DUE dates. We do not use it directly ourselves, but we
-	   must be able to handle it from incoming data. If a DTEND or DUE
-	   is requested, we convert the DURATION if necessary. If DTEND or
-	   DUE is set, we remove any DURATION. */
+	 * the VTODO DUE dates. We do not use it directly ourselves, but we
+	 * must be able to handle it from incoming data. If a DTEND or DUE
+	 * is requested, we convert the DURATION if necessary. If DTEND or
+	 * DUE is set, we remove any DURATION. */
 	icalproperty *duration;
 
 	struct datetime due;
@@ -248,7 +248,9 @@ free_slist (GSList *slist)
  * the UID pointers inside the icalproperties themselves.
  */
 static gboolean
-free_alarm_cb (gpointer key, gpointer value, gpointer data)
+free_alarm_cb (gpointer key,
+               gpointer value,
+               gpointer data)
 {
 	return TRUE;
 }
@@ -281,7 +283,8 @@ free_attachment (struct attachment *attachment)
  * does, it means we don't own it and we shouldn't free it.
  */
 static void
-free_icalcomponent (ECalComponent *comp, gboolean free)
+free_icalcomponent (ECalComponent *comp,
+                    gboolean free)
 {
 	ECalComponentPrivate *priv;
 
@@ -518,7 +521,8 @@ e_cal_component_clone (ECalComponent *comp)
 
 /* Scans an attachment property */
 static void
-scan_attachment (GSList **attachment_list, icalproperty *prop)
+scan_attachment (GSList **attachment_list,
+                 icalproperty *prop)
 {
 	struct attachment *attachment;
 
@@ -533,7 +537,8 @@ scan_attachment (GSList **attachment_list, icalproperty *prop)
 
 /* Scans an attendee property */
 static void
-scan_attendee (GSList **attendee_list, icalproperty *prop)
+scan_attendee (GSList **attendee_list,
+               icalproperty *prop)
 {
 	struct attendee *attendee;
 
@@ -556,7 +561,9 @@ scan_attendee (GSList **attendee_list, icalproperty *prop)
 
 /* Scans a date/time and timezone pair property */
 static void
-scan_datetime (ECalComponent *comp, struct datetime *datetime, icalproperty *prop)
+scan_datetime (ECalComponent *comp,
+               struct datetime *datetime,
+               icalproperty *prop)
 {
 	datetime->prop = prop;
 	datetime->tzid_param = icalproperty_get_first_parameter (prop, ICAL_TZID_PARAMETER);
@@ -564,7 +571,8 @@ scan_datetime (ECalComponent *comp, struct datetime *datetime, icalproperty *pro
 
 /* Scans an exception date property */
 static void
-scan_exdate (ECalComponent *comp, icalproperty *prop)
+scan_exdate (ECalComponent *comp,
+             icalproperty *prop)
 {
 	ECalComponentPrivate *priv;
 	struct datetime *dt;
@@ -580,7 +588,9 @@ scan_exdate (ECalComponent *comp, icalproperty *prop)
 
 /* Scans and attendee property */
 static void
-scan_organizer (ECalComponent *comp, struct organizer *organizer, icalproperty *prop)
+scan_organizer (ECalComponent *comp,
+                struct organizer *organizer,
+                icalproperty *prop)
 {
 	organizer->prop = prop;
 
@@ -591,7 +601,9 @@ scan_organizer (ECalComponent *comp, struct organizer *organizer, icalproperty *
 
 /* Scans an icalperiodtype property */
 static void
-scan_period (ECalComponent *comp, GSList **list, icalproperty *prop)
+scan_period (ECalComponent *comp,
+             GSList **list,
+             icalproperty *prop)
 {
 	struct period *period;
 
@@ -604,7 +616,9 @@ scan_period (ECalComponent *comp, GSList **list, icalproperty *prop)
 
 /* Scans an icalrecurtype property */
 static void
-scan_recur_id (ECalComponent *comp, struct recur_id *recur_id, icalproperty *prop)
+scan_recur_id (ECalComponent *comp,
+               struct recur_id *recur_id,
+               icalproperty *prop)
 {
 	scan_datetime (comp, &recur_id->recur_time, prop);
 
@@ -613,14 +627,17 @@ scan_recur_id (ECalComponent *comp, struct recur_id *recur_id, icalproperty *pro
 
 /* Scans an icalrecurtype property */
 static void
-scan_recur (ECalComponent *comp, GSList **list, icalproperty *prop)
+scan_recur (ECalComponent *comp,
+            GSList **list,
+            icalproperty *prop)
 {
 	*list = g_slist_append (*list, prop);
 }
 
 /* Scans the summary property */
 static void
-scan_summary (ECalComponent *comp, icalproperty *prop)
+scan_summary (ECalComponent *comp,
+              icalproperty *prop)
 {
 	ECalComponentPrivate *priv;
 
@@ -632,7 +649,9 @@ scan_summary (ECalComponent *comp, icalproperty *prop)
 
 /* Scans a text (i.e. text + altrep) property */
 static void
-scan_text (ECalComponent *comp, GSList **text_list, icalproperty *prop)
+scan_text (ECalComponent *comp,
+           GSList **text_list,
+           icalproperty *prop)
 {
 	struct text *text;
 
@@ -645,7 +664,8 @@ scan_text (ECalComponent *comp, GSList **text_list, icalproperty *prop)
 
 /* Scans an icalproperty and adds its mapping to the component */
 static void
-scan_property (ECalComponent *comp, icalproperty *prop)
+scan_property (ECalComponent *comp,
+               icalproperty *prop)
 {
 	ECalComponentPrivate *priv;
 	icalproperty_kind kind;
@@ -802,7 +822,8 @@ alarm_uid_from_prop (icalproperty *prop)
  * pointer to the UID string inside the property itself.
  */
 static const gchar *
-set_alarm_uid (icalcomponent *alarm, const gchar *auid)
+set_alarm_uid (icalcomponent *alarm,
+               const gchar *auid)
 {
 	icalproperty *prop;
 	const gchar *inprop_auid;
@@ -854,7 +875,9 @@ remove_alarm_uid (icalcomponent *alarm)
  * with the specified UID.  Returns the actual UID used.
  */
 static const gchar *
-add_alarm (ECalComponent *comp, icalcomponent *alarm, const gchar *auid)
+add_alarm (ECalComponent *comp,
+           icalcomponent *alarm,
+           const gchar *auid)
 {
 	ECalComponentPrivate *priv;
 	icalcomponent *old_alarm;
@@ -886,7 +909,8 @@ add_alarm (ECalComponent *comp, icalcomponent *alarm, const gchar *auid)
 /* Scans an alarm subcomponent, adds an UID extension property to it (so that we
  * can reference alarms by unique IDs), and adds its mapping to the component.  */
 static void
-scan_alarm (ECalComponent *comp, icalcomponent *alarm)
+scan_alarm (ECalComponent *comp,
+            icalcomponent *alarm)
 {
 	icalproperty *prop;
 	const gchar *auid;
@@ -991,7 +1015,8 @@ ensure_mandatory_properties (ECalComponent *comp)
  * that will be set in the new component will be its unique identifier.
  **/
 void
-e_cal_component_set_new_vtype (ECalComponent *comp, ECalComponentVType type)
+e_cal_component_set_new_vtype (ECalComponent *comp,
+                               ECalComponentVType type)
 {
 	ECalComponentPrivate *priv;
 	icalcomponent *icalcomp;
@@ -1067,7 +1092,8 @@ e_cal_component_set_new_vtype (ECalComponent *comp, ECalComponentVType type)
  * type.
  **/
 gboolean
-e_cal_component_set_icalcomponent (ECalComponent *comp, icalcomponent *icalcomp)
+e_cal_component_set_icalcomponent (ECalComponent *comp,
+                                   icalcomponent *icalcomp)
 {
 	ECalComponentPrivate *priv;
 	icalcomponent_kind kind;
@@ -1248,7 +1274,9 @@ e_cal_component_get_as_string (ECalComponent *comp)
  * has the mandatory properties it needs.
  */
 static void
-ensure_alarm_properties_cb (gpointer key, gpointer value, gpointer data)
+ensure_alarm_properties_cb (gpointer key,
+                            gpointer value,
+                            gpointer data)
 {
 	ECalComponent *comp;
 	ECalComponentPrivate *priv;
@@ -1429,7 +1457,8 @@ e_cal_component_get_id (ECalComponent *comp)
  * Queries the unique identifier of a calendar component object.
  **/
 void
-e_cal_component_get_uid (ECalComponent *comp, const gchar **uid)
+e_cal_component_get_uid (ECalComponent *comp,
+                         const gchar **uid)
 {
 	ECalComponentPrivate *priv;
 
@@ -1454,7 +1483,8 @@ e_cal_component_get_uid (ECalComponent *comp, const gchar **uid)
  * Sets the unique identifier string of a calendar component object.
  **/
 void
-e_cal_component_set_uid (ECalComponent *comp, const gchar *uid)
+e_cal_component_set_uid (ECalComponent *comp,
+                         const gchar *uid)
 {
 	ECalComponentPrivate *priv;
 
@@ -1472,7 +1502,8 @@ e_cal_component_set_uid (ECalComponent *comp, const gchar *uid)
 }
 
 static gboolean
-case_contains (const gchar *where, const gchar *what)
+case_contains (const gchar *where,
+               const gchar *what)
 {
 	gchar *lwhere, *lwhat;
 	gboolean res = FALSE;
@@ -1494,7 +1525,9 @@ case_contains (const gchar *where, const gchar *what)
 
 /* Gets a text list value */
 static void
-get_attachment_list (ECalComponent *comp, GSList *attachment_list, GSList **al)
+get_attachment_list (ECalComponent *comp,
+                     GSList *attachment_list,
+                     GSList **al)
 {
 	GSList *l;
 	gint index;
@@ -1521,7 +1554,7 @@ get_attachment_list (ECalComponent *comp, GSList *attachment_list, GSList **al)
 			icalattach_ref (attachment->attach);
 			data = icalattach_get_url (attachment->attach);
 			buf_size = strlen (data);
-			buf = g_malloc0 (buf_size+1);
+			buf = g_malloc0 (buf_size + 1);
 			icalvalue_decode_ical_string (data, buf, buf_size);
 		} else if (attachment->prop) {
 			if (!attachment->temporary_filename) {
@@ -1599,8 +1632,8 @@ get_attachment_list (ECalComponent *comp, GSList *attachment_list, GSList **al)
 
 static void
 set_attachment_list (icalcomponent *icalcomp,
-		   GSList **attachment_list,
-		   GSList *al)
+                     GSList **attachment_list,
+                     GSList *al)
 {
 	GSList *l;
 
@@ -1651,7 +1684,8 @@ set_attachment_list (icalcomponent *icalcomp,
  * the @attachment_list should be freed by calling #g_slist_free.
  **/
 void
-e_cal_component_get_attachment_list (ECalComponent *comp, GSList **attachment_list)
+e_cal_component_get_attachment_list (ECalComponent *comp,
+                                     GSList **attachment_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -1676,7 +1710,8 @@ e_cal_component_get_attachment_list (ECalComponent *comp, GSList **attachment_li
  * Sets the attachments of a calendar component object
  **/
 void
-e_cal_component_set_attachment_list (ECalComponent *comp, GSList *attachment_list)
+e_cal_component_set_attachment_list (ECalComponent *comp,
+                                     GSList *attachment_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -1745,7 +1780,8 @@ e_cal_component_get_num_attachments (ECalComponent *comp)
  * a comma-separated list of all categories set in the component.
  **/
 void
-e_cal_component_get_categories (ECalComponent *comp, const gchar **categories)
+e_cal_component_get_categories (ECalComponent *comp,
+                                const gchar **categories)
 {
 	ECalComponentPrivate *priv;
 
@@ -1770,7 +1806,8 @@ e_cal_component_get_categories (ECalComponent *comp, const gchar **categories)
  * Sets the list of categories for a calendar component.
  **/
 void
-e_cal_component_set_categories (ECalComponent *comp, const gchar *categories)
+e_cal_component_set_categories (ECalComponent *comp,
+                                const gchar *categories)
 {
 	ECalComponentPrivate *priv;
 
@@ -1808,7 +1845,8 @@ e_cal_component_set_categories (ECalComponent *comp, const gchar *categories)
  * in the returned categ_list is a string with the corresponding category.
  **/
 void
-e_cal_component_get_categories_list (ECalComponent *comp, GSList **categ_list)
+e_cal_component_get_categories_list (ECalComponent *comp,
+                                     GSList **categ_list)
 {
 	ECalComponentPrivate *priv;
 	const gchar *categories;
@@ -1879,7 +1917,8 @@ stringify_categories (GSList *categ_list)
  * Sets the list of categories of a calendar component object.
  **/
 void
-e_cal_component_set_categories_list (ECalComponent *comp, GSList *categ_list)
+e_cal_component_set_categories_list (ECalComponent *comp,
+                                     GSList *categ_list)
 {
 	ECalComponentPrivate *priv;
 	gchar *categories_str;
@@ -1919,7 +1958,8 @@ e_cal_component_set_categories_list (ECalComponent *comp, GSList *categ_list)
  * #E_CAL_COMPONENT_CLASS_NONE.
  **/
 void
-e_cal_component_get_classification (ECalComponent *comp, ECalComponentClassification *classif)
+e_cal_component_get_classification (ECalComponent *comp,
+                                    ECalComponentClassification *classif)
 {
 	ECalComponentPrivate *priv;
 	icalproperty_class class;
@@ -1964,7 +2004,8 @@ e_cal_component_get_classification (ECalComponent *comp, ECalComponentClassifica
  * the property, specify E_CAL_COMPONENT_CLASS_NONE for @classif.
  **/
 void
-e_cal_component_set_classification (ECalComponent *comp, ECalComponentClassification classif)
+e_cal_component_set_classification (ECalComponent *comp,
+                                    ECalComponentClassification classif)
 {
 	ECalComponentPrivate *priv;
 	icalproperty_class class;
@@ -2015,8 +2056,8 @@ e_cal_component_set_classification (ECalComponent *comp, ECalComponentClassifica
 /* Gets a text list value */
 static void
 get_text_list (GSList *text_list,
-	       const gchar *(* get_prop_func) (const icalproperty *prop),
-	       GSList **tl)
+               const gchar *(* get_prop_func) (const icalproperty *prop),
+               GSList **tl)
 {
 	GSList *l;
 
@@ -2049,9 +2090,9 @@ get_text_list (GSList *text_list,
 /* Sets a text list value */
 static void
 set_text_list (ECalComponent *comp,
-	       icalproperty *(* new_prop_func) (const gchar *value),
-	       GSList **text_list,
-	       GSList *tl)
+               icalproperty *(* new_prop_func) (const gchar *value),
+               GSList **text_list,
+               GSList *tl)
 {
 	ECalComponentPrivate *priv;
 	GSList *l;
@@ -2112,7 +2153,8 @@ set_text_list (ECalComponent *comp,
  * #ECalComponentText is returned.
  **/
 void
-e_cal_component_get_comment_list (ECalComponent *comp, GSList **text_list)
+e_cal_component_get_comment_list (ECalComponent *comp,
+                                  GSList **text_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -2136,7 +2178,8 @@ e_cal_component_get_comment_list (ECalComponent *comp, GSList **text_list)
  * #ECalComponentText structures is used.
  **/
 void
-e_cal_component_set_comment_list (ECalComponent *comp, GSList *text_list)
+e_cal_component_set_comment_list (ECalComponent *comp,
+                                  GSList *text_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -2161,7 +2204,8 @@ e_cal_component_set_comment_list (ECalComponent *comp, GSList *text_list)
  * #ECalComponentText is returned.
  **/
 void
-e_cal_component_get_contact_list (ECalComponent *comp, GSList **text_list)
+e_cal_component_get_contact_list (ECalComponent *comp,
+                                  GSList **text_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -2185,7 +2229,8 @@ e_cal_component_get_contact_list (ECalComponent *comp, GSList **text_list)
  * #ECalComponentText structures is used.
  **/
 void
-e_cal_component_set_contact_list (ECalComponent *comp, GSList *text_list)
+e_cal_component_set_contact_list (ECalComponent *comp,
+                                  GSList *text_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -2201,8 +2246,8 @@ e_cal_component_set_contact_list (ECalComponent *comp, GSList *text_list)
 /* Gets a struct icaltimetype value */
 static void
 get_icaltimetype (icalproperty *prop,
-		  struct icaltimetype (* get_prop_func) (const icalproperty *prop),
-		  struct icaltimetype **t)
+                  struct icaltimetype (*get_prop_func) (const icalproperty *prop),
+                                                        struct icaltimetype **t)
 {
 	if (!prop) {
 		*t = NULL;
@@ -2215,10 +2260,12 @@ get_icaltimetype (icalproperty *prop,
 
 /* Sets a struct icaltimetype value */
 static void
-set_icaltimetype (ECalComponent *comp, icalproperty **prop,
-		  icalproperty *(* prop_new_func) (struct icaltimetype v),
-		  void (* prop_set_func) (icalproperty *prop, struct icaltimetype v),
-		  struct icaltimetype *t)
+set_icaltimetype (ECalComponent *comp,
+                  icalproperty **prop,
+                  icalproperty *(*prop_new_func) (struct icaltimetype v),
+                  void (* prop_set_func) (icalproperty *prop,
+                                          struct icaltimetype v),
+                  struct icaltimetype *t)
 {
 	ECalComponentPrivate *priv;
 
@@ -2251,7 +2298,8 @@ set_icaltimetype (ECalComponent *comp, icalproperty **prop,
  * Queries the date at which a calendar compoment object was completed.
  **/
 void
-e_cal_component_get_completed (ECalComponent *comp, struct icaltimetype **t)
+e_cal_component_get_completed (ECalComponent *comp,
+                               struct icaltimetype **t)
 {
 	ECalComponentPrivate *priv;
 
@@ -2273,7 +2321,8 @@ e_cal_component_get_completed (ECalComponent *comp, struct icaltimetype **t)
  * Sets the date at which a calendar component object was completed.
  **/
 void
-e_cal_component_set_completed (ECalComponent *comp, struct icaltimetype *t)
+e_cal_component_set_completed (ECalComponent *comp,
+                               struct icaltimetype *t)
 {
 	ECalComponentPrivate *priv;
 
@@ -2299,7 +2348,8 @@ e_cal_component_set_completed (ECalComponent *comp, struct icaltimetype *t)
  * calendar store.
  **/
 void
-e_cal_component_get_created (ECalComponent *comp, struct icaltimetype **t)
+e_cal_component_get_created (ECalComponent *comp,
+                             struct icaltimetype **t)
 {
 	ECalComponentPrivate *priv;
 
@@ -2323,7 +2373,8 @@ e_cal_component_get_created (ECalComponent *comp, struct icaltimetype **t)
  * not by calendar user agents.
  **/
 void
-e_cal_component_set_created (ECalComponent *comp, struct icaltimetype *t)
+e_cal_component_set_created (ECalComponent *comp,
+                             struct icaltimetype *t)
 {
 	ECalComponentPrivate *priv;
 
@@ -2352,7 +2403,8 @@ e_cal_component_set_created (ECalComponent *comp, struct icaltimetype *t)
  * most one description.
  **/
 void
-e_cal_component_get_description_list (ECalComponent *comp, GSList **text_list)
+e_cal_component_get_description_list (ECalComponent *comp,
+                                      GSList **text_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -2377,7 +2429,8 @@ e_cal_component_get_description_list (ECalComponent *comp, GSList **text_list)
  * at most one description.
  **/
 void
-e_cal_component_set_description_list (ECalComponent *comp, GSList *text_list)
+e_cal_component_set_description_list (ECalComponent *comp,
+                                      GSList *text_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -2393,8 +2446,8 @@ e_cal_component_set_description_list (ECalComponent *comp, GSList *text_list)
 /* Gets a date/time and timezone pair */
 static void
 get_datetime (struct datetime *datetime,
-	      struct icaltimetype (* get_prop_func) (const icalproperty *prop),
-	      ECalComponentDateTime *dt)
+              struct icaltimetype (* get_prop_func) (const icalproperty *prop),
+              ECalComponentDateTime *dt)
 {
 	if (datetime->prop) {
 		dt->value = g_new (struct icaltimetype, 1);
@@ -2403,7 +2456,7 @@ get_datetime (struct datetime *datetime,
 		dt->value = NULL;
 
 	/* If the icaltimetype has is_utc set, we set "UTC" as the TZID.
-	   This makes the timezone code simpler. */
+	 * This makes the timezone code simpler. */
 	if (datetime->tzid_param)
 		dt->tzid = g_strdup (icalparameter_get_tzid (datetime->tzid_param));
 	else if (dt->value && dt->value->is_utc)
@@ -2414,17 +2467,19 @@ get_datetime (struct datetime *datetime,
 
 /* Sets a date/time and timezone pair */
 static void
-set_datetime (ECalComponent *comp, struct datetime *datetime,
-	      icalproperty *(* prop_new_func) (struct icaltimetype v),
-	      void (* prop_set_func) (icalproperty * prop, struct icaltimetype v),
-	      ECalComponentDateTime *dt)
+set_datetime (ECalComponent *comp,
+              struct datetime *datetime,
+              icalproperty *(* prop_new_func) (struct icaltimetype v),
+              void (* prop_set_func) (icalproperty *prop,
+                                      struct icaltimetype v),
+              ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 
 	priv = comp->priv;
 
 	/* If we are setting the property to NULL (i.e. removing it), then
-	   we remove it if it exists. */
+	 * we remove it if it exists. */
 	if (!dt) {
 		if (datetime->prop) {
 			icalcomponent_remove_property (priv->icalcomp, datetime->prop);
@@ -2472,11 +2527,11 @@ set_datetime (ECalComponent *comp, struct datetime *datetime,
 }
 
 /* This tries to get the DTSTART + DURATION for a VEVENT or VTODO. In a
-   VEVENT this is used for the DTEND if no DTEND exists, In a VTOTO it is
-   used for the DUE date if DUE doesn't exist. */
+ * VEVENT this is used for the DTEND if no DTEND exists, In a VTOTO it is
+ * used for the DUE date if DUE doesn't exist. */
 static void
 e_cal_component_get_start_plus_duration (ECalComponent *comp,
-					 ECalComponentDateTime *dt)
+                                         ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 	struct icaldurationtype duration;
@@ -2494,13 +2549,13 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp,
 	duration = icalproperty_get_duration (priv->duration);
 
 	/* The DURATION shouldn't be negative, but just return DTSTART if it
-	   is, i.e. assume it is 0. */
+	 * is, i.e. assume it is 0. */
 	if (duration.is_neg)
 		return;
 
 	/* If DTSTART is a DATE value, then we need to check if the DURATION
-	   includes any hours, minutes or seconds. If it does, we need to
-	   make the DTEND/DUE a DATE-TIME value. */
+	 * includes any hours, minutes or seconds. If it does, we need to
+	 * make the DTEND/DUE a DATE-TIME value. */
 	duration.days += duration.weeks * 7;
 	if (dt->value->is_date) {
 		if (duration.hours != 0 || duration.minutes != 0
@@ -2523,7 +2578,8 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp,
  * Queries the date/time end of a calendar component object.
  **/
 void
-e_cal_component_get_dtend (ECalComponent *comp, ECalComponentDateTime *dt)
+e_cal_component_get_dtend (ECalComponent *comp,
+                           ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 
@@ -2541,7 +2597,7 @@ e_cal_component_get_dtend (ECalComponent *comp, ECalComponentDateTime *dt)
 	get_datetime (&priv->dtend, icalproperty_get_dtend, dt);
 
 	/* If we don't have a DTEND property, then we try to get DTSTART
-	   + DURATION. */
+	 * + DURATION. */
 	if (!dt->value)
 		e_cal_component_get_start_plus_duration (comp, dt);
 }
@@ -2554,7 +2610,8 @@ e_cal_component_get_dtend (ECalComponent *comp, ECalComponentDateTime *dt)
  * Sets the date/time end property of a calendar component object.
  **/
 void
-e_cal_component_set_dtend (ECalComponent *comp, ECalComponentDateTime *dt)
+e_cal_component_set_dtend (ECalComponent *comp,
+                           ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 
@@ -2570,8 +2627,8 @@ e_cal_component_set_dtend (ECalComponent *comp, ECalComponentDateTime *dt)
 		      dt);
 
 	/* Make sure we remove any existing DURATION property, as it can't be
-	   used with a DTEND. If DTEND is set to NULL, i.e. removed, we also
-	   want to remove any DURATION. */
+	 * used with a DTEND. If DTEND is set to NULL, i.e. removed, we also
+	 * want to remove any DURATION. */
 	if (priv->duration) {
 		icalcomponent_remove_property (priv->icalcomp, priv->duration);
 		icalproperty_free (priv->duration);
@@ -2590,7 +2647,8 @@ e_cal_component_set_dtend (ECalComponent *comp, ECalComponentDateTime *dt)
  * the last time at which the object was modified by a calendar user agent.
  **/
 void
-e_cal_component_get_dtstamp (ECalComponent *comp, struct icaltimetype *t)
+e_cal_component_get_dtstamp (ECalComponent *comp,
+                             struct icaltimetype *t)
 {
 	ECalComponentPrivate *priv;
 
@@ -2617,7 +2675,8 @@ e_cal_component_get_dtstamp (ECalComponent *comp, struct icaltimetype *t)
  * properties.
  **/
 void
-e_cal_component_set_dtstamp (ECalComponent *comp, struct icaltimetype *t)
+e_cal_component_set_dtstamp (ECalComponent *comp,
+                             struct icaltimetype *t)
 {
 	ECalComponentPrivate *priv;
 
@@ -2643,7 +2702,8 @@ e_cal_component_set_dtstamp (ECalComponent *comp, struct icaltimetype *t)
  * Queries the date/time start of a calendar component object.
  **/
 void
-e_cal_component_get_dtstart (ECalComponent *comp, ECalComponentDateTime *dt)
+e_cal_component_get_dtstart (ECalComponent *comp,
+                             ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 
@@ -2669,7 +2729,8 @@ e_cal_component_get_dtstart (ECalComponent *comp, ECalComponentDateTime *dt)
  * Sets the date/time start property of a calendar component object.
  **/
 void
-e_cal_component_set_dtstart (ECalComponent *comp, ECalComponentDateTime *dt)
+e_cal_component_set_dtstart (ECalComponent *comp,
+                             ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 
@@ -2696,7 +2757,8 @@ e_cal_component_set_dtstart (ECalComponent *comp, ECalComponentDateTime *dt)
  * Queries the due date/time of a calendar component object.
  **/
 void
-e_cal_component_get_due (ECalComponent *comp, ECalComponentDateTime *dt)
+e_cal_component_get_due (ECalComponent *comp,
+                         ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 
@@ -2714,7 +2776,7 @@ e_cal_component_get_due (ECalComponent *comp, ECalComponentDateTime *dt)
 	get_datetime (&priv->due, icalproperty_get_due, dt);
 
 	/* If we don't have a DTEND property, then we try to get DTSTART
-	   + DURATION. */
+	 * + DURATION. */
 	if (!dt->value)
 		e_cal_component_get_start_plus_duration (comp, dt);
 }
@@ -2727,7 +2789,8 @@ e_cal_component_get_due (ECalComponent *comp, ECalComponentDateTime *dt)
  * Sets the due date/time property of a calendar component object.
  **/
 void
-e_cal_component_set_due (ECalComponent *comp, ECalComponentDateTime *dt)
+e_cal_component_set_due (ECalComponent *comp,
+                         ECalComponentDateTime *dt)
 {
 	ECalComponentPrivate *priv;
 
@@ -2743,8 +2806,8 @@ e_cal_component_set_due (ECalComponent *comp, ECalComponentDateTime *dt)
 		      dt);
 
 	/* Make sure we remove any existing DURATION property, as it can't be
-	   used with a DTEND. If DTEND is set to NULL, i.e. removed, we also
-	   want to remove any DURATION. */
+	 * used with a DTEND. If DTEND is set to NULL, i.e. removed, we also
+	 * want to remove any DURATION. */
 	if (priv->duration) {
 		icalcomponent_remove_property (priv->icalcomp, priv->duration);
 		icalproperty_free (priv->duration);
@@ -2757,8 +2820,8 @@ e_cal_component_set_due (ECalComponent *comp, ECalComponentDateTime *dt)
 /* Builds a list of ECalComponentPeriod structures based on a list of icalproperties */
 static void
 get_period_list (GSList *period_list,
-		 struct icaldatetimeperiodtype (* get_prop_func) (const icalproperty *prop),
-		 GSList **list)
+                 struct icaldatetimeperiodtype (* get_prop_func) (const icalproperty *prop),
+                 GSList **list)
 {
 	GSList *l;
 
@@ -2823,9 +2886,9 @@ get_period_list (GSList *period_list,
 /* Sets a period list value */
 static void
 set_period_list (ECalComponent *comp,
-		 icalproperty *(* new_prop_func) (struct icaldatetimeperiodtype period),
-		 GSList **period_list,
-		 GSList *pl)
+                 icalproperty *(* new_prop_func) (struct icaldatetimeperiodtype period),
+                 GSList **period_list,
+                 GSList *pl)
 {
 	ECalComponentPrivate *priv;
 	GSList *l;
@@ -2899,7 +2962,8 @@ set_period_list (ECalComponent *comp,
  * Queries the list of exception date properties in a calendar component object.
  **/
 void
-e_cal_component_get_exdate_list (ECalComponent *comp, GSList **exdate_list)
+e_cal_component_get_exdate_list (ECalComponent *comp,
+                                 GSList **exdate_list)
 {
 	ECalComponentPrivate *priv;
 	GSList *l;
@@ -2943,7 +3007,8 @@ e_cal_component_get_exdate_list (ECalComponent *comp, GSList **exdate_list)
  * Sets the list of exception dates in a calendar component object.
  **/
 void
-e_cal_component_set_exdate_list (ECalComponent *comp, GSList *exdate_list)
+e_cal_component_set_exdate_list (ECalComponent *comp,
+                                 GSList *exdate_list)
 {
 	ECalComponentPrivate *priv;
 	GSList *l;
@@ -2962,7 +3027,7 @@ e_cal_component_set_exdate_list (ECalComponent *comp, GSList *exdate_list)
 		dt = l->data;
 
 		/* Removing the DATE or DATE-TIME property will also remove
-		   any TZID parameter. */
+		 * any TZID parameter. */
 		icalcomponent_remove_property (priv->icalcomp, dt->prop);
 		icalproperty_free (dt->prop);
 		g_free (dt);
@@ -3026,8 +3091,8 @@ e_cal_component_has_exdates (ECalComponent *comp)
 /* Gets a list of recurrence rules */
 static void
 get_recur_list (GSList *recur_list,
-		struct icalrecurrencetype (* get_prop_func) (const icalproperty *prop),
-		GSList **list)
+                struct icalrecurrencetype (* get_prop_func) (const icalproperty *prop),
+                GSList **list)
 {
 	GSList *l;
 
@@ -3051,9 +3116,9 @@ get_recur_list (GSList *recur_list,
 /* Sets a list of recurrence rules */
 static void
 set_recur_list (ECalComponent *comp,
-		icalproperty *(* new_prop_func) (struct icalrecurrencetype recur),
-		GSList **recur_list,
-		GSList *rl)
+                icalproperty *(* new_prop_func) (struct icalrecurrencetype recur),
+                GSList **recur_list,
+                GSList *rl)
 {
 	ECalComponentPrivate *priv;
 	GSList *l;
@@ -3102,7 +3167,8 @@ set_recur_list (ECalComponent *comp,
  * object.
  **/
 void
-e_cal_component_get_exrule_list (ECalComponent *comp, GSList **recur_list)
+e_cal_component_get_exrule_list (ECalComponent *comp,
+                                 GSList **recur_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -3124,7 +3190,8 @@ e_cal_component_get_exrule_list (ECalComponent *comp, GSList **recur_list)
  * Queries the list of exception rule properties of a calendar component object.
  **/
 void
-e_cal_component_get_exrule_property_list (ECalComponent *comp, GSList **recur_list)
+e_cal_component_get_exrule_property_list (ECalComponent *comp,
+                                          GSList **recur_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -3146,7 +3213,8 @@ e_cal_component_get_exrule_property_list (ECalComponent *comp, GSList **recur_li
  * Sets the list of exception rules in a calendar component object.
  **/
 void
-e_cal_component_set_exrule_list (ECalComponent *comp, GSList *recur_list)
+e_cal_component_set_exrule_list (ECalComponent *comp,
+                                 GSList *recur_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -3208,7 +3276,8 @@ e_cal_component_has_exceptions (ECalComponent *comp)
  * Gets the geographic position property of a calendar component object.
  **/
 void
-e_cal_component_get_geo (ECalComponent *comp, struct icalgeotype **geo)
+e_cal_component_get_geo (ECalComponent *comp,
+                         struct icalgeotype **geo)
 {
 	ECalComponentPrivate *priv;
 
@@ -3234,7 +3303,8 @@ e_cal_component_get_geo (ECalComponent *comp, struct icalgeotype **geo)
  * Sets the geographic position property on a calendar component object.
  **/
 void
-e_cal_component_set_geo (ECalComponent *comp, struct icalgeotype *geo)
+e_cal_component_set_geo (ECalComponent *comp,
+                         struct icalgeotype *geo)
 {
 	ECalComponentPrivate *priv;
 
@@ -3271,7 +3341,8 @@ e_cal_component_set_geo (ECalComponent *comp, struct icalgeotype *geo)
  * the calendar store.
  **/
 void
-e_cal_component_get_last_modified (ECalComponent *comp, struct icaltimetype **t)
+e_cal_component_get_last_modified (ECalComponent *comp,
+                                   struct icaltimetype **t)
 {
 	ECalComponentPrivate *priv;
 
@@ -3294,7 +3365,8 @@ e_cal_component_get_last_modified (ECalComponent *comp, struct icaltimetype **t)
  * calendar store.  This should not be called by plain calendar user agents.
  **/
 void
-e_cal_component_set_last_modified (ECalComponent *comp, struct icaltimetype *t)
+e_cal_component_set_last_modified (ECalComponent *comp,
+                                   struct icaltimetype *t)
 {
 	ECalComponentPrivate *priv;
 
@@ -3318,7 +3390,8 @@ e_cal_component_set_last_modified (ECalComponent *comp, struct icaltimetype *t)
  * Queries the organizer property of a calendar component object
  **/
 void
-e_cal_component_get_organizer (ECalComponent *comp, ECalComponentOrganizer *organizer)
+e_cal_component_get_organizer (ECalComponent *comp,
+                               ECalComponentOrganizer *organizer)
 {
 	ECalComponentPrivate *priv;
 
@@ -3359,7 +3432,8 @@ e_cal_component_get_organizer (ECalComponent *comp, ECalComponentOrganizer *orga
  * Sets the organizer of a calendar component object
  **/
 void
-e_cal_component_set_organizer (ECalComponent *comp, ECalComponentOrganizer *organizer)
+e_cal_component_set_organizer (ECalComponent *comp,
+                               ECalComponentOrganizer *organizer)
 {
 	ECalComponentPrivate *priv;
 
@@ -3475,7 +3549,8 @@ e_cal_component_has_organizer (ECalComponent *comp)
  * Queries the percent-complete property of a calendar component object.
  **/
 void
-e_cal_component_get_percent (ECalComponent *comp, gint **percent)
+e_cal_component_get_percent (ECalComponent *comp,
+                             gint **percent)
 {
 	ECalComponentPrivate *priv;
 
@@ -3499,7 +3574,8 @@ e_cal_component_get_percent (ECalComponent *comp, gint **percent)
  * Since: 2.28
  **/
 void
-e_cal_component_set_percent_as_int (ECalComponent *comp, gint percent)
+e_cal_component_set_percent_as_int (ECalComponent *comp,
+                                    gint percent)
 {
 	ECalComponentPrivate *priv;
 
@@ -3560,7 +3636,8 @@ e_cal_component_get_percent_as_int (ECalComponent *comp)
  * Sets the percent-complete property of a calendar component object.
  **/
 void
-e_cal_component_set_percent (ECalComponent *comp, gint *percent)
+e_cal_component_set_percent (ECalComponent *comp,
+                             gint *percent)
 {
 	ECalComponentPrivate *priv;
 
@@ -3599,7 +3676,8 @@ e_cal_component_set_percent (ECalComponent *comp, gint *percent)
  * Queries the priority property of a calendar component object.
  **/
 void
-e_cal_component_get_priority (ECalComponent *comp, gint **priority)
+e_cal_component_get_priority (ECalComponent *comp,
+                              gint **priority)
 {
 	ECalComponentPrivate *priv;
 
@@ -3625,7 +3703,8 @@ e_cal_component_get_priority (ECalComponent *comp, gint **priority)
  * Sets the priority property of a calendar component object.
  **/
 void
-e_cal_component_set_priority (ECalComponent *comp, gint *priority)
+e_cal_component_set_priority (ECalComponent *comp,
+                              gint *priority)
 {
 	ECalComponentPrivate *priv;
 
@@ -3663,7 +3742,8 @@ e_cal_component_set_priority (ECalComponent *comp, gint *priority)
  * Queries the recurrence id property of a calendar component object.
  **/
 void
-e_cal_component_get_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
+e_cal_component_get_recurid (ECalComponent *comp,
+                             ECalComponentRange *recur_id)
 {
 	ECalComponentPrivate *priv;
 
@@ -3717,7 +3797,8 @@ e_cal_component_get_recurid_as_string (ECalComponent *comp)
  * Sets the recurrence id property of a calendar component object.
  **/
 void
-e_cal_component_set_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
+e_cal_component_set_recurid (ECalComponent *comp,
+                             ECalComponentRange *recur_id)
 {
 	ECalComponentPrivate *priv;
 
@@ -3744,7 +3825,8 @@ e_cal_component_set_recurid (ECalComponent *comp, ECalComponentRange *recur_id)
  * object.
  **/
 void
-e_cal_component_get_rdate_list (ECalComponent *comp, GSList **period_list)
+e_cal_component_get_rdate_list (ECalComponent *comp,
+                                GSList **period_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -3766,7 +3848,8 @@ e_cal_component_get_rdate_list (ECalComponent *comp, GSList **period_list)
  * Sets the list of recurrence dates in a calendar component object.
  **/
 void
-e_cal_component_set_rdate_list (ECalComponent *comp, GSList *period_list)
+e_cal_component_set_rdate_list (ECalComponent *comp,
+                                GSList *period_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -3815,7 +3898,8 @@ e_cal_component_has_rdates (ECalComponent *comp)
  * object.
  **/
 void
-e_cal_component_get_rrule_list (ECalComponent *comp, GSList **recur_list)
+e_cal_component_get_rrule_list (ECalComponent *comp,
+                                GSList **recur_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -3837,7 +3921,8 @@ e_cal_component_get_rrule_list (ECalComponent *comp, GSList **recur_list)
  * Queries a list of recurrence rule properties of a calendar component object.
  **/
 void
-e_cal_component_get_rrule_property_list (ECalComponent *comp, GSList **recur_list)
+e_cal_component_get_rrule_property_list (ECalComponent *comp,
+                                         GSList **recur_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -3859,7 +3944,8 @@ e_cal_component_get_rrule_property_list (ECalComponent *comp, GSList **recur_lis
  * Sets the list of recurrence rules in a calendar component object.
  **/
 void
-e_cal_component_set_rrule_list (ECalComponent *comp, GSList *recur_list)
+e_cal_component_set_rrule_list (ECalComponent *comp,
+                                GSList *recur_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -3914,7 +4000,8 @@ e_cal_component_has_recurrences (ECalComponent *comp)
 
 /* Counts the elements in the by_xxx fields of an icalrecurrencetype */
 static gint
-count_by_xxx (gshort *field, gint max_elements)
+count_by_xxx (gshort *field,
+              gint max_elements)
 {
 	gint i;
 
@@ -4036,8 +4123,8 @@ e_cal_component_has_simple_recurrence (ECalComponent *comp)
 			gint pos;
 
 			/* Outlook 2000 uses BYDAY=TU;BYSETPOS=2, and will not
-			   accept BYDAY=2TU. So we now use the same as Outlook
-			   by default. */
+			 * accept BYDAY=2TU. So we now use the same as Outlook
+			 * by default. */
 
 			weekday = icalrecurrencetype_day_day_of_week (r->by_day[0]);
 			pos = icalrecurrencetype_day_position (r->by_day[0]);
@@ -4123,7 +4210,8 @@ e_cal_component_is_instance (ECalComponent *comp)
  * Queries the sequence number of a calendar component object.
  **/
 void
-e_cal_component_get_sequence (ECalComponent *comp, gint **sequence)
+e_cal_component_get_sequence (ECalComponent *comp,
+                              gint **sequence)
 {
 	ECalComponentPrivate *priv;
 
@@ -4153,7 +4241,8 @@ e_cal_component_get_sequence (ECalComponent *comp, gint **sequence)
  * automatically at the proper times.
  **/
 void
-e_cal_component_set_sequence (ECalComponent *comp, gint *sequence)
+e_cal_component_set_sequence (ECalComponent *comp,
+                              gint *sequence)
 {
 	ECalComponentPrivate *priv;
 
@@ -4192,7 +4281,8 @@ e_cal_component_set_sequence (ECalComponent *comp, gint *sequence)
  * Queries the status property of a calendar component object.
  **/
 void
-e_cal_component_get_status (ECalComponent *comp, icalproperty_status *status)
+e_cal_component_get_status (ECalComponent *comp,
+                            icalproperty_status *status)
 {
 	ECalComponentPrivate *priv;
 
@@ -4220,7 +4310,8 @@ e_cal_component_get_status (ECalComponent *comp, icalproperty_status *status)
  * Sets the status property of a calendar component object.
  **/
 void
-e_cal_component_set_status (ECalComponent *comp, icalproperty_status status)
+e_cal_component_set_status (ECalComponent *comp,
+                            icalproperty_status status)
 {
 	ECalComponentPrivate *priv;
 
@@ -4258,7 +4349,8 @@ e_cal_component_set_status (ECalComponent *comp, icalproperty_status status)
  * Queries the summary of a calendar component object.
  **/
 void
-e_cal_component_get_summary (ECalComponent *comp, ECalComponentText *summary)
+e_cal_component_get_summary (ECalComponent *comp,
+                             ECalComponentText *summary)
 {
 	ECalComponentPrivate *priv;
 
@@ -4286,7 +4378,9 @@ typedef struct {
 } SetAlarmDescriptionData;
 
 static void
-set_alarm_description_cb (gpointer key, gpointer value, gpointer user_data)
+set_alarm_description_cb (gpointer key,
+                          gpointer value,
+                          gpointer user_data)
 {
 	icalcomponent *alarm;
 	icalproperty *icalprop, *desc_prop;
@@ -4337,7 +4431,8 @@ set_alarm_description_cb (gpointer key, gpointer value, gpointer user_data)
  * Sets the summary of a calendar component object.
  **/
 void
-e_cal_component_set_summary (ECalComponent *comp, ECalComponentText *summary)
+e_cal_component_set_summary (ECalComponent *comp,
+                             ECalComponentText *summary)
 {
 	ECalComponentPrivate *priv;
 	SetAlarmDescriptionData sadd;
@@ -4401,7 +4496,8 @@ e_cal_component_set_summary (ECalComponent *comp, ECalComponentText *summary)
  * Queries the time transparency of a calendar component object.
  **/
 void
-e_cal_component_get_transparency (ECalComponent *comp, ECalComponentTransparency *transp)
+e_cal_component_get_transparency (ECalComponent *comp,
+                                  ECalComponentTransparency *transp)
 {
 	ECalComponentPrivate *priv;
 	icalproperty_transp ical_transp;
@@ -4446,7 +4542,8 @@ e_cal_component_get_transparency (ECalComponent *comp, ECalComponentTransparency
  * Sets the time transparency of a calendar component object.
  **/
 void
-e_cal_component_set_transparency (ECalComponent *comp, ECalComponentTransparency transp)
+e_cal_component_set_transparency (ECalComponent *comp,
+                                  ECalComponentTransparency transp)
 {
 	ECalComponentPrivate *priv;
 	icalproperty_transp ical_transp;
@@ -4498,7 +4595,8 @@ e_cal_component_set_transparency (ECalComponent *comp, ECalComponentTransparency
  * Queries the uniform resource locator property of a calendar component object.
  **/
 void
-e_cal_component_get_url (ECalComponent *comp, const gchar **url)
+e_cal_component_get_url (ECalComponent *comp,
+                         const gchar **url)
 {
 	ECalComponentPrivate *priv;
 
@@ -4523,7 +4621,8 @@ e_cal_component_get_url (ECalComponent *comp, const gchar **url)
  * Sets the uniform resource locator property of a calendar component object.
  **/
 void
-e_cal_component_set_url (ECalComponent *comp, const gchar *url)
+e_cal_component_set_url (ECalComponent *comp,
+                         const gchar *url)
 {
 	ECalComponentPrivate *priv;
 
@@ -4553,7 +4652,8 @@ e_cal_component_set_url (ECalComponent *comp, const gchar *url)
 
 /* Gets a text list value */
 static void
-get_attendee_list (GSList *attendee_list, GSList **al)
+get_attendee_list (GSList *attendee_list,
+                   GSList **al)
 {
 	GSList *l;
 
@@ -4610,8 +4710,8 @@ get_attendee_list (GSList *attendee_list, GSList **al)
 /* Sets a text list value */
 static void
 set_attendee_list (icalcomponent *icalcomp,
-		   GSList **attendee_list,
-		   GSList *al)
+                   GSList **attendee_list,
+                   GSList *al)
 {
 	GSList *l;
 
@@ -4702,7 +4802,8 @@ set_attendee_list (icalcomponent *icalcomp,
  * Queries the attendee properties of the calendar component object
  **/
 void
-e_cal_component_get_attendee_list (ECalComponent *comp, GSList **attendee_list)
+e_cal_component_get_attendee_list (ECalComponent *comp,
+                                   GSList **attendee_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -4724,7 +4825,8 @@ e_cal_component_get_attendee_list (ECalComponent *comp, GSList **attendee_list)
  * Sets the attendees of a calendar component object
  **/
 void
-e_cal_component_set_attendee_list (ECalComponent *comp, GSList *attendee_list)
+e_cal_component_set_attendee_list (ECalComponent *comp,
+                                   GSList *attendee_list)
 {
 	ECalComponentPrivate *priv;
 
@@ -4769,7 +4871,8 @@ e_cal_component_has_attendees (ECalComponent *comp)
  * Queries the location property of a calendar component object.
  **/
 void
-e_cal_component_get_location (ECalComponent *comp, const gchar **location)
+e_cal_component_get_location (ECalComponent *comp,
+                              const gchar **location)
 {
 	ECalComponentPrivate *priv;
 
@@ -4794,7 +4897,8 @@ e_cal_component_get_location (ECalComponent *comp, const gchar **location)
  * Sets the location property of a calendar component object.
  **/
 void
-e_cal_component_set_location (ECalComponent *comp, const gchar *location)
+e_cal_component_set_location (ECalComponent *comp,
+                              const gchar *location)
 {
 	ECalComponentPrivate *priv;
 
@@ -5091,7 +5195,8 @@ e_cal_component_has_alarms (ECalComponent *comp)
  * e_cal_component_alarm_free().
  **/
 void
-e_cal_component_add_alarm (ECalComponent *comp, ECalComponentAlarm *alarm)
+e_cal_component_add_alarm (ECalComponent *comp,
+                           ECalComponentAlarm *alarm)
 {
 	ECalComponentPrivate *priv;
 
@@ -5117,7 +5222,8 @@ e_cal_component_add_alarm (ECalComponent *comp, ECalComponentAlarm *alarm)
  * function.
  **/
 void
-e_cal_component_remove_alarm (ECalComponent *comp, const gchar *auid)
+e_cal_component_remove_alarm (ECalComponent *comp,
+                              const gchar *auid)
 {
 	ECalComponentPrivate *priv;
 	icalcomponent *alarm;
@@ -5139,7 +5245,9 @@ e_cal_component_remove_alarm (ECalComponent *comp, const gchar *auid)
 }
 
 static gboolean
-for_each_remove_all_alarms (gpointer key, gpointer value, gpointer data)
+for_each_remove_all_alarms (gpointer key,
+                            gpointer value,
+                            gpointer data)
 {
 	ECalComponent *comp = E_CAL_COMPONENT (data);
 	ECalComponentPrivate *priv;
@@ -5177,7 +5285,8 @@ e_cal_component_remove_all_alarms (ECalComponent *comp)
  * own alarm structure.
  */
 static void
-scan_alarm_property (ECalComponentAlarm *alarm, icalproperty *prop)
+scan_alarm_property (ECalComponentAlarm *alarm,
+                     icalproperty *prop)
 {
 	icalproperty_kind kind;
 	const gchar *xname;
@@ -5324,7 +5433,8 @@ e_cal_component_get_alarm_uids (ECalComponent *comp)
  * e_cal_component_alarm_free().
  **/
 ECalComponentAlarm *
-e_cal_component_get_alarm (ECalComponent *comp, const gchar *auid)
+e_cal_component_get_alarm (ECalComponent *comp,
+                           const gchar *auid)
 {
 	ECalComponentPrivate *priv;
 	icalcomponent *alarm;
@@ -5489,7 +5599,8 @@ e_cal_component_alarm_get_uid (ECalComponentAlarm *alarm)
  * Queries the action type of an alarm.
  **/
 void
-e_cal_component_alarm_get_action (ECalComponentAlarm *alarm, ECalComponentAlarmAction *action)
+e_cal_component_alarm_get_action (ECalComponentAlarm *alarm,
+                                  ECalComponentAlarmAction *action)
 {
 	enum icalproperty_action ipa;
 
@@ -5538,7 +5649,8 @@ e_cal_component_alarm_get_action (ECalComponentAlarm *alarm, ECalComponentAlarmA
  * Sets the action type for an alarm.
  **/
 void
-e_cal_component_alarm_set_action (ECalComponentAlarm *alarm, ECalComponentAlarmAction action)
+e_cal_component_alarm_set_action (ECalComponentAlarm *alarm,
+                                  ECalComponentAlarmAction action)
 {
 	enum icalproperty_action ipa;
 
@@ -5585,7 +5697,8 @@ e_cal_component_alarm_set_action (ECalComponentAlarm *alarm, ECalComponentAlarmA
  * Queries the attachment property of an alarm.
  **/
 void
-e_cal_component_alarm_get_attach (ECalComponentAlarm *alarm, icalattach **attach)
+e_cal_component_alarm_get_attach (ECalComponentAlarm *alarm,
+                                  icalattach **attach)
 {
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (attach != NULL);
@@ -5606,7 +5719,8 @@ e_cal_component_alarm_get_attach (ECalComponentAlarm *alarm, icalattach **attach
  * Sets the attachment property of an alarm.
  **/
 void
-e_cal_component_alarm_set_attach (ECalComponentAlarm *alarm, icalattach *attach)
+e_cal_component_alarm_set_attach (ECalComponentAlarm *alarm,
+                                  icalattach *attach)
 {
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (alarm->icalcomp != NULL);
@@ -5631,7 +5745,8 @@ e_cal_component_alarm_set_attach (ECalComponentAlarm *alarm, icalattach *attach)
  * Queries the description property of an alarm.
  **/
 void
-e_cal_component_alarm_get_description (ECalComponentAlarm *alarm, ECalComponentText *description)
+e_cal_component_alarm_get_description (ECalComponentAlarm *alarm,
+                                       ECalComponentText *description)
 {
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (description != NULL);
@@ -5656,7 +5771,8 @@ e_cal_component_alarm_get_description (ECalComponentAlarm *alarm, ECalComponentT
  * Sets the description property of an alarm.
  **/
 void
-e_cal_component_alarm_set_description (ECalComponentAlarm *alarm, ECalComponentText *description)
+e_cal_component_alarm_set_description (ECalComponentAlarm *alarm,
+                                       ECalComponentText *description)
 {
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (alarm->icalcomp != NULL);
@@ -5693,7 +5809,8 @@ e_cal_component_alarm_set_description (ECalComponentAlarm *alarm, ECalComponentT
  * Queries the repeat/duration properties of an alarm.
  **/
 void
-e_cal_component_alarm_get_repeat (ECalComponentAlarm *alarm, ECalComponentAlarmRepeat *repeat)
+e_cal_component_alarm_get_repeat (ECalComponentAlarm *alarm,
+                                  ECalComponentAlarmRepeat *repeat)
 {
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (repeat != NULL);
@@ -5718,7 +5835,8 @@ e_cal_component_alarm_get_repeat (ECalComponentAlarm *alarm, ECalComponentAlarmR
  * Sets the repeat/duration values for an alarm.
  **/
 void
-e_cal_component_alarm_set_repeat (ECalComponentAlarm *alarm, ECalComponentAlarmRepeat repeat)
+e_cal_component_alarm_set_repeat (ECalComponentAlarm *alarm,
+                                  ECalComponentAlarmRepeat repeat)
 {
 	g_return_if_fail (alarm != NULL);
 	g_return_if_fail (repeat.repetitions >= 0);
@@ -5758,7 +5876,8 @@ e_cal_component_alarm_set_repeat (ECalComponentAlarm *alarm, ECalComponentAlarmR
  * Queries the trigger time for an alarm.
  **/
 void
-e_cal_component_alarm_get_trigger (ECalComponentAlarm *alarm, ECalComponentAlarmTrigger *trigger)
+e_cal_component_alarm_get_trigger (ECalComponentAlarm *alarm,
+                                   ECalComponentAlarmTrigger *trigger)
 {
 	icalparameter *param;
 	struct icaltriggertype t;
@@ -5841,7 +5960,8 @@ e_cal_component_alarm_get_trigger (ECalComponentAlarm *alarm, ECalComponentAlarm
  * Sets the trigger time of an alarm.
  **/
 void
-e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm, ECalComponentAlarmTrigger trigger)
+e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm,
+                                   ECalComponentAlarmTrigger trigger)
 {
 	struct icaltriggertype t;
 	icalparameter *param;
@@ -5923,7 +6043,8 @@ e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm, ECalComponentAlarm
  * Gets the list of attendees associated with an alarm.
  */
 void
-e_cal_component_alarm_get_attendee_list (ECalComponentAlarm *alarm, GSList **attendee_list)
+e_cal_component_alarm_get_attendee_list (ECalComponentAlarm *alarm,
+                                         GSList **attendee_list)
 {
 	g_return_if_fail (alarm != NULL);
 
@@ -5938,7 +6059,8 @@ e_cal_component_alarm_get_attendee_list (ECalComponentAlarm *alarm, GSList **att
  * Sets the list of attendees for an alarm.
  */
 void
-e_cal_component_alarm_set_attendee_list (ECalComponentAlarm *alarm, GSList *attendee_list)
+e_cal_component_alarm_set_attendee_list (ECalComponentAlarm *alarm,
+                                         GSList *attendee_list)
 {
 	g_return_if_fail (alarm != NULL);
 
@@ -5981,10 +6103,10 @@ e_cal_component_alarm_get_icalcomponent (ECalComponentAlarm *alarm)
 }
 
 /* Returns TRUE if both strings match, i.e. they are both NULL or the
-   strings are equal. */
+ * strings are equal. */
 static gboolean
-e_cal_component_strings_match	(const gchar	*string1,
-				 const gchar	*string2)
+e_cal_component_strings_match (const gchar *string1,
+                               const gchar *string2)
 {
 	if (string1 == NULL || string2 == NULL)
 		return (string1 == string2) ? TRUE : FALSE;
@@ -6007,8 +6129,8 @@ e_cal_component_strings_match	(const gchar	*string1,
  * Returns: TRUE if the DTSTART and DTEND properties of the 2 components match.
  **/
 gboolean
-e_cal_component_event_dates_match	(ECalComponent *comp1,
-				 ECalComponent *comp2)
+e_cal_component_event_dates_match (ECalComponent *comp1,
+                                   ECalComponent *comp2)
 {
 	ECalComponentDateTime comp1_dtstart, comp1_dtend;
 	ECalComponentDateTime comp2_dtstart, comp2_dtend;

@@ -77,7 +77,8 @@ static void source_added_callback (ESourceGroup *group, ESource *source);
 static void source_removed_callback (ESourceGroup *group, ESource *source);
 
 static void
-dump_property (const gchar *prop, const gchar *value)
+dump_property (const gchar *prop,
+               const gchar *value)
 {
 	g_print ("\t\t\t%s: %s\n", prop, value);
 }
@@ -241,7 +242,7 @@ disconnect_source (ESource *source)
 
 static void
 source_added_callback (ESourceGroup *group,
-		       ESource *source)
+                       ESource *source)
 {
 	static gint count = 0;
 
@@ -253,7 +254,7 @@ source_added_callback (ESourceGroup *group,
 
 static void
 source_removed_callback (ESourceGroup *group,
-			 ESource *source)
+                         ESource *source)
 {
 	static gint count = 0;
 
@@ -265,7 +266,7 @@ source_removed_callback (ESourceGroup *group,
 
 static void
 group_added_callback (ESourceList *list,
-		      ESourceGroup *group)
+                      ESourceGroup *group)
 {
 	static gint count = 0;
 
@@ -277,7 +278,7 @@ group_added_callback (ESourceList *list,
 
 static void
 group_removed_callback (ESourceList *list,
-			ESourceGroup *group)
+                        ESourceGroup *group)
 {
 	static gint count = 0;
 
@@ -527,7 +528,8 @@ on_idle_do_stuff (gpointer unused_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	GOptionContext *context;
 	GError *error = NULL;

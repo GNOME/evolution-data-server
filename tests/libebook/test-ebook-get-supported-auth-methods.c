@@ -6,8 +6,8 @@
 #include "ebook-test-utils.h"
 
 static void
-list_member_print_and_free (gchar     *member,
-			    gpointer  user_data)
+list_member_print_and_free (gchar *member,
+                            gpointer user_data)
 {
 	test_print ("    %s\n", member);
 	g_free (member);
@@ -33,11 +33,12 @@ get_supported_auth_methods_cb (EBookTestClosure *closure)
 
 	g_object_unref (closure->list);
 
-	g_main_loop_quit ((GMainLoop*) (closure->user_data));
+	g_main_loop_quit ((GMainLoop *) (closure->user_data));
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBook *book;
 	GMainLoop *loop;

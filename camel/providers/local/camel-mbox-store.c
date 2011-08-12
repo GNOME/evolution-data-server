@@ -59,7 +59,8 @@ inode_hash (gconstpointer d)
 }
 
 static gboolean
-inode_equal (gconstpointer a, gconstpointer b)
+inode_equal (gconstpointer a,
+             gconstpointer b)
 {
 	const struct _inode *v1 = a, *v2 = b;
 
@@ -67,19 +68,22 @@ inode_equal (gconstpointer a, gconstpointer b)
 }
 
 static void
-inode_free (gpointer k, gpointer v, gpointer d)
+inode_free (gpointer k,
+            gpointer v,
+            gpointer d)
 {
 	g_free (k);
 }
 
 static gboolean
-ignore_file (const gchar *filename, gboolean sbd)
+ignore_file (const gchar *filename,
+             gboolean sbd)
 {
 	gint flen, len, i;
 
 	/* TODO: Should probably just be 1 regex */
 	flen = strlen (filename);
-	if (flen > 0 && filename[flen-1] == '~')
+	if (flen > 0 && filename[flen - 1] == '~')
 		return TRUE;
 
 	for (i = 0; i < G_N_ELEMENTS (extensions); i++) {
@@ -264,7 +268,11 @@ scan_dir (CamelStore *store,
 }
 
 static gint
-xrename (CamelStore *store, const gchar *old_name, const gchar *new_name, const gchar *ext, gboolean missingok)
+xrename (CamelStore *store,
+         const gchar *old_name,
+         const gchar *new_name,
+         const gchar *ext,
+         gboolean missingok)
 {
 	CamelLocalStore *ls = (CamelLocalStore *) store;
 	gchar *oldpath, *newpath;

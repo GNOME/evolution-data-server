@@ -88,7 +88,9 @@ camel_offline_journal_init (CamelOfflineJournal *journal)
  * Constructs a journal object.
  **/
 void
-camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *folder, const gchar *filename)
+camel_offline_journal_construct (CamelOfflineJournal *journal,
+                                 CamelFolder *folder,
+                                 const gchar *filename)
 {
 	CamelDListNode *entry;
 	FILE *fp;
@@ -112,7 +114,8 @@ camel_offline_journal_construct (CamelOfflineJournal *journal, CamelFolder *fold
  * Set the filename where the journal should load/save from.
  **/
 void
-camel_offline_journal_set_filename (CamelOfflineJournal *journal, const gchar *filename)
+camel_offline_journal_set_filename (CamelOfflineJournal *journal,
+                                    const gchar *filename)
 {
 	g_return_if_fail (CAMEL_IS_OFFLINE_JOURNAL (journal));
 

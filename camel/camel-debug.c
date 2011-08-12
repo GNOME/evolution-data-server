@@ -92,9 +92,9 @@ gboolean camel_debug (const gchar *mode)
 		/* Check for fully qualified debug */
 		colon = strchr (mode, ':');
 		if (colon) {
-			fallback = g_alloca (strlen (mode)+1);
+			fallback = g_alloca (strlen (mode) + 1);
 			strcpy (fallback, mode);
-			colon = (colon-mode) + fallback;
+			colon = (colon - mode) + fallback;
 			/* Now check 'module[:*]' */
 			*colon = 0;
 			if (g_hash_table_lookup (debug_table, fallback))
@@ -149,7 +149,8 @@ camel_debug_end (void)
 #include <sys/debugreg.h>
 
 static unsigned
-i386_length_and_rw_bits (gint len, enum target_hw_bp_type type)
+i386_length_and_rw_bits (gint len,
+                         enum target_hw_bp_type type)
 {
   unsigned rw;
 
@@ -192,8 +193,8 @@ i386_length_and_rw_bits (gint len, enum target_hw_bp_type type)
 
 #define I386_DR_SET_RW_LEN(i,rwlen) \
   do { \
-    dr_control_mirror &= ~(0x0f << (DR_CONTROL_SHIFT+DR_CONTROL_SIZE*(i)));   \
-    dr_control_mirror |= ((rwlen) << (DR_CONTROL_SHIFT+DR_CONTROL_SIZE*(i))); \
+    dr_control_mirror &= ~(0x0f << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE * (i)));   \
+    dr_control_mirror |= ((rwlen) << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE * (i))); \
   } while (0)
 
 #define I386_DR_LOCAL_ENABLE(i) \
@@ -210,7 +211,8 @@ i386_length_and_rw_bits (gint len, enum target_hw_bp_type type)
 
 /* fine idea, but it doesn't work, crashes in get_dr :-/ */
 void
-camel_debug_hwatch (gint wp, gpointer addr)
+camel_debug_hwatch (gint wp,
+                    gpointer addr)
 {
      guint32 control, rw;
 
@@ -220,8 +222,8 @@ camel_debug_hwatch (gint wp, gpointer addr)
      get_dr (7, control);
      /* set watch mode + size */
      rw = DR_RW_WRITE | DR_LEN_4;
-     control &= ~(((1 << DR_CONTROL_SIZE)-1) << (DR_CONTROL_SHIFT+DR_CONTROL_SIZE * wp));
-     control |= rw << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE*wp);
+     control &= ~(((1 << DR_CONTROL_SIZE) - 1) << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE * wp));
+     control |= rw << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE * wp);
      /* set watch enable */
      control |=  ( 1<< (DR_LOCAL_ENABLE_SHIFT + DR_ENABLE_SIZE * wp));
      control |= DR_LOCAL_SLOWDOWN;

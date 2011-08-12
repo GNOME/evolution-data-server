@@ -55,7 +55,9 @@ test_sync (ECalClient *cal_client)
 
 /* asynchronous callback with a main-loop running */
 static void
-async_attachment_uris_result_ready (GObject *source_object, GAsyncResult *result, gpointer user_data)
+async_attachment_uris_result_ready (GObject *source_object,
+                                    GAsyncResult *result,
+                                    gpointer user_data)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -109,7 +111,8 @@ test_sync_in_thread (gpointer user_data)
 }
 
 static void
-add_attach (icalcomponent *icalcomp, const gchar *uri)
+add_attach (icalcomponent *icalcomp,
+            const gchar *uri)
 {
 	gsize buf_size;
 	gchar *buf;
@@ -130,7 +133,8 @@ add_attach (icalcomponent *icalcomp, const gchar *uri)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;

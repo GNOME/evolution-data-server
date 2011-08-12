@@ -67,10 +67,10 @@ stream_null_can_seek (GSeekable *seekable)
 
 static gboolean
 stream_null_seek (GSeekable *seekable,
-		  goffset offset,
-		  GSeekType type,
-		  GCancellable *cancellable,
-		  GError **error)
+                  goffset offset,
+                  GSeekType type,
+                  GCancellable *cancellable,
+                  GError **error)
 {
 	if (type != G_SEEK_SET || offset != 0) {
 		g_set_error_literal (
@@ -92,9 +92,9 @@ stream_null_can_truncate (GSeekable *seekable)
 
 static gboolean
 stream_null_truncate_fn (GSeekable *seekable,
-			 goffset offset,
-			 GCancellable *cancellable,
-			 GError **error)
+                         goffset offset,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	/* XXX Don't bother translating this.  Camel never calls it. */
 	g_set_error_literal (

@@ -27,27 +27,31 @@ print_contact (EContact *contact)
 }
 
 static void
-contacts_added (EBookView *book_view, const GList *contacts)
+contacts_added (EBookView *book_view,
+                const GList *contacts)
 {
 	GList *l;
 
-	for (l = (GList*) contacts; l; l = l->next) {
+	for (l = (GList *) contacts; l; l = l->next) {
 		print_contact (l->data);
 	}
 }
 
 static void
-contacts_removed (EBookView *book_view, const GList *ids)
+contacts_removed (EBookView *book_view,
+                  const GList *ids)
 {
 	GList *l;
 
-	for (l = (GList*) ids; l; l = l->next) {
+	for (l = (GList *) ids; l; l = l->next) {
 		test_print ("Removed contact: %s\n", (gchar *)l->data);
 	}
 }
 
 static void
-view_complete (EBookView *book_view, EBookViewStatus status, const gchar *error_msg)
+view_complete (EBookView *book_view,
+               EBookViewStatus status,
+               const gchar *error_msg)
 {
 	e_book_view_stop (book_view);
 	g_object_unref (book_view);
@@ -73,7 +77,7 @@ get_book_view_cb (EBookTestClosure *closure)
 }
 
 static void
-setup_book (EBook     **book_out)
+setup_book (EBook **book_out)
 {
 	EBook *book;
 
@@ -88,7 +92,8 @@ setup_book (EBook     **book_out)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBook *book;
 	EBookQuery *query;

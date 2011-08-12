@@ -194,7 +194,7 @@ connect_to_server (CamelService *service,
 	g_object_unref (tcp_stream);
 
 	/* rfc2595, section 4 states that after a successful STLS
-	   command, the client MUST discard prior CAPA responses */
+	 * command, the client MUST discard prior CAPA responses */
 	camel_pop3_engine_reget_capabilities (store->engine);
 
 	return TRUE;
@@ -273,10 +273,10 @@ try_sasl (CamelPOP3Store *store,
 			goto done;
 		}
 		/* If we dont get continuation, or the sasl object's run out of work, or we dont get a challenge,
-		   its a protocol error, so fail, and try reset the server */
+		 * its a protocol error, so fail, and try reset the server */
 		if (strncmp((gchar *) line, "+ ", 2) != 0
 		    || camel_sasl_get_authenticated (sasl)
-		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line+2, cancellable, NULL)) == NULL) {
+		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line + 2, cancellable, NULL)) == NULL) {
 			camel_stream_write_string (
 				CAMEL_STREAM (stream), "*\r\n", NULL, NULL);
 			camel_pop3_stream_line (stream, &line, &len, NULL, NULL);
@@ -371,7 +371,7 @@ pop3_try_authenticate (CamelService *service,
 		d = store->engine->apop;
 
 		while (*d != '\0') {
-			if (!isascii ((gint)*d)) {
+			if (!isascii ((gint) * d)) {
 
 				/* README for Translators: The string APOP should not be translated */
 				g_set_error (
@@ -387,7 +387,7 @@ pop3_try_authenticate (CamelService *service,
 			d++;
 		}
 
-		secret = g_alloca (strlen (store->engine->apop) + strlen (url->passwd)+1);
+		secret = g_alloca (strlen (store->engine->apop) + strlen (url->passwd) + 1);
 		sprintf(secret, "%s%s",  store->engine->apop, url->passwd);
 		md5asc = g_compute_checksum_for_string (G_CHECKSUM_MD5, secret, -1);
 		pcp = camel_pop3_engine_command_new (

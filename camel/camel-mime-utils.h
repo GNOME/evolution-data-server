@@ -186,7 +186,7 @@ gchar *camel_header_format_ctext (const gchar *in, const gchar *default_charset)
 gchar *camel_header_encode_phrase (const guchar *in);
 
 /* FIXME: these are the only 2 functions in this header which are ch_(action)_type
-   rather than ch_type_(action) */
+ * rather than ch_type_(action) */
 
 /* decode an email date field into a GMT time, + optional offset */
 time_t camel_header_decode_date (const gchar *str, gint *tz_offset);

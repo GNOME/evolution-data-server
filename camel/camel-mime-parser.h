@@ -58,8 +58,8 @@ typedef struct _CamelMimeParserClass CamelMimeParserClass;
 typedef struct _CamelMimeParserPrivate CamelMimeParserPrivate;
 
 /* NOTE: if you add more states, you may need to bump the
-   start of the END tags to 16 or 32, etc - so they are
-   the same as the matching start tag, with a bit difference */
+ * start of the END tags to 16 or 32, etc - so they are
+ * the same as the matching start tag, with a bit difference */
 typedef enum _camel_mime_parser_state_t {
 	CAMEL_MIME_PARSER_STATE_INITIAL,
 	CAMEL_MIME_PARSER_STATE_PRE_FROM,       /* data before a 'From' line */
@@ -148,7 +148,7 @@ gint camel_mime_parser_filter_add (CamelMimeParser *m, CamelMimeFilter *mf);
 void camel_mime_parser_filter_remove (CamelMimeParser *m, gint id);
 
 /* these should be used with caution, because the state will not
-   track the seeked position */
+ * track the seeked position */
 /* FIXME: something to bootstrap the state? */
 goffset camel_mime_parser_tell (CamelMimeParser *parser);
 goffset camel_mime_parser_seek (CamelMimeParser *parser, goffset offset, gint whence);

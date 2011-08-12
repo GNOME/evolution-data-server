@@ -215,9 +215,9 @@ struct _state_info *imapx_parse_status_info (struct _CamelIMAPXStream *is, GCanc
 /* ********************************************************************** */
 
 /* should this just return a FolderInfo?
-   should this just return the name & flags & separator by reference? */
+ * should this just return the name & flags & separator by reference? */
 struct _list_info {
-	guint32 flags:24;
+	guint32 flags : 24;
 	gchar separator;
 	gchar *name;
 };

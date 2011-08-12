@@ -63,7 +63,9 @@ G_DEFINE_TYPE (CamelTcpStreamRaw, camel_tcp_stream_raw, CAMEL_TYPE_TCP_STREAM)
 
 #ifdef SIMULATE_FLAKY_NETWORK
 static gssize
-flaky_tcp_write (gint fd, const gchar *buffer, gsize buflen)
+flaky_tcp_write (gint fd,
+                 const gchar *buffer,
+                 gsize buflen)
 {
 	gsize len = buflen;
 	gssize nwritten;
@@ -110,7 +112,9 @@ flaky_tcp_write (gint fd, const gchar *buffer, gsize buflen)
 #define write(fd, buffer, buflen) flaky_tcp_write (fd, buffer, buflen)
 
 static gssize
-flaky_tcp_read (gint fd, gchar *buffer, gsize buflen)
+flaky_tcp_read (gint fd,
+                gchar *buffer,
+                gsize buflen)
 {
 	gsize len = buflen;
 	gssize nread;
@@ -240,7 +244,8 @@ _set_errno_from_pr_error (gint pr_code)
 }
 
 void
-_set_g_error_from_errno (GError **error, gboolean eintr_means_cancelled)
+_set_g_error_from_errno (GError **error,
+                         gboolean eintr_means_cancelled)
 {
 	gint errn = errno;
 
@@ -526,10 +531,12 @@ tcp_stream_raw_close (CamelStream *stream,
 }
 
 static gint
-sockaddr_to_praddr (struct sockaddr *s, gint len, PRNetAddr *addr)
+sockaddr_to_praddr (struct sockaddr *s,
+                    gint len,
+                    PRNetAddr *addr)
 {
 	/* We assume the ip addresses are the same size - they have to be anyway.
-	   We could probably just use memcpy *shrug* */
+	 * We could probably just use memcpy *shrug* */
 
 	memset (addr, 0, sizeof (*addr));
 
@@ -590,7 +597,7 @@ socket_connect (struct addrinfo *host,
 		cancel_fd = camel_operation_cancel_prfd (
 			CAMEL_OPERATION (cancellable));
 
-	if (PR_Connect (fd, &netaddr, cancel_fd?0:CONNECT_TIMEOUT) == PR_FAILURE) {
+	if (PR_Connect (fd, &netaddr, cancel_fd ? 0 : CONNECT_TIMEOUT) == PR_FAILURE) {
 		gint errnosave;
 
 		_set_errno_from_pr_error (PR_GetError ());
@@ -609,7 +616,7 @@ socket_connect (struct addrinfo *host,
 				poll[0].out_flags = 0;
 				poll[1].out_flags = 0;
 
-				if (PR_Poll (poll, cancel_fd?2:1, CONNECT_TIMEOUT) == PR_FAILURE) {
+				if (PR_Poll (poll, cancel_fd ? 2 : 1, CONNECT_TIMEOUT) == PR_FAILURE) {
 					_set_errno_from_pr_error (PR_GetError ());
 					goto exception;
 				}
@@ -1204,7 +1211,8 @@ tcp_stream_raw_setsockopt (CamelTcpStream *stream,
 }
 
 static struct sockaddr *
-sockaddr_from_praddr (PRNetAddr *addr, socklen_t *len)
+sockaddr_from_praddr (PRNetAddr *addr,
+                      socklen_t *len)
 {
 	/* We assume the ip addresses are the same size - they have to be anyway */
 
@@ -1274,7 +1282,8 @@ tcp_stream_raw_get_file_desc (CamelTcpStream *stream)
 }
 
 void
-_camel_tcp_stream_raw_replace_file_desc (CamelTcpStreamRaw *raw, PRFileDesc *new_file_desc)
+_camel_tcp_stream_raw_replace_file_desc (CamelTcpStreamRaw *raw,
+                                         PRFileDesc *new_file_desc)
 {
 	CamelTcpStreamRawPrivate *priv = raw->priv;
 

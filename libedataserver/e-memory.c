@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
  * USA
-
+ *
 */
 
 #include "e-memory.h"
@@ -44,8 +44,8 @@ static time_end (const gchar *desc)
 	struct timeval end;
 
 	gettimeofday (&end, NULL);
-	diff = end.tv_sec * 1000 + end.tv_usec/1000;
-	diff -= timeit_start.tv_sec * 1000 + timeit_start.tv_usec/1000;
+	diff = end.tv_sec * 1000 + end.tv_usec / 1000;
+	diff -= timeit_start.tv_sec * 1000 + timeit_start.tv_usec / 1000;
 	printf("%s took %ld.%03ld seconds\n",
 	       desc, diff / 1000, diff % 1000);
 }
@@ -81,7 +81,8 @@ struct _EMemChunk {
  * Returns: a new #EMemChunk
  **/
 EMemChunk *
-e_memchunk_new (gint atomcount, gint atomsize)
+e_memchunk_new (gint atomcount,
+                gint atomsize)
 {
 	EMemChunk *memchunk = g_malloc (sizeof (*memchunk));
 
@@ -123,7 +124,7 @@ e_memchunk_alloc (EMemChunk *memchunk)
 		b = g_malloc (memchunk->blocksize * memchunk->atomsize);
 		g_ptr_array_add (memchunk->blocks, b);
 		f = (MemChunkFreeNode *) &b[memchunk->atomsize];
-		f->atoms = memchunk->blocksize-1;
+		f->atoms = memchunk->blocksize - 1;
 		f->next = NULL;
 		memchunk->free = f;
 		return b;
@@ -354,7 +355,7 @@ main ()
 	s = strv_set(s, 5, "Testing 5");
 	s = strv_set(s, 6, "Testing 7");
 
-	for (i=0;i<8;i++) {
+	for (i = 0; i < 8; i++) {
 		printf("s[%d] = %s\n", i, strv_get(s, i));
 	}
 
@@ -363,7 +364,7 @@ main ()
 	printf("packing ...\n");
 	s = strv_pack (s);
 
-	for (i=0;i<8;i++) {
+	for (i = 0; i < 8; i++) {
 		printf("s[%d] = %s\n", i, strv_get(s, i));
 	}
 
@@ -371,14 +372,14 @@ main ()
 
 	s = strv_set_ref(s, 1, "Testing 1 x");
 
-	for (i=0;i<8;i++) {
+	for (i = 0; i < 8; i++) {
 		printf("s[%d] = %s\n", i, strv_get(s, i));
 	}
 
 	printf("packing ...\n");
 	s = strv_pack (s);
 
-	for (i=0;i<8;i++) {
+	for (i = 0; i < 8; i++) {
 		printf("s[%d] = %s\n", i, strv_get(s, i));
 	}
 
@@ -387,7 +388,7 @@ main ()
 #if 0
 	time_start("Using memchunks");
 	mc = memchunk_new (CHUNK_COUNT, CHUNK_SIZE);
-	for (i=0;i<1000000;i++) {
+	for (i = 0; i < 1000000; i++) {
 		mem = memchunk_alloc (mc);
 		if ((i & 1) == 0)
 			memchunk_free (mc, mem);
@@ -398,7 +399,7 @@ main ()
 
 	time_start("Using gmemchunks");
 	gmc = g_mem_chunk_new("memchunk", CHUNK_SIZE, CHUNK_SIZE*CHUNK_COUNT, G_ALLOC_AND_FREE);
-	for (i=0;i<1000000;i++) {
+	for (i = 0; i < 1000000; i++) {
 		mem = g_mem_chunk_alloc (gmc);
 		if ((i & 1) == 0)
 			g_mem_chunk_free (gmc, mem);
@@ -409,7 +410,7 @@ main ()
 
 	time_start("Using memchunks");
 	mc = memchunk_new (CHUNK_COUNT, CHUNK_SIZE);
-	for (i=0;i<1000000;i++) {
+	for (i = 0; i < 1000000; i++) {
 		mem = memchunk_alloc (mc);
 	}
 	s (sleep (10));
@@ -418,7 +419,7 @@ main ()
 
 	time_start("Using gmemchunks");
 	gmc = g_mem_chunk_new("memchunk", CHUNK_SIZE, CHUNK_COUNT*CHUNK_SIZE, G_ALLOC_ONLY);
-	for (i=0;i<1000000;i++) {
+	for (i = 0; i < 1000000; i++) {
 		mem = g_mem_chunk_alloc (gmc);
 	}
 	s (sleep (10));
@@ -426,7 +427,7 @@ main ()
 	time_end("allocating 1000000 gmemchunks");
 
 	time_start("Using malloc");
-	for (i=0;i<1000000;i++) {
+	for (i = 0; i < 1000000; i++) {
 		malloc (CHUNK_SIZE);
 	}
 	time_end("allocating 1000000 malloc");

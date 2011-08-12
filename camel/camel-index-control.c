@@ -32,12 +32,13 @@ do_usage (gchar *argv0)
 }
 
 static gint
-do_compress (gint argc, gchar **argv)
+do_compress (gint argc,
+             gchar **argv)
 {
 	gint i;
 	CamelIndex *idx;
 
-	for (i=2;i<argc;i++) {
+	for (i = 2; i < argc; i++) {
 		printf("Opening index file: %s\n", argv[i]);
 		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDWR);
 		if (idx) {
@@ -56,12 +57,13 @@ do_compress (gint argc, gchar **argv)
 }
 
 static gint
-do_dump (gint argc, gchar **argv)
+do_dump (gint argc,
+         gchar **argv)
 {
 	gint i;
 	CamelIndex *idx;
 
-	for (i=2;i<argc;i++) {
+	for (i = 2; i < argc; i++) {
 		printf("Opening index file: %s\n", argv[i]);
 		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDONLY);
 		if (idx) {
@@ -77,12 +79,13 @@ do_dump (gint argc, gchar **argv)
 }
 
 static gint
-do_info (gint argc, gchar **argv)
+do_info (gint argc,
+         gchar **argv)
 {
 	gint i;
 	CamelIndex *idx;
 
-	for (i=2;i<argc;i++) {
+	for (i = 2; i < argc; i++) {
 		printf("Opening index file: %s\n", argv[i]);
 		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDONLY);
 		if (idx) {
@@ -97,12 +100,13 @@ do_info (gint argc, gchar **argv)
 }
 
 static gint
-do_check (gint argc, gchar **argv)
+do_check (gint argc,
+          gchar **argv)
 {
 	gint i;
 	CamelIndex *idx;
 
-	for (i=2;i<argc;i++) {
+	for (i = 2; i < argc; i++) {
 		printf("Opening index file: %s\n", argv[i]);
 		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDONLY);
 		if (idx) {
@@ -120,7 +124,7 @@ static gint do_perf (gint argc, gchar **argv);
 
 gint main (gint argc, gchar **argv)
 {
-	if (argc<2)
+	if (argc < 2)
 		do_usage (argv[0]);
 
 	g_thread_init (NULL);
@@ -148,7 +152,8 @@ gint main (gint argc, gchar **argv)
 #include "camel-stream-fs.h"
 
 static gint
-do_perf (gint argc, gchar **argv)
+do_perf (gint argc,
+         gchar **argv)
 {
 	CamelIndex *idx;
 	DIR *dir;

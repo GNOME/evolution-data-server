@@ -72,7 +72,9 @@ remove_parameters_from_uri (const gchar *uri)
 }
 
 static void
-load_source_auth_cb (EBook *book, const GError *error, gpointer closure)
+load_source_auth_cb (EBook *book,
+                     const GError *error,
+                     gpointer closure)
 {
 	LoadSourceData *data = closure;
 
@@ -84,8 +86,8 @@ load_source_auth_cb (EBook *book, const GError *error, gpointer closure)
 				GtkWidget *dialog;
 
 				/* XXX "LDAP" has to be removed from the folowing message
-				   so that it wil valid for other servers which provide
-				   anonymous access*/
+				 * so that it wil valid for other servers which provide
+				 * anonymous access */
 
 				dialog = gtk_message_dialog_new (NULL,
 								 0,
@@ -143,15 +145,19 @@ get_remember_password (ESource *source)
 }
 
 static void
-set_remember_password (ESource *source, gboolean value)
+set_remember_password (ESource *source,
+                       gboolean value)
 {
 	e_source_set_property (source, "remember_password",
 			       value ? "true" : "false");
 }
 
 static void
-addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *source,
-			  EBookAsyncCallback cb, gpointer closure)
+addressbook_authenticate (EBook *book,
+                          gboolean previous_failure,
+                          ESource *source,
+                          EBookAsyncCallback cb,
+                          gpointer closure)
 {
 	const gchar *auth;
 	const gchar *user;
@@ -185,7 +191,7 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 		gchar *password_prompt;
 		gboolean remember;
 		const gchar *failed_auth;
-		guint32 flags = E_PASSWORDS_REMEMBER_FOREVER|E_PASSWORDS_SECRET|E_PASSWORDS_ONLINE;
+		guint32 flags = E_PASSWORDS_REMEMBER_FOREVER | E_PASSWORDS_SECRET | E_PASSWORDS_ONLINE;
 
 		if (previous_failure) {
 			failed_auth = _("Failed to authenticate.\n");
@@ -230,7 +236,8 @@ addressbook_authenticate (EBook *book, gboolean previous_failure, ESource *sourc
 }
 
 static void
-auth_required_cb (EBook *book, gpointer data)
+auth_required_cb (EBook *book,
+                  gpointer data)
 {
 	LoadSourceData *load_source_data = g_new0 (LoadSourceData, 1);
 
@@ -241,7 +248,9 @@ auth_required_cb (EBook *book, gpointer data)
 }
 
 static void
-load_source_cb (EBook *book, const GError *error, gpointer closure)
+load_source_cb (EBook *book,
+                const GError *error,
+                gpointer closure)
 {
 	LoadSourceData *load_source_data = closure;
 
@@ -292,7 +301,9 @@ load_source_cb (EBook *book, const GError *error, gpointer closure)
  * Deprecated: 3.0: Use e_load_book_source_async() instead.
  **/
 EBook *
-e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data)
+e_load_book_source (ESource *source,
+                    EBookCallback open_func,
+                    gpointer user_data)
 {
 	EBook          *book;
 	LoadSourceData *load_source_data = g_new0 (LoadSourceData, 1);

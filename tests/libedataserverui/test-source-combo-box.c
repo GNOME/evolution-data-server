@@ -58,7 +58,8 @@ on_idle_create_widget (const gchar *gconf_path)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	const gchar *gconf_path;
 

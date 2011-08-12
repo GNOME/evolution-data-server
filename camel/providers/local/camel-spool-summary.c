@@ -124,13 +124,13 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	goffset spoollen, outlen;
 	gint size, sizeout;
 	struct stat st;
-	guint32 flags = (expunge?1:0);
+	guint32 flags = (expunge ? 1 : 0);
 
 	d(printf("performing full summary/sync\n"));
 
 	camel_operation_push_message (cancellable, _("Storing folder"));
 
-	fd = open (((CamelLocalSummary *) cls)->folder_path, O_RDWR|O_LARGEFILE);
+	fd = open (((CamelLocalSummary *) cls)->folder_path, O_RDWR | O_LARGEFILE);
 	if (fd == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
@@ -198,8 +198,8 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	outlen = st.st_size;
 
 	/* I think this is the right way to do this - checking that the file will fit the new data */
-	if (outlen>0
-	    && (lseek (fd, outlen-1, SEEK_SET) == -1
+	if (outlen > 0
+	    && (lseek (fd, outlen - 1, SEEK_SET) == -1
 		|| write(fd, "", 1) != 1
 		|| fsync (fd) == -1
 		|| lseek (fd, 0, SEEK_SET) == -1
@@ -219,7 +219,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	/* now copy content back */
 	buffer = g_malloc (8192);
 	size = 1;
-	while (size>0) {
+	while (size > 0) {
 		do {
 			size = read (fdout, buffer, 8192);
 		} while (size == -1 && errno == EINTR);
@@ -321,7 +321,7 @@ spool_summary_check (CamelLocalSummary *cls,
 	work = FALSE;
 	camel_folder_summary_prepare_fetch_all (s, error);
 	count = camel_folder_summary_count (s);
-	for (i=0;!work && i<count; i++) {
+	for (i = 0; !work && i < count; i++) {
 		CamelMboxMessageInfo *info = (CamelMboxMessageInfo *) camel_folder_summary_index (s, i);
 		g_assert (info);
 		work = (info->info.info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV)) != 0;
@@ -353,6 +353,7 @@ spool_summary_check (CamelLocalSummary *cls,
 }
 
 static gint
-spool_summary_need_index (void) {
+spool_summary_need_index (void)
+{
 	return 0;
 }

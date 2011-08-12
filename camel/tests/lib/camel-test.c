@@ -11,7 +11,7 @@
 
 /* well i dunno, doesn't seem to be in the headers but hte manpage mentions it */
 /* a nonportable checking mutex for glibc, not really needed, just validates
-   the test harness really */
+ * the test harness really */
 static GStaticMutex lock = G_STATIC_MUTEX_INIT;
 #define CAMEL_TEST_LOCK g_static_mutex_lock(&lock)
 #define CAMEL_TEST_UNLOCK g_static_mutex_unlock(&lock)
@@ -38,7 +38,9 @@ static GHashTable *info_table;
 gint camel_test_verbose;
 
 static void
-dump_action (GThread *thread, struct _state *s, gpointer d)
+dump_action (GThread *thread,
+             struct _state *s,
+             gpointer d)
 {
 	struct _stack *node;
 
@@ -91,7 +93,8 @@ current_state (void)
 }
 
 void
-camel_test_init (gint argc, gchar **argv)
+camel_test_init (gint argc,
+                 gchar **argv)
 {
 	struct stat st;
 	gchar *path;
@@ -124,7 +127,7 @@ camel_test_init (gint argc, gchar **argv)
 	/* default, just say what, how well we did, unless fail, then abort */
 	camel_test_verbose = 1;
 
-	for (i=0;i<argc;i++) {
+	for (i = 0; i < argc; i++) {
 		if (argv[i][0] == '-') {
 			switch (argv[i][1]) {
 			case 'v':
@@ -255,7 +258,7 @@ void camel_test_failv (const gchar *why, va_list ap)
 	if (s->nonfatal == 0) {
 		exit (1);
 	} else {
-		ok=0;
+		ok = 0;
 		if (camel_test_verbose > 1) {
 			printf("Known problem (ignored):\n");
 			dump_action (CAMEL_TEST_ID, s, 0);
@@ -334,7 +337,7 @@ gint string_equal (const gchar *a, const gchar *b)
 
 		if (ap - a != bp - a
 		    && ap - 1 > 0
-		    && memcmp (a, b, ap-a) != 0) {
+		    && memcmp (a, b, ap - a) != 0) {
 			return 0;
 		}
 	}

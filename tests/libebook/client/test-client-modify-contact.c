@@ -32,7 +32,9 @@ verify_modify (EContact *contact)
 }
 
 static void
-contact_ready_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+contact_ready_cb (GObject *source_object,
+                  GAsyncResult *result,
+                  gpointer user_data)
 {
 	EContact *contact;
 	GError *error = NULL;
@@ -51,7 +53,9 @@ contact_ready_cb (GObject *source_object, GAsyncResult *result, gpointer user_da
 }
 
 static void
-contact_modified_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+contact_modified_cb (GObject *source_object,
+                     GAsyncResult *result,
+                     gpointer user_data)
 {
 	EContact *contact = user_data;
 	GError *error = NULL;
@@ -66,7 +70,8 @@ contact_modified_cb (GObject *source_object, GAsyncResult *result, gpointer user
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	GError *error = NULL;

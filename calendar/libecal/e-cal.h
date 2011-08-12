@@ -195,9 +195,9 @@ gboolean e_cal_send_objects (ECal *ecal, icalcomponent *icalcomp, GList **users,
 gboolean e_cal_get_timezone (ECal *ecal, const gchar *tzid, icaltimezone **zone, GError **error);
 gboolean e_cal_add_timezone (ECal *ecal, icaltimezone *izone, GError **error);
 /* Sets the default timezone to use to resolve DATE and floating DATE-TIME
-   values. This will typically be from the user's timezone setting. Call this
-   before using any other functions. It will pass the default timezone on to
-   the server. Returns TRUE on success. */
+ * values. This will typically be from the user's timezone setting. Call this
+ * before using any other functions. It will pass the default timezone on to
+ * the server. Returns TRUE on success. */
 gboolean e_cal_set_default_timezone (ECal *ecal, icaltimezone *zone, GError **error);
 
 gboolean e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GError **error);
@@ -206,7 +206,7 @@ gboolean e_cal_get_query (ECal *ecal, const gchar *sexp, ECalView **query, GErro
 icaltimezone *e_cal_resolve_tzid_cb (const gchar *tzid, gpointer data);
 
 /* Returns a complete VCALENDAR for a VEVENT/VTODO including all VTIMEZONEs
-   used by the component. It also includes a 'METHOD:PUBLISH' property. */
+ * used by the component. It also includes a 'METHOD:PUBLISH' property. */
 gchar * e_cal_get_component_as_string (ECal *ecal, icalcomponent *icalcomp);
 
 const gchar * e_cal_get_error_message (ECalendarStatus status);

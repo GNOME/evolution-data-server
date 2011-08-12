@@ -10,7 +10,8 @@
 #define TZNAME_NEW "Ex Wye Zee"
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECal *cal;
 	gchar *uri = NULL;

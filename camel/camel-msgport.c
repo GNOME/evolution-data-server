@@ -97,7 +97,7 @@ msgport_pipe (gint *fds)
 	saddr.sin_port = 0;
 	saddr.sin_addr.s_addr = htonl (INADDR_LOOPBACK);
 
-	if (bind (temp, (struct sockaddr *)&saddr, sizeof (saddr))) {
+	if (bind (temp, (struct sockaddr *) &saddr, sizeof (saddr))) {
 		goto out0;
 	}
 
@@ -106,7 +106,7 @@ msgport_pipe (gint *fds)
 	}
 
 	len = sizeof (saddr);
-	if (getsockname (temp, (struct sockaddr *)&saddr, &len)) {
+	if (getsockname (temp, (struct sockaddr *) &saddr, &len)) {
 		goto out0;
 	}
 
@@ -121,7 +121,7 @@ msgport_pipe (gint *fds)
 		goto out1;
 	}
 
-	if (connect (socket1, (struct sockaddr  *)&saddr, len) != SOCKET_ERROR ||
+	if (connect (socket1, (struct sockaddr  *) &saddr, len) != SOCKET_ERROR ||
 	    WSAGetLastError () != WSAEWOULDBLOCK) {
 		goto out1;
 	}
@@ -344,7 +344,8 @@ camel_msgport_prfd (CamelMsgPort *msgport)
  * Since: 2.24
  **/
 void
-camel_msgport_push (CamelMsgPort *msgport, CamelMsg *msg)
+camel_msgport_push (CamelMsgPort *msgport,
+                    CamelMsg *msg)
 {
 	gint fd;
 #ifdef CAMEL_HAVE_NSS
@@ -456,7 +457,8 @@ camel_msgport_try_pop (CamelMsgPort *msgport)
  * Since: 2.30
  **/
 CamelMsg *
-camel_msgport_timed_pop (CamelMsgPort *msgport, GTimeVal *end_time)
+camel_msgport_timed_pop (CamelMsgPort *msgport,
+                         GTimeVal *end_time)
 {
 	CamelMsg *msg;
 

@@ -169,7 +169,8 @@ eds_module_shutdown (void)
 }
 
 void
-eds_module_list_types (const GType **types, gint *num_types)
+eds_module_list_types (const GType **types,
+                       gint *num_types)
 {
 	static GType file_types[3];
 

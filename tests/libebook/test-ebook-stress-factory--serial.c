@@ -7,7 +7,8 @@
 #define NUM_BOOKS 200
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gchar *uri = NULL;
 	gint i;

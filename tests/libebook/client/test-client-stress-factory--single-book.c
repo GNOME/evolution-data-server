@@ -8,7 +8,8 @@
 #define NUM_OPENS 200
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gchar *uri = NULL;
 	EBookClient *book_client;

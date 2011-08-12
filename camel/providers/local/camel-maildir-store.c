@@ -74,7 +74,7 @@ static CamelFolderInfo *
 maildir_store_create_folder_sync (CamelStore *store,
                const gchar *parent_name,
                const gchar *folder_name,
-	       GCancellable *cancellable,
+               GCancellable *cancellable,
                GError **error)
 {
 	gchar *path = ((CamelLocalStore *) store)->toplevel_dir;
@@ -306,7 +306,7 @@ maildir_store_delete_folder_sync (CamelStore *store,
 			/* for tmp (only), its contents is irrelevant */
 			dir = opendir (tmp);
 			if (dir) {
-				while ((d=readdir (dir))) {
+				while ((d = readdir (dir))) {
 					gchar *name = d->d_name, *file;
 
 					if (!strcmp(name, ".") || !strcmp(name, ".."))
@@ -620,14 +620,14 @@ maildir_store_get_folder_info_sync (CamelStore *store,
 		if (scan_dirs (store, flags, &fi, url, cancellable, error) == -1)
 			goto fail;
 
-		fi->flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
+		fi->flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 	} else if (!strcmp(top, ".")) {
 		fi = scan_fi(store, flags, url, "Inbox", _("Inbox"), cancellable);
-		fi->flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
+		fi->flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 	} else {
 		const gchar *name = strrchr (top, '/');
 
-		fi = scan_fi (store, flags, url, top, name?name+1:top, cancellable);
+		fi = scan_fi (store, flags, url, top, name ? name + 1 : top, cancellable);
 		if (scan_dirs (store, flags, &fi, url, cancellable, error) == -1)
 			goto fail;
 	}
@@ -655,7 +655,13 @@ maildir_store_get_inbox_sync (CamelStore *store,
 }
 
 static gboolean
-rename_traverse_fi (CamelStore *store, CamelStoreClass *store_class, CamelFolderInfo *fi, const gchar *old_full_name_prefix, const gchar *new_full_name_prefix, GCancellable *cancellable, GError **error)
+rename_traverse_fi (CamelStore *store,
+                    CamelStoreClass *store_class,
+                    CamelFolderInfo *fi,
+                    const gchar *old_full_name_prefix,
+                    const gchar *new_full_name_prefix,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	gint old_prefix_len = strlen (old_full_name_prefix);
 	gboolean ret = TRUE;
@@ -774,7 +780,8 @@ camel_maildir_store_init (CamelMaildirStore *maildir_store)
 }
 
 static gchar *
-maildir_get_full_path (CamelLocalStore *ls, const gchar *full_name)
+maildir_get_full_path (CamelLocalStore *ls,
+                       const gchar *full_name)
 {
 	gchar *dir_name, *path;
 
@@ -786,7 +793,9 @@ maildir_get_full_path (CamelLocalStore *ls, const gchar *full_name)
 }
 
 static gchar *
-maildir_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar *ext)
+maildir_get_meta_path (CamelLocalStore *ls,
+                       const gchar *full_name,
+                       const gchar *ext)
 {
 	gchar *dir_name, *path;
 
@@ -829,7 +838,9 @@ static void scan_free (gpointer k, gpointer v, gpointer d)
 }
 
 static gint
-scan_old_dir_info (CamelStore *store, CamelFolderInfo *topfi, GError **error)
+scan_old_dir_info (CamelStore *store,
+                   CamelFolderInfo *topfi,
+                   GError **error)
 {
 	CamelDList queue = CAMEL_DLIST_INITIALISER (queue);
 	CamelURL *url;
@@ -858,7 +869,7 @@ scan_old_dir_info (CamelStore *store, CamelFolderInfo *topfi, GError **error)
 
 		sn = (struct _scan_node *) camel_dlist_remhead (&queue);
 
-		last = (CamelFolderInfo *)&sn->fi->child;
+		last = (CamelFolderInfo *) &sn->fi->child;
 
 		if (!strcmp(sn->fi->full_name, "."))
 			name = g_strdup (root);
@@ -935,7 +946,10 @@ fail:
 }
 
 static void
-maildir_rename_old_folder (CamelMaildirStore *mstore, CamelFolderInfo *fi, GCancellable *cancellable, GError **error)
+maildir_rename_old_folder (CamelMaildirStore *mstore,
+                           CamelFolderInfo *fi,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	gchar *new_name = NULL, *old_name;
 	CamelStoreClass *store_class;
@@ -953,7 +967,10 @@ maildir_rename_old_folder (CamelMaildirStore *mstore, CamelFolderInfo *fi, GCanc
 }
 
 static void
-traverse_rename_folder_info (CamelMaildirStore *mstore, CamelFolderInfo *fi, GCancellable *cancellable, GError **error)
+traverse_rename_folder_info (CamelMaildirStore *mstore,
+                             CamelFolderInfo *fi,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	if (fi != NULL)	{
 		if (fi->child)
@@ -968,7 +985,9 @@ traverse_rename_folder_info (CamelMaildirStore *mstore, CamelFolderInfo *fi, GCa
 }
 
 static void
-maildir_migrate_hierarchy (CamelMaildirStore *mstore, GCancellable *cancellable, GError **error)
+maildir_migrate_hierarchy (CamelMaildirStore *mstore,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	CamelFolderInfo *topfi;
 	gchar *meta_path;

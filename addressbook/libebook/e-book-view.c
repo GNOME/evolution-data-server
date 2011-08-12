@@ -48,7 +48,9 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static void
-objects_added_cb (EGdbusBookView *object, const gchar * const *vcards, EBookView *book_view)
+objects_added_cb (EGdbusBookView *object,
+                  const gchar * const *vcards,
+                  EBookView *book_view)
 {
 	const gchar * const *p;
 	GList *contacts = NULL;
@@ -69,7 +71,9 @@ objects_added_cb (EGdbusBookView *object, const gchar * const *vcards, EBookView
 }
 
 static void
-objects_modified_cb (EGdbusBookView *object, const gchar * const *vcards, EBookView *book_view)
+objects_modified_cb (EGdbusBookView *object,
+                     const gchar * const *vcards,
+                     EBookView *book_view)
 {
 	const gchar * const *p;
 	GList *contacts = NULL;
@@ -89,7 +93,9 @@ objects_modified_cb (EGdbusBookView *object, const gchar * const *vcards, EBookV
 }
 
 static void
-objects_removed_cb (EGdbusBookView *object, const gchar * const *ids, EBookView *book_view)
+objects_removed_cb (EGdbusBookView *object,
+                    const gchar * const *ids,
+                    EBookView *book_view)
 {
 	const gchar * const *p;
 	GList *list = NULL;
@@ -98,7 +104,7 @@ objects_removed_cb (EGdbusBookView *object, const gchar * const *ids, EBookView 
 		return;
 
 	for (p = ids; *p; p++) {
-		list = g_list_prepend (list, (gchar *)*p);
+		list = g_list_prepend (list, (gchar *) * p);
 	}
 	list = g_list_reverse (list);
 
@@ -109,7 +115,10 @@ objects_removed_cb (EGdbusBookView *object, const gchar * const *ids, EBookView 
 }
 
 static void
-progress_cb (EGdbusBookView *object, guint percent, const gchar *message, EBookView *book_view)
+progress_cb (EGdbusBookView *object,
+             guint percent,
+             const gchar *message,
+             EBookView *book_view)
 {
 	if (!book_view->priv->running)
 		return;
@@ -118,7 +127,9 @@ progress_cb (EGdbusBookView *object, guint percent, const gchar *message, EBookV
 }
 
 static void
-complete_cb (EGdbusBookView *object, const gchar * const *in_error_strv, EBookView *book_view)
+complete_cb (EGdbusBookView *object,
+             const gchar * const *in_error_strv,
+             EBookView *book_view)
 {
 	GError *error = NULL;
 	EBookViewStatus bv_status = E_BOOK_VIEW_ERROR_OTHER_ERROR;
@@ -156,7 +167,8 @@ complete_cb (EGdbusBookView *object, const gchar * const *in_error_strv, EBookVi
 }
 
 EBookView *
-_e_book_view_new (EBook *book, EGdbusBookView *gdbus_bookview)
+_e_book_view_new (EBook *book,
+                  EGdbusBookView *gdbus_bookview)
 {
 	EBookView *view;
 	EBookViewPrivate *priv;

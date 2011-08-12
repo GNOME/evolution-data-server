@@ -53,10 +53,10 @@ gboolean
 ebook_test_utils_contacts_are_equal_shallow (EContact *a,
                                              EContact *b);
 
-EBook*
+EBook *
 ebook_test_utils_book_new_from_uri (const gchar *uri);
 
-EBook*
+EBook *
 ebook_test_utils_book_new_temp (gchar **uri);
 
 const gchar *
@@ -77,7 +77,7 @@ ebook_test_utils_book_async_commit_contact (EBook       *book,
                                             GSourceFunc  callback,
                                             gpointer     user_data);
 
-EContact*
+EContact *
 ebook_test_utils_book_get_contact (EBook      *book,
                                    const gchar *uid);
 void
@@ -86,21 +86,21 @@ ebook_test_utils_book_async_get_contact (EBook       *book,
                                          GSourceFunc  callback,
                                          gpointer     user_data);
 
-GList*
+GList *
 ebook_test_utils_book_get_required_fields (EBook *book);
 void
 ebook_test_utils_book_async_get_required_fields (EBook       *book,
                                                  GSourceFunc  callback,
                                                  gpointer     user_data);
 
-GList*
+GList *
 ebook_test_utils_book_get_supported_fields (EBook *book);
 void
 ebook_test_utils_book_async_get_supported_fields (EBook       *book,
 						  GSourceFunc  callback,
                                                   gpointer     user_data);
 
-GList*
+GList *
 ebook_test_utils_book_get_supported_auth_methods (EBook *book);
 void
 ebook_test_utils_book_async_get_supported_auth_methods (EBook       *book,

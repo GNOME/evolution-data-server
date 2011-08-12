@@ -28,12 +28,12 @@
 G_BEGIN_DECLS
 
 /*
-  initialization is now implicit when you call any of the functions
-  below, although this is only correct if the functions are called
-  from the main thread.
-
-  e_passwords_shutdown should be called at exit time to synch the
-  password on-disk storage, and to free up in-memory storage. */
+ * initialization is now implicit when you call any of the functions
+ * below, although this is only correct if the functions are called
+ * from the main thread.
+ *
+ * e_passwords_shutdown should be called at exit time to synch the
+ * password on-disk storage, and to free up in-memory storage. */
 void e_passwords_init (void);
 
 void        e_passwords_shutdown          (void);
@@ -53,8 +53,8 @@ typedef enum {
 	E_PASSWORDS_REMEMBER_MASK = 0xf,
 
 	/* option bits */
-	E_PASSWORDS_SECRET = 1<<8,
-	E_PASSWORDS_REPROMPT = 1<<9,
+	E_PASSWORDS_SECRET = 1 << 8,
+	E_PASSWORDS_REPROMPT = 1 << 9,
 	E_PASSWORDS_ONLINE = 1<<10, /* only ask if we're online */
 	E_PASSWORDS_DISABLE_REMEMBER = 1<<11, /* disable the 'remember password' checkbox */
 	E_PASSWORDS_PASSPHRASE = 1<<12 /* We are asking a passphrase */

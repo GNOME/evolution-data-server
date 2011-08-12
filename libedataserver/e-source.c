@@ -54,7 +54,7 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 static void
 group_weak_notify (ESource *source,
-		   GObject **where_the_object_was)
+                   GObject **where_the_object_was)
 {
 	source->priv->group = NULL;
 
@@ -239,7 +239,7 @@ e_source_new_from_xml_node (xmlNodePtr node)
 
 static void
 import_properties (ESource *source,
-		   xmlNodePtr prop_root)
+                   xmlNodePtr prop_root)
 {
 	ESourcePrivate *priv = source->priv;
 	xmlNodePtr prop_node;
@@ -270,7 +270,9 @@ typedef struct
 } hash_compare_data;
 
 static void
-compare_str_hash (gpointer key, gpointer value, hash_compare_data *cd)
+compare_str_hash (gpointer key,
+                  gpointer value,
+                  hash_compare_data *cd)
 {
 	gpointer value2 = g_hash_table_lookup (cd->table2, key);
 	if (value2 == NULL || g_str_equal (value, value2) == FALSE)
@@ -278,7 +280,8 @@ compare_str_hash (gpointer key, gpointer value, hash_compare_data *cd)
 }
 
 static gboolean
-compare_str_hashes (GHashTable *table1, GHashTable *table2)
+compare_str_hashes (GHashTable *table1,
+                    GHashTable *table2)
 {
 	hash_compare_data cd;
 
@@ -346,7 +349,7 @@ e_source_update_from_xml_node (ESource *source,
 
 		if (abs_uri && source->priv->absolute_uri && g_str_equal (abs_uri, source->priv->absolute_uri)) {
 			/* reset the absolute uri to NULL to be regenerated when asked for,
-			   but only when it was generated also before */
+			 * but only when it was generated also before */
 			g_free (source->priv->absolute_uri);
 			source->priv->absolute_uri = NULL;
 		} else if (source->priv->absolute_uri &&
@@ -563,7 +566,7 @@ e_source_set_group (ESource *source,
  **/
 void
 e_source_set_name (ESource *source,
-		   const gchar *name)
+                   const gchar *name)
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (name != NULL);
@@ -975,7 +978,8 @@ e_source_to_standalone_xml (ESource *source)
  * Since: 2.24
  **/
 gboolean
-e_source_equal (ESource *a, ESource *b)
+e_source_equal (ESource *a,
+                ESource *b)
 {
 	g_return_val_if_fail (E_IS_SOURCE (a), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (b), FALSE);
@@ -1032,7 +1036,8 @@ e_source_equal (ESource *a, ESource *b)
  * Since: 2.24
  **/
 gboolean
-e_source_xmlstr_equal (const gchar *a, const gchar *b)
+e_source_xmlstr_equal (const gchar *a,
+                       const gchar *b)
 {
 	ESource *srca, *srcb;
 	gboolean retval;

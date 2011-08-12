@@ -142,9 +142,9 @@ typedef enum {
 	E_CONTACT_IM_ICQ_WORK_3,       /* Synthetic string field */
 
 	/* Convenience field for getting a name from the contact.
-	   Returns the first one of[File-As, Full Name, Org, Email1]
-	   to be set */
-	E_CONTACT_REV,     /* string field to hold  time of last update to this vcard*/
+	 * Returns the first one of[File-As, Full Name, Org, Email1]
+	 * to be set */
+	E_CONTACT_REV,     /* string field to hold  time of last update to this vcard */
 	E_CONTACT_NAME_OR_ORG,
 
 	/* Address fields */
@@ -173,8 +173,8 @@ typedef enum {
 	E_CONTACT_WANTS_HTML,    /* boolean field */
 
 	/* fields used for describing contact lists.  a contact list
-	   is just a contact with _IS_LIST set to true.  the members
-	   are listed in the _EMAIL field. */
+	 * is just a contact with _IS_LIST set to true.  the members
+	 * are listed in the _EMAIL field. */
 	E_CONTACT_IS_LIST,             /* boolean field */
 	E_CONTACT_LIST_SHOW_ADDRESSES, /* boolean field */
 
@@ -268,8 +268,8 @@ typedef struct {
 
 typedef struct {
 	gchar *address_format; /* the two letter country code that
-				 determines the format/meaning of the
-				 following fields */
+				* determines the format/meaning of the
+				* following fields */
 	gchar *po;
 	gchar *ext;
 	gchar *street;
@@ -309,18 +309,18 @@ struct _EContactClass {
 
 GType                   e_contact_get_type (void);
 
-EContact*               e_contact_new              (void);
-EContact*               e_contact_new_from_vcard   (const gchar *vcard);
+EContact *               e_contact_new              (void);
+EContact *               e_contact_new_from_vcard   (const gchar *vcard);
 
-EContact*               e_contact_duplicate        (EContact *contact);
+EContact *               e_contact_duplicate        (EContact *contact);
 
 gpointer                e_contact_get              (EContact *contact, EContactField field_id);
 gconstpointer		e_contact_get_const        (EContact *contact, EContactField field_id);
 void                    e_contact_set              (EContact *contact, EContactField field_id, gconstpointer value);
 
 /* the following two calls return and take a GList of
-   EVCardAttribute*'s. */
-GList*                  e_contact_get_attributes   (EContact *contact, EContactField field_id);
+ * EVCardAttribute*'s. */
+GList *                  e_contact_get_attributes   (EContact *contact, EContactField field_id);
 void                    e_contact_set_attributes   (EContact *contact, EContactField field_id, GList *attributes);
 
 /* misc functions for structured values */
@@ -339,7 +339,7 @@ EContactName           *e_contact_name_from_string (const gchar *name_str);
 EContactName           *e_contact_name_copy        (EContactName *n);
 void                    e_contact_name_free        (EContactName *name);
 
-EContactPhoto*          e_contact_photo_new           (void);
+EContactPhoto *          e_contact_photo_new           (void);
 GType                   e_contact_photo_get_type      (void);
 void                    e_contact_photo_free          (EContactPhoto *photo);
 const guchar *          e_contact_photo_get_inlined   (EContactPhoto *photo, gsize *len);
@@ -355,7 +355,7 @@ void			e_contact_geo_free	   (EContactGeo *geo);
 GType                   e_contact_cert_get_type    (void);
 void                    e_contact_cert_free        (EContactCert *cert);
 
-EContactAddress*        e_contact_address_new      (void);
+EContactAddress *        e_contact_address_new      (void);
 GType                   e_contact_address_get_type (void);
 void                    e_contact_address_free     (EContactAddress *address);
 

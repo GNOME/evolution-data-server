@@ -49,7 +49,10 @@ struct EBookQuery {
 };
 
 static EBookQuery *
-conjoin (EBookQueryType type, gint nqs, EBookQuery **qs, gboolean unref)
+conjoin (EBookQueryType type,
+         gint nqs,
+         EBookQuery **qs,
+         gboolean unref)
 {
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 	gint i;
@@ -77,7 +80,9 @@ conjoin (EBookQueryType type, gint nqs, EBookQuery **qs, gboolean unref)
  * Returns: A new #EBookQuery
  **/
 EBookQuery *
-e_book_query_and (gint nqs, EBookQuery **qs, gboolean unref)
+e_book_query_and (gint nqs,
+                  EBookQuery **qs,
+                  gboolean unref)
 {
 	return conjoin (E_BOOK_QUERY_TYPE_AND, nqs, qs, unref);
 }
@@ -93,13 +98,17 @@ e_book_query_and (gint nqs, EBookQuery **qs, gboolean unref)
  * Returns: A new #EBookQuery
  **/
 EBookQuery *
-e_book_query_or (gint nqs, EBookQuery **qs, gboolean unref)
+e_book_query_or (gint nqs,
+                 EBookQuery **qs,
+                 gboolean unref)
 {
 	return conjoin (E_BOOK_QUERY_TYPE_OR, nqs, qs, unref);
 }
 
 static EBookQuery *
-conjoinv (EBookQueryType type, EBookQuery *q, va_list ap)
+conjoinv (EBookQueryType type,
+          EBookQuery *q,
+          va_list ap)
 {
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 	GPtrArray *qs;
@@ -165,7 +174,8 @@ e_book_query_orv (EBookQuery *q, ...)
  * Returns: the new #EBookQuery
  **/
 EBookQuery *
-e_book_query_not (EBookQuery *q, gboolean unref)
+e_book_query_not (EBookQuery *q,
+                  gboolean unref)
 {
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 
@@ -189,8 +199,8 @@ e_book_query_not (EBookQuery *q, gboolean unref)
  **/
 EBookQuery *
 e_book_query_field_test (EContactField field,
-			 EBookQueryTest test,
-			 const gchar *value)
+                         EBookQueryTest test,
+                         const gchar *value)
 {
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 
@@ -215,9 +225,9 @@ e_book_query_field_test (EContactField field,
  * Since: 2.22
  **/
 EBookQuery *
-e_book_query_vcard_field_test (const gchar     *field,
-			       EBookQueryTest  test,
-			       const gchar     *value)
+e_book_query_vcard_field_test (const gchar *field,
+                               EBookQueryTest test,
+                               const gchar *value)
 {
 	EBookQuery *ret = g_new0 (EBookQuery, 1);
 
@@ -349,7 +359,10 @@ e_book_query_ref (EBookQuery *q)
 }
 
 static ESExpResult *
-func_and (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_and (struct _ESExp *f,
+          gint argc,
+          struct _ESExpResult **argv,
+          gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -358,7 +371,7 @@ func_and (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data
 	if (argc > 0) {
 		gint i;
 
-		qs = g_new0 (EBookQuery*, argc);
+		qs = g_new0 (EBookQuery *, argc);
 
 		for (i = 0; i < argc; i++) {
 			GList *list_head = *list;
@@ -381,7 +394,10 @@ func_and (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data
 }
 
 static ESExpResult *
-func_or (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_or (struct _ESExp *f,
+         gint argc,
+         struct _ESExpResult **argv,
+         gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -390,7 +406,7 @@ func_or (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 	if (argc > 0) {
 		gint i;
 
-		qs = g_new0 (EBookQuery*, argc);
+		qs = g_new0 (EBookQuery *, argc);
 
 		for (i = 0; i < argc; i++) {
 			GList *list_head = *list;
@@ -413,7 +429,10 @@ func_or (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 }
 
 static ESExpResult *
-func_not (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_not (struct _ESExp *f,
+          gint argc,
+          struct _ESExpResult **argv,
+          gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -431,7 +450,10 @@ func_not (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data
 }
 
 static ESExpResult *
-func_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_contains (struct _ESExp *f,
+               gint argc,
+               struct _ESExpResult **argv,
+               gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -466,7 +488,10 @@ func_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer
 }
 
 static ESExpResult *
-func_is (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_is (struct _ESExp *f,
+         gint argc,
+         struct _ESExpResult **argv,
+         gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -495,7 +520,10 @@ func_is (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
 }
 
 static ESExpResult *
-func_beginswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_beginswith (struct _ESExp *f,
+                 gint argc,
+                 struct _ESExpResult **argv,
+                 gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -524,7 +552,10 @@ func_beginswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpoint
 }
 
 static ESExpResult *
-func_endswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_endswith (struct _ESExp *f,
+               gint argc,
+               struct _ESExpResult **argv,
+               gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -553,7 +584,10 @@ func_endswith (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer
 }
 
 static ESExpResult *
-func_exists (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+func_exists (struct _ESExp *f,
+             gint argc,
+             struct _ESExpResult **argv,
+             gpointer data)
 {
 	GList **list = data;
 	ESExpResult *r;
@@ -600,8 +634,8 @@ static const struct {
  *
  * Returns: the new #EBookQuery.
  **/
-EBookQuery*
-e_book_query_from_string  (const gchar *query_string)
+EBookQuery *
+e_book_query_from_string (const gchar *query_string)
 {
 	ESExp *sexp;
 	ESExpResult *r;
@@ -658,7 +692,7 @@ e_book_query_from_string  (const gchar *query_string)
  * finished with.
  **/
 gchar *
-e_book_query_to_string    (EBookQuery *q)
+e_book_query_to_string (EBookQuery *q)
 {
 	GString *str = g_string_new ("(");
 	GString *encoded = g_string_new ("");
@@ -754,7 +788,7 @@ e_book_query_get_type (void)
  *
  * Returns: A new #EBookQuery identical to @q.
  **/
-EBookQuery*
+EBookQuery *
 e_book_query_copy (EBookQuery *q)
 {
 	gchar *str = e_book_query_to_string (q);

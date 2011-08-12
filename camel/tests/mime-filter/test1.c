@@ -1,8 +1,8 @@
 /*
-  test-crlf.c
-
-  Test the CamelMimeFilterCanon class
-*/
+ * test-crlf.c
+ *
+ * Test the CamelMimeFilterCanon class
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -19,13 +19,13 @@ struct {
 	const gchar *in;
 	const gchar *out;
 } tests[] = {
-	{ CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_CRLF,
+	{ CAMEL_MIME_FILTER_CANON_FROM | CAMEL_MIME_FILTER_CANON_CRLF,
 	  "From \nRussia - with love.\n\n",
 	  "=46rom \r\nRussia - with love.\r\n\r\n" },
-	{ CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_CRLF,
+	{ CAMEL_MIME_FILTER_CANON_FROM | CAMEL_MIME_FILTER_CANON_CRLF,
 	  "From \r\nRussia - with love.\r\n\n",
 	  "=46rom \r\nRussia - with love.\r\n\r\n" },
-	{ CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_CRLF,
+	{ CAMEL_MIME_FILTER_CANON_FROM | CAMEL_MIME_FILTER_CANON_CRLF,
 	  "Tasmiania with fur    \nFrom",
 	  "Tasmiania with fur    \r\nFrom" },
 	{ CAMEL_MIME_FILTER_CANON_FROM,
@@ -34,22 +34,23 @@ struct {
 	{ CAMEL_MIME_FILTER_CANON_CRLF,
 	  "Tasmiania with fur    \nFrom",
 	  "Tasmiania with fur    \r\nFrom" },
-	{ CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_CRLF,
+	{ CAMEL_MIME_FILTER_CANON_FROM | CAMEL_MIME_FILTER_CANON_CRLF,
 	  "Tasmiania with fur    \nFrom here",
 	  "Tasmiania with fur    \r\n=46rom here" },
-	{ CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_CRLF|CAMEL_MIME_FILTER_CANON_STRIP,
+	{ CAMEL_MIME_FILTER_CANON_FROM | CAMEL_MIME_FILTER_CANON_CRLF | CAMEL_MIME_FILTER_CANON_STRIP,
 	  "Tasmiania with fur    \nFrom here",
 	  "Tasmiania with fur\r\n=46rom here" },
-	{ CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_CRLF|CAMEL_MIME_FILTER_CANON_STRIP,
+	{ CAMEL_MIME_FILTER_CANON_FROM | CAMEL_MIME_FILTER_CANON_CRLF | CAMEL_MIME_FILTER_CANON_STRIP,
 	  "Tasmiania with fur    \nFrom here\n",
 	  "Tasmiania with fur\r\n=46rom here\r\n" },
-	{ CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_CRLF|CAMEL_MIME_FILTER_CANON_STRIP,
+	{ CAMEL_MIME_FILTER_CANON_FROM | CAMEL_MIME_FILTER_CANON_CRLF | CAMEL_MIME_FILTER_CANON_STRIP,
 	  "Tasmiania with fur    \nFrom here or there ? \n",
 	  "Tasmiania with fur\r\n=46rom here or there ?\r\n" },
 };
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	CamelStream *stream;
 	CamelMimeFilter *sh;
@@ -65,7 +66,7 @@ main (gint argc, gchar **argv)
 		camel_test_push ("Data test %d '%s'\n", i, tests[i].in);
 
 		/* try all write sizes */
-		for (step=1;step<20;step++) {
+		for (step = 1; step < 20; step++) {
 			GByteArray *byte_array;
 			CamelStream *out;
 			const gchar *p;

@@ -67,7 +67,7 @@ folders_update (const gchar *root,
 	sprintf (tmpnew, "%s.folders~", root);
 
 	out = camel_stream_fs_new_with_name (
-		tmpnew, O_WRONLY|O_CREAT|O_TRUNC, 0666, NULL);
+		tmpnew, O_WRONLY | O_CREAT | O_TRUNC, 0666, NULL);
 	if (out == NULL)
 		goto fail;
 
@@ -103,7 +103,7 @@ folders_update (const gchar *root,
 			if (strncmp (line, folder, flen) == 0
 			    && (line[flen] == 0 || line[flen] == '/')) {
 				if (camel_stream_write (out, new, strlen (new), cancellable, NULL) == -1
-				    || camel_stream_write (out, line+flen, strlen (line)-flen, cancellable, NULL) == -1
+				    || camel_stream_write (out, line + flen, strlen (line) - flen, cancellable, NULL) == -1
 				    || camel_stream_write(out, "\n", 1, cancellable, NULL) == -1)
 					goto fail;
 				copy = FALSE;
@@ -208,8 +208,8 @@ fill_fi (CamelStore *store,
 		/* This should be fast enough not to have to test for INFO_FAST */
 
 		/* We could: if we have no folder, and FAST isn't specified, perform a full
-		   scan of all messages for their status flags.  But its probably not worth
-		   it as we need to read the top of every file, i.e. very very slow */
+		 * scan of all messages for their status flags.  But its probably not worth
+		 * it as we need to read the top of every file, i.e. very very slow */
 
 		root = camel_local_store_get_toplevel_dir (local_store);
 		path = g_strdup_printf (
@@ -252,7 +252,7 @@ folder_info_new (CamelStore *store,
 	/* Build the folder info structure. */
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (path);
-	fi->display_name = g_strdup (base?base+1:path);
+	fi->display_name = g_strdup (base ? base + 1 : path);
 	fill_fi (store, fi, flags, cancellable);
 
 	return fi;
@@ -388,15 +388,15 @@ folders_scan (CamelStore *store,
 
 		/* Check for invalidly long lines,
 		 * we abort everything and fallback. */
-		if (line[len-1] != '\n') {
+		if (line[len - 1] != '\n') {
 			gint i;
 
-			for (i=0;i<folders->len;i++)
+			for (i = 0; i < folders->len; i++)
 				camel_folder_info_free (folders->pdata[i]);
 			g_ptr_array_set_size (folders, 0);
 			break;
 		}
-		line[len-1] = 0;
+		line[len - 1] = 0;
 
 		/* check for \r ? */
 
@@ -411,7 +411,7 @@ folders_scan (CamelStore *store,
 			/* check is not sub-subdir if not recursive */
 			if ((flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE) == 0
 			    && (tmp = strrchr (line, '/'))
-			    && tmp > line+toplen)
+			    && tmp > line + toplen)
 				continue;
 		}
 
@@ -450,7 +450,8 @@ inode_hash (gconstpointer d)
 }
 
 static gboolean
-inode_equal (gconstpointer a, gconstpointer b)
+inode_equal (gconstpointer a,
+             gconstpointer b)
 {
 	const struct _inode *v1 = a, *v2 = b;
 
@@ -458,7 +459,9 @@ inode_equal (gconstpointer a, gconstpointer b)
 }
 
 static void
-inode_free (gpointer k, gpointer v, gpointer d)
+inode_free (gpointer k,
+            gpointer v,
+            gpointer d)
 {
 	g_free (k);
 }

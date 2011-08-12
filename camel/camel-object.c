@@ -47,21 +47,20 @@ enum {
 G_DEFINE_ABSTRACT_TYPE (CamelObject, camel_object, G_TYPE_OBJECT)
 
 /* State file for CamelObject data.
-   Any later versions should only append data.
-
-   version:uint32
-
-   Version 0 of the file:
-
-   version:uint32 = 0
-   count:uint32				-- count of meta-data items
-   ( name:string value:string ) *count		-- meta-data items
-
-   Version 1 of the file adds:
-   count:uint32					-- count of persistent properties
-   ( tag:uing32 value:tagtype ) *count		-- persistent properties
-
-*/
+ * Any later versions should only append data.
+ *
+ * version:uint32
+ *
+ * Version 0 of the file:
+ *
+ * version:uint32 = 0
+ * count:uint32				-- count of meta-data items
+ * ( name:string value:string ) *count		-- meta-data items
+ *
+ * Version 1 of the file adds:
+ * count:uint32					-- count of persistent properties
+ * ( tag:uing32 value:tagtype ) *count		-- persistent properties
+ */
 
 #define CAMEL_OBJECT_STATE_FILE_MAGIC "CLMD"
 

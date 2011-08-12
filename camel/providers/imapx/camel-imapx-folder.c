@@ -41,7 +41,10 @@
 G_DEFINE_TYPE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
 
 CamelFolder *
-camel_imapx_folder_new (CamelStore *store, const gchar *folder_dir, const gchar *folder_name, GError **error)
+camel_imapx_folder_new (CamelStore *store,
+                        const gchar *folder_dir,
+                        const gchar *folder_name,
+                        GError **error)
 {
 	CamelFolder *folder;
 	CamelService *service;
@@ -160,7 +163,9 @@ imapx_folder_finalize (GObject *object)
 }
 
 gchar *
-imapx_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
+imapx_get_filename (CamelFolder *folder,
+                    const gchar *uid,
+                    GError **error)
 {
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 
@@ -168,63 +173,64 @@ imapx_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
 }
 
 /* Algorithm for selecting a folder:
-
-  - If uidvalidity == old uidvalidity
-    and exsists == old exists
-    and recent == old recent
-    and unseen == old unseen
-    Assume our summary is correct
-  for each summary item
-    mark the summary item as 'old/not updated'
-  rof
-  fetch flags from 1:*
-  for each fetch response
-    info = summary[index]
-    if info.uid != uid
-      info = summary_by_uid[uid]
-    fi
-    if info == NULL
-      create new info @ index
-    fi
-    if got.flags
-      update flags
-    fi
-    if got.header
-      update based on header
-      mark as retrieved
-    else if got.body
-      update based on imap body
-      mark as retrieved
-    fi
-
-  Async fetch response:
-    info = summary[index]
-    if info == null
-       if uid == null
-          force resync/select?
-       info = empty @ index
-    else if uid && info.uid != uid
-       force a resync?
-       return
-    fi
-
-    if got.flags {
-      info.flags = flags
-    }
-    if got.header {
-      info.init (header)
-      info.empty = false
-    }
-
-info.state - 2 bit field in flags
-   0 = empty, nothing set
-   1 = uid & flags set
-   2 = update required
-   3 = up to date
-*/
+ *
+ *  - If uidvalidity == old uidvalidity
+ *    and exsists == old exists
+ *    and recent == old recent
+ *    and unseen == old unseen
+ *    Assume our summary is correct
+ *  for each summary item
+ *    mark the summary item as 'old/not updated'
+ *  rof
+ *  fetch flags from 1:*
+ *  for each fetch response
+ *    info = summary[index]
+ *    if info.uid != uid
+ *      info = summary_by_uid[uid]
+ *    fi
+ *    if info == NULL
+ *      create new info @ index
+ *    fi
+ *    if got.flags
+ *      update flags
+ *    fi
+ *    if got.header
+ *      update based on header
+ *      mark as retrieved
+ *    else if got.body
+ *      update based on imap body
+ *      mark as retrieved
+ *    fi
+ *
+ *  Async fetch response:
+ *    info = summary[index]
+ *    if info == null
+ *       if uid == null
+ *          force resync/select?
+ *       info = empty @ index
+ *    else if uid && info.uid != uid
+ *       force a resync?
+ *       return
+ *    fi
+ *
+ *    if got.flags {
+ *      info.flags = flags
+ *    }
+ *    if got.header {
+ *      info.init (header)
+ *      info.empty = false
+ *    }
+ *
+ * info.state - 2 bit field in flags
+ *   0 = empty, nothing set
+ *   1 = uid & flags set
+ *   2 = update required
+ *   3 = up to date
+ */
 
 static void
-imapx_search_free (CamelFolder *folder, GPtrArray *uids)
+imapx_search_free (CamelFolder *folder,
+                   GPtrArray *uids)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
 
@@ -238,7 +244,10 @@ imapx_search_free (CamelFolder *folder, GPtrArray *uids)
 }
 
 static GPtrArray *
-imapx_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *uids, GError **error)
+imapx_search_by_uids (CamelFolder *folder,
+                      const gchar *expression,
+                      GPtrArray *uids,
+                      GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
 	GPtrArray *matches;
@@ -257,7 +266,9 @@ imapx_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *u
 }
 
 static guint32
-imapx_count_by_expression (CamelFolder *folder, const gchar *expression, GError **error)
+imapx_count_by_expression (CamelFolder *folder,
+                           const gchar *expression,
+                           GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
 	guint32 matches;
@@ -273,7 +284,9 @@ imapx_count_by_expression (CamelFolder *folder, const gchar *expression, GError 
 }
 
 static GPtrArray *
-imapx_search_by_expression (CamelFolder *folder, const gchar *expression, GError **error)
+imapx_search_by_expression (CamelFolder *folder,
+                            const gchar *expression,
+                            GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
 	GPtrArray *matches;
@@ -486,7 +499,7 @@ imapx_synchronize_sync (CamelFolder *folder,
 	camel_imapx_server_sync_changes (server, folder, cancellable, NULL);
 
 	/* Sync twice - make sure deleted flags are written out,
-	   then sync again incase expunge changed anything */
+	 * then sync again incase expunge changed anything */
 
 	if (expunge)
 		camel_imapx_server_expunge (server, folder, cancellable, NULL);

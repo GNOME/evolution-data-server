@@ -69,7 +69,8 @@ struct {
 };
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	CamelURL *base_url, *url;
 	gchar *url_string;

@@ -39,7 +39,8 @@ static CamelFolderInfo fi_list_3[] = {
 };
 
 static gint
-cmp_fi (gconstpointer a, gconstpointer b)
+cmp_fi (gconstpointer a,
+        gconstpointer b)
 {
 	const CamelFolderInfo *fa = ((const CamelFolderInfo **) a)[0];
 	const CamelFolderInfo *fb = ((const CamelFolderInfo **) b)[0];
@@ -48,7 +49,8 @@ cmp_fi (gconstpointer a, gconstpointer b)
 }
 
 static void
-add_fi (GPtrArray *folders, CamelFolderInfo *fi)
+add_fi (GPtrArray *folders,
+        CamelFolderInfo *fi)
 {
 	while (fi) {
 		g_ptr_array_add (folders, fi);
@@ -59,7 +61,9 @@ add_fi (GPtrArray *folders, CamelFolderInfo *fi)
 }
 
 static void
-check_fi (CamelFolderInfo *fi, CamelFolderInfo *list, gint len)
+check_fi (CamelFolderInfo *fi,
+          CamelFolderInfo *list,
+          gint len)
 {
 	GPtrArray *folders = g_ptr_array_new ();
 	gint i;
@@ -67,7 +71,7 @@ check_fi (CamelFolderInfo *fi, CamelFolderInfo *list, gint len)
 	add_fi (folders, fi);
 	check_msg (folders->len == len, "unexpected number of folders returned from folderinfo");
 	qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), cmp_fi);
-	for (i=0;i<len;i++) {
+	for (i = 0; i < len; i++) {
 		CamelFolderInfo *f = folders->pdata[i];
 
 		camel_test_push ("checking folder '%s'", list[i].display_name);
@@ -90,7 +94,8 @@ check_fi (CamelFolderInfo *fi, CamelFolderInfo *list, gint len)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	CamelFolder *f1, *f2;
 	CamelStore *store;

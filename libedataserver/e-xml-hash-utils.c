@@ -47,7 +47,8 @@
  * of @doc.
  **/
 GHashTable *
-e_xml_to_hash (xmlDoc *doc, EXmlHashType type)
+e_xml_to_hash (xmlDoc *doc,
+               EXmlHashType type)
 {
 	xmlNode *root, *node;
 	xmlChar *key, *value;
@@ -93,7 +94,9 @@ struct save_data {
 };
 
 static void
-foreach_save_func (gpointer key, gpointer value, gpointer user_data)
+foreach_save_func (gpointer key,
+                   gpointer value,
+                   gpointer user_data)
 {
 	struct save_data *sd = user_data;
 	xmlNodePtr new_node;
@@ -135,7 +138,7 @@ e_xml_from_hash (GHashTable *hash,
 	doc->encoding = xmlStrdup ((xmlChar*)"UTF-8");
 	sd.type = type;
 	sd.doc = doc;
-	sd.root = xmlNewDocNode (doc, NULL, (xmlChar*) root_name, NULL);
+	sd.root = xmlNewDocNode (doc, NULL, (xmlChar *) root_name, NULL);
 	xmlDocSetRootElement (doc, sd.root);
 
 	g_hash_table_foreach (hash, foreach_save_func, &sd);
@@ -143,7 +146,9 @@ e_xml_from_hash (GHashTable *hash,
 }
 
 static void
-free_values (gpointer key, gpointer value, gpointer data)
+free_values (gpointer key,
+             gpointer value,
+             gpointer data)
 {
 	g_free (key);
 	g_free (value);
@@ -297,7 +302,9 @@ typedef struct {
 } foreach_data_t;
 
 static void
-foreach_hash_func (gpointer  key, gpointer value, gpointer user_data)
+foreach_hash_func (gpointer key,
+                   gpointer value,
+                   gpointer user_data)
 {
 	foreach_data_t *data = (foreach_data_t *) user_data;
 

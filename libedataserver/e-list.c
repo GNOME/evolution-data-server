@@ -44,7 +44,9 @@ e_list_init (EList *list)
  * Returns: (transfer full): The new #EList.
  **/
 EList *
-e_list_new (EListCopyFunc copy, EListFreeFunc free, gpointer closure)
+e_list_new (EListCopyFunc copy,
+            EListFreeFunc free,
+            gpointer closure)
 {
 	EList *list = g_object_new (E_TYPE_LIST, NULL);
 	e_list_construct (list, copy, free, closure);
@@ -60,7 +62,10 @@ e_list_new (EListCopyFunc copy, EListFreeFunc free, gpointer closure)
  *
  **/
 void
-e_list_construct (EList *list, EListCopyFunc copy, EListFreeFunc free, gpointer closure)
+e_list_construct (EList *list,
+                  EListCopyFunc copy,
+                  EListFreeFunc free,
+                  gpointer closure)
 {
 	list->copy    = copy;
 	list->free    = free;
@@ -115,7 +120,8 @@ e_list_length (EList *list)
 }
 
 void
-e_list_append (EList *list, gconstpointer data)
+e_list_append (EList *list,
+               gconstpointer data)
 {
 	e_list_invalidate_iterators (list, NULL);
 	if (list->copy)
@@ -125,7 +131,8 @@ e_list_append (EList *list, gconstpointer data)
 }
 
 void
-e_list_remove (EList *list, gconstpointer data)
+e_list_remove (EList *list,
+               gconstpointer data)
 {
 	GList *link;
 	link = g_list_find (list->list, data);
@@ -134,7 +141,8 @@ e_list_remove (EList *list, gconstpointer data)
 }
 
 void
-e_list_invalidate_iterators (EList *list, EIterator *skip)
+e_list_invalidate_iterators (EList *list,
+                             EIterator *skip)
 {
 	GList *iterators = list->iterators;
 	for (; iterators; iterators = iterators->next) {
@@ -145,10 +153,11 @@ e_list_invalidate_iterators (EList *list, EIterator *skip)
 }
 
 /* FIXME: This doesn't work properly if the iterator is the first
-   iterator in the list.  Well, the iterator doesn't continue on after
-   the next time next is called, at least. */
+ * iterator in the list.  Well, the iterator doesn't continue on after
+ * the next time next is called, at least. */
 void
-e_list_remove_link (EList *list, GList *link)
+e_list_remove_link (EList *list,
+                    GList *link)
 {
 	GList *iterators = list->iterators;
 	for (; iterators; iterators = iterators->next) {
@@ -163,7 +172,8 @@ e_list_remove_link (EList *list, GList *link)
 }
 
 void
-e_list_remove_iterator (EList *list, EIterator *iterator)
+e_list_remove_iterator (EList *list,
+                        EIterator *iterator)
 {
 	list->iterators = g_list_remove (list->iterators, iterator);
 }

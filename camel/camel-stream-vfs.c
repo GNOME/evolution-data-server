@@ -194,7 +194,8 @@ camel_stream_vfs_new_with_stream (GObject *stream)
  * Returns: the new stream, or %NULL on error.
  **/
 CamelStream *
-camel_stream_vfs_new_with_uri (const gchar *uri, CamelStreamVFSOpenMethod mode)
+camel_stream_vfs_new_with_uri (const gchar *uri,
+                               CamelStreamVFSOpenMethod mode)
 {
 	GFile *file;
 	GObject *stream;

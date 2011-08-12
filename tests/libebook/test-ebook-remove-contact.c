@@ -5,7 +5,8 @@
 #include "ebook-test-utils.h"
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBook *book;
 	GMainLoop *loop;

@@ -60,8 +60,12 @@ camel_test_session_get_type (void)
 }
 
 static gchar *
-get_password (CamelSession *session, const gchar *prompt, guint32 flags,
-	      CamelService *service, const gchar *item, GError **error)
+get_password (CamelSession *session,
+              const gchar *prompt,
+              guint32 flags,
+              CamelService *service,
+              const gchar *item,
+              GError **error)
 {
 	return g_strdup ("S/MIME v3 is rfc263x, now go and read them.");
 }

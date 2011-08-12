@@ -96,7 +96,8 @@ e_cal_backend_cache_new (const gchar *filename)
 }
 
 static gchar *
-get_key (const gchar *uid, const gchar *rid)
+get_key (const gchar *uid,
+         const gchar *rid)
 {
 	GString *real_key;
 	gchar *retval;
@@ -126,7 +127,9 @@ get_key (const gchar *uid, const gchar *rid)
  * or %NULL if it was not found in the cache.
  */
 ECalComponent *
-e_cal_backend_cache_get_component (ECalBackendCache *cache, const gchar *uid, const gchar *rid)
+e_cal_backend_cache_get_component (ECalBackendCache *cache,
+                                   const gchar *uid,
+                                   const gchar *rid)
 {
 	gchar *real_key;
 	const gchar *comp_str;
@@ -170,7 +173,7 @@ e_cal_backend_cache_get_component (ECalBackendCache *cache, const gchar *uid, co
  */
 gboolean
 e_cal_backend_cache_put_component (ECalBackendCache *cache,
-				   ECalComponent *comp)
+                                   ECalComponent *comp)
 {
 	gchar *real_key, *uid, *comp_str;
 	gchar *rid;
@@ -213,8 +216,8 @@ e_cal_backend_cache_put_component (ECalBackendCache *cache,
  */
 gboolean
 e_cal_backend_cache_remove_component (ECalBackendCache *cache,
-				      const gchar *uid,
-				      const gchar *rid)
+                                      const gchar *uid,
+                                      const gchar *rid)
 {
 	gchar *real_key;
 	gboolean retval;
@@ -293,7 +296,8 @@ e_cal_backend_cache_get_components (ECalBackendCache *cache)
  * Returns: The list of calendar components if found, or NULL otherwise.
  */
 GSList *
-e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const gchar *uid)
+e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache,
+                                           const gchar *uid)
 {
 	gchar *comp_str;
 	GSList *l;
@@ -342,7 +346,8 @@ e_cal_backend_cache_get_components_by_uid (ECalBackendCache *cache, const gchar 
  * Returns: The timezone if found, or NULL otherwise.
  */
 const icaltimezone *
-e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const gchar *tzid)
+e_cal_backend_cache_get_timezone (ECalBackendCache *cache,
+                                  const gchar *tzid)
 {
 	icaltimezone *zone;
 	const gchar *comp_str;
@@ -390,7 +395,8 @@ e_cal_backend_cache_get_timezone (ECalBackendCache *cache, const gchar *tzid)
  * Returns: TRUE if the timezone was put on the cache, FALSE otherwise.
  */
 gboolean
-e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *zone)
+e_cal_backend_cache_put_timezone (ECalBackendCache *cache,
+                                  const icaltimezone *zone)
 {
 	ECalBackendCachePrivate *priv;
 	icaltimezone *new_zone;
@@ -441,7 +447,8 @@ e_cal_backend_cache_put_timezone (ECalBackendCache *cache, const icaltimezone *z
  * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache, icaltimezone *default_zone)
+e_cal_backend_cache_put_default_timezone (ECalBackendCache *cache,
+                                          icaltimezone *default_zone)
 {
 	icalcomponent *icalcomp;
 	gboolean retval;
@@ -519,7 +526,8 @@ e_cal_backend_cache_get_default_timezone (ECalBackendCache *cache)
  * Returns: TRUE if the timezone was removed, FALSE otherwise.
  */
 gboolean
-e_cal_backend_cache_remove_timezone (ECalBackendCache *cache, const gchar *tzid)
+e_cal_backend_cache_remove_timezone (ECalBackendCache *cache,
+                                     const gchar *tzid)
 {
 	ECalBackendCachePrivate *priv;
 
@@ -589,7 +597,8 @@ e_cal_backend_cache_get_marker (ECalBackendCache *cache)
  * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache, const gchar *utc_str)
+e_cal_backend_cache_put_server_utc_time (ECalBackendCache *cache,
+                                         const gchar *utc_str)
 {
 	gboolean ret_val = FALSE;
 
@@ -633,7 +642,9 @@ get_keys_key (const gchar *key)
  * Returns: TRUE if the operation was successful, FALSE otherwise.
  */
 gboolean
-e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const gchar *key, const gchar *value)
+e_cal_backend_cache_put_key_value (ECalBackendCache *cache,
+                                   const gchar *key,
+                                   const gchar *value)
 {
 	gchar *real_key;
 	gboolean ret_val = FALSE;
@@ -662,7 +673,8 @@ e_cal_backend_cache_put_key_value (ECalBackendCache *cache, const gchar *key, co
  * Returns: The value.
  */
 const gchar *
-e_cal_backend_cache_get_key_value (ECalBackendCache *cache, const gchar *key)
+e_cal_backend_cache_get_key_value (ECalBackendCache *cache,
+                                   const gchar *key)
 {
 	gchar *real_key;
 	const gchar *value;

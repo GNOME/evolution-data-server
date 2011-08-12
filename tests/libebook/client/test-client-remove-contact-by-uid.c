@@ -5,7 +5,9 @@
 #include "client-test-utils.h"
 
 static void
-remove_contact_by_uid_cb (GObject *source_object, GAsyncResult *result, gpointer uid)
+remove_contact_by_uid_cb (GObject *source_object,
+                          GAsyncResult *result,
+                          gpointer uid)
 {
 	GError *error = NULL;
 	EContact *contact = NULL;
@@ -29,7 +31,8 @@ remove_contact_by_uid_cb (GObject *source_object, GAsyncResult *result, gpointer
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	GError *error = NULL;

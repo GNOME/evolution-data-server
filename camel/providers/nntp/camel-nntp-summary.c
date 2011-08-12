@@ -92,7 +92,8 @@ camel_nntp_summary_init (CamelNNTPSummary *nntp_summary)
 }
 
 CamelNNTPSummary *
-camel_nntp_summary_new (CamelFolder *folder, const gchar *path)
+camel_nntp_summary_new (CamelFolder *folder,
+                        const gchar *path)
 {
 	CamelNNTPSummary *cns;
 
@@ -128,7 +129,8 @@ message_info_new_from_header (CamelFolderSummary *s,
 }
 
 static gint
-summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
+summary_header_from_db (CamelFolderSummary *s,
+                        CamelFIRecord *mir)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 	gchar *part;
@@ -146,7 +148,8 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir)
 }
 
 static gint
-summary_header_load (CamelFolderSummary *s, FILE *in)
+summary_header_load (CamelFolderSummary *s,
+                     FILE *in)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 
@@ -176,7 +179,8 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 }
 
 static CamelFIRecord *
-summary_header_to_db (CamelFolderSummary *s, GError **error)
+summary_header_to_db (CamelFolderSummary *s,
+                      GError **error)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 	struct _CamelFIRecord *fir;
@@ -190,7 +194,8 @@ summary_header_to_db (CamelFolderSummary *s, GError **error)
 }
 
 static gint
-summary_header_save (CamelFolderSummary *s, FILE *out)
+summary_header_save (CamelFolderSummary *s,
+                     FILE *out)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 
@@ -253,8 +258,8 @@ add_range_xover (CamelNNTPSummary *cns,
 	}
 
 	count = 0;
-	total = high-low+1;
-	while ((ret = camel_nntp_stream_line (store->stream, (guchar **)&line, &len, cancellable, error)) > 0) {
+	total = high - low + 1;
+	while ((ret = camel_nntp_stream_line (store->stream, (guchar **) &line, &len, cancellable, error)) > 0) {
 		camel_operation_progress (cancellable, (count * 100) / total);
 		count++;
 		n = strtoul (line, &tab, 10);
@@ -263,13 +268,13 @@ add_range_xover (CamelNNTPSummary *cns,
 		tab++;
 		xover = store->xover;
 		size = 0;
-		for (;tab[0] && xover;xover = xover->next) {
+		for (; tab[0] && xover; xover = xover->next) {
 			line = tab;
 			tab = strchr (line, '\t');
 			if (tab)
 				*tab++ = 0;
 			else
-				tab = line+strlen (line);
+				tab = line + strlen (line);
 
 			/* do we care about this column? */
 			if (xover->name) {
@@ -353,8 +358,8 @@ add_range_head (CamelNNTPSummary *cns,
 		cancellable, _("%s: Scanning new messages"), url->host);
 
 	count = 0;
-	total = high-low+1;
-	for (i=low;i<high+1;i++) {
+	total = high - low + 1;
+	for (i = low; i < high + 1; i++) {
 		camel_operation_progress (cancellable, (count * 100) / total);
 		count++;
 		ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "head %u", i);
@@ -376,7 +381,7 @@ add_range_head (CamelNNTPSummary *cns,
 			g_warning ("retrieved message '%u' when i expected '%u'?\n", n, i);
 
 		/* FIXME: use camel-mime-utils.c function for parsing msgid? */
-		if ((msgid = strchr (line, '<')) && (line = strchr (msgid+1, '>'))) {
+		if ((msgid = strchr (line, '<')) && (line = strchr (msgid + 1, '>'))) {
 			line[1] = 0;
 			cns->priv->uid = g_strdup_printf ("%u,%s\n", n, msgid);
 			if (!GPOINTER_TO_INT (g_hash_table_lookup (summary_table, cns->priv->uid))) {
@@ -461,11 +466,11 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 	if (line[0] == ' ') {
 		gchar *tmp;
 
-		folder = line+1;
+		folder = line + 1;
 		tmp = strchr (folder, ' ');
 		if (tmp)
 			*tmp = 0;
-		tmp = g_alloca (strlen (folder)+1);
+		tmp = g_alloca (strlen (folder) + 1);
 		strcpy (tmp, folder);
 		folder = tmp;
 	}
@@ -490,8 +495,8 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 			if (n < f || n > l) {
 				dd (printf ("nntp_summary: %u is lower/higher than lowest/highest article, removed\n", n));
 				/* Since we use a global cache this could prematurely remove
-				   a cached message that might be in another folder - not that important as
-				   it is a true cache */
+				 * a cached message that might be in another folder - not that important as
+				 * it is a true cache */
 				msgid = strchr (uid, ',');
 				if (msgid)
 					camel_data_cache_remove (store->cache, "cache", msgid+1, NULL);
@@ -513,15 +518,15 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 
 	if (cns->high < l) {
 		if (cns->high < f)
-			cns->high = f-1;
+			cns->high = f - 1;
 
 		if (store->xover)
 			ret = add_range_xover (
-				cns, store, l, cns->high+1,
+				cns, store, l, cns->high + 1,
 				changes, cancellable, error);
 		else
 			ret = add_range_head (
-				cns, store, l, cns->high+1,
+				cns, store, l, cns->high + 1,
 				changes, cancellable, error);
 	}
 

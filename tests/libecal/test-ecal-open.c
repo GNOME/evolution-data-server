@@ -16,7 +16,7 @@ open_complete_cb (ECalTestClosure *closure)
 {
 	g_source_remove (open_timeout_id);
 
-	g_main_loop_quit ((GMainLoop*) closure->user_data);
+	g_main_loop_quit ((GMainLoop *) closure->user_data);
 }
 
 static void
@@ -28,7 +28,8 @@ open_timeout_cb (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECal *cal;
 	gchar *uri = NULL;

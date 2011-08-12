@@ -96,7 +96,8 @@ str_ic_hash (gconstpointer key)
 }
 
 static gboolean
-str_ic_equal (gconstpointer a, gconstpointer b)
+str_ic_equal (gconstpointer a,
+              gconstpointer b)
 {
 	const gchar *stra = a, *strb = b;
 	gint ii;
@@ -121,7 +122,10 @@ str_ic_equal (gconstpointer a, gconstpointer b)
  * Since: 2.32
  **/
 guint
-e_data_book_view_register_gdbus_object (EDataBookView *query, GDBusConnection *connection, const gchar *object_path, GError **error)
+e_data_book_view_register_gdbus_object (EDataBookView *query,
+                                        GDBusConnection *connection,
+                                        const gchar *object_path,
+                                        GError **error)
 {
 	g_return_val_if_fail (query != NULL, 0);
 	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (query), 0);
@@ -132,13 +136,14 @@ e_data_book_view_register_gdbus_object (EDataBookView *query, GDBusConnection *c
 }
 
 static void
-book_destroyed_cb (gpointer data, GObject *dead)
+book_destroyed_cb (gpointer data,
+                   GObject *dead)
 {
 	EDataBookView *view = E_DATA_BOOK_VIEW (data);
 	EDataBookViewPrivate *priv = view->priv;
 
 	/* The book has just died, so unset the pointer so we don't try and remove a
-	   dead weak reference. */
+	 * dead weak reference. */
 	view->priv->book = NULL;
 
 	/* If the view is running stop it here. */
@@ -218,7 +223,8 @@ ensure_pending_flush_timeout (EDataBookView *view)
  * Queue @vcard to be sent as a change notification.
  */
 static void
-notify_change (EDataBookView *view, const gchar *vcard)
+notify_change (EDataBookView *view,
+               const gchar *vcard)
 {
 	EDataBookViewPrivate *priv = view->priv;
 	gchar *utf8_vcard;
@@ -240,7 +246,8 @@ notify_change (EDataBookView *view, const gchar *vcard)
  * Queue @id to be sent as a change notification.
  */
 static void
-notify_remove (EDataBookView *view, const gchar *id)
+notify_remove (EDataBookView *view,
+               const gchar *id)
 {
 	EDataBookViewPrivate *priv = view->priv;
 	gchar *valid_id;
@@ -263,7 +270,9 @@ notify_remove (EDataBookView *view, const gchar *id)
  * Queue @id and @vcard to be sent as a change notification.
  */
 static void
-notify_add (EDataBookView *view, const gchar *id, const gchar *vcard)
+notify_add (EDataBookView *view,
+            const gchar *id,
+            const gchar *vcard)
 {
 	EDataBookViewPrivate *priv = view->priv;
 	gchar *utf8_vcard;
@@ -284,7 +293,10 @@ notify_add (EDataBookView *view, const gchar *id, const gchar *vcard)
 }
 
 static gboolean
-impl_DataBookView_set_fields_of_interest (EGdbusBookView *object, GDBusMethodInvocation *invocation, const gchar * const *in_fields_of_interest, EDataBookView *view)
+impl_DataBookView_set_fields_of_interest (EGdbusBookView *object,
+                                          GDBusMethodInvocation *invocation,
+                                          const gchar * const *in_fields_of_interest,
+                                          EDataBookView *view)
 {
 	EDataBookViewPrivate *priv;
 	gint ii;
@@ -331,7 +343,8 @@ reset_array (GArray *array)
 }
 
 static gboolean
-id_is_in_view (EDataBookView *book_view, const gchar *id)
+id_is_in_view (EDataBookView *book_view,
+               const gchar *id)
 {
 	gchar *valid_id;
 	gboolean res;
@@ -358,7 +371,8 @@ id_is_in_view (EDataBookView *book_view, const gchar *id)
  * by @book_view.
  **/
 void
-e_data_book_view_notify_update (EDataBookView *book_view, const EContact *contact)
+e_data_book_view_notify_update (EDataBookView *book_view,
+                                const EContact *contact)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
 	gboolean currently_in_view, want_in_view;
@@ -409,7 +423,8 @@ e_data_book_view_notify_update (EDataBookView *book_view, const EContact *contac
  * representation of a contact is a vCard.
  **/
 void
-e_data_book_view_notify_update_vcard (EDataBookView *book_view, gchar *vcard)
+e_data_book_view_notify_update_vcard (EDataBookView *book_view,
+                                      gchar *vcard)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
 	gboolean currently_in_view, want_in_view;
@@ -467,7 +482,9 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view, gchar *vcard)
  * known to exist in the view.
  **/
 void
-e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, const gchar *id, gchar *vcard)
+e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view,
+                                                  const gchar *id,
+                                                  gchar *vcard)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
 	gboolean currently_in_view;
@@ -500,7 +517,8 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, cons
  * was removed from @book_view.
  **/
 void
-e_data_book_view_notify_remove (EDataBookView *book_view, const gchar *id)
+e_data_book_view_notify_remove (EDataBookView *book_view,
+                                const gchar *id)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
 
@@ -525,7 +543,8 @@ e_data_book_view_notify_remove (EDataBookView *book_view, const gchar *id)
  * in sync with the backend's.
  **/
 void
-e_data_book_view_notify_complete (EDataBookView *book_view, const GError *error)
+e_data_book_view_notify_complete (EDataBookView *book_view,
+                                  const GError *error)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
 	gchar **strv_error;
@@ -557,7 +576,9 @@ e_data_book_view_notify_complete (EDataBookView *book_view, const GError *error)
  * reporting.
  **/
 void
-e_data_book_view_notify_progress (EDataBookView *book_view, guint percent, const gchar *message)
+e_data_book_view_notify_progress (EDataBookView *book_view,
+                                  guint percent,
+                                  const gchar *message)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
 	gchar *gdbus_message = NULL;
@@ -580,7 +601,9 @@ e_data_book_view_notify_progress (EDataBookView *book_view, guint percent, const
  * and place it on DBus at the object path #path.
  */
 EDataBookView *
-e_data_book_view_new (EDataBook *book, const gchar *card_query, EBookBackendSExp *card_sexp)
+e_data_book_view_new (EDataBook *book,
+                      const gchar *card_query,
+                      EBookBackendSExp *card_sexp)
 {
 	EDataBookView *view;
 	EDataBookViewPrivate *priv;
@@ -612,7 +635,9 @@ bookview_idle_start (gpointer data)
 }
 
 static gboolean
-impl_DataBookView_start (EGdbusBookView *object, GDBusMethodInvocation *invocation, EDataBookView *book_view)
+impl_DataBookView_start (EGdbusBookView *object,
+                         GDBusMethodInvocation *invocation,
+                         EDataBookView *book_view)
 {
 	book_view->priv->idle_id = g_idle_add (bookview_idle_start, book_view);
 
@@ -635,7 +660,9 @@ bookview_idle_stop (gpointer data)
 }
 
 static gboolean
-impl_DataBookView_stop (EGdbusBookView *object, GDBusMethodInvocation *invocation, EDataBookView *book_view)
+impl_DataBookView_stop (EGdbusBookView *object,
+                        GDBusMethodInvocation *invocation,
+                        EDataBookView *book_view)
 {
 	if (book_view->priv->idle_id)
 		g_source_remove (book_view->priv->idle_id);
@@ -648,7 +675,9 @@ impl_DataBookView_stop (EGdbusBookView *object, GDBusMethodInvocation *invocatio
 }
 
 static gboolean
-impl_DataBookView_dispose (EGdbusBookView *object, GDBusMethodInvocation *invocation, EDataBookView *book_view)
+impl_DataBookView_dispose (EGdbusBookView *object,
+                           GDBusMethodInvocation *invocation,
+                           EDataBookView *book_view)
 {
 	e_gdbus_book_view_complete_dispose (object, invocation, NULL);
 
@@ -777,7 +806,7 @@ e_data_book_view_get_card_query (EDataBookView *book_view)
  *
  * Returns: The #EBookBackendSExp used.
  **/
-EBookBackendSExp*
+EBookBackendSExp *
 e_data_book_view_get_card_sexp (EDataBookView *book_view)
 {
 	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), NULL);
@@ -793,7 +822,7 @@ e_data_book_view_get_card_sexp (EDataBookView *book_view)
  *
  * Returns: The associated #EBookBackend.
  **/
-EBookBackend*
+EBookBackend *
 e_data_book_view_get_backend (EDataBookView *book_view)
 {
 	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), NULL);

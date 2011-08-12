@@ -47,7 +47,8 @@
 #endif
 
 static void
-container_add_child (CamelFolderThreadNode *node, CamelFolderThreadNode *child)
+container_add_child (CamelFolderThreadNode *node,
+                     CamelFolderThreadNode *child)
 {
 	d(printf("\nAdding child %p to parent %p \n", child, node));
 	child->next = node->child;
@@ -56,7 +57,8 @@ container_add_child (CamelFolderThreadNode *node, CamelFolderThreadNode *child)
 }
 
 static void
-container_parent_child (CamelFolderThreadNode *parent, CamelFolderThreadNode *child)
+container_parent_child (CamelFolderThreadNode *parent,
+                        CamelFolderThreadNode *child)
 {
 	CamelFolderThreadNode *c, *node;
 
@@ -80,11 +82,11 @@ container_parent_child (CamelFolderThreadNode *parent, CamelFolderThreadNode *ch
 
 	/* else remove child from its existing parent, and reparent */
 	node = child->parent;
-	c = (CamelFolderThreadNode *)&node->child;
+	c = (CamelFolderThreadNode *) &node->child;
 	d(printf("scanning children:\n"));
 	while (c->next) {
 		d(printf(" %p\n", c));
-		if (c->next==child) {
+		if (c->next == child) {
 			d(printf("found node %p\n", child));
 			c->next = c->next->next;
 			child->parent = NULL;
@@ -98,7 +100,8 @@ container_parent_child (CamelFolderThreadNode *parent, CamelFolderThreadNode *ch
 }
 
 static void
-prune_empty (CamelFolderThread *thread, CamelFolderThreadNode **cp)
+prune_empty (CamelFolderThread *thread,
+             CamelFolderThreadNode **cp)
 {
 	CamelFolderThreadNode *child, *next, *c, *lastc;
 
@@ -109,8 +112,8 @@ prune_empty (CamelFolderThread *thread, CamelFolderThreadNode **cp)
 		prune_empty (thread, &c->child);
 
 		d(printf("checking message %p %p (%08x%08x)\n", c,
-			 c->message, c->message?c->message->message_id.id.part.hi:0,
-			 c->message?c->message->message_id.id.part.lo:0));
+			 c->message, c->message ? c->message->message_id.id.part.hi : 0,
+			 c->message ? c->message->message_id.id.part.lo : 0));
 		if (c->message == NULL) {
 			if (c->child == NULL) {
 				d(printf("removing empty node\n"));
@@ -140,7 +143,9 @@ prune_empty (CamelFolderThread *thread, CamelFolderThreadNode **cp)
 }
 
 static void
-hashloop (gpointer key, gpointer value, gpointer data)
+hashloop (gpointer key,
+          gpointer value,
+          gpointer data)
 {
 	CamelFolderThreadNode *c = value;
 	CamelFolderThreadNode *tail = data;
@@ -180,12 +185,12 @@ get_root_subject (CamelFolderThreadNode *c)
 				break;
 			if ((s[0] == 'r' || s[0]=='R')
 			    && (s[1] == 'e' || s[1]=='E')) {
-				p = s+2;
+				p = s + 2;
 				while (isdigit (*p) || (ispunct (*p) && (*p != ':')))
 					p++;
-				if (*p==':') {
+				if (*p == ':') {
 					c->re = TRUE;
-					s = p+1;
+					s = p + 1;
 				} else
 					break;
 			} else
@@ -200,15 +205,17 @@ get_root_subject (CamelFolderThreadNode *c)
 /* this can be pretty slow, but not used often */
 /* clast cannot be null */
 static void
-remove_node (CamelFolderThreadNode **list, CamelFolderThreadNode *node, CamelFolderThreadNode **clast)
+remove_node (CamelFolderThreadNode **list,
+             CamelFolderThreadNode *node,
+             CamelFolderThreadNode **clast)
 {
 	CamelFolderThreadNode *c;
 
 	/* this is intentional, even if it looks funny */
 	/* if we have a parent, then we should remove it from the parent list,
-	   otherwise we remove it from the root list */
+	 * otherwise we remove it from the root list */
 	if (node->parent) {
-		c = (CamelFolderThreadNode *)&node->parent->child;
+		c = (CamelFolderThreadNode *) &node->parent->child;
 	} else {
 		c = (CamelFolderThreadNode *) list;
 	}
@@ -226,7 +233,8 @@ remove_node (CamelFolderThreadNode **list, CamelFolderThreadNode *node, CamelFol
 }
 
 static void
-group_root_set (CamelFolderThread *thread, CamelFolderThreadNode **cp)
+group_root_set (CamelFolderThread *thread,
+                CamelFolderThreadNode **cp)
 {
 	GHashTable *subject_table = g_hash_table_new (g_str_hash, g_str_equal);
 	CamelFolderThreadNode *c, *clast, *scan, *container;
@@ -260,7 +268,7 @@ group_root_set (CamelFolderThread *thread, CamelFolderThreadNode **cp)
 			if (c->message == NULL && container->message == NULL) {
 				d(printf("merge containers children\n"));
 				/* steal the children from c onto container, and unlink c */
-				scan = (CamelFolderThreadNode *)&container->child;
+				scan = (CamelFolderThreadNode *) &container->child;
 				while (scan->next)
 					scan = scan->next;
 				scan->next = c->child;
@@ -316,14 +324,16 @@ struct _tree_info {
 };
 
 static gint
-dump_tree_rec (struct _tree_info *info, CamelFolderThreadNode *c, gint depth)
+dump_tree_rec (struct _tree_info *info,
+               CamelFolderThreadNode *c,
+               gint depth)
 {
 	gchar *p;
-	gint count=0;
+	gint count = 0;
 
-	p = alloca (depth*2+1);
-	memset (p, ' ', depth*2);
-	p[depth*2] = 0;
+	p = alloca (depth * 2 + 1);
+	memset (p, ' ', depth * 2);
+	p[depth * 2] = 0;
 
 	while (c) {
 		if (g_hash_table_lookup (info->visited, c)) {
@@ -339,7 +349,7 @@ dump_tree_rec (struct _tree_info *info, CamelFolderThreadNode *c, gint depth)
 			printf("%s %p <empty>\n", p, (gpointer) c);
 		}
 		if (c->child)
-			count += dump_tree_rec (info, c->child, depth+1);
+			count += dump_tree_rec (info, c->child, depth + 1);
 		c = c->next;
 	}
 	return count;
@@ -358,14 +368,15 @@ camel_folder_threaded_messages_dump (CamelFolderThreadNode *c)
 }
 
 static gint
-sort_node (gconstpointer a, gconstpointer b)
+sort_node (gconstpointer a,
+           gconstpointer b)
 {
 	const CamelFolderThreadNode *a1 = ((CamelFolderThreadNode **) a)[0];
 	const CamelFolderThreadNode *b1 = ((CamelFolderThreadNode **) b)[0];
 
 	/* if we have no message, it must be a dummy node, which
-	   also means it must have a child, just use that as the
-	   sort data (close enough?) */
+	 * also means it must have a child, just use that as the
+	 * sort data (close enough?) */
 	if (a1->message == NULL)
 		a1 = a1->child;
 	if (b1->message == NULL)
@@ -382,7 +393,7 @@ static void
 sort_thread (CamelFolderThreadNode **cp)
 {
 	CamelFolderThreadNode *c, *head, **carray;
-	gint size=0;
+	gint size = 0;
 
 	c = *cp;
 	while (c) {
@@ -392,11 +403,11 @@ sort_thread (CamelFolderThreadNode **cp)
 		size++;
 		c = c->next;
 	}
-	if (size<2)
+	if (size < 2)
 		return;
-	carray = alloca (size*sizeof (CamelFolderThreadNode *));
+	carray = alloca (size * sizeof (CamelFolderThreadNode *));
 	c = *cp;
-	size=0;
+	size = 0;
 	while (c) {
 		carray[size] = c;
 		c = c->next;
@@ -412,25 +423,29 @@ sort_thread (CamelFolderThreadNode **cp)
 		c->next = head;
 		head = c;
 		size--;
-	} while (size>=0);
+	} while (size >= 0);
 	*cp = head;
 }
 
-static guint id_hash (gpointer key)
+static guint
+id_hash (gpointer key)
 {
 	CamelSummaryMessageID *id = (CamelSummaryMessageID *) key;
 
 	return id->id.part.lo;
 }
 
-static gint id_equal (gpointer a, gpointer b)
+static gint
+id_equal (gpointer a,
+          gpointer b)
 {
 	return ((CamelSummaryMessageID *) a)->id.id == ((CamelSummaryMessageID *) b)->id.id;
 }
 
 /* perform actual threading */
 static void
-thread_summary (CamelFolderThread *thread, GPtrArray *summary)
+thread_summary (CamelFolderThread *thread,
+                GPtrArray *summary)
 {
 	GHashTable *id_table, *no_id_table;
 	gint i;
@@ -444,7 +459,7 @@ thread_summary (CamelFolderThread *thread, GPtrArray *summary)
 
 	id_table = g_hash_table_new ((GHashFunc) id_hash, (GCompareFunc) id_equal);
 	no_id_table = g_hash_table_new (NULL, NULL);
-	for (i=0;i<summary->len;i++) {
+	for (i = 0; i < summary->len; i++) {
 		CamelMessageInfo *mi = summary->pdata[i];
 		const CamelSummaryMessageID *mid = camel_message_info_message_id (mi);
 		const CamelSummaryReferences *references = camel_message_info_references (mi);
@@ -454,7 +469,7 @@ thread_summary (CamelFolderThread *thread, GPtrArray *summary)
 			/* check for duplicate messages */
 			if (c && c->order) {
 				/* if duplicate, just make out it is a no-id message,  but try and insert it
-				   into the right spot in the tree */
+				 * into the right spot in the tree */
 				d(printf("doing: (duplicate message id)\n"));
 				c = e_memchunk_alloc0 (thread->node_chunks);
 				g_hash_table_insert (no_id_table, (gpointer) mi, c);
@@ -470,13 +485,13 @@ thread_summary (CamelFolderThread *thread, GPtrArray *summary)
 		}
 
 		c->message = mi;
-		c->order = i+1;
+		c->order = i + 1;
 		child = c;
 		if (references) {
 			gint j;
 
 			d(printf("%s (%s) references:\n", G_STRLOC, G_STRFUNC); )
-			for (j=0;j<references->size;j++) {
+			for (j = 0; j < references->size; j++) {
 				gboolean found = FALSE;
 
 				/* should never be empty, but just incase */
@@ -487,14 +502,14 @@ thread_summary (CamelFolderThread *thread, GPtrArray *summary)
 				if (c == NULL) {
 					d(printf("%s (%s) not found\n", G_STRLOC, G_STRFUNC));
 					c = e_memchunk_alloc0 (thread->node_chunks);
-					g_hash_table_insert (id_table, (gpointer)&references->references[j], c);
+					g_hash_table_insert (id_table, (gpointer) &references->references[j], c);
 				} else
 					found = TRUE;
 				if (c != child) {
 					container_parent_child (c, child);
 					/* Stop on the first parent found, no need to reparent
-					   it once it's placed in. Also, references are from
-					   parent to root, thus this should do the right thing. */
+					 * it once it's placed in. Also, references are from
+					 * parent to root, thus this should do the right thing. */
 					if (found)
 						break;
 				}
@@ -528,7 +543,7 @@ thread_summary (CamelFolderThread *thread, GPtrArray *summary)
 	sort_thread (&head);
 
 	/* remove any phantom nodes, this could possibly be put in group_root_set()? */
-	c = (CamelFolderThreadNode *)&head;
+	c = (CamelFolderThreadNode *) &head;
 	while (c && c->next) {
 		CamelFolderThreadNode *scan, *newtop;
 
@@ -540,7 +555,7 @@ thread_summary (CamelFolderThread *thread, GPtrArray *summary)
 			c->next = newtop;
 
 			/* link its siblings onto the end of its children, fix all parent pointers */
-			scan = (CamelFolderThreadNode *)&newtop->child;
+			scan = (CamelFolderThreadNode *) &newtop->child;
 			while (scan->next) {
 				scan = scan->next;
 			}
@@ -561,7 +576,7 @@ thread_summary (CamelFolderThread *thread, GPtrArray *summary)
 	}
 
 	/* this is only debug assertion stuff */
-	c = (CamelFolderThreadNode *)&head;
+	c = (CamelFolderThreadNode *) &head;
 	while (c->next) {
 		c = c->next;
 		if (c->message == NULL)
@@ -574,8 +589,8 @@ thread_summary (CamelFolderThread *thread, GPtrArray *summary)
 
 #ifdef TIMEIT
 	gettimeofday (&end, NULL);
-	diff = end.tv_sec * 1000 + end.tv_usec/1000;
-	diff -= start.tv_sec * 1000 + start.tv_usec/1000;
+	diff = end.tv_sec * 1000 + end.tv_usec / 1000;
+	diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
 	printf("Message threading %d messages took %ld.%03ld seconds\n",
 	       summary->len, diff / 1000, diff % 1000);
 #endif
@@ -601,7 +616,9 @@ thread_summary (CamelFolderThread *thread, GPtrArray *summary)
  * which represent the threaded structure of the messages.
  **/
 CamelFolderThread *
-camel_folder_thread_messages_new (CamelFolder *folder, GPtrArray *uids, gboolean thread_subject)
+camel_folder_thread_messages_new (CamelFolder *folder,
+                                  GPtrArray *uids,
+                                  gboolean thread_subject)
 {
 	CamelFolderThread *thread;
 	GPtrArray *summary;
@@ -642,7 +659,10 @@ camel_folder_thread_messages_new (CamelFolder *folder, GPtrArray *uids, gboolean
 
 /* add any still there, in the existing order */
 static void
-add_present_rec (CamelFolderThread *thread, GHashTable *have, GPtrArray *summary, CamelFolderThreadNode *node)
+add_present_rec (CamelFolderThread *thread,
+                 GHashTable *have,
+                 GPtrArray *summary,
+                 CamelFolderThreadNode *node)
 {
 	while (node) {
 		const gchar *uid = camel_message_info_uid (node->message);
@@ -661,7 +681,8 @@ add_present_rec (CamelFolderThread *thread, GHashTable *have, GPtrArray *summary
 }
 
 void
-camel_folder_thread_messages_apply (CamelFolderThread *thread, GPtrArray *uids)
+camel_folder_thread_messages_apply (CamelFolderThread *thread,
+                                    GPtrArray *uids)
 {
 	gint i;
 	GPtrArray *all;
@@ -670,13 +691,13 @@ camel_folder_thread_messages_apply (CamelFolderThread *thread, GPtrArray *uids)
 
 	all = g_ptr_array_new ();
 	table = g_hash_table_new (g_str_hash, g_str_equal);
-	for (i=0;i<uids->len;i++)
+	for (i = 0; i < uids->len; i++)
 		g_hash_table_insert (table, uids->pdata[i], uids->pdata[i]);
 
 	add_present_rec (thread, table, all, thread->tree);
 
 	/* add any new ones, in supplied order */
-	for (i=0;i<uids->len;i++)
+	for (i = 0; i < uids->len; i++)
 		if (g_hash_table_lookup (table, uids->pdata[i]) && (info = camel_folder_get_message_info (thread->folder, uids->pdata[i])))
 			g_ptr_array_add (all, info);
 
@@ -714,7 +735,7 @@ camel_folder_thread_messages_unref (CamelFolderThread *thread)
 	if (thread->folder) {
 		gint i;
 
-		for (i=0;i<thread->summary->len;i++)
+		for (i = 0; i < thread->summary->len; i++)
 			camel_folder_free_message_info (thread->folder, thread->summary->pdata[i]);
 		g_ptr_array_free (thread->summary, TRUE);
 		g_object_unref (thread->folder);
@@ -761,7 +782,9 @@ camel_folder_thread_messages_new_summary (GPtrArray *summary)
 
 /* scan the list in depth-first fashion */
 static void
-build_summary_rec (GHashTable *have, GPtrArray *summary, CamelFolderThreadNode *node)
+build_summary_rec (GHashTable *have,
+                   GPtrArray *summary,
+                   CamelFolderThreadNode *node)
 {
 	while (node) {
 		if (node->message)
@@ -774,21 +797,22 @@ build_summary_rec (GHashTable *have, GPtrArray *summary, CamelFolderThreadNode *
 }
 
 void
-camel_folder_thread_messages_add (CamelFolderThread *thread, GPtrArray *summary)
+camel_folder_thread_messages_add (CamelFolderThread *thread,
+                                  GPtrArray *summary)
 {
 	GPtrArray *all;
 	gint i;
 	GHashTable *table;
 
 	/* Instead of working out all the complex in's and out's of
-	   trying to do an incremental summary generation, just redo the whole
-	   thing with the summary in the current order - so it comes out
-	   in the same order */
+	 * trying to do an incremental summary generation, just redo the whole
+	 * thing with the summary in the current order - so it comes out
+	 * in the same order */
 
 	all = g_ptr_array_new ();
 	table = g_hash_table_new (g_str_hash, g_str_equal);
 	build_summary_rec (table, all, thread->tree);
-	for (i=0;i<summary->len;i++) {
+	for (i = 0; i < summary->len; i++) {
 		CamelMessageInfo *info = summary->pdata[i];
 
 		/* check its not already there, we dont want duplicates */
@@ -804,7 +828,10 @@ camel_folder_thread_messages_add (CamelFolderThread *thread, GPtrArray *summary)
 }
 
 static void
-remove_uid_node_rec (CamelFolderThread *thread, GHashTable *table, CamelFolderThreadNode **list, CamelFolderThreadNode *parent)
+remove_uid_node_rec (CamelFolderThread *thread,
+                     GHashTable *table,
+                     CamelFolderThreadNode **list,
+                     CamelFolderThreadNode *parent)
 {
 	CamelFolderThreadNode *prev = NULL;
 	CamelFolderThreadNode *node, *next, *child, *rest;
@@ -821,18 +848,18 @@ remove_uid_node_rec (CamelFolderThread *thread, GHashTable *table, CamelFolderTh
 			child = next->child;
 			if (child) {
 				/*
-				  node
-				  next
-				   child
-				   lchild
-				  rest
-
-				  becomes:
-				  node
-				  child
-				  lchild
-				  rest
-				*/
+				 * node
+				 * next
+				 * child
+				 * lchild
+				 * rest
+				 *
+				 * becomes:
+				 * node
+				 * child
+				 * lchild
+				 * rest
+				 */
 
 				rest = next->next;
 				node->next = child;
@@ -846,12 +873,12 @@ remove_uid_node_rec (CamelFolderThread *thread, GHashTable *table, CamelFolderTh
 				lchild->next = rest;
 			} else {
 				/*
-				  node
-				  next
-				  rest
-				  becomes:
-				  node
-				  rest */
+				 * node
+				 * next
+				 * rest
+				 * becomes:
+				 * node
+				 * rest */
 				node->next = next->next;
 				e_memchunk_free (thread->node_chunks, next);
 				next = node->next;
@@ -864,13 +891,14 @@ remove_uid_node_rec (CamelFolderThread *thread, GHashTable *table, CamelFolderTh
 }
 
 void
-camel_folder_thread_messages_remove (CamelFolderThread *thread, GPtrArray *uids)
+camel_folder_thread_messages_remove (CamelFolderThread *thread,
+                                     GPtrArray *uids)
 {
 	GHashTable *table;
 	gint i;
 
 	table = g_hash_table_new (g_str_hash, g_str_equal);
-	for (i=0;i<uids->len;i++)
+	for (i = 0; i < uids->len; i++)
 		g_hash_table_insert (table, uids->pdata[i], uids->pdata[i]);
 
 	remove_uid_node_rec (thread, table, &thread->tree, NULL);

@@ -62,7 +62,7 @@ mime_filter_index_filter (CamelMimeFilter *mime_filter,
 
 	priv = CAMEL_MIME_FILTER_INDEX (mime_filter)->priv;
 
-	if (priv->index == NULL || priv->name==NULL) {
+	if (priv->index == NULL || priv->name == NULL) {
 		goto donothing;
 	}
 
@@ -87,7 +87,7 @@ mime_filter_index_complete (CamelMimeFilter *mime_filter,
 
 	priv = CAMEL_MIME_FILTER_INDEX (mime_filter)->priv;
 
-	if (priv->index == NULL || priv->name==NULL) {
+	if (priv->index == NULL || priv->name == NULL) {
 		goto donothing;
 	}
 

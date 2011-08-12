@@ -8,7 +8,8 @@
 #define NUM_CALS 200
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gchar *uri = NULL;
 	ECal *cals[NUM_CALS];

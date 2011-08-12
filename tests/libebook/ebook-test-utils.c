@@ -8,7 +8,7 @@
 
 void
 test_print (const gchar *format,
-	    ...)
+            ...)
 {
 	va_list args;
 	const gchar *debug_string;
@@ -34,7 +34,7 @@ gboolean
 ebook_test_utils_callback_quit (gpointer user_data)
 {
 	EBookTestClosure *closure = user_data;
-	g_main_loop_quit ((GMainLoop*) closure->user_data);
+	g_main_loop_quit ((GMainLoop *) closure->user_data);
 
 	return FALSE;
 }
@@ -44,7 +44,7 @@ ebook_test_utils_new_vcard_from_test_case (const gchar *case_name)
 {
 	gchar *filename;
 	gchar *case_filename;
-	GFile* file;
+	GFile * file;
 	GError *error = NULL;
 	gchar *vcard;
 
@@ -65,9 +65,9 @@ ebook_test_utils_new_vcard_from_test_case (const gchar *case_name)
 }
 
 gchar *
-ebook_test_utils_book_add_contact_from_test_case_verify (EBook       *book,
-                                                         const gchar  *case_name,
-                                                         EContact   **contact)
+ebook_test_utils_book_add_contact_from_test_case_verify (EBook *book,
+                                                         const gchar *case_name,
+                                                         EContact **contact)
 {
 	gchar *vcard;
 	EContact *contact_orig;
@@ -111,7 +111,7 @@ ebook_test_utils_contacts_are_equal_shallow (EContact *a,
 }
 
 const gchar *
-ebook_test_utils_book_add_contact (EBook    *book,
+ebook_test_utils_book_add_contact (EBook *book,
                                    EContact *contact)
 {
 	GError *error = NULL;
@@ -129,9 +129,9 @@ ebook_test_utils_book_add_contact (EBook    *book,
 }
 
 static void
-add_contact_cb (EBook            *book,
-                const GError     *error,
-                const gchar       *uid,
+add_contact_cb (EBook *book,
+                const GError *error,
+                const gchar *uid,
                 EBookTestClosure *closure)
 {
 	if (error) {
@@ -149,10 +149,10 @@ add_contact_cb (EBook            *book,
 }
 
 void
-ebook_test_utils_book_async_add_contact (EBook       *book,
-                                         EContact    *contact,
-                                         GSourceFunc  callback,
-                                         gpointer     user_data)
+ebook_test_utils_book_async_add_contact (EBook *book,
+                                         EContact *contact,
+                                         GSourceFunc callback,
+                                         gpointer user_data)
 {
 	EBookTestClosure *closure;
 
@@ -167,7 +167,7 @@ ebook_test_utils_book_async_add_contact (EBook       *book,
 }
 
 void
-ebook_test_utils_book_commit_contact (EBook    *book,
+ebook_test_utils_book_commit_contact (EBook *book,
                                       EContact *contact)
 {
 	GError *error = NULL;
@@ -185,8 +185,8 @@ ebook_test_utils_book_commit_contact (EBook    *book,
 }
 
 static void
-commit_contact_cb (EBook            *book,
-                   const GError     *error,
+commit_contact_cb (EBook *book,
+                   const GError *error,
                    EBookTestClosure *closure)
 {
 	if (error) {
@@ -204,10 +204,10 @@ commit_contact_cb (EBook            *book,
 }
 
 void
-ebook_test_utils_book_async_commit_contact (EBook       *book,
-                                            EContact    *contact,
-                                            GSourceFunc  callback,
-                                            gpointer     user_data)
+ebook_test_utils_book_async_commit_contact (EBook *book,
+                                            EContact *contact,
+                                            GSourceFunc callback,
+                                            gpointer user_data)
 {
 	EBookTestClosure *closure;
 
@@ -221,8 +221,8 @@ ebook_test_utils_book_async_commit_contact (EBook       *book,
 	}
 }
 
-EContact*
-ebook_test_utils_book_get_contact (EBook      *book,
+EContact *
+ebook_test_utils_book_get_contact (EBook *book,
                                    const gchar *uid)
 {
 	EContact *contact = NULL;
@@ -241,9 +241,9 @@ ebook_test_utils_book_get_contact (EBook      *book,
 }
 
 static void
-get_contact_cb (EBook            *book,
-                const GError     *error,
-                EContact         *contact,
+get_contact_cb (EBook *book,
+                const GError *error,
+                EContact *contact,
                 EBookTestClosure *closure)
 {
 	const gchar *uid;
@@ -265,10 +265,10 @@ get_contact_cb (EBook            *book,
 }
 
 void
-ebook_test_utils_book_async_get_contact (EBook       *book,
-                                         const gchar  *uid,
-                                         GSourceFunc  callback,
-                                         gpointer     user_data)
+ebook_test_utils_book_async_get_contact (EBook *book,
+                                         const gchar *uid,
+                                         GSourceFunc callback,
+                                         gpointer user_data)
 {
 	EBookTestClosure *closure;
 
@@ -283,7 +283,7 @@ ebook_test_utils_book_async_get_contact (EBook       *book,
 	}
 }
 
-GList*
+GList *
 ebook_test_utils_book_get_required_fields (EBook *book)
 {
 	GList *fields = NULL;
@@ -302,9 +302,9 @@ ebook_test_utils_book_get_required_fields (EBook *book)
 }
 
 static void
-get_required_fields_cb (EBook            *book,
-                        const GError     *error,
-                        EList            *fields,
+get_required_fields_cb (EBook *book,
+                        const GError *error,
+                        EList *fields,
                         EBookTestClosure *closure)
 {
 	if (error) {
@@ -324,9 +324,9 @@ get_required_fields_cb (EBook            *book,
 }
 
 void
-ebook_test_utils_book_async_get_required_fields (EBook       *book,
-                                                 GSourceFunc  callback,
-                                                 gpointer     user_data)
+ebook_test_utils_book_async_get_required_fields (EBook *book,
+                                                 GSourceFunc callback,
+                                                 gpointer user_data)
 {
 	EBookTestClosure *closure;
 
@@ -359,7 +359,7 @@ ebook_test_utils_book_get_static_capabilities (EBook *book)
 	return caps;
 }
 
-GList*
+GList *
 ebook_test_utils_book_get_supported_auth_methods (EBook *book)
 {
 	GList *fields = NULL;
@@ -378,9 +378,9 @@ ebook_test_utils_book_get_supported_auth_methods (EBook *book)
 }
 
 static void
-get_supported_auth_methods_cb (EBook            *book,
-                               const GError     *error,
-                               EList            *methods,
+get_supported_auth_methods_cb (EBook *book,
+                               const GError *error,
+                               EList *methods,
                                EBookTestClosure *closure)
 {
 	if (error) {
@@ -401,9 +401,9 @@ get_supported_auth_methods_cb (EBook            *book,
 }
 
 void
-ebook_test_utils_book_async_get_supported_auth_methods (EBook       *book,
-                                                        GSourceFunc  callback,
-                                                        gpointer     user_data)
+ebook_test_utils_book_async_get_supported_auth_methods (EBook *book,
+                                                        GSourceFunc callback,
+                                                        gpointer user_data)
 {
 	EBookTestClosure *closure;
 
@@ -418,7 +418,7 @@ ebook_test_utils_book_async_get_supported_auth_methods (EBook       *book,
 	}
 }
 
-GList*
+GList *
 ebook_test_utils_book_get_supported_fields (EBook *book)
 {
 	GList *fields = NULL;
@@ -437,9 +437,9 @@ ebook_test_utils_book_get_supported_fields (EBook *book)
 }
 
 static void
-get_supported_fields_cb (EBook           *book,
-                        const GError     *error,
-                        EList            *fields,
+get_supported_fields_cb (EBook *book,
+                        const GError *error,
+                        EList *fields,
                         EBookTestClosure *closure)
 {
 	if (error) {
@@ -459,9 +459,9 @@ get_supported_fields_cb (EBook           *book,
 }
 
 void
-ebook_test_utils_book_async_get_supported_fields (EBook       *book,
-                                                 GSourceFunc  callback,
-                                                 gpointer     user_data)
+ebook_test_utils_book_async_get_supported_fields (EBook *book,
+                                                 GSourceFunc callback,
+                                                 gpointer user_data)
 {
 	EBookTestClosure *closure;
 
@@ -477,7 +477,7 @@ ebook_test_utils_book_async_get_supported_fields (EBook       *book,
 }
 
 void
-ebook_test_utils_book_remove_contact (EBook      *book,
+ebook_test_utils_book_remove_contact (EBook *book,
                                       const gchar *uid)
 {
 	GError *error = NULL;
@@ -493,8 +493,8 @@ ebook_test_utils_book_remove_contact (EBook      *book,
 }
 
 static void
-remove_contact_cb (EBook            *book,
-                   const GError     *error,
+remove_contact_cb (EBook *book,
+                   const GError *error,
                    EBookTestClosure *closure)
 {
 	if (error) {
@@ -512,10 +512,10 @@ remove_contact_cb (EBook            *book,
 }
 
 void
-ebook_test_utils_book_async_remove_contact (EBook       *book,
-                                            EContact    *contact,
-                                            GSourceFunc  callback,
-                                            gpointer     user_data)
+ebook_test_utils_book_async_remove_contact (EBook *book,
+                                            EContact *contact,
+                                            GSourceFunc callback,
+                                            gpointer user_data)
 {
 	EBookTestClosure *closure;
 
@@ -531,8 +531,8 @@ ebook_test_utils_book_async_remove_contact (EBook       *book,
 }
 
 static void
-remove_contact_by_id_cb (EBook            *book,
-                         const GError     *error,
+remove_contact_by_id_cb (EBook *book,
+                         const GError *error,
                          EBookTestClosure *closure)
 {
 	if (error) {
@@ -550,10 +550,10 @@ remove_contact_by_id_cb (EBook            *book,
 }
 
 void
-ebook_test_utils_book_async_remove_contact_by_id (EBook       *book,
-                                                  const gchar  *uid,
-                                                  GSourceFunc  callback,
-                                                  gpointer     user_data)
+ebook_test_utils_book_async_remove_contact_by_id (EBook *book,
+                                                  const gchar *uid,
+                                                  GSourceFunc callback,
+                                                  gpointer user_data)
 {
 	EBookTestClosure *closure;
 
@@ -585,8 +585,8 @@ ebook_test_utils_book_remove_contacts (EBook *book,
 }
 
 static void
-remove_contacts_cb (EBook            *book,
-                    const GError     *error,
+remove_contacts_cb (EBook *book,
+                    const GError *error,
                     EBookTestClosure *closure)
 {
 	if (error) {
@@ -604,10 +604,10 @@ remove_contacts_cb (EBook            *book,
 }
 
 void
-ebook_test_utils_book_async_remove_contacts (EBook       *book,
-                                             GList       *uids,
-                                             GSourceFunc  callback,
-                                             gpointer     user_data)
+ebook_test_utils_book_async_remove_contacts (EBook *book,
+                                             GList *uids,
+                                             GSourceFunc callback,
+                                             gpointer user_data)
 {
 	EBookTestClosure *closure;
 
@@ -622,7 +622,7 @@ ebook_test_utils_book_async_remove_contacts (EBook       *book,
 	}
 }
 
-EBook*
+EBook *
 ebook_test_utils_book_new_from_uri (const gchar *uri)
 {
 	EBook *book;
@@ -638,7 +638,7 @@ ebook_test_utils_book_new_from_uri (const gchar *uri)
 	return book;
 }
 
-EBook*
+EBook *
 ebook_test_utils_book_new_temp (gchar **uri)
 {
 	EBook *book;
@@ -667,8 +667,8 @@ ebook_test_utils_book_new_temp (gchar **uri)
 }
 
 void
-ebook_test_utils_book_open (EBook    *book,
-                            gboolean  only_if_exists)
+ebook_test_utils_book_open (EBook *book,
+                            gboolean only_if_exists)
 {
 	GError *error = NULL;
 
@@ -698,7 +698,9 @@ ebook_test_utils_book_remove (EBook *book)
 }
 
 static void
-remove_cb (EBook *book, const GError *error, EBookTestClosure *closure)
+remove_cb (EBook *book,
+           const GError *error,
+           EBookTestClosure *closure)
 {
 	if (error) {
                 g_warning ("failed to asynchronously remove the book: "
@@ -713,9 +715,9 @@ remove_cb (EBook *book, const GError *error, EBookTestClosure *closure)
 }
 
 void
-ebook_test_utils_book_async_remove (EBook       *book,
-                                    GSourceFunc  callback,
-                                    gpointer     user_data)
+ebook_test_utils_book_async_remove (EBook *book,
+                                    GSourceFunc callback,
+                                    gpointer user_data)
 {
 	EBookTestClosure *closure;
 
@@ -729,9 +731,9 @@ ebook_test_utils_book_async_remove (EBook       *book,
 }
 
 void
-ebook_test_utils_book_get_book_view (EBook       *book,
-                                     EBookQuery  *query,
-                                     EBookView  **view)
+ebook_test_utils_book_get_book_view (EBook *book,
+                                     EBookQuery *query,
+                                     EBookView **view)
 {
 	GError *error = NULL;
 
@@ -747,9 +749,9 @@ ebook_test_utils_book_get_book_view (EBook       *book,
 }
 
 static void
-get_book_view_cb (EBook            *book,
-                  const GError     *error,
-                  EBookView        *view,
+get_book_view_cb (EBook *book,
+                  const GError *error,
+                  EBookView *view,
                   EBookTestClosure *closure)
 {
 	if (error) {
@@ -766,10 +768,10 @@ get_book_view_cb (EBook            *book,
 }
 
 void
-ebook_test_utils_book_async_get_book_view (EBook       *book,
-                                           EBookQuery  *query,
-                                           GSourceFunc  callback,
-                                           gpointer     user_data)
+ebook_test_utils_book_async_get_book_view (EBook *book,
+                                           EBookQuery *query,
+                                           GSourceFunc callback,
+                                           gpointer user_data)
 {
 	EBookTestClosure *closure;
 

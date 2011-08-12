@@ -86,7 +86,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
 	/* write it out, use the uid we got from the summary */
 	name = g_strdup_printf("%s/%s", lf->folder_path, camel_message_info_uid(mi));
 	output_stream = camel_stream_fs_new_with_name (
-		name, O_WRONLY|O_CREAT, 0600, error);
+		name, O_WRONLY | O_CREAT, 0600, error);
 	if (output_stream == NULL)
 		goto fail_write;
 

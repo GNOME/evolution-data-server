@@ -177,7 +177,8 @@ e_destination_store_new (void)
  * ------------------ */
 
 static void
-row_deleted (EDestinationStore *destination_store, gint n)
+row_deleted (EDestinationStore *destination_store,
+             gint n)
 {
 	GtkTreePath *path;
 
@@ -188,7 +189,8 @@ row_deleted (EDestinationStore *destination_store, gint n)
 }
 
 static void
-row_inserted (EDestinationStore *destination_store, gint n)
+row_inserted (EDestinationStore *destination_store,
+              gint n)
 {
 	GtkTreePath *path;
 	GtkTreeIter  iter;
@@ -203,7 +205,8 @@ row_inserted (EDestinationStore *destination_store, gint n)
 }
 
 static void
-row_changed (EDestinationStore *destination_store, gint n)
+row_changed (EDestinationStore *destination_store,
+             gint n)
 {
 	GtkTreePath *path;
 	GtkTreeIter  iter;
@@ -222,7 +225,8 @@ row_changed (EDestinationStore *destination_store, gint n)
  * ------------------- */
 
 static gint
-find_destination_by_pointer (EDestinationStore *destination_store, EDestination *destination)
+find_destination_by_pointer (EDestinationStore *destination_store,
+                             EDestination *destination)
 {
 	GPtrArray *array;
 	gint i;
@@ -242,7 +246,8 @@ find_destination_by_pointer (EDestinationStore *destination_store, EDestination 
 }
 
 static gint
-find_destination_by_email (EDestinationStore *destination_store, EDestination *destination)
+find_destination_by_email (EDestinationStore *destination_store,
+                           EDestination *destination)
 {
 	GPtrArray *array;
 	gint i;
@@ -265,14 +270,16 @@ find_destination_by_email (EDestinationStore *destination_store, EDestination *d
 }
 
 static void
-start_destination (EDestinationStore *destination_store, EDestination *destination)
+start_destination (EDestinationStore *destination_store,
+                   EDestination *destination)
 {
 	g_signal_connect_swapped (destination, "changed",
 				  G_CALLBACK (destination_changed), destination_store);
 }
 
 static void
-stop_destination (EDestinationStore *destination_store, EDestination *destination)
+stop_destination (EDestinationStore *destination_store,
+                  EDestination *destination)
 {
 	g_signal_handlers_disconnect_matched (destination, G_SIGNAL_MATCH_DATA,
 					      0, 0, NULL, NULL, destination_store);
@@ -283,7 +290,8 @@ stop_destination (EDestinationStore *destination_store, EDestination *destinatio
  * --------------- */
 
 static void
-destination_changed (EDestinationStore *destination_store, EDestination *destination)
+destination_changed (EDestinationStore *destination_store,
+                     EDestination *destination)
 {
 	gint n;
 
@@ -310,7 +318,8 @@ destination_changed (EDestinationStore *destination_store, EDestination *destina
  * Returns: An #EDestination.
  **/
 EDestination *
-e_destination_store_get_destination (EDestinationStore *destination_store, GtkTreeIter *iter)
+e_destination_store_get_destination (EDestinationStore *destination_store,
+                                     GtkTreeIter *iter)
 {
 	GPtrArray *array;
 	gint index;
@@ -367,7 +376,8 @@ e_destination_store_list_destinations (EDestinationStore *destination_store)
  **/
 void
 e_destination_store_insert_destination (EDestinationStore *destination_store,
-					gint index, EDestination *destination)
+                                        gint index,
+                                        EDestination *destination)
 {
 	GPtrArray *array;
 
@@ -406,7 +416,8 @@ e_destination_store_insert_destination (EDestinationStore *destination_store,
  * @destination_store will ref @destination.
  **/
 void
-e_destination_store_append_destination (EDestinationStore *destination_store, EDestination *destination)
+e_destination_store_append_destination (EDestinationStore *destination_store,
+                                        EDestination *destination)
 {
 	GPtrArray *array;
 
@@ -434,7 +445,8 @@ e_destination_store_append_destination (EDestinationStore *destination_store, ED
  * unref @destination.
  **/
 void
-e_destination_store_remove_destination (EDestinationStore *destination_store, EDestination *destination)
+e_destination_store_remove_destination (EDestinationStore *destination_store,
+                                        EDestination *destination)
 {
 	GPtrArray *array;
 	gint n;
@@ -456,7 +468,8 @@ e_destination_store_remove_destination (EDestinationStore *destination_store, ED
 }
 
 void
-e_destination_store_remove_destination_nth (EDestinationStore *destination_store, gint n)
+e_destination_store_remove_destination_nth (EDestinationStore *destination_store,
+                                            gint n)
 {
 	EDestination *destination;
 	GPtrArray *array;
@@ -500,7 +513,7 @@ e_destination_store_get_n_columns (GtkTreeModel *tree_model)
 
 static GType
 e_destination_store_get_column_type (GtkTreeModel *tree_model,
-				     gint          index)
+                                     gint index)
 {
 	g_return_val_if_fail (E_IS_DESTINATION_STORE (tree_model), G_TYPE_INVALID);
 	g_return_val_if_fail (index >= 0 && index < E_DESTINATION_STORE_NUM_COLUMNS, G_TYPE_INVALID);
@@ -509,7 +522,9 @@ e_destination_store_get_column_type (GtkTreeModel *tree_model,
 }
 
 static gboolean
-e_destination_store_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreePath *path)
+e_destination_store_get_iter (GtkTreeModel *tree_model,
+                              GtkTreeIter *iter,
+                              GtkTreePath *path)
 {
 	EDestinationStore *destination_store;
 	GPtrArray *array;
@@ -532,7 +547,7 @@ e_destination_store_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTr
 
 GtkTreePath *
 e_destination_store_get_path (GtkTreeModel *tree_model,
-			      GtkTreeIter  *iter)
+                              GtkTreeIter *iter)
 {
 	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
 	GtkTreePath       *path;
@@ -549,8 +564,8 @@ e_destination_store_get_path (GtkTreeModel *tree_model,
 }
 
 static gboolean
-e_destination_store_iter_next (GtkTreeModel  *tree_model,
-			       GtkTreeIter   *iter)
+e_destination_store_iter_next (GtkTreeModel *tree_model,
+                               GtkTreeIter *iter)
 {
 	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
 	gint           index;
@@ -570,8 +585,8 @@ e_destination_store_iter_next (GtkTreeModel  *tree_model,
 
 static gboolean
 e_destination_store_iter_children (GtkTreeModel *tree_model,
-				   GtkTreeIter  *iter,
-				   GtkTreeIter  *parent)
+                                   GtkTreeIter *iter,
+                                   GtkTreeIter *parent)
 {
 	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
 
@@ -591,7 +606,7 @@ e_destination_store_iter_children (GtkTreeModel *tree_model,
 
 static gboolean
 e_destination_store_iter_has_child (GtkTreeModel *tree_model,
-				    GtkTreeIter  *iter)
+                                    GtkTreeIter *iter)
 {
 	g_return_val_if_fail (E_IS_DESTINATION_STORE (tree_model), FALSE);
 
@@ -603,7 +618,7 @@ e_destination_store_iter_has_child (GtkTreeModel *tree_model,
 
 static gint
 e_destination_store_iter_n_children (GtkTreeModel *tree_model,
-				     GtkTreeIter  *iter)
+                                     GtkTreeIter *iter)
 {
 	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
 
@@ -618,9 +633,9 @@ e_destination_store_iter_n_children (GtkTreeModel *tree_model,
 
 static gboolean
 e_destination_store_iter_nth_child (GtkTreeModel *tree_model,
-				    GtkTreeIter  *iter,
-				    GtkTreeIter  *parent,
-				    gint          n)
+                                    GtkTreeIter *iter,
+                                    GtkTreeIter *parent,
+                                    gint n)
 {
 	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
 
@@ -639,17 +654,17 @@ e_destination_store_iter_nth_child (GtkTreeModel *tree_model,
 
 static gboolean
 e_destination_store_iter_parent (GtkTreeModel *tree_model,
-				 GtkTreeIter  *iter,
-				 GtkTreeIter  *child)
+                                 GtkTreeIter *iter,
+                                 GtkTreeIter *child)
 {
 	return FALSE;
 }
 
 static void
 e_destination_store_get_value (GtkTreeModel *tree_model,
-			       GtkTreeIter  *iter,
-			       gint          column,
-			       GValue       *value)
+                               GtkTreeIter *iter,
+                               gint column,
+                               GValue *value)
 {
 	EDestinationStore *destination_store = E_DESTINATION_STORE (tree_model);
 	EDestination *destination;

@@ -8,7 +8,8 @@
 #define NUM_OPENS 200
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gchar *uri = NULL;
 	ECal *cal;
@@ -20,7 +21,7 @@ main (gint argc, gchar **argv)
 	g_object_unref (cal);
 
 	/* open and close the same calendar repeatedly */
-	for (i = 0; i < NUM_OPENS-1; i++) {
+	for (i = 0; i < NUM_OPENS - 1; i++) {
 		cal = ecal_test_utils_cal_new_from_uri (uri,
 				E_CAL_SOURCE_TYPE_EVENT);
 		ecal_test_utils_cal_open (cal, FALSE);

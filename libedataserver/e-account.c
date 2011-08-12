@@ -209,12 +209,14 @@ e_account_new_from_xml (const gchar *xml)
 }
 
 static gboolean
-xml_set_bool (xmlNodePtr node, const gchar *name, gboolean *val)
+xml_set_bool (xmlNodePtr node,
+              const gchar *name,
+              gboolean *val)
 {
 	gboolean bool;
 	xmlChar *buf;
 
-	if ((buf = xmlGetProp (node, (xmlChar*) name))) {
+	if ((buf = xmlGetProp (node, (xmlChar *) name))) {
 		bool = (!strcmp ((gchar *)buf, "true") || !strcmp ((gchar *)buf, "yes"));
 		xmlFree (buf);
 
@@ -228,12 +230,14 @@ xml_set_bool (xmlNodePtr node, const gchar *name, gboolean *val)
 }
 
 static gboolean
-xml_set_int (xmlNodePtr node, const gchar *name, gint *val)
+xml_set_int (xmlNodePtr node,
+             const gchar *name,
+             gint *val)
 {
 	gint number;
 	xmlChar *buf;
 
-	if ((buf = xmlGetProp (node, (xmlChar*) name))) {
+	if ((buf = xmlGetProp (node, (xmlChar *) name))) {
 		number = strtol ((gchar *) buf, NULL, 10);
 		xmlFree (buf);
 
@@ -247,12 +251,14 @@ xml_set_int (xmlNodePtr node, const gchar *name, gint *val)
 }
 
 static gboolean
-xml_set_prop (xmlNodePtr node, const gchar *name, gchar **val)
+xml_set_prop (xmlNodePtr node,
+              const gchar *name,
+              gchar **val)
 {
 	xmlChar *buf;
 	gint res;
 
-	buf = xmlGetProp (node, (xmlChar*) name);
+	buf = xmlGetProp (node, (xmlChar *) name);
 	if (buf == NULL) {
 		res = (*val != NULL);
 		if (res) {
@@ -282,7 +288,7 @@ str_to_receipt_policy (const xmlChar *str)
 	return E_ACCOUNT_RECEIPT_NEVER;
 }
 
-static xmlChar*
+static xmlChar *
 receipt_policy_to_str (EAccountReceiptPolicy val)
 {
 	const gchar *ret = NULL;
@@ -299,16 +305,18 @@ receipt_policy_to_str (EAccountReceiptPolicy val)
 		break;
 	}
 
-	return (xmlChar*) ret;
+	return (xmlChar *) ret;
 }
 
 static gboolean
-xml_set_receipt_policy (xmlNodePtr node, const gchar *name, EAccountReceiptPolicy *val)
+xml_set_receipt_policy (xmlNodePtr node,
+                        const gchar *name,
+                        EAccountReceiptPolicy *val)
 {
 	EAccountReceiptPolicy new_val;
 	xmlChar *buf;
 
-	if ((buf = xmlGetProp (node, (xmlChar*) name))) {
+	if ((buf = xmlGetProp (node, (xmlChar *) name))) {
 		new_val = str_to_receipt_policy (buf);
 		xmlFree (buf);
 
@@ -322,7 +330,8 @@ xml_set_receipt_policy (xmlNodePtr node, const gchar *name, EAccountReceiptPolic
 }
 
 static gboolean
-xml_set_content (xmlNodePtr node, gchar **val)
+xml_set_content (xmlNodePtr node,
+                 gchar **val)
 {
 	xmlChar *buf;
 	gint res;
@@ -347,7 +356,8 @@ xml_set_content (xmlNodePtr node, gchar **val)
 }
 
 static gboolean
-xml_set_identity (xmlNodePtr node, EAccountIdentity *id)
+xml_set_identity (xmlNodePtr node,
+                  EAccountIdentity *id)
 {
 	gboolean changed = FALSE;
 
@@ -388,7 +398,8 @@ xml_set_identity (xmlNodePtr node, EAccountIdentity *id)
 }
 
 static gboolean
-xml_set_service (xmlNodePtr node, EAccountService *service)
+xml_set_service (xmlNodePtr node,
+                 EAccountService *service)
 {
 	gboolean changed = FALSE;
 
@@ -510,13 +521,14 @@ exit:
  * already matched @xml or @xml could not be parsed
  **/
 gboolean
-e_account_set_from_xml (EAccount *account, const gchar *xml)
+e_account_set_from_xml (EAccount *account,
+                        const gchar *xml)
 {
 	xmlNodePtr node, cur;
 	xmlDocPtr doc;
 	gboolean changed = FALSE;
 
-	if (!(doc = xmlParseDoc ((xmlChar*) xml)))
+	if (!(doc = xmlParseDoc ((xmlChar *) xml)))
 		return FALSE;
 
 	node = doc->children;
@@ -611,7 +623,8 @@ e_account_set_from_xml (EAccount *account, const gchar *xml)
  * Import the settings from @src to @dest.
  **/
 void
-e_account_import (EAccount *dest, EAccount *src)
+e_account_import (EAccount *dest,
+                  EAccount *src)
 {
 	g_free (dest->name);
 	dest->name = g_strdup (src->name);
@@ -924,7 +937,10 @@ static struct _option_info {
 #define LOCK_BASE "/apps/evolution/lock/mail/accounts"
 
 static void
-ea_setting_notify (GConfClient *gconf, guint cnxn_id, GConfEntry *entry, gpointer crap)
+ea_setting_notify (GConfClient *gconf,
+                   guint cnxn_id,
+                   GConfEntry *entry,
+                   gpointer crap)
 {
 	GConfValue *value;
 	gchar *tkey;
@@ -938,7 +954,7 @@ ea_setting_notify (GConfClient *gconf, guint cnxn_id, GConfEntry *entry, gpointe
 	tkey = strrchr (entry->key, '/');
 	g_return_if_fail (tkey != NULL);
 
-	info = g_hash_table_lookup (ea_system_table, tkey+1);
+	info = g_hash_table_lookup (ea_system_table, tkey + 1);
 	if (info) {
 		if (gconf_value_get_bool (value))
 			ea_perms |= info->perm;
@@ -988,25 +1004,28 @@ ea_setting_setup (void)
 /* look up the item in the structure or the substructure using our table of reflection data */
 #define addr(ea, type) \
 	((account_info[type].type & TYPE_STRUCT)? \
-	(((gchar **)(((gchar *) ea)+account_info[type].offset))[0] + account_info[type].struct_offset): \
-	(((gchar *) ea)+account_info[type].offset))
+	(((gchar **)(((gchar *) ea) + account_info[type].offset))[0] + account_info[type].struct_offset): \
+	(((gchar *) ea) + account_info[type].offset))
 
 const gchar *
-e_account_get_string (EAccount *ea, e_account_item_t type)
+e_account_get_string (EAccount *ea,
+                      e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, NULL);
 	return *((const gchar **) addr (ea, type));
 }
 
 gint
-e_account_get_int (EAccount *ea, e_account_item_t type)
+e_account_get_int (EAccount *ea,
+                   e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, 0);
 	return *((gint *) addr (ea, type));
 }
 
 gboolean
-e_account_get_bool (EAccount *ea, e_account_item_t type)
+e_account_get_bool (EAccount *ea,
+                    e_account_item_t type)
 {
 	g_return_val_if_fail (ea != NULL, FALSE);
 	return *((gboolean *) addr (ea, type));
@@ -1027,7 +1046,9 @@ dump_account (EAccount *ea)
 
 /* TODO: should it return true if it changed? */
 void
-e_account_set_string (EAccount *ea, e_account_item_t type, const gchar *val)
+e_account_set_string (EAccount *ea,
+                      e_account_item_t type,
+                      const gchar *val)
 {
 	gchar **p;
 
@@ -1049,7 +1070,9 @@ e_account_set_string (EAccount *ea, e_account_item_t type, const gchar *val)
 }
 
 void
-e_account_set_int (EAccount *ea, e_account_item_t type, gint val)
+e_account_set_int (EAccount *ea,
+                   e_account_item_t type,
+                   gint val)
 {
 	g_return_if_fail (ea != NULL);
 
@@ -1067,7 +1090,9 @@ e_account_set_int (EAccount *ea, e_account_item_t type, gint val)
 }
 
 void
-e_account_set_bool (EAccount *ea, e_account_item_t type, gboolean val)
+e_account_set_bool (EAccount *ea,
+                    e_account_item_t type,
+                    gboolean val)
 {
 	g_return_if_fail (ea != NULL);
 
@@ -1085,14 +1110,16 @@ e_account_set_bool (EAccount *ea, e_account_item_t type, gboolean val)
 }
 
 gboolean
-e_account_writable_option (EAccount *ea, const gchar *protocol, const gchar *option)
+e_account_writable_option (EAccount *ea,
+                           const gchar *protocol,
+                           const gchar *option)
 {
 	gchar *key;
 	struct _option_info *info;
 
 	ea_setting_setup ();
 
-	key = alloca (strlen (protocol)+strlen (option)+2);
+	key = alloca (strlen (protocol) + strlen (option) + 2);
 	sprintf(key, "%s_%s", protocol, option);
 
 	info = g_hash_table_lookup (ea_option_table, key);
@@ -1108,7 +1135,8 @@ e_account_writable_option (EAccount *ea, const gchar *protocol, const gchar *opt
 }
 
 gboolean
-e_account_writable (EAccount *ea, e_account_item_t type)
+e_account_writable (EAccount *ea,
+                    e_account_item_t type)
 {
 	ea_setting_setup ();
 

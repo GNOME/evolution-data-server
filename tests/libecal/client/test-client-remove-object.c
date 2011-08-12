@@ -58,7 +58,9 @@ test_sync (ECalClient *cal_client)
 
 /* asynchronous callback with a main-loop running */
 static void
-async_remove_result_ready (GObject *source_object, GAsyncResult *result, gpointer user_data)
+async_remove_result_ready (GObject *source_object,
+                           GAsyncResult *result,
+                           gpointer user_data)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -117,7 +119,8 @@ test_sync_in_thread (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;

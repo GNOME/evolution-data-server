@@ -88,7 +88,8 @@ imap_namespaces_destroy (struct _namespaces *namespaces)
 }
 
 static gboolean
-imap_namespace_decode (const gchar **in, struct _namespace **namespace)
+imap_namespace_decode (const gchar **in,
+                       struct _namespace **namespace)
 {
 	struct _namespace *list, *tail, *node;
 	const gchar *inptr;
@@ -148,8 +149,8 @@ imap_namespace_decode (const gchar **in, struct _namespace **namespace)
 
 			if (*inptr == ' ') {
 				/* parse extra flags... for now we
-				   don't save them, but in the future
-				   we may want to? */
+				 * don't save them, but in the future
+				 * we may want to? */
 				while (*inptr == ' ')
 					inptr++;
 
@@ -170,8 +171,8 @@ imap_namespace_decode (const gchar **in, struct _namespace **namespace)
 				goto exception;
 
 			/* there shouldn't be spaces according to the
-			   ABNF grammar, but we all know how closely
-			   people follow specs */
+			 * ABNF grammar, but we all know how closely
+			 * people follow specs */
 			while (*inptr == ' ')
 				inptr++;
 		}
@@ -303,7 +304,11 @@ imap_parse_namespace_response (const gchar *response)
  * Returns: whether or not the response was successfully parsed.
  **/
 gboolean
-imap_parse_list_response (CamelImapStore *store, const gchar *buf, gint *flags, gchar *sep, gchar **folder)
+imap_parse_list_response (CamelImapStore *store,
+                          const gchar *buf,
+                          gint *flags,
+                          gchar *sep,
+                          gchar **folder)
 {
 	gboolean is_lsub = FALSE;
 	const gchar *word;
@@ -418,7 +423,8 @@ imap_parse_list_response (CamelImapStore *store, const gchar *buf, gint *flags, 
  *   Full, Full/Path, Full/Path/"to / from", Full/Path/"to / from"/Folder
  **/
 gchar **
-imap_parse_folder_name (CamelImapStore *store, const gchar *folder_name)
+imap_parse_folder_name (CamelImapStore *store,
+                        const gchar *folder_name)
 {
 	GPtrArray *heirarchy;
 	gchar **paths;
@@ -465,7 +471,9 @@ imap_parse_folder_name (CamelImapStore *store, const gchar *folder_name)
  * @server_to_evo: if TRUE, then converting server names to evo's names, if FALSE then opposite.
  */
 static const gchar *
-rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo)
+rename_label_flag (const gchar *flag,
+                   gint len,
+                   gboolean server_to_evo)
 {
 	gint i;
 	const gchar *labels[] = {
@@ -477,7 +485,7 @@ rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo)
 		NULL,      NULL };
 
 	/* It really can pass zero-length flags inside, in that case it was able
-	   to always add first label, which is definitely wrong. */
+	 * to always add first label, which is definitely wrong. */
 	if (!len || !flag || !*flag)
 		return "";
 
@@ -490,7 +498,9 @@ rename_label_flag (const gchar *flag, gint len, gboolean server_to_evo)
 }
 
 gchar *
-imap_create_flag_list (guint32 flags, CamelMessageInfo *info, guint32 permanent_flags)
+imap_create_flag_list (guint32 flags,
+                       CamelMessageInfo *info,
+                       guint32 permanent_flags)
 {
 	GString *gstr = g_string_new ("(");
 
@@ -541,7 +551,9 @@ imap_create_flag_list (guint32 flags, CamelMessageInfo *info, guint32 permanent_
 }
 
 gboolean
-imap_parse_flag_list (gchar **flag_list_p, CamelMessageFlags *flags_out, gchar **custom_flags_out)
+imap_parse_flag_list (gchar **flag_list_p,
+                      CamelMessageFlags *flags_out,
+                      gchar **custom_flags_out)
 {
 	gchar *flag_list = *flag_list_p;
 	guint32 flags = 0;
@@ -574,7 +586,7 @@ imap_parse_flag_list (gchar **flag_list_p, CamelMessageFlags *flags_out, gchar *
 		else if (!g_ascii_strncasecmp (flag_list, "\\Recent", len))
 			flags |= CAMEL_IMAP_MESSAGE_RECENT;
 		else if (!g_ascii_strncasecmp(flag_list, "\\*", len))
-			flags |= CAMEL_MESSAGE_USER|CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_NOTJUNK;
+			flags |= CAMEL_MESSAGE_USER | CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_NOTJUNK;
 		else if (!g_ascii_strncasecmp(flag_list, "Junk", len))
 			flags |= CAMEL_MESSAGE_JUNK;
 		else if (!g_ascii_strncasecmp(flag_list, "NotJunk", len))
@@ -626,27 +638,27 @@ imap_parse_flag_list (gchar **flag_list_p, CamelMessageFlags *flags_out, gchar *
 }
 
 /*
- From RFC3501, which adds resp_specials over RFC2060
-
-ATOM_CHAR       ::= <any CHAR except atom_specials>
-
-atom_specials   ::= "(" / ")" / "{" / SPACE / CTL / list_wildcards /
-                    quoted_specials / resp_secials
-
-CHAR            ::= <any 7-bit US-ASCII character except NUL,
-                     0x01 - 0x7f>
-
-CTL             ::= <any ASCII control character and DEL,
-                        0x00 - 0x1f, 0x7f>
-
-SPACE           ::= <ASCII SP, space, 0x20>
-
-list_wildcards  ::= "%" / "*"
-
-quoted_specials ::= <"> / "\"
-
-resp_specials   ::= "]"
-*/
+ * From RFC3501, which adds resp_specials over RFC2060
+ *
+ * ATOM_CHAR       ::= <any CHAR except atom_specials>
+ *
+ * atom_specials   ::= "(" / ")" / "{" / SPACE / CTL / list_wildcards /
+ *                     quoted_specials / resp_secials
+ *
+ * CHAR            ::= <any 7-bit US-ASCII character except NUL,
+ *                     0x01 - 0x7f>
+ *
+ * CTL             ::= <any ASCII control character and DEL,
+ *                        0x00 - 0x1f, 0x7f>
+ *
+ * SPACE           ::= <ASCII SP, space, 0x20>
+ *
+ * list_wildcards  ::= "%" / "*"
+ *
+ * quoted_specials ::= <"> / "\"
+ *
+ * resp_specials   ::= "]"
+ */
 
 static guchar imap_atom_specials[256] = {
 /*	0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F */
@@ -676,14 +688,14 @@ imap_is_atom (const gchar *in)
 	register guchar c;
 	register const gchar *p = in;
 
-	while ((c = (guchar)*p)) {
+	while ((c = (guchar) * p)) {
 		if (!imap_is_atom_char (c))
 			return FALSE;
 		p++;
 	}
 
 	/* check for empty string */
-	return p!=in;
+	return p != in;
 }
 
 /**
@@ -708,7 +720,9 @@ imap_is_atom (const gchar *in)
  * latter, it will point to the character after the NIL.)
  **/
 gchar *
-imap_parse_string_generic (const gchar **str_p, gsize *len, gint type)
+imap_parse_string_generic (const gchar **str_p,
+                           gsize *len,
+                           gint type)
 {
 	const gchar *str = *str_p;
 	gchar *out;
@@ -757,7 +771,7 @@ imap_parse_string_generic (const gchar **str_p, gsize *len, gint type)
 		*str_p += 3;
 		*len = 0;
 		return NULL;
-	} else if (type == IMAP_ASTRING && imap_is_atom_char ((guchar)*str)) {
+	} else if (type == IMAP_ASTRING && imap_is_atom_char ((guchar) * str)) {
 		while (imap_is_atom_char ((guchar) *str))
 			str++;
 
@@ -772,7 +786,8 @@ imap_parse_string_generic (const gchar **str_p, gsize *len, gint type)
 }
 
 static inline void
-skip_char (const gchar **in, gchar ch)
+skip_char (const gchar **in,
+           gchar ch)
 {
 	if (*in && **in == ch)
 		*in = *in + 1;
@@ -836,7 +851,8 @@ imap_skip_list (const gchar **str_p)
 }
 
 static gint
-parse_params (const gchar **parms_p, CamelContentType *type)
+parse_params (const gchar **parms_p,
+              CamelContentType *type)
 {
 	const gchar *parms = *parms_p;
 	gchar *name, *value;
@@ -873,7 +889,10 @@ parse_params (const gchar **parms_p, CamelContentType *type)
 }
 
 static CamelMessageContentInfo *
-imap_body_decode (const gchar **in, CamelMessageContentInfo *ci, CamelFolder *folder, GPtrArray *cis)
+imap_body_decode (const gchar **in,
+                  CamelMessageContentInfo *ci,
+                  CamelFolder *folder,
+                  GPtrArray *cis)
 {
 	const gchar *inptr = *in;
 	CamelMessageContentInfo *child = NULL;
@@ -1095,8 +1114,9 @@ imap_body_decode (const gchar **in, CamelMessageContentInfo *ci, CamelFolder *fo
  * set to %NULL and @ci will be unchanged.
  **/
 void
-imap_parse_body (const gchar **body_p, CamelFolder *folder,
-		 CamelMessageContentInfo *ci)
+imap_parse_body (const gchar **body_p,
+                 CamelFolder *folder,
+                 CamelMessageContentInfo *ci)
 {
 	const gchar *inptr = *body_p;
 	CamelMessageContentInfo *child;
@@ -1167,7 +1187,8 @@ imap_quote_string (const gchar *str)
 }
 
 static inline gulong
-get_summary_uid_numeric (CamelFolderSummary *summary, gint index)
+get_summary_uid_numeric (CamelFolderSummary *summary,
+                         gint index)
 {
 	gulong uid;
 	gchar *suid;
@@ -1203,7 +1224,11 @@ get_summary_uid_numeric (CamelFolderSummary *summary, gint index)
  * Returns: the set, which the caller must free with g_free()
  **/
 gchar *
-imap_uid_array_to_set (CamelFolderSummary *summary, GPtrArray *uids, gint uid, gssize maxlen, gint *lastuid)
+imap_uid_array_to_set (CamelFolderSummary *summary,
+                       GPtrArray *uids,
+                       gint uid,
+                       gssize maxlen,
+                       gint *lastuid)
 {
 	gulong last_uid, next_summary_uid, this_uid;
 	gboolean range = FALSE;
@@ -1270,7 +1295,8 @@ imap_uid_array_to_set (CamelFolderSummary *summary, GPtrArray *uids, gint uid, g
  * imap_uid_array_free(). (Or %NULL if the uid set can't be parsed.)
  **/
 GPtrArray *
-imap_uid_set_to_array (CamelFolderSummary *summary, const gchar *uids)
+imap_uid_set_to_array (CamelFolderSummary *summary,
+                       const gchar *uids)
 {
 	GPtrArray *arr;
 	gchar *p, *q;
@@ -1343,7 +1369,9 @@ imap_uid_array_free (GPtrArray *arr)
 }
 
 gchar *
-imap_concat (CamelImapStore *imap_store, const gchar *prefix, const gchar *suffix)
+imap_concat (CamelImapStore *imap_store,
+             const gchar *prefix,
+             const gchar *suffix)
 {
 	gsize len;
 	CamelImapStoreNamespace *ns = camel_imap_store_summary_get_main_namespace (imap_store->summary);
@@ -1356,7 +1384,8 @@ imap_concat (CamelImapStore *imap_store, const gchar *prefix, const gchar *suffi
 }
 
 gchar *
-imap_mailbox_encode (const guchar *in, gsize inlen)
+imap_mailbox_encode (const guchar *in,
+                     gsize inlen)
 {
 	gchar *buf;
 
@@ -1368,7 +1397,8 @@ imap_mailbox_encode (const guchar *in, gsize inlen)
 }
 
 gchar *
-imap_mailbox_decode (const guchar *in, gsize inlen)
+imap_mailbox_decode (const guchar *in,
+                     gsize inlen)
 {
 	gchar *buf;
 
@@ -1380,7 +1410,8 @@ imap_mailbox_decode (const guchar *in, gsize inlen)
 }
 
 gchar *
-imap_path_to_physical (const gchar *prefix, const gchar *vpath)
+imap_path_to_physical (const gchar *prefix,
+                       const gchar *vpath)
 {
 	GString *out = g_string_new (prefix);
 	const gchar *p = vpath;
@@ -1404,8 +1435,10 @@ imap_path_to_physical (const gchar *prefix, const gchar *vpath)
 }
 
 static gboolean
-find_folders_recursive (const gchar *physical_path, const gchar *path,
-			IMAPPathFindFoldersCallback callback, gpointer data)
+find_folders_recursive (const gchar *physical_path,
+                        const gchar *path,
+                        IMAPPathFindFoldersCallback callback,
+                        gpointer data)
 {
 	GDir *dir;
 	gchar *subfolder_directory_path;
@@ -1477,7 +1510,9 @@ find_folders_recursive (const gchar *physical_path, const gchar *path,
  * Returns: %TRUE on success, %FALSE if an error occurs at any point
  **/
 gboolean
-imap_path_find_folders (const gchar *prefix, IMAPPathFindFoldersCallback callback, gpointer data)
+imap_path_find_folders (const gchar *prefix,
+                        IMAPPathFindFoldersCallback callback,
+                        gpointer data)
 {
 	return find_folders_recursive (prefix, "", callback, data);
 }

@@ -9,7 +9,8 @@
 #define NUM_VIEWS 200
 
 static void
-objects_added (EBookClientView *view, const GSList *contacts)
+objects_added (EBookClientView *view,
+               const GSList *contacts)
 {
 	const GSList *l;
 
@@ -19,7 +20,8 @@ objects_added (EBookClientView *view, const GSList *contacts)
 }
 
 static void
-objects_removed (EBookClientView *view, const GSList *ids)
+objects_removed (EBookClientView *view,
+                 const GSList *ids)
 {
 	const GSList *l;
 
@@ -29,13 +31,15 @@ objects_removed (EBookClientView *view, const GSList *ids)
 }
 
 static void
-complete (EBookClientView *view, const GError *error)
+complete (EBookClientView *view,
+          const GError *error)
 {
 	printf ("view_complete (status == %d, error_msg == %s%s%s)\n", error ? error->code : 0, error ? "'" : "", error ? error->message : "NULL", error ? "'" : "");
 }
 
 static gint
-stress_book_views (EBookClient *book_client, gboolean in_thread)
+stress_book_views (EBookClient *book_client,
+                   gboolean in_thread)
 {
 	EBookQuery *query;
 	EBookClientView *view = NULL;
@@ -95,7 +99,8 @@ stress_book_views_thread (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	GError *error = NULL;

@@ -248,7 +248,8 @@ e_tree_model_generator_init (ETreeModelGenerator *tree_model_generator)
  * ------------------ */
 
 static void
-row_deleted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
+row_deleted (ETreeModelGenerator *tree_model_generator,
+             GtkTreePath *path)
 {
 	g_assert (path);
 
@@ -257,7 +258,8 @@ row_deleted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
 }
 
 static void
-row_inserted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
+row_inserted (ETreeModelGenerator *tree_model_generator,
+              GtkTreePath *path)
 {
 	GtkTreeIter iter;
 
@@ -272,7 +274,8 @@ row_inserted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
 }
 
 static void
-row_changed (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
+row_changed (ETreeModelGenerator *tree_model_generator,
+             GtkTreePath *path)
 {
 	GtkTreeIter iter;
 
@@ -291,7 +294,9 @@ row_changed (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
  * -------------------- */
 
 static gint
-generated_offset_to_child_offset (GArray *group, gint offset, gint *internal_offset)
+generated_offset_to_child_offset (GArray *group,
+                                  gint offset,
+                                  gint *internal_offset)
 {
 	gboolean success      = FALSE;
 	gint     accum_offset = 0;
@@ -318,7 +323,8 @@ generated_offset_to_child_offset (GArray *group, gint offset, gint *internal_off
 }
 
 static gint
-child_offset_to_generated_offset (GArray *group, gint offset)
+child_offset_to_generated_offset (GArray *group,
+                                  gint offset)
 {
 	gint accum_offset = 0;
 	gint i;
@@ -374,8 +380,10 @@ append_node (GArray *group)
 }
 
 static GArray *
-build_node_map (ETreeModelGenerator *tree_model_generator, GtkTreeIter *parent_iter,
-		GArray *parent_group, gint parent_index)
+build_node_map (ETreeModelGenerator *tree_model_generator,
+                GtkTreeIter *parent_iter,
+                GArray *parent_group,
+                gint parent_index)
 {
 	GArray      *group;
 	GtkTreeIter  iter;
@@ -415,7 +423,8 @@ build_node_map (ETreeModelGenerator *tree_model_generator, GtkTreeIter *parent_i
 }
 
 static gint
-get_first_visible_index_from (GArray *group, gint index)
+get_first_visible_index_from (GArray *group,
+                              gint index)
 {
 	gint i;
 
@@ -433,7 +442,9 @@ get_first_visible_index_from (GArray *group, gint index)
 }
 
 static Node *
-get_node_by_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePath *path, GArray **node_group)
+get_node_by_child_path (ETreeModelGenerator *tree_model_generator,
+                        GtkTreePath *path,
+                        GArray **node_group)
 {
 	Node   *node = NULL;
 	GArray *group;
@@ -466,7 +477,8 @@ get_node_by_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePath *
 }
 
 static Node *
-create_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
+create_node_at_child_path (ETreeModelGenerator *tree_model_generator,
+                           GtkTreePath *path)
 {
 	GtkTreePath *parent_path;
 	gint         parent_index;
@@ -556,7 +568,8 @@ dump_group (GArray *group)
 )
 
 static void
-delete_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
+delete_node_at_child_path (ETreeModelGenerator *tree_model_generator,
+                           GtkTreePath *path)
 {
 	GtkTreePath *parent_path;
 	GArray      *parent_group;
@@ -607,7 +620,9 @@ delete_node_at_child_path (ETreeModelGenerator *tree_model_generator, GtkTreePat
 }
 
 static void
-child_row_changed (ETreeModelGenerator *tree_model_generator, GtkTreePath *path, GtkTreeIter *iter)
+child_row_changed (ETreeModelGenerator *tree_model_generator,
+                   GtkTreePath *path,
+                   GtkTreeIter *iter)
 {
 	GtkTreePath *generated_path;
 	Node        *node;
@@ -649,7 +664,9 @@ child_row_changed (ETreeModelGenerator *tree_model_generator, GtkTreePath *path,
 }
 
 static void
-child_row_inserted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path, GtkTreeIter *iter)
+child_row_inserted (ETreeModelGenerator *tree_model_generator,
+                    GtkTreePath *path,
+                    GtkTreeIter *iter)
 {
 	GtkTreePath *generated_path;
 	Node        *node;
@@ -680,7 +697,8 @@ child_row_inserted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path
 }
 
 static void
-child_row_deleted (ETreeModelGenerator *tree_model_generator, GtkTreePath *path)
+child_row_deleted (ETreeModelGenerator *tree_model_generator,
+                   GtkTreePath *path)
 {
 	GtkTreePath *generated_path;
 	Node        *node;
@@ -755,8 +773,9 @@ e_tree_model_generator_get_model (ETreeModelGenerator *tree_model_generator)
  **/
 void
 e_tree_model_generator_set_generate_func (ETreeModelGenerator *tree_model_generator,
-					  ETreeModelGeneratorGenerateFunc func,
-					  gpointer data, GDestroyNotify destroy)
+                                          ETreeModelGeneratorGenerateFunc func,
+                                          gpointer data,
+                                          GDestroyNotify destroy)
 {
 	g_return_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model_generator));
 
@@ -778,8 +797,9 @@ e_tree_model_generator_set_generate_func (ETreeModelGenerator *tree_model_genera
  **/
 void
 e_tree_model_generator_set_modify_func (ETreeModelGenerator *tree_model_generator,
-					ETreeModelGeneratorModifyFunc func,
-					gpointer data, GDestroyNotify destroy)
+                                        ETreeModelGeneratorModifyFunc func,
+                                        gpointer data,
+                                        GDestroyNotify destroy)
 {
 	g_return_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model_generator));
 
@@ -798,7 +818,7 @@ e_tree_model_generator_set_modify_func (ETreeModelGenerator *tree_model_generato
  **/
 GtkTreePath *
 e_tree_model_generator_convert_child_path_to_path (ETreeModelGenerator *tree_model_generator,
-						   GtkTreePath *child_path)
+                                                   GtkTreePath *child_path)
 {
 	GtkTreePath *path;
 	GArray      *group;
@@ -843,8 +863,8 @@ e_tree_model_generator_convert_child_path_to_path (ETreeModelGenerator *tree_mod
  **/
 void
 e_tree_model_generator_convert_child_iter_to_iter (ETreeModelGenerator *tree_model_generator,
-						   GtkTreeIter *generator_iter,
-						   GtkTreeIter *child_iter)
+                                                   GtkTreeIter *generator_iter,
+                                                   GtkTreeIter *child_iter)
 {
 	GtkTreePath *path;
 	GArray      *group;
@@ -890,7 +910,7 @@ e_tree_model_generator_convert_child_iter_to_iter (ETreeModelGenerator *tree_mod
  **/
 GtkTreePath *
 e_tree_model_generator_convert_path_to_child_path (ETreeModelGenerator *tree_model_generator,
-						   GtkTreePath *generator_path)
+                                                   GtkTreePath *generator_path)
 {
 	GtkTreePath *path;
 	GArray      *group;
@@ -937,9 +957,9 @@ e_tree_model_generator_convert_path_to_child_path (ETreeModelGenerator *tree_mod
  **/
 void
 e_tree_model_generator_convert_iter_to_child_iter (ETreeModelGenerator *tree_model_generator,
-						   GtkTreeIter *child_iter,
-						   gint *permutation_n,
-						   GtkTreeIter *generator_iter)
+                                                   GtkTreeIter *child_iter,
+                                                   gint *permutation_n,
+                                                   GtkTreeIter *generator_iter)
 {
 	GtkTreePath *path;
 	GArray      *group;
@@ -999,7 +1019,7 @@ e_tree_model_generator_get_n_columns (GtkTreeModel *tree_model)
 
 static GType
 e_tree_model_generator_get_column_type (GtkTreeModel *tree_model,
-					gint          index)
+                                        gint index)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);
 
@@ -1009,7 +1029,9 @@ e_tree_model_generator_get_column_type (GtkTreeModel *tree_model,
 }
 
 static gboolean
-e_tree_model_generator_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreePath *path)
+e_tree_model_generator_get_iter (GtkTreeModel *tree_model,
+                                 GtkTreeIter *iter,
+                                 GtkTreePath *path)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);
 	GArray              *group;
@@ -1047,7 +1069,7 @@ e_tree_model_generator_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, Gt
 
 static GtkTreePath *
 e_tree_model_generator_get_path (GtkTreeModel *tree_model,
-				 GtkTreeIter  *iter)
+                                 GtkTreeIter *iter)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);
 	GtkTreePath         *path;
@@ -1083,8 +1105,8 @@ e_tree_model_generator_get_path (GtkTreeModel *tree_model,
 }
 
 static gboolean
-e_tree_model_generator_iter_next (GtkTreeModel  *tree_model,
-				  GtkTreeIter   *iter)
+e_tree_model_generator_iter_next (GtkTreeModel *tree_model,
+                                  GtkTreeIter *iter)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);
 	Node                *node;
@@ -1111,8 +1133,8 @@ e_tree_model_generator_iter_next (GtkTreeModel  *tree_model,
 
 static gboolean
 e_tree_model_generator_iter_children (GtkTreeModel *tree_model,
-				      GtkTreeIter  *iter,
-				      GtkTreeIter  *parent)
+                                      GtkTreeIter *iter,
+                                      GtkTreeIter *parent)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);
 	Node                *node;
@@ -1149,7 +1171,7 @@ e_tree_model_generator_iter_children (GtkTreeModel *tree_model,
 
 static gboolean
 e_tree_model_generator_iter_has_child (GtkTreeModel *tree_model,
-				       GtkTreeIter  *iter)
+                                       GtkTreeIter *iter)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);
 	Node                *node;
@@ -1184,7 +1206,7 @@ e_tree_model_generator_iter_has_child (GtkTreeModel *tree_model,
 
 static gint
 e_tree_model_generator_iter_n_children (GtkTreeModel *tree_model,
-					GtkTreeIter  *iter)
+                                        GtkTreeIter *iter)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);
 	Node                *node;
@@ -1212,9 +1234,9 @@ e_tree_model_generator_iter_n_children (GtkTreeModel *tree_model,
 
 static gboolean
 e_tree_model_generator_iter_nth_child (GtkTreeModel *tree_model,
-				       GtkTreeIter  *iter,
-				       GtkTreeIter  *parent,
-				       gint          n)
+                                       GtkTreeIter *iter,
+                                       GtkTreeIter *parent,
+                                       gint n)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);
 	Node                *node;
@@ -1253,8 +1275,8 @@ e_tree_model_generator_iter_nth_child (GtkTreeModel *tree_model,
 
 static gboolean
 e_tree_model_generator_iter_parent (GtkTreeModel *tree_model,
-				    GtkTreeIter  *iter,
-				    GtkTreeIter  *child)
+                                    GtkTreeIter *iter,
+                                    GtkTreeIter *child)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);
 	Node                *node;
@@ -1281,9 +1303,9 @@ e_tree_model_generator_iter_parent (GtkTreeModel *tree_model,
 
 static void
 e_tree_model_generator_get_value (GtkTreeModel *tree_model,
-				  GtkTreeIter  *iter,
-				  gint          column,
-				  GValue       *value)
+                                  GtkTreeIter *iter,
+                                  gint column,
+                                  GValue *value)
 {
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (tree_model);
 	GtkTreeIter          child_iter;

@@ -108,7 +108,8 @@ camel_nntp_store_summary_new (void)
  * It must be freed using camel_store_summary_info_free().
  **/
 CamelNNTPStoreInfo *
-camel_nntp_store_summary_full_name (CamelNNTPStoreSummary *s, const gchar *full_name)
+camel_nntp_store_summary_full_name (CamelNNTPStoreSummary *s,
+                                    const gchar *full_name)
 {
 	gint count, i;
 	CamelNNTPStoreInfo *info;
@@ -127,7 +128,9 @@ camel_nntp_store_summary_full_name (CamelNNTPStoreSummary *s, const gchar *full_
 }
 
 gchar *
-camel_nntp_store_summary_full_to_path (CamelNNTPStoreSummary *s, const gchar *full_name, gchar dir_sep)
+camel_nntp_store_summary_full_to_path (CamelNNTPStoreSummary *s,
+                                       const gchar *full_name,
+                                       gchar dir_sep)
 {
 	gchar *path, *p;
 	gint c;
@@ -155,7 +158,7 @@ static guint32
 hexnib (guint32 c)
 {
 	if (c >= '0' && c <= '9')
-		return c-'0';
+		return c - '0';
 	else if (c >= 'A' && c <= 'Z')
 		return c - 'A' + 10;
 	else
@@ -163,12 +166,14 @@ hexnib (guint32 c)
 }
 
 gchar *
-camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const gchar *path, gchar dir_sep)
+camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s,
+                                       const gchar *path,
+                                       gchar dir_sep)
 {
 	gchar *full, *f;
 	guint32 c, v = 0;
 	const gchar *p;
-	gint state=0;
+	gint state = 0;
 	gchar *subpath, *last = NULL;
 	CamelStoreInfo *si;
 
@@ -191,7 +196,7 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const gchar *pa
 		return f;
 	}
 
-	f = full = g_alloca (strlen (path)*2+1);
+	f = full = g_alloca (strlen (path) * 2 + 1);
 	if (si)
 		p = path + strlen (subpath);
 	else
@@ -234,7 +239,9 @@ camel_nntp_store_summary_path_to_full (CamelNNTPStoreSummary *s, const gchar *pa
 }
 
 CamelNNTPStoreInfo *
-camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s, const gchar *full, gchar dir_sep)
+camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s,
+                                        const gchar *full,
+                                        gchar dir_sep)
 {
 	CamelNNTPStoreInfo *info;
 	gchar *pathu8;
@@ -244,10 +251,10 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s, const gchar *f
 	d(printf("adding full name '%s' '%c'\n", full, dir_sep));
 
 	len = strlen (full);
-	full_name = g_alloca (len+1);
+	full_name = g_alloca (len + 1);
 	strcpy (full_name, full);
-	if (full_name[len-1] == dir_sep)
-		full_name[len-1] = 0;
+	if (full_name[len - 1] == dir_sep)
+		full_name[len - 1] = 0;
 
 	info = camel_nntp_store_summary_full_name (s, full_name);
 	if (info) {
@@ -270,7 +277,8 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s, const gchar *f
 }
 
 static gint
-summary_header_load (CamelStoreSummary *s, FILE *in)
+summary_header_load (CamelStoreSummary *s,
+                     FILE *in)
 {
 	CamelNNTPStoreSummary *is = (CamelNNTPStoreSummary *) s;
 	gint32 version, nil;
@@ -295,7 +303,8 @@ summary_header_load (CamelStoreSummary *s, FILE *in)
 }
 
 static gint
-summary_header_save (CamelStoreSummary *s, FILE *out)
+summary_header_save (CamelStoreSummary *s,
+                     FILE *out)
 {
 	CamelNNTPStoreSummary *is = (CamelNNTPStoreSummary *) s;
 
@@ -310,7 +319,8 @@ summary_header_save (CamelStoreSummary *s, FILE *out)
 }
 
 static CamelStoreInfo *
-store_info_load (CamelStoreSummary *s, FILE *in)
+store_info_load (CamelStoreSummary *s,
+                 FILE *in)
 {
 	CamelNNTPStoreInfo *ni;
 
@@ -334,7 +344,9 @@ store_info_load (CamelStoreSummary *s, FILE *in)
 }
 
 static gint
-store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
+store_info_save (CamelStoreSummary *s,
+                 FILE *out,
+                 CamelStoreInfo *mi)
 {
 	CamelNNTPStoreInfo *isi = (CamelNNTPStoreInfo *) mi;
 
@@ -348,7 +360,8 @@ store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
 }
 
 static void
-store_info_free (CamelStoreSummary *s, CamelStoreInfo *mi)
+store_info_free (CamelStoreSummary *s,
+                 CamelStoreInfo *mi)
 {
 	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *) mi;
 
@@ -357,7 +370,9 @@ store_info_free (CamelStoreSummary *s, CamelStoreInfo *mi)
 }
 
 static const gchar *
-store_info_string (CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
+store_info_string (CamelStoreSummary *s,
+                   const CamelStoreInfo *mi,
+                   gint type)
 {
 	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *) mi;
 
@@ -374,7 +389,10 @@ store_info_string (CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
 }
 
 static void
-store_info_set_string (CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str)
+store_info_set_string (CamelStoreSummary *s,
+                       CamelStoreInfo *mi,
+                       gint type,
+                       const gchar *str)
 {
 	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *) mi;
 

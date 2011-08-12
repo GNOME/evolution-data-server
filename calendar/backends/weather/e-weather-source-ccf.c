@@ -64,7 +64,10 @@ struct search_struct
 };
 
 static gboolean
-find_location_func (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *node, gpointer data)
+find_location_func (GtkTreeModel *model,
+                    GtkTreePath *path,
+                    GtkTreeIter *node,
+                    gpointer data)
 {
 	WeatherLocation *wl = NULL;
 	struct search_struct *search = (struct search_struct *) data;
@@ -83,7 +86,8 @@ find_location_func (GtkTreeModel *model, GtkTreePath *path, GtkTreeIter *node, g
 }
 
 static WeatherLocation *
-find_location (const gchar *code_name, gboolean is_old)
+find_location (const gchar *code_name,
+               gboolean is_old)
 {
 	GtkTreeModel *model;
 	gchar **ids;
@@ -114,7 +118,7 @@ done:
 	return search.location;
 }
 
-EWeatherSource*
+EWeatherSource *
 e_weather_source_ccf_new (const gchar *uri)
 {
 	/* Old URI is formatted as weather://ccf/AAA[/BBB] - AAA is the 3-letter station
@@ -147,7 +151,7 @@ e_weather_source_ccf_new (const gchar *uri)
 }
 
 #if 0
-static GSList*
+static GSList *
 tokenize (gchar *buffer)
 {
 	gchar *token;
@@ -162,7 +166,8 @@ tokenize (gchar *buffer)
 }
 
 static void
-date2tm (gchar *date, struct tm *times)
+date2tm (gchar *date,
+         struct tm *times)
 {
 	gchar tmp[3];
 	time_t curtime = time (NULL);
@@ -235,7 +240,9 @@ decodePOP (gchar data)
 }
 
 static void
-decodeSnowfall (gchar *data, gfloat *low, gfloat *high)
+decodeSnowfall (gchar *data,
+                gfloat *low,
+                gfloat *high)
 {
 	gchar num[3];
 	num[2] = '\0';
@@ -252,11 +259,12 @@ ftoc (gchar *data)
 	gint fahrenheit = atoi (data);
 	if (fahrenheit >= 900)
 		fahrenheit = (fahrenheit - 900) * -1;
-	return ((gfloat)(fahrenheit-32)) * 5.0f / 9.0f;
+	return ((gfloat)(fahrenheit - 32)) * 5.0f / 9.0f;
 }
 
 static void
-e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, gchar *buffer)
+e_weather_source_ccf_do_parse (EWeatherSourceCCF *source,
+                               gchar *buffer)
 {
 	/* CCF gives us either 2 or 7 days of forecast data. IFPS WFO's
 	 * will produce 7 day forecasts, whereas pre-IFPS WFO's are only
@@ -333,7 +341,7 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, gchar *buffer)
 	if (tms.tm_hour >= 12)
 		base += 43200;
 	for (i = 0; i < 7; i++)
-		forecasts[i].date = base + 86400*i;
+		forecasts[i].date = base + 86400 * i;
 
 	if (current == NULL || strlen (current->data) == 3) {
 		/* We've got a pre-IFPS station. Realloc and return */
@@ -400,7 +408,8 @@ e_weather_source_ccf_do_parse (EWeatherSourceCCF *source, gchar *buffer)
 #endif
 
 static void
-parse_done (WeatherInfo *info, gpointer data)
+parse_done (WeatherInfo *info,
+            gpointer data)
 {
 	EWeatherSourceCCF *ccfsource = (EWeatherSourceCCF *) data;
 
@@ -420,7 +429,7 @@ e_weather_source_ccf_parse (EWeatherSource *source,
                             EWeatherSourceFinished done,
                             gpointer data)
 {
-	EWeatherSourceCCF *ccfsource = (EWeatherSourceCCF*) source;
+	EWeatherSourceCCF *ccfsource = (EWeatherSourceCCF *) source;
 	WeatherPrefs prefs;
 
 	ccfsource->finished_data = data;

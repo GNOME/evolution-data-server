@@ -41,7 +41,7 @@ G_DEFINE_TYPE (EIntervalTree, e_intervaltree, G_TYPE_OBJECT)
 
 typedef struct _EIntervalNode EIntervalNode;
 
-static EIntervalNode*
+static EIntervalNode *
 intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x);
 
 struct _EIntervalNode
@@ -60,10 +60,10 @@ struct _EIntervalNode
 	ECalComponent *comp;
 
 	/* left child */
-	EIntervalNode* left;
+	EIntervalNode * left;
 	/* right child */
-	EIntervalNode* right;
-	EIntervalNode* parent;
+	EIntervalNode * right;
+	EIntervalNode * parent;
 };
 
 struct _EIntervalTreePrivate
@@ -75,7 +75,9 @@ struct _EIntervalTreePrivate
 };
 
 static inline gint
-get_direction (EIntervalNode *x, time_t z_start, time_t z_end)
+get_direction (EIntervalNode *x,
+               time_t z_start,
+               time_t z_end)
 {
 	if (x->start == z_start)
 		return x->end > z_end;
@@ -87,7 +89,8 @@ get_direction (EIntervalNode *x, time_t z_start, time_t z_end)
 }
 
 static inline gchar *
-component_key (const gchar *uid, const gchar *rid)
+component_key (const gchar *uid,
+               const gchar *rid)
 {
 	if (rid)
 		return	g_strdup_printf("%s_%s", uid, rid);
@@ -105,7 +108,10 @@ component_key (const gchar *uid, const gchar *rid)
  *
  **/
 static inline gint
-compare_intervals (time_t x_start, time_t x_end, time_t y_start, time_t y_end)
+compare_intervals (time_t x_start,
+                   time_t x_end,
+                   time_t y_start,
+                   time_t y_end)
 {
 	/* assumption: x_start <= x_end */
 	/* assumption: y_start <= y_end */
@@ -131,7 +137,8 @@ compare_intervals (time_t x_start, time_t x_end, time_t y_start, time_t y_end)
  * Caller should hold the lock
  **/
 static void
-left_rotate (EIntervalTree *tree, EIntervalNode *x)
+left_rotate (EIntervalTree *tree,
+             EIntervalNode *x)
 {
 	EIntervalTreePrivate *priv;
 	EIntervalNode *y;
@@ -176,7 +183,8 @@ left_rotate (EIntervalTree *tree, EIntervalNode *x)
  * Caller should hold the lock
  **/
 static void
-right_rotate (EIntervalTree *tree, EIntervalNode *y)
+right_rotate (EIntervalTree *tree,
+              EIntervalNode *y)
 {
 	EIntervalTreePrivate *priv;
 	EIntervalNode *x;
@@ -211,7 +219,8 @@ right_rotate (EIntervalTree *tree, EIntervalNode *y)
 }
 
 static void
-fixup_min_max_fields (EIntervalTree *tree, EIntervalNode *node)
+fixup_min_max_fields (EIntervalTree *tree,
+                      EIntervalNode *node)
 {
 	EIntervalTreePrivate *priv = tree->priv;
 	while (node != priv->root)
@@ -225,7 +234,8 @@ fixup_min_max_fields (EIntervalTree *tree, EIntervalNode *node)
 
 /* Caller should hold the lock */
 static void
-binary_tree_insert (EIntervalTree *tree, EIntervalNode *z)
+binary_tree_insert (EIntervalTree *tree,
+                    EIntervalNode *z)
 {
 	EIntervalTreePrivate *priv = tree->priv;
 	EIntervalNode *x;
@@ -270,7 +280,10 @@ binary_tree_insert (EIntervalTree *tree, EIntervalNode *z)
  * Since: 2.32
  **/
 gboolean
-e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalComponent *comp)
+e_intervaltree_insert (EIntervalTree *tree,
+                       time_t start,
+                       time_t end,
+                       ECalComponent *comp)
 {
 	EIntervalTreePrivate *priv;
 	EIntervalNode *y;
@@ -362,8 +375,9 @@ e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalCompon
 	return TRUE;
 }
 
-static EIntervalNode*
-intervaltree_node_next (EIntervalTree *tree, EIntervalNode *x)
+static EIntervalNode *
+intervaltree_node_next (EIntervalTree *tree,
+                        EIntervalNode *x)
 {
 	EIntervalTreePrivate *priv;
 	EIntervalNode *y, *nil, *root;
@@ -420,7 +434,7 @@ e_intervaltree_destroy (EIntervalTree *tree)
 
 	while (pos != NULL)
 	{
-		node = (EIntervalNode*) pos->data;
+		node = (EIntervalNode *) pos->data;
 
 		if (node != priv->nil)
 		{
@@ -440,7 +454,8 @@ e_intervaltree_destroy (EIntervalTree *tree)
 
 /* Caller should hold the lock */
 static void
-e_intervaltree_fixup_deletion (EIntervalTree *tree, EIntervalNode *x)
+e_intervaltree_fixup_deletion (EIntervalTree *tree,
+                               EIntervalNode *x)
 {
 	EIntervalTreePrivate *priv = tree->priv;
 	EIntervalNode *root = priv->root->left;
@@ -529,8 +544,10 @@ e_intervaltree_fixup_deletion (EIntervalTree *tree, EIntervalNode *x)
  *
  * Since: 2.32
  **/
-GList*
-e_intervaltree_search (EIntervalTree *tree, time_t start, time_t end)
+GList *
+e_intervaltree_search (EIntervalTree *tree,
+                       time_t start,
+                       time_t end)
 {
 	EIntervalTreePrivate *priv;
 	EIntervalNode *node;
@@ -546,7 +563,7 @@ e_intervaltree_search (EIntervalTree *tree, time_t start, time_t end)
 
 	while (pos != NULL)
 	{
-		node = (EIntervalNode*) pos->data;
+		node = (EIntervalNode *) pos->data;
 
 		if (node != priv->nil)
 		{
@@ -575,12 +592,14 @@ e_intervaltree_search (EIntervalTree *tree, time_t start, time_t end)
 
 #ifdef E_INTERVALTREE_DEBUG
 static void
-e_intervaltree_node_dump (EIntervalTree *tree, EIntervalNode *node, gint indent)
+e_intervaltree_node_dump (EIntervalTree *tree,
+                          EIntervalNode *node,
+                          gint indent)
 {
 	/*
 	gchar start_time[32] = {0}, end_time[32] = {0};
 	struct tm tm_start_time, tm_end_time;
-
+ *
 	localtime_r (&node->start, &tm_start_time);
 	localtime_r (&node->end, &tm_end_time);
 	strftime(start_time, sizeof (start_time), "%Y-%m-%d T%H:%M:%S", &tm_start_time);
@@ -615,8 +634,8 @@ e_intervaltree_dump (EIntervalTree *tree)
  **/
 static EIntervalNode *
 e_intervaltree_search_component (EIntervalTree *tree,
-				 const gchar *searched_uid,
-				 const gchar *searched_rid)
+                                 const gchar *searched_uid,
+                                 const gchar *searched_rid)
 {
 	EIntervalTreePrivate *priv;
 	EIntervalNode *node;
@@ -649,8 +668,8 @@ e_intervaltree_search_component (EIntervalTree *tree,
  **/
 gboolean
 e_intervaltree_remove (EIntervalTree *tree,
-		       const gchar *uid,
-		       const gchar *rid)
+                       const gchar *uid,
+                       const gchar *rid)
 {
 	EIntervalTreePrivate *priv;
 	EIntervalNode *y;
@@ -807,7 +826,7 @@ e_intervaltree_init (EIntervalTree *tree)
  *
  * Since: 2.32
  **/
-EIntervalTree*
+EIntervalTree *
 e_intervaltree_new (void)
 {
 	EIntervalTree *tree;

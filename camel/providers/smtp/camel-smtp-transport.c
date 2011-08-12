@@ -240,7 +240,7 @@ connect_to_server (CamelService *service,
 #endif /* CAMEL_HAVE_SSL */
 
 	/* We are supposed to re-EHLO after a successful STARTTLS to
-	   re-fetch any supported extensions. */
+	 * re-fetch any supported extensions. */
 	if (!smtp_helo (transport, cancellable, error)) {
 		camel_service_disconnect_sync (
 			(CamelService *) transport, TRUE, NULL);
@@ -263,13 +263,16 @@ connect_to_server (CamelService *service,
 }
 
 static void
-authtypes_free (gpointer key, gpointer value, gpointer data)
+authtypes_free (gpointer key,
+                gpointer value,
+                gpointer data)
 {
 	g_free (value);
 }
 
 static gchar *
-smtp_transport_get_name (CamelService *service, gboolean brief)
+smtp_transport_get_name (CamelService *service,
+                         gboolean brief)
 {
 	CamelURL *url;
 
@@ -366,7 +369,7 @@ smtp_transport_connect_sync (CamelService *service,
 			authenticated = smtp_auth (transport, sasl, cancellable, error);
 			if (!authenticated && !authtype->need_password) {
 				/* authentication mechanism doesn't need a password,
-				   so if it fails there's nothing we can do */
+				 * so if it fails there's nothing we can do */
 				camel_service_disconnect_sync (
 					service, TRUE, NULL);
 				return FALSE;
@@ -576,7 +579,7 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 	smtp_transport->need_rset = FALSE;
 
 	/* rfc1652 (8BITMIME) requires that you notify the ESMTP daemon that
-	   you'll be sending an 8bit mime message at "MAIL FROM:" time. */
+	 * you'll be sending an 8bit mime message at "MAIL FROM:" time. */
 	if (!smtp_mail (
 		smtp_transport, addr, has_8bit_parts, cancellable, error)) {
 		camel_operation_pop_message (cancellable);
@@ -836,7 +839,8 @@ smtp_next_token (const gchar *buf)
  *        hexadecimal digits
  */
 static gchar *
-smtp_decode_status_code (const gchar *in, gsize len)
+smtp_decode_status_code (const gchar *in,
+                         gsize len)
 {
 	guchar *inptr, *outptr;
 	const guchar *inend;
@@ -864,10 +868,10 @@ smtp_decode_status_code (const gchar *in, gsize len)
 }
 
 /* converts string str to local encoding, thinking it's in utf8.
-   If fails, then converts all character greater than 127 to hex values.
-   Also those under 32, other than \n, \r, \t.
-   Note that the c is signed character, so all characters above 127 have
-   negative value.
+ * If fails, then converts all character greater than 127 to hex values.
+ * Also those under 32, other than \n, \r, \t.
+ * Note that the c is signed character, so all characters above 127 have
+ * negative value.
 */
 static void
 convert_to_local (GString *str)
@@ -990,7 +994,7 @@ smtp_helo (CamelSmtpTransport *transport,
 	socklen_t addrlen;
 
 	/* these are flags that we set, so unset them in case we
-	   are being called a second time (ie, after a STARTTLS) */
+	 * are being called a second time (ie, after a STARTTLS) */
 	transport->flags &= ~(CAMEL_SMTP_TRANSPORT_8BITMIME |
 			      CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES |
 			      CAMEL_SMTP_TRANSPORT_STARTTLS);
@@ -1379,8 +1383,8 @@ smtp_data (CamelSmtpTransport *transport,
 
 	/* FIXME: should we get the best charset too?? */
 	/* Changes the encoding of all mime parts to fit within our required
-	   encoding type and also force any text parts with long lines (longer
-	   than 998 octets) to wrap by QP or base64 encoding them. */
+	 * encoding type and also force any text parts with long lines (longer
+	 * than 998 octets) to wrap by QP or base64 encoding them. */
 	camel_mime_message_set_best_encoding (message, CAMEL_BESTENC_GET_ENCODING, enctype);
 
 	cmdbuf = g_strdup ("DATA\r\n");

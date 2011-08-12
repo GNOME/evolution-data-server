@@ -69,7 +69,8 @@ camel_url_get_type (void)
  * Returns: a parsed #CamelURL
  **/
 CamelURL *
-camel_url_new_with_base (CamelURL *base, const gchar *url_string)
+camel_url_new_with_base (CamelURL *base,
+                         const gchar *url_string)
 {
 	CamelURL *url;
 	const gchar *end, *hash, *colon, *semi, *at, *slash, *question;
@@ -99,7 +100,7 @@ camel_url_new_with_base (CamelURL *base, const gchar *url_string)
 
 	/* Find protocol: initial [a-z+.-]* substring until ":" */
 	p = url_string;
-	while (p < end && (isalnum ((guchar)*p) ||
+	while (p < end && (isalnum ((guchar) * p) ||
 			   *p == '.' || *p == '+' || *p == '-'))
 		p++;
 
@@ -240,7 +241,7 @@ camel_url_new_with_base (CamelURL *base, const gchar *url_string)
 			gchar *newpath, *last, *p, *q;
 
 			/* the base->path is NULL if given Content-Base url was without last slash,
-			   i.e. like "http://example.com" (this expected only "http://example.com/") */
+			 * i.e. like "http://example.com" (this expected only "http://example.com/") */
 			last = base->path ? strrchr (base->path, '/') : NULL;
 			if (last) {
 				newpath = g_strdup_printf ("%.*s/%s",
@@ -296,7 +297,9 @@ camel_url_new_with_base (CamelURL *base, const gchar *url_string)
 }
 
 static void
-copy_param (GQuark key_id, gpointer data, gpointer user_data)
+copy_param (GQuark key_id,
+            gpointer data,
+            gpointer user_data)
 {
 	GData **copy = user_data;
 
@@ -343,7 +346,8 @@ camel_url_new (const gchar *url_string,
  * Returns: a string representing @url, which the caller must free
  **/
 gchar *
-camel_url_to_string (CamelURL *url, CamelURLFlags flags)
+camel_url_to_string (CamelURL *url,
+                     CamelURLFlags flags)
 {
 	GString *str;
 	gchar *return_result;
@@ -405,7 +409,9 @@ camel_url_to_string (CamelURL *url, CamelURLFlags flags)
 }
 
 static void
-output_param (GQuark key_id, gpointer data, gpointer user_data)
+output_param (GQuark key_id,
+              gpointer data,
+              gpointer user_data)
 {
 	GString *str = user_data;
 
@@ -591,7 +597,8 @@ camel_url_set_fragment (CamelURL *url,
  * Set the port on a #CamelURL.
  **/
 void
-camel_url_set_port (CamelURL *url, gint port)
+camel_url_set_port (CamelURL *url,
+                    gint port)
 {
 	g_return_if_fail (url != NULL);
 
@@ -607,7 +614,9 @@ camel_url_set_port (CamelURL *url, gint port)
  * Set a param on the #CamelURL.
  **/
 void
-camel_url_set_param (CamelURL *url, const gchar *name, const gchar *value)
+camel_url_set_param (CamelURL *url,
+                     const gchar *name,
+                     const gchar *value)
 {
 	g_return_if_fail (url != NULL);
 
@@ -627,7 +636,8 @@ camel_url_set_param (CamelURL *url, const gchar *name, const gchar *value)
  * Returns: the value of a param if found or %NULL otherwise
  **/
 const gchar *
-camel_url_get_param (CamelURL *url, const gchar *name)
+camel_url_get_param (CamelURL *url,
+                     const gchar *name)
 {
 	g_return_val_if_fail (url != NULL, NULL);
 
@@ -655,7 +665,9 @@ static const gchar url_encoded_char[] = {
 };
 
 static void
-append_url_encoded (GString *str, const gchar *in, const gchar *extra_enc_chars)
+append_url_encoded (GString *str,
+                    const gchar *in,
+                    const gchar *extra_enc_chars)
 {
 	const guchar *s = (const guchar *) in;
 
@@ -680,7 +692,8 @@ append_url_encoded (GString *str, const gchar *in, const gchar *extra_enc_chars)
  * Returns: the encoded string
  **/
 gchar *
-camel_url_encode (const gchar *part, const gchar *escape_extra)
+camel_url_encode (const gchar *part,
+                  const gchar *escape_extra)
 {
 	GString *str;
 	gchar *encoded;
@@ -742,7 +755,8 @@ camel_url_hash (gconstpointer v)
 }
 
 static gint
-check_equal (gchar *s1, gchar *s2)
+check_equal (gchar *s1,
+             gchar *s2)
 {
 	if (s1 == NULL) {
 		if (s2 == NULL)
@@ -758,7 +772,8 @@ check_equal (gchar *s1, gchar *s2)
 }
 
 gint
-camel_url_equal (gconstpointer v, gconstpointer v2)
+camel_url_equal (gconstpointer v,
+                 gconstpointer v2)
 {
 	const CamelURL *u1 = v, *u2 = v2;
 
@@ -825,7 +840,7 @@ camel_url_decode_path (const gchar *path)
 	}
 
         /* Strip-off the trailing "/" */
-	new_path = g_strndup (str->str, str->len-1);
+	new_path = g_strndup (str->str, str->len - 1);
 
 	g_strfreev (comps);
 	g_string_free (str, TRUE);

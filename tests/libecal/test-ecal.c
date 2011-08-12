@@ -45,7 +45,9 @@ static GMainLoop *loop;
 
 /* Prints a message with a client identifier */
 static void
-cl_printf (ECal *client, const gchar *format, ...)
+cl_printf (ECal *client,
+           const gchar *format,
+           ...)
 {
 	va_list args;
 
@@ -58,7 +60,9 @@ cl_printf (ECal *client, const gchar *format, ...)
 }
 
 static void
-objects_added_cb (GObject *object, GList *objects, gpointer data)
+objects_added_cb (GObject *object,
+                  GList *objects,
+                  gpointer data)
 {
 	GList *l;
 
@@ -67,7 +71,9 @@ objects_added_cb (GObject *object, GList *objects, gpointer data)
 }
 
 static void
-objects_modified_cb (GObject *object, GList *objects, gpointer data)
+objects_modified_cb (GObject *object,
+                     GList *objects,
+                     gpointer data)
 {
 	GList *l;
 
@@ -76,7 +82,9 @@ objects_modified_cb (GObject *object, GList *objects, gpointer data)
 }
 
 static void
-objects_removed_cb (GObject *object, GList *objects, gpointer data)
+objects_removed_cb (GObject *object,
+                    GList *objects,
+                    gpointer data)
 {
 	GList *l;
 
@@ -85,7 +93,10 @@ objects_removed_cb (GObject *object, GList *objects, gpointer data)
 }
 
 static void
-view_complete_cb (GObject *object, ECalendarStatus status, const gchar *error_msg, gpointer data)
+view_complete_cb (GObject *object,
+                  ECalendarStatus status,
+                  const gchar *error_msg,
+                  gpointer data)
 {
 	cl_printf (data, "View complete (status:%d, error_msg:%s)\n", status, error_msg ? error_msg : "NULL");
 }
@@ -130,7 +141,8 @@ list_uids (ECal *client)
 
 /* Callback used when a client is destroyed */
 static void
-client_destroy_cb (gpointer data, GObject *object)
+client_destroy_cb (gpointer data,
+                   GObject *object)
 {
 	if (E_CAL (object) == client1)
 		client1 = NULL;
@@ -142,7 +154,8 @@ client_destroy_cb (gpointer data, GObject *object)
 }
 
 static const gchar *
-test_object_creation (ECal *client,  gchar **uid)
+test_object_creation (ECal *client,
+                      gchar **uid)
 {
 	ECalComponent *comp, *comp_retrieved;
 	icalcomponent *icalcomp, *icalcomp_retrieved;
@@ -217,7 +230,8 @@ test_object_creation (ECal *client,  gchar **uid)
 }
 
 static const gchar *
-test_object_modification (ECal *client, gchar *uid)
+test_object_modification (ECal *client,
+                          gchar *uid)
 {
 	const gchar *summary = "This summary was modified";
 	icalcomponent *icalcomp, *icalcomp_modified;
@@ -320,7 +334,8 @@ test_get_alarms_in_range (ECal *client)
 }
 
 static const gchar *
-test_set_uri (ECal *client, const gchar *uri)
+test_set_uri (ECal *client,
+              const gchar *uri)
 {
 	/* The uri is set as part of create_client call. This method merely
 	 * verifies it was done correctly.
@@ -348,7 +363,8 @@ test_cal_loaded (ECal *client)
 }
 
 static const gchar *
-test_get_source (ECal *client, const gchar *expected)
+test_get_source (ECal *client,
+                 const gchar *expected)
 {
 	ESource *source;
 	gchar *uri;
@@ -367,7 +383,9 @@ test_get_source (ECal *client, const gchar *expected)
 }
 
 static const gchar *
-test_query (ECal *client, const gchar *query, gint expected)
+test_query (ECal *client,
+            const gchar *query,
+            gint expected)
 {
 	/* This uses pre-loaded data. Hence its results are valid only
 	 * when called before any write operation is performed.
@@ -387,7 +405,8 @@ test_query (ECal *client, const gchar *query, gint expected)
 
 #if 0
 static gchar *
-test_e_cal_new (ECal **cal, const gchar *uri)
+test_e_cal_new (ECal **cal,
+                const gchar *uri)
 {
 	GError *error = NULL;
 	gchar *cal_uri, *cal_file;
@@ -422,7 +441,8 @@ test_e_cal_new (ECal **cal, const gchar *uri)
 }
 
 static gchar *
-test_e_cal_remove (ECal *ecal, const gchar *uri)
+test_e_cal_remove (ECal *ecal,
+                   const gchar *uri)
 {
 	gchar *cal_uri;
 	GError *error = NULL;
@@ -561,30 +581,30 @@ test_get_default_object (ECal *client)
  * how can this be done better ?
  */
 #define EXPECTED \
-"BEGIN:VEVENT\
-UID:20040213T055519Z-15802-500-1-3@testcal\
-DTSTAMP:20040213T055519Z\
-DTSTART;TZID=/softwarestudio.org/Olson_20011030_5/Asia/Calcutta:\
+"BEGIN : VEVENT\
+UID : 20040213T055519Z - 15802 - 500 - 1 - 3@testcal\
+DTSTAMP : 20040213T055519Z\
+DTSTART; TZID=/softwarestudio.org / Olson_20011030_5 / Asia / Calcutta:\
  20040213T130000\
-DTEND;TZID=/softwarestudio.org/Olson_20011030_5/Asia/Calcutta:\
+DTEND; TZID=/softwarestudio.org / Olson_20011030_5 / Asia / Calcutta:\
  20040213T133000\
-TRANSP:OPAQUE\
-SEQUENCE:3\
-SUMMARY:Test - Travel plans to Kansas\
-LOCATION:Yellow Brick road\
-CLASS:PUBLIC\
-ORGANIZER;CN=dorothy:MAILTO:dorothy@oz\
+TRANSP : OPAQUE\
+SEQUENCE : 3\
+SUMMARY : Test - Travel plans to Kansas\
+LOCATION : Yellow Brick road\
+CLASS : PUBLIC\
+ORGANIZER; CN = dorothy : MAILTO : dorothy@oz\
 DESCRIPTION: Discuss way to home\
-ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;\
- RSVP=TRUE;CN=dorothy;LANGUAGE=en:MAILTO:dorothy@oz\
-ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;\
- RSVP=TRUE;CN=tinman;LANGUAGE=en:MAILTO:tinman@oz\
-ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;\
- RSVP=TRUE;CN=toto;LANGUAGE=en:MAILTO:toto@oz\
-ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=OPT-PARTICIPANT;PARTSTAT=NEEDS-ACTION;\
- RSVP=TRUE;CN=scarecrow;LANGUAGE=en:MAILTO:scarecrow@oz\
-LAST-MODIFIED:20040213T055647Z\
-END:VEVENT"
+ATTENDEE; CUTYPE = INDIVIDUAL; ROLE = REQ - PARTICIPANT; PARTSTAT = ACCEPTED;\
+ RSVP = TRUE; CN = dorothy; LANGUAGE = en : MAILTO : dorothy@oz\
+ATTENDEE; CUTYPE = INDIVIDUAL; ROLE = REQ - PARTICIPANT; PARTSTAT = NEEDS - ACTION;\
+ RSVP = TRUE; CN = tinman; LANGUAGE = en : MAILTO : tinman@oz\
+ATTENDEE; CUTYPE = INDIVIDUAL; ROLE = REQ - PARTICIPANT; PARTSTAT = NEEDS - ACTION;\
+ RSVP = TRUE; CN = toto; LANGUAGE = en : MAILTO : toto@oz\
+ATTENDEE; CUTYPE = INDIVIDUAL; ROLE = OPT - PARTICIPANT; PARTSTAT = NEEDS - ACTION;\
+ RSVP = TRUE; CN = scarecrow; LANGUAGE = en : MAILTO : scarecrow@oz\
+LAST - MODIFIED : 20040213T055647Z\
+END : VEVENT"
 
 static const gchar *
 test_get_object (ECal *client)
@@ -626,7 +646,8 @@ test_timezones (ECal *client)
 }
 
 static const gchar *
-all_tests (ECal *client, const gchar *uri)
+all_tests (ECal *client,
+           const gchar *uri)
 {
 	gchar *uid;
 
@@ -665,7 +686,10 @@ all_tests (ECal *client, const gchar *uri)
 
 /* Creates a calendar client and tries to load the specified URI into it */
 static void
-create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean only_if_exists)
+create_client (ECal **client,
+               const gchar *uri,
+               ECalSourceType type,
+               gboolean only_if_exists)
 {
 	const gchar *results;
 	ECalView *query;
@@ -718,7 +742,8 @@ create_client (ECal **client, const gchar *uri, ECalSourceType type, gboolean on
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gchar *uri;
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);

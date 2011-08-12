@@ -97,8 +97,8 @@ enum ProxyType {
 struct _EProxyPrivate {
 	SoupURI *uri_http, *uri_https;
 	guint notify_id_evo, notify_id_sys, notify_id_sys_http; /* conxn id of gconf_client_notify_add  */
-	GSList* ign_hosts;	/* List of hostnames. (Strings)		*/
-	GSList* ign_addrs;	/* List of hostaddrs. (ProxyHostAddrs)	*/
+	GSList * ign_hosts;	/* List of hostnames. (Strings)		*/
+	GSList * ign_addrs;	/* List of hostaddrs. (ProxyHostAddrs)	*/
 	gboolean use_proxy;	/* Is our-proxy enabled? */
 	enum ProxyType type;
 };
@@ -111,8 +111,8 @@ typedef enum {
 
 typedef struct {
 	ProxyAddrType type;	/* Specifies whether IPV4 or IPV6 */
-	gpointer  addr;		/* Either in_addr* or in6_addr* */
-	gpointer  mask;		/* Either in_addr* or in6_addr* */
+	gpointer  addr;		/* Either in_addr * or in6_addr * */
+	gpointer  mask;		/* Either in_addr * or in6_addr * */
 } ProxyHostAddr;
 
 /* Signals.  */
@@ -133,7 +133,7 @@ static void	ipv6_network_addr	(const struct in6_addr *addr,
 					 struct in6_addr *res);
 
 static void
-ep_free_proxy_host_addr (ProxyHostAddr* host)
+ep_free_proxy_host_addr (ProxyHostAddr *host)
 {
 	if (host) {
 		if (host->addr) {
@@ -152,7 +152,7 @@ static void
 e_proxy_dispose (GObject *object)
 {
 	EProxyPrivate *priv;
-	GConfClient* client;
+	GConfClient * client;
 
 	priv = E_PROXY (object)->priv;
 
@@ -228,10 +228,11 @@ e_proxy_init (EProxy *proxy)
 }
 
 static gboolean
-ep_is_in_ignored (EProxy *proxy, const gchar *host)
+ep_is_in_ignored (EProxy *proxy,
+                  const gchar *host)
 {
 	EProxyPrivate *priv;
-	GSList* l;
+	GSList * l;
 	gchar *hn;
 
 	g_return_val_if_fail (proxy != NULL, FALSE);
@@ -245,7 +246,7 @@ ep_is_in_ignored (EProxy *proxy, const gchar *host)
 
 	for (l = priv->ign_hosts; l; l = l->next) {
 		if (*((gchar *) l->data) == '*') {
-			if (g_str_has_suffix (hn, ((gchar *) l->data)+1)) {
+			if (g_str_has_suffix (hn, ((gchar *) l->data) + 1)) {
 				g_free (hn);
 				return TRUE;
 			}
@@ -260,7 +261,8 @@ ep_is_in_ignored (EProxy *proxy, const gchar *host)
 }
 
 static gboolean
-ep_need_proxy_http (EProxy* proxy, const gchar * host)
+ep_need_proxy_http (EProxy *proxy,
+                    const gchar *host)
 {
 	SoupAddress *addr = NULL;
 	EProxyPrivate *priv = proxy->priv;
@@ -276,12 +278,12 @@ ep_need_proxy_http (EProxy* proxy, const gchar * host)
 	status = soup_address_resolve_sync (addr, NULL);
 	if (status == SOUP_STATUS_OK) {
 		gint addr_len;
-		struct sockaddr* so_addr = NULL;
+		struct sockaddr * so_addr = NULL;
 
 		so_addr = soup_address_get_sockaddr (addr, &addr_len);
 
 		/* This will never happen, since we have already called
-		   soup_address_resolve_sync ().
+		 * soup_address_resolve_sync ().
 		*/
 		if (!so_addr)
 			return TRUE;
@@ -341,7 +343,8 @@ ep_need_proxy_http (EProxy* proxy, const gchar * host)
 }
 
 static gboolean
-ep_need_proxy_https (EProxy* proxy, const gchar * host)
+ep_need_proxy_https (EProxy *proxy,
+                     const gchar *host)
 {
 	/* Can we share ignore list from HTTP at all? */
 	return !ep_is_in_ignored (proxy, host);
@@ -349,8 +352,8 @@ ep_need_proxy_https (EProxy* proxy, const gchar * host)
 
 static gboolean
 ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
-		    struct in_addr *addr_in,
-		    gchar * netmask)
+                    struct in_addr *addr_in,
+                    gchar *netmask)
 {
 	gboolean has_error = FALSE;
 	struct in_addr *addr, *mask;
@@ -386,8 +389,9 @@ ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
 }
 
 static void
-ipv6_network_addr (const struct in6_addr *addr, const struct in6_addr *mask,
-                  struct in6_addr *res)
+ipv6_network_addr (const struct in6_addr *addr,
+                   const struct in6_addr *mask,
+                   struct in6_addr *res)
 {
 	gint i;
 
@@ -398,8 +402,8 @@ ipv6_network_addr (const struct in6_addr *addr, const struct in6_addr *mask,
 
 static gboolean
 ep_manipulate_ipv6 (ProxyHostAddr *host_addr,
-		    struct in6_addr *addr_in6,
-		    gchar * netmask)
+                    struct in6_addr *addr_in6,
+                    gchar *netmask)
 {
 	gboolean has_error = FALSE;
 	struct in6_addr *addr, *mask;
@@ -444,10 +448,11 @@ ep_manipulate_ipv6 (ProxyHostAddr *host_addr,
 }
 
 static void
-ep_parse_ignore_host (gpointer data, gpointer user_data)
+ep_parse_ignore_host (gpointer data,
+                      gpointer user_data)
 {
-	EProxy* proxy = (EProxy *) user_data;
-	EProxyPrivate* priv = NULL;
+	EProxy * proxy = (EProxy *) user_data;
+	EProxyPrivate * priv = NULL;
 	SoupAddress *addr;
 	guint status;
 	gchar *input, *netmask, *hostname;
@@ -471,14 +476,14 @@ ep_parse_ignore_host (gpointer data, gpointer user_data)
 	status = soup_address_resolve_sync (addr, NULL);
 	if (status == SOUP_STATUS_OK) {
 		gint addr_len;
-		struct sockaddr* so_addr = NULL;
+		struct sockaddr * so_addr = NULL;
 
 		host_addr = g_new0 (ProxyHostAddr, 1);
 
 		so_addr = soup_address_get_sockaddr (addr, &addr_len);
 
 		/* This will never happen, since we have already called
-		   soup_address_resolve_sync ().
+		 * soup_address_resolve_sync ().
 		*/
 		if (!so_addr)
 			goto error;
@@ -505,7 +510,8 @@ ep_parse_ignore_host (gpointer data, gpointer user_data)
 }
 
 static gboolean
-ep_change_uri (SoupURI **soup_uri, const gchar *uri)
+ep_change_uri (SoupURI **soup_uri,
+               const gchar *uri)
 {
 	gboolean changed = FALSE;
 
@@ -536,7 +542,9 @@ ep_change_uri (SoupURI **soup_uri, const gchar *uri)
 }
 
 static gchar *
-update_proxy_uri (const gchar *uri, const gchar *proxy_user, const gchar *proxy_pw)
+update_proxy_uri (const gchar *uri,
+                  const gchar *proxy_user,
+                  const gchar *proxy_pw)
 {
 	gchar *res, *user = NULL, *pw = NULL;
 	gboolean is_https;
@@ -571,13 +579,13 @@ update_proxy_uri (const gchar *uri, const gchar *proxy_user, const gchar *proxy_
 
 static void
 ep_set_proxy (GConfClient *client,
-	      gpointer user_data,
-	      gboolean regen_ign_host_list)
+              gpointer user_data,
+              gboolean regen_ign_host_list)
 {
 	gchar *proxy_server, *uri_http = NULL, *uri_https = NULL;
 	gint proxy_port, old_type;
-	EProxy* proxy = (EProxy *) user_data;
-	EProxyPrivate* priv = proxy->priv;
+	EProxy * proxy = (EProxy *) user_data;
+	EProxyPrivate * priv = proxy->priv;
 	GSList *ignore;
 	gboolean changed = FALSE, sys_manual = TRUE;
 
@@ -681,10 +689,13 @@ ep_set_proxy (GConfClient *client,
 }
 
 static void
-ep_setting_changed (GConfClient *client, guint32 cnxn_id, GConfEntry *entry, gpointer user_data)
+ep_setting_changed (GConfClient *client,
+                    guint32 cnxn_id,
+                    GConfEntry *entry,
+                    gpointer user_data)
 {
 	const gchar *key;
-	EProxy* proxy = (EProxy *) user_data;
+	EProxy * proxy = (EProxy *) user_data;
 	EProxyPrivate *priv;
 
 	if (!proxy || !proxy->priv)
@@ -749,8 +760,8 @@ e_proxy_setup_proxy (EProxy *proxy)
 	GConfClient *client;
 
 	/* We get the evolution-shell proxy keys here
-	   set soup up to use the proxy,
-	   and listen to any changes */
+	 * set soup up to use the proxy,
+	 * and listen to any changes */
 
 	/* XXX Why can't we do this automatically in constructed() ? */
 

@@ -494,7 +494,7 @@ e_categories_selector_delete_selection (ECategoriesSelector *selector)
 		selected, (GCompareFunc) gtk_tree_path_compare));
 
 	/* Prevent the model from being rebuilt every time we
-	   remove a category, since we're already modifying it. */
+	 * remove a category, since we're already modifying it. */
 	selector->priv->ignore_category_changes = TRUE;
 
 	for (item = selected; item != NULL; item = item->next) {

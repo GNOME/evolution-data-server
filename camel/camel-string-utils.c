@@ -29,7 +29,8 @@
 #include "camel-string-utils.h"
 
 gint
-camel_strcase_equal (gconstpointer a, gconstpointer b)
+camel_strcase_equal (gconstpointer a,
+                     gconstpointer b)
 {
 	return (g_ascii_strcasecmp ((const gchar *) a, (const gchar *) b) == 0);
 }
@@ -52,7 +53,8 @@ camel_strcase_hash (gconstpointer v)
 }
 
 static void
-free_string (gpointer string, gpointer user_data)
+free_string (gpointer string,
+             gpointer user_data)
 {
 	g_free (string);
 }
@@ -68,7 +70,8 @@ camel_string_list_free (GList *string_list)
 }
 
 gchar *
-camel_strstrcase (const gchar *haystack, const gchar *needle)
+camel_strstrcase (const gchar *haystack,
+                  const gchar *needle)
 {
 	/* find the needle in the haystack neglecting case */
 	const gchar *ptr;
@@ -154,7 +157,8 @@ static GHashTable *pstring_table = NULL;
  * camel_pstring_free() when it is no longer needed.
  **/
 const gchar *
-camel_pstring_add (gchar *str, gboolean own)
+camel_pstring_add (gchar *str,
+                   gboolean own)
 {
 	gpointer pcount;
 	gchar *pstr;
@@ -268,8 +272,8 @@ camel_pstring_free (const gchar *s)
 		return;
 
 	g_static_mutex_lock (&pstring_lock);
-	if (g_hash_table_lookup_extended (pstring_table, s, (gpointer *)&p, &pcount)) {
-		count = GPOINTER_TO_INT (pcount)-1;
+	if (g_hash_table_lookup_extended (pstring_table, s, (gpointer *) &p, &pcount)) {
+		count = GPOINTER_TO_INT (pcount) - 1;
 		if (count == 0) {
 			g_hash_table_remove (pstring_table, p);
 			g_free (p);

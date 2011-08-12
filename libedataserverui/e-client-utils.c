@@ -41,7 +41,9 @@
  * Proxy function for e_book_client_utils_new() and e_cal_client_utils_new().
  **/
 EClient	*
-e_client_utils_new (ESource *source, EClientSourceType source_type, GError **error)
+e_client_utils_new (ESource *source,
+                    EClientSourceType source_type,
+                    GError **error)
 {
 	EClient *res = NULL;
 
@@ -75,7 +77,9 @@ e_client_utils_new (ESource *source, EClientSourceType source_type, GError **err
  * Proxy function for e_book_client_utils_new_from_uri() and e_cal_client_utils_new_from_uri().
  **/
 EClient *
-e_client_utils_new_from_uri (const gchar *uri, EClientSourceType source_type, GError **error)
+e_client_utils_new_from_uri (const gchar *uri,
+                             EClientSourceType source_type,
+                             GError **error)
 {
 	EClient *res = NULL;
 
@@ -108,7 +112,8 @@ e_client_utils_new_from_uri (const gchar *uri, EClientSourceType source_type, GE
  * Proxy function for e_book_client_utils_new_system() and e_cal_client_utils_new_system().
  **/
 EClient *
-e_client_utils_new_system (EClientSourceType source_type, GError **error)
+e_client_utils_new_system (EClientSourceType source_type,
+                           GError **error)
 {
 	EClient *res = NULL;
 
@@ -139,7 +144,8 @@ e_client_utils_new_system (EClientSourceType source_type, GError **error)
  * Proxy function for e_book_client_utils_new_default() and e_cal_client_utils_new_default().
  **/
 EClient *
-e_client_utils_new_default (EClientSourceType source_type, GError **error)
+e_client_utils_new_default (EClientSourceType source_type,
+                            GError **error)
 {
 	EClient *res = NULL;
 
@@ -170,7 +176,9 @@ e_client_utils_new_default (EClientSourceType source_type, GError **error)
  * Proxy function for e_book_client_utils_set_default() and e_book_client_utils_set_default().
  **/
 gboolean
-e_client_utils_set_default (EClient *client, EClientSourceType source_type, GError **error)
+e_client_utils_set_default (EClient *client,
+                            EClientSourceType source_type,
+                            GError **error)
 {
 	gboolean res = FALSE;
 
@@ -202,7 +210,9 @@ e_client_utils_set_default (EClient *client, EClientSourceType source_type, GErr
  * Proxy function for e_book_client_utils_set_default_source() and e_cal_client_utils_set_default_source().
  **/
 gboolean
-e_client_utils_set_default_source (ESource *source, EClientSourceType source_type, GError **error)
+e_client_utils_set_default_source (ESource *source,
+                                   EClientSourceType source_type,
+                                   GError **error)
 {
 	gboolean res = FALSE;
 
@@ -236,7 +246,9 @@ e_client_utils_set_default_source (ESource *source, EClientSourceType source_typ
  * Proxy function for e_book_client_utils_get_sources() and e_cal_client_utils_get_sources().
  **/
 gboolean
-e_client_utils_get_sources (ESourceList **sources, EClientSourceType source_type, GError **error)
+e_client_utils_get_sources (ESourceList **sources,
+                            EClientSourceType source_type,
+                            GError **error)
 {
 	gboolean res = FALSE;
 
@@ -340,7 +352,11 @@ complete_async_op_in_idle_cb (gpointer user_data)
 	} G_STMT_END
 
 static void
-return_async_error (const GError *error, GAsyncReadyCallback async_cb, gpointer async_cb_user_data, ESource *source, gpointer source_tag)
+return_async_error (const GError *error,
+                    GAsyncReadyCallback async_cb,
+                    gpointer async_cb_user_data,
+                    ESource *source,
+                    gpointer source_tag)
 {
 	GSimpleAsyncResult *simple;
 
@@ -355,7 +371,9 @@ return_async_error (const GError *error, GAsyncReadyCallback async_cb, gpointer 
 }
 
 static void
-client_utils_get_backend_property_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_utils_get_backend_property_cb (GObject *source_object,
+                                      GAsyncResult *result,
+                                      gpointer user_data)
 {
 	EClient *client = E_CLIENT (source_object);
 	EClientUtilsAsyncOpData *async_data = user_data;
@@ -377,7 +395,7 @@ client_utils_get_backend_property_cb (GObject *source_object, GAsyncResult *resu
 	}
 
 	/* keep the initial auth_handler connected directly, thus it will be able
-	   to answer any later authentication requests, for reconnection, for example
+	 * to answer any later authentication requests, for reconnection, for example
 	*/
 	if (async_data->auth_handler)
 		g_signal_connect (async_data->client, "authenticate", G_CALLBACK (async_data->auth_handler), async_data->auth_handler_user_data);
@@ -392,7 +410,9 @@ client_utils_get_backend_property_cb (GObject *source_object, GAsyncResult *resu
 }
 
 static void
-client_utils_capabilities_retrieved_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_utils_capabilities_retrieved_cb (GObject *source_object,
+                                        GAsyncResult *result,
+                                        gpointer user_data)
 {
 	EClient *client = E_CLIENT (source_object);
 	EClientUtilsAsyncOpData *async_data = user_data;
@@ -447,7 +467,8 @@ client_utils_open_new_done (EClientUtilsAsyncOpData *async_data)
 static gboolean client_utils_retry_open_timeout_cb (gpointer user_data);
 
 static void
-finish_or_retry_open (EClientUtilsAsyncOpData *async_data, const GError *error)
+finish_or_retry_open (EClientUtilsAsyncOpData *async_data,
+                      const GError *error)
 {
 	g_return_if_fail (async_data != NULL);
 
@@ -478,7 +499,9 @@ finish_or_retry_open (EClientUtilsAsyncOpData *async_data, const GError *error)
 }
 
 static void
-client_utils_opened_cb (EClient *client, const GError *error, EClientUtilsAsyncOpData *async_data)
+client_utils_opened_cb (EClient *client,
+                        const GError *error,
+                        EClientUtilsAsyncOpData *async_data)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (async_data != NULL);
@@ -488,8 +511,8 @@ client_utils_opened_cb (EClient *client, const GError *error, EClientUtilsAsyncO
 
 	if (!async_data->open_finished) {
 		/* there can happen that the "opened" signal is received
-		   before the e_client_open () is finished, thus keep detailed
-		   error for later use, if any */
+		 * before the e_client_open () is finished, thus keep detailed
+		 * error for later use, if any */
 		if (error)
 			async_data->opened_cb_error = g_error_copy (error);
 	} else {
@@ -498,7 +521,9 @@ client_utils_opened_cb (EClient *client, const GError *error, EClientUtilsAsyncO
 }
 
 static void
-client_utils_open_new_async_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_utils_open_new_async_cb (GObject *source_object,
+                                GAsyncResult *result,
+                                gpointer user_data)
 {
 	EClientUtilsAsyncOpData *async_data = user_data;
 	GError *error = NULL;
@@ -548,7 +573,9 @@ client_utils_retry_open_timeout_cb (gpointer user_data)
 }
 
 static gboolean
-client_utils_open_new_auth_cb (EClient *client, ECredentials *credentials, gpointer user_data)
+client_utils_open_new_auth_cb (EClient *client,
+                               ECredentials *credentials,
+                               gpointer user_data)
 {
 	EClientUtilsAsyncOpData *async_data = user_data;
 	gboolean handled;
@@ -622,9 +649,14 @@ client_utils_open_new_auth_cb (EClient *client, ECredentials *credentials, gpoin
  * Since: 3.2
  **/
 void
-e_client_utils_open_new (ESource *source, EClientSourceType source_type, gboolean only_if_exists, GCancellable *cancellable,
-			 EClientUtilsAuthenticateHandler auth_handler, gpointer auth_handler_user_data,
-			 GAsyncReadyCallback async_cb, gpointer async_cb_user_data)
+e_client_utils_open_new (ESource *source,
+                         EClientSourceType source_type,
+                         gboolean only_if_exists,
+                         GCancellable *cancellable,
+                         EClientUtilsAuthenticateHandler auth_handler,
+                         gpointer auth_handler_user_data,
+                         GAsyncReadyCallback async_cb,
+                         gpointer async_cb_user_data)
 {
 	EClient *client;
 	GError *error = NULL;
@@ -682,7 +714,10 @@ e_client_utils_open_new (ESource *source, EClientSourceType source_type, gboolea
  * Since: 3.2
  **/
 gboolean
-e_client_utils_open_new_finish (ESource *source, GAsyncResult *result, EClient **client, GError **error)
+e_client_utils_open_new_finish (ESource *source,
+                                GAsyncResult *result,
+                                EClient **client,
+                                GError **error)
 {
 	GSimpleAsyncResult *simple;
 
@@ -704,7 +739,8 @@ e_client_utils_open_new_finish (ESource *source, GAsyncResult *result, EClient *
 
 /* free returned pointer with g_free() */
 static gchar *
-get_prompt_key (EClient *client, const gchar *user_name)
+get_prompt_key (EClient *client,
+                const gchar *user_name)
 {
 	SoupURI *suri;
 	gchar *uri_str;
@@ -725,15 +761,17 @@ get_prompt_key (EClient *client, const gchar *user_name)
 }
 
 /* This function is suitable as a handler for EClient::authenticate signal.
-   It takes care of all the password prompt and such and returns TRUE if
-   credentials (password) were provided. Thus just connect it to that signal
-   and it'll take care of everything else.
-
-   gtk_window_parent is user_data passed into the callback. It can be a pointer
-   to GtkWindow, used as a parent for a pasword prompt dialog.
+ * It takes care of all the password prompt and such and returns TRUE if
+ * credentials (password) were provided. Thus just connect it to that signal
+ * and it'll take care of everything else.
+ *
+ * gtk_window_parent is user_data passed into the callback. It can be a pointer
+ * to GtkWindow, used as a parent for a pasword prompt dialog.
 */
 gboolean
-e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials, gpointer gtk_window_parent)
+e_client_utils_authenticate_handler (EClient *client,
+                                     ECredentials *credentials,
+                                     gpointer gtk_window_parent)
 {
 	ESource *source;
 	gboolean is_book, is_cal, res, remember_password = FALSE;
@@ -769,7 +807,7 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 		e_credentials_set (credentials, E_CREDENTIALS_KEY_USERNAME, username);
 
 		/* no username set on the source - deny authentication request until
-		   username will be also enterable with e-passwords */
+		 * username will be also enterable with e-passwords */
 		if (!e_credentials_has_key (credentials, E_CREDENTIALS_KEY_USERNAME))
 			return FALSE;
 	}
@@ -872,18 +910,20 @@ e_client_utils_forget_password (EClient *client)
 }
 
 /* Asks for a password based on the provided credentials information.
-   Credentials should have set following keys:
-      E_CREDENTIALS_KEY_USERNAME
-      E_CREDENTIALS_KEY_PROMPT_KEY
-      E_CREDENTIALS_KEY_PROMPT_TEXT
-   all other keys are optional. If also E_CREDENTIALS_KEY_PASSWORD key is provided,
-   then it implies a reprompt.
-
-   When this returns TRUE, then the structure contains E_CREDENTIALS_KEY_PASSWORD set
-   as entered by a user.
+ * Credentials should have set following keys:
+ *    E_CREDENTIALS_KEY_USERNAME
+ *    E_CREDENTIALS_KEY_PROMPT_KEY
+ *    E_CREDENTIALS_KEY_PROMPT_TEXT
+ * all other keys are optional. If also E_CREDENTIALS_KEY_PASSWORD key is provided,
+ * then it implies a reprompt.
+ *
+ * When this returns TRUE, then the structure contains E_CREDENTIALS_KEY_PASSWORD set
+ * as entered by a user.
 */
 gboolean
-e_credentials_authenticate_helper (ECredentials *credentials, GtkWindow *parent, gboolean *remember_password)
+e_credentials_authenticate_helper (ECredentials *credentials,
+                                   GtkWindow *parent,
+                                   gboolean *remember_password)
 {
 	gboolean res, fake_remember_password = FALSE;
 	guint prompt_flags;

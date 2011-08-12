@@ -178,7 +178,8 @@ source_list_changed_cb (ESourceList *source_list,
 }
 
 static GObject *
-e_source_combo_box_constructor (GType type, guint n_construct_properties,
+e_source_combo_box_constructor (GType type,
+                                guint n_construct_properties,
                                 GObjectConstructParam *construct_properties)
 {
 	GtkCellRenderer *renderer;

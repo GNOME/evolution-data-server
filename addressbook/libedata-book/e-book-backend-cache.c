@@ -78,7 +78,8 @@ e_book_backend_cache_new (const gchar *filename)
  * Returns: A cached #EContact, or %NULL if @uid is not cached.
  **/
 EContact *
-e_book_backend_cache_get_contact (EBookBackendCache *cache, const gchar *uid)
+e_book_backend_cache_get_contact (EBookBackendCache *cache,
+                                  const gchar *uid)
 {
 	const gchar *vcard_str;
 	EContact *contact = NULL;
@@ -106,7 +107,7 @@ e_book_backend_cache_get_contact (EBookBackendCache *cache, const gchar *uid)
  **/
 gboolean
 e_book_backend_cache_add_contact (EBookBackendCache *cache,
-				   EContact *contact)
+                                  EContact *contact)
 {
 	gchar *vcard_str;
 	const gchar *uid;
@@ -138,7 +139,7 @@ e_book_backend_cache_add_contact (EBookBackendCache *cache,
  **/
 gboolean
 e_book_backend_cache_remove_contact (EBookBackendCache *cache,
-				    const gchar *uid)
+                                     const gchar *uid)
 
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_CACHE (cache), FALSE);
@@ -160,7 +161,8 @@ e_book_backend_cache_remove_contact (EBookBackendCache *cache,
  * Returns: %TRUE if the cache contains the contact, %FALSE otherwise.
  **/
 gboolean
-e_book_backend_cache_check_contact (EBookBackendCache *cache, const gchar *uid)
+e_book_backend_cache_check_contact (EBookBackendCache *cache,
+                                    const gchar *uid)
 {
 
 	gboolean retval;
@@ -186,7 +188,8 @@ e_book_backend_cache_check_contact (EBookBackendCache *cache, const gchar *uid)
  * Returns: A #GList of pointers to #EContact.
  **/
 GList *
-e_book_backend_cache_get_contacts (EBookBackendCache *cache, const gchar *query)
+e_book_backend_cache_get_contacts (EBookBackendCache *cache,
+                                   const gchar *query)
 {
 	gchar *vcard_str;
 	GSList *l, *lcache;
@@ -236,7 +239,8 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache, const gchar *query)
  * Returns: A #GPtrArray of pointers to contact ID strings.
  **/
 GPtrArray *
-e_book_backend_cache_search (EBookBackendCache *cache, const gchar *query)
+e_book_backend_cache_search (EBookBackendCache *cache,
+                             const gchar *query)
 {
 	GList *matching_contacts, *temp;
 	GPtrArray *ptr_array;
@@ -286,7 +290,8 @@ e_book_backend_cache_is_populated (EBookBackendCache *cache)
 }
 
 void
-e_book_backend_cache_set_time (EBookBackendCache *cache, const gchar *t)
+e_book_backend_cache_set_time (EBookBackendCache *cache,
+                               const gchar *t)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND_CACHE (cache));
 	if (!e_file_cache_add_object (E_FILE_CACHE (cache), "last_update_time", t))

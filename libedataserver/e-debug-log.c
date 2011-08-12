@@ -64,7 +64,10 @@ unlock (void)
  * Since: 2.32
  **/
 void
-e_debug_log (gboolean is_milestone, const gchar *domain, const gchar *format, ...)
+e_debug_log (gboolean is_milestone,
+             const gchar *domain,
+             const gchar *format,
+             ...)
 {
 	va_list args;
 
@@ -148,7 +151,10 @@ add_to_milestones (const gchar *str)
  * Since: 2.32
  **/
 void
-e_debug_logv (gboolean is_milestone, const gchar *domain, const gchar *format, va_list args)
+e_debug_logv (gboolean is_milestone,
+              const gchar *domain,
+              const gchar *format,
+              va_list args)
 {
 	gchar *str;
 	gchar *debug_str;
@@ -192,7 +198,8 @@ e_debug_logv (gboolean is_milestone, const gchar *domain, const gchar *format, v
  * Since: 2.32
  **/
 gboolean
-e_debug_log_load_configuration (const gchar *filename, GError **error)
+e_debug_log_load_configuration (const gchar *filename,
+                                GError **error)
 {
 	GKeyFile *key_file;
 	gchar **strings;
@@ -245,7 +252,8 @@ e_debug_log_load_configuration (const gchar *filename, GError **error)
  * Since: 2.32
  **/
 void
-e_debug_log_enable_domains (const gchar **domains, gint n_domains)
+e_debug_log_enable_domains (const gchar **domains,
+                            gint n_domains)
 {
 	gint i;
 
@@ -280,7 +288,8 @@ e_debug_log_enable_domains (const gchar **domains, gint n_domains)
  * Since: 2.32
  **/
 void
-e_debug_log_disable_domains (const gchar **domains, gint n_domains)
+e_debug_log_disable_domains (const gchar **domains,
+                             gint n_domains)
 {
 	gint i;
 
@@ -334,7 +343,9 @@ struct domains_dump_closure {
 };
 
 static void
-domains_foreach_dump_cb (gpointer key, gpointer value, gpointer data)
+domains_foreach_dump_cb (gpointer key,
+                         gpointer value,
+                         gpointer data)
 {
 	struct domains_dump_closure *closure;
 	gchar *domain;
@@ -380,7 +391,10 @@ make_key_file_from_configuration (void)
 }
 
 static gboolean
-write_string (const gchar *filename, FILE *file, const gchar *str, GError **error)
+write_string (const gchar *filename,
+              FILE *file,
+              const gchar *str,
+              GError **error)
 {
 	if (fputs (str, file) == EOF) {
 		gint saved_errno;
@@ -398,7 +412,9 @@ write_string (const gchar *filename, FILE *file, const gchar *str, GError **erro
 }
 
 static gboolean
-dump_configuration (const gchar *filename, FILE *file, GError **error)
+dump_configuration (const gchar *filename,
+                    FILE *file,
+                    GError **error)
 {
 	GKeyFile *key_file;
 	gchar *data;
@@ -433,7 +449,9 @@ dump_configuration (const gchar *filename, FILE *file, GError **error)
 }
 
 static gboolean
-dump_milestones (const gchar *filename, FILE *file, GError **error)
+dump_milestones (const gchar *filename,
+                 FILE *file,
+                 GError **error)
 {
 	GSList *l;
 
@@ -456,7 +474,9 @@ dump_milestones (const gchar *filename, FILE *file, GError **error)
 }
 
 static gboolean
-dump_ring_buffer (const gchar *filename, FILE *file, GError **error)
+dump_ring_buffer (const gchar *filename,
+                  FILE *file,
+                  GError **error)
 {
 	gint start_index;
 	gint i;
@@ -492,7 +512,8 @@ dump_ring_buffer (const gchar *filename, FILE *file, GError **error)
  * Since: 2.32
  **/
 gboolean
-e_debug_log_dump (const gchar *filename, GError **error)
+e_debug_log_dump (const gchar *filename,
+                  GError **error)
 {
 	FILE *file;
 	gboolean success;

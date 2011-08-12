@@ -43,7 +43,7 @@ nntp_address_decode (CamelAddress *address,
 
 	ha = camel_header_newsgroups_decode (raw);
 	if (ha) {
-		for (n = ha;n;n=n->next)
+		for (n = ha; n; n = n->next)
 			camel_nntp_address_add (
 				CAMEL_NNTP_ADDRESS (address), n->newsgroup);
 		camel_header_newsgroups_free (ha);
@@ -65,7 +65,7 @@ nntp_address_encode (CamelAddress *address)
 
 	out = g_string_new("");
 
-	for (i = 0;i < address->addresses->len; i++) {
+	for (i = 0; i < address->addresses->len; i++) {
 		if (i != 0)
 			g_string_append(out, ", ");
 
@@ -147,14 +147,15 @@ camel_nntp_address_new (void)
  * Returns: Index of added entry, or existing matching entry.
  **/
 gint
-camel_nntp_address_add (CamelNNTPAddress *a, const gchar *name)
+camel_nntp_address_add (CamelNNTPAddress *a,
+                        const gchar *name)
 {
 	gint index, i;
 
 	g_assert (CAMEL_IS_NNTP_ADDRESS (a));
 
 	index = ((CamelAddress *) a)->addresses->len;
-	for (i=0;i<index;i++)
+	for (i = 0; i < index; i++)
 		if (!strcmp (g_ptr_array_index (((CamelAddress *) a)->addresses, i), name))
 			return i;
 
@@ -174,7 +175,9 @@ camel_nntp_address_add (CamelNNTPAddress *a, const gchar *name)
  * Returns: TRUE if such an address exists, or FALSE otherwise.
  **/
 gboolean
-camel_nntp_address_get (CamelNNTPAddress *a, gint index, const gchar **namep)
+camel_nntp_address_get (CamelNNTPAddress *a,
+                        gint index,
+                        const gchar **namep)
 {
 	g_assert (CAMEL_IS_NNTP_ADDRESS (a));
 

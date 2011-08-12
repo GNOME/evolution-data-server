@@ -37,7 +37,8 @@ struct _ECredentialsPrivate
 };
 
 static gboolean
-key_equal (gconstpointer str1, gconstpointer str2)
+key_equal (gconstpointer str1,
+           gconstpointer str2)
 {
 	g_return_val_if_fail (str1 != NULL, FALSE);
 	g_return_val_if_fail (str2 != NULL, FALSE);
@@ -62,7 +63,7 @@ e_credentials_new (void)
 }
 
 /* Expects @keys as NULL terminate list of strings "key:encoded_value".
-   The same can be returned from e_credentials_to_strv ().
+ * The same can be returned from e_credentials_to_strv ().
 */
 ECredentials *
 e_credentials_new_strv (const gchar * const *keys)
@@ -89,7 +90,8 @@ e_credentials_new_strv (const gchar * const *keys)
 
 /* NULL-terminated list of string pairs <key, value>; value is in a clear form */
 ECredentials *
-e_credentials_new_args	(const gchar *key, ...)
+e_credentials_new_args (const gchar *key,
+                        ...)
 {
 	ECredentials *credentials;
 	va_list va;
@@ -115,13 +117,15 @@ e_credentials_new_args	(const gchar *key, ...)
 }
 
 static void
-copy_keys_cb (gpointer key, gpointer value, gpointer hash_table)
+copy_keys_cb (gpointer key,
+              gpointer value,
+              gpointer hash_table)
 {
 	g_hash_table_insert (hash_table, g_strdup (key), g_strdup (value));
 }
 
 ECredentials *
-e_credentials_new_clone	(const ECredentials *credentials)
+e_credentials_new_clone (const ECredentials *credentials)
 {
 	ECredentials *res;
 
@@ -151,7 +155,9 @@ e_credentials_free (ECredentials *credentials)
 }
 
 static void
-add_to_array_cb (gpointer key, gpointer value, gpointer ptr_array)
+add_to_array_cb (gpointer key,
+                 gpointer value,
+                 gpointer ptr_array)
 {
 	if (key && value && ptr_array) {
 		gchar *str = g_strconcat (key, ":", value, NULL);
@@ -163,9 +169,9 @@ add_to_array_cb (gpointer key, gpointer value, gpointer ptr_array)
 }
 
 /* Returns NULL-terminated array of strings with keys and encoded values;
-   To read them back pass this pointer to e_credentials_new (). As it returns
-   newly allocated string then this should be freed with g_strfreev ()
-   when no longer needed.
+ * To read them back pass this pointer to e_credentials_new (). As it returns
+ * newly allocated string then this should be freed with g_strfreev ()
+ * when no longer needed.
 */
 gchar **
 e_credentials_to_strv (const ECredentials *credentials)
@@ -240,11 +246,13 @@ decode_string (const gchar *encoded)
 }
 
 /* sets value for a key, if value is NULL or an empty string then the key is removed.
-   the value is supposed to be in a clear form (unencoded).
-   'key' cannot contain colon.
+ * the value is supposed to be in a clear form (unencoded).
+ * 'key' cannot contain colon.
 */
 void
-e_credentials_set (ECredentials *credentials, const gchar *key, const gchar *value)
+e_credentials_set (ECredentials *credentials,
+                   const gchar *key,
+                   const gchar *value)
 {
 	g_return_if_fail (credentials != NULL);
 	g_return_if_fail (credentials->priv != NULL);
@@ -264,10 +272,11 @@ e_credentials_set (ECredentials *credentials, const gchar *key, const gchar *val
 }
 
 /* Returned pointer should be freed with e_credentials_util_safe_free_string()
-   when no longer needed.
+ * when no longer needed.
 */
 gchar *
-e_credentials_get (const ECredentials *credentials, const gchar *key)
+e_credentials_get (const ECredentials *credentials,
+                   const gchar *key)
 {
 	const gchar *stored;
 
@@ -285,11 +294,12 @@ e_credentials_get (const ECredentials *credentials, const gchar *key)
 }
 
 /* peeks value for a key, in a clear form. The value is valid until free
-   of the @credentials structure or until the key value is rewritten
-   by e_credentials_set ()
+ * of the @credentials structure or until the key value is rewritten
+ * by e_credentials_set ()
 */
 const gchar *
-e_credentials_peek (ECredentials *credentials, const gchar *key)
+e_credentials_peek (ECredentials *credentials,
+                    const gchar *key)
 {
 	gchar *value;
 
@@ -317,7 +327,9 @@ struct equal_data
 };
 
 static void
-check_equal_cb (gpointer key, gpointer value, gpointer user_data)
+check_equal_cb (gpointer key,
+                gpointer value,
+                gpointer user_data)
 {
 	struct equal_data *ed = user_data;
 
@@ -331,7 +343,8 @@ check_equal_cb (gpointer key, gpointer value, gpointer user_data)
 
 /* Returns whether two credential structurs contain the same keys with same values */
 gboolean
-e_credentials_equal (const ECredentials *credentials1, const ECredentials *credentials2)
+e_credentials_equal (const ECredentials *credentials1,
+                     const ECredentials *credentials2)
 {
 	struct equal_data ed;
 
@@ -362,7 +375,10 @@ e_credentials_equal (const ECredentials *credentials1, const ECredentials *crede
 
 /* Returns whether two credentials structures has same keys. Key names are NULL-terminated. */
 gboolean
-e_credentials_equal_keys (const ECredentials *credentials1, const ECredentials *credentials2, const gchar *key1, ...)
+e_credentials_equal_keys (const ECredentials *credentials1,
+                          const ECredentials *credentials2,
+                          const gchar *key1,
+                          ...)
 {
 	va_list va;
 	gboolean equal = TRUE;
@@ -393,7 +409,8 @@ e_credentials_equal_keys (const ECredentials *credentials1, const ECredentials *
  * This key is non-NULL and non-empty string.
  **/
 gboolean
-e_credentials_has_key (const ECredentials *credentials, const gchar *key)
+e_credentials_has_key (const ECredentials *credentials,
+                       const gchar *key)
 {
 	g_return_val_if_fail (credentials != NULL, FALSE);
 	g_return_val_if_fail (credentials->priv != NULL, FALSE);
@@ -415,7 +432,9 @@ e_credentials_keys_size (const ECredentials *credentials)
 }
 
 static void
-gather_key_names (gpointer key, gpointer value, gpointer pslist)
+gather_key_names (gpointer key,
+                  gpointer value,
+                  gpointer pslist)
 {
 	GSList **slist = pslist;
 
@@ -426,11 +445,11 @@ gather_key_names (gpointer key, gpointer value, gpointer pslist)
 }
 
 /* Returns newly allocated list of key names stored in the credentials strucutre;
-   strings are internal credentials values, only the list is newly allocated.
-   Free the list with g_slist_free () when no longer needed.
+ * strings are internal credentials values, only the list is newly allocated.
+ * Free the list with g_slist_free () when no longer needed.
 */
 GSList *
-e_credentials_list_keys	(const ECredentials *credentials)
+e_credentials_list_keys (const ECredentials *credentials)
 {
 	GSList *keys = NULL;
 
@@ -495,7 +514,7 @@ static struct _PromptFlags {
 };
 
 /* Returned pointer can be passed to e_credentials_util_string_to prompt_flags()
-   to decode it back to flags. Free returned pointer with g_free ().
+ * to decode it back to flags. Free returned pointer with g_free ().
 */
 gchar *
 e_credentials_util_prompt_flags_to_string (guint prompt_flags)

@@ -6,10 +6,13 @@
 sqlite3 *db;
 
 static gint
-callback (gpointer data, gint argc, gchar **argv, gchar **azColName)
+callback (gpointer data,
+          gint argc,
+          gchar **argv,
+          gchar **azColName)
 {
 	gint i;
-	for (i=0; i<argc; i++) {
+	for (i = 0; i < argc; i++) {
 		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
 	}
 	printf("--DONE \n");
@@ -18,14 +21,15 @@ callback (gpointer data, gint argc, gchar **argv, gchar **azColName)
 }
 
 static gint
-select_stmt (const gchar * stmt) {
+select_stmt (const gchar *stmt)
+{
 	gchar *errmsg;
-	gint   ret;
-	gint   nrecs = 0;
+	gint ret;
+	gint nrecs = 0;
 
 	ret = sqlite3_exec (db, stmt, callback, &nrecs, &errmsg);
 
-	if (ret!=SQLITE_OK) {
+	if (ret != SQLITE_OK) {
 		printf("Error in select statement %s [%s].\n", stmt, errmsg);
 	} else {
 		printf("\n   %d records returned.\n", nrecs);
@@ -35,9 +39,10 @@ select_stmt (const gchar * stmt) {
 }
 
 static gint
-sql_stmt (const gchar * stmt) {
+sql_stmt (const gchar *stmt)
+{
 	gchar *errmsg;
-	gint   ret;
+	gint ret;
 
 	ret = sqlite3_exec (db, stmt, 0, 0, &errmsg);
 
@@ -54,7 +59,7 @@ sql_stmt (const gchar * stmt) {
 static gint
 create_table (const gchar *tablename)
 {
-	gchar *cmd = malloc (sizeof (CREATE_STMT)+20);
+	gchar *cmd = malloc (sizeof (CREATE_STMT) + 20);
 	sprintf (cmd, CREATE_STMT, tablename);
 	sql_stmt (cmd);
 }

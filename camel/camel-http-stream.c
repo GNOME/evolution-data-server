@@ -531,10 +531,10 @@ http_stream_can_seek (GSeekable *seekable)
 
 static gboolean
 http_stream_seek (GSeekable *seekable,
-		  goffset offset,
-		  GSeekType type,
-		  GCancellable *cancellable,
-		  GError **error)
+                  goffset offset,
+                  GSeekType type,
+                  GCancellable *cancellable,
+                  GError **error)
 {
 	CamelHttpStream *http;
 
@@ -561,9 +561,9 @@ http_stream_can_truncate (GSeekable *seekable)
 
 static gboolean
 http_stream_truncate_fn (GSeekable *seekable,
-			 goffset offset,
-			 GCancellable *cancellable,
-			 GError **error)
+                         goffset offset,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	/* XXX Don't bother translating this.  Camel never calls it. */
 	g_set_error_literal (
@@ -614,7 +614,9 @@ camel_http_stream_init (CamelHttpStream *http)
  * Returns: a http stream
  **/
 CamelStream *
-camel_http_stream_new (CamelHttpMethod method, struct _CamelSession *session, CamelURL *url)
+camel_http_stream_new (CamelHttpMethod method,
+                       CamelSession *session,
+                       CamelURL *url)
 {
 	CamelHttpStream *stream;
 	gchar *str;
@@ -653,7 +655,8 @@ camel_http_stream_get_content_type (CamelHttpStream *http_stream)
 }
 
 void
-camel_http_stream_set_user_agent (CamelHttpStream *http_stream, const gchar *user_agent)
+camel_http_stream_set_user_agent (CamelHttpStream *http_stream,
+                                  const gchar *user_agent)
 {
 	g_return_if_fail (CAMEL_IS_HTTP_STREAM (http_stream));
 
@@ -662,7 +665,8 @@ camel_http_stream_set_user_agent (CamelHttpStream *http_stream, const gchar *use
 }
 
 void
-camel_http_stream_set_proxy (CamelHttpStream *http_stream, const gchar *proxy_url)
+camel_http_stream_set_proxy (CamelHttpStream *http_stream,
+                             const gchar *proxy_url)
 {
 	g_return_if_fail (CAMEL_IS_HTTP_STREAM (http_stream));
 
@@ -691,7 +695,8 @@ camel_http_stream_set_proxy (CamelHttpStream *http_stream, const gchar *proxy_ur
 }
 
 void
-camel_http_stream_set_proxy_authrealm (CamelHttpStream *http_stream, const gchar *proxy_authrealm)
+camel_http_stream_set_proxy_authrealm (CamelHttpStream *http_stream,
+                                       const gchar *proxy_authrealm)
 {
 	g_return_if_fail (CAMEL_IS_HTTP_STREAM (http_stream));
 
@@ -700,7 +705,8 @@ camel_http_stream_set_proxy_authrealm (CamelHttpStream *http_stream, const gchar
 }
 
 void
-camel_http_stream_set_proxy_authpass (CamelHttpStream *http_stream, const gchar *proxy_authpass)
+camel_http_stream_set_proxy_authpass (CamelHttpStream *http_stream,
+                                      const gchar *proxy_authpass)
 {
 	g_return_if_fail (CAMEL_IS_HTTP_STREAM (http_stream));
 

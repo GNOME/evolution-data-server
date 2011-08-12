@@ -40,7 +40,7 @@ struct _EInterval
 {
 	gint start;
 	gint end;
-	ECalComponent* comp;
+	ECalComponent * comp;
 };
 
 typedef struct _EInterval EInterval;
@@ -48,7 +48,10 @@ typedef struct _EInterval EInterval;
 GList *list = NULL;
 
 static inline gint
-compare_intervals (time_t x_start, time_t x_end, time_t y_start, time_t y_end)
+compare_intervals (time_t x_start,
+                   time_t x_end,
+                   time_t y_start,
+                   time_t y_end)
 {
 	/* assumption: x_start <= x_end */
 	/* assumption: y_start <= y_end */
@@ -65,15 +68,17 @@ compare_intervals (time_t x_start, time_t x_end, time_t y_start, time_t y_end)
 	return 0;
 }
 
-static GList*
-search_in_list (GList* l, time_t start, time_t end)
+static GList *
+search_in_list (GList *l,
+                time_t start,
+                time_t end)
 {
-	GList* result = NULL;
+	GList * result = NULL;
 	EInterval *i, *i_new;
 
 	while (l)
 	{
-		i = (EInterval*) l->data;
+		i = (EInterval *) l->data;
 
 		if (compare_intervals (start, end, i->start, i->end) == 0)
 		{
@@ -98,7 +103,8 @@ search_in_list (GList* l, time_t start, time_t end)
  * list2 ... from interval tree
  */
 static gboolean
-compare_interval_lists (GList *list1, GList *list2)
+compare_interval_lists (GList *list1,
+                        GList *list2)
 {
 	gboolean found;
 	GList *l2;
@@ -113,12 +119,12 @@ compare_interval_lists (GList *list1, GList *list2)
 
 		l2 = list2;
 
-		i1 = (EInterval*) list1->data;
+		i1 = (EInterval *) list1->data;
 		c1 = i1->comp;
 
 		while (!found && l2 != NULL)
 		{
-			c2 = (ECalComponent*) l2->data;
+			c2 = (ECalComponent *) l2->data;
 
 			found = (c1 == c2);
 
@@ -131,7 +137,7 @@ compare_interval_lists (GList *list1, GList *list2)
 
 	if (!found)
 	{
-		i1 = (EInterval*) list1->data;
+		i1 = (EInterval *) list1->data;
 
 		g_message (G_STRLOC ": Not found %d - %d\n", i1->start, i1->end);
 	}
@@ -139,8 +145,9 @@ compare_interval_lists (GList *list1, GList *list2)
 	return found;
 }
 
-static ECalComponent*
-create_test_component (time_t start, time_t end)
+static ECalComponent *
+create_test_component (time_t start,
+                       time_t end)
 {
 	ECalComponent *comp = e_cal_component_new ();
 	ECalComponentText summary;
@@ -150,11 +157,11 @@ create_test_component (time_t start, time_t end)
 	/*
 	ECalComponentDateTime dtstart, dtend;
 	struct icaltimetype time_start, time_end;
-
+ *
 	time_start = icaltime_from_timet (start, 0);
 	dtstart.value = icaltime_from_timet (start, 0);
 	dtstart.zone = icaltimezone_get_utc_timezone ();
-
+ *
 	dtend.value = icaltime_from_timet (end, 0);
 	dtend.value = icaltimezone_get_utc_timezone ();
 	e_cal_component_set_dtstart (comp, &dtstart);
@@ -176,9 +183,10 @@ create_test_component (time_t start, time_t end)
 }
 
 static void
-unref_comp (gpointer data, gpointer user_data)
+unref_comp (gpointer data,
+            gpointer user_data)
 {
-	EInterval *interval = (EInterval*) data;
+	EInterval *interval = (EInterval *) data;
 	g_object_unref (interval->comp);
 	g_free (data);
 }
@@ -191,20 +199,20 @@ print_nodes_list (GList *l1)
 	{
 		ECalComponent *comp = l1->data;
 		ECalComponentText summary;
-
+ *
 		e_cal_component_get_summary (comp, &summary);
 		g_print ("%s\n", summary.value);
 		l1 = l1->next;
 	}
 }
-
+ *
 static void
 print_list (GList *l2)
 {
 	while (l2)
 	{
-		EInterval* i = l2->data;
-
+		EInterval * i = l2->data;
+ *
 		g_print ("%d - %d\n", i->start, i->end);
 		l2 = l2->next;
 	}
@@ -283,8 +291,8 @@ random_test (void)
 		end = g_rand_int_range (myrand, 2000, _TIME_MAX);
 
 		/*
-		   g_print ("Search for : %d - %d\n", start, end);
-		   */
+		 * g_print ("Search for : %d - %d\n", start, end);
+		 * */
 
 		l1 = e_intervaltree_search (tree, start, end);
 
@@ -311,8 +319,8 @@ random_test (void)
 		end = _TIME_MAX;
 
 		/*
-		   g_print ("Search for : %d - %d\n", start, end);
-		   */
+		 * g_print ("Search for : %d - %d\n", start, end);
+		 * */
 
 		l1 = e_intervaltree_search (tree, start, end);
 
@@ -344,14 +352,14 @@ random_test (void)
 			ECalComponent *comp;
 			const gchar *uid = NULL;
 			gchar *rid;
-			interval = (EInterval*) l1->data;
+			interval = (EInterval *) l1->data;
 			comp = interval->comp;
 
 			/* delete l1 */
 			/*
-			   g_print ("Deleting interval %d - %d\n", interval->start,
-			   interval->end);
-			   */
+			 * g_print ("Deleting interval %d - %d\n", interval->start,
+			 * interval->end);
+			 * */
 
 			rid = e_cal_component_get_recurid_as_string (comp);
 			e_cal_component_get_uid (comp, &uid);
@@ -382,14 +390,14 @@ random_test (void)
 		end = g_rand_int_range (myrand, start, 2000);
 
 		/*
-		   g_print ("Search for : %d - %d\n", start, end);
-		   */
+		 * g_print ("Search for : %d - %d\n", start, end);
+		 * */
 
 		l1 = e_intervaltree_search (tree, start, end);
 
 		/*
-		   g_print ("Results from tree:\n");
-		   print_nodes_list (l1);
+		 * g_print ("Results from tree:\n");
+		 * print_nodes_list (l1);
 		 */
 
 		l2 = search_in_list (list, start, end);
@@ -453,7 +461,8 @@ mem_test (void)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	g_type_init ();
 

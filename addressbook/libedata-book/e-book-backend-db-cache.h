@@ -27,7 +27,7 @@
 
 G_BEGIN_DECLS
 
-EContact* e_book_backend_db_cache_get_contact (DB *db, const gchar *uid);
+EContact * e_book_backend_db_cache_get_contact (DB *db, const gchar *uid);
 void string_to_dbt (const gchar *str, DBT *dbt);
 gchar *e_book_backend_db_cache_get_filename (DB *db);
 void e_book_backend_db_cache_set_filename (DB *db, const gchar *filename);
@@ -36,11 +36,11 @@ gboolean e_book_backend_db_cache_add_contact (DB *db,
 gboolean e_book_backend_db_cache_remove_contact (DB *db,
 					      const gchar *uid);
 gboolean e_book_backend_db_cache_check_contact (DB *db, const gchar *uid);
-GList*   e_book_backend_db_cache_get_contacts (DB *db, const gchar *query);
+GList *   e_book_backend_db_cache_get_contacts (DB *db, const gchar *query);
 gboolean e_book_backend_db_cache_exists (const gchar *uri);
 void     e_book_backend_db_cache_set_populated (DB *db);
 gboolean e_book_backend_db_cache_is_populated (DB *db);
-GPtrArray* e_book_backend_db_cache_search (DB *db, const gchar *query);
+GPtrArray * e_book_backend_db_cache_search (DB *db, const gchar *query);
 void e_book_backend_db_cache_set_time (DB *db, const gchar *t);
 gchar * e_book_backend_db_cache_get_time (DB *db);
 

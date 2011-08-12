@@ -208,7 +208,8 @@ system_timezone_read_etc_conf_d_clock (void)
 }
 
 static void
-update_fallback (gchar **fallback, gchar *adept)
+update_fallback (gchar **fallback,
+                 gchar *adept)
 {
 	g_return_if_fail (fallback != NULL);
 
@@ -235,13 +236,13 @@ typedef gboolean (*CompareFiles) (struct stat *a_stat,
 				  const gchar  *b_filename);
 
 static gchar *
-recursive_compare (struct stat  *localtime_stat,
-		   const gchar   *localtime_content,
-		   gsize	 localtime_content_len,
-		   const gchar	*file,
-		   CompareFiles  compare_func,
-		   gint deep_level,
-		   gchar **fallback)
+recursive_compare (struct stat *localtime_stat,
+                   const gchar *localtime_content,
+                   gsize localtime_content_len,
+                   const gchar *file,
+                   CompareFiles compare_func,
+                   gint deep_level,
+                   gchar **fallback)
 {
 	struct stat file_stat;
 
@@ -299,10 +300,10 @@ recursive_compare (struct stat  *localtime_stat,
 
 static gboolean
 files_are_identical_inode (struct stat *a_stat,
-			   struct stat *b_stat,
-			   const gchar  *a_content,
-			   gsize	a_content_len,
-			   const gchar  *b_filename)
+                           struct stat *b_stat,
+                           const gchar *a_content,
+                           gsize a_content_len,
+                           const gchar *b_filename)
 {
 	gboolean res = a_stat->st_ino == b_stat->st_ino;
 
@@ -316,7 +317,7 @@ files_are_identical_inode (struct stat *a_stat,
 			filename = b_filename;
 
 		/* There is a 'localtime' soft link to /etc/localtime in the zoneinfo
-		   directory on Slackware, thus rather skip this file. */
+		 * directory on Slackware, thus rather skip this file. */
 		res = !g_str_equal (filename, "localtime");
 	}
 
@@ -355,10 +356,10 @@ system_timezone_read_etc_localtime_hardlink (void)
 
 static gboolean
 files_are_identical_content (struct stat *a_stat,
-			     struct stat *b_stat,
-			     const gchar  *a_content,
-			     gsize        a_content_len,
-			     const gchar  *b_filename)
+                             struct stat *b_stat,
+                             const gchar *a_content,
+                             gsize a_content_len,
+                             const gchar *b_filename)
 {
 	gchar  *b_content = NULL;
 	gsize  b_content_len = -1;
@@ -487,7 +488,7 @@ struct timezone_map_entry
 };
 
 static gchar *
-windows_timezone_string_to_olson (const gchar * windows_tz)
+windows_timezone_string_to_olson (const gchar *windows_tz)
 {
 	/* source: http://www.chronos-st.org/Windows-to-Olson.txt */
 	static const struct timezone_map_entry timezone_map[] = {
@@ -656,7 +657,7 @@ windows_timezone_string_to_olson (const gchar * windows_tz)
 
 	gint i;
 
-	for (i=0; timezone_map[i].windows_string && windows_tz; i++) {
+	for (i = 0; timezone_map[i].windows_string && windows_tz; i++) {
 		gint res = strcmp ( timezone_map[i].windows_string, windows_tz);
 		if (res > 0)
 			return NULL;
@@ -723,7 +724,7 @@ system_timezone_win32_query_registry (void)
 		return NULL;
 	}
 
-	for (i=0, res = ERROR_SUCCESS; res != ERROR_NO_MORE_ITEMS; i++) {
+	for (i = 0, res = ERROR_SUCCESS; res != ERROR_NO_MORE_ITEMS; i++) {
 		size = MAX_VALUE_NAME;
 		res = RegEnumKeyEx (reg_key, i, subKey, &size, NULL, NULL, NULL, NULL);
 		if (res == ERROR_SUCCESS) {

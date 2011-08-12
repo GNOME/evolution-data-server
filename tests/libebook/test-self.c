@@ -4,7 +4,8 @@
 #include <libebook/e-book.h>
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBook *book;
 	EContact *contact;

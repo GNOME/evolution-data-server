@@ -139,11 +139,11 @@ nntp_stream_read (CamelStream *stream,
 		}
 		if (p[0] == '.') {
 			if (p[1] == '\r' && p[2] == '\n') {
-				is->ptr = p+3;
+				is->ptr = p + 3;
 				is->mode = CAMEL_NNTP_STREAM_EOD;
 				is->state = 0;
 				dd (printf ("NNTP_STREAM_READ (%d):\n%.*s\n", (gint)(o-buffer), (gint)(o-buffer), buffer));
-				return o-buffer;
+				return o - buffer;
 			}
 			p++;
 		}
@@ -177,7 +177,7 @@ nntp_stream_read (CamelStream *stream,
 
 	dd (printf ("NNTP_STREAM_READ (%d):\n%.*s\n", (gint)(o-buffer), (gint)(o-buffer), buffer));
 
-	return o-buffer;
+	return o - buffer;
 }
 
 static gssize
@@ -240,8 +240,8 @@ static void
 camel_nntp_stream_init (CamelNNTPStream *is)
 {
 	/* +1 is room for appending a 0 if we need to for a line */
-	is->ptr = is->end = is->buf = g_malloc (CAMEL_NNTP_STREAM_SIZE+1);
-	is->lineptr = is->linebuf = g_malloc (CAMEL_NNTP_STREAM_LINE_SIZE+1);
+	is->ptr = is->end = is->buf = g_malloc (CAMEL_NNTP_STREAM_SIZE + 1);
+	is->lineptr = is->linebuf = g_malloc (CAMEL_NNTP_STREAM_LINE_SIZE + 1);
 	is->lineend = is->linebuf + CAMEL_NNTP_STREAM_LINE_SIZE;
 
 	/* init sentinal */
@@ -296,7 +296,7 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 	/* Data mode, convert leading '..' to '.', and stop when we reach a solitary '.' */
 	if (is->mode == CAMEL_NNTP_STREAM_DATA) {
 		/* need at least 3 chars in buffer */
-		while (e-p < 3) {
+		while (e - p < 3) {
 			is->ptr = p;
 			if (nntp_stream_fill (is, cancellable, error) == -1)
 				return -1;
@@ -307,7 +307,7 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 		/* check for isolated '.\r\n' or begging of line '.' */
 		if (p[0] == '.') {
 			if (p[1] == '\r' && p[2] == '\n') {
-				is->ptr = p+3;
+				is->ptr = p + 3;
 				is->mode = CAMEL_NNTP_STREAM_EOD;
 				*data = is->linebuf;
 				*len = 0;
@@ -387,7 +387,7 @@ camel_nntp_stream_gets (CamelNNTPStream *is,
 
 	dd (printf ("NNTP_STREAM_GETS (%s,%d): '%.*s'\n", end==NULL?"more":"last", *len, (gint)*len, *start));
 
-	return end == NULL?1:0;
+	return end == NULL ? 1 : 0;
 }
 
 void
@@ -438,7 +438,7 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 			/* check leading '.', ... */
 			if (p[0] == '.') {
 				if (p[1] == '\r' && p[2] == '\n') {
-					is->ptr = p+3;
+					is->ptr = p + 3;
 					*len = p-s;
 					*start = s;
 					is->mode = CAMEL_NNTP_STREAM_EOD;
@@ -454,7 +454,7 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 					s++;
 					p++;
 				} else {
-					is->ptr = p+1;
+					is->ptr = p + 1;
 					*len = p-s;
 					*start = s;
 					is->state = 1;
@@ -467,7 +467,7 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 			state = 1;
 		case 1:
 			/* Scan for sentinal */
-			while ((*p++)!='\n')
+			while ((*p++) != '\n')
 				;
 
 			if (p > e) {
@@ -477,7 +477,7 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 			}
 			break;
 		}
-	} while ((e-p) >= 3);
+	} while ((e - p) >= 3);
 
 	is->state = state;
 	is->ptr = p;

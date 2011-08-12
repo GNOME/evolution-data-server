@@ -5,7 +5,8 @@
 #include "client-test-utils.h"
 
 void
-report_error (const gchar *operation, GError **error)
+report_error (const gchar *operation,
+              GError **error)
 {
 	g_return_if_fail (operation != NULL);
 
@@ -107,7 +108,8 @@ static GMainLoop *loop = NULL;
 static gint main_stop_result = 0;
 
 static void
-do_start (GThreadFunc func, gpointer data)
+do_start (GThreadFunc func,
+          gpointer data)
 {
 	main_initialize ();
 
@@ -125,11 +127,11 @@ do_start (GThreadFunc func, gpointer data)
 }
 
 /* Starts new main-loop, but just before that calls 'func'.
-   Main-loop is kept running, and this function blocks,
-   until call of stop_main_loop ().
-*/
+ * Main-loop is kept running, and this function blocks,
+ * until call of stop_main_loop (). */
 void
-start_main_loop (GThreadFunc func, gpointer data)
+start_main_loop (GThreadFunc func,
+                 gpointer data)
 {
 	g_return_if_fail (loop == NULL);
 
@@ -137,11 +139,11 @@ start_main_loop (GThreadFunc func, gpointer data)
 }
 
 /* Starts new main-loop and then invokes func in a new thread.
-   Main-loop is kept running, and this function blocks,
-   until call of stop_main_loop ().
-*/
+ * Main-loop is kept running, and this function blocks,
+ * until call of stop_main_loop (). */
 void
-start_in_thread_with_main_loop (GThreadFunc func, gpointer data)
+start_in_thread_with_main_loop (GThreadFunc func,
+                                gpointer data)
 {
 	struct IdleData *idle;
 
@@ -161,11 +163,11 @@ start_in_thread_with_main_loop (GThreadFunc func, gpointer data)
 }
 
 /* Starts new main-loop and then invokes func in an idle callback.
-   Main-loop is kept running, and this function blocks,
-   until call of stop_main_loop ().
-*/
+ * Main-loop is kept running, and this function blocks,
+ * until call of stop_main_loop (). */
 void
-start_in_idle_with_main_loop (GThreadFunc func, gpointer data)
+start_in_idle_with_main_loop (GThreadFunc func,
+                              gpointer data)
 {
 	struct IdleData *idle;
 
@@ -185,7 +187,7 @@ start_in_idle_with_main_loop (GThreadFunc func, gpointer data)
 }
 
 /* Stops main-loop previously run by start_main_loop,
-   start_in_thread_with_main_loop or start_in_idle_with_main_loop.
+ * start_in_thread_with_main_loop or start_in_idle_with_main_loop.
 */
 void
 stop_main_loop (gint stop_result)
@@ -273,7 +275,8 @@ foreach_configured_source_async_start (ESource **source)
 }
 
 gboolean
-foreach_configured_source_async_next (gpointer *foreach_async_data, ESource **source)
+foreach_configured_source_async_next (gpointer *foreach_async_data,
+                                      ESource **source)
 {
 	struct ForeachConfiguredData *async_data;
 
@@ -353,7 +356,7 @@ new_vcard_from_test_case (const gchar *case_name)
 {
 	gchar *filename;
 	gchar *case_filename;
-	GFile* file;
+	GFile * file;
 	GError *error = NULL;
 	gchar *vcard;
 
@@ -374,7 +377,8 @@ new_vcard_from_test_case (const gchar *case_name)
 }
 
 static gboolean
-contacts_are_equal_shallow (EContact *a, EContact *b)
+contacts_are_equal_shallow (EContact *a,
+                            EContact *b)
 {
 	const gchar *uid_a, *uid_b;
 
@@ -393,7 +397,9 @@ contacts_are_equal_shallow (EContact *a, EContact *b)
 }
 
 gboolean
-add_contact_from_test_case_verify (EBookClient *book_client, const gchar *case_name, EContact **contact)
+add_contact_from_test_case_verify (EBookClient *book_client,
+                                   const gchar *case_name,
+                                   EContact **contact)
 {
 	gchar *vcard;
 	EContact *contact_orig;
@@ -433,7 +439,8 @@ add_contact_from_test_case_verify (EBookClient *book_client, const gchar *case_n
 }
 
 gboolean
-add_contact_verify (EBookClient *book_client, EContact *contact)
+add_contact_verify (EBookClient *book_client,
+                    EContact *contact)
 {
 	EContact *contact_final;
 	gchar *uid;

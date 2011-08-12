@@ -89,7 +89,9 @@ add_contacts (EBookBackendSqliteDB *ebsdb)
 }
 
 static void
-search_db (EBookBackendSqliteDB *ebsdb, const gchar *type, const gchar *sexp)
+search_db (EBookBackendSqliteDB *ebsdb,
+           const gchar *type,
+           const gchar *sexp)
 {
 	GSList *vcards;
 	EbSdbSearchData *s_data;
@@ -191,7 +193,8 @@ exit:
 }
 
 gint
-main (gint argc, gchar *argv[])
+main (gint argc,
+      gchar *argv[])
 {
 	g_type_init ();
 	g_thread_init (NULL);

@@ -170,8 +170,8 @@ struct _EVCardClass {
 GType   e_vcard_get_type                     (void);
 
 void    e_vcard_construct                    (EVCard *evc, const gchar *str);
-EVCard* e_vcard_new                          (void);
-EVCard* e_vcard_new_from_string              (const gchar *str);
+EVCard * e_vcard_new                          (void);
+EVCard * e_vcard_new_from_string              (const gchar *str);
 
 gboolean e_vcard_is_parsed (EVCard *evc);
 
@@ -204,9 +204,9 @@ void             e_vcard_attribute_remove_param_value (EVCardAttribute *attr, co
 
 /* attribute parameters */
 GType                 e_vcard_attribute_param_get_type        (void);
-EVCardAttributeParam* e_vcard_attribute_param_new             (const gchar *name);
+EVCardAttributeParam * e_vcard_attribute_param_new             (const gchar *name);
 void                  e_vcard_attribute_param_free            (EVCardAttributeParam *param);
-EVCardAttributeParam* e_vcard_attribute_param_copy            (EVCardAttributeParam *param);
+EVCardAttributeParam * e_vcard_attribute_param_copy            (EVCardAttributeParam *param);
 void                  e_vcard_attribute_add_param             (EVCardAttribute *attr, EVCardAttributeParam *param);
 void                  e_vcard_attribute_add_param_with_value  (EVCardAttribute *attr,
 							       EVCardAttributeParam *param, const gchar *value);
@@ -220,23 +220,23 @@ void                  e_vcard_attribute_param_add_values      (EVCardAttributePa
 void                  e_vcard_attribute_param_remove_values   (EVCardAttributeParam *param);
 
 /* EVCard* accessors.  nothing returned from these functions should be
-   freed by the caller. */
+ * freed by the caller. */
 EVCardAttribute *e_vcard_get_attribute        (EVCard *evc, const gchar *name);
-GList*           e_vcard_get_attributes       (EVCard *evcard);
+GList *           e_vcard_get_attributes       (EVCard *evcard);
 const gchar *      e_vcard_attribute_get_group  (EVCardAttribute *attr);
 const gchar *      e_vcard_attribute_get_name   (EVCardAttribute *attr);
-GList*           e_vcard_attribute_get_values (EVCardAttribute *attr);  /* GList elements are of type gchar * */
-GList*           e_vcard_attribute_get_values_decoded (EVCardAttribute *attr); /* GList elements are of type GString* */
+GList *           e_vcard_attribute_get_values (EVCardAttribute *attr);  /* GList elements are of type gchar * */
+GList *           e_vcard_attribute_get_values_decoded (EVCardAttribute *attr); /* GList elements are of type GString * */
 
 /* special accessors for single valued attributes */
 gboolean              e_vcard_attribute_is_single_valued      (EVCardAttribute *attr);
 gchar *                 e_vcard_attribute_get_value             (EVCardAttribute *attr);
-GString*              e_vcard_attribute_get_value_decoded     (EVCardAttribute *attr);
+GString *              e_vcard_attribute_get_value_decoded     (EVCardAttribute *attr);
 
-GList*           e_vcard_attribute_get_params       (EVCardAttribute *attr);
-GList*           e_vcard_attribute_get_param        (EVCardAttribute *attr, const gchar *name);
+GList *           e_vcard_attribute_get_params       (EVCardAttribute *attr);
+GList *           e_vcard_attribute_get_param        (EVCardAttribute *attr, const gchar *name);
 const gchar *      e_vcard_attribute_param_get_name   (EVCardAttributeParam *param);
-GList*           e_vcard_attribute_param_get_values (EVCardAttributeParam *param);
+GList *           e_vcard_attribute_param_get_values (EVCardAttributeParam *param);
 
 /* special TYPE= parameter predicate (checks for TYPE=@typestr */
 gboolean         e_vcard_attribute_has_type         (EVCardAttribute *attr, const gchar *typestr);

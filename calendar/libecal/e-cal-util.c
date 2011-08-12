@@ -206,7 +206,9 @@ e_cal_util_parse_ics_string (const gchar *string)
 }
 
 static gchar *
-get_line_fn (gchar *buf, gsize size, gpointer file)
+get_line_fn (gchar *buf,
+             gsize size,
+             gpointer file)
 {
 	return fgets (buf, size, file);
 }
@@ -246,8 +248,12 @@ e_cal_util_parse_ics_file (const gchar *filename)
  * component in order to compute alarm trigger times.
  */
 static void
-compute_alarm_range (ECalComponent *comp, GList *alarm_uids, time_t start, time_t end,
-		     time_t *alarm_start, time_t *alarm_end)
+compute_alarm_range (ECalComponent *comp,
+                     GList *alarm_uids,
+                     time_t start,
+                     time_t end,
+                     time_t *alarm_start,
+                     time_t *alarm_end)
 {
 	GList *l;
 	time_t repeat_time;
@@ -324,8 +330,11 @@ struct alarm_occurrence_data {
 };
 
 static void
-add_trigger (struct alarm_occurrence_data *aod, const gchar *auid, time_t trigger,
-	     time_t occur_start, time_t occur_end)
+add_trigger (struct alarm_occurrence_data *aod,
+             const gchar *auid,
+             time_t trigger,
+             time_t occur_start,
+             time_t occur_end)
 {
 	ECalComponentAlarmInstance *instance;
 
@@ -343,7 +352,10 @@ add_trigger (struct alarm_occurrence_data *aod, const gchar *auid, time_t trigge
  * of a component's RELATIVE alarms.
  */
 static gboolean
-add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointer data)
+add_alarm_occurrences_cb (ECalComponent *comp,
+                          time_t start,
+                          time_t end,
+                          gpointer data)
 {
 	struct alarm_occurrence_data *aod;
 	GList *l;
@@ -426,10 +438,11 @@ add_alarm_occurrences_cb (ECalComponent *comp, time_t start, time_t end, gpointe
 
 /* Generates the absolute triggers for a component */
 static void
-generate_absolute_triggers (ECalComponent *comp, struct alarm_occurrence_data *aod,
-			    ECalRecurResolveTimezoneFn resolve_tzid,
-			    gpointer user_data,
-			    icaltimezone *default_timezone)
+generate_absolute_triggers (ECalComponent *comp,
+                            struct alarm_occurrence_data *aod,
+                            ECalRecurResolveTimezoneFn resolve_tzid,
+                            gpointer user_data,
+                            icaltimezone *default_timezone)
 {
 	GList *l;
 	ECalComponentDateTime dt_start, dt_end;
@@ -524,7 +537,8 @@ generate_absolute_triggers (ECalComponent *comp, struct alarm_occurrence_data *a
 
 /* Compares two alarm instances; called from g_slist_sort() */
 static gint
-compare_alarm_instance (gconstpointer a, gconstpointer b)
+compare_alarm_instance (gconstpointer a,
+                        gconstpointer b)
 {
 	const ECalComponentAlarmInstance *aia, *aib;
 
@@ -560,12 +574,12 @@ compare_alarm_instance (gconstpointer a, gconstpointer b)
  */
 ECalComponentAlarms *
 e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
-				     time_t start,
-				     time_t end,
-				     ECalComponentAlarmAction *omit,
-				     ECalRecurResolveTimezoneFn resolve_tzid,
-				     gpointer user_data,
-				     icaltimezone *default_timezone)
+                                     time_t start,
+                                     time_t end,
+                                     ECalComponentAlarmAction *omit,
+                                     ECalRecurResolveTimezoneFn resolve_tzid,
+                                     gpointer user_data,
+                                     icaltimezone *default_timezone)
 {
 	GList *alarm_uids;
 	time_t alarm_start, alarm_end;
@@ -627,13 +641,13 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
  */
 gint
 e_cal_util_generate_alarms_for_list (GList *comps,
-				     time_t start,
-				     time_t end,
-				     ECalComponentAlarmAction *omit,
-				     GSList **comp_alarms,
-				     ECalRecurResolveTimezoneFn resolve_tzid,
-				     gpointer user_data,
-				     icaltimezone *default_timezone)
+                                     time_t start,
+                                     time_t end,
+                                     ECalComponentAlarmAction *omit,
+                                     GSList **comp_alarms,
+                                     ECalRecurResolveTimezoneFn resolve_tzid,
+                                     gpointer user_data,
+                                     icaltimezone *default_timezone)
 {
 	GList *l;
 	gint n;
@@ -720,7 +734,8 @@ typedef struct {
 } ForeachTzidData;
 
 static void
-add_timezone_cb (icalparameter *param, gpointer data)
+add_timezone_cb (icalparameter *param,
+                 gpointer data)
 {
 	icaltimezone *tz;
 	const gchar *tzid;
@@ -760,7 +775,7 @@ add_timezone_cb (icalparameter *param, gpointer data)
  */
 void
 e_cal_util_add_timezones_from_component (icalcomponent *vcal_comp,
-					 icalcomponent *icalcomp)
+                                         icalcomponent *icalcomp)
 {
 	ForeachTzidData f_data;
 
@@ -913,7 +928,8 @@ e_cal_util_component_has_rrules (icalcomponent *icalcomp)
  * Returns: TRUE if the dates of both components match, FALSE otherwise.
  */
 gboolean
-e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *icalcomp2)
+e_cal_util_event_dates_match (icalcomponent *icalcomp1,
+                              icalcomponent *icalcomp2)
 {
 	struct icaltimetype c1_dtstart, c1_dtend, c2_dtstart, c2_dtend;
 
@@ -966,7 +982,9 @@ struct instance_data {
 };
 
 static void
-check_instance (icalcomponent *comp, struct icaltime_span *span, gpointer data)
+check_instance (icalcomponent *comp,
+                struct icaltime_span *span,
+                gpointer data)
 {
 	struct instance_data *instance = data;
 
@@ -986,7 +1004,7 @@ check_instance (icalcomponent *comp, struct icaltime_span *span, gpointer data)
  **/
 icalcomponent *
 e_cal_util_construct_instance (icalcomponent *icalcomp,
-			       struct icaltimetype rid)
+                               struct icaltimetype rid)
 {
 	struct instance_data instance;
 	struct icaltimetype start, end;
@@ -1018,7 +1036,9 @@ e_cal_util_construct_instance (icalcomponent *icalcomp,
 }
 
 static inline gboolean
-time_matches_rid (struct icaltimetype itt, struct icaltimetype rid, CalObjModType mod)
+time_matches_rid (struct icaltimetype itt,
+                  struct icaltimetype rid,
+                  CalObjModType mod)
 {
 	gint compare;
 
@@ -1046,8 +1066,8 @@ time_matches_rid (struct icaltimetype itt, struct icaltimetype rid, CalObjModTyp
  **/
 void
 e_cal_util_remove_instances (icalcomponent *icalcomp,
-			     struct icaltimetype rid,
-			     CalObjModType mod)
+                             struct icaltimetype rid,
+                             CalObjModType mod)
 {
 	icalproperty *prop;
 	struct icaltimetype itt, recur;
@@ -1168,10 +1188,10 @@ e_cal_util_get_system_timezone (void)
 }
 
 static time_t
-componenttime_to_utc_timet (const ECalComponentDateTime* dt_time,
-			    ECalRecurResolveTimezoneFn tz_cb,
-			    gpointer tz_cb_data,
-			    const icaltimezone *default_zone)
+componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
+                            ECalRecurResolveTimezoneFn tz_cb,
+                            gpointer tz_cb_data,
+                            const icaltimezone *default_zone)
 {
 	time_t timet = -1;
 	icaltimezone *zone = NULL;
@@ -1199,12 +1219,12 @@ componenttime_to_utc_timet (const ECalComponentDateTime* dt_time,
  **/
 void
 e_cal_util_get_component_occur_times (ECalComponent *comp,
-			   time_t* start,
-			   time_t* end,
-			   ECalRecurResolveTimezoneFn tz_cb,
-			   gpointer tz_cb_data,
-			   const icaltimezone *default_timezone,
-			   icalcomponent_kind kind)
+                                      time_t *start,
+                                      time_t *end,
+                                      ECalRecurResolveTimezoneFn tz_cb,
+                                      gpointer tz_cb_data,
+                                      const icaltimezone *default_timezone,
+                                      icalcomponent_kind kind)
 {
 	struct icalrecurrencetype ir;
 	ECalComponentDateTime dt_start, dt_end;
@@ -1301,11 +1321,11 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 				time_t rdate_end = _TIME_MAX;
 
 				/* FIXME: We currently assume RDATEs are in the same timezone
-				   as DTSTART. We should get the RDATE timezone and convert
-				   to the DTSTART timezone first. */
+				 * as DTSTART. We should get the RDATE timezone and convert
+				 * to the DTSTART timezone first. */
 
 				/* Check if the end date or duration is set, libical seems to set
-				   second to -1 to denote an unset time */
+				 * second to -1 to denote an unset time */
 				if (p->type != E_CAL_COMPONENT_PERIOD_DATETIME || p->u.end.second != -1)
 					rdate_end = icaltime_as_timet (icaltime_add (p->start, p->u.duration));
 				else

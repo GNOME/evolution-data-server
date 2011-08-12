@@ -256,9 +256,9 @@ const gchar *	camel_cipher_context_hash_to_id	(CamelCipherContext *context,
 						 CamelCipherHash hash);
 
 /* FIXME:
-   There are some inconsistencies here, the api's should probably handle CamelMimePart's as input/outputs,
-   Something that might generate a multipart/signed should do it as part of that processing, internally
-   to the cipher, etc etc. */
+ * There are some inconsistencies here, the api's should probably handle CamelMimePart's as input/outputs,
+ * Something that might generate a multipart/signed should do it as part of that processing, internally
+ * to the cipher, etc etc. */
 
 /* cipher routines */
 gboolean	camel_cipher_context_sign_sync	(CamelCipherContext *context,

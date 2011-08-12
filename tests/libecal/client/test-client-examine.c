@@ -50,7 +50,8 @@ extra_values_free (ExtraValues *evals)
 }
 
 static void
-print_with_prefix (const gchar *str, const gchar *prefix)
+print_with_prefix (const gchar *str,
+                   const gchar *prefix)
 {
 	const gchar *p = str, *n;
 	while (n = strchr (p, '\n'), p) {
@@ -67,7 +68,9 @@ print_with_prefix (const gchar *str, const gchar *prefix)
 }
 
 static void
-print_each_property (gpointer prop_name, gpointer prop_value, gpointer user_data)
+print_each_property (gpointer prop_name,
+                     gpointer prop_value,
+                     gpointer user_data)
 {
 	g_return_if_fail (prop_name != NULL);
 
@@ -100,7 +103,8 @@ print_each_property (gpointer prop_name, gpointer prop_value, gpointer user_data
 }
 
 static void
-print_values (const ExtraValues *evals, EClient *client)
+print_values (const ExtraValues *evals,
+              EClient *client)
 {
 	const GSList *values;
 
@@ -142,7 +146,8 @@ print_values (const ExtraValues *evals, EClient *client)
 }
 
 static void
-identify_source (ESource *source, ECalClientSourceType source_type)
+identify_source (ESource *source,
+                 ECalClientSourceType source_type)
 {
 	const gchar *name, *uri, *type;
 	gchar *abs_uri = NULL;
@@ -225,7 +230,9 @@ continue_next_source (gpointer async_data)
 }
 
 static void
-client_got_backend_property_async (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_got_backend_property_async (GObject *source_object,
+                                   GAsyncResult *result,
+                                   gpointer user_data)
 {
 	ExtraValues *evals = user_data;
 	gchar *prop_value = NULL;
@@ -265,7 +272,9 @@ client_got_backend_property_async (GObject *source_object, GAsyncResult *result,
 }
 
 static void
-client_set_backend_property_async (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_set_backend_property_async (GObject *source_object,
+                                   GAsyncResult *result,
+                                   gpointer user_data)
 {
 	ExtraValues *evals = user_data;
 	GError *error = NULL;
@@ -289,7 +298,9 @@ client_set_backend_property_async (GObject *source_object, GAsyncResult *result,
 }
 
 static void
-client_got_default_object_async (GObject *source_object, GAsyncResult *result, gpointer evals_data)
+client_got_default_object_async (GObject *source_object,
+                                 GAsyncResult *result,
+                                 gpointer evals_data)
 {
 	ExtraValues *evals = evals_data;
 	ECalClient *cal_client;
@@ -310,7 +321,9 @@ client_got_default_object_async (GObject *source_object, GAsyncResult *result, g
 }
 
 static void
-client_opened_async (GObject *source_object, GAsyncResult *result, gpointer async_data)
+client_opened_async (GObject *source_object,
+                     GAsyncResult *result,
+                     gpointer async_data)
 {
 	ExtraValues *evals;
 	GError *error = NULL;
@@ -339,7 +352,8 @@ client_opened_async (GObject *source_object, GAsyncResult *result, gpointer asyn
 }
 
 static void
-check_source_sync (ESource *source, ECalClientSourceType source_type)
+check_source_sync (ESource *source,
+                   ECalClientSourceType source_type)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -470,7 +484,8 @@ worker_thread (gpointer unused)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	main_initialize ();
 

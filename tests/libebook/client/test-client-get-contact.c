@@ -6,7 +6,9 @@
 #include "client-test-utils.h"
 
 static void
-contact_ready_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+contact_ready_cb (GObject *source_object,
+                  GAsyncResult *result,
+                  gpointer user_data)
 {
 	EContact *contact;
 	GError *error = NULL;
@@ -21,7 +23,8 @@ contact_ready_cb (GObject *source_object, GAsyncResult *result, gpointer user_da
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	EContact *contact_final;

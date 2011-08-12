@@ -5,7 +5,7 @@
  *
  * Author :
  *  Michael Zucchi <notzed@ximian.com>
-
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of version 2 of the GNU Lesser General Public
  * License as published by the Free Software Foundation.
@@ -22,65 +22,65 @@
  */
 
 /*
-  The following built-in s-exp's are supported:
-
-  list = (and list*)
-	perform an intersection of a number of lists, and return that.
-
-  bool = (and bool*)
-	perform a boolean AND of boolean values.
-
-  list = (or list*)
-	perform a union of a number of lists, returning the new list.
-
-  bool = (or bool*)
-	perform a boolean OR of boolean values.
-
-  gint = (+ int*)
-	Add integers.
-
-  string = (+ string*)
-	Concat strings.
-
-  time_t = (+ time_t*)
-	Add time_t values.
-
-  gint = (- gint int*)
-	Subtract integers from the first.
-
-  time_t = (- time_t*)
-	Subtract time_t values from the first.
-
-  gint = (cast-int string|int|bool)
-        Cast to an integer value.
-
-  string = (cast-string string|int|bool)
-        Cast to an string value.
-
-  Comparison operators:
-
-  bool = (< gint gint)
-  bool = (> gint gint)
-  bool = (= gint gint)
-
-  bool = (< string string)
-  bool = (> string string)
-  bool = (= string string)
-
-  bool = (< time_t time_t)
-  bool = (> time_t time_t)
-  bool = (= time_t time_t)
-	Perform a comparision of 2 integers, 2 string values, or 2 time values.
-
-  Function flow:
-
-  type = (if bool function)
-  type = (if bool function function)
-	Choose a flow path based on a boolean value
-
-  type = (begin  func func func)
-        Execute a sequence.  The last function return is the return type.
-*/
+ *   The following built-in s-exp's are supported:
+ *
+ *   list = (and list*)
+ *      perform an intersection of a number of lists, and return that.
+ *
+ *   bool = (and bool*)
+ *      perform a boolean AND of boolean values.
+ *
+ *   list = (or list*)
+ *      perform a union of a number of lists, returning the new list.
+ *
+ *   bool = (or bool*)
+ *      perform a boolean OR of boolean values.
+ *
+ *   gint = (+ int*)
+ *      Add integers.
+ *
+ *   string = (+ string*)
+ *      Concat strings.
+ *
+ *   time_t = (+ time_t*)
+ *      Add time_t values.
+ *
+ *   gint = (- gint int*)
+ *      Subtract integers from the first.
+ *
+ *   time_t = (- time_t*)
+ *      Subtract time_t values from the first.
+ *
+ *   gint = (cast-int string|int|bool)
+ *         Cast to an integer value.
+ *
+ *   string = (cast-string string|int|bool)
+ *         Cast to an string value.
+ *
+ *   Comparison operators:
+ *
+ *   bool = (< gint gint)
+ *   bool = (> gint gint)
+ *   bool = (= gint gint)
+ *
+ *   bool = (< string string)
+ *   bool = (> string string)
+ *   bool = (= string string)
+ *
+ *   bool = (< time_t time_t)
+ *   bool = (> time_t time_t)
+ *   bool = (= time_t time_t)
+ *      Perform a comparision of 2 integers, 2 string values, or 2 time values.
+ *
+ *   Function flow:
+ *
+ *   type = (if bool function)
+ *   type = (if bool function function)
+ *      Choose a flow path based on a boolean value
+ *
+ *   type = (begin  func func func)
+ *         Execute a sequence.  The last function return is the return type.
+ */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -158,7 +158,9 @@ static const GScannerConfig scanner_config =
 
 /* jumps back to the caller of f->failenv, only to be called from inside a callback */
 void
-e_sexp_fatal_error (struct _ESExp *f, const gchar *why, ...)
+e_sexp_fatal_error (struct _ESExp *f,
+                    const gchar *why,
+                    ...)
 {
 	va_list args;
 
@@ -179,7 +181,8 @@ e_sexp_error (struct _ESExp *f)
 }
 
 struct _ESExpResult *
-e_sexp_result_new (struct _ESExp *f, gint type)
+e_sexp_result_new (struct _ESExp *f,
+                   gint type)
 {
 	struct _ESExpResult *r = e_memchunk_alloc0 (f->result_chunks);
 	r->type = type;
@@ -190,7 +193,8 @@ e_sexp_result_new (struct _ESExp *f, gint type)
 }
 
 void
-e_sexp_result_free (struct _ESExp *f, struct _ESExpResult *t)
+e_sexp_result_free (struct _ESExp *f,
+                    struct _ESExpResult *t)
 {
 	if (t == NULL)
 		return;
@@ -216,11 +220,13 @@ e_sexp_result_free (struct _ESExp *f, struct _ESExpResult *t)
 
 /* used in normal functions if they have to abort, and free their arguments */
 void
-e_sexp_resultv_free (struct _ESExp *f, gint argc, struct _ESExpResult **argv)
+e_sexp_resultv_free (struct _ESExp *f,
+                     gint argc,
+                     struct _ESExpResult **argv)
 {
 	gint i;
 
-	for (i=0;i<argc;i++) {
+	for (i = 0; i < argc; i++) {
 		e_sexp_result_free (f, argv[i]);
 	}
 }
@@ -235,7 +241,9 @@ struct IterData {
 
 /* ok, store any values that are in all sets */
 static void
-htand (gchar *key, gint value, struct IterData *iter_data)
+htand (gchar *key,
+       gint value,
+       struct IterData *iter_data)
 {
 	if (value == iter_data->count) {
 		g_ptr_array_add (iter_data->uids, key);
@@ -244,13 +252,18 @@ htand (gchar *key, gint value, struct IterData *iter_data)
 
 /* or, store all unique values */
 static void
-htor (gchar *key, gint value, struct IterData *iter_data)
+htor (gchar *key,
+      gint value,
+      struct IterData *iter_data)
 {
 	g_ptr_array_add (iter_data->uids, key);
 }
 
 static ESExpResult *
-term_eval_and (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+term_eval_and (struct _ESExp *f,
+               gint argc,
+               struct _ESExpTerm **argv,
+               gpointer data)
 {
 	struct _ESExpResult *r, *r1;
 	GHashTable *ht = g_hash_table_new (g_str_hash, g_str_equal);
@@ -267,7 +280,7 @@ term_eval_and (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer d
 	oper = "AND";
 	f->operators = g_slist_prepend (f->operators, (gpointer) oper);
 
-	for (i=0;bool && i<argc;i++) {
+	for (i = 0; bool && i < argc; i++) {
 		r1 = e_sexp_term_eval (f, argv[i]);
 		if (type == -1)
 			type = r1->type;
@@ -282,12 +295,12 @@ term_eval_and (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer d
 
 			a1 = (gchar **) r1->value.ptrarray->pdata;
 			l1 = r1->value.ptrarray->len;
-			for (j=0;j<l1;j++) {
+			for (j = 0; j < l1; j++) {
 				gpointer ptr;
 				gint n;
 				ptr = g_hash_table_lookup (ht, a1[j]);
 				n = GPOINTER_TO_INT (ptr);
-				g_hash_table_insert (ht, a1[j], GINT_TO_POINTER (n+1));
+				g_hash_table_insert (ht, a1[j], GINT_TO_POINTER (n + 1));
 			}
 		} else if (r1->type == ESEXP_RES_BOOL) {
 			bool = bool && r1->value.boolean;
@@ -313,7 +326,10 @@ term_eval_and (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer d
 }
 
 static ESExpResult *
-term_eval_or (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+term_eval_or (struct _ESExp *f,
+              gint argc,
+              struct _ESExpTerm **argv,
+              gpointer data)
 {
 	struct _ESExpResult *r, *r1;
 	GHashTable *ht = g_hash_table_new (g_str_hash, g_str_equal);
@@ -330,7 +346,7 @@ term_eval_or (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 
 	r = e_sexp_result_new (f, ESEXP_RES_UNDEFINED);
 
-	for (i=0;!bool && i<argc;i++) {
+	for (i = 0; !bool && i < argc; i++) {
 		r1 = e_sexp_term_eval (f, argv[i]);
 		if (type == -1)
 			type = r1->type;
@@ -345,7 +361,7 @@ term_eval_or (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 
 			a1 = (gchar **) r1->value.ptrarray->pdata;
 			l1 = r1->value.ptrarray->len;
-			for (j=0;j<l1;j++) {
+			for (j = 0; j < l1; j++) {
 				g_hash_table_insert (ht, a1[j], (gpointer) 1);
 			}
 		} else if (r1->type == ESEXP_RES_BOOL) {
@@ -371,12 +387,15 @@ term_eval_or (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 }
 
 static ESExpResult *
-term_eval_not (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+term_eval_not (struct _ESExp *f,
+               gint argc,
+               struct _ESExpResult **argv,
+               gpointer data)
 {
 	gint res = TRUE;
 	ESExpResult *r;
 
-	if (argc>0) {
+	if (argc > 0) {
 		if (argv[0]->type == ESEXP_RES_BOOL
 		    && argv[0]->value.boolean)
 			res = FALSE;
@@ -388,7 +407,10 @@ term_eval_not (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer
 
 /* this should support all arguments ...? */
 static ESExpResult *
-term_eval_lt (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+term_eval_lt (struct _ESExp *f,
+              gint argc,
+              struct _ESExpTerm **argv,
+              gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
@@ -420,7 +442,10 @@ term_eval_lt (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 
 /* this should support all arguments ...? */
 static ESExpResult *
-term_eval_gt (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+term_eval_gt (struct _ESExp *f,
+              gint argc,
+              struct _ESExpTerm **argv,
+              gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
@@ -452,7 +477,10 @@ term_eval_gt (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 
 /* this should support all arguments ...? */
 static ESExpResult *
-term_eval_eq (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+term_eval_eq (struct _ESExp *f,
+              gint argc,
+              struct _ESExpTerm **argv,
+              gpointer data)
 {
 	struct _ESExpResult *r, *r1, *r2;
 
@@ -479,21 +507,24 @@ term_eval_eq (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 }
 
 static ESExpResult *
-term_eval_plus (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+term_eval_plus (struct _ESExp *f,
+                gint argc,
+                struct _ESExpResult **argv,
+                gpointer data)
 {
-	struct _ESExpResult *r=NULL;
+	struct _ESExpResult *r = NULL;
 	gint type;
 	gint i;
 
-	if (argc>0) {
+	if (argc > 0) {
 		type = argv[0]->type;
 		switch (type) {
 		case ESEXP_RES_INT: {
 			gint total = argv[0]->value.number;
-			for (i=1;i<argc && argv[i]->type == ESEXP_RES_INT;i++) {
+			for (i = 1; i < argc && argv[i]->type == ESEXP_RES_INT; i++) {
 				total += argv[i]->value.number;
 			}
-			if (i<argc) {
+			if (i < argc) {
 				e_sexp_resultv_free (f, argc, argv);
 				e_sexp_fatal_error(f, "Invalid types in (+ ints)");
 			}
@@ -502,10 +533,10 @@ term_eval_plus (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 			break; }
 		case ESEXP_RES_STRING: {
 			GString *s = g_string_new (argv[0]->value.string);
-			for (i=1;i<argc && argv[i]->type == ESEXP_RES_STRING;i++) {
+			for (i = 1; i < argc && argv[i]->type == ESEXP_RES_STRING; i++) {
 				g_string_append (s, argv[i]->value.string);
 			}
-			if (i<argc) {
+			if (i < argc) {
 				e_sexp_resultv_free (f, argc, argv);
 				e_sexp_fatal_error(f, "Invalid types in (+ strings)");
 			}
@@ -540,21 +571,24 @@ term_eval_plus (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointe
 }
 
 static ESExpResult *
-term_eval_sub (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+term_eval_sub (struct _ESExp *f,
+               gint argc,
+               struct _ESExpResult **argv,
+               gpointer data)
 {
-	struct _ESExpResult *r=NULL;
+	struct _ESExpResult *r = NULL;
 	gint type;
 	gint i;
 
-	if (argc>0) {
+	if (argc > 0) {
 		type = argv[0]->type;
 		switch (type) {
 		case ESEXP_RES_INT: {
 			gint total = argv[0]->value.number;
-			for (i=1;i<argc && argv[i]->type == ESEXP_RES_INT;i++) {
+			for (i = 1; i < argc && argv[i]->type == ESEXP_RES_INT; i++) {
 				total -= argv[i]->value.number;
 			}
-			if (i<argc) {
+			if (i < argc) {
 				e_sexp_resultv_free (f, argc, argv);
 				e_sexp_fatal_error(f, "Invalid types in -");
 			}
@@ -589,7 +623,10 @@ term_eval_sub (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer
 
 /* cast to gint */
 static ESExpResult *
-term_eval_castint (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+term_eval_castint (struct _ESExp *f,
+                   gint argc,
+                   struct _ESExpResult **argv,
+                   gpointer data)
 {
 	struct _ESExpResult *r;
 
@@ -617,7 +654,10 @@ term_eval_castint (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpoi
 
 /* cast to string */
 static ESExpResult *
-term_eval_caststring (struct _ESExp *f, gint argc, struct _ESExpResult **argv, gpointer data)
+term_eval_caststring (struct _ESExp *f,
+                      gint argc,
+                      struct _ESExpResult **argv,
+                      gpointer data)
 {
 	struct _ESExpResult *r;
 
@@ -645,18 +685,21 @@ term_eval_caststring (struct _ESExp *f, gint argc, struct _ESExpResult **argv, g
 
 /* implements 'if' function */
 static ESExpResult *
-term_eval_if (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+term_eval_if (struct _ESExp *f,
+              gint argc,
+              struct _ESExpTerm **argv,
+              gpointer data)
 {
 	struct _ESExpResult *r;
 	gint doit;
 
-	if (argc >=2 && argc<=3) {
+	if (argc >=2 && argc <= 3) {
 		r = e_sexp_term_eval (f, argv[0]);
 		doit = (r->type == ESEXP_RES_BOOL && r->value.boolean);
 		e_sexp_result_free (f, r);
 		if (doit) {
 			return e_sexp_term_eval (f, argv[1]);
-		} else if (argc>2) {
+		} else if (argc > 2) {
 			return e_sexp_term_eval (f, argv[2]);
 		}
 	}
@@ -665,12 +708,15 @@ term_eval_if (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer da
 
 /* implements 'begin' statement */
 static ESExpResult *
-term_eval_begin (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+term_eval_begin (struct _ESExp *f,
+                 gint argc,
+                 struct _ESExpTerm **argv,
+                 gpointer data)
 {
-	struct _ESExpResult *r=NULL;
+	struct _ESExpResult *r = NULL;
 	gint i;
 
-	for (i=0;i<argc;i++) {
+	for (i = 0; i < argc; i++) {
 		if (r)
 			e_sexp_result_free (f, r);
 		r = e_sexp_term_eval (f, argv[i]);
@@ -683,7 +729,8 @@ term_eval_begin (struct _ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer
 
 /* this must only be called from inside term evaluation callbacks! */
 struct _ESExpResult *
-e_sexp_term_eval (struct _ESExp *f, struct _ESExpTerm *t)
+e_sexp_term_eval (struct _ESExp *f,
+                  struct _ESExpTerm *t)
 {
 	struct _ESExpResult *r = NULL;
 	gint i;
@@ -723,7 +770,7 @@ e_sexp_term_eval (struct _ESExp *f, struct _ESExpTerm *t)
 	case ESEXP_TERM_FUNC:
 		/* first evaluate all arguments to result types */
 		argv = alloca (sizeof (argv[0]) * t->value.func.termcount);
-		for (i=0;i<t->value.func.termcount;i++) {
+		for (i = 0; i < t->value.func.termcount; i++) {
 			argv[i] = e_sexp_term_eval (f, t->value.func.terms[i]);
 		}
 		/* call the function */
@@ -736,7 +783,7 @@ e_sexp_term_eval (struct _ESExp *f, struct _ESExpTerm *t)
 		e_sexp_fatal_error(f, "Unknown type in parse tree: %d", t->type);
 	}
 
-	if (r==NULL)
+	if (r == NULL)
 		r = e_sexp_result_new (f, ESEXP_RES_UNDEFINED);
 
 	return r;
@@ -744,16 +791,17 @@ e_sexp_term_eval (struct _ESExp *f, struct _ESExpTerm *t)
 
 #ifdef TESTER
 static void
-eval_dump_result (ESExpResult *r, gint depth)
+eval_dump_result (ESExpResult *r,
+                  gint depth)
 {
 	gint i;
 
-	if (r==NULL) {
+	if (r == NULL) {
 		printf("null result???\n");
 		return;
 	}
 
-	for (i=0;i<depth;i++)
+	for (i = 0; i < depth; i++)
 		printf("   ");
 
 	switch (r->type) {
@@ -782,16 +830,17 @@ eval_dump_result (ESExpResult *r, gint depth)
 
 #ifdef TESTER
 static void
-parse_dump_term (struct _ESExpTerm *t, gint depth)
+parse_dump_term (struct _ESExpTerm *t,
+                 gint depth)
 {
 	gint i;
 
-	if (t==NULL) {
+	if (t == NULL) {
 		printf("null term??\n");
 		return;
 	}
 
-	for (i=0;i<depth;i++)
+	for (i = 0; i < depth; i++)
 		printf("   ");
 
 	switch (t->type) {
@@ -811,10 +860,10 @@ parse_dump_term (struct _ESExpTerm *t, gint depth)
 	case ESEXP_TERM_FUNC:
 		printf(" (function %s\n", t->value.func.sym->name);
 		/*printf(" [%d] ", t->value.func.termcount);*/
-		for (i=0;i<t->value.func.termcount;i++) {
-			parse_dump_term (t->value.func.terms[i], depth+1);
+		for (i = 0; i < t->value.func.termcount; i++) {
+			parse_dump_term (t->value.func.terms[i], depth + 1);
 		}
-		for (i=0;i<depth;i++)
+		for (i = 0; i < depth; i++)
 			printf("   ");
 		printf(" )");
 		break;
@@ -838,7 +887,9 @@ const gchar *time_functions[] = {
 };
 
 static gboolean
-binary_generator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
+binary_generator (gint argc,
+                  struct _ESExpResult **argv,
+                  struct _ESExpResult *r)
 {
 	g_return_val_if_fail (r != NULL, FALSE);
 	g_return_val_if_fail (argc == 2, FALSE);
@@ -853,7 +904,9 @@ binary_generator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 }
 
 static gboolean
-unary_generator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
+unary_generator (gint argc,
+                 struct _ESExpResult **argv,
+                 struct _ESExpResult *r)
 {
 	/* unary generator with end time */
 	g_return_val_if_fail (r != NULL, FALSE);
@@ -881,18 +934,20 @@ static const struct {
 const gint generators_count = sizeof (generators) / sizeof (generators[0]);
 
 static gboolean
-or_operator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
+or_operator (gint argc,
+             struct _ESExpResult **argv,
+             struct _ESExpResult *r)
 {
 	gint ii;
 
 	/*
-	   A          B           A or B
-	   ----       ----        ------
-	   norm (0)    norm (0)     norm (0)
-	   gen (1)     norm (0)     norm (0)
-	   norm (0)    gen (1)      norm (0)
-	   gen (1)     gen (1)      gen*(1)
-	   */
+	 * A          B           A or B
+	 * ----       ----        ------
+	 * norm (0)   norm (0)    norm (0)
+	 * gen (1)    norm (0)    norm (0)
+	 * norm (0)   gen (1)     norm (0)
+	 * gen (1)    gen (1)     gen*(1)
+	 */
 
 	g_return_val_if_fail (r != NULL, FALSE);
 	g_return_val_if_fail (argc > 0, FALSE);
@@ -916,18 +971,20 @@ or_operator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
 }
 
 static gboolean
-and_operator (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r)
+and_operator (gint argc,
+              struct _ESExpResult **argv,
+              struct _ESExpResult *r)
 {
 	gint ii;
 
 	/*
-	   A           B          A and B
-	   ----        ----       ------- -
-	   norm (0)     norm (0)    norm (0)
-	   gen (1)      norm (0)    gen (1)
-	   norm (0)     gen (1)     gen (1)
-	   gen (1)      gen (1)     gen (1)
-	   */
+	 * A           B          A and B
+	 * ----        ----       ------- -
+	 * norm (0)     norm (0)    norm (0)
+	 * gen (1)      norm (0)    gen (1)
+	 * norm (0)     gen (1)     gen (1)
+	 * gen (1)      gen (1)     gen (1)
+	 * */
 
 	g_return_val_if_fail (r != NULL, FALSE);
 	g_return_val_if_fail (argc > 0, FALSE);
@@ -960,7 +1017,7 @@ static const struct {
 
 const gint operators_count = sizeof (operators) / sizeof (operators[0]);
 
-static ESOperatorFunc*
+static ESOperatorFunc *
 get_operator_function (const gchar *fname)
 {
 	gint i;
@@ -988,7 +1045,7 @@ is_time_function (const gchar *fname)
 	return FALSE;
 }
 
-static ESGeneratorFunc*
+static ESGeneratorFunc *
 get_generator_function (const gchar *fname)
 {
 	gint i;
@@ -1004,7 +1061,10 @@ get_generator_function (const gchar *fname)
 
 /* this must only be called from inside term evaluation callbacks! */
 static struct _ESExpResult *
-e_sexp_term_evaluate_occur_times (struct _ESExp *f, struct _ESExpTerm *t, time_t *start, time_t *end)
+e_sexp_term_evaluate_occur_times (struct _ESExp *f,
+                                  struct _ESExpTerm *t,
+                                  time_t *start,
+                                  time_t *end)
 {
 	struct _ESExpResult *r = NULL;
 	gint i, argc;
@@ -1038,7 +1098,7 @@ e_sexp_term_evaluate_occur_times (struct _ESExp *f, struct _ESExpTerm *t, time_t
 		argc = t->value.func.termcount;
 		argv = alloca (sizeof (argv[0]) * argc);
 
-		for (i=0;i<t->value.func.termcount;i++) {
+		for (i = 0; i < t->value.func.termcount; i++) {
 			argv[i] = e_sexp_term_evaluate_occur_times (f, t->value.func.terms[i],
 								    start, end);
 		}
@@ -1075,7 +1135,7 @@ e_sexp_term_evaluate_occur_times (struct _ESExp *f, struct _ESExpTerm *t, time_t
 	if (!ok)
 		e_sexp_fatal_error(f, "Error in parse tree");
 
-	if (r==NULL)
+	if (r == NULL)
 		r = e_sexp_result_new (f, ESEXP_RES_UNDEFINED);
 
 	return r;
@@ -1086,7 +1146,8 @@ e_sexp_term_evaluate_occur_times (struct _ESExp *f, struct _ESExpTerm *t, time_t
 */
 
 static struct _ESExpTerm *
-parse_term_new (struct _ESExp *f, gint type)
+parse_term_new (struct _ESExp *f,
+                gint type)
 {
 	struct _ESExpTerm *s = e_memchunk_alloc0 (f->term_chunks);
 	s->type = type;
@@ -1094,11 +1155,12 @@ parse_term_new (struct _ESExp *f, gint type)
 }
 
 static void
-parse_term_free (struct _ESExp *f, struct _ESExpTerm *t)
+parse_term_free (struct _ESExp *f,
+                 struct _ESExpTerm *t)
 {
 	gint i;
 
-	if (t==NULL) {
+	if (t == NULL) {
 		return;
 	}
 
@@ -1115,7 +1177,7 @@ parse_term_free (struct _ESExp *f, struct _ESExpTerm *t)
 
 	case ESEXP_TERM_FUNC:
 	case ESEXP_TERM_IFUNC:
-		for (i=0;i<t->value.func.termcount;i++) {
+		for (i = 0; i < t->value.func.termcount; i++) {
 			parse_term_free (f, t->value.func.terms[i]);
 		}
 		g_free (t->value.func.terms);
@@ -1128,7 +1190,8 @@ parse_term_free (struct _ESExp *f, struct _ESExpTerm *t)
 }
 
 static struct _ESExpTerm **
-parse_values (ESExp *f, gint *len)
+parse_values (ESExp *f,
+              gint *len)
 {
 	gint token;
 	struct _ESExpTerm **terms;
@@ -1147,7 +1210,7 @@ parse_values (ESExp *f, gint *len)
 	/* go over the list, and put them backwards into the term array */
 	terms = g_malloc (size * sizeof (*terms));
 	l = list;
-	for (i=size-1;i>=0;i--) {
+	for (i = size - 1; i >= 0; i--) {
 		g_assert (l);
 		g_assert (l->data);
 		terms[i] = l->data;
@@ -1240,7 +1303,7 @@ parse_value (ESExp *f)
 		case ESEXP_TERM_FUNC:
 		case ESEXP_TERM_IFUNC:
 				/* this is basically invalid, since we can't use function
-				   pointers, but let the runtime catch it ... */
+				 * pointers, but let the runtime catch it ... */
 			t = parse_term_new (f, s->type);
 			t->value.func.sym = s;
 			t->value.func.terms = parse_values (f, &t->value.func.termcount);
@@ -1266,7 +1329,8 @@ parse_value (ESExp *f)
 
 /* FIXME: this needs some robustification */
 static struct _ESExpTerm *
-parse_list (ESExp *f, gint gotbrace)
+parse_list (ESExp *f,
+            gint gotbrace)
 {
 	gint token;
 	struct _ESExpTerm *t = NULL;
@@ -1356,7 +1420,9 @@ static const struct {
 };
 
 static void
-free_symbol (gpointer key, gpointer value, gpointer data)
+free_symbol (gpointer key,
+             gpointer value,
+             gpointer data)
 {
 	struct _ESExpSymbol *s = value;
 
@@ -1397,9 +1463,9 @@ e_sexp_init (ESExp *s)
 	/* load in builtin symbols? */
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction (s, 0, symbols[i].name, (ESExpIFunc *) symbols[i].func, (gpointer)&symbols[i]);
+			e_sexp_add_ifunction (s, 0, symbols[i].name, (ESExpIFunc *) symbols[i].func, (gpointer) &symbols[i]);
 		} else {
-			e_sexp_add_function (s, 0, symbols[i].name, symbols[i].func, (gpointer)&symbols[i]);
+			e_sexp_add_function (s, 0, symbols[i].name, symbols[i].func, (gpointer) &symbols[i]);
 		}
 	}
 
@@ -1440,7 +1506,11 @@ e_sexp_unref (ESExp *f)
 #endif
 
 void
-e_sexp_add_function (ESExp *f, gint scope, const gchar *name, ESExpFunc *func, gpointer data)
+e_sexp_add_function (ESExp *f,
+                     gint scope,
+                     const gchar *name,
+                     ESExpFunc *func,
+                     gpointer data)
 {
 	struct _ESExpSymbol *s;
 
@@ -1458,7 +1528,11 @@ e_sexp_add_function (ESExp *f, gint scope, const gchar *name, ESExpFunc *func, g
 }
 
 void
-e_sexp_add_ifunction (ESExp *f, gint scope, const gchar *name, ESExpIFunc *ifunc, gpointer data)
+e_sexp_add_ifunction (ESExp *f,
+                      gint scope,
+                      const gchar *name,
+                      ESExpIFunc *ifunc,
+                      gpointer data)
 {
 	struct _ESExpSymbol *s;
 
@@ -1476,7 +1550,10 @@ e_sexp_add_ifunction (ESExp *f, gint scope, const gchar *name, ESExpIFunc *ifunc
 }
 
 void
-e_sexp_add_variable (ESExp *f, gint scope, gchar *name, ESExpTerm *value)
+e_sexp_add_variable (ESExp *f,
+                     gint scope,
+                     gchar *name,
+                     ESExpTerm *value)
 {
 	struct _ESExpSymbol *s;
 
@@ -1491,7 +1568,9 @@ e_sexp_add_variable (ESExp *f, gint scope, gchar *name, ESExpTerm *value)
 }
 
 void
-e_sexp_remove_symbol (ESExp *f, gint scope, const gchar *name)
+e_sexp_remove_symbol (ESExp *f,
+                      gint scope,
+                      const gchar *name)
 {
 	gint oldscope;
 	struct _ESExpSymbol *s;
@@ -1510,7 +1589,8 @@ e_sexp_remove_symbol (ESExp *f, gint scope, const gchar *name)
 }
 
 gint
-e_sexp_set_scope (ESExp *f, gint scope)
+e_sexp_set_scope (ESExp *f,
+                  gint scope)
 {
 	g_return_val_if_fail (IS_E_SEXP (f), 0);
 
@@ -1518,7 +1598,9 @@ e_sexp_set_scope (ESExp *f, gint scope)
 }
 
 void
-e_sexp_input_text (ESExp *f, const gchar *text, gint len)
+e_sexp_input_text (ESExp *f,
+                   const gchar *text,
+                   gint len)
 {
 	g_return_if_fail (IS_E_SEXP (f));
 	g_return_if_fail (text != NULL);
@@ -1527,7 +1609,8 @@ e_sexp_input_text (ESExp *f, const gchar *text, gint len)
 }
 
 void
-e_sexp_input_file (ESExp *f, gint fd)
+e_sexp_input_file (ESExp *f,
+                   gint fd)
 {
 	g_return_if_fail (IS_E_SEXP (f));
 
@@ -1579,7 +1662,9 @@ e_sexp_eval (ESExp *f)
  * Since: 2.32
  */
 gboolean
-e_sexp_evaluate_occur_times (ESExp *f, time_t *start, time_t *end)
+e_sexp_evaluate_occur_times (ESExp *f,
+                             time_t *start,
+                             time_t *end)
 {
 	struct _ESExpResult *r;
 	gboolean generator;
@@ -1617,7 +1702,8 @@ e_sexp_evaluate_occur_times (ESExp *f, time_t *start, time_t *end)
  * encoded using #t #f syntax.
  **/
 void
-e_sexp_encode_bool (GString *s, gboolean state)
+e_sexp_encode_bool (GString *s,
+                    gboolean state)
 {
 	if (state)
 		g_string_append(s, " #t");
@@ -1635,7 +1721,8 @@ e_sexp_encode_bool (GString *s, gboolean state)
  * are escaped appropriately.
  **/
 void
-e_sexp_encode_string (GString *s, const gchar *string)
+e_sexp_encode_string (GString *s,
+                      const gchar *string)
 {
 	gchar c;
 	const gchar *p;
@@ -1646,7 +1733,7 @@ e_sexp_encode_string (GString *s, const gchar *string)
 		p = string;
 	g_string_append(s, " \"");
 	while ((c = *p++)) {
-		if (c=='\\' || c=='\"' || c=='\'')
+		if (c == '\\' || c == '\"' || c == '\'')
 			g_string_append_c (s, '\\');
 		g_string_append_c (s, c);
 	}

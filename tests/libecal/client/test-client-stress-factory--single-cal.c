@@ -8,7 +8,8 @@
 #define NUM_OPENS 200
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECalClientSourceType source_type = E_CAL_CLIENT_SOURCE_TYPE_EVENTS;
 	gchar *uri = NULL;

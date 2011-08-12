@@ -165,7 +165,8 @@ e_client_error_to_string (EClientError code)
  * Returned pointer should be freed with g_error_free().
  **/
 GError *
-e_client_error_create (EClientError code, const gchar *custom_msg)
+e_client_error_create (EClientError code,
+                       const gchar *custom_msg)
 {
 	return g_error_new_literal (E_CLIENT_ERROR, code, custom_msg ? custom_msg : e_client_error_to_string (code));
 }
@@ -252,7 +253,10 @@ client_finalize (GObject *object)
 }
 
 static void
-client_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+client_set_property (GObject *object,
+                     guint property_id,
+                     const GValue *value,
+                     GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_SOURCE:
@@ -268,7 +272,10 @@ client_set_property (GObject *object, guint property_id, const GValue *value, GP
 }
 
 static void
-client_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+client_get_property (GObject *object,
+                     guint property_id,
+                     GValue *value,
+                     GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_SOURCE:
@@ -407,7 +414,8 @@ e_client_class_init (EClientClass *klass)
 }
 
 static void
-client_set_source (EClient *client, ESource *source)
+client_set_source (EClient *client,
+                   ESource *source)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
@@ -527,7 +535,8 @@ e_client_get_capabilities (EClient *client)
  * Since: 3.2
  **/
 gboolean
-e_client_check_capability (EClient *client, const gchar *capability)
+e_client_check_capability (EClient *client,
+                           const gchar *capability)
 {
 	GSList *iter;
 
@@ -575,7 +584,8 @@ e_client_check_refresh_supported (EClient *client)
 
 /* capabilities - comma-separated list of capabilities; can be NULL to unset */
 void
-e_client_set_capabilities (EClient *client, const gchar *capabilities)
+e_client_set_capabilities (EClient *client,
+                           const gchar *capabilities)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
@@ -616,7 +626,8 @@ e_client_is_readonly (EClient *client)
 }
 
 void
-e_client_set_readonly (EClient *client, gboolean readonly)
+e_client_set_readonly (EClient *client,
+                       gboolean readonly)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
@@ -656,7 +667,8 @@ e_client_is_online (EClient *client)
 }
 
 void
-e_client_set_online (EClient *client, gboolean is_online)
+e_client_set_online (EClient *client,
+                     gboolean is_online)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
@@ -714,7 +726,8 @@ e_client_is_opened (EClient *client)
  * Since: 3.2
  */
 static void
-client_cancel_op (EClient *client, guint32 opid)
+client_cancel_op (EClient *client,
+                  guint32 opid)
 {
 	GCancellable *cancellable;
 
@@ -733,7 +746,9 @@ client_cancel_op (EClient *client, guint32 opid)
 }
 
 static void
-gather_opids_cb (gpointer opid, gpointer cancellable, gpointer ids_list)
+gather_opids_cb (gpointer opid,
+                 gpointer cancellable,
+                 gpointer ids_list)
 {
 	GSList **ids = ids_list;
 
@@ -743,7 +758,8 @@ gather_opids_cb (gpointer opid, gpointer cancellable, gpointer ids_list)
 }
 
 static void
-cancel_op_cb (gpointer opid, gpointer client)
+cancel_op_cb (gpointer opid,
+              gpointer client)
 {
 	client_cancel_op (client, GPOINTER_TO_INT (opid));
 }
@@ -777,7 +793,8 @@ e_client_cancel_all (EClient *client)
 }
 
 guint32
-e_client_register_op (EClient *client, GCancellable *cancellable)
+e_client_register_op (EClient *client,
+                      GCancellable *cancellable)
 {
 	guint32 opid;
 
@@ -807,7 +824,8 @@ e_client_register_op (EClient *client, GCancellable *cancellable)
 }
 
 void
-e_client_unregister_op (EClient *client, guint32 opid)
+e_client_unregister_op (EClient *client,
+                        guint32 opid)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
@@ -820,7 +838,8 @@ e_client_unregister_op (EClient *client, guint32 opid)
 }
 
 static void
-client_handle_authentication (EClient *client, const ECredentials *credentials)
+client_handle_authentication (EClient *client,
+                              const ECredentials *credentials)
 {
 	EClientClass *klass;
 
@@ -865,15 +884,16 @@ client_process_authentication_idle_cb (gpointer user_data)
 }
 
 /* Processes authentication request in idle callback. Usual steps are:
-   a) backend sends an auth-required signal
-   b) EClient implementation calls this function
-   c) a new idle callback is run which emits authenticate signal by e_client_emit_authenticate ()
-   d) if anyone responds (returns true), the EClient::handle_authentication
-      is called from the same idle callback with new credentials
-   e) EClient implementation passes results to backend in the EClient::handle_authentication
+ * a) backend sends an auth - required signal
+ * b) EClient implementation calls this function
+ * c) a new idle callback is run which emits authenticate signal by e_client_emit_authenticate ()
+ * d) if anyone responds (returns true), the EClient::handle_authentication
+ *    is called from the same idle callback with new credentials
+ * e) EClient implementation passes results to backend in the EClient::handle_authentication
 */
 void
-e_client_process_authentication (EClient *client, const ECredentials *credentials)
+e_client_process_authentication (EClient *client,
+                                 const ECredentials *credentials)
 {
 	struct EClientAuthData *auth_data;
 
@@ -888,7 +908,8 @@ e_client_process_authentication (EClient *client, const ECredentials *credential
 }
 
 gboolean
-e_client_emit_authenticate (EClient *client, ECredentials *credentials)
+e_client_emit_authenticate (EClient *client,
+                            ECredentials *credentials)
 {
 	gboolean handled = FALSE;
 
@@ -902,7 +923,8 @@ e_client_emit_authenticate (EClient *client, ECredentials *credentials)
 }
 
 void
-e_client_emit_opened (EClient *client, const GError *dbus_error)
+e_client_emit_opened (EClient *client,
+                      const GError *dbus_error)
 {
 	GError *local_error = NULL;
 
@@ -925,7 +947,8 @@ e_client_emit_opened (EClient *client, const GError *dbus_error)
 }
 
 void
-e_client_emit_backend_error (EClient *client, const gchar *error_msg)
+e_client_emit_backend_error (EClient *client,
+                             const gchar *error_msg)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
@@ -944,7 +967,9 @@ e_client_emit_backend_died (EClient *client)
 }
 
 void
-e_client_emit_backend_property_changed (EClient *client, const gchar *prop_name, const gchar *prop_value)
+e_client_emit_backend_property_changed (EClient *client,
+                                        const gchar *prop_name,
+                                        const gchar *prop_value)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
@@ -959,7 +984,9 @@ e_client_emit_backend_property_changed (EClient *client, const gchar *prop_name,
 }
 
 void
-e_client_update_backend_property_cache (EClient *client, const gchar *prop_name, const gchar *prop_value)
+e_client_update_backend_property_cache (EClient *client,
+                                        const gchar *prop_name,
+                                        const gchar *prop_value)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
@@ -977,7 +1004,8 @@ e_client_update_backend_property_cache (EClient *client, const gchar *prop_name,
 }
 
 gchar *
-e_client_get_backend_property_from_cache (EClient *client, const gchar *prop_name)
+e_client_get_backend_property_from_cache (EClient *client,
+                                          const gchar *prop_name)
 {
 	gchar *prop_value = NULL;
 
@@ -1014,7 +1042,10 @@ e_client_get_backend_property_from_cache (EClient *client, const gchar *prop_nam
  * Since: 3.2
  **/
 void
-e_client_retrieve_capabilities (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_client_retrieve_capabilities (EClient *client,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
 	EClientClass *klass;
 
@@ -1046,7 +1077,10 @@ e_client_retrieve_capabilities (EClient *client, GCancellable *cancellable, GAsy
  * Since: 3.2
  **/
 gboolean
-e_client_retrieve_capabilities_finish (EClient *client, GAsyncResult *result, gchar **capabilities, GError **error)
+e_client_retrieve_capabilities_finish (EClient *client,
+                                       GAsyncResult *result,
+                                       gchar **capabilities,
+                                       GError **error)
 {
 	EClientClass *klass;
 	gboolean res;
@@ -1086,7 +1120,10 @@ e_client_retrieve_capabilities_finish (EClient *client, GAsyncResult *result, gc
  * Since: 3.2
  **/
 gboolean
-e_client_retrieve_capabilities_sync (EClient *client, gchar **capabilities, GCancellable *cancellable, GError **error)
+e_client_retrieve_capabilities_sync (EClient *client,
+                                     gchar **capabilities,
+                                     GCancellable *cancellable,
+                                     GError **error)
 {
 	EClientClass *klass;
 	gboolean res = FALSE;
@@ -1121,7 +1158,11 @@ e_client_retrieve_capabilities_sync (EClient *client, gchar **capabilities, GCan
  * Since: 3.2
  **/
 void
-e_client_get_backend_property (EClient *client, const gchar *prop_name, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_client_get_backend_property (EClient *client,
+                               const gchar *prop_name,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
 	EClientClass *klass;
 
@@ -1152,7 +1193,10 @@ e_client_get_backend_property (EClient *client, const gchar *prop_name, GCancell
  * Since: 3.2
  **/
 gboolean
-e_client_get_backend_property_finish (EClient *client, GAsyncResult *result, gchar **prop_value, GError **error)
+e_client_get_backend_property_finish (EClient *client,
+                                      GAsyncResult *result,
+                                      gchar **prop_value,
+                                      GError **error)
 {
 	EClientClass *klass;
 
@@ -1183,7 +1227,11 @@ e_client_get_backend_property_finish (EClient *client, GAsyncResult *result, gch
  * Since: 3.2
  **/
 gboolean
-e_client_get_backend_property_sync (EClient *client, const gchar *prop_name, gchar **prop_value, GCancellable *cancellable, GError **error)
+e_client_get_backend_property_sync (EClient *client,
+                                    const gchar *prop_name,
+                                    gchar **prop_value,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	EClientClass *klass;
 
@@ -1216,7 +1264,12 @@ e_client_get_backend_property_sync (EClient *client, const gchar *prop_name, gch
  * Since: 3.2
  **/
 void
-e_client_set_backend_property (EClient *client, const gchar *prop_name, const gchar *prop_value, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_client_set_backend_property (EClient *client,
+                               const gchar *prop_name,
+                               const gchar *prop_value,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
 	EClientClass *klass;
 
@@ -1247,7 +1300,9 @@ e_client_set_backend_property (EClient *client, const gchar *prop_name, const gc
  * Since: 3.2
  **/
 gboolean
-e_client_set_backend_property_finish (EClient *client, GAsyncResult *result, GError **error)
+e_client_set_backend_property_finish (EClient *client,
+                                      GAsyncResult *result,
+                                      GError **error)
 {
 	EClientClass *klass;
 
@@ -1278,7 +1333,11 @@ e_client_set_backend_property_finish (EClient *client, GAsyncResult *result, GEr
  * Since: 3.2
  **/
 gboolean
-e_client_set_backend_property_sync (EClient *client, const gchar *prop_name, const gchar *prop_value, GCancellable *cancellable, GError **error)
+e_client_set_backend_property_sync (EClient *client,
+                                    const gchar *prop_name,
+                                    const gchar *prop_value,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	EClientClass *klass;
 
@@ -1309,7 +1368,11 @@ e_client_set_backend_property_sync (EClient *client, const gchar *prop_name, con
  * Since: 3.2
  **/
 void
-e_client_open (EClient *client, gboolean only_if_exists, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_client_open (EClient *client,
+               gboolean only_if_exists,
+               GCancellable *cancellable,
+               GAsyncReadyCallback callback,
+               gpointer user_data)
 {
 	EClientClass *klass;
 
@@ -1338,7 +1401,9 @@ e_client_open (EClient *client, gboolean only_if_exists, GCancellable *cancellab
  * Since: 3.2
  **/
 gboolean
-e_client_open_finish (EClient *client, GAsyncResult *result, GError **error)
+e_client_open_finish (EClient *client,
+                      GAsyncResult *result,
+                      GError **error)
 {
 	EClientClass *klass;
 
@@ -1367,7 +1432,10 @@ e_client_open_finish (EClient *client, GAsyncResult *result, GError **error)
  * Since: 3.2
  **/
 gboolean
-e_client_open_sync (EClient *client, gboolean only_if_exists, GCancellable *cancellable, GError **error)
+e_client_open_sync (EClient *client,
+                    gboolean only_if_exists,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	EClientClass *klass;
 
@@ -1392,7 +1460,10 @@ e_client_open_sync (EClient *client, gboolean only_if_exists, GCancellable *canc
  * Since: 3.2
  **/
 void
-e_client_remove (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_client_remove (EClient *client,
+                 GCancellable *cancellable,
+                 GAsyncReadyCallback callback,
+                 gpointer user_data)
 {
 	EClientClass *klass;
 
@@ -1421,7 +1492,9 @@ e_client_remove (EClient *client, GCancellable *cancellable, GAsyncReadyCallback
  * Since: 3.2
  **/
 gboolean
-e_client_remove_finish (EClient *client, GAsyncResult *result, GError **error)
+e_client_remove_finish (EClient *client,
+                        GAsyncResult *result,
+                        GError **error)
 {
 	EClientClass *klass;
 
@@ -1450,7 +1523,9 @@ e_client_remove_finish (EClient *client, GAsyncResult *result, GError **error)
  * Since: 3.2
  **/
 gboolean
-e_client_remove_sync (EClient *client, GCancellable *cancellable, GError **error)
+e_client_remove_sync (EClient *client,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	EClientClass *klass;
 
@@ -1477,7 +1552,10 @@ e_client_remove_sync (EClient *client, GCancellable *cancellable, GError **error
  * Since: 3.2
  **/
 void
-e_client_refresh (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_client_refresh (EClient *client,
+                  GCancellable *cancellable,
+                  GAsyncReadyCallback callback,
+                  gpointer user_data)
 {
 	EClientClass *klass;
 
@@ -1506,7 +1584,9 @@ e_client_refresh (EClient *client, GCancellable *cancellable, GAsyncReadyCallbac
  * Since: 3.2
  **/
 gboolean
-e_client_refresh_finish (EClient *client, GAsyncResult *result, GError **error)
+e_client_refresh_finish (EClient *client,
+                         GAsyncResult *result,
+                         GError **error)
 {
 	EClientClass *klass;
 
@@ -1537,7 +1617,9 @@ e_client_refresh_finish (EClient *client, GAsyncResult *result, GError **error)
  * Since: 3.2
  **/
 gboolean
-e_client_refresh_sync (EClient *client, GCancellable *cancellable, GError **error)
+e_client_refresh_sync (EClient *client,
+                       GCancellable *cancellable,
+                       GError **error)
 {
 	EClientClass *klass;
 
@@ -1624,7 +1706,8 @@ e_client_util_strv_to_slist (const gchar * const *strv)
  * Since: 3.2
  **/
 GSList *
-e_client_util_copy_string_slist	(GSList *copy_to, const GSList *strings)
+e_client_util_copy_string_slist (GSList *copy_to,
+                                 const GSList *strings)
 {
 	GSList *res = copy_to;
 	const GSList *iter;
@@ -1649,7 +1732,8 @@ e_client_util_copy_string_slist	(GSList *copy_to, const GSList *strings)
  * Since: 3.2
  **/
 GSList *
-e_client_util_copy_object_slist	(GSList *copy_to, const GSList *objects)
+e_client_util_copy_object_slist (GSList *copy_to,
+                                 const GSList *objects)
 {
 	GSList *res = copy_to;
 	const GSList *iter;
@@ -1736,10 +1820,13 @@ e_client_util_parse_comma_strings (const gchar *strings)
 }
 
 /* for each known source calls check_func, which should return TRUE if the required
-   source have been found. Function returns NULL or the source on which was returned
-   TRUE by the check_func. Non-NULL pointer should be unreffed by g_object_unref. */
+ * source have been found. Function returns NULL or the source on which was returned
+ * TRUE by the check_func. Non - NULL pointer should be unreffed by g_object_unref. */
 static ESource *
-search_known_sources (ESourceList *sources, gboolean (*check_func)(ESource *source, gpointer user_data), gpointer user_data)
+search_known_sources (ESourceList *sources,
+                      gboolean (*check_func) (ESource *source,
+                                              gpointer user_data),
+                      gpointer user_data)
 {
 	ESource *res = NULL;
 	GSList *g;
@@ -1768,7 +1855,8 @@ search_known_sources (ESourceList *sources, gboolean (*check_func)(ESource *sour
 }
 
 static gboolean
-check_uri (ESource *source, gpointer uri)
+check_uri (ESource *source,
+           gpointer uri)
 {
 	const gchar *suri;
 	gchar *suri2;
@@ -1796,7 +1884,8 @@ struct check_system_data
 };
 
 static gboolean
-check_system (ESource *source, gpointer data)
+check_system (ESource *source,
+              gpointer data)
 {
 	struct check_system_data *csd = data;
 
@@ -1864,7 +1953,8 @@ e_client_util_get_system_source (ESourceList *source_list)
 }
 
 gboolean
-e_client_util_set_default (ESourceList *source_list, ESource *source)
+e_client_util_set_default (ESourceList *source_list,
+                           ESource *source)
 {
 	const gchar *uid;
 	GSList *g;
@@ -1877,13 +1967,13 @@ e_client_util_set_default (ESourceList *source_list, ESource *source)
 	uid = e_source_peek_uid (source);
 
 	/* make sure the source is actually in the ESourceList.  If
-	   it's not we don't bother adding it, just return an error */
+	 * it's not we don't bother adding it, just return an error */
 	source = e_source_list_peek_source_by_uid (source_list, uid);
 	if (!source)
 		return FALSE;
 
 	/* loop over all the sources clearing out any "default"
-	   properties we find */
+	 * properties we find */
 	for (g = e_source_list_peek_groups (source_list); g; g = g->next) {
 		GSList *s;
 		for (s = e_source_group_peek_sources (E_SOURCE_GROUP (g->data));
@@ -1899,7 +1989,8 @@ e_client_util_set_default (ESourceList *source_list, ESource *source)
 }
 
 ESource *
-e_client_util_get_source_for_uri (ESourceList *source_list, const gchar *uri)
+e_client_util_get_source_for_uri (ESourceList *source_list,
+                                  const gchar *uri)
 {
 	ESource *source;
 
@@ -1915,7 +2006,13 @@ e_client_util_get_source_for_uri (ESourceList *source_list, const gchar *uri)
 }
 
 void
-e_client_finish_async_without_dbus (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data, gpointer source_tag, gpointer op_res, GDestroyNotify destroy_op_res)
+e_client_finish_async_without_dbus (EClient *client,
+                                    GCancellable *cancellable,
+                                    GAsyncReadyCallback callback,
+                                    gpointer user_data,
+                                    gpointer source_tag,
+                                    gpointer op_res,
+                                    GDestroyNotify destroy_op_res)
 {
 	GCancellable *use_cancellable;
 	GSimpleAsyncResult *simple;
@@ -1967,7 +2064,9 @@ e_client_get_dbus_proxy (EClient *client)
  * @dbus_erorr and @out_error can point to the same variable.
  **/
 void
-e_client_unwrap_dbus_error (EClient *client, GError *dbus_error, GError **out_error)
+e_client_unwrap_dbus_error (EClient *client,
+                            GError *dbus_error,
+                            GError **out_error)
 {
 	EClientClass *klass;
 
@@ -2009,7 +2108,12 @@ e_client_unwrap_dbus_error (EClient *client, GError *dbus_error, GError **out_er
  * Note: The @dbus_error is automatically freed if returned %TRUE.
  **/
 gboolean
-e_client_util_unwrap_dbus_error (GError *dbus_error, GError **client_error, const EClientErrorsList *known_errors, guint known_errors_count, GQuark known_errors_domain, gboolean fail_when_none_matched)
+e_client_util_unwrap_dbus_error (GError *dbus_error,
+                                 GError **client_error,
+                                 const EClientErrorsList *known_errors,
+                                 guint known_errors_count,
+                                 GQuark known_errors_domain,
+                                 gboolean fail_when_none_matched)
 {
 	if (!client_error) {
 		if (dbus_error)
@@ -2134,7 +2238,9 @@ complete_async_op_in_idle_cb (gpointer user_data)
 }
 
 static void
-finish_async_op (EClientAsyncOpData *async_data, const GError *error, gboolean in_idle)
+finish_async_op (EClientAsyncOpData *async_data,
+                 const GError *error,
+                 gboolean in_idle)
 {
 	GSimpleAsyncResult *simple;
 
@@ -2161,7 +2267,9 @@ finish_async_op (EClientAsyncOpData *async_data, const GError *error, gboolean i
 }
 
 static void
-async_result_ready_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+async_result_ready_cb (GObject *source_object,
+                       GAsyncResult *result,
+                       gpointer user_data)
 {
 	GError *error = NULL;
 	EClientAsyncOpData *async_data;
@@ -2197,7 +2305,19 @@ async_result_ready_cb (GObject *source_object, GAsyncResult *result, gpointer us
 }
 
 static EClientAsyncOpData *
-prepare_async_data (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data, gpointer source_tag, gboolean error_report_only, EClientProxyFinishVoidFunc finish_void, EClientProxyFinishBooleanFunc finish_boolean, EClientProxyFinishStringFunc finish_string, EClientProxyFinishStrvFunc finish_strv, EClientProxyFinishUintFunc finish_uint, GDBusProxy **proxy, GCancellable **out_cancellable)
+prepare_async_data (EClient *client,
+                    GCancellable *cancellable,
+                    GAsyncReadyCallback callback,
+                    gpointer user_data,
+                    gpointer source_tag,
+                    gboolean error_report_only,
+                    EClientProxyFinishVoidFunc finish_void,
+                    EClientProxyFinishBooleanFunc finish_boolean,
+                    EClientProxyFinishStringFunc finish_string,
+                    EClientProxyFinishStrvFunc finish_strv,
+                    EClientProxyFinishUintFunc finish_uint,
+                    GDBusProxy **proxy,
+                    GCancellable **out_cancellable)
 {
 	EClientAsyncOpData *async_data;
 	GCancellable *use_cancellable;
@@ -2280,7 +2400,11 @@ prepare_async_data (EClient *client, GCancellable *cancellable, GAsyncReadyCallb
 }
 
 void
-e_client_proxy_return_async_error (EClient *client, const GError *error, GAsyncReadyCallback callback, gpointer user_data, gpointer source_tag)
+e_client_proxy_return_async_error (EClient *client,
+                                   const GError *error,
+                                   GAsyncReadyCallback callback,
+                                   gpointer user_data,
+                                   gpointer source_tag)
 {
 	EClientAsyncOpData *async_data;
 
@@ -2296,7 +2420,20 @@ e_client_proxy_return_async_error (EClient *client, const GError *error, GAsyncR
 }
 
 void
-e_client_proxy_call_void (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data, gpointer source_tag, void (*func) (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data), EClientProxyFinishVoidFunc finish_void, EClientProxyFinishBooleanFunc finish_boolean, EClientProxyFinishStringFunc finish_string, EClientProxyFinishStrvFunc finish_strv, EClientProxyFinishUintFunc finish_uint)
+e_client_proxy_call_void (EClient *client,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data,
+                          gpointer source_tag,
+                          void (*func) (GDBusProxy *proxy,
+                                        GCancellable *cancellable,
+                                        GAsyncReadyCallback callback,
+                                        gpointer user_data),
+                          EClientProxyFinishVoidFunc finish_void,
+                          EClientProxyFinishBooleanFunc finish_boolean,
+                          EClientProxyFinishStringFunc finish_string,
+                          EClientProxyFinishStrvFunc finish_strv,
+                          EClientProxyFinishUintFunc finish_uint)
 {
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
@@ -2314,7 +2451,22 @@ e_client_proxy_call_void (EClient *client, GCancellable *cancellable, GAsyncRead
 }
 
 void
-e_client_proxy_call_boolean (EClient *client, gboolean in_boolean, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data, gpointer source_tag, void (*func) (GDBusProxy *proxy, gboolean in_boolean, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data), EClientProxyFinishVoidFunc finish_void, EClientProxyFinishBooleanFunc finish_boolean, EClientProxyFinishStringFunc finish_string, EClientProxyFinishStrvFunc finish_strv, EClientProxyFinishUintFunc finish_uint)
+e_client_proxy_call_boolean (EClient *client,
+                             gboolean in_boolean,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data,
+                             gpointer source_tag,
+                             void (*func) (GDBusProxy *proxy,
+                                           gboolean in_boolean,
+                                           GCancellable *cancellable,
+                                           GAsyncReadyCallback callback,
+                                           gpointer user_data),
+                             EClientProxyFinishVoidFunc finish_void,
+                             EClientProxyFinishBooleanFunc finish_boolean,
+                             EClientProxyFinishStringFunc finish_string,
+                             EClientProxyFinishStrvFunc finish_strv,
+                             EClientProxyFinishUintFunc finish_uint)
 {
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
@@ -2332,7 +2484,22 @@ e_client_proxy_call_boolean (EClient *client, gboolean in_boolean, GCancellable 
 }
 
 void
-e_client_proxy_call_string (EClient *client, const gchar *in_string, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data, gpointer source_tag, void (*func) (GDBusProxy *proxy, const gchar * in_string, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data), EClientProxyFinishVoidFunc finish_void, EClientProxyFinishBooleanFunc finish_boolean, EClientProxyFinishStringFunc finish_string, EClientProxyFinishStrvFunc finish_strv, EClientProxyFinishUintFunc finish_uint)
+e_client_proxy_call_string (EClient *client,
+                            const gchar *in_string,
+                            GCancellable *cancellable,
+                            GAsyncReadyCallback callback,
+                            gpointer user_data,
+                            gpointer source_tag,
+                            void (*func) (GDBusProxy *proxy,
+                                          const gchar *in_string,
+                                          GCancellable *cancellable,
+                                          GAsyncReadyCallback callback,
+                                          gpointer user_data),
+                            EClientProxyFinishVoidFunc finish_void,
+                            EClientProxyFinishBooleanFunc finish_boolean,
+                            EClientProxyFinishStringFunc finish_string,
+                            EClientProxyFinishStrvFunc finish_strv,
+                            EClientProxyFinishUintFunc finish_uint)
 {
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
@@ -2351,7 +2518,23 @@ e_client_proxy_call_string (EClient *client, const gchar *in_string, GCancellabl
 }
 
 void
-e_client_proxy_call_string_with_res_op_data (EClient *client, const gchar *in_string, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data, gpointer source_tag, const gchar *res_op_data, void (*func) (GDBusProxy *proxy, const gchar * in_string, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data), EClientProxyFinishVoidFunc finish_void, EClientProxyFinishBooleanFunc finish_boolean, EClientProxyFinishStringFunc finish_string, EClientProxyFinishStrvFunc finish_strv, EClientProxyFinishUintFunc finish_uint)
+e_client_proxy_call_string_with_res_op_data (EClient *client,
+                                             const gchar *in_string,
+                                             GCancellable *cancellable,
+                                             GAsyncReadyCallback callback,
+                                             gpointer user_data,
+                                             gpointer source_tag,
+                                             const gchar *res_op_data,
+                                             void (*func) (GDBusProxy *proxy,
+                                                           const gchar *in_string,
+                                                           GCancellable *cancellable,
+                                                           GAsyncReadyCallback callback,
+                                                           gpointer user_data),
+                                             EClientProxyFinishVoidFunc finish_void,
+                                             EClientProxyFinishBooleanFunc finish_boolean,
+                                             EClientProxyFinishStringFunc finish_string,
+                                             EClientProxyFinishStrvFunc finish_strv,
+                                             EClientProxyFinishUintFunc finish_uint)
 {
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
@@ -2372,7 +2555,22 @@ e_client_proxy_call_string_with_res_op_data (EClient *client, const gchar *in_st
 }
 
 void
-e_client_proxy_call_strv (EClient *client, const gchar * const *in_strv, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data, gpointer source_tag, void (*func) (GDBusProxy *proxy, const gchar * const * in_strv, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data), EClientProxyFinishVoidFunc finish_void, EClientProxyFinishBooleanFunc finish_boolean, EClientProxyFinishStringFunc finish_string, EClientProxyFinishStrvFunc finish_strv, EClientProxyFinishUintFunc finish_uint)
+e_client_proxy_call_strv (EClient *client,
+                          const gchar * const *in_strv,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data,
+                          gpointer source_tag,
+                          void (*func) (GDBusProxy *proxy,
+                                        const gchar * const * in_strv,
+                                        GCancellable *cancellable,
+                                        GAsyncReadyCallback callback,
+                                        gpointer user_data),
+                          EClientProxyFinishVoidFunc finish_void,
+                          EClientProxyFinishBooleanFunc finish_boolean,
+                          EClientProxyFinishStringFunc finish_string,
+                          EClientProxyFinishStrvFunc finish_strv,
+                          EClientProxyFinishUintFunc finish_uint)
 {
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
@@ -2391,7 +2589,22 @@ e_client_proxy_call_strv (EClient *client, const gchar * const *in_strv, GCancel
 }
 
 void
-e_client_proxy_call_uint (EClient *client, guint in_uint, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data, gpointer source_tag, void (*func) (GDBusProxy *proxy, guint in_uint, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data), EClientProxyFinishVoidFunc finish_void, EClientProxyFinishBooleanFunc finish_boolean, EClientProxyFinishStringFunc finish_string, EClientProxyFinishStrvFunc finish_strv, EClientProxyFinishUintFunc finish_uint)
+e_client_proxy_call_uint (EClient *client,
+                          guint in_uint,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data,
+                          gpointer source_tag,
+                          void (*func) (GDBusProxy *proxy,
+                                        guint in_uint,
+                                        GCancellable *cancellable,
+                                        GAsyncReadyCallback callback,
+                                        gpointer user_data),
+                          EClientProxyFinishVoidFunc finish_void,
+                          EClientProxyFinishBooleanFunc finish_boolean,
+                          EClientProxyFinishStringFunc finish_string,
+                          EClientProxyFinishStrvFunc finish_strv,
+                          EClientProxyFinishUintFunc finish_uint)
 {
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
@@ -2409,7 +2622,10 @@ e_client_proxy_call_uint (EClient *client, guint in_uint, GCancellable *cancella
 }
 
 gboolean
-e_client_proxy_call_finish_void (EClient *client, GAsyncResult *result, GError **error, gpointer source_tag)
+e_client_proxy_call_finish_void (EClient *client,
+                                 GAsyncResult *result,
+                                 GError **error,
+                                 gpointer source_tag)
 {
 	GSimpleAsyncResult *simple;
 	GError *local_error = NULL;
@@ -2435,7 +2651,11 @@ e_client_proxy_call_finish_void (EClient *client, GAsyncResult *result, GError *
 }
 
 gboolean
-e_client_proxy_call_finish_boolean (EClient *client, GAsyncResult *result, gboolean *out_boolean, GError **error, gpointer source_tag)
+e_client_proxy_call_finish_boolean (EClient *client,
+                                    GAsyncResult *result,
+                                    gboolean *out_boolean,
+                                    GError **error,
+                                    gpointer source_tag)
 {
 	GSimpleAsyncResult *simple;
 	GError *local_error = NULL;
@@ -2464,7 +2684,11 @@ e_client_proxy_call_finish_boolean (EClient *client, GAsyncResult *result, gbool
 }
 
 gboolean
-e_client_proxy_call_finish_string (EClient *client, GAsyncResult *result, gchar **out_string, GError **error, gpointer source_tag)
+e_client_proxy_call_finish_string (EClient *client,
+                                   GAsyncResult *result,
+                                   gchar **out_string,
+                                   GError **error,
+                                   gpointer source_tag)
 {
 	GSimpleAsyncResult *simple;
 	GError *local_error = NULL;
@@ -2494,7 +2718,11 @@ e_client_proxy_call_finish_string (EClient *client, GAsyncResult *result, gchar 
 }
 
 gboolean
-e_client_proxy_call_finish_strv (EClient *client, GAsyncResult *result, gchar ***out_strv, GError **error, gpointer source_tag)
+e_client_proxy_call_finish_strv (EClient *client,
+                                 GAsyncResult *result,
+                                 gchar ***out_strv,
+                                 GError **error,
+                                 gpointer source_tag)
 {
 	GSimpleAsyncResult *simple;
 	GError *local_error = NULL;
@@ -2524,7 +2752,11 @@ e_client_proxy_call_finish_strv (EClient *client, GAsyncResult *result, gchar **
 }
 
 gboolean
-e_client_proxy_call_finish_uint (EClient *client, GAsyncResult *result, guint *out_uint, GError **error, gpointer source_tag)
+e_client_proxy_call_finish_uint (EClient *client,
+                                 GAsyncResult *result,
+                                 guint *out_uint,
+                                 GError **error,
+                                 gpointer source_tag)
 {
 	GSimpleAsyncResult *simple;
 	GError *local_error = NULL;
@@ -2587,151 +2819,356 @@ e_client_proxy_call_finish_uint (EClient *client, GAsyncResult *result, guint *o
 	return result;
 
 gboolean
-e_client_proxy_call_sync_void__void (EClient *client, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_void__void (EClient *client,
+                                     GCancellable *cancellable,
+                                     GError **error,
+                                     gboolean (*func) (GDBusProxy *proxy,
+                                                       GCancellable *cancellable,
+                                                       GError **error))
 {
 	SYNC_CALL_TEMPLATE (client, (proxy, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_void__boolean (EClient *client, gboolean *out_boolean, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, gboolean *out_boolean, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_void__boolean (EClient *client,
+                                        gboolean *out_boolean,
+                                        GCancellable *cancellable,
+                                        GError **error,
+                                        gboolean (*func) (GDBusProxy *proxy,
+                                                          gboolean *out_boolean,
+                                                          GCancellable *cancellable,
+                                                          GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_boolean, (proxy, out_boolean, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_void__string (EClient *client, gchar **out_string, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, gchar **out_string, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_void__string (EClient *client,
+                                       gchar **out_string,
+                                       GCancellable *cancellable,
+                                       GError **error,
+                                       gboolean (*func) (GDBusProxy *proxy,
+                                                         gchar **out_string,
+                                                         GCancellable *cancellable,
+                                                         GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_string, (proxy, out_string, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_void__strv (EClient *client, gchar ***out_strv, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, gchar ***out_strv, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_void__strv (EClient *client,
+                                     gchar ***out_strv,
+                                     GCancellable *cancellable,
+                                     GError **error,
+                                     gboolean (*func) (GDBusProxy *proxy,
+                                                       gchar ***out_strv,
+                                                       GCancellable *cancellable,
+                                                       GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_strv, (proxy, out_strv, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_void__uint (EClient *client, guint *out_uint, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, guint *out_uint, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_void__uint (EClient *client,
+                                     guint *out_uint,
+                                     GCancellable *cancellable,
+                                     GError **error,
+                                     gboolean (*func) (GDBusProxy *proxy,
+                                                       guint *out_uint,
+                                                       GCancellable *cancellable,
+                                                       GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_uint, (proxy, out_uint, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_boolean__void (EClient *client, gboolean in_boolean, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, gboolean in_boolean, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_boolean__void (EClient *client,
+                                        gboolean in_boolean,
+                                        GCancellable *cancellable,
+                                        GError **error,
+                                        gboolean (*func) (GDBusProxy *proxy,
+                                                          gboolean in_boolean,
+                                                          GCancellable *cancellable,
+                                                          GError **error))
 {
 	SYNC_CALL_TEMPLATE (client, (proxy, in_boolean, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_boolean__boolean (EClient *client, gboolean in_boolean, gboolean *out_boolean, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, gboolean in_boolean, gboolean *out_boolean, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_boolean__boolean (EClient *client,
+                                           gboolean in_boolean,
+                                           gboolean *out_boolean,
+                                           GCancellable *cancellable,
+                                           GError **error,
+                                           gboolean (*func) (GDBusProxy *proxy,
+                                                             gboolean in_boolean,
+                                                             gboolean *out_boolean,
+                                                             GCancellable *cancellable,
+                                                             GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_boolean, (proxy, in_boolean, out_boolean, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_boolean__string (EClient *client, gboolean in_boolean, gchar **out_string, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, gboolean in_boolean, gchar **out_string, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_boolean__string (EClient *client,
+                                          gboolean in_boolean,
+                                          gchar **out_string,
+                                          GCancellable *cancellable,
+                                          GError **error,
+                                          gboolean (*func) (GDBusProxy *proxy,
+                                                            gboolean in_boolean,
+                                                            gchar **out_string,
+                                                            GCancellable *cancellable,
+                                                            GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_string, (proxy, in_boolean, out_string, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_boolean__strv (EClient *client, gboolean in_boolean, gchar ***out_strv, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, gboolean in_boolean, gchar ***out_strv, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_boolean__strv (EClient *client,
+                                        gboolean in_boolean,
+                                        gchar ***out_strv,
+                                        GCancellable *cancellable,
+                                        GError **error,
+                                        gboolean (*func) (GDBusProxy *proxy,
+                                                          gboolean in_boolean,
+                                                          gchar ***out_strv,
+                                                          GCancellable *cancellable,
+                                                          GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_strv, (proxy, in_boolean, out_strv, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_boolean__uint (EClient *client, gboolean in_boolean, guint *out_uint, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, gboolean in_boolean, guint *out_uint, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_boolean__uint (EClient *client,
+                                        gboolean in_boolean,
+                                        guint *out_uint,
+                                        GCancellable *cancellable,
+                                        GError **error,
+                                        gboolean (*func) (GDBusProxy *proxy,
+                                                          gboolean in_boolean,
+                                                          guint *out_uint,
+                                                          GCancellable *cancellable,
+                                                          GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_uint, (proxy, in_boolean, out_uint, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_string__void (EClient *client, const gchar *in_string, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, const gchar *in_string, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_string__void (EClient *client,
+                                       const gchar *in_string,
+                                       GCancellable *cancellable,
+                                       GError **error,
+                                       gboolean (*func) (GDBusProxy *proxy,
+                                                         const gchar *in_string,
+                                                         GCancellable *cancellable,
+                                                         GError **error))
 {
 	SYNC_CALL_TEMPLATE (client, (proxy, in_string, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_string__boolean (EClient *client, const gchar *in_string, gboolean *out_boolean, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, const gchar *in_string, gboolean *out_boolean, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_string__boolean (EClient *client,
+                                          const gchar *in_string,
+                                          gboolean *out_boolean,
+                                          GCancellable *cancellable,
+                                          GError **error,
+                                          gboolean (*func) (GDBusProxy *proxy,
+                                                            const gchar *in_string,
+                                                            gboolean *out_boolean,
+                                                            GCancellable *cancellable,
+                                                            GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_boolean, (proxy, in_string, out_boolean, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_string__string (EClient *client, const gchar *in_string, gchar **out_string, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, const gchar *in_string, gchar **out_string, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_string__string (EClient *client,
+                                         const gchar *in_string,
+                                         gchar **out_string,
+                                         GCancellable *cancellable,
+                                         GError **error,
+                                         gboolean (*func) (GDBusProxy *proxy,
+                                                           const gchar *in_string,
+                                                           gchar **out_string,
+                                                           GCancellable *cancellable,
+                                                           GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_string, (proxy, in_string, out_string, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_string__strv (EClient *client, const gchar *in_string, gchar ***out_strv, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, const gchar *in_string, gchar ***out_strv, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_string__strv (EClient *client,
+                                       const gchar *in_string,
+                                       gchar ***out_strv,
+                                       GCancellable *cancellable,
+                                       GError **error,
+                                       gboolean (*func) (GDBusProxy *proxy,
+                                                         const gchar *in_string,
+                                                         gchar ***out_strv,
+                                                         GCancellable *cancellable,
+                                                         GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_strv, (proxy, in_string, out_strv, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_string__uint (EClient *client, const gchar *in_string, guint *out_uint, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, const gchar *in_string, guint *out_uint, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_string__uint (EClient *client,
+                                       const gchar *in_string,
+                                       guint *out_uint,
+                                       GCancellable *cancellable,
+                                       GError **error,
+                                       gboolean (*func) (GDBusProxy *proxy,
+                                                         const gchar *in_string,
+                                                         guint *out_uint,
+                                                         GCancellable *cancellable,
+                                                         GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_uint, (proxy, in_string, out_uint, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_strv__void (EClient *client, const gchar * const *in_strv, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, const gchar * const *in_strv, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_strv__void (EClient *client,
+                                     const gchar * const *in_strv,
+                                     GCancellable *cancellable,
+                                     GError **error,
+                                     gboolean (*func) (GDBusProxy *proxy,
+                                                       const gchar * const *in_strv,
+                                                       GCancellable *cancellable,
+                                                       GError **error))
 {
 	SYNC_CALL_TEMPLATE (client, (proxy, in_strv, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_strv__boolean (EClient *client, const gchar * const *in_strv, gboolean *out_boolean, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, const gchar * const *in_strv, gboolean *out_boolean, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_strv__boolean (EClient *client,
+                                        const gchar * const *in_strv,
+                                        gboolean *out_boolean,
+                                        GCancellable *cancellable,
+                                        GError **error,
+                                        gboolean (*func) (GDBusProxy *proxy,
+                                                          const gchar * const *in_strv,
+                                                          gboolean *out_boolean,
+                                                          GCancellable *cancellable,
+                                                          GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_boolean, (proxy, in_strv, out_boolean, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_strv__string (EClient *client, const gchar * const *in_strv, gchar **out_string, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, const gchar * const *in_strv, gchar **out_string, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_strv__string (EClient *client,
+                                       const gchar * const *in_strv,
+                                       gchar **out_string,
+                                       GCancellable *cancellable,
+                                       GError **error,
+                                       gboolean (*func) (GDBusProxy *proxy,
+                                                         const gchar * const *in_strv,
+                                                         gchar **out_string,
+                                                         GCancellable *cancellable,
+                                                         GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_string, (proxy, in_strv, out_string, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_strv__strv (EClient *client, const gchar * const *in_strv, gchar ***out_strv, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, const gchar * const *in_strv, gchar ***out_strv, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_strv__strv (EClient *client,
+                                     const gchar * const *in_strv,
+                                     gchar ***out_strv,
+                                     GCancellable *cancellable,
+                                     GError **error,
+                                     gboolean (*func) (GDBusProxy *proxy,
+                                                       const gchar * const *in_strv,
+                                                       gchar ***out_strv,
+                                                       GCancellable *cancellable,
+                                                       GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_strv, (proxy, in_strv, out_strv, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_strv__uint (EClient *client, const gchar * const *in_strv, guint *out_uint, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, const gchar * const *in_strv, guint *out_uint, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_strv__uint (EClient *client,
+                                     const gchar * const *in_strv,
+                                     guint *out_uint,
+                                     GCancellable *cancellable,
+                                     GError **error,
+                                     gboolean (*func) (GDBusProxy *proxy,
+                                                       const gchar * const *in_strv,
+                                                       guint *out_uint,
+                                                       GCancellable *cancellable,
+                                                       GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_uint, (proxy, in_strv, out_uint, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_uint__void (EClient *client, guint in_uint, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, guint in_uint, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_uint__void (EClient *client,
+                                     guint in_uint,
+                                     GCancellable *cancellable,
+                                     GError **error,
+                                     gboolean (*func) (GDBusProxy *proxy,
+                                                       guint in_uint,
+                                                       GCancellable *cancellable,
+                                                       GError **error))
 {
 	SYNC_CALL_TEMPLATE (client, (proxy, in_uint, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_uint__boolean (EClient *client, guint in_uint, gboolean *out_boolean, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, guint in_uint, gboolean *out_boolean, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_uint__boolean (EClient *client,
+                                        guint in_uint,
+                                        gboolean *out_boolean,
+                                        GCancellable *cancellable,
+                                        GError **error,
+                                        gboolean (*func) (GDBusProxy *proxy,
+                                                          guint in_uint,
+                                                          gboolean *out_boolean,
+                                                          GCancellable *cancellable,
+                                                          GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_boolean, (proxy, in_uint, out_boolean, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_uint__string (EClient *client, guint in_uint, gchar **out_string, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, guint in_uint, gchar **out_string, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_uint__string (EClient *client,
+                                       guint in_uint,
+                                       gchar **out_string,
+                                       GCancellable *cancellable,
+                                       GError **error,
+                                       gboolean (*func) (GDBusProxy *proxy,
+                                                         guint in_uint,
+                                                         gchar **out_string,
+                                                         GCancellable *cancellable,
+                                                         GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_string, (proxy, in_uint, out_string, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_uint__strv (EClient *client, guint in_uint, gchar ***out_strv, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, guint in_uint, gchar ***out_strv, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_uint__strv (EClient *client,
+                                     guint in_uint,
+                                     gchar ***out_strv,
+                                     GCancellable *cancellable,
+                                     GError **error,
+                                     gboolean (*func) (GDBusProxy *proxy,
+                                                       guint in_uint,
+                                                       gchar ***out_strv,
+                                                       GCancellable *cancellable,
+                                                       GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_strv, (proxy, in_uint, out_strv, use_cancellable, &local_error))
 }
 
 gboolean
-e_client_proxy_call_sync_uint__uint (EClient *client, guint in_uint, guint *out_uint, GCancellable *cancellable, GError **error, gboolean (*func) (GDBusProxy *proxy, guint in_uint, guint *out_uint, GCancellable *cancellable, GError **error))
+e_client_proxy_call_sync_uint__uint (EClient *client,
+                                     guint in_uint,
+                                     guint *out_uint,
+                                     GCancellable *cancellable,
+                                     GError **error,
+                                     gboolean (*func) (GDBusProxy *proxy,
+                                                       guint in_uint,
+                                                       guint *out_uint,
+                                                       GCancellable *cancellable,
+                                                       GError **error))
 {
 	SYNC_CALL_TEMPLATE (out_uint, (proxy, in_uint, out_uint, use_cancellable, &local_error))
 }

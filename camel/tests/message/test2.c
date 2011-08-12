@@ -18,11 +18,11 @@ static gchar *convert (const gchar *in, const gchar *from, const gchar *to)
 	const gchar *inp;
 	gsize inlen, outlen;
 
-	if (ic == (iconv_t)-1)
+	if (ic == (iconv_t) - 1)
 		return g_strdup (in);
 
 	inlen = strlen (in);
-	outlen = inlen*5 + 16;
+	outlen = inlen * 5 + 16;
 
 	outp = out = g_malloc (outlen);
 	inp = in;
@@ -49,12 +49,12 @@ static gchar *convert (const gchar *in, const gchar *from, const gchar *to)
 		gchar *nout, *noutp;
 		iconv_t ic = iconv_open (from, to);
 
-		if (ic == (iconv_t)-1)
+		if (ic == (iconv_t) - 1)
 			goto fail;
 
 		inp = out;
 		inlen = strlen (out);
-		outlen = inlen*5 + 16;
+		outlen = inlen * 5 + 16;
 		noutp = nout = g_malloc (outlen);
 		if (iconv (ic, &inp, &inlen, &noutp, &outlen) == -1
 		    || iconv (ic, NULL, 0, &noutp, &outlen) == -1) {
@@ -75,7 +75,10 @@ fail:
 }
 
 static void
-check_address_line_decode (gint i, const gchar *line, const gchar *name, const gchar *email)
+check_address_line_decode (gint i,
+                           const gchar *line,
+                           const gchar *name,
+                           const gchar *email)
 {
 	CamelInternetAddress *addr;
 	const gchar *dname, *demail;
@@ -136,12 +139,12 @@ gint main (gint argc, gchar **argv)
 	pull ();
 
 	push("Test add many");
-	for (i=1;i<10;i++) {
+	for (i = 1; i < 10; i++) {
 		gchar name[16], a[32];
 		sprintf(name, "Zed %d", i);
 		sprintf(a, "nowhere@here-%d.com.au", i);
 		camel_internet_address_add (addr, name, a);
-		check (camel_address_length (CAMEL_ADDRESS (addr)) == i+1);
+		check (camel_address_length (CAMEL_ADDRESS (addr)) == i + 1);
 		check (camel_internet_address_get (addr, i, &real, &where) == TRUE);
 		check_msg(string_equal(name, real), "name = '%s' real = '%s'", name, real);
 		check (strcmp (where, a) == 0);
@@ -233,7 +236,7 @@ gint main (gint argc, gchar **argv)
 
 	camel_test_start("CamelInternetAddress, I18N");
 
-	for (i = 0;i < G_N_ELEMENTS (test_lines); i++) {
+	for (i = 0; i < G_N_ELEMENTS (test_lines); i++) {
 		push("Testing text line %d (%s) '%s'", i, test_lines[i].type, test_lines[i].line);
 
 		addr = camel_internet_address_new ();

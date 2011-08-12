@@ -115,7 +115,7 @@ nntp_folder_refresh_info_online (CamelFolder *folder,
 	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	/* When invoked with no fmt, camel_nntp_command() just selects the folder
-	   and should return zero. */
+	 * and should return zero. */
 	success = !camel_nntp_command (
 		nntp_store, cancellable, error, nntp_folder, &line, NULL);
 
@@ -135,7 +135,8 @@ nntp_folder_refresh_info_online (CamelFolder *folder,
 }
 
 static void
-unset_flagged_flag (const gchar *uid, CamelFolderSummary *summary)
+unset_flagged_flag (const gchar *uid,
+                    CamelFolderSummary *summary)
 {
 	CamelMessageInfo *info;
 
@@ -153,7 +154,8 @@ unset_flagged_flag (const gchar *uid, CamelFolderSummary *summary)
 }
 
 static gboolean
-nntp_folder_sync (CamelFolder *folder, GError **error)
+nntp_folder_sync (CamelFolder *folder,
+                  GError **error)
 {
 	CamelStore *parent_store;
 	GPtrArray *changed;
@@ -177,19 +179,23 @@ nntp_folder_sync (CamelFolder *folder, GError **error)
 }
 
 static gboolean
-nntp_folder_sync_online (CamelFolder *folder, GError **error)
+nntp_folder_sync_online (CamelFolder *folder,
+                         GError **error)
 {
 	return nntp_folder_sync (folder, error);
 }
 
 static gboolean
-nntp_folder_sync_offline (CamelFolder *folder, GError **error)
+nntp_folder_sync_offline (CamelFolder *folder,
+                          GError **error)
 {
 	return nntp_folder_sync (folder, error);
 }
 
 static gchar *
-nntp_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
+nntp_get_filename (CamelFolder *folder,
+                   const gchar *uid,
+                   GError **error)
 {
 	CamelStore *parent_store;
 	CamelNNTPStore *nntp_store;
@@ -198,7 +204,7 @@ nntp_get_filename (CamelFolder *folder, const gchar *uid, GError **error)
 	parent_store = camel_folder_get_parent_store (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	article = alloca (strlen (uid)+1);
+	article = alloca (strlen (uid) + 1);
 	strcpy (article, uid);
 	msgid = strchr (article, ',');
 	if (msgid == NULL) {
@@ -287,7 +293,7 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 	parent_store = camel_folder_get_parent_store (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	article = alloca (strlen (uid)+1);
+	article = alloca (strlen (uid) + 1);
 	strcpy (article, uid);
 	msgid = strchr (article, ',');
 	if (!msgid) {
@@ -312,8 +318,10 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 	return success;
 }
 
-static GPtrArray*
-nntp_folder_search_by_expression (CamelFolder *folder, const gchar *expression, GError **error)
+static GPtrArray *
+nntp_folder_search_by_expression (CamelFolder *folder,
+                                  const gchar *expression,
+                                  GError **error)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	GPtrArray *matches;
@@ -332,7 +340,9 @@ nntp_folder_search_by_expression (CamelFolder *folder, const gchar *expression, 
 }
 
 static guint32
-nntp_folder_count_by_expression (CamelFolder *folder, const gchar *expression, GError **error)
+nntp_folder_count_by_expression (CamelFolder *folder,
+                                 const gchar *expression,
+                                 GError **error)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	guint32 count;
@@ -351,7 +361,10 @@ nntp_folder_count_by_expression (CamelFolder *folder, const gchar *expression, G
 }
 
 static GPtrArray *
-nntp_folder_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrArray *uids, GError **error)
+nntp_folder_search_by_uids (CamelFolder *folder,
+                            const gchar *expression,
+                            GPtrArray *uids,
+                            GError **error)
 {
 	CamelNNTPFolder *nntp_folder = (CamelNNTPFolder *) folder;
 	GPtrArray *matches;
@@ -373,7 +386,8 @@ nntp_folder_search_by_uids (CamelFolder *folder, const gchar *expression, GPtrAr
 }
 
 static void
-nntp_folder_search_free (CamelFolder *folder, GPtrArray *result)
+nntp_folder_search_free (CamelFolder *folder,
+                         GPtrArray *result)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
 
@@ -401,7 +415,7 @@ nntp_folder_get_message_sync (CamelFolder *folder,
 	nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	article = alloca (strlen (uid)+1);
+	article = alloca (strlen (uid) + 1);
 	strcpy (article, uid);
 	msgid = strchr (article, ',');
 	if (msgid == NULL) {
@@ -538,7 +552,7 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	    || camel_data_wrapper_write_to_stream_sync (CAMEL_DATA_WRAPPER (mime_message), filtered_stream, cancellable, error) == -1
 	    || camel_stream_flush (filtered_stream, cancellable, error) == -1
 	    || camel_stream_write (stream, "\r\n.\r\n", 5, cancellable, error) == -1
-	    || camel_nntp_stream_line (nntp_store->stream, (guchar **)&line, &u, cancellable, error) == -1) {
+	    || camel_nntp_stream_line (nntp_store->stream, (guchar **) &line, &u, cancellable, error) == -1) {
 		g_prefix_error (error, _("Posting failed: "));
 		success = FALSE;
 	} else if (atoi (line) != 240) {
@@ -574,8 +588,8 @@ nntp_folder_append_message_offline (CamelFolder *folder,
 }
 
 /* I do not know what to do this exactly. Looking at the IMAP implementation for this, it
-   seems to assume the message is copied to a folder on the same store. In that case, an
-   NNTP implementation doesn't seem to make any sense. */
+ * seems to assume the message is copied to a folder on the same store. In that case, an
+ * NNTP implementation doesn't seem to make any sense. */
 static gboolean
 nntp_folder_transfer_message (CamelFolder *source,
                               GPtrArray *uids,
@@ -594,7 +608,9 @@ nntp_folder_transfer_message (CamelFolder *source,
 }
 
 static gboolean
-nntp_folder_expunge_uids_offline (CamelFolder *folder, GPtrArray *uids, GError **error)
+nntp_folder_expunge_uids_offline (CamelFolder *folder,
+                                  GPtrArray *uids,
+                                  GError **error)
 {
 	CamelFolderChangeInfo *changes;
 	gint ii;
@@ -710,10 +726,10 @@ camel_nntp_folder_new (CamelStore *parent,
 
 	camel_folder_summary_load_from_db (folder->summary, NULL);
 
-	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelNNTPStore*) parent)->summary, folder_name);
+	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelNNTPStore *) parent)->summary, folder_name);
 	if (si) {
 		subscribed = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
-		camel_store_summary_info_free ((CamelStoreSummary *) ((CamelNNTPStore*) parent)->summary, si);
+		camel_store_summary_info_free ((CamelStoreSummary *) ((CamelNNTPStore *) parent)->summary, si);
 	}
 
 	if (subscribed && !camel_folder_refresh_info_sync (

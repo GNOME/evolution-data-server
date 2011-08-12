@@ -3,26 +3,28 @@
 #include <libebook/e-contact.h>
 
 /* TEL;WORK:... should map to PHONE_BUSINESS
-   TEL;FAX:... should map to OTHER_FAX. */
+ * TEL;FAX:... should map to OTHER_FAX. */
 #define VCARD \
-"BEGIN:vCard\r\n\
-VERSION:3.0\r\n\
-X-EVOLUTION-FILE-AS:test\\, 40013\r\n\
-FN:40013 test\r\n\
-N:40013;test;;;\r\n\
-TEL;VOICE:456-456-4567\r\n\
-TEL;WORK:123-123-1234\r\n\
-TEL;FAX:321-321-4321\r\n\
-END:vCard"
+"BEGIN : vCard\r\n\
+VERSION : 3.0\r\n\
+X - EVOLUTION - FILE - AS : test\\, 40013\r\n\
+FN : 40013 test\r\n\
+N : 40013; test;;;\r\n\
+TEL; VOICE : 456 - 456 - 4567\r\n\
+TEL; WORK : 123 - 123 - 1234\r\n\
+TEL; FAX : 321 - 321 - 4321\r\n\
+END : vCard"
 
 static void
-check (gboolean test, const gchar *msg)
+check (gboolean test,
+       const gchar *msg)
 {
 	printf ("%s - %s\n", test ? "passed" : "failed", msg);
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EContact *contact;
 	const gchar *phone;

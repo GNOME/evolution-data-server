@@ -89,7 +89,7 @@ mime_filter_yenc_filter (CamelMimeFilter *mime_filter,
 								inptr++;
 								priv->state |= CAMEL_MIME_YDECODE_STATE_BEGIN;
 								/* we can start ydecoding if the next line isn't
-								   a ypart... */
+								 * a ypart... */
 								in = inptr;
 								len = inend - in;
 							} else {
@@ -111,7 +111,7 @@ mime_filter_yenc_filter (CamelMimeFilter *mime_filter,
 				left = inend - inptr;
 				if ((priv->state & CAMEL_MIME_YDECODE_STATE_BEGIN) && left > 0) {
 					/* we have found an '=ybegin' line but we may yet have an "=ypart" line to
-					   yield before decoding the content */
+					 * yield before decoding the content */
 					if (left < 7 && !strncmp (inptr, "=ypart ", left)) {
 						camel_mime_filter_backup (mime_filter, inptr, left);
 					} else if (!strncmp (inptr, "=ypart ", 7)) {
@@ -286,7 +286,8 @@ camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction)
  * Sets the current state of the yencoder/ydecoder
  **/
 void
-camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc, gint state)
+camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc,
+                                  gint state)
 {
 	g_return_if_fail (CAMEL_IS_MIME_FILTER_YENC (yenc));
 
@@ -301,7 +302,8 @@ camel_mime_filter_yenc_set_state (CamelMimeFilterYenc *yenc, gint state)
  * Sets the current crc32 value on the yEnc filter @yenc to @crc.
  **/
 void
-camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc, guint32 crc)
+camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc,
+                                guint32 crc)
 {
 	g_return_if_fail (CAMEL_IS_MIME_FILTER_YENC (yenc));
 
@@ -401,8 +403,12 @@ static const gint yenc_crc_table[256] = {
  * Returns: the number of bytes decoded
  **/
 gsize
-camel_ydecode_step (const guchar *in, gsize inlen, guchar *out,
-		    gint *state, guint32 *pcrc, guint32 *crc)
+camel_ydecode_step (const guchar *in,
+                    gsize inlen,
+                    guchar *out,
+                    gint *state,
+                    guint32 *pcrc,
+                    guint32 *crc)
 {
 	register const guchar *inptr;
 	register guchar *outptr;
@@ -480,8 +486,12 @@ camel_ydecode_step (const guchar *in, gsize inlen, guchar *out,
  * Returns: the number of bytes encoded
  **/
 gsize
-camel_yencode_step (const guchar *in, gsize inlen, guchar *out,
-		    gint *state, guint32 *pcrc, guint32 *crc)
+camel_yencode_step (const guchar *in,
+                    gsize inlen,
+                    guchar *out,
+                    gint *state,
+                    guint32 *pcrc,
+                    guint32 *crc)
 {
 	register const guchar *inptr;
 	register guchar *outptr;
@@ -544,8 +554,12 @@ camel_yencode_step (const guchar *in, gsize inlen, guchar *out,
  * Returns: the number of bytes encoded.
  **/
 gsize
-camel_yencode_close (const guchar *in, gsize inlen, guchar *out,
-		     gint *state, guint32 *pcrc, guint32 *crc)
+camel_yencode_close (const guchar *in,
+                     gsize inlen,
+                     guchar *out,
+                     gint *state,
+                     guint32 *pcrc,
+                     guint32 *crc)
 {
 	register guchar *outptr;
 

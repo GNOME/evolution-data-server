@@ -8,7 +8,8 @@
 #define NUM_CLIENTS 200
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_clients[NUM_CLIENTS];
 	GError *error = NULL;

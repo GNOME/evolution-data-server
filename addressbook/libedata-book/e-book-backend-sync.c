@@ -46,10 +46,10 @@ e_book_backend_sync_construct (EBookBackendSync *backend)
  **/
 void
 e_book_backend_sync_open (EBookBackendSync *backend,
-			  EDataBook *book,
-			  GCancellable *cancellable,
-			  gboolean only_if_exists,
-			  GError **error)
+                          EDataBook *book,
+                          GCancellable *cancellable,
+                          gboolean only_if_exists,
+                          GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -71,11 +71,11 @@ e_book_backend_sync_open (EBookBackendSync *backend,
  **/
 void
 e_book_backend_sync_create_contact (EBookBackendSync *backend,
-				    EDataBook *book,
-				    GCancellable *cancellable,
-				    const gchar *vcard,
-				    EContact **contact,
-				    GError **error)
+                                    EDataBook *book,
+                                    GCancellable *cancellable,
+                                    const gchar *vcard,
+                                    EContact **contact,
+                                    GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -98,9 +98,9 @@ e_book_backend_sync_create_contact (EBookBackendSync *backend,
  **/
 void
 e_book_backend_sync_remove (EBookBackendSync *backend,
-			    EDataBook *book,
-			    GCancellable *cancellable,
-			    GError **error)
+                            EDataBook *book,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -121,7 +121,10 @@ e_book_backend_sync_remove (EBookBackendSync *backend,
  * Since: 3.2
  */
 void
-e_book_backend_sync_refresh  (EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, GError **error)
+e_book_backend_sync_refresh (EBookBackendSync *backend,
+                             EDataBook *book,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -148,7 +151,12 @@ e_book_backend_sync_refresh  (EBookBackendSync *backend, EDataBook *book, GCance
  * Since: 3.2
  **/
 gboolean
-e_book_backend_sync_get_backend_property (EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **error)
+e_book_backend_sync_get_backend_property (EBookBackendSync *backend,
+                                          EDataBook *book,
+                                          GCancellable *cancellable,
+                                          const gchar *prop_name,
+                                          gchar **prop_value,
+                                          GError **error)
 {
 	e_return_data_book_error_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_val_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -177,7 +185,12 @@ e_book_backend_sync_get_backend_property (EBookBackendSync *backend, EDataBook *
  * Since: 3.2
  **/
 gboolean
-e_book_backend_sync_set_backend_property (EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value, GError **error)
+e_book_backend_sync_set_backend_property (EBookBackendSync *backend,
+                                          EDataBook *book,
+                                          GCancellable *cancellable,
+                                          const gchar *prop_name,
+                                          const gchar *prop_value,
+                                          GError **error)
 {
 	e_return_data_book_error_val_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_val_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -203,11 +216,11 @@ e_book_backend_sync_set_backend_property (EBookBackendSync *backend, EDataBook *
  **/
 void
 e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
-				     EDataBook *book,
-				     GCancellable *cancellable,
-				     const GSList *id_list,
-				     GSList **removed_ids,
-				     GError **error)
+                                     EDataBook *book,
+                                     GCancellable *cancellable,
+                                     const GSList *id_list,
+                                     GSList **removed_ids,
+                                     GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -232,11 +245,11 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
  **/
 void
 e_book_backend_sync_modify_contact (EBookBackendSync *backend,
-				    EDataBook *book,
-				    GCancellable *cancellable,
-				    const gchar *vcard,
-				    EContact **contact,
-				    GError **error)
+                                    EDataBook *book,
+                                    GCancellable *cancellable,
+                                    const gchar *vcard,
+                                    EContact **contact,
+                                    GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -259,11 +272,11 @@ e_book_backend_sync_modify_contact (EBookBackendSync *backend,
  **/
 void
 e_book_backend_sync_get_contact (EBookBackendSync *backend,
-				 EDataBook *book,
-				 GCancellable *cancellable,
-				 const gchar *id,
-				 gchar **vcard,
-				 GError **error)
+                                 EDataBook *book,
+                                 GCancellable *cancellable,
+                                 const gchar *id,
+                                 gchar **vcard,
+                                 GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -288,11 +301,11 @@ e_book_backend_sync_get_contact (EBookBackendSync *backend,
  **/
 void
 e_book_backend_sync_get_contact_list (EBookBackendSync *backend,
-				      EDataBook *book,
-				      GCancellable *cancellable,
-				      const gchar *query,
-				      GSList **contacts,
-				      GError **error)
+                                      EDataBook *book,
+                                      GCancellable *cancellable,
+                                      const gchar *query,
+                                      GSList **contacts,
+                                      GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -319,11 +332,11 @@ e_book_backend_sync_get_contact_list (EBookBackendSync *backend,
  **/
 void
 e_book_backend_sync_get_contact_list_uids (EBookBackendSync *backend,
-					   EDataBook *book,
-					   GCancellable *cancellable,
-					   const gchar *query,
-					   GSList **contacts_uids,
-					   GError **error)
+                                           EDataBook *book,
+                                           GCancellable *cancellable,
+                                           const gchar *query,
+                                           GSList **contacts_uids,
+                                           GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -380,9 +393,9 @@ e_book_backend_sync_get_contact_list_uids (EBookBackendSync *backend,
  **/
 void
 e_book_backend_sync_authenticate_user (EBookBackendSync *backend,
-				       GCancellable *cancellable,
-				       ECredentials *credentials,
-				       GError **error)
+                                       GCancellable *cancellable,
+                                       ECredentials *credentials,
+                                       GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (credentials, E_DATA_BOOK_STATUS_INVALID_ARG);
@@ -393,10 +406,10 @@ e_book_backend_sync_authenticate_user (EBookBackendSync *backend,
 
 static void
 book_backend_open (EBookBackend *backend,
-		      EDataBook    *book,
-		      guint32       opid,
-		      GCancellable *cancellable,
-		      gboolean only_if_exists)
+                   EDataBook *book,
+                   guint32 opid,
+                   GCancellable *cancellable,
+                   gboolean only_if_exists)
 {
 	GError *error = NULL;
 
@@ -407,9 +420,9 @@ book_backend_open (EBookBackend *backend,
 
 static void
 book_backend_remove (EBookBackend *backend,
-			EDataBook    *book,
-			guint32       opid,
-			GCancellable *cancellable)
+                     EDataBook *book,
+                     guint32 opid,
+                     GCancellable *cancellable)
 {
 	GError *error = NULL;
 
@@ -419,7 +432,10 @@ book_backend_remove (EBookBackend *backend,
 }
 
 static void
-book_backend_refresh (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable)
+book_backend_refresh (EBookBackend *backend,
+                      EDataBook *book,
+                      guint32 opid,
+                      GCancellable *cancellable)
 {
 	GError *error = NULL;
 
@@ -429,7 +445,11 @@ book_backend_refresh (EBookBackend *backend, EDataBook *book, guint32 opid, GCan
 }
 
 static void
-book_backend_get_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name)
+book_backend_get_backend_property (EBookBackend *backend,
+                                   EDataBook *book,
+                                   guint32 opid,
+                                   GCancellable *cancellable,
+                                   const gchar *prop_name)
 {
 	GError *error = NULL;
 	gchar *prop_value = NULL;
@@ -443,7 +463,12 @@ book_backend_get_backend_property (EBookBackend *backend, EDataBook *book, guint
 }
 
 static void
-book_backend_set_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value)
+book_backend_set_backend_property (EBookBackend *backend,
+                                   EDataBook *book,
+                                   guint32 opid,
+                                   GCancellable *cancellable,
+                                   const gchar *prop_name,
+                                   const gchar *prop_value)
 {
 	GError *error = NULL;
 
@@ -455,10 +480,10 @@ book_backend_set_backend_property (EBookBackend *backend, EDataBook *book, guint
 
 static void
 book_backend_create_contact (EBookBackend *backend,
-			     EDataBook    *book,
-			     guint32       opid,
-			     GCancellable *cancellable,
-			     const gchar   *vcard)
+                             EDataBook *book,
+                             guint32 opid,
+                             GCancellable *cancellable,
+                             const gchar *vcard)
 {
 	GError *error = NULL;
 	EContact *contact = NULL;
@@ -473,10 +498,10 @@ book_backend_create_contact (EBookBackend *backend,
 
 static void
 book_backend_remove_contacts (EBookBackend *backend,
-			      EDataBook    *book,
-			      guint32       opid,
-			      GCancellable *cancellable,
-			      const GSList *id_list)
+                              EDataBook *book,
+                              guint32 opid,
+                              GCancellable *cancellable,
+                              const GSList *id_list)
 {
 	GError *error = NULL;
 	GSList *ids = NULL;
@@ -493,10 +518,10 @@ book_backend_remove_contacts (EBookBackend *backend,
 
 static void
 book_backend_modify_contact (EBookBackend *backend,
-			     EDataBook    *book,
-			     guint32       opid,
-			     GCancellable *cancellable,
-			     const gchar   *vcard)
+                             EDataBook *book,
+                             guint32 opid,
+                             GCancellable *cancellable,
+                             const gchar *vcard)
 {
 	GError *error = NULL;
 	EContact *contact = NULL;
@@ -511,10 +536,10 @@ book_backend_modify_contact (EBookBackend *backend,
 
 static void
 book_backend_get_contact (EBookBackend *backend,
-			  EDataBook    *book,
-			  guint32       opid,
-			  GCancellable *cancellable,
-			  const gchar   *id)
+                          EDataBook *book,
+                          guint32 opid,
+                          GCancellable *cancellable,
+                          const gchar *id)
 {
 	GError *error = NULL;
 	gchar *vcard = NULL;
@@ -529,10 +554,10 @@ book_backend_get_contact (EBookBackend *backend,
 
 static void
 book_backend_get_contact_list (EBookBackend *backend,
-			       EDataBook    *book,
-			       guint32       opid,
-			       GCancellable *cancellable,
-			       const gchar   *query)
+                               EDataBook *book,
+                               guint32 opid,
+                               GCancellable *cancellable,
+                               const gchar *query)
 {
 	GError *error = NULL;
 	GSList *cards = NULL;
@@ -547,10 +572,10 @@ book_backend_get_contact_list (EBookBackend *backend,
 
 static void
 book_backend_get_contact_list_uids (EBookBackend *backend,
-				    EDataBook    *book,
-				    guint32       opid,
-				    GCancellable *cancellable,
-				    const gchar   *query)
+                                    EDataBook *book,
+                                    guint32 opid,
+                                    GCancellable *cancellable,
+                                    const gchar *query)
 {
 	GError *error = NULL;
 	GSList *uids = NULL;
@@ -565,8 +590,8 @@ book_backend_get_contact_list_uids (EBookBackend *backend,
 
 static void
 book_backend_authenticate_user (EBookBackend *backend,
-				GCancellable *cancellable,
-				ECredentials *credentials)
+                                GCancellable *cancellable,
+                                ECredentials *credentials)
 {
 	GError *error = NULL;
 
@@ -576,14 +601,24 @@ book_backend_authenticate_user (EBookBackend *backend,
 }
 
 static gboolean
-book_backend_sync_get_backend_property (EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **error)
+book_backend_sync_get_backend_property (EBookBackendSync *backend,
+                                        EDataBook *book,
+                                        GCancellable *cancellable,
+                                        const gchar *prop_name,
+                                        gchar **prop_value,
+                                        GError **error)
 {
 	/* to indicate to pass to the EBookBackend parent class */
 	return FALSE;
 }
 
 static gboolean
-book_backend_sync_set_backend_property (EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value, GError **error)
+book_backend_sync_set_backend_property (EBookBackendSync *backend,
+                                        EDataBook *book,
+                                        GCancellable *cancellable,
+                                        const gchar *prop_name,
+                                        const gchar *prop_value,
+                                        GError **error)
 {
 	/* to indicate to pass to the EBookBackend parent class */
 	return FALSE;

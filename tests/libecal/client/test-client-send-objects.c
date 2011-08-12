@@ -22,7 +22,8 @@ create_object (void)
 }
 
 static gboolean
-manage_result (GSList *users, icalcomponent *modified_icalcomp)
+manage_result (GSList *users,
+               icalcomponent *modified_icalcomp)
 {
 	g_print ("Wishes to send to %d users", g_slist_length (users));
 	if (users) {
@@ -69,7 +70,9 @@ test_sync (ECalClient *cal_client)
 
 /* asynchronous callback with a main-loop running */
 static void
-async_send_result_ready (GObject *source_object, GAsyncResult *result, gpointer user_data)
+async_send_result_ready (GObject *source_object,
+                         GAsyncResult *result,
+                         gpointer user_data)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -130,7 +133,8 @@ test_sync_in_thread (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;

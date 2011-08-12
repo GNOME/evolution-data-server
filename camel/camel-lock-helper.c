@@ -198,7 +198,7 @@ static gint unlock_id (guint32 lockid)
 
 	d(fprintf(stderr, "unlocking id '%d'\n", lockid));
 
-	p = (struct _lock_info *)&lock_info_list;
+	p = (struct _lock_info *) &lock_info_list;
 	info = p->next;
 	while (info) {
 		if (info->id == lockid) {
@@ -263,7 +263,7 @@ static void setup_process (void)
 
 #ifdef SETEUID_SAVES
 	/* here we change to the real user id, this is probably not particularly
-	   portable so may need configure checks */
+	 * portable so may need configure checks */
 	lock_real_uid = getuid ();
 	lock_root_uid = geteuid ();
 	if (lock_real_uid != lock_root_uid)
@@ -307,7 +307,7 @@ gint main (gint argc, gchar **argv)
 		}
 
 		d(fprintf(stderr, "lock helper waiting for input\n"));
-		if (select (STDIN_FILENO+1, &rset, NULL, NULL, lock_info_list?&tv:NULL) == -1) {
+		if (select (STDIN_FILENO + 1, &rset, NULL, NULL, lock_info_list ? &tv : NULL) == -1) {
 			if (errno == EINTR)
 				break;
 
@@ -345,7 +345,7 @@ gint main (gint argc, gchar **argv)
 				res = CAMEL_LOCK_HELPER_STATUS_NOMEM;
 				if (msg.data > 0xffff) {
 					res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
-				} else if ((path = malloc (msg.data+1)) != NULL) {
+				} else if ((path = malloc (msg.data + 1)) != NULL) {
 					res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
 					len = read_n (STDIN_FILENO, path, msg.data);
 					if (len == msg.data) {

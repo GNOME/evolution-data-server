@@ -7,7 +7,8 @@
 #include "client-test-utils.h"
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	const gchar *query_string;

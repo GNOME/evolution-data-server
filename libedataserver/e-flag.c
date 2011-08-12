@@ -150,7 +150,8 @@ e_flag_wait (EFlag *flag)
  * Since: 1.12
  **/
 gboolean
-e_flag_timed_wait (EFlag *flag, GTimeVal *abs_time)
+e_flag_timed_wait (EFlag *flag,
+                   GTimeVal *abs_time)
 {
 	gboolean is_set;
 

@@ -20,8 +20,8 @@
  */
 
 /* This is a helper class for folders to implement the search function.
-   It implements enough to do basic searches on folders that can provide
-   an in-memory summary and a body index. */
+ * It implements enough to do basic searches on folders that can provide
+ * an in-memory summary and a body index. */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -95,10 +95,10 @@ static GScannerConfig config =
         };
 
 typedef struct Node {
-	gchar *token; /* Token to search*/
+	gchar *token; /* Token to search */
 	gchar *exact_token; /* Token to substitute */
 	gint nodes; /* Number of nodes to process */
-	gchar pre_token; /* Pre token to prepend with value substitute*/
+	gchar pre_token; /* Pre token to prepend with value substitute */
 	gchar post_token; /* post token to apppend with substitute */
 	gchar rval; /* rhs value for binary ops */
 	gint level; /* depth in the hier */
@@ -107,8 +107,8 @@ typedef struct Node {
 	guint ignore_lhs:1; /* ignore lhs value ?*/
 	guint swap :1;
 	guint prenode :1;
-	guint operator:1;
-	guint execute:1;
+	guint operator : 1;
+	guint execute : 1;
 	gint ref;
 }Node;
 
@@ -210,13 +210,13 @@ gchar *
 camel_sexp_to_sql (const gchar *txt)
 {
 	GScanner *scanner = g_scanner_new (&config);
-	gchar *sql=NULL;
+	gchar *sql = NULL;
 	gint level = 0;
 	GList *tlist;
-	GList *operators=NULL, *operands=NULL, *all=NULL, *preserve=NULL;
+	GList *operators = NULL, *operands = NULL, *all = NULL, *preserve = NULL;
 	GList *tmp;
-	Node *n1=NULL, *n2=NULL, *n3=NULL, *last, *lastoper=NULL;
-	GList *res=NULL;
+	Node *n1 = NULL, *n2 = NULL, *n3 = NULL, *last, *lastoper = NULL;
+	GList *res = NULL;
 	gboolean last_sysnode = FALSE;
 
 	d(printf("len = %d\n", strlen (txt)));
@@ -253,7 +253,7 @@ camel_sexp_to_sql (const gchar *txt)
 				gint i;
 				Node *node;
 
-				for (i=0; i < G_N_ELEMENTS (elements); i++) {
+				for (i = 0; i < G_N_ELEMENTS (elements); i++) {
 					if (g_ascii_strcasecmp (elements[i].token, token) == 0) {
 
 						if (!*elements[i].exact_token) /* Skip match-all */ {
@@ -263,7 +263,7 @@ camel_sexp_to_sql (const gchar *txt)
 								/* remove next node also. We dont support it*/
 								g_scanner_get_next_token (scanner);
 								/* Put a 'or' so that everything comes up. It hardly matter. It is just to start loading
-								   operator */
+								 * operator */
 								node = g_new0 (Node, 1);
 
 								node->token = g_strdup ("or");
@@ -322,7 +322,7 @@ camel_sexp_to_sql (const gchar *txt)
 					} else
 						 node->exact_token = g_strdup (token);
 
-					node->nodes = pnode->nodes > 0 ? pnode->nodes - 1:0;
+					node->nodes = pnode->nodes > 0 ? pnode->nodes - 1 : 0;
 					node->prefix = 0;
 					node->rval = ' ';
 					node->level = level;
@@ -351,9 +351,9 @@ camel_sexp_to_sql (const gchar *txt)
 			operators = g_list_prepend (operators, node);
 			all = g_list_prepend (all, node);
 		} else if (token == '+') {
-			gchar *astr=NULL, *bstr=NULL;
+			gchar *astr = NULL, *bstr = NULL;
 			Node *node, *pnode = operands->data;
-			gint lvl=0, lval=0;
+			gint lvl = 0, lval = 0;
 
 			if (g_ascii_strcasecmp (pnode->token, "user-flag") == 0) {
 				    /* Colloct all after '+' and append them to one token. Go till you find ')' */
@@ -400,7 +400,7 @@ camel_sexp_to_sql (const gchar *txt)
 			node = g_new0 (Node, 1);
 			node->token = bstr;
 			node->exact_token = g_strdup (bstr);
-			node->nodes = pnode->nodes > 0 ? pnode->nodes - 1:0;
+			node->nodes = pnode->nodes > 0 ? pnode->nodes - 1 : 0;
 			node->prefix = 0;
 			node->rval = ' ';
 			node->level = new_level == -1 ? level : new_level;
@@ -411,9 +411,9 @@ camel_sexp_to_sql (const gchar *txt)
 			new_level = -1;
 			level--;
 		} else if (token == '-') {
-			gchar *bstr=NULL;
+			gchar *bstr = NULL;
 			Node *node, *pnode = operands->data;
-			gint lvl=0, lval=0;
+			gint lvl = 0, lval = 0;
 
 			/* Colloct all after '+' and append them to one token. Go till you find ')' */
 			token = g_scanner_get_next_token (scanner);
@@ -444,7 +444,7 @@ camel_sexp_to_sql (const gchar *txt)
 			node = g_new0 (Node, 1);
 			node->token = bstr;
 			node->exact_token = g_strdup_printf("%ld", (glong)lval);
-			node->nodes = pnode->nodes > 0 ? pnode->nodes - 1:0;
+			node->nodes = pnode->nodes > 0 ? pnode->nodes - 1 : 0;
 			node->prefix = 0;
 			node->rval = ' ';
 			node->level = level;
@@ -475,7 +475,7 @@ camel_sexp_to_sql (const gchar *txt)
 			node = g_new0 (Node, 1);
 			node->token = g_strdup_printf ("%ld", scanner->value.v_int);
 			node->exact_token = g_strdup_printf ("%ld", scanner->value.v_int);
-			node->nodes = pnode->nodes > 0 ? pnode->nodes - 1:0;
+			node->nodes = pnode->nodes > 0 ? pnode->nodes - 1 : 0;
 			node->prefix = 0;
 			node->rval = ' ';
 			node->level = level;
@@ -501,7 +501,7 @@ camel_sexp_to_sql (const gchar *txt)
 				gint len = 2;
 				Node *pnode;
 
-				n1=NULL; n2=NULL; n3=NULL;
+				n1 = NULL; n2 = NULL; n3 = NULL;
 				tmp = operands;
 				n1 = operands->data;
 				operands = g_list_delete_link (operands, operands);
@@ -650,7 +650,7 @@ camel_sexp_to_sql (const gchar *txt)
 					}
 
 					if (n2->execute) {
-						Node *popnode=NULL;
+						Node *popnode = NULL;
 						gboolean dbl = FALSE;
 
 						/* g_node_dump (operators); */
@@ -728,9 +728,9 @@ camel_sexp_to_sql (const gchar *txt)
 	d (g_node_dump (all));
 	d(printf("\n\n\n"));
 
-	res=NULL;
+	res = NULL;
 	tmp = all;
-	n1=NULL;
+	n1 = NULL;
 
 	/* Time to operate on the stack. */
 	tmp = all;
@@ -754,7 +754,7 @@ camel_sexp_to_sql (const gchar *txt)
 			  if (!res)
 				  break;
 			  if (res->next) {
-				   GList *ts=res;
+				   GList *ts = res;
 				   Node *n = ts->data;
 				   GString *s = g_string_new (NULL);
 
@@ -875,28 +875,29 @@ camel_sexp_to_sql (const gchar *txt)
 
 #ifdef TEST_MAIN
 /*
+ *
+ * (and (match-all (and (not (system-flag "deleted")) (not (system-flag "junk"))))
+ * (and   (or
+ *
+ *     (match-all (not (system-flag "Attachments")))
+ *
+ *  )
+ * ))
+ *
+ * "
+ * replied INTEGER ,                (match-all (system-flag  "Answered"))
+ * size INTEGER ,                   (match-all (< (get-size) 100))
+ * dsent NUMERIC ,                  (match-all (< (get-sent-date) (- (get-current-date) 10)))
+ * dreceived NUMERIC ,               (match-all (< (get-received-date) (- (get-current-date) 10)))
+ * //mlist TEXT ,                      x-camel-mlist   (match-all (header-matches "x-camel-mlist"  "gnome.org"))
+ * //attachment,                      system-flag "Attachments"   (match-all (system-flag "Attachments"))
+ * //followup_flag TEXT ,             (match-all (not (= (user-tag "follow-up") "")))
+ * //followup_completed_on TEXT ,      (match-all (not (= (user-tag "completed-on") "")))
+ * //followup_due_by TEXT ," //NOTREQD
+ */
 
-(and (match-all (and (not (system-flag "deleted")) (not (system-flag "junk"))))
- (and   (or
-
-     (match-all (not (system-flag "Attachments")))
-
-  )
- ))
-
-"
-replied INTEGER ,                (match-all (system-flag  "Answered"))
-size INTEGER ,                   (match-all (< (get-size) 100))
-dsent NUMERIC ,                  (match-all (< (get-sent-date) (- (get-current-date) 10)))
-dreceived NUMERIC ,               (match-all (< (get-received-date) (- (get-current-date) 10)))
-//mlist TEXT ,                      x-camel-mlist   (match-all (header-matches "x-camel-mlist"  "gnome.org"))
-//attachment,                      system-flag "Attachments"   (match-all (system-flag "Attachments"))
-//followup_flag TEXT ,             (match-all (not (= (user-tag "follow-up") "")))
-//followup_completed_on TEXT ,      (match-all (not (= (user-tag "completed-on") "")))
-//followup_due_by TEXT ," //NOTREQD
-*/
-
-gchar * camel_db_get_column_name (const gchar *raw_name)
+gchar *
+camel_db_get_column_name (const gchar *raw_name)
 {
 	d(g_print ("\n\aRAW name is : [%s] \n\a", raw_name));
 	if (!g_ascii_strcasecmp (raw_name, "Subject"))
@@ -927,9 +928,9 @@ gchar * camel_db_get_column_name (const gchar *raw_name)
 		return g_strdup ("mlist");
 	else {
 		/* Let it crash for all unknown columns for now.
-		We need to load the messages into memory and search etc.
-		We should extend this for camel-folder-search system flags search as well
-		otherwise, search-for-signed-messages will not work etc.*/
+		 * We need to load the messages into memory and search etc.
+		 * We should extend this for camel-folder-search system flags search as well
+		 * otherwise, search-for-signed-messages will not work etc.*/
 
 		return g_strdup (raw_name);
 	}
@@ -939,7 +940,7 @@ gchar * camel_db_get_column_name (const gchar *raw_name)
 gint main ()
 {
 
-	gint i=0;
+	gint i = 0;
 	gchar *txt[] = {
 	"(and  (and   (match-all (header-contains \"From\"  \"org\"))   )  (match-all (not (system-flag \"junk\"))))",
 	"(and  (and (match-all (header-contains \"From\"  \"org\"))) (and (match-all (not (system-flag \"junk\"))) (and   (or (match-all (header-contains \"Subject\"  \"test\")) (match-all (header-contains \"From\"  \"test\"))))))",
@@ -979,7 +980,7 @@ gint main ()
 
 	};
 
-	for (i=0; i < G_N_ELEMENTS (txt); i++) {
+	for (i = 0; i < G_N_ELEMENTS (txt); i++) {
 		gchar *sql;
 		printf("Q: %s\n\n", txt[i]);
 		sql = camel_sexp_to_sql (txt[i]);

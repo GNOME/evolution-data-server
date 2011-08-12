@@ -112,7 +112,8 @@ static void _e_contact_remove_gdata_entry_xml (EContact *contact);
 static const gchar *_e_contact_get_gdata_entry_xml (EContact *contact, const gchar **edit_uri);
 
 static void
-cache_init (EBookBackend *backend, gboolean on_disk)
+cache_init (EBookBackend *backend,
+            gboolean on_disk)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	const gchar *cache_dir;
@@ -135,7 +136,8 @@ cache_init (EBookBackend *backend, gboolean on_disk)
 }
 
 static EContact *
-cache_add_contact (EBookBackend *backend, GDataEntry *entry)
+cache_add_contact (EBookBackend *backend,
+                   GDataEntry *entry)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact;
@@ -163,7 +165,8 @@ cache_add_contact (EBookBackend *backend, GDataEntry *entry)
 }
 
 static gboolean
-cache_remove_contact (EBookBackend *backend, const gchar *uid)
+cache_remove_contact (EBookBackend *backend,
+                      const gchar *uid)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	gboolean success = TRUE;
@@ -183,7 +186,8 @@ cache_remove_contact (EBookBackend *backend, const gchar *uid)
 }
 
 static gboolean
-cache_has_contact (EBookBackend *backend, const gchar *uid)
+cache_has_contact (EBookBackend *backend,
+                   const gchar *uid)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 
@@ -201,7 +205,9 @@ cache_has_contact (EBookBackend *backend, const gchar *uid)
 }
 
 static EContact *
-cache_get_contact (EBookBackend *backend, const gchar *uid, GDataEntry **entry)
+cache_get_contact (EBookBackend *backend,
+                   const gchar *uid,
+                   GDataEntry **entry)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact;
@@ -324,7 +330,8 @@ cache_get_last_update (EBookBackend *backend)
 }
 
 static gboolean
-cache_get_last_update_tv (EBookBackend *backend, GTimeVal *tv)
+cache_get_last_update_tv (EBookBackend *backend,
+                          GTimeVal *tv)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	gchar *last_update;
@@ -348,7 +355,8 @@ cache_get_last_update_tv (EBookBackend *backend, GTimeVal *tv)
 }
 
 static void
-cache_set_last_update (EBookBackend *backend, GTimeVal *tv)
+cache_set_last_update (EBookBackend *backend,
+                       GTimeVal *tv)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	gchar *_time;
@@ -370,7 +378,8 @@ cache_set_last_update (EBookBackend *backend, GTimeVal *tv)
 }
 
 static gboolean
-cache_needs_update (EBookBackend *backend, guint *remaining_secs)
+cache_needs_update (EBookBackend *backend,
+                    guint *remaining_secs)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GTimeVal last, current;
@@ -436,7 +445,8 @@ backend_is_authorized (EBookBackend *backend)
 }
 
 static void
-on_contact_added (EBookBackend *backend, EContact *contact)
+on_contact_added (EBookBackend *backend,
+                  EContact *contact)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GList *iter;
@@ -449,7 +459,8 @@ on_contact_added (EBookBackend *backend, EContact *contact)
 }
 
 static void
-on_contact_removed (EBookBackend *backend, const gchar *uid)
+on_contact_removed (EBookBackend *backend,
+                    const gchar *uid)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GList *iter;
@@ -462,7 +473,8 @@ on_contact_removed (EBookBackend *backend, const gchar *uid)
 }
 
 static void
-on_contact_changed (EBookBackend *backend, EContact *contact)
+on_contact_changed (EBookBackend *backend,
+                    EContact *contact)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GList *iter;
@@ -475,7 +487,10 @@ on_contact_changed (EBookBackend *backend, EContact *contact)
 }
 
 static GCancellable *
-start_operation (EBookBackend *backend, guint32 opid, GCancellable *cancellable, const gchar *message)
+start_operation (EBookBackend *backend,
+                 guint32 opid,
+                 GCancellable *cancellable,
+                 const gchar *message)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GList *iter;
@@ -495,7 +510,9 @@ start_operation (EBookBackend *backend, guint32 opid, GCancellable *cancellable,
 }
 
 static void
-finish_operation (EBookBackend *backend, guint32 opid, const GError *gdata_error)
+finish_operation (EBookBackend *backend,
+                  guint32 opid,
+                  const GError *gdata_error)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GError *book_error = NULL;
@@ -517,7 +534,8 @@ finish_operation (EBookBackend *backend, guint32 opid, const GError *gdata_error
 }
 
 static void
-process_contact_finish (EBookBackend *backend, GDataEntry *entry)
+process_contact_finish (EBookBackend *backend,
+                        GDataEntry *entry)
 {
 	EContact *new_contact;
 	gboolean was_cached;
@@ -579,7 +597,8 @@ typedef struct {
 } PhotoData;
 
 static void
-process_contact_photo_cancelled_cb (GCancellable *parent_cancellable, GCancellable *photo_cancellable)
+process_contact_photo_cancelled_cb (GCancellable *parent_cancellable,
+                                    GCancellable *photo_cancellable)
 {
 	__debug__ (G_STRFUNC);
 
@@ -587,7 +606,9 @@ process_contact_photo_cancelled_cb (GCancellable *parent_cancellable, GCancellab
 }
 
 static void
-process_contact_photo_cb (GDataContactsContact *gdata_contact, GAsyncResult *async_result, PhotoData *data)
+process_contact_photo_cb (GDataContactsContact *gdata_contact,
+                          GAsyncResult *async_result,
+                          PhotoData *data)
 {
 	EBookBackend *backend = data->parent_data->backend;
 	guint8 *photo_data = NULL;
@@ -637,7 +658,10 @@ process_contact_photo_cb (GDataContactsContact *gdata_contact, GAsyncResult *asy
 #endif /* HAVE_LIBGDATA_0_9 */
 
 static void
-process_contact_cb (GDataEntry *entry, guint entry_key, guint entry_count, GetContactsData *data)
+process_contact_cb (GDataEntry *entry,
+                    guint entry_key,
+                    guint entry_count,
+                    GetContactsData *data)
 {
 	EBookBackend *backend = data->backend;
 	gboolean is_deleted, is_cached;
@@ -723,7 +747,9 @@ process_contact_cb (GDataEntry *entry, guint entry_key, guint entry_count, GetCo
 }
 
 static void
-get_new_contacts_cb (GDataService *service, GAsyncResult *result, GetContactsData *data)
+get_new_contacts_cb (GDataService *service,
+                     GAsyncResult *result,
+                     GetContactsData *data)
 {
 	EBookBackend *backend = data->backend;
 	GDataFeed *feed;
@@ -850,7 +876,10 @@ sanitise_group_name (GDataEntry *group)
 }
 
 static void
-process_group (GDataEntry *entry, guint entry_key, guint entry_count, EBookBackend *backend)
+process_group (GDataEntry *entry,
+               guint entry_key,
+               guint entry_count,
+               EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	const gchar *uid;
@@ -877,7 +906,9 @@ process_group (GDataEntry *entry, guint entry_key, guint entry_count, EBookBacke
 }
 
 static void
-get_groups_cb (GDataService *service, GAsyncResult *result, EBookBackend *backend)
+get_groups_cb (GDataService *service,
+               GAsyncResult *result,
+               EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GDataFeed *feed;
@@ -939,7 +970,9 @@ get_groups (EBookBackend *backend)
 }
 
 static gchar *
-create_group (EBookBackend *backend, const gchar *category_name, GError **error)
+create_group (EBookBackend *backend,
+              const gchar *category_name,
+              GError **error)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GDataEntry *group, *new_group;
@@ -1136,7 +1169,9 @@ typedef struct {
 } CreateContactData;
 
 static void
-create_contact_finish (CreateContactData *data, GDataContactsContact *new_contact, const GError *gdata_error)
+create_contact_finish (CreateContactData *data,
+                       GDataContactsContact *new_contact,
+                       const GError *gdata_error)
 {
 	EContact *e_contact;
 
@@ -1176,7 +1211,9 @@ create_contact_finish (CreateContactData *data, GDataContactsContact *new_contac
 
 #ifdef HAVE_LIBGDATA_0_9
 static void
-create_contact_photo_query_cb (GDataService *service, GAsyncResult *async_result, CreateContactData *data)
+create_contact_photo_query_cb (GDataService *service,
+                               GAsyncResult *async_result,
+                               CreateContactData *data)
 {
 	GDataEntry *queried_contact;
 	EContactPhoto *photo;
@@ -1216,7 +1253,9 @@ finish:
 }
 
 static void
-create_contact_photo_cb (GDataContactsContact *contact, GAsyncResult *async_result, CreateContactData *data)
+create_contact_photo_cb (GDataContactsContact *contact,
+                         GAsyncResult *async_result,
+                         CreateContactData *data)
 {
 	GError *gdata_error = NULL;
 
@@ -1248,7 +1287,9 @@ create_contact_photo_cb (GDataContactsContact *contact, GAsyncResult *async_resu
 #endif /* HAVE_LIBGDATA_0_9 */
 
 static void
-create_contact_cb (GDataService *service, GAsyncResult *result, CreateContactData *data)
+create_contact_cb (GDataService *service,
+                   GAsyncResult *result,
+                   CreateContactData *data)
 {
 	GError *gdata_error = NULL;
 	GDataEntry *new_contact;
@@ -1296,7 +1337,11 @@ finish:
  * operation responded to in create_contact_photo_query_cb().
  */
 static void
-e_book_backend_google_create_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard_str)
+e_book_backend_google_create_contact (EBookBackend *backend,
+                                      EDataBook *book,
+                                      guint32 opid,
+                                      GCancellable *cancellable,
+                                      const gchar *vcard_str)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact;
@@ -1353,7 +1398,9 @@ typedef struct {
 } RemoveContactData;
 
 static void
-remove_contact_cb (GDataService *service, GAsyncResult *result, RemoveContactData *data)
+remove_contact_cb (GDataService *service,
+                   GAsyncResult *result,
+                   RemoveContactData *data)
 {
 	GError *gdata_error = NULL;
 	gboolean success;
@@ -1387,7 +1434,11 @@ finish:
 }
 
 static void
-e_book_backend_google_remove_contacts (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *id_list)
+e_book_backend_google_remove_contacts (EBookBackend *backend,
+                                       EDataBook *book,
+                                       guint32 opid,
+                                       GCancellable *cancellable,
+                                       const GSList *id_list)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	const gchar *uid = id_list->data;
@@ -1463,7 +1514,9 @@ typedef struct {
 } ModifyContactData;
 
 static void
-modify_contact_finish (ModifyContactData *data, GDataContactsContact *new_contact, const GError *gdata_error)
+modify_contact_finish (ModifyContactData *data,
+                       GDataContactsContact *new_contact,
+                       const GError *gdata_error)
 {
 	EContact *e_contact;
 
@@ -1502,7 +1555,9 @@ modify_contact_finish (ModifyContactData *data, GDataContactsContact *new_contac
 
 #ifdef HAVE_LIBGDATA_0_9
 static void
-modify_contact_photo_query_cb (GDataService *service, GAsyncResult *async_result, ModifyContactData *data)
+modify_contact_photo_query_cb (GDataService *service,
+                               GAsyncResult *async_result,
+                               ModifyContactData *data)
 {
 	GDataEntry *queried_contact;
 	EContactPhoto *photo;
@@ -1542,7 +1597,9 @@ finish:
 }
 
 static void
-modify_contact_photo_cb (GDataContactsContact *contact, GAsyncResult *async_result, ModifyContactData *data)
+modify_contact_photo_cb (GDataContactsContact *contact,
+                         GAsyncResult *async_result,
+                         ModifyContactData *data)
 {
 	GError *gdata_error = NULL;
 
@@ -1578,7 +1635,9 @@ modify_contact_photo_cb (GDataContactsContact *contact, GAsyncResult *async_resu
 #endif /* HAVE_LIBGDATA_0_9 */
 
 static void
-modify_contact_cb (GDataService *service, GAsyncResult *result, ModifyContactData *data)
+modify_contact_cb (GDataService *service,
+                   GAsyncResult *result,
+                   ModifyContactData *data)
 {
 	GDataEntry *new_contact;
 	GError *gdata_error = NULL;
@@ -1648,7 +1707,11 @@ finish:
  * operation responded to in modify_contact_photo_query_cb().
  */
 static void
-e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard_str)
+e_book_backend_google_modify_contact (EBookBackend *backend,
+                                      EDataBook *book,
+                                      guint32 opid,
+                                      GCancellable *cancellable,
+                                      const gchar *vcard_str)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact, *cached_contact;
@@ -1754,7 +1817,11 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 }
 
 static void
-e_book_backend_google_get_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *uid)
+e_book_backend_google_get_contact (EBookBackend *backend,
+                                   EDataBook *book,
+                                   guint32 opid,
+                                   GCancellable *cancellable,
+                                   const gchar *uid)
 {
 	EContact *contact;
 	gchar *vcard_str;
@@ -1778,7 +1845,11 @@ e_book_backend_google_get_contact (EBookBackend *backend, EDataBook *book, guint
 }
 
 static void
-e_book_backend_google_get_contact_list (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query)
+e_book_backend_google_get_contact_list (EBookBackend *backend,
+                                        EDataBook *book,
+                                        guint32 opid,
+                                        GCancellable *cancellable,
+                                        const gchar *query)
 {
 	EBookBackendSExp *sexp;
 	GList *all_contacts;
@@ -1811,7 +1882,11 @@ e_book_backend_google_get_contact_list (EBookBackend *backend, EDataBook *book, 
 }
 
 static void
-e_book_backend_google_get_contact_list_uids (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query)
+e_book_backend_google_get_contact_list_uids (EBookBackend *backend,
+                                             EDataBook *book,
+                                             guint32 opid,
+                                             GCancellable *cancellable,
+                                             const gchar *query)
 {
 	EBookBackendSExp *sexp;
 	GList *all_contacts;
@@ -1854,7 +1929,8 @@ on_refresh_idle (EBookBackend *backend)
 }
 
 static void
-set_live_mode (EBookBackend *backend, gboolean live_mode)
+set_live_mode (EBookBackend *backend,
+               gboolean live_mode)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 
@@ -1876,7 +1952,8 @@ set_live_mode (EBookBackend *backend, gboolean live_mode)
 }
 
 static void
-e_book_backend_google_start_book_view (EBookBackend *backend, EDataBookView *bookview)
+e_book_backend_google_start_book_view (EBookBackend *backend,
+                                       EDataBookView *bookview)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GList *cached_contacts;
@@ -1920,7 +1997,8 @@ e_book_backend_google_start_book_view (EBookBackend *backend, EDataBookView *boo
 }
 
 static void
-e_book_backend_google_stop_book_view (EBookBackend *backend, EDataBookView *bookview)
+e_book_backend_google_stop_book_view (EBookBackend *backend,
+                                      EDataBookView *bookview)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GList *view;
@@ -2006,7 +2084,9 @@ authenticate_client_login_cb (GDataService *service,
 #endif
 
 static void
-e_book_backend_google_authenticate_user (EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials)
+e_book_backend_google_authenticate_user (EBookBackend *backend,
+                                         GCancellable *cancellable,
+                                         ECredentials *credentials)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	AuthenticateUserData *data;
@@ -2068,14 +2148,21 @@ e_book_backend_google_authenticate_user (EBookBackend *backend, GCancellable *ca
 }
 
 static void
-e_book_backend_google_remove (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable)
+e_book_backend_google_remove (EBookBackend *backend,
+                              EDataBook *book,
+                              guint32 opid,
+                              GCancellable *cancellable)
 {
 	__debug__ (G_STRFUNC);
 	e_data_book_respond_remove (book, opid, NULL);
 }
 
 static void
-e_book_backend_google_open (EBookBackend *backend, EDataBook *book, guint opid, GCancellable *cancellable, gboolean only_if_exists)
+e_book_backend_google_open (EBookBackend *backend,
+                            EDataBook *book,
+                            guint opid,
+                            GCancellable *cancellable,
+                            gboolean only_if_exists)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	const gchar *refresh_interval_str, *use_ssl_str, *use_cache_str;
@@ -2144,7 +2231,11 @@ e_book_backend_google_open (EBookBackend *backend, EDataBook *book, guint opid, 
 }
 
 static void
-e_book_backend_google_get_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name)
+e_book_backend_google_get_backend_property (EBookBackend *backend,
+                                            EDataBook *book,
+                                            guint32 opid,
+                                            GCancellable *cancellable,
+                                            const gchar *prop_name)
 {
 	__debug__ (G_STRFUNC);
 
@@ -2315,7 +2406,8 @@ google_cancel_all_operations (EBookBackend *backend)
 }
 
 static void
-e_book_backend_google_set_online (EBookBackend *backend, gboolean is_online)
+e_book_backend_google_set_online (EBookBackend *backend,
+                                  gboolean is_online)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	__debug__ (G_STRFUNC);
@@ -2457,7 +2549,8 @@ e_book_backend_google_new (void)
 }
 
 static void
-data_book_error_from_gdata_error (GError **dest_err, const GError *error)
+data_book_error_from_gdata_error (GError **dest_err,
+                                  const GError *error)
 {
 	if (!error || !dest_err)
 		return;
@@ -2559,7 +2652,8 @@ static GDataGDOrganization *gdata_gd_organization_from_attribute (EVCardAttribut
 static gboolean is_known_google_im_protocol (const gchar *protocol);
 
 static GDataEntry *
-_gdata_entry_new_from_e_contact (EBookBackend *backend, EContact *contact)
+_gdata_entry_new_from_e_contact (EBookBackend *backend,
+                                 EContact *contact)
 {
 	GDataEntry *entry = GDATA_ENTRY (gdata_contacts_contact_new (NULL));
 
@@ -2621,7 +2715,9 @@ remove_websites (GDataContactsContact *contact)
 }
 
 static gboolean
-_gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EContact *contact)
+_gdata_entry_update_from_e_contact (EBookBackend *backend,
+                                    GDataEntry *entry,
+                                    EContact *contact)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GList *attributes, *iter, *category_names;
@@ -2881,7 +2977,9 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EC
 }
 
 static void
-foreach_extended_props_cb (const gchar *name, const gchar *value, EVCard *vcard)
+foreach_extended_props_cb (const gchar *name,
+                           const gchar *value,
+                           EVCard *vcard)
 {
 	EVCardAttribute *attr;
 
@@ -2890,7 +2988,8 @@ foreach_extended_props_cb (const gchar *name, const gchar *value, EVCard *vcard)
 }
 
 static EContact *
-_e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry)
+_e_contact_new_from_gdata_entry (EBookBackend *backend,
+                                 GDataEntry *entry)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EVCard *vcard;
@@ -3138,7 +3237,8 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry)
 }
 
 static void
-_e_contact_add_gdata_entry_xml (EContact *contact, GDataEntry *entry)
+_e_contact_add_gdata_entry_xml (EContact *contact,
+                                GDataEntry *entry)
 {
 	EVCardAttribute *attr;
 	gchar *entry_xml;
@@ -3168,7 +3268,8 @@ _e_contact_remove_gdata_entry_xml (EContact *contact)
 }
 
 static const gchar *
-_e_contact_get_gdata_entry_xml (EContact *contact, const gchar **edit_uri)
+_e_contact_get_gdata_entry_xml (EContact *contact,
+                                const gchar **edit_uri)
 {
 	EVCardAttribute *attr;
 	GList *values = NULL;
@@ -3232,7 +3333,10 @@ static const struct RelTypeMap rel_type_map_others[] = {
 };
 
 static gboolean
-_add_type_param_from_google_rel (EVCardAttribute *attr, const struct RelTypeMap rel_type_map[], guint map_len, const gchar *rel)
+_add_type_param_from_google_rel (EVCardAttribute *attr,
+                                 const struct RelTypeMap rel_type_map[],
+                                 guint map_len,
+                                 const gchar *rel)
 {
 	const gchar * field;
 	guint i;
@@ -3259,25 +3363,29 @@ _add_type_param_from_google_rel (EVCardAttribute *attr, const struct RelTypeMap 
 }
 
 static gboolean
-add_type_param_from_google_rel_phone (EVCardAttribute *attr, const gchar *rel)
+add_type_param_from_google_rel_phone (EVCardAttribute *attr,
+                                      const gchar *rel)
 {
 	return _add_type_param_from_google_rel (attr, rel_type_map_phone, G_N_ELEMENTS (rel_type_map_phone), rel);
 }
 
 static gboolean
-add_type_param_from_google_rel_im (EVCardAttribute *attr, const gchar *rel)
+add_type_param_from_google_rel_im (EVCardAttribute *attr,
+                                   const gchar *rel)
 {
 	return _add_type_param_from_google_rel (attr, rel_type_map_im, G_N_ELEMENTS (rel_type_map_im), rel);
 }
 
 static gboolean
-add_type_param_from_google_rel (EVCardAttribute *attr, const gchar *rel)
+add_type_param_from_google_rel (EVCardAttribute *attr,
+                                const gchar *rel)
 {
 	return _add_type_param_from_google_rel (attr, rel_type_map_others, G_N_ELEMENTS (rel_type_map_others), rel);
 }
 
 static void
-add_label_param (EVCardAttribute *attr, const gchar *label)
+add_label_param (EVCardAttribute *attr,
+                 const gchar *label)
 {
 	if (label && label[0] != '\0') {
 		EVCardAttributeParam *param;
@@ -3287,7 +3395,9 @@ add_label_param (EVCardAttribute *attr, const gchar *label)
 }
 
 static gchar *
-_google_rel_from_types (GList *types, const struct RelTypeMap rel_type_map[], guint map_len)
+_google_rel_from_types (GList *types,
+                        const struct RelTypeMap rel_type_map[],
+                        guint map_len)
 {
 	const gchar format[] = "http://schemas.google.com/g/2005#%s";
 	guint i;
@@ -3372,7 +3482,8 @@ google_im_protocol_from_field_name (const gchar *field_name)
 }
 
 static void
-add_primary_param (EVCardAttribute *attr, gboolean has_type)
+add_primary_param (EVCardAttribute *attr,
+                   gboolean has_type)
 {
 	EVCardAttributeParam *param = e_vcard_attribute_param_new (GOOGLE_PRIMARY_PARAM);
 	e_vcard_attribute_add_param_with_value (attr, param, "1");
@@ -3384,7 +3495,9 @@ add_primary_param (EVCardAttribute *attr, gboolean has_type)
 }
 
 static GList *
-get_google_primary_type_label (EVCardAttribute *attr, gboolean *primary, const gchar **label)
+get_google_primary_type_label (EVCardAttribute *attr,
+                               gboolean *primary,
+                               const gchar **label)
 {
 	GList *params;
 	GList *types = NULL;
@@ -3424,7 +3537,8 @@ get_google_primary_type_label (EVCardAttribute *attr, gboolean *primary, const g
 }
 
 static void
-add_attribute_from_gdata_gd_email_address (EVCard *vcard, GDataGDEmailAddress *email)
+add_attribute_from_gdata_gd_email_address (EVCard *vcard,
+                                           GDataGDEmailAddress *email)
 {
 	EVCardAttribute *attr;
 	gboolean has_type;
@@ -3445,7 +3559,8 @@ add_attribute_from_gdata_gd_email_address (EVCard *vcard, GDataGDEmailAddress *e
 }
 
 static void
-add_attribute_from_gdata_gd_im_address (EVCard *vcard, GDataGDIMAddress *im)
+add_attribute_from_gdata_gd_im_address (EVCard *vcard,
+                                        GDataGDIMAddress *im)
 {
 	EVCardAttribute *attr;
 	gboolean has_type;
@@ -3471,7 +3586,8 @@ add_attribute_from_gdata_gd_im_address (EVCard *vcard, GDataGDIMAddress *im)
 }
 
 static void
-add_attribute_from_gdata_gd_phone_number (EVCard *vcard, GDataGDPhoneNumber *number)
+add_attribute_from_gdata_gd_phone_number (EVCard *vcard,
+                                          GDataGDPhoneNumber *number)
 {
 	EVCardAttribute *attr;
 	gboolean has_type;
@@ -3492,7 +3608,8 @@ add_attribute_from_gdata_gd_phone_number (EVCard *vcard, GDataGDPhoneNumber *num
 }
 
 static void
-add_attribute_from_gdata_gd_postal_address (EVCard *vcard, GDataGDPostalAddress *address)
+add_attribute_from_gdata_gd_postal_address (EVCard *vcard,
+                                            GDataGDPostalAddress *address)
 {
 	EVCardAttribute *attr;
 	gboolean has_type;
@@ -3540,7 +3657,8 @@ add_attribute_from_gdata_gd_postal_address (EVCard *vcard, GDataGDPostalAddress 
 }
 
 static void
-add_attribute_from_gdata_gd_organization (EVCard *vcard, GDataGDOrganization *org)
+add_attribute_from_gdata_gd_organization (EVCard *vcard,
+                                          GDataGDOrganization *org)
 {
 	EVCardAttribute *attr;
 	gboolean has_type;
@@ -3569,7 +3687,8 @@ add_attribute_from_gdata_gd_organization (EVCard *vcard, GDataGDOrganization *or
 }
 
 static GDataGDEmailAddress *
-gdata_gd_email_address_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
+gdata_gd_email_address_from_attribute (EVCardAttribute *attr,
+                                       gboolean *have_primary)
 {
 	GDataGDEmailAddress *email = NULL;
 	GList *values;
@@ -3602,7 +3721,8 @@ gdata_gd_email_address_from_attribute (EVCardAttribute *attr, gboolean *have_pri
 }
 
 static GDataGDIMAddress *
-gdata_gd_im_address_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
+gdata_gd_im_address_from_attribute (EVCardAttribute *attr,
+                                    gboolean *have_primary)
 {
 	GDataGDIMAddress *im = NULL;
 	GList *values;
@@ -3641,7 +3761,8 @@ gdata_gd_im_address_from_attribute (EVCardAttribute *attr, gboolean *have_primar
 }
 
 static GDataGDPhoneNumber *
-gdata_gd_phone_number_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
+gdata_gd_phone_number_from_attribute (EVCardAttribute *attr,
+                                      gboolean *have_primary)
 {
 	GDataGDPhoneNumber *number = NULL;
 	GList *values;
@@ -3674,7 +3795,8 @@ gdata_gd_phone_number_from_attribute (EVCardAttribute *attr, gboolean *have_prim
 }
 
 static GDataGDPostalAddress *
-gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
+gdata_gd_postal_address_from_attribute (EVCardAttribute *attr,
+                                        gboolean *have_primary)
 {
 	GDataGDPostalAddress *address = NULL;
 	GList *values;
@@ -3744,7 +3866,8 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have_pr
 }
 
 static GDataGDOrganization *
-gdata_gd_organization_from_attribute (EVCardAttribute *attr, gboolean *have_primary)
+gdata_gd_organization_from_attribute (EVCardAttribute *attr,
+                                      gboolean *have_primary)
 {
 	GDataGDOrganization *org = NULL;
 	GList *values;
@@ -3764,7 +3887,7 @@ gdata_gd_organization_from_attribute (EVCardAttribute *attr, gboolean *have_prim
 
 		rel = google_rel_from_types (types);
 		org = gdata_gd_organization_new (values->data, NULL, rel, label, primary);
-		if (values->next != NULL && values->next->data != NULL && *((gchar*) values->next->data) != '\0')
+		if (values->next != NULL && values->next->data != NULL && *((gchar *) values->next->data) != '\0')
 			gdata_gd_organization_set_department (org, values->next->data);
 		g_free (rel);
 

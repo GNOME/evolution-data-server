@@ -1,13 +1,13 @@
 /* --------------------------------------------------
-
- An address parser, yielding fields as per RFC 2426.
-
- Author:
-   Jesse Pavel (jpavel@ximian.com)
-
- Copyright 2000, Ximian, Inc.
-   --------------------------------------------------
-*/
+ *
+ * An address parser, yielding fields as per RFC 2426.
+ *
+ * Author:
+ * Jesse Pavel (jpavel@ximian.com)
+ *
+ * Copyright 2000, Ximian, Inc.
+ * --------------------------------------------------
+ */
 
 #include <ctype.h>
 #include <string.h>
@@ -16,7 +16,7 @@
 #include "libedataserver/e-data-server-util.h"
 
 /* These are the keywords that will distinguish the start of an extended
-   address. */
+ * address. */
 
 static const gchar *extended_keywords[] = {
 	"apt", "apartment", "suite", NULL
@@ -43,7 +43,9 @@ e_address_western_is_line_blank (gchar *line)
  shift the remaining lines, up to line number num_lines, up one position. */
 
 static void
-e_address_western_shift_line (gchar *lines[], gint line_num, gint num_lines)
+e_address_western_shift_line (gchar *lines[],
+                              gint line_num,
+                              gint num_lines)
 {
 	gint cntr;
 
@@ -65,7 +67,7 @@ e_address_western_remove_blank_lines (gchar *lines[], gint *linecntr)
 	for (cntr = 0; cntr < *linecntr; cntr++) {
 		if (e_address_western_is_line_blank (lines[cntr])) {
 			/* Delete the blank line, and shift all subsequent lines up
-			   one spot to fill its old spot. */
+			 * one spot to fill its old spot. */
 			e_address_western_shift_line (lines, cntr, *linecntr);
 
 			/* Since we must check the newly shifted line, let's
@@ -130,7 +132,7 @@ e_address_western_is_po_box (gchar *line)
 }
 
 /* A line that contains a comma followed eventually by a number is
-  deemed to be the line in the form of <town, region postal-code>. */
+ * deemed to be the line in the form of <town, region postal-code>. */
 
 static gboolean
 e_address_western_is_postal (gchar *line)
@@ -166,7 +168,7 @@ e_address_western_is_postal (gchar *line)
 		if (cntr == 0)
 			retval = FALSE;
 		else {
-			if (isdigit (line[cntr+1]))
+			if (isdigit (line[cntr + 1]))
 				retval = TRUE;
 			else
 				retval = FALSE;
@@ -180,7 +182,7 @@ static gchar *
 e_address_western_extract_po_box (gchar *line)
 {
 	/* Return everything from the beginning of the line to
-	   the end of the first word that contains a number. */
+	 * the end of the first word that contains a number. */
 
 	gint index;
 
@@ -240,7 +242,7 @@ e_address_western_extract_region (gchar *line)
 		return g_strdup ("");
 
 	/* Between start and end lie the string. */
-	return g_strndup ( (line+start), end-start);
+	return g_strndup ( (line + start), end - start);
 }
 
 static gchar *
@@ -260,11 +262,13 @@ e_address_western_extract_postal_code (gchar *line)
 	start++;
 
 	/* Between start and end lie the string. */
-	return g_strndup ( (line+start), end-start);
+	return g_strndup ( (line + start), end - start);
 }
 
 static void
-e_address_western_extract_street (gchar *line, gchar **street, gchar **extended)
+e_address_western_extract_street (gchar *line,
+                                  gchar **street,
+                                  gchar **extended)
 {
 	const gchar *split = NULL;
 	gint cntr;
@@ -334,7 +338,7 @@ e_address_western_parse (const gchar *in_address)
 	}
 
 	/* ... tally them. */
-	lines = (gchar **) g_malloc (sizeof (gchar *) * (linecntr+3));
+	lines = (gchar **) g_malloc (sizeof (gchar *) * (linecntr + 3));
 	lineindex = 0;
 	lines[0] = &address[0];
 	linecntr = 1;

@@ -36,34 +36,35 @@
  * Currently simply strips a suffix introduced by a hyphen,
  * as in "America/Denver-(Standard)".
  */
-static const gchar *e_cal_match_location (const gchar *location)
+static const gchar *
+e_cal_match_location (const gchar *location)
 {
-    icaltimezone *icomp;
-    const gchar *tail;
-    gsize len;
-    gchar *buffer;
+	icaltimezone *icomp;
+	const gchar *tail;
+	gsize len;
+	gchar *buffer;
 
-    icomp = icaltimezone_get_builtin_timezone (location);
-    if (icomp) {
-	return icaltimezone_get_tzid (icomp);
-    }
-
-    /* try a bit harder by stripping trailing suffix */
-    tail = strrchr (location, '-');
-    len = tail ? (tail - location) : strlen (location);
-    buffer = g_malloc (len + 1);
-
-    if (buffer) {
-	memcpy (buffer, location, len);
-	buffer[len] = 0;
-	icomp = icaltimezone_get_builtin_timezone (buffer);
-	g_free (buffer);
+	icomp = icaltimezone_get_builtin_timezone (location);
 	if (icomp) {
-	    return icaltimezone_get_tzid (icomp);
+		return icaltimezone_get_tzid (icomp);
 	}
-    }
 
-    return NULL;
+	/* try a bit harder by stripping trailing suffix */
+	tail = strrchr (location, '-');
+	len = tail ? (tail - location) : strlen (location);
+	buffer = g_malloc (len + 1);
+
+	if (buffer) {
+		memcpy (buffer, location, len);
+		buffer[len] = 0;
+		icomp = icaltimezone_get_builtin_timezone (buffer);
+		g_free (buffer);
+		if (icomp) {
+			return icaltimezone_get_tzid (icomp);
+		}
+	}
+
+	return NULL;
 }
 
 /**
@@ -78,127 +79,129 @@ static const gchar *e_cal_match_location (const gchar *location)
 const gchar *
 e_cal_match_tzid (const gchar *tzid)
 {
-    const gchar *location;
-    const gchar *systzid = NULL;
-    gsize len = strlen (tzid);
-    gssize eostr;
+	const gchar *location;
+	const gchar *systzid = NULL;
+	gsize len = strlen (tzid);
+	gssize eostr;
 
-    /*
-     * Try without any trailing spaces/digits: they might have been added
-     * by e_cal_check_timezones() in order to distinguish between
-     * different incompatible definitions. At that time mapping
-     * to system time zones must have failed, but perhaps now
-     * we have better code and it succeeds...
-     */
-    eostr = len - 1;
-    while (eostr >= 0 &&
-	   isdigit (tzid[eostr])) {
-	eostr--;
-    }
-    while (eostr >= 0 &&
-	   isspace (tzid[eostr])) {
-	eostr--;
-    }
-    if (eostr + 1 < len) {
-	gchar *strippedtzid = g_strndup (tzid, eostr + 1);
-	if (strippedtzid) {
-	    systzid = e_cal_match_tzid (strippedtzid);
-	    g_free (strippedtzid);
-	    if (systzid) {
-		goto done;
-	    }
+	/*
+	 * Try without any trailing spaces/digits: they might have been added
+	 * by e_cal_check_timezones() in order to distinguish between
+	 * different incompatible definitions. At that time mapping
+	 * to system time zones must have failed, but perhaps now
+	 * we have better code and it succeeds...
+	 */
+	eostr = len - 1;
+	while (eostr >= 0 && isdigit (tzid[eostr])) {
+		eostr--;
 	}
-    }
-
-    /*
-     * old-style Evolution: /softwarestudio.org/Olson_20011030_5/America/Denver
-     *
-     * jump from one slash to the next and check whether the remainder
-     * is a known location; start with the whole string (just in case)
-     */
-    for (location = tzid;
-	 location && location[0];
-	 location = strchr (location + 1, '/')) {
-	systzid = e_cal_match_location (location[0] == '/' ?
-				       location + 1 :
-				       location);
-	if (systzid) {
-	    goto done;
+	while (eostr >= 0 && isspace (tzid[eostr])) {
+		eostr--;
 	}
-    }
+	if (eostr + 1 < len) {
+		gchar *strippedtzid = g_strndup (tzid, eostr + 1);
+		if (strippedtzid) {
+			systzid = e_cal_match_tzid (strippedtzid);
+			g_free (strippedtzid);
+			if (systzid) {
+				goto done;
+			}
+		}
+	}
 
-    /* TODO: lookup table for Exchange TZIDs */
+	/*
+	 * old-style Evolution: /softwarestudio.org/Olson_20011030_5/America/Denver
+	 *
+	 * jump from one slash to the next and check whether the remainder
+	 * is a known location; start with the whole string (just in case)
+	 */
+	for (location = tzid;
+		 location && location[0];
+		 location = strchr (location + 1, '/')) {
+		systzid = e_cal_match_location (
+			location[0] == '/' ?
+			location + 1 : location);
+		if (systzid) {
+			goto done;
+		}
+	}
+
+	/* TODO: lookup table for Exchange TZIDs */
 
  done:
-    if (systzid && !strcmp(systzid, "UTC")) {
-        /**
-         * UTC is special: it doesn't have a real VTIMEZONE in
-         * EDS. Matching some pseudo VTTIMEZONE with UTC in the TZID
-         * to our internal UTC "timezone" breaks
-         * e_cal_check_timezones() (it patches the event to use
-         * TZID=UTC, which cannot be exported correctly later on) and
-         * e_cal_get_timezone() (triggers an assert).
-         *
-         * So better avoid matching against it...
-         */
-	return NULL;
-    } else {
-	return systzid;
-    }
-}
-
-static void patch_tzids (icalcomponent *subcomp,
-                        GHashTable *mapping)
-{
-    gchar *tzid = NULL;
-
-    if (icalcomponent_isa (subcomp) != ICAL_VTIMEZONE_COMPONENT) {
-	icalproperty *prop = icalcomponent_get_first_property (subcomp,
-							      ICAL_ANY_PROPERTY);
-	while (prop) {
-	    icalparameter *param = icalproperty_get_first_parameter (prop,
-								    ICAL_TZID_PARAMETER);
-	    while (param) {
-		const gchar *oldtzid;
-		const gchar *newtzid;
-
-		g_free (tzid);
-		tzid = g_strdup (icalparameter_get_tzid (param));
-
-		if (!g_hash_table_lookup_extended (mapping,
-						  tzid,
-						  (gpointer *)&oldtzid,
-						  (gpointer *)&newtzid)) {
-                    /* Corresponding VTIMEZONE not seen before! */
-		    newtzid = e_cal_match_tzid (tzid);
-		}
-		if (newtzid) {
-		    icalparameter_set_tzid (param, newtzid);
-		}
-		param = icalproperty_get_next_parameter (prop,
-							ICAL_TZID_PARAMETER);
-	    }
-	    prop = icalcomponent_get_next_property (subcomp,
-						   ICAL_ANY_PROPERTY);
+	if (systzid && !strcmp(systzid, "UTC")) {
+		/**
+		 * UTC is special: it doesn't have a real VTIMEZONE in
+		 * EDS. Matching some pseudo VTTIMEZONE with UTC in the TZID
+		 * to our internal UTC "timezone" breaks
+		 * e_cal_check_timezones() (it patches the event to use
+		 * TZID=UTC, which cannot be exported correctly later on) and
+		 * e_cal_get_timezone() (triggers an assert).
+		 *
+		 * So better avoid matching against it...
+		 */
+		return NULL;
+	} else {
+		return systzid;
 	}
-    }
-
-    g_free (tzid);
 }
 
-static void addsystemtz (gpointer key,
-                        gpointer value,
-                        gpointer user_data)
+static void
+patch_tzids (icalcomponent *subcomp,
+             GHashTable *mapping)
 {
-    const gchar *tzid = key;
-    icalcomponent *comp = user_data;
-    icaltimezone *zone;
+	gchar *tzid = NULL;
 
-    zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-    if (zone) {
-	icalcomponent_add_component (comp,
-				    icalcomponent_new_clone (icaltimezone_get_component (zone)));
-    }
+	if (icalcomponent_isa (subcomp) != ICAL_VTIMEZONE_COMPONENT) {
+		icalproperty *prop = icalcomponent_get_first_property (
+			subcomp, ICAL_ANY_PROPERTY);
+		while (prop) {
+			icalparameter *param = icalproperty_get_first_parameter (
+				prop, ICAL_TZID_PARAMETER);
+			while (param) {
+				const gchar *oldtzid;
+				const gchar *newtzid;
+
+				g_free (tzid);
+				tzid = g_strdup (icalparameter_get_tzid (param));
+
+				if (!g_hash_table_lookup_extended (
+					mapping, tzid,
+					(gpointer *) &oldtzid,
+					(gpointer *) &newtzid)) {
+					/* Corresponding VTIMEZONE not seen before! */
+					newtzid = e_cal_match_tzid (tzid);
+				}
+				if (newtzid) {
+					icalparameter_set_tzid (param, newtzid);
+				}
+				param = icalproperty_get_next_parameter (
+					prop, ICAL_TZID_PARAMETER);
+			}
+			prop = icalcomponent_get_next_property (
+				subcomp, ICAL_ANY_PROPERTY);
+		}
+	}
+
+	g_free (tzid);
+}
+
+static void
+addsystemtz (gpointer key,
+             gpointer value,
+             gpointer user_data)
+{
+	const gchar *tzid = key;
+	icalcomponent *comp = user_data;
+	icaltimezone *zone;
+
+	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	if (zone) {
+		icalcomponent_add_component (
+			comp,
+			icalcomponent_new_clone (
+			icaltimezone_get_component (zone)));
+	}
 }
 
 /**
@@ -266,196 +269,196 @@ e_cal_check_timezones (icalcomponent *comp,
                        gconstpointer custom,
                        GError **error)
 {
-    gboolean success = TRUE;
-    icalcomponent *subcomp = NULL;
-    icaltimezone *zone = icaltimezone_new ();
-    gchar *key = NULL, *value = NULL;
-    gchar *buffer = NULL;
-    gchar *zonestr = NULL;
-    gchar *tzid = NULL;
-    GList *l;
+	gboolean success = TRUE;
+	icalcomponent *subcomp = NULL;
+	icaltimezone *zone = icaltimezone_new ();
+	gchar *key = NULL, *value = NULL;
+	gchar *buffer = NULL;
+	gchar *zonestr = NULL;
+	gchar *tzid = NULL;
+	GList *l;
 
-    /** a hash from old to new tzid; strings dynamically allocated */
-    GHashTable *mapping = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	/** a hash from old to new tzid; strings dynamically allocated */
+	GHashTable *mapping = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-    /** a hash of all system time zone IDs which have to be added; strings are shared with mapping hash */
-    GHashTable *systemtzids = g_hash_table_new (g_str_hash, g_str_equal);
+	/** a hash of all system time zone IDs which have to be added; strings are shared with mapping hash */
+	GHashTable *systemtzids = g_hash_table_new (g_str_hash, g_str_equal);
 
-    *error = NULL;
+	*error = NULL;
 
-    if (!mapping || !zone) {
-	goto nomem;
-    }
-
-    /* iterate over all VTIMEZONE definitions */
-    subcomp = icalcomponent_get_first_component (comp,
-						ICAL_VTIMEZONE_COMPONENT);
-    while (subcomp) {
-	if (icaltimezone_set_component (zone, subcomp)) {
-	    g_free (tzid);
-	    tzid = g_strdup (icaltimezone_get_tzid (zone));
-	    if (tzid) {
-		const gchar *newtzid = e_cal_match_tzid (tzid);
-		if (newtzid) {
-                    /* matched against system time zone */
-		    g_free (key);
-		    key = g_strdup (tzid);
-		    if (!key) {
-			goto nomem;
-		    }
-
-		    g_free (value);
-		    value = g_strdup (newtzid);
-		    if (!value) {
-			goto nomem;
-		    }
-
-		    g_hash_table_insert (mapping, key, value);
-		    g_hash_table_insert (systemtzids, value, NULL);
-		    key =
-			value = NULL;
-		} else {
-		    gint counter;
-
-		    zonestr = icalcomponent_as_ical_string_r (subcomp);
-
-                    /* check for collisions with existing timezones */
-		    for (counter = 0;
-			 counter < 100 /* sanity limit */;
-			 counter++) {
-			icaltimezone *existing_zone;
-
-			if (counter) {
-			    g_free (value);
-                            value = g_strdup_printf("%s %d", tzid, counter);
-			}
-			existing_zone = tzlookup (counter ? value : tzid,
-						 custom,
-						 error);
-			if (!existing_zone) {
-			    if (*error) {
-				goto failed;
-			    } else {
-				break;
-			    }
-			}
-			g_free (buffer);
-			buffer = icalcomponent_as_ical_string_r (icaltimezone_get_component (existing_zone));
-
-			if (counter) {
-                            gchar *fulltzid = g_strdup_printf("TZID:%s", value);
-                            gsize baselen = strlen("TZID:") + strlen(tzid);
-			    gsize fulllen = strlen (fulltzid);
-			    gchar *tzidprop;
-                            /*
-                             * Map TZID with counter suffix back to basename.
-                             */
-			    tzidprop = strstr (buffer, fulltzid);
-			    if (tzidprop) {
-				memmove (tzidprop + baselen,
-					tzidprop + fulllen,
-					strlen (tzidprop + fulllen) + 1);
-			    }
-			    g_free (fulltzid);
-			}
-
-                        /*
-                         * If the strings are identical, then the
-                         * VTIMEZONE definitions are identical.  If
-                         * they are not identical, then VTIMEZONE
-                         * definitions might still be semantically
-                         * correct and we waste some space by
-                         * needlesly duplicating the VTIMEZONE. This
-                         * is expected to occur rarely (if at all) in
-                         * practice.
-                         */
-			if (!strcmp (zonestr, buffer)) {
-			    break;
-			}
-		    }
-
-		    if (!counter) {
-                        /* does not exist, nothing to do */
-		    } else {
-                        /* timezone renamed */
-			icalproperty *prop = icalcomponent_get_first_property (subcomp,
-									      ICAL_TZID_PROPERTY);
-			while (prop) {
-                            icalproperty_set_value_from_string(prop, value, "NO");
-			    prop = icalcomponent_get_next_property (subcomp,
-								   ICAL_ANY_PROPERTY);
-			}
-			g_free (key);
-			key = g_strdup (tzid);
-			g_hash_table_insert (mapping, key, value);
-			key =
-			    value = NULL;
-		    }
-		}
-	    }
+	if (!mapping || !zone) {
+		goto nomem;
 	}
 
-	subcomp = icalcomponent_get_next_component (comp,
-						   ICAL_VTIMEZONE_COMPONENT);
-    }
+	/* iterate over all VTIMEZONE definitions */
+	subcomp = icalcomponent_get_first_component (
+		comp, ICAL_VTIMEZONE_COMPONENT);
+	while (subcomp) {
+		if (icaltimezone_set_component (zone, subcomp)) {
+			g_free (tzid);
+			tzid = g_strdup (icaltimezone_get_tzid (zone));
+			if (tzid) {
+				const gchar *newtzid = e_cal_match_tzid (tzid);
+				if (newtzid) {
+					/* matched against system time zone */
+					g_free (key);
+					key = g_strdup (tzid);
+					if (!key) {
+						goto nomem;
+					}
 
-    /*
-     * now replace all TZID parameters in place
-     */
-    subcomp = icalcomponent_get_first_component (comp,
-						ICAL_ANY_COMPONENT);
-    while (subcomp) {
-        /*
-         * Leave VTIMEZONE unchanged, iterate over properties of
-         * everything else.
-         *
-         * Note that no attempt is made to remove unused VTIMEZONE
-         * definitions. That would just make the code more complex for
-         * little additional gain. However, newly used time zones are
-         * added below.
-         */
-	patch_tzids (subcomp, mapping);
-	subcomp = icalcomponent_get_next_component (comp,
-						   ICAL_ANY_COMPONENT);
-    }
+					g_free (value);
+					value = g_strdup (newtzid);
+					if (!value) {
+						goto nomem;
+					}
 
-    for (l = comps; l; l = l->next) {
-	patch_tzids (l->data, mapping);
-    }
+					g_hash_table_insert (mapping, key, value);
+					g_hash_table_insert (systemtzids, value, NULL);
+					key =
+						value = NULL;
+				} else {
+					gint counter;
 
-    /*
-     * add system time zones that we mapped to: adding them ensures
-     * that the VCALENDAR remains consistent
-     */
-    g_hash_table_foreach (systemtzids, addsystemtz, comp);
+					zonestr = icalcomponent_as_ical_string_r (subcomp);
 
-    goto done;
+					/* check for collisions with existing timezones */
+					for (counter = 0;
+						 counter < 100 /* sanity limit */;
+						 counter++) {
+						icaltimezone *existing_zone;
+
+						if (counter) {
+							g_free (value);
+							value = g_strdup_printf("%s %d", tzid, counter);
+						}
+						existing_zone = tzlookup (
+							counter ? value : tzid,
+							custom, error);
+						if (!existing_zone) {
+							if (*error) {
+								goto failed;
+							} else {
+								break;
+							}
+						}
+						g_free (buffer);
+						buffer = icalcomponent_as_ical_string_r (icaltimezone_get_component (existing_zone));
+
+						if (counter) {
+							gchar *fulltzid = g_strdup_printf("TZID:%s", value);
+							gsize baselen = strlen("TZID:") + strlen(tzid);
+							gsize fulllen = strlen (fulltzid);
+							gchar *tzidprop;
+							/*
+							 * Map TZID with counter suffix back to basename.
+							 */
+							tzidprop = strstr (buffer, fulltzid);
+							if (tzidprop) {
+								memmove (
+									tzidprop + baselen,
+									tzidprop + fulllen,
+									strlen (tzidprop + fulllen) + 1);
+							}
+							g_free (fulltzid);
+						}
+
+						/*
+						 * If the strings are identical, then the
+						 * VTIMEZONE definitions are identical.  If
+						 * they are not identical, then VTIMEZONE
+						 * definitions might still be semantically
+						 * correct and we waste some space by
+						 * needlesly duplicating the VTIMEZONE. This
+						 * is expected to occur rarely (if at all) in
+						 * practice.
+						 */
+						if (!strcmp (zonestr, buffer)) {
+							break;
+						}
+					}
+
+					if (!counter) {
+						/* does not exist, nothing to do */
+					} else {
+						/* timezone renamed */
+						icalproperty *prop = icalcomponent_get_first_property (
+							subcomp, ICAL_TZID_PROPERTY);
+						while (prop) {
+							icalproperty_set_value_from_string(prop, value, "NO");
+							prop = icalcomponent_get_next_property (
+								subcomp, ICAL_ANY_PROPERTY);
+						}
+						g_free (key);
+						key = g_strdup (tzid);
+						g_hash_table_insert (mapping, key, value);
+						key = value = NULL;
+					}
+				}
+			}
+		}
+
+		subcomp = icalcomponent_get_next_component (
+			comp, ICAL_VTIMEZONE_COMPONENT);
+	}
+
+	/*
+	 * now replace all TZID parameters in place
+	 */
+	subcomp = icalcomponent_get_first_component (
+		comp, ICAL_ANY_COMPONENT);
+	while (subcomp) {
+		/*
+		 * Leave VTIMEZONE unchanged, iterate over properties of
+		 * everything else.
+		 *
+		 * Note that no attempt is made to remove unused VTIMEZONE
+		 * definitions. That would just make the code more complex for
+		 * little additional gain. However, newly used time zones are
+		 * added below.
+		 */
+		patch_tzids (subcomp, mapping);
+		subcomp = icalcomponent_get_next_component (
+			comp, ICAL_ANY_COMPONENT);
+	}
+
+	for (l = comps; l; l = l->next) {
+		patch_tzids (l->data, mapping);
+	}
+
+	/*
+	 * add system time zones that we mapped to: adding them ensures
+	 * that the VCALENDAR remains consistent
+	 */
+	g_hash_table_foreach (systemtzids, addsystemtz, comp);
+
+	goto done;
  nomem:
-    /* set gerror for "out of memory" if possible, otherwise abort via g_error() */
-    *error = g_error_new(E_CALENDAR_ERROR, E_CALENDAR_STATUS_OTHER_ERROR, "out of memory");
-    if (!*error) {
-        g_error("e_cal_check_timezones(): out of memory, cannot proceed - sorry!");
-    }
+	/* set gerror for "out of memory" if possible, otherwise abort via g_error() */
+	*error = g_error_new(E_CALENDAR_ERROR, E_CALENDAR_STATUS_OTHER_ERROR, "out of memory");
+	if (!*error) {
+		g_error("e_cal_check_timezones(): out of memory, cannot proceed - sorry!");
+	}
  failed:
-    /* gerror should have been set already */
-    success = FALSE;
+	/* gerror should have been set already */
+	success = FALSE;
  done:
-    if (mapping) {
-	g_hash_table_destroy (mapping);
-    }
-    if (systemtzids) {
-	g_hash_table_destroy (systemtzids);
-    }
-    if (zone) {
-	icaltimezone_free (zone, 1);
-    }
-    g_free (tzid);
-    g_free (zonestr);
-    g_free (buffer);
-    g_free (key);
-    g_free (value);
+	if (mapping) {
+		g_hash_table_destroy (mapping);
+	}
+	if (systemtzids) {
+		g_hash_table_destroy (systemtzids);
+	}
+	if (zone) {
+		icaltimezone_free (zone, 1);
+	}
+	g_free (tzid);
+	g_free (zonestr);
+	g_free (buffer);
+	g_free (key);
+	g_free (value);
 
-    return success;
+	return success;
 }
 
 /**
@@ -578,16 +581,15 @@ e_cal_tzlookup_icomp (const gchar *tzid,
  * Since: 3.2
  **/
 gboolean
-e_cal_client_check_timezones (
-			icalcomponent *comp,
-			GList *comps,
-			icaltimezone *(*tzlookup) (const gchar *tzid,
-						   gconstpointer ecalclient,
-						   GCancellable *cancellable,
-                                                   GError **error),
-                       gconstpointer ecalclient,
-		       GCancellable *cancellable,
-                       GError **error)
+e_cal_client_check_timezones (icalcomponent *comp,
+                              GList *comps,
+                              icaltimezone *(*tzlookup) (const gchar *tzid,
+                                                         gconstpointer ecalclient,
+                                                         GCancellable *cancellable,
+                                                         GError **error),
+                              gconstpointer ecalclient,
+                              GCancellable *cancellable,
+                              GError **error)
 {
 	gboolean success = TRUE;
 	icalcomponent *subcomp = NULL;
@@ -782,8 +784,8 @@ e_cal_client_check_timezones (
  */
 icaltimezone *
 e_cal_client_tzlookup (const gchar *tzid,
-		       gconstpointer ecalclient,
-		       GCancellable *cancellable,
+                       gconstpointer ecalclient,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	ECalClient *cal_client = (ECalClient *) ecalclient;
@@ -824,9 +826,9 @@ e_cal_client_tzlookup (const gchar *tzid,
  */
 icaltimezone *
 e_cal_client_tzlookup_icomp (const gchar *tzid,
-			     gconstpointer custom,
-			     GCancellable *cancellable,
-			     GError **error)
+                             gconstpointer custom,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	icalcomponent *icomp = (icalcomponent *) custom;
 

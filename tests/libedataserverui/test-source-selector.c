@@ -48,7 +48,7 @@ dump_selection (ESourceSelector *selector)
 
 static void
 selection_changed_callback (ESourceSelector *selector,
-			    gpointer unused_data)
+                            gpointer unused_data)
 {
 	g_print ("Selection changed!\n");
 	dump_selection (selector);
@@ -56,7 +56,7 @@ selection_changed_callback (ESourceSelector *selector,
 
 static void
 check_toggled_callback (GtkToggleButton *button,
-			ESourceSelector *selector)
+                        ESourceSelector *selector)
 {
 	e_source_selector_show_selection (selector, gtk_toggle_button_get_active (button));
 }
@@ -102,7 +102,8 @@ on_idle_create_widget (const gchar *gconf_path)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	const gchar *gconf_path;
 

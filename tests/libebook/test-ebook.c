@@ -71,7 +71,8 @@ print_one_email (EBook *book)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBook *book;
 

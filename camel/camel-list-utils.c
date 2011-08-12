@@ -36,9 +36,9 @@
 void
 camel_dlist_init (CamelDList *v)
 {
-	v->head = (CamelDListNode *)&v->tail;
+	v->head = (CamelDListNode *) &v->tail;
 	v->tail = NULL;
-	v->tailpred = (CamelDListNode *)&v->head;
+	v->tailpred = (CamelDListNode *) &v->head;
 }
 
 /**
@@ -51,10 +51,11 @@ camel_dlist_init (CamelDList *v)
  * Returns: @n.
  **/
 CamelDListNode *
-camel_dlist_addhead (CamelDList *l, CamelDListNode *n)
+camel_dlist_addhead (CamelDList *l,
+                     CamelDListNode *n)
 {
 	n->next = l->head;
-	n->prev = (CamelDListNode *)&l->head;
+	n->prev = (CamelDListNode *) &l->head;
 	l->head->prev = n;
 	l->head = n;
 	return n;
@@ -70,9 +71,10 @@ camel_dlist_addhead (CamelDList *l, CamelDListNode *n)
  * Returns: @n.
  **/
 CamelDListNode *
-camel_dlist_addtail (CamelDList *l, CamelDListNode *n)
+camel_dlist_addtail (CamelDList *l,
+                     CamelDListNode *n)
 {
-	n->next = (CamelDListNode *)&l->tail;
+	n->next = (CamelDListNode *) &l->tail;
 	n->prev = l->tailpred;
 	l->tailpred->next = n;
 	l->tailpred = n;
@@ -154,7 +156,7 @@ camel_dlist_remtail (CamelDList *l)
 gint
 camel_dlist_empty (CamelDList *l)
 {
-	return (l->head == (CamelDListNode *)&l->tail);
+	return (l->head == (CamelDListNode *) &l->tail);
 }
 
 /**
@@ -191,7 +193,8 @@ camel_slist_init (CamelSList *v)
 }
 
 CamelSListNode *
-camel_slist_addhead (CamelSList *l, CamelSListNode *n)
+camel_slist_addhead (CamelSList *l,
+                     CamelSListNode *n)
 {
 	n->next = l->head;
 	l->head = n;
@@ -200,7 +203,8 @@ camel_slist_addhead (CamelSList *l, CamelSListNode *n)
 }
 
 CamelSListNode *
-camel_slist_addtail (CamelSList *l, CamelSListNode *n)
+camel_slist_addtail (CamelSList *l,
+                     CamelSListNode *n)
 {
 	CamelSListNode *p;
 
@@ -214,7 +218,8 @@ camel_slist_addtail (CamelSList *l, CamelSListNode *n)
 }
 
 CamelSListNode *
-camel_slist_remove (CamelSList *l, CamelSListNode *n)
+camel_slist_remove (CamelSList *l,
+                    CamelSListNode *n)
 {
 	CamelSListNode *p, *q;
 

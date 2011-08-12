@@ -7,7 +7,9 @@
 #include "client-test-utils.h"
 
 static void
-print_all_uids_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+print_all_uids_cb (GObject *source_object,
+                   GAsyncResult *result,
+                   gpointer user_data)
 {
 	EBookClient *book_client;
 	GSList *uids = NULL, *u;
@@ -35,7 +37,9 @@ print_all_uids_cb (GObject *source_object, GAsyncResult *result, gpointer user_d
 }
 
 static void
-print_all_emails_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+print_all_emails_cb (GObject *source_object,
+                     GAsyncResult *result,
+                     gpointer user_data)
 {
 	EBookClient *book_client;
 	EBookQuery *query;
@@ -86,7 +90,9 @@ print_all_emails (EBookClient *book_client)
 }
 
 static void
-print_email_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+print_email_cb (GObject *source_object,
+                GAsyncResult *result,
+                gpointer user_data)
 {
 	EBookClient *book_client;
 	EContact *contact = NULL;
@@ -113,7 +119,9 @@ print_one_email (EBookClient *book_client)
 }
 
 static void
-client_loaded_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_loaded_cb (GObject *source_object,
+                  GAsyncResult *result,
+                  gpointer user_data)
 {
 	EBookClient *book_client;
 	GError *error = NULL;
@@ -132,7 +140,8 @@ client_loaded_cb (GObject *source_object, GAsyncResult *result, gpointer user_da
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	GError *error = NULL;

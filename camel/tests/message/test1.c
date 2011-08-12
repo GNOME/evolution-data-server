@@ -1,16 +1,16 @@
 /*
   test1.c
-
+ *
   Create a message, save it.
-
+ *
   Retrieve message, compare content.
-
+ *
   Operations:
-	writing/loading from different types of streams
-	reading/writing different content
-	reading/writing different encodings
-	reading/writing different charsets
-
+	writing / loading from different types of streams
+	reading / writing different content
+	reading / writing different encodings
+	reading / writing different charsets
+ *
   Just testing streams:
 	different stream types
 	different file ops
@@ -71,18 +71,18 @@ setup (void)
 
 	srand (42);
 	p = texts[12].text = g_malloc (1024);
-	for (i=0;i<1024;i++) {
+	for (i = 0; i < 1024; i++) {
 		j = rand ();
-		if (j<RAND_MAX/120)
+		if (j < RAND_MAX / 120)
 			*p++ = '\n';
 		else
 			*p++ = (j % 95) + 32;
 	}
 	texts[12].len = 1024;
 	p = texts[13].text = g_malloc (102400);
-	for (i=0;i<102400;i++) {
+	for (i = 0; i < 102400; i++) {
 		j = rand ();
-		if (j<RAND_MAX/120)
+		if (j < RAND_MAX / 120)
 			*p++ = '\n';
 		else
 			*p++ = (j % 95) + 32;
@@ -100,7 +100,8 @@ cleanup (void)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	CamelMimeMessage *msg, *msg2;
 	gint i, j;
@@ -114,11 +115,11 @@ main (gint argc, gchar **argv)
 	camel_test_start("Simple memory-based content creation");
 
 	/* test all ways of setting simple content for a message (i.e. memory based) */
-	for (j=0;j<MAX_TEXTS;j++) {
+	for (j = 0; j < MAX_TEXTS; j++) {
 		push("testing text number %d", j);
 		text = texts[j].text;
 		len = texts[j].len;
-		for (i=0;i<SET_CONTENT_WAYS;i++) {
+		for (i = 0; i < SET_CONTENT_WAYS; i++) {
 			push("create simple message %d", i);
 			msg = test_message_create_simple ();
 
@@ -154,11 +155,11 @@ main (gint argc, gchar **argv)
 	camel_test_end ();
 
 	camel_test_start("Different encodings");
-	for (j=0;j<MAX_TEXTS;j++) {
+	for (j = 0; j < MAX_TEXTS; j++) {
 		push("testing text number %d", j);
 		text = texts[j].text;
 		len = texts[j].len;
-		for (i=0;i<CAMEL_TRANSFER_NUM_ENCODINGS;i++) {
+		for (i = 0; i < CAMEL_TRANSFER_NUM_ENCODINGS; i++) {
 
 			push("test simple message, encoding %s", camel_transfer_encoding_to_string(i));
 			msg = test_message_create_simple ();

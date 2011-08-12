@@ -38,7 +38,7 @@ e_cal_backend_factory_class_init (ECalBackendFactoryClass *klass)
 icalcomponent_kind
 e_cal_backend_factory_get_kind (ECalBackendFactory *factory)
 {
-	g_return_val_if_fail (E_IS_CAL_BACKEND_FACTORY (factory), 0/*XXX*/);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_FACTORY (factory), 0/*XXX */);
 
 	return E_CAL_BACKEND_FACTORY_GET_CLASS (factory)->get_kind (factory);
 }
@@ -68,8 +68,9 @@ e_cal_backend_factory_get_protocol (ECalBackendFactory *factory)
  *
  * Returns: The newly created backend, or NULL if there was an error.
  */
-ECalBackend*
-e_cal_backend_factory_new_backend (ECalBackendFactory *factory, ESource *source)
+ECalBackend *
+e_cal_backend_factory_new_backend (ECalBackendFactory *factory,
+                                   ESource *source)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_FACTORY (factory), NULL);
 

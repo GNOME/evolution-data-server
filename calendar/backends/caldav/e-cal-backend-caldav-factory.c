@@ -52,7 +52,7 @@ _get_protocol (ECalBackendFactory *factory)
 
 #define declare_functions(_type,_name)						\
 										\
-static ECalBackend*								\
+static ECalBackend *								\
 _new_backend_ ## _type (ECalBackendFactory *factory, ESource *source)		\
 {										\
 	   return g_object_new (E_TYPE_CAL_BACKEND_CALDAV,			\
@@ -121,12 +121,13 @@ eds_module_initialize (GTypeModule *module)
 }
 
 void
-eds_module_shutdown   (void)
+eds_module_shutdown (void)
 {
 }
 
 void
-eds_module_list_types (const GType **types, gint *num_types)
+eds_module_list_types (const GType **types,
+                       gint *num_types)
 {
 	*types = caldav_types;
 	*num_types = 3;

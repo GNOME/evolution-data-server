@@ -51,7 +51,9 @@ static void free_uids (GPtrArray *array);
 G_DEFINE_TYPE (CamelIMAPJournal, camel_imap_journal, CAMEL_TYPE_OFFLINE_JOURNAL)
 
 static void
-free_uid (gpointer key, gpointer value, gpointer data)
+free_uid (gpointer key,
+          gpointer value,
+          gpointer data)
 {
 	g_free (key);
 	g_free (value);
@@ -101,13 +103,16 @@ camel_imap_journal_init (CamelIMAPJournal *journal)
 }
 
 static void
-unref_folder (gpointer key, gpointer value, gpointer data)
+unref_folder (gpointer key,
+              gpointer value,
+              gpointer data)
 {
 	g_object_unref (value);
 }
 
 static void
-imap_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry)
+imap_entry_free (CamelOfflineJournal *journal,
+                 CamelDListNode *entry)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
 
@@ -175,7 +180,8 @@ decode_uids (FILE *file)
 }
 
 static CamelDListNode *
-imap_entry_load (CamelOfflineJournal *journal, FILE *in)
+imap_entry_load (CamelOfflineJournal *journal,
+                 FILE *in)
 {
 	CamelIMAPJournalEntry *entry;
 
@@ -226,7 +232,8 @@ imap_entry_load (CamelOfflineJournal *journal, FILE *in)
 }
 
 static gint
-encode_uids (FILE *file, GPtrArray *uids)
+encode_uids (FILE *file,
+             GPtrArray *uids)
 {
 	gint i, status;
 
@@ -237,7 +244,9 @@ encode_uids (FILE *file, GPtrArray *uids)
 }
 
 static gint
-imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out)
+imap_entry_write (CamelOfflineJournal *journal,
+                  CamelDListNode *entry,
+                  FILE *out)
 {
 	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
 	GPtrArray *uids = NULL;
@@ -337,7 +346,7 @@ imap_entry_play (CamelOfflineJournal *journal,
 			cancellable, error);
 		if (!message) {
 			/* it seems message gone, just ignore the error and continue;
-			   otherwise the entry would not be removed from the list */
+			 * otherwise the entry would not be removed from the list */
 			g_clear_error (error);
 			return 0;
 		}
@@ -392,7 +401,8 @@ imap_entry_play (CamelOfflineJournal *journal,
 }
 
 CamelOfflineJournal *
-camel_imap_journal_new (CamelImapFolder *folder, const gchar *filename)
+camel_imap_journal_new (CamelImapFolder *folder,
+                        const gchar *filename)
 {
 	CamelOfflineJournal *journal;
 
@@ -406,7 +416,9 @@ camel_imap_journal_new (CamelImapFolder *folder, const gchar *filename)
 }
 
 void
-camel_imap_journal_log (CamelOfflineJournal *journal, CamelOfflineAction action, ...)
+camel_imap_journal_log (CamelOfflineJournal *journal,
+                        CamelOfflineAction action,
+                        ...)
 {
 	CamelIMAPJournalEntry *entry;
 	va_list ap;
@@ -475,15 +487,17 @@ camel_imap_journal_close_folders (CamelIMAPJournal *journal)
 }
 
 void
-camel_imap_journal_uidmap_add (CamelIMAPJournal *journal, const gchar *old_uid,
-			      const gchar *new_uid)
+camel_imap_journal_uidmap_add (CamelIMAPJournal *journal,
+                               const gchar *old_uid,
+                               const gchar *new_uid)
 {
 	g_hash_table_insert (journal->uidmap, g_strdup (old_uid),
 			     g_strdup (new_uid));
 }
 
 const gchar *
-camel_imap_journal_uidmap_lookup (CamelIMAPJournal *journal, const gchar *uid)
+camel_imap_journal_uidmap_lookup (CamelIMAPJournal *journal,
+                                  const gchar *uid)
 {
 	return g_hash_table_lookup (journal->uidmap, uid);
 }

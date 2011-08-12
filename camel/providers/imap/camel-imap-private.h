@@ -2,7 +2,7 @@
 #define CAMEL_IMAP_PRIVATE_H
 
 /* need a way to configure and save this data, if this header is to
-   be installed.  For now, dont install it */
+ * be installed.  For now, dont install it */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

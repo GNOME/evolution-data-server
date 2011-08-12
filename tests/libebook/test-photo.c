@@ -24,7 +24,8 @@ static const gchar *photo_data =
 	"VdTW3rgwvsUpSvAFKUoAUxSlAClKUAKUpQB//2Q==";
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EContact *contact;
 	EContactPhoto *photo, *new_photo;

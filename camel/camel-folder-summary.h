@@ -69,7 +69,7 @@ typedef struct _CamelFolderMetaSummary CamelFolderMetaSummary;
 typedef struct _CamelMessageContentInfo CamelMessageContentInfo;
 
 /* A tree of message content info structures
-   describe the content structure of the message (if it has any) */
+ * describe the content structure of the message (if it has any) */
 struct _CamelMessageContentInfo {
 	CamelMessageContentInfo *next;
 
@@ -104,11 +104,11 @@ typedef enum _CamelMessageFlags {
 	/* following flags are for the folder, and are not really permanent flags */
 	CAMEL_MESSAGE_FOLDER_FLAGGED = 1 << 16, /* for use by the folder implementation */
 	/* flags after 1 << 16 are used by camel providers,
-           if adding non permanent flags, add them to the end  */
+ *         if adding non permanent flags, add them to the end  */
 
 	CAMEL_MESSAGE_JUNK_LEARN = 1 << 30, /* used when setting CAMEL_MESSAGE_JUNK flag
-					     to say that we request junk plugin
-					     to learn that message as junk/non junk */
+					     * to say that we request junk plugin
+					     * to learn that message as junk/non junk */
 	CAMEL_MESSAGE_USER = 1 << 31 /* supports user flags */
 } CamelMessageFlags;
 
@@ -176,7 +176,7 @@ struct _CamelMessageInfo {
 	guint32 refcount;	/* ??? */
 	const gchar *uid;
 	/*FIXME: Make it work with the CAMEL_MESSADE_DB_DIRTY flag instead of another 4 bytes*/
-	guint dirty:1;
+	guint dirty : 1;
 };
 
 /* For classes wishing to do the provided i/o, or for anonymous users,
@@ -188,7 +188,7 @@ struct _CamelMessageInfoBase {
 	guint32 refcount;	/* ??? */
 	const gchar *uid;
 	/*FIXME: Make it work with the CAMEL_MESSADE_DB_DIRTY flag instead of another 4 bytes*/
-	guint dirty:1;
+	guint dirty : 1;
 
 	const gchar *subject;
 	const gchar *from;
@@ -288,7 +288,7 @@ struct _CamelFolderSummaryClass {
 	/* Load/Save folder summary from DB*/
 	gint (*summary_header_from_db)(CamelFolderSummary *, struct _CamelFIRecord *);
 	struct _CamelFIRecord * (*summary_header_to_db)(CamelFolderSummary *, GError **error);
-	CamelMessageInfo * (*message_info_from_db) (CamelFolderSummary *, struct _CamelMIRecord*);
+	CamelMessageInfo * (*message_info_from_db) (CamelFolderSummary *, struct _CamelMIRecord *);
 	struct _CamelMIRecord * (*message_info_to_db) (CamelFolderSummary *, CamelMessageInfo *);
 	CamelMessageContentInfo * (*content_info_from_db) (CamelFolderSummary *, struct _CamelMIRecord *);
 	gint (*content_info_to_db) (CamelFolderSummary *, CamelMessageContentInfo *, struct _CamelMIRecord *);

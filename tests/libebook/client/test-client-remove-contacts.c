@@ -5,7 +5,8 @@
 #include "client-test-utils.h"
 
 static gboolean
-check_removed (EBookClient *book_client, const GSList *uids)
+check_removed (EBookClient *book_client,
+               const GSList *uids)
 {
 	g_return_val_if_fail (book_client != NULL, FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
@@ -31,7 +32,8 @@ check_removed (EBookClient *book_client, const GSList *uids)
 }
 
 static gboolean
-fill_book_client (EBookClient *book_client, GSList **uids)
+fill_book_client (EBookClient *book_client,
+                  GSList **uids)
 {
 	EContact *contact;
 
@@ -56,7 +58,9 @@ fill_book_client (EBookClient *book_client, GSList **uids)
 }
 
 static void
-remove_contacts_cb (GObject *source_object, GAsyncResult *result, gpointer uids)
+remove_contacts_cb (GObject *source_object,
+                    GAsyncResult *result,
+                    gpointer uids)
 {
 	GError *error = NULL;
 
@@ -70,7 +74,8 @@ remove_contacts_cb (GObject *source_object, GAsyncResult *result, gpointer uids)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	GError *error = NULL;

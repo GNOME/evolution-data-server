@@ -92,7 +92,7 @@ e_list_iterator_dispose (GObject *object)
 }
 
 static gconstpointer
-e_list_iterator_get      (EIterator *_iterator)
+e_list_iterator_get (EIterator *_iterator)
 {
 	EListIterator *iterator = E_LIST_ITERATOR (_iterator);
 	if (iterator->iterator)
@@ -102,21 +102,21 @@ e_list_iterator_get      (EIterator *_iterator)
 }
 
 static void
-e_list_iterator_reset    (EIterator *_iterator)
+e_list_iterator_reset (EIterator *_iterator)
 {
 	EListIterator *iterator = E_LIST_ITERATOR (_iterator);
 	iterator->iterator = iterator->list->list;
 }
 
 static void
-e_list_iterator_last     (EIterator *_iterator)
+e_list_iterator_last (EIterator *_iterator)
 {
 	EListIterator *iterator = E_LIST_ITERATOR (_iterator);
 	iterator->iterator = g_list_last (iterator->list->list);
 }
 
 static gboolean
-e_list_iterator_next     (EIterator *_iterator)
+e_list_iterator_next (EIterator *_iterator)
 {
 	EListIterator *iterator = E_LIST_ITERATOR (_iterator);
 	if (iterator->iterator)
@@ -127,7 +127,7 @@ e_list_iterator_next     (EIterator *_iterator)
 }
 
 static gboolean
-e_list_iterator_prev     (EIterator *_iterator)
+e_list_iterator_prev (EIterator *_iterator)
 {
 	EListIterator *iterator = E_LIST_ITERATOR (_iterator);
 	if (iterator->iterator)
@@ -138,9 +138,9 @@ e_list_iterator_prev     (EIterator *_iterator)
 }
 
 static void
-e_list_iterator_insert   (EIterator  *_iterator,
-			  gconstpointer object,
-			  gboolean    before)
+e_list_iterator_insert (EIterator *_iterator,
+                        gconstpointer object,
+                        gboolean before)
 {
 	EListIterator *iterator = E_LIST_ITERATOR (_iterator);
 	gpointer data;
@@ -173,7 +173,7 @@ e_list_iterator_insert   (EIterator  *_iterator,
 }
 
 static void
-e_list_iterator_remove   (EIterator *_iterator)
+e_list_iterator_remove (EIterator *_iterator)
 {
 	EListIterator *iterator = E_LIST_ITERATOR (_iterator);
 	if (iterator->iterator) {
@@ -182,8 +182,8 @@ e_list_iterator_remove   (EIterator *_iterator)
 }
 
 static void
-e_list_iterator_set      (EIterator  *_iterator,
-			  gconstpointer object)
+e_list_iterator_set (EIterator *_iterator,
+                     gconstpointer object)
 {
 	EListIterator *iterator = E_LIST_ITERATOR (_iterator);
 	if (iterator->iterator) {

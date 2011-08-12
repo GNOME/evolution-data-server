@@ -297,7 +297,9 @@ category_completion_update_prefix (GtkEntryCompletion *completion)
 }
 
 static gboolean
-category_completion_sanitize_suffix (GtkEntry *entry, GdkEventFocus *event, GtkEntryCompletion *completion)
+category_completion_sanitize_suffix (GtkEntry *entry,
+                                     GdkEventFocus *event,
+                                     GtkEntryCompletion *completion)
 {
 	const gchar *text;
 

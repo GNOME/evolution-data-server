@@ -104,8 +104,8 @@ maildir_folder_get_filename (CamelFolder *folder,
 	mdi = (CamelMaildirMessageInfo *) info;
 
 	/* If filename is NULL, it means folder_summary_check is not yet executed.
-	   Try to find the file in the folder and use it, otherwise construct its
-	   name based on actual flags.
+	 * Try to find the file in the folder and use it, otherwise construct its
+	 * name based on actual flags.
 	*/
 	if (!camel_maildir_info_filename (mdi)) {
 		const gchar *uid = camel_message_info_uid (info);
@@ -183,7 +183,7 @@ maildir_folder_append_message_sync (CamelFolder *folder,
 	/* write it out to tmp, use the uid we got from the summary */
 	name = g_strdup_printf ("%s/tmp/%s", lf->folder_path, camel_message_info_uid(mi));
 	output_stream = camel_stream_fs_new_with_name (
-		name, O_WRONLY|O_CREAT, 0600, error);
+		name, O_WRONLY | O_CREAT, 0600, error);
 	if (output_stream == NULL)
 		goto fail_write;
 

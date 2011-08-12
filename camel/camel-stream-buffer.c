@@ -165,11 +165,11 @@ stream_buffer_read (CamelStream *stream,
 				priv->ptr += bytes_left;
 			}
 			/* if we are reading a lot, then read directly to the destination buffer */
-			if (n >= priv->size/3) {
+			if (n >= priv->size / 3) {
 				bytes_read = camel_stream_read (
 					priv->stream, bptr, n,
 					cancellable, &local_error);
-				if (bytes_read>0) {
+				if (bytes_read > 0) {
 					n -= bytes_read;
 					bptr += bytes_read;
 				}
@@ -177,10 +177,10 @@ stream_buffer_read (CamelStream *stream,
 				bytes_read = camel_stream_read (
 					priv->stream, (gchar *) priv->buf,
 					priv->size, cancellable, &local_error);
-				if (bytes_read>0) {
+				if (bytes_read > 0) {
 					gsize bytes_used = bytes_read > n ? n : bytes_read;
 					priv->ptr = priv->buf;
-					priv->end = priv->buf+bytes_read;
+					priv->end = priv->buf + bytes_read;
 					memcpy (bptr, priv->ptr, bytes_used);
 					priv->ptr += bytes_used;
 					bptr += bytes_used;
@@ -248,7 +248,7 @@ stream_buffer_write (CamelStream *stream,
 
 	/* if we still have more, write directly, or copy to buffer */
 	if (n > 0) {
-		if (n >= priv->size/3) {
+		if (n >= priv->size / 3) {
 			if (stream_write_all (
 				priv->stream, buffer, n,
 				cancellable, error) == -1)
@@ -500,16 +500,16 @@ camel_stream_buffer_gets (CamelStreamBuffer *sbf,
 	outptr = buf;
 	inptr = (gchar *) sbf->priv->ptr;
 	inend = (gchar *) sbf->priv->end;
-	outend = buf+max-1;	/* room for NUL */
+	outend = buf + max-1;	/* room for NUL */
 
 	do {
-		while (inptr<inend && outptr<outend) {
+		while (inptr < inend && outptr < outend) {
 			c = *inptr++;
 			*outptr++ = c;
 			if (c == '\n') {
 				*outptr = 0;
 				sbf->priv->ptr = (guchar *) inptr;
-				return outptr-buf;
+				return outptr - buf;
 			}
 		}
 		if (outptr == outend)
@@ -528,7 +528,7 @@ camel_stream_buffer_gets (CamelStreamBuffer *sbf,
 		sbf->priv->end = sbf->priv->buf + bytes_read;
 		inptr = (gchar *) sbf->priv->ptr;
 		inend = (gchar *) sbf->priv->end;
-	} while (bytes_read>0);
+	} while (bytes_read > 0);
 
 	sbf->priv->ptr = (guchar *) inptr;
 	*outptr = 0;

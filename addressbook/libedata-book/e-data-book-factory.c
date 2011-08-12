@@ -230,7 +230,7 @@ e_data_book_factory_extract_proto_from_uri (const gchar *uri)
 	return proto;
 }
 
-static EBookBackendFactory*
+static EBookBackendFactory *
 e_data_book_factory_lookup_backend_factory (EDataBookFactory *factory,
                                             const gchar *uri)
 {
@@ -266,7 +266,9 @@ construct_book_factory_path (void)
 }
 
 static gboolean
-remove_dead_pointer_cb (gpointer path, gpointer live, gpointer dead)
+remove_dead_pointer_cb (gpointer path,
+                        gpointer live,
+                        gpointer dead)
 {
 	return live == dead;
 }
@@ -498,7 +500,8 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 }
 
 static void
-remove_data_book_cb (gpointer data_bk, gpointer user_data)
+remove_data_book_cb (gpointer data_bk,
+                     gpointer user_data)
 {
 	EDataBook *data_book;
 	EBookBackend *backend;
@@ -668,7 +671,8 @@ e_data_book_factory_register_gdbus_object (EDataBookFactory *factory,
 
 /* Convenience function to print an error and exit */
 G_GNUC_NORETURN static void
-die (const gchar *prefix, GError *error)
+die (const gchar *prefix,
+     GError *error)
 {
 	g_error ("%s: %s", prefix, error->message);
 	g_error_free (error);
@@ -771,7 +775,8 @@ static GOptionEntry entries[] = {
 };
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EOfflineListener *eol;
 	GOptionContext *context;
@@ -796,7 +801,7 @@ main (gint argc, gchar **argv)
 
 		p_SetProcessDEPPolicy = GetProcAddress (GetModuleHandle ("kernel32.dll"), "SetProcessDEPPolicy");
 		if (p_SetProcessDEPPolicy)
-			(*p_SetProcessDEPPolicy) (PROCESS_DEP_ENABLE|PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION);
+			(*p_SetProcessDEPPolicy) (PROCESS_DEP_ENABLE | PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION);
 	}
 #endif
 #endif

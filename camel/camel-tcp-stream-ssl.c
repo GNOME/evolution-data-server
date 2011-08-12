@@ -111,10 +111,11 @@ tcp_stream_ssl_finalize (GObject *object)
 #if 0
 /* Since this is default implementation, let NSS handle it. */
 static SECStatus
-ssl_get_client_auth (gpointer data, PRFileDesc *sockfd,
-		     struct CERTDistNamesStr *caNames,
-		     struct CERTCertificateStr **pRetCert,
-		     struct SECKEYPrivateKeyStr **pRetKey)
+ssl_get_client_auth (gpointer data,
+                     PRFileDesc *sockfd,
+                     struct CERTDistNamesStr *caNames,
+                     struct CERTCertificateStr **pRetCert,
+                     struct SECKEYPrivateKeyStr **pRetKey)
 {
 	SECStatus status = SECFailure;
 	SECKEYPrivateKey *privkey;
@@ -182,7 +183,10 @@ ssl_get_client_auth (gpointer data, PRFileDesc *sockfd,
 #if 0
 /* Since this is the default NSS implementation, no need for us to use this. */
 static SECStatus
-ssl_auth_cert (gpointer data, PRFileDesc *sockfd, PRBool checksig, PRBool is_server)
+ssl_auth_cert (gpointer data,
+               PRFileDesc *sockfd,
+               PRBool checksig,
+               PRBool is_server)
 {
 	CERTCertificate *cert;
 	SECStatus status;
@@ -242,7 +246,7 @@ cert_fingerprint (CERTCertificate *cert)
 	g_checksum_get_digest (checksum, digest, &length);
 	g_checksum_free (checksum);
 
-	for (i=0,f = fingerprint; i < length; i++) {
+	for (i = 0,f = fingerprint; i < length; i++) {
 		guint c = digest[i];
 
 		*f++ = tohex[(c >> 4) & 0xf];
@@ -264,7 +268,8 @@ cert_fingerprint (CERTCertificate *cert)
 
 /* lookup a cert uses fingerprint to index an on-disk file */
 CamelCert *
-camel_certdb_nss_cert_get (CamelCertDB *certdb, CERTCertificate *cert)
+camel_certdb_nss_cert_get (CamelCertDB *certdb,
+                           CERTCertificate *cert)
 {
 	gchar *fingerprint;
 	CamelCert *ccert;
@@ -322,7 +327,8 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb, CERTCertificate *cert)
 
 /* add a cert to the certdb */
 CamelCert *
-camel_certdb_nss_cert_add (CamelCertDB *certdb, CERTCertificate *cert)
+camel_certdb_nss_cert_add (CamelCertDB *certdb,
+                           CERTCertificate *cert)
 {
 	CamelCert *ccert;
 	gchar *fingerprint;
@@ -347,7 +353,9 @@ camel_certdb_nss_cert_add (CamelCertDB *certdb, CERTCertificate *cert)
 
 /* set the 'raw' cert (& save it) */
 void
-camel_certdb_nss_cert_set (CamelCertDB *certdb, CamelCert *ccert, CERTCertificate *cert)
+camel_certdb_nss_cert_set (CamelCertDB *certdb,
+                           CamelCert *ccert,
+                           CERTCertificate *cert)
 {
 	gchar *dir, *path, *fingerprint;
 	CamelStream *stream;
@@ -406,7 +414,7 @@ get_nickname (CERTCertificate *cert)
 	if (server == NULL)
 		return NULL;
 
-	for (i=1;status == PR_TRUE;i++) {
+	for (i = 1; status == PR_TRUE; i++) {
 		if (nick) {
 			g_free (nick);
 			nick = g_strdup_printf("%s #%d", server, i);
@@ -421,7 +429,8 @@ get_nickname (CERTCertificate *cert)
 #endif
 
 static SECStatus
-ssl_bad_cert (gpointer data, PRFileDesc *sockfd)
+ssl_bad_cert (gpointer data,
+              PRFileDesc *sockfd)
 {
 	gboolean accept;
 	CamelCertDB *certdb = NULL;
@@ -491,7 +500,7 @@ ssl_bad_cert (gpointer data, PRFileDesc *sockfd)
 	error = PR_GetError ();
 
 	/* This code is basically what mozilla does - however it doesn't seem to work here
-	   very reliably :-/ */
+	 * very reliably :-/ */
 	while (go && status != SECSuccess) {
 		gchar *prompt = NULL;
 
@@ -518,7 +527,7 @@ ssl_bad_cert (gpointer data, PRFileDesc *sockfd)
 				printf("adding cert '%s'\n", nick);
 
 				if (!cert->trust) {
-					cert->trust = (CERTCertTrust*) PORT_ArenaZAlloc (cert->arena, sizeof (CERTCertTrust));
+					cert->trust = (CERTCertTrust *) PORT_ArenaZAlloc (cert->arena, sizeof (CERTCertTrust));
 					CERT_DecodeTrustString(cert->trust, "P");
 				}
 
@@ -529,7 +538,7 @@ ssl_bad_cert (gpointer data, PRFileDesc *sockfd)
 
 				printf(" cert type %08x\n", cert->nsCertType);
 
-				memset ((gpointer)&trust, 0, sizeof (trust));
+				memset ((gpointer) &trust, 0, sizeof (trust));
 				if (CERT_GetCertTrust (cert, &trust) != SECSuccess) {
 					CERT_DecodeTrustString(&trust, "P");
 				}
@@ -617,7 +626,8 @@ ssl_bad_cert (gpointer data, PRFileDesc *sockfd)
 }
 
 static PRFileDesc *
-enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
+enable_ssl (CamelTcpStreamSSL *ssl,
+            PRFileDesc *fd)
 {
 	PRFileDesc *ssl_fd;
 
@@ -652,7 +662,7 @@ enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 	/* NSS provides a default implementation for the SSL_GetClientAuthDataHook callback
 	 * but does not enable it by default. It must be explicltly requested by the application.
 	 * See: http://www.mozilla.org/projects/security/pki/nss/ref/ssl/sslfnc.html#1126622 */
-	SSL_GetClientAuthDataHook (ssl_fd, (SSLGetClientAuthData)&NSS_GetClientAuthData, NULL );
+	SSL_GetClientAuthDataHook (ssl_fd, (SSLGetClientAuthData) &NSS_GetClientAuthData, NULL );
 
 	/* NSS provides _and_ installs a default implementation for the
 	 * SSL_AuthCertificateHook callback so we _don't_ need to install one. */
@@ -662,7 +672,9 @@ enable_ssl (CamelTcpStreamSSL *ssl, PRFileDesc *fd)
 }
 
 static PRFileDesc *
-enable_ssl_or_close_fd (CamelTcpStreamSSL *ssl, PRFileDesc *fd, GError **error)
+enable_ssl_or_close_fd (CamelTcpStreamSSL *ssl,
+                        PRFileDesc *fd,
+                        GError **error)
 {
 	PRFileDesc *ssl_fd;
 
@@ -684,7 +696,8 @@ enable_ssl_or_close_fd (CamelTcpStreamSSL *ssl, PRFileDesc *fd, GError **error)
 }
 
 static gboolean
-rehandshake_ssl (PRFileDesc *fd, GError **error)
+rehandshake_ssl (PRFileDesc *fd,
+                 GError **error)
 {
 	if (SSL_ResetHandshake (fd, FALSE) == SECFailure) {
 		_set_errno_from_pr_error (PR_GetError ());

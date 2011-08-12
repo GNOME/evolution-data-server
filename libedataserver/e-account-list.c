@@ -118,8 +118,10 @@ finalize (GObject *object)
 }
 
 static void
-gconf_accounts_changed (GConfClient *client, guint cnxn_id,
-			GConfEntry *entry, gpointer user_data)
+gconf_accounts_changed (GConfClient *client,
+                        guint cnxn_id,
+                        GConfEntry *entry,
+                        gpointer user_data)
 {
 	EAccountList *account_list = user_data;
 	GSList *list, *l, *new_accounts = NULL;
@@ -194,7 +196,8 @@ gconf_accounts_changed (GConfClient *client, guint cnxn_id,
 }
 
 static gpointer
-copy_func (gconstpointer data, gpointer closure)
+copy_func (gconstpointer data,
+           gpointer closure)
 {
 	GObject *object = (GObject *) data;
 
@@ -203,7 +206,8 @@ copy_func (gconstpointer data, gpointer closure)
 }
 
 static void
-free_func (gpointer data, gpointer closure)
+free_func (gpointer data,
+           gpointer closure)
 {
 	g_object_unref (data);
 }
@@ -237,7 +241,8 @@ e_account_list_new (GConfClient *gconf)
 }
 
 void
-e_account_list_construct (EAccountList *account_list, GConfClient *gconf)
+e_account_list_construct (EAccountList *account_list,
+                          GConfClient *gconf)
 {
 	g_return_if_fail (GCONF_IS_CLIENT (gconf));
 
@@ -315,7 +320,8 @@ e_account_list_prune_proxies (EAccountList *account_list)
 }
 
 void
-e_account_list_remove_account_proxies (EAccountList *accounts, EAccount *account)
+e_account_list_remove_account_proxies (EAccountList *accounts,
+                                       EAccount *account)
 {
 	EAccount *child_account;
 
@@ -430,7 +436,7 @@ e_account_list_get_default (EAccountList *account_list)
 	it = e_list_get_iterator (E_LIST (account_list));
 
 	if (uid) {
-		for (;e_iterator_is_valid (it);e_iterator_next (it)) {
+		for (; e_iterator_is_valid (it); e_iterator_next (it)) {
 			account = (const EAccount *) e_iterator_get (it);
 
 			if (!strcmp (uid, account->uid))
@@ -499,7 +505,7 @@ e_account_list_find (EAccountList *account_list,
 	const EAccount *account = NULL;
 
 	/* this could use a callback for more flexibility ...
-	   ... but this makes the common cases easier */
+	 * ... but this makes the common cases easier */
 
 	if (!key)
 		return NULL;

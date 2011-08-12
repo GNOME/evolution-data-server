@@ -105,7 +105,7 @@ disco_store_connect_sync (CamelService *service,
 			return TRUE;
 
 		/* Need to resync.  Note we do the ref thing since during the replay
-		   disconnect could be called, which will remove store->diary and unref it */
+		 * disconnect could be called, which will remove store->diary and unref it */
 		store->status = CAMEL_DISCO_STORE_RESYNCING;
 		diary = g_object_ref (store->diary);
 		camel_disco_diary_replay (diary, cancellable, &local_error);

@@ -187,7 +187,9 @@ escape_string (const gchar *source)
 }
 
 static void
-hash_to_xml_string (gpointer key, gpointer value, gpointer user_data)
+hash_to_xml_string (gpointer key,
+                    gpointer value,
+                    gpointer user_data)
 {
 	CategoryInfo *cat_info = value;
 	GString *string = user_data;
@@ -288,7 +290,7 @@ static void
 categories_add_full (const gchar *category,
                      const gchar *icon_file,
                      gboolean is_default,
-		     gboolean is_searchable)
+                     gboolean is_searchable)
 {
 	CategoryInfo *cat_info;
 	gchar *collation_key;
@@ -328,7 +330,8 @@ categories_lookup (const gchar *category)
 }
 
 static gint
-parse_categories (const gchar *contents, gsize length)
+parse_categories (const gchar *contents,
+                  gsize length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr node;
@@ -407,7 +410,9 @@ exit:
 }
 
 static void
-migrate_old_icon_file (gpointer key, gpointer value, gpointer user_data)
+migrate_old_icon_file (gpointer key,
+                       gpointer value,
+                       gpointer user_data)
 {
 	CategoryInfo *info = value;
 	gchar *basename;
@@ -736,7 +741,8 @@ e_categories_is_searchable (const gchar *category)
  * Since: 2.24
  **/
 void
-e_categories_register_change_listener (GCallback listener, gpointer user_data)
+e_categories_register_change_listener (GCallback listener,
+                                       gpointer user_data)
 {
 	if (!initialized)
 		initialize_categories ();
@@ -755,7 +761,8 @@ e_categories_register_change_listener (GCallback listener, gpointer user_data)
  * Since: 2.24
  **/
 void
-e_categories_unregister_change_listener (GCallback listener, gpointer user_data)
+e_categories_unregister_change_listener (GCallback listener,
+                                         gpointer user_data)
 {
 	if (initialized)
 		g_signal_handlers_disconnect_by_func (listeners, listener, user_data);

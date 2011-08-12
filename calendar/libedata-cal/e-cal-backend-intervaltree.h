@@ -68,7 +68,7 @@ struct _EIntervalTreeClass
 
 GType		e_intervaltree_get_type	(void);
 
-EIntervalTree* e_intervaltree_new (void);
+EIntervalTree * e_intervaltree_new (void);
 
 gboolean e_intervaltree_insert (EIntervalTree *tree, time_t start, time_t end, ECalComponent *comp);
 
@@ -76,7 +76,7 @@ gboolean e_intervaltree_remove (EIntervalTree *tree, const gchar *uid, const gch
 
 void e_intervaltree_destroy (EIntervalTree *tree);
 
-GList*
+GList *
 e_intervaltree_search (EIntervalTree *tree, time_t start, time_t end);
 #ifdef E_INTERVALTREE_DEBUG
 void e_intervaltree_dump (EIntervalTree *tree);

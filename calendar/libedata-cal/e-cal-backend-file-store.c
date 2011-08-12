@@ -99,7 +99,8 @@ copy_timezone (icaltimezone *zone)
 }
 
 static gboolean
-put_component (ECalBackendFileStore *fstore, ECalComponent *comp)
+put_component (ECalBackendFileStore *fstore,
+               ECalComponent *comp)
 {
 	ECalBackendFileStorePrivate *priv;
 	FullCompObject *obj = NULL;
@@ -140,7 +141,9 @@ put_component (ECalBackendFileStore *fstore, ECalComponent *comp)
 }
 
 static gboolean
-remove_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *rid)
+remove_component (ECalBackendFileStore *fstore,
+                  const gchar *uid,
+                  const gchar *rid)
 {
 	ECalBackendFileStorePrivate *priv;
 	FullCompObject *obj = NULL;
@@ -176,7 +179,9 @@ end:
 }
 
 static ECalComponent *
-get_component (ECalBackendFileStore *fstore, const gchar *uid, const gchar *rid)
+get_component (ECalBackendFileStore *fstore,
+               const gchar *uid,
+               const gchar *rid)
 {
 	ECalBackendFileStorePrivate *priv;
 	FullCompObject *obj = NULL;
@@ -204,7 +209,9 @@ end:
 }
 
 static ECalComponent *
-e_cal_backend_file_store_get_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
+e_cal_backend_file_store_get_component (ECalBackendStore *store,
+                                        const gchar *uid,
+                                        const gchar *rid)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 
@@ -212,7 +219,9 @@ e_cal_backend_file_store_get_component (ECalBackendStore *store, const gchar *ui
 }
 
 static gboolean
-e_cal_backend_file_store_has_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
+e_cal_backend_file_store_has_component (ECalBackendStore *store,
+                                        const gchar *uid,
+                                        const gchar *rid)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
@@ -242,7 +251,8 @@ end:
 }
 
 static gboolean
-e_cal_backend_file_store_put_component (ECalBackendStore *store, ECalComponent *comp)
+e_cal_backend_file_store_put_component (ECalBackendStore *store,
+                                        ECalComponent *comp)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
@@ -263,7 +273,9 @@ e_cal_backend_file_store_put_component (ECalBackendStore *store, ECalComponent *
 }
 
 static gboolean
-e_cal_backend_file_store_remove_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
+e_cal_backend_file_store_remove_component (ECalBackendStore *store,
+                                           const gchar *uid,
+                                           const gchar *rid)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
@@ -284,7 +296,8 @@ e_cal_backend_file_store_remove_component (ECalBackendStore *store, const gchar 
 }
 
 static const icaltimezone *
-e_cal_backend_file_store_get_timezone (ECalBackendStore *store, const gchar *tzid)
+e_cal_backend_file_store_get_timezone (ECalBackendStore *store,
+                                       const gchar *tzid)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
@@ -300,7 +313,8 @@ e_cal_backend_file_store_get_timezone (ECalBackendStore *store, const gchar *tzi
 }
 
 static gboolean
-e_cal_backend_file_store_put_timezone (ECalBackendStore *store, const icaltimezone *zone)
+e_cal_backend_file_store_put_timezone (ECalBackendStore *store,
+                                       const icaltimezone *zone)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
@@ -325,7 +339,8 @@ e_cal_backend_file_store_put_timezone (ECalBackendStore *store, const icaltimezo
 }
 
 static gboolean
-e_cal_backend_file_store_remove_timezone (ECalBackendStore *store, const gchar *tzid)
+e_cal_backend_file_store_remove_timezone (ECalBackendStore *store,
+                                          const gchar *tzid)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
@@ -348,7 +363,8 @@ e_cal_backend_file_store_remove_timezone (ECalBackendStore *store, const gchar *
 }
 
 static const gchar *
-e_cal_backend_file_store_get_key_value (ECalBackendStore *store, const gchar *key)
+e_cal_backend_file_store_get_key_value (ECalBackendStore *store,
+                                        const gchar *key)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
@@ -364,7 +380,9 @@ e_cal_backend_file_store_get_key_value (ECalBackendStore *store, const gchar *ke
 }
 
 static gboolean
-e_cal_backend_file_store_put_key_value (ECalBackendStore *store, const gchar *key, const gchar *value)
+e_cal_backend_file_store_put_key_value (ECalBackendStore *store,
+                                        const gchar *key,
+                                        const gchar *value)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
@@ -410,7 +428,8 @@ e_cal_backend_file_store_get_default_timezone (ECalBackendStore *store)
 }
 
 static gboolean
-e_cal_backend_file_store_set_default_timezone (ECalBackendStore *store, const icaltimezone *zone)
+e_cal_backend_file_store_set_default_timezone (ECalBackendStore *store,
+                                               const icaltimezone *zone)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
@@ -422,7 +441,7 @@ e_cal_backend_file_store_set_default_timezone (ECalBackendStore *store, const ic
 
 	g_static_rw_lock_writer_lock (&priv->lock);
 
-	tzid = icaltimezone_get_tzid ((icaltimezone*) zone);
+	tzid = icaltimezone_get_tzid ((icaltimezone *) zone);
 	copy = copy_timezone ((icaltimezone *) zone);
 	g_hash_table_insert (priv->timezones, g_strdup (tzid), copy);
 
@@ -465,7 +484,9 @@ e_cal_backend_file_store_freeze_changes (ECalBackendStore *store)
 }
 
 static void
-add_comp_to_slist (gpointer key, gpointer value, gpointer user_data)
+add_comp_to_slist (gpointer key,
+                   gpointer value,
+                   gpointer user_data)
 {
 	GSList **slist = (GSList **) user_data;
 	ECalComponent *comp = (ECalComponent *) value;
@@ -475,7 +496,8 @@ add_comp_to_slist (gpointer key, gpointer value, gpointer user_data)
 }
 
 static GSList *
-e_cal_backend_file_store_get_components_by_uid (ECalBackendStore *store, const gchar *uid)
+e_cal_backend_file_store_get_components_by_uid (ECalBackendStore *store,
+                                                const gchar *uid)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
@@ -503,7 +525,9 @@ end:
 }
 
 static void
-add_full_comp_to_slist (gpointer key, gpointer value, gpointer user_data)
+add_full_comp_to_slist (gpointer key,
+                        gpointer value,
+                        gpointer user_data)
 {
 	GSList **slist = (GSList **) user_data;
 	FullCompObject *obj = NULL;
@@ -534,7 +558,9 @@ e_cal_backend_file_store_get_components (ECalBackendStore *store)
 }
 
 static void
-add_instance_ids_to_slist (gpointer key, gpointer value, gpointer user_data)
+add_instance_ids_to_slist (gpointer key,
+                           gpointer value,
+                           gpointer user_data)
 {
 	GSList **slist = (GSList **) user_data;
 	ECalComponent *comp = (ECalComponent *) value;
@@ -544,7 +570,9 @@ add_instance_ids_to_slist (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-add_comp_ids_to_slist (gpointer key, gpointer value, gpointer user_data)
+add_comp_ids_to_slist (gpointer key,
+                       gpointer value,
+                       gpointer user_data)
 {
 	GSList **slist = (GSList **) user_data;
 	FullCompObject *obj = NULL;
@@ -576,7 +604,8 @@ e_cal_backend_file_store_get_component_ids (ECalBackendStore *store)
 }
 
 static void
-add_timezone (ECalBackendFileStore *fstore, icalcomponent *vtzcomp)
+add_timezone (ECalBackendFileStore *fstore,
+              icalcomponent *vtzcomp)
 {
 	ECalBackendFileStorePrivate *priv;
 	icalproperty *prop;
@@ -605,7 +634,8 @@ add_timezone (ECalBackendFileStore *fstore, icalcomponent *vtzcomp)
 }
 
 static icaltimezone *
-resolve_tzid (const gchar *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid,
+              gpointer user_data)
 {
 	icaltimezone *zone;
 
@@ -634,7 +664,8 @@ get_zone (icalcomponent *icalcomp)
 } */
 
 static void
-scan_vcalendar (ECalBackendStore *store, icalcomponent *top_icalcomp)
+scan_vcalendar (ECalBackendStore *store,
+                icalcomponent *top_icalcomp)
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	icalcompiter iter;
@@ -752,7 +783,9 @@ e_cal_backend_file_store_clean (ECalBackendStore *store)
 }
 
 static void
-save_instance (gpointer key, gpointer value, gpointer user_data)
+save_instance (gpointer key,
+               gpointer value,
+               gpointer user_data)
 {
 	icalcomponent *vcalcomp = user_data;
 	icalcomponent *icalcomp;
@@ -763,7 +796,9 @@ save_instance (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-save_object (gpointer key, gpointer value, gpointer user_data)
+save_object (gpointer key,
+             gpointer value,
+             gpointer user_data)
 {
 	FullCompObject *obj = value;
 	icalcomponent *icalcomp, *vcalcomp = user_data;
@@ -777,7 +812,9 @@ save_object (gpointer key, gpointer value, gpointer user_data)
 }
 
 static void
-save_timezone (gpointer key, gpointer tz, gpointer vcalcomp)
+save_timezone (gpointer key,
+               gpointer tz,
+               gpointer vcalcomp)
 {
 	icalcomponent *tzcomp;
 
@@ -970,7 +1007,7 @@ e_cal_backend_file_store_init (ECalBackendFileStore *store)
  *
  * Since: 2.28
  **/
-ECalBackendStore*
+ECalBackendStore *
 e_cal_backend_file_store_new (const gchar *path)
 {
 	return g_object_new (

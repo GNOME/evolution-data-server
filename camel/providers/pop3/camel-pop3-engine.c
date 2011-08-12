@@ -33,7 +33,7 @@
 #include "camel-pop3-stream.h"
 
 /* max 'outstanding' bytes in output stream, so we can't deadlock waiting
-   for the server to accept our data when pipelining */
+ * for the server to accept our data when pipelining */
 #define CAMEL_POP3_SEND_LIMIT (1024)
 
 extern CamelServiceAuthType camel_pop3_password_authtype;
@@ -127,7 +127,8 @@ read_greeting (CamelPOP3Engine *pe)
  * Returns: the stream
  **/
 CamelPOP3Engine *
-camel_pop3_engine_new (CamelStream *source, guint32 flags)
+camel_pop3_engine_new (CamelStream *source,
+                       guint32 flags)
 {
 	CamelPOP3Engine *pe;
 
@@ -162,7 +163,7 @@ camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine)
 }
 
 /* TODO: read implementation too?
-   etc? */
+ * etc? */
 static struct {
 	const gchar *cap;
 	guint32 flag;
@@ -175,7 +176,9 @@ static struct {
 };
 
 static void
-cmd_capa (CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
+cmd_capa (CamelPOP3Engine *pe,
+          CamelPOP3Stream *stream,
+          gpointer data)
 {
 	guchar *line, *tok, *next;
 	guint len;
@@ -189,7 +192,7 @@ cmd_capa (CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 		ret = camel_pop3_stream_line (stream, &line, &len, NULL, NULL);
 		if (ret >= 0) {
 			if (strncmp((gchar *) line, "SASL ", 5) == 0) {
-				tok = line+5;
+				tok = line + 5;
 				dd(printf("scanning tokens '%s'\n", tok));
 				while (tok) {
 					next = (guchar *) strchr ((gchar *) tok, ' ');
@@ -211,7 +214,7 @@ cmd_capa (CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data)
 				}
 			}
 		}
-	} while (ret>0);
+	} while (ret > 0);
 }
 
 static void
@@ -359,15 +362,15 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 	if (pcwait && pcwait->state >= CAMEL_POP3_COMMAND_OK)
 		return 0;
 
-	return pe->current==NULL?0:1;
+	return pe->current == NULL ? 0 : 1;
 ioerror:
 	/* we assume all outstanding commands are gunna fail now */
-	while ((pw = (CamelPOP3Command*) camel_dlist_remhead (&pe->active))) {
+	while ((pw = (CamelPOP3Command *) camel_dlist_remhead (&pe->active))) {
 		pw->state = CAMEL_POP3_COMMAND_ERR;
 		camel_dlist_addtail (&pe->done, (CamelDListNode *) pw);
 	}
 
-	while ((pw = (CamelPOP3Command*) camel_dlist_remhead (&pe->queue))) {
+	while ((pw = (CamelPOP3Command *) camel_dlist_remhead (&pe->queue))) {
 		pw->state = CAMEL_POP3_COMMAND_ERR;
 		camel_dlist_addtail (&pe->done, (CamelDListNode *) pw);
 	}
@@ -410,7 +413,8 @@ camel_pop3_engine_command_new (CamelPOP3Engine *pe,
 }
 
 void
-camel_pop3_engine_command_free (CamelPOP3Engine *pe, CamelPOP3Command *pc)
+camel_pop3_engine_command_free (CamelPOP3Engine *pe,
+                                CamelPOP3Command *pc)
 {
 	if (pe->current != pc)
 		camel_dlist_remove ((CamelDListNode *) pc);

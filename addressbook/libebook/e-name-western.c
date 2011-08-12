@@ -66,7 +66,7 @@ e_name_western_cleanup_string (gchar **str)
 		while (g_unichar_isspace (g_utf8_get_char (p)) || *p == ',')
 			p = g_utf8_prev_char (p);
 		/* advance p to after the character that caused us to exit the
-		   previous loop, and end the string. */
+		 * previous loop, and end the string. */
 		if ((!g_unichar_isspace (g_utf8_get_char (p))) && *p != ',')
 			p = g_utf8_next_char (p);
 		*p = '\0';
@@ -77,7 +77,9 @@ e_name_western_cleanup_string (gchar **str)
 }
 
 static gchar *
-e_name_western_get_words_at_idx (gchar *str, gint idx, gint num_words)
+e_name_western_get_words_at_idx (gchar *str,
+                                 gint idx,
+                                 gint num_words)
 {
 	GString *words;
 	gchar *p;
@@ -105,7 +107,8 @@ e_name_western_get_words_at_idx (gchar *str, gint idx, gint num_words)
 }
 
 static gint
-e_name_western_max (const gint a, const gint b)
+e_name_western_max (const gint a,
+                    const gint b)
 {
 	if (a > b)
 		return a;
@@ -218,7 +221,8 @@ e_name_western_get_prefix_at_str (gchar *str)
 }
 
 static void
-e_name_western_extract_prefix (ENameWestern *name, ENameWesternIdxs *idxs)
+e_name_western_extract_prefix (ENameWestern *name,
+                               ENameWesternIdxs *idxs)
 {
 	gchar *pfx;
 
@@ -249,7 +253,8 @@ e_name_western_is_complex_last_beginning (gchar *word)
 }
 
 static void
-e_name_western_extract_first (ENameWestern *name, ENameWesternIdxs *idxs)
+e_name_western_extract_first (ENameWestern *name,
+                              ENameWesternIdxs *idxs)
 {
 	/*
 	 * If there's a prefix, then the first name is right after it.
@@ -296,7 +301,8 @@ e_name_western_extract_first (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 static void
-e_name_western_extract_middle (ENameWestern *name, ENameWesternIdxs *idxs)
+e_name_western_extract_middle (ENameWestern *name,
+                               ENameWesternIdxs *idxs)
 {
 	gchar *word;
 	gchar *middle;
@@ -374,7 +380,8 @@ e_name_western_extract_middle (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 static void
-e_name_western_extract_nickname (ENameWestern *name, ENameWesternIdxs *idxs)
+e_name_western_extract_nickname (ENameWestern *name,
+                                 ENameWesternIdxs *idxs)
 {
 	gchar *nick;
 	gint   start_idx;
@@ -419,7 +426,8 @@ e_name_western_extract_nickname (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 static gint
-e_name_western_last_get_max_idx (ENameWestern *name, ENameWesternIdxs *idxs)
+e_name_western_last_get_max_idx (ENameWestern *name,
+                                 ENameWesternIdxs *idxs)
 {
 	gint max_idx = -1;
 
@@ -443,7 +451,8 @@ e_name_western_last_get_max_idx (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 static void
-e_name_western_extract_last (ENameWestern *name, ENameWesternIdxs *idxs)
+e_name_western_extract_last (ENameWestern *name,
+                             ENameWesternIdxs *idxs)
 {
 	gchar *word;
 	gint   idx = -1;
@@ -505,7 +514,8 @@ e_name_western_extract_last (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 static gchar *
-e_name_western_get_preceding_word (gchar *str, gint idx)
+e_name_western_get_preceding_word (gchar *str,
+                                   gint idx)
 {
 	gint   word_len;
 	gchar *word;
@@ -579,7 +589,8 @@ e_name_western_get_suffix_at_str_end (gchar *str)
 }
 
 static void
-e_name_western_extract_suffix (ENameWestern *name, ENameWesternIdxs *idxs)
+e_name_western_extract_suffix (ENameWestern *name,
+                               ENameWesternIdxs *idxs)
 {
 	name->suffix = e_name_western_get_suffix_at_str_end (name->full);
 
@@ -590,7 +601,8 @@ e_name_western_extract_suffix (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 static gboolean
-e_name_western_detect_backwards (ENameWestern *name, ENameWesternIdxs *idxs)
+e_name_western_detect_backwards (ENameWestern *name,
+                                 ENameWesternIdxs *idxs)
 {
 	gchar *comma;
 	gchar *word;
@@ -618,7 +630,8 @@ e_name_western_detect_backwards (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 static void
-e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
+e_name_western_reorder_asshole (ENameWestern *name,
+                                ENameWesternIdxs *idxs)
 {
 	gchar *prefix;
 	gchar *last;
@@ -660,17 +673,17 @@ e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 		p = g_utf8_next_char (p);
 
 	/*
-	   Consider this case, "Br.Gate,Br. Gate,W". I know this is a damn
-	   random name, but, I got this from the bug report of 317411.
-
-	   comma = ",Br.Gate,W"
-	   prefix = "Br.Gate,Br."
-	   p = " Gate,W"
-	   comma - p < 0 and hence the crash.
-
-	   Actually, we don't have to put lot of intelligence in reordering such
-	   screwedup names, just return.
-	*/
+	 * Consider this case, "Br.Gate,Br. Gate,W". I know this is a damn
+	 * random name, but, I got this from the bug report of 317411.
+	 *
+	 * comma = ",Br.Gate,W"
+	 * prefix = "Br.Gate,Br."
+	 * p = " Gate,W"
+	 * comma - p < 0 and hence the crash.
+	 *
+	 * Actually, we don't have to put lot of intelligence in reordering such
+	 * screwedup names, just return.
+	 */
 	if (comma - p + 1 < 1) {
 		g_free (prefix);
 		return;
@@ -735,7 +748,8 @@ e_name_western_reorder_asshole (ENameWestern *name, ENameWesternIdxs *idxs)
 }
 
 static void
-e_name_western_zap_nil (gchar **str, gint *idx)
+e_name_western_zap_nil (gchar **str,
+                        gint *idx)
 {
 	if (*str == NULL)
 		return;
@@ -804,7 +818,8 @@ e_name_western_zap_nil (gchar **str, gint *idx)
 	}
 
 static void
-e_name_western_fixup (ENameWestern *name, ENameWesternIdxs *idxs)
+e_name_western_fixup (ENameWestern *name,
+                      ENameWesternIdxs *idxs)
 {
 	/*
 	 * The middle and last names cannot be the same.
@@ -939,7 +954,7 @@ e_name_western_parse (const gchar *full_name)
 	ENameWestern *wname;
 	gchar *end;
 
-	if (!g_utf8_validate (full_name, -1, (const gchar **)&end)) {
+	if (!g_utf8_validate (full_name, -1, (const gchar **) &end)) {
 		g_warning ("e_name_western_parse passed invalid UTF-8 sequence");
 		*end = '\0';
 	}

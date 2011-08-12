@@ -50,7 +50,8 @@ static struct {
 };
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gint i, j;
 	struct _camel_search_words *words, *tmp;
@@ -66,7 +67,7 @@ main (gint argc, gchar **argv)
 		check (words != NULL);
 		check_msg(words->len == split_tests[i].count, "words->len = %d, count = %d", words->len, split_tests[i].count);
 
-		for (j=0;j<words->len;j++) {
+		for (j = 0; j < words->len; j++) {
 			check_msg (strcmp (split_tests[i].splits[j].word, words->words[j]->word) == 0,
 				  "'%s' != '%s'", split_tests[i].splits[j].word, words->words[j]->word);
 			check (split_tests[i].splits[j].type == words->words[j]->type);
@@ -90,7 +91,7 @@ main (gint argc, gchar **argv)
 		check (words != NULL);
 		check_msg(words->len == simple_tests[i].count, "words->len = %d, count = %d", words->len, simple_tests[i].count);
 
-		for (j=0;j<words->len;j++) {
+		for (j = 0; j < words->len; j++) {
 			check_msg (strcmp (simple_tests[i].splits[j].word, words->words[j]->word) == 0,
 				  "'%s' != '%s'", simple_tests[i].splits[j].word, words->words[j]->word);
 			check (simple_tests[i].splits[j].type == words->words[j]->type);

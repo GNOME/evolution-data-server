@@ -160,7 +160,7 @@ store_summary_store_info_load (CamelStoreSummary *summary,
 	camel_file_util_decode_uint32 (in, &info->total);
 
 	/* Ok, brown paper bag bug - prior to version 2 of the file, flags are
-	   stored using the bit number, not the bit. Try to recover as best we can */
+	 * stored using the bit number, not the bit. Try to recover as best we can */
 	if (summary->version < CAMEL_STORE_SUMMARY_VERSION_2) {
 		guint32 flags = 0;
 
@@ -226,7 +226,7 @@ store_summary_store_info_string (CamelStoreSummary *summary,
 	case CAMEL_STORE_INFO_NAME:
 		p = strrchr (info->path, '/');
 		if (p)
-			return p+1;
+			return p + 1;
 		else
 			return info->path;
 	case CAMEL_STORE_INFO_URI:
@@ -272,10 +272,10 @@ store_summary_store_info_set_string (CamelStoreSummary *summary,
 		g_hash_table_remove (summary->folders_path, (gchar *) camel_store_info_path (summary, info));
 		p = strrchr (info->path, '/');
 		if (p) {
-			len = p-info->path+1;
-			v = g_malloc (len+strlen (str)+1);
+			len = p - info->path + 1;
+			v = g_malloc (len + strlen (str) + 1);
 			memcpy (v, info->path, len);
-			strcpy (v+len, str);
+			strcpy (v + len, str);
 		} else {
 			v = g_strdup (str);
 		}
@@ -470,7 +470,7 @@ camel_store_summary_array (CamelStoreSummary *summary)
 
 	res = g_ptr_array_new ();
 	g_ptr_array_set_size (res, summary->folders->len);
-	for (i=0; i < summary->folders->len; i++) {
+	for (i = 0; i < summary->folders->len; i++) {
 		info = res->pdata[i] = g_ptr_array_index (summary->folders, i);
 		info->refcount++;
 	}
@@ -497,7 +497,7 @@ camel_store_summary_array_free (CamelStoreSummary *summary,
 	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
 	g_return_if_fail (array != NULL);
 
-	for (i=0; i < array->len; i++)
+	for (i = 0; i < array->len; i++)
 		camel_store_summary_info_free (summary, array->pdata[i]);
 
 	g_ptr_array_free (array, TRUE);
@@ -634,7 +634,7 @@ camel_store_summary_save (CamelStoreSummary *summary)
 		return 0;
 	}
 
-	fd = g_open (summary->summary_path, O_RDWR|O_CREAT|O_TRUNC|O_BINARY, 0600);
+	fd = g_open (summary->summary_path, O_RDWR | O_CREAT | O_TRUNC | O_BINARY, 0600);
 	if (fd == -1) {
 		io (printf ("**  open error: %s\n", g_strerror (errno)));
 		return -1;
@@ -666,7 +666,7 @@ camel_store_summary_save (CamelStoreSummary *summary)
 	/* FIXME: Locking? */
 
 	count = summary->folders->len;
-	for (i=0; i < count; i++) {
+	for (i = 0; i < count; i++) {
 		info = summary->folders->pdata[i];
 		class->store_info_save (summary, out, info);
 	}
@@ -909,7 +909,7 @@ camel_store_summary_clear (CamelStoreSummary *summary)
 		return;
 	}
 
-	for (i=0; i < summary->folders->len; i++)
+	for (i = 0; i < summary->folders->len; i++)
 		camel_store_summary_info_free (summary, summary->folders->pdata[i]);
 
 	g_ptr_array_set_size (summary->folders, 0);
@@ -961,7 +961,7 @@ camel_store_summary_remove_path (CamelStoreSummary *summary,
 
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-	if (g_hash_table_lookup_extended (summary->folders_path, path, (gpointer)&oldpath, (gpointer)&oldinfo)) {
+	if (g_hash_table_lookup_extended (summary->folders_path, path, (gpointer) &oldpath, (gpointer) &oldinfo)) {
 		/* make sure it doesn't vanish while we're removing it */
 		oldinfo->refcount++;
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);

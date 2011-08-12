@@ -146,7 +146,8 @@ camel_provider_module_init (void)
 }
 
 static void
-imapx_add_hash (guint *hash, gchar *s)
+imapx_add_hash (guint *hash,
+                gchar *s)
 {
 	if (s)
 		*hash ^= g_str_hash(s);
@@ -166,7 +167,8 @@ imapx_url_hash (gconstpointer key)
 }
 
 static gint
-imapx_check_equal (gchar *s1, gchar *s2)
+imapx_check_equal (gchar *s1,
+                   gchar *s2)
 {
 	if (s1 == NULL) {
 		if (s2 == NULL)
@@ -182,7 +184,8 @@ imapx_check_equal (gchar *s1, gchar *s2)
 }
 
 static gint
-imapx_url_equal (gconstpointer a, gconstpointer b)
+imapx_url_equal (gconstpointer a,
+                 gconstpointer b)
 {
 	const CamelURL *u1 = a, *u2 = b;
 

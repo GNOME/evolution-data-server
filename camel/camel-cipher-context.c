@@ -1546,11 +1546,12 @@ camel_cipher_validity_get_valid (CamelCipherValidity *validity)
 }
 
 void
-camel_cipher_validity_set_valid (CamelCipherValidity *validity, gboolean valid)
+camel_cipher_validity_set_valid (CamelCipherValidity *validity,
+                                 gboolean valid)
 {
 	g_assert (validity != NULL);
 
-	validity->sign.status = valid?CAMEL_CIPHER_VALIDITY_SIGN_GOOD:CAMEL_CIPHER_VALIDITY_SIGN_BAD;
+	validity->sign.status = valid ? CAMEL_CIPHER_VALIDITY_SIGN_GOOD : CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 }
 
 gchar *
@@ -1563,7 +1564,8 @@ camel_cipher_validity_get_description (CamelCipherValidity *validity)
 }
 
 void
-camel_cipher_validity_set_description (CamelCipherValidity *validity, const gchar *description)
+camel_cipher_validity_set_description (CamelCipherValidity *validity,
+                                       const gchar *description)
 {
 	g_assert (validity != NULL);
 
@@ -1625,7 +1627,10 @@ camel_cipher_validity_clone (CamelCipherValidity *vin)
  * Add a cert info to the signer or encrypter info.
  **/
 void
-camel_cipher_validity_add_certinfo (CamelCipherValidity *vin, enum _camel_cipher_validity_mode_t mode, const gchar *name, const gchar *email)
+camel_cipher_validity_add_certinfo (CamelCipherValidity *vin,
+                                    enum _camel_cipher_validity_mode_t mode,
+                                    const gchar *name,
+                                    const gchar *email)
 {
 	camel_cipher_validity_add_certinfo_ex (vin, mode, name, email, NULL, NULL, NULL);
 }
@@ -1638,7 +1643,13 @@ camel_cipher_validity_add_certinfo (CamelCipherValidity *vin, enum _camel_cipher
  * Since: 2.30
  **/
 void
-camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin, camel_cipher_validity_mode_t mode, const gchar *name, const gchar *email, gpointer cert_data, void (*cert_data_free)(gpointer cert_data), gpointer (*cert_data_clone)(gpointer cert_data))
+camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin,
+                                       camel_cipher_validity_mode_t mode,
+                                       const gchar *name,
+                                       const gchar *email,
+                                       gpointer cert_data,
+                                       void (*cert_data_free)(gpointer cert_data),
+                                       gpointer (*cert_data_clone)(gpointer cert_data))
 {
 	CamelCipherCertInfo *info;
 	CamelDList *list;
@@ -1659,7 +1670,7 @@ camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin, camel_cipher_va
 		}
 	}
 
-	list = (mode==CAMEL_CIPHER_VALIDITY_SIGN)?&vin->sign.signers:&vin->encrypt.encrypters;
+	list = (mode == CAMEL_CIPHER_VALIDITY_SIGN) ? &vin->sign.signers : &vin->encrypt.encrypters;
 	camel_dlist_addtail (list, (CamelDListNode *) info);
 }
 
@@ -1672,7 +1683,8 @@ camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin, camel_cipher_va
  * another one.
  **/
 void
-camel_cipher_validity_envelope (CamelCipherValidity *parent, CamelCipherValidity *valid)
+camel_cipher_validity_envelope (CamelCipherValidity *parent,
+                                CamelCipherValidity *valid)
 {
 	CamelCipherCertInfo *info;
 
@@ -1763,8 +1775,8 @@ camel_cipher_context_get_session (CamelCipherContext *context)
 
 /* See rfc3156, section 2 and others */
 /* We do this simply: Anything not base64 must be qp
-   This is so that we can safely translate any occurance of "From "
-   into the quoted-printable escaped version safely. */
+ * This is so that we can safely translate any occurance of "From "
+ * into the quoted-printable escaped version safely. */
 static void
 cc_prepare_sign (CamelMimePart *part)
 {
@@ -1817,7 +1829,7 @@ camel_cipher_canonical_to_stream (CamelMimePart *part,
 	CamelMimeFilter *canon;
 	gint res = -1;
 
-	if (flags & (CAMEL_MIME_FILTER_CANON_FROM|CAMEL_MIME_FILTER_CANON_STRIP))
+	if (flags & (CAMEL_MIME_FILTER_CANON_FROM | CAMEL_MIME_FILTER_CANON_STRIP))
 		cc_prepare_sign (part);
 
 	filter = camel_stream_filter_new (ostream);

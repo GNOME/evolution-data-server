@@ -310,7 +310,7 @@ camel_stream_fs_new_with_name (const gchar *name,
 {
 	gint fd;
 
-	fd = g_open (name, flags|O_BINARY, mode);
+	fd = g_open (name, flags | O_BINARY, mode);
 	if (fd == -1) {
 		g_set_error (
 			error, G_IO_ERROR,

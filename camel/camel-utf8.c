@@ -38,7 +38,8 @@
  * be written to @ptr.  @ptr will be advanced to the next character position.
  **/
 void
-camel_utf8_putc (guchar **ptr, guint32 c)
+camel_utf8_putc (guchar **ptr,
+                 guint32 c)
 {
 	register guchar *p = *ptr;
 
@@ -76,7 +77,7 @@ camel_utf8_putc (guchar **ptr, guint32 c)
 guint32
 camel_utf8_getc (const guchar **ptr)
 {
-	register guchar *p = (guchar *)*ptr;
+	register guchar *p = (guchar *) * ptr;
 	register guchar c, r;
 	register guint32 v, m;
 
@@ -124,9 +125,10 @@ loop:
  * Returns: The next utf8 char, or 0xffff.
  **/
 guint32
-camel_utf8_getc_limit (const guchar **ptr, const guchar *end)
+camel_utf8_getc_limit (const guchar **ptr,
+                       const guchar *end)
 {
-	register guchar *p = (guchar *)*ptr;
+	register guchar *p = (guchar *) * ptr;
 	register guchar c, r;
 	register guint32 v = 0xffff, m;
 
@@ -167,7 +169,8 @@ loop:
 }
 
 void
-g_string_append_u (GString *out, guint32 c)
+g_string_append_u (GString *out,
+                   guint32 c)
 {
 	guchar buffer[8];
 	guchar *p = buffer;
@@ -215,9 +218,9 @@ camel_utf7_utf8 (const gchar *ptr)
 {
 	const guchar *p = (guchar *) ptr;
 	guint c;
-	guint32 v=0, x;
+	guint32 v = 0, x;
 	GString *out;
-	gint i=0;
+	gint i = 0;
 	gint state = 0;
 	gchar *ret;
 
@@ -252,7 +255,7 @@ camel_utf7_utf8 (const gchar *ptr)
 				v = (v << 6) | utf7_rank[c];
 				i+=6;
 				if (i >= 16) {
-					x = (v >> (i-16)) & 0xffff;
+					x = (v >> (i - 16)) & 0xffff;
 					g_string_append_u (out, x);
 					i-=16;
 				}
@@ -274,8 +277,8 @@ static void utf7_closeb64 (GString *out, guint32 v, guint32 i)
 {
 	guint32 x;
 
-	if (i>0) {
-		x = (v << (6-i)) & 0x3f;
+	if (i > 0) {
+		x = (v << (6 - i)) & 0x3f;
 		g_string_append_c (out, utf7_alphabet[x]);
 	}
 	g_string_append_c (out, '-');
@@ -323,7 +326,7 @@ camel_utf8_utf7 (const gchar *ptr)
 			v = (v << 16) | c;
 			i += 16;
 			while (i >= 6) {
-				x = (v >> (i-6)) & 0x3f;
+				x = (v >> (i - 6)) & 0x3f;
 				g_string_append_c (out, utf7_alphabet[x]);
 				i -= 6;
 			}

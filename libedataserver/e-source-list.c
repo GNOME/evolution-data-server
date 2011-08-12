@@ -138,8 +138,8 @@ load_from_gconf (ESourceList *list)
 	g_slist_free (conf_list);
 
 	/* Emit "group_removed" and disconnect the "changed" signal for all the
-	   groups that we haven't found in the new list.  Also, check if the
-	   order has changed.  */
+	 * groups that we haven't found in the new list.  Also, check if the
+	 * order has changed.  */
 	q = new_groups_list;
 	for (p = list->priv->groups; p != NULL; p = p->next) {
 		ESourceGroup *group = E_SOURCE_GROUP (p->data);
@@ -174,7 +174,7 @@ load_from_gconf (ESourceList *list)
 
 static void
 remove_group (ESourceList *list,
-	      ESourceGroup *group)
+              ESourceGroup *group)
 {
 	list->priv->groups = g_slist_remove (list->priv->groups, group);
 
@@ -191,7 +191,6 @@ sync_idle_callback (ESourceList *list)
 {
 	GError *error = NULL;
 
-	g_return_val_if_fail (list != NULL, FALSE);
 	g_return_val_if_fail (E_IS_SOURCE_LIST (list), FALSE);
 
 	g_object_ref (list);
@@ -208,9 +207,8 @@ sync_idle_callback (ESourceList *list)
 
 static void
 group_changed_callback (ESourceGroup *group,
-			ESourceList *list)
+                        ESourceList *list)
 {
-	g_return_if_fail (list != NULL);
 	g_return_if_fail (E_IS_SOURCE_LIST (list));
 
 	g_object_ref (list);
@@ -226,11 +224,10 @@ group_changed_callback (ESourceGroup *group,
 
 static void
 conf_changed_callback (GConfClient *client,
-		       guint connection_id,
-		       GConfEntry *entry,
-		       ESourceList *list)
+                       guint connection_id,
+                       GConfEntry *entry,
+                       ESourceList *list)
 {
-	g_return_if_fail (list != NULL);
 	g_return_if_fail (E_IS_SOURCE_LIST (list));
 
 	g_object_ref (list);
@@ -354,7 +351,7 @@ e_source_list_new (void)
 
 ESourceList *
 e_source_list_new_for_gconf (GConfClient *client,
-			     const gchar *path)
+                             const gchar *path)
 {
 	ESourceList *list;
 
@@ -379,7 +376,7 @@ e_source_list_new_for_gconf (GConfClient *client,
 }
 
 ESourceList *
-e_source_list_new_for_gconf_default (const gchar  *path)
+e_source_list_new_for_gconf_default (const gchar *path)
 {
 	ESourceList *list;
 
@@ -421,7 +418,7 @@ e_source_list_peek_groups (ESourceList *list)
  */
 ESourceGroup *
 e_source_list_peek_group_by_uid (ESourceList *list,
-				 const gchar *uid)
+                                 const gchar *uid)
 {
 	GSList *p;
 
@@ -480,7 +477,9 @@ struct property_check_struct {
 };
 
 static void
-check_group_property (const gchar *property_name, const gchar *property_value, struct property_check_struct *pcs)
+check_group_property (const gchar *property_name,
+                      const gchar *property_value,
+                      struct property_check_struct *pcs)
 {
 	gchar *value;
 
@@ -507,7 +506,9 @@ check_group_property (const gchar *property_name, const gchar *property_value, s
  * Since: 2.28
  **/
 ESourceGroup *
-e_source_list_peek_group_by_properties (ESourceList *list, const gchar *property_name, ...)
+e_source_list_peek_group_by_properties (ESourceList *list,
+                                        const gchar *property_name,
+                                        ...)
 {
 	GSList *p;
 	va_list ap;
@@ -556,7 +557,7 @@ e_source_list_peek_group_by_properties (ESourceList *list, const gchar *property
  */
 ESource *
 e_source_list_peek_source_by_uid (ESourceList *list,
-				  const gchar *uid)
+                                  const gchar *uid)
 {
 	GSList *p;
 

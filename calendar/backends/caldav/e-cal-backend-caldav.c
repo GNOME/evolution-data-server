@@ -126,13 +126,13 @@ struct _ECalBackendCalDAVPrivate {
 	/* TRUE when 'calendar-schedule' supported on the server */
 	gboolean calendar_schedule;
 	/* with 'calendar-schedule' supported, here's an outbox url
-	   for queries of free/busy information */
+	 * for queries of free/busy information */
 	gchar *schedule_outbox_url;
 
 	/* "Temporary hack" to indicate it's talking to a google calendar.
-	   The proper solution should be to subclass whole backend and change only
-	   necessary parts in it, but this will give us more freedom, as also direct
-	   caldav calendars can profit from this. */
+	 * The proper solution should be to subclass whole backend and change only
+	 * necessary parts in it, but this will give us more freedom, as also direct
+	 * caldav calendars can profit from this. */
 	gboolean is_google;
 };
 
@@ -153,7 +153,8 @@ static gboolean caldav_debug_all = FALSE;
 static GHashTable *caldav_debug_table = NULL;
 
 static void
-add_debug_key (const gchar *start, const gchar *end)
+add_debug_key (const gchar *start,
+               const gchar *end)
 {
 	gchar *debug_key;
 	gchar *debug_value;
@@ -268,7 +269,8 @@ caldav_debug_setup (SoupSession *session)
 
 /* TODO Do not replicate this in every backend */
 static icaltimezone *
-resolve_tzid (const gchar *tzid, gpointer user_data)
+resolve_tzid (const gchar *tzid,
+              gpointer user_data)
 {
 	icaltimezone *zone;
 
@@ -284,7 +286,7 @@ resolve_tzid (const gchar *tzid, gpointer user_data)
 
 static gboolean
 put_component_to_store (ECalBackendCalDAV *cbdav,
-			ECalComponent *comp)
+                        ECalComponent *comp)
 {
 	time_t time_start, time_end;
 	ECalBackendCalDAVPrivate *priv;
@@ -312,7 +314,9 @@ static gboolean put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *ical
 #define X_E_CALDAV_ATTACHMENT_NAME X_E_CALDAV "ATTACHMENT-NAME"
 
 static void
-icomp_x_prop_set (icalcomponent *comp, const gchar *key, const gchar *value)
+icomp_x_prop_set (icalcomponent *comp,
+                  const gchar *key,
+                  const gchar *value)
 {
 	icalproperty *xprop;
 
@@ -343,7 +347,8 @@ icomp_x_prop_set (icalcomponent *comp, const gchar *key, const gchar *value)
 }
 
 static gchar *
-icomp_x_prop_get (icalcomponent *comp, const gchar *key)
+icomp_x_prop_get (icalcomponent *comp,
+                  const gchar *key)
 {
 	icalproperty *xprop;
 
@@ -369,7 +374,8 @@ icomp_x_prop_get (icalcomponent *comp, const gchar *key)
 
 /* passing NULL as 'href' removes the property */
 static void
-ecalcomp_set_href (ECalComponent *comp, const gchar *href)
+ecalcomp_set_href (ECalComponent *comp,
+                   const gchar *href)
 {
 	icalcomponent *icomp;
 
@@ -396,7 +402,8 @@ ecalcomp_get_href (ECalComponent *comp)
 
 /* passing NULL as 'etag' removes the property */
 static void
-ecalcomp_set_etag (ECalComponent *comp, const gchar *etag)
+ecalcomp_set_etag (ECalComponent *comp,
+                   const gchar *etag)
 {
 	icalcomponent *icomp;
 
@@ -422,31 +429,32 @@ ecalcomp_get_etag (ECalComponent *comp)
 }
 
 /*typedef enum {
-
+ *
 	/ * object is in synch,
 	 * now isnt that ironic? :) * /
 	ECALCOMP_IN_SYNCH = 0,
-
+ *
 	/ * local changes * /
 	ECALCOMP_LOCALLY_CREATED,
 	ECALCOMP_LOCALLY_DELETED,
 	ECALCOMP_LOCALLY_MODIFIED
-
+ *
 } ECalCompSyncState;
-
+ *
 / * oos = out of synch * /
 static void
-ecalcomp_set_synch_state (ECalComponent *comp, ECalCompSyncState state)
+ecalcomp_set_synch_state (ECalComponent *comp,
+ *                        ECalCompSyncState state)
 {
 	icalcomponent *icomp;
 	gchar          *state_string;
-
+ *
 	icomp = e_cal_component_get_icalcomponent (comp);
-
+ *
 	state_string = g_strdup_printf ("%d", state);
-
+ *
 	icomp_x_prop_set (icomp, X_E_CALDAV "ETAG", state_string);
-
+ *
 	g_free (state_string);
 }*/
 
@@ -501,7 +509,9 @@ quote_etag (const gchar *etag)
 /* ************************************************************************* */
 
 static gboolean
-status_code_to_result (SoupMessage *message, ECalBackendCalDAVPrivate  *priv, GError **perror)
+status_code_to_result (SoupMessage *message,
+                       ECalBackendCalDAVPrivate *priv,
+                       GError **perror)
 {
 	g_return_val_if_fail (message != NULL, FALSE);
 
@@ -555,7 +565,9 @@ status_code_to_result (SoupMessage *message, ECalBackendCalDAVPrivate  *priv, GE
 
 /* !TS, call with lock held */
 static gboolean
-check_state (ECalBackendCalDAV *cbdav, gboolean *online, GError **perror)
+check_state (ECalBackendCalDAV *cbdav,
+             gboolean *online,
+             GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
 
@@ -586,7 +598,9 @@ check_state (ECalBackendCalDAV *cbdav, gboolean *online, GError **perror)
 /* XML Parsing code */
 
 static xmlXPathObjectPtr
-xpath_eval (xmlXPathContextPtr ctx, const gchar *format, ...)
+xpath_eval (xmlXPathContextPtr ctx,
+            const gchar *format,
+            ...)
 {
 	xmlXPathObjectPtr  result;
 	va_list            args;
@@ -618,7 +632,8 @@ xpath_eval (xmlXPathContextPtr ctx, const gchar *format, ...)
 
 #if 0
 static gboolean
-parse_status_node (xmlNodePtr node, guint *status_code)
+parse_status_node (xmlNodePtr node,
+                   guint *status_code)
 {
 	xmlChar  *content;
 	gboolean  res;
@@ -739,7 +754,8 @@ struct _CalDAVObject {
 };
 
 static void
-caldav_object_free (CalDAVObject *object, gboolean free_object_itself)
+caldav_object_free (CalDAVObject *object,
+                    gboolean free_object_itself)
 {
 	g_free (object->href);
 	g_free (object->etag);
@@ -751,7 +767,9 @@ caldav_object_free (CalDAVObject *object, gboolean free_object_itself)
 }
 
 static gboolean
-parse_report_response (SoupMessage *soup_message, CalDAVObject **objs, gint *len)
+parse_report_response (SoupMessage *soup_message,
+                       CalDAVObject **objs,
+                       gint *len)
 {
 	xmlXPathContextPtr xpctx;
 	xmlXPathObjectPtr  result;
@@ -836,7 +854,10 @@ out:
 
 /* returns whether was able to read the xpath_value from the server's response; *value contains the result */
 static gboolean
-parse_propfind_response (SoupMessage *message, const gchar *xpath_status, const gchar *xpath_value, gchar **value)
+parse_propfind_response (SoupMessage *message,
+                         const gchar *xpath_status,
+                         const gchar *xpath_value,
+                         gchar **value)
 {
 	xmlXPathContextPtr xpctx;
 	xmlDocPtr          doc;
@@ -890,11 +911,11 @@ parse_propfind_response (SoupMessage *message, const gchar *xpath_status, const 
 /* Authentication helpers for libsoup */
 
 static void
-soup_authenticate (SoupSession  *session,
-		   SoupMessage  *msg,
-		   SoupAuth     *auth,
-		   gboolean      retrying,
-		   gpointer      data)
+soup_authenticate (SoupSession *session,
+                   SoupMessage *msg,
+                   SoupAuth *auth,
+                   gboolean retrying,
+                   gpointer data)
 {
 	ECalBackendCalDAVPrivate *priv;
 	ECalBackendCalDAV        *cbdav;
@@ -913,7 +934,8 @@ soup_authenticate (SoupSession  *session,
 /* direct CalDAV server access functions */
 
 static void
-redirect_handler (SoupMessage *msg, gpointer user_data)
+redirect_handler (SoupMessage *msg,
+                  gpointer user_data)
 {
 	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
 		SoupSession *soup_session = user_data;
@@ -934,7 +956,7 @@ redirect_handler (SoupMessage *msg, gpointer user_data)
 
 		if (new_uri->host && g_str_has_suffix (new_uri->host, "yahoo.com")) {
 			/* yahoo! returns port 7070, which is unreachable;
-			   it also requires https being used (below call resets port as well) */
+			 * it also requires https being used (below call resets port as well) */
 			soup_uri_set_scheme (new_uri, SOUP_URI_SCHEME_HTTPS);
 		}
 
@@ -946,7 +968,9 @@ redirect_handler (SoupMessage *msg, gpointer user_data)
 }
 
 static void
-send_and_handle_redirection (SoupSession *soup_session, SoupMessage *msg, gchar **new_location)
+send_and_handle_redirection (SoupSession *soup_session,
+                             SoupMessage *msg,
+                             gchar **new_location)
 {
 	gchar *old_uri = NULL;
 
@@ -973,7 +997,8 @@ send_and_handle_redirection (SoupSession *soup_session, SoupMessage *msg, gchar 
 }
 
 static gchar *
-caldav_generate_uri (ECalBackendCalDAV *cbdav, const gchar *target)
+caldav_generate_uri (ECalBackendCalDAV *cbdav,
+                     const gchar *target)
 {
 	ECalBackendCalDAVPrivate  *priv;
 	gchar *uri;
@@ -992,7 +1017,9 @@ caldav_generate_uri (ECalBackendCalDAV *cbdav, const gchar *target)
 }
 
 static gboolean
-caldav_server_open_calendar (ECalBackendCalDAV *cbdav, gboolean *server_unreachable, GError **perror)
+caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
+                             gboolean *server_unreachable,
+                             GError **perror)
 {
 	ECalBackendCalDAVPrivate  *priv;
 	SoupMessage               *message;
@@ -1064,7 +1091,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav, gboolean *server_unreacha
 }
 
 /* Returns whether calendar changed on the server. This works only when server
-   supports 'getctag' extension. */
+ * supports 'getctag' extension. */
 static gboolean
 check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 {
@@ -1155,11 +1182,16 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 }
 
 /* only_hrefs is a list of requested objects to fetch; it has precedence from
-   start_time/end_time, which are used only when both positive.
-   Times are supposed to be in UTC, if set.
-*/
+ * start_time/end_time, which are used only when both positive.
+ * Times are supposed to be in UTC, if set.
+ */
 static gboolean
-caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, gint *len, GSList *only_hrefs, time_t start_time, time_t end_time)
+caldav_server_list_objects (ECalBackendCalDAV *cbdav,
+                            CalDAVObject **objs,
+                            gint *len,
+                            GSList *only_hrefs,
+                            time_t start_time,
+                            time_t end_time)
 {
 	ECalBackendCalDAVPrivate *priv;
 	xmlOutputBufferPtr   buf;
@@ -1289,7 +1321,11 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, gint 
 }
 
 static gboolean
-caldav_server_download_attachment (ECalBackendCalDAV *cbdav, const gchar *attachment_uri, gchar **content, gsize *len, GError **error)
+caldav_server_download_attachment (ECalBackendCalDAV *cbdav,
+                                   const gchar *attachment_uri,
+                                   gchar **content,
+                                   gsize *len,
+                                   GError **error)
 {
 	SoupMessage *message;
 
@@ -1324,7 +1360,9 @@ caldav_server_download_attachment (ECalBackendCalDAV *cbdav, const gchar *attach
 }
 
 static gboolean
-caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, GError **perror)
+caldav_server_get_object (ECalBackendCalDAV *cbdav,
+                          CalDAVObject *object,
+                          GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
 	SoupMessage              *message;
@@ -1386,7 +1424,10 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, GError
 }
 
 static void
-caldav_post_freebusy (ECalBackendCalDAV *cbdav, const gchar *url, gchar **post_fb, GError **error)
+caldav_post_freebusy (ECalBackendCalDAV *cbdav,
+                      const gchar *url,
+                      gchar **post_fb,
+                      GError **error)
 {
 	ECalBackendCalDAVPrivate *priv;
 	SoupMessage *message;
@@ -1427,7 +1468,10 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav, const gchar *url, gchar **post_f
 }
 
 static gboolean
-caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalcomponent *icalcomp, GError **perror)
+caldav_server_put_object (ECalBackendCalDAV *cbdav,
+                          CalDAVObject *object,
+                          icalcomponent *icalcomp,
+                          GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
 	SoupMessage              *message;
@@ -1541,7 +1585,9 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, icalco
 }
 
 static void
-caldav_server_delete_object (ECalBackendCalDAV *cbdav, CalDAVObject *object, GError **perror)
+caldav_server_delete_object (ECalBackendCalDAV *cbdav,
+                             CalDAVObject *object,
+                             GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
 	SoupMessage              *message;
@@ -1632,7 +1678,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 		g_object_unref (message);
 
 		/* owner is a full path to the user's URL, thus change it in
-		   calendar's uri when asking for schedule-outbox-URL */
+		 * calendar's uri when asking for schedule-outbox-URL */
 		suri = soup_uri_new (priv->uri);
 		soup_uri_set_path (suri, owner);
 		g_free (owner);
@@ -1708,7 +1754,9 @@ struct cache_comp_list
 };
 
 static gboolean
-remove_complist_from_cache_and_notify_cb (gpointer key, gpointer value, gpointer data)
+remove_complist_from_cache_and_notify_cb (gpointer key,
+                                          gpointer value,
+                                          gpointer data)
 {
 	GSList *l;
 	struct cache_comp_list *ccl = value;
@@ -1756,11 +1804,13 @@ free_comp_list (gpointer cclist)
 						_tag2 != NULL ? _tag2 : ""))
 
 /* start_time/end_time is an interval for checking changes. If both greater than zero,
-   only the interval is checked and the removed items are not notified, as they can
-   be still there.
+ * only the interval is checked and the removed items are not notified, as they can
+ * be still there.
 */
 static void
-synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
+synchronize_cache (ECalBackendCalDAV *cbdav,
+                   time_t start_time,
+                   time_t end_time)
 {
 	ECalBackendCalDAVPrivate *priv;
 	ECalBackend *bkend;
@@ -1832,8 +1882,8 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 
 		if (g_hash_table_lookup (c_href2uid, href) == NULL) {
 			/* uid is from a component or c_uid2complist key, thus will not be
-			   freed before a removal from c_uid2complist, thus do not duplicate it,
-			   rather save memory */
+			 * freed before a removal from c_uid2complist, thus do not duplicate it,
+			 * rather save memory */
 			g_hash_table_insert (c_href2uid, href, (gpointer) uid);
 		} else {
 			g_free (href);
@@ -1932,7 +1982,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav, time_t start_time, time_t end_time)
 
 			/* we are going to update cache */
 			/* they are downloaded, so process them */
-			for (i = 0, object = up_sobjs; i < count /*&& priv->slave_cmd == SLAVE_SHOULD_WORK*/; i++, object++) {
+			for (i = 0, object = up_sobjs; i < count /*&& priv->slave_cmd == SLAVE_SHOULD_WORK */; i++, object++) {
 				if (object->status == 200 && object->href && object->etag && object->cdata && *object->cdata) {
 					icalcomponent *icomp = icalparser_parse_string (object->cdata);
 
@@ -2149,7 +2199,7 @@ caldav_synch_slave_loop (gpointer data)
 		if (priv->opened) {
 			time (&now);
 			/* check for events in the month before/after today first,
-			   to show user actual data as soon as possible */
+			 * to show user actual data as soon as possible */
 			synchronize_cache (cbdav, time_add_week_with_zone (now, -5, utc), time_add_week_with_zone (now, +5, utc));
 
 			if (priv->slave_cmd != SLAVE_SHOULD_SLEEP) {
@@ -2191,7 +2241,8 @@ caldav_synch_slave_loop (gpointer data)
 }
 
 static gchar *
-maybe_append_email_domain (const gchar *username, const gchar *may_append)
+maybe_append_email_domain (const gchar *username,
+                           const gchar *may_append)
 {
 	if (!username || !*username)
 		return NULL;
@@ -2236,7 +2287,12 @@ get_usermail (ECalBackend *backend)
 /* ********** ECalBackendSync virtual function implementation *************  */
 
 static gboolean
-caldav_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **perror)
+caldav_get_backend_property (ECalBackendSync *backend,
+                             EDataCal *cal,
+                             GCancellable *cancellable,
+                             const gchar *prop_name,
+                             gchar **prop_value,
+                             GError **perror)
 {
 	gboolean processed = TRUE;
 
@@ -2301,7 +2357,8 @@ caldav_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellab
 }
 
 static gboolean
-initialize_backend (ECalBackendCalDAV *cbdav, GError **perror)
+initialize_backend (ECalBackendCalDAV *cbdav,
+                    GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
 	ECalBackend              *backend;
@@ -2358,9 +2415,9 @@ initialize_backend (ECalBackendCalDAV *cbdav, GError **perror)
 
 			if (suri->path && strchr (suri->path, '%')) {
 				/* If path contains anything already encoded, then decode it first,
-				   thus it'll be managed properly. For example, the '#' in a path
-				   is in URI shown as %23 and not doing this decode makes it being
-				   like %2523, which is not what is wanted here. */
+				 * thus it'll be managed properly. For example, the '#' in a path
+				 * is in URI shown as %23 and not doing this decode makes it being
+				 * like %2523, which is not what is wanted here. */
 				tmp = soup_uri_decode (suri->path);
 				soup_uri_set_path (suri, tmp);
 				g_free (tmp);
@@ -2439,7 +2496,8 @@ initialize_backend (ECalBackendCalDAV *cbdav, GError **perror)
 }
 
 static void
-proxy_settings_changed (EProxy *proxy, gpointer user_data)
+proxy_settings_changed (EProxy *proxy,
+                        gpointer user_data)
 {
 	SoupURI *proxy_uri = NULL;
 	ECalBackendCalDAVPrivate *priv = (ECalBackendCalDAVPrivate *) user_data;
@@ -2456,7 +2514,8 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 }
 
 static void
-open_calendar (ECalBackendCalDAV *cbdav, GError **error)
+open_calendar (ECalBackendCalDAV *cbdav,
+               GError **error)
 {
 	gboolean server_unreachable = FALSE;
 	ECalBackendCalDAVPrivate *priv;
@@ -2489,7 +2548,11 @@ open_calendar (ECalBackendCalDAV *cbdav, GError **error)
 }
 
 static void
-caldav_do_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, gboolean only_if_exists, GError **perror)
+caldav_do_open (ECalBackendSync *backend,
+                EDataCal *cal,
+                GCancellable *cancellable,
+                gboolean only_if_exists,
+                GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2543,7 +2606,10 @@ caldav_do_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellab
 }
 
 static void
-caldav_authenticate_user (ECalBackendSync *backend, GCancellable *cancellable, ECredentials *credentials, GError **error)
+caldav_authenticate_user (ECalBackendSync *backend,
+                          GCancellable *cancellable,
+                          ECredentials *credentials,
+                          GError **error)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2570,7 +2636,10 @@ caldav_authenticate_user (ECalBackendSync *backend, GCancellable *cancellable, E
 }
 
 static void
-caldav_refresh (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
+caldav_refresh (ECalBackendSync *backend,
+                EDataCal *cal,
+                GCancellable *cancellable,
+                GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2597,7 +2666,10 @@ caldav_refresh (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellab
 }
 
 static void
-caldav_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
+caldav_remove (ECalBackendSync *backend,
+               EDataCal *cal,
+               GCancellable *cancellable,
+               GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -2637,7 +2709,8 @@ caldav_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellabl
 }
 
 static void
-remove_comp_from_cache_cb (gpointer value, gpointer user_data)
+remove_comp_from_cache_cb (gpointer value,
+                           gpointer user_data)
 {
 	ECalComponent *comp = value;
 	ECalBackendStore *store = user_data;
@@ -2654,7 +2727,9 @@ remove_comp_from_cache_cb (gpointer value, gpointer user_data)
 }
 
 static gboolean
-remove_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid)
+remove_comp_from_cache (ECalBackendCalDAV *cbdav,
+                        const gchar *uid,
+                        const gchar *rid)
 {
 	ECalBackendCalDAVPrivate *priv;
 	gboolean res = FALSE;
@@ -2680,7 +2755,8 @@ remove_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar 
 }
 
 static void
-add_detached_recur_to_vcalendar_cb (gpointer value, gpointer user_data)
+add_detached_recur_to_vcalendar_cb (gpointer value,
+                                    gpointer user_data)
 {
 	icalcomponent *recurrence = e_cal_component_get_icalcomponent (value);
 	icalcomponent *vcalendar = user_data;
@@ -2691,7 +2767,8 @@ add_detached_recur_to_vcalendar_cb (gpointer value, gpointer user_data)
 }
 
 static gint
-sort_master_first (gconstpointer a, gconstpointer b)
+sort_master_first (gconstpointer a,
+                   gconstpointer b)
 {
 	icalcomponent *ca, *cb;
 
@@ -2711,10 +2788,14 @@ sort_master_first (gconstpointer a, gconstpointer b)
 }
 
 /* Returns new icalcomponent, with all detached instances stored in a cache.
-   The cache lock should be locked when called this function.
+ * The cache lock should be locked when called this function.
 */
 static icalcomponent *
-get_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, gchar **href, gchar **etag)
+get_comp_from_cache (ECalBackendCalDAV *cbdav,
+                     const gchar *uid,
+                     const gchar *rid,
+                     gchar **href,
+                     gchar **etag)
 {
 	ECalBackendCalDAVPrivate *priv;
 	icalcomponent *icalcomp = NULL;
@@ -2771,7 +2852,10 @@ get_comp_from_cache (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *ri
 }
 
 static gboolean
-put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gchar *href, const gchar *etag)
+put_comp_to_cache (ECalBackendCalDAV *cbdav,
+                   icalcomponent *icalcomp,
+                   const gchar *href,
+                   const gchar *etag)
 {
 	icalcomponent_kind my_kind;
 	ECalComponent *comp;
@@ -2830,7 +2914,8 @@ put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, const gcha
 }
 
 static void
-remove_property (gpointer prop, gpointer icomp)
+remove_property (gpointer prop,
+                 gpointer icomp)
 {
 	icalcomponent_remove_property (icomp, prop);
 	icalproperty_free (prop);
@@ -2864,7 +2949,8 @@ strip_unneeded_x_props (icalcomponent *icomp)
 }
 
 static gboolean
-is_stored_on_server (ECalBackendCalDAV *cbdav, const gchar *uri)
+is_stored_on_server (ECalBackendCalDAV *cbdav,
+                     const gchar *uri)
 {
 	SoupURI *my_uri, *test_uri;
 	gboolean res;
@@ -2892,7 +2978,8 @@ is_stored_on_server (ECalBackendCalDAV *cbdav, const gchar *uri)
 }
 
 static void
-convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
+convert_to_inline_attachment (ECalBackendCalDAV *cbdav,
+                              icalcomponent *icalcomp)
 {
 	icalcomponent *cclone;
 	icalproperty *p;
@@ -2981,7 +3068,8 @@ convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 }
 
 static void
-convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
+convert_to_url_attachment (ECalBackendCalDAV *cbdav,
+                           icalcomponent *icalcomp)
 {
 	ECalBackend *backend;
 	GSList *to_remove = NULL, *to_remove_after_download = NULL;
@@ -3111,7 +3199,8 @@ remove_dir (const gchar *dir)
 }
 
 static void
-remove_cached_attachment (ECalBackendCalDAV *cbdav, const gchar *uid)
+remove_cached_attachment (ECalBackendCalDAV *cbdav,
+                          const gchar *uid)
 {
 	ECalBackendCalDAVPrivate *priv;
 	ECalBackend *backend;
@@ -3146,7 +3235,8 @@ typedef struct {
 } ForeachTzidData;
 
 static void
-add_timezone_cb (icalparameter *param, gpointer data)
+add_timezone_cb (icalparameter *param,
+                 gpointer data)
 {
 	icaltimezone *tz;
 	const gchar *tzid;
@@ -3179,7 +3269,9 @@ add_timezone_cb (icalparameter *param, gpointer data)
 }
 
 static void
-add_timezones_from_component (ECalBackendCalDAV *cbdav, icalcomponent *vcal_comp, icalcomponent *icalcomp)
+add_timezones_from_component (ECalBackendCalDAV *cbdav,
+                              icalcomponent *vcal_comp,
+                              icalcomponent *icalcomp)
 {
 	ForeachTzidData f_data;
 	ECalBackendCalDAVPrivate *priv;
@@ -3199,7 +3291,8 @@ add_timezones_from_component (ECalBackendCalDAV *cbdav, icalcomponent *vcal_comp
 
 /* also removes X-EVOLUTION-CALDAV from all the components */
 static gchar *
-pack_cobj (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
+pack_cobj (ECalBackendCalDAV *cbdav,
+           icalcomponent *icomp)
 {
 	icalcomponent *calcomp;
 	gchar          *objstr;
@@ -3238,7 +3331,8 @@ pack_cobj (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 }
 
 static void
-sanitize_component (ECalBackend *cb, ECalComponent *comp)
+sanitize_component (ECalBackend *cb,
+                    ECalComponent *comp)
 {
 	ECalComponentDateTime dt;
 	icaltimezone *zone;
@@ -3282,7 +3376,9 @@ sanitize_component (ECalBackend *cb, ECalComponent *comp)
 }
 
 static gboolean
-cache_contains (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid)
+cache_contains (ECalBackendCalDAV *cbdav,
+                const gchar *uid,
+                const gchar *rid)
 {
 	ECalBackendCalDAVPrivate *priv;
 	gboolean res;
@@ -3304,10 +3400,11 @@ cache_contains (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid)
 }
 
 /* Returns subcomponent of icalcomp, which is a master object, or icalcomp itself, if it's not a VCALENDAR;
-   Do not free returned pointer, it'll be freed together with the icalcomp.
+ * Do not free returned pointer, it'll be freed together with the icalcomp.
 */
 static icalcomponent *
-get_master_comp (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
+get_master_comp (ECalBackendCalDAV *cbdav,
+                 icalcomponent *icalcomp)
 {
 	icalcomponent *master = icalcomp;
 
@@ -3336,7 +3433,11 @@ get_master_comp (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 }
 
 static gboolean
-remove_instance (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, struct icaltimetype rid, CalObjModType mod, gboolean also_exdate)
+remove_instance (ECalBackendCalDAV *cbdav,
+                 icalcomponent *icalcomp,
+                 struct icaltimetype rid,
+                 CalObjModType mod,
+                 gboolean also_exdate)
 {
 	icalcomponent *master = icalcomp;
 	gboolean res = FALSE;
@@ -3393,7 +3494,9 @@ remove_instance (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp, struct icalt
 }
 
 static icalcomponent *
-replace_master (ECalBackendCalDAV *cbdav, icalcomponent *old_comp, icalcomponent *new_master)
+replace_master (ECalBackendCalDAV *cbdav,
+                icalcomponent *old_comp,
+                icalcomponent *new_master)
 {
 	icalcomponent *old_master;
 	if (icalcomponent_isa (old_comp) != ICAL_VCALENDAR_COMPONENT) {
@@ -3417,7 +3520,11 @@ replace_master (ECalBackendCalDAV *cbdav, icalcomponent *old_comp, icalcomponent
 
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
-do_create_object (ECalBackendCalDAV *cbdav, const gchar *in_calobj, gchar **uid, gchar **new_calobj, GError **perror)
+do_create_object (ECalBackendCalDAV *cbdav,
+                  const gchar *in_calobj,
+                  gchar **uid,
+                  gchar **new_calobj,
+                  GError **perror)
 {
 	ECalComponent            *comp;
 	gboolean                  online, did_put = FALSE;
@@ -3514,7 +3621,12 @@ do_create_object (ECalBackendCalDAV *cbdav, const gchar *in_calobj, gchar **uid,
 
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
-do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object, GError **error)
+do_modify_object (ECalBackendCalDAV *cbdav,
+                  const gchar *calobj,
+                  CalObjModType mod,
+                  gchar **old_object,
+                  gchar **new_object,
+                  GError **error)
 {
 	ECalBackendCalDAVPrivate *priv;
 	ECalComponent            *comp;
@@ -3684,7 +3796,13 @@ do_modify_object (ECalBackendCalDAV *cbdav, const gchar *calobj, CalObjModType m
 
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
-do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object, GError **perror)
+do_remove_object (ECalBackendCalDAV *cbdav,
+                  const gchar *uid,
+                  const gchar *rid,
+                  CalObjModType mod,
+                  gchar **old_object,
+                  gchar **object,
+                  GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
 	icalcomponent            *cache_comp;
@@ -3782,10 +3900,10 @@ do_remove_object (ECalBackendCalDAV *cbdav, const gchar *uid, const gchar *rid, 
 }
 
 static void
-extract_objects (icalcomponent       *icomp,
-		 icalcomponent_kind   ekind,
-		 GSList             **objects,
-		 GError             **error)
+extract_objects (icalcomponent *icomp,
+                 icalcomponent_kind ekind,
+                 GSList **objects,
+                 GError **error)
 {
 	icalcomponent         *scomp;
 	icalcomponent_kind     kind;
@@ -3819,7 +3937,8 @@ extract_objects (icalcomponent       *icomp,
 }
 
 static gboolean
-extract_timezones (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
+extract_timezones (ECalBackendCalDAV *cbdav,
+                   icalcomponent *icomp)
 {
 	ECalBackendCalDAVPrivate *priv;
 	GSList *timezones = NULL, *iter;
@@ -3853,11 +3972,11 @@ extract_timezones (ECalBackendCalDAV *cbdav, icalcomponent *icomp)
 }
 
 static void
-process_object (ECalBackendCalDAV   *cbdav,
-		ECalComponent       *ecomp,
-		gboolean             online,
-		icalproperty_method  method,
-		GError             **error)
+process_object (ECalBackendCalDAV *cbdav,
+                ECalComponent *ecomp,
+                gboolean online,
+                icalproperty_method method,
+                GError **error)
 {
 	ECalBackend              *backend;
 	struct icaltimetype       now;
@@ -3961,7 +4080,11 @@ process_object (ECalBackendCalDAV   *cbdav,
 }
 
 static void
-do_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **perror)
+do_receive_objects (ECalBackendSync *backend,
+                    EDataCal *cal,
+                    GCancellable *cancellable,
+                    const gchar *calobj,
+                    GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	icalcomponent            *icomp;
@@ -4060,30 +4183,94 @@ _func_name _params							\
 }
 
 caldav_busy_stub (
-	caldav_create_object, (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *in_calobj, gchar **uid, gchar **new_calobj, GError **perror),
-	do_create_object, (cbdav, in_calobj, uid, new_calobj, perror))
+        caldav_create_object,
+                  (ECalBackendSync *backend,
+                  EDataCal *cal,
+                  GCancellable *cancellable,
+                  const gchar *in_calobj,
+                  gchar **uid,
+                  gchar **new_calobj,
+                  GError **perror),
+        do_create_object,
+                  (cbdav,
+                  in_calobj,
+                  uid,
+                  new_calobj,
+                  perror))
 
 caldav_busy_stub (
-	caldav_modify_object, (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, CalObjModType mod, gchar **old_object, gchar **new_object, GError **perror),
-	do_modify_object, (cbdav, calobj, mod, old_object, new_object, perror))
+        caldav_modify_object,
+                  (ECalBackendSync *backend,
+                  EDataCal *cal,
+                  GCancellable *cancellable,
+                  const gchar *calobj,
+                  CalObjModType mod,
+                  gchar **old_object,
+                  gchar **new_object,
+                  GError **perror),
+        do_modify_object,
+                  (cbdav,
+                  calobj,
+                  mod,
+                  old_object,
+                  new_object,
+                  perror))
 
 caldav_busy_stub (
-	caldav_remove_object, (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, CalObjModType mod, gchar **old_object, gchar **object, GError **perror),
-	do_remove_object, (cbdav, uid, rid, mod, old_object, object, perror))
+        caldav_remove_object,
+                  (ECalBackendSync *backend,
+                  EDataCal *cal,
+                  GCancellable *cancellable,
+                  const gchar *uid,
+                  const gchar *rid,
+                  CalObjModType mod,
+                  gchar **old_object,
+                  gchar **object,
+                  GError **perror),
+        do_remove_object,
+                  (cbdav,
+                  uid,
+                  rid,
+                  mod,
+                  old_object,
+                  object,
+                  perror))
 
 caldav_busy_stub (
-	caldav_receive_objects, (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **perror),
-	do_receive_objects, (backend, cal, cancellable, calobj, perror))
+        caldav_receive_objects,
+                  (ECalBackendSync *backend,
+                  EDataCal *cal,
+                  GCancellable *cancellable,
+                  const gchar *calobj,
+                  GError **perror),
+        do_receive_objects,
+                  (backend,
+                  cal,
+                  cancellable,
+                  calobj,
+                  perror))
 
 static void
-caldav_send_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GSList **users, gchar **modified_calobj, GError **perror)
+caldav_send_objects (ECalBackendSync *backend,
+                     EDataCal *cal,
+                     GCancellable *cancellable,
+                     const gchar *calobj,
+                     GSList **users,
+                     gchar **modified_calobj,
+                     GError **perror)
 {
 	*users = NULL;
 	*modified_calobj = g_strdup (calobj);
 }
 
 static void
-caldav_get_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, gchar **object, GError **perror)
+caldav_get_object (ECalBackendSync *backend,
+                   EDataCal *cal,
+                   GCancellable *cancellable,
+                   const gchar *uid,
+                   const gchar *rid,
+                   gchar **object,
+                   GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	icalcomponent            *icalcomp;
@@ -4103,7 +4290,11 @@ caldav_get_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancel
 }
 
 static void
-caldav_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **error)
+caldav_add_timezone (ECalBackendSync *backend,
+                     EDataCal *cal,
+                     GCancellable *cancellable,
+                     const gchar *tzobj,
+                     GError **error)
 {
 	icalcomponent *tz_comp;
 	ECalBackendCalDAV *cbdav;
@@ -4137,7 +4328,12 @@ caldav_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *canc
 }
 
 static void
-caldav_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *sexp_string, GSList **objects, GError **perror)
+caldav_get_object_list (ECalBackendSync *backend,
+                        EDataCal *cal,
+                        GCancellable *cancellable,
+                        const gchar *sexp_string,
+                        GSList **objects,
+                        GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -4192,7 +4388,8 @@ caldav_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCancellable *c
 }
 
 static void
-caldav_start_view (ECalBackend *backend, EDataCalView *query)
+caldav_start_view (ECalBackend *backend,
+                   EDataCalView *query)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -4246,7 +4443,14 @@ caldav_start_view (ECalBackend *backend, EDataCalView *query)
 }
 
 static void
-caldav_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users, time_t start, time_t end, GSList **freebusy, GError **error)
+caldav_get_free_busy (ECalBackendSync *backend,
+                      EDataCal *cal,
+                      GCancellable *cancellable,
+                      const GSList *users,
+                      time_t start,
+                      time_t end,
+                      GSList **freebusy,
+                      GError **error)
 {
 	ECalBackendCalDAV *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -4430,7 +4634,8 @@ caldav_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *can
 }
 
 static void
-caldav_set_online (ECalBackend *backend, gboolean is_online)
+caldav_set_online (ECalBackend *backend,
+                   gboolean is_online)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
@@ -4465,7 +4670,7 @@ caldav_set_online (ECalBackend *backend, gboolean is_online)
 
 static icaltimezone *
 caldav_internal_get_timezone (ECalBackend *backend,
-			      const gchar *tzid)
+                              const gchar *tzid)
 {
 	icaltimezone *zone;
 	ECalBackendCalDAV *cbdav;
@@ -4485,7 +4690,8 @@ caldav_internal_get_timezone (ECalBackend *backend,
 }
 
 static void
-caldav_source_changed_cb (ESource *source, ECalBackendCalDAV *cbdav)
+caldav_source_changed_cb (ESource *source,
+                          ECalBackendCalDAV *cbdav)
 {
 	ECalBackendCalDAVPrivate *priv;
 	SlaveCommand old_slave_cmd;
@@ -4531,7 +4737,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 	priv = cbdav->priv;
 
 	/* tell the slave to stop before acquiring a lock,
-	   as it can work at the moment, and lock can be locked */
+	 * as it can work at the moment, and lock can be locked */
 	priv->slave_cmd = SLAVE_SHOULD_DIE;
 
 	g_mutex_lock (priv->busy_lock);

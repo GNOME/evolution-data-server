@@ -105,13 +105,14 @@ camel_imap_store_summary_new (void)
  * It must be freed using camel_store_summary_info_free().
  **/
 CamelImapStoreInfo *
-camel_imap_store_summary_full_name (CamelImapStoreSummary *s, const gchar *full_name)
+camel_imap_store_summary_full_name (CamelImapStoreSummary *s,
+                                    const gchar *full_name)
 {
 	gint count, i;
 	CamelImapStoreInfo *info;
 
 	count = camel_store_summary_count ((CamelStoreSummary *) s);
-	for (i=0;i<count;i++) {
+	for (i = 0; i < count; i++) {
 		info = (CamelImapStoreInfo *) camel_store_summary_index ((CamelStoreSummary *) s, i);
 		if (info) {
 			if (strcmp (info->full_name, full_name) == 0)
@@ -124,14 +125,16 @@ camel_imap_store_summary_full_name (CamelImapStoreSummary *s, const gchar *full_
 }
 
 gchar *
-camel_imap_store_summary_full_to_path (CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep)
+camel_imap_store_summary_full_to_path (CamelImapStoreSummary *s,
+                                       const gchar *full_name,
+                                       gchar dir_sep)
 {
 	gchar *path, *p;
 	gint c;
 	const gchar *f;
 
 	if (dir_sep != '/') {
-		p = path = alloca (strlen (full_name)*3+1);
+		p = path = alloca (strlen (full_name) * 3 + 1);
 		f = full_name;
 		while ((c = *f++ & 0xff)) {
 			if (c == dir_sep)
@@ -151,26 +154,28 @@ camel_imap_store_summary_full_to_path (CamelImapStoreSummary *s, const gchar *fu
 static guint32 hexnib (guint32 c)
 {
 	if (c >= '0' && c <= '9')
-		return c-'0';
-	else if (c>='A' && c <= 'Z')
-		return c-'A'+10;
+		return c - '0';
+	else if (c >= 'A' && c <= 'Z')
+		return c - 'A' + 10;
 	else
 		return 0;
 }
 
 gchar *
-camel_imap_store_summary_path_to_full (CamelImapStoreSummary *s, const gchar *path, gchar dir_sep)
+camel_imap_store_summary_path_to_full (CamelImapStoreSummary *s,
+                                       const gchar *path,
+                                       gchar dir_sep)
 {
 	gchar *full, *f;
 	guint32 c, v = 0;
 	const gchar *p;
-	gint state=0;
+	gint state = 0;
 	gchar *subpath, *last = NULL;
 	CamelStoreInfo *si;
 	CamelImapStoreNamespace *ns;
 
 	/* check to see if we have a subpath of path already defined */
-	subpath = alloca (strlen (path)+1);
+	subpath = alloca (strlen (path) + 1);
 	strcpy (subpath, path);
 	do {
 		si = camel_store_summary_path ((CamelStoreSummary *) s, subpath);
@@ -190,7 +195,7 @@ camel_imap_store_summary_path_to_full (CamelImapStoreSummary *s, const gchar *pa
 
 	ns = camel_imap_store_summary_namespace_find_path (s, path);
 
-	f = full = alloca (strlen (path)*2+1);
+	f = full = alloca (strlen (path) * 2 + 1);
 	if (si)
 		p = path + strlen (subpath);
 	else if (ns)
@@ -198,7 +203,7 @@ camel_imap_store_summary_path_to_full (CamelImapStoreSummary *s, const gchar *pa
 	else
 		p = path;
 
-	while ((c = camel_utf8_getc ((const guchar **)&p))) {
+	while ((c = camel_utf8_getc ((const guchar **) &p))) {
 		switch (state) {
 		case 0:
 			if (c == '%')
@@ -239,7 +244,9 @@ camel_imap_store_summary_path_to_full (CamelImapStoreSummary *s, const gchar *pa
 }
 
 CamelImapStoreInfo *
-camel_imap_store_summary_add_from_full (CamelImapStoreSummary *s, const gchar *full, gchar dir_sep)
+camel_imap_store_summary_add_from_full (CamelImapStoreSummary *s,
+                                        const gchar *full,
+                                        gchar dir_sep)
 {
 	CamelImapStoreInfo *info;
 	gchar *pathu8, *prefix;
@@ -250,10 +257,10 @@ camel_imap_store_summary_add_from_full (CamelImapStoreSummary *s, const gchar *f
 	d(printf("adding full name '%s' '%c'\n", full, dir_sep));
 
 	len = strlen (full);
-	full_name = alloca (len+1);
+	full_name = alloca (len + 1);
 	strcpy (full_name, full);
-	if (full_name[len-1] == dir_sep)
-		full_name[len-1] = 0;
+	if (full_name[len - 1] == dir_sep)
+		full_name[len - 1] = 0;
 
 	info = camel_imap_store_summary_full_name (s, full_name);
 	if (info) {
@@ -272,7 +279,7 @@ camel_imap_store_summary_add_from_full (CamelImapStoreSummary *s, const gchar *f
 			if (full_name[len] == ns->sep)
 				len++;
 
-			prefix = camel_imap_store_summary_full_to_path (s, full_name+len, ns->sep);
+			prefix = camel_imap_store_summary_full_to_path (s, full_name + len, ns->sep);
 			if (*ns->path) {
 				pathu8 = g_strdup_printf ("%s/%s", ns->path, prefix);
 				g_free (prefix);
@@ -292,7 +299,7 @@ camel_imap_store_summary_add_from_full (CamelImapStoreSummary *s, const gchar *f
 		camel_store_info_set_string ((CamelStoreSummary *) s, (CamelStoreInfo *) info, CAMEL_IMAP_STORE_INFO_FULL_NAME, full_name);
 
 		if (!g_ascii_strcasecmp(full_name, "inbox"))
-			info->info.flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
+			info->info.flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 	} else {
 		d(printf("  failed\n"));
 	}
@@ -303,7 +310,8 @@ camel_imap_store_summary_add_from_full (CamelImapStoreSummary *s, const gchar *f
 /* should this be const? */
 /* TODO: deprecate/merge this function with path_to_full */
 gchar *
-camel_imap_store_summary_full_from_path (CamelImapStoreSummary *s, const gchar *path)
+camel_imap_store_summary_full_from_path (CamelImapStoreSummary *s,
+                                         const gchar *path)
 {
 	CamelImapStoreNamespace *ns;
 	gchar *name = NULL;
@@ -318,7 +326,9 @@ camel_imap_store_summary_full_from_path (CamelImapStoreSummary *s, const gchar *
 }
 
 static CamelImapStoreNamespace *
-namespace_new (CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep)
+namespace_new (CamelImapStoreSummary *s,
+               const gchar *full_name,
+               gchar dir_sep)
 {
 	CamelImapStoreNamespace *ns;
 	gchar *p, *o, c;
@@ -326,7 +336,7 @@ namespace_new (CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep)
 
 	ns = g_malloc0 (sizeof (*ns));
 	ns->full_name = g_strdup (full_name);
-	len = strlen (ns->full_name)-1;
+	len = strlen (ns->full_name) - 1;
 	if (len >= 0 && ns->full_name[len] == dir_sep)
 		ns->full_name[len] = 0;
 	ns->sep = dir_sep;
@@ -345,7 +355,9 @@ namespace_new (CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep)
 }
 
 static CamelImapStoreNamespace *
-namespace_find (CamelImapStoreNamespace *ns, const gchar *full_name, gchar dir_sep)
+namespace_find (CamelImapStoreNamespace *ns,
+                const gchar *full_name,
+                gchar dir_sep)
 {
 	if (!ns || !full_name)
 		return NULL;
@@ -355,7 +367,7 @@ namespace_find (CamelImapStoreNamespace *ns, const gchar *full_name, gchar dir_s
 
 		if ((g_ascii_strcasecmp (ns->full_name, full_name) == 0 ||
 		    (g_ascii_strncasecmp (ns->full_name, full_name, len) == 0
-		    && len + 1 == strlen (full_name) && full_name[len] == ns->sep))&& (!dir_sep || ns->sep == dir_sep)) {
+		    && len + 1 == strlen (full_name) && full_name[len] == ns->sep)) && (!dir_sep || ns->sep == dir_sep)) {
 			break;
 		}
 		ns = ns->next;
@@ -365,7 +377,9 @@ namespace_find (CamelImapStoreNamespace *ns, const gchar *full_name, gchar dir_s
 }
 
 void
-camel_imap_store_summary_namespace_set_main (CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep)
+camel_imap_store_summary_namespace_set_main (CamelImapStoreSummary *s,
+                                             const gchar *full_name,
+                                             gchar dir_sep)
 {
 	CamelImapStoreNamespace *ns;
 
@@ -413,7 +427,9 @@ camel_imap_store_summary_namespace_set_main (CamelImapStoreSummary *s, const gch
 }
 
 void
-camel_imap_store_summary_namespace_add_secondary (CamelImapStoreSummary *s, const gchar *full_name, gchar dir_sep)
+camel_imap_store_summary_namespace_add_secondary (CamelImapStoreSummary *s,
+                                                  const gchar *full_name,
+                                                  gchar dir_sep)
 {
 	CamelImapStoreNamespace **tail;
 
@@ -439,7 +455,8 @@ camel_imap_store_summary_get_main_namespace (CamelImapStoreSummary *s)
 }
 
 CamelImapStoreNamespace *
-camel_imap_store_summary_namespace_find_path (CamelImapStoreSummary *s, const gchar *path)
+camel_imap_store_summary_namespace_find_path (CamelImapStoreSummary *s,
+                                              const gchar *path)
 {
 	gint len;
 	CamelImapStoreNamespace *ns;
@@ -459,7 +476,8 @@ camel_imap_store_summary_namespace_find_path (CamelImapStoreSummary *s, const gc
 }
 
 CamelImapStoreNamespace *
-camel_imap_store_summary_namespace_find_full (CamelImapStoreSummary *s, const gchar *full)
+camel_imap_store_summary_namespace_find_full (CamelImapStoreSummary *s,
+                                              const gchar *full)
 {
 	gint len;
 	CamelImapStoreNamespace *ns;
@@ -480,7 +498,8 @@ camel_imap_store_summary_namespace_find_full (CamelImapStoreSummary *s, const gc
 }
 
 static void
-namespace_free (CamelImapStoreSummary *is, CamelImapStoreNamespace *ns)
+namespace_free (CamelImapStoreSummary *is,
+                CamelImapStoreNamespace *ns)
 {
 	g_free (ns->path);
 	g_free (ns->full_name);
@@ -499,7 +518,9 @@ namespace_clear (CamelImapStoreSummary *is)
 }
 
 static gboolean
-namespaces_load (CamelImapStoreSummary *s, FILE *in, guint count)
+namespaces_load (CamelImapStoreSummary *s,
+                 FILE *in,
+                 guint count)
 {
 	CamelImapStoreNamespace *ns, **tail;
 	guint32 sep = '/';
@@ -529,7 +550,9 @@ namespaces_load (CamelImapStoreSummary *s, FILE *in, guint count)
 }
 
 static gboolean
-namespaces_save (CamelImapStoreSummary *s, FILE *in, CamelImapStoreNamespace *ns)
+namespaces_save (CamelImapStoreSummary *s,
+                 FILE *in,
+                 CamelImapStoreNamespace *ns)
 {
 	while (ns) {
 		if (camel_file_util_encode_string (in, ns->path) == -1
@@ -544,7 +567,8 @@ namespaces_save (CamelImapStoreSummary *s, FILE *in, CamelImapStoreNamespace *ns
 }
 
 static gint
-summary_header_load (CamelStoreSummary *s, FILE *in)
+summary_header_load (CamelStoreSummary *s,
+                     FILE *in)
 {
 	CamelImapStoreSummary *is = (CamelImapStoreSummary *) s;
 	gint32 version, capabilities, count;
@@ -576,7 +600,8 @@ summary_header_load (CamelStoreSummary *s, FILE *in)
 }
 
 static gint
-summary_header_save (CamelStoreSummary *s, FILE *out)
+summary_header_save (CamelStoreSummary *s,
+                     FILE *out)
 {
 	CamelImapStoreSummary *is = (CamelImapStoreSummary *) s;
 	guint32 count = 0;
@@ -600,7 +625,8 @@ summary_header_save (CamelStoreSummary *s, FILE *out)
 }
 
 static CamelStoreInfo *
-store_info_load (CamelStoreSummary *s, FILE *in)
+store_info_load (CamelStoreSummary *s,
+                 FILE *in)
 {
 	CamelImapStoreInfo *mi;
 
@@ -612,7 +638,7 @@ store_info_load (CamelStoreSummary *s, FILE *in)
 		} else {
 			/* NB: this is done again for compatability */
 			if (g_ascii_strcasecmp(mi->full_name, "inbox") == 0)
-				mi->info.flags |= CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_TYPE_INBOX;
+				mi->info.flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 		}
 	}
 
@@ -620,7 +646,9 @@ store_info_load (CamelStoreSummary *s, FILE *in)
 }
 
 static gint
-store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
+store_info_save (CamelStoreSummary *s,
+                 FILE *out,
+                 CamelStoreInfo *mi)
 {
 	CamelImapStoreInfo *isi = (CamelImapStoreInfo *) mi;
 
@@ -632,7 +660,8 @@ store_info_save (CamelStoreSummary *s, FILE *out, CamelStoreInfo *mi)
 }
 
 static void
-store_info_free (CamelStoreSummary *s, CamelStoreInfo *mi)
+store_info_free (CamelStoreSummary *s,
+                 CamelStoreInfo *mi)
 {
 	CamelImapStoreInfo *isi = (CamelImapStoreInfo *) mi;
 
@@ -641,7 +670,9 @@ store_info_free (CamelStoreSummary *s, CamelStoreInfo *mi)
 }
 
 static const gchar *
-store_info_string (CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
+store_info_string (CamelStoreSummary *s,
+                   const CamelStoreInfo *mi,
+                   gint type)
 {
 	CamelImapStoreInfo *isi = (CamelImapStoreInfo *) mi;
 
@@ -658,7 +689,10 @@ store_info_string (CamelStoreSummary *s, const CamelStoreInfo *mi, gint type)
 }
 
 static void
-store_info_set_string (CamelStoreSummary *s, CamelStoreInfo *mi, gint type, const gchar *str)
+store_info_set_string (CamelStoreSummary *s,
+                       CamelStoreInfo *mi,
+                       gint type,
+                       const gchar *str)
 {
 	CamelImapStoreInfo *isi = (CamelImapStoreInfo *) mi;
 

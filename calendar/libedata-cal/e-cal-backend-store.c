@@ -212,7 +212,9 @@ e_cal_backend_store_clean (ECalBackendStore *store)
  * Since: 2.28
  **/
 ECalComponent *
-e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
+e_cal_backend_store_get_component (ECalBackendStore *store,
+                                   const gchar *uid,
+                                   const gchar *rid)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
@@ -226,7 +228,9 @@ e_cal_backend_store_get_component (ECalBackendStore *store, const gchar *uid, co
  * Since: 2.28
  **/
 gboolean
-e_cal_backend_store_has_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
+e_cal_backend_store_has_component (ECalBackendStore *store,
+                                   const gchar *uid,
+                                   const gchar *rid)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -240,7 +244,10 @@ e_cal_backend_store_has_component (ECalBackendStore *store, const gchar *uid, co
  * Since: 2.32
  **/
 gboolean
-e_cal_backend_store_put_component_with_time_range (ECalBackendStore *store, ECalComponent *comp, time_t occurence_start, time_t occurence_end)
+e_cal_backend_store_put_component_with_time_range (ECalBackendStore *store,
+                                                   ECalComponent *comp,
+                                                   time_t occurence_start,
+                                                   time_t occurence_end)
 {
 	ECalBackendStorePrivate *priv;
 
@@ -263,7 +270,8 @@ e_cal_backend_store_put_component_with_time_range (ECalBackendStore *store, ECal
  * Since: 2.28
  **/
 gboolean
-e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
+e_cal_backend_store_put_component (ECalBackendStore *store,
+                                   ECalComponent *comp)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
@@ -277,7 +285,9 @@ e_cal_backend_store_put_component (ECalBackendStore *store, ECalComponent *comp)
  * Since: 2.28
  **/
 gboolean
-e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid, const gchar *rid)
+e_cal_backend_store_remove_component (ECalBackendStore *store,
+                                      const gchar *uid,
+                                      const gchar *rid)
 {
 	ECalBackendStorePrivate *priv;
 
@@ -299,7 +309,8 @@ e_cal_backend_store_remove_component (ECalBackendStore *store, const gchar *uid,
  * Since: 2.28
  **/
 const icaltimezone *
-e_cal_backend_store_get_timezone (ECalBackendStore *store, const gchar *tzid)
+e_cal_backend_store_get_timezone (ECalBackendStore *store,
+                                  const gchar *tzid)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (tzid != NULL, NULL);
@@ -313,7 +324,8 @@ e_cal_backend_store_get_timezone (ECalBackendStore *store, const gchar *tzid)
  * Since: 2.28
  **/
 gboolean
-e_cal_backend_store_put_timezone (ECalBackendStore *store, const icaltimezone *zone)
+e_cal_backend_store_put_timezone (ECalBackendStore *store,
+                                  const icaltimezone *zone)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
@@ -327,7 +339,8 @@ e_cal_backend_store_put_timezone (ECalBackendStore *store, const icaltimezone *z
  * Since: 2.28
  **/
 gboolean
-e_cal_backend_store_remove_timezone (ECalBackendStore *store, const gchar *tzid)
+e_cal_backend_store_remove_timezone (ECalBackendStore *store,
+                                     const gchar *tzid)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (tzid != NULL, FALSE);
@@ -354,7 +367,8 @@ e_cal_backend_store_get_default_timezone (ECalBackendStore *store)
  * Since: 2.28
  **/
 gboolean
-e_cal_backend_store_set_default_timezone (ECalBackendStore *store, const icaltimezone *zone)
+e_cal_backend_store_set_default_timezone (ECalBackendStore *store,
+                                          const icaltimezone *zone)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
@@ -368,7 +382,8 @@ e_cal_backend_store_set_default_timezone (ECalBackendStore *store, const icaltim
  * Since: 2.28
  **/
 GSList *
-e_cal_backend_store_get_components_by_uid (ECalBackendStore *store, const gchar *uid)
+e_cal_backend_store_get_components_by_uid (ECalBackendStore *store,
+                                           const gchar *uid)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
@@ -403,7 +418,9 @@ e_cal_backend_store_get_components (ECalBackendStore *store)
  * Since: 2.32
  */
 GSList *
-e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store, time_t start, time_t end)
+e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store,
+                                                      time_t start,
+                                                      time_t end)
 {
 	ECalBackendStorePrivate *priv;
 	GList *l, *objects;
@@ -457,7 +474,8 @@ e_cal_backend_store_get_component_ids (ECalBackendStore *store)
  * Since: 2.28
  **/
 const gchar *
-e_cal_backend_store_get_key_value (ECalBackendStore *store, const gchar *key)
+e_cal_backend_store_get_key_value (ECalBackendStore *store,
+                                   const gchar *key)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (key != NULL, NULL);
@@ -471,7 +489,9 @@ e_cal_backend_store_get_key_value (ECalBackendStore *store, const gchar *key)
  * Since: 2.28
  **/
 gboolean
-e_cal_backend_store_put_key_value (ECalBackendStore *store, const gchar *key, const gchar *value)
+e_cal_backend_store_put_key_value (ECalBackendStore *store,
+                                   const gchar *key,
+                                   const gchar *value)
 {
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
@@ -511,7 +531,10 @@ e_cal_backend_store_freeze_changes (ECalBackendStore *store)
  * Since: 2.32
  **/
 void
-e_cal_backend_store_interval_tree_add_comp (ECalBackendStore *store, ECalComponent *comp, time_t occurence_start, time_t occurence_end)
+e_cal_backend_store_interval_tree_add_comp (ECalBackendStore *store,
+                                            ECalComponent *comp,
+                                            time_t occurence_start,
+                                            time_t occurence_end)
 {
 	ECalBackendStorePrivate *priv;
 

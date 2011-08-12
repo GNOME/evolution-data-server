@@ -11,7 +11,8 @@
 #define EVENT_SUMMARY "Creation of new test event in the " TZID_NEW " timezone"
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECal *cal;
 	gchar *uri = NULL;

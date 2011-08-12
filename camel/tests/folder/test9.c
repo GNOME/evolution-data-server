@@ -134,7 +134,7 @@ gint main (gint argc, gchar **argv)
 	/* append a bunch of messages with specific content */
 	push ("creating 100 test message mbox");
 	mbox = camel_stream_fs_new_with_name ("/tmp/camel-test/inbox", O_WRONLY|O_CREAT|O_EXCL, 0600, NULL);
-	for (j=0;j<100;j++) {
+	for (j = 0; j < 100; j++) {
 		gchar *content, *subject;
 
 		push ("creating test message");
@@ -146,7 +146,7 @@ gint main (gint argc, gchar **argv)
 		subject = g_strdup_printf ("Test%d message%d subject", j, 100-j);
 		camel_mime_message_set_subject (msg, subject);
 
-		camel_mime_message_set_date (msg, j*60*24, 0);
+		camel_mime_message_set_date (msg, j * 60 * 24, 0);
 		pull ();
 
 		camel_stream_write_string (mbox, "From \n", NULL, NULL);

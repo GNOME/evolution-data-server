@@ -8,7 +8,8 @@
 #define NUM_VIEWS 200
 
 static void
-objects_added (ECalClientView *cal_view, const GSList *objects)
+objects_added (ECalClientView *cal_view,
+               const GSList *objects)
 {
 	const GSList *l;
 
@@ -18,7 +19,8 @@ objects_added (ECalClientView *cal_view, const GSList *objects)
 }
 
 static void
-objects_removed (ECalClientView *view, const GSList *ids)
+objects_removed (ECalClientView *view,
+                 const GSList *ids)
 {
 	const GSList *l;
 
@@ -28,13 +30,15 @@ objects_removed (ECalClientView *view, const GSList *ids)
 }
 
 static void
-complete (ECalClientView *view, const GError *error)
+complete (ECalClientView *view,
+          const GError *error)
 {
 	printf ("view_complete (status == %d, error_msg == %s%s%s)\n", error ? error->code : 0, error ? "'" : "", error ? error->message : "NULL", error ? "'" : "");
 }
 
 static gint
-stress_cal_views (ECalClient *cal_client, gboolean in_thread)
+stress_cal_views (ECalClient *cal_client,
+                  gboolean in_thread)
 {
 	ECalClientView *view = NULL;
 	ECalClientView *new_view;
@@ -85,7 +89,8 @@ stress_cal_views_thread (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;

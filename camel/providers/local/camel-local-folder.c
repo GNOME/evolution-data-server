@@ -533,8 +533,8 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	len = strlen (root_dir_path);
 	tmp = g_alloca (len + 1);
 	strcpy (tmp, root_dir_path);
-	if (len>1 && G_IS_DIR_SEPARATOR (tmp[len-1]))
-		tmp[len-1] = 0;
+	if (len > 1 && G_IS_DIR_SEPARATOR (tmp[len - 1]))
+		tmp[len - 1] = 0;
 
 	lf->base_path = g_strdup (root_dir_path);
 
@@ -579,7 +579,7 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	lf->changes = camel_folder_change_info_new ();
 
 	/* TODO: Remove the following line, it is a temporary workaround to remove
-	   the old-format 'ibex' files that might be lying around */
+	 * the old-format 'ibex' files that might be lying around */
 	g_unlink (lf->index_path);
 
 	/* FIXME: Need to run indexing off of the setv method */
@@ -587,7 +587,7 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	/* if we have no/invalid index file, force it */
 	forceindex = camel_text_index_check (lf->index_path) == -1;
 	if (lf->flags & CAMEL_STORE_FOLDER_BODY_INDEX) {
-		gint flag = O_RDWR|O_CREAT;
+		gint flag = O_RDWR | O_CREAT;
 
 		if (forceindex)
 			flag |= O_TRUNC;
@@ -657,7 +657,7 @@ camel_local_folder_set_index_body (CamelLocalFolder *local_folder,
 }
 
 /* lock the folder, may be called repeatedly (with matching unlock calls),
-   with type the same or less than the first call */
+ * with type the same or less than the first call */
 gint
 camel_local_folder_lock (CamelLocalFolder *lf,
                          CamelLockType type,
@@ -681,7 +681,7 @@ camel_local_folder_lock (CamelLocalFolder *lf,
 gint
 camel_local_folder_unlock (CamelLocalFolder *lf)
 {
-	g_assert (lf->locked>0);
+	g_assert (lf->locked > 0);
 	lf->locked--;
 	if (lf->locked == 0)
 		CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->unlock (lf);
@@ -690,11 +690,15 @@ camel_local_folder_unlock (CamelLocalFolder *lf)
 }
 
 void
-set_cannot_get_message_ex (GError **error, gint err_code, const gchar *msgID, const gchar *folder_path, const gchar *detailErr)
+set_cannot_get_message_ex (GError **error,
+                           gint err_code,
+                           const gchar *msgID,
+                           const gchar *folder_path,
+                           const gchar *detailErr)
 {
 	/* Translators: The first %s is replaced with a message ID,
-	   the second %s is replaced with the folder path,
-	   the third %s is replaced with a detailed error string */
+	 * the second %s is replaced with the folder path,
+	 * the third %s is replaced with a detailed error string */
 	g_set_error (
 		error, CAMEL_ERROR, err_code,
 		_("Cannot get message %s from folder %s\n%s"),

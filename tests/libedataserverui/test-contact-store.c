@@ -24,7 +24,8 @@
 #include <libedataserverui/e-contact-store.h>
 
 static void
-entry_changed (GtkWidget *entry, EContactStore *contact_store)
+entry_changed (GtkWidget *entry,
+               EContactStore *contact_store)
 {
 	const gchar *text;
 	EBookQuery  *query;
@@ -111,7 +112,8 @@ start_test (const gchar *gconf_path)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	const gchar *gconf_path;
 

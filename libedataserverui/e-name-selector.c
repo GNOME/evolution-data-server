@@ -60,7 +60,8 @@ struct _ENameSelectorPrivate {
 G_DEFINE_TYPE (ENameSelector, e_name_selector, G_TYPE_OBJECT)
 
 static void
-reset_pointer_cb (gpointer data, GObject *where_was)
+reset_pointer_cb (gpointer data,
+                  GObject *where_was)
 {
 	ENameSelector *name_selector = data;
 	ENameSelectorPrivate *priv;
@@ -330,7 +331,8 @@ e_name_selector_new (void)
  * ------- */
 
 static gint
-add_section (ENameSelector *name_selector, const gchar *name)
+add_section (ENameSelector *name_selector,
+             const gchar *name)
 {
 	GArray *array;
 	Section section;
@@ -346,7 +348,8 @@ add_section (ENameSelector *name_selector, const gchar *name)
 }
 
 static gint
-find_section_by_name (ENameSelector *name_selector, const gchar *name)
+find_section_by_name (ENameSelector *name_selector,
+                      const gchar *name)
 {
 	GArray *array;
 	gint i;
@@ -428,7 +431,7 @@ e_name_selector_peek_dialog (ENameSelector *name_selector)
  **/
 void
 e_name_selector_show_dialog (ENameSelector *name_selector,
-			     GtkWidget     *for_transient_widget)
+                             GtkWidget *for_transient_widget)
 {
 	GtkWindow *top = NULL;
 	ENameSelectorDialog *dialog;
@@ -455,7 +458,8 @@ e_name_selector_show_dialog (ENameSelector *name_selector,
  * doesn't exist in the #ENameSelectorModel.
  **/
 ENameSelectorEntry *
-e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *name)
+e_name_selector_peek_section_entry (ENameSelector *name_selector,
+                                    const gchar *name)
 {
 	ENameSelectorPrivate *priv;
 	ENameSelectorModel *model;
@@ -523,7 +527,8 @@ e_name_selector_peek_section_entry (ENameSelector *name_selector, const gchar *n
  **/
 
 ENameSelectorList *
-e_name_selector_peek_section_list (ENameSelector *name_selector, const gchar *name)
+e_name_selector_peek_section_list (ENameSelector *name_selector,
+                                   const gchar *name)
 {
 	ENameSelectorPrivate *priv;
 	ENameSelectorModel *model;

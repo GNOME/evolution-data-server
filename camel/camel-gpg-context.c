@@ -21,10 +21,10 @@
  */
 
 /* Debug states:
-   gpg:sign	dump canonicalised to-be-signed data to a file
-   gpg:verify	dump canonicalised verification and signature data to file
-   gpg:status	print gpg status-fd output to stdout
-*/
+ * gpg:sign	dump canonicalised to-be-signed data to a file
+ * gpg:verify	dump canonicalised verification and signature data to file
+ * gpg:status	print gpg status-fd output to stdout
+ */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -135,33 +135,33 @@ struct _GpgCtx {
 
 	gint exit_status;
 
-	guint exited:1;
-	guint complete:1;
-	guint seen_eof1:1;
-	guint seen_eof2:1;
-	guint always_trust:1;
-	guint armor:1;
-	guint need_passwd:1;
-	guint send_passwd:1;
+	guint exited : 1;
+	guint complete : 1;
+	guint seen_eof1 : 1;
+	guint seen_eof2 : 1;
+	guint always_trust : 1;
+	guint armor : 1;
+	guint need_passwd : 1;
+	guint send_passwd : 1;
 
-	guint bad_passwds:2;
+	guint bad_passwds : 2;
 
-	guint hadsig:1;
-	guint badsig:1;
-	guint errsig:1;
-	guint goodsig:1;
-	guint validsig:1;
-	guint nopubkey:1;
-	guint nodata:1;
-	guint trust:3;
-	guint processing:1;
+	guint hadsig : 1;
+	guint badsig : 1;
+	guint errsig : 1;
+	guint goodsig : 1;
+	guint validsig : 1;
+	guint nopubkey : 1;
+	guint nodata : 1;
+	guint trust : 3;
+	guint processing : 1;
 	GString *signers;
 
-	guint diagflushed:1;
+	guint diagflushed : 1;
 
-	guint utf8:1;
+	guint utf8 : 1;
 
-	guint padding:10;
+	guint padding : 10;
 };
 
 static struct _GpgCtx *
@@ -252,33 +252,38 @@ gpg_ctx_new (CamelCipherContext *context)
 }
 
 static void
-gpg_ctx_set_mode (struct _GpgCtx *gpg, enum _GpgCtxMode mode)
+gpg_ctx_set_mode (struct _GpgCtx *gpg,
+                  enum _GpgCtxMode mode)
 {
 	gpg->mode = mode;
 	gpg->need_passwd = ((gpg->mode == GPG_CTX_MODE_SIGN) || (gpg->mode == GPG_CTX_MODE_DECRYPT));
 }
 
 static void
-gpg_ctx_set_hash (struct _GpgCtx *gpg, CamelCipherHash hash)
+gpg_ctx_set_hash (struct _GpgCtx *gpg,
+                  CamelCipherHash hash)
 {
 	gpg->hash = hash;
 }
 
 static void
-gpg_ctx_set_always_trust (struct _GpgCtx *gpg, gboolean trust)
+gpg_ctx_set_always_trust (struct _GpgCtx *gpg,
+                          gboolean trust)
 {
 	gpg->always_trust = trust;
 }
 
 static void
-gpg_ctx_set_userid (struct _GpgCtx *gpg, const gchar *userid)
+gpg_ctx_set_userid (struct _GpgCtx *gpg,
+                    const gchar *userid)
 {
 	g_free (gpg->userid);
 	gpg->userid = g_strdup (userid);
 }
 
 static void
-gpg_ctx_add_recipient (struct _GpgCtx *gpg, const gchar *keyid)
+gpg_ctx_add_recipient (struct _GpgCtx *gpg,
+                       const gchar *keyid)
 {
 	if (gpg->mode != GPG_CTX_MODE_ENCRYPT && gpg->mode != GPG_CTX_MODE_EXPORT)
 		return;
@@ -290,20 +295,23 @@ gpg_ctx_add_recipient (struct _GpgCtx *gpg, const gchar *keyid)
 }
 
 static void
-gpg_ctx_set_sigfile (struct _GpgCtx *gpg, const gchar *sigfile)
+gpg_ctx_set_sigfile (struct _GpgCtx *gpg,
+                     const gchar *sigfile)
 {
 	g_free (gpg->sigfile);
 	gpg->sigfile = g_strdup (sigfile);
 }
 
 static void
-gpg_ctx_set_armor (struct _GpgCtx *gpg, gboolean armor)
+gpg_ctx_set_armor (struct _GpgCtx *gpg,
+                   gboolean armor)
 {
 	gpg->armor = armor;
 }
 
 static void
-gpg_ctx_set_istream (struct _GpgCtx *gpg, CamelStream *istream)
+gpg_ctx_set_istream (struct _GpgCtx *gpg,
+                     CamelStream *istream)
 {
 	g_object_ref (istream);
 	if (gpg->istream)
@@ -312,7 +320,8 @@ gpg_ctx_set_istream (struct _GpgCtx *gpg, CamelStream *istream)
 }
 
 static void
-gpg_ctx_set_ostream (struct _GpgCtx *gpg, CamelStream *ostream)
+gpg_ctx_set_ostream (struct _GpgCtx *gpg,
+                     CamelStream *ostream)
 {
 	g_object_ref (ostream);
 	if (gpg->ostream)
@@ -337,7 +346,9 @@ gpg_ctx_get_diagnostics (struct _GpgCtx *gpg)
 }
 
 static void
-userid_hint_free (gpointer key, gpointer value, gpointer user_data)
+userid_hint_free (gpointer key,
+                  gpointer value,
+                  gpointer user_data)
 {
 	g_free (key);
 	g_free (value);
@@ -428,7 +439,11 @@ gpg_hash_str (CamelCipherHash hash)
 }
 
 static GPtrArray *
-gpg_ctx_get_argv (struct _GpgCtx *gpg, gint status_fd, gchar **sfd, gint passwd_fd, gchar **pfd)
+gpg_ctx_get_argv (struct _GpgCtx *gpg,
+                  gint status_fd,
+                  gchar **sfd,
+                  gint passwd_fd,
+                  gchar **pfd)
 {
 	const gchar *hash_str;
 	GPtrArray *argv;
@@ -445,7 +460,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg, gint status_fd, gchar **sfd, gint passwd_
 
 	if (passwd_fd == -1) {
 		/* only use batch mode if we don't intend on using the
-		   interactive --command-fd option */
+		 * interactive --command-fd option */
 		g_ptr_array_add (argv, (guint8 *) "--batch");
 		g_ptr_array_add (argv, (guint8 *) "--yes");
 	}
@@ -652,7 +667,8 @@ exception:
 #ifndef G_OS_WIN32
 
 static const gchar *
-next_token (const gchar *in, gchar **token)
+next_token (const gchar *in,
+            gchar **token)
 {
 	const gchar *start, *inptr = in;
 
@@ -852,7 +868,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		gchar *message;
 
 		message = g_locale_to_utf8 (
-			(const gchar *) status+11, -1, NULL, NULL, NULL);
+			(const gchar *) status + 11, -1, NULL, NULL, NULL);
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Unexpected response from GnuPG: %s"), message);
@@ -1071,7 +1087,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 	gint status, i;
 	gboolean read_data = FALSE, wrote_data = FALSE;
 
-	for (i=0;i<6;i++) {
+	for (i = 0; i < 6; i++) {
 		polls[i].fd = -1;
 		polls[i].events = 0;
 	}
@@ -1099,9 +1115,9 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 	polls[5].events = G_IO_IN;
 
 	do {
-		for (i=0;i<6;i++)
+		for (i = 0; i < 6; i++)
 			polls[i].revents = 0;
-		status = g_poll (polls, 6, 30*1000);
+		status = g_poll (polls, 6, 30 * 1000);
 	} while (status == -1 && errno == EINTR);
 
 	if (status == 0)
@@ -1117,12 +1133,12 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 	}
 
 	/* Test each and every file descriptor to see if it's 'ready',
-	   and if so - do what we can with it and then drop through to
-	   the next file descriptor and so on until we've done what we
-	   can to all of them. If one fails along the way, return
-	   -1. */
+	 * and if so - do what we can with it and then drop through to
+	 * the next file descriptor and so on until we've done what we
+	 * can to all of them. If one fails along the way, return
+	 * -1. */
 
-	if (polls[2].revents & (G_IO_IN|G_IO_HUP)) {
+	if (polls[2].revents & (G_IO_IN | G_IO_HUP)) {
 		/* read the status message and decide what to do... */
 		gchar buffer[4096];
 		gssize nread;
@@ -1145,7 +1161,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 		}
 	}
 
-	if ((polls[0].revents & (G_IO_IN|G_IO_HUP)) && gpg->ostream) {
+	if ((polls[0].revents & (G_IO_IN | G_IO_HUP)) && gpg->ostream) {
 		gchar buffer[4096];
 		gssize nread;
 
@@ -1170,7 +1186,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 		read_data = TRUE;
 	}
 
-	if (polls[1].revents & (G_IO_IN|G_IO_HUP)) {
+	if (polls[1].revents & (G_IO_IN | G_IO_HUP)) {
 		gchar buffer[4096];
 		gssize nread;
 
@@ -1191,7 +1207,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 		}
 	}
 
-	if ((polls[4].revents & (G_IO_OUT|G_IO_HUP)) && gpg->need_passwd && gpg->send_passwd) {
+	if ((polls[4].revents & (G_IO_OUT | G_IO_HUP)) && gpg->need_passwd && gpg->send_passwd) {
 		gssize w, nwritten = 0;
 		gsize n;
 
@@ -1219,7 +1235,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 		gpg->send_passwd = FALSE;
 	}
 
-	if ((polls[3].revents & (G_IO_OUT|G_IO_HUP)) && gpg->istream) {
+	if ((polls[3].revents & (G_IO_OUT | G_IO_HUP)) && gpg->istream) {
 		gchar buffer[4096];
 		gssize nread;
 
@@ -1257,8 +1273,8 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 
 	if (gpg->need_id && !gpg->processing && !read_data && !wrote_data) {
 		/* do not ask more than hundred times per second when looking for a pass phrase,
-		   in case user has the use-agent set, it'll not use the all CPU when
-		   agent is asking for a pass phrase, instead of us */
+		 * in case user has the use-agent set, it'll not use the all CPU when
+		 * agent is asking for a pass phrase, instead of us */
 		g_usleep (G_USEC_PER_SEC / 100);
 	}
 
@@ -1382,7 +1398,8 @@ swrite (CamelMimePart *sigpart,
 }
 
 static void
-add_signers (CamelCipherValidity *validity, const GString *signers)
+add_signers (CamelCipherValidity *validity,
+             const GString *signers)
 {
 	CamelInternetAddress *address;
 	gint i, count;
@@ -1542,7 +1559,7 @@ gpg_sign_sync (CamelCipherContext *context,
 		CamelStream *out;
 
 		name = g_strdup_printf("camel-gpg.%d.sign-data", logid++);
-		out = camel_stream_fs_new_with_name (name, O_CREAT|O_TRUNC|O_WRONLY, 0666);
+		out = camel_stream_fs_new_with_name (name, O_CREAT | O_TRUNC | O_WRONLY, 0666);
 		if (out) {
 			printf("Writing gpg signing data to '%s'\n", name);
 			camel_stream_write_to_stream (istream, out);
@@ -1708,7 +1725,7 @@ gpg_verify_sync (CamelCipherContext *context,
 		CamelStream *out;
 
 		name = g_strdup_printf("camel-gpg.%d.verify.data", logid);
-		out = camel_stream_fs_new_with_name (name, O_CREAT|O_TRUNC|O_WRONLY, 0666);
+		out = camel_stream_fs_new_with_name (name, O_CREAT | O_TRUNC | O_WRONLY, 0666);
 		if (out) {
 			printf("Writing gpg verify data to '%s'\n", name);
 			camel_stream_write_to_stream (istream, out);
@@ -1722,7 +1739,7 @@ gpg_verify_sync (CamelCipherContext *context,
 
 		if (sigpart) {
 			name = g_strdup_printf("camel-gpg.%d.verify.signature", logid++);
-			out = camel_stream_fs_new_with_name (name, O_CREAT|O_TRUNC|O_WRONLY, 0666);
+			out = camel_stream_fs_new_with_name (name, O_CREAT | O_TRUNC | O_WRONLY, 0666);
 			if (out) {
 				printf("Writing gpg verify signature to '%s'\n", name);
 				camel_data_wrapper_write_to_stream ((CamelDataWrapper *) sigpart, out);
@@ -2061,8 +2078,8 @@ gpg_decrypt_sync (CamelCipherContext *context,
 		if (!camel_data_wrapper_decode_to_stream_sync (
 			dw, null, cancellable, NULL)) {
 			/* nothing had been decoded from the stream, it doesn't
-			   contain any header, like Content-Type or such, thus
-			   write it as a message body */
+			 * contain any header, like Content-Type or such, thus
+			 * write it as a message body */
 			success = camel_data_wrapper_construct_from_stream_sync (
 				dw, ostream, cancellable, error);
 		}

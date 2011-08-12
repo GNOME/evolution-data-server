@@ -9,7 +9,9 @@
 #include "session.h"
 
 static void
-test_folder_search_sub (CamelFolder *folder, const gchar *expr, gint expected)
+test_folder_search_sub (CamelFolder *folder,
+                        const gchar *expr,
+                        gint expected)
 {
 	GPtrArray *uids;
 	GHashTable *hash;
@@ -24,7 +26,7 @@ test_folder_search_sub (CamelFolder *folder, const gchar *expr, gint expected)
 
 	/* check the uid's are actually unique, too */
 	hash = g_hash_table_new (g_str_hash, g_str_equal);
-	for (i=0;i<uids->len;i++) {
+	for (i = 0; i < uids->len; i++) {
 		check (g_hash_table_lookup (hash, uids->pdata[i]) == NULL);
 		g_hash_table_insert (hash, uids->pdata[i], uids->pdata[i]);
 	}
@@ -34,7 +36,9 @@ test_folder_search_sub (CamelFolder *folder, const gchar *expr, gint expected)
 }
 
 static void
-test_folder_search (CamelFolder *folder, const gchar *expr, gint expected)
+test_folder_search (CamelFolder *folder,
+                    const gchar *expr,
+                    gint expected)
 {
 	gchar *matchall;
 
@@ -106,16 +110,17 @@ static struct {
 };
 
 static void
-run_search (CamelFolder *folder, gint m)
+run_search (CamelFolder *folder,
+            gint m)
 {
 	gint i, j = 0;
 
 	check (m == 50 || m == 100 || m == 0);
 
 	/* *shrug* messy, but it'll do */
-	if (m==50)
+	if (m == 50)
 		j = 1;
-	else if (m==0)
+	else if (m == 0)
 		j = 2;
 
 	push ("performing searches, expected %d", m);
@@ -135,7 +140,9 @@ static const gchar *stores[] = {
 	"maildir:///tmp/camel-test/maildir"
 };
 
-gint main (gint argc, gchar **argv)
+gint
+main (gint argc,
+      gchar **argv)
 {
 	CamelService *service;
 	CamelSession *session;
@@ -161,7 +168,7 @@ gint main (gint argc, gchar **argv)
 	/* we iterate over all stores we want to test, with indexing or indexing turned on or off */
 	for (i = 0; i < G_N_ELEMENTS (stores); i++) {
 		const gchar *name = stores[i];
-		for (indexed = 0;indexed<2;indexed++) {
+		for (indexed = 0; indexed < 2; indexed++) {
 			gchar *what = g_strdup_printf ("folder search: %s (%sindexed)", name, indexed?"":"non-");
 			gchar *uid;
 			gint flags;
@@ -183,7 +190,7 @@ gint main (gint argc, gchar **argv)
 
 			push ("creating %sindexed folder", indexed?"":"non-");
 			if (indexed)
-				flags = CAMEL_STORE_FOLDER_CREATE|CAMEL_STORE_FOLDER_BODY_INDEX;
+				flags = CAMEL_STORE_FOLDER_CREATE | CAMEL_STORE_FOLDER_BODY_INDEX;
 			else
 				flags = CAMEL_STORE_FOLDER_CREATE;
 			folder = camel_store_get_folder_sync (
@@ -198,7 +205,7 @@ gint main (gint argc, gchar **argv)
 
 			/* append a bunch of messages with specific content */
 			push ("appending 100 test messages");
-			for (j=0;j<100;j++) {
+			for (j = 0; j < 100; j++) {
 				gchar *content, *subject;
 
 				push ("creating test message");
@@ -210,7 +217,7 @@ gint main (gint argc, gchar **argv)
 				subject = g_strdup_printf ("Test%d message%d subject", j, 100-j);
 				camel_mime_message_set_subject (msg, subject);
 
-				camel_mime_message_set_date (msg, j*60*24, 0);
+				camel_mime_message_set_date (msg, j * 60 * 24, 0);
 				pull ();
 
 				push ("appending simple message %d", j);
@@ -229,21 +236,21 @@ gint main (gint argc, gchar **argv)
 			push ("Setting up some flags &c");
 			uids = camel_folder_get_uids (folder);
 			check (uids->len == 100);
-			for (j=0;j<100;j++) {
+			for (j = 0; j < 100; j++) {
 				gchar *uid = uids->pdata[j];
 
-				if ((j/13)*13 == j) {
+				if ((j / 13) * 13 == j) {
 					camel_folder_set_message_user_flag (folder, uid, "every13", TRUE);
 				}
-				if ((j/17)*17 == j) {
+				if ((j / 17) * 17 == j) {
 					camel_folder_set_message_user_flag (folder, uid, "every17", TRUE);
 				}
-				if ((j/7)*7 == j) {
+				if ((j / 7) * 7 == j) {
 					gchar *tag = g_strdup_printf ("7tag%d", j/7);
 					camel_folder_set_message_user_tag (folder, uid, "every7", tag);
 					test_free (tag);
 				}
-				if ((j/11)*11 == j) {
+				if ((j / 11) * 11 == j) {
 					camel_folder_set_message_user_tag (folder, uid, "every11", "11tag");
 				}
 			}
@@ -271,7 +278,7 @@ gint main (gint argc, gchar **argv)
 			push ("deleting every 2nd message");
 			uids = camel_folder_get_uids (folder);
 			check (uids->len == 100);
-			for (j=0;j<uids->len;j+=2) {
+			for (j = 0; j < uids->len; j+=2) {
 				camel_folder_delete_message (folder, uids->pdata[j]);
 			}
 			camel_folder_free_uids (folder, uids);
@@ -307,7 +314,7 @@ gint main (gint argc, gchar **argv)
 			push ("deleting remaining messages");
 			uids = camel_folder_get_uids (folder);
 			check (uids->len == 50);
-			for (j=0;j<uids->len;j++) {
+			for (j = 0; j < uids->len; j++) {
 				camel_folder_delete_message (folder, uids->pdata[j]);
 			}
 			camel_folder_free_uids (folder, uids);

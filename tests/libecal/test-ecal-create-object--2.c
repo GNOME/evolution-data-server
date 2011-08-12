@@ -9,7 +9,8 @@
 #define EVENT_SUMMARY "Creation of new test event"
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECal *cal;
 	gchar *uri = NULL;

@@ -298,7 +298,10 @@ camel_movemail_copy_file (gint sfd,
 
 #if 0
 static gint
-camel_movemail_copy (gint fromfd, gint tofd, goffset start, gsize bytes)
+camel_movemail_copy (gint fromfd,
+                     gint tofd,
+                     goffset start,
+                     gsize bytes)
 {
 	gchar buffer[4096];
 	gint written = 0;
@@ -308,11 +311,11 @@ camel_movemail_copy (gint fromfd, gint tofd, goffset start, gsize bytes)
 	if (lseek (fromfd, start, SEEK_SET) != start)
 		return -1;
 
-	while (bytes>0) {
+	while (bytes > 0) {
 		gint toread, towrite;
 
 		toread = bytes;
-		if (bytes>4096)
+		if (bytes > 4096)
 			toread = 4096;
 		else
 			toread = bytes;
@@ -350,9 +353,13 @@ camel_movemail_copy (gint fromfd, gint tofd, goffset start, gsize bytes)
 
 #ifdef HAVE_BROKEN_SPOOL
 static gint
-camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, CamelMimeFilter *filter)
+camel_movemail_copy_filter (gint fromfd,
+                            gint tofd,
+                            goffset start,
+                            gsize bytes,
+                            CamelMimeFilter *filter)
 {
-	gchar buffer[4096+PRE_SIZE];
+	gchar buffer[4096 + PRE_SIZE];
 	gint written = 0;
 	gchar *filterbuffer;
 	gint filterlen, filterpre;
@@ -364,16 +371,16 @@ camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, 
 	if (lseek (fromfd, start, SEEK_SET) != start)
 		return -1;
 
-	while (bytes>0) {
+	while (bytes > 0) {
 		gint toread, towrite;
 
 		toread = bytes;
-		if (bytes>4096)
+		if (bytes > 4096)
 			toread = 4096;
 		else
 			toread = bytes;
 		do {
-			towrite = read (fromfd, buffer+PRE_SIZE, toread);
+			towrite = read (fromfd, buffer + PRE_SIZE, toread);
 		} while (towrite == -1 && errno == EINTR);
 
 		if (towrite == -1)
@@ -384,13 +391,13 @@ camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, 
                 /* check for 'end of file' */
 		if (towrite == 0) {
 			d(printf("end of file?\n"));
-			camel_mime_filter_complete (filter, buffer+PRE_SIZE, towrite, PRE_SIZE,
+			camel_mime_filter_complete (filter, buffer + PRE_SIZE, towrite, PRE_SIZE,
 						   &filterbuffer, &filterlen, &filterpre);
 			towrite = filterlen;
 			if (towrite == 0)
 				break;
 		} else {
-			camel_mime_filter_filter (filter, buffer+PRE_SIZE, towrite, PRE_SIZE,
+			camel_mime_filter_filter (filter, buffer + PRE_SIZE, towrite, PRE_SIZE,
 						 &filterbuffer, &filterlen, &filterpre);
 			towrite = filterlen;
 		}
@@ -414,9 +421,10 @@ camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, 
 }
 
 /* write the headers back out again, but not he Content-Length header, because we dont
-   want	to maintain it! */
+ * want	to maintain it! */
 static gint
-solaris_header_write (gint fd, struct _camel_header_raw *header)
+solaris_header_write (gint fd,
+                      struct _camel_header_raw *header)
 {
 	struct iovec iv[4];
 	gint outlen = 0, len;
@@ -459,8 +467,8 @@ solaris_header_write (gint fd, struct _camel_header_raw *header)
 }
 
 /* Well, since Solaris is a tad broken wrt its 'mbox' folder format,
-   we must convert it to a real mbox format.  Thankfully this is
-   mostly pretty easy */
+ * we must convert it to a real mbox format.  Thankfully this is
+ * mostly pretty easy */
 static gint
 camel_movemail_solaris (gint oldsfd,
                         gint dfd,
@@ -525,7 +533,7 @@ camel_movemail_solaris (gint oldsfd,
 				length = atoi (cl);
 				camel_mime_parser_drop_step (mp);
 				camel_mime_parser_drop_step (mp);
-				newpos = length+body;
+				newpos = length + body;
 			}
 			/* copy body->length converting From lines */
 			if (camel_movemail_copy_filter (sfd, dfd, body, length, ffrom) == -1)

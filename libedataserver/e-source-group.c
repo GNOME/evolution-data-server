@@ -60,7 +60,7 @@ static guint signals[LAST_SIGNAL] = { 0 };
 
 static void
 source_changed_callback (ESource *source,
-			 ESourceGroup *group)
+                         ESourceGroup *group)
 {
 	if (!group->priv->ignore_source_changed)
 		g_signal_emit (group, signals[CHANGED], 0);
@@ -163,7 +163,7 @@ e_source_group_init (ESourceGroup *source_group)
 
 static void
 import_properties (ESourceGroup *source_group,
-		   xmlNodePtr prop_root)
+                   xmlNodePtr prop_root)
 {
 	ESourceGroupPrivate *priv = source_group->priv;
 	xmlNodePtr prop_node;
@@ -195,7 +195,9 @@ typedef struct
 } hash_compare_data;
 
 static void
-compare_str_hash (gpointer key, gpointer value, hash_compare_data *cd)
+compare_str_hash (gpointer key,
+                  gpointer value,
+                  hash_compare_data *cd)
 {
 	gpointer value2 = g_hash_table_lookup (cd->table2, key);
 	if (value2 == NULL || g_str_equal (value, value2) == FALSE)
@@ -203,7 +205,8 @@ compare_str_hash (gpointer key, gpointer value, hash_compare_data *cd)
 }
 
 static gboolean
-compare_str_hashes (GHashTable *table1, GHashTable *table2)
+compare_str_hashes (GHashTable *table1,
+                    GHashTable *table2)
 {
 	hash_compare_data cd;
 
@@ -217,7 +220,9 @@ compare_str_hashes (GHashTable *table1, GHashTable *table2)
 }
 
 static void
-property_dump_cb (const gchar *key, const gchar *value, xmlNodePtr root)
+property_dump_cb (const gchar *key,
+                  const gchar *value,
+                  xmlNodePtr root)
 {
 	xmlNodePtr node;
 
@@ -230,7 +235,7 @@ property_dump_cb (const gchar *key, const gchar *value, xmlNodePtr root)
 
 ESourceGroup *
 e_source_group_new (const gchar *name,
-		    const gchar *base_uri)
+                    const gchar *base_uri)
 {
 	ESourceGroup *new;
 
@@ -249,7 +254,8 @@ e_source_group_new (const gchar *name,
 static ESourceGroup *source_group_new_from_xmldoc (xmlDocPtr doc, gboolean can_migrate);
 
 static ESourceGroup *
-source_group_new_from_xml (const gchar *xml, gboolean can_migrate)
+source_group_new_from_xml (const gchar *xml,
+                           gboolean can_migrate)
 {
 	xmlDocPtr doc;
 	ESourceGroup *group;
@@ -271,7 +277,8 @@ e_source_group_new_from_xml (const gchar *xml)
 }
 
 static ESourceGroup *
-source_group_new_from_xmldoc (xmlDocPtr doc, gboolean can_migrate)
+source_group_new_from_xmldoc (xmlDocPtr doc,
+                              gboolean can_migrate)
 {
 	xmlNodePtr root, p;
 	xmlChar *uid;
@@ -355,8 +362,8 @@ e_source_group_new_from_xmldoc (xmlDocPtr doc)
 
 gboolean
 e_source_group_update_from_xml (ESourceGroup *group,
-				const gchar *xml,
-				gboolean *changed_return)
+                                const gchar *xml,
+                                gboolean *changed_return)
 {
 	xmlDocPtr xmldoc;
 	gboolean success;
@@ -375,8 +382,8 @@ e_source_group_update_from_xml (ESourceGroup *group,
 
 gboolean
 e_source_group_update_from_xmldoc (ESourceGroup *group,
-				   xmlDocPtr doc,
-				   gboolean *changed_return)
+                                   xmlDocPtr doc,
+                                   gboolean *changed_return)
 {
 	GHashTable *new_sources_hash;
 	GSList *new_sources_list = NULL;
@@ -509,7 +516,7 @@ e_source_group_update_from_xmldoc (ESourceGroup *group,
 	new_sources_list = g_slist_reverse (new_sources_list);
 
 	/* Emit "group_removed" and disconnect the "changed" signal for all the
-	   groups that we haven't found in the new list.  */
+	 * groups that we haven't found in the new list.  */
 	q = new_sources_list;
 	for (p = group->priv->sources; p != NULL; p = p->next) {
 		ESource *source = E_SOURCE (p->data);
@@ -571,7 +578,7 @@ e_source_group_uid_from_xmldoc (xmlDocPtr doc)
 
 void
 e_source_group_set_name (ESourceGroup *group,
-			 const gchar *name)
+                         const gchar *name)
 {
 	g_return_if_fail (E_IS_SOURCE_GROUP (group));
 	g_return_if_fail (name != NULL);
@@ -679,7 +686,7 @@ e_source_group_peek_sources (ESourceGroup *group)
  */
 ESource *
 e_source_group_peek_source_by_uid (ESourceGroup *group,
-				   const gchar *uid)
+                                   const gchar *uid)
 {
 	GSList *p;
 
@@ -698,7 +705,7 @@ e_source_group_peek_source_by_uid (ESourceGroup *group,
  */
 ESource *
 e_source_group_peek_source_by_name (ESourceGroup *group,
-				    const gchar *name)
+                                    const gchar *name)
 {
 	GSList *p;
 
@@ -712,8 +719,8 @@ e_source_group_peek_source_by_name (ESourceGroup *group,
 
 gboolean
 e_source_group_add_source (ESourceGroup *group,
-			   ESource *source,
-			   gint position)
+                           ESource *source,
+                           gint position)
 {
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (group), FALSE);
 
@@ -738,7 +745,7 @@ e_source_group_add_source (ESourceGroup *group,
 
 gboolean
 e_source_group_remove_source (ESourceGroup *group,
-			      ESource *source)
+                              ESource *source)
 {
 	GSList *p;
 
@@ -766,7 +773,7 @@ e_source_group_remove_source (ESourceGroup *group,
 
 gboolean
 e_source_group_remove_source_by_uid (ESourceGroup *group,
-				     const gchar *uid)
+                                     const gchar *uid)
 {
 	GSList *p;
 
@@ -836,13 +843,15 @@ e_source_group_to_xml (ESourceGroup *group)
 }
 
 static gint
-find_esource_from_uid (gconstpointer a, gconstpointer b)
+find_esource_from_uid (gconstpointer a,
+                       gconstpointer b)
 {
 	return g_ascii_strcasecmp (e_source_peek_uid ((ESource *)(a)), (gchar *)(b));
 }
 
 static gboolean
-compare_source_lists (GSList *a, GSList *b)
+compare_source_lists (GSList *a,
+                      GSList *b)
 {
 	gboolean retval = TRUE;
 	GSList *l;
@@ -873,7 +882,8 @@ compare_source_lists (GSList *a, GSList *b)
  * Since: 2.24
  **/
 gboolean
-e_source_group_equal (ESourceGroup *a, ESourceGroup *b)
+e_source_group_equal (ESourceGroup *a,
+                      ESourceGroup *b)
 {
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (a), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE_GROUP (b), FALSE);
@@ -920,7 +930,8 @@ e_source_group_equal (ESourceGroup *a, ESourceGroup *b)
  * Since: 2.24
  **/
 gboolean
-e_source_group_xmlstr_equal (const gchar *a, const gchar *b)
+e_source_group_xmlstr_equal (const gchar *a,
+                             const gchar *b)
 {
 	ESourceGroup *grpa, *grpb;
 	gboolean retval;
@@ -943,7 +954,7 @@ e_source_group_xmlstr_equal (const gchar *a, const gchar *b)
  **/
 gchar *
 e_source_group_get_property (ESourceGroup *source_group,
-			     const gchar *property)
+                             const gchar *property)
 {
 	ESourceGroupPrivate *priv;
 
@@ -960,8 +971,8 @@ e_source_group_get_property (ESourceGroup *source_group,
  **/
 void
 e_source_group_set_property (ESourceGroup *source_group,
-			     const gchar *property,
-			     const gchar *value)
+                             const gchar *property,
+                             const gchar *value)
 {
 	ESourceGroupPrivate *priv;
 
@@ -985,7 +996,9 @@ e_source_group_set_property (ESourceGroup *source_group,
  * Since: 1.12
  **/
 void
-e_source_group_foreach_property (ESourceGroup *source_group, GHFunc func, gpointer data)
+e_source_group_foreach_property (ESourceGroup *source_group,
+                                 GHFunc func,
+                                 gpointer data)
 {
 	ESourceGroupPrivate *priv;
 

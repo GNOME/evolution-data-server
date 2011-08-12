@@ -47,7 +47,7 @@ static struct {
 	const gchar *enriched;
 	const gchar *html;
 	gboolean needs_param;
-	EnrichedParamParser parse_param; /* parses *and* validates the input */
+	EnrichedParamParser parse_param; /* parses *and * validates the input */
 } enriched_tags[] = {
 	{ "bold",        "<b>",                 FALSE, NULL               },
 	{ "/bold",       "</b>",                FALSE, NULL               },
@@ -122,7 +122,8 @@ static const gchar *valid_colors[] = {
 };
 
 static gchar *
-param_parse_color (const gchar *inptr, gint inlen)
+param_parse_color (const gchar *inptr,
+                   gint inlen)
 {
 	const gchar *inend, *end;
 	guint32 rgb = 0;
@@ -167,7 +168,8 @@ param_parse_color (const gchar *inptr, gint inlen)
 }
 
 static gchar *
-param_parse_font (const gchar *fontfamily, gint inlen)
+param_parse_font (const gchar *fontfamily,
+                  gint inlen)
 {
 	register const gchar *inptr = fontfamily;
 	const gchar *inend = inptr + inlen;
@@ -180,7 +182,8 @@ param_parse_font (const gchar *fontfamily, gint inlen)
 }
 
 static gchar *
-param_parse_lang (const gchar *lang, gint inlen)
+param_parse_lang (const gchar *lang,
+                  gint inlen)
 {
 	register const gchar *inptr = lang;
 	const gchar *inend = inptr + inlen;
@@ -193,7 +196,9 @@ param_parse_lang (const gchar *lang, gint inlen)
 }
 
 static gchar *
-param_parse (const gchar *enriched, const gchar *inptr, gint inlen)
+param_parse (const gchar *enriched,
+             const gchar *inptr,
+             gint inlen)
 {
 	gint i;
 
@@ -449,8 +454,8 @@ enriched_to_html (CamelMimeFilter *mime_filter,
  need_input:
 
 	/* the reason we ignore @flush here is because if there isn't
-	   enough input to parse a tag, then there's nothing we can
-	   do. */
+	 * enough input to parse a tag, then there's nothing we can
+	 * do. */
 
 	if (inptr < inend)
 		camel_mime_filter_backup (mime_filter, inptr, (unsigned) (inend - inptr));
@@ -585,7 +590,8 @@ camel_mime_filter_enriched_new (guint32 flags)
  * richtext version of @in.
  **/
 gchar *
-camel_enriched_to_html (const gchar *in, guint32 flags)
+camel_enriched_to_html (const gchar *in,
+                        guint32 flags)
 {
 	CamelMimeFilter *filter;
 	gsize outlen, outpre;

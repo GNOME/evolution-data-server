@@ -52,7 +52,7 @@ static void
 stream_process_finalize (GObject *object)
 {
 	/* Ensure we clean up after ourselves -- kill
-	   the child process and reap it. */
+	 * the child process and reap it. */
 	camel_stream_close (CAMEL_STREAM (object), NULL, NULL);
 
 	/* Chain up to parent's finalize() method. */
@@ -181,7 +181,9 @@ camel_stream_process_new (void)
 }
 
 G_GNUC_NORETURN static void
-do_exec_command (gint fd, const gchar *command, gchar **env)
+do_exec_command (gint fd,
+                 const gchar *command,
+                 gchar **env)
 {
 	gint i, maxopen;
 
@@ -192,10 +194,10 @@ do_exec_command (gint fd, const gchar *command, gchar **env)
 		exit (1);
 
 	/* What to do with stderr? Possibly put it through a separate pipe
-	   and bring up a dialog box with its output if anything does get
-	   spewed to it? It'd help the user understand what was going wrong
-	   with their command, but it's hard to do cleanly. For now we just
-	   leave it as it is. Perhaps we should close it and reopen /dev/null? */
+	 * and bring up a dialog box with its output if anything does get
+	 * spewed to it? It'd help the user understand what was going wrong
+	 * with their command, but it's hard to do cleanly. For now we just
+	 * leave it as it is. Perhaps we should close it and reopen /dev/null? */
 
 	maxopen = sysconf (_SC_OPEN_MAX);
 	for (i = 3; i < maxopen; i++)
@@ -204,8 +206,8 @@ do_exec_command (gint fd, const gchar *command, gchar **env)
 	setsid ();
 #ifdef TIOCNOTTY
 	/* Detach from the controlling tty if we have one. Otherwise,
-	   SSH might do something stupid like trying to use it instead
-	   of running $SSH_ASKPASS. Doh. */
+	 * SSH might do something stupid like trying to use it instead
+	 * of running $SSH_ASKPASS. Doh. */
 	if ((fd = open ("/dev/tty", O_RDONLY)) != -1) {
 		ioctl (fd, TIOCNOTTY, NULL);
 		close (fd);
@@ -213,7 +215,7 @@ do_exec_command (gint fd, const gchar *command, gchar **env)
 #endif /* TIOCNOTTY */
 
 	/* Set up child's environment. We _add_ to it, don't use execle,
-	   because otherwise we'd destroy stuff like SSH_AUTH_SOCK etc. */
+	 * because otherwise we'd destroy stuff like SSH_AUTH_SOCK etc. */
 	for (; env && *env; env++)
 		putenv (*env);
 

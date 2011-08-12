@@ -528,7 +528,9 @@ ep_add_password (EPassMsg *msg)
 static void ep_ask_password (EPassMsg *msg);
 
 static void
-pass_response (GtkDialog *dialog, gint response, gpointer data)
+pass_response (GtkDialog *dialog,
+               gint response,
+               gpointer data)
 {
 	EPassMsg *msg = data;
 	gint type = msg->flags & E_PASSWORDS_REMEMBER_MASK;
@@ -898,7 +900,8 @@ e_passwords_clear_passwords (const gchar *component_name)
  * Saves the password associated with @key to disk.
  **/
 void
-e_passwords_remember_password (const gchar *component_name, const gchar *key)
+e_passwords_remember_password (const gchar *component_name,
+                               const gchar *key)
 {
 	EPassMsg *msg;
 
@@ -920,7 +923,8 @@ e_passwords_remember_password (const gchar *component_name, const gchar *key)
  * Forgets the password associated with @key, in memory and on disk.
  **/
 void
-e_passwords_forget_password (const gchar *component_name, const gchar *key)
+e_passwords_forget_password (const gchar *component_name,
+                             const gchar *key)
 {
 	EPassMsg *msg;
 
@@ -943,7 +947,8 @@ e_passwords_forget_password (const gchar *component_name, const gchar *key)
  * must free the returned password.
  **/
 gchar *
-e_passwords_get_password (const gchar *component_name, const gchar *key)
+e_passwords_get_password (const gchar *component_name,
+                          const gchar *key)
 {
 	EPassMsg *msg;
 	gchar *passwd;
@@ -973,7 +978,8 @@ e_passwords_get_password (const gchar *component_name, const gchar *key)
  * hash.
  **/
 void
-e_passwords_add_password (const gchar *key, const gchar *passwd)
+e_passwords_add_password (const gchar *key,
+                          const gchar *passwd)
 {
 	EPassMsg *msg;
 
@@ -1009,12 +1015,13 @@ e_passwords_add_password (const gchar *key, const gchar *passwd)
  * E_PASSWORDS_DO_NOT_REMEMBER.
  **/
 gchar *
-e_passwords_ask_password (const gchar *title, const gchar *component_name,
-			  const gchar *key,
-			  const gchar *prompt,
-			  EPasswordsRememberType type,
-			  gboolean *remember,
-			  GtkWindow *parent)
+e_passwords_ask_password (const gchar *title,
+                          const gchar *component_name,
+                          const gchar *key,
+                          const gchar *prompt,
+                          EPasswordsRememberType type,
+                          gboolean *remember,
+                          GtkWindow *parent)
 {
 	gchar *passwd;
 	EPassMsg *msg;

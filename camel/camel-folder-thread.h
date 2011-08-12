@@ -35,7 +35,7 @@ typedef struct _CamelFolderThreadNode {
 	struct _CamelFolderThreadNode *next, *parent, *child;
 	const CamelMessageInfo *message;
 	gchar *root_subject;	/* cached root equivalent subject */
-	guint32 order:31;
+	guint32 order : 31;
 	guint32 re:1;			/* re version of subject? */
 } CamelFolderThreadNode;
 

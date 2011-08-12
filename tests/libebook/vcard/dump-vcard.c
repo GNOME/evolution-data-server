@@ -4,7 +4,8 @@
 #include <libebook/e-vcard.h>
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	FILE *fp;
 	EVCard *vcard;

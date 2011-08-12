@@ -95,7 +95,7 @@ typedef enum _e_account_item_t {
 } e_account_item_t;
 
 typedef enum _e_account_access_t {
-	E_ACCOUNT_ACCESS_WRITE = 1<<0
+	E_ACCOUNT_ACCESS_WRITE = 1 << 0
 } e_account_access_t;
 
 typedef struct _EAccountIdentity {

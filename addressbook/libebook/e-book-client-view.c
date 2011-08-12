@@ -53,7 +53,9 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 static void
-objects_added_cb (EGdbusBookView *object, const gchar * const *vcards, EBookClientView *view)
+objects_added_cb (EGdbusBookView *object,
+                  const gchar * const *vcards,
+                  EBookClientView *view)
 {
 	const gchar * const *p;
 	GSList *contacts = NULL;
@@ -74,7 +76,9 @@ objects_added_cb (EGdbusBookView *object, const gchar * const *vcards, EBookClie
 }
 
 static void
-objects_modified_cb (EGdbusBookView *object, const gchar * const *vcards, EBookClientView *view)
+objects_modified_cb (EGdbusBookView *object,
+                     const gchar * const *vcards,
+                     EBookClientView *view)
 {
 	const gchar * const *p;
 	GSList *contacts = NULL;
@@ -94,7 +98,9 @@ objects_modified_cb (EGdbusBookView *object, const gchar * const *vcards, EBookC
 }
 
 static void
-objects_removed_cb (EGdbusBookView *object, const gchar * const *ids, EBookClientView *view)
+objects_removed_cb (EGdbusBookView *object,
+                    const gchar * const *ids,
+                    EBookClientView *view)
 {
 	const gchar * const *p;
 	GSList *list = NULL;
@@ -114,7 +120,10 @@ objects_removed_cb (EGdbusBookView *object, const gchar * const *ids, EBookClien
 }
 
 static void
-progress_cb (EGdbusBookView *object, guint percent, const gchar *message, EBookClientView *view)
+progress_cb (EGdbusBookView *object,
+             guint percent,
+             const gchar *message,
+             EBookClientView *view)
 {
 	if (!view->priv->running)
 		return;
@@ -123,7 +132,9 @@ progress_cb (EGdbusBookView *object, guint percent, const gchar *message, EBookC
 }
 
 static void
-complete_cb (EGdbusBookView *object, const gchar * const *in_error_strv, EBookClientView *view)
+complete_cb (EGdbusBookView *object,
+             const gchar * const *in_error_strv,
+             EBookClientView *view)
 {
 	GError *error = NULL;
 
@@ -150,7 +161,8 @@ complete_cb (EGdbusBookView *object, const gchar * const *in_error_strv, EBookCl
  * Returns: A new #EBookClientView.
  **/
 EBookClientView *
-_e_book_client_view_new (EBookClient *book_client, EGdbusBookView *gdbus_bookview)
+_e_book_client_view_new (EBookClient *book_client,
+                         EGdbusBookView *gdbus_bookview)
 {
 	EBookClientView *view;
 	EBookClientViewPrivate *priv;
@@ -197,7 +209,8 @@ e_book_client_view_get_client (EBookClientView *view)
  * Tells @view to start processing events.
  */
 void
-e_book_client_view_start (EBookClientView *view, GError **error)
+e_book_client_view_start (EBookClientView *view,
+                          GError **error)
 {
 	EBookClientViewPrivate *priv;
 
@@ -228,7 +241,8 @@ e_book_client_view_start (EBookClientView *view, GError **error)
  * Tells @view to stop processing events.
  **/
 void
-e_book_client_view_stop (EBookClientView *view, GError **error)
+e_book_client_view_stop (EBookClientView *view,
+                         GError **error)
 {
 	EBookClientViewPrivate *priv;
 
@@ -268,7 +282,9 @@ e_book_client_view_stop (EBookClientView *view, GError **error)
  * it will simply return object as is stored in the cache.
  **/
 void
-e_book_client_view_set_fields_of_interest (EBookClientView *view, const GSList *fields_of_interest, GError **error)
+e_book_client_view_set_fields_of_interest (EBookClientView *view,
+                                           const GSList *fields_of_interest,
+                                           GError **error)
 {
 	EBookClientViewPrivate *priv;
 

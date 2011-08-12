@@ -65,15 +65,15 @@ typedef union {
 		guint16 xlen_nread;
 		guint16 crc16;
 
-		guint8 got_hdr:1;
-		guint8 is_valid:1;
-		guint8 got_xlen:1;
-		guint8 got_fname:1;
-		guint8 got_fcomment:1;
-		guint8 got_crc16:1;
+		guint8 got_hdr : 1;
+		guint8 is_valid : 1;
+		guint8 got_xlen : 1;
+		guint8 got_fname : 1;
+		guint8 got_fcomment : 1;
+		guint8 got_crc16 : 1;
 	} unzip;
 	struct {
-		guint32 wrote_hdr:1;
+		guint32 wrote_hdr : 1;
 	} zip;
 } gzip_state_t;
 
@@ -458,7 +458,8 @@ camel_mime_filter_gzip_init (CamelMimeFilterGZip *mime_filter)
  * Returns: a new gzip (or gunzip) filter.
  **/
 CamelMimeFilter *
-camel_mime_filter_gzip_new (CamelMimeFilterGZipMode mode, gint level)
+camel_mime_filter_gzip_new (CamelMimeFilterGZipMode mode,
+                            gint level)
 {
 	CamelMimeFilter *new;
 	CamelMimeFilterGZipPrivate *priv;

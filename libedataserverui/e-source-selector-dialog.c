@@ -111,14 +111,17 @@ e_source_selector_dialog_init (ESourceSelectorDialog *dialog)
 /* Public API */
 
 static void
-row_activated_cb (GtkTreeView *tree_view, GtkTreePath *path,
-		  GtkTreeViewColumn *column, GtkWidget *dialog)
+row_activated_cb (GtkTreeView *tree_view,
+                  GtkTreePath *path,
+                  GtkTreeViewColumn *column,
+                  GtkWidget *dialog)
 {
 	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 }
 
 static void
-primary_selection_changed_cb (ESourceSelector *selector, gpointer user_data)
+primary_selection_changed_cb (ESourceSelector *selector,
+                              gpointer user_data)
 {
 	ESourceSelectorDialog *dialog = user_data;
 	ESourceSelectorDialogPrivate *priv = dialog->priv;
@@ -150,7 +153,9 @@ primary_selection_changed_cb (ESourceSelector *selector, gpointer user_data)
 }
 
 static GtkWidget *
-setup_dialog (GtkWindow *parent, ESourceSelectorDialog *dialog, ESourceList *source_list)
+setup_dialog (GtkWindow *parent,
+              ESourceSelectorDialog *dialog,
+              ESourceList *source_list)
 {
 	GtkWidget *vbox, *label, *scroll, *hbox, *spacer;
 	GtkWidget *content_area;

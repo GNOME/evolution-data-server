@@ -73,7 +73,8 @@ e_dbhash_new (const gchar *filename)
 }
 
 static void
-string_to_dbt (const gchar *str, DBT *dbt)
+string_to_dbt (const gchar *str,
+               DBT *dbt)
 {
 	memset (dbt, 0, sizeof (DBT));
 	dbt->data = (gpointer) str;
@@ -81,7 +82,8 @@ string_to_dbt (const gchar *str, DBT *dbt)
 }
 
 static void
-md5_to_dbt (const guint8 str[16], DBT *dbt)
+md5_to_dbt (const guint8 str[16],
+            DBT *dbt)
 {
 	memset (dbt, 0, sizeof (DBT));
 	dbt->data = (gpointer) str;

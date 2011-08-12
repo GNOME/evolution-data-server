@@ -19,7 +19,7 @@
  */
 
 /* This is *identical* to the camel-nntp-stream, so should probably
-   work out a way to merge them */
+ * work out a way to merge them */
 
 #ifndef CAMEL_POP3_STREAM_H
 #define CAMEL_POP3_STREAM_H

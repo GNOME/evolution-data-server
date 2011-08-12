@@ -7,7 +7,8 @@
 #define NUM_CLIENTS 200
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	GError *error = NULL;
 	gint ii;

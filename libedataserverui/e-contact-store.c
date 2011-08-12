@@ -228,7 +228,8 @@ e_contact_store_new (void)
  * ------------------ */
 
 static void
-row_deleted (EContactStore *contact_store, gint n)
+row_deleted (EContactStore *contact_store,
+             gint n)
 {
 	GtkTreePath *path;
 
@@ -239,7 +240,8 @@ row_deleted (EContactStore *contact_store, gint n)
 }
 
 static void
-row_inserted (EContactStore *contact_store, gint n)
+row_inserted (EContactStore *contact_store,
+              gint n)
 {
 	GtkTreePath *path;
 	GtkTreeIter  iter;
@@ -254,7 +256,8 @@ row_inserted (EContactStore *contact_store, gint n)
 }
 
 static void
-row_changed (EContactStore *contact_store, gint n)
+row_changed (EContactStore *contact_store,
+             gint n)
 {
 	GtkTreePath *path;
 	GtkTreeIter  iter;
@@ -273,7 +276,8 @@ row_changed (EContactStore *contact_store, gint n)
  * ---------------------- */
 
 static gint
-find_contact_source_by_client (EContactStore *contact_store, EBookClient *book_client)
+find_contact_source_by_client (EContactStore *contact_store,
+                               EBookClient *book_client)
 {
 	GArray *array;
 	gint i;
@@ -292,7 +296,8 @@ find_contact_source_by_client (EContactStore *contact_store, EBookClient *book_c
 }
 
 static gint
-find_contact_source_by_view (EContactStore *contact_store, EBookClientView *client_view)
+find_contact_source_by_view (EContactStore *contact_store,
+                             EBookClientView *client_view)
 {
 	GArray *array;
 	gint i;
@@ -312,7 +317,8 @@ find_contact_source_by_view (EContactStore *contact_store, EBookClientView *clie
 }
 
 static gint
-find_contact_source_by_offset (EContactStore *contact_store, gint offset)
+find_contact_source_by_offset (EContactStore *contact_store,
+                               gint offset)
 {
 	GArray *array;
 	gint i;
@@ -333,7 +339,8 @@ find_contact_source_by_offset (EContactStore *contact_store, gint offset)
 }
 
 static gint
-find_contact_source_by_pointer (EContactStore *contact_store, ContactSource *source)
+find_contact_source_by_pointer (EContactStore *contact_store,
+                                ContactSource *source)
 {
 	GArray *array;
 	gint i;
@@ -349,7 +356,8 @@ find_contact_source_by_pointer (EContactStore *contact_store, ContactSource *sou
 }
 
 static gint
-get_contact_source_offset (EContactStore *contact_store, gint contact_source_index)
+get_contact_source_offset (EContactStore *contact_store,
+                           gint contact_source_index)
 {
 	GArray *array;
 	gint offset = 0;
@@ -389,7 +397,9 @@ count_contacts (EContactStore *contact_store)
 }
 
 static gint
-find_contact_by_view_and_uid (EContactStore *contact_store, EBookClientView *find_view, const gchar *find_uid)
+find_contact_by_view_and_uid (EContactStore *contact_store,
+                              EBookClientView *find_view,
+                              const gchar *find_uid)
 {
 	GArray *array;
 	ContactSource *source;
@@ -423,7 +433,8 @@ find_contact_by_view_and_uid (EContactStore *contact_store, EBookClientView *fin
 }
 
 static gint
-find_contact_by_uid (EContactStore *contact_store, const gchar *find_uid)
+find_contact_by_uid (EContactStore *contact_store,
+                     const gchar *find_uid)
 {
 	GArray *array;
 	gint i;
@@ -447,7 +458,8 @@ find_contact_by_uid (EContactStore *contact_store, const gchar *find_uid)
 }
 
 static EBookClient *
-get_book_at_row (EContactStore *contact_store, gint row)
+get_book_at_row (EContactStore *contact_store,
+                 gint row)
 {
 	GArray *array;
 	ContactSource *source;
@@ -464,7 +476,8 @@ get_book_at_row (EContactStore *contact_store, gint row)
 }
 
 static EContact *
-get_contact_at_row (EContactStore *contact_store, gint row)
+get_contact_at_row (EContactStore *contact_store,
+                    gint row)
 {
 	GArray *array;
 	ContactSource *source;
@@ -486,8 +499,10 @@ get_contact_at_row (EContactStore *contact_store, gint row)
 }
 
 static gboolean
-find_contact_source_details_by_view (EContactStore *contact_store, EBookClientView *client_view,
-				     ContactSource **contact_source, gint *offset)
+find_contact_source_details_by_view (EContactStore *contact_store,
+                                     EBookClientView *client_view,
+                                     ContactSource **contact_source,
+                                     gint *offset)
 {
 	GArray *array;
 	gint source_index;
@@ -508,7 +523,9 @@ find_contact_source_details_by_view (EContactStore *contact_store, EBookClientVi
  * ------------------------- */
 
 static void
-view_contacts_added (EContactStore *contact_store, const GSList *contacts, EBookClientView *client_view)
+view_contacts_added (EContactStore *contact_store,
+                     const GSList *contacts,
+                     EBookClientView *client_view)
 {
 	ContactSource *source;
 	gint           offset;
@@ -536,7 +553,9 @@ view_contacts_added (EContactStore *contact_store, const GSList *contacts, EBook
 }
 
 static void
-view_contacts_removed (EContactStore *contact_store, const GSList *uids, EBookClientView *client_view)
+view_contacts_removed (EContactStore *contact_store,
+                       const GSList *uids,
+                       EBookClientView *client_view)
 {
 	ContactSource *source;
 	gint           offset;
@@ -573,7 +592,9 @@ view_contacts_removed (EContactStore *contact_store, const GSList *uids, EBookCl
 }
 
 static void
-view_contacts_modified (EContactStore *contact_store, const GSList *contacts, EBookClientView *client_view)
+view_contacts_modified (EContactStore *contact_store,
+                        const GSList *contacts,
+                        EBookClientView *client_view)
 {
 	GPtrArray     *cached_contacts;
 	ContactSource *source;
@@ -616,7 +637,9 @@ view_contacts_modified (EContactStore *contact_store, const GSList *contacts, EB
 }
 
 static void
-view_complete (EContactStore *contact_store, const GError *error, EBookClientView *client_view)
+view_complete (EContactStore *contact_store,
+               const GError *error,
+               EBookClientView *client_view)
 {
 	ContactSource *source;
 	gint           offset;
@@ -689,7 +712,8 @@ view_complete (EContactStore *contact_store, const GError *error, EBookClientVie
  * --------------------- */
 
 static void
-start_view (EContactStore *contact_store, EBookClientView *view)
+start_view (EContactStore *contact_store,
+            EBookClientView *view)
 {
 	g_signal_emit (contact_store, signals[START_CLIENT_VIEW], 0, view);
 
@@ -706,7 +730,8 @@ start_view (EContactStore *contact_store, EBookClientView *view)
 }
 
 static void
-stop_view (EContactStore *contact_store, EBookClientView *view)
+stop_view (EContactStore *contact_store,
+           EBookClientView *view)
 {
 	e_book_client_view_stop (view, NULL);
 
@@ -737,7 +762,8 @@ free_contact_ptrarray (GPtrArray *contacts)
 }
 
 static void
-clear_contact_source (EContactStore *contact_store, ContactSource *source)
+clear_contact_source (EContactStore *contact_store,
+                      ContactSource *source)
 {
 	gint source_index;
 	gint offset;
@@ -789,7 +815,9 @@ clear_contact_source (EContactStore *contact_store, ContactSource *source)
 }
 
 static void
-client_view_ready_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_view_ready_cb (GObject *source_object,
+                      GAsyncResult *result,
+                      gpointer user_data)
 {
 	EContactStore *contact_store = user_data;
 	gint source_idx;
@@ -839,7 +867,8 @@ client_view_ready_cb (GObject *source_object, GAsyncResult *result, gpointer use
 }
 
 static void
-query_contact_source (EContactStore *contact_store, ContactSource *source)
+query_contact_source (EContactStore *contact_store,
+                      ContactSource *source)
 {
 	gboolean is_opened;
 
@@ -885,7 +914,8 @@ query_contact_source (EContactStore *contact_store, ContactSource *source)
  * Returns: An #EBookClient.
  **/
 EBookClient *
-e_contact_store_get_client (EContactStore *contact_store, GtkTreeIter *iter)
+e_contact_store_get_client (EContactStore *contact_store,
+                            GtkTreeIter *iter)
 {
 	gint index;
 
@@ -907,7 +937,8 @@ e_contact_store_get_client (EContactStore *contact_store, GtkTreeIter *iter)
  * Returns: An #EContact.
  **/
 EContact *
-e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter)
+e_contact_store_get_contact (EContactStore *contact_store,
+                             GtkTreeIter *iter)
 {
 	gint index;
 
@@ -930,8 +961,9 @@ e_contact_store_get_contact (EContactStore *contact_store, GtkTreeIter *iter)
  * Returns: %TRUE if the contact was found, and @iter was set. %FALSE otherwise.
  **/
 gboolean
-e_contact_store_find_contact (EContactStore *contact_store, const gchar *uid,
-			      GtkTreeIter *iter)
+e_contact_store_find_contact (EContactStore *contact_store,
+                              const gchar *uid,
+                              GtkTreeIter *iter)
 {
 	gint index;
 
@@ -985,7 +1017,8 @@ e_contact_store_get_clients (EContactStore *contact_store)
  * The @contact_store adds a reference to @book_client, if added.
  **/
 void
-e_contact_store_add_client (EContactStore *contact_store, EBookClient *book_client)
+e_contact_store_add_client (EContactStore *contact_store,
+                            EBookClient *book_client)
 {
 	GArray *array;
 	ContactSource source;
@@ -1019,7 +1052,8 @@ e_contact_store_add_client (EContactStore *contact_store, EBookClient *book_clie
  * Removes @book from the list of book clients that provide contacts for @contact_store.
  **/
 void
-e_contact_store_remove_client (EContactStore *contact_store, EBookClient *book_client)
+e_contact_store_remove_client (EContactStore *contact_store,
+                               EBookClient *book_client)
 {
 	GArray *array;
 	ContactSource *source;
@@ -1053,7 +1087,8 @@ e_contact_store_remove_client (EContactStore *contact_store, EBookClient *book_c
  * assigned to @contact_store.
  **/
 void
-e_contact_store_set_query (EContactStore *contact_store, EBookQuery *book_query)
+e_contact_store_set_query (EContactStore *contact_store,
+                           EBookQuery *book_query)
 {
 	GArray *array;
 	gint i;
@@ -1118,7 +1153,8 @@ e_contact_store_get_n_columns (GtkTreeModel *tree_model)
 }
 
 static GType
-get_column_type (EContactStore *contact_store, gint column)
+get_column_type (EContactStore *contact_store,
+                 gint column)
 {
 	const gchar  *field_name;
 	GObjectClass *contact_class;
@@ -1144,7 +1180,7 @@ get_column_type (EContactStore *contact_store, gint column)
 
 static GType
 e_contact_store_get_column_type (GtkTreeModel *tree_model,
-				 gint          index)
+                                 gint index)
 {
 	EContactStore *contact_store = E_CONTACT_STORE (tree_model);
 
@@ -1155,7 +1191,9 @@ e_contact_store_get_column_type (GtkTreeModel *tree_model,
 }
 
 static gboolean
-e_contact_store_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreePath *path)
+e_contact_store_get_iter (GtkTreeModel *tree_model,
+                          GtkTreeIter *iter,
+                          GtkTreePath *path)
 {
 	EContactStore *contact_store = E_CONTACT_STORE (tree_model);
 	gint           index;
@@ -1173,7 +1211,7 @@ e_contact_store_get_iter (GtkTreeModel *tree_model, GtkTreeIter *iter, GtkTreePa
 
 static GtkTreePath *
 e_contact_store_get_path (GtkTreeModel *tree_model,
-			  GtkTreeIter  *iter)
+                          GtkTreeIter *iter)
 {
 	EContactStore *contact_store = E_CONTACT_STORE (tree_model);
 	GtkTreePath   *path;
@@ -1190,8 +1228,8 @@ e_contact_store_get_path (GtkTreeModel *tree_model,
 }
 
 static gboolean
-e_contact_store_iter_next (GtkTreeModel  *tree_model,
-			   GtkTreeIter   *iter)
+e_contact_store_iter_next (GtkTreeModel *tree_model,
+                           GtkTreeIter *iter)
 {
 	EContactStore *contact_store = E_CONTACT_STORE (tree_model);
 	gint           index;
@@ -1211,8 +1249,8 @@ e_contact_store_iter_next (GtkTreeModel  *tree_model,
 
 static gboolean
 e_contact_store_iter_children (GtkTreeModel *tree_model,
-			       GtkTreeIter  *iter,
-			       GtkTreeIter  *parent)
+                               GtkTreeIter *iter,
+                               GtkTreeIter *parent)
 {
 	EContactStore *contact_store = E_CONTACT_STORE (tree_model);
 
@@ -1232,7 +1270,7 @@ e_contact_store_iter_children (GtkTreeModel *tree_model,
 
 static gboolean
 e_contact_store_iter_has_child (GtkTreeModel *tree_model,
-				GtkTreeIter  *iter)
+                                GtkTreeIter *iter)
 {
 	g_return_val_if_fail (E_IS_CONTACT_STORE (tree_model), FALSE);
 
@@ -1244,7 +1282,7 @@ e_contact_store_iter_has_child (GtkTreeModel *tree_model,
 
 static gint
 e_contact_store_iter_n_children (GtkTreeModel *tree_model,
-				 GtkTreeIter  *iter)
+                                 GtkTreeIter *iter)
 {
 	EContactStore *contact_store = E_CONTACT_STORE (tree_model);
 
@@ -1259,9 +1297,9 @@ e_contact_store_iter_n_children (GtkTreeModel *tree_model,
 
 static gboolean
 e_contact_store_iter_nth_child (GtkTreeModel *tree_model,
-				GtkTreeIter  *iter,
-				GtkTreeIter  *parent,
-				gint          n)
+                                GtkTreeIter *iter,
+                                GtkTreeIter *parent,
+                                gint n)
 {
 	EContactStore *contact_store = E_CONTACT_STORE (tree_model);
 
@@ -1280,17 +1318,17 @@ e_contact_store_iter_nth_child (GtkTreeModel *tree_model,
 
 static gboolean
 e_contact_store_iter_parent (GtkTreeModel *tree_model,
-			     GtkTreeIter  *iter,
-			     GtkTreeIter  *child)
+                             GtkTreeIter *iter,
+                             GtkTreeIter *child)
 {
 	return FALSE;
 }
 
 static void
 e_contact_store_get_value (GtkTreeModel *tree_model,
-			   GtkTreeIter  *iter,
-			   gint          column,
-			   GValue       *value)
+                           GtkTreeIter *iter,
+                           gint column,
+                           GValue *value)
 {
 	EContactStore *contact_store = E_CONTACT_STORE (tree_model);
 	EContact      *contact;

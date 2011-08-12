@@ -72,16 +72,16 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 	if (priv->flags & CAMEL_BESTENC_GET_ENCODING) {
 		register guint /* hopefully reg's are assinged in the order they appear? */
 			c,
-			lastc=priv->lastc,
-			countline=priv->countline,
-			count0=priv->count0,
+			lastc = priv->lastc,
+			countline = priv->countline,
+			count0 = priv->count0,
 			count8 = priv->count8;
 
 		/* Check ^From  lines first call, or have the start of a new line waiting? */
 		if ((priv->flags & CAMEL_BESTENC_NO_FROM) && !priv->hadfrom
 		    && (priv->fromcount > 0 || priv->startofline)) {
 			if (priv->fromcount + len >=5) {
-				memcpy (&priv->fromsave[priv->fromcount], in, 5-priv->fromcount);
+				memcpy (&priv->fromsave[priv->fromcount], in, 5 - priv->fromcount);
 				priv->hadfrom = strncmp(priv->fromsave, "From ", 5) == 0;
 				priv->fromcount = 0;
 			} else {
@@ -95,7 +95,7 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 		/* See rfc2045 section 2 for definitions of 7bit/8bit/binary */
 		p = (guchar *) in;
 		pend = p + len;
-		while (p<pend) {
+		while (p < pend) {
 			c = *p++;
 			/* check for 8 bit characters */
 			if (c & 0x80)
@@ -120,13 +120,13 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 
 					/* Check for "^From " lines */
 					if ((priv->flags & CAMEL_BESTENC_NO_FROM) && !priv->hadfrom) {
-						if (pend-p >= 5) {
+						if (pend - p >= 5) {
 							priv->hadfrom = strncmp((gchar *) p, (gchar *) "From ", 5) == 0;
-						} else if (pend-p == 0) {
+						} else if (pend - p == 0) {
 							priv->startofline = TRUE;
 						} else {
-							priv->fromcount = pend-p;
-							memcpy (priv->fromsave, p, pend-p);
+							priv->fromcount = pend - p;
+							memcpy (priv->fromsave, p, pend - p);
 						}
 					}
 				} else {
@@ -267,8 +267,8 @@ camel_mime_filter_bestenc_get_best_encoding (CamelMimeFilterBestenc *filter,
 #endif
 
 	/* if we're not allowed to have From lines and we had one, use an encoding
-	   that will never let it show.  Unfortunately only base64 can at present,
-	   although qp could be modified to allow it too */
+	 * that will never let it show.  Unfortunately only base64 can at present,
+	 * although qp could be modified to allow it too */
 	if ((priv->flags & CAMEL_BESTENC_NO_FROM) && priv->hadfrom)
 		return CAMEL_TRANSFER_ENCODING_BASE64;
 

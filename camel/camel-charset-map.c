@@ -39,19 +39,19 @@
 #include "camel-iconv.h"
 
 /*
-  if you want to build the charset map, compile this with something like:
-    gcc -DBUILD_MAP camel-charset-map.c `pkg-config --cflags --libs glib-2.0`
-  (plus any -I/-L/-l flags you need for iconv), then run it as
-    ./a.out > camel-charset-map-private.h
-
-  Note that the big-endian variant isn't tested...
-
-  The tables genereated work like this:
-
-   An indirect array for each page of unicode character
-   Each array element has an indirect pointer to one of the bytes of
-   the generated bitmask.
-*/
+ * if you want to build the charset map, compile this with something like:
+ *    gcc -DBUILD_MAP camel-charset-map.c `pkg-config --cflags --libs glib-2.0`
+ * (plus any -I/-L/-l flags you need for iconv), then run it as
+ *    ./a.out > camel-charset-map-private.h
+ *
+ * Note that the big-endian variant isn't tested...
+ *
+ * The tables genereated work like this:
+ *
+ * An indirect array for each page of unicode character
+ * Each array element has an indirect pointer to one of the bytes of
+ * the generated bitmask.
+ */
 
 #ifdef BUILD_MAP
 
@@ -119,7 +119,8 @@ block_hash (gconstpointer v)
 }
 
 static gint
-block_equal (gconstpointer v1, gconstpointer v2)
+block_equal (gconstpointer v1,
+             gconstpointer v2)
 {
 	return !memcmp (v1, v2, 256);
 }
@@ -312,7 +313,9 @@ camel_charset_init (CamelCharset *c)
 }
 
 void
-camel_charset_step (CamelCharset *cc, const gchar *in, gint len)
+camel_charset_step (CamelCharset *cc,
+                    const gchar *in,
+                    gint len)
 {
 	const guchar *inptr = (const guchar *) in;
 	const guchar *inend = inptr + len;
@@ -328,9 +331,9 @@ camel_charset_step (CamelCharset *cc, const gchar *in, gint len)
 		if (c < 0xffff) {
 			mask &= charset_mask (c);
 
-			if (c>=128 && c<256)
+			if (c >= 128 && c < 256)
 				level = MAX (level, 1);
-			else if (c>=256)
+			else if (c >= 256)
 				level = 2;
 		} else {
 			mask = 0;
@@ -376,7 +379,8 @@ camel_charset_best_name (CamelCharset *charset)
 
 /* finds the minimum charset for this string NULL means US-ASCII */
 const gchar *
-camel_charset_best (const gchar *in, gint len)
+camel_charset_best (const gchar *in,
+                    gint len)
 {
 	CamelCharset charset;
 

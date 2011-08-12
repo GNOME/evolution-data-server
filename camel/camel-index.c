@@ -80,7 +80,8 @@ camel_index_init (CamelIndex *index)
 }
 
 CamelIndex *
-camel_index_new (const gchar *path, gint flags)
+camel_index_new (const gchar *path,
+                 gint flags)
 {
 	CamelIndex *idx;
 
@@ -91,7 +92,9 @@ camel_index_new (const gchar *path, gint flags)
 }
 
 void
-camel_index_construct (CamelIndex *idx, const gchar *path, gint flags)
+camel_index_construct (CamelIndex *idx,
+                       const gchar *path,
+                       gint flags)
 {
 	g_free (idx->path);
 	idx->path = g_strdup_printf ("%s.index", path);
@@ -99,7 +102,8 @@ camel_index_construct (CamelIndex *idx, const gchar *path, gint flags)
 }
 
 gint
-camel_index_rename (CamelIndex *idx, const gchar *path)
+camel_index_rename (CamelIndex *idx,
+                    const gchar *path)
 {
 	CamelIndexClass *class;
 
@@ -125,7 +129,9 @@ camel_index_rename (CamelIndex *idx, const gchar *path)
  * Since: 2.32
  **/
 void
-camel_index_set_normalize (CamelIndex *idx, CamelIndexNorm func, gpointer data)
+camel_index_set_normalize (CamelIndex *idx,
+                           CamelIndexNorm func,
+                           gpointer data)
 {
 	g_return_if_fail (CAMEL_IS_INDEX (idx));
 
@@ -192,7 +198,8 @@ camel_index_delete (CamelIndex *idx)
 }
 
 gint
-camel_index_has_name (CamelIndex *idx, const gchar *name)
+camel_index_has_name (CamelIndex *idx,
+                      const gchar *name)
 {
 	CamelIndexClass *class;
 
@@ -208,7 +215,8 @@ camel_index_has_name (CamelIndex *idx, const gchar *name)
 }
 
 CamelIndexName *
-camel_index_add_name (CamelIndex *idx, const gchar *name)
+camel_index_add_name (CamelIndex *idx,
+                      const gchar *name)
 {
 	CamelIndexClass *class;
 
@@ -224,7 +232,8 @@ camel_index_add_name (CamelIndex *idx, const gchar *name)
 }
 
 gint
-camel_index_write_name (CamelIndex *idx, CamelIndexName *idn)
+camel_index_write_name (CamelIndex *idx,
+                        CamelIndexName *idn)
 {
 	CamelIndexClass *class;
 
@@ -242,7 +251,8 @@ camel_index_write_name (CamelIndex *idx, CamelIndexName *idn)
 }
 
 CamelIndexCursor *
-camel_index_find_name (CamelIndex *idx, const gchar *name)
+camel_index_find_name (CamelIndex *idx,
+                       const gchar *name)
 {
 	CamelIndexClass *class;
 
@@ -258,7 +268,8 @@ camel_index_find_name (CamelIndex *idx, const gchar *name)
 }
 
 void
-camel_index_delete_name (CamelIndex *idx, const gchar *name)
+camel_index_delete_name (CamelIndex *idx,
+                         const gchar *name)
 {
 	CamelIndexClass *class;
 
@@ -272,7 +283,8 @@ camel_index_delete_name (CamelIndex *idx, const gchar *name)
 }
 
 CamelIndexCursor *
-camel_index_find (CamelIndex *idx, const gchar *word)
+camel_index_find (CamelIndex *idx,
+                  const gchar *word)
 {
 	CamelIndexClass *class;
 	CamelIndexCursor *ret;
@@ -364,7 +376,8 @@ camel_index_name_init (CamelIndexName *index_name)
 }
 
 CamelIndexName *
-camel_index_name_new (CamelIndex *idx, const gchar *name)
+camel_index_name_new (CamelIndex *idx,
+                      const gchar *name)
 {
 	CamelIndexName *idn;
 
@@ -445,7 +458,8 @@ camel_index_cursor_init (CamelIndexCursor *index_cursor)
 }
 
 CamelIndexCursor *
-camel_index_cursor_new (CamelIndex *idx, const gchar *name)
+camel_index_cursor_new (CamelIndex *idx,
+                        const gchar *name)
 {
 	CamelIndexCursor *idc;
 

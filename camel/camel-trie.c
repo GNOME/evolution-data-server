@@ -62,7 +62,8 @@ struct _CamelTrie {
 };
 
 static inline gunichar
-trie_utf8_getc (const guchar **in, gsize inlen)
+trie_utf8_getc (const guchar **in,
+                gsize inlen)
 {
 	register const guchar *inptr = *in;
 	const guchar *inend = inptr + inlen;
@@ -153,7 +154,8 @@ camel_trie_free (CamelTrie *trie)
 }
 
 static struct _trie_match *
-g (struct _trie_state *s, gunichar c)
+g (struct _trie_state *s,
+   gunichar c)
 {
 	struct _trie_match *m = s->match;
 
@@ -164,7 +166,10 @@ g (struct _trie_state *s, gunichar c)
 }
 
 static struct _trie_state *
-trie_insert (CamelTrie *trie, gint depth, struct _trie_state *q, gunichar c)
+trie_insert (CamelTrie *trie,
+             gint depth,
+             struct _trie_state *q,
+             gunichar c)
 {
 	struct _trie_match *m;
 
@@ -194,7 +199,8 @@ trie_insert (CamelTrie *trie, gint depth, struct _trie_state *q, gunichar c)
 
 #if d(!)0
 static void
-dump_trie (struct _trie_state *s, gint depth)
+dump_trie (struct _trie_state *s,
+           gint depth)
 {
 	gchar *p = g_alloca ((depth * 2) + 1);
 	struct _trie_match *m;
@@ -240,7 +246,9 @@ dump_trie (struct _trie_state *s, gint depth)
  * Since: 2.24
  **/
 void
-camel_trie_add (CamelTrie *trie, const gchar *pattern, gint pattern_id)
+camel_trie_add (CamelTrie *trie,
+                const gchar *pattern,
+                gint pattern_id)
 {
 	const guchar *inptr = (const guchar *) pattern;
 	struct _trie_state *q, *q1, *r;
@@ -338,7 +346,9 @@ camel_trie_add (CamelTrie *trie, const gchar *pattern, gint pattern_id)
  * Since: 2.24
  **/
 const gchar *
-camel_trie_search (CamelTrie *trie, const gchar *buffer, gsize buflen,
+camel_trie_search (CamelTrie *trie,
+                   const gchar *buffer,
+                   gsize buflen,
                    gint *matched_id)
 {
 	const guchar *inptr, *inend, *prev, *pat;

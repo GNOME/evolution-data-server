@@ -35,11 +35,11 @@ void
 test_print (const gchar *format,
             ...);
 
-ECal*
+ECal *
 ecal_test_utils_cal_new_from_uri (const gchar     *uri,
 				  ECalSourceType  type);
 
-ECal*
+ECal *
 ecal_test_utils_cal_new_temp (gchar           **uri,
 			      ECalSourceType   type);
 
@@ -68,7 +68,7 @@ ecal_test_utils_cal_get_ldap_attribute (ECal *cal);
 void
 ecal_test_utils_cal_get_capabilities (ECal *cal);
 
-GList*
+GList *
 ecal_test_utils_cal_get_free_busy (ECal   *cal,
                                    GList  *users,
                                    time_t  start,
@@ -82,7 +82,7 @@ void
 ecal_test_utils_cal_assert_e_cal_components_equal (ECalComponent *a,
                                                    ECalComponent *b);
 
-icalcomponent*
+icalcomponent *
 ecal_test_utils_cal_get_object (ECal       *cal,
                                 const gchar *uid);
 
@@ -95,14 +95,14 @@ void
 ecal_test_utils_cal_remove_object (ECal       *cal,
 				   const gchar *uid);
 
-icalcomponent*
+icalcomponent *
 ecal_test_utils_cal_get_default_object (ECal *cal);
 
-GList*
+GList *
 ecal_test_utils_cal_get_object_list (ECal       *cal,
                                      const gchar *query);
 
-GList*
+GList *
 ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
 					 const gchar *uid);
 
@@ -130,7 +130,7 @@ void
 ecal_test_utils_cal_component_set_icalcomponent (ECalComponent *e_component,
 						 icalcomponent *component);
 
-icaltimezone*
+icaltimezone *
 ecal_test_utils_cal_get_timezone (ECal       *cal,
                                   const gchar *tzid);
 
@@ -152,7 +152,7 @@ void
 ecal_test_utils_cal_receive_objects (ECal          *cal,
                                      icalcomponent *component);
 
-ECalView*
+ECalView *
 ecal_test_utils_get_query (ECal       *cal,
                            const gchar *sexp);
 

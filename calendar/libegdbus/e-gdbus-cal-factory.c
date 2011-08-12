@@ -74,9 +74,10 @@ e_gdbus_cal_factory_default_init (EGdbusCalFactoryIface *iface)
 }
 
 /* encodes source and source type into a strv usable for a wire transfer;
-   Free returned pointer with g_strfreev () */
+ * Free returned pointer with g_strfreev () */
 gchar **
-e_gdbus_cal_factory_encode_get_cal (const gchar *in_source, guint in_type)
+e_gdbus_cal_factory_encode_get_cal (const gchar *in_source,
+                                    guint in_type)
 {
 	gchar **strv;
 
@@ -91,9 +92,11 @@ e_gdbus_cal_factory_encode_get_cal (const gchar *in_source, guint in_type)
 }
 
 /* decodes source and source type from a strv recevied from a wire transfer;
-   free out_source with g_free (); returns TRUE is successful. */
+ * free out_source with g_free (); returns TRUE is successful. */
 gboolean
-e_gdbus_cal_factory_decode_get_cal (const gchar * const * in_strv, gchar **out_source, guint *out_type)
+e_gdbus_cal_factory_decode_get_cal (const gchar * const * in_strv,
+                                    gchar **out_source,
+                                    guint *out_type)
 {
 	g_return_val_if_fail (in_strv != NULL, FALSE);
 	g_return_val_if_fail (in_strv[0] != NULL, FALSE);
@@ -111,7 +114,11 @@ e_gdbus_cal_factory_decode_get_cal (const gchar * const * in_strv, gchar **out_s
 /* C Bindings for properties */
 
 void
-e_gdbus_cal_factory_call_get_cal (GDBusProxy *proxy, const gchar * const *in_source_type, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_factory_call_get_cal (GDBusProxy *proxy,
+                                  const gchar * const *in_source_type,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
 {
 	/* in_source_type has only two items, the first is ESource, the second is source type */
 	/* use e_gdbus_cal_factory_encode_get_cal() to encode them */
@@ -125,13 +132,20 @@ e_gdbus_cal_factory_call_get_cal (GDBusProxy *proxy, const gchar * const *in_sou
 }
 
 gboolean
-e_gdbus_cal_factory_call_get_cal_finish (GDBusProxy *proxy, GAsyncResult *result, gchar **out_path, GError **error)
+e_gdbus_cal_factory_call_get_cal_finish (GDBusProxy *proxy,
+                                         GAsyncResult *result,
+                                         gchar **out_path,
+                                         GError **error)
 {
 	return e_gdbus_proxy_method_call_finish_string (proxy, result, out_path, error);
 }
 
 gboolean
-e_gdbus_cal_factory_call_get_cal_sync (GDBusProxy *proxy, const gchar * const *in_source_type, gchar **out_path, GCancellable *cancellable, GError **error)
+e_gdbus_cal_factory_call_get_cal_sync (GDBusProxy *proxy,
+                                       const gchar * const *in_source_type,
+                                       gchar **out_path,
+                                       GCancellable *cancellable,
+                                       GError **error)
 {
 	/* in_source_type has only two items, the first is ESource, the second is source type */
 	/* use e_gdbus_cal_factory_encode_get_cal() to encode them */
@@ -145,7 +159,10 @@ e_gdbus_cal_factory_call_get_cal_sync (GDBusProxy *proxy, const gchar * const *i
 }
 
 void
-e_gdbus_cal_factory_complete_get_cal (EGdbusCalFactory *object, GDBusMethodInvocation *invocation, const gchar *out_path, const GError *error)
+e_gdbus_cal_factory_complete_get_cal (EGdbusCalFactory *object,
+                                      GDBusMethodInvocation *invocation,
+                                      const gchar *out_path,
+                                      const GError *error)
 {
 	e_gdbus_complete_sync_method_string (object, invocation, out_path, error);
 }
@@ -168,14 +185,14 @@ static const GDBusInterfaceInfo _e_gdbus_cal_factory_interface_info =
 };
 
 static void
-handle_method_call (GDBusConnection       *connection,
-                    const gchar           *sender,
-                    const gchar           *object_path,
-                    const gchar           *interface_name,
-                    const gchar           *method_name,
-                    GVariant              *parameters,
+handle_method_call (GDBusConnection *connection,
+                    const gchar *sender,
+                    const gchar *object_path,
+                    const gchar *interface_name,
+                    const gchar *method_name,
+                    GVariant *parameters,
                     GDBusMethodInvocation *invocation,
-                    gpointer               user_data)
+                    gpointer user_data)
 {
 	guint method_id, method_type;
 
@@ -189,14 +206,27 @@ handle_method_call (GDBusConnection       *connection,
 }
 
 static GVariant *
-get_property (GDBusConnection *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *property_name, GError **error, gpointer user_data)
+get_property (GDBusConnection *connection,
+              const gchar *sender,
+              const gchar *object_path,
+              const gchar *interface_name,
+              const gchar *property_name,
+              GError **error,
+              gpointer user_data)
 {
 	g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_NOT_SUPPORTED, "This implementation does not support property `%s'", property_name);
 	return NULL;
 }
 
 static gboolean
-set_property (GDBusConnection *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *property_name, GVariant *value, GError **error, gpointer user_data)
+set_property (GDBusConnection *connection,
+              const gchar *sender,
+              const gchar *object_path,
+              const gchar *interface_name,
+              const gchar *property_name,
+              GVariant *value,
+              GError **error,
+              gpointer user_data)
 {
 	g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_NOT_SUPPORTED, "This implementation does not support property `%s'", property_name);
 	return FALSE;
@@ -311,7 +341,10 @@ on_object_unregistered (GObject *object)
  * Returns: 0 if @error is set, otherwise a registration id (never 0) that can be used with g_dbus_connection_unregister_object().
  */
 guint
-e_gdbus_cal_factory_register_object (EGdbusCalFactory *object, GDBusConnection *connection, const gchar *object_path, GError **error)
+e_gdbus_cal_factory_register_object (EGdbusCalFactory *object,
+                                     GDBusConnection *connection,
+                                     const gchar *object_path,
+                                     GError **error)
 {
 	GHashTable *pvc;
 
@@ -356,17 +389,20 @@ e_gdbus_cal_factory_proxy_init (EGdbusCalFactoryProxy *proxy)
 }
 
 static void
-g_signal (GDBusProxy *proxy, const gchar *sender_name, const gchar *signal_name, GVariant *parameters)
+g_signal (GDBusProxy *proxy,
+          const gchar *sender_name,
+          const gchar *signal_name,
+          GVariant *parameters)
 {
 	/*
 	guint signal_id, signal_type;
-
+ *
 	signal_id = lookup_signal_id_from_signal_name (signal_name);
 	signal_type = lookup_signal_type_from_signal_name (signal_name);
-
+ *
 	g_return_if_fail (signal_id != 0);
 	g_return_if_fail (signal_type != 0);
-
+ *
 	e_gdbus_proxy_emit_signal (proxy, parameters, signals[signal_id], signal_type);
 	*/
 }
@@ -400,7 +436,13 @@ proxy_iface_init (EGdbusCalFactoryIface *iface)
  * This is a failable asynchronous constructor - when the proxy is ready, callback will be invoked and you can use e_gdbus_cal_factory_proxy_new_finish() to get the result.
  */
 void
-e_gdbus_cal_factory_proxy_new (GDBusConnection *connection, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_factory_proxy_new (GDBusConnection *connection,
+                               GDBusProxyFlags flags,
+                               const gchar *name,
+                               const gchar *object_path,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
 	g_async_initable_new_async (E_TYPE_GDBUS_CAL_FACTORY_PROXY,
 				G_PRIORITY_DEFAULT,
@@ -425,7 +467,8 @@ e_gdbus_cal_factory_proxy_new (GDBusConnection *connection, GDBusProxyFlags flag
  * Returns: A #EGdbusCalFactoryProxy or %NULL if @error is set. Free with g_object_unref().
  */
 EGdbusCalFactory *
-e_gdbus_cal_factory_proxy_new_finish (GAsyncResult *result, GError **error)
+e_gdbus_cal_factory_proxy_new_finish (GAsyncResult *result,
+                                      GError **error)
 {
 	GObject *object;
 	GObject *source_object;
@@ -455,7 +498,12 @@ e_gdbus_cal_factory_proxy_new_finish (GAsyncResult *result, GError **error)
  * Returns: A #EGdbusCalFactoryProxy or %NULL if error is set. Free with g_object_unref().
  */
 EGdbusCalFactory *
-e_gdbus_cal_factory_proxy_new_sync (GDBusConnection *connection, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GError **error)
+e_gdbus_cal_factory_proxy_new_sync (GDBusConnection *connection,
+                                    GDBusProxyFlags flags,
+                                    const gchar *name,
+                                    const gchar *object_path,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	GInitable *initable;
 	initable = g_initable_new (E_TYPE_GDBUS_CAL_FACTORY_PROXY,
@@ -488,7 +536,13 @@ e_gdbus_cal_factory_proxy_new_sync (GDBusConnection *connection, GDBusProxyFlags
  * This is a failable asynchronous constructor - when the proxy is ready, callback will be invoked and you can use e_gdbus_cal_factory_proxy_new_for_bus_finish() to get the result.
  */
 void
-e_gdbus_cal_factory_proxy_new_for_bus (GBusType bus_type, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_cal_factory_proxy_new_for_bus (GBusType bus_type,
+                                       GDBusProxyFlags flags,
+                                       const gchar *name,
+                                       const gchar *object_path,
+                                       GCancellable *cancellable,
+                                       GAsyncReadyCallback callback,
+                                       gpointer user_data)
 {
 	g_async_initable_new_async (E_TYPE_GDBUS_CAL_FACTORY_PROXY,
 				G_PRIORITY_DEFAULT,
@@ -513,7 +567,8 @@ e_gdbus_cal_factory_proxy_new_for_bus (GBusType bus_type, GDBusProxyFlags flags,
  * Returns: A #EGdbusCalFactoryProxy or %NULL if @error is set. Free with g_object_unref().
  */
 EGdbusCalFactory *
-e_gdbus_cal_factory_proxy_new_for_bus_finish (GAsyncResult *result, GError **error)
+e_gdbus_cal_factory_proxy_new_for_bus_finish (GAsyncResult *result,
+                                              GError **error)
 {
 	GObject *object;
 	GObject *source_object;
@@ -543,7 +598,12 @@ e_gdbus_cal_factory_proxy_new_for_bus_finish (GAsyncResult *result, GError **err
  * Returns: A #EGdbusCalFactoryProxy or %NULL if error is set. Free with g_object_unref().
  */
 EGdbusCalFactory *
-e_gdbus_cal_factory_proxy_new_for_bus_sync (GBusType bus_type, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GError **error)
+e_gdbus_cal_factory_proxy_new_for_bus_sync (GBusType bus_type,
+                                            GDBusProxyFlags flags,
+                                            const gchar *name,
+                                            const gchar *object_path,
+                                            GCancellable *cancellable,
+                                            GError **error)
 {
 	GInitable *initable;
 	initable = g_initable_new (E_TYPE_GDBUS_CAL_FACTORY_PROXY,

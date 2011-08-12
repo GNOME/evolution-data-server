@@ -153,11 +153,11 @@ write_references (CamelStream *stream,
 
 	while (*value) {
 		ids = value;
-		ide = strchr (ids+1, '>');
+		ide = strchr (ids + 1, '>');
 		if (ide)
 			value = ++ide;
 		else
-			ide = value = strlen (ids)+ids;
+			ide = value = strlen (ids) + ids;
 
 		if (len > 0 && len + (ide - ids) >= CAMEL_FOLD_SIZE) {
 			g_string_append_len (buffer, "\n\t", 2);
@@ -542,7 +542,7 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 						 GError **error);
 
 		/* fold/write the headers.   But dont fold headers that are already formatted
-		   (e.g. ones with parameter-lists, that we know about, and have created) */
+		 * (e.g. ones with parameter-lists, that we know about, and have created) */
 		while (h) {
 			val = h->value;
 			if (val == NULL) {

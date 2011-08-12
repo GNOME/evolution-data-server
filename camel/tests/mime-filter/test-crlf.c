@@ -1,6 +1,6 @@
 /*
-  test-crlf.c
-
+  test - crlf.c
+ *
   Test the CamelMimeFilterCrlf class
 */
 
@@ -21,7 +21,8 @@ enum {
 };
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	CamelStream *source;
 	CamelStream *correct;

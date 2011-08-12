@@ -24,7 +24,7 @@ open_complete_cb (ECalTestClosure *closure)
 
 	if (cals_processed == NUM_CALS) {
 		test_print ("asynchronously opened all calendars successfully\n");
-		g_main_loop_quit ((GMainLoop*) closure->user_data);
+		g_main_loop_quit ((GMainLoop *) closure->user_data);
 	}
 }
 
@@ -36,7 +36,8 @@ open_timeout_cb (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gchar *uri = NULL;
 	GMainLoop *loop;

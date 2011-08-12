@@ -60,7 +60,8 @@ struct _EOfflineListenerPrivate {
 };
 
 static void
-set_online_status (EOfflineListener *eol, gboolean is_offline)
+set_online_status (EOfflineListener *eol,
+                   gboolean is_offline)
 {
 	g_signal_emit (eol, signals[CHANGED], 0);
 }
@@ -126,7 +127,7 @@ setup_offline_listener (EOfflineListener *eol)
  *
  * Since: 2.30
  **/
-EOfflineListener*
+EOfflineListener *
 e_offline_listener_new (void)
 {
 	EOfflineListener *eol = g_object_new (E_TYPE_OFFLINE_LISTENER, NULL);

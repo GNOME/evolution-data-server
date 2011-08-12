@@ -64,9 +64,9 @@ e_url_shroud (const gchar *url)
 	}
 
 	if (first_colon && last_at && first_colon < last_at) {
-		shrouded = g_malloc (first_colon - url + strlen (last_at)+1);
-		memcpy (shrouded, url, first_colon-url);
-		strcpy (shrouded + (first_colon-url), last_at);
+		shrouded = g_malloc (first_colon - url + strlen (last_at) + 1);
+		memcpy (shrouded, url, first_colon - url);
+		strcpy (shrouded + (first_colon - url), last_at);
 	} else {
 		shrouded = g_strdup (url);
 	}
@@ -85,7 +85,8 @@ e_url_shroud (const gchar *url)
  * Returns: %TRUE if the urls are equal, %FALSE if they are not.
  **/
 gboolean
-e_url_equal (const gchar *url1, const gchar *url2)
+e_url_equal (const gchar *url1,
+             const gchar *url2)
 {
 	gchar *shroud1 = e_url_shroud (url1);
 	gchar *shroud2 = e_url_shroud (url2);
@@ -182,8 +183,8 @@ e_uri_new (const gchar *uri_string)
 		if (at && at < slash) {
 			const gchar *at2;
 			/* this is for cases where username contains '@' at it, like:
-			   http://user@domain.com@server.addr.com/path
-			   We skip all at-s before the slash here. */
+			 * http://user@domain.com@server.addr.com/path
+			 * We skip all at-s before the slash here. */
 
 			while (at2 = strchr (at + 1, '@'), at2 && at2 < slash) {
 				at = at2;
@@ -314,13 +315,16 @@ e_uri_free (EUri *uri)
  * Returns: The value of the parameter.
  **/
 const gchar *
-e_uri_get_param (EUri *uri, const gchar *name)
+e_uri_get_param (EUri *uri,
+                 const gchar *name)
 {
 	return g_datalist_get_data (&uri->params, name);
 }
 
 static void
-copy_param_cb (GQuark key_id, gpointer data, gpointer user_data)
+copy_param_cb (GQuark key_id,
+               gpointer data,
+               gpointer user_data)
 {
 	GData *params = (GData *) user_data;
 
@@ -372,7 +376,8 @@ e_uri_copy (EUri *uri)
  * Returns: The string representation of @uri.
  **/
 gchar *
-e_uri_to_string (EUri *uri, gboolean show_password)
+e_uri_to_string (EUri *uri,
+                 gboolean show_password)
 {
 	gchar *str_uri = NULL;
 

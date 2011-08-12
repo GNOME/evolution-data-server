@@ -519,11 +519,11 @@ imap_read_untagged (CamelImapStore *store,
 			break;
 
 		/* HACK ALERT: We scan the non-literal part of the string, looking for possible s expression braces.
-		   This assumes we're getting s-expressions, which we should be.
-		   This is so if we get a blank line after a literal, in an s-expression, we can keep going, since
-		   we do no other parsing at this level.
-		   TODO: handle quoted strings? */
-		for (s=str->str; s<p; s++) {
+		 * This assumes we're getting s-expressions, which we should be.
+		 * This is so if we get a blank line after a literal, in an s-expression, we can keep going, since
+		 * we do no other parsing at this level.
+		 * TODO: handle quoted strings? */
+		for (s = str->str; s < p; s++) {
 			if (*s == '(')
 				sexp++;
 			else if (*s == ')')
@@ -570,7 +570,7 @@ imap_read_untagged (CamelImapStore *store,
 
 		if (camel_debug("imap")) {
 			printf("Literal: -->");
-			fwrite (str->str+1, 1, length, stdout);
+			fwrite (str->str + 1, 1, length, stdout);
 			printf("<--\n");
 		}
 
@@ -619,7 +619,7 @@ imap_read_untagged (CamelImapStore *store,
 				goto lose;
 
 			/* MAJOR HACK ALERT, gropuwise sometimes sends an extra blank line after literals, check that here
-			   But only do it if we're inside an sexpression */
+			 * But only do it if we're inside an sexpression */
 			if (line[0] == 0 && sexp > 0)
 				g_warning("Server sent empty line after a literal, assuming in error");
 		} while (line[0] == 0 && sexp > 0);
@@ -653,7 +653,8 @@ imap_read_untagged (CamelImapStore *store,
  * EXPUNGE and EXISTS responses in it. Releases @store's connect_lock.
  **/
 void
-camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
+camel_imap_response_free (CamelImapStore *store,
+                          CamelImapResponse *response)
 {
 	gint i, number, exists = 0;
 	GArray *expunged = NULL;
@@ -714,7 +715,7 @@ camel_imap_response_free (CamelImapStore *store, CamelImapResponse *response)
  **/
 void
 camel_imap_response_free_without_processing (CamelImapStore *store,
-					     CamelImapResponse *response)
+                                             CamelImapResponse *response)
 {
 	if (!response)
 		return;
@@ -743,9 +744,9 @@ camel_imap_response_free_without_processing (CamelImapStore *store,
  **/
 gchar *
 camel_imap_response_extract (CamelImapStore *store,
-			     CamelImapResponse *response,
-			     const gchar *type,
-			     GError **error)
+                             CamelImapResponse *response,
+                             const gchar *type,
+                             GError **error)
 {
 	gint len, i;
 	gchar *resp;
@@ -794,8 +795,8 @@ camel_imap_response_extract (CamelImapStore *store,
  **/
 gchar *
 camel_imap_response_extract_continuation (CamelImapStore *store,
-					  CamelImapResponse *response,
-					  GError **error)
+                                          CamelImapResponse *response,
+                                          GError **error)
 {
 	gchar *status;
 
@@ -817,8 +818,9 @@ camel_imap_response_extract_continuation (CamelImapStore *store,
 }
 
 static gchar *
-imap_command_strdup_vprintf (CamelImapStore *store, const gchar *fmt,
-			     va_list ap)
+imap_command_strdup_vprintf (CamelImapStore *store,
+                             const gchar *fmt,
+                             va_list ap)
 {
 	GPtrArray *args;
 	const gchar *p, *start;
@@ -947,7 +949,9 @@ imap_command_strdup_vprintf (CamelImapStore *store, const gchar *fmt,
 }
 
 static gchar *
-imap_command_strdup_printf (CamelImapStore *store, const gchar *fmt, ...)
+imap_command_strdup_printf (CamelImapStore *store,
+                            const gchar *fmt,
+                            ...)
 {
 	va_list ap;
 	gchar *result;

@@ -107,8 +107,8 @@
  */
 
 /* This is the maximum year we will go up to (inclusive). Since we use time_t
-   values we can't go past 2037 anyway, and some of our VTIMEZONEs may stop
-   at 2037 as well. */
+ * values we can't go past 2037 anyway, and some of our VTIMEZONEs may stop
+ * at 2037 as well. */
 #define MAX_YEAR	2037
 
 /* Define this for some debugging output. */
@@ -123,15 +123,15 @@ typedef struct {
 	gint            interval;
 
 	/* Specifies the end of the recurrence, inclusive. No occurrences are
-	   generated after this date. If it is 0, the event recurs forever. */
+	 * generated after this date. If it is 0, the event recurs forever. */
 	time_t         enddate;
 
 	/* WKST property - the week start day: 0 = Monday to 6 = Sunday. */
 	gint	       week_start_day;
 
 	/* NOTE: I've used GList's here, but it doesn't matter if we use
-	   other data structures like arrays. The code should be easy to
-	   change. So long as it is easy to see if the modifier is set. */
+	 * other data structures like arrays. The code should be easy to
+	 * change. So long as it is easy to see if the modifier is set. */
 
 	/* For BYMONTH modifier. A list of GINT_TO_POINTERs, 0-11. */
 	GList	      *bymonth;
@@ -146,8 +146,8 @@ typedef struct {
 	GList	      *bymonthday;
 
 	/* For BYDAY modifier. A list of GINT_TO_POINTERs, in pairs.
-	   The first of each pair is the weekday, 0 = Monday to 6 = Sunday.
-	   The second of each pair is the week number[+-]0-53. */
+	 * The first of each pair is the weekday, 0 = Monday to 6 = Sunday.
+	 * The second of each pair is the week number[+-]0-53. */
 	GList	      *byday;
 
 	/* For BYHOUR modifier. A list of GINT_TO_POINTERs, 0-23. */
@@ -169,7 +169,7 @@ struct _RecurData {
 	ECalRecurrence *recur;
 
 	/* This is used for the WEEKLY frequency. It is the offset from the
-	   week_start_day. */
+	 * week_start_day. */
 	gint weekday_offset;
 
 	/* This is used for fast lookup in BYMONTH filtering. */
@@ -204,16 +204,16 @@ struct _CalObjTime {
 	guint8 minute;		/* 0 - 59 */
 	guint8 second;		/* 0 - 59 (maybe up to 61 for leap seconds) */
 	guint8 flags;		/* The meaning of this depends on where the
-				   CalObjTime is used. In most cases this is
-				   set to TRUE to indicate that this is an
-				   RDATE with an end or a duration set.
-				   In the exceptions code, this is set to TRUE
-				   to indicate that this is an EXDATE with a
-				   DATE value. */
+				 * CalObjTime is used. In most cases this is
+				 * set to TRUE to indicate that this is an
+				 * RDATE with an end or a duration set.
+				 * In the exceptions code, this is set to TRUE
+				 * to indicate that this is an EXDATE with a
+				 * DATE value. */
 };
 
 /* This is what we use to represent specific recurrence dates.
-   Note that we assume it starts with a CalObjTime when sorting. */
+ * Note that we assume it starts with a CalObjTime when sorting. */
 typedef struct _CalObjRecurrenceDate CalObjRecurrenceDate;
 struct _CalObjRecurrenceDate {
 	CalObjTime start;
@@ -233,7 +233,7 @@ typedef gboolean (*CalObjFindNextFn)  (CalObjTime *cotime,
 				       CalObjTime *event_end,
 				       RecurData  *recur_data,
 				       CalObjTime *interval_end);
-typedef GArray*	 (*CalObjFilterFn)    (RecurData  *recur_data,
+typedef GArray *	 (*CalObjFilterFn)    (RecurData  *recur_data,
 				       GArray     *occs);
 
 typedef struct _ECalRecurVTable ECalRecurVTable;
@@ -252,7 +252,7 @@ struct _ECalRecurVTable {
 };
 
 /* This is used to specify which parts of the CalObjTime to compare in
-   cal_obj_time_compare (). */
+ * cal_obj_time_compare (). */
 typedef enum {
 	CALOBJ_YEAR,
 	CALOBJ_MONTH,
@@ -305,24 +305,24 @@ static gboolean generate_instances_for_chunk	(ECalComponent		*comp,
 						 ECalRecurInstanceFn	 cb,
 						 gpointer		 cb_data);
 
-static GArray* cal_obj_expand_recurrence	(CalObjTime	  *event_start,
+static GArray * cal_obj_expand_recurrence	(CalObjTime	  *event_start,
 						 icaltimezone	  *zone,
 						 ECalRecurrence	  *recur,
 						 CalObjTime	  *interval_start,
 						 CalObjTime	  *interval_end,
 						 gboolean	  *finished);
 
-static GArray*	cal_obj_generate_set_yearly	(RecurData	*recur_data,
+static GArray *	cal_obj_generate_set_yearly	(RecurData	*recur_data,
 						 ECalRecurVTable *vtable,
 						 CalObjTime	*occ);
-static GArray*	cal_obj_generate_set_monthly	(RecurData	*recur_data,
+static GArray *	cal_obj_generate_set_monthly	(RecurData	*recur_data,
 						 ECalRecurVTable *vtable,
 						 CalObjTime	*occ);
-static GArray*	cal_obj_generate_set_default	(RecurData	*recur_data,
+static GArray *	cal_obj_generate_set_default	(RecurData	*recur_data,
 						 ECalRecurVTable *vtable,
 						 CalObjTime	*occ);
 
-static ECalRecurVTable* cal_obj_get_vtable	(icalrecurrencetype_frequency recur_type);
+static ECalRecurVTable * cal_obj_get_vtable	(icalrecurrencetype_frequency recur_type);
 static void	cal_obj_initialize_recur_data	(RecurData	*recur_data,
 						 ECalRecurrence	*recur,
 						 CalObjTime	*event_start);
@@ -332,7 +332,7 @@ static gint	cal_obj_time_compare_func	(const void	*arg1,
 static void	cal_obj_remove_duplicates_and_invalid_dates (GArray	*occs);
 static void	cal_obj_remove_exceptions	(GArray		*occs,
 						 GArray		*ex_occs);
-static GArray*	cal_obj_bysetpos_filter		(ECalRecurrence	*recur,
+static GArray *	cal_obj_bysetpos_filter		(ECalRecurrence	*recur,
 						 GArray		*occs);
 
 static gboolean cal_obj_yearly_find_start_position (CalObjTime *event_start,
@@ -412,44 +412,44 @@ static gboolean cal_obj_secondly_find_next_position  (CalObjTime *cotime,
 						      RecurData  *recur_data,
 						      CalObjTime *interval_end);
 
-static GArray* cal_obj_bymonth_expand		(RecurData  *recur_data,
+static GArray * cal_obj_bymonth_expand		(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_bymonth_filter		(RecurData  *recur_data,
+static GArray * cal_obj_bymonth_filter		(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_byweekno_expand		(RecurData  *recur_data,
+static GArray * cal_obj_byweekno_expand		(RecurData  *recur_data,
 						 GArray     *occs);
 #if 0
 /* This isn't used at present. */
-static GArray* cal_obj_byweekno_filter		(RecurData  *recur_data,
+static GArray * cal_obj_byweekno_filter		(RecurData  *recur_data,
 						 GArray     *occs);
 #endif
-static GArray* cal_obj_byyearday_expand		(RecurData  *recur_data,
+static GArray * cal_obj_byyearday_expand		(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_byyearday_filter		(RecurData  *recur_data,
+static GArray * cal_obj_byyearday_filter		(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_bymonthday_expand	(RecurData  *recur_data,
+static GArray * cal_obj_bymonthday_expand	(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_bymonthday_filter	(RecurData  *recur_data,
+static GArray * cal_obj_bymonthday_filter	(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_byday_expand_yearly	(RecurData  *recur_data,
+static GArray * cal_obj_byday_expand_yearly	(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_byday_expand_monthly	(RecurData  *recur_data,
+static GArray * cal_obj_byday_expand_monthly	(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_byday_expand_weekly	(RecurData  *recur_data,
+static GArray * cal_obj_byday_expand_weekly	(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_byday_filter		(RecurData  *recur_data,
+static GArray * cal_obj_byday_filter		(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_byhour_expand		(RecurData  *recur_data,
+static GArray * cal_obj_byhour_expand		(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_byhour_filter		(RecurData  *recur_data,
+static GArray * cal_obj_byhour_filter		(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_byminute_expand		(RecurData  *recur_data,
+static GArray * cal_obj_byminute_expand		(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_byminute_filter		(RecurData  *recur_data,
+static GArray * cal_obj_byminute_filter		(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_bysecond_expand		(RecurData  *recur_data,
+static GArray * cal_obj_bysecond_expand		(RecurData  *recur_data,
 						 GArray     *occs);
-static GArray* cal_obj_bysecond_filter		(RecurData  *recur_data,
+static GArray * cal_obj_bysecond_filter		(RecurData  *recur_data,
 						 GArray     *occs);
 
 static void cal_obj_time_add_months		(CalObjTime *cotime,
@@ -623,14 +623,14 @@ static ECalRecurVTable cal_obj_secondly_vtable = {
  * are DATE values or do not have a TZID (i.e. floating times).
  */
 void
-e_cal_recur_generate_instances (ECalComponent		*comp,
-			      time_t			 start,
-			      time_t			 end,
-			      ECalRecurInstanceFn	 cb,
-			      gpointer                   cb_data,
-			      ECalRecurResolveTimezoneFn  tz_cb,
-			      gpointer			 tz_cb_data,
-			      icaltimezone		*default_timezone)
+e_cal_recur_generate_instances (ECalComponent *comp,
+                                time_t start,
+                                time_t end,
+                                ECalRecurInstanceFn cb,
+                                gpointer cb_data,
+                                ECalRecurResolveTimezoneFn tz_cb,
+                                gpointer tz_cb_data,
+                                icaltimezone *default_timezone)
 {
 #if 0
 	g_print ("In e_cal_recur_generate_instances comp: %p\n", comp);
@@ -657,15 +657,15 @@ e_cal_recur_generate_instances (ECalComponent		*comp,
  * instance and continue until it ends, or forever if it has no enddate.
  */
 static void
-e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
-					icalproperty	 *prop,
-					time_t		  start,
-					time_t		  end,
-					ECalRecurInstanceFn  cb,
-					gpointer            cb_data,
-					ECalRecurResolveTimezoneFn  tz_cb,
-					gpointer		    tz_cb_data,
-					icaltimezone	 *default_timezone)
+e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
+                                        icalproperty *prop,
+                                        time_t start,
+                                        time_t end,
+                                        ECalRecurInstanceFn cb,
+                                        gpointer cb_data,
+                                        ECalRecurResolveTimezoneFn tz_cb,
+                                        gpointer tz_cb_data,
+                                        icaltimezone *default_timezone)
 {
 	ECalComponentDateTime dtstart, dtend;
 	time_t dtstart_time, dtend_time;
@@ -684,8 +684,8 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 	g_return_if_fail (end >= -1);
 
 	/* Get dtstart, dtend, recurrences, and exceptions. Note that
-	   cal_component_get_dtend () will convert a DURATION property to a
-	   DTEND so we don't need to worry about that. */
+	 * cal_component_get_dtend () will convert a DURATION property to a
+	 * DTEND so we don't need to worry about that. */
 
 	e_cal_component_get_dtstart (comp, &dtstart);
 	e_cal_component_get_dtend (comp, &dtend);
@@ -697,8 +697,8 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 	}
 
 	/* For DATE-TIME values with a TZID, we use the supplied callback to
-	   resolve the TZID. For DATE values and DATE-TIME values without a
-	   TZID (i.e. floating times) we use the default timezone. */
+	 * resolve the TZID. For DATE values and DATE-TIME values without a
+	 * TZID (i.e. floating times) we use the default timezone. */
 	if (dtstart.tzid && !dtstart.value->is_date) {
 		start_zone = (*tz_cb) (dtstart.tzid, tz_cb_data);
 		if (!start_zone)
@@ -707,7 +707,7 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 		start_zone = default_timezone;
 
 		/* Flag that we need to convert the saved ENDDATE property
-		   to the default timezone. */
+		 * to the default timezone. */
 		convert_end_date = TRUE;
 	}
 
@@ -718,9 +718,9 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 
 	if (dtend.value) {
 		/* If both DTSTART and DTEND are DATE values, and they are the
-		   same day, we add 1 day to DTEND. This means that most
-		   events created with the old Evolution behavior will still
-		   work OK. I'm not sure what Outlook does in this case. */
+		 * same day, we add 1 day to DTEND. This means that most
+		 * events created with the old Evolution behavior will still
+		 * work OK. I'm not sure what Outlook does in this case. */
 		if (dtstart.value->is_date && dtend.value->is_date) {
 			if (icaltime_compare_date_only (*dtstart.value,
 							*dtend.value) == 0) {
@@ -729,8 +729,8 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 		}
 	} else {
 		/* If there is no DTEND, then if DTSTART is a DATE-TIME value
-		   we use the same time (so we have a single point in time).
-		   If DTSTART is a DATE value we add 1 day. */
+		 * we use the same time (so we have a single point in time).
+		 * If DTSTART is a DATE value we add 1 day. */
 		dtend.value = g_new (struct icaltimetype, 1);
 		*dtend.value = *dtstart.value;
 
@@ -748,10 +748,10 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 	}
 
 	/* We don't do this any more, since Outlook assumes that the DTEND
-	   date is not included. */
+	 * date is not included. */
 #if 0
 	/* If DTEND is a DATE value, we add 1 day to it so that it includes
-	   the entire day. */
+	 * the entire day. */
 	if (dtend.value->is_date) {
 		dtend.value->hour = 0;
 		dtend.value->minute = 0;
@@ -762,7 +762,7 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 	dtend_time = icaltime_as_timet_with_zone (*dtend.value, end_zone);
 
 	/* If there is no recurrence, just call the callback if the event
-	   intersects the given interval. */
+	 * intersects the given interval. */
 	if (!(e_cal_component_has_recurrences (comp)
 	      || e_cal_component_has_exceptions (comp))) {
 		if (e_cal_component_get_vtype (comp) == E_CAL_COMPONENT_JOURNAL) {
@@ -779,7 +779,7 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 	}
 
 	/* If a specific recurrence rule is being used, set up a simple list,
-	   else get the recurrence rules from the component. */
+	 * else get the recurrence rules from the component. */
 	if (prop) {
 		single_rule = TRUE;
 
@@ -801,10 +801,10 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 	}
 
 	/* Convert the interval start & end to CalObjTime. Note that if end
-	   is -1 interval_end won't be set, so don't use it!
-	   Also note that we use end - 1 since we want the interval to be
-	   inclusive as it makes the code simpler. We do all calculation
-	   in the timezone of the DTSTART. */
+	 * is -1 interval_end won't be set, so don't use it!
+	 * Also note that we use end - 1 since we want the interval to be
+	 * inclusive as it makes the code simpler. We do all calculation
+	 * in the timezone of the DTSTART. */
 	cal_object_time_from_time (&interval_start, start, start_zone);
 	if (end != -1)
 		cal_object_time_from_time (&interval_end, end - 1, start_zone);
@@ -813,29 +813,29 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
 	cal_object_time_from_time (&event_end, dtend_time, start_zone);
 
 	/* Calculate the duration of the event, which we use for all
-	   occurrences. We can't just subtract start from end since that may
-	   be affected by daylight-saving time. So we want a value of days
-	   + seconds. */
+	 * occurrences. We can't just subtract start from end since that may
+	 * be affected by daylight-saving time. So we want a value of days
+	 * + seconds. */
 	cal_object_compute_duration (&event_start, &event_end,
 				     &days, &seconds);
 
 	/* Take off the duration from interval_start, so we get occurrences
-	   that start just before the start time but overlap it. But only do
-	   that if the interval is after the event's start time. */
+	 * that start just before the start time but overlap it. But only do
+	 * that if the interval is after the event's start time. */
 	if (start > dtstart_time) {
 		cal_obj_time_add_days (&interval_start, -days);
 		cal_obj_time_add_seconds (&interval_start, -seconds);
 	}
 
 	/* Expand the recurrence for each year between start & end, or until
-	   the callback returns 0 if end is 0. We do a year at a time to
-	   give the callback function a chance to break out of the loop, and
-	   so we don't get into problems with infinite recurrences. Since we
-	   have to work on complete sets of occurrences, if there is a yearly
-	   frequency it wouldn't make sense to break it into smaller chunks,
-	   since we would then be calculating the same sets several times.
-	   Though this does mean that we sometimes do a lot more work than
-	   is necessary, e.g. if COUNT is set to something quite low. */
+	 * the callback returns 0 if end is 0. We do a year at a time to
+	 * give the callback function a chance to break out of the loop, and
+	 * so we don't get into problems with infinite recurrences. Since we
+	 * have to work on complete sets of occurrences, if there is a yearly
+	 * frequency it wouldn't make sense to break it into smaller chunks,
+	 * since we would then be calculating the same sets several times.
+	 * Though this does mean that we sometimes do a lot more work than
+	 * is necessary, e.g. if COUNT is set to something quite low. */
 	for (year = interval_start.year;
 	     (end == -1 || year <= interval_end.year) && year <= MAX_YEAR;
 	     year++) {
@@ -889,7 +889,8 @@ e_cal_recur_generate_instances_of_rule (ECalComponent	 *comp,
  * struct icalrecurrencetype.
  */
 static GList *
-array_to_list (gshort *array, gint max_elements)
+array_to_list (gshort *array,
+               gint max_elements)
 {
 	GList *l;
 	gint i;
@@ -918,8 +919,10 @@ array_to_list (gshort *array, gint max_elements)
  * Since: 2.32
  */
 time_t
-e_cal_recur_obtain_enddate (struct icalrecurrencetype *ir, icalproperty *prop,
-          icaltimezone *zone, gboolean convert_end_date)
+e_cal_recur_obtain_enddate (struct icalrecurrencetype *ir,
+                            icalproperty *prop,
+          icaltimezone *zone,
+                            gboolean convert_end_date)
 {
 	time_t enddate = -1;
 
@@ -977,8 +980,10 @@ e_cal_recur_obtain_enddate (struct icalrecurrencetype *ir, icalproperty *prop,
  * Returns: #ECalRecurrence structure.
  **/
 static ECalRecurrence *
-e_cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,
-			     icaltimezone *zone, gboolean convert_end_date)
+e_cal_recur_from_icalproperty (icalproperty *prop,
+                               gboolean exception,
+                               icaltimezone *zone,
+                               gboolean convert_end_date)
 {
 	struct icalrecurrencetype ir;
 	ECalRecurrence *r;
@@ -1051,7 +1056,7 @@ e_cal_recur_from_icalproperty (icalproperty *prop, gboolean exception,
 }
 
 static gint
-e_cal_recur_ical_weekday_to_weekday	(enum icalrecurrencetype_weekday day)
+e_cal_recur_ical_weekday_to_weekday (enum icalrecurrencetype_weekday day)
 {
 	gint weekday;
 
@@ -1125,23 +1130,23 @@ e_cal_recur_free (ECalRecurrence *r)
  * interval_start and interval_end.
  */
 static gboolean
-generate_instances_for_chunk (ECalComponent	*comp,
-			      time_t             comp_dtstart,
-			      icaltimezone	*zone,
-			      GSList		*rrules,
-			      GSList		*rdates,
-			      GSList		*exrules,
-			      GSList		*exdates,
-			      gboolean		 single_rule,
-			      CalObjTime	*event_start,
-			      time_t		 interval_start,
-			      CalObjTime	*chunk_start,
-			      CalObjTime	*chunk_end,
-			      gint		 duration_days,
-			      gint		 duration_seconds,
-			      gboolean		 convert_end_date,
-			      ECalRecurInstanceFn cb,
-			      gpointer           cb_data)
+generate_instances_for_chunk (ECalComponent *comp,
+                              time_t comp_dtstart,
+                              icaltimezone *zone,
+                              GSList *rrules,
+                              GSList *rdates,
+                              GSList *exrules,
+                              GSList *exdates,
+                              gboolean single_rule,
+                              CalObjTime *event_start,
+                              time_t interval_start,
+                              CalObjTime *chunk_start,
+                              CalObjTime *chunk_end,
+                              gint duration_days,
+                              gint duration_seconds,
+                              gboolean convert_end_date,
+                              ECalRecurInstanceFn cb,
+                              gpointer cb_data)
 {
 	GArray *occs, *ex_occs, *tmp_occs, *rdate_periods;
 	CalObjTime cotime, *occ;
@@ -1169,11 +1174,11 @@ generate_instances_for_chunk (ECalComponent	*comp,
 				     sizeof (CalObjRecurrenceDate));
 
 	/* The original DTSTART property is included in the occurrence set,
-	   but not if we are just generating occurrences for a single rule. */
+	 * but not if we are just generating occurrences for a single rule. */
 	if (!single_rule) {
 		/* We add it if it is in this chunk. If it is after this chunk
-		   we set finished to FALSE, since we know we aren't finished
-		   yet. */
+		 * we set finished to FALSE, since we know we aren't finished
+		 * yet. */
 		if (cal_obj_time_compare_func (event_start, chunk_end) >= 0)
 			finished = FALSE;
 		else if (cal_obj_time_compare_func (event_start, chunk_start) >= 0)
@@ -1196,7 +1201,7 @@ generate_instances_for_chunk (ECalComponent	*comp,
 		e_cal_recur_free (r);
 
 		/* If any of the rules return FALSE for finished, we know we
-		   have to carry on so we set finished to FALSE. */
+		 * have to carry on so we set finished to FALSE. */
 		if (!rule_finished)
 			finished = FALSE;
 
@@ -1205,9 +1210,9 @@ generate_instances_for_chunk (ECalComponent	*comp,
 	}
 
 	/* Add on specific RDATE occurrence dates. If they have an end time
-	   or duration set, flag them as RDATEs, and store a pointer to the
-	   period in the rdate_periods array. Otherwise we can just treat them
-	   as normal occurrences. */
+	 * or duration set, flag them as RDATEs, and store a pointer to the
+	 * period in the rdate_periods array. Otherwise we can just treat them
+	 * as normal occurrences. */
 	for (elem = rdates; elem; elem = elem->next) {
 		ECalComponentPeriod *p;
 		CalObjRecurrenceDate rdate;
@@ -1225,16 +1230,16 @@ generate_instances_for_chunk (ECalComponent	*comp,
 		cotime.flags    = FALSE;
 
 		/* If the rdate is after the current chunk we set finished
-		   to FALSE, and we skip it. */
+		 * to FALSE, and we skip it. */
 		if (cal_obj_time_compare_func (&cotime, chunk_end) >= 0) {
 			finished = FALSE;
 			continue;
 		}
 
 		/* Check if the end date or duration is set. If it is we need
-		   to store it so we can get it later. (libical seems to set
-		   second to -1 to denote an unset time. See icalvalue.c)
-		   FIXME. */
+		 * to store it so we can get it later. (libical seems to set
+		 * second to -1 to denote an unset time. See icalvalue.c)
+		 * FIXME. */
 		if (p->type != E_CAL_COMPONENT_PERIOD_DATETIME
 		    || p->u.end.second != -1) {
 			cotime.flags = TRUE;
@@ -1273,15 +1278,15 @@ generate_instances_for_chunk (ECalComponent	*comp,
 		cdt = elem->data;
 
 		/* FIXME: We currently assume EXDATEs are in the same timezone
-		   as DTSTART. We should get the EXDATE timezone and convert
-		   to the DTSTART timezone first. */
+		 * as DTSTART. We should get the EXDATE timezone and convert
+		 * to the DTSTART timezone first. */
 		cotime.year     = cdt->value->year;
 		cotime.month    = cdt->value->month - 1;
 		cotime.day      = cdt->value->day;
 
 		/* If the EXDATE has a DATE value, set the time to the start
-		   of the day and set flags to TRUE so we know to skip all
-		   occurrences on that date. */
+		 * of the day and set flags to TRUE so we know to skip all
+		 * occurrences on that date. */
 		if (cdt->value->is_date) {
 			cotime.hour     = 0;
 			cotime.minute   = 0;
@@ -1305,14 +1310,14 @@ generate_instances_for_chunk (ECalComponent	*comp,
 	       sizeof (CalObjRecurrenceDate), cal_obj_time_compare_func);
 
 	/* Create the final array, by removing the exceptions from the
-	   occurrences, and removing any duplicates. */
+	 * occurrences, and removing any duplicates. */
 	cal_obj_remove_exceptions (occs, ex_occs);
 
 	/* Call the callback for each occurrence. If it returns 0 we break
-	   out of the loop. */
+	 * out of the loop. */
 	for (i = 0; i < occs->len; i++) {
 		/* Convert each CalObjTime into a start & end time_t, and
-		   check it is within the bounds of the event & interval. */
+		 * check it is within the bounds of the event & interval. */
 		occ = &g_array_index (occs, CalObjTime, i);
 #if 0
 		g_print ("Checking occurrence: %s\n",
@@ -1334,10 +1339,10 @@ generate_instances_for_chunk (ECalComponent	*comp,
 		}
 
 		/* Check to ensure that the start time is at or after the
-		   event's DTSTART time, and that it is inside the chunk that
-		   we are currently working on. (Note that the chunk_end time
-		   is never after the interval end time, so this also tests
-		   that we don't go past the end of the required interval). */
+		 * event's DTSTART time, and that it is inside the chunk that
+		 * we are currently working on. (Note that the chunk_end time
+		 * is never after the interval end time, so this also tests
+		 * that we don't go past the end of the required interval). */
 		if (start_time < comp_dtstart
 		    || cal_obj_time_compare_func (occ, chunk_start) < 0
 		    || cal_obj_time_compare_func (occ, chunk_end) > 0) {
@@ -1349,8 +1354,8 @@ generate_instances_for_chunk (ECalComponent	*comp,
 
 		if (occ->flags) {
 			/* If it is an RDATE, we see if the end date or
-			   duration was set. If not, we use the same duration
-			   as the original occurrence. */
+			 * duration was set. If not, we use the same duration
+			 * as the original occurrence. */
 			if (!cal_object_get_rdate_end (occ, rdate_periods, zone)) {
 				cal_obj_time_add_days (occ, duration_days);
 				cal_obj_time_add_seconds (occ,
@@ -1377,7 +1382,7 @@ generate_instances_for_chunk (ECalComponent	*comp,
 		}
 
 		/* Check that the end time is after the interval start, so we
-		   know that it intersects the required interval. */
+		 * know that it intersects the required interval. */
 		if (end_time <= interval_start) {
 #if 0
 			g_print ("  end time invalid\n");
@@ -1395,18 +1400,18 @@ generate_instances_for_chunk (ECalComponent	*comp,
 	g_array_free (rdate_periods, TRUE);
 
 	/* We return TRUE (i.e. carry on) only if the callback has always
-	   returned TRUE and we know that we have more occurrences to generate
-	   (i.e. finished is FALSE). */
+	 * returned TRUE and we know that we have more occurrences to generate
+	 * (i.e. finished is FALSE). */
 	return cb_status && !finished;
 }
 
 /* This looks up the occurrence time in the sorted rdate_periods array, and
-   tries to compute the end time of the occurrence. If no end time or duration
-   is set it returns FALSE and the default duration will be used. */
+ * tries to compute the end time of the occurrence. If no end time or duration
+ * is set it returns FALSE and the default duration will be used. */
 static gboolean
-cal_object_get_rdate_end	(CalObjTime	*occ,
-				 GArray		*rdate_periods,
-				 icaltimezone	*zone)
+cal_object_get_rdate_end (CalObjTime *occ,
+                          GArray *rdate_periods,
+                          icaltimezone *zone)
 {
 	CalObjRecurrenceDate *rdate = NULL;
 	ECalComponentPeriod *p;
@@ -1463,9 +1468,9 @@ cal_object_get_rdate_end	(CalObjTime	*occ,
 
 static void
 cal_object_compute_duration (CalObjTime *start,
-			     CalObjTime *end,
-			     gint	*days,
-			     gint	*seconds)
+                             CalObjTime *end,
+                             gint *days,
+                             gint *seconds)
 {
 	GDate start_date, end_date;
 	gint start_seconds, end_seconds;
@@ -1490,19 +1495,19 @@ cal_object_compute_duration (CalObjTime *start,
 }
 
 /* Returns an unsorted GArray of CalObjTime's resulting from expanding the
-   given recurrence rule within the given interval. Note that it doesn't
-   clip the generated occurrences to the interval, i.e. if the interval
-   starts part way through the year this function still returns all the
-   occurrences for the year. Clipping is done later.
-   The finished flag is set to FALSE if there are more occurrences to generate
-   after the given interval.*/
-static GArray*
-cal_obj_expand_recurrence		(CalObjTime	  *event_start,
-					 icaltimezone	  *zone,
-					 ECalRecurrence	  *recur,
-					 CalObjTime	  *interval_start,
-					 CalObjTime	  *interval_end,
-					 gboolean	  *finished)
+ * given recurrence rule within the given interval. Note that it doesn't
+ * clip the generated occurrences to the interval, i.e. if the interval
+ * starts part way through the year this function still returns all the
+ * occurrences for the year. Clipping is done later.
+ * The finished flag is set to FALSE if there are more occurrences to generate
+ * after the given interval.*/
+static GArray *
+cal_obj_expand_recurrence (CalObjTime *event_start,
+                           icaltimezone *zone,
+                           ECalRecurrence *recur,
+                           CalObjTime *interval_start,
+                           CalObjTime *interval_end,
+                           gboolean *finished)
 {
 	ECalRecurVTable *vtable;
 	CalObjTime *event_end = NULL, event_end_cotime;
@@ -1535,13 +1540,13 @@ cal_obj_expand_recurrence		(CalObjTime	  *event_start,
 	}
 
 	/* Set finished to FALSE if we know there will be more occurrences to
-	   do after this interval. */
+	 * do after this interval. */
 	if (!interval_end || !event_end
 	    || cal_obj_time_compare_func (event_end, interval_end) > 0)
 		*finished = FALSE;
 
 	/* Get the first period based on the frequency and the interval that
-	   intersects the interval between start and end. */
+	 * intersects the interval between start and end. */
 	if ((*vtable->find_start_position) (event_start, event_end,
 					    &recur_data,
 					    interval_start, interval_end,
@@ -1549,7 +1554,7 @@ cal_obj_expand_recurrence		(CalObjTime	  *event_start,
 		return all_occs;
 
 	/* Loop until the event ends or we go past the end of the required
-	   interval. */
+	 * interval. */
 	for (;;) {
 		/* Generate the set of occurrences for this period. */
 		switch (recur->freq) {
@@ -1602,34 +1607,34 @@ cal_obj_expand_recurrence		(CalObjTime	  *event_start,
 	return all_occs;
 }
 
-static GArray*
-cal_obj_generate_set_yearly	(RecurData *recur_data,
-				 ECalRecurVTable *vtable,
-				 CalObjTime *occ)
+static GArray *
+cal_obj_generate_set_yearly (RecurData *recur_data,
+                             ECalRecurVTable *vtable,
+                             CalObjTime *occ)
 {
 	ECalRecurrence *recur = recur_data->recur;
 	GArray *occs_arrays[4], *occs, *occs2;
 	gint num_occs_arrays = 0, i;
 
 	/* This is a bit complicated, since the iCalendar spec says that
-	   several BYxxx modifiers can be used simultaneously. So we have to
-	   be quite careful when determining the days of the occurrences.
-	   The BYHOUR, BYMINUTE & BYSECOND modifiers are no problem at all.
-
-	   The modifiers we have to worry about are: BYMONTH, BYWEEKNO,
-	   BYYEARDAY, BYMONTHDAY & BYDAY. We can't do these sequentially
-	   since each filter will mess up the results of the previous one.
-	   But they aren't all completely independant, e.g. BYMONTHDAY and
-	   BYDAY are related to BYMONTH, and BYDAY is related to BYWEEKNO.
-
-	   BYDAY & BYMONTHDAY can also be applied independently, which makes
-	   it worse. So we assume that if BYMONTH or BYWEEKNO is used, then
-	   the BYDAY modifier applies to those, else it is applied
-	   independantly.
-
-	   We expand the occurrences in parallel into the occs_arrays[] array,
-	   and then merge them all into one GArray before expanding BYHOUR,
-	   BYMINUTE & BYSECOND. */
+	 * several BYxxx modifiers can be used simultaneously. So we have to
+	 * be quite careful when determining the days of the occurrences.
+	 * The BYHOUR, BYMINUTE & BYSECOND modifiers are no problem at all.
+	 *
+	 * The modifiers we have to worry about are: BYMONTH, BYWEEKNO,
+	 * BYYEARDAY, BYMONTHDAY & BYDAY. We can't do these sequentially
+	 * since each filter will mess up the results of the previous one.
+	 * But they aren't all completely independant, e.g. BYMONTHDAY and
+	 * BYDAY are related to BYMONTH, and BYDAY is related to BYWEEKNO.
+	 *
+	 * BYDAY & BYMONTHDAY can also be applied independently, which makes
+	 * it worse. So we assume that if BYMONTH or BYWEEKNO is used, then
+	 * the BYDAY modifier applies to those, else it is applied
+	 * independantly.
+	 *
+	 * We expand the occurrences in parallel into the occs_arrays[] array,
+	 * and then merge them all into one GArray before expanding BYHOUR,
+	 * BYMINUTE & BYSECOND. */
 
 	if (recur->bymonth) {
 		occs = g_array_new (FALSE, FALSE, sizeof (CalObjTime));
@@ -1638,7 +1643,7 @@ cal_obj_generate_set_yearly	(RecurData *recur_data,
 		occs = (*vtable->bymonth_filter) (recur_data, occs);
 
 		/* If BYMONTHDAY & BYDAY are both set we need to expand them
-		   in parallel and add the results. */
+		 * in parallel and add the results. */
 		if (recur->bymonthday && recur->byday) {
 			CalObjTime *prev_occ = NULL;
 			GArray *new_occs = g_array_new (FALSE, FALSE, sizeof (CalObjTime));
@@ -1650,7 +1655,7 @@ cal_obj_generate_set_yearly	(RecurData *recur_data,
 
 			occs = (*vtable->bymonthday_filter) (recur_data, occs);
 			/* Note that we explicitly call the monthly version
-			   of the BYDAY expansion filter. */
+			 * of the BYDAY expansion filter. */
 			occs2 = cal_obj_byday_expand_monthly (recur_data,
 							      occs2);
 
@@ -1675,7 +1680,7 @@ cal_obj_generate_set_yearly	(RecurData *recur_data,
 		} else {
 			occs = (*vtable->bymonthday_filter) (recur_data, occs);
 			/* Note that we explicitly call the monthly version
-			   of the BYDAY expansion filter. */
+			 * of the BYDAY expansion filter. */
 			occs = cal_obj_byday_expand_monthly (recur_data, occs);
 		}
 
@@ -1688,7 +1693,7 @@ cal_obj_generate_set_yearly	(RecurData *recur_data,
 
 		occs = (*vtable->byweekno_filter) (recur_data, occs);
 		/* Note that we explicitly call the weekly version of the
-		   BYDAY expansion filter. */
+		 * BYDAY expansion filter. */
 		occs = cal_obj_byday_expand_weekly (recur_data, occs);
 
 		occs_arrays[num_occs_arrays++] = occs;
@@ -1704,7 +1709,7 @@ cal_obj_generate_set_yearly	(RecurData *recur_data,
 	}
 
 	/* If BYMONTHDAY is set, and BYMONTH is not set, we need to
-	   expand BYMONTHDAY independantly. */
+	 * expand BYMONTHDAY independantly. */
 	if (recur->bymonthday && !recur->bymonth) {
 		occs = g_array_new (FALSE, FALSE, sizeof (CalObjTime));
 		g_array_append_vals (occs, occ, 1);
@@ -1715,7 +1720,7 @@ cal_obj_generate_set_yearly	(RecurData *recur_data,
 	}
 
 	/* If BYDAY is set, and BYMONTH and BYWEEKNO are not set, we need to
-	   expand BYDAY independantly. */
+	 * expand BYDAY independantly. */
 	if (recur->byday && !recur->bymonth && !recur->byweekno) {
 		occs = g_array_new (FALSE, FALSE, sizeof (CalObjTime));
 		g_array_append_vals (occs, occ, 1);
@@ -1726,7 +1731,7 @@ cal_obj_generate_set_yearly	(RecurData *recur_data,
 	}
 
 	/* Add all the arrays together. If no filters were used we just
-	   create an array with one element. */
+	 * create an array with one element. */
 	if (num_occs_arrays > 0) {
 		occs = occs_arrays[0];
 		for (i = 1; i < num_occs_arrays; i++) {
@@ -1747,10 +1752,10 @@ cal_obj_generate_set_yearly	(RecurData *recur_data,
 	return occs;
 }
 
-static GArray*
-cal_obj_generate_set_monthly	(RecurData *recur_data,
-				 ECalRecurVTable *vtable,
-				 CalObjTime *occ)
+static GArray *
+cal_obj_generate_set_monthly (RecurData *recur_data,
+                              ECalRecurVTable *vtable,
+                              CalObjTime *occ)
 {
 	GArray *occs, *occs2;
 
@@ -1761,9 +1766,9 @@ cal_obj_generate_set_monthly	(RecurData *recur_data,
 	occs = (*vtable->bymonth_filter) (recur_data, occs);
 
 	/* We need to combine the output of BYMONTHDAY & BYDAY, by doing them
-	   in parallel rather than sequentially. If we did them sequentially
-	   then we would lose the occurrences generated by BYMONTHDAY, and
-	   instead have repetitions of the occurrences from BYDAY. */
+	 * in parallel rather than sequentially. If we did them sequentially
+	 * then we would lose the occurrences generated by BYMONTHDAY, and
+	 * instead have repetitions of the occurrences from BYDAY. */
 	if (recur_data->recur->bymonthday && recur_data->recur->byday) {
 		occs2 = g_array_new (FALSE, FALSE, sizeof (CalObjTime));
 		g_array_append_vals (occs2, occs->data, occs->len);
@@ -1785,10 +1790,10 @@ cal_obj_generate_set_monthly	(RecurData *recur_data,
 	return occs;
 }
 
-static GArray*
-cal_obj_generate_set_default	(RecurData *recur_data,
-				 ECalRecurVTable *vtable,
-				 CalObjTime *occ)
+static GArray *
+cal_obj_generate_set_default (RecurData *recur_data,
+                              ECalRecurVTable *vtable,
+                              CalObjTime *occ)
 {
 	GArray *occs;
 
@@ -1819,9 +1824,9 @@ cal_obj_generate_set_default	(RecurData *recur_data,
 }
 
 /* Returns the function table corresponding to the recurrence frequency. */
-static ECalRecurVTable* cal_obj_get_vtable (icalrecurrencetype_frequency recur_type)
+static ECalRecurVTable * cal_obj_get_vtable (icalrecurrencetype_frequency recur_type)
 {
-	ECalRecurVTable* vtable;
+	ECalRecurVTable * vtable;
 
 	switch (recur_type) {
 	case ICAL_YEARLY_RECURRENCE:
@@ -1854,11 +1859,11 @@ static ECalRecurVTable* cal_obj_get_vtable (icalrecurrencetype_frequency recur_t
 }
 
 /* This creates a number of fast lookup tables used when filtering with the
-   modifier properties BYMONTH, BYYEARDAY etc. */
+ * modifier properties BYMONTH, BYYEARDAY etc. */
 static void
-cal_obj_initialize_recur_data (RecurData  *recur_data,
-			       ECalRecurrence *recur,
-			       CalObjTime *event_start)
+cal_obj_initialize_recur_data (RecurData *recur_data,
+                               ECalRecurrence *recur,
+                               CalObjTime *event_start)
 {
 	GList *elem;
 	gint month, yearday, monthday, weekday, hour, minute, second;
@@ -1869,7 +1874,7 @@ cal_obj_initialize_recur_data (RecurData  *recur_data,
 	recur_data->recur = recur;
 
 	/* Set the weekday, used for the WEEKLY frequency and the BYWEEKNO
-	   modifier. */
+	 * modifier. */
 	recur_data->weekday_offset = cal_obj_time_weekday_offset (event_start,
 								  recur);
 
@@ -1882,8 +1887,8 @@ cal_obj_initialize_recur_data (RecurData  *recur_data,
 	}
 
 	/* Create an array of yeardays from byyearday for fast lookup.
-	   We create a second array to handle the negative values. The first
-	   element there corresponds to the last day of the year. */
+	 * We create a second array to handle the negative values. The first
+	 * element there corresponds to the last day of the year. */
 	elem = recur->byyearday;
 	while (elem) {
 		yearday = GPOINTER_TO_INT (elem->data);
@@ -1895,8 +1900,8 @@ cal_obj_initialize_recur_data (RecurData  *recur_data,
 	}
 
 	/* Create an array of monthdays from bymonthday for fast lookup.
-	   We create a second array to handle the negative values. The first
-	   element there corresponds to the last day of the month. */
+	 * We create a second array to handle the negative values. The first
+	 * element there corresponds to the last day of the month. */
 	elem = recur->bymonthday;
 	while (elem) {
 		monthday = GPOINTER_TO_INT (elem->data);
@@ -1995,10 +2000,10 @@ cal_obj_remove_duplicates_and_invalid_dates (GArray *occs)
 }
 
 /* Removes the exceptions from the ex_occs array from the occurrences in the
-   occs array, and removes any duplicates. Both arrays are sorted. */
+ * occs array, and removes any duplicates. Both arrays are sorted. */
 static void
 cal_obj_remove_exceptions (GArray *occs,
-			   GArray *ex_occs)
+                           GArray *ex_occs)
 {
 	CalObjTime *occ, *prev_occ = NULL, *ex_occ = NULL, *last_occ_kept;
 	gint i, j = 0, cmp, ex_index, occs_len, ex_occs_len;
@@ -2019,15 +2024,15 @@ cal_obj_remove_exceptions (GArray *occs,
 		keep_occ = TRUE;
 
 		/* If the occurrence is a duplicate of the previous one, skip
-		   it. */
+		 * it. */
 		if (prev_occ
 		    && cal_obj_time_compare_func (occ, prev_occ) == 0) {
 			keep_occ = FALSE;
 
 			/* If this occurrence is an RDATE with an end or
-			   duration set, and the previous occurrence in the
-			   array was kept, set the RDATE flag of the last one,
-			   so we still use the end date or duration. */
+			 * duration set, and the previous occurrence in the
+			 * array was kept, set the RDATE flag of the last one,
+			 * so we still use the end date or duration. */
 			if (occ->flags && !current_time_is_exception) {
 				last_occ_kept = &g_array_index (occs,
 								CalObjTime,
@@ -2036,18 +2041,18 @@ cal_obj_remove_exceptions (GArray *occs,
 			}
 		} else {
 			/* We've found a new occurrence time. Reset the flag
-			   to indicate that it hasn't been found in the
-			   exceptions array (yet). */
+			 * to indicate that it hasn't been found in the
+			 * exceptions array (yet). */
 			current_time_is_exception = FALSE;
 
 			if (ex_occ) {
 				/* Step through the exceptions until we come
-				   to one that matches or follows this
-				   occurrence. */
+				 * to one that matches or follows this
+				 * occurrence. */
 				while (ex_occ) {
 					/* If the exception is an EXDATE with
-					   a DATE value, we only have to
-					   compare the date. */
+					 * a DATE value, we only have to
+					 * compare the date. */
 					if (ex_occ->flags)
 						cmp = cal_obj_date_only_compare_func (ex_occ, occ);
 					else
@@ -2057,8 +2062,8 @@ cal_obj_remove_exceptions (GArray *occs,
 						break;
 
 					/* Move to the next exception, or set
-					   ex_occ to NULL when we reach the
-					   end of array. */
+					 * ex_occ to NULL when we reach the
+					 * end of array. */
 					ex_index++;
 					if (ex_index < ex_occs_len)
 						ex_occ = &g_array_index (ex_occs, CalObjTime, ex_index);
@@ -2066,9 +2071,9 @@ cal_obj_remove_exceptions (GArray *occs,
 						ex_occ = NULL;
 
 					/* If the exception did match this
-					   occurrence we remove it, and set the
-					   flag to indicate that the current
-					   time is an exception. */
+					 * occurrence we remove it, and set the
+					 * flag to indicate that the current
+					 * time is an exception. */
 					if (cmp == 0) {
 						current_time_is_exception = TRUE;
 						keep_occ = FALSE;
@@ -2080,9 +2085,9 @@ cal_obj_remove_exceptions (GArray *occs,
 
 		if (keep_occ) {
 			/* We are keeping this occurrence, so we move it to
-			   the next free space, unless its position hasn't
-			   changed (i.e. all previous occurrences were also
-			   kept). */
+			 * the next free space, unless its position hasn't
+			 * changed (i.e. all previous occurrences were also
+			 * kept). */
 			if (i != j)
 				g_array_index (occs, CalObjTime, j)
 					= g_array_index (occs, CalObjTime, i);
@@ -2095,9 +2100,9 @@ cal_obj_remove_exceptions (GArray *occs,
 	g_array_set_size (occs, j);
 }
 
-static GArray*
+static GArray *
 cal_obj_bysetpos_filter (ECalRecurrence *recur,
-			 GArray	    *occs)
+                         GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
@@ -2105,7 +2110,7 @@ cal_obj_bysetpos_filter (ECalRecurrence *recur,
 	gint len, pos;
 
 	/* If BYSETPOS has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	elem = recur->bysetpos;
 	if (!elem || occs->len == 0)
 		return occs;
@@ -2113,7 +2118,7 @@ cal_obj_bysetpos_filter (ECalRecurrence *recur,
 	new_occs = g_array_new (FALSE, FALSE, sizeof (CalObjTime));
 
 	/* Iterate over the indices given in bysetpos, adding the corresponding
-	   element from occs to new_occs. */
+	 * element from occs to new_occs. */
 	len = occs->len;
 	while (elem) {
 		pos = GPOINTER_TO_INT (elem->data);
@@ -2122,7 +2127,7 @@ cal_obj_bysetpos_filter (ECalRecurrence *recur,
 		if (pos < 0)
 			pos += len;
 		/* Positive values need to be decremented since the array is
-		   0-based. */
+		 * 0 - based. */
 		else
 			pos--;
 
@@ -2139,20 +2144,20 @@ cal_obj_bysetpos_filter (ECalRecurrence *recur,
 }
 
 /* Finds the first year from the event_start, counting in multiples of the
-   recurrence interval, that intersects the given interval. It returns TRUE
-   if there is no intersection. */
+ * recurrence interval, that intersects the given interval. It returns TRUE
+ * if there is no intersection. */
 static gboolean
 cal_obj_yearly_find_start_position (CalObjTime *event_start,
-				    CalObjTime *event_end,
-				    RecurData  *recur_data,
-				    CalObjTime *interval_start,
-				    CalObjTime *interval_end,
-				    CalObjTime *cotime)
+                                    CalObjTime *event_end,
+                                    RecurData *recur_data,
+                                    CalObjTime *interval_start,
+                                    CalObjTime *interval_end,
+                                    CalObjTime *cotime)
 {
 	*cotime = *event_start;
 
 	/* Move on to the next interval, if the event starts before the
-	   given interval. */
+	 * given interval. */
 	if (cotime->year < interval_start->year) {
 		gint years = interval_start->year - cotime->year
 			+ recur_data->recur->interval - 1;
@@ -2170,9 +2175,9 @@ cal_obj_yearly_find_start_position (CalObjTime *event_start,
 
 static gboolean
 cal_obj_yearly_find_next_position (CalObjTime *cotime,
-				   CalObjTime *event_end,
-				   RecurData  *recur_data,
-				   CalObjTime *interval_end)
+                                   CalObjTime *event_end,
+                                   RecurData *recur_data,
+                                   CalObjTime *interval_end)
 {
 	/* NOTE: The day may now be invalid, e.g. 29th Feb. */
 	cotime->year += recur_data->recur->interval;
@@ -2186,16 +2191,16 @@ cal_obj_yearly_find_next_position (CalObjTime *cotime,
 
 static gboolean
 cal_obj_monthly_find_start_position (CalObjTime *event_start,
-				     CalObjTime *event_end,
-				     RecurData  *recur_data,
-				     CalObjTime *interval_start,
-				     CalObjTime *interval_end,
-				     CalObjTime *cotime)
+                                     CalObjTime *event_end,
+                                     RecurData *recur_data,
+                                     CalObjTime *interval_start,
+                                     CalObjTime *interval_end,
+                                     CalObjTime *cotime)
 {
 	*cotime = *event_start;
 
 	/* Move on to the next interval, if the event starts before the
-	   given interval. */
+	 * given interval. */
 	if (cal_obj_time_compare (cotime, interval_start, CALOBJ_MONTH) < 0) {
 		gint months = (interval_start->year - cotime->year) * 12
 			+ interval_start->month - cotime->month
@@ -2217,9 +2222,9 @@ cal_obj_monthly_find_start_position (CalObjTime *event_start,
 
 static gboolean
 cal_obj_monthly_find_next_position (CalObjTime *cotime,
-				    CalObjTime *event_end,
-				    RecurData  *recur_data,
-				    CalObjTime *interval_end)
+                                    CalObjTime *event_end,
+                                    RecurData *recur_data,
+                                    CalObjTime *interval_end)
 {
 	/* NOTE: The day may now be invalid, e.g. 31st Sep. */
 	cal_obj_time_add_months (cotime, recur_data->recur->interval);
@@ -2236,11 +2241,11 @@ cal_obj_monthly_find_next_position (CalObjTime *cotime,
 
 static gboolean
 cal_obj_weekly_find_start_position (CalObjTime *event_start,
-				    CalObjTime *event_end,
-				    RecurData  *recur_data,
-				    CalObjTime *interval_start,
-				    CalObjTime *interval_end,
-				    CalObjTime *cotime)
+                                    CalObjTime *event_end,
+                                    RecurData *recur_data,
+                                    CalObjTime *interval_start,
+                                    CalObjTime *interval_end,
+                                    CalObjTime *cotime)
 {
 	GDate event_start_date, interval_start_date;
 	guint32 event_start_julian, interval_start_julian;
@@ -2257,7 +2262,7 @@ cal_obj_weekly_find_start_position (CalObjTime *event_start,
 	*cotime = *event_start;
 
 	/* Convert the event start and interval start to GDates, so we can
-	   easily find the number of days between them. */
+	 * easily find the number of days between them. */
 	g_date_clear (&event_start_date, 1);
 	g_date_set_dmy (&event_start_date, event_start->day,
 			event_start->month + 1, event_start->year);
@@ -2266,7 +2271,7 @@ cal_obj_weekly_find_start_position (CalObjTime *event_start,
 			interval_start->month + 1, interval_start->year);
 
 	/* Calculate the start of the weeks corresponding to the event start
-	   and interval start. */
+	 * and interval start. */
 	event_start_julian = g_date_get_julian (&event_start_date);
 	event_start_julian -= recur_data->weekday_offset;
 
@@ -2275,7 +2280,7 @@ cal_obj_weekly_find_start_position (CalObjTime *event_start,
 	interval_start_julian -= interval_start_weekday_offset;
 
 	/* We want to find the first full week using the recurrence interval
-	   that intersects the given interval dates. */
+	 * that intersects the given interval dates. */
 	if (event_start_julian < interval_start_julian) {
 		gint weeks = (interval_start_julian - event_start_julian) / 7;
 		weeks += recur_data->recur->interval - 1;
@@ -2298,16 +2303,16 @@ cal_obj_weekly_find_start_position (CalObjTime *event_start,
 
 static gboolean
 cal_obj_weekly_find_next_position (CalObjTime *cotime,
-				   CalObjTime *event_end,
-				   RecurData  *recur_data,
-				   CalObjTime *interval_end)
+                                   CalObjTime *event_end,
+                                   RecurData *recur_data,
+                                   CalObjTime *interval_end)
 {
 	CalObjTime week_start;
 
 	cal_obj_time_add_days (cotime, recur_data->recur->interval * 7);
 
 	/* Return TRUE if the start of this week is after the event finishes
-	   or is after the end of the required interval. */
+	 * or is after the end of the required interval. */
 	week_start = *cotime;
 	cal_obj_time_add_days (&week_start, -recur_data->weekday_offset);
 
@@ -2332,12 +2337,12 @@ cal_obj_weekly_find_next_position (CalObjTime *cotime,
 }
 
 static gboolean
-cal_obj_daily_find_start_position  (CalObjTime *event_start,
-				    CalObjTime *event_end,
-				    RecurData  *recur_data,
-				    CalObjTime *interval_start,
-				    CalObjTime *interval_end,
-				    CalObjTime *cotime)
+cal_obj_daily_find_start_position (CalObjTime *event_start,
+                                   CalObjTime *event_end,
+                                   RecurData *recur_data,
+                                   CalObjTime *interval_start,
+                                   CalObjTime *interval_end,
+                                   CalObjTime *cotime)
 {
 	GDate event_start_date, interval_start_date;
 	guint32 event_start_julian, interval_start_julian, days;
@@ -2352,7 +2357,7 @@ cal_obj_daily_find_start_position  (CalObjTime *event_start,
 	*cotime = *event_start;
 
 	/* Convert the event start and interval start to GDates, so we can
-	   easily find the number of days between them. */
+	 * easily find the number of days between them. */
 	g_date_clear (&event_start_date, 1);
 	g_date_set_dmy (&event_start_date, event_start->day,
 			event_start->month + 1, event_start->year);
@@ -2381,10 +2386,10 @@ cal_obj_daily_find_start_position  (CalObjTime *event_start,
 }
 
 static gboolean
-cal_obj_daily_find_next_position  (CalObjTime *cotime,
-				   CalObjTime *event_end,
-				   RecurData  *recur_data,
-				   CalObjTime *interval_end)
+cal_obj_daily_find_next_position (CalObjTime *cotime,
+                                  CalObjTime *event_end,
+                                  RecurData *recur_data,
+                                  CalObjTime *interval_end)
 {
 	cal_obj_time_add_days (cotime, recur_data->recur->interval);
 
@@ -2400,11 +2405,11 @@ cal_obj_daily_find_next_position  (CalObjTime *cotime,
 
 static gboolean
 cal_obj_hourly_find_start_position (CalObjTime *event_start,
-				    CalObjTime *event_end,
-				    RecurData  *recur_data,
-				    CalObjTime *interval_start,
-				    CalObjTime *interval_end,
-				    CalObjTime *cotime)
+                                    CalObjTime *event_end,
+                                    RecurData *recur_data,
+                                    CalObjTime *interval_start,
+                                    CalObjTime *interval_end,
+                                    CalObjTime *cotime)
 {
 	GDate event_start_date, interval_start_date;
 	guint32 event_start_julian, interval_start_julian, hours;
@@ -2421,7 +2426,7 @@ cal_obj_hourly_find_start_position (CalObjTime *event_start,
 	if (cal_obj_time_compare (event_start, interval_start,
 				  CALOBJ_HOUR) < 0) {
 		/* Convert the event start and interval start to GDates, so we
-		   can easily find the number of days between them. */
+		 * can easily find the number of days between them. */
 		g_date_clear (&event_start_date, 1);
 		g_date_set_dmy (&event_start_date, event_start->day,
 				event_start->month + 1, event_start->year);
@@ -2452,9 +2457,9 @@ cal_obj_hourly_find_start_position (CalObjTime *event_start,
 
 static gboolean
 cal_obj_hourly_find_next_position (CalObjTime *cotime,
-				   CalObjTime *event_end,
-				   RecurData  *recur_data,
-				   CalObjTime *interval_end)
+                                   CalObjTime *event_end,
+                                   RecurData *recur_data,
+                                   CalObjTime *interval_end)
 {
 	cal_obj_time_add_hours (cotime, recur_data->recur->interval);
 
@@ -2470,11 +2475,11 @@ cal_obj_hourly_find_next_position (CalObjTime *cotime,
 
 static gboolean
 cal_obj_minutely_find_start_position (CalObjTime *event_start,
-				      CalObjTime *event_end,
-				      RecurData  *recur_data,
-				      CalObjTime *interval_start,
-				      CalObjTime *interval_end,
-				      CalObjTime *cotime)
+                                      CalObjTime *event_end,
+                                      RecurData *recur_data,
+                                      CalObjTime *interval_start,
+                                      CalObjTime *interval_end,
+                                      CalObjTime *cotime)
 {
 	GDate event_start_date, interval_start_date;
 	guint32 event_start_julian, interval_start_julian, minutes;
@@ -2491,7 +2496,7 @@ cal_obj_minutely_find_start_position (CalObjTime *event_start,
 	if (cal_obj_time_compare (event_start, interval_start,
 				  CALOBJ_MINUTE) < 0) {
 		/* Convert the event start and interval start to GDates, so we
-		   can easily find the number of days between them. */
+		 * can easily find the number of days between them. */
 		g_date_clear (&event_start_date, 1);
 		g_date_set_dmy (&event_start_date, event_start->day,
 				event_start->month + 1, event_start->year);
@@ -2524,9 +2529,9 @@ cal_obj_minutely_find_start_position (CalObjTime *event_start,
 
 static gboolean
 cal_obj_minutely_find_next_position (CalObjTime *cotime,
-				     CalObjTime *event_end,
-				     RecurData  *recur_data,
-				     CalObjTime *interval_end)
+                                     CalObjTime *event_end,
+                                     RecurData *recur_data,
+                                     CalObjTime *interval_end)
 {
 	cal_obj_time_add_minutes (cotime, recur_data->recur->interval);
 
@@ -2542,11 +2547,11 @@ cal_obj_minutely_find_next_position (CalObjTime *cotime,
 
 static gboolean
 cal_obj_secondly_find_start_position (CalObjTime *event_start,
-				      CalObjTime *event_end,
-				      RecurData  *recur_data,
-				      CalObjTime *interval_start,
-				      CalObjTime *interval_end,
-				      CalObjTime *cotime)
+                                      CalObjTime *event_end,
+                                      RecurData *recur_data,
+                                      CalObjTime *interval_start,
+                                      CalObjTime *interval_end,
+                                      CalObjTime *cotime)
 {
 	GDate event_start_date, interval_start_date;
 	guint32 event_start_julian, interval_start_julian, seconds;
@@ -2563,7 +2568,7 @@ cal_obj_secondly_find_start_position (CalObjTime *event_start,
 	if (cal_obj_time_compare (event_start, interval_start,
 				  CALOBJ_SECOND) < 0) {
 		/* Convert the event start and interval start to GDates, so we
-		   can easily find the number of days between them. */
+		 * can easily find the number of days between them. */
 		g_date_clear (&event_start_date, 1);
 		g_date_set_dmy (&event_start_date, event_start->day,
 				event_start->month + 1, event_start->year);
@@ -2598,9 +2603,9 @@ cal_obj_secondly_find_start_position (CalObjTime *event_start,
 
 static gboolean
 cal_obj_secondly_find_next_position (CalObjTime *cotime,
-				     CalObjTime *event_end,
-				     RecurData  *recur_data,
-				     CalObjTime *interval_end)
+                                     CalObjTime *event_end,
+                                     RecurData *recur_data,
+                                     CalObjTime *interval_end)
 {
 	cal_obj_time_add_seconds (cotime, recur_data->recur->interval);
 
@@ -2615,10 +2620,10 @@ cal_obj_secondly_find_next_position (CalObjTime *cotime,
 }
 
 /* If the BYMONTH rule is specified it expands each occurrence in occs, by
-   using each of the months in the bymonth list. */
-static GArray*
-cal_obj_bymonth_expand		(RecurData  *recur_data,
-				 GArray     *occs)
+ * using each of the months in the bymonth list. */
+static GArray *
+cal_obj_bymonth_expand (RecurData *recur_data,
+                        GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
@@ -2626,7 +2631,7 @@ cal_obj_bymonth_expand		(RecurData  *recur_data,
 	gint len, i;
 
 	/* If BYMONTH has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->bymonth || occs->len == 0)
 		return occs;
 
@@ -2651,17 +2656,17 @@ cal_obj_bymonth_expand		(RecurData  *recur_data,
 }
 
 /* If the BYMONTH rule is specified it filters out all occurrences in occs
-   which do not match one of the months in the bymonth list. */
-static GArray*
-cal_obj_bymonth_filter		(RecurData  *recur_data,
-				 GArray     *occs)
+ * which do not match one of the months in the bymonth list. */
+static GArray *
+cal_obj_bymonth_filter (RecurData *recur_data,
+                        GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
 	gint len, i;
 
 	/* If BYMONTH has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->bymonth || occs->len == 0)
 		return occs;
 
@@ -2679,9 +2684,9 @@ cal_obj_bymonth_filter		(RecurData  *recur_data,
 	return new_occs;
 }
 
-static GArray*
-cal_obj_byweekno_expand		(RecurData  *recur_data,
-				 GArray     *occs)
+static GArray *
+cal_obj_byweekno_expand (RecurData *recur_data,
+                         GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ, year_start_cotime, year_end_cotime, cotime;
@@ -2689,7 +2694,7 @@ cal_obj_byweekno_expand		(RecurData  *recur_data,
 	gint len, i, weekno;
 
 	/* If BYWEEKNO has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byweekno || occs->len == 0)
 		return occs;
 
@@ -2700,21 +2705,21 @@ cal_obj_byweekno_expand		(RecurData  *recur_data,
 		occ = &g_array_index (occs, CalObjTime, i);
 
 		/* Find the day that would correspond to week 1 (note that
-		   week 1 is the first week starting from the specified week
-		   start day that has 4 days in the new year). */
+		 * week 1 is the first week starting from the specified week
+		 * start day that has 4 days in the new year). */
 		year_start_cotime = *occ;
 		cal_obj_time_find_first_week (&year_start_cotime,
 					      recur_data);
 
 		/* Find the day that would correspond to week 1 of the next
-		   year, which we use for -ve week numbers. */
+		 * year, which we use for -ve week numbers. */
 		year_end_cotime = *occ;
 		year_end_cotime.year++;
 		cal_obj_time_find_first_week (&year_end_cotime,
 					      recur_data);
 
 		/* Now iterate over the week numbers in byweekno, generating a
-		   new occurrence for each one. */
+		 * new occurrence for each one. */
 		elem = recur_data->recur->byweekno;
 		while (elem) {
 			weekno = GPOINTER_TO_INT (elem->data);
@@ -2739,20 +2744,9 @@ cal_obj_byweekno_expand		(RecurData  *recur_data,
 	return new_occs;
 }
 
-#if 0
-/* This isn't used at present. */
-static GArray*
-cal_obj_byweekno_filter		(RecurData  *recur_data,
-				 GArray     *occs)
-{
-
-	return occs;
-}
-#endif
-
-static GArray*
-cal_obj_byyearday_expand	(RecurData  *recur_data,
-				 GArray     *occs)
+static GArray *
+cal_obj_byyearday_expand (RecurData *recur_data,
+                          GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ, year_start_cotime, year_end_cotime, cotime;
@@ -2760,7 +2754,7 @@ cal_obj_byyearday_expand	(RecurData  *recur_data,
 	gint len, i, dayno;
 
 	/* If BYYEARDAY has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byyearday || occs->len == 0)
 		return occs;
 
@@ -2776,14 +2770,14 @@ cal_obj_byyearday_expand	(RecurData  *recur_data,
 		year_start_cotime.day = 1;
 
 		/* Find the day that would correspond to day 1 of the next
-		   year, which we use for -ve day numbers. */
+		 * year, which we use for -ve day numbers. */
 		year_end_cotime = *occ;
 		year_end_cotime.year++;
 		year_end_cotime.month = 0;
 		year_end_cotime.day = 1;
 
 		/* Now iterate over the day numbers in byyearday, generating a
-		   new occurrence for each one. */
+		 * new occurrence for each one. */
 		elem = recur_data->recur->byyearday;
 		while (elem) {
 			dayno = GPOINTER_TO_INT (elem->data);
@@ -2808,16 +2802,16 @@ cal_obj_byyearday_expand	(RecurData  *recur_data,
 }
 
 /* Note: occs must not contain invalid dates, e.g. 31st September. */
-static GArray*
-cal_obj_byyearday_filter	(RecurData  *recur_data,
-				 GArray     *occs)
+static GArray *
+cal_obj_byyearday_filter (RecurData *recur_data,
+                          GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
 	gint yearday, len, i, days_in_year;
 
 	/* If BYYEARDAY has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byyearday || occs->len == 0)
 		return occs;
 
@@ -2843,9 +2837,9 @@ cal_obj_byyearday_filter	(RecurData  *recur_data,
 	return new_occs;
 }
 
-static GArray*
-cal_obj_bymonthday_expand	(RecurData  *recur_data,
-				 GArray     *occs)
+static GArray *
+cal_obj_bymonthday_expand (RecurData *recur_data,
+                           GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ, month_start_cotime, month_end_cotime, cotime;
@@ -2853,7 +2847,7 @@ cal_obj_bymonthday_expand	(RecurData  *recur_data,
 	gint len, i, dayno;
 
 	/* If BYMONTHDAY has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->bymonthday || occs->len == 0)
 		return occs;
 
@@ -2868,13 +2862,13 @@ cal_obj_bymonthday_expand	(RecurData  *recur_data,
 		month_start_cotime.day = 1;
 
 		/* Find the day that would correspond to day 1 of the next
-		   month, which we use for -ve day numbers. */
+		 * month, which we use for -ve day numbers. */
 		month_end_cotime = *occ;
 		month_end_cotime.month++;
 		month_end_cotime.day = 1;
 
 		/* Now iterate over the day numbers in bymonthday, generating a
-		   new occurrence for each one. */
+		 * new occurrence for each one. */
 		elem = recur_data->recur->bymonthday;
 		while (elem) {
 			dayno = GPOINTER_TO_INT (elem->data);
@@ -2903,16 +2897,16 @@ cal_obj_bymonthday_expand	(RecurData  *recur_data,
 	return new_occs;
 }
 
-static GArray*
-cal_obj_bymonthday_filter	(RecurData  *recur_data,
-				 GArray     *occs)
+static GArray *
+cal_obj_bymonthday_filter (RecurData *recur_data,
+                           GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
 	gint len, i, days_in_month;
 
 	/* If BYMONTHDAY has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->bymonthday || occs->len == 0)
 		return occs;
 
@@ -2937,9 +2931,9 @@ cal_obj_bymonthday_filter	(RecurData  *recur_data,
 	return new_occs;
 }
 
-static GArray*
-cal_obj_byday_expand_yearly	(RecurData  *recur_data,
-				 GArray     *occs)
+static GArray *
+cal_obj_byday_expand_yearly (RecurData *recur_data,
+                             GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
@@ -2949,7 +2943,7 @@ cal_obj_byday_expand_yearly	(RecurData  *recur_data,
 	guint16 year;
 
 	/* If BYDAY has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byday || occs->len == 0)
 		return occs;
 
@@ -3013,9 +3007,9 @@ cal_obj_byday_expand_yearly	(RecurData  *recur_data,
 	return new_occs;
 }
 
-static GArray*
-cal_obj_byday_expand_monthly	(RecurData  *recur_data,
-				 GArray     *occs)
+static GArray *
+cal_obj_byday_expand_monthly (RecurData *recur_data,
+                              GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
@@ -3026,7 +3020,7 @@ cal_obj_byday_expand_monthly	(RecurData  *recur_data,
 	guint8 month;
 
 	/* If BYDAY has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byday || occs->len == 0)
 		return occs;
 
@@ -3075,8 +3069,8 @@ cal_obj_byday_expand_monthly	(RecurData  *recur_data,
 				last_weekday = cal_obj_time_weekday (occ);
 
 				/* This calculates the number of days to step
-				   backwards from the last day of the month
-				   to the weekday we want. */
+				 * backwards from the last day of the month
+				 * to the weekday we want. */
 				offset = (last_weekday + 7 - weekday) % 7;
 
 				/* This adds on the weeks. */
@@ -3088,7 +3082,7 @@ cal_obj_byday_expand_monthly	(RecurData  *recur_data,
 			}
 
 			/* Reset the year & month, as we may have gone past
-			   the end. */
+			 * the end. */
 			occ->year = year;
 			occ->month = month;
 		}
@@ -3100,9 +3094,9 @@ cal_obj_byday_expand_monthly	(RecurData  *recur_data,
 }
 
 /* Note: occs must not contain invalid dates, e.g. 31st September. */
-static GArray*
-cal_obj_byday_expand_weekly	(RecurData  *recur_data,
-				 GArray     *occs)
+static GArray *
+cal_obj_byday_expand_weekly (RecurData *recur_data,
+                             GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
@@ -3111,7 +3105,7 @@ cal_obj_byday_expand_weekly	(RecurData  *recur_data,
 	gint weekday_offset, new_weekday_offset;
 
 	/* If BYDAY has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byday || occs->len == 0)
 		return occs;
 
@@ -3127,8 +3121,8 @@ cal_obj_byday_expand_weekly	(RecurData  *recur_data,
 			elem = elem->next;
 
 			/* FIXME: Currently we just ignore this, but maybe we
-			   should skip all elements where week_num != 0.
-			   The spec isn't clear about this. */
+			 * should skip all elements where week_num != 0.
+			 * The spec isn't clear about this. */
 			/*week_num = GPOINTER_TO_INT (elem->data);*/
 			elem = elem->next;
 
@@ -3145,16 +3139,16 @@ cal_obj_byday_expand_weekly	(RecurData  *recur_data,
 }
 
 /* Note: occs must not contain invalid dates, e.g. 31st September. */
-static GArray*
-cal_obj_byday_filter		(RecurData  *recur_data,
-				 GArray     *occs)
+static GArray *
+cal_obj_byday_filter (RecurData *recur_data,
+                      GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
 	gint len, i, weekday;
 
 	/* If BYDAY has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byday || occs->len == 0)
 		return occs;
 
@@ -3176,10 +3170,10 @@ cal_obj_byday_filter		(RecurData  *recur_data,
 }
 
 /* If the BYHOUR rule is specified it expands each occurrence in occs, by
-   using each of the hours in the byhour list. */
-static GArray*
-cal_obj_byhour_expand		(RecurData  *recur_data,
-				 GArray     *occs)
+ * using each of the hours in the byhour list. */
+static GArray *
+cal_obj_byhour_expand (RecurData *recur_data,
+                       GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
@@ -3187,7 +3181,7 @@ cal_obj_byhour_expand		(RecurData  *recur_data,
 	gint len, i;
 
 	/* If BYHOUR has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byhour || occs->len == 0)
 		return occs;
 
@@ -3211,17 +3205,17 @@ cal_obj_byhour_expand		(RecurData  *recur_data,
 }
 
 /* If the BYHOUR rule is specified it filters out all occurrences in occs
-   which do not match one of the hours in the byhour list. */
-static GArray*
-cal_obj_byhour_filter		(RecurData  *recur_data,
-				 GArray     *occs)
+ * which do not match one of the hours in the byhour list. */
+static GArray *
+cal_obj_byhour_filter (RecurData *recur_data,
+                       GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
 	gint len, i;
 
 	/* If BYHOUR has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byhour || occs->len == 0)
 		return occs;
 
@@ -3240,10 +3234,10 @@ cal_obj_byhour_filter		(RecurData  *recur_data,
 }
 
 /* If the BYMINUTE rule is specified it expands each occurrence in occs, by
-   using each of the minutes in the byminute list. */
-static GArray*
-cal_obj_byminute_expand		(RecurData  *recur_data,
-				 GArray     *occs)
+ * using each of the minutes in the byminute list. */
+static GArray *
+cal_obj_byminute_expand (RecurData *recur_data,
+                         GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
@@ -3251,7 +3245,7 @@ cal_obj_byminute_expand		(RecurData  *recur_data,
 	gint len, i;
 
 	/* If BYMINUTE has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byminute || occs->len == 0)
 		return occs;
 
@@ -3275,17 +3269,17 @@ cal_obj_byminute_expand		(RecurData  *recur_data,
 }
 
 /* If the BYMINUTE rule is specified it filters out all occurrences in occs
-   which do not match one of the minutes in the byminute list. */
-static GArray*
-cal_obj_byminute_filter		(RecurData  *recur_data,
-				 GArray     *occs)
+ * which do not match one of the minutes in the byminute list. */
+static GArray *
+cal_obj_byminute_filter (RecurData *recur_data,
+                         GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
 	gint len, i;
 
 	/* If BYMINUTE has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->byminute || occs->len == 0)
 		return occs;
 
@@ -3304,10 +3298,10 @@ cal_obj_byminute_filter		(RecurData  *recur_data,
 }
 
 /* If the BYSECOND rule is specified it expands each occurrence in occs, by
-   using each of the seconds in the bysecond list. */
-static GArray*
-cal_obj_bysecond_expand		(RecurData  *recur_data,
-				 GArray     *occs)
+ * using each of the seconds in the bysecond list. */
+static GArray *
+cal_obj_bysecond_expand (RecurData *recur_data,
+                         GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
@@ -3315,7 +3309,7 @@ cal_obj_bysecond_expand		(RecurData  *recur_data,
 	gint len, i;
 
 	/* If BYSECOND has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->bysecond || occs->len == 0)
 		return occs;
 
@@ -3339,17 +3333,17 @@ cal_obj_bysecond_expand		(RecurData  *recur_data,
 }
 
 /* If the BYSECOND rule is specified it filters out all occurrences in occs
-   which do not match one of the seconds in the bysecond list. */
-static GArray*
-cal_obj_bysecond_filter		(RecurData  *recur_data,
-				 GArray     *occs)
+ * which do not match one of the seconds in the bysecond list. */
+static GArray *
+cal_obj_bysecond_filter (RecurData *recur_data,
+                         GArray *occs)
 {
 	GArray *new_occs;
 	CalObjTime *occ;
 	gint len, i;
 
 	/* If BYSECOND has not been specified, or the array is empty, just
-	   return the array. */
+	 * return the array. */
 	if (!recur_data->recur->bysecond || occs->len == 0)
 		return occs;
 
@@ -3368,11 +3362,11 @@ cal_obj_bysecond_filter		(RecurData  *recur_data,
 }
 
 /* Adds a positive or negative number of months to the given CalObjTime,
-   updating the year appropriately so we end up with a valid month.
-   Note that the day may be invalid, e.g. 30th Feb. */
+ * updating the year appropriately so we end up with a valid month.
+ * Note that the day may be invalid, e.g. 30th Feb. */
 static void
-cal_obj_time_add_months		(CalObjTime *cotime,
-				 gint	     months)
+cal_obj_time_add_months (CalObjTime *cotime,
+                         gint months)
 {
 	guint month, years;
 
@@ -3392,10 +3386,10 @@ cal_obj_time_add_months		(CalObjTime *cotime,
 }
 
 /* Adds a positive or negative number of days to the given CalObjTime,
-   updating the month and year appropriately so we end up with a valid day. */
+ * updating the month and year appropriately so we end up with a valid day. */
 static void
-cal_obj_time_add_days		(CalObjTime *cotime,
-				 gint	     days)
+cal_obj_time_add_days (CalObjTime *cotime,
+                       gint days)
 {
 	gint day, days_in_month;
 
@@ -3439,11 +3433,11 @@ cal_obj_time_add_days		(CalObjTime *cotime,
 }
 
 /* Adds a positive or negative number of hours to the given CalObjTime,
-   updating the day, month & year appropriately so we end up with a valid
-   time. */
+ * updating the day, month & year appropriately so we end up with a valid
+ * time. */
 static void
-cal_obj_time_add_hours		(CalObjTime *cotime,
-				 gint	     hours)
+cal_obj_time_add_hours (CalObjTime *cotime,
+                        gint hours)
 {
 	gint hour, days;
 
@@ -3464,10 +3458,10 @@ cal_obj_time_add_hours		(CalObjTime *cotime,
 }
 
 /* Adds a positive or negative number of minutes to the given CalObjTime,
-   updating the rest of the CalObjTime appropriately. */
+ * updating the rest of the CalObjTime appropriately. */
 static void
-cal_obj_time_add_minutes	(CalObjTime *cotime,
-				 gint	     minutes)
+cal_obj_time_add_minutes (CalObjTime *cotime,
+                          gint minutes)
 {
 	gint minute, hours;
 
@@ -3488,10 +3482,10 @@ cal_obj_time_add_minutes	(CalObjTime *cotime,
 }
 
 /* Adds a positive or negative number of seconds to the given CalObjTime,
-   updating the rest of the CalObjTime appropriately. */
+ * updating the rest of the CalObjTime appropriately. */
 static void
-cal_obj_time_add_seconds	(CalObjTime *cotime,
-				 gint	     seconds)
+cal_obj_time_add_seconds (CalObjTime *cotime,
+                          gint seconds)
 {
 	gint second, minutes;
 
@@ -3512,13 +3506,13 @@ cal_obj_time_add_seconds	(CalObjTime *cotime,
 }
 
 /* Compares 2 CalObjTimes. Returns -1 if the cotime1 is before cotime2, 0 if
-   they are the same, or 1 if cotime1 is after cotime2. The comparison type
-   specifies which parts of the times we are interested in, e.g. if CALOBJ_DAY
-   is used we only want to know if the days are different. */
+ * they are the same, or 1 if cotime1 is after cotime2. The comparison type
+ * specifies which parts of the times we are interested in, e.g. if CALOBJ_DAY
+ * is used we only want to know if the days are different. */
 static gint
-cal_obj_time_compare		(CalObjTime *cotime1,
-				 CalObjTime *cotime2,
-				 CalObjTimeComparison type)
+cal_obj_time_compare (CalObjTime *cotime1,
+                      CalObjTime *cotime2,
+                      CalObjTimeComparison type)
 {
 	if (cotime1->year < cotime2->year)
 		return -1;
@@ -3569,16 +3563,16 @@ cal_obj_time_compare		(CalObjTime *cotime1,
 }
 
 /* This is the same as the above function, but without the comparison type.
-   It is used for qsort (). */
+ * It is used for qsort (). */
 static gint
 cal_obj_time_compare_func (gconstpointer arg1,
-			   gconstpointer arg2)
+                           gconstpointer arg2)
 {
 	CalObjTime *cotime1, *cotime2;
 	gint retval;
 
-	cotime1 = (CalObjTime*) arg1;
-	cotime2 = (CalObjTime*) arg2;
+	cotime1 = (CalObjTime *) arg1;
+	cotime2 = (CalObjTime *) arg2;
 
 	if (cotime1->year < cotime2->year)
 		retval = -1;
@@ -3623,12 +3617,12 @@ cal_obj_time_compare_func (gconstpointer arg1,
 
 static gint
 cal_obj_date_only_compare_func (gconstpointer arg1,
-				gconstpointer arg2)
+                                gconstpointer arg2)
 {
 	CalObjTime *cotime1, *cotime2;
 
-	cotime1 = (CalObjTime*) arg1;
-	cotime2 = (CalObjTime*) arg2;
+	cotime1 = (CalObjTime *) arg1;
+	cotime2 = (CalObjTime *) arg2;
 
 	if (cotime1->year < cotime2->year)
 		return -1;
@@ -3650,7 +3644,7 @@ cal_obj_date_only_compare_func (gconstpointer arg1,
 
 /* Returns the weekday of the given CalObjTime, from 0 (Mon) - 6 (Sun). */
 static gint
-cal_obj_time_weekday		(CalObjTime *cotime)
+cal_obj_time_weekday (CalObjTime *cotime)
 {
 	GDate date;
 	gint weekday;
@@ -3665,10 +3659,10 @@ cal_obj_time_weekday		(CalObjTime *cotime)
 }
 
 /* Returns the weekday of the given CalObjTime, from 0 - 6. The week start
-   day is Monday by default, but can be set in the recurrence rule. */
+ * day is Monday by default, but can be set in the recurrence rule. */
 static gint
-cal_obj_time_weekday_offset	(CalObjTime *cotime,
-				 ECalRecurrence *recur)
+cal_obj_time_weekday_offset (CalObjTime *cotime,
+                             ECalRecurrence *recur)
 {
 	GDate date;
 	gint weekday, offset;
@@ -3680,9 +3674,9 @@ cal_obj_time_weekday_offset	(CalObjTime *cotime,
 	weekday = g_date_get_weekday (&date) - 1;
 
 	/* This calculates the offset of our day from the start of the week.
-	   We just add on a week (to avoid any possible negative values) and
-	   then subtract the specified week start day, then convert it into a
-	   value from 0-6. */
+	 * We just add on a week (to avoid any possible negative values) and
+	 * then subtract the specified week start day, then convert it into a
+	 * value from 0-6. */
 	offset = (weekday + 7 - recur->week_start_day) % 7;
 
 	return offset;
@@ -3690,7 +3684,7 @@ cal_obj_time_weekday_offset	(CalObjTime *cotime,
 
 /* Returns the day of the year of the given CalObjTime, from 1 - 366. */
 static gint
-cal_obj_time_day_of_year		(CalObjTime *cotime)
+cal_obj_time_day_of_year (CalObjTime *cotime)
 {
 	GDate date;
 
@@ -3701,13 +3695,13 @@ cal_obj_time_day_of_year		(CalObjTime *cotime)
 }
 
 /* Finds the first week in the given CalObjTime's year, using the same weekday
-   as the event start day (i.e. from the RecurData).
-   The first week of the year is the first week starting from the specified
-   week start day that has 4 days in the new year. It may be in the previous
-   year. */
+ * as the event start day (i.e. from the RecurData).
+ * The first week of the year is the first week starting from the specified
+ * week start day that has 4 days in the new year. It may be in the previous
+ * year. */
 static void
-cal_obj_time_find_first_week	(CalObjTime *cotime,
-				 RecurData  *recur_data)
+cal_obj_time_find_first_week (CalObjTime *cotime,
+                              RecurData *recur_data)
 {
 	GDate date;
 	gint weekday, week_start_day, first_full_week_start_offset, offset;
@@ -3718,15 +3712,15 @@ cal_obj_time_find_first_week	(CalObjTime *cotime,
 	weekday = g_date_get_weekday (&date) - 1;
 
 	/* Calculate the first day of the year that starts a new week, i.e. the
-	   first week_start_day after weekday, using 0 = 1st Jan.
-	   e.g. if the 1st Jan is a Tuesday (1) and week_start_day is a
-	   Monday (0), the result will be (0 + 7 - 1) % 7 = 6 (7th Jan). */
+	 * first week_start_day after weekday, using 0 = 1st Jan.
+	 * e.g. if the 1st Jan is a Tuesday (1) and week_start_day is a
+	 * Monday (0), the result will be (0 + 7 - 1) % 7 = 6 (7th Jan). */
 	week_start_day = recur_data->recur->week_start_day;
 	first_full_week_start_offset = (week_start_day + 7 - weekday) % 7;
 
 	/* Now see if we have to move backwards 1 week, i.e. if the week
-	   starts on or after Jan 5th (since the previous week has 4 days in
-	   this year and so will be the first week of the year). */
+	 * starts on or after Jan 5th (since the previous week has 4 days in
+	 * this year and so will be the first week of the year). */
 	if (first_full_week_start_offset >= 4)
 		first_full_week_start_offset -= 7;
 
@@ -3740,9 +3734,9 @@ cal_obj_time_find_first_week	(CalObjTime *cotime,
 }
 
 static void
-cal_object_time_from_time	(CalObjTime	*cotime,
-				 time_t		 t,
-				 icaltimezone	*zone)
+cal_object_time_from_time (CalObjTime *cotime,
+                           time_t t,
+                           icaltimezone *zone)
 {
 	struct icaltimetype tt;
 
@@ -3761,10 +3755,10 @@ cal_object_time_from_time	(CalObjTime	*cotime,
 }
 
 /* Debugging function to convert a CalObjTime to a string. It uses a static
-   buffer so beware. */
+ * buffer so beware. */
 #ifdef CAL_OBJ_DEBUG
 static const gchar *
-cal_obj_time_to_string		(CalObjTime	*cotime)
+cal_obj_time_to_string (CalObjTime *cotime)
 {
 	static gchar buffer[50];
 	gchar *weekdays[] = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun",
@@ -3795,10 +3789,10 @@ cal_obj_time_to_string		(CalObjTime	*cotime)
  * Since: 2.32
  **/
 gboolean
-e_cal_recur_ensure_end_dates (ECalComponent	*comp,
-			    gboolean		 refresh,
-			    ECalRecurResolveTimezoneFn  tz_cb,
-			    gpointer		 tz_cb_data)
+e_cal_recur_ensure_end_dates (ECalComponent *comp,
+                              gboolean refresh,
+                              ECalRecurResolveTimezoneFn tz_cb,
+                              gpointer tz_cb_data)
 {
 	GSList *rrules, *exrules, *elem;
 	gboolean changed = FALSE;
@@ -3830,12 +3824,12 @@ struct _ECalRecurEnsureEndDateData {
 };
 
 static gboolean
-e_cal_recur_ensure_rule_end_date (ECalComponent			*comp,
-				icalproperty			*prop,
-				gboolean			 exception,
-				gboolean			 refresh,
-				ECalRecurResolveTimezoneFn	 tz_cb,
-				gpointer			 tz_cb_data)
+e_cal_recur_ensure_rule_end_date (ECalComponent *comp,
+                                  icalproperty *prop,
+                                  gboolean exception,
+                                  gboolean refresh,
+                                  ECalRecurResolveTimezoneFn tz_cb,
+                                  gpointer tz_cb_data)
 {
 	struct icalrecurrencetype rule;
 	ECalRecurEnsureEndDateData cb_data;
@@ -3850,17 +3844,17 @@ e_cal_recur_ensure_rule_end_date (ECalComponent			*comp,
 		return FALSE;
 
 	/* If refresh is FALSE, we check if the enddate is already set, and
-	   if it is we just return. */
+	 * if it is we just return. */
 	if (!refresh) {
 		if (e_cal_recur_get_rule_end_date (prop, NULL) != -1)
 			return FALSE;
 	}
 
 	/* Calculate the end date. Note that we initialize end_date to 0, so
-	   if the RULE doesn't generate COUNT instances we save a time_t of 0.
-	   Also note that we use the UTC timezone as the default timezone.
-	   In get_end_date () if the DTSTART is a DATE or floating time, we will
-	   convert the ENDDATE to the current timezone. */
+	 * if the RULE doesn't generate COUNT instances we save a time_t of 0.
+	 * Also note that we use the UTC timezone as the default timezone.
+	 * In get_end_date () if the DTSTART is a DATE or floating time, we will
+	 * convert the ENDDATE to the current timezone. */
 	cb_data.count = rule.count;
 	cb_data.instances = 0;
 	cb_data.end_date = 0;
@@ -3870,21 +3864,21 @@ e_cal_recur_ensure_rule_end_date (ECalComponent			*comp,
 					      icaltimezone_get_utc_timezone ());
 
 	/* Store the end date in the "X-EVOLUTION-ENDDATE" parameter of the
-	   rule. */
+	 * rule. */
 	e_cal_recur_set_rule_end_date (prop, cb_data.end_date);
 
 	return TRUE;
 }
 
 static gboolean
-e_cal_recur_ensure_rule_end_date_cb	(ECalComponent	*comp,
-					 time_t		 instance_start,
-					 time_t		 instance_end,
-					 gpointer	 data)
+e_cal_recur_ensure_rule_end_date_cb (ECalComponent *comp,
+                                     time_t instance_start,
+                                     time_t instance_end,
+                                     gpointer data)
 {
 	ECalRecurEnsureEndDateData *cb_data;
 
-	cb_data = (ECalRecurEnsureEndDateData*) data;
+	cb_data = (ECalRecurEnsureEndDateData *) data;
 
 	cb_data->instances++;
 
@@ -3897,12 +3891,12 @@ e_cal_recur_ensure_rule_end_date_cb	(ECalComponent	*comp,
 }
 
 /* If default_timezone is set, the saved ENDDATE parameter is assumed to be
-   in that timezone. This is used when the DTSTART is a DATE or floating
-   value, since the RRULE end date will change depending on the timezone that
-   it is evaluated in. */
+ * in that timezone. This is used when the DTSTART is a DATE or floating
+ * value, since the RRULE end date will change depending on the timezone that
+ * it is evaluated in. */
 static time_t
-e_cal_recur_get_rule_end_date	(icalproperty	*prop,
-				 icaltimezone	*default_timezone)
+e_cal_recur_get_rule_end_date (icalproperty *prop,
+                               icaltimezone *default_timezone)
 {
 	icalparameter *param;
 	const gchar *xname, *xvalue;
@@ -3936,8 +3930,8 @@ e_cal_recur_get_rule_end_date	(icalproperty	*prop,
 }
 
 static void
-e_cal_recur_set_rule_end_date	(icalproperty	*prop,
-				 time_t		 end_date)
+e_cal_recur_set_rule_end_date (icalproperty *prop,
+                               time_t end_date)
 {
 	icalparameter *param;
 	icalvalue *value;
@@ -3954,7 +3948,7 @@ e_cal_recur_set_rule_end_date	(icalproperty	*prop,
 	icalvalue_free (value);
 
 	/* If we already have an X-EVOLUTION-ENDDATE parameter, set the value
-	   to the new date-time. */
+	 * to the new date-time. */
 	param = icalproperty_get_first_parameter (prop, ICAL_X_PARAMETER);
 	while (param) {
 		xname = icalparameter_get_xname (param);

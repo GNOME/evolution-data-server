@@ -114,8 +114,9 @@ closure_destroy (WebdavBackendSearchClosure *closure)
 	g_free (closure);
 }
 
-static WebdavBackendSearchClosure*
-init_closure (EDataBookView *book_view, EBookBackendWebdav *webdav)
+static WebdavBackendSearchClosure *
+init_closure (EDataBookView *book_view,
+              EBookBackendWebdav *webdav)
 {
 	WebdavBackendSearchClosure *closure = g_new (WebdavBackendSearchClosure, 1);
 
@@ -129,14 +130,15 @@ init_closure (EDataBookView *book_view, EBookBackendWebdav *webdav)
 	return closure;
 }
 
-static WebdavBackendSearchClosure*
+static WebdavBackendSearchClosure *
 get_closure (EDataBookView *book_view)
 {
 	return g_object_get_data (G_OBJECT (book_view), WEBDAV_CLOSURE_NAME);
 }
 
-static EContact*
-download_contact (EBookBackendWebdav *webdav, const gchar *uri)
+static EContact *
+download_contact (EBookBackendWebdav *webdav,
+                  const gchar *uri)
 {
 	SoupMessage *message;
 	const gchar  *etag;
@@ -186,7 +188,9 @@ download_contact (EBookBackendWebdav *webdav, const gchar *uri)
 }
 
 static guint
-upload_contact (EBookBackendWebdav *webdav, EContact *contact, gchar **reason)
+upload_contact (EBookBackendWebdav *webdav,
+                EContact *contact,
+                gchar **reason)
 {
 	ESource     *source;
 	SoupMessage *message;
@@ -299,7 +303,11 @@ webdav_handle_auth_request (EBookBackendWebdav *webdav)
 }
 
 static void
-e_book_backend_webdav_create_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard)
+e_book_backend_webdav_create_contact (EBookBackend *backend,
+                                      EDataBook *book,
+                                      guint32 opid,
+                                      GCancellable *cancellable,
+                                      const gchar *vcard)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
@@ -370,7 +378,8 @@ e_book_backend_webdav_create_contact (EBookBackend *backend, EDataBook *book, gu
 }
 
 static guint
-delete_contact (EBookBackendWebdav *webdav, const gchar *uri)
+delete_contact (EBookBackendWebdav *webdav,
+                const gchar *uri)
 {
 	SoupMessage *message;
 	guint        status;
@@ -386,7 +395,11 @@ delete_contact (EBookBackendWebdav *webdav, const gchar *uri)
 }
 
 static void
-e_book_backend_webdav_remove_contacts (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *id_list)
+e_book_backend_webdav_remove_contacts (EBookBackend *backend,
+                                       EDataBook *book,
+                                       guint32 opid,
+                                       GCancellable *cancellable,
+                                       const GSList *id_list)
 {
 	EBookBackendWebdav        *webdav      = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv        = webdav->priv;
@@ -424,7 +437,11 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend, EDataBook *book, g
 }
 
 static void
-e_book_backend_webdav_modify_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard)
+e_book_backend_webdav_modify_contact (EBookBackend *backend,
+                                      EDataBook *book,
+                                      guint32 opid,
+                                      GCancellable *cancellable,
+                                      const gchar *vcard)
 {
 	EBookBackendWebdav        *webdav  = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv    = webdav->priv;
@@ -494,7 +511,11 @@ e_book_backend_webdav_modify_contact (EBookBackend *backend, EDataBook *book, gu
 }
 
 static void
-e_book_backend_webdav_get_contact (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *uid)
+e_book_backend_webdav_get_contact (EBookBackend *backend,
+                                   EDataBook *book,
+                                   guint32 opid,
+                                   GCancellable *cancellable,
+                                   const gchar *uid)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
@@ -540,8 +561,9 @@ struct response_element_t {
 	response_element_t *next;
 };
 
-static response_element_t*
-parse_response_tag (const parser_strings_t *strings, xmlTextReaderPtr reader)
+static response_element_t *
+parse_response_tag (const parser_strings_t *strings,
+                    xmlTextReaderPtr reader)
 {
 	xmlChar            *href  = NULL;
 	xmlChar            *etag  = NULL;
@@ -609,7 +631,7 @@ parse_response_tag (const parser_strings_t *strings, xmlTextReaderPtr reader)
 	return element;
 }
 
-static response_element_t*
+static response_element_t *
 parse_propfind_response (xmlTextReaderPtr reader)
 {
 	parser_strings_t    strings;
@@ -660,7 +682,7 @@ parse_propfind_response (xmlTextReaderPtr reader)
 	return elements;
 }
 
-static SoupMessage*
+static SoupMessage *
 send_propfind (EBookBackendWebdav *webdav)
 {
 	SoupMessage               *message;
@@ -682,7 +704,9 @@ send_propfind (EBookBackendWebdav *webdav)
 }
 
 static xmlXPathObjectPtr
-xpath_eval (xmlXPathContextPtr ctx, const gchar *format, ...)
+xpath_eval (xmlXPathContextPtr ctx,
+            const gchar *format,
+            ...)
 {
 	xmlXPathObjectPtr  result;
 	va_list            args;
@@ -749,7 +773,8 @@ xp_object_get_status (xmlXPathObjectPtr result)
 }
 
 static gboolean
-check_addressbook_changed (EBookBackendWebdav *webdav, gchar **new_ctag)
+check_addressbook_changed (EBookBackendWebdav *webdav,
+                           gchar **new_ctag)
 {
 	gboolean res = TRUE;
 	const gchar *request = "<?xml version=\"1.0\" encoding=\"utf-8\"?><propfind xmlns=\"DAV:\"><prop><getctag/></prop></propfind>";
@@ -826,7 +851,8 @@ check_addressbook_changed (EBookBackendWebdav *webdav, gchar **new_ctag)
 }
 
 static GError *
-download_contacts (EBookBackendWebdav *webdav, EFlag *running,
+download_contacts (EBookBackendWebdav *webdav,
+                   EFlag *running,
                   EDataBookView *book_view)
 {
 	EBookBackendWebdavPrivate *priv = webdav->priv;
@@ -924,7 +950,7 @@ download_contacts (EBookBackendWebdav *webdav, EFlag *running,
 
 		/* skip collections */
 		uri = (const gchar *) element->href;
-		if (uri[strlen (uri)-1] == '/')
+		if (uri[strlen (uri) - 1] == '/')
 			continue;
 
 		/* uri might be relative, construct complete one */
@@ -1058,7 +1084,11 @@ e_book_backend_webdav_stop_book_view (EBookBackend *backend,
 }
 
 static void
-e_book_backend_webdav_get_contact_list (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query)
+e_book_backend_webdav_get_contact_list (EBookBackend *backend,
+                                        EDataBook *book,
+                                        guint32 opid,
+                                        GCancellable *cancellable,
+                                        const gchar *query)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
@@ -1095,7 +1125,11 @@ e_book_backend_webdav_get_contact_list (EBookBackend *backend, EDataBook *book, 
 }
 
 static void
-e_book_backend_webdav_get_contact_list_uids (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query)
+e_book_backend_webdav_get_contact_list_uids (EBookBackend *backend,
+                                             EDataBook *book,
+                                             guint32 opid,
+                                             GCancellable *cancellable,
+                                             const gchar *query)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
@@ -1132,7 +1166,9 @@ e_book_backend_webdav_get_contact_list_uids (EBookBackend *backend, EDataBook *b
 }
 
 static void
-e_book_backend_webdav_authenticate_user (EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials)
+e_book_backend_webdav_authenticate_user (EBookBackend *backend,
+                                         GCancellable *cancellable,
+                                         ECredentials *credentials)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
@@ -1176,7 +1212,8 @@ static void soup_authenticate (SoupSession *session, SoupMessage *message,
 }
 
 static void
-proxy_settings_changed (EProxy *proxy, gpointer user_data)
+proxy_settings_changed (EProxy *proxy,
+                        gpointer user_data)
 {
 	SoupURI *proxy_uri = NULL;
 	EBookBackendWebdavPrivate *priv = (EBookBackendWebdavPrivate *) user_data;
@@ -1193,7 +1230,11 @@ proxy_settings_changed (EProxy *proxy, gpointer user_data)
 }
 
 static void
-e_book_backend_webdav_open (EBookBackend *backend, EDataBook *book, guint opid, GCancellable *cancellable, gboolean only_if_exists)
+e_book_backend_webdav_open (EBookBackend *backend,
+                            EDataBook *book,
+                            guint opid,
+                            GCancellable *cancellable,
+                            gboolean only_if_exists)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
@@ -1310,13 +1351,17 @@ e_book_backend_webdav_open (EBookBackend *backend, EDataBook *book, guint opid, 
 }
 
 static void
-e_book_backend_webdav_remove (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable)
+e_book_backend_webdav_remove (EBookBackend *backend,
+                              EDataBook *book,
+                              guint32 opid,
+                              GCancellable *cancellable)
 {
 	e_data_book_respond_remove (book, opid, EDB_ERROR (SUCCESS));
 }
 
 static void
-e_book_backend_webdav_set_online (EBookBackend *backend, gboolean is_online)
+e_book_backend_webdav_set_online (EBookBackend *backend,
+                                  gboolean is_online)
 {
 	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 
@@ -1336,7 +1381,11 @@ e_book_backend_webdav_set_online (EBookBackend *backend, gboolean is_online)
 }
 
 static void
-e_book_backend_webdav_get_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name)
+e_book_backend_webdav_get_backend_property (EBookBackend *backend,
+                                            EDataBook *book,
+                                            guint32 opid,
+                                            GCancellable *cancellable,
+                                            const gchar *prop_name)
 {
 	g_return_if_fail (prop_name != NULL);
 

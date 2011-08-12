@@ -75,14 +75,15 @@ static gchar *
 e_book_backend_vcf_create_unique_id (void)
 {
 	/* use a 32 counter and the 32 bit timestamp to make an id.
-	   it's doubtful 2^32 id's will be created in a second, so we
-	   should be okay. */
+	 * it's doubtful 2^32 id's will be created in a second, so we
+	 * should be okay. */
 	static guint c = 0;
 	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", time(NULL), c++);
 }
 
 static void
-insert_contact (EBookBackendVCF *vcf, gchar *vcard)
+insert_contact (EBookBackendVCF *vcf,
+                gchar *vcard)
 {
 	EContact *contact = e_contact_new_from_vcard (vcard);
 	gchar *id;
@@ -100,7 +101,8 @@ insert_contact (EBookBackendVCF *vcf, gchar *vcard)
 }
 
 static void
-load_file (EBookBackendVCF *vcf, gint fd)
+load_file (EBookBackendVCF *vcf,
+           gint fd)
 {
 	FILE *fp;
 	GString *str;
@@ -229,9 +231,9 @@ set_revision (EContact *contact)
 }
 
 static EContact *
-do_create (EBookBackendVCF  *bvcf,
-	  const gchar     *vcard_req,
-	  gboolean        dirty_the_file)
+do_create (EBookBackendVCF *bvcf,
+           const gchar *vcard_req,
+           gboolean dirty_the_file)
 {
 	gchar           *id;
 	EContact       *contact;
@@ -239,8 +241,8 @@ do_create (EBookBackendVCF  *bvcf,
 	const gchar     *rev;
 
 	/* at the very least we need the unique_id generation to be
-	   protected by the lock, even if the actual vcard parsing
-	   isn't. */
+	 * protected by the lock, even if the actual vcard parsing
+	 * isn't. */
 	g_mutex_lock (bvcf->priv->mutex);
 	id = e_book_backend_vcf_create_unique_id ();
 
@@ -271,29 +273,29 @@ do_create (EBookBackendVCF  *bvcf,
 
 static void
 e_book_backend_vcf_create_contact (EBookBackendSync *backend,
-				   EDataBook *book,
-				   GCancellable *cancellable,
-				   const gchar *vcard,
-				   EContact **contact,
-				   GError **perror)
+                                   EDataBook *book,
+                                   GCancellable *cancellable,
+                                   const gchar *vcard,
+                                   EContact **contact,
+                                   GError **perror)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 
 	*contact = do_create(bvcf, vcard, TRUE);
 	if (!*contact) {
 		/* XXX need a different call status for this case, i
-		   think */
+		 * think */
 		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
 	}
 }
 
 static void
 e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
-				    EDataBook *book,
-				    GCancellable *cancellable,
-				    const GSList *id_list,
-				    GSList **ids,
-				    GError **perror)
+                                    EDataBook *book,
+                                    GCancellable *cancellable,
+                                    const GSList *id_list,
+                                    GSList **ids,
+                                    GError **perror)
 {
 	/* FIXME: make this handle bulk deletes like the file backend does */
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
@@ -328,11 +330,11 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 
 static void
 e_book_backend_vcf_modify_contact (EBookBackendSync *backend,
-				   EDataBook *book,
-				   GCancellable *cancellable,
-				   const gchar *vcard,
-				   EContact **contact,
-				   GError **perror)
+                                   EDataBook *book,
+                                   GCancellable *cancellable,
+                                   const gchar *vcard,
+                                   EContact **contact,
+                                   GError **perror)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	GList *elem;
@@ -361,11 +363,11 @@ e_book_backend_vcf_modify_contact (EBookBackendSync *backend,
 
 static void
 e_book_backend_vcf_get_contact (EBookBackendSync *backend,
-				EDataBook *book,
-				GCancellable *cancellable,
-				const gchar *id,
-				gchar **vcard,
-				GError **perror)
+                                EDataBook *book,
+                                GCancellable *cancellable,
+                                const gchar *id,
+                                gchar **vcard,
+                                GError **perror)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	GList *elem;
@@ -388,7 +390,8 @@ typedef struct {
 } GetContactListClosure;
 
 static void
-foreach_get_contact_compare (gchar *vcard_string, GetContactListClosure *closure)
+foreach_get_contact_compare (gchar *vcard_string,
+                             GetContactListClosure *closure)
 {
 	if ((!closure->search_needed) || e_book_backend_sexp_match_vcard  (closure->card_sexp, vcard_string)) {
 		closure->list = g_slist_append (closure->list, g_strdup (vcard_string));
@@ -397,11 +400,11 @@ foreach_get_contact_compare (gchar *vcard_string, GetContactListClosure *closure
 
 static void
 e_book_backend_vcf_get_contact_list (EBookBackendSync *backend,
-				     EDataBook *book,
-				     GCancellable *cancellable,
-				     const gchar *query,
-				     GSList **contacts,
-				     GError **perror)
+                                     EDataBook *book,
+                                     GCancellable *cancellable,
+                                     const gchar *query,
+                                     GSList **contacts,
+                                     GError **perror)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	const gchar *search = query;
@@ -434,8 +437,9 @@ closure_destroy (VCFBackendSearchClosure *closure)
 	g_free (closure);
 }
 
-static VCFBackendSearchClosure*
-init_closure (EDataBookView *book_view, EBookBackendVCF *bvcf)
+static VCFBackendSearchClosure *
+init_closure (EDataBookView *book_view,
+              EBookBackendVCF *bvcf)
 {
 	VCFBackendSearchClosure *closure = g_new (VCFBackendSearchClosure, 1);
 
@@ -450,7 +454,7 @@ init_closure (EDataBookView *book_view, EBookBackendVCF *bvcf)
 	return closure;
 }
 
-static VCFBackendSearchClosure*
+static VCFBackendSearchClosure *
 get_closure (EDataBookView *book_view)
 {
 	return g_object_get_data (G_OBJECT (book_view), "EBookBackendVCF.BookView::closure");
@@ -465,7 +469,7 @@ book_view_thread (gpointer data)
 	GList *l;
 
 	/* ref the book view because it'll be removed and unrefed
-	   when/if it's stopped */
+	 * when/if it's stopped */
 	e_data_book_view_ref (book_view);
 
 	query = e_data_book_view_get_card_query (book_view);
@@ -500,8 +504,8 @@ book_view_thread (gpointer data)
 }
 
 static void
-e_book_backend_vcf_start_book_view (EBookBackend  *backend,
-				    EDataBookView *book_view)
+e_book_backend_vcf_start_book_view (EBookBackend *backend,
+                                    EDataBookView *book_view)
 {
 	VCFBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_VCF (backend));
 
@@ -516,8 +520,8 @@ e_book_backend_vcf_start_book_view (EBookBackend  *backend,
 }
 
 static void
-e_book_backend_vcf_stop_book_view (EBookBackend  *backend,
-				   EDataBookView *book_view)
+e_book_backend_vcf_stop_book_view (EBookBackend *backend,
+                                   EDataBookView *book_view)
 {
 	VCFBackendSearchClosure *closure = get_closure (book_view);
 	gboolean need_join;
@@ -540,9 +544,9 @@ e_book_backend_vcf_extract_path_from_uri (const gchar *uri)
 
 static void
 e_book_backend_vcf_authenticate_user (EBookBackendSync *backend,
-				      GCancellable *cancellable,
-				      ECredentials *credentials,
-				      GError **perror)
+                                      GCancellable *cancellable,
+                                      ECredentials *credentials,
+                                      GError **perror)
 {
 	/* Success */
 }
@@ -552,11 +556,11 @@ e_book_backend_vcf_authenticate_user (EBookBackendSync *backend,
 #endif
 
 static void
-e_book_backend_vcf_open (EBookBackendSync        *backend,
-			 EDataBook		 *book,
-			 GCancellable		 *cancellable,
-			 gboolean		  only_if_exists,
-			 GError			**perror)
+e_book_backend_vcf_open (EBookBackendSync *backend,
+                         EDataBook *book,
+                         GCancellable *cancellable,
+                         gboolean only_if_exists,
+                         GError **perror)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	ESource *source = e_book_backend_get_source (E_BOOK_BACKEND (backend));
@@ -586,7 +590,7 @@ e_book_backend_vcf_open (EBookBackendSync        *backend,
 			gint rv;
 
 			/* the database didn't exist, so we create the
-			   directory then the .vcf file */
+			 * directory then the .vcf file */
 			rv = g_mkdir_with_parents (dirname, 0700);
 			if (rv == -1 && errno != EEXIST) {
 				g_warning ("failed to make directory %s: %s", dirname, g_strerror (errno));
@@ -634,7 +638,12 @@ e_book_backend_vcf_open (EBookBackendSync        *backend,
 }
 
 static gboolean
-e_book_backend_vcf_get_backend_property (EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **error)
+e_book_backend_vcf_get_backend_property (EBookBackendSync *backend,
+                                         EDataBook *book,
+                                         GCancellable *cancellable,
+                                         const gchar *prop_name,
+                                         gchar **prop_value,
+                                         GError **error)
 {
 	gboolean processed = TRUE;
 
@@ -650,7 +659,7 @@ e_book_backend_vcf_get_backend_property (EBookBackendSync *backend, EDataBook *b
 		gint i;
 
 		/* XXX we need a way to say "we support everything", since the
-		   vcf backend does */
+		 * vcf backend does */
 		for (i = 1; i < E_CONTACT_FIELD_LAST; i++)
 			fields = g_slist_append (fields, (gpointer) e_contact_field_name (i));
 
@@ -666,7 +675,8 @@ e_book_backend_vcf_get_backend_property (EBookBackendSync *backend, EDataBook *b
 }
 
 static void
-e_book_backend_vcf_set_online (EBookBackend *backend, gboolean is_online)
+e_book_backend_vcf_set_online (EBookBackend *backend,
+                               gboolean is_online)
 {
 	if (e_book_backend_is_opened (backend))
 		e_book_backend_notify_online (backend, TRUE);

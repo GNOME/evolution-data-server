@@ -84,11 +84,16 @@ lookup_signal_type_from_signal_name (const gchar *signal_name)
 
 /* ------------------------------------------------------------------------- */
 
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV	 (GDBUS_BOOK_VIEW_INTERFACE_NAME, objects_added)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV	 (GDBUS_BOOK_VIEW_INTERFACE_NAME, objects_modified)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV	 (GDBUS_BOOK_VIEW_INTERFACE_NAME, objects_removed)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_UINT_STRING (GDBUS_BOOK_VIEW_INTERFACE_NAME, progress)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV	 (GDBUS_BOOK_VIEW_INTERFACE_NAME, complete)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_BOOK_VIEW_INTERFACE_NAME,
+                                           objects_added)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_BOOK_VIEW_INTERFACE_NAME,
+                                           objects_modified)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_BOOK_VIEW_INTERFACE_NAME,
+                                           objects_removed)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_UINT_STRING (GDBUS_BOOK_VIEW_INTERFACE_NAME,
+                                                  progress)
+E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_BOOK_VIEW_INTERFACE_NAME,
+                                           complete)
 
 static void
 e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
@@ -114,103 +119,139 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
 }
 
 void
-e_gdbus_book_view_call_start (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_book_view_call_start (GDBusProxy *proxy,
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
 {
 	e_gdbus_proxy_method_call_void ("start", proxy, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_book_view_call_start_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_book_view_call_start_finish (GDBusProxy *proxy,
+                                     GAsyncResult *result,
+                                     GError **error)
 {
 	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
 }
 
 gboolean
-e_gdbus_book_view_call_start_sync (GDBusProxy *proxy, GCancellable *cancellable, GError **error)
+e_gdbus_book_view_call_start_sync (GDBusProxy *proxy,
+                                   GCancellable *cancellable,
+                                   GError **error)
 {
 	return e_gdbus_proxy_method_call_sync_void__void ("start", proxy, cancellable, error);
 }
 
 void
-e_gdbus_book_view_call_stop (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_book_view_call_stop (GDBusProxy *proxy,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
 {
 	e_gdbus_proxy_method_call_void ("stop", proxy, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_book_view_call_stop_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_book_view_call_stop_finish (GDBusProxy *proxy,
+                                    GAsyncResult *result,
+                                    GError **error)
 {
 	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
 }
 
 gboolean
-e_gdbus_book_view_call_stop_sync (GDBusProxy *proxy, GCancellable *cancellable, GError **error)
+e_gdbus_book_view_call_stop_sync (GDBusProxy *proxy,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	return e_gdbus_proxy_method_call_sync_void__void ("stop", proxy, cancellable, error);
 }
 
 void
-e_gdbus_book_view_call_dispose (GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_book_view_call_dispose (GDBusProxy *proxy,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
 	e_gdbus_proxy_method_call_void ("dispose", proxy, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_book_view_call_dispose_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_book_view_call_dispose_finish (GDBusProxy *proxy,
+                                       GAsyncResult *result,
+                                       GError **error)
 {
 	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
 }
 
 gboolean
-e_gdbus_book_view_call_dispose_sync (GDBusProxy *proxy, GCancellable *cancellable, GError **error)
+e_gdbus_book_view_call_dispose_sync (GDBusProxy *proxy,
+                                     GCancellable *cancellable,
+                                     GError **error)
 {
 	return e_gdbus_proxy_method_call_sync_void__void ("dispose", proxy, cancellable, error);
 }
 
 void
-e_gdbus_book_view_call_set_fields_of_interest (GDBusProxy *proxy, const gchar * const *in_only_fields, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_book_view_call_set_fields_of_interest (GDBusProxy *proxy,
+                                               const gchar * const *in_only_fields,
+                                               GCancellable *cancellable,
+                                               GAsyncReadyCallback callback,
+                                               gpointer user_data)
 {
 	e_gdbus_proxy_method_call_strv ("set_fields_of_interest", proxy, in_only_fields, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_book_view_call_set_fields_of_interest_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error)
+e_gdbus_book_view_call_set_fields_of_interest_finish (GDBusProxy *proxy,
+                                                      GAsyncResult *result,
+                                                      GError **error)
 {
 	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
 }
 
 gboolean
-e_gdbus_book_view_call_set_fields_of_interest_sync (GDBusProxy *proxy, const gchar * const *in_only_fields, GCancellable *cancellable, GError **error)
+e_gdbus_book_view_call_set_fields_of_interest_sync (GDBusProxy *proxy,
+                                                    const gchar * const *in_only_fields,
+                                                    GCancellable *cancellable,
+                                                    GError **error)
 {
 	return e_gdbus_proxy_method_call_sync_strv__void ("set_fields_of_interest", proxy, in_only_fields, cancellable, error);
 }
 
 void
-e_gdbus_book_view_emit_objects_added (EGdbusBookView *object, const gchar * const *arg_objects)
+e_gdbus_book_view_emit_objects_added (EGdbusBookView *object,
+                                      const gchar * const *arg_objects)
 {
 	g_signal_emit (object, signals[__OBJECTS_ADDED_SIGNAL], 0, arg_objects);
 }
 
 void
-e_gdbus_book_view_emit_objects_modified (EGdbusBookView *object, const gchar * const *arg_objects)
+e_gdbus_book_view_emit_objects_modified (EGdbusBookView *object,
+                                         const gchar * const *arg_objects)
 {
 	g_signal_emit (object, signals[__OBJECTS_MODIFIED_SIGNAL], 0, arg_objects);
 }
 
 void
-e_gdbus_book_view_emit_objects_removed (EGdbusBookView *object, const gchar * const *arg_uids)
+e_gdbus_book_view_emit_objects_removed (EGdbusBookView *object,
+                                        const gchar * const *arg_uids)
 {
 	g_signal_emit (object, signals[__OBJECTS_REMOVED_SIGNAL], 0, arg_uids);
 }
 
 void
-e_gdbus_book_view_emit_progress (EGdbusBookView *object, guint arg_percent, const gchar *arg_message)
+e_gdbus_book_view_emit_progress (EGdbusBookView *object,
+                                 guint arg_percent,
+                                 const gchar *arg_message)
 {
 	g_signal_emit (object, signals[__PROGRESS_SIGNAL], 0, arg_percent, arg_message);
 }
 
 void
-e_gdbus_book_view_emit_complete (EGdbusBookView *object, const gchar * const *arg_error)
+e_gdbus_book_view_emit_complete (EGdbusBookView *object,
+                                 const gchar * const *arg_error)
 {
 	g_signal_emit (object, signals[__COMPLETE_SIGNAL], 0, arg_error);
 }
@@ -221,9 +262,12 @@ E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book_view, objects_removed, uids, "as")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_2 (book_view, progress, percent, "u", message, "s")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book_view, complete, error, "as")
 
-E_DECLARE_GDBUS_SYNC_METHOD_0	(book_view, start)
-E_DECLARE_GDBUS_SYNC_METHOD_0	(book_view, stop)
-E_DECLARE_GDBUS_SYNC_METHOD_0	(book_view, dispose)
+E_DECLARE_GDBUS_SYNC_METHOD_0 (book_view,
+                               start)
+E_DECLARE_GDBUS_SYNC_METHOD_0 (book_view,
+                               stop)
+E_DECLARE_GDBUS_SYNC_METHOD_0 (book_view,
+                               dispose)
 E_DECLARE_GDBUS_SYNC_METHOD_1	(book_view, set_fields_of_interest, fields_of_interest, "as")
 
 static const GDBusMethodInfo * const e_gdbus_book_view_method_info_pointers[] =
@@ -255,14 +299,14 @@ static const GDBusInterfaceInfo _e_gdbus_book_view_interface_info =
 };
 
 static void
-handle_method_call (GDBusConnection       *connection,
-                    const gchar           *sender,
-                    const gchar           *object_path,
-                    const gchar           *interface_name,
-                    const gchar           *method_name,
-                    GVariant              *parameters,
+handle_method_call (GDBusConnection *connection,
+                    const gchar *sender,
+                    const gchar *object_path,
+                    const gchar *interface_name,
+                    const gchar *method_name,
+                    GVariant *parameters,
                     GDBusMethodInvocation *invocation,
-                    gpointer               user_data)
+                    gpointer user_data)
 {
 	guint method_id, method_type;
 
@@ -276,14 +320,27 @@ handle_method_call (GDBusConnection       *connection,
 }
 
 static GVariant *
-get_property (GDBusConnection *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *property_name, GError **error, gpointer user_data)
+get_property (GDBusConnection *connection,
+              const gchar *sender,
+              const gchar *object_path,
+              const gchar *interface_name,
+              const gchar *property_name,
+              GError **error,
+              gpointer user_data)
 {
 	g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_NOT_SUPPORTED, "This implementation does not support property `%s'", property_name);
 	return NULL;
 }
 
 static gboolean
-set_property (GDBusConnection *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *property_name, GVariant *value, GError **error, gpointer user_data)
+set_property (GDBusConnection *connection,
+              const gchar *sender,
+              const gchar *object_path,
+              const gchar *interface_name,
+              const gchar *property_name,
+              GVariant *value,
+              GError **error,
+              gpointer user_data)
 {
 	g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_NOT_SUPPORTED, "This implementation does not support property `%s'", property_name);
 	return FALSE;
@@ -398,7 +455,10 @@ on_object_unregistered (GObject *object)
  * Returns: 0 if @error is set, otherwise a registration id (never 0) that can be used with g_dbus_connection_unregister_object().
  */
 guint
-e_gdbus_book_view_register_object (EGdbusBookView *object, GDBusConnection *connection, const gchar *object_path, GError **error)
+e_gdbus_book_view_register_object (EGdbusBookView *object,
+                                   GDBusConnection *connection,
+                                   const gchar *object_path,
+                                   GError **error)
 {
 	GHashTable *pvc;
 
@@ -443,7 +503,10 @@ e_gdbus_book_view_proxy_init (EGdbusBookViewProxy *proxy)
 }
 
 static void
-g_signal (GDBusProxy *proxy, const gchar *sender_name, const gchar *signal_name, GVariant *parameters)
+g_signal (GDBusProxy *proxy,
+          const gchar *sender_name,
+          const gchar *signal_name,
+          GVariant *parameters)
 {
 	guint signal_id, signal_type;
 
@@ -485,7 +548,13 @@ proxy_iface_init (EGdbusBookViewIface *iface)
  * This is a failable asynchronous constructor - when the proxy is ready, callback will be invoked and you can use e_gdbus_book_view_proxy_new_finish() to get the result.
  */
 void
-e_gdbus_book_view_proxy_new (GDBusConnection *connection, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_book_view_proxy_new (GDBusConnection *connection,
+                             GDBusProxyFlags flags,
+                             const gchar *name,
+                             const gchar *object_path,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
 {
 	g_async_initable_new_async (E_TYPE_GDBUS_BOOK_VIEW_PROXY,
 				G_PRIORITY_DEFAULT,
@@ -510,7 +579,8 @@ e_gdbus_book_view_proxy_new (GDBusConnection *connection, GDBusProxyFlags flags,
  * Returns: A #EGdbusBookViewProxy or %NULL if @error is set. Free with g_object_unref().
  */
 EGdbusBookView *
-e_gdbus_book_view_proxy_new_finish (GAsyncResult  *result, GError **error)
+e_gdbus_book_view_proxy_new_finish (GAsyncResult *result,
+                                    GError **error)
 {
 	GObject *object;
 	GObject *source_object;
@@ -540,7 +610,12 @@ e_gdbus_book_view_proxy_new_finish (GAsyncResult  *result, GError **error)
  * Returns: A #EGdbusBookViewProxy or %NULL if error is set. Free with g_object_unref().
  */
 EGdbusBookView *
-e_gdbus_book_view_proxy_new_sync (GDBusConnection *connection, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GError **error)
+e_gdbus_book_view_proxy_new_sync (GDBusConnection *connection,
+                                  GDBusProxyFlags flags,
+                                  const gchar *name,
+                                  const gchar *object_path,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	GInitable *initable;
 	initable = g_initable_new (E_TYPE_GDBUS_BOOK_VIEW_PROXY,
@@ -573,7 +648,13 @@ e_gdbus_book_view_proxy_new_sync (GDBusConnection *connection, GDBusProxyFlags f
  * This is a failable asynchronous constructor - when the proxy is ready, callback will be invoked and you can use e_gdbus_book_view_proxy_new_for_bus_finish() to get the result.
  */
 void
-e_gdbus_book_view_proxy_new_for_bus (GBusType bus_type, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_gdbus_book_view_proxy_new_for_bus (GBusType bus_type,
+                                     GDBusProxyFlags flags,
+                                     const gchar *name,
+                                     const gchar *object_path,
+                                     GCancellable *cancellable,
+                                     GAsyncReadyCallback callback,
+                                     gpointer user_data)
 {
 	g_async_initable_new_async (E_TYPE_GDBUS_BOOK_VIEW_PROXY,
 				G_PRIORITY_DEFAULT,
@@ -598,7 +679,8 @@ e_gdbus_book_view_proxy_new_for_bus (GBusType bus_type, GDBusProxyFlags flags, c
  * Returns: A #EGdbusBookViewProxy or %NULL if @error is set. Free with g_object_unref().
  */
 EGdbusBookView *
-e_gdbus_book_view_proxy_new_for_bus_finish (GAsyncResult *result, GError **error)
+e_gdbus_book_view_proxy_new_for_bus_finish (GAsyncResult *result,
+                                            GError **error)
 {
 	GObject *object;
 	GObject *source_object;
@@ -628,7 +710,12 @@ e_gdbus_book_view_proxy_new_for_bus_finish (GAsyncResult *result, GError **error
  * Returns: A #EGdbusBookViewProxy or %NULL if error is set. Free with g_object_unref().
  */
 EGdbusBookView *
-e_gdbus_book_view_proxy_new_for_bus_sync (GBusType bus_type, GDBusProxyFlags flags, const gchar *name, const gchar *object_path, GCancellable *cancellable, GError **error)
+e_gdbus_book_view_proxy_new_for_bus_sync (GBusType bus_type,
+                                          GDBusProxyFlags flags,
+                                          const gchar *name,
+                                          const gchar *object_path,
+                                          GCancellable *cancellable,
+                                          GError **error)
 {
 	GInitable *initable;
 	initable = g_initable_new (E_TYPE_GDBUS_BOOK_VIEW_PROXY,

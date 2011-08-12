@@ -235,7 +235,7 @@ store_get_special (CamelStore *store,
 
 	folder = camel_vtrash_folder_new (store, type);
 	folders = camel_object_bag_list (store->folders);
-	for (i=0;i<folders->len;i++) {
+	for (i = 0; i < folders->len; i++) {
 		if (!CAMEL_IS_VTRASH_FOLDER (folders->pdata[i]))
 			camel_vee_folder_add_folder ((CamelVeeFolder *) folder, (CamelFolder *) folders->pdata[i]);
 		g_object_unref (folders->pdata[i]);
@@ -385,7 +385,7 @@ store_synchronize_sync (CamelStore *store,
 	/* We don't sync any vFolders, that is used to update certain
 	 * vfolder queries mainly, and we're really only interested in
 	 * storing/expunging the physical mails. */
-	for (i=0;i<folders->len;i++) {
+	for (i = 0; i < folders->len; i++) {
 		folder = folders->pdata[i];
 		if (!CAMEL_IS_VEE_FOLDER (folder)
 		    && local_error == NULL) {
@@ -1425,18 +1425,19 @@ add_special_info (CamelStore *store,
 }
 
 static void
-dump_fi (CamelFolderInfo *fi, gint depth)
+dump_fi (CamelFolderInfo *fi,
+         gint depth)
 {
 	gchar *s;
 
-	s = g_alloca (depth+1);
+	s = g_alloca (depth + 1);
 	memset (s, ' ', depth);
 	s[depth] = 0;
 
 	while (fi) {
 		printf("%sfull_name: %s\n", s, fi->full_name);
 		printf("%sflags: %08x\n", s, fi->flags);
-		dump_fi (fi->child, depth+2);
+		dump_fi (fi->child, depth + 2);
 		fi = fi->next;
 	}
 }
@@ -1589,14 +1590,14 @@ camel_folder_info_build (GPtrArray *folders,
 	for (i = 0; i < folders->len; i++) {
 		fi = folders->pdata[i];
 		if (!strncmp (namespace, fi->full_name, nlen)
-		    && (p = strrchr (fi->full_name+nlen, separator))) {
+		    && (p = strrchr (fi->full_name + nlen, separator))) {
 			pname = g_strndup (fi->full_name, p - fi->full_name);
 			pfi = g_hash_table_lookup (hash, pname);
 			if (pfi) {
 				g_free (pname);
 			} else {
 				/* we are missing a folder in the heirarchy so
-				   create a fake folder node */
+				 * create a fake folder node */
 
 				pfi = camel_folder_info_new ();
 
@@ -1618,7 +1619,7 @@ camel_folder_info_build (GPtrArray *folders,
 				g_hash_table_insert (hash, pname, pfi);
 				g_ptr_array_add (folders, pfi);
 			}
-			tail = (CamelFolderInfo *)&pfi->child;
+			tail = (CamelFolderInfo *) &pfi->child;
 			while (tail->next)
 				tail = tail->next;
 			tail->next = fi;
@@ -2812,7 +2813,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 	 * We need to rename them atomically with renaming the actual
 	 * folder path. */
 	folders = camel_object_bag_list (store->folders);
-	for (i=0;i<folders->len;i++) {
+	for (i = 0; i < folders->len; i++) {
 		const gchar *full_name;
 
 		folder = folders->pdata[i];
@@ -2845,7 +2846,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 
 			flags = CAMEL_STORE_FOLDER_INFO_RECURSIVE;
 
-			for (i=0;i<folders->len;i++) {
+			for (i = 0; i < folders->len; i++) {
 				const gchar *full_name;
 				gchar *new;
 
@@ -2875,7 +2876,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 			}
 		} else {
 			/* Failed, just unlock our folders for re-use */
-			for (i=0;i<folders->len;i++) {
+			for (i = 0; i < folders->len; i++) {
 				folder = folders->pdata[i];
 				camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 				g_object_unref (folder);

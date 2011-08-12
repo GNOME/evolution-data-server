@@ -26,12 +26,12 @@
  */
 
 /*
-  We should probably make most of the functions in this file a little
-  stupider..  all the work extracting useful info from the
-  EContact/raw text/etc should happen in e_destination_set_contact
-  (and the other setters), not in a bunch of if's in the respective
-  _get_*() functions.
-*/
+ * We should probably make most of the functions in this file a little
+ * stupider..  all the work extracting useful info from the
+ * EContact/raw text/etc should happen in e_destination_set_contact
+ * (and the other setters), not in a bunch of if's in the respective
+ * _get_*() functions.
+ */
 
 #include <config.h>
 #include "e-destination.h"
@@ -100,7 +100,9 @@ static GObjectClass *parent_class;
 
 /* Copied from eab-book-util.c. The name selector also keeps its own copy... */
 static gint
-utf8_casefold_collate_len (const gchar *str1, const gchar *str2, gint len)
+utf8_casefold_collate_len (const gchar *str1,
+                           const gchar *str2,
+                           gint len)
 {
 	gchar *s1 = g_utf8_casefold (str1, len);
 	gchar *s2 = g_utf8_casefold (str2, len);
@@ -116,7 +118,8 @@ utf8_casefold_collate_len (const gchar *str1, const gchar *str2, gint len)
 
 /* Copied from eab-book-util.c. The name selector also keeps its own copy... */
 static gint
-utf8_casefold_collate (const gchar *str1, const gchar *str2)
+utf8_casefold_collate (const gchar *str1,
+                       const gchar *str2)
 {
 	return utf8_casefold_collate_len (str1, str2, -1);
 }
@@ -191,7 +194,7 @@ e_destination_new (void)
  *
  * Returns: (transfer full): A newly created #EDestination, identical to @dest.
  */
-EDestination*
+EDestination *
 e_destination_copy (const EDestination *dest)
 {
 	EDestination *new_dest;
@@ -314,7 +317,8 @@ e_destination_empty (const EDestination *dest)
  * Returns: %TRUE if the destinations are equal, %FALSE otherwise.
  **/
 gboolean
-e_destination_equal (const EDestination *a, const EDestination *b)
+e_destination_equal (const EDestination *a,
+                     const EDestination *b)
 {
 	const struct _EDestinationPrivate *pa, *pb;
 	const gchar *na, *nb;
@@ -362,7 +366,9 @@ e_destination_equal (const EDestination *a, const EDestination *b)
  * indicated by @email_num.
  **/
 void
-e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num)
+e_destination_set_contact (EDestination *dest,
+                           EContact *contact,
+                           gint email_num)
 {
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 	g_return_if_fail (contact && E_IS_CONTACT (contact));
@@ -427,7 +433,7 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 				/* Is parent of current attribute already in the tree? */
 				parent_dest = g_hash_table_lookup (hash_table, parent_id);
 				/* Make sure that when parent with parent_id does not exist the item will be appended to root
-				   destination. */
+				 * destination. */
 				if (parent_dest == NULL && lists_count == 0 && list_iterations > 0) {
 					parent_id = "0";
 					parent_dest = dest;
@@ -550,7 +556,8 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
  * Deprecated: 3.2: Use e_destination_set_client() instead.
  **/
 void
-e_destination_set_book (EDestination *dest, EBook *book)
+e_destination_set_book (EDestination *dest,
+                        EBook *book)
 {
 	ESource *source;
 	const gchar *uid;
@@ -579,7 +586,8 @@ e_destination_set_book (EDestination *dest, EBook *book)
  * if you need to update the contact later.
  **/
 void
-e_destination_set_client (EDestination *dest, EBookClient *client)
+e_destination_set_client (EDestination *dest,
+                          EBookClient *client)
 {
 	ESource *source;
 	const gchar *uid;
@@ -609,7 +617,9 @@ e_destination_set_client (EDestination *dest, EBookClient *client)
  * addresses indicated by @email_num.
  **/
 void
-e_destination_set_contact_uid (EDestination *dest, const gchar *uid, gint email_num)
+e_destination_set_contact_uid (EDestination *dest,
+                               const gchar *uid,
+                               gint email_num)
 {
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 	g_return_if_fail (uid != NULL);
@@ -623,7 +633,7 @@ e_destination_set_contact_uid (EDestination *dest, const gchar *uid, gint email_
 		dest->priv->email_num = email_num;
 
 		/* If we already have a contact, remove it unless it's uid matches the one
-		   we just set. */
+		 * we just set. */
 		if (dest->priv->contact && strcmp (uid,
 						   e_contact_get_const (dest->priv->contact, E_CONTACT_UID))) {
 			g_object_unref (dest->priv->contact);
@@ -635,7 +645,8 @@ e_destination_set_contact_uid (EDestination *dest, const gchar *uid, gint email_
 }
 
 static void
-e_destination_set_source_uid (EDestination *dest, const gchar *uid)
+e_destination_set_source_uid (EDestination *dest,
+                              const gchar *uid)
 {
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 	g_return_if_fail (uid != NULL);
@@ -658,7 +669,8 @@ e_destination_set_source_uid (EDestination *dest, const gchar *uid)
  * Sets the full name of @dest's addressee.
  **/
 void
-e_destination_set_name (EDestination *dest, const gchar *name)
+e_destination_set_name (EDestination *dest,
+                        const gchar *name)
 {
 	gboolean changed = FALSE;
 
@@ -694,7 +706,8 @@ e_destination_set_name (EDestination *dest, const gchar *name)
  * Sets the e-mail address of @dest's addressee.
  **/
 void
-e_destination_set_email (EDestination *dest, const gchar *email)
+e_destination_set_email (EDestination *dest,
+                         const gchar *email)
 {
 	gboolean changed = FALSE;
 
@@ -757,7 +770,8 @@ e_destination_is_auto_recipient (const EDestination *dest)
  * to hide it from some UI elements.
  **/
 void
-e_destination_set_auto_recipient (EDestination *dest, gboolean value)
+e_destination_set_auto_recipient (EDestination *dest,
+                                  gboolean value)
 {
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 
@@ -909,7 +923,8 @@ e_destination_is_ignored (const EDestination *dest)
  * Set the ignore flag on a #EDestination.
  */
 void
-e_destination_set_ignored (EDestination *dest, gboolean ignored)
+e_destination_set_ignored (EDestination *dest,
+                           gboolean ignored)
 {
 	dest->priv->ignored = ignored;
 }
@@ -971,7 +986,7 @@ e_destination_get_email (const EDestination *dest)
  * iterating through structured destinations list */
 static void
 destination_get_address (const EDestination *dest,
-			 CamelInternetAddress *addr)
+                         CamelInternetAddress *addr)
 {
 	const GList *iter;
 
@@ -1049,7 +1064,8 @@ e_destination_get_address (const EDestination *dest)
  * parsing the supplied string. Useful for user input.
  **/
 void
-e_destination_set_raw (EDestination *dest, const gchar *raw)
+e_destination_set_raw (EDestination *dest,
+                       const gchar *raw)
 {
 	g_return_if_fail (E_IS_DESTINATION (dest));
 	g_return_if_fail (raw != NULL);
@@ -1074,7 +1090,8 @@ e_destination_set_raw (EDestination *dest, const gchar *raw)
  * Returns: A textual representation of the destination.
  **/
 const gchar *
-e_destination_get_textrep (const EDestination *dest, gboolean include_email)
+e_destination_get_textrep (const EDestination *dest,
+                           gboolean include_email)
 {
 	const gchar *name, *email;
 
@@ -1189,7 +1206,7 @@ e_destination_list_get_dests (const EDestination *dest)
 		GList *iter;
 		for (iter = dest->priv->list_dests; iter; iter = iter->next) {
 			if (e_destination_is_evolution_list (iter->data)) {
-				GList *l = g_list_copy ((GList*) e_destination_list_get_dests (iter->data));
+				GList *l = g_list_copy ((GList *) e_destination_list_get_dests (iter->data));
 				dest->priv->list_alldests = g_list_concat (dest->priv->list_alldests, l);
 			} else {
 				dest->priv->list_alldests = g_list_append (dest->priv->list_alldests, iter->data);
@@ -1227,7 +1244,8 @@ e_destination_get_html_mail_pref (const EDestination *dest)
  * Specifies whether @dest wants to get mail formatted as HTML.
  **/
 void
-e_destination_set_html_mail_pref (EDestination *dest, gboolean flag)
+e_destination_set_html_mail_pref (EDestination *dest,
+                                  gboolean flag)
 {
 	g_return_if_fail (dest && E_IS_DESTINATION (dest));
 
@@ -1262,11 +1280,11 @@ e_destination_get_textrepv (EDestination **destv)
 	g_return_val_if_fail (destv, NULL);
 
 	/* Q: Please tell me this is only for assertion
-	   reasons. If this is considered to be ok behavior then you
-	   shouldn't use g_return's. Just a reminder;-)
-
-	   A: Yes, this is just an assertion.  (Though it does find the
-	   length of the vector in the process...)
+	 * reasons. If this is considered to be ok behavior then you
+	 * shouldn't use g_return's. Just a reminder;-)
+	 *
+	 * A: Yes, this is just an assertion.  (Though it does find the
+	 * length of the vector in the process...)
 	*/
 	while (destv[len]) {
 		g_return_val_if_fail (E_IS_DESTINATION (destv[len]), NULL);
@@ -1323,14 +1341,14 @@ e_destination_xml_encode (const EDestination *dest)
 
 			str = e_destination_get_name (list_dest);
 			if (str) {
-				xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar*) str);
+				xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar *) str);
 				xmlNewTextChild (list_node, NULL, (xmlChar*)"name", escaped);
 				xmlFree (escaped);
 			}
 
 			str = e_destination_get_email (list_dest);
 			if (str) {
-				xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar*) str);
+				xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar *) str);
 				xmlNewTextChild (list_node, NULL, (xmlChar*)"email", escaped);
 				xmlFree (escaped);
 			}
@@ -1347,7 +1365,7 @@ e_destination_xml_encode (const EDestination *dest)
 
 	str = e_destination_get_source_uid (dest);
 	if (str) {
-		xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar*) str);
+		xmlChar *escaped = xmlEncodeEntitiesReentrant (NULL, (xmlChar *) str);
 		xmlNewTextChild (dest_node, NULL, (xmlChar*)"source_uid", escaped);
 		xmlFree (escaped);
 	}
@@ -1380,7 +1398,8 @@ e_destination_xml_encode (const EDestination *dest)
  * Returns: %TRUE if the XML tree was well-formed, %FALSE otherwise.
  **/
 static gboolean
-e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
+e_destination_xml_decode (EDestination *dest,
+                          xmlNodePtr node)
 {
 	gchar *name = NULL, *email = NULL, *source_uid = NULL, *card_uid = NULL;
 	gboolean is_list = FALSE, show_addr = FALSE, auto_recip = FALSE;
@@ -1515,7 +1534,8 @@ e_destination_xml_decode (EDestination *dest, xmlNodePtr node)
 }
 
 static gchar *
-null_terminate_and_remove_extra_whitespace (xmlChar *xml_in, gint size)
+null_terminate_and_remove_extra_whitespace (xmlChar *xml_in,
+                                            gint size)
 {
 	gboolean skip_white = FALSE;
 	gchar *xml, *r, *w;
@@ -1571,7 +1591,7 @@ e_destination_export (const EDestination *dest)
 	if (dest_node == NULL)
 		return NULL;
 
-	dest_doc = xmlNewDoc ((xmlChar*) XML_DEFAULT_VERSION);
+	dest_doc = xmlNewDoc ((xmlChar *) XML_DEFAULT_VERSION);
 	xmlDocSetRootElement (dest_doc, dest_node);
 
 	xmlDocDumpMemory (dest_doc, &buffer, &size);
@@ -1634,7 +1654,7 @@ e_destination_exportv (EDestination **destv)
 	if (destv == NULL || *destv == NULL)
 		return NULL;
 
-	destv_doc  = xmlNewDoc ((xmlChar*) XML_DEFAULT_VERSION);
+	destv_doc  = xmlNewDoc ((xmlChar *) XML_DEFAULT_VERSION);
 	destv_node = xmlNewNode (NULL, (xmlChar*)"destinations");
 	xmlDocSetRootElement (destv_doc, destv_node);
 
@@ -1743,7 +1763,8 @@ e_destination_freev (EDestination **destv)
  * and values in @attr, suitable for an address book.
  **/
 void
-e_destination_export_to_vcard_attribute (EDestination *dest, EVCardAttribute *attr)
+e_destination_export_to_vcard_attribute (EDestination *dest,
+                                         EVCardAttribute *attr)
 {
 	e_vcard_attribute_remove_values (attr);
 	e_vcard_attribute_remove_params (attr);

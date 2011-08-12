@@ -8,7 +8,8 @@
 #define NUM_OPENS 200
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gchar *uri = NULL;
 	EBook *book;
@@ -20,7 +21,7 @@ main (gint argc, gchar **argv)
 	g_object_unref (book);
 
 	/* open and close the same book repeatedly */
-	for (i = 0; i < NUM_OPENS-1; i++) {
+	for (i = 0; i < NUM_OPENS - 1; i++) {
 		book = ebook_test_utils_book_new_from_uri (uri);
 		ebook_test_utils_book_open (book, FALSE);
 		g_object_unref (book);

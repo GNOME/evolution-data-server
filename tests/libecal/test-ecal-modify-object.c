@@ -15,7 +15,8 @@
 #define FINAL_BEGIN_TIMEZONE   "UTC"
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECal *cal;
 	gchar *uri = NULL;

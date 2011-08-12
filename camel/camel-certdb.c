@@ -176,7 +176,8 @@ camel_certdb_get_default (void)
 }
 
 void
-camel_certdb_set_filename (CamelCertDB *certdb, const gchar *filename)
+camel_certdb_set_filename (CamelCertDB *certdb,
+                           const gchar *filename)
 {
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (filename != NULL);
@@ -190,7 +191,8 @@ camel_certdb_set_filename (CamelCertDB *certdb, const gchar *filename)
 }
 
 static gint
-certdb_header_load (CamelCertDB *certdb, FILE *istream)
+certdb_header_load (CamelCertDB *certdb,
+                    FILE *istream)
 {
 	if (camel_file_util_decode_uint32 (istream, &certdb->version) == -1)
 		return -1;
@@ -201,7 +203,8 @@ certdb_header_load (CamelCertDB *certdb, FILE *istream)
 }
 
 static CamelCert *
-certdb_cert_load (CamelCertDB *certdb, FILE *istream)
+certdb_cert_load (CamelCertDB *certdb,
+                  FILE *istream)
 {
 	CamelCert *cert;
 
@@ -280,7 +283,8 @@ camel_certdb_load (CamelCertDB *certdb)
 }
 
 static gint
-certdb_header_save (CamelCertDB *certdb, FILE *ostream)
+certdb_header_save (CamelCertDB *certdb,
+                    FILE *ostream)
 {
 	if (camel_file_util_encode_uint32 (ostream, certdb->version) == -1)
 		return -1;
@@ -291,7 +295,9 @@ certdb_header_save (CamelCertDB *certdb, FILE *ostream)
 }
 
 static gint
-certdb_cert_save (CamelCertDB *certdb, CamelCert *cert, FILE *ostream)
+certdb_cert_save (CamelCertDB *certdb,
+                  CamelCert *cert,
+                  FILE *ostream)
 {
 	if (camel_file_util_encode_string (ostream, cert->issuer) == -1)
 		return -1;
@@ -407,7 +413,8 @@ camel_certdb_touch (CamelCertDB *certdb)
 }
 
 CamelCert *
-camel_certdb_get_cert (CamelCertDB *certdb, const gchar *fingerprint)
+camel_certdb_get_cert (CamelCertDB *certdb,
+                       const gchar *fingerprint)
 {
 	CamelCert *cert;
 
@@ -425,7 +432,8 @@ camel_certdb_get_cert (CamelCertDB *certdb, const gchar *fingerprint)
 }
 
 void
-camel_certdb_add (CamelCertDB *certdb, CamelCert *cert)
+camel_certdb_add (CamelCertDB *certdb,
+                  CamelCert *cert)
 {
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 
@@ -446,7 +454,8 @@ camel_certdb_add (CamelCertDB *certdb, CamelCert *cert)
 }
 
 void
-camel_certdb_remove (CamelCertDB *certdb, CamelCert *cert)
+camel_certdb_remove (CamelCertDB *certdb,
+                     CamelCert *cert)
 {
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 
@@ -499,7 +508,8 @@ camel_certdb_cert_new (CamelCertDB *certdb)
 }
 
 void
-camel_certdb_cert_ref (CamelCertDB *certdb, CamelCert *cert)
+camel_certdb_cert_ref (CamelCertDB *certdb,
+                       CamelCert *cert)
 {
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (cert != NULL);
@@ -510,7 +520,8 @@ camel_certdb_cert_ref (CamelCertDB *certdb, CamelCert *cert)
 }
 
 static void
-certdb_cert_free (CamelCertDB *certdb, CamelCert *cert)
+certdb_cert_free (CamelCertDB *certdb,
+                  CamelCert *cert)
 {
 	g_free (cert->issuer);
 	g_free (cert->subject);
@@ -548,7 +559,9 @@ camel_certdb_cert_unref (CamelCertDB *certdb,
 }
 
 static gboolean
-cert_remove (gpointer key, gpointer value, gpointer user_data)
+cert_remove (gpointer key,
+             gpointer value,
+             gpointer user_data)
 {
 	return TRUE;
 }
@@ -577,7 +590,9 @@ camel_certdb_clear (CamelCertDB *certdb)
 }
 
 static const gchar *
-cert_get_string (CamelCertDB *certdb, CamelCert *cert, gint string)
+cert_get_string (CamelCertDB *certdb,
+                 CamelCert *cert,
+                 gint string)
 {
 	switch (string) {
 	case CAMEL_CERT_STRING_ISSUER:
@@ -612,7 +627,10 @@ camel_cert_get_string (CamelCertDB *certdb,
 }
 
 static void
-cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, const gchar *value)
+cert_set_string (CamelCertDB *certdb,
+                 CamelCert *cert,
+                 gint string,
+                 const gchar *value)
 {
 	switch (string) {
 	case CAMEL_CERT_STRING_ISSUER:
@@ -656,7 +674,8 @@ camel_cert_set_string (CamelCertDB *certdb,
 }
 
 CamelCertTrust
-camel_cert_get_trust (CamelCertDB *certdb, CamelCert *cert)
+camel_cert_get_trust (CamelCertDB *certdb,
+                      CamelCert *cert)
 {
 	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), CAMEL_CERT_TRUST_UNKNOWN);
 	g_return_val_if_fail (cert != NULL, CAMEL_CERT_TRUST_UNKNOWN);
@@ -665,7 +684,9 @@ camel_cert_get_trust (CamelCertDB *certdb, CamelCert *cert)
 }
 
 void
-camel_cert_set_trust (CamelCertDB *certdb, CamelCert *cert, CamelCertTrust trust)
+camel_cert_set_trust (CamelCertDB *certdb,
+                      CamelCert *cert,
+                      CamelCertTrust trust)
 {
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 	g_return_if_fail (cert != NULL);
@@ -683,7 +704,8 @@ camel_cert_set_trust (CamelCertDB *certdb, CamelCert *cert, CamelCertTrust trust
  * Since: 2.32
  **/
 void
-camel_certdb_lock (CamelCertDB *certdb, CamelCertDBLock lock)
+camel_certdb_lock (CamelCertDB *certdb,
+                   CamelCertDBLock lock)
 {
 	g_return_if_fail (certdb != NULL);
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
@@ -717,7 +739,8 @@ camel_certdb_lock (CamelCertDB *certdb, CamelCertDBLock lock)
  * Since: 2.32
  **/
 void
-camel_certdb_unlock (CamelCertDB *certdb, CamelCertDBLock lock)
+camel_certdb_unlock (CamelCertDB *certdb,
+                     CamelCertDBLock lock)
 {
 	g_return_if_fail (certdb != NULL);
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));

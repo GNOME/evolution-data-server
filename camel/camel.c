@@ -45,13 +45,13 @@
 
 #ifdef CAMEL_HAVE_NSS
 /* To protect NSS initialization and shutdown. This prevents
-   concurrent calls to shutdown () and init () by different threads */
+ * concurrent calls to shutdown () and init () by different threads */
 PRLock *nss_initlock = NULL;
 
 /* Whether or not Camel has initialized the NSS library. We cannot
-   unconditionally call NSS_Shutdown () if NSS was initialized by other
-   library before. This boolean ensures that we only perform a cleanup
-   if and only if Camel is the one that previously initialized NSS */
+ * unconditionally call NSS_Shutdown () if NSS was initialized by other
+ * library before. This boolean ensures that we only perform a cleanup
+ * if and only if Camel is the one that previously initialized NSS */
 volatile gboolean nss_initialized = FALSE;
 #endif
 
@@ -84,7 +84,8 @@ nss_has_system_db (void)
 }
 
 gint
-camel_init (const gchar *configdir, gboolean nss_init)
+camel_init (const gchar *configdir,
+            gboolean nss_init)
 {
 	CamelCertDB *certdb;
 	gchar *path;

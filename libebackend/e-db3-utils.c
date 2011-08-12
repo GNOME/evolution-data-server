@@ -37,7 +37,8 @@ get_copy_filename (const gchar *filename)
 }
 
 static gint
-cp_file (const gchar *src, const gchar *dest)
+cp_file (const gchar *src,
+         const gchar *dest)
 {
 	gint i;
 	gint o;

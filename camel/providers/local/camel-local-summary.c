@@ -131,7 +131,10 @@ camel_local_summary_init (CamelLocalSummary *local_summary)
 }
 
 void
-camel_local_summary_construct (CamelLocalSummary *new, const gchar *filename, const gchar *local_name, CamelIndex *index)
+camel_local_summary_construct (CamelLocalSummary *new,
+                               const gchar *filename,
+                               const gchar *local_name,
+                               CamelIndex *index)
 {
 	camel_folder_summary_set_build_content (CAMEL_FOLDER_SUMMARY (new), FALSE);
 	camel_folder_summary_set_filename (CAMEL_FOLDER_SUMMARY (new), filename);
@@ -142,7 +145,9 @@ camel_local_summary_construct (CamelLocalSummary *new, const gchar *filename, co
 }
 
 static gint
-local_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error)
+local_summary_load (CamelLocalSummary *cls,
+                    gint forceindex,
+                    GError **error)
 {
 	d(g_print ("\nlocal_summary_load called \n"));
 	return camel_folder_summary_load_from_db ((CamelFolderSummary *) cls, error);
@@ -150,7 +155,9 @@ local_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error)
 
 /* load/check the summary */
 gint
-camel_local_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error)
+camel_local_summary_load (CamelLocalSummary *cls,
+                          gint forceindex,
+                          GError **error)
 {
 	CamelLocalSummaryClass *class;
 
@@ -174,13 +181,16 @@ void camel_local_summary_check_force (CamelLocalSummary *cls)
 }
 
 gchar *
-camel_local_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *info)
+camel_local_summary_encode_x_evolution (CamelLocalSummary *cls,
+                                        const CamelLocalMessageInfo *info)
 {
 	return CAMEL_LOCAL_SUMMARY_GET_CLASS (cls)->encode_x_evolution (cls, info);
 }
 
 gint
-camel_local_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *info)
+camel_local_summary_decode_x_evolution (CamelLocalSummary *cls,
+                                        const gchar *xev,
+                                        CamelLocalMessageInfo *info)
 {
 	return CAMEL_LOCAL_SUMMARY_GET_CLASS (cls)->decode_x_evolution (cls, xev, info);
 }
@@ -197,7 +207,9 @@ struct _stat_info {
 };
 
 static void
-do_stat_ci (CamelLocalSummary *cls, struct _stat_info *info, CamelMessageContentInfo *ci)
+do_stat_ci (CamelLocalSummary *cls,
+            struct _stat_info *info,
+            CamelMessageContentInfo *ci)
 {
 	info->cicount++;
 	info->citotal += ((CamelFolderSummary *) cls)->content_info_size /*+ 4 memchunks are 1/4 byte overhead per mi */;
@@ -220,9 +232,9 @@ do_stat_ci (CamelLocalSummary *cls, struct _stat_info *info, CamelMessageContent
 		while (param) {
 			info->citotal += sizeof (*param) + 4;
 			if (param->name)
-				info->citotal += strlen (param->name)+4;
+				info->citotal += strlen (param->name) + 4;
 			if (param->value)
-				info->citotal += strlen (param->value)+4;
+				info->citotal += strlen (param->value) + 4;
 			param = param->next;
 		}
 	}
@@ -234,10 +246,12 @@ do_stat_ci (CamelLocalSummary *cls, struct _stat_info *info, CamelMessageContent
 }
 
 static void
-do_stat_mi (CamelLocalSummary *cls, struct _stat_info *info, CamelMessageInfo *mi)
+do_stat_mi (CamelLocalSummary *cls,
+            struct _stat_info *info,
+            CamelMessageInfo *mi)
 {
 	info->micount++;
-	info->mitotal += ((CamelFolderSummary *) cls)->content_info_size /*+ 4*/;
+	info->mitotal += ((CamelFolderSummary *) cls)->content_info_size /*+ 4 */;
 
 	if (mi->subject)
 		info->mitotal += strlen (mi->subject) + 4;
@@ -251,7 +265,7 @@ do_stat_mi (CamelLocalSummary *cls, struct _stat_info *info, CamelMessageInfo *m
 		info->mitotal += strlen (mi->uid) + 4;
 
 	if (mi->references) {
-		info->mitotal += (mi->references->size-1) * sizeof (CamelSummaryMessageID) + sizeof (CamelSummaryReferences) + 4;
+		info->mitotal += (mi->references->size - 1) * sizeof (CamelSummaryMessageID) + sizeof (CamelSummaryReferences) + 4;
 		info->msgid += (mi->references->size) * sizeof (CamelSummaryMessageID);
 		info->msgcount += mi->references->size;
 	}
@@ -283,7 +297,7 @@ camel_local_summary_check (CamelLocalSummary *cls,
 		CamelFolderSummary *s = (CamelFolderSummary *) cls;
 		struct _stat_info stats = { 0 };
 
-		for (i=0;i<camel_folder_summary_count (s);i++) {
+		for (i = 0; i < camel_folder_summary_count (s); i++) {
 			CamelMessageInfo *info = camel_folder_summary_index (s, i);
 			do_stat_mi (cls, &stats, info);
 			camel_message_info_free (info);
@@ -292,7 +306,7 @@ camel_local_summary_check (CamelLocalSummary *cls,
 		printf("\nMemory used by summary:\n\n");
 		printf("Total of %d messages\n", camel_folder_summary_count(s));
 		printf("Total: %d bytes (ave %f)\n", stats.citotal + stats.mitotal,
-		       (double)(stats.citotal+stats.mitotal)/(double) camel_folder_summary_count (s));
+		       (double)(stats.citotal + stats.mitotal) / (double) camel_folder_summary_count (s));
 		printf("Message Info: %d (ave %f)\n", stats.mitotal, (double)stats.mitotal/(double)stats.micount);
 		printf("Content Info; %d (ave %f) count %d\n", stats.citotal, (double)stats.citotal/(double)stats.cicount, stats.cicount);
 		printf("message id's: %d (ave %f) count %d\n", stats.msgid, (double)stats.msgid/(double)stats.msgcount, stats.msgcount);
@@ -345,7 +359,11 @@ camel_local_summary_add (CamelLocalSummary *cls,
  * Returns: -1 on error, otherwise the number of bytes written.
  **/
 gint
-camel_local_summary_write_headers (gint fd, struct _camel_header_raw *header, const gchar *xevline, const gchar *status, const gchar *xstatus)
+camel_local_summary_write_headers (gint fd,
+                                   struct _camel_header_raw *header,
+                                   const gchar *xevline,
+                                   const gchar *status,
+                                   const gchar *xstatus)
 {
 	gint outlen = 0, len;
 	gint newfd;
@@ -452,14 +470,17 @@ local_summary_sync (CamelLocalSummary *cls,
 }
 
 static gint
-local_summary_need_index (void) {
+local_summary_need_index (void)
+{
 	return 1;
 }
 
 static void
-update_summary (CamelFolderSummary *summary, CamelMessageInfoBase *info, CamelMessageInfoBase *old)
+update_summary (CamelFolderSummary *summary,
+                CamelMessageInfoBase *info,
+                CamelMessageInfoBase *old)
 {
-	gint unread=0, deleted=0, junk=0;
+	gint unread = 0, deleted = 0, junk = 0;
 	guint32 flags = info->flags;
 	guint32 oldflags = old->flags;
 
@@ -551,7 +572,8 @@ local_summary_add (CamelLocalSummary *cls,
 }
 
 static gchar *
-local_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi)
+local_summary_encode_x_evolution (CamelLocalSummary *cls,
+                                  const CamelLocalMessageInfo *mi)
 {
 	GString *out = g_string_new("");
 	struct _camel_header_param *params = NULL;
@@ -607,7 +629,9 @@ local_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessag
 }
 
 static gint
-local_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *mi)
+local_summary_decode_x_evolution (CamelLocalSummary *cls,
+                                  const gchar *xev,
+                                  CamelLocalMessageInfo *mi)
 {
 	struct _camel_header_param *params, *scan;
 	guint32 uid, flags;
@@ -635,20 +659,20 @@ local_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, Came
 	/* check for additional data */
 	header = strchr (xev, ';');
 	if (header) {
-		params = camel_header_param_list_decode (header+1);
+		params = camel_header_param_list_decode (header + 1);
 		scan = params;
 		while (scan) {
 			if (!g_ascii_strcasecmp(scan->name, "flags")) {
 				gchar **flagv = g_strsplit(scan->value, ",", 1000);
 
-				for (i=0;flagv[i];i++)
+				for (i = 0; flagv[i]; i++)
 					camel_message_info_set_user_flag ((CamelMessageInfo *) mi, flagv[i], TRUE);
 				g_strfreev (flagv);
 			} else if (!g_ascii_strcasecmp(scan->name, "tags")) {
 				gchar **tagv = g_strsplit(scan->value, ",", 10000);
 				gchar *val;
 
-				for (i=0;tagv[i];i++) {
+				for (i = 0; tagv[i]; i++) {
 					val = strchr (tagv[i], '=');
 					if (val) {
 						*val++ = 0;
@@ -670,7 +694,8 @@ local_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, Came
 }
 
 static gint
-summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *fir)
+summary_header_from_db (CamelFolderSummary *s,
+                        CamelFIRecord *fir)
 {
 	CamelLocalSummary *cls = (CamelLocalSummary *) s;
 	gchar *part, *tmp;
@@ -694,7 +719,8 @@ summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *fir)
 }
 
 static gint
-summary_header_load (CamelFolderSummary *s, FILE *in)
+summary_header_load (CamelFolderSummary *s,
+                     FILE *in)
 {
 	CamelLocalSummary *cls = (CamelLocalSummary *) s;
 
@@ -712,7 +738,8 @@ summary_header_load (CamelFolderSummary *s, FILE *in)
 }
 
 static struct _CamelFIRecord *
-summary_header_to_db (CamelFolderSummary *s, GError **error)
+summary_header_to_db (CamelFolderSummary *s,
+                      GError **error)
 {
 	CamelFolderSummaryClass *folder_summary_class;
 	struct _CamelFIRecord *fir;
@@ -727,7 +754,8 @@ summary_header_to_db (CamelFolderSummary *s, GError **error)
 }
 
 static gint
-summary_header_save (CamelFolderSummary *s, FILE *out)
+summary_header_save (CamelFolderSummary *s,
+                     FILE *out)
 {
 	/*CamelLocalSummary *cls = (CamelLocalSummary *)s;*/
 
@@ -738,7 +766,8 @@ summary_header_save (CamelFolderSummary *s, FILE *out)
 }
 
 static CamelMessageInfo *
-message_info_new_from_header (CamelFolderSummary *s, struct _camel_header_raw *h)
+message_info_new_from_header (CamelFolderSummary *s,
+                              struct _camel_header_raw *h)
 {
 	CamelLocalMessageInfo *mi;
 	CamelLocalSummary *cls = (CamelLocalSummary *) s;
@@ -749,7 +778,7 @@ message_info_new_from_header (CamelFolderSummary *s, struct _camel_header_raw *h
 		gint doindex = FALSE;
 
 		xev = camel_header_raw_find(&h, "X-Evolution", NULL);
-		if (xev==NULL || camel_local_summary_decode_x_evolution (cls, xev, mi) == -1) {
+		if (xev == NULL || camel_local_summary_decode_x_evolution (cls, xev, mi) == -1) {
 			/* to indicate it has no xev header */
 			mi->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_FOLDER_NOXEV;
 			mi->info.dirty = TRUE;

@@ -31,7 +31,7 @@
 
 E_BOOK_BACKEND_FACTORY_SIMPLE (vcf, VCF, e_book_backend_vcf_new)
 
-static GType  vcf_type;
+static GType vcf_type;
 
 void
 eds_module_initialize (GTypeModule *type_module)
@@ -45,7 +45,8 @@ eds_module_shutdown (void)
 }
 
 void
-eds_module_list_types (const GType **types, gint *num_types)
+eds_module_list_types (const GType **types,
+                       gint *num_types)
 {
 	*types = & vcf_type;
 	*num_types = 1;

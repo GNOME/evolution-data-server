@@ -23,33 +23,38 @@ print_contact (EContact *contact)
 }
 
 static void
-contacts_added (EBookView *book_view, const GList *contacts)
+contacts_added (EBookView *book_view,
+                const GList *contacts)
 {
   GList *l;
 
-  for (l = (GList*) contacts; l; l = l->next) {
+  for (l = (GList *) contacts; l; l = l->next) {
     print_contact (l->data);
   }
 }
 
 static void
-contacts_removed (EBookView *book_view, const GList *ids)
+contacts_removed (EBookView *book_view,
+                  const GList *ids)
 {
   GList *l;
 
-  for (l = (GList*) ids; l; l = l->next) {
+  for (l = (GList *) ids; l; l = l->next) {
     printf ("Removed contact: %s\n", (gchar *)l->data);
   }
 }
 
 static void
-view_complete (EBookView *book_view, EBookViewStatus status, const gchar *error_msg)
+view_complete (EBookView *book_view,
+               EBookViewStatus status,
+               const gchar *error_msg)
 {
   printf ("view_complete (status == %d, error_msg == %s%s%s)\n", status, error_msg ? "'" : "", error_msg ? error_msg : "NULL", error_msg ? "'" : "");
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBook *book;
 	gboolean status;

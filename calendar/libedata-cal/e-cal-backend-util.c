@@ -40,7 +40,8 @@ static EAccountList *accounts;
  * Returns: TRUE if there is a default account, FALSE otherwise.
  */
 gboolean
-e_cal_backend_mail_account_get_default (gchar **address, gchar **name)
+e_cal_backend_mail_account_get_default (gchar **address,
+                                        gchar **name)
 {
 	const EAccount *account;
 
@@ -71,7 +72,8 @@ e_cal_backend_mail_account_get_default (gchar **address, gchar **name)
  * Returns: TRUE if the account is valid, FALSE if not.
  */
 gboolean
-e_cal_backend_mail_account_is_valid (gchar *user, gchar **name)
+e_cal_backend_mail_account_is_valid (gchar *user,
+                                     gchar **name)
 {
 	const EAccount *account;
 
@@ -99,7 +101,8 @@ e_cal_backend_mail_account_is_valid (gchar *user, gchar **name)
  *          It's not necessary to have this attendee in the list.
  **/
 static gboolean
-is_attendee_declined (icalcomponent *icalcomp, const gchar *email)
+is_attendee_declined (icalcomponent *icalcomp,
+                      const gchar *email)
 {
 	icalproperty *prop;
 	icalparameter *param;

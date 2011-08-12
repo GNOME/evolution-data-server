@@ -60,7 +60,8 @@ camel_url_scanner_free (CamelUrlScanner *scanner)
 }
 
 void
-camel_url_scanner_add (CamelUrlScanner *scanner, urlpattern_t *pattern)
+camel_url_scanner_add (CamelUrlScanner *scanner,
+                       urlpattern_t *pattern)
 {
 	g_return_if_fail (scanner != NULL);
 
@@ -69,7 +70,10 @@ camel_url_scanner_add (CamelUrlScanner *scanner, urlpattern_t *pattern)
 }
 
 gboolean
-camel_url_scanner_scan (CamelUrlScanner *scanner, const gchar *in, gsize inlen, urlmatch_t *match)
+camel_url_scanner_scan (CamelUrlScanner *scanner,
+                        const gchar *in,
+                        gsize inlen,
+                        urlmatch_t *match)
 {
 	const gchar *pos;
 	const guchar *inptr, *inend;
@@ -172,7 +176,9 @@ is_open_brace (gchar c)
 }
 
 static char
-url_stop_at_brace (const gchar *in, gsize so, gchar *open_brace)
+url_stop_at_brace (const gchar *in,
+                   gsize so,
+                   gchar *open_brace)
 {
 	gint i;
 
@@ -193,7 +199,10 @@ url_stop_at_brace (const gchar *in, gsize so, gchar *open_brace)
 }
 
 gboolean
-camel_url_addrspec_start (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
+camel_url_addrspec_start (const gchar *in,
+                          const gchar *pos,
+                          const gchar *inend,
+                          urlmatch_t *match)
 {
 	register const gchar *inptr = pos;
 
@@ -227,7 +236,10 @@ camel_url_addrspec_start (const gchar *in, const gchar *pos, const gchar *inend,
 }
 
 gboolean
-camel_url_addrspec_end (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
+camel_url_addrspec_end (const gchar *in,
+                        const gchar *pos,
+                        const gchar *inend,
+                        urlmatch_t *match)
 {
 	const gchar *inptr = pos;
 	gint parts = 0, digits;
@@ -288,7 +300,10 @@ camel_url_addrspec_end (const gchar *in, const gchar *pos, const gchar *inend, u
 }
 
 gboolean
-camel_url_file_start (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
+camel_url_file_start (const gchar *in,
+                      const gchar *pos,
+                      const gchar *inend,
+                      urlmatch_t *match)
 {
 	match->um_so = (pos - in);
 
@@ -296,7 +311,10 @@ camel_url_file_start (const gchar *in, const gchar *pos, const gchar *inend, url
 }
 
 gboolean
-camel_url_file_end (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
+camel_url_file_end (const gchar *in,
+                    const gchar *pos,
+                    const gchar *inend,
+                    urlmatch_t *match)
 {
 	register const gchar *inptr = pos;
 	gchar close_brace;
@@ -320,7 +338,10 @@ camel_url_file_end (const gchar *in, const gchar *pos, const gchar *inend, urlma
 }
 
 gboolean
-camel_url_web_start (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
+camel_url_web_start (const gchar *in,
+                     const gchar *pos,
+                     const gchar *inend,
+                     urlmatch_t *match)
 {
 	if (pos > in && !strncmp (pos, "www", 3)) {
 		/* make sure we aren't actually part of another word */
@@ -334,7 +355,10 @@ camel_url_web_start (const gchar *in, const gchar *pos, const gchar *inend, urlm
 }
 
 gboolean
-camel_url_web_end (const gchar *in, const gchar *pos, const gchar *inend, urlmatch_t *match)
+camel_url_web_end (const gchar *in,
+                   const gchar *pos,
+                   const gchar *inend,
+                   urlmatch_t *match)
 {
 	register const gchar *inptr = pos;
 	gboolean passwd = FALSE;
@@ -472,7 +496,8 @@ camel_url_web_end (const gchar *in, const gchar *pos, const gchar *inend, urlmat
 #define CHARS_URLSAFE "$-_.+!*'(),{}|\\^~[]`#%\";/?:@&="
 
 static void
-table_init_bits (guint mask, const guchar *vals)
+table_init_bits (guint mask,
+                 const guchar *vals)
 {
 	gint i;
 
@@ -501,9 +526,9 @@ url_scanner_table_init (void)
 	url_scanner_table['-'] |= IS_DOMAIN;
 
 	/* not defined to be special in rfc0822, but when scanning
-	   backwards to find the beginning of the email address we do
-	   not want to include this gchar if we come accross it - so
-	   this is kind of a hack */
+	 * backwards to find the beginning of the email address we do
+	 * not want to include this gchar if we come accross it - so
+	 * this is kind of a hack */
 	url_scanner_table['/'] |= IS_SPECIAL;
 
 	table_init_bits (IS_LWSP, CHARS_LWSP);

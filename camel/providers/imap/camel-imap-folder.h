@@ -66,9 +66,9 @@ struct _CamelImapFolder {
 	CamelImapMessageCache *cache;
 	CamelOfflineJournal *journal;
 
-	guint need_rescan:1;
-	guint need_refresh:1;
-	guint read_only:1;
+	guint need_rescan : 1;
+	guint need_refresh : 1;
+	guint read_only : 1;
 };
 
 struct _CamelImapFolderClass {

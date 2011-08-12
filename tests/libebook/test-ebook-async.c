@@ -26,7 +26,10 @@ print_email (EContact *contact)
 }
 
 static void
-print_all_emails_cb (EBook *book, const GError *error, GList *contacts, gpointer closure)
+print_all_emails_cb (EBook *book,
+                     const GError *error,
+                     GList *contacts,
+                     gpointer closure)
 {
 	GList *c;
 
@@ -56,7 +59,10 @@ print_all_emails (EBook *book)
 }
 
 static void
-print_email_cb (EBook *book, const GError *error, EContact *contact, gpointer closure)
+print_email_cb (EBook *book,
+                const GError *error,
+                EContact *contact,
+                gpointer closure)
 {
 	if (!error)
 		print_email (contact);
@@ -74,7 +80,9 @@ print_one_email (EBook *book)
 }
 
 static void
-book_loaded_cb (EBook *book, const GError *error, gpointer data)
+book_loaded_cb (EBook *book,
+                const GError *error,
+                gpointer data)
 {
 	if (error) {
 		g_warning ("%s: Got error %d (%s)", G_STRFUNC, error->code, error->message);
@@ -86,7 +94,8 @@ book_loaded_cb (EBook *book, const GError *error, gpointer data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBook *book;
 

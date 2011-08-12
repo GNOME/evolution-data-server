@@ -74,8 +74,8 @@ struct _xover_header {
 	struct _xover_header *next;
 
 	const gchar *name;
-	guint skip:8;
-	xover_t type:8;
+	guint skip : 8;
+	xover_t type : 8;
 };
 
 /* names of supported capabilities on the server */
@@ -89,7 +89,7 @@ struct _CamelNNTPStore {
 
 	guint32 extensions;
 
-	guint posting_allowed:1;
+	guint posting_allowed : 1;
 	gboolean password_reprompt;
 
 	struct _CamelNNTPStoreSummary *summary;

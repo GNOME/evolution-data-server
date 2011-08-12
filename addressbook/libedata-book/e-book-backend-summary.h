@@ -47,12 +47,12 @@ struct _EBookBackendSummaryClass{
 	GObjectClass parent_class;
 };
 
-EBookBackendSummary* e_book_backend_summary_new              (const gchar *summary_path,
+EBookBackendSummary * e_book_backend_summary_new              (const gchar *summary_path,
 							 gint flush_timeout_millis);
 GType              e_book_backend_summary_get_type         (void);
 
 /* returns FALSE if the load fails for any reason (including that the
-   summary is out of date), TRUE if it succeeds */
+ * summary is out of date), TRUE if it succeeds */
 gboolean           e_book_backend_summary_load             (EBookBackendSummary *summary);
 /* returns FALSE if the save fails, TRUE if it succeeds (or isn't required due to no changes) */
 gboolean           e_book_backend_summary_save              (EBookBackendSummary *summary);
@@ -67,7 +67,7 @@ void               e_book_backend_summary_touch             (EBookBackendSummary
 gboolean           e_book_backend_summary_is_up_to_date     (EBookBackendSummary *summary, time_t t);
 
 gboolean           e_book_backend_summary_is_summary_query  (EBookBackendSummary *summary, const gchar *query);
-GPtrArray*         e_book_backend_summary_search            (EBookBackendSummary *summary, const gchar *query);
+GPtrArray *         e_book_backend_summary_search            (EBookBackendSummary *summary, const gchar *query);
 gchar *              e_book_backend_summary_get_summary_vcard (EBookBackendSummary *summary, const gchar *id);
 
 G_END_DECLS

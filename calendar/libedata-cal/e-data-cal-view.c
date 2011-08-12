@@ -120,7 +120,8 @@ str_ic_hash (gconstpointer key)
 }
 
 static gboolean
-str_ic_equal (gconstpointer a, gconstpointer b)
+str_ic_equal (gconstpointer a,
+              gconstpointer b)
 {
 	const gchar *stra = a, *strb = b;
 	gint ii;
@@ -147,14 +148,16 @@ id_hash (gconstpointer key)
 }
 
 static gboolean
-id_equal (gconstpointer a, gconstpointer b)
+id_equal (gconstpointer a,
+          gconstpointer b)
 {
 	const ECalComponentId *id_a = a, *id_b = b;
 	return g_strcmp0 (id_a->uid, id_b->uid) == 0 && g_strcmp0 (id_a->rid, id_b->rid) == 0;
 }
 
 EDataCalView *
-e_data_cal_view_new (ECalBackend *backend, ECalBackendSExp *sexp)
+e_data_cal_view_new (ECalBackend *backend,
+                     ECalBackendSExp *sexp)
 {
 	EDataCalView *view;
 
@@ -169,7 +172,10 @@ e_data_cal_view_new (ECalBackend *backend, ECalBackendSExp *sexp)
  * Since: 2.32
  **/
 guint
-e_data_cal_view_register_gdbus_object (EDataCalView *view, GDBusConnection *connection, const gchar *object_path, GError **error)
+e_data_cal_view_register_gdbus_object (EDataCalView *view,
+                                       GDBusConnection *connection,
+                                       const gchar *object_path,
+                                       GError **error)
 {
 	g_return_val_if_fail (view != NULL, 0);
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), 0);
@@ -263,7 +269,8 @@ ensure_pending_flush_timeout (EDataCalView *view)
 }
 
 static void
-notify_add (EDataCalView *view, gchar *obj)
+notify_add (EDataCalView *view,
+            gchar *obj)
 {
 	EDataCalViewPrivate *priv = view->priv;
 	ECalComponent *comp;
@@ -286,7 +293,8 @@ notify_add (EDataCalView *view, gchar *obj)
 }
 
 static void
-notify_change (EDataCalView *view, gchar *obj)
+notify_change (EDataCalView *view,
+               gchar *obj)
 {
 	EDataCalViewPrivate *priv = view->priv;
 
@@ -303,7 +311,8 @@ notify_change (EDataCalView *view, gchar *obj)
 }
 
 static void
-notify_remove (EDataCalView *view, ECalComponentId *id)
+notify_remove (EDataCalView *view,
+               ECalComponentId *id)
 {
 	EDataCalViewPrivate *priv = view->priv;
 	gchar *ids;
@@ -356,7 +365,8 @@ notify_remove (EDataCalView *view, ECalComponentId *id)
 }
 
 static void
-notify_complete (EDataCalView *view, const GError *error)
+notify_complete (EDataCalView *view,
+                 const GError *error)
 {
 	gchar **error_strv;
 
@@ -372,7 +382,9 @@ notify_complete (EDataCalView *view, const GError *error)
 }
 
 static gboolean
-impl_DataCalView_start (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *view)
+impl_DataCalView_start (EGdbusCalView *object,
+                        GDBusMethodInvocation *invocation,
+                        EDataCalView *view)
 {
 	EDataCalViewPrivate *priv;
 
@@ -390,7 +402,9 @@ impl_DataCalView_start (EGdbusCalView *object, GDBusMethodInvocation *invocation
 }
 
 static gboolean
-impl_DataCalView_stop (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *view)
+impl_DataCalView_stop (EGdbusCalView *object,
+                       GDBusMethodInvocation *invocation,
+                       EDataCalView *view)
 {
 	EDataCalViewPrivate *priv;
 
@@ -405,7 +419,9 @@ impl_DataCalView_stop (EGdbusCalView *object, GDBusMethodInvocation *invocation,
 }
 
 static gboolean
-impl_DataCalView_dispose (EGdbusCalView *object, GDBusMethodInvocation *invocation, EDataCalView *view)
+impl_DataCalView_dispose (EGdbusCalView *object,
+                          GDBusMethodInvocation *invocation,
+                          EDataCalView *view)
 {
 	e_gdbus_cal_view_complete_dispose (object, invocation, NULL);
 
@@ -418,7 +434,10 @@ impl_DataCalView_dispose (EGdbusCalView *object, GDBusMethodInvocation *invocati
 }
 
 static gboolean
-impl_DataCalView_set_fields_of_interest (EGdbusCalView *object, GDBusMethodInvocation *invocation, const gchar * const *in_fields_of_interest, EDataCalView *view)
+impl_DataCalView_set_fields_of_interest (EGdbusCalView *object,
+                                         GDBusMethodInvocation *invocation,
+                                         const gchar * const *in_fields_of_interest,
+                                         EDataCalView *view)
 {
 	EDataCalViewPrivate *priv;
 	gint ii;
@@ -449,7 +468,10 @@ impl_DataCalView_set_fields_of_interest (EGdbusCalView *object, GDBusMethodInvoc
 }
 
 static void
-e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
+e_data_cal_view_set_property (GObject *object,
+                              guint property_id,
+                              const GValue *value,
+                              GParamSpec *pspec)
 {
 	EDataCalView *view;
 	EDataCalViewPrivate *priv;
@@ -471,7 +493,10 @@ e_data_cal_view_set_property (GObject *object, guint property_id, const GValue *
 }
 
 static void
-e_data_cal_view_get_property (GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
+e_data_cal_view_get_property (GObject *object,
+                              guint property_id,
+                              GValue *value,
+                              GParamSpec *pspec)
 {
 	EDataCalView *view;
 	EDataCalViewPrivate *priv;
@@ -632,7 +657,8 @@ e_data_cal_view_get_object_sexp (EDataCalView *view)
  * Returns: TRUE if the object matches the expression, FALSE if not.
  */
 gboolean
-e_data_cal_view_object_matches (EDataCalView *view, const gchar *object)
+e_data_cal_view_object_matches (EDataCalView *view,
+                                const gchar *object)
 {
 	EDataCalViewPrivate *priv;
 
@@ -726,7 +752,8 @@ e_data_cal_view_get_fields_of_interest (EDataCalView *view)
  * Notifies all view listeners of the addition of a list of objects.
  */
 void
-e_data_cal_view_notify_objects_added (EDataCalView *view, const GSList *objects)
+e_data_cal_view_notify_objects_added (EDataCalView *view,
+                                      const GSList *objects)
 {
 	EDataCalViewPrivate *priv;
 	const GSList *l;
@@ -754,7 +781,8 @@ e_data_cal_view_notify_objects_added (EDataCalView *view, const GSList *objects)
  * Notifies all the view listeners of the addition of a single object.
  */
 void
-e_data_cal_view_notify_objects_added_1 (EDataCalView *view, const gchar *object)
+e_data_cal_view_notify_objects_added_1 (EDataCalView *view,
+                                        const gchar *object)
 {
 	GSList l = {NULL,};
 
@@ -773,7 +801,8 @@ e_data_cal_view_notify_objects_added_1 (EDataCalView *view, const gchar *object)
  * Notifies all view listeners of the modification of a list of objects.
  */
 void
-e_data_cal_view_notify_objects_modified (EDataCalView *view, const GSList *objects)
+e_data_cal_view_notify_objects_modified (EDataCalView *view,
+                                         const GSList *objects)
 {
 	EDataCalViewPrivate *priv;
 	const GSList *l;
@@ -802,7 +831,8 @@ e_data_cal_view_notify_objects_modified (EDataCalView *view, const GSList *objec
  * Notifies all view listeners of the modification of a single object.
  */
 void
-e_data_cal_view_notify_objects_modified_1 (EDataCalView *view, const gchar *object)
+e_data_cal_view_notify_objects_modified_1 (EDataCalView *view,
+                                           const gchar *object)
 {
 	GSList l = {NULL,};
 
@@ -821,7 +851,8 @@ e_data_cal_view_notify_objects_modified_1 (EDataCalView *view, const gchar *obje
  * Notifies all view listener of the removal of a list of objects.
  */
 void
-e_data_cal_view_notify_objects_removed (EDataCalView *view, const GSList *ids)
+e_data_cal_view_notify_objects_removed (EDataCalView *view,
+                                        const GSList *ids)
 {
 	EDataCalViewPrivate *priv;
 	const GSList *l;
@@ -851,7 +882,8 @@ e_data_cal_view_notify_objects_removed (EDataCalView *view, const GSList *ids)
  * Notifies all view listener of the removal of a single object.
  */
 void
-e_data_cal_view_notify_objects_removed_1 (EDataCalView *view, const ECalComponentId *id)
+e_data_cal_view_notify_objects_removed_1 (EDataCalView *view,
+                                          const ECalComponentId *id)
 {
 	GSList l = {NULL,};
 
@@ -871,7 +903,9 @@ e_data_cal_view_notify_objects_removed_1 (EDataCalView *view, const ECalComponen
  * Notifies all view listeners of progress messages.
  */
 void
-e_data_cal_view_notify_progress (EDataCalView *view, gint percent, const gchar *message)
+e_data_cal_view_notify_progress (EDataCalView *view,
+                                 gint percent,
+                                 const gchar *message)
 {
 	EDataCalViewPrivate *priv;
 	gchar *gdbus_message = NULL;
@@ -896,7 +930,8 @@ e_data_cal_view_notify_progress (EDataCalView *view, gint percent, const gchar *
  * status code.
  */
 void
-e_data_cal_view_notify_complete (EDataCalView *view, const GError *error)
+e_data_cal_view_notify_complete (EDataCalView *view,
+                                 const GError *error)
 {
 	EDataCalViewPrivate *priv;
 

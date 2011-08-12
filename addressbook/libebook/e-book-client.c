@@ -109,7 +109,8 @@ e_book_client_error_to_string (EBookClientError code)
  * Returned pointer should be freed with g_error_free().
  **/
 GError *
-e_book_client_error_create (EBookClientError code, const gchar *custom_msg)
+e_book_client_error_create (EBookClientError code,
+                            const gchar *custom_msg)
 {
 	return g_error_new_literal (E_BOOK_CLIENT_ERROR, code, custom_msg ? custom_msg : e_book_client_error_to_string (code));
 }
@@ -120,7 +121,8 @@ e_book_client_error_create (EBookClientError code, const gchar *custom_msg)
  * leave it alone.
  */
 static gboolean
-unwrap_dbus_error (GError *error, GError **client_error)
+unwrap_dbus_error (GError *error,
+                   GError **client_error)
 {
 	#define err(a,b) "org.gnome.evolution.dataserver.AddressBook." a, b
 	static EClientErrorsList book_errors[] = {
@@ -200,7 +202,10 @@ gdbus_book_factory_proxy_disconnect (GDBusConnection *connection)
 }
 
 static void
-gdbus_book_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data)
+gdbus_book_factory_proxy_closed_cb (GDBusConnection *connection,
+                                    gboolean remote_peer_vanished,
+                                    GError *error,
+                                    gpointer user_data)
 {
 	GError *err = NULL;
 
@@ -222,10 +227,16 @@ gdbus_book_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote
 }
 
 static void
-gdbus_book_factory_connection_gone_cb (GDBusConnection *connection, const gchar *sender_name, const gchar *object_path, const gchar *interface_name, const gchar *signal_name, GVariant *parameters, gpointer user_data)
+gdbus_book_factory_connection_gone_cb (GDBusConnection *connection,
+                                       const gchar *sender_name,
+                                       const gchar *object_path,
+                                       const gchar *interface_name,
+                                       const gchar *signal_name,
+                                       GVariant *parameters,
+                                       gpointer user_data)
 {
 	/* signal subscription takes care of correct parameters,
-	   thus just do what is to be done here */
+	 * thus just do what is to be done here */
 	gdbus_book_factory_proxy_closed_cb (connection, TRUE, NULL, user_data);
 }
 
@@ -277,7 +288,10 @@ static void gdbus_book_client_disconnect (EBookClient *client);
  * Called when the addressbook server dies.
  */
 static void
-gdbus_book_client_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, EBookClient *client)
+gdbus_book_client_closed_cb (GDBusConnection *connection,
+                             gboolean remote_peer_vanished,
+                             GError *error,
+                             EBookClient *client)
 {
 	GError *err = NULL;
 
@@ -299,10 +313,16 @@ gdbus_book_client_closed_cb (GDBusConnection *connection, gboolean remote_peer_v
 }
 
 static void
-gdbus_book_client_connection_gone_cb (GDBusConnection *connection, const gchar *sender_name, const gchar *object_path, const gchar *interface_name, const gchar *signal_name, GVariant *parameters, gpointer user_data)
+gdbus_book_client_connection_gone_cb (GDBusConnection *connection,
+                                      const gchar *sender_name,
+                                      const gchar *object_path,
+                                      const gchar *interface_name,
+                                      const gchar *signal_name,
+                                      GVariant *parameters,
+                                      gpointer user_data)
 {
 	/* signal subscription takes care of correct parameters,
-	   thus just do what is to be done here */
+	 * thus just do what is to be done here */
 	gdbus_book_client_closed_cb (connection, TRUE, NULL, user_data);
 }
 
@@ -332,7 +352,9 @@ gdbus_book_client_disconnect (EBookClient *client)
 }
 
 static void
-backend_error_cb (EGdbusBook *object, const gchar *message, EBookClient *client)
+backend_error_cb (EGdbusBook *object,
+                  const gchar *message,
+                  EBookClient *client)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
@@ -342,7 +364,9 @@ backend_error_cb (EGdbusBook *object, const gchar *message, EBookClient *client)
 }
 
 static void
-readonly_cb (EGdbusBook *object, gboolean readonly, EBookClient *client)
+readonly_cb (EGdbusBook *object,
+             gboolean readonly,
+             EBookClient *client)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
@@ -351,7 +375,9 @@ readonly_cb (EGdbusBook *object, gboolean readonly, EBookClient *client)
 }
 
 static void
-online_cb (EGdbusBook *object, gboolean is_online, EBookClient *client)
+online_cb (EGdbusBook *object,
+           gboolean is_online,
+           EBookClient *client)
 {
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
@@ -360,7 +386,9 @@ online_cb (EGdbusBook *object, gboolean is_online, EBookClient *client)
 }
 
 static void
-auth_required_cb (EGdbusBook *object, const gchar * const *credentials_strv, EBookClient *client)
+auth_required_cb (EGdbusBook *object,
+                  const gchar * const *credentials_strv,
+                  EBookClient *client)
 {
 	ECredentials *credentials;
 
@@ -378,7 +406,9 @@ auth_required_cb (EGdbusBook *object, const gchar * const *credentials_strv, EBo
 }
 
 static void
-opened_cb (EGdbusBook *object, const gchar * const *error_strv, EBookClient *client)
+opened_cb (EGdbusBook *object,
+           const gchar * const *error_strv,
+           EBookClient *client)
 {
 	GError *error = NULL;
 
@@ -394,7 +424,9 @@ opened_cb (EGdbusBook *object, const gchar * const *error_strv, EBookClient *cli
 }
 
 static void
-backend_property_changed_cb (EGdbusBook *object, const gchar * const *name_value_strv, EBookClient *client)
+backend_property_changed_cb (EGdbusBook *object,
+                             const gchar * const *name_value_strv,
+                             EBookClient *client)
 {
 	gchar *prop_name = NULL, *prop_value = NULL;
 
@@ -426,7 +458,8 @@ backend_property_changed_cb (EGdbusBook *object, const gchar * const *name_value
  * Since: 3.2
  **/
 EBookClient *
-e_book_client_new (ESource *source, GError **error)
+e_book_client_new (ESource *source,
+                   GError **error)
 {
 	EBookClient *client;
 	GError *err = NULL;
@@ -534,7 +567,8 @@ e_book_client_new (ESource *source, GError **error)
  * Since: 3.2
  **/
 EBookClient *
-e_book_client_new_from_uri (const gchar *uri, GError **error)
+e_book_client_new_from_uri (const gchar *uri,
+                            GError **error)
 {
 	ESourceList *source_list = NULL;
 	ESource *source;
@@ -658,7 +692,8 @@ e_book_client_new_default (GError **error)
  * Since: 3.2
  **/
 gboolean
-e_book_client_set_default (EBookClient *client, GError **error)
+e_book_client_set_default (EBookClient *client,
+                           GError **error)
 {
 	ESource *source;
 
@@ -685,7 +720,8 @@ e_book_client_set_default (EBookClient *client, GError **error)
  * Since: 3.2
  **/
 gboolean
-e_book_client_set_default_source (ESource *source, GError **error)
+e_book_client_set_default_source (ESource *source,
+                                  GError **error)
 {
 	ESourceList *source_list = NULL;
 	gboolean res = FALSE;
@@ -722,7 +758,8 @@ e_book_client_set_default_source (ESource *source, GError **error)
  * Since: 3.2
  **/
 gboolean
-e_book_client_get_sources (ESourceList **sources, GError **error)
+e_book_client_get_sources (ESourceList **sources,
+                           GError **error)
 {
 	GConfClient *gconf;
 
@@ -788,7 +825,9 @@ make_me_card (void)
  * Since: 3.2
  **/
 gboolean
-e_book_client_get_self (EContact **contact, EBookClient **client, GError **error)
+e_book_client_get_self (EContact **contact,
+                        EBookClient **client,
+                        GError **error)
 {
 	GError *local_error = NULL;
 	GConfClient *gconf;
@@ -860,7 +899,9 @@ e_book_client_get_self (EContact **contact, EBookClient **client, GError **error
  * Since: 3.2
  **/
 gboolean
-e_book_client_set_self (EBookClient *client, EContact *contact, GError **error)
+e_book_client_set_self (EBookClient *client,
+                        EContact *contact,
+                        GError **error)
 {
 	GConfClient *gconf;
 
@@ -906,7 +947,10 @@ e_book_client_is_self (EContact *contact)
 }
 
 static gboolean
-book_client_get_backend_property_from_cache_finish (EClient *client, GAsyncResult *result, gchar **prop_value, GError **error)
+book_client_get_backend_property_from_cache_finish (EClient *client,
+                                                    GAsyncResult *result,
+                                                    gchar **prop_value,
+                                                    GError **error)
 {
 	GSimpleAsyncResult *simple;
 	GError *local_error = NULL;
@@ -930,7 +974,11 @@ book_client_get_backend_property_from_cache_finish (EClient *client, GAsyncResul
 }
 
 static void
-book_client_get_backend_property (EClient *client, const gchar *prop_name, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+book_client_get_backend_property (EClient *client,
+                                  const gchar *prop_name,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
 {
 	gchar *prop_value;
 
@@ -945,7 +993,10 @@ book_client_get_backend_property (EClient *client, const gchar *prop_name, GCanc
 }
 
 static gboolean
-book_client_get_backend_property_finish (EClient *client, GAsyncResult *result, gchar **prop_value, GError **error)
+book_client_get_backend_property_finish (EClient *client,
+                                         GAsyncResult *result,
+                                         gchar **prop_value,
+                                         GError **error)
 {
 	gchar *str = NULL;
 	gboolean res;
@@ -970,7 +1021,11 @@ book_client_get_backend_property_finish (EClient *client, GAsyncResult *result, 
 }
 
 static gboolean
-book_client_get_backend_property_sync (EClient *client, const gchar *prop_name, gchar **prop_value, GCancellable *cancellable, GError **error)
+book_client_get_backend_property_sync (EClient *client,
+                                       const gchar *prop_name,
+                                       gchar **prop_value,
+                                       GCancellable *cancellable,
+                                       GError **error)
 {
 	EBookClient *book_client;
 	gchar *prop_val;
@@ -1006,7 +1061,12 @@ book_client_get_backend_property_sync (EClient *client, const gchar *prop_name, 
 }
 
 static void
-book_client_set_backend_property (EClient *client, const gchar *prop_name, const gchar *prop_value, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+book_client_set_backend_property (EClient *client,
+                                  const gchar *prop_name,
+                                  const gchar *prop_value,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
 {
 	gchar **prop_name_value;
 
@@ -1020,13 +1080,19 @@ book_client_set_backend_property (EClient *client, const gchar *prop_name, const
 }
 
 static gboolean
-book_client_set_backend_property_finish (EClient *client, GAsyncResult *result, GError **error)
+book_client_set_backend_property_finish (EClient *client,
+                                         GAsyncResult *result,
+                                         GError **error)
 {
 	return e_client_proxy_call_finish_void (client, result, error, book_client_set_backend_property);
 }
 
 static gboolean
-book_client_set_backend_property_sync (EClient *client, const gchar *prop_name, const gchar *prop_value, GCancellable *cancellable, GError **error)
+book_client_set_backend_property_sync (EClient *client,
+                                       const gchar *prop_name,
+                                       const gchar *prop_value,
+                                       GCancellable *cancellable,
+                                       GError **error)
 {
 	EBookClient *book_client;
 	gboolean res;
@@ -1052,7 +1118,11 @@ book_client_set_backend_property_sync (EClient *client, const gchar *prop_name, 
 }
 
 static void
-book_client_open (EClient *client, gboolean only_if_exists, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+book_client_open (EClient *client,
+                  gboolean only_if_exists,
+                  GCancellable *cancellable,
+                  GAsyncReadyCallback callback,
+                  gpointer user_data)
 {
 	e_client_proxy_call_boolean (client, only_if_exists, cancellable, callback, user_data, book_client_open,
 			e_gdbus_book_call_open,
@@ -1060,13 +1130,18 @@ book_client_open (EClient *client, gboolean only_if_exists, GCancellable *cancel
 }
 
 static gboolean
-book_client_open_finish (EClient *client, GAsyncResult *result, GError **error)
+book_client_open_finish (EClient *client,
+                         GAsyncResult *result,
+                         GError **error)
 {
 	return e_client_proxy_call_finish_void (client, result, error, book_client_open);
 }
 
 static gboolean
-book_client_open_sync (EClient *client, gboolean only_if_exists, GCancellable *cancellable, GError **error)
+book_client_open_sync (EClient *client,
+                       gboolean only_if_exists,
+                       GCancellable *cancellable,
+                       GError **error)
 {
 	EBookClient *book_client;
 
@@ -1086,7 +1161,10 @@ book_client_open_sync (EClient *client, gboolean only_if_exists, GCancellable *c
 }
 
 static void
-book_client_remove (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+book_client_remove (EClient *client,
+                    GCancellable *cancellable,
+                    GAsyncReadyCallback callback,
+                    gpointer user_data)
 {
 	e_client_proxy_call_void (client, cancellable, callback, user_data, book_client_remove,
 			e_gdbus_book_call_remove,
@@ -1094,13 +1172,17 @@ book_client_remove (EClient *client, GCancellable *cancellable, GAsyncReadyCallb
 }
 
 static gboolean
-book_client_remove_finish (EClient *client, GAsyncResult *result, GError **error)
+book_client_remove_finish (EClient *client,
+                           GAsyncResult *result,
+                           GError **error)
 {
 	return e_client_proxy_call_finish_void (client, result, error, book_client_remove);
 }
 
 static gboolean
-book_client_remove_sync (EClient *client, GCancellable *cancellable, GError **error)
+book_client_remove_sync (EClient *client,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	EBookClient *book_client;
 
@@ -1120,7 +1202,10 @@ book_client_remove_sync (EClient *client, GCancellable *cancellable, GError **er
 }
 
 static void
-book_client_refresh (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+book_client_refresh (EClient *client,
+                     GCancellable *cancellable,
+                     GAsyncReadyCallback callback,
+                     gpointer user_data)
 {
 	e_client_proxy_call_void (client, cancellable, callback, user_data, book_client_refresh,
 			e_gdbus_book_call_refresh,
@@ -1128,13 +1213,17 @@ book_client_refresh (EClient *client, GCancellable *cancellable, GAsyncReadyCall
 }
 
 static gboolean
-book_client_refresh_finish (EClient *client, GAsyncResult *result, GError **error)
+book_client_refresh_finish (EClient *client,
+                            GAsyncResult *result,
+                            GError **error)
 {
 	return e_client_proxy_call_finish_void (client, result, error, book_client_refresh);
 }
 
 static gboolean
-book_client_refresh_sync (EClient *client, GCancellable *cancellable, GError **error)
+book_client_refresh_sync (EClient *client,
+                          GCancellable *cancellable,
+                          GError **error)
 {
 	EBookClient *book_client;
 
@@ -1168,7 +1257,11 @@ book_client_refresh_sync (EClient *client, GCancellable *cancellable, GError **e
  * Since: 3.2
  **/
 void
-e_book_client_add_contact (EBookClient *client, /* const */ EContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_book_client_add_contact (EBookClient *client,
+                           /* const */ EContact *contact,
+                           GCancellable *cancellable,
+                           GAsyncReadyCallback callback,
+                           gpointer user_data)
 {
 	gchar *vcard, *gdbus_vcard = NULL;
 
@@ -1203,7 +1296,10 @@ e_book_client_add_contact (EBookClient *client, /* const */ EContact *contact, G
  * Since: 3.2
  **/
 gboolean
-e_book_client_add_contact_finish (EBookClient *client, GAsyncResult *result, gchar **added_uid, GError **error)
+e_book_client_add_contact_finish (EBookClient *client,
+                                  GAsyncResult *result,
+                                  gchar **added_uid,
+                                  GError **error)
 {
 	gboolean res;
 	gchar *out_uid = NULL;
@@ -1241,7 +1337,11 @@ e_book_client_add_contact_finish (EBookClient *client, GAsyncResult *result, gch
  * Since: 3.2
  **/
 gboolean
-e_book_client_add_contact_sync (EBookClient *client, /* const */ EContact *contact, gchar **added_uid, GCancellable *cancellable, GError **error)
+e_book_client_add_contact_sync (EBookClient *client,
+                                /* const */ EContact *contact,
+                                gchar **added_uid,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	gboolean res;
 	gchar *vcard, *gdbus_vcard = NULL, *out_uid = NULL;
@@ -1288,7 +1388,11 @@ e_book_client_add_contact_sync (EBookClient *client, /* const */ EContact *conta
  * Since: 3.2
  **/
 void
-e_book_client_modify_contact (EBookClient *client, /* const */ EContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_book_client_modify_contact (EBookClient *client,
+                              /* const */ EContact *contact,
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
 {
 	gchar *vcard, *gdbus_vcard = NULL;
 
@@ -1318,7 +1422,9 @@ e_book_client_modify_contact (EBookClient *client, /* const */ EContact *contact
  * Since: 3.2
  **/
 gboolean
-e_book_client_modify_contact_finish (EBookClient *client, GAsyncResult *result, GError **error)
+e_book_client_modify_contact_finish (EBookClient *client,
+                                     GAsyncResult *result,
+                                     GError **error)
 {
 	return e_client_proxy_call_finish_void (E_CLIENT (client), result, error, e_book_client_modify_contact);
 }
@@ -1337,7 +1443,10 @@ e_book_client_modify_contact_finish (EBookClient *client, GAsyncResult *result, 
  * Since: 3.2
  **/
 gboolean
-e_book_client_modify_contact_sync (EBookClient *client, /* const */ EContact *contact, GCancellable *cancellable, GError **error)
+e_book_client_modify_contact_sync (EBookClient *client,
+                                   /* const */ EContact *contact,
+                                   GCancellable *cancellable,
+                                   GError **error)
 {
 	gboolean res;
 	gchar *vcard, *gdbus_vcard = NULL;
@@ -1376,7 +1485,11 @@ e_book_client_modify_contact_sync (EBookClient *client, /* const */ EContact *co
  * Since: 3.2
  **/
 void
-e_book_client_remove_contact (EBookClient *client, /* const */ EContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_book_client_remove_contact (EBookClient *client,
+                              /* const */ EContact *contact,
+                              GCancellable *cancellable,
+                              GAsyncReadyCallback callback,
+                              gpointer user_data)
 {
 	gchar *uid;
 	const gchar *lst[2];
@@ -1410,7 +1523,9 @@ e_book_client_remove_contact (EBookClient *client, /* const */ EContact *contact
  * Since: 3.2
  **/
 gboolean
-e_book_client_remove_contact_finish (EBookClient *client, GAsyncResult *result, GError **error)
+e_book_client_remove_contact_finish (EBookClient *client,
+                                     GAsyncResult *result,
+                                     GError **error)
 {
 	return e_client_proxy_call_finish_void (E_CLIENT (client), result, error, e_book_client_remove_contact);
 }
@@ -1429,7 +1544,10 @@ e_book_client_remove_contact_finish (EBookClient *client, GAsyncResult *result, 
  * Since: 3.2
  **/
 gboolean
-e_book_client_remove_contact_sync (EBookClient *client, /* const */ EContact *contact, GCancellable *cancellable, GError **error)
+e_book_client_remove_contact_sync (EBookClient *client,
+                                   /* const */ EContact *contact,
+                                   GCancellable *cancellable,
+                                   GError **error)
 {
 	gboolean res;
 	gchar *uid;
@@ -1474,7 +1592,11 @@ e_book_client_remove_contact_sync (EBookClient *client, /* const */ EContact *co
  * Since: 3.2
  **/
 void
-e_book_client_remove_contact_by_uid (EBookClient *client, const gchar *uid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_book_client_remove_contact_by_uid (EBookClient *client,
+                                     const gchar *uid,
+                                     GCancellable *cancellable,
+                                     GAsyncReadyCallback callback,
+                                     gpointer user_data)
 {
 	gchar *safe_uid;
 	const gchar *lst[2];
@@ -1507,7 +1629,9 @@ e_book_client_remove_contact_by_uid (EBookClient *client, const gchar *uid, GCan
  * Since: 3.2
  **/
 gboolean
-e_book_client_remove_contact_by_uid_finish (EBookClient *client, GAsyncResult *result, GError **error)
+e_book_client_remove_contact_by_uid_finish (EBookClient *client,
+                                            GAsyncResult *result,
+                                            GError **error)
 {
 	return e_client_proxy_call_finish_void (E_CLIENT (client), result, error, e_book_client_remove_contact_by_uid);
 }
@@ -1526,7 +1650,10 @@ e_book_client_remove_contact_by_uid_finish (EBookClient *client, GAsyncResult *r
  * Since: 3.2
  **/
 gboolean
-e_book_client_remove_contact_by_uid_sync (EBookClient *client, const gchar *uid, GCancellable *cancellable, GError **error)
+e_book_client_remove_contact_by_uid_sync (EBookClient *client,
+                                          const gchar *uid,
+                                          GCancellable *cancellable,
+                                          GError **error)
 {
 	gboolean res;
 	gchar *safe_uid;
@@ -1573,7 +1700,11 @@ e_book_client_remove_contact_by_uid_sync (EBookClient *client, const gchar *uid,
  * Since: 3.2
  **/
 void
-e_book_client_remove_contacts (EBookClient *client, const GSList *uids, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_book_client_remove_contacts (EBookClient *client,
+                               const GSList *uids,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
 	gchar **lst;
 
@@ -1602,7 +1733,9 @@ e_book_client_remove_contacts (EBookClient *client, const GSList *uids, GCancell
  * Since: 3.2
  **/
 gboolean
-e_book_client_remove_contacts_finish (EBookClient *client, GAsyncResult *result, GError **error)
+e_book_client_remove_contacts_finish (EBookClient *client,
+                                      GAsyncResult *result,
+                                      GError **error)
 {
 	return e_client_proxy_call_finish_void (E_CLIENT (client), result, error, e_book_client_remove_contacts);
 }
@@ -1624,7 +1757,10 @@ e_book_client_remove_contacts_finish (EBookClient *client, GAsyncResult *result,
  * Since: 3.2
  **/
 gboolean
-e_book_client_remove_contacts_sync (EBookClient *client, const GSList *uids, GCancellable *cancellable, GError **error)
+e_book_client_remove_contacts_sync (EBookClient *client,
+                                    const GSList *uids,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	gboolean res;
 	gchar **lst;
@@ -1664,7 +1800,11 @@ e_book_client_remove_contacts_sync (EBookClient *client, const GSList *uids, GCa
  * Since: 3.2
  **/
 void
-e_book_client_get_contact (EBookClient *client, const gchar *uid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_book_client_get_contact (EBookClient *client,
+                           const gchar *uid,
+                           GCancellable *cancellable,
+                           GAsyncReadyCallback callback,
+                           gpointer user_data)
 {
 	gchar *safe_uid;
 
@@ -1696,7 +1836,10 @@ e_book_client_get_contact (EBookClient *client, const gchar *uid, GCancellable *
  * Since: 3.2
  **/
 gboolean
-e_book_client_get_contact_finish (EBookClient *client, GAsyncResult *result, EContact **contact, GError **error)
+e_book_client_get_contact_finish (EBookClient *client,
+                                  GAsyncResult *result,
+                                  EContact **contact,
+                                  GError **error)
 {
 	gboolean res;
 	gchar *vcard = NULL;
@@ -1732,7 +1875,11 @@ e_book_client_get_contact_finish (EBookClient *client, GAsyncResult *result, ECo
  * Since: 3.2
  **/
 gboolean
-e_book_client_get_contact_sync (EBookClient *client, const gchar *uid, EContact **contact, GCancellable *cancellable, GError **error)
+e_book_client_get_contact_sync (EBookClient *client,
+                                const gchar *uid,
+                                EContact **contact,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	gboolean res;
 	gchar *vcard = NULL, *safe_uid;
@@ -1782,7 +1929,11 @@ e_book_client_get_contact_sync (EBookClient *client, const gchar *uid, EContact 
  * Since: 3.2
  **/
 void
-e_book_client_get_contacts (EBookClient *client, const gchar *sexp, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_book_client_get_contacts (EBookClient *client,
+                            const gchar *sexp,
+                            GCancellable *cancellable,
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
 {
 	gchar *gdbus_sexp = NULL;
 
@@ -1811,7 +1962,10 @@ e_book_client_get_contacts (EBookClient *client, const gchar *sexp, GCancellable
  * Since: 3.2
  **/
 gboolean
-e_book_client_get_contacts_finish (EBookClient *client, GAsyncResult *result, GSList **contacts, GError **error)
+e_book_client_get_contacts_finish (EBookClient *client,
+                                   GAsyncResult *result,
+                                   GSList **contacts,
+                                   GError **error)
 {
 	gboolean res;
 	gchar **vcards = NULL;
@@ -1858,7 +2012,11 @@ e_book_client_get_contacts_finish (EBookClient *client, GAsyncResult *result, GS
  * Since: 3.2
  **/
 gboolean
-e_book_client_get_contacts_sync (EBookClient *client, const gchar *sexp, GSList **contacts, GCancellable *cancellable, GError **error)
+e_book_client_get_contacts_sync (EBookClient *client,
+                                 const gchar *sexp,
+                                 GSList **contacts,
+                                 GCancellable *cancellable,
+                                 GError **error)
 {
 	gboolean res;
 	gchar *gdbus_sexp = NULL;
@@ -1914,7 +2072,11 @@ e_book_client_get_contacts_sync (EBookClient *client, const gchar *sexp, GSList 
  * Since: 3.2
  **/
 void
-e_book_client_get_contacts_uids (EBookClient *client, const gchar *sexp, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_book_client_get_contacts_uids (EBookClient *client,
+                                 const gchar *sexp,
+                                 GCancellable *cancellable,
+                                 GAsyncReadyCallback callback,
+                                 gpointer user_data)
 {
 	gchar *gdbus_sexp = NULL;
 
@@ -1943,7 +2105,10 @@ e_book_client_get_contacts_uids (EBookClient *client, const gchar *sexp, GCancel
  * Since: 3.2
  **/
 gboolean
-e_book_client_get_contacts_uids_finish (EBookClient *client, GAsyncResult *result, GSList **contacts_uids, GError **error)
+e_book_client_get_contacts_uids_finish (EBookClient *client,
+                                        GAsyncResult *result,
+                                        GSList **contacts_uids,
+                                        GError **error)
 {
 	gboolean res;
 	gchar **uids = NULL;
@@ -1990,7 +2155,11 @@ e_book_client_get_contacts_uids_finish (EBookClient *client, GAsyncResult *resul
  * Since: 3.2
  **/
 gboolean
-e_book_client_get_contacts_uids_sync (EBookClient *client, const gchar *sexp, GSList **contacts_uids, GCancellable *cancellable, GError **error)
+e_book_client_get_contacts_uids_sync (EBookClient *client,
+                                      const gchar *sexp,
+                                      GSList **contacts_uids,
+                                      GCancellable *cancellable,
+                                      GError **error)
 {
 	gboolean res;
 	gchar *gdbus_sexp = NULL;
@@ -2046,7 +2215,11 @@ e_book_client_get_contacts_uids_sync (EBookClient *client, const gchar *sexp, GS
  * Since: 3.2
  **/
 void
-e_book_client_get_view (EBookClient *client, const gchar *sexp, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+e_book_client_get_view (EBookClient *client,
+                        const gchar *sexp,
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
 {
 	gchar *gdbus_sexp = NULL;
 
@@ -2060,7 +2233,11 @@ e_book_client_get_view (EBookClient *client, const gchar *sexp, GCancellable *ca
 }
 
 static gboolean
-complete_get_view (EBookClient *client, gboolean res, gchar *view_path, EBookClientView **view, GError **error)
+complete_get_view (EBookClient *client,
+                   gboolean res,
+                   gchar *view_path,
+                   EBookClientView **view,
+                   GError **error)
 {
 	g_return_val_if_fail (view != NULL, FALSE);
 
@@ -2114,7 +2291,10 @@ complete_get_view (EBookClient *client, gboolean res, gchar *view_path, EBookCli
  * Since: 3.2
  **/
 gboolean
-e_book_client_get_view_finish (EBookClient *client, GAsyncResult *result, EBookClientView **view, GError **error)
+e_book_client_get_view_finish (EBookClient *client,
+                               GAsyncResult *result,
+                               EBookClientView **view,
+                               GError **error)
 {
 	gboolean res;
 	gchar *view_path = NULL;
@@ -2146,7 +2326,11 @@ e_book_client_get_view_finish (EBookClient *client, GAsyncResult *result, EBookC
  * Since: 3.2
  **/
 gboolean
-e_book_client_get_view_sync (EBookClient *client, const gchar *sexp, EBookClientView **view, GCancellable *cancellable, GError **error)
+e_book_client_get_view_sync (EBookClient *client,
+                             const gchar *sexp,
+                             EBookClientView **view,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	gboolean res;
 	gchar *gdbus_sexp = NULL;
@@ -2185,13 +2369,16 @@ book_client_get_dbus_proxy (EClient *client)
 }
 
 static void
-book_client_unwrap_dbus_error (EClient *client, GError *dbus_error, GError **out_error)
+book_client_unwrap_dbus_error (EClient *client,
+                               GError *dbus_error,
+                               GError **out_error)
 {
 	unwrap_dbus_error (dbus_error, out_error);
 }
 
 static void
-book_client_handle_authentication (EClient *client, const ECredentials *credentials)
+book_client_handle_authentication (EClient *client,
+                                   const ECredentials *credentials)
 {
 	EBookClient *book_client;
 	GError *error = NULL;
@@ -2221,7 +2408,10 @@ book_client_handle_authentication (EClient *client, const ECredentials *credenti
 }
 
 static void
-book_client_retrieve_capabilities (EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
+book_client_retrieve_capabilities (EClient *client,
+                                   GCancellable *cancellable,
+                                   GAsyncReadyCallback callback,
+                                   gpointer user_data)
 {
 	EBookClient *book_client;
 
@@ -2235,7 +2425,10 @@ book_client_retrieve_capabilities (EClient *client, GCancellable *cancellable, G
 }
 
 static gboolean
-book_client_retrieve_capabilities_finish (EClient *client, GAsyncResult *result, gchar **capabilities, GError **error)
+book_client_retrieve_capabilities_finish (EClient *client,
+                                          GAsyncResult *result,
+                                          gchar **capabilities,
+                                          GError **error)
 {
 	EBookClient *book_client;
 
@@ -2249,7 +2442,10 @@ book_client_retrieve_capabilities_finish (EClient *client, GAsyncResult *result,
 }
 
 static gboolean
-book_client_retrieve_capabilities_sync (EClient *client, gchar **capabilities, GCancellable *cancellable, GError **error)
+book_client_retrieve_capabilities_sync (EClient *client,
+                                        gchar **capabilities,
+                                        GCancellable *cancellable,
+                                        GError **error)
 {
 	EBookClient *book_client;
 

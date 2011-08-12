@@ -95,7 +95,8 @@ static struct {
 } global_env;
 
 static void
-db_error_to_gerror (const gint db_error, GError **perror)
+db_error_to_gerror (const gint db_error,
+                    GError **perror)
 {
 	if (db_error && perror && *perror)
 		g_clear_error (perror);
@@ -116,7 +117,8 @@ db_error_to_gerror (const gint db_error, GError **perror)
 }
 
 static void
-string_to_dbt (const gchar *str, DBT *dbt)
+string_to_dbt (const gchar *str,
+               DBT *dbt)
 {
 	memset (dbt, 0, sizeof (*dbt));
 	dbt->data = (gpointer) str;
@@ -125,7 +127,8 @@ string_to_dbt (const gchar *str, DBT *dbt)
 }
 
 static gboolean
-remove_file (const gchar *filename, GError **error)
+remove_file (const gchar *filename,
+             GError **error)
 {
 	if (-1 == g_unlink (filename)) {
 		if (errno == EACCES || errno == EPERM) {
@@ -144,7 +147,7 @@ remove_file (const gchar *filename, GError **error)
 
 static gboolean
 create_directory (const gchar *dirname,
-		  GError     **error)
+                  GError **error)
 {
 	gint rv;
 
@@ -163,8 +166,9 @@ create_directory (const gchar *dirname,
 	return TRUE;
 }
 
-static EContact*
-create_contact (const gchar *uid, const gchar *vcard)
+static EContact *
+create_contact (const gchar *uid,
+                const gchar *vcard)
 {
 	EContact *contact = e_contact_new_from_vcard (vcard);
 	if (!e_contact_get_const (contact, E_CONTACT_UID))
@@ -175,8 +179,8 @@ create_contact (const gchar *uid, const gchar *vcard)
 
 static gchar *
 load_vcard (EBookBackendFile *bf,
-	    const gchar      *uid,
-	    GError          **error)
+            const gchar *uid,
+            GError **error)
 {
 	DB     *db = bf->priv->file_db;
 	DBT     id_dbt, vcard_dbt;
@@ -269,8 +273,8 @@ static gchar *
 e_book_backend_file_create_unique_id (void)
 {
 	/* use a 32 counter and the 32 bit timestamp to make an id.
-	   it's doubtful 2^32 id's will be created in a second, so we
-	   should be okay. */
+	 * it's doubtful 2^32 id's will be created in a second, so we
+	 * should be okay. */
 	static guint c = 0;
 	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", time(NULL), c++);
 }
@@ -291,10 +295,10 @@ set_revision (EContact *contact)
 }
 
 static gboolean
-do_create (EBookBackendFile  *bf,
-	  const gchar      *vcard_req,
-	  EContact **contact,
-	  GError **perror)
+do_create (EBookBackendFile *bf,
+          const gchar *vcard_req,
+          EContact **contact,
+          GError **perror)
 {
 	DB             *db = bf->priv->file_db;
 	DBT            id_dbt, vcard_dbt;
@@ -349,11 +353,11 @@ do_create (EBookBackendFile  *bf,
 
 static void
 e_book_backend_file_create_contact (EBookBackendSync *backend,
-				    EDataBook *book,
-				    GCancellable *cancellable,
-				    const gchar *vcard,
-				    EContact **contact,
-				    GError **perror)
+                                    EDataBook *book,
+                                    GCancellable *cancellable,
+                                    const gchar *vcard,
+                                    EContact **contact,
+                                    GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 
@@ -371,11 +375,11 @@ e_book_backend_file_create_contact (EBookBackendSync *backend,
 
 static void
 e_book_backend_file_remove_contacts (EBookBackendSync *backend,
-				     EDataBook *book,
-				     GCancellable *cancellable,
-				     const GSList *id_list,
-				     GSList **ids,
-				     GError **perror)
+                                     EDataBook *book,
+                                     GCancellable *cancellable,
+                                     const GSList *id_list,
+                                     GSList **ids,
+                                     GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB               *db = bf->priv->file_db;
@@ -425,11 +429,11 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 
 static void
 e_book_backend_file_modify_contact (EBookBackendSync *backend,
-				    EDataBook *book,
-				    GCancellable *cancellable,
-				    const gchar *vcard,
-				    EContact **contact,
-				    GError **perror)
+                                    EDataBook *book,
+                                    GCancellable *cancellable,
+                                    const gchar *vcard,
+                                    EContact **contact,
+                                    GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
@@ -456,10 +460,10 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 	vcard_with_rev = e_vcard_to_string (E_VCARD (*contact), EVC_FORMAT_VCARD_30);
 
 	/* This is disgusting, but for a time cards were added with
-	   ID's that are no longer used (they contained both the uri
-	   and the id.) If we recognize it as a uri (file:///...) trim
-	   off everything before the last '/', and use that as the
-	   id.*/
+	 * ID's that are no longer used (they contained both the uri
+	 * and the id.) If we recognize it as a uri (file:///...) trim
+	 * off everything before the last '/', and use that as the
+	 * id.*/
 	if (!strncmp (id, "file:///", strlen ("file:///"))) {
 		lookup_id = strrchr (id, '/') + 1;
 	}
@@ -500,11 +504,11 @@ e_book_backend_file_modify_contact (EBookBackendSync *backend,
 
 static void
 e_book_backend_file_get_contact (EBookBackendSync *backend,
-				 EDataBook *book,
-				 GCancellable *cancellable,
-				 const gchar *id,
-				 gchar **vcard,
-				 GError **perror)
+                                 EDataBook *book,
+                                 GCancellable *cancellable,
+                                 const gchar *id,
+                                 gchar **vcard,
+                                 GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 
@@ -521,11 +525,11 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 
 static void
 e_book_backend_file_get_contact_list (EBookBackendSync *backend,
-				      EDataBook *book,
-				      GCancellable *cancellable,
-				      const gchar *query,
-				      GSList **contacts,
-				      GError **perror)
+                                      EDataBook *book,
+                                      GCancellable *cancellable,
+                                      const gchar *query,
+                                      GSList **contacts,
+                                      GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
@@ -643,11 +647,11 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 
 static void
 e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
-					   EDataBook *book,
-					   GCancellable *cancellable,
-					   const gchar *query,
-					   GSList **contacts_uids,
-					   GError **perror)
+                                           EDataBook *book,
+                                           GCancellable *cancellable,
+                                           const gchar *query,
+                                           GSList **contacts_uids,
+                                           GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB             *db = bf->priv->file_db;
@@ -744,8 +748,9 @@ closure_destroy (FileBackendSearchClosure *closure)
 	g_free (closure);
 }
 
-static FileBackendSearchClosure*
-init_closure (EDataBookView *book_view, EBookBackendFile *bf)
+static FileBackendSearchClosure *
+init_closure (EDataBookView *book_view,
+              EBookBackendFile *bf)
 {
 	FileBackendSearchClosure *closure = g_new (FileBackendSearchClosure, 1);
 
@@ -759,7 +764,7 @@ init_closure (EDataBookView *book_view, EBookBackendFile *bf)
 	return closure;
 }
 
-static FileBackendSearchClosure*
+static FileBackendSearchClosure *
 get_closure (EDataBookView *book_view)
 {
 	return g_object_get_data (G_OBJECT (book_view), "EBookBackendFile.BookView::closure");
@@ -767,9 +772,9 @@ get_closure (EDataBookView *book_view)
 
 static void
 notify_update_vcard (EDataBookView *book_view,
-		     gboolean       prefiltered,
-		     const gchar   *id,
-		     gchar         *vcard)
+                     gboolean prefiltered,
+                     const gchar *id,
+                     gchar *vcard)
 {
 	if (prefiltered)
 		e_data_book_view_notify_update_prefiltered_vcard (book_view, id, vcard);
@@ -806,7 +811,7 @@ book_view_thread (gpointer data)
 	d(printf ("starting initial population of book view\n"));
 
 	/* ref the book view because it'll be removed and unrefed
-	   when/if it's stopped */
+	 * when/if it's stopped */
 	e_data_book_view_ref (book_view);
 
 	db                 = bf->priv->file_db;
@@ -919,8 +924,8 @@ book_view_thread (gpointer data)
 }
 
 static void
-e_book_backend_file_start_book_view (EBookBackend  *backend,
-				     EDataBookView *book_view)
+e_book_backend_file_start_book_view (EBookBackend *backend,
+                                     EDataBookView *book_view)
 {
 	FileBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_FILE (backend));
 
@@ -934,8 +939,8 @@ e_book_backend_file_start_book_view (EBookBackend  *backend,
 }
 
 static void
-e_book_backend_file_stop_book_view (EBookBackend  *backend,
-				    EDataBookView *book_view)
+e_book_backend_file_stop_book_view (EBookBackend *backend,
+                                    EDataBookView *book_view)
 {
 	FileBackendSearchClosure *closure = get_closure (book_view);
 	gboolean need_join;
@@ -997,9 +1002,9 @@ e_book_backend_file_extract_path_from_source (ESource *source)
 
 static void
 e_book_backend_file_authenticate_user (EBookBackendSync *backend,
-				       GCancellable *cancellable,
-				       ECredentials *credentials,
-				       GError **perror)
+                                       GCancellable *cancellable,
+                                       ECredentials *credentials,
+                                       GError **perror)
 {
 	/* Success */
 }
@@ -1017,7 +1022,8 @@ e_book_backend_file_authenticate_user (EBookBackendSync *backend,
 **     came about.
 */
 static gboolean
-e_book_backend_file_upgrade_db (EBookBackendFile *bf, gchar *old_version)
+e_book_backend_file_upgrade_db (EBookBackendFile *bf,
+                                gchar *old_version)
 {
 	DB  *db = bf->priv->file_db;
 	gint db_error;
@@ -1037,7 +1043,7 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, gchar *old_version)
 
 	if (!strcmp (old_version, "0.1")) {
 		/* we just loop through all the cards in the db,
-		   giving them valid ids if they don't have them */
+		 * giving them valid ids if they don't have them */
 		DBT  id_dbt, vcard_dbt;
 		DBC *dbc;
 		gint  card_failed = 0;
@@ -1061,11 +1067,11 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf, gchar *old_version)
 				contact = create_contact (id_dbt.data, vcard_dbt.data);
 
 				/* the cards we're looking for are
-				   created with a normal id dbt, but
-				   with the id field in the vcard set
-				   to something that doesn't match.
-				   so, we need to modify the card to
-				   have the same id as the the dbt. */
+				 * created with a normal id dbt, but
+				 * with the id field in the vcard set
+				 * to something that doesn't match.
+				 * so, we need to modify the card to
+				 * have the same id as the the dbt. */
 				if (strcmp (id_dbt.data, e_contact_get_const (contact, E_CONTACT_UID))) {
 					gchar *vcard;
 
@@ -1149,20 +1155,23 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 
 static void
 #if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 3
-file_errcall (const DB_ENV *env, const gchar *buf1, const gchar *buf2)
+file_errcall (const DB_ENV *env,
+              const gchar *buf1,
+              const gchar *buf2)
 #else
-file_errcall (const gchar *buf1, gchar *buf2)
+file_errcall (const gchar *buf1,
+              gchar *buf2)
 #endif
 {
 	g_warning ("libdb error: %s", buf2);
 }
 
 static void
-e_book_backend_file_open (EBookBackendSync       *backend,
-			  EDataBook              *book,
-			  GCancellable		*cancellable,
-			  gboolean               only_if_exists,
-			  GError	       **perror)
+e_book_backend_file_open (EBookBackendSync *backend,
+                          EDataBook *book,
+                          GCancellable *cancellable,
+                          gboolean only_if_exists,
+                          GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	gchar            *dirname, *filename;
@@ -1293,7 +1302,7 @@ e_book_backend_file_open (EBookBackendSync       *backend,
 		if (db_error != 0 && !only_if_exists) {
 
 			/* the database didn't exist, so we create the
-			   directory then the .db */
+			 * directory then the .db */
 			db->close (db, 0);
 
 			if (!create_directory (dirname, perror)) {
@@ -1408,9 +1417,9 @@ select_changes (const gchar *name)
 
 static void
 e_book_backend_file_remove (EBookBackendSync *backend,
-			    EDataBook        *book,
-			    GCancellable *cancellable,
-			    GError          **perror)
+                            EDataBook *book,
+                            GCancellable *cancellable,
+                            GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	GDir *dir;
@@ -1446,14 +1455,19 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 		g_warning ("failed to remove directory `%s`: %s", bf->priv->dirname, g_strerror (errno));
 
 	/* we may not have actually succeeded in removing the
-	   backend's files/dirs, but there's nothing we can do about
-	   it here..  the only time we should return failure is if we
-	   failed to remove the actual data.  a failure should mean
-	   that the addressbook is still valid */
+	 * backend's files/dirs, but there's nothing we can do about
+	 * it here..  the only time we should return failure is if we
+	 * failed to remove the actual data.  a failure should mean
+	 * that the addressbook is still valid */
 }
 
 static gboolean
-e_book_backend_file_get_backend_property (EBookBackendSync *backend, EDataBook *book, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **error)
+e_book_backend_file_get_backend_property (EBookBackendSync *backend,
+                                          EDataBook *book,
+                                          GCancellable *cancellable,
+                                          const gchar *prop_name,
+                                          gchar **prop_value,
+                                          GError **error)
 {
 	gboolean processed = TRUE;
 
@@ -1469,7 +1483,7 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend, EDataBook *
 		gint i;
 
 		/* XXX we need a way to say "we support everything", since the
-		   file backend does */
+		 * file backend does */
 		for (i = 1; i < E_CONTACT_FIELD_LAST; i++)
 			fields = g_slist_append (fields, (gpointer) e_contact_field_name (i));
 
@@ -1485,7 +1499,8 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend, EDataBook *
 }
 
 static void
-e_book_backend_file_set_online (EBookBackend *backend, gboolean is_online)
+e_book_backend_file_set_online (EBookBackend *backend,
+                                gboolean is_online)
 {
 	if (e_book_backend_is_opened (backend))
 		e_book_backend_notify_online (backend, TRUE);
@@ -1512,7 +1527,8 @@ typedef struct {
 } NotifyData;
 
 static gboolean
-view_notify_update (EDataBookView *view, gpointer data)
+view_notify_update (EDataBookView *view,
+                    gpointer data)
 {
 	NotifyData *ndata    = data;
 	GHashTable *fields   = e_data_book_view_get_fields_of_interest (view);
@@ -1547,7 +1563,8 @@ view_notify_update (EDataBookView *view, gpointer data)
 }
 
 static void
-e_book_backend_file_notify_update (EBookBackend *backend, const EContact *contact)
+e_book_backend_file_notify_update (EBookBackend *backend,
+                                   const EContact *contact)
 {
 	NotifyData data = { (EContact *) contact, E_BOOK_BACKEND_FILE (backend) };
 
@@ -1612,7 +1629,9 @@ e_book_backend_file_finalize (GObject *object)
  */
 
 static gint
-my_open (const gchar *name, gint oflag, ...)
+my_open (const gchar *name,
+         gint oflag,
+         ...)
 {
 	gint mode = 0;
 
@@ -1627,13 +1646,15 @@ my_open (const gchar *name, gint oflag, ...)
 }
 
 gint
-my_rename (const gchar *oldname, const gchar *newname)
+my_rename (const gchar *oldname,
+           const gchar *newname)
 {
 	return g_rename (oldname, newname);
 }
 
 gint
-my_exists (const gchar *name, gint *isdirp)
+my_exists (const gchar *name,
+           gint *isdirp)
 {
 	if (!g_file_test (name, G_FILE_TEST_EXISTS))
 		return ENOENT;

@@ -4,7 +4,8 @@
 #include <libecal/e-cal.h>
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECal *ecal;
 	GList *l, *objects;

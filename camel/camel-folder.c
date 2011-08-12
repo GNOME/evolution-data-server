@@ -697,7 +697,7 @@ folder_get_uids (CamelFolder *folder)
 
 static GPtrArray *
 folder_get_uncached_uids (CamelFolder *folder,
-                          GPtrArray * uids,
+                          GPtrArray *uids,
                           GError **error)
 {
 	GPtrArray *result;
@@ -719,7 +719,7 @@ folder_free_uids (CamelFolder *folder,
 {
 	gint i;
 
-	for (i=0; i<array->len; i++)
+	for (i = 0; i < array->len; i++)
 		camel_pstring_free (array->pdata[i]);
 	g_ptr_array_free (array, TRUE);
 }
@@ -912,7 +912,7 @@ folder_transfer_messages_to_sync (CamelFolder *source,
 
 	for (i = 0; i < uids->len && local_error == NULL; i++) {
 		if (transferred_uids)
-			ret_uid = (gchar **)&((*transferred_uids)->pdata[i]);
+			ret_uid = (gchar **) &((*transferred_uids)->pdata[i]);
 		folder_transfer_message_to (
 			source, uids->pdata[i], dest, ret_uid,
 			delete_originals, local_cancellable, &local_error);
@@ -1532,7 +1532,7 @@ folder_changed (CamelFolder *folder,
 		}
 	}
 
-	if ((folder->folder_flags & (CAMEL_FOLDER_FILTER_RECENT|CAMEL_FOLDER_FILTER_JUNK))
+	if ((folder->folder_flags & (CAMEL_FOLDER_FILTER_RECENT | CAMEL_FOLDER_FILTER_JUNK))
 	    && p->uid_filter->len > 0)
 		driver = camel_session_get_filter_driver (session,
 							 (folder->folder_flags & CAMEL_FOLDER_FILTER_RECENT)
@@ -2071,7 +2071,7 @@ camel_folder_set_message_flags (CamelFolder *folder,
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->set_message_flags != NULL, FALSE);
 
-	if ((flags & (CAMEL_MESSAGE_JUNK|CAMEL_MESSAGE_JUNK_LEARN)) == CAMEL_MESSAGE_JUNK) {
+	if ((flags & (CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_JUNK_LEARN)) == CAMEL_MESSAGE_JUNK) {
 		flags |= CAMEL_MESSAGE_JUNK_LEARN;
 		set &= ~CAMEL_MESSAGE_JUNK_LEARN;
 	}
@@ -2725,7 +2725,7 @@ camel_folder_changed (CamelFolder *folder,
 
 	if (camel_folder_is_frozen (folder)) {
 		/* folder_changed() will catch this case and pile
-		   the changes into folder->changed_frozen */
+		 * the changes into folder->changed_frozen */
 		g_signal_emit (folder, signals[CHANGED], 0, changes);
 		return;
 	}
@@ -3963,7 +3963,7 @@ camel_folder_change_info_add_source_list (CamelFolderChangeInfo *info,
 	if (p->uid_source == NULL)
 		p->uid_source = g_hash_table_new (g_str_hash, g_str_equal);
 
-	for (i=0;i<list->len;i++) {
+	for (i = 0; i < list->len; i++) {
 		gchar *uid = list->pdata[i];
 
 		if (g_hash_table_lookup (p->uid_source, uid) == NULL)
@@ -4019,12 +4019,14 @@ camel_folder_change_info_add_update_list (CamelFolderChangeInfo *info,
 	g_return_if_fail (info != NULL);
 	g_return_if_fail (list != NULL);
 
-	for (i=0;i<list->len;i++)
+	for (i = 0; i < list->len; i++)
 		camel_folder_change_info_add_update (info, list->pdata[i]);
 }
 
 static void
-change_info_remove (gchar *key, gpointer value, CamelFolderChangeInfo *info)
+change_info_remove (gchar *key,
+                    gpointer value,
+                    CamelFolderChangeInfo *info)
 {
 	struct _CamelFolderChangeInfoPrivate *p = info->priv;
 	GPtrArray *olduids;
@@ -4069,7 +4071,8 @@ camel_folder_change_info_build_diff (CamelFolderChangeInfo *info)
 }
 
 static void
-change_info_recent_uid (CamelFolderChangeInfo *info, const gchar *uid)
+change_info_recent_uid (CamelFolderChangeInfo *info,
+                        const gchar *uid)
 {
 	struct _CamelFolderChangeInfoPrivate *p;
 	GPtrArray *olduids;
@@ -4078,14 +4081,15 @@ change_info_recent_uid (CamelFolderChangeInfo *info, const gchar *uid)
 	p = info->priv;
 
 	/* always add to recent, but dont let anyone else know */
-	if (!g_hash_table_lookup_extended (p->uid_stored, uid, (gpointer *)&olduid, (gpointer *)&olduids)) {
+	if (!g_hash_table_lookup_extended (p->uid_stored, uid, (gpointer *) &olduid, (gpointer *) &olduids)) {
 		olduid = camel_mempool_strdup (p->uid_pool, uid);
 	}
 	g_ptr_array_add (info->uid_recent, olduid);
 }
 
 static void
-change_info_filter_uid (CamelFolderChangeInfo *info, const gchar *uid)
+change_info_filter_uid (CamelFolderChangeInfo *info,
+                        const gchar *uid)
 {
 	struct _CamelFolderChangeInfoPrivate *p;
 	GPtrArray *olduids;
@@ -4094,18 +4098,21 @@ change_info_filter_uid (CamelFolderChangeInfo *info, const gchar *uid)
 	p = info->priv;
 
 	/* always add to filter, but dont let anyone else know */
-	if (!g_hash_table_lookup_extended (p->uid_stored, uid, (gpointer *)&olduid, (gpointer *)&olduids)) {
+	if (!g_hash_table_lookup_extended (p->uid_stored, uid, (gpointer *) &olduid, (gpointer *) &olduids)) {
 		olduid = camel_mempool_strdup (p->uid_pool, uid);
 	}
 	g_ptr_array_add (p->uid_filter, olduid);
 }
 
 static void
-change_info_cat (CamelFolderChangeInfo *info, GPtrArray *source, void (*add)(CamelFolderChangeInfo *info, const gchar *uid))
+change_info_cat (CamelFolderChangeInfo *info,
+                 GPtrArray *source,
+                 void (*add)(CamelFolderChangeInfo *info,
+                 const gchar *uid))
 {
 	gint i;
 
-	for (i=0;i<source->len;i++)
+	for (i = 0; i < source->len; i++)
 		add (info, source->pdata[i]);
 }
 

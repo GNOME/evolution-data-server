@@ -32,7 +32,7 @@ worker (gpointer d)
 	CamelService *service;
 	CamelFolder *folder;
 
-	for (i=0;i<MAX_LOOP;i++) {
+	for (i = 0; i < MAX_LOOP; i++) {
 		gchar *uid;
 
 		uid = g_strdup_printf ("test-uid-%d", i);
@@ -59,7 +59,8 @@ worker (gpointer d)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gint i, j;
 	GThread *threads[MAX_THREADS];
@@ -72,7 +73,7 @@ main (gint argc, gchar **argv)
 
 	session = camel_test_session_new ("/tmp/camel-test");
 
-	for (testid=0;testid<2;testid++) {
+	for (testid = 0; testid < 2; testid++) {
 		if (testid == 0)
 			camel_test_start ("store and folder bag torture test, stacked references");
 		else

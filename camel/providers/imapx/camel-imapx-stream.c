@@ -62,9 +62,9 @@ imapx_stream_fill (CamelIMAPXStream *is,
 		} else {
 			io(is->tagprefix, "camel_imapx_read: -1\n");
 			/* If returning zero, camel_stream_read() doesn't consider
-			   that to be an error. But we do -- we should only be here
-			   if we *know* there are data to receive. So set the error
-			   accordingly */
+			 * that to be an error. But we do -- we should only be here
+			 * if we *know* there are data to receive. So set the error
+			 * accordingly */
 			if (!left)
 				g_set_error (error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 					    _("Source stream returned no data"));
@@ -279,7 +279,9 @@ camel_imapx_stream_buffered (CamelIMAPXStream *is)
 #if 0
 
 static gint
-skip_ws (CamelIMAPXStream *is, guchar *pp, guchar *pe)
+skip_ws (CamelIMAPXStream *is,
+         guchar *pp,
+         guchar *pe)
 {
 	register guchar c, *p;
 	guchar *e;
@@ -306,7 +308,7 @@ skip_ws (CamelIMAPXStream *is, guchar *pp, guchar *pe)
 #endif
 
 /* FIXME: these should probably handle it themselves,
-   and get rid of the token interface? */
+ * and get rid of the token interface? */
 gint
 camel_imapx_stream_atom (CamelIMAPXStream *is,
                          guchar **data,
@@ -603,7 +605,7 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 		while (1) {
 			while (p < e) {
 				c = *p++;
-				if (isdigit (c) && literal < (UINT_MAX/10)) {
+				if (isdigit (c) && literal < (UINT_MAX / 10)) {
 					literal = literal * 10 + (c - '0');
 				} else if (c == '}') {
 					while (1) {
@@ -691,12 +693,12 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 					if (c == ' ' || c == '\r')
 						is->ptr = p;
 					else
-						is->ptr = p-1;
+						is->ptr = p - 1;
 					*o = 0;
 					*data = is->tokenbuf;
 					*len = o - is->tokenbuf;
 					t(is->tagprefix, "token TOKEN '%s'\n", is->tokenbuf);
-					return digits?IMAPX_TOK_INT:IMAPX_TOK_TOKEN;
+					return digits ? IMAPX_TOK_INT : IMAPX_TOK_TOKEN;
 				}
 
 				if (o >= oe) {
@@ -720,7 +722,7 @@ protocol_error:
 	io(is->tagprefix, "Got protocol error\n");
 
 	if (c == '\n')
-		is->ptr = p-1;
+		is->ptr = p - 1;
 	else
 		is->ptr = p;
 
@@ -729,7 +731,10 @@ protocol_error:
 }
 
 void
-camel_imapx_stream_ungettoken (CamelIMAPXStream *is, camel_imapx_token_t tok, guchar *token, guint len)
+camel_imapx_stream_ungettoken (CamelIMAPXStream *is,
+                               camel_imapx_token_t tok,
+                               guchar *token,
+                               guint len)
 {
 	/*printf("ungettoken: '%c' '%s'\n", tok, token);*/
 	is->unget_tok = tok;
@@ -766,7 +771,7 @@ camel_imapx_stream_gets (CamelIMAPXStream *is,
 	*len = max;
 	is->ptr += max;
 
-	return end == NULL?1:0;
+	return end == NULL ? 1 : 0;
 }
 
 void camel_imapx_stream_set_literal (CamelIMAPXStream *is, guint literal)

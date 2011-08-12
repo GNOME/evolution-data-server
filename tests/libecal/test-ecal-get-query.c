@@ -42,7 +42,9 @@ subtest_passed (SubTestId id)
 }
 
 static void
-objects_added_cb (GObject *object, GList *objects, gpointer data)
+objects_added_cb (GObject *object,
+                  GList *objects,
+                  gpointer data)
 {
 	GList *l;
 
@@ -53,7 +55,9 @@ objects_added_cb (GObject *object, GList *objects, gpointer data)
 }
 
 static void
-objects_modified_cb (GObject *object, GList *objects, gpointer data)
+objects_modified_cb (GObject *object,
+                     GList *objects,
+                     gpointer data)
 {
 	GList *l;
 
@@ -64,7 +68,9 @@ objects_modified_cb (GObject *object, GList *objects, gpointer data)
 }
 
 static void
-objects_removed_cb (GObject *object, GList *objects, gpointer data)
+objects_removed_cb (GObject *object,
+                    GList *objects,
+                    gpointer data)
 {
 	GList *l;
 
@@ -79,7 +85,10 @@ objects_removed_cb (GObject *object, GList *objects, gpointer data)
 }
 
 static void
-view_complete_cb (GObject *object, ECalendarStatus status, const gchar *error_msg, gpointer data)
+view_complete_cb (GObject *object,
+                  ECalendarStatus status,
+                  const gchar *error_msg,
+                  gpointer data)
 {
         test_print ("View complete (status: %d, error_msg:%s\n", status, error_msg ? error_msg : "NULL");
 
@@ -146,7 +155,8 @@ alter_cal_cb (ECal *cal)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECal *cal;
 	gchar *uri = NULL;

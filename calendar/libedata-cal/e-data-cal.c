@@ -158,7 +158,9 @@ construct_calview_path (void)
 }
 
 static void
-cancel_ops_cb (gpointer opid, gpointer cancellable, gpointer user_data)
+cancel_ops_cb (gpointer opid,
+               gpointer cancellable,
+               gpointer user_data)
 {
 	g_return_if_fail (cancellable != NULL);
 
@@ -166,7 +168,8 @@ cancel_ops_cb (gpointer opid, gpointer cancellable, gpointer user_data)
 }
 
 static void
-operation_thread (gpointer data, gpointer user_data)
+operation_thread (gpointer data,
+                  gpointer user_data)
 {
 	OperationData *op = data;
 	ECalBackend *backend;
@@ -246,8 +249,8 @@ operation_thread (gpointer data, gpointer user_data)
 			GError *error = NULL;
 
 			/* we handle this entirely here, since it doesn't require any
-			   backend involvement now that we have e_cal_view_start to
-			   actually kick off the search. */
+			 * backend involvement now that we have e_cal_view_start to
+			 * actually kick off the search. */
 
 			obj_sexp = e_cal_backend_sexp_new (op->d.sexp);
 			if (!obj_sexp) {
@@ -324,7 +327,8 @@ operation_thread (gpointer data, gpointer user_data)
 }
 
 static OperationData *
-op_new (OperationID op, EDataCal *cal)
+op_new (OperationID op,
+        EDataCal *cal)
 {
 	OperationData *data;
 
@@ -342,7 +346,8 @@ op_new (OperationID op, EDataCal *cal)
 }
 
 static void
-op_complete (EDataCal *cal, guint32 opid)
+op_complete (EDataCal *cal,
+             guint32 opid)
 {
 	g_return_if_fail (cal != NULL);
 
@@ -455,7 +460,8 @@ e_data_cal_status_to_string (EDataCalCallStatus status)
  * Since: 2.32
  **/
 GError *
-e_data_cal_create_error (EDataCalCallStatus status, const gchar *custom_msg)
+e_data_cal_create_error (EDataCalCallStatus status,
+                         const gchar *custom_msg)
 {
 	if (status == Success)
 		return NULL;
@@ -469,7 +475,9 @@ e_data_cal_create_error (EDataCalCallStatus status, const gchar *custom_msg)
  * Since: 2.32
  **/
 GError *
-e_data_cal_create_error_fmt (EDataCalCallStatus status, const gchar *custom_msg_fmt, ...)
+e_data_cal_create_error_fmt (EDataCalCallStatus status,
+                             const gchar *custom_msg_fmt,
+                             ...)
 {
 	GError *error;
 	gchar *custom_msg;
@@ -490,7 +498,9 @@ e_data_cal_create_error_fmt (EDataCalCallStatus status, const gchar *custom_msg_
 }
 
 static void
-data_cal_return_error (GDBusMethodInvocation *invocation, const GError *perror, const gchar *error_fmt)
+data_cal_return_error (GDBusMethodInvocation *invocation,
+                       const GError *perror,
+                       const gchar *error_fmt)
 {
 	GError *error;
 
@@ -504,7 +514,8 @@ data_cal_return_error (GDBusMethodInvocation *invocation, const GError *perror, 
 }
 
 EDataCal *
-e_data_cal_new (ECalBackend *backend, ESource *source)
+e_data_cal_new (ECalBackend *backend,
+                ESource *source)
 {
 	EDataCal *cal;
 
@@ -525,13 +536,13 @@ e_data_cal_new (ECalBackend *backend, ESource *source)
  *
  * Since: 2.30
  **/
-ESource*
+ESource *
 e_data_cal_get_source (EDataCal *cal)
 {
 	return cal->priv->source;
 }
 
-ECalBackend*
+ECalBackend *
 e_data_cal_get_backend (EDataCal *cal)
 {
 	return cal->priv->backend;
@@ -545,7 +556,10 @@ e_data_cal_get_backend (EDataCal *cal)
  * Since: 2.32
  **/
 guint
-e_data_cal_register_gdbus_object (EDataCal *cal, GDBusConnection *connection, const gchar *object_path, GError **error)
+e_data_cal_register_gdbus_object (EDataCal *cal,
+                                  GDBusConnection *connection,
+                                  const gchar *object_path,
+                                  GError **error)
 {
 	g_return_val_if_fail (cal != NULL, 0);
 	g_return_val_if_fail (E_IS_DATA_CAL (cal), 0);
@@ -556,7 +570,10 @@ e_data_cal_register_gdbus_object (EDataCal *cal, GDBusConnection *connection, co
 }
 
 static gboolean
-impl_Cal_open (EGdbusCal *object, GDBusMethodInvocation *invocation, gboolean in_only_if_exists, EDataCal *cal)
+impl_Cal_open (EGdbusCal *object,
+               GDBusMethodInvocation *invocation,
+               gboolean in_only_if_exists,
+               EDataCal *cal)
 {
 	OperationData *op;
 
@@ -570,7 +587,9 @@ impl_Cal_open (EGdbusCal *object, GDBusMethodInvocation *invocation, gboolean in
 }
 
 static gboolean
-impl_Cal_remove (EGdbusCal *object, GDBusMethodInvocation *invocation, EDataCal *cal)
+impl_Cal_remove (EGdbusCal *object,
+                 GDBusMethodInvocation *invocation,
+                 EDataCal *cal)
 {
 	OperationData *op;
 
@@ -583,7 +602,9 @@ impl_Cal_remove (EGdbusCal *object, GDBusMethodInvocation *invocation, EDataCal 
 }
 
 static gboolean
-impl_Cal_refresh (EGdbusCal *object, GDBusMethodInvocation *invocation, EDataCal *cal)
+impl_Cal_refresh (EGdbusCal *object,
+                  GDBusMethodInvocation *invocation,
+                  EDataCal *cal)
 {
 	OperationData *op;
 
@@ -596,7 +617,10 @@ impl_Cal_refresh (EGdbusCal *object, GDBusMethodInvocation *invocation, EDataCal
 }
 
 static gboolean
-impl_Cal_get_backend_property (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *in_prop_name, EDataCal *cal)
+impl_Cal_get_backend_property (EGdbusCal *object,
+                               GDBusMethodInvocation *invocation,
+                               const gchar *in_prop_name,
+                               EDataCal *cal)
 {
 	OperationData *op;
 
@@ -610,7 +634,10 @@ impl_Cal_get_backend_property (EGdbusCal *object, GDBusMethodInvocation *invocat
 }
 
 static gboolean
-impl_Cal_set_backend_property (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_prop_name_value, EDataCal *cal)
+impl_Cal_set_backend_property (EGdbusCal *object,
+                               GDBusMethodInvocation *invocation,
+                               const gchar * const *in_prop_name_value,
+                               EDataCal *cal)
 {
 	OperationData *op;
 
@@ -624,7 +651,10 @@ impl_Cal_set_backend_property (EGdbusCal *object, GDBusMethodInvocation *invocat
 }
 
 static gboolean
-impl_Cal_get_object (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_uid_rid, EDataCal *cal)
+impl_Cal_get_object (EGdbusCal *object,
+                     GDBusMethodInvocation *invocation,
+                     const gchar * const *in_uid_rid,
+                     EDataCal *cal)
 {
 	OperationData *op;
 
@@ -638,7 +668,10 @@ impl_Cal_get_object (EGdbusCal *object, GDBusMethodInvocation *invocation, const
 }
 
 static gboolean
-impl_Cal_get_object_list (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *in_sexp, EDataCal *cal)
+impl_Cal_get_object_list (EGdbusCal *object,
+                          GDBusMethodInvocation *invocation,
+                          const gchar *in_sexp,
+                          EDataCal *cal)
 {
 	OperationData *op;
 
@@ -652,7 +685,10 @@ impl_Cal_get_object_list (EGdbusCal *object, GDBusMethodInvocation *invocation, 
 }
 
 static gboolean
-impl_Cal_get_free_busy (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_start_end_userlist, EDataCal *cal)
+impl_Cal_get_free_busy (EGdbusCal *object,
+                        GDBusMethodInvocation *invocation,
+                        const gchar * const *in_start_end_userlist,
+                        EDataCal *cal)
 {
 	OperationData *op;
 	guint start, end;
@@ -670,7 +706,10 @@ impl_Cal_get_free_busy (EGdbusCal *object, GDBusMethodInvocation *invocation, co
 }
 
 static gboolean
-impl_Cal_create_object (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *in_calobj, EDataCal *cal)
+impl_Cal_create_object (EGdbusCal *object,
+                        GDBusMethodInvocation *invocation,
+                        const gchar *in_calobj,
+                        EDataCal *cal)
 {
 	OperationData *op;
 
@@ -684,7 +723,10 @@ impl_Cal_create_object (EGdbusCal *object, GDBusMethodInvocation *invocation, co
 }
 
 static gboolean
-impl_Cal_modify_object (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_calobj_mod, EDataCal *cal)
+impl_Cal_modify_object (EGdbusCal *object,
+                        GDBusMethodInvocation *invocation,
+                        const gchar * const *in_calobj_mod,
+                        EDataCal *cal)
 {
 	OperationData *op;
 	guint mod;
@@ -700,7 +742,10 @@ impl_Cal_modify_object (EGdbusCal *object, GDBusMethodInvocation *invocation, co
 }
 
 static gboolean
-impl_Cal_remove_object (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_uid_rid_mod, EDataCal *cal)
+impl_Cal_remove_object (EGdbusCal *object,
+                        GDBusMethodInvocation *invocation,
+                        const gchar * const *in_uid_rid_mod,
+                        EDataCal *cal)
 {
 	OperationData *op;
 	guint mod = 0;
@@ -716,7 +761,10 @@ impl_Cal_remove_object (EGdbusCal *object, GDBusMethodInvocation *invocation, co
 }
 
 static gboolean
-impl_Cal_receive_objects (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *in_calobj, EDataCal *cal)
+impl_Cal_receive_objects (EGdbusCal *object,
+                          GDBusMethodInvocation *invocation,
+                          const gchar *in_calobj,
+                          EDataCal *cal)
 {
 	OperationData *op;
 
@@ -730,7 +778,10 @@ impl_Cal_receive_objects (EGdbusCal *object, GDBusMethodInvocation *invocation, 
 }
 
 static gboolean
-impl_Cal_send_objects (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *in_calobj, EDataCal *cal)
+impl_Cal_send_objects (EGdbusCal *object,
+                       GDBusMethodInvocation *invocation,
+                       const gchar *in_calobj,
+                       EDataCal *cal)
 {
 	OperationData *op;
 
@@ -744,7 +795,10 @@ impl_Cal_send_objects (EGdbusCal *object, GDBusMethodInvocation *invocation, con
 }
 
 static gboolean
-impl_Cal_get_attachment_uris (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_uid_rid, EDataCal *cal)
+impl_Cal_get_attachment_uris (EGdbusCal *object,
+                              GDBusMethodInvocation *invocation,
+                              const gchar * const *in_uid_rid,
+                              EDataCal *cal)
 {
 	OperationData *op;
 
@@ -758,7 +812,10 @@ impl_Cal_get_attachment_uris (EGdbusCal *object, GDBusMethodInvocation *invocati
 }
 
 static gboolean
-impl_Cal_discard_alarm (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_uid_rid_auid, EDataCal *cal)
+impl_Cal_discard_alarm (EGdbusCal *object,
+                        GDBusMethodInvocation *invocation,
+                        const gchar * const *in_uid_rid_auid,
+                        EDataCal *cal)
 {
 	OperationData *op;
 
@@ -772,7 +829,10 @@ impl_Cal_discard_alarm (EGdbusCal *object, GDBusMethodInvocation *invocation, co
 }
 
 static gboolean
-impl_Cal_get_view (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *in_sexp, EDataCal *cal)
+impl_Cal_get_view (EGdbusCal *object,
+                   GDBusMethodInvocation *invocation,
+                   const gchar *in_sexp,
+                   EDataCal *cal)
 {
 	OperationData *op;
 
@@ -786,7 +846,10 @@ impl_Cal_get_view (EGdbusCal *object, GDBusMethodInvocation *invocation, const g
 }
 
 static gboolean
-impl_Cal_get_timezone (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *in_tzid, EDataCal *cal)
+impl_Cal_get_timezone (EGdbusCal *object,
+                       GDBusMethodInvocation *invocation,
+                       const gchar *in_tzid,
+                       EDataCal *cal)
 {
 	OperationData *op;
 
@@ -800,7 +863,10 @@ impl_Cal_get_timezone (EGdbusCal *object, GDBusMethodInvocation *invocation, con
 }
 
 static gboolean
-impl_Cal_add_timezone (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *in_tzobject, EDataCal *cal)
+impl_Cal_add_timezone (EGdbusCal *object,
+                       GDBusMethodInvocation *invocation,
+                       const gchar *in_tzobject,
+                       EDataCal *cal)
 {
 	OperationData *op;
 
@@ -814,7 +880,10 @@ impl_Cal_add_timezone (EGdbusCal *object, GDBusMethodInvocation *invocation, con
 }
 
 static gboolean
-impl_Cal_authenticate_user (EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_credentials, EDataCal *cal)
+impl_Cal_authenticate_user (EGdbusCal *object,
+                            GDBusMethodInvocation *invocation,
+                            const gchar * const *in_credentials,
+                            EDataCal *cal)
 {
 	OperationData *op;
 
@@ -836,7 +905,10 @@ impl_Cal_authenticate_user (EGdbusCal *object, GDBusMethodInvocation *invocation
 }
 
 static gboolean
-impl_Cal_cancel_operation (EGdbusCal *object, GDBusMethodInvocation *invocation, guint in_opid, EDataCal *cal)
+impl_Cal_cancel_operation (EGdbusCal *object,
+                           GDBusMethodInvocation *invocation,
+                           guint in_opid,
+                           EDataCal *cal)
 {
 	OperationData *op;
 
@@ -850,7 +922,9 @@ impl_Cal_cancel_operation (EGdbusCal *object, GDBusMethodInvocation *invocation,
 }
 
 static gboolean
-impl_Cal_cancel_all (EGdbusCal *object, GDBusMethodInvocation *invocation, EDataCal *cal)
+impl_Cal_cancel_all (EGdbusCal *object,
+                     GDBusMethodInvocation *invocation,
+                     EDataCal *cal)
 {
 	OperationData *op;
 
@@ -863,7 +937,9 @@ impl_Cal_cancel_all (EGdbusCal *object, GDBusMethodInvocation *invocation, EData
 }
 
 static gboolean
-impl_Cal_close (EGdbusCal *object, GDBusMethodInvocation *invocation, EDataCal *cal)
+impl_Cal_close (EGdbusCal *object,
+                GDBusMethodInvocation *invocation,
+                EDataCal *cal)
 {
 	OperationData *op;
 
@@ -901,7 +977,9 @@ gslist_to_strv (const GSList *lst)
  * Notifies listeners of the completion of the open method call.
  */
 void
-e_data_cal_respond_open (EDataCal *cal, guint32 opid, GError *error)
+e_data_cal_respond_open (EDataCal *cal,
+                         guint32 opid,
+                         GError *error)
 {
 	op_complete (cal, opid);
 
@@ -922,7 +1000,9 @@ e_data_cal_respond_open (EDataCal *cal, guint32 opid, GError *error)
  * Notifies listeners of the completion of the remove method call.
  */
 void
-e_data_cal_respond_remove (EDataCal *cal, guint32 opid, GError *error)
+e_data_cal_respond_remove (EDataCal *cal,
+                           guint32 opid,
+                           GError *error)
 {
 	op_complete (cal, opid);
 
@@ -947,7 +1027,9 @@ e_data_cal_respond_remove (EDataCal *cal, guint32 opid, GError *error)
  * Since: 2.30
  */
 void
-e_data_cal_respond_refresh (EDataCal *cal, guint32 opid, GError *error)
+e_data_cal_respond_refresh (EDataCal *cal,
+                            guint32 opid,
+                            GError *error)
 {
 	op_complete (cal, opid);
 
@@ -969,7 +1051,10 @@ e_data_cal_respond_refresh (EDataCal *cal, guint32 opid, GError *error)
  * Notifies listeners of the completion of the get_backend_property method call.
  */
 void
-e_data_cal_respond_get_backend_property (EDataCal *cal, guint32 opid, GError *error, const gchar *prop_value)
+e_data_cal_respond_get_backend_property (EDataCal *cal,
+                                         guint32 opid,
+                                         GError *error,
+                                         const gchar *prop_value)
 {
 	gchar *gdbus_prop_value = NULL;
 
@@ -993,7 +1078,9 @@ e_data_cal_respond_get_backend_property (EDataCal *cal, guint32 opid, GError *er
  * Notifies listeners of the completion of the set_backend_property method call.
  */
 void
-e_data_cal_respond_set_backend_property (EDataCal *cal, guint32 opid, GError *error)
+e_data_cal_respond_set_backend_property (EDataCal *cal,
+                                         guint32 opid,
+                                         GError *error)
 {
 	op_complete (cal, opid);
 
@@ -1015,7 +1102,10 @@ e_data_cal_respond_set_backend_property (EDataCal *cal, guint32 opid, GError *er
  * Notifies listeners of the completion of the get_object method call.
  */
 void
-e_data_cal_respond_get_object (EDataCal *cal, guint32 opid, GError *error, const gchar *object)
+e_data_cal_respond_get_object (EDataCal *cal,
+                               guint32 opid,
+                               GError *error,
+                               const gchar *object)
 {
 	gchar *gdbus_object = NULL;
 
@@ -1040,7 +1130,10 @@ e_data_cal_respond_get_object (EDataCal *cal, guint32 opid, GError *error, const
  * Notifies listeners of the completion of the get_object_list method call.
  */
 void
-e_data_cal_respond_get_object_list (EDataCal *cal, guint32 opid, GError *error, const GSList *objects)
+e_data_cal_respond_get_object_list (EDataCal *cal,
+                                    guint32 opid,
+                                    GError *error,
+                                    const GSList *objects)
 {
 	gchar **strv_objects;
 
@@ -1067,7 +1160,9 @@ e_data_cal_respond_get_object_list (EDataCal *cal, guint32 opid, GError *error, 
  * To pass actual free/busy objects to the client use e_data_cal_report_free_busy_data().
  */
 void
-e_data_cal_respond_get_free_busy (EDataCal *cal, guint32 opid, GError *error)
+e_data_cal_respond_get_free_busy (EDataCal *cal,
+                                  guint32 opid,
+                                  GError *error)
 {
 	op_complete (cal, opid);
 
@@ -1090,8 +1185,11 @@ e_data_cal_respond_get_free_busy (EDataCal *cal, guint32 opid, GError *error)
  * Notifies listeners of the completion of the create_object method call.
  */
 void
-e_data_cal_respond_create_object (EDataCal *cal, guint32 opid, GError *error,
-				  const gchar *uid, const gchar *object)
+e_data_cal_respond_create_object (EDataCal *cal,
+                                  guint32 opid,
+                                  GError *error,
+                                  const gchar *uid,
+                                  const gchar *object)
 {
 	gchar *gdbus_uid = NULL;
 
@@ -1119,8 +1217,11 @@ e_data_cal_respond_create_object (EDataCal *cal, guint32 opid, GError *error,
  * Notifies listeners of the completion of the modify_object method call.
  */
 void
-e_data_cal_respond_modify_object (EDataCal *cal, guint32 opid, GError *error,
-				  const gchar *old_object, const gchar *object)
+e_data_cal_respond_modify_object (EDataCal *cal,
+                                  guint32 opid,
+                                  GError *error,
+                                  const gchar *old_object,
+                                  const gchar *object)
 {
 	op_complete (cal, opid);
 
@@ -1147,8 +1248,12 @@ e_data_cal_respond_modify_object (EDataCal *cal, guint32 opid, GError *error,
  * Notifies listeners of the completion of the remove_object method call.
  */
 void
-e_data_cal_respond_remove_object (EDataCal *cal, guint32 opid, GError *error,
-				  const ECalComponentId *id, const gchar *old_object, const gchar *object)
+e_data_cal_respond_remove_object (EDataCal *cal,
+                                  guint32 opid,
+                                  GError *error,
+                                  const ECalComponentId *id,
+                                  const gchar *old_object,
+                                  const gchar *object)
 {
 	op_complete (cal, opid);
 
@@ -1171,7 +1276,9 @@ e_data_cal_respond_remove_object (EDataCal *cal, guint32 opid, GError *error,
  * Notifies listeners of the completion of the receive_objects method call.
  */
 void
-e_data_cal_respond_receive_objects (EDataCal *cal, guint32 opid, GError *error)
+e_data_cal_respond_receive_objects (EDataCal *cal,
+                                    guint32 opid,
+                                    GError *error)
 {
 	op_complete (cal, opid);
 
@@ -1194,7 +1301,11 @@ e_data_cal_respond_receive_objects (EDataCal *cal, guint32 opid, GError *error)
  * Notifies listeners of the completion of the send_objects method call.
  */
 void
-e_data_cal_respond_send_objects (EDataCal *cal, guint32 opid, GError *error, const GSList *users, const gchar *calobj)
+e_data_cal_respond_send_objects (EDataCal *cal,
+                                 guint32 opid,
+                                 GError *error,
+                                 const GSList *users,
+                                 const gchar *calobj)
 {
 	gchar **strv_users_calobj;
 
@@ -1221,7 +1332,10 @@ e_data_cal_respond_send_objects (EDataCal *cal, guint32 opid, GError *error, con
  * Notifies listeners of the completion of the get_attachment_uris method call.
  **/
 void
-e_data_cal_respond_get_attachment_uris (EDataCal *cal, guint32 opid, GError *error, const GSList *attachment_uris)
+e_data_cal_respond_get_attachment_uris (EDataCal *cal,
+                                        guint32 opid,
+                                        GError *error,
+                                        const GSList *attachment_uris)
 {
 	gchar **strv_attachment_uris;
 
@@ -1247,7 +1361,9 @@ e_data_cal_respond_get_attachment_uris (EDataCal *cal, guint32 opid, GError *err
  * Notifies listeners of the completion of the discard_alarm method call.
  **/
 void
-e_data_cal_respond_discard_alarm (EDataCal *cal, guint32 opid, GError *error)
+e_data_cal_respond_discard_alarm (EDataCal *cal,
+                                  guint32 opid,
+                                  GError *error)
 {
 	op_complete (cal, opid);
 
@@ -1269,7 +1385,10 @@ e_data_cal_respond_discard_alarm (EDataCal *cal, guint32 opid, GError *error)
  * Notifies listeners of the completion of the get_view method call.
  */
 void
-e_data_cal_respond_get_view (EDataCal *cal, guint32 opid, GError *error, const gchar *view_path)
+e_data_cal_respond_get_view (EDataCal *cal,
+                             guint32 opid,
+                             GError *error,
+                             const gchar *view_path)
 {
 	gchar *gdbus_view_path = NULL;
 
@@ -1294,7 +1413,10 @@ e_data_cal_respond_get_view (EDataCal *cal, guint32 opid, GError *error, const g
  * Notifies listeners of the completion of the get_timezone method call.
  */
 void
-e_data_cal_respond_get_timezone (EDataCal *cal, guint32 opid, GError *error, const gchar *tzobject)
+e_data_cal_respond_get_timezone (EDataCal *cal,
+                                 guint32 opid,
+                                 GError *error,
+                                 const gchar *tzobject)
 {
 	gchar *gdbus_tzobject = NULL;
 
@@ -1318,7 +1440,9 @@ e_data_cal_respond_get_timezone (EDataCal *cal, guint32 opid, GError *error, con
  * Notifies listeners of the completion of the add_timezone method call.
  */
 void
-e_data_cal_respond_add_timezone (EDataCal *cal, guint32 opid, GError *error)
+e_data_cal_respond_add_timezone (EDataCal *cal,
+                                 guint32 opid,
+                                 GError *error)
 {
 	op_complete (cal, opid);
 
@@ -1332,7 +1456,8 @@ e_data_cal_respond_add_timezone (EDataCal *cal, guint32 opid, GError *error)
 }
 
 void
-e_data_cal_report_error (EDataCal *cal, const gchar *message)
+e_data_cal_report_error (EDataCal *cal,
+                         const gchar *message)
 {
 	g_return_if_fail (cal != NULL);
 	g_return_if_fail (message != NULL);
@@ -1341,7 +1466,8 @@ e_data_cal_report_error (EDataCal *cal, const gchar *message)
 }
 
 void
-e_data_cal_report_readonly (EDataCal *cal, gboolean readonly)
+e_data_cal_report_readonly (EDataCal *cal,
+                            gboolean readonly)
 {
 	g_return_if_fail (cal != NULL);
 
@@ -1349,7 +1475,8 @@ e_data_cal_report_readonly (EDataCal *cal, gboolean readonly)
 }
 
 void
-e_data_cal_report_online (EDataCal *cal, gboolean is_online)
+e_data_cal_report_online (EDataCal *cal,
+                          gboolean is_online)
 {
 	g_return_if_fail (cal != NULL);
 
@@ -1357,10 +1484,11 @@ e_data_cal_report_online (EDataCal *cal, gboolean is_online)
 }
 
 /* credentilas contains extra information for a source for which authentication is requested.
-   This parameter can be NULL to indicate "for this calendar".
+ * This parameter can be NULL to indicate "for this calendar".
 */
 void
-e_data_cal_report_auth_required (EDataCal *cal, const ECredentials *credentials)
+e_data_cal_report_auth_required (EDataCal *cal,
+                                 const ECredentials *credentials)
 {
 	gchar *empty_strv[2];
 	gchar **strv = NULL;
@@ -1379,12 +1507,13 @@ e_data_cal_report_auth_required (EDataCal *cal, const ECredentials *credentials)
 }
 
 /* Reports to associated client that opening phase of the cal is finished.
-   error being NULL means successfully, otherwise reports an error which happened
-   during opening phase. By opening phase is meant a process including successfull
-   authentication to the server/storage.
-*/
+ * error being NULL means successfully, otherwise reports an error which happened
+ * during opening phase. By opening phase is meant a process including successfull
+ * authentication to the server/storage.
+ */
 void
-e_data_cal_report_opened (EDataCal *cal, const GError *error)
+e_data_cal_report_opened (EDataCal *cal,
+                          const GError *error)
 {
 	gchar **strv_error;
 
@@ -1396,7 +1525,8 @@ e_data_cal_report_opened (EDataCal *cal, const GError *error)
 }
 
 void
-e_data_cal_report_free_busy_data (EDataCal *cal, const GSList *freebusy)
+e_data_cal_report_free_busy_data (EDataCal *cal,
+                                  const GSList *freebusy)
 {
 	gchar **strv_freebusy;
 
@@ -1411,7 +1541,9 @@ e_data_cal_report_free_busy_data (EDataCal *cal, const GSList *freebusy)
 
 /* Notifies client about certain property value change */
 void
-e_data_cal_report_backend_property_changed (EDataCal *cal, const gchar *prop_name, const gchar *prop_value)
+e_data_cal_report_backend_property_changed (EDataCal *cal,
+                                            const gchar *prop_name,
+                                            const gchar *prop_value)
 {
 	gchar **strv;
 

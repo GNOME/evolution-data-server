@@ -1,8 +1,8 @@
 /*
-  test-html.c
-
-  Test the CamelMimeFilterToHTML class
-*/
+ * test - html.c
+ *
+ * Test the CamelMimeFilterToHTML class
+ */
 
 #include <sys/stat.h>
 #include <unistd.h>
@@ -19,7 +19,9 @@
 #define CHUNK_SIZE 4096
 
 static void
-test_filter (CamelMimeFilter *f, const gchar *inname, const gchar *outname)
+test_filter (CamelMimeFilter *f,
+             const gchar *inname,
+             const gchar *outname)
 {
 	CamelStream *in, *out;
 	CamelStream *indisk, *outdisk, *filter;
@@ -101,7 +103,8 @@ test_filter (CamelMimeFilter *f, const gchar *inname, const gchar *outname)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gint i;
 
@@ -109,7 +112,7 @@ main (gint argc, gchar **argv)
 
 	camel_test_start("HTML Stream filtering");
 
-	for (i=0;i<100;i++) {
+	for (i = 0; i < 100; i++) {
 		gchar inname[32], outname[32];
 		CamelMimeFilter *f;
 		struct stat st;

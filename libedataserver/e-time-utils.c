@@ -169,22 +169,22 @@ translate_picture (const gchar *picture)
 enum ptime_locale_status { not, loc, raw };
 
 /* Copyright (C) 2002, 2004 Free Software Foundation, Inc.
-   This file is part of the GNU C Library.
-
-   The GNU C Library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   The GNU C Library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
-
-   You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, write to the Free
-   Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-   02110-1301 USA.  */
+ * This file is part of the GNU C Library.
+ *
+ * The GNU C Library is free software; you can redistribute it and / or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * The GNU C Library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the GNU C Library; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110 - 1301 USA.  */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -216,7 +216,8 @@ enum ptime_locale_status { not, loc, raw };
 #  define localtime_r my_localtime_r
 static struct tm *localtime_r __P ((const time_t *, struct tm *));
 static struct tm *
-localtime_r (t, tp)
+localtime_r (t,
+             tp)
      const time_t *t;
      struct tm *tp;
 {
@@ -242,7 +243,7 @@ localtime_r (t, tp)
   (g_ascii_strncasecmp ((cs1), (s2), strlen (cs1)) ? 0 : ((s2) += strlen (cs1), 1))
 #endif
 /* We intentionally do not use isdigit() for testing because this will
-   lead to problems with the wide character version.  */
+ * lead to problems with the wide character version.  */
 #define get_number(from, to, n) \
   do {									      \
     gint __n = n;							      \
@@ -347,9 +348,9 @@ static const gushort __mon_yday[2][13] =
 
 #if defined _LIBC
 /* We use this code also for the extended locale handling where the
-   function gets as an additional argument the locale which has to be
-   used.  To access the values we have to redefine the _NL_CURRENT
-   macro.  */
+ * function gets as an additional argument the locale which has to be
+ * used.  To access the values we have to redefine the _NL_CURRENT
+ * macro.  */
 # define strptime		__strptime_l
 # undef _NL_CURRENT
 # define _NL_CURRENT(category, item) \
@@ -374,7 +375,7 @@ static const gushort __mon_yday[2][13] =
 
 #ifndef __isleap
 /* Nonzero if YEAR is a leap year (every 4 years,
-   except every 100th isn't, and every 400th is).  */
+ * except every 100th isn't, and every 400th is).  */
 # define __isleap(year)	\
   ((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
 #endif
@@ -411,7 +412,11 @@ internal_function
 #else
 static gchar *
 #endif
-__strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
+__strptime_internal (rp,
+                     fmt,
+                     tm,
+                     decided,
+                     era_cnt LOCALE_PARAM)
      const gchar *rp;
      const gchar *fmt;
      struct tm *tm;
@@ -992,7 +997,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 	  /* Match year within century.  */
 	  get_number (0, 99, 2);
 	  /* The "Year 2000: The Millennium Rollover" paper suggests that
-	     values in the range 69-99 refer to the twentieth century.  */
+	   * values in the range 69-99 refer to the twentieth century.  */
 	  tm->tm_year = val >= 69 ? val : val + 100;
 	  /* Indicate that we want to use the century, if specified.  */
 	  want_century = 1;
@@ -1353,7 +1358,7 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
     if (want_era)
       {
 	/* No era found but we have seen an E modifier.  Rectify some
-	   values.  */
+	 * values.  */
 	if (want_century && century == -1 && tm->tm_year < 69)
 	  tm->tm_year += 100;
       }
@@ -1420,7 +1425,9 @@ __strptime_internal (rp, fmt, tm, decided, era_cnt LOCALE_PARAM)
 }
 
 static gchar *
-strptime (buf, format, tm LOCALE_PARAM)
+strptime (buf,
+          format,
+          tm LOCALE_PARAM)
      const gchar *buf;
      const gchar *format;
      struct tm *tm;
@@ -1439,7 +1446,8 @@ strptime (buf, format, tm LOCALE_PARAM)
 }
 
 #ifdef _LIBC
-weak_alias (__strptime_l, strptime_l)
+weak_alias (__strptime_l,
+            strptime_l)
 #endif
 #endif	/* HAVE_STRPTIME */
 
@@ -1467,7 +1475,10 @@ string_is_empty (const gchar *value)
  * string with them.
  */
 static ETimeParseStatus
-parse_with_strptime (const gchar *value, struct tm *result, const gchar **formats, gint n_formats)
+parse_with_strptime (const gchar *value,
+                     struct tm *result,
+                     const gchar **formats,
+                     gint n_formats)
 {
 	const gchar *parse_end = NULL, *pos;
 	gchar *locale_str;
@@ -1489,7 +1500,7 @@ parse_with_strptime (const gchar *value, struct tm *result, const gchar **format
 		return E_TIME_PARSE_INVALID;
 
 	/* Skip whitespace */
-	while (n = (gint)((guchar)*pos), isspace (n) != 0)
+	while (n = (gint)((guchar) * pos), isspace (n) != 0)
 		pos++;
 
 	/* Try each of the formats in turn */
@@ -1521,7 +1532,8 @@ parse_with_strptime (const gchar *value, struct tm *result, const gchar **format
 }
 
 static void
-correct_two_digit_year (struct tm *result, gboolean *two_digit_year)
+correct_two_digit_year (struct tm *result,
+                        gboolean *two_digit_year)
 {
 	g_return_if_fail (result != NULL);
 
@@ -1546,7 +1558,7 @@ correct_two_digit_year (struct tm *result, gboolean *two_digit_year)
 }
 
 /* Returns TRUE if the locale has 'am' and 'pm' strings defined, in which
-   case the user can choose between 12 and 24-hour time formats. */
+ * case the user can choose between 12 and 24-hour time formats. */
 static gboolean
 locale_supports_12_hour_format (void)
 {
@@ -1613,16 +1625,16 @@ e_time_parse_date_and_time_ex (const gchar *value,
 	}
 
 	/* We'll parse the whole date and time in one go, otherwise we get
-	   into i18n problems. We attempt to parse with several formats,
-	   longest first. Note that we only use the '%p' specifier if the
-	   locale actually has 'am' and 'pm' strings defined, otherwise we
-	   will get incorrect results. Note also that we try to use exactly
-	   the same strings as in e_time_format_date_and_time (), to try to
-	   avoid i18n problems. We also use cut-down versions, so users don't
-	   have to type in the weekday or the seconds, for example.
-	   Note that all these formats include the full date, and the time
-	   will be set to 00:00:00 before parsing, so we don't need to worry
-	   about filling in any missing fields after parsing. */
+	 * into i18n problems. We attempt to parse with several formats,
+	 * longest first. Note that we only use the '%p' specifier if the
+	 * locale actually has 'am' and 'pm' strings defined, otherwise we
+	 * will get incorrect results. Note also that we try to use exactly
+	 * the same strings as in e_time_format_date_and_time (), to try to
+	 * avoid i18n problems. We also use cut-down versions, so users don't
+	 * have to type in the weekday or the seconds, for example.
+	 * Note that all these formats include the full date, and the time
+	 * will be set to 00:00:00 before parsing, so we don't need to worry
+	 * about filling in any missing fields after parsing. */
 
 	/*
 	 * Try the full times, with the weekday. Then try without seconds,
@@ -1630,32 +1642,32 @@ e_time_parse_date_and_time_ex (const gchar *value,
 	 */
 	if (use_12_hour_formats) {
 		/* strptime format of a weekday, a date and a time,
-		   in 12-hour format. */
+		 * in 12-hour format. */
 		format[num_formats++] = _("%a %m/%d/%Y %I:%M:%S %p");
 	}
 
 	/* strptime format of a weekday, a date and a time,
-	   in 24-hour format. */
+	 * in 24-hour format. */
 	format[num_formats++] = _("%a %m/%d/%Y %H:%M:%S");
 
 	if (use_12_hour_formats) {
 		/* strptime format of a weekday, a date and a time,
-		   in 12-hour format, without seconds. */
+		 * in 12-hour format, without seconds. */
 		format[num_formats++] = _("%a %m/%d/%Y %I:%M %p");
 	}
 
 	/* strptime format of a weekday, a date and a time,
-	   in 24-hour format, without seconds. */
+	 * in 24-hour format, without seconds. */
 	format[num_formats++] = _("%a %m/%d/%Y %H:%M");
 
 	if (use_12_hour_formats) {
 		/* strptime format of a weekday, a date and a time,
-		   in 12-hour format, without minutes or seconds. */
+		 * in 12-hour format, without minutes or seconds. */
 		format[num_formats++] = _("%a %m/%d/%Y %I %p");
 	}
 
 	/* strptime format of a weekday, a date and a time,
-	   in 24-hour format, without minutes or seconds. */
+	 * in 24-hour format, without minutes or seconds. */
 	format[num_formats++] = _("%a %m/%d/%Y %H");
 
 	/* strptime format of a weekday and a date. */
@@ -1674,22 +1686,22 @@ e_time_parse_date_and_time_ex (const gchar *value,
 
 	if (use_12_hour_formats) {
 		/* strptime format of a date and a time, in 12-hour format,
-		   without seconds. */
+		 * without seconds. */
 		format[num_formats++] = _("%m/%d/%Y %I:%M %p");
 	}
 
 	/* strptime format of a date and a time, in 24-hour format,
-	   without seconds. */
+	 * without seconds. */
 	format[num_formats++] = _("%m/%d/%Y %H:%M");
 
 	if (use_12_hour_formats) {
 		/* strptime format of a date and a time, in 12-hour format,
-		   without minutes or seconds. */
+		 * without minutes or seconds. */
 		format[num_formats++] = _("%m/%d/%Y %I %p");
 	}
 
 	/* strptime format of a date and a time, in 24-hour format,
-	   without minutes or seconds. */
+	 * without minutes or seconds. */
 	format[num_formats++] = _("%m/%d/%Y %H");
 
 	/* strptime format of a weekday and a date. */
@@ -1704,7 +1716,7 @@ e_time_parse_date_and_time_ex (const gchar *value,
 		status = E_TIME_PARSE_INVALID;
 
 	/* Note that we checked if it was empty already, so it is either OK
-	   or INVALID here. */
+	 * or INVALID here. */
 	if (status == E_TIME_PARSE_OK) {
 		correct_two_digit_year (result, two_digit_year);
 	} else {
@@ -1740,7 +1752,7 @@ e_time_parse_date_and_time_ex (const gchar *value,
  *          E_TIME_PARSE_INVALID if the string could not be parsed.
  */
 ETimeParseStatus
-e_time_parse_date_and_time (const gchar	*value,
+e_time_parse_date_and_time (const gchar *value,
                             struct tm *result)
 {
 	return e_time_parse_date_and_time_ex (value, result, NULL);
@@ -1786,8 +1798,8 @@ e_time_parse_date_ex (const gchar *value,
 
 	if (two_digit_year) {
 		/* when we need to know about two digit year, then always first try
-		   full year, because for example nl_NL have format %d-%m-%y and it
-		   changes from two year itself, which isn't what we want */
+		 * full year, because for example nl_NL have format %d-%m-%y and it
+		 * changes from two year itself, which isn't what we want */
 		const gchar *tmp = format[1];
 		format[1] = format[0];
 		format[0] = tmp;
@@ -1823,7 +1835,8 @@ e_time_parse_date_ex (const gchar *value,
  * @value was an empty string, a valid date, or an invalid date.
  **/
 ETimeParseStatus
-e_time_parse_date (const gchar *value, struct tm *result)
+e_time_parse_date (const gchar *value,
+                   struct tm *result)
 {
 	return e_time_parse_date_ex (value, result, NULL);
 }
@@ -1843,7 +1856,8 @@ e_time_parse_date (const gchar *value, struct tm *result)
  * @value was an empty string, a valid date, or an invalid date.
  **/
 ETimeParseStatus
-e_time_parse_time (const gchar *value, struct tm *result)
+e_time_parse_time (const gchar *value,
+                   struct tm *result)
 {
 	const gchar *format[7];
 	gint num_formats = 0;
@@ -1859,7 +1873,7 @@ e_time_parse_time (const gchar *value, struct tm *result)
 
 	if (use_12_hour_formats) {
 		/* strptime format for time of day, without seconds,
-		   in 12-hour format. */
+		 * in 12-hour format. */
 		format[num_formats++] = _("%I:%M %p");
 	}
 
@@ -1897,12 +1911,12 @@ e_time_parse_time (const gchar *value, struct tm *result)
  * of the time are stored in @buffer.
  **/
 void
-e_time_format_date_and_time		(struct tm	*date_tm,
-					 gboolean	 use_24_hour_format,
-					 gboolean	 show_midnight,
-					 gboolean	 show_zero_seconds,
-					 gchar		*buffer,
-					 gint		 buffer_size)
+e_time_format_date_and_time (struct tm *date_tm,
+                             gboolean use_24_hour_format,
+                             gboolean show_midnight,
+                             gboolean show_zero_seconds,
+                             gchar *buffer,
+                             gint buffer_size)
 {
 	gchar *format;
 
@@ -1913,25 +1927,25 @@ e_time_format_date_and_time		(struct tm	*date_tm,
 	} else if (use_24_hour_format) {
 		if (!show_zero_seconds && date_tm->tm_sec == 0)
 			/* strftime format of a weekday, a date and a
-			   time, in 24-hour format, without seconds. */
+			 * time, in 24-hour format, without seconds. */
 			format = _("%a %m/%d/%Y %H:%M");
 		else
 			/* strftime format of a weekday, a date and a
-			   time, in 24-hour format. */
+			 * time, in 24-hour format. */
 			format = _("%a %m/%d/%Y %H:%M:%S");
 	} else {
 		if (!show_zero_seconds && date_tm->tm_sec == 0)
 			/* strftime format of a weekday, a date and a
-			   time, in 12-hour format, without seconds. */
+			 * time, in 12-hour format, without seconds. */
 			format = _("%a %m/%d/%Y %I:%M %p");
 		else
 			/* strftime format of a weekday, a date and a
-			   time, in 12-hour format. */
+			 * time, in 12-hour format. */
 			format = _("%a %m/%d/%Y %I:%M:%S %p");
 	}
 
 	/* strftime returns 0 if the string doesn't fit, and leaves the buffer
-	   undefined, so we set it to the empty string in that case. */
+	 * undefined, so we set it to the empty string in that case. */
 	if (e_utf8_strftime (buffer, buffer_size, format, date_tm) == 0)
 		buffer[0] = '\0';
 }
@@ -1948,18 +1962,18 @@ e_time_format_date_and_time		(struct tm	*date_tm,
  * stores it in @buffer. @buffer_size should be at least 64.
  **/
 void
-e_time_format_time			(struct tm	*date_tm,
-					 gboolean	 use_24_hour_format,
-					 gboolean	 show_zero_seconds,
-					 gchar		*buffer,
-					 gint		 buffer_size)
+e_time_format_time (struct tm *date_tm,
+                    gboolean use_24_hour_format,
+                    gboolean show_zero_seconds,
+                    gchar *buffer,
+                    gint buffer_size)
 {
 	gchar *format;
 
 	if (use_24_hour_format) {
 		if (!show_zero_seconds && date_tm->tm_sec == 0)
 			/* strftime format of a time in 24-hour format,
-			   without seconds. */
+			 * without seconds. */
 			format = _("%H:%M");
 		else
 			/* strftime format of a time in 24-hour format. */
@@ -1967,7 +1981,7 @@ e_time_format_time			(struct tm	*date_tm,
 	} else {
 		if (!show_zero_seconds && date_tm->tm_sec == 0)
 			/* strftime format of a time in 12-hour format,
-			   without seconds. */
+			 * without seconds. */
 			format = _("%I:%M %p");
 		else
 			/* strftime format of a time in 12-hour format. */
@@ -1975,7 +1989,7 @@ e_time_format_time			(struct tm	*date_tm,
 	}
 
 	/* strftime returns 0 if the string doesn't fit, and leaves the buffer
-	   undefined, so we set it to the empty string in that case. */
+	 * undefined, so we set it to the empty string in that case. */
 	if (e_utf8_strftime (buffer, buffer_size, format, date_tm) == 0)
 		buffer[0] = '\0';
 }
@@ -2023,7 +2037,9 @@ e_mktime_utc (struct tm *tm)
  * seconds from UTC time, stored in @offset.
  **/
 void
-e_localtime_with_offset (time_t tt, struct tm *tm, gint *offset)
+e_localtime_with_offset (time_t tt,
+                         struct tm *tm,
+                         gint *offset)
 {
 	localtime_r (&tt, tm);
 

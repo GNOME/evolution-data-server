@@ -1,6 +1,6 @@
 /* BE WARY of editing this file with emacs.
-	Otherwise it might be smart and try to re-encode everything, which
-	you really do not want
+ * Otherwise it might be smart and try to re-encode everything, which
+ * you really do not want
 */
 
 static struct _a {

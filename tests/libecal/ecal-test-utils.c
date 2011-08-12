@@ -27,7 +27,7 @@
 
 void
 test_print (const gchar *format,
-	    ...)
+            ...)
 {
 	va_list args;
 	const gchar *debug_string;
@@ -49,9 +49,9 @@ test_print (const gchar *format,
 	}
 }
 
-ECal*
-ecal_test_utils_cal_new_from_uri (const gchar     *uri,
-				  ECalSourceType  type)
+ECal *
+ecal_test_utils_cal_new_from_uri (const gchar *uri,
+                                  ECalSourceType type)
 {
 	ECal *cal;
 
@@ -63,9 +63,9 @@ ecal_test_utils_cal_new_from_uri (const gchar     *uri,
 	return cal;
 }
 
-ECal*
-ecal_test_utils_cal_new_temp (gchar           **uri,
-                              ECalSourceType   type)
+ECal *
+ecal_test_utils_cal_new_temp (gchar **uri,
+                              ECalSourceType type)
 {
 	ECal *cal;
 	gchar *file_template;
@@ -92,8 +92,8 @@ ecal_test_utils_cal_new_temp (gchar           **uri,
 }
 
 void
-ecal_test_utils_cal_open (ECal     *cal,
-                          gboolean  only_if_exists)
+ecal_test_utils_cal_open (ECal *cal,
+                          gboolean only_if_exists)
 {
 	GError *error = NULL;
 
@@ -109,9 +109,9 @@ ecal_test_utils_cal_open (ECal     *cal,
 }
 
 static void
-open_ex_cb (ECal            *cal,
-	 const GError *error,
-	 ECalTestClosure *closure)
+open_ex_cb (ECal *cal,
+         const GError *error,
+         ECalTestClosure *closure)
 {
 	if (FALSE) {
 	} else if (error && error->code == E_CALENDAR_STATUS_BUSY) {
@@ -135,10 +135,10 @@ open_ex_cb (ECal            *cal,
 }
 
 void
-ecal_test_utils_cal_async_open (ECal        *cal,
-				gboolean     only_if_exists,
-                                GSourceFunc  callback,
-                                gpointer     user_data)
+ecal_test_utils_cal_async_open (ECal *cal,
+                                gboolean only_if_exists,
+                                GSourceFunc callback,
+                                gpointer user_data)
 {
 	ECalTestClosure *closure;
 
@@ -295,7 +295,7 @@ ecal_test_utils_cal_get_capabilities (ECal *cal)
 
 void
 ecal_test_utils_cal_assert_objects_equal_shallow (icalcomponent *a,
-						  icalcomponent *b)
+                                                  icalcomponent *b)
 {
 	const gchar *uid_a, *uid_b;
 
@@ -320,7 +320,7 @@ ecal_test_utils_cal_assert_objects_equal_shallow (icalcomponent *a,
 
 void
 ecal_test_utils_cal_assert_e_cal_components_equal (ECalComponent *a,
-						   ECalComponent *b)
+                                                   ECalComponent *b)
 {
 	icalcomponent *ical_a, *ical_b;
 	ECalComponentTransparency transp_a, transp_b;
@@ -339,9 +339,9 @@ ecal_test_utils_cal_assert_e_cal_components_equal (ECalComponent *a,
 	g_assert (transp_a == transp_b);
 }
 
-icalcomponent*
-ecal_test_utils_cal_get_object (ECal       *cal,
-				const gchar *uid)
+icalcomponent *
+ecal_test_utils_cal_get_object (ECal *cal,
+                                const gchar *uid)
 {
 	GError *error = NULL;
 	icalcomponent *component = NULL;
@@ -360,9 +360,9 @@ ecal_test_utils_cal_get_object (ECal       *cal,
 }
 
 void
-ecal_test_utils_cal_modify_object (ECal          *cal,
-				   icalcomponent *component,
-				   CalObjModType  mod_type)
+ecal_test_utils_cal_modify_object (ECal *cal,
+                                   icalcomponent *component,
+                                   CalObjModType mod_type)
 {
 	GError *error = NULL;
 
@@ -378,8 +378,8 @@ ecal_test_utils_cal_modify_object (ECal          *cal,
 }
 
 void
-ecal_test_utils_cal_remove_object (ECal       *cal,
-				   const gchar *uid)
+ecal_test_utils_cal_remove_object (ECal *cal,
+                                   const gchar *uid)
 {
 	GError *error = NULL;
 
@@ -390,7 +390,7 @@ ecal_test_utils_cal_remove_object (ECal       *cal,
         test_print ("successfully remoed the icalcomponent object '%s'\n", uid);
 }
 
-icalcomponent*
+icalcomponent *
 ecal_test_utils_cal_get_default_object (ECal *cal)
 {
 	GError *error = NULL;
@@ -409,9 +409,9 @@ ecal_test_utils_cal_get_default_object (ECal *cal)
 	return component;
 }
 
-GList*
-ecal_test_utils_cal_get_object_list (ECal       *cal,
-				     const gchar *query)
+GList *
+ecal_test_utils_cal_get_object_list (ECal *cal,
+                                     const gchar *query)
 {
 	GError *error = NULL;
 	GList *objects = NULL;
@@ -425,9 +425,9 @@ ecal_test_utils_cal_get_object_list (ECal       *cal,
 	return objects;
 }
 
-GList*
-ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
-					 const gchar *uid)
+GList *
+ecal_test_utils_cal_get_objects_for_uid (ECal *cal,
+                                         const gchar *uid)
 {
 	GError *error = NULL;
 	GList *objects = NULL;
@@ -442,8 +442,8 @@ ecal_test_utils_cal_get_objects_for_uid (ECal       *cal,
 }
 
 gchar *
-ecal_test_utils_cal_create_object (ECal          *cal,
-				   icalcomponent *component)
+ecal_test_utils_cal_create_object (ECal *cal,
+                                   icalcomponent *component)
 {
 	GError *error = NULL;
 	gchar *uid = NULL;
@@ -468,10 +468,10 @@ ecal_test_utils_cal_create_object (ECal          *cal,
 }
 
 static void
-cal_set_mode_cb (ECal            *cal,
-		 ECalendarStatus  status,
-		 CalMode          mode,
-		 ECalTestClosure *closure)
+cal_set_mode_cb (ECal *cal,
+                 ECalendarStatus status,
+                 CalMode mode,
+                 ECalTestClosure *closure)
 {
 	if (FALSE) {
 	} else if (status == E_CALENDAR_STATUS_BUSY) {
@@ -494,10 +494,10 @@ cal_set_mode_cb (ECal            *cal,
 }
 
 void
-ecal_test_utils_cal_set_mode (ECal        *cal,
-			      CalMode      mode,
-			      GSourceFunc  callback,
-			      gpointer     user_data)
+ecal_test_utils_cal_set_mode (ECal *cal,
+                              CalMode mode,
+                              GSourceFunc callback,
+                              gpointer user_data)
 {
 	ECalTestClosure *closure;
 
@@ -510,14 +510,14 @@ ecal_test_utils_cal_set_mode (ECal        *cal,
 }
 
 void
-ecal_test_utils_create_component (ECal           *cal,
-				  const gchar     *dtstart,
-				  const gchar     *dtstart_tzid,
-				  const gchar     *dtend,
-				  const gchar     *dtend_tzid,
-				  const gchar     *summary,
-				  ECalComponent **comp_out,
-				  gchar          **uid_out)
+ecal_test_utils_create_component (ECal *cal,
+                                  const gchar *dtstart,
+                                  const gchar *dtstart_tzid,
+                                  const gchar *dtend,
+                                  const gchar *dtend_tzid,
+                                  const gchar *summary,
+                                  ECalComponent **comp_out,
+                                  gchar **uid_out)
 {
 	ECalComponent *comp;
 	icalcomponent *icalcomp;
@@ -554,16 +554,16 @@ ecal_test_utils_create_component (ECal           *cal,
 
 void
 ecal_test_utils_cal_component_set_icalcomponent (ECalComponent *e_component,
-						 icalcomponent *component)
+                                                 icalcomponent *component)
 {
 	if (!e_cal_component_set_icalcomponent (e_component, component)) {
                 g_error ("Could not set icalcomponent\n");
 	}
 }
 
-icaltimezone*
-ecal_test_utils_cal_get_timezone (ECal       *cal,
-				  const gchar *tzid)
+icaltimezone *
+ecal_test_utils_cal_get_timezone (ECal *cal,
+                                  const gchar *tzid)
 {
 	GError *error = NULL;
 	icaltimezone *zone = NULL;
@@ -578,8 +578,8 @@ ecal_test_utils_cal_get_timezone (ECal       *cal,
 }
 
 void
-ecal_test_utils_cal_add_timezone (ECal         *cal,
-				  icaltimezone *zone)
+ecal_test_utils_cal_add_timezone (ECal *cal,
+                                  icaltimezone *zone)
 {
 	GError *error = NULL;
 	const gchar *name;
@@ -594,8 +594,8 @@ ecal_test_utils_cal_add_timezone (ECal         *cal,
 }
 
 void
-ecal_test_utils_cal_set_default_timezone (ECal         *cal,
-					  icaltimezone *zone)
+ecal_test_utils_cal_set_default_timezone (ECal *cal,
+                                          icaltimezone *zone)
 {
 	GError *error = NULL;
 	const gchar *name;
@@ -609,11 +609,11 @@ ecal_test_utils_cal_set_default_timezone (ECal         *cal,
         test_print ("successfully set default icaltimezone '%s'\n", name);
 }
 
-GList*
-ecal_test_utils_cal_get_free_busy (ECal   *cal,
-				   GList  *users,
-				   time_t  start,
-				   time_t  end)
+GList *
+ecal_test_utils_cal_get_free_busy (ECal *cal,
+                                   GList *users,
+                                   time_t start,
+                                   time_t end)
 {
 	GList *free_busy = NULL;
 	GList *l = NULL;
@@ -641,10 +641,10 @@ ecal_test_utils_cal_get_free_busy (ECal   *cal,
 }
 
 void
-ecal_test_utils_cal_send_objects (ECal           *cal,
-				  icalcomponent  *component,
-				  GList         **users,
-				  icalcomponent **component_final)
+ecal_test_utils_cal_send_objects (ECal *cal,
+                                  icalcomponent *component,
+                                  GList **users,
+                                  icalcomponent **component_final)
 {
 	GList *l = NULL;
 	GError *error = NULL;
@@ -664,8 +664,8 @@ ecal_test_utils_cal_send_objects (ECal           *cal,
 }
 
 void
-ecal_test_utils_cal_receive_objects (ECal          *cal,
-				     icalcomponent *component)
+ecal_test_utils_cal_receive_objects (ECal *cal,
+                                     icalcomponent *component)
 {
 	GError *error = NULL;
 
@@ -676,9 +676,9 @@ ecal_test_utils_cal_receive_objects (ECal          *cal,
 	test_print ("successfully received the objects\n");
 }
 
-ECalView*
-ecal_test_utils_get_query (ECal       *cal,
-			   const gchar *sexp)
+ECalView *
+ecal_test_utils_get_query (ECal *cal,
+                           const gchar *sexp)
 {
 	GError *error = NULL;
 	ECalView *query = NULL;

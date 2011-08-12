@@ -44,7 +44,8 @@
 G_DEFINE_TYPE (CamelVeeSummary, camel_vee_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static void
-vee_message_info_free (CamelFolderSummary *s, CamelMessageInfo *info)
+vee_message_info_free (CamelFolderSummary *s,
+                       CamelMessageInfo *info)
 {
 	CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *) info;
 
@@ -53,7 +54,8 @@ vee_message_info_free (CamelFolderSummary *s, CamelMessageInfo *info)
 }
 
 static CamelMessageInfo *
-vee_message_info_clone (CamelFolderSummary *s, const CamelMessageInfo *mi)
+vee_message_info_clone (CamelFolderSummary *s,
+                        const CamelMessageInfo *mi)
 {
 	CamelVeeMessageInfo *to;
 	const CamelVeeMessageInfo *from = (const CamelVeeMessageInfo *) mi;
@@ -70,13 +72,14 @@ vee_message_info_clone (CamelFolderSummary *s, const CamelMessageInfo *mi)
 #define HANDLE_NULL_INFO(value) if (!rmi) { d(g_warning (G_STRLOC ": real info is NULL for %s, safeguarding\n", mi->uid)); return value; }
 
 static gconstpointer
-vee_info_ptr (const CamelMessageInfo *mi, gint id)
+vee_info_ptr (const CamelMessageInfo *mi,
+              gint id)
 {
 	CamelVeeMessageInfo *vmi = (CamelVeeMessageInfo *) mi;
 	CamelMessageInfo *rmi;
 	gpointer p;
 
-	rmi = camel_folder_summary_uid (vmi->summary, mi->uid+8);
+	rmi = camel_folder_summary_uid (vmi->summary, mi->uid + 8);
 	HANDLE_NULL_INFO (NULL);
 	p = (gpointer) camel_message_info_ptr (rmi, id);
 	camel_message_info_free (rmi);
@@ -85,9 +88,10 @@ vee_info_ptr (const CamelMessageInfo *mi, gint id)
 }
 
 static guint32
-vee_info_uint32 (const CamelMessageInfo *mi, gint id)
+vee_info_uint32 (const CamelMessageInfo *mi,
+                 gint id)
 {
-	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
+	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid + 8);
 	guint32 ret;
 
 	HANDLE_NULL_INFO (0);
@@ -99,9 +103,10 @@ vee_info_uint32 (const CamelMessageInfo *mi, gint id)
 }
 
 static time_t
-vee_info_time (const CamelMessageInfo *mi, gint id)
+vee_info_time (const CamelMessageInfo *mi,
+               gint id)
 {
-	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
+	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid + 8);
 	time_t ret;
 
 	HANDLE_NULL_INFO (0);
@@ -112,9 +117,10 @@ vee_info_time (const CamelMessageInfo *mi, gint id)
 }
 
 static gboolean
-vee_info_user_flag (const CamelMessageInfo *mi, const gchar *id)
+vee_info_user_flag (const CamelMessageInfo *mi,
+                    const gchar *id)
 {
-	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
+	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid + 8);
 	gboolean ret;
 
 	HANDLE_NULL_INFO (FALSE);
@@ -125,9 +131,10 @@ vee_info_user_flag (const CamelMessageInfo *mi, const gchar *id)
 }
 
 static const gchar *
-vee_info_user_tag (const CamelMessageInfo *mi, const gchar *id)
+vee_info_user_tag (const CamelMessageInfo *mi,
+                   const gchar *id)
 {
-	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
+	CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid + 8);
 	const gchar *ret;
 
 	HANDLE_NULL_INFO("");
@@ -138,7 +145,9 @@ vee_info_user_tag (const CamelMessageInfo *mi, const gchar *id)
 }
 
 static gboolean
-vee_info_set_user_flag (CamelMessageInfo *mi, const gchar *name, gboolean value)
+vee_info_set_user_flag (CamelMessageInfo *mi,
+                        const gchar *name,
+                        gboolean value)
 {
 	gint res = FALSE;
 	CamelVeeFolder *vf = (CamelVeeFolder *) mi->summary->folder;
@@ -150,11 +159,11 @@ vee_info_set_user_flag (CamelMessageInfo *mi, const gchar *name, gboolean value)
 			g_strescape (vf->expression, ""));
 
 	if (mi->uid) {
-		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
+		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid + 8);
 		HANDLE_NULL_INFO (FALSE);
 
 		/* ignore changes done in the folder itself,
-		   unless it's a vTrash or vJunk folder */
+		 * unless it's a vTrash or vJunk folder */
 		if (!CAMEL_IS_VTRASH_FOLDER (vf))
 			camel_vee_folder_ignore_next_changed_event (vf, rmi->summary->folder);
 
@@ -167,16 +176,18 @@ vee_info_set_user_flag (CamelMessageInfo *mi, const gchar *name, gboolean value)
 }
 
 static gboolean
-vee_info_set_user_tag (CamelMessageInfo *mi, const gchar *name, const gchar *value)
+vee_info_set_user_tag (CamelMessageInfo *mi,
+                       const gchar *name,
+                       const gchar *value)
 {
 	gint res = FALSE;
 
 	if (mi->uid) {
-		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
+		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid + 8);
 		HANDLE_NULL_INFO (FALSE);
 
 		/* ignore changes done in the folder itself,
-		   unless it's a vTrash or vJunk folder */
+		 * unless it's a vTrash or vJunk folder */
 		if (!CAMEL_IS_VTRASH_FOLDER (mi->summary->folder))
 			camel_vee_folder_ignore_next_changed_event ((CamelVeeFolder *) mi->summary->folder, rmi->summary->folder);
 
@@ -202,14 +213,14 @@ vee_info_set_flags (CamelMessageInfo *mi,
 			g_strescape (vf->expression, ""));
 
 	if (mi->uid) {
-		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid+8);
+		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *) mi)->summary, mi->uid + 8);
 
 		HANDLE_NULL_INFO (FALSE);
 
 		camel_folder_summary_update_counts_by_flags (mi->summary, camel_message_info_flags (rmi), TRUE);
 
 		/* ignore changes done in the folder itself,
-		   unless it's a vTrash or vJunk folder */
+		 * unless it's a vTrash or vJunk folder */
 		if (!CAMEL_IS_VTRASH_FOLDER (vf))
 			camel_vee_folder_ignore_next_changed_event (vf, rmi->summary->folder);
 
@@ -238,7 +249,8 @@ vee_info_set_flags (CamelMessageInfo *mi,
 }
 
 static CamelMessageInfo *
-message_info_from_uid (CamelFolderSummary *s, const gchar *uid)
+message_info_from_uid (CamelFolderSummary *s,
+                       const gchar *uid)
 {
 	CamelMessageInfo *info;
 
@@ -343,7 +355,8 @@ camel_vee_summary_new (CamelFolder *parent)
  * Since: 2.24
  **/
 GPtrArray *
-camel_vee_summary_get_ids (CamelVeeSummary *summary, gchar hash[8])
+camel_vee_summary_get_ids (CamelVeeSummary *summary,
+                           gchar hash[8])
 {
 	gchar *shash = g_strdup_printf("%c%c%c%c%c%c%c%c", hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7]);
 	CamelFolderSummary *cfs = (CamelFolderSummary *) summary;
@@ -362,14 +375,17 @@ camel_vee_summary_get_ids (CamelVeeSummary *summary, gchar hash[8])
 }
 
 CamelVeeMessageInfo *
-camel_vee_summary_add (CamelVeeSummary *s, CamelFolderSummary *summary, const gchar *uid, const gchar hash[8])
+camel_vee_summary_add (CamelVeeSummary *s,
+                       CamelFolderSummary *summary,
+                       const gchar *uid,
+                       const gchar hash[8])
 {
 	CamelVeeMessageInfo *mi;
 	CamelMessageInfo *rmi;
 	gchar *vuid;
-	vuid = g_malloc (strlen (uid)+9);
+	vuid = g_malloc (strlen (uid) + 9);
 	memcpy (vuid, hash, 8);
-	strcpy (vuid+8, uid);
+	strcpy (vuid + 8, uid);
 
 	camel_folder_summary_lock (CAMEL_FOLDER_SUMMARY (s), CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	mi = (CamelVeeMessageInfo *) g_hash_table_lookup (((CamelFolderSummary *) s)->loaded_infos, vuid);

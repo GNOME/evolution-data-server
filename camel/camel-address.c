@@ -105,7 +105,8 @@ camel_address_length (CamelAddress *addr)
  * Returns: the number of addresses parsed or %-1 on fail
  **/
 gint
-camel_address_decode (CamelAddress *addr, const gchar *raw)
+camel_address_decode (CamelAddress *addr,
+                      const gchar *raw)
 {
 	CamelAddressClass *class;
 
@@ -149,7 +150,8 @@ camel_address_encode (CamelAddress *addr)
  * Returns: the number of addresses parsed or %-1 on fail
  **/
 gint
-camel_address_unformat (CamelAddress *addr, const gchar *raw)
+camel_address_unformat (CamelAddress *addr,
+                        const gchar *raw)
 {
 	CamelAddressClass *class;
 
@@ -193,7 +195,8 @@ camel_address_format (CamelAddress *addr)
  * Returns: the number of addresses concatenated
  **/
 gint
-camel_address_cat (CamelAddress *dest, CamelAddress *source)
+camel_address_cat (CamelAddress *dest,
+                   CamelAddress *source)
 {
 	CamelAddressClass *class;
 
@@ -216,7 +219,8 @@ camel_address_cat (CamelAddress *dest, CamelAddress *source)
  * Returns: the number of addresses copied
  **/
 gint
-camel_address_copy (CamelAddress *dest, CamelAddress *source)
+camel_address_copy (CamelAddress *dest,
+                    CamelAddress *source)
 {
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (dest), -1);
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (source), -1);
@@ -233,7 +237,8 @@ camel_address_copy (CamelAddress *dest, CamelAddress *source)
  * Remove an address by index, or all addresses.
  **/
 void
-camel_address_remove (CamelAddress *addr, gint index)
+camel_address_remove (CamelAddress *addr,
+                      gint index)
 {
 	CamelAddressClass *class;
 

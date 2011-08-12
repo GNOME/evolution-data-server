@@ -47,7 +47,8 @@ on_idle_create_widget (void)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gtk_init (&argc, &argv);
 

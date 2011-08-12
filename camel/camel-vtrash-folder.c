@@ -90,7 +90,7 @@ transfer_messages (CamelFolder *folder,
 
 	camel_folder_thaw (md->folder);
 
-	for (i=0;i<md->uids->len;i++)
+	for (i = 0; i < md->uids->len; i++)
 		g_free (md->uids->pdata[i]);
 
 	g_ptr_array_free (md->uids, TRUE);
@@ -199,7 +199,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 			camel_message_info_set_flags ((CamelMessageInfo *) mi, sbit, 0);
 
 			tuid = uids->pdata[i];
-			if (strlen (tuid)>8)
+			if (strlen (tuid) > 8)
 				tuid += 8;
 			g_ptr_array_add (md->uids, g_strdup (tuid));
 			g_ptr_array_add (md->source_uids, uids->pdata[i]);
@@ -244,7 +244,8 @@ camel_vtrash_folder_init (CamelVTrashFolder *vtrash_folder)
  * Returns: a new #CamelVTrashFolder object
  **/
 CamelFolder *
-camel_vtrash_folder_new (CamelStore *parent_store, camel_vtrash_folder_t type)
+camel_vtrash_folder_new (CamelStore *parent_store,
+                         camel_vtrash_folder_t type)
 {
 	CamelVTrashFolder *vtrash;
 

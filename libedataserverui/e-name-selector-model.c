@@ -170,8 +170,9 @@ deep_free_list (GList *list)
 }
 
 static gint
-generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
-		       ENameSelectorModel *name_selector_model)
+generate_contact_rows (EContactStore *contact_store,
+                       GtkTreeIter *iter,
+                       ENameSelectorModel *name_selector_model)
 {
 	EContact    *contact;
 	const gchar *contact_uid;
@@ -222,9 +223,12 @@ generate_contact_rows (EContactStore *contact_store, GtkTreeIter *iter,
 }
 
 static void
-override_email_address (EContactStore *contact_store, GtkTreeIter *iter,
-			gint permutation_n, gint column, GValue *value,
-			ENameSelectorModel *name_selector_model)
+override_email_address (EContactStore *contact_store,
+                        GtkTreeIter *iter,
+                        gint permutation_n,
+                        gint column,
+                        GValue *value,
+                        ENameSelectorModel *name_selector_model)
 {
 	if (column == E_CONTACT_EMAIL_1) {
 		EContact *contact;
@@ -254,7 +258,9 @@ typedef struct
 HashCompare;
 
 static void
-emit_destination_uid_changes_cb (gchar *uid_num, gpointer value, HashCompare *hash_compare)
+emit_destination_uid_changes_cb (gchar *uid_num,
+                                 gpointer value,
+                                 HashCompare *hash_compare)
 {
 	EContactStore *contact_store = hash_compare->name_selector_model->priv->contact_store;
 
@@ -329,7 +335,8 @@ destinations_changed (ENameSelectorModel *name_selector_model)
 }
 
 static void
-free_section (ENameSelectorModel *name_selector_model, gint n)
+free_section (ENameSelectorModel *name_selector_model,
+              gint n)
 {
 	Section *section;
 
@@ -347,7 +354,8 @@ free_section (ENameSelectorModel *name_selector_model, gint n)
 }
 
 static gint
-find_section_by_name (ENameSelectorModel *name_selector_model, const gchar *name)
+find_section_by_name (ENameSelectorModel *name_selector_model,
+                      const gchar *name)
 {
 	gint i;
 
@@ -441,8 +449,9 @@ e_name_selector_model_list_sections (ENameSelectorModel *name_selector_model)
  **/
 void
 e_name_selector_model_add_section (ENameSelectorModel *name_selector_model,
-				   const gchar *name, const gchar *pretty_name,
-				   EDestinationStore *destination_store)
+                                   const gchar *name,
+                                   const gchar *pretty_name,
+                                   EDestinationStore *destination_store)
 {
 	Section section;
 
@@ -486,7 +495,8 @@ e_name_selector_model_add_section (ENameSelectorModel *name_selector_model,
  * Removes a destination section from @name_selector_model.
  **/
 void
-e_name_selector_model_remove_section (ENameSelectorModel *name_selector_model, const gchar *name)
+e_name_selector_model_remove_section (ENameSelectorModel *name_selector_model,
+                                      const gchar *name)
 {
 	gint     n;
 
@@ -518,8 +528,10 @@ e_name_selector_model_remove_section (ENameSelectorModel *name_selector_model, c
  * Gets the parameters for a destination section.
  **/
 gboolean
-e_name_selector_model_peek_section (ENameSelectorModel *name_selector_model, const gchar *name,
-				    gchar **pretty_name, EDestinationStore **destination_store)
+e_name_selector_model_peek_section (ENameSelectorModel *name_selector_model,
+                                    const gchar *name,
+                                    gchar **pretty_name,
+                                    EDestinationStore **destination_store)
 {
 	Section *section;
 	gint     n;
@@ -557,7 +569,9 @@ e_name_selector_model_peek_section (ENameSelectorModel *name_selector_model, con
  * Since: 2.30
  **/
 GList *
-e_name_selector_model_get_contact_emails_without_used (ENameSelectorModel *name_selector_model, EContact *contact, gboolean remove_used)
+e_name_selector_model_get_contact_emails_without_used (ENameSelectorModel *name_selector_model,
+                                                       EContact *contact,
+                                                       gboolean remove_used)
 {
 	GList *email_list;
 	gint emails;

@@ -123,7 +123,9 @@ construct_bookview_path (void)
 }
 
 static void
-cancel_ops_cb (gpointer opid, gpointer cancellable, gpointer user_data)
+cancel_ops_cb (gpointer opid,
+               gpointer cancellable,
+               gpointer user_data)
 {
 	g_return_if_fail (cancellable != NULL);
 
@@ -131,7 +133,8 @@ cancel_ops_cb (gpointer opid, gpointer cancellable, gpointer user_data)
 }
 
 static void
-operation_thread (gpointer data, gpointer user_data)
+operation_thread (gpointer data,
+                  gpointer user_data)
 {
 	OperationData *op = data;
 	EBookBackend *backend;
@@ -254,7 +257,8 @@ operation_thread (gpointer data, gpointer user_data)
 }
 
 static OperationData *
-op_new (OperationID op, EDataBook *book)
+op_new (OperationID op,
+        EDataBook *book)
 {
 	OperationData *data;
 
@@ -272,7 +276,8 @@ op_new (OperationID op, EDataBook *book)
 }
 
 static void
-op_complete (EDataBook *book, guint32 opid)
+op_complete (EDataBook *book,
+             guint32 opid)
 {
 	g_return_if_fail (book != NULL);
 
@@ -381,7 +386,8 @@ e_data_book_error_quark (void)
  * Since: 2.32
  **/
 GError *
-e_data_book_create_error (EDataBookStatus status, const gchar *custom_msg)
+e_data_book_create_error (EDataBookStatus status,
+                          const gchar *custom_msg)
 {
 	if (status == E_DATA_BOOK_STATUS_SUCCESS)
 		return NULL;
@@ -395,7 +401,9 @@ e_data_book_create_error (EDataBookStatus status, const gchar *custom_msg)
  * Since: 2.32
  **/
 GError *
-e_data_book_create_error_fmt (EDataBookStatus status, const gchar *custom_msg_fmt, ...)
+e_data_book_create_error_fmt (EDataBookStatus status,
+                              const gchar *custom_msg_fmt,
+                              ...)
 {
 	GError *error;
 	gchar *custom_msg;
@@ -415,7 +423,7 @@ e_data_book_create_error_fmt (EDataBookStatus status, const gchar *custom_msg_fm
 	return error;
 }
 
-ESource*
+ESource *
 e_data_book_get_source (EDataBook *book)
 {
 	g_return_val_if_fail (book != NULL, NULL);
@@ -424,7 +432,7 @@ e_data_book_get_source (EDataBook *book)
 	return book->priv->source;
 }
 
-EBookBackend*
+EBookBackend *
 e_data_book_get_backend (EDataBook *book)
 {
 	g_return_val_if_fail (book != NULL, NULL);
@@ -434,7 +442,9 @@ e_data_book_get_backend (EDataBook *book)
 }
 
 static void
-data_book_return_error (GDBusMethodInvocation *invocation, const GError *perror, const gchar *error_prefix)
+data_book_return_error (GDBusMethodInvocation *invocation,
+                        const GError *perror,
+                        const gchar *error_prefix)
 {
 	GError *error;
 
@@ -451,7 +461,7 @@ data_book_return_error (GDBusMethodInvocation *invocation, const GError *perror,
 }
 
 /* takes a list of strings and converts it to a comma-separated string of values;
-   free returned pointer with g_free () */
+ * free returned pointer with g_free () */
 gchar *
 e_data_book_string_slist_to_comma_string (const GSList *strings)
 {
@@ -484,7 +494,10 @@ e_data_book_string_slist_to_comma_string (const GSList *strings)
 }
 
 static gboolean
-impl_Book_open (EGdbusBook *object, GDBusMethodInvocation *invocation, gboolean only_if_exists, EDataBook *book)
+impl_Book_open (EGdbusBook *object,
+                GDBusMethodInvocation *invocation,
+                gboolean only_if_exists,
+                EDataBook *book)
 {
 	OperationData *op;
 
@@ -498,7 +511,9 @@ impl_Book_open (EGdbusBook *object, GDBusMethodInvocation *invocation, gboolean 
 }
 
 static gboolean
-impl_Book_remove (EGdbusBook *object, GDBusMethodInvocation *invocation, EDataBook *book)
+impl_Book_remove (EGdbusBook *object,
+                  GDBusMethodInvocation *invocation,
+                  EDataBook *book)
 {
 	OperationData *op;
 
@@ -511,7 +526,9 @@ impl_Book_remove (EGdbusBook *object, GDBusMethodInvocation *invocation, EDataBo
 }
 
 static gboolean
-impl_Book_refresh (EGdbusBook *object, GDBusMethodInvocation *invocation, EDataBook *book)
+impl_Book_refresh (EGdbusBook *object,
+                   GDBusMethodInvocation *invocation,
+                   EDataBook *book)
 {
 	OperationData *op;
 
@@ -524,7 +541,10 @@ impl_Book_refresh (EGdbusBook *object, GDBusMethodInvocation *invocation, EDataB
 }
 
 static gboolean
-impl_Book_get_contact (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_uid, EDataBook *book)
+impl_Book_get_contact (EGdbusBook *object,
+                       GDBusMethodInvocation *invocation,
+                       const gchar *in_uid,
+                       EDataBook *book)
 {
 	OperationData *op;
 
@@ -548,7 +568,10 @@ impl_Book_get_contact (EGdbusBook *object, GDBusMethodInvocation *invocation, co
 }
 
 static gboolean
-impl_Book_get_contact_list (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_query, EDataBook *book)
+impl_Book_get_contact_list (EGdbusBook *object,
+                            GDBusMethodInvocation *invocation,
+                            const gchar *in_query,
+                            EDataBook *book)
 {
 	OperationData *op;
 
@@ -570,7 +593,10 @@ impl_Book_get_contact_list (EGdbusBook *object, GDBusMethodInvocation *invocatio
 }
 
 static gboolean
-impl_Book_get_contact_list_uids (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_query, EDataBook *book)
+impl_Book_get_contact_list_uids (EGdbusBook *object,
+                                 GDBusMethodInvocation *invocation,
+                                 const gchar *in_query,
+                                 EDataBook *book)
 {
 	OperationData *op;
 
@@ -592,7 +618,10 @@ impl_Book_get_contact_list_uids (EGdbusBook *object, GDBusMethodInvocation *invo
 }
 
 static gboolean
-impl_Book_add_contact (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_vcard, EDataBook *book)
+impl_Book_add_contact (EGdbusBook *object,
+                       GDBusMethodInvocation *invocation,
+                       const gchar *in_vcard,
+                       EDataBook *book)
 {
 	OperationData *op;
 
@@ -614,7 +643,10 @@ impl_Book_add_contact (EGdbusBook *object, GDBusMethodInvocation *invocation, co
 }
 
 static gboolean
-impl_Book_modify_contact (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_vcard, EDataBook *book)
+impl_Book_modify_contact (EGdbusBook *object,
+                          GDBusMethodInvocation *invocation,
+                          const gchar *in_vcard,
+                          EDataBook *book)
 {
 	OperationData *op;
 
@@ -636,7 +668,10 @@ impl_Book_modify_contact (EGdbusBook *object, GDBusMethodInvocation *invocation,
 }
 
 static gboolean
-impl_Book_remove_contacts (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar * const *in_uids, EDataBook *book)
+impl_Book_remove_contacts (EGdbusBook *object,
+                           GDBusMethodInvocation *invocation,
+                           const gchar * const *in_uids,
+                           EDataBook *book)
 {
 	OperationData *op;
 
@@ -654,7 +689,10 @@ impl_Book_remove_contacts (EGdbusBook *object, GDBusMethodInvocation *invocation
 }
 
 static gboolean
-impl_Book_get_backend_property (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_prop_name, EDataBook *book)
+impl_Book_get_backend_property (EGdbusBook *object,
+                                GDBusMethodInvocation *invocation,
+                                const gchar *in_prop_name,
+                                EDataBook *book)
 {
 	OperationData *op;
 
@@ -668,7 +706,10 @@ impl_Book_get_backend_property (EGdbusBook *object, GDBusMethodInvocation *invoc
 }
 
 static gboolean
-impl_Book_set_backend_property (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar * const *in_prop_name_value, EDataBook *book)
+impl_Book_set_backend_property (EGdbusBook *object,
+                                GDBusMethodInvocation *invocation,
+                                const gchar * const *in_prop_name_value,
+                                EDataBook *book)
 {
 	OperationData *op;
 
@@ -682,7 +723,10 @@ impl_Book_set_backend_property (EGdbusBook *object, GDBusMethodInvocation *invoc
 }
 
 static gboolean
-impl_Book_get_view (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_query, EDataBook *book)
+impl_Book_get_view (EGdbusBook *object,
+                    GDBusMethodInvocation *invocation,
+                    const gchar *in_query,
+                    EDataBook *book)
 {
 	OperationData *op;
 
@@ -707,7 +751,10 @@ impl_Book_get_view (EGdbusBook *object, GDBusMethodInvocation *invocation, const
 }
 
 static gboolean
-impl_Book_authenticate_user (EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar * const *in_credentials, EDataBook *book)
+impl_Book_authenticate_user (EGdbusBook *object,
+                             GDBusMethodInvocation *invocation,
+                             const gchar * const *in_credentials,
+                             EDataBook *book)
 {
 	OperationData *op;
 
@@ -729,7 +776,10 @@ impl_Book_authenticate_user (EGdbusBook *object, GDBusMethodInvocation *invocati
 }
 
 static gboolean
-impl_Book_cancel_operation (EGdbusBook *object, GDBusMethodInvocation *invocation, guint in_opid, EDataBook *book)
+impl_Book_cancel_operation (EGdbusBook *object,
+                            GDBusMethodInvocation *invocation,
+                            guint in_opid,
+                            EDataBook *book)
 {
 	OperationData *op;
 
@@ -743,7 +793,9 @@ impl_Book_cancel_operation (EGdbusBook *object, GDBusMethodInvocation *invocatio
 }
 
 static gboolean
-impl_Book_cancel_all (EGdbusBook *object, GDBusMethodInvocation *invocation, EDataBook *book)
+impl_Book_cancel_all (EGdbusBook *object,
+                      GDBusMethodInvocation *invocation,
+                      EDataBook *book)
 {
 	OperationData *op;
 
@@ -756,7 +808,9 @@ impl_Book_cancel_all (EGdbusBook *object, GDBusMethodInvocation *invocation, EDa
 }
 
 static gboolean
-impl_Book_close (EGdbusBook *object, GDBusMethodInvocation *invocation, EDataBook *book)
+impl_Book_close (EGdbusBook *object,
+                 GDBusMethodInvocation *invocation,
+                 EDataBook *book)
 {
 	OperationData *op;
 
@@ -771,7 +825,9 @@ impl_Book_close (EGdbusBook *object, GDBusMethodInvocation *invocation, EDataBoo
 }
 
 void
-e_data_book_respond_open (EDataBook *book, guint opid, GError *error)
+e_data_book_respond_open (EDataBook *book,
+                          guint opid,
+                          GError *error)
 {
 	op_complete (book, opid);
 
@@ -785,7 +841,9 @@ e_data_book_respond_open (EDataBook *book, guint opid, GError *error)
 }
 
 void
-e_data_book_respond_remove (EDataBook *book, guint opid, GError *error)
+e_data_book_respond_remove (EDataBook *book,
+                            guint opid,
+                            GError *error)
 {
 	op_complete (book, opid);
 
@@ -810,7 +868,9 @@ e_data_book_respond_remove (EDataBook *book, guint opid, GError *error)
  * Since: 3.2
  */
 void
-e_data_book_respond_refresh (EDataBook *book, guint32 opid, GError *error)
+e_data_book_respond_refresh (EDataBook *book,
+                             guint32 opid,
+                             GError *error)
 {
 	op_complete (book, opid);
 
@@ -824,7 +884,10 @@ e_data_book_respond_refresh (EDataBook *book, guint32 opid, GError *error)
 }
 
 void
-e_data_book_respond_get_backend_property (EDataBook *book, guint32 opid, GError *error, const gchar *prop_value)
+e_data_book_respond_get_backend_property (EDataBook *book,
+                                          guint32 opid,
+                                          GError *error,
+                                          const gchar *prop_value)
 {
 	gchar *gdbus_prop_value = NULL;
 
@@ -842,7 +905,9 @@ e_data_book_respond_get_backend_property (EDataBook *book, guint32 opid, GError 
 }
 
 void
-e_data_book_respond_set_backend_property (EDataBook *book, guint32 opid, GError *error)
+e_data_book_respond_set_backend_property (EDataBook *book,
+                                          guint32 opid,
+                                          GError *error)
 {
 	op_complete (book, opid);
 
@@ -856,7 +921,10 @@ e_data_book_respond_set_backend_property (EDataBook *book, guint32 opid, GError 
 }
 
 void
-e_data_book_respond_get_contact (EDataBook *book, guint32 opid, GError *error, const gchar *vcard)
+e_data_book_respond_get_contact (EDataBook *book,
+                                 guint32 opid,
+                                 GError *error,
+                                 const gchar *vcard)
 {
 	gchar *gdbus_vcard = NULL;
 
@@ -874,7 +942,10 @@ e_data_book_respond_get_contact (EDataBook *book, guint32 opid, GError *error, c
 }
 
 void
-e_data_book_respond_get_contact_list (EDataBook *book, guint32 opid, GError *error, const GSList *cards)
+e_data_book_respond_get_contact_list (EDataBook *book,
+                                      guint32 opid,
+                                      GError *error,
+                                      const GSList *cards)
 {
 	if (error) {
 		/* Translators: This is prefix to a detailed error message */
@@ -898,7 +969,10 @@ e_data_book_respond_get_contact_list (EDataBook *book, guint32 opid, GError *err
 }
 
 void
-e_data_book_respond_get_contact_list_uids (EDataBook *book, guint32 opid, GError *error, const GSList *uids)
+e_data_book_respond_get_contact_list_uids (EDataBook *book,
+                                           guint32 opid,
+                                           GError *error,
+                                           const GSList *uids)
 {
 	if (error) {
 		/* Translators: This is prefix to a detailed error message */
@@ -922,7 +996,10 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book, guint32 opid, GError
 }
 
 void
-e_data_book_respond_create (EDataBook *book, guint32 opid, GError *error, const EContact *contact)
+e_data_book_respond_create (EDataBook *book,
+                            guint32 opid,
+                            GError *error,
+                            const EContact *contact)
 {
 	gchar *gdbus_uid = NULL;
 
@@ -943,7 +1020,10 @@ e_data_book_respond_create (EDataBook *book, guint32 opid, GError *error, const 
 }
 
 void
-e_data_book_respond_modify (EDataBook *book, guint32 opid, GError *error, const EContact *contact)
+e_data_book_respond_modify (EDataBook *book,
+                            guint32 opid,
+                            GError *error,
+                            const EContact *contact)
 {
 	op_complete (book, opid);
 
@@ -961,7 +1041,10 @@ e_data_book_respond_modify (EDataBook *book, guint32 opid, GError *error, const 
 }
 
 void
-e_data_book_respond_remove_contacts (EDataBook *book, guint32 opid, GError *error, const GSList *ids)
+e_data_book_respond_remove_contacts (EDataBook *book,
+                                     guint32 opid,
+                                     GError *error,
+                                     const GSList *ids)
 {
 	op_complete (book, opid);
 
@@ -984,7 +1067,8 @@ e_data_book_respond_remove_contacts (EDataBook *book, guint32 opid, GError *erro
 }
 
 void
-e_data_book_report_error (EDataBook *book, const gchar *message)
+e_data_book_report_error (EDataBook *book,
+                          const gchar *message)
 {
 	g_return_if_fail (book != NULL);
 	g_return_if_fail (message != NULL);
@@ -993,7 +1077,8 @@ e_data_book_report_error (EDataBook *book, const gchar *message)
 }
 
 void
-e_data_book_report_readonly (EDataBook *book, gboolean readonly)
+e_data_book_report_readonly (EDataBook *book,
+                             gboolean readonly)
 {
 	g_return_if_fail (book != NULL);
 
@@ -1001,7 +1086,8 @@ e_data_book_report_readonly (EDataBook *book, gboolean readonly)
 }
 
 void
-e_data_book_report_online (EDataBook *book, gboolean is_online)
+e_data_book_report_online (EDataBook *book,
+                           gboolean is_online)
 {
 	g_return_if_fail (book != NULL);
 
@@ -1009,10 +1095,11 @@ e_data_book_report_online (EDataBook *book, gboolean is_online)
 }
 
 /* credentilas contains extra information for a source for which authentication is requested.
-   This parameter can be NULL to indicate "for this book".
+ * This parameter can be NULL to indicate "for this book".
 */
 void
-e_data_book_report_auth_required (EDataBook *book, const ECredentials *credentials)
+e_data_book_report_auth_required (EDataBook *book,
+                                  const ECredentials *credentials)
 {
 	gchar *empty_strv[2];
 	gchar **strv = NULL;
@@ -1031,12 +1118,13 @@ e_data_book_report_auth_required (EDataBook *book, const ECredentials *credentia
 }
 
 /* Reports to associated client that opening phase of the book is finished.
-   error being NULL means successfully, otherwise reports an error which happened
-   during opening phase. By opening phase is meant a process including successfull
-   authentication to the server/storage.
-*/
+ * error being NULL means successfully, otherwise reports an error which happened
+ * during opening phase. By opening phase is meant a process including successfull
+ * authentication to the server/storage.
+ */
 void
-e_data_book_report_opened (EDataBook *book, const GError *error)
+e_data_book_report_opened (EDataBook *book,
+                           const GError *error)
 {
 	gchar **strv_error;
 
@@ -1049,7 +1137,9 @@ e_data_book_report_opened (EDataBook *book, const GError *error)
 
 /* Notifies client about certain property value change */
 void
-e_data_book_report_backend_property_changed (EDataBook *book, const gchar *prop_name, const gchar *prop_value)
+e_data_book_report_backend_property_changed (EDataBook *book,
+                                             const gchar *prop_name,
+                                             const gchar *prop_value)
 {
 	gchar **strv;
 
@@ -1074,7 +1164,10 @@ e_data_book_report_backend_property_changed (EDataBook *book, const gchar *prop_
  * Since: 2.32
  **/
 guint
-e_data_book_register_gdbus_object (EDataBook *book, GDBusConnection *connection, const gchar *object_path, GError **error)
+e_data_book_register_gdbus_object (EDataBook *book,
+                                   GDBusConnection *connection,
+                                   const gchar *object_path,
+                                   GError **error)
 {
 	g_return_val_if_fail (book != NULL, 0);
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), 0);
@@ -1169,7 +1262,8 @@ e_data_book_class_init (EDataBookClass *klass)
 }
 
 EDataBook *
-e_data_book_new (EBookBackend *backend, ESource *source)
+e_data_book_new (EBookBackend *backend,
+                 ESource *source)
 {
 	EDataBook *book;
 

@@ -56,7 +56,8 @@ enum {
 };
 
 static void
-free_connection (gpointer data, gpointer user_data)
+free_connection (gpointer data,
+                 gpointer user_data)
 {
 	ConnectionInfo *cinfo = (ConnectionInfo *) data;
 	CamelIMAPXServer *conn = cinfo->conn;
@@ -203,16 +204,17 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 
 /* TODO destroy unused connections in a time-out loop */
 static void
-imapx_conn_shutdown (CamelIMAPXServer *conn, CamelIMAPXConnManager *con_man)
+imapx_conn_shutdown (CamelIMAPXServer *conn,
+                     CamelIMAPXConnManager *con_man)
 {
 	GSList *l;
 	ConnectionInfo *cinfo;
 	gboolean found = FALSE;
 
 	/* when clearing connections then other thread than a parser thread,
-	   in which this function is called, holds the CON_LOCK, thus skip
-	   this all, because otherwise a deadlock will happen.
-	   The connection will be freed later anyway. */
+	 * in which this function is called, holds the CON_LOCK, thus skip
+	 * this all, because otherwise a deadlock will happen.
+	 * The connection will be freed later anyway. */
 	if (con_man->priv->clearing_connections) {
 		c(conn->tagprefix, "%s: called on %p when clearing connections, skipping it...\n", G_STRFUNC, conn);
 		return;
@@ -237,7 +239,9 @@ imapx_conn_shutdown (CamelIMAPXServer *conn, CamelIMAPXConnManager *con_man)
 }
 
 static void
-imapx_conn_update_select (CamelIMAPXServer *conn, const gchar *selected_folder, CamelIMAPXConnManager *con_man)
+imapx_conn_update_select (CamelIMAPXServer *conn,
+                          const gchar *selected_folder,
+                          CamelIMAPXConnManager *con_man)
 {
 	GSList *l;
 	ConnectionInfo *cinfo;
@@ -274,7 +278,8 @@ imapx_conn_update_select (CamelIMAPXServer *conn, const gchar *selected_folder, 
 
 /* This should find a connection if the slots are full, returns NULL if there are slots available for a new connection for a folder */
 static CamelIMAPXServer *
-imapx_find_connection (CamelIMAPXConnManager *con_man, const gchar *folder_name)
+imapx_find_connection (CamelIMAPXConnManager *con_man,
+                       const gchar *folder_name)
 {
 	guint i = 0, prev_len = -1, n = -1;
 	GSList *l;
@@ -450,8 +455,9 @@ camel_imapx_conn_manager_get_connections (CamelIMAPXConnManager *con_man)
 
 /* Used for handling operations that fails to execute and that needs to removed from folder list */
 void
-camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man, CamelIMAPXServer *conn,
-					  const gchar *folder_name)
+camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man,
+                                          CamelIMAPXServer *conn,
+                                          const gchar *folder_name)
 {
 	GSList *l;
 	ConnectionInfo *cinfo;

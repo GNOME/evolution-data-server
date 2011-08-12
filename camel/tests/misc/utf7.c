@@ -40,7 +40,8 @@ static struct {
 };
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	const gchar *p;
 	gchar *utf8, *utf7;
@@ -61,7 +62,7 @@ main (gint argc, gchar **argv)
 		p = tests[i].utf8;
 		j = 0;
 		do {
-			u = camel_utf8_getc ((const guchar **)&p);
+			u = camel_utf8_getc ((const guchar **) &p);
 			check (u == tests[i].unicode[j]);
 			j++;
 		} while (u);
@@ -87,7 +88,7 @@ main (gint argc, gchar **argv)
 		j = 0;
 		do {
 			u = tests[i].unicode[j++];
-			camel_utf8_putc ((guchar **)&p, u);
+			camel_utf8_putc ((guchar **) &p, u);
 			g_string_append_u (out, u);
 		} while (u);
 

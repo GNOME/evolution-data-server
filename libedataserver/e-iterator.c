@@ -61,7 +61,7 @@ e_iterator_init (EIterator *card)
  * Returns: (transfer none): the iterator.
  */
 gconstpointer
-e_iterator_get      (EIterator *iterator)
+e_iterator_get (EIterator *iterator)
 {
 	if (E_ITERATOR_GET_CLASS (iterator)->get)
 		return E_ITERATOR_GET_CLASS (iterator)->get (iterator);
@@ -70,21 +70,21 @@ e_iterator_get      (EIterator *iterator)
 }
 
 void
-e_iterator_reset    (EIterator *iterator)
+e_iterator_reset (EIterator *iterator)
 {
 	if (E_ITERATOR_GET_CLASS (iterator)->reset)
 		E_ITERATOR_GET_CLASS (iterator)->reset (iterator);
 }
 
 void
-e_iterator_last     (EIterator *iterator)
+e_iterator_last (EIterator *iterator)
 {
 	if (E_ITERATOR_GET_CLASS (iterator)->last)
 		E_ITERATOR_GET_CLASS (iterator)->last (iterator);
 }
 
 gboolean
-e_iterator_next     (EIterator *iterator)
+e_iterator_next (EIterator *iterator)
 {
 	if (E_ITERATOR_GET_CLASS (iterator)->next)
 		return E_ITERATOR_GET_CLASS (iterator)->next (iterator);
@@ -93,7 +93,7 @@ e_iterator_next     (EIterator *iterator)
 }
 
 gboolean
-e_iterator_prev     (EIterator *iterator)
+e_iterator_prev (EIterator *iterator)
 {
 	if (E_ITERATOR_GET_CLASS (iterator)->prev)
 		return E_ITERATOR_GET_CLASS (iterator)->prev (iterator);
@@ -102,23 +102,24 @@ e_iterator_prev     (EIterator *iterator)
 }
 
 void
-e_iterator_delete   (EIterator *iterator)
+e_iterator_delete (EIterator *iterator)
 {
 	if (E_ITERATOR_GET_CLASS (iterator)->remove)
 		E_ITERATOR_GET_CLASS (iterator)->remove (iterator);
 }
 
-void           e_iterator_insert     (EIterator  *iterator,
-				      gconstpointer object,
-				      gboolean    before)
+void
+e_iterator_insert (EIterator *iterator,
+                   gconstpointer object,
+                   gboolean before)
 {
 	if (E_ITERATOR_GET_CLASS (iterator)->insert)
 		E_ITERATOR_GET_CLASS (iterator)->insert (iterator, object, before);
 }
 
 void
-e_iterator_set      (EIterator *iterator,
-			  const void    *object)
+e_iterator_set (EIterator *iterator,
+                gconstpointer object)
 {
 	if (E_ITERATOR_GET_CLASS (iterator)->set)
 		E_ITERATOR_GET_CLASS (iterator)->set (iterator, object);

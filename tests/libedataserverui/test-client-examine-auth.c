@@ -47,7 +47,9 @@ extra_values_free (ExtraValues *evals)
 }
 
 static void
-print_each_property (gpointer prop_name, gpointer prop_value, gpointer user_data)
+print_each_property (gpointer prop_name,
+                     gpointer prop_value,
+                     gpointer user_data)
 {
 	g_return_if_fail (prop_name != NULL);
 
@@ -77,7 +79,8 @@ print_each_property (gpointer prop_name, gpointer prop_value, gpointer user_data
 }
 
 static void
-print_values (const ExtraValues *evals, EClient *client)
+print_values (const ExtraValues *evals,
+              EClient *client)
 {
 	const GSList *values;
 
@@ -168,7 +171,9 @@ continue_next_source (gpointer async_data)
 }
 
 static void
-client_got_backend_property_async (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_got_backend_property_async (GObject *source_object,
+                                   GAsyncResult *result,
+                                   gpointer user_data)
 {
 	ExtraValues *evals = user_data;
 	gchar *prop_value = NULL;
@@ -204,7 +209,9 @@ client_got_backend_property_async (GObject *source_object, GAsyncResult *result,
 }
 
 static void
-client_set_backend_property_async (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_set_backend_property_async (GObject *source_object,
+                                   GAsyncResult *result,
+                                   gpointer user_data)
 {
 	ExtraValues *evals = user_data;
 	GError *error = NULL;
@@ -227,7 +234,9 @@ client_set_backend_property_async (GObject *source_object, GAsyncResult *result,
 }
 
 static void
-client_opened_async (GObject *source_object, GAsyncResult *result, gpointer async_data)
+client_opened_async (GObject *source_object,
+                     GAsyncResult *result,
+                     gpointer async_data)
 {
 	ExtraValues *evals;
 	GError *error = NULL;
@@ -349,7 +358,8 @@ foreach_configured_source_async_start (ESource **source)
 }
 
 static gboolean
-foreach_configured_source_async_next (gpointer *foreach_async_data, ESource **source)
+foreach_configured_source_async_next (gpointer *foreach_async_data,
+                                      ESource **source)
 {
 	struct ForeachConfiguredData *async_data;
 
@@ -388,7 +398,8 @@ foreach_configured_source_async_next (gpointer *foreach_async_data, ESource **so
 }
 
 static void
-report_error (const gchar *operation, GError **error)
+report_error (const gchar *operation,
+              GError **error)
 {
 	g_return_if_fail (operation != NULL);
 
@@ -398,7 +409,8 @@ report_error (const gchar *operation, GError **error)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	g_type_init ();
 	g_thread_init (NULL);

@@ -134,7 +134,9 @@ enl_popup_ungrab (ENameSelectorList *list)
 }
 
 static gboolean
-enl_entry_focus_in (ENameSelectorList *list, GdkEventFocus *event, gpointer dummy)
+enl_entry_focus_in (ENameSelectorList *list,
+                    GdkEventFocus *event,
+                    gpointer dummy)
 {
 	gint len;
 
@@ -146,7 +148,9 @@ enl_entry_focus_in (ENameSelectorList *list, GdkEventFocus *event, gpointer dumm
 }
 
 static gboolean
-enl_entry_focus_out (ENameSelectorList *list, GdkEventFocus *event, gpointer dummy)
+enl_entry_focus_out (ENameSelectorList *list,
+                     GdkEventFocus *event,
+                     gpointer dummy)
 {
 	/* When we lose focus and popup is still present hide it. Dont do it, when we click the popup. Look for grab */
 	if (gtk_widget_get_visible (GTK_WIDGET (list->priv->popup))
@@ -162,8 +166,8 @@ enl_entry_focus_out (ENameSelectorList *list, GdkEventFocus *event, gpointer dum
 
 static gboolean
 enl_popup_button_press (GtkWidget *widget,
-			GdkEventButton *event,
-			ENameSelectorList *list)
+                        GdkEventButton *event,
+                        ENameSelectorList *list)
 {
 	if (!gtk_widget_get_mapped (widget))
 		return FALSE;
@@ -176,8 +180,8 @@ enl_popup_button_press (GtkWidget *widget,
 
 static gboolean
 enl_popup_focus_out (GtkWidget *w,
-		     GdkEventFocus *event,
-		     ENameSelectorList *list)
+                     GdkEventFocus *event,
+                     ENameSelectorList *list)
 {
 	/* Just ungrab. We lose focus on button press event */
 	enl_popup_ungrab (list);
@@ -185,9 +189,9 @@ enl_popup_focus_out (GtkWidget *w,
 }
 
 static gboolean
-enl_popup_enter_notify (GtkWidget        *widget,
-			GdkEventCrossing *event,
-			ENameSelectorList *list)
+enl_popup_enter_notify (GtkWidget *widget,
+                        GdkEventCrossing *event,
+                        ENameSelectorList *list)
 {
   if (event->type == GDK_ENTER_NOTIFY && !gtk_widget_has_grab (GTK_WIDGET (list->priv->popup)))
 	enl_popup_grab (list);
@@ -197,7 +201,7 @@ enl_popup_enter_notify (GtkWidget        *widget,
 
 static void
 enl_tree_select_node (ENameSelectorList *list,
-		      gint n)
+                      gint n)
 {
 	EDestinationStore *store;
 	ENameSelectorEntry *entry;
@@ -212,7 +216,7 @@ enl_tree_select_node (ENameSelectorList *list,
 	store = e_name_selector_entry_peek_destination_store (entry);
 	selection = gtk_tree_view_get_selection (tree_view);
 	iter.stamp = e_destination_store_get_stamp (store);
-	iter.user_data = GINT_TO_POINTER (n-1);
+	iter.user_data = GINT_TO_POINTER (n - 1);
 
 	gtk_tree_selection_unselect_all (selection);
 	gtk_tree_selection_select_iter (selection, &iter);
@@ -229,8 +233,8 @@ enl_tree_select_node (ENameSelectorList *list,
 
 static gboolean
 enl_entry_key_press_event (ENameSelectorList *list,
-			   GdkEventKey *event,
-			   gpointer dummy)
+                           GdkEventKey *event,
+                           gpointer dummy)
 {
 	ENameSelectorEntry *entry;
 	EDestinationStore *store;
@@ -251,7 +255,8 @@ enl_entry_key_press_event (ENameSelectorList *list,
 }
 
 static void
-delete_row (GtkTreePath *path, ENameSelectorList *list)
+delete_row (GtkTreePath *path,
+            ENameSelectorList *list)
 {
 	ENameSelectorEntry *entry;
 	EDestinationStore *store;
@@ -297,7 +302,8 @@ delete_row (GtkTreePath *path, ENameSelectorList *list)
 }
 
 static void
-popup_activate_email (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
+popup_activate_email (ENameSelectorEntry *name_selector_entry,
+                      GtkWidget *menu_item)
 {
 	EDestination *destination;
 	EContact     *contact;
@@ -316,7 +322,8 @@ popup_activate_email (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_i
 }
 
 static void
-popup_activate_list (EDestination *destination, GtkWidget *item)
+popup_activate_list (EDestination *destination,
+                     GtkWidget *item)
 {
 	gboolean status = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
 
@@ -324,7 +331,8 @@ popup_activate_list (EDestination *destination, GtkWidget *item)
 }
 
 static void
-destination_set_list (GtkWidget *item, EDestination *destination)
+destination_set_list (GtkWidget *item,
+                      EDestination *destination)
 {
 	EContact *contact;
 	gboolean status = gtk_check_menu_item_get_active (GTK_CHECK_MENU_ITEM (item));
@@ -337,7 +345,8 @@ destination_set_list (GtkWidget *item, EDestination *destination)
 }
 
 static void
-destination_set_email (GtkWidget *item, EDestination *destination)
+destination_set_email (GtkWidget *item,
+                       EDestination *destination)
 {
 	gint email_num;
 	EContact *contact;
@@ -358,22 +367,24 @@ typedef struct {
 }PopupDeleteRowInfo;
 
 static void
-popup_delete_row (GtkWidget *w, PopupDeleteRowInfo *row_info)
+popup_delete_row (GtkWidget *w,
+                  PopupDeleteRowInfo *row_info)
 {
 	delete_row (row_info->path, row_info->list);
 	g_free (row_info);
 }
 
 static void
-menu_deactivate (GtkMenuShell *junk, ENameSelectorList *list)
+menu_deactivate (GtkMenuShell *junk,
+                 ENameSelectorList *list)
 {
 	enl_popup_grab (list);
 }
 
 static gboolean
 enl_tree_button_press_event (GtkWidget *widget,
-		       GdkEventButton *event,
-		       ENameSelectorList *list)
+                             GdkEventButton *event,
+                             ENameSelectorList *list)
 {
 	GtkWidget *menu;
 	EDestination *destination;
@@ -525,8 +536,8 @@ enl_tree_button_press_event (GtkWidget *widget,
 
 static gboolean
 enl_tree_key_press_event (GtkWidget *w,
-			   GdkEventKey *event,
-			   ENameSelectorList *list)
+                          GdkEventKey *event,
+                          ENameSelectorList *list)
 {
 	if (event->keyval == GDK_KEY_Escape) {
 		enl_popup_ungrab (list);

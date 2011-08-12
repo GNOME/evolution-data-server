@@ -58,16 +58,16 @@ mime_filter_canon_run (CamelMimeFilter *mime_filter,
 
 	/* first, work out how much space we need */
 	inptr = (guchar *) in;
-	inend = (const guchar *) (in+len);
+	inend = (const guchar *) (in + len);
 	while (inptr < inend)
 		if (*inptr++ == '\n')
 			lf++;
 
 	/* worst case, extra 3 chars per line
-	   "From \n" -> "=46rom \r\n"
-	   We add 1 extra incase we're called from complete, when we didn't end in \n */
+	 * "From \n" -> "=46rom \r\n"
+	 * We add 1 extra incase we're called from complete, when we didn't end in \n */
 
-	camel_mime_filter_set_size (mime_filter, len+lf*3+4, FALSE);
+	camel_mime_filter_set_size (mime_filter, len + lf * 3 + 4, FALSE);
 
 	o = mime_filter->outbuf;
 	inptr = (guchar *) in;
@@ -78,7 +78,7 @@ mime_filter_canon_run (CamelMimeFilter *mime_filter,
 		c = *inptr;
 		if (priv->flags & CAMEL_MIME_FILTER_CANON_FROM && c == 'F') {
 			inptr++;
-			if (inptr < inend-4) {
+			if (inptr < inend - 4) {
 				if (strncmp((gchar *)inptr, "rom ", 4) == 0) {
 					strcpy(o, "=46rom ");
 					inptr+=4;
@@ -97,11 +97,11 @@ mime_filter_canon_run (CamelMimeFilter *mime_filter,
 			if (c == '\n') {
 				/* check to strip trailing space */
 				if (priv->flags & CAMEL_MIME_FILTER_CANON_STRIP) {
-					while (o>starto && (o[-1] == ' ' || o[-1] == '\t' || o[-1]=='\r'))
+					while (o > starto && (o[-1] == ' ' || o[-1] == '\t' || o[-1]=='\r'))
 						o--;
 				}
 				/* check end of line canonicalisation */
-				if (o>starto) {
+				if (o > starto) {
 					if (priv->flags & CAMEL_MIME_FILTER_CANON_CRLF) {
 						if (o[-1] != '\r')
 							*o++ = '\r';
@@ -124,7 +124,7 @@ mime_filter_canon_run (CamelMimeFilter *mime_filter,
 	}
 
 	/* TODO: We should probably track if we end somewhere in the middle of a line,
-	   otherwise we potentially backup a full line, which could be large */
+	 * otherwise we potentially backup a full line, which could be large */
 
 	/* we got to the end of the data without finding anything, backup to start and re-process next time around */
 	if (last) {

@@ -79,7 +79,8 @@ camel_provider_module_init (void)
 }
 
 static void
-add_hash (guint *hash, gchar *s)
+add_hash (guint *hash,
+          gchar *s)
 {
 	if (s)
 		*hash ^= g_str_hash(s);
@@ -99,7 +100,8 @@ smtp_url_hash (gconstpointer key)
 }
 
 static gint
-check_equal (gchar *s1, gchar *s2)
+check_equal (gchar *s1,
+             gchar *s2)
 {
 	if (s1 == NULL) {
 		if (s2 == NULL)
@@ -115,7 +117,8 @@ check_equal (gchar *s1, gchar *s2)
 }
 
 static gint
-smtp_url_equal (gconstpointer a, gconstpointer b)
+smtp_url_equal (gconstpointer a,
+                gconstpointer b)
 {
 	const CamelURL *u1 = a, *u2 = b;
 

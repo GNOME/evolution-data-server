@@ -26,7 +26,7 @@ add_contact (EBookClient *client)
 }
 
 static gboolean
-setup_book (EBookClient     **book_out)
+setup_book (EBookClient **book_out)
 {
 	GError *error = NULL;
 	gint    i;
@@ -83,7 +83,8 @@ finish_test (EBookClientView *view)
 }
 
 static void
-objects_added (EBookClientView *view, const GSList *contacts)
+objects_added (EBookClientView *view,
+               const GSList *contacts)
 {
 	const GSList *l;
 
@@ -103,7 +104,8 @@ objects_added (EBookClientView *view, const GSList *contacts)
 }
 
 static void
-objects_removed (EBookClientView *view, const GSList *ids)
+objects_removed (EBookClientView *view,
+                 const GSList *ids)
 {
 	const GSList *l;
 
@@ -113,7 +115,8 @@ objects_removed (EBookClientView *view, const GSList *ids)
 }
 
 static void
-complete (EBookClientView *view, const GError *error)
+complete (EBookClientView *view,
+          const GError *error)
 {
 	/* Now add a contact and assert that we received notification */
 	loading_view = FALSE;
@@ -148,7 +151,9 @@ setup_and_start_view (EBookClientView *view)
 }
 
 static void
-get_view_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+get_view_cb (GObject *source_object,
+             GAsyncResult *result,
+             gpointer user_data)
 {
 	EBookClientView *view;
 	GError *error = NULL;
@@ -185,7 +190,8 @@ call_get_view (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	EBookQuery *query;

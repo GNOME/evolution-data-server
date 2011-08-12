@@ -204,7 +204,7 @@ camel_provider_load (const gchar *path,
 	}
 
 	if (!g_module_symbol (module, "camel_provider_module_init",
-			      (gpointer *)&provider_module_init)) {
+			      (gpointer *) &provider_module_init)) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Could not load %s: No initialization "
@@ -250,7 +250,7 @@ camel_provider_register (CamelProvider *provider)
 	provider->description = P_(provider->description);
 	conf = provider->extra_conf;
 	if (conf) {
-		for (i=0;conf[i].type != CAMEL_PROVIDER_CONF_END;i++) {
+		for (i = 0; conf[i].type != CAMEL_PROVIDER_CONF_END; i++) {
 			if (conf[i].text)
 				conf[i].text = P_(conf[i].text);
 		}
@@ -278,7 +278,8 @@ camel_provider_register (CamelProvider *provider)
 }
 
 static gint
-provider_compare (gconstpointer a, gconstpointer b)
+provider_compare (gconstpointer a,
+                  gconstpointer b)
 {
 	const CamelProvider *cpa = (const CamelProvider *) a;
 	const CamelProvider *cpb = (const CamelProvider *) b;
@@ -287,7 +288,9 @@ provider_compare (gconstpointer a, gconstpointer b)
 }
 
 static void
-add_to_list (gpointer key, gpointer value, gpointer user_data)
+add_to_list (gpointer key,
+             gpointer value,
+             gpointer user_data)
 {
 	GList **list = user_data;
 
@@ -322,7 +325,7 @@ camel_provider_list (gboolean load)
 		GList *w;
 
 		g_hash_table_foreach (module_table, add_to_list, &list);
-		for (w = list;w;w = w->next) {
+		for (w = list; w; w = w->next) {
 			CamelProviderModule *m = w->data;
 
 			if (!m->loaded) {
@@ -365,7 +368,7 @@ camel_provider_get (const gchar *url_string,
 	g_return_val_if_fail (provider_table != NULL, NULL);
 
 	len = strcspn(url_string, ":");
-	protocol = g_alloca (len+1);
+	protocol = g_alloca (len + 1);
 	memcpy (protocol, url_string, len);
 	protocol[len] = 0;
 

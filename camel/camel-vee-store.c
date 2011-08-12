@@ -33,14 +33,14 @@
 #include "camel-vee-store.h"
 
 /* Translators: 'Unmatched' is a folder name under Search folders where are shown
-   all messages not belonging into any other configured search folder */
+ * all messages not belonging into any other configured search folder */
 #define PRETTY_UNMATCHED_FOLDER_NAME _("Unmatched")
 
 #define d(x)
 
 /* flags
-   1 = delete (0 = add)
-   2 = noselect
+ * 1 = delete (0 = add)
+ * 2 = noselect
 */
 #define CHANGE_ADD (0)
 #define CHANGE_DELETE (1)
@@ -92,7 +92,9 @@ change_folder (CamelStore *store,
 }
 
 static void
-cvs_free_unmatched (gpointer key, gpointer value, gpointer data)
+cvs_free_unmatched (gpointer key,
+                    gpointer value,
+                    gpointer data)
 {
 	g_free (key);
 }
@@ -172,7 +174,7 @@ vee_store_get_folder_sync (CamelStore *store,
 				/* create a dummy vFolder for this, makes get_folder_info simpler */
 				folder = camel_vee_folder_new (store, name, flags);
 				camel_object_bag_add (store->folders, name, folder);
-				change_folder (store, name, CHANGE_ADD|CHANGE_NOSELECT, 0);
+				change_folder (store, name, CHANGE_ADD | CHANGE_NOSELECT, 0);
 				/* FIXME: this sort of leaks folder, nobody owns a ref to it but us */
 			} else {
 				g_object_unref (folder);
@@ -203,7 +205,7 @@ vee_store_get_folder_info_sync (CamelStore *store,
 	infos_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	folders = camel_object_bag_list (store->folders);
 	qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), vee_folder_cmp);
-	for (i=0;i<folders->len;i++) {
+	for (i = 0; i < folders->len; i++) {
 		CamelVeeFolder *folder = folders->pdata[i];
 		const gchar *full_name;
 		const gchar *display_name;
@@ -225,7 +227,7 @@ vee_store_get_folder_info_sync (CamelStore *store,
 				   && strncmp (full_name, top, toplen) == 0
 				   && full_name[toplen] == '/'
 				   && ((flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)
-				       || strchr (full_name+toplen+1, '/') == NULL)));
+				       || strchr (full_name + toplen + 1, '/') == NULL)));
 		} else {
 			add = (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)
 				|| strchr (full_name, '/') == NULL;
@@ -269,7 +271,7 @@ vee_store_get_folder_info_sync (CamelStore *store,
 			pinfo = NULL;
 
 		if (pinfo) {
-			pinfo->flags = (pinfo->flags & ~(CAMEL_FOLDER_CHILDREN|CAMEL_FOLDER_NOCHILDREN))|CAMEL_FOLDER_CHILDREN;
+			pinfo->flags = (pinfo->flags & ~(CAMEL_FOLDER_CHILDREN | CAMEL_FOLDER_NOCHILDREN)) | CAMEL_FOLDER_CHILDREN;
 			d (printf ("updating parent flags for children '%s' %08x\n", pinfo->full_name, pinfo->flags));
 			tail = pinfo->child;
 			if (tail == NULL)
@@ -412,7 +414,7 @@ vee_store_rename_folder_sync (CamelStore *store,
 	}
 
 	/* Check that new parents exist, if not, create dummy ones */
-	name = alloca (strlen (new)+1);
+	name = alloca (strlen (new) + 1);
 	strcpy (name, new);
 	p = name;
 	while ( (p = strchr (p, '/'))) {
@@ -423,7 +425,7 @@ vee_store_rename_folder_sync (CamelStore *store,
 			/* create a dummy vFolder for this, makes get_folder_info simpler */
 			folder = camel_vee_folder_new (store, name, ((CamelVeeFolder *) oldfolder)->flags);
 			camel_object_bag_add (store->folders, name, folder);
-			change_folder (store, name, CHANGE_ADD|CHANGE_NOSELECT, 0);
+			change_folder (store, name, CHANGE_ADD | CHANGE_NOSELECT, 0);
 			/* FIXME: this sort of leaks folder, nobody owns a ref to it but us */
 		} else {
 			g_object_unref (folder);

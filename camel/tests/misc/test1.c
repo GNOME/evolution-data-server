@@ -25,7 +25,8 @@ struct {
 };
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	gint i, j;
 
@@ -39,7 +40,7 @@ main (gint argc, gchar **argv)
 		camel_test_push("references decoding[%d] '%s'", i, test1[i].header);
 		head = camel_header_references_decode (test1[i].header);
 		node = head;
-		for (j=0;test1[i].values[j];j++) {
+		for (j = 0; test1[i].values[j]; j++) {
 			check_msg(node != NULL, "didn't find all references");
 			check (strcmp (test1[i].values[j], node->id) == 0);
 			node = node->next;

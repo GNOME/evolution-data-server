@@ -110,7 +110,8 @@ static void setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp);
 
 /* BookRecord methods */
 static BookRecord *
-book_record_new (ECalBackendContacts *cbc, ESource *source)
+book_record_new (ECalBackendContacts *cbc,
+                 ESource *source)
 {
 	EBookClient *book_client;
 	EBookQuery *query;
@@ -168,7 +169,9 @@ book_record_new (ECalBackendContacts *cbc, ESource *source)
 }
 
 static gboolean
-remove_by_book (gpointer key, gpointer value, gpointer user_data)
+remove_by_book (gpointer key,
+                gpointer value,
+                gpointer user_data)
 {
 	ContactRecord *cr = value;
 	EBookClient *book_client = user_data;
@@ -191,7 +194,9 @@ book_record_free (BookRecord *br)
 
 /* ContactRecord methods */
 static ContactRecord *
-contact_record_new (ECalBackendContacts *cbc, EBookClient *book_client, EContact *contact)
+contact_record_new (ECalBackendContacts *cbc,
+                    EBookClient *book_client,
+                    EContact *contact)
 {
 	ContactRecord *cr = g_new0 (ContactRecord, 1);
 	gchar *comp_str;
@@ -261,7 +266,8 @@ typedef struct _ContactRecordCB {
 } ContactRecordCB;
 
 static ContactRecordCB *
-contact_record_cb_new (ECalBackendContacts *cbc, ECalBackendSExp *sexp)
+contact_record_cb_new (ECalBackendContacts *cbc,
+                       ECalBackendSExp *sexp)
 {
 	ContactRecordCB *cb_data = g_new (ContactRecordCB, 1);
 
@@ -282,7 +288,9 @@ contact_record_cb_free (ContactRecordCB *cb_data)
 }
 
 static void
-contact_record_cb (gpointer key, gpointer value, gpointer user_data)
+contact_record_cb (gpointer key,
+                   gpointer value,
+                   gpointer user_data)
 {
 	ContactRecordCB *cb_data = user_data;
 	ContactRecord   *record = value;
@@ -299,7 +307,8 @@ contact_record_cb (gpointer key, gpointer value, gpointer user_data)
 }
 
 static gboolean
-is_source_usable (ESource *source, ESourceGroup *group)
+is_source_usable (ESource *source,
+                  ESourceGroup *group)
 {
 	const gchar *base_uri;
 	const gchar *prop;
@@ -316,7 +325,8 @@ is_source_usable (ESource *source, ESourceGroup *group)
 
 /* SourceList callbacks */
 static void
-add_source (ECalBackendContacts *cbc, ESource *source)
+add_source (ECalBackendContacts *cbc,
+            ESource *source)
 {
 	BookRecord *br = book_record_new (cbc, source);
 	const gchar *uid = e_source_peek_uid (source);
@@ -328,7 +338,9 @@ add_source (ECalBackendContacts *cbc, ESource *source)
 }
 
 static void
-source_added_cb (ESourceGroup *group, ESource *source, gpointer user_data)
+source_added_cb (ESourceGroup *group,
+                 ESource *source,
+                 gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 
@@ -339,7 +351,9 @@ source_added_cb (ESourceGroup *group, ESource *source, gpointer user_data)
 }
 
 static void
-source_removed_cb (ESourceGroup *group, ESource *source, gpointer user_data)
+source_removed_cb (ESourceGroup *group,
+                   ESource *source,
+                   gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 	const gchar          *uid = e_source_peek_uid (source);
@@ -350,7 +364,8 @@ source_removed_cb (ESourceGroup *group, ESource *source, gpointer user_data)
 }
 
 static void
-source_list_changed_cb (ESourceList *source_list, gpointer user_data)
+source_list_changed_cb (ESourceList *source_list,
+                        gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 	GSList *g, *s;
@@ -385,7 +400,9 @@ source_list_changed_cb (ESourceList *source_list, gpointer user_data)
 }
 
 static void
-source_group_added_cb (ESourceList *source_list, ESourceGroup *group, gpointer user_data)
+source_group_added_cb (ESourceList *source_list,
+                       ESourceGroup *group,
+                       gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 	GSList *i;
@@ -403,7 +420,9 @@ source_group_added_cb (ESourceList *source_list, ESourceGroup *group, gpointer u
 }
 
 static void
-source_group_removed_cb (ESourceList *source_list, ESourceGroup *group, gpointer user_data)
+source_group_removed_cb (ESourceList *source_list,
+                         ESourceGroup *group,
+                         gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 	GSList *i = NULL;
@@ -422,7 +441,9 @@ source_group_removed_cb (ESourceList *source_list, ESourceGroup *group, gpointer
 /************************************************************************************/
 
 static void
-contacts_modified_cb (EBookClientView *book_view, const GSList *contacts, gpointer user_data)
+contacts_modified_cb (EBookClientView *book_view,
+                      const GSList *contacts,
+                      gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 	EBookClient *book_client = e_book_client_view_get_client (book_view);
@@ -434,7 +455,7 @@ contacts_modified_cb (EBookClientView *book_view, const GSList *contacts, gpoint
 		EContactDate *birthday, *anniversary;
 
 		/* Because this is a change of contact, then always remove old tracked data
-		   and if possible, add with (possibly) new values.
+		 * and if possible, add with (possibly) new values.
 		*/
 		g_hash_table_remove (cbc->priv->tracked_contacts, (gchar *) uid);
 
@@ -452,7 +473,9 @@ contacts_modified_cb (EBookClientView *book_view, const GSList *contacts, gpoint
 }
 
 static void
-contacts_added_cb (EBookClientView *book_view, const GSList *contacts, gpointer user_data)
+contacts_added_cb (EBookClientView *book_view,
+                   const GSList *contacts,
+                   gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 	EBookClient *book_client = e_book_client_view_get_client (book_view);
@@ -479,7 +502,9 @@ contacts_added_cb (EBookClientView *book_view, const GSList *contacts, gpointer 
 }
 
 static void
-contacts_removed_cb (EBookClientView *book_view, const GSList *contact_ids, gpointer user_data)
+contacts_removed_cb (EBookClientView *book_view,
+                     const GSList *contact_ids,
+                     gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
 	const GSList *ii;
@@ -509,7 +534,8 @@ cdate_to_icaltime (EContactDate *cdate)
 }
 
 static void
-manage_comp_alarm_update (ECalBackendContacts *cbc, ECalComponent *comp)
+manage_comp_alarm_update (ECalBackendContacts *cbc,
+                          ECalComponent *comp)
 {
 	gchar *old_comp, *new_comp;
 
@@ -529,7 +555,9 @@ manage_comp_alarm_update (ECalBackendContacts *cbc, ECalComponent *comp)
 }
 
 static void
-update_alarm_cb (gpointer key, gpointer value, gpointer user_data)
+update_alarm_cb (gpointer key,
+                 gpointer value,
+                 gpointer user_data)
 {
 	ECalBackendContacts *cbc = user_data;
 	ContactRecord   *record = value;
@@ -558,7 +586,10 @@ update_tracked_alarms_cb (gpointer user_data)
 }
 
 static void
-alarm_config_changed_cb (GConfClient *client, guint cnxn_id, GConfEntry *entry, gpointer user_data)
+alarm_config_changed_cb (GConfClient *client,
+                         guint cnxn_id,
+                         GConfEntry *entry,
+                         gpointer user_data)
 {
 	ECalBackendContacts *cbc = user_data;
 
@@ -572,7 +603,8 @@ alarm_config_changed_cb (GConfClient *client, guint cnxn_id, GConfEntry *entry, 
 
 /* When called with NULL, then just refresh local static variables on setup change from the user. */
 static void
-setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp)
+setup_alarm (ECalBackendContacts *cbc,
+             ECalComponent *comp)
 {
 	ECalComponentAlarm *alarm;
 	ECalComponentAlarmTrigger trigger;
@@ -665,7 +697,10 @@ setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp)
 
 /* Contact -> Event creator */
 static ECalComponent *
-create_component (ECalBackendContacts *cbc, const gchar *uid, EContactDate *cdate, const gchar *summary)
+create_component (ECalBackendContacts *cbc,
+                  const gchar *uid,
+                  EContactDate *cdate,
+                  const gchar *summary)
 {
 	ECalComponent             *cal_comp;
 	ECalComponentText          comp_summary;
@@ -737,7 +772,8 @@ create_component (ECalBackendContacts *cbc, const gchar *uid, EContactDate *cdat
 }
 
 static ECalComponent *
-create_birthday (ECalBackendContacts *cbc, EContact *contact)
+create_birthday (ECalBackendContacts *cbc,
+                 EContact *contact)
 {
 	EContactDate  *cdate;
 	ECalComponent *cal_comp;
@@ -761,7 +797,8 @@ create_birthday (ECalBackendContacts *cbc, EContact *contact)
 }
 
 static ECalComponent *
-create_anniversary (ECalBackendContacts *cbc, EContact *contact)
+create_anniversary (ECalBackendContacts *cbc,
+                    EContact *contact)
 {
 	EContactDate  *cdate;
 	ECalComponent *cal_comp;
@@ -790,7 +827,12 @@ create_anniversary (ECalBackendContacts *cbc, EContact *contact)
 /* First the empty stubs */
 
 static gboolean
-e_cal_backend_contacts_get_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, gchar **prop_value, GError **perror)
+e_cal_backend_contacts_get_backend_property (ECalBackendSync *backend,
+                                             EDataCal *cal,
+                                             GCancellable *cancellable,
+                                             const gchar *prop_name,
+                                             gchar **prop_value,
+                                             GError **perror)
 {
 	gboolean processed = TRUE;
 
@@ -815,16 +857,23 @@ e_cal_backend_contacts_get_backend_property (ECalBackendSync *backend, EDataCal 
 }
 
 static void
-e_cal_backend_contacts_remove (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, GError **perror)
+e_cal_backend_contacts_remove (ECalBackendSync *backend,
+                               EDataCal *cal,
+                               GCancellable *cancellable,
+                               GError **perror)
 {
 	/* WRITE ME */
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 static void
-e_cal_backend_contacts_get_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
-				   const gchar *uid, const gchar *rid,
-				   gchar **object, GError **perror)
+e_cal_backend_contacts_get_object (ECalBackendSync *backend,
+                                   EDataCal *cal,
+                                   GCancellable *cancellable,
+                                   const gchar *uid,
+                                   const gchar *rid,
+                                   gchar **object,
+                                   GError **perror)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
 	ECalBackendContactsPrivate *priv = cbc->priv;
@@ -871,9 +920,14 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend, EDataCal *cal, GCan
 }
 
 static void
-e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
-				      const GSList *users, time_t start, time_t end,
-				      GSList **freebusy, GError **perror)
+e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend,
+                                      EDataCal *cal,
+                                      GCancellable *cancellable,
+                                      const GSList *users,
+                                      time_t start,
+                                      time_t end,
+                                      GSList **freebusy,
+                                      GError **perror)
 {
 	/* Birthdays/anniversaries don't count as busy time */
 
@@ -906,15 +960,23 @@ e_cal_backend_contacts_get_free_busy (ECalBackendSync *backend, EDataCal *cal, G
 }
 
 static void
-e_cal_backend_contacts_receive_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
-					const gchar *calobj, GError **perror)
+e_cal_backend_contacts_receive_objects (ECalBackendSync *backend,
+                                        EDataCal *cal,
+                                        GCancellable *cancellable,
+                                        const gchar *calobj,
+                                        GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 static void
-e_cal_backend_contacts_send_objects (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
-				     const gchar *calobj, GSList **users, gchar **modified_calobj, GError **perror)
+e_cal_backend_contacts_send_objects (ECalBackendSync *backend,
+                                     EDataCal *cal,
+                                     GCancellable *cancellable,
+                                     const gchar *calobj,
+                                     GSList **users,
+                                     gchar **modified_calobj,
+                                     GError **perror)
 {
 	*users = NULL;
 	*modified_calobj = NULL;
@@ -925,7 +987,8 @@ e_cal_backend_contacts_send_objects (ECalBackendSync *backend, EDataCal *cal, GC
 /* Then the real implementations */
 
 static void
-e_cal_backend_contacts_set_online (ECalBackend *backend, gboolean is_online)
+e_cal_backend_contacts_set_online (ECalBackend *backend,
+                                   gboolean is_online)
 {
 	e_cal_backend_notify_online (backend, is_online);
 	e_cal_backend_notify_readonly (backend, TRUE);
@@ -959,8 +1022,11 @@ init_sources_cb (ECalBackendContacts *cbc)
 }
 
 static void
-e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
-			     gboolean only_if_exists, GError **perror)
+e_cal_backend_contacts_open (ECalBackendSync *backend,
+                             EDataCal *cal,
+                             GCancellable *cancellable,
+                             gboolean only_if_exists,
+                             GError **perror)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
 	ECalBackendContactsPrivate *priv = cbc->priv;
@@ -989,7 +1055,11 @@ e_cal_backend_contacts_open (ECalBackendSync *backend, EDataCal *cal, GCancellab
 
 /* Add_timezone handler for the file backend */
 static void
-e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **error)
+e_cal_backend_contacts_add_timezone (ECalBackendSync *backend,
+                                     EDataCal *cal,
+                                     GCancellable *cancellable,
+                                     const gchar *tzobj,
+                                     GError **error)
 {
 	ECalBackendContacts *cbcontacts;
 	ECalBackendContactsPrivate *priv;
@@ -1027,8 +1097,12 @@ e_cal_backend_contacts_add_timezone (ECalBackendSync *backend, EDataCal *cal, GC
 }
 
 static void
-e_cal_backend_contacts_get_object_list (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
-					const gchar *sexp_string, GSList **objects, GError **perror)
+e_cal_backend_contacts_get_object_list (ECalBackendSync *backend,
+                                        EDataCal *cal,
+                                        GCancellable *cancellable,
+                                        const gchar *sexp_string,
+                                        GSList **objects,
+                                        GError **perror)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
 	ECalBackendContactsPrivate *priv = cbc->priv;
@@ -1050,7 +1124,8 @@ e_cal_backend_contacts_get_object_list (ECalBackendSync *backend, EDataCal *cal,
 }
 
 static void
-e_cal_backend_contacts_start_view (ECalBackend *backend, EDataCalView *query)
+e_cal_backend_contacts_start_view (ECalBackend *backend,
+                                   EDataCalView *query)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
 	ECalBackendContactsPrivate *priv = cbc->priv;
@@ -1076,7 +1151,8 @@ e_cal_backend_contacts_start_view (ECalBackend *backend, EDataCalView *query)
 }
 
 static icaltimezone *
-e_cal_backend_contacts_internal_get_timezone (ECalBackend *backend, const gchar *tzid)
+e_cal_backend_contacts_internal_get_timezone (ECalBackend *backend,
+                                              const gchar *tzid)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (backend);
 
@@ -1168,7 +1244,13 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 }
 
 static void
-e_cal_backend_contacts_create_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, gchar **uid, gchar **new_calobj, GError **perror)
+e_cal_backend_contacts_create_object (ECalBackendSync *backend,
+                                      EDataCal *cal,
+                                      GCancellable *cancellable,
+                                      const gchar *calobj,
+                                      gchar **uid,
+                                      gchar **new_calobj,
+                                      GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }

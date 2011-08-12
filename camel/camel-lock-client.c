@@ -139,7 +139,7 @@ lock_helper_init (GError **error)
 		close (lock_stdin_pipe[1]);
 		close (lock_stdout_pipe[0]);
 		close (lock_stdout_pipe[1]);
-		for (i=3;i<255;i++)
+		for (i = 3; i < 255; i++)
 			     close (i);
 		execl(CAMEL_LIBEXECDIR "/camel-lock-helper-" API_VERSION, "camel-lock-helper", NULL);
 		/* it'll pick this up when it tries to use us */
@@ -180,9 +180,9 @@ again:
 	msg->seq = lock_sequence;
 	msg->id = CAMEL_LOCK_HELPER_LOCK;
 	msg->data = len;
-	memcpy (msg+1, path, len);
+	memcpy (msg + 1, path, len);
 
-	write_n (lock_stdin_pipe[1], msg, len+sizeof (*msg));
+	write_n (lock_stdin_pipe[1], msg, len + sizeof (*msg));
 
 	do {
 		/* should also have a timeout here?  cancellation? */

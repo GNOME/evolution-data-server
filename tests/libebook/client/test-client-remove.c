@@ -6,7 +6,9 @@
 #include "client-test-utils.h"
 
 static void
-client_removed_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
+client_removed_cb (GObject *source_object,
+                   GAsyncResult *result,
+                   gpointer user_data)
 {
 	GError *error = NULL;
 
@@ -19,7 +21,8 @@ client_removed_cb (GObject *source_object, GAsyncResult *result, gpointer user_d
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	GError *error = NULL;

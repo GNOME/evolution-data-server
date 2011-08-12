@@ -68,7 +68,7 @@ struct _CamelSMIMEContextPrivate {
 	camel_smime_sign_t sign_mode;
 
 	gint password_tries;
-	guint send_encrypt_key_prefs:1;
+	guint send_encrypt_key_prefs : 1;
 };
 
 G_DEFINE_TYPE (CamelSMIMEContext, camel_smime_context, CAMEL_TYPE_CIPHER_CONTEXT)
@@ -91,13 +91,16 @@ smime_cert_data_clone (gpointer cert_data)
 
 /* used for decode content callback, for streaming decode */
 static void
-sm_write_stream (gpointer arg, const gchar *buf, gulong len)
+sm_write_stream (gpointer arg,
+                 const gchar *buf,
+                 gulong len)
 {
 	camel_stream_write ((CamelStream *) arg, buf, len, NULL, NULL);
 }
 
 static PK11SymKey *
-sm_decrypt_key (gpointer arg, SECAlgorithmID *algid)
+sm_decrypt_key (gpointer arg,
+                SECAlgorithmID *algid)
 {
 	printf ("Decrypt key called\n");
 	return (PK11SymKey *) arg;
@@ -551,7 +554,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 	status = NSSCMSVS_Unverified;
 
 	/* NB: this probably needs to go into a decoding routine that can be used for processing
-	   enveloped data too */
+	 * enveloped data too */
 	count = NSS_CMSMessage_ContentLevelCount (cmsg);
 	for (i = 0; i < count; i++) {
 		NSSCMSContentInfo *cinfo = NSS_CMSMessage_ContentLevel (cmsg, i);
@@ -1036,13 +1039,13 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	}
 
 	/* Lookup all recipients certs, for later working */
-	recipient_certs = (CERTCertificate **) PORT_ArenaZAlloc (poolp, sizeof (*recipient_certs[0])*(recipients->len + 1));
+	recipient_certs = (CERTCertificate **) PORT_ArenaZAlloc (poolp, sizeof (*recipient_certs[0]) * (recipients->len + 1));
 	if (recipient_certs == NULL) {
 		set_nss_error (error, g_strerror (ENOMEM));
 		goto fail;
 	}
 
-	for (i=0;i<recipients->len;i++) {
+	for (i = 0; i < recipients->len; i++) {
 		recipient_certs[i] = CERT_FindCertByNicknameOrEmailAddr (p->certdb, recipients->pdata[i]);
 		if (recipient_certs[i] == NULL) {
 			g_set_error (
@@ -1067,7 +1070,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 		goto fail;
 	}
 
-	bulkkey = PK11_KeyGen (slot, type, NULL, bulkkeysize/8, context);
+	bulkkey = PK11_KeyGen (slot, type, NULL, bulkkeysize / 8, context);
 	PK11_FreeSlot (slot);
 
 	/* Now we can start building the message */
@@ -1097,7 +1100,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	}
 
 	/* add recipient certs */
-	for (i=0;recipient_certs[i];i++) {
+	for (i = 0; recipient_certs[i]; i++) {
 		NSSCMSRecipientInfo *ri = NSS_CMSRecipientInfo_Create (cmsg, recipient_certs[i]);
 
 		if (ri == NULL) {
@@ -1143,7 +1146,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 
 	PK11_FreeSymKey (bulkkey);
 	NSS_CMSMessage_Destroy (cmsg);
-	for (i=0;recipient_certs[i];i++)
+	for (i = 0; recipient_certs[i]; i++)
 		CERT_DestroyCertificate (recipient_certs[i]);
 	PORT_FreeArena (poolp, PR_FALSE);
 
@@ -1178,7 +1181,7 @@ fail:
 		PK11_FreeSymKey (bulkkey);
 
 	if (recipient_certs) {
-		for (i=0;recipient_certs[i];i++)
+		for (i = 0; recipient_certs[i]; i++)
 			CERT_DestroyCertificate (recipient_certs[i]);
 	}
 
@@ -1202,7 +1205,7 @@ smime_context_decrypt_sync (CamelCipherContext *context,
 	GByteArray *buffer;
 
 	/* FIXME: This assumes the content is only encrypted.  Perhaps its ok for
-	   this api to do this ... */
+	 * this api to do this ... */
 
 	ostream = camel_stream_mem_new ();
 	camel_stream_mem_set_secure (CAMEL_STREAM_MEM (ostream));
@@ -1318,7 +1321,9 @@ camel_smime_context_new (CamelSession *session)
 }
 
 void
-camel_smime_context_set_encrypt_key (CamelSMIMEContext *context, gboolean use, const gchar *key)
+camel_smime_context_set_encrypt_key (CamelSMIMEContext *context,
+                                     gboolean use,
+                                     const gchar *key)
 {
 	context->priv->send_encrypt_key_prefs = use;
 	g_free (context->priv->encrypt_key);
@@ -1327,14 +1332,16 @@ camel_smime_context_set_encrypt_key (CamelSMIMEContext *context, gboolean use, c
 
 /* set signing mode, clearsigned multipart/signed or enveloped */
 void
-camel_smime_context_set_sign_mode (CamelSMIMEContext *context, camel_smime_sign_t type)
+camel_smime_context_set_sign_mode (CamelSMIMEContext *context,
+                                   camel_smime_sign_t type)
 {
 	context->priv->sign_mode = type;
 }
 
 /* TODO: This is suboptimal, but the only other solution is to pass around NSSCMSMessages */
 guint32
-camel_smime_context_describe_part (CamelSMIMEContext *context, CamelMimePart *part)
+camel_smime_context_describe_part (CamelSMIMEContext *context,
+                                   CamelMimePart *part)
 {
 	CamelCipherContextClass *class;
 	guint32 flags = 0;

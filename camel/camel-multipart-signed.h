@@ -21,8 +21,8 @@
  */
 
 /* Should this be a subclass of multipart?
-   No, because we dont have different parts?
-   I'm not really sure yet ... ? */
+ * No, because we dont have different parts?
+ * I'm not really sure yet ... ? */
 
 #if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
 #error "Only <camel/camel.h> can be included directly."
@@ -72,7 +72,7 @@ struct _CamelMultipartSigned
 
 	/* the raw content which must go over the wire, if we have generated it */
 	/* perhaps this should jsut set data_wrapper->stream and update start1/end1 accordingly, as it is done
-	   for other parts, or visa versa? */
+	 * for other parts, or visa versa? */
 	CamelStream *contentraw;
 
 	/*int state;*/

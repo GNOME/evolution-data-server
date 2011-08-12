@@ -196,7 +196,7 @@ static gchar *
 local_store_get_name (CamelService *service,
                       gboolean brief)
 {
-	gchar *dir = ((CamelLocalStore*) service)->toplevel_dir;
+	gchar *dir = ((CamelLocalStore *) service)->toplevel_dir;
 
 	if (brief)
 		return g_strdup (dir);
@@ -225,8 +225,8 @@ local_store_get_folder_sync (CamelStore *store,
 	struct stat st;
 
 	strcpy (path, ((CamelLocalStore *) store)->toplevel_dir);
-	if (G_IS_DIR_SEPARATOR (path[len-1]))
-		path[len-1] = '\0';
+	if (G_IS_DIR_SEPARATOR (path[len - 1]))
+		path[len - 1] = '\0';
 
 	if (!g_path_is_absolute (path)) {
 		g_set_error (

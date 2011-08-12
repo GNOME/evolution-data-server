@@ -5,7 +5,8 @@
 #include "client-test-utils.h"
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	GError *error = NULL;
 	EBookClient *book_client = NULL;

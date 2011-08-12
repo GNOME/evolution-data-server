@@ -1,5 +1,5 @@
 /*
-  generic s-exp evaluator class
+ * generic s-exp evaluator class
 */
 #ifndef _E_SEXP_H
 #define _E_SEXP_H
@@ -121,7 +121,7 @@ struct _ESExp {
 	GSList *operators;
 
 	/* TODO: may also need a pool allocator for term strings, so we dont lose them
-	   in error conditions? */
+	 * in error conditions? */
 	struct _EMemChunk *term_chunks;
 	struct _EMemChunk *result_chunks;
 };

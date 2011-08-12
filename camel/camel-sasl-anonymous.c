@@ -144,7 +144,8 @@ camel_sasl_anonymous_init (CamelSaslAnonymous *sasl_anonymous)
  * Returns: a new #CamelSasl object
  **/
 CamelSasl *
-camel_sasl_anonymous_new (CamelSaslAnonTraceType type, const gchar *trace_info)
+camel_sasl_anonymous_new (CamelSaslAnonTraceType type,
+                          const gchar *trace_info)
 {
 	CamelSaslAnonymous *sasl_anon;
 
