@@ -2076,7 +2076,7 @@ e_cal_backend_file_compute_changes_foreach_key (const gchar *key, gpointer value
 {
 	ECalBackendFileComputeChangesData *be_data = data;
 
-	if (!lookup_component (be_data->backend, key)) {
+	if (!uid_in_use (be_data->backend, key)) {
 		ECalComponent *comp;
 
 		comp = e_cal_component_new ();
