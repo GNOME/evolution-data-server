@@ -157,6 +157,8 @@ CamelService *	camel_session_add_service	(CamelSession *session,
 						 const gchar *uri_string,
 						 CamelProviderType type,
 						 GError **error);
+gboolean	camel_session_remove_service	(CamelSession *session,
+						 const gchar *uid);
 CamelService *	camel_session_get_service	(CamelSession *session,
 						 const gchar *uid);
 CamelService *	camel_session_get_service_by_url

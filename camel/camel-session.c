@@ -577,6 +577,37 @@ camel_session_add_service (CamelSession *session,
 }
 
 /**
+ * camel_session_remove_service:
+ * @session: a #CamelSession
+ * @uid: a unique identifier for #CamelService to remove
+ *
+ * Removes previously added #CamelService by camel_session_add_service().
+ * Internally stored #CamelService is unreffed, if found.
+ *
+ * Returns: %TRUE when service with given @uid was found and removed,
+ *    %FALSE otherwise.
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_session_remove_service (CamelSession *session, const gchar *uid)
+{
+	gboolean removed;
+
+	g_return_val_if_fail (session, FALSE);
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	camel_session_lock (session, CAMEL_SESSION_SESSION_LOCK);
+
+	removed = g_hash_table_remove (session->priv->services, uid);
+
+	camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
+
+	return removed;
+}
+
+/**
  * camel_session_get_service:
  * @session: a #CamelSession
  * @uid: a unique identifier string
