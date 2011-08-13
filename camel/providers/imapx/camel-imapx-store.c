@@ -939,6 +939,7 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore,
 			ns = ns->next;
 		}
 	}
+	g_slist_free (namespaces);
  out:
 	g_object_unref (server);
 	return folders;
