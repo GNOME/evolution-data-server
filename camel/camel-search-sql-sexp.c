@@ -629,8 +629,11 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 	e_sexp_parse (sexp);
 
 	r = e_sexp_eval (sexp);
-	if (!r)
+	if (!r) {
+		e_sexp_unref (sexp);
 		return NULL;
+	}
+
 	if (r->type == ESEXP_RES_STRING) {
 		res = g_strdup (r->value.string);
 	} else
