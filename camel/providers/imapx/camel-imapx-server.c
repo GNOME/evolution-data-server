@@ -497,7 +497,7 @@ imapx_command_add_part (CamelIMAPXCommand *ic, camel_imapx_command_part_t type, 
 		/* we presume we'll need to get additional data only if we're not authenticated yet */
 		g_object_ref (ob);
 		camel_stream_write_string (
-			(CamelStream *)ic->mem,
+			(CamelStream *) ic->mem,
 			camel_sasl_get_mechanism (CAMEL_SASL (ob)),
 			NULL, NULL);
 		if (!camel_sasl_get_authenticated ((CamelSasl *) ob))
@@ -537,7 +537,7 @@ imapx_command_add_part (CamelIMAPXCommand *ic, camel_imapx_command_part_t type, 
 			string = g_strdup_printf ("{%u}", ob_size);
 		}
 
-		camel_stream_write_string ((CamelStream *)ic->mem, string, NULL, NULL);
+		camel_stream_write_string ((CamelStream *) ic->mem, string, NULL, NULL);
 
 		g_free (string);
 	}

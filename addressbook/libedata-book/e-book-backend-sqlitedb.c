@@ -63,7 +63,7 @@ static GStaticMutex dbcon_lock = G_STATIC_MUTEX_INIT;
 
 typedef struct {
 	EContactField field;            /* The EContact field */
-	GType         fundamental_type; /* The fundamental type (string or int) */
+	GType         fundamental_type; /* The fundamental type (string or gint) */
 	const gchar  *dbname;           /* The key for this field in the sqlite3 table */
 } SummeryField;
 
@@ -818,7 +818,7 @@ e_book_backend_sqlitedb_get_contact	(EBookBackendSqliteDB *ebsdb,
 {
 	GError *err = NULL;
 	EContact *contact = NULL;
-	gchar *vcard = e_book_backend_sqlitedb_get_vcard_string (ebsdb, folderid, uid, 
+	gchar *vcard = e_book_backend_sqlitedb_get_vcard_string (ebsdb, folderid, uid,
 								 fields_of_interest, with_all_required_fields, &err);
 	if (!err) {
 		contact = e_contact_new_from_vcard (vcard);
@@ -828,7 +828,6 @@ e_book_backend_sqlitedb_get_contact	(EBookBackendSqliteDB *ebsdb,
 
 	return contact;
 }
-
 
 static void
 accumulate_fields_select_stmt (const gchar *field_name,
@@ -873,7 +872,7 @@ e_book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest)
 	if (!fields_of_interest)
 		return FALSE;
 
-	g_hash_table_foreach (fields_of_interest, (GHFunc)check_field_foreach, &summary_fields);
+	g_hash_table_foreach (fields_of_interest, (GHFunc) check_field_foreach, &summary_fields);
 
 	return summary_fields;
 }
@@ -893,7 +892,7 @@ summary_select_stmt (const gchar *folderid,
 	 *
 	 */
 	if (fields_of_interest && e_book_backend_sqlitedb_is_summary_fields (fields_of_interest)) {
-		g_hash_table_foreach (fields_of_interest, (GHFunc)accumulate_fields_select_stmt, string);
+		g_hash_table_foreach (fields_of_interest, (GHFunc) accumulate_fields_select_stmt, string);
 
 		/* The query should return all the required information */
 		if (with_all_required_fields)
@@ -911,7 +910,6 @@ summary_select_stmt (const gchar *folderid,
 
 	return g_string_free (string, FALSE);
 }
-
 
 /**
  * e_book_backend_sqlitedb_get_vcard_string:
@@ -1350,7 +1348,7 @@ book_backend_sqlitedb_search_query	(EBookBackendSqliteDB *ebsdb,
 			book_backend_sql_exec (ebsdb->priv->db, stmt, store_data_to_vcard, &vcard_data, &err);
 			sqlite3_free (stmt);
 		} else
-			book_backend_sql_exec (ebsdb->priv->db, select_stmt, 
+			book_backend_sql_exec (ebsdb->priv->db, select_stmt,
 					       store_data_to_vcard, &vcard_data, &err);
 
 		g_free (select_stmt);
@@ -1469,8 +1467,8 @@ e_book_backend_sqlitedb_search	(EBookBackendSqliteDB *ebsdb,
 		gchar *sql_query;
 
 		sql_query = sexp ? sexp_to_sql_query (sexp) : NULL;
-		search_contacts = book_backend_sqlitedb_search_query (ebsdb, sql_query, folderid, 
-								      fields_of_interest, 
+		search_contacts = book_backend_sqlitedb_search_query (ebsdb, sql_query, folderid,
+								      fields_of_interest,
 								      &local_with_all_required_fields, error);
 		g_free (sql_query);
 

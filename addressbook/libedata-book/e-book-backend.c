@@ -1054,7 +1054,6 @@ e_book_backend_sync (EBookBackend *backend)
 	g_object_unref (backend);
 }
 
-
 /**
  * e_book_backend_notify_update:
  * @backend: an #EBookBackend

@@ -11,7 +11,6 @@
 #define COMPARE_PERFORMANCE 0
 #define BEEFY_VCARDS        1
 
-
 #if COMPARE_PERFORMANCE
 #  define SETUP_TIMER(timer)  GTimer *timer = g_timer_new ();
 #  define START_TIMER(timer)  g_timer_start (timer);
@@ -131,7 +130,7 @@ print_contact (EContact *contact)
 	for (e = emails; e; e = e->next) {
 		g_print ("\t%s\n",  (gchar *)e->data);
 	}
-	g_list_foreach (emails, (GFunc)g_free, NULL);
+	g_list_foreach (emails, (GFunc) g_free, NULL);
 	g_list_free (emails);
 
 	g_print ("\n");
@@ -161,7 +160,7 @@ objects_added (EBookClientView *view, const GSList *contacts)
 
 		if (uids_only && e_contact_get_const (contact, E_CONTACT_FULL_NAME) != NULL)
 			g_error ("received contact name `%s' when only the uid was requested",
-				 (gchar *)e_contact_get_const (contact, E_CONTACT_FULL_NAME));
+				 (gchar *) e_contact_get_const (contact, E_CONTACT_FULL_NAME));
 		else if (!uids_only && e_contact_get_const (contact, E_CONTACT_FULL_NAME) == NULL)
 			g_error ("expected contact name missing");
 	}
@@ -199,7 +198,7 @@ setup_and_start_view (EBookClientView *view)
 	g_signal_connect (view, "objects-removed", G_CALLBACK (objects_removed), NULL);
 	g_signal_connect (view, "complete", G_CALLBACK (complete), NULL);
 
-	uid_field_list.data = (gpointer)e_contact_field_name (E_CONTACT_UID);
+	uid_field_list.data = (gpointer) e_contact_field_name (E_CONTACT_UID);
 
 	if (uids_only)
 		e_book_client_view_set_fields_of_interest (view, &uid_field_list, &error);
@@ -232,7 +231,6 @@ get_view_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
 
 	setup_and_start_view (view);
 }
-
 
 static gpointer
 call_get_view (gpointer user_data)
@@ -302,7 +300,6 @@ main (gint argc, gchar **argv)
 	}
 	g_object_unref (book_client);
 
-
 	/*
 	 * Sync version uids only
 	 */
@@ -338,7 +335,6 @@ main (gint argc, gchar **argv)
 	}
 	g_object_unref (book_client);
 
-
 	/*
 	 * Async version all data
 	 */
@@ -346,7 +342,6 @@ main (gint argc, gchar **argv)
 
 	if (!setup_book (&book_client))
 		return 1;
-
 
 	START_TIMER (timer);
 	start_in_idle_with_main_loop (call_get_view, book_client);
@@ -361,7 +356,6 @@ main (gint argc, gchar **argv)
 	}
 
 	g_object_unref (book_client);
-
 
 	/*
 	 * Async version uids only

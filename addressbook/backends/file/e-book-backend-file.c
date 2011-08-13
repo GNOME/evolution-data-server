@@ -67,7 +67,6 @@
 #define SQLITEDB_FOLDER_ID   "folder_id"
 #define SQLITEDB_FOLDER_NAME "folder"
 
-
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
 #define EDB_NOT_OPENED_ERROR EDB_ERROR(NOT_OPENED)
@@ -133,7 +132,7 @@ remove_file (const gchar *filename, GError **error)
 			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
 		} else {
 			g_propagate_error (error, e_data_book_create_error_fmt
-					   (E_DATA_BOOK_STATUS_OTHER_ERROR, 
+					   (E_DATA_BOOK_STATUS_OTHER_ERROR,
 					    "Failed to remove file '%s': %s", 
 					    filename, g_strerror (errno)));
 		}
@@ -155,7 +154,7 @@ create_directory (const gchar *dirname,
 		if (errno == EACCES || errno == EPERM)
 			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
 		else
-			g_propagate_error (error, 
+			g_propagate_error (error,
 					   e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
 									 "Failed to make directory %s: %s", 
 									 dirname, g_strerror (errno)));
@@ -188,7 +187,7 @@ load_vcard (EBookBackendFile *bf,
 	string_to_dbt (uid, &id_dbt);
 	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
 	vcard_dbt.flags = DB_DBT_MALLOC;
-		
+
 	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
 
 	if (db_error == 0) {
@@ -254,7 +253,7 @@ build_sqlitedb (EBookBackendFilePrivate *bfpriv)
 		return FALSE;
 	}
 
-	g_slist_foreach (contacts, (GFunc)g_object_unref, NULL);
+	g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
 	g_slist_free (contacts);
 
 	if (!e_book_backend_sqlitedb_set_is_populated (bfpriv->sqlitedb, SQLITEDB_FOLDER_ID, TRUE, &error)) {
@@ -578,7 +577,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 			}
 		}
 
-		g_slist_foreach (summary_list, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+		g_slist_foreach (summary_list, (GFunc) e_book_backend_sqlitedb_search_data_free, NULL);
 		g_slist_free (summary_list);
 
 	} else {
@@ -833,7 +832,7 @@ book_view_thread (gpointer data)
 
 	summary_list = e_book_backend_sqlitedb_search (bf->priv->sqlitedb,
 						       SQLITEDB_FOLDER_ID,
-						       query, fields_of_interest, 
+						       query, fields_of_interest,
 						       &searched, &with_all_required_fields, NULL);
 
 	if (searched) {
@@ -866,7 +865,7 @@ book_view_thread (gpointer data)
 			notify_update_vcard (book_view, TRUE, data->uid, vcard);
 		}
 
-		g_slist_foreach (summary_list, (GFunc)e_book_backend_sqlitedb_search_data_free, NULL);
+		g_slist_foreach (summary_list, (GFunc) e_book_backend_sqlitedb_search_data_free, NULL);
 		g_slist_free (summary_list);
 	} else {
 		/* iterate over the db and do the query there */
@@ -887,7 +886,7 @@ book_view_thread (gpointer data)
 
 				/* don't include the version in the list of cards */
 				if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
-					notify_update_vcard (book_view, allcontacts, 
+					notify_update_vcard (book_view, allcontacts,
 							     id_dbt.data, vcard_dbt.data);
 				} else {
 					g_free (vcard_dbt.data);
@@ -1380,7 +1379,7 @@ e_book_backend_file_open (EBookBackendSync       *backend,
 		} else if (!build_sqlitedb (bf->priv)) {
 			g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
                                     "Failed to build summary for an address book %s",
-                                     bf->priv->filename));
+				     bf->priv->filename));
 		}
 	}
 
@@ -1550,7 +1549,7 @@ view_notify_update (EDataBookView *view, gpointer data)
 static void
 e_book_backend_file_notify_update (EBookBackend *backend, const EContact *contact)
 {
-	NotifyData data = { (EContact *)contact, E_BOOK_BACKEND_FILE (backend) };
+	NotifyData data = { (EContact *) contact, E_BOOK_BACKEND_FILE (backend) };
 
 	e_book_backend_foreach_view (backend, view_notify_update, &data);
 }

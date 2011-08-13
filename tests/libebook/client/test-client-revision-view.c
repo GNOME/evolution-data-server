@@ -7,7 +7,6 @@
 
 #define N_TEST_CONTACTS 4
 
-
 static gboolean loading_view = FALSE;
 
 /****************************************************************
@@ -95,7 +94,7 @@ objects_added (EBookClientView *view, const GSList *contacts)
 
 		if (e_contact_get_const (contact, E_CONTACT_FULL_NAME) != NULL)
 			g_error ("received contact name `%s' when only the uid and revision was requested",
-				 (gchar *)e_contact_get_const (contact, E_CONTACT_FULL_NAME));
+				 (gchar *) e_contact_get_const (contact, E_CONTACT_FULL_NAME));
 	}
 
 	if (!loading_view)
@@ -131,9 +130,8 @@ setup_and_start_view (EBookClientView *view)
 	g_signal_connect (view, "objects-removed", G_CALLBACK (objects_removed), NULL);
 	g_signal_connect (view, "complete", G_CALLBACK (complete), NULL);
 
-
-	field_list = g_slist_prepend (NULL, (gpointer)e_contact_field_name (E_CONTACT_UID));
-	field_list = g_slist_prepend (field_list, (gpointer)e_contact_field_name (E_CONTACT_REV));
+	field_list = g_slist_prepend (NULL, (gpointer) e_contact_field_name (E_CONTACT_UID));
+	field_list = g_slist_prepend (field_list, (gpointer) e_contact_field_name (E_CONTACT_REV));
 
 	e_book_client_view_set_fields_of_interest (view, field_list, &error);
 	g_slist_free (field_list);
@@ -164,7 +162,6 @@ get_view_cb (GObject *source_object, GAsyncResult *result, gpointer user_data)
 
 	setup_and_start_view (view);
 }
-
 
 static gpointer
 call_get_view (gpointer user_data)
