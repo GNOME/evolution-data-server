@@ -478,6 +478,16 @@ EBookBackend
 @error: 
 
 
+<!-- ##### FUNCTION e_book_backend_notify_property_changed ##### -->
+<para>
+
+</para>
+
+@backend: 
+@prop_name: 
+@prop_value: 
+
+
 <!-- ##### FUNCTION e_book_backend_sync ##### -->
 <para>
 
@@ -527,6 +537,7 @@ EBookBackend
 @get_contact_list_uids: 
 @start_book_view: 
 @stop_book_view: 
+@notify_update: 
 @last_client_gone: 
 @sync: 
 

@@ -1957,6 +1957,7 @@ camel_session_get_user_data_dir
 camel_session_set_socks_proxy
 camel_session_get_socks_proxy
 camel_session_add_service
+camel_session_remove_service
 camel_session_get_service
 camel_session_get_service_by_url
 camel_session_list_services

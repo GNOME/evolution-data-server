@@ -52,6 +52,7 @@ EClient
 @E_CLIENT_ERROR_QUERY_REFUSED: 
 @E_CLIENT_ERROR_DBUS_ERROR: 
 @E_CLIENT_ERROR_OTHER_ERROR: 
+@E_CLIENT_ERROR_NOT_OPENED: 
 
 <!-- ##### FUNCTION e_client_error_to_string ##### -->
 <para>
@@ -143,6 +144,15 @@ EClient
 
 @eclient: the object which received the signal.
 @arg1: 
+
+<!-- ##### SIGNAL EClient::backend-property-changed ##### -->
+<para>
+
+</para>
+
+@eclient: the object which received the signal.
+@arg1: 
+@arg2: 
 
 <!-- ##### SIGNAL EClient::opened ##### -->
 <para>

@@ -283,6 +283,16 @@ EDataBook
 @error: 
 
 
+<!-- ##### FUNCTION e_data_book_report_backend_property_changed ##### -->
+<para>
+
+</para>
+
+@book: 
+@prop_name: 
+@prop_value: 
+
+
 <!-- ##### FUNCTION e_data_book_string_slist_to_comma_string ##### -->
 <para>
 

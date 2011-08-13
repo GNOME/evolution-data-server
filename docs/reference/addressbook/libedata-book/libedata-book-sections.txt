@@ -48,6 +48,7 @@ e_book_backend_notify_readonly
 e_book_backend_notify_online
 e_book_backend_notify_auth_required
 e_book_backend_notify_opened
+e_book_backend_notify_property_changed
 e_book_backend_sync
 e_book_backend_set_is_removed
 e_book_backend_respond_opened
@@ -179,6 +180,8 @@ e_book_backend_sqlitedb_get_partially_cached_ids
 e_book_backend_sqlitedb_delete_addressbook
 e_book_backend_sqlitedb_remove
 e_book_backend_sqlitedb_search_data_free
+e_book_backend_sqlitedb_is_summary_query
+e_book_backend_sqlitedb_is_summary_fields
 <SUBSECTION Standard>
 E_TYPE_BOOK_BACKEND_SQLITEDB
 E_BOOK_BACKEND_SQLITEDB
@@ -280,6 +283,7 @@ e_data_book_report_readonly
 e_data_book_report_online
 e_data_book_report_auth_required
 e_data_book_report_opened
+e_data_book_report_backend_property_changed
 e_data_book_string_slist_to_comma_string
 <SUBSECTION Standard>
 E_DATA_BOOK

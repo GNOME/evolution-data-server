@@ -122,6 +122,8 @@ EBookBackendSqliteDB
 @ebsdb: 
 @folderid: 
 @uid: 
+@fields_of_interest: 
+@with_all_required_fields: 
 @error: 
 @Returns: 
 
@@ -134,6 +136,8 @@ EBookBackendSqliteDB
 @ebsdb: 
 @folderid: 
 @uid: 
+@fields_of_interest: 
+@with_all_required_fields: 
 @error: 
 @Returns: 
 
@@ -147,6 +151,8 @@ EBookBackendSqliteDB
 @folderid: 
 @sexp: 
 @fields_of_interest: 
+@searched: 
+@with_all_required_fields: 
 @error: 
 @Returns: 
 
@@ -159,6 +165,7 @@ EBookBackendSqliteDB
 @ebsdb: 
 @folderid: 
 @sexp: 
+@searched: 
 @error: 
 @Returns: 
 
@@ -320,5 +327,23 @@ EBookBackendSqliteDB
 </para>
 
 @s_data: 
+
+
+<!-- ##### FUNCTION e_book_backend_sqlitedb_is_summary_query ##### -->
+<para>
+
+</para>
+
+@query: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_backend_sqlitedb_is_summary_fields ##### -->
+<para>
+
+</para>
+
+@fields_of_interest: 
+@Returns: 
 
 

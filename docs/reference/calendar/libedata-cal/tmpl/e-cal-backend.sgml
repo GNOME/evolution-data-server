@@ -634,6 +634,16 @@ Base class for calendar/tasks backend implementations.
 @error: 
 
 
+<!-- ##### FUNCTION e_cal_backend_notify_property_changed ##### -->
+<para>
+
+</para>
+
+@backend: 
+@prop_name: 
+@prop_value: 
+
+
 <!-- ##### FUNCTION e_cal_backend_empty_cache ##### -->
 <para>
 

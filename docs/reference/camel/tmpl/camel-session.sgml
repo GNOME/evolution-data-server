@@ -119,6 +119,16 @@ CamelSession
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_session_remove_service ##### -->
+<para>
+
+</para>
+
+@session: 
+@uid: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_session_get_service ##### -->
 <para>
 

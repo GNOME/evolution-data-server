@@ -292,11 +292,40 @@ ECalClient
 @client: 
 @start: 
 @end: 
+@cancellable: 
+@cb: 
+@cb_data: 
+@destroy_cb_data: 
+
+
+<!-- ##### FUNCTION e_cal_client_generate_instances_sync ##### -->
+<para>
+
+</para>
+
+@client: 
+@start: 
+@end: 
 @cb: 
 @cb_data: 
 
 
 <!-- ##### FUNCTION e_cal_client_generate_instances_for_object ##### -->
+<para>
+
+</para>
+
+@client: 
+@icalcomp: 
+@start: 
+@end: 
+@cancellable: 
+@cb: 
+@cb_data: 
+@destroy_cb_data: 
+
+
+<!-- ##### FUNCTION e_cal_client_generate_instances_for_object_sync ##### -->
 <para>
 
 </para>

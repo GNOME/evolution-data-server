@@ -370,3 +370,13 @@ Implementation of the calendar CORBA client interface.
 @freebusy: 
 
 
+<!-- ##### FUNCTION e_data_cal_report_backend_property_changed ##### -->
+<para>
+
+</para>
+
+@cal: 
+@prop_name: 
+@prop_value: 
+
+

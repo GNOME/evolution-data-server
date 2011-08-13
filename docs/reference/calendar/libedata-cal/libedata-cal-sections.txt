@@ -60,6 +60,7 @@ e_cal_backend_notify_readonly
 e_cal_backend_notify_online
 e_cal_backend_notify_auth_required
 e_cal_backend_notify_opened
+e_cal_backend_notify_property_changed
 e_cal_backend_empty_cache
 e_cal_backend_set_is_removed
 e_cal_backend_respond_opened
@@ -297,6 +298,7 @@ e_data_cal_report_online
 e_data_cal_report_auth_required
 e_data_cal_report_opened
 e_data_cal_report_free_busy_data
+e_data_cal_report_backend_property_changed
 <SUBSECTION Standard>
 E_DATA_CAL
 E_IS_DATA_CAL
