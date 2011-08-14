@@ -101,6 +101,7 @@ imapx_stream_finalize (GObject *object)
 	CamelIMAPXStream *stream = CAMEL_IMAPX_STREAM (object);
 
 	g_free (stream->buf);
+	g_free (stream->tokenbuf);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_stream_parent_class)->finalize (object);
