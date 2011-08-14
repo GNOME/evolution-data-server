@@ -1,3 +1,48 @@
+Evolution-Data-Server 3.1.5 2011-08-14
+--------------------------------------
+
+Bug Fixes:
+	Bug 656490 - imapx: Memory leak of stream tokenbuf (David Woodhouse)
+	Bug 656487 - Memory leak in imapx fetch_folders_for_namespaces() (David Woodhouse)
+	Bug 656480 - Memory leak in camel_folder_search_search() (David Woodhouse)
+	Bug 656267 - Checking for auth types doesn't work properly (Milan Crha)
+	Bug 656058 - Improve EBookBackendSqliteDB searching API (Tristan Van Berkom)
+	Bug 652172 - Fix a regression from the previous commit (Milan Crha)
+	Bug 655748 - rdate parsing failure: unknown value for period 20068 (Milan Crha)
+	Bug 655190 - Sluggish performance interacting with calendar/tasks (Milan Crha)
+	Bug 619135 — Add photo support to Google Contacts backend (Philip Withnall)
+	Bug 655499 - Don't crash when getting contacts before backend is opened (Milan Crha)
+	Bug 654893 - Fix one missed rename of 'msg_security' to 'dirty' (Sean Finney)
+	Bug 655414 - Need translation comments (Milan Crha)
+	Bug 655409 - Extra flags in CamelStoreInfo break folder type check (Milan Crha)
+	Bug 654472 - Crash on async error return over GDBus (Milan Crha)
+	Bug 655331 - pgp/gpg signature is not shown (Milan Crha)
+	Bug 654480 - [imapx] Mark as Junk is not reliable (Matthew Barnes)
+
+Miscellaneous Fixes:
+	libecal: e_cal_remove_object() must remove *all* recurrences (Patrick Ohly)
+	calendar file backend: fixed incomplete sanity check in e_cal_create_object() (Patrick Ohly)
+	e_client_utils_open_new() could use already freed memory (Milan Crha)
+	Properly manage boolean values in SQLite contacts cache (Milan Crha)
+	Vala bindings: work around owned not being honored in metadata (Raul Gutierrez Segales)
+	Call gtk_init_check() in factories with enabled maintainer mode (Milan Crha)
+	Handle fields-of-interest for local addressbook backend. (Tristan Van Berkom)
+	Do not cancel cancellable in free_get_objects_async_data() (Milan Crha)
+	Be able to provide backtraces for e_ptr_tracker* functions (Milan Crha)
+	Fix stray unref of server in imapx add_folders_to_summary() (David Woodhouse)
+	Make e-{addressbook,calendar}-factory supersede old factory at startup. (David Woodhouse)
+	Introspection: fix annotation fixes (Raul Gutierrez Segales)
+	Be able to fetch all vCards/uids from an SQLite book backend cache (Milan Crha)
+
+Translations:
+	Yuri Kozlov (ru)
+	Daniel Mustieles (es)
+	Fran Dieguez (gl)
+	Jorge González (es)
+	Daniel Nylander (sv)
+	Kjartan Maraas (nn)
+
+
 Evolution-Data-Server 3.1.4 2011-07-25
 --------------------------------------
 
