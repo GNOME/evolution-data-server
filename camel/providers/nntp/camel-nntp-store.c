@@ -59,6 +59,7 @@ static GInitableIface *parent_initable_interface;
 /* Forward Declarations */
 static void camel_nntp_store_initable_init (GInitableIface *interface);
 static void camel_network_service_init (CamelNetworkServiceInterface *interface);
+static void camel_subscribable_init (CamelSubscribableInterface *interface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelNNTPStore,
@@ -69,7 +70,10 @@ G_DEFINE_TYPE_WITH_CODE (
 		camel_nntp_store_initable_init)
 	G_IMPLEMENT_INTERFACE (
 		CAMEL_TYPE_NETWORK_SERVICE,
-		camel_network_service_init))
+		camel_network_service_init)
+	G_IMPLEMENT_INTERFACE (
+		CAMEL_TYPE_SUBSCRIBABLE,
+		camel_subscribable_init))
 
 static gint
 camel_nntp_try_authenticate (CamelNNTPStore *store,
@@ -1127,121 +1131,6 @@ nntp_get_folder_info_offline (CamelStore *store,
 		store, top, flags, FALSE, cancellable, error);
 }
 
-static gboolean
-nntp_store_folder_is_subscribed (CamelStore *store, const gchar *folder_name)
-{
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
-	CamelStoreInfo *si;
-	gint truth = FALSE;
-
-	si = camel_store_summary_path ((CamelStoreSummary *) nntp_store->summary, folder_name);
-	if (si) {
-		truth = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
-		camel_store_summary_info_free ((CamelStoreSummary *) nntp_store->summary, si);
-	}
-
-	return truth;
-}
-
-static gboolean
-nntp_store_subscribe_folder_sync (CamelStore *store,
-                                  const gchar *folder_name,
-                                  GCancellable *cancellable,
-                                  GError **error)
-{
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
-	CamelService *service;
-	CamelSettings *settings;
-	CamelStoreInfo *si;
-	CamelFolderInfo *fi;
-	gboolean short_folder_names;
-	gboolean success = TRUE;
-
-	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
-
-	short_folder_names = camel_nntp_settings_get_short_folder_names (
-		CAMEL_NNTP_SETTINGS (settings));
-
-	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	si = camel_store_summary_path (CAMEL_STORE_SUMMARY (nntp_store->summary), folder_name);
-	if (!si) {
-		g_set_error (
-			error, CAMEL_FOLDER_ERROR,
-			CAMEL_FOLDER_ERROR_INVALID,
-			_("You cannot subscribe to this newsgroup:\n\n"
-			  "No such newsgroup. The selected item is a "
-			  "probably a parent folder."));
-		success = FALSE;
-	} else {
-		if (!(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
-			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			fi = nntp_folder_info_from_store_info (nntp_store, short_folder_names, si);
-			fi->flags |= CAMEL_FOLDER_NOINFERIORS | CAMEL_FOLDER_NOCHILDREN;
-			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
-			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
-			camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-			camel_store_folder_subscribed (CAMEL_STORE (nntp_store), fi);
-			camel_folder_info_free (fi);
-			return TRUE;
-		}
-	}
-
-	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	return success;
-}
-
-static gboolean
-nntp_store_unsubscribe_folder_sync (CamelStore *store,
-                                    const gchar *folder_name,
-                                    GCancellable *cancellable,
-                                    GError **error)
-{
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
-	CamelService *service;
-	CamelSettings *settings;
-	CamelFolderInfo *fi;
-	CamelStoreInfo *fitem;
-	gboolean short_folder_names;
-	gboolean success = TRUE;
-
-	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
-
-	short_folder_names = camel_nntp_settings_get_short_folder_names (
-		CAMEL_NNTP_SETTINGS (settings));
-
-	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	fitem = camel_store_summary_path (CAMEL_STORE_SUMMARY (nntp_store->summary), folder_name);
-
-	if (!fitem) {
-		g_set_error (
-			error, CAMEL_FOLDER_ERROR,
-			CAMEL_FOLDER_ERROR_INVALID,
-			_("You cannot unsubscribe to this newsgroup:\n\n"
-			  "newsgroup does not exist!"));
-		success = FALSE;
-	} else {
-		if (fitem->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
-			fitem->flags &= ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			fi = nntp_folder_info_from_store_info (nntp_store, short_folder_names, fitem);
-			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
-			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
-			camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-			camel_store_folder_unsubscribed (CAMEL_STORE (nntp_store), fi);
-			camel_folder_info_free (fi);
-			return TRUE;
-		}
-	}
-
-	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	return success;
-}
-
 /* stubs for various folder operations we're not implementing */
 
 static CamelFolderInfo *
@@ -1281,8 +1170,14 @@ nntp_store_delete_folder_sync (CamelStore *store,
                                GCancellable *cancellable,
                                GError **error)
 {
-	nntp_store_unsubscribe_folder_sync (
-		store, folder_name, cancellable, NULL);
+	CamelSubscribable *subscribable;
+	CamelSubscribableInterface *interface;
+
+	subscribable = CAMEL_SUBSCRIBABLE (store);
+	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
+
+	interface->unsubscribe_folder_sync (
+		subscribable, folder_name, cancellable, NULL);
 
 	g_set_error (
 		error, CAMEL_FOLDER_ERROR,
@@ -1387,6 +1282,122 @@ nntp_store_get_default_port (CamelNetworkService *service,
 	return default_port;
 }
 
+static gboolean
+nntp_store_folder_is_subscribed (CamelSubscribable *subscribable,
+                                 const gchar *folder_name)
+{
+	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (subscribable);
+	CamelStoreInfo *si;
+	gint truth = FALSE;
+
+	si = camel_store_summary_path ((CamelStoreSummary *) nntp_store->summary, folder_name);
+	if (si) {
+		truth = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
+		camel_store_summary_info_free ((CamelStoreSummary *) nntp_store->summary, si);
+	}
+
+	return truth;
+}
+
+static gboolean
+nntp_store_subscribe_folder_sync (CamelSubscribable *subscribable,
+                                  const gchar *folder_name,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (subscribable);
+	CamelService *service;
+	CamelSettings *settings;
+	CamelStoreInfo *si;
+	CamelFolderInfo *fi;
+	gboolean short_folder_names;
+	gboolean success = TRUE;
+
+	service = CAMEL_SERVICE (subscribable);
+	settings = camel_service_get_settings (service);
+
+	short_folder_names = camel_nntp_settings_get_short_folder_names (
+		CAMEL_NNTP_SETTINGS (settings));
+
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	si = camel_store_summary_path (CAMEL_STORE_SUMMARY (nntp_store->summary), folder_name);
+	if (!si) {
+		g_set_error (
+			error, CAMEL_FOLDER_ERROR,
+			CAMEL_FOLDER_ERROR_INVALID,
+			_("You cannot subscribe to this newsgroup:\n\n"
+			  "No such newsgroup. The selected item is a "
+			  "probably a parent folder."));
+		success = FALSE;
+	} else {
+		if (!(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
+			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+			fi = nntp_folder_info_from_store_info (nntp_store, short_folder_names, si);
+			fi->flags |= CAMEL_FOLDER_NOINFERIORS | CAMEL_FOLDER_NOCHILDREN;
+			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
+			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
+			camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+			camel_subscribable_folder_subscribed (subscribable, fi);
+			camel_folder_info_free (fi);
+			return TRUE;
+		}
+	}
+
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	return success;
+}
+
+static gboolean
+nntp_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
+                                    const gchar *folder_name,
+                                    GCancellable *cancellable,
+                                    GError **error)
+{
+	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (subscribable);
+	CamelService *service;
+	CamelSettings *settings;
+	CamelFolderInfo *fi;
+	CamelStoreInfo *fitem;
+	gboolean short_folder_names;
+	gboolean success = TRUE;
+
+	service = CAMEL_SERVICE (subscribable);
+	settings = camel_service_get_settings (service);
+
+	short_folder_names = camel_nntp_settings_get_short_folder_names (
+		CAMEL_NNTP_SETTINGS (settings));
+
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	fitem = camel_store_summary_path (CAMEL_STORE_SUMMARY (nntp_store->summary), folder_name);
+
+	if (!fitem) {
+		g_set_error (
+			error, CAMEL_FOLDER_ERROR,
+			CAMEL_FOLDER_ERROR_INVALID,
+			_("You cannot unsubscribe to this newsgroup:\n\n"
+			  "newsgroup does not exist!"));
+		success = FALSE;
+	} else {
+		if (fitem->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
+			fitem->flags &= ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+			fi = nntp_folder_info_from_store_info (nntp_store, short_folder_names, fitem);
+			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
+			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
+			camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+			camel_subscribable_folder_unsubscribed (subscribable, fi);
+			camel_folder_info_free (fi);
+			return TRUE;
+		}
+	}
+
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	return success;
+}
+
 static void
 camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 {
@@ -1407,12 +1418,9 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->can_refresh_folder = nntp_can_refresh_folder;
 	store_class->free_folder_info = camel_store_free_folder_info_full;
-	store_class->folder_is_subscribed = nntp_store_folder_is_subscribed;
 	store_class->create_folder_sync = nntp_store_create_folder_sync;
 	store_class->delete_folder_sync = nntp_store_delete_folder_sync;
 	store_class->rename_folder_sync = nntp_store_rename_folder_sync;
-	store_class->subscribe_folder_sync = nntp_store_subscribe_folder_sync;
-	store_class->unsubscribe_folder_sync = nntp_store_unsubscribe_folder_sync;
 
 	disco_store_class = CAMEL_DISCO_STORE_CLASS (class);
 	disco_store_class->can_work_offline = nntp_can_work_offline;
@@ -1444,13 +1452,20 @@ camel_network_service_init (CamelNetworkServiceInterface *interface)
 }
 
 static void
+camel_subscribable_init (CamelSubscribableInterface *interface)
+{
+	interface->folder_is_subscribed = nntp_store_folder_is_subscribed;
+	interface->subscribe_folder_sync = nntp_store_subscribe_folder_sync;
+	interface->unsubscribe_folder_sync = nntp_store_unsubscribe_folder_sync;
+}
+
+static void
 camel_nntp_store_init (CamelNNTPStore *nntp_store)
 {
-	CamelStore *store = CAMEL_STORE (nntp_store);
-
-	store->flags = CAMEL_STORE_SUBSCRIPTIONS;
-
 	nntp_store->mem = (CamelStreamMem *) camel_stream_mem_new ();
+
+	/* Clear the VJUNK and VTRASH flags, which are set by default. */
+	CAMEL_STORE (nntp_store)->flags = 0;
 }
 
 /* Enter owning lock */

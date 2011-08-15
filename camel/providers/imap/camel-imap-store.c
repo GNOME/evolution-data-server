@@ -76,9 +76,9 @@ static gint compare_folder_name (gconstpointer a, gconstpointer b);
 static CamelFolderInfo *imap_store_create_folder_sync (CamelStore *store, const gchar *parent_name, const gchar *folder_name, GCancellable *cancellable, GError **error);
 static gboolean imap_store_delete_folder_sync (CamelStore *store, const gchar *folder_name, GCancellable *cancellable, GError **error);
 static gboolean imap_store_rename_folder_sync (CamelStore *store, const gchar *old_name, const gchar *new_name, GCancellable *cancellable, GError **error);
-static gboolean folder_is_subscribed (CamelStore *store, const gchar *folder_name);
-static gboolean imap_store_subscribe_folder_sync (CamelStore *store, const gchar *folder_name, GCancellable *cancellable, GError **error);
-static gboolean imap_store_unsubscribe_folder_sync (CamelStore *store, const gchar *folder_name, GCancellable *cancellable, GError **error);
+static gboolean imap_store_folder_is_subscribed (CamelSubscribable *subscribable, const gchar *folder_name);
+static gboolean imap_store_subscribe_folder_sync (CamelSubscribable *subscribable, const gchar *folder_name, GCancellable *cancellable, GError **error);
+static gboolean imap_store_unsubscribe_folder_sync (CamelSubscribable *subscribable, const gchar *folder_name, GCancellable *cancellable, GError **error);
 
 static gboolean get_folders_sync (CamelImapStore *imap_store, const gchar *pattern, GCancellable *cancellable, GError **error);
 
@@ -118,6 +118,7 @@ static GInitableIface *parent_initable_interface;
 /* Forward Declarations */
 static void camel_imap_store_initable_init (GInitableIface *interface);
 static void camel_network_service_init (CamelNetworkServiceInterface *interface);
+static void camel_subscribable_init (CamelSubscribableInterface *interface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelImapStore,
@@ -128,7 +129,10 @@ G_DEFINE_TYPE_WITH_CODE (
 		camel_imap_store_initable_init)
 	G_IMPLEMENT_INTERFACE (
 		CAMEL_TYPE_NETWORK_SERVICE,
-		camel_network_service_init))
+		camel_network_service_init)
+	G_IMPLEMENT_INTERFACE (
+		CAMEL_TYPE_SUBSCRIBABLE,
+		camel_subscribable_init))
 
 static void
 parse_capability (CamelImapStore *store, gchar *capa)
@@ -195,6 +199,31 @@ imap_get_capability (CamelService *service,
 	}
 
 	return TRUE;
+}
+
+/* folder_name is path name */
+static CamelFolderInfo *
+imap_build_folder_info (CamelImapStore *imap_store, const gchar *folder_name)
+{
+	const gchar *name;
+	CamelFolderInfo *fi;
+
+	fi = camel_folder_info_new ();
+	fi->full_name = g_strdup (folder_name);
+	fi->unread = -1;
+	fi->total = -1;
+
+	name = strrchr (fi->full_name, '/');
+	if (name == NULL)
+		name = fi->full_name;
+	else
+		name++;
+	if (!g_ascii_strcasecmp (fi->full_name, "INBOX"))
+		fi->display_name = g_strdup (_("Inbox"));
+	else
+		fi->display_name = g_strdup (name);
+
+	return fi;
 }
 
 static gboolean
@@ -1274,6 +1303,123 @@ imap_store_get_default_port (CamelNetworkService *service,
 	return default_port;
 }
 
+static gboolean
+imap_store_folder_is_subscribed (CamelSubscribable *subscribable,
+                                 const gchar *folder_name)
+{
+	CamelImapStore *imap_store = CAMEL_IMAP_STORE (subscribable);
+	CamelStoreInfo *si;
+	gint truth = FALSE;
+
+	si = camel_store_summary_path ((CamelStoreSummary *) imap_store->summary, folder_name);
+	if (si) {
+		truth = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
+		camel_store_summary_info_free ((CamelStoreSummary *) imap_store->summary, si);
+	}
+
+	return truth;
+}
+
+/* Note: folder_name must match a folder as listed with get_folder_info() -> full_name */
+static gboolean
+imap_store_subscribe_folder_sync (CamelSubscribable *subscribable,
+                                  const gchar *folder_name,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	CamelService *service;
+	CamelImapStore *imap_store;
+	CamelImapResponse *response;
+	CamelFolderInfo *fi;
+	CamelStoreInfo *si;
+	gboolean success = TRUE;
+
+	service = CAMEL_SERVICE (subscribable);
+	imap_store = CAMEL_IMAP_STORE (subscribable);
+
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	if (!camel_imap_store_connected (imap_store, error)) {
+		success = FALSE;
+		goto done;
+	}
+
+	response = camel_imap_command (imap_store, NULL, cancellable, error,
+				       "SUBSCRIBE %F", folder_name);
+	if (!response) {
+		success = FALSE;
+		goto done;
+	}
+
+	camel_imap_response_free (imap_store, response);
+
+	si = camel_store_summary_path ((CamelStoreSummary *) imap_store->summary, folder_name);
+	if (si) {
+		if ((si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) == 0) {
+			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
+			camel_store_summary_touch ((CamelStoreSummary *) imap_store->summary);
+			camel_store_summary_save ((CamelStoreSummary *) imap_store->summary);
+		}
+		camel_store_summary_info_free ((CamelStoreSummary *) imap_store->summary, si);
+	}
+
+	if (imap_store->renaming) {
+		/* we don't need to emit a "folder_subscribed" signal
+		   if we are in the process of renaming folders, so we
+		   are done here... */
+		goto done;
+	}
+
+	fi = imap_build_folder_info (imap_store, folder_name);
+	fi->flags |= CAMEL_FOLDER_NOCHILDREN;
+
+	camel_subscribable_folder_subscribed (subscribable, fi);
+	camel_folder_info_free (fi);
+
+done:
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	return success;
+}
+
+static gboolean
+imap_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
+                                    const gchar *folder_name,
+                                    GCancellable *cancellable,
+                                    GError **error)
+{
+	CamelService *service;
+	CamelImapStore *imap_store;
+	CamelImapResponse *response;
+	gboolean success = TRUE;
+
+	service = CAMEL_SERVICE (subscribable);
+	imap_store = CAMEL_IMAP_STORE (subscribable);
+
+	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	if (!camel_imap_store_connected (imap_store, error)) {
+		success = FALSE;
+		goto done;
+	}
+
+	response = camel_imap_command (imap_store, NULL, cancellable, error,
+				       "UNSUBSCRIBE %F", folder_name);
+	if (!response) {
+		success = FALSE;
+		goto done;
+	}
+
+	camel_imap_response_free (imap_store, response);
+
+	success = imap_folder_effectively_unsubscribed (imap_store, folder_name, error);
+
+done:
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	return success;
+}
+
 static void
 camel_imap_store_class_init (CamelImapStoreClass *class)
 {
@@ -1296,7 +1442,6 @@ camel_imap_store_class_init (CamelImapStoreClass *class)
 	store_class->hash_folder_name = hash_folder_name;
 	store_class->compare_folder_name = compare_folder_name;
 	store_class->can_refresh_folder = imap_can_refresh_folder;
-	store_class->folder_is_subscribed = folder_is_subscribed;
 	store_class->free_folder_info = camel_store_free_folder_info_full;
 	store_class->get_folder_sync = imap_store_get_folder_sync;
 	store_class->get_folder_info_sync = imap_store_get_folder_info_sync;
@@ -1305,8 +1450,6 @@ camel_imap_store_class_init (CamelImapStoreClass *class)
 	store_class->create_folder_sync = imap_store_create_folder_sync;
 	store_class->delete_folder_sync = imap_store_delete_folder_sync;
 	store_class->rename_folder_sync = imap_store_rename_folder_sync;
-	store_class->subscribe_folder_sync = imap_store_subscribe_folder_sync;
-	store_class->unsubscribe_folder_sync = imap_store_unsubscribe_folder_sync;
 	store_class->noop_sync = imap_store_noop_sync;
 }
 
@@ -1326,6 +1469,14 @@ camel_network_service_init (CamelNetworkServiceInterface *interface)
 }
 
 static void
+camel_subscribable_init (CamelSubscribableInterface *interface)
+{
+	interface->folder_is_subscribed = imap_store_folder_is_subscribed;
+	interface->subscribe_folder_sync = imap_store_subscribe_folder_sync;
+	interface->unsubscribe_folder_sync = imap_store_unsubscribe_folder_sync;
+}
+
+static void
 camel_imap_store_init (CamelImapStore *imap_store)
 {
 	imap_store->istream = NULL;
@@ -1336,7 +1487,6 @@ camel_imap_store_init (CamelImapStore *imap_store)
 	imap_store->current_folder = NULL;
 	imap_store->connected = FALSE;
 	imap_store->preauthed = FALSE;
-	((CamelStore *) imap_store)->flags |= CAMEL_STORE_SUBSCRIPTIONS;
 
 	imap_store->tag_prefix = imap_tag_prefix++;
 	if (imap_tag_prefix > 'Z')
@@ -1353,40 +1503,6 @@ imap_set_server_level (CamelImapStore *store)
 		store->server_level = IMAP_LEVEL_IMAP4;
 	else
 		store->server_level = IMAP_LEVEL_UNKNOWN;
-}
-
-/* folder_name is path name */
-static CamelFolderInfo *
-imap_build_folder_info (CamelImapStore *imap_store, const gchar *folder_name)
-{
-	const gchar *name;
-	CamelFolderInfo *fi;
-
-	fi = camel_folder_info_new ();
-	fi->full_name = g_strdup (folder_name);
-	fi->unread = -1;
-	fi->total = -1;
-
-	name = strrchr (fi->full_name, '/');
-	if (name == NULL)
-		name = fi->full_name;
-	else
-		name++;
-	if (!g_ascii_strcasecmp (fi->full_name, "INBOX"))
-		fi->display_name = g_strdup (_("Inbox"));
-	/* Do not localize the rest, these are from a server, thus shouldn't be localized */
-	/*else if (!g_ascii_strcasecmp (fi->full_name, "Drafts"))
-		fi->display_name = g_strdup (_("Drafts"));
-	else if (!g_ascii_strcasecmp (fi->full_name, "Sent"))
-		fi->display_name = g_strdup (_("Sent"));
-	else if (!g_ascii_strcasecmp (fi->full_name, "Templates"))
-		fi->display_name = g_strdup (_("Templates"));
-	else if (!g_ascii_strcasecmp (fi->full_name, "Trash"))
-		fi->display_name = g_strdup (_("Trash"));*/
-	else
-		fi->display_name = g_strdup (name);
-
-	return fi;
 }
 
 static gboolean
@@ -1416,7 +1532,8 @@ imap_folder_effectively_unsubscribed (CamelImapStore *imap_store,
 	}
 
 	fi = imap_build_folder_info (imap_store, folder_name);
-	camel_store_folder_unsubscribed (CAMEL_STORE (imap_store), fi);
+	camel_subscribable_folder_unsubscribed (
+		CAMEL_SUBSCRIBABLE (imap_store), fi);
 	camel_folder_info_free (fi);
 
 	return TRUE;
@@ -2113,10 +2230,12 @@ manage_subscriptions (CamelStore *store,
 			if (strncmp (path, old_name, olen) == 0) {
 				if (subscribe)
 					imap_store_subscribe_folder_sync (
-						store, path, cancellable, NULL);
+						CAMEL_SUBSCRIBABLE (store),
+						path, cancellable, NULL);
 				else
 					imap_store_unsubscribe_folder_sync (
-						store, path, cancellable, NULL);
+						CAMEL_SUBSCRIBABLE (store),
+						path, cancellable, NULL);
 			}
 			camel_store_summary_info_free ((CamelStoreSummary *) imap_store->summary, si);
 		}
@@ -2650,7 +2769,7 @@ get_folders_sync (CamelImapStore *imap_store,
 					camel_store_summary_touch ((CamelStoreSummary *) imap_store->summary);
 
 					camel_store_folder_created (CAMEL_STORE (imap_store), fi);
-					camel_store_folder_subscribed (CAMEL_STORE (imap_store), fi);
+					camel_subscribable_folder_subscribed (CAMEL_SUBSCRIBABLE (imap_store), fi);
 				}
 			} else {
 				gchar *dup_folder_name = g_strdup (camel_store_info_path (imap_store->summary, si));
@@ -3006,114 +3125,6 @@ get_folder_info_offline (CamelStore *store, const gchar *top,
 	g_free (name);
 
 	return fi;
-}
-
-static gboolean
-folder_is_subscribed (CamelStore *store,
-                      const gchar *folder_name)
-{
-	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
-	CamelStoreInfo *si;
-	gint truth = FALSE;
-
-	si = camel_store_summary_path ((CamelStoreSummary *) imap_store->summary, folder_name);
-	if (si) {
-		truth = (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0;
-		camel_store_summary_info_free ((CamelStoreSummary *) imap_store->summary, si);
-	}
-
-	return truth;
-}
-
-/* Note: folder_name must match a folder as listed with get_folder_info() -> full_name */
-static gboolean
-imap_store_subscribe_folder_sync (CamelStore *store,
-                                  const gchar *folder_name,
-                                  GCancellable *cancellable,
-                                  GError **error)
-{
-	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
-	CamelImapResponse *response;
-	CamelFolderInfo *fi;
-	CamelStoreInfo *si;
-	gboolean success = TRUE;
-
-	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	if (!camel_imap_store_connected (imap_store, error)) {
-		success = FALSE;
-		goto done;
-	}
-
-	response = camel_imap_command (imap_store, NULL, cancellable, error,
-				       "SUBSCRIBE %F", folder_name);
-	if (!response) {
-		success = FALSE;
-		goto done;
-	}
-
-	camel_imap_response_free (imap_store, response);
-
-	si = camel_store_summary_path ((CamelStoreSummary *) imap_store->summary, folder_name);
-	if (si) {
-		if ((si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) == 0) {
-			si->flags |= CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			camel_store_summary_touch ((CamelStoreSummary *) imap_store->summary);
-			camel_store_summary_save ((CamelStoreSummary *) imap_store->summary);
-		}
-		camel_store_summary_info_free ((CamelStoreSummary *) imap_store->summary, si);
-	}
-
-	if (imap_store->renaming) {
-		/* we don't need to emit a "folder_subscribed" signal
-		   if we are in the process of renaming folders, so we
-		   are done here... */
-		goto done;
-	}
-
-	fi = imap_build_folder_info (imap_store, folder_name);
-	fi->flags |= CAMEL_FOLDER_NOCHILDREN;
-
-	camel_store_folder_subscribed (store, fi);
-	camel_folder_info_free (fi);
-done:
-	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	return success;
-}
-
-static gboolean
-imap_store_unsubscribe_folder_sync (CamelStore *store,
-                                    const gchar *folder_name,
-                                    GCancellable *cancellable,
-                                    GError **error)
-{
-	CamelImapStore *imap_store = CAMEL_IMAP_STORE (store);
-	CamelImapResponse *response;
-	gboolean success = TRUE;
-
-	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	if (!camel_imap_store_connected (imap_store, error)) {
-		success = FALSE;
-		goto done;
-	}
-
-	response = camel_imap_command (imap_store, NULL, cancellable, error,
-				       "UNSUBSCRIBE %F", folder_name);
-	if (!response) {
-		success = FALSE;
-		goto done;
-	}
-
-	camel_imap_response_free (imap_store, response);
-
-	success = imap_folder_effectively_unsubscribed (imap_store, folder_name, error);
-
-done:
-	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	return success;
 }
 
 #if 0

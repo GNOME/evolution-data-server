@@ -144,8 +144,6 @@ struct _CamelStoreClass {
 	gboolean	(*can_refresh_folder)	(CamelStore *store,
 						 CamelFolderInfo *info,
 						 GError **error);
-	gboolean	(*folder_is_subscribed)	(CamelStore *store,
-						 const gchar *folder_name);
 	void		(*free_folder_info)	(CamelStore *store,
 						 CamelFolderInfo *fi);
 
@@ -185,16 +183,6 @@ struct _CamelStoreClass {
 	gboolean	(*rename_folder_sync)	(CamelStore *store,
 						 const gchar *old_name,
 						 const gchar *new_name,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*subscribe_folder_sync)
-						(CamelStore *store,
-						 const gchar *folder_name,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*unsubscribe_folder_sync)
-						(CamelStore *store,
-						 const gchar *folder_name,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*synchronize_sync)	(CamelStore *store,
@@ -285,26 +273,6 @@ struct _CamelStoreClass {
 	gboolean	(*rename_folder_finish)	(CamelStore *store,
 						 GAsyncResult *result,
 						 GError **error);
-	void		(*subscribe_folder)	(CamelStore *store,
-						 const gchar *folder_name,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*subscribe_folder_finish)
-						(CamelStore *store,
-						 GAsyncResult *result,
-						 GError **error);
-	void		(*unsubscribe_folder)	(CamelStore *store,
-						 const gchar *folder_name,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*unsubscribe_folder_finish)
-						(CamelStore *store,
-						 GAsyncResult *result,
-						 GError **error);
 	void		(*synchronize)		(CamelStore *store,
 						 gboolean expunge,
 						 gint io_priority,
@@ -333,10 +301,6 @@ struct _CamelStoreClass {
 	void		(*folder_renamed)	(CamelStore *store,
 						 const gchar *old_name,
 						 CamelFolderInfo *folder_info);
-	void		(*folder_subscribed)	(CamelStore *store,
-						 CamelFolderInfo *folder_info);
-	void		(*folder_unsubscribed)	(CamelStore *store,
-						 CamelFolderInfo *folder_info);
 };
 
 GType		camel_store_get_type		(void);
@@ -349,10 +313,6 @@ void		camel_store_folder_opened	(CamelStore *store,
 						 CamelFolder *folder);
 void		camel_store_folder_renamed	(CamelStore *store,
 						 const gchar *old_name,
-						 CamelFolderInfo *folder_info);
-void		camel_store_folder_subscribed	(CamelStore *store,
-						 CamelFolderInfo *folder_info);
-void		camel_store_folder_unsubscribed	(CamelStore *store,
 						 CamelFolderInfo *folder_info);
 void		camel_store_free_folder_info	(CamelStore *store,
 						 CamelFolderInfo *fi);
@@ -373,10 +333,6 @@ CamelFolderInfo *
 #endif /* CAMEL_DISABLE_DEPRECATED */
 CamelFolderInfo *
 		camel_folder_info_clone		(CamelFolderInfo *fi);
-gboolean	camel_store_supports_subscriptions
-						(CamelStore *store);
-gboolean	camel_store_folder_is_subscribed (CamelStore *store,
-						 const gchar *folder_name);
 gboolean	camel_store_can_refresh_folder	(CamelStore *store,
 						 CamelFolderInfo *info,
 						 GError **error);
@@ -503,36 +459,6 @@ void		camel_store_rename_folder	(CamelStore *store,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
 gboolean	camel_store_rename_folder_finish
-						(CamelStore *store,
-						 GAsyncResult *result,
-						 GError **error);
-gboolean	camel_store_subscribe_folder_sync
-						(CamelStore *store,
-						 const gchar *folder_name,
-						 GCancellable *cancellable,
-						 GError **error);
-void		camel_store_subscribe_folder	(CamelStore *store,
-						 const gchar *folder_name,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gboolean	camel_store_subscribe_folder_finish
-						(CamelStore *store,
-						 GAsyncResult *result,
-						 GError **error);
-gboolean	camel_store_unsubscribe_folder_sync
-						(CamelStore *store,
-						 const gchar *folder_name,
-						 GCancellable *cancellable,
-						 GError **error);
-void		camel_store_unsubscribe_folder	(CamelStore *store,
-						 const gchar *folder_name,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gboolean	camel_store_unsubscribe_folder_finish
 						(CamelStore *store,
 						 GAsyncResult *result,
 						 GError **error);

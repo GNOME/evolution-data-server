@@ -90,6 +90,7 @@ libcamel_provider_1_2_la_SOURCES = 		\
 	camel-store.c				\
 	camel-store-settings.c			\
 	camel-store-summary.c			\
+	camel-subscribable.c			\
 	camel-tcp-stream-raw.c			\
 	camel-tcp-stream-ssl.c			\
 	camel-tcp-stream.c			\
@@ -142,6 +143,7 @@ libcamel_providerinclude_HEADERS =		\
 	camel-store.h				\
 	camel-store-settings.h			\
 	camel-store-summary.h			\
+	camel-subscribable.h			\
 	camel-tcp-stream-raw.h			\
 	camel-tcp-stream-ssl.h			\
 	camel-tcp-stream.h			\

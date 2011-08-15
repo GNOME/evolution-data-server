@@ -59,22 +59,6 @@ CamelStore
 @arg1: 
 @arg2: 
 
-<!-- ##### SIGNAL CamelStore::folder-subscribed ##### -->
-<para>
-
-</para>
-
-@camelstore: the object which received the signal.
-@Param2: 
-
-<!-- ##### SIGNAL CamelStore::folder-unsubscribed ##### -->
-<para>
-
-</para>
-
-@camelstore: the object which received the signal.
-@Param2: 
-
 <!-- ##### MACRO CAMEL_STORE_ERROR ##### -->
 <para>
 
@@ -149,7 +133,6 @@ CamelStore
 
 </para>
 
-@CAMEL_STORE_SUBSCRIPTIONS: 
 @CAMEL_STORE_VTRASH: 
 @CAMEL_STORE_VJUNK: 
 @CAMEL_STORE_PROXY: 
@@ -230,24 +213,6 @@ CamelStore
 @folder_info: 
 
 
-<!-- ##### FUNCTION camel_store_folder_subscribed ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_info: 
-
-
-<!-- ##### FUNCTION camel_store_folder_unsubscribed ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_info: 
-
-
 <!-- ##### FUNCTION camel_store_free_folder_info ##### -->
 <para>
 
@@ -310,25 +275,6 @@ CamelStore
 </para>
 
 @fi: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_supports_subscriptions ##### -->
-<para>
-
-</para>
-
-@store: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_folder_is_subscribed ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
 @Returns: 
 
 
@@ -648,78 +594,6 @@ CamelStore
 
 
 <!-- ##### FUNCTION camel_store_rename_folder_finish ##### -->
-<para>
-
-</para>
-
-@store: 
-@result: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_subscribe_folder_sync ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_subscribe_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@io_priority: 
-@cancellable: 
-@callback: 
-@user_data: 
-
-
-<!-- ##### FUNCTION camel_store_subscribe_folder_finish ##### -->
-<para>
-
-</para>
-
-@store: 
-@result: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_unsubscribe_folder_sync ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@cancellable: 
-@error: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_store_unsubscribe_folder ##### -->
-<para>
-
-</para>
-
-@store: 
-@folder_name: 
-@io_priority: 
-@cancellable: 
-@callback: 
-@user_data: 
-
-
-<!-- ##### FUNCTION camel_store_unsubscribe_folder_finish ##### -->
 <para>
 
 </para>

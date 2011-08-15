@@ -41,6 +41,7 @@
 #include "camel-session.h"
 #include "camel-store.h"
 #include "camel-store-settings.h"
+#include "camel-subscribable.h"
 #include "camel-vtrash-folder.h"
 
 #define d(x)
@@ -81,8 +82,6 @@ enum {
 	FOLDER_DELETED,
 	FOLDER_OPENED,
 	FOLDER_RENAMED,
-	FOLDER_SUBSCRIBED,
-	FOLDER_UNSUBSCRIBED,
 	LAST_SIGNAL
 };
 
@@ -168,28 +167,6 @@ store_emit_folder_renamed_cb (SignalData *data)
 		data->store,
 		signals[FOLDER_RENAMED], 0,
 		data->folder_name,
-		data->folder_info);
-
-	return FALSE;
-}
-
-static gboolean
-store_emit_folder_subscribed_cb (SignalData *data)
-{
-	g_signal_emit (
-		data->store,
-		signals[FOLDER_SUBSCRIBED], 0,
-		data->folder_info);
-
-	return FALSE;
-}
-
-static gboolean
-store_emit_folder_unsubscribed_cb (SignalData *data)
-{
-	g_signal_emit (
-		data->store,
-		signals[FOLDER_UNSUBSCRIBED], 0,
 		data->folder_info);
 
 	return FALSE;
@@ -982,136 +959,6 @@ store_rename_folder_finish (CamelStore *store,
 }
 
 static void
-store_subscribe_folder_thread (GSimpleAsyncResult *simple,
-                               GObject *object,
-                               GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	camel_store_subscribe_folder_sync (
-		CAMEL_STORE (object), async_context->folder_name_1,
-		cancellable, &error);
-
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
-}
-
-static void
-store_subscribe_folder (CamelStore *store,
-                        const gchar *folder_name,
-                        gint io_priority,
-                        GCancellable *cancellable,
-                        GAsyncReadyCallback callback,
-                        gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->folder_name_1 = g_strdup (folder_name);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (store), callback,
-		user_data, store_subscribe_folder);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, store_subscribe_folder_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-store_subscribe_folder_finish (CamelStore *store,
-                               GAsyncResult *result,
-                               GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), store_subscribe_folder), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
-}
-
-static void
-store_unsubscribe_folder_thread (GSimpleAsyncResult *simple,
-                                 GObject *object,
-                                 GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	camel_store_unsubscribe_folder_sync (
-		CAMEL_STORE (object), async_context->folder_name_1,
-		cancellable, &error);
-
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
-}
-
-static void
-store_unsubscribe_folder (CamelStore *store,
-                          const gchar *folder_name,
-                          gint io_priority,
-                          GCancellable *cancellable,
-                          GAsyncReadyCallback callback,
-                          gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->folder_name_1 = g_strdup (folder_name);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (store), callback,
-		user_data, store_unsubscribe_folder);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, store_unsubscribe_folder_thread,
-		io_priority, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-store_unsubscribe_folder_finish (CamelStore *store,
-                                 GAsyncResult *result,
-                                 GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), store_unsubscribe_folder), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
-}
-
-static void
 store_synchronize_thread (GSimpleAsyncResult *simple,
                           GObject *object,
                           GCancellable *cancellable)
@@ -1309,10 +1156,6 @@ camel_store_class_init (CamelStoreClass *class)
 	class->delete_folder_finish = store_delete_folder_finish;
 	class->rename_folder = store_rename_folder;
 	class->rename_folder_finish = store_rename_folder_finish;
-	class->subscribe_folder = store_subscribe_folder;
-	class->subscribe_folder_finish = store_subscribe_folder_finish;
-	class->unsubscribe_folder = store_unsubscribe_folder;
-	class->unsubscribe_folder_finish = store_unsubscribe_folder_finish;
 	class->synchronize = store_synchronize;
 	class->synchronize_finish = store_synchronize_finish;
 	class->noop = store_noop;
@@ -1357,26 +1200,6 @@ camel_store_class_init (CamelStoreClass *class)
 		camel_marshal_VOID__STRING_POINTER,
 		G_TYPE_NONE, 2,
 		G_TYPE_STRING,
-		G_TYPE_POINTER);
-
-	signals[FOLDER_SUBSCRIBED] = g_signal_new (
-		"folder-subscribed",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (CamelStoreClass, folder_subscribed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1,
-		G_TYPE_POINTER);
-
-	signals[FOLDER_UNSUBSCRIBED] = g_signal_new (
-		"folder-unsubscribed",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (CamelStoreClass, folder_unsubscribed),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1,
 		G_TYPE_POINTER);
 }
 
@@ -1538,68 +1361,6 @@ camel_store_folder_renamed (CamelStore *store,
 	g_idle_add_full (
 		G_PRIORITY_DEFAULT_IDLE,
 		(GSourceFunc) store_emit_folder_renamed_cb,
-		data, (GDestroyNotify) signal_data_free);
-}
-
-/**
- * camel_store_folder_subscribed:
- * @store: a #CamelStore
- * @folder_info: information about the subscribed folder
- *
- * Emits the #CamelStore::folder-subscribed signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
- *
- * This function is only intended for Camel providers.
- *
- * Since: 2.32
- **/
-void
-camel_store_folder_subscribed (CamelStore *store,
-                               CamelFolderInfo *folder_info)
-{
-	SignalData *data;
-
-	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (folder_info != NULL);
-
-	data = g_slice_new0 (SignalData);
-	data->store = g_object_ref (store);
-	data->folder_info = camel_folder_info_clone (folder_info);
-
-	g_idle_add_full (
-		G_PRIORITY_DEFAULT_IDLE,
-		(GSourceFunc) store_emit_folder_subscribed_cb,
-		data, (GDestroyNotify) signal_data_free);
-}
-
-/**
- * camel_store_folder_unsubscribed:
- * @store: a #CamelStore
- * @folder_info: information about the unsubscribed folder
- *
- * Emits the #CamelStore::folder-unsubscribed signal from an idle source on
- * the main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
- *
- * This function is only intended for Camel providers.
- *
- * Since: 2.32
- **/
-void
-camel_store_folder_unsubscribed (CamelStore *store,
-                                 CamelFolderInfo *folder_info)
-{
-	SignalData *data;
-
-	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (folder_info != NULL);
-
-	data = g_slice_new0 (SignalData);
-	data->store = g_object_ref (store);
-	data->folder_info = camel_folder_info_clone (folder_info);
-
-	g_idle_add_full (
-		G_PRIORITY_DEFAULT_IDLE,
-		(GSourceFunc) store_emit_folder_unsubscribed_cb,
 		data, (GDestroyNotify) signal_data_free);
 }
 
@@ -1921,54 +1682,6 @@ camel_folder_info_clone (CamelFolderInfo *fi)
 		return NULL;
 
 	return folder_info_clone_rec (fi, NULL);
-}
-
-/**
- * camel_store_supports_subscriptions:
- * @store: a #CamelStore
- *
- * Get whether or not @store supports subscriptions to folders.
- *
- * Returns: %TRUE if folder subscriptions are supported or %FALSE otherwise
- **/
-gboolean
-camel_store_supports_subscriptions (CamelStore *store)
-{
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-
-	return (store->flags & CAMEL_STORE_SUBSCRIPTIONS);
-}
-
-/**
- * camel_store_folder_is_subscribed:
- * @store: a #CamelStore
- * @folder_name: full path of the folder
- *
- * Find out if a folder has been subscribed to.
- *
- * Returns: %TRUE if the folder has been subscribed to or %FALSE otherwise
- **/
-gboolean
-camel_store_folder_is_subscribed (CamelStore *store,
-                                  const gchar *folder_name)
-{
-	CamelStoreClass *class;
-	gboolean is_subscribed;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (folder_name != NULL, FALSE);
-	g_return_val_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS, FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->folder_is_subscribed != NULL, FALSE);
-
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	is_subscribed = class->folder_is_subscribed (store, folder_name);
-
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	return is_subscribed;
 }
 
 /**
@@ -3142,7 +2855,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 			}
 
 			/* Emit renamed signal */
-			if (store->flags & CAMEL_STORE_SUBSCRIPTIONS)
+			if (CAMEL_IS_SUBSCRIBABLE (store))
 				flags |= CAMEL_STORE_FOLDER_INFO_SUBSCRIBED;
 
 			folder_info = class->get_folder_info_sync (
@@ -3237,233 +2950,6 @@ camel_store_rename_folder_finish (CamelStore *store,
 	g_return_val_if_fail (class->rename_folder_finish != NULL, FALSE);
 
 	return class->rename_folder_finish (store, result, error);
-}
-
-/**
- * camel_store_subscribe_folder_sync:
- * @store: a #CamelStore
- * @folder_name: full path of the folder
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Subscribes to the folder described by @folder_name.
- *
- * Returns: %TRUE on success, %FALSE on error
- *
- * Since: 3.0
- **/
-gboolean
-camel_store_subscribe_folder_sync (CamelStore *store,
-                                   const gchar *folder_name,
-                                   GCancellable *cancellable,
-                                   GError **error)
-{
-	CamelStoreClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (folder_name != NULL, FALSE);
-	g_return_val_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS, FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->subscribe_folder_sync != NULL, FALSE);
-
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	/* Check for cancellation after locking. */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-		return FALSE;
-	}
-
-	success = class->subscribe_folder_sync (
-		store, folder_name, cancellable, error);
-	CAMEL_CHECK_GERROR (store, subscribe_folder_sync, success, error);
-
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	return success;
-}
-
-/**
- * camel_store_subscribe_folder:
- * @store: a #CamelStore
- * @folder_name: full path of the folder
- * @io_priority: the I/O priority of the request
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
- * @user_data: data to pass to the callback function
- *
- * Asynchronously subscribes to the folder described by @folder_name.
- *
- * When the operation is finished, @callback will be called.  You can
- * then call camel_store_subscribe_folder_finish() to get the result of
- * the operation.
- *
- * Since: 3.0
- **/
-void
-camel_store_subscribe_folder (CamelStore *store,
-                              const gchar *folder_name,
-                              gint io_priority,
-                              GCancellable *cancellable,
-                              GAsyncReadyCallback callback,
-                              gpointer user_data)
-{
-	CamelStoreClass *class;
-
-	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (folder_name != NULL);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_if_fail (class->subscribe_folder != NULL);
-
-	class->subscribe_folder (
-		store, folder_name, io_priority,
-		cancellable, callback, user_data);
-}
-
-/**
- * camel_store_subscribe_folder_finish:
- * @store: a #CamelStore
- * @result: a #GAsyncResult
- * @error: return location for a #GError, or %NULL
- *
- * Finishes the operation started with camel_store_subscribe_folder().
- *
- * Returns: %TRUE on success, %FALSE on error
- *
- * Since: 3.0
- **/
-gboolean
-camel_store_subscribe_folder_finish (CamelStore *store,
-                                     GAsyncResult *result,
-                                     GError **error)
-{
-	CamelStoreClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->subscribe_folder_finish != NULL, FALSE);
-
-	return class->subscribe_folder_finish (store, result, error);
-}
-
-/**
- * camel_store_unsubscribe_folder_sync:
- * @store: a #CamelStore
- * @folder_name: full path of the folder
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Unsubscribes from the folder described by @folder_name.
- *
- * Returns: %TRUE on success, %FALSE on error
- *
- * Since: 3.0
- **/
-gboolean
-camel_store_unsubscribe_folder_sync (CamelStore *store,
-                                     const gchar *folder_name,
-                                     GCancellable *cancellable,
-                                     GError **error)
-{
-	CamelStoreClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (folder_name != NULL, FALSE);
-	g_return_val_if_fail (store->flags & CAMEL_STORE_SUBSCRIPTIONS, FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->unsubscribe_folder_sync != NULL, FALSE);
-
-	camel_store_lock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	/* Check for cancellation after locking. */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-		return FALSE;
-	}
-
-	success = class->unsubscribe_folder_sync (
-		store, folder_name, cancellable, error);
-	CAMEL_CHECK_GERROR (store, unsubscribe_folder_sync, success, error);
-
-	if (success)
-		cs_delete_cached_folder (store, folder_name);
-
-	camel_store_unlock (store, CAMEL_STORE_FOLDER_LOCK);
-
-	return success;
-}
-
-/**
- * camel_store_unsubscribe_folder:
- * @store: a #CamelStore
- * @folder_name: full path of the folder
- * @io_priority: the I/O priority of the request
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
- * @user_data: data to pass to the callback function
- *
- * Asynchronously unsubscribes from the folder described by @folder_name.
- *
- * When the operation is finished, @callback will be called.  You can then
- * call camel_store_unsubscribe_folder_finish() to get the result of the
- * operation.
- *
- * Since: 3.0
- **/
-void
-camel_store_unsubscribe_folder (CamelStore *store,
-                                const gchar *folder_name,
-                                gint io_priority,
-                                GCancellable *cancellable,
-                                GAsyncReadyCallback callback,
-                                gpointer user_data)
-{
-	CamelStoreClass *class;
-
-	g_return_if_fail (CAMEL_IS_STORE (store));
-	g_return_if_fail (folder_name != NULL);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_if_fail (class->unsubscribe_folder != NULL);
-
-	class->unsubscribe_folder (
-		store, folder_name, io_priority,
-		cancellable, callback, user_data);
-}
-
-/**
- * camel_store_unsubscribe_folder_finish:
- * @store: a #CamelStore
- * @result: a #GAsyncResult
- * @error: return location for a #GError, or %NULL
- *
- * Finishes the operation started with camel_store_unsubscribe_folder().
- *
- * Returns: %TRUE on success, %FALSE on error
- *
- * Since: 3.0
- **/
-gboolean
-camel_store_unsubscribe_folder_finish (CamelStore *store,
-                                       GAsyncResult *result,
-                                       GError **error)
-{
-	CamelStoreClass *class;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->unsubscribe_folder_finish != NULL, FALSE);
-
-	return class->unsubscribe_folder_finish (store, result, error);
 }
 
 /**

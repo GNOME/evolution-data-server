@@ -34,6 +34,7 @@
 #include "camel-disco-store.h"
 #include "camel-offline-settings.h"
 #include "camel-session.h"
+#include "camel-subscribable.h"
 
 #define d(x)
 
@@ -223,7 +224,7 @@ disco_store_get_folder_info_sync (CamelStore *store,
 
 	case CAMEL_DISCO_STORE_OFFLINE:
 		/* Can't edit subscriptions while offline */
-		if ((store->flags & CAMEL_STORE_SUBSCRIPTIONS) &&
+		if (CAMEL_IS_SUBSCRIBABLE (store) &&
 		    !(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED)) {
 			camel_disco_store_check_online (disco_store, error);
 			return NULL;

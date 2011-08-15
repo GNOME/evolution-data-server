@@ -81,6 +81,7 @@ camel_stream_mem_get_type
 camel_stream_null_get_type
 camel_stream_process_get_type
 camel_stream_vfs_get_type
+camel_subscribable_get_type
 camel_tcp_stream_get_type
 camel_tcp_stream_raw_get_type
 camel_text_index_cursor_get_type

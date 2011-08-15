@@ -2098,8 +2098,6 @@ camel_store_folder_created
 camel_store_folder_deleted
 camel_store_folder_opened
 camel_store_folder_renamed
-camel_store_folder_subscribed
-camel_store_folder_unsubscribed
 camel_store_free_folder_info
 camel_store_free_folder_info_full
 camel_store_free_folder_info_nop
@@ -2107,8 +2105,6 @@ camel_folder_info_new
 camel_folder_info_free
 camel_folder_info_build
 camel_folder_info_clone
-camel_store_supports_subscriptions
-camel_store_folder_is_subscribed
 camel_store_can_refresh_folder
 CamelStoreLock
 camel_store_lock
@@ -2137,12 +2133,6 @@ camel_store_delete_folder_finish
 camel_store_rename_folder_sync
 camel_store_rename_folder
 camel_store_rename_folder_finish
-camel_store_subscribe_folder_sync
-camel_store_subscribe_folder
-camel_store_subscribe_folder_finish
-camel_store_unsubscribe_folder_sync
-camel_store_unsubscribe_folder
-camel_store_unsubscribe_folder_finish
 camel_store_synchronize_sync
 camel_store_synchronize
 camel_store_synchronize_finish
@@ -2396,6 +2386,31 @@ CAMEL_STREAM_VFS_GET_CLASS
 CamelStreamVFSClass
 <SUBSECTION Private>
 camel_stream_vfs_get_type
+</SECTION>
+
+<SECTION>
+<FILE>camel-subscribable</FILE>
+<TITLE>CamelSubscribable</TITLE>
+CamelSubscribable
+camel_subscribable_folder_is_subscribed
+camel_subscribable_subscribe_folder_sync
+camel_subscribable_subscribe_folder
+camel_subscribable_subscribe_folder_finish
+camel_subscribable_unsubscribe_folder_sync
+camel_subscribable_unsubscribe_folder
+camel_subscribable_unsubscribe_folder_finish
+camel_subscribable_folder_subscribed
+camel_subscribable_folder_unsubscribed
+<SUBSECTION Standard>
+CAMEL_SUBSCRIBABLE
+CAMEL_IS_SUBSCRIBABLE
+CAMEL_TYPE_SUBSCRIBABLE
+CAMEL_SUBSCRIBABLE_INTERFACE
+CAMEL_IS_SUBSCRIBABLE_INTERFACE
+CAMEL_SUBSCRIBABLE_GET_INTERFACE
+CamelSubscribableInterface
+<SUBSECTION Private>
+camel_subscribable_get_type
 </SECTION>
 
 <SECTION>
