@@ -3593,7 +3593,7 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have_pr
 	GList *values;
 
 	values = e_vcard_attribute_get_values (attr);
-	if (values && values->data && *((gchar *) values->data) != '\0') {
+	if (values && values->data) {
 		GList *types, *value;
 		gchar *rel;
 		const gchar *label;
@@ -3608,12 +3608,6 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have_pr
 		rel = google_rel_from_types (types);
 		address = gdata_gd_postal_address_new (rel, label, primary);
 		g_free (rel);
-
-		__debug__ ("New %spostal address entry %s (%s/%s)",
-			   gdata_gd_postal_address_is_primary (address) ? "primary " : "",
-			   gdata_gd_postal_address_get_address (address),
-			   gdata_gd_postal_address_get_relation_type (address),
-			   gdata_gd_postal_address_get_label (address));
 
 		/* Set the components of the address from the vCard's attribute values */
 		value = values;
@@ -3642,6 +3636,21 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *have_pr
 		if (!value)
 			return address;
 		gdata_gd_postal_address_set_country (address, (*((gchar *) value->data) != '\0') ? value->data : NULL, NULL);
+
+		/* Throw it away if nothing was set */
+		if (gdata_gd_postal_address_get_po_box (address) == NULL && gdata_gd_postal_address_get_house_name (address) == NULL &&
+		    gdata_gd_postal_address_get_street (address) == NULL && gdata_gd_postal_address_get_city (address) == NULL &&
+		    gdata_gd_postal_address_get_region (address) == NULL && gdata_gd_postal_address_get_postcode (address) == NULL &&
+		    gdata_gd_postal_address_get_country (address) == NULL) {
+			g_object_unref (address);
+			return NULL;
+		}
+
+		__debug__ ("New %spostal address entry %s (%s/%s)",
+			   gdata_gd_postal_address_is_primary (address) ? "primary " : "",
+			   gdata_gd_postal_address_get_address (address),
+			   gdata_gd_postal_address_get_relation_type (address),
+			   gdata_gd_postal_address_get_label (address));
 	}
 
 	return address;
