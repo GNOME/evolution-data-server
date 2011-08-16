@@ -552,10 +552,60 @@ process_contact_finish (EBookBackend *backend, GDataEntry *entry)
 	g_object_unref (new_contact);
 }
 
-#ifdef HAVE_LIBGDATA_0_9
+typedef struct {
+	EBookBackend *backend;
+	GCancellable *cancellable;
+	GError *gdata_error;
+
+	/* These two don't need locking; they're only accessed from the main thread. */
+	gboolean update_complete;
+	guint num_contacts_pending_photos;
+} GetContactsData;
+
 static void
-process_contact_photo_cb (GDataContactsContact *gdata_contact, GAsyncResult *async_result, EBookBackend *backend)
+check_get_new_contacts_finished (GetContactsData *data)
 {
+	__debug__ (G_STRFUNC);
+
+	/* Are we finished yet? */
+	if (data->update_complete == FALSE || data->num_contacts_pending_photos > 0) {
+		__debug__ ("Bailing from check_get_new_contacts_finished(): update_complete: %u, num_contacts_pending_photos: %u, data: %p",
+			   data->update_complete, data->num_contacts_pending_photos, data);
+		return;
+	}
+
+	__debug__ ("Proceeding with check_get_new_contacts_finished() for data: %p.", data);
+
+	finish_operation (data->backend, 0);
+	on_sequence_complete (data->backend, data->gdata_error);
+
+	/* Tidy up */
+	g_object_unref (data->cancellable);
+	g_object_unref (data->backend);
+
+	g_slice_free (GetContactsData, data);
+}
+
+#ifdef HAVE_LIBGDATA_0_9
+typedef struct {
+	GetContactsData *parent_data;
+
+	GCancellable *cancellable;
+	gulong cancelled_handle;
+} PhotoData;
+
+static void
+process_contact_photo_cancelled_cb (GCancellable *parent_cancellable, GCancellable *photo_cancellable)
+{
+	__debug__ (G_STRFUNC);
+
+	g_cancellable_cancel (photo_cancellable);
+}
+
+static void
+process_contact_photo_cb (GDataContactsContact *gdata_contact, GAsyncResult *async_result, PhotoData *data)
+{
+	EBookBackend *backend = data->parent_data->backend;
 	guint8 *photo_data = NULL;
 	gsize photo_length;
 	gchar *photo_content_type = NULL;
@@ -590,12 +640,22 @@ process_contact_photo_cb (GDataContactsContact *gdata_contact, GAsyncResult *asy
 
 	g_free (photo_data);
 	g_free (photo_content_type);
+
+	/* Disconnect from the cancellable. */
+	g_cancellable_disconnect (data->parent_data->cancellable, data->cancelled_handle);
+	g_object_unref (data->cancellable);
+
+	data->parent_data->num_contacts_pending_photos--;
+	check_get_new_contacts_finished (data->parent_data);
+
+	g_slice_free (PhotoData, data);
 }
 #endif /* HAVE_LIBGDATA_0_9 */
 
 static void
-process_contact_cb (GDataEntry *entry, guint entry_key, guint entry_count, EBookBackend *backend)
+process_contact_cb (GDataEntry *entry, guint entry_key, guint entry_count, GetContactsData *data)
 {
+	EBookBackend *backend = data->backend;
 	gboolean is_deleted, is_cached;
 	const gchar *uid;
 
@@ -643,10 +703,28 @@ process_contact_cb (GDataEntry *entry, guint entry_key, guint entry_count, EBook
 
 		if ((old_photo_etag == NULL && new_photo_etag != NULL) ||
 		    (old_photo_etag != NULL && new_photo_etag != NULL && strcmp (old_photo_etag, new_photo_etag) != 0)) {
+			GCancellable *cancellable;
+			PhotoData *photo_data;
+
+			photo_data = g_slice_new (PhotoData);
+			photo_data->parent_data = data;
+
+			/* Increment the count of contacts whose photos we're waiting for. */
+			data->num_contacts_pending_photos++;
+
+			/* Cancel downloading if the get_new_contacts() operation is cancelled. */
+			cancellable = g_cancellable_new ();
+
+			photo_data->cancellable = g_object_ref (cancellable);
+			photo_data->cancelled_handle = g_cancellable_connect (data->cancellable, (GCallback) process_contact_photo_cancelled_cb,
+									      g_object_ref (cancellable), (GDestroyNotify) g_object_unref);
+
 			/* Download the photo. */
 			gdata_contacts_contact_get_photo_async (GDATA_CONTACTS_CONTACT (entry),
-								GDATA_CONTACTS_SERVICE (E_BOOK_BACKEND_GOOGLE (backend)->priv->service), NULL,
-								(GAsyncReadyCallback) process_contact_photo_cb, backend);
+								GDATA_CONTACTS_SERVICE (E_BOOK_BACKEND_GOOGLE (backend)->priv->service), cancellable,
+								(GAsyncReadyCallback) process_contact_photo_cb, photo_data);
+
+			g_object_unref (cancellable);
 			g_free (old_photo_etag);
 
 			return;
@@ -661,8 +739,9 @@ process_contact_cb (GDataEntry *entry, guint entry_key, guint entry_count, EBook
 }
 
 static void
-get_new_contacts_cb (GDataService *service, GAsyncResult *result, EBookBackend *backend)
+get_new_contacts_cb (GDataService *service, GAsyncResult *result, GetContactsData *data)
 {
+	EBookBackend *backend = data->backend;
 	GDataFeed *feed;
 	GError *gdata_error = NULL;
 
@@ -683,13 +762,14 @@ get_new_contacts_cb (GDataService *service, GAsyncResult *result, EBookBackend *
 		cache_set_last_update (backend, &current_time);
 	}
 
-	finish_operation (backend, 0);
-	on_sequence_complete (backend, gdata_error);
-
 	/* Thaw the cache again */
 	cache_thaw (backend);
 
-	g_clear_error (&gdata_error);
+	/* Note: The operation's only marked as finished when all the
+	 * process_contact_photo_cb() callbacks have been called as well. */
+	data->update_complete = TRUE;
+	data->gdata_error = gdata_error;
+	check_get_new_contacts_finished (data);
 }
 
 static void
@@ -700,6 +780,7 @@ get_new_contacts (EBookBackend *backend)
 	GTimeVal updated;
 	GDataQuery *query;
 	GCancellable *cancellable;
+	GetContactsData *data;
 
 	__debug__ (G_STRFUNC);
 	g_return_if_fail (backend_is_authorized (backend));
@@ -721,17 +802,25 @@ get_new_contacts (EBookBackend *backend)
 
 	/* Query for new contacts asynchronously */
 	cancellable = start_operation (backend, 0, NULL, _("Querying for updated contacts…"));
+
+	data = g_slice_new (GetContactsData);
+	data->backend = g_object_ref (backend);
+	data->cancellable = g_object_ref (cancellable);
+	data->gdata_error = NULL;
+	data->num_contacts_pending_photos = 0;
+	data->update_complete = FALSE;
+
 	gdata_contacts_service_query_contacts_async (
 		GDATA_CONTACTS_SERVICE (priv->service),
 		query,
 		cancellable,
 		(GDataQueryProgressCallback) process_contact_cb,
-		backend,
+		data,
 #ifdef HAVE_LIBGDATA_0_9
 		(GDestroyNotify) NULL,
 #endif
 		(GAsyncReadyCallback) get_new_contacts_cb,
-		backend);
+		data);
 
 	g_object_unref (cancellable);
 	g_object_unref (query);
