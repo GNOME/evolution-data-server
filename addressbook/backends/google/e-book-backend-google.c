@@ -1641,8 +1641,9 @@ e_book_backend_google_modify_contact (EBookBackend *backend, EDataBook *book, gu
 	} else if (old_photo != NULL && (new_photo == NULL || new_photo->type != E_CONTACT_PHOTO_TYPE_INLINED)) {
 		/* Removing a photo */
 		data->photo_operation = REMOVE_PHOTO;
-	} else if (old_photo->data.inlined.length != new_photo->data.inlined.length ||
-		   memcmp (old_photo->data.inlined.data, new_photo->data.inlined.data, old_photo->data.inlined.length) != 0) {
+	} else if (old_photo != NULL && new_photo != NULL &&
+		   (old_photo->data.inlined.length != new_photo->data.inlined.length ||
+		    memcmp (old_photo->data.inlined.data, new_photo->data.inlined.data, old_photo->data.inlined.length) != 0)) {
 		/* Modifying the photo */
 		data->photo_operation = UPDATE_PHOTO;
 	} else {
