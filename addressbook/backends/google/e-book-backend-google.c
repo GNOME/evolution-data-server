@@ -474,30 +474,6 @@ on_contact_changed (EBookBackend *backend, EContact *contact)
 		e_data_book_view_notify_update (E_DATA_BOOK_VIEW (iter->data), g_object_ref (contact));
 }
 
-static void
-on_sequence_complete (EBookBackend *backend, GError *error)
-{
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-	GList *iter;
-	GError *err = NULL;
-
-	if (!priv->live_mode)
-		return;
-
-	if (error) {
-
-		data_book_error_from_gdata_error (&err, error);
-
-		__debug__ ("Book-view query failed: %s", error->message);
-	}
-
-	for (iter = priv->bookviews; iter; iter = iter->next)
-		e_data_book_view_notify_complete (E_DATA_BOOK_VIEW (iter->data), err);
-
-	if (err)
-		g_error_free (err);
-}
-
 static GCancellable *
 start_operation (EBookBackend *backend, guint32 opid, GCancellable *cancellable, const gchar *message)
 {
@@ -519,17 +495,25 @@ start_operation (EBookBackend *backend, guint32 opid, GCancellable *cancellable,
 }
 
 static void
-finish_operation (EBookBackend *backend, guint32 opid)
+finish_operation (EBookBackend *backend, guint32 opid, const GError *gdata_error)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	GError *book_error = NULL;
+
+	if (gdata_error != NULL) {
+		data_book_error_from_gdata_error (&book_error, gdata_error);
+		__debug__ ("Book view query failed: %s", book_error->message);
+	}
 
 	if (g_hash_table_remove (priv->cancellables, GUINT_TO_POINTER (opid))) {
 		GList *iter;
 
 		/* Send out a status message to each view */
 		for (iter = priv->bookviews; iter; iter = iter->next)
-			e_data_book_view_notify_complete (E_DATA_BOOK_VIEW (iter->data), NULL);
+			e_data_book_view_notify_complete (E_DATA_BOOK_VIEW (iter->data), book_error);
 	}
+
+	g_clear_error (&book_error);
 }
 
 static void
@@ -576,12 +560,12 @@ check_get_new_contacts_finished (GetContactsData *data)
 
 	__debug__ ("Proceeding with check_get_new_contacts_finished() for data: %p.", data);
 
-	finish_operation (data->backend, 0);
-	on_sequence_complete (data->backend, data->gdata_error);
+	finish_operation (data->backend, 0, data->gdata_error);
 
 	/* Tidy up */
 	g_object_unref (data->cancellable);
 	g_object_unref (data->backend);
+	g_clear_error (&data->gdata_error);
 
 	g_slice_free (GetContactsData, data);
 }
@@ -914,7 +898,7 @@ get_groups_cb (GDataService *service, GAsyncResult *result, EBookBackend *backen
 		g_get_current_time (&(priv->last_groups_update));
 	}
 
-	finish_operation (backend, 1);
+	finish_operation (backend, 1, gdata_error);
 
 	g_clear_error (&gdata_error);
 }
@@ -1172,7 +1156,7 @@ create_contact_finish (CreateContactData *data, GDataContactsContact *new_contac
 		e_data_book_respond_create (data->book, data->opid, book_error, NULL);
 	}
 
-	finish_operation (data->backend, data->opid);
+	finish_operation (data->backend, data->opid, gdata_error);
 
 #ifdef HAVE_LIBGDATA_0_9
 	if (data->photo != NULL) {
@@ -1378,7 +1362,7 @@ remove_contact_cb (GDataService *service, GAsyncResult *result, RemoveContactDat
 	__debug__ (G_STRFUNC);
 
 	success = gdata_service_delete_entry_finish (service, result, &gdata_error);
-	finish_operation (data->backend, data->opid);
+	finish_operation (data->backend, data->opid, gdata_error);
 
 	if (!success) {
 		GError *book_error = NULL;
@@ -1498,7 +1482,7 @@ modify_contact_finish (ModifyContactData *data, GDataContactsContact *new_contac
 		e_data_book_respond_modify (data->book, data->opid, book_error, NULL);
 	}
 
-	finish_operation (data->backend, data->opid);
+	finish_operation (data->backend, data->opid, gdata_error);
 
 #ifdef HAVE_LIBGDATA_0_9
 	if (data->photo != NULL) {
@@ -1977,15 +1961,16 @@ authenticate_client_login_cb (GDataClientLoginAuthorizer *authorizer,
 	if (gdata_error != NULL) {
 		data_book_error_from_gdata_error (&book_error, gdata_error);
 		__debug__ ("Authentication failed: %s", gdata_error->message);
-		g_error_free (gdata_error);
 	}
 
-	finish_operation (data->backend, data->opid);
+	finish_operation (data->backend, data->opid, gdata_error);
 	e_book_backend_notify_readonly (data->backend, gdata_error != NULL);
 	e_book_backend_notify_opened (data->backend, book_error);
 
 	g_object_unref (data->backend);
 	g_slice_free (AuthenticateUserData, data);
+
+	g_clear_error (&gdata_error);
 }
 #else
 static void
@@ -2004,15 +1989,16 @@ authenticate_client_login_cb (GDataService *service,
 	if (gdata_error != NULL) {
 		data_book_error_from_gdata_error (&book_error, gdata_error);
 		__debug__ ("Authentication failed: %s", gdata_error->message);
-		g_error_free (gdata_error);
 	}
 
-	finish_operation (data->backend, data->opid);
+	finish_operation (data->backend, data->opid, gdata_error);
 	e_book_backend_notify_readonly (data->backend, gdata_error != NULL);
 	e_book_backend_notify_opened (data->backend, book_error);
 
 	g_object_unref (data->backend);
 	g_slice_free (AuthenticateUserData, data);
+
+	g_clear_error (&gdata_error);
 }
 #endif
 
