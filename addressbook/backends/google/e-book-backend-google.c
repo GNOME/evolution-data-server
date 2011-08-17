@@ -522,7 +522,14 @@ static void
 finish_operation (EBookBackend *backend, guint32 opid)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
-	g_hash_table_remove (priv->cancellables, GUINT_TO_POINTER (opid));
+
+	if (g_hash_table_remove (priv->cancellables, GUINT_TO_POINTER (opid))) {
+		GList *iter;
+
+		/* Send out a status message to each view */
+		for (iter = priv->bookviews; iter; iter = iter->next)
+			e_data_book_view_notify_complete (E_DATA_BOOK_VIEW (iter->data), NULL);
+	}
 }
 
 static void
