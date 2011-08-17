@@ -1464,7 +1464,8 @@ camel_nntp_store_init (CamelNNTPStore *nntp_store)
 {
 	nntp_store->mem = (CamelStreamMem *) camel_stream_mem_new ();
 
-	/* Clear the VJUNK and VTRASH flags, which are set by default. */
+	/* Clear the default flags.  We don't want a virtual Junk or Trash
+	 * folder and the user can't create/delete/rename newsgroup folders. */
 	CAMEL_STORE (nntp_store)->flags = 0;
 }
 

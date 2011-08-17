@@ -1216,8 +1216,17 @@ camel_store_init (CamelStore *store)
 {
 	store->priv = CAMEL_STORE_GET_PRIVATE (store);
 
-	/* set vtrash and vjunk on by default */
-	store->flags = CAMEL_STORE_VTRASH | CAMEL_STORE_VJUNK;
+	/* Default CamelStore capabilities:
+	 *
+	 *  - Include a virtual Junk folder.
+	 *  - Include a virtual Trash folder.
+	 *  - Allow creating/deleting/renaming folders.
+	 */
+	store->flags =
+		CAMEL_STORE_VJUNK |
+		CAMEL_STORE_VTRASH |
+		CAMEL_STORE_CAN_EDIT_FOLDERS;
+
 	store->mode = CAMEL_STORE_READ | CAMEL_STORE_WRITE;
 
 	g_static_rec_mutex_init (&store->priv->folder_lock);

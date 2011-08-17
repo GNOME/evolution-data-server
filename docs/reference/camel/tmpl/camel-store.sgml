@@ -138,6 +138,7 @@ CamelStore
 @CAMEL_STORE_PROXY: 
 @CAMEL_STORE_IS_MIGRATING: 
 @CAMEL_STORE_REAL_JUNK_FOLDER: 
+@CAMEL_STORE_CAN_EDIT_FOLDERS: 
 
 <!-- ##### ENUM CamelStorePermissionFlags ##### -->
 <para>
