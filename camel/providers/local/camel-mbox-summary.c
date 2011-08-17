@@ -692,12 +692,17 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 	CamelFolderSummary *s = CAMEL_FOLDER_SUMMARY (mbs);
 	gint fd = -1, fdout = -1;
 	gchar *tmpname = NULL;
-	guint32 flags = (expunge?1:0);
+	guint32 flags = (expunge?1:0), filemode = 0600;
+	struct stat st;
 
 	d(printf("performing full summary/sync\n"));
 
 	camel_operation_push_message (cancellable, _("Storing folder"));
 	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	/* preserve attributes as set on the file previously */
+	if (g_stat (cls->folder_path, &st) == 0)
+		filemode = 07777 & st.st_mode;
 
 	fd = g_open (cls->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
@@ -714,7 +719,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 	tmpname = g_alloca (strlen (cls->folder_path) + 5);
 	sprintf (tmpname, "%s.tmp", cls->folder_path);
 	d(printf("Writing temporary file to %s\n", tmpname));
-	fdout = g_open (tmpname, O_LARGEFILE|O_WRONLY|O_CREAT|O_TRUNC|O_BINARY, 0600);
+	fdout = g_open (tmpname, O_LARGEFILE | O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, filemode);
 	if (fdout == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
