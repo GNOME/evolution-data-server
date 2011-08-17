@@ -1,6 +1,5 @@
 noinst_PROGRAMS = 							\
 	test-category-completion					\
-	test-client-examine-auth					\
 	test-source-combo-box						\
 	test-source-selector						\
 	test-contact-store						\
@@ -29,10 +28,6 @@ TEST_EDATASERVERUI_LDFLAGS =						\
 test_category_completion_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
 test_category_completion_SOURCES = test-category-completion.c
 test_category_completion_LDADD = $(TEST_EDATASERVERUI_LDFLAGS)
-
-test_client_examine_auth_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
-test_client_examine_auth_SOURCES = test-client-examine-auth.c
-test_client_examine_auth_LDADD = $(TEST_EDATASERVERUI_LDFLAGS)
 
 test_source_selector_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
 test_source_selector_SOURCES = test-source-selector.c

@@ -95,10 +95,12 @@ start_test (const gchar *gconf_path)
 
 	gtk_container_add (GTK_CONTAINER (scrolled_window), tree_view);
 
+#if 0  /* ACCOUNT_MGMT */
 	book_client = e_book_client_new_default (NULL);
 	g_warn_if_fail (e_client_open_sync (E_CLIENT (book_client), TRUE, NULL, NULL));
 	e_contact_store_add_client (contact_store, book_client);
 	g_object_unref (book_client);
+#endif /* ACCOUNT_MGMT */
 
 	book_query = e_book_query_any_field_contains ("");
 	e_contact_store_set_query (contact_store, book_query);
