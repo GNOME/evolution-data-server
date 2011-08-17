@@ -3270,6 +3270,7 @@ camel_folder_get_message_sync (CamelFolder *folder,
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
 		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		camel_operation_pop_message (cancellable);
 		return NULL;
 	}
 
