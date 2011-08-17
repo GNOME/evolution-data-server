@@ -36,8 +36,6 @@
 #include <config.h>
 #endif
 
-#ifndef E_CAL_DISABLE_DEPRECATED
-
 #include <unistd.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
@@ -77,9 +75,7 @@ static GStaticRecMutex cal_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
 G_DEFINE_TYPE (ECal, e_cal, G_TYPE_OBJECT)
 
 static gboolean open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	ECalendarStatus *status,
-	#endif
 	gboolean needs_auth, gboolean async);
 static void e_cal_dispose (GObject *object);
 static void e_cal_finalize (GObject *object);
@@ -138,9 +134,7 @@ struct _ECalPrivate {
 
 /* Signal IDs */
 enum {
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	CAL_OPENED,
-	#endif
 	CAL_OPENED_EX,
 	CAL_SET_MODE,
 	BACKEND_ERROR,
@@ -613,7 +607,7 @@ e_cal_class_init (ECalClass *klass)
 
 	parent_class = g_type_class_peek_parent (klass);
 
-	#ifndef E_CAL_DISABLE_DEPRECATED
+	/* XXX The "cal-opened" signal is deprecated. */
 	e_cal_signals[CAL_OPENED] =
 		g_signal_new ("cal_opened",
 			      G_TYPE_FROM_CLASS (klass),
@@ -622,7 +616,6 @@ e_cal_class_init (ECalClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);
-	#endif
 
         /**
          * ECal::cal-opened-ex:
@@ -666,9 +659,7 @@ e_cal_class_init (ECalClass *klass)
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	klass->cal_opened = NULL;
-	#endif
 	klass->cal_opened_ex = NULL;
 	klass->backend_died = NULL;
 
@@ -934,15 +925,11 @@ call_authenticate_user (ECal *cal, gboolean async, GError **error)
 static gboolean
 reopen_with_auth (gpointer data)
 {
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	ECalendarStatus status;
-	#endif
 	GError *error = NULL;
 
 	open_calendar (E_CAL (data), TRUE, &error,
-		#ifndef E_CAL_DISABLE_DEPRECATED
 		&status,
-		#endif
 		TRUE, FALSE);
 
 	if (error)
@@ -1438,9 +1425,7 @@ e_cal_set_auth_func (ECal *ecal, ECalAuthFunc func, gpointer data)
 static void
 async_open_report_result (ECal *ecal, const GError *error)
 {
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	ECalendarStatus status;
-	#endif
 
 	g_return_if_fail (ecal && E_IS_CAL (ecal));
 
@@ -1448,18 +1433,12 @@ async_open_report_result (ECal *ecal, const GError *error)
 		ecal->priv->load_state = E_CAL_LOAD_LOADED;
 
 	if (error) {
-	#ifndef E_CAL_DISABLE_DEPRECATED
 		status = get_status_from_error (error);
 	} else {
 		status = E_CALENDAR_STATUS_OK;
-	#else
-	} else {
-	#endif
 	}
 
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, status);
-	#endif
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED_EX], 0, error);
 }
 
@@ -1511,9 +1490,7 @@ async_open_ready_cb (GDBusProxy *gdbus_cal, GAsyncResult *res, ECal *ecal)
 
 static gboolean
 open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	ECalendarStatus *status,
-	#endif
 	gboolean needs_auth, gboolean async)
 {
 	ECalPrivate *priv;
@@ -1536,35 +1513,25 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
 
 		if (priv->auth_func == NULL) {
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
-			#ifndef E_CAL_DISABLE_DEPRECATED
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
-			#endif
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
 		if (!e_source_get_property (priv->source, "username")) {
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
-			#ifndef E_CAL_DISABLE_DEPRECATED
 			*status = E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED;
-			#endif
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
 		needs_auth = TRUE;
 	}
 
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	*status = E_CALENDAR_STATUS_OK;
-	#endif
 	if (!async) {
 		if (!e_gdbus_cal_call_open_sync (priv->gdbus_cal, only_if_exists, NULL, error)) {
-			#ifndef E_CAL_DISABLE_DEPRECATED
 			*status = E_CALENDAR_STATUS_DBUS_EXCEPTION;
-			#endif
 		} else if (needs_auth && !call_authenticate_user (ecal, FALSE, error)) {
-			#ifndef E_CAL_DISABLE_DEPRECATED
 			*status = error && *error ? (*error)->code : E_CALENDAR_STATUS_AUTHENTICATION_FAILED;
-			#endif
 		}
 		if (!*error)
 			priv->load_state = E_CAL_LOAD_LOADED;
@@ -1602,20 +1569,14 @@ open_calendar (ECal *ecal, gboolean only_if_exists, GError **error,
 gboolean
 e_cal_open (ECal *ecal, gboolean only_if_exists, GError **error)
 {
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	ECalendarStatus status;
-	#endif
 	GError *err = NULL;
 	gboolean result;
 
 	result = open_calendar (ecal, only_if_exists, &err,
-		#ifndef E_CAL_DISABLE_DEPRECATED
 		&status,
-		#endif
 		FALSE, FALSE);
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, status);
-	#endif
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED_EX], 0, err);
 
 	if (err)
@@ -1688,9 +1649,7 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 {
 	ECalPrivate *priv;
 	GError *error = NULL;
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	ECalendarStatus status;
-	#endif
 
 	g_return_if_fail (ecal != NULL);
 	g_return_if_fail (E_IS_CAL (ecal));
@@ -1711,9 +1670,7 @@ e_cal_open_async (ECal *ecal, gboolean only_if_exists)
 	}
 
 	open_calendar (ecal, only_if_exists, &error,
-		#ifndef E_CAL_DISABLE_DEPRECATED
 		&status,
-		#endif
 		FALSE, TRUE);
 
 	if (error)
@@ -4688,5 +4645,3 @@ e_cal_get_sources (ESourceList **sources, ECalSourceType type, GError **error)
 		     e_cal_get_error_message (E_CALENDAR_STATUS_NO_SUCH_CALENDAR));
 	return FALSE;
 }
-
-#endif /* E_CAL_DISABLE_DEPRECATED */

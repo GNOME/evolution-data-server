@@ -27,8 +27,6 @@
 #include <config.h>
 #endif
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
-
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
@@ -44,9 +42,7 @@ typedef struct {
 	ESource       *source;
 	EBook         *book;
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback  open_func;
-	#endif
 	EBookAsyncCallback  open_func_ex;
 	gpointer       open_func_data;
 } LoadSourceData;
@@ -126,10 +122,8 @@ load_source_auth_cb (EBook *book, const GError *error, gpointer closure)
 			break;
 	}
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (data->open_func)
 		data->open_func (book, error ? error->code : E_BOOK_ERROR_OK, data->open_func_data);
-	#endif
 	if (data->open_func_ex)
 		data->open_func_ex (book, error, data->open_func_data);
 
@@ -271,17 +265,14 @@ load_source_cb (EBook *book, const GError *error, gpointer closure)
 		}
 	}
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (load_source_data->open_func)
 		load_source_data->open_func (book, error ? error->code : E_BOOK_ERROR_OK, load_source_data->open_func_data);
-	#endif
 	if (load_source_data->open_func_ex)
 		load_source_data->open_func_ex (book, error, load_source_data->open_func_data);
 
 	free_load_source_data (load_source_data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_load_book_source:
  * @source: an #ESource
@@ -319,7 +310,6 @@ e_load_book_source (ESource *source, EBookCallback open_func, gpointer user_data
 	e_book_open_async (book, FALSE, load_source_cb, load_source_data);
 	return book;
 }
-#endif
 
 typedef struct {
 	EBook *book;
@@ -669,5 +659,3 @@ e_load_book_source_finish (ESource *source,
 
 	return g_object_ref (context->book);
 }
-
-#endif /* E_BOOK_DISABLE_DEPRECATED */

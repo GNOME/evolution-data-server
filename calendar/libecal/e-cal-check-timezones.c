@@ -24,9 +24,7 @@
 #include <libical/ical.h>
 
 #include "e-cal-check-timezones.h"
-#ifndef E_CAL_DISABLE_DEPRECATED
 #include <libecal/e-cal.h>
-#endif
 #include <libecal/e-cal-client.h>
 #include <string.h>
 #include <ctype.h>
@@ -202,8 +200,6 @@ static void addsystemtz (gpointer key,
 				    icalcomponent_new_clone (icaltimezone_get_component (zone)));
     }
 }
-
-#ifndef E_CAL_DISABLE_DEPRECATED
 
 /**
  * e_cal_check_timezones:
@@ -525,8 +521,6 @@ e_cal_tzlookup_icomp (const gchar *tzid,
 
     return icalcomponent_get_timezone (icomp, (gchar *) tzid);
 }
-
-#endif /* E_CAL_DISABLE_DEPRECATED */
 
 /**
  * e_cal_client_check_timezones:

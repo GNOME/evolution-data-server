@@ -539,7 +539,6 @@ e_destination_set_contact (EDestination *dest, EContact *contact, gint email_num
 	}
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_destination_set_book:
  * @dest: an #EDestination
@@ -570,7 +569,6 @@ e_destination_set_book (EDestination *dest, EBook *book)
 		g_signal_emit (dest, signals[CHANGED], 0);
 	}
 }
-#endif /* E_BOOK_DISABLE_DEPRECATED */
 
 /**
  * e_destination_set_client:

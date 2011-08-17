@@ -25,8 +25,6 @@
 #include <config.h>
 #endif
 
-#ifndef E_CAL_DISABLE_DEPRECATED
-
 #include <string.h>
 #include "e-cal-marshal.h"
 #include "e-cal.h"
@@ -55,9 +53,7 @@ enum {
 	OBJECTS_MODIFIED,
 	OBJECTS_REMOVED,
 	VIEW_PROGRESS,
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	VIEW_DONE,
-	#endif
 	VIEW_COMPLETE,
 	LAST_SIGNAL
 };
@@ -182,9 +178,7 @@ complete_cb (EGdbusCalView *gdbus_calview, const gchar * const *arg_error, ECalV
 
 	g_return_if_fail (e_gdbus_templates_decode_error (arg_error, &error));
 
-	#ifndef E_CAL_DISABLE_DEPRECATED
 	g_signal_emit (G_OBJECT (view), signals[VIEW_DONE], 0, error ? error->code : 0);
-	#endif
 
 	g_signal_emit (G_OBJECT (view), signals[VIEW_COMPLETE], 0, error ? error->code : 0, error ? error->message : "");
 
@@ -357,7 +351,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      e_cal_marshal_VOID__STRING_UINT,
 			      G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_UINT);
 
-	#ifndef E_CAL_DISABLE_DEPRECATED
+	/* XXX The "view-done" signal is deprecated. */
 	signals[VIEW_DONE] =
 		g_signal_new ("view_done",
 			      G_TYPE_FROM_CLASS (klass),
@@ -366,7 +360,6 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__INT,
 			      G_TYPE_NONE, 1, G_TYPE_INT);
-	#endif
 
 	signals[VIEW_COMPLETE] =
 		g_signal_new ("view_complete",
@@ -452,9 +445,7 @@ e_cal_view_start (ECalView *view)
 		g_warning ("Cannot start cal view: %s\n", error->message);
 
 		/* Fake a sequence-complete so that the application knows this failed */
-		#ifndef E_CAL_DISABLE_DEPRECATED
 		g_signal_emit (view, signals[VIEW_DONE], 0, E_CALENDAR_STATUS_DBUS_EXCEPTION);
-		#endif
 		g_signal_emit (view, signals[VIEW_COMPLETE], 0, E_CALENDAR_STATUS_DBUS_EXCEPTION, error->message);
 
 		g_error_free (error);
@@ -491,5 +482,3 @@ e_cal_view_stop (ECalView *view)
 		g_error_free (error);
 	}
 }
-
-#endif /* E_CAL_DISABLE_DEPRECATED */

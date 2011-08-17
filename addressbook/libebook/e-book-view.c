@@ -27,8 +27,6 @@
 #include "libedata-book/e-data-book-types.h"
 #include "e-gdbus-book-view.h"
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
-
 G_DEFINE_TYPE (EBookView, e_book_view, G_TYPE_OBJECT);
 
 struct _EBookViewPrivate {
@@ -41,9 +39,7 @@ enum {
 	CONTACTS_CHANGED,
 	CONTACTS_REMOVED,
 	CONTACTS_ADDED,
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	SEQUENCE_COMPLETE,
-	#endif
 	VIEW_COMPLETE,
 	STATUS_MESSAGE,
 	LAST_SIGNAL
@@ -152,9 +148,7 @@ complete_cb (EGdbusBookView *object, const gchar * const *in_error_strv, EBookVi
 		break;
 	}
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0, bv_status);
-	#endif
 	g_signal_emit (book_view, signals[VIEW_COMPLETE], 0, bv_status, error ? error->message : "");
 
 	if (error)
@@ -225,9 +219,7 @@ e_book_view_start (EBookView *book_view)
 
 			/* Fake a sequence-complete so that the application knows this failed */
 			/* TODO: use get_status_from_error */
-			#ifndef E_BOOK_DISABLE_DEPRECATED
 			g_signal_emit (book_view, signals[SEQUENCE_COMPLETE], 0, E_BOOK_VIEW_ERROR_OTHER_ERROR);
-			#endif
 			g_signal_emit (book_view, signals[VIEW_COMPLETE], 0, E_BOOK_VIEW_ERROR_OTHER_ERROR, error->message);
 
 			g_error_free (error);
@@ -326,7 +318,7 @@ e_book_view_class_init (EBookViewClass *klass)
 						 NULL, NULL,
 						 e_book_marshal_NONE__POINTER,
 						 G_TYPE_NONE, 1, G_TYPE_POINTER);
-	#ifndef E_BOOK_DISABLE_DEPRECATED
+	/* XXX The "sequence-complete" signal is deprecated. */
 	signals [SEQUENCE_COMPLETE] = g_signal_new ("sequence_complete",
 						    G_OBJECT_CLASS_TYPE (object_class),
 						    G_SIGNAL_RUN_LAST,
@@ -334,7 +326,6 @@ e_book_view_class_init (EBookViewClass *klass)
 						    NULL, NULL,
 						    e_book_marshal_NONE__INT,
 						    G_TYPE_NONE, 1, G_TYPE_UINT);
-	#endif
 	signals [VIEW_COMPLETE] = g_signal_new ("view_complete",
 						    G_OBJECT_CLASS_TYPE (object_class),
 						    G_SIGNAL_RUN_LAST,
@@ -353,4 +344,3 @@ e_book_view_class_init (EBookViewClass *klass)
 	object_class->dispose = e_book_view_dispose;
 }
 
-#endif /* E_BOOK_DISABLE_DEPRECATED */

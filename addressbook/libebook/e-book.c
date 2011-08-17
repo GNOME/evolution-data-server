@@ -21,7 +21,6 @@
  */
 
 /* e-book deprecated since 3.2, use e-book-client instead */
-#ifndef E_BOOK_DISABLE_DEPRECATED
 
 /**
  * SECTION:e-book
@@ -95,9 +94,7 @@ static GStaticRecMutex book_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
 
 typedef struct {
 	EBook *book;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	gpointer callback; /* TODO union */
-	#endif
 	gpointer excallback;
 	gpointer closure;
 	gpointer data;
@@ -430,9 +427,7 @@ add_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	gchar *uid = NULL;
 	AsyncData *data = user_data;
 	EBookIdAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookIdCallback cb = data->callback;
-	#endif
 
 	e_gdbus_book_call_add_contact_finish (G_DBUS_PROXY (gdbus_book), res, &uid, &error);
 
@@ -443,10 +438,8 @@ add_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	if (error)
 		uid = NULL;
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, uid, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, uid, data->closure);
 
@@ -460,7 +453,6 @@ add_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_add_contact:
  * @book: an #EBook
@@ -503,7 +495,6 @@ e_book_async_add_contact (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_add_contact_async:
@@ -591,18 +582,14 @@ modify_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
-	#endif
 
 	e_gdbus_book_call_modify_contact_finish (G_DBUS_PROXY (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
-	#endif
 
 	if (excb)
 		excb (data->book, err, data->closure);
@@ -614,7 +601,6 @@ modify_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_commit_contact:
  * @book: an #EBook
@@ -658,7 +644,6 @@ e_book_async_commit_contact (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_commit_contact_async:
@@ -756,9 +741,7 @@ get_required_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookEListAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
-	#endif
 	EList *efields = NULL;
 
 	e_gdbus_book_call_get_backend_property_finish (G_DBUS_PROXY (gdbus_book), res, &fields_str, &error);
@@ -770,10 +753,8 @@ get_required_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user
 
 	unwrap_gerror (error, &err);
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, efields, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, efields, data->closure);
 
@@ -786,7 +767,6 @@ get_required_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_required_fields:
  * @book: an #EBook
@@ -821,7 +801,6 @@ e_book_async_get_required_fields (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_get_required_fields_async:
@@ -910,9 +889,7 @@ get_supported_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookEListAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
-	#endif
 	EList *efields;
 
 	e_gdbus_book_call_get_backend_property_finish (G_DBUS_PROXY (gdbus_book), res, &fields_str, &error);
@@ -924,10 +901,8 @@ get_supported_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
 
 	unwrap_gerror (error, &err);
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, efields, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, efields, data->closure);
 
@@ -940,7 +915,6 @@ get_supported_fields_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_supported_fields:
  * @book: an #EBook
@@ -976,7 +950,6 @@ e_book_async_get_supported_fields (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_get_supported_fields_async:
@@ -1067,9 +1040,7 @@ get_supported_auth_methods_reply (GObject *gdbus_book, GAsyncResult *res, gpoint
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookEListAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookEListCallback cb = data->callback;
-	#endif
 	EList *emethods;
 
 	e_gdbus_book_call_get_backend_property_finish (G_DBUS_PROXY (gdbus_book), res, &methods_str, &error);
@@ -1081,10 +1052,8 @@ get_supported_auth_methods_reply (GObject *gdbus_book, GAsyncResult *res, gpoint
 
 	unwrap_gerror (error, &err);
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, emethods, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, emethods, data->closure);
 
@@ -1097,7 +1066,6 @@ get_supported_auth_methods_reply (GObject *gdbus_book, GAsyncResult *res, gpoint
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_supported_auth_methods:
  * @book: an #EBook
@@ -1132,7 +1100,6 @@ e_book_async_get_supported_auth_methods (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_get_supported_auth_methods_async:
@@ -1226,18 +1193,14 @@ authenticate_user_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_d
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
-	#endif
 
 	e_gdbus_book_call_authenticate_user_finish (G_DBUS_PROXY (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, data->closure);
 
@@ -1248,7 +1211,6 @@ authenticate_user_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_d
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_authenticate_user:
  * @book: an #EBook
@@ -1307,7 +1269,6 @@ e_book_async_authenticate_user (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_authenticate_user_async:
@@ -1417,9 +1378,7 @@ get_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookContactAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookContactCallback cb = data->callback;
-	#endif
 
 	e_gdbus_book_call_get_contact_finish (G_DBUS_PROXY (gdbus_book), res, &vcard, &error);
 
@@ -1429,10 +1388,8 @@ get_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	if (error)
 		vcard = NULL;
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, err ? NULL : e_contact_new_from_vcard (vcard), data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, err ? NULL : e_contact_new_from_vcard (vcard), data->closure);
 
@@ -1444,7 +1401,6 @@ get_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_contact:
  * @book: an #EBook
@@ -1484,7 +1440,6 @@ e_book_async_get_contact (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_get_contact_async:
@@ -1570,18 +1525,14 @@ remove_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
-	#endif
 
 	e_gdbus_book_call_remove_contacts_finish (G_DBUS_PROXY (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, data->closure);
 
@@ -1630,7 +1581,6 @@ e_book_remove_contacts (EBook *book,
 	return unwrap_gerror (err, error);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_remove_contact:
  * @book: an #EBook
@@ -1673,7 +1623,6 @@ e_book_async_remove_contact (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_remove_contact_async:
@@ -1726,18 +1675,14 @@ remove_contact_by_id_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
-	#endif
 
 	e_gdbus_book_call_remove_contacts_finish (G_DBUS_PROXY (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, data->closure);
 
@@ -1748,7 +1693,6 @@ remove_contact_by_id_reply (GObject *gdbus_book, GAsyncResult *res, gpointer use
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_remove_contact_by_id:
  * @book: an #EBook
@@ -1791,7 +1735,6 @@ e_book_async_remove_contact_by_id (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_remove_contact_by_id_async:
@@ -1844,18 +1787,14 @@ remove_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_dat
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
-	#endif
 
 	e_gdbus_book_call_remove_contacts_finish (G_DBUS_PROXY (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, data->closure);
 
@@ -1866,7 +1805,6 @@ remove_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_dat
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_remove_contacts:
  * @book: an #EBook
@@ -1916,7 +1854,6 @@ e_book_async_remove_contacts (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_remove_contacts_async:
@@ -2047,9 +1984,7 @@ get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	AsyncData *data = user_data;
 	EBookView *view = NULL;
 	EBookBookViewAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookBookViewCallback cb = data->callback;
-	#endif
 	EGdbusBookView *gdbus_bookview;
 
 	e_gdbus_book_call_get_view_finish (G_DBUS_PROXY (gdbus_book), res, &view_path, &error);
@@ -2068,10 +2003,8 @@ get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 
 	unwrap_gerror (error, &err);
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, view, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, view, data->closure);
 
@@ -2082,7 +2015,6 @@ get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_book_view:
  * @book: an #EBook
@@ -2130,7 +2062,6 @@ e_book_async_get_book_view (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_get_book_view_async:
@@ -2241,9 +2172,7 @@ get_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	AsyncData *data = user_data;
 	GList *list = NULL;
 	EBookListAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookListCallback cb = data->callback;
-	#endif
 
 	e_gdbus_book_call_get_contact_list_finish (G_DBUS_PROXY (gdbus_book), res, &vcards, &error);
 
@@ -2261,10 +2190,8 @@ get_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 		list = g_list_reverse (list);
 	}
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, list, data->closure);
-	#endif
 
 	if (excb)
 		excb (data->book, err, list, data->closure);
@@ -2276,7 +2203,6 @@ get_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_contacts:
  * @book: an #EBook
@@ -2319,7 +2245,6 @@ e_book_async_get_contacts (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_get_contacts_async:
@@ -2441,7 +2366,6 @@ e_book_get_changes (EBook       *book,
 	}
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_get_changes:
  * @book: an #EBook
@@ -2471,7 +2395,6 @@ e_book_async_get_changes (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_get_changes_async:
@@ -2626,9 +2549,7 @@ open_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
-	#endif
 
 	e_gdbus_book_call_open_finish (G_DBUS_PROXY (gdbus_book), res, &error);
 
@@ -2636,10 +2557,8 @@ open_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 
 	data->book->priv->loaded = !error;
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, data->closure);
 
@@ -2650,7 +2569,6 @@ open_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_open:
  * @book: an #EBook
@@ -2687,7 +2605,6 @@ e_book_async_open (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_open_async:
@@ -2762,18 +2679,14 @@ remove_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookAsyncCallback excb = data->excallback;
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	EBookCallback cb = data->callback;
-	#endif
 
 	e_gdbus_book_call_remove_finish (G_DBUS_PROXY (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
-	#ifndef E_BOOK_DISABLE_DEPRECATED
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
-	#endif
 	if (excb)
 		excb (data->book, err, data->closure);
 
@@ -2784,7 +2697,6 @@ remove_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
 	g_slice_free (AsyncData, data);
 }
 
-#ifndef E_BOOK_DISABLE_DEPRECATED
 /**
  * e_book_async_remove:
  * @book: an #EBook
@@ -2819,7 +2731,6 @@ e_book_async_remove (EBook *book,
 
 	return TRUE;
 }
-#endif
 
 /**
  * e_book_remove_async:
@@ -3836,4 +3747,3 @@ array_to_elist (gchar **list)
 	return elst;
 }
 
-#endif /* E_BOOK_DISABLE_DEPRECATED */
