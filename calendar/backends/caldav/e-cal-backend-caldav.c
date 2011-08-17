@@ -143,6 +143,7 @@ struct _ECalBackendCalDAVPrivate {
 #define DEBUG_MESSAGE_HEADER "message:header"
 #define DEBUG_MESSAGE_BODY "message:body"
 #define DEBUG_SERVER_ITEMS "items"
+#define DEBUG_ATTACHMENTS "attachments"
 
 static void convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp);
 static void convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp);
@@ -1285,6 +1286,41 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav, CalDAVObject **objs, gint 
 
 	g_object_unref (message);
 	return result;
+}
+
+static gboolean
+caldav_server_download_attachment (ECalBackendCalDAV *cbdav, const gchar *attachment_uri, gchar **content, gsize *len, GError **error)
+{
+	SoupMessage *message;
+
+	g_return_val_if_fail (cbdav != NULL, FALSE);
+	g_return_val_if_fail (cbdav->priv != NULL, FALSE);
+	g_return_val_if_fail (attachment_uri != NULL, FALSE);
+	g_return_val_if_fail (content != NULL, FALSE);
+	g_return_val_if_fail (len != NULL, FALSE);
+
+	message = soup_message_new (SOUP_METHOD_GET, attachment_uri);
+	if (message == NULL) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return FALSE;
+	}
+
+	soup_message_headers_append (message->request_headers, "User-Agent", "Evolution/" VERSION);
+	send_and_handle_redirection (cbdav->priv->session, message, NULL);
+
+	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+		status_code_to_result (message, cbdav->priv, error);
+
+		g_object_unref (message);
+		return FALSE;
+	}
+
+	*len = message->response_body->length;
+	*content = g_memdup (message->response_body->data, *len);
+
+	g_object_unref (message);
+
+	return TRUE;
 }
 
 static gboolean
@@ -2827,6 +2863,34 @@ strip_unneeded_x_props (icalcomponent *icomp)
 	g_slist_free (to_remove);
 }
 
+static gboolean
+is_stored_on_server (ECalBackendCalDAV *cbdav, const gchar *uri)
+{
+	SoupURI *my_uri, *test_uri;
+	gboolean res;
+
+	g_return_val_if_fail (cbdav != NULL, FALSE);
+	g_return_val_if_fail (cbdav->priv != NULL, FALSE);
+	g_return_val_if_fail (cbdav->priv->uri != NULL, FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	my_uri = soup_uri_new (cbdav->priv->uri);
+	g_return_val_if_fail (my_uri != NULL, FALSE);
+
+	test_uri = soup_uri_new (uri);
+	if (!test_uri) {
+		soup_uri_free (my_uri);
+		return FALSE;
+	}
+
+	res = my_uri->host && test_uri->host && g_ascii_strcasecmp (my_uri->host, test_uri->host) == 0;
+
+	soup_uri_free (my_uri);
+	soup_uri_free (test_uri);
+
+	return res;
+}
+
 static void
 convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 {
@@ -2878,7 +2942,7 @@ convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 
 		file = g_file_new_for_uri (uri);
 		basename = g_file_get_basename (file);
-		if (g_file_load_contents (file, NULL, &content, &len, NULL, &error) == TRUE) {
+		if (g_file_load_contents (file, NULL, &content, &len, NULL, &error)) {
 			icalproperty *prop;
 			icalparameter *param;
 			gchar *encoded;
@@ -2920,7 +2984,7 @@ static void
 convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 {
 	ECalBackend *backend;
-	GSList *to_remove = NULL;
+	GSList *to_remove = NULL, *to_remove_after_download = NULL;
 	const gchar *cache_dir;
 	icalcomponent *cclone;
 	icalproperty *p;
@@ -2942,6 +3006,8 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 		attach = icalproperty_get_attach ((const icalproperty *) p);
 		if (!icalattach_get_is_url (attach))
 			to_remove = g_slist_prepend (to_remove, p);
+		else if (is_stored_on_server (cbdav, icalattach_get_url (attach)))
+			to_remove_after_download = g_slist_prepend (to_remove_after_download, p);
 	}
 	g_slist_foreach (to_remove, remove_property, icalcomp);
 	g_slist_free (to_remove);
@@ -2952,10 +3018,23 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 	     p = icalcomponent_get_next_property (cclone, ICAL_ATTACH_PROPERTY)) {
 		icalattach *attach;
 		gchar *dir;
+		gsize len = -1;
+		gchar *decoded = NULL;
 
 		attach = icalproperty_get_attach ((const icalproperty *) p);
-		if (icalattach_get_is_url (attach))
-			continue;
+		if (icalattach_get_is_url (attach)) {
+			const gchar *attach_url = icalattach_get_url (attach);
+			GError *error = NULL;
+
+			if (!is_stored_on_server (cbdav, attach_url))
+				continue;
+
+			if (!caldav_server_download_attachment (cbdav, attach_url, &decoded, &len, &error)) {
+				if (caldav_debug_show (DEBUG_ATTACHMENTS))
+					g_print ("CalDAV::%s: Failed to download from a server: %s\n", G_STRFUNC, error ? error->message : "Unknown error");
+				continue;
+			}
+		}
 
 		dir = g_build_filename (
 			cache_dir, icalcomponent_get_uid (icalcomp), NULL);
@@ -2963,18 +3042,20 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 			GError *error = NULL;
 			gchar *basename;
 			gchar *dest;
-			gchar *content;
-			gsize len;
-			gchar *decoded;
 
 			basename = icalproperty_get_parameter_as_string_r (p,
 					X_E_CALDAV_ATTACHMENT_NAME);
 			dest = g_build_filename (dir, basename, NULL);
 			g_free (basename);
 
-			content = (gchar *) icalattach_get_data (attach);
-			decoded = (gchar *) g_base64_decode (content, &len);
-			if (g_file_set_contents (dest, decoded, len, &error) == TRUE) {
+			if (decoded == NULL) {
+				gchar *content;
+
+				content = (gchar *) icalattach_get_data (attach);
+				decoded = (gchar *) g_base64_decode (content, &len);
+			}
+
+			if (g_file_set_contents (dest, decoded, len, &error)) {
 				icalproperty *prop;
 				gchar *url;
 
@@ -2993,7 +3074,11 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp)
 		}
 		g_free (dir);
 	}
+
 	icalcomponent_free (cclone);
+
+	g_slist_foreach (to_remove_after_download, remove_property, icalcomp);
+	g_slist_free (to_remove_after_download);
 }
 
 static void
