@@ -32,6 +32,7 @@ TESTS = 					\
 	test-client-receive-objects		\
 	test-client-get-attachment-uris		\
 	test-client-get-view			\
+	test-client-revision-view		\
 	test-client-stress-views		\
 	test-client-stress-factory--serial	\
 	test-client-stress-factory--fifo	\
@@ -65,6 +66,8 @@ test_client_get_object_list_LDADD=$(TEST_LIBS)
 test_client_get_object_list_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_get_view_LDADD=$(TEST_LIBS)
 test_client_get_view_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_revision_view_LDADD=$(TEST_LIBS)
+test_client_revision_view_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_modify_object_LDADD=$(TEST_LIBS)
 test_client_modify_object_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_open_LDADD=$(TEST_LIBS)
