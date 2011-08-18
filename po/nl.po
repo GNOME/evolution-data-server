@@ -36,7 +36,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-03 17:06+0200\n"
+"POT-Creation-Date: 2011-08-18 22:10+0200\n"
 "PO-Revision-Date: 2011-04-03 17:06+0200\n"
 "Last-Translator: Wouter Bolsterlee <wbolster@gnome.org>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
@@ -46,17 +46,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:570
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2330
+#: ../addressbook/backends/file/e-book-backend-file.c:574
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2326
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Loading..."
 msgstr "Laden…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:573
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2261
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2328
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4506
+#: ../addressbook/backends/file/e-book-backend-file.c:577
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2257
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2279
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2324
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4510
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Zoeken…"
@@ -67,6 +67,7 @@ msgid "Querying for updated contacts…"
 msgstr "Bijgewerkte contacten opvragen…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:624
+#: ../addressbook/libebook/e-book.c:3476 ../calendar/libecal/e-cal.c:1069
 msgid "Personal"
 msgstr "Persoonlijk"
 
@@ -107,15 +108,15 @@ msgstr "Laden…"
 msgid "Authenticating with the server…"
 msgstr "Aanmelden bij de server…"
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2699
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4665
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2703
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4669
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Downloaden van contacten (%d)… "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2849
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3030
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3077
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2853
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3034
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3081
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Bijwerken van cache voor contacten (%d)… "
@@ -133,31 +134,31 @@ msgstr "Distinguished Name (DN) gebruiken"
 msgid "Using Email Address"
 msgstr "E-mailadres gebruiken"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1033
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1037
 msgid "Reconnecting to LDAP server..."
 msgstr "Opnieuw verbinden met LDAP-server…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1158
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1162
 msgid "Invalid DN syntax"
 msgstr "Ongeldige DN-syntaxis"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1675
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1679
 msgid "Adding contact to LDAP server..."
 msgstr "Contact wordt toegevoegd aan LDAP-server…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1807
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1811
 msgid "Removing contact from LDAP server..."
 msgstr "Contact wordt van LDAP-server verwijderd…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2243
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2247
 msgid "Modifying contact from LDAP server..."
 msgstr "Contact van LDAP-server wordt aangepast…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4356
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4360
 msgid "Receiving LDAP search results..."
 msgstr "LDAP-zoekresultaten worden ingelezen…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4528
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4532
 msgid "Error performing search"
 msgstr "Fout bij het zoeken"
 
@@ -167,7 +168,7 @@ msgstr "Fout bij het zoeken"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:523
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:552
 #: ../calendar/backends/http/e-cal-backend-http.c:435
-#: ../calendar/libecal/e-cal.c:4177
+#: ../calendar/libecal/e-cal.c:4287
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:160
 #: ../camel/providers/imap/camel-imap-command.c:481
 #: ../camel/providers/imap/camel-imap-store.c:425
@@ -182,12 +183,16 @@ msgstr "Onbekende fout"
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "Aanmaken van bron '%s' mislukt met HTTP-status: %d (%s)"
 
-#: ../addressbook/libebook/e-book.c:3160
+#: ../addressbook/libebook/e-book.c:3159
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: er is geen bron voor UID ‘%s’ opgeslagen in GConf."
 
-#: ../addressbook/libebook/e-book.c:3516
+#: ../addressbook/libebook/e-book.c:3459 ../calendar/libecal/e-cal.c:1049
+msgid "On This Computer"
+msgstr "Op deze computer"
+
+#: ../addressbook/libebook/e-book.c:3583
 #: ../addressbook/libedata-book/e-data-book.c:183
 msgid "Address book does not exist"
 msgstr "Adresboek bestaat niet"
@@ -726,7 +731,7 @@ msgstr "Skype-namenlijst"
 msgid "SIP address"
 msgstr "SIP-adres"
 
-#: ../addressbook/libebook/e-contact.c:1517
+#: ../addressbook/libebook/e-contact.c:1516
 #: ../addressbook/libebook/e-destination.c:739
 msgid "Unnamed List"
 msgstr "Naamloze lijst"
@@ -756,7 +761,7 @@ msgid "Repository offline"
 msgstr "Opslagplaats offline"
 
 #: ../addressbook/libedata-book/e-data-book.c:175
-#: ../calendar/libecal/e-cal.c:4159 ../calendar/libedata-cal/e-data-cal.c:110
+#: ../calendar/libecal/e-cal.c:4269 ../calendar/libedata-cal/e-data-cal.c:110
 msgid "Permission denied"
 msgstr "Operatie niet toegestaan"
 
@@ -840,13 +845,13 @@ msgid "No space"
 msgstr "Geen ruimte"
 
 #: ../addressbook/libedata-book/e-data-book.c:194
-#: ../calendar/libecal/e-cal.c:4143 ../calendar/libedata-cal/e-data-cal.c:131
+#: ../calendar/libecal/e-cal.c:4253 ../calendar/libedata-cal/e-data-cal.c:131
 msgid "Invalid argument"
 msgstr "Ongeldige argument"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:196
-#: ../calendar/libecal/e-cal.c:4182 ../calendar/libedata-cal/e-data-cal.c:133
+#: ../calendar/libecal/e-cal.c:4292 ../calendar/libedata-cal/e-data-cal.c:133
 msgid "Not supported"
 msgstr "Niet ondersteund"
 
@@ -1101,127 +1106,127 @@ msgstr "Vooruitzicht"
 msgid "Untitled appointment"
 msgstr "Afspraak zonder titel"
 
-#: ../calendar/libecal/e-cal-recur.c:3986
+#: ../calendar/libecal/e-cal-recur.c:3988
 msgid "1st"
 msgstr "1e"
 
-#: ../calendar/libecal/e-cal-recur.c:3987
+#: ../calendar/libecal/e-cal-recur.c:3989
 msgid "2nd"
 msgstr "2e"
 
-#: ../calendar/libecal/e-cal-recur.c:3988
+#: ../calendar/libecal/e-cal-recur.c:3990
 msgid "3rd"
 msgstr "3e"
 
-#: ../calendar/libecal/e-cal-recur.c:3989
+#: ../calendar/libecal/e-cal-recur.c:3991
 msgid "4th"
 msgstr "4e"
 
-#: ../calendar/libecal/e-cal-recur.c:3990
+#: ../calendar/libecal/e-cal-recur.c:3992
 msgid "5th"
 msgstr "5e"
 
-#: ../calendar/libecal/e-cal-recur.c:3991
+#: ../calendar/libecal/e-cal-recur.c:3993
 msgid "6th"
 msgstr "6e"
 
-#: ../calendar/libecal/e-cal-recur.c:3992
+#: ../calendar/libecal/e-cal-recur.c:3994
 msgid "7th"
 msgstr "7e"
 
-#: ../calendar/libecal/e-cal-recur.c:3993
+#: ../calendar/libecal/e-cal-recur.c:3995
 msgid "8th"
 msgstr "8e"
 
-#: ../calendar/libecal/e-cal-recur.c:3994
+#: ../calendar/libecal/e-cal-recur.c:3996
 msgid "9th"
 msgstr "9e"
 
-#: ../calendar/libecal/e-cal-recur.c:3995
+#: ../calendar/libecal/e-cal-recur.c:3997
 msgid "10th"
 msgstr "10e"
 
-#: ../calendar/libecal/e-cal-recur.c:3996
+#: ../calendar/libecal/e-cal-recur.c:3998
 msgid "11th"
 msgstr "11e"
 
-#: ../calendar/libecal/e-cal-recur.c:3997
+#: ../calendar/libecal/e-cal-recur.c:3999
 msgid "12th"
 msgstr "12e"
 
-#: ../calendar/libecal/e-cal-recur.c:3998
+#: ../calendar/libecal/e-cal-recur.c:4000
 msgid "13th"
 msgstr "13e"
 
-#: ../calendar/libecal/e-cal-recur.c:3999
+#: ../calendar/libecal/e-cal-recur.c:4001
 msgid "14th"
 msgstr "14e"
 
-#: ../calendar/libecal/e-cal-recur.c:4000
+#: ../calendar/libecal/e-cal-recur.c:4002
 msgid "15th"
 msgstr "15e"
 
-#: ../calendar/libecal/e-cal-recur.c:4001
+#: ../calendar/libecal/e-cal-recur.c:4003
 msgid "16th"
 msgstr "16e"
 
-#: ../calendar/libecal/e-cal-recur.c:4002
+#: ../calendar/libecal/e-cal-recur.c:4004
 msgid "17th"
 msgstr "17e"
 
-#: ../calendar/libecal/e-cal-recur.c:4003
+#: ../calendar/libecal/e-cal-recur.c:4005
 msgid "18th"
 msgstr "18e"
 
-#: ../calendar/libecal/e-cal-recur.c:4004
+#: ../calendar/libecal/e-cal-recur.c:4006
 msgid "19th"
 msgstr "19e"
 
-#: ../calendar/libecal/e-cal-recur.c:4005
+#: ../calendar/libecal/e-cal-recur.c:4007
 msgid "20th"
 msgstr "20e"
 
-#: ../calendar/libecal/e-cal-recur.c:4006
+#: ../calendar/libecal/e-cal-recur.c:4008
 msgid "21st"
 msgstr "21e"
 
-#: ../calendar/libecal/e-cal-recur.c:4007
+#: ../calendar/libecal/e-cal-recur.c:4009
 msgid "22nd"
 msgstr "22e"
 
-#: ../calendar/libecal/e-cal-recur.c:4008
+#: ../calendar/libecal/e-cal-recur.c:4010
 msgid "23rd"
 msgstr "23e"
 
-#: ../calendar/libecal/e-cal-recur.c:4009
+#: ../calendar/libecal/e-cal-recur.c:4011
 msgid "24th"
 msgstr "24ste"
 
-#: ../calendar/libecal/e-cal-recur.c:4010
+#: ../calendar/libecal/e-cal-recur.c:4012
 msgid "25th"
 msgstr "25e"
 
-#: ../calendar/libecal/e-cal-recur.c:4011
+#: ../calendar/libecal/e-cal-recur.c:4013
 msgid "26th"
 msgstr "26e"
 
-#: ../calendar/libecal/e-cal-recur.c:4012
+#: ../calendar/libecal/e-cal-recur.c:4014
 msgid "27th"
 msgstr "27e"
 
-#: ../calendar/libecal/e-cal-recur.c:4013
+#: ../calendar/libecal/e-cal-recur.c:4015
 msgid "28th"
 msgstr "28e"
 
-#: ../calendar/libecal/e-cal-recur.c:4014
+#: ../calendar/libecal/e-cal-recur.c:4016
 msgid "29th"
 msgstr "29e"
 
-#: ../calendar/libecal/e-cal-recur.c:4015
+#: ../calendar/libecal/e-cal-recur.c:4017
 msgid "30th"
 msgstr "30e"
 
-#: ../calendar/libecal/e-cal-recur.c:4016
+#: ../calendar/libecal/e-cal-recur.c:4018
 msgid "31st"
 msgstr "31e"
 
@@ -1242,7 +1247,7 @@ msgstr "Laag"
 msgid "Undefined"
 msgstr "Onbepaald"
 
-#: ../calendar/libecal/e-cal.c:1236 ../libedataserverui/e-book-auth-util.c:206
+#: ../calendar/libecal/e-cal.c:1294 ../libedataserverui/e-book-auth-util.c:206
 #: ../libedataserverui/e-book-auth-util.c:440
 #, c-format
 msgid "Enter password for %s (user %s)"
@@ -1252,63 +1257,63 @@ msgstr "Wachtwoord invoeren voor %s (gebruiker %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1250
+#: ../calendar/libecal/e-cal.c:1308
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
 "Voer wachtwoord in van %s om de proxy voor gebruiker %s in te schakelen"
 
-#: ../calendar/libecal/e-cal.c:4145
+#: ../calendar/libecal/e-cal.c:4255
 msgid "Backend is busy"
 msgstr "Backend is bezig"
 
-#: ../calendar/libecal/e-cal.c:4147
+#: ../calendar/libecal/e-cal.c:4257
 msgid "Repository is offline"
 msgstr "Repository is offline"
 
-#: ../calendar/libecal/e-cal.c:4149
+#: ../calendar/libecal/e-cal.c:4259
 msgid "No such calendar"
 msgstr "Agenda bestaat niet"
 
-#: ../calendar/libecal/e-cal.c:4151 ../calendar/libedata-cal/e-data-cal.c:112
+#: ../calendar/libecal/e-cal.c:4261 ../calendar/libedata-cal/e-data-cal.c:112
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Object not found"
 msgstr "Object niet gevonden"
 
-#: ../calendar/libecal/e-cal.c:4153 ../calendar/libedata-cal/e-data-cal.c:113
+#: ../calendar/libecal/e-cal.c:4263 ../calendar/libedata-cal/e-data-cal.c:113
 #: ../servers/groupwise/e-gw-connection.c:229
 msgid "Invalid object"
 msgstr "Ongeldig object"
 
-#: ../calendar/libecal/e-cal.c:4155
+#: ../calendar/libecal/e-cal.c:4265
 msgid "URI not loaded"
 msgstr "URI niet geladen"
 
-#: ../calendar/libecal/e-cal.c:4157
+#: ../calendar/libecal/e-cal.c:4267
 msgid "URI already loaded"
 msgstr "URI is reeds geladen"
 
-#: ../calendar/libecal/e-cal.c:4161 ../servers/groupwise/e-gw-connection.c:237
+#: ../calendar/libecal/e-cal.c:4271 ../servers/groupwise/e-gw-connection.c:237
 msgid "Unknown User"
 msgstr "Onbekende gebruiker"
 
-#: ../calendar/libecal/e-cal.c:4163 ../calendar/libedata-cal/e-data-cal.c:114
+#: ../calendar/libecal/e-cal.c:4273 ../calendar/libedata-cal/e-data-cal.c:114
 msgid "Object ID already exists"
 msgstr "Object-ID bestaat reeds"
 
-#: ../calendar/libecal/e-cal.c:4165
+#: ../calendar/libecal/e-cal.c:4275
 msgid "Protocol not supported"
 msgstr "Protocol niet ondersteund"
 
-#: ../calendar/libecal/e-cal.c:4167
+#: ../calendar/libecal/e-cal.c:4277
 msgid "Operation has been canceled"
 msgstr "Opdracht is geannuleerd"
 
-#: ../calendar/libecal/e-cal.c:4169
+#: ../calendar/libecal/e-cal.c:4279
 msgid "Could not cancel operation"
 msgstr "Kon de opdracht niet annuleren"
 
-#: ../calendar/libecal/e-cal.c:4171
+#: ../calendar/libecal/e-cal.c:4281
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1306
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:1324
 #: ../camel/providers/groupwise/camel-groupwise-store.c:628
@@ -1319,16 +1324,16 @@ msgstr "Kon de opdracht niet annuleren"
 msgid "Authentication failed"
 msgstr "Aanmelding mislukt"
 
-#: ../calendar/libecal/e-cal.c:4173
+#: ../calendar/libecal/e-cal.c:4283
 #: ../camel/providers/smtp/camel-smtp-transport.c:775
 msgid "Authentication required"
 msgstr "Aanmelding is vereist"
 
-#: ../calendar/libecal/e-cal.c:4175
+#: ../calendar/libecal/e-cal.c:4285
 msgid "A D-Bus exception has occurred"
 msgstr "Er is een D-Bus-fout opgetreden"
 
-#: ../calendar/libecal/e-cal.c:4179
+#: ../calendar/libecal/e-cal.c:4289
 msgid "No error"
 msgstr "Geen fout"
 
@@ -1656,7 +1661,7 @@ msgid "No stream available"
 msgstr "Geen stream beschikbaar"
 
 # 'vrij' toegevoegd
-#: ../camel/camel-db.c:455
+#: ../camel/camel-db.c:471
 #, c-format
 msgid "Insufficient memory"
 msgstr "Onvoldoende vrij geheugen"
@@ -1715,9 +1720,9 @@ msgstr "De inhoud van de map lokaal kopiëren voor offline gebruik"
 #: ../camel/providers/imapx/camel-imapx-folder.c:505
 #: ../camel/providers/imapx/camel-imapx-folder.c:541
 #: ../camel/providers/imapx/camel-imapx-store.c:276
-#: ../camel/providers/imapx/camel-imapx-store.c:1298
-#: ../camel/providers/imapx/camel-imapx-store.c:1386
-#: ../camel/providers/imapx/camel-imapx-store.c:1421
+#: ../camel/providers/imapx/camel-imapx-store.c:1297
+#: ../camel/providers/imapx/camel-imapx-store.c:1385
+#: ../camel/providers/imapx/camel-imapx-store.c:1420
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "U moet online werken om deze bewerking te voltooien"
@@ -1876,7 +1881,7 @@ msgstr[0] "Nieuw bericht in '%s' wordt door de filter gehaald"
 msgstr[1] "Nieuwe berichten in '%s' worden door de filter gehaald"
 
 #: ../camel/camel-folder.c:875
-#: ../camel/providers/local/camel-maildir-folder.c:293
+#: ../camel/providers/local/camel-maildir-folder.c:319
 msgid "Moving messages"
 msgstr "Verplaatsen van berichten"
 
@@ -1952,9 +1957,9 @@ msgstr "Onverwacht verzoek van GnuPG voor ‘%s’"
 #: ../camel/providers/imapx/camel-imapx-server.c:4909
 #: ../camel/providers/imapx/camel-imapx-store.c:198
 #: ../camel/providers/nntp/camel-nntp-summary.c:405
-#: ../camel/providers/pop3/camel-pop3-folder.c:366
-#: ../camel/providers/pop3/camel-pop3-folder.c:431
-#: ../camel/providers/pop3/camel-pop3-folder.c:506
+#: ../camel/providers/pop3/camel-pop3-folder.c:371
+#: ../camel/providers/pop3/camel-pop3-folder.c:436
+#: ../camel/providers/pop3/camel-pop3-folder.c:513
 #: ../camel/providers/pop3/camel-pop3-store.c:487
 #: ../libedataserverui/e-book-auth-util.c:229
 #, c-format
@@ -2180,22 +2185,22 @@ msgstr "Virtuele map e-mail aanbieder"
 msgid "For reading mail as a query of another set of folders"
 msgstr "Voor het lezen van post als een zoekopdracht op een verzameling mappen"
 
-#: ../camel/camel-provider.c:192
+#: ../camel/camel-provider.c:188
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr "Kon %s niet laden. Module laden niet ondersteund door dit systeem"
 
-#: ../camel/camel-provider.c:201
+#: ../camel/camel-provider.c:197
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "Kon %s niet laden: %s"
 
-#: ../camel/camel-provider.c:210
+#: ../camel/camel-provider.c:206
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "Kon %s niet laden: Geen initialisatie code in de module."
 
-#: ../camel/camel-provider.c:392 ../camel/camel-session.c:202
+#: ../camel/camel-provider.c:388 ../camel/camel-session.c:202
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Geen aanbieder beschikbaar voor protocol ‘%s’"
@@ -2436,17 +2441,17 @@ msgstr "POP voor SMTP gebruikmakend van een niet-POP bron"
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "Compileren van reguliere expressie mislukt: %s: %s"
 
-#: ../camel/camel-service.c:85
+#: ../camel/camel-service.c:87
 #, c-format
 msgid "URL '%s' needs a username component"
 msgstr "URL ‘%s’ heeft een gebruikersnaamcomponent nodig"
 
-#: ../camel/camel-service.c:89
+#: ../camel/camel-service.c:91
 #, c-format
 msgid "URL '%s' needs a host component"
 msgstr "URL ‘%s’ heeft een machinenaamcomponent nodig"
 
-#: ../camel/camel-service.c:93
+#: ../camel/camel-service.c:95
 #, c-format
 msgid "URL '%s' needs a path component"
 msgstr "URL ‘%s’ heeft een padcomponent nodig"
@@ -2658,36 +2663,36 @@ msgstr "Kon gegevens niet toevoegen aan codeerder"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME Decrypten: Geen versleutelde inhoud gevonden"
 
-#: ../camel/camel-store.c:2181
+#: ../camel/camel-store.c:2177
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "Kan map ‘%s’ niet aanmaken: map bestaat al"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:2372 ../camel/camel-store.c:2382
+#: ../camel/camel-store.c:2368 ../camel/camel-store.c:2378
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Prullenbak"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:2375 ../camel/camel-store.c:2386
+#: ../camel/camel-store.c:2371 ../camel/camel-store.c:2382
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Spam"
 
-#: ../camel/camel-store.c:2829
+#: ../camel/camel-store.c:2825
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Kan map niet aanmaken: %s: map bestaat reeds"
 
-#: ../camel/camel-store.c:2956 ../camel/camel-vee-store.c:367
+#: ../camel/camel-store.c:2952 ../camel/camel-vee-store.c:367
 #: ../camel/providers/local/camel-maildir-store.c:272
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Kon map: %s niet verwijderen: Ongeldige opdracht"
 
-#: ../camel/camel-store.c:3097 ../camel/camel-vee-store.c:417
-#: ../camel/providers/local/camel-maildir-store.c:668
+#: ../camel/camel-store.c:3093 ../camel/camel-vee-store.c:417
+#: ../camel/providers/local/camel-maildir-store.c:700
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Kon de naam van de map: %s niet wijzigen: ongeldige opdracht"
@@ -2848,17 +2853,17 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "Kon URL ‘%s’ niet verwerken"
 
-#: ../camel/camel-vee-folder.c:1235 ../camel/camel-vee-folder.c:1398
+#: ../camel/camel-vee-folder.c:1263 ../camel/camel-vee-folder.c:1426
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Kan berichten niet naar een VMap verplaatsen of kopiëren"
 
-#: ../camel/camel-vee-folder.c:1271
+#: ../camel/camel-vee-folder.c:1299
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Dergelijk bericht %s bestaat niet in %s"
 
-#: ../camel/camel-vee-folder.c:1339
+#: ../camel/camel-vee-folder.c:1367
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Fout bij opslaan van ‘%s’:"
@@ -2938,7 +2943,7 @@ msgstr ""
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2640
 #: ../camel/providers/local/camel-maildir-folder.c:100
-#: ../camel/providers/local/camel-maildir-folder.c:307
+#: ../camel/providers/local/camel-maildir-folder.c:333
 #: ../camel/providers/local/camel-mbox-folder.c:117
 #: ../camel/providers/local/camel-mbox-folder.c:325
 #: ../camel/providers/local/camel-mh-folder.c:156
@@ -2948,7 +2953,7 @@ msgstr "Bericht bestaat niet"
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:2659
 #: ../camel/providers/nntp/camel-nntp-folder.c:246
 #: ../camel/providers/nntp/camel-nntp-folder.c:413
-#: ../camel/providers/pop3/camel-pop3-folder.c:457
+#: ../camel/providers/pop3/camel-pop3-folder.c:462
 #, c-format
 msgid "Cannot get message %s: "
 msgstr "Kan bericht %s niet opvragen: "
@@ -2988,8 +2993,8 @@ msgstr "Alle mappen op nieuwe berichten _controleren"
 #: ../camel/providers/imap/camel-imap-provider.c:64
 #: ../camel/providers/imapx/camel-imapx-provider.c:72
 #: ../camel/providers/local/camel-local-provider.c:42
-#: ../camel/providers/local/camel-local-provider.c:84
-#: ../camel/providers/local/camel-local-provider.c:105
+#: ../camel/providers/local/camel-local-provider.c:82
+#: ../camel/providers/local/camel-local-provider.c:102
 msgid "Options"
 msgstr "Opties"
 
@@ -3022,27 +3027,23 @@ msgstr "SOAP-instellingen"
 msgid "Post Office Agent SOAP _Port:"
 msgstr "SOAP-_poort van postkantoor-agent:"
 
-#: ../camel/providers/groupwise/camel-groupwise-provider.c:80
-msgid "Default GroupWise port"
-msgstr "Standaard GroupWise-poort"
-
-#: ../camel/providers/groupwise/camel-groupwise-provider.c:86
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:81
 msgid "Novell GroupWise"
 msgstr "Novell GroupWise"
 
-#: ../camel/providers/groupwise/camel-groupwise-provider.c:88
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:83
 msgid "For accessing Novell GroupWise servers"
 msgstr "Voor het benaderen van Novell Groupwise-servers"
 
-#: ../camel/providers/groupwise/camel-groupwise-provider.c:105
-#: ../camel/providers/imap/camel-imap-provider.c:105
-#: ../camel/providers/imapx/camel-imapx-provider.c:113
-#: ../camel/providers/nntp/camel-nntp-provider.c:80
-#: ../camel/providers/pop3/camel-pop3-provider.c:81
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:98
+#: ../camel/providers/imap/camel-imap-provider.c:97
+#: ../camel/providers/imapx/camel-imapx-provider.c:104
+#: ../camel/providers/nntp/camel-nntp-provider.c:72
+#: ../camel/providers/pop3/camel-pop3-provider.c:73
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: ../camel/providers/groupwise/camel-groupwise-provider.c:107
+#: ../camel/providers/groupwise/camel-groupwise-provider.c:100
 msgid ""
 "This option will connect to the GroupWise server using a plaintext password."
 msgstr ""
@@ -3087,7 +3088,7 @@ msgstr "Kan een speciale systeemmap niet aanmaken"
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1236
 #: ../camel/providers/imap/camel-imap-store.c:1886
 #: ../camel/providers/imap/camel-imap-store.c:2323
-#: ../camel/providers/imapx/camel-imapx-store.c:1340
+#: ../camel/providers/imapx/camel-imapx-store.c:1339
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "De bovenliggende map kan geen mappen bevatten"
@@ -3217,13 +3218,13 @@ msgid "Unable to retrieve message: "
 msgstr "Ophalen van bericht niet mogelijk: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3404
-#: ../camel/providers/imapx/camel-imapx-server.c:5193
+#: ../camel/providers/imapx/camel-imapx-server.c:5211
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan bericht met bericht-ID ‘%s’ niet opvragen: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3405
-#: ../camel/providers/imapx/camel-imapx-server.c:5194
+#: ../camel/providers/imapx/camel-imapx-server.c:5212
 msgid "No such message available."
 msgstr "Bericht niet beschikbaar."
 
@@ -3325,26 +3326,17 @@ msgstr "Nieuwe berichten op _spam controleren"
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "Automatisch lokaal synchroni_seren met e-mail op afstand"
 
-#: ../camel/providers/imap/camel-imap-provider.c:78
-msgid "IMAP default port"
-msgstr "Standaard IMAP-poort"
-
 #: ../camel/providers/imap/camel-imap-provider.c:79
-#: ../camel/providers/imapx/camel-imapx-provider.c:87
-msgid "IMAP over SSL"
-msgstr "IMAP over SSL"
-
-#: ../camel/providers/imap/camel-imap-provider.c:85
 msgid "IMAP"
 msgstr "IMAP"
 
-#: ../camel/providers/imap/camel-imap-provider.c:87
-#: ../camel/providers/imapx/camel-imapx-provider.c:96
+#: ../camel/providers/imap/camel-imap-provider.c:81
+#: ../camel/providers/imapx/camel-imapx-provider.c:90
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Voor het lezen en opslaan van e-mail op IMAP servers."
 
-#: ../camel/providers/imap/camel-imap-provider.c:107
-#: ../camel/providers/imapx/camel-imapx-provider.c:115
+#: ../camel/providers/imap/camel-imap-provider.c:99
+#: ../camel/providers/imapx/camel-imapx-provider.c:106
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Deze optie zal bij het verbinden met de IMAP-server het wachtwoord versturen "
@@ -3451,19 +3443,19 @@ msgstr "IMAP-service voor %s op %s"
 #: ../camel/providers/imap/camel-imap-store.c:1367
 #: ../camel/providers/imap/camel-imap-store.c:2416
 #: ../camel/providers/imapx/camel-imapx-store.c:371
-#: ../camel/providers/imapx/camel-imapx-store.c:793
-#: ../camel/providers/local/camel-maildir-folder.c:409
+#: ../camel/providers/imapx/camel-imapx-store.c:791
+#: ../camel/providers/local/camel-maildir-folder.c:455
 #: ../camel/providers/local/camel-maildir-store.c:273
 #: ../camel/providers/local/camel-maildir-store.c:615
 #: ../camel/providers/local/camel-maildir-store.c:621
-#: ../camel/providers/local/camel-maildir-store.c:669
+#: ../camel/providers/local/camel-maildir-store.c:701
 #: ../camel/providers/local/camel-spool-store.c:289
 msgid "Inbox"
 msgstr "Postvak IN"
 
 #: ../camel/providers/imap/camel-imap-store.c:1822
 #: ../camel/providers/imap/camel-imap-store.c:2259
-#: ../camel/providers/imapx/camel-imapx-store.c:1319
+#: ../camel/providers/imapx/camel-imapx-store.c:1318
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
@@ -3478,7 +3470,7 @@ msgid "Cannot create folder '%s': folder exists."
 msgstr "Kan map ‘%s’ niet aanmaken: map bestaat al."
 
 #: ../camel/providers/imap/camel-imap-store.c:2272
-#: ../camel/providers/imapx/camel-imapx-store.c:1330
+#: ../camel/providers/imapx/camel-imapx-store.c:1329
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Onbekende oudermap: %s"
@@ -3523,11 +3515,7 @@ msgstr "_Aantal te gebruiken gecachete verbindingen"
 msgid "Namespace:"
 msgstr "Namespace:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:86
-msgid "Defalut IMAP port"
-msgstr "Standaard IMAP-poort"
-
-#: ../camel/providers/imapx/camel-imapx-provider.c:94
+#: ../camel/providers/imapx/camel-imapx-provider.c:88
 msgid "IMAP+"
 msgstr "IMAP+"
 
@@ -3550,12 +3538,12 @@ msgstr "Kon niet verbinden met %s (poort %s):"
 msgid "Closing tmp stream failed: "
 msgstr "Sluiten van tijdelijke stream is mislukt:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5343
-#: ../camel/providers/imapx/camel-imapx-server.c:5358
+#: ../camel/providers/imapx/camel-imapx-server.c:5357
+#: ../camel/providers/imapx/camel-imapx-server.c:5372
 msgid "Cannot create spool file: "
 msgstr "Aanmaken van spoolbestand mislukt:"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1135
+#: ../camel/providers/imapx/camel-imapx-store.c:1134
 #: ../camel/providers/nntp/camel-nntp-store.c:1666
 #, c-format
 msgid "No such folder: %s"
@@ -3612,11 +3600,11 @@ msgstr "Postbussen in MH-formaat"
 msgid "For storing local mail in MH-like mail directories."
 msgstr "Voor het opslaan van lokale post in MH-achtige postbussen."
 
-#: ../camel/providers/local/camel-local-provider.c:70
+#: ../camel/providers/local/camel-local-provider.c:69
 msgid "Local delivery"
 msgstr "Lokale bezorging"
 
-#: ../camel/providers/local/camel-local-provider.c:71
+#: ../camel/providers/local/camel-local-provider.c:70
 msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
@@ -3624,30 +3612,30 @@ msgstr ""
 "Voor het ophalen (verplaatsen) van lokale post uit standaard mbox-spools "
 "naar door Evolution beheerde mappen."
 
-#: ../camel/providers/local/camel-local-provider.c:86
-#: ../camel/providers/local/camel-local-provider.c:106
+#: ../camel/providers/local/camel-local-provider.c:84
+#: ../camel/providers/local/camel-local-provider.c:103
 msgid "_Apply filters to new messages in INBOX"
 msgstr "_Filters toepassen op nieuwe berichten in de INBOX"
 
-#: ../camel/providers/local/camel-local-provider.c:93
+#: ../camel/providers/local/camel-local-provider.c:91
 msgid "Maildir-format mail directories"
 msgstr "E-mailmappen in maildir-formaat"
 
-#: ../camel/providers/local/camel-local-provider.c:94
+#: ../camel/providers/local/camel-local-provider.c:92
 msgid "For storing local mail in maildir directories."
 msgstr "Voor het opslaan van lokale post in Maildir-mappen."
 
 # bestandsindeling/formaat
-#: ../camel/providers/local/camel-local-provider.c:107
+#: ../camel/providers/local/camel-local-provider.c:104
 msgid "_Store status headers in Elm/Pine/Mutt format"
 msgstr "_Status-kopregels opslaan in formaat van Elm/Pine/Mutt"
 
-#: ../camel/providers/local/camel-local-provider.c:114
+#: ../camel/providers/local/camel-local-provider.c:111
 msgid "Standard Unix mbox spool file"
 msgstr "Standaard Unix-mbox-spoolbestand"
 
-#: ../camel/providers/local/camel-local-provider.c:115
-#: ../camel/providers/local/camel-local-provider.c:127
+#: ../camel/providers/local/camel-local-provider.c:112
+#: ../camel/providers/local/camel-local-provider.c:123
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
@@ -3657,7 +3645,7 @@ msgstr ""
 "Kan ook gebruikt worden om een mappenstructuur van Elm, Pine of Mutt in te "
 "lezen."
 
-#: ../camel/providers/local/camel-local-provider.c:126
+#: ../camel/providers/local/camel-local-provider.c:122
 msgid "Standard Unix mbox spool directory"
 msgstr "Standaard Unix mbox-spoolmap"
 
@@ -3721,13 +3709,13 @@ msgstr "Kon metabestand ‘%s’ niet verwijderen: %s"
 msgid "Unable to add message to summary: unknown reason"
 msgstr "Kan geen bericht toevoegen aan de korte inhoud: onbekende reden"
 
-#: ../camel/providers/local/camel-maildir-folder.c:198
+#: ../camel/providers/local/camel-maildir-folder.c:223
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr "Kan bericht niet toevoegen aan maildir-map: %s:"
 
-#: ../camel/providers/local/camel-maildir-folder.c:246
-#: ../camel/providers/local/camel-maildir-folder.c:256
+#: ../camel/providers/local/camel-maildir-folder.c:271
+#: ../camel/providers/local/camel-maildir-folder.c:281
 #: ../camel/providers/local/camel-mbox-folder.c:386
 #: ../camel/providers/local/camel-mh-folder.c:168
 #: ../camel/providers/local/camel-mh-folder.c:178
@@ -3735,7 +3723,7 @@ msgstr "Kan bericht niet toevoegen aan maildir-map: %s:"
 msgid "Cannot get message %s from folder %s: "
 msgstr "Kan bericht %s uit folder %s niet opvragen: "
 
-#: ../camel/providers/local/camel-maildir-folder.c:326
+#: ../camel/providers/local/camel-maildir-folder.c:351
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "Kan bericht niet overbrengen naar doelmap: %s"
@@ -3746,7 +3734,7 @@ msgid "Cannot create folder: %s : Folder name cannot contain a dot"
 msgstr "Kan map niet aanmaken: %s: mapnaam mag geen punt bevatten"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
-#: ../camel/providers/local/camel-maildir-store.c:686
+#: ../camel/providers/local/camel-maildir-store.c:718
 #, c-format
 msgid "Folder %s already exists"
 msgstr "De map %s bestaat al"
@@ -3790,14 +3778,14 @@ msgid "not a maildir directory"
 msgstr "geen Maildir-map"
 
 #: ../camel/providers/local/camel-maildir-store.c:508
-#: ../camel/providers/local/camel-maildir-store.c:825
+#: ../camel/providers/local/camel-maildir-store.c:866
 #: ../camel/providers/local/camel-spool-store.c:143
 #: ../camel/providers/local/camel-spool-store.c:159
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "Kon map ‘%s’ niet scannen: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:677
+#: ../camel/providers/local/camel-maildir-store.c:709
 #, c-format
 msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
 msgstr "Kan map niet hernoemen: %s: mapnaam mag geen punt bevatten"
@@ -3818,8 +3806,8 @@ msgstr "Controleren op nieuwe berichten"
 
 #: ../camel/providers/local/camel-maildir-summary.c:743
 #: ../camel/providers/local/camel-mbox-summary.c:468
-#: ../camel/providers/local/camel-mbox-summary.c:690
-#: ../camel/providers/local/camel-mbox-summary.c:826
+#: ../camel/providers/local/camel-mbox-summary.c:699
+#: ../camel/providers/local/camel-mbox-summary.c:839
 #: ../camel/providers/local/camel-spool-summary.c:131
 msgid "Storing folder"
 msgstr "Map opslaan"
@@ -3911,58 +3899,58 @@ msgstr "Kon ‘%s’ niet hernoemen: ‘%s’: %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Kon ‘%s’ niet hernoemen naar ‘%s’: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:476
+#: ../camel/providers/local/camel-mbox-summary.c:478
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "Kon map ‘%s’ niet openen: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:537
+#: ../camel/providers/local/camel-mbox-summary.c:539
 #, c-format
 msgid "Fatal mail parser error near position %s in folder %s"
 msgstr "Onherstelbare fout bij verwerken van e-mail op positie %s in de map %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:622
+#: ../camel/providers/local/camel-mbox-summary.c:628
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Kan map ‘%s’ niet controleren: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:697
-#: ../camel/providers/local/camel-mbox-summary.c:833
+#: ../camel/providers/local/camel-mbox-summary.c:708
+#: ../camel/providers/local/camel-mbox-summary.c:848
 #: ../camel/providers/local/camel-spool-summary.c:138
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Kon bestand ‘%s’ niet openen: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:711
+#: ../camel/providers/local/camel-mbox-summary.c:722
 #: ../camel/providers/local/camel-spool-summary.c:153
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Kon tijdelijke postbus niet openen: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:728
-#: ../camel/providers/local/camel-mbox-summary.c:949
+#: ../camel/providers/local/camel-mbox-summary.c:739
+#: ../camel/providers/local/camel-mbox-summary.c:964
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Kon de bronmap ‘%s’ niet sluiten: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:739
+#: ../camel/providers/local/camel-mbox-summary.c:750
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Kon de tijdelijke map niet sluiten: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:756
+#: ../camel/providers/local/camel-mbox-summary.c:767
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Kon map niet hernoemen: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:846
-#: ../camel/providers/local/camel-mbox-summary.c:1099
+#: ../camel/providers/local/camel-mbox-summary.c:862
+#: ../camel/providers/local/camel-mbox-summary.c:1129
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Kon de map niet opslaan: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:886
-#: ../camel/providers/local/camel-mbox-summary.c:1131
+#: ../camel/providers/local/camel-mbox-summary.c:901
+#: ../camel/providers/local/camel-mbox-summary.c:1160
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
@@ -3971,25 +3959,25 @@ msgstr ""
 "Mbox-bestand is beschadigd; probeer het te repareren. (‘From’-regel verwacht "
 "maar niet tegengekomen.)"
 
-#: ../camel/providers/local/camel-mbox-summary.c:895
-#: ../camel/providers/local/camel-mbox-summary.c:1140
+#: ../camel/providers/local/camel-mbox-summary.c:910
+#: ../camel/providers/local/camel-mbox-summary.c:1169
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Mapoverzicht en map niet gelijk, zelfs na synchronisatie"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1052
+#: ../camel/providers/local/camel-mbox-summary.c:1075
 #: ../camel/providers/local/camel-spool-summary.c:343
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Onbekende fout: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1210
-#: ../camel/providers/local/camel-mbox-summary.c:1240
+#: ../camel/providers/local/camel-mbox-summary.c:1239
+#: ../camel/providers/local/camel-mbox-summary.c:1269
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Fout bij het schrijven naar tijdelijke postbus: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1229
+#: ../camel/providers/local/camel-mbox-summary.c:1258
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Fout bij het schrijven naar tijdelijke postbus %s: %s"
@@ -4114,10 +4102,10 @@ msgstr "Interne fout: UID in ongeldig formaat: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:236
 #: ../camel/providers/nntp/camel-nntp-folder.c:240
-#: ../camel/providers/pop3/camel-pop3-folder.c:371
-#: ../camel/providers/pop3/camel-pop3-folder.c:436
-#: ../camel/providers/pop3/camel-pop3-folder.c:448
-#: ../camel/providers/pop3/camel-pop3-folder.c:697
+#: ../camel/providers/pop3/camel-pop3-folder.c:376
+#: ../camel/providers/pop3/camel-pop3-folder.c:441
+#: ../camel/providers/pop3/camel-pop3-folder.c:453
+#: ../camel/providers/pop3/camel-pop3-folder.c:713
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Kan bericht ‘%s’ niet opvragen: %s"
@@ -4153,25 +4141,17 @@ msgstr ""
 msgid "In the subscription _dialog, show relative folder names"
 msgstr "_Relatieve mapnamen tonen in het abonnementenvenster."
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:52
-msgid "Default NNTP port"
-msgstr "Standaard NNTP-poort"
-
 #: ../camel/providers/nntp/camel-nntp-provider.c:53
-msgid "NNTP over SSL"
-msgstr "NNTP over SSL"
-
-#: ../camel/providers/nntp/camel-nntp-provider.c:59
 msgid "USENET news"
 msgstr "USENET-nieuws"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:61
+#: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr ""
 "Dit is een provider voor het lezen van en versturen naar USENET "
 "nieuwsgroepen."
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:82
+#: ../camel/providers/nntp/camel-nntp-provider.c:74
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
@@ -4286,35 +4266,35 @@ msgstr "Onverwacht serverantwoord van head: %s"
 msgid "Operation failed: %s"
 msgstr "Opdracht mislukt: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:277
-#: ../camel/providers/pop3/camel-pop3-folder.c:336
+#: ../camel/providers/pop3/camel-pop3-folder.c:282
+#: ../camel/providers/pop3/camel-pop3-folder.c:341
 #, c-format
 msgid "No message with UID %s"
 msgstr "Geen bericht met UID %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:344
+#: ../camel/providers/pop3/camel-pop3-folder.c:349
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "POP-bericht %d wordt opgehaald"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:449
+#: ../camel/providers/pop3/camel-pop3-folder.c:454
 msgid "Unknown reason"
 msgstr "Onbekende reden"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:488
+#: ../camel/providers/pop3/camel-pop3-folder.c:494
 msgid "Retrieving POP summary"
 msgstr "POP-overzicht aan het ophalen"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:511
+#: ../camel/providers/pop3/camel-pop3-folder.c:518
 #, c-format
 msgid "Cannot get POP summary: %s"
 msgstr "Kan POP-overzicht niet opvragen: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:563
+#: ../camel/providers/pop3/camel-pop3-folder.c:576
 msgid "Expunging old messages"
 msgstr "Bezig met schrappen van oude berichten"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:577
+#: ../camel/providers/pop3/camel-pop3-folder.c:590
 msgid "Expunging deleted messages"
 msgstr "Bezig met schrappen van verwijderde berichten"
 
@@ -4340,23 +4320,15 @@ msgstr "_Vernietigde berichten uit lokale Postvak IN verwijderen"
 msgid "Disable _support for all POP3 extensions"
 msgstr "O_ndersteuning voor POP3-uitbreidingen uitschakelen"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:54
-msgid "Default POP3 port"
-msgstr "Standaard POP3-poort"
-
-#: ../camel/providers/pop3/camel-pop3-provider.c:55
-msgid "POP3 over SSL"
-msgstr "POP3 over SSL"
-
-#: ../camel/providers/pop3/camel-pop3-provider.c:62
+#: ../camel/providers/pop3/camel-pop3-provider.c:56
 msgid "POP"
 msgstr "POP"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:64
+#: ../camel/providers/pop3/camel-pop3-provider.c:58
 msgid "For connecting to and downloading mail from POP servers."
 msgstr "Voor het verbinden en downloaden van berichten van POP-servers."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:83
+#: ../camel/providers/pop3/camel-pop3-provider.c:75
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
@@ -4365,7 +4337,7 @@ msgstr ""
 "vorm. Deze optie is de enige die wordt ondersteund door de meeste POP-"
 "servers."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:93
+#: ../camel/providers/pop3/camel-pop3-provider.c:85
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
@@ -4486,17 +4458,17 @@ msgstr "POP3-server %s"
 msgid "POP3 server for %s on %s"
 msgstr "POP3-server voor %s op %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:693
+#: ../camel/providers/pop3/camel-pop3-store.c:694
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "Kon niet verbinden met POP-server %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:720
+#: ../camel/providers/pop3/camel-pop3-store.c:721
 #, c-format
 msgid "No such folder '%s'."
 msgstr "De map ‘%s’ bestaat niet."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:737
+#: ../camel/providers/pop3/camel-pop3-store.c:738
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "POP3-opslaglocaties hebben geen mappenhiërarchie"
@@ -4555,23 +4527,11 @@ msgstr "Kon %s niet uitvoeren: bericht niet verstuurd."
 msgid "sendmail exited with status %d: mail not sent."
 msgstr "sendmail eindigde met status %d: bericht niet verstuurd."
 
-#: ../camel/providers/smtp/camel-smtp-provider.c:42
-msgid "Default SMTP port"
-msgstr "Standaard SMTP-poort"
-
 #: ../camel/providers/smtp/camel-smtp-provider.c:43
-msgid "SMTP over SSL"
-msgstr "SMTP over SSL"
-
-#: ../camel/providers/smtp/camel-smtp-provider.c:44
-msgid "Message submission port"
-msgstr "Poort voor inzenden van berichten"
-
-#: ../camel/providers/smtp/camel-smtp-provider.c:50
 msgid "SMTP"
 msgstr "SMTP"
 
-#: ../camel/providers/smtp/camel-smtp-provider.c:52
+#: ../camel/providers/smtp/camel-smtp-provider.c:45
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr "Voor het versturen van e-mail naar een externe mailhub met SMTP."
 
@@ -4631,7 +4591,7 @@ msgstr "Kan bericht niet versturen: ongeldig afzenderadres."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:624
 msgid "Sending message"
-msgstr "Bericht wordt verstuurd"
+msgstr "Bericht versturen"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:649
 #, c-format
@@ -5246,6 +5206,35 @@ msgstr "Geen antwoord van de server"
 msgid "Bad parameter"
 msgstr "Onjuiste parameter"
 
-#: ../calendar/libecal/e-cal.c:1049
-msgid "On This Computer"
-msgstr "Op deze computer"
+#~ msgid "Default GroupWise port"
+#~ msgstr "Standaard GroupWise-poort"
+
+#~ msgid "IMAP default port"
+#~ msgstr "Standaard IMAP-poort"
+
+#~ msgid "IMAP over SSL"
+#~ msgstr "IMAP over SSL"
+
+#~ msgid "Defalut IMAP port"
+#~ msgstr "Standaard IMAP-poort"
+
+#~ msgid "Default NNTP port"
+#~ msgstr "Standaard NNTP-poort"
+
+#~ msgid "NNTP over SSL"
+#~ msgstr "NNTP over SSL"
+
+#~ msgid "Default POP3 port"
+#~ msgstr "Standaard POP3-poort"
+
+#~ msgid "POP3 over SSL"
+#~ msgstr "POP3 over SSL"
+
+#~ msgid "Default SMTP port"
+#~ msgstr "Standaard SMTP-poort"
+
+#~ msgid "SMTP over SSL"
+#~ msgstr "SMTP over SSL"
+
+#~ msgid "Message submission port"
+#~ msgstr "Poort voor inzenden van berichten"
