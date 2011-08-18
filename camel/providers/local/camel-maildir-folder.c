@@ -309,7 +309,8 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 {
 	gboolean fallback = FALSE;
 
-	if (delete_originals && CAMEL_IS_MAILDIR_FOLDER (source) && CAMEL_IS_MAILDIR_FOLDER (dest)) {
+	if (delete_originals && CAMEL_IS_MAILDIR_FOLDER (source) && CAMEL_IS_MAILDIR_FOLDER (dest)
+	    && camel_folder_get_parent_store (source) == camel_folder_get_parent_store (dest)) {
 		gint i;
 		CamelLocalFolder *lf = (CamelLocalFolder *) source;
 		CamelLocalFolder *df = (CamelLocalFolder *) dest;
@@ -322,7 +323,7 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 
 		for (i = 0; i < uids->len; i++) {
 			gchar *uid = (gchar *) uids->pdata[i];
-			gchar *s_filename, *d_filename, *tmp;
+			gchar *s_filename, *d_filename, *new_filename;
 			CamelMaildirMessageInfo *mdi;
 			CamelMessageInfo *info;
 
@@ -334,10 +335,9 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 			}
 
 			mdi = (CamelMaildirMessageInfo *) info;
-			tmp = camel_maildir_summary_info_to_name (mdi);
+			new_filename = camel_maildir_summary_info_to_name (mdi);
 
-			d_filename = g_strdup_printf ("%s/cur/%s", df->folder_path, tmp);
-			g_free (tmp);
+			d_filename = g_strdup_printf ("%s/cur/%s", df->folder_path, new_filename);
 			s_filename = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
 
 			if (g_rename (s_filename, d_filename) != 0) {
@@ -354,15 +354,36 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 					break;
 				}
 			} else {
+				CamelMessageInfo *clone;
+
+				clone = camel_message_info_clone (info);
+				clone->summary = dest->summary;
+				camel_maildir_info_set_filename (clone, g_strdup (new_filename));
+				camel_folder_summary_add (dest->summary, clone);
+
+				camel_folder_change_info_add_uid (df->changes, camel_message_info_uid (clone));
+
 				camel_folder_set_message_flags (
 					source, uid, CAMEL_MESSAGE_DELETED |
 					CAMEL_MESSAGE_SEEN, ~0);
+				camel_folder_change_info_remove_uid (lf->changes, camel_message_info_uid (info));
 				camel_folder_summary_remove (source->summary, info);
 			}
 
 			camel_message_info_free (info);
 			g_free (s_filename);
 			g_free (d_filename);
+			g_free (new_filename);
+		}
+
+		if (lf && camel_folder_change_info_changed (lf->changes)) {
+			camel_folder_changed (source, lf->changes);
+			camel_folder_change_info_clear (lf->changes);
+		}
+
+		if (df && camel_folder_change_info_changed (df->changes)) {
+			camel_folder_changed (dest, df->changes);
+			camel_folder_change_info_clear (df->changes);
 		}
 
 		camel_folder_thaw (source);
