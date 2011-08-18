@@ -26,6 +26,11 @@ CamelService
 </para>
 
 
+<!-- ##### ARG CamelService:display-name ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG CamelService:provider ##### -->
 <para>
 
@@ -88,6 +93,24 @@ CamelService
 @description: 
 @authproto: 
 @need_password: 
+
+<!-- ##### FUNCTION camel_service_get_display_name ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_set_display_name ##### -->
+<para>
+
+</para>
+
+@service: 
+@display_name: 
+
 
 <!-- ##### FUNCTION camel_service_get_user_data_dir ##### -->
 <para>

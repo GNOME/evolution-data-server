@@ -1952,6 +1952,8 @@ CAMEL_SERVICE_ERROR
 CamelServiceError
 CamelServiceConnectionStatus
 CamelServiceAuthType
+camel_service_get_display_name
+camel_service_set_display_name
 camel_service_get_user_data_dir
 camel_service_get_name
 camel_service_get_provider

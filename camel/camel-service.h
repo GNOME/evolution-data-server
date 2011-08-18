@@ -145,6 +145,9 @@ typedef struct {
 
 GType		camel_service_get_type		(void);
 GQuark		camel_service_error_quark	(void) G_GNUC_CONST;
+const gchar *	camel_service_get_display_name	(CamelService *service);
+void		camel_service_set_display_name	(CamelService *service,
+						 const gchar *display_name);
 const gchar *	camel_service_get_user_data_dir	(CamelService *service);
 gchar *		camel_service_get_name		(CamelService *service,
 						 gboolean brief);

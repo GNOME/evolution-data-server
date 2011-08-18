@@ -58,6 +58,7 @@ struct _CamelServicePrivate {
 	CamelProvider *provider;
 	CamelURL *url;
 
+	gchar *display_name;
 	gchar *user_data_dir;
 	gchar *uid;
 
@@ -74,6 +75,7 @@ struct _AsyncContext {
 
 enum {
 	PROP_0,
+	PROP_DISPLAY_NAME,
 	PROP_PROVIDER,
 	PROP_SESSION,
 	PROP_SETTINGS,
@@ -229,6 +231,12 @@ service_set_property (GObject *object,
                       GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_DISPLAY_NAME:
+			camel_service_set_display_name (
+				CAMEL_SERVICE (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_PROVIDER:
 			service_set_provider (
 				CAMEL_SERVICE (object),
@@ -270,6 +278,12 @@ service_get_property (GObject *object,
                       GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_DISPLAY_NAME:
+			g_value_set_string (
+				value, camel_service_get_display_name (
+				CAMEL_SERVICE (object)));
+			return;
+
 		case PROP_PROVIDER:
 			g_value_set_pointer (
 				value, camel_service_get_provider (
@@ -340,6 +354,7 @@ service_finalize (GObject *object)
 	if (priv->url != NULL)
 		camel_url_free (priv->url);
 
+	g_free (priv->display_name);
 	g_free (priv->user_data_dir);
 	g_free (priv->uid);
 
@@ -580,6 +595,18 @@ camel_service_class_init (CamelServiceClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_DISPLAY_NAME,
+		g_param_spec_string (
+			"display-name",
+			"Display Name",
+			"The display name for the service",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_PROVIDER,
 		g_param_spec_pointer (
 			"provider",
@@ -690,6 +717,58 @@ camel_service_cancel_connect (CamelService *service)
 	if (service->priv->connect_op)
 		class->cancel_connect (service);
 	camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
+}
+
+/**
+ * camel_service_get_display_name:
+ * @service: a #CamelService
+ *
+ * Returns the display name for @service, or %NULL if @service has not
+ * been given a display name.  The display name is intended for use in
+ * a user interface and should generally be given a user-defined name.
+ *
+ * Compare this with camel_service_get_name(), which returns a built-in
+ * description of the type of service (IMAP, SMTP, etc.).
+ *
+ * Returns: the display name for @service, or %NULL
+ *
+ * Since: 3.2
+ **/
+const gchar *
+camel_service_get_display_name (CamelService *service)
+{
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	return service->priv->display_name;
+}
+
+/**
+ * camel_service_set_display_name:
+ * @service: a #CamelService
+ * @display_name: a valid UTF-8 string, or %NULL
+ *
+ * Assigns a UTF-8 display name to @service.  The display name is intended
+ * for use in a user interface and should generally be given a user-defined
+ * name.
+ *
+ * Compare this with camel_service_get_name(), which returns a built-in
+ * description of the type of service (IMAP, SMTP, etc.).
+ *
+ * Since: 3.2
+ **/
+void
+camel_service_set_display_name (CamelService *service,
+                                const gchar *display_name)
+{
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	if (display_name != NULL)
+		g_return_if_fail (g_utf8_validate (display_name, -1, NULL));
+
+	g_free (service->priv->display_name);
+	service->priv->display_name = g_strdup (display_name);
+
+	g_object_notify (G_OBJECT (service), "display-name");
 }
 
 /**
