@@ -2775,9 +2775,9 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EC
 		}
 
 		/* Set the title and role */
-		if (org && title)
+		if (org != NULL && title != NULL && *title != '\0')
 			gdata_gd_organization_set_title (org, title);
-		if (org && role)
+		if (org != NULL && role != NULL && *role != '\0')
 			gdata_gd_organization_set_job_description (org, role);
 	}
 
@@ -2988,7 +2988,7 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry)
 		add_attribute_from_gdata_gd_postal_address (vcard, postal_address);
 	}
 
-	/* ORG - primary first */
+	/* TITLE, ROLE and ORG - primary first */
 	org = gdata_contacts_contact_get_primary_organization (GDATA_CONTACTS_CONTACT (entry));
 	orgs = gdata_contacts_contact_get_organizations (GDATA_CONTACTS_CONTACT (entry));
 	add_attribute_from_gdata_gd_organization (vcard, org);
@@ -3007,8 +3007,6 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry)
 
 	for (itr = orgs; itr; itr = itr->next) {
 		org = itr->data;
-		if (gdata_gd_organization_is_primary (org) == TRUE)
-			continue;
 		add_attribute_from_gdata_gd_organization (vcard, org);
 	}
 
@@ -3540,7 +3538,7 @@ add_attribute_from_gdata_gd_organization (EVCard *vcard, GDataGDOrganization *or
 	EVCardAttribute *attr;
 	gboolean has_type;
 
-	if (!org || !gdata_gd_organization_get_name (org))
+	if (!org)
 		return;
 
 	/* Add the LABEL */
@@ -3554,8 +3552,8 @@ add_attribute_from_gdata_gd_organization (EVCard *vcard, GDataGDOrganization *or
 	e_vcard_attribute_add_value (attr, gdata_gd_organization_get_department (org));
 
 	/* The following bits of data provided by the Google Contacts API can't be fitted into the vCard format:
-	 *   gdata_gd_organization_get_title
-	 *   gdata_gd_organization_get_job_description
+	 *   gdata_gd_organization_get_title (handled by TITLE)
+	 *   gdata_gd_organization_get_job_description (handled by ROLE)
 	 *   gdata_gd_organization_get_symbol
 	 *   gdata_gd_organization_get_location */
 
@@ -3759,7 +3757,7 @@ gdata_gd_organization_from_attribute (EVCardAttribute *attr, gboolean *have_prim
 
 		rel = google_rel_from_types (types);
 		org = gdata_gd_organization_new (values->data, NULL, rel, label, primary);
-		if (values->next)
+		if (values->next != NULL && values->next->data != NULL && *((gchar*) values->next->data) != '\0')
 			gdata_gd_organization_set_department (org, values->next->data);
 		g_free (rel);
 
