@@ -4525,7 +4525,7 @@ msgstr "Kan bericht niet versturen: ongeldig afzenderadres."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:651
 msgid "Sending message"
-msgstr "Bericht wordt verstuurd"
+msgstr "Bericht versturen"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:676
 #, c-format
