@@ -2381,6 +2381,33 @@ editor_closed_cb (GtkWidget *editor, gpointer data)
 	g_object_unref (name_selector_entry);
 }
 
+/* To parse something like...
+ * =?UTF-8?Q?=E0=A4=95=E0=A4=95=E0=A4=AC=E0=A5=82=E0=A5=8B=E0=A5=87?=\t\n=?UTF-8?Q?=E0=A4=B0?=\t\n<aa@aa.ccom>
+ * and return the decoded representation of name & email parts.
+ * */
+static gboolean
+eab_parse_qp_email (const gchar *string, gchar **name, gchar **email)
+{
+        struct _camel_header_address *address;
+        gboolean res = FALSE;
+
+        address = camel_header_address_decode (string, "UTF-8");
+
+        if (!address)
+                return FALSE;
+
+        /* report success only when we have filled both name and email address */
+        if (address->type == CAMEL_HEADER_ADDRESS_NAME  && address->name && *address->name && address->v.addr && *address->v.addr) {
+                *name = g_strdup (address->name);
+                *email = g_strdup (address->v.addr);
+                res = TRUE;
+        }
+
+        camel_header_address_unref (address);
+
+        return res;
+}
+
 static void
 popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget *menu_item)
 {
@@ -2395,15 +2422,25 @@ popup_activate_inline_expand (ENameSelectorEntry *name_selector_entry, GtkWidget
 	for (dests = e_destination_list_get_dests (destination); dests; dests = dests->next) {
 		const EDestination *dest = dests->data;
 		gchar *sanitized;
+		gchar *name = NULL, *email = NULL, *tofree = NULL;
 
 		if (!dest)
 			continue;
 
-		text = e_destination_get_address (dest);
+		text = e_destination_get_textrep (dest, TRUE);
+
 		if (!text || !*text)
 			continue;
 
+		if (eab_parse_qp_email (text, &name, &email)) {
+			tofree = g_strdup_printf ("%s <%s>", name, email);
+			text = tofree;
+			g_free (name);
+			g_free (email);
+		}
+
 		sanitized = sanitize_string (text);
+		g_free (tofree);
 		if (!sanitized)
 			continue;
 
