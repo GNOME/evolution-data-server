@@ -224,6 +224,10 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 		if (stream) {
 			if (camel_stream_write_to_stream ((CamelStream *) nntp_store->stream, stream, cancellable, error) == -1)
 				goto fail;
+
+			if ((error && *error) || g_cancellable_set_error_if_cancelled (cancellable, error))
+				goto fail;
+
 			if (camel_stream_reset (stream, error) == -1)
 				goto fail;
 		} else {
@@ -243,6 +247,7 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 	return stream;
 
 fail:
+	camel_data_cache_remove (nntp_store->cache, "cache", msgid, NULL);
 	g_prefix_error (error, _("Cannot get message %s: "), msgid);
 
 	return NULL;
