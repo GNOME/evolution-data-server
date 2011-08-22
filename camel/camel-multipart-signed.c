@@ -166,6 +166,7 @@ multipart_signed_parse_content (CamelMultipartSigned *mps)
 				mps->end1--;
 		} else {
 			g_warning("multipart/signed has more than 2 parts, remaining parts ignored");
+			state = CAMEL_MIME_PARSER_STATE_MULTIPART_END;
 			break;
 		}
 
