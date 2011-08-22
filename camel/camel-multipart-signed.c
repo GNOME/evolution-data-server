@@ -711,6 +711,9 @@ camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps,
 
 		g_object_unref (filter_stream);
 		g_object_unref (base_stream);
+
+		/* rewind to the beginning of a stream */
+		g_seekable_seek (G_SEEKABLE (constream), 0, G_SEEK_SET, NULL, NULL);
 	}
 
 	return constream;
