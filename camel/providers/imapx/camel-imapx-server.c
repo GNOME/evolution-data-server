@@ -3126,23 +3126,25 @@ imapx_reconnect (CamelIMAPXServer *is,
 
 		if (!authtype && url->authmech) {
 			if (!g_hash_table_lookup (is->cinfo->auth_types, url->authmech)) {
-				g_set_error (
-					error, CAMEL_SERVICE_ERROR,
-					CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-					_("IMAP server %s does not support requested "
-					  "authentication type %s"),
-					url->host, url->authmech);
+				if (error && !*error)
+					g_set_error (
+						error, CAMEL_SERVICE_ERROR,
+						CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+						_("IMAP server %s does not support requested "
+						"authentication type %s"),
+						url->host, url->authmech);
 				goto exception;
 			}
 
 			authtype = camel_sasl_authtype (url->authmech);
 			if (!authtype) {
 			noauth:
-				g_set_error (
-					error, CAMEL_SERVICE_ERROR,
-					CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-					_("No support for authentication type %s"),
-					url->authmech);
+				if (error && !*error)
+					g_set_error (
+						error, CAMEL_SERVICE_ERROR,
+						CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+						_("No support for authentication type %s"),
+						url->authmech);
 				goto exception;
 			}
 		}
@@ -3182,10 +3184,11 @@ imapx_reconnect (CamelIMAPXServer *is,
 			errbuf = NULL;
 
 			if (!url->passwd) {
-				g_set_error (
-					error, G_IO_ERROR,
-					G_IO_ERROR_CANCELLED,
-					_("You did not enter a password."));
+				if (error && !*error)
+					g_set_error (
+						error, G_IO_ERROR,
+						G_IO_ERROR_CANCELLED,
+						_("You did not enter a password."));
 				if (sasl)
 					g_object_unref (sasl);
 				goto exception;
