@@ -72,15 +72,28 @@ camel_nntp_folder_selected (CamelNNTPFolder *nntp_folder,
 {
 	CamelFolder *folder;
 	CamelStore *parent_store;
+	gboolean res;
 
 	folder = CAMEL_FOLDER (nntp_folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
-	return camel_nntp_summary_check (
+	res = camel_nntp_summary_check (
 		CAMEL_NNTP_SUMMARY (folder->summary),
 		CAMEL_NNTP_STORE (parent_store),
 		line, nntp_folder->changes,
 		cancellable, error);
+
+	if (camel_folder_change_info_changed (nntp_folder->changes)) {
+		CamelFolderChangeInfo *changes;
+
+		changes = nntp_folder->changes;
+		nntp_folder->changes = camel_folder_change_info_new ();
+
+		camel_folder_changed (CAMEL_FOLDER (nntp_folder), changes);
+		camel_folder_change_info_free (changes);
+	}
+
+	return res;
 }
 
 static gboolean
