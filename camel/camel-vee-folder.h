@@ -129,6 +129,7 @@ void	     camel_vee_folder_set_expression	(CamelVeeFolder *vf, const gchar *expr
 
 void	     camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub);
 void	     camel_vee_folder_unmask_event_folder_changed (CamelVeeFolder *vf, CamelFolder *sub);
+void	     camel_vee_folder_ignore_next_changed_event (CamelVeeFolder *vf, CamelFolder *sub);
 
 void	     camel_vee_folder_hash_folder	(CamelFolder *folder, gchar buffer[8]);
 void	     camel_vee_folder_sync_headers (CamelFolder *vf, GError **error);

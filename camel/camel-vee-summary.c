@@ -36,11 +36,10 @@
 #include "camel-vee-summary.h"
 #include "camel-vee-folder.h"
 #include "camel-vee-store.h"
+#include "camel-vtrash-folder.h"
 #include "camel-string-utils.h"
 
 #define d(x)
-
-static const gchar *unread_str = " (and\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n;  (or\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n; (match-threads \"all\"  (and\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n)\n;  (match-threads \"all\"  (or\n  \n     (match-all (not (system-flag  \"Seen\")))\n    \n  )\n)\n;";
 
 G_DEFINE_TYPE (CamelVeeSummary, camel_vee_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
@@ -142,7 +141,6 @@ static gboolean
 vee_info_set_user_flag (CamelMessageInfo *mi, const gchar *name, gboolean value)
 {
 	gint res = FALSE;
-	gboolean hacked_unread_folder = FALSE;
 	CamelVeeFolder *vf = (CamelVeeFolder *)mi->summary->folder;
 
 	if (camel_debug("vfolderexp"))
@@ -151,23 +149,16 @@ vee_info_set_user_flag (CamelMessageInfo *mi, const gchar *name, gboolean value)
 			camel_folder_get_full_name (mi->summary->folder),
 			g_strescape (vf->expression, ""));
 
-	if (camel_vee_folder_get_unread_vfolder (vf) == -1)
-		camel_vee_summary_load_check_unread_vfolder (CAMEL_VEE_SUMMARY (mi->summary));
-
-	if (camel_vee_folder_get_unread_vfolder (vf) == 1)
-		hacked_unread_folder = TRUE;
-
 	if (mi->uid) {
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
 		HANDLE_NULL_INFO (FALSE);
 
-		if (hacked_unread_folder)
-			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
+		/* ignore changes done in the folder itself,
+		   unless it's a vTrash or vJunk folder */
+		if (!CAMEL_IS_VTRASH_FOLDER (vf))
+			camel_vee_folder_ignore_next_changed_event (vf, rmi->summary->folder);
 
 		res = camel_message_info_set_user_flag (rmi, name, value);
-
-		if (hacked_unread_folder)
-			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
 
 		camel_message_info_free (rmi);
 	}
@@ -183,6 +174,12 @@ vee_info_set_user_tag (CamelMessageInfo *mi, const gchar *name, const gchar *val
 	if (mi->uid) {
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
 		HANDLE_NULL_INFO (FALSE);
+
+		/* ignore changes done in the folder itself,
+		   unless it's a vTrash or vJunk folder */
+		if (!CAMEL_IS_VTRASH_FOLDER (mi->summary->folder))
+			camel_vee_folder_ignore_next_changed_event ((CamelVeeFolder *) mi->summary->folder, rmi->summary->folder);
+
 		res = camel_message_info_set_user_tag (rmi, name, value);
 		camel_message_info_free (rmi);
 	}
@@ -194,37 +191,12 @@ vee_info_set_user_tag (CamelMessageInfo *mi, const gchar *name, const gchar *val
  * camel_vee_summary_load_check_unread_vfolder:
  *
  * Since: 2.26
+ *
+ * Deprecated: 3.2: Does nothing.
  **/
 void
 camel_vee_summary_load_check_unread_vfolder (CamelVeeSummary *vs)
 {
-	static gint only_once = FALSE;
-	static gchar *exp = NULL;
-	gboolean hacked_unread_folder = FALSE;
-	CamelVeeFolder *vf;
-
-	g_return_if_fail (vs != NULL);
-
-	vf = (CamelVeeFolder *) ((CamelFolderSummary *)vs)->folder;
-
-	/* HACK: Ugliest of all hacks. Its virtually not possible now
-	 * to maintain counts and the non matching uids of unread vfolder here.
-	 * So, I hardcode unread vfolder expression and hack it. */
-	if (!only_once) {
-		exp =  g_getenv("CAMEL_VFOLDER_UNREAD_EXP") ? g_strcompress(g_getenv("CAMEL_VFOLDER_UNREAD_EXP")) : NULL;
-		only_once = TRUE;
-	}
-
-	if (!exp || !*exp)
-		exp = g_strcompress (unread_str);
-
-	if (vf->expression && strstr (exp, vf->expression) &&  (vf->flags & CAMEL_STORE_VEE_FOLDER_SPECIAL) == 0)
-		hacked_unread_folder = TRUE;
-
-	if (hacked_unread_folder)
-		camel_vee_folder_set_unread_vfolder (vf, 1);
-	else
-		camel_vee_folder_set_unread_vfolder (vf, 0);
 }
 
 static gboolean
@@ -234,7 +206,6 @@ vee_info_set_flags (CamelMessageInfo *mi,
 {
 	gint res = FALSE;
 	CamelVeeFolder *vf = (CamelVeeFolder *)mi->summary->folder;
-	gboolean hacked_unread_folder = FALSE;
 
 	if (camel_debug("vfolderexp"))
 		printf (
@@ -242,68 +213,32 @@ vee_info_set_flags (CamelMessageInfo *mi,
 			camel_folder_get_full_name (mi->summary->folder),
 			g_strescape (vf->expression, ""));
 
-	if (camel_vee_folder_get_unread_vfolder (vf) == -1)
-		camel_vee_summary_load_check_unread_vfolder (CAMEL_VEE_SUMMARY (mi->summary));
-
-	if (camel_vee_folder_get_unread_vfolder (vf) == 1)
-		hacked_unread_folder = TRUE;
-
 	if (mi->uid) {
-		guint32 old_visible, visible, old_unread;
 		CamelMessageInfo *rmi = camel_folder_summary_uid (((CamelVeeMessageInfo *)mi)->summary, mi->uid+8);
-		CamelVeeSummary *vsummary = (CamelVeeSummary *)mi->summary;
 
 		HANDLE_NULL_INFO (FALSE);
 
-		old_visible = rmi->summary->visible_count;
-		old_unread = mi->summary->unread_count;
 		camel_folder_summary_update_counts_by_flags (mi->summary, camel_message_info_flags (rmi), TRUE);
 
-		if (hacked_unread_folder)
-			camel_vee_folder_mask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
+		/* ignore changes done in the folder itself,
+		   unless it's a vTrash or vJunk folder */
+		if (!CAMEL_IS_VTRASH_FOLDER (vf))
+			camel_vee_folder_ignore_next_changed_event (vf, rmi->summary->folder);
 
 		camel_folder_freeze (rmi->summary->folder);
 		res = camel_message_info_set_flags (rmi, flags, set);
 		((CamelVeeMessageInfo *) mi)->old_flags = camel_message_info_flags (rmi);
 		camel_folder_thaw (rmi->summary->folder);
 
-		if (hacked_unread_folder)
-			camel_vee_folder_unmask_event_folder_changed ((CamelVeeFolder *)mi->summary->folder, rmi->summary->folder);
-
-		visible = rmi->summary->visible_count;
-
 		/* Keep the summary in sync */
 		camel_folder_summary_update_counts_by_flags (mi->summary, camel_message_info_flags (rmi), FALSE);
 
-		if (hacked_unread_folder && !vsummary->fake_visible_count)
-			vsummary->fake_visible_count = mi->summary->visible_count;
-
-		if (vsummary->fake_visible_count || hacked_unread_folder)
-			vsummary->fake_visible_count += visible - old_visible;
-
 		d(printf("VF %d %d %d %d %d\n", mi->summary->unread_count, mi->summary->deleted_count, mi->summary->junk_count, mi->summary->junk_not_deleted_count, mi->summary->visible_count));
 
-		/* This is where the ugly-created-hack is used */
-		if (hacked_unread_folder && mi->summary->unread_count - old_unread != 0) {
+		if (res && mi->summary && mi->summary->folder) {
 			CamelFolderChangeInfo *changes = camel_folder_change_info_new ();
-			GPtrArray *match, *array;
 
-			camel_folder_change_info_change_uid (changes, mi->uid);
-
-			array = g_ptr_array_new ();
-			g_ptr_array_add (array, (gpointer)rmi->uid);
-
-			match = camel_folder_search_by_uids (rmi->summary->folder, vf->expression, array, NULL);
-			if ((match && !match->len) || !match) {
-				vsummary->fake_visible_count--;
-			} else {
-				vsummary->fake_visible_count++;
-			}
-
-			g_ptr_array_free (array, TRUE);
-			if (match)
-				camel_folder_search_free (rmi->summary->folder, match);
-
+			camel_folder_change_info_change_uid (changes, camel_message_info_uid (mi));
 			camel_folder_changed (mi->summary->folder, changes);
 			camel_folder_change_info_free (changes);
 		}
