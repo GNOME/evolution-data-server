@@ -67,13 +67,12 @@ gdata_goa_authorizer_get_parameters (SoupMessage *message,
 	GString *base_string;
 	GString *signing_key;
 	GHashTable *parameters;
-	GHashTable *hash_table;
 	GHashTableIter iter;
 	SoupURI *soup_uri;
 	GList *keys, *link;
 	gchar *string;
 	gchar *request_uri;
-	gpointer key, value;
+	gpointer key;
 
 	parameters = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -87,13 +86,19 @@ gdata_goa_authorizer_get_parameters (SoupMessage *message,
 	 * table directly. */
 
 	soup_uri = soup_message_get_uri (message);
-	hash_table = soup_form_decode (soup_uri->query);
-	g_hash_table_iter_init (&iter, hash_table);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		key = (gpointer) g_intern_string (key);
-		g_hash_table_insert (parameters, key, g_strdup (value));
+	if (soup_uri->query != NULL) {
+		GHashTable *hash_table;
+		gpointer value;
+
+		hash_table = soup_form_decode (soup_uri->query);
+		g_hash_table_iter_init (&iter, hash_table);
+		while (g_hash_table_iter_next (&iter, &key, &value)) {
+			key = (gpointer) g_intern_string (key);
+			value = g_strdup (value);
+			g_hash_table_insert (parameters, key, value);
+		}
+		g_hash_table_destroy (hash_table);
 	}
-	g_hash_table_destroy (hash_table);
 
 	/* Add OAuth parameters. */
 
