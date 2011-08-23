@@ -165,7 +165,8 @@ unwrap_dbus_error (GError *error, GError **client_error)
 static void
 set_proxy_gone_error (GError **error)
 {
-	g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_DBUS_ERROR, _("D-Bus book proxy gone"));
+	/* do not translate this string, it should ideally never happen */
+	g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_DBUS_ERROR, "D-Bus book proxy gone");
 }
 
 static guint active_book_clients = 0, book_connection_closed_id = 0;
