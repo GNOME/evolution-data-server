@@ -124,20 +124,20 @@ e_cal_client_error_to_string (ECalClientError code)
 {
 	switch (code) {
 	case E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR:
-		return C_("CalClientError", "No such calendar");
+		return _("No such calendar");
 	case E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND:
-		return C_("CalClientError", "Object not found");
+		return _("Object not found");
 	case E_CAL_CLIENT_ERROR_INVALID_OBJECT:
-		return C_("CalClientError", "Invalid object");
+		return _("Invalid object");
 	case E_CAL_CLIENT_ERROR_UNKNOWN_USER:
-		return C_("CalClientError", "Unknown user");
+		return _("Unknown user");
 	case E_CAL_CLIENT_ERROR_OBJECT_ID_ALREADY_EXISTS:
-		return C_("CalClientError", "Object ID already exists");
+		return _("Object ID already exists");
 	case E_CAL_CLIENT_ERROR_INVALID_RANGE:
-		return C_("CalClientError", "Invalid range");
+		return _("Invalid range");
 	}
 
-	return C_("CalClientError", "Unknown error");
+	return _("Unknown error");
 }
 
 /**

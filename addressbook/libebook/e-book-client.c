@@ -82,18 +82,18 @@ e_book_client_error_to_string (EBookClientError code)
 {
 	switch (code) {
 	case E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK:
-		return C_("BookClientError", "No such book");
+		return _("No such book");
 	case E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND:
-		return C_("BookClientError", "Contact not found");
+		return _("Contact not found");
 	case E_BOOK_CLIENT_ERROR_CONTACT_ID_ALREADY_EXISTS:
-		return C_("BookClientError", "Contact ID already exists");
+		return _("Contact ID already exists");
 	case E_BOOK_CLIENT_ERROR_NO_SUCH_SOURCE:
-		return C_("BookClientError", "No such source");
+		return _("No such source");
 	case E_BOOK_CLIENT_ERROR_NO_SPACE:
-		return C_("BookClientError", "No space");
+		return _("No space");
 	}
 
-	return C_("BookClientError", "Unknown error");
+	return _("Unknown error");
 }
 
 /**

@@ -106,50 +106,50 @@ e_client_error_to_string (EClientError code)
 {
 	switch (code) {
 	case E_CLIENT_ERROR_INVALID_ARG:
-		return C_("ClientError", "Invalid argument");
+		return _("Invalid argument");
 	case E_CLIENT_ERROR_BUSY:
-		return C_("ClientError", "Backend is busy");
+		return _("Backend is busy");
 	case E_CLIENT_ERROR_SOURCE_NOT_LOADED:
-		return C_("ClientError", "Source not loaded");
+		return _("Source not loaded");
 	case E_CLIENT_ERROR_SOURCE_ALREADY_LOADED:
-		return C_("ClientError", "Source already loaded");
+		return _("Source already loaded");
 	case E_CLIENT_ERROR_AUTHENTICATION_FAILED:
-		return C_("ClientError", "Authentication failed");
+		return _("Authentication failed");
 	case E_CLIENT_ERROR_AUTHENTICATION_REQUIRED:
-		return C_("ClientError", "Authentication required");
+		return _("Authentication required");
 	case E_CLIENT_ERROR_REPOSITORY_OFFLINE:
-		return C_("ClientError", "Repository offline");
+		return _("Repository offline");
 	case E_CLIENT_ERROR_OFFLINE_UNAVAILABLE:
-		return C_("ClientError", "Offline unavailable");
+		return _("Offline unavailable");
 	case E_CLIENT_ERROR_PERMISSION_DENIED:
-		return C_("ClientError", "Permission denied");
+		return _("Permission denied");
 	case E_CLIENT_ERROR_CANCELLED:
-		return C_("ClientError", "Cancelled");
+		return _("Cancelled");
 	case E_CLIENT_ERROR_COULD_NOT_CANCEL:
-		return C_("ClientError", "Could not cancel");
+		return _("Could not cancel");
 	case E_CLIENT_ERROR_NOT_SUPPORTED:
-		return C_("ClientError", "Not supported");
+		return _("Not supported");
 	case E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD:
-		return C_("ClientError", "Unsupported authentication method");
+		return _("Unsupported authentication method");
 	case E_CLIENT_ERROR_TLS_NOT_AVAILABLE:
-		return C_("ClientError", "TLS not available");
+		return _("TLS not available");
 	case E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED:
-		return C_("ClientError", "Search size limit exceeded");
+		return _("Search size limit exceeded");
 	case E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED:
-		return C_("ClientError", "Search time limit exceeded");
+		return _("Search time limit exceeded");
 	case E_CLIENT_ERROR_INVALID_QUERY:
-		return C_("ClientError", "Invalid query");
+		return _("Invalid query");
 	case E_CLIENT_ERROR_QUERY_REFUSED:
-		return C_("ClientError", "Query refused");
+		return _("Query refused");
 	case E_CLIENT_ERROR_DBUS_ERROR:
-		return C_("ClientError", "D-Bus error");
+		return _("D-Bus error");
 	case E_CLIENT_ERROR_OTHER_ERROR:
-		return C_("ClientError", "Other error");
+		return _("Other error");
 	case E_CLIENT_ERROR_NOT_OPENED:
-		return C_("ClientError", "Backend is not opened yet");
+		return _("Backend is not opened yet");
 	}
 
-	return C_("ClientError", "Unknown error");
+	return _("Unknown error");
 }
 
 /**
