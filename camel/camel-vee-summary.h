@@ -66,8 +66,6 @@ struct _CamelVeeMessageInfo {
 
 struct _CamelVeeSummary {
 	CamelFolderSummary summary;
-	gboolean force_counts;
-	guint32 fake_visible_count;
 };
 
 struct _CamelVeeSummaryClass {
@@ -84,8 +82,6 @@ CamelVeeMessageInfo *
 						 const gchar hash[8]);
 GPtrArray *	camel_vee_summary_get_ids	(CamelVeeSummary *summary,
 						 gchar hash[8]);
-void		camel_vee_summary_load_check_unread_vfolder
-						(CamelVeeSummary *vs);
 
 G_END_DECLS
 

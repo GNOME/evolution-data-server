@@ -49,11 +49,12 @@ struct _CamelVeeFolderPrivate {
 	gboolean destroyed;
 	GList *folders;			/* lock using subfolder_lock before changing/accessing */
 	GList *folders_changed;		/* for list of folders that have changed between updates */
+	GHashTable *ignore_changed;	/* hash of subfolder pointers to ignore the next folder's 'changed' signal */
+	GHashTable *skipped_changes;	/* CamelFolder -> CamelFolderChangeInfo accumulating ignored changes */
 
 	GMutex *summary_lock;		/* for locking vfolder summary */
 	GMutex *subfolder_lock;		/* for locking the subfolder list */
 	GMutex *changed_lock;		/* for locking the folders-changed list */
-	gint unread_vfolder;
 };
 
 struct _update_data {
@@ -781,29 +782,6 @@ folder_added_uid (gchar *uidin, gpointer value, struct _update_data *u)
 	camel_message_info_free ((CamelMessageInfo *) mi);
 }
 
-static gint
-count_result (CamelFolderSummary *summary,
-              const gchar *query,
-              GError **error)
-{
-	CamelFolder *folder = summary->folder;
-	CamelVeeFolder *vf = (CamelVeeFolder *) folder;
-	guint32 count=0;
-	gchar *expr = g_strdup_printf ("(and %s %s)", vf->expression ? vf->expression : "", query);
-	GList *node;
-	CamelVeeFolderPrivate *p = vf->priv;
-
-	node = p->folders;
-	while (node) {
-		CamelFolder *f = node->data;
-		count += camel_folder_count_by_expression (f, expr, error);
-		node = node->next;
-	}
-
-	g_free (expr);
-	return count;
-}
-
 static	CamelFIRecord *
 summary_header_to_db (CamelFolderSummary *s,
                       GError **error)
@@ -823,35 +801,11 @@ summary_header_to_db (CamelFolderSummary *s,
 	record->time = s->time;
 
 	record->saved_count = s->uids->len;
-
-	if (1) { /* We always would do this. Just refactor the code again. */
-		/*!(((CamelVeeSummary *) s)->force_counts) && !g_getenv ("FORCE_VFOLDER_COUNT")) {*/
-		/* We should be in sync always. so use the count. Don't search.*/
-		record->junk_count = s->junk_count;
-		record->deleted_count = s->deleted_count;
-		record->unread_count = s->unread_count;
-
-		if (((CamelVeeSummary *) s)->fake_visible_count)
-			record->visible_count = ((CamelVeeSummary *) s)->fake_visible_count;
-		else
-			record->visible_count = s->visible_count;
-		((CamelVeeSummary *) s)->fake_visible_count = 0;
-
-		record->jnd_count = s->junk_not_deleted_count;
-	} else {
-		/* Either first time, or by force we search the count */
-		s->junk_count = count_result (s, "(match-all (system-flag  \"junk\"))", NULL);
-		s->deleted_count = count_result (s, "(match-all (system-flag  \"deleted\"))", NULL);
-		s->unread_count = count_result (s, "(match-all (not (system-flag  \"Seen\")))", NULL);
-		s->visible_count = count_result (s, "(match-all (and (not (system-flag \"deleted\")) (not (system-flag \"junk\"))))", NULL);
-		s->junk_not_deleted_count = count_result (s, "(match-all (and (not (system-flag \"deleted\")) (system-flag \"junk\")))", NULL);
-
-		record->junk_count = s->junk_count;
-		record->deleted_count = s->deleted_count;
-		record->unread_count = s->unread_count;
-		record->visible_count = s->visible_count;
-		record->jnd_count = s->junk_not_deleted_count;
-	}
+	record->junk_count = s->junk_count;
+	record->deleted_count = s->deleted_count;
+	record->unread_count = s->unread_count;
+	record->visible_count = s->visible_count;
+	record->jnd_count = s->junk_not_deleted_count;
 
 	return record;
 }
@@ -862,6 +816,24 @@ folder_changed (CamelFolder *sub,
                 CamelVeeFolder *vee_folder)
 {
 	CamelVeeFolderClass *class;
+
+	g_return_if_fail (vee_folder != NULL);
+	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vee_folder));
+
+	camel_vee_folder_lock (vee_folder, CAMEL_VEE_FOLDER_CHANGED_LOCK);
+	if (g_hash_table_lookup (vee_folder->priv->ignore_changed, sub)) {
+		CamelFolderChangeInfo *old_changes;
+		g_hash_table_remove (vee_folder->priv->ignore_changed, sub);
+
+		old_changes = g_hash_table_lookup (vee_folder->priv->skipped_changes, sub);
+		if (!old_changes)
+			old_changes = camel_folder_change_info_new ();
+		camel_folder_change_info_cat (old_changes, changes);
+		g_hash_table_insert (vee_folder->priv->skipped_changes, sub, old_changes);
+		camel_vee_folder_unlock (vee_folder, CAMEL_VEE_FOLDER_CHANGED_LOCK);
+		return;
+	}
+	camel_vee_folder_unlock (vee_folder, CAMEL_VEE_FOLDER_CHANGED_LOCK);
 
 	class = CAMEL_VEE_FOLDER_GET_CLASS (vee_folder);
 	class->folder_changed (vee_folder, sub, changes);
@@ -1013,6 +985,12 @@ vee_folder_dispose (GObject *object)
 }
 
 static void
+free_change_info_cb (gpointer folder, gpointer change_info, gpointer user_data)
+{
+	camel_folder_change_info_free (change_info);
+}
+
+static void
 vee_folder_finalize (GObject *object)
 {
 	CamelVeeFolder *vf;
@@ -1027,13 +1005,47 @@ vee_folder_finalize (GObject *object)
 	camel_folder_change_info_free (vf->changes);
 	g_object_unref (vf->search);
 
+	g_hash_table_foreach (vf->priv->skipped_changes, free_change_info_cb, NULL);
+
 	g_mutex_free (vf->priv->summary_lock);
 	g_mutex_free (vf->priv->subfolder_lock);
 	g_mutex_free (vf->priv->changed_lock);
 	g_hash_table_destroy (vf->hashes);
+	g_hash_table_destroy (vf->priv->ignore_changed);
+	g_hash_table_destroy (vf->priv->skipped_changes);
 
 	/* Chain up to parent's finalize () method. */
 	G_OBJECT_CLASS (camel_vee_folder_parent_class)->finalize (object);
+}
+
+static void
+vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
+{
+	CamelVeeFolderClass *klass;
+	GHashTableIter iter;
+	gpointer psub, pchanges;
+
+	g_return_if_fail (vf != NULL);
+
+	klass = CAMEL_VEE_FOLDER_GET_CLASS (vf);
+
+	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_CHANGED_LOCK);
+
+	g_hash_table_iter_init (&iter, vf->priv->skipped_changes);
+	while (g_hash_table_iter_next (&iter, &psub, &pchanges)) {
+		g_warn_if_fail (pchanges != NULL);
+		if (!pchanges)
+			continue;
+
+		if (g_list_find (vf->priv->folders, psub) != NULL)
+			klass->folder_changed (vf, psub, pchanges);
+
+		camel_folder_change_info_free (pchanges);
+	}
+
+	g_hash_table_remove_all (vf->priv->skipped_changes);
+
+	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_CHANGED_LOCK);
 }
 
 static GPtrArray *
@@ -1050,6 +1062,8 @@ vee_folder_search_by_expression (CamelFolder *folder,
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
 	gboolean is_folder_unmatched = vf == folder_unmatched && folder_unmatched;
 	GHashTable *folder_unmatched_hash = NULL;
+
+	vee_folder_propagate_skipped_changes (vf);
 
 	if (is_folder_unmatched) {
 		expr = g_strdup (expression);
@@ -1109,6 +1123,8 @@ vee_folder_search_by_uids (CamelFolder *folder,
 	CamelVeeFolder *vf = (CamelVeeFolder *) folder;
 	CamelVeeFolderPrivate *p = vf->priv;
 	GHashTable *searched = g_hash_table_new (NULL, NULL);
+
+	vee_folder_propagate_skipped_changes (vf);
 
 	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 
@@ -1172,6 +1188,8 @@ vee_folder_count_by_expression (CamelFolder *folder,
 	CamelVeeFolderPrivate *p = vf->priv;
 	GHashTable *searched = g_hash_table_new (NULL, NULL);
 	CamelVeeFolder *folder_unmatched = vf->parent_vee_store ? vf->parent_vee_store->folder_unmatched : NULL;
+
+	vee_folder_propagate_skipped_changes (vf);
 
 	if (vf != folder_unmatched)
 		expr = g_strdup_printf ("(and %s %s)", vf->expression ? vf->expression : "", expression);
@@ -1286,9 +1304,6 @@ vee_folder_expunge_sync (CamelFolder *folder,
                          GCancellable *cancellable,
                          GError **error)
 {
-	/* Force it to rebuild the counts, when some folders were expunged. */
-	((CamelVeeSummary *) folder->summary)->force_counts = TRUE;
-
 	return CAMEL_FOLDER_GET_CLASS (folder)->
 		synchronize_sync (folder, TRUE, cancellable, error);
 }
@@ -1329,6 +1344,8 @@ vee_folder_refresh_info_sync (CamelFolder *folder,
 	GList *node, *list;
 	gboolean success = TRUE;
 
+	vee_folder_propagate_skipped_changes (vf);
+
 	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_CHANGED_LOCK);
 	list = p->folders_changed;
 	p->folders_changed = NULL;
@@ -1361,9 +1378,7 @@ vee_folder_synchronize_sync (CamelFolder *folder,
 	CamelVeeFolderPrivate *p = vf->priv;
 	GList *node;
 
-	if (((CamelVeeSummary *) folder->summary)->fake_visible_count)
-		folder->summary->visible_count = ((CamelVeeSummary *) folder->summary)->fake_visible_count;
-	((CamelVeeSummary *) folder->summary)->fake_visible_count = 0;
+	vee_folder_propagate_skipped_changes (vf);
 
 	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 
@@ -1393,7 +1408,7 @@ vee_folder_synchronize_sync (CamelFolder *folder,
 		node = node->next;
 	}
 
-	if (vf->priv->unread_vfolder == 1) {
+	if (!CAMEL_IS_VTRASH_FOLDER (vf)) {
 		/* Cleanup Junk/Trash uids */
 		CamelStore *parent_store;
 		const gchar *full_name;
@@ -1931,7 +1946,7 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
 				parent_store->cdb_w,
 				full_name, shash, del_list, NULL);
 		}
-		((CamelVeeSummary *) folder->summary)->force_counts = TRUE;
+
 		g_slist_foreach (del_list, (GFunc) camel_pstring_free, NULL);
 		g_slist_free (del_list);
 	};
@@ -2075,7 +2090,8 @@ camel_vee_folder_init (CamelVeeFolder *vee_folder)
 	vee_folder->priv->summary_lock = g_mutex_new ();
 	vee_folder->priv->subfolder_lock = g_mutex_new ();
 	vee_folder->priv->changed_lock = g_mutex_new ();
-	vee_folder->priv->unread_vfolder = -1;
+	vee_folder->priv->ignore_changed = g_hash_table_new (g_direct_hash, g_direct_equal);
+	vee_folder->priv->skipped_changes = g_hash_table_new (g_direct_hash, g_direct_equal);
 }
 
 void
@@ -2310,6 +2326,8 @@ camel_vee_folder_rebuild_folder (CamelVeeFolder *vf,
                                  CamelFolder *sub,
                                  GError **error)
 {
+	vee_folder_propagate_skipped_changes (vf);
+
 	return CAMEL_VEE_FOLDER_GET_CLASS (vf)->rebuild_folder (vf, sub, error);
 }
 
@@ -2446,27 +2464,29 @@ camel_vee_folder_get_location (CamelVeeFolder *vf, const CamelVeeMessageInfo *vi
 }
 
 /**
- * camel_vee_folder_mask_event_folder_changed:
+ * camel_vee_folder_ignore_next_changed_event:
+ * @vf: a #CamelVeeFolder
+ * @sub: a #CamelFolder folder
  *
- * Since: 2.26
+ * The next @sub folder's 'changed' event will be silently ignored. This
+ * is usually used in virtual folders when the change was done in them,
+ * but it is neither vTrash nor vJunk folder. Doing this avoids unnecessary
+ * removals of messages which don't satisfy search criteria anymore,
+ * which could be done on asynchronous delivery of folder's 'changed' signal.
+ * These ignored changes are accumulated and used on folder refresh.
+ *
+ * Since: 3.2
  **/
 void
-camel_vee_folder_mask_event_folder_changed (CamelVeeFolder *vf,
-                                            CamelFolder *sub)
+camel_vee_folder_ignore_next_changed_event (CamelVeeFolder *vf, CamelFolder *sub)
 {
-	g_signal_handlers_block_by_func (sub, folder_changed, vf);
-}
+	g_return_if_fail (vf != NULL);
+	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vf));
+	g_return_if_fail (sub != NULL);
 
-/**
- * camel_vee_folder_unmask_event_folder_changed:
- *
- * Since: 2.26
- **/
-void
-camel_vee_folder_unmask_event_folder_changed (CamelVeeFolder *vf,
-                                              CamelFolder *sub)
-{
-	g_signal_handlers_unblock_by_func (sub, folder_changed, vf);
+	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_CHANGED_LOCK);
+	g_hash_table_insert (vf->priv->ignore_changed, sub, GINT_TO_POINTER (1));
+	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_CHANGED_LOCK);
 }
 
 /**
@@ -2490,38 +2510,6 @@ camel_vee_folder_sync_headers (CamelFolder *vf,
 
 	g_free (record->folder_name);
 	g_free (record);
-}
-
-/**
- * camel_vee_folder_get_unread_vfolder:
- * @folder: a #CamelVeeFolder
- *
- * Since: 2.32
- **/
-gint
-camel_vee_folder_get_unread_vfolder (CamelVeeFolder *folder)
-{
-	/* FIXME: This shouldn't be needed */
-	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (folder), 0);
-
-	return folder->priv->unread_vfolder;
-}
-
-/**
- * camel_vee_folder_set_unread_vfolder:
- * @folder: a #CamelVeeFolder
- * @unread_vfolder: %TRUE if %folder is for unread messages
- *
- * Since: 2.32
- **/
-void
-camel_vee_folder_set_unread_vfolder (CamelVeeFolder *folder,
-                                     gint unread_vfolder)
-{
-	/* FIXME: This shouldn't be needed */
-	g_return_if_fail (CAMEL_IS_VEE_FOLDER (folder));
-
-	folder->priv->unread_vfolder = unread_vfolder;
 }
 
 /**
