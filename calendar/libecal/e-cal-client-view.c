@@ -453,7 +453,8 @@ e_cal_client_view_start (ECalClientView *view, GError **error)
 
 		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
 	} else {
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, _("Cannot start view, D-Bus proxy gone"));
+		/* do not translate this string, it should ideally never happen */
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot start view, D-Bus proxy gone");
 	}
 }
 
@@ -482,7 +483,8 @@ e_cal_client_view_stop (ECalClientView *view, GError **error)
 
 		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
 	} else {
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, _("Cannot stop view, D-Bus proxy gone"));
+		/* do not translate this string, it should ideally never happen */
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot stop view, D-Bus proxy gone");
 	}
 }
 
@@ -523,6 +525,7 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *view, const GSList *fi
 
 		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
 	} else {
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, _("Cannot set fields of interest, D-Bus proxy gone"));
+		/* do not translate this string, it should ideally never happen */
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot set fields of interest, D-Bus proxy gone");
 	}
 }
