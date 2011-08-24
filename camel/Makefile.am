@@ -52,6 +52,7 @@ libcamel_provider_1_2_la_CPPFLAGS = \
 	$(CAMEL_CFLAGS)
 
 libcamel_provider_1_2_la_SOURCES = 		\
+	$(ENUM_GENERATED)			\
 	camel-cipher-context.c			\
 	camel-disco-diary.c			\
 	camel-disco-folder.c			\
@@ -177,7 +178,6 @@ libcamel_1_2_la_CPPFLAGS = \
 	$(CAMEL_CFLAGS)
 
 libcamel_1_2_la_SOURCES = 			\
-	$(ENUM_GENERATED)			\
 	$(MARSHAL_GENERATED)			\
 	camel-address.c				\
 	camel-block-file.c			\
