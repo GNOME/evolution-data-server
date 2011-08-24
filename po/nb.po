@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-24 15:21+0200\n"
-"PO-Revision-Date: 2011-08-24 15:23+0200\n"
+"POT-Creation-Date: 2011-08-24 18:50+0200\n"
+"PO-Revision-Date: 2011-08-24 18:50+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -36,7 +36,7 @@ msgid "Querying for updated contacts…"
 msgstr "Spør etter oppdaterte kontakter …"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:839
-#: ../addressbook/libebook/e-book.c:3483 ../calendar/libecal/e-cal.c:1318
+#: ../addressbook/libebook/e-book.c:3483 ../calendar/libecal/e-cal.c:1337
 #: ../libedataserver/e-client.c:1851
 msgid "Personal"
 msgstr "Personlig"
@@ -133,7 +133,7 @@ msgstr "Laster ned kontakter (%d) …"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:520
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:549
 #: ../calendar/backends/http/e-cal-backend-http.c:422
-#: ../calendar/libecal/e-cal.c:4420 ../calendar/libecal/e-cal-client.c:140
+#: ../calendar/libecal/e-cal.c:4439 ../calendar/libecal/e-cal-client.c:140
 #: ../camel/providers/imap/camel-imap-command.c:484
 #: ../camel/providers/imap/camel-imap-store.c:409
 #: ../camel/providers/imapx/camel-imapx-server.c:2246
@@ -152,7 +152,7 @@ msgstr "Oppretting av ressurs «%s» feilet med HTTP-status: %d (%s)"
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: ingen kilde lagret i GConf for uid «%s»."
 
-#: ../addressbook/libebook/e-book.c:3466 ../calendar/libecal/e-cal.c:1298
+#: ../addressbook/libebook/e-book.c:3466 ../calendar/libecal/e-cal.c:1317
 #: ../libedataserver/e-client.c:1846
 msgid "On This Computer"
 msgstr "På denne datamaskinen"
@@ -751,7 +751,35 @@ msgstr "Liste med Skype-navn"
 msgid "SIP address"
 msgstr "SIP-adresse"
 
-#: ../addressbook/libebook/e-contact.c:1542
+#: ../addressbook/libebook/e-contact.c:293
+msgid "Google Talk Home Name 1"
+msgstr "Google Talk hjemme 1"
+
+#: ../addressbook/libebook/e-contact.c:294
+msgid "Google Talk Home Name 2"
+msgstr "Google Talk hjemme 2"
+
+#: ../addressbook/libebook/e-contact.c:295
+msgid "Google Talk Home Name 3"
+msgstr "Google Talk hjemme 3"
+
+#: ../addressbook/libebook/e-contact.c:296
+msgid "Google Talk Work Name 1"
+msgstr "Google Talk arbeid 1"
+
+#: ../addressbook/libebook/e-contact.c:297
+msgid "Google Talk Work Name 2"
+msgstr "Google Talk arbeid 2"
+
+#: ../addressbook/libebook/e-contact.c:298
+msgid "Google Talk Work Name 3"
+msgstr "Google Talk arbeid 3"
+
+#: ../addressbook/libebook/e-contact.c:299
+msgid "Google Talk Name List"
+msgstr "Liste med Google Talk navn"
+
+#: ../addressbook/libebook/e-contact.c:1550
 #: ../addressbook/libebook/e-destination.c:868
 msgid "Unnamed List"
 msgstr "Liste uten navn"
@@ -789,7 +817,7 @@ msgid "Success"
 msgstr "Suksess"
 
 #: ../addressbook/libedata-book/e-data-book.c:300
-#: ../calendar/libecal/e-cal.c:4388 ../calendar/libedata-cal/e-data-cal.c:415
+#: ../calendar/libecal/e-cal.c:4407 ../calendar/libedata-cal/e-data-cal.c:415
 #: ../libedataserver/e-client.c:111
 msgid "Backend is busy"
 msgstr "Motoren er opptatt"
@@ -800,7 +828,7 @@ msgid "Repository offline"
 msgstr "Lageret er frakoblet"
 
 #: ../addressbook/libedata-book/e-data-book.c:302
-#: ../calendar/libecal/e-cal.c:4402 ../calendar/libedata-cal/e-data-cal.c:417
+#: ../calendar/libecal/e-cal.c:4421 ../calendar/libedata-cal/e-data-cal.c:417
 #: ../libedataserver/e-client.c:125
 msgid "Permission denied"
 msgstr "Tilgang nektet"
@@ -872,14 +900,14 @@ msgid "Invalid server version"
 msgstr "Ugyldig versjon for tjener"
 
 #: ../addressbook/libedata-book/e-data-book.c:321
-#: ../calendar/libecal/e-cal.c:4386 ../calendar/libedata-cal/e-data-cal.c:438
+#: ../calendar/libecal/e-cal.c:4405 ../calendar/libedata-cal/e-data-cal.c:438
 #: ../libedataserver/e-client.c:109
 msgid "Invalid argument"
 msgstr "Ugyldig argument"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:323
-#: ../calendar/libecal/e-cal.c:4425 ../calendar/libedata-cal/e-data-cal.c:440
+#: ../calendar/libecal/e-cal.c:4444 ../calendar/libedata-cal/e-data-cal.c:440
 #: ../libedataserver/e-client.c:131
 msgid "Not supported"
 msgstr "Ikke støttet"
@@ -1082,7 +1110,7 @@ msgstr "Vær: Tordenvær"
 msgid "Forecast"
 msgstr "Værmelding"
 
-#: ../calendar/libecal/e-cal.c:851 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:867 ../libedataserverui/e-book-auth-util.c:198
 #: ../libedataserverui/e-book-auth-util.c:417
 #: ../libedataserverui/e-client-utils.c:795
 #, c-format
@@ -1093,73 +1121,73 @@ msgstr "Oppgi passord for %s (bruker %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:865
+#: ../calendar/libecal/e-cal.c:881
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Oppgi passord for %s for å aktivere proxy for bruker %s"
 
-#: ../calendar/libecal/e-cal.c:4390
+#: ../calendar/libecal/e-cal.c:4409
 msgid "Repository is offline"
 msgstr "Lageret er frakoblet"
 
-#: ../calendar/libecal/e-cal.c:4392 ../calendar/libecal/e-cal-client.c:127
+#: ../calendar/libecal/e-cal.c:4411 ../calendar/libecal/e-cal-client.c:127
 msgid "No such calendar"
 msgstr "Ingen slik kalender"
 
-#: ../calendar/libecal/e-cal.c:4394 ../calendar/libecal/e-cal-client.c:129
+#: ../calendar/libecal/e-cal.c:4413 ../calendar/libecal/e-cal-client.c:129
 #: ../calendar/libedata-cal/e-data-cal.c:419
 msgid "Object not found"
 msgstr "Objektet ble ikke funnet"
 
-#: ../calendar/libecal/e-cal.c:4396 ../calendar/libecal/e-cal-client.c:131
+#: ../calendar/libecal/e-cal.c:4415 ../calendar/libecal/e-cal-client.c:131
 #: ../calendar/libedata-cal/e-data-cal.c:420
 msgid "Invalid object"
 msgstr "Ugyldig objekt"
 
-#: ../calendar/libecal/e-cal.c:4398
+#: ../calendar/libecal/e-cal.c:4417
 msgid "URI not loaded"
 msgstr "URI ble ikke lastet"
 
-#: ../calendar/libecal/e-cal.c:4400
+#: ../calendar/libecal/e-cal.c:4419
 msgid "URI already loaded"
 msgstr "URI allerede lastet"
 
-#: ../calendar/libecal/e-cal.c:4404
+#: ../calendar/libecal/e-cal.c:4423
 msgid "Unknown User"
 msgstr "Ukjent bruker"
 
-#: ../calendar/libecal/e-cal.c:4406 ../calendar/libecal/e-cal-client.c:135
+#: ../calendar/libecal/e-cal.c:4425 ../calendar/libecal/e-cal-client.c:135
 #: ../calendar/libedata-cal/e-data-cal.c:421
 msgid "Object ID already exists"
 msgstr "Objekt-ID eksisterer allerede"
 
-#: ../calendar/libecal/e-cal.c:4408
+#: ../calendar/libecal/e-cal.c:4427
 msgid "Protocol not supported"
 msgstr "Protokollen er ikke støttet"
 
-#: ../calendar/libecal/e-cal.c:4410
+#: ../calendar/libecal/e-cal.c:4429
 msgid "Operation has been canceled"
 msgstr "Operasjonen ble avbrutt"
 
-#: ../calendar/libecal/e-cal.c:4412
+#: ../calendar/libecal/e-cal.c:4431
 msgid "Could not cancel operation"
 msgstr "Kunne ikke avbryte operasjon"
 
-#: ../calendar/libecal/e-cal.c:4414 ../libedataserver/e-client.c:117
+#: ../calendar/libecal/e-cal.c:4433 ../libedataserver/e-client.c:117
 msgid "Authentication failed"
 msgstr "Autentisering feilet"
 
-#: ../calendar/libecal/e-cal.c:4416
+#: ../calendar/libecal/e-cal.c:4435
 #: ../camel/providers/smtp/camel-smtp-transport.c:756
 #: ../libedataserver/e-client.c:119
 msgid "Authentication required"
 msgstr "Autentisering kreves"
 
-#: ../calendar/libecal/e-cal.c:4418
+#: ../calendar/libecal/e-cal.c:4437
 msgid "A D-Bus exception has occurred"
 msgstr "Et D-Bus-unntak har oppstått"
 
-#: ../calendar/libecal/e-cal.c:4422
+#: ../calendar/libecal/e-cal.c:4441
 msgid "No error"
 msgstr "Ingen feil"
 
