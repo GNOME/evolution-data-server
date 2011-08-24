@@ -814,6 +814,20 @@ authenticate_user_ready_cb (GObject *source_object, GAsyncResult *result, gpoint
 		g_error_free (error);
 }
 
+static void
+finish_backend_opening_phase (ECal *cal)
+{
+	const gchar *strv[2];
+
+	g_return_if_fail (cal != NULL);
+	g_return_if_fail (E_IS_CAL (cal));
+
+	strv[0] = "";
+	strv[1] = NULL;
+
+	e_gdbus_cal_call_authenticate_user_sync (cal->priv->gdbus_cal, (const gchar * const *) strv, NULL, NULL);
+}
+
 static gboolean
 call_authenticate_user (ECal *cal, gboolean async, GError **error)
 {
@@ -839,12 +853,14 @@ call_authenticate_user (ECal *cal, gboolean async, GError **error)
 
 		if (priv->auth_func == NULL) {
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
+			finish_backend_opening_phase (cal);
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
 		username = e_source_get_duped_property (priv->source, "username");
 		if (!username) {
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
+			finish_backend_opening_phase (cal);
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
@@ -872,6 +888,7 @@ call_authenticate_user (ECal *cal, gboolean async, GError **error)
 		if (!key) {
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			g_free (username);
+			finish_backend_opening_phase (cal);
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
@@ -880,6 +897,7 @@ call_authenticate_user (ECal *cal, gboolean async, GError **error)
 		if (!password) {
 			priv->load_state = E_CAL_LOAD_NOT_LOADED;
 			g_free (username);
+			finish_backend_opening_phase (cal);
 			E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, error);
 		}
 
@@ -916,6 +934,7 @@ call_authenticate_user (ECal *cal, gboolean async, GError **error)
 			unwrap_gerror (error);
 	} else if (priv->requires_auth) {
 		priv->load_state = E_CAL_LOAD_NOT_LOADED;
+		finish_backend_opening_phase (cal);
 		g_set_error_literal (error, E_CALENDAR_ERROR, E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED, e_cal_get_error_message (E_CALENDAR_STATUS_AUTHENTICATION_REQUIRED));
 	}
 

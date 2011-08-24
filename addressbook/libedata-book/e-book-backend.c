@@ -816,8 +816,10 @@ e_book_backend_remove_client (EBookBackend *backend,
 	/* When all clients go away, notify the parent factory about it so that
 	 * it may decide whether to kill the backend or not.
 	 */
-	if (!backend->priv->clients)
+	if (!backend->priv->clients) {
+		backend->priv->opening = FALSE;
 		last_client_gone (backend);
+	}
 
 	g_mutex_unlock (backend->priv->clients_mutex);
 

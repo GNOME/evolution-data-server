@@ -717,8 +717,10 @@ e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal *cal, gboole
 	/* When all clients go away, notify the parent factory about it so that
 	 * it may decide whether to kill the backend or not.
 	 */
-	if (!priv->clients)
+	if (!priv->clients) {
+		priv->opening = FALSE;
 		g_signal_emit (backend, signals[LAST_CLIENT_GONE], 0);
+	}
 }
 
 /**
