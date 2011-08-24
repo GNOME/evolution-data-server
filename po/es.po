@@ -9,22 +9,22 @@
 # Héctor García Álvarez <hector@scouts-es.org>, 2000, 20001, 2002.
 # Pablo Gonzalo del Campo <pablodc@bigfoot.com>,2003 (revisión).
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2005, 2006.
-# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009, 2010, 2011.
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2011.
+# Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-08-23 14:03+0000\n"
-"PO-Revision-Date: 2011-08-24 12:22+0200\n"
-"Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
-"Language-Team: Español <gnome-es-list@gnome.org>\n"
+"POT-Creation-Date: 2011-08-24 17:55+0000\n"
+"PO-Revision-Date: 2011-08-24 21:11+0200\n"
+"Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
+"Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:823
@@ -44,7 +44,7 @@ msgid "Querying for updated contacts…"
 msgstr "Solicitando actualizaciones de contactos…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:839
-#: ../addressbook/libebook/e-book.c:3483 ../calendar/libecal/e-cal.c:1318
+#: ../addressbook/libebook/e-book.c:3483 ../calendar/libecal/e-cal.c:1337
 #: ../libedataserver/e-client.c:1851
 msgid "Personal"
 msgstr "Personal"
@@ -141,7 +141,7 @@ msgstr "Descargando contactos (%d)…"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:520
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:549
 #: ../calendar/backends/http/e-cal-backend-http.c:422
-#: ../calendar/libecal/e-cal.c:4420 ../calendar/libecal/e-cal-client.c:140
+#: ../calendar/libecal/e-cal.c:4439 ../calendar/libecal/e-cal-client.c:140
 #: ../camel/providers/imap/camel-imap-command.c:484
 #: ../camel/providers/imap/camel-imap-store.c:409
 #: ../camel/providers/imapx/camel-imapx-server.c:2246
@@ -160,7 +160,7 @@ msgstr "Falló al crear el recurso «%s» con el estado HTTP: %d (%s)"
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: no había origen para el UID «%s» almacenado en GConf."
 
-#: ../addressbook/libebook/e-book.c:3466 ../calendar/libecal/e-cal.c:1298
+#: ../addressbook/libebook/e-book.c:3466 ../calendar/libecal/e-cal.c:1317
 #: ../libedataserver/e-client.c:1846
 msgid "On This Computer"
 msgstr "En este equipo"
@@ -172,8 +172,6 @@ msgid "Address book does not exist"
 msgstr "La libreta de direcciones no existe"
 
 #: ../addressbook/libebook/e-book-client.c:85
-#| msgctxt "BookClientError"
-#| msgid "No such book"
 msgid "No such book"
 msgstr "No existe la libreta"
 
@@ -188,8 +186,6 @@ msgid "Contact ID already exists"
 msgstr "Ya existe el ID del contacto"
 
 #: ../addressbook/libebook/e-book-client.c:91
-#| msgctxt "BookClientError"
-#| msgid "No such source"
 msgid "No such source"
 msgstr "No existe la fuente"
 
@@ -757,13 +753,48 @@ msgstr "Nombre de Skype en el trabajo 3"
 
 #: ../addressbook/libebook/e-contact.c:289
 msgid "Skype Name List"
-msgstr "Lista de nombres Skype"
+msgstr "Lista de nombres para Skype"
 
 #: ../addressbook/libebook/e-contact.c:291
 msgid "SIP address"
 msgstr "Dirección SIP"
 
-#: ../addressbook/libebook/e-contact.c:1542
+#: ../addressbook/libebook/e-contact.c:293
+#| msgid "Skype Home Name 1"
+msgid "Google Talk Home Name 1"
+msgstr "Nombre de Google Talk en casa 1"
+
+#: ../addressbook/libebook/e-contact.c:294
+#| msgid "Skype Home Name 2"
+msgid "Google Talk Home Name 2"
+msgstr "Nombre de Google Talk en casa 2"
+
+#: ../addressbook/libebook/e-contact.c:295
+#| msgid "Skype Home Name 3"
+msgid "Google Talk Home Name 3"
+msgstr "Nombre de Google Talk en casa 3"
+
+#: ../addressbook/libebook/e-contact.c:296
+#| msgid "Skype Work Name 1"
+msgid "Google Talk Work Name 1"
+msgstr "Nombre de Google Talk en el trabajo 1"
+
+#: ../addressbook/libebook/e-contact.c:297
+#| msgid "Skype Work Name 2"
+msgid "Google Talk Work Name 2"
+msgstr "Nombre de Google Talk en el trabajo 2"
+
+#: ../addressbook/libebook/e-contact.c:298
+#| msgid "Skype Work Name 3"
+msgid "Google Talk Work Name 3"
+msgstr "Nombre de Google Talk en el trabajo 3"
+
+#: ../addressbook/libebook/e-contact.c:299
+#| msgid "Skype Name List"
+msgid "Google Talk Name List"
+msgstr "Lista de nombres para Google Talk"
+
+#: ../addressbook/libebook/e-contact.c:1550
 #: ../addressbook/libebook/e-destination.c:868
 msgid "Unnamed List"
 msgstr "Lista de anónimos"
@@ -801,7 +832,7 @@ msgid "Success"
 msgstr "Correcto"
 
 #: ../addressbook/libedata-book/e-data-book.c:300
-#: ../calendar/libecal/e-cal.c:4388 ../calendar/libedata-cal/e-data-cal.c:415
+#: ../calendar/libecal/e-cal.c:4407 ../calendar/libedata-cal/e-data-cal.c:415
 #: ../libedataserver/e-client.c:111
 msgid "Backend is busy"
 msgstr "El soporte está ocupado"
@@ -812,7 +843,7 @@ msgid "Repository offline"
 msgstr "Repositorio desconectado"
 
 #: ../addressbook/libedata-book/e-data-book.c:302
-#: ../calendar/libecal/e-cal.c:4402 ../calendar/libedata-cal/e-data-cal.c:417
+#: ../calendar/libecal/e-cal.c:4421 ../calendar/libedata-cal/e-data-cal.c:417
 #: ../libedataserver/e-client.c:125
 msgid "Permission denied"
 msgstr "Permiso denegado"
@@ -884,14 +915,14 @@ msgid "Invalid server version"
 msgstr "Versión del servidor no válida"
 
 #: ../addressbook/libedata-book/e-data-book.c:321
-#: ../calendar/libecal/e-cal.c:4386 ../calendar/libedata-cal/e-data-cal.c:438
+#: ../calendar/libecal/e-cal.c:4405 ../calendar/libedata-cal/e-data-cal.c:438
 #: ../libedataserver/e-client.c:109
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:323
-#: ../calendar/libecal/e-cal.c:4425 ../calendar/libedata-cal/e-data-cal.c:440
+#: ../calendar/libecal/e-cal.c:4444 ../calendar/libedata-cal/e-data-cal.c:440
 #: ../libedataserver/e-client.c:131
 msgid "Not supported"
 msgstr "No soportado"
@@ -1095,7 +1126,7 @@ msgstr "Meteorología: Tormenta"
 msgid "Forecast"
 msgstr "Pronóstico"
 
-#: ../calendar/libecal/e-cal.c:851 ../libedataserverui/e-book-auth-util.c:198
+#: ../calendar/libecal/e-cal.c:867 ../libedataserverui/e-book-auth-util.c:198
 #: ../libedataserverui/e-book-auth-util.c:417
 #: ../libedataserverui/e-client-utils.c:795
 #, c-format
@@ -1106,74 +1137,74 @@ msgstr "Introduzca la contraseña para %s (usuario %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:865
+#: ../calendar/libecal/e-cal.c:881
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
 "Introduzca la contraseña de %s para activar el proxy para el usuario %s"
 
-#: ../calendar/libecal/e-cal.c:4390
+#: ../calendar/libecal/e-cal.c:4409
 msgid "Repository is offline"
 msgstr "El repositorio está desconectado"
 
-#: ../calendar/libecal/e-cal.c:4392 ../calendar/libecal/e-cal-client.c:127
+#: ../calendar/libecal/e-cal.c:4411 ../calendar/libecal/e-cal-client.c:127
 msgid "No such calendar"
 msgstr "No existe el calendario"
 
-#: ../calendar/libecal/e-cal.c:4394 ../calendar/libecal/e-cal-client.c:129
+#: ../calendar/libecal/e-cal.c:4413 ../calendar/libecal/e-cal-client.c:129
 #: ../calendar/libedata-cal/e-data-cal.c:419
 msgid "Object not found"
 msgstr "Objeto no encontrado"
 
-#: ../calendar/libecal/e-cal.c:4396 ../calendar/libecal/e-cal-client.c:131
+#: ../calendar/libecal/e-cal.c:4415 ../calendar/libecal/e-cal-client.c:131
 #: ../calendar/libedata-cal/e-data-cal.c:420
 msgid "Invalid object"
 msgstr "Objeto inválido"
 
-#: ../calendar/libecal/e-cal.c:4398
+#: ../calendar/libecal/e-cal.c:4417
 msgid "URI not loaded"
 msgstr "URI no cargado"
 
-#: ../calendar/libecal/e-cal.c:4400
+#: ../calendar/libecal/e-cal.c:4419
 msgid "URI already loaded"
 msgstr "URI ya cargado"
 
-#: ../calendar/libecal/e-cal.c:4404
+#: ../calendar/libecal/e-cal.c:4423
 msgid "Unknown User"
 msgstr "Usuario desconocido"
 
-#: ../calendar/libecal/e-cal.c:4406 ../calendar/libecal/e-cal-client.c:135
+#: ../calendar/libecal/e-cal.c:4425 ../calendar/libecal/e-cal-client.c:135
 #: ../calendar/libedata-cal/e-data-cal.c:421
 msgid "Object ID already exists"
 msgstr "El ID del objeto ya existe"
 
-#: ../calendar/libecal/e-cal.c:4408
+#: ../calendar/libecal/e-cal.c:4427
 msgid "Protocol not supported"
 msgstr "Protocolo no implementado"
 
-#: ../calendar/libecal/e-cal.c:4410
+#: ../calendar/libecal/e-cal.c:4429
 msgid "Operation has been canceled"
 msgstr "La operación ha sido cancelada"
 
-#: ../calendar/libecal/e-cal.c:4412
+#: ../calendar/libecal/e-cal.c:4431
 msgid "Could not cancel operation"
 msgstr "No se pudo cancelar la operación"
 
-#: ../calendar/libecal/e-cal.c:4414 ../libedataserver/e-client.c:117
+#: ../calendar/libecal/e-cal.c:4433 ../libedataserver/e-client.c:117
 msgid "Authentication failed"
 msgstr "Falló la autenticación"
 
-#: ../calendar/libecal/e-cal.c:4416
+#: ../calendar/libecal/e-cal.c:4435
 #: ../camel/providers/smtp/camel-smtp-transport.c:756
 #: ../libedataserver/e-client.c:119
 msgid "Authentication required"
 msgstr "Autenticación requerida"
 
-#: ../calendar/libecal/e-cal.c:4418
+#: ../calendar/libecal/e-cal.c:4437
 msgid "A D-Bus exception has occurred"
 msgstr "Ocurrió una excepción de D-Bus"
 
-#: ../calendar/libecal/e-cal.c:4422
+#: ../calendar/libecal/e-cal.c:4441
 msgid "No error"
 msgstr "Sin errores"
 
@@ -1399,7 +1430,8 @@ msgstr "«%s» espera que el primer argumento sea una cadena"
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
-"«%s» espera que el primer argumento sea una cadena tipo ISO 8601 de fecha/hora"
+"«%s» espera que el primer argumento sea una cadena tipo ISO 8601 de fecha/"
+"hora"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:162
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:363
@@ -1459,8 +1491,8 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"«%s» espera que todos los argumentos sean cadenas o que uno y sólo uno de los "
-"argumentos sea un booleano falso (#f)"
+"«%s» espera que todos los argumentos sean cadenas o que uno y sólo uno de "
+"los argumentos sea un booleano falso (#f)"
 
 #: ../calendar/libedata-cal/e-data-cal.c:425
 msgid "Unsupported method"
@@ -2966,51 +2998,51 @@ msgstr "No se puede cargar la recopilación de %s"
 msgid "Scanning for changed messages in %s"
 msgstr "Buscando mensajes modificados en %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3454
+#: ../camel/providers/imap/camel-imap-folder.c:3462
 msgid "Unable to retrieve message: "
 msgstr "No se pudo obtener el mensaje: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3489
+#: ../camel/providers/imap/camel-imap-folder.c:3497
 #: ../camel/providers/imapx/camel-imapx-server.c:5283
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "No se puede obtener el mensaje con ID de mensaje %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3490
+#: ../camel/providers/imap/camel-imap-folder.c:3498
 #: ../camel/providers/imapx/camel-imapx-server.c:5284
 msgid "No such message available."
 msgstr "Dicho mensaje no está disponible."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3565
-#: ../camel/providers/imap/camel-imap-folder.c:4483
+#: ../camel/providers/imap/camel-imap-folder.c:3573
+#: ../camel/providers/imap/camel-imap-folder.c:4491
 #: ../camel/providers/nntp/camel-nntp-folder.c:424
 #, c-format
 msgid "This message is not currently available"
 msgstr "Este mensaje no está disponible actualmente"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4067
-#: ../camel/providers/imap/camel-imap-folder.c:4150
+#: ../camel/providers/imap/camel-imap-folder.c:4075
+#: ../camel/providers/imap/camel-imap-folder.c:4158
 #: ../camel/providers/imapx/camel-imapx-server.c:3968
 #: ../camel/providers/imapx/camel-imapx-server.c:4118
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obteniendo recopilación de información sobre los mensajes nuevos en %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4284
+#: ../camel/providers/imap/camel-imap-folder.c:4292
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Respuesta del servidor incompleta: no hay información proporcionada para el "
 "mensaje %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4294
+#: ../camel/providers/imap/camel-imap-folder.c:4302
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
-"Respuesta incompleta del servidor: No se proporcionó un UID para el mensaje %"
-"d"
+"Respuesta incompleta del servidor: No se proporcionó un UID para el mensaje "
+"%d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4523
+#: ../camel/providers/imap/camel-imap-folder.c:4531
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "No se pudo encontrar el cuerpo del mensaje en la respuesta de FETCH."
@@ -4707,26 +4739,18 @@ msgid "Waiting"
 msgstr "En espera"
 
 #: ../libedataserver/e-client.c:113
-#| msgctxt "ClientError"
-#| msgid "Source not loaded"
 msgid "Source not loaded"
 msgstr "Fuente no cargada"
 
 #: ../libedataserver/e-client.c:115
-#| msgctxt "ClientError"
-#| msgid "Source already loaded"
 msgid "Source already loaded"
 msgstr "Fuente ya cargada"
 
 #: ../libedataserver/e-client.c:123
-#| msgctxt "ClientError"
-#| msgid "Offline unavailable"
 msgid "Offline unavailable"
 msgstr "Fuera de línea no disponible"
 
 #: ../libedataserver/e-client.c:145
-#| msgctxt "ClientError"
-#| msgid "D-Bus error"
 msgid "D-Bus error"
 msgstr "Error de D-Bus"
 
@@ -5636,8 +5660,8 @@ msgstr "_Destino"
 
 #~ msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
-#~ "No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: Error "
-#~ "desconocido"
+#~ "No se pueden mover los mensajes de la carpeta «%s» a la carpeta «%s»: "
+#~ "Error desconocido"
 
 #~ msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
@@ -5700,8 +5724,8 @@ msgstr "_Destino"
 
 #~ msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
 #~ msgstr ""
-#~ "No se puede obtener la información LIST para «%s» en el servidor IMAP %s: %"
-#~ "s"
+#~ "No se puede obtener la información LIST para «%s» en el servidor IMAP %s: "
+#~ "%s"
 
 #~ msgid "Bad command"
 #~ msgstr "Comando erróneo"
