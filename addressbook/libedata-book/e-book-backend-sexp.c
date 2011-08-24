@@ -85,6 +85,13 @@ compare_im_skype (EContact *contact, const gchar *str,
 }
 
 static gboolean
+compare_im_google_talk (EContact *contact, const gchar *str,
+		gchar *(*compare)(const gchar *, const gchar *))
+{
+	return compare_im (contact, str, compare, E_CONTACT_IM_GOOGLE_TALK);
+}
+
+static gboolean
 compare_im_icq (EContact *contact, const gchar *str,
 		gchar *(*compare)(const gchar *, const gchar *))
 {
@@ -319,6 +326,7 @@ static struct prop_info {
 	LIST_PROP ( "im_aim",    compare_im_aim ),
 	LIST_PROP ( "im_msn",    compare_im_msn ),
 	LIST_PROP ( "im_skype",    compare_im_skype ),
+	LIST_PROP ( "im_google_talk",    compare_im_google_talk ),
 	LIST_PROP ( "im_icq",    compare_im_icq ),
 	LIST_PROP ( "im_jabber", compare_im_jabber ),
 	LIST_PROP ( "im_yahoo",  compare_im_yahoo ),

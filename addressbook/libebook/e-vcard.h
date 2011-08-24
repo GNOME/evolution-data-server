@@ -97,6 +97,13 @@ G_BEGIN_DECLS
 #define EVC_X_SKYPE			"X-SKYPE"
 
 /**
+ * EVC_X_GOOGLE_TALK:
+ *
+ * Since: 3.2
+ **/
+#define EVC_X_GOOGLE_TALK		"X-GOOGLE_TALK"
+
+/**
  * EVC_X_SIP:
  *
  * Since: 2.26

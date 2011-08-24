@@ -289,6 +289,14 @@ static const EContactFieldInfo field_info[] = {
 	MULTI_LIST_FIELD (E_CONTACT_IM_SKYPE,	  EVC_X_SKYPE,     "im_skype",     N_("Skype Name List"),         FALSE),
 
 	MULTI_LIST_FIELD (E_CONTACT_SIP,	  EVC_X_SIP,    "sip",    N_("SIP address"),          FALSE),
+
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GOOGLE_TALK_HOME_1,  EVC_X_GOOGLE_TALK,  "im_google_talk_home_1",  N_("Google Talk Home Name 1"),         FALSE, "HOME", 0),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GOOGLE_TALK_HOME_2,  EVC_X_GOOGLE_TALK,  "im_google_talk_home_2",  N_("Google Talk Home Name 2"),         FALSE, "HOME", 1),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GOOGLE_TALK_HOME_3,  EVC_X_GOOGLE_TALK,  "im_google_talk_home_3",  N_("Google Talk Home Name 3"),         FALSE, "HOME", 2),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GOOGLE_TALK_WORK_1,  EVC_X_GOOGLE_TALK,  "im_google_talk_work_1",  N_("Google Talk Work Name 1"),         FALSE, "WORK", 0),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GOOGLE_TALK_WORK_2,  EVC_X_GOOGLE_TALK,  "im_google_talk_work_2",  N_("Google Talk Work Name 2"),         FALSE, "WORK", 1),
+	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GOOGLE_TALK_WORK_3,  EVC_X_GOOGLE_TALK,  "im_google_talk_work_3",  N_("Google Talk Work Name 3"),         FALSE, "WORK", 2),
+	MULTI_LIST_FIELD (E_CONTACT_IM_GOOGLE_TALK,	  EVC_X_GOOGLE_TALK,     "im_google_talk",     N_("Google Talk Name List"),         FALSE),
 };
 
 #undef LIST_ELEM_STR_FIELD
