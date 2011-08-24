@@ -908,6 +908,7 @@ camel_service_set_settings (CamelService *service,
 				class->settings_type,
 				CAMEL_TYPE_SETTINGS));
 		settings = g_object_new (class->settings_type, NULL);
+		camel_settings_load_from_url (settings, camel_service_get_camel_url (service));
 	}
 
 	if (service->priv->settings != NULL)

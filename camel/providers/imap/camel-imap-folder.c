@@ -2865,7 +2865,7 @@ do_copy (CamelFolder *source,
 			camel_imap_response_free (store, response);
 		}
 
-		if (local_error == NULL && delete_originals) {
+		if (local_error == NULL && delete_originals && (mark_moved || !trash_path)) {
 			for (i = last; i < uid; i++) {
 				camel_folder_delete_message (
 					source, uids->pdata[i]);
@@ -2885,6 +2885,14 @@ do_copy (CamelFolder *source,
 		g_propagate_error (error, local_error);
 		return FALSE;
 	}
+
+	/* There is a real trash folder set, which is not on a google account
+	   and copied messages should be deleted, thus do not move them into
+	   a trash folder, but just expunge them, because the copy part of
+	   the operation was successful.
+	*/
+	if (trash_path && !mark_moved && delete_originals)
+		camel_imap_expunge_uids_only (source, uids, cancellable, NULL);
 
 	return TRUE;
 }
