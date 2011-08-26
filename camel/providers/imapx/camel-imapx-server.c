@@ -2582,12 +2582,16 @@ imapx_command_select_done (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
 				if (ic->error != NULL) {
 					g_propagate_error (&cw->error, ic->error);
 					ic->error = NULL;
-				} else
+				} else {
+					if (ic->status == NULL)
+						/* FIXME: why is ic->status == NULL here? It shouldn't happen. */
+						g_debug ("imapx_command_select_done: ic->status is NULL.");
 					g_set_error (
 						&cw->error, CAMEL_IMAPX_ERROR, 1,
 						"SELECT %s failed: %s",
 						camel_folder_get_full_name (cw->select),
-						ic->status->text? ic->status->text:"<unknown reason>");
+						ic->status && ic->status->text? ic->status->text:"<unknown reason>");
+				}
 				cw->complete (is, cw);
 				cw = cn;
 				cn = cn->next;
