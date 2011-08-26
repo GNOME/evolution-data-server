@@ -49,6 +49,9 @@ typedef enum {
 	E_CAL_CLIENT_SOURCE_TYPE_LAST
 } ECalClientSourceType;
 
+#define E_TYPE_CAL_CLIENT_SOURCE_TYPE \
+	(e_cal_client_source_type_enum_get_type ())
+
 GType e_cal_client_source_type_enum_get_type (void);
 
 #define E_CAL_CLIENT_ERROR e_cal_client_error_quark ()
