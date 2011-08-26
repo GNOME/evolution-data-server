@@ -2476,6 +2476,30 @@ complete_string_exchange (gboolean res, gchar *out_string, gchar **result, GErro
 	return res;
 }
 
+static gboolean
+cal_client_get_default_object_from_cache_finish (EClient *client, GAsyncResult *result, gchar **prop_value, GError **error)
+{
+	GSimpleAsyncResult *simple;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+	g_return_val_if_fail (result != NULL, FALSE);
+	g_return_val_if_fail (prop_value != NULL, FALSE);
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (client), cal_client_get_default_object_from_cache_finish), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	if (g_simple_async_result_propagate_error (simple, &local_error)) {
+		e_client_unwrap_dbus_error (client, local_error, error);
+		return FALSE;
+	}
+
+	*prop_value = g_strdup (g_simple_async_result_get_op_res_gpointer (simple));
+
+	return *prop_value != NULL;
+}
+
 /**
  * e_cal_client_get_default_object:
  * @client: an #ECalClient
@@ -2492,9 +2516,17 @@ complete_string_exchange (gboolean res, gchar *out_string, gchar **result, GErro
 void
 e_cal_client_get_default_object (ECalClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data)
 {
-	e_client_proxy_call_string (E_CLIENT (client), CAL_BACKEND_PROPERTY_DEFAULT_OBJECT, cancellable, callback, user_data, e_cal_client_get_default_object,
+	gchar *prop_value;
+	EClient *base_client = E_CLIENT (client);
+
+	prop_value = e_client_get_backend_property_from_cache (base_client, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT);
+	if (prop_value) {
+		e_client_finish_async_without_dbus (base_client, cancellable, callback, user_data, cal_client_get_default_object_from_cache_finish, prop_value, g_free);
+	} else {
+		e_client_proxy_call_string (base_client, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT, cancellable, callback, user_data, e_cal_client_get_default_object,
 			e_gdbus_cal_call_get_backend_property,
 			NULL, NULL, e_gdbus_cal_call_get_backend_property_finish, NULL, NULL);
+	}
 }
 
 static gboolean
@@ -2542,7 +2574,11 @@ e_cal_client_get_default_object_finish (ECalClient *client, GAsyncResult *result
 
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	res = e_client_proxy_call_finish_string (E_CLIENT (client), result, &out_string, error, e_cal_client_get_default_object);
+	if (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)) == cal_client_get_default_object_from_cache_finish) {
+		res = cal_client_get_default_object_from_cache_finish (E_CLIENT (client), result, &out_string, error);
+	} else {
+		res = e_client_proxy_call_finish_string (E_CLIENT (client), result, &out_string, error, e_cal_client_get_default_object);
+	}
 
 	return complete_get_object (res, out_string, icalcomp, error);
 }
@@ -2578,7 +2614,11 @@ e_cal_client_get_default_object_sync (ECalClient *client, icalcomponent **icalco
 		return FALSE;
 	}
 
-	res = e_client_proxy_call_sync_string__string (E_CLIENT (client), CAL_BACKEND_PROPERTY_DEFAULT_OBJECT, &out_string, cancellable, error, e_gdbus_cal_call_get_backend_property_sync);
+	out_string = e_client_get_backend_property_from_cache (E_CLIENT (client), CAL_BACKEND_PROPERTY_DEFAULT_OBJECT);
+	if (out_string)
+		res = TRUE;
+	else
+		res = e_client_proxy_call_sync_string__string (E_CLIENT (client), CAL_BACKEND_PROPERTY_DEFAULT_OBJECT, &out_string, cancellable, error, e_gdbus_cal_call_get_backend_property_sync);
 
 	return complete_get_object (res, out_string, icalcomp, error);
 }
