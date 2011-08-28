@@ -296,6 +296,41 @@ The URI of the contact's calendar.
 
 </para>
 
+<!-- ##### ARG EContact:im-google-talk ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-google-talk-home-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-google-talk-home-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-google-talk-home-3 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-google-talk-work-1 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-google-talk-work-2 ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG EContact:im-google-talk-work-3 ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG EContact:im-groupwise ##### -->
 <para>
 
@@ -786,6 +821,7 @@ The URI of the contact's calendar.
 @E_CONTACT_IM_SKYPE_WORK_2: 
 @E_CONTACT_IM_SKYPE_WORK_3: 
 @E_CONTACT_IM_SKYPE: 
+@E_CONTACT_SIP: 
 @E_CONTACT_IM_GOOGLE_TALK_HOME_1: 
 @E_CONTACT_IM_GOOGLE_TALK_HOME_2: 
 @E_CONTACT_IM_GOOGLE_TALK_HOME_3: 
@@ -793,7 +829,6 @@ The URI of the contact's calendar.
 @E_CONTACT_IM_GOOGLE_TALK_WORK_2: 
 @E_CONTACT_IM_GOOGLE_TALK_WORK_3: 
 @E_CONTACT_IM_GOOGLE_TALK: 
-@E_CONTACT_SIP: 
 @E_CONTACT_FIELD_LAST: 
 @E_CONTACT_FIELD_FIRST: 
 @E_CONTACT_LAST_SIMPLE_STRING: 

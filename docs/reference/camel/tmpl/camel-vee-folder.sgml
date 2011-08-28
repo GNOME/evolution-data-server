@@ -111,16 +111,7 @@ CamelVeeFolder
 @expr: 
 
 
-<!-- ##### FUNCTION camel_vee_folder_mask_event_folder_changed ##### -->
-<para>
-
-</para>
-
-@vf: 
-@sub: 
-
-
-<!-- ##### FUNCTION camel_vee_folder_unmask_event_folder_changed ##### -->
+<!-- ##### FUNCTION camel_vee_folder_ignore_next_changed_event ##### -->
 <para>
 
 </para>
@@ -145,24 +136,6 @@ CamelVeeFolder
 
 @vf: 
 @error: 
-
-
-<!-- ##### FUNCTION camel_vee_folder_get_unread_vfolder ##### -->
-<para>
-
-</para>
-
-@folder: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_vee_folder_set_unread_vfolder ##### -->
-<para>
-
-</para>
-
-@folder: 
-@unread_vfolder: 
 
 
 <!-- ##### ENUM CamelVeeFolderLock ##### -->

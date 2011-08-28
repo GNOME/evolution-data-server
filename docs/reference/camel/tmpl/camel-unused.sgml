@@ -9286,6 +9286,45 @@ streams
 @needle: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_vee_folder_get_unread_vfolder ##### -->
+<para>
+
+</para>
+
+@folder: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_vee_folder_mask_event_folder_changed ##### -->
+<para>
+
+</para>
+
+@vf: 
+@sub: 
+
+<!-- ##### FUNCTION camel_vee_folder_set_unread_vfolder ##### -->
+<para>
+
+</para>
+
+@folder: 
+@unread_vfolder: 
+
+<!-- ##### FUNCTION camel_vee_folder_unmask_event_folder_changed ##### -->
+<para>
+
+</para>
+
+@vf: 
+@sub: 
+
+<!-- ##### FUNCTION camel_vee_summary_load_check_unread_vfolder ##### -->
+<para>
+
+</para>
+
+@vs: 
+
 <!-- ##### VARIABLE camel_verbose_debug ##### -->
 <para>
 

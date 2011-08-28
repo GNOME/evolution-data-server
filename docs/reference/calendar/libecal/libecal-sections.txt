@@ -188,6 +188,7 @@ E_TYPE_CAL_CLIENT
 E_CAL_CLIENT_CLASS
 E_IS_CAL_CLIENT_CLASS
 E_CAL_CLIENT_GET_CLASS
+E_TYPE_CAL_CLIENT_SOURCE_TYPE
 ECalClientClass
 e_cal_client_get_type
 e_cal_client_source_type_enum_get_type
