@@ -1,3 +1,84 @@
+Evolution-Data-Server 3.1.90 2011-08-29
+---------------------------------------
+
+Camel has a new class heirarchy for managing provider-specific settings
+called CamelSettings.  Heavily utilizing GObject properties, this new API
+replaces the prevous method of settings storage which stuffed values into
+the CamelService URL string as "&key=value;..." pairs.
+
+Details about the new API here:
+http://mail.gnome.org/archives/evolution-hackers/2011-August/msg00013.html
+
+Bug Fixes:
+	Bug 562912 - Unread vfolder marks unread messages as read (Milan Crha)
+	Bug 576398 - vfolder not showing new messages from nntp group
+	             (Milan Crha)
+	Bug 651469 - Folders don't update after moving mails in maildir
+	             (Milan Crha)
+	Bug 651693 - Decode QP encoded names when invoking 'Expand list Inline'
+	             (Ritesh Khadgaray)
+	Bug 651849 - Remove string from translation (Milan Crha)
+	Bug 652437 - NNTP messages is sometimes displayed as grey (Milan Crha)
+	Bug 652914 - IMAP: moving mail puts a copy into real Trash too
+	             (Milan Crha)
+	Bug 655121 - CalDAV: Can't reopen attachments saved on a server
+	             (Milan Crha)
+	Bug 655272 - IMAPX: Leaking file descriptors from open pipes
+	             (Milan Crha)
+	Bug 655833 — Mailing addresses for Google Contacts not saving if
+	             PO Box… (Philip Withnall)
+	Bug 655997 - Unneeded context specifiers (Milan Crha)
+	Bug 656051 - Preserve mbox file attributes after rewrite (Milan Crha)
+	Bug 657181 - Backends can be left half-opened when using ECal
+	             (Milan Crha)
+
+Other Changes:
+	* CamelStore: Split subscription API into a separate interface.
+	  (Matthew Barnes)
+	* Camel: Remove unused CAMEL_STORE_ASYNC flag. (Matthew Barnes)
+	* google: Add a missing NULL pointer check (Philip Withnall)
+	* Do not keep Google progress notifications in book view forever
+	  (Milan Crha)
+	* google: Fix cancellation and progress reporting for cold-cache
+	  queries (Philip Withnall)
+	* google: Tidy up finish_operation() (Philip Withnall)
+	* Don't use our own DISABLE_DEPRECATED macros in .c files.
+	  (Matthew Barnes)
+	* CamelService: Add a "display-name" property. (Matthew Barnes)
+	* Camel: Add CAMEL_STORE_CAN_EDIT_FOLDERS flag. (Matthew Barnes)
+	* google: Fix various data loss bugs with organisations/jobs
+	  (Philip Withnall)
+	* Incorrect message signature verification failure (Milan Crha)
+	* Pretend successful read when skipping 3+ part of multipart/signed
+	  (Milan Crha)
+	* [IMAPX] Do not overwrite errors on reconnect (Milan Crha)
+	* Remove more similar strings from translation (Milan Crha)
+	* Avoid a crash in gdata_goa_authorizer_get_parameters().
+	  (Matthew Barnes)
+	* Add Google Talk field to the list of IM information
+	  (Raul Gutierrez Segales)
+	* Avoid use-after-free by unsetting open_finished flag sooner
+	  (Milan Crha)
+	* Use cached value in e_cal_client_get_default_object() (Milan Crha)
+	* Check ic->status is not NULL imapx_command_select_done ()
+	  (Raul Gutierrez Segales)
+	* Add E_TYPE_CAL_CLIENT_SOURCE_TYPE macro. (Matthew Barnes)
+
+Translations:
+	Alexander Shopov (bg)
+	Mario Blättermann (de)
+	Jorge González (es)
+	Daniel Mustieles (es)
+	Fran Dieguez (gl)
+	Andika Triwidada (id)
+	Kjartan Maraas (nb)
+	Wouter Bolsterlee (nl)
+	Yuri Myasoedov (ru)
+	Мирослав Николић (sr)
+	Daniel Nylander (sv)
+	Abduxukur Abdurixit (ug)
+
+
 Evolution-Data-Server 3.1.5 2011-08-14
 --------------------------------------
 
