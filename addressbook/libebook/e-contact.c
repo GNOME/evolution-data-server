@@ -2033,6 +2033,8 @@ e_contact_date_new (void)
  * Creates a new #EContactPhoto struct.
  *
  * Returns: (transfer full): A new #EContactPhoto struct.
+ *
+ * Since: 3.2
  **/
 EContactPhoto *
 e_contact_photo_new (void)
@@ -2108,6 +2110,8 @@ e_contact_photo_copy (EContactPhoto *photo)
  *
  * Returns: (transfer none) (array length=len): the inlined image in the
  * #EContactPhoto.
+ *
+ * Since: 3.2
  **/
 const guchar *
 e_contact_photo_get_inlined (EContactPhoto *photo,
@@ -2127,6 +2131,8 @@ e_contact_photo_get_inlined (EContactPhoto *photo,
  * @len: the length of @data
  *
  * Sets the @photo's inlined data.
+ *
+ * Since: 3.2
  **/
 void
 e_contact_photo_set_inlined (EContactPhoto *photo,
@@ -2148,6 +2154,8 @@ e_contact_photo_set_inlined (EContactPhoto *photo,
  * Gets the @photo's mime type.
  *
  * Returns: (transfer none): the mime type of the image
+ *
+ * Since: 3.2
  **/
 const gchar *
 e_contact_photo_get_mime_type (EContactPhoto *photo)
@@ -2164,6 +2172,8 @@ e_contact_photo_get_mime_type (EContactPhoto *photo)
  * @mime_type: the mime type
  *
  * Sets the @photo's mime type.
+ *
+ * Since: 3.2
  **/
 void
 e_contact_photo_set_mime_type (EContactPhoto *photo,
@@ -2183,6 +2193,8 @@ e_contact_photo_set_mime_type (EContactPhoto *photo,
  * Gets the @photo's URI.
  *
  * Returns: (transfer none): the URI of the image
+ *
+ * Since: 3.2
  **/
 const gchar *
 e_contact_photo_get_uri (EContactPhoto *photo)
@@ -2199,6 +2211,8 @@ e_contact_photo_get_uri (EContactPhoto *photo)
  * @uri: the @photo's URI
  *
  * Sets the @photo's URI.
+ *
+ * Since: 3.2
  **/
 void
 e_contact_photo_set_uri (EContactPhoto *photo,
@@ -2245,6 +2259,8 @@ E_CONTACT_DEFINE_BOXED_TYPE (e_contact_geo, "EContactGeo")
  * Creates a new #EContactAddress struct.
  *
  * Returns: (transfer full): A new #EContactAddress struct.
+ *
+ * Since: 3.2
  **/
 EContactAddress *
 e_contact_address_new (void)

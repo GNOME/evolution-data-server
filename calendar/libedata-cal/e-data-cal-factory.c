@@ -711,6 +711,8 @@ e_data_cal_factory_register_gdbus_object (EDataCalFactory *factory,
  * @is_online: Online mode to set.
  *
  * Sets the online mode for all backends created by the given factory.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_factory_set_backend_online (EDataCalFactory *factory,

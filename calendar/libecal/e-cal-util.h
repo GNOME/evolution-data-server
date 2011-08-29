@@ -111,7 +111,16 @@ gboolean e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *
 #define CAL_STATIC_CAPABILITY_NO_THISANDFUTURE            "no-thisandfuture"
 #define CAL_STATIC_CAPABILITY_NO_THISANDPRIOR             "no-thisandprior"
 #define CAL_STATIC_CAPABILITY_NO_TRANSPARENCY             "no-transparency"
+
+/**
+ * CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS            "remove-only-this"
+
 #define CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY              "one-alarm-only"
 #define CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ATTEND       "organizer-must-attend"
 #define CAL_STATIC_CAPABILITY_ORGANIZER_NOT_EMAIL_ADDRESS "organizer-not-email-address"

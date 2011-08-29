@@ -48,6 +48,11 @@
 
 G_BEGIN_DECLS
 
+/**
+ * CamelNetworkService:
+ *
+ * Since: 3.2
+ **/
 typedef struct _CamelNetworkService CamelNetworkService;
 typedef struct _CamelNetworkServiceInterface CamelNetworkServiceInterface;
 

@@ -91,6 +91,8 @@ e_cal_backend_sync_open (ECalBackendSync *backend,
  * @error: #GError to set, when something fails
  *
  * Authenticates @backend with given @credentials.
+ *
+ * Since: 3.2
  **/
 void
 e_cal_backend_sync_authenticate_user (ECalBackendSync *backend,
@@ -454,6 +456,8 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
  * @error: Out parameter for a #GError.
  *
  * Calls the get_attachment_uris_sync method on the given backend.
+ *
+ * Since: 3.2
  */
 void
 e_cal_backend_sync_get_attachment_uris (ECalBackendSync *backend,

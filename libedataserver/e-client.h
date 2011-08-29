@@ -35,19 +35,93 @@
 #define E_IS_CLIENT_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_CLIENT))
 #define E_CLIENT_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_CLIENT, EClientClass))
 
+/**
+ * CLIENT_BACKEND_PROPERTY_OPENED:
+ *
+ * The "opened" property is "TRUE" when the client is fully opened,
+ * "FALSE" at all other times.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_OPENED			"opened"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_OPENING:
+ *
+ * The "opening" property is "TRUE" when the client is in the process of
+ * opening, "FALSE" at all other times.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_ONLINE:
+ *
+ * The "online" property is "TRUE" when the client is fully opened and
+ * online, "FALSE" at all other times.  See also e_client_is_online().
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_ONLINE			"online"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_READONLY:
+ *
+ * The "online" property is "TRUE" if the backend has only read access
+ * to its data, "FALSE" if the backend can modify its data.  See also
+ * e_client_is_readonly().
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_READONLY		"readonly"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_CACHE_DIR:
+ *
+ * The "cache-dir" property indicates the backend's local directory for
+ * cached data.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_CACHE_DIR		"cache-dir"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_CAPABILITIES:
+ *
+ * The "capabilities" property is a comma-separated list of capabilities
+ * supported by the backend.  The preferred method of retrieving and working
+ * with capabilities is e_client_get_capabilities() and
+ * e_client_check_capability().
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_CAPABILITIES		"capabilities"
 
+/**
+ * E_CLIENT_ERROR:
+ *
+ * Error domain for #EClient operations.  Errors in this domain will be
+ * from the #EClientError enumeration.  See #GError for more information
+ * on error domains.
+ *
+ * Since: 3.2
+ **/
 #define E_CLIENT_ERROR		e_client_error_quark ()
 
 G_BEGIN_DECLS
 
 GQuark e_client_error_quark (void) G_GNUC_CONST;
 
+/**
+ * EClientError:
+ *
+ * FIXME Document each code.
+ *
+ * Error codes for #EClient operations.
+ *
+ * Since: 3.2
+ **/
 typedef enum {
 	E_CLIENT_ERROR_INVALID_ARG,
 	E_CLIENT_ERROR_BUSY,
@@ -75,6 +149,14 @@ typedef enum {
 const gchar *	e_client_error_to_string (EClientError code);
 GError *	e_client_error_create (EClientError code, const gchar *custom_msg);
 
+/**
+ * EClient:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 typedef struct _EClient        EClient;
 typedef struct _EClientClass   EClientClass;
 typedef struct _EClientPrivate EClientPrivate;
@@ -176,6 +258,11 @@ GSList *	e_client_util_parse_comma_strings	(const gchar *strings);
 
 typedef struct _EClientErrorsList EClientErrorsList;
 
+/**
+ * EClientErrorsList:
+ *
+ * Since: 3.2
+ **/
 struct _EClientErrorsList {
 	const gchar *name;
 	gint err_code;

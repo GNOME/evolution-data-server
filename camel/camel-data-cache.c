@@ -519,6 +519,8 @@ camel_data_cache_remove (CamelDataCache *cdc,
  * @path: Path to the (sub) cache the item exists in.
  *
  * Clear cache's content in @path.
+ *
+ * Since: 3.2
  **/
 void
 camel_data_cache_clear (CamelDataCache *cdc,

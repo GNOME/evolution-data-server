@@ -49,6 +49,13 @@ key_equal (gconstpointer str1,
 	return g_ascii_strcasecmp (str1, str2) == 0;
 }
 
+/**
+ * e_credentials_new:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 ECredentials *
 e_credentials_new (void)
 {
@@ -62,14 +69,22 @@ e_credentials_new (void)
 	return credentials;
 }
 
-/* Expects @keys as NULL terminate list of strings "key:encoded_value".
- * The same can be returned from e_credentials_to_strv ().
-*/
+/**
+ * e_credentials_new_strv:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 ECredentials *
 e_credentials_new_strv (const gchar * const *keys)
 {
 	ECredentials *credentials;
 	gint ii;
+
+	/* Expects @keys as NULL terminated list of strings
+	 * "key:encoded_value".  The same can be returned from
+	 * e_credentials_to_strv (). */
 
 	g_return_val_if_fail (keys != NULL, NULL);
 
@@ -88,13 +103,22 @@ e_credentials_new_strv (const gchar * const *keys)
 	return credentials;
 }
 
-/* NULL-terminated list of string pairs <key, value>; value is in a clear form */
+/**
+ * e_credentials_new_args:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 ECredentials *
 e_credentials_new_args (const gchar *key,
                         ...)
 {
 	ECredentials *credentials;
 	va_list va;
+
+	/* NULL-terminated list of string pairs <key, value>; value is
+	 * in a clear form. */
 
 	g_return_val_if_fail (key != NULL, NULL);
 
@@ -124,6 +148,13 @@ copy_keys_cb (gpointer key,
 	g_hash_table_insert (hash_table, g_strdup (key), g_strdup (value));
 }
 
+/**
+ * e_credentials_new_clone:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 ECredentials *
 e_credentials_new_clone (const ECredentials *credentials)
 {
@@ -140,6 +171,13 @@ e_credentials_new_clone (const ECredentials *credentials)
 	return res;
 }
 
+/**
+ * e_credentials_free:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_credentials_free (ECredentials *credentials)
 {
@@ -168,11 +206,19 @@ add_to_array_cb (gpointer key,
 	}
 }
 
-/* Returns NULL-terminated array of strings with keys and encoded values;
- * To read them back pass this pointer to e_credentials_new (). As it returns
- * newly allocated string then this should be freed with g_strfreev ()
- * when no longer needed.
-*/
+/**
+ * e_credentials_to_strv:
+ * @credentials: an #ECredentials
+ *
+ * Returns %NULL-terminated array of strings with keys and encoded values;
+ * To read them back pass this pointer to e_credentials_new(). As it returns
+ * newly allocated string then this should be freed with g_strfreev() when no
+ * longer needed.
+ *
+ * Returns: a %NULL-terminated array of key/value strings
+ *
+ * Since: 3.2
+ **/
 gchar **
 e_credentials_to_strv (const ECredentials *credentials)
 {
@@ -245,10 +291,18 @@ decode_string (const gchar *encoded)
 	return res;
 }
 
-/* sets value for a key, if value is NULL or an empty string then the key is removed.
- * the value is supposed to be in a clear form (unencoded).
- * 'key' cannot contain colon.
-*/
+/**
+ * e_credentials_set:
+ * @credentials: an #ECredentials
+ * @key: a key string
+ * @value: a value string
+ *
+ * Sets value for @key, if @value is %NULL or an empty string then @key is
+ * removed.  The value is supposed to be in a clear form (unencoded).
+ * @key cannot contain colon.
+ *
+ * Since: 3.2
+ **/
 void
 e_credentials_set (ECredentials *credentials,
                    const gchar *key,
@@ -271,14 +325,21 @@ e_credentials_set (ECredentials *credentials,
 	}
 }
 
-/* Returned pointer should be freed with e_credentials_util_safe_free_string()
- * when no longer needed.
-*/
+/**
+ * e_credentials_get:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gchar *
 e_credentials_get (const ECredentials *credentials,
                    const gchar *key)
 {
 	const gchar *stored;
+
+	/* Returned pointer should be freed with
+	 * e_credentials_util_safe_free_string() when no longer needed. */
 
 	g_return_val_if_fail (credentials != NULL, NULL);
 	g_return_val_if_fail (credentials->priv != NULL, NULL);
@@ -293,10 +354,19 @@ e_credentials_get (const ECredentials *credentials,
 	return decode_string (stored);
 }
 
-/* peeks value for a key, in a clear form. The value is valid until free
- * of the @credentials structure or until the key value is rewritten
- * by e_credentials_set ()
-*/
+/**
+ * e_credentials_peek:
+ * @credentials: an #ECredentials
+ * @key: a key string
+ *
+ * Peeks at the value for @key, in a clear form. The returned value is valid
+ * until free of the @credentials structure or until the key value is rewritten
+ * by e_credentials_set().
+ *
+ * Returns: the value for @key
+ *
+ * Since: 3.2
+ **/
 const gchar *
 e_credentials_peek (ECredentials *credentials,
                     const gchar *key)
@@ -341,7 +411,18 @@ check_equal_cb (gpointer key,
 	ed->equal = ed->equal && g_strcmp0 (value, g_hash_table_lookup (ed->keys, key)) == 0;
 }
 
-/* Returns whether two credential structurs contain the same keys with same values */
+/**
+ * e_credentials_equal:
+ * @credentials1: an #ECredentials
+ * @credentials2: another #ECredentials
+ *
+ * Returns whether two #ECredential structures contain the same keys with
+ * same values.
+ *
+ * Returns: %TRUE if they are equal, %FALSE otherwise
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_credentials_equal (const ECredentials *credentials1,
                      const ECredentials *credentials2)
@@ -373,7 +454,18 @@ e_credentials_equal (const ECredentials *credentials1,
 	return ed.equal;
 }
 
-/* Returns whether two credentials structures has same keys. Key names are NULL-terminated. */
+/**
+ * e_credentials_equal_keys:
+ * @credentials1: an #ECredentials
+ * @credentials2: another #ECredentials
+ *
+ * Returns whether two #ECredentials structures have the same keys. Key names
+ * are NULL-terminated.
+ *
+ * Returns: %TRUE if the key sets match, %FALSE otherwise
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_credentials_equal_keys (const ECredentials *credentials1,
                           const ECredentials *credentials2,
@@ -405,8 +497,15 @@ e_credentials_equal_keys (const ECredentials *credentials1,
 }
 
 /**
+ * e_credentials_has_key:
+ * @credentials: an #ECredentials
+ * @key: a key string
+ *
  * Returns whether @credentials contains @key.
- * This key is non-NULL and non-empty string.
+ *
+ * Returns: %TRUE if @credentials contains @key, %FALSE otherwise
+ *
+ * Since: 3.2
  **/
 gboolean
 e_credentials_has_key (const ECredentials *credentials,
@@ -421,6 +520,16 @@ e_credentials_has_key (const ECredentials *credentials,
 	return g_hash_table_lookup (credentials->priv->keys, key) != NULL;
 }
 
+/**
+ * e_credentials_keys_size:
+ * @credentials: an #ECredentials
+ *
+ * Returns the number of keys in @credentials.
+ *
+ * Returns: the number of keys in @credentials
+ *
+ * Since: 3.2
+ **/
 guint
 e_credentials_keys_size (const ECredentials *credentials)
 {
@@ -444,10 +553,18 @@ gather_key_names (gpointer key,
 	*slist = g_slist_prepend (*slist, key);
 }
 
-/* Returns newly allocated list of key names stored in the credentials strucutre;
- * strings are internal credentials values, only the list is newly allocated.
- * Free the list with g_slist_free () when no longer needed.
-*/
+/**
+ * e_credentials_list_keys:
+ * @credentials: an #ECredentials
+ *
+ * Returns a newly-allocated #GSList of key names stored in @credentials.
+ * The key names are internal credentials values and should not be modified
+ * or freed.  Free the list with g_slist_free() when no longer needed.
+ *
+ * Returns: a newly-allocated #GSList of key names
+ *
+ * Since: 3.2
+ **/
 GSList *
 e_credentials_list_keys (const ECredentials *credentials)
 {
@@ -457,12 +574,20 @@ e_credentials_list_keys (const ECredentials *credentials)
 	g_return_val_if_fail (credentials->priv != NULL, NULL);
 	g_return_val_if_fail (credentials->priv->keys != NULL, NULL);
 
+	/* XXX g_hash_table_get_keys() would have been
+	 *     easier had we used #GList instead. */
 	g_hash_table_foreach (credentials->priv->keys, gather_key_names, &keys);
 
 	return g_slist_reverse (keys);
 }
 
-/* Removes all keys in once. */
+/**
+ * e_credentials_clear:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_credentials_clear (ECredentials *credentials)
 {
@@ -475,6 +600,13 @@ e_credentials_clear (ECredentials *credentials)
 	g_hash_table_remove_all (credentials->priv->keys);
 }
 
+/**
+ * e_credentials_clear_peek:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_credentials_clear_peek (ECredentials *credentials)
 {
@@ -485,6 +617,13 @@ e_credentials_clear_peek (ECredentials *credentials)
 	g_hash_table_remove_all (credentials->priv->peek_keys);
 }
 
+/**
+ * e_credentials_util_safe_free_string:
+ *
+ * FIXME Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_credentials_util_safe_free_string (gchar *str)
 {
@@ -513,15 +652,23 @@ static struct _PromptFlags {
 	{ E_CREDENTIALS_PROMPT_FLAG_PASSPHRASE,		"passphrase",		TRUE }
 };
 
-/* Returned pointer can be passed to e_credentials_util_string_to prompt_flags()
- * to decode it back to flags. Free returned pointer with g_free ().
-*/
+/**
+ * e_credentials_util_prompt_flags_to_string:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gchar *
 e_credentials_util_prompt_flags_to_string (guint prompt_flags)
 {
 	gint ii;
 	guint masked = prompt_flags & E_CREDENTIALS_PROMPT_FLAG_REMEMBER_MASK;
 	GString *str = g_string_new ("");
+
+	/* Returned pointer can be passed to
+	 * e_credentials_util_string_to prompt_flags() to decode
+	 * it back to flags. Free returned pointer with g_free(). */
 
 	for (ii = 0; ii < G_N_ELEMENTS (PromptFlags); ii++) {
 		const gchar *add = NULL;
@@ -545,6 +692,13 @@ e_credentials_util_prompt_flags_to_string (guint prompt_flags)
 	return g_string_free (str, FALSE);
 }
 
+/**
+ * e_credentials_util_string_to_prompt_flags:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 guint
 e_credentials_util_string_to_prompt_flags (const gchar *prompt_flags_string)
 {

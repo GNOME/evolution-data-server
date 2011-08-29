@@ -195,6 +195,8 @@ e_data_book_factory_register_backends (EDataBookFactory *book_factory)
  * @is_online: Online mode to set.
  *
  * Sets the online mode for all backends created by the given factory.
+ *
+ * Since: 3.2
  */
 void
 e_data_book_factory_set_backend_online (EDataBookFactory *factory,

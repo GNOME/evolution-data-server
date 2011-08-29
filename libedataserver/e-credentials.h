@@ -29,19 +29,97 @@ G_BEGIN_DECLS
 typedef struct _ECredentials ECredentials;
 typedef struct _ECredentialsPrivate ECredentialsPrivate;
 
+/**
+ * ECredentials:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 struct _ECredentials {
 	ECredentialsPrivate *priv;
 };
 
+/**
+ * E_CREDENTIALS_KEY_USERNAME:
+ *
+ * FIXME Docment me.
+ *
+ * Since: 3.2
+ **/
 #define E_CREDENTIALS_KEY_USERNAME	"username"
+
+/**
+ * E_CREDENTIALS_KEY_PASSWORD:
+ *
+ * FIXME Document me.
+ *
+ * Since: 3.2
+ **/
 #define E_CREDENTIALS_KEY_PASSWORD	"password"
+
+/**
+ * E_CREDENTIALS_KEY_AUTH_METHOD:
+ *
+ * FIXME Document me.
+ *
+ * Since: 3.2
+ **/
 #define E_CREDENTIALS_KEY_AUTH_METHOD	"auth-method"
+
+/**
+ * E_CREDENTIALS_KEY_PROMPT_TITLE:
+ *
+ * FIXME Document me.
+ *
+ * Since: 3.2
+ **/
 #define E_CREDENTIALS_KEY_PROMPT_TITLE	"prompt-title"
+
+/**
+ * E_CREDENTIALS_KEY_PROMPT_TEXT:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define E_CREDENTIALS_KEY_PROMPT_TEXT	"prompt-text"
+
+/**
+ * E_CREDENTIALS_KEY_PROMPT_REASON:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define E_CREDENTIALS_KEY_PROMPT_REASON	"prompt-reason"
+
+/**
+ * E_CREDENTIALS_KEY_PROMPT_KEY:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define E_CREDENTIALS_KEY_PROMPT_KEY	"prompt-key"
+
+/**
+ * E_CREDENTIALS_KEY_PROMPT_FLAGS:
+ *
+ * FIXME Document me.
+ *
+ * Since: 3.2
+ **/
 #define E_CREDENTIALS_KEY_PROMPT_FLAGS	"prompt-flags"
 
+/**
+ * ECredentialsPromptFlags:
+ *
+ * FIXME Document me.
+ *
+ * Since: 3.2
+ **/
 /* this is 1:1 with EPasswordsRememberType */
 typedef enum {
 	E_CREDENTIALS_PROMPT_FLAG_REMEMBER_NEVER,

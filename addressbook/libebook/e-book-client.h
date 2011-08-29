@@ -38,14 +38,51 @@ G_BEGIN_DECLS
 #define E_IS_BOOK_CLIENT_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK_CLIENT))
 #define E_BOOK_CLIENT_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BOOK_CLIENT, EBookClientClass))
 
+/**
+ * BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS		"required-fields"
+
+/**
+ * BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS		"supported-fields"
+
+/**
+ * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
 
+/**
+ * E_BOOK_CLIENT_ERROR:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define E_BOOK_CLIENT_ERROR e_book_client_error_quark ()
 
 GQuark e_book_client_error_quark (void) G_GNUC_CONST;
 
+/**
+ * EBookClientError:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 typedef enum {
 	E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK,
 	E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
@@ -61,6 +98,14 @@ typedef struct _EBookClient        EBookClient;
 typedef struct _EBookClientClass   EBookClientClass;
 typedef struct _EBookClientPrivate EBookClientPrivate;
 
+/**
+ * EBookClient:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 struct _EBookClient {
 	EClient parent;
 

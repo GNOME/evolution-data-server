@@ -84,7 +84,14 @@ G_BEGIN_DECLS
 #define EVC_X_JABBER			"X-JABBER"
 #define EVC_X_LIST_SHOW_ADDRESSES	"X-EVOLUTION-LIST-SHOW-ADDRESSES"
 #define EVC_X_LIST			"X-EVOLUTION-LIST"
+
+/**
+ * EVC_X_LIST_NAME:
+ *
+ * Since: 3.2
+ **/
 #define EVC_X_LIST_NAME			"X-EVOLUTION-LIST-NAME"
+
 #define EVC_X_MANAGER			"X-EVOLUTION-MANAGER"
 #define EVC_X_MSN			"X-MSN"
 #define EVC_X_RADIO			"X-EVOLUTION-RADIO"
@@ -119,8 +126,26 @@ G_BEGIN_DECLS
 #define EVC_X_BOOK_URI			"X-EVOLUTION-BOOK-URI"
 
 /* Constants for Evo contact lists only */
+
+/**
+ * EVC_CONTACT_LIST
+ *
+ * Since: 3.2
+ **/
 #define EVC_CONTACT_LIST		"X-EVOLUTION-CONTACT-LIST-INFO"
+
+/**
+ * EVC_PARENT_CL:
+ *
+ * Since: 3.2
+ **/
 #define EVC_PARENT_CL			"X-EVOLUTION-PARENT-UID"
+
+/**
+ * EVC_CL_UID:
+ *
+ * Since: 3.2
+ **/
 #define EVC_CL_UID			"X-EVOLUTION-CONTACT-LIST-UID"
 
 #ifndef EDS_DISABLE_DEPRECATED

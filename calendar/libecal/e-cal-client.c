@@ -119,6 +119,13 @@ e_cal_client_error_quark (void)
 	return q;
 }
 
+/**
+ * e_cal_client_error_to_string:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 const gchar *
 e_cal_client_error_to_string (ECalClientError code)
 {
@@ -151,6 +158,8 @@ e_cal_client_error_to_string (ECalClientError code)
  * otherwise the given message is used.
  *
  * Returned pointer should be freed with g_error_free().
+ *
+ * Since: 3.2
  **/
 GError *
 e_cal_client_error_create (ECalClientError code,
@@ -1198,6 +1207,8 @@ e_cal_client_free_ecalcomp_slist (GSList *ecalcomps)
  *
  * Returns: The timezone identified by the @tzid argument, or %NULL if
  * it could not be found.
+ *
+ * Since: 3.2
  */
 icaltimezone *
 e_cal_client_resolve_tzid_cb (const gchar *tzid,

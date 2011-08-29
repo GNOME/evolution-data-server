@@ -270,6 +270,7 @@ e_list_iterator_get_type
 <SECTION>
 <FILE>e-operation-pool</FILE>
 <TITLE>EOperationPool</TITLE>
+EOperationPool
 e_operation_pool_new
 e_operation_pool_free
 e_operation_pool_reserve_opid

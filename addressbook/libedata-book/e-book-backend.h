@@ -39,14 +39,85 @@ G_BEGIN_DECLS
 #define E_IS_BOOK_BACKEND_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK_BACKEND))
 #define E_BOOK_BACKEND_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((k), E_TYPE_BOOK_BACKEND, EBookBackendClass))
 
+/**
+ * CLIENT_BACKEND_PROPERTY_OPENED:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_OPENED			"opened"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_OPENING:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_ONLINE:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_ONLINE			"online"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_READONLY:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_READONLY		"readonly"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_CACHE_DIR:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_CACHE_DIR		"cache-dir"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_CAPABILITIES:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_CAPABILITIES		"capabilities"
+
+/**
+ * BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS		"required-fields"
+
+/**
+ * BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS		"supported-fields"
+
+/**
+ * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
 
 typedef struct _EBookBackendPrivate EBookBackendPrivate;

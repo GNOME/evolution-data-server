@@ -47,6 +47,11 @@
 
 G_BEGIN_DECLS
 
+/**
+ * CamelJunkFilter:
+ *
+ * Since: 3.2
+ **/
 typedef struct _CamelJunkFilter CamelJunkFilter;
 typedef struct _CamelJunkFilterInterface CamelJunkFilterInterface;
 

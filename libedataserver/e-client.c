@@ -101,6 +101,13 @@ e_client_error_quark (void)
 	return q;
 }
 
+/**
+ * e_client_error_to_string:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 const gchar *
 e_client_error_to_string (EClientError code)
 {
@@ -163,6 +170,8 @@ e_client_error_to_string (EClientError code)
  * otherwise the given message is used.
  *
  * Returned pointer should be freed with g_error_free().
+ *
+ * Since: 3.2
  **/
 GError *
 e_client_error_create (EClientError code,
@@ -506,7 +515,8 @@ client_ensure_capabilities (EClient *client)
  * This list, together with inner strings, is owned by the @client.
  * To check for individual capabilities use e_client_check_capability().
  *
- * Returns: (element-type utf8) (transfer none): #GSList of const strings of capabilities
+ * Returns: (element-type utf8) (transfer none): #GSList of const strings
+ *          of capabilities
  *
  * Since: 3.2
  **/
@@ -567,7 +577,8 @@ e_client_check_capability (EClient *client,
  * e_client_check_refresh_supported:
  * @client: A client.
  *
- * Checks whether a client supports explicit refreshing (see e_client_refresh()).
+ * Checks whether a client supports explicit refreshing
+ * (see e_client_refresh()).
  *
  * Returns: TRUE if the client supports refreshing, FALSE otherwise.
  *
@@ -1453,8 +1464,8 @@ e_client_open_sync (EClient *client,
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
- * Removes the backing data for this #EClient. For example, with the file backend this
- * deletes the database file. You cannot get it back!
+ * Removes the backing data for this #EClient. For example, with the file
+ * backend this deletes the database file. You cannot get it back!
  * The call is finished by e_client_remove_finish() from the @callback.
  *
  * Since: 3.2
@@ -1515,8 +1526,8 @@ e_client_remove_finish (EClient *client,
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
- * Removes the backing data for this #EClient. For example, with the file backend this
- * deletes the database file. You cannot get it back!
+ * Removes the backing data for this #EClient. For example, with the file
+ * backend this deletes the database file. You cannot get it back!
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -1641,7 +1652,7 @@ e_client_refresh_sync (EClient *client,
  *
  * Note: Pair function for this is e_client_util_strv_to_slist().
  *
- * Sice: 3.2
+ * Since: 3.2
  **/
 gchar **
 e_client_util_slist_to_strv (const GSList *strings)
@@ -1675,7 +1686,7 @@ e_client_util_slist_to_strv (const GSList *strings)
  *
  * Note: Pair function for this is e_client_util_slist_to_strv().
  *
- * Sice: 3.2
+ * Since: 3.2
  **/
 GSList *
 e_client_util_strv_to_slist (const gchar * const *strv)
@@ -1751,7 +1762,7 @@ e_client_util_copy_object_slist (GSList *copy_to,
  *
  * Frees memory previously allocated by e_client_util_strv_to_slist().
  *
- * Sice: 3.2
+ * Since: 3.2
  **/
 void
 e_client_util_free_string_slist (GSList *strings)
@@ -1770,7 +1781,7 @@ e_client_util_free_string_slist (GSList *strings)
  * Calls g_object_unref() on each member of @objects and then frees
  * also @objects itself.
  *
- * Sice: 3.2
+ * Since: 3.2
  **/
 void
 e_client_util_free_object_slist (GSList *objects)
@@ -2062,6 +2073,8 @@ e_client_get_dbus_proxy (EClient *client)
  *
  * Unwraps D-Bus error to local error. @dbus_error is automatically freed.
  * @dbus_erorr and @out_error can point to the same variable.
+ *
+ * Since: 3.2
  **/
 void
 e_client_unwrap_dbus_error (EClient *client,
@@ -2094,18 +2107,22 @@ e_client_unwrap_dbus_error (EClient *client,
  * @known_errors_domain: Error domain for @known_errors
  * @fail_when_none_matched: Whether to fail when none of @known_errors matches
  *
- * The function takes a @dbus_error and tries to find a match in @known_errors for it,
- * if it is a G_IO_ERROR, G_IO_ERROR_DBUS_ERROR. If it is anything else then the @dbus_error
- * is moved to @client_error.
+ * The function takes a @dbus_error and tries to find a match in @known_errors
+ * for it, if it is a G_IO_ERROR, G_IO_ERROR_DBUS_ERROR. If it is anything else
+ * then the @dbus_error is moved to @client_error.
  *
- * The @fail_when_none_matched influences behaviour. If it's %TRUE, and none of @known_errors matches,
- * or this is not a G_IO_ERROR_DBUS_ERROR, then %FALSE is returned and the @client_error
- * is left without change. Otherwise, the @fail_when_none_matched is %FALSE, the error is always
- * processed and will result in E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR if none of @known_error matches.
+ * The @fail_when_none_matched influences behaviour. If it's %TRUE, and none of
+ * @known_errors matches, or this is not a G_IO_ERROR_DBUS_ERROR, then %FALSE
+ * is returned and the @client_error is left without change. Otherwise, the
+ * @fail_when_none_matched is %FALSE, the error is always processed and will
+ * result in E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR if none of @known_error
+ * matches.
  *
  * Returns: Whether was @dbus_error processed into @client_error.
  *
  * Note: The @dbus_error is automatically freed if returned %TRUE.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_client_util_unwrap_dbus_error (GError *dbus_error,

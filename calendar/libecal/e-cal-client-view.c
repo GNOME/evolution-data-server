@@ -431,6 +431,8 @@ _e_cal_client_view_new (ECalClient *client,
  * Get the #ECalClient associated with this view.
  *
  * Returns: the associated client.
+ *
+ * Since: 3.2
  **/
 ECalClient *
 e_cal_client_view_get_client (ECalClientView *view)
@@ -446,6 +448,8 @@ e_cal_client_view_get_client (ECalClientView *view)
  *
  * Retunrs: Whether view is running. Not running views are ignoring
  * all events sent from the server.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_cal_client_view_is_running (ECalClientView *view)
@@ -461,6 +465,8 @@ e_cal_client_view_is_running (ECalClientView *view)
  * @error: A #Gerror
  *
  * Starts a live query to the calendar/tasks backend.
+ *
+ * Since: 3.2
  **/
 void
 e_cal_client_view_start (ECalClientView *view,
@@ -493,6 +499,8 @@ e_cal_client_view_start (ECalClientView *view,
  * @error: A #GError
  *
  * Stops a live query to the calendar/tasks backend.
+ *
+ * Since: 3.2
  */
 void
 e_cal_client_view_stop (ECalClientView *view,

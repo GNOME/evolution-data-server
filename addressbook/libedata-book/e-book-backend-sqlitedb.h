@@ -51,6 +51,14 @@ typedef struct _EBookBackendSqliteDB EBookBackendSqliteDB;
 typedef struct _EBookBackendSqliteDBClass EBookBackendSqliteDBClass;
 typedef struct _EBookBackendSqliteDBPrivate EBookBackendSqliteDBPrivate;
 
+/**
+ * EBookBackendSqliteDB:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 struct _EBookBackendSqliteDB {
 	GObject parent;
 	EBookBackendSqliteDBPrivate *priv;
@@ -62,6 +70,13 @@ struct _EBookBackendSqliteDBClass {
 	/* virtual methods */
 };
 
+/**
+ * EbSdbSearchData:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 typedef struct {
 	gchar *vcard;
 	gchar *uid;

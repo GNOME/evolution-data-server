@@ -912,6 +912,8 @@ query_contact_source (EContactStore *contact_store,
  * Gets the #EBookClient that provided the contact at @iter.
  *
  * Returns: An #EBookClient.
+ *
+ * Since: 3.2
  **/
 EBookClient *
 e_contact_store_get_client (EContactStore *contact_store,
@@ -986,6 +988,8 @@ e_contact_store_find_contact (EContactStore *contact_store,
  *
  * Returns: A #GSList of pointers to #EBookClient. The caller owns the list,
  * but not the book clients.
+ *
+ * Since: 3.2
  **/
 GSList *
 e_contact_store_get_clients (EContactStore *contact_store)
@@ -1015,6 +1019,8 @@ e_contact_store_get_clients (EContactStore *contact_store)
  *
  * Adds @book_client to the list of book clients that provide contacts for @contact_store.
  * The @contact_store adds a reference to @book_client, if added.
+ *
+ * Since: 3.2
  **/
 void
 e_contact_store_add_client (EContactStore *contact_store,
@@ -1050,6 +1056,8 @@ e_contact_store_add_client (EContactStore *contact_store,
  * @book_client: an #EBookClient
  *
  * Removes @book from the list of book clients that provide contacts for @contact_store.
+ *
+ * Since: 3.2
  **/
 void
 e_contact_store_remove_client (EContactStore *contact_store,

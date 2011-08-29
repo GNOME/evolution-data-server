@@ -39,6 +39,8 @@
  * e_client_utils_new:
  *
  * Proxy function for e_book_client_utils_new() and e_cal_client_utils_new().
+ *
+ * Since: 3.2
  **/
 EClient	*
 e_client_utils_new (ESource *source,
@@ -75,6 +77,8 @@ e_client_utils_new (ESource *source,
  * e_client_utils_new_from_uri:
  *
  * Proxy function for e_book_client_utils_new_from_uri() and e_cal_client_utils_new_from_uri().
+ *
+ * Since: 3.2
  **/
 EClient *
 e_client_utils_new_from_uri (const gchar *uri,
@@ -110,6 +114,8 @@ e_client_utils_new_from_uri (const gchar *uri,
  * e_client_utils_new_system:
  *
  * Proxy function for e_book_client_utils_new_system() and e_cal_client_utils_new_system().
+ *
+ * Since: 3.2
  **/
 EClient *
 e_client_utils_new_system (EClientSourceType source_type,
@@ -142,6 +148,8 @@ e_client_utils_new_system (EClientSourceType source_type,
  * e_client_utils_new_default:
  *
  * Proxy function for e_book_client_utils_new_default() and e_cal_client_utils_new_default().
+ *
+ * Since: 3.2
  **/
 EClient *
 e_client_utils_new_default (EClientSourceType source_type,
@@ -174,6 +182,8 @@ e_client_utils_new_default (EClientSourceType source_type,
  * e_client_utils_set_default:
  *
  * Proxy function for e_book_client_utils_set_default() and e_book_client_utils_set_default().
+ *
+ * Since: 3.2
  **/
 gboolean
 e_client_utils_set_default (EClient *client,
@@ -208,6 +218,8 @@ e_client_utils_set_default (EClient *client,
  * e_client_utils_set_default_source:
  *
  * Proxy function for e_book_client_utils_set_default_source() and e_cal_client_utils_set_default_source().
+ *
+ * Since: 3.2
  **/
 gboolean
 e_client_utils_set_default_source (ESource *source,
@@ -244,6 +256,8 @@ e_client_utils_set_default_source (ESource *source,
  * e_client_utils_get_sources:
  *
  * Proxy function for e_book_client_utils_get_sources() and e_cal_client_utils_get_sources().
+ *
+ * Since: 3.2
  **/
 gboolean
 e_client_utils_get_sources (ESourceList **sources,
@@ -760,14 +774,19 @@ get_prompt_key (EClient *client,
 	return uri_str;
 }
 
-/* This function is suitable as a handler for EClient::authenticate signal.
+/**
+ * e_client_utils_authenticate_handler:
+ *
+ * This function is suitable as a handler for EClient::authenticate signal.
  * It takes care of all the password prompt and such and returns TRUE if
  * credentials (password) were provided. Thus just connect it to that signal
  * and it'll take care of everything else.
  *
  * gtk_window_parent is user_data passed into the callback. It can be a pointer
  * to GtkWindow, used as a parent for a pasword prompt dialog.
-*/
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_client_utils_authenticate_handler (EClient *client,
                                      ECredentials *credentials,
@@ -909,7 +928,10 @@ e_client_utils_forget_password (EClient *client)
 	g_free (prompt_key);
 }
 
-/* Asks for a password based on the provided credentials information.
+/** 
+ * e_credentials_authenticate_helper:
+ *
+ * Asks for a password based on the provided credentials information.
  * Credentials should have set following keys:
  *    E_CREDENTIALS_KEY_USERNAME
  *    E_CREDENTIALS_KEY_PROMPT_KEY
@@ -919,7 +941,9 @@ e_client_utils_forget_password (EClient *client)
  *
  * When this returns TRUE, then the structure contains E_CREDENTIALS_KEY_PASSWORD set
  * as entered by a user.
-*/
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_credentials_authenticate_helper (ECredentials *credentials,
                                    GtkWindow *parent,

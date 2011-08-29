@@ -46,6 +46,14 @@
 
 G_BEGIN_DECLS
 
+/**
+ * CamelOfflineSettings:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 typedef struct _CamelOfflineSettings CamelOfflineSettings;
 typedef struct _CamelOfflineSettingsClass CamelOfflineSettingsClass;
 typedef struct _CamelOfflineSettingsPrivate CamelOfflineSettingsPrivate;

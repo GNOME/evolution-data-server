@@ -106,6 +106,11 @@ typedef struct {
 	const gchar *text, *value;
 } CamelProviderConfEntry;
 
+/**
+ * CamelProviderPortEntry:
+ *
+ * Since: 3.2
+ **/
 typedef struct {
 	gint port;
 	const gchar *desc;

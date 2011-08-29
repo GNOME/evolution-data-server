@@ -970,11 +970,13 @@ gslist_to_strv (const GSList *lst)
 }
 
 /**
- * e_data_cal_notify_open:
+ * e_data_cal_respond_open:
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the open method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_open (EDataCal *cal,
@@ -998,6 +1000,8 @@ e_data_cal_respond_open (EDataCal *cal,
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the remove method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_remove (EDataCal *cal,
@@ -1024,7 +1028,7 @@ e_data_cal_respond_remove (EDataCal *cal,
  *
  * Notifies listeners of the completion of the refresh method call.
  *
- * Since: 2.30
+ * Since: 3.2
  */
 void
 e_data_cal_respond_refresh (EDataCal *cal,
@@ -1049,6 +1053,8 @@ e_data_cal_respond_refresh (EDataCal *cal,
  * @prop_value: Value of a property
  *
  * Notifies listeners of the completion of the get_backend_property method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_get_backend_property (EDataCal *cal,
@@ -1076,6 +1082,8 @@ e_data_cal_respond_get_backend_property (EDataCal *cal,
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the set_backend_property method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_set_backend_property (EDataCal *cal,
@@ -1100,6 +1108,8 @@ e_data_cal_respond_set_backend_property (EDataCal *cal,
  * @object: The object retrieved as an iCalendar string.
  *
  * Notifies listeners of the completion of the get_object method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_get_object (EDataCal *cal,
@@ -1128,6 +1138,8 @@ e_data_cal_respond_get_object (EDataCal *cal,
  * @objects: List of retrieved objects.
  *
  * Notifies listeners of the completion of the get_object_list method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_get_object_list (EDataCal *cal,
@@ -1158,6 +1170,8 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
  *
  * Notifies listeners of the completion of the get_free_busy method call.
  * To pass actual free/busy objects to the client use e_data_cal_report_free_busy_data().
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_get_free_busy (EDataCal *cal,
@@ -1183,6 +1197,8 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
  * @object: The object created as an iCalendar string.
  *
  * Notifies listeners of the completion of the create_object method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_create_object (EDataCal *cal,
@@ -1215,6 +1231,8 @@ e_data_cal_respond_create_object (EDataCal *cal,
  * @object: The modified object as an iCalendar string.
  *
  * Notifies listeners of the completion of the modify_object method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_modify_object (EDataCal *cal,
@@ -1246,6 +1264,8 @@ e_data_cal_respond_modify_object (EDataCal *cal,
  * when removing instances of a recurring appointment.
  *
  * Notifies listeners of the completion of the remove_object method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_remove_object (EDataCal *cal,
@@ -1274,6 +1294,8 @@ e_data_cal_respond_remove_object (EDataCal *cal,
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the receive_objects method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_receive_objects (EDataCal *cal,
@@ -1299,6 +1321,8 @@ e_data_cal_respond_receive_objects (EDataCal *cal,
  * @calobj: An iCalendar string representing the object sent.
  *
  * Notifies listeners of the completion of the send_objects method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_send_objects (EDataCal *cal,
@@ -1330,6 +1354,8 @@ e_data_cal_respond_send_objects (EDataCal *cal,
  * @attachment_uris: List of retrieved attachment uri's.
  *
  * Notifies listeners of the completion of the get_attachment_uris method call.
+ *
+ * Since: 3.2
  **/
 void
 e_data_cal_respond_get_attachment_uris (EDataCal *cal,
@@ -1359,6 +1385,8 @@ e_data_cal_respond_get_attachment_uris (EDataCal *cal,
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the discard_alarm method call.
+ *
+ * Since: 3.2
  **/
 void
 e_data_cal_respond_discard_alarm (EDataCal *cal,
@@ -1383,6 +1411,8 @@ e_data_cal_respond_discard_alarm (EDataCal *cal,
  * @view_path: The new live view path.
  *
  * Notifies listeners of the completion of the get_view method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_get_view (EDataCal *cal,
@@ -1411,6 +1441,8 @@ e_data_cal_respond_get_view (EDataCal *cal,
  * @tzobject: The requested timezone as an iCalendar string.
  *
  * Notifies listeners of the completion of the get_timezone method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_get_timezone (EDataCal *cal,
@@ -1433,11 +1465,13 @@ e_data_cal_respond_get_timezone (EDataCal *cal,
 }
 
 /**
- * e_data_cal_notify_timezone_added:
+ * e_data_cal_respond_add_timezone:
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the add_timezone method call.
+ *
+ * Since: 3.2
  */
 void
 e_data_cal_respond_add_timezone (EDataCal *cal,
@@ -1455,6 +1489,13 @@ e_data_cal_respond_add_timezone (EDataCal *cal,
 		g_error_free (error);
 }
 
+/**
+ * e_data_cal_report_error:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_cal_report_error (EDataCal *cal,
                          const gchar *message)
@@ -1465,6 +1506,13 @@ e_data_cal_report_error (EDataCal *cal,
 	e_gdbus_cal_emit_backend_error (cal->priv->gdbus_object, message);
 }
 
+/**
+ * e_data_cal_report_readonly:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_cal_report_readonly (EDataCal *cal,
                             gboolean readonly)
@@ -1474,6 +1522,13 @@ e_data_cal_report_readonly (EDataCal *cal,
 	e_gdbus_cal_emit_readonly (cal->priv->gdbus_object, readonly);
 }
 
+/**
+ * e_data_cal_report_online:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_cal_report_online (EDataCal *cal,
                           gboolean is_online)
@@ -1483,15 +1538,23 @@ e_data_cal_report_online (EDataCal *cal,
 	e_gdbus_cal_emit_online (cal->priv->gdbus_object, is_online);
 }
 
-/* credentilas contains extra information for a source for which authentication is requested.
- * This parameter can be NULL to indicate "for this calendar".
-*/
+/**
+ * e_data_cal_report_auth_required:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_cal_report_auth_required (EDataCal *cal,
                                  const ECredentials *credentials)
 {
 	gchar *empty_strv[2];
 	gchar **strv = NULL;
+
+	/* credentilas contains extra information for a source for which
+	 * authentication is requested.  This parameter can be NULL to
+	 * indicate "for this calendar". */
 
 	g_return_if_fail (cal != NULL);
 
@@ -1506,11 +1569,16 @@ e_data_cal_report_auth_required (EDataCal *cal,
 	g_strfreev (strv);
 }
 
-/* Reports to associated client that opening phase of the cal is finished.
- * error being NULL means successfully, otherwise reports an error which happened
- * during opening phase. By opening phase is meant a process including successfull
- * authentication to the server/storage.
- */
+/**
+ * e_data_cal_report_opened:
+ *
+ * Reports to associated client that opening phase of the cal is finished.
+ * error being NULL means successfully, otherwise reports an error which
+ * happened during opening phase. By opening phase is meant a process
+ * including successfull authentication to the server/storage.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_cal_report_opened (EDataCal *cal,
                           const GError *error)
@@ -1524,6 +1592,13 @@ e_data_cal_report_opened (EDataCal *cal,
 	g_strfreev (strv_error);
 }
 
+/**
+ * e_data_cal_report_free_busy_data:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_cal_report_free_busy_data (EDataCal *cal,
                                   const GSList *freebusy)
@@ -1539,7 +1614,13 @@ e_data_cal_report_free_busy_data (EDataCal *cal,
 	g_strfreev (strv_freebusy);
 }
 
-/* Notifies client about certain property value change */
+/**
+ * e_data_cal_report_backend_property_changed:
+ *
+ * Notifies client about certain property value change 
+ *
+ * Since: 3.2
+ **/
 void
 e_data_cal_report_backend_property_changed (EDataCal *cal,
                                             const gchar *prop_name,

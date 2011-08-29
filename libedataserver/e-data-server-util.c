@@ -1243,6 +1243,13 @@ dump_left_at_exit_cb (void)
 	G_UNLOCK (ptr_tracker);
 }
 
+/**
+ * e_pointer_tracker_track_with_info:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_pointer_tracker_track_with_info (gpointer ptr,
                                    const gchar *info)
@@ -1267,6 +1274,13 @@ e_pointer_tracker_track_with_info (gpointer ptr,
 	G_UNLOCK (ptr_tracker);
 }
 
+/**
+ * e_pointer_tracker_untrack:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_pointer_tracker_untrack (gpointer ptr)
 {
@@ -1284,6 +1298,13 @@ e_pointer_tracker_untrack (gpointer ptr)
 	G_UNLOCK (ptr_tracker);
 }
 
+/**
+ * e_pointer_tracker_dump:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_pointer_tracker_dump (void)
 {

@@ -38,10 +38,40 @@ G_BEGIN_DECLS
 #define E_IS_CAL_CLIENT_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_CAL_CLIENT))
 #define E_CAL_CLIENT_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_CAL_CLIENT, ECalClientClass))
 
+/**
+ * CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS		"cal-email-address"
+
+/**
+ * CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS	"alarm-email-address"
+
+/**
+ * CAL_BACKEND_PROPERTY_DEFAULT_OBJECT:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CAL_BACKEND_PROPERTY_DEFAULT_OBJECT		"default-object"
 
+/**
+ * ECalClientSourceType:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 typedef enum {
 	E_CAL_CLIENT_SOURCE_TYPE_EVENTS,
 	E_CAL_CLIENT_SOURCE_TYPE_TASKS,
@@ -54,10 +84,24 @@ typedef enum {
 
 GType e_cal_client_source_type_enum_get_type (void);
 
+/**
+ * E_CAL_CLIENT_ERROR:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define E_CAL_CLIENT_ERROR e_cal_client_error_quark ()
 
 GQuark e_cal_client_error_quark (void) G_GNUC_CONST;
 
+/**
+ * ECalClientError:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 typedef enum {
 	E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR,
 	E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND,
@@ -74,6 +118,14 @@ typedef struct _ECalClient        ECalClient;
 typedef struct _ECalClientClass   ECalClientClass;
 typedef struct _ECalClientPrivate ECalClientPrivate;
 
+/**
+ * ECalClient:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 struct _ECalClient {
 	EClient parent;
 

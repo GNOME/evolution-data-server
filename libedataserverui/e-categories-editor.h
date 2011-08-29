@@ -47,6 +47,14 @@ typedef struct _ECategoriesEditor ECategoriesEditor;
 typedef struct _ECategoriesEditorClass ECategoriesEditorClass;
 typedef struct _ECategoriesEditorPrivate ECategoriesEditorPrivate;
 
+/**
+ * ECategoriesEditor:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 struct _ECategoriesEditor {
 	GtkTable parent;
 	ECategoriesEditorPrivate *priv;

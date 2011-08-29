@@ -848,6 +848,8 @@ e_book_backend_remove_client (EBookBackend *backend,
  *
  * Calls @callback for each known book view of this @backend.
  * @callback returns %FALSE to stop further processing.
+ *
+ * Since: 3.2
  **/
 void
 e_book_backend_foreach_view (EBookBackend *backend,
@@ -946,6 +948,8 @@ e_book_backend_set_backend_property (EBookBackend *backend,
  * Checks if @backend's storage is online.
  *
  * Returns: %TRUE if online, %FALSE otherwise.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_book_backend_is_online (EBookBackend *backend)
@@ -965,6 +969,8 @@ e_book_backend_is_online (EBookBackend *backend)
  * within call of e_book_backend_notify_opened().
  *
  * Returns: %TRUE if fully opened, %FALSE otherwise.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_book_backend_is_opened (EBookBackend *backend)
@@ -986,6 +992,8 @@ e_book_backend_is_opened (EBookBackend *backend)
  * it is being opening.
  *
  * Returns: %TRUE if opening phase is in the effect, %FALSE otherwise.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_book_backend_is_opening (EBookBackend *backend)
@@ -1002,6 +1010,8 @@ e_book_backend_is_opening (EBookBackend *backend)
  * Checks if we can write to @backend.
  *
  * Returns: %TRUE if writeable, %FALSE if not.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_book_backend_is_readonly (EBookBackend *backend)
@@ -1163,6 +1173,8 @@ e_book_backend_notify_complete (EBookBackend *backend)
  * Notifies each backend listener about an error. This is meant to be used
  * for cases where is no GError return possibility, to notify user about
  * an issue.
+ *
+ * Since: 3.2
  **/
 void
 e_book_backend_notify_error (EBookBackend *backend,
@@ -1187,6 +1199,8 @@ e_book_backend_notify_error (EBookBackend *backend,
  * @is_readonly: flag indicating readonly status
  *
  * Notifies all backend's clients about the current readonly state.
+ *
+ * Since: 3.2
  **/
 void
 e_book_backend_notify_readonly (EBookBackend *backend,
@@ -1213,6 +1227,8 @@ e_book_backend_notify_readonly (EBookBackend *backend,
  *
  * Notifies clients of @backend's connection status indicated by @is_online.
  * Meant to be used by backend implementations.
+ *
+ * Since: 3.2
  **/
 void
 e_book_backend_notify_online (EBookBackend *backend,
@@ -1291,6 +1307,8 @@ e_book_backend_notify_auth_required (EBookBackend *backend,
  * Note: The @error is freed automatically if not %NULL.
  *
  * Meant to be used by backend implementations.
+ *
+ * Since: 3.2
  **/
 void
 e_book_backend_notify_opened (EBookBackend *backend,
@@ -1321,6 +1339,8 @@ e_book_backend_notify_opened (EBookBackend *backend,
  * @prop_value: new property value
  *
  * Notifies clients about property value change.
+ *
+ * Since: 3.2
  **/
 void
 e_book_backend_notify_property_changed (EBookBackend *backend,
@@ -1359,6 +1379,8 @@ e_book_backend_notify_property_changed (EBookBackend *backend,
  * and e_data_book_respond_open() with the same @error.
  *
  * See e_book_backend_open() for more details how the opening phase works.
+ *
+ * Since: 3.2
  **/
 void
 e_book_backend_respond_opened (EBookBackend *backend,

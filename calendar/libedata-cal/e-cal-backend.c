@@ -470,6 +470,8 @@ e_cal_backend_get_kind (ECalBackend *backend)
  * @backend: an #ECalBackend
  *
  * Returns: Whether is backend online.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_cal_backend_is_online (ECalBackend *backend)
@@ -489,6 +491,8 @@ e_cal_backend_is_online (ECalBackend *backend)
  * within call of e_cal_backend_notify_opened().
  *
  * Returns: %TRUE if fully opened, %FALSE otherwise.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_cal_backend_is_opened (ECalBackend *backend)
@@ -499,7 +503,7 @@ e_cal_backend_is_opened (ECalBackend *backend)
 }
 
 /**
- * e_cal_backend_is_opening::
+ * e_cal_backend_is_opening:
  * @backend: an #ECalBackend
  *
  * Checks if @backend is processing its opening phase, which
@@ -510,6 +514,8 @@ e_cal_backend_is_opened (ECalBackend *backend)
  * it is being opening.
  *
  * Returns: %TRUE if opening phase is in the effect, %FALSE otherwise.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_cal_backend_is_opening (ECalBackend *backend)
@@ -525,6 +531,8 @@ e_cal_backend_is_opening (ECalBackend *backend)
  *
  * Returns: Whether is backend read-only. This value is the last used
  * in a call of e_cal_backend_notify_readonly().
+ *
+ * Since: 3.2
  **/
 gboolean
 e_cal_backend_is_readonly (ECalBackend *backend)
@@ -541,6 +549,8 @@ e_cal_backend_is_readonly (ECalBackend *backend)
  * Checks if @backend has been removed from its physical storage.
  *
  * Returns: %TRUE if @backend has been removed, %FALSE otherwise.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_cal_backend_is_removed (ECalBackend *backend)
@@ -557,6 +567,8 @@ e_cal_backend_is_removed (ECalBackend *backend)
  *
  * Sets the flag indicating whether @backend was removed to @is_removed.
  * Meant to be used by backend implementations.
+ *
+ * Since: 3.2
  **/
 void
 e_cal_backend_set_is_removed (ECalBackend *backend,
@@ -769,6 +781,8 @@ e_cal_backend_remove_client (ECalBackend *backend,
  * Adds a view to the list of live views being run by the given backend.
  * Doing so means that any listener on the view will get notified of any
  * change that affect the live view.
+ *
+ * Since: 3.2
  */
 void
 e_cal_backend_add_view (ECalBackend *backend,
@@ -791,7 +805,7 @@ e_cal_backend_add_view (ECalBackend *backend,
  *
  * Removes view from the list of live views for the backend.
  *
- * Since: 2.24
+ * Since: 3.2
  **/
 void
 e_cal_backend_remove_view (ECalBackend *backend,
@@ -815,6 +829,8 @@ e_cal_backend_remove_view (ECalBackend *backend,
  *
  * Calls @callback for each known calendar view of this @backend.
  * @callback returns %FALSE to stop further processing.
+ *
+ * Since: 3.2
  **/
 void
 e_cal_backend_foreach_view (ECalBackend *backend,
@@ -848,6 +864,8 @@ e_cal_backend_foreach_view (ECalBackend *backend,
  * @proxy: The calendar backend to act as notification proxy.
  *
  * Sets the backend that will act as notification proxy for the given backend.
+ *
+ * Since: 3.2
  */
 void
 e_cal_backend_set_notification_proxy (ECalBackend *backend,
@@ -864,6 +882,8 @@ e_cal_backend_set_notification_proxy (ECalBackend *backend,
  * @is_online: Whether is online
  *
  * Sets the online mode of the calendar
+ *
+ * Since: 3.2
  */
 void
 e_cal_backend_set_online (ECalBackend *backend,
@@ -979,6 +999,8 @@ e_cal_backend_open (ECalBackend *backend,
  *
  * See information at e_cal_backend_open() for more details
  * how the opening phase works.
+ *
+ * Since: 3.2
  **/
 void
 e_cal_backend_authenticate_user (ECalBackend *backend,
@@ -1333,6 +1355,8 @@ e_cal_backend_send_objects (ECalBackend *backend,
  * Queries a calendar backend for attachments present in a calendar object based
  * on its unique identifier and its recurrence ID (if a recurrent appointment).
  * This might be finished with e_data_cal_respond_get_attachment_uris().
+ *
+ * Since: 3.2
  **/
 void
 e_cal_backend_get_attachment_uris (ECalBackend *backend,
@@ -1480,6 +1504,8 @@ e_cal_backend_internal_get_timezone (ECalBackend *backend,
  * @view: The view to be started.
  *
  * Starts a new live view on the given backend.
+ *
+ * Since: 3.2
  */
 void
 e_cal_backend_start_view (ECalBackend *backend,
@@ -1796,6 +1822,8 @@ e_cal_backend_notify_readonly (ECalBackend *backend,
  *
  * Notifies clients of @backend's connection status indicated by @is_online.
  * Meant to be used by backend implementations.
+ *
+ * Since: 3.2
  **/
 void
 e_cal_backend_notify_online (ECalBackend *backend,
@@ -1886,6 +1914,8 @@ e_cal_backend_notify_auth_required (ECalBackend *backend,
  * Note: The @error is freed automatically if not %NULL.
  *
  * Meant to be used by backend implementations.
+ *
+ * Since: 3.2
  **/
 void
 e_cal_backend_notify_opened (ECalBackend *backend,
@@ -1916,6 +1946,8 @@ e_cal_backend_notify_opened (ECalBackend *backend,
  * @prop_value: new property value
  *
  * Notifies client about property value change.
+ *
+ * Since: 3.2
  **/
 void
 e_cal_backend_notify_property_changed (ECalBackend *backend,
@@ -1954,6 +1986,8 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
  * e_data_cal_respond_open() with the same @error.
  *
  * See e_cal_backend_open() for more details how the opening phase works.
+ *
+ * Since: 3.2
  **/
 void
 e_cal_backend_respond_opened (ECalBackend *backend,

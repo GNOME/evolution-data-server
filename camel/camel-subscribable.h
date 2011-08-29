@@ -46,6 +46,11 @@
 
 G_BEGIN_DECLS
 
+/**
+ * CamelSubscribable:
+ *
+ * Since: 3.2
+ **/
 typedef struct _CamelSubscribable CamelSubscribable;
 typedef struct _CamelSubscribableInterface CamelSubscribableInterface;
 

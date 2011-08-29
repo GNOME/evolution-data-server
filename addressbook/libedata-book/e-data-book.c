@@ -460,8 +460,14 @@ data_book_return_error (GDBusMethodInvocation *invocation,
 	g_error_free (error);
 }
 
-/* takes a list of strings and converts it to a comma-separated string of values;
- * free returned pointer with g_free () */
+/**
+ * e_data_book_string_slist_to_comma_string:
+ *
+ * Takes a list of strings and converts it to a comma-separated string of
+ * values; free returned pointer with g_free()
+ *
+ * Since: 3.2
+ **/
 gchar *
 e_data_book_string_slist_to_comma_string (const GSList *strings)
 {
@@ -883,6 +889,13 @@ e_data_book_respond_refresh (EDataBook *book,
 		g_error_free (error);
 }
 
+/**
+ * e_data_book_respond_get_backend_property:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_book_respond_get_backend_property (EDataBook *book,
                                           guint32 opid,
@@ -904,6 +917,13 @@ e_data_book_respond_get_backend_property (EDataBook *book,
 	g_free (gdbus_prop_value);
 }
 
+/**
+ * e_data_book_respond_set_backend_property:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_book_respond_set_backend_property (EDataBook *book,
                                           guint32 opid,
@@ -968,6 +988,13 @@ e_data_book_respond_get_contact_list (EDataBook *book,
 	}
 }
 
+/**
+ * e_data_book_respond_get_contact_list_uids:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_book_respond_get_contact_list_uids (EDataBook *book,
                                            guint32 opid,
@@ -1066,6 +1093,13 @@ e_data_book_respond_remove_contacts (EDataBook *book,
 
 }
 
+/**
+ * e_data_book_report_error:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_book_report_error (EDataBook *book,
                           const gchar *message)
@@ -1076,6 +1110,13 @@ e_data_book_report_error (EDataBook *book,
 	e_gdbus_book_emit_backend_error (book->priv->gdbus_object, message);
 }
 
+/**
+ * e_data_book_report_readonly:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_book_report_readonly (EDataBook *book,
                              gboolean readonly)
@@ -1085,6 +1126,13 @@ e_data_book_report_readonly (EDataBook *book,
 	e_gdbus_book_emit_readonly (book->priv->gdbus_object, readonly);
 }
 
+/**
+ * e_data_book_report_online:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_book_report_online (EDataBook *book,
                            gboolean is_online)
@@ -1117,11 +1165,16 @@ e_data_book_report_auth_required (EDataBook *book,
 	g_strfreev (strv);
 }
 
-/* Reports to associated client that opening phase of the book is finished.
- * error being NULL means successfully, otherwise reports an error which happened
- * during opening phase. By opening phase is meant a process including successfull
- * authentication to the server/storage.
- */
+/**
+ * e_data_book_report_opened:
+ *
+ * Reports to associated client that opening phase of the book is finished.
+ * error being NULL means successfully, otherwise reports an error which
+ * happened during opening phase. By opening phase is meant a process
+ * including successfull authentication to the server/storage.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_book_report_opened (EDataBook *book,
                            const GError *error)
@@ -1135,13 +1188,21 @@ e_data_book_report_opened (EDataBook *book,
 	g_strfreev (strv_error);
 }
 
-/* Notifies client about certain property value change */
+/**
+ * e_data_book_report_backend_property_changed:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_book_report_backend_property_changed (EDataBook *book,
                                              const gchar *prop_name,
                                              const gchar *prop_value)
 {
 	gchar **strv;
+
+	/* Notifies client about certain property value change */
 
 	g_return_if_fail (book != NULL);
 	g_return_if_fail (prop_name != NULL);

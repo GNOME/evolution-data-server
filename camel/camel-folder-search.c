@@ -1995,7 +1995,18 @@ search_message_location (struct _ESExp *f,
 	return r;
 }
 
-/* add or subtract given number of months to given time */
+/**
+ * camel_folder_search_util_add_months:
+ * @t: Initial time
+ * @months: number of months to add or subtract
+ *
+ * Increases time @t by the given number of months (or decreases, if
+ * @months is negative).
+ *
+ * Returns: a new #time_t value
+ *
+ * Since: 3.2
+ **/
 time_t
 camel_folder_search_util_add_months (time_t t,
                                      gint months)

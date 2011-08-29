@@ -584,6 +584,8 @@ e_destination_set_book (EDestination *dest,
  *
  * Specify the source @dest's contact comes from. This is useful
  * if you need to update the contact later.
+ *
+ * Since: 3.2
  **/
 void
 e_destination_set_client (EDestination *dest,
@@ -1170,6 +1172,8 @@ e_destination_list_show_addresses (const EDestination *dest)
  * The list and its elements belong to @dest, and should not be freed.
  *
  * Returns: (element-type EDestination) (transfer none): A list of elements of type #EDestination, or %NULL.
+ *
+ * Since: 3.2
  **/
 const GList *
 e_destination_list_get_root_dests (const EDestination *dest)

@@ -29,6 +29,13 @@ struct _EOperationPool {
 	guint32 last_opid;
 };
 
+/**
+ * e_operation_pool_new:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 EOperationPool *
 e_operation_pool_new (guint max_threads,
                       GFunc thread_func,
@@ -59,6 +66,13 @@ e_operation_pool_new (guint max_threads,
 	return pool;
 }
 
+/**
+ * e_operation_pool_free:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_operation_pool_free (EOperationPool *pool)
 {
@@ -70,10 +84,18 @@ e_operation_pool_free (EOperationPool *pool)
 	g_free (pool);
 }
 
-/* Reserves new operation ID, which is returned. This operation ID may
- * be released by e_operation_pool_release_opid () when the operation
+/**
+ * e_operation_pool_reserve_opid:
+ * @pool: an #EOperationPool
+ *
+ * Reserves new operation ID, which is returned. This operation ID may
+ * be released by e_operation_pool_release_opid() when the operation
  * is finished.
-*/
+ *
+ * Returns: a new operation ID
+ *
+ * Since: 3.2
+ **/
 guint32
 e_operation_pool_reserve_opid (EOperationPool *pool)
 {
@@ -103,7 +125,15 @@ e_operation_pool_reserve_opid (EOperationPool *pool)
 	return opid;
 }
 
-/* Releases operation ID previously reserved by e_operation_pool_reserve_opid(). */
+/**
+ * e_operation_pool_release_opid:
+ * @pool: an #EOperationPool
+ * @opid: an operation ID
+ *
+ * Releases @opid previously reserved by e_operation_pool_reserve_opid().
+ *
+ * Since: 3.2
+ **/
 void
 e_operation_pool_release_opid (EOperationPool *pool,
                                guint32 opid)
@@ -117,9 +147,16 @@ e_operation_pool_release_opid (EOperationPool *pool,
 	g_mutex_unlock (pool->ops_lock);
 }
 
-/* Pushes operation to be processed. 'opdata' is passed to the function
- * provided in e_operation_pool_new ().
-*/
+/**
+ * e_operation_pool_push:
+ * @pool: an #EOperationPool
+ * @opdata: user data for the operation
+ *
+ * Pushes an operation to be processed.  @opdata is passed to the function
+ * provided in e_operation_pool_new().
+ *
+ * Since: 3.2
+ **/
 void
 e_operation_pool_push (EOperationPool *pool,
                        gpointer opdata)

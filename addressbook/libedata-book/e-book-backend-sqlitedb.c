@@ -507,6 +507,8 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
  * would be stored in same db in different tables.
  *
  * Returns:
+ *
+ * Since: 3.2
  **/
 EBookBackendSqliteDB *
 e_book_backend_sqlitedb_new (const gchar *path,
@@ -630,6 +632,8 @@ insert_stmt_from_contact (EContact *contact,
  * which is the preferred means to add multiple contacts when possible.
  *
  * Returns: TRUE on success.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_book_backend_sqlitedb_add_contact (EBookBackendSqliteDB *ebsdb,
@@ -656,6 +660,8 @@ e_book_backend_sqlitedb_add_contact (EBookBackendSqliteDB *ebsdb,
  *
  *
  * Returns: TRUE on success.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_book_backend_sqlitedb_add_contacts (EBookBackendSqliteDB *ebsdb,
@@ -695,6 +701,13 @@ e_book_backend_sqlitedb_add_contacts (EBookBackendSqliteDB *ebsdb,
 	return ret && !err;
 }
 
+/**
+ * e_book_backend_sqlitedb_remove_contact:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_remove_contact (EBookBackendSqliteDB *ebsdb,
                                         const gchar *folderid,
@@ -708,6 +721,13 @@ e_book_backend_sqlitedb_remove_contact (EBookBackendSqliteDB *ebsdb,
 							error);
 }
 
+/**
+ * e_book_backend_sqlitedb_remove_contacts:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_remove_contacts (EBookBackendSqliteDB *ebsdb,
                                          const gchar *folderid,
@@ -777,6 +797,13 @@ contact_found_cb (gpointer ref,
 	return 0;
 }
 
+/**
+ * e_book_backend_sqlitedb_has_contact:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_has_contact (EBookBackendSqliteDB *ebsdb,
                                      const gchar *folderid,
@@ -821,6 +848,13 @@ get_vcard_cb (gpointer ref,
 	return 0;
 }
 
+/**
+ * e_book_backend_sqlitedb_get_contact:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 EContact *
 e_book_backend_sqlitedb_get_contact (EBookBackendSqliteDB *ebsdb,
                                      const gchar *folderid,
@@ -877,6 +911,13 @@ check_field_foreach (const gchar *field_name,
 	}
 }
 
+/**
+ * e_book_backend_sqlitedb_is_summary_fields:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest)
 {
@@ -943,6 +984,8 @@ summary_select_stmt (const gchar *folderid,
  * the returned vcard string satisfies the passed 'fields_of_interest' parameter.
  * 
  * Returns: (transfer full): The vcard string for @uid or %NULL if @uid was not found.
+ *
+ * Since: 3.2
  */
 gchar *
 e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
@@ -1044,6 +1087,13 @@ static const struct {
 	{ "exists", func_check, 0 }
 };
 
+/**
+ * e_book_backend_sqlitedb_is_summary_query:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_is_summary_query (const gchar *query)
 {
@@ -1494,6 +1544,8 @@ book_backend_sqlitedb_search_full (EBookBackendSqliteDB *ebsdb,
  * and fetch for full required data from another persistance.
  *
  * Returns: List of EbSdbSearchData.
+ *
+ * Since: 3.2
  **/
 GSList *
 e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
@@ -1539,6 +1591,13 @@ e_book_backend_sqlitedb_search (EBookBackendSqliteDB *ebsdb,
 	return search_contacts;
 }
 
+/**
+ * e_book_backend_sqlitedb_search_uids:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 GSList *
 e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
                                      const gchar *folderid,
@@ -1595,6 +1654,13 @@ get_bool_cb (gpointer ref,
 	return 0;
 }
 
+/**
+ * e_book_backend_sqlitedb_get_is_populated:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_get_is_populated (EBookBackendSqliteDB *ebsdb,
                                           const gchar *folderid,
@@ -1615,6 +1681,13 @@ e_book_backend_sqlitedb_get_is_populated (EBookBackendSqliteDB *ebsdb,
 
 }
 
+/**
+ * e_book_backend_sqlitedb_set_is_populated:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_set_is_populated (EBookBackendSqliteDB *ebsdb,
                                           const gchar *folderid,
@@ -1652,6 +1725,8 @@ e_book_backend_sqlitedb_set_is_populated (EBookBackendSqliteDB *ebsdb,
  * 
  * Returns: TRUE if the vcards stored in the db were downloaded partially. It is to indicate
  * the stored vcards does not contain the full data.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_book_backend_sqlitedb_get_has_partial_content (EBookBackendSqliteDB *ebsdb,
@@ -1672,6 +1747,13 @@ e_book_backend_sqlitedb_get_has_partial_content (EBookBackendSqliteDB *ebsdb,
 	return ret;
 }
 
+/**
+ * e_book_backend_sqlitedb_set_has_partial_content:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_set_has_partial_content (EBookBackendSqliteDB *ebsdb,
                                                  const gchar *folderid,
@@ -1713,6 +1795,13 @@ get_string_cb (gpointer ref,
 	return 0;
 }
 
+/**
+ * e_book_backend_sqlitedb_get_contact_bdata:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gchar *
 e_book_backend_sqlitedb_get_contact_bdata (EBookBackendSqliteDB *ebsdb,
                                            const gchar *folderid,
@@ -1732,6 +1821,13 @@ e_book_backend_sqlitedb_get_contact_bdata (EBookBackendSqliteDB *ebsdb,
 	return ret;
 }
 
+/**
+ * e_book_backend_sqlitedb_set_contact_bdata:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_set_contact_bdata (EBookBackendSqliteDB *ebsdb,
                                            const gchar *folderid,
@@ -1761,6 +1857,13 @@ e_book_backend_sqlitedb_set_contact_bdata (EBookBackendSqliteDB *ebsdb,
 	return !err;
 }
 
+/**
+ * e_book_backend_sqlitedb_get_sync_data:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gchar *
 e_book_backend_sqlitedb_get_sync_data (EBookBackendSqliteDB *ebsdb,
                                        const gchar *folderid,
@@ -1779,6 +1882,13 @@ e_book_backend_sqlitedb_get_sync_data (EBookBackendSqliteDB *ebsdb,
 	return ret;
 }
 
+/**
+ * e_book_backend_sqlitedb_set_sync_data:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_set_sync_data (EBookBackendSqliteDB *ebsdb,
                                        const gchar *folderid,
@@ -1807,6 +1917,13 @@ e_book_backend_sqlitedb_set_sync_data (EBookBackendSqliteDB *ebsdb,
 	return !err;
 }
 
+/**
+ * e_book_backend_sqlitedb_get_key_value:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gchar *
 e_book_backend_sqlitedb_get_key_value (EBookBackendSqliteDB *ebsdb,
                                        const gchar *folderid,
@@ -1827,6 +1944,13 @@ e_book_backend_sqlitedb_get_key_value (EBookBackendSqliteDB *ebsdb,
 	return ret;
 }
 
+/**
+ * e_book_backend_sqlitedb_set_key_value:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
                                        const gchar *folderid,
@@ -1856,6 +1980,13 @@ e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
 	return !err;
 }
 
+/**
+ * e_book_backend_sqlitedb_get_partially_cached_ids:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 GSList *
 e_book_backend_sqlitedb_get_partially_cached_ids (EBookBackendSqliteDB *ebsdb,
                                                   const gchar *folderid,
@@ -1876,6 +2007,13 @@ e_book_backend_sqlitedb_get_partially_cached_ids (EBookBackendSqliteDB *ebsdb,
 	return uids;
 }
 
+/**
+ * e_book_backend_sqlitedb_delete_addressbook:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_delete_addressbook (EBookBackendSqliteDB *ebsdb,
                                             const gchar *folderid,
@@ -1917,6 +2055,13 @@ e_book_backend_sqlitedb_delete_addressbook (EBookBackendSqliteDB *ebsdb,
 	return !err;
 }
 
+/**
+ * e_book_backend_sqlitedb_search_data_free:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 void
 e_book_backend_sqlitedb_search_data_free (EbSdbSearchData *s_data)
 {
@@ -1928,6 +2073,13 @@ e_book_backend_sqlitedb_search_data_free (EbSdbSearchData *s_data)
 	}
 }
 
+/**
+ * e_book_backend_sqlitedb_remove:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 gboolean
 e_book_backend_sqlitedb_remove (EBookBackendSqliteDB *ebsdb,
                                 GError **error)

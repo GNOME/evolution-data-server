@@ -715,6 +715,8 @@ e_data_cal_view_is_stopped (EDataCalView *view)
  * if there are changes in the objects matching the view search expression.
  *
  * Returns: TRUE if the view is completed, FALSE if still in progress.
+ *
+ * Since: 3.2
  */
 gboolean
 e_data_cal_view_is_completed (EDataCalView *view)
@@ -735,6 +737,8 @@ e_data_cal_view_is_completed (EDataCalView *view)
  * Note: The data pointer in the hash table has no special meaning, it's
  * only GINT_TO_POINTER(1) for easier checking. Also, field names are
  * compared case insensitively.
+ *
+ * Since: 3.2
  **/
 /* const */ GHashTable *
 e_data_cal_view_get_fields_of_interest (EDataCalView *view)
@@ -928,7 +932,9 @@ e_data_cal_view_notify_progress (EDataCalView *view,
  *
  * Notifies all view listeners of the completion of the view, including a
  * status code.
- */
+ *
+ * Since: 3.2
+ **/
 void
 e_data_cal_view_notify_complete (EDataCalView *view,
                                  const GError *error)

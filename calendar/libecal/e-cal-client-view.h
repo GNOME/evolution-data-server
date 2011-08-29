@@ -37,6 +37,14 @@ typedef struct _ECalClientViewPrivate	ECalClientViewPrivate;
 
 struct _ECalClient;
 
+/**
+ * ECalClientView:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 struct _ECalClientView {
 	GObject object;
 

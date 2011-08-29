@@ -77,6 +77,13 @@ e_book_client_error_quark (void)
 	return q;
 }
 
+/**
+ * e_book_client_error_to_string:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 const gchar *
 e_book_client_error_to_string (EBookClientError code)
 {
@@ -107,6 +114,8 @@ e_book_client_error_to_string (EBookClientError code)
  * otherwise the given message is used.
  *
  * Returned pointer should be freed with g_error_free().
+ *
+ * Since: 3.2
  **/
 GError *
 e_book_client_error_create (EBookClientError code,

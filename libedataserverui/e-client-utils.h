@@ -28,6 +28,11 @@
 
 G_BEGIN_DECLS
 
+/**
+ * EClientSourceType:
+ *
+ * Since: 3.2
+ **/
 typedef enum {
 	E_CLIENT_SOURCE_TYPE_CONTACTS,
 	E_CLIENT_SOURCE_TYPE_EVENTS,
@@ -36,6 +41,11 @@ typedef enum {
 	E_CLIENT_SOURCE_TYPE_LAST
 } EClientSourceType;
 
+/**
+ * EClientUtilsAuthenticateHandler:
+ *
+ * Since: 3.2
+ **/
 typedef gboolean (* EClientUtilsAuthenticateHandler) (EClient *client, ECredentials *credentials, gpointer user_data);
 
 EClient	*	e_client_utils_new			(ESource *source, EClientSourceType source_type, GError **error);

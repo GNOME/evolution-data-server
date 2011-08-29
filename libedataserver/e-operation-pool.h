@@ -24,6 +24,14 @@
 
 #include <gio/gio.h>
 
+/**
+ * EOperationPool:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 typedef struct _EOperationPool EOperationPool;
 
 EOperationPool *e_operation_pool_new (guint max_threads, GFunc thread_func, gpointer user_data);

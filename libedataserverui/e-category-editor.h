@@ -47,6 +47,14 @@ typedef struct _ECategoryEditor ECategoryEditor;
 typedef struct _ECategoryEditorClass ECategoryEditorClass;
 typedef struct _ECategoryEditorPrivate ECategoryEditorPrivate;
 
+/**
+ * ECategoryEditor:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 struct _ECategoryEditor {
 	GtkDialog parent;
 	ECategoryEditorPrivate *priv;

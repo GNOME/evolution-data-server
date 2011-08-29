@@ -2165,6 +2165,8 @@ e_vcard_attribute_get_param (EVCardAttribute *attr,
  * Check if the @evc has been parsed already. Used for debugging.
  *
  * Return value: %TRUE if @evc has been parsed, %FALSE otherwise.
+ *
+ * Since: 3.2
  **/
 gboolean
 e_vcard_is_parsed (EVCard *evc)

@@ -712,6 +712,8 @@ camel_session_get_service_by_url (CamelSession *session,
  * camel_session_add_service().  Free the returned list using g_list_free().
  *
  * Returns: an unsorted list of #CamelService objects
+ *
+ * Since: 3.2
  **/
 GList *
 camel_session_list_services (CamelSession *session)

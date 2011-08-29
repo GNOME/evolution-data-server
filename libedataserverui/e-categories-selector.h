@@ -47,6 +47,14 @@ typedef struct _ECategoriesSelector ECategoriesSelector;
 typedef struct _ECategoriesSelectorClass ECategoriesSelectorClass;
 typedef struct _ECategoriesSelectorPrivate ECategoriesSelectorPrivate;
 
+/**
+ * ECategoriesSelector:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
+ * Since: 3.2
+ **/
 struct _ECategoriesSelector {
 	GtkTreeView parent;
 	ECategoriesSelectorPrivate *priv;

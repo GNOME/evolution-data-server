@@ -71,6 +71,13 @@ typedef enum {
 	E_CAL_LOAD_LOADED
 } ECalLoadState;
 
+/**
+ * EDataCalMode:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 typedef enum {
 	Local = 1 << 0,
 	Remote = 1 << 1,

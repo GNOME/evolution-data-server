@@ -43,14 +43,85 @@ G_BEGIN_DECLS
 #define E_IS_CAL_BACKEND_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_BACKEND))
 #define E_CAL_BACKEND_GET_CLASS(obj)  (E_CAL_BACKEND_CLASS (G_OBJECT_GET_CLASS (obj)))
 
+/**
+ * CLIENT_BACKEND_PROPERTY_OPENED:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_OPENED			"opened"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_OPENING:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_OPENING			"opening"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_ONLINE:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_ONLINE			"online"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_READONLY:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_READONLY		"readonly"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_CACHE_DIR:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_CACHE_DIR		"cache-dir"
+
+/**
+ * CLIENT_BACKEND_PROPERTY_CAPABILITIES:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CLIENT_BACKEND_PROPERTY_CAPABILITIES		"capabilities"
+
+/**
+ * CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS		"cal-email-address"
+
+/**
+ * CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS	"alarm-email-address"
+
+/**
+ * CAL_BACKEND_PROPERTY_DEFAULT_OBJECT:
+ *
+ * FIXME: Document me.
+ *
+ * Since: 3.2
+ **/
 #define CAL_BACKEND_PROPERTY_DEFAULT_OBJECT		"default-object"
 
 struct _ECalBackendCache;

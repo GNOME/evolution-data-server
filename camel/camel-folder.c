@@ -1852,6 +1852,8 @@ camel_folder_set_full_name (CamelFolder *folder,
  * can be obtained with camel_folder_get_full_name().
  *
  * Returns: the display name of the folder
+ *
+ * Since: 3.2
  **/
 const gchar *
 camel_folder_get_display_name (CamelFolder *folder)
@@ -1868,7 +1870,7 @@ camel_folder_get_display_name (CamelFolder *folder)
  *
  * Sets the display name for the folder.
  *
- * Since: 2.32
+ * Since: 3.2
  **/
 void
 camel_folder_set_display_name (CamelFolder *folder,

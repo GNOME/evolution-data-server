@@ -43,6 +43,8 @@ e_book_backend_sync_construct (EBookBackendSync *backend)
  * @error: #GError to set, when something fails
  *
  * Opens @backend, which can involve connecting it to a remote server.
+ *
+ * Since: 3.2
  **/
 void
 e_book_backend_sync_open (EBookBackendSync *backend,

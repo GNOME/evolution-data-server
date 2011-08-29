@@ -574,6 +574,8 @@ e_data_book_view_notify_complete (EDataBookView *book_view,
  * Provides listeners with a human-readable text describing the
  * current backend operation. This can be used for progress
  * reporting.
+ *
+ * Since: 3.2
  **/
 void
 e_data_book_view_notify_progress (EDataBookView *book_view,

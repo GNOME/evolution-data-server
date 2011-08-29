@@ -336,6 +336,11 @@ init_sqlite_vfs (void)
 	return NULL;
 }
 
+/**
+ * e_sqlite3_vfs_init:
+ *
+ * Since: 3.2
+ **/
 void
 e_sqlite3_vfs_init (void)
 {
