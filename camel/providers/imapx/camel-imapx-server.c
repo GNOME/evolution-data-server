@@ -621,7 +621,7 @@ imapx_command_addv (CamelIMAPXCommand *ic, const gchar *fmt, va_list ap)
 					break;
 				case 's': /* simple string */
 					s = va_arg (ap, gchar *);
-					c(ic->is->tagprefix, "got string '%s'\n", s);
+					c(ic->is->tagprefix, "got string '%s'\n", g_str_has_prefix (fmt, "LOGIN") ? "***" : s);
 				output_string:
 					if (*s) {
 						guchar mask = imapx_is_mask (s);
@@ -815,7 +815,11 @@ camel_imapx_command_close (CamelIMAPXCommand *ic)
 
 		byte_array = camel_stream_mem_get_byte_array (ic->mem);
 
-		c(ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", byte_array->len, (gint)byte_array->len, byte_array->data);
+		if (g_str_has_prefix ((const gchar *) byte_array->data, "LOGIN")) {
+			c(ic->is->tagprefix, "completing command buffer is [%d] 'LOGIN...'\n", byte_array->len);
+		} else {
+			c(ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", byte_array->len, (gint)byte_array->len, byte_array->data);
+		}
 		if (byte_array->len > 0)
 			imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_SIMPLE, NULL);
 
@@ -845,7 +849,7 @@ imapx_command_start (CamelIMAPXServer *imap, CamelIMAPXCommand *ic)
 
 	g_static_rec_mutex_lock (&imap->ostream_lock);
 
-	c(imap->tagprefix, "Starting command (active=%d,%s) %c%05u %s\r\n", camel_dlist_length(&imap->active), imap->literal?" literal":"", imap->tagprefix, ic->tag, cp->data);
+	c(imap->tagprefix, "Starting command (active=%d,%s) %c%05u %s\r\n", camel_dlist_length(&imap->active), imap->literal?" literal":"", imap->tagprefix, ic->tag, cp->data && g_str_has_prefix (cp->data, "LOGIN") ? "LOGIN..." : cp->data);
 	if (!imap->stream || camel_stream_printf((CamelStream *)imap->stream, "%c%05u %s\r\n", imap->tagprefix, ic->tag, cp->data) == -1) {
 		g_set_error (
 			&ic->error, CAMEL_IMAPX_ERROR, 1,

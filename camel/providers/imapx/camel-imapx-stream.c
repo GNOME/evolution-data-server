@@ -149,7 +149,11 @@ imapx_stream_write (CamelStream *stream,
 {
 	CamelIMAPXStream *is = (CamelIMAPXStream *)stream;
 
-	io(is->tagprefix, "camel_imapx_write: '%.*s'\n", (gint)n, buffer);
+	if (g_strstr_len (buffer, n, "LOGIN")) {
+		io(is->tagprefix, "camel_imapx_write: 'LOGIN...'\n");
+	} else {
+		io(is->tagprefix, "camel_imapx_write: '%.*s'\n", (gint)n, buffer);
+	}
 
 	return camel_stream_write (is->source, buffer, n, cancellable, error);
 }
