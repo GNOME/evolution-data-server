@@ -72,7 +72,8 @@ DISTCLEANFILES = $(pkgconfig_DATA)
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(top_builddir)/libedataserver --identifier-prefix E --pkg-export libecal-1.2
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(top_builddir)/libedataserver --identifier-prefix E --pkg-export libecal-1.2 \
+	--c-include="libecal/e-cal.h"
 INTROSPECTION_COMPILER_ARGS = --includedir=$(top_builddir)/libedataserver
 
 if HAVE_INTROSPECTION
