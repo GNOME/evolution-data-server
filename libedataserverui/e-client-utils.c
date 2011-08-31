@@ -790,10 +790,38 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 		username_markup = g_markup_printf_escaped ("<b>%s</b>", e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME));
 		source_name_markup = g_markup_printf_escaped ("<b>%s</b>", e_source_peek_name (source));
 
-		if (reason && *reason)
-			prompt = g_strdup_printf (_("Enter password for %s (user %s)\nReason: %s"), source_name_markup, username_markup, reason);
-		else
-			prompt = g_strdup_printf (_("Enter password for %s (user %s)"), source_name_markup, username_markup);
+		if (is_cal) {
+			switch (e_cal_client_get_source_type (E_CAL_CLIENT (client))) {
+			default:
+				g_warn_if_reached ();
+			case E_CAL_CLIENT_SOURCE_TYPE_EVENTS:
+				if (reason && *reason)
+					prompt = g_strdup_printf (_("Enter password for calendar %s (user %s)\nReason: %s"), source_name_markup, username_markup, reason);
+				else
+					prompt = g_strdup_printf (_("Enter password for calendar %s (user %s)"), source_name_markup, username_markup);
+				break;
+			case E_CAL_CLIENT_SOURCE_TYPE_TASKS:
+				if (reason && *reason)
+					prompt = g_strdup_printf (_("Enter password for task list %s (user %s)\nReason: %s"), source_name_markup, username_markup, reason);
+				else
+					prompt = g_strdup_printf (_("Enter password for task list %s (user %s)"), source_name_markup, username_markup);
+				break;
+			case E_CAL_CLIENT_SOURCE_TYPE_MEMOS:
+				if (reason && *reason)
+					prompt = g_strdup_printf (_("Enter password for memo list %s (user %s)\nReason: %s"), source_name_markup, username_markup, reason);
+				else
+					prompt = g_strdup_printf (_("Enter password for memo list %s (user %s)"), source_name_markup, username_markup);
+				break;
+			}
+		} else {
+			if (reason && *reason)
+				prompt = g_strdup_printf (_("Enter password for address book %s (user %s)\nReason: %s"), source_name_markup, username_markup, reason);
+			else
+				prompt = g_strdup_printf (_("Enter password for address book %s (user %s)"), source_name_markup, username_markup);
+
+			if (!is_book)
+				g_warn_if_reached ();
+		}
 
 		e_credentials_set (credentials, E_CREDENTIALS_KEY_PROMPT_TEXT, prompt);
 
