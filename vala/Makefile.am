@@ -6,6 +6,7 @@ vapi_DATA = \
 	$(NULL)
 dist_vapi_DATA = \
 	libebook-1.2.deps \
+	libecalendar-1.2.deps \
 	$(NULL)
 
 EXTRA_DIST = EBook-1.2.metadata ECalendar-1.2.metadata
