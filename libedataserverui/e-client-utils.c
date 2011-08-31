@@ -737,6 +737,7 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 {
 	ESource *source;
 	gboolean is_book, is_cal, res, remember_password = FALSE;
+	const gchar *prop;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (credentials != NULL, FALSE);
@@ -802,12 +803,13 @@ e_client_utils_authenticate_handler (EClient *client, ECredentials *credentials,
 		g_free (prompt);
 	}
 
-	remember_password = g_strcmp0 (e_source_get_property (source, "remember_password"), "true") == 0;
+	prop = e_source_get_property (source, "remember_password");
+	remember_password = !prop || g_strcmp0 (prop, "true") == 0;
 
 	res = e_credentials_authenticate_helper (credentials, gtk_window_parent, &remember_password);
 
 	if (res)
-		e_source_set_property (source, "remember_password", remember_password ? "true" : NULL);
+		e_source_set_property (source, "remember_password", remember_password ? "true" : "false");
 
 	e_credentials_clear_peek (credentials);
 
