@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-08-24 17:55+0000\n"
-"PO-Revision-Date: 2011-08-24 21:11+0200\n"
+"POT-Creation-Date: 2011-08-31 16:22+0000\n"
+"PO-Revision-Date: 2011-08-31 19:24+0200\n"
 "Last-Translator: Jorge González <jorgegonz@svn.gnome.org>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -144,7 +144,7 @@ msgstr "Descargando contactos (%d)…"
 #: ../calendar/libecal/e-cal.c:4439 ../calendar/libecal/e-cal-client.c:140
 #: ../camel/providers/imap/camel-imap-command.c:484
 #: ../camel/providers/imap/camel-imap-store.c:409
-#: ../camel/providers/imapx/camel-imapx-server.c:2246
+#: ../camel/providers/imapx/camel-imapx-server.c:2250
 #: ../camel/providers/smtp/camel-smtp-transport.c:439
 #: ../libedataserver/e-client.c:152
 msgid "Unknown error"
@@ -224,7 +224,7 @@ msgid "There was no source for UID '%s' stored in a source list."
 msgstr "No había origen para el UID «%s» almacenado en la lista de origen."
 
 #: ../addressbook/libebook/e-book-client.c:2094
-#: ../calendar/libecal/e-cal-client.c:4092
+#: ../calendar/libecal/e-cal-client.c:4132
 msgid "Cannot get connection to view"
 msgstr "No se puede obtener conexión para ver"
 
@@ -760,37 +760,30 @@ msgid "SIP address"
 msgstr "Dirección SIP"
 
 #: ../addressbook/libebook/e-contact.c:293
-#| msgid "Skype Home Name 1"
 msgid "Google Talk Home Name 1"
 msgstr "Nombre de Google Talk en casa 1"
 
 #: ../addressbook/libebook/e-contact.c:294
-#| msgid "Skype Home Name 2"
 msgid "Google Talk Home Name 2"
 msgstr "Nombre de Google Talk en casa 2"
 
 #: ../addressbook/libebook/e-contact.c:295
-#| msgid "Skype Home Name 3"
 msgid "Google Talk Home Name 3"
 msgstr "Nombre de Google Talk en casa 3"
 
 #: ../addressbook/libebook/e-contact.c:296
-#| msgid "Skype Work Name 1"
 msgid "Google Talk Work Name 1"
 msgstr "Nombre de Google Talk en el trabajo 1"
 
 #: ../addressbook/libebook/e-contact.c:297
-#| msgid "Skype Work Name 2"
 msgid "Google Talk Work Name 2"
 msgstr "Nombre de Google Talk en el trabajo 2"
 
 #: ../addressbook/libebook/e-contact.c:298
-#| msgid "Skype Work Name 3"
 msgid "Google Talk Work Name 3"
 msgstr "Nombre de Google Talk en el trabajo 3"
 
 #: ../addressbook/libebook/e-contact.c:299
-#| msgid "Skype Name List"
 msgid "Google Talk Name List"
 msgstr "Lista de nombres para Google Talk"
 
@@ -1128,7 +1121,6 @@ msgstr "Pronóstico"
 
 #: ../calendar/libecal/e-cal.c:867 ../libedataserverui/e-book-auth-util.c:198
 #: ../libedataserverui/e-book-auth-util.c:417
-#: ../libedataserverui/e-client-utils.c:795
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduzca la contraseña para %s (usuario %s)"
@@ -1952,8 +1944,8 @@ msgstr "Solicitud inesperada de GnuPG para «%s»"
 
 #: ../camel/camel-gpg-context.c:828 ../camel/camel-net-utils.c:515
 #: ../camel/camel-tcp-stream-raw.c:255
-#: ../camel/providers/imapx/camel-imapx-server.c:4954
-#: ../camel/providers/imapx/camel-imapx-server.c:4971
+#: ../camel/providers/imapx/camel-imapx-server.c:4962
+#: ../camel/providers/imapx/camel-imapx-server.c:4979
 #: ../camel/providers/imapx/camel-imapx-store.c:159
 #: ../camel/providers/nntp/camel-nntp-summary.c:409
 #: ../libedataserver/e-client.c:127 ../libedataserverui/e-book-auth-util.c:221
@@ -2993,7 +2985,7 @@ msgid "Could not load summary for %s"
 msgstr "No se puede cargar la recopilación de %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:1049
-#: ../camel/providers/imapx/camel-imapx-server.c:4010
+#: ../camel/providers/imapx/camel-imapx-server.c:4018
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Buscando mensajes modificados en %s"
@@ -3003,13 +2995,13 @@ msgid "Unable to retrieve message: "
 msgstr "No se pudo obtener el mensaje: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3497
-#: ../camel/providers/imapx/camel-imapx-server.c:5283
+#: ../camel/providers/imapx/camel-imapx-server.c:5291
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "No se puede obtener el mensaje con ID de mensaje %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3498
-#: ../camel/providers/imapx/camel-imapx-server.c:5284
+#: ../camel/providers/imapx/camel-imapx-server.c:5292
 msgid "No such message available."
 msgstr "Dicho mensaje no está disponible."
 
@@ -3022,8 +3014,8 @@ msgstr "Este mensaje no está disponible actualmente"
 
 #: ../camel/providers/imap/camel-imap-folder.c:4075
 #: ../camel/providers/imap/camel-imap-folder.c:4158
-#: ../camel/providers/imapx/camel-imapx-server.c:3968
-#: ../camel/providers/imapx/camel-imapx-server.c:4118
+#: ../camel/providers/imapx/camel-imapx-server.c:3976
+#: ../camel/providers/imapx/camel-imapx-server.c:4126
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obteniendo recopilación de información sobre los mensajes nuevos en %s"
@@ -3195,19 +3187,19 @@ msgstr "Bandeja de entrada"
 #: ../camel/providers/imap/camel-imap-store.c:354
 #: ../camel/providers/imap/camel-imap-store.c:381
 #: ../camel/providers/imap/camel-imap-store.c:408
-#: ../camel/providers/imapx/camel-imapx-server.c:2999
+#: ../camel/providers/imapx/camel-imapx-server.c:3007
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:355
-#: ../camel/providers/imapx/camel-imapx-server.c:3000
+#: ../camel/providers/imapx/camel-imapx-server.c:3008
 #: ../camel/providers/smtp/camel-smtp-transport.c:192
 msgid "STARTTLS not supported"
 msgstr "No se soporta STARTTLS"
 
 #: ../camel/providers/imap/camel-imap-store.c:374
-#: ../camel/providers/imapx/camel-imapx-server.c:3038
+#: ../camel/providers/imapx/camel-imapx-server.c:3046
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: "
@@ -3218,13 +3210,13 @@ msgid "SSL is not available in this build"
 msgstr "No se soporta SSL en esta compilación"
 
 #: ../camel/providers/imap/camel-imap-store.c:707
-#: ../camel/providers/imapx/camel-imapx-server.c:3133
+#: ../camel/providers/imapx/camel-imapx-server.c:3141
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "El servidor IMAP %s no soporta el método de autenticación requerido %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:718
-#: ../camel/providers/imapx/camel-imapx-server.c:3146
+#: ../camel/providers/imapx/camel-imapx-server.c:3154
 #: ../camel/providers/smtp/camel-smtp-transport.c:347
 #, c-format
 msgid "No support for authentication type %s"
@@ -3237,13 +3229,13 @@ msgid "Error creating SASL authentication object."
 msgstr "Error al crear el objeto de autenticación SASL."
 
 #: ../camel/providers/imap/camel-imap-store.c:777
-#: ../camel/providers/imapx/camel-imapx-server.c:3191
+#: ../camel/providers/imapx/camel-imapx-server.c:3199
 #, c-format
 msgid "You did not enter a password."
 msgstr "No introdujo una contraseña."
 
 #: ../camel/providers/imap/camel-imap-store.c:818
-#: ../camel/providers/imapx/camel-imapx-server.c:3236
+#: ../camel/providers/imapx/camel-imapx-server.c:3244
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3350,21 +3342,21 @@ msgstr "Puerto IMAP predeterminado"
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1476
+#: ../camel/providers/imapx/camel-imapx-server.c:1480
 msgid "Error writing to cache stream: "
 msgstr "Error al escribir al flujo de caché: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2182
+#: ../camel/providers/imapx/camel-imapx-server.c:2186
 #, c-format
 msgid "Not authenticated"
 msgstr "No está autenticado"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3408
+#: ../camel/providers/imapx/camel-imapx-server.c:3416
 msgid "Closing tmp stream failed: "
 msgstr "Falló el flujo de cierre del temporal: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5429
-#: ../camel/providers/imapx/camel-imapx-server.c:5444
+#: ../camel/providers/imapx/camel-imapx-server.c:5437
+#: ../camel/providers/imapx/camel-imapx-server.c:5452
 msgid "Cannot create spool file: "
 msgstr "No se puede crear el archivo de cola de correo: "
 
@@ -4941,20 +4933,84 @@ msgid ""
 msgstr ""
 "Ya hay una categoría «%s» en la configuración. Por favor, use otro nombre"
 
-#: ../libedataserverui/e-client-utils.c:793
+#: ../libedataserverui/e-client-utils.c:799
 #, c-format
+#| msgid ""
+#| "Enter password for %s (user %s)\n"
+#| "Reason: %s"
 msgid ""
-"Enter password for %s (user %s)\n"
+"Enter password for calendar %s (user %s)\n"
 "Reason: %s"
 msgstr ""
-"Introduzca la contraseña para %s (usuario %s)\n"
+"Introduzca la contraseña para el calendario %s (usuario %s)\n"
 "Razón: %s"
 
-#: ../libedataserverui/e-client-utils.c:887
+#: ../libedataserverui/e-client-utils.c:801
+#, c-format
+#| msgid "Enter password for %s (user %s)"
+msgid "Enter password for calendar %s (user %s)"
+msgstr "Introduzca la contraseña para el calendario %s (usuario %s)"
+
+#: ../libedataserverui/e-client-utils.c:805
+#, c-format
+#| msgid ""
+#| "Enter password for %s (user %s)\n"
+#| "Reason: %s"
+msgid ""
+"Enter password for task list %s (user %s)\n"
+"Reason: %s"
+msgstr ""
+"Introduzca la contraseña para la lista de tareas %s (usuario %s)\n"
+"Razón: %s"
+
+#: ../libedataserverui/e-client-utils.c:807
+#, c-format
+#| msgid "Enter password for %s (user %s)"
+msgid "Enter password for task list %s (user %s)"
+msgstr "Introduzca la contraseña para la lista de tareas %s (usuario %s)"
+
+#: ../libedataserverui/e-client-utils.c:811
+#, c-format
+#| msgid ""
+#| "Enter password for %s (user %s)\n"
+#| "Reason: %s"
+msgid ""
+"Enter password for memo list %s (user %s)\n"
+"Reason: %s"
+msgstr ""
+"Introduzca la contraseña para la lista de notas %s (usuario %s)\n"
+"Razón: %s"
+
+#: ../libedataserverui/e-client-utils.c:813
+#, c-format
+#| msgid "Enter password for %s (user %s)"
+msgid "Enter password for memo list %s (user %s)"
+msgstr "Introduzca la contraseña para la lista de notas %s (usuario %s)"
+
+#: ../libedataserverui/e-client-utils.c:818
+#, c-format
+#| msgid ""
+#| "Enter password for %s (user %s)\n"
+#| "Reason: %s"
+msgid ""
+"Enter password for address book %s (user %s)\n"
+"Reason: %s"
+msgstr ""
+"Introduzca la contraseña para la libreta de direcciones %s (usuario %s)\n"
+"Razón: %s"
+
+#: ../libedataserverui/e-client-utils.c:820
+#, c-format
+#| msgid "Enter password for %s (user %s)"
+msgid "Enter password for address book %s (user %s)"
+msgstr ""
+"Introduzca la contraseña para la libreta de direcciones %s (usuario %s)"
+
+#: ../libedataserverui/e-client-utils.c:917
 msgid "Enter Passphrase"
 msgstr "Introduzca la frase de paso"
 
-#: ../libedataserverui/e-client-utils.c:889
+#: ../libedataserverui/e-client-utils.c:919
 msgid "Enter Password"
 msgstr "Introduzca contraseña"
 
