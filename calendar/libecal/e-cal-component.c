@@ -2446,6 +2446,9 @@ set_datetime (ECalComponent *comp, struct datetime *datetime,
 		dt->value->is_utc = 0;
 
 	if (datetime->prop) {
+		/* make sure no VALUE property is left if not needed */
+		icalproperty_remove_parameter (datetime->prop, ICAL_VALUE_PARAMETER);
+
 		(* prop_set_func) (datetime->prop, *dt->value);
 	} else {
 		datetime->prop = (* prop_new_func) (*dt->value);
