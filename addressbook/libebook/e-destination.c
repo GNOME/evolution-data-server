@@ -1152,7 +1152,7 @@ e_destination_list_show_addresses (const EDestination *dest)
  * to @dest.
  * The list and its elements belong to @dest, and should not be freed.
  *
- * Returns: A list of elements of type #EDestination, or %NULL.
+ * Returns: (element-type EDestination) (transfer none): A list of elements of type #EDestination, or %NULL.
  **/
 const GList *
 e_destination_list_get_root_dests (const EDestination *dest)
@@ -1173,7 +1173,7 @@ e_destination_list_get_root_dests (const EDestination *dest)
  * Everything returned from this function belongs to @dest and
  * thus should not be freed.
  *
- * Returns: A list of elements of type #EDestination, or %NULL.
+ * Returns: (element-type EDestination) (transfer none): A list of elements of type #EDestination, or %NULL.
  *
  * Since: 3.2
  **/

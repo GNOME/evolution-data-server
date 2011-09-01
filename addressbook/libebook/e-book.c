@@ -694,7 +694,7 @@ e_book_commit_contact_async (EBook *book,
 /**
  * e_book_get_required_fields:
  * @book: an #EBook
- * @fields: a #GList of fields to set on success
+ * @fields: (out) (transfer full) (element-type utf8): a #GList of fields to set on success
  * @error: a #GError to set on failure
  *
  * Gets a list of fields that are required to be filled in for
@@ -843,7 +843,7 @@ e_book_get_required_fields_async (EBook *book,
 /**
  * e_book_get_supported_fields:
  * @book: an #EBook
- * @fields: a #GList of fields to set on success
+ * @fields: (out) (transfer full) (element-type utf8): a #GList of fields to set on success
  * @error: a #GError to set on failure
  *
  * Gets a list of fields that can be stored for contacts
@@ -993,7 +993,7 @@ e_book_get_supported_fields_async (EBook *book,
 /**
  * e_book_get_supported_auth_methods:
  * @book: an #EBook
- * @auth_methods: a #GList of auth methods to set on success
+ * @auth_methods: (out) (transfer full) (element-type utf8): a #GList of auth methods to set on success
  * @error: a #GError to set on failure
  *
  * Queries @book for the list of authentication methods it supports.
@@ -1546,7 +1546,7 @@ remove_contact_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data
 /**
  * e_book_remove_contacts:
  * @book: an #EBook
- * @ids: an #GList of const gchar *id's
+ * @ids: (element-type utf8): an #GList of const gchar *id's
  * @error: a #GError to set on failure
  *
  * Removes the contacts with ids from the list @ids from @book.  This is
@@ -1808,7 +1808,7 @@ remove_contacts_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_dat
 /**
  * e_book_async_remove_contacts:
  * @book: an #EBook
- * @ids: a #GList of const gchar *id's
+ * @ids: (element-type utf8): a #GList of const gchar *id's
  * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
@@ -1858,7 +1858,7 @@ e_book_async_remove_contacts (EBook *book,
 /**
  * e_book_remove_contacts_async:
  * @book: an #EBook
- * @ids: a #GList of const gchar *id's
+ * @ids: (element-type utf8): a #GList of const gchar *id's
  * @cb: (scope async): a function to call when the operation finishes
  * @closure: data to pass to callback function
  *
@@ -1911,7 +1911,7 @@ e_book_remove_contacts_async (EBook *book,
  * e_book_get_book_view:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @requested_fields: (allow-none): a #GList containing the names of fields to
+ * @requested_fields: (allow-none) (element-type utf8): a #GList containing the names of fields to
  * return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
  * @book_view: (out): A #EBookView pointer, will be set to the view
@@ -2019,7 +2019,7 @@ get_book_view_reply (GObject *gdbus_book, GAsyncResult *res, gpointer user_data)
  * e_book_async_get_book_view:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @requested_fields: a #GList containing the names of fields to return, or NULL for all
+ * @requested_fields: (element-type utf8): a #GList containing the names of fields to return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
  * @cb: (scope call): a function to call when the operation finishes
  * @closure: data to pass to callback function
@@ -2067,7 +2067,7 @@ e_book_async_get_book_view (EBook *book,
  * e_book_get_book_view_async:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @requested_fields: (allow-none): a #GList containing the names of fields to
+ * @requested_fields: (allow-none) (element-type utf8): a #GList containing the names of fields to
  * return, or NULL for all
  * @max_results: the maximum number of contacts to show (or 0 for all)
  * @cb: (scope call): a function to call when the operation finishes
@@ -2118,7 +2118,7 @@ e_book_get_book_view_async (EBook *book,
  * e_book_get_contacts:
  * @book: an #EBook
  * @query: an #EBookQuery
- * @contacts: a #GList pointer, will be set to the list of contacts
+ * @contacts: (element-type utf8): a #GList pointer, will be set to the list of contacts
  * @error: a #GError to set on failure
  *
  * Query @book with @query, setting @contacts to the list of contacts which
@@ -2323,10 +2323,10 @@ parse_changes_array (GVariant *var_changes)
 }
 
 /**
- * e_book_get_changes:
+ * e_book_get_changes: (skip)
  * @book: an #EBook
  * @changeid:  the change ID
- * @changes: return location for a #GList of #EBookChange items
+ * @changes: (out) (transfer full): return location for a #GList of #EBookChange items
  * @error: a #GError to set on failure.
  *
  * Get the set of changes since the previous call to e_book_get_changes()
@@ -2434,7 +2434,7 @@ e_book_get_changes_async (EBook *book,
 
 /**
  * e_book_free_change_list:
- * @change_list: a #GList of #EBookChange items
+ * @change_list: (element-type EBookChange): a #GList of #EBookChange items
  *
  * Free the contents of #change_list, and the list itself.
  *

@@ -253,7 +253,7 @@ e_book_client_view_stop (EBookClientView *view, GError **error)
 /**
  * e_book_client_view_set_fields_of_interest:
  * @view: An #EBookClientView object
- * @fields_of_interest: List of field names in which the client is interested
+ * @fields_of_interest: (element-type utf8): List of field names in which the client is interested
  * @error: A #GError
  *
  * Client can instruct server to which fields it is interested in only, thus

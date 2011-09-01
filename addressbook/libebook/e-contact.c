@@ -1703,7 +1703,7 @@ e_contact_get_attributes (EContact *contact, EContactField field_id)
  * e_contact_set_attributes:
  * @contact: an #EContact
  * @field_id: an #EContactField
- * @attributes: a #GList of pointers to #EVCardAttribute
+ * @attributes: (element-type EVCardAttribute): a #GList of pointers to #EVCardAttribute
  *
  * Sets the vcard attributes for @contact's @field_id.
  * Attributes are added to the contact in the same order as they are in @attributes.
