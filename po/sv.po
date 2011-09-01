@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-24 08:40+0200\n"
-"PO-Revision-Date: 2011-08-24 08:41+0100\n"
+"POT-Creation-Date: 2011-09-01 15:34+0200\n"
+"PO-Revision-Date: 2011-09-01 15:35+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -39,7 +39,7 @@ msgstr "Frågar efter uppdaterade kontakter..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:839
 #: ../addressbook/libebook/e-book.c:3483
-#: ../calendar/libecal/e-cal.c:1318
+#: ../calendar/libecal/e-cal.c:1337
 #: ../libedataserver/e-client.c:1851
 msgid "Personal"
 msgstr "Personligt"
@@ -136,11 +136,11 @@ msgstr "Hämtar kontakter (%d)... "
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:520
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:549
 #: ../calendar/backends/http/e-cal-backend-http.c:422
-#: ../calendar/libecal/e-cal.c:4420
+#: ../calendar/libecal/e-cal.c:4439
 #: ../calendar/libecal/e-cal-client.c:140
 #: ../camel/providers/imap/camel-imap-command.c:484
 #: ../camel/providers/imap/camel-imap-store.c:409
-#: ../camel/providers/imapx/camel-imapx-server.c:2246
+#: ../camel/providers/imapx/camel-imapx-server.c:2250
 #: ../camel/providers/smtp/camel-smtp-transport.c:439
 #: ../libedataserver/e-client.c:152
 msgid "Unknown error"
@@ -157,7 +157,7 @@ msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: det finns ingen källa för UID \"%s\" lagrad i GConf."
 
 #: ../addressbook/libebook/e-book.c:3466
-#: ../calendar/libecal/e-cal.c:1298
+#: ../calendar/libecal/e-cal.c:1317
 #: ../libedataserver/e-client.c:1846
 msgid "On This Computer"
 msgstr "På denna dator"
@@ -221,7 +221,7 @@ msgid "There was no source for UID '%s' stored in a source list."
 msgstr "Det finns ingen källa för UID \"%s\" lagrad i en källista."
 
 #: ../addressbook/libebook/e-book-client.c:2094
-#: ../calendar/libecal/e-cal-client.c:4092
+#: ../calendar/libecal/e-cal-client.c:4132
 msgid "Cannot get connection to view"
 msgstr "Kan inte hämta anslutning att visa"
 
@@ -756,7 +756,35 @@ msgstr "Lista med Skype-namn"
 msgid "SIP address"
 msgstr "SIP-adress"
 
-#: ../addressbook/libebook/e-contact.c:1542
+#: ../addressbook/libebook/e-contact.c:293
+msgid "Google Talk Home Name 1"
+msgstr "Google Talk-hemnamn 1"
+
+#: ../addressbook/libebook/e-contact.c:294
+msgid "Google Talk Home Name 2"
+msgstr "Google Talk-hemnamn 2"
+
+#: ../addressbook/libebook/e-contact.c:295
+msgid "Google Talk Home Name 3"
+msgstr "Google Talk-hemnamn 3"
+
+#: ../addressbook/libebook/e-contact.c:296
+msgid "Google Talk Work Name 1"
+msgstr "Google Talk-jobbnamn 1"
+
+#: ../addressbook/libebook/e-contact.c:297
+msgid "Google Talk Work Name 2"
+msgstr "Google Talk-jobbnamn 2"
+
+#: ../addressbook/libebook/e-contact.c:298
+msgid "Google Talk Work Name 3"
+msgstr "Google Talk-jobbnamn 3"
+
+#: ../addressbook/libebook/e-contact.c:299
+msgid "Google Talk Name List"
+msgstr "Lista med Google Talk-namn"
+
+#: ../addressbook/libebook/e-contact.c:1550
 #: ../addressbook/libebook/e-destination.c:868
 msgid "Unnamed List"
 msgstr "Namnlös lista"
@@ -794,7 +822,7 @@ msgid "Success"
 msgstr "Lyckades"
 
 #: ../addressbook/libedata-book/e-data-book.c:300
-#: ../calendar/libecal/e-cal.c:4388
+#: ../calendar/libecal/e-cal.c:4407
 #: ../calendar/libedata-cal/e-data-cal.c:415
 #: ../libedataserver/e-client.c:111
 msgid "Backend is busy"
@@ -807,7 +835,7 @@ msgid "Repository offline"
 msgstr "Lagret är frånkopplat"
 
 #: ../addressbook/libedata-book/e-data-book.c:302
-#: ../calendar/libecal/e-cal.c:4402
+#: ../calendar/libecal/e-cal.c:4421
 #: ../calendar/libedata-cal/e-data-cal.c:417
 #: ../libedataserver/e-client.c:125
 msgid "Permission denied"
@@ -887,7 +915,7 @@ msgid "Invalid server version"
 msgstr "Ogiltig serverversion"
 
 #: ../addressbook/libedata-book/e-data-book.c:321
-#: ../calendar/libecal/e-cal.c:4386
+#: ../calendar/libecal/e-cal.c:4405
 #: ../calendar/libedata-cal/e-data-cal.c:438
 #: ../libedataserver/e-client.c:109
 msgid "Invalid argument"
@@ -895,7 +923,7 @@ msgstr "Ogiltigt argument"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:323
-#: ../calendar/libecal/e-cal.c:4425
+#: ../calendar/libecal/e-cal.c:4444
 #: ../calendar/libedata-cal/e-data-cal.c:440
 #: ../libedataserver/e-client.c:131
 msgid "Not supported"
@@ -1101,10 +1129,9 @@ msgstr "Väder: Åskväder"
 msgid "Forecast"
 msgstr "Prognos"
 
-#: ../calendar/libecal/e-cal.c:851
+#: ../calendar/libecal/e-cal.c:867
 #: ../libedataserverui/e-book-auth-util.c:198
 #: ../libedataserverui/e-book-auth-util.c:417
-#: ../libedataserverui/e-client-utils.c:795
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Ange lösenord för %s (användare %s)"
@@ -1113,78 +1140,78 @@ msgstr "Ange lösenord för %s (användare %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:865
+#: ../calendar/libecal/e-cal.c:881
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "Ange lösenord för %s för att aktivera proxyn för användaren %s"
 
-#: ../calendar/libecal/e-cal.c:4390
+#: ../calendar/libecal/e-cal.c:4409
 msgid "Repository is offline"
 msgstr "Lagret är frånkopplat"
 
-#: ../calendar/libecal/e-cal.c:4392
+#: ../calendar/libecal/e-cal.c:4411
 #: ../calendar/libecal/e-cal-client.c:127
 msgid "No such calendar"
 msgstr "Det finns ingen sådan kalender"
 
-#: ../calendar/libecal/e-cal.c:4394
+#: ../calendar/libecal/e-cal.c:4413
 #: ../calendar/libecal/e-cal-client.c:129
 #: ../calendar/libedata-cal/e-data-cal.c:419
 msgid "Object not found"
 msgstr "Objektet kunde inte hittas"
 
-#: ../calendar/libecal/e-cal.c:4396
+#: ../calendar/libecal/e-cal.c:4415
 #: ../calendar/libecal/e-cal-client.c:131
 #: ../calendar/libedata-cal/e-data-cal.c:420
 msgid "Invalid object"
 msgstr "Ogiltigt objekt"
 
-#: ../calendar/libecal/e-cal.c:4398
+#: ../calendar/libecal/e-cal.c:4417
 msgid "URI not loaded"
 msgstr "URI:n är inte inläst"
 
-#: ../calendar/libecal/e-cal.c:4400
+#: ../calendar/libecal/e-cal.c:4419
 msgid "URI already loaded"
 msgstr "URI:n är redan inläst"
 
-#: ../calendar/libecal/e-cal.c:4404
+#: ../calendar/libecal/e-cal.c:4423
 msgid "Unknown User"
 msgstr "Okänd användare"
 
-#: ../calendar/libecal/e-cal.c:4406
+#: ../calendar/libecal/e-cal.c:4425
 #: ../calendar/libecal/e-cal-client.c:135
 #: ../calendar/libedata-cal/e-data-cal.c:421
 msgid "Object ID already exists"
 msgstr "Objektid finns redan"
 
-#: ../calendar/libecal/e-cal.c:4408
+#: ../calendar/libecal/e-cal.c:4427
 msgid "Protocol not supported"
 msgstr "Protokollet stöds inte"
 
-#: ../calendar/libecal/e-cal.c:4410
+#: ../calendar/libecal/e-cal.c:4429
 msgid "Operation has been canceled"
 msgstr "Åtgärden har avbrutits"
 
-#: ../calendar/libecal/e-cal.c:4412
+#: ../calendar/libecal/e-cal.c:4431
 msgid "Could not cancel operation"
 msgstr "Kunde inte avbryta åtgärden"
 
-#: ../calendar/libecal/e-cal.c:4414
+#: ../calendar/libecal/e-cal.c:4433
 #: ../libedataserver/e-client.c:117
 msgid "Authentication failed"
 msgstr "Autentisering misslyckades"
 
-#: ../calendar/libecal/e-cal.c:4416
+#: ../calendar/libecal/e-cal.c:4435
 #: ../camel/providers/smtp/camel-smtp-transport.c:756
 #: ../libedataserver/e-client.c:119
 msgid "Authentication required"
 msgstr "Autentisering krävs"
 
-#: ../calendar/libecal/e-cal.c:4418
+#: ../calendar/libecal/e-cal.c:4437
 msgid "A D-Bus exception has occurred"
 msgstr "Ett D-Bus-undantag har inträffat"
 
-#: ../calendar/libecal/e-cal.c:4422
+#: ../calendar/libecal/e-cal.c:4441
 msgid "No error"
 msgstr "Inga fel"
 
@@ -1950,8 +1977,8 @@ msgstr "Oväntad begäran från GnuPG för \"%s\""
 #: ../camel/camel-gpg-context.c:828
 #: ../camel/camel-net-utils.c:515
 #: ../camel/camel-tcp-stream-raw.c:255
-#: ../camel/providers/imapx/camel-imapx-server.c:4954
-#: ../camel/providers/imapx/camel-imapx-server.c:4971
+#: ../camel/providers/imapx/camel-imapx-server.c:4962
+#: ../camel/providers/imapx/camel-imapx-server.c:4979
 #: ../camel/providers/imapx/camel-imapx-store.c:159
 #: ../camel/providers/nntp/camel-nntp-summary.c:409
 #: ../libedataserver/e-client.c:127
@@ -3016,52 +3043,52 @@ msgid "Could not load summary for %s"
 msgstr "Kunde inte läsa in sammandrag för %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:1049
-#: ../camel/providers/imapx/camel-imapx-server.c:4010
+#: ../camel/providers/imapx/camel-imapx-server.c:4018
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Letar efter ändrade meddelanden i %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3454
+#: ../camel/providers/imap/camel-imap-folder.c:3462
 msgid "Unable to retrieve message: "
 msgstr "Kan inte hämta meddelande: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3489
-#: ../camel/providers/imapx/camel-imapx-server.c:5283
+#: ../camel/providers/imap/camel-imap-folder.c:3497
+#: ../camel/providers/imapx/camel-imapx-server.c:5291
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan inte hämta meddelande med meddelande-id %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3490
-#: ../camel/providers/imapx/camel-imapx-server.c:5284
+#: ../camel/providers/imap/camel-imap-folder.c:3498
+#: ../camel/providers/imapx/camel-imapx-server.c:5292
 msgid "No such message available."
 msgstr "Det finns inget sådant meddelande."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3565
-#: ../camel/providers/imap/camel-imap-folder.c:4483
+#: ../camel/providers/imap/camel-imap-folder.c:3573
+#: ../camel/providers/imap/camel-imap-folder.c:4491
 #: ../camel/providers/nntp/camel-nntp-folder.c:424
 #, c-format
 msgid "This message is not currently available"
 msgstr "Detta meddelande är inte tillgängligt för tillfället"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4067
-#: ../camel/providers/imap/camel-imap-folder.c:4150
-#: ../camel/providers/imapx/camel-imapx-server.c:3968
-#: ../camel/providers/imapx/camel-imapx-server.c:4118
+#: ../camel/providers/imap/camel-imap-folder.c:4075
+#: ../camel/providers/imap/camel-imap-folder.c:4158
+#: ../camel/providers/imapx/camel-imapx-server.c:3976
+#: ../camel/providers/imapx/camel-imapx-server.c:4126
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Hämtar sammandragsinformation för nya meddelanden i %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4284
+#: ../camel/providers/imap/camel-imap-folder.c:4292
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Ofullständigt serversvar: ingen information tillhandahölls för meddelande %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4294
+#: ../camel/providers/imap/camel-imap-folder.c:4302
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Ofullständigt serversvar: inget UID tillhandahölls för meddelande %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4523
+#: ../camel/providers/imap/camel-imap-folder.c:4531
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Kunde inte hitta meddelandetext i FETCH-svaret."
@@ -3211,19 +3238,19 @@ msgstr "Inkorg"
 #: ../camel/providers/imap/camel-imap-store.c:354
 #: ../camel/providers/imap/camel-imap-store.c:381
 #: ../camel/providers/imap/camel-imap-store.c:408
-#: ../camel/providers/imapx/camel-imapx-server.c:2999
+#: ../camel/providers/imapx/camel-imapx-server.c:3007
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Misslyckades med att ansluta till IMAP-servern %s i säkert läge: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:355
-#: ../camel/providers/imapx/camel-imapx-server.c:3000
+#: ../camel/providers/imapx/camel-imapx-server.c:3008
 #: ../camel/providers/smtp/camel-smtp-transport.c:192
 msgid "STARTTLS not supported"
 msgstr "STARTTLS stöds inte"
 
 #: ../camel/providers/imap/camel-imap-store.c:374
-#: ../camel/providers/imapx/camel-imapx-server.c:3038
+#: ../camel/providers/imapx/camel-imapx-server.c:3046
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Misslyckades med att ansluta till IMAP-servern %s i säkert läge: "
@@ -3234,13 +3261,13 @@ msgid "SSL is not available in this build"
 msgstr "SSL är inte tillgängligt i detta bygge"
 
 #: ../camel/providers/imap/camel-imap-store.c:707
-#: ../camel/providers/imapx/camel-imapx-server.c:3133
+#: ../camel/providers/imapx/camel-imapx-server.c:3141
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "IMAP-servern %s stöder inte den begärda autentiseringstypen %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:718
-#: ../camel/providers/imapx/camel-imapx-server.c:3146
+#: ../camel/providers/imapx/camel-imapx-server.c:3154
 #: ../camel/providers/smtp/camel-smtp-transport.c:347
 #, c-format
 msgid "No support for authentication type %s"
@@ -3253,13 +3280,13 @@ msgid "Error creating SASL authentication object."
 msgstr "Fel vid skapande av SASL-autentiseringsobjekt."
 
 #: ../camel/providers/imap/camel-imap-store.c:777
-#: ../camel/providers/imapx/camel-imapx-server.c:3191
+#: ../camel/providers/imapx/camel-imapx-server.c:3199
 #, c-format
 msgid "You did not enter a password."
 msgstr "Du angav inte något lösenord."
 
 #: ../camel/providers/imap/camel-imap-store.c:818
-#: ../camel/providers/imapx/camel-imapx-server.c:3236
+#: ../camel/providers/imapx/camel-imapx-server.c:3244
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3364,21 +3391,21 @@ msgstr "Standardport för IMAP"
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1476
+#: ../camel/providers/imapx/camel-imapx-server.c:1480
 msgid "Error writing to cache stream: "
 msgstr "Fel vid skrivning till mellanlagringsström: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2182
+#: ../camel/providers/imapx/camel-imapx-server.c:2186
 #, c-format
 msgid "Not authenticated"
 msgstr "Inte autentiserad"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3408
+#: ../camel/providers/imapx/camel-imapx-server.c:3416
 msgid "Closing tmp stream failed: "
 msgstr "Stängning av temporärström misslyckades: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5429
-#: ../camel/providers/imapx/camel-imapx-server.c:5444
+#: ../camel/providers/imapx/camel-imapx-server.c:5437
+#: ../camel/providers/imapx/camel-imapx-server.c:5452
 msgid "Cannot create spool file: "
 msgstr "Kan inte skapa köfil: "
 
@@ -4916,20 +4943,67 @@ msgstr "Kategoriegenskaper"
 msgid "There is already a category '%s' in the configuration. Please use another name"
 msgstr "Det finns redan en kategori med namnet \"%s\" i konfigurationen. Använd ett annat namn"
 
-#: ../libedataserverui/e-client-utils.c:793
+#: ../libedataserverui/e-client-utils.c:799
 #, c-format
 msgid ""
-"Enter password for %s (user %s)\n"
+"Enter password for calendar %s (user %s)\n"
 "Reason: %s"
 msgstr ""
-"Ange lösenord för %s (användare %s)\n"
+"Ange lösenord för kalendern %s (användare %s)\n"
 "Anledning: %s"
 
-#: ../libedataserverui/e-client-utils.c:887
+#: ../libedataserverui/e-client-utils.c:801
+#, c-format
+msgid "Enter password for calendar %s (user %s)"
+msgstr "Ange lösenord för kalendern %s (användare %s)"
+
+#: ../libedataserverui/e-client-utils.c:805
+#, c-format
+msgid ""
+"Enter password for task list %s (user %s)\n"
+"Reason: %s"
+msgstr ""
+"Ange lösenord för uppgiftslistan %s (användare %s)\n"
+"Anledning: %s"
+
+#: ../libedataserverui/e-client-utils.c:807
+#, c-format
+msgid "Enter password for task list %s (user %s)"
+msgstr "Ange lösenord för uppgiftslistan %s (användare %s)"
+
+#: ../libedataserverui/e-client-utils.c:811
+#, c-format
+msgid ""
+"Enter password for memo list %s (user %s)\n"
+"Reason: %s"
+msgstr ""
+"Ange lösenord för memolistan %s (användare %s)\n"
+"Anledning: %s"
+
+#: ../libedataserverui/e-client-utils.c:813
+#, c-format
+msgid "Enter password for memo list %s (user %s)"
+msgstr "Ange lösenord för memolistan %s (användare %s)"
+
+#: ../libedataserverui/e-client-utils.c:818
+#, c-format
+msgid ""
+"Enter password for address book %s (user %s)\n"
+"Reason: %s"
+msgstr ""
+"Ange lösenord för adressboken %s (användare %s)\n"
+"Anledning: %s"
+
+#: ../libedataserverui/e-client-utils.c:820
+#, c-format
+msgid "Enter password for address book %s (user %s)"
+msgstr "Ange lösenord för adressboken %s (användare %s)"
+
+#: ../libedataserverui/e-client-utils.c:917
 msgid "Enter Passphrase"
 msgstr "Ange lösenfras"
 
-#: ../libedataserverui/e-client-utils.c:889
+#: ../libedataserverui/e-client-utils.c:919
 msgid "Enter Password"
 msgstr "Ange lösenord"
 
