@@ -1135,7 +1135,7 @@ e_source_get_duped_property (ESource *source,
  * e_source_set_property:
  * @source: an #ESource
  * @property_name: a custom property name
- * @property_value: a new value for the property, or %NULL
+ * @property_value: (allow-none): a new value for the property, or %NULL
  *
  * Create a new custom #ESource property or replaces an existing one.  If
  * @property_value is %NULL, the property is removed from @source.  This
