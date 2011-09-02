@@ -2292,7 +2292,11 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 			priv->comp = g_list_remove (priv->comp, recurrence);
 			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
 			g_hash_table_remove (obj_data->recurrences, rid);
+		} else if (obj_data->full_object) {
+			/* add exception for the modified instance */
+			e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object), icaltime_from_string (rid), CALOBJ_MOD_THIS);
 		}
+
 
 		/* add the detached instance */
 		g_hash_table_insert (obj_data->recurrences,
@@ -2588,6 +2592,28 @@ get_object_string_from_fileobject (ECalBackendFileObject *obj_data, const gchar 
 	return NULL;
 }
 
+static void
+notify_comp_removed_cb (gpointer pecalcomp, gpointer pbackend)
+{
+	ECalComponent *comp = pecalcomp;
+	ECalBackend *backend = pbackend;
+	ECalComponentId *id;
+	gchar *compstr;
+
+	g_return_if_fail (comp != NULL);
+	g_return_if_fail (backend != NULL);
+
+	id = e_cal_component_get_id (comp);
+	g_return_if_fail (id != NULL);
+
+	compstr = e_cal_component_get_as_string (comp);
+
+	e_cal_backend_notify_object_removed (backend, id, compstr, NULL);
+
+	e_cal_component_free_id (id);
+	g_free (compstr);
+}
+
 /* Remove_object handler for the file backend */
 static void
 e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable,
@@ -2636,6 +2662,8 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend, EDataCal *cal, GCanc
 	switch (mod) {
 	case CALOBJ_MOD_ALL :
 		*old_object = get_object_string_from_fileobject (obj_data, recur_id);
+		if (obj_data->recurrences_list)
+			g_list_foreach (obj_data->recurrences_list, notify_comp_removed_cb, cbfile);
 		remove_component (cbfile, uid, obj_data);
 
 		*object = NULL;
