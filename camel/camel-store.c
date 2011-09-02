@@ -1862,14 +1862,12 @@ camel_store_get_folder_sync (CamelStore *store,
 			CAMEL_CHECK_GERROR (
 				store, get_trash_folder_sync,
 				folder != NULL, error);
-
 		} else if (folder_name_is_vjunk) {
 			folder = class->get_junk_folder_sync (
 				store, cancellable, error);
 			CAMEL_CHECK_GERROR (
 				store, get_junk_folder_sync,
 				folder != NULL, error);
-
 		} else {
 			folder = class->get_folder_sync (
 				store, folder_name, flags,

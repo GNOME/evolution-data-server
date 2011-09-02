@@ -359,6 +359,12 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 				clone = camel_message_info_clone (info);
 				clone->summary = dest->summary;
 				camel_maildir_info_set_filename (clone, g_strdup (new_filename));
+				/* unset deleted flag when transferring from trash folder */
+				if ((source->folder_flags & CAMEL_FOLDER_IS_TRASH) != 0)
+					camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED, 0);
+				/* unset junk flag when transferring from junk folder */
+				if ((source->folder_flags & CAMEL_FOLDER_IS_JUNK) != 0)
+					camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK, 0);
 				camel_folder_summary_add (dest->summary, clone);
 
 				camel_folder_change_info_add_uid (df->changes, camel_message_info_uid (clone));

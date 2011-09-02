@@ -408,8 +408,12 @@ folder_transfer_message_to (CamelFolder *source,
 	} else
 		info = camel_message_info_new_from_header (NULL, ((CamelMimePart *) msg)->headers);
 
-	/* FIXME decide this based on the source folder */
-//	camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED, 0);
+	/* unset deleted flag when transferring from trash folder */
+	if ((source->folder_flags & CAMEL_FOLDER_IS_TRASH) != 0)
+		camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED, 0);
+	/* unset junk flag when transferring from junk folder */
+	if ((source->folder_flags & CAMEL_FOLDER_IS_JUNK) != 0)
+		camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK, 0);
 
 	camel_folder_append_message_sync (
 		dest, msg, info, transferred_uid,

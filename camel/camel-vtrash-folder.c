@@ -57,6 +57,10 @@ struct _transfer_data {
 	CamelFolder *dest;
 	GPtrArray *uids;
 	gboolean delete;
+
+	CamelFolder *source_folder;
+	GPtrArray *source_uids;
+	guint32 sbit;
 };
 
 G_DEFINE_TYPE (CamelVTrashFolder, camel_vtrash_folder, CAMEL_TYPE_VEE_FOLDER)
@@ -75,10 +79,22 @@ transfer_messages (CamelFolder *folder,
 	if (md->cancellable != NULL)
 		g_object_unref (md->cancellable);
 
+	/* set the bit back */
+	for (i = 0; i < md->source_uids->len; i++) {
+		CamelMessageInfo *mi = camel_folder_get_message_info (md->source_folder, md->source_uids->pdata[i]);
+		if (mi) {
+			camel_message_info_set_flags (mi, md->sbit, md->sbit);
+			camel_folder_free_message_info (md->source_folder, mi);
+		}
+	}
+
+	camel_folder_thaw (md->folder);
+
 	for (i=0;i<md->uids->len;i++)
 		g_free (md->uids->pdata[i]);
 
 	g_ptr_array_free (md->uids, TRUE);
+	g_ptr_array_free (md->source_uids, TRUE);
 	g_object_unref (md->folder);
 	g_free (md);
 }
@@ -145,6 +161,9 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 	 * Need to check this uid by uid, but we batch up the copies.
 	 */
 
+	camel_folder_freeze (source);
+	camel_folder_freeze (dest);
+
 	for (i = 0; i < uids->len; i++) {
 		mi = (CamelVeeMessageInfo *) camel_folder_get_message_info (source, uids->pdata[i]);
 		if (mi == NULL) {
@@ -166,15 +185,24 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 				md->folder = g_object_ref (mi->summary->folder);
 				md->uids = g_ptr_array_new ();
 				md->dest = dest;
+				md->delete = delete_originals;
+				md->source_folder = source;
+				md->source_uids = g_ptr_array_new ();
+				md->sbit = sbit;
 				if (cancellable != NULL)
 					g_object_ref (cancellable);
+				camel_folder_freeze (md->folder);
 				g_hash_table_insert (batch, mi->summary->folder, md);
 			}
+
+			/* unset the bit temporarily */
+			camel_message_info_set_flags ((CamelMessageInfo *) mi, sbit, 0);
 
 			tuid = uids->pdata[i];
 			if (strlen (tuid)>8)
 				tuid += 8;
 			g_ptr_array_add (md->uids, g_strdup (tuid));
+			g_ptr_array_add (md->source_uids, uids->pdata[i]);
 		}
 		camel_folder_free_message_info (source, (CamelMessageInfo *) mi);
 	}
@@ -183,6 +211,9 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 		g_hash_table_foreach (batch, (GHFunc) transfer_messages, error);
 		g_hash_table_destroy (batch);
 	}
+
+	camel_folder_thaw (dest);
+	camel_folder_thaw (source);
 
 	return TRUE;
 }
