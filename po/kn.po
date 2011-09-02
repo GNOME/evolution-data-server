@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2011-08-24 15:15+0000\n"
-"PO-Revision-Date: 2011-08-29 18:02+0530\n"
+"PO-Revision-Date: 2011-09-02 17:04+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -1419,10 +1419,10 @@ msgid "Unknown calendar property '%s'"
 msgstr "ಗೊತ್ತಿರದ ಕ್ಯಾಲೆಂಡರ್ ಗುಣಲಕ್ಷಣ: '%s'"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:219
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create calendar object: %s"
 msgid "Cannot change value of calendar property '%s'"
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ವಸ್ತುವನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ: %s"
+msgstr "'%s' ಎಂಬ ಕ್ಯಾಲೆಂಡರ್ ಗುಣದ ಮೌಲ್ಯವನ್ನು ಬದಲಾಯಿಸಲಾಗಿಲ್ಲ"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:69
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
@@ -1600,24 +1600,21 @@ msgstr "ಕ್ಯಾಲೆಂಡರ್ ವಸ್ತುಗಳನ್ನು ಕಳ�
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1231
-#, fuzzy
 #| msgid "Could not retrieve attachment list: %s"
 msgid "Could not retrieve attachment uris: "
-msgstr "ಲಗತ್ತಿನ ಪಟ್ಟಿಯನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
+msgstr "ಲಗತ್ತಿನ uriಗಳನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗಿಲ್ಲ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1255
-#, fuzzy
 #| msgid "Could not store folder: %s"
 msgid "Could not discard reminder: "
-msgstr "ಫೋಲ್ಡರನ್ನು ಶೇಖರಿಸಲಾಗಲಿಲ್ಲ: %s"
+msgstr "ಜ್ಞಾಪನೆಯನ್ನು ಕಡೆಗಣಿಸಲಾಗಲಿಲ್ಲ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1279
-#, fuzzy
 #| msgid "Could not retrieve calendar time zone: %s"
 msgid "Could not get calendar view path: "
-msgstr "ಕ್ಯಾಲೆಂಡರ್ ಕಾಲವಲಯವನ್ನು ಮರುಗಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ನೋಟ ಮಾರ್ಗವನ್ನು ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1304
@@ -1881,7 +1878,7 @@ msgstr "ಸಂದೇಶಗಳನ್ನು ಕಾಪಿ ಮಾಡಲಾಗುತ�
 #: ../camel/camel-folder.c:1156
 #, c-format
 msgid "Quota information not supported for folder '%s'"
-msgstr ""
+msgstr "'%s' ಗಾಗಿ ಕೋಟಾ ಮಾಹಿತಿಗೆ ಬೆಂಬಲವಿಲ್ಲ"
 
 #: ../camel/camel-folder.c:3265
 #, c-format
@@ -1890,10 +1887,10 @@ msgid "Retrieving message '%s' in %s"
 msgstr "'%s' (%s ರಲ್ಲಿ) ಸಂದೇಶವನ್ನು ಹಿಂದಕ್ಕೆ ಪಡೆಯಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-folder.c:3390
-#, fuzzy, c-format
+#, c-format
 #| msgid "Fetching summary information for new messages in %s"
 msgid "Retrieving quota information for '%s'"
-msgstr "%s ನಲ್ಲಿನ ಹೊಸ ಸಂದೇಶಗಳಿಗಾಗಿ ಮಾಹಿತಿಗಳನ್ನು ಪಡೆದುಕೊಳ್ಳಲಾಗುತ್ತಿದೆ"
+msgstr "'%s' ನಲ್ಲಿನ ಕೋಟಾ ಮಾಹಿತಿಯನ್ನು ಪಡೆದುಕೊಳ್ಳಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-folder-search.c:345 ../camel/camel-folder-search.c:456
 #: ../camel/camel-folder-search.c:627
@@ -2076,7 +2073,7 @@ msgstr "ಗೂಢಲಿಪೀಕರಣಗೊಂಡ ವಿಷಯ"
 
 #: ../camel/camel-http-stream.c:546 ../camel/camel-stream-null.c:78
 msgid "Only reset to beginning is supported with CamelHttpStream"
-msgstr ""
+msgstr "CamelHttpStream ಇಂದ ಮಾತ್ರ ಆರಂಭಕ್ಕೆ ಹೊಂದಿಸುವುದನ್ನು ಬೆಂಬಲಿಸಲಾಗುತ್ತದೆ"
 
 #: ../camel/camel-lock.c:102
 #, c-format
@@ -2503,10 +2500,10 @@ msgid "POP Before SMTP authentication using an unknown transport"
 msgstr "SMTP ದೃಢೀಕರಣದ ಮೊದಲು POP ಒಂದು ತಿಳಿಯದ ವರ್ಗಾವಣೆಯನ್ನು ಬಳಸುತ್ತಿದೆ"
 
 #: ../camel/camel-sasl-popb4smtp.c:104 ../camel/camel-sasl-popb4smtp.c:114
-#, fuzzy, c-format
+#, c-format
 #| msgid "POP Before SMTP authentication using a non-POP source"
 msgid "POP Before SMTP authentication attempted with a %s service"
-msgstr "SMTP ದೃಢೀಕರಣದ ಮೊದಲು POP ಒಂದು POP ಅಲ್ಲದ ಮೂಲವನ್ನು ಬಳಸುತ್ತಿದೆ"
+msgstr "%s ಸೇವೆಯೊಂದಿಗೆ SMTP ದೃಢೀಕರಣದ ಮೊದಲು POP ಅನ್ನು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ"
 
 #: ../camel/camel-search-private.c:112
 #, c-format
@@ -2530,10 +2527,10 @@ msgid "URL '%s' needs a path component"
 msgstr "URL '%s' ಗೆ ಒಂದು ಮಾರ್ಗ ಘಟಕದ ಅಗತ್ಯವಿದೆ"
 
 #: ../camel/camel-session.c:361
-#, fuzzy, c-format
+#, c-format
 #| msgid "No provider available for protocol '%s'"
 msgid "Invalid GType registered for protocol '%s'"
-msgstr "'%s' ಪ್ರೊಟೋಕಾಲ್‌ಗೆ ಒದಗಿಸುವವರು ಲಭ್ಯವಿಲ್ಲ"
+msgstr "'%s' ಪ್ರೊಟೋಕಾಲ್‌ಗಾಗಿ ಅಮಾನ್ಯವಾದ GType ಬಗೆ"
 
 #: ../camel/camel-session.c:938
 #, c-format
@@ -2738,16 +2735,16 @@ msgid "Cannot create folder '%s': folder exists"
 msgstr "ಫೋಲ್ಡರನ್ನು ನಿರ್ಮಿಸಲಾಗಿಲ್ಲ: '%s': ಫೋಲ್ಡರ್ ಈಗಾಗಲೆ ಇದೆ"
 
 #: ../camel/camel-store.c:1857
-#, fuzzy, c-format
+#, c-format
 #| msgid "Syncing folders"
 msgid "Opening folder '%s'"
-msgstr "ಫೋಲ್ಡರುಗಳನ್ನು ಹೊಂದಿಸಲಾಗುತ್ತಿದೆ"
+msgstr "'%s' ಫೋಲ್ಡರನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-store.c:2044
-#, fuzzy, c-format
+#, c-format
 #| msgid "Scanning for changed messages in %s"
 msgid "Scanning folders in '%s'"
-msgstr "%s ನಲ್ಲಿ ಬದಲಾಯಿಸಲಾದ ಸಂದೇಶಗಳಿಗಾಗಿ ಪರಿಶೋಧನೆ"
+msgstr "'%s' ನಲ್ಲಿನ ಫೋಲ್ಡರಿಗಾಗಿ ಪರಿಶೋಧಿಸಲಾಗುತ್ತಿದೆ"
 
 #. the name of the Trash folder, used for deleted messages
 #: ../camel/camel-store.c:2056 ../camel/camel-store.c:2066
@@ -2767,10 +2764,10 @@ msgid "Cannot create folder: %s: folder exists"
 msgstr "ಫೋಲ್ಡರನ್ನು ನಿರ್ಮಿಸಲಾಗಿಲ್ಲ: %s: ಫೋಲ್ಡರ್ ಈಗಾಗಲೆ ಇದೆ"
 
 #: ../camel/camel-store.c:2535
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot get folder '%s': %s"
 msgid "Creating folder '%s'"
-msgstr "'%s' ಫೋಲ್ಡರನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
+msgstr "'%s' ಫೋಲ್ಡರನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-store.c:2653 ../camel/camel-vee-store.c:350
 #: ../camel/providers/local/camel-maildir-store.c:272
@@ -2786,7 +2783,7 @@ msgstr "ಫೋಲ್ಡರಿನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸ�
 
 #: ../camel/camel-stream-filter.c:327
 msgid "Only reset to beginning is supported with CamelStreamFilter"
-msgstr ""
+msgstr "CamelStreamFilter ಇಂದ ಮಾತ್ರ ಆರಂಭಕ್ಕೆ ಹೊಂದಿಸುವುದನ್ನು ಬೆಂಬಲಿಸಲಾಗುತ್ತದೆ"
 
 #: ../camel/camel-stream-process.c:265
 #, c-format
@@ -4473,7 +4470,7 @@ msgstr "SSL ಮೂಲಕ SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:44
 msgid "Message submission port"
-msgstr ""
+msgstr "ಸಂದೇಶ ಸಲ್ಲಿಕೆ ಸಂಪರ್ಕಸ್ಥಾನ"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:50
 msgid "SMTP"
@@ -4836,28 +4833,24 @@ msgid "Waiting"
 msgstr "ಕಾಯಲಾಗುತ್ತಿದೆ"
 
 #: ../libedataserver/e-client.c:113
-#, fuzzy
 #| msgid "URI not loaded"
 msgid "Source not loaded"
-msgstr "URI ಲೋಡ್ ಆಗಿಲ್ಲ"
+msgstr "ಮೂಲವನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿಲ್ಲ"
 
 #: ../libedataserver/e-client.c:115
-#, fuzzy
 #| msgid "URI already loaded"
 msgid "Source already loaded"
-msgstr "URI ಈಗಾಗಲೆ ಲೋಡ್ ಆಗಿದೆ"
+msgstr "ಮೂಲವನ್ನು ಈಗಾಗಲೆ ಲೋಡ್ ಮಾಡಲಾಗಿದೆ"
 
 #: ../libedataserver/e-client.c:123
-#, fuzzy
 #| msgid "Offline mode unavailable"
 msgid "Offline unavailable"
-msgstr "ಆಫ್‌ಲೈನ್‌ ಸ್ಥಿತಿಯು ಲಭ್ಯವಿಲ್ಲ"
+msgstr "ಆಫ್‌ಲೈನ್‌ ಲಭ್ಯವಿಲ್ಲ"
 
 #: ../libedataserver/e-client.c:145
-#, fuzzy
 #| msgid "parse error"
 msgid "D-Bus error"
-msgstr "ಪಾರ್ಸ್ ದೋಷ"
+msgstr "ಡಿ-ಬಸ್ ದೋಷ"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format.
@@ -5046,12 +5039,14 @@ msgid ""
 msgstr "ಸಂರಚನೆಯಲ್ಲಿ '%s' ವರ್ಗವು ಈಗಾಗಲೆ ಇದೆ. ದಯವಿಟ್ಟು ಬೇರೆ ಹೆಸರನ್ನು ಬಳಸಿ"
 
 #: ../libedataserverui/e-client-utils.c:793
-#, fuzzy, c-format
+#, c-format
 #| msgid "Enter password for %s (user %s)"
 msgid ""
 "Enter password for %s (user %s)\n"
 "Reason: %s"
-msgstr "%s ಕ್ಕಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ (ಬಳಕೆದಾರ %s)"
+msgstr ""
+"%s ಕ್ಕಾಗಿ ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ (ಬಳಕೆದಾರ %s) "
+"ಕಾರಣ: %s"
 
 #: ../libedataserverui/e-client-utils.c:887
 #| msgid "Enter password"
