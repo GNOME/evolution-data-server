@@ -2802,6 +2802,18 @@ camel_unlock_folder
 </SECTION>
 
 <SECTION>
+<FILE>camel-memchunk</FILE>
+CamelMemChunk
+camel_memchunk_new
+camel_memchunk_alloc
+camel_memchunk_alloc0
+camel_memchunk_free
+camel_memchunk_empty
+camel_memchunk_clean
+camel_memchunk_destroy
+</SECTION>
+
+<SECTION>
 <FILE>camel-mempool</FILE>
 CamelMemPool
 CamelMemPoolFlags

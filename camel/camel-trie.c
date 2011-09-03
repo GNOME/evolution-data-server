@@ -25,8 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <libedataserver/e-memory.h>
-
+#include "camel-memchunk.h"
 #include "camel-trie.h"
 
 #define d(x)
@@ -57,8 +56,8 @@ struct _CamelTrie {
 	GPtrArray *fail_states;
 	gboolean icase;
 
-	EMemChunk *match_chunks;
-	EMemChunk *state_chunks;
+	CamelMemChunk *match_chunks;
+	CamelMemChunk *state_chunks;
 };
 
 static inline gunichar
@@ -130,8 +129,8 @@ camel_trie_new (gboolean icase)
 	trie->fail_states = g_ptr_array_sized_new (8);
 	trie->icase = icase;
 
-	trie->match_chunks = e_memchunk_new (8, sizeof (struct _trie_match));
-	trie->state_chunks = e_memchunk_new (8, sizeof (struct _trie_state));
+	trie->match_chunks = camel_memchunk_new (8, sizeof (struct _trie_match));
+	trie->state_chunks = camel_memchunk_new (8, sizeof (struct _trie_state));
 
 	return trie;
 }
@@ -148,8 +147,8 @@ void
 camel_trie_free (CamelTrie *trie)
 {
 	g_ptr_array_free (trie->fail_states, TRUE);
-	e_memchunk_destroy (trie->match_chunks);
-	e_memchunk_destroy (trie->state_chunks);
+	camel_memchunk_destroy (trie->match_chunks);
+	camel_memchunk_destroy (trie->state_chunks);
 	g_free (trie);
 }
 
@@ -173,12 +172,12 @@ trie_insert (CamelTrie *trie,
 {
 	struct _trie_match *m;
 
-	m = e_memchunk_alloc (trie->match_chunks);
+	m = camel_memchunk_alloc (trie->match_chunks);
 	m->next = q->match;
 	m->c = c;
 
 	q->match = m;
-	q = m->state = e_memchunk_alloc (trie->state_chunks);
+	q = m->state = camel_memchunk_alloc (trie->state_chunks);
 	q->match = NULL;
 	q->fail = &trie->root;
 	q->final = 0;

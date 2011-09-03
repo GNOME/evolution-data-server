@@ -28,6 +28,7 @@
 #define CAMEL_CERTDB_H
 
 #include <stdio.h>
+#include <camel/camel-memchunk.h>
 #include <camel/camel-object.h>
 
 /* Standard GObject macros */
@@ -109,7 +110,7 @@ struct _CamelCertDB {
 
 	guint32 cert_size;
 
-	struct _EMemChunk *cert_chunks;
+	CamelMemChunk *cert_chunks;
 
 	GPtrArray *certs;
 	GHashTable *cert_hash;

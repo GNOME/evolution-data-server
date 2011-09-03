@@ -1,0 +1,89 @@
+<!-- ##### SECTION Title ##### -->
+camel-memchunk
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT CamelMemChunk ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION camel_memchunk_new ##### -->
+<para>
+
+</para>
+
+@atomcount: 
+@atomsize: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_memchunk_alloc ##### -->
+<para>
+
+</para>
+
+@memchunk: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_memchunk_alloc0 ##### -->
+<para>
+
+</para>
+
+@memchunk: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_memchunk_free ##### -->
+<para>
+
+</para>
+
+@memchunk: 
+@mem: 
+
+
+<!-- ##### FUNCTION camel_memchunk_empty ##### -->
+<para>
+
+</para>
+
+@memchunk: 
+
+
+<!-- ##### FUNCTION camel_memchunk_clean ##### -->
+<para>
+
+</para>
+
+@memchunk: 
+
+
+<!-- ##### FUNCTION camel_memchunk_destroy ##### -->
+<para>
+
+</para>
+
+@memchunk: 
+
+

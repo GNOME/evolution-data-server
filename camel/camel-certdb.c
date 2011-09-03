@@ -34,8 +34,6 @@
 
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-memory.h>
-
 #include "camel-certdb.h"
 #include "camel-file-utils.h"
 #include "camel-win32.h"
@@ -79,7 +77,7 @@ certdb_finalize (GObject *object)
 	g_free (certdb->filename);
 
 	if (certdb->cert_chunks)
-		e_memchunk_destroy (certdb->cert_chunks);
+		camel_memchunk_destroy (certdb->cert_chunks);
 
 	g_mutex_free (priv->db_lock);
 	g_mutex_free (priv->io_lock);
@@ -478,7 +476,7 @@ certdb_cert_new (CamelCertDB *certdb)
 	CamelCert *cert;
 
 	if (certdb->cert_chunks)
-		cert = e_memchunk_alloc0 (certdb->cert_chunks);
+		cert = camel_memchunk_alloc0 (certdb->cert_chunks);
 	else
 		cert = g_malloc0 (certdb->cert_size);
 
@@ -548,7 +546,7 @@ camel_certdb_cert_unref (CamelCertDB *certdb,
 	if (cert->refcount <= 1) {
 		class->cert_free (certdb, cert);
 		if (certdb->cert_chunks)
-			e_memchunk_free (certdb->cert_chunks, cert);
+			camel_memchunk_free (certdb->cert_chunks, cert);
 		else
 			g_free (cert);
 	} else {

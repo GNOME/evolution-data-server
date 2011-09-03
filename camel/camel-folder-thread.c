@@ -33,8 +33,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <libedataserver/e-memory.h>
-
 #include "camel-folder-thread.h"
 
 #define d(x)
@@ -119,7 +117,7 @@ prune_empty (CamelFolderThread *thread,
 				d(printf("removing empty node\n"));
 				lastc->next = c->next;
 				m (memset (c, 0xfe, sizeof (*c)));
-				e_memchunk_free (thread->node_chunks, c);
+				camel_memchunk_free (thread->node_chunks, c);
 				continue;
 			}
 			if (c->parent || c->child->next == NULL) {
@@ -274,7 +272,7 @@ group_root_set (CamelFolderThread *thread,
 				scan->next = c->child;
 				clast->next = c->next;
 				m (memset (c, 0xee, sizeof (*c)));
-				e_memchunk_free (thread->node_chunks, c);
+				camel_memchunk_free (thread->node_chunks, c);
 				continue;
 			} if (c->message == NULL && container->message != NULL) {
 				d(printf("container is non-empty parent\n"));
@@ -301,7 +299,7 @@ group_root_set (CamelFolderThread *thread,
 				remove_node (cp, container, &clast);
 				remove_node (cp, c, &clast);
 
-				scan = e_memchunk_alloc0 (thread->node_chunks);
+				scan = camel_memchunk_alloc0 (thread->node_chunks);
 
 				scan->root_subject = c->root_subject;
 				scan->re = c->re && container->re;
@@ -471,16 +469,16 @@ thread_summary (CamelFolderThread *thread,
 				/* if duplicate, just make out it is a no-id message,  but try and insert it
 				 * into the right spot in the tree */
 				d(printf("doing: (duplicate message id)\n"));
-				c = e_memchunk_alloc0 (thread->node_chunks);
+				c = camel_memchunk_alloc0 (thread->node_chunks);
 				g_hash_table_insert (no_id_table, (gpointer) mi, c);
 			} else if (!c) {
 				d(printf("doing : %08x%08x (%s)\n", mid->id.part.hi, mid->id.part.lo, camel_message_info_subject(mi)));
-				c = e_memchunk_alloc0 (thread->node_chunks);
+				c = camel_memchunk_alloc0 (thread->node_chunks);
 				g_hash_table_insert (id_table, (gpointer) mid, c);
 			}
 		} else {
 			d(printf("doing : (no message id)\n"));
-			c = e_memchunk_alloc0 (thread->node_chunks);
+			c = camel_memchunk_alloc0 (thread->node_chunks);
 			g_hash_table_insert (no_id_table, (gpointer) mi, c);
 		}
 
@@ -501,7 +499,7 @@ thread_summary (CamelFolderThread *thread,
 				c = g_hash_table_lookup (id_table, &references->references[j]);
 				if (c == NULL) {
 					d(printf("%s (%s) not found\n", G_STRLOC, G_STRFUNC));
-					c = e_memchunk_alloc0 (thread->node_chunks);
+					c = camel_memchunk_alloc0 (thread->node_chunks);
 					g_hash_table_insert (id_table, (gpointer) &references->references[j], c);
 				} else
 					found = TRUE;
@@ -569,7 +567,7 @@ thread_summary (CamelFolderThread *thread,
 			newtop->next = child->next;
 			c = newtop;
 			m (memset (child, 0xde, sizeof (*child)));
-			e_memchunk_free (thread->node_chunks, child);
+			camel_memchunk_free (thread->node_chunks, child);
 		} else {
 			c = child;
 		}
@@ -629,7 +627,7 @@ camel_folder_thread_messages_new (CamelFolder *folder,
 	thread->refcount = 1;
 	thread->subject = thread_subject;
 	thread->tree = NULL;
-	thread->node_chunks = e_memchunk_new (32, sizeof (CamelFolderThreadNode));
+	thread->node_chunks = camel_memchunk_new (32, sizeof (CamelFolderThreadNode));
 	thread->folder = g_object_ref (folder);
 
 	camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
@@ -704,8 +702,8 @@ camel_folder_thread_messages_apply (CamelFolderThread *thread,
 	g_hash_table_destroy (table);
 
 	thread->tree = NULL;
-	e_memchunk_destroy (thread->node_chunks);
-	thread->node_chunks = e_memchunk_new (32, sizeof (CamelFolderThreadNode));
+	camel_memchunk_destroy (thread->node_chunks);
+	thread->node_chunks = camel_memchunk_new (32, sizeof (CamelFolderThreadNode));
 	thread_summary (thread, all);
 
 	g_ptr_array_free (thread->summary, TRUE);
@@ -740,7 +738,7 @@ camel_folder_thread_messages_unref (CamelFolderThread *thread)
 		g_ptr_array_free (thread->summary, TRUE);
 		g_object_unref (thread->folder);
 	}
-	e_memchunk_destroy (thread->node_chunks);
+	camel_memchunk_destroy (thread->node_chunks);
 	g_free (thread);
 }
 
@@ -771,7 +769,7 @@ camel_folder_thread_messages_new_summary (GPtrArray *summary)
 	thread = g_malloc (sizeof (*thread));
 	thread->refcount = 1;
 	thread->tree = NULL;
-	thread->node_chunks = e_memchunk_new (32, sizeof (CamelFolderThreadNode));
+	thread->node_chunks = camel_memchunk_new (32, sizeof (CamelFolderThreadNode));
 	thread->folder = NULL;
 	thread->summary = NULL;
 
@@ -823,7 +821,7 @@ camel_folder_thread_messages_add (CamelFolderThread *thread,
 
 	/* reset the tree, and rebuild fully */
 	thread->tree = NULL;
-	e_memchunk_empty (thread->node_chunks);
+	camel_memchunk_empty (thread->node_chunks);
 	thread_summary (thread, all);
 }
 
@@ -863,7 +861,7 @@ remove_uid_node_rec (CamelFolderThread *thread,
 
 				rest = next->next;
 				node->next = child;
-				e_memchunk_free (thread->node_chunks, next);
+				camel_memchunk_free (thread->node_chunks, next);
 				next = child;
 				do {
 					lchild = child;
@@ -880,7 +878,7 @@ remove_uid_node_rec (CamelFolderThread *thread,
 				 * node
 				 * rest */
 				node->next = next->next;
-				e_memchunk_free (thread->node_chunks, next);
+				camel_memchunk_free (thread->node_chunks, next);
 				next = node->next;
 			}
 		} else {

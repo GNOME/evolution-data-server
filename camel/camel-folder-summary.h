@@ -29,9 +29,10 @@
 #include <stdio.h>
 #include <time.h>
 
+#include <camel/camel-index.h>
+#include <camel/camel-memchunk.h>
 #include <camel/camel-mime-message.h>
 #include <camel/camel-mime-parser.h>
-#include <camel/camel-index.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_FOLDER_SUMMARY \
@@ -249,8 +250,8 @@ struct _CamelFolderSummary {
 	guint32 visible_count;
 
 	/* memory allocators (setup automatically) */
-	struct _EMemChunk *message_info_chunks;
-	struct _EMemChunk *content_info_chunks;
+	CamelMemChunk *message_info_chunks;
+	CamelMemChunk *content_info_chunks;
 
 	gchar *summary_path;
 	gboolean build_content;	/* do we try and parse/index the content, or not? */

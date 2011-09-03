@@ -196,6 +196,7 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-list-utils.c			\
 	camel-lock.c				\
 	camel-medium.c				\
+	camel-memchunk.c			\
 	camel-mempool.c				\
 	camel-mime-filter-basic.c		\
 	camel-mime-filter-bestenc.c		\
@@ -267,6 +268,7 @@ libcamelinclude_HEADERS =			\
 	camel-lock-client.h			\
 	camel-lock.h				\
 	camel-medium.h				\
+	camel-memchunk.h			\
 	camel-mempool.h				\
 	camel-mime-filter-basic.h		\
 	camel-mime-filter-bestenc.h		\

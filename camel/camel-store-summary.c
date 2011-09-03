@@ -34,8 +34,6 @@
 
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-memory.h>
-
 #include "camel-file-utils.h"
 #include "camel-store-summary.h"
 #include "camel-url.h"
@@ -71,7 +69,7 @@ store_summary_finalize (GObject *object)
 	g_free (summary->summary_path);
 
 	if (summary->store_info_chunks != NULL)
-		e_memchunk_destroy (summary->store_info_chunks);
+		camel_memchunk_destroy (summary->store_info_chunks);
 
 	g_mutex_free (summary->priv->summary_lock);
 	g_mutex_free (summary->priv->io_lock);

@@ -28,6 +28,7 @@
 
 #include <camel/camel-folder-summary.h>
 #include <camel/camel-folder.h>
+#include <camel/camel-memchunk.h>
 
 G_BEGIN_DECLS
 
@@ -44,7 +45,7 @@ typedef struct _CamelFolderThread {
 	guint32 subject   : 1;
 
 	struct _CamelFolderThreadNode *tree;
-	struct _EMemChunk *node_chunks;
+	CamelMemChunk *node_chunks;
 	CamelFolder *folder;
 	GPtrArray *summary;
 } CamelFolderThread;
