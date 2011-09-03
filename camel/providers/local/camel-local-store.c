@@ -150,8 +150,7 @@ local_store_constructed (GObject *object)
 	CamelLocalStore *local_store;
 	CamelService *service;
 	CamelURL *url;
-	gchar *local_store_path;
-	gchar *local_store_uri;
+	const gchar *uid;
 	gint len;
 
 	local_store = CAMEL_LOCAL_STORE (object);
@@ -160,6 +159,7 @@ local_store_constructed (GObject *object)
 	G_OBJECT_CLASS (camel_local_store_parent_class)->constructed (object);
 
 	service = CAMEL_SERVICE (object);
+	uid = camel_service_get_uid (service);
 	url = camel_service_get_camel_url (service);
 
 	len = strlen (url->path);
@@ -168,28 +168,8 @@ local_store_constructed (GObject *object)
 	else
 		local_store->toplevel_dir = g_strdup (url->path);
 
-	local_store->is_main_store = FALSE;
-
-	local_store_path = g_build_filename (
-		e_get_user_data_dir (), "mail", "local", NULL);
-	local_store_uri = g_filename_to_uri (local_store_path, NULL, NULL);
-	if (local_store_uri) {
-		CamelProvider *provider;
-		CamelURL *local_store_url = camel_url_new (local_store_uri, NULL);
-
-		provider = camel_service_get_provider (service);
-		camel_url_set_protocol (local_store_url, url->protocol);
-		camel_url_set_host (local_store_url, url->host);
-
-		local_store->is_main_store =
-			provider && provider->url_equal ?
-			provider->url_equal (url, local_store_url) :
-			camel_url_equal (url, local_store_url);
-		camel_url_free (local_store_url);
-	}
-
-	g_free (local_store_uri);
-	g_free (local_store_path);
+	/* XXX This is Evolution-specific policy. */
+	local_store->is_main_store = (g_strcmp0 (uid, "local") == 0);
 }
 
 static gchar *
