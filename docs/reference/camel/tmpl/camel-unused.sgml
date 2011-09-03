@@ -2886,6 +2886,13 @@ streams
 </para>
 
 
+<!-- ##### MACRO CAMEL_SLIST_INITIALISER ##### -->
+<para>
+
+</para>
+
+@l: 
+
 <!-- ##### MACRO CAMEL_SMTP_TRANSPORT_8BITMIME ##### -->
 <para>
 
@@ -4391,6 +4398,20 @@ streams
 
 @old_base: 
 @new: 
+
+<!-- ##### STRUCT CamelSList ##### -->
+<para>
+
+</para>
+
+@head: 
+
+<!-- ##### STRUCT CamelSListNode ##### -->
+<para>
+
+</para>
+
+@next: 
 
 <!-- ##### STRUCT CamelSeekableStream ##### -->
 <para>
@@ -8833,6 +8854,72 @@ streams
 @session: 
 @msg: 
 @flags: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_slist_addhead ##### -->
+<para>
+
+</para>
+
+@l: 
+@n: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_slist_addtail ##### -->
+<para>
+
+</para>
+
+@l: 
+@n: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_slist_empty ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_slist_init ##### -->
+<para>
+
+</para>
+
+@l: 
+
+<!-- ##### FUNCTION camel_slist_length ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_slist_remhead ##### -->
+<para>
+
+</para>
+
+@l: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_slist_remove ##### -->
+<para>
+
+</para>
+
+@l: 
+@n: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_slist_remtail ##### -->
+<para>
+
+</para>
+
+@l: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_spool_folder_new ##### -->

@@ -2758,17 +2758,6 @@ camel_dlist_remhead
 camel_dlist_remtail
 camel_dlist_empty
 camel_dlist_length
-CamelSListNode
-CamelSList
-CAMEL_SLIST_INITIALISER
-camel_slist_init
-camel_slist_addhead
-camel_slist_addtail
-camel_slist_remove
-camel_slist_remhead
-camel_slist_remtail
-camel_slist_empty
-camel_slist_length
 </SECTION>
 
 <SECTION>

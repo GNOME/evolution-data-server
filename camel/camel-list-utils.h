@@ -87,50 +87,6 @@ CamelDListNode *camel_dlist_remtail (CamelDList *l);
 gint camel_dlist_empty (CamelDList *l);
 gint camel_dlist_length (CamelDList *l);
 
-/* This is provided mostly for orthogonality with the dlist structure.
- * By making the nodes contain all of the data themselves it
- * simplifies memory management.  Removing and adding from/to the head
- * of the list is O(1), the rest of the operations are O(n). */
-
-typedef struct _CamelSListNode CamelSListNode;
-typedef struct _CamelSList CamelSList;
-
-/**
- * struct _CamelSListNode - A single-linked list node.
- *
- * @next: The next node in the list.
- *
- * A single-linked list node header.  Put this at hte start of the
- * actual list node structure, or more commonly, just a next pointer.
- * Data is stored in the list node by subclassing the node-header
- * rather than using a pointer.
- **/
-struct _CamelSListNode {
-	struct _CamelSListNode *next;
-};
-
-/**
- * struct _CamelSList - A single-linked list header.
- *
- * @head: The head of the list.
- *
- * This is the header of a single-linked list.
- **/
-struct _CamelSList {
-	struct _CamelSListNode *head;
-};
-
-#define CAMEL_SLIST_INITIALISER(l) { 0 }
-
-void camel_slist_init (CamelSList *l);
-CamelSListNode *camel_slist_addhead (CamelSList *l, CamelSListNode *n);
-CamelSListNode *camel_slist_addtail (CamelSList *l, CamelSListNode *n);
-CamelSListNode *camel_slist_remove (CamelSList *l, CamelSListNode *n);
-CamelSListNode *camel_slist_remhead (CamelSList *l);
-CamelSListNode *camel_slist_remtail (CamelSList *l);
-gint camel_slist_empty (CamelSList *l);
-gint camel_slist_length (CamelSList *l);
-
 G_END_DECLS
 
 #endif
