@@ -1,3 +1,35 @@
+Evolution-Data-Server 3.1.91 2011-09-05
+---------------------------------------
+
+Bug Fixes:
+	Bug 566563 - Make ESource password prompts clearer (Milan Crha)
+	Bug 655111 - Modify allday to date-time event keeps VALUE=DATE
+	             parameter (Milan Crha)
+	Bug 655253 - Delete of one occurrence of a repeatable event don't
+	             work (Milan Crha)
+	Bug 655433 - Drag and Drop of messages out of Junk folder broken
+	             (Milan Crha)
+	Bug 657345 - Remember password by default for book/calendar
+	             (Milan Crha)
+	Bug 657836 - Work around g_unix_signal API changes. (Denis Washington)
+
+Other Changes:
+	* Do not expose password in imapx log (Milan Crha)
+	* Add a vapi for ecalendar (Lucas Baudin)
+	* Create tar.xz files for 'make dist' only (Milan Crha)
+
+Translations:
+	Jorge González (es)
+	Claude Paroz (fr)
+	Fran Dieguez (gl)
+	Shankar Prasad (kn)
+	Kjartan Maraas (nb)
+	Yuri Myasoedov (ru)
+	Daniel Nylander (sv)
+	krishnababu k (te)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.1.90 2011-08-29
 ---------------------------------------
 
