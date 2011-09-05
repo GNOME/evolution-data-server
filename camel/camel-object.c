@@ -139,7 +139,7 @@ static gint
 object_state_read (CamelObject *object,
                    FILE *fp)
 {
-	GValue value;
+	GValue value = G_VALUE_INIT;
 	GObjectClass *class;
 	GParamSpec **properties;
 	guint32 count, version;
@@ -183,7 +183,6 @@ object_state_read (CamelObject *object,
 		return 0;
 
 	count = MIN (count, CAMEL_ARGV_MAX);
-	memset (&value, 0, sizeof (GValue));
 
 	class = G_OBJECT_GET_CLASS (object);
 	properties = g_object_class_list_properties (class, &n_properties);
@@ -252,13 +251,11 @@ static gint
 object_state_write (CamelObject *object,
                     FILE *fp)
 {
-	GValue value;
+	GValue value = G_VALUE_INIT;
 	GObjectClass *class;
 	GParamSpec **properties;
 	guint ii, n_properties;
 	guint32 n_persistent = 0;
-
-	memset (&value, 0, sizeof (GValue));
 
 	class = G_OBJECT_GET_CLASS (object);
 	properties = g_object_class_list_properties (class, &n_properties);

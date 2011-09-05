@@ -19,7 +19,6 @@
 #include "camel-settings.h"
 
 #include <stdlib.h>
-#include <string.h>
 
 G_DEFINE_TYPE (CamelSettings, camel_settings, G_TYPE_OBJECT)
 
@@ -240,13 +239,11 @@ camel_settings_load_from_url (CamelSettings *settings,
 {
 	CamelSettingsClass *class;
 	GParamSpec **properties;
-	GValue value;
+	GValue value = G_VALUE_INIT;
 	guint ii, n_properties;
 
 	g_return_if_fail (CAMEL_IS_SETTINGS (settings));
 	g_return_if_fail (url != NULL);
-
-	memset (&value, 0, sizeof (GValue));
 
 	class = CAMEL_SETTINGS_GET_CLASS (settings);
 	properties = camel_settings_class_list_settings (class, &n_properties);
@@ -398,15 +395,12 @@ camel_settings_save_to_url (CamelSettings *settings,
 {
 	CamelSettingsClass *class;
 	GParamSpec **properties;
-	GValue pvalue;
-	GValue svalue;
+	GValue pvalue = G_VALUE_INIT;
+	GValue svalue = G_VALUE_INIT;
 	guint ii, n_properties;
 
 	g_return_if_fail (CAMEL_IS_SETTINGS (settings));
 	g_return_if_fail (url != NULL);
-
-	memset (&pvalue, 0, sizeof (GValue));
-	memset (&svalue, 0, sizeof (GValue));
 
 	g_value_init (&svalue, G_TYPE_STRING);
 
