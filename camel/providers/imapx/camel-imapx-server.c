@@ -3827,7 +3827,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		uidl++;
 
 		if (uidl > ifolder->uidnext_on_server) {
-			c(is->tagprefix, "Updating uidnext_on_server for '%s' to %lld\n",
+			c(is->tagprefix, "Updating uidnext_on_server for '%s' to %" G_GUINT64_FORMAT "\n",
 			  camel_folder_get_full_name (job->folder), uidl);
 			ifolder->uidnext_on_server = uidl;
 		}
@@ -4104,7 +4104,7 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is,
 		uidl++;
 
 		if (uidl > ifolder->uidnext_on_server) {
-			c(is->tagprefix, "Updating uidnext_on_server for '%s' to %lld\n",
+			c(is->tagprefix, "Updating uidnext_on_server for '%s' to %" G_GUINT64_FORMAT "\n",
 			  camel_folder_get_full_name (ic->job->folder), uidl);
 			ifolder->uidnext_on_server = uidl;
 		}
@@ -4161,7 +4161,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
 		uid = camel_folder_summary_uid_from_index (folder->summary, total - 1);
 		uidl = strtoull (uid, NULL, 10);
 		g_free (uid);
-		uid = g_strdup_printf("%lld", uidl+1);
+		uid = g_strdup_printf ("%" G_GUINT64_FORMAT, uidl+1);
 	} else
 		uid = g_strdup ("1");
 
@@ -4306,7 +4306,7 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is,
 	if (is->use_qresync && isum->modseq && ifolder->uidvalidity_on_server)
 		can_qresync = TRUE;
 
-	e(is->tagprefix, "folder %s is %sselected, total %u / %u, unread %u / %u, modseq %llu / %llu, uidnext %u / %u: will %srescan\n",
+	e(is->tagprefix, "folder %s is %sselected, total %u / %u, unread %u / %u, modseq %" G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT ", uidnext %u / %u: will %srescan\n",
 	  full_name, is_selected?"": "not ", total, ifolder->exists_on_server,
 	  folder->summary->unread_count, ifolder->unread_on_server,
 	  (guint64) isum->modseq, (guint64) ifolder->modseq_on_server,

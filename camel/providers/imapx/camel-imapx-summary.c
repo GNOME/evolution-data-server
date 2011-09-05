@@ -288,7 +288,7 @@ summary_header_to_db (CamelFolderSummary *s,
 	fir = folder_summary_class->summary_header_to_db (s, error);
 	if (!fir)
 		return NULL;
-	fir->bdata = g_strdup_printf ("%d %llu %u %llu", CAMEL_IMAPX_SUMMARY_VERSION,
+	fir->bdata = g_strdup_printf ("%d %" G_GUINT64_FORMAT " %u %" G_GUINT64_FORMAT, CAMEL_IMAPX_SUMMARY_VERSION,
 				      (guint64) ims->validity, ims->uidnext,
 				      (guint64) ims->modseq);
 	return fir;
