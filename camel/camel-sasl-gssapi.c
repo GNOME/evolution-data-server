@@ -228,7 +228,15 @@ send_dbus_message (gchar *name)
 	/* Sends the message: Have a 300 sec wait timeout  */
 	reply = g_dbus_connection_send_message_with_reply_sync (connection, message, G_DBUS_SEND_MESSAGE_FLAGS_NONE, 300 * 1000, NULL, NULL, &error);
 
+	if (!error && reply) {
+		if (g_dbus_message_to_gerror (reply, &error)) {
+			g_object_unref (reply);
+			reply = NULL;
+		}
+	}
+
 	if (error) {
+		g_dbus_error_strip_remote_error (error);
 		g_warning ("%s: %s\n", G_STRFUNC, error->message);
 		g_error_free (error);
 	}
@@ -236,7 +244,8 @@ send_dbus_message (gchar *name)
 	if (reply) {
 		GVariant *body = g_dbus_message_get_body (reply);
 
-		success = body && g_variant_get_boolean (body);
+		if (body)
+			g_variant_get (body, "(b)", &success);
 
 		g_object_unref (reply);
 	}
