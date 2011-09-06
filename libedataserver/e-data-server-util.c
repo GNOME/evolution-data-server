@@ -251,7 +251,12 @@ e_util_utf8_strstrcase (const gchar *haystack,
 static gunichar
 stripped_char (gunichar ch)
 {
-	gunichar *decomp, retval;
+#if GLIB_CHECK_VERSION(2,29,12)
+	gunichar decomp[4];
+#else
+	gunichar *decomp;
+#endif
+	gunichar retval;
 	GUnicodeType utype;
 	gsize dlen;
 
@@ -268,11 +273,18 @@ stripped_char (gunichar ch)
 		/* Convert to lowercase, fall through */
 		ch = g_unichar_tolower (ch);
 	case G_UNICODE_LOWERCASE_LETTER:
+#if GLIB_CHECK_VERSION(2,29,12)
+		if ((dlen = g_unichar_fully_decompose (ch, FALSE, decomp, 4))) {
+			retval = decomp[0];
+			return retval;
+		}
+#else
 		if ((decomp = g_unicode_canonical_decomposition (ch, &dlen))) {
 			retval = decomp[0];
 			g_free (decomp);
 			return retval;
 		}
+#endif
 		break;
 	}
 
