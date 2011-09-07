@@ -50,6 +50,28 @@ e_db3_utils_upgrade_format
 </SECTION>
 
 <SECTION>
+<FILE>e-module</FILE>
+<TITLE>EModule</TITLE>
+EModule
+e_module_new
+e_module_get_filename
+e_module_load_all_in_directory
+ETypeFunc
+e_type_traverse
+<SUBSECTION Standard>
+E_MODULE
+E_IS_MODULE
+E_TYPE_MODULE
+E_MODULE_CLASS
+E_IS_MODULE_CLASS
+E_MODULE_GET_CLASS
+EModuleClass
+<SUBSECTION Private>
+EModulePrivate
+e_module_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-offline-listener</FILE>
 <TITLE>EOfflineListener</TITLE>
 EOfflineListenerState

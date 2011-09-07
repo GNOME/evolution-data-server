@@ -12,6 +12,7 @@ libebackend_1_2_la_SOURCES =		\
 	e-offline-listener.c		\
 	e-dbhash.c			\
 	e-db3-utils.c			\
+	e-module.c			\
 	e-sqlite3-vfs.c			\
 	e-file-cache.c
 
@@ -30,6 +31,7 @@ libebackendinclude_HEADERS =		\
 	e-offline-listener.h		\
 	e-db3-utils.h			\
 	e-dbhash.h			\
+	e-module.h			\
 	e-sqlite3-vfs.h			\
 	e-file-cache.h
 
