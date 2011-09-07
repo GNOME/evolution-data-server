@@ -10,6 +10,8 @@
 
   <chapter>
     <title>Evolution-Data-Server Manual: Backend Utilities (libebackend)</title>
+    <xi:include href="xml/e-extensible.xml"/>
+    <xi:include href="xml/e-extension.xml"/>
     <xi:include href="xml/e-module.xml"/>
     <xi:include href="xml/e-file-cache.xml"/>
     <xi:include href="xml/e-dbhash.xml"/>

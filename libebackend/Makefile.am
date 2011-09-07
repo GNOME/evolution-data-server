@@ -9,6 +9,8 @@ libebackend_1_2_la_CPPFLAGS = \
 	$(E_BACKEND_CFLAGS)
 
 libebackend_1_2_la_SOURCES =		\
+	e-extensible.c			\
+	e-extension.c			\
 	e-offline-listener.c		\
 	e-dbhash.c			\
 	e-db3-utils.c			\
@@ -28,6 +30,8 @@ libebackend_1_2_la_LDFLAGS = \
 libebackendincludedir = $(privincludedir)/libebackend
 
 libebackendinclude_HEADERS =		\
+	e-extensible.h			\
+	e-extension.h			\
 	e-offline-listener.h		\
 	e-db3-utils.h			\
 	e-dbhash.h			\

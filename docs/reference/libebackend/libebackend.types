@@ -1,7 +1,11 @@
+#include <libebackend/e-extensible.h>
+#include <libebackend/e-extension.h>
 #include <libebackend/e-file-cache.h>
 #include <libebackend/e-module.h>
 #include <libebackend/e-offline-listener.h>
 
+e_extensible_get_type
+e_extension_get_type
 e_file_cache_get_type
 e_module_get_type
 e_offline_listener_get_type
