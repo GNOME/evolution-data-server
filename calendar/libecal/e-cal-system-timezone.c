@@ -210,7 +210,7 @@ system_timezone_read_etc_conf_d_clock (GHashTable *ical_zones)
 static void
 update_fallback (gchar **fallback,
                  gchar *adept,
-		 GHashTable *ical_zones)
+                 GHashTable *ical_zones)
 {
 	g_return_if_fail (fallback != NULL);
 
@@ -251,7 +251,7 @@ recursive_compare (struct stat *localtime_stat,
                    gsize localtime_content_len,
                    const gchar *file,
                    CompareFiles compare_func,
-		   GHashTable *ical_zones,
+                   GHashTable *ical_zones,
                    gint deep_level,
                    gchar **fallback)
 {
@@ -498,7 +498,7 @@ static GetSystemTimezone get_system_timezone_methods[] = {
 
 static gboolean
 system_timezone_is_valid (const gchar *tz,
-			  GHashTable *ical_zones)
+                          GHashTable *ical_zones)
 {
 	const gchar *c;
 

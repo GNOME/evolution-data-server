@@ -32,7 +32,9 @@
 #include "e-cal-view-private.h"
 #include "e-gdbus-cal-view.h"
 
-G_DEFINE_TYPE (ECalView, e_cal_view, G_TYPE_OBJECT);
+#define E_CAL_VIEW_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_VIEW, ECalViewPrivate))
 
 /* Private part of the ECalView structure */
 struct _ECalViewPrivate {
@@ -59,6 +61,8 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
+
+G_DEFINE_TYPE (ECalView, e_cal_view, G_TYPE_OBJECT);
 
 static GList *
 build_object_list (const gchar * const *seq)
@@ -201,8 +205,7 @@ complete_cb (EGdbusCalView *gdbus_calview,
 static void
 e_cal_view_init (ECalView *view)
 {
-	view->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		view, E_TYPE_CAL_VIEW, ECalViewPrivate);
+	view->priv = E_CAL_VIEW_GET_PRIVATE (view);
 }
 
 static void
@@ -211,11 +214,9 @@ e_cal_view_set_property (GObject *object,
                          const GValue *value,
                          GParamSpec *pspec)
 {
-	ECalView *view;
 	ECalViewPrivate *priv;
 
-	view = E_CAL_VIEW (object);
-	priv = view->priv;
+	priv = E_CAL_VIEW_GET_PRIVATE (object);
 
 	switch (property_id) {
 	case PROP_VIEW:
@@ -223,11 +224,11 @@ e_cal_view_set_property (GObject *object,
 		g_return_if_fail (priv->gdbus_calview == NULL);
 
 		priv->gdbus_calview = g_object_ref (g_value_get_pointer (value));
-		g_signal_connect (priv->gdbus_calview, "objects-added", G_CALLBACK (objects_added_cb), view);
-		g_signal_connect (priv->gdbus_calview, "objects-modified", G_CALLBACK (objects_modified_cb), view);
-		g_signal_connect (priv->gdbus_calview, "objects-removed", G_CALLBACK (objects_removed_cb), view);
-		g_signal_connect (priv->gdbus_calview, "progress", G_CALLBACK (progress_cb), view);
-		g_signal_connect (priv->gdbus_calview, "complete", G_CALLBACK (complete_cb), view);
+		g_signal_connect (priv->gdbus_calview, "objects-added", G_CALLBACK (objects_added_cb), object);
+		g_signal_connect (priv->gdbus_calview, "objects-modified", G_CALLBACK (objects_modified_cb), object);
+		g_signal_connect (priv->gdbus_calview, "objects-removed", G_CALLBACK (objects_removed_cb), object);
+		g_signal_connect (priv->gdbus_calview, "progress", G_CALLBACK (progress_cb), object);
+		g_signal_connect (priv->gdbus_calview, "complete", G_CALLBACK (complete_cb), object);
 		break;
 	case PROP_CLIENT:
 		priv->client = E_CAL (g_value_dup_object (value));
@@ -244,11 +245,9 @@ e_cal_view_get_property (GObject *object,
                          GValue *value,
                          GParamSpec *pspec)
 {
-	ECalView *view;
 	ECalViewPrivate *priv;
 
-	view = E_CAL_VIEW (object);
-	priv = view->priv;
+	priv = E_CAL_VIEW_GET_PRIVATE (object);
 
 	switch (property_id) {
 	case PROP_VIEW:
@@ -267,19 +266,14 @@ e_cal_view_get_property (GObject *object,
 static void
 e_cal_view_finalize (GObject *object)
 {
-	ECalView *view;
 	ECalViewPrivate *priv;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (E_IS_CAL_VIEW (object));
-
-	view = E_CAL_VIEW (object);
-	priv = view->priv;
+	priv = E_CAL_VIEW_GET_PRIVATE (object);
 
 	if (priv->gdbus_calview != NULL) {
 		GError *error = NULL;
 
-		g_signal_handlers_disconnect_matched (priv->gdbus_calview, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, view);
+		g_signal_handlers_disconnect_matched (priv->gdbus_calview, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, object);
 		e_gdbus_cal_view_call_dispose_sync (priv->gdbus_calview, NULL, &error);
 		g_object_unref (priv->gdbus_calview);
 		priv->gdbus_calview = NULL;
@@ -301,17 +295,17 @@ e_cal_view_finalize (GObject *object)
 
 /* Class initialization function for the calendar view */
 static void
-e_cal_view_class_init (ECalViewClass *klass)
+e_cal_view_class_init (ECalViewClass *class)
 {
 	GObjectClass *object_class;
 
-	object_class = (GObjectClass *) klass;
+	object_class = (GObjectClass *) class;
 
 	object_class->set_property = e_cal_view_set_property;
 	object_class->get_property = e_cal_view_get_property;
 	object_class->finalize = e_cal_view_finalize;
 
-	g_type_class_add_private (klass, sizeof (ECalViewPrivate));
+	g_type_class_add_private (class, sizeof (ECalViewPrivate));
 
 	g_object_class_install_property (object_class, PROP_VIEW,
 		g_param_spec_pointer ("view", "The GDBus view proxy", NULL,
@@ -327,7 +321,7 @@ e_cal_view_class_init (ECalViewClass *klass)
          */
 	signals[OBJECTS_ADDED] =
 		g_signal_new ("objects_added",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, objects_added),
 			      NULL, NULL,
@@ -340,7 +334,7 @@ e_cal_view_class_init (ECalViewClass *klass)
          */
 	signals[OBJECTS_MODIFIED] =
 		g_signal_new ("objects_modified",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, objects_modified),
 			      NULL, NULL,
@@ -353,7 +347,7 @@ e_cal_view_class_init (ECalViewClass *klass)
          */
 	signals[OBJECTS_REMOVED] =
 		g_signal_new ("objects_removed",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, objects_removed),
 			      NULL, NULL,
@@ -361,7 +355,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 	signals[VIEW_PROGRESS] =
 		g_signal_new ("view_progress",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, view_progress),
 			      NULL, NULL,
@@ -371,7 +365,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 	/* XXX The "view-done" signal is deprecated. */
 	signals[VIEW_DONE] =
 		g_signal_new ("view_done",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, view_done),
 			      NULL, NULL,
@@ -380,7 +374,7 @@ e_cal_view_class_init (ECalViewClass *klass)
 
 	signals[VIEW_COMPLETE] =
 		g_signal_new ("view_complete",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalViewClass, view_complete),
 			      NULL, NULL,
@@ -448,15 +442,11 @@ void
 e_cal_view_start (ECalView *view)
 {
 	GError *error = NULL;
-	ECalViewPrivate *priv;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 
-	priv = view->priv;
-
-	if (priv->gdbus_calview) {
-		e_gdbus_cal_view_call_start_sync (priv->gdbus_calview, NULL, &error);
+	if (view->priv->gdbus_calview) {
+		e_gdbus_cal_view_call_start_sync (view->priv->gdbus_calview, NULL, &error);
 	}
 
 	if (error) {
@@ -484,15 +474,11 @@ void
 e_cal_view_stop (ECalView *view)
 {
 	GError *error = NULL;
-	ECalViewPrivate *priv;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_VIEW (view));
 
-	priv = view->priv;
-
-	if (priv->gdbus_calview) {
-		e_gdbus_cal_view_call_stop_sync (priv->gdbus_calview, NULL, &error);
+	if (view->priv->gdbus_calview) {
+		e_gdbus_cal_view_call_stop_sync (view->priv->gdbus_calview, NULL, &error);
 	}
 
 	if (error) {

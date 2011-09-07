@@ -1471,7 +1471,6 @@ camel_sexp_finalize (GObject *object)
 	G_OBJECT_CLASS (camel_sexp_parent_class)->finalize (object);
 }
 
-
 static void
 camel_sexp_class_init (CamelSExpClass *class)
 {

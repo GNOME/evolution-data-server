@@ -45,11 +45,16 @@
 #include <libebook/e-book-query.h>
 #include <libebook/e-contact.h>
 
+#define E_CAL_BACKEND_CONTACTS_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND_CONTACTS, ECalBackendContactsPrivate))
+
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 
-G_DEFINE_TYPE (ECalBackendContacts, e_cal_backend_contacts, E_TYPE_CAL_BACKEND_SYNC)
-
-static ECalBackendSyncClass *parent_class;
+G_DEFINE_TYPE (
+	ECalBackendContacts,
+	e_cal_backend_contacts,
+	E_TYPE_CAL_BACKEND_SYNC)
 
 typedef enum
 {
@@ -116,8 +121,8 @@ static void setup_alarm (ECalBackendContacts *cbc, ECalComponent *comp);
 
 static gboolean
 book_client_authenticate_cb (EClient *client,
-			     ECredentials *credentials,
-			     ECalBackendContacts *cbc)
+                             ECredentials *credentials,
+                             ECalBackendContacts *cbc)
 {
 	ESource *source;
 	const gchar *source_uid;
@@ -285,7 +290,8 @@ cbc_reopen_book_client_thread (gpointer user_data)
 }
 
 static void
-cbc_reopen_book_client (ECalBackendContacts *cbc, EBookClient *book_client)
+cbc_reopen_book_client (ECalBackendContacts *cbc,
+                        EBookClient *book_client)
 {
 	GError *error = NULL;
 
@@ -310,8 +316,8 @@ cbc_reopen_book_client (ECalBackendContacts *cbc, EBookClient *book_client)
 
 static void
 book_client_opened_cb (EBookClient *book_client,
-		       const GError *error,
-		       ECalBackendContacts *cbc)
+                       const GError *error,
+                       ECalBackendContacts *cbc)
 {
 	ESource *source;
 	const gchar *source_uid;
@@ -382,9 +388,9 @@ book_client_opened_cb (EBookClient *book_client,
 
 static void
 e_cal_backend_contacts_authenticate_user (ECalBackendSync *backend,
-					  GCancellable *cancellable,
-					  ECredentials *credentials,
-					  GError **error)
+                                          GCancellable *cancellable,
+                                          ECredentials *credentials,
+                                          GError **error)
 {
 	ECalBackendContacts *cbc;
 	const gchar *source_uid;
@@ -543,7 +549,7 @@ typedef struct _ContactRecordCB {
 static ContactRecordCB *
 contact_record_cb_new (ECalBackendContacts *cbc,
                        ECalBackendSExp *sexp,
-		       gboolean as_string)
+                       gboolean as_string)
 {
 	ContactRecordCB *cb_data = g_new (ContactRecordCB, 1);
 
@@ -1491,14 +1497,9 @@ free_zone (gpointer data)
 static void
 e_cal_backend_contacts_finalize (GObject *object)
 {
-	ECalBackendContacts *cbc;
 	ECalBackendContactsPrivate *priv;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND_CONTACTS (object));
-
-	cbc = E_CAL_BACKEND_CONTACTS (object);
-	priv = cbc->priv;
+	priv = E_CAL_BACKEND_CONTACTS_GET_PRIVATE (object);
 
 	if (priv->init_done_flag) {
 		e_flag_wait (priv->init_done_flag);
@@ -1526,43 +1527,52 @@ e_cal_backend_contacts_finalize (GObject *object)
 
 	g_object_unref (priv->conf_client);
 
-	g_free (priv);
-	cbc->priv = NULL;
-
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->finalize (object);
 }
 
 /* Object initialization function for the contacts backend */
 static void
 e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 {
-	ECalBackendContactsPrivate *priv;
+	cbc->priv = E_CAL_BACKEND_CONTACTS_GET_PRIVATE (cbc);
 
-	priv = g_new0 (ECalBackendContactsPrivate, 1);
+	if (!e_book_client_get_sources (&cbc->priv->addressbook_sources, NULL))
+		cbc->priv->addressbook_sources = NULL;
 
-	if (!e_book_client_get_sources (&priv->addressbook_sources, NULL))
-		priv->addressbook_sources = NULL;
+	cbc->priv->addressbooks = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) book_record_free);
 
-	priv->addressbooks = g_hash_table_new_full (g_str_hash, g_str_equal,
-						    g_free, (GDestroyNotify) book_record_free);
-	priv->credentials = g_hash_table_new_full (g_str_hash, g_str_equal,
-						    g_free, (GDestroyNotify) e_credentials_free);
-	priv->tracked_contacts = g_hash_table_new_full (g_str_hash, g_str_equal,
-							g_free, (GDestroyNotify) contact_record_free);
+	cbc->priv->credentials = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) e_credentials_free);
 
-	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);
-	priv->init_done_flag = e_flag_new ();
-	priv->conf_client = gconf_client_get_default ();
-	priv->notifyid1 = 0;
-	priv->notifyid2 = 0;
-	priv->notifyid3 = 0;
-	priv->update_alarms_id = 0;
-	priv->alarm_enabled = FALSE;
-	priv->alarm_interval = -1;
-	priv->alarm_units = CAL_MINUTES;
+	cbc->priv->tracked_contacts = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) contact_record_free);
 
-	cbc->priv = priv;
+	cbc->priv->zones = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) free_zone);
+
+	cbc->priv->init_done_flag = e_flag_new ();
+	cbc->priv->conf_client = gconf_client_get_default ();
+	cbc->priv->notifyid1 = 0;
+	cbc->priv->notifyid2 = 0;
+	cbc->priv->notifyid3 = 0;
+	cbc->priv->update_alarms_id = 0;
+	cbc->priv->alarm_enabled = FALSE;
+	cbc->priv->alarm_interval = -1;
+	cbc->priv->alarm_units = CAL_MINUTES;
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbc), TRUE);
 
@@ -1591,11 +1601,11 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 	ECalBackendClass *backend_class;
 	ECalBackendSyncClass *sync_class;
 
+	g_type_class_add_private (class, sizeof (ECalBackendContactsPrivate));
+
 	object_class = (GObjectClass *) class;
 	backend_class = (ECalBackendClass *) class;
 	sync_class = (ECalBackendSyncClass *) class;
-
-	parent_class = (ECalBackendSyncClass *) g_type_class_peek_parent (class);
 
 	object_class->finalize = e_cal_backend_contacts_finalize;
 

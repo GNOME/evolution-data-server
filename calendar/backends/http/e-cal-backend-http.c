@@ -39,12 +39,14 @@
 #include <libsoup/soup.h>
 #include "e-cal-backend-http.h"
 
+#define E_CAL_BACKEND_HTTP_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND_HTTP, ECalBackendHttpPrivate))
+
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
 G_DEFINE_TYPE (ECalBackendHttp, e_cal_backend_http, E_TYPE_CAL_BACKEND_SYNC)
-
-
 
 /* Private part of the ECalBackendHttp structure */
 struct _ECalBackendHttpPrivate {
@@ -79,10 +81,6 @@ static void e_cal_backend_http_finalize (GObject *object);
 static gboolean begin_retrieval_cb (ECalBackendHttp *cbhttp);
 static void e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
 
-static ECalBackendSyncClass *parent_class;
-
-
-
 /* Dispose handler for the file backend */
 static void
 e_cal_backend_http_dispose (GObject *object)
@@ -113,21 +111,16 @@ e_cal_backend_http_dispose (GObject *object)
 	}
 
 	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (e_cal_backend_http_parent_class)->dispose (object);
 }
 
 /* Finalize handler for the file backend */
 static void
 e_cal_backend_http_finalize (GObject *object)
 {
-	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND_HTTP (object));
-
-	cbhttp = E_CAL_BACKEND_HTTP (object);
-	priv = cbhttp->priv;
+	priv = E_CAL_BACKEND_HTTP_GET_PRIVATE (object);
 
 	/* Clean up */
 
@@ -136,16 +129,10 @@ e_cal_backend_http_finalize (GObject *object)
 		priv->store = NULL;
 	}
 
-	if (priv->uri) {
-		g_free (priv->uri);
-		priv->uri = NULL;
-	}
-
-	g_free (priv);
-	cbhttp->priv = NULL;
+	g_free (priv->uri);
 
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_cal_backend_http_parent_class)->finalize (object);
 }
 
 
@@ -1360,8 +1347,8 @@ e_cal_backend_http_internal_get_timezone (ECalBackend *backend,
 		/* first try to get the timezone from the cache */
 		zone = (icaltimezone *) e_cal_backend_store_get_timezone (priv->store, tzid);
 
-		if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
-			zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
+		if (!zone && E_CAL_BACKEND_CLASS (e_cal_backend_http_parent_class)->internal_get_timezone)
+			zone = E_CAL_BACKEND_CLASS (e_cal_backend_http_parent_class)->internal_get_timezone (backend, tzid);
 	}
 
 	return zone;
@@ -1371,14 +1358,7 @@ e_cal_backend_http_internal_get_timezone (ECalBackend *backend,
 static void
 e_cal_backend_http_init (ECalBackendHttp *cbhttp)
 {
-	ECalBackendHttpPrivate *priv;
-
-	priv = g_new0 (ECalBackendHttpPrivate, 1);
-	cbhttp->priv = priv;
-
-	priv->uri = NULL;
-	priv->reload_timeout_id = 0;
-	priv->opened = FALSE;
+	cbhttp->priv = E_CAL_BACKEND_HTTP_GET_PRIVATE (cbhttp);
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbhttp), TRUE);
 
@@ -1395,11 +1375,11 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	ECalBackendClass *backend_class;
 	ECalBackendSyncClass *sync_class;
 
+	g_type_class_add_private (class, sizeof (ECalBackendHttpPrivate));
+
 	object_class = (GObjectClass *) class;
 	backend_class = (ECalBackendClass *) class;
 	sync_class = (ECalBackendSyncClass *) class;
-
-	parent_class = (ECalBackendSyncClass *) g_type_class_peek_parent (class);
 
 	object_class->dispose = e_cal_backend_http_dispose;
 	object_class->finalize = e_cal_backend_http_finalize;

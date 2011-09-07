@@ -32,8 +32,10 @@
 
 G_BEGIN_DECLS
 
-#define CAMEL_NNTP_STORE_LOCK(f, l) (e_mutex_lock(((CamelNNTPStore *)f)->priv->l))
-#define CAMEL_NNTP_STORE_UNLOCK(f, l) (e_mutex_unlock(((CamelNNTPStore *)f)->priv->l))
+#define CAMEL_NNTP_STORE_LOCK(f, l) \
+	(e_mutex_lock (((CamelNNTPStore *) f)->priv->l))
+#define CAMEL_NNTP_STORE_UNLOCK(f, l) \
+	(e_mutex_unlock (((CamelNNTPStore *) f)->priv->l))
 
 struct _CamelNNTPFolderPrivate {
 	GMutex *search_lock;	/* for locking the search object */
@@ -42,11 +44,10 @@ struct _CamelNNTPFolderPrivate {
 	gboolean apply_filters;		/* persistent property */
 };
 
-#define CAMEL_NNTP_FOLDER_LOCK(f, l) (g_mutex_lock(((CamelNNTPFolder *)f)->priv->l))
-#define CAMEL_NNTP_FOLDER_UNLOCK(f, l) (g_mutex_unlock(((CamelNNTPFolder *)f)->priv->l))
-#else
-#define CAMEL_NNTP_FOLDER_LOCK(f, l)
-#define CAMEL_NNTP_FOLDER_UNLOCK(f, l)
+#define CAMEL_NNTP_FOLDER_LOCK(f, l) \
+	(g_mutex_lock (((CamelNNTPFolder *) f)->priv->l))
+#define CAMEL_NNTP_FOLDER_UNLOCK(f, l) \
+	(g_mutex_unlock (((CamelNNTPFolder *) f)->priv->l))
 
 G_END_DECLS
 

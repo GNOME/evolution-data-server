@@ -32,6 +32,10 @@
 #include "camel-sasl-plain.h"
 #include "camel-service.h"
 
+#define CAMEL_SASL_PLAIN_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL_PLAIN, CamelSaslPlainPrivate))
+
 struct _CamelSaslPlainPrivate {
 	gint placeholder;  /* allow for future expansion */
 };
@@ -102,6 +106,5 @@ camel_sasl_plain_class_init (CamelSaslPlainClass *class)
 static void
 camel_sasl_plain_init (CamelSaslPlain *sasl)
 {
-	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		sasl, CAMEL_TYPE_SASL_PLAIN, CamelSaslPlainPrivate);
+	sasl->priv = CAMEL_SASL_PLAIN_GET_PRIVATE (sasl);
 }

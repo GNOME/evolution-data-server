@@ -34,6 +34,10 @@
 #include "libedataserver/e-data-server-util.h"
 #include "e-gdbus-book-view.h"
 
+#define E_BOOK_CLIENT_VIEW_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_CLIENT_VIEW, EBookClientViewPrivate))
+
 G_DEFINE_TYPE (EBookClientView, e_book_client_view, G_TYPE_OBJECT);
 
 struct _EBookClientViewPrivate {
@@ -346,7 +350,7 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
 static void
 e_book_client_view_init (EBookClientView *view)
 {
-	view->priv = G_TYPE_INSTANCE_GET_PRIVATE (view, E_TYPE_BOOK_CLIENT_VIEW, EBookClientViewPrivate);
+	view->priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (view);
 	view->priv->gdbus_bookview = NULL;
 
 	view->priv->client = NULL;
@@ -382,13 +386,13 @@ book_client_view_dispose (GObject *object)
 }
 
 static void
-e_book_client_view_class_init (EBookClientViewClass *klass)
+e_book_client_view_class_init (EBookClientViewClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (EBookClientViewPrivate));
+	g_type_class_add_private (class, sizeof (EBookClientViewPrivate));
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = book_client_view_dispose;
 
 	signals[OBJECTS_ADDED] =

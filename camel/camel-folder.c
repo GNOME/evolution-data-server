@@ -42,6 +42,10 @@
 #include "camel-vtrash-folder.h"
 #include "camel-string-utils.h"
 
+#define CAMEL_FOLDER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_FOLDER, CamelFolderPrivate))
+
 #define d(x)
 #define w(x)
 
@@ -77,7 +81,7 @@ struct _AsyncContext {
 	gboolean delete_originals;
 	gboolean expunge;
 	CamelFetchType fetch_type;
-	int limit;
+	gint limit;
 	gchar *start_uid;
 	gchar *end_uid;
 
@@ -556,7 +560,7 @@ folder_finalize (GObject *object)
 {
 	CamelFolderPrivate *priv;
 
-	priv = CAMEL_FOLDER (object)->priv;
+	priv = CAMEL_FOLDER_GET_PRIVATE (object);
 
 	g_free (priv->full_name);
 	g_free (priv->display_name);
@@ -1091,8 +1095,8 @@ fetch_messages_thread (GSimpleAsyncResult *simple,
 
 static void
 fetch_messages (CamelFolder *folder,
-		CamelFetchType type,
-		int limit,
+                CamelFetchType type,
+                gint limit,
                 gint io_priority,
                 GCancellable *cancellable,
                 GAsyncReadyCallback callback,
@@ -1302,12 +1306,12 @@ purge_message_cache_thread (GSimpleAsyncResult *simple,
 
 static void
 purge_message_cache (CamelFolder *folder,
-		     gchar *start_uid,
-		     gchar *end_uid,
-		     gint io_priority,
-		     GCancellable *cancellable,
-		     GAsyncReadyCallback callback,
-		     gpointer user_data)
+                     gchar *start_uid,
+                     gchar *end_uid,
+                     gint io_priority,
+                     GCancellable *cancellable,
+                     GAsyncReadyCallback callback,
+                     gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -1330,8 +1334,8 @@ purge_message_cache (CamelFolder *folder,
 
 static gboolean
 purge_message_cache_finish (CamelFolder *folder,
-     	                    GAsyncResult *result,
-			    GError **error)
+                            GAsyncResult *result,
+                            GError **error)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -1746,13 +1750,13 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->expunge = folder_expunge;
 	class->expunge_finish = folder_expunge_finish;
 	class->fetch_messages= fetch_messages;
-	class->fetch_messages_finish = fetch_messages_finish;	
+	class->fetch_messages_finish = fetch_messages_finish;
 	class->get_message = folder_get_message;
 	class->get_message_finish = folder_get_message_finish;
 	class->get_quota_info = folder_get_quota_info;
 	class->get_quota_info_finish = folder_get_quota_info_finish;
 	class->purge_message_cache= purge_message_cache;
-	class->purge_message_cache_finish = purge_message_cache_finish;		
+	class->purge_message_cache_finish = purge_message_cache_finish;
 	class->refresh_info = folder_refresh_info;
 	class->refresh_info_finish = folder_refresh_info_finish;
 	class->synchronize = folder_synchronize;
@@ -1872,8 +1876,7 @@ camel_folder_class_init (CamelFolderClass *class)
 static void
 camel_folder_init (CamelFolder *folder)
 {
-	folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		folder, CAMEL_TYPE_FOLDER, CamelFolderPrivate);
+	folder->priv = CAMEL_FOLDER_GET_PRIVATE (folder);
 	folder->priv->frozen = 0;
 	folder->priv->changed_frozen = camel_folder_change_info_new ();
 
@@ -3395,18 +3398,21 @@ camel_folder_expunge_finish (CamelFolder *folder,
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Downloads old or new specified number of messages from the server. It is optimized for mobile client usage. Desktop clients should keep away from this api and use @camel_folder_refresh_info.
+ * Downloads old or new specified number of messages from the server. It is
+ * optimized for mobile client usage. Desktop clients should keep away from
+ * this api and use @camel_folder_refresh_info.
  *
- * Returns: %TRUE if there are more messages to fetch, %FALSE if there are no more messages. 
+ * Returns: %TRUE if there are more messages to fetch,
+ *          %FALSE if there are no more messages
  *
  * Since: 3.4
  **/
 gboolean
 camel_folder_fetch_messages_sync (CamelFolder *folder,
-				  CamelFetchType type,
-				  int limit,
-                           	  GCancellable *cancellable,
-                               	  GError **error)
+                                  CamelFetchType type,
+                                  gint limit,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	CamelFolderClass *class;
 	gboolean success = TRUE;
@@ -3415,7 +3421,8 @@ camel_folder_fetch_messages_sync (CamelFolder *folder,
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 
-	/* Some backends that wont support mobile mode, won't have this api implemented. */
+	/* Some backends that wont support mobile
+	 * mode, won't have this method implemented. */
 	if (class->fetch_messages_sync == NULL)
 		return FALSE;
 
@@ -3427,7 +3434,8 @@ camel_folder_fetch_messages_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	success = class->fetch_messages_sync (folder, type, limit, cancellable, error);
+	success = class->fetch_messages_sync (
+		folder, type, limit, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, fetch_messages_sync, success, error);
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
@@ -3445,11 +3453,14 @@ camel_folder_fetch_messages_sync (CamelFolder *folder,
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
- * Asynchronously download new or old messages from the server. It is assumes that the client has only a 
- * window of interested messages of what server has. And old/new type helps to expand that window.
+ * Asynchronously download new or old messages from the server. It is assumes
+ * that the client has only a window of interested messages of what server has.
+ * And old/new type helps to expand that window.
  *
- * type = CAMEL_FETCH_OLD_MESSAGES: Downloads messages older than what the client already has. 
- * type = CAMEL_FETCH_NEW_MESSAGES: Downloads messages newer than what the client already has.
+ * type = CAMEL_FETCH_OLD_MESSAGES: Downloads messages older than what the
+ * client already has.
+ * type = CAMEL_FETCH_NEW_MESSAGES: Downloads messages newer than what the
+ * client already has.
  *
  * When the operation is finished, @callback will be called.  You can then
  * call camel_folder_fetch_messages_finish() to get the result of the operation.
@@ -3458,12 +3469,12 @@ camel_folder_fetch_messages_sync (CamelFolder *folder,
  **/
 void
 camel_folder_fetch_messages (CamelFolder *folder,
-			     CamelFetchType type,
-			     int limit,
-	                     gint io_priority,
-			     GCancellable *cancellable,
-			     GAsyncReadyCallback callback,
-			     gpointer user_data)
+                             CamelFetchType type,
+                             gint limit,
+                             gint io_priority,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
 {
 	CamelFolderClass *class;
 
@@ -3472,7 +3483,9 @@ camel_folder_fetch_messages (CamelFolder *folder,
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_if_fail (class->fetch_messages != NULL);
 
-	class->fetch_messages (folder, type, limit, io_priority, cancellable, callback, user_data);
+	class->fetch_messages (
+		folder, type, limit, io_priority,
+		cancellable, callback, user_data);
 }
 
 /**
@@ -3483,14 +3496,15 @@ camel_folder_fetch_messages (CamelFolder *folder,
  *
  * Finishes the operation started with camel_folder_fetch_messages().
  *
- * Returns: %TRUE if there are more messages to fetch, %FALSE if there are no more messages.
+ * Returns: %TRUE if there are more messages to fetch,
+ *          %FALSE if there are no more messages
  *
  * Since: 3.4
  **/
 gboolean
 camel_folder_fetch_messages_finish (CamelFolder *folder,
-                             	    GAsyncResult *result,
-				    GError **error)
+                                    GAsyncResult *result,
+                                    GError **error)
 {
 	CamelFolderClass *class;
 
@@ -3536,12 +3550,12 @@ camel_folder_get_message_sync (CamelFolder *folder,
 		message_uid, camel_folder_get_display_name (folder));
 
 	if (class->get_message_cached) {
-		/* Return cached message, if available locally; this should not do any
-		 * network I/O, only check if message is already downloaded and return
-		 * it quicker, not being blocked by the folder's lock.
-		 * Returning NULL is not considered as an error, it just means that
-		 * the message is still to-be-downloaded.
-		*/
+		/* Return cached message, if available locally; this should
+		 * not do any network I/O, only check if message is already
+		 * downloaded and return it quicker, not being blocked by
+		 * the folder's lock.  Returning NULL is not considered as
+		 * an error, it just means that the message is still
+		 * to-be-downloaded. */
 		message = class->get_message_cached (
 			folder, message_uid, cancellable);
 	}
@@ -3558,17 +3572,20 @@ camel_folder_get_message_sync (CamelFolder *folder,
 
 		message = class->get_message_sync (
 			folder, message_uid, cancellable, error);
-		CAMEL_CHECK_GERROR (folder, get_message_sync, message != NULL, error);
+		CAMEL_CHECK_GERROR (
+			folder, get_message_sync, message != NULL, error);
 
 		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 	}
 
 	if (message && camel_mime_message_get_source (message) == NULL) {
 		CamelStore *store;
+		const gchar *uid;
 
 		store = camel_folder_get_parent_store (folder);
+		uid = camel_service_get_uid (CAMEL_SERVICE (store));
 
-		camel_mime_message_set_source (message, camel_service_get_uid (CAMEL_SERVICE (store)));
+		camel_mime_message_set_source (message, uid);
 	}
 
 	camel_operation_pop_message (cancellable);
@@ -3773,10 +3790,10 @@ camel_folder_get_quota_info_finish (CamelFolder *folder,
  **/
 gboolean
 camel_folder_purge_message_cache_sync (CamelFolder *folder,
-				       gchar *start_uid,
-				       gchar *end_uid,
-				       GCancellable *cancellable,
-				       GError **error)
+                                       gchar *start_uid,
+                                       gchar *end_uid,
+                                       GCancellable *cancellable,
+                                       GError **error)
 {
 	CamelFolderClass *class;
 	gboolean success = TRUE;
@@ -3785,7 +3802,8 @@ camel_folder_purge_message_cache_sync (CamelFolder *folder,
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 
-	/* Some backends that wont support mobile mode, won't have this api implemented. */
+	/* Some backends that wont support mobile
+	 * mode, won't have this api implemented. */
 	if (class->purge_message_cache_sync == NULL)
 		return FALSE;
 
@@ -3797,7 +3815,8 @@ camel_folder_purge_message_cache_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	success = class->purge_message_cache_sync (folder, start_uid, end_uid, cancellable, error);
+	success = class->purge_message_cache_sync (
+		folder, start_uid, end_uid, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, purge_message_cache_sync, success, error);
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
@@ -3818,18 +3837,19 @@ camel_folder_purge_message_cache_sync (CamelFolder *folder,
  * Delete the local cache of all messages between these uids.
  * 
  * When the operation is finished, @callback will be called.  You can then
- * call camel_folder_purge_message_cache_finish() to get the result of the operation.
+ * call camel_folder_purge_message_cache_finish() to get the result of the
+ * operation.
  *
  * Since: 3.4
  **/
 void
 camel_folder_purge_message_cache (CamelFolder *folder,
-				  gchar *start_uid,
-				  gchar *end_uid,
-				  gint io_priority,
-				  GCancellable *cancellable,
-				  GAsyncReadyCallback callback,
-				  gpointer user_data)
+                                  gchar *start_uid,
+                                  gchar *end_uid,
+                                  gint io_priority,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
 {
 	CamelFolderClass *class;
 
@@ -3838,7 +3858,9 @@ camel_folder_purge_message_cache (CamelFolder *folder,
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_if_fail (class->purge_message_cache != NULL);
 
-	class->purge_message_cache (folder, start_uid, end_uid, io_priority, cancellable, callback, user_data);
+	class->purge_message_cache (
+		folder, start_uid, end_uid, io_priority,
+		cancellable, callback, user_data);
 }
 
 /**
@@ -3849,14 +3871,14 @@ camel_folder_purge_message_cache (CamelFolder *folder,
  *
  * Finishes the operation started with camel_folder_purge_message_cache().
  *
- * Returns: %TRUE if cache is deleted, %FALSE if there are any errors.
+ * Returns: %TRUE if cache is deleted, %FALSE if there are any errors
  *
  * Since: 3.4
  **/
 gboolean
 camel_folder_purge_message_cache_finish (CamelFolder *folder,
-                             	    GAsyncResult *result,
-				    GError **error)
+                                         GAsyncResult *result,
+                                    GError **error)
 {
 	CamelFolderClass *class;
 

@@ -33,8 +33,11 @@
 #include "e-client.h"
 #include "e-client-private.h"
 
-struct _EClientPrivate
-{
+#define E_CLIENT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CLIENT, EClientPrivate))
+
+struct _EClientPrivate {
 	GStaticRecMutex prop_mutex;
 
 	ESource *source;
@@ -188,7 +191,7 @@ static void client_handle_authentication (EClient *client, const ECredentials *c
 static void
 e_client_init (EClient *client)
 {
-	client->priv = G_TYPE_INSTANCE_GET_PRIVATE (client, E_TYPE_CLIENT, EClientPrivate);
+	client->priv = E_CLIENT_GET_PRIVATE (client);
 
 	client->priv->readonly = TRUE;
 
@@ -314,13 +317,13 @@ client_get_property (GObject *object,
 }
 
 static void
-e_client_class_init (EClientClass *klass)
+e_client_class_init (EClientClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (EClientPrivate));
+	g_type_class_add_private (class, sizeof (EClientPrivate));
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = client_set_property;
 	object_class->get_property = client_get_property;
 	object_class->dispose = client_dispose;
@@ -377,7 +380,7 @@ e_client_class_init (EClientClass *klass)
 
 	signals[AUTHENTICATE] = g_signal_new (
 		"authenticate",
-		G_OBJECT_CLASS_TYPE (klass),
+		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EClientClass, authenticate),
 		NULL, NULL,
@@ -387,7 +390,7 @@ e_client_class_init (EClientClass *klass)
 
 	signals[OPENED] = g_signal_new (
 		"opened",
-		G_OBJECT_CLASS_TYPE (klass),
+		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EClientClass, opened),
 		NULL, NULL,
@@ -397,7 +400,7 @@ e_client_class_init (EClientClass *klass)
 
 	signals[BACKEND_ERROR] = g_signal_new (
 		"backend-error",
-		G_OBJECT_CLASS_TYPE (klass),
+		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (EClientClass, backend_error),
 		NULL, NULL,
@@ -407,7 +410,7 @@ e_client_class_init (EClientClass *klass)
 
 	signals[BACKEND_DIED] = g_signal_new (
 		"backend-died",
-		G_OBJECT_CLASS_TYPE (klass),
+		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EClientClass, backend_died),
 		NULL, NULL,
@@ -416,7 +419,7 @@ e_client_class_init (EClientClass *klass)
 
 	signals[BACKEND_PROPERTY_CHANGED] = g_signal_new (
 		"backend-property-changed",
-		G_OBJECT_CLASS_TYPE (klass),
+		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EClientClass, backend_property_changed),
 		NULL, NULL,
@@ -854,17 +857,17 @@ static void
 client_handle_authentication (EClient *client,
                               const ECredentials *credentials)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (credentials != NULL);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_if_fail (klass != NULL);
-	g_return_if_fail (klass->handle_authentication != NULL);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->handle_authentication != NULL);
 
-	return klass->handle_authentication (client, credentials);
+	return class->handle_authentication (client, credentials);
 }
 
 struct EClientAuthData {
@@ -883,8 +886,8 @@ client_process_authentication_idle_cb (gpointer user_data)
 		client_handle_authentication (auth_data->client, auth_data->credentials);
 	} else {
 		/* Always pass credentials to backend to finish opening phase.
-		   Empty username indicates that either user cancelled password prompt
-		   or there was no authentication callback set.
+		 * Empty username indicates that either user cancelled password prompt
+		 * or there was no authentication callback set.
 		*/
 		e_credentials_set (auth_data->credentials, E_CREDENTIALS_KEY_USERNAME, NULL);
 		client_handle_authentication (auth_data->client, auth_data->credentials);
@@ -1069,18 +1072,18 @@ e_client_retrieve_capabilities (EClient *client,
                                 GAsyncReadyCallback callback,
                                 gpointer user_data)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (callback != NULL);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_if_fail (klass != NULL);
-	g_return_if_fail (klass->retrieve_capabilities != NULL);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->retrieve_capabilities != NULL);
 
-	klass->retrieve_capabilities (client, cancellable, callback, user_data);
+	class->retrieve_capabilities (client, cancellable, callback, user_data);
 }
 
 /**
@@ -1104,7 +1107,7 @@ e_client_retrieve_capabilities_finish (EClient *client,
                                        gchar **capabilities,
                                        GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 	gboolean res;
 
 	g_return_val_if_fail (client != NULL, FALSE);
@@ -1112,12 +1115,12 @@ e_client_retrieve_capabilities_finish (EClient *client,
 	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (capabilities != NULL, FALSE);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->retrieve_capabilities_finish != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->retrieve_capabilities_finish != NULL, FALSE);
 
 	*capabilities = NULL;
-	res = klass->retrieve_capabilities_finish (client, result, capabilities, error);
+	res = class->retrieve_capabilities_finish (client, result, capabilities, error);
 
 	e_client_set_capabilities (client, res ? *capabilities : NULL);
 
@@ -1147,18 +1150,18 @@ e_client_retrieve_capabilities_sync (EClient *client,
                                      GCancellable *cancellable,
                                      GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 	gboolean res = FALSE;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (capabilities != NULL, FALSE);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->retrieve_capabilities_sync != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->retrieve_capabilities_sync != NULL, FALSE);
 
 	*capabilities = NULL;
-	res = klass->retrieve_capabilities_sync (client, capabilities, cancellable, error);
+	res = class->retrieve_capabilities_sync (client, capabilities, cancellable, error);
 
 	e_client_set_capabilities (client, res ? *capabilities : NULL);
 
@@ -1186,7 +1189,7 @@ e_client_get_backend_property (EClient *client,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (client != NULL);
@@ -1194,11 +1197,11 @@ e_client_get_backend_property (EClient *client,
 	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (prop_name != NULL);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_if_fail (klass != NULL);
-	g_return_if_fail (klass->get_backend_property != NULL);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->get_backend_property != NULL);
 
-	klass->get_backend_property (client, prop_name, cancellable, callback, user_data);
+	class->get_backend_property (client, prop_name, cancellable, callback, user_data);
 }
 
 /**
@@ -1220,18 +1223,18 @@ e_client_get_backend_property_finish (EClient *client,
                                       gchar **prop_value,
                                       GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (prop_value != NULL, FALSE);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->get_backend_property_finish != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->get_backend_property_finish != NULL, FALSE);
 
-	return klass->get_backend_property_finish (client, result, prop_value, error);
+	return class->get_backend_property_finish (client, result, prop_value, error);
 }
 
 /**
@@ -1255,7 +1258,7 @@ e_client_get_backend_property_sync (EClient *client,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
@@ -1263,11 +1266,11 @@ e_client_get_backend_property_sync (EClient *client,
 	g_return_val_if_fail (prop_name != NULL, FALSE);
 	g_return_val_if_fail (prop_value != NULL, FALSE);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->get_backend_property_sync != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->get_backend_property_sync != NULL, FALSE);
 
-	return klass->get_backend_property_sync (client, prop_name, prop_value, cancellable, error);
+	return class->get_backend_property_sync (client, prop_name, prop_value, cancellable, error);
 }
 
 /**
@@ -1293,7 +1296,7 @@ e_client_set_backend_property (EClient *client,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (client != NULL);
@@ -1302,11 +1305,11 @@ e_client_set_backend_property (EClient *client,
 	g_return_if_fail (prop_name != NULL);
 	g_return_if_fail (prop_value != NULL);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_if_fail (klass != NULL);
-	g_return_if_fail (klass->set_backend_property != NULL);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->set_backend_property != NULL);
 
-	klass->set_backend_property (client, prop_name, prop_value, cancellable, callback, user_data);
+	class->set_backend_property (client, prop_name, prop_value, cancellable, callback, user_data);
 }
 
 /**
@@ -1326,17 +1329,17 @@ e_client_set_backend_property_finish (EClient *client,
                                       GAsyncResult *result,
                                       GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (client->priv != NULL, FALSE);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->set_backend_property_finish != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->set_backend_property_finish != NULL, FALSE);
 
-	return klass->set_backend_property_finish (client, result, error);
+	return class->set_backend_property_finish (client, result, error);
 }
 
 /**
@@ -1361,7 +1364,7 @@ e_client_set_backend_property_sync (EClient *client,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
@@ -1369,11 +1372,11 @@ e_client_set_backend_property_sync (EClient *client,
 	g_return_val_if_fail (prop_name != NULL, FALSE);
 	g_return_val_if_fail (prop_value != NULL, FALSE);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->set_backend_property_sync != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->set_backend_property_sync != NULL, FALSE);
 
-	return klass->set_backend_property_sync (client, prop_name, prop_value, cancellable, error);
+	return class->set_backend_property_sync (client, prop_name, prop_value, cancellable, error);
 }
 
 /**
@@ -1396,18 +1399,18 @@ e_client_open (EClient *client,
                GAsyncReadyCallback callback,
                gpointer user_data)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (client->priv != NULL);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_if_fail (klass != NULL);
-	g_return_if_fail (klass->open != NULL);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->open != NULL);
 
-	klass->open (client, only_if_exists, cancellable, callback, user_data);
+	class->open (client, only_if_exists, cancellable, callback, user_data);
 }
 
 /**
@@ -1427,17 +1430,17 @@ e_client_open_finish (EClient *client,
                       GAsyncResult *result,
                       GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (client->priv != NULL, FALSE);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->open_finish != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->open_finish != NULL, FALSE);
 
-	return klass->open_finish (client, result, error);
+	return class->open_finish (client, result, error);
 }
 
 /**
@@ -1459,13 +1462,13 @@ e_client_open_sync (EClient *client,
                     GCancellable *cancellable,
                     GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->open_sync != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->open_sync != NULL, FALSE);
 
-	return klass->open_sync (client, only_if_exists, cancellable, error);
+	return class->open_sync (client, only_if_exists, cancellable, error);
 }
 
 /**
@@ -1487,18 +1490,18 @@ e_client_remove (EClient *client,
                  GAsyncReadyCallback callback,
                  gpointer user_data)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (callback != NULL);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_if_fail (klass != NULL);
-	g_return_if_fail (klass->remove != NULL);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->remove != NULL);
 
-	klass->remove (client, cancellable, callback, user_data);
+	class->remove (client, cancellable, callback, user_data);
 }
 
 /**
@@ -1518,17 +1521,17 @@ e_client_remove_finish (EClient *client,
                         GAsyncResult *result,
                         GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (client->priv != NULL, FALSE);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->remove_finish != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->remove_finish != NULL, FALSE);
 
-	return klass->remove_finish (client, result, error);
+	return class->remove_finish (client, result, error);
 }
 
 /**
@@ -1549,13 +1552,13 @@ e_client_remove_sync (EClient *client,
                       GCancellable *cancellable,
                       GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->remove_sync != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->remove_sync != NULL, FALSE);
 
-	return klass->remove_sync (client, cancellable, error);
+	return class->remove_sync (client, cancellable, error);
 }
 
 /**
@@ -1579,18 +1582,18 @@ e_client_refresh (EClient *client,
                   GAsyncReadyCallback callback,
                   gpointer user_data)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (callback != NULL);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_if_fail (klass != NULL);
-	g_return_if_fail (klass->refresh != NULL);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->refresh != NULL);
 
-	klass->refresh (client, cancellable, callback, user_data);
+	class->refresh (client, cancellable, callback, user_data);
 }
 
 /**
@@ -1610,17 +1613,17 @@ e_client_refresh_finish (EClient *client,
                          GAsyncResult *result,
                          GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (client->priv != NULL, FALSE);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->refresh_finish != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->refresh_finish != NULL, FALSE);
 
-	return klass->refresh_finish (client, result, error);
+	return class->refresh_finish (client, result, error);
 }
 
 /**
@@ -1643,13 +1646,13 @@ e_client_refresh_sync (EClient *client,
                        GCancellable *cancellable,
                        GError **error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->refresh_sync != NULL, FALSE);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->refresh_sync != NULL, FALSE);
 
-	return klass->refresh_sync (client, cancellable, error);
+	return class->refresh_sync (client, cancellable, error);
 }
 
 /**
@@ -2017,16 +2020,16 @@ e_client_finish_async_without_dbus (EClient *client,
 GDBusProxy *
 e_client_get_dbus_proxy (EClient *client)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_val_if_fail (klass != NULL, NULL);
-	g_return_val_if_fail (klass->get_dbus_proxy != NULL, NULL);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (class != NULL, NULL);
+	g_return_val_if_fail (class->get_dbus_proxy != NULL, NULL);
 
-	return klass->get_dbus_proxy (client);
+	return class->get_dbus_proxy (client);
 }
 
 /**
@@ -2045,20 +2048,20 @@ e_client_unwrap_dbus_error (EClient *client,
                             GError *dbus_error,
                             GError **out_error)
 {
-	EClientClass *klass;
+	EClientClass *class;
 
 	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 
-	klass = E_CLIENT_GET_CLASS (client);
-	g_return_if_fail (klass != NULL);
-	g_return_if_fail (klass->unwrap_dbus_error != NULL);
+	class = E_CLIENT_GET_CLASS (client);
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->unwrap_dbus_error != NULL);
 
 	if (!dbus_error || !out_error) {
 		if (dbus_error)
 			g_error_free (dbus_error);
 	} else {
-		klass->unwrap_dbus_error (client, dbus_error, out_error);
+		class->unwrap_dbus_error (client, dbus_error, out_error);
 	}
 }
 

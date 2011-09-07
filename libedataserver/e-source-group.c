@@ -31,6 +31,10 @@
 #define XC (const xmlChar *)
 #define GC (const gchar *)
 
+#define E_SOURCE_GROUP_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_SOURCE_GROUP, ESourceGroupPrivate))
+
 /* Private members.  */
 
 struct _ESourceGroupPrivate {
@@ -71,9 +75,11 @@ source_changed_callback (ESource *source,
 G_DEFINE_TYPE (ESourceGroup, e_source_group, G_TYPE_OBJECT)
 
 static void
-impl_dispose (GObject *object)
+source_group_dispose (GObject *object)
 {
-	ESourceGroupPrivate *priv = E_SOURCE_GROUP (object)->priv;
+	ESourceGroupPrivate *priv;
+
+	priv = E_SOURCE_GROUP_GET_PRIVATE (object);
 
 	if (priv->sources != NULL) {
 		GSList *p;
@@ -91,13 +97,16 @@ impl_dispose (GObject *object)
 		priv->sources = NULL;
 	}
 
-	(* G_OBJECT_CLASS (e_source_group_parent_class)->dispose) (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_source_group_parent_class)->dispose (object);
 }
 
 static void
-impl_finalize (GObject *object)
+source_group_finalize (GObject *object)
 {
-	ESourceGroupPrivate *priv = E_SOURCE_GROUP (object)->priv;
+	ESourceGroupPrivate *priv;
+
+	priv = E_SOURCE_GROUP_GET_PRIVATE (object);
 
 	g_free (priv->uid);
 	g_free (priv->name);
@@ -105,9 +114,8 @@ impl_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->properties);
 
-	g_free (priv);
-
-	(* G_OBJECT_CLASS (e_source_group_parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_source_group_parent_class)->finalize (object);
 }
 
 /* Initialization.  */
@@ -115,50 +123,54 @@ impl_finalize (GObject *object)
 static void
 e_source_group_class_init (ESourceGroupClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (class);
+	GObjectClass *object_class;
 
-	object_class->dispose  = impl_dispose;
-	object_class->finalize = impl_finalize;
+	g_type_class_add_private (class, sizeof (ESourceGroupPrivate));
 
-	signals[CHANGED] =
-		g_signal_new ("changed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (ESourceGroupClass, changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = source_group_dispose;
+	object_class->finalize = source_group_finalize;
 
-	signals[SOURCE_ADDED] =
-		g_signal_new ("source_added",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (ESourceGroupClass, source_added),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__OBJECT,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_OBJECT);
-	signals[SOURCE_REMOVED] =
-		g_signal_new ("source_removed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (ESourceGroupClass, source_removed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__OBJECT,
-			      G_TYPE_NONE, 1,
-			      G_TYPE_OBJECT);
+	signals[CHANGED] = g_signal_new (
+		"changed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ESourceGroupClass, changed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
+
+	signals[SOURCE_ADDED] = g_signal_new (
+		"source_added",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ESourceGroupClass, source_added),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		G_TYPE_OBJECT);
+
+	signals[SOURCE_REMOVED] = g_signal_new (
+		"source_removed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ESourceGroupClass, source_removed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		G_TYPE_OBJECT);
 }
 
 static void
 e_source_group_init (ESourceGroup *source_group)
 {
-	ESourceGroupPrivate *priv;
+	source_group->priv = E_SOURCE_GROUP_GET_PRIVATE (source_group);
 
-	priv = g_new0 (ESourceGroupPrivate, 1);
-	source_group->priv = priv;
-
-	priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
-						  g_free, g_free);
+	source_group->priv->properties = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) g_free);
 }
 
 static void

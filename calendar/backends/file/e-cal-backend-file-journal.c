@@ -26,7 +26,7 @@ G_DEFINE_TYPE (
 	E_TYPE_CAL_BACKEND_FILE)
 
 static void
-e_cal_backend_file_journal_class_init (ECalBackendFileJournalClass *klass)
+e_cal_backend_file_journal_class_init (ECalBackendFileJournalClass *class)
 {
 }
 

@@ -15,12 +15,6 @@
 
 G_DEFINE_TYPE (EBookBackendSync, e_book_backend_sync, E_TYPE_BOOK_BACKEND)
 
-struct _EBookBackendSyncPrivate {
-	gint mumble;
-};
-
-static GObjectClass *parent_class;
-
 /**
  * e_book_backend_sync_construct:
  * @backend: an #EBookBackendSync
@@ -632,39 +626,12 @@ book_backend_sync_set_backend_property (EBookBackendSync *backend,
 static void
 e_book_backend_sync_init (EBookBackendSync *backend)
 {
-	EBookBackendSyncPrivate *priv;
-
-	priv          = g_new0 (EBookBackendSyncPrivate, 1);
-
-	backend->priv = priv;
 }
 
 static void
-e_book_backend_sync_dispose (GObject *object)
+e_book_backend_sync_class_init (EBookBackendSyncClass *class)
 {
-	EBookBackendSync *backend;
-
-	backend = E_BOOK_BACKEND_SYNC (object);
-
-	if (backend->priv) {
-		g_free (backend->priv);
-
-		backend->priv = NULL;
-	}
-
-	G_OBJECT_CLASS (parent_class)->dispose (object);
-}
-
-static void
-e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
-{
-	GObjectClass *object_class;
-	EBookBackendClass *backend_class = E_BOOK_BACKEND_CLASS (klass);
-
-	parent_class = g_type_class_peek_parent (klass);
-
-	object_class = (GObjectClass *) klass;
-	object_class->dispose = e_book_backend_sync_dispose;
+	EBookBackendClass *backend_class = E_BOOK_BACKEND_CLASS (class);
 
 	backend_class->open			= book_backend_open;
 	backend_class->authenticate_user	= book_backend_authenticate_user;
@@ -679,6 +646,6 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
 	backend_class->get_contact_list		= book_backend_get_contact_list;
 	backend_class->get_contact_list_uids	= book_backend_get_contact_list_uids;
 
-	klass->get_backend_property_sync	= book_backend_sync_get_backend_property;
-	klass->set_backend_property_sync	= book_backend_sync_set_backend_property;
+	class->get_backend_property_sync	= book_backend_sync_get_backend_property;
+	class->set_backend_property_sync	= book_backend_sync_set_backend_property;
 }

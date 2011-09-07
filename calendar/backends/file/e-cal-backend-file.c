@@ -49,6 +49,10 @@
 #define O_BINARY 0
 #endif
 
+#define E_CAL_BACKEND_FILE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND_FILE, ECalBackendFilePrivate))
+
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_NO_URI() e_data_cal_create_error (OtherError, "Cannot get URI")
 
@@ -125,8 +129,6 @@ struct _ECalBackendFilePrivate {
 
 static void e_cal_backend_file_dispose (GObject *object);
 static void e_cal_backend_file_finalize (GObject *object);
-
-static ECalBackendSyncClass *parent_class;
 
 static void free_refresh_data (ECalBackendFile *cbfile);
 
@@ -266,7 +268,7 @@ save_file_when_idle (gpointer user_data)
 
 static void
 save (ECalBackendFile *cbfile,
-      gboolean         do_bump_revision)
+      gboolean do_bump_revision)
 {
 	ECalBackendFilePrivate *priv;
 
@@ -335,54 +337,35 @@ e_cal_backend_file_dispose (GObject *object)
 		g_signal_handlers_disconnect_matched (source, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, cbfile);
 
 	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (e_cal_backend_file_parent_class)->dispose (object);
 }
 
 /* Finalize handler for the file backend */
 static void
 e_cal_backend_file_finalize (GObject *object)
 {
-	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND_FILE (object));
-
-	cbfile = E_CAL_BACKEND_FILE (object);
-	priv = cbfile->priv;
+	priv = E_CAL_BACKEND_FILE_GET_PRIVATE (object);
 
 	/* Clean up */
 
-	if (priv->dirty_idle_id) {
+	if (priv->dirty_idle_id)
 		g_source_remove (priv->dirty_idle_id);
-		priv->dirty_idle_id = 0;
-	}
 
-	free_refresh_data (cbfile);
+	free_refresh_data (E_CAL_BACKEND_FILE (object));
 
 	if (priv->refresh_lock)
 		g_mutex_free (priv->refresh_lock);
-	priv->refresh_lock = NULL;
 
 	g_static_rec_mutex_free (&priv->idle_save_rmutex);
 
-	if (priv->path) {
-		g_free (priv->path);
-		priv->path = NULL;
-	}
-
+	g_free (priv->path);
 	g_free (priv->custom_file);
-	priv->custom_file = NULL;
-
-	if (priv->file_name) {
-		g_free (priv->file_name);
-		priv->file_name = NULL;
-	}
-	g_free (priv);
-	cbfile->priv = NULL;
+	g_free (priv->file_name);
 
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_cal_backend_file_parent_class)->finalize (object);
 }
 
 
@@ -445,7 +428,7 @@ make_revision_string (ECalBackendFile *cbfile)
 static icalproperty *
 ensure_revision (ECalBackendFile *cbfile)
 {
-       icalproperty* prop;
+       icalproperty * prop;
 
        prop = get_revision_property (cbfile);
 
@@ -2204,8 +2187,8 @@ e_cal_backend_file_internal_get_timezone (ECalBackend *backend,
 	else {
 		zone = icalcomponent_get_timezone (priv->icalcomp, tzid);
 
-		if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
-			zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
+		if (!zone && E_CAL_BACKEND_CLASS (e_cal_backend_file_parent_class)->internal_get_timezone)
+			zone = E_CAL_BACKEND_CLASS (e_cal_backend_file_parent_class)->internal_get_timezone (backend, tzid);
 	}
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
@@ -3369,28 +3352,18 @@ e_cal_backend_file_send_objects (ECalBackendSync *backend,
 static void
 e_cal_backend_file_init (ECalBackendFile *cbfile)
 {
-	ECalBackendFilePrivate *priv;
+	cbfile->priv = E_CAL_BACKEND_FILE_GET_PRIVATE (cbfile);
 
-	priv = g_new0 (ECalBackendFilePrivate, 1);
-	cbfile->priv = priv;
+	cbfile->priv->file_name = g_strdup ("calendar.ics");
 
-	priv->path = NULL;
-	priv->file_name = g_strdup ("calendar.ics");
-	priv->read_only = FALSE;
-	priv->is_dirty = FALSE;
-	priv->dirty_idle_id = 0;
-	g_static_rec_mutex_init (&priv->idle_save_rmutex);
-	priv->icalcomp = NULL;
-	priv->comp_uid_hash = NULL;
-	priv->comp = NULL;
-	priv->interval_tree = NULL;
-	priv->custom_file = NULL;
-	priv->refresh_lock = g_mutex_new ();
+	g_static_rec_mutex_init (&cbfile->priv->idle_save_rmutex);
 
-        /*
-         * data access is serialized via idle_save_rmutex, so locking at the
-         * backend method level is not needed
-         */
+	cbfile->priv->refresh_lock = g_mutex_new ();
+
+	/*
+	 * data access is serialized via idle_save_rmutex, so locking at the
+	 * backend method level is not needed
+	 */
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbfile), FALSE);
 }
 
@@ -3457,11 +3430,11 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 	ECalBackendClass *backend_class;
 	ECalBackendSyncClass *sync_class;
 
+	g_type_class_add_private (class, sizeof (ECalBackendFilePrivate));
+
 	object_class = (GObjectClass *) class;
 	backend_class = (ECalBackendClass *) class;
 	sync_class = (ECalBackendSyncClass *) class;
-
-	parent_class = (ECalBackendSyncClass *) g_type_class_peek_parent (class);
 
 	object_class->dispose = e_cal_backend_file_dispose;
 	object_class->finalize = e_cal_backend_file_finalize;

@@ -43,6 +43,10 @@
 #include <libsoup/soup-uri.h>
 #include "e-proxy.h"
 
+#define E_PROXY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_PROXY, EProxyPrivate))
+
 G_DEFINE_TYPE (EProxy, e_proxy, G_TYPE_OBJECT)
 
 /* Debug */
@@ -70,6 +74,10 @@ typedef enum {
 	E_PROXY_KEY_SOCKS_PORT,
 	E_PROXY_KEY_AUTOCONFIG_URL
 } EProxyKey;
+
+#define E_PROXY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_PROXY, EProxyPrivate))
 
 struct _EProxyPrivate {
 	SoupURI *uri_http, *uri_https, *uri_socks;
@@ -958,8 +966,7 @@ e_proxy_class_init (EProxyClass *class)
 static void
 e_proxy_init (EProxy *proxy)
 {
-	proxy->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		proxy, E_TYPE_PROXY, EProxyPrivate);
+	proxy->priv = E_PROXY_GET_PRIVATE (proxy);
 
 	proxy->priv->type = PROXY_TYPE_SYSTEM;
 

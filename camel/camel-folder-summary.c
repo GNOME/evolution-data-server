@@ -58,6 +58,10 @@
 #include "camel-vtrash-folder.h"
 #include "camel-mime-part-utils.h"
 
+#define CAMEL_FOLDER_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummaryPrivate))
+
 /* Make 5 minutes as default cache drop */
 #define SUMMARY_CACHE_DROP 300
 #define dd(x) if (camel_debug("sync")) x
@@ -177,7 +181,7 @@ folder_summary_dispose (GObject *object)
 {
 	CamelFolderSummaryPrivate *priv;
 
-	priv = CAMEL_FOLDER_SUMMARY (object)->priv;
+	priv = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (object);
 
 	if (priv->filter_index != NULL) {
 		g_object_unref (priv->filter_index);
@@ -1261,8 +1265,7 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 static void
 camel_folder_summary_init (CamelFolderSummary *summary)
 {
-	summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		summary, CAMEL_TYPE_FOLDER_SUMMARY, CamelFolderSummaryPrivate);
+	summary->priv = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (summary);
 
 	summary->version = CAMEL_FOLDER_SUMMARY_VERSION;
 	summary->flags = 0;

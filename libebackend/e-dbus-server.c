@@ -223,7 +223,7 @@ e_dbus_server_init (EDBusServer *server)
 
 void
 e_dbus_server_run (EDBusServer *server,
-		   gboolean wait_for_client)
+                   gboolean wait_for_client)
 {
 	EDBusServerClass *class;
 

@@ -38,6 +38,10 @@
 #include "libedataserver/e-data-server-util.h"
 #include "libedataserver/e-xml-hash-utils.h"
 
+#define E_FILE_CACHE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_FILE_CACHE, EFileCachePrivate))
+
 struct _EFileCachePrivate {
 	gchar *filename;
 	EXmlHash *xml_hash;
@@ -127,27 +131,16 @@ e_file_cache_get_property (GObject *object,
 static void
 e_file_cache_finalize (GObject *object)
 {
-	EFileCache *cache;
 	EFileCachePrivate *priv;
 
-	cache = E_FILE_CACHE (object);
-	priv = cache->priv;
+	priv = E_FILE_CACHE_GET_PRIVATE (object);
 
-	if (priv) {
-		if (priv->filename) {
-			g_free (priv->filename);
-			priv->filename = NULL;
-		}
+	g_free (priv->filename);
 
-		if (priv->xml_hash) {
-			e_xmlhash_destroy (priv->xml_hash);
-			priv->xml_hash = NULL;
-		}
+	if (priv->xml_hash != NULL)
+		e_xmlhash_destroy (priv->xml_hash);
 
-		g_free (priv);
-		cache->priv = NULL;
-	}
-
+	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_file_cache_parent_class)->finalize (object);
 }
 
@@ -156,10 +149,12 @@ e_file_cache_class_init (EFileCacheClass *class)
 {
 	GObjectClass *object_class;
 
+	g_type_class_add_private (class, sizeof (EFileCachePrivate));
+
 	object_class = G_OBJECT_CLASS (class);
-	object_class->finalize = e_file_cache_finalize;
 	object_class->set_property = e_file_cache_set_property;
 	object_class->get_property = e_file_cache_get_property;
+	object_class->finalize = e_file_cache_finalize;
 
 	/**
 	 * EFileCache:filename
@@ -181,12 +176,7 @@ e_file_cache_class_init (EFileCacheClass *class)
 static void
 e_file_cache_init (EFileCache *cache)
 {
-	EFileCachePrivate *priv;
-
-	priv = g_new0 (EFileCachePrivate, 1);
-	priv->dirty = FALSE;
-	priv->frozen = 0;
-	cache->priv = priv;
+	cache->priv = E_FILE_CACHE_GET_PRIVATE (cache);
 }
 
 /**

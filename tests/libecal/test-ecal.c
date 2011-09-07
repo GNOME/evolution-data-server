@@ -51,7 +51,7 @@ cl_printf (ECal *client,
 {
 	va_list args;
 
-	if (client != client1) 
+	if (client != client1)
 		return;
 
 	va_start (args, format);

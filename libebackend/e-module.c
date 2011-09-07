@@ -27,6 +27,10 @@
 #include <config.h>
 #include <glib/gi18n.h>
 
+#define E_MODULE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_MODULE, EModulePrivate))
+
 /* This is the symbol we call when loading a module. */
 #define LOAD_SYMBOL	"e_module_load"
 
@@ -99,7 +103,7 @@ module_finalize (GObject *object)
 {
 	EModulePrivate *priv;
 
-	priv = E_MODULE (object)->priv;
+	priv = E_MODULE_GET_PRIVATE (object);
 
 	g_free (priv->filename);
 
@@ -113,7 +117,7 @@ module_load (GTypeModule *type_module)
 	EModulePrivate *priv;
 	gpointer symbol;
 
-	priv = E_MODULE (type_module)->priv;
+	priv = E_MODULE_GET_PRIVATE (type_module);
 
 	g_return_val_if_fail (priv->filename != NULL, FALSE);
 	priv->module = g_module_open (priv->filename, 0);
@@ -168,7 +172,7 @@ module_unload (GTypeModule *type_module)
 {
 	EModulePrivate *priv;
 
-	priv = E_MODULE (type_module)->priv;
+	priv = E_MODULE_GET_PRIVATE (type_module);
 
 	priv->unload (type_module);
 
@@ -216,8 +220,7 @@ e_module_class_init (EModuleClass *class)
 static void
 e_module_init (EModule *module)
 {
-	module->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		module, E_TYPE_MODULE, EModulePrivate);
+	module->priv = E_MODULE_GET_PRIVATE (module);
 }
 
 /**

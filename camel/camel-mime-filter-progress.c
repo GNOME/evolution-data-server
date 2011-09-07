@@ -30,6 +30,10 @@
 #include "camel-mime-filter-progress.h"
 #include "camel-operation.h"
 
+#define CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_PROGRESS, CamelMimeFilterProgressPrivate))
+
 #define d(x)
 #define w(x)
 
@@ -46,7 +50,7 @@ mime_filter_progress_dispose (GObject *object)
 {
 	CamelMimeFilterProgressPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_PROGRESS (object)->priv;
+	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (object);
 
 	if (priv->cancellable != NULL) {
 		g_object_unref (priv->cancellable);
@@ -69,7 +73,7 @@ mime_filter_progress_filter (CamelMimeFilter *mime_filter,
 	CamelMimeFilterProgressPrivate *priv;
 	gdouble percent;
 
-	priv = CAMEL_MIME_FILTER_PROGRESS (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (mime_filter);
 	priv->count += len;
 
 	if (priv->count < priv->total)
@@ -103,7 +107,7 @@ mime_filter_progress_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterProgressPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_PROGRESS (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (mime_filter);
 
 	priv->count = 0;
 }
@@ -128,9 +132,7 @@ camel_mime_filter_progress_class_init (CamelMimeFilterProgressClass *class)
 static void
 camel_mime_filter_progress_init (CamelMimeFilterProgress *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		filter, CAMEL_TYPE_MIME_FILTER_PROGRESS,
-		CamelMimeFilterProgressPrivate);
+	filter->priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (filter);
 }
 
 /**
@@ -155,7 +157,7 @@ camel_mime_filter_progress_new (GCancellable *cancellable,
 	CamelMimeFilterProgressPrivate *priv;
 
 	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_PROGRESS, NULL);
-	priv = CAMEL_MIME_FILTER_PROGRESS (filter)->priv;
+	priv = CAMEL_MIME_FILTER_PROGRESS_GET_PRIVATE (filter);
 
 	if (CAMEL_IS_OPERATION (cancellable))
 		priv->cancellable = g_object_ref (cancellable);

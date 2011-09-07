@@ -44,6 +44,10 @@ enum {
 	PROP_APPLY_FILTERS = 0x2501
 };
 
+#define CAMEL_NNTP_FOLDER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderPrivate))
+
 G_DEFINE_TYPE (CamelNNTPFolder, camel_nntp_folder, CAMEL_TYPE_DISCO_FOLDER)
 
 static gboolean
@@ -57,7 +61,7 @@ nntp_folder_get_apply_filters (CamelNNTPFolder *folder)
 
 static void
 nntp_folder_set_apply_filters (CamelNNTPFolder *folder,
-			       gboolean apply_filters)
+                               gboolean apply_filters)
 {
 	g_return_if_fail (folder != NULL);
 	g_return_if_fail (CAMEL_IS_NNTP_FOLDER (folder));
@@ -72,9 +76,9 @@ nntp_folder_set_apply_filters (CamelNNTPFolder *folder,
 
 static void
 nntp_folder_set_property (GObject *object,
-			  guint property_id,
-			  const GValue *value,
-			  GParamSpec *pspec)
+                          guint property_id,
+                          const GValue *value,
+                          GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_APPLY_FILTERS:
@@ -89,9 +93,9 @@ nntp_folder_set_property (GObject *object,
 
 static void
 nntp_folder_get_property (GObject *object,
-			  guint property_id,
-			  GValue *value,
-			  GParamSpec *pspec)
+                          guint property_id,
+                          GValue *value,
+                          GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_APPLY_FILTERS:
@@ -762,8 +766,7 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 static void
 camel_nntp_folder_init (CamelNNTPFolder *nntp_folder)
 {
-	nntp_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		nntp_folder, CAMEL_TYPE_NNTP_FOLDER, CamelNNTPFolderPrivate);
+	nntp_folder->priv = CAMEL_NNTP_FOLDER_GET_PRIVATE (nntp_folder);
 
 	nntp_folder->changes = camel_folder_change_info_new ();
 	nntp_folder->priv->search_lock = g_mutex_new ();

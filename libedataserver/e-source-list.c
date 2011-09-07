@@ -27,6 +27,10 @@
 #include <string.h>
 #include "e-source-list.h"
 
+#define E_SOURCE_LIST_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_SOURCE_LIST, ESourceListPrivate))
+
 struct _ESourceListPrivate {
 	GConfClient *gconf_client;
 	gchar *gconf_path;
@@ -240,9 +244,11 @@ conf_changed_callback (GConfClient *client,
 G_DEFINE_TYPE (ESourceList, e_source_list, G_TYPE_OBJECT)
 
 static void
-impl_dispose (GObject *object)
+source_list_dispose (GObject *object)
 {
-	ESourceListPrivate *priv = E_SOURCE_LIST (object)->priv;
+	ESourceListPrivate *priv;
+
+	priv = E_SOURCE_LIST_GET_PRIVATE (object);
 
 	if (priv->gconf_client != NULL && priv->gconf_notify_id != 0) {
 		gconf_client_notify_remove (priv->gconf_client, priv->gconf_notify_id);
@@ -275,18 +281,21 @@ impl_dispose (GObject *object)
 		priv->gconf_client = NULL;
 	}
 
-	(* G_OBJECT_CLASS (e_source_list_parent_class)->dispose) (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_source_list_parent_class)->dispose (object);
 }
 
 static void
-impl_finalize (GObject *object)
+source_list_finalize (GObject *object)
 {
-	ESourceListPrivate *priv = E_SOURCE_LIST (object)->priv;
+	ESourceListPrivate *priv;
+
+	priv = E_SOURCE_LIST_GET_PRIVATE (object);
 
 	g_free (priv->gconf_path);
-	g_free (priv);
 
-	(* G_OBJECT_CLASS (e_source_list_parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_source_list_parent_class)->finalize (object);
 }
 
 /* Initialization.  */
@@ -294,49 +303,48 @@ impl_finalize (GObject *object)
 static void
 e_source_list_class_init (ESourceListClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (class);
+	GObjectClass *object_class;
 
-	object_class->dispose  = impl_dispose;
-	object_class->finalize = impl_finalize;
+	g_type_class_add_private (class, sizeof (ESourceListPrivate));
 
-	signals[CHANGED] =
-		g_signal_new ("changed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (ESourceListClass, changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose  = source_list_dispose;
+	object_class->finalize = source_list_finalize;
 
-	signals[GROUP_REMOVED] =
-		g_signal_new ("group_removed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (ESourceListClass, group_removed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__OBJECT,
-			      G_TYPE_NONE, 1,
-			      E_TYPE_SOURCE_GROUP);
+	signals[CHANGED] = g_signal_new (
+		"changed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ESourceListClass, changed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
 
-	signals[GROUP_ADDED] =
-		g_signal_new ("group_added",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (ESourceListClass, group_added),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__OBJECT,
-			      G_TYPE_NONE, 1,
-			      E_TYPE_SOURCE_GROUP);
+	signals[GROUP_REMOVED] = g_signal_new (
+		"group_removed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ESourceListClass, group_removed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		E_TYPE_SOURCE_GROUP);
+
+	signals[GROUP_ADDED] = g_signal_new (
+		"group_added",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ESourceListClass, group_added),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		E_TYPE_SOURCE_GROUP);
 }
 
 static void
 e_source_list_init (ESourceList *source_list)
 {
-	ESourceListPrivate *priv;
-
-	priv = g_new0 (ESourceListPrivate, 1);
-
-	source_list->priv = priv;
+	source_list->priv = E_SOURCE_LIST_GET_PRIVATE (source_list);
 }
 
 /* Public methods.  */

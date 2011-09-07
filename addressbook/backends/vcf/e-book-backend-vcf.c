@@ -50,6 +50,10 @@
 
 #include "e-book-backend-vcf.h"
 
+#define E_BOOK_BACKEND_VCF_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_BACKEND_VCF, EBookBackendVCFPrivate))
+
 #define PAS_ID_PREFIX "pas-id-"
 #define FILE_FLUSH_TIMEOUT 5000
 
@@ -718,50 +722,44 @@ e_book_backend_vcf_notify_online_cb (EBookBackend *backend,
 }
 
 static void
-e_book_backend_vcf_dispose (GObject *object)
+e_book_backend_vcf_finalize (GObject *object)
 {
-	EBookBackendVCF *bvcf;
+	EBookBackendVCFPrivate *priv;
 
-	bvcf = E_BOOK_BACKEND_VCF (object);
+	priv = E_BOOK_BACKEND_VCF_GET_PRIVATE (object);
 
-	if (bvcf->priv) {
+	g_mutex_lock (priv->mutex);
 
-		g_mutex_lock (bvcf->priv->mutex);
+	if (priv->flush_timeout_tag)
+		g_source_remove (priv->flush_timeout_tag);
 
-		if (bvcf->priv->flush_timeout_tag) {
-			g_source_remove (bvcf->priv->flush_timeout_tag);
-			bvcf->priv->flush_timeout_tag = 0;
-		}
+	if (priv->dirty)
+		save_file (E_BOOK_BACKEND_VCF (object));
 
-		if (bvcf->priv->dirty)
-			save_file (bvcf);
+	g_hash_table_destroy (priv->contacts);
+	g_list_free_full (priv->contact_list, (GDestroyNotify) g_free);
 
-		g_hash_table_destroy (bvcf->priv->contacts);
-		g_list_foreach (bvcf->priv->contact_list, (GFunc) g_free, NULL);
-		g_list_free (bvcf->priv->contact_list);
+	g_free (priv->filename);
 
-		g_free (bvcf->priv->filename);
+	g_mutex_unlock (priv->mutex);
 
-		g_mutex_unlock (bvcf->priv->mutex);
+	g_mutex_free (priv->mutex);
 
-		g_mutex_free (bvcf->priv->mutex);
-
-		g_free (bvcf->priv);
-		bvcf->priv = NULL;
-	}
-
-	G_OBJECT_CLASS (e_book_backend_vcf_parent_class)->dispose (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_book_backend_vcf_parent_class)->finalize (object);
 }
 
 static void
-e_book_backend_vcf_class_init (EBookBackendVCFClass *klass)
+e_book_backend_vcf_class_init (EBookBackendVCFClass *class)
 {
-	GObjectClass    *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass    *object_class = G_OBJECT_CLASS (class);
 	EBookBackendSyncClass *sync_class;
 	EBookBackendClass *backend_class;
 
-	sync_class = E_BOOK_BACKEND_SYNC_CLASS (klass);
-	backend_class = E_BOOK_BACKEND_CLASS (klass);
+	g_type_class_add_private (class, sizeof (EBookBackendVCFPrivate));
+
+	sync_class = E_BOOK_BACKEND_SYNC_CLASS (class);
+	backend_class = E_BOOK_BACKEND_CLASS (class);
 
 	/* Set the virtual methods. */
 	backend_class->start_book_view		= e_book_backend_vcf_start_book_view;
@@ -776,18 +774,14 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *klass)
 	sync_class->get_contact_list_sync	= e_book_backend_vcf_get_contact_list;
 	sync_class->authenticate_user_sync	= e_book_backend_vcf_authenticate_user;
 
-	object_class->dispose = e_book_backend_vcf_dispose;
+	object_class->finalize = e_book_backend_vcf_finalize;
 }
 
 static void
 e_book_backend_vcf_init (EBookBackendVCF *backend)
 {
-	EBookBackendVCFPrivate *priv;
-
-	priv                 = g_new0 (EBookBackendVCFPrivate, 1);
-	priv->mutex = g_mutex_new ();
-
-	backend->priv = priv;
+	backend->priv = E_BOOK_BACKEND_VCF_GET_PRIVATE (backend);
+	backend->priv->mutex = g_mutex_new ();
 
 	g_signal_connect (
 		backend, "notify::online",

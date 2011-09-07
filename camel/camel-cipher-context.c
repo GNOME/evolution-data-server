@@ -41,8 +41,14 @@
 #include "camel-mime-filter-canon.h"
 #include "camel-stream-filter.h"
 
-#define CIPHER_LOCK(ctx)   g_mutex_lock (((CamelCipherContext *) ctx)->priv->lock)
-#define CIPHER_UNLOCK(ctx) g_mutex_unlock (((CamelCipherContext *) ctx)->priv->lock);
+#define CAMEL_CIPHER_CONTEXT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_CIPHER_CONTEXT, CamelCipherContextPrivate))
+
+#define CIPHER_LOCK(ctx) \
+	g_mutex_lock (((CamelCipherContext *) ctx)->priv->lock)
+#define CIPHER_UNLOCK(ctx) \
+	g_mutex_unlock (((CamelCipherContext *) ctx)->priv->lock);
 
 #define d(x)
 
@@ -148,7 +154,7 @@ cipher_context_dispose (GObject *object)
 {
 	CamelCipherContextPrivate *priv;
 
-	priv = CAMEL_CIPHER_CONTEXT (object)->priv;
+	priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (object);
 
 	if (priv->session != NULL) {
 		g_object_unref (priv->session);
@@ -164,7 +170,7 @@ cipher_context_finalize (GObject *object)
 {
 	CamelCipherContextPrivate *priv;
 
-	priv = CAMEL_CIPHER_CONTEXT (object)->priv;
+	priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (object);
 
 	g_mutex_free (priv->lock);
 
@@ -749,8 +755,7 @@ camel_cipher_context_class_init (CamelCipherContextClass *class)
 static void
 camel_cipher_context_init (CamelCipherContext *context)
 {
-	context->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		context, CAMEL_TYPE_CIPHER_CONTEXT, CamelCipherContextPrivate);
+	context->priv = CAMEL_CIPHER_CONTEXT_GET_PRIVATE (context);
 	context->priv->lock = g_mutex_new ();
 }
 

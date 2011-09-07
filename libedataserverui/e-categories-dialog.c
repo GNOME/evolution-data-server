@@ -33,6 +33,10 @@
 #include "e-category-completion.h"
 #include "e-category-editor.h"
 
+#define E_CATEGORIES_DIALOG_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogPrivate))
+
 G_DEFINE_TYPE (ECategoriesDialog, e_categories_dialog, GTK_TYPE_DIALOG)
 
 struct _ECategoriesDialogPrivate {
@@ -59,8 +63,7 @@ e_categories_dialog_init (ECategoriesDialog *dialog)
 	GtkWidget *dialog_content;
 	GtkWidget *categories_editor;
 
-	dialog->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		dialog, E_TYPE_CATEGORIES_DIALOG, ECategoriesDialogPrivate);
+	dialog->priv = E_CATEGORIES_DIALOG_GET_PRIVATE (dialog);
 
 	categories_editor = e_categories_editor_new ();
 	dialog->priv->categories_editor = categories_editor;

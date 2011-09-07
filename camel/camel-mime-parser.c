@@ -60,7 +60,7 @@ gint inend_id = -1,
 
 /* a little hacky, but i couldn't be bothered renaming everything */
 #define _header_scan_state _CamelMimeParserPrivate
-#define _PRIVATE(o) (((CamelMimeParser *)(o))->priv)
+#define _PRIVATE(obj) (((CamelMimeParser *)(obj))->priv)
 
 struct _header_scan_state {
 
@@ -1711,7 +1711,6 @@ tail_recurse:
 				while (f) {
 					camel_mime_filter_filter (f->filter, *databuffer, *datalength, presize,
 								 databuffer, datalength, &presize);
-					d(printf("Filtered content (%s): '", ((CamelObject *)f->filter)->klass->name));
 					d (fwrite (*databuffer, sizeof (gchar), *datalength, stdout));
 					d(printf("'\n"));
 					f = f->next;

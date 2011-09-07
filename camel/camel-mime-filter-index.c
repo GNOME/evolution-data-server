@@ -21,6 +21,10 @@
 #include "camel-mime-filter-index.h"
 #include "camel-text-index.h"
 
+#define CAMEL_MIME_FILTER_INDEX_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_INDEX, CamelMimeFilterIndexPrivate))
+
 struct _CamelMimeFilterIndexPrivate {
 	CamelIndex *index;
 	CamelIndexName *name;
@@ -33,7 +37,7 @@ mime_filter_index_dispose (GObject *object)
 {
 	CamelMimeFilterIndexPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_INDEX (object)->priv;
+	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (object);
 
 	if (priv->name != NULL) {
 		g_object_unref (priv->name);
@@ -60,7 +64,7 @@ mime_filter_index_filter (CamelMimeFilter *mime_filter,
 {
 	CamelMimeFilterIndexPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_INDEX (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (mime_filter);
 
 	if (priv->index == NULL || priv->name == NULL) {
 		goto donothing;
@@ -85,7 +89,7 @@ mime_filter_index_complete (CamelMimeFilter *mime_filter,
 {
 	CamelMimeFilterIndexPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_INDEX (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (mime_filter);
 
 	if (priv->index == NULL || priv->name == NULL) {
 		goto donothing;
@@ -119,9 +123,7 @@ camel_mime_filter_index_class_init (CamelMimeFilterIndexClass *class)
 static void
 camel_mime_filter_index_init (CamelMimeFilterIndex *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		filter, CAMEL_TYPE_MIME_FILTER_INDEX,
-		CamelMimeFilterIndexPrivate);
+	filter->priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (filter);
 }
 
 /**
@@ -135,17 +137,17 @@ camel_mime_filter_index_init (CamelMimeFilterIndex *filter)
 CamelMimeFilter *
 camel_mime_filter_index_new (CamelIndex *index)
 {
-	CamelMimeFilter *res;
+	CamelMimeFilter *new;
 	CamelMimeFilterIndexPrivate *priv;
 
-	res = g_object_new (CAMEL_TYPE_MIME_FILTER_INDEX, NULL);
+	new = g_object_new (CAMEL_TYPE_MIME_FILTER_INDEX, NULL);
 
-	priv = CAMEL_MIME_FILTER_INDEX (res)->priv;
-	priv->index = index;
-	if (index)
-		g_object_ref (index);
+	priv = CAMEL_MIME_FILTER_INDEX_GET_PRIVATE (new);
 
-	return res;
+	if (index != NULL)
+		priv->index = g_object_ref (index);
+
+	return new;
 }
 
 /* Set the match name for any indexed words */

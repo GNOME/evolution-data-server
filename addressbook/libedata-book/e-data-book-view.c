@@ -31,11 +31,14 @@
 
 #include "e-gdbus-book-view.h"
 
+#define E_DATA_BOOK_VIEW_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_DATA_BOOK_VIEW, EDataBookViewPrivate))
+
 static void reset_array (GArray *array);
 static void ensure_pending_flush_timeout (EDataBookView *view);
 
 G_DEFINE_TYPE (EDataBookView, e_data_book_view, G_TYPE_OBJECT);
-
 #define THRESHOLD_ITEMS   32	/* how many items can be hold in a cache, before propagated to UI */
 #define THRESHOLD_SECONDS  2	/* how long to wait until notifications are propagated to UI; in seconds */
 
@@ -70,11 +73,11 @@ static void e_data_book_view_dispose (GObject *object);
 static void e_data_book_view_finalize (GObject *object);
 
 static void
-e_data_book_view_class_init (EDataBookViewClass *klass)
+e_data_book_view_class_init (EDataBookViewClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-	g_type_class_add_private (klass, sizeof (EDataBookViewPrivate));
+	g_type_class_add_private (class, sizeof (EDataBookViewPrivate));
 
 	object_class->dispose = e_data_book_view_dispose;
 	object_class->finalize = e_data_book_view_finalize;
@@ -531,17 +534,15 @@ void
 e_data_book_view_notify_remove (EDataBookView *book_view,
                                 const gchar *id)
 {
-	EDataBookViewPrivate *priv = book_view->priv;
-
-	if (!priv->running)
+	if (!book_view->priv->running)
 		return;
 
-	g_mutex_lock (priv->pending_mutex);
+	g_mutex_lock (book_view->priv->pending_mutex);
 
 	if (id_is_in_view (book_view, id))
 		notify_remove (book_view, id);
 
-	g_mutex_unlock (priv->pending_mutex);
+	g_mutex_unlock (book_view->priv->pending_mutex);
 }
 
 /**
@@ -595,13 +596,14 @@ e_data_book_view_notify_progress (EDataBookView *book_view,
                                   guint percent,
                                   const gchar *message)
 {
-	EDataBookViewPrivate *priv = book_view->priv;
 	gchar *gdbus_message = NULL;
 
-	if (!priv->running)
+	if (!book_view->priv->running)
 		return;
 
-	e_gdbus_book_view_emit_progress (priv->gdbus_object, percent, e_util_ensure_gdbus_string (message, &gdbus_message));
+	e_gdbus_book_view_emit_progress (
+		book_view->priv->gdbus_object, percent,
+		e_util_ensure_gdbus_string (message, &gdbus_message));
 
 	g_free (gdbus_message);
 }
@@ -722,33 +724,47 @@ impl_DataBookView_dispose (EGdbusBookView *object,
 static void
 e_data_book_view_init (EDataBookView *book_view)
 {
-	EDataBookViewPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		book_view, E_TYPE_DATA_BOOK_VIEW, EDataBookViewPrivate);
+	book_view->priv = E_DATA_BOOK_VIEW_GET_PRIVATE (book_view);
 
-	book_view->priv = priv;
+	book_view->priv->flags = E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL;
 
-	priv->flags = E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL;
+	book_view->priv->gdbus_object = e_gdbus_book_view_stub_new ();
+	g_signal_connect (
+		book_view->priv->gdbus_object, "handle-start",
+		G_CALLBACK (impl_DataBookView_start), book_view);
+	g_signal_connect (
+		book_view->priv->gdbus_object, "handle-stop",
+		G_CALLBACK (impl_DataBookView_stop), book_view);
+	g_signal_connect (
+		book_view->priv->gdbus_object, "handle-set-flags",
+		G_CALLBACK (impl_DataBookView_setFlags), book_view);
+	g_signal_connect (
+		book_view->priv->gdbus_object, "handle-dispose",
+		G_CALLBACK (impl_DataBookView_dispose), book_view);
+	g_signal_connect (
+		book_view->priv->gdbus_object, "handle-set-fields-of-interest",
+		G_CALLBACK (impl_DataBookView_set_fields_of_interest), book_view);
 
-	priv->gdbus_object = e_gdbus_book_view_stub_new ();
-	g_signal_connect (priv->gdbus_object, "handle-start", G_CALLBACK (impl_DataBookView_start), book_view);
-	g_signal_connect (priv->gdbus_object, "handle-stop", G_CALLBACK (impl_DataBookView_stop), book_view);
-	g_signal_connect (priv->gdbus_object, "handle-set-flags", G_CALLBACK (impl_DataBookView_setFlags), book_view);
-	g_signal_connect (priv->gdbus_object, "handle-dispose", G_CALLBACK (impl_DataBookView_dispose), book_view);
-	g_signal_connect (priv->gdbus_object, "handle-set-fields-of-interest", G_CALLBACK (impl_DataBookView_set_fields_of_interest), book_view);
-
-	priv->fields_of_interest = NULL;
-	priv->running = FALSE;
-	priv->complete = FALSE;
-	priv->pending_mutex = g_mutex_new ();
+	book_view->priv->fields_of_interest = NULL;
+	book_view->priv->running = FALSE;
+	book_view->priv->complete = FALSE;
+	book_view->priv->pending_mutex = g_mutex_new ();
 
 	/* THRESHOLD_ITEMS * 2 because we store UID and vcard */
-	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS * 2);
-	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS * 2);
-	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
+	book_view->priv->adds = g_array_sized_new (
+		TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS * 2);
+	book_view->priv->changes = g_array_sized_new (
+		TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS * 2);
+	book_view->priv->removes = g_array_sized_new (
+		TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
 
-	priv->ids = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	book_view->priv->ids = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) NULL);
 
-	priv->flush_id = 0;
+	book_view->priv->flush_id = 0;
 }
 
 static void

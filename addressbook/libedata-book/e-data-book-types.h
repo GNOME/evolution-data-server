@@ -31,14 +31,8 @@ G_BEGIN_DECLS
 typedef struct _EDataBookView        EDataBookView;
 typedef struct _EDataBookViewClass   EDataBookViewClass;
 
-typedef struct _EBookBackendSExp EBookBackendSExp;
-typedef struct _EBookBackendSExpClass EBookBackendSExpClass;
-
 typedef struct _EBookBackend        EBookBackend;
 typedef struct _EBookBackendClass   EBookBackendClass;
-
-typedef struct _EBookBackendSummary EBookBackendSummary;
-typedef struct _EBookBackendSummaryClass EBookBackendSummaryClass;
 
 typedef struct _EBookBackendSync        EBookBackendSync;
 typedef struct _EBookBackendSyncClass   EBookBackendSyncClass;

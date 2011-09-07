@@ -41,6 +41,10 @@
 #include "e-gdata-goa-authorizer.h"
 #endif
 
+#define E_BOOK_BACKEND_GOOGLE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGooglePrivate))
+
 #define CLIENT_ID "evolution-client-0.1.0"
 
 #define URI_GET_CONTACTS "://www.google.com/m8/feeds/contacts/default/full"
@@ -138,8 +142,10 @@ static void
 cache_init (EBookBackend *backend,
             gboolean on_disk)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	const gchar *cache_dir;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	cache_dir = e_book_backend_get_cache_dir (backend);
 
@@ -164,9 +170,11 @@ static EContact *
 cache_add_contact (EBookBackend *backend,
                    GDataEntry *entry)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	EContact *contact;
 	const gchar *uid;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	switch (priv->cache_type) {
 	case ON_DISK_CACHE:
@@ -193,8 +201,10 @@ static gboolean
 cache_remove_contact (EBookBackend *backend,
                       const gchar *uid)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	gboolean success = TRUE;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	switch (priv->cache_type) {
 	case ON_DISK_CACHE:
@@ -214,7 +224,9 @@ static gboolean
 cache_has_contact (EBookBackend *backend,
                    const gchar *uid)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	switch (priv->cache_type) {
 	case ON_DISK_CACHE:
@@ -234,8 +246,10 @@ cache_get_contact (EBookBackend *backend,
                    const gchar *uid,
                    GDataEntry **entry)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	EContact *contact;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	switch (priv->cache_type) {
 	case ON_DISK_CACHE:
@@ -296,8 +310,10 @@ _g_hash_table_to_list (GHashTable *ht)
 static GList *
 cache_get_contacts (EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GList *contacts, *iter;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	switch (priv->cache_type) {
 	case ON_DISK_CACHE:
@@ -319,7 +335,9 @@ cache_get_contacts (EBookBackend *backend)
 static void
 cache_freeze (EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	if (priv->cache_type == ON_DISK_CACHE)
 		e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache.on_disk));
@@ -328,7 +346,9 @@ cache_freeze (EBookBackend *backend)
 static void
 cache_thaw (EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	if (priv->cache_type == ON_DISK_CACHE)
 		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache.on_disk));
@@ -337,7 +357,9 @@ cache_thaw (EBookBackend *backend)
 static gchar *
 cache_get_last_update (EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	switch (priv->cache_type) {
 	case ON_DISK_CACHE:
@@ -358,9 +380,11 @@ static gboolean
 cache_get_last_update_tv (EBookBackend *backend,
                           GTimeVal *tv)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	gchar *last_update;
 	gint rv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	switch (priv->cache_type) {
 	case ON_DISK_CACHE:
@@ -383,8 +407,10 @@ static void
 cache_set_last_update (EBookBackend *backend,
                        GTimeVal *tv)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	gchar *_time;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	switch (priv->cache_type) {
 	case ON_DISK_CACHE:
@@ -406,10 +432,12 @@ static gboolean
 cache_needs_update (EBookBackend *backend,
                     guint *remaining_secs)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GTimeVal last, current;
 	guint diff;
 	gboolean rv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	if (remaining_secs)
 		*remaining_secs = G_MAXUINT;
@@ -448,7 +476,7 @@ backend_is_authorized (EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv;
 
-	priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	if (priv->service == NULL)
 		return FALSE;
@@ -469,8 +497,10 @@ static void
 on_contact_added (EBookBackend *backend,
                   EContact *contact)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GList *iter;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	if (!priv->live_mode)
 		return;
@@ -483,8 +513,10 @@ static void
 on_contact_removed (EBookBackend *backend,
                     const gchar *uid)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GList *iter;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	if (!priv->live_mode)
 		return;
@@ -497,8 +529,10 @@ static void
 on_contact_changed (EBookBackend *backend,
                     EContact *contact)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GList *iter;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	if (!priv->live_mode)
 		return;
@@ -513,8 +547,10 @@ start_operation (EBookBackend *backend,
                  GCancellable *cancellable,
                  const gchar *message)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GList *iter;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	/* Insert the operation into the set of active cancellable operations */
 	if (cancellable)
@@ -535,8 +571,10 @@ finish_operation (EBookBackend *backend,
                   guint32 opid,
                   const GError *gdata_error)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GError *book_error = NULL;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	if (gdata_error != NULL) {
 		data_book_error_from_gdata_error (&book_error, gdata_error);
@@ -682,9 +720,12 @@ process_contact_cb (GDataEntry *entry,
                     guint entry_count,
                     GetContactsData *data)
 {
+	EBookBackendGooglePrivate *priv;
 	EBookBackend *backend = data->backend;
 	gboolean is_deleted, is_cached;
 	const gchar *uid;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 	uid = gdata_entry_get_id (entry);
@@ -747,7 +788,7 @@ process_contact_cb (GDataEntry *entry,
 
 			/* Download the photo. */
 			gdata_contacts_contact_get_photo_async (GDATA_CONTACTS_CONTACT (entry),
-								GDATA_CONTACTS_SERVICE (E_BOOK_BACKEND_GOOGLE (backend)->priv->service), cancellable,
+								GDATA_CONTACTS_SERVICE (priv->service), cancellable,
 								(GAsyncReadyCallback) process_contact_photo_cb, photo_data);
 
 			g_object_unref (cancellable);
@@ -802,12 +843,14 @@ get_new_contacts_cb (GDataService *service,
 static void
 get_new_contacts (EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	gchar *last_updated;
 	GTimeVal updated;
 	GDataQuery *query;
 	GCancellable *cancellable;
 	GetContactsData *data;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 	g_return_if_fail (backend_is_authorized (backend));
@@ -896,10 +939,12 @@ process_group (GDataEntry *entry,
                guint entry_count,
                EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	const gchar *uid;
 	gchar *name;
 	gboolean is_deleted;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 	uid = gdata_entry_get_id (entry);
@@ -925,9 +970,11 @@ get_groups_cb (GDataService *service,
                GAsyncResult *result,
                EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GDataFeed *feed;
 	GError *gdata_error = NULL;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 	feed = gdata_service_query_finish (service, result, &gdata_error);
@@ -952,9 +999,11 @@ get_groups_cb (GDataService *service,
 static void
 get_groups (EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GDataQuery *query;
 	GCancellable *cancellable;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 	g_return_if_fail (backend_is_authorized (backend));
@@ -987,9 +1036,11 @@ create_group (EBookBackend *backend,
               const gchar *category_name,
               GError **error)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GDataEntry *group, *new_group;
 	gchar *uid;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	group = GDATA_ENTRY (gdata_contacts_group_new (NULL));
 
@@ -1020,7 +1071,9 @@ static gboolean cache_refresh_if_needed (EBookBackend *backend);
 static gboolean
 on_refresh_timeout (EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -1034,10 +1087,12 @@ on_refresh_timeout (EBookBackend *backend)
 static gboolean
 cache_refresh_if_needed (EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	guint remaining_secs;
 	gboolean install_timeout;
 	gboolean is_online;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -1068,7 +1123,9 @@ cache_refresh_if_needed (EBookBackend *backend)
 static void
 cache_destroy (EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	switch (priv->cache_type) {
 	case ON_DISK_CACHE:
@@ -1094,7 +1151,7 @@ proxy_settings_changed (EProxy *proxy,
 	SoupURI *proxy_uri = NULL;
 	gchar *uri;
 
-	priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	if (!priv || !priv->service)
 		return;
@@ -1117,7 +1174,7 @@ request_authorization (EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv;
 
-	priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	/* Make sure we have the GDataService configured
 	 * before requesting authorization. */
@@ -1264,7 +1321,10 @@ create_contact_photo_cb (GDataContactsContact *contact,
                          GAsyncResult *async_result,
                          CreateContactData *data)
 {
+	EBookBackendGooglePrivate *priv;
 	GError *gdata_error = NULL;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (data->backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -1276,7 +1336,7 @@ create_contact_photo_cb (GDataContactsContact *contact,
 		data->photo = NULL;
 
 		/* We now have to re-query for the contact, since setting its photo changes the contact's ETag. */
-		gdata_service_query_single_entry_async (E_BOOK_BACKEND_GOOGLE (data->backend)->priv->service,
+		gdata_service_query_single_entry_async (priv->service,
 							gdata_contacts_service_get_primary_authorization_domain (),
 							gdata_entry_get_id (GDATA_ENTRY (contact)), NULL, GDATA_TYPE_CONTACTS_CONTACT,
 							data->cancellable, (GAsyncReadyCallback) create_contact_photo_query_cb, data);
@@ -1347,12 +1407,14 @@ e_book_backend_google_create_contacts (EBookBackend *backend,
                                        GCancellable *cancellable,
                                        const GSList *vcards)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	EContact *contact;
 	GDataEntry *entry;
 	gchar *xml;
 	CreateContactData *data;
 	const gchar *vcard_str = (const gchar *) vcards->data;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
 	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
@@ -1453,11 +1515,13 @@ e_book_backend_google_remove_contacts (EBookBackend *backend,
                                        GCancellable *cancellable,
                                        const GSList *id_list)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	const gchar *uid = id_list->data;
 	GDataEntry *entry = NULL;
 	EContact *cached_contact;
 	RemoveContactData *data;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -1612,7 +1676,10 @@ modify_contact_photo_cb (GDataContactsContact *contact,
                          GAsyncResult *async_result,
                          ModifyContactData *data)
 {
+	EBookBackendGooglePrivate *priv;
 	GError *gdata_error = NULL;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (data->backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -1628,7 +1695,7 @@ modify_contact_photo_cb (GDataContactsContact *contact,
 		}
 
 		/* We now have to re-query for the contact, since setting its photo changes the contact's ETag. */
-		gdata_service_query_single_entry_async (E_BOOK_BACKEND_GOOGLE (data->backend)->priv->service,
+		gdata_service_query_single_entry_async (priv->service,
 							gdata_contacts_service_get_primary_authorization_domain (),
 							gdata_entry_get_id (GDATA_ENTRY (contact)), NULL, GDATA_TYPE_CONTACTS_CONTACT,
 							data->cancellable, (GAsyncReadyCallback) modify_contact_photo_query_cb, data);
@@ -1724,13 +1791,15 @@ e_book_backend_google_modify_contacts (EBookBackend *backend,
                                       GCancellable *cancellable,
                                       const GSList *vcards)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	EContact *contact, *cached_contact;
 	EContactPhoto *old_photo, *new_photo;
 	GDataEntry *entry = NULL;
 	const gchar *uid;
 	ModifyContactData *data;
 	const gchar *vcard_str = vcards->data;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -1934,7 +2003,9 @@ e_book_backend_google_get_contact_list_uids (EBookBackend *backend,
 static gboolean
 on_refresh_idle (EBookBackend *backend)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	priv->idle_id = 0;
 	cache_refresh_if_needed (backend);
@@ -1946,7 +2017,9 @@ static void
 set_live_mode (EBookBackend *backend,
                gboolean live_mode)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -1969,11 +2042,13 @@ static void
 e_book_backend_google_start_book_view (EBookBackend *backend,
                                        EDataBookView *bookview)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GList *cached_contacts;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND_GOOGLE (backend));
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (bookview));
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -2014,8 +2089,10 @@ static void
 e_book_backend_google_stop_book_view (EBookBackend *backend,
                                       EDataBookView *bookview)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GList *view;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -2069,9 +2146,11 @@ e_book_backend_google_authenticate_user (EBookBackend *backend,
                                          GCancellable *cancellable,
                                          ECredentials *credentials)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	AuthenticateUserData *data;
 	guint32 opid;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -2135,12 +2214,14 @@ e_book_backend_google_open (EBookBackend *backend,
                             GCancellable *cancellable,
                             gboolean only_if_exists)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	const gchar *refresh_interval_str, *use_ssl_str, *use_cache_str;
 	guint refresh_interval;
 	gboolean use_ssl, use_cache;
 	ESource *source;
 	gboolean is_online;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -2374,10 +2455,12 @@ e_book_backend_google_get_backend_property (EBookBackend *backend,
 static void
 google_cancel_all_operations (EBookBackend *backend)
 {
+	EBookBackendGooglePrivate *priv;
 	GHashTableIter iter;
 	gpointer opid_ptr;
 	GCancellable *cancellable;
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -2395,8 +2478,10 @@ static void
 e_book_backend_google_notify_online_cb (EBookBackend *backend,
                                         GParamSpec *pspec)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	gboolean is_online;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	__debug__ (G_STRFUNC);
 
@@ -2425,7 +2510,9 @@ e_book_backend_google_notify_online_cb (EBookBackend *backend,
 static void
 e_book_backend_google_dispose (GObject *object)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (object)->priv;
+	EBookBackendGooglePrivate *priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (object);
 
 	__debug__ (G_STRFUNC);
 
@@ -2462,7 +2549,9 @@ e_book_backend_google_dispose (GObject *object)
 static void
 e_book_backend_google_finalize (GObject *object)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (object)->priv;
+	EBookBackendGooglePrivate *priv;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (object);
 
 	__debug__ (G_STRFUNC);
 
@@ -2476,12 +2565,12 @@ e_book_backend_google_finalize (GObject *object)
 }
 
 static void
-e_book_backend_google_class_init (EBookBackendGoogleClass *klass)
+e_book_backend_google_class_init (EBookBackendGoogleClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	EBookBackendClass *backend_class = E_BOOK_BACKEND_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (class);
+	EBookBackendClass *backend_class = E_BOOK_BACKEND_CLASS (class);
 
-	g_type_class_add_private (klass, sizeof (EBookBackendGooglePrivate));
+	g_type_class_add_private (class, sizeof (EBookBackendGooglePrivate));
 
 	/* Set the virtual methods. */
 	backend_class->open			= e_book_backend_google_open;
@@ -2507,9 +2596,8 @@ static void
 e_book_backend_google_init (EBookBackendGoogle *backend)
 {
 	__debug__ (G_STRFUNC);
-	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		backend, E_TYPE_BOOK_BACKEND_GOOGLE,
-		EBookBackendGooglePrivate);
+
+	backend->priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	g_signal_connect (
 		backend, "notify::online",
@@ -2652,7 +2740,7 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
                                     GDataEntry *entry,
                                     EContact *contact)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	GList *attributes, *iter, *category_names;
 	EContactName *name_struct = NULL;
 	EContactPhoto *photo;
@@ -2671,6 +2759,8 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 	const gchar *file_as;
 #endif
 #endif
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	attributes = e_vcard_get_attributes (E_VCARD (contact));
 
@@ -3009,7 +3099,7 @@ static EContact *
 _e_contact_new_from_gdata_entry (EBookBackend *backend,
                                  GDataEntry *entry)
 {
-	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	EBookBackendGooglePrivate *priv;
 	EVCard *vcard;
 	EVCardAttribute *attr;
 	EContactPhoto *photo;
@@ -3034,6 +3124,8 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 	const gchar *file_as;
 #endif
 #endif
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	uid = gdata_entry_get_id (entry);
 	if (NULL == uid)

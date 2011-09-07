@@ -21,21 +21,35 @@
  * 02110-1301, USA.
  */
 
-#ifndef __E_BOOK_BACKEND_SUMMARY_H__
-#define __E_BOOK_BACKEND_SUMMARY_H__
+#ifndef E_BOOK_BACKEND_SUMMARY_H
+#define E_BOOK_BACKEND_SUMMARY_H
 
 #include <libedata-book/e-data-book-types.h>
 #include <libebook/e-contact.h>
 
+/* Standard GObject macros */
+#define E_TYPE_BOOK_BACKEND_SUMMARY \
+	(e_book_backend_summary_get_type ())
+#define E_BOOK_BACKEND_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_BOOK_BACKEND_SUMMARY, EBookBackendSummary))
+#define E_BOOK_BACKEND_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_BOOK_BACKEND_SUMMARY, EBookBackendSummaryClass))
+#define E_IS_BOOK_BACKEND_SUMMARY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_BOOK_BACKEND_SUMMARY))
+#define E_IS_BOOK_BACKEND_SUMMARY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_BOOK_BACKEND_SUMMARY))
+#define E_BOOK_BACKEND_SUMMARY_GET_CLASS(cls) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_BOOK_BACKEND_SUMMARY, EBookBackendSummaryClass))
+
 G_BEGIN_DECLS
 
-#define E_TYPE_BACKEND_SUMMARY        (e_book_backend_summary_get_type ())
-#define E_BOOK_BACKEND_SUMMARY(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BACKEND_SUMMARY, EBookBackendSummary))
-#define E_BOOK_BACKEND_SUMMARY_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_BOOK_BACKEND_TYPE, EBookBackendSummaryClass))
-#define E_IS_BACKEND_SUMMARY(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BACKEND_SUMMARY))
-#define E_IS_BACKEND_SUMMARY_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BACKEND_SUMMARY))
-#define E_BOOK_BACKEND_SUMMARY_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BACKEND_SUMMARY, EBookBackendSummaryClass))
-
+typedef struct _EBookBackendSummary EBookBackendSummary;
+typedef struct _EBookBackendSummaryClass EBookBackendSummaryClass;
 typedef struct _EBookBackendSummaryPrivate EBookBackendSummaryPrivate;
 
 struct _EBookBackendSummary{
@@ -47,29 +61,43 @@ struct _EBookBackendSummaryClass{
 	GObjectClass parent_class;
 };
 
-EBookBackendSummary * e_book_backend_summary_new              (const gchar *summary_path,
-							 gint flush_timeout_millis);
-GType              e_book_backend_summary_get_type         (void);
+GType		e_book_backend_summary_get_type	(void) G_GNUC_CONST;
+EBookBackendSummary *
+		e_book_backend_summary_new	(const gchar *summary_path,
+						 gint flush_timeout_millis);
 
 /* returns FALSE if the load fails for any reason (including that the
  * summary is out of date), TRUE if it succeeds */
-gboolean           e_book_backend_summary_load             (EBookBackendSummary *summary);
+gboolean	e_book_backend_summary_load	(EBookBackendSummary *summary);
 /* returns FALSE if the save fails, TRUE if it succeeds (or isn't required due to no changes) */
-gboolean           e_book_backend_summary_save              (EBookBackendSummary *summary);
+gboolean	e_book_backend_summary_save	(EBookBackendSummary *summary);
 
-void               e_book_backend_summary_add_contact       (EBookBackendSummary *summary, EContact *contact);
-void               e_book_backend_summary_remove_contact    (EBookBackendSummary *summary, const gchar *id);
-gboolean           e_book_backend_summary_check_contact     (EBookBackendSummary *summary, const gchar *id);
+void		e_book_backend_summary_add_contact
+						(EBookBackendSummary *summary,
+						 EContact *contact);
+void		e_book_backend_summary_remove_contact
+						(EBookBackendSummary *summary,
+						 const gchar *id);
+gboolean	e_book_backend_summary_check_contact
+						(EBookBackendSummary *summary,
+						 const gchar *id);
 
-void               e_book_backend_summary_touch             (EBookBackendSummary *summary);
+void		e_book_backend_summary_touch	(EBookBackendSummary *summary);
 
 /* returns TRUE if the summary's mtime is >= @t. */
-gboolean           e_book_backend_summary_is_up_to_date     (EBookBackendSummary *summary, time_t t);
+gboolean	e_book_backend_summary_is_up_to_date
+						(EBookBackendSummary *summary,
+						 time_t t);
 
-gboolean           e_book_backend_summary_is_summary_query  (EBookBackendSummary *summary, const gchar *query);
-GPtrArray *         e_book_backend_summary_search            (EBookBackendSummary *summary, const gchar *query);
-gchar *              e_book_backend_summary_get_summary_vcard (EBookBackendSummary *summary, const gchar *id);
+gboolean	e_book_backend_summary_is_summary_query
+						(EBookBackendSummary *summary,
+						 const gchar *query);
+GPtrArray *	e_book_backend_summary_search	(EBookBackendSummary *summary,
+						 const gchar *query);
+gchar *		e_book_backend_summary_get_summary_vcard
+						(EBookBackendSummary *summary,
+						 const gchar *id);
 
 G_END_DECLS
 
-#endif /* __E_BOOK_BACKEND_SUMMARY_H__ */
+#endif /* E_BOOK_BACKEND_SUMMARY_H */

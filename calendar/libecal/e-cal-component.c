@@ -28,12 +28,14 @@
 #include "e-cal-time-util.h"
 #include "libedataserver/e-data-server-util.h"
 
-
-
 #ifdef G_OS_WIN32
 #define getgid() 0
 #define getppid() 0
 #endif
+
+#define E_CAL_COMPONENT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_COMPONENT, ECalComponentPrivate))
 
 G_DEFINE_TYPE (ECalComponent, e_cal_component, G_TYPE_OBJECT)
 
@@ -195,51 +197,14 @@ struct _ECalComponentAlarm {
 	GSList *attendee_list;
 };
 
-
-
-static void e_cal_component_finalize (GObject *object);
-
-static GObjectClass *parent_class;
-
-
-
-/* Class initialization function for the calendar component object */
-static void
-e_cal_component_class_init (ECalComponentClass *klass)
-{
-	GObjectClass *object_class;
-
-	object_class = (GObjectClass *) klass;
-
-	parent_class = g_type_class_peek_parent (klass);
-
-	object_class->finalize = e_cal_component_finalize;
-}
-
-/* Object initialization function for the calendar component object */
-static void
-e_cal_component_init (ECalComponent *comp)
-{
-	ECalComponentPrivate *priv;
-
-	priv = g_new0 (ECalComponentPrivate, 1);
-	comp->priv = priv;
-
-	priv->alarm_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
-}
-
 /* Does a simple g_free() of the elements of a GSList and then frees the list
  * itself.  Returns NULL.
  */
 static GSList *
 free_slist (GSList *slist)
 {
-	GSList *l;
+	g_slist_free_full (slist, (GDestroyNotify) g_free);
 
-	for (l = slist; l; l = l->next)
-		g_free (l->data);
-
-	g_slist_free (slist);
 	return NULL;
 }
 
@@ -372,31 +337,41 @@ free_icalcomponent (ECalComponent *comp,
 	priv->need_sequence_inc = FALSE;
 }
 
-/* Finalize handler for the calendar component object */
 static void
-e_cal_component_finalize (GObject *object)
+cal_component_finalize (GObject *object)
 {
-	ECalComponent *comp;
 	ECalComponentPrivate *priv;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (E_IS_CAL_COMPONENT (object));
+	priv = E_CAL_COMPONENT_GET_PRIVATE (object);
 
-	comp = E_CAL_COMPONENT (object);
-	priv = comp->priv;
-
-	free_icalcomponent (comp, TRUE);
+	free_icalcomponent (E_CAL_COMPONENT (object), TRUE);
 	g_hash_table_destroy (priv->alarm_uid_hash);
-	priv->alarm_uid_hash = NULL;
-
-	g_free (priv);
-	comp->priv = NULL;
 
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_cal_component_parent_class)->finalize (object);
 }
 
 
+
+/* Class initialization function for the calendar component object */
+static void
+e_cal_component_class_init (ECalComponentClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (ECalComponentPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = cal_component_finalize;
+}
+
+/* Object initialization function for the calendar component object */
+static void
+e_cal_component_init (ECalComponent *comp)
+{
+	comp->priv = E_CAL_COMPONENT_GET_PRIVATE (comp);
+	comp->priv->alarm_uid_hash = g_hash_table_new (g_str_hash, g_str_equal);
+}
 
 /**
  * e_cal_component_gen_uid:

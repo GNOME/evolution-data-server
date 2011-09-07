@@ -31,8 +31,10 @@ struct _CamelImapWrapperPrivate {
 	GMutex *lock;
 };
 
-#define CAMEL_IMAP_WRAPPER_LOCK(f, l) (g_mutex_lock(((CamelImapWrapper *)f)->priv->l))
-#define CAMEL_IMAP_WRAPPER_UNLOCK(f, l) (g_mutex_unlock(((CamelImapWrapper *)f)->priv->l))
+#define CAMEL_IMAP_WRAPPER_LOCK(f, l) \
+	(g_mutex_lock (((CamelImapWrapper *) f)->priv->l))
+#define CAMEL_IMAP_WRAPPER_UNLOCK(f, l) \
+	(g_mutex_unlock (((CamelImapWrapper *) f)->priv->l))
 
 G_END_DECLS
 

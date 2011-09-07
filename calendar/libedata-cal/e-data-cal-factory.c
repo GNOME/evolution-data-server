@@ -45,8 +45,6 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate))
 
-G_DEFINE_TYPE (EDataCalFactory, e_data_cal_factory, E_TYPE_DATA_FACTORY);
-
 struct _EDataCalFactoryPrivate {
 	EGdbusCalFactory *gdbus_object;
 
@@ -58,6 +56,8 @@ struct _EDataCalFactoryPrivate {
 	/* This is a hash of client addresses to GList* of EDataCals */
 	GHashTable *connections;
 };
+
+G_DEFINE_TYPE (EDataCalFactory, e_data_cal_factory, E_TYPE_DATA_FACTORY);
 
 static const gchar *
 calobjtype_to_string (const EDataCalObjType type)

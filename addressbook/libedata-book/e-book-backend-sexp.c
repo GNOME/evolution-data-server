@@ -23,9 +23,11 @@
 #include "libedataserver/e-data-server-util.h"
 #include "e-book-backend-sexp.h"
 
-G_DEFINE_TYPE (EBookBackendSExp, e_book_backend_sexp, G_TYPE_OBJECT)
+#define E_BOOK_BACKEND_SEXP_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_BACKEND_SEXP, EBookBackendSExpPrivate))
 
-static GObjectClass *parent_class;
+G_DEFINE_TYPE (EBookBackendSExp, e_book_backend_sexp, G_TYPE_OBJECT)
 
 typedef struct _SearchContext SearchContext;
 
@@ -1016,7 +1018,7 @@ e_book_backend_sexp_match_vcard (EBookBackendSExp *sexp,
 EBookBackendSExp *
 e_book_backend_sexp_new (const gchar *text)
 {
-	EBookBackendSExp *sexp = g_object_new (E_TYPE_BACKEND_SEXP, NULL);
+	EBookBackendSExp *sexp = g_object_new (E_TYPE_BOOK_BACKEND_SEXP, NULL);
 	gint esexp_error;
 	gint i;
 
@@ -1045,41 +1047,34 @@ e_book_backend_sexp_new (const gchar *text)
 }
 
 static void
-e_book_backend_sexp_dispose (GObject *object)
+e_book_backend_sexp_finalize (GObject *object)
 {
-	EBookBackendSExp *sexp = E_BOOK_BACKEND_SEXP (object);
+	EBookBackendSExpPrivate *priv;
 
-	if (sexp->priv) {
-		e_sexp_unref (sexp->priv->search_sexp);
+	priv = E_BOOK_BACKEND_SEXP_GET_PRIVATE (object);
 
-		g_free (sexp->priv->search_context);
-		g_free (sexp->priv);
-		sexp->priv = NULL;
-	}
+	e_sexp_unref (priv->search_sexp);
 
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	g_free (priv->search_context);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_book_backend_sexp_parent_class)->finalize (object);
 }
 
 static void
-e_book_backend_sexp_class_init (EBookBackendSExpClass *klass)
+e_book_backend_sexp_class_init (EBookBackendSExpClass *class)
 {
-	GObjectClass  *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class;
 
-	parent_class = g_type_class_peek_parent (klass);
+	g_type_class_add_private (class, sizeof (EBookBackendSExpPrivate));
 
-	/* Set the virtual methods. */
-
-	object_class->dispose = e_book_backend_sexp_dispose;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = e_book_backend_sexp_finalize;
 }
 
 static void
 e_book_backend_sexp_init (EBookBackendSExp *sexp)
 {
-	EBookBackendSExpPrivate *priv;
-
-	priv             = g_new0 (EBookBackendSExpPrivate, 1);
-
-	sexp->priv = priv;
-	priv->search_context = g_new (SearchContext, 1);
+	sexp->priv = E_BOOK_BACKEND_SEXP_GET_PRIVATE (sexp);
+	sexp->priv->search_context = g_new (SearchContext, 1);
 }

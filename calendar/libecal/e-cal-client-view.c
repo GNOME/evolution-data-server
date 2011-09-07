@@ -36,6 +36,10 @@
 
 #include "e-gdbus-cal-view.h"
 
+#define E_CAL_CLIENT_VIEW_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_CLIENT_VIEW, ECalClientViewPrivate))
+
 G_DEFINE_TYPE (ECalClientView, e_cal_client_view, G_TYPE_OBJECT);
 
 /* Private part of the ECalClientView structure */
@@ -222,7 +226,7 @@ complete_cb (EGdbusCalView *gdbus_calview,
 static void
 e_cal_client_view_init (ECalClientView *view)
 {
-	view->priv = G_TYPE_INSTANCE_GET_PRIVATE (view, E_TYPE_CAL_CLIENT_VIEW, ECalClientViewPrivate);
+	view->priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (view);
 	view->priv->running = FALSE;
 }
 
@@ -322,17 +326,17 @@ cal_client_view_finalize (GObject *object)
 
 /* Class initialization function for the calendar view */
 static void
-e_cal_client_view_class_init (ECalClientViewClass *klass)
+e_cal_client_view_class_init (ECalClientViewClass *class)
 {
 	GObjectClass *object_class;
 
-	object_class = (GObjectClass *) klass;
+	object_class = (GObjectClass *) class;
 
 	object_class->set_property = cal_client_view_set_property;
 	object_class->get_property = cal_client_view_get_property;
 	object_class->finalize = cal_client_view_finalize;
 
-	g_type_class_add_private (klass, sizeof (ECalClientViewPrivate));
+	g_type_class_add_private (class, sizeof (ECalClientViewPrivate));
 
 	g_object_class_install_property (object_class, PROP_VIEW,
 		g_param_spec_pointer ("view", "The GDBus view proxy", NULL,
@@ -348,7 +352,7 @@ e_cal_client_view_class_init (ECalClientViewClass *klass)
          */
 	signals[OBJECTS_ADDED] =
 		g_signal_new ("objects-added",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClientViewClass, objects_added),
 			      NULL, NULL,
@@ -361,7 +365,7 @@ e_cal_client_view_class_init (ECalClientViewClass *klass)
          */
 	signals[OBJECTS_MODIFIED] =
 		g_signal_new ("objects-modified",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClientViewClass, objects_modified),
 			      NULL, NULL,
@@ -374,7 +378,7 @@ e_cal_client_view_class_init (ECalClientViewClass *klass)
          */
 	signals[OBJECTS_REMOVED] =
 		g_signal_new ("objects-removed",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClientViewClass, objects_removed),
 			      NULL, NULL,
@@ -383,7 +387,7 @@ e_cal_client_view_class_init (ECalClientViewClass *klass)
 
 	signals[PROGRESS] =
 		g_signal_new ("progress",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClientViewClass, progress),
 			      NULL, NULL,
@@ -392,7 +396,7 @@ e_cal_client_view_class_init (ECalClientViewClass *klass)
 
 	signals[COMPLETE] =
 		g_signal_new ("complete",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClientViewClass, complete),
 			      NULL, NULL,

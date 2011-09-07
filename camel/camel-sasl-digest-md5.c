@@ -49,6 +49,10 @@
 
 #define PARANOID(x) x
 
+#define CAMEL_SASL_DIGEST_MD5_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL_DIGEST_MD5, CamelSaslDigestMd5Private))
+
 /* Implements rfc2831 */
 
 static CamelServiceAuthType sasl_digest_md5_auth_type = {
@@ -973,6 +977,5 @@ camel_sasl_digest_md5_class_init (CamelSaslDigestMd5Class *class)
 static void
 camel_sasl_digest_md5_init (CamelSaslDigestMd5 *sasl)
 {
-	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		sasl, CAMEL_TYPE_SASL_DIGEST_MD5, CamelSaslDigestMd5Private);
+	sasl->priv = CAMEL_SASL_DIGEST_MD5_GET_PRIVATE (sasl);
 }

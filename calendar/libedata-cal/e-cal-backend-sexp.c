@@ -29,9 +29,11 @@
 
 #include "e-cal-backend-sexp.h"
 
-G_DEFINE_TYPE (ECalBackendSExp, e_cal_backend_sexp, G_TYPE_OBJECT)
+#define E_CAL_BACKEND_SEXP_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND_SEXP, ECalBackendSExpPrivate))
 
-static GObjectClass *parent_class;
+G_DEFINE_TYPE (ECalBackendSExp, e_cal_backend_sexp, G_TYPE_OBJECT)
 
 typedef struct _SearchContext SearchContext;
 
@@ -1603,43 +1605,34 @@ e_cal_backend_sexp_text (ECalBackendSExp *sexp)
 }
 
 static void
-e_cal_backend_sexp_dispose (GObject *object)
+e_cal_backend_sexp_finalize (GObject *object)
 {
-	ECalBackendSExp *sexp = E_CAL_BACKEND_SEXP (object);
+	ECalBackendSExpPrivate *priv;
 
-	if (sexp->priv) {
-		e_sexp_unref (sexp->priv->search_sexp);
+	priv = E_CAL_BACKEND_SEXP_GET_PRIVATE (object);
 
-		g_free (sexp->priv->text);
+	e_sexp_unref (priv->search_sexp);
+	g_free (priv->text);
+	g_free (priv->search_context);
 
-		g_free (sexp->priv->search_context);
-		g_free (sexp->priv);
-		sexp->priv = NULL;
-	}
-
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_cal_backend_sexp_parent_class)->finalize (object);
 }
 
 static void
-e_cal_backend_sexp_class_init (ECalBackendSExpClass *klass)
+e_cal_backend_sexp_class_init (ECalBackendSExpClass *class)
 {
-	GObjectClass  *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class;
 
-	parent_class = g_type_class_peek_parent (klass);
+	g_type_class_add_private (class, sizeof (ECalBackendSExpPrivate));
 
-	/* Set the virtual methods. */
-
-	object_class->dispose = e_cal_backend_sexp_dispose;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = e_cal_backend_sexp_finalize;
 }
 
 static void
 e_cal_backend_sexp_init (ECalBackendSExp *sexp)
 {
-	ECalBackendSExpPrivate *priv;
-
-	priv = g_new0 (ECalBackendSExpPrivate, 1);
-
-	sexp->priv = priv;
-	priv->search_context = g_new (SearchContext, 1);
+	sexp->priv = E_CAL_BACKEND_SEXP_GET_PRIVATE (sexp);
+	sexp->priv->search_context = g_new (SearchContext, 1);
 }

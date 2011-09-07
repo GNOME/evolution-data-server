@@ -156,7 +156,7 @@ imapx_folder_get_apply_filters (CamelIMAPXFolder *folder)
 
 static void
 imapx_folder_set_apply_filters (CamelIMAPXFolder *folder,
-				gboolean apply_filters)
+                                gboolean apply_filters)
 {
 	g_return_if_fail (folder != NULL);
 	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
@@ -171,9 +171,9 @@ imapx_folder_set_apply_filters (CamelIMAPXFolder *folder,
 
 static void
 imapx_folder_set_property (GObject *object,
-			   guint property_id,
-			   const GValue *value,
-			   GParamSpec *pspec)
+                           guint property_id,
+                           const GValue *value,
+                           GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_APPLY_FILTERS:
@@ -188,9 +188,9 @@ imapx_folder_set_property (GObject *object,
 
 static void
 imapx_folder_get_property (GObject *object,
-			   guint property_id,
-			   GValue *value,
-			   GParamSpec *pspec)
+                           guint property_id,
+                           GValue *value,
+                           GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_APPLY_FILTERS:
@@ -454,10 +454,10 @@ imapx_expunge_sync (CamelFolder *folder,
 
 static gboolean
 imapx_fetch_messages_sync (CamelFolder *folder,
-			   CamelFetchType type,
-			   int limit,
-			   GCancellable *cancellable,
-			   GError **error)
+                           CamelFetchType type,
+                           gint limit,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
@@ -558,10 +558,10 @@ imapx_get_message_sync (CamelFolder *folder,
 
 static gboolean
 imapx_purge_message_cache_sync (CamelFolder *folder,
-				gchar *start_uid,
-				gchar *end_uid,
-				GCancellable *cancellable,
-				GError **error)
+                                gchar *start_uid,
+                                gchar *end_uid,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	/* Not Implemented for now. */
 	return TRUE;

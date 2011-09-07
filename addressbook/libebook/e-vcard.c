@@ -33,6 +33,10 @@
 
 #define CRLF "\r\n"
 
+#define E_VCARD_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_VCARD, EVCardPrivate))
+
 G_DEFINE_TYPE (EVCard, e_vcard, G_TYPE_OBJECT)
 
 /** Encoding used in v-card
@@ -64,44 +68,40 @@ struct _EVCardAttributeParam {
 	GList    *values;  /* GList of gchar *'s */
 };
 
-static GObjectClass *parent_class;
-
 static void
-e_vcard_dispose (GObject *object)
+vcard_finalize (GObject *object)
 {
-	EVCard *evc = E_VCARD (object);
+	EVCardPrivate *priv;
 
-	if (evc->priv) {
-		/* Directly access priv->attributes and don't call e_vcard_ensure_attributes(),
-		 * since it is pointless to start vCard parsing that late. */
-		g_list_foreach (evc->priv->attributes, (GFunc) e_vcard_attribute_free, NULL);
-		g_list_free (evc->priv->attributes);
+	priv = E_VCARD_GET_PRIVATE (object);
 
-		g_free (evc->priv->vcard);
-		g_free (evc->priv);
-		evc->priv = NULL;
-	}
+	/* Directly access priv->attributes and don't call
+	 * e_vcard_ensure_attributes(), since it is pointless
+	 * to start vCard parsing that late. */
+	g_list_free_full (
+		priv->attributes, (GDestroyNotify) e_vcard_attribute_free);
 
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	g_free (priv->vcard);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_vcard_parent_class)->finalize (object);
 }
 
 static void
-e_vcard_class_init (EVCardClass *klass)
+e_vcard_class_init (EVCardClass *class)
 {
 	GObjectClass *object_class;
 
-	object_class = G_OBJECT_CLASS (klass);
+	g_type_class_add_private (class, sizeof (EVCardPrivate));
 
-	parent_class = g_type_class_ref (G_TYPE_OBJECT);
-
-	object_class->dispose = e_vcard_dispose;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = vcard_finalize;
 }
 
 static void
 e_vcard_init (EVCard *evc)
 {
-	evc->priv = g_new0 (EVCardPrivate, 1);
+	evc->priv = E_VCARD_GET_PRIVATE (evc);
 }
 
 /* Case insensitive version of strstr */

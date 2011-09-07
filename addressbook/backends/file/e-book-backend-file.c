@@ -54,6 +54,10 @@
 
 #include "e-book-backend-file.h"
 
+#define E_BOOK_BACKEND_FILE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_BACKEND_FILE, EBookBackendFilePrivate))
+
 #define d(x)
 
 #define CHANGES_DB_SUFFIX ".changes.db"
@@ -2366,17 +2370,16 @@ e_book_backend_file_dispose (GObject *object)
 static void
 e_book_backend_file_finalize (GObject *object)
 {
-	EBookBackendFile *bf;
+	EBookBackendFilePrivate *priv;
 
-	bf = E_BOOK_BACKEND_FILE (object);
+	priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (object);
 
-	g_free (bf->priv->filename);
-	g_free (bf->priv->dirname);
-	g_free (bf->priv->photo_dirname);
-	g_free (bf->priv->revision);
+	g_free (priv->filename);
+	g_free (priv->dirname);
+	g_free (priv->photo_dirname);
+	g_free (priv->revision);
 
-	g_free (bf->priv);
-
+	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_file_parent_class)->finalize (object);
 }
 
@@ -2429,14 +2432,16 @@ my_unlink (const gchar *name)
 #endif
 
 static void
-e_book_backend_file_class_init (EBookBackendFileClass *klass)
+e_book_backend_file_class_init (EBookBackendFileClass *class)
 {
-	GObjectClass    *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass    *object_class = G_OBJECT_CLASS (class);
 	EBookBackendSyncClass *sync_class;
 	EBookBackendClass *backend_class;
 
-	sync_class = E_BOOK_BACKEND_SYNC_CLASS (klass);
-	backend_class = E_BOOK_BACKEND_CLASS (klass);
+	g_type_class_add_private (class, sizeof (EBookBackendFilePrivate));
+
+	sync_class = E_BOOK_BACKEND_SYNC_CLASS (class);
+	backend_class = E_BOOK_BACKEND_CLASS (class);
 
 	/* Set the virtual methods. */
 	backend_class->start_book_view		= e_book_backend_file_start_book_view;
@@ -2473,10 +2478,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 static void
 e_book_backend_file_init (EBookBackendFile *backend)
 {
-	EBookBackendFilePrivate *priv;
-
-	priv          = g_new0 (EBookBackendFilePrivate, 1);
-	backend->priv = priv;
+	backend->priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (backend);
 
 	g_signal_connect (
 		backend, "notify::online",

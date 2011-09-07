@@ -23,6 +23,10 @@
 #include "e-cal-backend-intervaltree.h"
 #include <libedataserver/e-data-server-util.h>
 
+#define E_CAL_BACKEND_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND_STORE, ECalBackendStorePrivate))
+
 struct _ECalBackendStorePrivate {
 	gchar *path;
 	EIntervalTree *intervaltree;
@@ -85,7 +89,7 @@ cal_backend_store_finalize (GObject *object)
 {
 	ECalBackendStorePrivate *priv;
 
-	priv = E_CAL_BACKEND_STORE (object)->priv;
+	priv = E_CAL_BACKEND_STORE_GET_PRIVATE (object);
 
 	g_free (priv->path);
 	if (priv->intervaltree) {
@@ -124,8 +128,7 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *class)
 static void
 e_cal_backend_store_init (ECalBackendStore *store)
 {
-	store->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		store, E_TYPE_CAL_BACKEND_STORE, ECalBackendStorePrivate);
+	store->priv = E_CAL_BACKEND_STORE_GET_PRIVATE (store);
 	store->priv->intervaltree = e_intervaltree_new ();
 }
 
@@ -150,18 +153,19 @@ e_cal_backend_store_get_path (ECalBackendStore *store)
 gboolean
 e_cal_backend_store_load (ECalBackendStore *store)
 {
-	ECalBackendStorePrivate *priv;
+	ECalBackendStoreClass *class;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
-	priv = store->priv;
-
-	if (priv->loaded)
+	if (store->priv->loaded)
 		return TRUE;
 
-	priv->loaded = (E_CAL_BACKEND_STORE_GET_CLASS (store))->load (store);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->load != NULL, FALSE);
 
-	return priv->loaded;
+	store->priv->loaded = class->load (store);
+
+	return store->priv->loaded;
 }
 
 /**
@@ -172,16 +176,18 @@ e_cal_backend_store_load (ECalBackendStore *store)
 gboolean
 e_cal_backend_store_remove (ECalBackendStore *store)
 {
-	ECalBackendStorePrivate *priv;
+	ECalBackendStoreClass *class;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
-	priv = store->priv;
-	/* remove interval tree */
-	e_intervaltree_destroy (priv->intervaltree);
-	priv->intervaltree = NULL;
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->remove != NULL, FALSE);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove (store);
+	/* remove interval tree */
+	e_intervaltree_destroy (store->priv->intervaltree);
+	store->priv->intervaltree = NULL;
+
+	return class->remove (store);
 }
 
 /**
@@ -192,18 +198,19 @@ e_cal_backend_store_remove (ECalBackendStore *store)
 gboolean
 e_cal_backend_store_clean (ECalBackendStore *store)
 {
-	ECalBackendStorePrivate *priv;
+	ECalBackendStoreClass *class;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 
-	priv = store->priv;
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->clean != NULL, FALSE);
 
-	if (priv->intervaltree) {
-		e_intervaltree_destroy (priv->intervaltree);
-		priv->intervaltree = e_intervaltree_new ();
+	if (store->priv->intervaltree != NULL) {
+		e_intervaltree_destroy (store->priv->intervaltree);
+		store->priv->intervaltree = e_intervaltree_new ();
 	}
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->clean (store);
+	return class->clean (store);
 }
 
 /**
@@ -216,10 +223,15 @@ e_cal_backend_store_get_component (ECalBackendStore *store,
                                    const gchar *uid,
                                    const gchar *rid)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_component (store, uid, rid);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_component != NULL, NULL);
+
+	return class->get_component (store, uid, rid);
 }
 
 /**
@@ -232,10 +244,15 @@ e_cal_backend_store_has_component (ECalBackendStore *store,
                                    const gchar *uid,
                                    const gchar *rid)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->has_component (store, uid, rid);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->has_component != NULL, FALSE);
+
+	return class->has_component (store, uid, rid);
 }
 
 /**
@@ -249,17 +266,21 @@ e_cal_backend_store_put_component_with_time_range (ECalBackendStore *store,
                                                    time_t occurence_start,
                                                    time_t occurence_end)
 {
-	ECalBackendStorePrivate *priv;
+	ECalBackendStoreClass *class;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
-	priv = store->priv;
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->put_component != NULL, FALSE);
 
-	if ((E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp)) {
-		if (e_intervaltree_insert (priv->intervaltree, occurence_start, occurence_end, comp))
+	if (class->put_component (store, comp)) {
+		if (e_intervaltree_insert (
+			store->priv->intervaltree,
+			occurence_start, occurence_end, comp))
 			return TRUE;
 	}
+
 	return FALSE;
 
 }
@@ -273,10 +294,15 @@ gboolean
 e_cal_backend_store_put_component (ECalBackendStore *store,
                                    ECalComponent *comp)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), FALSE);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_component (store, comp);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->put_component != NULL, FALSE);
+
+	return class->put_component (store, comp);
 }
 
 /**
@@ -289,17 +315,19 @@ e_cal_backend_store_remove_component (ECalBackendStore *store,
                                       const gchar *uid,
                                       const gchar *rid)
 {
-	ECalBackendStorePrivate *priv;
+	ECalBackendStoreClass *class;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	priv = store->priv;
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->remove_component != NULL, FALSE);
 
-	if ((E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_component (store, uid, rid)) {
-		if (e_intervaltree_remove (priv->intervaltree, uid, rid))
+	if (class->remove_component (store, uid, rid)) {
+		if (e_intervaltree_remove (store->priv->intervaltree, uid, rid))
 			return TRUE;
 	}
+
 	return FALSE;
 }
 
@@ -312,10 +340,15 @@ const icaltimezone *
 e_cal_backend_store_get_timezone (ECalBackendStore *store,
                                   const gchar *tzid)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (tzid != NULL, NULL);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_timezone (store, tzid);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_timezone != NULL, NULL);
+
+	return class->get_timezone (store, tzid);
 }
 
 /**
@@ -327,10 +360,15 @@ gboolean
 e_cal_backend_store_put_timezone (ECalBackendStore *store,
                                   const icaltimezone *zone)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_timezone (store, zone);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->put_timezone != NULL, FALSE);
+
+	return class->put_timezone (store, zone);
 }
 
 /**
@@ -342,10 +380,15 @@ gboolean
 e_cal_backend_store_remove_timezone (ECalBackendStore *store,
                                      const gchar *tzid)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (tzid != NULL, FALSE);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->remove_timezone (store, tzid);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->remove_timezone != NULL, FALSE);
+
+	return class->remove_timezone (store, tzid);
 }
 
 /**
@@ -356,9 +399,14 @@ e_cal_backend_store_remove_timezone (ECalBackendStore *store,
 const icaltimezone *
 e_cal_backend_store_get_default_timezone (ECalBackendStore *store)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_default_timezone (store);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_default_timezone != NULL, NULL);
+
+	return class->get_default_timezone (store);
 }
 
 /**
@@ -370,10 +418,15 @@ gboolean
 e_cal_backend_store_set_default_timezone (ECalBackendStore *store,
                                           const icaltimezone *zone)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->set_default_timezone (store, zone);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->set_default_timezone != NULL, FALSE);
+
+	return class->set_default_timezone (store, zone);
 }
 
 /**
@@ -385,10 +438,15 @@ GSList *
 e_cal_backend_store_get_components_by_uid (ECalBackendStore *store,
                                            const gchar *uid)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_components_by_uid (store, uid);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_components_by_uid != NULL, NULL);
+
+	return class->get_components_by_uid (store, uid);
 }
 
 /**
@@ -399,8 +457,14 @@ e_cal_backend_store_get_components_by_uid (ECalBackendStore *store,
 GSList *
 e_cal_backend_store_get_components (ECalBackendStore *store)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_components (store);
+
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_components != NULL, NULL);
+
+	return class->get_components (store);
 }
 
 /**
@@ -422,7 +486,6 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store,
                                                       time_t start,
                                                       time_t end)
 {
-	ECalBackendStorePrivate *priv;
 	GList *l, *objects;
 	GSList *list = NULL;
 	icalcomponent *icalcomp;
@@ -430,9 +493,10 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store,
 	g_return_val_if_fail (store != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 
-	priv = store->priv;
+	objects = e_intervaltree_search (
+		store->priv->intervaltree, start, end);
 
-	if (!(objects = e_intervaltree_search (priv->intervaltree, start, end)))
+	if (objects == NULL)
 		return NULL;
 
 	for (l = objects; l != NULL; l = g_list_next (l)) {
@@ -442,7 +506,9 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store,
 			icalcomponent_kind kind;
 
 			kind = icalcomponent_isa (icalcomp);
-			if (kind == ICAL_VEVENT_COMPONENT || kind == ICAL_VTODO_COMPONENT || kind == ICAL_VJOURNAL_COMPONENT) {
+			if (kind == ICAL_VEVENT_COMPONENT ||
+			    kind == ICAL_VTODO_COMPONENT ||
+			    kind == ICAL_VJOURNAL_COMPONENT) {
 				list = g_slist_prepend (list, comp);
 			} else {
 				g_object_unref (comp);
@@ -463,9 +529,14 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store,
 GSList *
 e_cal_backend_store_get_component_ids (ECalBackendStore *store)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_component_ids (store);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_component_ids != NULL, NULL);
+
+	return class->get_component_ids (store);
 }
 
 /**
@@ -477,10 +548,15 @@ const gchar *
 e_cal_backend_store_get_key_value (ECalBackendStore *store,
                                    const gchar *key)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->get_key_value (store, key);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_key_value != NULL, NULL);
+
+	return class->get_key_value (store, key);
 }
 
 /**
@@ -493,10 +569,15 @@ e_cal_backend_store_put_key_value (ECalBackendStore *store,
                                    const gchar *key,
                                    const gchar *value)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_STORE (store), FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
-	return (E_CAL_BACKEND_STORE_GET_CLASS (store))->put_key_value (store, key, value);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->put_key_value != NULL, FALSE);
+
+	return class->put_key_value (store, key, value);
 }
 
 /**
@@ -507,9 +588,14 @@ e_cal_backend_store_put_key_value (ECalBackendStore *store,
 void
 e_cal_backend_store_thaw_changes (ECalBackendStore *store)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_if_fail (E_IS_CAL_BACKEND_STORE (store));
 
-	(E_CAL_BACKEND_STORE_GET_CLASS (store))->thaw_changes (store);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_if_fail (class->thaw_changes != NULL);
+
+	class->thaw_changes (store);
 }
 
 /**
@@ -520,9 +606,14 @@ e_cal_backend_store_thaw_changes (ECalBackendStore *store)
 void
 e_cal_backend_store_freeze_changes (ECalBackendStore *store)
 {
+	ECalBackendStoreClass *class;
+
 	g_return_if_fail (E_IS_CAL_BACKEND_STORE (store));
 
-	(E_CAL_BACKEND_STORE_GET_CLASS (store))->freeze_changes (store);
+	class = E_CAL_BACKEND_STORE_GET_CLASS (store);
+	g_return_if_fail (class->freeze_changes != NULL);
+
+	class->freeze_changes (store);
 }
 
 /**
@@ -536,12 +627,10 @@ e_cal_backend_store_interval_tree_add_comp (ECalBackendStore *store,
                                             time_t occurence_start,
                                             time_t occurence_end)
 {
-	ECalBackendStorePrivate *priv;
-
 	g_return_if_fail (E_IS_CAL_BACKEND_STORE (store));
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 
-	priv = store->priv;
-
-	e_intervaltree_insert (priv->intervaltree, occurence_start, occurence_end, comp);
+	e_intervaltree_insert (
+		store->priv->intervaltree,
+		occurence_start, occurence_end, comp);
 }

@@ -551,11 +551,11 @@ g_signal (GDBusProxy *proxy,
 }
 
 static void
-e_gdbus_book_view_proxy_class_init (EGdbusBookViewProxyClass *klass)
+e_gdbus_book_view_proxy_class_init (EGdbusBookViewProxyClass *class)
 {
 	GDBusProxyClass *proxy_class;
 
-	proxy_class = G_DBUS_PROXY_CLASS (klass);
+	proxy_class = G_DBUS_PROXY_CLASS (class);
 	proxy_class->g_signal = g_signal;
 }
 
@@ -766,11 +766,6 @@ e_gdbus_book_view_proxy_new_for_bus_sync (GBusType bus_type,
 
 /* ---------------------------------------------------------------------- */
 
-struct _EGdbusBookViewStubPrivate
-{
-	gint foo;
-};
-
 static void stub_iface_init (EGdbusBookViewIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (EGdbusBookViewStub, e_gdbus_book_view_stub, G_TYPE_OBJECT,
@@ -779,13 +774,11 @@ G_DEFINE_TYPE_WITH_CODE (EGdbusBookViewStub, e_gdbus_book_view_stub, G_TYPE_OBJE
 static void
 e_gdbus_book_view_stub_init (EGdbusBookViewStub *stub)
 {
-	stub->priv = G_TYPE_INSTANCE_GET_PRIVATE (stub, E_TYPE_GDBUS_BOOK_VIEW_STUB, EGdbusBookViewStubPrivate);
 }
 
 static void
-e_gdbus_book_view_stub_class_init (EGdbusBookViewStubClass *klass)
+e_gdbus_book_view_stub_class_init (EGdbusBookViewStubClass *class)
 {
-	g_type_class_add_private (klass, sizeof (EGdbusBookViewStubPrivate));
 }
 
 static void

@@ -29,6 +29,10 @@
 #include "camel-msgport.h"
 #include "camel-operation.h"
 
+#define CAMEL_OPERATION_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_OPERATION, CamelOperationPrivate))
+
 #define PROGRESS_DELAY		250  /* milliseconds */
 #define TRANSIENT_DELAY		250  /* milliseconds */
 #define POP_MESSAGE_DELAY	999  /* milliseconds */
@@ -136,7 +140,7 @@ operation_finalize (GObject *object)
 {
 	CamelOperationPrivate *priv;
 
-	priv = CAMEL_OPERATION (object)->priv;
+	priv = CAMEL_OPERATION_GET_PRIVATE (object);
 
 	LOCK ();
 
@@ -178,8 +182,7 @@ camel_operation_class_init (CamelOperationClass *class)
 static void
 camel_operation_init (CamelOperation *operation)
 {
-	operation->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		operation, CAMEL_TYPE_OPERATION, CamelOperationPrivate);
+	operation->priv = CAMEL_OPERATION_GET_PRIVATE (operation);
 
 	g_queue_init (&operation->priv->status_stack);
 

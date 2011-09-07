@@ -38,6 +38,10 @@
 	(iter)->user_data = GINT_TO_POINTER (index); \
 	} G_STMT_END
 
+#define E_CONTACT_STORE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CONTACT_STORE, EContactStorePrivate))
+
 struct _EContactStorePrivate {
 	gint stamp;
 	EBookQuery *query;
@@ -112,7 +116,7 @@ contact_store_dispose (GObject *object)
 	EContactStorePrivate *priv;
 	gint ii;
 
-	priv = E_CONTACT_STORE (object)->priv;
+	priv = E_CONTACT_STORE_GET_PRIVATE (object);
 
 	/* Free sources and cached contacts */
 	for (ii = 0; ii < priv->contact_sources->len; ii++) {
@@ -142,7 +146,7 @@ contact_store_finalize (GObject *object)
 {
 	EContactStorePrivate *priv;
 
-	priv = E_CONTACT_STORE (object)->priv;
+	priv = E_CONTACT_STORE_GET_PRIVATE (object);
 
 	g_array_free (priv->contact_sources, TRUE);
 
@@ -204,8 +208,7 @@ e_contact_store_init (EContactStore *contact_store)
 
 	contact_sources = g_array_new (FALSE, FALSE, sizeof (ContactSource));
 
-	contact_store->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		contact_store, E_TYPE_CONTACT_STORE, EContactStorePrivate);
+	contact_store->priv = E_CONTACT_STORE_GET_PRIVATE (contact_store);
 	contact_store->priv->stamp = g_random_int ();
 	contact_store->priv->contact_sources = contact_sources;
 }

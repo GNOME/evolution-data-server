@@ -44,14 +44,16 @@
 
 #define CAMEL_NNTP_SUMMARY_VERSION (1)
 
+#define CAMEL_NNTP_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_NNTP_SUMMARY, CamelNNTPSummaryPrivate))
+
 struct _CamelNNTPSummaryPrivate {
 	gchar *uid;
 
 	struct _xover_header *xover; /* xoverview format */
 	gint xover_setup;
 };
-
-#define _PRIVATE(o) (((CamelNNTPSummary *)(o))->priv)
 
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static gboolean summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
@@ -79,9 +81,7 @@ camel_nntp_summary_init (CamelNNTPSummary *nntp_summary)
 {
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (nntp_summary);
 
-	nntp_summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		nntp_summary, CAMEL_TYPE_NNTP_SUMMARY,
-		CamelNNTPSummaryPrivate);
+	nntp_summary->priv = CAMEL_NNTP_SUMMARY_GET_PRIVATE (nntp_summary);
 
 	/* and a unique file version */
 	summary->version += CAMEL_NNTP_SUMMARY_VERSION;

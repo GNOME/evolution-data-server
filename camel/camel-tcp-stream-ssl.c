@@ -68,6 +68,10 @@
 #define IO_TIMEOUT (PR_TicksPerSecond() * 4 * 60)
 #define CONNECT_TIMEOUT (PR_TicksPerSecond () * 4 * 60)
 
+#define CAMEL_TCP_STREAM_SSL_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_TCP_STREAM_SSL, CamelTcpStreamSSLPrivate))
+
 struct _CamelTcpStreamSSLPrivate {
 	CamelSession *session;
 	gchar *expected_host;
@@ -82,7 +86,7 @@ tcp_stream_ssl_dispose (GObject *object)
 {
 	CamelTcpStreamSSLPrivate *priv;
 
-	priv = CAMEL_TCP_STREAM_SSL (object)->priv;
+	priv = CAMEL_TCP_STREAM_SSL_GET_PRIVATE (object);
 
 	if (priv->session != NULL) {
 		g_object_unref (priv->session);
@@ -98,7 +102,7 @@ tcp_stream_ssl_finalize (GObject *object)
 {
 	CamelTcpStreamSSLPrivate *priv;
 
-	priv = CAMEL_TCP_STREAM_SSL (object)->priv;
+	priv = CAMEL_TCP_STREAM_SSL_GET_PRIVATE (object);
 
 	g_free (priv->expected_host);
 
@@ -820,8 +824,7 @@ camel_tcp_stream_ssl_class_init (CamelTcpStreamSSLClass *class)
 static void
 camel_tcp_stream_ssl_init (CamelTcpStreamSSL *stream)
 {
-	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		stream, CAMEL_TYPE_TCP_STREAM_SSL, CamelTcpStreamSSLPrivate);
+	stream->priv = CAMEL_TCP_STREAM_SSL_GET_PRIVATE (stream);
 }
 
 /**

@@ -39,6 +39,10 @@
 
 #define CAMEL_INDEX_VERSION (0x01)
 
+#define CAMEL_INDEX_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_INDEX, CamelIndexPrivate))
+
 struct _CamelIndexPrivate {
 	gpointer dummy;
 };
@@ -74,8 +78,7 @@ camel_index_class_init (CamelIndexClass *class)
 static void
 camel_index_init (CamelIndex *index)
 {
-	index->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		index, CAMEL_TYPE_INDEX, CamelIndexPrivate);
+	index->priv = CAMEL_INDEX_GET_PRIVATE (index);
 	index->version = CAMEL_INDEX_VERSION;
 }
 

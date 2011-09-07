@@ -31,6 +31,10 @@
 #include "camel-url-scanner.h"
 #include "camel-utf8.h"
 
+#define CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_TOHTML, CamelMimeFilterToHTMLPrivate))
+
 struct _CamelMimeFilterToHTMLPrivate {
 
 	CamelUrlScanner *scanner;
@@ -156,7 +160,7 @@ writeln (CamelMimeFilter *mime_filter,
 	CamelMimeFilterToHTMLPrivate *priv;
 	const guchar *inptr = in;
 
-	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
 
 	while (inptr < inend) {
 		guint32 u;
@@ -236,7 +240,7 @@ html_convert (CamelMimeFilter *mime_filter,
 	const gchar *inend;
 	gint depth;
 
-	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
 
 	if (inlen == 0) {
 		if (priv->pre_open) {
@@ -394,7 +398,7 @@ mime_filter_tohtml_finalize (GObject *object)
 {
 	CamelMimeFilterToHTMLPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_TOHTML (object)->priv;
+	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (object);
 
 	camel_url_scanner_free (priv->scanner);
 
@@ -435,7 +439,7 @@ mime_filter_tohtml_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterToHTMLPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_TOHTML (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (mime_filter);
 
 	priv->column = 0;
 	priv->pre_open = FALSE;
@@ -461,9 +465,7 @@ camel_mime_filter_tohtml_class_init (CamelMimeFilterToHTMLClass *class)
 static void
 camel_mime_filter_tohtml_init (CamelMimeFilterToHTML *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		filter, CAMEL_TYPE_MIME_FILTER_TOHTML,
-		CamelMimeFilterToHTMLPrivate);
+	filter->priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (filter);
 	filter->priv->scanner = camel_url_scanner_new ();
 }
 
@@ -486,7 +488,7 @@ camel_mime_filter_tohtml_new (guint32 flags,
 	gint i;
 
 	filter = g_object_new (CAMEL_TYPE_MIME_FILTER_TOHTML, NULL);
-	priv = CAMEL_MIME_FILTER_TOHTML (filter)->priv;
+	priv = CAMEL_MIME_FILTER_TOHTML_GET_PRIVATE (filter);
 
 	priv->flags = flags;
 	priv->color = color;

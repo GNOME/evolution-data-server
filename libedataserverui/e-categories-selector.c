@@ -23,10 +23,9 @@
 #include "e-categories-selector.h"
 #include "e-data-server-ui-marshal.h"
 
-G_DEFINE_TYPE (
-	ECategoriesSelector,
-	e_categories_selector,
-	GTK_TYPE_TREE_VIEW)
+#define E_CATEGORIES_SELECTOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CATEGORIES_SELECTOR, ECategoriesSelectorPrivate))
 
 struct _ECategoriesSelectorPrivate {
 	gboolean checkable;
@@ -54,6 +53,11 @@ enum {
 };
 
 static gint signals[LAST_SIGNAL] = {0};
+
+G_DEFINE_TYPE (
+	ECategoriesSelector,
+	e_categories_selector,
+	GTK_TYPE_TREE_VIEW)
 
 static void
 categories_selector_build_model (ECategoriesSelector *selector)
@@ -224,7 +228,7 @@ categories_selector_dispose (GObject *object)
 {
 	ECategoriesSelectorPrivate *priv;
 
-	priv = E_CATEGORIES_SELECTOR (object)->priv;
+	priv = E_CATEGORIES_SELECTOR_GET_PRIVATE (object);
 
 	if (priv->selected_categories != NULL) {
 		g_hash_table_destroy (priv->selected_categories);
@@ -294,9 +298,7 @@ e_categories_selector_init (ECategoriesSelector *selector)
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
 
-	selector->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		selector, E_TYPE_CATEGORIES_SELECTOR,
-		ECategoriesSelectorPrivate);
+	selector->priv = E_CATEGORIES_SELECTOR_GET_PRIVATE (selector);
 
 	selector->priv->checkable = TRUE;
 	selector->priv->selected_categories = g_hash_table_new_full (

@@ -73,6 +73,10 @@
 static gint logid;
 #endif
 
+#define CAMEL_GPG_CONTEXT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_GPG_CONTEXT, CamelGpgContextPrivate))
+
 struct _CamelGpgContextPrivate {
 	gboolean always_trust;
 };
@@ -745,7 +749,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 			gboolean all_zero = *key == '0';
 			gint i = 0;
 
-			while (key [i] && all_zero) {
+			while (key[i] && all_zero) {
 				all_zero = key[i] == '0';
 				i++;
 			}
@@ -883,7 +887,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		gpg->bad_passwds = 0;
 	} else if (!strncmp ((gchar *) status, "BAD_PASSPHRASE", 14)) {
 		/* with anonymous recipient is user asked for his/her password for each stored key,
-		   thus here cannot be counted wrong passwords */
+		 * thus here cannot be counted wrong passwords */
 		if (!gpg->anonymous_recipient) {
 			gpg->bad_passwds++;
 
@@ -2259,7 +2263,7 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 	GObjectClass *object_class;
 	CamelCipherContextClass *cipher_context_class;
 
-	g_type_class_add_private (class, sizeof (CamelGpgContextClass));
+	g_type_class_add_private (class, sizeof (CamelGpgContextPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = gpg_context_set_property;
@@ -2293,8 +2297,7 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 static void
 camel_gpg_context_init (CamelGpgContext *context)
 {
-	context->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		context, CAMEL_TYPE_GPG_CONTEXT, CamelGpgContextPrivate);
+	context->priv = CAMEL_GPG_CONTEXT_GET_PRIVATE (context);
 }
 
 /**

@@ -34,6 +34,10 @@
 
 #include "camel-stream-mem.h"
 
+#define CAMEL_STREAM_MEM_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_STREAM_MEM, CamelStreamMemPrivate))
+
 struct _CamelStreamMemPrivate {
 	guint owner  : 1;	/* do we own the buffer? */
 	guint secure : 1;	/* do we clear the buffer on finalize?
@@ -74,7 +78,7 @@ stream_mem_finalize (GObject *object)
 {
 	CamelStreamMemPrivate *priv;
 
-	priv = CAMEL_STREAM_MEM (object)->priv;
+	priv = CAMEL_STREAM_MEM_GET_PRIVATE (object);
 
 	if (priv->buffer && priv->owner) {
 		/* TODO: we need our own bytearray type since we don't know
@@ -98,7 +102,7 @@ stream_mem_read (CamelStream *stream,
 	CamelStreamMemPrivate *priv;
 	gssize nread;
 
-	priv = CAMEL_STREAM_MEM (stream)->priv;
+	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 
 	nread = MIN (n, priv->buffer->len - priv->position);
 	if (nread > 0) {
@@ -120,7 +124,7 @@ stream_mem_write (CamelStream *stream,
 	CamelStreamMemPrivate *priv;
 	gssize nwrite = n;
 
-	priv = CAMEL_STREAM_MEM (stream)->priv;
+	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 
 	/* FIXME: we shouldn't use g_byte_arrays or g_malloc perhaps? */
 	if (priv->position == priv->buffer->len) {
@@ -139,7 +143,7 @@ stream_mem_eos (CamelStream *stream)
 {
 	CamelStreamMemPrivate *priv;
 
-	priv = CAMEL_STREAM_MEM (stream)->priv;
+	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 
 	return priv->buffer->len <= priv->position;
 }
@@ -149,7 +153,7 @@ stream_mem_tell (GSeekable *seekable)
 {
 	CamelStreamMemPrivate *priv;
 
-	priv = CAMEL_STREAM_MEM (seekable)->priv;
+	priv = CAMEL_STREAM_MEM_GET_PRIVATE (seekable);
 
 	return priv->position;
 }
@@ -170,7 +174,7 @@ stream_mem_seek (GSeekable *seekable,
 	CamelStreamMemPrivate *priv;
 	goffset position;
 
-	priv = CAMEL_STREAM_MEM (seekable)->priv;
+	priv = CAMEL_STREAM_MEM_GET_PRIVATE (seekable);
 
 	switch (type) {
 	case G_SEEK_SET:
@@ -251,8 +255,7 @@ camel_stream_mem_seekable_init (GSeekableIface *interface)
 static void
 camel_stream_mem_init (CamelStreamMem *stream)
 {
-	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		stream, CAMEL_TYPE_STREAM_MEM, CamelStreamMemPrivate);
+	stream->priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 }
 
 /**
@@ -315,7 +318,7 @@ camel_stream_mem_new_with_byte_array (GByteArray *buffer)
 	g_return_val_if_fail (buffer != NULL, NULL);
 
 	stream = g_object_new (CAMEL_TYPE_STREAM_MEM, NULL);
-	priv = CAMEL_STREAM_MEM (stream)->priv;
+	priv = CAMEL_STREAM_MEM_GET_PRIVATE (stream);
 
 	priv->buffer = buffer;
 	priv->owner = TRUE;

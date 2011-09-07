@@ -352,11 +352,11 @@ g_signal (GDBusProxy *proxy,
 }
 
 static void
-e_gdbus_book_factory_proxy_class_init (EGdbusBookFactoryProxyClass *klass)
+e_gdbus_book_factory_proxy_class_init (EGdbusBookFactoryProxyClass *class)
 {
 	GDBusProxyClass *proxy_class;
 
-	proxy_class = G_DBUS_PROXY_CLASS (klass);
+	proxy_class = G_DBUS_PROXY_CLASS (class);
 	proxy_class->g_signal = g_signal;
 }
 
@@ -567,11 +567,6 @@ e_gdbus_book_factory_proxy_new_for_bus_sync (GBusType bus_type,
 
 /* ---------------------------------------------------------------------- */
 
-struct _EGdbusBookFactoryStubPrivate
-{
-	gint foo;
-};
-
 static void stub_iface_init (EGdbusBookFactoryIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (EGdbusBookFactoryStub, e_gdbus_book_factory_stub, G_TYPE_OBJECT,
@@ -580,13 +575,11 @@ G_DEFINE_TYPE_WITH_CODE (EGdbusBookFactoryStub, e_gdbus_book_factory_stub, G_TYP
 static void
 e_gdbus_book_factory_stub_init (EGdbusBookFactoryStub *stub)
 {
-	stub->priv = G_TYPE_INSTANCE_GET_PRIVATE (stub, E_TYPE_GDBUS_BOOK_FACTORY_STUB, EGdbusBookFactoryStubPrivate);
 }
 
 static void
-e_gdbus_book_factory_stub_class_init (EGdbusBookFactoryStubClass *klass)
+e_gdbus_book_factory_stub_class_init (EGdbusBookFactoryStubClass *class)
 {
-	g_type_class_add_private (klass, sizeof (EGdbusBookFactoryStubPrivate));
 }
 
 static void
@@ -604,5 +597,5 @@ stub_iface_init (EGdbusBookFactoryIface *iface)
 EGdbusBookFactory *
 e_gdbus_book_factory_stub_new (void)
 {
-	return E_GDBUS_BOOK_FACTORY (g_object_new (E_TYPE_GDBUS_BOOK_FACTORY_STUB, NULL));
+	return g_object_new (E_TYPE_GDBUS_BOOK_FACTORY_STUB, NULL);
 }

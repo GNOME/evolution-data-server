@@ -45,6 +45,10 @@
 
 #define w(x)
 
+#define CAMEL_SASL_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL, CamelSaslPrivate))
+
 typedef struct _AsyncContext AsyncContext;
 
 struct _CamelSaslPrivate {

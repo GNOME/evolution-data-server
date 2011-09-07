@@ -76,12 +76,12 @@ gboolean	camel_pop3_settings_get_keep_on_server
 void		camel_pop3_settings_set_keep_on_server
 						(CamelPOP3Settings *settings,
 						 gboolean keep_on_server);
-gboolean	camel_pop3_settings_get_auto_fetch 
+gboolean	camel_pop3_settings_get_auto_fetch
 						(CamelPOP3Settings *settings);
 void		camel_pop3_settings_set_auto_fetch
 						(CamelPOP3Settings *settings,
 						 gboolean auto_fetch);
-gboolean	camel_pop3_settings_get_mobile_mode 
+gboolean	camel_pop3_settings_get_mobile_mode
 						(CamelPOP3Settings *settings);
 void		camel_pop3_settings_set_mobile_mode
 						(CamelPOP3Settings *settings,
@@ -90,7 +90,7 @@ gboolean	camel_pop3_settings_get_batch_fetch_count
 						(CamelPOP3Settings *settings);
 void		camel_pop3_settings_set_batch_fetch_count
 						(CamelPOP3Settings *settings,
-						 int batch_fetch_count);
+						 gint batch_fetch_count);
 
 G_END_DECLS
 

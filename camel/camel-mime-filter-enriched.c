@@ -30,6 +30,10 @@
 #include "camel-mime-filter-enriched.h"
 #include "camel-string-utils.h"
 
+#define CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MIME_FILTER_ENRICHED, CamelMimeFilterEnrichedPrivate))
+
 struct _CamelMimeFilterEnrichedPrivate {
 	guint32 flags;
 	gint nofill;
@@ -229,7 +233,7 @@ enriched_to_html (CamelMimeFilter *mime_filter,
 	register const gchar *inptr;
 	register gchar *outptr;
 
-	priv = CAMEL_MIME_FILTER_ENRICHED (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (mime_filter);
 
 	camel_mime_filter_set_size (mime_filter, inlen * 2 + 6, FALSE);
 
@@ -520,7 +524,7 @@ mime_filter_enriched_reset (CamelMimeFilter *mime_filter)
 {
 	CamelMimeFilterEnrichedPrivate *priv;
 
-	priv = CAMEL_MIME_FILTER_ENRICHED (mime_filter)->priv;
+	priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (mime_filter);
 
 	priv->nofill = 0;
 }
@@ -550,9 +554,7 @@ camel_mime_filter_enriched_class_init (CamelMimeFilterEnrichedClass *class)
 static void
 camel_mime_filter_enriched_init (CamelMimeFilterEnriched *filter)
 {
-	filter->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		filter, CAMEL_TYPE_MIME_FILTER_ENRICHED,
-		CamelMimeFilterEnrichedPrivate);
+	filter->priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (filter);
 }
 
 /**
@@ -567,15 +569,15 @@ camel_mime_filter_enriched_init (CamelMimeFilterEnriched *filter)
 CamelMimeFilter *
 camel_mime_filter_enriched_new (guint32 flags)
 {
-	CamelMimeFilter *res;
+	CamelMimeFilter *new;
 	CamelMimeFilterEnrichedPrivate *priv;
 
-	res = g_object_new (CAMEL_TYPE_MIME_FILTER_ENRICHED, NULL);
-	priv = CAMEL_MIME_FILTER_ENRICHED (res)->priv;
+	new = g_object_new (CAMEL_TYPE_MIME_FILTER_ENRICHED, NULL);
+	priv = CAMEL_MIME_FILTER_ENRICHED_GET_PRIVATE (new);
 
 	priv->flags = flags;
 
-	return res;
+	return new;
 }
 
 /**

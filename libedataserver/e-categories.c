@@ -95,11 +95,11 @@ enum {
 static guint changed_listener_signals[LAST_SIGNAL];
 
 static void
-e_changed_listener_class_init (EChangedListenerClass *klass)
+e_changed_listener_class_init (EChangedListenerClass *class)
 {
 	changed_listener_signals[CHANGED] =
 		g_signal_new ("changed",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (EChangedListenerClass, changed),
 			      NULL, NULL,

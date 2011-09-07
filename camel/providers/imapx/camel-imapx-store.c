@@ -392,7 +392,7 @@ fill_fi (CamelStore *store,
          guint32 flags)
 {
 	CamelFolder *folder;
-	CamelService *service = (CamelService *)store;
+	CamelService *service = (CamelService *) store;
 	CamelSettings *settings;
 	gboolean mobile_mode;
 

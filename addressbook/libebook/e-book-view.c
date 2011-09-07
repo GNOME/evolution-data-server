@@ -29,6 +29,10 @@
 
 G_DEFINE_TYPE (EBookView, e_book_view, G_TYPE_OBJECT);
 
+#define E_BOOK_VIEW_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_VIEW, EBookViewPrivate))
+
 struct _EBookViewPrivate {
 	EGdbusBookView *gdbus_bookview;
 	EBook *book;
@@ -268,8 +272,7 @@ e_book_view_stop (EBookView *book_view)
 static void
 e_book_view_init (EBookView *book_view)
 {
-	book_view->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		book_view, E_TYPE_BOOK_VIEW, EBookViewPrivate);
+	book_view->priv = E_BOOK_VIEW_GET_PRIVATE (book_view);
 	book_view->priv->gdbus_bookview = NULL;
 
 	book_view->priv->book = NULL;
@@ -305,11 +308,11 @@ e_book_view_dispose (GObject *object)
 }
 
 static void
-e_book_view_class_init (EBookViewClass *klass)
+e_book_view_class_init (EBookViewClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-	g_type_class_add_private (klass, sizeof (EBookViewPrivate));
+	g_type_class_add_private (class, sizeof (EBookViewPrivate));
 
 	signals [CONTACTS_CHANGED] = g_signal_new ("contacts_changed",
 						   G_OBJECT_CLASS_TYPE (object_class),

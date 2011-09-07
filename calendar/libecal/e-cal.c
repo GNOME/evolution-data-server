@@ -57,6 +57,10 @@
 #include "e-gdbus-cal-view.h"
 #include "e-gdbus-cal-factory.h"
 
+#define E_CAL_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL, ECalPrivate))
+
 #define CLIENT_BACKEND_PROPERTY_CACHE_DIR		"cache-dir"
 #define CLIENT_BACKEND_PROPERTY_CAPABILITIES		"capabilities"
 #define CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS		"cal-email-address"
@@ -143,8 +147,6 @@ enum {
 };
 
 static guint e_cal_signals[LAST_SIGNAL];
-
-static GObjectClass *parent_class;
 
 #ifdef __PRETTY_FUNCTION__
 #define e_return_error_if_fail(expr,error_code)	G_STMT_START{		\
@@ -419,28 +421,25 @@ convert_type (ECalSourceType type)
 static void
 e_cal_init (ECal *ecal)
 {
-	ECalPrivate *priv;
-
 	LOCK_FACTORY ();
 	active_cals++;
 	UNLOCK_FACTORY ();
 
-	ecal->priv = priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		ecal, E_TYPE_CAL, ECalPrivate);
+	ecal->priv = E_CAL_GET_PRIVATE (ecal);
 
-	priv->load_state = E_CAL_LOAD_NOT_LOADED;
-	priv->uri = NULL;
-	priv->local_attachment_store = NULL;
+	ecal->priv->load_state = E_CAL_LOAD_NOT_LOADED;
+	ecal->priv->uri = NULL;
+	ecal->priv->local_attachment_store = NULL;
 
-	priv->cal_address = NULL;
-	priv->alarm_email_address = NULL;
-	priv->ldap_attribute = NULL;
-	priv->capabilities = NULL;
-	priv->gdbus_cal = NULL;
-	priv->timezones = g_hash_table_new (g_str_hash, g_str_equal);
-	priv->default_zone = icaltimezone_get_utc_timezone ();
-	priv->free_busy_data_lock = g_mutex_new ();
-	g_static_rec_mutex_init (&priv->cache_lock);
+	ecal->priv->cal_address = NULL;
+	ecal->priv->alarm_email_address = NULL;
+	ecal->priv->ldap_attribute = NULL;
+	ecal->priv->capabilities = NULL;
+	ecal->priv->gdbus_cal = NULL;
+	ecal->priv->timezones = g_hash_table_new (g_str_hash, g_str_equal);
+	ecal->priv->default_zone = icaltimezone_get_utc_timezone ();
+	ecal->priv->free_busy_data_lock = g_mutex_new ();
+	g_static_rec_mutex_init (&ecal->priv->cache_lock);
 }
 
 static void
@@ -526,7 +525,8 @@ e_cal_dispose (GObject *object)
 
 	gdbus_cal_disconnect (ecal);
 
-	(* G_OBJECT_CLASS (parent_class)->dispose) (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_cal_parent_class)->dispose (object);
 }
 
 static void
@@ -601,7 +601,8 @@ e_cal_finalize (GObject *object)
 	g_static_rec_mutex_free (&priv->cache_lock);
 	g_mutex_free (priv->free_busy_data_lock);
 
-	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_cal_parent_class)->finalize (object);
 
 	LOCK_FACTORY ();
 	active_cals--;
@@ -610,18 +611,16 @@ e_cal_finalize (GObject *object)
 
 /* Class initialization function for the calendar ecal */
 static void
-e_cal_class_init (ECalClass *klass)
+e_cal_class_init (ECalClass *class)
 {
 	GObjectClass *object_class;
 
-	object_class = (GObjectClass *) klass;
-
-	parent_class = g_type_class_peek_parent (klass);
+	object_class = (GObjectClass *) class;
 
 	/* XXX The "cal-opened" signal is deprecated. */
 	e_cal_signals[CAL_OPENED] =
 		g_signal_new ("cal_opened",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClass, cal_opened),
 			      NULL, NULL,
@@ -635,7 +634,7 @@ e_cal_class_init (ECalClass *klass)
          */
 	e_cal_signals[CAL_OPENED_EX] =
 		g_signal_new ("cal_opened_ex",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClass, cal_opened_ex),
 			      NULL, NULL,
@@ -644,7 +643,7 @@ e_cal_class_init (ECalClass *klass)
 
 	e_cal_signals[CAL_SET_MODE] =
 		g_signal_new ("cal_set_mode",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClass, cal_set_mode),
 			      NULL, NULL,
@@ -654,7 +653,7 @@ e_cal_class_init (ECalClass *klass)
 			      CAL_MODE_ENUM_TYPE);
 	e_cal_signals[BACKEND_ERROR] =
 		g_signal_new ("backend_error",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClass, backend_error),
 			      NULL, NULL,
@@ -663,21 +662,21 @@ e_cal_class_init (ECalClass *klass)
 			      G_TYPE_STRING);
 	e_cal_signals[BACKEND_DIED] =
 		g_signal_new ("backend_died",
-			      G_TYPE_FROM_CLASS (klass),
+			      G_TYPE_FROM_CLASS (class),
 			      G_SIGNAL_RUN_FIRST,
 			      G_STRUCT_OFFSET (ECalClass, backend_died),
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 
-	klass->cal_opened = NULL;
-	klass->cal_opened_ex = NULL;
-	klass->backend_died = NULL;
+	class->cal_opened = NULL;
+	class->cal_opened_ex = NULL;
+	class->backend_died = NULL;
 
 	object_class->dispose = e_cal_dispose;
 	object_class->finalize = e_cal_finalize;
 
-	g_type_class_add_private (klass, sizeof (ECalPrivate));
+	g_type_class_add_private (class, sizeof (ECalPrivate));
 }
 
 static void

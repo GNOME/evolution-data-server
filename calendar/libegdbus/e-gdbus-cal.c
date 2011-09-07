@@ -28,6 +28,10 @@
 
 #include "e-gdbus-cal.h"
 
+#define E_GDBUS_CAL_PROXY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_GDBUS_CAL_PROXY, EGdbusCalProxyPrivate))
+
 #define GDBUS_CAL_INTERFACE_NAME "org.gnome.evolution.dataserver.Calendar"
 
 typedef EGdbusCalIface EGdbusCalInterface;
@@ -1546,7 +1550,7 @@ e_gdbus_cal_proxy_init (EGdbusCalProxy *proxy)
 {
 	g_dbus_proxy_set_interface_info (G_DBUS_PROXY (proxy), (GDBusInterfaceInfo *) &_e_gdbus_cal_interface_info);
 
-	proxy->priv = G_TYPE_INSTANCE_GET_PRIVATE (proxy, E_TYPE_GDBUS_CAL_PROXY, EGdbusCalProxyPrivate);
+	proxy->priv = E_GDBUS_CAL_PROXY_GET_PRIVATE (proxy);
 	proxy->priv->pending_ops = e_gdbus_async_op_keeper_create_pending_ops (E_GDBUS_ASYNC_OP_KEEPER (proxy));
 
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (open);
@@ -1603,17 +1607,17 @@ gdbus_cal_proxy_finalize (GObject *object)
 }
 
 static void
-e_gdbus_cal_proxy_class_init (EGdbusCalProxyClass *klass)
+e_gdbus_cal_proxy_class_init (EGdbusCalProxyClass *class)
 {
 	GObjectClass *object_class;
 	GDBusProxyClass *proxy_class;
 
-	g_type_class_add_private (klass, sizeof (EGdbusCalProxyPrivate));
+	g_type_class_add_private (class, sizeof (EGdbusCalProxyPrivate));
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = gdbus_cal_proxy_finalize;
 
-	proxy_class = G_DBUS_PROXY_CLASS (klass);
+	proxy_class = G_DBUS_PROXY_CLASS (class);
 	proxy_class->g_signal = g_signal;
 }
 
@@ -1857,11 +1861,6 @@ e_gdbus_cal_proxy_new_for_bus_sync (GBusType bus_type,
 
 /* ---------------------------------------------------------------------- */
 
-struct _EGdbusCalStubPrivate
-{
-	gint foo;
-};
-
 static void stub_iface_init (EGdbusCalIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (EGdbusCalStub, e_gdbus_cal_stub, G_TYPE_OBJECT,
@@ -1870,13 +1869,11 @@ G_DEFINE_TYPE_WITH_CODE (EGdbusCalStub, e_gdbus_cal_stub, G_TYPE_OBJECT,
 static void
 e_gdbus_cal_stub_init (EGdbusCalStub *stub)
 {
-	stub->priv = G_TYPE_INSTANCE_GET_PRIVATE (stub, E_TYPE_GDBUS_CAL_STUB, EGdbusCalStubPrivate);
 }
 
 static void
 e_gdbus_cal_stub_class_init (EGdbusCalStubClass *klass)
 {
-	g_type_class_add_private (klass, sizeof (EGdbusCalStubPrivate));
 }
 
 static void

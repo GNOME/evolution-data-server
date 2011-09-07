@@ -41,8 +41,11 @@
 #include "e-gdbus-cal-factory.h"
 #include "e-gdbus-cal-view.h"
 
-struct _ECalClientPrivate
-{
+#define E_CAL_CLIENT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_CLIENT, ECalClientPrivate))
+
+struct _ECalClientPrivate {
 	/* GDBus data */
 	GDBusProxy *gdbus_cal;
 	guint gone_signal_id;
@@ -5057,7 +5060,7 @@ e_cal_client_init (ECalClient *client)
 	active_cal_clients++;
 	UNLOCK_FACTORY ();
 
-	client->priv = G_TYPE_INSTANCE_GET_PRIVATE (client, E_TYPE_CAL_CLIENT, ECalClientPrivate);
+	client->priv = E_CAL_CLIENT_GET_PRIVATE (client);
 	client->priv->source_type = E_CAL_CLIENT_SOURCE_TYPE_LAST;
 	client->priv->default_zone = icaltimezone_get_utc_timezone ();
 	client->priv->cache_dir = NULL;
@@ -5119,18 +5122,18 @@ cal_client_finalize (GObject *object)
 }
 
 static void
-e_cal_client_class_init (ECalClientClass *klass)
+e_cal_client_class_init (ECalClientClass *class)
 {
 	GObjectClass *object_class;
 	EClientClass *client_class;
 
-	g_type_class_add_private (klass, sizeof (ECalClientPrivate));
+	g_type_class_add_private (class, sizeof (ECalClientPrivate));
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = cal_client_dispose;
 	object_class->finalize = cal_client_finalize;
 
-	client_class = E_CLIENT_CLASS (klass);
+	client_class = E_CLIENT_CLASS (class);
 	client_class->get_dbus_proxy			= cal_client_get_dbus_proxy;
 	client_class->unwrap_dbus_error			= cal_client_unwrap_dbus_error;
 	client_class->handle_authentication		= cal_client_handle_authentication;
@@ -5155,7 +5158,7 @@ e_cal_client_class_init (ECalClientClass *klass)
 
 	signals[FREE_BUSY_DATA] = g_signal_new (
 		"free-busy-data",
-		G_OBJECT_CLASS_TYPE (klass),
+		G_OBJECT_CLASS_TYPE (class),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ECalClientClass, free_busy_data),
 		NULL, NULL,

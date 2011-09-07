@@ -47,6 +47,10 @@
 
 #define d(x)
 
+#define E_DESTINATION_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_DESTINATION, EDestinationPrivate))
+
 G_DEFINE_TYPE (EDestination, e_destination, G_TYPE_OBJECT)
 
 struct _EDestinationPrivate {
@@ -96,8 +100,6 @@ enum CONTACT_TYPE {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-static GObjectClass *parent_class;
-
 /* Copied from eab-book-util.c. The name selector also keeps its own copy... */
 static gint
 utf8_casefold_collate_len (const gchar *str1,
@@ -125,52 +127,44 @@ utf8_casefold_collate (const gchar *str1,
 }
 
 static void
-e_destination_dispose (GObject *object)
+destination_finalize (GObject *object)
 {
-	EDestination *dest = E_DESTINATION (object);
+	EDestinationPrivate *priv;
 
-	if (dest->priv) {
-		e_destination_clear (dest);
+	priv = E_DESTINATION_GET_PRIVATE (object);
 
-		g_free (dest->priv->source_uid);
-		dest->priv->source_uid = NULL;
+	e_destination_clear (E_DESTINATION (object));
 
-		g_free (dest->priv);
-		dest->priv = NULL;
-	}
+	g_free (priv->source_uid);
 
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_destination_parent_class)->finalize (object);
 }
 
 static void
-e_destination_class_init (EDestinationClass *klass)
+e_destination_class_init (EDestinationClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-	parent_class = g_type_class_ref (G_TYPE_OBJECT);
+	g_type_class_add_private (class, sizeof (EDestinationPrivate));
 
-	signals[CHANGED] =
-		g_signal_new ("changed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EDestinationClass, changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = destination_finalize;
 
-	object_class->dispose = e_destination_dispose;
+	signals[CHANGED] = g_signal_new (
+		"changed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDestinationClass, changed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
 }
 
 static void
 e_destination_init (EDestination *dest)
 {
-	dest->priv = g_new0 (struct _EDestinationPrivate, 1);
-
-	dest->priv->auto_recipient = FALSE;
-	dest->priv->ignored = FALSE;
-	dest->priv->list_dests = NULL;
-	dest->priv->list_alldests = NULL;
+	dest->priv = E_DESTINATION_GET_PRIVATE (dest);
 }
 
 /**
@@ -291,7 +285,7 @@ gboolean
 e_destination_empty (const EDestination *dest)
 
 {
-	struct _EDestinationPrivate *p;
+	EDestinationPrivate *p;
 
 	g_return_val_if_fail (E_IS_DESTINATION (dest), TRUE);
 
@@ -320,7 +314,7 @@ gboolean
 e_destination_equal (const EDestination *a,
                      const EDestination *b)
 {
-	const struct _EDestinationPrivate *pa, *pb;
+	const EDestinationPrivate *pa, *pb;
 	const gchar *na, *nb;
 
 	g_return_val_if_fail (E_IS_DESTINATION (a), FALSE);
@@ -863,11 +857,11 @@ e_destination_get_email_num (const EDestination *dest)
 const gchar *
 e_destination_get_name (const EDestination *dest)
 {
-	struct _EDestinationPrivate *priv;
+	EDestinationPrivate *priv;
 
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
 
-	priv = (struct _EDestinationPrivate *) dest->priv; /* cast out const */
+	priv = (EDestinationPrivate *) dest->priv; /* cast out const */
 
 	if (priv->name == NULL) {
 		if (priv->contact != NULL) {
@@ -942,11 +936,11 @@ e_destination_set_ignored (EDestination *dest,
 const gchar *
 e_destination_get_email (const EDestination *dest)
 {
-	struct _EDestinationPrivate *priv;
+	EDestinationPrivate *priv;
 
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
 
-	priv = (struct _EDestinationPrivate *) dest->priv; /* cast out const */
+	priv = (EDestinationPrivate *) dest->priv; /* cast out const */
 
 	if (priv->email == NULL) {
 		if (priv->contact != NULL) {
@@ -1029,12 +1023,12 @@ destination_get_address (const EDestination *dest,
 const gchar *
 e_destination_get_address (const EDestination *dest)
 {
-	struct _EDestinationPrivate *priv;
+	EDestinationPrivate *priv;
 	CamelInternetAddress *addr = camel_internet_address_new ();
 
 	g_return_val_if_fail (dest && E_IS_DESTINATION (dest), NULL);
 
-	priv = (struct _EDestinationPrivate *) dest->priv; /* cast out const */
+	priv = (EDestinationPrivate *) dest->priv; /* cast out const */
 
 	if (priv->addr) {
 		g_free (priv->addr);

@@ -26,12 +26,16 @@
 #include "libedataserver/e-categories.h"
 #include "e-category-editor.h"
 
-G_DEFINE_TYPE (ECategoryEditor, e_category_editor, GTK_TYPE_DIALOG)
+#define E_CATEGORY_EDITOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CATEGORY_EDITOR, ECategoryEditorPrivate))
 
 struct _ECategoryEditorPrivate {
 	GtkWidget *category_name;
 	GtkWidget *category_icon;
 };
+
+G_DEFINE_TYPE (ECategoryEditor, e_category_editor, GTK_TYPE_DIALOG)
 
 static void
 update_preview (GtkFileChooser *chooser,
@@ -125,8 +129,7 @@ e_category_editor_init (ECategoryEditor *editor)
 	GtkWidget *chooser_dialog;
 	GtkWidget *preview;
 
-	editor->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		editor, E_TYPE_CATEGORY_EDITOR, ECategoryEditorPrivate);
+	editor->priv = E_CATEGORY_EDITOR_GET_PRIVATE (editor);
 
 	chooser_dialog = gtk_file_chooser_dialog_new (
 		_("Category Icon"),

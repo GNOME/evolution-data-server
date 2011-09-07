@@ -35,6 +35,10 @@
 
 #include "e-name-selector-entry.h"
 
+#define E_NAME_SELECTOR_ENTRY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntryPrivate))
+
 struct _ENameSelectorEntryPrivate {
 
 	PangoAttrList *attr_list;
@@ -102,7 +106,7 @@ name_selector_entry_dispose (GObject *object)
 {
 	ENameSelectorEntryPrivate *priv;
 
-	priv = E_NAME_SELECTOR_ENTRY (object)->priv;
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (object);
 
 	if (priv->attr_list != NULL) {
 		pango_attr_list_unref (priv->attr_list);
@@ -151,7 +155,7 @@ name_selector_entry_realize (GtkWidget *widget)
 {
 	ENameSelectorEntryPrivate *priv;
 
-	priv = E_NAME_SELECTOR_ENTRY (widget)->priv;
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (widget);
 
 	/* Chain up to parent's realize() method. */
 	GTK_WIDGET_CLASS (e_name_selector_entry_parent_class)->realize (widget);
@@ -623,7 +627,7 @@ set_completion_query (ENameSelectorEntry *name_selector_entry,
 	gchar      *file_as_query_str;
 	gchar      *user_fields_str;
 
-	priv = name_selector_entry->priv;
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
 	if (!name_selector_entry->priv->contact_store)
 		return;
@@ -938,7 +942,7 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 	gchar         *temp_str;
 	ENameSelectorEntryPrivate *priv;
 
-	priv = name_selector_entry->priv;
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
 	cursor_pos = gtk_editable_get_position (GTK_EDITABLE (name_selector_entry));
 	if (cursor_pos < 0)
@@ -1011,7 +1015,7 @@ clear_completion_model (ENameSelectorEntry *name_selector_entry)
 {
 	ENameSelectorEntryPrivate *priv;
 
-	priv = name_selector_entry->priv;
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
 	if (!name_selector_entry->priv->contact_store)
 		return;
@@ -1633,7 +1637,7 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 	if (cursor_pos < 0)
 		return;
 
-	priv = name_selector_entry->priv;
+	priv = E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	if (!get_range_at_position (text, cursor_pos, &range_start, &range_end))
@@ -2982,9 +2986,8 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 	GtkCellRenderer *renderer;
 	GConfClient *gconf;
 
-	name_selector_entry->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		name_selector_entry, E_TYPE_NAME_SELECTOR_ENTRY,
-		ENameSelectorEntryPrivate);
+	name_selector_entry->priv =
+		E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
 	g_queue_init (&name_selector_entry->priv->cancellables);
 

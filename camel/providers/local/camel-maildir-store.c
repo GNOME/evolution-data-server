@@ -535,7 +535,7 @@ maildir_dir_name_to_fullname (const gchar *dir_name)
 static gint
 scan_dirs (CamelStore *store,
            guint32 flags,
-	   gboolean can_inbox_sibling,
+           gboolean can_inbox_sibling,
            CamelFolderInfo **topfi,
            GCancellable *cancellable,
            GError **error)

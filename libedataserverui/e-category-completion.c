@@ -25,7 +25,9 @@
 #include <glib/gi18n-lib.h>
 #include <libedataserver/e-categories.h>
 
-G_DEFINE_TYPE (ECategoryCompletion, e_category_completion, GTK_TYPE_ENTRY_COMPLETION)
+#define E_CATEGORY_COMPLETION_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CATEGORY_COMPLETION, ECategoryCompletionPrivate))
 
 struct _ECategoryCompletionPrivate {
 	GtkWidget *last_known_entry;
@@ -40,7 +42,10 @@ enum {
 	NUM_COLUMNS
 };
 
-static gpointer parent_class;
+G_DEFINE_TYPE (
+	ECategoryCompletion,
+	e_category_completion,
+	GTK_TYPE_ENTRY_COMPLETION)
 
 /* Forward Declarations */
 
@@ -173,7 +178,7 @@ category_completion_is_match (GtkEntryCompletion *completion,
 	GValue value = { 0, };
 	gboolean match;
 
-	priv = E_CATEGORY_COMPLETION (completion)->priv;
+	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (completion);
 	entry = gtk_entry_completion_get_entry (completion);
 	model = gtk_entry_completion_get_model (completion);
 
@@ -208,7 +213,7 @@ category_completion_update_prefix (GtkEntryCompletion *completion)
 	gchar *input;
 	glong offset;
 
-	priv = E_CATEGORY_COMPLETION (completion)->priv;
+	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (completion);
 	entry = gtk_entry_completion_get_entry (completion);
 	model = gtk_entry_completion_get_model (completion);
 
@@ -330,7 +335,7 @@ category_completion_track_entry (GtkEntryCompletion *completion)
 {
 	ECategoryCompletionPrivate *priv;
 
-	priv = E_CATEGORY_COMPLETION (completion)->priv;
+	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (completion);
 
 	if (priv->last_known_entry != NULL) {
 		g_signal_handlers_disconnect_matched (
@@ -370,7 +375,7 @@ category_completion_constructed (GObject *object)
 	GtkEntryCompletion *completion;
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (parent_class)->constructed (object);
+	G_OBJECT_CLASS (e_category_completion_parent_class)->constructed (object);
 
 	completion = GTK_ENTRY_COMPLETION (object);
 
@@ -401,7 +406,7 @@ category_completion_dispose (GObject *object)
 {
 	ECategoryCompletionPrivate *priv;
 
-	priv = E_CATEGORY_COMPLETION (object)->priv;
+	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (object);
 
 	if (priv->last_known_entry != NULL) {
 		g_signal_handlers_disconnect_matched (
@@ -412,7 +417,7 @@ category_completion_dispose (GObject *object)
 	}
 
 	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (e_category_completion_parent_class)->dispose (object);
 }
 
 static void
@@ -420,7 +425,7 @@ category_completion_finalize (GObject *object)
 {
 	ECategoryCompletionPrivate *priv;
 
-	priv = E_CATEGORY_COMPLETION (object)->priv;
+	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (object);
 
 	g_free (priv->create);
 	g_free (priv->prefix);
@@ -430,7 +435,7 @@ category_completion_finalize (GObject *object)
 		object);
 
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_category_completion_parent_class)->finalize (object);
 }
 
 static gboolean
@@ -454,7 +459,7 @@ category_completion_action_activated (GtkEntryCompletion *completion,
 	ECategoryCompletionPrivate *priv;
 	gchar *category;
 
-	priv = E_CATEGORY_COMPLETION (completion)->priv;
+	priv = E_CATEGORY_COMPLETION_GET_PRIVATE (completion);
 
 	category = g_strdup (priv->create);
 	e_categories_add (category, NULL, NULL, TRUE);
@@ -468,7 +473,6 @@ e_category_completion_class_init (ECategoryCompletionClass *class)
 	GObjectClass *object_class;
 	GtkEntryCompletionClass *entry_completion_class;
 
-	parent_class = g_type_class_peek_parent (class);
 	g_type_class_add_private (class, sizeof (ECategoryCompletionPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
@@ -484,9 +488,8 @@ e_category_completion_class_init (ECategoryCompletionClass *class)
 static void
 e_category_completion_init (ECategoryCompletion *category_completion)
 {
-	category_completion->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		category_completion, E_TYPE_CATEGORY_COMPLETION,
-		ECategoryCompletionPrivate);
+	category_completion->priv =
+		E_CATEGORY_COMPLETION_GET_PRIVATE (category_completion);
 }
 
 /**

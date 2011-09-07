@@ -142,10 +142,10 @@ camel_filter_search_get_message (FilterMessageSearch *fms,
 
 static gboolean
 check_header_in_message_info (CamelMessageInfo *info,
-			      gint argc,
-			      struct _CamelSExpResult **argv,
-			      camel_search_match_t how,
-			      gboolean *matched)
+                              gint argc,
+                              struct _CamelSExpResult **argv,
+                              camel_search_match_t how,
+                              gboolean *matched)
 {
 	struct _KnownHeaders {
 		const gchar *header_name;
@@ -273,9 +273,9 @@ header_contains (struct _CamelSExp *f,
 
 static CamelSExpResult *
 header_has_words (struct _CamelSExp *f,
-		  gint argc,
-		  struct _CamelSExpResult **argv,
-		  FilterMessageSearch *fms)
+                  gint argc,
+                  struct _CamelSExpResult **argv,
+                  FilterMessageSearch *fms)
 {
 	return check_header (f, argc, argv, fms, CAMEL_SEARCH_MATCH_WORD);
 }

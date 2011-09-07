@@ -917,7 +917,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 				    si->path[strlen (last->full_name)] != '.') {
 					gchar *dot;
 					tmpname = g_strdup (si->path);
-					dot = strchr(tmpname + toplen, '.');
+					dot = strchr (tmpname + toplen, '.');
 					if (dot)
 						*dot = '\0';
 					fi = nntp_folder_info_from_name (store, FALSE, tmpname);

@@ -1174,6 +1174,10 @@ _camel_tcp_stream_raw_replace_file_desc (CamelTcpStreamRaw *raw,
 	priv->sockfd = new_file_desc;
 }
 
+#define CAMEL_TCP_STREAM_RAW_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_TCP_STREAM_RAW, CamelTcpStreamRawPrivate))
+
 static void
 camel_tcp_stream_raw_class_init (CamelTcpStreamRawClass *class)
 {
@@ -1204,13 +1208,7 @@ camel_tcp_stream_raw_class_init (CamelTcpStreamRawClass *class)
 static void
 camel_tcp_stream_raw_init (CamelTcpStreamRaw *stream)
 {
-	CamelTcpStreamRawPrivate *priv;
-
-	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		stream, CAMEL_TYPE_TCP_STREAM_RAW, CamelTcpStreamRawPrivate);
-	priv = stream->priv;
-
-	priv->sockfd = NULL;
+	stream->priv = CAMEL_TCP_STREAM_RAW_GET_PRIVATE (stream);
 }
 
 GQuark

@@ -72,10 +72,10 @@ struct _CamelPOP3Folder {
 
 	GKeyFile *key_file;
 	gboolean mobile_mode;
-	int fetch_more;
+	gint fetch_more;
 	CamelFetchType fetch_type;
-	int first_id;
-	int latest_id;
+	gint first_id;
+	gint latest_id;
 };
 
 struct _CamelPOP3FolderClass {

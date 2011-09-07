@@ -314,7 +314,7 @@ depunct_string (const gchar *str)
 
 static gboolean
 camel_uwordcase (const gchar *haystack,
-		 const gchar *needle)
+                 const gchar *needle)
 {
 	struct _camel_search_words *hwords, *nwords;
 	gchar *copy_haystack, *copy_needle;

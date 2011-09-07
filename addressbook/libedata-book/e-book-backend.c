@@ -19,6 +19,10 @@
 #define EDB_OPENING_ERROR	e_data_book_create_error (E_DATA_BOOK_STATUS_BUSY, _("Cannot process, book backend is opening"))
 #define EDB_NOT_OPENED_ERROR	e_data_book_create_error (E_DATA_BOOK_STATUS_NOT_OPENED, NULL)
 
+#define E_BOOK_BACKEND_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_BACKEND, EBookBackendPrivate))
+
 struct _EBookBackendPrivate {
 	GMutex *clients_mutex;
 	GSList *clients;
@@ -143,7 +147,7 @@ book_backend_dispose (GObject *object)
 {
 	EBookBackendPrivate *priv;
 
-	priv = E_BOOK_BACKEND (object)->priv;
+	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
 
 	if (priv->views != NULL) {
 		g_slist_free (priv->views);
@@ -159,7 +163,7 @@ book_backend_finalize (GObject *object)
 {
 	EBookBackendPrivate *priv;
 
-	priv = E_BOOK_BACKEND (object)->priv;
+	priv = E_BOOK_BACKEND_GET_PRIVATE (object);
 
 	g_slist_free (priv->clients);
 
@@ -189,21 +193,21 @@ book_backend_notify_update (EBookBackend *backend,
 }
 
 static void
-e_book_backend_class_init (EBookBackendClass *klass)
+e_book_backend_class_init (EBookBackendClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (EBookBackendPrivate));
+	g_type_class_add_private (class, sizeof (EBookBackendPrivate));
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = book_backend_set_property;
 	object_class->get_property = book_backend_get_property;
 	object_class->dispose = book_backend_dispose;
 	object_class->finalize = book_backend_finalize;
 
-	klass->get_backend_property = book_backend_get_backend_property;
-	klass->set_backend_property = book_backend_set_backend_property;
-	klass->notify_update        = book_backend_notify_update;
+	class->get_backend_property = book_backend_get_backend_property;
+	class->set_backend_property = book_backend_set_backend_property;
+	class->notify_update        = book_backend_notify_update;
 
 	g_object_class_install_property (
 		object_class,
@@ -219,8 +223,7 @@ e_book_backend_class_init (EBookBackendClass *klass)
 static void
 e_book_backend_init (EBookBackend *backend)
 {
-	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		backend, E_TYPE_BOOK_BACKEND, EBookBackendPrivate);
+	backend->priv = E_BOOK_BACKEND_GET_PRIVATE (backend);
 
 	backend->priv->clients = NULL;
 	backend->priv->clients_mutex = g_mutex_new ();

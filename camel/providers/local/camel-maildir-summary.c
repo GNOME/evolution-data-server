@@ -42,6 +42,10 @@
 
 #include "camel-maildir-summary.h"
 
+#define CAMEL_MAILDIR_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummaryPrivate))
+
 #define d(x) /*(printf("%s(%d): ", __FILE__, __LINE__),(x))*/
 
 #define CAMEL_MAILDIR_SUMMARY_VERSION (0x2000)
@@ -73,7 +77,7 @@ maildir_summary_finalize (GObject *object)
 {
 	CamelMaildirSummaryPrivate *priv;
 
-	priv = CAMEL_MAILDIR_SUMMARY (object)->priv;
+	priv = CAMEL_MAILDIR_SUMMARY_GET_PRIVATE (object);
 
 	g_free (priv->hostname);
 	g_mutex_free (priv->summary_lock);
@@ -118,9 +122,8 @@ camel_maildir_summary_init (CamelMaildirSummary *maildir_summary)
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (maildir_summary);
 
-	maildir_summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		maildir_summary, CAMEL_TYPE_MAILDIR_SUMMARY,
-		CamelMaildirSummaryPrivate);
+	maildir_summary->priv =
+		CAMEL_MAILDIR_SUMMARY_GET_PRIVATE (maildir_summary);
 
 	/* set unique file version */
 	folder_summary->version += CAMEL_MAILDIR_SUMMARY_VERSION;

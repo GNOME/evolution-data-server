@@ -13,6 +13,10 @@
 #include "e-cal-backend-sync.h"
 #include <libical/icaltz-util.h>
 
+#define E_CAL_BACKEND_SYNC_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND_SYNC, ECalBackendSyncPrivate))
+
 G_DEFINE_TYPE (ECalBackendSync, e_cal_backend_sync, E_TYPE_CAL_BACKEND)
 
 struct _ECalBackendSyncPrivate {
@@ -1012,43 +1016,30 @@ cal_backend_sync_set_backend_property (ECalBackendSync *backend,
 }
 
 static void
-e_cal_backend_sync_init (ECalBackendSync *backend)
+e_cal_backend_sync_finalize (GObject *object)
 {
 	ECalBackendSyncPrivate *priv;
 
-	priv             = g_new0 (ECalBackendSyncPrivate, 1);
-	priv->sync_mutex = g_mutex_new ();
+	priv = E_CAL_BACKEND_SYNC_GET_PRIVATE (object);
 
-	backend->priv = priv;
+	g_mutex_free (priv->sync_mutex);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_cal_backend_sync_parent_class)->finalize (object);
 }
 
 static void
-e_cal_backend_sync_dispose (GObject *object)
-{
-	ECalBackendSync *backend;
-
-	backend = E_CAL_BACKEND_SYNC (object);
-
-	if (backend->priv) {
-		g_mutex_free (backend->priv->sync_mutex);
-		g_free (backend->priv);
-
-		backend->priv = NULL;
-	}
-
-	G_OBJECT_CLASS (e_cal_backend_sync_parent_class)->dispose (object);
-}
-
-static void
-e_cal_backend_sync_class_init (ECalBackendSyncClass *klass)
+e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 {
 	GObjectClass *object_class;
 	ECalBackendClass *backend_class;
 
-	object_class = G_OBJECT_CLASS (klass);
-	object_class->dispose = e_cal_backend_sync_dispose;
+	g_type_class_add_private (class, sizeof (ECalBackendSyncPrivate));
 
-	backend_class = E_CAL_BACKEND_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = e_cal_backend_sync_finalize;
+
+	backend_class = E_CAL_BACKEND_CLASS (class);
 	backend_class->open			= cal_backend_open;
 	backend_class->authenticate_user	= cal_backend_authenticate_user;
 	backend_class->remove			= cal_backend_remove;
@@ -1069,6 +1060,14 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *klass)
 	backend_class->add_timezone		= cal_backend_add_timezone;
 	backend_class->internal_get_timezone	= cal_backend_internal_get_timezone;
 
-	klass->get_backend_property_sync	= cal_backend_sync_get_backend_property;
-	klass->set_backend_property_sync	= cal_backend_sync_set_backend_property;
+	class->get_backend_property_sync	= cal_backend_sync_get_backend_property;
+	class->set_backend_property_sync	= cal_backend_sync_set_backend_property;
 }
+
+static void
+e_cal_backend_sync_init (ECalBackendSync *backend)
+{
+	backend->priv = E_CAL_BACKEND_SYNC_GET_PRIVATE (backend);
+	backend->priv->sync_mutex = g_mutex_new ();
+}
+

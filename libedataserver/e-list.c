@@ -11,18 +11,29 @@
 #include "e-list.h"
 #include "e-list-iterator.h"
 
-static void e_list_dispose (GObject *object);
-
 G_DEFINE_TYPE (EList, e_list, G_TYPE_OBJECT)
 
 static void
-e_list_class_init (EListClass *klass)
+list_dispose (GObject *object)
+{
+	EList *list = E_LIST (object);
+
+	if (list->free)
+		g_list_foreach (list->list, (GFunc) list->free, list->closure);
+	g_list_free (list->list);
+	list->list = NULL;
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_list_parent_class)->dispose (object);
+}
+
+static void
+e_list_class_init (EListClass *class)
 {
 	GObjectClass *object_class;
 
-	object_class = G_OBJECT_CLASS (klass);
-
-	object_class->dispose = e_list_dispose;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = list_dispose;
 }
 
 /**
@@ -31,8 +42,6 @@ e_list_class_init (EListClass *klass)
 static void
 e_list_init (EList *list)
 {
-	list->list = NULL;
-	list->iterators = NULL;
 }
 
 /**
@@ -176,19 +185,5 @@ e_list_remove_iterator (EList *list,
                         EIterator *iterator)
 {
 	list->iterators = g_list_remove (list->iterators, iterator);
-}
-
-/*
- * Virtual functions
- */
-static void
-e_list_dispose (GObject *object)
-{
-	EList *list = E_LIST (object);
-	if (list->free)
-		g_list_foreach (list->list, (GFunc) list->free, list->closure);
-	g_list_free (list->list);
-
-	(* G_OBJECT_CLASS (e_list_parent_class)->dispose) (object);
 }
 

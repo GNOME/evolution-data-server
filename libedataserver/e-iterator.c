@@ -20,11 +20,11 @@ static guint e_iterator_signals[LAST_SIGNAL] = { 0, };
 G_DEFINE_TYPE (EIterator, e_iterator, G_TYPE_OBJECT)
 
 static void
-e_iterator_class_init (EIteratorClass *klass)
+e_iterator_class_init (EIteratorClass *class)
 {
 	GObjectClass *object_class;
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 
 	e_iterator_signals[INVALIDATE] =
 		g_signal_new ("invalidate",
@@ -34,17 +34,6 @@ e_iterator_class_init (EIteratorClass *klass)
 			      NULL, NULL,
 			      g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-
-	klass->invalidate = NULL;
-	klass->get        = NULL;
-	klass->reset      = NULL;
-	klass->last       = NULL;
-	klass->next       = NULL;
-	klass->prev       = NULL;
-	klass->remove     = NULL;
-	klass->insert     = NULL;
-	klass->set        = NULL;
-	klass->is_valid   = NULL;
 }
 
 /**

@@ -29,7 +29,9 @@
 #include "e-category-completion.h"
 #include "e-category-editor.h"
 
-G_DEFINE_TYPE (ECategoriesEditor, e_categories_editor, GTK_TYPE_TABLE)
+#define E_CATEGORIES_EDITOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CATEGORIES_EDITOR, ECategoriesEditorPrivate))
 
 struct _ECategoriesEditorPrivate {
 	ECategoriesSelector *categories_list;
@@ -60,6 +62,8 @@ enum {
 };
 
 static gint signals[LAST_SIGNAL] = {0};
+
+G_DEFINE_TYPE (ECategoriesEditor, e_categories_editor, GTK_TYPE_TABLE)
 
 static void
 entry_changed_cb (GtkEntry *entry,
@@ -285,8 +289,7 @@ e_categories_editor_init (ECategoriesEditor *editor)
 	gtk_label_set_mnemonic_widget (
 		GTK_LABEL (label2), categories_list);
 
-	editor->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		editor, E_TYPE_CATEGORIES_EDITOR, ECategoriesEditorPrivate);
+	editor->priv = E_CATEGORIES_EDITOR_GET_PRIVATE (editor);
 
 	editor->priv->categories_list = E_CATEGORIES_SELECTOR (categories_list);
 	editor->priv->categories_entry = entry_categories;

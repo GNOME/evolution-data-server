@@ -109,10 +109,6 @@ static struct _ESExpTerm * parse_value (ESExp *f);
 static void parse_dump_term (struct _ESExpTerm *t, gint depth);
 #endif
 
-#ifdef E_SEXP_IS_G_OBJECT
-static GObjectClass *parent_class;
-#endif
-
 typedef gboolean (ESGeneratorFunc) (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r);
 typedef gboolean (ESOperatorFunc) (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r);
 
@@ -1405,13 +1401,11 @@ static void e_sexp_finalise (gpointer);
 
 #ifdef E_SEXP_IS_G_OBJECT
 static void
-e_sexp_class_init (ESExpClass *klass)
+e_sexp_class_init (ESExpClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
 	object_class->finalize = e_sexp_finalise;
-
-	parent_class = g_type_class_ref (g_object_get_type ());
 }
 #endif
 
@@ -1464,7 +1458,7 @@ e_sexp_finalise (gpointer o)
 	g_scanner_destroy (s->scanner);
 
 #ifdef E_SEXP_IS_G_OBJECT
-	G_OBJECT_CLASS (parent_class)->finalize (o);
+	G_OBJECT_CLASS (e_sexp_parent_class)->finalize (o);
 #endif
 }
 

@@ -51,6 +51,10 @@
 #include "e-gdbus-book-factory.h"
 #include "e-gdbus-book-view.h"
 
+#define E_BOOK_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK, EBookPrivate))
+
 #define CLIENT_BACKEND_PROPERTY_CAPABILITIES		"capabilities"
 #define BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS		"required-fields"
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS		"supported-fields"
@@ -62,7 +66,6 @@ static EList *array_to_elist (gchar **list);
 static gboolean unwrap_gerror (GError *error, GError **client_error);
 
 G_DEFINE_TYPE (EBook, e_book, G_TYPE_OBJECT)
-
 enum {
 	WRITABLE_STATUS,
 	CONNECTION_STATUS,
@@ -264,8 +267,7 @@ e_book_class_init (EBookClass *e_book_class)
 static void
 e_book_init (EBook *book)
 {
-	book->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		book, E_TYPE_BOOK, EBookPrivate);
+	book->priv = E_BOOK_GET_PRIVATE (book);
 
 	LOCK_FACTORY ();
 	active_books++;

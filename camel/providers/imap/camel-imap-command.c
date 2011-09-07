@@ -281,7 +281,7 @@ imap_command_start (CamelImapStore *store,
  **/
 CamelImapResponse *
 camel_imap_command_continuation (CamelImapStore *store,
-				 CamelFolder *folder,
+                                 CamelFolder *folder,
                                  const gchar *cmd,
                                  gsize cmdlen,
                                  GCancellable *cancellable,
@@ -336,7 +336,7 @@ camel_imap_command_continuation (CamelImapStore *store,
  **/
 CamelImapResponseType
 camel_imap_command_response (CamelImapStore *store,
-			     CamelFolder *folder,
+                             CamelFolder *folder,
                              gchar **response,
                              GCancellable *cancellable,
                              GError **error)
@@ -449,7 +449,7 @@ exit:
 
 static CamelImapResponse *
 imap_read_response (CamelImapStore *store,
-		    CamelFolder *folder,
+                    CamelFolder *folder,
                     GCancellable *cancellable,
                     GError **error)
 {

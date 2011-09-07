@@ -26,6 +26,10 @@
 
 #include <string.h>
 
+#define E_ACCOUNT_LIST_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_ACCOUNT_LIST, EAccountListPrivate))
+
 struct _EAccountListPrivate {
 	GConfClient *gconf;
 	guint notify_id;
@@ -40,19 +44,36 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-static void dispose (GObject *);
-static void finalize (GObject *);
-
 G_DEFINE_TYPE (EAccountList, e_account_list, E_TYPE_LIST)
 
 static void
-e_account_list_class_init (EAccountListClass *klass)
+account_list_dispose (GObject *object)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	EAccountListPrivate *priv;
 
-	/* virtual method override */
-	object_class->dispose = dispose;
-	object_class->finalize = finalize;
+	priv = E_ACCOUNT_LIST_GET_PRIVATE (object);
+
+	if (priv->gconf != NULL) {
+		if (priv->notify_id > 0)
+			gconf_client_notify_remove (
+				priv->gconf, priv->notify_id);
+		g_object_unref (priv->gconf);
+		priv->gconf = NULL;
+	}
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_account_list_parent_class)->dispose (object);
+}
+
+static void
+e_account_list_class_init (EAccountListClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (EAccountListPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = account_list_dispose;
 
 	/* signals */
 	signals[ACCOUNT_ADDED] =
@@ -87,34 +108,7 @@ e_account_list_class_init (EAccountListClass *klass)
 static void
 e_account_list_init (EAccountList *account_list)
 {
-	account_list->priv = g_new0 (EAccountListPrivate, 1);
-}
-
-static void
-dispose (GObject *object)
-{
-	EAccountList *account_list = E_ACCOUNT_LIST (object);
-
-	if (account_list->priv->gconf) {
-		if (account_list->priv->notify_id) {
-			gconf_client_notify_remove (account_list->priv->gconf,
-						    account_list->priv->notify_id);
-		}
-		g_object_unref (account_list->priv->gconf);
-		account_list->priv->gconf = NULL;
-	}
-
-	G_OBJECT_CLASS (e_account_list_parent_class)->dispose (object);
-}
-
-static void
-finalize (GObject *object)
-{
-	EAccountList *account_list = E_ACCOUNT_LIST (object);
-
-	g_free (account_list->priv);
-
-	G_OBJECT_CLASS (e_account_list_parent_class)->finalize (object);
+	account_list->priv = E_ACCOUNT_LIST_GET_PRIVATE (account_list);
 }
 
 static void

@@ -220,7 +220,9 @@ test_econtact (const gchar *vcard_str)
 	return TRUE;
 }
 
-gint main (gint argc, gchar **argv)
+gint
+main (gint argc,
+      gchar **argv)
 {
 	const gchar
 		*test_vcard_no_uid_str = 

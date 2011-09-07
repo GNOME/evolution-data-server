@@ -52,6 +52,10 @@
 
 #define d(x)
 
+#define E_CAL_BACKEND_CALDAV_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVPrivate))
+
 #define CALDAV_CTAG_KEY "CALDAV_CTAG"
 #define CALDAV_MAX_MULTIGET_AMOUNT 100 /* what's the maximum count of items to fetch within a multiget request */
 #define LOCAL_PREFIX "file://"
@@ -286,15 +290,14 @@ put_component_to_store (ECalBackendCalDAV *cbdav,
                         ECalComponent *comp)
 {
 	time_t time_start, time_end;
-	ECalBackendCalDAVPrivate *priv;
 
-	priv = cbdav->priv;
+	e_cal_util_get_component_occur_times (
+		comp, &time_start, &time_end,
+		resolve_tzid, cbdav,  icaltimezone_get_utc_timezone (),
+		e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)));
 
-	e_cal_util_get_component_occur_times (comp, &time_start, &time_end,
-				   resolve_tzid, cbdav,  icaltimezone_get_utc_timezone (),
-				   e_cal_backend_get_kind (E_CAL_BACKEND (cbdav)));
-
-	return e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);
+	return e_cal_backend_store_put_component_with_time_range (
+		cbdav->priv->store, comp, time_start, time_end);
 }
 
 static ECalBackendSyncClass *parent_class = NULL;
@@ -584,20 +587,16 @@ check_state (ECalBackendCalDAV *cbdav,
              gboolean *online,
              GError **perror)
 {
-	ECalBackendCalDAVPrivate *priv;
-
-	priv = cbdav->priv;
-
 	*online = FALSE;
 
-	if (!priv->loaded) {
+	if (!cbdav->priv->loaded) {
 		g_propagate_error (perror, EDC_ERROR_EX (OtherError, "Not loaded"));
 		return FALSE;
 	}
 
 	if (!e_backend_get_online (E_BACKEND (cbdav))) {
 
-		if (!priv->do_offline) {
+		if (!cbdav->priv->do_offline) {
 			g_propagate_error (perror, EDC_ERROR (RepositoryOffline));
 			return FALSE;
 		}
@@ -932,16 +931,14 @@ soup_authenticate (SoupSession *session,
                    gboolean retrying,
                    gpointer data)
 {
-	ECalBackendCalDAVPrivate *priv;
-	ECalBackendCalDAV        *cbdav;
+	ECalBackendCalDAV *cbdav;
 
 	cbdav = E_CAL_BACKEND_CALDAV (data);
-	priv = cbdav->priv;
 
 	/* do not send same password twice, but keep it for later use */
-	if (!retrying && priv->credentials && e_credentials_has_key (priv->credentials, E_CREDENTIALS_KEY_USERNAME)) {
-		soup_auth_authenticate (auth, e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_USERNAME), e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_PASSWORD));
-		e_credentials_clear_peek (priv->credentials);
+	if (!retrying && cbdav->priv->credentials && e_credentials_has_key (cbdav->priv->credentials, E_CREDENTIALS_KEY_USERNAME)) {
+		soup_auth_authenticate (auth, e_credentials_peek (cbdav->priv->credentials, E_CREDENTIALS_KEY_USERNAME), e_credentials_peek (cbdav->priv->credentials, E_CREDENTIALS_KEY_PASSWORD));
+		e_credentials_clear_peek (cbdav->priv->credentials);
 	}
 }
 
@@ -1015,18 +1012,15 @@ static gchar *
 caldav_generate_uri (ECalBackendCalDAV *cbdav,
                      const gchar *target)
 {
-	ECalBackendCalDAVPrivate  *priv;
 	gchar *uri;
 	const gchar *slash;
-
-	priv = cbdav->priv;
 
 	slash = strrchr (target, '/');
 	if (slash)
 		target = slash + 1;
 
-	/* priv->uri *have* trailing slash already */
-	uri = g_strconcat (priv->uri, target, NULL);
+	/* uri *have* trailing slash already */
+	uri = g_strconcat (cbdav->priv->uri, target, NULL);
 
 	return uri;
 }
@@ -1036,7 +1030,6 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
                              gboolean *server_unreachable,
                              GError **perror)
 {
-	ECalBackendCalDAVPrivate  *priv;
 	SoupMessage               *message;
 	const gchar                *header;
 	gboolean                   calendar_access;
@@ -1046,11 +1039,9 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 	g_return_val_if_fail (server_unreachable != NULL, FALSE);
 
-	priv = cbdav->priv;
-
 	/* FIXME: setup text_uri */
 
-	message = soup_message_new (SOUP_METHOD_OPTIONS, priv->uri);
+	message = soup_message_new (SOUP_METHOD_OPTIONS, cbdav->priv->uri);
 	if (message == NULL) {
 		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
 		return FALSE;
@@ -1058,7 +1049,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
 
-	send_and_handle_redirection (priv->session, message, NULL);
+	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		switch (message->status_code) {
@@ -1068,7 +1059,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 			break;
 		}
 
-		status_code_to_result (message, priv, perror);
+		status_code_to_result (message, cbdav->priv, perror);
 
 		g_object_unref (message);
 		return FALSE;
@@ -1079,10 +1070,10 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 	header = soup_message_headers_get (message->response_headers, "DAV");
 	if (header) {
 		calendar_access = soup_header_contains (header, "calendar-access");
-		priv->calendar_schedule = soup_header_contains (header, "calendar-schedule");
+		cbdav->priv->calendar_schedule = soup_header_contains (header, "calendar-schedule");
 	} else {
 		calendar_access = FALSE;
-		priv->calendar_schedule = FALSE;
+		cbdav->priv->calendar_schedule = FALSE;
 	}
 
 	/* parse the Allow header and look for PUT, DELETE at the
@@ -1097,7 +1088,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 	g_object_unref (message);
 
 	if (calendar_access) {
-		priv->read_only = !(put_allowed && delete_allowed);
+		cbdav->priv->read_only = !(put_allowed && delete_allowed);
 		return TRUE;
 	}
 
@@ -1144,7 +1135,6 @@ caldav_notify_auth_required (ECalBackendCalDAV *cbdav)
 static gboolean
 check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 {
-	ECalBackendCalDAVPrivate *priv;
 	xmlOutputBufferPtr	  buf;
 	SoupMessage              *message;
 	xmlDocPtr		  doc;
@@ -1154,14 +1144,12 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 
 	g_return_val_if_fail (cbdav != NULL, TRUE);
 
-	priv   = cbdav->priv;
-
 	/* no support for 'getctag', thus update cache */
-	if (!priv->ctag_supported)
+	if (!cbdav->priv->ctag_supported)
 		return TRUE;
 
 	/* Prepare the soup message */
-	message = soup_message_new ("PROPFIND", priv->uri);
+	message = soup_message_new ("PROPFIND", cbdav->priv->uri);
 	if (message == NULL)
 		return FALSE;
 
@@ -1191,7 +1179,7 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 				  buf->buffer->use);
 
 	/* Send the request now */
-	send_and_handle_redirection (priv->session, message, NULL);
+	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
 	/* Clean up the memory */
 	xmlOutputBufferClose (buf);
@@ -1202,28 +1190,29 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 		caldav_notify_auth_required (cbdav);
 	} else if (message->status_code != 207) {
 		/* does not support it, but report calendar changed to update cache */
-		priv->ctag_supported = FALSE;
+		cbdav->priv->ctag_supported = FALSE;
 	} else {
 		gchar *ctag = NULL;
 
 		if (parse_propfind_response (message, XPATH_GETCTAG_STATUS, XPATH_GETCTAG, &ctag)) {
 			const gchar *my_ctag;
 
-			my_ctag = e_cal_backend_store_get_key_value (priv->store, CALDAV_CTAG_KEY);
+			my_ctag = e_cal_backend_store_get_key_value (
+				cbdav->priv->store, CALDAV_CTAG_KEY);
 
 			if (ctag && my_ctag && g_str_equal (ctag, my_ctag)) {
 				/* ctag is same, no change in the calendar */
 				result = FALSE;
 			} else {
 				/* do not store ctag now, do it rather after complete sync */
-				g_free (priv->ctag_to_store);
-				priv->ctag_to_store = ctag;
+				g_free (cbdav->priv->ctag_to_store);
+				cbdav->priv->ctag_to_store = ctag;
 				ctag = NULL;
 			}
 
 			g_free (ctag);
 		} else {
-			priv->ctag_supported = FALSE;
+			cbdav->priv->ctag_supported = FALSE;
 		}
 	}
 
@@ -1244,7 +1233,6 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
                             time_t start_time,
                             time_t end_time)
 {
-	ECalBackendCalDAVPrivate *priv;
 	xmlOutputBufferPtr   buf;
 	SoupMessage         *message;
 	xmlNodePtr           node;
@@ -1255,9 +1243,8 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 	xmlNsPtr             nscd;
 	gboolean             result;
 
-	priv = cbdav->priv;
 	/* Allocate the soup message */
-	message = soup_message_new ("REPORT", priv->uri);
+	message = soup_message_new ("REPORT", cbdav->priv->uri);
 	if (message == NULL)
 		return FALSE;
 
@@ -1340,7 +1327,7 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 				  buf->buffer->use);
 
 	/* Send the request now */
-	send_and_handle_redirection (priv->session, message, NULL);
+	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
 	/* Clean up the memory */
 	xmlOutputBufferClose (buf);
@@ -1351,10 +1338,11 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 		switch (message->status_code) {
 		case SOUP_STATUS_CANT_CONNECT:
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
-			priv->opened = FALSE;
-			priv->slave_cmd = SLAVE_SHOULD_SLEEP;
-			priv->read_only = TRUE;
-			e_cal_backend_notify_readonly (E_CAL_BACKEND (cbdav), priv->read_only);
+			cbdav->priv->opened = FALSE;
+			cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+			cbdav->priv->read_only = TRUE;
+			e_cal_backend_notify_readonly (
+				E_CAL_BACKEND (cbdav), cbdav->priv->read_only);
 			break;
 		case 401:
 			caldav_notify_auth_required (cbdav);
@@ -1422,12 +1410,9 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav,
                           CalDAVObject *object,
                           GError **perror)
 {
-	ECalBackendCalDAVPrivate *priv;
 	SoupMessage              *message;
 	const gchar               *hdr;
 	gchar                     *uri;
-
-	priv = cbdav->priv;
 
 	g_assert (object != NULL && object->href != NULL);
 
@@ -1442,10 +1427,10 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav,
 	soup_message_headers_append (message->request_headers,
 				     "User-Agent", "Evolution/" VERSION);
 
-	send_and_handle_redirection (priv->session, message, NULL);
+	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		status_code_to_result (message, priv, perror);
+		status_code_to_result (message, cbdav->priv, perror);
 
 		if (message->status_code == 401)
 			caldav_notify_auth_required (cbdav);
@@ -1490,15 +1475,12 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav,
                       gchar **post_fb,
                       GError **error)
 {
-	ECalBackendCalDAVPrivate *priv;
 	SoupMessage *message;
 
 	e_return_data_cal_error_if_fail (cbdav != NULL, InvalidArg);
 	e_return_data_cal_error_if_fail (url != NULL, InvalidArg);
 	e_return_data_cal_error_if_fail (post_fb != NULL, InvalidArg);
 	e_return_data_cal_error_if_fail (*post_fb != NULL, InvalidArg);
-
-	priv = cbdav->priv;
 
 	message = soup_message_new (SOUP_METHOD_POST, url);
 	if (message == NULL) {
@@ -1512,10 +1494,10 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav,
 				  SOUP_MEMORY_COPY,
 				  *post_fb, strlen (*post_fb));
 
-	send_and_handle_redirection (priv->session, message, NULL);
+	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		status_code_to_result (message, priv, error);
+		status_code_to_result (message, cbdav->priv, error);
 		if (message->status_code == 401)
 			caldav_notify_auth_required (cbdav);
 		else
@@ -1538,13 +1520,11 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
                           icalcomponent *icalcomp,
                           GError **perror)
 {
-	ECalBackendCalDAVPrivate *priv;
 	SoupMessage              *message;
 	const gchar               *hdr;
 	gchar                     *uri;
 
-	priv   = cbdav->priv;
-	hdr    = NULL;
+	hdr = NULL;
 
 	g_assert (object != NULL && object->cdata != NULL);
 
@@ -1577,7 +1557,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 				  strlen (object->cdata));
 
 	uri = NULL;
-	send_and_handle_redirection (priv->session, message, &uri);
+	send_and_handle_redirection (cbdav->priv->session, message, &uri);
 
 	if (uri) {
 		gchar *file = strrchr (uri, '/');
@@ -1597,7 +1577,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 		g_free (uri);
 	}
 
-	if (status_code_to_result (message, priv, perror)) {
+	if (status_code_to_result (message, cbdav->priv, perror)) {
 		gboolean was_get = FALSE;
 
 		hdr = soup_message_headers_get (message->response_headers, "ETag");
@@ -1656,11 +1636,8 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav,
                              CalDAVObject *object,
                              GError **perror)
 {
-	ECalBackendCalDAVPrivate *priv;
 	SoupMessage              *message;
 	gchar                     *uri;
-
-	priv = cbdav->priv;
 
 	g_assert (object != NULL && object->href != NULL);
 
@@ -1680,9 +1657,9 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav,
 					     "If-Match", object->etag);
 	}
 
-	send_and_handle_redirection (priv->session, message, NULL);
+	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
-	status_code_to_result (message, priv, perror);
+	status_code_to_result (message, cbdav->priv, perror);
 
 	if (message->status_code == 401)
 		caldav_notify_auth_required (cbdav);
@@ -1693,7 +1670,6 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav,
 static gboolean
 caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 {
-	ECalBackendCalDAVPrivate *priv;
 	SoupMessage *message;
 	xmlOutputBufferPtr buf;
 	xmlDocPtr doc;
@@ -1703,12 +1679,11 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 
-	priv = cbdav->priv;
-	g_return_val_if_fail (priv != NULL, FALSE);
-	g_return_val_if_fail (priv->schedule_outbox_url == NULL, TRUE);
+	g_return_val_if_fail (cbdav->priv != NULL, FALSE);
+	g_return_val_if_fail (cbdav->priv->schedule_outbox_url == NULL, TRUE);
 
 	/* Prepare the soup message */
-	message = soup_message_new ("PROPFIND", priv->uri);
+	message = soup_message_new ("PROPFIND", cbdav->priv->uri);
 	if (message == NULL)
 		return FALSE;
 
@@ -1734,7 +1709,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 				  buf->buffer->use);
 
 	/* Send the request now */
-	send_and_handle_redirection (priv->session, message, NULL);
+	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
 	/* Clean up the memory */
 	xmlOutputBufferClose (buf);
@@ -1749,7 +1724,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 
 		/* owner is a full path to the user's URL, thus change it in
 		 * calendar's uri when asking for schedule-outbox-URL */
-		suri = soup_uri_new (priv->uri);
+		suri = soup_uri_new (cbdav->priv->uri);
 		soup_uri_set_path (suri, owner);
 		g_free (owner);
 		owner = soup_uri_to_string (suri, FALSE);
@@ -1784,18 +1759,18 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 				  buf->buffer->use);
 
 		/* Send the request now */
-		send_and_handle_redirection (priv->session, message, NULL);
+		send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
-		if (message->status_code == 207 && parse_propfind_response (message, XPATH_SCHEDULE_OUTBOX_URL_STATUS, XPATH_SCHEDULE_OUTBOX_URL, &priv->schedule_outbox_url)) {
-			if (!*priv->schedule_outbox_url) {
-				g_free (priv->schedule_outbox_url);
-				priv->schedule_outbox_url = NULL;
+		if (message->status_code == 207 && parse_propfind_response (message, XPATH_SCHEDULE_OUTBOX_URL_STATUS, XPATH_SCHEDULE_OUTBOX_URL, &cbdav->priv->schedule_outbox_url)) {
+			if (!*cbdav->priv->schedule_outbox_url) {
+				g_free (cbdav->priv->schedule_outbox_url);
+				cbdav->priv->schedule_outbox_url = NULL;
 			} else {
 				/* make it a full URI */
-				suri = soup_uri_new (priv->uri);
-				soup_uri_set_path (suri, priv->schedule_outbox_url);
-				g_free (priv->schedule_outbox_url);
-				priv->schedule_outbox_url = soup_uri_to_string (suri, FALSE);
+				suri = soup_uri_new (cbdav->priv->uri);
+				soup_uri_set_path (suri, cbdav->priv->schedule_outbox_url);
+				g_free (cbdav->priv->schedule_outbox_url);
+				cbdav->priv->schedule_outbox_url = soup_uri_to_string (suri, FALSE);
 				soup_uri_free (suri);
 			}
 		}
@@ -1812,7 +1787,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 
 	g_free (owner);
 
-	return priv->schedule_outbox_url != NULL;
+	return cbdav->priv->schedule_outbox_url != NULL;
 }
 
 /* ************************************************************************* */
@@ -1833,7 +1808,6 @@ remove_complist_from_cache_and_notify_cb (gpointer key,
 	GSList *l;
 	struct cache_comp_list *ccl = value;
 	ECalBackendCalDAV *cbdav = data;
-	ECalBackendCalDAVPrivate *priv = cbdav->priv;
 
 	for (l = ccl->slist; l; l = l->next) {
 		ECalComponent *old_comp = l->data;
@@ -1844,7 +1818,7 @@ remove_complist_from_cache_and_notify_cb (gpointer key,
 			continue;
 		}
 
-		if (e_cal_backend_store_remove_component (priv->store, id->uid, id->rid)) {
+		if (e_cal_backend_store_remove_component (cbdav->priv->store, id->uid, id->rid)) {
 			e_cal_backend_notify_component_removed ((ECalBackend *) cbdav, id, old_comp, NULL);
 		}
 
@@ -1880,7 +1854,6 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
                    time_t start_time,
                    time_t end_time)
 {
-	ECalBackendCalDAVPrivate *priv;
 	ECalBackend *bkend;
 	CalDAVObject *sobjs, *object;
 	GSList *c_objs, *c_iter; /* list of all items known from our cache */
@@ -1894,7 +1867,6 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 		return;
 	}
 
-	priv   = cbdav->priv;
 	bkend  = E_CAL_BACKEND (cbdav);
 	len    = 0;
 	sobjs  = NULL;
@@ -1903,14 +1875,14 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 	if (!caldav_server_list_objects (cbdav, &sobjs, &len, NULL, start_time, end_time))
 		return;
 
-	c_objs = e_cal_backend_store_get_components (priv->store);
+	c_objs = e_cal_backend_store_get_components (cbdav->priv->store);
 
 	if (caldav_debug_show (DEBUG_SERVER_ITEMS)) {
 		printf ("CalDAV - found %d objects on the server, locally stored %d objects\n", len, g_slist_length (c_objs)); fflush (stdout);
 	}
 
 	/* do not store changes in cache immediately - makes things significantly quicker */
-	e_cal_backend_store_freeze_changes (priv->store);
+	e_cal_backend_store_freeze_changes (cbdav->priv->store);
 
 	c_uid2complist = g_tree_new_full ((GCompareDataFunc) g_strcmp0, NULL, g_free, free_comp_list);
 	c_href2uid = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -1966,7 +1938,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 	hrefs_to_update = NULL;
 
 	/* see if we have to update or add some objects */
-	for (i = 0, object = sobjs; i < len && priv->slave_cmd == SLAVE_SHOULD_WORK; i++, object++) {
+	for (i = 0, object = sobjs; i < len && cbdav->priv->slave_cmd == SLAVE_SHOULD_WORK; i++, object++) {
 		ECalComponent *ccomp = NULL;
 		gchar *etag = NULL;
 		const gchar *uid;
@@ -2021,7 +1993,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 	}
 
 	htu = hrefs_to_update;
-	while (htu && priv->slave_cmd == SLAVE_SHOULD_WORK) {
+	while (htu && cbdav->priv->slave_cmd == SLAVE_SHOULD_WORK) {
 		gint count = 0;
 		GSList *to_fetch = NULL;
 
@@ -2031,7 +2003,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 			count++;
 		}
 
-		if (to_fetch && priv->slave_cmd == SLAVE_SHOULD_WORK) {
+		if (to_fetch && cbdav->priv->slave_cmd == SLAVE_SHOULD_WORK) {
 			CalDAVObject *up_sobjs = NULL;
 
 			if (caldav_debug_show (DEBUG_SERVER_ITEMS)) {
@@ -2050,7 +2022,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 
 			/* we are going to update cache */
 			/* they are downloaded, so process them */
-			for (i = 0, object = up_sobjs; i < count /*&& priv->slave_cmd == SLAVE_SHOULD_WORK */; i++, object++) {
+			for (i = 0, object = up_sobjs; i < count /*&& cbdav->priv->slave_cmd == SLAVE_SHOULD_WORK */; i++, object++) {
 				if (object->status == 200 && object->href && object->etag && object->cdata && *object->cdata) {
 					icalcomponent *icomp = icalparser_parse_string (object->cdata);
 
@@ -2140,23 +2112,23 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 	}
 
 	/* if not interrupted and not using the time range... */
-	if (priv->slave_cmd == SLAVE_SHOULD_WORK && (!start_time || !end_time)) {
+	if (cbdav->priv->slave_cmd == SLAVE_SHOULD_WORK && (!start_time || !end_time)) {
 		/* ...remove old (not on server anymore) items from our cache and notify of a removal */
 		g_tree_foreach (c_uid2complist, remove_complist_from_cache_and_notify_cb, cbdav);
 	}
 
-	if (priv->ctag_to_store) {
+	if (cbdav->priv->ctag_to_store) {
 		/* store only when wasn't interrupted */
-		if (priv->slave_cmd == SLAVE_SHOULD_WORK && start_time == 0 && end_time == 0) {
-			e_cal_backend_store_put_key_value (priv->store, CALDAV_CTAG_KEY, priv->ctag_to_store);
+		if (cbdav->priv->slave_cmd == SLAVE_SHOULD_WORK && start_time == 0 && end_time == 0) {
+			e_cal_backend_store_put_key_value (cbdav->priv->store, CALDAV_CTAG_KEY, cbdav->priv->ctag_to_store);
 		}
 
-		g_free (priv->ctag_to_store);
-		priv->ctag_to_store = NULL;
+		g_free (cbdav->priv->ctag_to_store);
+		cbdav->priv->ctag_to_store = NULL;
 	}
 
 	/* save cache changes to disk finally */
-	e_cal_backend_store_thaw_changes (priv->store);
+	e_cal_backend_store_thaw_changes (cbdav->priv->store);
 
 	for (i = 0, object = sobjs; i < len; i++, object++) {
 		caldav_object_free (object, FALSE);
@@ -2190,24 +2162,22 @@ is_google_uri (const gchar *uri)
 static gpointer
 caldav_synch_slave_loop (gpointer data)
 {
-	ECalBackendCalDAVPrivate *priv;
 	ECalBackendCalDAV        *cbdav;
 	time_t now;
 	icaltimezone *utc = icaltimezone_get_utc_timezone ();
 	gboolean know_unreachable;
 
 	cbdav = E_CAL_BACKEND_CALDAV (data);
-	priv = cbdav->priv;
 
-	g_mutex_lock (priv->busy_lock);
+	g_mutex_lock (cbdav->priv->busy_lock);
 
-	know_unreachable = !priv->opened;
+	know_unreachable = !cbdav->priv->opened;
 
-	while (priv->slave_cmd != SLAVE_SHOULD_DIE) {
+	while (cbdav->priv->slave_cmd != SLAVE_SHOULD_DIE) {
 		GTimeVal alarm_clock;
-		if (priv->slave_cmd == SLAVE_SHOULD_SLEEP) {
+		if (cbdav->priv->slave_cmd == SLAVE_SHOULD_SLEEP) {
 			/* just sleep until we get woken up again */
-			g_cond_wait (priv->cond, priv->busy_lock);
+			g_cond_wait (cbdav->priv->cond, cbdav->priv->busy_lock);
 
 			/* check if we should die, work or sleep again */
 			continue;
@@ -2216,23 +2186,23 @@ caldav_synch_slave_loop (gpointer data)
 		/* Ok here we go, do some real work
 		 * Synch it baby one more time ...
 		 */
-		priv->slave_busy = TRUE;
+		cbdav->priv->slave_busy = TRUE;
 
-		if (!priv->opened) {
+		if (!cbdav->priv->opened) {
 			gboolean server_unreachable = FALSE;
 			GError *local_error = NULL;
 			gboolean online;
 
 			if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
-				priv->opened = TRUE;
-				priv->slave_cmd = SLAVE_SHOULD_WORK;
-				g_cond_signal (priv->cond);
+				cbdav->priv->opened = TRUE;
+				cbdav->priv->slave_cmd = SLAVE_SHOULD_WORK;
+				g_cond_signal (cbdav->priv->cond);
 
-				priv->is_google = is_google_uri (priv->uri);
+				cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
 				know_unreachable = FALSE;
 			} else if (local_error) {
-				priv->opened = FALSE;
-				priv->read_only = TRUE;
+				cbdav->priv->opened = FALSE;
+				cbdav->priv->read_only = TRUE;
 
 				if (!know_unreachable) {
 					gchar *msg;
@@ -2246,24 +2216,24 @@ caldav_synch_slave_loop (gpointer data)
 
 				g_clear_error (&local_error);
 			} else {
-				priv->opened = FALSE;
-				priv->read_only = TRUE;
+				cbdav->priv->opened = FALSE;
+				cbdav->priv->read_only = TRUE;
 				know_unreachable = TRUE;
 			}
 
-			e_cal_backend_notify_readonly (E_CAL_BACKEND (cbdav), priv->read_only);
+			e_cal_backend_notify_readonly (E_CAL_BACKEND (cbdav), cbdav->priv->read_only);
 
 			online = e_backend_get_online (E_BACKEND (cbdav));
 			e_cal_backend_notify_online (E_CAL_BACKEND (cbdav), online);
 		}
 
-		if (priv->opened) {
+		if (cbdav->priv->opened) {
 			time (&now);
 			/* check for events in the month before/after today first,
 			 * to show user actual data as soon as possible */
 			synchronize_cache (cbdav, time_add_week_with_zone (now, -5, utc), time_add_week_with_zone (now, +5, utc));
 
-			if (priv->slave_cmd != SLAVE_SHOULD_SLEEP) {
+			if (cbdav->priv->slave_cmd != SLAVE_SHOULD_SLEEP) {
 				/* and then check for changes in a whole calendar */
 				synchronize_cache (cbdav, 0, 0);
 			}
@@ -2271,7 +2241,7 @@ caldav_synch_slave_loop (gpointer data)
 			if (caldav_debug_show (DEBUG_SERVER_ITEMS)) {
 				GSList *c_objs;
 
-				c_objs = e_cal_backend_store_get_components (priv->store);
+				c_objs = e_cal_backend_store_get_components (cbdav->priv->store);
 
 				printf ("CalDAV - finished syncing with %d items in a cache\n", g_slist_length (c_objs)); fflush (stdout);
 
@@ -2280,24 +2250,24 @@ caldav_synch_slave_loop (gpointer data)
 			}
 		}
 
-		priv->slave_busy = FALSE;
+		cbdav->priv->slave_busy = FALSE;
 
 		/* puhh that was hard, get some rest :) */
 		g_get_current_time (&alarm_clock);
-		alarm_clock.tv_sec += priv->refresh_time.tv_sec;
-		g_cond_timed_wait (priv->cond,
-				   priv->busy_lock,
+		alarm_clock.tv_sec += cbdav->priv->refresh_time.tv_sec;
+		g_cond_timed_wait (cbdav->priv->cond,
+				   cbdav->priv->busy_lock,
 				   &alarm_clock);
 
 	}
 
 	/* signal we are done */
-	g_cond_signal (priv->slave_gone_cond);
+	g_cond_signal (cbdav->priv->slave_gone_cond);
 
-	priv->synch_slave = NULL;
+	cbdav->priv->synch_slave = NULL;
 
 	/* we got killed ... */
-	g_mutex_unlock (priv->busy_lock);
+	g_mutex_unlock (cbdav->priv->busy_lock);
 	return NULL;
 }
 
@@ -2318,7 +2288,6 @@ static gchar *
 get_usermail (ECalBackend *backend)
 {
 	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	ESource *source;
 	gchar *res = NULL;
 
@@ -2335,10 +2304,9 @@ get_usermail (ECalBackend *backend)
 	}
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
 
-	if (priv && priv->is_google && priv->credentials) {
-		res = maybe_append_email_domain (e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_USERNAME), "@gmail.com");
+	if (cbdav->priv->is_google && cbdav->priv->credentials) {
+		res = maybe_append_email_domain (e_credentials_peek (cbdav->priv->credentials, E_CREDENTIALS_KEY_USERNAME), "@gmail.com");
 	}
 
 	return res;
@@ -2421,7 +2389,6 @@ static gboolean
 initialize_backend (ECalBackendCalDAV *cbdav,
                     GError **perror)
 {
-	ECalBackendCalDAVPrivate *priv;
 	ECalBackend              *backend;
 	ESource                  *source;
 	const gchar		 *os_val;
@@ -2429,8 +2396,6 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	gsize                     len;
 	const gchar              *refresh;
 	const gchar              *cache_dir;
-
-	priv  = cbdav->priv;
 
 	backend = E_CAL_BACKEND (cbdav);
 	cache_dir = e_cal_backend_get_cache_dir (backend);
@@ -2443,16 +2408,16 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	os_val = e_source_get_property (source, "offline_sync");
 
 	if (!os_val || !g_str_equal (os_val, "1")) {
-		priv->do_offline = FALSE;
+		cbdav->priv->do_offline = FALSE;
 	}
 
 	os_val = e_source_get_property (source, "auth");
-	priv->auth_required = os_val != NULL;
+	cbdav->priv->auth_required = os_val != NULL;
 
 	os_val = e_source_get_property(source, "ssl");
 
-	g_free (priv->uri);
-	priv->uri = NULL;
+	g_free (cbdav->priv->uri);
+	cbdav->priv->uri = NULL;
 	if (g_str_has_prefix (uri, "caldav://")) {
 		const gchar *proto;
 
@@ -2462,15 +2427,15 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 			proto = "http://";
 		}
 
-		priv->uri = g_strconcat (proto, uri + 9, NULL);
+		cbdav->priv->uri = g_strconcat (proto, uri + 9, NULL);
 
 		g_free (uri);
 	} else {
-		priv->uri = uri;
+		cbdav->priv->uri = uri;
 	}
 
-	if (priv->uri) {
-		SoupURI *suri = soup_uri_new (priv->uri);
+	if (cbdav->priv->uri) {
+		SoupURI *suri = soup_uri_new (cbdav->priv->uri);
 
 		/* properly encode uri */
 		if (suri && suri->path) {
@@ -2493,46 +2458,46 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 
 			g_free (tmp);
 			g_free (path);
-			g_free (priv->uri);
+			g_free (cbdav->priv->uri);
 
-			priv->uri = soup_uri_to_string (suri, FALSE);
+			cbdav->priv->uri = soup_uri_to_string (suri, FALSE);
 		}
 
 		soup_uri_free (suri);
 	}
 
-	g_return_val_if_fail (priv->uri != NULL, FALSE);
+	g_return_val_if_fail (cbdav->priv->uri != NULL, FALSE);
 
 	/* remove trailing slashes... */
-	len = strlen (priv->uri);
+	len = strlen (cbdav->priv->uri);
 	while (len--) {
-		if (priv->uri[len] == '/') {
-			priv->uri[len] = '\0';
+		if (cbdav->priv->uri[len] == '/') {
+			cbdav->priv->uri[len] = '\0';
 		} else {
 			break;
 		}
 	}
 
 	/* ...and append exactly one slash */
-	if (priv->uri && *priv->uri) {
-		gchar *tmp = priv->uri;
+	if (cbdav->priv->uri && *cbdav->priv->uri) {
+		gchar *tmp = cbdav->priv->uri;
 
-		priv->uri = g_strconcat (priv->uri, "/", NULL);
+		cbdav->priv->uri = g_strconcat (cbdav->priv->uri, "/", NULL);
 
 		g_free (tmp);
 	}
 
-	if (priv->store == NULL) {
+	if (cbdav->priv->store == NULL) {
 		/* remove the old cache while migrating to ECalBackendStore */
 		e_cal_backend_cache_remove (cache_dir, "cache.xml");
-		priv->store = e_cal_backend_file_store_new (cache_dir);
+		cbdav->priv->store = e_cal_backend_file_store_new (cache_dir);
 
-		if (priv->store == NULL) {
+		if (cbdav->priv->store == NULL) {
 			g_propagate_error (perror, EDC_ERROR_EX (OtherError, "Cannot create local store"));
 			return FALSE;
 		}
 
-		e_cal_backend_store_load (priv->store);
+		e_cal_backend_store_load (cbdav->priv->store);
 	}
 
 	/* Set the local attachment store */
@@ -2542,19 +2507,19 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	}
 
 	refresh = e_source_get_property (source, "refresh");
-	priv->refresh_time.tv_sec  = (refresh && atoi (refresh) > 0) ? (60 * atoi (refresh)) : (DEFAULT_REFRESH_TIME);
+	cbdav->priv->refresh_time.tv_sec  = (refresh && atoi (refresh) > 0) ? (60 * atoi (refresh)) : (DEFAULT_REFRESH_TIME);
 
-	if (!priv->synch_slave) {
+	if (!cbdav->priv->synch_slave) {
 		GThread *slave;
 
-		priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+		cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
 		slave = g_thread_create (caldav_synch_slave_loop, cbdav, FALSE, NULL);
 
 		if (slave == NULL) {
 			g_propagate_error (perror, EDC_ERROR_EX (OtherError, "Could not create synch slave"));
 		}
 
-		priv->synch_slave = slave;
+		cbdav->priv->synch_slave = slave;
 	}
 
 	return TRUE;
@@ -2583,24 +2548,21 @@ open_calendar (ECalBackendCalDAV *cbdav,
                GError **error)
 {
 	gboolean server_unreachable = FALSE;
-	ECalBackendCalDAVPrivate *priv;
 	GError *local_error = NULL;
 
 	g_return_if_fail (cbdav != NULL);
 
-	priv  = cbdav->priv;
-
 	/* set forward proxy */
-	proxy_settings_changed (priv->proxy, priv);
+	proxy_settings_changed (cbdav->priv->proxy, cbdav->priv);
 
 	if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
-		priv->slave_cmd = SLAVE_SHOULD_WORK;
-		g_cond_signal (priv->cond);
+		cbdav->priv->slave_cmd = SLAVE_SHOULD_WORK;
+		g_cond_signal (cbdav->priv->cond);
 
-		priv->is_google = is_google_uri (priv->uri);
+		cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
 	} else if (server_unreachable) {
-		priv->opened = FALSE;
-		priv->read_only = TRUE;
+		cbdav->priv->opened = FALSE;
+		cbdav->priv->read_only = TRUE;
 		if (local_error) {
 			gchar *msg = g_strdup_printf (_("Server is unreachable, calendar is opened in read-only mode.\nError message: %s"), local_error->message);
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbdav), msg);
@@ -2620,33 +2582,31 @@ caldav_do_open (ECalBackendSync *backend,
                 GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	gboolean online;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
 
-	g_mutex_lock (priv->busy_lock);
+	g_mutex_lock (cbdav->priv->busy_lock);
 
 	/* let it decide the 'getctag' extension availability again */
-	priv->ctag_supported = TRUE;
+	cbdav->priv->ctag_supported = TRUE;
 
-	if (!priv->loaded && !initialize_backend (cbdav, perror)) {
-		g_mutex_unlock (priv->busy_lock);
+	if (!cbdav->priv->loaded && !initialize_backend (cbdav, perror)) {
+		g_mutex_unlock (cbdav->priv->busy_lock);
 		return;
 	}
 
 	online = e_backend_get_online (E_BACKEND (backend));
 
-	if (!priv->do_offline && !online) {
-		g_mutex_unlock (priv->busy_lock);
+	if (!cbdav->priv->do_offline && !online) {
+		g_mutex_unlock (cbdav->priv->busy_lock);
 		g_propagate_error (perror, EDC_ERROR (RepositoryOffline));
 		return;
 	}
 
-	priv->loaded = TRUE;
-	priv->opened = TRUE;
-	priv->is_google = FALSE;
+	cbdav->priv->loaded = TRUE;
+	cbdav->priv->opened = TRUE;
+	cbdav->priv->is_google = FALSE;
 
 	if (online) {
 		GError *local_error = NULL;
@@ -2655,7 +2615,7 @@ caldav_do_open (ECalBackendSync *backend,
 
 		if (g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationRequired) || g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed)) {
 			g_clear_error (&local_error);
-			e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbdav), TRUE, priv->credentials);
+			e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbdav), TRUE, cbdav->priv->credentials);
 		} else {
 			e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 		}
@@ -2663,14 +2623,14 @@ caldav_do_open (ECalBackendSync *backend,
 		if (local_error)
 			g_propagate_error (perror, local_error);
 	} else {
-		priv->read_only = TRUE;
+		cbdav->priv->read_only = TRUE;
 		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 	}
 
-	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), priv->read_only);
+	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), cbdav->priv->read_only);
 	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
 
-	g_mutex_unlock (priv->busy_lock);
+	g_mutex_unlock (cbdav->priv->busy_lock);
 }
 
 static void
@@ -2680,27 +2640,25 @@ caldav_authenticate_user (ECalBackendSync *backend,
                           GError **error)
 {
 	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
 
-	g_mutex_lock (priv->busy_lock);
+	g_mutex_lock (cbdav->priv->busy_lock);
 
-	e_credentials_free (priv->credentials);
-	priv->credentials = NULL;
+	e_credentials_free (cbdav->priv->credentials);
+	cbdav->priv->credentials = NULL;
 
 	if (!credentials || !e_credentials_has_key (credentials, E_CREDENTIALS_KEY_USERNAME)) {
-		g_mutex_unlock (priv->busy_lock);
+		g_mutex_unlock (cbdav->priv->busy_lock);
 		g_propagate_error (error, EDC_ERROR (AuthenticationRequired));
 		return;
 	}
 
-	priv->credentials = e_credentials_new_clone (credentials);
+	cbdav->priv->credentials = e_credentials_new_clone (credentials);
 
 	open_calendar (cbdav, error);
 
-	g_mutex_unlock (priv->busy_lock);
+	g_mutex_unlock (cbdav->priv->busy_lock);
 }
 
 static void
@@ -2710,27 +2668,25 @@ caldav_refresh (ECalBackendSync *backend,
                 GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	gboolean                  online;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
 
-	g_mutex_lock (priv->busy_lock);
+	g_mutex_lock (cbdav->priv->busy_lock);
 
-	if (!priv->loaded
-	    || priv->slave_cmd != SLAVE_SHOULD_SLEEP
+	if (!cbdav->priv->loaded
+	    || cbdav->priv->slave_cmd != SLAVE_SHOULD_SLEEP
 	    || !check_state (cbdav, &online, NULL)
 	    || !online) {
-		g_mutex_unlock (priv->busy_lock);
+		g_mutex_unlock (cbdav->priv->busy_lock);
 		return;
 	}
 
-	priv->slave_cmd = SLAVE_SHOULD_WORK;
+	cbdav->priv->slave_cmd = SLAVE_SHOULD_WORK;
 
 	/* wake it up */
-	g_cond_signal (priv->cond);
-	g_mutex_unlock (priv->busy_lock);
+	g_cond_signal (cbdav->priv->cond);
+	g_mutex_unlock (cbdav->priv->busy_lock);
 }
 
 static void
@@ -2740,19 +2696,17 @@ caldav_remove (ECalBackendSync *backend,
                GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	gboolean                  online;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
 
 	/* first tell it to die, then wait for its lock */
-	priv->slave_cmd = SLAVE_SHOULD_DIE;
+	cbdav->priv->slave_cmd = SLAVE_SHOULD_DIE;
 
-	g_mutex_lock (priv->busy_lock);
+	g_mutex_lock (cbdav->priv->busy_lock);
 
-	if (!priv->loaded) {
-		g_mutex_unlock (priv->busy_lock);
+	if (!cbdav->priv->loaded) {
+		g_mutex_unlock (cbdav->priv->busy_lock);
 		return;
 	}
 
@@ -2761,19 +2715,19 @@ caldav_remove (ECalBackendSync *backend,
 		g_print (G_STRLOC ": Failed to check state");
 	}
 
-	e_cal_backend_store_remove (priv->store);
-	priv->store = NULL;
-	priv->loaded = FALSE;
-	priv->opened = FALSE;
+	e_cal_backend_store_remove (cbdav->priv->store);
+	cbdav->priv->store = NULL;
+	cbdav->priv->loaded = FALSE;
+	cbdav->priv->opened = FALSE;
 
-	if (priv->synch_slave) {
-		g_cond_signal (priv->cond);
+	if (cbdav->priv->synch_slave) {
+		g_cond_signal (cbdav->priv->cond);
 
 		/* wait until the slave died */
-		g_cond_wait (priv->slave_gone_cond, priv->busy_lock);
+		g_cond_wait (cbdav->priv->slave_gone_cond, cbdav->priv->busy_lock);
 	}
 
-	g_mutex_unlock (priv->busy_lock);
+	g_mutex_unlock (cbdav->priv->busy_lock);
 }
 
 static void
@@ -2799,24 +2753,21 @@ remove_comp_from_cache (ECalBackendCalDAV *cbdav,
                         const gchar *uid,
                         const gchar *rid)
 {
-	ECalBackendCalDAVPrivate *priv;
 	gboolean res = FALSE;
-
-	priv  = cbdav->priv;
 
 	if (!rid || !*rid) {
 		/* get with detached instances */
-		GSList *objects = e_cal_backend_store_get_components_by_uid (priv->store, uid);
+		GSList *objects = e_cal_backend_store_get_components_by_uid (cbdav->priv->store, uid);
 
 		if (objects) {
-			g_slist_foreach (objects, (GFunc) remove_comp_from_cache_cb, priv->store);
+			g_slist_foreach (objects, (GFunc) remove_comp_from_cache_cb, cbdav->priv->store);
 			g_slist_foreach (objects, (GFunc) g_object_unref, NULL);
 			g_slist_free (objects);
 
 			res = TRUE;
 		}
 	} else {
-		res = e_cal_backend_store_remove_component (priv->store, uid, rid);
+		res = e_cal_backend_store_remove_component (cbdav->priv->store, uid, rid);
 	}
 
 	return res;
@@ -2865,14 +2816,11 @@ get_comp_from_cache (ECalBackendCalDAV *cbdav,
                      gchar **href,
                      gchar **etag)
 {
-	ECalBackendCalDAVPrivate *priv;
 	icalcomponent *icalcomp = NULL;
-
-	priv  = cbdav->priv;
 
 	if (rid == NULL || !*rid) {
 		/* get with detached instances */
-		GSList *objects = e_cal_backend_store_get_components_by_uid (priv->store, uid);
+		GSList *objects = e_cal_backend_store_get_components_by_uid (cbdav->priv->store, uid);
 
 		if (!objects) {
 			return NULL;
@@ -2904,7 +2852,7 @@ get_comp_from_cache (ECalBackendCalDAV *cbdav,
 		g_slist_free (objects);
 	} else {
 		/* get the exact object */
-		ECalComponent *comp = e_cal_backend_store_get_component (priv->store, uid, rid);
+		ECalComponent *comp = e_cal_backend_store_get_component (cbdav->priv->store, uid, rid);
 
 		if (comp) {
 			icalcomp = icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
@@ -3262,7 +3210,6 @@ static void
 remove_cached_attachment (ECalBackendCalDAV *cbdav,
                           const gchar *uid)
 {
-	ECalBackendCalDAVPrivate *priv;
 	GSList *l;
 	guint len;
 	gchar *dir;
@@ -3271,8 +3218,7 @@ remove_cached_attachment (ECalBackendCalDAV *cbdav,
 	g_return_if_fail (cbdav != NULL);
 	g_return_if_fail (uid != NULL);
 
-	priv = cbdav->priv;
-	l = e_cal_backend_store_get_components_by_uid (priv->store, uid);
+	l = e_cal_backend_store_get_components_by_uid (cbdav->priv->store, uid);
 	len = g_slist_length (l);
 	g_slist_foreach (l, (GFunc) g_object_unref, NULL);
 	g_slist_free (l);
@@ -3344,15 +3290,12 @@ add_timezones_from_component (ECalBackendCalDAV *cbdav,
                               icalcomponent *icalcomp)
 {
 	ForeachTzidData f_data;
-	ECalBackendCalDAVPrivate *priv;
 
 	g_return_if_fail (cbdav != NULL);
 	g_return_if_fail (vcal_comp != NULL);
 	g_return_if_fail (icalcomp != NULL);
 
-	priv  = cbdav->priv;
-
-	f_data.store = priv->store;
+	f_data.store = cbdav->priv->store;
 	f_data.vcal_comp = vcal_comp;
 	f_data.icalcomp = icalcomp;
 
@@ -3450,17 +3393,15 @@ cache_contains (ECalBackendCalDAV *cbdav,
                 const gchar *uid,
                 const gchar *rid)
 {
-	ECalBackendCalDAVPrivate *priv;
 	gboolean res;
 	ECalComponent *comp;
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	priv  = cbdav->priv;
-	g_return_val_if_fail (priv != NULL && priv->store != NULL, FALSE);
+	g_return_val_if_fail (cbdav->priv->store != NULL, FALSE);
 
-	comp = e_cal_backend_store_get_component (priv->store, uid, rid);
+	comp = e_cal_backend_store_get_component (cbdav->priv->store, uid, rid);
 	res = comp != NULL;
 
 	if (comp)
@@ -3589,12 +3530,12 @@ replace_master (ECalBackendCalDAV *cbdav,
 }
 
 /* the resulting component should be unreffed when done with it;
-   the fallback_comp is cloned, if used */
+ * the fallback_comp is cloned, if used */
 static ECalComponent *
 get_ecalcomp_master_from_cache_or_fallback (ECalBackendCalDAV *cbdav,
-					    const gchar *uid,
-					    const gchar *rid,
-					    ECalComponent *fallback_comp)
+                                            const gchar *uid,
+                                            const gchar *rid,
+                                            ECalComponent *fallback_comp)
 {
 	ECalComponent *comp = NULL;
 	icalcomponent *icalcomp;
@@ -3717,15 +3658,12 @@ do_modify_object (ECalBackendCalDAV *cbdav,
                   ECalComponent **new_component,
                   GError **error)
 {
-	ECalBackendCalDAVPrivate *priv;
 	ECalComponent            *comp;
 	icalcomponent            *cache_comp;
 	gboolean                  online, did_put = FALSE;
 	ECalComponentId		 *id;
 	struct icaltimetype current;
 	gchar *href = NULL, *etag = NULL;
-
-	priv  = cbdav->priv;
 
 	if (new_component)
 		*new_component = NULL;
@@ -3779,7 +3717,7 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 
 		if (e_cal_component_is_instance (comp)) {
 			/* set detached instance as the old object, if any */
-			ECalComponent *old_instance = e_cal_backend_store_get_component (priv->store, id->uid, id->rid);
+			ECalComponent *old_instance = e_cal_backend_store_get_component (cbdav->priv->store, id->uid, id->rid);
 
 			/* This will give a reference to 'old_component' */
 			if (old_instance) {
@@ -3823,7 +3761,7 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 				cache_comp = icomp;
 			}
 
-			if (cache_comp && priv->is_google) {
+			if (cache_comp && cbdav->priv->is_google) {
 				icalcomponent_set_sequence (cache_comp, icalcomponent_get_sequence (cache_comp) + 1);
 				icalcomponent_set_sequence (new_comp, icalcomponent_get_sequence (new_comp) + 1);
 			}
@@ -3885,12 +3823,9 @@ do_remove_object (ECalBackendCalDAV *cbdav,
                   ECalComponent **new_component,
                   GError **perror)
 {
-	ECalBackendCalDAVPrivate *priv;
 	icalcomponent            *cache_comp;
 	gboolean                  online;
 	gchar *href = NULL, *etag = NULL;
-
-	priv  = cbdav->priv;
 
 	if (new_component)
 		*new_component = NULL;
@@ -3906,7 +3841,7 @@ do_remove_object (ECalBackendCalDAV *cbdav,
 	}
 
 	if (old_component) {
-		ECalComponent *old = e_cal_backend_store_get_component (priv->store, uid, rid);
+		ECalComponent *old = e_cal_backend_store_get_component (cbdav->priv->store, uid, rid);
 
 		if (old) {
 			*old_component = e_cal_component_clone (old);
@@ -4022,7 +3957,6 @@ static gboolean
 extract_timezones (ECalBackendCalDAV *cbdav,
                    icalcomponent *icomp)
 {
-	ECalBackendCalDAVPrivate *priv;
 	GSList *timezones = NULL, *iter;
 	icaltimezone *zone;
 	GError *err = NULL;
@@ -4036,12 +3970,10 @@ extract_timezones (ECalBackendCalDAV *cbdav,
 		return FALSE;
 	}
 
-	priv = cbdav->priv;
-
 	zone = icaltimezone_new ();
 	for (iter = timezones; iter; iter = iter->next) {
 		if (icaltimezone_set_component (zone, iter->data)) {
-			e_cal_backend_store_put_timezone (priv->store, zone);
+			e_cal_backend_store_put_timezone (cbdav->priv->store, zone);
 		} else {
 			icalcomponent_free (iter->data);
 		}
@@ -4245,31 +4177,29 @@ static void								\
 _func_name _params							\
 {									\
 	ECalBackendCalDAV        *cbdav;				\
-	ECalBackendCalDAVPrivate *priv;					\
 	SlaveCommand		  old_slave_cmd;			\
 	gboolean		  was_slave_busy;			\
 									\
 	cbdav = E_CAL_BACKEND_CALDAV (backend);				\
-	priv  = cbdav->priv;						\
 									\
 	/* this is done before locking */				\
-	old_slave_cmd = priv->slave_cmd;				\
-	was_slave_busy = priv->slave_busy;				\
+	old_slave_cmd = cbdav->priv->slave_cmd;				\
+	was_slave_busy = cbdav->priv->slave_busy;			\
 	if (was_slave_busy) {						\
 		/* let it pause its work and do our job */		\
-		priv->slave_cmd = SLAVE_SHOULD_SLEEP;			\
+		cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;		\
 	}								\
 									\
-	g_mutex_lock (priv->busy_lock);					\
+	g_mutex_lock (cbdav->priv->busy_lock);				\
 	_call_func _call_params;					\
 									\
 	/* this is done before unlocking */				\
 	if (was_slave_busy) {						\
-		priv->slave_cmd = old_slave_cmd;			\
-		g_cond_signal (priv->cond);				\
+		cbdav->priv->slave_cmd = old_slave_cmd;			\
+		g_cond_signal (cbdav->priv->cond);			\
 	}								\
 									\
-	g_mutex_unlock (priv->busy_lock);				\
+	g_mutex_unlock (cbdav->priv->busy_lock);			\
 }
 
 caldav_busy_stub (
@@ -4388,14 +4318,11 @@ caldav_add_timezone (ECalBackendSync *backend,
 {
 	icalcomponent *tz_comp;
 	ECalBackendCalDAV *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 
 	e_return_data_cal_error_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), InvalidArg);
 	e_return_data_cal_error_if_fail (tzobj != NULL, InvalidArg);
-
-	priv = cbdav->priv;
 
 	tz_comp = icalparser_parse_string (tzobj);
 	if (!tz_comp) {
@@ -4409,7 +4336,7 @@ caldav_add_timezone (ECalBackendSync *backend,
 		zone = icaltimezone_new ();
 		icaltimezone_set_component (zone, tz_comp);
 
-		e_cal_backend_store_put_timezone (priv->store, zone);
+		e_cal_backend_store_put_timezone (cbdav->priv->store, zone);
 
 		icaltimezone_free (zone, TRUE);
 	} else {
@@ -4426,7 +4353,6 @@ caldav_get_object_list (ECalBackendSync *backend,
                         GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	ECalBackendSExp	 *sexp;
 	ECalBackend *bkend;
 	gboolean                  do_search;
@@ -4435,7 +4361,6 @@ caldav_get_object_list (ECalBackendSync *backend,
 	gboolean prunning_by_time;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
 
 	sexp = e_cal_backend_sexp_new (sexp_string);
 
@@ -4455,8 +4380,8 @@ caldav_get_object_list (ECalBackendSync *backend,
 	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp, &occur_start, &occur_end);
 
 	list = prunning_by_time ?
-		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
-		: e_cal_backend_store_get_components (priv->store);
+		e_cal_backend_store_get_components_occuring_in_range (cbdav->priv->store, occur_start, occur_end)
+		: e_cal_backend_store_get_components (cbdav->priv->store);
 
 	bkend = E_CAL_BACKEND (backend);
 
@@ -4480,7 +4405,6 @@ caldav_start_view (ECalBackend *backend,
                    EDataCalView *query)
 {
 	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	ECalBackendSExp	 *sexp;
 	ECalBackend              *bkend;
 	gboolean                  do_search;
@@ -4489,7 +4413,6 @@ caldav_start_view (ECalBackend *backend,
 	time_t occur_start = -1, occur_end = -1;
 	gboolean prunning_by_time;
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
 
 	sexp_string = e_data_cal_view_get_text (query);
 	sexp = e_cal_backend_sexp_new (sexp_string);
@@ -4508,8 +4431,8 @@ caldav_start_view (ECalBackend *backend,
 	bkend = E_CAL_BACKEND (backend);
 
 	list = prunning_by_time ?
-		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)
-		: e_cal_backend_store_get_components (priv->store);
+		e_cal_backend_store_get_components_occuring_in_range (cbdav->priv->store, occur_start, occur_end)
+		: e_cal_backend_store_get_components (cbdav->priv->store);
 
 	for (iter = list; iter; iter = g_slist_next (iter)) {
 		ECalComponent *comp = E_CAL_COMPONENT (iter->data);
@@ -4539,7 +4462,6 @@ caldav_get_free_busy (ECalBackendSync *backend,
                       GError **error)
 {
 	ECalBackendCalDAV *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	icalcomponent *icalcomp;
 	ECalComponent *comp;
 	ECalComponentDateTime dt;
@@ -4551,22 +4473,20 @@ caldav_get_free_busy (ECalBackendSync *backend,
 	GError *err = NULL;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
 
-	e_return_data_cal_error_if_fail (priv != NULL, InvalidArg);
 	e_return_data_cal_error_if_fail (users != NULL, InvalidArg);
 	e_return_data_cal_error_if_fail (freebusy != NULL, InvalidArg);
 	e_return_data_cal_error_if_fail (start < end, InvalidArg);
 
-	if (!priv->calendar_schedule) {
+	if (!cbdav->priv->calendar_schedule) {
 		g_propagate_error (error, EDC_ERROR_EX (OtherError, _("Calendar doesn't support Free/Busy")));
 		return;
 	}
 
-	if (!priv->schedule_outbox_url) {
+	if (!cbdav->priv->schedule_outbox_url) {
 		caldav_receive_schedule_outbox_url (cbdav);
-		if (!priv->schedule_outbox_url) {
-			priv->calendar_schedule = FALSE;
+		if (!cbdav->priv->schedule_outbox_url) {
+			cbdav->priv->calendar_schedule = FALSE;
 			g_propagate_error (error, EDC_ERROR_EX (OtherError, "Schedule outbox url not found"));
 			return;
 		}
@@ -4598,10 +4518,10 @@ caldav_get_free_busy (ECalBackendSync *backend,
 		usermail = NULL;
 	}
 
-	if ((priv->credentials && e_credentials_has_key (priv->credentials, E_CREDENTIALS_KEY_USERNAME)) || usermail) {
+	if ((cbdav->priv->credentials && e_credentials_has_key (cbdav->priv->credentials, E_CREDENTIALS_KEY_USERNAME)) || usermail) {
 		ECalComponentOrganizer organizer = {NULL};
 
-		organizer.value = usermail ? usermail : e_credentials_peek (priv->credentials, E_CREDENTIALS_KEY_USERNAME);
+		organizer.value = usermail ? usermail : e_credentials_peek (cbdav->priv->credentials, E_CREDENTIALS_KEY_USERNAME);
 		organizer.value = g_strconcat ("mailto:", organizer.value, NULL);
 
 		e_cal_component_set_organizer (comp, &organizer);
@@ -4648,7 +4568,7 @@ caldav_get_free_busy (ECalBackendSync *backend,
 
 	e_return_data_cal_error_if_fail (str != NULL, OtherError);
 
-	caldav_post_freebusy (cbdav, priv->schedule_outbox_url, &str, &err);
+	caldav_post_freebusy (cbdav, cbdav->priv->schedule_outbox_url, &str, &err);
 
 	if (!err) {
 		/* parse returned xml */
@@ -4724,34 +4644,32 @@ caldav_notify_online_cb (ECalBackend *backend,
                          GParamSpec *pspec)
 {
 	ECalBackendCalDAV        *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 	gboolean online;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
 
-	/*g_mutex_lock (priv->busy_lock);*/
+	/*g_mutex_lock (cbdav->priv->busy_lock);*/
 
 	online = e_backend_get_online (E_BACKEND (backend));
 
-	if (!priv->loaded) {
+	if (!cbdav->priv->loaded) {
 		e_cal_backend_notify_online (backend, online);
-		/*g_mutex_unlock (priv->busy_lock);*/
+		/*g_mutex_unlock (cbdav->priv->busy_lock);*/
 		return;
 	}
 
 	if (online) {
 		/* Wake up the slave thread */
-		priv->slave_cmd = SLAVE_SHOULD_WORK;
-		g_cond_signal (priv->cond);
+		cbdav->priv->slave_cmd = SLAVE_SHOULD_WORK;
+		g_cond_signal (cbdav->priv->cond);
 	} else {
-		soup_session_abort (priv->session);
-		priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+		soup_session_abort (cbdav->priv->session);
+		cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
 	}
 
 	e_cal_backend_notify_online (backend, online);
 
-	/*g_mutex_unlock (priv->busy_lock);*/
+	/*g_mutex_unlock (cbdav->priv->busy_lock);*/
 }
 
 static icaltimezone *
@@ -4760,14 +4678,12 @@ caldav_internal_get_timezone (ECalBackend *backend,
 {
 	icaltimezone *zone;
 	ECalBackendCalDAV *cbdav;
-	ECalBackendCalDAVPrivate *priv;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
-	priv  = cbdav->priv;
 	zone = NULL;
 
-	if (priv->store)
-		zone = (icaltimezone *) e_cal_backend_store_get_timezone (priv->store, tzid);
+	if (cbdav->priv->store)
+		zone = (icaltimezone *) e_cal_backend_store_get_timezone (cbdav->priv->store, tzid);
 
 	if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
 		zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
@@ -4779,31 +4695,27 @@ static void
 caldav_source_changed_cb (ESource *source,
                           ECalBackendCalDAV *cbdav)
 {
-	ECalBackendCalDAVPrivate *priv;
 	SlaveCommand old_slave_cmd;
 	gboolean old_slave_busy;
 
 	g_return_if_fail (source != NULL);
 	g_return_if_fail (cbdav != NULL);
 
-	priv = cbdav->priv;
-	g_return_if_fail (priv != NULL);
-
-	old_slave_cmd = priv->slave_cmd;
-	old_slave_busy = priv->slave_busy;
+	old_slave_cmd = cbdav->priv->slave_cmd;
+	old_slave_busy = cbdav->priv->slave_busy;
 	if (old_slave_busy) {
-		priv->slave_cmd = SLAVE_SHOULD_SLEEP;
-		g_mutex_lock (priv->busy_lock);
+		cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+		g_mutex_lock (cbdav->priv->busy_lock);
 	}
 
 	initialize_backend (cbdav, NULL);
 
 	/* always wakeup thread, even when it was sleeping */
-	g_cond_signal (priv->cond);
+	g_cond_signal (cbdav->priv->cond);
 
 	if (old_slave_busy) {
-		priv->slave_cmd = old_slave_cmd;
-		g_mutex_unlock (priv->busy_lock);
+		cbdav->priv->slave_cmd = old_slave_cmd;
+		g_mutex_unlock (cbdav->priv->busy_lock);
 	}
 }
 
@@ -4815,12 +4727,10 @@ G_DEFINE_TYPE (ECalBackendCalDAV, e_cal_backend_caldav, E_TYPE_CAL_BACKEND_SYNC)
 static void
 e_cal_backend_caldav_dispose (GObject *object)
 {
-	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
 	ESource *source;
 
-	cbdav = E_CAL_BACKEND_CALDAV (object);
-	priv = cbdav->priv;
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (object);
 
 	/* tell the slave to stop before acquiring a lock,
 	 * as it can work at the moment, and lock can be locked */
@@ -4833,9 +4743,9 @@ e_cal_backend_caldav_dispose (GObject *object)
 		return;
 	}
 
-	source = e_backend_get_source (E_BACKEND (cbdav));
+	source = e_backend_get_source (E_BACKEND (object));
 	if (source)
-		g_signal_handlers_disconnect_by_func (G_OBJECT (source), caldav_source_changed_cb, cbdav);
+		g_signal_handlers_disconnect_by_func (G_OBJECT (source), caldav_source_changed_cb, object);
 
 	/* stop the slave  */
 	if (priv->synch_slave) {
@@ -4868,11 +4778,9 @@ e_cal_backend_caldav_dispose (GObject *object)
 static void
 e_cal_backend_caldav_finalize (GObject *object)
 {
-	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
 
-	cbdav = E_CAL_BACKEND_CALDAV (object);
-	priv = cbdav->priv;
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (object);
 
 	g_mutex_free (priv->busy_lock);
 	g_cond_free (priv->cond);
@@ -4885,9 +4793,7 @@ e_cal_backend_caldav_finalize (GObject *object)
 static void
 e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 {
-	cbdav->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		cbdav, E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVPrivate);
-
+	cbdav->priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	cbdav->priv->session = soup_session_sync_new ();
 	g_object_set (cbdav->priv->session, SOUP_SESSION_TIMEOUT, 90, NULL);
 

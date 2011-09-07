@@ -29,22 +29,27 @@
 #include "e-source-selector.h"
 #include "e-source-selector-dialog.h"
 
+#define E_SOURCE_SELECTOR_DIALOG_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_SOURCE_SELECTOR_DIALOG, ESourceSelectorDialogPrivate))
+
 struct _ESourceSelectorDialogPrivate {
 	GtkWidget *source_selector;
 	ESourceList *source_list;
 	ESource *selected_source;
 };
 
-static GObjectClass *parent_class = NULL;
-
-/* GObject methods */
-
-G_DEFINE_TYPE (ESourceSelectorDialog, e_source_selector_dialog, GTK_TYPE_DIALOG)
+G_DEFINE_TYPE (
+	ESourceSelectorDialog,
+	e_source_selector_dialog,
+	GTK_TYPE_DIALOG)
 
 static void
-e_source_selector_dialog_dispose (GObject *object)
+source_selector_dialog_dispose (GObject *object)
 {
-	ESourceSelectorDialogPrivate *priv = E_SOURCE_SELECTOR_DIALOG (object)->priv;
+	ESourceSelectorDialogPrivate *priv;
+
+	priv = E_SOURCE_SELECTOR_DIALOG_GET_PRIVATE (object);
 
 	if (priv->source_list) {
 		g_object_unref (priv->source_list);
@@ -56,41 +61,28 @@ e_source_selector_dialog_dispose (GObject *object)
 		priv->selected_source = NULL;
 	}
 
-	(*G_OBJECT_CLASS (parent_class)->dispose) (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_source_selector_dialog_parent_class)->dispose (object);
 }
 
 static void
-e_source_selector_dialog_finalize (GObject *object)
+e_source_selector_dialog_class_init (ESourceSelectorDialogClass *class)
 {
-	ESourceSelectorDialogPrivate *priv = E_SOURCE_SELECTOR_DIALOG (object)->priv;
+	GObjectClass *object_class;
 
-	g_free (priv);
-	E_SOURCE_SELECTOR_DIALOG (object)->priv = NULL;
+	g_type_class_add_private (class, sizeof (ESourceSelectorDialogPrivate));
 
-	(* G_OBJECT_CLASS (parent_class)->finalize) (object);
-}
-
-static void
-e_source_selector_dialog_class_init (ESourceSelectorDialogClass *klass)
-{
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	object_class->dispose = e_source_selector_dialog_dispose;
-	object_class->finalize = e_source_selector_dialog_finalize;
-
-	parent_class = g_type_class_peek_parent (klass);
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = source_selector_dialog_dispose;
 }
 
 static void
 e_source_selector_dialog_init (ESourceSelectorDialog *dialog)
 {
-	ESourceSelectorDialogPrivate *priv;
 	GtkWidget *action_area;
 	GtkWidget *content_area;
 
-	priv = g_new0 (ESourceSelectorDialogPrivate, 1);
-	priv->selected_source = NULL;
-	dialog->priv = priv;
+	dialog->priv = E_SOURCE_SELECTOR_DIALOG_GET_PRIVATE (dialog);
 
 	action_area = gtk_dialog_get_action_area (GTK_DIALOG (dialog));
 	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));

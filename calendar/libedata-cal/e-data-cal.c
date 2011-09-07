@@ -1699,13 +1699,13 @@ data_cal_finalize (GObject *object)
 }
 
 static void
-e_data_cal_class_init (EDataCalClass *klass)
+e_data_cal_class_init (EDataCalClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (EDataCalPrivate));
+	g_type_class_add_private (class, sizeof (EDataCalPrivate));
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = data_cal_set_property;
 	object_class->get_property = data_cal_get_property;
 	object_class->dispose = data_cal_dispose;

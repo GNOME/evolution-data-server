@@ -881,7 +881,7 @@ camel_iconv_strndup (iconv_t cd,
 	while (iconv (cd, NULL, NULL, &outbuf, &outleft) == (gsize) -1) {
 		if (errno != E2BIG)
 			break;
-		
+
 		outlen += 16;
 		converted = outbuf - out;
 		out = g_realloc (out, outlen + 4);
@@ -982,14 +982,14 @@ decode_8bit (const gchar *text,
 		while ((rc = iconv (cd, NULL, NULL, &outbuf, &outleft)) == (gsize) -1) {
 			if (errno != E2BIG)
 				break;
-			
+
 			outlen += 16;
 			rc = (gsize) (outbuf - out);
 			out = g_realloc (out, outlen + 1);
 			outleft = outlen - rc;
 			outbuf = out + rc;
 		}
-		
+
 		*outbuf = '\0';
 
 		camel_iconv_close (cd);
@@ -1059,7 +1059,7 @@ decode_8bit (const gchar *text,
 	while ((rc = iconv (cd, NULL, NULL, &outbuf, &outleft)) == (gsize) -1) {
 		if (errno != E2BIG)
 			break;
-		
+
 		outlen += 16;
 		rc = (gsize) (outbuf - out);
 		out = g_realloc (out, outlen + 1);

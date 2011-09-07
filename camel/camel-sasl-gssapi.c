@@ -75,6 +75,10 @@ extern gss_OID gss_nt_service_name;
 #endif /* HAVE_SUN_KRB5 */
 #endif /* HAVE_HEIMDAL_KRB5 */
 
+#define CAMEL_SASL_GSSAPI_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_SASL_GSSAPI, CamelSaslGssapiPrivate))
+
 #ifndef GSS_C_OID_KRBV5_DES
 #define GSS_C_OID_KRBV5_DES GSS_C_NO_OID
 #endif
@@ -283,7 +287,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 	gchar *host;
 	gchar *user;
 
-	priv = CAMEL_SASL_GSSAPI (sasl)->priv;
+	priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
 
 	service = camel_sasl_get_service (sasl);
 	service_name = camel_sasl_get_service_name (sasl);
@@ -474,8 +478,7 @@ static void
 camel_sasl_gssapi_init (CamelSaslGssapi *sasl)
 {
 #ifdef HAVE_KRB5
-	sasl->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		sasl, CAMEL_TYPE_SASL_GSSAPI, CamelSaslGssapiPrivate);
+	sasl->priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
 	sasl->priv->state = GSSAPI_STATE_INIT;
 	sasl->priv->ctx = GSS_C_NO_CONTEXT;
 	sasl->priv->target = GSS_C_NO_NAME;

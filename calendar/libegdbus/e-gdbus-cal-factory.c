@@ -408,11 +408,11 @@ g_signal (GDBusProxy *proxy,
 }
 
 static void
-e_gdbus_cal_factory_proxy_class_init (EGdbusCalFactoryProxyClass *klass)
+e_gdbus_cal_factory_proxy_class_init (EGdbusCalFactoryProxyClass *class)
 {
 	GDBusProxyClass *proxy_class;
 
-	proxy_class = G_DBUS_PROXY_CLASS (klass);
+	proxy_class = G_DBUS_PROXY_CLASS (class);
 	proxy_class->g_signal = g_signal;
 }
 
@@ -623,11 +623,6 @@ e_gdbus_cal_factory_proxy_new_for_bus_sync (GBusType bus_type,
 
 /* ---------------------------------------------------------------------- */
 
-struct _EGdbusCalFactoryStubPrivate
-{
-	gint foo;
-};
-
 static void stub_iface_init (EGdbusCalFactoryIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (EGdbusCalFactoryStub, e_gdbus_cal_factory_stub, G_TYPE_OBJECT,
@@ -636,13 +631,11 @@ G_DEFINE_TYPE_WITH_CODE (EGdbusCalFactoryStub, e_gdbus_cal_factory_stub, G_TYPE_
 static void
 e_gdbus_cal_factory_stub_init (EGdbusCalFactoryStub *stub)
 {
-	stub->priv = G_TYPE_INSTANCE_GET_PRIVATE (stub, E_TYPE_GDBUS_CAL_FACTORY_STUB, EGdbusCalFactoryStubPrivate);
 }
 
 static void
-e_gdbus_cal_factory_stub_class_init (EGdbusCalFactoryStubClass *klass)
+e_gdbus_cal_factory_stub_class_init (EGdbusCalFactoryStubClass *class)
 {
-	g_type_class_add_private (klass, sizeof (EGdbusCalFactoryStubPrivate));
 }
 
 static void

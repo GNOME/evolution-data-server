@@ -478,8 +478,8 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 	if (g_stat (path, &st) == -1 || !S_ISREG (st.st_mode)) {
 		char *test_if_subdir = g_strdup_printf("%s.sbd", path);
 
-		if (g_stat(test_if_subdir, &st) == -1) {
-			g_free(path);
+		if (g_stat (test_if_subdir, &st) == -1) {
+			g_free (path);
 			g_free (test_if_subdir);
 			return NULL;
 		}

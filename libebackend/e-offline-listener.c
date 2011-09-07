@@ -43,6 +43,10 @@
 #include "e-offline-listener.h"
 #include <gconf/gconf-client.h>
 
+#define E_OFFLINE_LISTENER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_OFFLINE_LISTENER, EOfflineListenerPrivate))
+
 G_DEFINE_TYPE (EOfflineListener, e_offline_listener, G_TYPE_OBJECT)
 
 enum {
@@ -51,8 +55,6 @@ enum {
 };
 
 static guint signals[NUM_SIGNALS] = { 0 };
-
-static GObjectClass *parent_class = NULL;
 
 struct _EOfflineListenerPrivate {
 	GConfClient *default_client;
@@ -138,36 +140,25 @@ e_offline_listener_new (void)
 }
 
 static void
-e_offline_listener_dispose (GObject *object)
+offline_listener_dispose (GObject *object)
 {
-	EOfflineListener *eol = E_OFFLINE_LISTENER (object);
-	if (eol->priv->default_client) {
-		g_object_unref (eol->priv->default_client);
-		eol->priv->default_client = NULL;
+	EOfflineListenerPrivate *priv;
+
+	priv = E_OFFLINE_LISTENER_GET_PRIVATE (object);
+
+	if (priv->default_client) {
+		g_object_unref (priv->default_client);
+		priv->default_client = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (parent_class)->dispose (object);
-}
-
-static void
-e_offline_listener_finalize (GObject *object)
-{
-	EOfflineListener *eol;
-
-	eol = E_OFFLINE_LISTENER (object);
-
-	g_free (eol->priv);
-	eol->priv = NULL;
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_offline_listener_parent_class)->dispose (object);
 }
 
 static void
 e_offline_listener_init (EOfflineListener *eol)
 {
-	eol->priv = g_new0 (EOfflineListenerPrivate, 1);
+	eol->priv = E_OFFLINE_LISTENER_GET_PRIVATE (eol);
 }
 
 static void
@@ -175,11 +166,10 @@ e_offline_listener_class_init (EOfflineListenerClass *class)
 {
 	GObjectClass *object_class;
 
-	parent_class = g_type_class_peek_parent (class);
+	g_type_class_add_private (class, sizeof (EOfflineListenerPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->dispose = e_offline_listener_dispose;
-	object_class->finalize = e_offline_listener_finalize;
+	object_class->dispose = offline_listener_dispose;
 
 	/**
 	 * EOfflineListener::changed:

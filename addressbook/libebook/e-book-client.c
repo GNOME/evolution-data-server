@@ -38,8 +38,11 @@
 #include "e-gdbus-book-factory.h"
 #include "e-gdbus-book-view.h"
 
-struct _EBookClientPrivate
-{
+#define E_BOOK_CLIENT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_CLIENT, EBookClientPrivate))
+
+struct _EBookClientPrivate {
 	/* GDBus data */
 	GDBusProxy *gdbus_book;
 	guint gone_signal_id;
@@ -2757,7 +2760,7 @@ e_book_client_init (EBookClient *client)
 	active_book_clients++;
 	UNLOCK_FACTORY ();
 
-	client->priv = G_TYPE_INSTANCE_GET_PRIVATE (client, E_TYPE_BOOK_CLIENT, EBookClientPrivate);
+	client->priv = E_BOOK_CLIENT_GET_PRIVATE (client);
 }
 
 static void
@@ -2797,18 +2800,18 @@ book_client_finalize (GObject *object)
 }
 
 static void
-e_book_client_class_init (EBookClientClass *klass)
+e_book_client_class_init (EBookClientClass *class)
 {
 	GObjectClass *object_class;
 	EClientClass *client_class;
 
-	g_type_class_add_private (klass, sizeof (EBookClientPrivate));
+	g_type_class_add_private (class, sizeof (EBookClientPrivate));
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = book_client_dispose;
 	object_class->finalize = book_client_finalize;
 
-	client_class = E_CLIENT_CLASS (klass);
+	client_class = E_CLIENT_CLASS (class);
 	client_class->get_dbus_proxy			= book_client_get_dbus_proxy;
 	client_class->unwrap_dbus_error			= book_client_unwrap_dbus_error;
 	client_class->handle_authentication		= book_client_handle_authentication;

@@ -30,6 +30,10 @@
 #include "e-data-server-ui-marshal.h"
 #include "e-source-selector.h"
 
+#define E_SOURCE_SELECTOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_SOURCE_SELECTOR, ESourceSelectorPrivate))
+
 struct _ESourceSelectorPrivate {
 	ESourceList *list;
 
@@ -115,11 +119,11 @@ safe_toggle_activate (GtkCellRenderer *cell,
 }
 
 static void
-e_cell_renderer_safe_toggle_class_init (ECellRendererSafeToggleClass *klass)
+e_cell_renderer_safe_toggle_class_init (ECellRendererSafeToggleClass *class)
 {
 	GtkCellRendererClass *rndr_class;
 
-	rndr_class = GTK_CELL_RENDERER_CLASS (klass);
+	rndr_class = GTK_CELL_RENDERER_CLASS (class);
 	rndr_class->activate = safe_toggle_activate;
 }
 
@@ -846,7 +850,9 @@ source_selector_get_property (GObject *object,
 static void
 source_selector_dispose (GObject *object)
 {
-	ESourceSelectorPrivate *priv = E_SOURCE_SELECTOR (object)->priv;
+	ESourceSelectorPrivate *priv;
+
+	priv = E_SOURCE_SELECTOR_GET_PRIVATE (object);
 
 	g_hash_table_remove_all (priv->selected_sources);
 
@@ -869,7 +875,9 @@ source_selector_dispose (GObject *object)
 static void
 source_selector_finalize (GObject *object)
 {
-	ESourceSelectorPrivate *priv = E_SOURCE_SELECTOR (object)->priv;
+	ESourceSelectorPrivate *priv;
+
+	priv = E_SOURCE_SELECTOR_GET_PRIVATE (object);
 
 	g_hash_table_destroy (priv->selected_sources);
 
@@ -1125,7 +1133,7 @@ source_selector_test_collapse_row (GtkTreeView *tree_view,
 	GtkTreeModel *model;
 	GtkTreeIter child_iter;
 
-	priv = E_SOURCE_SELECTOR (tree_view)->priv;
+	priv = E_SOURCE_SELECTOR_GET_PRIVATE (tree_view);
 
 	/* Clear this because something else has been clicked on now */
 	priv->toggled_last = FALSE;
@@ -1161,7 +1169,7 @@ source_selector_row_expanded (GtkTreeView *tree_view,
 	GtkTreePath *child_path;
 	GtkTreeIter child_iter;
 
-	priv = E_SOURCE_SELECTOR (tree_view)->priv;
+	priv = E_SOURCE_SELECTOR_GET_PRIVATE (tree_view);
 
 	if (!priv->saved_primary_selection)
 		return;
@@ -1293,16 +1301,13 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 static void
 e_source_selector_init (ESourceSelector *selector)
 {
-	ESourceSelectorPrivate *priv;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *cell_renderer;
 	GtkTreeSelection *selection;
 	GtkTreeStore *tree_store;
 	GtkTreeView *tree_view;
 
-	selector->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		selector, E_TYPE_SOURCE_SELECTOR, ESourceSelectorPrivate);
-	priv = selector->priv;
+	selector->priv = E_SOURCE_SELECTOR_GET_PRIVATE (selector);
 
 	tree_view = GTK_TREE_VIEW (selector);
 
@@ -1310,11 +1315,11 @@ e_source_selector_init (ESourceSelector *selector)
 	gtk_tree_view_set_search_equal_func (tree_view, group_search_function, NULL, NULL);
 	gtk_tree_view_set_enable_search (tree_view, TRUE);
 
-	priv->toggled_last = FALSE;
-	priv->checkboxes_shown = TRUE;
-	priv->select_new = FALSE;
+	selector->priv->toggled_last = FALSE;
+	selector->priv->checkboxes_shown = TRUE;
+	selector->priv->select_new = FALSE;
 
-	priv->selected_sources = g_hash_table_new_full (
+	selector->priv->selected_sources = g_hash_table_new_full (
 		g_direct_hash, g_direct_equal,
 		(GDestroyNotify) g_object_unref,
 		(GDestroyNotify) NULL);

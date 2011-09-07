@@ -36,15 +36,30 @@
 #include <libebook/e-book.h>
 #endif /* E_BOOK_DISABLE_DEPRECATED */
 
-#define E_TYPE_DESTINATION           (e_destination_get_type ())
-#define E_DESTINATION(o)             (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_DESTINATION, EDestination))
-#define E_DESTINATION_CLASS(k)       (G_TYPE_CHECK_CLASS_CAST ((k), E_TYPE_DESTINATION, EDestinationClass))
-#define E_IS_DESTINATION(o)          (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_DESTINATION))
-#define E_IS_DESTINATION_CLASS(k)    (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_DESTINATION))
-#define E_DESTINATION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_DESTINATION, EDestinationClass))
+/* Standard GObject macros */
+#define E_TYPE_DESTINATION \
+	(e_destination_get_type ())
+#define E_DESTINATION(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_DESTINATION, EDestination))
+#define E_DESTINATION_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_DESTINATION, EDestinationClass))
+#define E_IS_DESTINATION(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_DESTINATION))
+#define E_IS_DESTINATION_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_DESTINATION))
+#define E_DESTINATION_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_DESTINATION, EDestinationClass))
+
+G_BEGIN_DECLS
 
 typedef struct _EDestination EDestination;
 typedef struct _EDestinationClass EDestinationClass;
+typedef struct _EDestinationPrivate EDestinationPrivate;
 
 struct _EDestinationPrivate;
 
@@ -130,5 +145,7 @@ void           e_destination_freev              (EDestination **destv);
 #ifndef E_BOOK_DISABLE_DEPRECATED
 void           e_destination_set_book           (EDestination *dest, EBook *book);
 #endif
+
+G_END_DECLS
 
 #endif /* __E_DESTINATION_H__ */

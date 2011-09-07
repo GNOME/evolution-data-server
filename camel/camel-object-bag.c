@@ -88,8 +88,8 @@ key_reservation_free (CamelObjectBag *bag,
 
 static void
 object_bag_toggle_notify (gpointer user_data,
-			  GObject *object,
-			  gboolean is_last_ref)
+                          GObject *object,
+                          gboolean is_last_ref)
 {
 	CamelObjectBag *bag = user_data;
 	gpointer key;
@@ -113,8 +113,8 @@ object_bag_toggle_notify (gpointer user_data,
 
 static void
 object_bag_toggle_unref (gpointer key,
-			 GObject *object,
-			 CamelObjectBag *bag)
+                         GObject *object,
+                         CamelObjectBag *bag)
 {
 	g_object_remove_toggle_ref (object, object_bag_toggle_notify, bag);
 }

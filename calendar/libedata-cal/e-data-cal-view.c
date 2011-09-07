@@ -33,6 +33,10 @@
 #include "e-data-cal-view.h"
 #include "e-gdbus-cal-view.h"
 
+#define E_DATA_CAL_VIEW_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_DATA_CAL_VIEW_TYPE, EDataCalViewPrivate))
+
 static void ensure_pending_flush_timeout (EDataCalView *view);
 
 #define THRESHOLD_ITEMS   32	/* how many items can be hold in a cache, before propagated to UI */
@@ -80,11 +84,11 @@ enum props {
 
 /* Class init */
 static void
-e_data_cal_view_class_init (EDataCalViewClass *klass)
+e_data_cal_view_class_init (EDataCalViewClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-	g_type_class_add_private (klass, sizeof (EDataCalViewPrivate));
+	g_type_class_add_private (class, sizeof (EDataCalViewPrivate));
 
 	object_class->set_property = e_data_cal_view_set_property;
 	object_class->get_property = e_data_cal_view_get_property;
@@ -556,32 +560,44 @@ e_data_cal_view_get_property (GObject *object,
 static void
 e_data_cal_view_init (EDataCalView *view)
 {
-	EDataCalViewPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		view, E_DATA_CAL_VIEW_TYPE, EDataCalViewPrivate);
+	view->priv = E_DATA_CAL_VIEW_GET_PRIVATE (view);
 
-	view->priv = priv;
+	view->priv->gdbus_object = e_gdbus_cal_view_stub_new ();
+	g_signal_connect (
+		view->priv->gdbus_object, "handle-start",
+		G_CALLBACK (impl_DataCalView_start), view);
+	g_signal_connect (
+		view->priv->gdbus_object, "handle-stop",
+		G_CALLBACK (impl_DataCalView_stop), view);
+	g_signal_connect (
+		view->priv->gdbus_object, "handle-dispose",
+		G_CALLBACK (impl_DataCalView_dispose), view);
+	g_signal_connect (
+		view->priv->gdbus_object, "handle-set-fields-of-interest",
+		G_CALLBACK (impl_DataCalView_set_fields_of_interest), view);
 
-	priv->gdbus_object = e_gdbus_cal_view_stub_new ();
-	g_signal_connect (priv->gdbus_object, "handle-start", G_CALLBACK (impl_DataCalView_start), view);
-	g_signal_connect (priv->gdbus_object, "handle-stop", G_CALLBACK (impl_DataCalView_stop), view);
-	g_signal_connect (priv->gdbus_object, "handle-dispose", G_CALLBACK (impl_DataCalView_dispose), view);
-	g_signal_connect (priv->gdbus_object, "handle-set-fields-of-interest", G_CALLBACK (impl_DataCalView_set_fields_of_interest), view);
+	view->priv->backend = NULL;
+	view->priv->started = FALSE;
+	view->priv->stopped = FALSE;
+	view->priv->complete = FALSE;
+	view->priv->sexp = NULL;
+	view->priv->fields_of_interest = NULL;
 
-	priv->backend = NULL;
-	priv->started = FALSE;
-	priv->stopped = FALSE;
-	priv->complete = FALSE;
-	priv->sexp = NULL;
-	priv->fields_of_interest = NULL;
+	view->priv->adds = g_array_sized_new (
+		TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
+	view->priv->changes = g_array_sized_new (
+		TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
+	view->priv->removes = g_array_sized_new (
+		TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
 
-	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
-	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
-	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
+	view->priv->ids = g_hash_table_new_full (
+		(GHashFunc) id_hash,
+		(GEqualFunc) id_equal,
+		(GDestroyNotify) e_cal_component_free_id,
+		(GDestroyNotify) NULL);
 
-	priv->ids = g_hash_table_new_full (id_hash, id_equal, (GDestroyNotify) e_cal_component_free_id, NULL);
-
-	priv->pending_mutex = g_mutex_new ();
-	priv->flush_id = 0;
+	view->priv->pending_mutex = g_mutex_new ();
+	view->priv->flush_id = 0;
 }
 
 static void

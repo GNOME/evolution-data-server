@@ -41,6 +41,10 @@
 
 #define d(x)
 
+#define E_CONTACT_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CONTACT, EContactPrivate))
+
 G_DEFINE_TYPE (EContact, e_contact, E_TYPE_VCARD)
 
 struct _EContactPrivate {
@@ -306,42 +310,36 @@ static const EContactFieldInfo field_info[] = {
 #undef LIST_FIELD
 #undef GETSET_FIELD
 
-static GObjectClass *parent_class;
-
 static void e_contact_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec);
 static void e_contact_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec);
 
 static void
 e_contact_finalize (GObject *object)
 {
-	EContact *ec = E_CONTACT (object);
+	EContactPrivate *priv;
 	gint i;
 
-	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i++) {
-		g_free (ec->priv->cached_strings[i]);
-	}
+	priv = E_CONTACT_GET_PRIVATE (object);
 
-	if (ec->priv) {
-		g_free (ec->priv);
-		ec->priv = NULL;
-	}
+	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i++)
+		g_free (priv->cached_strings[i]);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_contact_parent_class)->finalize (object);
 }
 
 static void
-e_contact_class_init (EContactClass *klass)
+e_contact_class_init (EContactClass *class)
 {
 	GObjectClass *object_class;
 	gint i;
 
-	object_class = G_OBJECT_CLASS (klass);
+	g_type_class_add_private (class, sizeof (EContactPrivate));
 
-	parent_class = g_type_class_ref (E_TYPE_VCARD);
-
-	object_class->finalize = e_contact_finalize;
+	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = e_contact_set_property;
 	object_class->get_property = e_contact_get_property;
+	object_class->finalize = e_contact_finalize;
 
 	for (i = E_CONTACT_FIELD_FIRST; i < E_CONTACT_FIELD_LAST; i++) {
 		GParamSpec *pspec = NULL;
@@ -385,10 +383,8 @@ e_contact_class_init (EContactClass *klass)
 static void
 e_contact_init (EContact *ec)
 {
-	ec->priv = g_new0 (EContactPrivate, 1);
+	ec->priv = E_CONTACT_GET_PRIVATE (ec);
 }
-
-
 
 static gpointer
 geo_getter (EContact *contact,

@@ -39,7 +39,7 @@ get_revision_compare_cycle (ECalClient *client)
        g_assert (strcmp (revision_before, revision_after) != 0);
 
        g_message ("Passed cycle, revision before '%s' revision after '%s'",
-                  revision_before, revision_after);
+		  revision_before, revision_after);
 
        g_free (revision_before);
        g_free (revision_after);
@@ -49,7 +49,8 @@ get_revision_compare_cycle (ECalClient *client)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECalClient *cal_client;
 	GError      *error = NULL;

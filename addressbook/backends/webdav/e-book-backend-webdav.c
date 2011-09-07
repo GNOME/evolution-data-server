@@ -52,6 +52,10 @@
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 
+#define E_BOOK_BACKEND_WEBDAV_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_BACKEND, EBookBackendWebdavPrivate))
+
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
 
@@ -60,8 +64,6 @@
 #define WEBDAV_CTAG_KEY "WEBDAV_CTAG"
 
 G_DEFINE_TYPE (EBookBackendWebdav, e_book_backend_webdav, E_TYPE_BOOK_BACKEND)
-
-static EBookBackendClass *parent_class;
 
 struct _EBookBackendWebdavPrivate {
 	gboolean           marked_for_offline;
@@ -1461,18 +1463,16 @@ e_book_backend_webdav_dispose (GObject *object)
 	#undef do_unref
 	#undef do_free
 
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (e_book_backend_webdav_parent_class)->dispose (object);
 }
 
 static void
-e_book_backend_webdav_class_init (EBookBackendWebdavClass *klass)
+e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 {
-	GObjectClass      *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass      *object_class = G_OBJECT_CLASS (class);
 	EBookBackendClass *backend_class;
 
-	parent_class = g_type_class_peek_parent (klass);
-
-	backend_class = E_BOOK_BACKEND_CLASS (klass);
+	backend_class = E_BOOK_BACKEND_CLASS (class);
 
 	/* Set the virtual methods. */
 	backend_class->open			= e_book_backend_webdav_open;
@@ -1497,9 +1497,7 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *klass)
 static void
 e_book_backend_webdav_init (EBookBackendWebdav *backend)
 {
-	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		backend, E_TYPE_BOOK_BACKEND_WEBDAV,
-		EBookBackendWebdavPrivate);
+	backend->priv = E_BOOK_BACKEND_WEBDAV_GET_PRIVATE (backend);
 
 	g_signal_connect (
 		backend, "notify::online",

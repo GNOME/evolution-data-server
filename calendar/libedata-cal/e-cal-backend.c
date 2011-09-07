@@ -30,6 +30,10 @@
 #include "e-cal-backend.h"
 #include "e-cal-backend-cache.h"
 
+#define E_CAL_BACKEND_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND, ECalBackendPrivate))
+
 #define EDC_ERROR(_code)	e_data_cal_create_error (_code, NULL)
 #define EDC_OPENING_ERROR	e_data_cal_create_error (Busy, _("Cannot process, calendar backend is opening"))
 #define EDC_NOT_OPENED_ERROR	e_data_cal_create_error (NotOpened, NULL)
@@ -208,7 +212,7 @@ cal_backend_finalize (GObject *object)
 {
 	ECalBackendPrivate *priv;
 
-	priv = E_CAL_BACKEND (object)->priv;
+	priv = E_CAL_BACKEND_GET_PRIVATE (object);
 
 	g_assert (priv->clients == NULL);
 
@@ -234,20 +238,20 @@ cal_backend_constructed (GObject *object)
 }
 
 static void
-e_cal_backend_class_init (ECalBackendClass *klass)
+e_cal_backend_class_init (ECalBackendClass *class)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (ECalBackendPrivate));
+	g_type_class_add_private (class, sizeof (ECalBackendPrivate));
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = cal_backend_set_property;
 	object_class->get_property = cal_backend_get_property;
 	object_class->finalize = cal_backend_finalize;
 	object_class->constructed = cal_backend_constructed;
 
-	klass->get_backend_property = cal_backend_get_backend_property;
-	klass->set_backend_property = cal_backend_set_backend_property;
+	class->get_backend_property = cal_backend_get_backend_property;
+	class->set_backend_property = cal_backend_set_backend_property;
 
 	g_object_class_install_property (
 		object_class,
@@ -276,8 +280,7 @@ e_cal_backend_class_init (ECalBackendClass *klass)
 static void
 e_cal_backend_init (ECalBackend *backend)
 {
-	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		backend, E_TYPE_CAL_BACKEND, ECalBackendPrivate);
+	backend->priv = E_CAL_BACKEND_GET_PRIVATE (backend);
 
 	backend->priv->clients = NULL;
 	backend->priv->clients_mutex = g_mutex_new ();

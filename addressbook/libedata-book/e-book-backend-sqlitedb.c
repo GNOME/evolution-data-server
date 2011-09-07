@@ -34,6 +34,10 @@
 #include "libebackend/e-sqlite3-vfs.h"
 #include "e-book-backend-sqlitedb.h"
 
+#define E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_BACKEND_SQLITEDB, EBookBackendSqliteDBPrivate))
+
 #define d(x)
 
 #define DB_FILENAME "contacts.db"
@@ -120,7 +124,7 @@ e_book_backend_sqlitedb_dispose (GObject *object)
 {
 	EBookBackendSqliteDBPrivate *priv;
 
-	priv = E_BOOK_BACKEND_SQLITEDB (object)->priv;
+	priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (object);
 
 	g_static_mutex_lock (&dbcon_lock);
 	if (db_connections != NULL) {
@@ -147,21 +151,15 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 {
 	EBookBackendSqliteDBPrivate *priv;
 
-	priv = E_BOOK_BACKEND_SQLITEDB (object)->priv;
+	priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (object);
 
 	g_static_rw_lock_free (&priv->rwlock);
 
 	sqlite3_close (priv->db);
-	priv->db = NULL;
 
 	g_free (priv->path);
-	priv->path = NULL;
 
 	g_mutex_free (priv->in_transaction_lock);
-	priv->in_transaction_lock = NULL;
-
-	g_free (priv);
-	priv = NULL;
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_backend_sqlitedb_parent_class)->finalize (object);
@@ -182,7 +180,7 @@ e_book_backend_sqlitedb_class_init (EBookBackendSqliteDBClass *class)
 static void
 e_book_backend_sqlitedb_init (EBookBackendSqliteDB *ebsdb)
 {
-	ebsdb->priv = g_new0 (EBookBackendSqliteDBPrivate, 1);
+	ebsdb->priv = E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE (ebsdb);
 
 	ebsdb->priv->store_vcard = TRUE;
 	g_static_rw_lock_init (&ebsdb->priv->rwlock);
@@ -314,7 +312,7 @@ book_backend_sqlitedb_start_transaction (EBookBackendSqliteDB *ebsdb,
 /* the last caller releases the writer lock too */
 static gboolean
 book_backend_sqlitedb_end_transaction (EBookBackendSqliteDB *ebsdb,
-				       gboolean do_commit,
+                                       gboolean do_commit,
                                        GError **error)
 {
 	gboolean res = TRUE;
@@ -610,7 +608,7 @@ exit:
 
 gboolean
 e_book_backend_sqlitedb_lock_updates (EBookBackendSqliteDB *ebsdb,
-				      GError **error)
+                                      GError **error)
 {
 	g_return_val_if_fail (ebsdb != NULL, FALSE);
 	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
@@ -620,8 +618,8 @@ e_book_backend_sqlitedb_lock_updates (EBookBackendSqliteDB *ebsdb,
 
 gboolean
 e_book_backend_sqlitedb_unlock_updates (EBookBackendSqliteDB *ebsdb,
-					gboolean do_commit,
-					GError **error)
+                                        gboolean do_commit,
+                                        GError **error)
 {
 	g_return_val_if_fail (ebsdb != NULL, FALSE);
 	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
@@ -1750,7 +1748,7 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 
 static gint
 get_uids_and_rev_cb (gpointer user_data,
-		     gint col,
+                     gint col,
                      gchar **cols,
                      gchar **name)
 {
@@ -1774,8 +1772,8 @@ get_uids_and_rev_cb (gpointer user_data,
  **/
 GHashTable *
 e_book_backend_sqlitedb_get_uids_and_rev (EBookBackendSqliteDB *ebsdb,
-					  const gchar *folderid,
-					  GError **error)
+                                          const gchar *folderid,
+                                          GError **error)
 {
 	GHashTable *uids_and_rev = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	gchar *stmt;

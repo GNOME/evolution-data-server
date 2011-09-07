@@ -31,12 +31,18 @@
 #include "camel-imap-folder.h"
 #include "camel-imap-wrapper.h"
 
+#define CAMEL_IMAP_WRAPPER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_IMAP_WRAPPER, CamelImapWrapperPrivate))
+
 struct _CamelImapWrapperPrivate {
 	GMutex *lock;
 };
 
-#define CAMEL_IMAP_WRAPPER_LOCK(f, l) (g_mutex_lock(((CamelImapWrapper *)f)->priv->l))
-#define CAMEL_IMAP_WRAPPER_UNLOCK(f, l) (g_mutex_unlock(((CamelImapWrapper *)f)->priv->l))
+#define CAMEL_IMAP_WRAPPER_LOCK(f, l) \
+	(g_mutex_lock (((CamelImapWrapper *) f)->priv->l))
+#define CAMEL_IMAP_WRAPPER_UNLOCK(f, l) \
+	(g_mutex_unlock (((CamelImapWrapper *) f)->priv->l))
 
 G_DEFINE_TYPE (CamelImapWrapper, camel_imap_wrapper, CAMEL_TYPE_DATA_WRAPPER)
 
@@ -149,9 +155,7 @@ camel_imap_wrapper_class_init (CamelImapWrapperClass *class)
 static void
 camel_imap_wrapper_init (CamelImapWrapper *imap_wrapper)
 {
-	imap_wrapper->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		imap_wrapper, CAMEL_TYPE_IMAP_WRAPPER,
-		CamelImapWrapperPrivate);
+	imap_wrapper->priv = CAMEL_IMAP_WRAPPER_GET_PRIVATE (imap_wrapper);
 	imap_wrapper->priv->lock = g_mutex_new ();
 }
 

@@ -29,16 +29,15 @@ static void        e_list_iterator_dispose    (GObject *object);
 G_DEFINE_TYPE (EListIterator, e_list_iterator, E_TYPE_ITERATOR)
 
 static void
-e_list_iterator_class_init (EListIteratorClass *klass)
+e_list_iterator_class_init (EListIteratorClass *class)
 {
 	GObjectClass *object_class;
 	EIteratorClass *iterator_class;
 
-	object_class = G_OBJECT_CLASS (klass);
-	iterator_class = E_ITERATOR_CLASS (klass);
-
+	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = e_list_iterator_dispose;
 
+	iterator_class = E_ITERATOR_CLASS (class);
 	iterator_class->invalidate = e_list_iterator_invalidate;
 	iterator_class->get        = e_list_iterator_get;
 	iterator_class->reset      = e_list_iterator_reset;

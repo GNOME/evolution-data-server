@@ -45,6 +45,10 @@
 #include "e-name-selector-dialog.h"
 #include "e-name-selector-entry.h"
 
+#define E_NAME_SELECTOR_DIALOG_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_NAME_SELECTOR_DIALOG, ENameSelectorDialogPrivate))
+
 typedef struct {
 	gchar        *name;
 
@@ -173,9 +177,8 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkWidget *status_message;
 	GtkWidget *source_combo;
 
-	name_selector_dialog->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		name_selector_dialog, E_TYPE_NAME_SELECTOR_DIALOG,
-		ENameSelectorDialogPrivate);
+	name_selector_dialog->priv =
+		E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 
 	name_selector_box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (name_selector_box);
@@ -446,7 +449,7 @@ e_name_selector_dialog_finalize (GObject *object)
 {
 	ENameSelectorDialogPrivate *priv;
 
-	priv = E_NAME_SELECTOR_DIALOG (object)->priv;
+	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (object);
 
 	g_slist_foreach (priv->user_query_fields, (GFunc) g_free, NULL);
 	g_slist_free (priv->user_query_fields);
@@ -730,7 +733,7 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	g_assert (pretty_name != NULL);
 	g_assert (E_IS_DESTINATION_STORE (destination_store));
 
-	priv = name_selector_dialog->priv;
+	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 
 	memset (&section, 0, sizeof (Section));
 
@@ -1009,7 +1012,7 @@ source_changed (ENameSelectorDialog *name_selector_dialog,
 static void
 search_changed (ENameSelectorDialog *name_selector_dialog)
 {
-	ENameSelectorDialogPrivate *priv = name_selector_dialog->priv;
+	ENameSelectorDialogPrivate *priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
 	EContactStore *contact_store;
 	EBookQuery    *book_query;
 	GtkWidget     *combo_box;

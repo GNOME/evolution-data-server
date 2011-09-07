@@ -166,13 +166,13 @@ gboolean	camel_imapx_server_expunge	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_fetch_messages 		
+gboolean	camel_imapx_server_fetch_messages
 						(CamelIMAPXServer *is,
-                                       		 CamelFolder *folder,
+						 CamelFolder *folder,
 						 CamelFetchType type,
-				       		 int limit,
+						 gint limit,
 						 GCancellable *cancellable,
-                                       		 GError **error);
+						 GError **error);
 gboolean	camel_imapx_server_noop		(CamelIMAPXServer *is,
 						 CamelFolder *folder,
 						 GCancellable *cancellable,

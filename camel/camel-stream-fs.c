@@ -39,6 +39,10 @@
 #include "camel-stream-fs.h"
 #include "camel-win32.h"
 
+#define CAMEL_STREAM_FS_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_STREAM_FS, CamelStreamFsPrivate))
+
 struct _CamelStreamFsPrivate {
 	gint fd;	/* file descriptor on the underlying file */
 };
@@ -55,7 +59,7 @@ stream_fs_finalize (GObject *object)
 {
 	CamelStreamFsPrivate *priv;
 
-	priv = CAMEL_STREAM_FS (object)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (object);
 
 	if (priv->fd != -1)
 		close (priv->fd);
@@ -74,7 +78,7 @@ stream_fs_read (CamelStream *stream,
 	CamelStreamFsPrivate *priv;
 	gssize nread;
 
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
 	nread = camel_read (priv->fd, buffer, n, cancellable, error);
 
@@ -93,7 +97,7 @@ stream_fs_write (CamelStream *stream,
 {
 	CamelStreamFsPrivate *priv;
 
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
 	return camel_write (priv->fd, buffer, n, cancellable, error);
 }
@@ -105,7 +109,7 @@ stream_fs_flush (CamelStream *stream,
 {
 	CamelStreamFsPrivate *priv;
 
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return -1;
@@ -128,7 +132,7 @@ stream_fs_close (CamelStream *stream,
 {
 	CamelStreamFsPrivate *priv;
 
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return -1;
@@ -151,7 +155,7 @@ stream_fs_tell (GSeekable *seekable)
 {
 	CamelStreamFsPrivate *priv;
 
-	priv = CAMEL_STREAM_FS (seekable)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (seekable);
 
 	return (goffset) lseek (priv->fd, 0, SEEK_CUR);
 }
@@ -172,7 +176,7 @@ stream_fs_seek (GSeekable *seekable,
 	CamelStreamFsPrivate *priv;
 	goffset real = 0;
 
-	priv = CAMEL_STREAM_FS (seekable)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (seekable);
 
 	switch (type) {
 	case G_SEEK_SET:
@@ -258,8 +262,7 @@ camel_stream_fs_seekable_init (GSeekableIface *interface)
 static void
 camel_stream_fs_init (CamelStreamFs *stream)
 {
-	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		stream, CAMEL_TYPE_STREAM_FS, CamelStreamFsPrivate);
+	stream->priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 	stream->priv->fd = -1;
 }
 
@@ -283,7 +286,7 @@ camel_stream_fs_new_with_fd (gint fd)
 		return NULL;
 
 	stream = g_object_new (CAMEL_TYPE_STREAM_FS, NULL);
-	priv = CAMEL_STREAM_FS (stream)->priv;
+	priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 
 	priv->fd = fd;
 

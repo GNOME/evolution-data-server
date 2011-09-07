@@ -28,6 +28,10 @@
 #include <libedataserver/e-uid.h>
 #include <libedataserver/e-source-group.h>
 
+#define E_SOURCE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_SOURCE, ESourcePrivate))
+
 struct _ESourcePrivate {
 	ESourceGroup *group;
 
@@ -66,9 +70,11 @@ group_weak_notify (ESource *source,
 G_DEFINE_TYPE (ESource, e_source, G_TYPE_OBJECT)
 
 static void
-impl_finalize (GObject *object)
+source_finalize (GObject *object)
 {
-	ESourcePrivate *priv = E_SOURCE (object)->priv;
+	ESourcePrivate *priv;
+
+	priv = E_SOURCE_GET_PRIVATE (object);
 
 	g_free (priv->uid);
 	g_free (priv->name);
@@ -78,22 +84,24 @@ impl_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->properties);
 
-	g_free (priv);
-
-	(* G_OBJECT_CLASS (e_source_parent_class)->finalize) (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_source_parent_class)->finalize (object);
 }
 
 static void
-impl_dispose (GObject *object)
+source_dispose (GObject *object)
 {
-	ESourcePrivate *priv = E_SOURCE (object)->priv;
+	ESourcePrivate *priv;
+
+	priv = E_SOURCE_GET_PRIVATE (object);
 
 	if (priv->group != NULL) {
 		g_object_weak_unref (G_OBJECT (priv->group), (GWeakNotify) group_weak_notify, object);
 		priv->group = NULL;
 	}
 
-	(* G_OBJECT_CLASS (e_source_parent_class)->dispose) (object);
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_source_parent_class)->dispose (object);
 }
 
 /* Initialization.  */
@@ -101,31 +109,34 @@ impl_dispose (GObject *object)
 static void
 e_source_class_init (ESourceClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (class);
+	GObjectClass *object_class;
 
-	object_class->dispose  = impl_dispose;
-	object_class->finalize = impl_finalize;
+	g_type_class_add_private (class, sizeof (ESourcePrivate));
 
-	signals[CHANGED] =
-		g_signal_new ("changed",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (ESourceClass, changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = source_dispose;
+	object_class->finalize = source_finalize;
+
+	signals[CHANGED] = g_signal_new (
+		"changed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ESourceClass, changed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
 }
 
 static void
 e_source_init (ESource *source)
 {
-	ESourcePrivate *priv;
+	source->priv = E_SOURCE_GET_PRIVATE (source);
 
-	priv = g_new0 (ESourcePrivate, 1);
-	source->priv = priv;
-
-	priv->properties = g_hash_table_new_full (g_str_hash, g_str_equal,
-						  g_free, g_free);
+	source->priv->properties = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) g_free);
 }
 
 /* Private methods. */

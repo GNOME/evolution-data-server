@@ -27,6 +27,10 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 
+#define E_CELL_RENDERER_COLOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CELL_RENDERER_COLOR, ECellRendererColorPrivate))
+
 enum {
 	PROP_0,
 	PROP_COLOR
@@ -36,9 +40,10 @@ struct _ECellRendererColorPrivate {
 	GdkColor *color;
 };
 
-static gpointer parent_class;
-
-G_DEFINE_TYPE (ECellRendererColor, e_cell_renderer_color, GTK_TYPE_CELL_RENDERER)
+G_DEFINE_TYPE (
+	ECellRendererColor,
+	e_cell_renderer_color,
+	GTK_TYPE_CELL_RENDERER)
 
 static void
 cell_renderer_color_get_size (GtkCellRenderer *cell,
@@ -104,7 +109,7 @@ cell_renderer_color_render (GtkCellRenderer *cell,
 	guint xpad;
 	guint ypad;
 
-	priv = E_CELL_RENDERER_COLOR (cell)->priv;
+	priv = E_CELL_RENDERER_COLOR_GET_PRIVATE (cell);
 
 	if (priv->color == NULL)
 		return;
@@ -138,7 +143,7 @@ cell_renderer_color_set_property (GObject *object,
 {
 	ECellRendererColorPrivate *priv;
 
-	priv = E_CELL_RENDERER_COLOR (object)->priv;
+	priv = E_CELL_RENDERER_COLOR_GET_PRIVATE (object);
 
 	switch (property_id) {
 		case PROP_COLOR:
@@ -159,7 +164,7 @@ cell_renderer_color_get_property (GObject *object,
 {
 	ECellRendererColorPrivate *priv;
 
-	priv = E_CELL_RENDERER_COLOR (object)->priv;
+	priv = E_CELL_RENDERER_COLOR_GET_PRIVATE (object);
 
 	switch (property_id) {
 		case PROP_COLOR:
@@ -175,13 +180,13 @@ cell_renderer_color_finalize (GObject *object)
 {
 	ECellRendererColorPrivate *priv;
 
-	priv = E_CELL_RENDERER_COLOR (object)->priv;
+	priv = E_CELL_RENDERER_COLOR_GET_PRIVATE (object);
 
 	if (priv->color != NULL)
 		gdk_color_free (priv->color);
 
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_cell_renderer_color_parent_class)->finalize (object);
 }
 
 static void
@@ -190,8 +195,7 @@ e_cell_renderer_color_class_init (ECellRendererColorClass *class)
 	GObjectClass *object_class;
 	GtkCellRendererClass *cell_class;
 
-	parent_class = g_type_class_peek_parent (class);
-	g_type_class_add_private (class, sizeof (ECellRendererColor));
+	g_type_class_add_private (class, sizeof (ECellRendererColorPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = cell_renderer_color_set_property;
@@ -216,9 +220,7 @@ e_cell_renderer_color_class_init (ECellRendererColorClass *class)
 static void
 e_cell_renderer_color_init (ECellRendererColor *cellcolor)
 {
-	cellcolor->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		cellcolor, E_TYPE_CELL_RENDERER_COLOR,
-		ECellRendererColorPrivate);
+	cellcolor->priv = E_CELL_RENDERER_COLOR_GET_PRIVATE (cellcolor);
 
 	g_object_set (cellcolor, "xpad", 4, NULL);
 }

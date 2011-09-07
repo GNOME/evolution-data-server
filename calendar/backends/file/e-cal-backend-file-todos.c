@@ -31,7 +31,7 @@ G_DEFINE_TYPE (
 	E_TYPE_CAL_BACKEND_FILE)
 
 static void
-e_cal_backend_file_todos_class_init (ECalBackendFileTodosClass *klass)
+e_cal_backend_file_todos_class_init (ECalBackendFileTodosClass *class)
 {
 }
 

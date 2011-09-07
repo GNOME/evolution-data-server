@@ -41,9 +41,11 @@
 
 #include "e-book-backend-summary.h"
 
-G_DEFINE_TYPE (EBookBackendSummary, e_book_backend_summary, G_TYPE_OBJECT)
+#define E_BOOK_BACKEND_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_BACKEND_SUMMARY, EBookBackendSummaryPrivate))
 
-static GObjectClass *parent_class;
+G_DEFINE_TYPE (EBookBackendSummary, e_book_backend_summary, G_TYPE_OBJECT)
 
 struct _EBookBackendSummaryPrivate {
 	gchar *summary_path;
@@ -161,7 +163,7 @@ EBookBackendSummary *
 e_book_backend_summary_new (const gchar *summary_path,
                             gint flush_timeout_millis)
 {
-	EBookBackendSummary *summary = g_object_new (E_TYPE_BACKEND_SUMMARY, NULL);
+	EBookBackendSummary *summary = g_object_new (E_TYPE_BOOK_BACKEND_SUMMARY, NULL);
 
 	summary->priv->summary_path = g_strdup (summary_path);
 	summary->priv->flush_timeout_millis = flush_timeout_millis;
@@ -171,69 +173,50 @@ e_book_backend_summary_new (const gchar *summary_path,
 }
 
 static void
-e_book_backend_summary_dispose (GObject *object)
+e_book_backend_summary_finalize (GObject *object)
 {
-	EBookBackendSummary *summary = E_BOOK_BACKEND_SUMMARY (object);
+	EBookBackendSummaryPrivate *priv;
 
-	if (summary->priv) {
-		if (summary->priv->fp)
-			fclose (summary->priv->fp);
-		if (summary->priv->dirty)
-			e_book_backend_summary_save (summary);
-		else
-			utime (summary->priv->summary_path, NULL);
+	priv = E_BOOK_BACKEND_SUMMARY_GET_PRIVATE (object);
 
-		if (summary->priv->flush_timeout) {
-			g_source_remove (summary->priv->flush_timeout);
-			summary->priv->flush_timeout = 0;
-		}
+	if (priv->fp)
+		fclose (priv->fp);
+	if (priv->dirty)
+		e_book_backend_summary_save (E_BOOK_BACKEND_SUMMARY (object));
+	else
+		utime (priv->summary_path, NULL);
 
-		g_free (summary->priv->summary_path);
-		clear_items (summary);
-		g_ptr_array_free (summary->priv->items, TRUE);
+	if (priv->flush_timeout)
+		g_source_remove (priv->flush_timeout);
 
-		g_hash_table_destroy (summary->priv->id_to_item);
+	g_free (priv->summary_path);
+	clear_items (E_BOOK_BACKEND_SUMMARY (object));
+	g_ptr_array_free (priv->items, TRUE);
 
-		g_free (summary->priv);
-		summary->priv = NULL;
-	}
+	g_hash_table_destroy (priv->id_to_item);
 
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_book_backend_summary_parent_class)->finalize (object);
 }
 
 static void
-e_book_backend_summary_class_init (EBookBackendSummaryClass *klass)
+e_book_backend_summary_class_init (EBookBackendSummaryClass *class)
 {
-	GObjectClass  *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class;
 
-	parent_class = g_type_class_peek_parent (klass);
+	g_type_class_add_private (class, sizeof (EBookBackendSummaryPrivate));
 
-	/* Set the virtual methods. */
-
-	object_class->dispose = e_book_backend_summary_dispose;
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = e_book_backend_summary_finalize;
 }
 
 static void
 e_book_backend_summary_init (EBookBackendSummary *summary)
 {
-	EBookBackendSummaryPrivate *priv;
+	summary->priv = E_BOOK_BACKEND_SUMMARY_GET_PRIVATE (summary);
 
-	priv             = g_new (EBookBackendSummaryPrivate, 1);
-
-	summary->priv = priv;
-
-	priv->summary_path = NULL;
-	priv->fp = NULL;
-	priv->dirty = FALSE;
-	priv->upgraded = FALSE;
-	priv->items = g_ptr_array_new ();
-	priv->id_to_item = g_hash_table_new (g_str_hash, g_str_equal);
-	priv->flush_timeout_millis = 0;
-	priv->flush_timeout = 0;
-#ifdef SUMMARY_STATS
-	priv->size = 0;
-#endif
+	summary->priv->items = g_ptr_array_new ();
+	summary->priv->id_to_item = g_hash_table_new (g_str_hash, g_str_equal);
 }
 
 

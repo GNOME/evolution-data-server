@@ -27,6 +27,10 @@
 
 #include "e-gdbus-book.h"
 
+#define E_GDBUS_BOOK_PROXY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_GDBUS_BOOK_PROXY, EGdbusBookProxyPrivate))
+
 #define GDBUS_BOOK_INTERFACE_NAME "org.gnome.evolution.dataserver.AddressBook"
 
 typedef EGdbusBookIface EGdbusBookInterface;
@@ -1033,7 +1037,7 @@ e_gdbus_book_proxy_init (EGdbusBookProxy *proxy)
 {
 	g_dbus_proxy_set_interface_info (G_DBUS_PROXY (proxy), (GDBusInterfaceInfo *) &_e_gdbus_book_interface_info);
 
-	proxy->priv = G_TYPE_INSTANCE_GET_PRIVATE (proxy, E_TYPE_GDBUS_BOOK_PROXY, EGdbusBookProxyPrivate);
+	proxy->priv = E_GDBUS_BOOK_PROXY_GET_PRIVATE (proxy);
 	proxy->priv->pending_ops = e_gdbus_async_op_keeper_create_pending_ops (E_GDBUS_ASYNC_OP_KEEPER (proxy));
 
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (open);
@@ -1084,17 +1088,17 @@ gdbus_book_proxy_finalize (GObject *object)
 }
 
 static void
-e_gdbus_book_proxy_class_init (EGdbusBookProxyClass *klass)
+e_gdbus_book_proxy_class_init (EGdbusBookProxyClass *class)
 {
 	GObjectClass *object_class;
 	GDBusProxyClass *proxy_class;
 
-	g_type_class_add_private (klass, sizeof (EGdbusBookProxyPrivate));
+	g_type_class_add_private (class, sizeof (EGdbusBookProxyPrivate));
 
-	object_class = G_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = gdbus_book_proxy_finalize;
 
-	proxy_class = G_DBUS_PROXY_CLASS (klass);
+	proxy_class = G_DBUS_PROXY_CLASS (class);
 	proxy_class->g_signal = g_signal;
 }
 
@@ -1341,11 +1345,6 @@ e_gdbus_book_proxy_new_for_bus_sync (GBusType bus_type,
 
 /* ---------------------------------------------------------------------- */
 
-struct _EGdbusBookStubPrivate
-{
-	gint foo;
-};
-
 static void stub_iface_init (EGdbusBookIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (EGdbusBookStub, e_gdbus_book_stub, G_TYPE_OBJECT,
@@ -1354,13 +1353,11 @@ G_DEFINE_TYPE_WITH_CODE (EGdbusBookStub, e_gdbus_book_stub, G_TYPE_OBJECT,
 static void
 e_gdbus_book_stub_init (EGdbusBookStub *stub)
 {
-	stub->priv = G_TYPE_INSTANCE_GET_PRIVATE (stub, E_TYPE_GDBUS_BOOK_STUB, EGdbusBookStubPrivate);
 }
 
 static void
-e_gdbus_book_stub_class_init (EGdbusBookStubClass *klass)
+e_gdbus_book_stub_class_init (EGdbusBookStubClass *class)
 {
-	g_type_class_add_private (klass, sizeof (EGdbusBookStubPrivate));
 }
 
 static void

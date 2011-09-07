@@ -137,6 +137,10 @@
 /* this is broken currently, don't enable it */
 /*#define ENABLE_SASL_BINDS*/
 
+#define E_BOOK_BACKEND_LDAP_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_BACKEND, EBookBackendLDAPPrivate))
+
 typedef enum {
 	E_BOOK_BACKEND_LDAP_TLS_NO,
 	E_BOOK_BACKEND_LDAP_TLS_ALWAYS,
@@ -5475,10 +5479,14 @@ e_book_backend_ldap_get_backend_property (EBookBackend *backend,
                                           GCancellable *cancellable,
                                           const gchar *prop_name)
 {
+	EBookBackendLDAPPrivate *priv;
+
 	g_return_if_fail (prop_name != NULL);
 
+	priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (backend);
+
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		if (can_browse (backend) || E_BOOK_BACKEND_LDAP (backend)->priv->marked_for_offline)
+		if (can_browse (backend) || priv->marked_for_offline)
 			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists,do-initial-query");
 		else
 			e_data_book_respond_get_backend_property (book, opid, NULL, "net,anon-access,contact-lists");
@@ -5644,75 +5652,67 @@ call_dtor (gint msgid,
 }
 
 static void
-e_book_backend_ldap_dispose (GObject *object)
+e_book_backend_ldap_finalize (GObject *object)
 {
-	EBookBackendLDAP *bl;
+	EBookBackendLDAPPrivate *priv;
 
-	bl = E_BOOK_BACKEND_LDAP (object);
+	priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (object);
 
-	if (bl->priv) {
-		g_static_rec_mutex_lock (&bl->priv->op_hash_mutex);
-		g_hash_table_foreach_remove (bl->priv->id_to_op, (GHRFunc) call_dtor, NULL);
-		g_hash_table_destroy (bl->priv->id_to_op);
-		g_static_rec_mutex_unlock (&bl->priv->op_hash_mutex);
-		g_static_rec_mutex_free (&bl->priv->op_hash_mutex);
+	g_static_rec_mutex_lock (&priv->op_hash_mutex);
+	g_hash_table_foreach_remove (priv->id_to_op, (GHRFunc) call_dtor, NULL);
+	g_hash_table_destroy (priv->id_to_op);
+	g_static_rec_mutex_unlock (&priv->op_hash_mutex);
+	g_static_rec_mutex_free (&priv->op_hash_mutex);
 
-		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-		if (bl->priv->ldap)
-			ldap_unbind (bl->priv->ldap);
-		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
+	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
+	if (priv->ldap)
+		ldap_unbind (priv->ldap);
+	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
-		if (bl->priv->poll_timeout != -1) {
-			g_source_remove (bl->priv->poll_timeout);
-		}
+	if (priv->poll_timeout != -1)
+		g_source_remove (priv->poll_timeout);
 
-		if (bl->priv->supported_fields) {
-			g_slist_foreach (bl->priv->supported_fields, (GFunc) g_free, NULL);
-			g_slist_free (bl->priv->supported_fields);
-		}
+	g_slist_foreach (priv->supported_fields, (GFunc) g_free, NULL);
+	g_slist_free (priv->supported_fields);
 
-		if (bl->priv->supported_auth_methods) {
-			g_slist_foreach (bl->priv->supported_auth_methods, (GFunc) g_free, NULL);
-			g_slist_free (bl->priv->supported_auth_methods);
-		}
-		if (bl->priv->summary_file_name) {
-			g_free (bl->priv->summary_file_name);
-			bl->priv->summary_file_name = NULL;
-		}
-		if (bl->priv->summary) {
-			e_book_backend_summary_save (bl->priv->summary);
-			g_object_unref (bl->priv->summary);
-			bl->priv->summary = NULL;
-		}
+	g_slist_foreach (priv->supported_auth_methods, (GFunc) g_free, NULL);
+	g_slist_free (priv->supported_auth_methods);
 
-		if (bl->priv->cache) {
-			g_object_unref (bl->priv->cache);
-			bl->priv->cache = NULL;
-		}
+	g_free (priv->summary_file_name);
 
-		g_free (bl->priv->ldap_host);
-		g_free (bl->priv->ldap_rootdn);
-		g_free (bl->priv->ldap_search_filter);
-		g_free (bl->priv->schema_dn);
-		g_free (bl->priv);
-		bl->priv = NULL;
+	if (priv->summary) {
+		e_book_backend_summary_save (priv->summary);
+		g_object_unref (priv->summary);
+		priv->summary = NULL;
 	}
 
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (e_book_backend_ldap_parent_class)->dispose (object);
+	if (priv->cache) {
+		g_object_unref (priv->cache);
+		priv->cache = NULL;
+	}
+
+	g_free (priv->ldap_host);
+	g_free (priv->ldap_rootdn);
+	g_free (priv->ldap_search_filter);
+	g_free (priv->schema_dn);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_book_backend_ldap_parent_class)->finalize (object);
 }
 
 static void
-e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
+e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 {
-	GObjectClass  *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass  *object_class = G_OBJECT_CLASS (class);
 	EBookBackendClass *parent_class;
+
+	g_type_class_add_private (class, sizeof (EBookBackendLDAPPrivate));
 
 #ifndef SUNLDAP
 	/* get client side information (extensions present in the library) */
 	get_ldap_library_info ();
 #endif
-	parent_class = E_BOOK_BACKEND_CLASS (klass);
+	parent_class = E_BOOK_BACKEND_CLASS (class);
 
 	/* Set the virtual methods. */
 	parent_class->open			= e_book_backend_ldap_open;
@@ -5729,30 +5729,19 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	parent_class->stop_book_view		= e_book_backend_ldap_stop_book_view;
 	parent_class->authenticate_user		= e_book_backend_ldap_authenticate_user;
 
-	object_class->dispose = e_book_backend_ldap_dispose;
+	object_class->finalize = e_book_backend_ldap_finalize;
 }
 
 static void
 e_book_backend_ldap_init (EBookBackendLDAP *backend)
 {
-	EBookBackendLDAPPrivate *priv;
+	backend->priv = E_BOOK_BACKEND_LDAP_GET_PRIVATE (backend);
 
-	priv                   = g_new0 (EBookBackendLDAPPrivate, 1);
+	backend->priv->ldap_limit = 100;
+	backend->priv->id_to_op = g_hash_table_new (g_int_hash, g_int_equal);
+	backend->priv->poll_timeout = -1;
 
-	priv->supported_fields       = NULL;
-	priv->supported_auth_methods = NULL;
-	priv->ldap_limit	     = 100;
-	priv->id_to_op		     = g_hash_table_new (g_int_hash, g_int_equal);
-	priv->poll_timeout	     = -1;
-	priv->marked_for_offline     = FALSE;
-	priv->is_summary_ready	     = FALSE;
-	priv->reserved1	     = NULL;
-	priv->reserved2	     = NULL;
-	priv->reserved3	     = NULL;
-	priv->reserved4	     = NULL;
-	g_static_rec_mutex_init (&priv->op_hash_mutex);
-
-	backend->priv = priv;
+	g_static_rec_mutex_init (&backend->priv->op_hash_mutex);
 
 	if (g_getenv ("LDAP_DEBUG"))
 		enable_debug = TRUE;

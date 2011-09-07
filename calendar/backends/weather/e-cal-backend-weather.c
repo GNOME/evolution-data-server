@@ -34,6 +34,10 @@
 
 #define WEATHER_UID_EXT "-weather"
 
+#define E_CAL_BACKEND_WEATHER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_CAL_BACKEND_WEATHER, ECalBackendWeatherPrivate))
+
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
@@ -70,8 +74,6 @@ struct _ECalBackendWeatherPrivate {
 
 	guint begin_retrival_id;
 };
-
-static ECalBackendSyncClass *parent_class;
 
 static gboolean
 reload_cb (ECalBackendWeather *cbw)
@@ -814,8 +816,8 @@ e_cal_backend_weather_internal_get_timezone (ECalBackend *backend,
 
 		zone = g_hash_table_lookup (cbw->priv->zones, tzid);
 
-		if (!zone && E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone)
-			zone = E_CAL_BACKEND_CLASS (parent_class)->internal_get_timezone (backend, tzid);
+		if (!zone && E_CAL_BACKEND_CLASS (e_cal_backend_weather_parent_class)->internal_get_timezone)
+			zone = E_CAL_BACKEND_CLASS (e_cal_backend_weather_parent_class)->internal_get_timezone (backend, tzid);
 	}
 
 	return zone;
@@ -831,24 +833,15 @@ free_zone (gpointer data)
 static void
 e_cal_backend_weather_finalize (GObject *object)
 {
-	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND_WEATHER (object));
+	priv = E_CAL_BACKEND_WEATHER_GET_PRIVATE (object);
 
-	cbw = (ECalBackendWeather *) object;
-	priv = cbw->priv;
-
-	if (priv->reload_timeout_id) {
+	if (priv->reload_timeout_id)
 		g_source_remove (priv->reload_timeout_id);
-		priv->reload_timeout_id = 0;
-	}
 
-	if (priv->begin_retrival_id) {
+	if (priv->begin_retrival_id)
 		g_source_remove (priv->begin_retrival_id);
-		priv->begin_retrival_id = 0;
-	}
 
 	if (priv->store) {
 		g_object_unref (priv->store);
@@ -857,37 +850,23 @@ e_cal_backend_weather_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->zones);
 
-	if (priv->city) {
-		g_free (priv->city);
-		priv->city = NULL;
-	}
-
-	g_free (priv);
-	cbw->priv = NULL;
+	g_free (priv->city);
 
 	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_cal_backend_weather_parent_class)->finalize (object);
 }
 
 /* Object initialization function for the weather backend */
 static void
 e_cal_backend_weather_init (ECalBackendWeather *cbw)
 {
-	ECalBackendWeatherPrivate *priv;
+	cbw->priv = E_CAL_BACKEND_WEATHER_GET_PRIVATE (cbw);
 
-	priv = g_new0 (ECalBackendWeatherPrivate, 1);
-
-	cbw->priv = priv;
-
-	priv->reload_timeout_id = 0;
-	priv->source_changed_id = 0;
-	priv->begin_retrival_id = 0;
-	priv->opened = FALSE;
-	priv->source = NULL;
-	priv->store = NULL;
-	priv->city = NULL;
-
-	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);
+	cbw->priv->zones = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) free_zone);
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbw), TRUE);
 
@@ -904,11 +883,11 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	ECalBackendClass *backend_class;
 	ECalBackendSyncClass *sync_class;
 
+	g_type_class_add_private (class, sizeof (ECalBackendWeatherPrivate));
+
 	object_class = (GObjectClass *) class;
 	backend_class = (ECalBackendClass *) class;
 	sync_class = (ECalBackendSyncClass *) class;
-
-	parent_class = (ECalBackendSyncClass *) g_type_class_peek_parent (class);
 
 	object_class->finalize = e_cal_backend_weather_finalize;
 

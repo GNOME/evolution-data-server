@@ -41,6 +41,10 @@
 
 #define CAMEL_MH_SUMMARY_VERSION (0x2000)
 
+#define CAMEL_MH_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_MH_SUMMARY, CamelMhSummaryPrivate))
+
 static gint mh_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 static gint mh_summary_sync (CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 /*static gint mh_summary_add(CamelLocalSummary *cls, CamelMimeMessage *msg, CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);*/
@@ -74,8 +78,7 @@ camel_mh_summary_init (CamelMhSummary *mh_summary)
 {
 	CamelFolderSummary *folder_summary;
 
-	mh_summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		mh_summary, CAMEL_TYPE_MH_SUMMARY, CamelMhSummaryPrivate);
+	mh_summary->priv = CAMEL_MH_SUMMARY_GET_PRIVATE (mh_summary);
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (mh_summary);
 
