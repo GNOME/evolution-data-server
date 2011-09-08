@@ -387,6 +387,11 @@ files_are_identical_content (struct stat *a_stat,
 static gchar *
 system_timezone_read_etc_localtime_content (void)
 {
+	static gchar *last_localtime_content = NULL;
+	static gsize last_localtime_content_len = -1;
+	static gchar *last_timezone = NULL;
+	static GStaticRecMutex mutex = G_STATIC_REC_MUTEX_INIT;
+
 	struct stat  stat_localtime;
 	gchar	*localtime_content = NULL;
 	gsize	localtime_content_len = -1;
@@ -404,6 +409,25 @@ system_timezone_read_etc_localtime_content (void)
 				  NULL))
 		return NULL;
 
+	g_static_rec_mutex_lock (&mutex);
+
+	if (last_localtime_content) {
+		if (localtime_content_len != last_localtime_content_len
+		    || memcmp (localtime_content, last_localtime_content, localtime_content_len) != 0) {
+			g_free (last_localtime_content);
+			g_free (last_timezone);
+			last_localtime_content = NULL;
+			last_localtime_content_len = -1;
+			last_timezone = NULL;
+		} else {
+			retval = g_strdup (last_timezone);
+			g_static_rec_mutex_unlock (&mutex);
+
+			g_free (localtime_content);
+			return retval;
+		}
+	}
+
 	retval = recursive_compare (&stat_localtime,
 				   localtime_content,
 				   localtime_content_len,
@@ -412,12 +436,20 @@ system_timezone_read_etc_localtime_content (void)
 				   0,
 				   &fallback);
 
-	g_free (localtime_content);
-
 	if (retval)
 		g_free (fallback);
 	else
 		retval = fallback;
+
+	if (retval) {
+		last_localtime_content = localtime_content;
+		last_localtime_content_len = localtime_content_len;
+		last_timezone = g_strdup (retval);
+	} else {
+		g_free (localtime_content);
+	}
+
+	g_static_rec_mutex_unlock (&mutex);
 
 	return retval;
 }
@@ -428,6 +460,10 @@ typedef gchar * (*GetSystemTimezone) (void);
 static GetSystemTimezone get_system_timezone_methods[] = {
 	/* cheap and "more correct" than data from a config file */
 	system_timezone_read_etc_localtime_softlink,
+	/* reading /etc/timezone directly. Expensive since we have to stat
+	 * many files, but it returns always correct values, even on KDE */
+	system_timezone_read_etc_localtime_content,
+	system_timezone_read_etc_localtime_hardlink,
 	/* reading various config files */
 	system_timezone_read_etc_timezone,
 	system_timezone_read_etc_sysconfig_clock,
@@ -436,10 +472,6 @@ static GetSystemTimezone get_system_timezone_methods[] = {
 	system_timezone_read_etc_rc_conf,
 	/* reading deprecated config files */
 	system_timezone_read_etc_conf_d_clock,
-	/* reading /etc/timezone directly. Expensive since we have to stat
-	 * many files */
-	system_timezone_read_etc_localtime_hardlink,
-	system_timezone_read_etc_localtime_content,
 	NULL
 };
 
