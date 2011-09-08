@@ -10,6 +10,10 @@
 
   <chapter>
     <title>Evolution-Data-Server Manual: Backend Utilities (libebackend)</title>
+    <xi:include href="xml/e-backend.xml"/>
+    <xi:include href="xml/e-backend-factory.xml"/>
+    <xi:include href="xml/e-data-factory.xml"/>
+    <xi:include href="xml/e-dbus-service.xml"/>
     <xi:include href="xml/e-extensible.xml"/>
     <xi:include href="xml/e-extension.xml"/>
     <xi:include href="xml/e-module.xml"/>

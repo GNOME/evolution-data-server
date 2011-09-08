@@ -1,0 +1,76 @@
+<!-- ##### SECTION Title ##### -->
+EDBusServer
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT EDBusServer ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SIGNAL EDBusServer::bus-acquired ##### -->
+<para>
+
+</para>
+
+@edbusserver: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDBusServer::bus-name-acquired ##### -->
+<para>
+
+</para>
+
+@edbusserver: the object which received the signal.
+@arg1: 
+
+<!-- ##### SIGNAL EDBusServer::bus-name-lost ##### -->
+<para>
+
+</para>
+
+@edbusserver: the object which received the signal.
+@arg1: 
+
+<!-- ##### FUNCTION e_dbus_server_run ##### -->
+<para>
+
+</para>
+
+@server: 
+
+
+<!-- ##### FUNCTION e_dbus_server_quit ##### -->
+<para>
+
+</para>
+
+@server: 
+
+
+<!-- ##### FUNCTION e_dbus_server_load_modules ##### -->
+<para>
+
+</para>
+
+@server: 
+
+

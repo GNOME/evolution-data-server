@@ -9,6 +9,10 @@ libebackend_1_2_la_CPPFLAGS = \
 	$(E_BACKEND_CFLAGS)
 
 libebackend_1_2_la_SOURCES =		\
+	e-backend.c			\
+	e-backend-factory.c		\
+	e-data-factory.c		\
+	e-dbus-server.c			\
 	e-extensible.c			\
 	e-extension.c			\
 	e-offline-listener.c		\
@@ -30,6 +34,10 @@ libebackend_1_2_la_LDFLAGS = \
 libebackendincludedir = $(privincludedir)/libebackend
 
 libebackendinclude_HEADERS =		\
+	e-backend.h			\
+	e-backend-factory.h		\
+	e-data-factory.h		\
+	e-dbus-server.h			\
 	e-extensible.h			\
 	e-extension.h			\
 	e-offline-listener.h		\

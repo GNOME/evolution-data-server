@@ -1,9 +1,17 @@
+#include <libebackend/e-backend.h>
+#include <libebackend/e-backend-factory.h>
+#include <libebackend/e-data-factory.h>
+#include <libebackend/e-dbus-server.h>
 #include <libebackend/e-extensible.h>
 #include <libebackend/e-extension.h>
 #include <libebackend/e-file-cache.h>
 #include <libebackend/e-module.h>
 #include <libebackend/e-offline-listener.h>
 
+e_backend_get_type
+e_backend_factory_get_type
+e_data_factory_get_type
+e_dbus_server_get_type
 e_extensible_get_type
 e_extension_get_type
 e_file_cache_get_type

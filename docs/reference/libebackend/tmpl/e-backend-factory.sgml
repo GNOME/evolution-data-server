@@ -1,0 +1,47 @@
+<!-- ##### SECTION Title ##### -->
+EBackendFactory
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT EBackendFactory ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION e_backend_factory_get_hash_key ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_backend_factory_new_backend ##### -->
+<para>
+
+</para>
+
+@factory: 
+@source: 
+@Returns: 
+
+

@@ -1,0 +1,251 @@
+/*
+ * e-dbus-server.c
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
+ *
+ */
+
+/**
+ * SECTION: e-dbus-server
+ * @short_description: an abstract base class for a D-Bus server
+ * @include: libebackend/e-dbus-server
+ **/
+
+#include "e-dbus-server.h"
+
+#include <config.h>
+
+#ifdef G_OS_UNIX
+#include <glib-unix.h>
+#endif
+
+#include <libebackend/e-module.h>
+#include <libebackend/e-extensible.h>
+
+#define E_DBUS_SERVER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_DBUS_SERVER, EDBusServerPrivate))
+
+struct _EDBusServerPrivate {
+	GMainLoop *main_loop;
+	guint bus_owner_id;
+	guint terminate_id;
+};
+
+enum {
+	BUS_ACQUIRED,
+	BUS_NAME_ACQUIRED,
+	BUS_NAME_LOST,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
+	EDBusServer, e_dbus_server, G_TYPE_OBJECT,
+	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
+
+static void
+dbus_server_bus_acquired_cb (GDBusConnection *connection,
+                             const gchar *bus_name,
+                             EDBusServer *server)
+{
+	g_signal_emit (server, signals[BUS_ACQUIRED], 0, connection);
+}
+
+static void
+dbus_server_name_acquired_cb (GDBusConnection *connection,
+                              const gchar *bus_name,
+                              EDBusServer *server)
+{
+	g_signal_emit (server, signals[BUS_NAME_ACQUIRED], 0, connection);
+}
+
+static void
+dbus_server_name_lost_cb (GDBusConnection *connection,
+                          const gchar *bus_name,
+                          EDBusServer *server)
+{
+	g_signal_emit (server, signals[BUS_NAME_LOST], 0, connection);
+}
+
+#ifdef G_OS_UNIX
+static gboolean
+dbus_server_terminate_cb (EDBusServer *server)
+{
+	g_print ("Received terminate signal.\n");
+	e_dbus_server_quit (server);
+
+	return FALSE;
+}
+#endif
+
+static void
+dbus_server_finalize (GObject *object)
+{
+	EDBusServerPrivate *priv;
+
+	priv = E_DBUS_SERVER_GET_PRIVATE (object);
+
+	g_main_loop_unref (priv->main_loop);
+	g_bus_unown_name (priv->bus_owner_id);
+
+	if (priv->terminate_id > 0)
+		g_source_remove (priv->terminate_id);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_dbus_server_parent_class)->finalize (object);
+}
+
+static void
+dbus_server_bus_acquired (EDBusServer *server,
+                          GDBusConnection *connection)
+{
+	/* Placeholder so subclasses can safely chain up. */
+}
+
+static void
+dbus_server_bus_name_acquired (EDBusServer *server,
+                               GDBusConnection *connection)
+{
+	EDBusServerClass *class;
+
+	class = E_DBUS_SERVER_GET_CLASS (server);
+	g_return_if_fail (class->bus_name != NULL);
+
+	g_print ("Bus name '%s' acquired.\n", class->bus_name);
+}
+
+static void
+dbus_server_bus_name_lost (EDBusServer *server,
+                           GDBusConnection *connection)
+{
+	EDBusServerClass *class;
+
+	class = E_DBUS_SERVER_GET_CLASS (server);
+	g_return_if_fail (class->bus_name != NULL);
+
+	g_print ("Bus name '%s' lost.\n", class->bus_name);
+
+	e_dbus_server_quit (server);
+}
+
+static void
+e_dbus_server_class_init (EDBusServerClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (EDBusServerPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = dbus_server_finalize;
+
+	class->bus_acquired = dbus_server_bus_acquired;
+	class->bus_name_acquired = dbus_server_bus_name_acquired;
+	class->bus_name_lost = dbus_server_bus_name_lost;
+
+	signals[BUS_ACQUIRED] = g_signal_new (
+		"bus-acquired",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDBusServerClass, bus_acquired),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		G_TYPE_DBUS_CONNECTION);
+
+	signals[BUS_NAME_ACQUIRED] = g_signal_new (
+		"bus-name-acquired",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDBusServerClass, bus_name_acquired),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		G_TYPE_DBUS_CONNECTION);
+
+	signals[BUS_NAME_LOST] = g_signal_new (
+		"bus-name-lost",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDBusServerClass, bus_name_lost),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		G_TYPE_DBUS_CONNECTION);
+}
+
+static void
+e_dbus_server_init (EDBusServer *server)
+{
+	server->priv = E_DBUS_SERVER_GET_PRIVATE (server);
+	server->priv->main_loop = g_main_loop_new (NULL, FALSE);
+
+#ifdef G_OS_UNIX
+	server->priv->terminate_id = g_unix_signal_add (
+		SIGTERM, (GSourceFunc) dbus_server_terminate_cb, server);
+#endif
+}
+
+void
+e_dbus_server_run (EDBusServer *server)
+{
+	EDBusServerClass *class;
+
+	g_return_if_fail (E_IS_DBUS_SERVER (server));
+
+	if (g_main_loop_is_running (server->priv->main_loop))
+		return;
+
+	/* Try to acquire the well-known bus name. */
+
+	class = E_DBUS_SERVER_GET_CLASS (server);
+	g_return_if_fail (class->bus_name != NULL);
+
+	server->priv->bus_owner_id = g_bus_own_name (
+		G_BUS_TYPE_SESSION,
+		class->bus_name,
+		G_BUS_NAME_OWNER_FLAGS_REPLACE |
+		G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT,
+		(GBusAcquiredCallback) dbus_server_bus_acquired_cb,
+		(GBusNameAcquiredCallback) dbus_server_name_acquired_cb,
+		(GBusNameLostCallback) dbus_server_name_lost_cb,
+		g_object_ref (server),
+		(GDestroyNotify) g_object_unref);
+
+	g_main_loop_run (server->priv->main_loop);
+}
+
+void
+e_dbus_server_quit (EDBusServer *server)
+{
+	g_return_if_fail (E_IS_DBUS_SERVER (server));
+
+	g_main_loop_quit (server->priv->main_loop);
+}
+
+void
+e_dbus_server_load_modules (EDBusServer *server)
+{
+	EDBusServerClass *class;
+	GList *list;
+
+	g_return_if_fail (E_IS_DBUS_SERVER (server));
+
+	class = E_DBUS_SERVER_GET_CLASS (server);
+	g_return_if_fail (class->module_directory != NULL);
+
+	list = e_module_load_all_in_directory (class->module_directory);
+	g_list_free_full (list, (GDestroyNotify) g_type_module_unuse);
+}

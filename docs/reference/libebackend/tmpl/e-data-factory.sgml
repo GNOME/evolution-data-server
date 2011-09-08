@@ -1,0 +1,62 @@
+<!-- ##### SECTION Title ##### -->
+EDataFactory
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### SECTION Image ##### -->
+
+
+<!-- ##### STRUCT EDataFactory ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ARG EDataFactory:online ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION e_data_factory_get_backend ##### -->
+<para>
+
+</para>
+
+@factory: 
+@hash_key: 
+@source: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_factory_get_online ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_data_factory_set_online ##### -->
+<para>
+
+</para>
+
+@factory: 
+@online: 
+
+

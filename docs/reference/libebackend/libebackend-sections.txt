@@ -1,4 +1,83 @@
 <SECTION>
+<FILE>e-backend</FILE>
+<TITLE>EBackend</TITLE>
+EBackend
+e_backend_get_online
+e_backend_set_online
+e_backend_get_source
+e_backend_last_client_gone
+<SUBSECTION Standard>
+E_BACKEND
+E_IS_BACKEND
+E_TYPE_BACKEND
+E_BACKEND_CLASS
+E_IS_BACKEND_CLASS
+E_BACKEND_GET_CLASS
+EBackendClass
+<SUBSECTION Private>
+EBackendPrivate
+e_backend_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-backend-factory</FILE>
+<TITLE>EBackendFactory</TITLE>
+EBackendFactory
+e_backend_factory_get_hash_key
+e_backend_factory_new_backend
+<SUBSECTION Standard>
+E_BACKEND_FACTORY
+E_IS_BACKEND_FACTORY
+E_TYPE_BACKEND_FACTORY
+E_BACKEND_FACTORY_CLASS
+E_IS_BACKEND_FACTORY_CLASS
+E_BACKEND_FACTORY_GET_CLASS
+EBackendFactoryClass
+<SUBSECTION Private>
+EBackendFactoryPrivate
+e_backend_factory_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-data-factory</FILE>
+<TITLE>EDataFactory</TITLE>
+EDataFactory
+e_data_factory_get_backend
+e_data_factory_get_online
+e_data_factory_set_online
+<SUBSECTION Standard>
+E_DATA_FACTORY
+E_IS_DATA_FACTORY
+E_TYPE_DATA_FACTORY
+E_DATA_FACTORY_CLASS
+E_IS_DATA_FACTORY_CLASS
+E_DATA_FACTORY_GET_CLASS
+<SUBSECTION Private>
+EDataFactoryPrivate
+e_data_factory_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-dbus-server</FILE>
+<TITLE>EDBusServer</TITLE>
+EDBusServer
+e_dbus_server_run
+e_dbus_server_quit
+e_dbus_server_load_modules
+<SUBSECTION Standard>
+E_DBUS_SERVER
+E_IS_DBUS_SERVER
+E_TYPE_DBUS_SERVER
+E_DBUS_SERVER_CLASS
+E_IS_DBUS_SERVER_CLASS
+E_DBUS_SERVER_GET_CLASS
+EDBusServerClass
+<SUBSECTION Private>
+EDBusServerPrivate
+e_dbus_server_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-file-cache</FILE>
 <TITLE>EFileCache</TITLE>
 EFileCache
