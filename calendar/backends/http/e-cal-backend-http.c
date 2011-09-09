@@ -53,9 +53,6 @@ struct _ECalBackendHttpPrivate {
 	/* URI to get remote calendar data from */
 	gchar *uri;
 
-	/* Local/remote mode */
-	gboolean is_online;
-
 	/* The file cache */
 	ECalBackendStore *store;
 
@@ -100,7 +97,7 @@ e_cal_backend_http_dispose (GObject *object)
 	priv->credentials = NULL;
 
 	if (priv->source_changed_id) {
-		g_signal_handler_disconnect (e_cal_backend_get_source (E_CAL_BACKEND (cbhttp)), priv->source_changed_id);
+		g_signal_handler_disconnect (e_backend_get_source (E_BACKEND (cbhttp)), priv->source_changed_id);
 		priv->source_changed_id = 0;
 	}
 
@@ -579,7 +576,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 
 	priv = cbhttp->priv;
 
-	if (!priv->is_online)
+	if (!e_backend_get_online (E_BACKEND (cbhttp)))
 		return FALSE;
 
 	maybe_start_reload_timeout (cbhttp);
@@ -592,11 +589,12 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	priv->is_loading = TRUE;
 
 	if (priv->uri == NULL) {
-		ESource *source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
+		ESource *source = e_backend_get_source (E_BACKEND (cbhttp));
 		const gchar *secure_prop = e_source_get_property (source, "use_ssl");
 
-		priv->uri = webcal_to_http_method (e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)),
-						   (secure_prop && g_str_equal(secure_prop, "1")));
+		priv->uri = webcal_to_http_method (
+			e_source_get_uri (source),
+			(secure_prop && g_str_equal(secure_prop, "1")));
 	}
 
 	/* create the Soup session if not already created */
@@ -685,7 +683,7 @@ maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
 	if (priv->reload_timeout_id)
 		return;
 
-	source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
+	source = e_backend_get_source (E_BACKEND (cbhttp));
 	if (!source) {
 		g_warning ("Could not get source for ECalBackendHttp reload.");
 		return;
@@ -713,11 +711,11 @@ source_changed_cb (ESource *source,
 		const gchar *secure_prop;
 		gchar *new_uri;
 
-		source = e_cal_backend_get_source (E_CAL_BACKEND (cbhttp));
+		source = e_backend_get_source (E_BACKEND (cbhttp));
 		secure_prop = e_source_get_property (source, "use_ssl");
 
 		new_uri = webcal_to_http_method (
-			e_cal_backend_get_uri (E_CAL_BACKEND (cbhttp)),
+			e_source_get_uri (source),
 			(secure_prop && g_str_equal(secure_prop, "1")));
 
 		if (new_uri && !g_str_equal (priv->uri, new_uri)) {
@@ -744,6 +742,7 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	ESource *source;
+	gboolean online;
 	gchar *tmp;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
@@ -755,7 +754,7 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 		return;
 	}
 
-	source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
+	source = e_backend_get_source (E_BACKEND (backend));
 
 	if (priv->source_changed_id == 0) {
 		priv->source_changed_id = g_signal_connect (source, "changed", G_CALLBACK (source_changed_cb), cbhttp);
@@ -784,9 +783,11 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	}
 
 	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), TRUE);
-	e_cal_backend_notify_online (E_CAL_BACKEND (backend), priv->is_online);
 
-	if (priv->is_online) {
+	online = e_backend_get_online (E_BACKEND (backend));
+	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
+
+	if (online) {
 		if (e_source_get_property (source, "auth")) {
 			e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbhttp), TRUE, priv->credentials);
 		} else if (priv->requires_auth && perror && !*perror) {
@@ -875,33 +876,32 @@ e_cal_backend_http_remove (ECalBackendSync *backend,
 
 /* Set_mode handler for the http backend */
 static void
-e_cal_backend_http_set_online (ECalBackend *backend,
-                               gboolean is_online)
+e_cal_backend_http_notify_online_cb (ECalBackend *backend,
+                                     GParamSpec *pspec)
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	gboolean loaded;
+	gboolean online;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
+	online = e_backend_get_online (E_BACKEND (backend));
 	loaded = e_cal_backend_is_opened (backend);
 
-	if ((priv->is_online ? 1 : 0) != (is_online ? 1 : 0)) {
-		priv->is_online = is_online;
-		if (!priv->is_online) {
-			if (loaded && priv->reload_timeout_id) {
-				g_source_remove (priv->reload_timeout_id);
-				priv->reload_timeout_id = 0;
-			}
-		} else {
-			if (loaded)
-				g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
+	if (!online) {
+		if (loaded && priv->reload_timeout_id) {
+			g_source_remove (priv->reload_timeout_id);
+			priv->reload_timeout_id = 0;
 		}
+	} else {
+		if (loaded)
+			g_idle_add ((GSourceFunc) begin_retrieval_cb, backend);
 	}
 
 	if (loaded)
-		e_cal_backend_notify_online (backend, priv->is_online);
+		e_cal_backend_notify_online (backend, online);
 }
 
 /* Get_object_component handler for the http backend */
@@ -1369,6 +1369,10 @@ e_cal_backend_http_init (ECalBackendHttp *cbhttp)
 	priv->opened = FALSE;
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbhttp), TRUE);
+
+	g_signal_connect (
+		cbhttp, "notify::online",
+		G_CALLBACK (e_cal_backend_http_notify_online_cb), NULL);
 }
 
 /* Class initialization function for the file backend */
@@ -1404,6 +1408,5 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	sync_class->get_free_busy_sync		= e_cal_backend_http_get_free_busy;
 
 	backend_class->start_view		= e_cal_backend_http_start_view;
-	backend_class->set_online		= e_cal_backend_http_set_online;
 	backend_class->internal_get_timezone	= e_cal_backend_http_internal_get_timezone;
 }

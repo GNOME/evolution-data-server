@@ -12,7 +12,6 @@ libecalbackendhttp_la_CPPFLAGS = \
 
 libecalbackendhttp_la_SOURCES =		\
 	e-cal-backend-http-factory.c	\
-	e-cal-backend-http-factory.h	\
 	e-cal-backend-http.c		\
 	e-cal-backend-http.h
 

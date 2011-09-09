@@ -23,27 +23,32 @@
 
 #include <libedata-cal/e-cal-backend-sync.h>
 
+#define E_TYPE_CAL_BACKEND_HTTP \
+	(e_cal_backend_http_get_type ())
+#define E_CAL_BACKEND_HTTP(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CAL_BACKEND_HTTP, ECalBackendHttp))
+#define E_CAL_BACKEND_HTTP_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CAL_BACKEND_HTTP, ECalBackendHttpClass))
+#define E_IS_CAL_BACKEND_HTTP(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CAL_BACKEND_HTTP))
+#define E_IS_CAL_BACKEND_HTTP_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CAL_BACKEND_HTTP))
+#define E_CAL_BACKEND_HTTP_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CAL_BACKEND_HTTP, ECalBackendHttpClass))
+
 G_BEGIN_DECLS
-
-
-
-#define E_TYPE_CAL_BACKEND_HTTP            (e_cal_backend_http_get_type ())
-#define E_CAL_BACKEND_HTTP(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_BACKEND_HTTP,		\
-					  ECalBackendHttp))
-#define E_CAL_BACKEND_HTTP_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_BACKEND_HTTP,	\
-					  ECalBackendHttpClass))
-#define E_IS_CAL_BACKEND_HTTP(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_BACKEND_HTTP))
-#define E_IS_CAL_BACKEND_HTTP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_BACKEND_HTTP))
 
 typedef struct _ECalBackendHttp ECalBackendHttp;
 typedef struct _ECalBackendHttpClass ECalBackendHttpClass;
-
 typedef struct _ECalBackendHttpPrivate ECalBackendHttpPrivate;
 
 struct _ECalBackendHttp {
 	ECalBackendSync backend;
-
-	/* Private data */
 	ECalBackendHttpPrivate *priv;
 };
 
@@ -51,10 +56,8 @@ struct _ECalBackendHttpClass {
 	ECalBackendSyncClass parent_class;
 };
 
-GType       e_cal_backend_http_get_type      (void);
-
-
+GType		e_cal_backend_http_get_type	(void);
 
 G_END_DECLS
 
-#endif
+#endif /* E_CAL_BACKEND_HTTP_H */
