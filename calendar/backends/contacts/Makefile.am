@@ -13,7 +13,6 @@ libecalbackendcontacts_la_CPPFLAGS = \
 
 libecalbackendcontacts_la_SOURCES =		\
 	e-cal-backend-contacts-factory.c	\
-	e-cal-backend-contacts-factory.h	\
 	e-cal-backend-contacts.c		\
 	e-cal-backend-contacts.h
 

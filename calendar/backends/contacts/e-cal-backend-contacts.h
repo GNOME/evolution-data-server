@@ -25,27 +25,33 @@
 
 #include <libedata-cal/e-cal-backend-sync.h>
 
+/* Standard GObject macros */
+#define E_TYPE_CAL_BACKEND_CONTACTS \
+	(e_cal_backend_contacts_get_type ())
+#define E_CAL_BACKEND_CONTACTS(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CAL_BACKEND_CONTACTS, ECalBackendContacts))
+#define E_CAL_BACKEND_CONTACTS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CAL_BACKEND_CONTACTS, ECalBackendContactsClass))
+#define E_IS_CAL_BACKEND_CONTACTS(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CAL_BACKEND_CONTACTS))
+#define E_IS_CAL_BACKEND_CONTACTS_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CAL_BACKEND_CONTACTS))
+#define E_CAL_BACKEND_CONTACTS_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CAL_BACKEND_CONTACTS, ECalBackendContactsClass))
+
 G_BEGIN_DECLS
-
-
-
-#define E_TYPE_CAL_BACKEND_CONTACTS            (e_cal_backend_contacts_get_type ())
-#define E_CAL_BACKEND_CONTACTS(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_BACKEND_CONTACTS,		\
-					  ECalBackendContacts))
-#define E_CAL_BACKEND_CONTACTS_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_BACKEND_CONTACTS,	\
-					  ECalBackendContactsClass))
-#define E_IS_CAL_BACKEND_CONTACTS(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_BACKEND_CONTACTS))
-#define E_IS_CAL_BACKEND_CONTACTS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_BACKEND_CONTACTS))
 
 typedef struct _ECalBackendContacts ECalBackendContacts;
 typedef struct _ECalBackendContactsClass ECalBackendContactsClass;
-
 typedef struct _ECalBackendContactsPrivate ECalBackendContactsPrivate;
 
 struct _ECalBackendContacts {
 	ECalBackendSync backend;
-
-	/* Private data */
 	ECalBackendContactsPrivate *priv;
 };
 
@@ -53,10 +59,8 @@ struct _ECalBackendContactsClass {
 	ECalBackendSyncClass parent_class;
 };
 
-GType e_cal_backend_contacts_get_type (void);
-
-
+GType		e_cal_backend_contacts_get_type		(void);
 
 G_END_DECLS
 
-#endif
+#endif /* E_CAL_BACKEND_CONTACTS_H */

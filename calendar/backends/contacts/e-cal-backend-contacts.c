@@ -987,10 +987,13 @@ e_cal_backend_contacts_send_objects (ECalBackendSync *backend,
 /* Then the real implementations */
 
 static void
-e_cal_backend_contacts_set_online (ECalBackend *backend,
-                                   gboolean is_online)
+e_cal_backend_contacts_notify_online_cb (ECalBackend *backend,
+                                         gboolean is_online)
 {
-	e_cal_backend_notify_online (backend, is_online);
+	gboolean online;
+
+	online = e_backend_get_online (E_BACKEND (backend));
+	e_cal_backend_notify_online (backend, online);
 	e_cal_backend_notify_readonly (backend, TRUE);
 }
 
@@ -1241,6 +1244,10 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 	cbc->priv = priv;
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbc), TRUE);
+
+	g_signal_connect (
+		cbc, "notify::online",
+		G_CALLBACK (e_cal_backend_contacts_notify_online_cb), NULL);
 }
 
 static void
@@ -1283,6 +1290,5 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 	sync_class->get_free_busy_sync		= e_cal_backend_contacts_get_free_busy;
 
 	backend_class->start_view		= e_cal_backend_contacts_start_view;
-	backend_class->set_online		= e_cal_backend_contacts_set_online;
 	backend_class->internal_get_timezone	= e_cal_backend_contacts_internal_get_timezone;
 }
