@@ -1176,7 +1176,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	gchar            *dirname, *filename;
 	gboolean          readonly = TRUE;
-	ESource          *source = e_book_backend_get_source (E_BOOK_BACKEND (backend));
+	ESource          *source;
 	gint              db_error;
 	DB               *db;
 	DB_ENV           *env;
@@ -1186,6 +1186,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	gboolean create_default_vcard = FALSE;
 #endif
 
+	source = e_backend_get_source (E_BACKEND (backend));
 	dirname = e_book_backend_file_extract_path_from_source (source);
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 
@@ -1499,8 +1500,8 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend,
 }
 
 static void
-e_book_backend_file_set_online (EBookBackend *backend,
-                                gboolean is_online)
+e_book_backend_file_notify_online_cb (EBookBackend *backend,
+                                      GParamSpec *pspec)
 {
 	if (e_book_backend_is_opened (backend))
 		e_book_backend_notify_online (backend, TRUE);
@@ -1569,15 +1570,6 @@ e_book_backend_file_notify_update (EBookBackend *backend,
 	NotifyData data = { (EContact *) contact, E_BOOK_BACKEND_FILE (backend) };
 
 	e_book_backend_foreach_view (backend, view_notify_update, &data);
-}
-
-/**
- * e_book_backend_file_new:
- */
-EBookBackend *
-e_book_backend_file_new (void)
-{
-	return g_object_new (E_TYPE_BOOK_BACKEND_FILE, NULL);
 }
 
 static void
@@ -1684,7 +1676,6 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	/* Set the virtual methods. */
 	backend_class->start_book_view		= e_book_backend_file_start_book_view;
 	backend_class->stop_book_view		= e_book_backend_file_stop_book_view;
-	backend_class->set_online		= e_book_backend_file_set_online;
 	backend_class->sync			= e_book_backend_file_sync;
 	backend_class->notify_update            = e_book_backend_file_notify_update;
 
@@ -1722,4 +1713,9 @@ e_book_backend_file_init (EBookBackendFile *backend)
 	priv             = g_new0 (EBookBackendFilePrivate, 1);
 
 	backend->priv = priv;
+
+	g_signal_connect (
+		backend, "notify::online",
+		G_CALLBACK (e_book_backend_file_notify_online_cb), NULL);
 }
+

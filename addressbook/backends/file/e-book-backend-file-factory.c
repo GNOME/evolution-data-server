@@ -21,27 +21,21 @@
  * Authors: Chris Toshok <toshok@ximian.com>
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
-#include <string.h>
-
-#include "libebackend/e-data-server-module.h"
-#include "libedata-book/e-book-backend-factory.h"
+#include <libedata-book/e-book-backend-factory.h>
 #include "e-book-backend-file.h"
 
-typedef struct _EBookBackendFileFactory EBookBackendFileFactory;
-typedef struct _EBookBackendFileFactoryClass EBookBackendFileFactoryClass;
+#define FACTORY_NAME "local"
 
-struct _EBookBackendFileFactory {
-	EBookBackendFactory parent;
-};
+typedef EBookBackendFactory EBookBackendFileFactory;
+typedef EBookBackendFactoryClass EBookBackendFileFactoryClass;
 
-struct _EBookBackendFileFactoryClass {
-	EBookBackendFactoryClass parent_class;
-};
+/* Module Entry Points */
+void e_module_load (GTypeModule *type_module);
+void e_module_unload (GTypeModule *type_module);
 
+/* Forward Declarations */
 GType e_book_backend_file_factory_get_type (void);
 
 G_DEFINE_DYNAMIC_TYPE (
@@ -49,54 +43,31 @@ G_DEFINE_DYNAMIC_TYPE (
 	e_book_backend_file_factory,
 	E_TYPE_BOOK_BACKEND_FACTORY)
 
-static const gchar *
-book_backend_file_factory_get_protocol (EBookBackendFactory *factory)
+static void
+e_book_backend_file_factory_class_init (EBookBackendFactoryClass *class)
 {
-	return "local";
-}
-
-static EBookBackend *
-book_backend_file_factory_new_backend (EBookBackendFactory *factory)
-{
-	return e_book_backend_file_new ();
+	class->factory_name = FACTORY_NAME;
+	class->backend_type = E_TYPE_BOOK_BACKEND_FILE;
 }
 
 static void
-e_book_backend_file_factory_class_init (EBookBackendFileFactoryClass *class)
-{
-	EBookBackendFactoryClass *factory_class;
-
-	factory_class = E_BOOK_BACKEND_FACTORY_CLASS (class);
-	factory_class->get_protocol = book_backend_file_factory_get_protocol;
-	factory_class->new_backend = book_backend_file_factory_new_backend;
-}
-
-static void
-e_book_backend_file_factory_class_finalize (EBookBackendFileFactoryClass *class)
+e_book_backend_file_factory_class_finalize (EBookBackendFactoryClass *class)
 {
 }
 
 static void
-e_book_backend_file_factory_init (EBookBackendFileFactory *factory)
+e_book_backend_file_factory_init (EBookBackendFactory *factory)
 {
 }
 
-void
-eds_module_initialize (GTypeModule *type_module)
+G_MODULE_EXPORT void
+e_module_load (GTypeModule *type_module)
 {
 	e_book_backend_file_factory_register_type (type_module);
 }
 
-void
-eds_module_shutdown (void)
+G_MODULE_EXPORT void
+e_module_unload (GTypeModule *type_module)
 {
-}
-
-void
-eds_module_list_types (const GType **types,
-                       gint *num_types)
-{
-	*types = &e_book_backend_file_factory_type_id;
-	*num_types = 1;
 }
 
