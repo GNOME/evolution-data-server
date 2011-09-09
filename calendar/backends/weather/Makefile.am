@@ -17,7 +17,6 @@ libecalbackendweather_la_CPPFLAGS = \
 
 libecalbackendweather_la_SOURCES =	\
 	e-cal-backend-weather-factory.c	\
-	e-cal-backend-weather-factory.h	\
 	e-cal-backend-weather.c		\
 	e-cal-backend-weather.h		\
 	e-weather-source.c		\

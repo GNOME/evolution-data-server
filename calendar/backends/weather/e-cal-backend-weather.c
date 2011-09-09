@@ -49,9 +49,6 @@ struct _ECalBackendWeatherPrivate {
 	/* URI to get remote weather data from */
 	gchar *uri;
 
-	/* Local/remote mode */
-	gboolean is_online;
-
 	/* The file cache */
 	ECalBackendStore *store;
 
@@ -114,7 +111,7 @@ maybe_start_reload_timeout (ECalBackendWeather *cbw)
 	if (priv->reload_timeout_id)
 		return;
 
-	source = e_cal_backend_get_source (E_CAL_BACKEND (cbw));
+	source = e_backend_get_source (E_BACKEND (cbw));
 	if (!source) {
 		g_warning ("Could not get source for ECalBackendWeather reload.");
 		return;
@@ -253,13 +250,19 @@ begin_retrieval_cb (ECalBackendWeather *cbw)
 	ECalBackendWeatherPrivate *priv = cbw->priv;
 	GSource *source;
 
-	if (!priv->is_online)
+	if (!e_backend_get_online (E_BACKEND (cbw)))
 		return TRUE;
 
 	maybe_start_reload_timeout (cbw);
 
-	if (priv->source == NULL)
-		priv->source = e_weather_source_new (e_cal_backend_get_uri (E_CAL_BACKEND (cbw)));
+	if (priv->source == NULL) {
+		ESource *e_source;
+		const gchar *uri;
+
+		e_source = e_backend_get_source (E_BACKEND (cbw));
+		uri = e_source_get_uri (e_source);
+		priv->source = e_weather_source_new (uri);
+	}
 
 	source = g_main_current_source ();
 
@@ -340,7 +343,7 @@ create_weather (ECalBackendWeather *cbw,
 
 	priv = cbw->priv;
 
-	source = e_cal_backend_get_source (E_CAL_BACKEND (cbw));
+	source = e_backend_get_source (E_BACKEND (cbw));
 	tmp = e_source_get_property (source, "units");
 	if (tmp == NULL) {
 		tmp = e_source_get_property (source, "temperature");
@@ -503,13 +506,17 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
+	ESource *source;
 	const gchar *cache_dir;
 	const gchar *uri;
+	gboolean online;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
-	uri = e_cal_backend_get_uri (E_CAL_BACKEND (backend));
+	source = e_backend_get_source (E_BACKEND (backend));
+	uri = e_source_get_uri (source);
+
 	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
 
 	if (priv->city)
@@ -517,7 +524,9 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 	priv->city = g_strdup (strrchr (uri, '/') + 1);
 
 	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), TRUE);
-	e_cal_backend_notify_online (E_CAL_BACKEND (backend), priv->is_online);
+
+	online = e_backend_get_online (E_BACKEND (backend));
+	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
 
 	if (!priv->store) {
 		e_cal_backend_cache_remove (cache_dir, "cache.xml");
@@ -532,7 +541,7 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 		e_cal_backend_store_load (priv->store);
 		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 
-		if (!priv->is_online)
+		if (!e_backend_get_online (E_BACKEND (backend)))
 			return;
 
 		if (!priv->begin_retrival_id)
@@ -779,28 +788,27 @@ e_cal_backend_weather_start_view (ECalBackend *backend,
 }
 
 static void
-e_cal_backend_weather_set_online (ECalBackend *backend,
-                                  gboolean is_online)
+e_cal_backend_weather_notify_online_cb (ECalBackend *backend,
+                                        GParamSpec *pspec)
 {
 	ECalBackendWeather *cbw;
 	ECalBackendWeatherPrivate *priv;
 	gboolean loaded;
+	gboolean online;
 
 	cbw = E_CAL_BACKEND_WEATHER (backend);
 	priv = cbw->priv;
 
+	online = e_backend_get_online (E_BACKEND (backend));
 	loaded = e_cal_backend_is_opened (backend);
 
-	if ((priv->is_online ? 1: 0) != (is_online ? 1 : 0)) {
-		priv->is_online = is_online;
-		if (loaded && priv->reload_timeout_id) {
-			g_source_remove (priv->reload_timeout_id);
-			priv->reload_timeout_id = 0;
-		}
+	if (loaded && priv->reload_timeout_id) {
+		g_source_remove (priv->reload_timeout_id);
+		priv->reload_timeout_id = 0;
 	}
 
 	if (loaded) {
-		e_cal_backend_notify_online (backend, priv->is_online);
+		e_cal_backend_notify_online (backend, online);
 		e_cal_backend_notify_readonly (backend, TRUE);
 	}
 }
@@ -899,6 +907,10 @@ e_cal_backend_weather_init (ECalBackendWeather *cbw)
 	priv->zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone);
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbw), TRUE);
+
+	g_signal_connect (
+		cbw, "notify::online",
+		G_CALLBACK (e_cal_backend_weather_notify_online_cb), NULL);
 }
 
 /* Class initialization function for the weather backend */
@@ -928,6 +940,5 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	sync_class->get_free_busy_sync		= e_cal_backend_weather_get_free_busy;
 
 	backend_class->start_view		= e_cal_backend_weather_start_view;
-	backend_class->set_online		= e_cal_backend_weather_set_online;
 	backend_class->internal_get_timezone	= e_cal_backend_weather_internal_get_timezone;
 }
