@@ -11,7 +11,6 @@ libecalbackendcaldav_la_CPPFLAGS = \
 
 libecalbackendcaldav_la_SOURCES = \
 	e-cal-backend-caldav-factory.c \
-	e-cal-backend-caldav-factory.h \
 	e-cal-backend-caldav.c \
 	e-cal-backend-caldav.h
 

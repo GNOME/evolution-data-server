@@ -25,21 +25,33 @@
 
 #include <libedata-cal/e-cal-backend-sync.h>
 
-G_BEGIN_DECLS
+/* Standard GObject macros */
+#define E_TYPE_CAL_BACKEND_CALDAV \
+	(e_cal_backend_caldav_get_type ())
+#define E_CAL_BACKEND_CALDAV(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAV))
+#define E_CAL_BACKEND_CALDAV_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVClass))
+#define E_IS_CAL_BACKEND_CALDAV(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CAL_BACKEND_CALDAV))
+#define E_IS_CAL_BACKEND_CALDAV_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CAL_BACKEND_CALDAV))
+#define E_CAL_BACKEND_CALDAV_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVClass))
 
-#define E_TYPE_CAL_BACKEND_CALDAV             (e_cal_backend_caldav_get_type ())
-#define E_CAL_BACKEND_CALDAV(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAV))
-#define E_CAL_BACKEND_CALDAV_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVClass))
-#define E_IS_CAL_BACKEND_CALDAV(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_CAL_BACKEND_CALDAV))
-#define E_IS_CAL_BACKEND_CALDAV_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_CAL_BACKEND_CALDAV))
+G_BEGIN_DECLS
 
 typedef struct _ECalBackendCalDAV ECalBackendCalDAV;
 typedef struct _ECalBackendCalDAVClass ECalBackendCalDAVClass;
 typedef struct _ECalBackendCalDAVPrivate ECalBackendCalDAVPrivate;
 
 struct _ECalBackendCalDAV {
-	ECalBackendSync backend;
-
+	ECalBackendSync parent;
 	ECalBackendCalDAVPrivate *priv;
 };
 
@@ -47,7 +59,7 @@ struct _ECalBackendCalDAVClass {
 	ECalBackendSyncClass parent_class;
 };
 
-GType       e_cal_backend_caldav_get_type      (void);
+GType		e_cal_backend_caldav_get_type	(void);
 
 G_END_DECLS
 

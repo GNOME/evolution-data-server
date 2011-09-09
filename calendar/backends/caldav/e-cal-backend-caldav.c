@@ -73,9 +73,6 @@ typedef enum {
 /* Private part of the ECalBackendHttp structure */
 struct _ECalBackendCalDAVPrivate {
 
-	/* online/offline */
-	gboolean is_online;
-
 	/* The local disk cache */
 	ECalBackendStore *store;
 
@@ -580,7 +577,7 @@ check_state (ECalBackendCalDAV *cbdav,
 		return FALSE;
 	}
 
-	if (!priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (cbdav))) {
 
 		if (!priv->do_offline) {
 			g_propagate_error (perror, EDC_ERROR (RepositoryOffline));
@@ -2163,6 +2160,7 @@ caldav_synch_slave_loop (gpointer data)
 		if (!priv->opened) {
 			gboolean server_unreachable = FALSE;
 			GError *local_error = NULL;
+			gboolean online;
 
 			if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
 				priv->opened = TRUE;
@@ -2193,7 +2191,9 @@ caldav_synch_slave_loop (gpointer data)
 			}
 
 			e_cal_backend_notify_readonly (E_CAL_BACKEND (cbdav), priv->read_only);
-			e_cal_backend_notify_online (E_CAL_BACKEND (cbdav), priv->is_online);
+
+			online = e_backend_get_online (E_BACKEND (cbdav));
+			e_cal_backend_notify_online (E_CAL_BACKEND (cbdav), online);
 		}
 
 		if (priv->opened) {
@@ -2263,7 +2263,7 @@ get_usermail (ECalBackend *backend)
 
 	g_return_val_if_fail (backend != NULL, NULL);
 
-	source = e_cal_backend_get_source (backend);
+	source = e_backend_get_source (E_BACKEND (backend));
 	if (source) {
 		res = e_source_get_duped_property (source, "usermail");
 		if (res && *res)
@@ -2313,7 +2313,7 @@ caldav_get_backend_property (ECalBackendSync *backend,
 			g_string_append (caps, "," CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS);
 		g_free (usermail);
 
-		source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
+		source = e_backend_get_source (E_BACKEND (backend));
 		if (source) {
 			const gchar *prop = e_source_get_property (source, "autoschedule");
 
@@ -2372,8 +2372,9 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	priv  = cbdav->priv;
 
 	backend = E_CAL_BACKEND (cbdav);
-	source = e_cal_backend_get_source (backend);
 	cache_dir = e_cal_backend_get_cache_dir (backend);
+	source = e_backend_get_source (E_BACKEND (backend));
+	uri = e_source_get_uri (source);
 
 	if (!g_signal_handler_find (G_OBJECT (source), G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 0, 0, NULL, caldav_source_changed_cb, cbdav))
 		g_signal_connect (G_OBJECT (source), "changed", G_CALLBACK (caldav_source_changed_cb), cbdav);
@@ -2388,7 +2389,6 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	priv->auth_required = os_val != NULL;
 
 	os_val = e_source_get_property(source, "ssl");
-	uri = e_cal_backend_get_uri (backend);
 
 	g_free (priv->uri);
 	priv->uri = NULL;
@@ -2556,6 +2556,7 @@ caldav_do_open (ECalBackendSync *backend,
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
+	gboolean online;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = cbdav->priv;
@@ -2570,7 +2571,9 @@ caldav_do_open (ECalBackendSync *backend,
 		return;
 	}
 
-	if (!priv->do_offline && !priv->is_online) {
+	online = e_backend_get_online (E_BACKEND (backend));
+
+	if (!priv->do_offline && !online) {
 		g_mutex_unlock (priv->busy_lock);
 		g_propagate_error (perror, EDC_ERROR (RepositoryOffline));
 		return;
@@ -2580,7 +2583,7 @@ caldav_do_open (ECalBackendSync *backend,
 	priv->opened = TRUE;
 	priv->is_google = FALSE;
 
-	if (priv->is_online) {
+	if (online) {
 		GError *local_error = NULL;
 
 		open_calendar (cbdav, &local_error);
@@ -2600,7 +2603,7 @@ caldav_do_open (ECalBackendSync *backend,
 	}
 
 	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), priv->read_only);
-	e_cal_backend_notify_online (E_CAL_BACKEND (backend), priv->is_online);
+	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
 
 	g_mutex_unlock (priv->busy_lock);
 }
@@ -4635,27 +4638,27 @@ caldav_get_free_busy (ECalBackendSync *backend,
 }
 
 static void
-caldav_set_online (ECalBackend *backend,
-                   gboolean is_online)
+caldav_notify_online_cb (ECalBackend *backend,
+                         GParamSpec *pspec)
 {
 	ECalBackendCalDAV        *cbdav;
 	ECalBackendCalDAVPrivate *priv;
+	gboolean online;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 	priv  = cbdav->priv;
 
 	/*g_mutex_lock (priv->busy_lock);*/
 
-	if ((priv->is_online ? 1: 0) == (is_online ? 1 : 0) || !priv->loaded) {
-		priv->is_online = is_online;
-		e_cal_backend_notify_online (backend, is_online);
+	online = e_backend_get_online (E_BACKEND (backend));
+
+	if (!priv->loaded) {
+		e_cal_backend_notify_online (backend, online);
 		/*g_mutex_unlock (priv->busy_lock);*/
 		return;
 	}
 
-	priv->is_online = is_online;
-
-	if (is_online) {
+	if (online) {
 		/* Wake up the slave thread */
 		priv->slave_cmd = SLAVE_SHOULD_WORK;
 		g_cond_signal (priv->cond);
@@ -4664,7 +4667,7 @@ caldav_set_online (ECalBackend *backend,
 		priv->slave_cmd = SLAVE_SHOULD_SLEEP;
 	}
 
-	e_cal_backend_notify_online (backend, is_online);
+	e_cal_backend_notify_online (backend, online);
 
 	/*g_mutex_unlock (priv->busy_lock);*/
 }
@@ -4748,7 +4751,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 		return;
 	}
 
-	source = e_cal_backend_get_source (E_CAL_BACKEND (cbdav));
+	source = e_backend_get_source (E_BACKEND (cbdav));
 	if (source)
 		g_signal_handlers_disconnect_by_func (G_OBJECT (source), caldav_source_changed_cb, cbdav);
 
@@ -4839,6 +4842,10 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 			  G_CALLBACK (soup_authenticate), cbdav);
 
 	e_cal_backend_sync_set_lock (E_CAL_BACKEND_SYNC (cbdav), FALSE);
+
+	g_signal_connect (
+		cbdav, "notify::online",
+		G_CALLBACK (caldav_notify_online_cb), NULL);
 }
 
 static void
@@ -4879,7 +4886,6 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	sync_class->get_free_busy_sync		= caldav_get_free_busy;
 
 	backend_class->start_view		= caldav_start_view;
-	backend_class->set_online		= caldav_set_online;
 
 	backend_class->internal_get_timezone	= caldav_internal_get_timezone;
 }
