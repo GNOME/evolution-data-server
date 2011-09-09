@@ -19,20 +19,34 @@
  * Author: Joergen Scheibengruber <joergen.scheibengruber AT googlemail.com>
  */
 
-#ifndef __E_BOOK_BACKEND_GOOGLE_H__
-#define __E_BOOK_BACKEND_GOOGLE_H__
+#ifndef E_BOOK_BACKEND_GOOGLE_H
+#define E_BOOK_BACKEND_GOOGLE_H
 
 #include <libedata-book/e-book-backend.h>
 
-#define E_TYPE_BOOK_BACKEND_GOOGLE         (e_book_backend_google_get_type ())
-#define E_BOOK_BACKEND_GOOGLE(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGoogle))
-#define E_BOOK_BACKEND_GOOGLE_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGoogleClass))
-#define E_IS_BOOK_BACKEND_GOOGLE(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BOOK_BACKEND_GOOGLE))
-#define E_IS_BOOK_BACKEND_GOOGLE_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK_BACKEND_GOOGLE))
-#define E_BOOK_BACKEND_GOOGLE_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGoogleClass))
+/* Standard GObject macros */
+#define E_TYPE_BOOK_BACKEND_GOOGLE \
+	(e_book_backend_google_get_type ())
+#define E_BOOK_BACKEND_GOOGLE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGoogle))
+#define E_BOOK_BACKEND_GOOGLE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGoogleClass))
+#define E_IS_BOOK_BACKEND_GOOGLE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_BOOK_BACKEND_GOOGLE))
+#define E_IS_BOOK_BACKEND_GOOGLE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_BOOK_BACKEND_GOOGLE))
+#define E_BOOK_BACKEND_GOOGLE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_BOOK_BACKEND_GOOGLE, EBookBackendGoogleClass))
 
-typedef struct _EBookBackendGoogle        EBookBackendGoogle;
-typedef struct _EBookBackendGoogleClass   EBookBackendGoogleClass;
+G_BEGIN_DECLS
+
+typedef struct _EBookBackendGoogle EBookBackendGoogle;
+typedef struct _EBookBackendGoogleClass EBookBackendGoogleClass;
 typedef struct _EBookBackendGooglePrivate EBookBackendGooglePrivate;
 
 struct _EBookBackendGoogle {
@@ -44,7 +58,8 @@ struct _EBookBackendGoogleClass {
 	EBookBackendClass parent_class;
 };
 
-EBookBackend *e_book_backend_google_new (void);
-GType e_book_backend_google_get_type (void);
+GType		e_book_backend_google_get_type	(void);
 
-#endif /* __E_BOOK_BACKEND_GOOGLE_H__ */
+G_END_DECLS
+
+#endif /* E_BOOK_BACKEND_GOOGLE_H */

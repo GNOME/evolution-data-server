@@ -68,7 +68,6 @@ typedef enum {
 } CacheType;
 
 struct _EBookBackendGooglePrivate {
-	gboolean is_online;
 	GList *bookviews;
 
 	CacheType cache_type;
@@ -418,7 +417,7 @@ cache_needs_update (EBookBackend *backend,
 		*remaining_secs = G_MAXUINT;
 
 	/* We never want to update in offline mode */
-	if (!priv->is_online)
+	if (!e_backend_get_online (E_BACKEND (backend)))
 		return FALSE;
 
 	rv = cache_get_last_update_tv (backend, &last);
@@ -1052,11 +1051,14 @@ cache_refresh_if_needed (EBookBackend *backend)
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	guint remaining_secs;
 	gboolean install_timeout;
+	gboolean is_online;
 
 	__debug__ (G_STRFUNC);
 
-	if (!priv->is_online || !backend_is_authorized (backend)) {
-		__debug__ ("We are not connected to Google%s.", (!priv->is_online) ? " (offline mode)" : "");
+	is_online = e_backend_get_online (E_BACKEND (backend));
+
+	if (!is_online || !backend_is_authorized (backend)) {
+		__debug__ ("We are not connected to Google%s.", (!is_online) ? " (offline mode)" : "");
 		return TRUE;
 	}
 
@@ -1381,7 +1383,7 @@ e_book_backend_google_create_contact (EBookBackend *backend,
 
 	__debug__ ("Creating: %s", vcard_str);
 
-	if (!priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_create (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE), NULL);
 		return;
 	}
@@ -1476,7 +1478,7 @@ e_book_backend_google_remove_contacts (EBookBackend *backend,
 
 	__debug__ (G_STRFUNC);
 
-	if (!priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_remove_contacts (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE), NULL);
 		return;
 	}
@@ -1757,7 +1759,7 @@ e_book_backend_google_modify_contact (EBookBackend *backend,
 
 	__debug__ ("Updating: %s", vcard_str);
 
-	if (!priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_modify (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE), NULL);
 		return;
 	}
@@ -2125,7 +2127,7 @@ e_book_backend_google_authenticate_user (EBookBackend *backend,
 
 	__debug__ (G_STRFUNC);
 
-	if (!priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_book_backend_notify_readonly (backend, TRUE);
 		e_book_backend_notify_online (backend, FALSE);
 		e_book_backend_notify_opened (backend, EDB_ERROR (SUCCESS));
@@ -2199,7 +2201,8 @@ e_book_backend_google_open (EBookBackend *backend,
 	const gchar *refresh_interval_str, *use_ssl_str, *use_cache_str;
 	guint refresh_interval;
 	gboolean use_ssl, use_cache;
-	ESource *source = e_book_backend_get_source (backend);
+	ESource *source;
+	gboolean is_online;
 
 	__debug__ (G_STRFUNC);
 
@@ -2207,6 +2210,8 @@ e_book_backend_google_open (EBookBackend *backend,
 		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, "Source already loaded!"));
 		return;
 	}
+
+	source = e_backend_get_source (E_BACKEND (backend));
 
 	/* Parse various other properties */
 	refresh_interval_str = e_source_get_property (source, "refresh-interval");
@@ -2242,10 +2247,11 @@ e_book_backend_google_open (EBookBackend *backend,
 	}
 
 	/* Set up ready to be interacted with */
-	e_book_backend_notify_online (backend, priv->is_online);
+	is_online = e_backend_get_online (E_BACKEND (backend));
+	e_book_backend_notify_online (backend, is_online);
 	e_book_backend_notify_readonly (backend, TRUE);
 
-	if (priv->is_online) {
+	if (is_online) {
 		request_authorization (backend);
 
 #ifdef HAVE_LIBGDATA_0_9
@@ -2255,7 +2261,7 @@ e_book_backend_google_open (EBookBackend *backend,
 #endif
 	}
 
-	if (!priv->is_online || backend_is_authorized (backend)) {
+	if (!is_online || backend_is_authorized (backend)) {
 		e_book_backend_notify_readonly (backend, FALSE);
 		e_book_backend_notify_opened (backend, NULL /* Success */);
 	}
@@ -2439,17 +2445,15 @@ google_cancel_all_operations (EBookBackend *backend)
 }
 
 static void
-e_book_backend_google_set_online (EBookBackend *backend,
-                                  gboolean is_online)
+e_book_backend_google_notify_online_cb (EBookBackend *backend,
+                                        GParamSpec *pspec)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
+	gboolean is_online;
+
 	__debug__ (G_STRFUNC);
 
-	if (is_online == priv->is_online)
-		return;
-
-	priv->is_online = is_online;
-
+	is_online = e_backend_get_online (E_BACKEND (backend));
 	e_book_backend_notify_online (backend, is_online);
 
 	if (is_online && e_book_backend_is_opened (backend)) {
@@ -2537,7 +2541,6 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *klass)
 	backend_class->get_backend_property	= e_book_backend_google_get_backend_property;
 	backend_class->start_book_view		= e_book_backend_google_start_book_view;
 	backend_class->stop_book_view		= e_book_backend_google_stop_book_view;
-	backend_class->set_online		= e_book_backend_google_set_online;
 	backend_class->remove			= e_book_backend_google_remove;
 	backend_class->create_contact		= e_book_backend_google_create_contact;
 	backend_class->remove_contacts		= e_book_backend_google_remove_contacts;
@@ -2561,6 +2564,10 @@ e_book_backend_google_init (EBookBackendGoogle *backend)
 		backend, E_TYPE_BOOK_BACKEND_GOOGLE,
 		EBookBackendGooglePrivate);
 
+	g_signal_connect (
+		backend, "notify::online",
+		G_CALLBACK (e_book_backend_google_notify_online_cb), NULL);
+
 	/* Set up our EProxy. */
 	backend->priv->proxy = e_proxy_new ();
 	e_proxy_setup_proxy (backend->priv->proxy);
@@ -2568,17 +2575,6 @@ e_book_backend_google_init (EBookBackendGoogle *backend)
 	g_signal_connect (
 		backend->priv->proxy, "changed",
 		G_CALLBACK (proxy_settings_changed), backend);
-}
-
-EBookBackend *
-e_book_backend_google_new (void)
-{
-	EBookBackendGoogle *backend;
-
-	__debug__ (G_STRFUNC);
-	backend = g_object_new (E_TYPE_BOOK_BACKEND_GOOGLE, NULL);
-
-	return E_BOOK_BACKEND (backend);
 }
 
 static void

@@ -21,29 +21,50 @@
 
 #include <config.h>
 
-#include <libebackend/e-data-server-module.h>
 #include <libedata-book/e-book-backend-factory.h>
 #include "e-book-backend-google.h"
 
-E_BOOK_BACKEND_FACTORY_SIMPLE (google, Google, e_book_backend_google_new)
+#define FACTORY_NAME "google"
 
-GType google_type;
+typedef EBookBackendFactory EBookBackendGoogleFactory;
+typedef EBookBackendFactoryClass EBookBackendGoogleFactoryClass;
 
-void
-eds_module_initialize (GTypeModule *module)
+/* Module Entry Points */
+void e_module_load (GTypeModule *type_module);
+void e_module_unload (GTypeModule *type_module);
+
+/* Forward Declarations */
+GType e_book_backend_google_factory_get_type (void);
+
+G_DEFINE_DYNAMIC_TYPE (
+	EBookBackendGoogleFactory,
+	e_book_backend_google_factory,
+	E_TYPE_BOOK_BACKEND_FACTORY)
+
+static void
+e_book_backend_google_factory_class_init (EBookBackendFactoryClass *class)
 {
-    google_type = _google_factory_get_type (module);
+	class->factory_name = FACTORY_NAME;
+	class->backend_type = E_TYPE_BOOK_BACKEND_GOOGLE;
 }
 
-void
-eds_module_shutdown (void)
+static void
+e_book_backend_google_factory_class_finalize (EBookBackendFactoryClass *class)
 {
 }
 
-void
-eds_module_list_types (const GType **types,
-                       gint *num_types)
+static void
+e_book_backend_google_factory_init (EBookBackendFactory *factory)
 {
-    *types = &google_type;
-    *num_types = 1;
+}
+
+G_MODULE_EXPORT void
+e_module_load (GTypeModule *type_module)
+{
+	e_book_backend_google_factory_register_type (type_module);
+}
+
+G_MODULE_EXPORT void
+e_module_unload (GTypeModule *type_module)
+{
 }
