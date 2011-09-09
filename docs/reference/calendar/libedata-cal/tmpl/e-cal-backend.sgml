@@ -26,29 +26,12 @@ Base class for calendar/tasks backend implementations.
 </para>
 
 
-<!-- ##### SIGNAL ECalBackend::last-client-gone ##### -->
-<para>
-
-</para>
-
-@ecalbackend: the object which received the signal.
-
 <!-- ##### ARG ECalBackend:cache-dir ##### -->
 <para>
 
 </para>
 
 <!-- ##### ARG ECalBackend:kind ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG ECalBackend:source ##### -->
-<para>
-
-</para>
-
-<!-- ##### ARG ECalBackend:uri ##### -->
 <para>
 
 </para>
@@ -116,34 +99,7 @@ Base class for calendar/tasks backend implementations.
 
 
 
-<!-- ##### FUNCTION e_cal_backend_get_source ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_cal_backend_get_uri ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_cal_backend_get_kind ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_cal_backend_is_online ##### -->
 <para>
 
 </para>
@@ -292,15 +248,6 @@ Base class for calendar/tasks backend implementations.
 @cancellable: 
 @prop_name: 
 @prop_value: 
-
-
-<!-- ##### FUNCTION e_cal_backend_set_online ##### -->
-<para>
-
-</para>
-
-@backend: 
-@is_online: 
 
 
 <!-- ##### FUNCTION e_cal_backend_authenticate_user ##### -->

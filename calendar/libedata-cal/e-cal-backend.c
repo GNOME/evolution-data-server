@@ -36,12 +36,10 @@
 
 /* Private part of the CalBackend structure */
 struct _ECalBackendPrivate {
-	/* The source for this backend */
-	ESource *source;
 	/* The kind of components for this backend */
 	icalcomponent_kind kind;
 
-	gboolean opening, opened, readonly, removed, online;
+	gboolean opening, opened, readonly, removed;
 
 	/* URI, from source. This is cached, since we return const. */
 	gchar *uri;
@@ -64,46 +62,12 @@ struct _ECalBackendPrivate {
 enum {
 	PROP_0,
 	PROP_CACHE_DIR,
-	PROP_KIND,
-	PROP_SOURCE,
-	PROP_URI
+	PROP_KIND
 };
-
-/* Signal IDs */
-enum {
-	LAST_CLIENT_GONE,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
 
 static void e_cal_backend_remove_client_private (ECalBackend *backend, EDataCal *cal, gboolean weak_unref);
 
-G_DEFINE_TYPE (ECalBackend, e_cal_backend, G_TYPE_OBJECT);
-
-static void
-source_changed_cb (ESource *source,
-                   ECalBackend *backend)
-{
-	ECalBackendPrivate *priv;
-	gchar *suri;
-
-	g_return_if_fail (source != NULL);
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-
-	priv = backend->priv;
-	g_return_if_fail (priv != NULL);
-	g_return_if_fail (priv->source == source);
-
-	suri = e_source_get_uri (priv->source);
-	if (!priv->uri || (suri && !g_str_equal (priv->uri, suri))) {
-		g_free (priv->uri);
-		priv->uri = suri;
-	} else {
-		g_free (suri);
-	}
-}
+G_DEFINE_TYPE (ECalBackend, e_cal_backend, E_TYPE_BACKEND);
 
 static void
 cal_backend_set_default_cache_dir (ECalBackend *backend)
@@ -118,7 +82,7 @@ cal_backend_set_default_cache_dir (ECalBackend *backend)
 	user_cache_dir = e_get_user_cache_dir ();
 
 	kind = e_cal_backend_get_kind (backend);
-	source = e_cal_backend_get_source (backend);
+	source = e_backend_get_source (E_BACKEND (backend));
 
 	switch (kind) {
 		case ICAL_VEVENT_COMPONENT:
@@ -146,40 +110,6 @@ cal_backend_set_default_cache_dir (ECalBackend *backend)
 }
 
 static void
-cal_backend_set_source (ECalBackend *backend,
-                        ESource *source)
-{
-	if (backend->priv->source != NULL) {
-		g_signal_handlers_disconnect_matched (backend->priv->source, G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 0, 0, NULL, source_changed_cb, backend);
-		g_object_unref (backend->priv->source);
-	}
-
-	if (source != NULL)
-		g_signal_connect (
-			g_object_ref (source), "changed",
-			G_CALLBACK (source_changed_cb), backend);
-
-	backend->priv->source = source;
-
-	/* Cache the URI */
-	if (source != NULL) {
-		g_free (backend->priv->uri);
-		backend->priv->uri = e_source_get_uri (source);
-	}
-}
-
-static void
-cal_backend_set_uri (ECalBackend *backend,
-                     const gchar *uri)
-{
-	/* ESource's URI gets priority. */
-	if (backend->priv->source == NULL) {
-		g_free (backend->priv->uri);
-		backend->priv->uri = g_strdup (uri);
-	}
-}
-
-static void
 cal_backend_set_kind (ECalBackend *backend,
                       icalcomponent_kind kind)
 {
@@ -203,7 +133,7 @@ cal_backend_get_backend_property (ECalBackend *backend,
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
 		e_data_cal_respond_get_backend_property (cal, opid, NULL, e_cal_backend_is_opening (backend) ? "TRUE" : "FALSE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
-		e_data_cal_respond_get_backend_property (cal, opid, NULL, e_cal_backend_is_online (backend) ? "TRUE" : "FALSE");
+		e_data_cal_respond_get_backend_property (cal, opid, NULL, e_backend_get_online (E_BACKEND (backend)) ? "TRUE" : "FALSE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
 		e_data_cal_respond_get_backend_property (cal, opid, NULL, e_cal_backend_is_readonly (backend) ? "TRUE" : "FALSE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CACHE_DIR)) {
@@ -246,16 +176,6 @@ cal_backend_set_property (GObject *object,
 				E_CAL_BACKEND (object),
 				g_value_get_ulong (value));
 			return;
-		case PROP_SOURCE:
-			cal_backend_set_source (
-				E_CAL_BACKEND (object),
-				g_value_get_object (value));
-			return;
-		case PROP_URI:
-			cal_backend_set_uri (
-				E_CAL_BACKEND (object),
-				g_value_get_string (value));
-			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -276,16 +196,6 @@ cal_backend_get_property (GObject *object,
 		case PROP_KIND:
 			g_value_set_ulong (
 				value, e_cal_backend_get_kind (
-				E_CAL_BACKEND (object)));
-			return;
-		case PROP_SOURCE:
-			g_value_set_object (
-				value, e_cal_backend_get_source (
-				E_CAL_BACKEND (object)));
-			return;
-		case PROP_URI:
-			g_value_set_string (
-				value, e_cal_backend_get_uri (
 				E_CAL_BACKEND (object)));
 			return;
 	}
@@ -309,13 +219,7 @@ cal_backend_finalize (GObject *object)
 	g_mutex_free (priv->clients_mutex);
 	g_mutex_free (priv->views_mutex);
 
-	g_free (priv->uri);
 	g_free (priv->cache_dir);
-
-	if (priv->source) {
-		g_signal_handlers_disconnect_matched (priv->source, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, object);
-		g_object_unref (priv->source);
-	}
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->finalize (object);
@@ -367,37 +271,6 @@ e_cal_backend_class_init (ECalBackendClass *klass)
 			ICAL_NO_COMPONENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_SOURCE,
-		g_param_spec_object (
-			"source",
-			NULL,
-			NULL,
-			E_TYPE_SOURCE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_URI,
-		g_param_spec_string (
-			"uri",
-			NULL,
-			NULL,
-			"",
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
-
-	signals[LAST_CLIENT_GONE] = g_signal_new (
-		"last_client_gone",
-		G_TYPE_FROM_CLASS (klass),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (ECalBackendClass, last_client_gone),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
-		G_TYPE_NONE, 0);
 }
 
 static void
@@ -413,40 +286,6 @@ e_cal_backend_init (ECalBackend *backend)
 	backend->priv->views_mutex = g_mutex_new ();
 
 	backend->priv->readonly = TRUE;
-	backend->priv->online = FALSE;
-}
-
-/**
- * e_cal_backend_get_source:
- * @backend: an #ECalBackend
- *
- * Gets the #ESource associated with the given backend.
- *
- * Returns: The #ESource for the backend.
- */
-ESource *
-e_cal_backend_get_source (ECalBackend *backend)
-{
-	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
-
-	return backend->priv->source;
-}
-
-/**
- * e_cal_backend_get_uri:
- * @backend: an #ECalBackend
- *
- * Queries the URI of a calendar backend, which must already have an open
- * calendar.
- *
- * Returns: The URI where the calendar is stored.
- **/
-const gchar *
-e_cal_backend_get_uri (ECalBackend *backend)
-{
-	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
-
-	return backend->priv->uri;
 }
 
 /**
@@ -463,22 +302,6 @@ e_cal_backend_get_kind (ECalBackend *backend)
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), ICAL_NO_COMPONENT);
 
 	return backend->priv->kind;
-}
-
-/**
- * e_cal_backend_is_online:
- * @backend: an #ECalBackend
- *
- * Returns: Whether is backend online.
- *
- * Since: 3.2
- **/
-gboolean
-e_cal_backend_is_online (ECalBackend *backend)
-{
-	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), FALSE);
-
-	return backend->priv->online;
 }
 
 /**
@@ -776,7 +599,7 @@ e_cal_backend_remove_client_private (ECalBackend *backend,
 	 */
 	if (!priv->clients) {
 		priv->opening = FALSE;
-		g_signal_emit (backend, signals[LAST_CLIENT_GONE], 0);
+		e_backend_last_client_gone (E_BACKEND (backend));
 	}
 }
 
@@ -898,26 +721,6 @@ e_cal_backend_set_notification_proxy (ECalBackend *backend,
 }
 
 /**
- * e_cal_backend_set_online:
- * @backend: A calendar backend
- * @is_online: Whether is online
- *
- * Sets the online mode of the calendar
- *
- * Since: 3.2
- */
-void
-e_cal_backend_set_online (ECalBackend *backend,
-                          gboolean is_online)
-{
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->set_online != NULL);
-
-	(* E_CAL_BACKEND_GET_CLASS (backend)->set_online) (backend, is_online);
-}
-
-/**
  * e_cal_backend_open:
  * @backend: an #ECalBackend
  * @cal: an #EDataCal
@@ -987,10 +790,14 @@ e_cal_backend_open (ECalBackend *backend,
 	g_mutex_lock (backend->priv->clients_mutex);
 
 	if (e_cal_backend_is_opened (backend)) {
+		gboolean online;
+
 		g_mutex_unlock (backend->priv->clients_mutex);
 
 		e_data_cal_report_readonly (cal, backend->priv->readonly);
-		e_data_cal_report_online (cal, backend->priv->online);
+
+		online = e_backend_get_online (E_BACKEND (backend));
+		e_data_cal_report_online (cal, online);
 
 		e_cal_backend_respond_opened (backend, cal, opid, NULL);
 	} else if (e_cal_backend_is_opening (backend)) {
@@ -1854,7 +1661,6 @@ e_cal_backend_notify_online (ECalBackend *backend,
 	GSList *clients;
 
 	priv = backend->priv;
-	priv->online = is_online;
 
 	if (priv->notification_proxy) {
 		e_cal_backend_notify_online (priv->notification_proxy, is_online);

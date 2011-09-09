@@ -26,31 +26,3 @@ Factory for creating backends.
 </para>
 
 
-<!-- ##### FUNCTION e_cal_backend_factory_get_kind ##### -->
-<para>
-
-</para>
-
-@factory: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_cal_backend_factory_get_protocol ##### -->
-<para>
-
-</para>
-
-@factory: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_cal_backend_factory_new_backend ##### -->
-<para>
-
-</para>
-
-@factory: 
-@source: 
-@Returns: 
-
-

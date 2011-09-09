@@ -20,40 +20,53 @@
  * Author: Chris Toshok <toshok@ximian.com>
  */
 
-#ifndef _E_CAL_BACKEND_FACTORY_H_
-#define _E_CAL_BACKEND_FACTORY_H_
+#ifndef E_CAL_BACKEND_FACTORY_H
+#define E_CAL_BACKEND_FACTORY_H
 
-#include "e-cal-backend.h"
+#include <libical/ical.h>
+#include <libebackend/e-backend-factory.h>
+
+/* Standard GObject macros */
+#define E_TYPE_CAL_BACKEND_FACTORY \
+	(e_cal_backend_factory_get_type ())
+#define E_CAL_BACKEND_FACTORY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CAL_BACKEND_FACTORY, ECalBackendFactory))
+#define E_CAL_BACKEND_FACTORY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CAL_BACKEND_FACTORY, ECalBackendFactoryClass))
+#define E_IS_CAL_BACKEND_FACTORY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CAL_BACKEND_FACTORY))
+#define E_IS_CAL_BACKEND_FACTORY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CAL_BACKEND_FACTORY))
+#define E_CAL_BACKEND_FACTORY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CAL_BACKEND_FACTORY, ECalBackendFactoryClass))
 
 G_BEGIN_DECLS
 
-#define E_TYPE_CAL_BACKEND_FACTORY        (e_cal_backend_factory_get_type ())
-#define E_CAL_BACKEND_FACTORY(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_CAL_BACKEND_FACTORY, ECalBackendFactory))
-#define E_CAL_BACKEND_FACTORY_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_CAL_BACKEND_FACTORY, ECalBackendFactoryClass))
-#define E_IS_CAL_BACKEND_FACTORY(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_CAL_BACKEND_FACTORY))
-#define E_IS_CAL_BACKEND_FACTORY_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_CAL_BACKEND_FACTORY))
-#define E_CAL_BACKEND_FACTORY_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), E_TYPE_CAL_BACKEND_FACTORY, ECalBackendFactoryClass))
-
+typedef struct _ECalBackendFactory ECalBackendFactory;
+typedef struct _ECalBackendFactoryClass ECalBackendFactoryClass;
 typedef struct _ECalBackendFactoryPrivate ECalBackendFactoryPrivate;
 
-typedef struct {
-	GObject            parent_object;
-} ECalBackendFactory;
+struct _ECalBackendFactory {
+	EBackendFactory parent;
+};
 
-typedef struct {
-	GObjectClass parent_class;
+struct _ECalBackendFactoryClass {
+	EBackendFactoryClass parent_class;
 
-	icalcomponent_kind (*get_kind)     (ECalBackendFactory *factory);
-	const gchar *        (*get_protocol) (ECalBackendFactory *factory);
-	ECalBackend *       (*new_backend)  (ECalBackendFactory *factory, ESource *source);
-} ECalBackendFactoryClass;
+	/* Subclasses just need to set these
+	 * class members, we handle the rest. */
+	const gchar *factory_name;
+	icalcomponent_kind component_kind;
+	GType backend_type;
+};
 
-GType               e_cal_backend_factory_get_type              (void);
-
-icalcomponent_kind  e_cal_backend_factory_get_kind              (ECalBackendFactory *factory);
-const gchar *         e_cal_backend_factory_get_protocol          (ECalBackendFactory *factory);
-ECalBackend *        e_cal_backend_factory_new_backend           (ECalBackendFactory *factory, ESource *source);
+GType		e_cal_backend_factory_get_type		(void) G_GNUC_CONST;
 
 G_END_DECLS
 
-#endif /* _E_CAL_BACKEND_FACTORY_H_ */
+#endif /* E_CAL_BACKEND_FACTORY_H */

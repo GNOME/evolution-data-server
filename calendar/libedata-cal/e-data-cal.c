@@ -38,7 +38,9 @@
 #include "e-data-cal-enumtypes.h"
 #include "e-gdbus-cal.h"
 
-G_DEFINE_TYPE (EDataCal, e_data_cal, G_TYPE_OBJECT);
+#define E_DATA_CAL_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_DATA_CAL, EDataCalPrivate))
 
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
@@ -47,10 +49,14 @@ struct _EDataCalPrivate {
 	EGdbusCal *gdbus_object;
 
 	ECalBackend *backend;
-	ESource *source;
 
 	GStaticRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid to GCancellable for still running operations */
+};
+
+enum {
+	PROP_0,
+	PROP_BACKEND
 };
 
 static EOperationPool *ops_pool = NULL;
@@ -148,6 +154,8 @@ typedef struct {
 		/* OP_CLOSE */
 	} d;
 } OperationData;
+
+G_DEFINE_TYPE (EDataCal, e_data_cal, G_TYPE_OBJECT);
 
 /* Function to get a new EDataCalView path, used by get_view below */
 static gchar *
@@ -511,41 +519,6 @@ data_cal_return_error (GDBusMethodInvocation *invocation,
 	g_dbus_method_invocation_return_gerror (invocation, error);
 
 	g_error_free (error);
-}
-
-EDataCal *
-e_data_cal_new (ECalBackend *backend,
-                ESource *source)
-{
-	EDataCal *cal;
-
-	cal = g_object_new (E_TYPE_DATA_CAL, NULL);
-	cal->priv->backend = g_object_ref (backend);
-	cal->priv->source = g_object_ref (source);
-
-	return cal;
-}
-
-/**
- * e_data_cal_get_source:
- * @cal: an #EDataCal
- *
- * Returns the #ESource for @cal.
- *
- * Returns: the #ESource for @cal
- *
- * Since: 2.30
- **/
-ESource *
-e_data_cal_get_source (EDataCal *cal)
-{
-	return cal->priv->source;
-}
-
-ECalBackend *
-e_data_cal_get_backend (EDataCal *cal)
-{
-	return cal->priv->backend;
 }
 
 /**
@@ -1641,86 +1614,90 @@ e_data_cal_report_backend_property_changed (EDataCal *cal,
 	g_strfreev (strv);
 }
 
-/* Instance init */
 static void
-e_data_cal_init (EDataCal *ecal)
+data_cal_set_backend (EDataCal *cal,
+                      ECalBackend *backend)
 {
-	EGdbusCal *gdbus_object;
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (cal->priv->backend == NULL);
 
-	ecal->priv = G_TYPE_INSTANCE_GET_PRIVATE (ecal, E_TYPE_DATA_CAL, EDataCalPrivate);
+	cal->priv->backend = g_object_ref (backend);
+}
 
-	ecal->priv->gdbus_object = e_gdbus_cal_stub_new ();
-	ecal->priv->pending_ops = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
-	g_static_rec_mutex_init (&ecal->priv->pending_ops_lock);
+static void
+data_cal_set_property (GObject *object,
+                       guint property_id,
+                       const GValue *value,
+                       GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_BACKEND:
+			data_cal_set_backend (
+				E_DATA_CAL (object),
+				g_value_get_object (value));
+			return;
+	}
 
-	gdbus_object = ecal->priv->gdbus_object;
-	g_signal_connect (gdbus_object, "handle-open", G_CALLBACK (impl_Cal_open), ecal);
-	g_signal_connect (gdbus_object, "handle-authenticate-user", G_CALLBACK (impl_Cal_authenticate_user), ecal);
-	g_signal_connect (gdbus_object, "handle-remove", G_CALLBACK (impl_Cal_remove), ecal);
-	g_signal_connect (gdbus_object, "handle-refresh", G_CALLBACK (impl_Cal_refresh), ecal);
-	g_signal_connect (gdbus_object, "handle-get-backend-property", G_CALLBACK (impl_Cal_get_backend_property), ecal);
-	g_signal_connect (gdbus_object, "handle-set-backend-property", G_CALLBACK (impl_Cal_set_backend_property), ecal);
-	g_signal_connect (gdbus_object, "handle-get-object", G_CALLBACK (impl_Cal_get_object), ecal);
-	g_signal_connect (gdbus_object, "handle-get-object-list", G_CALLBACK (impl_Cal_get_object_list), ecal);
-	g_signal_connect (gdbus_object, "handle-get-free-busy", G_CALLBACK (impl_Cal_get_free_busy), ecal);
-	g_signal_connect (gdbus_object, "handle-create-object", G_CALLBACK (impl_Cal_create_object), ecal);
-	g_signal_connect (gdbus_object, "handle-modify-object", G_CALLBACK (impl_Cal_modify_object), ecal);
-	g_signal_connect (gdbus_object, "handle-remove-object", G_CALLBACK (impl_Cal_remove_object), ecal);
-	g_signal_connect (gdbus_object, "handle-receive-objects", G_CALLBACK (impl_Cal_receive_objects), ecal);
-	g_signal_connect (gdbus_object, "handle-send-objects", G_CALLBACK (impl_Cal_send_objects), ecal);
-	g_signal_connect (gdbus_object, "handle-get-attachment-uris", G_CALLBACK (impl_Cal_get_attachment_uris), ecal);
-	g_signal_connect (gdbus_object, "handle-discard-alarm", G_CALLBACK (impl_Cal_discard_alarm), ecal);
-	g_signal_connect (gdbus_object, "handle-get-view", G_CALLBACK (impl_Cal_get_view), ecal);
-	g_signal_connect (gdbus_object, "handle-get-timezone", G_CALLBACK (impl_Cal_get_timezone), ecal);
-	g_signal_connect (gdbus_object, "handle-add-timezone", G_CALLBACK (impl_Cal_add_timezone), ecal);
-	g_signal_connect (gdbus_object, "handle-cancel-operation", G_CALLBACK (impl_Cal_cancel_operation), ecal);
-	g_signal_connect (gdbus_object, "handle-cancel-all", G_CALLBACK (impl_Cal_cancel_all), ecal);
-	g_signal_connect (gdbus_object, "handle-close", G_CALLBACK (impl_Cal_close), ecal);
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+data_cal_get_property (GObject *object,
+                       guint property_id,
+                       GValue *value,
+                       GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_BACKEND:
+			g_value_set_object (
+				value,
+				e_data_cal_get_backend (
+				E_DATA_CAL (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
 data_cal_dispose (GObject *object)
 {
-	EDataCal *cal = E_DATA_CAL (object);
+	EDataCalPrivate *priv;
 
-	g_return_if_fail (cal != NULL);
+	priv = E_DATA_CAL_GET_PRIVATE (object);
 
-	if (cal->priv->backend) {
-		g_object_unref (cal->priv->backend);
-		cal->priv->backend = NULL;
+	if (priv->backend) {
+		g_object_unref (priv->backend);
+		priv->backend = NULL;
 	}
 
-	if (cal->priv->source) {
-		g_object_unref (cal->priv->source);
-		cal->priv->source = NULL;
-	}
-
+	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_data_cal_parent_class)->dispose (object);
 }
 
 static void
 data_cal_finalize (GObject *object)
 {
-	EDataCal *cal = E_DATA_CAL (object);
+	EDataCalPrivate *priv;
 
-	g_return_if_fail (cal != NULL);
+	priv = E_DATA_CAL_GET_PRIVATE (object);
 
-	if (cal->priv->pending_ops) {
-		g_hash_table_destroy (cal->priv->pending_ops);
-		cal->priv->pending_ops = NULL;
+	if (priv->pending_ops) {
+		g_hash_table_destroy (priv->pending_ops);
+		priv->pending_ops = NULL;
 	}
 
-	g_static_rec_mutex_free (&cal->priv->pending_ops_lock);
+	g_static_rec_mutex_free (&priv->pending_ops_lock);
 
-	if (cal->priv->gdbus_object) {
-		g_object_unref (cal->priv->gdbus_object);
-		cal->priv->gdbus_object = NULL;
+	if (priv->gdbus_object) {
+		g_object_unref (priv->gdbus_object);
+		priv->gdbus_object = NULL;
 	}
 
+	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_cal_parent_class)->finalize (object);
 }
 
-/* Class init */
 static void
 e_data_cal_class_init (EDataCalClass *klass)
 {
@@ -1729,9 +1706,121 @@ e_data_cal_class_init (EDataCalClass *klass)
 	g_type_class_add_private (klass, sizeof (EDataCalPrivate));
 
 	object_class = G_OBJECT_CLASS (klass);
+	object_class->set_property = data_cal_set_property;
+	object_class->get_property = data_cal_get_property;
 	object_class->dispose = data_cal_dispose;
 	object_class->finalize = data_cal_finalize;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_BACKEND,
+		g_param_spec_object (
+			"backend",
+			"Backend",
+			"The backend driving this connection",
+			E_TYPE_CAL_BACKEND,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 
 	if (!ops_pool)
 		ops_pool = e_operation_pool_new (10, operation_thread, NULL);
 }
+
+static void
+e_data_cal_init (EDataCal *ecal)
+{
+	EGdbusCal *gdbus_object;
+
+	ecal->priv = E_DATA_CAL_GET_PRIVATE (ecal);
+
+	ecal->priv->gdbus_object = e_gdbus_cal_stub_new ();
+	ecal->priv->pending_ops = g_hash_table_new_full (
+		g_direct_hash, g_direct_equal, NULL, g_object_unref);
+	g_static_rec_mutex_init (&ecal->priv->pending_ops_lock);
+
+	gdbus_object = ecal->priv->gdbus_object;
+	g_signal_connect (
+		gdbus_object, "handle-open",
+		G_CALLBACK (impl_Cal_open), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-authenticate-user",
+		G_CALLBACK (impl_Cal_authenticate_user), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-remove",
+		G_CALLBACK (impl_Cal_remove), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-refresh",
+		G_CALLBACK (impl_Cal_refresh), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-get-backend-property",
+		G_CALLBACK (impl_Cal_get_backend_property), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-set-backend-property",
+		G_CALLBACK (impl_Cal_set_backend_property), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-get-object",
+		G_CALLBACK (impl_Cal_get_object), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-get-object-list",
+		G_CALLBACK (impl_Cal_get_object_list), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-get-free-busy",
+		G_CALLBACK (impl_Cal_get_free_busy), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-create-object",
+		G_CALLBACK (impl_Cal_create_object), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-modify-object",
+		G_CALLBACK (impl_Cal_modify_object), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-remove-object",
+		G_CALLBACK (impl_Cal_remove_object), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-receive-objects",
+		G_CALLBACK (impl_Cal_receive_objects), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-send-objects",
+		G_CALLBACK (impl_Cal_send_objects), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-get-attachment-uris",
+		G_CALLBACK (impl_Cal_get_attachment_uris), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-discard-alarm",
+		G_CALLBACK (impl_Cal_discard_alarm), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-get-view",
+		G_CALLBACK (impl_Cal_get_view), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-get-timezone",
+		G_CALLBACK (impl_Cal_get_timezone), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-add-timezone",
+		G_CALLBACK (impl_Cal_add_timezone), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-cancel-operation",
+		G_CALLBACK (impl_Cal_cancel_operation), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-cancel-all",
+		G_CALLBACK (impl_Cal_cancel_all), ecal);
+	g_signal_connect (
+		gdbus_object, "handle-close",
+		G_CALLBACK (impl_Cal_close), ecal);
+}
+
+EDataCal *
+e_data_cal_new (ECalBackend *backend)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+
+	return g_object_new (E_TYPE_DATA_CAL, "backend", backend, NULL);
+}
+
+ECalBackend *
+e_data_cal_get_backend (EDataCal *cal)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL (cal), NULL);
+
+	return cal->priv->backend;
+}
+

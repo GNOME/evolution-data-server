@@ -11,10 +11,7 @@ CLIENT_BACKEND_PROPERTY_CAPABILITIES
 CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS
 CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS
 CAL_BACKEND_PROPERTY_DEFAULT_OBJECT
-e_cal_backend_get_source
-e_cal_backend_get_uri
 e_cal_backend_get_kind
-e_cal_backend_is_online
 e_cal_backend_is_opened
 e_cal_backend_is_opening
 e_cal_backend_is_readonly
@@ -29,7 +26,6 @@ e_cal_backend_foreach_view
 e_cal_backend_set_notification_proxy
 e_cal_backend_get_backend_property
 e_cal_backend_set_backend_property
-e_cal_backend_set_online
 e_cal_backend_authenticate_user
 e_cal_backend_open
 e_cal_backend_remove
@@ -117,9 +113,6 @@ e_cal_backend_cache_get_type
 <FILE>e-cal-backend-factory</FILE>
 <TITLE>ECalBackendFactory</TITLE>
 ECalBackendFactory
-e_cal_backend_factory_get_kind
-e_cal_backend_factory_get_protocol
-e_cal_backend_factory_new_backend
 <SUBSECTION Standard>
 E_CAL_BACKEND_FACTORY
 E_IS_CAL_BACKEND_FACTORY
@@ -272,7 +265,6 @@ e_return_data_cal_error_if_fail
 e_return_data_cal_error_val_if_fail
 e_data_cal_new
 e_data_cal_get_backend
-e_data_cal_get_source
 e_data_cal_register_gdbus_object
 e_data_cal_respond_open
 e_data_cal_respond_remove
@@ -331,25 +323,18 @@ ECalBackendSExpClass
 <SECTION>
 <FILE>e-data-cal-factory</FILE>
 <TITLE>EDataCalFactory</TITLE>
-E_DATA_CAL_FACTORY_ERROR
-EDataCalFactoryError
 EDataCalFactory
-e_data_cal_factory_register_backend
-e_data_cal_factory_register_backends
-e_data_cal_factory_get_n_backends
-e_data_cal_factory_dump_active_backends
-e_data_cal_factory_set_backend_online
 <SUBSECTION Standard>
 E_DATA_CAL_FACTORY
 E_IS_DATA_CAL_FACTORY
 E_TYPE_DATA_CAL_FACTORY
 E_DATA_CAL_FACTORY_CLASS
 E_IS_DATA_CAL_FACTORY_CLASS
+E_DATA_CAL_FACTORY_GET_CLASS
 EDataCalFactoryClass
 <SUBSECTION Private>
 EDataCalFactoryPrivate
 e_data_cal_factory_get_type
-e_data_cal_factory_error_quark
 </SECTION>
 
 <SECTION>

@@ -23,6 +23,7 @@
 #ifndef E_CAL_BACKEND_H
 #define E_CAL_BACKEND_H
 
+#include <libebackend/e-backend.h>
 #include <libedataserver/e-credentials.h>
 #include <libedataserver/e-source.h>
 #include <libecal/e-cal-util.h>
@@ -129,13 +130,12 @@ struct _ECalBackendCache;
 typedef struct _ECalBackendPrivate ECalBackendPrivate;
 
 struct _ECalBackend {
-	GObject object;
-
+	EBackend parent;
 	ECalBackendPrivate *priv;
 };
 
 struct _ECalBackendClass {
-	GObjectClass parent_class;
+	EBackendClass parent_class;
 
 	/* Virtual methods */
         void	(* get_backend_property)	(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name);
@@ -143,7 +143,6 @@ struct _ECalBackendClass {
 
 	void	(* open)			(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, gboolean only_if_exists);
 	void	(* remove)			(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable);
-	void	(* set_online)			(ECalBackend *backend, gboolean is_online);
 	void	(* authenticate_user)		(ECalBackend *backend, GCancellable *cancellable, ECredentials *credentials);
 
 	void	(* refresh)			(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable);
@@ -172,10 +171,7 @@ struct _ECalBackendClass {
 
 GType		e_cal_backend_get_type			(void);
 
-ESource *	e_cal_backend_get_source		(ECalBackend *backend);
-const gchar *	e_cal_backend_get_uri			(ECalBackend *backend);
 icalcomponent_kind e_cal_backend_get_kind		(ECalBackend *backend);
-gboolean	e_cal_backend_is_online			(ECalBackend *backend);
 gboolean	e_cal_backend_is_opened			(ECalBackend *backend);
 gboolean	e_cal_backend_is_opening		(ECalBackend *backend);
 gboolean	e_cal_backend_is_readonly		(ECalBackend *backend);
@@ -197,7 +193,6 @@ void		e_cal_backend_set_notification_proxy	(ECalBackend *backend, ECalBackend *p
 void		e_cal_backend_get_backend_property	(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name);
 void		e_cal_backend_set_backend_property	(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value);
 
-void		e_cal_backend_set_online		(ECalBackend *backend, gboolean is_online);
 void		e_cal_backend_authenticate_user		(ECalBackend *backend, GCancellable *cancellable, ECredentials *credentials);
 
 void		e_cal_backend_open			(ECalBackend *backend, EDataCal *cal, guint32 opid, GCancellable *cancellable, gboolean only_if_exists);

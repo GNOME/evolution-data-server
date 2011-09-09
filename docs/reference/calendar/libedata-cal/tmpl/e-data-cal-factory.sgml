@@ -20,20 +20,6 @@ Implementation of the calendar CORBA factory.
 <!-- ##### SECTION Image ##### -->
 
 
-<!-- ##### MACRO E_DATA_CAL_FACTORY_ERROR ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### ENUM EDataCalFactoryError ##### -->
-<para>
-
-</para>
-
-@E_DATA_CAL_FACTORY_ERROR_GENERIC: 
-
 <!-- ##### STRUCT EDataCalFactory ##### -->
 <para>
 
@@ -41,47 +27,4 @@ Implementation of the calendar CORBA factory.
 
 @parent: 
 @priv: 
-
-<!-- ##### FUNCTION e_data_cal_factory_register_backend ##### -->
-<para>
-
-</para>
-
-@factory: 
-@backend_factory: 
-
-
-<!-- ##### FUNCTION e_data_cal_factory_register_backends ##### -->
-<para>
-
-</para>
-
-@factory: 
-
-
-<!-- ##### FUNCTION e_data_cal_factory_get_n_backends ##### -->
-<para>
-
-</para>
-
-@factory: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_cal_factory_dump_active_backends ##### -->
-<para>
-
-</para>
-
-@factory: 
-
-
-<!-- ##### FUNCTION e_data_cal_factory_set_backend_online ##### -->
-<para>
-
-</para>
-
-@factory: 
-@is_online: 
-
 

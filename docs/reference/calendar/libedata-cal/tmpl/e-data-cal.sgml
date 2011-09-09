@@ -33,6 +33,11 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 
+<!-- ##### ARG EDataCal:backend ##### -->
+<para>
+
+</para>
+
 <!-- ##### FUNCTION e_data_cal_create_error ##### -->
 <para>
 
@@ -87,20 +92,10 @@ Implementation of the calendar CORBA client interface.
 </para>
 
 @backend: 
-@source: 
 @Returns: 
 
 
 <!-- ##### FUNCTION e_data_cal_get_backend ##### -->
-<para>
-
-</para>
-
-@cal: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_cal_get_source ##### -->
 <para>
 
 </para>

@@ -22,49 +22,44 @@
 #ifndef E_DATA_CAL_FACTORY_H
 #define E_DATA_CAL_FACTORY_H
 
-#include <glib-object.h>
+#include <libebackend/e-data-factory.h>
+
+/* Standard GObject macros */
+#define E_TYPE_DATA_CAL_FACTORY \
+	(e_data_cal_factory_get_type ())
+#define E_DATA_CAL_FACTORY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_DATA_CAL_FACTORY, EDataCalFactory))
+#define E_DATA_CAL_FACTORY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_DATA_CAL_FACTORY,  EDataCalFactoryClass))
+#define E_IS_DATA_CAL_FACTORY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_DATA_CAL_FACTORY))
+#define E_IS_DATA_CAL_FACTORY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_DATA_CAL_FACTORY))
+#define E_DATA_CAL_FACTORY_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryClass))
 
 G_BEGIN_DECLS
 
-
-
-#define E_TYPE_DATA_CAL_FACTORY            (e_data_cal_factory_get_type ())
-#define E_DATA_CAL_FACTORY(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_DATA_CAL_FACTORY, EDataCalFactory))
-#define E_DATA_CAL_FACTORY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_DATA_CAL_FACTORY,  EDataCalFactoryClass))
-#define E_IS_DATA_CAL_FACTORY(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_DATA_CAL_FACTORY))
-#define E_IS_DATA_CAL_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_DATA_CAL_FACTORY))
-
 typedef struct _EDataCalFactory EDataCalFactory;
 typedef struct _EDataCalFactoryClass EDataCalFactoryClass;
-
 typedef struct _EDataCalFactoryPrivate EDataCalFactoryPrivate;
 
 struct _EDataCalFactory {
-	GObject parent;
+	EDataFactory parent;
 	EDataCalFactoryPrivate *priv;
 };
 
 struct _EDataCalFactoryClass {
-	GObjectClass parent_class;
+	EDataFactoryClass parent_class;
 };
 
-typedef enum {
-	E_DATA_CAL_FACTORY_ERROR_GENERIC
-} EDataCalFactoryError;
-
-GQuark e_data_cal_factory_error_quark (void);
-#define E_DATA_CAL_FACTORY_ERROR e_data_cal_factory_error_quark ()
-
-GType	e_data_cal_factory_get_type        (void);
-
-void	e_data_cal_factory_register_backend	(EDataCalFactory *factory,
-						 ECalBackendFactory *backend_factory);
-void	e_data_cal_factory_register_backends	(EDataCalFactory *factory);
-guint	e_data_cal_factory_get_n_backends	(EDataCalFactory *factory);
-void	e_data_cal_factory_dump_active_backends	(EDataCalFactory *factory);
-void	e_data_cal_factory_set_backend_online	(EDataCalFactory *factory,
-						 gboolean is_online);
+GType	e_data_cal_factory_get_type		(void);
 
 G_END_DECLS
 
-#endif
+#endif /* E_DATA_CAL_FACTORY_H */
