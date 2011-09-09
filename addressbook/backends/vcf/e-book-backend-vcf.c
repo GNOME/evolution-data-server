@@ -563,12 +563,13 @@ e_book_backend_vcf_open (EBookBackendSync *backend,
                          GError **perror)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
-	ESource *source = e_book_backend_get_source (E_BOOK_BACKEND (backend));
-	gchar           *dirname;
-	gboolean        readonly = TRUE;
-	gchar          *uri;
+	ESource *source;
+	gchar *dirname;
+	gboolean readonly = TRUE;
+	gchar *uri;
 	gint fd;
 
+	source = e_backend_get_source (E_BACKEND (backend));
 	uri = e_source_get_uri (source);
 
 	dirname = e_book_backend_vcf_extract_path_from_uri (uri);
@@ -675,20 +676,11 @@ e_book_backend_vcf_get_backend_property (EBookBackendSync *backend,
 }
 
 static void
-e_book_backend_vcf_set_online (EBookBackend *backend,
-                               gboolean is_online)
+e_book_backend_vcf_notify_online_cb (EBookBackend *backend,
+                                     GParamSpec *pspec)
 {
 	if (e_book_backend_is_opened (backend))
 		e_book_backend_notify_online (backend, TRUE);
-}
-
-/**
- * e_book_backend_vcf_new:
- */
-EBookBackend *
-e_book_backend_vcf_new (void)
-{
-	return g_object_new (E_TYPE_BOOK_BACKEND_VCF, NULL);
 }
 
 static void
@@ -740,7 +732,6 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *klass)
 	/* Set the virtual methods. */
 	backend_class->start_book_view		= e_book_backend_vcf_start_book_view;
 	backend_class->stop_book_view		= e_book_backend_vcf_stop_book_view;
-	backend_class->set_online		= e_book_backend_vcf_set_online;
 
 	sync_class->open_sync			= e_book_backend_vcf_open;
 	sync_class->get_backend_property_sync	= e_book_backend_vcf_get_backend_property;
@@ -763,4 +754,8 @@ e_book_backend_vcf_init (EBookBackendVCF *backend)
 	priv->mutex = g_mutex_new ();
 
 	backend->priv = priv;
+
+	g_signal_connect (
+		backend, "notify::online",
+		G_CALLBACK (e_book_backend_vcf_notify_online_cb), NULL);
 }

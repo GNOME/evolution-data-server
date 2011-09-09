@@ -25,30 +25,51 @@
 #include <config.h>
 #endif
 
-#include "libebackend/e-data-server-module.h"
-#include "libedata-book/e-book-backend-factory.h"
+#include <libedata-book/e-book-backend-factory.h>
 #include "e-book-backend-vcf.h"
 
-E_BOOK_BACKEND_FACTORY_SIMPLE (vcf, VCF, e_book_backend_vcf_new)
+#define FACTORY_NAME "vcf"
 
-static GType vcf_type;
+typedef EBookBackendFactory EBookBackendVCFFactory;
+typedef EBookBackendFactoryClass EBookBackendVCFFactoryClass;
 
-void
-eds_module_initialize (GTypeModule *type_module)
+/* Module Entry Points */
+void e_module_load (GTypeModule *type_module);
+void e_module_unload (GTypeModule *type_module);
+
+/* Forward Declarations */
+GType e_book_backend_vcf_factory_get_type (void);
+
+G_DEFINE_DYNAMIC_TYPE (
+	EBookBackendVCFFactory,
+	e_book_backend_vcf_factory,
+	E_TYPE_BOOK_BACKEND_FACTORY)
+
+static void
+e_book_backend_vcf_factory_class_init (EBookBackendFactoryClass *class)
 {
-	vcf_type = _vcf_factory_get_type (type_module);
+	class->factory_name = FACTORY_NAME;
+	class->backend_type = E_TYPE_BOOK_BACKEND_VCF;
 }
 
-void
-eds_module_shutdown (void)
+static void
+e_book_backend_vcf_factory_class_finalize (EBookBackendFactoryClass *class)
 {
 }
 
-void
-eds_module_list_types (const GType **types,
-                       gint *num_types)
+static void
+e_book_backend_vcf_factory_init (EBookBackendFactory *factory)
 {
-	*types = & vcf_type;
-	*num_types = 1;
+}
+
+G_MODULE_EXPORT void
+e_module_load (GTypeModule *type_module)
+{
+	e_book_backend_vcf_factory_register_type (type_module);
+}
+
+G_MODULE_EXPORT void
+e_module_unload (GTypeModule *type_module)
+{
 }
 
