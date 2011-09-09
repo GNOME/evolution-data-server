@@ -209,7 +209,7 @@ esac
 dnl ******************************
 dnl Initialize maintainer mode
 dnl ******************************
-AM_MAINTAINER_MODE
+AM_MAINTAINER_MODE([enable])
 
 if test "x$enable_maintainer_mode" = "xyes" ; then
 	AC_DEFINE(ENABLE_MAINTAINER_MODE, 1, [Configured with enabled maintainer mode])
