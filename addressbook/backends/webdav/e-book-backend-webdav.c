@@ -64,7 +64,6 @@ G_DEFINE_TYPE (EBookBackendWebdav, e_book_backend_webdav, E_TYPE_BOOK_BACKEND)
 static EBookBackendClass *parent_class;
 
 struct _EBookBackendWebdavPrivate {
-	gboolean           is_online;
 	gboolean           marked_for_offline;
 	SoupSession       *session;
 	EProxy		  *proxy;
@@ -202,7 +201,7 @@ upload_contact (EBookBackendWebdav *webdav,
 	const gchar  *property;
 	gboolean     avoid_ifmatch;
 
-	source = e_book_backend_get_source (E_BOOK_BACKEND (webdav));
+	source = e_backend_get_source (E_BACKEND (webdav));
 
 	uri = e_contact_get (contact, E_CONTACT_UID);
 	if (uri == NULL) {
@@ -316,7 +315,7 @@ e_book_backend_webdav_create_contact (EBookBackend *backend,
 	guint                      status;
 	gchar			  *status_reason = NULL;
 
-	if (!priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_create (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
 	}
@@ -406,7 +405,7 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 	GSList                    *deleted_ids = NULL;
 	const GSList              *list;
 
-	if (!priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_remove_contacts (book, opid,
 				EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
@@ -451,7 +450,7 @@ e_book_backend_webdav_modify_contact (EBookBackend *backend,
 	guint status;
 	gchar *status_reason = NULL;
 
-	if (!priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_create (book, opid,
 				EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		g_object_unref (contact);
@@ -522,7 +521,7 @@ e_book_backend_webdav_get_contact (EBookBackend *backend,
 	EContact                  *contact;
 	gchar                      *vcard;
 
-	if (!priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		contact = e_book_backend_cache_get_contact (priv->cache, uid);
 	} else {
 		contact = download_contact (webdav, uid);
@@ -1037,7 +1036,7 @@ e_book_backend_webdav_start_book_view (EBookBackend *backend,
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 
-	if (priv->is_online) {
+	if (e_backend_get_online (E_BACKEND (backend))) {
 		WebdavBackendSearchClosure *closure
 			= init_closure (book_view, E_BOOK_BACKEND_WEBDAV (backend));
 
@@ -1064,11 +1063,10 @@ static void
 e_book_backend_webdav_stop_book_view (EBookBackend *backend,
                                      EDataBookView *book_view)
 {
-	EBookBackendWebdav         *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	WebdavBackendSearchClosure *closure;
 	gboolean                    need_join;
 
-	if (!webdav->priv->is_online)
+	if (!e_backend_get_online (E_BACKEND (backend)))
 		return;
 
 	closure = get_closure (book_view);
@@ -1096,7 +1094,7 @@ e_book_backend_webdav_get_contact_list (EBookBackend *backend,
 	GSList                    *vcard_list;
 	GList                     *c;
 
-	if (priv->is_online) {
+	if (e_backend_get_online (E_BACKEND (backend))) {
 		/* make sure the cache is up to date */
 		GError *error = download_contacts (webdav, NULL, NULL);
 
@@ -1137,7 +1135,7 @@ e_book_backend_webdav_get_contact_list_uids (EBookBackend *backend,
 	GSList                    *uids_list;
 	GList                     *c;
 
-	if (priv->is_online) {
+	if (e_backend_get_online (E_BACKEND (backend))) {
 		/* make sure the cache is up to date */
 		GError *error = download_contacts (webdav, NULL, NULL);
 
@@ -1251,7 +1249,7 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	/* will try fetch ctag for the first time, if it fails then sets this to FALSE */
 	priv->supports_getctag = TRUE;
 
-	source = e_book_backend_get_source (backend);
+	source = e_backend_get_source (E_BACKEND (backend));
 	cache_dir = e_book_backend_get_cache_dir (backend);
 
 	uri = e_source_get_uri (source);
@@ -1272,7 +1270,7 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	if (offline && g_str_equal(offline, "1"))
 		priv->marked_for_offline = TRUE;
 
-	if (!priv->is_online && !priv->marked_for_offline ) {
+	if (!e_backend_get_online (E_BACKEND (backend)) && !priv->marked_for_offline ) {
 		soup_uri_free (suri);
 		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE));
 		return;
@@ -1360,18 +1358,14 @@ e_book_backend_webdav_remove (EBookBackend *backend,
 }
 
 static void
-e_book_backend_webdav_set_online (EBookBackend *backend,
-                                  gboolean is_online)
+e_book_backend_webdav_notify_online_cb (EBookBackend *backend,
+                                        GParamSpec *pspec)
 {
-	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (backend);
-
-	webdav->priv->is_online = is_online;
-
 	/* set_mode is called before the backend is loaded */
 	if (!e_book_backend_is_opened (backend))
 		return;
 
-	if (!is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_book_backend_notify_readonly (backend, TRUE);
 		e_book_backend_notify_online (backend, FALSE);
 	} else {
@@ -1414,12 +1408,6 @@ e_book_backend_webdav_get_backend_property (EBookBackend *backend,
 	} else {
 		E_BOOK_BACKEND_CLASS (e_book_backend_webdav_parent_class)->get_backend_property (backend, book, opid, cancellable, prop_name);
 	}
-}
-
-EBookBackend *
-e_book_backend_webdav_new (void)
-{
-	return g_object_new (E_TYPE_BOOK_BACKEND_WEBDAV, NULL);
 }
 
 static void
@@ -1468,7 +1456,6 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *klass)
 	backend_class->stop_book_view		= e_book_backend_webdav_stop_book_view;
 	backend_class->authenticate_user	= e_book_backend_webdav_authenticate_user;
 	backend_class->remove			= e_book_backend_webdav_remove;
-	backend_class->set_online		= e_book_backend_webdav_set_online;
 
 	object_class->dispose			= e_book_backend_webdav_dispose;
 
@@ -1481,5 +1468,9 @@ e_book_backend_webdav_init (EBookBackendWebdav *backend)
 	backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (
 		backend, E_TYPE_BOOK_BACKEND_WEBDAV,
 		EBookBackendWebdavPrivate);
+
+	g_signal_connect (
+		backend, "notify::online",
+		G_CALLBACK (e_book_backend_webdav_notify_online_cb), NULL);
 }
 

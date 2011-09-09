@@ -18,31 +18,48 @@
  *
  * Author: Matthias Braun <matze@braunis.de>
  */
-#ifndef __E_BOOK_BACKEND_WEBDAV_H__
-#define __E_BOOK_BACKEND_WEBDAV_H__
+#ifndef E_BOOK_BACKEND_WEBDAV_H
+#define E_BOOK_BACKEND_WEBDAV_H
 
 #include <libedata-book/e-book-backend.h>
 
-#define E_TYPE_BOOK_BACKEND_WEBDAV         (e_book_backend_webdav_get_type ())
-#define E_BOOK_BACKEND_WEBDAV(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdav))
-#define E_BOOK_BACKEND_WEBDAV_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdavClass))
-#define E_IS_BOOK_BACKEND_WEBDAV(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BOOK_BACKEND_WEBDAV))
-#define E_IS_BOOK_BACKEND_WEBDAV_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK_BACKEND_WEBDAV))
-#define E_BOOK_BACKEND_WEBDAV_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdavClass))
+/* Standard GObject macros */
+#define E_TYPE_BOOK_BACKEND_WEBDAV \
+	(e_book_backend_webdav_get_type ())
+#define E_BOOK_BACKEND_WEBDAV(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdav))
+#define E_BOOK_BACKEND_WEBDAV_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdavClass))
+#define E_IS_BOOK_BACKEND_WEBDAV(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_BOOK_BACKEND_WEBDAV))
+#define E_IS_BOOK_BACKEND_WEBDAV_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_BOOK_BACKEND_WEBDAV))
+#define E_BOOK_BACKEND_WEBDAV_GET_CLASS(cls) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdavClass))
 
+G_BEGIN_DECLS
+
+typedef struct _EBookBackendWebdav EBookBackendWebdav;
+typedef struct _EBookBackendWebdavClass EBookBackendWebdavClass;
 typedef struct _EBookBackendWebdavPrivate EBookBackendWebdavPrivate;
 
-typedef struct {
-    EBookBackend               parent_object;
-    EBookBackendWebdavPrivate *priv;
-} EBookBackendWebdav;
+struct _EBookBackendWebdav {
+	EBookBackend parent;
+	EBookBackendWebdavPrivate *priv;
+};
 
-typedef struct {
-    EBookBackendClass parent_class;
-} EBookBackendWebdavClass;
+struct _EBookBackendWebdavClass {
+	EBookBackendClass parent_class;
+};
 
-EBookBackend *e_book_backend_webdav_new      (void);
-GType         e_book_backend_webdav_get_type (void);
+GType		e_book_backend_webdav_get_type	(void);
 
-#endif
+G_END_DECLS
+
+#endif /* E_BOOK_BACKEND_WEBDAV_H */
 
