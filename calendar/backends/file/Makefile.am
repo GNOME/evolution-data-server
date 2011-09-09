@@ -13,7 +13,6 @@ noinst_PROGRAMS = test-interval-searches
 
 libecalbackendfile_la_SOURCES =		\
 	e-cal-backend-file-factory.c	\
-	e-cal-backend-file-factory.h	\
 	e-cal-backend-file-events.c	\
 	e-cal-backend-file-events.h	\
 	e-cal-backend-file-journal.c	\

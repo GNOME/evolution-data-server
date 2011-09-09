@@ -318,7 +318,7 @@ e_cal_backend_file_dispose (GObject *object)
 
 	free_calendar_data (cbfile);
 
-	source = e_cal_backend_get_source (E_CAL_BACKEND (cbfile));
+	source = e_backend_get_source (E_BACKEND (cbfile));
 	if (source)
 		g_signal_handlers_disconnect_matched (source, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, cbfile);
 
@@ -792,7 +792,7 @@ uri_to_path (ECalBackend *backend)
 
 	cache_dir = e_cal_backend_get_cache_dir (backend);
 
-	source = e_cal_backend_get_source (backend);
+	source = e_backend_get_source (E_BACKEND (backend));
 	if (source && e_source_get_property (source, "custom-file")) {
 		const gchar *property;
 
@@ -918,7 +918,7 @@ prepare_refresh_data (ECalBackendFile *cbfile)
 	priv->refresh_thread_stop = FALSE;
 	priv->refresh_skip = 0;
 
-	source = e_cal_backend_get_source (E_CAL_BACKEND (cbfile));
+	source = e_backend_get_source (E_BACKEND (cbfile));
 	value = e_source_get_property (source, "refresh-type");
 	if (e_source_get_property (source, "custom-file") && value && *value && !value[1]) {
 		GFile *file;
@@ -1329,7 +1329,7 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 		if (!priv->read_only) {
 			ESource *source;
 
-			source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
+			source = e_backend_get_source (E_BACKEND (backend));
 
 			g_signal_connect (
 				source, "changed",
@@ -1433,14 +1433,6 @@ e_cal_backend_file_remove (ECalBackendSync *backend,
 
 	if (local_error)
 		g_error_free (local_error);
-}
-
-/* Set_mode handler for the file backend */
-static void
-e_cal_backend_file_set_online (ECalBackend *backend,
-                               gboolean is_online)
-{
-	e_cal_backend_notify_online (backend, TRUE);
 }
 
 static void
@@ -3305,7 +3297,7 @@ cal_backend_file_constructed (GObject *object)
 
 	backend = E_CAL_BACKEND (object);
 	kind = e_cal_backend_get_kind (backend);
-	source = e_cal_backend_get_source (backend);
+	source = e_backend_get_source (E_BACKEND (backend));
 
 	switch (kind) {
 		case ICAL_VEVENT_COMPONENT:
@@ -3372,7 +3364,6 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 	sync_class->get_free_busy_sync		= e_cal_backend_file_get_free_busy;
 
 	backend_class->start_view		= e_cal_backend_file_start_view;
-	backend_class->set_online		= e_cal_backend_file_set_online;
 	backend_class->internal_get_timezone	= e_cal_backend_file_internal_get_timezone;
 }
 
@@ -3440,7 +3431,7 @@ e_cal_backend_file_reload (ECalBackendFile *cbfile,
 	if (!err && !priv->read_only) {
 		ESource *source;
 
-		source = e_cal_backend_get_source (E_CAL_BACKEND (cbfile));
+		source = e_backend_get_source (E_BACKEND (cbfile));
 
 		if (e_source_get_property (source, "custom-file-readonly") && g_str_equal (e_source_get_property (source, "custom-file-readonly"), "1"))
 			priv->read_only = TRUE;

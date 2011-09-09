@@ -7,16 +7,14 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
-#include <string.h>
-
-#include "e-cal-backend-file-factory.h"
+#include <libedata-cal/e-cal-backend-factory.h>
 #include "e-cal-backend-file-events.h"
 #include "e-cal-backend-file-journal.h"
 #include "e-cal-backend-file-todos.h"
+
+#define FACTORY_NAME "local"
 
 typedef ECalBackendFactory ECalBackendFileEventsFactory;
 typedef ECalBackendFactoryClass ECalBackendFileEventsFactoryClass;
@@ -26,6 +24,10 @@ typedef ECalBackendFactoryClass ECalBackendFileJournalFactoryClass;
 
 typedef ECalBackendFactory ECalBackendFileTodosFactory;
 typedef ECalBackendFactoryClass ECalBackendFileTodosFactoryClass;
+
+/* Module Entry Points */
+void e_module_load (GTypeModule *type_module);
+void e_module_unload (GTypeModule *type_module);
 
 /* Forward Declarations */
 GType e_cal_backend_file_events_factory_get_type (void);
@@ -47,66 +49,12 @@ G_DEFINE_DYNAMIC_TYPE (
 	e_cal_backend_file_todos_factory,
 	E_TYPE_CAL_BACKEND_FACTORY)
 
-static const gchar *
-_get_protocol (ECalBackendFactory *factory)
-{
-	return "local";
-}
-
-static icalcomponent_kind
-_events_get_kind (ECalBackendFactory *factory)
-{
-	return ICAL_VEVENT_COMPONENT;
-}
-
-static ECalBackend *
-_events_new_backend (ECalBackendFactory *factory,
-                     ESource *source)
-{
-	return g_object_new (
-		e_cal_backend_file_events_get_type (),
-		"kind", ICAL_VEVENT_COMPONENT,
-		"source", source, NULL);
-}
-
-static icalcomponent_kind
-_journal_get_kind (ECalBackendFactory *factory)
-{
-	return ICAL_VJOURNAL_COMPONENT;
-}
-
-static ECalBackend *
-_journal_new_backend (ECalBackendFactory *factory,
-                      ESource *source)
-{
-	return g_object_new (
-		e_cal_backend_file_journal_get_type (),
-		"kind", ICAL_VJOURNAL_COMPONENT,
-		"source", source, NULL);
-}
-
-static icalcomponent_kind
-_todos_get_kind (ECalBackendFactory *factory)
-{
-	return ICAL_VTODO_COMPONENT;
-}
-
-static ECalBackend *
-_todos_new_backend (ECalBackendFactory *factory,
-                    ESource *source)
-{
-	return g_object_new (
-		e_cal_backend_file_todos_get_type (),
-		"kind", ICAL_VTODO_COMPONENT,
-		"source", source, NULL);
-}
-
 static void
 e_cal_backend_file_events_factory_class_init (ECalBackendFactoryClass *class)
 {
-	class->get_protocol = _get_protocol;
-	class->get_kind     = _events_get_kind;
-	class->new_backend  = _events_new_backend;
+	class->factory_name = FACTORY_NAME;
+	class->component_kind = ICAL_VEVENT_COMPONENT;
+	class->backend_type = E_TYPE_CAL_BACKEND_FILE_EVENTS;
 }
 
 static void
@@ -122,9 +70,9 @@ e_cal_backend_file_events_factory_init (ECalBackendFactory *factory)
 static void
 e_cal_backend_file_journal_factory_class_init (ECalBackendFactoryClass *class)
 {
-	class->get_protocol = _get_protocol;
-	class->get_kind     = _journal_get_kind;
-	class->new_backend  = _journal_new_backend;
+	class->factory_name = FACTORY_NAME;
+	class->component_kind = ICAL_VJOURNAL_COMPONENT;
+	class->backend_type = E_TYPE_CAL_BACKEND_FILE_JOURNAL;
 }
 
 static void
@@ -140,9 +88,9 @@ e_cal_backend_file_journal_factory_init (ECalBackendFactory *factory)
 static void
 e_cal_backend_file_todos_factory_class_init (ECalBackendFactoryClass *class)
 {
-	class->get_protocol = _get_protocol;
-	class->get_kind     = _todos_get_kind;
-	class->new_backend  = _todos_new_backend;
+	class->factory_name = FACTORY_NAME;
+	class->component_kind = ICAL_VTODO_COMPONENT;
+	class->backend_type = E_TYPE_CAL_BACKEND_FILE_TODOS;
 }
 
 static void
@@ -155,29 +103,16 @@ e_cal_backend_file_todos_factory_init (ECalBackendFactory *factory)
 {
 }
 
-void
-eds_module_initialize (GTypeModule *type_module)
+G_MODULE_EXPORT void
+e_module_load (GTypeModule *type_module)
 {
 	e_cal_backend_file_events_factory_register_type (type_module);
 	e_cal_backend_file_journal_factory_register_type (type_module);
 	e_cal_backend_file_todos_factory_register_type (type_module);
 }
 
-void
-eds_module_shutdown (void)
+G_MODULE_EXPORT void
+e_module_unload (GTypeModule *type_module)
 {
 }
 
-void
-eds_module_list_types (const GType **types,
-                       gint *num_types)
-{
-	static GType file_types[3];
-
-	file_types[0] = e_cal_backend_file_events_factory_get_type ();
-	file_types[1] = e_cal_backend_file_journal_factory_get_type ();
-	file_types[2] = e_cal_backend_file_todos_factory_get_type ();
-
-	*types = file_types;
-	*num_types = G_N_ELEMENTS (file_types);
-}
