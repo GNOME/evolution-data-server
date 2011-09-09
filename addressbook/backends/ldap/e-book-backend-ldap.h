@@ -22,31 +22,48 @@
  *          Hans Petter Jansson <hpj@novell.com>
  */
 
-#ifndef __E_BOOK_BACKEND_LDAP_H__
-#define __E_BOOK_BACKEND_LDAP_H__
+#ifndef E_BOOK_BACKEND_LDAP_H
+#define E_BOOK_BACKEND_LDAP_H
 
 #include <libedata-book/e-book-backend.h>
 
-#define E_TYPE_BOOK_BACKEND_LDAP         (e_book_backend_ldap_get_type ())
-#define E_BOOK_BACKEND_LDAP(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_BOOK_BACKEND_LDAP, EBookBackendLDAP))
-#define E_BOOK_BACKEND_LDAP_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_BOOK_BACKEND_LDAP, EBookBackendLDAPClass))
-#define E_IS_BOOK_BACKEND_LDAP(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_BOOK_BACKEND_LDAP))
-#define E_IS_BOOK_BACKEND_LDAP_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK_BACKEND_LDAP))
-#define E_BOOK_BACKEND_LDAP_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BOOK_BACKEND_LDAP, EBookBackendLDAPClass))
+/* Standard GObject macros */
+#define E_TYPE_BOOK_BACKEND_LDAP \
+	(e_book_backend_ldap_get_type ())
+#define E_BOOK_BACKEND_LDAP(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_BOOK_BACKEND_LDAP, EBookBackendLDAP))
+#define E_BOOK_BACKEND_LDAP_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_BOOK_BACKEND_LDAP, EBookBackendLDAPClass))
+#define E_IS_BOOK_BACKEND_LDAP(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_BOOK_BACKEND_LDAP))
+#define E_IS_BOOK_BACKEND_LDAP_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_BOOK_BACKEND_LDAP))
+#define E_BOOK_BACKEND_LDAP_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_BOOK_BACKEND_LDAP, EBookBackendLDAPClass))
 
+G_BEGIN_DECLS
+
+typedef struct _EBookBackendLDAP EBookBackendLDAP;
+typedef struct _EBookBackendLDAPClass EBookBackendLDAPClass;
 typedef struct _EBookBackendLDAPPrivate EBookBackendLDAPPrivate;
 
-typedef struct {
-	EBookBackend             parent_object;
+struct _EBookBackendLDAP {
+	EBookBackend parent;
 	EBookBackendLDAPPrivate *priv;
-} EBookBackendLDAP;
+};
 
-typedef struct {
+struct _EBookBackendLDAPClass {
 	EBookBackendClass parent_class;
-} EBookBackendLDAPClass;
+};
 
-EBookBackend *e_book_backend_ldap_new      (void);
-GType       e_book_backend_ldap_get_type (void);
+GType		e_book_backend_ldap_get_type	(void);
 
-#endif /* __E_BOOK_BACKEND_LDAP_H__ */
+G_END_DECLS
+
+#endif /* E_BOOK_BACKEND_LDAP_H */
 

@@ -211,7 +211,6 @@ struct _EBookBackendLDAPPrivate {
 	gboolean evolutionPersonChecked;
 	gboolean marked_for_offline;
 
-	gboolean is_online;
 	/* our operations */
 	GStaticRecMutex op_hash_mutex;
 	GHashTable *id_to_op;
@@ -438,10 +437,20 @@ static struct prop_info {
 static gboolean
 can_browse (EBookBackend *backend)
 {
-	return backend &&
-		e_book_backend_get_source (backend) &&
-		e_source_get_property (e_book_backend_get_source (backend), "can-browse") &&
-		strcmp (e_source_get_property (e_book_backend_get_source (backend), "can-browse"), "1") == 0;
+	ESource *source = NULL;
+	const gchar *can_browse;
+
+	/* XXX Backend can really be NULL here, or
+	 *     are we just being needlessly paranoid? */
+	if (backend == NULL)
+		return FALSE;
+
+	source = e_backend_get_source (E_BACKEND (backend));
+	g_return_val_if_fail (source != NULL, FALSE);
+
+	can_browse = e_source_get_property (source, "can-browse");
+
+	return (g_strcmp0 (can_browse, "1") == 0);
 }
 
 static gboolean
@@ -1615,7 +1624,7 @@ e_book_backend_ldap_create_contact (EBookBackend *backend,
 	LDAPMod **ldap_mods;
 	gchar *new_uid;
 
-	if (!bl->priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_create (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
 	}
@@ -1815,7 +1824,7 @@ e_book_backend_ldap_remove_contacts (EBookBackend *backend,
 	gint remove_msgid;
 	gint ldap_error;
 
-	if (!bl->priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_remove_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		g_free (remove_op);
 		return;
@@ -2253,7 +2262,7 @@ e_book_backend_ldap_modify_contact (EBookBackend *backend,
 	gint modify_contact_msgid;
 	EDataBookView *book_view;
 
-	if (!bl->priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_modify (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
 	}
@@ -2426,7 +2435,7 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 	GTimeVal start, end;
 	gulong diff;
 
-	if (!bl->priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		if (bl->priv->marked_for_offline && bl->priv->cache) {
 			EContact *contact = e_book_backend_cache_get_contact (bl->priv->cache, id);
 			gchar *vcard_str;
@@ -2650,7 +2659,7 @@ e_book_backend_ldap_get_contact_list (EBookBackend *backend,
 		g_get_current_time (&start);
 	}
 
-	if (!bl->priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		if (bl->priv->marked_for_offline && bl->priv->cache) {
 			GList *contacts;
 			GSList *vcard_strings = NULL;
@@ -2862,7 +2871,7 @@ e_book_backend_ldap_get_contact_list_uids (EBookBackend *backend,
 		g_get_current_time (&start);
 	}
 
-	if (!bl->priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		if (bl->priv->marked_for_offline && bl->priv->cache) {
 			GList *contacts;
 			GSList *uids = NULL;
@@ -4759,7 +4768,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 		g_get_current_time (&start);
 	}
 
-	if (!bl->priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (bl))) {
 		if (!(bl->priv->marked_for_offline && bl->priv->cache)) {
 			GError *edb_err = EDB_ERROR (REPOSITORY_OFFLINE);
 			e_data_book_view_notify_complete (view, edb_err);
@@ -5053,12 +5062,13 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!auth_method || !*auth_method) {
-		ESource *source = e_book_backend_get_source (backend);
+		ESource *source;
 
+		source = e_backend_get_source (E_BACKEND (backend));
 		auth_method = e_source_get_property (source, "auth");
 	}
 
-	if (!bl->priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_book_backend_notify_readonly (backend, TRUE);
 		e_book_backend_notify_online (backend, FALSE);
 		e_book_backend_notify_opened (backend, EDB_ERROR (SUCCESS));
@@ -5251,7 +5261,7 @@ e_book_backend_ldap_open (EBookBackend *backend,
                           gboolean only_if_exists)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-	ESource *source = e_book_backend_get_source (backend);
+	ESource *source;
 	LDAPURLDesc    *lud;
 	gint ldap_error;
 	gint limit = 100;
@@ -5269,6 +5279,7 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	if (enable_debug)
 		printf ("%s ... \n", G_STRFUNC);
 
+	source = e_backend_get_source (E_BACKEND (backend));
 	uri = e_source_get_uri (source);
 	cache_dir = e_book_backend_get_cache_dir (backend);
 
@@ -5334,7 +5345,7 @@ e_book_backend_ldap_open (EBookBackend *backend,
 
 	g_free (uri);
 
-	if (!bl->priv->is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		/* Offline */
 
 		e_book_backend_notify_readonly (backend, TRUE);
@@ -5506,15 +5517,11 @@ start_views (EBookBackend *backend)
 #endif
 
 static void
-e_book_backend_ldap_set_online (EBookBackend *backend,
-                                gboolean is_online)
+e_book_backend_ldap_notify_online_cb (EBookBackend *backend,
+                                      GParamSpec *pspec)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 
-	if (bl->priv->is_online == is_online)
-		return;
-
-	bl->priv->is_online = is_online;
 #if 0
 	stop_views (backend);
 #endif
@@ -5522,7 +5529,7 @@ e_book_backend_ldap_set_online (EBookBackend *backend,
 	/* Cancel all running operations */
 	ldap_cancel_all_operations (backend);
 
-	if (!is_online) {
+	if (!e_backend_get_online (E_BACKEND (backend))) {
 		/* Go offline */
 
 		e_book_backend_notify_readonly (backend, TRUE);
@@ -5565,15 +5572,6 @@ e_book_backend_ldap_set_online (EBookBackend *backend,
 				generate_cache (bl);
 		}
 	}
-}
-
-/**
- * e_book_backend_ldap_new:
- */
-EBookBackend *
-e_book_backend_ldap_new (void)
-{
-	return g_object_new (E_TYPE_BOOK_BACKEND_LDAP, NULL);
 }
 
 static gboolean
@@ -5680,7 +5678,6 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	parent_class->start_book_view		= e_book_backend_ldap_start_book_view;
 	parent_class->stop_book_view		= e_book_backend_ldap_stop_book_view;
 	parent_class->authenticate_user		= e_book_backend_ldap_authenticate_user;
-	parent_class->set_online		= e_book_backend_ldap_set_online;
 
 	object_class->dispose = e_book_backend_ldap_dispose;
 }
@@ -5698,7 +5695,6 @@ e_book_backend_ldap_init (EBookBackendLDAP *backend)
 	priv->id_to_op		     = g_hash_table_new (g_int_hash, g_int_equal);
 	priv->poll_timeout	     = -1;
 	priv->marked_for_offline     = FALSE;
-	priv->is_online              = TRUE;
 	priv->is_summary_ready	     = FALSE;
 	priv->reserved1	     = NULL;
 	priv->reserved2	     = NULL;
@@ -5710,4 +5706,8 @@ e_book_backend_ldap_init (EBookBackendLDAP *backend)
 
 	if (g_getenv ("LDAP_DEBUG"))
 		enable_debug = TRUE;
+
+	g_signal_connect (
+		backend, "notify::online",
+		G_CALLBACK (e_book_backend_ldap_notify_online_cb), NULL);
 }
