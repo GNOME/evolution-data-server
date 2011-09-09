@@ -25,6 +25,7 @@
 #include <gio/gio.h>
 
 #include <libebook/e-contact.h>
+#include <libebackend/e-backend.h>
 #include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-data-book.h>
 #include <libedataserver/e-source.h>
@@ -123,12 +124,12 @@ G_BEGIN_DECLS
 typedef struct _EBookBackendPrivate EBookBackendPrivate;
 
 struct _EBookBackend {
-	GObject parent_object;
+	EBackend parent;
 	EBookBackendPrivate *priv;
 };
 
 struct _EBookBackendClass {
-	GObjectClass parent_class;
+	EBackendClass parent_class;
 
 	/* Virtual methods */
         void	(* get_backend_property)	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name);
@@ -136,7 +137,6 @@ struct _EBookBackendClass {
 
 	void	(* open)			(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, gboolean only_if_exists);
 	void	(* remove)			(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable);
-	void	(* set_online)			(EBookBackend *backend, gboolean is_online);
 	void	(* authenticate_user)		(EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials);
 
 	void	(* refresh)			(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable);
@@ -162,17 +162,13 @@ GType		e_book_backend_get_type		(void);
 const gchar *	e_book_backend_get_cache_dir	(EBookBackend *backend);
 void		e_book_backend_set_cache_dir	(EBookBackend *backend, const gchar *cache_dir);
 
-ESource *	e_book_backend_get_source	(EBookBackend *backend);
-
 gboolean	e_book_backend_add_client	(EBookBackend *backend, EDataBook *book);
 void		e_book_backend_remove_client	(EBookBackend *backend, EDataBook *book);
 
-gboolean	e_book_backend_is_online	(EBookBackend *backend);
 gboolean	e_book_backend_is_opened	(EBookBackend *backend);
 gboolean	e_book_backend_is_opening	(EBookBackend *backend);
 gboolean	e_book_backend_is_readonly	(EBookBackend *backend);
 gboolean	e_book_backend_is_removed	(EBookBackend *backend);
-void		e_book_backend_set_online	(EBookBackend *backend, gboolean is_online);
 void		e_book_backend_authenticate_user (EBookBackend *backend, GCancellable *cancellable, ECredentials *credentials);
 
 void		e_book_backend_get_backend_property (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *prop_name);

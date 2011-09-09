@@ -7,54 +7,55 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
-#include <string.h>
-
+#include "e-book-backend.h"
 #include "e-book-backend-factory.h"
 
-G_DEFINE_TYPE (EBookBackendFactory, e_book_backend_factory, G_TYPE_OBJECT)
+G_DEFINE_ABSTRACT_TYPE (
+	EBookBackendFactory,
+	e_book_backend_factory,
+	E_TYPE_BACKEND_FACTORY)
+
+static const gchar *
+book_backend_factory_get_hash_key (EBackendFactory *factory)
+{
+	EBookBackendFactoryClass *class;
+
+	class = E_BOOK_BACKEND_FACTORY_GET_CLASS (factory);
+	g_return_val_if_fail (class->factory_name != NULL, NULL);
+
+	/* For address book backends the factory hash key is simply
+	 * the factory name.  See ECalBackendFactory for a slightly
+	 * more complex scheme. */
+
+	return class->factory_name;
+}
+
+static EBackend *
+book_backend_factory_new_backend (EBackendFactory *factory,
+                                  ESource *source)
+{
+	EBookBackendFactoryClass *class;
+
+	class = E_BOOK_BACKEND_FACTORY_GET_CLASS (factory);
+	g_return_val_if_fail (g_type_is_a (
+		class->backend_type, E_TYPE_BOOK_BACKEND), NULL);
+
+	return g_object_new (class->backend_type, "source", source, NULL);
+}
+
+static void
+e_book_backend_factory_class_init (EBookBackendFactoryClass *class)
+{
+	EBackendFactoryClass *factory_class;
+
+	factory_class = E_BACKEND_FACTORY_CLASS (class);
+	factory_class->get_hash_key = book_backend_factory_get_hash_key;
+	factory_class->new_backend = book_backend_factory_new_backend;
+}
 
 static void
 e_book_backend_factory_init (EBookBackendFactory *factory)
 {
-}
-
-static void
-e_book_backend_factory_class_init (EBookBackendFactoryClass *klass)
-{
-}
-
-/**
- * e_book_backend_factory_get_protocol:
- * @factory: an #EBookBackendFactory
- *
- * Gets the protocol that @factory creates backends for.
- *
- * Returns: A string representing a protocol.
- **/
-const gchar *
-e_book_backend_factory_get_protocol (EBookBackendFactory *factory)
-{
-	g_return_val_if_fail (E_IS_BOOK_BACKEND_FACTORY (factory), NULL);
-
-	return E_BOOK_BACKEND_FACTORY_GET_CLASS (factory)->get_protocol (factory);
-}
-
-/**
- * e_book_backend_factory_new_backend:
- * @factory: an #EBookBackendFactory
- *
- * Creates a new #EBookBackend with @factory's protocol.
- *
- * Returns: A new #EBookBackend.
- **/
-EBookBackend *
-e_book_backend_factory_new_backend (EBookBackendFactory *factory)
-{
-	g_return_val_if_fail (E_IS_BOOK_BACKEND_FACTORY (factory), NULL);
-
-	return E_BOOK_BACKEND_FACTORY_GET_CLASS (factory)->new_backend (factory);
 }

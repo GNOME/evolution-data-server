@@ -18,42 +18,47 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef __E_DATA_BOOK_FACTORY_H__
-#define __E_DATA_BOOK_FACTORY_H__
+#ifndef E_DATA_BOOK_FACTORY_H
+#define E_DATA_BOOK_FACTORY_H
 
-#include <glib-object.h>
+#include <libebackend/e-data-factory.h>
+
+/* Standard GObject macros */
+#define E_TYPE_DATA_BOOK_FACTORY \
+	(e_data_book_factory_get_type ())
+#define E_DATA_BOOK_FACTORY(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactory))
+#define E_DATA_BOOK_FACTORY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryClass))
+#define E_IS_DATA_BOOK_FACTORY(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_DATA_BOOK_FACTORY))
+#define E_IS_DATA_BOOK_FACTORY_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_DATA_BOOK_FACTORY))
+#define E_DATA_BOOK_FACTORY_GET_CLASS(cls) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryClass))
 
 G_BEGIN_DECLS
 
-#define E_TYPE_DATA_BOOK_FACTORY        (e_data_book_factory_get_type ())
-#define E_DATA_BOOK_FACTORY(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactory))
-#define E_DATA_BOOK_FACTORY_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryClass))
-#define E_IS_DATA_BOOK_FACTORY(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_DATA_BOOK_FACTORY))
-#define E_IS_DATA_BOOK_FACTORY_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_DATA_BOOK_FACTORY))
-#define E_DATA_BOOK_FACTORY_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryClass))
-
+typedef struct _EDataBookFactory EDataBookFactory;
+typedef struct _EDataBookFactoryClass EDataBookFactoryClass;
 typedef struct _EDataBookFactoryPrivate EDataBookFactoryPrivate;
 
-typedef struct {
-	GObject parent;
+struct _EDataBookFactory {
+	EDataFactory parent;
 	EDataBookFactoryPrivate *priv;
-} EDataBookFactory;
+};
 
-typedef struct {
-	GObjectClass parent;
-} EDataBookFactoryClass;
+struct _EDataBookFactoryClass {
+	EDataFactoryClass parent_class;
+};
 
-typedef enum {
-	E_DATA_BOOK_FACTORY_ERROR_GENERIC
-} EDataBookFactoryError;
-
-GQuark e_data_book_factory_error_quark (void);
-#define E_DATA_BOOK_FACTORY_ERROR e_data_book_factory_error_quark ()
-
-GType e_data_book_factory_get_type (void);
-
-void e_data_book_factory_set_backend_online (EDataBookFactory *factory, gboolean is_online);
+GType		e_data_book_factory_get_type	(void) G_GNUC_CONST;
 
 G_END_DECLS
 
-#endif /* __E_DATA_BOOK_FACTORY_H__ */
+#endif /* E_DATA_BOOK_FACTORY_H */

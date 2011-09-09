@@ -26,13 +26,6 @@ EBookBackend
 </para>
 
 
-<!-- ##### SIGNAL EBookBackend::last-client-gone ##### -->
-<para>
-
-</para>
-
-@ebookbackend: the object which received the signal.
-
 <!-- ##### ARG EBookBackend:cache-dir ##### -->
 <para>
 
@@ -119,15 +112,6 @@ EBookBackend
 @cache_dir: 
 
 
-<!-- ##### FUNCTION e_book_backend_get_source ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
-
-
 <!-- ##### FUNCTION e_book_backend_add_client ##### -->
 <para>
 
@@ -145,15 +129,6 @@ EBookBackend
 
 @backend: 
 @book: 
-
-
-<!-- ##### FUNCTION e_book_backend_is_online ##### -->
-<para>
-
-</para>
-
-@backend: 
-@Returns: 
 
 
 <!-- ##### FUNCTION e_book_backend_is_opened ##### -->
@@ -190,15 +165,6 @@ EBookBackend
 
 @backend: 
 @Returns: 
-
-
-<!-- ##### FUNCTION e_book_backend_set_online ##### -->
-<para>
-
-</para>
-
-@backend: 
-@is_online: 
 
 
 <!-- ##### FUNCTION e_book_backend_authenticate_user ##### -->
@@ -526,7 +492,6 @@ EBookBackend
 @set_backend_property: 
 @open: 
 @remove: 
-@set_online: 
 @authenticate_user: 
 @refresh: 
 @create_contact: 

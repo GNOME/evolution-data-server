@@ -13,15 +13,12 @@ BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS
 BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
 e_book_backend_get_cache_dir
 e_book_backend_set_cache_dir
-e_book_backend_get_source
 e_book_backend_add_client
 e_book_backend_remove_client
-e_book_backend_is_online
 e_book_backend_is_opened
 e_book_backend_is_opening
 e_book_backend_is_readonly
 e_book_backend_is_removed
-e_book_backend_set_online
 e_book_backend_authenticate_user
 e_book_backend_get_backend_property
 e_book_backend_set_backend_property
@@ -115,9 +112,6 @@ e_book_backend_db_cache_get_time
 <FILE>e-book-backend-factory</FILE>
 <TITLE>EBookBackendFactory</TITLE>
 EBookBackendFactory
-e_book_backend_factory_get_protocol
-e_book_backend_factory_new_backend
-E_BOOK_BACKEND_FACTORY_SIMPLE
 <SUBSECTION Standard>
 E_BOOK_BACKEND_FACTORY
 E_IS_BOOK_BACKEND_FACTORY
@@ -265,7 +259,6 @@ e_return_data_book_error_if_fail
 e_return_data_book_error_val_if_fail
 e_data_book_new
 e_data_book_get_backend
-e_data_book_get_source
 e_data_book_register_gdbus_object
 e_data_book_respond_open
 e_data_book_respond_remove
@@ -308,10 +301,7 @@ e_data_book_status_get_type
 <SECTION>
 <FILE>e-data-book-factory</FILE>
 <TITLE>EDataBookFactory</TITLE>
-E_DATA_BOOK_FACTORY_ERROR
-EDataBookFactoryError
 EDataBookFactory
-e_data_book_factory_set_backend_online
 <SUBSECTION Standard>
 E_DATA_BOOK_FACTORY
 E_IS_DATA_BOOK_FACTORY
@@ -323,7 +313,6 @@ EDataBookFactoryClass
 <SUBSECTION Private>
 EDataBookFactoryPrivate
 e_data_book_factory_get_type
-e_data_book_factory_error_quark
 </SECTION>
 
 <SECTION>

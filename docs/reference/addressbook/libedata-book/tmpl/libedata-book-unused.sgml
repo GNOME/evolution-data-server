@@ -46,6 +46,13 @@ e-data-book-marshal
 e-data-book-types
 
 
+<!-- ##### SIGNAL EBookBackend::last-client-gone ##### -->
+<para>
+
+</para>
+
+@ebookbackend: the object which received the signal.
+
 <!-- ##### ARG EBookBackendCache:uri ##### -->
 <para>
 
@@ -167,6 +174,13 @@ e-data-book-types
 @_pas_reserved3: 
 @_pas_reserved4: 
 
+<!-- ##### ENUM EDataBookFactoryError ##### -->
+<para>
+
+</para>
+
+@E_DATA_BOOK_FACTORY_ERROR_GENERIC: 
+
 <!-- ##### STRUCT EDataBookFactoryPrivate ##### -->
 <para>
 
@@ -234,6 +248,21 @@ e-data-book-types
 </para>
 
 
+<!-- ##### MACRO E_BOOK_BACKEND_FACTORY_SIMPLE ##### -->
+<para>
+
+</para>
+
+@p: 
+@t: 
+@f: 
+
+<!-- ##### MACRO E_DATA_BOOK_FACTORY_ERROR ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### FUNCTION e_book_backend_cache_exists ##### -->
 <para>
 
@@ -283,6 +312,22 @@ e-data-book-types
 @backend: 
 @Returns: 
 
+<!-- ##### FUNCTION e_book_backend_factory_get_protocol ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_backend_factory_new_backend ##### -->
+<para>
+
+</para>
+
+@factory: 
+@Returns: 
+
 <!-- ##### FUNCTION e_book_backend_get_book_views ##### -->
 <para>
 
@@ -309,6 +354,14 @@ e-data-book-types
 @backend: 
 @book: 
 @opid: 
+
+<!-- ##### FUNCTION e_book_backend_get_source ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
 
 <!-- ##### FUNCTION e_book_backend_get_static_capabilities ##### -->
 <para>
@@ -345,6 +398,14 @@ e-data-book-types
 @Returns: 
 
 <!-- ##### FUNCTION e_book_backend_is_loaded ##### -->
+<para>
+
+</para>
+
+@backend: 
+@Returns: 
+
+<!-- ##### FUNCTION e_book_backend_is_online ##### -->
 <para>
 
 </para>
@@ -409,6 +470,14 @@ e-data-book-types
 
 @backend: 
 @mode: 
+
+<!-- ##### FUNCTION e_book_backend_set_online ##### -->
+<para>
+
+</para>
+
+@backend: 
+@is_online: 
 
 <!-- ##### FUNCTION e_book_backend_sync_get_changes ##### -->
 <para>
@@ -509,7 +578,23 @@ e-data-book-types
 @factory: 
 @mode: 
 
+<!-- ##### FUNCTION e_data_book_factory_set_backend_online ##### -->
+<para>
+
+</para>
+
+@factory: 
+@is_online: 
+
 <!-- ##### FUNCTION e_data_book_get_listener ##### -->
+<para>
+
+</para>
+
+@book: 
+@Returns: 
+
+<!-- ##### FUNCTION e_data_book_get_source ##### -->
 <para>
 
 </para>

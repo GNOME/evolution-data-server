@@ -23,7 +23,6 @@ struct _EBookBackendPrivate {
 	GMutex *clients_mutex;
 	GSList *clients;
 
-	ESource *source;
 	gboolean opening, opened, readonly, removed, online;
 
 	GMutex *views_mutex;
@@ -38,15 +37,7 @@ enum {
 	PROP_CACHE_DIR
 };
 
-/* Signal IDs */
-enum {
-	LAST_CLIENT_GONE,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
-
-G_DEFINE_TYPE (EBookBackend, e_book_backend, G_TYPE_OBJECT)
+G_DEFINE_TYPE (EBookBackend, e_book_backend, E_TYPE_BACKEND)
 
 static void
 book_backend_set_default_cache_dir (EBookBackend *backend)
@@ -57,7 +48,7 @@ book_backend_set_default_cache_dir (EBookBackend *backend)
 	gchar *filename;
 
 	user_cache_dir = e_get_user_cache_dir ();
-	source = e_book_backend_get_source (backend);
+	source = e_backend_get_source (E_BACKEND (backend));
 
 	/* Mangle the URI to not contain invalid characters. */
 	mangled_uri = g_strdelimit (e_source_get_uri (source), ":/", '_');
@@ -87,7 +78,7 @@ book_backend_get_backend_property (EBookBackend *backend,
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_OPENING)) {
 		e_data_book_respond_get_backend_property (book, opid, NULL, e_book_backend_is_opening (backend) ? "TRUE" : "FALSE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_ONLINE)) {
-		e_data_book_respond_get_backend_property (book, opid, NULL, e_book_backend_is_online (backend) ? "TRUE" : "FALSE");
+		e_data_book_respond_get_backend_property (book, opid, NULL, e_backend_get_online (E_BACKEND (backend)) ? "TRUE" : "FALSE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_READONLY)) {
 		e_data_book_respond_get_backend_property (book, opid, NULL, e_book_backend_is_readonly (backend) ? "TRUE" : "FALSE");
 	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CACHE_DIR)) {
@@ -159,11 +150,6 @@ book_backend_dispose (GObject *object)
 		priv->views = NULL;
 	}
 
-	if (priv->source != NULL) {
-		g_object_unref (priv->source);
-		priv->source = NULL;
-	}
-
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_book_backend_parent_class)->dispose (object);
 }
@@ -228,15 +214,6 @@ e_book_backend_class_init (EBookBackendClass *klass)
 			NULL,
 			NULL,
 			G_PARAM_READWRITE));
-
-	signals[LAST_CLIENT_GONE] = g_signal_new (
-		"last-client-gone",
-		G_OBJECT_CLASS_TYPE (object_class),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (EBookBackendClass, last_client_gone),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
-		G_TYPE_NONE, 0);
 }
 
 static void
@@ -294,22 +271,6 @@ e_book_backend_set_cache_dir (EBookBackend *backend,
 	backend->priv->cache_dir = g_strdup (cache_dir);
 
 	g_object_notify (G_OBJECT (backend), "cache-dir");
-}
-
-/**
- * e_book_backend_get_source:
- * @backend: An addressbook backend.
- *
- * Queries the source that an addressbook backend is serving.
- *
- * Returns: ESource for the backend.
- **/
-ESource *
-e_book_backend_get_source (EBookBackend *backend)
-{
-	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
-
-	return backend->priv->source;
 }
 
 /**
@@ -391,17 +352,12 @@ e_book_backend_open (EBookBackend *backend,
 
 		e_data_book_respond_open (book, opid, EDB_OPENING_ERROR);
 	} else {
-		ESource *source = e_data_book_get_source (book);
-
 		backend->priv->opening = TRUE;
 		g_mutex_unlock (backend->priv->clients_mutex);
-
-		g_return_if_fail (source != NULL);
 
 		/* Subclasses may need to call e_book_backend_get_cache_dir() in
 		 * their open() methods, so get the "cache-dir" property
 		 * initialized before we call the method. */
-		backend->priv->source = g_object_ref (source);
 		book_backend_set_default_cache_dir (backend);
 
 		g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->open != NULL);
@@ -735,12 +691,6 @@ e_book_backend_authenticate_user (EBookBackend *backend,
 	(* E_BOOK_BACKEND_GET_CLASS (backend)->authenticate_user) (backend, cancellable, credentials);
 }
 
-static void
-last_client_gone (EBookBackend *backend)
-{
-	g_signal_emit (backend, signals[LAST_CLIENT_GONE], 0);
-}
-
 /**
  * e_book_backend_add_book_view:
  * @backend: an #EBookBackend
@@ -832,7 +782,7 @@ e_book_backend_remove_client (EBookBackend *backend,
 	 */
 	if (!backend->priv->clients) {
 		backend->priv->opening = FALSE;
-		last_client_gone (backend);
+		e_backend_last_client_gone (E_BACKEND (backend));
 	}
 
 	g_mutex_unlock (backend->priv->clients_mutex);
@@ -942,24 +892,6 @@ e_book_backend_set_backend_property (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_is_online:
- * @backend: an #EBookBackend
- *
- * Checks if @backend's storage is online.
- *
- * Returns: %TRUE if online, %FALSE otherwise.
- *
- * Since: 3.2
- **/
-gboolean
-e_book_backend_is_online (EBookBackend *backend)
-{
-	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
-
-	return backend->priv->online;
-}
-
-/**
  * e_book_backend_is_opened:
  * @backend: an #EBookBackend
  *
@@ -1052,23 +984,6 @@ e_book_backend_set_is_removed (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
 	backend->priv->removed = is_removed;
-}
-
-/**
- * e_book_backend_set_online:
- * @backend: an #EBookbackend
- * @is_online: a mode indicating the online/offline status of the backend
- *
- * Sets @backend's online/offline mode to @is_online.
- **/
-void
-e_book_backend_set_online (EBookBackend *backend,
-                           gboolean is_online)
-{
-	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->set_online);
-
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->set_online) (backend,  is_online);
 }
 
 /**

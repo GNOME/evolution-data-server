@@ -37,17 +37,23 @@
 
 #include "e-gdbus-book.h"
 
-G_DEFINE_TYPE (EDataBook, e_data_book, G_TYPE_OBJECT)
+#define E_DATA_BOOK_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_DATA_BOOK, EDataBookPrivate))
 
 struct _EDataBookPrivate
 {
 	EGdbusBook *gdbus_object;
 
 	EBookBackend *backend;
-	ESource *source;
 
 	GStaticRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid to GCancellable for still running operations */
+};
+
+enum {
+	PROP_0,
+	PROP_BACKEND
 };
 
 static EOperationPool *ops_pool = NULL;
@@ -109,6 +115,8 @@ typedef struct {
 		/* OP_CLOSE */
 	} d;
 } OperationData;
+
+G_DEFINE_TYPE (EDataBook, e_data_book, G_TYPE_OBJECT)
 
 static gchar *
 construct_bookview_path (void)
@@ -421,24 +429,6 @@ e_data_book_create_error_fmt (EDataBookStatus status,
 	g_free (custom_msg);
 
 	return error;
-}
-
-ESource *
-e_data_book_get_source (EDataBook *book)
-{
-	g_return_val_if_fail (book != NULL, NULL);
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
-
-	return book->priv->source;
-}
-
-EBookBackend *
-e_data_book_get_backend (EDataBook *book)
-{
-	g_return_val_if_fail (book != NULL, NULL);
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
-
-	return book->priv->backend;
 }
 
 static void
@@ -1238,99 +1228,195 @@ e_data_book_register_gdbus_object (EDataBook *book,
 	return e_gdbus_book_register_object (book->priv->gdbus_object, connection, object_path, error);
 }
 
-/* Instance init */
 static void
-e_data_book_init (EDataBook *ebook)
+data_book_set_backend (EDataBook *book,
+                       EBookBackend *backend)
 {
-	EGdbusBook *gdbus_object;
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
+	g_return_if_fail (book->priv->backend == NULL);
 
-	ebook->priv = G_TYPE_INSTANCE_GET_PRIVATE (
-		ebook, E_TYPE_DATA_BOOK, EDataBookPrivate);
+	book->priv->backend = g_object_ref (backend);
+}
 
-	ebook->priv->gdbus_object = e_gdbus_book_stub_new ();
-	ebook->priv->pending_ops = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
-	g_static_rec_mutex_init (&ebook->priv->pending_ops_lock);
+static void
+data_book_set_property (GObject *object,
+                        guint property_id,
+                        const GValue *value,
+                        GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_BACKEND:
+			data_book_set_backend (
+				E_DATA_BOOK (object),
+				g_value_get_object (value));
+			return;
+	}
 
-	gdbus_object = ebook->priv->gdbus_object;
-	g_signal_connect (gdbus_object, "handle-open", G_CALLBACK (impl_Book_open), ebook);
-	g_signal_connect (gdbus_object, "handle-remove", G_CALLBACK (impl_Book_remove), ebook);
-	g_signal_connect (gdbus_object, "handle-refresh", G_CALLBACK (impl_Book_refresh), ebook);
-	g_signal_connect (gdbus_object, "handle-get-contact", G_CALLBACK (impl_Book_get_contact), ebook);
-	g_signal_connect (gdbus_object, "handle-get-contact-list", G_CALLBACK (impl_Book_get_contact_list), ebook);
-	g_signal_connect (gdbus_object, "handle-get-contact-list-uids", G_CALLBACK (impl_Book_get_contact_list_uids), ebook);
-	g_signal_connect (gdbus_object, "handle-authenticate-user", G_CALLBACK (impl_Book_authenticate_user), ebook);
-	g_signal_connect (gdbus_object, "handle-add-contact", G_CALLBACK (impl_Book_add_contact), ebook);
-	g_signal_connect (gdbus_object, "handle-remove-contacts", G_CALLBACK (impl_Book_remove_contacts), ebook);
-	g_signal_connect (gdbus_object, "handle-modify-contact", G_CALLBACK (impl_Book_modify_contact), ebook);
-	g_signal_connect (gdbus_object, "handle-get-backend-property", G_CALLBACK (impl_Book_get_backend_property), ebook);
-	g_signal_connect (gdbus_object, "handle-set-backend-property", G_CALLBACK (impl_Book_set_backend_property), ebook);
-	g_signal_connect (gdbus_object, "handle-get-view", G_CALLBACK (impl_Book_get_view), ebook);
-	g_signal_connect (gdbus_object, "handle-cancel-operation", G_CALLBACK (impl_Book_cancel_operation), ebook);
-	g_signal_connect (gdbus_object, "handle-cancel-all", G_CALLBACK (impl_Book_cancel_all), ebook);
-	g_signal_connect (gdbus_object, "handle-close", G_CALLBACK (impl_Book_close), ebook);
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+data_book_get_property (GObject *object,
+                        guint property_id,
+                        GValue *value,
+                        GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_BACKEND:
+			g_value_set_object (
+				value,
+				e_data_book_get_backend (
+				E_DATA_BOOK (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
 data_book_dispose (GObject *object)
 {
-	EDataBook *book = E_DATA_BOOK (object);
+	EDataBookPrivate *priv;
 
-	if (book->priv->backend) {
-		g_object_unref (book->priv->backend);
-		book->priv->backend = NULL;
+	priv = E_DATA_BOOK_GET_PRIVATE (object);
+
+	if (priv->backend) {
+		g_object_unref (priv->backend);
+		priv->backend = NULL;
 	}
 
-	if (book->priv->source) {
-		g_object_unref (book->priv->source);
-		book->priv->source = NULL;
-	}
-
+	/* Chain up to parent's dispose() metnod. */
 	G_OBJECT_CLASS (e_data_book_parent_class)->dispose (object);
 }
 
 static void
 data_book_finalize (GObject *object)
 {
-	EDataBook *book = E_DATA_BOOK (object);
+	EDataBookPrivate *priv;
 
-	if (book->priv->pending_ops) {
-		g_hash_table_destroy (book->priv->pending_ops);
-		book->priv->pending_ops = NULL;
+	priv = E_DATA_BOOK_GET_PRIVATE (object);
+
+	if (priv->pending_ops) {
+		g_hash_table_destroy (priv->pending_ops);
+		priv->pending_ops = NULL;
 	}
 
-	g_static_rec_mutex_free (&book->priv->pending_ops_lock);
+	g_static_rec_mutex_free (&priv->pending_ops_lock);
 
-	if (book->priv->gdbus_object) {
-		g_object_unref (book->priv->gdbus_object);
-		book->priv->gdbus_object = NULL;
+	if (priv->gdbus_object) {
+		g_object_unref (priv->gdbus_object);
+		priv->gdbus_object = NULL;
 	}
 
+	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_parent_class)->finalize (object);
 }
 
 static void
-e_data_book_class_init (EDataBookClass *klass)
+e_data_book_class_init (EDataBookClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+	GObjectClass *object_class;
 
-	g_type_class_add_private (klass, sizeof (EDataBookPrivate));
+	g_type_class_add_private (class, sizeof (EDataBookPrivate));
 
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = data_book_set_property;
+	object_class->get_property = data_book_get_property;
 	object_class->dispose = data_book_dispose;
 	object_class->finalize = data_book_finalize;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_BACKEND,
+		g_param_spec_object (
+			"backend",
+			"Backend",
+			"The backend driving this connection",
+			E_TYPE_BOOK_BACKEND,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 
 	if (!ops_pool)
 		ops_pool = e_operation_pool_new (10, operation_thread, NULL);
 }
 
-EDataBook *
-e_data_book_new (EBookBackend *backend,
-                 ESource *source)
+static void
+e_data_book_init (EDataBook *ebook)
 {
-	EDataBook *book;
+	EGdbusBook *gdbus_object;
 
-	book = g_object_new (E_TYPE_DATA_BOOK, NULL);
-	book->priv->backend = g_object_ref (backend);
-	book->priv->source = g_object_ref (source);
+	ebook->priv = E_DATA_BOOK_GET_PRIVATE (ebook);
 
-	return book;
+	ebook->priv->gdbus_object = e_gdbus_book_stub_new ();
+	ebook->priv->pending_ops = g_hash_table_new_full (
+		g_direct_hash, g_direct_equal, NULL, g_object_unref);
+	g_static_rec_mutex_init (&ebook->priv->pending_ops_lock);
+
+	gdbus_object = ebook->priv->gdbus_object;
+	g_signal_connect (
+		gdbus_object, "handle-open",
+		G_CALLBACK (impl_Book_open), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-remove",
+		G_CALLBACK (impl_Book_remove), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-refresh",
+		G_CALLBACK (impl_Book_refresh), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-get-contact",
+		G_CALLBACK (impl_Book_get_contact), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-get-contact-list",
+		G_CALLBACK (impl_Book_get_contact_list), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-get-contact-list-uids",
+		G_CALLBACK (impl_Book_get_contact_list_uids), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-authenticate-user",
+		G_CALLBACK (impl_Book_authenticate_user), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-add-contact",
+		G_CALLBACK (impl_Book_add_contact), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-remove-contacts",
+		G_CALLBACK (impl_Book_remove_contacts), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-modify-contact",
+		G_CALLBACK (impl_Book_modify_contact), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-get-backend-property",
+		G_CALLBACK (impl_Book_get_backend_property), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-set-backend-property",
+		G_CALLBACK (impl_Book_set_backend_property), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-get-view",
+		G_CALLBACK (impl_Book_get_view), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-cancel-operation",
+		G_CALLBACK (impl_Book_cancel_operation), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-cancel-all",
+		G_CALLBACK (impl_Book_cancel_all), ebook);
+	g_signal_connect (
+		gdbus_object, "handle-close",
+		G_CALLBACK (impl_Book_close), ebook);
 }
+
+EDataBook *
+e_data_book_new (EBookBackend *backend)
+{
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+
+	return g_object_new (E_TYPE_DATA_BOOK, "backend", backend, NULL);
+}
+
+EBookBackend *
+e_data_book_get_backend (EDataBook *book)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
+
+	return book->priv->backend;
+}
+

@@ -20,20 +20,6 @@ EDataBookFactory
 <!-- ##### SECTION Image ##### -->
 
 
-<!-- ##### MACRO E_DATA_BOOK_FACTORY_ERROR ##### -->
-<para>
-
-</para>
-
-
-
-<!-- ##### ENUM EDataBookFactoryError ##### -->
-<para>
-
-</para>
-
-@E_DATA_BOOK_FACTORY_ERROR_GENERIC: 
-
 <!-- ##### STRUCT EDataBookFactory ##### -->
 <para>
 
@@ -41,13 +27,4 @@ EDataBookFactory
 
 @parent: 
 @priv: 
-
-<!-- ##### FUNCTION e_data_book_factory_set_backend_online ##### -->
-<para>
-
-</para>
-
-@factory: 
-@is_online: 
-
 

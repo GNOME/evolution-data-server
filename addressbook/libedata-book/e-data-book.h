@@ -126,9 +126,8 @@ const gchar *e_data_book_status_to_string (EDataBookStatus status);
 	} G_STMT_END
 
 GType		e_data_book_get_type				(void);
-EDataBook *	e_data_book_new					(EBookBackend *backend, ESource *source);
+EDataBook *	e_data_book_new					(EBookBackend *backend);
 EBookBackend *	e_data_book_get_backend				(EDataBook *book);
-ESource *	e_data_book_get_source				(EDataBook *book);
 
 guint		e_data_book_register_gdbus_object		(EDataBook *cal, GDBusConnection *connection, const gchar *object_path, GError **error);
 

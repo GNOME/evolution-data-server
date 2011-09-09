@@ -26,6 +26,11 @@ EDataBook
 </para>
 
 
+<!-- ##### ARG EDataBook:backend ##### -->
+<para>
+
+</para>
+
 <!-- ##### MACRO E_DATA_BOOK_ERROR ##### -->
 <para>
 
@@ -87,20 +92,10 @@ EDataBook
 </para>
 
 @backend: 
-@source: 
 @Returns: 
 
 
 <!-- ##### FUNCTION e_data_book_get_backend ##### -->
-<para>
-
-</para>
-
-@book: 
-@Returns: 
-
-
-<!-- ##### FUNCTION e_data_book_get_source ##### -->
 <para>
 
 </para>
