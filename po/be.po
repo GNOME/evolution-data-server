@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-09-11 15:26+0300\n"
-"PO-Revision-Date: 2011-09-11 15:24+0300\n"
+"PO-Revision-Date: 2011-09-12 12:41+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "Language: be\n"
@@ -1869,7 +1869,7 @@ msgstr "(%s) патрабуе знакавага ланцужка, які б а�
 #: ../camel/camel-folder-search.c:1003
 #, c-format
 msgid "(%s) expects an array result"
-msgstr "(%s) чакае масіва як выніку"
+msgstr "(%s) чакае масіву як выніку"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../camel/camel-folder-search.c:1013
