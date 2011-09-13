@@ -1285,7 +1285,7 @@ e_gdbus_proxy_finish_call_uint (EGdbusAsyncOpKeeper *proxy,
 
 	op_data = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (result));
 	g_return_val_if_fail (op_data != NULL, FALSE);
-	g_return_val_if_fail (op_data->result_type == E_GDBUS_TYPE_STRING, FALSE);
+	g_return_val_if_fail (op_data->result_type == E_GDBUS_TYPE_UINT, FALSE);
 
 	*out_uint = op_data->result.out_uint;
 
