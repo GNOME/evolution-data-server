@@ -2224,8 +2224,10 @@ e_book_backend_google_open (EBookBackend *backend,
 #endif
 	}
 
-	if (!priv->is_online || backend_is_authorized (backend))
+	if (!priv->is_online || backend_is_authorized (backend)) {
+		e_book_backend_notify_readonly (backend, FALSE);
 		e_book_backend_notify_opened (backend, NULL /* Success */);
+	}
 
 	e_data_book_respond_open (book, opid, NULL /* Success */);
 }
