@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2011-08-31 16:22+0000\n"
-"PO-Revision-Date: 2011-09-09 14:58+0530\n"
+"PO-Revision-Date: 2011-09-12 17:56+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -1095,16 +1095,13 @@ msgid "Server is unreachable (%s)"
 msgstr ""
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:546
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Unexpected GnuPG status message encountered:\n"
 #| "\n"
 #| "%s"
 msgid "Unexpected HTTP status code %d returned (%s)"
-msgstr ""
-"ଅପ୍ରତ୍ୟାଶିତ GnuPG ସ୍ଥିତି ସନ୍ଦେଶର ସମ୍ମୁଖିନ ହେଲା:\n"
-"\n"
-"%s"
+msgstr "ଅପ୍ରତ୍ୟାଶିତ HTTP ସ୍ଥିତି ସଂକେତ %d (%s) କୁ ଫେରାଇଛି"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2133
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2481
@@ -1278,10 +1275,9 @@ msgid "Authentication required"
 msgstr "ବୈଧିକରଣ ଆବଶ୍ଯକ"
 
 #: ../calendar/libecal/e-cal.c:4437
-#, fuzzy
 #| msgid "A CORBA exception has occurred"
 msgid "A D-Bus exception has occurred"
-msgstr "ଗୋଟିଏ କୋର୍ବା ବ୍ଯତିକ୍ରମ ଘଟିଛି"
+msgstr "ଗୋଟିଏ D-Bus ବ୍ଯତିକ୍ରମ ଘଟିଛି"
 
 #: ../calendar/libecal/e-cal.c:4441
 msgid "No error"
@@ -1289,10 +1285,9 @@ msgstr "କୌଣସି ତ୍ରୁଟି ନାହିଁ"
 
 #: ../calendar/libecal/e-cal-client.c:133
 #: ../calendar/libedata-cal/e-data-cal.c:429
-#, fuzzy
 #| msgid "Unknown User"
 msgid "Unknown user"
-msgstr "ଅଜଣା ତାଲିକା"
+msgstr "ଅଜ୍ଞାତ ଚାଳକ"
 
 #: ../calendar/libecal/e-cal-client.c:137
 #: ../calendar/libedata-cal/e-data-cal.c:418
@@ -1300,29 +1295,25 @@ msgid "Invalid range"
 msgstr "ଅବୈଧ ପରିସୀମା"
 
 #: ../calendar/libecal/e-cal-client.c:555
-#, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to run calendar factory"
-msgstr "ତଥ୍ୟ ସାଙ୍କେତିକରଣ କରିବାରେ ବିଫଳ"
+msgstr "କ୍ୟାଲେଣ୍ଡର କାରଖାନା ଚଲାଇବାରେ ବିଫଳ"
 
 #: ../calendar/libecal/e-cal-client.c:717
-#, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to find system calendar"
-msgstr "ତଥ୍ୟ ସାଙ୍କେତିକରଣ କରିବାରେ ବିଫଳ"
+msgstr "ତନ୍ତ୍ର କ୍ୟାଲେଣ୍ଡର ଖୋଜିବାରେ ବିଫଳ"
 
 #: ../calendar/libecal/e-cal-client.c:755
 #: ../calendar/libedata-cal/e-data-cal.c:428
-#, fuzzy
 #| msgid "Folder '%s' does not exist."
 msgid "Calendar does not exist"
-msgstr "ଫୋଲଡର '%s' ଅବସ୍ଥିତ ନାହିଁ।"
+msgstr "କ୍ୟାଲେଣ୍ଡର ଅବସ୍ଥିତ ନାହିଁ"
 
 #: ../calendar/libecal/e-cal-client.c:865
-#, fuzzy
 #| msgid "%s: Invalid source."
 msgid "Invalid source type"
-msgstr "%s: ଅବୈଧ ଉତ୍ସ।"
+msgstr "ଅବୈଧ ଉତ୍ସ ପ୍ରକାର"
 
 #: ../calendar/libecal/e-cal-component.c:1298
 msgid "Untitled appointment"
@@ -1453,51 +1444,46 @@ msgid "31st"
 msgstr "ଏକତିଂଶ"
 
 #: ../calendar/libecal/e-cal-util.c:677 ../calendar/libecal/e-cal-util.c:704
-#, fuzzy
 #| msgid "High"
 msgctxt "Priority"
 msgid "High"
-msgstr "ବ୍ରୁହତ"
+msgstr "ଉଚ୍ଚ"
 
 #: ../calendar/libecal/e-cal-util.c:679 ../calendar/libecal/e-cal-util.c:706
-#, fuzzy
 #| msgid "Normal"
 msgctxt "Priority"
 msgid "Normal"
 msgstr "ସାଧାରଣ"
 
 #: ../calendar/libecal/e-cal-util.c:681 ../calendar/libecal/e-cal-util.c:708
-#, fuzzy
 #| msgid "Low"
 msgctxt "Priority"
 msgid "Low"
-msgstr "ଧୀର"
+msgstr "ନିମ୍ନ"
 
 #. An empty string is the same as 'None'.
 #: ../calendar/libecal/e-cal-util.c:702
-#, fuzzy
 #| msgid "Undefined"
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "ଅପରିଭାଷିତ"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:34
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot process, calendar backend is opening"
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କାର୍ଯ୍ୟକାରୀ କରିପାରିବେ ନାହିଁ, କ୍ଯାଲେଣ୍ଡର ପୃଷ୍ଠଭୂମି ଖୋଲୁଅଛି"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:207
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unknown error: %s"
 msgid "Unknown calendar property '%s'"
-msgstr "ଅଜଣା ତ୍ରୁଟି: %s"
+msgstr "ଅଜଣା କ୍ୟାଲେଣ୍ଡର ଗୁଣଧର୍ମ: '%s'"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:219
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot change value of calendar property '%s'"
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ଯାଲେଣ୍ଡର ଗୁଣଧର୍ମ '%s' ର ମୂଲ୍ୟକୁ ପରିବର୍ତ୍ତନ କରିପାରିବେ ନାହିଁ"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:69
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
@@ -1604,31 +1590,27 @@ msgstr "ଅସମର୍ଥିତ ପଦ୍ଧତି"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:909
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot open calendar: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ୟାଲେଣ୍ଡରକୁ ଖୋଲି ପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:930
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot remove calendar: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ୟାଲେଣ୍ଡରକୁ କାଢ଼ି ପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:955
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot refresh calendar: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ଯାଲେଣ୍ଡରକୁ ସତେଜ କରିପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:979
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot retrieve backend property: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "ପୃଷ୍ଠଭୂମି ଗୁଣଧର୍ମକୁ କାଢ଼ିପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1025
@@ -1646,10 +1628,9 @@ msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷି�
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1075
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot retrieve calendar free/busy list: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ଯାଲେଣ୍ଡର ଖାଲି/ବ୍ୟସ୍ତ ତାଲିକାକୁ କାଢ଼ିପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1101
@@ -1722,16 +1703,16 @@ msgid "Could not add calendar time zone: "
 msgstr "କାର୍ଯ୍ଯ ବାତିଲ କରିପାରଲିା ନାହିଁ"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:383
-#, fuzzy, c-format
+#, c-format
 #| msgid "Invalid range"
 msgid "Invalid call"
-msgstr "ଅବୈଧ ପରିସୀମା"
+msgstr "ଅବୈଧ ଡ଼ାକରା"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:424
-#, fuzzy, c-format
+#, c-format
 #| msgid "Invalid server URI"
 msgid "Invalid URI"
-msgstr "ଅବୈଧ ସେବକ ୟୁ.ଆର.ଆଇ."
+msgstr "ଅବୈଧ URI"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:442
 #, c-format
@@ -1979,16 +1960,16 @@ msgid "Quota information not supported for folder '%s'"
 msgstr ""
 
 #: ../camel/camel-folder.c:3265
-#, fuzzy, c-format
+#, c-format
 #| msgid "Retrieving POP message %d"
 msgid "Retrieving message '%s' in %s"
-msgstr "POP ସନ୍ଦେଶ %dକୁ କାଢ଼ୁଅଛି"
+msgstr "ସନ୍ଦେଶ '%s' କୁ %s ରେ କାଢ଼ୁଅଛି"
 
 #: ../camel/camel-folder.c:3390
-#, fuzzy, c-format
+#, c-format
 #| msgid "Fetching summary information for new messages in %s"
 msgid "Retrieving quota information for '%s'"
-msgstr "%s ରେ ନୂତନ ସନ୍ଦେଶଗୁଡ଼ିକ ପାଇଁ ସୂଚନା ସାରାଂଶକୁ ଆନୟନ କରିଅଛି"
+msgstr "'%s' ପାଇଁ କୋଟା ସୂଚନାକୁ କାଢ଼ୁଅଛି"
 
 #: ../camel/camel-folder-search.c:345 ../camel/camel-folder-search.c:456
 #: ../camel/camel-folder-search.c:627
@@ -2102,10 +2083,10 @@ msgstr "'%s' ପାଇଁ GnuPG ରୁ ଅପ୍ରତ୍ୟାଶିତ ଅନ�
 #: ../camel/providers/imapx/camel-imapx-store.c:159
 #: ../camel/providers/nntp/camel-nntp-summary.c:409
 #: ../libedataserver/e-client.c:127 ../libedataserverui/e-book-auth-util.c:221
-#, fuzzy, c-format
+#, c-format
 #| msgid "Canceled"
 msgid "Cancelled"
-msgstr "ବାତିଲ କରାଗଲା"
+msgstr "ବାତିଲ ହୋଇଛି"
 
 #: ../camel/camel-gpg-context.c:846
 #, c-format
@@ -2143,16 +2124,14 @@ msgid "Cannot verify message signature: Incorrect message format"
 msgstr "ସନ୍ଦେଶ ହସ୍ତାକ୍ଷରକୁ ଯାଞ୍ଚକରିପାରିବେ ନାହିଁ: ଭୁଲ ସନ୍ଦେଶ ସଜ୍ଜିକରଣ ଶୈଳୀ"
 
 #: ../camel/camel-gpg-context.c:1741
-#, fuzzy
 #| msgid "Cannot verify message signature: Incorrect message format"
 msgid "Cannot verify message signature: "
-msgstr "ସନ୍ଦେଶ ହସ୍ତାକ୍ଷରକୁ ଯାଞ୍ଚକରିପାରିବେ ନାହିଁ: ଭୁଲ ସନ୍ଦେଶ ସଜ୍ଜିକରଣ ଶୈଳୀ"
+msgstr "ସନ୍ଦେଶ ହସ୍ତାକ୍ଷରକୁ ଯାଞ୍ଚକରିପାରିବେ ନାହିଁ: "
 
 #: ../camel/camel-gpg-context.c:1864
-#, fuzzy
 #| msgid "Could not generate encrypting data: %s"
 msgid "Could not generate encrypting data: "
-msgstr "ସଂଗୁପ୍ତ ତଥ୍ୟ ସୃଷ୍ଟି କରିପାରିବେ ନାହିଁ: %s"
+msgstr "ସଂଗୁପ୍ତ ତଥ୍ୟ ସୃଷ୍ଟି କରିପାରିବେ ନାହିଁ: "
 
 #: ../camel/camel-gpg-context.c:1917
 msgid "This is a digitally encrypted message part"
@@ -2275,16 +2254,16 @@ msgid "Error copying mail temp file: %s"
 msgstr "ମେଲ ଅସ୍ଥାୟୀ ଫାଇଲ ନକଲ କରିବାରେ ତ୍ରୁଟି: %s"
 
 #: ../camel/camel-multipart-signed.c:297
-#, fuzzy, c-format
+#, c-format
 #| msgid "No description available"
 msgid "No content available"
-msgstr "କୌଣସି ବର୍ଣ୍ଣନା ଉପଲବ୍ଧ ନାହିଁ"
+msgstr "କୌଣସି ବିଷୟବସ୍ତୁ ଉପଲବ୍ଧ ନାହିଁ"
 
 #: ../camel/camel-multipart-signed.c:305
-#, fuzzy, c-format
+#, c-format
 #| msgid "No description available"
 msgid "No signature available"
-msgstr "କୌଣସି ବର୍ଣ୍ଣନା ଉପଲବ୍ଧ ନାହିଁ"
+msgstr "କୌଣସି ହସ୍ତାକ୍ଷର ଉପଲବ୍ଧ ନାହିଁ"
 
 #: ../camel/camel-multipart-signed.c:689
 #, c-format
@@ -2301,10 +2280,10 @@ msgid "SSL unavailable"
 msgstr "SSL ଉପଲବ୍ଧ ନାହିଁ"
 
 #: ../camel/camel-network-service.c:123
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not connect to %s: %s"
 msgid "Could not connect to %s: "
-msgstr "%s ସହିତ ସଂଯୁକ୍ତ କରିପାରିଲା ନାହିଁ: %s"
+msgstr "%s ସହିତ ସଂଯୁକ୍ତ କରିପାରିଲା ନାହିଁ: "
 
 #: ../camel/camel-net-utils.c:695
 #, c-format
@@ -2590,10 +2569,9 @@ msgid "This option will authorise a POP connection before attempting SMTP"
 msgstr "SMTP ମାଧ୍ଯମରେ ଚେଷ୍ଟାକରିବା ପୂର୍ବରୁ ଏହି ପ୍ରୟୋଗଟି POP ସଂଯୋଗକୁ ମାନ୍ୟତା ଦେବ"
 
 #: ../camel/camel-sasl-popb4smtp.c:80
-#, fuzzy
 #| msgid "POP Source URI"
 msgid "POP Source UID"
-msgstr "POP ଉତ୍ସ URI"
+msgstr "POP ଉତ୍ସ UID"
 
 #: ../camel/camel-sasl-popb4smtp.c:92
 #, fuzzy, c-format
