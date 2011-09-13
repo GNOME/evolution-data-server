@@ -3664,9 +3664,6 @@ done:
 	if (msg) {
 		gboolean has_attachment;
 
-		/* FIXME, this shouldn't be done this way. */
-		camel_medium_set_header (CAMEL_MEDIUM (msg), "X-Evolution-Source", store->base_url);
-
 		if (!mi->info.mlist || !*mi->info.mlist) {
 			/* update mailing list information, if necessary */
 			gchar *mlist = camel_header_raw_check_mailing_list (&(CAMEL_MIME_PART (msg)->headers));

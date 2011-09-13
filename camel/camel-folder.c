@@ -3286,6 +3286,14 @@ camel_folder_get_message_sync (CamelFolder *folder,
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 
+	if (message) {
+		CamelStore *store;
+
+		store = camel_folder_get_parent_store (folder);
+
+		camel_mime_message_set_source (message, camel_service_get_uid (CAMEL_SERVICE (store)));
+	}
+
 	camel_operation_pop_message (cancellable);
 
 	if (message != NULL && camel_debug_start (":folder")) {
