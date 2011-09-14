@@ -2391,9 +2391,6 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 			priv->comp = g_list_remove (priv->comp, recurrence);
 			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
 			g_hash_table_remove (obj_data->recurrences, rid);
-		} else if (obj_data->full_object) {
-			/* add exception for the modified instance */
-			e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object), icaltime_from_string (rid), CALOBJ_MOD_THIS);
 		}
 
 		/* add the detached instance */
