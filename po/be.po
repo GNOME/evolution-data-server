@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-11 15:26+0300\n"
-"PO-Revision-Date: 2011-09-12 12:41+0300\n"
+"POT-Creation-Date: 2011-09-14 21:50+0300\n"
+"PO-Revision-Date: 2011-09-14 21:50+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "Language: be\n"
@@ -586,7 +586,7 @@ msgstr "Дата апошняга абнаўлення"
 
 #: ../addressbook/libebook/e-contact.c:233
 msgid "Name or Org"
-msgstr ""
+msgstr "Імя ці ўстанова"
 
 #. Address fields
 #: ../addressbook/libebook/e-contact.c:236
@@ -658,11 +658,11 @@ msgstr "Аддае перавагу HTML-лістам"
 
 #: ../addressbook/libebook/e-contact.c:261
 msgid "List"
-msgstr ""
+msgstr "Спіс"
 
 #: ../addressbook/libebook/e-contact.c:262
 msgid "List Show Addresses"
-msgstr ""
+msgstr "Разгортваць спіс адрасоў"
 
 #: ../addressbook/libebook/e-contact.c:264
 msgid "Birth Date"
@@ -1822,7 +1822,7 @@ msgstr "Папка \"%s\" не падтрымлівае інфармацыі а�
 msgid "Retrieving message '%s' in %s"
 msgstr "Атрыманне паведамлення \"%s\" з \"%s\""
 
-#: ../camel/camel-folder.c:3396
+#: ../camel/camel-folder.c:3404
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Атрыманне інфармацыі аб квотах для \"%s\""
@@ -2991,31 +2991,31 @@ msgid "No such message available."
 msgstr "Такое паведамленне адсутнічае."
 
 #: ../camel/providers/imap/camel-imap-folder.c:3596
-#: ../camel/providers/imap/camel-imap-folder.c:4506
+#: ../camel/providers/imap/camel-imap-folder.c:4503
 #: ../camel/providers/nntp/camel-nntp-folder.c:438
 #, c-format
 msgid "This message is not currently available"
 msgstr "Гэта паведамленне недаступна"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4090
-#: ../camel/providers/imap/camel-imap-folder.c:4173
+#: ../camel/providers/imap/camel-imap-folder.c:4087
+#: ../camel/providers/imap/camel-imap-folder.c:4170
 #: ../camel/providers/imapx/camel-imapx-server.c:4023
 #: ../camel/providers/imapx/camel-imapx-server.c:4173
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Атрыманне рэзюмэ аб новых паведамленнях у %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4307
+#: ../camel/providers/imap/camel-imap-folder.c:4304
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Няпоўны адказ сервера: інфармацыя аб паведамленні %d адсутнічае"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4317
+#: ../camel/providers/imap/camel-imap-folder.c:4314
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Няпоўны адказ сервера: UID паведамлення %d адсутнічае"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4546
+#: ../camel/providers/imap/camel-imap-folder.c:4543
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Не ўдалося адшукаць цела паведамлення ў FETCH-адказе."
@@ -4631,7 +4631,6 @@ msgid "Goals/Objectives"
 msgstr "Намеры і мэты"
 
 #: ../libedataserver/e-categories.c:54
-#, fuzzy
 msgctxt "CategoryName"
 msgid "Holiday"
 msgstr "Адпачынак"
@@ -4718,7 +4717,7 @@ msgstr "Крыніца ўжо загружана"
 
 #: ../libedataserver/e-client.c:130
 msgid "Offline unavailable"
-msgstr ""
+msgstr "Пазасеткавы рэжым недаступны"
 
 #: ../libedataserver/e-client.c:152
 msgid "D-Bus error"
