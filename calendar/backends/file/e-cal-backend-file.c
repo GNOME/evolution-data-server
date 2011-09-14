@@ -472,7 +472,11 @@ resolve_tzid (const gchar *tzid,
 	return zone;
 }
 
-/* Checks if the specified component has a duplicated UID and if so changes it */
+/* Checks if the specified component has a duplicated UID and if so changes it.
+ * UIDs may be shared between components if there is at most one component
+ * without RECURRENCE-ID (master) and all others have different RECURRENCE-ID
+ * values.
+ */
 static void
 check_dup_uid (ECalBackendFile *cbfile,
                ECalComponent *comp)
@@ -480,7 +484,8 @@ check_dup_uid (ECalBackendFile *cbfile,
 	ECalBackendFilePrivate *priv;
 	ECalBackendFileObject *obj_data;
 	const gchar *uid = NULL;
-	gchar *new_uid;
+	gchar *new_uid = NULL;
+	gchar *rid = NULL;
 
 	priv = cbfile->priv;
 
@@ -495,17 +500,33 @@ check_dup_uid (ECalBackendFile *cbfile,
 	if (!obj_data)
 		return; /* Everything is fine */
 
-	d(g_message (G_STRLOC ": Got object with duplicated UID `%s', changing it...", uid));
+	rid = e_cal_component_get_recurid_as_string (comp);
+	if (rid && *rid) {
+		/* new component has rid, must not be the same as in other detached recurrence */
+		if (!g_hash_table_lookup (obj_data->recurrences, rid))
+			goto done;
+	} else {
+		/* new component has no rid, must not clash with existing master */
+		if (!obj_data->full_object)
+			goto done;
+	}
+
+	d(g_message (G_STRLOC ": Got object with duplicated UID `%s' and rid `%s', changing it...",
+		     uid,
+		     rid ? rid : ""));
 
 	new_uid = e_cal_component_gen_uid ();
 	e_cal_component_set_uid (comp, new_uid);
-	g_free (new_uid);
 
 	/* FIXME: I think we need to reset the SEQUENCE property and reset the
 	 * CREATED/DTSTAMP/LAST-MODIFIED.
 	 */
 
 	save (cbfile);
+
+ done:
+	g_free (rid);
+	g_free (new_uid);
 }
 
 static struct icaltimetype
