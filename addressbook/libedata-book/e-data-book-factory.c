@@ -578,6 +578,44 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 	object_class->finalize = e_data_book_factory_finalize;
 }
 
+#ifdef HAVE_GOA
+static void
+e_data_book_factory_update_goa_accounts (EDataBookFactory *factory)
+{
+	GList *list, *iter;
+
+	g_hash_table_remove_all (factory->priv->goa_accounts);
+
+	list = goa_client_get_accounts (factory->priv->goa_client);
+
+	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
+		GoaObject *goa_object;
+		GoaAccount *goa_account;
+		const gchar *goa_account_id;
+
+		goa_object = GOA_OBJECT (iter->data);
+		goa_account = goa_object_peek_account (goa_object);
+		goa_account_id = goa_account_get_id (goa_account);
+
+		/* Takes ownership of the GoaObject. */
+		g_hash_table_insert (
+				     factory->priv->goa_accounts,
+				     g_strdup (goa_account_id), goa_object);
+	}
+
+	g_list_free (list);
+}
+
+static void
+e_data_book_factory_accounts_changed_cb (GoaClient *client, GDBusObject *object, EDataBookFactory *factory)
+{
+	e_data_book_factory_update_goa_accounts (factory);
+}
+
+#endif
+
+
+
 static void
 e_data_book_factory_init (EDataBookFactory *factory)
 {
@@ -629,27 +667,14 @@ e_data_book_factory_init (EDataBookFactory *factory)
 	factory->priv->goa_client = goa_client_new_sync (NULL, &error);
 
 	if (factory->priv->goa_client != NULL) {
-		GList *list, *iter;
+		e_data_book_factory_update_goa_accounts (factory);
 
-		list = goa_client_get_accounts (factory->priv->goa_client);
-
-		for (iter = list; iter != NULL; iter = g_list_next (iter)) {
-			GoaObject *goa_object;
-			GoaAccount *goa_account;
-			const gchar *goa_account_id;
-
-			goa_object = GOA_OBJECT (iter->data);
-			goa_account = goa_object_peek_account (goa_object);
-			goa_account_id = goa_account_get_id (goa_account);
-
-			/* Takes ownership of the GoaObject. */
-			g_hash_table_insert (
-				factory->priv->goa_accounts,
-				g_strdup (goa_account_id), goa_object);
-		}
-
-		g_list_free (list);
-
+		g_signal_connect (factory->priv->goa_client,
+				  "account_added", e_data_book_factory_accounts_changed_cb, factory);
+		g_signal_connect (factory->priv->goa_client,
+				  "account_removed", e_data_book_factory_accounts_changed_cb, factory);
+		g_signal_connect (factory->priv->goa_client,
+				  "account_changed", e_data_book_factory_accounts_changed_cb, factory);
 	} else if (error != NULL) {
 		g_warning ("%s", error->message);
 		g_error_free (error);
