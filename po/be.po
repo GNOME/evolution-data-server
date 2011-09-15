@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-14 21:50+0300\n"
-"PO-Revision-Date: 2011-09-14 21:50+0300\n"
+"POT-Creation-Date: 2011-09-15 15:40+0300\n"
+"PO-Revision-Date: 2011-09-15 15:39+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
 "Language: be\n"
@@ -1907,7 +1907,7 @@ msgstr "Не ўдалося разабраць userid-падказку \"gpg\"."
 #: ../camel/camel-gpg-context.c:769 ../camel/camel-gpg-context.c:784
 #, c-format
 msgid "Failed to parse gpg passphrase request."
-msgstr "Не ўдалося разабраць запыт пароля \"gpg\"."
+msgstr "Не ўдалося разабраць запыт парольнай фразы \"gpg\"."
 
 #: ../camel/camel-gpg-context.c:805
 #, c-format
@@ -1925,7 +1925,7 @@ msgid ""
 "user: \"%s\""
 msgstr ""
 "Каб разблакіраваць ключ карыстальніка,\n"
-"трэба падаць пароль: \"%s\""
+"трэба падаць парольную фразу: \"%s\""
 
 #: ../camel/camel-gpg-context.c:815
 #, c-format
@@ -1947,7 +1947,8 @@ msgstr "Скасавана"
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
-"Не ўдалося разблакіраваць сакрэтны ключ: тройчы пададзены хібныя паролі."
+"Не ўдалося разблакіраваць сакрэтны ключ: тройчы пададзены хібныя парольныя "
+"фразы."
 
 #: ../camel/camel-gpg-context.c:874
 #, c-format
@@ -4963,7 +4964,7 @@ msgstr "Упішыце пароль для адраснай кнігі %s (ка�
 
 #: ../libedataserverui/e-client-utils.c:981
 msgid "Enter Passphrase"
-msgstr "Увод пароля"
+msgstr "Увод парольнай фразы"
 
 #: ../libedataserverui/e-client-utils.c:983
 msgid "Enter Password"
@@ -5065,12 +5066,12 @@ msgstr "Caps Lock уключаны."
 #: ../libedataserverui/e-passwords.c:821
 #: ../libedataserverui/e-passwords-win32.c:737
 msgid "_Remember this passphrase"
-msgstr "_Запомніць гэты пароль"
+msgstr "_Запомніць гэту парольную фразу"
 
 #: ../libedataserverui/e-passwords.c:822
 #: ../libedataserverui/e-passwords-win32.c:738
 msgid "_Remember this passphrase for the remainder of this session"
-msgstr "_Запомніць гэты пароль да заканчэння гэтага сеанса"
+msgstr "_Запомніць гэту парольную фразу да заканчэння гэтага сеанса"
 
 #: ../libedataserverui/e-passwords.c:827
 #: ../libedataserverui/e-passwords-win32.c:743
