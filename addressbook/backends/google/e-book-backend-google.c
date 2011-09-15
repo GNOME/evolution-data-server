@@ -112,6 +112,22 @@ static void _e_contact_remove_gdata_entry_xml (EContact *contact);
 static const gchar *_e_contact_get_gdata_entry_xml (EContact *contact, const gchar **edit_uri);
 
 static void
+migrate_cache (EBookBackendCache *cache)
+{
+	const gchar *version;
+	const gchar *version_key = "book-cache-version";
+
+	g_return_if_fail (cache != NULL);
+
+	version = e_file_cache_get_object (E_FILE_CACHE (cache), version_key);
+	if (!version || atoi (version) < 1) {
+		/* not versioned yet, dump the cache and reload it from a server */
+		e_file_cache_clean (E_FILE_CACHE (cache));
+		e_file_cache_add_object (E_FILE_CACHE (cache), version_key, "1");
+	}
+}
+
+static void
 cache_init (EBookBackend *backend,
             gboolean on_disk)
 {
@@ -127,6 +143,8 @@ cache_init (EBookBackend *backend,
 		priv->cache_type = ON_DISK_CACHE;
 		priv->cache.on_disk = e_book_backend_cache_new (filename);
 		g_free (filename);
+
+		migrate_cache (priv->cache.on_disk);
 	} else {
 		priv->cache_type = IN_MEMORY_CACHE;
 		priv->cache.in_memory.contacts = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
@@ -2691,31 +2709,6 @@ remove_anniversary (GDataContactsContact *contact)
 	g_list_free (events);
 }
 
-static void
-remove_websites (GDataContactsContact *contact)
-{
-	GList *websites, *itr;
-
-	websites = gdata_contacts_contact_get_websites (contact);
-	if (!websites)
-		return;
-
-	websites = g_list_copy (websites);
-	g_list_foreach (websites, (GFunc) g_object_ref, NULL);
-
-	gdata_contacts_contact_remove_all_websites (contact);
-	for (itr = websites; itr; itr = itr->next) {
-		GDataGContactWebsite *website = itr->data;
-
-		if (g_strcmp0 (gdata_gcontact_website_get_relation_type (website), GDATA_GCONTACT_WEBSITE_HOME_PAGE) != 0 &&
-		    g_strcmp0 (gdata_gcontact_website_get_relation_type (website), GDATA_GCONTACT_WEBSITE_BLOG) != 0)
-			gdata_contacts_contact_add_website (contact, website);
-	}
-
-	g_list_foreach (websites, (GFunc) g_object_unref, NULL);
-	g_list_free (websites);
-}
-
 static gboolean
 _gdata_entry_update_from_e_contact (EBookBackend *backend,
                                     GDataEntry *entry,
@@ -2775,6 +2768,7 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 	gdata_contacts_contact_remove_all_postal_addresses (GDATA_CONTACTS_CONTACT (entry));
 	gdata_contacts_contact_remove_all_im_addresses (GDATA_CONTACTS_CONTACT (entry));
 	gdata_contacts_contact_remove_all_organizations (GDATA_CONTACTS_CONTACT (entry));
+	gdata_contacts_contact_remove_all_websites (GDATA_CONTACTS_CONTACT (entry));
 
 	category_names = gdata_contacts_contact_get_groups (GDATA_CONTACTS_CONTACT (entry));
 	for (iter = category_names; iter != NULL; iter = g_list_delete_link (iter, iter))
@@ -2847,6 +2841,22 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 				gdata_contacts_contact_add_im_address (GDATA_CONTACTS_CONTACT (entry), im);
 				g_object_unref (im);
 			}
+		} else if (0 == g_ascii_strcasecmp (name, "X-URIS")) {
+			GList *param;
+
+			param = e_vcard_attribute_get_param (attr, EVC_TYPE);
+			if (param) {
+				GDataGContactWebsite *website;
+				gchar *url = e_vcard_attribute_get_value (attr);
+
+				website = gdata_gcontact_website_new (url, param->data, NULL, FALSE);
+				if (website) {
+					gdata_contacts_contact_add_website (GDATA_CONTACTS_CONTACT (entry), website);
+					g_object_unref (website);
+				}
+
+				g_free (url);
+			}
 		} else if (e_vcard_attribute_is_single_valued (attr)) {
 			gchar *value;
 
@@ -2885,8 +2895,6 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 		if (org != NULL && role != NULL && *role != '\0')
 			gdata_gd_organization_set_job_description (org, role);
 	}
-
-	remove_websites (GDATA_CONTACTS_CONTACT (entry));
 
 	url = e_contact_get_const (contact, E_CONTACT_HOMEPAGE_URL);
 	if (url && *url) {
@@ -3013,6 +3021,7 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 	GList *websites, *events;
 	GDate bdate;
 	gboolean bdate_has_year;
+	gboolean have_uri_home = FALSE, have_uri_blog = FALSE;
 
 	uid = gdata_entry_get_id (entry);
 	if (NULL == uid)
@@ -3155,10 +3164,18 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 		if (!uri || !*uri || !reltype)
 			continue;
 
-		if (g_str_equal (reltype, GDATA_GCONTACT_WEBSITE_HOME_PAGE))
+		if (!have_uri_home && g_str_equal (reltype, GDATA_GCONTACT_WEBSITE_HOME_PAGE)) {
 			e_contact_set (E_CONTACT (vcard), E_CONTACT_HOMEPAGE_URL, uri);
-		else if (g_str_equal (reltype, GDATA_GCONTACT_WEBSITE_BLOG))
+			have_uri_home = TRUE;
+		} else if (!have_uri_blog && g_str_equal (reltype, GDATA_GCONTACT_WEBSITE_BLOG)) {
 			e_contact_set (E_CONTACT (vcard), E_CONTACT_BLOG_URL, uri);
+			have_uri_blog = TRUE;
+		} else {
+			EVCardAttribute *attr = e_vcard_attribute_new (NULL, "X-URIS");
+
+			e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), reltype);
+			e_vcard_append_attribute_with_value (vcard, attr, uri);
+		}
 	}
 
 	g_date_clear (&bdate, 1);
