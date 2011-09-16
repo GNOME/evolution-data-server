@@ -718,7 +718,7 @@ e_source_set_color_spec (ESource *source,
  * Returns the #ESourceGroup to which @source belongs, or %NULL if it
  * does not belong to a group.
  *
- * Returns: (transfer none): the group to which the source belongs
+ * Returns: (transfer none): the #ESourceGroup to which the source belongs
  **/
 ESourceGroup *
 e_source_peek_group (ESource *source)
