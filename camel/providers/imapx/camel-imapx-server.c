@@ -843,7 +843,7 @@ camel_imapx_command_close (CamelIMAPXCommand *ic)
 
 		byte_array = camel_stream_mem_get_byte_array (ic->mem);
 
-		if (g_str_has_prefix ((const gchar *) byte_array->data, "LOGIN")) {
+		if (byte_array->len > 5 && g_ascii_strncasecmp ((const gchar *) byte_array->data, "LOGIN", 5)) {
 			c(ic->is->tagprefix, "completing command buffer is [%d] 'LOGIN...'\n", byte_array->len);
 		} else {
 			c(ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", byte_array->len, (gint)byte_array->len, byte_array->data);
