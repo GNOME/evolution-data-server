@@ -1683,7 +1683,10 @@ modify_contact_cb (GDataService *service,
 	 * we can update the EContact with the photo data and ETag. */
 	switch (data->photo_operation) {
 		case LEAVE_PHOTO:
-			/* Do nothing. */
+			/* Do nothing apart from copy the photo stolen from the old GDataContactsContact to the updated one we've just received from
+			 * Google. */
+			g_object_set_data_full (G_OBJECT (new_contact), "photo", data->photo, (GDestroyNotify) e_contact_photo_free);
+			data->photo = NULL;
 			break;
 		case ADD_PHOTO:
 		case UPDATE_PHOTO:
