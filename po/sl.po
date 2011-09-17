@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2011-09-03 11:37+0000\n"
-"PO-Revision-Date: 2011-09-15 22:24+0100\n"
+"PO-Revision-Date: 2011-09-17 10:03+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -2072,7 +2072,6 @@ msgstr "Šifrirana vsebina"
 
 #: ../camel/camel-http-stream.c:546
 #: ../camel/camel-stream-null.c:78
-#, fuzzy
 msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr "S CamelHttpStream je podprta le ponastavitev na začetek"
 
@@ -2747,7 +2746,6 @@ msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Ni mogoče preimenovati mape %s: neveljavno dejanje"
 
 #: ../camel/camel-stream-filter.c:327
-#, fuzzy
 msgid "Only reset to beginning is supported with CamelStreamFilter"
 msgstr "S CamelStreamFilter je podprta le ponastavitev na začetek"
 
@@ -4937,7 +4935,7 @@ msgid "There is already a category '%s' in the configuration. Please use another
 msgstr "Kategorija '%s' je med nastavitvami že določena. Uporabite drugo ime."
 
 #: ../libedataserverui/e-client-utils.c:799
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Enter password for %s (user %s)\n"
 #| "Reason: %s"
@@ -4949,13 +4947,13 @@ msgstr ""
 "Vzrok: %s"
 
 #: ../libedataserverui/e-client-utils.c:801
-#, fuzzy, c-format
+#, c-format
 #| msgid "Enter password for %s (user %s)"
 msgid "Enter password for calendar %s (user %s)"
 msgstr "Vnesite geslo za koledar %s (uporabnik %s)"
 
 #: ../libedataserverui/e-client-utils.c:805
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Enter password for %s (user %s)\n"
 #| "Reason: %s"
@@ -4963,17 +4961,17 @@ msgid ""
 "Enter password for task list %s (user %s)\n"
 "Reason: %s"
 msgstr ""
-"Vnesite geslo za seznam opravkov %s (uporabnik %s)\n"
+"Vnesite geslo za seznam nalog %s (uporabnik %s)\n"
 "Vzrok: %s"
 
 #: ../libedataserverui/e-client-utils.c:807
-#, fuzzy, c-format
+#, c-format
 #| msgid "Enter password for %s (user %s)"
 msgid "Enter password for task list %s (user %s)"
-msgstr "Vnesite geslo za seznam opravkov %s (uporabnik %s)"
+msgstr "Vnesite geslo za seznam nalog %s (uporabnik %s)"
 
 #: ../libedataserverui/e-client-utils.c:811
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Enter password for %s (user %s)\n"
 #| "Reason: %s"
@@ -4981,14 +4979,14 @@ msgid ""
 "Enter password for memo list %s (user %s)\n"
 "Reason: %s"
 msgstr ""
-"Vnesite geslo za seznam zapiskov %s (uporabnik %s)\n"
+"Vnesite geslo za seznam opomnikov %s (uporabnik %s)\n"
 "Vzrok: %s"
 
 #: ../libedataserverui/e-client-utils.c:813
-#, fuzzy, c-format
+#, c-format
 #| msgid "Enter password for %s (user %s)"
 msgid "Enter password for memo list %s (user %s)"
-msgstr "Vnesite geslo za seznam zapiskov %s (uporabnik %s)"
+msgstr "Vnesite geslo za seznam opomnikov %s (uporabnik %s)"
 
 #: ../libedataserverui/e-client-utils.c:818
 #, c-format
@@ -5136,4 +5134,3 @@ msgstr "Izbor cilja"
 #: ../libedataserverui/e-source-selector-dialog.c:169
 msgid "_Destination"
 msgstr "_Cilj"
-
