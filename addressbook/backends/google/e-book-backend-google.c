@@ -46,6 +46,14 @@
 #define URI_GET_CONTACTS "://www.google.com/m8/feeds/contacts/default/full"
 #define GDATA_PHOTO_ETAG_ATTR "X-GDATA-PHOTO-ETAG"
 
+/* Definitions for our custom X-URIS vCard attribute for storing URIs.
+ * See: bgo#659079. It would be nice to move this into EVCard sometime. */
+#define GDATA_URIS_ATTR "X-URIS"
+#define GDATA_URIS_TYPE_HOME_PAGE "X-HOME-PAGE"
+#define GDATA_URIS_TYPE_BLOG "X-BLOG"
+#define GDATA_URIS_TYPE_PROFILE "X-PROFILE"
+#define GDATA_URIS_TYPE_FTP "X-FTP"
+
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
 
@@ -2665,12 +2673,14 @@ static void add_attribute_from_gdata_gd_im_address (EVCard *vcard, GDataGDIMAddr
 static void add_attribute_from_gdata_gd_phone_number (EVCard *vcard, GDataGDPhoneNumber *number);
 static void add_attribute_from_gdata_gd_postal_address (EVCard *vcard, GDataGDPostalAddress *address);
 static void add_attribute_from_gdata_gd_organization (EVCard *vcard, GDataGDOrganization *org);
+static void add_attribute_from_gc_contact_website (EVCard *vcard, GDataGContactWebsite *website);
 
 static GDataGDEmailAddress *gdata_gd_email_address_from_attribute (EVCardAttribute *attr, gboolean *primary);
 static GDataGDIMAddress *gdata_gd_im_address_from_attribute (EVCardAttribute *attr, gboolean *primary);
 static GDataGDPhoneNumber *gdata_gd_phone_number_from_attribute (EVCardAttribute *attr, gboolean *primary);
 static GDataGDPostalAddress *gdata_gd_postal_address_from_attribute (EVCardAttribute *attr, gboolean *primary);
 static GDataGDOrganization *gdata_gd_organization_from_attribute (EVCardAttribute *attr, gboolean *primary);
+static GDataGContactWebsite *gdata_gc_contact_website_from_attribute (EVCardAttribute *attr, gboolean *primary);
 
 static gboolean is_known_google_im_protocol (const gchar *protocol);
 
@@ -2728,6 +2738,7 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 	gboolean have_phone_primary = FALSE;
 	gboolean have_postal_primary = FALSE;
 	gboolean have_org_primary = FALSE;
+	gboolean have_uri_primary = FALSE;
 	const gchar *title, *role, *note;
 	EContactDate *bdate;
 	const gchar *url;
@@ -2844,21 +2855,14 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 				gdata_contacts_contact_add_im_address (GDATA_CONTACTS_CONTACT (entry), im);
 				g_object_unref (im);
 			}
-		} else if (0 == g_ascii_strcasecmp (name, "X-URIS")) {
-			GList *param;
+		} else if (0 == g_ascii_strcasecmp (name, GDATA_URIS_ATTR)) {
+			/* X-URIS */
+			GDataGContactWebsite *website;
 
-			param = e_vcard_attribute_get_param (attr, EVC_TYPE);
-			if (param) {
-				GDataGContactWebsite *website;
-				gchar *url = e_vcard_attribute_get_value (attr);
-
-				website = gdata_gcontact_website_new (url, param->data, NULL, FALSE);
-				if (website) {
-					gdata_contacts_contact_add_website (GDATA_CONTACTS_CONTACT (entry), website);
-					g_object_unref (website);
-				}
-
-				g_free (url);
+			website =gdata_gc_contact_website_from_attribute (attr, &have_uri_primary);
+			if (website) {
+				gdata_contacts_contact_add_website (GDATA_CONTACTS_CONTACT (entry), website);
+				g_object_unref (website);
 			}
 		} else if (e_vcard_attribute_is_single_valued (attr)) {
 			gchar *value;
@@ -3174,10 +3178,7 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 			e_contact_set (E_CONTACT (vcard), E_CONTACT_BLOG_URL, uri);
 			have_uri_blog = TRUE;
 		} else {
-			EVCardAttribute *attr = e_vcard_attribute_new (NULL, "X-URIS");
-
-			e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_TYPE), reltype);
-			e_vcard_append_attribute_with_value (vcard, attr, uri);
+			add_attribute_from_gc_contact_website (vcard, website);
 		}
 	}
 
@@ -3348,6 +3349,16 @@ static const struct RelTypeMap rel_type_map_im[] = {
 	{ "work", { "WORK", NULL }},
 };
 
+static const struct RelTypeMap rel_type_map_uris[] = {
+	{ GDATA_GCONTACT_WEBSITE_HOME_PAGE, { GDATA_URIS_TYPE_HOME_PAGE, NULL }},
+	{ GDATA_GCONTACT_WEBSITE_BLOG, { GDATA_URIS_TYPE_BLOG, NULL }},
+	{ GDATA_GCONTACT_WEBSITE_PROFILE, { GDATA_URIS_TYPE_PROFILE, NULL }},
+	{ GDATA_GCONTACT_WEBSITE_FTP, { GDATA_URIS_TYPE_FTP, NULL }},
+	{ GDATA_GCONTACT_WEBSITE_HOME, { "HOME", NULL }},
+	{ GDATA_GCONTACT_WEBSITE_OTHER, { "OTHER", NULL }},
+	{ GDATA_GCONTACT_WEBSITE_WORK, { "WORK", NULL }},
+};
+
 static const struct RelTypeMap rel_type_map_others[] = {
 	{ "home", { "HOME", NULL }},
 	{ "other", { "OTHER", NULL }},
@@ -3399,6 +3410,13 @@ add_type_param_from_google_rel_im (EVCardAttribute *attr,
 }
 
 static gboolean
+add_type_param_from_google_rel_uris (EVCardAttribute *attr,
+				     const gchar *rel)
+{
+	return _add_type_param_from_google_rel (attr, rel_type_map_uris, G_N_ELEMENTS (rel_type_map_uris), rel);
+}
+
+static gboolean
 add_type_param_from_google_rel (EVCardAttribute *attr,
                                 const gchar *rel)
 {
@@ -3419,10 +3437,13 @@ add_label_param (EVCardAttribute *attr,
 static gchar *
 _google_rel_from_types (GList *types,
                         const struct RelTypeMap rel_type_map[],
-                        guint map_len)
+                        guint map_len,
+			gboolean use_prefix)
 {
-	const gchar format[] = "http://schemas.google.com/g/2005#%s";
+	const gchar *format = "http://schemas.google.com/g/2005#%s";
 	guint i;
+	if (!use_prefix)
+		format = "%s";
 
 	/* For each of the entries in the map... */
 	for (i = 0; i < map_len; i++) {
@@ -3449,13 +3470,19 @@ _google_rel_from_types (GList *types,
 static gchar *
 google_rel_from_types (GList *types)
 {
-	return _google_rel_from_types (types, rel_type_map_others, G_N_ELEMENTS (rel_type_map_others));
+	return _google_rel_from_types (types, rel_type_map_others, G_N_ELEMENTS (rel_type_map_others), TRUE);
 }
 
 static gchar *
 google_rel_from_types_phone (GList *types)
 {
-	return _google_rel_from_types (types, rel_type_map_phone, G_N_ELEMENTS (rel_type_map_phone));
+	return _google_rel_from_types (types, rel_type_map_phone, G_N_ELEMENTS (rel_type_map_phone), TRUE);
+}
+
+static gchar *
+google_rel_from_types_uris (GList *types)
+{
+	return _google_rel_from_types (types, rel_type_map_uris, G_N_ELEMENTS (rel_type_map_uris), FALSE);
 }
 
 static gboolean
@@ -3708,6 +3735,26 @@ add_attribute_from_gdata_gd_organization (EVCard *vcard,
 		e_vcard_add_attribute (vcard, attr);
 }
 
+static void
+add_attribute_from_gc_contact_website (EVCard *vcard,
+				       GDataGContactWebsite *website)
+{
+	EVCardAttribute *attr;
+	gboolean has_type;
+
+	if (!website || !gdata_gcontact_website_get_uri (website))
+		return;
+
+	attr = e_vcard_attribute_new (NULL, GDATA_URIS_ATTR);
+	has_type = add_type_param_from_google_rel_uris (attr, gdata_gcontact_website_get_relation_type (website));
+	if (gdata_gcontact_website_is_primary (website))
+		add_primary_param (attr, has_type);
+	add_label_param (attr, gdata_gcontact_website_get_label (website));
+
+	e_vcard_attribute_add_value (attr, gdata_gcontact_website_get_uri (website));
+
+	e_vcard_add_attribute (vcard, attr);
+}
 static GDataGDEmailAddress *
 gdata_gd_email_address_from_attribute (EVCardAttribute *attr,
                                        gboolean *have_primary)
@@ -3923,4 +3970,38 @@ gdata_gd_organization_from_attribute (EVCardAttribute *attr,
 	}
 
 	return org;
+}
+
+static GDataGContactWebsite *
+gdata_gc_contact_website_from_attribute (EVCardAttribute *attr,
+					 gboolean *have_primary)
+{
+	GDataGContactWebsite *website = NULL;
+	GList *values;
+
+	values = e_vcard_attribute_get_values (attr);
+	if (values) {
+		GList *types;
+		gchar *rel;
+		const gchar *label;
+		gboolean primary;
+
+		types = get_google_primary_type_label (attr, &primary, &label);
+		if (!*have_primary)
+			*have_primary = primary;
+		else
+			primary = FALSE;
+
+		rel = google_rel_from_types_uris (types);
+		website = gdata_gcontact_website_new (values->data, rel, label, primary);
+		g_free (rel);
+
+		__debug__ ("New %suri entry %s (%s/%s)",
+			   gdata_gcontact_website_is_primary (website) ? "primary " : "",
+			   gdata_gcontact_website_get_uri (website),
+			   gdata_gcontact_website_get_relation_type (website),
+			   gdata_gcontact_website_get_label (website));
+	}
+
+	return website;
 }
