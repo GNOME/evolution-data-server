@@ -1,3 +1,50 @@
+Evolution-Data-Server 3.1.92 2011-09-19
+---------------------------------------
+
+Bug Fixes:
+	Bug #659282 - Cannot add more than one appointment per session (Milan Crha)
+	Bug 659184 - Contacts calendar backend doesn't show events (Milan Crha)
+	Bug 659079 — Read all gContact:website (Alexander Larsson)
+	Bug 659165 — editing eds contacts that has an avatar fails (Philip Withnall)
+	Bug 655253 - fix regression introduced with MOD_ONLY_THIS (Patrick Ohly)
+	Bug 632153 - Set X-Evolution-Source header consistently (Milan Crha)
+	Bug 658911 - google: Always readonly addressbooks with goa (Alexander Larsson)
+	Bug 655728 - Read proxy settings from GSettings since Gnome 3 (Milan Crha)
+	Bug 655837 - Avoid use of deprecated g_unicode_canonical_decomposition (Vincent Untz)
+	Bug 654818 crash fix : query conversion to sql (Punit Jain)
+
+Miscellaneous Fixes:
+	Introspection: improve annotation for e_source_peek_group (Raul Gutierrez Segales)
+	[imapx] Fix read of uninitialized memory from g_str_has_prefix (Milan Crha)
+	e-d-s: Expose all gContact:websites items (Milan Crha)
+	Handle changes in the goa accounts list at runtime (Alexander Larsson)
+	calendar file backend: revert adding EXDATE when creating detached recurrences (Patrick Ohly)
+	e-gdbus-templates: Fix incorrect type check in e_gdbus_proxy_finish_call_uint() (Christophe Dumez)
+	Make maintiner mode enabled by default (Javier Jardón)
+	Change order of system timezone detection (Milan Crha)
+	camel-sasl-gssapi.c: Fix reply read of org.gnome.KrbAuthDialog.acquireTgt (Milan Crha)
+
+Translations:
+	Duarte Loreto (pt)
+	Jiro Matsuzawa (ja)
+	Bruce Cowan (en_GB)
+	A S Alam (pa)
+	Gabor Kelemen (hu)
+	Luca Ferretti (it)
+	Krasimir Chonov (bg)
+	Jorge González (es)
+	Piotr Drąg (pl)
+	Rajesh Ranjan (hi)
+	I Felix (ta)
+	Marek Černocký (cs)
+	Changwoo Ryu (ko)
+	Matej Urbančič (sl)
+	Ihar Hrachyshka ()
+	Rudolfs Mazurs (lv)
+	Andika Triwidada (id)
+	Martin Srebotnjak (sl)
+	Antonio Fernandes C. Neto (pt)
+
 Evolution-Data-Server 3.1.91 2011-09-05
 ---------------------------------------
 
