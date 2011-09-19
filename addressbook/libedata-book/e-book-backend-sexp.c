@@ -437,6 +437,11 @@ entry_compare (SearchContext *ctx,
 						truth = compare_date (date, argv[1]->value.string, compare);
 						e_contact_date_free (date);
 					}
+				} else {
+					g_warn_if_reached ();
+
+					saw_any = FALSE;
+					break;
 				}
 
 				/* if we're looking at all fields and find a match,
@@ -836,8 +841,22 @@ func_exists (struct _ESExp *f,
 						truth = TRUE;
 				}
 				else if (info->prop_type == PROP_TYPE_LIST) {
-				/* the special searches that match any of the list elements */
+					/* the special searches that match any of the list elements */
 					truth = info->list_compare (ctx->contact, "", exists_helper);
+				}
+				else if (info->prop_type == PROP_TYPE_DATE) {
+					EContactDate *date;
+
+					date = e_contact_get (ctx->contact, info->field_id);
+
+					if (date) {
+						truth = TRUE;
+						e_contact_date_free (date);
+					}
+				} else {
+					g_warn_if_reached ();
+
+					saw_any = FALSE;
 				}
 
 				break;
