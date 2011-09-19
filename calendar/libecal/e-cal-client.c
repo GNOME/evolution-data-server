@@ -2699,6 +2699,7 @@ static gboolean
 complete_get_object (gboolean res,
                      gchar *out_string,
                      icalcomponent **icalcomp,
+		     gboolean ensure_unique_uid,
                      GError **error)
 {
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
@@ -2708,6 +2709,12 @@ complete_get_object (gboolean res,
 		if (!*icalcomp) {
 			g_propagate_error (error, e_cal_client_error_create (E_CAL_CLIENT_ERROR_INVALID_OBJECT, NULL));
 			res = FALSE;
+		} else if (ensure_unique_uid && icalcomponent_get_uid (*icalcomp)) {
+			/* make sure the UID is always unique */
+			gchar *new_uid = e_cal_component_gen_uid ();
+
+			icalcomponent_set_uid (*icalcomp, new_uid);
+			g_free (new_uid);
 		}
 	} else {
 		*icalcomp = NULL;
@@ -2752,7 +2759,7 @@ e_cal_client_get_default_object_finish (ECalClient *client,
 		res = e_client_proxy_call_finish_string (E_CLIENT (client), result, &out_string, error, e_cal_client_get_default_object);
 	}
 
-	return complete_get_object (res, out_string, icalcomp, error);
+	return complete_get_object (res, out_string, icalcomp, TRUE, error);
 }
 
 /**
@@ -2795,7 +2802,7 @@ e_cal_client_get_default_object_sync (ECalClient *client,
 	else
 		res = e_client_proxy_call_sync_string__string (E_CLIENT (client), CAL_BACKEND_PROPERTY_DEFAULT_OBJECT, &out_string, cancellable, error, e_gdbus_cal_call_get_backend_property_sync);
 
-	return complete_get_object (res, out_string, icalcomp, error);
+	return complete_get_object (res, out_string, icalcomp, TRUE, error);
 }
 
 static gboolean
@@ -3043,7 +3050,7 @@ complete_get_objects_for_uid (ECalClientSourceType source_type,
 	icalcomponent_kind kind;
 	ECalComponent *comp;
 
-	res = complete_get_object (res, out_string, &icalcomp, error);
+	res = complete_get_object (res, out_string, &icalcomp, FALSE, error);
 	if (!res || !icalcomp)
 		return FALSE;
 
