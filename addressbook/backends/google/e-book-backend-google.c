@@ -54,6 +54,8 @@
 #define GDATA_URIS_TYPE_PROFILE "X-PROFILE"
 #define GDATA_URIS_TYPE_FTP "X-FTP"
 
+#define MULTIVALUE_ATTRIBUTE_SUFFIX "-MULTIVALUE"
+
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
 
@@ -2872,11 +2874,24 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 			gdata_contacts_contact_set_extended_property (GDATA_CONTACTS_CONTACT (entry), name, value);
 			g_free (value);
 		} else {
-			GList *values;
+			gchar *multi_name;
+			GList *values, *l;
+			GString *value;
 
+			value = g_string_new ("");
 			values = e_vcard_attribute_get_values (attr);
-			if (values && values->data && ((gchar *) values->data)[0])
-				__debug__ ("unsupported vcard field: %s: %s", name, (gchar *)values->data);
+
+			for (l = values; l != NULL; l = l->next) {
+				gchar *escaped = e_vcard_escape_string (l->data);
+				g_string_append (value, escaped);
+				if (l->next != NULL)
+					g_string_append (value, ",");
+				g_free (escaped);
+			}
+			multi_name = g_strconcat (name, MULTIVALUE_ATTRIBUTE_SUFFIX, NULL);
+			gdata_contacts_contact_set_extended_property (GDATA_CONTACTS_CONTACT (entry), multi_name, value->str);
+			g_free (multi_name);
+			g_string_free (value, TRUE);
 		}
 	}
 
@@ -2999,9 +3014,59 @@ foreach_extended_props_cb (const gchar *name,
                            EVCard *vcard)
 {
 	EVCardAttribute *attr;
+	gchar *multi_name;
+	GString *str;
+	const gchar *p;
 
-	attr = e_vcard_attribute_new (NULL, name);
-	e_vcard_add_attribute_with_value (vcard, attr, value);
+	if (g_str_has_suffix (name, MULTIVALUE_ATTRIBUTE_SUFFIX)) {
+		multi_name = g_strndup (name, strlen (name) - strlen (MULTIVALUE_ATTRIBUTE_SUFFIX));
+
+		attr = e_vcard_attribute_new (NULL, multi_name);
+		g_free (multi_name);
+		str = g_string_new ("");
+
+		/* Unescape a string as described in RFC2426, section 5, breaking at unescaped commas */
+		for (p = value ? value : ""; *p; p++) {
+			if (*p == '\\') {
+				p++;
+				if (*p == '\0') {
+					g_string_append_c (str, '\\');
+					break;
+				}
+				switch (*p) {
+				case 'n':  g_string_append_c (str, '\n'); break;
+				case 'r':  g_string_append_c (str, '\r'); break;
+				case ';':  g_string_append_c (str, ';'); break;
+				case ',':  g_string_append_c (str, ','); break;
+				case '\\': g_string_append_c (str, '\\'); break;
+				default:
+					g_warning ("invalid escape, passing it through");
+					g_string_append_c (str, '\\');
+					g_string_append_c (str, *p);
+					break;
+				}
+			} else if (*p == ',') {
+				if (str->len > 0) {
+					e_vcard_attribute_add_value (attr, str->str);
+					g_string_set_size (str, 0);
+				}
+			} else {
+				g_string_append_c (str, *p);
+			}
+		}
+
+		if (str->len > 0) {
+			e_vcard_attribute_add_value (attr, str->str);
+			g_string_set_size (str, 0);
+		}
+		g_string_free (str, TRUE);
+
+		e_vcard_add_attribute (vcard, attr);
+
+	} else {
+		attr = e_vcard_attribute_new (NULL, name);
+		e_vcard_add_attribute_with_value (vcard, attr, value);
+	}
 }
 
 static EContact *
