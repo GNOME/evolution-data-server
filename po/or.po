@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2011-08-31 16:22+0000\n"
-"PO-Revision-Date: 2011-09-12 17:56+0530\n"
+"PO-Revision-Date: 2011-09-20 14:39+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgstr "ସନ୍ଧାନ କରୁଅଛି..."
 #. Query for new contacts asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:788
 msgid "Querying for updated contacts…"
-msgstr ""
+msgstr "ଅଦ୍ୟତିତ ଯୋଗାଯୋଗଗୁଡ଼ିକ ବିଷୟରେ ପଚାରୁଛି..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:839
 #: ../addressbook/libebook/e-book.c:3483 ../calendar/libecal/e-cal.c:1337
@@ -217,10 +217,9 @@ msgid "No space"
 msgstr "କୌଣସି ସ୍ଥାନ ନାହିଁ"
 
 #: ../addressbook/libebook/e-book-client.c:449
-#, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to run book factory"
-msgstr "ତଥ୍ୟ ସାଙ୍କେତିକରଣ କରିବାରେ ବିଫଳ"
+msgstr "ପୁସ୍ତକ କାରଖାନାକୁ ଚଲାଇବାରେ ବିଫଳ"
 
 #: ../addressbook/libebook/e-book-client.c:459
 #: ../addressbook/libedata-book/e-data-book-factory.c:375
@@ -1092,7 +1091,7 @@ msgstr "ଖାଲି URI"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:518
 #, c-format
 msgid "Server is unreachable (%s)"
-msgstr ""
+msgstr "ସର୍ଭର ପାଖକୁ ପହଞ୍ଚିପାରୁ ନାହିଁ (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:546
 #, c-format
@@ -1110,10 +1109,12 @@ msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
 "Error message: %s"
 msgstr ""
+"ସର୍ଭର ପାଖରେ ପହଞ୍ଚିପାରୁ ନାହିଁ, କ୍ୟାଲେଣ୍ଡରଟି କେବଳ-ପଠନୀୟ ଧାରାରେ ଖୋଲାହୋଇଛି।\n"
+"ତ୍ରୁଟି ସନ୍ଦେଶ: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4272
 msgid "Calendar doesn't support Free/Busy"
-msgstr ""
+msgstr "କ୍ୟାଲେଣ୍ଡରଟି ଖାଲି ଅଛି/ବ୍ୟସ୍ତ ଅଛି କୁ ସମର୍ଥନ କରେନାହିଁ"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:723
 msgid "Birthday"
@@ -1614,17 +1615,15 @@ msgstr "ପୃଷ୍ଠଭୂମି ଗୁଣଧର୍ମକୁ କାଢ଼ି�
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1025
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot retrieve calendar object path: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ଯାଲେଣ୍ଡର ବସ୍ତୁ ପଥକୁ କାଢ଼ିପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1050
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot retrieve calendar object list: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ଯାଲେଣ୍ଡର ବସ୍ତୁ ତାଲିକାକୁ କାଢ଼ି ପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1075
@@ -1634,73 +1633,63 @@ msgstr "କ୍ଯାଲେଣ୍ଡର ଖାଲି/ବ୍ୟସ୍ତ ତାଲ
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1101
-#, fuzzy
 #| msgid "Cannot create encoder context"
 msgid "Cannot create calendar object: "
-msgstr "ସାଙ୍କେତିକରଣ ପ୍ରସଙ୍ଗ ନିର୍ମାଣ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ୟାଲେଣ୍ଡର ବସ୍ତୁକୁ ନିର୍ମାଣ କରିପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1128
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot modify calendar object: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ଯାଲେଣ୍ଡର ବସ୍ତୁକୁ ପରିବର୍ତ୍ତନ କରିପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1156
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot remove calendar object: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ଯାଲେଣ୍ଡର ବସ୍ତୁକୁ କାଢ଼ି ପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1179
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot receive calendar objects: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ଯାଲେଣ୍ଡର ବସ୍ତୁଗୁଡ଼ିକୁ ଗ୍ରହଣ କରିପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1204
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot send calendar objects: "
-msgstr "କ୍ଯାଲେଣ୍ଡର ତଥ୍ଯକୁ ସଂରକ୍ଷିତ କରିପାରିବେ ନାହିଁ"
+msgstr "କ୍ଯାଲେଣ୍ଡର ବସ୍ତୁଗୁଡ଼ିକୁ ପଠାଇ ପାରିବେ ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1231
-#, fuzzy
 #| msgid "Could not retrieve weather data"
 msgid "Could not retrieve attachment uris: "
-msgstr "ପାଣିପାଗ ସୂଚନାକୁ ପୁନରୁଦ୍ଧାର କରିପାରିଲା ନାହିଁ"
+msgstr "ସଂଲଗ୍ନ uri ଗୁଡ଼ିକୁ ପୁନରୁଦ୍ଧାର କରିପାରିଲା ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1255
-#, fuzzy
 #| msgid "Could not store folder: %s"
 msgid "Could not discard reminder: "
-msgstr "ଫୋଲଡରକୁ ସଂରକ୍ଷଣ କରିହେବ ନାହିଁ: %s"
+msgstr "ସ୍ମରଣକାରୀକୁ ପ୍ରତ୍ୟାଖାନ କରିପାରିଲା ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1279
-#, fuzzy
 #| msgid "Could not retrieve weather data"
 msgid "Could not get calendar view path: "
-msgstr "ପାଣିପାଗ ସୂଚନାକୁ ପୁନରୁଦ୍ଧାର କରିପାରିଲା ନାହିଁ"
+msgstr "କ୍ୟାଲେଣ୍ଡର ଦେଖିବା ପଥ ପାଇଲା ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1304
-#, fuzzy
 #| msgid "Could not retrieve weather data"
 msgid "Could not retrieve calendar time zone: "
-msgstr "ପାଣିପାଗ ସୂଚନାକୁ ପୁନରୁଦ୍ଧାର କରିପାରିଲା ନାହିଁ"
+msgstr "କ୍ୟାଲେଣ୍ଡର ସମୟ ମଣ୍ଡଳକୁ କାଢ଼ି ପାରିଲା ନାହିଁ: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1326
-#, fuzzy
 #| msgid "Could not cancel operation"
 msgid "Could not add calendar time zone: "
-msgstr "କାର୍ଯ୍ଯ ବାତିଲ କରିପାରଲିା ନାହିଁ"
+msgstr "କ୍ୟାଲେଣ୍ଡର ସମୟ ମଣ୍ଡଳକୁ ଯୋଗ କରିପାରଲା ନାହିଁ: "
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:383
 #, c-format
@@ -1938,17 +1927,17 @@ msgstr[0] "%s ରେ ପରିବର୍ତ୍ତିତ ସନ୍ଦେଶଗୁ�
 msgstr[1] "%s ରେ ପରିବର୍ତ୍ତିତ ସନ୍ଦେଶଗୁଡ଼ିକୁ କ୍ରମବିକ୍ଷଣ କରୁଅଛି"
 
 #: ../camel/camel-folder.c:331
-#, fuzzy, c-format
+#, c-format
 #| msgid "Filtering new message(s)"
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
-msgstr[0] "ନୂତନ ସନ୍ଦେଶ(ଗୁଡ଼ିକୁ) ଛାଣୁଅଛି"
-msgstr[1] "ନୂତନ ସନ୍ଦେଶ(ଗୁଡ଼ିକୁ) ଛାଣୁଅଛି"
+msgstr[0] "'%s' ରେ ନୂତନ ସନ୍ଦେଶକୁ ଛାଣୁଅଛି"
+msgstr[1] "'%s' ରେ ନୂତନ ସନ୍ଦେଶଗୁଡ଼ିକୁ ଛାଣୁଅଛି"
 
 #: ../camel/camel-folder.c:898
 #: ../camel/providers/local/camel-maildir-folder.c:319
 msgid "Moving messages"
-msgstr "ସନ୍ଦେଶଗୁଡ଼ିକୁ ଗତିକରାଉଛି"
+msgstr "ସନ୍ଦେଶଗୁଡ଼ିକୁ ପଠାଉଛି"
 
 #: ../camel/camel-folder.c:901
 msgid "Copying messages"
@@ -2590,10 +2579,10 @@ msgid "Regular expression compilation failed: %s: %s"
 msgstr "ନିୟମିତ ଅଭିବ୍ୟକ୍ତି ସଂକଳନ ବିଫଳ ହୋଇଛି: %s: %s"
 
 #: ../camel/camel-service.c:526
-#, fuzzy, c-format
+#, c-format
 #| msgid "URL '%s' needs a username component"
 msgid "URL '%s' needs a user component"
-msgstr "URL '%s' ଗୋଟିଏ ଚାଳକ ନାମ ଉପାଦାନ ଆବଶ୍ୟକ"
+msgstr "URL '%s' ଚାଳକ ଉପାଦାନ ଆବଶ୍ୟକ କରେ"
 
 #: ../camel/camel-service.c:537
 #, c-format
@@ -2606,10 +2595,10 @@ msgid "URL '%s' needs a path component"
 msgstr "URL '%s' ପଥ ଉପାଦାନ ଆବଶ୍ୟକ କରେ"
 
 #: ../camel/camel-session.c:361
-#, fuzzy, c-format
+#, c-format
 #| msgid "No provider available for protocol '%s'"
 msgid "Invalid GType registered for protocol '%s'"
-msgstr "ପ୍ରୋଟୋକଲ '%s' ପାଇଁ କୌଣସି ପ୍ରଦାତା ଉପଲବ୍ଧ ନାହିଁ"
+msgstr "ପ୍ରୋଟୋକଲ '%s' ପାଇଁ ଅବୈଧ GType ପଞ୍ଜିକରଣ ହୋଇଛି"
 
 #: ../camel/camel-session.c:938
 #, c-format
