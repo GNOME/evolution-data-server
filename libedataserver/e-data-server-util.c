@@ -459,33 +459,13 @@ e_util_utf8_make_valid (const gchar *str)
 	/* almost identical copy of glib's _g_utf8_make_valid() */
 	GString *string;
 	const gchar *remainder, *invalid;
-	gint remaining_bytes, valid_bytes, total_bytes, len = -1;
+	gint remaining_bytes, valid_bytes, total_bytes;
 
 	g_return_val_if_fail (str != NULL, NULL);
 
 	string = NULL;
 	remainder = str;
-	if (len == -1) {
-		remaining_bytes = strlen (str);
-	} else {
-		const gchar *start = str, *end = str;
-
-		while (len > 0) {
-			gunichar uc = g_utf8_get_char_validated (end, -1);
-
-			if (uc == (gunichar) -2 || uc == (gunichar) -1) {
-				end++;
-			} else if (uc == 0) {
-				break;
-			} else {
-				end = g_utf8_next_char (end);
-			}
-
-			len--;
-		}
-
-		remaining_bytes = end - start;
-	}
+	remaining_bytes = strlen (str);
 
 	total_bytes = remaining_bytes;
 
