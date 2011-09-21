@@ -4400,7 +4400,7 @@ msgstr "STLS ସର୍ଭର ଦ୍ୱାରା ସମର୍ଥିତ ନୁହ�
 #, c-format
 #| msgid "Failed to connect to POP server %s in secure mode: %s"
 msgid "Failed to connect to POP server %s in secure mode%s"
-msgstr "POP ସର୍ଭର %s ସହିତ ସୁରକ୍ଷିତ ଧାରାରେ ସଂଯୋଗ ହେବାରେ ବିଫଳ: "
+msgstr "POP ସର୍ଭର %s ସହିତ ସୁରକ୍ଷିତ ଧାରା %s ରେ ସଂଯୋଗ ହେବାରେ ବିଫଳ: "
 
 #: ../camel/providers/pop3/camel-pop3-store.c:182
 #, c-format
@@ -4428,7 +4428,7 @@ msgstr ""
 #, c-format
 #| msgid "SASL '%s' Login failed for POP server %s: %s"
 msgid "SASL '%s' Login failed for POP server %s%s"
-msgstr "SASL '%s' ଲଗଇନ POP ସର୍ଭର %s ପାଇଁ ବିଫଳ ହୋଇଛି: "
+msgstr "SASL '%s' ଲଗଇନ POP ସର୍ଭର %s%s ପାଇଁ ବିଫଳ ହୋଇଛି: "
 
 #: ../camel/providers/pop3/camel-pop3-store.c:286
 #, c-format
