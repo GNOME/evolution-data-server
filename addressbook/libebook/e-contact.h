@@ -311,6 +311,7 @@ GType                   e_contact_get_type (void);
 
 EContact *               e_contact_new              (void);
 EContact *               e_contact_new_from_vcard   (const gchar *vcard);
+EContact *               e_contact_new_from_vcard_with_uid (const gchar *vcard, const gchar *uid);
 
 EContact *               e_contact_duplicate        (EContact *contact);
 

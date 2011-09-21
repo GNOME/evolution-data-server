@@ -387,27 +387,6 @@ e_contact_init (EContact *ec)
 	ec->priv = g_new0 (EContactPrivate, 1);
 }
 
-static EVCardAttribute *
-e_contact_get_first_attr (EContact *contact,
-                          const gchar *attr_name)
-{
-	GList *attrs, *l;
-
-	attrs = e_vcard_get_attributes (E_VCARD (contact));
-
-	for (l = attrs; l; l = l->next) {
-		EVCardAttribute *attr = l->data;
-		const gchar *name;
-
-		name = e_vcard_attribute_get_name (attr);
-
-		if (!g_ascii_strcasecmp (name, attr_name))
-			return attr;
-	}
-
-	return NULL;
-}
-
 
 
 static gpointer
@@ -548,7 +527,7 @@ fn_setter (EContact *contact,
 
 	e_vcard_attribute_add_value (attr, name_str);
 
-	attr = e_contact_get_first_attr (contact, EVC_N);
+	attr = e_vcard_get_attribute (E_VCARD (contact), EVC_N);
 	if (!attr) {
 		EContactName *name = e_contact_name_from_string ((gchar *) data);
 
@@ -647,7 +626,7 @@ n_getter (EContact *contact,
 		name->suffixes   = g_strdup (p && p->data ? p->data : "");
 	}
 
-	new_attr = e_contact_get_first_attr (contact, EVC_FN);
+	new_attr = e_vcard_get_attribute (E_VCARD (contact), EVC_FN);
 	if (!new_attr) {
 		new_attr = e_vcard_attribute_new (NULL, EVC_FN);
 		e_vcard_append_attribute (E_VCARD (contact), new_attr);
@@ -673,7 +652,7 @@ n_setter (EContact *contact,
 	e_vcard_attribute_add_value (attr, name->suffixes ? name->suffixes : "");
 
 	/* now find the attribute for FileAs.  if it's not present, fill it in */
-	attr = e_contact_get_first_attr (contact, EVC_X_FILE_AS);
+	attr = e_vcard_get_attribute (E_VCARD (contact), EVC_X_FILE_AS);
 	if (!attr) {
 		gchar *strings[3], **stringptr;
 		gchar *string;
@@ -1010,7 +989,7 @@ e_contact_set_property (GObject *object,
 			}
 		}
 		else if (info->t & E_CONTACT_FIELD_TYPE_LIST_ELEM) {
-			EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+			EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
 			GList *values;
 			GList *p;
 			const gchar *sval = g_value_get_string (value);
@@ -1045,7 +1024,7 @@ e_contact_set_property (GObject *object,
 		else {
 			switch (info->field_id) {
 			case E_CONTACT_CATEGORIES: {
-				EVCardAttribute *attr = e_contact_get_first_attr (contact, EVC_CATEGORIES);
+				EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (contact), EVC_CATEGORIES);
 				gchar **split, **s;
 				const gchar *str;
 
@@ -1082,7 +1061,7 @@ e_contact_set_property (GObject *object,
 		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT || info->t & E_CONTACT_FIELD_TYPE_GETSET) {
-		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
 		gpointer data = info->t & E_CONTACT_FIELD_TYPE_STRUCT ? g_value_get_boxed (value) : (gchar *) g_value_get_string (value);
 
 		if (attr) {
@@ -1116,7 +1095,7 @@ e_contact_set_property (GObject *object,
 		EVCardAttribute *attr;
 
 		/* first we search for an attribute we can overwrite */
-		attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
 		if (attr) {
 			d(printf ("setting %s to `%s'\n", info->vcard_field_name, g_value_get_string (value)));
 			e_vcard_attribute_remove_values (attr);
@@ -1134,7 +1113,16 @@ e_contact_set_property (GObject *object,
 		const gchar *sval = g_value_get_string (value);
 
 		/* first we search for an attribute we can overwrite */
-		attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		if (sval == NULL || g_ascii_strcasecmp (info->vcard_field_name, EVC_UID) != 0) {
+			attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
+		} else {
+			/* Avoid useless vcard parsing when trying to set a new non-empty UID.
+			 * Parsing the vcard is pointless in this particular case because even
+			 * if there is a UID in the unparsed vcard, it is going to be ignored
+			 * upon parsing if we already have a UID for the vcard */
+			attr = e_vcard_get_attribute_if_parsed (E_VCARD (contact), EVC_UID);
+		}
+
 		if (attr) {
 			d(printf ("setting %s to `%s'\n", info->vcard_field_name, sval));
 			e_vcard_attribute_remove_values (attr);
@@ -1152,7 +1140,7 @@ e_contact_set_property (GObject *object,
 			/* and if we don't find one we create a new attribute */
 			e_vcard_append_attribute_with_value (E_VCARD (contact),
 							  e_vcard_attribute_new (NULL, info->vcard_field_name),
-							  g_value_get_string (value));
+							  sval);
 		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {
@@ -1161,7 +1149,7 @@ e_contact_set_property (GObject *object,
 
 		values = g_value_get_pointer (value);
 
-		attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
 
 		if (attr) {
 			e_vcard_attribute_remove_values (attr);
@@ -1326,6 +1314,27 @@ e_contact_new_from_vcard (const gchar *vcard)
 }
 
 /**
+ * e_contact_new_from_vcard_with_uid:
+ * @vcard: a string representing a vcard
+ * @uid: a contact UID
+ *
+ * Creates a new #EContact based on a vcard and a predefined UID.
+ *
+ * Returns: A new #EContact.
+ **/
+EContact *
+e_contact_new_from_vcard_with_uid (const gchar *vcard, const gchar *uid)
+{
+	EContact *contact;
+	g_return_val_if_fail (vcard != NULL, NULL);
+
+	contact = g_object_new (E_TYPE_CONTACT, NULL);
+	e_vcard_construct_with_uid (E_VCARD (contact), vcard, uid);
+
+	return contact;
+}
+
+/**
  * e_contact_duplicate:
  * @contact: an #EContact
  *
@@ -1471,7 +1480,7 @@ e_contact_get (EContact *contact,
 	info = &field_info[field_id];
 
 	if (info->t & E_CONTACT_FIELD_TYPE_BOOLEAN) {
-		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
 		gboolean rv = FALSE;
 
 		if (attr) {
@@ -1481,7 +1490,7 @@ e_contact_get (EContact *contact,
 		}
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {
-		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
 
 		if (attr) {
 			GList *list = g_list_copy (e_vcard_attribute_get_values (attr));
@@ -1493,7 +1502,7 @@ e_contact_get (EContact *contact,
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_LIST_ELEM) {
 		if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
-			EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+			EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
 
 			if (attr) {
 				GList *v;
@@ -1546,12 +1555,12 @@ e_contact_get (EContact *contact,
 
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_STRUCT) {
-		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
 		if (attr)
 			return info->struct_getter (contact, attr);
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_GETSET) {
-		EVCardAttribute *attr = e_contact_get_first_attr (contact, info->vcard_field_name);
+		EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
 		gpointer rv = NULL;
 
 		rv = info->struct_getter (contact, attr);
@@ -1585,7 +1594,7 @@ e_contact_get (EContact *contact,
 			return str ? g_strstrip (g_strdup (str)) : NULL;
 		}
 		case E_CONTACT_CATEGORIES: {
-			EVCardAttribute *attr = e_contact_get_first_attr (contact, EVC_CATEGORIES);
+			EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (contact), EVC_CATEGORIES);
 			gchar *rv = NULL;
 
 			if (attr) {
@@ -1607,6 +1616,25 @@ e_contact_get (EContact *contact,
 			break;
 		}
 	}
+	else if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
+		EVCardAttribute *attr;
+		const char *cv = NULL;
+		GList *v = NULL;
+		
+		/* Do our best to avoid vcard parsing by not calling
+		 * e_vcard_get_attributes */
+
+		cv = contact->priv->cached_strings[field_id];
+		if (cv)
+			return g_strdup (cv);
+
+		attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
+
+		if (attr)
+			v = e_vcard_attribute_get_values (attr);
+
+		return ((v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL);
+	}
 	else {
 		GList *attrs, *l;
 		GList *rv = NULL; /* used for multi attribute lists */
@@ -1623,12 +1651,7 @@ e_contact_get (EContact *contact,
 				GList *v;
 				v = e_vcard_attribute_get_values (attr);
 
-				if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
-					return (v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL;
-				}
-				else {
-					rv = g_list_append (rv, (v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL);
-				}
+				rv = g_list_append (rv, (v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL);
 			}
 		}
 		return rv;

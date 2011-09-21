@@ -1400,7 +1400,7 @@ e_book_get_contact (EBook *book,
 	g_free (gdbus_id);
 
 	if (vcard) {
-		*contact = e_contact_new_from_vcard (vcard);
+		*contact = e_contact_new_from_vcard_with_uid (vcard, id);
 		g_free (vcard);
 	}
 

@@ -224,20 +224,24 @@ ensure_pending_flush_timeout (EDataBookView *view)
  */
 static void
 notify_change (EDataBookView *view,
+               const gchar *id,
                const gchar *vcard)
 {
 	EDataBookViewPrivate *priv = view->priv;
-	gchar *utf8_vcard;
+	gchar *utf8_vcard, *utf8_id;
 
 	send_pending_adds (view);
 	send_pending_removes (view);
 
-	if (priv->changes->len == THRESHOLD_ITEMS) {
+	if (priv->changes->len == THRESHOLD_ITEMS * 2) {
 		send_pending_changes (view);
 	}
 
 	utf8_vcard = e_util_utf8_make_valid (vcard);
+	utf8_id = e_util_utf8_make_valid (id);
+	
 	g_array_append_val (priv->changes, utf8_vcard);
+	g_array_append_val (priv->changes, utf8_id);
 
 	ensure_pending_flush_timeout (view);
 }
@@ -275,18 +279,21 @@ notify_add (EDataBookView *view,
             const gchar *vcard)
 {
 	EDataBookViewPrivate *priv = view->priv;
-	gchar *utf8_vcard;
+	gchar *utf8_vcard, *utf8_id;
 
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	if (priv->adds->len == THRESHOLD_ITEMS) {
+	if (priv->adds->len == THRESHOLD_ITEMS * 2) {
 		send_pending_adds (view);
 	}
 
 	utf8_vcard = e_util_utf8_make_valid (vcard);
+	utf8_id = e_util_utf8_make_valid (id);
+
 	g_array_append_val (priv->adds, utf8_vcard);
-	g_hash_table_insert (priv->ids, e_util_utf8_make_valid (id),
+	g_array_append_val (priv->adds, utf8_id);
+	g_hash_table_insert (priv->ids, g_strdup (utf8_id),
 			     GUINT_TO_POINTER (1));
 
 	ensure_pending_flush_timeout (view);
@@ -395,7 +402,7 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 					   EVC_FORMAT_VCARD_30);
 
 		if (currently_in_view)
-			notify_change (book_view, vcard);
+			notify_change (book_view, id, vcard);
 		else
 			notify_add (book_view, id, vcard);
 
@@ -424,11 +431,11 @@ e_data_book_view_notify_update (EDataBookView *book_view,
  **/
 void
 e_data_book_view_notify_update_vcard (EDataBookView *book_view,
+                                      const gchar *id,
                                       gchar *vcard)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
 	gboolean currently_in_view, want_in_view;
-	const gchar *id;
 	EContact *contact;
 
 	if (!priv->running) {
@@ -438,15 +445,14 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view,
 
 	g_mutex_lock (priv->pending_mutex);
 
-	contact = e_contact_new_from_vcard (vcard);
-	id = e_contact_get_const (contact, E_CONTACT_UID);
+	contact = e_contact_new_from_vcard_with_uid (vcard, id);
 	currently_in_view = id_is_in_view (book_view, id);
 	want_in_view =
 		e_book_backend_sexp_match_contact (priv->card_sexp, contact);
 
 	if (want_in_view) {
 		if (currently_in_view)
-			notify_change (book_view, vcard);
+			notify_change (book_view, id, vcard);
 		else
 			notify_add (book_view, id, vcard);
 	} else {
@@ -499,7 +505,7 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view,
 	currently_in_view = id_is_in_view (book_view, id);
 
 	if (currently_in_view)
-		notify_change (book_view, vcard);
+		notify_change (book_view, id, vcard);
 	else
 		notify_add (book_view, id, vcard);
 
@@ -709,8 +715,9 @@ e_data_book_view_init (EDataBookView *book_view)
 	priv->running = FALSE;
 	priv->pending_mutex = g_mutex_new ();
 
-	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
-	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
+	/* THRESHOLD_ITEMS * 2 because we store UID and vcard */
+	priv->adds = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS * 2);
+	priv->changes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS * 2);
 	priv->removes = g_array_sized_new (TRUE, TRUE, sizeof (gchar *), THRESHOLD_ITEMS);
 
 	priv->ids = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);

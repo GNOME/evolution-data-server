@@ -58,8 +58,9 @@ objects_added_cb (EGdbusBookView *object,
 	if (!book_view->priv->running)
 		return;
 
-	for (p = vcards; *p; p++) {
-		contacts = g_list_prepend (contacts, e_contact_new_from_vcard (*p));
+	/* array contains both UID and vcard */
+	for (p = vcards; *p; p += 2) {
+		contacts = g_list_prepend (contacts, e_contact_new_from_vcard_with_uid (p[0], p[1]));
 	}
 
 	contacts = g_list_reverse (contacts);
@@ -81,8 +82,9 @@ objects_modified_cb (EGdbusBookView *object,
 	if (!book_view->priv->running)
 		return;
 
-	for (p = vcards; *p; p++) {
-		contacts = g_list_prepend (contacts, e_contact_new_from_vcard (*p));
+	/* array contains both UID and vcard */
+	for (p = vcards; *p; p += 2) {
+		contacts = g_list_prepend (contacts, e_contact_new_from_vcard_with_uid (p[0], p[1]));
 	}
 	contacts = g_list_reverse (contacts);
 

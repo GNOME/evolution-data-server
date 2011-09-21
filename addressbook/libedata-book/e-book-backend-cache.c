@@ -89,7 +89,7 @@ e_book_backend_cache_get_contact (EBookBackendCache *cache,
 
 	vcard_str = e_file_cache_get_object (E_FILE_CACHE (cache), uid);
 	if (vcard_str) {
-		contact = e_contact_new_from_vcard (vcard_str);
+		contact = e_contact_new_from_vcard_with_uid (vcard_str, uid);
 
 	}
 

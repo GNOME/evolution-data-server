@@ -170,11 +170,7 @@ static EContact *
 create_contact (const gchar *uid,
                 const gchar *vcard)
 {
-	EContact *contact = e_contact_new_from_vcard (vcard);
-	if (!e_contact_get_const (contact, E_CONTACT_UID))
-		e_contact_set (contact, E_CONTACT_UID, uid);
-
-	return contact;
+	return e_contact_new_from_vcard_with_uid (vcard, uid);
 }
 
 static gchar *
@@ -320,8 +316,7 @@ do_create (EBookBackendFile *bf,
 
 	string_to_dbt (id, &id_dbt);
 
-	*contact = e_contact_new_from_vcard (vcard_req);
-	e_contact_set (*contact, E_CONTACT_UID, id);
+	*contact = e_contact_new_from_vcard_with_uid (vcard_req, id);
 	rev = e_contact_get_const (*contact,  E_CONTACT_REV);
 	if (!(rev && *rev))
 		set_revision (*contact);
@@ -779,7 +774,7 @@ notify_update_vcard (EDataBookView *book_view,
 	if (prefiltered)
 		e_data_book_view_notify_update_prefiltered_vcard (book_view, id, vcard);
 	else
-		e_data_book_view_notify_update_vcard (book_view, vcard);
+		e_data_book_view_notify_update_vcard (book_view, id, vcard);
 }
 
 static gpointer

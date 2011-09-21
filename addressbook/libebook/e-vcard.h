@@ -195,6 +195,7 @@ struct _EVCardClass {
 GType   e_vcard_get_type                     (void);
 
 void    e_vcard_construct                    (EVCard *evc, const gchar *str);
+void    e_vcard_construct_with_uid           (EVCard *evc, const gchar *str, const gchar *uid);
 EVCard * e_vcard_new                          (void);
 EVCard * e_vcard_new_from_string              (const gchar *str);
 
@@ -247,6 +248,7 @@ void                  e_vcard_attribute_param_remove_values   (EVCardAttributePa
 /* EVCard* accessors.  nothing returned from these functions should be
  * freed by the caller. */
 EVCardAttribute *e_vcard_get_attribute        (EVCard *evc, const gchar *name);
+EVCardAttribute *e_vcard_get_attribute_if_parsed	(EVCard *evc, const gchar *name);
 GList *           e_vcard_get_attributes       (EVCard *evcard);
 const gchar *      e_vcard_attribute_get_group  (EVCardAttribute *attr);
 const gchar *      e_vcard_attribute_get_name   (EVCardAttribute *attr);

@@ -868,7 +868,7 @@ e_book_backend_sqlitedb_get_contact (EBookBackendSqliteDB *ebsdb,
 	gchar *vcard = e_book_backend_sqlitedb_get_vcard_string (ebsdb, folderid, uid,
 								 fields_of_interest, with_all_required_fields, &err);
 	if (!err) {
-		contact = e_contact_new_from_vcard (vcard);
+		contact = e_contact_new_from_vcard_with_uid (vcard, uid);
 		g_free (vcard);
 	} else
 		g_propagate_error (error, err);

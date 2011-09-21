@@ -246,8 +246,7 @@ do_create (EBookBackendVCF *bvcf,
 	g_mutex_lock (bvcf->priv->mutex);
 	id = e_book_backend_vcf_create_unique_id ();
 
-	contact = e_contact_new_from_vcard (vcard_req);
-	e_contact_set (contact, E_CONTACT_UID, id);
+	contact = e_contact_new_from_vcard_with_uid (vcard_req, id);
 	g_free (id);
 
 	rev = e_contact_get_const (contact,  E_CONTACT_REV);

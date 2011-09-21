@@ -168,16 +168,15 @@ download_contact (EBookBackendWebdav *webdav,
 
 	etag = soup_message_headers_get(message->response_headers, "ETag");
 
-	contact = e_contact_new_from_vcard (message->response_body->data);
+	/* we use our URI as UID */
+	contact = e_contact_new_from_vcard_with_uid (message->response_body->data, uri);
 	if (contact == NULL) {
 		g_warning("Invalid vcard at '%s'", uri);
 		g_object_unref (message);
 		return NULL;
 	}
 
-	/* we use our URI as UID
-	 * the etag is rememebered in the revision field */
-	e_contact_set (contact, E_CONTACT_UID, (gconstpointer) uri);
+	/* the etag is remembered in the revision field */
 	if (etag != NULL) {
 		e_contact_set (contact, E_CONTACT_REV, (gconstpointer) etag);
 	}
@@ -320,13 +319,12 @@ e_book_backend_webdav_create_contact (EBookBackend *backend,
 		return;
 	}
 
-	contact = e_contact_new_from_vcard (vcard);
-
 	/* do 3 rand() calls to construct a unique ID... poor way but should be
 	 * good enough for us */
 	uid = g_strdup_printf("%s%08X-%08X-%08X.vcf", priv->uri, rand(), rand(),
 			      rand ());
-	e_contact_set (contact, E_CONTACT_UID, uid);
+			      
+	contact = e_contact_new_from_vcard_with_uid (vcard, uid);
 
 	/* kill revision field (might have been set by some other backend) */
 	e_contact_set (contact, E_CONTACT_REV, NULL);

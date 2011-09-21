@@ -1910,7 +1910,7 @@ e_book_client_get_contact_sync (EBookClient *client,
 	res = e_client_proxy_call_sync_string__string (E_CLIENT (client), safe_uid, &vcard, cancellable, error, e_gdbus_book_call_get_contact_sync);
 
 	if (vcard && res)
-		*contact = e_contact_new_from_vcard (vcard);
+		*contact = e_contact_new_from_vcard_with_uid (vcard, safe_uid);
 	else
 		*contact = NULL;
 

@@ -144,7 +144,7 @@ e_book_backend_db_cache_get_contact (DB *db,
 		return NULL;
 	}
 
-	contact = e_contact_new_from_vcard ((const gchar *) vcard_dbt.data);
+	contact = e_contact_new_from_vcard_with_uid ((const gchar *) vcard_dbt.data, uid);
 	g_free (vcard_dbt.data);
 	return contact;
 }
