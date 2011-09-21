@@ -23,8 +23,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.9x\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-09-14 18:51+0000\n"
-"PO-Revision-Date: 2011-09-14 23:10+0200\n"
+"POT-Creation-Date: 2011-09-21 11:03+0000\n"
+"PO-Revision-Date: 2011-09-21 20:50+0200\n"
 "Last-Translator: Luca Ferretti <lferrett@gnome.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -46,53 +46,53 @@ msgstr "Ricerca..."
 
 # infedele, ma meglio di "Interrogazione"
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:814
+#: ../addressbook/backends/google/e-book-backend-google.c:842
 msgid "Querying for updated contacts…"
 msgstr "Verifica dei contatti aggiornati..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:865
+#: ../addressbook/backends/google/e-book-backend-google.c:893
 #: ../addressbook/libebook/e-book.c:3549 ../calendar/libecal/e-cal.c:1381
 #: ../libedataserver/e-client.c:1951
 msgid "Personal"
 msgstr "Personale"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:867
+#: ../addressbook/backends/google/e-book-backend-google.c:895
 msgid "Friends"
 msgstr "Amici"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:869
+#: ../addressbook/backends/google/e-book-backend-google.c:897
 msgid "Family"
 msgstr "Famiglia"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:871
+#: ../addressbook/backends/google/e-book-backend-google.c:899
 msgid "Coworkers"
 msgstr "Collaboratori"
 
 # infedele, ma meglio di "Interrogazione"<
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:955
+#: ../addressbook/backends/google/e-book-backend-google.c:983
 msgid "Querying for updated groups…"
 msgstr "Verifica dei gruppi aggiornati..."
 
 #. Insert the entry on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1374
+#: ../addressbook/backends/google/e-book-backend-google.c:1402
 msgid "Creating new contact…"
 msgstr "Creazione nuovo contatto..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1484
+#: ../addressbook/backends/google/e-book-backend-google.c:1512
 msgid "Deleting contact…"
 msgstr "Eliminazione del contatto..."
 
 #. Update the contact on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1762
+#: ../addressbook/backends/google/e-book-backend-google.c:1793
 msgid "Modifying contact…"
 msgstr "Modifica del contatto..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1969
+#: ../addressbook/backends/google/e-book-backend-google.c:2000
 msgid "Loading…"
 msgstr "Caricamento..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2127
+#: ../addressbook/backends/google/e-book-backend-google.c:2158
 msgid "Authenticating with the server…"
 msgstr "Autenticazione con il server..."
 
@@ -237,7 +237,7 @@ msgstr ""
 "sorgente."
 
 #: ../addressbook/libebook/e-book-client.c:2280
-#: ../calendar/libecal/e-cal-client.c:4475
+#: ../calendar/libecal/e-cal-client.c:4482
 msgid "Cannot get connection to view"
 msgstr "Impossibile ottenere la connessione alla vista"
 
@@ -2053,10 +2053,10 @@ msgstr "Decifratura della parte MIME non riuscita: errore di protocollo"
 msgid "Encrypted content"
 msgstr "Contenuto cifrato"
 
+# certo che un commento per traduttori...
 #: ../camel/camel-http-stream.c:546 ../camel/camel-stream-null.c:78
-#, fuzzy
 msgid "Only reset to beginning is supported with CamelHttpStream"
-msgstr "Azzera all'inizio solo se supportato con CamelHttpStream"
+msgstr "Con CamelHttpStream è supportato solo l'azzeramento all'inizio"
 
 #: ../camel/camel-lock.c:102
 #, c-format
@@ -2758,10 +2758,10 @@ msgstr "Impossibile eliminare la cartella: %s: operazione non valida"
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Impossibile rinominare la cartella: %s: operazione non valida"
 
+# certo che un commento per traduttori...
 #: ../camel/camel-stream-filter.c:327
-#, fuzzy
 msgid "Only reset to beginning is supported with CamelStreamFilter"
-msgstr "Azzera all'inizio solo se supportato con CamelStreamFilter"
+msgstr "Con CamelStreamFilter è supportato solo l'azzeramento all'inizio"
 
 #: ../camel/camel-stream-process.c:267
 #, c-format
