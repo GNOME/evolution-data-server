@@ -852,20 +852,20 @@ fetch_folders_for_pattern (CamelIMAPXStore *istore,
 	return TRUE;
 }
 
-static GSList *
+static GList *
 get_namespaces (CamelIMAPXStore *istore)
 {
-	GSList *namespaces = NULL;
+	GList *namespaces = NULL;
 	CamelIMAPXNamespaceList *nsl = NULL;
 
 	/* Add code to return the namespaces from preference else all of them */
 	nsl = istore->summary->namespaces;
 	if (nsl->personal)
-		namespaces = g_slist_append (namespaces, nsl->personal);
+		namespaces = g_list_append (namespaces, nsl->personal);
 	if (nsl->other)
-		namespaces = g_slist_append (namespaces, nsl->other);
+		namespaces = g_list_append (namespaces, nsl->other);
 	if (nsl->shared)
-		namespaces = g_slist_append (namespaces, nsl->shared);
+		namespaces = g_list_append (namespaces, nsl->shared);
 
 	return namespaces;
 }
@@ -879,7 +879,7 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore,
 {
 	CamelIMAPXServer *server;
 	GHashTable *folders = NULL;
-	GSList *namespaces = NULL, *l;
+	GList *namespaces = NULL, *l;
 
 	server = camel_imapx_store_get_server (istore, NULL, cancellable, error);
 	if (!server)
@@ -888,7 +888,7 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore,
 	folders = g_hash_table_new (folder_hash, folder_eq);
 	namespaces = get_namespaces (istore);
 
-	for (l = namespaces; l != NULL; l = g_slist_next (l))
+	for (l = namespaces; l != NULL; l = g_list_next (l))
 	{
 		CamelIMAPXStoreNamespace *ns = l->data;
 
@@ -937,7 +937,7 @@ fetch_folders_for_namespaces (CamelIMAPXStore *istore,
 			ns = ns->next;
 		}
 	}
-	g_slist_free (namespaces);
+	g_list_free (namespaces);
  out:
 	g_object_unref (server);
 	return folders;
@@ -1488,7 +1488,7 @@ imapx_store_noop_sync (CamelStore *store,
                        GError **error)
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
-	GSList *servers = NULL, *l;
+	GList *servers = NULL, *l;
 	gboolean success = FALSE;
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
@@ -1496,7 +1496,7 @@ imapx_store_noop_sync (CamelStore *store,
 
 	servers = camel_imapx_conn_manager_get_connections (istore->con_man);
 
-	for (l = servers; l != NULL; l = g_slist_next (l)) {
+	for (l = servers; l != NULL; l = g_list_next (l)) {
 		CamelIMAPXServer *server = CAMEL_IMAPX_SERVER (l->data);
 
 		/* we just return last noops value, technically not correct though */
@@ -1504,7 +1504,7 @@ imapx_store_noop_sync (CamelStore *store,
 		g_object_unref (server);
 	}
 
-	g_slist_free (servers);
+	g_list_free (servers);
 
 	return success;
 }

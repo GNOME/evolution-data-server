@@ -36,7 +36,7 @@ struct _CamelObjectBag {
 	GEqualFunc key_equal_func;
 	CamelCopyFunc key_copy_func;
 	GFreeFunc key_free_func;
-	GSList *reserved;  /* list of KeyReservations */
+	GList *reserved;  /* list of KeyReservations */
 	GMutex *mutex;
 };
 
@@ -51,7 +51,7 @@ key_reservation_new (CamelObjectBag *bag,
 	reservation->owner = g_thread_self ();
 	reservation->cond = g_cond_new ();
 
-	bag->reserved = g_slist_prepend (bag->reserved, reservation);
+	bag->reserved = g_list_prepend (bag->reserved, reservation);
 
 	return reservation;
 }
@@ -60,7 +60,7 @@ static KeyReservation *
 key_reservation_lookup (CamelObjectBag *bag,
                         gconstpointer key)
 {
-	GSList *iter;
+	GList *iter;
 
 	/* XXX Might be easier to use a GHashTable for reservations. */
 	for (iter = bag->reserved; iter != NULL; iter = iter->next) {
@@ -79,7 +79,7 @@ key_reservation_free (CamelObjectBag *bag,
 	/* Make sure the reservation is actually in the object bag. */
 	g_return_if_fail (key_reservation_lookup (bag, reservation->key) != NULL);
 
-	bag->reserved = g_slist_remove (bag->reserved, reservation);
+	bag->reserved = g_list_remove (bag->reserved, reservation);
 
 	bag->key_free_func (reservation->key);
 	g_cond_free (reservation->cond);

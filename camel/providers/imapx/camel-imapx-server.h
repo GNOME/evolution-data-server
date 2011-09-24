@@ -103,7 +103,7 @@ struct _CamelIMAPXServer {
 
 	/* any expunges that happened from the last command, they are
 	 * processed after the command completes. */
-	GSList *expunged;
+	GList *expunged;
 
 	GThread *parser_thread;
 	/* Protects the output stream between parser thread (which can disconnect from server) and other threads that issue

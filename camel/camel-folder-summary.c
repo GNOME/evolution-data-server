@@ -1523,11 +1523,11 @@ cfs_count_dirty (CamelFolderSummary *s)
 static gboolean
 remove_item (gchar *key,
              CamelMessageInfoBase *info,
-             GSList **to_free_list)
+             GList **to_free_list)
 {
 	d(printf("%d(%d)\t", info->refcount, info->dirty)); /* camel_message_info_dump (info); */
 	if (info->refcount == 1 && !info->dirty && !(info->flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
-		*to_free_list = g_slist_prepend (*to_free_list, info);
+		*to_free_list = g_list_prepend (*to_free_list, info);
 		return TRUE;
 	}
 	return FALSE;
@@ -1539,7 +1539,7 @@ remove_cache (CamelSession *session,
               CamelFolderSummary *summary,
               GError **error)
 {
-	GSList *to_free_list = NULL, *l;
+	GList *to_free_list = NULL, *l;
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
@@ -1559,7 +1559,7 @@ remove_cache (CamelSession *session,
 	 * entries from the hash_table in foreach_remove otherwise */
 	for (l = to_free_list; l; l = l->next)
 		camel_message_info_free (l->data);
-	g_slist_free (to_free_list);
+	g_list_free (to_free_list);
 
 	camel_folder_summary_unlock (
 		summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
@@ -3133,7 +3133,7 @@ camel_folder_summary_remove_range (CamelFolderSummary *s,
 		CamelDB *cdb;
 		CamelStore *parent_store;
 		const gchar *folder_name;
-		GSList *uids = NULL;
+		GList *uids = NULL;
 
 		end = MIN (end + 1, s->uids->len);
 
@@ -3142,7 +3142,7 @@ camel_folder_summary_remove_range (CamelFolderSummary *s,
 			gpointer olduid, oldinfo;
 
 			/* the uid will be freed below and will not be used because of changing size of the s->uids array */
-			uids = g_slist_prepend (uids, (gpointer) uid);
+			uids = g_list_prepend (uids, (gpointer) uid);
 
 			if (g_hash_table_lookup_extended (s->loaded_infos, uid, &olduid, &oldinfo)) {
 				camel_message_info_free (oldinfo);
@@ -3160,8 +3160,8 @@ camel_folder_summary_remove_range (CamelFolderSummary *s,
 		 * folder switch */
 		camel_db_delete_uids (cdb, folder_name, uids, NULL);
 
-		g_slist_foreach (uids, (GFunc) camel_pstring_free, NULL);
-		g_slist_free (uids);
+		g_list_foreach (uids, (GFunc) camel_pstring_free, NULL);
+		g_list_free (uids);
 
 		memmove (s->uids->pdata + start, s->uids->pdata + end, (s->uids->len - end) * sizeof (s->uids->pdata[0]));
 		g_ptr_array_set_size (s->uids, s->uids->len - (end - start));

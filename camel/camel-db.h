@@ -212,7 +212,7 @@ CamelDB * camel_db_clone (CamelDB *cdb, GError **error);
 void camel_db_close (CamelDB *cdb);
 gint camel_db_command (CamelDB *cdb, const gchar *stmt, GError **error);
 
-gint camel_db_transaction_command (CamelDB *cdb, GSList *qry_list, GError **error);
+gint camel_db_transaction_command (CamelDB *cdb, GList *qry_list, GError **error);
 
 gint camel_db_begin_transaction (CamelDB *cdb, GError **error);
 gint camel_db_add_to_transaction (CamelDB *cdb, const gchar *query, GError **error);
@@ -224,8 +224,8 @@ gint camel_db_rename_folder (CamelDB *cdb, const gchar *old_folder, const gchar 
 gint camel_db_delete_folder (CamelDB *cdb, const gchar *folder, GError **error);
 gint camel_db_delete_uid (CamelDB *cdb, const gchar *folder, const gchar *uid, GError **error);
 /*int camel_db_delete_uids (CamelDB *cdb, GError **error, gint nargs, ... );*/
-gint camel_db_delete_uids (CamelDB *cdb, const gchar * folder_name, GSList *uids, GError **error);
-gint camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, const gchar *shash, GSList *uids, GError **error);
+gint camel_db_delete_uids (CamelDB *cdb, const gchar * folder_name, GList *uids, GError **error);
+gint camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, const gchar *shash, GList *uids, GError **error);
 
 gint camel_db_create_folders_table (CamelDB *cdb, GError **error);
 gint camel_db_select (CamelDB *cdb, const gchar * stmt, CamelDBSelectCB callback, gpointer data, GError **error);

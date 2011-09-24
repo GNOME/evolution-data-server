@@ -1270,7 +1270,7 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *imap,
 	}
 
 	camel_folder_summary_remove_uid_fast (imap->select_folder->summary, uid);
-	imap->expunged = g_slist_prepend (imap->expunged, uid);
+	imap->expunged = g_list_prepend (imap->expunged, uid);
 
 	camel_folder_change_info_remove_uid (imap->changes, uid);
 
@@ -1282,8 +1282,8 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *imap,
 		imapx_update_store_summary (imap->select_folder);
 		camel_folder_changed (imap->select_folder, imap->changes);
 
-		g_slist_foreach (imap->expunged, (GFunc) g_free, NULL);
-		g_slist_free (imap->expunged);
+		g_list_foreach (imap->expunged, (GFunc) g_free, NULL);
+		g_list_free (imap->expunged);
 		imap->expunged = NULL;
 		camel_folder_change_info_clear (imap->changes);
 	}
@@ -2025,8 +2025,8 @@ imapx_completion (CamelIMAPXServer *imap,
 		}
 
 		if (imap->expunged) {
-			g_slist_foreach (imap->expunged, (GFunc) g_free, NULL);
-			g_slist_free (imap->expunged);
+			g_list_foreach (imap->expunged, (GFunc) g_free, NULL);
+			g_list_free (imap->expunged);
 			imap->expunged = NULL;
 		}
 
@@ -3897,7 +3897,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 		CamelIMAPXMessageInfo *info;
 		CamelFolderSummary *s = job->folder->summary;
 		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
-		GSList *removed = NULL, *l;
+		GList *removed = NULL, *l;
 		gboolean fetch_new = FALSE;
 		gint i;
 		guint j = 0;
@@ -3933,7 +3933,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 				const gchar *uid = camel_message_info_uid (s_minfo);
 
 				camel_folder_change_info_remove_uid (job->u.refresh_info.changes, uid);
-				removed = g_slist_prepend (removed, (gpointer ) g_strdup (uid));
+				removed = g_list_prepend (removed, (gpointer ) g_strdup (uid));
 				camel_message_info_free (s_minfo);
 				s_minfo = NULL;
 
@@ -3977,12 +3977,12 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 			}
 
 			e(is->tagprefix, "Message %s vanished\n", s_minfo->uid);
-			removed = g_slist_prepend (removed, (gpointer) g_strdup (s_minfo->uid));
+			removed = g_list_prepend (removed, (gpointer) g_strdup (s_minfo->uid));
 			camel_message_info_free (s_minfo);
 			j++;
 		}
 
-		for (l = removed; l != NULL; l = g_slist_next (l)) {
+		for (l = removed; l != NULL; l = g_list_next (l)) {
 			gchar *uid = (gchar *) l->data;
 			CamelMessageInfo *mi;
 
@@ -4001,8 +4001,8 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 			full_name = camel_folder_get_full_name (s->folder);
 			camel_db_delete_uids (is->store->cdb_w, full_name, removed, NULL);
-			g_slist_foreach (removed, (GFunc) g_free, NULL);
-			g_slist_free (removed);
+			g_list_foreach (removed, (GFunc) g_free, NULL);
+			g_list_free (removed);
 		}
 
 		imapx_update_store_summary (job->folder);
@@ -4384,7 +4384,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 
 		if (uids && uids->len)	{
 			CamelFolderChangeInfo *changes;
-			GSList *removed = NULL;
+			GList *removed = NULL;
 			gint i;
 
 			changes = camel_folder_change_info_new ();
@@ -4399,7 +4399,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 
 				camel_folder_summary_remove_uid_fast (folder->summary, uid);
 				camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
-				removed = g_slist_prepend (removed, (gpointer) uids->pdata[i]);
+				removed = g_list_prepend (removed, (gpointer) uids->pdata[i]);
 			}
 
 			camel_db_delete_uids (parent_store->cdb_w, full_name, removed, NULL);
@@ -4407,7 +4407,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 			camel_folder_changed (folder, changes);
 			camel_folder_change_info_free (changes);
 
-			g_slist_free (removed);
+			g_list_free (removed);
 			g_ptr_array_foreach (uids, (GFunc) camel_pstring_free, NULL);
 			g_ptr_array_free (uids, TRUE);
 		}

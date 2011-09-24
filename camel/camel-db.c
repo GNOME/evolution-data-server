@@ -692,7 +692,7 @@ camel_db_add_to_transaction (CamelDB *cdb,
  **/
 gint
 camel_db_transaction_command (CamelDB *cdb,
-                              GSList *qry_list,
+                              GList *qry_list,
                               GError **error)
 {
 	gint ret;
@@ -713,7 +713,7 @@ camel_db_transaction_command (CamelDB *cdb,
 		ret = cdb_sql_exec (cdb->db, query, NULL, NULL, error);
 		if (ret)
 			goto end;
-		qry_list = g_slist_next (qry_list);
+		qry_list = g_list_next (qry_list);
 	}
 
 	ret = cdb_sql_exec (cdb->db, "COMMIT", NULL, NULL, error);
@@ -1958,7 +1958,7 @@ camel_db_delete_uid (CamelDB *cdb,
 static gint
 cdb_delete_ids (CamelDB *cdb,
                 const gchar *folder_name,
-                GSList *uids,
+                GList *uids,
                 const gchar *uid_prefix,
                 const gchar *field,
                 GError **error)
@@ -1968,7 +1968,7 @@ cdb_delete_ids (CamelDB *cdb,
 	gchar *tab;
 	gboolean first = TRUE;
 	GString *str = g_string_new ("DELETE FROM ");
-	GSList *iterator;
+	GList *iterator;
 	GString *ins_str = NULL;
 
 	if (strcmp (field, "vuid") != 0)
@@ -2039,7 +2039,7 @@ cdb_delete_ids (CamelDB *cdb,
 gint
 camel_db_delete_uids (CamelDB *cdb,
                       const gchar *folder_name,
-                      GSList *uids,
+                      GList *uids,
                       GError **error)
 {
 	if (!uids || !uids->data)
@@ -2057,7 +2057,7 @@ gint
 camel_db_delete_vuids (CamelDB *cdb,
                        const gchar *folder_name,
                        const gchar *hash,
-                       GSList *uids,
+                       GList *uids,
                        GError **error)
 {
 	return cdb_delete_ids (cdb, folder_name, uids, hash, "vuid", error);

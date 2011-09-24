@@ -451,7 +451,7 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 	gchar *folder = NULL;
 	CamelNNTPStoreInfo *si;
 	CamelStore *parent_store;
-	GSList *del = NULL;
+	GList *del = NULL;
 	const gchar *full_name;
 
 	s = (CamelFolderSummary *) cns;
@@ -501,7 +501,7 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 				if (msgid)
 					camel_data_cache_remove (store->cache, "cache", msgid+1, NULL);
 				camel_folder_change_info_remove_uid (changes, uid);
-				del = g_slist_prepend (del, uid);
+				del = g_list_prepend (del, uid);
 				camel_folder_summary_remove_uid_fast (s, uid);
 				uid = NULL; /*Lets not free it */
 				count--;
@@ -513,8 +513,8 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 	}
 
 	camel_db_delete_uids (parent_store->cdb_w, full_name, del, NULL);
-	g_slist_foreach (del, (GFunc) g_free, NULL);
-	g_slist_free (del);
+	g_list_foreach (del, (GFunc) g_free, NULL);
+	g_list_free (del);
 
 	if (cns->high < l) {
 		if (cns->high < f)

@@ -476,7 +476,7 @@ summary_update (CamelLocalSummary *cls,
 	gint ok = 0;
 	struct stat st;
 	goffset size = 0;
-	GSList *del = NULL;
+	GList *del = NULL;
 
 	d(printf("Calling summary update, from pos %d\n", (gint)offset));
 
@@ -585,7 +585,7 @@ summary_update (CamelLocalSummary *cls,
 			d(printf("uid '%s' vanished, removing", uid));
 			if (changeinfo)
 				camel_folder_change_info_remove_uid (changeinfo, uid);
-			del = g_slist_prepend (del, (gpointer) camel_pstring_strdup (uid));
+			del = g_list_prepend (del, (gpointer) camel_pstring_strdup (uid));
 			camel_folder_summary_remove_index_fast (s, i);
 			count--;
 			i--;
@@ -599,8 +599,8 @@ summary_update (CamelLocalSummary *cls,
 	full_name = camel_folder_get_full_name (s->folder);
 	parent_store = camel_folder_get_parent_store (s->folder);
 	camel_db_delete_uids (parent_store->cdb_w, full_name, del, NULL);
-	g_slist_foreach (del, (GFunc) camel_pstring_free, NULL);
-	g_slist_free (del);
+	g_list_foreach (del, (GFunc) camel_pstring_free, NULL);
+	g_list_free (del);
 
 	mbs->changes = NULL;
 
@@ -1134,7 +1134,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 	const gchar *fromline;
 	gint lastdel = FALSE;
 	gboolean touched = FALSE;
-	GSList *del = NULL;
+	GList *del = NULL;
 #ifdef STATUS_PINE
 	gchar statnew[8], xstatnew[8];
 #endif
@@ -1215,7 +1215,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 			s->deleted_count--;
 			camel_folder_change_info_remove_uid (changeinfo, uid);
 			camel_folder_summary_remove_index_fast (s, i);
-			del = g_slist_prepend (del, (gpointer) camel_pstring_strdup (uid));
+			del = g_list_prepend (del, (gpointer) camel_pstring_strdup (uid));
 			camel_message_info_free ((CamelMessageInfo *) info);
 			count--;
 			i--;
@@ -1306,8 +1306,8 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 	full_name = camel_folder_get_full_name (s->folder);
 	parent_store = camel_folder_get_parent_store (s->folder);
 	camel_db_delete_uids (parent_store->cdb_w, full_name, del, NULL);
-	g_slist_foreach (del, (GFunc) camel_pstring_free, NULL);
-	g_slist_free (del);
+	g_list_foreach (del, (GFunc) camel_pstring_free, NULL);
+	g_list_free (del);
 
 #if 0
 	/* if last was deleted, append the \n we removed */

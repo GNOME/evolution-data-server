@@ -950,7 +950,7 @@ static gboolean
 merge_custom_flags (CamelMessageInfo *mi,
                     const gchar *custom_flags)
 {
-	GSList *list, *p;
+	GList *list, *p;
 	GHashTable *server;
 	gchar **cflags;
 	gint i;
@@ -971,7 +971,7 @@ merge_custom_flags (CamelMessageInfo *mi,
 
 		if (name && *name) {
 			g_hash_table_insert (server, name, name);
-			list = g_slist_prepend (list, name);
+			list = g_list_prepend (list, name);
 		}
 	}
 
@@ -979,10 +979,10 @@ merge_custom_flags (CamelMessageInfo *mi,
 		gchar *name = (gchar *) flag->name;
 
 		if (name && *name)
-			list = g_slist_prepend (list, name);
+			list = g_list_prepend (list, name);
 	}
 
-	list = g_slist_sort (list, (GCompareFunc) strcmp);
+	list = g_list_sort (list, (GCompareFunc) strcmp);
 	for (p = list; p; p = p->next) {
 		if (p->next && strcmp (p->data, p->next->data) == 0) {
 			/* This flag is there twice, which means it was on the server and
@@ -1000,7 +1000,7 @@ merge_custom_flags (CamelMessageInfo *mi,
 		}
 	}
 
-	g_slist_free (list);
+	g_list_free (list);
 	g_hash_table_destroy (server);
 	g_strfreev (cflags);
 
@@ -1384,7 +1384,7 @@ get_matching (CamelFolder *folder,
 	CamelImapMessageInfo *info;
 	gint i, max, range, last_range_uid;
 	GString *gset;
-	GSList *list1 = NULL;
+	GList *list1 = NULL;
 	gint count1 = 0;
 	gchar *uid;
 
@@ -1437,40 +1437,40 @@ get_matching (CamelFolder *folder,
 		/* only check user flags when we see other message than our 'master' */
 		if (strcmp (master_info->uid, ((CamelMessageInfo *) info)->uid)) {
 			const CamelFlag *flag;
-			GSList *list2 = NULL, *l1, *l2;
+			GList *list2 = NULL, *l1, *l2;
 			gint count2 = 0, cmp = 0;
 
 			if (!list1) {
 				for (flag = camel_message_info_user_flags (master_info); flag; flag = flag->next) {
 					if (flag->name && *flag->name) {
 						count1++;
-						list1 = g_slist_prepend (list1, (gchar *) flag->name);
+						list1 = g_list_prepend (list1, (gchar *) flag->name);
 					}
 				}
 
-				list1 = g_slist_sort (list1, (GCompareFunc) strcmp);
+				list1 = g_list_sort (list1, (GCompareFunc) strcmp);
 			}
 
 			for (flag = camel_message_info_user_flags (info); flag; flag = flag->next) {
 				if (flag->name && *flag->name) {
 					count2++;
-					list2 = g_slist_prepend (list2, (gchar *) flag->name);
+					list2 = g_list_prepend (list2, (gchar *) flag->name);
 				}
 			}
 
 			if (count1 != count2) {
-				g_slist_free (list2);
+				g_list_free (list2);
 				close_range ();
 				continue;
 			}
 
-			list2 = g_slist_sort (list2, (GCompareFunc) strcmp);
+			list2 = g_list_sort (list2, (GCompareFunc) strcmp);
 			for (l1 = list1, l2 = list2; l1 && l2 && !cmp; l1 = l1->next, l2 = l2->next) {
 				cmp = strcmp (l1->data, l2->data);
 			}
 
 			if (cmp) {
-				g_slist_free (list2);
+				g_list_free (list2);
 				close_range ();
 				continue;
 			}
@@ -1506,7 +1506,7 @@ get_matching (CamelFolder *folder,
 	}
 
 	if (list1)
-		g_slist_free (list1);
+		g_list_free (list1);
 
 	if (matches->len) {
 		*set = gset->str;
@@ -1907,7 +1907,7 @@ imap_expunge_uids_offline (CamelFolder *folder,
 {
 	CamelFolderChangeInfo *changes;
 	CamelStore *parent_store;
-	GSList *list = NULL;
+	GList *list = NULL;
 	const gchar *full_name;
 	gint i;
 
@@ -1921,14 +1921,14 @@ imap_expunge_uids_offline (CamelFolder *folder,
 	for (i = 0; i < uids->len; i++) {
 		camel_folder_summary_remove_uid_fast (folder->summary, uids->pdata[i]);
 		camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
-		list = g_slist_prepend (list, (gpointer) uids->pdata[i]);
+		list = g_list_prepend (list, (gpointer) uids->pdata[i]);
 		/* We intentionally don't remove it from the cache because
 		 * the cached data may be useful in replaying a COPY later.
 		 */
 	}
 
 	camel_db_delete_uids (parent_store->cdb_w, full_name, list, NULL);
-	g_slist_free (list);
+	g_list_free (list);
 	camel_folder_summary_save_to_db (folder->summary, NULL);
 
 	camel_imap_journal_log (CAMEL_IMAP_FOLDER (folder)->journal,
@@ -1955,7 +1955,7 @@ imap_expunge_uids_online (CamelFolder *folder,
 	CamelStore *parent_store;
 	const gchar *full_name;
 	gint i;
-	GSList *list = NULL;
+	GList *list = NULL;
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
@@ -2024,14 +2024,14 @@ imap_expunge_uids_online (CamelFolder *folder,
 	for (i = 0; i < uids->len; i++) {
 		camel_folder_summary_remove_uid_fast (folder->summary, uids->pdata[i]);
 		camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
-		list = g_slist_prepend (list, (gpointer) uids->pdata[i]);
+		list = g_list_prepend (list, (gpointer) uids->pdata[i]);
 		/* We intentionally don't remove it from the cache because
 		 * the cached data may be useful in replaying a COPY later.
 		 */
 	}
 
 	camel_db_delete_uids (parent_store->cdb_w, full_name, list, NULL);
-	g_slist_free (list);
+	g_list_free (list);
 	camel_folder_summary_save_to_db (folder->summary, NULL);
 	camel_folder_changed (folder, changes);
 	camel_folder_change_info_free (changes);
@@ -4393,7 +4393,7 @@ camel_imap_folder_changed (CamelFolder *folder,
 	if (expunged) {
 		CamelStore *parent_store;
 		gint i, id;
-		GSList *deleted = NULL;
+		GList *deleted = NULL;
 		const gchar *full_name;
 
 		for (i = 0; i < expunged->len; i++) {
@@ -4405,7 +4405,7 @@ camel_imap_folder_changed (CamelFolder *folder,
 				continue;
 			}
 
-			deleted = g_slist_prepend (deleted, uid);
+			deleted = g_list_prepend (deleted, uid);
 			camel_folder_change_info_remove_uid (changes, uid);
 			CAMEL_IMAP_FOLDER_REC_LOCK (imap_folder, cache_lock);
 			camel_imap_message_cache_remove (imap_folder->cache, uid);
@@ -4417,8 +4417,8 @@ camel_imap_folder_changed (CamelFolder *folder,
 		full_name = camel_folder_get_full_name (folder);
 		parent_store = camel_folder_get_parent_store (folder);
 		camel_db_delete_uids (parent_store->cdb_w, full_name, deleted, NULL);
-		g_slist_foreach (deleted, (GFunc) g_free, NULL);
-		g_slist_free (deleted);
+		g_list_foreach (deleted, (GFunc) g_free, NULL);
+		g_list_free (deleted);
 	}
 
 	len = camel_folder_summary_count (folder->summary);
