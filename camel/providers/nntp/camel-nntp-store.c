@@ -87,11 +87,13 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
 	CamelURL *url;
 	gint ret;
 	gchar *line = NULL;
+	const gchar *password;
 	GError *local_error = NULL;
 
 	service = CAMEL_SERVICE (store);
 	url = camel_service_get_camel_url (service);
 	session = camel_service_get_session (service);
+	password = camel_service_get_password (service);
 
 	if (!url->user) {
 		g_set_error (
@@ -101,8 +103,9 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
 	}
 
 	/* if nessecary, prompt for the password */
-	if (!url->passwd) {
+	if (password == NULL) {
 		gchar *prompt, *base;
+		gchar *new_passwd;
 	retry:
 		base = camel_session_build_password_prompt (
 			"NNTP", url->user, url->host);
@@ -117,17 +120,24 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
 			base = NULL;
 		}
 
-		url->passwd =
-			camel_session_get_password (
-				session, service, prompt, "password",
-				CAMEL_SESSION_PASSWORD_SECRET |
-				(store->password_reprompt ?
-					CAMEL_SESSION_PASSWORD_REPROMPT : 0),
-				error);
+		/* XXX This is a tad awkward.  Maybe define a
+		 *     camel_service_ask_password() that calls
+		 *     camel_session_get_password() and caches
+		 *     the password itself? */
+		new_passwd = camel_session_get_password (
+			session, service, prompt, "password",
+			CAMEL_SESSION_PASSWORD_SECRET |
+			(store->password_reprompt ?
+				CAMEL_SESSION_PASSWORD_REPROMPT : 0),
+			error);
+		camel_service_set_password (service, new_passwd);
+		password = camel_service_get_password (service);
+		g_free (new_passwd);
+
 		g_free (prompt);
 		g_free (base);
 
-		if (!url->passwd)
+		if (password == NULL)
 			return -1;
 
 		store->password_reprompt = FALSE;
@@ -136,7 +146,7 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
 	/* now, send auth info (currently, only authinfo user/pass is supported) */
 	ret = camel_nntp_raw_command(store, cancellable, &local_error, &line, "authinfo user %s", url->user);
 	if (ret == NNTP_AUTH_CONTINUE)
-		ret = camel_nntp_raw_command(store, cancellable, &local_error, &line, "authinfo pass %s", url->passwd);
+		ret = camel_nntp_raw_command(store, cancellable, &local_error, &line, "authinfo pass %s", password);
 
 	if (ret != NNTP_AUTH_ACCEPTED) {
 		if (ret != -1) {
@@ -148,8 +158,8 @@ camel_nntp_try_authenticate (CamelNNTPStore *store,
 
 			/* To force password reprompt */
 			store->password_reprompt = TRUE;
-			g_free (url->passwd);
-			url->passwd = NULL;
+			camel_service_set_password (service, NULL);
+			password = camel_service_get_password (service);
 			goto retry;
 		}
 		return -1;
