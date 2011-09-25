@@ -2827,11 +2827,17 @@ connect_to_server_process (CamelIMAPXServer *is,
                            GError **error)
 {
 	CamelStream *cmd_stream;
+	CamelService *service;
 	gint ret, i = 0;
 	gchar *buf;
 	gchar *cmd_copy;
 	gchar *full_cmd;
 	gchar *child_env[7];
+	const gchar *password;
+
+	service = CAMEL_SERVICE (is->store);
+	password = camel_service_get_password (service);
+	g_return_val_if_fail (password != NULL, FALSE);
 
 	/* Put full details in the environment, in case the connection
 	 * program needs them */
@@ -2844,8 +2850,8 @@ connect_to_server_process (CamelIMAPXServer *is,
 		child_env[i++] = g_strdup_printf("URLPORT=%d", is->url->port);
 	if (is->url->user)
 		child_env[i++] = g_strdup_printf("URLUSER=%s", is->url->user);
-	if (is->url->passwd)
-		child_env[i++] = g_strdup_printf("URLPASSWD=%s", is->url->passwd);
+	if (password)
+		child_env[i++] = g_strdup_printf("URLPASSWD=%s", password);
 	if (is->url->path)
 		child_env[i++] = g_strdup_printf("URLPATH=%s", is->url->path);
 	child_env[i] = NULL;
@@ -3148,6 +3154,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 
 	while (!authenticated) {
 		CamelSasl *sasl = NULL;
+		const gchar *password;
 
 		if (authtype && authtype->need_password && !need_password) {
 			/* We tried an empty password, but it didn't work */
@@ -3157,8 +3164,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		} else if (errbuf) {
 			/* We need to un-cache the password before prompting again */
 			prompt_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-			g_free (url->passwd);
-			url->passwd = NULL;
+			camel_service_set_password (service, NULL);
 		}
 
 		if (!imapx_connect_to_server (is, cancellable, error))
@@ -3205,9 +3211,12 @@ imapx_reconnect (CamelIMAPXServer *is,
 		} else
 			need_password = TRUE;
 
-		if (need_password && url->passwd == NULL) {
+		password = camel_service_get_password (service);
+
+		if (need_password && password == NULL) {
 			gchar *base_prompt;
 			gchar *full_prompt;
+			gchar *new_passwd;
 
 			base_prompt = camel_session_build_password_prompt (
 					"IMAP", url->user, url->host);
@@ -3217,16 +3226,23 @@ imapx_reconnect (CamelIMAPXServer *is,
 			else
 				full_prompt = g_strdup (base_prompt);
 
-			url->passwd = camel_session_get_password (
+			/* XXX This is a tad awkward.  Maybe define a
+			 *     camel_service_ask_password() that calls
+			 *     camel_session_get_password() and caches
+			 *     the password itself? */
+			new_passwd = camel_session_get_password (
 				is->session, (CamelService *) is->store,
 				full_prompt, "password", prompt_flags, error);
+			camel_service_set_password (service, new_passwd);
+			password = camel_service_get_password (service);
+			g_free (new_passwd);
 
 			g_free (base_prompt);
 			g_free (full_prompt);
 			g_free (errbuf);
 			errbuf = NULL;
 
-			if (!url->passwd) {
+			if (password == NULL) {
 				if (error && !*error)
 					g_set_error (
 						error, G_IO_ERROR,
@@ -3245,7 +3261,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		} else {
 			ic = camel_imapx_command_new (
 				is, "LOGIN", NULL, cancellable,
-				"LOGIN %s %s", url->user, url->passwd);
+				"LOGIN %s %s", url->user, password);
 		}
 
 		imapx_command_run (is, ic);
