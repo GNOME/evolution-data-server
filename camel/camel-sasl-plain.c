@@ -56,18 +56,22 @@ sasl_plain_challenge_sync (CamelSasl *sasl,
 	GByteArray *buf = NULL;
 	CamelService *service;
 	CamelURL *url;
+	const gchar *password;
 
 	service = camel_sasl_get_service (sasl);
 
 	url = camel_service_get_camel_url (service);
-	g_return_val_if_fail (url->passwd != NULL, NULL);
+	g_return_val_if_fail (url->user != NULL, NULL);
+
+	password = camel_service_get_password (service);
+	g_return_val_if_fail (password != NULL, NULL);
 
 	/* FIXME: make sure these are "UTF8-SAFE" */
 	buf = g_byte_array_new ();
 	g_byte_array_append (buf, (guint8 *) "", 1);
 	g_byte_array_append (buf, (guint8 *) url->user, strlen (url->user));
 	g_byte_array_append (buf, (guint8 *) "", 1);
-	g_byte_array_append (buf, (guint8 *) url->passwd, strlen (url->passwd));
+	g_byte_array_append (buf, (guint8 *) password, strlen (password));
 
 	camel_sasl_set_authenticated (sasl, TRUE);
 
