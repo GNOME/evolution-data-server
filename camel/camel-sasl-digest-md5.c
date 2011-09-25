@@ -810,6 +810,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 	gchar *tokens;
 	struct addrinfo *ai, hints;
 	const gchar *service_name;
+	const gchar *password;
 
 	/* Need to wait for the server */
 	if (!token)
@@ -819,7 +820,10 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 	service_name = camel_sasl_get_service_name (sasl);
 
 	url = camel_service_get_camel_url (service);
-	g_return_val_if_fail (url->passwd != NULL, NULL);
+	g_return_val_if_fail (url->user != NULL, NULL);
+
+	password = camel_service_get_password (service);
+	g_return_val_if_fail (password != NULL, NULL);
 
 	switch (priv->state) {
 	case STATE_AUTH:
@@ -863,7 +867,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 
 		priv->response = generate_response (
 			priv->challenge, ptr, service_name,
-			url->user, url->passwd);
+			url->user, password);
 		if (ai)
 			camel_freeaddrinfo (ai);
 		ret = digest_response (priv->response);
@@ -906,7 +910,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 			return NULL;
 		}
 
-		compute_response (priv->response, url->passwd, FALSE, out);
+		compute_response (priv->response, password, FALSE, out);
 		if (memcmp (out, rspauth->value, 32) != 0) {
 			g_free (rspauth->name);
 			g_free (rspauth->value);
