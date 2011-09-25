@@ -15,9 +15,9 @@ msgstr ""
 "Project-Id-Version: evolution-data-server gnome-3-0\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-09-15 17:19+0000\n"
-"PO-Revision-Date: 2011-09-11 00:28+0900\n"
-"Last-Translator: Jiro Matsuzawa <jmatsuzawa@src.gnome.org>\n"
+"POT-Creation-Date: 2011-09-24 22:20+0000\n"
+"PO-Revision-Date: 2011-09-25 10:56+0900\n"
+"Last-Translator: OKANO Takayoshi <kano@na.rim.or.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,52 +37,52 @@ msgid "Searching..."
 msgstr "検索中..."
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:832
+#: ../addressbook/backends/google/e-book-backend-google.c:842
 msgid "Querying for updated contacts…"
 msgstr "更新された連絡先を問い合わせ中…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:883
+#: ../addressbook/backends/google/e-book-backend-google.c:893
 #: ../addressbook/libebook/e-book.c:3549 ../calendar/libecal/e-cal.c:1381
 #: ../libedataserver/e-client.c:1951
 msgid "Personal"
 msgstr "個人"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:885
+#: ../addressbook/backends/google/e-book-backend-google.c:895
 msgid "Friends"
 msgstr "友人"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:887
+#: ../addressbook/backends/google/e-book-backend-google.c:897
 msgid "Family"
 msgstr "家族"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:889
+#: ../addressbook/backends/google/e-book-backend-google.c:899
 msgid "Coworkers"
 msgstr "同僚"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:973
+#: ../addressbook/backends/google/e-book-backend-google.c:983
 msgid "Querying for updated groups…"
 msgstr "更新されたグループを問い合わせ中…"
 
 #. Insert the entry on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1392
+#: ../addressbook/backends/google/e-book-backend-google.c:1402
 msgid "Creating new contact…"
 msgstr "新しい連絡先の作成中…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1502
+#: ../addressbook/backends/google/e-book-backend-google.c:1512
 msgid "Deleting contact…"
 msgstr "連絡先の削除中…"
 
 #. Update the contact on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1780
+#: ../addressbook/backends/google/e-book-backend-google.c:1793
 msgid "Modifying contact…"
 msgstr "連絡先の更新中…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1987
+#: ../addressbook/backends/google/e-book-backend-google.c:2000
 msgid "Loading…"
 msgstr "読み込み中…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2145
+#: ../addressbook/backends/google/e-book-backend-google.c:2158
 msgid "Authenticating with the server…"
 msgstr "サーバーで認証中…"
 
@@ -231,7 +231,7 @@ msgid "There was no source for UID '%s' stored in a source list."
 msgstr "%s: GConf に UID '%s' のソースがありません。"
 
 #: ../addressbook/libebook/e-book-client.c:2280
-#: ../calendar/libecal/e-cal-client.c:4475
+#: ../calendar/libecal/e-cal-client.c:4482
 #, fuzzy
 #| msgid "Cannot get contact list: %s"
 msgid "Cannot get connection to view"
@@ -2442,7 +2442,7 @@ msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 msgstr ""
-"input_token に引数 input_chan_bindigs を介して指定された別のチャンネルのビン"
+"input_token に引数 input_chan_bindings を介して指定された別のチャンネルのビン"
 "ディングがあります。"
 
 #: ../camel/camel-sasl-gssapi.c:146
