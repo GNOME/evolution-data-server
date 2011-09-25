@@ -227,15 +227,6 @@ store_summary_store_info_string (CamelStoreSummary *summary,
 			return p + 1;
 		else
 			return info->path;
-	case CAMEL_STORE_INFO_URI:
-		if (info->uri == NULL) {
-			CamelURL *uri;
-
-			uri = camel_url_new_with_base (summary->uri_base, info->path);
-			((CamelStoreInfo *) info)->uri = camel_url_to_string (uri, 0);
-			camel_url_free (uri);
-		}
-		return info->uri;
 	}
 
 	return "";
@@ -283,10 +274,6 @@ store_summary_store_info_set_string (CamelStoreSummary *summary,
 		info->uri = NULL;
 		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-		break;
-	case CAMEL_STORE_INFO_URI:
-		g_warning ("Cannot set store info uri, aborting");
-		abort ();
 		break;
 	}
 }

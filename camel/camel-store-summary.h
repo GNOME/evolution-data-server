@@ -66,7 +66,6 @@ typedef struct _CamelStoreInfo CamelStoreInfo;
 enum {
 	CAMEL_STORE_INFO_PATH = 0,
 	CAMEL_STORE_INFO_NAME,
-	CAMEL_STORE_INFO_URI,
 	CAMEL_STORE_INFO_LAST
 };
 
@@ -184,7 +183,6 @@ void camel_store_info_set_string (CamelStoreSummary *summary, CamelStoreInfo *in
 
 /* helper macro's */
 #define camel_store_info_path(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_PATH))
-#define camel_store_info_uri(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_URI))
 #define camel_store_info_name(s, i) (camel_store_info_string((CamelStoreSummary *)s, (const CamelStoreInfo *)i, CAMEL_STORE_INFO_NAME))
 
 void camel_store_summary_lock   (CamelStoreSummary *summary, CamelStoreSummaryLock lock);
