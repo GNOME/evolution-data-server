@@ -323,17 +323,20 @@ pop3_try_authenticate (CamelService *service,
 	CamelPOP3Store *store = (CamelPOP3Store *) service;
 	CamelPOP3Command *pcu = NULL, *pcp = NULL;
 	CamelURL *url;
+	const gchar *password;
 	gint status;
 
 	url = camel_service_get_camel_url (service);
+	password = camel_service_get_password (service);
 
 	/* override, testing only */
 	/*printf("Forcing authmech to 'login'\n");
 	url->authmech = g_strdup("LOGIN");*/
 
-	if (!url->passwd) {
+	if (password == NULL) {
 		gchar *base_prompt;
 		gchar *full_prompt;
+		gchar *new_passwd;
 		guint32 flags = CAMEL_SESSION_PASSWORD_SECRET;
 
 		if (reprompt)
@@ -347,13 +350,21 @@ pop3_try_authenticate (CamelService *service,
 		else
 			full_prompt = g_strdup (base_prompt);
 
-		url->passwd = camel_session_get_password (
+		/* XXX This is a tad awkward.  Maybe define a
+		 *     camel_service_ask_password() that calls
+		 *     camel_session_get_password() and caches
+		 *     the password itself? */
+		new_passwd = camel_session_get_password (
 			camel_service_get_session (service), service,
 			full_prompt, "password", flags, error);
+		camel_service_set_password (service, new_passwd);
+		password = camel_service_get_password (service);
+		g_free (new_passwd);
 
 		g_free (base_prompt);
 		g_free (full_prompt);
-		if (!url->passwd)
+
+		if (password == NULL)
 			return -1;
 	}
 
@@ -364,7 +375,7 @@ pop3_try_authenticate (CamelService *service,
 			"USER %s\r\n", url->user);
 		pcp = camel_pop3_engine_command_new (
 			store->engine, 0, NULL, NULL, cancellable, error,
-			"PASS %s\r\n", url->passwd);
+			"PASS %s\r\n", password);
 	} else if (strcmp (url->authmech, "+APOP") == 0 && store->engine->apop) {
 		gchar *secret, *md5asc, *d;
 
@@ -387,8 +398,8 @@ pop3_try_authenticate (CamelService *service,
 			d++;
 		}
 
-		secret = g_alloca (strlen (store->engine->apop) + strlen (url->passwd) + 1);
-		sprintf(secret, "%s%s",  store->engine->apop, url->passwd);
+		secret = g_alloca (strlen (store->engine->apop) + strlen (password) + 1);
+		sprintf(secret, "%s%s",  store->engine->apop, password);
 		md5asc = g_compute_checksum_for_string (G_CHECKSUM_MD5, secret, -1);
 		pcp = camel_pop3_engine_command_new (
 			store->engine, 0, NULL, NULL, cancellable, error,
@@ -503,12 +514,10 @@ pop3_store_connect_sync (CamelService *service,
 {
 	CamelPOP3Store *store = (CamelPOP3Store *) service;
 	gboolean reprompt = FALSE;
-	CamelURL *url;
 	const gchar *user_data_dir;
 	gchar *errbuf = NULL;
 	GError *local_error = NULL;
 
-	url = camel_service_get_camel_url (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
 	if (store->cache == NULL) {
@@ -540,8 +549,7 @@ pop3_store_connect_sync (CamelService *service,
 
 			g_clear_error (&local_error);
 
-			g_free (url->passwd);
-			url->passwd = NULL;
+			camel_service_set_password (service, NULL);
 			reprompt = TRUE;
 		} else
 			break;
