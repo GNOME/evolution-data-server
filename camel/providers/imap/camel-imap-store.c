@@ -456,8 +456,10 @@ connect_to_server_process (CamelService *service,
 	gchar *cmd_copy;
 	gchar *full_cmd;
 	gchar *child_env[7];
+	const gchar *password;
 
 	url = camel_service_get_camel_url (service);
+	password = camel_service_get_password (service);
 
 	/* Put full details in the environment, in case the connection
 	 * program needs them */
@@ -470,8 +472,8 @@ connect_to_server_process (CamelService *service,
 		child_env[i++] = g_strdup_printf("URLPORT=%d", url->port);
 	if (url->user)
 		child_env[i++] = g_strdup_printf("URLUSER=%s", url->user);
-	if (url->passwd)
-		child_env[i++] = g_strdup_printf("URLPASSWD=%s", url->passwd);
+	if (password)
+		child_env[i++] = g_strdup_printf("URLPASSWD=%s", password);
 	if (url->path)
 		child_env[i++] = g_strdup_printf("URLPATH=%s", url->path);
 	child_env[i] = NULL;
@@ -742,18 +744,21 @@ imap_auth_loop (CamelService *service,
 	}
 
 	while (!authenticated) {
+		const gchar *password;
 		GError *local_error = NULL;
 
 		if (errbuf) {
 			/* We need to un-cache the password before prompting again */
 			prompt_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-			g_free (url->passwd);
-			url->passwd = NULL;
+			camel_service_set_password (service, NULL);
 		}
 
-		if (!url->passwd) {
+		password = camel_service_get_password (service);
+
+		if (password == NULL) {
 			gchar *base_prompt;
 			gchar *full_prompt;
+			gchar *new_passwd;
 
 			base_prompt = camel_session_build_password_prompt (
 				"IMAP", url->user, url->host);
@@ -763,16 +768,23 @@ imap_auth_loop (CamelService *service,
 			else
 				full_prompt = g_strdup (base_prompt);
 
-			url->passwd = camel_session_get_password (
+			/* XXX This is a tad awkward.  Maybe define a
+			 *     camel_service_ask_password() that calls
+			 *     camel_session_get_password() and caches
+			 *     the password itself? */
+			new_passwd = camel_session_get_password (
 				session, service, full_prompt,
 				"password", prompt_flags, error);
+			camel_service_set_password (service, new_passwd);
+			password = camel_service_get_password (service);
+			g_free (new_passwd);
 
 			g_free (base_prompt);
 			g_free (full_prompt);
 			g_free (errbuf);
 			errbuf = NULL;
 
-			if (!url->passwd) {
+			if (password == NULL) {
 				g_set_error (
 					error, G_IO_ERROR,
 					G_IO_ERROR_CANCELLED,
@@ -803,7 +815,7 @@ imap_auth_loop (CamelService *service,
 		} else {
 			response = camel_imap_command (
 				store, NULL, cancellable, &local_error,
-				"LOGIN %S %S", url->user, url->passwd);
+				"LOGIN %S %S", url->user, password);
 			if (response) {
 				camel_imap_response_free (store, response);
 				authenticated = TRUE;
