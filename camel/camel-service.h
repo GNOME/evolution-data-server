@@ -148,6 +148,9 @@ GQuark		camel_service_error_quark	(void) G_GNUC_CONST;
 const gchar *	camel_service_get_display_name	(CamelService *service);
 void		camel_service_set_display_name	(CamelService *service,
 						 const gchar *display_name);
+const gchar *	camel_service_get_password	(CamelService *service);
+void		camel_service_set_password	(CamelService *service,
+						 const gchar *password);
 const gchar *	camel_service_get_user_data_dir	(CamelService *service);
 const gchar *	camel_service_get_user_cache_dir
 						(CamelService *service);

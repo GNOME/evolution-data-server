@@ -60,6 +60,7 @@ struct _CamelServicePrivate {
 	gchar *user_data_dir;
 	gchar *user_cache_dir;
 	gchar *uid;
+	gchar *password;
 
 	GCancellable *connect_op;
 	CamelServiceConnectionStatus status;
@@ -75,6 +76,7 @@ struct _AsyncContext {
 enum {
 	PROP_0,
 	PROP_DISPLAY_NAME,
+	PROP_PASSWORD,
 	PROP_PROVIDER,
 	PROP_SESSION,
 	PROP_SETTINGS,
@@ -236,6 +238,12 @@ service_set_property (GObject *object,
 				g_value_get_string (value));
 			return;
 
+		case PROP_PASSWORD:
+			camel_service_set_password (
+				CAMEL_SERVICE (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_PROVIDER:
 			service_set_provider (
 				CAMEL_SERVICE (object),
@@ -280,6 +288,12 @@ service_get_property (GObject *object,
 		case PROP_DISPLAY_NAME:
 			g_value_set_string (
 				value, camel_service_get_display_name (
+				CAMEL_SERVICE (object)));
+			return;
+
+		case PROP_PASSWORD:
+			g_value_set_string (
+				value, camel_service_get_password (
 				CAMEL_SERVICE (object)));
 			return;
 
@@ -357,6 +371,7 @@ service_finalize (GObject *object)
 	g_free (priv->user_data_dir);
 	g_free (priv->user_cache_dir);
 	g_free (priv->uid);
+	g_free (priv->password);
 
 	g_static_rec_mutex_free (&priv->connect_lock);
 	g_static_mutex_free (&priv->connect_op_lock);
@@ -609,6 +624,18 @@ camel_service_class_init (CamelServiceClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_PASSWORD,
+		g_param_spec_string (
+			"password",
+			"Password",
+			"The password for the service",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_PROVIDER,
 		g_param_spec_pointer (
 			"provider",
@@ -771,6 +798,48 @@ camel_service_set_display_name (CamelService *service,
 	service->priv->display_name = g_strdup (display_name);
 
 	g_object_notify (G_OBJECT (service), "display-name");
+}
+
+/**
+ * camel_service_get_password:
+ * @service: a #CamelService
+ *
+ * Returns the password for @service.  Some SASL mechanisms use this
+ * when attempting to authenticate.
+ *
+ * Returns: the password for @service
+ *
+ * Since: 3.4
+ **/
+const gchar *
+camel_service_get_password (CamelService *service)
+{
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	return service->priv->password;
+}
+
+/**
+ * camel_service_set_password:
+ * @service: a #CamelService
+ * @password: the password for @service
+ *
+ * Sets the password for @service.  Use this function to cache the password
+ * in memory after obtaining it through camel_session_get_password().  Some
+ * SASL mechanisms use this when attempting to authenticate.
+ *
+ * Since: 3.4
+ **/
+void
+camel_service_set_password (CamelService *service,
+                            const gchar *password)
+{
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	g_free (service->priv->password);
+	service->priv->password = g_strdup (password);
+
+	g_object_notify (G_OBJECT (service), "password");
 }
 
 /**

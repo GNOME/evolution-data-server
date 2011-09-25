@@ -1954,6 +1954,8 @@ CamelServiceConnectionStatus
 CamelServiceAuthType
 camel_service_get_display_name
 camel_service_set_display_name
+camel_service_get_password
+camel_service_set_password
 camel_service_get_user_data_dir
 camel_service_get_name
 camel_service_get_provider
@@ -2184,7 +2186,6 @@ CAMEL_STORE_INFO_FOLDER_UNKNOWN
 CamelStoreSummaryFlags
 camel_store_summary_new
 camel_store_summary_set_filename
-camel_store_summary_set_uri_base
 camel_store_summary_load
 camel_store_summary_save
 camel_store_summary_header_load
