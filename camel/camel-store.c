@@ -2082,15 +2082,12 @@ camel_store_get_folder_info_sync (CamelStore *store,
 	camel_operation_pop_message (cancellable);
 
 	if (camel_debug_start("store:folder_info")) {
-		CamelURL *curl;
-		gchar *url;
+		const gchar *uid;
 
-		curl = camel_service_get_camel_url (CAMEL_SERVICE (store));
-		url = camel_url_to_string (curl, CAMEL_URL_HIDE_ALL);
+		uid = camel_service_get_uid (CAMEL_SERVICE (store));
 		printf (
 			"Get folder info(%p:%s, '%s') =\n",
-			(gpointer) store, url, top ? top : "<null>");
-		g_free (url);
+			(gpointer) store, uid, top ? top : "<null>");
 		dump_fi (info, 2);
 		camel_debug_end ();
 	}
