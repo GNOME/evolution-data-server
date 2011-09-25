@@ -9105,6 +9105,14 @@ streams
 @error: 
 @Returns: 
 
+<!-- ##### MACRO camel_store_info_uri ##### -->
+<para>
+
+</para>
+
+@s: 
+@i: 
+
 <!-- ##### FUNCTION camel_store_set_filter_inbox ##### -->
 <para>
 
@@ -9145,6 +9153,14 @@ streams
 @cancellable: 
 @error: 
 @Returns: 
+
+<!-- ##### FUNCTION camel_store_summary_set_uri_base ##### -->
+<para>
+
+</para>
+
+@summary: 
+@base: 
 
 <!-- ##### FUNCTION camel_store_supports_subscriptions ##### -->
 <para>

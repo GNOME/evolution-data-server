@@ -1211,7 +1211,6 @@ nntp_store_initable_init (GInitable *initable,
 {
 	CamelNNTPStore *nntp_store;
 	CamelService *service;
-	CamelURL *summary_url;
 	CamelURL *url;
 	const gchar *user_data_dir;
 	gchar *tmp;
@@ -1234,11 +1233,8 @@ nntp_store_initable_init (GInitable *initable,
 	tmp = g_build_filename (user_data_dir, ".ev-store-summary", NULL);
 	nntp_store->summary = camel_nntp_store_summary_new ();
 	camel_store_summary_set_filename ((CamelStoreSummary *) nntp_store->summary, tmp);
-	summary_url = camel_url_new (nntp_store->base_url, NULL);
-	camel_store_summary_set_uri_base ((CamelStoreSummary *) nntp_store->summary, summary_url);
 	g_free (tmp);
 
-	camel_url_free (summary_url);
 	camel_store_summary_load ((CamelStoreSummary *) nntp_store->summary);
 
 	/* setup store-wide cache */

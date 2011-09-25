@@ -1189,7 +1189,6 @@ imap_store_initable_init (GInitable *initable,
 	CamelImapStore *imap_store;
 	CamelService *service;
 	CamelSettings *settings;
-	CamelURL *summary_url;
 	CamelURL *url;
 	const gchar *user_data_dir;
 	const gchar *real_path;
@@ -1245,9 +1244,6 @@ imap_store_initable_init (GInitable *initable,
 	sprintf(tmp, "%s/.ev-store-summary", user_data_dir);
 	imap_store->summary = camel_imap_store_summary_new ();
 	camel_store_summary_set_filename ((CamelStoreSummary *) imap_store->summary, tmp);
-	summary_url = camel_url_new (imap_store->base_url, NULL);
-	camel_store_summary_set_uri_base ((CamelStoreSummary *) imap_store->summary, summary_url);
-	camel_url_free (summary_url);
 	if (camel_store_summary_load ((CamelStoreSummary *) imap_store->summary) == 0) {
 		CamelImapStoreSummary *is = imap_store->summary;
 

@@ -1538,9 +1538,6 @@ imapx_store_initable_init (GInitable *initable,
 
 	summary = g_build_filename (user_data_dir, ".ev-store-summary", NULL);
 	camel_store_summary_set_filename ((CamelStoreSummary *) store->summary, summary);
-	/* FIXME: need to remove params, passwords, etc */
-	camel_store_summary_set_uri_base (
-		(CamelStoreSummary *) store->summary, url);
 	camel_store_summary_load ((CamelStoreSummary *) store->summary);
 
 	g_free (summary);

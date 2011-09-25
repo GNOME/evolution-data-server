@@ -355,28 +355,6 @@ camel_store_summary_set_filename (CamelStoreSummary *summary,
 }
 
 /**
- * camel_store_summary_set_uri_base:
- * @summary: a #CamelStoreSummary object
- * @base: a #CamelURL
- *
- * Sets the base URI for the summary.
- **/
-void
-camel_store_summary_set_uri_base (CamelStoreSummary *summary,
-                                  CamelURL *base)
-{
-	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
-
-	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-
-	if (summary->uri_base)
-		camel_url_free (summary->uri_base);
-	summary->uri_base = camel_url_new_with_base (base, "");
-
-	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
-}
-
-/**
  * camel_store_summary_count:
  * @summary: a #CamelStoreSummary object
  *

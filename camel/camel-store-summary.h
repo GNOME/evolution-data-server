@@ -32,7 +32,6 @@
 #include <camel/camel-memchunk.h>
 #include <camel/camel-mime-parser.h>
 #include <camel/camel-object.h>
-#include <camel/camel-url.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_STORE_SUMMARY \
@@ -102,7 +101,6 @@ struct _CamelStoreSummary {
 	guint32 flags;		/* flags */
 	guint32 count;		/* how many were saved/loaded */
 	time_t time;		/* timestamp for this summary (for implementors to use) */
-	struct _CamelURL *uri_base;	/* url of base part of summary */
 
 	/* sizes of memory objects */
 	guint32 store_info_size;
@@ -138,7 +136,6 @@ GType			 camel_store_summary_get_type	(void);
 CamelStoreSummary      *camel_store_summary_new	(void);
 
 void camel_store_summary_set_filename (CamelStoreSummary *summary, const gchar *filename);
-void camel_store_summary_set_uri_base (CamelStoreSummary *summary, CamelURL *base);
 
 /* load/save the summary in its entirety */
 gint camel_store_summary_load (CamelStoreSummary *summary);

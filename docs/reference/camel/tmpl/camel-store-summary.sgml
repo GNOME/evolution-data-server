@@ -90,15 +90,6 @@ CamelStoreSummary
 @filename: 
 
 
-<!-- ##### FUNCTION camel_store_summary_set_uri_base ##### -->
-<para>
-
-</para>
-
-@summary: 
-@base: 
-
-
 <!-- ##### FUNCTION camel_store_summary_load ##### -->
 <para>
 
@@ -295,15 +286,6 @@ CamelStoreSummary
 
 
 <!-- ##### MACRO camel_store_info_path ##### -->
-<para>
-
-</para>
-
-@s: 
-@i: 
-
-
-<!-- ##### MACRO camel_store_info_uri ##### -->
 <para>
 
 </para>
