@@ -380,18 +380,21 @@ smtp_transport_connect_sync (CamelService *service,
 
 		/* keep trying to login until either we succeed or the user cancels */
 		while (!authenticated) {
+			const gchar *password;
 			GError *local_error = NULL;
 
 			if (errbuf) {
 				/* We need to un-cache the password before prompting again */
 				password_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-				g_free (url->passwd);
-				url->passwd = NULL;
+				camel_service_set_password (service, NULL);
 			}
 
-			if (!url->passwd) {
+			password = camel_service_get_password (service);
+
+			if (password == NULL) {
 				gchar *base_prompt;
 				gchar *full_prompt;
+				gchar *new_passwd;
 
 				base_prompt = camel_session_build_password_prompt (
 					"SMTP", url->user, url->host);
@@ -401,16 +404,23 @@ smtp_transport_connect_sync (CamelService *service,
 				else
 					full_prompt = g_strdup (base_prompt);
 
-				url->passwd = camel_session_get_password (
+				/* XXX This is a tad awkward.  Maybe define a
+				 *     camel_service_ask_password() that calls
+				 *     camel_session_get_password() and caches
+				 *     the password itself? */
+				new_passwd = camel_session_get_password (
 					session, service, full_prompt,
 					"password", password_flags, error);
+				camel_service_set_password (service, new_passwd);
+				password = camel_service_get_password (service);
+				g_free (new_passwd);
 
 				g_free (base_prompt);
 				g_free (full_prompt);
 				g_free (errbuf);
 				errbuf = NULL;
 
-				if (!url->passwd) {
+				if (password == NULL) {
 					camel_service_disconnect_sync (
 						service, TRUE, NULL);
 					return FALSE;
@@ -427,8 +437,7 @@ smtp_transport_connect_sync (CamelService *service,
 			if (!authenticated) {
 				if (g_cancellable_is_cancelled (cancellable) ||
 				    g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE)) {
-					g_free (url->passwd);
-					url->passwd = NULL;
+					camel_service_set_password (service, NULL);
 
 					if (local_error)
 						g_clear_error (&local_error);
@@ -442,8 +451,7 @@ smtp_transport_connect_sync (CamelService *service,
 					local_error ? local_error->message : _("Unknown error"));
 				g_clear_error (&local_error);
 
-				g_free (url->passwd);
-				url->passwd = NULL;
+				camel_service_set_password (service, NULL);
 			}
 
 		}
@@ -1219,10 +1227,8 @@ smtp_auth (CamelSmtpTransport *transport,
 
 	/* If our authentication data was rejected, destroy the
 	 * password so that the user gets prompted to try again. */
-	if (strncmp (respbuf, "535", 3) == 0) {
-		g_free (url->passwd);
-		url->passwd = NULL;
-	}
+	if (strncmp (respbuf, "535", 3) == 0)
+		camel_service_set_password (service, NULL);
 
 	/* Catch any other errors. */
 	if (strncmp (respbuf, "235", 3) != 0) {
