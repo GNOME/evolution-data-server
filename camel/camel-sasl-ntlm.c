@@ -691,14 +691,20 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	gchar *user;
 	guchar nonce[8], hash[21], lm_resp[24], nt_resp[24];
 	GString *domain = NULL;
+	const gchar *password;
 
 	service = camel_sasl_get_service (sasl);
+
 	url = camel_service_get_camel_url (service);
+	g_return_val_if_fail (url->user != NULL, NULL);
+
+	password = camel_service_get_password (service);
+	/* Assert a non-NULL password below, not here. */
 
 	ret = g_byte_array_new ();
 
 #ifndef G_OS_WIN32
-	if (priv->helper_stream && !url->passwd) {
+	if (priv->helper_stream && password == NULL) {
 		guchar *data;
 		gsize length = 0;
 		gchar buf[1024];
@@ -746,6 +752,8 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	}
 #endif
 
+	g_return_val_if_fail (password != NULL, NULL);
+
 	if (!token || token->len < NTLM_CHALLENGE_NONCE_OFFSET + 8)
 		goto fail;
 
@@ -778,15 +786,15 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 		g_checksum_get_digest (md5, digest, &digest_len);
 
 		g_checksum_free (md5);
-		ntlm_nt_hash (url->passwd, (gchar *) hash);
+		ntlm_nt_hash (password, (gchar *) hash);
 
 		ntlm_calc_response (hash, digest, nt_resp);
 	} else {
 		/* NTLM1 */
 		memcpy (nonce, token->data + NTLM_CHALLENGE_NONCE_OFFSET, 8);
-		ntlm_lanmanager_hash (url->passwd, (gchar *) hash);
+		ntlm_lanmanager_hash (password, (gchar *) hash);
 		ntlm_calc_response (hash, nonce, lm_resp);
-		ntlm_nt_hash (url->passwd, (gchar *) hash);
+		ntlm_nt_hash (password, (gchar *) hash);
 		ntlm_calc_response (hash, nonce, nt_resp);
 	}
 
@@ -864,6 +872,7 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 
 	service = camel_sasl_get_service (sasl);
 	url = camel_service_get_camel_url (service);
+	g_return_val_if_fail (url->user != NULL, FALSE);
 
 	user = strchr (url->user, '\\');
 	if (user) {
