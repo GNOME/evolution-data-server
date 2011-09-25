@@ -645,13 +645,9 @@ nntp_store_info_update (CamelNNTPStore *store,
                         gchar *line)
 {
 	CamelStoreSummary *summ = (CamelStoreSummary *) store->summary;
-	CamelURL *base_url;
 	CamelNNTPStoreInfo *si, *fsi;
-	CamelURL *url;
 	gchar *relpath, *tmp;
 	guint32 last = 0, first = 0, new = 0;
-
-	base_url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
 	tmp = strchr (line, ' ');
 	if (tmp)
@@ -663,9 +659,6 @@ nntp_store_info_update (CamelNNTPStore *store,
 
 		relpath = g_alloca (strlen (line) + 2);
 		sprintf(relpath, "/%s", line);
-		url = camel_url_new_with_base (base_url, relpath);
-		si->info.uri = camel_url_to_string (url, CAMEL_URL_HIDE_ALL);
-		camel_url_free (url);
 
 		si->info.path = g_strdup (line);
 		si->full_name = g_strdup (line); /* why do we keep this? */

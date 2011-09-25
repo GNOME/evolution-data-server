@@ -70,7 +70,6 @@ enum {
 
 struct _CamelStoreInfo {
 	guint32 refcount;
-	gchar *uri;
 	gchar *path;
 	guint32 flags;
 	guint32 unread;
