@@ -442,6 +442,7 @@ camel_imap_folder_new (CamelStore *parent,
 		const gchar *junk_path;
 		const gchar *trash_path;
 		gboolean filter_junk;
+		gboolean filter_junk_inbox;
 		gboolean folder_is_junk;
 		gboolean folder_is_trash;
 
@@ -464,8 +465,10 @@ camel_imap_folder_new (CamelStore *parent,
 
 		filter_junk = camel_imap_settings_get_filter_junk (
 			CAMEL_IMAP_SETTINGS (settings));
+		filter_junk_inbox = camel_imap_settings_get_filter_junk_inbox (
+			CAMEL_IMAP_SETTINGS (settings));
 
-		if (filter_junk)
+		if (filter_junk && !filter_junk_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
 
 		folder_is_trash =
