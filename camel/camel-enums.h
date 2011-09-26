@@ -72,6 +72,14 @@ typedef enum { /*< flags >*/
  *    The folder shows junk messages.
  * @CAMEL_FOLDER_TYPE_SENT:
  *    The folder shows sent messages.
+ * @CAMEL_FOLDER_TYPE_CONTACTS:
+ *    The folder contains contacts, instead of mail messages.
+ * @CAMEL_FOLDER_TYPE_EVENTS:
+ *    The folder contains calendar events, instead of mail messages.
+ * @CAMEL_FOLDER_TYPE_MEMOS:
+ *    The folder contains memos, instead of mail messages.
+ * @CAMEL_FOLDER_TYPE_TASKS:
+ *    The folder contains tasks, instead of mail messages.
  *
  * These flags are abstractions.  It's up to the CamelProvider to give
  * them suitable interpretations.  Use #CAMEL_FOLDER_TYPE_MASK to isolate
@@ -96,6 +104,10 @@ typedef enum { /*< flags >*/
 	CAMEL_FOLDER_TYPE_TRASH    = 3 << CAMEL_FOLDER_TYPE_BIT,
 	CAMEL_FOLDER_TYPE_JUNK     = 4 << CAMEL_FOLDER_TYPE_BIT,
 	CAMEL_FOLDER_TYPE_SENT     = 5 << CAMEL_FOLDER_TYPE_BIT,
+	CAMEL_FOLDER_TYPE_CONTACTS = 6 << CAMEL_FOLDER_TYPE_BIT,
+	CAMEL_FOLDER_TYPE_EVENTS   = 7 << CAMEL_FOLDER_TYPE_BIT,
+	CAMEL_FOLDER_TYPE_MEMOS    = 8 << CAMEL_FOLDER_TYPE_BIT,
+	CAMEL_FOLDER_TYPE_TASKS    = 9 << CAMEL_FOLDER_TYPE_BIT,
 	CAMEL_FOLDER_READONLY      = 1 << 16,
 	CAMEL_FOLDER_CHECK_FOR_NEW = 1 << 17,
 	CAMEL_FOLDER_FLAGGED       = 1 << 18,
