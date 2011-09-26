@@ -363,10 +363,12 @@ resolve_tzid (const gchar *tzid,
 	return e_cal_backend_internal_get_timezone (ctx->backend, tzid);
 }
 
-/* (occur-in-time-range? START END)
+/* (occur-in-time-range? START END TZLOC)
  *
- * START - time_t, start of the time range
- * END - time_t, end of the time range
+ * START - time_t, start of the time range, in UTC
+ * END - time_t, end of the time range, in UTC
+ * TZLOC - optional string with timezone location to use
+ *        as default timezone; if not set, UTC is used
  *
  * Returns a boolean indicating whether the component has any occurrences in the
  * specified time range.
@@ -380,12 +382,12 @@ func_occur_in_time_range (ESExp *esexp,
 	SearchContext *ctx = data;
 	time_t start, end;
 	ESExpResult *result;
-	icaltimezone *default_zone;
+	icaltimezone *default_zone = NULL;
 
 	/* Check argument types */
 
-	if (argc != 2) {
-		e_sexp_fatal_error (esexp, _("\"%s\" expects two arguments"),
+	if (argc != 2 && argc != 3) {
+		e_sexp_fatal_error (esexp, _("\"%s\" expects two or three arguments"),
 				    "occur-in-time-range");
 		return NULL;
 	}
@@ -406,9 +408,21 @@ func_occur_in_time_range (ESExp *esexp,
 	}
 	end = argv[1]->value.time;
 
-	/* See if the object occurs in the specified time range */
-	default_zone = icaltimezone_get_utc_timezone ();
+	if (argc == 3) {
+		if (argv[2]->type != ESEXP_RES_STRING) {
+			e_sexp_fatal_error (esexp, _("\"%s\" expects the third "
+						     "argument to be a string"),
+					    "occur-in-time-range");
+			return NULL;
+		}
+		
+		default_zone = resolve_tzid (argv[2]->value.string, ctx);
+	}
 
+	if (!default_zone)
+		default_zone = icaltimezone_get_utc_timezone ();
+
+	/* See if the object occurs in the specified time range */
 	ctx->occurs = FALSE;
 	e_cal_recur_generate_instances (ctx->comp, start, end,
 					(ECalRecurInstanceFn) check_instance_time_range_cb,

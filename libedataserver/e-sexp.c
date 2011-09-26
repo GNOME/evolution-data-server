@@ -887,6 +887,23 @@ const gchar *time_functions[] = {
 };
 
 static gboolean
+occur_in_time_range_generator (gint argc,
+                  struct _ESExpResult **argv,
+                  struct _ESExpResult *r)
+{
+	g_return_val_if_fail (r != NULL, FALSE);
+	g_return_val_if_fail (argc == 2 || argc == 3, FALSE);
+
+	if ((argv[0]->type != ESEXP_RES_TIME) || (argv[1]->type != ESEXP_RES_TIME))
+		return FALSE;
+
+	r->occuring_start = argv[0]->value.time;
+	r->occuring_end = argv[1]->value.time;
+
+	return TRUE;
+}
+
+static gboolean
 binary_generator (gint argc,
                   struct _ESExpResult **argv,
                   struct _ESExpResult *r)
@@ -925,7 +942,7 @@ static const struct {
 	const gchar *name;
 	ESGeneratorFunc *func;
 } generators[] = {
-	{"occur-in-time-range?", binary_generator},
+	{"occur-in-time-range?", occur_in_time_range_generator},
 	{"due-in-time-range?", binary_generator},
 	{"has-alarms-in-range?", binary_generator},
 	{"completed-before?", unary_generator},
