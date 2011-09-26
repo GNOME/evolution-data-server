@@ -2985,7 +2985,6 @@ camel_url_decode_path
 camel_url_set_protocol
 camel_url_set_user
 camel_url_set_authmech
-camel_url_set_passwd
 camel_url_set_host
 camel_url_set_port
 camel_url_set_path

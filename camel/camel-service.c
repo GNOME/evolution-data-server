@@ -533,7 +533,7 @@ service_initable_init (GInitable *initable,
 	url = camel_service_get_camel_url (service);
 	provider = camel_service_get_provider (service);
 
-	url_string = camel_url_to_string (url, CAMEL_URL_HIDE_PASSWORD);
+	url_string = camel_url_to_string (url, 0);
 
 	if (CAMEL_PROVIDER_NEEDS (provider, CAMEL_URL_PART_USER)) {
 		if (url->user == NULL || *url->user == '\0') {
@@ -1052,8 +1052,7 @@ camel_service_get_camel_url (CamelService *service)
  * @service: a #CamelService
  *
  * Gets the URL representing @service. The returned URL must be
- * freed when it is no longer needed. For security reasons, this
- * routine does not return the password.
+ * freed when it is no longer needed.
  *
  * Returns: the URL representing @service
  **/
@@ -1066,7 +1065,7 @@ camel_service_get_url (CamelService *service)
 
 	url = camel_service_get_camel_url (service);
 
-	return camel_url_to_string (url, CAMEL_URL_HIDE_PASSWORD);
+	return camel_url_to_string (url, 0);
 }
 
 /**

@@ -43,7 +43,6 @@ struct _CamelURL {
 	gchar  *protocol;
 	gchar  *user;
 	gchar  *authmech;
-	gchar  *passwd;
 	gchar  *host;
 	gint    port;
 	gchar  *path;
@@ -53,13 +52,12 @@ struct _CamelURL {
 };
 
 typedef enum {
-	CAMEL_URL_HIDE_PASSWORD = 1 << 0,
-	CAMEL_URL_HIDE_PARAMS   = 1 << 1,
-	CAMEL_URL_HIDE_AUTH     = 1 << 2
+	CAMEL_URL_HIDE_PARAMS   = 1 << 0,
+	CAMEL_URL_HIDE_AUTH     = 1 << 1
 } CamelURLFlags;
 
 #define CAMEL_URL_HIDE_ALL \
-	(CAMEL_URL_HIDE_PASSWORD | CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH)
+	(CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH)
 
 GType		camel_url_get_type		(void) G_GNUC_CONST;
 CamelURL *	camel_url_new_with_base		(CamelURL *base,
@@ -86,8 +84,6 @@ void		camel_url_set_user		(CamelURL *url,
 						 const gchar *user);
 void		camel_url_set_authmech		(CamelURL *url,
 						 const gchar *authmech);
-void		camel_url_set_passwd		(CamelURL *url,
-						 const gchar *passwd);
 void		camel_url_set_host		(CamelURL *url,
 						 const gchar *host);
 void		camel_url_set_port		(CamelURL *url,

@@ -28,7 +28,6 @@ camel-url
 @protocol: 
 @user: 
 @authmech: 
-@passwd: 
 @host: 
 @port: 
 @path: 
@@ -41,7 +40,6 @@ camel-url
 
 </para>
 
-@CAMEL_URL_HIDE_PASSWORD: 
 @CAMEL_URL_HIDE_PARAMS: 
 @CAMEL_URL_HIDE_AUTH: 
 
@@ -142,15 +140,6 @@ camel-url
 
 @url: 
 @authmech: 
-
-
-<!-- ##### FUNCTION camel_url_set_passwd ##### -->
-<para>
-
-</para>
-
-@url: 
-@passwd: 
 
 
 <!-- ##### FUNCTION camel_url_set_host ##### -->

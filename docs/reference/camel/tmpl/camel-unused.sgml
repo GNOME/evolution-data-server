@@ -9388,6 +9388,14 @@ streams
 @type: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_url_set_passwd ##### -->
+<para>
+
+</para>
+
+@url: 
+@passwd: 
+
 <!-- ##### FUNCTION camel_ustrstrcase ##### -->
 <para>
 

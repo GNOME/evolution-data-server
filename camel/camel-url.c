@@ -129,11 +129,9 @@ camel_url_new_with_base (CamelURL *base,
 		if (at && at < slash) {
 			colon = strchr (url_string, ':');
 			if (colon && colon < at) {
-				url->passwd = g_strndup (colon + 1,
-							 at - colon - 1);
-				camel_url_decode (url->passwd);
+				/* XXX We used to extract and store the
+				 *     password here, now we just eat it. */
 			} else {
-				url->passwd = NULL;
 				colon = at;
 			}
 
@@ -152,7 +150,7 @@ camel_url_new_with_base (CamelURL *base,
 			camel_url_decode (url->user);
 			url_string = at + 1;
 		} else
-			url->user = url->passwd = url->authmech = NULL;
+			url->user = url->authmech = NULL;
 
 		/* Find host and port. */
 		colon = strchr (url_string, ':');
@@ -217,7 +215,7 @@ camel_url_new_with_base (CamelURL *base,
 	if (base && !url->protocol && url->host)
 		url->protocol = g_strdup (base->protocol);
 	else if (base && !url->protocol) {
-		if (!url->user && !url->authmech && !url->passwd &&
+		if (!url->user && !url->authmech &&
 		    !url->host && !url->port && !url->path &&
 		    !url->params && !url->query && !url->fragment)
 			url->fragment = g_strdup (base->fragment);
@@ -225,7 +223,6 @@ camel_url_new_with_base (CamelURL *base,
 		url->protocol = g_strdup (base->protocol);
 		url->user = g_strdup (base->user);
 		url->authmech = g_strdup (base->authmech);
-		url->passwd = g_strdup (base->passwd);
 		url->host = g_strdup (base->host);
 		url->port = base->port;
 
@@ -376,10 +373,6 @@ camel_url_to_string (CamelURL *url,
 				g_string_append (str, ";auth=");
 				append_url_encoded (str, url->authmech, ":@/");
 			}
-			if (url->passwd && !(flags & CAMEL_URL_HIDE_PASSWORD)) {
-				g_string_append_c (str, ':');
-				append_url_encoded (str, url->passwd, "@/");
-			}
 			g_string_append_c (str, '@');
 		}
 		append_url_encoded (str, url->host, ":/");
@@ -433,8 +426,6 @@ void
 camel_url_free (CamelURL *url)
 {
 	if (url) {
-		if (url->passwd)
-			memset (url->passwd, 0, strlen (url->passwd));
 		if (url->user)
 			memset (url->user, 0, strlen (url->user));
 		if (url->host)
@@ -442,7 +433,6 @@ camel_url_free (CamelURL *url)
 		g_free (url->protocol);
 		g_free (url->user);
 		g_free (url->authmech);
-		g_free (url->passwd);
 		g_free (url->host);
 		g_free (url->path);
 		g_datalist_clear (&url->params);
@@ -502,23 +492,6 @@ camel_url_set_authmech (CamelURL *url,
 
 	g_free (url->authmech);
 	url->authmech = g_strdup (authmech);
-}
-
-/**
- * camel_url_set_passwd:
- * @url: a #CamelURL
- * @passwd: password
- *
- * Set the password of a #CamelURL.
- **/
-void
-camel_url_set_passwd (CamelURL *url,
-                      const gchar *passwd)
-{
-	g_return_if_fail (url != NULL);
-
-	g_free (url->passwd);
-	url->passwd = g_strdup (passwd);
 }
 
 /**
@@ -805,7 +778,6 @@ camel_url_copy (CamelURL *in)
 	out->protocol = g_strdup (in->protocol);
 	out->user = g_strdup (in->user);
 	out->authmech = g_strdup (in->authmech);
-	out->passwd = g_strdup (in->passwd);
 	out->host = g_strdup (in->host);
 	out->port = in->port;
 	out->path = g_strdup (in->path);
