@@ -2339,37 +2339,6 @@ e_book_get_contacts_async (EBook *book,
 	return TRUE;
 }
 
-static GList *
-parse_changes_array (GVariant *var_changes)
-{
-	GList *l = NULL;
-	GVariantIter iter;
-	guint32 val_uint;
-	gchar *val_str;
-
-	if (var_changes == NULL)
-		return NULL;
-
-	g_variant_iter_init (&iter, var_changes);
-	while (g_variant_iter_next (&iter, "(us)", &val_uint, &val_str)) {
-		EBookChange *change;
-
-		if (val_uint ==  (guint32) -1 || !val_str || !*val_str) {
-			/* skip empty values */
-		} else {
-			change = g_slice_new (EBookChange);
-			change->change_type = val_uint;
-			change->contact = e_contact_new_from_vcard (val_str);
-
-			l = g_list_prepend (l, change);
-		}
-
-		g_free (val_str);
-	}
-
-	return g_list_reverse (l);
-}
-
 /**
  * e_book_get_changes: (skip)
  * @book: an #EBook
@@ -2390,28 +2359,16 @@ e_book_get_changes (EBook *book,
                     GList **changes,
                     GError **error)
 {
-	GError *err = NULL;
-	GVariant *var_changes = NULL;
-	gchar *gdbus_changeid = NULL;
-
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 
 	e_return_error_if_fail (
 		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-
-	/*e_gdbus_book_call_get_changes_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (changeid, &gdbus_changeid), &var_changes, NULL, &err);*/
-
-	g_free (gdbus_changeid);
-
-	if (!err) {
-		*changes = parse_changes_array (var_changes);
-
-		g_variant_unref (var_changes);
-
-		return TRUE;
-	} else {
-		return unwrap_gerror (err, error);
+	
+	if (error) {	
+		*error = g_error_new (E_BOOK_ERROR, E_BOOK_ERROR_NOT_SUPPORTED, "Not supported");
 	}
+
+	return FALSE;
 }
 
 /**
