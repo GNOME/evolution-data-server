@@ -99,7 +99,7 @@ struct _CamelNNTPStore {
 
 	struct _CamelDataCache *cache;
 
-	gchar *current_folder, *base_url;
+	gchar *current_folder;
 
 	struct _xover_header *xover;
 	guint32 capabilities; /* bit-or of nntp_capabilities */

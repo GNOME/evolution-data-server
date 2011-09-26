@@ -206,8 +206,6 @@ nntp_store_finalize (GObject *object)
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (object);
 	struct _xover_header *xover, *xn;
 
-	g_free (nntp_store->base_url);
-
 	xover = nntp_store->xover;
 	while (xover) {
 		xn = xover->next;
@@ -1254,8 +1252,8 @@ nntp_store_initable_init (GInitable *initable,
 	CamelNNTPStore *nntp_store;
 	CamelStore *store;
 	CamelService *service;
-	CamelURL *url;
-	const gchar *user_data_dir, *user_cache_dir;
+	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	gchar *tmp;
 
 	nntp_store = CAMEL_NNTP_STORE (initable);
@@ -1269,7 +1267,7 @@ nntp_store_initable_init (GInitable *initable,
 	if (!parent_initable_interface->init (initable, cancellable, error))
 		return FALSE;
 
-	url = camel_service_get_camel_url (service);
+	service = CAMEL_SERVICE (initable);
 	user_data_dir = camel_service_get_user_data_dir (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
 
@@ -1280,11 +1278,6 @@ nntp_store_initable_init (GInitable *initable,
 			g_strerror (errno));
 		return FALSE;
 	}
-
-	/* FIXME */
-	nntp_store->base_url = camel_url_to_string (
-		url, CAMEL_URL_HIDE_PASSWORD |
-		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
 
 	tmp = g_build_filename (user_data_dir, ".ev-store-summary", NULL);
 	nntp_store->summary = camel_nntp_store_summary_new ();
