@@ -146,6 +146,8 @@ struct _CamelSessionClass {
 
 GType		camel_session_get_type		(void);
 const gchar *	camel_session_get_user_data_dir	(CamelSession *session);
+const gchar *	camel_session_get_user_cache_dir
+						(CamelSession *session);
 void            camel_session_set_socks_proxy   (CamelSession *session,
 						 const gchar *socks_host,
 						 gint socks_port);

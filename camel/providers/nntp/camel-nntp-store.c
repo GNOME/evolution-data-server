@@ -25,12 +25,14 @@
 #include <config.h>
 #endif
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 
+#include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-nntp-folder.h"
@@ -331,14 +333,14 @@ connect_to_server (CamelService *service,
 	CamelDiscoStore *disco_store = (CamelDiscoStore *) service;
 	CamelURL *url;
 	CamelStream *tcp_stream;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	gboolean retval = FALSE;
 	guchar *buf;
 	guint len;
 	gchar *path;
 
 	url = camel_service_get_camel_url (service);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
@@ -390,7 +392,7 @@ connect_to_server (CamelService *service,
 		goto fail;
 
 	if (!disco_store->diary) {
-		path = g_build_filename (user_data_dir, ".ev-journal", NULL);
+		path = g_build_filename (user_cache_dir, ".ev-journal", NULL);
 		disco_store->diary = camel_disco_diary_new (disco_store, path, error);
 		g_free (path);
 	}
@@ -445,14 +447,14 @@ nntp_connect_offline (CamelService *service,
 {
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (service);
 	CamelDiscoStore *disco_store = (CamelDiscoStore *) nntp_store;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	gchar *path;
 
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	/* setup store-wide cache */
 	if (nntp_store->cache == NULL) {
-		nntp_store->cache = camel_data_cache_new (user_data_dir, error);
+		nntp_store->cache = camel_data_cache_new (user_cache_dir, error);
 		if (nntp_store->cache == NULL)
 			return FALSE;
 
@@ -464,7 +466,7 @@ nntp_connect_offline (CamelService *service,
 	if (disco_store->diary)
 		return TRUE;
 
-	path = g_build_filename (user_data_dir, ".ev-journal", NULL);
+	path = g_build_filename (user_cache_dir, ".ev-journal", NULL);
 	disco_store->diary = camel_disco_diary_new (disco_store, path, error);
 	g_free (path);
 
@@ -1197,26 +1199,87 @@ nntp_can_refresh_folder (CamelStore *store,
 	return TRUE;
 }
 
+/* nntp stores part of its data in user_data_dir and part in user_cache_dir,
+   thus check whether to migrate based on folders.db file */
+static void
+nntp_migrate_to_user_cache_dir (CamelService *service)
+{
+	const gchar *user_data_dir, *user_cache_dir;
+	gchar *udd_folders_db, *ucd_folders_db;
+
+	g_return_if_fail (service != NULL);
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	g_return_if_fail (user_data_dir != NULL);
+	g_return_if_fail (user_cache_dir != NULL);
+
+	udd_folders_db = g_build_filename (user_data_dir, "folders.db", NULL);
+	ucd_folders_db = g_build_filename (user_cache_dir, "folders.db", NULL);
+
+	/* migrate only if the source directory exists and the destination doesn't */
+	if (g_file_test (udd_folders_db, G_FILE_TEST_EXISTS) &&
+	    !g_file_test (ucd_folders_db, G_FILE_TEST_EXISTS)) {
+		gchar *parent_dir;
+
+		parent_dir = g_path_get_dirname (user_cache_dir);
+		g_mkdir_with_parents (parent_dir, S_IRWXU);
+		g_free (parent_dir);
+
+		if (g_rename (user_data_dir, user_cache_dir) == -1) {
+			g_debug ("%s: Failed to migrate '%s' to '%s': %s", G_STRFUNC, user_data_dir, user_cache_dir, g_strerror (errno));
+		} else if (g_mkdir_with_parents (user_data_dir, S_IRWXU) != -1) {
+			gchar *udd_ev_store_summary, *ucd_ev_store_summary;
+
+			udd_ev_store_summary = g_build_filename (user_data_dir, ".ev-store-summary", NULL);
+			ucd_ev_store_summary = g_build_filename (user_cache_dir, ".ev-store-summary", NULL);
+
+			/* return back the .ev-store-summary file, it's saved in user_data_dir */
+			if (g_rename (ucd_ev_store_summary, udd_ev_store_summary) == -1)
+				g_debug ("%s: Failed to return back '%s' to '%s': %s", G_STRFUNC, ucd_ev_store_summary, udd_ev_store_summary, g_strerror (errno));
+		}
+	}
+
+	g_free (udd_folders_db);
+	g_free (ucd_folders_db);
+}
+
 static gboolean
 nntp_store_initable_init (GInitable *initable,
                           GCancellable *cancellable,
                           GError **error)
 {
 	CamelNNTPStore *nntp_store;
+	CamelStore *store;
 	CamelService *service;
 	CamelURL *url;
-	const gchar *user_data_dir;
+	const gchar *user_data_dir, *user_cache_dir;
 	gchar *tmp;
 
 	nntp_store = CAMEL_NNTP_STORE (initable);
+	store = CAMEL_STORE (initable);
+	service = CAMEL_SERVICE (initable);
+
+	store->flags |= CAMEL_STORE_USE_CACHE_DIR;
+	nntp_migrate_to_user_cache_dir (service);
 
 	/* Chain up to parent interface's init() method. */
 	if (!parent_initable_interface->init (initable, cancellable, error))
 		return FALSE;
 
-	service = CAMEL_SERVICE (initable);
 	url = camel_service_get_camel_url (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	if (g_mkdir_with_parents (user_data_dir, S_IRWXU) == -1) {
+		g_set_error_literal (
+			error, G_FILE_ERROR,
+			g_file_error_from_errno (errno),
+			g_strerror (errno));
+		return FALSE;
+	}
 
 	/* FIXME */
 	nntp_store->base_url = camel_url_to_string (
@@ -1231,7 +1294,7 @@ nntp_store_initable_init (GInitable *initable,
 	camel_store_summary_load ((CamelStoreSummary *) nntp_store->summary);
 
 	/* setup store-wide cache */
-	nntp_store->cache = camel_data_cache_new (user_data_dir, error);
+	nntp_store->cache = camel_data_cache_new (user_cache_dir, error);
 	if (nntp_store->cache == NULL)
 		return FALSE;
 

@@ -1181,30 +1181,63 @@ imap_store_query_auth_types_sync (CamelService *service,
 	return g_list_prepend (sasl_types, &camel_imap_password_authtype);
 }
 
+static void
+imap_migrate_to_user_cache_dir (CamelService *service)
+{
+	const gchar *user_data_dir, *user_cache_dir;
+
+	g_return_if_fail (service != NULL);
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	g_return_if_fail (user_data_dir != NULL);
+	g_return_if_fail (user_cache_dir != NULL);
+
+	/* migrate only if the source directory exists and the destination doesn't */
+	if (g_file_test (user_data_dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR) &&
+	    !g_file_test (user_cache_dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+		gchar *parent_dir;
+
+		parent_dir = g_path_get_dirname (user_cache_dir);
+		g_mkdir_with_parents (parent_dir, S_IRWXU);
+		g_free (parent_dir);
+
+		if (g_rename (user_data_dir, user_cache_dir) == -1)
+			g_debug ("%s: Failed to migrate '%s' to '%s': %s", G_STRFUNC, user_data_dir, user_cache_dir, g_strerror (errno));
+	}
+}
+
 static gboolean
 imap_store_initable_init (GInitable *initable,
                           GCancellable *cancellable,
                           GError **error)
 {
 	CamelImapStore *imap_store;
+	CamelStore *store;
 	CamelService *service;
 	CamelSettings *settings;
 	CamelURL *url;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	const gchar *real_path;
 	gboolean use_real_path;
-	gchar *tmp;
+	gchar *tmp_path;
 
 	imap_store = CAMEL_IMAP_STORE (initable);
+	store = CAMEL_STORE (initable);
+	service = CAMEL_SERVICE (initable);
+
+	store->flags |= CAMEL_STORE_USE_CACHE_DIR;
+	imap_migrate_to_user_cache_dir (service);
 
 	/* Chain up to parent interface's init() method. */
 	if (!parent_initable_interface->init (initable, cancellable, error))
 		return FALSE;
 
-	service = CAMEL_SERVICE (initable);
 	url = camel_service_get_camel_url (service);
 	settings = camel_service_get_settings (service);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	/* FIXME */
 	imap_store->base_url = camel_url_to_string (
@@ -1240,10 +1273,10 @@ imap_store_initable_init (GInitable *initable,
 		CAMEL_STORE (service)->flags |= CAMEL_STORE_VTRASH;
 
 	/* setup/load the store summary */
-	tmp = alloca (strlen (user_data_dir) + 32);
-	sprintf(tmp, "%s/.ev-store-summary", user_data_dir);
+	tmp_path = g_build_filename (user_cache_dir, ".ev-store-summary", NULL);
 	imap_store->summary = camel_imap_store_summary_new ();
-	camel_store_summary_set_filename ((CamelStoreSummary *) imap_store->summary, tmp);
+	camel_store_summary_set_filename ((CamelStoreSummary *) imap_store->summary, tmp_path);
+	g_free (tmp_path);
 	if (camel_store_summary_load ((CamelStoreSummary *) imap_store->summary) == 0) {
 		CamelImapStoreSummary *is = imap_store->summary;
 
@@ -1545,7 +1578,7 @@ imap_forget_folder (CamelImapStore *imap_store,
                     GError **error)
 {
 	CamelService *service;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	gchar *state_file;
 	gchar *journal_file;
 	gchar *folder_dir, *storage_path;
@@ -1559,9 +1592,9 @@ imap_forget_folder (CamelImapStore *imap_store,
 		name = folder_name;
 
 	service = CAMEL_SERVICE (imap_store);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
-	storage_path = g_strdup_printf ("%s/folders", user_data_dir);
+	storage_path = g_build_filename (user_cache_dir, "folders", NULL);
 	folder_dir = imap_path_to_physical (storage_path, folder_name);
 	g_free (storage_path);
 	if (g_access (folder_dir, F_OK) != 0) {
@@ -1684,11 +1717,11 @@ imap_store_get_trash_folder_sync (CamelStore *store,
 	CamelSettings *settings;
 	CamelFolder *folder = NULL;
 	const gchar *trash_path;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	trash_path = camel_imap_settings_get_real_trash_path (
 		CAMEL_IMAP_SETTINGS (settings));
@@ -1711,7 +1744,7 @@ imap_store_get_trash_folder_sync (CamelStore *store,
 		gchar *state;
 
 		state = g_build_filename (
-			user_data_dir, "system", "Trash.cmeta", NULL);
+			user_cache_dir, "system", "Trash.cmeta", NULL);
 
 		camel_object_set_state_filename (object, state);
 		g_free (state);
@@ -1731,11 +1764,11 @@ imap_store_get_junk_folder_sync (CamelStore *store,
 	CamelSettings *settings;
 	CamelFolder *folder = NULL;
 	const gchar *junk_path;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	junk_path = camel_imap_settings_get_real_junk_path (
 		CAMEL_IMAP_SETTINGS (settings));
@@ -1758,7 +1791,7 @@ imap_store_get_junk_folder_sync (CamelStore *store,
 		gchar *state;
 
 		state = g_build_filename (
-			user_data_dir, "system", "Junk.cmeta", NULL);
+			user_cache_dir, "system", "Junk.cmeta", NULL);
 
 		camel_object_set_state_filename (object, state);
 		g_free (state);
@@ -1909,12 +1942,12 @@ imap_store_get_folder_sync (CamelStore *store,
 	CamelImapResponse *response;
 	CamelFolder *new_folder;
 	CamelService *service;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	gchar *folder_dir, *storage_path;
 	GError *local_error = NULL;
 
 	service = CAMEL_SERVICE (store);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	/* Try to get it locally first, if it is, then the client will
 	 * force a select when necessary */
@@ -2106,7 +2139,7 @@ imap_store_get_folder_sync (CamelStore *store,
 		return NULL;
 	}
 
-	storage_path = g_strdup_printf("%s/folders", user_data_dir);
+	storage_path = g_build_filename (user_cache_dir, "folders", NULL);
 	folder_dir = imap_path_to_physical (storage_path, folder_name);
 	g_free (storage_path);
 	new_folder = camel_imap_folder_new (store, folder_name, folder_dir, error);
@@ -2139,10 +2172,10 @@ get_folder_offline (CamelStore *store,
 	CamelFolder *new_folder = NULL;
 	CamelStoreInfo *si;
 	CamelService *service;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 
 	service = CAMEL_SERVICE (store);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	si = camel_store_summary_path ((CamelStoreSummary *) imap_store->summary, folder_name);
 	if (si) {
@@ -2158,7 +2191,7 @@ get_folder_offline (CamelStore *store,
 		if (!g_ascii_strcasecmp (folder_name, "INBOX"))
 			folder_name = "INBOX";
 
-		storage_path = g_strdup_printf("%s/folders", user_data_dir);
+		storage_path = g_build_filename (user_cache_dir, "folders", NULL);
 		folder_dir = imap_path_to_physical (storage_path, folder_name);
 		g_free (storage_path);
 		new_folder = camel_imap_folder_new (store, folder_name, folder_dir, error);
@@ -2306,14 +2339,14 @@ imap_store_rename_folder_sync (CamelStore *store,
 	CamelImapResponse *response;
 	CamelService *service;
 	CamelSettings *settings;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	gchar *oldpath, *newpath, *storage_path;
 	gboolean use_subscriptions;
 	gboolean success = TRUE;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	use_subscriptions = camel_imap_settings_get_use_subscriptions (
 		CAMEL_IMAP_SETTINGS (settings));
@@ -2363,7 +2396,7 @@ imap_store_rename_folder_sync (CamelStore *store,
 		manage_subscriptions (
 			store, new_name_in, TRUE, cancellable);
 
-	storage_path = g_strdup_printf("%s/folders", user_data_dir);
+	storage_path = g_build_filename (user_cache_dir, "folders", NULL);
 	oldpath = imap_path_to_physical (storage_path, old_name);
 	newpath = imap_path_to_physical (storage_path, new_name_in);
 

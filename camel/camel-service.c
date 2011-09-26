@@ -58,6 +58,7 @@ struct _CamelServicePrivate {
 
 	gchar *display_name;
 	gchar *user_data_dir;
+	gchar *user_cache_dir;
 	gchar *uid;
 
 	GCancellable *connect_op;
@@ -354,6 +355,7 @@ service_finalize (GObject *object)
 
 	g_free (priv->display_name);
 	g_free (priv->user_data_dir);
+	g_free (priv->user_cache_dir);
 	g_free (priv->uid);
 
 	g_static_rec_mutex_free (&priv->connect_lock);
@@ -368,7 +370,7 @@ service_constructed (GObject *object)
 {
 	CamelService *service;
 	CamelSession *session;
-	const gchar *base_data_dir;
+	const gchar *base_dir;
 	const gchar *uid;
 
 	/* Chain up to parent's constructed() method. */
@@ -378,10 +380,12 @@ service_constructed (GObject *object)
 	session = camel_service_get_session (service);
 
 	uid = camel_service_get_uid (service);
-	base_data_dir = camel_session_get_user_data_dir (session);
 
-	service->priv->user_data_dir =
-		g_build_filename (base_data_dir, uid, NULL);
+	base_dir = camel_session_get_user_data_dir (session);
+	service->priv->user_data_dir = g_build_filename (base_dir, uid, NULL);
+
+	base_dir = camel_session_get_user_cache_dir (session);
+	service->priv->user_cache_dir = g_build_filename (base_dir, uid, NULL);
 }
 
 static gchar *
@@ -788,6 +792,27 @@ camel_service_get_user_data_dir (CamelService *service)
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
 	return service->priv->user_data_dir;
+}
+
+/**
+ * camel_service_get_user_cache_dir:
+ * @service: a #CamelService
+ *
+ * Returns the base directory under which to store cache data
+ * for @service.  The directory is formed by appending the directory
+ * returned by camel_session_get_user_cache_dir() with the service's
+ * #CamelService:uid value.
+ *
+ * Returns: the base cache directory for @service
+ *
+ * Since: 3.4
+ **/
+const gchar *
+camel_service_get_user_cache_dir (CamelService *service)
+{
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	return service->priv->user_cache_dir;
 }
 
 /**

@@ -318,7 +318,8 @@ typedef enum { /*< flags >*/
 	CAMEL_STORE_PROXY            = 1 << 2,
 	CAMEL_STORE_IS_MIGRATING     = 1 << 3,
 	CAMEL_STORE_REAL_JUNK_FOLDER = 1 << 4,
-	CAMEL_STORE_CAN_EDIT_FOLDERS = 1 << 5
+	CAMEL_STORE_CAN_EDIT_FOLDERS = 1 << 5,
+	CAMEL_STORE_USE_CACHE_DIR    = 1 << 6
 } CamelStoreFlags;
 
 /**

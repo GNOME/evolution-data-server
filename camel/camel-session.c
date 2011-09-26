@@ -63,6 +63,7 @@ struct _CamelSessionPrivate {
 	GMutex *thread_lock;	/* locking threads */
 
 	gchar *user_data_dir;
+	gchar *user_cache_dir;
 
 	GHashTable *services;
 	GHashTable *junk_headers;
@@ -93,6 +94,7 @@ enum {
 	PROP_NETWORK_AVAILABLE,
 	PROP_ONLINE,
 	PROP_USER_DATA_DIR,
+	PROP_USER_CACHE_DIR
 };
 
 enum {
@@ -194,6 +196,16 @@ session_set_user_data_dir (CamelSession *session,
 }
 
 static void
+session_set_user_cache_dir (CamelSession *session,
+			    const gchar *user_cache_dir)
+{
+	g_return_if_fail (user_cache_dir != NULL);
+	g_return_if_fail (session->priv->user_cache_dir == NULL);
+
+	session->priv->user_cache_dir = g_strdup (user_cache_dir);
+}
+
+static void
 session_set_property (GObject *object,
                       guint property_id,
                       const GValue *value,
@@ -226,6 +238,12 @@ session_set_property (GObject *object,
 
 		case PROP_USER_DATA_DIR:
 			session_set_user_data_dir (
+				CAMEL_SESSION (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_USER_CACHE_DIR:
+			session_set_user_cache_dir (
 				CAMEL_SESSION (object),
 				g_value_get_string (value));
 			return;
@@ -270,6 +288,12 @@ session_get_property (GObject *object,
 				value, camel_session_get_user_data_dir (
 				CAMEL_SESSION (object)));
 			return;
+
+		case PROP_USER_CACHE_DIR:
+			g_value_set_string (
+				value, camel_session_get_user_cache_dir (
+				CAMEL_SESSION (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -301,6 +325,7 @@ session_finalize (GObject *object)
 	priv = CAMEL_SESSION_GET_PRIVATE (object);
 
 	g_free (priv->user_data_dir);
+	g_free (priv->user_cache_dir);
 
 	g_hash_table_destroy (priv->services);
 
@@ -464,6 +489,18 @@ camel_session_class_init (CamelSessionClass *class)
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
 
+	g_object_class_install_property (
+		object_class,
+		PROP_USER_CACHE_DIR,
+		g_param_spec_string (
+			"user-cache-dir",
+			"User Cache Directory",
+			"User-specific base directory for mail cache",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
 	signals[JOB_STARTED] = g_signal_new (
 		"job-started",
 		G_OBJECT_CLASS_TYPE (class),
@@ -525,6 +562,24 @@ camel_session_get_user_data_dir (CamelSession *session)
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
 	return session->priv->user_data_dir;
+}
+
+/**
+ * camel_session_get_user_cache_dir:
+ * @session: a #CamelSession
+ *
+ * Returns the base directory under which to store user-specific mail cache.
+ *
+ * Returns: the base directory for mail cache
+ *
+ * Since: 3.4
+ **/
+const gchar *
+camel_session_get_user_cache_dir (CamelSession *session)
+{
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+
+	return session->priv->user_cache_dir;
 }
 
 /**

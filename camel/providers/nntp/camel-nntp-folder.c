@@ -695,11 +695,11 @@ camel_nntp_folder_new (CamelStore *parent,
 	gchar *root;
 	CamelService *service;
 	CamelStoreInfo *si;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	gboolean subscribed = TRUE;
 
 	service = CAMEL_SERVICE (parent);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	folder = g_object_new (
 		CAMEL_TYPE_NNTP_FOLDER,
@@ -713,7 +713,7 @@ camel_nntp_folder_new (CamelStore *parent,
 		CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
 
 	nntp_folder->storage_path =
-		g_build_filename (user_data_dir, folder_name, NULL);
+		g_build_filename (user_cache_dir, folder_name, NULL);
 
 	root = g_strdup_printf ("%s.cmeta", nntp_folder->storage_path);
 	camel_object_set_state_filename (CAMEL_OBJECT (nntp_folder), root);

@@ -385,7 +385,7 @@ camel_imap_folder_new (CamelStore *parent,
 		"display-name", short_name,
 		"parent-store", parent, NULL);
 
-	summary_file = g_strdup_printf ("%s/summary", folder_dir);
+	summary_file = g_build_filename (folder_dir, "summary", NULL);
 	folder->summary = camel_imap_summary_new (folder, summary_file);
 	g_free (summary_file);
 	if (!folder->summary) {
@@ -397,12 +397,12 @@ camel_imap_folder_new (CamelStore *parent,
 	}
 
 	imap_folder = CAMEL_IMAP_FOLDER (folder);
-	path = g_strdup_printf ("%s/journal", folder_dir);
+	path = g_build_filename (folder_dir, "journal", NULL);
 	imap_folder->journal = camel_imap_journal_new (imap_folder, path);
 	g_free (path);
 
 	/* set/load persistent state */
-	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
+	state_file = g_build_filename (folder_dir, "cmeta", NULL);
 	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
 	g_free (state_file);
 	camel_object_state_read (CAMEL_OBJECT (folder));
@@ -688,20 +688,20 @@ imap_rename (CamelFolder *folder,
 	CamelService *service;
 	CamelStore *parent_store;
 	CamelImapFolder *imap_folder = (CamelImapFolder *) folder;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	gchar *folder_dir, *summary_path, *state_file;
 	gchar *folders;
 
 	parent_store = camel_folder_get_parent_store (folder);
 
 	service = CAMEL_SERVICE (parent_store);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
-	folders = g_strconcat (user_data_dir, "/folders", NULL);
+	folders = g_build_filename (user_cache_dir, "folders", NULL);
 	folder_dir = imap_path_to_physical (folders, new);
 	g_free (folders);
 
-	summary_path = g_strdup_printf("%s/summary", folder_dir);
+	summary_path = g_build_filename (folder_dir, "summary", NULL);
 
 	CAMEL_IMAP_FOLDER_REC_LOCK (folder, cache_lock);
 	camel_imap_message_cache_set_path (imap_folder->cache, folder_dir);
@@ -709,7 +709,7 @@ imap_rename (CamelFolder *folder,
 
 	camel_folder_summary_set_filename (folder->summary, summary_path);
 
-	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
+	state_file = g_build_filename (folder_dir, "cmeta", NULL);
 	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
 	g_free (state_file);
 

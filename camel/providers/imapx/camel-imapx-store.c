@@ -281,10 +281,10 @@ get_folder_offline (CamelStore *store,
 	CamelFolder *new_folder = NULL;
 	CamelStoreInfo *si;
 	CamelService *service;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 
 	service = CAMEL_SERVICE (store);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	si = camel_store_summary_path ((CamelStoreSummary *) imapx_store->summary, folder_name);
 	if (si) {
@@ -300,7 +300,7 @@ get_folder_offline (CamelStore *store,
 		if (!g_ascii_strcasecmp (folder_name, "INBOX"))
 			folder_name = "INBOX";
 
-		storage_path = g_strdup_printf("%s/folders", user_data_dir);
+		storage_path = g_build_filename (user_cache_dir, "folders", NULL);
 		folder_dir = imapx_path_to_physical (storage_path, folder_name);
 		g_free (storage_path);
 		/* FIXME */
@@ -556,12 +556,12 @@ imapx_delete_folder_from_cache (CamelIMAPXStore *istore,
 	gchar *folder_dir, *storage_path;
 	CamelFolderInfo *fi;
 	CamelService *service;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 
 	service = CAMEL_SERVICE (istore);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
-	storage_path = g_strdup_printf ("%s/folders", user_data_dir);
+	storage_path = g_build_filename (user_cache_dir, "folders", NULL);
 	folder_dir = imapx_path_to_physical (storage_path, folder_name);
 	g_free (storage_path);
 	if (g_access (folder_dir, F_OK) != 0) {
@@ -570,14 +570,14 @@ imapx_delete_folder_from_cache (CamelIMAPXStore *istore,
 	}
 
 	/* Delete summary and all the data */
-	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
+	state_file = g_build_filename (folder_dir, "cmeta", NULL);
 	g_unlink (state_file);
 	g_free (state_file);
 
 	camel_db_delete_folder (((CamelStore *) istore)->cdb_w, folder_name, NULL);
 	g_rmdir (folder_dir);
 
-	state_file = g_strdup_printf("%s/subfolders", folder_dir);
+	state_file = g_build_filename (folder_dir, "subfolders", NULL);
 	g_rmdir (state_file);
 	g_free (state_file);
 
@@ -1233,14 +1233,14 @@ imapx_store_get_junk_folder_sync (CamelStore *store,
 	if (folder) {
 		CamelObject *object = CAMEL_OBJECT (folder);
 		CamelService *service;
-		const gchar *user_data_dir;
+		const gchar *user_cache_dir;
 		gchar *state;
 
 		service = CAMEL_SERVICE (store);
-		user_data_dir = camel_service_get_user_data_dir (service);
+		user_cache_dir = camel_service_get_user_cache_dir (service);
 
 		state = g_build_filename (
-			user_data_dir, "system", "Junk.cmeta", NULL);
+			user_cache_dir, "system", "Junk.cmeta", NULL);
 
 		camel_object_set_state_filename (object, state);
 		g_free (state);
@@ -1265,14 +1265,14 @@ imapx_store_get_trash_folder_sync (CamelStore *store,
 	if (folder) {
 		CamelObject *object = CAMEL_OBJECT (folder);
 		CamelService *service;
-		const gchar *user_data_dir;
+		const gchar *user_cache_dir;
 		gchar *state;
 
 		service = CAMEL_SERVICE (store);
-		user_data_dir = camel_service_get_user_data_dir (service);
+		user_cache_dir = camel_service_get_user_cache_dir (service);
 
 		state = g_build_filename (
-			user_data_dir, "system", "Trash.cmeta", NULL);
+			user_cache_dir, "system", "Trash.cmeta", NULL);
 
 		camel_object_set_state_filename (object, state);
 		g_free (state);
@@ -1421,14 +1421,14 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	CamelIMAPXServer *server;
 	CamelService *service;
 	CamelSettings *settings;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	gchar *oldpath, *newpath, *storage_path;
 	gboolean use_subscriptions;
 	gboolean success = FALSE;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	use_subscriptions = camel_imapx_settings_get_use_subscriptions (
 		CAMEL_IMAPX_SETTINGS (settings));
@@ -1465,7 +1465,7 @@ imapx_store_rename_folder_sync (CamelStore *store,
 		success = imapx_subscribe_folder (
 			store, new, FALSE, cancellable, error);
 
-	storage_path = g_strdup_printf("%s/folders", user_data_dir);
+	storage_path = g_build_filename (user_cache_dir, "folders", NULL);
 	oldpath = imapx_path_to_physical (storage_path, old);
 	newpath = imapx_path_to_physical (storage_path, new);
 	g_free (storage_path);
@@ -1509,36 +1509,69 @@ imapx_store_noop_sync (CamelStore *store,
 	return success;
 }
 
+static void
+imapx_migrate_to_user_cache_dir (CamelService *service)
+{
+	const gchar *user_data_dir, *user_cache_dir;
+
+	g_return_if_fail (service != NULL);
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	g_return_if_fail (user_data_dir != NULL);
+	g_return_if_fail (user_cache_dir != NULL);
+
+	/* migrate only if the source directory exists and the destination doesn't */
+	if (g_file_test (user_data_dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR) &&
+	    !g_file_test (user_cache_dir, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+		gchar *parent_dir;
+
+		parent_dir = g_path_get_dirname (user_cache_dir);
+		g_mkdir_with_parents (parent_dir, S_IRWXU);
+		g_free (parent_dir);
+
+		if (g_rename (user_data_dir, user_cache_dir) == -1)
+			g_debug ("%s: Failed to migrate '%s' to '%s': %s", G_STRFUNC, user_data_dir, user_cache_dir, g_strerror (errno));
+	}
+}
+
 static gboolean
 imapx_store_initable_init (GInitable *initable,
                            GCancellable *cancellable,
                            GError **error)
 {
-	CamelIMAPXStore *store;
+	CamelIMAPXStore *imapx_store;
+	CamelStore *store;
 	CamelService *service;
 	CamelURL *url;
-	const gchar *user_data_dir;
+	const gchar *user_cache_dir;
 	gchar *summary;
 
-	store = CAMEL_IMAPX_STORE (initable);
+	imapx_store = CAMEL_IMAPX_STORE (initable);
+	store = CAMEL_STORE (initable);
+	service = CAMEL_SERVICE (initable);
+
+	store->flags |= CAMEL_STORE_USE_CACHE_DIR;
+	imapx_migrate_to_user_cache_dir (service);
 
 	/* Chain up to parent interface's init() method. */
 	if (!parent_initable_interface->init (initable, cancellable, error))
 		return FALSE;
 
-	service = CAMEL_SERVICE (initable);
 	url = camel_service_get_camel_url (service);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	user_cache_dir = camel_service_get_user_cache_dir (service);
 
-	store->base_url = camel_url_to_string (
+	imapx_store->base_url = camel_url_to_string (
 		url, CAMEL_URL_HIDE_PASSWORD |
 		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
 
-	store->summary = camel_imapx_store_summary_new ();
+	imapx_store->summary = camel_imapx_store_summary_new ();
 
-	summary = g_build_filename (user_data_dir, ".ev-store-summary", NULL);
-	camel_store_summary_set_filename ((CamelStoreSummary *) store->summary, summary);
-	camel_store_summary_load ((CamelStoreSummary *) store->summary);
+	summary = g_build_filename (user_cache_dir, ".ev-store-summary", NULL);
+	camel_store_summary_set_filename ((CamelStoreSummary *) imapx_store->summary, summary);
+	camel_store_summary_load ((CamelStoreSummary *) imapx_store->summary);
 
 	g_free (summary);
 

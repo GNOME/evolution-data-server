@@ -149,6 +149,8 @@ const gchar *	camel_service_get_display_name	(CamelService *service);
 void		camel_service_set_display_name	(CamelService *service,
 						 const gchar *display_name);
 const gchar *	camel_service_get_user_data_dir	(CamelService *service);
+const gchar *	camel_service_get_user_cache_dir
+						(CamelService *service);
 gchar *		camel_service_get_name		(CamelService *service,
 						 gboolean brief);
 CamelProvider *	camel_service_get_provider	(CamelService *service);

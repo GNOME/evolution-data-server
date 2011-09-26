@@ -1078,7 +1078,7 @@ store_initable_init (GInitable *initable,
 {
 	CamelStore *store;
 	CamelService *service;
-	const gchar *user_data_dir;
+	const gchar *user_dir;
 	gchar *filename;
 
 	store = CAMEL_STORE (initable);
@@ -1088,9 +1088,12 @@ store_initable_init (GInitable *initable,
 		return FALSE;
 
 	service = CAMEL_SERVICE (initable);
-	user_data_dir = camel_service_get_user_data_dir (service);
+	if ((store->flags & CAMEL_STORE_USE_CACHE_DIR) != 0)
+		user_dir = camel_service_get_user_cache_dir (service);
+	else
+		user_dir = camel_service_get_user_data_dir (service);
 
-	if (g_mkdir_with_parents (user_data_dir, S_IRWXU) == -1) {
+	if (g_mkdir_with_parents (user_dir, S_IRWXU) == -1) {
 		g_set_error_literal (
 			error, G_FILE_ERROR,
 			g_file_error_from_errno (errno),
@@ -1099,7 +1102,7 @@ store_initable_init (GInitable *initable,
 	}
 
 	/* This is for reading from the store */
-	filename = g_build_filename (user_data_dir, CAMEL_DB_FILE, NULL);
+	filename = g_build_filename (user_dir, CAMEL_DB_FILE, NULL);
 	store->cdb_r = camel_db_open (filename, error);
 	g_free (filename);
 

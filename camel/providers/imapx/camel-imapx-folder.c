@@ -83,7 +83,7 @@ camel_imapx_folder_new (CamelStore *store,
 
 	((CamelIMAPXFolder *) folder)->raw_name = g_strdup (folder_name);
 
-	summary_file = g_strdup_printf ("%s/summary", folder_dir);
+	summary_file = g_build_filename (folder_dir, "summary", NULL);
 	folder->summary = camel_imapx_summary_new (folder, summary_file);
 	if (!folder->summary) {
 		g_set_error (
@@ -101,7 +101,7 @@ camel_imapx_folder_new (CamelStore *store,
 		return NULL;
 	}
 
-	state_file = g_strdup_printf ("%s/cmeta", folder_dir);
+	state_file = g_build_filename (folder_dir, "cmeta", NULL);
 	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
 	g_free (state_file);
 	camel_object_state_read (CAMEL_OBJECT (folder));
