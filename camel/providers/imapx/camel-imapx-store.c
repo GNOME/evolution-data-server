@@ -125,8 +125,6 @@ imapx_store_finalize (GObject *object)
 
 	g_mutex_free (imapx_store->get_finfo_lock);
 
-	g_free (imapx_store->base_url);
-
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->finalize (object);
 }
@@ -1545,7 +1543,6 @@ imapx_store_initable_init (GInitable *initable,
 	CamelIMAPXStore *imapx_store;
 	CamelStore *store;
 	CamelService *service;
-	CamelURL *url;
 	const gchar *user_cache_dir;
 	gchar *summary;
 
@@ -1560,12 +1557,8 @@ imapx_store_initable_init (GInitable *initable,
 	if (!parent_initable_interface->init (initable, cancellable, error))
 		return FALSE;
 
-	url = camel_service_get_camel_url (service);
+	service = CAMEL_SERVICE (initable);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
-
-	imapx_store->base_url = camel_url_to_string (
-		url, CAMEL_URL_HIDE_PASSWORD |
-		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
 
 	imapx_store->summary = camel_imapx_store_summary_new ();
 
