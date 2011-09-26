@@ -346,7 +346,6 @@ connect_to_server (CamelService *service,
 	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT)
 		return TRUE;  /* we're done */
 
-#ifdef CAMEL_HAVE_SSL
 	/* as soon as we send a STARTTLS command, all hope is lost of a clean QUIT if problems arise */
 	clean_quit = FALSE;
 
@@ -377,13 +376,6 @@ connect_to_server (CamelService *service,
 			url->host);
 		goto exception;
 	}
-#else
-	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-		_("Failed to connect to IMAP server %s in secure mode: %s"),
-		url->host, _("SSL is not available in this build"));
-	goto exception;
-#endif /* CAMEL_HAVE_SSL */
 
 	/* rfc2595, section 4 states that after a successful STLS
 	 * command, the client MUST discard prior CAPA responses */

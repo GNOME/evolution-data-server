@@ -140,7 +140,6 @@ connect_to_server (CamelService *service,
 		return TRUE;
 	}
 
-#ifdef CAMEL_HAVE_SSL
 	/* as soon as we send a STLS command, all hope is lost of a clean QUIT if problems arise */
 	clean_quit = FALSE;
 
@@ -183,13 +182,6 @@ connect_to_server (CamelService *service,
 			url->host);
 		goto stls_exception;
 	}
-#else
-	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-		_("Failed to connect to POP server %s in secure mode: %s"),
-		url->host, _("TLS is not available in this build"));
-	goto stls_exception;
-#endif /* CAMEL_HAVE_SSL */
 
 	g_object_unref (tcp_stream);
 

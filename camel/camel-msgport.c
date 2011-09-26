@@ -25,9 +25,7 @@
 #include <errno.h>
 #include <unistd.h>
 
-#ifdef CAMEL_HAVE_NSS
 #include <nspr.h>
-#endif
 
 #ifdef G_OS_WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -57,9 +55,7 @@ enum {
 struct _CamelMsgPort {
 	GAsyncQueue *queue;
 	gint pipe[2];  /* on Win32, actually a pair of SOCKETs */
-#ifdef CAMEL_HAVE_NSS
 	PRFileDesc *prpipe[2];
-#endif
 };
 
 static gint
@@ -192,7 +188,6 @@ out0:
 #endif
 }
 
-#ifdef CAMEL_HAVE_NSS
 static gint
 msgport_prpipe (PRFileDesc **fds)
 {
@@ -209,7 +204,6 @@ msgport_prpipe (PRFileDesc **fds)
 
 	return -1;
 }
-#endif
 
 static void
 msgport_sync_with_pipe (gint fd)
@@ -227,7 +221,6 @@ msgport_sync_with_pipe (gint fd)
 	}
 }
 
-#ifdef CAMEL_HAVE_NSS
 static void
 msgport_sync_with_prpipe (PRFileDesc *prfd)
 {
@@ -245,7 +238,6 @@ msgport_sync_with_prpipe (PRFileDesc *prfd)
 		}
 	}
 }
-#endif
 
 /**
  * camel_msgport_new:
@@ -261,10 +253,8 @@ camel_msgport_new (void)
 	msgport->queue = g_async_queue_new ();
 	msgport->pipe[0] = -1;
 	msgport->pipe[1] = -1;
-#ifdef CAMEL_HAVE_NSS
 	msgport->prpipe[0] = NULL;
 	msgport->prpipe[1] = NULL;
-#endif
 
 	return msgport;
 }
@@ -283,12 +273,10 @@ camel_msgport_destroy (CamelMsgPort *msgport)
 		MP_CLOSE (msgport->pipe[0]);
 		MP_CLOSE (msgport->pipe[1]);
 	}
-#ifdef CAMEL_HAVE_NSS
 	if (msgport->prpipe[0] != NULL) {
 		PR_Close (msgport->prpipe[0]);
 		PR_Close (msgport->prpipe[1]);
 	}
-#endif
 
 	g_async_queue_unref (msgport->queue);
 	g_slice_free (CamelMsgPort, msgport);
@@ -315,7 +303,6 @@ camel_msgport_fd (CamelMsgPort *msgport)
 	return fd;
 }
 
-#ifdef CAMEL_HAVE_NSS
 /**
  * camel_msgport_prfd:
  *
@@ -336,7 +323,6 @@ camel_msgport_prfd (CamelMsgPort *msgport)
 
 	return prfd;
 }
-#endif
 
 /**
  * camel_msgport_push:
@@ -348,9 +334,7 @@ camel_msgport_push (CamelMsgPort *msgport,
                     CamelMsg *msg)
 {
 	gint fd;
-#ifdef CAMEL_HAVE_NSS
 	PRFileDesc *prfd;
-#endif
 
 	g_return_if_fail (msgport != NULL);
 	g_return_if_fail (msg != NULL);
@@ -371,7 +355,6 @@ camel_msgport_push (CamelMsgPort *msgport,
 		}
 	}
 
-#ifdef CAMEL_HAVE_NSS
 	prfd = msgport->prpipe[1];
 	while (prfd != NULL) {
 		if (PR_Write (prfd, "E", 1) > 0) {
@@ -385,7 +368,6 @@ camel_msgport_push (CamelMsgPort *msgport,
 			break;
 		}
 	}
-#endif
 
 	g_async_queue_push_unlocked (msgport->queue, msg);
 	g_async_queue_unlock (msgport->queue);
@@ -411,10 +393,8 @@ camel_msgport_pop (CamelMsgPort *msgport)
 
 	if (msg->flags & MSG_FLAG_SYNC_WITH_PIPE)
 		msgport_sync_with_pipe (msgport->pipe[0]);
-#ifdef CAMEL_HAVE_NSS
 	if (msg->flags & MSG_FLAG_SYNC_WITH_PR_PIPE)
 		msgport_sync_with_prpipe (msgport->prpipe[0]);
-#endif
 
 	g_async_queue_unlock (msgport->queue);
 
@@ -439,10 +419,8 @@ camel_msgport_try_pop (CamelMsgPort *msgport)
 
 	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PIPE)
 		msgport_sync_with_pipe (msgport->pipe[0]);
-#ifdef CAMEL_HAVE_NSS
 	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PR_PIPE)
 		msgport_sync_with_prpipe (msgport->prpipe[0]);
-#endif
 
 	g_async_queue_unlock (msgport->queue);
 
@@ -470,10 +448,8 @@ camel_msgport_timed_pop (CamelMsgPort *msgport,
 
 	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PIPE)
 		msgport_sync_with_pipe (msgport->pipe[0]);
-#ifdef CAMEL_HAVE_NSS
 	if (msg != NULL && msg->flags & MSG_FLAG_SYNC_WITH_PR_PIPE)
 		msgport_sync_with_prpipe (msgport->prpipe[0]);
-#endif
 
 	g_async_queue_unlock (msgport->queue);
 

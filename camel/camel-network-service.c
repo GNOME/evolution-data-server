@@ -27,9 +27,7 @@
 #include <camel/camel-session.h>
 #include <camel/camel-tcp-stream-raw.h>
 
-#if CAMEL_HAVE_SSL
 #include <camel/camel-tcp-stream-ssl.h>
-#endif
 
 G_DEFINE_INTERFACE (
 	CamelNetworkService,
@@ -77,7 +75,6 @@ network_service_connect_sync (CamelNetworkService *service,
 			stream = camel_tcp_stream_raw_new ();
 			break;
 
-#ifdef CAMEL_HAVE_SSL
 		case CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT:
 			stream = camel_tcp_stream_ssl_new_raw (
 				session, url->host,
@@ -90,16 +87,6 @@ network_service_connect_sync (CamelNetworkService *service,
 				CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 |
 				CAMEL_TCP_STREAM_SSL_ENABLE_SSL3);
 			break;
-#else
-		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
-		case CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT:
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_UNAVAILABLE,
-				_("Could not connect to %s: %s"),
-				url->host, _("SSL unavailable"));
-			return NULL;
-#endif
 
 		default:
 			g_return_val_if_reached (NULL);

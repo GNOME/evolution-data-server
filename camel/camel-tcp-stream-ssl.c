@@ -28,8 +28,6 @@
 #include <config.h>
 #endif
 
-#ifdef CAMEL_HAVE_NSS
-
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
@@ -878,5 +876,3 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl,
 
 	return 0;
 }
-
-#endif /* CAMEL_HAVE_NSS */

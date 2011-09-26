@@ -27,13 +27,11 @@
 
 #include <signal.h>
 
-#ifdef CAMEL_HAVE_NSS
 #include <nspr.h>
 #include <prthread.h>
 #include "nss.h"      /* Don't use <> here or it will include the system nss.h instead */
 #include <ssl.h>
 #include <errno.h>
-#endif /* CAMEL_HAVE_NSS */
 
 #include <glib/gi18n-lib.h>
 
@@ -43,7 +41,6 @@
 #include "camel-provider.h"
 #include "camel-win32.h"
 
-#ifdef CAMEL_HAVE_NSS
 /* To protect NSS initialization and shutdown. This prevents
  * concurrent calls to shutdown () and init () by different threads */
 PRLock *nss_initlock = NULL;
@@ -53,7 +50,6 @@ PRLock *nss_initlock = NULL;
  * library before. This boolean ensures that we only perform a cleanup
  * if and only if Camel is the one that previously initialized NSS */
 volatile gboolean nss_initialized = FALSE;
-#endif
 
 static gint initialised = FALSE;
 
@@ -98,7 +94,6 @@ camel_init (const gchar *configdir,
 
 	camel_debug_init ();
 
-#ifdef CAMEL_HAVE_NSS
 	if (nss_init) {
 		gchar *nss_configdir = NULL;
 		gchar *nss_sql_configdir = NULL;
@@ -201,7 +196,6 @@ skip_nss_init:
 		g_free (nss_configdir);
 		g_free (nss_sql_configdir);
 	}
-#endif /* CAMEL_HAVE_NSS */
 
 	path = g_strdup_printf ("%s/camel-cert.db", configdir);
 	certdb = camel_certdb_new ();
@@ -242,14 +236,12 @@ camel_shutdown (void)
 
 	/* These next calls must come last. */
 
-#if defined (CAMEL_HAVE_NSS)
 	if (nss_initlock != NULL) {
 		PR_Lock (nss_initlock);
 		if (nss_initialized)
 			NSS_Shutdown ();
 		PR_Unlock (nss_initlock);
 	}
-#endif /* CAMEL_HAVE_NSS */
 
 	initialised = FALSE;
 }

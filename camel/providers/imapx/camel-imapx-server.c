@@ -30,12 +30,10 @@
 // fixme, use own type funcs
 #include <ctype.h>
 
-#ifdef CAMEL_HAVE_NSS
 #include <nspr.h>
 #include <prio.h>
 #include <prerror.h>
 #include <prerr.h>
-#endif
 
 #include "camel-imapx-utils.h"
 #include "camel-imapx-stream.h"
@@ -3038,7 +3036,6 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		camel_imapx_command_free (ic);
 	}
 
-#ifdef CAMEL_HAVE_SSL
 	if (method == CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
 
 		if (!(is->cinfo->capa & IMAPX_CAPABILITY_STARTTLS)) {
@@ -3103,7 +3100,6 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 			camel_imapx_command_free (ic);
 		}
 	}
-#endif
 
 exit:
 	if (local_error != NULL) {

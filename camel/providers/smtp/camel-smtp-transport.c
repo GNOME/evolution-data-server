@@ -184,7 +184,6 @@ connect_to_server (CamelService *service,
 	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT)
 		return TRUE;  /* we're done */
 
-#ifdef CAMEL_HAVE_SSL
 	if (!(transport->flags & CAMEL_SMTP_TRANSPORT_STARTTLS)) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -231,13 +230,6 @@ connect_to_server (CamelService *service,
 			url->host);
 		goto exception_cleanup;
 	}
-#else
-	g_set_error (
-		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-		_("Failed to connect to SMTP server %s in secure mode: %s"),
-		url->host, _("SSL is not available in this build"));
-	goto exception_cleanup;
-#endif /* CAMEL_HAVE_SSL */
 
 	/* We are supposed to re-EHLO after a successful STARTTLS to
 	 * re-fetch any supported extensions. */

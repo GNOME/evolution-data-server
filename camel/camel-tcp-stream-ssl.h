@@ -27,8 +27,6 @@
 #ifndef CAMEL_TCP_STREAM_SSL_H
 #define CAMEL_TCP_STREAM_SSL_H
 
-#ifdef CAMEL_HAVE_SSL
-
 #include <camel/camel-enums.h>
 #include <camel/camel-session.h>
 #include <camel/camel-tcp-stream-raw.h>
@@ -78,7 +76,5 @@ gint		camel_tcp_stream_ssl_enable_ssl	(CamelTcpStreamSSL *ssl,
 						 GError **error);
 
 G_END_DECLS
-
-#endif /* CAMEL_HAVE_SSL */
 
 #endif /* CAMEL_TCP_STREAM_SSL_H */

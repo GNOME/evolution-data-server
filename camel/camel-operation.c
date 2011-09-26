@@ -23,9 +23,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-#ifdef CAMEL_HAVE_NSS
 #include <nspr.h>
-#endif
 
 #include "camel-marshal.h"
 #include "camel-msgport.h"
@@ -50,9 +48,7 @@ struct _CamelOperationPrivate {
 	GQueue status_stack;
 
 	CamelMsgPort *cancel_port;
-#ifdef CAMEL_HAVE_NSS
 	PRFileDesc *cancel_prfd;
-#endif
 };
 
 enum {
@@ -357,7 +353,6 @@ camel_operation_cancel_fd (CamelOperation *operation)
 	return g_cancellable_get_fd (G_CANCELLABLE (operation));
 }
 
-#ifdef CAMEL_HAVE_NSS
 /**
  * camel_operation_cancel_prfd:
  * @operation: a #CamelOperation
@@ -389,7 +384,6 @@ camel_operation_cancel_prfd (CamelOperation *operation)
 
 	return priv->cancel_prfd;
 }
-#endif /* CAMEL_HAVE_NSS */
 
 /**
  * camel_operation_push_message:

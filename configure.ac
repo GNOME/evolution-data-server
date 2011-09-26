@@ -641,17 +641,11 @@ dnl needed by Camel (SSL and S/MIME).
 dnl
 dnl The Evolution security extensions are only built if these libraries are found
 dnl ********************************************************************************
-msg_ssl="no"
 msg_smime="no"
-
-AC_ARG_ENABLE([ssl],
-	AS_HELP_STRING([--enable-ssl],
-	[Enable SSL support through Mozilla nss @<:@default=yes@:>@]),
-	[enable_ssl="$enableval"],[enable_ssl="yes"])
 
 AC_ARG_ENABLE([smime],
 	AS_HELP_STRING([--enable-smime],
-	[Enable SMIME support through Mozilla nss @<:@default=yes,requires --enable-ssl@:>@ ]),
+	[Enable SMIME support through Mozilla nss @<:@default=yes@:>@ ]),
 	[enable_smime="$enableval"],[enable_smime="yes"])
 
 AC_ARG_WITH([nspr-includes],
@@ -674,172 +668,157 @@ AC_ARG_WITH([nss-libs],
 	[Prefix of Mozilla nss3 libs.]),
 	[with_nss_libs="$withval"])
 
-if test "x${enable_ssl}" = "xyes"; then
-	if test -n "${with_nspr_includes}" || test -n "${with_nspr_libs}" || test -n "${with_nss_includes}" || test -n "${with_nss_libs}"; then
-		check_manually="yes"
-	else
-		check_manually="no"
-	fi
+if test -n "${with_nspr_includes}" || test -n "${with_nspr_libs}" || test -n "${with_nss_includes}" || test -n "${with_nss_libs}"; then
+	check_manually="yes"
+else
+	check_manually="no"
+fi
 
 dnl check if pkg-config files exist (which are only shipped by distributions, not upstream)
-	if test "x${check_manually}" = "xno"; then
-		AC_MSG_CHECKING(Mozilla NSPR pkg-config module name)
-		mozilla_nspr_pcs="nspr mozilla-nspr firefox-nspr xulrunner-nspr seamonkey-nspr"
-		for pc in $mozilla_nspr_pcs; do
-			if $PKG_CONFIG --exists $pc; then
-				AC_MSG_RESULT($pc)
-				mozilla_nspr=$pc
-				break;
-			fi
-		done
-
-		AC_MSG_CHECKING(Mozilla NSS pkg-config module name)
-		mozilla_nss_pcs="nss mozilla-nss firefox-nss xulrunner-nss seamonkey-nss"
-		for pc in $mozilla_nss_pcs; do
-			if $PKG_CONFIG --exists $pc; then
-				AC_MSG_RESULT($pc)
-				mozilla_nss=$pc
-				break;
-			fi
-		done
-
-		if test -n "$mozilla_nspr" -a -n "$mozilla_nss"; then
-			msg_ssl="yes"
-			if test "x$enable_smime" = "xyes"; then
-				AC_DEFINE(ENABLE_SMIME,1,[Define if SMIME should be enabled])
-				msg_smime="yes"
-			fi
-			AC_DEFINE(CAMEL_HAVE_NSS,1,[Define if you have NSS])
-			AC_DEFINE(CAMEL_HAVE_SSL,1,[Define if you have a supported SSL library])
-			MANUAL_NSPR_CFLAGS=""
-			MANUAL_NSPR_LIBS=""
-			MANUAL_NSS_CFLAGS=""
-			MANUAL_NSS_LIBS=""
-		else
-			check_manually="yes"
-			mozilla_nspr=""
-			mozilla_nss=""
+if test "x${check_manually}" = "xno"; then
+	AC_MSG_CHECKING(Mozilla NSPR pkg-config module name)
+	mozilla_nspr_pcs="nspr mozilla-nspr firefox-nspr xulrunner-nspr seamonkey-nspr"
+	for pc in $mozilla_nspr_pcs; do
+		if $PKG_CONFIG --exists $pc; then
+			AC_MSG_RESULT($pc)
+			mozilla_nspr=$pc
+			break;
 		fi
-	fi
+	done
 
-	if test "x${check_manually}" = "xyes"; then
-	dnl ******************
-	dnl Check for NSPR 4
-	dnl ******************
-		AC_MSG_CHECKING([for Mozilla nspr4 includes])
-			CPPFLAGS_save="$CPPFLAGS"
-			if test -n "$with_nspr_includes"; then
-				CPPFLAGS="$CPPFLAGS -I$with_nspr_includes"
-			fi
+	AC_MSG_CHECKING(Mozilla NSS pkg-config module name)
+	mozilla_nss_pcs="nss mozilla-nss firefox-nss xulrunner-nss seamonkey-nss"
+	for pc in $mozilla_nss_pcs; do
+		if $PKG_CONFIG --exists $pc; then
+			AC_MSG_RESULT($pc)
+			mozilla_nss=$pc
+			break;
+		fi
+	done
 
-			AC_CHECK_HEADERS(nspr.h prio.h,
-			[moz_nspr_includes="yes"],[moz_nspr_includes="no"])
-			CPPFLAGS="$CPPFLAGS_save"
-
-			if test "x${moz_nspr_includes}" = "xyes"; then
-				MANUAL_NSPR_CFLAGS="-I$with_nspr_includes"
-			else
-				AC_MSG_FAILURE([NSPR headers not found. Use --with-nspr-includes to specify the include dir of NSPR.])
-			fi
-		AC_MSG_RESULT([$moz_nspr_includes])
-
-		AC_MSG_CHECKING([for Mozilla nspr libraries])
-			CFLAGS_save="$CFLAGS"
-			LDFLAGS_save="$LDFLAGS"
-			LIBS_save="$LIBS"
-			nsprlibs="$DL_LIB -lplc4 -lplds4 -lnspr4"
-
-			CFLAGS="$CFLAGS $MANUAL_NSPR_CFLAGS"
-			LIBS="$nsprlibs"
-			dnl Test to protect from giving libtool an -L , which results in failure (used below,too)
-			if test -n "${with_nspr_libs}"; then
-				LDFLAGS="$LDFLAGS -L$with_nspr_libs"
-			else
-				LDFLAGS="$LDFLAGS"
-			fi
-
-			AC_LINK_IFELSE([AC_LANG_CALL([],[PR_Init])],
-			[moz_nspr_libs="yes"],[moz_nspr_libs="no"])
-
-			CFLAGS="$CFLAGS_save"
-			LDFLAGS="$LDFLAGS_save"
-			LIBS="$LIBS_save"
-
-			if test "x${moz_nspr_libs}" = "xyes"; then
-				if test -n "${with_nspr_libs}"; then
-					MANUAL_NSPR_LIBS="-L$with_nspr_libs $nsprlibs"
-				else
-					MANUAL_NSPR_LIBS="$nsprlibs"
-				fi
-			else
-				AC_MSG_FAILURE([NSPR libs not found. Use --with-nspr-libs to specify the libdir of NSPR.])
-			fi
-		AC_MSG_RESULT([$moz_nspr_libs])
-
-	dnl *****************
-	dnl Check for NSS 3
-	dnl *****************
-		AC_MSG_CHECKING([for Mozilla nss3 includes])
-			CPPFLAGS_save="$CPPFLAGS"
-			CPPFLAGS="$CPPFLAGS -I$with_nspr_includes -I$with_nss_includes"
-
-			AC_CHECK_HEADERS(nss.h ssl.h smime.h,
-			[moz_nss_includes="yes"],[moz_nss_includes="no"])
-			CPPFLAGS="$CPPFLAGS_save"
-
-			if test "x${moz_nss_includes}" = "xyes"; then
-				MANUAL_NSS_CFLAGS="-I$with_nss_includes"
-			else
-				AC_MSG_FAILURE([NSS headers not found. Use --with-nss-includes to specify the include dir of NSS.])
-			fi
-		AC_MSG_RESULT($moz_nss_includes)
-
-		AC_MSG_CHECKING([for Mozilla nss libraries])
-			LDFLAGS_save="$LDFLAGS"
-			LIBS_save="$LIBS"
-			nsslibs="-lssl3 -lsmime3 -lnss3"
-
-			LIBS="$nsslibs $nsprlibs"
-			dnl Test to protect from giving libtool an -L , which results in failure (used below,too)
-			if test -n "${with_nss_libs}"; then
-				LDFLAGS="$LDFLAGS -L$with_nss_libs $MANUAL_NSPR_LIBS"
-			else
-				LDFLAGS="$LDFLAGS $LDFLAGS_NSPR $MANUAL_NSPR_LIBS"
-			fi
-
-			AC_LINK_IFELSE([AC_LANG_CALL([],[NSS_Init])],
-			[moz_nss_libs="yes"],[moz_nss_libs="no"])
-			LDFLAGS="$LDFLAGS_save"
-			LIBS="$LIBS_save"
-
-			if test "x${moz_nss_libs}" = "xyes"; then
-				AC_DEFINE(CAMEL_HAVE_NSS)
-				AC_DEFINE(CAMEL_HAVE_SSL)
-				msg_ssl="yes"
-				if test "x${enable_smime}" = "xyes"; then
-					AC_DEFINE(ENABLE_SMIME,1,[Define if SMIME should be enabled])
-					msg_smime="yes"
-				fi
-				if test -n "${with_nss_libs}"; then
-					MANUAL_NSS_LIBS="-L$with_nss_libs $nsslibs"
-				else
-					MANUAL_NSS_LIBS="$nsslibs"
-				fi
-			else
-				AC_MSG_FAILURE([NSS libs not found. Use --with-nss-libs to specify the libdir of NSS.])
-			fi
-		AC_MSG_RESULT([$moz_nss_libs])
-
-		MANUAL_NSS_CFLAGS="$MANUAL_NSPR_CFLAGS $MANUAL_NSS_CFLAGS"
-		MANUAL_NSS_LIBS="$MANUAL_NSPR_LIBS $MANUAL_NSS_LIBS"
+	if test -n "$mozilla_nspr" -a -n "$mozilla_nss"; then
+		if test "x$enable_smime" = "xyes"; then
+			AC_DEFINE(ENABLE_SMIME,1,[Define if SMIME should be enabled])
+			msg_smime="yes"
+		fi
+		MANUAL_NSPR_CFLAGS=""
+		MANUAL_NSPR_LIBS=""
+		MANUAL_NSS_CFLAGS=""
+		MANUAL_NSS_LIBS=""
+	else
+		check_manually="yes"
+		mozilla_nspr=""
+		mozilla_nss=""
 	fi
 fi
 
-dnl These flags are used in camel.pc.in.
-if test "x${msg_ssl}" = "xyes"; then
-	CAMEL_SSL_DEFINES="-DCAMEL_HAVE_NSS -DCAMEL_HAVE_SSL"
-else
-	CAMEL_SSL_DEFINES=""
+if test "x${check_manually}" = "xyes"; then
+dnl ******************
+dnl Check for NSPR 4
+dnl ******************
+	AC_MSG_CHECKING([for Mozilla nspr4 includes])
+		CPPFLAGS_save="$CPPFLAGS"
+		if test -n "$with_nspr_includes"; then
+			CPPFLAGS="$CPPFLAGS -I$with_nspr_includes"
+		fi
+
+		AC_CHECK_HEADERS(nspr.h prio.h,
+		[moz_nspr_includes="yes"],[moz_nspr_includes="no"])
+		CPPFLAGS="$CPPFLAGS_save"
+
+		if test "x${moz_nspr_includes}" = "xyes"; then
+			MANUAL_NSPR_CFLAGS="-I$with_nspr_includes"
+		else
+			AC_MSG_FAILURE([NSPR headers not found. Use --with-nspr-includes to specify the include dir of NSPR.])
+		fi
+	AC_MSG_RESULT([$moz_nspr_includes])
+
+	AC_MSG_CHECKING([for Mozilla nspr libraries])
+		CFLAGS_save="$CFLAGS"
+		LDFLAGS_save="$LDFLAGS"
+		LIBS_save="$LIBS"
+		nsprlibs="$DL_LIB -lplc4 -lplds4 -lnspr4"
+
+		CFLAGS="$CFLAGS $MANUAL_NSPR_CFLAGS"
+		LIBS="$nsprlibs"
+		dnl Test to protect from giving libtool an -L , which results in failure (used below,too)
+		if test -n "${with_nspr_libs}"; then
+			LDFLAGS="$LDFLAGS -L$with_nspr_libs"
+		else
+			LDFLAGS="$LDFLAGS"
+		fi
+
+		AC_LINK_IFELSE([AC_LANG_CALL([],[PR_Init])],
+		[moz_nspr_libs="yes"],[moz_nspr_libs="no"])
+
+		CFLAGS="$CFLAGS_save"
+		LDFLAGS="$LDFLAGS_save"
+		LIBS="$LIBS_save"
+
+		if test "x${moz_nspr_libs}" = "xyes"; then
+			if test -n "${with_nspr_libs}"; then
+				MANUAL_NSPR_LIBS="-L$with_nspr_libs $nsprlibs"
+			else
+				MANUAL_NSPR_LIBS="$nsprlibs"
+			fi
+		else
+			AC_MSG_FAILURE([NSPR libs not found. Use --with-nspr-libs to specify the libdir of NSPR.])
+		fi
+	AC_MSG_RESULT([$moz_nspr_libs])
+
+dnl *****************
+dnl Check for NSS 3
+dnl *****************
+	AC_MSG_CHECKING([for Mozilla nss3 includes])
+		CPPFLAGS_save="$CPPFLAGS"
+		CPPFLAGS="$CPPFLAGS -I$with_nspr_includes -I$with_nss_includes"
+
+		AC_CHECK_HEADERS(nss.h ssl.h smime.h,
+		[moz_nss_includes="yes"],[moz_nss_includes="no"])
+		CPPFLAGS="$CPPFLAGS_save"
+
+		if test "x${moz_nss_includes}" = "xyes"; then
+			MANUAL_NSS_CFLAGS="-I$with_nss_includes"
+		else
+			AC_MSG_FAILURE([NSS headers not found. Use --with-nss-includes to specify the include dir of NSS.])
+		fi
+	AC_MSG_RESULT($moz_nss_includes)
+
+	AC_MSG_CHECKING([for Mozilla nss libraries])
+		LDFLAGS_save="$LDFLAGS"
+		LIBS_save="$LIBS"
+		nsslibs="-lssl3 -lsmime3 -lnss3"
+
+		LIBS="$nsslibs $nsprlibs"
+		dnl Test to protect from giving libtool an -L , which results in failure (used below,too)
+		if test -n "${with_nss_libs}"; then
+			LDFLAGS="$LDFLAGS -L$with_nss_libs $MANUAL_NSPR_LIBS"
+		else
+			LDFLAGS="$LDFLAGS $LDFLAGS_NSPR $MANUAL_NSPR_LIBS"
+		fi
+
+		AC_LINK_IFELSE([AC_LANG_CALL([],[NSS_Init])],
+		[moz_nss_libs="yes"],[moz_nss_libs="no"])
+		LDFLAGS="$LDFLAGS_save"
+		LIBS="$LIBS_save"
+
+		if test "x${moz_nss_libs}" = "xyes"; then
+			if test "x${enable_smime}" = "xyes"; then
+				AC_DEFINE(ENABLE_SMIME,1,[Define if SMIME should be enabled])
+				msg_smime="yes"
+			fi
+			if test -n "${with_nss_libs}"; then
+				MANUAL_NSS_LIBS="-L$with_nss_libs $nsslibs"
+			else
+				MANUAL_NSS_LIBS="$nsslibs"
+			fi
+		else
+			AC_MSG_FAILURE([NSS libs not found. Use --with-nss-libs to specify the libdir of NSS.])
+		fi
+	AC_MSG_RESULT([$moz_nss_libs])
+
+	MANUAL_NSS_CFLAGS="$MANUAL_NSPR_CFLAGS $MANUAL_NSS_CFLAGS"
+	MANUAL_NSS_LIBS="$MANUAL_NSPR_LIBS $MANUAL_NSS_LIBS"
 fi
 
 AM_CONDITIONAL(ENABLE_SMIME, test "x$msg_smime" != "xno")
@@ -848,7 +827,6 @@ dnl For pkgconfig files.
 AC_SUBST(mozilla_nss)
 AC_SUBST(mozilla_nspr)
 
-AC_SUBST(CAMEL_SSL_DEFINES)
 AC_SUBST(MANUAL_NSPR_CFLAGS)
 AC_SUBST(MANUAL_NSPR_LIBS)
 AC_SUBST(MANUAL_NSS_CFLAGS)
@@ -1657,7 +1635,6 @@ echo "
 	LDAP support:		$msg_ldap
 	NNTP support:		$msg_nntp
 	Kerberos 5:		$msg_krb5
-	SSL support:		$msg_ssl
 	SMIME support:		$msg_smime
 	IPv6 support:		$msg_ipv6
 	Dot Locking:		$msg_dot
