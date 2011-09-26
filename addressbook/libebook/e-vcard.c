@@ -761,9 +761,11 @@ e_vcard_unescape_string (const gchar *s)
 			default:
 				g_warning ("invalid escape, passing it through");
 				g_string_append_c (str, '\\');
-				g_string_append_unichar (str, g_utf8_get_char (p));
+				g_string_append_c (str, *p);
 				break;
 			}
+		} else {
+			g_string_append_c (str, *p);
 		}
 	}
 
