@@ -11,11 +11,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: evolution-data-server master\n"
+"Project-Id-Version: evolution-data-server gnome-3-2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-14 07:36+0300\n"
-"PO-Revision-Date: 2011-09-11 11:59+0200\n"
-"Last-Translator: Krasimir Chonov <mk2616@abv.bg>\n"
+"POT-Creation-Date: 2011-09-26 20:00+0300\n"
+"PO-Revision-Date: 2011-09-26 20:01+0300\n"
+"Last-Translator: Alexander Shopov <ash@kambanaria.org>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "Language: bg\n"
 "MIME-Version: 1.0\n"
@@ -35,52 +35,52 @@ msgid "Searching..."
 msgstr "Търсене…"
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:814
+#: ../addressbook/backends/google/e-book-backend-google.c:842
 msgid "Querying for updated contacts…"
 msgstr "Проверка за променени контакти…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:865
-#: ../addressbook/libebook/e-book.c:3549 ../calendar/libecal/e-cal.c:1381
+#: ../addressbook/backends/google/e-book-backend-google.c:893
+#: ../addressbook/libebook/e-book.c:3506 ../calendar/libecal/e-cal.c:1381
 #: ../libedataserver/e-client.c:1951
 msgid "Personal"
 msgstr "Лични"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:867
+#: ../addressbook/backends/google/e-book-backend-google.c:895
 msgid "Friends"
 msgstr "Приятели"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:869
+#: ../addressbook/backends/google/e-book-backend-google.c:897
 msgid "Family"
 msgstr "Семейство"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:871
+#: ../addressbook/backends/google/e-book-backend-google.c:899
 msgid "Coworkers"
 msgstr "Колеги"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:955
+#: ../addressbook/backends/google/e-book-backend-google.c:983
 msgid "Querying for updated groups…"
 msgstr "Проверка за променени групи…"
 
 #. Insert the entry on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1374
+#: ../addressbook/backends/google/e-book-backend-google.c:1402
 msgid "Creating new contact…"
 msgstr "Създаване на нов контакт…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1484
+#: ../addressbook/backends/google/e-book-backend-google.c:1512
 msgid "Deleting contact…"
 msgstr "Изтриване на контакт…"
 
 #. Update the contact on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1762
+#: ../addressbook/backends/google/e-book-backend-google.c:1793
 msgid "Modifying contact…"
 msgstr "Промяна на контакт…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1969
+#: ../addressbook/backends/google/e-book-backend-google.c:2000
 msgid "Loading…"
 msgstr "Зареждане…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2127
+#: ../addressbook/backends/google/e-book-backend-google.c:2158
 msgid "Authenticating with the server…"
 msgstr "Идентифициране пред сървъра…"
 
@@ -151,17 +151,17 @@ msgstr "Неизвестна грешка"
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "Неуспешно създаване на ресурс „%s“ с код от HTTP: %d (%s)"
 
-#: ../addressbook/libebook/e-book.c:3216
+#: ../addressbook/libebook/e-book.c:3173
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: не съществува източник за идентификатор „%s“ в GConf."
 
-#: ../addressbook/libebook/e-book.c:3532 ../calendar/libecal/e-cal.c:1361
+#: ../addressbook/libebook/e-book.c:3489 ../calendar/libecal/e-cal.c:1361
 #: ../libedataserver/e-client.c:1946
 msgid "On This Computer"
 msgstr "На този компютър"
 
-#: ../addressbook/libebook/e-book.c:3658
+#: ../addressbook/libebook/e-book.c:3615
 #: ../addressbook/libebook/e-book-client.c:678
 #: ../addressbook/libedata-book/e-data-book.c:315
 msgid "Address book does not exist"
@@ -220,7 +220,7 @@ msgid "There was no source for UID '%s' stored in a source list."
 msgstr "Не съществува източник с идентификатор „%s“ в списъка с източници."
 
 #: ../addressbook/libebook/e-book-client.c:2280
-#: ../calendar/libecal/e-cal-client.c:4475
+#: ../calendar/libecal/e-cal-client.c:4482
 msgid "Cannot get connection to view"
 msgstr "Няма връзка към изглед"
 
@@ -1387,12 +1387,12 @@ msgid "Cannot change value of calendar property '%s'"
 msgstr "Свойството „%s“ на календара не може да бъде променено"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:72
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:714
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:736
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:851
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:882
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1082
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1112
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:728
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:750
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:865
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:896
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1096
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1126
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "„%s“ не очаква аргументи"
@@ -1401,7 +1401,7 @@ msgstr "„%s“ не очаква аргументи"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:224
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:269
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:308
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1153
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1167
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "„%s“ очаква един аргумент"
@@ -1409,7 +1409,7 @@ msgstr "„%s“ очаква един аргумент"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:114
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:314
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:781
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:795
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "„%s“ очаква първият аргумент да бъде низ"
@@ -1420,10 +1420,9 @@ msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr "„%s“ очаква първият аргумент да бъде низ за дата/време по ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:171
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:388
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:441
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:775
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:917
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:455
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:789
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:931
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "„%s“ очаква два аргумента"
@@ -1431,10 +1430,10 @@ msgstr "„%s“ очаква два аргумента"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:177
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:230
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:275
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:394
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:447
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:923
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1159
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:396
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:461
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:937
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1173
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "„%s“ очаква първият аргумент да бъде от вида time_t"
@@ -1444,19 +1443,29 @@ msgstr "„%s“ очаква първият аргумент да бъде от
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "„%s“ очаква вторият аргумент да бъде от вида integer"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:402
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:456
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:931
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:390
+#, c-format
+msgid "\"%s\" expects two or three arguments"
+msgstr "„%s“ очаква два или три аргумента"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:404
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:945
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "„%s“ очаква вторият аргумент да бъде от вида time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:789
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:413
+#, c-format
+msgid "\"%s\" expects the third argument to be a string"
+msgstr "„%s“ очаква третият аргумент да бъде низ"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:803
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "„%s“ очаква втория аргумент да бъде низ"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:819
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:833
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1468,12 +1477,12 @@ msgstr ""
 "„location“ (местоположение), „attendee“ (участник), „attendee“ (организатор) "
 "или „classification“ (класификация)"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:981
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:995
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "„%s“ очаква поне един аргумент"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:995
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1009
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -2979,53 +2988,53 @@ msgstr "Неуспешно създаване на папка %s: %s"
 msgid "Could not load summary for %s"
 msgstr "Неуспешно зареждане на обобщение на „%s“"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1054
+#: ../camel/providers/imap/camel-imap-folder.c:1057
 #: ../camel/providers/imapx/camel-imapx-server.c:4065
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Проверка за променени писма в %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3483
+#: ../camel/providers/imap/camel-imap-folder.c:3486
 msgid "Unable to retrieve message: "
 msgstr "Неуспешно получаване на писмото: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3520
+#: ../camel/providers/imap/camel-imap-folder.c:3523
 #: ../camel/providers/imapx/camel-imapx-server.c:5344
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Неуспешно получаване на писмо с идентификатор %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3521
+#: ../camel/providers/imap/camel-imap-folder.c:3524
 #: ../camel/providers/imapx/camel-imapx-server.c:5345
 msgid "No such message available."
 msgstr "Няма такова писмо."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3596
-#: ../camel/providers/imap/camel-imap-folder.c:4503
+#: ../camel/providers/imap/camel-imap-folder.c:3599
+#: ../camel/providers/imap/camel-imap-folder.c:4506
 #: ../camel/providers/nntp/camel-nntp-folder.c:438
 #, c-format
 msgid "This message is not currently available"
 msgstr "Това писмо не е налично в момента"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4087
-#: ../camel/providers/imap/camel-imap-folder.c:4170
+#: ../camel/providers/imap/camel-imap-folder.c:4090
+#: ../camel/providers/imap/camel-imap-folder.c:4173
 #: ../camel/providers/imapx/camel-imapx-server.c:4023
 #: ../camel/providers/imapx/camel-imapx-server.c:4173
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Извличане на обобщена информация за нови писма в %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4304
+#: ../camel/providers/imap/camel-imap-folder.c:4307
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Непълен отговор от сървъра: няма данни за писмо %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4314
+#: ../camel/providers/imap/camel-imap-folder.c:4317
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Непълен отговор от сървъра: писмо %d няма уникален идентификатор"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4543
+#: ../camel/providers/imap/camel-imap-folder.c:4546
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Неуспешно намиране на тялото на писмото в отговора на командата FETCH."
