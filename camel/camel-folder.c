@@ -3259,7 +3259,7 @@ camel_folder_get_message_sync (CamelFolder *folder,
                                GError **error)
 {
 	CamelFolderClass *class;
-	CamelMimeMessage *message;
+	CamelMimeMessage *message = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 	g_return_val_if_fail (message_uid != NULL, NULL);
@@ -3271,20 +3271,33 @@ camel_folder_get_message_sync (CamelFolder *folder,
 		cancellable, _("Retrieving message '%s' in %s"),
 		message_uid, camel_folder_get_display_name (folder));
 
-	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
-
-	/* Check for cancellation after locking. */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
-		camel_operation_pop_message (cancellable);
-		return NULL;
+	if (class->get_message_cached) {
+		/* Return cached message, if available locally; this should not do any
+		   network I/O, only check if message is already downloaded and return
+		   it quicker, not being blocked by the folder's lock.
+		   Returning NULL is not considered as an error, it just means that
+		   the message is still to-be-downloaded.
+		*/
+		message = class->get_message_cached (
+			folder, message_uid, cancellable);
 	}
 
-	message = class->get_message_sync (
-		folder, message_uid, cancellable, error);
-	CAMEL_CHECK_GERROR (folder, get_message_sync, message != NULL, error);
+	if (!message) {
+		camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 
-	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		/* Check for cancellation after locking. */
+		if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+			camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+			camel_operation_pop_message (cancellable);
+			return NULL;
+		}
+
+		message = class->get_message_sync (
+			folder, message_uid, cancellable, error);
+		CAMEL_CHECK_GERROR (folder, get_message_sync, message != NULL, error);
+
+		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+	}
 
 	if (message) {
 		CamelStore *store;

@@ -204,6 +204,10 @@ struct _CamelFolderClass {
 	gchar *		(*get_filename)		(CamelFolder *folder,
 						 const gchar *uid,
 						 GError **error);
+	CamelMimeMessage *
+			(*get_message_cached)	(CamelFolder *folder,
+						 const gchar *message_uid,
+						 GCancellable *cancellable);
 
 	/* Synchronous I/O Methods */
 	gboolean	(*append_message_sync)	(CamelFolder *folder,
