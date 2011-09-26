@@ -102,7 +102,7 @@ struct _CamelImapStore {
 	/* Information about the server */
 	CamelImapServerLevel server_level;
 	guint32 capabilities;
-	gchar dir_sep, *base_url;
+	gchar dir_sep;
 	GHashTable *authtypes;
 
 	time_t refresh_stamp;

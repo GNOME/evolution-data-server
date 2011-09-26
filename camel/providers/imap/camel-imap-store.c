@@ -859,8 +859,6 @@ imap_store_finalize (GObject *object)
 	/* This frees current_folder, folders, authtypes, streams, and namespace. */
 	camel_service_disconnect_sync (CAMEL_SERVICE (imap_store), TRUE, NULL);
 
-	g_free (imap_store->base_url);
-
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imap_store_parent_class)->finalize (object);
 }
@@ -1218,7 +1216,6 @@ imap_store_initable_init (GInitable *initable,
 	CamelStore *store;
 	CamelService *service;
 	CamelSettings *settings;
-	CamelURL *url;
 	const gchar *user_cache_dir;
 	const gchar *real_path;
 	gboolean use_real_path;
@@ -1235,14 +1232,9 @@ imap_store_initable_init (GInitable *initable,
 	if (!parent_initable_interface->init (initable, cancellable, error))
 		return FALSE;
 
-	url = camel_service_get_camel_url (service);
+	service = CAMEL_SERVICE (initable);
 	settings = camel_service_get_settings (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
-
-	/* FIXME */
-	imap_store->base_url = camel_url_to_string (
-		url, CAMEL_URL_HIDE_PASSWORD |
-		CAMEL_URL_HIDE_PARAMS | CAMEL_URL_HIDE_AUTH);
 
 	/* XXX Using CamelStoreFlags like this is suboptimal because they're
 	 *     only set once during initialization.  Subsequent changes to the
