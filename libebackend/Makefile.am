@@ -5,8 +5,9 @@ libebackend_1_2_la_CPPFLAGS = \
 	-I$(top_srcdir)						\
 	-DG_LOG_DOMAIN=\"e-data-server\"			\
 	$(DB_CFLAGS)						\
-	$(SQLITE3_CFLAGS)						\
-	$(E_BACKEND_CFLAGS)
+	$(SQLITE3_CFLAGS)					\
+	$(E_BACKEND_CFLAGS)					\
+	$(GIO_CFLAGS)
 
 libebackend_1_2_la_SOURCES =		\
 	e-backend.c			\
@@ -25,7 +26,8 @@ libebackend_1_2_la_SOURCES =		\
 libebackend_1_2_la_LIBADD = 				\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(E_BACKEND_LIBS)				\
-	$(SQLITE3_LIBS)				\
+	$(SQLITE3_LIBS)					\
+	$(GIO_LIBS)					\
 	$(DB_LIBS)
 
 libebackend_1_2_la_LDFLAGS = \

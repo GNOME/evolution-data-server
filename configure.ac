@@ -349,6 +349,10 @@ if `$PKG_CONFIG --atleast-version=0.9.1 libgdata`; then
 	AC_DEFINE(HAVE_LIBGDATA_0_9, 1, [libgdata is 0.9.1 or higher])
 fi
 
+if test x$os_win32 = xno; then
+	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
+fi
+
 dnl *******************************
 dnl Check for GNOME Online Accounts
 dnl *******************************
