@@ -39,8 +39,6 @@ camel-provider
 @url_hash: 
 @url_equal: 
 @translation_domain: 
-@license: 
-@license_file: 
 @priv: 
 
 <!-- ##### ENUM CamelProviderType ##### -->
@@ -279,8 +277,6 @@ camel-provider
 @url_hash: 
 @url_equal: 
 @translation_domain: 
-@license: 
-@license_file: 
 @priv: 
 
 <!-- ##### STRUCT CamelProviderModule ##### -->

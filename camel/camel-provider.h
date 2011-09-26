@@ -185,16 +185,6 @@ typedef struct {
 	 */
 	const gchar *translation_domain;
 
-	/* This string points to the provider's gconf key value
-	 */
-	const gchar *license;
-
-	/* This holds the license file name [ ascii text format ] containing
-	 * the license agreement. This should be the absolute file path. This
-	 * is read only when the HAS_LICENSE flag is set
-	 */
-	const gchar *license_file;
-
 	/* Private to the provider */
 	gpointer priv;
 } CamelProvider;
