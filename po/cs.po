@@ -2,7 +2,6 @@
 # Copyright (C) 2002, 2003, 2008, 2009, 2010, 2011 the author(s) of evolution-data-server.
 # Copyright (C) 2004, 2005 Miloslav Trmac <mitr@volny.cz>.
 # This file is distributed under the same license as the evolution-data-server package.
-#
 # Radka Doulíková <doulikova@centrum.cz>, 2002.
 # Michal Bukovjan <bukm@centrum.cz>, 2003.
 # Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005.
@@ -10,16 +9,15 @@
 # Jiří Eischmann <jiri@eischmann.cz> 2008, 2009, 2010.
 # Marek Černocký <marek@manet.cz>, 2010.
 # Jiri Eischmann <jiri@eischmann.cz>, 2011.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-09-05 10:38+0000\n"
-"PO-Revision-Date: 2011-09-05 00:02+0200\n"
+"POT-Creation-Date: 2011-09-26 08:09+0000\n"
+"PO-Revision-Date: 2011-09-25 22:58+0200\n"
 "Last-Translator: Jiri Eischmann <jiri@eischmann.cz>\n"
-"Language-Team: Czech <gnome-cs-list@gnome.org>\n"
+"Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bits\n"
@@ -38,54 +36,54 @@ msgid "Searching..."
 msgstr "Vyhledávání…"
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:814
+#: ../addressbook/backends/google/e-book-backend-google.c:842
 msgid "Querying for updated contacts…"
 msgstr "Dotazování na aktualizované kontakty..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:865
-#: ../addressbook/libebook/e-book.c:3549 ../calendar/libecal/e-cal.c:1381
+#: ../addressbook/backends/google/e-book-backend-google.c:893
+#: ../addressbook/libebook/e-book.c:3506 ../calendar/libecal/e-cal.c:1381
 #: ../libedataserver/e-client.c:1951
 msgid "Personal"
 msgstr "Osobní"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:867
+#: ../addressbook/backends/google/e-book-backend-google.c:895
 msgid "Friends"
 msgstr "Přátelé"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:869
+#: ../addressbook/backends/google/e-book-backend-google.c:897
 msgid "Family"
 msgstr "Rodina"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:871
+#: ../addressbook/backends/google/e-book-backend-google.c:899
 msgid "Coworkers"
 msgstr "Spolupracovníci"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:955
+#: ../addressbook/backends/google/e-book-backend-google.c:983
 msgid "Querying for updated groups…"
 msgstr "Dotazování na aktualizované skupiny..."
 
 #. Insert the entry on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1374
+#: ../addressbook/backends/google/e-book-backend-google.c:1402
 msgid "Creating new contact…"
 msgstr "Vytváření nového kontaktu..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1484
+#: ../addressbook/backends/google/e-book-backend-google.c:1512
 msgid "Deleting contact…"
 msgstr "Odstraňování kontaktu..."
 
 #. Update the contact on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1762
+#: ../addressbook/backends/google/e-book-backend-google.c:1793
 msgid "Modifying contact…"
 msgstr "Upravování kontaktu..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1969
+#: ../addressbook/backends/google/e-book-backend-google.c:2000
 msgid "Loading…"
 msgstr "Načítání…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2127
+#: ../addressbook/backends/google/e-book-backend-google.c:2158
 msgid "Authenticating with the server…"
-msgstr "Probíhá ověřování identity se serverem..."
+msgstr "Probíhá ověřování totožnosti se serverem..."
 
 #. Translators: An error message shown to a user when trying to do an operation on the LDAP address book which is not connected to the server
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:173
@@ -154,17 +152,17 @@ msgstr "Neznámá chyba"
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "Vytvoření zdroje „%s“ selhalo se stavovým kódem HTTP: %d (%s)"
 
-#: ../addressbook/libebook/e-book.c:3216
+#: ../addressbook/libebook/e-book.c:3173
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: v gconf nebyl uložen zdroj pro UID „%s“."
 
-#: ../addressbook/libebook/e-book.c:3532 ../calendar/libecal/e-cal.c:1361
+#: ../addressbook/libebook/e-book.c:3489 ../calendar/libecal/e-cal.c:1361
 #: ../libedataserver/e-client.c:1946
 msgid "On This Computer"
 msgstr "V tomto počítači"
 
-#: ../addressbook/libebook/e-book.c:3658
+#: ../addressbook/libebook/e-book.c:3615
 #: ../addressbook/libebook/e-book-client.c:678
 #: ../addressbook/libedata-book/e-data-book.c:315
 msgid "Address book does not exist"
@@ -223,7 +221,7 @@ msgid "There was no source for UID '%s' stored in a source list."
 msgstr "V seznamu zdrojů nebyl žádný zdroj pro UID „%s“."
 
 #: ../addressbook/libebook/e-book-client.c:2280
-#: ../calendar/libecal/e-cal-client.c:4475
+#: ../calendar/libecal/e-cal-client.c:4482
 msgid "Cannot get connection to view"
 msgstr "Nelze se připojit pro zobrazení"
 
@@ -843,12 +841,12 @@ msgstr "Přístup odepřen"
 #: ../addressbook/libedata-book/e-data-book.c:310
 #: ../calendar/libedata-cal/e-data-cal.c:427
 msgid "Authentication Failed"
-msgstr "Ověření identity selhalo"
+msgstr "Ověření totožnosti selhalo"
 
 #: ../addressbook/libedata-book/e-data-book.c:311
 #: ../calendar/libedata-cal/e-data-cal.c:428
 msgid "Authentication Required"
-msgstr "Je vyžadováno ověření identity"
+msgstr "Je vyžadováno ověření totožnosti"
 
 #: ../addressbook/libedata-book/e-data-book.c:312
 #: ../calendar/libedata-cal/e-data-cal.c:429
@@ -858,7 +856,7 @@ msgstr "Nepodporované pole"
 #: ../addressbook/libedata-book/e-data-book.c:313
 #: ../calendar/libedata-cal/e-data-cal.c:431 ../libedataserver/e-client.c:140
 msgid "Unsupported authentication method"
-msgstr "Nepodporovaná metoda ověřování identity"
+msgstr "Nepodporovaná metoda ověřování totožnosti"
 
 #: ../addressbook/libedata-book/e-data-book.c:314
 #: ../calendar/libedata-cal/e-data-cal.c:432 ../libedataserver/e-client.c:142
@@ -1181,13 +1179,13 @@ msgstr "Nelze zrušit operaci"
 
 #: ../calendar/libecal/e-cal.c:4589 ../libedataserver/e-client.c:124
 msgid "Authentication failed"
-msgstr "Ověření identity selhalo"
+msgstr "Ověření totožnosti selhalo"
 
 #: ../calendar/libecal/e-cal.c:4591
 #: ../camel/providers/smtp/camel-smtp-transport.c:759
 #: ../libedataserver/e-client.c:126
 msgid "Authentication required"
-msgstr "Je vyžadováno ověření identity"
+msgstr "Je vyžadováno ověření totožnosti"
 
 #: ../calendar/libecal/e-cal.c:4593
 msgid "A D-Bus exception has occurred"
@@ -1829,7 +1827,7 @@ msgstr "Informace o kvótě nejsou podporovány pro složku „%s“"
 msgid "Retrieving message '%s' in %s"
 msgstr "Získávání zprávy '%s' v %s"
 
-#: ../camel/camel-folder.c:3396
+#: ../camel/camel-folder.c:3404
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Stahování informací o kvótě pro „%s“"
@@ -2213,7 +2211,7 @@ msgstr "Tato volba vás připojí k serveru pomocí anonymního přihlášení."
 #: ../camel/camel-sasl-anonymous.c:70
 #, c-format
 msgid "Authentication failed."
-msgstr "Ověření identity selhalo."
+msgstr "Ověření totožnosti selhalo."
 
 #: ../camel/camel-sasl-anonymous.c:81
 #, c-format
@@ -2302,7 +2300,7 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:88
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr "Tato volba vás připojí k serveru pomocí ověření Kerberos 5."
+msgstr "Tato volba vás připojí k serveru pomocí ověření totožnosti Kerberos 5."
 
 #: ../camel/camel-sasl-gssapi.c:129
 msgid ""
@@ -2366,7 +2364,7 @@ msgstr "Odkazované údaje vypršely."
 #: ../camel/providers/smtp/camel-smtp-transport.c:1232
 #, c-format
 msgid "Bad authentication response from server."
-msgstr "Neplatná odpověď ověřování od serveru."
+msgstr "Neplatná odpověď ověřování totožnosti od serveru."
 
 #: ../camel/camel-sasl-gssapi.c:394
 #, c-format
@@ -2384,7 +2382,7 @@ msgstr "Tato volba vás připojí k serveru pomocí jednoduchého hesla."
 #: ../camel/camel-sasl-login.c:92
 #, c-format
 msgid "Unknown authentication state."
-msgstr "Neznámý stav ověřování identity."
+msgstr "Neznámý stav ověřování totožnosti."
 
 #: ../camel/camel-sasl-ntlm.c:42
 msgid "NTLM / SPA"
@@ -2417,12 +2415,12 @@ msgstr "Zdrojové UID pro POP"
 #: ../camel/camel-sasl-popb4smtp.c:92
 #, c-format
 msgid "POP Before SMTP authentication using an unknown transport"
-msgstr "POP před autentizací SMTP pomocí neznámého transportu"
+msgstr "POP před ověřením totožnosti SMTP pomocí neznámého transportu"
 
 #: ../camel/camel-sasl-popb4smtp.c:104 ../camel/camel-sasl-popb4smtp.c:114
 #, c-format
 msgid "POP Before SMTP authentication attempted with a %s service"
-msgstr "Byl vyzkoušen protokol POP před autentizací SMTP se službou %s"
+msgstr "Byl vyzkoušen protokol POP před oveřením totožnosti SMTP se službou %s"
 
 #: ../camel/camel-search-private.c:112
 #, c-format
@@ -2725,7 +2723,7 @@ msgstr "Hostitel proxy nepodporuje SOCKS5"
 #: ../camel/camel-tcp-stream-raw.c:886
 #, c-format
 msgid "Could not find a suitable authentication type: code 0x%x"
-msgstr "Nelze najít vhodný typ ověřování identity: kód 0x%x"
+msgstr "Nelze najít vhodný typ ověřování totožnosti: kód 0x%x"
 
 #: ../camel/camel-tcp-stream-raw.c:898
 msgid "General SOCKS server failure"
@@ -2989,32 +2987,32 @@ msgid "No such message available."
 msgstr "Žádná taková zpráva není k dispozici."
 
 #: ../camel/providers/imap/camel-imap-folder.c:3596
-#: ../camel/providers/imap/camel-imap-folder.c:4506
+#: ../camel/providers/imap/camel-imap-folder.c:4503
 #: ../camel/providers/nntp/camel-nntp-folder.c:438
 #, c-format
 msgid "This message is not currently available"
 msgstr "Tato zpráva není v tuto chvíli dostupná"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4090
-#: ../camel/providers/imap/camel-imap-folder.c:4173
+#: ../camel/providers/imap/camel-imap-folder.c:4087
+#: ../camel/providers/imap/camel-imap-folder.c:4170
 #: ../camel/providers/imapx/camel-imapx-server.c:4023
 #: ../camel/providers/imapx/camel-imapx-server.c:4173
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Stahování souhrnných informací o nových zprávách v %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4307
+#: ../camel/providers/imap/camel-imap-folder.c:4304
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Neúplná odpověď od serveru: pro zprávu %d nebyly poskytnuty žádné informace"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4317
+#: ../camel/providers/imap/camel-imap-folder.c:4314
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Neúplná odpověď od serveru: pro zprávu %d nebylo poskytnuto UID"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4546
+#: ../camel/providers/imap/camel-imap-folder.c:4543
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Nelze nalézt tělo zprávy v odpovědi FETCH."
@@ -3190,14 +3188,14 @@ msgstr "SSL v tomto sestavení není k dispozici"
 #: ../camel/providers/imapx/camel-imapx-server.c:3176
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
-msgstr "Server IMAP %s nepodporuje požadovaný typ ověřování %s"
+msgstr "Server IMAP %s nepodporuje požadovaný typ ověřování totožnosti %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:720
 #: ../camel/providers/imapx/camel-imapx-server.c:3189
 #: ../camel/providers/smtp/camel-smtp-transport.c:350
 #, c-format
 msgid "No support for authentication type %s"
-msgstr "Typ ověřování %s není podporován"
+msgstr "Typ ověřování totožnosti %s není podporován"
 
 #: ../camel/providers/imap/camel-imap-store.c:731
 #: ../camel/providers/smtp/camel-smtp-transport.c:363
@@ -3219,7 +3217,7 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
-"Nelze ověřit identitu k serveru IMAP.\n"
+"Nelze ověřit totožnost k serveru IMAP.\n"
 "%s\n"
 "\n"
 
@@ -3967,17 +3965,19 @@ msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
 msgstr ""
-"Tato volba nastaví ověřování k serveru NNTP pomocí hesla v prostém textu."
+"Tato volba nastaví ověřování totožnosti k serveru NNTP pomocí hesla v "
+"prostém textu."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:97
 #, c-format
 msgid "Authentication requested but no username provided"
-msgstr "Je požadováno ověření, ale nebylo poskytnuto uživatelské jméno"
+msgstr ""
+"Je požadováno ověření totožnosti, ale nebylo poskytnuto uživatelské jméno"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:109
 #, c-format
 msgid "Cannot authenticate to server: %s"
-msgstr "Nelze ověřit identitu k serveru: %s"
+msgstr "Nelze ověřit totožnost k serveru: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:357
 #, c-format
@@ -4207,7 +4207,7 @@ msgid ""
 "mechanism."
 msgstr ""
 "Nelze se připojit k serveru POP %s: Požadovaný mechanismus ověřování "
-"identity není podporován."
+"totožnosti není podporován."
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
 #: ../camel/providers/pop3/camel-pop3-store.c:269
@@ -4223,7 +4223,7 @@ msgstr "Nelze se přihlásit k serveru POP %s: Chyba protokolu SASL"
 #: ../camel/providers/pop3/camel-pop3-store.c:308
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
-msgstr "Nelze ověřit identitu k serveru POP %s: "
+msgstr "Nelze ověřit totožnost k serveru POP %s: "
 
 #: ../camel/providers/pop3/camel-pop3-store.c:380
 #, c-format
@@ -4395,7 +4395,7 @@ msgstr "Doručení pošty SMTP pomocí %s"
 #: ../camel/providers/smtp/camel-smtp-transport.c:338
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
-msgstr "Server SMTP %s nepodporuje požadovaný typ ověřování %s."
+msgstr "Server SMTP %s nepodporuje požadovaný typ ověřování totožnosti %s."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:440
 #, c-format
@@ -4404,7 +4404,7 @@ msgid ""
 "%s\n"
 "\n"
 msgstr ""
-"Nelze ověřit identitu k serveru SMTP.\n"
+"Nelze ověřit totožnost k serveru SMTP.\n"
 "%s\n"
 "\n"
 
@@ -4519,15 +4519,15 @@ msgstr "Vyžadován přenos hesla"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:753
 msgid "Authentication mechanism is too weak"
-msgstr "Mechanismus ověřování identity je příliš slabý"
+msgstr "Mechanismus ověřování totožnosti je příliš slabý"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:755
 msgid "Encryption required for requested authentication mechanism"
-msgstr "Pro požadovaný způsob ověřování identity je vyžadováno šifrovaní"
+msgstr "Pro požadovaný způsob ověřování totožnosti je vyžadováno šifrovaní"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:757
 msgid "Temporary authentication failure"
-msgstr "Dočasné selhání ověřování identity"
+msgstr "Dočasné selhání ověřování totožnosti"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1008
 msgid "SMTP Greeting"
@@ -4851,7 +4851,7 @@ msgstr "Probíhá anonymní přístup k serveru LDAP"
 #: ../libedataserverui/e-book-auth-util.c:197
 #: ../libedataserverui/e-book-auth-util.c:423
 msgid "Failed to authenticate.\n"
-msgstr "Nelze ověřit identitu.\n"
+msgstr "Nelze ověřit totožnost.\n"
 
 #: ../libedataserverui/e-categories-editor.c:221
 msgid "Currently _used categories:"
