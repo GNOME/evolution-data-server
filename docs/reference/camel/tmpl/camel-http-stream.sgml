@@ -54,15 +54,6 @@ CamelHttpStream
 @user_agent: 
 
 
-<!-- ##### FUNCTION camel_http_stream_set_proxy ##### -->
-<para>
-
-</para>
-
-@http_stream: 
-@proxy_url: 
-
-
 <!-- ##### FUNCTION camel_http_stream_set_proxy_authrealm ##### -->
 <para>
 

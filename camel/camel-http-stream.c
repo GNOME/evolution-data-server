@@ -665,36 +665,6 @@ camel_http_stream_set_user_agent (CamelHttpStream *http_stream,
 }
 
 void
-camel_http_stream_set_proxy (CamelHttpStream *http_stream,
-                             const gchar *proxy_url)
-{
-	g_return_if_fail (CAMEL_IS_HTTP_STREAM (http_stream));
-
-	if (http_stream->proxy)
-		camel_url_free (http_stream->proxy);
-
-	if (proxy_url == NULL || !*proxy_url)
-		http_stream->proxy = NULL;
-	else
-		http_stream->proxy = camel_url_new (proxy_url, NULL);
-
-	if (http_stream->proxy && ((http_stream->proxy->user && *http_stream->proxy->user) || (http_stream->proxy->passwd && *http_stream->proxy->passwd))) {
-		gchar *basic, *basic64;
-
-		basic = g_strdup_printf("%s:%s", http_stream->proxy->user?http_stream->proxy->user:"",
-					http_stream->proxy->passwd?http_stream->proxy->passwd:"");
-		basic64 = g_base64_encode ((const guchar *) basic, strlen (basic));
-		memset (basic, 0, strlen (basic));
-		g_free (basic);
-		camel_http_stream_set_proxy_authpass (http_stream, basic64);
-		memset (basic64, 0, strlen (basic64));
-		g_free (basic64);
-	} else {
-		camel_http_stream_set_proxy_authpass (http_stream, NULL);
-	}
-}
-
-void
 camel_http_stream_set_proxy_authrealm (CamelHttpStream *http_stream,
                                        const gchar *proxy_authrealm)
 {

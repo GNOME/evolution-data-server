@@ -5822,6 +5822,14 @@ streams
 @uid: 
 @info: 
 
+<!-- ##### FUNCTION camel_http_stream_set_proxy ##### -->
+<para>
+
+</para>
+
+@http_stream: 
+@proxy_url: 
+
 <!-- ##### FUNCTION camel_imap4_build_folder_info_tree ##### -->
 <para>
 

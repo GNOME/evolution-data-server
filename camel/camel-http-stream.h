@@ -103,8 +103,6 @@ CamelStream *	camel_http_stream_new		(CamelHttpMethod method,
 						 CamelURL *url);
 void		camel_http_stream_set_user_agent (CamelHttpStream *http_stream,
 						 const gchar *user_agent);
-void		camel_http_stream_set_proxy	(CamelHttpStream *http_stream,
-						 const gchar *proxy_url);
 void		camel_http_stream_set_proxy_authrealm
 						(CamelHttpStream *http_stream,
 						 const gchar *proxy_authrealm);
