@@ -7,7 +7,7 @@ libebackend_1_2_la_CPPFLAGS = \
 	$(DB_CFLAGS)						\
 	$(SQLITE3_CFLAGS)					\
 	$(E_BACKEND_CFLAGS)					\
-	$(GIO_CFLAGS)
+	$(GIO_UNIX_CFLAGS)
 
 libebackend_1_2_la_SOURCES =		\
 	e-backend.c			\
@@ -27,7 +27,7 @@ libebackend_1_2_la_LIBADD = 				\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(E_BACKEND_LIBS)				\
 	$(SQLITE3_LIBS)					\
-	$(GIO_LIBS)					\
+	$(GIO_UNIX_LIBS)				\
 	$(DB_LIBS)
 
 libebackend_1_2_la_LDFLAGS = \
