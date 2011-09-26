@@ -624,6 +624,27 @@ e_cal_backend_set_cache_dir (ECalBackend *backend,
 }
 
 /**
+ * e_cal_backend_create_cache_filename:
+ * @backend: an #ECalBackend
+ * @uid: a component UID
+ * @filename: a filename to use; can be NULL
+ * @fileindex: index of a file; used only when @filename is NULL
+ *
+ * Returns: a filename for an attachment in a local cache dir. Free returned
+ * pointer with a g_free().
+ *
+ * Since: 3.4
+ **/
+gchar *
+e_cal_backend_create_cache_filename (ECalBackend *backend, const gchar *uid, const gchar *filename, gint fileindex)
+{
+	g_return_val_if_fail (backend != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+
+	return e_filename_mkdir_encoded (e_cal_backend_get_cache_dir (backend), uid, filename, fileindex);
+}
+
+/**
  * e_cal_backend_get_backend_property:
  * @backend: an #ECalBackend
  * @cal: an #EDataCal

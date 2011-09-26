@@ -2916,23 +2916,16 @@ fetch_attachments (ECalBackendSync *backend,
 {
 	GSList *attach_list = NULL, *new_attach_list = NULL;
 	GSList *l;
-	gchar  *attach_store;
 	gchar *dest_url, *dest_file;
-	gint fd;
-	const gchar *user_data_dir;
+	gint fd, fileindex;
 	const gchar *uid;
 
 	e_cal_component_get_attachment_list (comp, &attach_list);
 	e_cal_component_get_uid (comp, &uid);
 
-	/*FIXME  get the uri rather than computing the path */
-	user_data_dir = e_get_user_data_dir ();
-	attach_store = g_build_filename (
-		user_data_dir, "calendar", "system", NULL);
-
-	for (l = attach_list; l; l = l->next) {
+	for (l = attach_list, fileindex = 0; l; l = l->next, fileindex++) {
 		gchar *sfname = g_filename_from_uri ((const gchar *) l->data, NULL, NULL);
-		gchar *filename, *new_filename;
+		gchar *filename;
 		GMappedFile *mapped_file;
 		GError *error = NULL;
 
@@ -2948,10 +2941,8 @@ fetch_attachments (ECalBackendSync *backend,
 			continue;
 		}
 		filename = g_path_get_basename (sfname);
-		new_filename = g_strconcat (uid, "-", filename, NULL);
+		dest_file = e_cal_backend_create_cache_filename (E_CAL_BACKEND (backend), uid, filename, fileindex);
 		g_free (filename);
-		dest_file = g_build_filename (attach_store, new_filename, NULL);
-		g_free (new_filename);
 		fd = g_open (dest_file, O_RDWR | O_CREAT | O_TRUNC | O_BINARY, 0600);
 		if (fd == -1) {
 			/* TODO handle error conditions */
@@ -2975,7 +2966,7 @@ fetch_attachments (ECalBackendSync *backend,
 		new_attach_list = g_slist_append (new_attach_list, dest_url);
 		g_free (sfname);
 	}
-	g_free (attach_store);
+
 	e_cal_component_set_attachment_list (comp, new_attach_list);
 }
 

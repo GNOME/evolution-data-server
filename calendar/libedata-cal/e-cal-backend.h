@@ -183,6 +183,7 @@ gboolean	e_cal_backend_is_removed		(ECalBackend *backend);
 
 const gchar *	e_cal_backend_get_cache_dir		(ECalBackend *backend);
 void		e_cal_backend_set_cache_dir		(ECalBackend *backend, const gchar *cache_dir);
+gchar *		e_cal_backend_create_cache_filename	(ECalBackend *backend, const gchar *uid, const gchar *filename, gint fileindex);
 
 void		e_cal_backend_add_client		(ECalBackend *backend, EDataCal *cal);
 void		e_cal_backend_remove_client		(ECalBackend *backend, EDataCal *cal);

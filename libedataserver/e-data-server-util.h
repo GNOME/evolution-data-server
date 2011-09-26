@@ -49,6 +49,10 @@ const gchar *   e_util_ensure_gdbus_string	(const gchar *str,
 						 gchar **gdbus_str);
 guint64		e_util_gthread_id		(GThread *thread);
 void		e_filename_make_safe		(gchar *string);
+gchar *		e_filename_mkdir_encoded	(const gchar *basepath,
+						 const gchar *fileprefix,
+						 const gchar *filename,
+						 gint fileindex);
 
 gsize		e_utf8_strftime			(gchar *string,
 						 gsize max,

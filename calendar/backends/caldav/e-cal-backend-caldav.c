@@ -3073,16 +3073,14 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav,
 {
 	ECalBackend *backend;
 	GSList *to_remove = NULL, *to_remove_after_download = NULL;
-	const gchar *cache_dir;
 	icalcomponent *cclone;
 	icalproperty *p;
+	gint fileindex;
 
 	g_return_if_fail (cbdav != NULL);
 	g_return_if_fail (icalcomp != NULL);
 
 	backend = E_CAL_BACKEND (cbdav);
-	cache_dir = e_cal_backend_get_cache_dir (backend);
-
 	cclone = icalcomponent_new_clone (icalcomp);
 
 	/* Remove all inline attachments first */
@@ -3101,13 +3099,13 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav,
 	g_slist_free (to_remove);
 
 	/* convert inline attachments to url attachments now */
-	for (p = icalcomponent_get_first_property (cclone, ICAL_ATTACH_PROPERTY);
+	for (p = icalcomponent_get_first_property (cclone, ICAL_ATTACH_PROPERTY), fileindex = 0;
 	     p;
-	     p = icalcomponent_get_next_property (cclone, ICAL_ATTACH_PROPERTY)) {
+	     p = icalcomponent_get_next_property (cclone, ICAL_ATTACH_PROPERTY), fileindex++) {
 		icalattach *attach;
-		gchar *dir;
 		gsize len = -1;
 		gchar *decoded = NULL;
+		gchar *basename, *local_filename;
 
 		attach = icalproperty_get_attach ((const icalproperty *) p);
 		if (icalattach_get_is_url (attach)) {
@@ -3124,17 +3122,12 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav,
 			}
 		}
 
-		dir = g_build_filename (
-			cache_dir, icalcomponent_get_uid (icalcomp), NULL);
-		if (g_mkdir_with_parents (dir, 0700) >= 0) {
-			GError *error = NULL;
-			gchar *basename;
-			gchar *dest;
+		basename = icalproperty_get_parameter_as_string_r (p, X_E_CALDAV_ATTACHMENT_NAME);
+		local_filename = e_cal_backend_create_cache_filename (backend, icalcomponent_get_uid (icalcomp), basename, fileindex);
+		g_free (basename);
 
-			basename = icalproperty_get_parameter_as_string_r (p,
-					X_E_CALDAV_ATTACHMENT_NAME);
-			dest = g_build_filename (dir, basename, NULL);
-			g_free (basename);
+		if (local_filename) {
+			GError *error = NULL;
 
 			if (decoded == NULL) {
 				gchar *content;
@@ -3143,11 +3136,11 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav,
 				decoded = (gchar *) g_base64_decode (content, &len);
 			}
 
-			if (g_file_set_contents (dest, decoded, len, &error)) {
+			if (g_file_set_contents (local_filename, decoded, len, &error)) {
 				icalproperty *prop;
 				gchar *url;
 
-				url = g_filename_to_uri (dest, NULL, NULL);
+				url = g_filename_to_uri (local_filename, NULL, NULL);
 				attach = icalattach_new_from_url (url);
 				prop = icalproperty_new_attach (attach);
 				icalattach_unref (attach);
@@ -3157,10 +3150,9 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav,
 				g_warning ("%s\n", error->message);
 				g_clear_error (&error);
 			}
-			g_free (decoded);
-			g_free (dest);
+
+			g_free (local_filename);
 		}
-		g_free (dir);
 	}
 
 	icalcomponent_free (cclone);
@@ -3170,32 +3162,31 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav,
 }
 
 static void
-remove_dir (const gchar *dir)
+remove_files (const gchar *dir, const gchar *fileprefix)
 {
 	GDir *d;
 
-	/*
-	 * remove all files in the direcory first
-	 * and call rmdir to remove the empty directory
-	 * because ZFS does not support unlinking a directory.
-	 */
+	g_return_if_fail (dir != NULL);
+	g_return_if_fail (fileprefix != NULL);
+	g_return_if_fail (*fileprefix != '\0');
+
 	d = g_dir_open (dir, 0, NULL);
 	if (d) {
 		const gchar *entry;
+		gint len = strlen (fileprefix);
 
 		while ((entry = g_dir_read_name (d)) != NULL) {
-			gchar *path;
+			if (entry && strncmp (entry, fileprefix, len) == 0) {
+				gchar *path;
 
-			path = g_build_filename (dir, entry, NULL);
-			if (g_file_test (path, G_FILE_TEST_IS_DIR))
-				remove_dir (path);
-			else
-				g_unlink (path);
-			g_free (path);
+				path = g_build_filename (dir, entry, NULL);
+				if (!g_file_test (path, G_FILE_TEST_IS_DIR))
+					g_unlink (path);
+				g_free (path);
+			}
 		}
 		g_dir_close (d);
 	}
-	g_rmdir (dir);
 }
 
 static void
@@ -3203,11 +3194,10 @@ remove_cached_attachment (ECalBackendCalDAV *cbdav,
                           const gchar *uid)
 {
 	ECalBackendCalDAVPrivate *priv;
-	ECalBackend *backend;
-	const gchar *cache_dir;
 	GSList *l;
 	guint len;
 	gchar *dir;
+	gchar *fileprefix;
 
 	g_return_if_fail (cbdav != NULL);
 	g_return_if_fail (uid != NULL);
@@ -3220,10 +3210,21 @@ remove_cached_attachment (ECalBackendCalDAV *cbdav,
 	if (len > 0)
 		return;
 
-	backend = E_CAL_BACKEND (cbdav);
-	cache_dir = e_cal_backend_get_cache_dir (backend);
-	dir = g_build_filename (cache_dir, uid, NULL);
-	remove_dir (dir);
+	dir = e_cal_backend_create_cache_filename (E_CAL_BACKEND (cbdav), uid, "a", 0);
+	if (!dir)
+		return;
+
+	fileprefix = g_strrstr (dir, G_DIR_SEPARATOR_S);
+	if (fileprefix) {
+		*fileprefix = '\0';
+		fileprefix++;
+
+		if (*fileprefix)
+			fileprefix[strlen(fileprefix) - 1] = '\0';
+
+		remove_files (dir, fileprefix);
+	}
+
 	g_free (dir);
 }
 
