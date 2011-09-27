@@ -522,6 +522,10 @@ e_data_book_factory_accounts_changed_cb (GoaClient *client, GDBusObject *object,
 static void
 e_data_book_factory_init (EDataBookFactory *factory)
 {
+#ifdef HAVE_GOA
+	GError *error = NULL;
+#endif
+
 	factory->priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (factory);
 
 	factory->priv->gdbus_object = e_gdbus_book_factory_stub_new ();
