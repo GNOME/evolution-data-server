@@ -13,10 +13,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-25 23:42+0200\n"
-"PO-Revision-Date: 2011-09-23 22:08+0200\n"
+"POT-Creation-Date: 2011-09-27 11:02+0200\n"
+"PO-Revision-Date: 2011-09-27 11:02+0200\n"
 "Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
-"Language-Team: Catalan <tradgnome@softcatala.org>\n"
+"Language-Team: català; valencià <tradgnome@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,7 +40,7 @@ msgid "Querying for updated contacts…"
 msgstr "S'està consultant si hi ha contactes actualitzats…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:893
-#: ../addressbook/libebook/e-book.c:3549 ../calendar/libecal/e-cal.c:1381
+#: ../addressbook/libebook/e-book.c:3506 ../calendar/libecal/e-cal.c:1381
 #: ../libedataserver/e-client.c:1951
 msgid "Personal"
 msgstr "Personal"
@@ -151,19 +151,19 @@ msgstr "Error desconegut"
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "La creació del recurs «%s» ha fallat amb l'estat HTTP: %d (%s)"
 
-#: ../addressbook/libebook/e-book.c:3216
+#: ../addressbook/libebook/e-book.c:3173
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr ""
 "%s: no hi ha cap font per a l'identificador d'usuari «%s» emmagatzemat al "
 "GConf."
 
-#: ../addressbook/libebook/e-book.c:3532 ../calendar/libecal/e-cal.c:1361
+#: ../addressbook/libebook/e-book.c:3489 ../calendar/libecal/e-cal.c:1361
 #: ../libedataserver/e-client.c:1946
 msgid "On This Computer"
 msgstr "En aquest ordinador"
 
-#: ../addressbook/libebook/e-book.c:3658
+#: ../addressbook/libebook/e-book.c:3615
 #: ../addressbook/libebook/e-book-client.c:678
 #: ../addressbook/libedata-book/e-data-book.c:315
 msgid "Address book does not exist"
@@ -1394,12 +1394,12 @@ msgid "Cannot change value of calendar property '%s'"
 msgstr "No es pot canviar la propietat «%s» del calendari"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:72
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:714
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:736
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:851
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:882
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1082
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1112
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:728
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:750
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:865
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:896
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1096
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1126
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "«%s» no espera cap argument"
@@ -1408,7 +1408,7 @@ msgstr "«%s» no espera cap argument"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:224
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:269
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:308
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1153
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1167
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "«%s» espera un argument"
@@ -1416,7 +1416,7 @@ msgstr "«%s» espera un argument"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:114
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:314
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:781
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:795
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "«%s» espera que el primer argument sigui una cadena"
@@ -1429,10 +1429,9 @@ msgstr ""
 "format ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:171
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:388
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:441
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:775
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:917
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:455
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:789
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:931
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "«%s» espera dos arguments"
@@ -1440,10 +1439,10 @@ msgstr "«%s» espera dos arguments"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:177
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:230
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:275
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:394
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:447
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:923
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1159
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:396
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:461
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:937
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1173
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "«%s» espera que el primer argument sigui de tipus time_t"
@@ -1453,19 +1452,29 @@ msgstr "«%s» espera que el primer argument sigui de tipus time_t"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "«%s» espera que el segon argument sigui un enter"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:402
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:456
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:931
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:390
+#, c-format
+msgid "\"%s\" expects two or three arguments"
+msgstr "«%s» espera dos o tres arguments"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:404
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:945
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "«%s» espera que el segon argument sigui un tipus time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:789
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:413
+#, c-format
+msgid "\"%s\" expects the third argument to be a string"
+msgstr "«%s» espera que el tercer argument sigui una cadena"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:803
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "«%s» espera que el segon argument sigui una cadena"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:819
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:833
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1477,12 +1486,12 @@ msgstr ""
 "«attendee» (assistent), «organizer» (organitzador), o "
 "«classification» (classificació)"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:981
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:995
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "«%s» espera almenys un argument"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:995
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1009
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -1694,9 +1703,9 @@ msgstr "Copia el contingut de la carpeta localment per treballar fora de línia"
 
 #: ../camel/camel-disco-store.c:456
 #: ../camel/providers/imap/camel-imap-store.c:1157
-#: ../camel/providers/imap/camel-imap-store.c:1931
-#: ../camel/providers/imap/camel-imap-store.c:2426
-#: ../camel/providers/imap/camel-imap-store.c:3188
+#: ../camel/providers/imap/camel-imap-store.c:1935
+#: ../camel/providers/imap/camel-imap-store.c:2430
+#: ../camel/providers/imap/camel-imap-store.c:3192
 #: ../camel/providers/imapx/camel-imapx-folder.c:324
 #: ../camel/providers/imapx/camel-imapx-folder.c:357
 #: ../camel/providers/imapx/camel-imapx-folder.c:411
@@ -2705,23 +2714,23 @@ msgstr "Paperera"
 msgid "Junk"
 msgstr "Brossa"
 
-#: ../camel/camel-store.c:2517
+#: ../camel/camel-store.c:2520
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "No s'ha pogut crear la carpeta: %s. La carpeta existeix"
 
-#: ../camel/camel-store.c:2531
+#: ../camel/camel-store.c:2534
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "S'està creant la carpeta «%s»"
 
-#: ../camel/camel-store.c:2649 ../camel/camel-vee-store.c:352
+#: ../camel/camel-store.c:2652 ../camel/camel-vee-store.c:352
 #: ../camel/providers/local/camel-maildir-store.c:272
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "No s'ha pogut suprimir la carpeta: %s. L'operació no és vàlida"
 
-#: ../camel/camel-store.c:2792 ../camel/camel-vee-store.c:402
+#: ../camel/camel-store.c:2795 ../camel/camel-vee-store.c:402
 #: ../camel/providers/local/camel-maildir-store.c:710
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3002,57 +3011,57 @@ msgstr "No s'ha pogut crear el directori %s: %s"
 msgid "Could not load summary for %s"
 msgstr "No s'ha pogut carregar el resum per a %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1054
+#: ../camel/providers/imap/camel-imap-folder.c:1057
 #: ../camel/providers/imapx/camel-imapx-server.c:4065
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "S'estan cercant els missatges canviats a %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3483
+#: ../camel/providers/imap/camel-imap-folder.c:3486
 msgid "Unable to retrieve message: "
 msgstr "No es pot obtenir el missatge: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3520
+#: ../camel/providers/imap/camel-imap-folder.c:3523
 #: ../camel/providers/imapx/camel-imapx-server.c:5344
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "No es pot obtenir el missatge amb l'identificador %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3521
+#: ../camel/providers/imap/camel-imap-folder.c:3524
 #: ../camel/providers/imapx/camel-imapx-server.c:5345
 msgid "No such message available."
 msgstr "No existeix tal missatge."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3596
-#: ../camel/providers/imap/camel-imap-folder.c:4503
+#: ../camel/providers/imap/camel-imap-folder.c:3599
+#: ../camel/providers/imap/camel-imap-folder.c:4506
 #: ../camel/providers/nntp/camel-nntp-folder.c:438
 #, c-format
 msgid "This message is not currently available"
 msgstr "Aquest missatge no està disponible actualment"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4087
-#: ../camel/providers/imap/camel-imap-folder.c:4170
+#: ../camel/providers/imap/camel-imap-folder.c:4090
+#: ../camel/providers/imap/camel-imap-folder.c:4173
 #: ../camel/providers/imapx/camel-imapx-server.c:4023
 #: ../camel/providers/imapx/camel-imapx-server.c:4173
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "S'està recollint la informació del resum per als missatges nous a %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4304
+#: ../camel/providers/imap/camel-imap-folder.c:4307
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Resposta incompleta del servidor: no s'ha proporcionat informació per al "
 "missatge %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4314
+#: ../camel/providers/imap/camel-imap-folder.c:4317
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
 "Resposta incompleta del servidor: no s'ha proporcionat l'UID per al missatge "
 "%d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4543
+#: ../camel/providers/imap/camel-imap-folder.c:4546
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "No s'ha pogut trobar el cos del missatge en la resposta a FETCH."
@@ -3190,7 +3199,7 @@ msgstr ""
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imap/camel-imap-store.c:224
-#: ../camel/providers/imap/camel-imap-store.c:2597
+#: ../camel/providers/imap/camel-imap-store.c:2601
 #: ../camel/providers/imapx/camel-imapx-store.c:340
 #: ../camel/providers/imapx/camel-imapx-store.c:796
 #: ../camel/providers/local/camel-maildir-folder.c:464
@@ -3277,29 +3286,29 @@ msgstr "Servidor d'IMAP %s"
 msgid "IMAP service for %s on %s"
 msgstr "Servei d'IMAP per a %s a %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1968
-#: ../camel/providers/imap/camel-imap-store.c:2172
+#: ../camel/providers/imap/camel-imap-store.c:1972
+#: ../camel/providers/imap/camel-imap-store.c:2176
 #: ../camel/providers/imapx/camel-imapx-store.c:315
 #, c-format
 msgid "No such folder %s"
 msgstr "No existeix la carpeta %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1982
-#: ../camel/providers/imap/camel-imap-store.c:2441
+#: ../camel/providers/imap/camel-imap-store.c:1986
+#: ../camel/providers/imap/camel-imap-store.c:2445
 #: ../camel/providers/imapx/camel-imapx-store.c:1327
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "El nom de carpeta «%s» no és vàlid perquè conté el caràcter «%c»"
 
-#: ../camel/providers/imap/camel-imap-store.c:2046
-#: ../camel/providers/imap/camel-imap-store.c:2505
+#: ../camel/providers/imap/camel-imap-store.c:2050
+#: ../camel/providers/imap/camel-imap-store.c:2509
 #: ../camel/providers/imapx/camel-imapx-store.c:1348
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "La carpeta pare no pot contenir subcarpetes"
 
-#: ../camel/providers/imap/camel-imap-store.c:2099
+#: ../camel/providers/imap/camel-imap-store.c:2103
 #: ../camel/providers/local/camel-maildir-store.c:244
 #: ../camel/providers/local/camel-mbox-store.c:424
 #: ../camel/providers/local/camel-mh-store.c:550
@@ -3307,18 +3316,18 @@ msgstr "La carpeta pare no pot contenir subcarpetes"
 msgid "Cannot create folder '%s': folder exists."
 msgstr "No s'ha pogut crear la carpeta «%s»: ja existeix."
 
-#: ../camel/providers/imap/camel-imap-store.c:2454
+#: ../camel/providers/imap/camel-imap-store.c:2458
 #: ../camel/providers/imapx/camel-imapx-store.c:1338
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "La carpeta pare és desconeguda: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:3231
+#: ../camel/providers/imap/camel-imap-store.c:3235
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "El servidor s'ha desconnectat inesperadament"
 
-#: ../camel/providers/imap/camel-imap-store.c:3234
+#: ../camel/providers/imap/camel-imap-store.c:3238
 msgid "Server unexpectedly disconnected: "
 msgstr "El servidor s'ha desconnectat inesperadament: "
 
@@ -3379,7 +3388,7 @@ msgid "Cannot create spool file: "
 msgstr "No es pot crear el fitxer de cua: "
 
 #: ../camel/providers/imapx/camel-imapx-store.c:1115
-#: ../camel/providers/nntp/camel-nntp-store.c:1702
+#: ../camel/providers/nntp/camel-nntp-store.c:1713
 #, c-format
 msgid "No such folder: %s"
 msgstr "No existeix la carpeta: %s"
@@ -3488,13 +3497,13 @@ msgstr "Directori mbox estàndard per a cues de correu de l'Unix"
 msgid "Could not rename folder %s to %s: %s"
 msgstr "No s'ha pogut canviar el nom de la carpeta %s a %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:184
+#: ../camel/providers/local/camel-local-store.c:204
 #, c-format
 msgid "Local mail file %s"
 msgstr "Fitxer de correu local %s"
 
-#: ../camel/providers/local/camel-local-store.c:215
-#: ../camel/providers/local/camel-local-store.c:357
+#: ../camel/providers/local/camel-local-store.c:235
+#: ../camel/providers/local/camel-local-store.c:377
 #: ../camel/providers/local/camel-maildir-store.c:92
 #: ../camel/providers/local/camel-mbox-store.c:542
 #: ../camel/providers/local/camel-spool-store.c:574
@@ -3502,37 +3511,37 @@ msgstr "Fitxer de correu local %s"
 msgid "Store root %s is not an absolute path"
 msgstr "L'arrel del magatzem (%s) no és un camí absolut"
 
-#: ../camel/providers/local/camel-local-store.c:224
+#: ../camel/providers/local/camel-local-store.c:244
 #, c-format
 msgid "Store root %s is not a regular directory"
 msgstr "L'arrel del magatzem (%s) no és un directori normal"
 
-#: ../camel/providers/local/camel-local-store.c:235
-#: ../camel/providers/local/camel-local-store.c:245
-#: ../camel/providers/local/camel-local-store.c:370
+#: ../camel/providers/local/camel-local-store.c:255
+#: ../camel/providers/local/camel-local-store.c:265
+#: ../camel/providers/local/camel-local-store.c:390
 #: ../camel/providers/local/camel-maildir-store.c:124
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "No s'ha pogut obtenir la carpeta: %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:277
+#: ../camel/providers/local/camel-local-store.c:297
 #, c-format
 msgid "Local stores do not have an inbox"
 msgstr "Els magatzems locals no tenen cap bústia d'entrada"
 
-#: ../camel/providers/local/camel-local-store.c:415
+#: ../camel/providers/local/camel-local-store.c:435
 #: ../camel/providers/local/camel-mbox-store.c:716
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
 msgstr "No s'ha pogut suprimir el fitxer d'índex de carpeta «%s»: %s"
 
-#: ../camel/providers/local/camel-local-store.c:443
+#: ../camel/providers/local/camel-local-store.c:463
 #: ../camel/providers/local/camel-mbox-store.c:746
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
 msgstr "No s'ha pogut suprimir el metafitxer de la carpeta «%s»: %s"
 
-#: ../camel/providers/local/camel-local-store.c:529
+#: ../camel/providers/local/camel-local-store.c:549
 #, c-format
 msgid "Could not rename '%s': %s"
 msgstr "No s'ha pogut canviar el nom a «%s»: %s"
@@ -4046,7 +4055,7 @@ msgstr "El servidor NNTP %s ha retornat el codi d'error %d: %s"
 msgid "USENET News via %s"
 msgstr "Notícies USENET mitjançant %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1053
+#: ../camel/providers/nntp/camel-nntp-store.c:1060
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4057,26 +4066,26 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1146
+#: ../camel/providers/nntp/camel-nntp-store.c:1153
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "No es pot crear una carpeta en un magatzem de notícies. Heu de subscriureu-"
 "us-hi."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1162
+#: ../camel/providers/nntp/camel-nntp-store.c:1169
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "No es pot canviar el nom d'una carpeta en un magatzem de notícies."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1185
+#: ../camel/providers/nntp/camel-nntp-store.c:1192
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "No es pot suprimir una carpeta en un magatzem de notícies. Heu de suprimir "
 "la subscripció."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1327
+#: ../camel/providers/nntp/camel-nntp-store.c:1338
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4087,7 +4096,7 @@ msgstr ""
 "\n"
 "No existeix. L'element seleccionat és segurament una carpeta pare."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1378
+#: ../camel/providers/nntp/camel-nntp-store.c:1389
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4097,11 +4106,11 @@ msgstr ""
 "No es pot suprimir la subscripció al grup de\n"
 "notícies perquè aquest grup no existeix."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1571
+#: ../camel/providers/nntp/camel-nntp-store.c:1582
 msgid "NNTP Command failed: "
 msgstr "Ha fallat l'ordre NNTP: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1645
+#: ../camel/providers/nntp/camel-nntp-store.c:1656
 #, c-format
 msgid "Not connected."
 msgstr "No connectat."
