@@ -37,9 +37,8 @@ camel-imapx-tokenise.h: camel-imapx-tokens.txt
 	@GPERF@ -H imapx_hash -N imapx_tokenise_struct -L ANSI-C -o -t -k1,$$ $< --output-file=$@
 
 libcamelimapx_la_LIBADD = \
-        $(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
-        $(top_builddir)/camel/libcamel-provider-1.2.la                  \
-        $(top_builddir)/camel/libcamel-1.2.la                           \
+        $(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la	\
+        $(top_builddir)/camel/libcamel-1.2.la				\
         $(CAMEL_LIBS)
 
 libcamelimapx_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
@@ -57,8 +56,7 @@ test_imapx_CPPFLAGS = \
 test_imapx_SOURCES = test-imapx.c
 test_imapx_LDADD =							\
 	$(CAMEL_LIBS)							\
-	$(top_builddir)/camel/libcamel-1.2.la				\
-	$(top_builddir)/camel/libcamel-provider-1.2.la
+	$(top_builddir)/camel/libcamel-1.2.la
 
 BUILT_SOURCES = camel-imapx-tokenise.h
 CLEANFILES = $(BUILT_SOURCES)

@@ -32,7 +32,6 @@ libcameltest_a_LIBADD =				\
 	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la
 
 libcameltest_provider_a_LIBADD =				\
-	$(top_builddir)/camel/libcamel-provider-${API_VERSION}.la \
 	$(top_builddir)/camel/libcamel-${API_VERSION}.la		\
 	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la
 

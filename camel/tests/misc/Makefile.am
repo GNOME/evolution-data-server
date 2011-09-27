@@ -8,7 +8,6 @@ MISC_TESTS_CPPFLAGS= \
 	$(CAMEL_CFLAGS)
 
 MISC_TESTS_LDADD= \
-	$(top_builddir)/camel/libcamel-provider-${API_VERSION}.la 	\
 	$(top_builddir)/camel/libcamel-${API_VERSION}.la 		\
 	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
 	$(top_builddir)/camel/tests/lib/libcameltest.a	\

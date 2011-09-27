@@ -25,7 +25,6 @@ cd @prefix@
 rm $ZIP
 zip $ZIP -@ <<EOF
 bin/libcamel-1.2-$LIBCAMEL_CURRENT_MINUS_AGE.dll
-bin/libcamel-provider-1.2-$LIBCAMEL_CURRENT_MINUS_AGE.dll
 bin/libebackend-1.2-$LIBEBACKEND_CURRENT_MINUS_AGE.dll
 bin/libebook-1.2-$LIBEBOOK_CURRENT_MINUS_AGE.dll
 bin/libecal-1.2-$LIBECAL_CURRENT_MINUS_AGE.dll
@@ -81,7 +80,6 @@ fi
 rm $DEVZIP
 zip -r -D $DEVZIP -@ <<EOF
 lib/libcamel-1.2.dll.a
-lib/libcamel-provider-1.2.dll.a
 lib/libebook-1.2.dll.a
 lib/libecal-1.2.dll.a
 lib/libedata-book-1.2.dll.a

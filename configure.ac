@@ -1593,7 +1593,6 @@ camel/tests/mime-filter/Makefile
 camel/tests/misc/Makefile
 camel/tests/smime/Makefile
 camel/camel.pc
-camel/camel-provider.pc
 libebackend/Makefile
 libebackend/libebackend.pc
 libedataserver/Makefile

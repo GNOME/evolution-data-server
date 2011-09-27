@@ -3,13 +3,12 @@ SUBDIRS = . providers tests
 if OS_WIN32
 LIBCAMEL_PLATFORM_DEP_SOURCES = \
 	camel-win32.c
-LIBCAMEL_PROVIDER_PLATFORM_DEP_SOURCES =
 LOCK_HELPER =
 else
 LIBCAMEL_PLATFORM_DEP_SOURCES = \
 	camel-lock-client.c \
+	camel-movemail.c \
 	camel-stream-process.c
-LIBCAMEL_PROVIDER_PLATFORM_DEP_SOURCES = camel-movemail.c
 LOCK_HELPER = camel-lock-helper-1.2
 endif
 
@@ -20,16 +19,15 @@ MARSHAL_GENERATED = camel-marshal.c camel-marshal.h
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_in_files = camel.pc.in camel-provider.pc.in
+pkgconfig_in_files = camel.pc.in
 pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=-$(API_VERSION).pc)
 
 libcamelincludedir = $(privincludedir)/camel
-libcamel_providerincludedir = $(privincludedir)/camel
 
 camellibexecdir = $(libexecdir)
 camellibexec_PROGRAMS =	$(LOCK_HELPER) camel-index-control-1.2
 
-lib_LTLIBRARIES = libcamel-1.2.la libcamel-provider-1.2.la
+lib_LTLIBRARIES = libcamel-1.2.la
 
 include $(top_srcdir)/camel/glib-gen.mak
 glib_enum_headers=camel-enums.h
@@ -37,132 +35,6 @@ glib_enum_define=CAMEL
 glib_enum_prefix=camel
 
 ENUM_GENERATED = camel-enumtypes.h camel-enumtypes.c
-
-libcamel_provider_1_2_la_CPPFLAGS = \
-	$(AM_CPPFLAGS)						\
-	-I$(top_srcdir) 					\
-	-I$(top_builddir)					\
-	-I$(srcdir)						\
-	-DCAMEL_LIBEXECDIR=\""$(camellibexecdir)"\"		\
-	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\"		\
-	-DG_LOG_DOMAIN=\"camel\"				\
-	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
-	-DLOCALEDIR=\""$(localedir)"\"				\
-	-DCAMEL_COMPILATION					\
-	$(CAMEL_CFLAGS)
-
-libcamel_provider_1_2_la_SOURCES = 		\
-	$(ENUM_GENERATED)			\
-	camel-cipher-context.c			\
-	camel-disco-diary.c			\
-	camel-disco-folder.c			\
-	camel-disco-store.c			\
-	camel-filter-driver.c			\
-	camel-filter-search.c			\
-	camel-folder-search.c			\
-	camel-folder-summary.c			\
-	camel-folder-thread.c			\
-	camel-folder.c				\
-	camel-gpg-context.c			\
-	camel-http-stream.c			\
-	camel-network-service.c			\
-	camel-network-settings.c		\
-	camel-offline-folder.c			\
-	camel-offline-journal.c			\
-	camel-offline-settings.c		\
-	camel-offline-store.c			\
-	camel-provider.c			\
-	camel-sasl-anonymous.c			\
-	camel-sasl-cram-md5.c			\
-	camel-sasl-digest-md5.c			\
-	camel-sasl-gssapi.c			\
-	camel-sasl-login.c			\
-	camel-sasl-ntlm.c			\
-	camel-sasl-plain.c			\
-	camel-sasl-popb4smtp.c			\
-	camel-sasl.c				\
-	camel-search-private.c			\
-	camel-search-sql.c			\
-	camel-search-sql-sexp.c			\
-	camel-service.c				\
-	camel-session.c				\
-	camel-settings.c			\
-	camel-smime-context.c			\
-	camel-store.c				\
-	camel-store-settings.c			\
-	camel-store-summary.c			\
-	camel-subscribable.c			\
-	camel-tcp-stream-raw.c			\
-	camel-tcp-stream-ssl.c			\
-	camel-tcp-stream.c			\
-	camel-transport.c			\
-	camel-uid-cache.c			\
-	camel-vee-folder.c			\
-	camel-vee-store.c			\
-	camel-vee-summary.c			\
-	camel-vtrash-folder.c			\
-	$(LIBCAMEL_PROVIDER_PLATFORM_DEP_SOURCES)
-
-libcamel_providerinclude_HEADERS =		\
-	camel-cipher-context.h			\
-	camel-disco-diary.h			\
-	camel-disco-folder.h			\
-	camel-disco-store.h			\
-	camel-filter-driver.h			\
-	camel-filter-search.h			\
-	camel-folder-search.h			\
-	camel-folder-summary.h			\
-	camel-folder-thread.h			\
-	camel-folder.h				\
-	camel-gpg-context.h			\
-	camel-http-stream.h			\
-	camel-html-parser.h			\
-	camel-lock-helper.h			\
-	camel-movemail.h			\
-	camel-network-service.h			\
-	camel-network-settings.h		\
-	camel-offline-folder.h			\
-	camel-offline-journal.h			\
-	camel-offline-settings.h		\
-	camel-offline-store.h			\
-	camel-provider.h			\
-	camel-sasl-anonymous.h			\
-	camel-sasl-cram-md5.h			\
-	camel-sasl-digest-md5.h			\
-	camel-sasl-gssapi.h			\
-	camel-sasl-login.h			\
-	camel-sasl-ntlm.h			\
-	camel-sasl-plain.h			\
-	camel-sasl-popb4smtp.h			\
-	camel-sasl.h				\
-	camel-search-sql.h			\
-	camel-search-sql-sexp.h			\
-	camel-service.h				\
-	camel-session.h				\
-	camel-settings.h			\
-	camel-smime-context.h			\
-	camel-store.h				\
-	camel-store-settings.h			\
-	camel-store-summary.h			\
-	camel-subscribable.h			\
-	camel-tcp-stream-raw.h			\
-	camel-tcp-stream-ssl.h			\
-	camel-tcp-stream.h			\
-	camel-transport.h			\
-	camel-uid-cache.h			\
-	camel-vee-folder.h			\
-	camel-vee-store.h			\
-	camel-vee-summary.h			\
-	camel-vtrash-folder.h
-
-libcamel_provider_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE) $(NO_UNDEFINED)
-
-libcamel_provider_1_2_la_LIBADD =			\
-	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la 	\
-	libcamel-1.2.la				\
-	$(CAMEL_LIBS)				\
-	$(SOCKET_LIBS)				\
-	$(REGEX_LIBS)
 
 libcamel_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)						\
@@ -178,17 +50,30 @@ libcamel_1_2_la_CPPFLAGS = \
 	$(CAMEL_CFLAGS)
 
 libcamel_1_2_la_SOURCES = 			\
+	$(ENUM_GENERATED)			\
 	$(MARSHAL_GENERATED)			\
 	camel-address.c				\
 	camel-block-file.c			\
 	camel-certdb.c				\
 	camel-charset-map.c			\
+	camel-cipher-context.c			\
 	camel-data-cache.c			\
 	camel-data-wrapper.c			\
 	camel-db.c				\
 	camel-debug.c				\
+	camel-disco-diary.c			\
+	camel-disco-folder.c			\
+	camel-disco-store.c			\
 	camel-file-utils.c			\
+	camel-filter-driver.c			\
+	camel-filter-search.c			\
+	camel-folder-search.c			\
+	camel-folder-summary.c			\
+	camel-folder-thread.c			\
+	camel-folder.c				\
+	camel-gpg-context.c			\
 	camel-html-parser.c			\
+	camel-http-stream.c			\
 	camel-iconv.c				\
 	camel-index.c				\
 	camel-internet-address.c		\
@@ -220,18 +105,44 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-mime-parser.c			\
 	camel-mime-part-utils.c			\
 	camel-mime-part.c			\
-	camel-mime-utils.c			\
 	camel-mime-tables.c			\
+	camel-mime-utils.c			\
 	camel-msgport.c				\
 	camel-multipart-encrypted.c		\
 	camel-multipart-signed.c		\
 	camel-multipart.c			\
 	camel-net-utils.c			\
+	camel-network-service.c			\
+	camel-network-settings.c		\
 	camel-nntp-address.c			\
-	camel-object.c				\
 	camel-object-bag.c			\
+	camel-object.c				\
+	camel-offline-folder.c			\
+	camel-offline-journal.c			\
+	camel-offline-settings.c		\
+	camel-offline-store.c			\
 	camel-operation.c			\
 	camel-partition-table.c			\
+	camel-provider.c			\
+	camel-sasl-anonymous.c			\
+	camel-sasl-cram-md5.c			\
+	camel-sasl-digest-md5.c			\
+	camel-sasl-gssapi.c			\
+	camel-sasl-login.c			\
+	camel-sasl-ntlm.c			\
+	camel-sasl-plain.c			\
+	camel-sasl-popb4smtp.c			\
+	camel-sasl.c				\
+	camel-search-private.c			\
+	camel-search-sql-sexp.c			\
+	camel-search-sql.c			\
+	camel-service.c				\
+	camel-session.c				\
+	camel-settings.c			\
+	camel-smime-context.c			\
+	camel-store-settings.c			\
+	camel-store-summary.c			\
+	camel-store.c				\
 	camel-stream-buffer.c			\
 	camel-stream-filter.c			\
 	camel-stream-fs.c			\
@@ -240,11 +151,21 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-stream-vfs.c			\
 	camel-stream.c				\
 	camel-string-utils.c			\
+	camel-subscribable.c			\
+	camel-tcp-stream-raw.c			\
+	camel-tcp-stream-ssl.c			\
+	camel-tcp-stream.c			\
 	camel-text-index.c			\
+	camel-transport.c			\
 	camel-trie.c				\
+	camel-uid-cache.c			\
 	camel-url-scanner.c			\
 	camel-url.c				\
 	camel-utf8.c				\
+	camel-vee-folder.c			\
+	camel-vee-store.c			\
+	camel-vee-summary.c			\
+	camel-vtrash-folder.c			\
 	camel.c					\
 	$(LIBCAMEL_PLATFORM_DEP_SOURCES)
 
@@ -253,19 +174,33 @@ libcamelinclude_HEADERS =			\
 	camel-block-file.h			\
 	camel-certdb.h				\
 	camel-charset-map.h			\
+	camel-cipher-context.h			\
 	camel-data-cache.h			\
 	camel-data-wrapper.h			\
 	camel-db.h				\
 	camel-debug.h				\
+	camel-disco-diary.h			\
+	camel-disco-folder.h			\
+	camel-disco-store.h			\
 	camel-enums.h				\
 	camel-enumtypes.h			\
 	camel-file-utils.h			\
+	camel-filter-driver.h			\
+	camel-filter-search.h			\
+	camel-folder-search.h			\
+	camel-folder-summary.h			\
+	camel-folder-thread.h			\
+	camel-folder.h				\
+	camel-gpg-context.h			\
+	camel-html-parser.h			\
+	camel-http-stream.h			\
 	camel-iconv.h				\
 	camel-index.h				\
 	camel-internet-address.h		\
 	camel-junk-filter.h			\
 	camel-list-utils.h			\
 	camel-lock-client.h			\
+	camel-lock-helper.h			\
 	camel-lock.h				\
 	camel-medium.h				\
 	camel-memchunk.h			\
@@ -293,17 +228,43 @@ libcamelinclude_HEADERS =			\
 	camel-mime-part-utils.h			\
 	camel-mime-part.h			\
 	camel-mime-utils.h			\
+	camel-movemail.h			\
 	camel-msgport.h				\
 	camel-multipart-encrypted.h		\
 	camel-multipart-signed.h		\
 	camel-multipart.h			\
 	camel-net-utils.h			\
+	camel-network-service.h			\
+	camel-network-settings.h		\
 	camel-nntp-address.h			\
-	camel-object.h				\
 	camel-object-bag.h			\
+	camel-object.h				\
+	camel-offline-folder.h			\
+	camel-offline-journal.h			\
+	camel-offline-settings.h		\
+	camel-offline-store.h			\
 	camel-operation.h			\
 	camel-partition-table.h			\
+	camel-provider.h			\
+	camel-sasl-anonymous.h			\
+	camel-sasl-cram-md5.h			\
+	camel-sasl-digest-md5.h			\
+	camel-sasl-gssapi.h			\
+	camel-sasl-login.h			\
+	camel-sasl-ntlm.h			\
+	camel-sasl-plain.h			\
+	camel-sasl-popb4smtp.h			\
+	camel-sasl.h				\
 	camel-search-private.h			\
+	camel-search-sql-sexp.h			\
+	camel-search-sql.h			\
+	camel-service.h				\
+	camel-session.h				\
+	camel-settings.h			\
+	camel-smime-context.h			\
+	camel-store-settings.h			\
+	camel-store-summary.h			\
+	camel-store.h				\
 	camel-stream-buffer.h			\
 	camel-stream-filter.h			\
 	camel-stream-fs.h			\
@@ -313,11 +274,21 @@ libcamelinclude_HEADERS =			\
 	camel-stream-vfs.h			\
 	camel-stream.h				\
 	camel-string-utils.h			\
+	camel-subscribable.h			\
+	camel-tcp-stream-raw.h			\
+	camel-tcp-stream-ssl.h			\
+	camel-tcp-stream.h			\
 	camel-text-index.h			\
+	camel-transport.h			\
 	camel-trie.h				\
+	camel-uid-cache.h			\
 	camel-url-scanner.h			\
 	camel-url.h				\
 	camel-utf8.h				\
+	camel-vee-folder.h			\
+	camel-vee-store.h			\
+	camel-vee-summary.h			\
+	camel-vtrash-folder.h			\
 	camel.h
 
 libcamel_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE) $(NO_UNDEFINED)
