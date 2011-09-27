@@ -1273,15 +1273,18 @@ e_book_client_add_contact (EBookClient *client,
                            gpointer user_data)
 {
 	gchar *vcard, *gdbus_vcard = NULL;
+	const gchar *strv[2];
 
 	g_return_if_fail (contact != NULL);
 	g_return_if_fail (E_IS_CONTACT (contact));
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
+	strv[1] = NULL;
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (vcard, &gdbus_vcard), cancellable, callback, user_data, e_book_client_add_contact,
-			e_gdbus_book_call_add_contact,
-			NULL, NULL, e_gdbus_book_call_add_contact_finish, NULL, NULL);
+	e_client_proxy_call_strv (E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_add_contact,
+			e_gdbus_book_call_add_contacts,
+			NULL, NULL, NULL, e_gdbus_book_call_add_contacts_finish, NULL);
 
 	g_free (vcard);
 	g_free (gdbus_vcard);
@@ -1311,17 +1314,17 @@ e_book_client_add_contact_finish (EBookClient *client,
                                   GError **error)
 {
 	gboolean res;
-	gchar *out_uid = NULL;
+	gchar **out_uids = NULL;
 
-	res = e_client_proxy_call_finish_string (E_CLIENT (client), result, &out_uid, error, e_book_client_add_contact);
+	res = e_client_proxy_call_finish_strv (E_CLIENT (client), result, &out_uids, error, e_book_client_add_contact);
 
-	if (res && out_uid && added_uid) {
-		*added_uid = out_uid;
+	if (res && out_uids && added_uid) {
+		*added_uid = g_strdup (out_uids[0]);
 	} else {
-		g_free (out_uid);
 		if (added_uid)
 			*added_uid = NULL;
 	}
+	g_strfreev (out_uids);
 
 	return res;
 }
@@ -1353,7 +1356,8 @@ e_book_client_add_contact_sync (EBookClient *client,
                                 GError **error)
 {
 	gboolean res;
-	gchar *vcard, *gdbus_vcard = NULL, *out_uid = NULL;
+	gchar *vcard, *gdbus_vcard = NULL, **out_uids = NULL;
+	const gchar *strv[2];
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -1365,19 +1369,170 @@ e_book_client_add_contact_sync (EBookClient *client,
 	}
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
+	strv[1] = NULL;
 
-	res = e_client_proxy_call_sync_string__string (E_CLIENT (client), e_util_ensure_gdbus_string (vcard, &gdbus_vcard), &out_uid, cancellable, error, e_gdbus_book_call_add_contact_sync);
+	res = e_client_proxy_call_sync_strv__strv (E_CLIENT (client), strv, &out_uids, cancellable, error, e_gdbus_book_call_add_contacts_sync);
 
-	if (res && out_uid && added_uid) {
-		*added_uid = out_uid;
+	if (res && out_uids && added_uid) {
+		*added_uid = g_strdup (out_uids[0]);
 	} else {
-		g_free (out_uid);
 		if (added_uid)
 			*added_uid = NULL;
 	}
 
+	g_strfreev (out_uids);
 	g_free (vcard);
 	g_free (gdbus_vcard);
+
+	return res;
+}
+
+/**
+ * e_book_client_add_contacts:
+ * @client: an #EBookClient
+ * @contacts: a #GSList of #EContact objects to add
+ * @cancellable: a #GCancellable; can be %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * Adds @contacts to @client.
+ * The call is finished by e_book_client_add_contacts_finish()
+ * from the @callback.
+ *
+ * Since: 3.4
+ **/
+void
+e_book_client_add_contacts (EBookClient *client,
+                            /* const */ GSList *contacts,
+                            GCancellable *cancellable,
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
+{
+	gchar **array;
+	const GSList *l;
+	gint i = 0;
+
+	g_return_if_fail (contacts != NULL);
+
+	array = g_new0 (gchar *, g_slist_length (contacts) + 1);
+	for (l = contacts; l != NULL; l = l->next) {
+		gchar *vcard = e_vcard_to_string (E_VCARD (l->data), EVC_FORMAT_VCARD_30);
+		array[i++] = e_util_utf8_make_valid (vcard);
+		g_free (vcard);
+	}
+
+	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_book_client_add_contacts,
+			e_gdbus_book_call_add_contacts,
+			NULL, NULL, NULL, e_gdbus_book_call_add_contacts_finish, NULL);
+
+	g_strfreev (array);
+}
+
+/**
+ * e_book_client_add_contacts_finish:
+ * @client: an #EBookClient
+ * @result: a #GAsyncResult
+ * @added_uids: (out): UIDs of newly added contacts; can be %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Finishes previous call of e_book_client_add_contacts() and
+ * sets @added_uids to the UIDs of newly added contacts if successful.
+ * This #GSList should be freed with e_client_util_free_string_slist().
+ *
+ * If any of the contacts cannot be inserted, all of the insertions will be
+ * reverted and this method will return %FALSE.
+ *
+ * Note: This is not modifying original #EContact objects.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.4
+ **/
+gboolean
+e_book_client_add_contacts_finish (EBookClient *client,
+                                   GAsyncResult *result,
+                                   GSList **added_uids,
+                                   GError **error)
+{
+	gboolean res;
+	gchar **out_uids = NULL;
+
+	res = e_client_proxy_call_finish_strv (E_CLIENT (client), result, &out_uids, error, e_book_client_add_contacts);
+
+	if (res && out_uids && added_uids) {
+		*added_uids = e_client_util_strv_to_slist ((const gchar * const*) out_uids);
+	} else {
+		if (added_uids)
+			*added_uids = NULL;
+	}
+
+	g_strfreev (out_uids);
+
+	return res;
+}
+
+/**
+ * e_book_client_add_contacts_sync:
+ * @client: an #EBookClient
+ * @contacts: a #GSList of #EContact objects to add
+ * @added_uids: (out): UIDs of newly added contacts; can be %NULL
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Adds @contacts to @client and
+ * sets @added_uids to the UIDs of newly added contacts if successful.
+ * This #GSList should be freed with e_client_util_free_string_slist().
+ *
+ * If any of the contacts cannot be inserted, all of the insertions will be
+ * reverted and this method will return %FALSE.
+ *
+ * Note: This is not modifying original @contacts, thus if it's needed,
+ * then use e_contact_set (contact, E_CONTACT_UID, new_uid).
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.4
+ **/
+gboolean
+e_book_client_add_contacts_sync	(EBookClient *client,
+                                 /* const */ GSList *contacts,
+                                 GSList **added_uids,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	gboolean res;
+	gint i = 0;
+	gchar **array, **out_uids = NULL;
+	const GSList *l;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (client->priv != NULL, FALSE);
+
+	if (!client->priv->gdbus_book) {
+		set_proxy_gone_error (error);
+		return FALSE;
+	}
+
+	array = g_new0 (gchar *, g_slist_length (contacts) + 1);
+	for (l = contacts; l != NULL; l = l->next) {
+		gchar *vcard = e_vcard_to_string (E_VCARD (l->data), EVC_FORMAT_VCARD_30);
+		array[i++] = e_util_utf8_make_valid (vcard);
+		g_free (vcard);
+	}
+
+	res = e_client_proxy_call_sync_strv__strv (E_CLIENT (client), (const gchar * const*) array, &out_uids, cancellable, error, e_gdbus_book_call_add_contacts_sync);
+
+	if (res && out_uids && added_uids) {
+		*added_uids = e_client_util_strv_to_slist ((const gchar * const*) out_uids);
+	} else {
+		if (added_uids)
+			*added_uids = NULL;
+	}
+
+	g_strfreev (out_uids);
+	g_strfreev (array);
 
 	return res;
 }
@@ -1501,7 +1656,7 @@ e_book_client_remove_contact (EBookClient *client,
                               gpointer user_data)
 {
 	gchar *uid;
-	const gchar *lst[2];
+	const gchar *strv[2];
 
 	g_return_if_fail (contact != NULL);
 	g_return_if_fail (E_IS_CONTACT (contact));
@@ -1509,10 +1664,10 @@ e_book_client_remove_contact (EBookClient *client,
 	uid = e_util_utf8_make_valid (e_contact_get_const ((EContact *) contact, E_CONTACT_UID));
 	g_return_if_fail (uid != NULL);
 
-	lst[0] = uid;
-	lst[1] = NULL;
+	strv[0] = uid;
+	strv[1] = NULL;
 
-	e_client_proxy_call_strv (E_CLIENT (client), lst, cancellable, callback, user_data, e_book_client_remove_contact,
+	e_client_proxy_call_strv (E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_remove_contact,
 			e_gdbus_book_call_remove_contacts,
 			e_gdbus_book_call_remove_contacts_finish, NULL, NULL, NULL, NULL);
 
@@ -1560,7 +1715,7 @@ e_book_client_remove_contact_sync (EBookClient *client,
 {
 	gboolean res;
 	gchar *uid;
-	const gchar *lst[2];
+	const gchar *strv[2];
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -1576,10 +1731,10 @@ e_book_client_remove_contact_sync (EBookClient *client,
 	uid = e_util_utf8_make_valid (e_contact_get_const ((EContact *) contact, E_CONTACT_UID));
 	g_return_val_if_fail (uid != NULL, 0);
 
-	lst[0] = uid;
-	lst[1] = NULL;
+	strv[0] = uid;
+	strv[1] = NULL;
 
-	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), lst, cancellable, error, e_gdbus_book_call_remove_contacts_sync);
+	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), strv, cancellable, error, e_gdbus_book_call_remove_contacts_sync);
 
 	g_free (uid);
 
@@ -1608,17 +1763,17 @@ e_book_client_remove_contact_by_uid (EBookClient *client,
                                      gpointer user_data)
 {
 	gchar *safe_uid;
-	const gchar *lst[2];
+	const gchar *strv[2];
 
 	g_return_if_fail (uid != NULL);
 
 	safe_uid = e_util_utf8_make_valid (uid);
 	g_return_if_fail (safe_uid != NULL);
 
-	lst[0] = safe_uid;
-	lst[1] = NULL;
+	strv[0] = safe_uid;
+	strv[1] = NULL;
 
-	e_client_proxy_call_strv (E_CLIENT (client), lst, cancellable, callback, user_data, e_book_client_remove_contact_by_uid,
+	e_client_proxy_call_strv (E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_remove_contact_by_uid,
 			e_gdbus_book_call_remove_contacts,
 			e_gdbus_book_call_remove_contacts_finish, NULL, NULL, NULL, NULL);
 
@@ -1666,7 +1821,7 @@ e_book_client_remove_contact_by_uid_sync (EBookClient *client,
 {
 	gboolean res;
 	gchar *safe_uid;
-	const gchar *lst[2];
+	const gchar *strv[2];
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -1681,10 +1836,10 @@ e_book_client_remove_contact_by_uid_sync (EBookClient *client,
 	safe_uid = e_util_utf8_make_valid (uid);
 	g_return_val_if_fail (safe_uid != NULL, FALSE);
 
-	lst[0] = safe_uid;
-	lst[1] = NULL;
+	strv[0] = safe_uid;
+	strv[1] = NULL;
 
-	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), lst, cancellable, error, e_gdbus_book_call_remove_contacts_sync);
+	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), strv, cancellable, error, e_gdbus_book_call_remove_contacts_sync);
 
 	g_free (safe_uid);
 
@@ -1715,18 +1870,18 @@ e_book_client_remove_contacts (EBookClient *client,
                                GAsyncReadyCallback callback,
                                gpointer user_data)
 {
-	gchar **lst;
+	gchar **strv;
 
 	g_return_if_fail (uids != NULL);
 
-	lst = e_client_util_slist_to_strv (uids);
-	g_return_if_fail (lst != NULL);
+	strv = e_client_util_slist_to_strv (uids);
+	g_return_if_fail (strv != NULL);
 
-	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) lst, cancellable, callback, user_data, e_book_client_remove_contacts,
+	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_book_client_remove_contacts,
 			e_gdbus_book_call_remove_contacts,
 			e_gdbus_book_call_remove_contacts_finish, NULL, NULL, NULL, NULL);
 
-	g_strfreev (lst);
+	g_strfreev (strv);
 }
 
 /**
@@ -1772,7 +1927,7 @@ e_book_client_remove_contacts_sync (EBookClient *client,
                                     GError **error)
 {
 	gboolean res;
-	gchar **lst;
+	gchar **strv;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -1784,12 +1939,12 @@ e_book_client_remove_contacts_sync (EBookClient *client,
 		return FALSE;
 	}
 
-	lst = e_client_util_slist_to_strv (uids);
-	g_return_val_if_fail (lst != NULL, FALSE);
+	strv = e_client_util_slist_to_strv (uids);
+	g_return_val_if_fail (strv != NULL, FALSE);
 
-	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const *) lst, cancellable, error, e_gdbus_book_call_remove_contacts_sync);
+	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const *) strv, cancellable, error, e_gdbus_book_call_remove_contacts_sync);
 
-	g_strfreev (lst);
+	g_strfreev (strv);
 
 	return res;
 }

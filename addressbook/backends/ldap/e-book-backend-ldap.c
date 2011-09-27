@@ -1553,24 +1553,25 @@ create_contact_handler (LDAPOp *op,
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
 	gchar *ldap_error_msg;
 	gint ldap_error;
+	GSList added_contacts = {NULL,};
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_create (op->book,
-					    op->opid,
-					    EDB_ERROR_NOT_CONNECTED (),
-					    NULL);
+		e_data_book_respond_create_contacts (op->book,
+					             op->opid,
+					             EDB_ERROR_NOT_CONNECTED (),
+					             NULL);
 		ldap_op_finished (op);
 		return;
 	}
 	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	if (LDAP_RES_ADD != ldap_msgtype (res)) {
-		e_data_book_respond_create (op->book,
-					    op->opid,
-					    EDB_ERROR_MSG_TYPE (ldap_msgtype (res)),
-					    NULL);
+		e_data_book_respond_create_contacts (op->book,
+					             op->opid,
+					             EDB_ERROR_MSG_TYPE (ldap_msgtype (res)),
+					             NULL);
 		ldap_op_finished (op);
 		return;
 	}
@@ -1590,10 +1591,11 @@ create_contact_handler (LDAPOp *op,
 	ldap_memfree (ldap_error_msg);
 
 	/* and lastly respond */
-	e_data_book_respond_create (op->book,
-				    op->opid,
-				    ldap_error_to_response (ldap_error),
-				    create_op->new_contact);
+	added_contacts.data = create_op->new_contact;
+	e_data_book_respond_create_contacts (op->book,
+				             op->opid,
+				             ldap_error_to_response (ldap_error),
+				             &added_contacts);
 
 	ldap_op_finished (op);
 }
@@ -1609,11 +1611,11 @@ create_contact_dtor (LDAPOp *op)
 }
 
 static void
-e_book_backend_ldap_create_contact (EBookBackend *backend,
-                                    EDataBook *book,
-                                    guint32 opid,
-                                    GCancellable *cancellable,
-                                    const gchar *vcard)
+e_book_backend_ldap_create_contacts (EBookBackend *backend,
+                                     EDataBook *book,
+                                     guint32 opid,
+                                     GCancellable *cancellable,
+                                     const GSList *vcards)
 {
 	LDAPCreateOp *create_op = g_new0 (LDAPCreateOp, 1);
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
@@ -1623,16 +1625,27 @@ e_book_backend_ldap_create_contact (EBookBackend *backend,
 	GPtrArray *mod_array;
 	LDAPMod **ldap_mods;
 	gchar *new_uid;
+	const gchar *vcard = (const gchar *) vcards->data;
+
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
+	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
+	if (vcards->next != NULL) {
+		e_data_book_respond_create_contacts (book, opid,
+		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+		                                     _("The backend does not support bulk additions")),
+		                                     NULL);
+		return;
+	}
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_create (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		e_data_book_respond_create_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
 	}
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_create (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
+		e_data_book_respond_create_contacts (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
 		return;
 	}
 	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
@@ -1730,10 +1743,10 @@ e_book_backend_ldap_create_contact (EBookBackend *backend,
 	free_mods (mod_array);
 
 	if (LDAP_SUCCESS != err) {
-		e_data_book_respond_create (create_op->op.book,
-					    opid,
-					    ldap_error_to_response (err),
-					    NULL);
+		e_data_book_respond_create_contacts (create_op->op.book,
+					             opid,
+					             ldap_error_to_response (err),
+					             NULL);
 		create_contact_dtor ((LDAPOp *) create_op);
 		return;
 	} else {
@@ -5669,7 +5682,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 	parent_class->remove			= e_book_backend_ldap_remove;
 	parent_class->get_backend_property	= e_book_backend_ldap_get_backend_property;
 
-	parent_class->create_contact		= e_book_backend_ldap_create_contact;
+	parent_class->create_contacts		= e_book_backend_ldap_create_contacts;
 	parent_class->remove_contacts		= e_book_backend_ldap_remove_contacts;
 	parent_class->modify_contact		= e_book_backend_ldap_modify_contact;
 	parent_class->get_contact		= e_book_backend_ldap_get_contact;

@@ -301,21 +301,33 @@ webdav_handle_auth_request (EBookBackendWebdav *webdav)
 }
 
 static void
-e_book_backend_webdav_create_contact (EBookBackend *backend,
-                                      EDataBook *book,
-                                      guint32 opid,
-                                      GCancellable *cancellable,
-                                      const gchar *vcard)
+e_book_backend_webdav_create_contacts (EBookBackend *backend,
+                                       EDataBook *book,
+                                       guint32 opid,
+                                       GCancellable *cancellable,
+                                       const GSList *vcards)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 	EContact                  *contact;
 	gchar                     *uid;
 	guint                      status;
-	gchar			  *status_reason = NULL;
+	gchar                     *status_reason = NULL;
+	const gchar               *vcard = (const gchar *) vcards->data;
+	GSList                     added_contacts = {NULL,};
+
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
+	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
+	if (vcards->next != NULL) {
+		e_data_book_respond_create_contacts (book, opid,
+		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+		                                     _("The backend does not support bulk additions")),
+		                                     NULL);
+		return;
+	}
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_create (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		e_data_book_respond_create_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
 	}
 
@@ -323,7 +335,7 @@ e_book_backend_webdav_create_contact (EBookBackend *backend,
 	 * good enough for us */
 	uid = g_strdup_printf("%s%08X-%08X-%08X.vcf", priv->uri, rand(), rand(),
 			      rand ());
-			      
+
 	contact = e_contact_new_from_vcard_with_uid (vcard, uid);
 
 	/* kill revision field (might have been set by some other backend) */
@@ -333,12 +345,12 @@ e_book_backend_webdav_create_contact (EBookBackend *backend,
 	if (status != 201 && status != 204) {
 		g_object_unref (contact);
 		if (status == 401 || status == 407) {
-			e_data_book_respond_create (book, opid, webdav_handle_auth_request (webdav), NULL);
+			e_data_book_respond_create_contacts (book, opid, webdav_handle_auth_request (webdav), NULL);
 		} else {
-			e_data_book_respond_create (book, opid,
-					e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-						_("Create resource '%s' failed with HTTP status: %d (%s)"), uid, status, status_reason),
-					NULL);
+			e_data_book_respond_create_contacts (book, opid,
+				        e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+				        _("Create resource '%s' failed with HTTP status: %d (%s)"), uid, status, status_reason),
+				        NULL);
 		}
 		g_free (uid);
 		g_free (status_reason);
@@ -358,7 +370,7 @@ e_book_backend_webdav_create_contact (EBookBackend *backend,
 		g_object_unref (contact);
 
 		if (new_contact == NULL) {
-			e_data_book_respond_create (book, opid,
+			e_data_book_respond_create_contacts (book, opid,
 					EDB_ERROR (OTHER_ERROR), NULL);
 			g_free (uid);
 			return;
@@ -367,10 +379,11 @@ e_book_backend_webdav_create_contact (EBookBackend *backend,
 	}
 
 	e_book_backend_cache_add_contact (priv->cache, contact);
-	e_data_book_respond_create (book, opid, EDB_ERROR (SUCCESS), contact);
 
-	if (contact)
-		g_object_unref (contact);
+	added_contacts.data = contact;
+	e_data_book_respond_create_contacts (book, opid, EDB_ERROR (SUCCESS), &added_contacts);
+
+	g_object_unref (contact);
 	g_free (uid);
 }
 
@@ -449,7 +462,7 @@ e_book_backend_webdav_modify_contact (EBookBackend *backend,
 	gchar *status_reason = NULL;
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_create (book, opid,
+		e_data_book_respond_create_contacts (book, opid,
 				EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		g_object_unref (contact);
 		return;
@@ -1444,7 +1457,7 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *klass)
 	backend_class->open			= e_book_backend_webdav_open;
 	backend_class->get_backend_property	= e_book_backend_webdav_get_backend_property;
 
-	backend_class->create_contact		= e_book_backend_webdav_create_contact;
+	backend_class->create_contacts		= e_book_backend_webdav_create_contacts;
 	backend_class->remove_contacts		= e_book_backend_webdav_remove_contacts;
 	backend_class->modify_contact		= e_book_backend_webdav_modify_contact;
 	backend_class->get_contact		= e_book_backend_webdav_get_contact;

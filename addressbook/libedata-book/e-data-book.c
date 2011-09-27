@@ -66,7 +66,7 @@ typedef enum {
 	OP_GET_CONTACTS,
 	OP_GET_CONTACTS_UIDS,
 	OP_AUTHENTICATE,
-	OP_ADD_CONTACT,
+	OP_ADD_CONTACTS,
 	OP_REMOVE_CONTACTS,
 	OP_MODIFY_CONTACT,
 	OP_GET_BACKEND_PROPERTY,
@@ -93,6 +93,7 @@ typedef struct {
 		/* OP_REMOVE_CONTACTS */
 		GSList *ids;
 		/* OP_ADD_CONTACT */
+		GSList *vcards;
 		/* OP_MODIFY_CONTACT */
 		gchar *vcard;
 		/* OP_GET_VIEW */
@@ -153,9 +154,9 @@ operation_thread (gpointer data,
 	case OP_OPEN:
 		e_book_backend_open (backend, op->book, op->id, op->cancellable, op->d.only_if_exists);
 		break;
-	case OP_ADD_CONTACT:
-		e_book_backend_create_contact (backend, op->book, op->id, op->cancellable, op->d.vcard);
-		g_free (op->d.vcard);
+	case OP_ADD_CONTACTS:
+		e_book_backend_create_contacts (backend, op->book, op->id, op->cancellable, op->d.vcards);
+		e_util_free_string_slist (op->d.vcards);
 		break;
 	case OP_GET_CONTACT:
 		e_book_backend_get_contact (backend, op->book, op->id, op->cancellable, op->d.uid);
@@ -175,8 +176,7 @@ operation_thread (gpointer data,
 		break;
 	case OP_REMOVE_CONTACTS:
 		e_book_backend_remove_contacts (backend, op->book, op->id, op->cancellable, op->d.ids);
-		g_slist_foreach (op->d.ids, (GFunc) g_free, NULL);
-		g_slist_free (op->d.ids);
+		e_util_free_string_slist (op->d.ids);
 		break;
 	case OP_REMOVE:
 		e_book_backend_remove (backend, op->book, op->id, op->cancellable);
@@ -614,14 +614,14 @@ impl_Book_get_contact_list_uids (EGdbusBook *object,
 }
 
 static gboolean
-impl_Book_add_contact (EGdbusBook *object,
+impl_Book_add_contacts (EGdbusBook *object,
                        GDBusMethodInvocation *invocation,
-                       const gchar *in_vcard,
+                       const gchar * const *in_vcards,
                        EDataBook *book)
 {
 	OperationData *op;
 
-	if (in_vcard == NULL || !*in_vcard) {
+	if (in_vcards == NULL || !*in_vcards) {
 		GError *error = e_data_book_create_error (E_DATA_BOOK_STATUS_INVALID_QUERY, NULL);
 		/* Translators: This is prefix to a detailed error message */
 		data_book_return_error (invocation, error, _("Cannot add contact: "));
@@ -629,10 +629,10 @@ impl_Book_add_contact (EGdbusBook *object,
 		return TRUE;
 	}
 
-	op = op_new (OP_ADD_CONTACT, book);
-	op->d.vcard = g_strdup (in_vcard);
+	op = op_new (OP_ADD_CONTACTS, book);
+	op->d.vcards = e_util_strv_to_slist (in_vcards);
 
-	e_gdbus_book_complete_add_contact (book->priv->gdbus_object, invocation, op->id);
+	e_gdbus_book_complete_add_contacts (book->priv->gdbus_object, invocation, op->id);
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -1013,25 +1013,39 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
 }
 
 void
-e_data_book_respond_create (EDataBook *book,
-                            guint32 opid,
-                            GError *error,
-                            const EContact *contact)
+e_data_book_respond_create_contacts (EDataBook *book,
+                                     guint32 opid,
+                                     GError *error,
+                                     const GSList *contacts)
 {
-	gchar *gdbus_uid = NULL;
+	gchar **array = NULL;
+	const GSList *l;
+	gint i = 0;
 
 	op_complete (book, opid);
+
+	array = g_new0 (gchar *, g_slist_length ((GSList *) contacts) + 1);
+	for (l = contacts; l != NULL; l = l->next) {
+		EContact *contact = E_CONTACT (l->data);
+
+		array[i++] = e_util_utf8_make_valid (e_contact_get_const (contact, E_CONTACT_UID));
+	}
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot add contact: "));
 
-	e_gdbus_book_emit_add_contact_done (book->priv->gdbus_object, opid, error, e_util_ensure_gdbus_string (e_contact_get_const ((EContact *) contact, E_CONTACT_UID), &gdbus_uid));
+	e_gdbus_book_emit_add_contacts_done (book->priv->gdbus_object, opid, error, (const gchar * const *) array);
 
-	g_free (gdbus_uid);
+	g_strfreev (array);
 	if (error) {
 		g_error_free (error);
 	} else {
-		e_book_backend_notify_update (e_data_book_get_backend (book), contact);
+		for (l = contacts; l != NULL; l = l->next) {
+			EContact *contact = E_CONTACT (l->data);
+
+			e_book_backend_notify_update (e_data_book_get_backend (book), contact);
+		}
+
 		e_book_backend_notify_complete (e_data_book_get_backend (book));
 	}
 }
@@ -1376,8 +1390,8 @@ e_data_book_init (EDataBook *ebook)
 		gdbus_object, "handle-authenticate-user",
 		G_CALLBACK (impl_Book_authenticate_user), ebook);
 	g_signal_connect (
-		gdbus_object, "handle-add-contact",
-		G_CALLBACK (impl_Book_add_contact), ebook);
+		gdbus_object, "handle-add-contacts",
+		G_CALLBACK (impl_Book_add_contacts), ebook);
 	g_signal_connect (
 		gdbus_object, "handle-remove-contacts",
 		G_CALLBACK (impl_Book_remove_contacts), ebook);

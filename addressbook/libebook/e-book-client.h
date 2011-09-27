@@ -140,6 +140,10 @@ void		e_book_client_add_contact			(EBookClient *client, /* const */ EContact *co
 gboolean	e_book_client_add_contact_finish		(EBookClient *client, GAsyncResult *result, gchar **added_uid, GError **error);
 gboolean	e_book_client_add_contact_sync			(EBookClient *client, /* const */ EContact *contact, gchar **added_uid, GCancellable *cancellable, GError **error);
 
+void		e_book_client_add_contacts			(EBookClient *client, /* const */ GSList *contacts, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_book_client_add_contacts_finish		(EBookClient *client, GAsyncResult *result, GSList **added_uids, GError **error);
+gboolean	e_book_client_add_contacts_sync			(EBookClient *client, /* const */ GSList *contacts, GSList **added_uids, GCancellable *cancellable, GError **error);
+
 void		e_book_client_modify_contact			(EBookClient *client, /* const */ EContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_book_client_modify_contact_finish		(EBookClient *client, GAsyncResult *result, GError **error);
 gboolean	e_book_client_modify_contact_sync		(EBookClient *client, /* const */ EContact *contact, GCancellable *cancellable, GError **error);

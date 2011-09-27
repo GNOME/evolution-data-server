@@ -429,35 +429,35 @@ e_book_backend_refresh (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_create_contact:
+ * e_book_backend_create_contacts
  * @backend: an #EBookBackend
  * @book: an #EDataBook
  * @opid: the ID to use for this operation
  * @cancellable: a #GCancellable for the operation
- * @vcard: the VCard to add
+ * @vcards: a #GSList of vCards to add
  *
- * Executes a 'create contact' request specified by @opid on @book
+ * Executes a 'create contacts' request specified by @opid on @book
  * using @backend.
- * This might be finished with e_data_book_respond_create().
+ * This might be finished with e_data_book_respond_create_contacts().
  **/
 void
-e_book_backend_create_contact (EBookBackend *backend,
+e_book_backend_create_contacts (EBookBackend *backend,
                                EDataBook *book,
                                guint32 opid,
                                GCancellable *cancellable,
-                               const gchar *vcard)
+                               const GSList *vcards)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (vcard);
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->create_contact);
+	g_return_if_fail (vcards);
+	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->create_contacts);
 
 	if (e_book_backend_is_opening (backend))
-		e_data_book_respond_create (book, opid, EDB_OPENING_ERROR, NULL);
+		e_data_book_respond_create_contacts (book, opid, EDB_OPENING_ERROR, NULL);
 	else if (!e_book_backend_is_opened (backend))
-		e_data_book_respond_create (book, opid, EDB_NOT_OPENED_ERROR, NULL);
+		e_data_book_respond_create_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->create_contact) (backend, book, opid, cancellable, vcard);
+		(* E_BOOK_BACKEND_GET_CLASS (backend)->create_contacts) (backend, book, opid, cancellable, vcards);
 }
 
 /**

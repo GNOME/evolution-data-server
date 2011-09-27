@@ -1203,22 +1203,24 @@ create_contact_finish (CreateContactData *data,
                        GDataContactsContact *new_contact,
                        const GError *gdata_error)
 {
-	EContact *e_contact;
-
 	__debug__ (G_STRFUNC);
 
 	if (gdata_error == NULL) {
 		/* Add the new contact to the cache. If uploading the photo was successful, the photo's data is stored on the contact as the "photo"
 		 * key, which the cache will pick up and store. */
+		EContact *e_contact;
+		GSList added_contacts = {NULL,};
 		e_contact = cache_add_contact (data->backend, GDATA_ENTRY (new_contact));
-		e_data_book_respond_create (data->book, data->opid, NULL, e_contact);
+
+		added_contacts.data = e_contact;
+		e_data_book_respond_create_contacts (data->book, data->opid, NULL, &added_contacts);
 		g_object_unref (e_contact);
 	} else {
 		GError *book_error = NULL;
 
 		/* Report the error. */
 		data_book_error_from_gdata_error (&book_error, gdata_error);
-		e_data_book_respond_create (data->book, data->opid, book_error, NULL);
+		e_data_book_respond_create_contacts (data->book, data->opid, book_error, NULL);
 	}
 
 	finish_operation (data->backend, data->opid, gdata_error);
@@ -1367,24 +1369,35 @@ finish:
  * operation responded to in create_contact_photo_query_cb().
  */
 static void
-e_book_backend_google_create_contact (EBookBackend *backend,
-                                      EDataBook *book,
-                                      guint32 opid,
-                                      GCancellable *cancellable,
-                                      const gchar *vcard_str)
+e_book_backend_google_create_contacts (EBookBackend *backend,
+                                       EDataBook *book,
+                                       guint32 opid,
+                                       GCancellable *cancellable,
+                                       const GSList *vcards)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact;
 	GDataEntry *entry;
 	gchar *xml;
 	CreateContactData *data;
+	const gchar *vcard_str = (const gchar *) vcards->data;
+
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
+	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
+	if (vcards->next != NULL) {
+		e_data_book_respond_create_contacts (book, opid,
+		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+		                                     _("The backend does not support bulk additions")),
+		                                     NULL);
+		return;
+	}
 
 	__debug__ (G_STRFUNC);
 
 	__debug__ ("Creating: %s", vcard_str);
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_create (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE), NULL);
+		e_data_book_respond_create_contacts (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE), NULL);
 		return;
 	}
 
@@ -1487,6 +1500,13 @@ e_book_backend_google_remove_contacts (EBookBackend *backend,
 
 	/* We make the assumption that the ID list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
 	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
+	if (id_list->next != NULL) {
+		e_data_book_respond_remove_contacts (book, opid,
+		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+		                                     _("The backend does not support bulk removals")),
+		                                     NULL);
+		return;
+	}
 	g_return_if_fail (!id_list->next);
 
 	/* Get the contact and associated GDataEntry from the cache */
@@ -2542,7 +2562,7 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *klass)
 	backend_class->start_book_view		= e_book_backend_google_start_book_view;
 	backend_class->stop_book_view		= e_book_backend_google_stop_book_view;
 	backend_class->remove			= e_book_backend_google_remove;
-	backend_class->create_contact		= e_book_backend_google_create_contact;
+	backend_class->create_contacts		= e_book_backend_google_create_contacts;
 	backend_class->remove_contacts		= e_book_backend_google_remove_contacts;
 	backend_class->modify_contact		= e_book_backend_google_modify_contact;
 	backend_class->get_contact		= e_book_backend_google_get_contact;

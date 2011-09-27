@@ -423,7 +423,8 @@ e_book_add_contact (EBook *book,
                     GError **error)
 {
 	GError *err = NULL;
-	gchar *vcard, *uid = NULL, *gdbus_vcard = NULL;
+	gchar *vcard, **uids = NULL, *gdbus_vcard = NULL;
+	const gchar *strv[2];
 
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
@@ -432,13 +433,16 @@ e_book_add_contact (EBook *book,
 		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	e_gdbus_book_call_add_contact_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), &uid, NULL, &err);
+	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
+	strv[1] = NULL;
+
+	e_gdbus_book_call_add_contacts_sync (book->priv->gdbus_book, strv, &uids, NULL, &err);
 	g_free (vcard);
 	g_free (gdbus_vcard);
 
-	if (uid) {
-		e_contact_set (contact, E_CONTACT_UID, uid);
-		g_free (uid);
+	if (uids) {
+		e_contact_set (contact, E_CONTACT_UID, uids[0]);
+		g_strfreev (uids);
 	}
 
 	return unwrap_gerror (err, error);
@@ -450,12 +454,12 @@ add_contact_reply (GObject *gdbus_book,
                    gpointer user_data)
 {
 	GError *err = NULL, *error = NULL;
-	gchar *uid = NULL;
+	gchar *uid = NULL, **uids = NULL;
 	AsyncData *data = user_data;
 	EBookIdAsyncCallback excb = data->excallback;
 	EBookIdCallback cb = data->callback;
 
-	e_gdbus_book_call_add_contact_finish (G_DBUS_PROXY (gdbus_book), res, &uid, &error);
+	e_gdbus_book_call_add_contacts_finish (G_DBUS_PROXY (gdbus_book), res, &uids, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -463,6 +467,8 @@ add_contact_reply (GObject *gdbus_book,
 	 * for the OUT values. This is bad. */
 	if (error)
 		uid = NULL;
+	else
+		uid = uids[0];
 
 	if (cb)
 		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, uid, data->closure);
@@ -472,8 +478,8 @@ add_contact_reply (GObject *gdbus_book,
 	if (err)
 		g_error_free (err);
 
-	if (uid)
-		g_free (uid);
+	if (uids)
+		g_strfreev (uids);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
@@ -500,6 +506,7 @@ e_book_async_add_contact (EBook *book,
 {
 	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
+	const gchar *strv[2];
 
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
@@ -508,13 +515,15 @@ e_book_async_add_contact (EBook *book,
 		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
+	strv[1] = NULL;
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->callback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_add_contact (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, add_contact_reply, data);
+	e_gdbus_book_call_add_contacts (book->priv->gdbus_book, strv, NULL, add_contact_reply, data);
 
 	g_free (vcard);
 	g_free (gdbus_vcard);
@@ -545,6 +554,7 @@ e_book_add_contact_async (EBook *book,
 {
 	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
+	const gchar *strv[2];
 
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
@@ -553,13 +563,15 @@ e_book_add_contact_async (EBook *book,
 		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
+	strv[1] = NULL;
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->excallback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_add_contact (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, add_contact_reply, data);
+	e_gdbus_book_call_add_contacts (book->priv->gdbus_book, strv, NULL, add_contact_reply, data);
 
 	g_free (vcard);
 	g_free (gdbus_vcard);
@@ -3755,13 +3767,13 @@ array_to_stringlist (gchar **list)
 }
 
 static EList *
-array_to_elist (gchar **list)
+array_to_elist (gchar **strv)
 {
 	EList *elst = NULL;
-	gchar **i = list;
+	gchar **i = strv;
 
 	elst = e_list_new (NULL, (EListFreeFunc) g_free, NULL);
-	if (!list)
+	if (!strv)
 		return elst;
 
 	while (*i != NULL) {

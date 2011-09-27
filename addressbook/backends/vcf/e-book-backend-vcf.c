@@ -56,6 +56,7 @@
 #define d(x)
 
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
+#define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
 
 G_DEFINE_TYPE (EBookBackendVCF, e_book_backend_vcf, E_TYPE_BOOK_BACKEND_SYNC)
 
@@ -271,17 +272,30 @@ do_create (EBookBackendVCF *bvcf,
 }
 
 static void
-e_book_backend_vcf_create_contact (EBookBackendSync *backend,
+e_book_backend_vcf_create_contacts (EBookBackendSync *backend,
                                    EDataBook *book,
                                    GCancellable *cancellable,
-                                   const gchar *vcard,
-                                   EContact **contact,
+                                   const GSList *vcards,
+                                   GSList **added_contacts,
                                    GError **perror)
 {
+	EContact *contact = NULL;
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
+	const gchar *vcard = vcards->data;
 
-	*contact = do_create(bvcf, vcard, TRUE);
-	if (!*contact) {
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
+	 * in our static capability list. */
+	if (vcards->next != NULL) {
+		g_propagate_error (perror,
+		                   EDB_ERROR_EX (NOT_SUPPORTED,
+		                   _("The backend does not support bulk additions")));
+		return;
+	}
+
+	contact = do_create(bvcf, vcard, TRUE);
+	if (added_contacts) {
+		*added_contacts = g_slist_append (*added_contacts, contact);
+	} else {
 		/* XXX need a different call status for this case, i
 		 * think */
 		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
@@ -300,6 +314,15 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	const gchar *id = id_list->data;
 	GList *elem;
+
+	/* We make the assumption that the ID list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
+	 * in our static capability list. */
+	if (id_list->next != NULL) {
+		g_propagate_error (perror,
+		                   EDB_ERROR_EX (NOT_SUPPORTED,
+		                   _("The backend does not support bulk removals")));
+		return;
+	}
 
 	g_mutex_lock (bvcf->priv->mutex);
 	elem = g_hash_table_lookup (bvcf->priv->contacts, id);
@@ -734,7 +757,7 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *klass)
 
 	sync_class->open_sync			= e_book_backend_vcf_open;
 	sync_class->get_backend_property_sync	= e_book_backend_vcf_get_backend_property;
-	sync_class->create_contact_sync		= e_book_backend_vcf_create_contact;
+	sync_class->create_contacts_sync	= e_book_backend_vcf_create_contacts;
 	sync_class->remove_contacts_sync	= e_book_backend_vcf_remove_contacts;
 	sync_class->modify_contact_sync		= e_book_backend_vcf_modify_contact;
 	sync_class->get_contact_sync		= e_book_backend_vcf_get_contact;

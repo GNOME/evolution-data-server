@@ -296,79 +296,133 @@ set_revision (EContact *contact)
 
 }
 
+/**
+ * This method will return TRUE if all the contacts were properly created.
+ * If at least one contact fails, the method will return FALSE, all
+ * changes will be reverted (the @contacts list will stay empty) and
+ * @perror will be set.
+ */
 static gboolean
 do_create (EBookBackendFile *bf,
-          const gchar *vcard_req,
-          EContact **contact,
+          const GSList *vcards_req,
+          GSList **contacts,
           GError **perror)
 {
-	DB             *db = bf->priv->file_db;
-	DBT            id_dbt, vcard_dbt;
-	gint            db_error;
-	gchar           *id;
-	gchar           *vcard;
-	const gchar *rev;
+	DB *db = bf->priv->file_db;
+	DB_ENV *env = bf->priv->env;
+	DB_TXN *txn = NULL;
+	GSList *slist = NULL;
+	const GSList *l;
+	gint db_error = 0;
 
 	g_assert (bf);
-	g_assert (vcard_req);
-	g_assert (contact);
+	g_assert (vcards_req);
 
 	if (!db) {
 		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
 		return FALSE;
 	}
 
-	id = e_book_backend_file_create_unique_id ();
-
-	string_to_dbt (id, &id_dbt);
-
-	*contact = e_contact_new_from_vcard_with_uid (vcard_req, id);
-	rev = e_contact_get_const (*contact,  E_CONTACT_REV);
-	if (!(rev && *rev))
-		set_revision (*contact);
-
-	vcard = e_vcard_to_string (E_VCARD (*contact), EVC_FORMAT_VCARD_30);
-
-	string_to_dbt (vcard, &vcard_dbt);
-
-	db_error = db->put (db, NULL, &id_dbt, &vcard_dbt, 0);
-
-	g_free (vcard);
-
-	if (0 == db_error) {
-		db_error = db->sync (db, 0);
-		if (db_error != 0) {
-			g_warning ("db->sync failed with %s", db_strerror (db_error));
-		}
-	} else {
-		g_warning (G_STRLOC ": db->put failed with %s", db_strerror (db_error));
-		g_object_unref (*contact);
-		*contact = NULL;
+	/* Begin transaction */
+	db_error = env->txn_begin(env, NULL, &txn, 0);
+	if (db_error != 0) {
+		g_warning (G_STRLOC ": env->txn_begin failed with %s", db_strerror (db_error));
+		db_error_to_gerror (db_error, perror);
+		return FALSE;
 	}
 
-	g_free (id);
-	db_error_to_gerror (db_error, perror);
+	for (l = vcards_req; l != NULL; l = l->next) {
+		DBT            id_dbt, vcard_dbt;
+		gchar           *id;
+		gchar           *vcard;
+		const gchar *rev;
+		const gchar *vcard_req;
+		EContact *contact;
 
-	return db_error == 0;
+		vcard_req = (const gchar*) l->data;
+
+		id = e_book_backend_file_create_unique_id ();
+
+		string_to_dbt (id, &id_dbt);
+
+		contact = e_contact_new_from_vcard_with_uid (vcard_req, id);
+
+		rev = e_contact_get_const (contact, E_CONTACT_REV);
+		if (!(rev && *rev))
+			set_revision (contact);
+
+		vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+
+		string_to_dbt (vcard, &vcard_dbt);
+
+		db_error = db->put (db, txn, &id_dbt, &vcard_dbt, 0);
+
+		g_free (vcard);
+		g_free (id);
+
+		if (db_error == 0) {
+			/* Contact was added successfully, add it to the return list */
+			if (contacts != NULL)
+				slist = g_slist_prepend (slist, contact);
+		} else {
+			/* Contact could not be added */
+			g_warning (G_STRLOC ": db->put failed with %s", db_strerror (db_error));
+			g_object_unref (contact);
+			db_error_to_gerror (db_error, perror);
+
+			/* Abort as soon as an error occurs */
+			break;
+		}
+	}
+
+	if (db_error == 0) {
+		/* Commit transaction */
+		db_error = txn->commit (txn, 0);
+		if (db_error == 0) {
+			/* Flush cache information to disk */
+			if (db->sync (db, 0) != 0) {
+				g_warning ("db->sync failed with %s", db_strerror (db_error));
+			}
+		} else {
+			g_warning (G_STRLOC ": txn->commit failed with %s", db_strerror (db_error));
+			db_error_to_gerror (db_error, perror);
+		}
+	} else {
+		/* Rollback transaction */
+		txn->abort (txn);
+	}
+
+	if (db_error == 0) {
+		if (contacts != NULL)
+			*contacts = g_slist_reverse (slist);
+
+		return TRUE;
+	} else {
+		if (contacts != NULL)
+			*contacts = NULL;
+
+		e_util_free_object_slist (slist);
+		return FALSE;
+	}
 }
 
 static void
-e_book_backend_file_create_contact (EBookBackendSync *backend,
-                                    EDataBook *book,
-                                    GCancellable *cancellable,
-                                    const gchar *vcard,
-                                    EContact **contact,
-                                    GError **perror)
+e_book_backend_file_create_contacts (EBookBackendSync *backend,
+                                     EDataBook *book,
+                                     GCancellable *cancellable,
+                                     const GSList *vcards,
+                                     GSList **added_contacts,
+                                     GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 
-	if (do_create (bf, vcard, contact, perror)) {
+	if (do_create (bf, vcards, added_contacts, perror)) {
 		GError *error = NULL;
 
-		if (!e_book_backend_sqlitedb_add_contact (bf->priv->sqlitedb,
+		if (!e_book_backend_sqlitedb_add_contacts (bf->priv->sqlitedb,
 							  SQLITEDB_FOLDER_ID,
-							  *contact, FALSE, &error)) {
-			g_warning ("Failed to add contact to summary: %s", error->message);
+							  *added_contacts, FALSE, &error)) {
+			g_warning ("Failed to add contacts to summary: %s", error->message);
 			g_error_free (error);
 		}
 	}
@@ -1219,18 +1273,31 @@ e_book_backend_file_open (EBookBackendSync *backend,
 				(gpointer (*)(gpointer , gsize)) g_try_realloc,
 				g_free);
 
+		/* Make sure the database directory is created
+		   or env->open will fail */
+		if (!only_if_exists) {
+			if (!create_directory (dirname, perror)) {
+				g_warning ("failed to create directory at %s", dirname);
+				G_UNLOCK (global_env);
+				g_free (dirname);
+				g_free (filename);
+				return;
+			}
+		}
+
 		/*
-		 * We need either DB_INIT_CDB or DB_INIT_LOCK, because we will have
-		 * multiple threads reading and writing concurrently without
-		 * any locking above libdb.
+		 * DB_INIT_TXN enables transaction support. It requires DB_INIT_LOCK to
+		 * initialize the locking subsystem and DB_INIT_LOG for the logging
+		 * subsystem.
 		 *
-		 * DB_INIT_CDB enforces multiple reader/single writer by locking inside
-		 * the database. It is used instead of DB_INIT_LOCK because DB_INIT_LOCK
-		 * may deadlock, which would have to be called in a separate thread.
-		 * Considered too complicated for not enough gain (= concurrent writes)
-		 * at this point.
+		 * DB_INIT_MPOOL enables the in-memory cache.
+		 *
+		 * Note that we need either DB_INIT_CDB or DB_INIT_LOCK, because we will
+		 * have multiple threads reading and writing concurrently without
+		 * any locking above libdb. Right now DB_INIT_LOCK is used because
+		 * DB_INIT_TXN conflicts with DB_INIT_CDB.
 		 */
-		db_error = (*env->open) (env, NULL, DB_INIT_CDB | DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
+		db_error = (*env->open) (env, dirname, DB_INIT_LOCK | DB_INIT_TXN | DB_INIT_LOG | DB_CREATE | DB_INIT_MPOOL | DB_PRIVATE | DB_THREAD, 0);
 		if (db_error != 0) {
 			env->close (env, 0);
 			g_warning ("db_env_open failed with %s", db_strerror (db_error));
@@ -1257,7 +1324,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 		return;
 	}
 
-	db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
+	db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_THREAD | DB_AUTO_COMMIT, 0666);
 
 	if (db_error == DB_OLD_VERSION) {
 		db_error = e_db3_utils_upgrade_format (filename);
@@ -1280,7 +1347,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			return;
 		}
 
-		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_THREAD, 0666);
+		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_THREAD | DB_AUTO_COMMIT, 0666);
 	}
 
 	if (db_error == 0) {
@@ -1296,7 +1363,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 			return;
 		}
 
-		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD, 0666);
+		db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_RDONLY | DB_THREAD | DB_AUTO_COMMIT, 0666);
 
 		if (db_error != 0 && !only_if_exists) {
 
@@ -1319,7 +1386,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 				return;
 			}
 
-			db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD, 0666);
+			db_error = (*db->open) (db, NULL, filename, NULL, DB_HASH, DB_CREATE | DB_THREAD | DB_AUTO_COMMIT, 0666);
 			if (db_error != 0) {
 				db->close (db, 0);
 				g_warning ("db->open (... %s ... DB_CREATE ...) failed with %s", filename, db_strerror (db_error));
@@ -1346,12 +1413,12 @@ e_book_backend_file_open (EBookBackendSync *backend,
 
 #ifdef CREATE_DEFAULT_VCARD
 	if (create_default_vcard) {
-		EContact *contact = NULL;
+		GSList l;
+		l.data = XIMIAN_VCARD;
+		l.next = NULL;
 
-		if (!do_create (bf, XIMIAN_VCARD, &contact, NULL))
+		if (!do_create (bf, &l, NULL, NULL))
 			g_warning ("Cannot create default contact");
-		if (contact)
-			g_object_unref (contact);
 	}
 #endif
 
@@ -1474,7 +1541,7 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend,
 	g_return_val_if_fail (prop_value != NULL, FALSE);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		*prop_value = g_strdup ("local,do-initial-query,bulk-removes,contact-lists");
+		*prop_value = g_strdup ("local,do-initial-query,bulk-adds,bulk-removes,contact-lists");
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
 		*prop_value = g_strdup (e_contact_field_name (E_CONTACT_FILE_AS));
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
@@ -1680,7 +1747,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	sync_class->open_sync			= e_book_backend_file_open;
 	sync_class->remove_sync			= e_book_backend_file_remove;
 	sync_class->get_backend_property_sync	= e_book_backend_file_get_backend_property;
-	sync_class->create_contact_sync		= e_book_backend_file_create_contact;
+	sync_class->create_contacts_sync	= e_book_backend_file_create_contacts;
 	sync_class->remove_contacts_sync	= e_book_backend_file_remove_contacts;
 	sync_class->modify_contact_sync		= e_book_backend_file_modify_contact;
 	sync_class->get_contact_sync		= e_book_backend_file_get_contact;
