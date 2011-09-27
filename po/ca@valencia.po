@@ -13,10 +13,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-26 14:38+0200\n"
-"PO-Revision-Date: 2011-09-23 22:08+0200\n"
+"POT-Creation-Date: 2011-09-27 11:03+0200\n"
+"PO-Revision-Date: 2011-09-27 11:02+0200\n"
 "Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
-"Language-Team: Catalan <tradgnome@softcatala.org>\n"
+"Language-Team: català; valencià <tradgnome@softcatala.org>\n"
 "Language: ca-XV\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1454,9 +1454,9 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "«%s» espera que el segon argument siga un enter"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:390
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects two or three arguments"
-msgstr "«%s» espera dos arguments"
+msgstr "«%s» espera dos o tres arguments"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:404
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:470
@@ -1466,9 +1466,9 @@ msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "«%s» espera que el segon argument siga un tipus time_t"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:413
-#, fuzzy, c-format
+#, c-format
 msgid "\"%s\" expects the third argument to be a string"
-msgstr "«%s» espera que el primer argument siga una cadena"
+msgstr "«%s» espera que el tercer argument siga una cadena"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:803
 #, c-format
