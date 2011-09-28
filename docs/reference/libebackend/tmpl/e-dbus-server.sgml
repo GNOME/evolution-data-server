@@ -66,6 +66,22 @@ EDBusServer
 @server: 
 
 
+<!-- ##### FUNCTION e_dbus_server_hold ##### -->
+<para>
+
+</para>
+
+@server: 
+
+
+<!-- ##### FUNCTION e_dbus_server_release ##### -->
+<para>
+
+</para>
+
+@server: 
+
+
 <!-- ##### FUNCTION e_dbus_server_load_modules ##### -->
 <para>
 

@@ -90,8 +90,6 @@ struct _EDataCalFactoryPrivate {
 	GMutex *connections_lock;
 	/* This is a hash of client addresses to GList* of EDataCals */
 	GHashTable *connections;
-
-	guint exit_timeout;
 };
 
 /* Forward Declarations */
@@ -207,13 +205,7 @@ calendar_freed_cb (EDataCalFactory *factory,
 		}
 	}
 
-	if (g_hash_table_size (priv->calendars) > 0)
-		return;
-
-	/* If there are no open calendars, start a timer to quit. */
-	if (!opt_keep_running && priv->exit_timeout == 0)
-		priv->exit_timeout = g_timeout_add_seconds (
-			10, (GSourceFunc) e_dbus_server_quit, factory);
+	e_dbus_server_release (E_DBUS_SERVER (factory));
 }
 
 static gboolean
@@ -292,11 +284,7 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 
 	g_mutex_lock (priv->calendars_lock);
 
-	/* Remove a pending exit */
-	if (priv->exit_timeout) {
-		g_source_remove (priv->exit_timeout);
-		priv->exit_timeout = 0;
-	}
+	e_dbus_server_hold (E_DBUS_SERVER (factory));
 
 	path = construct_cal_factory_path ();
 	calendar = e_data_cal_new (E_CAL_BACKEND (backend));
@@ -561,6 +549,11 @@ main (gint argc,
 	}
 
 	g_print ("Server is up and running...\n");
+
+	/* This SHOULD keep the server's use
+	 * count from ever reaching zero. */
+	if (opt_keep_running)
+		e_dbus_server_hold (server);
 
 	e_dbus_server_run (server);
 

@@ -37,10 +37,15 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_DBUS_SERVER, EDBusServerPrivate))
 
+#define INACTIVITY_TIMEOUT 10  /* seconds */
+
 struct _EDBusServerPrivate {
 	GMainLoop *main_loop;
 	guint bus_owner_id;
 	guint terminate_id;
+
+	guint inactivity_timeout_id;
+	guint use_count;
 };
 
 enum {
@@ -80,6 +85,14 @@ dbus_server_name_lost_cb (GDBusConnection *connection,
 	g_signal_emit (server, signals[BUS_NAME_LOST], 0, connection);
 }
 
+static gboolean
+dbus_server_inactivity_timeout_cb (EDBusServer *server)
+{
+	e_dbus_server_quit (server);
+
+	return FALSE;
+}
+
 #ifdef G_OS_UNIX
 static gboolean
 dbus_server_terminate_cb (EDBusServer *server)
@@ -104,6 +117,9 @@ dbus_server_finalize (GObject *object)
 	if (priv->terminate_id > 0)
 		g_source_remove (priv->terminate_id);
 
+	if (priv->inactivity_timeout_id > 0)
+		g_source_remove (priv->inactivity_timeout_id);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_dbus_server_parent_class)->finalize (object);
 }
@@ -112,7 +128,12 @@ static void
 dbus_server_bus_acquired (EDBusServer *server,
                           GDBusConnection *connection)
 {
-	/* Placeholder so subclasses can safely chain up. */
+	if (server->priv->use_count == 0)
+		server->priv->inactivity_timeout_id =
+			g_timeout_add_seconds (
+				INACTIVITY_TIMEOUT, (GSourceFunc)
+				dbus_server_inactivity_timeout_cb,
+				server);
 }
 
 static void
@@ -233,6 +254,59 @@ e_dbus_server_quit (EDBusServer *server)
 	g_return_if_fail (E_IS_DBUS_SERVER (server));
 
 	g_main_loop_quit (server->priv->main_loop);
+}
+
+/**
+ * e_dbus_server_hold:
+ * @server: an #EDBusServer
+ *
+ * Increases the use count of @server.
+ *
+ * Use this function to indicate that the server has a reason to continue
+ * to run.  To cancel the hold, call e_dbus_server_release().
+ *
+ * Since: 3.4
+ **/
+void
+e_dbus_server_hold (EDBusServer *server)
+{
+	g_return_if_fail (E_IS_DBUS_SERVER (server));
+
+	if (server->priv->inactivity_timeout_id > 0) {
+		g_source_remove (server->priv->inactivity_timeout_id);
+		server->priv->inactivity_timeout_id = 0;
+	}
+
+	server->priv->use_count++;
+}
+
+/**
+ * e_dbus_server_release:
+ * @server: an #EDBusServer
+ *
+ * Decreates the use count of @server.
+ *
+ * When the use count reaches zero, the server will stop running.
+ *
+ * Never call this function except to cancel the effect of a previous call
+ * to e_dbus_server_hold().
+ *
+ * Since: 3.4
+ **/
+void
+e_dbus_server_release (EDBusServer *server)
+{
+	g_return_if_fail (E_IS_DBUS_SERVER (server));
+	g_return_if_fail (server->priv->use_count > 0);
+
+	server->priv->use_count--;
+
+	if (server->priv->use_count == 0)
+		server->priv->inactivity_timeout_id =
+			g_timeout_add_seconds (
+				INACTIVITY_TIMEOUT, (GSourceFunc)
+				dbus_server_inactivity_timeout_cb,
+				server);
 }
 
 void

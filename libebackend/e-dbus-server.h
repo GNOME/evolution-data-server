@@ -79,6 +79,8 @@ struct _EDBusServerClass {
 GType		e_dbus_server_get_type		(void) G_GNUC_CONST;
 void		e_dbus_server_run		(EDBusServer *server);
 void		e_dbus_server_quit		(EDBusServer *server);
+void		e_dbus_server_hold		(EDBusServer *server);
+void		e_dbus_server_release		(EDBusServer *server);
 void		e_dbus_server_load_modules	(EDBusServer *server);
 
 G_END_DECLS

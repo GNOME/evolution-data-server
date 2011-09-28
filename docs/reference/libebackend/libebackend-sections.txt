@@ -63,6 +63,8 @@ e_data_factory_get_type
 EDBusServer
 e_dbus_server_run
 e_dbus_server_quit
+e_dbus_server_hold
+e_dbus_server_release
 e_dbus_server_load_modules
 <SUBSECTION Standard>
 E_DBUS_SERVER
