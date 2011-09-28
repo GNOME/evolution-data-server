@@ -748,7 +748,7 @@ e_book_backend_sqlitedb_remove_contacts (EBookBackendSqliteDB *ebsdb,
 	sqlite3_free (tmp);
 
 	for (l = uids; l != NULL; l = g_slist_next (l)) {
-		gchar *uid = (gchar *) uids->data;
+		gchar *uid = (gchar *) l->data;
 
 		tmp = sqlite3_mprintf ("%Q", uid);
 		g_string_append_printf (str, " %s ,", tmp);
