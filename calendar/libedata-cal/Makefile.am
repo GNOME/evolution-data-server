@@ -11,7 +11,7 @@ lib_LTLIBRARIES = libedata-cal-1.2.la
 libedata_cal_1_2_la_CPPFLAGS = 			\
 	$(AM_CPPFLAGS)				\
 	-DG_LOG_DOMAIN=\"libedata-cal\"		\
-	-DBASE_VERSION=\""$(BASE_VERSION)"\"	\
+	-DBACKENDDIR=\"$(ecal_backenddir)\"	\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/calendar		\
 	-I$(top_srcdir)/calendar/libegdbus	\
@@ -32,6 +32,7 @@ libedata_cal_1_2_la_SOURCES =		\
 	e-cal-backend-store.c		\
 	e-cal-backend-file-store.c	\
 	e-data-cal.c			\
+	e-data-cal-factory.c		\
 	e-data-cal-view.c
 
 libedata_cal_1_2_la_LIBADD =					\
@@ -69,52 +70,14 @@ libedata_calinclude_HEADERS = 		\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedata-cal-$(API_VERSION).pc
 
-service_in_files = org.gnome.evolution.dataserver.Calendar.service.in
-servicedir = $(datadir)/dbus-1/services
-service_DATA = $(service_in_files:.service.in=.service)
-@EVO_SUBST_SERVICE_RULE@
-
 BUILT_SOURCES = $(ENUM_GENERATED)
-CLEANFILES = $(BUILT_SOURCES) $(service_DATA)
-DISTCLEANFILES = $(pkgconfig_DATA) $(service_DATA)
+CLEANFILES = $(BUILT_SOURCES)
+DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
 	e-data-cal-factory.xml				\
 	e-data-cal-view.xml				\
 	e-data-cal.xml					\
-	$(service_in_files)				\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
-
-
-factorydir = $(libexecdir)
-factory_PROGRAMS = e-calendar-factory
-
-e_calendar_factory_SOURCES =		\
-	e-data-cal-factory.c		\
-	e-data-cal-factory.h		\
-	e-data-cal-migrate-basedir.c
-
-e_calendar_factory_CPPFLAGS = \
-	$(AM_CPPFLAGS)					\
-	-DG_LOG_DOMAIN=\"libedata-cal\"			\
-	-DE_PRGNAME=\"e-calendar-factory\"		\
-	-DBACKENDDIR=\"$(ecal_backenddir)\"		\
-	-DLOCALEDIR=\"$(localedir)\"			\
-	-I$(top_srcdir)					\
-	-I$(top_srcdir)/calendar			\
-	-I$(top_srcdir)/calendar/libegdbus		\
-	-I$(top_builddir)				\
-	-I$(top_builddir)/calendar			\
-	$(LIBICAL_CFLAGS)				\
-	$(EVOLUTION_CALENDAR_CFLAGS)			\
-	$(FACTORY_GTK_CFLAGS)
-
-e_calendar_factory_LDADD =						\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
-	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la		\
-	libedata-cal-1.2.la						\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la 		\
-	$(top_builddir)/libebackend/libebackend-1.2.la			\
-	$(FACTORY_GTK_LIBS)
 
 -include $(top_srcdir)/git.mk

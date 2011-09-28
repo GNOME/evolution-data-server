@@ -26,16 +26,6 @@
 #include <unistd.h>
 #include <glib/gi18n.h>
 
-#ifdef ENABLE_MAINTAINER_MODE
-#include <gtk/gtk.h>
-#endif
-
-#ifdef G_OS_UNIX
-#if GLIB_CHECK_VERSION(2,29,5)
-#include <glib-unix.h>
-#endif
-#endif
-
 #ifdef HAVE_GOA
 #define GOA_API_IS_SUBJECT_TO_CHANGE
 #include <goa/goa.h>
@@ -45,43 +35,18 @@
 #define GOA_KEY "goa-account-id"
 #endif
 
-#include "e-book-backend-factory.h"
-#include "e-data-book-factory.h"
-#include "e-data-book.h"
 #include "e-book-backend.h"
+#include "e-book-backend-factory.h"
+#include "e-data-book.h"
+#include "e-data-book-factory.h"
 
 #include "e-gdbus-book-factory.h"
-
-#ifdef G_OS_WIN32
-#include <windows.h>
-#include <conio.h>
-#ifndef PROCESS_DEP_ENABLE
-#define PROCESS_DEP_ENABLE 0x00000001
-#endif
-#ifndef PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION
-#define PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION 0x00000002
-#endif
-#endif
 
 #define d(x)
 
 #define E_DATA_BOOK_FACTORY_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryPrivate))
-
-/* Keep running after the last client is closed. */
-static gboolean opt_keep_running = FALSE;
-
-/* Convenience macro to test and set a GError/return on failure */
-#define g_set_error_val_if_fail(test, returnval, error, domain, code) \
-	G_STMT_START {							\
-	if G_LIKELY (test) {						\
-	} else {							\
-		g_set_error_literal (error, domain, code, #test);	\
-		g_warning (#test " failed");				\
-		return (returnval);					\
-	}								\
-	} G_STMT_END
 
 G_DEFINE_TYPE (EDataBookFactory, e_data_book_factory, E_TYPE_DATA_FACTORY);
 
@@ -490,22 +455,22 @@ e_data_book_factory_update_goa_accounts (EDataBookFactory *factory)
 
 		/* Takes ownership of the GoaObject. */
 		g_hash_table_insert (
-				     factory->priv->goa_accounts,
-				     g_strdup (goa_account_id), goa_object);
+			factory->priv->goa_accounts,
+			g_strdup (goa_account_id), goa_object);
 	}
 
 	g_list_free (list);
 }
 
 static void
-e_data_book_factory_accounts_changed_cb (GoaClient *client, GDBusObject *object, EDataBookFactory *factory)
+e_data_book_factory_accounts_changed_cb (GoaClient *client,
+                                         GDBusObject *object,
+                                         EDataBookFactory *factory)
 {
 	e_data_book_factory_update_goa_accounts (factory);
 }
 
 #endif
-
-
 
 static void
 e_data_book_factory_init (EDataBookFactory *factory)
@@ -546,12 +511,15 @@ e_data_book_factory_init (EDataBookFactory *factory)
 	if (factory->priv->goa_client != NULL) {
 		e_data_book_factory_update_goa_accounts (factory);
 
-		g_signal_connect (factory->priv->goa_client,
-				  "account_added", e_data_book_factory_accounts_changed_cb, factory);
-		g_signal_connect (factory->priv->goa_client,
-				  "account_removed", e_data_book_factory_accounts_changed_cb, factory);
-		g_signal_connect (factory->priv->goa_client,
-				  "account_changed", e_data_book_factory_accounts_changed_cb, factory);
+		g_signal_connect (
+			factory->priv->goa_client, "account_added",
+			e_data_book_factory_accounts_changed_cb, factory);
+		g_signal_connect (
+			factory->priv->goa_client, "account_removed",
+			e_data_book_factory_accounts_changed_cb, factory);
+		g_signal_connect (
+			factory->priv->goa_client, "account_changed",
+			e_data_book_factory_accounts_changed_cb, factory);
 	} else if (error != NULL) {
 		g_warning ("%s", error->message);
 		g_error_free (error);
@@ -559,88 +527,3 @@ e_data_book_factory_init (EDataBookFactory *factory)
 #endif
 }
 
-static GOptionEntry entries[] = {
-
-	/* FIXME Have the description translated for 3.2, but this
-	 *       option is to aid in testing and development so it
-	 *       doesn't really matter. */
-	{ "keep-running", 'r', 0, G_OPTION_ARG_NONE, &opt_keep_running,
-	  "Keep running after the last client is closed", NULL },
-	{ NULL }
-};
-
-gint
-main (gint argc,
-      gchar **argv)
-{
-	GOptionContext *context;
-	EDBusServer *server;
-	GError *error = NULL;
-
-#ifdef G_OS_WIN32
-	/* Reduce risks */
-	{
-		typedef BOOL (WINAPI *t_SetDllDirectoryA) (LPCSTR lpPathName);
-		t_SetDllDirectoryA p_SetDllDirectoryA;
-
-		p_SetDllDirectoryA = GetProcAddress (GetModuleHandle ("kernel32.dll"), "SetDllDirectoryA");
-		if (p_SetDllDirectoryA)
-			(*p_SetDllDirectoryA) ("");
-	}
-#ifndef _WIN64
-	{
-		typedef BOOL (WINAPI *t_SetProcessDEPPolicy) (DWORD dwFlags);
-		t_SetProcessDEPPolicy p_SetProcessDEPPolicy;
-
-		p_SetProcessDEPPolicy = GetProcAddress (GetModuleHandle ("kernel32.dll"), "SetProcessDEPPolicy");
-		if (p_SetProcessDEPPolicy)
-			(*p_SetProcessDEPPolicy) (PROCESS_DEP_ENABLE | PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION);
-	}
-#endif
-#endif
-
-	g_type_init ();
-	g_set_prgname (E_PRGNAME);
-	if (!g_thread_supported ()) g_thread_init (NULL);
-
-	#ifdef ENABLE_MAINTAINER_MODE
-	/* only to load gtk-modules, like bug-buddy's gnomesegvhandler, if possible */
-	gtk_init_check (&argc, &argv);
-	#endif
-
-	context = g_option_context_new (NULL);
-	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
-	g_option_context_parse (context, &argc, &argv, &error);
-	g_option_context_free (context);
-
-	if (error != NULL) {
-		g_printerr ("%s\n", error->message);
-		exit (EXIT_FAILURE);
-	}
-
-	/* Migrate user data from ~/.evolution to XDG base directories. */
-	e_data_book_migrate_basedir ();
-
-	server = g_initable_new (
-		E_TYPE_DATA_BOOK_FACTORY, NULL, &error, NULL);
-
-	if (error != NULL) {
-		g_printerr ("%s\n", error->message);
-		exit (EXIT_FAILURE);
-	}
-
-	g_print ("Server is up and running...\n");
-
-	/* This SHOULD keep the server's use
-	 * count from ever reaching zero. */
-	if (opt_keep_running)
-		e_dbus_server_hold (server);
-
-	e_dbus_server_run (server);
-
-	g_object_unref (server);
-
-	g_print ("Bye.\n");
-
-	return 0;
-}

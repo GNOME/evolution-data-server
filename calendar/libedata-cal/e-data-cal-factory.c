@@ -30,13 +30,6 @@
 #include <unistd.h>
 #include <glib/gi18n.h>
 
-#ifdef ENABLE_MAINTAINER_MODE
-#include <gtk/gtk.h>
-#endif
-
-#include <libedataserver/e-url.h>
-#include <libedataserver/e-source-list.h>
-#include <libecal/e-cal-client.h>
 #include "e-cal-backend.h"
 #include "e-cal-backend-factory.h"
 #include "e-data-cal.h"
@@ -48,35 +41,11 @@
 #include <libical/ical.h>
 #endif
 
-#ifdef G_OS_WIN32
-#include <windows.h>
-#include <conio.h>
-#ifndef PROCESS_DEP_ENABLE
-#define PROCESS_DEP_ENABLE 0x00000001
-#endif
-#ifndef PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION
-#define PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION 0x00000002
-#endif
-#endif
-
 #define d(x)
 
 #define E_DATA_CAL_FACTORY_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_DATA_CAL_FACTORY, EDataCalFactoryPrivate))
-
-/* Keeps running after the last client is closed. */
-static gboolean opt_keep_running = FALSE;
-
-/* Convenience macro to test and set a GError/return on failure */
-#define g_set_error_val_if_fail(test, returnval, error, domain, code) \
-	G_STMT_START {							\
-	if G_LIKELY (test) {} else {					\
-		g_set_error_literal (error, domain, code, #test);	\
-		g_warning(#test " failed");				\
-		return (returnval);					\
-	}								\
-	} G_STMT_END
 
 G_DEFINE_TYPE (EDataCalFactory, e_data_cal_factory, E_TYPE_DATA_FACTORY);
 
@@ -468,98 +437,4 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 		g_str_hash, g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) NULL);
-}
-
-static GOptionEntry entries[] = {
-
-	/* FIXME Have the description translated for 3.2, but this
-	 *       option is to aid in testing and development so it
-	 *       doesn't really matter. */
-	{ "keep-running", 'r', 0, G_OPTION_ARG_NONE, &opt_keep_running,
-	  "Keep running after the last client is closed", NULL },
-	{ NULL }
-};
-
-gint
-main (gint argc,
-      gchar **argv)
-{
-	GOptionContext *context;
-	EDBusServer *server;
-	GError *error = NULL;
-
-#ifdef G_OS_WIN32
-	/* Reduce risks */
-	{
-		typedef BOOL (WINAPI *t_SetDllDirectoryA) (LPCSTR lpPathName);
-		t_SetDllDirectoryA p_SetDllDirectoryA;
-
-		p_SetDllDirectoryA = GetProcAddress (GetModuleHandle ("kernel32.dll"), "SetDllDirectoryA");
-		if (p_SetDllDirectoryA)
-			(*p_SetDllDirectoryA) ("");
-	}
-#ifndef _WIN64
-	{
-		typedef BOOL (WINAPI *t_SetProcessDEPPolicy) (DWORD dwFlags);
-		t_SetProcessDEPPolicy p_SetProcessDEPPolicy;
-
-		p_SetProcessDEPPolicy = GetProcAddress (GetModuleHandle ("kernel32.dll"), "SetProcessDEPPolicy");
-		if (p_SetProcessDEPPolicy)
-			(*p_SetProcessDEPPolicy) (PROCESS_DEP_ENABLE | PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION);
-	}
-#endif
-#endif
-
-	setlocale (LC_ALL, "");
-	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-
-	g_type_init ();
-	g_set_prgname (E_PRGNAME);
-	if (!g_thread_supported ()) g_thread_init (NULL);
-
-	#ifdef ENABLE_MAINTAINER_MODE
-	/* only to load gtk-modules, like bug-buddy's gnomesegvhandler, if possible */
-	gtk_init_check (&argc, &argv);
-	#endif
-
-	context = g_option_context_new (NULL);
-	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
-	g_option_context_parse (context, &argc, &argv, &error);
-	g_option_context_free (context);
-
-	if (error != NULL) {
-		g_printerr ("%s\n", error->message);
-		exit (EXIT_FAILURE);
-	}
-
-#ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
-	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
-#endif
-
-	/* Migrate user data from ~/.evolution to XDG base directories. */
-	e_data_cal_migrate_basedir ();
-
-	server = g_initable_new (
-		E_TYPE_DATA_CAL_FACTORY, NULL, &error, NULL);
-
-	if (error != NULL) {
-		g_printerr ("%s\n", error->message);
-		exit (EXIT_FAILURE);
-	}
-
-	g_print ("Server is up and running...\n");
-
-	/* This SHOULD keep the server's use
-	 * count from ever reaching zero. */
-	if (opt_keep_running)
-		e_dbus_server_hold (server);
-
-	e_dbus_server_run (server);
-
-	g_object_unref (server);
-
-	g_print ("Bye.\n");
-
-	return 0;
 }

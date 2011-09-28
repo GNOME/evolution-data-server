@@ -63,6 +63,11 @@ CamelSession
 
 </para>
 
+<!-- ##### ARG CamelSession:user-cache-dir ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG CamelSession:user-data-dir ##### -->
 <para>
 

@@ -1488,7 +1488,8 @@ AC_SUBST(camel_providerdir)
 dnl *******************
 dnl D-BUS service stuff
 dnl *******************
-EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; sed -e "s|\@libexecdir\@|$(libexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" $< > $@'
+m4_pattern_allow([AM_V_GEN])
+EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; $(AM_V_GEN) sed -e "s|\@libexecdir\@|$(libexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" $< > $@'
 AC_SUBST(EVO_SUBST_SERVICE_RULE)
 
 dnl ******************************
@@ -1600,6 +1601,9 @@ libedataserver/eds-version.h
 libedataserver/libedataserver.pc
 libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
+services/Makefile
+services/evolution-addressbook-factory/Makefile
+services/evolution-calendar-factory/Makefile
 tests/Makefile
 tests/libebook/Makefile
 tests/libebook/client/Makefile

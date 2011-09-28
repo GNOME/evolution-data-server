@@ -6,8 +6,8 @@ if ENABLE_CALENDAR
 CALENDAR_DIR = calendar
 endif
 
-SUBDIRS = libedataserver libebackend camel addressbook $(CALENDAR_DIR) libedataserverui tests docs art po
-DIST_SUBDIRS = libedataserver libebackend camel addressbook calendar libedataserverui tests docs art po vala
+SUBDIRS = libedataserver libebackend camel addressbook $(CALENDAR_DIR) libedataserverui services tests docs art po
+DIST_SUBDIRS = libedataserver libebackend camel addressbook calendar libedataserverui services tests docs art po vala
 
 if HAVE_INTROSPECTION
 if HAVE_VALA

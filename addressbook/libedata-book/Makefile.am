@@ -11,7 +11,7 @@ lib_LTLIBRARIES = libedata-book-1.2.la
 libedata_book_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
 	-DG_LOG_DOMAIN=\"libedata-book\" \
-	-DLIBEXECDIR=\"$(libexecdir)\" \
+	-DBACKENDDIR=\"$(ebook_backenddir)\" \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/addressbook \
 	-I$(top_srcdir)/addressbook/libegdbus \
@@ -22,6 +22,7 @@ libedata_book_1_2_la_CPPFLAGS = \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 libedata_book_1_2_la_SOURCES = \
+	$(ENUM_GENERATED) \
 	e-book-backend-factory.c \
 	e-book-backend-sexp.c \
 	e-book-backend-summary.c \
@@ -30,14 +31,14 @@ libedata_book_1_2_la_SOURCES = \
 	e-book-backend-sqlitedb.c \
 	e-book-backend-sync.c \
 	e-book-backend.c \
-	e-data-book-view.c \
 	e-data-book.c \
-	ximian-vcard.h \
-	$(ENUM_GENERATED)
+	e-data-book-factory.c \
+	e-data-book-view.c \
+	ximian-vcard.h
 
 libedata_book_1_2_la_LIBADD = \
-	$(top_builddir)/addressbook/libegdbus/libegdbus-book.la \
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la \
+	$(top_builddir)/addressbook/libegdbus/libegdbus-book.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(DB_LIBS) \
@@ -74,55 +75,20 @@ e_book_backend_sqlitedb_test_LDADD = \
 	libedata-book-1.2.la \
 	$(libedata_book_1_2_la_LIBADD)
 
-factory_PROGRAMS = e-addressbook-factory
-
-e_addressbook_factory_CPPFLAGS = \
-	$(AM_CPPFLAGS) \
-	-DG_LOG_DOMAIN=\"libedata-book\" \
-	-DE_PRGNAME=\"e-addressbook-factory\" \
-	-DBACKENDDIR=\"$(ebook_backenddir)\" \
-	-I$(top_srcdir) \
-	-I$(top_srcdir)/addressbook \
-	-I$(top_srcdir)/addressbook/libegdbus \
-	-I$(top_builddir) \
-	-I$(top_builddir)/addressbook \
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
-	$(GOA_CFLAGS) \
-	$(FACTORY_GTK_CFLAGS)
-
-e_addressbook_factory_SOURCES = \
-	e-data-book-factory.c \
-	e-data-book-factory.h \
-	e-data-book-migrate-basedir.c
-
-e_addressbook_factory_LDADD = \
-	libedata-book-1.2.la \
-	$(top_builddir)/libedataserver/libedataserver-1.2.la \
-	$(top_builddir)/libebackend/libebackend-1.2.la \
-	$(EVOLUTION_ADDRESSBOOK_LIBS) \
-	$(GOA_LIBS) \
-	$(FACTORY_GTK_LIBS)
-
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedata-book-$(API_VERSION).pc
 
-service_in_files = org.gnome.evolution.dataserver.AddressBook.service.in
-servicedir = $(datadir)/dbus-1/services
-service_DATA = $(service_in_files:.service.in=.service)
-@EVO_SUBST_SERVICE_RULE@
-
 BUILT_SOURCES = $(ENUM_GENERATED)
-CLEANFILES = $(BUILT_SOURCES) $(service_DATA)
+CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = \
 	e-data-book-factory.xml \
 	e-data-book-view.xml \
 	e-data-book.xml \
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in) \
-	$(service_in_files)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 -include $(top_srcdir)/git.mk

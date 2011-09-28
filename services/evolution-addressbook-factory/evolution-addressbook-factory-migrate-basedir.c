@@ -1,5 +1,5 @@
 /*
- * e-data-book-migrate-basedir.c
+ * evolution-addressbook-factory-migrate-basedir.c
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,11 +20,12 @@
 #include <glib/gstdio.h>
 #include <libedataserver/e-data-server-util.h>
 
-void e_data_book_migrate_basedir (void);
+/* Forward Declarations */
+void evolution_addressbook_factory_migrate_basedir (void);
 
 static gboolean
-data_book_migrate_rename (const gchar *old_filename,
-                          const gchar *new_filename)
+migrate_rename (const gchar *old_filename,
+                const gchar *new_filename)
 {
 	gboolean old_filename_is_dir;
 	gboolean old_filename_exists;
@@ -58,7 +59,7 @@ data_book_migrate_rename (const gchar *old_filename,
 }
 
 static gboolean
-data_book_migrate_rmdir (const gchar *dirname)
+migrate_rmdir (const gchar *dirname)
 {
 	GDir *dir = NULL;
 	gboolean success = TRUE;
@@ -91,7 +92,7 @@ data_book_migrate_rmdir (const gchar *dirname)
 }
 
 static void
-data_book_migrate_process_corrections (GHashTable *corrections)
+migrate_process_corrections (GHashTable *corrections)
 {
 	GHashTableIter iter;
 	gpointer old_filename;
@@ -100,14 +101,14 @@ data_book_migrate_process_corrections (GHashTable *corrections)
 	g_hash_table_iter_init (&iter, corrections);
 
 	while (g_hash_table_iter_next (&iter, &old_filename, &new_filename)) {
-		data_book_migrate_rename (old_filename, new_filename);
+		migrate_rename (old_filename, new_filename);
 		g_hash_table_iter_remove (&iter);
 	}
 }
 
 static gboolean
-data_book_migrate_move_contents (const gchar *src_directory,
-                                 const gchar *dst_directory)
+migrate_move_contents (const gchar *src_directory,
+                       const gchar *dst_directory)
 {
 	GDir *dir;
 	GHashTable *corrections;
@@ -138,7 +139,7 @@ data_book_migrate_move_contents (const gchar *src_directory,
 
 	g_dir_close (dir);
 
-	data_book_migrate_process_corrections (corrections);
+	migrate_process_corrections (corrections);
 	g_hash_table_destroy (corrections);
 
 	/* It's tempting to want to remove the source directory here.
@@ -150,7 +151,7 @@ data_book_migrate_move_contents (const gchar *src_directory,
 }
 
 static void
-data_book_migrate_fix_groupwise_bug (const gchar *old_base_dir)
+migrate_fix_groupwise_bug (const gchar *old_base_dir)
 {
 	GDir *dir;
 	GHashTable *corrections;
@@ -192,7 +193,7 @@ data_book_migrate_fix_groupwise_bug (const gchar *old_base_dir)
 
 	g_dir_close (dir);
 
-	data_book_migrate_process_corrections (corrections);
+	migrate_process_corrections (corrections);
 	g_hash_table_destroy (corrections);
 
 exit:
@@ -201,7 +202,7 @@ exit:
 }
 
 static void
-data_book_migrate_to_user_cache_dir (const gchar *old_base_dir)
+migrate_to_user_cache_dir (const gchar *old_base_dir)
 {
 	const gchar *new_cache_dir;
 	gchar *old_cache_dir;
@@ -235,21 +236,21 @@ data_book_migrate_to_user_cache_dir (const gchar *old_base_dir)
 	src_directory = g_build_filename (old_cache_dir, "addressbook", NULL);
 	dst_directory = g_build_filename (new_cache_dir, "addressbook", NULL);
 
-	data_book_migrate_move_contents (src_directory, dst_directory);
-	data_book_migrate_rmdir (src_directory);
+	migrate_move_contents (src_directory, dst_directory);
+	migrate_rmdir (src_directory);
 
 	g_free (src_directory);
 	g_free (dst_directory);
 
 	/* Try to remove the old cache directory.  Good chance this will
 	 * fail on the first try, since Evolution puts stuff here too. */
-	data_book_migrate_rmdir (old_cache_dir);
+	migrate_rmdir (old_cache_dir);
 
 	g_free (old_cache_dir);
 }
 
 static void
-data_book_migrate_to_user_data_dir (const gchar *old_base_dir)
+migrate_to_user_data_dir (const gchar *old_base_dir)
 {
 	const gchar *new_data_dir;
 	gchar *src_directory;
@@ -281,15 +282,15 @@ data_book_migrate_to_user_data_dir (const gchar *old_base_dir)
 	src_directory = g_build_filename (old_base_dir, "addressbook", "local", NULL);
 	dst_directory = g_build_filename (new_data_dir, "addressbook", NULL);
 
-	data_book_migrate_move_contents (src_directory, dst_directory);
-	data_book_migrate_rmdir (src_directory);
+	migrate_move_contents (src_directory, dst_directory);
+	migrate_rmdir (src_directory);
 
 	g_free (src_directory);
 	g_free (dst_directory);
 }
 
 void
-e_data_book_migrate_basedir (void)
+evolution_addressbook_factory_migrate_basedir (void)
 {
 	const gchar *home_dir;
 	gchar *old_base_dir;
@@ -304,14 +305,14 @@ e_data_book_migrate_basedir (void)
 	if (!g_file_test (old_base_dir, G_FILE_TEST_IS_DIR))
 		goto exit;
 
-	data_book_migrate_fix_groupwise_bug (old_base_dir);
+	migrate_fix_groupwise_bug (old_base_dir);
 
-	data_book_migrate_to_user_cache_dir (old_base_dir);
-	data_book_migrate_to_user_data_dir (old_base_dir);
+	migrate_to_user_cache_dir (old_base_dir);
+	migrate_to_user_data_dir (old_base_dir);
 
 	/* Try to remove the old base directory.  Good chance this will
 	 * fail on the first try, since Evolution puts stuff here too. */
-	data_book_migrate_rmdir (old_base_dir);
+	migrate_rmdir (old_base_dir);
 
 exit:
 	g_free (old_base_dir);
