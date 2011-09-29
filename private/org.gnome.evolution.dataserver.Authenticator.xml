@@ -1,0 +1,92 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.Authenticator:
+    @short_description: Authentication interface
+
+    Interface for an authentication session.
+-->
+<interface name="org.gnome.evolution.dataserver.Authenticator">
+  <!--
+      Ready:
+      @encryption_key: Implementation defined encryption key
+
+      Indicates the client is ready to receive Response signals.
+      If this method is not called within a short duration after
+      the object path for this interface is exported, the object
+      path will be unexported.
+  -->
+  <method name="Ready">
+    <arg name="encryption_key" direction="in" type="s"/>
+  </method>
+
+  <!--
+      Cancel:
+
+      Indicates the client no longer wishes to authenticate.
+      Any active or pending authentication prompt will be cancelled,
+      and the object path for this interface will be unexported.
+
+      The object path for this interface will be unexported.
+
+      This method ends the authentication session.
+  -->
+  <method name="Cancel"/>
+
+  <!--
+      Accepted:
+
+      Indicates the most-recently-passed secret was accepted.  If the
+      user wishes, the secret can be copied to a keyring for permanent
+      storage at this point.
+
+      The object path for this interface will be unexported.
+
+      This method ends the authentication session.
+  -->
+  <method name="Accepted"/>
+
+  <!--
+      Rejected:
+
+      Indicates the most-recently-passed secret was rejected.  The
+      client should continue listening for a new Authenticate signal.
+  -->
+  <method name="Rejected"/>
+
+  <!--
+      Authenticate:
+      @encrypted_secret: Encrypted secret string
+
+      Emitted when the user has responded to an authentication prompt.
+
+      The client should attempt to authenticate using the provided
+      secret and then respond by calling either Accepted, Rejected
+      or Cancel.  The Authenticate signal will not be emitted again
+      until the client has responded.
+
+      If at any time the user cancels the authentication prompt, the
+      Dismissed signal is emitted immediately.
+  -->
+  <signal name="Authenticate">
+    <arg name="encrypted_secret" type="s"/>
+  </signal>
+
+  <!--
+      Dismissed:
+
+      Emitted when the user has declined to provide a secret.
+
+      Any further attempts to authenticate the Source will emit a
+      Dismissed signal without interrupting the user.  This state
+      persists until the ResetAuthDismissal method is called.
+
+      This signal ends the authentication session.
+  -->
+  <signal name="Dismissed"/>
+
+</interface>
+

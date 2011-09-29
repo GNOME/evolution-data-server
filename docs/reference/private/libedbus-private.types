@@ -1,0 +1,23 @@
+#include <private/e-dbus-source.h>
+#include <private/e-dbus-source-manager.h>
+#include <private/e-dbus-authenticator.h>
+
+e_dbus_object_get_type
+e_dbus_object_proxy_get_type
+e_dbus_object_skeleton_get_type
+e_dbus_object_manager_client_get_type
+e_dbus_source_get_type
+e_dbus_source_proxy_get_type
+e_dbus_source_skeleton_get_type
+e_dbus_source_manager_get_type
+e_dbus_source_manager_proxy_get_type
+e_dbus_source_manager_skeleton_get_type
+e_dbus_source_removable_get_type
+e_dbus_source_removable_proxy_get_type
+e_dbus_source_removable_skeleton_get_type
+e_dbus_source_writable_get_type
+e_dbus_source_writable_proxy_get_type
+e_dbus_source_writable_skeleton_get_type
+e_dbus_authenticator_get_type
+e_dbus_authenticator_proxy_get_type
+e_dbus_authenticator_skeleton_get_type

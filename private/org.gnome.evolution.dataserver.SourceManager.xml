@@ -1,0 +1,66 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.SourceManager:
+    @short_description: SourceManager interface
+
+    Interface for top-level manager singleton objects.
+-->
+<interface name="org.gnome.evolution.dataserver.SourceManager">
+  <!--
+      Authenticate:
+      @uid: Unique identifier for the authenticating source
+      @prompt_title: The title of the prompt
+      @prompt_message: The prompt message for the user
+      @prompt_description: The detailed description of the prompt
+      @object_path: Object path of a new authentication session
+
+      Initiates a new authentication session at the returned object
+      path.  The client should prepare to receive Response signals
+      from the Authenticator interface at that object path, then
+      call the interface's Ready method.
+
+      The @prompt_title, @prompt_message and @prompt_description
+      arguments are used to construct an authentication prompt if
+      necessary.  (See #GcrPrompt for details.)
+  -->
+  <method name="Authenticate">
+    <arg name="uid" direction="in" type="s"/>
+    <arg name="prompt_title" direction="in" type="s"/>
+    <arg name="prompt_message" direction="in" type="s"/>
+    <arg name="prompt_description" direction="in" type="s"/>
+    <arg name="object_path" direction="out" type="s"/>
+  </method>
+
+  <!--
+      CreateSources:
+      @array: An array of "uid" and "data" pairs
+
+      Creates a new data source for each "uid" and "data" string pair in
+      @array and adds them to the list of managed objects.  The "uid" part
+      is a unique identifier for the new source, and the "data" part is the
+      raw key file data describing the new source.
+  -->
+  <method name="CreateSources">
+    <arg name="array" direction="in" type="a{ss}"/>
+  </method>
+
+  <!--
+      Reload:
+
+      Reloads the registry service as if it were stopped and restarted.
+      Client applications will see all exported objects suddenly removed
+      and replaced by a new and possibly different set of objects.
+
+      The primary use case for this method is to rerun the data migration
+      routines that run automatically on startup.
+
+      A reload can also be triggered by sending the SourceManager process
+      a SIGHUP on platforms that support it.
+  -->
+  <method name="Reload"/>
+</interface>
+

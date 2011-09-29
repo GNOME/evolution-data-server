@@ -26,6 +26,20 @@
   </chapter>
 
   <chapter>
+    <title>Generated Types</title>
+    <xi:include href="xml/e-dbus-object.xml"/>
+    <xi:include href="xml/e-dbus-object-proxy.xml"/>
+    <xi:include href="xml/e-dbus-object-skeleton.xml"/>
+    <xi:include href="xml/e-dbus-source.xml"/>
+    <xi:include href="xml/e-dbus-source-proxy.xml"/>
+    <xi:include href="xml/e-dbus-source-skeleton.xml"/>
+    <xi:include href="xml/e-dbus-source-manager.xml"/>
+    <xi:include href="xml/e-dbus-source-manager-proxy.xml"/>
+    <xi:include href="xml/e-dbus-source-manager-skeleton.xml"/>
+    <xi:include href="xml/e-dbus-object-manager-client.xml"/>
+  </chapter>
+
+  <chapter>
     <title>Miscellaneous Utilities</title>
     <xi:include href="xml/e-categories.xml"/>
     <xi:include href="xml/e-client.xml"/>

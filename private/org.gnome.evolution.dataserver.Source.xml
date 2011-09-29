@@ -1,0 +1,59 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.Source:
+    @short_description: Data source
+
+    This interface is used to represent data sources.
+-->
+<interface name="org.gnome.evolution.dataserver.Source">
+  <!-- UID: The unique identifier for the source. -->
+  <property name="UID" type="s" access="read"/>
+  <!-- Data: Raw key file data describing the source. -->
+  <property name="Data" type="s" access="read"/>
+
+  <!--
+      AllowAuthPrompt:
+
+      If the user declines to provide a secret when prompted, further
+      authentication prompts are inhibited until this method is called.
+  -->
+  <method name="AllowAuthPrompt"/>
+</interface>
+
+<!--
+    org.gnome.evolution.dataserver.Source.Removable:
+    @short_description: Removable data source
+
+    This interface is used to represent removable data sources.
+-->
+<interface name="org.gnome.evolution.dataserver.Source.Removable">
+  <!--
+      Remove:
+
+      Permanently removes the data source.
+  -->
+  <method name="Remove"/>
+</interface>
+
+<!--
+    org.gnome.evolution.dataserver.Source.Writable:
+    @short_description: Writable data source
+
+    This interface is used to represent writable data sources.
+-->
+<interface name="org.gnome.evolution.dataserver.Source.Writable">
+  <!--
+      Write:
+      @data: Raw key file data describing the source.
+
+      Submits new key file data for the source, which is written
+      to disk and then reflected in the Data property.
+  -->
+  <method name="Write">
+    <arg name="data" direction="in" type="s"/>
+  </method>
+</interface>

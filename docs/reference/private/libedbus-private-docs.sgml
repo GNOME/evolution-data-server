@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY % local.common.attrib "xmlns:xi  CDATA  #FIXED 'http://www.w3.org/2003/XInclude'">
+]>
+<book id="index" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <bookinfo>
+    <title>Evolution-Data-Server Manual: Private</title>
+  </bookinfo>
+
+  <chapter>
+    <title>D-Bus API Reference</title>
+    <xi:include href="xml/e-dbus-object.xml"/>
+    <xi:include href="xml/e-dbus-object-proxy.xml"/>
+    <xi:include href="xml/e-dbus-object-skeleton.xml"/>
+    <xi:include href="xml/e-dbus-source.xml"/>
+    <xi:include href="xml/e-dbus-source-proxy.xml"/>
+    <xi:include href="xml/e-dbus-source-skeleton.xml"/>
+    <xi:include href="xml/e-dbus-source-removable.xml"/>
+    <xi:include href="xml/e-dbus-source-removable-proxy.xml"/>
+    <xi:include href="xml/e-dbus-source-removable-skeleton.xml"/>
+    <xi:include href="xml/e-dbus-source-writable.xml"/>
+    <xi:include href="xml/e-dbus-source-writable-proxy.xml"/>
+    <xi:include href="xml/e-dbus-source-writable-skeleton.xml"/>
+    <xi:include href="xml/e-dbus-source-manager.xml"/>
+    <xi:include href="xml/e-dbus-source-manager-proxy.xml"/>
+    <xi:include href="xml/e-dbus-source-manager-skeleton.xml"/>
+    <xi:include href="xml/e-dbus-object-manager-client.xml"/>
+    <xi:include href="xml/e-dbus-authenticator.xml"/>
+    <xi:include href="xml/e-dbus-authenticator-proxy.xml"/>
+    <xi:include href="xml/e-dbus-authenticator-skeleton.xml"/>
+  </chapter>
+
+  <chapter>
+    <title>D-Bus Interfaces</title>
+    <xi:include href="../../../private/e-dbus-source-org.gnome.evolution.dataserver.Source.xml"/>
+    <xi:include href="../../../private/e-dbus-source-org.gnome.evolution.dataserver.Source.Removable.xml"/>
+    <xi:include href="../../../private/e-dbus-source-org.gnome.evolution.dataserver.Source.Writable.xml"/>
+    <xi:include href="../../../private/e-dbus-source-manager-org.gnome.evolution.dataserver.SourceManager.xml"/>
+    <xi:include href="../../../private/e-dbus-authenticator-org.gnome.evolution.dataserver.Authenticator.xml"/>
+  </chapter>
+
+  <index id="api-index-full">
+    <title>Index</title>
+    <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
+  </index>
+
+  <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+
+</book>

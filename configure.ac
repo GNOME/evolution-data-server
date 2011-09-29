@@ -273,6 +273,14 @@ dnl Gtk Doc stuff
 dnl ******************************
 GTK_DOC_CHECK([1.14],[--flavour no-tmpl])
 
+dnl The private D-Bus documentation is for developers only.
+AC_ARG_WITH([private-docs],
+	AS_HELP_STRING([--with-private-docs],
+	[Build documentation for private libraries ]
+	[(requires --enable-gtk-doc) [default=no]],),
+	[with_private_docs="$withval"],[with_private_docs="no"])
+AM_CONDITIONAL(WITH_PRIVATE_DOCS, [test x$with_private_docs = xyes])
+
 dnl This must appear after AC_CANONICAL_HOST, which defines $host.
 case "$host" in
 *openbsd*|*freebsd*)
@@ -1614,6 +1622,7 @@ libedataserver/eds-version.h
 libedataserver/libedataserver.pc
 libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
+private/Makefile
 services/Makefile
 services/evolution-addressbook-factory/Makefile
 services/evolution-calendar-factory/Makefile
@@ -1638,6 +1647,7 @@ docs/reference/camel/Makefile
 docs/reference/libedataserver/Makefile
 docs/reference/libedataserverui/Makefile
 docs/reference/libebackend/Makefile
+docs/reference/private/Makefile
 po/Makefile.in
 vala/Makefile
 ])

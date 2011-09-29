@@ -114,10 +114,6 @@ e_credentials_list_keys
 e_credentials_clear
 e_credentials_clear_peek
 e_credentials_util_safe_free_string
-e_credentials_util_prompt_flags_to_string
-e_credentials_util_string_to_prompt_flags
-<SUBSECTION Private>
-ECredentialsPrivate
 </SECTION>
 
 <SECTION>

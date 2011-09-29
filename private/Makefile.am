@@ -1,0 +1,87 @@
+NULL =
+
+$(GENERATED_DBUS_SOURCE) : Makefile.am org.gnome.evolution.dataserver.Source.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.gnome.evolution.dataserver. \
+	--c-namespace E_DBus \
+	--c-generate-object-manager \
+	--generate-c-code e-dbus-source \
+	--generate-docbook e-dbus-source \
+	org.gnome.evolution.dataserver.Source.xml \
+	$(NULL)
+
+$(GENERATED_DBUS_SOURCE_MANAGER) : Makefile.am org.gnome.evolution.dataserver.SourceManager.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.gnome.evolution.dataserver. \
+	--c-namespace E_DBus \
+	--generate-c-code e-dbus-source-manager \
+	--generate-docbook e-dbus-source-manager \
+	org.gnome.evolution.dataserver.SourceManager.xml \
+	$(NULL)
+
+$(GENERATED_DBUS_AUTHENTICATOR) : Makefile.am org.gnome.evolution.dataserver.Authenticator.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.gnome.evolution.dataserver \
+	--c-namespace E_DBus \
+	--generate-c-code e-dbus-authenticator \
+	--generate-docbook e-dbus-authenticator \
+	org.gnome.evolution.dataserver.Authenticator.xml \
+	$(NULL)
+
+GENERATED_DBUS_SOURCE = \
+	e-dbus-source.c \
+	e-dbus-source.h \
+	$(NULL)
+
+GENERATED_DBUS_SOURCE_MANAGER = \
+	e-dbus-source-manager.c \
+	e-dbus-source-manager.h \
+	$(NULL)
+
+GENERATED_DBUS_AUTHENTICATOR = \
+	e-dbus-authenticator.c \
+	e-dbus-authenticator.h \
+	$(NULL)
+
+BUILT_SOURCES = \
+	$(GENERATED_DBUS_SOURCE) \
+	$(GENERATED_DBUS_SOURCE_MANAGER) \
+	$(GENERATED_DBUS_AUTHENTICATOR) \
+	$(NULL)
+
+noinst_LTLIBRARIES = libedbus-private.la
+
+libedbus_private_la_CPPFLAGS = \
+	$(AM_CPPFLAGS) \
+	-I$(top_srcdir) \
+	$(E_DATA_SERVER_CFLAGS) \
+	$(GIO_UNIX_CFLAGS) \
+	$(CODE_COVERAGE_CFLAGS) \
+	$(NULL)
+
+libedbus_private_la_SOURCES = \
+	$(BUILT_SOURCES) \
+	$(NULL)
+
+libedbus_private_la_LIBADD = \
+	$(E_DATA_SERVER_LIBS) \
+	$(GIO_UNIX_LIBS) \
+	$(NULL)
+
+libedbus_private_la_LDFLAGS = \
+	$(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
+
+EXTRA_DIST = \
+	org.gnome.evolution.dataserver.Source.xml \
+	org.gnome.evolution.dataserver.SourceManager.xml \
+	org.gnome.evolution.dataserver.Authenticator.xml \
+	$(NULL)
+
+CLEANFILES = \
+	$(BUILT_SOURCES) \
+	e-dbus-*-org.gnome.evolution.dataserver.*.xml \
+	$(NULL)
+
+-include $(top_srcdir)/git.mk

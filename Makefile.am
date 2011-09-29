@@ -2,7 +2,7 @@ ACLOCAL_AMFLAGS=-I m4
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --with-krb5=/usr --without-weather --enable-introspection
 
-SUBDIRS = camel libedataserver libebackend addressbook calendar libedataserverui services tests docs art po
+SUBDIRS = camel private libedataserver libebackend addressbook calendar libedataserverui services tests docs art po
 
 if HAVE_INTROSPECTION
 if HAVE_VALA

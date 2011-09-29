@@ -4,11 +4,16 @@ MARSHAL_GENERATED = \
 	e-gdbus-marshallers.h
 @EVO_MARSHAL_RULE@
 
+BUILT_SOURCES = \
+	$(ENUM_GENERATED) \
+	$(MARSHAL_GENERATED)
+
 lib_LTLIBRARIES = libedataserver-1.2.la
 
 libedataserver_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)							\
 	-I$(top_srcdir)							\
+	-I$(top_srcdir)/private						\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"				\
 	-DE_DATA_SERVER_LOCALEDIR=\""$(localedir)"\"			\
@@ -17,12 +22,13 @@ libedataserver_1_2_la_CPPFLAGS = \
 	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"				\
 	-DDEFAULT_EDS_DBUS_TIMEOUT=$(DEFAULT_EDS_DBUS_TIMEOUT)		\
 	$(E_DATA_SERVER_CFLAGS)						\
+	$(GIO_UNIX_CFLAGS)						\
 	$(SOUP_CFLAGS)							\
 	$(CODE_COVERAGE_CFLAGS)						\
 	$(NULL)
 
 libedataserver_1_2_la_SOURCES =		\
-	$(MARSHAL_GENERATED)		\
+	$(BUILT_SOURCES)		\
 	e-categories.c			\
 	e-client.c			\
 	e-client-private.h		\
@@ -48,7 +54,10 @@ libedataserver_1_2_la_SOURCES =		\
 	eds-version.c
 
 libedataserver_1_2_la_LIBADD =				\
+	$(top_builddir)/camel/libcamel-1.2.la		\
+	$(top_builddir)/private/libedbus-private.la	\
 	$(E_DATA_SERVER_LIBS)				\
+	$(GIO_UNIX_LIBS)				\
 	$(ICONV_LIBS)					\
 	$(SOCKET_LIBS)					\
 	$(SOUP_LIBS)					\
@@ -107,7 +116,6 @@ EXTRA_DIST = 						\
 	$(convert_DATA)					\
 	$(gsettings_SCHEMAS:.xml=.xml.in)
 
-BUILT_SOURCES = $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES) $(gsettings_SCHEMAS:.xml=.valid)
 
 DISTCLEANFILES = eds-version.h				\

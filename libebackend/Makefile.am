@@ -13,6 +13,7 @@ lib_LTLIBRARIES = libebackend-1.2.la
 libebackend_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)						\
 	-I$(top_srcdir)						\
+	-I$(top_srcdir)/private					\
 	-DG_LOG_DOMAIN=\"e-data-server\"			\
 	$(DB_CFLAGS)						\
 	$(SQLITE3_CFLAGS)					\
