@@ -45,6 +45,11 @@ struct _SearchContext {
 	ECalComponent *comp;
 	ECalBackend *backend;
 	gboolean occurs;
+	gint occurrences_count;
+
+	gboolean expr_range_set;
+	time_t expr_range_start;
+	time_t expr_range_end;
 };
 
 static ESExpResult *func_is_completed (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
@@ -431,6 +436,81 @@ func_occur_in_time_range (ESExp *esexp,
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 	result->value.boolean = ctx->occurs;
+
+	return result;
+}
+
+static gboolean
+count_instances_time_range_cb (ECalComponent *comp,
+			       time_t instance_start,
+			       time_t instance_end,
+			       gpointer data)
+{
+	SearchContext *ctx = data;
+
+	ctx->occurrences_count++;
+
+	return TRUE;
+}
+
+/*
+ * (occurrences-count? START END)
+ * (occurrences-count?)
+ *
+ * Counts occurrences either in the given time range (the first variant)
+ * or in the time range defined by the expression itself (the second variant).
+ * If the time range cannot be determined, then -1 is returned.
+ */
+static ESExpResult *
+func_occurrences_count (ESExp *esexp,
+                        gint argc,
+                        ESExpResult **argv,
+                        gpointer data)
+{
+	SearchContext *ctx = data;
+	time_t start, end;
+	ESExpResult *result;
+	icaltimezone *default_zone;
+
+	/* Check argument types */
+
+	if (argc != 2 && argc != 0) {
+		e_sexp_fatal_error (esexp, _("\"%s\" expects none or two arguments"), "occurrences-count");
+		return NULL;
+	}
+
+	if (argc == 2) {
+		if (argv[0]->type != ESEXP_RES_TIME) {
+			e_sexp_fatal_error (esexp, _("\"%s\" expects the first argument to be a time_t"), "occurrences-count");
+			return NULL;
+		}
+		start = argv[0]->value.time;
+
+		if (argv[1]->type != ESEXP_RES_TIME) {
+			e_sexp_fatal_error (esexp, _("\"%s\" expects the second argument to be a time_t"), "occurrences-count");
+			return NULL;
+		}
+		end = argv[1]->value.time;
+	} else if (ctx->expr_range_set) {
+		start = ctx->expr_range_start;
+		end = ctx->expr_range_end;
+	} else {
+		result = e_sexp_result_new (esexp, ESEXP_RES_INT);
+		result->value.number = -1;
+
+		return result;
+	}
+
+	default_zone = icaltimezone_get_utc_timezone ();
+
+	ctx->occurrences_count = 0;
+	e_cal_recur_generate_instances (ctx->comp, start, end,
+					count_instances_time_range_cb, ctx,
+					resolve_tzid, ctx,
+					default_zone);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_INT);
+	result->value.number = ctx->occurrences_count;
 
 	return result;
 }
@@ -1348,7 +1428,8 @@ static struct {
 	{ "is-completed?", func_is_completed, 0 },
 	{ "completed-before?", func_completed_before, 0 },
 	{ "has-attachments?", func_has_attachment, 0 },
-	{ "percent-complete?", func_percent_complete, 0 }
+	{ "percent-complete?", func_percent_complete, 0 },
+	{ "occurrences-count?", func_occurrences_count, 0 }
 };
 
 /**
@@ -1370,7 +1451,13 @@ e_cal_backend_sexp_evaluate_occur_times (ECalBackendSExp *sexp,
 	g_return_val_if_fail (start != NULL, FALSE);
 	g_return_val_if_fail (end != NULL, FALSE);
 
-	return e_sexp_evaluate_occur_times (sexp->priv->search_sexp, start, end);
+	if (!sexp->priv->search_context->expr_range_set)
+		return FALSE;
+
+	*start = sexp->priv->search_context->expr_range_start;
+	*end = sexp->priv->search_context->expr_range_end;
+
+	return TRUE;
 }
 
 /**
@@ -1485,6 +1572,13 @@ e_cal_backend_sexp_new (const gchar *text)
 		g_object_unref (sexp);
 		sexp = NULL;
 	}
+
+	if (sexp) {
+		SearchContext *ctx = sexp->priv->search_context;
+
+		ctx->expr_range_set = e_sexp_evaluate_occur_times (sexp->priv->search_sexp, &ctx->expr_range_start, &ctx->expr_range_end);
+	}
+		
 
 	return sexp;
 }
