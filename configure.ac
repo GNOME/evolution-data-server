@@ -63,6 +63,7 @@ dnl D-Bus versioning
 dnl ******************************
 ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook3"
 CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar2"
+SOURCES_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Sources0"
 
 AC_DEFINE_UNQUOTED(
        ADDRESS_BOOK_DBUS_SERVICE_NAME,
@@ -74,8 +75,14 @@ AC_DEFINE_UNQUOTED(
        ["$CALENDAR_DBUS_SERVICE_NAME"],
        [D-Bus service name for the calendar factory])
 
+AC_DEFINE_UNQUOTED(
+	SOURCES_DBUS_SERVICE_NAME,
+	["$SOURCES_DBUS_SERVICE_NAME"],
+	[D-Bus service name for the source registry])
+
 AC_SUBST(ADDRESS_BOOK_DBUS_SERVICE_NAME)
 AC_SUBST(CALENDAR_DBUS_SERVICE_NAME)
+AC_SUBST(SOURCES_DBUS_SERVICE_NAME)
 
 dnl ******************************
 dnl Libtool versioning
@@ -397,14 +404,15 @@ if test "x$enable_goa" = xyes; then
 fi
 AM_CONDITIONAL(HAVE_GOA, [test x$enable_goa = xyes])
 
+dnl ***********************************
+dnl Check for GNOME Keyring.
+dnl ***********************************
 if test x$os_win32 = xno; then
-  dnl ***********************************
-  dnl Check for GNOME Keyring.
-  dnl ***********************************
-  PKG_CHECK_MODULES(GNOME_KEYRING,
-	[gnome-keyring-1 >= gnome_keyring_minimum_version])
+	PKG_CHECK_MODULES(GNOME_KEYRING,
+		[gnome-keyring-1 >= gnome_keyring_minimum_version])
 fi
-
+AC_SUBST(GNOME_KEYRING_CFLAGS)
+AC_SUBST(GNOME_KEYRING_LIBS)
 
 dnl **********************************************************
 dnl gcr-base is needed for secure password exchange over D-Bus
@@ -1327,7 +1335,7 @@ if test "x$enable_maintainer_mode" = "xyes" ; then
 	AC_SUBST(FACTORY_GTK_LIBS)
 fi
 
-E_BACKEND_DEPS="gio-2.0 gmodule-2.0 libxml-2.0 gconf-2.0"
+E_BACKEND_DEPS="gio-2.0 gmodule-2.0 gnome-keyring-1 libxml-2.0 gconf-2.0"
 
 dnl ******************************
 dnl libebackend flags
@@ -1491,11 +1499,20 @@ AC_SUBST(privlibdir)
 imagesdir='${datadir}'/pixmaps/evolution-data-server
 AC_SUBST(imagesdir)
 
+moduledir='${libdir}'/evolution-data-server/registry-modules
+AC_SUBST(moduledir)
+
 ebook_backenddir='${libdir}'/evolution-data-server/addressbook-backends
 AC_SUBST(ebook_backenddir)
 
 ecal_backenddir='${libdir}'/evolution-data-server/calendar-backends
 AC_SUBST(ecal_backenddir)
+
+ro_sourcesdir='${datadir}'/evolution-data-server-$BASE_VERSION/ro-sources
+AC_SUBST(ro_sourcesdir)
+
+rw_sourcesdir='${datadir}'/evolution-data-server-$BASE_VERSION/rw-sources
+AC_SUBST(rw_sourcesdir)
 
 if test "x$use_gweather" = "xyes"; then
 	weatherdatadir="$privdatadir/weather"
@@ -1510,7 +1527,7 @@ dnl *******************
 dnl D-BUS service stuff
 dnl *******************
 m4_pattern_allow([AM_V_GEN])
-EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; $(AM_V_GEN) sed -e "s|\@libexecdir\@|$(libexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" $< > $@'
+EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; $(AM_V_GEN) sed -e "s|\@libexecdir\@|$(libexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" -e "s|\@SOURCES_DBUS_SERVICE_NAME\@|$(SOURCES_DBUS_SERVICE_NAME)|" $< > $@'
 AC_SUBST(EVO_SUBST_SERVICE_RULE)
 
 dnl ******************************
@@ -1626,6 +1643,7 @@ private/Makefile
 services/Makefile
 services/evolution-addressbook-factory/Makefile
 services/evolution-calendar-factory/Makefile
+services/evolution-source-registry/Makefile
 tests/Makefile
 tests/libebook/Makefile
 tests/libebook/client/Makefile

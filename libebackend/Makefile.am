@@ -14,18 +14,27 @@ libebackend_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)						\
 	-I$(top_srcdir)						\
 	-I$(top_srcdir)/private					\
-	-DG_LOG_DOMAIN=\"e-data-server\"			\
+	-DG_LOG_DOMAIN=\"libebackend\"				\
+	-DMODULE_DIRECTORY=\"$(moduledir)\"			\
+	-DE_DATA_SERVER_PRIVDATADIR=\"$(privdatadir)\"		\
+	-DSYSTEM_WIDE_RO_SOURCES_DIRECTORY=\"$(ro_sourcesdir)\"	\
+	-DSYSTEM_WIDE_RW_SOURCES_DIRECTORY=\"$(rw_sourcesdir)\"	\
 	$(DB_CFLAGS)						\
 	$(SQLITE3_CFLAGS)					\
 	$(E_BACKEND_CFLAGS)					\
+	$(GCR_BASE_CFLAGS)					\
 	$(GIO_UNIX_CFLAGS)					\
 	$(CODE_COVERAGE_CFLAGS)					\
 	$(NULL)
 
 libebackend_1_2_la_SOURCES =		\
 	$(BUILT_SOURCES)		\
+	e-authentication-mediator.c	\
+	e-authentication-session.c	\
 	e-backend.c			\
 	e-backend-factory.c		\
+	e-collection-backend.c		\
+	e-collection-backend-factory.c	\
 	e-data-factory.c		\
 	e-dbus-server.c			\
 	e-extensible.c			\
@@ -34,13 +43,17 @@ libebackend_1_2_la_SOURCES =		\
 	e-dbhash.c			\
 	e-db3-utils.c			\
 	e-module.c			\
+	e-server-side-source.c		\
+	e-source-registry-server.c	\
 	e-sqlite3-vfs.c			\
 	e-file-cache.c
 
 libebackend_1_2_la_LIBADD = 				\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(top_builddir)/private/libedbus-private.la	\
 	$(E_BACKEND_LIBS)				\
 	$(SQLITE3_LIBS)					\
+	$(GCR_BASE_LIBS)				\
 	$(GIO_UNIX_LIBS)				\
 	$(DB_LIBS)
 
@@ -52,9 +65,13 @@ libebackend_1_2_la_LDFLAGS = \
 libebackendincludedir = $(privincludedir)/libebackend
 
 libebackendinclude_HEADERS =		\
+	e-authentication-mediator.h	\
+	e-authentication-session.h	\
 	e-backend.h			\
 	e-backend-enums.h		\
 	e-backend-factory.h		\
+	e-collection-backend.h		\
+	e-collection-backend-factory.h	\
 	e-data-factory.h		\
 	e-dbus-server.h			\
 	e-extensible.h			\
@@ -63,6 +80,8 @@ libebackendinclude_HEADERS =		\
 	e-db3-utils.h			\
 	e-dbhash.h			\
 	e-module.h			\
+	e-server-side-source.h		\
+	e-source-registry-server.h	\
 	e-sqlite3-vfs.h			\
 	e-file-cache.h
 

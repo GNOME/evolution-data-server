@@ -19,14 +19,15 @@ evolution_calendar_factory_CPPFLAGS = \
 	-I$(top_builddir) \
 	-I$(top_builddir)/calendar \
 	$(EVOLUTION_CALENDAR_CFLAGS) \
+	$(GNOME_KEYRING_CFLAGS) \
 	$(FACTORY_GTK_CFLAGS) \
 	$(DBUS_GLIB_CFLAGS) \
+	$(SOUP_CFLAGS) \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
 
 evolution_calendar_factory_SOURCES = \
 	evolution-calendar-factory.c \
-	evolution-calendar-factory-migrate-basedir.c \
 	$(NULL)
 
 evolution_calendar_factory_LDADD = \
@@ -35,8 +36,10 @@ evolution_calendar_factory_LDADD = \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(EVOLUTION_CALENDAR_LIBS) \
+	$(GNOME_KEYRING_LIBS) \
 	$(FACTORY_GTK_LIBS) \
 	$(DBUS_GLIB_LIBS) \
+	$(SOUP_LIBS) \
 	$(NULL)
 
 evolution_calendar_factory_LDFLAGS = \

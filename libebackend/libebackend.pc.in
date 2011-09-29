@@ -6,6 +6,7 @@ datarootdir=@datarootdir@
 datadir=@datadir@
 
 privincludedir=@privincludedir@
+moduledir=@moduledir@
 
 Name: libebackend
 Description: Utility library for Evolution Data Server Backends

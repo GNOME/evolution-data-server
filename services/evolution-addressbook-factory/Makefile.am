@@ -19,15 +19,16 @@ evolution_addressbook_factory_CPPFLAGS = \
 	-I$(top_builddir) \
 	-I$(top_builddir)/addressbook \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(GNOME_KEYRING_CFLAGS) \
 	$(FACTORY_GTK_CFLAGS) \
 	$(DBUS_GLIB_CFLAGS) \
+	$(SOUP_CFLAGS) \
 	$(GOA_CFLAGS) \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
 
 evolution_addressbook_factory_SOURCES = \
 	evolution-addressbook-factory.c \
-	evolution-addressbook-factory-migrate-basedir.c \
 	$(NULL)
 
 evolution_addressbook_factory_LDADD = \
@@ -36,8 +37,10 @@ evolution_addressbook_factory_LDADD = \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(EVOLUTION_ADDRESSBOOK_LIBS) \
+	$(GNOME_KEYRING_LIBS) \
 	$(FACTORY_GTK_LIBS) \
 	$(DBUS_GLIB_LIBS) \
+	$(SOUP_LIBS) \
 	$(GOA_LIBS) \
 	$(NULL)
 

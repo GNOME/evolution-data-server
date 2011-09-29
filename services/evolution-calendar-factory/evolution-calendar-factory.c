@@ -57,9 +57,6 @@ static GOptionEntry entries[] = {
 	{ NULL }
 };
 
-/* Forward Declarations */
-void evolution_calendar_factory_migrate_basedir (void);
-
 gint
 main (gint argc,
       gchar **argv)
@@ -126,9 +123,6 @@ main (gint argc,
 #ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
 	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
 #endif
-
-	/* Migrate user data from ~/.evolution to XDG base directories. */
-	evolution_calendar_factory_migrate_basedir ();
 
 	e_gdbus_templates_init_main_thread ();
 

@@ -20,6 +20,16 @@
   </chapter>
 
   <chapter>
+    <title>Registry Service Classes</title>
+    <xi:include href="xml/e-authentication-mediator.xml"/>
+    <xi:include href="xml/e-authentication-session.xml"/>
+    <xi:include href="xml/e-collection-backend.xml"/>
+    <xi:include href="xml/e-collection-backend-factory.xml"/>
+    <xi:include href="xml/e-server-side-source.xml"/>
+    <xi:include href="xml/e-source-registry-server.xml"/>
+  </chapter>
+
+  <chapter>
     <title>Miscellaneous Utilities</title>
     <xi:include href="xml/e-file-cache.xml"/>
     <xi:include href="xml/e-dbhash.xml"/>

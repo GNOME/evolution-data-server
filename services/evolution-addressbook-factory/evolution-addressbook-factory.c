@@ -53,9 +53,6 @@ static GOptionEntry entries[] = {
 	{ NULL }
 };
 
-/* Forward Declarations */
-void evolution_addressbook_factory_migrate_basedir (void);
-
 gint
 main (gint argc,
       gchar **argv)
@@ -118,9 +115,6 @@ main (gint argc,
 		g_printerr ("%s\n", error->message);
 		exit (EXIT_FAILURE);
 	}
-
-	/* Migrate user data from ~/.evolution to XDG base directories. */
-	evolution_addressbook_factory_migrate_basedir ();
 
 	e_gdbus_templates_init_main_thread ();
 

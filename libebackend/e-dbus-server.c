@@ -31,7 +31,6 @@
 #endif
 
 #include <libebackend/e-module.h>
-#include <libebackend/e-extensible.h>
 #include <libebackend/e-backend-enumtypes.h>
 
 #define E_DBUS_SERVER_GET_PRIVATE(obj) \
@@ -66,9 +65,8 @@ static guint signals[LAST_SIGNAL];
 static GHashTable *directories_loaded;
 G_LOCK_DEFINE_STATIC (directories_loaded);
 
-G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
-	EDBusServer, e_dbus_server, G_TYPE_OBJECT,
-	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
+G_DEFINE_ABSTRACT_TYPE (
+	EDBusServer, e_dbus_server, G_TYPE_OBJECT)
 
 static void
 dbus_server_bus_acquired_cb (GDBusConnection *connection,

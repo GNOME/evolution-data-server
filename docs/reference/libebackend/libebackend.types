@@ -1,5 +1,9 @@
+#include <libebackend/e-authentication-mediator.h>
+#include <libebackend/e-authentication-session.h>
 #include <libebackend/e-backend.h>
 #include <libebackend/e-backend-factory.h>
+#include <libebackend/e-collection-backend.h>
+#include <libebackend/e-collection-backend-factory.h>
 #include <libebackend/e-data-factory.h>
 #include <libebackend/e-dbus-server.h>
 #include <libebackend/e-extensible.h>
@@ -7,9 +11,15 @@
 #include <libebackend/e-file-cache.h>
 #include <libebackend/e-module.h>
 #include <libebackend/e-offline-listener.h>
+#include <libebackend/e-server-side-source.h>
+#include <libebackend/e-source-registry-server.h>
 
+e_authentication_mediator_get_type
+e_authentication_session_get_type
 e_backend_get_type
 e_backend_factory_get_type
+e_collection_backend_get_type
+e_collection_backend_factory_get_type
 e_data_factory_get_type
 e_dbus_server_get_type
 e_extensible_get_type
@@ -17,3 +27,5 @@ e_extension_get_type
 e_file_cache_get_type
 e_module_get_type
 e_offline_listener_get_type
+e_server_side_source_get_type
+e_source_registry_server_get_type

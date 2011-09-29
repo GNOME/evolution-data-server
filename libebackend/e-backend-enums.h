@@ -20,6 +20,25 @@
 #define E_BACKEND_ENUMS_H
 
 /**
+ * EAuthenticationSessionResult:
+ * @E_AUTHENTICATION_SESSION_ERROR:
+ *   An error occurred while authenticating.
+ * @E_AUTHENTICATION_SESSION_SUCCESS:
+ *   Client reported successful authentication.
+ * @E_AUTHENTICATION_SESSION_DISMISSED:
+ *   User dismissed the authentication prompt.
+ *
+ * Completion codes used by #EAuthenticationSession.
+ *
+ * Since: 3.6
+ **/
+typedef enum {
+	E_AUTHENTICATION_SESSION_ERROR,
+	E_AUTHENTICATION_SESSION_SUCCESS,
+	E_AUTHENTICATION_SESSION_DISMISSED
+} EAuthenticationSessionResult;
+
+/**
  * EDBusServerExitCode:
  * @E_DBUS_SERVER_EXIT_NONE:
  *   The server's run state is unchanged.
@@ -41,5 +60,23 @@ typedef enum {
 	E_DBUS_SERVER_EXIT_RELOAD
 } EDBusServerExitCode;
 
-#endif /* E_BACKEND_ENUMS_H */
+/**
+ * ESourcePermissionFlags:
+ * @E_SOURCE_PERMISSION_NONE:
+ *   The data source gets no initial permissions.
+ * @E_SOURCE_PERMISSION_WRITABLE:
+ *   The data source is initially writable.
+ * @E_SOURCE_PERMISSION_REMOVABLE:
+ *   The data source is initially removable.
+ *
+ * Initial permissions for a newly-loaded data source key file.
+ *
+ * Since: 3.6
+ **/
+typedef enum { /*< flags >*/
+	E_SOURCE_PERMISSION_NONE      = 0,
+	E_SOURCE_PERMISSION_WRITABLE  = 1 << 0,
+	E_SOURCE_PERMISSION_REMOVABLE = 1 << 1
+} ESourcePermissionFlags;
 
+#endif /* E_BACKEND_ENUMS_H */
