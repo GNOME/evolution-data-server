@@ -61,9 +61,6 @@ struct _EDataCalFactoryPrivate {
 	GHashTable *connections;
 };
 
-/* Forward Declarations */
-void e_data_cal_migrate_basedir (void);
-
 static const gchar *
 calobjtype_to_string (const EDataCalObjType type)
 {

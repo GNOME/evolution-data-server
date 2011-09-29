@@ -67,9 +67,6 @@ struct _EDataBookFactoryPrivate {
 #endif
 };
 
-/* Forward Declarations */
-void e_data_book_migrate_basedir (void);
-
 static gchar *
 e_data_book_factory_extract_proto_from_uri (const gchar *uri)
 {
