@@ -114,8 +114,7 @@ main (gint argc,
 	/* Migrate user data from ~/.evolution to XDG base directories. */
 	evolution_addressbook_factory_migrate_basedir ();
 
-	server = g_initable_new (
-		E_TYPE_DATA_BOOK_FACTORY, NULL, &error, NULL);
+	server = e_data_book_factory_new (NULL, &error);
 
 	if (error != NULL) {
 		g_printerr ("%s\n", error->message);

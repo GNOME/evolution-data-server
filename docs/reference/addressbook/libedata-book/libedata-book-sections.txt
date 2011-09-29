@@ -302,6 +302,7 @@ e_data_book_status_get_type
 <FILE>e-data-book-factory</FILE>
 <TITLE>EDataBookFactory</TITLE>
 EDataBookFactory
+e_data_book_factory_new
 <SUBSECTION Standard>
 E_DATA_BOOK_FACTORY
 E_IS_DATA_BOOK_FACTORY

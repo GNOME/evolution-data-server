@@ -28,3 +28,13 @@ EDataBookFactory
 @parent: 
 @priv: 
 
+<!-- ##### FUNCTION e_data_book_factory_new ##### -->
+<para>
+
+</para>
+
+@cancellable: 
+@error: 
+@Returns: 
+
+

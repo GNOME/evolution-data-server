@@ -548,13 +548,6 @@ e-data-book-types
 @factory: 
 @Returns: 
 
-<!-- ##### FUNCTION e_data_book_factory_new ##### -->
-<para>
-
-</para>
-
-@Returns: 
-
 <!-- ##### FUNCTION e_data_book_factory_register_backend ##### -->
 <para>
 
