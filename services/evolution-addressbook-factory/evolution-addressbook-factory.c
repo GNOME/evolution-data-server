@@ -24,12 +24,6 @@
 #include <gtk/gtk.h>
 #endif
 
-#ifdef G_OS_UNIX
-#if GLIB_CHECK_VERSION(2,29,5)
-#include <glib-unix.h>
-#endif
-#endif
-
 #ifdef G_OS_WIN32
 #include <windows.h>
 #include <conio.h>

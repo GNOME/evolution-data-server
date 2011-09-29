@@ -2946,11 +2946,8 @@ fetch_attachments (ECalBackendSync *backend,
 			g_message ("DEBUG: attachment write failed.\n");
 		}
 
-#if GLIB_CHECK_VERSION(2,21,3)
 		g_mapped_file_unref (mapped_file);
-#else
-		g_mapped_file_free (mapped_file);
-#endif
+
 		if (fd != -1)
 			close (fd);
 		dest_url = g_filename_to_uri (dest_file, NULL, NULL);
