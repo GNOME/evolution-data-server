@@ -18,6 +18,7 @@
 
 #include <config.h>
 #include <locale.h>
+#include <stdlib.h>
 #include <glib/gi18n.h>
 
 #ifdef ENABLE_MAINTAINER_MODE
