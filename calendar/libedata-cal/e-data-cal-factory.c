@@ -438,3 +438,13 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) NULL);
 }
+
+EDBusServer *
+e_data_cal_factory_new (GCancellable *cancellable,
+                        GError **error)
+{
+	return g_initable_new (
+		E_TYPE_DATA_CAL_FACTORY,
+		cancellable, error, NULL);
+}
+

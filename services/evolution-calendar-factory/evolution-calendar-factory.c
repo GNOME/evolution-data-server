@@ -122,8 +122,7 @@ main (gint argc,
 	/* Migrate user data from ~/.evolution to XDG base directories. */
 	evolution_calendar_factory_migrate_basedir ();
 
-	server = g_initable_new (
-		E_TYPE_DATA_CAL_FACTORY, NULL, &error, NULL);
+	server = e_data_cal_factory_new (NULL, &error);
 
 	if (error != NULL) {
 		g_printerr ("%s\n", error->message);

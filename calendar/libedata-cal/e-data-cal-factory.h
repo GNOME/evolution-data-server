@@ -58,7 +58,9 @@ struct _EDataCalFactoryClass {
 	EDataFactoryClass parent_class;
 };
 
-GType	e_data_cal_factory_get_type		(void);
+GType		e_data_cal_factory_get_type	(void);
+EDBusServer *	e_data_cal_factory_new		(GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

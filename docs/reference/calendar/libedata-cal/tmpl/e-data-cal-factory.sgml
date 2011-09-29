@@ -28,3 +28,13 @@ Implementation of the calendar CORBA factory.
 @parent: 
 @priv: 
 
+<!-- ##### FUNCTION e_data_cal_factory_new ##### -->
+<para>
+
+</para>
+
+@cancellable: 
+@error: 
+@Returns: 
+
+

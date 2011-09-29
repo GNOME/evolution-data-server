@@ -324,6 +324,7 @@ ECalBackendSExpClass
 <FILE>e-data-cal-factory</FILE>
 <TITLE>EDataCalFactory</TITLE>
 EDataCalFactory
+e_data_cal_factory_new
 <SUBSECTION Standard>
 E_DATA_CAL_FACTORY
 E_IS_DATA_CAL_FACTORY
