@@ -510,6 +510,7 @@ e_source_combo_box_set_active_uid (ESourceComboBox *combo_box,
 	GtkTreeRowReference *reference;
 	GtkComboBox *gtk_combo_box;
 	GtkTreeIter iter;
+	GtkTreePath *path;
 	gboolean iter_was_set;
 
 	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), FALSE);
@@ -524,9 +525,12 @@ e_source_combo_box_set_active_uid (ESourceComboBox *combo_box,
 
 	g_return_val_if_fail (gtk_tree_row_reference_valid (reference), FALSE);
 
+	path = gtk_tree_row_reference_get_path (reference);
 	iter_was_set = gtk_tree_model_get_iter (
 		gtk_combo_box_get_model (gtk_combo_box), &iter,
-		gtk_tree_row_reference_get_path (reference));
+		path);
+	gtk_tree_path_free (path);
+
 	g_return_val_if_fail (iter_was_set, FALSE);
 
 	gtk_combo_box_set_active_iter (gtk_combo_box, &iter);
