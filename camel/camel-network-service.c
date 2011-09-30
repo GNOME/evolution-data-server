@@ -92,7 +92,7 @@ network_service_connect_sync (CamelNetworkService *service,
 			g_return_val_if_reached (NULL);
 	}
 
-	camel_session_get_socks_proxy (session, &socks_host, &socks_port);
+	camel_session_get_socks_proxy (session, url->host, &socks_host, &socks_port);
 
 	if (socks_host != NULL) {
 		camel_tcp_stream_set_socks_proxy (

@@ -135,6 +135,10 @@ struct _CamelSessionClass {
 						 CamelMimeMessage *message,
 						 const gchar *address,
 						 GError **error);
+	void		(*get_socks_proxy)	(CamelSession *session,
+						 const gchar *for_host,
+						 gchar **host_ret,
+						 gint *port_ret);
 
 	/* Signals */
 	void		(*job_started)		(CamelSession *session,
@@ -148,10 +152,8 @@ GType		camel_session_get_type		(void);
 const gchar *	camel_session_get_user_data_dir	(CamelSession *session);
 const gchar *	camel_session_get_user_cache_dir
 						(CamelSession *session);
-void            camel_session_set_socks_proxy   (CamelSession *session,
-						 const gchar *socks_host,
-						 gint socks_port);
 void            camel_session_get_socks_proxy   (CamelSession *session,
+						 const gchar *for_host,
 						 gchar **host_ret,
 						 gint *port_ret);
 CamelService *	camel_session_add_service	(CamelSession *session,

@@ -71,9 +71,6 @@ struct _CamelSessionPrivate {
 
 	GMainContext *context;
 
-	gchar *socks_proxy_host;
-	gint socks_proxy_port;
-
 	guint check_junk        : 1;
 	guint network_available : 1;
 	guint online            : 1;
@@ -1369,56 +1366,33 @@ camel_session_unlock (CamelSession *session,
 }
 
 /**
- * camel_session_set_socks_proxy:
- * @session: A #CamelSession
- * @socks_host: Hostname of the SOCKS proxy, or %NULL for none.
- * @socks_port: Port number of the SOCKS proxy
- *
- * Sets a SOCKS proxy that will be used throughout the @session for
- * TCP connections.
- *
- * Since: 2.32
- */
-void
-camel_session_set_socks_proxy (CamelSession *session,
-                               const gchar *socks_host,
-                               gint socks_port)
-{
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-
-	if (session->priv->socks_proxy_host)
-		g_free (session->priv->socks_proxy_host);
-
-	if (socks_host && socks_host[0] != '\0') {
-		session->priv->socks_proxy_host = g_strdup (socks_host);
-		session->priv->socks_proxy_port = socks_port;
-	} else {
-		session->priv->socks_proxy_host = NULL;
-		session->priv->socks_proxy_port = 0;
-	}
-}
-
-/**
  * camel_session_get_socks_proxy:
  * @session: A #CamelSession
+ * @for_host: Host name to which the connection will be requested
  * @host_ret: Location to return the SOCKS proxy hostname
  * @port_ret: Location to return the SOCKS proxy port
  *
  * Queries the SOCKS proxy that is configured for a @session.  This will
- * put %NULL in @hosts_ret if there is no proxy configured.
+ * put %NULL in @hosts_ret if there is no proxy configured or when
+ * the @for_host is listed in proxy ignore list.
  *
  * Since: 2.32
  */
 void
 camel_session_get_socks_proxy (CamelSession *session,
+			       const gchar *for_host,
                                gchar **host_ret,
                                gint *port_ret)
 {
+	CamelSessionClass *klass;
+
 	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (for_host != NULL);
 	g_return_if_fail (host_ret != NULL);
 	g_return_if_fail (port_ret != NULL);
 
-	*host_ret = g_strdup (session->priv->socks_proxy_host);
-	*port_ret = session->priv->socks_proxy_port;
-}
+	klass = CAMEL_SESSION_GET_CLASS (session);
+	g_return_if_fail (klass->get_socks_proxy != NULL);
 
+	klass->get_socks_proxy (session, for_host, host_ret, port_ret);
+}

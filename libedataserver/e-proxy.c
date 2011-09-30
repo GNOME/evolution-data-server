@@ -92,7 +92,7 @@ typedef enum {
 } EProxyKey;
 
 struct _EProxyPrivate {
-	SoupURI *uri_http, *uri_https;
+	SoupURI *uri_http, *uri_https, *uri_socks;
 	guint notify_id_evo; /* conxn id of gconf_client_notify_add  */
 	GSList * ign_hosts;	/* List of hostnames. (Strings)		*/
 	GSList * ign_addrs;	/* List of hostaddrs. (ProxyHostAddrs)	*/
@@ -436,6 +436,14 @@ ep_need_proxy_https (EProxy *proxy,
 }
 
 static gboolean
+ep_need_proxy_socks (EProxy *proxy,
+                     const gchar *host)
+{
+	/* Can we share ignore list from HTTP at all? */
+	return !ep_is_in_ignored (proxy, host);
+}
+
+static gboolean
 ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
                     struct in_addr *addr_in,
                     gchar *netmask)
@@ -582,10 +590,12 @@ ep_parse_ignore_host (gpointer data,
 							&((struct sockaddr_in6 *) so_addr)->sin6_addr,
 							netmask);
 
-		if (!has_error)
+		if (!has_error) {
 			priv->ign_addrs = g_slist_append (priv->ign_addrs, host_addr);
-
-		g_free (hostname);
+			priv->ign_hosts = g_slist_append (priv->ign_hosts, hostname);
+		} else {
+			g_free (hostname);
+		}
 	} else {
 		d(g_print ("Unable to resolve %s\n", hostname));
 		priv->ign_hosts = g_slist_append (priv->ign_hosts, hostname);
@@ -674,7 +684,7 @@ static void
 ep_set_proxy (EProxy *proxy,
               gboolean regen_ign_host_list)
 {
-	gchar *proxy_server, *uri_http = NULL, *uri_https = NULL;
+	gchar *proxy_server, *uri_http = NULL, *uri_https = NULL, *uri_socks = NULL;
 	gint proxy_port, old_type;
 	EProxyPrivate * priv = proxy->priv;
 	GSList *ignore;
@@ -700,6 +710,7 @@ ep_set_proxy (EProxy *proxy,
 	if (!priv->use_proxy || priv->type == PROXY_TYPE_NO_PROXY || !sys_manual) {
 		changed = ep_change_uri (&priv->uri_http, NULL) || changed;
 		changed = ep_change_uri (&priv->uri_https, NULL) || changed;
+		changed = ep_change_uri (&priv->uri_socks, NULL) || changed;
 		goto emit_signal;
 	}
 
@@ -726,6 +737,18 @@ ep_set_proxy (EProxy *proxy,
 		uri_https = NULL;
 	g_free (proxy_server);
 	d(g_print ("ep_set_proxy: uri_https: %s\n", uri_https));
+
+	proxy_server = ep_read_key_string (proxy, E_PROXY_KEY_SOCKS_HOST, client);
+	proxy_port = ep_read_key_int (proxy, E_PROXY_KEY_SOCKS_PORT, client);
+	if (proxy_server != NULL && *proxy_server && !g_ascii_isspace (*proxy_server)) {
+		if (proxy_port > 0)
+			uri_socks = g_strdup_printf ("socks://%s:%d", proxy_server, proxy_port);
+		else
+			uri_socks = g_strdup_printf ("socks://%s", proxy_server);
+	} else
+		uri_socks = NULL;
+	g_free (proxy_server);
+	d(g_print ("ep_set_proxy: uri_socks: %s\n", uri_socks));
 
 	if (regen_ign_host_list) {
 		if (priv->ign_hosts) {
@@ -772,14 +795,16 @@ ep_set_proxy (EProxy *proxy,
 
 	changed = ep_change_uri (&priv->uri_http, uri_http) || changed;
 	changed = ep_change_uri (&priv->uri_https, uri_https) || changed;
+	changed = ep_change_uri (&priv->uri_socks, uri_socks) || changed;
 
  emit_signal:
-	d(g_print ("%s: changed:%d uri_http: %s; uri_https: %s\n", G_STRFUNC, changed ? 1 : 0, uri_http ? uri_http : "[null]", uri_https ? uri_https : "[null]"));
+	d(g_print ("%s: changed:%d uri_http: %s; uri_https: %s; uri_socks: %s\n", G_STRFUNC, changed ? 1 : 0, uri_http ? uri_http : "[null]", uri_https ? uri_https : "[null]", uri_socks ? uri_socks : "[null]"));
 	if (changed)
 		g_signal_emit (proxy, signals[CHANGED], 0);
 
 	g_free (uri_http);
 	g_free (uri_https);
+	g_free (uri_socks);
 	g_object_unref (client);
 }
 
@@ -800,7 +825,7 @@ ep_setting_changed (GConfClient *client,
 	key = gconf_entry_get_key (entry);
 
 	if (g_str_equal (key, KEY_GCONF_EVO_PROXY_TYPE)) {
-		ep_set_proxy (user_data, FALSE);
+		ep_set_proxy (user_data, TRUE);
 		d(g_print ("e-proxy.c:ep_settings_changed: proxy type changed\n"));
 	} else if (priv->type == PROXY_TYPE_SYSTEM) {
 		return;
@@ -829,8 +854,11 @@ ep_setting_changed (GConfClient *client,
 		ep_set_proxy (proxy, FALSE);
 		d(g_print ("e-proxy.c:ep_settings_changed: https\n"));
 	} else if (g_str_equal (key, KEY_GCONF_EVO_SOCKS_HOST) ||
-		   g_str_equal (key, KEY_GCONF_EVO_SOCKS_PORT) ||
-		   g_str_equal (key, KEY_GCONF_EVO_AUTOCONFIG_URL)) {
+		   g_str_equal (key, KEY_GCONF_EVO_SOCKS_PORT)) {
+
+		ep_set_proxy (proxy, FALSE);
+		d(g_print ("e-proxy.c:ep_settings_changed: socks\n"));
+	} else if (g_str_equal (key, KEY_GCONF_EVO_AUTOCONFIG_URL)) {
 
 		/* ep_set_proxy (proxy, FALSE); */
 		d(g_print ("e-proxy.c:ep_settings_changed: socks/autoconf-url changed\n"));
@@ -923,6 +951,9 @@ e_proxy_dispose (GObject *object)
 
 	if (priv->uri_https)
 		soup_uri_free (priv->uri_https);
+
+	if (priv->uri_socks)
+		soup_uri_free (priv->uri_socks);
 
 	g_slist_foreach (priv->ign_hosts, (GFunc) g_free, NULL);
 	g_slist_free (priv->ign_hosts);
@@ -1045,10 +1076,16 @@ e_proxy_peek_uri_for (EProxy *proxy,
 	if (soup_uri == NULL)
 		return NULL;
 
+	if (soup_uri->scheme == SOUP_URI_SCHEME_HTTP)
+		return proxy->priv->uri_http;
+
 	if (soup_uri->scheme == SOUP_URI_SCHEME_HTTPS)
 		return proxy->priv->uri_https;
 
-	return proxy->priv->uri_http;
+	if (soup_uri->scheme && g_ascii_strcasecmp (soup_uri->scheme, "socks") == 0)
+		return proxy->priv->uri_socks;
+
+	return NULL;
 }
 
 /**
@@ -1075,10 +1112,12 @@ e_proxy_require_proxy_for_uri (EProxy *proxy,
 	if (soup_uri == NULL)
 		return FALSE;
 
-	if (soup_uri->scheme == SOUP_URI_SCHEME_HTTPS)
-		need_proxy = ep_need_proxy_https (proxy, soup_uri->host);
-	else
+	if (soup_uri->scheme == SOUP_URI_SCHEME_HTTP)
 		need_proxy = ep_need_proxy_http (proxy, soup_uri->host);
+	else if (soup_uri->scheme == SOUP_URI_SCHEME_HTTPS)
+		need_proxy = ep_need_proxy_https (proxy, soup_uri->host);
+	else if (soup_uri->scheme && g_ascii_strcasecmp (soup_uri->scheme, "socks") == 0)
+		need_proxy = ep_need_proxy_socks (proxy, soup_uri->host);
 
 	soup_uri_free (soup_uri);
 
