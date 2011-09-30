@@ -1361,6 +1361,7 @@ e_cal_backend_file_remove (ECalBackendSync *backend,
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+	ESource *source;
 	gchar *str_uri = NULL, *dirname = NULL;
 	gchar *full_path = NULL;
 	const gchar *fname;
@@ -1375,6 +1376,12 @@ e_cal_backend_file_remove (ECalBackendSync *backend,
 	str_uri = get_uri_string (E_CAL_BACKEND (backend));
 	if (!str_uri) {
 		err = EDC_ERROR_NO_URI ();
+		goto done;
+	}
+
+	source = e_cal_backend_get_source (E_CAL_BACKEND (backend));
+	if (!source || e_source_get_property (source, "custom-file")) {
+		/* skip file and directory removal for custom calendars */
 		goto done;
 	}
 
