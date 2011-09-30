@@ -19,6 +19,7 @@ libedata_book_1_2_la_CPPFLAGS = \
 	-I$(top_builddir)/addressbook \
 	$(DB_CFLAGS) \
 	$(SQLITE3_CFLAGS) \
+	$(GOA_CFLAGS) \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
 
 libedata_book_1_2_la_SOURCES = \
@@ -42,6 +43,7 @@ libedata_book_1_2_la_LIBADD = \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(DB_LIBS) \
 	$(SQLITE3_LIBS) \
+	$(GOA_LIBS) \
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 libedata_book_1_2_la_LDFLAGS = \
