@@ -96,6 +96,7 @@ noinst_PROGRAMS = \
 	test-undefinedfield			\
 	test-untyped-phones			\
 	test-vcard-parsing			\
+	test-bulk-methods			\
 	$(NULL)
 
 EXTRA_DIST = \
@@ -120,6 +121,8 @@ test_untyped_phones_LDADD=$(TEST_LIBS)
 test_untyped_phones_CPPFLAGS=$(TEST_CPPFLAGS)
 test_vcard_parsing_LDADD=$(TEST_LIBS)
 test_vcard_parsing_CPPFLAGS=$(TEST_CPPFLAGS)
+test_bulk_methods_LDADD=$(TEST_LIBS)
+test_bulk_methods_CPPFLAGS=$(TEST_CPPFLAGS)
 
 if !HAVE_E_BOOK_DISABLE_DEPRECATED
 
