@@ -11,7 +11,8 @@ MARSHAL_GENERATED = e-marshal.c e-marshal.h
 libemail_utils_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)	\
 	$(CAMEL_CFLAGS)		\
-	$(GNOME_PLATFORM_CFLAGS)
+	$(GNOME_PLATFORM_CFLAGS) \
+	-DEVOLUTION_PRIVDATADIR=\""$(privdatadir)"\"	
 
 libemail_utils_la_LIBADD = 	\
 		$(CAMEL_LIBS)		\
@@ -23,14 +24,16 @@ libemail_utils_la_LIBADD = 	\
 libemail_utils_la_LDFLAGS = 
 
 libemail_utils_la_SOURCES = 	\
-		mail-mt.c	\
 		e-marshal.c	\
-		e-account-utils.c
+		e-account-utils.c	\
+		mail-mt.c
+
 
 libmailutilsincludedir = $(includedir)/libemail-utils
 libmailutilsinclude_HEADERS = 	\
 		e-marshal.h	\
-		e-account-utils.h
+		e-account-utils.h	\
+		mail-mt.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libemail-utils.pc

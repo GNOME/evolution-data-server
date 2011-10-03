@@ -1,7 +1,8 @@
 factorydir = $(libexecdir)
 
 factory_PROGRAMS = evolution-mail-factory
-evolution_mail_factory_SOURCES = 
+evolution_mail_factory_SOURCES = 	\
+		main.c
 
 noinst_PROGRAMS = test-email-client
 
@@ -17,13 +18,13 @@ test_email_client_CPPFLAGS = \
 		-I$(top_builddir)					
 
 test_email_client_LDADD = \
-		$(top_builddir)/mail/libemailutils/libemail-engine.la	\			  
+		$(top_builddir)/mail/libemailengine/libemail-engine.la	\
 		$(top_builddir)/mail/libemailutils/libemail-utils.la	\
 		$(top_builddir)/mail/libegdbus/libegdbus-mail.la	\
 		$(top_builddir)/camel/libcamel-1.2.la			\
 		$(top_builddir)/camel/libcamel-provider-1.2.la		\
 		$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-		$(top_builddir)/libedataserverui/libedataserverui-1.2.la	\
+		$(top_builddir)/libedataserverui/libedataserverui-3.0.la	\
 		$(GNOME_PLATFORM_LIBS)	\
 		$(CAMEL_LIBS)			
 
@@ -44,8 +45,9 @@ evolution_mail_factory_LDADD = \
 		$(top_builddir)/camel/libcamel-1.2.la			\
 		$(top_builddir)/camel/libcamel-provider-1.2.la		\
 		$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-		$(top_builddir)/libedataserverui/libedataserverui-1.2.la	\
+		$(top_builddir)/libedataserverui/libedataserverui-3.0.la	\
 		$(top_builddir)/mail/libemailutils/libemail-utils.la	\
+		$(top_builddir)/mail/libemailengine/libemail-engine.la	\
 		$(top_builddir)/mail/libegdbus/libegdbus-mail.la	
 
 service_in_files = org.gnome.evolution.dataserver.Mail.service.in
