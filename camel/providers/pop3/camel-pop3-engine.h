@@ -90,7 +90,7 @@ enum {
 	CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS = 1 << 0
 };
 
-typedef void (*CamelPOP3CommandFunc)(CamelPOP3Engine *pe, CamelPOP3Stream *stream, gpointer data);
+typedef void (*CamelPOP3CommandFunc)(CamelPOP3Engine *pe, CamelPOP3Stream *stream, GCancellable *cancellable, gpointer data);
 
 struct _CamelPOP3Command {
 	struct _CamelPOP3Command *next;
@@ -139,9 +139,11 @@ struct _CamelPOP3EngineClass {
 GType		camel_pop3_engine_get_type	(void);
 CamelPOP3Engine *
 		camel_pop3_engine_new		(CamelStream *source,
-						 guint32 flags);
+						 guint32 flags,
+						 GCancellable *cancellable);
 void		camel_pop3_engine_reget_capabilities
-						(CamelPOP3Engine *engine);
+						(CamelPOP3Engine *engine,
+						 GCancellable *cancellable);
 void		camel_pop3_engine_command_free	(CamelPOP3Engine *pe,
 						 CamelPOP3Command *pc);
 gint		camel_pop3_engine_iterate	(CamelPOP3Engine *pe,

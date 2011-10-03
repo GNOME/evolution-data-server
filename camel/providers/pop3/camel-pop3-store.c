@@ -124,7 +124,7 @@ connect_to_server (CamelService *service,
 	if (disable_extensions)
 		flags |= CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS;
 
-	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags))) {
+	if (!(store->engine = camel_pop3_engine_new (tcp_stream, flags, cancellable))) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Failed to read a valid greeting from POP server %s"),
@@ -152,7 +152,7 @@ connect_to_server (CamelService *service,
 	}
 
 	pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, cancellable, error, "STLS\r\n");
-	while (camel_pop3_engine_iterate (store->engine, NULL, NULL, NULL) > 0)
+	while (camel_pop3_engine_iterate (store->engine, NULL, cancellable, NULL) > 0)
 		;
 
 	ret = pc->state == CAMEL_POP3_COMMAND_OK;
@@ -187,15 +187,15 @@ connect_to_server (CamelService *service,
 
 	/* rfc2595, section 4 states that after a successful STLS
 	 * command, the client MUST discard prior CAPA responses */
-	camel_pop3_engine_reget_capabilities (store->engine);
+	camel_pop3_engine_reget_capabilities (store->engine, cancellable);
 
 	return TRUE;
 
  stls_exception:
 	if (clean_quit) {
 		/* try to disconnect cleanly */
-		pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, NULL, NULL, "QUIT\r\n");
-		while (camel_pop3_engine_iterate (store->engine, NULL, NULL, NULL) > 0)
+		pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, cancellable, NULL, "QUIT\r\n");
+		while (camel_pop3_engine_iterate (store->engine, NULL, cancellable, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (store->engine, pc);
 	}
@@ -270,8 +270,8 @@ try_sasl (CamelPOP3Store *store,
 		    || camel_sasl_get_authenticated (sasl)
 		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line + 2, cancellable, NULL)) == NULL) {
 			camel_stream_write_string (
-				CAMEL_STREAM (stream), "*\r\n", NULL, NULL);
-			camel_pop3_stream_line (stream, &line, &len, NULL, NULL);
+				CAMEL_STREAM (stream), "*\r\n", cancellable, NULL);
+			camel_pop3_stream_line (stream, &line, &len, cancellable, NULL);
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -558,7 +558,7 @@ pop3_store_connect_sync (CamelService *service,
 	/* Now that we are in the TRANSACTION state,
 	 * try regetting the capabilities */
 	store->engine->state = CAMEL_POP3_ENGINE_TRANSACTION;
-	camel_pop3_engine_reget_capabilities (store->engine);
+	camel_pop3_engine_reget_capabilities (store->engine, cancellable);
 
 	return TRUE;
 }
@@ -577,7 +577,7 @@ pop3_store_disconnect_sync (CamelService *service,
 		CamelPOP3Command *pc;
 
 		pc = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, cancellable, error, "QUIT\r\n");
-		while (camel_pop3_engine_iterate (store->engine, NULL, NULL, NULL) > 0)
+		while (camel_pop3_engine_iterate (store->engine, NULL, cancellable, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (store->engine, pc);
 	}
@@ -759,6 +759,7 @@ camel_pop3_store_init (CamelPOP3Store *pop3_store)
  * camel_pop3_store_expunge:
  * @store: the store
  * @error: return location for a #GError, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
  *
  * Expunge messages from the store. This will result in the connection
  * being closed, which may cause later commands to fail if they can't
@@ -766,18 +767,18 @@ camel_pop3_store_init (CamelPOP3Store *pop3_store)
  **/
 void
 camel_pop3_store_expunge (CamelPOP3Store *store,
+			  GCancellable *cancellable,
                           GError **error)
 {
 	CamelPOP3Command *pc;
 
 	pc = camel_pop3_engine_command_new (
-		store->engine, 0, NULL, NULL, NULL, error, "QUIT\r\n");
+		store->engine, 0, NULL, NULL, cancellable, error, "QUIT\r\n");
 
-	while (camel_pop3_engine_iterate (store->engine, NULL, NULL, NULL) > 0)
+	while (camel_pop3_engine_iterate (store->engine, NULL, cancellable, NULL) > 0)
 		;
 
 	camel_pop3_engine_command_free (store->engine, pc);
 
 	camel_service_disconnect_sync (CAMEL_SERVICE (store), FALSE, error);
 }
-
