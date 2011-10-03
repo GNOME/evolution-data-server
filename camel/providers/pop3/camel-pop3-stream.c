@@ -327,7 +327,7 @@ camel_pop3_stream_line (CamelPOP3Stream *is,
 				/* sentinal? */
 				if (p> e) {
 					is->ptr = e;
-					if (stream_fill (is, NULL, NULL) == -1)
+					if (stream_fill (is, cancellable, error) == -1)
 						return -1;
 					p = is->ptr;
 					e = is->end;

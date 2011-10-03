@@ -41,7 +41,7 @@ extern CamelServiceAuthType camel_pop3_apop_authtype;
 
 #define dd(x) (camel_debug ("pop3")?(x):0)
 
-static void get_capabilities (CamelPOP3Engine *pe);
+static void get_capabilities (CamelPOP3Engine *pe, GCancellable *cancellable);
 
 G_DEFINE_TYPE (CamelPOP3Engine, camel_pop3_engine, CAMEL_TYPE_OBJECT)
 
@@ -93,13 +93,13 @@ camel_pop3_engine_init (CamelPOP3Engine *engine)
 }
 
 static gint
-read_greeting (CamelPOP3Engine *pe)
+read_greeting (CamelPOP3Engine *pe, GCancellable *cancellable)
 {
 	guchar *line, *apop, *apopend;
 	guint len;
 
 	/* first, read the greeting */
-	if (camel_pop3_stream_line (pe->stream, &line, &len, NULL, NULL) == -1
+	if (camel_pop3_stream_line (pe->stream, &line, &len, cancellable, NULL) == -1
 	    || strncmp ((gchar *) line, "+OK", 3) != 0)
 		return -1;
 
@@ -120,6 +120,7 @@ read_greeting (CamelPOP3Engine *pe)
  * camel_pop3_engine_new:
  * @source: source stream
  * @flags: engine flags
+ * @cancellable: optional #GCancellable object, or %NULL
  *
  * Returns a NULL stream.  A null stream is always at eof, and
  * always returns success for all reads and writes.
@@ -128,7 +129,8 @@ read_greeting (CamelPOP3Engine *pe)
  **/
 CamelPOP3Engine *
 camel_pop3_engine_new (CamelStream *source,
-                       guint32 flags)
+                       guint32 flags,
+		       GCancellable *cancellable)
 {
 	CamelPOP3Engine *pe;
 
@@ -138,12 +140,12 @@ camel_pop3_engine_new (CamelStream *source,
 	pe->state = CAMEL_POP3_ENGINE_AUTH;
 	pe->flags = flags;
 
-	if (read_greeting (pe) == -1) {
+	if (read_greeting (pe, cancellable) == -1) {
 		g_object_unref (pe);
 		return NULL;
 	}
 
-	get_capabilities (pe);
+	get_capabilities (pe, cancellable);
 
 	return pe;
 }
@@ -151,15 +153,16 @@ camel_pop3_engine_new (CamelStream *source,
 /**
  * camel_pop3_engine_reget_capabilities:
  * @engine: pop3 engine
+ * @cancellable: optional #GCancellable object, or %NULL
  *
  * Regets server capabilities (needed after a STLS command is issued for example).
  **/
 void
-camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine)
+camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine, GCancellable *cancellable)
 {
 	g_return_if_fail (CAMEL_IS_POP3_ENGINE (engine));
 
-	get_capabilities (engine);
+	get_capabilities (engine, cancellable);
 }
 
 /* TODO: read implementation too?
@@ -178,6 +181,7 @@ static struct {
 static void
 cmd_capa (CamelPOP3Engine *pe,
           CamelPOP3Stream *stream,
+	  GCancellable *cancellable,
           gpointer data)
 {
 	guchar *line, *tok, *next;
@@ -189,7 +193,7 @@ cmd_capa (CamelPOP3Engine *pe,
 	dd(printf("cmd_capa\n"));
 
 	do {
-		ret = camel_pop3_stream_line (stream, &line, &len, NULL, NULL);
+		ret = camel_pop3_stream_line (stream, &line, &len, cancellable, NULL);
 		if (ret >= 0) {
 			if (strncmp((gchar *) line, "SASL ", 5) == 0) {
 				tok = line + 5;
@@ -218,20 +222,20 @@ cmd_capa (CamelPOP3Engine *pe,
 }
 
 static void
-get_capabilities (CamelPOP3Engine *pe)
+get_capabilities (CamelPOP3Engine *pe, GCancellable *cancellable)
 {
 	CamelPOP3Command *pc;
 
 	if (!(pe->flags & CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS)) {
-		pc = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, NULL, NULL, "CAPA\r\n");
-		while (camel_pop3_engine_iterate (pe, pc, NULL, NULL) > 0)
+		pc = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, cancellable, NULL, "CAPA\r\n");
+		while (camel_pop3_engine_iterate (pe, pc, cancellable, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (pe, pc);
 
 		if (pe->state == CAMEL_POP3_ENGINE_TRANSACTION && !(pe->capa & CAMEL_POP3_CAP_UIDL)) {
 			/* check for UIDL support manually */
-			pc = camel_pop3_engine_command_new (pe, CAMEL_POP3_COMMAND_SIMPLE, NULL, NULL, NULL, NULL, "UIDL 1\r\n");
-			while (camel_pop3_engine_iterate (pe, pc, NULL, NULL) > 0)
+			pc = camel_pop3_engine_command_new (pe, CAMEL_POP3_COMMAND_SIMPLE, NULL, NULL, cancellable, NULL, "UIDL 1\r\n");
+			while (camel_pop3_engine_iterate (pe, pc, cancellable, NULL) > 0)
 				;
 
 			if (pc->state == CAMEL_POP3_COMMAND_OK)
@@ -305,10 +309,10 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 			camel_pop3_stream_set_mode (pe->stream, CAMEL_POP3_STREAM_DATA);
 
 			if (pc->func)
-				pc->func (pe, pe->stream, pc->func_data);
+				pc->func (pe, pe->stream, cancellable, pc->func_data);
 
 			/* Make sure we get all data before going back to command mode */
-			while (camel_pop3_stream_getd (pe->stream, &p, &len, NULL, NULL) > 0)
+			while (camel_pop3_stream_getd (pe->stream, &p, &len, cancellable, NULL) > 0)
 				;
 			camel_pop3_stream_set_mode (pe->stream, CAMEL_POP3_STREAM_LINE);
 		} else {
@@ -340,7 +344,7 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 		    && pe->current != NULL)
 			break;
 
-		if (camel_stream_write ((CamelStream *) pe->stream, pw->data, strlen (pw->data), NULL, NULL) == -1)
+		if (camel_stream_write ((CamelStream *) pe->stream, pw->data, strlen (pw->data), cancellable, NULL) == -1)
 			goto ioerror;
 
 		camel_dlist_remove ((CamelDListNode *) pw);
