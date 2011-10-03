@@ -1286,6 +1286,10 @@ AC_SUBST(E_BACKEND_CFLAGS)
 AC_SUBST(E_BACKEND_LIBS)
 
 dnl ******************************
+dnl Email daemon
+dnl ******************************
+
+dnl ******************************
 dnl evolution-addressbook flags
 dnl ******************************
 EVOLUTION_ADDRESSBOOK_DEPS="gio-2.0 libxml-2.0 gconf-2.0"
@@ -1571,6 +1575,13 @@ libedataserver/eds-version.h
 libedataserver/libedataserver.pc
 libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
+mail/Makefile
+mail/libegdbus/Makefile
+mail/libemailengine/Makefile
+mail/libemailengine/libemail-engine.pc
+mail/libemailutils/Makefile
+mail/libemailutils/libemail-utils.pc
+mail/daemon/Makefile
 services/Makefile
 services/evolution-addressbook-factory/Makefile
 services/evolution-calendar-factory/Makefile
