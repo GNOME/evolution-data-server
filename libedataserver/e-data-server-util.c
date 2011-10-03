@@ -38,6 +38,8 @@
 #include <mbstring.h>
 #endif
 
+#include <glib-object.h>
+
 #include "e-data-server-util.h"
 
 /**
@@ -787,6 +789,158 @@ e_filename_mkdir_encoded (const gchar *basepath, const gchar *fileprefix, const 
 	g_free (elem2);
 
 	return res;
+}
+
+/**
+ * e_util_slist_to_strv:
+ * @strings: a #GSList of strings (const gchar *)
+ *
+ * Convert list of strings into NULL-terminates array of strings.
+ *
+ * Returns: (transfer full): Newly allocated NULL-terminated array of strings.
+ * Returned pointer should be freed with g_strfreev().
+ *
+ * Note: Pair function for this is e_util_strv_to_slist().
+ *
+ * Since: 3.4
+ **/
+gchar **
+e_util_slist_to_strv (const GSList *strings)
+{
+	const GSList *iter;
+	GPtrArray *array;
+
+	array = g_ptr_array_sized_new (g_slist_length ((GSList *) strings) + 1);
+
+	for (iter = strings; iter; iter = iter->next) {
+		const gchar *str = iter->data;
+
+		if (str)
+			g_ptr_array_add (array, g_strdup (str));
+	}
+
+	/* NULL-terminated */
+	g_ptr_array_add (array, NULL);
+
+	return (gchar **) g_ptr_array_free (array, FALSE);
+}
+
+/**
+ * e_util_strv_to_slist:
+ * @strv: a NULL-terminated array of strings (const gchar *)
+ *
+ * Convert NULL-terminated array of strings to a list of strings.
+ *
+ * Returns: (transfer full): Newly allocated #GSList of newly allocated strings.
+ * Returned pointer should be freed with e_util_free_string_slist().
+ *
+ * Note: Pair function for this is e_util_slist_to_strv().
+ *
+ * Since: 3.4
+ **/
+GSList *
+e_util_strv_to_slist (const gchar * const *strv)
+{
+	GSList *slist = NULL;
+	gint ii;
+
+	if (!strv)
+		return NULL;
+
+	for (ii = 0; strv[ii]; ii++) {
+		slist = g_slist_prepend (slist, g_strdup (strv[ii]));
+	}
+
+	return g_slist_reverse (slist);
+}
+
+/**
+ * e_util_copy_string_slist:
+ * @copy_to: Where to copy; can be NULL
+ * @strings: GSList of strings to be copied
+ *
+ * Copies GSList of strings at the end of @copy_to.
+ *
+ * Returns: (transfer full): New head of @copy_to.
+ * Returned pointer can be freed with e_util_free_string_slist().
+ *
+ * Since: 3.4
+ **/
+GSList *
+e_util_copy_string_slist (GSList *copy_to,
+                          const GSList *strings)
+{
+	GSList *res = copy_to;
+	const GSList *iter;
+
+	for (iter = strings; iter; iter = iter->next) {
+		res = g_slist_append (res, g_strdup (iter->data));
+	}
+
+	return res;
+}
+
+/**
+ * e_util_copy_object_slist:
+ * @copy_to: Where to copy; can be NULL
+ * @objects: GSList of GObject-s to be copied
+ *
+ * Copies GSList of GObject-s at the end of @copy_to.
+ *
+ * Returns: (transfer full): New head of @copy_to.
+ * Returned pointer can be freed with e_util_free_object_slist().
+ *
+ * Since: 3.4
+ **/
+GSList *
+e_util_copy_object_slist (GSList *copy_to,
+                          const GSList *objects)
+{
+	GSList *res = copy_to;
+	const GSList *iter;
+
+	for (iter = objects; iter; iter = iter->next) {
+		res = g_slist_append (res, g_object_ref (iter->data));
+	}
+
+	return res;
+}
+
+/**
+ * e_util_free_string_slist:
+ * @strings: a #GSList of strings (gchar *)
+ *
+ * Frees memory previously allocated by e_util_strv_to_slist().
+ *
+ * Since: 3.4
+ **/
+void
+e_util_free_string_slist (GSList *strings)
+{
+	if (!strings)
+		return;
+
+	g_slist_foreach (strings, (GFunc) g_free, NULL);
+	g_slist_free (strings);
+}
+
+/**
+ * e_util_free_object_slist:
+ * @objects: a #GSList of #GObject-s
+ *
+ * Calls g_object_unref() on each member of @objects and then frees
+ * also @objects itself.
+ *
+ * Since: 3.4
+ **/
+void
+e_util_free_object_slist (GSList *objects)
+{
+	if (!objects)
+		return;
+
+	g_slist_foreach (objects, (GFunc) g_object_unref, NULL);
+	g_slist_free (objects);
 }
 
 #ifdef G_OS_WIN32

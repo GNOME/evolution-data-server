@@ -26,6 +26,8 @@
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
+#include <libedataserver/e-data-server-util.h>
+
 #include "e-gdbus-marshallers.h"
 
 #include "e-client.h"
@@ -1657,22 +1659,7 @@ e_client_refresh_sync (EClient *client,
 gchar **
 e_client_util_slist_to_strv (const GSList *strings)
 {
-	const GSList *iter;
-	GPtrArray *array;
-
-	array = g_ptr_array_sized_new (g_slist_length ((GSList *) strings) + 1);
-
-	for (iter = strings; iter; iter = iter->next) {
-		const gchar *str = iter->data;
-
-		if (str)
-			g_ptr_array_add (array, g_strdup (str));
-	}
-
-	/* NULL-terminated */
-	g_ptr_array_add (array, NULL);
-
-	return (gchar **) g_ptr_array_free (array, FALSE);
+	return e_util_slist_to_strv (strings);
 }
 
 /**
@@ -1691,17 +1678,7 @@ e_client_util_slist_to_strv (const GSList *strings)
 GSList *
 e_client_util_strv_to_slist (const gchar * const *strv)
 {
-	GSList *slist = NULL;
-	gint ii;
-
-	if (!strv)
-		return NULL;
-
-	for (ii = 0; strv[ii]; ii++) {
-		slist = g_slist_prepend (slist, g_strdup (strv[ii]));
-	}
-
-	return g_slist_reverse (slist);
+	return e_util_strv_to_slist (strv);
 }
 
 /**
@@ -1720,14 +1697,7 @@ GSList *
 e_client_util_copy_string_slist (GSList *copy_to,
                                  const GSList *strings)
 {
-	GSList *res = copy_to;
-	const GSList *iter;
-
-	for (iter = strings; iter; iter = iter->next) {
-		res = g_slist_append (res, g_strdup (iter->data));
-	}
-
-	return res;
+	return e_util_copy_string_slist (copy_to, strings);
 }
 
 /**
@@ -1746,14 +1716,7 @@ GSList *
 e_client_util_copy_object_slist (GSList *copy_to,
                                  const GSList *objects)
 {
-	GSList *res = copy_to;
-	const GSList *iter;
-
-	for (iter = objects; iter; iter = iter->next) {
-		res = g_slist_append (res, g_object_ref (iter->data));
-	}
-
-	return res;
+	return e_util_copy_object_slist (copy_to, objects);
 }
 
 /**
@@ -1767,11 +1730,7 @@ e_client_util_copy_object_slist (GSList *copy_to,
 void
 e_client_util_free_string_slist (GSList *strings)
 {
-	if (!strings)
-		return;
-
-	g_slist_foreach (strings, (GFunc) g_free, NULL);
-	g_slist_free (strings);
+	e_util_free_string_slist (strings);
 }
 
 /**
@@ -1786,11 +1745,7 @@ e_client_util_free_string_slist (GSList *strings)
 void
 e_client_util_free_object_slist (GSList *objects)
 {
-	if (!objects)
-		return;
-
-	g_slist_foreach (objects, (GFunc) g_object_unref, NULL);
-	g_slist_free (objects);
+	e_util_free_object_slist (objects);
 }
 
 /**

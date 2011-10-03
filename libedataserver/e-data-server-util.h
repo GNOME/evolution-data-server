@@ -63,6 +63,13 @@ gsize		e_strftime			(gchar *string,
 						 const gchar *fmt,
 						 const struct tm *tm);
 
+gchar **	e_util_slist_to_strv		(const GSList *strings);
+GSList *	e_util_strv_to_slist		(const gchar * const *strv);
+GSList *	e_util_copy_string_slist	(GSList *copy_to, const GSList *strings);
+GSList *	e_util_copy_object_slist	(GSList *copy_to, const GSList *objects);
+void		e_util_free_string_slist	(GSList *strings);
+void		e_util_free_object_slist	(GSList *objects);
+
 #ifdef G_OS_WIN32
 const gchar *	e_util_get_prefix		(void) G_GNUC_CONST;
 const gchar *	e_util_get_cp_prefix		(void) G_GNUC_CONST;
