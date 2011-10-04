@@ -438,48 +438,76 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	DB               *db = bf->priv->file_db;
-	DBT               id_dbt;
+	DB_ENV           *env = bf->priv->env;
+	DB_TXN           *txn = NULL;
 	gint              db_error;
-	const gchar      *id;
-	GSList           *removed_cards = NULL;
+	GSList           *removed_ids = NULL;
 	const GSList     *l;
-	GError           *error = NULL;
 
 	if (!db) {
 		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
 		return;
 	}
 
-	for (l = id_list; l; l = l->next) {
+	/* Begin transaction */
+	db_error = env->txn_begin(env, NULL, &txn, 0);
+	if (db_error != 0) {
+		g_warning (G_STRLOC ": env->txn_begin failed with %s", db_strerror (db_error));
+		db_error_to_gerror (db_error, perror);
+		return;
+	}
+
+	for (l = id_list; l != NULL; l = l->next) {
+		const gchar *id;
+		DBT id_dbt;
+
 		id = l->data;
 
 		string_to_dbt (id, &id_dbt);
 
-		db_error = db->del (db, NULL, &id_dbt, 0);
-		if (0 != db_error) {
+		db_error = db->del (db, txn, &id_dbt, 0);
+		if (db_error != 0) {
 			g_warning (G_STRLOC ": db->del failed with %s", db_strerror (db_error));
 			db_error_to_gerror (db_error, perror);
-			continue;
+			/* Abort as soon as a removal fails */
+			break;
 		}
 
-		removed_cards = g_slist_prepend (removed_cards, g_strdup (id));
+		removed_ids = g_slist_prepend (removed_ids, g_strdup (id));
 	}
 
-	/* if we actually removed some, try to sync */
-	if (removed_cards) {
-		db_error = db->sync (db, 0);
-		if (db_error != 0)
-			g_warning (G_STRLOC ": db->sync failed with %s", db_strerror (db_error));
+	if (db_error == 0) {
+		/* Commit transaction */
+		db_error = txn->commit (txn, 0);
+		if (db_error == 0) {
+			/* Flush cache information to disk */
+			if (db->sync (db, 0) != 0) {
+				g_warning ("db->sync failed with %s", db_strerror (db_error));
+			}
+		} else {
+			g_warning (G_STRLOC ": txn->commit failed with %s", db_strerror (db_error));
+			db_error_to_gerror (db_error, perror);
+		}
+	} else {
+		/* Rollback transaction */
+		txn->abort (txn);
 	}
 
-	if (!e_book_backend_sqlitedb_remove_contacts (bf->priv->sqlitedb,
+	if (db_error == 0) {
+		GError *error = NULL;
+		/* Remove from summary as well */
+		if (!e_book_backend_sqlitedb_remove_contacts (bf->priv->sqlitedb,
 						      SQLITEDB_FOLDER_ID,
-						      removed_cards, &error)) {
-		g_warning ("Failed to remove contacts from the summary: %s", error->message);
-		g_error_free (error);
-	}
+						      removed_ids, &error)) {
+			g_warning ("Failed to remove contacts from the summary: %s", error->message);
+			g_error_free (error);
+		}
 
-	*ids = removed_cards;
+		*ids = removed_ids;
+	} else {
+		*ids = NULL;
+		e_util_free_string_slist (removed_ids);
+	}
 }
 
 static void

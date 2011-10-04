@@ -413,8 +413,9 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 {
 	EBookBackendWebdav        *webdav      = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv        = webdav->priv;
-	GSList                    *deleted_ids = NULL;
-	const GSList              *list;
+	gchar                     *uid         = id_list->data;
+	GSList                     deleted_ids = {NULL,};
+	guint                      status;
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_remove_contacts (book, opid,
@@ -422,28 +423,35 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 		return;
 	}
 
-	for (list = id_list; list != NULL; list = list->next) {
-		const gchar *uid = (const gchar *) list->data;
-		guint       status;
-
-		status = delete_contact (webdav, uid);
-		if (status != 204) {
-			if (status == 401 || status == 407) {
-				e_data_book_respond_remove_contacts (book, opid, webdav_handle_auth_request (webdav),
-								    deleted_ids);
-			} else {
-				g_warning("DELETE failed with HTTP status %d", status);
-			}
-			continue;
-		}
-		e_book_backend_cache_remove_contact (priv->cache, uid);
-		deleted_ids = g_slist_append (deleted_ids, list->data);
+	/* We make the assumption that the ID list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
+	 * in our static capability list. */
+	if (id_list->next != NULL) {
+		e_data_book_respond_remove_contacts (book, opid,
+		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+		                                     _("The backend does not support bulk removals")),
+		                                     NULL);
+		return;
 	}
 
-	e_data_book_respond_remove_contacts (book, opid,
-			EDB_ERROR (SUCCESS),  deleted_ids);
+	status = delete_contact (webdav, uid);
+	if (status != 204) {
+		if (status == 401 || status == 407) {
+			e_data_book_respond_remove_contacts (book, opid,
+			                                     webdav_handle_auth_request (webdav), NULL);
+		} else {
+			g_warning("DELETE failed with HTTP status %d", status);
+			e_data_book_respond_remove_contacts (book, opid,
+			                                     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+						                         "DELETE failed with HTTP status %d", status),
+			                                     NULL);
+		}
+		return;
+	}
 
-	g_slist_free (deleted_ids);
+	e_book_backend_cache_remove_contact (priv->cache, uid);
+
+	deleted_ids.data = uid;
+	e_data_book_respond_remove_contacts (book, opid, EDB_ERROR (SUCCESS), &deleted_ids);
 }
 
 static void
