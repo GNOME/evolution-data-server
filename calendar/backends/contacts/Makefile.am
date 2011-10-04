@@ -21,6 +21,7 @@ libecalbackendcontacts_la_LIBADD =						\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
+	$(top_builddir)/libebackend/libebackend-1.2.la				\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 libecalbackendcontacts_la_LDFLAGS =	\
