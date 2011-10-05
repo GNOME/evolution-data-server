@@ -513,9 +513,6 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 	}
 
 	*vcard = load_vcard (bf, id, perror);
-
-	if (!*vcard)
-		*vcard = g_strdup ("");
 }
 
 static void

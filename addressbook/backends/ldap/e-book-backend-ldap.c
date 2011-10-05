@@ -2331,7 +2331,7 @@ get_contact_handler (LDAPOp *op,
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_get_contact (op->book, op->opid, EDB_ERROR_NOT_CONNECTED (), "");
+		e_data_book_respond_get_contact (op->book, op->opid, EDB_ERROR_NOT_CONNECTED (), NULL);
 		ldap_op_finished (op);
 		if (enable_debug)
 			printf ("get_contact_handler... ldap handler is NULL \n");
@@ -2356,7 +2356,7 @@ get_contact_handler (LDAPOp *op,
 			e_data_book_respond_get_contact (op->book,
 							 op->opid,
 							 e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "%s: NULL returned from ldap_first_entry", G_STRFUNC),
-							 "");
+							 NULL);
 			ldap_op_finished (op);
 			return;
 		}
@@ -2398,7 +2398,7 @@ get_contact_handler (LDAPOp *op,
 		e_data_book_respond_get_contact (op->book,
 						 op->opid,
 						 ldap_error_to_response (ldap_error),
-						 "");
+						 NULL);
 		ldap_op_finished (op);
 	}
 	else {
@@ -2406,7 +2406,7 @@ get_contact_handler (LDAPOp *op,
 						 op->opid,
 						 e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
 							"%s: Unhandled result type %d returned", G_STRFUNC, msg_type),
-						 "");
+						 NULL);
 		ldap_op_finished (op);
 	}
 
@@ -2441,7 +2441,7 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 			gchar *vcard_str;
 
 			if (!contact) {
-				e_data_book_respond_get_contact (book, opid, EDB_ERROR (CONTACT_NOT_FOUND), "");
+				e_data_book_respond_get_contact (book, opid, EDB_ERROR (CONTACT_NOT_FOUND), NULL);
 				return;
 			}
 
@@ -2456,7 +2456,7 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 			return;
 		}
 
-		e_data_book_respond_get_contact(book, opid, EDB_ERROR (REPOSITORY_OFFLINE), "");
+		e_data_book_respond_get_contact(book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
 		return;
 	}
 
@@ -2468,7 +2468,7 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_get_contact (book, opid, EDB_ERROR_NOT_CONNECTED (), "");
+		e_data_book_respond_get_contact (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
 		if (enable_debug)
 			printf("e_book_backend_ldap_get_contact ... ldap handler is NULL\n");
 		return;
@@ -2506,7 +2506,7 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 		e_data_book_respond_get_contact (book,
 						 opid,
 						 ldap_error_to_response (ldap_error),
-						 "");
+						 NULL);
 		get_contact_dtor ((LDAPOp *) get_contact_op);
 	}
 }

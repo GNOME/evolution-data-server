@@ -550,8 +550,7 @@ book_backend_get_contact (EBookBackend *backend,
 
 	e_data_book_respond_get_contact (book, opid, error, vcard);
 
-	if (vcard)
-		g_free (vcard);
+	g_free (vcard);
 }
 
 static void

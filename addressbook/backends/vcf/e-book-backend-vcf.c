@@ -376,7 +376,7 @@ e_book_backend_vcf_get_contact (EBookBackendSync *backend,
 	if (elem) {
 		*vcard = g_strdup (elem->data);
 	} else {
-		*vcard = g_strdup ("");
+		*vcard = NULL;
 		g_propagate_error (perror, EDB_ERROR (CONTACT_NOT_FOUND));
 	}
 }
