@@ -210,9 +210,10 @@ build_sqlitedb (EBookBackendFilePrivate *bfpriv)
 	DBT             id_dbt, vcard_dbt;
 	GSList         *contacts = NULL;
 	GError         *error = NULL;
+	gboolean        skipped_version = FALSE;
 
 	if (!db) {
-		g_warning (G_STRLOC ": Not openend yet");
+		g_warning (G_STRLOC ": Not opened yet");
 		return FALSE;
 	}
 
@@ -228,33 +229,39 @@ build_sqlitedb (EBookBackendFilePrivate *bfpriv)
 	db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 
 	while (db_error == 0) {
-
 		/* don't include the version in the list of cards */
-		if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
-		    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
+		if (skipped_version || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 			EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
 
 			contacts = g_slist_prepend (contacts, contact);
+		} else {
+			skipped_version = TRUE;
 		}
 
+		g_free (vcard_dbt.data);
 		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 
 	}
 
 	dbc->c_close (dbc);
 
-	contacts = g_slist_reverse (contacts);
+	/* Detect error case */
+	if (db_error != DB_NOTFOUND) {
+		g_warning (G_STRLOC ": dbc->c_get failed with %s", db_strerror (db_error));
+		e_util_free_object_slist (contacts);
+		return FALSE;
+	}
 
 	if (!e_book_backend_sqlitedb_add_contacts (bfpriv->sqlitedb,
 						   SQLITEDB_FOLDER_ID,
 						   contacts, FALSE, &error)) {
 		g_warning ("Failed to build contact summary: %s", error->message);
 		g_error_free (error);
+		e_util_free_object_slist (contacts);
 		return FALSE;
 	}
 
-	g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
-	g_slist_free (contacts);
+	e_util_free_object_slist (contacts);
 
 	if (!e_book_backend_sqlitedb_set_is_populated (bfpriv->sqlitedb, SQLITEDB_FOLDER_ID, TRUE, &error)) {
 		g_warning ("Failed to set the sqlitedb populated flag: %s", error->message);
