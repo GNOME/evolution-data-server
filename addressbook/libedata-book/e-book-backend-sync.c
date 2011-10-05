@@ -235,32 +235,32 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
 }
 
 /**
- * e_book_backend_sync_modify_contact:
+ * e_book_backend_sync_modify_contacts:
  * @backend: an #EBookBackendSync
  * @book: an #EDataBook
  * @cancellable: a #GCancellable for the operation
- * @vcard: the string representation of a contact
- * @contact: a pointer to a location to store the resulting #EContact
+ * @vcards: the string representations of contacts
+ * @contacts: a pointer to a location to store the resulting #EContact objects
  * @error: #GError to set, when something fails
  *
- * Modifies the contact specified by the ID embedded in @vcard, to
- * reflect the full contents of @vcard.
+ * Modifies the contacts specified by the IDs embedded in @vcards, to
+ * reflect the full contents of @vcards.
  **/
 void
-e_book_backend_sync_modify_contact (EBookBackendSync *backend,
+e_book_backend_sync_modify_contacts (EBookBackendSync *backend,
                                     EDataBook *book,
                                     GCancellable *cancellable,
-                                    const gchar *vcard,
-                                    EContact **contact,
+                                    const GSList *vcards,
+                                    GSList **contacts,
                                     GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (vcard, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (contact, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->modify_contact_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
+	e_return_data_book_error_if_fail (vcards, E_DATA_BOOK_STATUS_INVALID_ARG);
+	e_return_data_book_error_if_fail (contacts, E_DATA_BOOK_STATUS_INVALID_ARG);
+	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->modify_contacts_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
 
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->modify_contact_sync) (backend, book, cancellable, vcard, contact, error);
+	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->modify_contacts_sync) (backend, book, cancellable, vcards, contacts, error);
 }
 
 /**
@@ -519,21 +519,20 @@ book_backend_remove_contacts (EBookBackend *backend,
 }
 
 static void
-book_backend_modify_contact (EBookBackend *backend,
+book_backend_modify_contacts (EBookBackend *backend,
                              EDataBook *book,
                              guint32 opid,
                              GCancellable *cancellable,
-                             const gchar *vcard)
+                             const GSList *vcards)
 {
 	GError *error = NULL;
-	EContact *contact = NULL;
+	GSList *modified_contacts = NULL;
 
-	e_book_backend_sync_modify_contact (E_BOOK_BACKEND_SYNC (backend), book, cancellable, vcard, &contact, &error);
+	e_book_backend_sync_modify_contacts (E_BOOK_BACKEND_SYNC (backend), book, cancellable, vcards, &modified_contacts, &error);
 
-	e_data_book_respond_modify (book, opid, error, contact);
+	e_data_book_respond_modify_contacts (book, opid, error, modified_contacts);
 
-	if (contact)
-		g_object_unref (contact);
+	e_util_free_object_slist (modified_contacts);
 }
 
 static void
@@ -670,7 +669,7 @@ e_book_backend_sync_class_init (EBookBackendSyncClass *klass)
 	backend_class->set_backend_property	= book_backend_set_backend_property;
 	backend_class->create_contacts		= book_backend_create_contacts;
 	backend_class->remove_contacts		= book_backend_remove_contacts;
-	backend_class->modify_contact		= book_backend_modify_contact;
+	backend_class->modify_contacts		= book_backend_modify_contacts;
 	backend_class->get_contact		= book_backend_get_contact;
 	backend_class->get_contact_list		= book_backend_get_contact_list;
 	backend_class->get_contact_list_uids	= book_backend_get_contact_list_uids;

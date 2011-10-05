@@ -68,7 +68,7 @@ typedef enum {
 	OP_AUTHENTICATE,
 	OP_ADD_CONTACTS,
 	OP_REMOVE_CONTACTS,
-	OP_MODIFY_CONTACT,
+	OP_MODIFY_CONTACTS,
 	OP_GET_BACKEND_PROPERTY,
 	OP_SET_BACKEND_PROPERTY,
 	OP_GET_VIEW,
@@ -93,9 +93,8 @@ typedef struct {
 		/* OP_REMOVE_CONTACTS */
 		GSList *ids;
 		/* OP_ADD_CONTACT */
+		/* OP_MODIFY_CONTACTS */
 		GSList *vcards;
-		/* OP_MODIFY_CONTACT */
-		gchar *vcard;
 		/* OP_GET_VIEW */
 		/* OP_GET_CONTACTS */
 		/* OP_GET_CONTACTS_UIDS */
@@ -170,9 +169,9 @@ operation_thread (gpointer data,
 		e_book_backend_get_contact_list_uids (backend, op->book, op->id, op->cancellable, op->d.query);
 		g_free (op->d.query);
 		break;
-	case OP_MODIFY_CONTACT:
-		e_book_backend_modify_contact (backend, op->book, op->id, op->cancellable, op->d.vcard);
-		g_free (op->d.vcard);
+	case OP_MODIFY_CONTACTS:
+		e_book_backend_modify_contacts (backend, op->book, op->id, op->cancellable, op->d.vcards);
+		e_util_free_string_slist (op->d.vcards);
 		break;
 	case OP_REMOVE_CONTACTS:
 		e_book_backend_remove_contacts (backend, op->book, op->id, op->cancellable, op->d.ids);
@@ -639,25 +638,25 @@ impl_Book_add_contacts (EGdbusBook *object,
 }
 
 static gboolean
-impl_Book_modify_contact (EGdbusBook *object,
-                          GDBusMethodInvocation *invocation,
-                          const gchar *in_vcard,
-                          EDataBook *book)
+impl_Book_modify_contacts (EGdbusBook *object,
+                           GDBusMethodInvocation *invocation,
+                           const gchar * const *in_vcards,
+                           EDataBook *book)
 {
 	OperationData *op;
 
-	if (in_vcard == NULL) {
+	if (in_vcards == NULL || !*in_vcards) {
 		GError *error = e_data_book_create_error (E_DATA_BOOK_STATUS_INVALID_QUERY, NULL);
 		/* Translators: This is prefix to a detailed error message */
-		data_book_return_error (invocation, error, _("Cannot modify contact: "));
+		data_book_return_error (invocation, error, _("Cannot modify contacts: "));
 		g_error_free (error);
 		return TRUE;
 	}
 
-	op = op_new (OP_MODIFY_CONTACT, book);
-	op->d.vcard = g_strdup (in_vcard);
+	op = op_new (OP_MODIFY_CONTACTS, book);
+	op->d.vcards = e_util_strv_to_slist (in_vcards);
 
-	e_gdbus_book_complete_modify_contact (book->priv->gdbus_object, invocation, op->id);
+	e_gdbus_book_complete_modify_contacts (book->priv->gdbus_object, invocation, op->id);
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -1051,22 +1050,26 @@ e_data_book_respond_create_contacts (EDataBook *book,
 }
 
 void
-e_data_book_respond_modify (EDataBook *book,
-                            guint32 opid,
-                            GError *error,
-                            const EContact *contact)
+e_data_book_respond_modify_contacts (EDataBook *book,
+                                     guint32 opid,
+                                     GError *error,
+                                     const GSList *contacts)
 {
 	op_complete (book, opid);
 
 	/* Translators: This is prefix to a detailed error message */
-	g_prefix_error (&error, "%s", _("Cannot modify contact: "));
+	g_prefix_error (&error, "%s", _("Cannot modify contacts: "));
 
-	e_gdbus_book_emit_modify_contact_done (book->priv->gdbus_object, opid, error);
+	e_gdbus_book_emit_modify_contacts_done (book->priv->gdbus_object, opid, error);
 
 	if (error) {
 		g_error_free (error);
 	} else {
-		e_book_backend_notify_update (e_data_book_get_backend (book), contact);
+		const GSList *l;
+
+		for (l = contacts; l != NULL; l = l->next)
+			e_book_backend_notify_update (e_data_book_get_backend (book), l->data);
+
 		e_book_backend_notify_complete (e_data_book_get_backend (book));
 	}
 }
@@ -1396,8 +1399,8 @@ e_data_book_init (EDataBook *ebook)
 		gdbus_object, "handle-remove-contacts",
 		G_CALLBACK (impl_Book_remove_contacts), ebook);
 	g_signal_connect (
-		gdbus_object, "handle-modify-contact",
-		G_CALLBACK (impl_Book_modify_contact), ebook);
+		gdbus_object, "handle-modify-contacts",
+		G_CALLBACK (impl_Book_modify_contacts), ebook);
 	g_signal_connect (
 		gdbus_object, "handle-get-backend-property",
 		G_CALLBACK (impl_Book_get_backend_property), ebook);

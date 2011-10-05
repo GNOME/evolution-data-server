@@ -599,6 +599,7 @@ e_book_commit_contact (EBook *book,
 {
 	GError *err = NULL;
 	gchar *vcard, *gdbus_vcard = NULL;
+	const gchar *strv[2];
 
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
@@ -607,7 +608,10 @@ e_book_commit_contact (EBook *book,
 		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	e_gdbus_book_call_modify_contact_sync (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, &err);
+	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
+	strv[1] = NULL;
+
+	e_gdbus_book_call_modify_contacts_sync (book->priv->gdbus_book, strv, NULL, &err);
 	g_free (vcard);
 	g_free (gdbus_vcard);
 
@@ -615,7 +619,7 @@ e_book_commit_contact (EBook *book,
 }
 
 static void
-modify_contact_reply (GObject *gdbus_book,
+modify_contacts_reply (GObject *gdbus_book,
                       GAsyncResult *res,
                       gpointer user_data)
 {
@@ -624,7 +628,7 @@ modify_contact_reply (GObject *gdbus_book,
 	EBookAsyncCallback excb = data->excallback;
 	EBookCallback cb = data->callback;
 
-	e_gdbus_book_call_modify_contact_finish (G_DBUS_PROXY (gdbus_book), res, &error);
+	e_gdbus_book_call_modify_contacts_finish (G_DBUS_PROXY (gdbus_book), res, &error);
 
 	unwrap_gerror (error, &err);
 
@@ -663,6 +667,7 @@ e_book_async_commit_contact (EBook *book,
 {
 	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
+	const gchar *strv[2];
 
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
@@ -677,7 +682,9 @@ e_book_async_commit_contact (EBook *book,
 	data->callback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_modify_contact (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, modify_contact_reply, data);
+	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
+	strv[1] = NULL;
+	e_gdbus_book_call_modify_contacts (book->priv->gdbus_book, strv, NULL, modify_contacts_reply, data);
 
 	g_free (vcard);
 	g_free (gdbus_vcard);
@@ -709,6 +716,7 @@ e_book_commit_contact_async (EBook *book,
 {
 	gchar *vcard, *gdbus_vcard = NULL;
 	AsyncData *data;
+	const gchar *strv[2];
 
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
@@ -723,7 +731,10 @@ e_book_commit_contact_async (EBook *book,
 	data->excallback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_modify_contact (book->priv->gdbus_book, e_util_ensure_gdbus_string (vcard, &gdbus_vcard), NULL, modify_contact_reply, data);
+	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
+	strv[1] = NULL;
+
+	e_gdbus_book_call_modify_contacts (book->priv->gdbus_book, strv, NULL, modify_contacts_reply, data);
 
 	g_free (vcard);
 	g_free (gdbus_vcard);

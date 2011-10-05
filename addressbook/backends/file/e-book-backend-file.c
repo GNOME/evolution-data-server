@@ -511,78 +511,133 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 }
 
 static void
-e_book_backend_file_modify_contact (EBookBackendSync *backend,
-                                    EDataBook *book,
-                                    GCancellable *cancellable,
-                                    const gchar *vcard,
-                                    EContact **contact,
-                                    GError **perror)
+e_book_backend_file_modify_contacts (EBookBackendSync *backend,
+                                     EDataBook *book,
+                                     GCancellable *cancellable,
+                                     const GSList *vcards,
+                                     GSList **contacts,
+                                     GError **perror)
 {
 	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	DB             *db = bf->priv->file_db;
-	DBT            id_dbt, vcard_dbt;
-	gint            db_error;
-	const gchar    *id, *lookup_id;
-	gchar          *vcard_with_rev;
+	DB               *db = bf->priv->file_db;
+	DB_ENV           *env = bf->priv->env;
+	DB_TXN           *txn = NULL;
+	gint              db_error;
+	const GSList     *l;
+	GSList           *modified_contacts = NULL;
+	GSList           *ids = NULL;
 
 	if (!db) {
 		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
 		return;
 	}
 
-	*contact = e_contact_new_from_vcard (vcard);
-	id = e_contact_get_const (*contact, E_CONTACT_UID);
-
-	if (id == NULL) {
-		g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, "No UID in the contact"));
+	/* Begin transaction */
+	db_error = env->txn_begin(env, NULL, &txn, 0);
+	if (db_error != 0) {
+		g_warning (G_STRLOC ": env->txn_begin failed with %s", db_strerror (db_error));
+		db_error_to_gerror (db_error, perror);
 		return;
 	}
 
-	/* update the revision (modified time of contact) */
-	set_revision (*contact);
-	vcard_with_rev = e_vcard_to_string (E_VCARD (*contact), EVC_FORMAT_VCARD_30);
+	for (l = vcards; l != NULL; l = l->next) {
+		gchar *id, *lookup_id;
+		gchar *vcard_with_rev;
+		DBT id_dbt, vcard_dbt;
+		EContact *contact;
 
-	/* This is disgusting, but for a time cards were added with
-	 * ID's that are no longer used (they contained both the uri
-	 * and the id.) If we recognize it as a uri (file:///...) trim
-	 * off everything before the last '/', and use that as the
-	 * id.*/
-	if (!strncmp (id, "file:///", strlen ("file:///"))) {
-		lookup_id = strrchr (id, '/') + 1;
-	}
-	else
-		lookup_id = id;
+		contact = e_contact_new_from_vcard (l->data);
+		id = e_contact_get (contact, E_CONTACT_UID);
 
-	string_to_dbt (lookup_id, &id_dbt);
-	string_to_dbt (vcard_with_rev, &vcard_dbt);
+		if (id == NULL) {
+			g_propagate_error (perror, EDB_ERROR_EX (OTHER_ERROR, "No UID in the contact"));
+			break;
+		}
 
-	db_error = db->put (db, NULL, &id_dbt, &vcard_dbt, 0);
+		/* update the revision (modified time of contact) */
+		set_revision (contact);
+		vcard_with_rev = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
-	if (0 == db_error) {
-		db_error = db->sync (db, 0);
+		/* This is disgusting, but for a time cards were added with
+		 * ID's that are no longer used (they contained both the uri
+		 * and the id.) If we recognize it as a uri (file:///...) trim
+		 * off everything before the last '/', and use that as the
+		 * id.*/
+		if (!strncmp (id, "file:///", strlen ("file:///"))) {
+			lookup_id = strrchr (id, '/') + 1;
+		}
+		else
+			lookup_id = id;
+
+		string_to_dbt (lookup_id, &id_dbt);
+
+		/* Make sure the record to update already exists */
+		memset (&vcard_dbt, 0, sizeof (vcard_dbt));
+		vcard_dbt.flags = DB_DBT_MALLOC;
+		db_error = db->get (db, txn, &id_dbt, &vcard_dbt, 0);
 		if (db_error != 0) {
-			g_warning (G_STRLOC ": db->sync failed with %s", db_strerror (db_error));
-		} else {
-			GError *error = NULL;
+			g_warning (G_STRLOC ": db->get failed with %s", db_strerror (db_error));
+			db_error_to_gerror (db_error, perror);
+			/* Abort as soon as a modification fails */
+			break;
+		}
+		g_free (vcard_dbt.data);
 
-			if (!e_book_backend_sqlitedb_remove_contact (bf->priv->sqlitedb,
-								     SQLITEDB_FOLDER_ID,
-								     id, &error)) {
-				g_warning ("Failed to remove contact from the summary: %s", error->message);
-				g_error_free (error);
-			} else if (!e_book_backend_sqlitedb_add_contact (bf->priv->sqlitedb,
-									 SQLITEDB_FOLDER_ID,
-									 *contact, FALSE, &error)) {
-				g_warning ("Failed to add contact to summary: %s", error->message);
-				g_error_free (error);
+		string_to_dbt (vcard_with_rev, &vcard_dbt);
+
+		db_error = db->put (db, txn, &id_dbt, &vcard_dbt, 0);
+		g_free (vcard_with_rev);
+
+		if (db_error != 0) {
+			g_warning (G_STRLOC ": db->put failed with %s", db_strerror (db_error));
+			db_error_to_gerror (db_error, perror);
+			/* Abort as soon as a modification fails */
+			break;
+		}
+
+		modified_contacts = g_slist_prepend (modified_contacts, contact);
+		ids = g_slist_prepend (ids, id);
+	}
+
+	if (db_error == 0) {
+		/* Commit transaction */
+		db_error = txn->commit (txn, 0);
+		if (db_error == 0) {
+			/* Flush cache information to disk */
+			if (db->sync (db, 0) != 0) {
+				g_warning ("db->sync failed with %s", db_strerror (db_error));
 			}
+		} else {
+			g_warning (G_STRLOC ": txn->commit failed with %s", db_strerror (db_error));
+			db_error_to_gerror (db_error, perror);
 		}
 	} else {
-		g_warning (G_STRLOC ": db->put failed with %s", db_strerror(db_error));
+		/* Rollback transaction */
+		txn->abort (txn);
 	}
-	g_free (vcard_with_rev);
 
-	db_error_to_gerror (db_error, perror);
+	if (db_error == 0) {
+		GError *error = NULL;
+		/* Update summary as well */
+		if (!e_book_backend_sqlitedb_remove_contacts (bf->priv->sqlitedb,
+					                      SQLITEDB_FOLDER_ID,
+							      ids, &error)) {
+			g_warning ("Failed to remove contacts from the summary: %s", error->message);
+			g_error_free (error);
+		} else if (!e_book_backend_sqlitedb_add_contacts (bf->priv->sqlitedb,
+								  SQLITEDB_FOLDER_ID,
+								  modified_contacts, FALSE, &error)) {
+			g_warning ("Failed to add contacts to summary: %s", error->message);
+			g_error_free (error);
+		}
+
+		*contacts = g_slist_reverse (modified_contacts);
+	} else {
+		*contacts = NULL;
+		e_util_free_object_slist (modified_contacts);
+	}
+
+	e_util_free_string_slist (ids);
 }
 
 static void
@@ -1569,7 +1624,7 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend,
 	g_return_val_if_fail (prop_value != NULL, FALSE);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		*prop_value = g_strdup ("local,do-initial-query,bulk-adds,bulk-removes,contact-lists");
+		*prop_value = g_strdup ("local,do-initial-query,bulk-adds,bulk-modifies,bulk-removes,contact-lists");
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
 		*prop_value = g_strdup (e_contact_field_name (E_CONTACT_FILE_AS));
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
@@ -1777,7 +1832,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *klass)
 	sync_class->get_backend_property_sync	= e_book_backend_file_get_backend_property;
 	sync_class->create_contacts_sync	= e_book_backend_file_create_contacts;
 	sync_class->remove_contacts_sync	= e_book_backend_file_remove_contacts;
-	sync_class->modify_contact_sync		= e_book_backend_file_modify_contact;
+	sync_class->modify_contacts_sync	= e_book_backend_file_modify_contacts;
 	sync_class->get_contact_sync		= e_book_backend_file_get_contact;
 	sync_class->get_contact_list_sync	= e_book_backend_file_get_contact_list;
 	sync_class->get_contact_list_uids_sync	= e_book_backend_file_get_contact_list_uids;

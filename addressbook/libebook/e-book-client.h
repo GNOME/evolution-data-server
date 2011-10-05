@@ -148,6 +148,10 @@ void		e_book_client_modify_contact			(EBookClient *client, /* const */ EContact 
 gboolean	e_book_client_modify_contact_finish		(EBookClient *client, GAsyncResult *result, GError **error);
 gboolean	e_book_client_modify_contact_sync		(EBookClient *client, /* const */ EContact *contact, GCancellable *cancellable, GError **error);
 
+void		e_book_client_modify_contacts			(EBookClient *client, /* const */ GSList *contacts, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_book_client_modify_contacts_finish		(EBookClient *client, GAsyncResult *result, GError **error);
+gboolean	e_book_client_modify_contacts_sync		(EBookClient *client, /* const */ GSList *contacts, GCancellable *cancellable, GError **error);
+
 void		e_book_client_remove_contact			(EBookClient *client, /* const */ EContact *contact, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_book_client_remove_contact_finish		(EBookClient *client, GAsyncResult *result, GError **error);
 gboolean	e_book_client_remove_contact_sync		(EBookClient *client, /* const */ EContact *contact, GCancellable *cancellable, GError **error);

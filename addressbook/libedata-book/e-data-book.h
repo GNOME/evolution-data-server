@@ -138,7 +138,7 @@ void		e_data_book_respond_get_backend_property	(EDataBook *book, guint32 opid, G
 void		e_data_book_respond_set_backend_property	(EDataBook *book, guint32 opid, GError *error);
 void		e_data_book_respond_create_contacts		(EDataBook *book, guint32 opid, GError *error, const GSList *contacts);
 void		e_data_book_respond_remove_contacts		(EDataBook *book, guint32 opid, GError *error, const GSList *ids);
-void		e_data_book_respond_modify			(EDataBook *book, guint32 opid, GError *error, const EContact *contact);
+void		e_data_book_respond_modify_contacts		(EDataBook *book, guint32 opid, GError *error, const GSList *contacts);
 void		e_data_book_respond_get_contact			(EDataBook *book, guint32 opid, GError *error, const gchar *vcard);
 void		e_data_book_respond_get_contact_list		(EDataBook *book, guint32 opid, GError *error, const GSList *cards);
 void		e_data_book_respond_get_contact_list_uids	(EDataBook *book, guint32 opid, GError *error, const GSList *uids);

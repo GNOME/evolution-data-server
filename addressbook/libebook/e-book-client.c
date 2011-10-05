@@ -1559,15 +1559,18 @@ e_book_client_modify_contact (EBookClient *client,
                               gpointer user_data)
 {
 	gchar *vcard, *gdbus_vcard = NULL;
+	const gchar *strv[2];
 
 	g_return_if_fail (contact != NULL);
 	g_return_if_fail (E_IS_CONTACT (contact));
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
+	strv[1] = NULL;
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (vcard, &gdbus_vcard), cancellable, callback, user_data, e_book_client_modify_contact,
-			e_gdbus_book_call_modify_contact,
-			e_gdbus_book_call_modify_contact_finish, NULL, NULL, NULL, NULL);
+	e_client_proxy_call_strv (E_CLIENT (client), strv, cancellable, callback, user_data, e_book_client_modify_contact,
+			e_gdbus_book_call_modify_contacts,
+			e_gdbus_book_call_modify_contacts_finish, NULL, NULL, NULL, NULL);
 
 	g_free (vcard);
 	g_free (gdbus_vcard);
@@ -1614,6 +1617,7 @@ e_book_client_modify_contact_sync (EBookClient *client,
 {
 	gboolean res;
 	gchar *vcard, *gdbus_vcard = NULL;
+	const gchar *strv[2];
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -1625,11 +1629,122 @@ e_book_client_modify_contact_sync (EBookClient *client,
 	}
 
 	vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+	strv[0] = e_util_ensure_gdbus_string (vcard, &gdbus_vcard);
+	strv[1] = NULL;
 
-	res = e_client_proxy_call_sync_string__void (E_CLIENT (client), e_util_ensure_gdbus_string (vcard, &gdbus_vcard), cancellable, error, e_gdbus_book_call_modify_contact_sync);
+	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), strv, cancellable, error, e_gdbus_book_call_modify_contacts_sync);
 
 	g_free (vcard);
 	g_free (gdbus_vcard);
+
+	return res;
+}
+
+/**
+ * e_book_client_modify_contacts:
+ * @client: an #EBookClient
+ * @contacts: a #GSList of #EContact objects
+ * @cancellable: a #GCancellable; can be %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * Applies the changes made to @contacts to the stored versions in @client.
+ * The call is finished by e_book_client_modify_contacts_finish()
+ * from the @callback.
+ *
+ * Since: 3.4
+ **/
+void
+e_book_client_modify_contacts (EBookClient *client,
+                               /* const */ GSList *contacts,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
+{
+	gchar **array;
+	const GSList *l;
+	gint i = 0;
+
+	g_return_if_fail (contacts != NULL);
+
+	array = g_new0 (gchar *, g_slist_length (contacts) + 1);
+	for (l = contacts; l != NULL; l = l->next) {
+		gchar *vcard = e_vcard_to_string (E_VCARD (l->data), EVC_FORMAT_VCARD_30);
+		array[i++] = e_util_utf8_make_valid (vcard);
+		g_free (vcard);
+	}
+
+	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_book_client_modify_contacts,
+			e_gdbus_book_call_modify_contacts,
+			e_gdbus_book_call_modify_contacts_finish, NULL, NULL, NULL, NULL);
+
+	g_strfreev (array);
+}
+
+/**
+ * e_book_client_modify_contacts_finish:
+ * @client: an #EBookClient
+ * @result: a #GAsyncResult
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Finishes previous call of e_book_client_modify_contacts().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.4
+ **/
+gboolean
+e_book_client_modify_contacts_finish (EBookClient *client,
+                                      GAsyncResult *result,
+                                      GError **error)
+{
+	return e_client_proxy_call_finish_void (E_CLIENT (client), result, error, e_book_client_modify_contacts);
+}
+
+/**
+ * e_book_client_modify_contacts_sync:
+ * @client: an #EBookClient
+ * @contacts: a #GSList of #EContact objects
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Applies the changes made to @contacts to the stored versions in @client.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.4
+ **/
+gboolean
+e_book_client_modify_contacts_sync (EBookClient *client,
+                                    /* const */ GSList *contacts,
+                                    GCancellable *cancellable,
+                                    GError **error)
+{
+	gboolean res;
+	gint i = 0;
+	gchar **array;
+	const GSList *l;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+	g_return_val_if_fail (client->priv != NULL, FALSE);
+	g_return_val_if_fail (contacts != NULL, FALSE);
+
+	if (!client->priv->gdbus_book) {
+		set_proxy_gone_error (error);
+		return FALSE;
+	}
+
+	array = g_new0 (gchar *, g_slist_length (contacts) + 1);
+	for (l = contacts; l != NULL; l = l->next) {
+		gchar *vcard = e_vcard_to_string (E_VCARD (l->data), EVC_FORMAT_VCARD_30);
+		array[i++] = e_util_utf8_make_valid (vcard);
+		g_free (vcard);
+	}
+
+	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const*) array, cancellable, error, e_gdbus_book_call_modify_contacts_sync);
+
+	g_strfreev (array);
 
 	return res;
 }

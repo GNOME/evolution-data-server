@@ -351,20 +351,30 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 }
 
 static void
-e_book_backend_vcf_modify_contact (EBookBackendSync *backend,
-                                   EDataBook *book,
-                                   GCancellable *cancellable,
-                                   const gchar *vcard,
-                                   EContact **contact,
-                                   GError **perror)
+e_book_backend_vcf_modify_contacts (EBookBackendSync *backend,
+                                    EDataBook *book,
+                                    GCancellable *cancellable,
+                                    const GSList *vcards,
+                                    GSList **modified_contacts,
+                                    GError **perror)
 {
 	EBookBackendVCF *bvcf = E_BOOK_BACKEND_VCF (backend);
 	GList *elem;
 	const gchar *id;
+	EContact *contact;
+
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
+	 * in our static capability list. */
+	if (vcards->next != NULL) {
+		g_propagate_error (perror,
+		                   EDB_ERROR_EX (NOT_SUPPORTED,
+		                   _("The backend does not support bulk modifications")));
+		return;
+	}
 
 	/* create a new ecard from the request data */
-	*contact = e_contact_new_from_vcard (vcard);
-	id = e_contact_get_const (*contact, E_CONTACT_UID);
+	contact = e_contact_new_from_vcard (vcards->data);
+	id = e_contact_get_const (contact, E_CONTACT_UID);
 
 	g_mutex_lock (bvcf->priv->mutex);
 	elem = g_hash_table_lookup (bvcf->priv->contacts, id);
@@ -375,12 +385,14 @@ e_book_backend_vcf_modify_contact (EBookBackendSync *backend,
 	}
 
 	g_free (elem->data);
-	elem->data = g_strdup (vcard);
+	elem->data = g_strdup (vcards->data);
 	bvcf->priv->dirty = TRUE;
 	if (!bvcf->priv->flush_timeout_tag)
 		bvcf->priv->flush_timeout_tag = g_timeout_add (FILE_FLUSH_TIMEOUT,
 							       vcf_flush_file, bvcf);
 	g_mutex_unlock (bvcf->priv->mutex);
+
+	*modified_contacts = g_slist_append (*modified_contacts, contact);
 }
 
 static void
@@ -759,7 +771,7 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *klass)
 	sync_class->get_backend_property_sync	= e_book_backend_vcf_get_backend_property;
 	sync_class->create_contacts_sync	= e_book_backend_vcf_create_contacts;
 	sync_class->remove_contacts_sync	= e_book_backend_vcf_remove_contacts;
-	sync_class->modify_contact_sync		= e_book_backend_vcf_modify_contact;
+	sync_class->modify_contacts_sync	= e_book_backend_vcf_modify_contacts;
 	sync_class->get_contact_sync		= e_book_backend_vcf_get_contact;
 	sync_class->get_contact_list_sync	= e_book_backend_vcf_get_contact_list;
 	sync_class->authenticate_user_sync	= e_book_backend_vcf_authenticate_user;

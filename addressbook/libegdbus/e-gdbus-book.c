@@ -57,8 +57,8 @@ enum
 	__ADD_CONTACTS_DONE_SIGNAL,
 	__REMOVE_CONTACTS_METHOD,
 	__REMOVE_CONTACTS_DONE_SIGNAL,
-	__MODIFY_CONTACT_METHOD,
-	__MODIFY_CONTACT_DONE_SIGNAL,
+	__MODIFY_CONTACTS_METHOD,
+	__MODIFY_CONTACTS_DONE_SIGNAL,
 	__GET_BACKEND_PROPERTY_METHOD,
 	__GET_BACKEND_PROPERTY_DONE_SIGNAL,
 	__SET_BACKEND_PROPERTY_METHOD,
@@ -144,7 +144,7 @@ E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRV (GDBUS_BOOK_INTERFACE_NAME,
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_BOOK_INTERFACE_NAME,
                                                       remove_contacts)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_BOOK_INTERFACE_NAME,
-                                                      modify_contact)
+                                                      modify_contacts)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING (GDBUS_BOOK_INTERFACE_NAME,
                                                         get_backend_property)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_BOOK_INTERFACE_NAME,
@@ -178,7 +178,7 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
 	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV	(EGdbusBookIface, "get_contact_list_uids",	get_contact_list_uids, __GET_CONTACT_LIST_UIDS_METHOD, __GET_CONTACT_LIST_UIDS_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_STRV__STRV    (EGdbusBookIface, "add_contacts",		add_contacts, __ADD_CONTACTS_METHOD, __ADD_CONTACTS_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "remove_contacts",		remove_contacts, __REMOVE_CONTACTS_METHOD, __REMOVE_CONTACTS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__VOID	(EGdbusBookIface, "modify_contact",		modify_contact, __MODIFY_CONTACT_METHOD, __MODIFY_CONTACT_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "modify_contacts",		modify_contacts, __MODIFY_CONTACTS_METHOD, __MODIFY_CONTACTS_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "get_backend_property",	get_backend_property, __GET_BACKEND_PROPERTY_METHOD, __GET_BACKEND_PROPERTY_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "set_backend_property",	set_backend_property, __SET_BACKEND_PROPERTY_METHOD, __SET_BACKEND_PROPERTY_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "get_view",			get_view, __GET_VIEW_METHOD, __GET_VIEW_DONE_SIGNAL)
@@ -425,32 +425,32 @@ e_gdbus_book_call_remove_contacts_sync (GDBusProxy *proxy,
 }
 
 void
-e_gdbus_book_call_modify_contact (GDBusProxy *proxy,
-                                  const gchar *in_vcard,
-                                  GCancellable *cancellable,
-                                  GAsyncReadyCallback callback,
-                                  gpointer user_data)
+e_gdbus_book_call_modify_contacts (GDBusProxy *proxy,
+                                   const gchar * const *in_vcards,
+                                   GCancellable *cancellable,
+                                   GAsyncReadyCallback callback,
+                                   gpointer user_data)
 {
-	e_gdbus_proxy_call_string ("modify_contact", e_gdbus_book_call_modify_contact, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_vcard, cancellable, callback, user_data);
+	e_gdbus_proxy_call_strv ("modify_contacts", e_gdbus_book_call_modify_contacts, E_GDBUS_ASYNC_OP_KEEPER (proxy), in_vcards, cancellable, callback, user_data);
 }
 
 gboolean
-e_gdbus_book_call_modify_contact_finish (GDBusProxy *proxy,
+e_gdbus_book_call_modify_contacts_finish (GDBusProxy *proxy,
                                          GAsyncResult *result,
                                          GError **error)
 {
-	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_book_call_modify_contact);
+	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_book_call_modify_contacts);
 }
 
 gboolean
-e_gdbus_book_call_modify_contact_sync (GDBusProxy *proxy,
-                                       const gchar *in_vcard,
-                                       GCancellable *cancellable,
-                                       GError **error)
+e_gdbus_book_call_modify_contacts_sync (GDBusProxy *proxy,
+                                        const gchar * const *in_vcards,
+                                        GCancellable *cancellable,
+                                        GError **error)
 {
-	return e_gdbus_proxy_call_sync_string__void (proxy, in_vcard, cancellable, error,
-		e_gdbus_book_call_modify_contact,
-		e_gdbus_book_call_modify_contact_finish);
+	return e_gdbus_proxy_call_sync_strv__void (proxy, in_vcards, cancellable, error,
+		e_gdbus_book_call_modify_contacts,
+		e_gdbus_book_call_modify_contacts_finish);
 }
 
 void
@@ -699,8 +699,8 @@ DECLARE_EMIT_DONE_SIGNAL_1 (add_contacts,
                             const gchar * const *)
 DECLARE_EMIT_DONE_SIGNAL_0 (remove_contacts,
                             __REMOVE_CONTACTS_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_0 (modify_contact,
-                            __MODIFY_CONTACT_DONE_SIGNAL)
+DECLARE_EMIT_DONE_SIGNAL_0 (modify_contacts,
+                            __MODIFY_CONTACTS_DONE_SIGNAL)
 DECLARE_EMIT_DONE_SIGNAL_1 (get_backend_property,
                             __GET_BACKEND_PROPERTY_DONE_SIGNAL,
                             const gchar *)
@@ -772,7 +772,7 @@ E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_contact_list, query, "s", 
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_contact_list_uids, query, "s", uids, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, add_contacts, vcards, "as", uids, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, remove_contacts, list, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, modify_contact, vcard, "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, modify_contacts, vcard, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_backend_property, prop_name, "s", prop_value, "s")
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, set_backend_property, prop_name_value, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_view, query, "s", view, "s")
@@ -794,7 +794,7 @@ static const GDBusMethodInfo * const e_gdbus_book_method_info_pointers[] =
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_contact_list_uids),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, add_contacts),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, remove_contacts),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, modify_contact),
+	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, modify_contacts),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_backend_property),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, set_backend_property),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_view),
@@ -822,7 +822,7 @@ static const GDBusSignalInfo * const e_gdbus_book_signal_info_pointers[] =
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_contact_list_uids_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, add_contacts_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, remove_contacts_done),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, modify_contact_done),
+	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, modify_contacts_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_backend_property_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, set_backend_property_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, get_view_done),
@@ -1044,7 +1044,7 @@ e_gdbus_book_proxy_init (EGdbusBookProxy *proxy)
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRV   (get_contact_list_uids);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRV   (add_contacts);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (remove_contacts);
-	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (modify_contact);
+	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (modify_contacts);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRING (get_backend_property);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID	  (set_backend_property);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRING (get_view);

@@ -1917,24 +1917,25 @@ modify_contact_modify_handler (LDAPOp *op,
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
 	gchar *ldap_error_msg;
 	gint ldap_error;
+	GSList modified_contacts = {NULL,};
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_modify (op->book,
-					    op->opid,
-					    EDB_ERROR_NOT_CONNECTED (),
-					    NULL);
+		e_data_book_respond_modify_contacts (op->book,
+					             op->opid,
+					             EDB_ERROR_NOT_CONNECTED (),
+					             NULL);
 		ldap_op_finished (op);
 		return;
 	}
 	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	if (LDAP_RES_MODIFY != ldap_msgtype (res)) {
-		e_data_book_respond_modify (op->book,
-					    op->opid,
-					    EDB_ERROR_MSG_TYPE (ldap_msgtype (res)),
-					    NULL);
+		e_data_book_respond_modify_contacts (op->book,
+					             op->opid,
+					             EDB_ERROR_MSG_TYPE (ldap_msgtype (res)),
+					             NULL);
 		ldap_op_finished (op);
 		return;
 	}
@@ -1954,10 +1955,11 @@ modify_contact_modify_handler (LDAPOp *op,
 	ldap_memfree (ldap_error_msg);
 
 	/* and lastly respond */
-	e_data_book_respond_modify (op->book,
-				    op->opid,
-				    ldap_error_to_response (ldap_error),
-				    modify_op->contact);
+	modified_contacts.data = modify_op->contact;
+	e_data_book_respond_modify_contacts (op->book,
+				             op->opid,
+				             ldap_error_to_response (ldap_error),
+				             &modified_contacts);
 	ldap_op_finished (op);
 }
 
@@ -1975,8 +1977,8 @@ modify_contact_search_handler (LDAPOp *op,
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_modify (op->book, op->opid,
-					    EDB_ERROR_NOT_CONNECTED (), NULL);
+		e_data_book_respond_modify_contacts (op->book, op->opid,
+					             EDB_ERROR_NOT_CONNECTED (), NULL);
 		ldap_op_finished (op);
 		return;
 	}
@@ -1995,10 +1997,10 @@ modify_contact_search_handler (LDAPOp *op,
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 		if (!e) {
-			e_data_book_respond_modify (op->book,
-						    op->opid,
-						    e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "%s: NULL returned from ldap_first_entry", G_STRFUNC),
-						    NULL);
+			e_data_book_respond_modify_contacts (op->book,
+						             op->opid,
+						             e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "%s: NULL returned from ldap_first_entry", G_STRFUNC),
+						             NULL);
 			ldap_op_finished (op);
 			return;
 		}
@@ -2027,10 +2029,10 @@ modify_contact_search_handler (LDAPOp *op,
 
 		if (ldap_error != LDAP_SUCCESS) {
 			/* more here i'm sure */
-			e_data_book_respond_modify (op->book,
-						    op->opid,
-						    ldap_error_to_response (ldap_error),
-						    NULL);
+			e_data_book_respond_modify_contacts (op->book,
+						             op->opid,
+						             ldap_error_to_response (ldap_error),
+						             NULL);
 			ldap_op_finished (op);
 			return;
 		}
@@ -2082,10 +2084,10 @@ modify_contact_search_handler (LDAPOp *op,
 						e_book_backend_cache_remove_contact (bl->priv->cache, modify_op->id);
 				} else {
 					g_warning ("ldap_rename returned %d\n", ldap_error);
-					e_data_book_respond_modify (op->book,
-								    op->opid,
-								    ldap_error_to_response (ldap_error),
-								    NULL);
+					e_data_book_respond_modify_contacts (op->book,
+								             op->opid,
+								             ldap_error_to_response (ldap_error),
+								             NULL);
 					ldap_op_finished (op);
 					return;
 				}
@@ -2118,10 +2120,10 @@ modify_contact_rename_handler (LDAPOp *op,
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_modify (op->book,
-					    op->opid,
-					    EDB_ERROR_NOT_CONNECTED (),
-					    NULL);
+		e_data_book_respond_modify_contacts (op->book,
+					             op->opid,
+					             EDB_ERROR_NOT_CONNECTED (),
+					             NULL);
 		ldap_op_finished (op);
 		return;
 	}
@@ -2130,10 +2132,10 @@ modify_contact_rename_handler (LDAPOp *op,
 	/* was a rename necessary? */
 	if (modify_op->new_id) {
 		if (LDAP_RES_RENAME != ldap_msgtype (res)) {
-			e_data_book_respond_modify (op->book,
-						    op->opid,
-						    EDB_ERROR_MSG_TYPE (ldap_msgtype (res)),
-						    NULL);
+			e_data_book_respond_modify_contacts (op->book,
+						             op->opid,
+						             EDB_ERROR_MSG_TYPE (ldap_msgtype (res)),
+						             NULL);
 			ldap_op_finished (op);
 			return;
 		}
@@ -2153,10 +2155,10 @@ modify_contact_rename_handler (LDAPOp *op,
 		ldap_memfree (ldap_error_msg);
 
 		if (ldap_error != LDAP_SUCCESS) {
-			e_data_book_respond_modify (op->book,
-						    op->opid,
-						    ldap_error_to_response (ldap_error),
-						    NULL);
+			e_data_book_respond_modify_contacts (op->book,
+						             op->opid,
+						             ldap_error_to_response (ldap_error),
+						             NULL);
 			ldap_op_finished (op);
 			return;
 		}
@@ -2228,19 +2230,19 @@ modify_contact_rename_handler (LDAPOp *op,
 					   modify_contact_msgid);
 		} else {
 			g_warning ("ldap_modify_ext returned %d\n", ldap_error);
-			e_data_book_respond_modify (op->book,
-						    op->opid,
-						    ldap_error_to_response (ldap_error),
-						    NULL);
+			e_data_book_respond_modify_contacts (op->book,
+						             op->opid,
+						             ldap_error_to_response (ldap_error),
+						             NULL);
 			ldap_op_finished (op);
 			return;
 		}
 	} else {
-		e_data_book_respond_modify (op->book,
-					    op->opid,
-					    e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-						"%s: Unhandled result type %d returned", G_STRFUNC, ldap_msgtype (res)),
-					    NULL);
+		e_data_book_respond_modify_contacts (op->book,
+					             op->opid,
+					             e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+						     "%s: Unhandled result type %d returned", G_STRFUNC, ldap_msgtype (res)),
+					             NULL);
 		ldap_op_finished (op);
 	}
 }
@@ -2263,27 +2265,38 @@ modify_contact_dtor (LDAPOp *op)
 }
 
 static void
-e_book_backend_ldap_modify_contact (EBookBackend *backend,
+e_book_backend_ldap_modify_contacts (EBookBackend *backend,
                                     EDataBook *book,
                                     guint32 opid,
                                     GCancellable *cancellable,
-                                    const gchar *vcard)
+                                    const GSList *vcards)
 {
 	LDAPModifyOp *modify_op = g_new0 (LDAPModifyOp, 1);
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 	gint ldap_error;
 	gint modify_contact_msgid;
 	EDataBookView *book_view;
+	gchar *vcard = vcards->data;
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_modify (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		e_data_book_respond_modify_contacts (book, opid, EDB_ERROR (REPOSITORY_OFFLINE), NULL);
+		return;
+	}
+
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
+	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
+	if (vcards->next != NULL) {
+		e_data_book_respond_modify_contacts (book, opid,
+		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+		                                     _("The backend does not support bulk modifications")),
+		                                     NULL);
 		return;
 	}
 
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		e_data_book_respond_modify (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
+		e_data_book_respond_modify_contacts (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
 		g_free (modify_op);
 		return;
 	}
@@ -2315,10 +2328,10 @@ e_book_backend_ldap_modify_contact (EBookBackend *backend,
 			     book_view, opid, modify_contact_msgid,
 			     modify_contact_search_handler, modify_contact_dtor);
 	} else {
-		e_data_book_respond_modify (book,
-					    opid,
-					    ldap_error_to_response (ldap_error),
-					    NULL);
+		e_data_book_respond_modify_contacts (book,
+					             opid,
+					             ldap_error_to_response (ldap_error),
+					             NULL);
 		modify_contact_dtor ((LDAPOp *) modify_op);
 	}
 }
@@ -5684,7 +5697,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *klass)
 
 	parent_class->create_contacts		= e_book_backend_ldap_create_contacts;
 	parent_class->remove_contacts		= e_book_backend_ldap_remove_contacts;
-	parent_class->modify_contact		= e_book_backend_ldap_modify_contact;
+	parent_class->modify_contacts		= e_book_backend_ldap_modify_contacts;
 	parent_class->get_contact		= e_book_backend_ldap_get_contact;
 	parent_class->get_contact_list		= e_book_backend_ldap_get_contact_list;
 	parent_class->get_contact_list_uids	= e_book_backend_ldap_get_contact_list_uids;

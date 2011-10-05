@@ -1573,16 +1573,18 @@ modify_contact_finish (ModifyContactData *data,
 	__debug__ (G_STRFUNC);
 
 	if (gdata_error == NULL) {
+		GSList modified_contacts = {NULL,};
 		/* Add the new entry to the cache */
 		e_contact = cache_add_contact (data->backend, GDATA_ENTRY (new_contact));
-		e_data_book_respond_modify (data->book, data->opid, NULL, e_contact);
+		modified_contacts.data = e_contact;
+		e_data_book_respond_modify_contacts (data->book, data->opid, NULL, &modified_contacts);
 		g_object_unref (e_contact);
 	} else {
 		GError *book_error = NULL;
 
 		/* Report the error. */
 		data_book_error_from_gdata_error (&book_error, gdata_error);
-		e_data_book_respond_modify (data->book, data->opid, book_error, NULL);
+		e_data_book_respond_modify_contacts (data->book, data->opid, book_error, NULL);
 	}
 
 	finish_operation (data->backend, data->opid, gdata_error);
@@ -1760,11 +1762,11 @@ finish:
  * operation responded to in modify_contact_photo_query_cb().
  */
 static void
-e_book_backend_google_modify_contact (EBookBackend *backend,
+e_book_backend_google_modify_contacts (EBookBackend *backend,
                                       EDataBook *book,
                                       guint32 opid,
                                       GCancellable *cancellable,
-                                      const gchar *vcard_str)
+                                      const GSList *vcards)
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact, *cached_contact;
@@ -1774,13 +1776,24 @@ e_book_backend_google_modify_contact (EBookBackend *backend,
 	GDataEntry *entry = NULL;
 	const gchar *uid;
 	ModifyContactData *data;
+	const gchar *vcard_str = vcards->data;
 
 	__debug__ (G_STRFUNC);
 
 	__debug__ ("Updating: %s", vcard_str);
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
-		e_data_book_respond_modify (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE), NULL);
+		e_data_book_respond_modify_contacts (book, opid, EDB_ERROR (OFFLINE_UNAVAILABLE), NULL);
+		return;
+	}
+
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
+	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
+	if (vcards->next != NULL) {
+		e_data_book_respond_modify_contacts (book, opid,
+		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+		                                     _("The backend does not support bulk modifications")),
+		                                     NULL);
 		return;
 	}
 
@@ -1797,7 +1810,7 @@ e_book_backend_google_modify_contact (EBookBackend *backend,
 		__debug__ ("Modifying contact failed: Contact with uid %s not found in cache.", uid);
 		g_object_unref (contact);
 
-		e_data_book_respond_modify (book, opid, EDB_ERROR (CONTACT_NOT_FOUND), NULL);
+		e_data_book_respond_modify_contacts (book, opid, EDB_ERROR (CONTACT_NOT_FOUND), NULL);
 		return;
 	}
 
@@ -2564,7 +2577,7 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *klass)
 	backend_class->remove			= e_book_backend_google_remove;
 	backend_class->create_contacts		= e_book_backend_google_create_contacts;
 	backend_class->remove_contacts		= e_book_backend_google_remove_contacts;
-	backend_class->modify_contact		= e_book_backend_google_modify_contact;
+	backend_class->modify_contacts		= e_book_backend_google_modify_contacts;
 	backend_class->get_contact		= e_book_backend_google_get_contact;
 	backend_class->get_contact_list		= e_book_backend_google_get_contact_list;
 	backend_class->get_contact_list_uids	= e_book_backend_google_get_contact_list_uids;

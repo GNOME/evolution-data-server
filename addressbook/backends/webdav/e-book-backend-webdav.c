@@ -455,50 +455,62 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 }
 
 static void
-e_book_backend_webdav_modify_contact (EBookBackend *backend,
-                                      EDataBook *book,
-                                      guint32 opid,
-                                      GCancellable *cancellable,
-                                      const gchar *vcard)
+e_book_backend_webdav_modify_contacts (EBookBackend *backend,
+                                       EDataBook *book,
+                                       guint32 opid,
+                                       GCancellable *cancellable,
+                                       const GSList *vcards)
 {
 	EBookBackendWebdav        *webdav  = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv    = webdav->priv;
-	EContact                  *contact = e_contact_new_from_vcard (vcard);
+	EContact                  *contact;
+	GSList                     modified_contacts = {NULL,};
 	const gchar                *uid;
 	const gchar                *etag;
 	guint status;
 	gchar *status_reason = NULL;
+	const gchar *vcard = vcards->data;
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
 		e_data_book_respond_create_contacts (book, opid,
 				EDB_ERROR (REPOSITORY_OFFLINE), NULL);
-		g_object_unref (contact);
+		return;
+	}
+
+	/* We make the assumption that the vCard list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
+	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
+	if (vcards->next != NULL) {
+		e_data_book_respond_modify_contacts (book, opid,
+		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+		                                     _("The backend does not support bulk modifications")),
+		                                     NULL);
 		return;
 	}
 
 	/* modify contact */
+	contact = e_contact_new_from_vcard (vcard);
 	status = upload_contact (webdav, contact, &status_reason);
 	if (status != 201 && status != 204) {
 		g_object_unref (contact);
 		if (status == 401 || status == 407) {
-			e_data_book_respond_remove_contacts (book, opid, webdav_handle_auth_request (webdav), NULL);
+			e_data_book_respond_modify_contacts (book, opid, webdav_handle_auth_request (webdav), NULL);
 			g_free (status_reason);
 			return;
 		}
 		/* data changed on server while we were editing */
 		if (status == 412) {
 			/* too bad no special error code in evolution for this... */
-			e_data_book_respond_modify (book, opid,
+			e_data_book_respond_modify_contacts (book, opid,
 					e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-						"Contact on server changed -> not modifying"),
+					"Contact on server changed -> not modifying"),
 					NULL);
 			g_free (status_reason);
 			return;
 		}
 
-		e_data_book_respond_modify (book, opid,
+		e_data_book_respond_modify_contacts (book, opid,
 				e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-					"Modify contact failed with HTTP status: %d (%s)", status, status_reason),
+				"Modify contact failed with HTTP status: %d (%s)", status, status_reason),
 				NULL);
 		g_free (status_reason);
 		return;
@@ -523,7 +535,8 @@ e_book_backend_webdav_modify_contact (EBookBackend *backend,
 	}
 	e_book_backend_cache_add_contact (priv->cache, contact);
 
-	e_data_book_respond_modify (book, opid, EDB_ERROR (SUCCESS), contact);
+	modified_contacts.data = contact;
+	e_data_book_respond_modify_contacts (book, opid, EDB_ERROR (SUCCESS), &modified_contacts);
 
 	g_object_unref (contact);
 }
@@ -1467,7 +1480,7 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *klass)
 
 	backend_class->create_contacts		= e_book_backend_webdav_create_contacts;
 	backend_class->remove_contacts		= e_book_backend_webdav_remove_contacts;
-	backend_class->modify_contact		= e_book_backend_webdav_modify_contact;
+	backend_class->modify_contacts		= e_book_backend_webdav_modify_contacts;
 	backend_class->get_contact		= e_book_backend_webdav_get_contact;
 	backend_class->get_contact_list		= e_book_backend_webdav_get_contact_list;
 	backend_class->get_contact_list_uids	= e_book_backend_webdav_get_contact_list_uids;

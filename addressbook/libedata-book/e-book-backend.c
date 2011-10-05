@@ -493,35 +493,35 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_modify_contact:
+ * e_book_backend_modify_contacts:
  * @backend: an #EBookBackend
  * @book: an #EDataBook
  * @opid: the ID to use for this operation
  * @cancellable: a #GCancellable for the operation
- * @vcard: the VCard to update
+ * @vcards: the VCards to update
  *
- * Executes a 'modify contact' request specified by @opid on @book
+ * Executes a 'modify contacts' request specified by @opid on @book
  * using @backend.
- * This might be finished with e_data_book_respond_modify().
+ * This might be finished with e_data_book_respond_modify_contacts().
  **/
 void
-e_book_backend_modify_contact (EBookBackend *backend,
+e_book_backend_modify_contacts (EBookBackend *backend,
                                EDataBook *book,
                                guint32 opid,
                                GCancellable *cancellable,
-                               const gchar *vcard)
+                               const GSList *vcards)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
-	g_return_if_fail (vcard);
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->modify_contact);
+	g_return_if_fail (vcards);
+	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->modify_contacts);
 
 	if (e_book_backend_is_opening (backend))
-		e_data_book_respond_modify (book, opid, EDB_OPENING_ERROR, NULL);
+		e_data_book_respond_modify_contacts (book, opid, EDB_OPENING_ERROR, NULL);
 	else if (!e_book_backend_is_opened (backend))
-		e_data_book_respond_modify (book, opid, EDB_NOT_OPENED_ERROR, NULL);
+		e_data_book_respond_modify_contacts (book, opid, EDB_NOT_OPENED_ERROR, NULL);
 	else
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->modify_contact) (backend, book, opid, cancellable, vcard);
+		(* E_BOOK_BACKEND_GET_CLASS (backend)->modify_contacts) (backend, book, opid, cancellable, vcards);
 }
 
 /**
@@ -1017,7 +1017,7 @@ e_book_backend_sync (EBookBackend *backend)
  * Notifies all of @backend's book views about the new or modified
  * contacts @contact.
  *
- * e_data_book_respond_create() and e_data_book_respond_modify() call this
+ * e_data_book_respond_create_contacts() and e_data_book_respond_modify_contacts() call this
  * function for you. You only need to call this from your backend if
  * contacts are created or modified by another (non-PAS-using) client.
  **/

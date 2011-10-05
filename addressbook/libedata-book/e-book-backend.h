@@ -142,7 +142,7 @@ struct _EBookBackendClass {
 	void	(* refresh)			(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable);
 	void	(* create_contacts)		(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *vcards);
 	void	(* remove_contacts)		(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *id_list);
-	void	(* modify_contact)		(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard);
+	void	(* modify_contacts)		(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *vcards);
 	void	(* get_contact)			(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *id);
 	void	(* get_contact_list)		(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
 	void	(* get_contact_list_uids)	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
@@ -179,7 +179,7 @@ void		e_book_backend_remove		(EBookBackend *backend, EDataBook *book, guint32 op
 void		e_book_backend_refresh		(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable);
 void		e_book_backend_create_contacts	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *vcards);
 void		e_book_backend_remove_contacts	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *id_list);
-void		e_book_backend_modify_contact	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *vcard);
+void		e_book_backend_modify_contacts	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const GSList *vcards);
 void		e_book_backend_get_contact	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *id);
 void		e_book_backend_get_contact_list	(EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
 void		e_book_backend_get_contact_list_uids (EBookBackend *backend, EDataBook *book, guint32 opid, GCancellable *cancellable, const gchar *query);
