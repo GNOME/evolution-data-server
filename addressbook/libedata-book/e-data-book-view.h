@@ -59,8 +59,8 @@ EBookBackendSExp *	e_data_book_view_get_card_sexp		(EDataBookView *book_view);
 EBookBackend *		e_data_book_view_get_backend		(EDataBookView *book_view);
 void			e_data_book_view_notify_update		(EDataBookView *book_view, const EContact *contact);
 
-void			e_data_book_view_notify_update_vcard	(EDataBookView *book_view, const gchar *id, gchar *vcard);
-void			e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, const gchar *id, gchar *vcard);
+void			e_data_book_view_notify_update_vcard	(EDataBookView *book_view, const gchar *id, const gchar *vcard);
+void			e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view, const gchar *id, const gchar *vcard);
 
 void			e_data_book_view_notify_remove		(EDataBookView *book_view, const gchar *id);
 void			e_data_book_view_notify_complete	(EDataBookView *book_view, const GError *error);

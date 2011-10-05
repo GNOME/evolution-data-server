@@ -909,7 +909,7 @@ static void
 notify_update_vcard (EDataBookView *book_view,
                      gboolean prefiltered,
                      const gchar *id,
-                     gchar *vcard)
+                     const gchar *vcard)
 {
 	if (prefiltered)
 		e_data_book_view_notify_update_prefiltered_vcard (book_view, id, vcard);
@@ -1003,6 +1003,7 @@ book_view_thread (gpointer data)
 			}
 
 			notify_update_vcard (book_view, TRUE, data->uid, vcard);
+			g_free (vcard);
 		}
 
 		g_slist_foreach (summary_list, (GFunc) e_book_backend_sqlitedb_search_data_free, NULL);
@@ -1028,10 +1029,9 @@ book_view_thread (gpointer data)
 				if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
 					notify_update_vcard (book_view, allcontacts,
 							     id_dbt.data, vcard_dbt.data);
-				} else {
-					g_free (vcard_dbt.data);
 				}
 
+				g_free (vcard_dbt.data);
 				db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 			}
 
@@ -1695,13 +1695,11 @@ view_notify_update (EDataBookView *view,
 								  fields, &with_all_required_fields, NULL);
 
 		if (vcard) {
-
 			if (with_all_required_fields) {
 				e_data_book_view_notify_update_prefiltered_vcard (view, uid, vcard);
 				notified = TRUE;
-			} else {
-				g_free (vcard);
 			}
+			g_free (vcard);
 		}
 	}
 

@@ -432,16 +432,14 @@ e_data_book_view_notify_update (EDataBookView *book_view,
 void
 e_data_book_view_notify_update_vcard (EDataBookView *book_view,
                                       const gchar *id,
-                                      gchar *vcard)
+                                      const gchar *vcard)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
 	gboolean currently_in_view, want_in_view;
 	EContact *contact;
 
-	if (!priv->running) {
-		g_free (vcard);
+	if (!priv->running)
 		return;
-	}
 
 	g_mutex_lock (priv->pending_mutex);
 
@@ -462,7 +460,6 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view,
 
 	/* Do this last so that id is still valid when notify_ is called */
 	g_object_unref (contact);
-	g_free (vcard);
 
 	g_mutex_unlock (priv->pending_mutex);
 }
@@ -490,15 +487,13 @@ e_data_book_view_notify_update_vcard (EDataBookView *book_view,
 void
 e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view,
                                                   const gchar *id,
-                                                  gchar *vcard)
+                                                  const gchar *vcard)
 {
 	EDataBookViewPrivate *priv = book_view->priv;
 	gboolean currently_in_view;
 
-	if (!priv->running) {
-		g_free (vcard);
+	if (!priv->running)
 		return;
-	}
 
 	g_mutex_lock (priv->pending_mutex);
 
@@ -508,8 +503,6 @@ e_data_book_view_notify_update_prefiltered_vcard (EDataBookView *book_view,
 		notify_change (book_view, id, vcard);
 	else
 		notify_add (book_view, id, vcard);
-
-	g_free (vcard);
 
 	g_mutex_unlock (priv->pending_mutex);
 }
