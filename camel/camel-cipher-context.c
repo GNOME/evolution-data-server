@@ -1507,6 +1507,8 @@ camel_cipher_context_hash_to_id (CamelCipherContext *context,
 static void
 ccv_certinfo_free (CamelCipherCertInfo *info)
 {
+	g_return_if_fail (info != NULL);
+
 	g_free (info->name);
 	g_free (info->email);
 
@@ -1530,7 +1532,7 @@ camel_cipher_validity_new (void)
 void
 camel_cipher_validity_init (CamelCipherValidity *validity)
 {
-	g_assert (validity != NULL);
+	g_return_if_fail (validity != NULL);
 
 	memset (validity, 0, sizeof (*validity));
 	camel_dlist_init (&validity->children);
@@ -1549,7 +1551,7 @@ void
 camel_cipher_validity_set_valid (CamelCipherValidity *validity,
                                  gboolean valid)
 {
-	g_assert (validity != NULL);
+	g_return_if_fail (validity != NULL);
 
 	validity->sign.status = valid ? CAMEL_CIPHER_VALIDITY_SIGN_GOOD : CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 }
@@ -1557,8 +1559,7 @@ camel_cipher_validity_set_valid (CamelCipherValidity *validity,
 gchar *
 camel_cipher_validity_get_description (CamelCipherValidity *validity)
 {
-	if (validity == NULL)
-		return NULL;
+	g_return_val_if_fail (validity != NULL, NULL);
 
 	return validity->sign.description;
 }
@@ -1567,7 +1568,7 @@ void
 camel_cipher_validity_set_description (CamelCipherValidity *validity,
                                        const gchar *description)
 {
-	g_assert (validity != NULL);
+	g_return_if_fail (validity != NULL);
 
 	g_free (validity->sign.description);
 	validity->sign.description = g_strdup (description);
@@ -1576,7 +1577,7 @@ camel_cipher_validity_set_description (CamelCipherValidity *validity,
 void
 camel_cipher_validity_clear (CamelCipherValidity *validity)
 {
-	g_assert (validity != NULL);
+	g_return_if_fail (validity != NULL);
 
 	/* TODO: this doesn't free children/clear key lists */
 	g_free (validity->sign.description);
@@ -1589,6 +1590,8 @@ camel_cipher_validity_clone (CamelCipherValidity *vin)
 {
 	CamelCipherValidity *vo;
 	CamelCipherCertInfo *info;
+
+	g_return_val_if_fail (vin != NULL, NULL);
 
 	vo = camel_cipher_validity_new ();
 	vo->sign.status = vin->sign.status;
@@ -1654,20 +1657,19 @@ camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin,
 	CamelCipherCertInfo *info;
 	CamelDList *list;
 
+	g_return_if_fail (vin != NULL);
+	if (cert_data) {
+		g_return_if_fail (cert_data_free != NULL);
+		g_return_if_fail (cert_data_clone != NULL);
+	}
+
 	info = g_malloc0 (sizeof (*info));
 	info->name = g_strdup (name);
 	info->email = g_strdup (email);
 	if (cert_data) {
-		if (cert_data_free && cert_data_clone) {
-			info->cert_data = cert_data;
-			info->cert_data_free = cert_data_free;
-			info->cert_data_clone = cert_data_clone;
-		} else {
-			if (!cert_data_free)
-				g_warning ("%s: requires non-NULL cert_data_free function!", G_STRFUNC);
-			if (!cert_data_clone)
-				g_warning ("%s: requires non-NULL cert_data_clone function!", G_STRFUNC);
-		}
+		info->cert_data = cert_data;
+		info->cert_data_free = cert_data_free;
+		info->cert_data_clone = cert_data_clone;
 	}
 
 	list = (mode == CAMEL_CIPHER_VALIDITY_SIGN) ? &vin->sign.signers : &vin->encrypt.encrypters;
@@ -1687,6 +1689,9 @@ camel_cipher_validity_envelope (CamelCipherValidity *parent,
                                 CamelCipherValidity *valid)
 {
 	CamelCipherCertInfo *info;
+
+	g_return_if_fail (parent != NULL);
+	g_return_if_fail (valid != NULL);
 
 	if (parent->sign.status != CAMEL_CIPHER_VALIDITY_SIGN_NONE
 	    && parent->encrypt.status == CAMEL_CIPHER_VALIDITY_ENCRYPT_NONE
@@ -1828,6 +1833,9 @@ camel_cipher_canonical_to_stream (CamelMimePart *part,
 	CamelStream *filter;
 	CamelMimeFilter *canon;
 	gint res = -1;
+
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (part), -1);
+	g_return_val_if_fail (CAMEL_IS_STREAM (ostream), -1);
 
 	if (flags & (CAMEL_MIME_FILTER_CANON_FROM | CAMEL_MIME_FILTER_CANON_STRIP))
 		cc_prepare_sign (part);
