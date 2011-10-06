@@ -86,8 +86,7 @@ camel_spool_summary_new (CamelFolder *folder,
 {
 	CamelSpoolSummary *new;
 
-	new = g_object_new (CAMEL_TYPE_SPOOL_SUMMARY, NULL);
-	((CamelFolderSummary *) new)->folder = folder;
+	new = g_object_new (CAMEL_TYPE_SPOOL_SUMMARY, "folder", folder, NULL);
 	if (folder) {
 		CamelStore *parent_store;
 
@@ -310,9 +309,11 @@ spool_summary_check (CamelLocalSummary *cls,
                      GCancellable *cancellable,
                      GError **error)
 {
-	gint i, work, count;
+	gint i;
+	gboolean work;
 	struct stat st;
 	CamelFolderSummary *s = (CamelFolderSummary *) cls;
+	GPtrArray *known_uids;
 
 	if (CAMEL_LOCAL_SUMMARY_CLASS (camel_spool_summary_parent_class)->check (cls, changeinfo, cancellable, error) == -1)
 		return -1;
@@ -320,13 +321,14 @@ spool_summary_check (CamelLocalSummary *cls,
 	/* check to see if we need to copy/update the file; missing xev headers prompt this */
 	work = FALSE;
 	camel_folder_summary_prepare_fetch_all (s, error);
-	count = camel_folder_summary_count (s);
-	for (i = 0; !work && i < count; i++) {
-		CamelMboxMessageInfo *info = (CamelMboxMessageInfo *) camel_folder_summary_index (s, i);
+	known_uids = camel_folder_summary_get_array (s);
+	for (i = 0; !work && known_uids && i < known_uids->len; i++) {
+		CamelMboxMessageInfo *info = (CamelMboxMessageInfo *) camel_folder_summary_get (s, g_ptr_array_index (known_uids, i));
 		g_assert (info);
 		work = (info->info.info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV)) != 0;
 		camel_message_info_free ((CamelMessageInfo *) info);
 	}
+	camel_folder_summary_free_array (known_uids);
 
 	/* if we do, then write out the headers using sync_full, etc */
 	if (work) {

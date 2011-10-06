@@ -184,6 +184,10 @@ void camel_store_info_set_string (CamelStoreSummary *summary, CamelStoreInfo *in
 void camel_store_summary_lock   (CamelStoreSummary *summary, CamelStoreSummaryLock lock);
 void camel_store_summary_unlock (CamelStoreSummary *summary, CamelStoreSummaryLock lock);
 
+struct _CamelFolderSummary;
+gboolean camel_store_summary_connect_folder_summary (CamelStoreSummary *summary, const gchar *path, struct _CamelFolderSummary *folder_summary);
+gboolean camel_store_summary_disconnect_folder_summary (CamelStoreSummary *summary, struct _CamelFolderSummary *folder_summary);
+
 G_END_DECLS
 
 #endif /* CAMEL_STORE_SUMMARY_H */

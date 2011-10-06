@@ -98,8 +98,7 @@ camel_mh_summary_new (CamelFolder *folder,
 {
 	CamelMhSummary *o;
 
-	o = g_object_new (CAMEL_TYPE_MH_SUMMARY, NULL);
-	((CamelFolderSummary *) o)->folder = folder;
+	o = g_object_new (CAMEL_TYPE_MH_SUMMARY, "folder", folder, NULL);
 	if (folder) {
 		CamelStore *parent_store;
 
@@ -127,7 +126,7 @@ mh_summary_next_uid_string (CamelFolderSummary *s)
 	if (mhs->priv->current_uid) {
 		uidstr = g_strdup (mhs->priv->current_uid);
 		/* tell the summary of this, so we always append numbers to the end */
-		camel_folder_summary_set_uid (s, strtoul (uidstr, NULL, 10) + 1);
+		camel_folder_summary_set_next_uid (s, strtoul (uidstr, NULL, 10) + 1);
 	} else {
 		/* else scan for one - and create it too, to make sure */
 		do {
@@ -210,8 +209,9 @@ mh_summary_check (CamelLocalSummary *cls,
 	CamelMessageInfo *info;
 	CamelFolderSummary *s = (CamelFolderSummary *) cls;
 	GHashTable *left;
-	gint i, count;
-	gint forceindex;
+	gint i;
+	gboolean forceindex;
+	GPtrArray *known_uids;
 
 	/* FIXME: Handle changeinfo */
 
@@ -232,14 +232,15 @@ mh_summary_check (CamelLocalSummary *cls,
 	/* keeps track of all uid's that have not been processed */
 	left = g_hash_table_new (g_str_hash, g_str_equal);
 	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
-	count = camel_folder_summary_count ((CamelFolderSummary *) cls);
-	forceindex = count == 0;
-	for (i = 0; i < count; i++) {
-		info = camel_folder_summary_index ((CamelFolderSummary *) cls, i);
+	known_uids = camel_folder_summary_get_array ((CamelFolderSummary *) cls);
+	forceindex = !known_uids || known_uids->len == 0;
+	for (i = 0; known_uids && i < known_uids->len; i++) {
+		info = camel_folder_summary_get ((CamelFolderSummary *) cls, g_ptr_array_index (known_uids, i));
 		if (info) {
 			g_hash_table_insert (left, (gchar *) camel_message_info_uid (info), info);
 		}
 	}
+	camel_folder_summary_free_array (known_uids);
 
 	while ((d = readdir (dir))) {
 		/* FIXME: also run stat to check for regular file */
@@ -249,7 +250,7 @@ mh_summary_check (CamelLocalSummary *cls,
 				break;
 		}
 		if (c == 0) {
-			info = camel_folder_summary_uid ((CamelFolderSummary *) cls, d->d_name);
+			info = camel_folder_summary_get ((CamelFolderSummary *) cls, d->d_name);
 			if (info == NULL || (cls->index && (!camel_index_has_name (cls->index, d->d_name)))) {
 				/* need to add this file to the summary */
 				if (info != NULL) {
@@ -290,7 +291,8 @@ mh_summary_sync (CamelLocalSummary *cls,
                  GError **error)
 {
 	CamelLocalSummaryClass *local_summary_class;
-	gint count, i;
+	gint i;
+	GPtrArray *known_uids;
 	CamelLocalMessageInfo *info;
 	gchar *name;
 	const gchar *uid;
@@ -305,9 +307,9 @@ mh_summary_sync (CamelLocalSummary *cls,
 	/* FIXME: need to update/honour .mh_sequences or whatever it is */
 
 	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
-	count = camel_folder_summary_count ((CamelFolderSummary *) cls);
-	for (i = count - 1; i >= 0; i--) {
-		info = (CamelLocalMessageInfo *) camel_folder_summary_index ((CamelFolderSummary *) cls, i);
+	known_uids = camel_folder_summary_get_array ((CamelFolderSummary *) cls);
+	for (i = (known_uids ? known_uids->len : 0) - 1; i >= 0; i--) {
+		info = (CamelLocalMessageInfo *) camel_folder_summary_get ((CamelFolderSummary *) cls, g_ptr_array_index (known_uids, i));
 		g_assert (info);
 		if (expunge && (info->info.flags & CAMEL_MESSAGE_DELETED)) {
 			uid = camel_message_info_uid (info);

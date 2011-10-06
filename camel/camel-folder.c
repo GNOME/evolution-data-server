@@ -528,7 +528,6 @@ folder_dispose (GObject *object)
 	}
 
 	if (folder->summary) {
-		folder->summary->folder = NULL;
 		g_object_unref (folder->summary);
 		folder->summary = NULL;
 	}
@@ -580,7 +579,7 @@ folder_get_message_flags (CamelFolder *folder,
 
 	g_return_val_if_fail (folder->summary != NULL, 0);
 
-	info = camel_folder_summary_uid (folder->summary, uid);
+	info = camel_folder_summary_get (folder->summary, uid);
 	if (info == NULL)
 		return 0;
 
@@ -601,7 +600,7 @@ folder_set_message_flags (CamelFolder *folder,
 
 	g_return_val_if_fail (folder->summary != NULL, FALSE);
 
-	info = camel_folder_summary_uid (folder->summary, uid);
+	info = camel_folder_summary_get (folder->summary, uid);
 	if (info == NULL)
 		return FALSE;
 
@@ -621,7 +620,7 @@ folder_get_message_user_flag (CamelFolder *folder,
 
 	g_return_val_if_fail (folder->summary != NULL, FALSE);
 
-	info = camel_folder_summary_uid (folder->summary, uid);
+	info = camel_folder_summary_get (folder->summary, uid);
 	if (info == NULL)
 		return FALSE;
 
@@ -641,7 +640,7 @@ folder_set_message_user_flag (CamelFolder *folder,
 
 	g_return_if_fail (folder->summary != NULL);
 
-	info = camel_folder_summary_uid (folder->summary, uid);
+	info = camel_folder_summary_get (folder->summary, uid);
 	if (info == NULL)
 		return;
 
@@ -659,7 +658,7 @@ folder_get_message_user_tag (CamelFolder *folder,
 
 	g_return_val_if_fail (folder->summary != NULL, NULL);
 
-	info = camel_folder_summary_uid (folder->summary, uid);
+	info = camel_folder_summary_get (folder->summary, uid);
 	if (info == NULL)
 		return NULL;
 
@@ -679,7 +678,7 @@ folder_set_message_user_tag (CamelFolder *folder,
 
 	g_return_if_fail (folder->summary != NULL);
 
-	info = camel_folder_summary_uid (folder->summary, uid);
+	info = camel_folder_summary_get (folder->summary, uid);
 	if (info == NULL)
 		return;
 
@@ -692,7 +691,7 @@ folder_get_uids (CamelFolder *folder)
 {
 	g_return_val_if_fail (folder->summary != NULL, NULL);
 
-	return camel_folder_summary_array (folder->summary);
+	return camel_folder_summary_get_array (folder->summary);
 }
 
 static GPtrArray *
@@ -717,11 +716,7 @@ static void
 folder_free_uids (CamelFolder *folder,
                   GPtrArray *array)
 {
-	gint i;
-
-	for (i = 0; i < array->len; i++)
-		camel_pstring_free (array->pdata[i]);
-	g_ptr_array_free (array, TRUE);
+	camel_folder_summary_free_array (array);
 }
 
 static gint
@@ -749,15 +744,14 @@ folder_get_summary (CamelFolder *folder)
 {
 	g_return_val_if_fail (folder->summary != NULL, NULL);
 
-	return camel_folder_summary_array (folder->summary);
+	return camel_folder_summary_get_array (folder->summary);
 }
 
 static void
 folder_free_summary (CamelFolder *folder,
-                     GPtrArray *summary)
+                     GPtrArray *array)
 {
-	g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
-	g_ptr_array_free (summary, TRUE);
+	camel_folder_summary_free_array (array);
 }
 
 static void
@@ -777,7 +771,7 @@ folder_get_message_info (CamelFolder *folder,
 {
 	g_return_val_if_fail (folder->summary != NULL, NULL);
 
-	return camel_folder_summary_uid (folder->summary, uid);
+	return camel_folder_summary_get (folder->summary, uid);
 }
 
 static void
@@ -802,7 +796,7 @@ static void
 folder_delete (CamelFolder *folder)
 {
 	if (folder->summary)
-		camel_folder_summary_clear (folder->summary);
+		camel_folder_summary_clear (folder->summary, NULL);
 }
 
 static void
@@ -1959,7 +1953,7 @@ camel_folder_get_unread_message_count (CamelFolder *folder)
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), -1);
 	g_return_val_if_fail (folder->summary != NULL, -1);
 
-	return folder->summary->unread_count;
+	return camel_folder_summary_get_unread_count (folder->summary);
 }
 
 /**
@@ -1975,7 +1969,7 @@ camel_folder_get_deleted_message_count (CamelFolder *folder)
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), -1);
 	g_return_val_if_fail (folder->summary != NULL, -1);
 
-	return folder->summary->deleted_count;
+	return camel_folder_summary_get_deleted_count (folder->summary);
 }
 
 /**

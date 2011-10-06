@@ -150,7 +150,7 @@ mh_folder_get_message_sync (CamelFolder *folder,
 		return NULL;
 
 	/* get the message summary info */
-	if ((info = camel_folder_summary_uid (folder->summary, uid)) == NULL) {
+	if ((info = camel_folder_summary_get (folder->summary, uid)) == NULL) {
 		set_cannot_get_message_ex (
 			error, CAMEL_FOLDER_ERROR_INVALID_UID,
 			uid, lf->folder_path, _("No such message"));

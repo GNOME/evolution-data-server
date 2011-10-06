@@ -171,18 +171,18 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 			continue;
 		}
 
-		if (dest == mi->summary->folder) {
+		if (dest == camel_folder_summary_get_folder (mi->orig_summary)) {
 			/* Just unset the flag on the original message */
 			camel_folder_set_message_flags (
 				source, uids->pdata[i], sbit, 0);
 		} else {
 			if (batch == NULL)
 				batch = g_hash_table_new (NULL, NULL);
-			md = g_hash_table_lookup (batch, mi->summary->folder);
+			md = g_hash_table_lookup (batch, camel_folder_summary_get_folder (mi->orig_summary));
 			if (md == NULL) {
 				md = g_malloc0 (sizeof (*md));
 				md->cancellable = cancellable;
-				md->folder = g_object_ref (mi->summary->folder);
+				md->folder = g_object_ref (camel_folder_summary_get_folder (mi->orig_summary));
 				md->uids = g_ptr_array_new ();
 				md->dest = dest;
 				md->delete = delete_originals;
@@ -192,7 +192,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 				if (cancellable != NULL)
 					g_object_ref (cancellable);
 				camel_folder_freeze (md->folder);
-				g_hash_table_insert (batch, mi->summary->folder, md);
+				g_hash_table_insert (batch, camel_folder_summary_get_folder (mi->orig_summary), md);
 			}
 
 			/* unset the bit temporarily */

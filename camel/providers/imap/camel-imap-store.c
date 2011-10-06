@@ -1654,19 +1654,24 @@ static gboolean
 imap_summary_is_dirty (CamelFolderSummary *summary)
 {
 	CamelImapMessageInfo *info;
-	gint max, i;
-	gint found = FALSE;
+	gint i;
+	gboolean found = FALSE;
+	GPtrArray *known_uids;
 
-	max = camel_folder_summary_count (summary);
-	for (i = 0; i < max && !found; i++) {
-		info = (CamelImapMessageInfo *) camel_folder_summary_index (summary, i);
+	known_uids = camel_folder_summary_get_array (summary);
+	g_return_val_if_fail (known_uids != NULL, FALSE);
+
+	for (i = 0; i < known_uids->len && !found; i++) {
+		info = (CamelImapMessageInfo *) camel_folder_summary_get (summary, g_ptr_array_index (known_uids, i));
 		if (info) {
 			found = info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED;
 			camel_message_info_free (info);
 		}
 	}
 
-	return FALSE;
+	camel_folder_summary_free_array (known_uids);
+
+	return found;
 }
 
 static gboolean
@@ -2878,8 +2883,8 @@ fill_fi (CamelStore *store,
 		else
 			ims = (CamelImapSummary *) camel_imap_summary_new (folder, NULL);
 
-		fi->unread = ((CamelFolderSummary *) ims)->unread_count;
-		fi->total = ((CamelFolderSummary *) ims)->saved_count;
+		fi->unread = camel_folder_summary_get_unread_count ((CamelFolderSummary *) ims);
+		fi->total = camel_folder_summary_get_saved_count ((CamelFolderSummary *) ims);
 
 		if (!folder->summary)
 			g_object_unref (ims);
@@ -3171,27 +3176,6 @@ get_folder_info_offline (CamelStore *store,
 
 	return fi;
 }
-
-#if 0
-static gboolean
-folder_flags_have_changed (CamelFolder *folder)
-{
-	CamelMessageInfo *info;
-	gint i, max;
-
-	max = camel_folder_summary_count (folder->summary);
-	for (i = 0; i < max; i++) {
-		info = camel_folder_summary_index (folder->summary, i);
-		if (!info)
-			continue;
-		if (info->flags & CAMEL_MESSAGE_FOLDER_FLAGGED) {
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-#endif
 
 /* Use this whenever you need to ensure you're both connected and
  * online. */

@@ -620,7 +620,7 @@ camel_folder_thread_messages_new (CamelFolder *folder,
 {
 	CamelFolderThread *thread;
 	GPtrArray *summary;
-	GPtrArray *fsummary;
+	GPtrArray *fsummary = NULL;
 	gint i;
 
 	thread = g_malloc (sizeof (*thread));
@@ -631,12 +631,13 @@ camel_folder_thread_messages_new (CamelFolder *folder,
 	thread->folder = g_object_ref (folder);
 
 	camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
-	fsummary = camel_folder_summary_array (folder->summary);
 	thread->summary = summary = g_ptr_array_new ();
 
 	/* prefer given order from the summary order */
-	if (!uids)
+	if (!uids) {
+		fsummary = camel_folder_summary_get_array (folder->summary);
 		uids = fsummary;
+	}
 
 	for (i = 0; i < uids->len; i++) {
 		CamelMessageInfo *info;
@@ -648,7 +649,8 @@ camel_folder_thread_messages_new (CamelFolder *folder,
 		/* FIXME: Check if the info is leaking */
 	}
 
-	camel_folder_free_summary (folder, fsummary);
+	if (fsummary)
+		camel_folder_summary_free_array (fsummary);
 
 	thread_summary (thread, summary);
 

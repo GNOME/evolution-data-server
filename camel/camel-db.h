@@ -200,6 +200,49 @@ typedef struct _CamelFIRecord {
 
 typedef struct _CamelDB CamelDB;
 
+typedef enum {
+	CAMEL_DB_COLUMN_UNKNOWN = -1,
+	CAMEL_DB_COLUMN_ATTACHMENT,
+	CAMEL_DB_COLUMN_BDATA,
+	CAMEL_DB_COLUMN_BODYSTRUCTURE,
+	CAMEL_DB_COLUMN_CINFO,
+	CAMEL_DB_COLUMN_DELETED,
+	CAMEL_DB_COLUMN_DELETED_COUNT,
+	CAMEL_DB_COLUMN_DRECEIVED,
+	CAMEL_DB_COLUMN_DSENT,
+	CAMEL_DB_COLUMN_FLAGS,
+	CAMEL_DB_COLUMN_FOLDER_NAME,
+	CAMEL_DB_COLUMN_FOLLOWUP_COMPLETED_ON,
+	CAMEL_DB_COLUMN_FOLLOWUP_DUE_BY,
+	CAMEL_DB_COLUMN_FOLLOWUP_FLAG,
+	CAMEL_DB_COLUMN_IMPORTANT,
+	CAMEL_DB_COLUMN_JND_COUNT,
+	CAMEL_DB_COLUMN_JUNK,
+	CAMEL_DB_COLUMN_JUNK_COUNT,
+	CAMEL_DB_COLUMN_LABELS,
+	CAMEL_DB_COLUMN_MAIL_CC,
+	CAMEL_DB_COLUMN_MAIL_FROM,
+	CAMEL_DB_COLUMN_MAIL_TO,
+	CAMEL_DB_COLUMN_MLIST,
+	CAMEL_DB_COLUMN_NEXTUID,
+	CAMEL_DB_COLUMN_PART,
+	CAMEL_DB_COLUMN_PREVIEW,
+	CAMEL_DB_COLUMN_READ,
+	CAMEL_DB_COLUMN_REPLIED,
+	CAMEL_DB_COLUMN_SAVED_COUNT,
+	CAMEL_DB_COLUMN_SIZE,
+	CAMEL_DB_COLUMN_SUBJECT,
+	CAMEL_DB_COLUMN_TIME,
+	CAMEL_DB_COLUMN_UID,
+	CAMEL_DB_COLUMN_UNREAD_COUNT,
+	CAMEL_DB_COLUMN_USERTAGS,
+	CAMEL_DB_COLUMN_VERSION,
+	CAMEL_DB_COLUMN_VISIBLE_COUNT,
+	CAMEL_DB_COLUMN_VUID
+} CamelDBKnownColumnNames;
+
+CamelDBKnownColumnNames camel_db_get_column_ident (GHashTable **hash, gint index, gint ncols, gchar **col_names);
+
 /**
  * CamelDBSelectCB:
  *
@@ -231,7 +274,7 @@ gint camel_db_create_folders_table (CamelDB *cdb, GError **error);
 gint camel_db_select (CamelDB *cdb, const gchar * stmt, CamelDBSelectCB callback, gpointer data, GError **error);
 
 gint camel_db_write_folder_info_record (CamelDB *cdb, CamelFIRecord *record, GError **error);
-gint camel_db_read_folder_info_record (CamelDB *cdb, const gchar *folder_name, CamelFIRecord **record, GError **error);
+gint camel_db_read_folder_info_record (CamelDB *cdb, const gchar *folder_name, CamelFIRecord *record, GError **error);
 
 gint camel_db_prepare_message_info_table (CamelDB *cdb, const gchar *folder_name, GError **error);
 
@@ -260,7 +303,7 @@ GPtrArray * camel_db_get_vuids_from_vfolder (CamelDB *db, const gchar *folder_na
 gint camel_db_add_to_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, GError **error);
 gint camel_db_add_to_vfolder_transaction (CamelDB *db, const gchar *folder_name, const gchar *vuid, GError **error);
 
-gint camel_db_get_folder_uids (CamelDB *db, const gchar *folder_name, const gchar *sort_by, const gchar *collate, GPtrArray *array, GError **error);
+gint camel_db_get_folder_uids (CamelDB *db, const gchar *folder_name, const gchar *sort_by, const gchar *collate, GHashTable *hash, GError **error);
 
 GPtrArray * camel_db_get_folder_junk_uids (CamelDB *db, gchar *folder_name, GError **error);
 GPtrArray * camel_db_get_folder_deleted_uids (CamelDB *db, const gchar *folder_name, GError **error);
@@ -282,5 +325,5 @@ gint camel_db_write_preview_record (CamelDB *db, const gchar *folder_name, const
 
 gint
 camel_db_reset_folder_version (CamelDB *cdb, const gchar *folder_name, gint reset_version, GError **error);
-#endif
 
+#endif

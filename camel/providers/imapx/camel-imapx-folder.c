@@ -125,6 +125,10 @@ camel_imapx_folder_new (CamelStore *store,
 
 	g_free (summary_file);
 
+	camel_store_summary_connect_folder_summary (
+		(CamelStoreSummary *) ((CamelIMAPXStore *) store)->summary,
+		folder_name, folder->summary);
+
 	return folder;
 }
 
@@ -132,6 +136,7 @@ static void
 imapx_folder_dispose (GObject *object)
 {
 	CamelIMAPXFolder *folder = CAMEL_IMAPX_FOLDER (object);
+	CamelStore *parent_store;
 
 	if (folder->cache != NULL) {
 		g_object_unref (folder->cache);
@@ -141,6 +146,13 @@ imapx_folder_dispose (GObject *object)
 	if (folder->search != NULL) {
 		g_object_unref (folder->search);
 		folder->search = NULL;
+	}
+
+	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (folder));
+	if (parent_store) {
+		camel_store_summary_disconnect_folder_summary (
+			(CamelStoreSummary *) ((CamelIMAPXStore *) parent_store)->summary,
+			CAMEL_FOLDER (folder)->summary);
 	}
 
 	/* Chain up to parent's dispose() method. */

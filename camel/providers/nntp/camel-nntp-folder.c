@@ -42,10 +42,18 @@ G_DEFINE_TYPE (CamelNNTPFolder, camel_nntp_folder, CAMEL_TYPE_DISCO_FOLDER)
 static void
 nntp_folder_dispose (GObject *object)
 {
+	CamelStore *parent_store;
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (object);
 
 	camel_folder_summary_save_to_db (
 		CAMEL_FOLDER (nntp_folder)->summary, NULL);
+
+	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (nntp_folder));
+	if (parent_store) {
+		camel_store_summary_disconnect_folder_summary (
+			(CamelStoreSummary *) ((CamelNNTPStore *) parent_store)->summary,
+			CAMEL_FOLDER (nntp_folder)->summary);
+	}
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_nntp_folder_parent_class)->dispose (object);
@@ -140,7 +148,7 @@ unset_flagged_flag (const gchar *uid,
 {
 	CamelMessageInfo *info;
 
-	info = camel_folder_summary_uid (summary, uid);
+	info = camel_folder_summary_get (summary, uid);
 	if (info) {
 		CamelMessageInfoBase *base = (CamelMessageInfoBase *) info;
 
@@ -737,6 +745,10 @@ camel_nntp_folder_new (CamelStore *parent,
 		g_object_unref (folder);
 		folder = NULL;
 	}
+
+	camel_store_summary_connect_folder_summary (
+		(CamelStoreSummary *) ((CamelNNTPStore *) parent)->summary,
+		folder_name, folder->summary);
 
 	return folder;
 }

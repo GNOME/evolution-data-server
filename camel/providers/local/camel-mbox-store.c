@@ -130,9 +130,9 @@ fill_fi (CamelStore *store,
 
 		mbs = (CamelMboxSummary *) camel_mbox_summary_new (NULL, path, folderpath, NULL);
 		/* FIXME[disk-summary] track exception */
-		if (camel_folder_summary_header_load_from_db ((CamelFolderSummary *) mbs, store, fi->full_name, NULL) != -1) {
-			fi->unread = ((CamelFolderSummary *) mbs)->unread_count;
-			fi->total = ((CamelFolderSummary *) mbs)->saved_count;
+		if (camel_folder_summary_header_load_from_db ((CamelFolderSummary *) mbs, store, fi->full_name, NULL)) {
+			fi->unread = camel_folder_summary_get_unread_count ((CamelFolderSummary *) mbs);
+			fi->total = camel_folder_summary_get_saved_count ((CamelFolderSummary *) mbs);
 		}
 
 		g_object_unref (mbs);

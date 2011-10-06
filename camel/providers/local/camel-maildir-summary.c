@@ -150,8 +150,7 @@ CamelMaildirSummary
 {
 	CamelMaildirSummary *o;
 
-	o = g_object_new (CAMEL_TYPE_MAILDIR_SUMMARY, NULL);
-	((CamelFolderSummary *) o)->folder = folder;
+	o = g_object_new (CAMEL_TYPE_MAILDIR_SUMMARY, "folder", folder, NULL);
 	if (folder) {
 		CamelStore *parent_store;
 
@@ -289,7 +288,7 @@ message_info_new_from_header (CamelFolderSummary *s,
 			mdi->info.info.uid = camel_pstring_add (camel_folder_summary_next_uid_string (s), TRUE);
 
 		/* handle 'duplicates' */
-		info = camel_folder_summary_peek_info (s, uid);
+		info = camel_folder_summary_peek_loaded (s, uid);
 		if (info) {
 			d(printf("already seen uid '%s', just summarising instead\n", uid));
 			camel_message_info_free (mi);
@@ -550,6 +549,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	gchar *new, *cur;
 	gchar *uid;
 	struct _remove_data rd = { cls, changes };
+	GPtrArray *known_uids;
 
 	g_mutex_lock (((CamelMaildirSummary *) cls)->priv->summary_lock);
 
@@ -580,10 +580,10 @@ maildir_summary_check (CamelLocalSummary *cls,
 	/* keeps track of all uid's that have not been processed */
 	left = g_hash_table_new (g_str_hash, g_str_equal);
 	camel_folder_summary_prepare_fetch_all (s, error);
-	count = camel_folder_summary_count (s);
-	forceindex = count == 0;
-	for (i = 0; i < count; i++) {
-		info = camel_folder_summary_index ((CamelFolderSummary *) cls, i);
+	known_uids = camel_folder_summary_get_array (s);
+	forceindex = !known_uids || known_uids->len == 0;
+	for (i = 0; known_uids && i < known_uids->len; i++) {
+		info = camel_folder_summary_get ((CamelFolderSummary *) cls, g_ptr_array_index (known_uids, i));
 		if (info) {
 			g_hash_table_insert (left, (gchar *) camel_message_info_uid (info), info);
 		}
@@ -620,7 +620,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 			g_hash_table_remove (left, uid);
 		}
 
-		info = camel_folder_summary_uid ((CamelFolderSummary *) cls, uid);
+		info = camel_folder_summary_get ((CamelFolderSummary *) cls, uid);
 		if (info == NULL) {
 			/* must be a message incorporated by another client, this is not a 'recent' uid */
 			if (camel_maildir_summary_add (cls, d->d_name, forceindex, cancellable) == 0)
@@ -676,7 +676,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 				continue;
 
 			/* already in summary?  shouldn't happen, but just incase ... */
-			if ((info = camel_folder_summary_uid ((CamelFolderSummary *) cls, name))) {
+			if ((info = camel_folder_summary_get ((CamelFolderSummary *) cls, name))) {
 				camel_message_info_free (info);
 				newname = destname = camel_folder_summary_next_uid_string (s);
 			} else {
@@ -720,6 +720,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	g_free (new);
 	g_free (cur);
 
+	camel_folder_summary_free_array (known_uids);
 	g_mutex_unlock (((CamelMaildirSummary *) cls)->priv->summary_lock);
 
 	return 0;
@@ -734,11 +735,12 @@ maildir_summary_sync (CamelLocalSummary *cls,
                       GError **error)
 {
 	CamelLocalSummaryClass *local_summary_class;
-	gint count, i;
+	gint i;
 	CamelMessageInfo *info;
 	CamelMaildirMessageInfo *mdi;
 	gchar *name;
 	struct stat st;
+	GPtrArray *known_uids;
 
 	d(printf("summary_sync(expunge=%s)\n", expunge?"true":"false"));
 
@@ -748,11 +750,11 @@ maildir_summary_sync (CamelLocalSummary *cls,
 	camel_operation_push_message (cancellable, _("Storing folder"));
 
 	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
-	count = camel_folder_summary_count ((CamelFolderSummary *) cls);
-	for (i = count - 1; i >= 0; i--) {
-		camel_operation_progress (cancellable, (count - i) * 100 / count);
+	known_uids = camel_folder_summary_get_array ((CamelFolderSummary *) cls);
+	for (i = (known_uids ? known_uids->len : 0) - 1; i >= 0; i--) {
+		camel_operation_progress (cancellable, (known_uids->len - i) * 100 / known_uids->len);
 
-		info = camel_folder_summary_index ((CamelFolderSummary *) cls, i);
+		info = camel_folder_summary_get ((CamelFolderSummary *) cls, g_ptr_array_index (known_uids, i));
 		mdi = (CamelMaildirMessageInfo *) info;
 		if (mdi && (mdi->info.info.flags & CAMEL_MESSAGE_DELETED) && expunge) {
 			name = g_strdup_printf("%s/cur/%s", cls->folder_path, camel_maildir_info_filename(mdi));
@@ -801,6 +803,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 		camel_message_info_free (info);
 	}
 
+	camel_folder_summary_free_array (known_uids);
 	camel_operation_pop_message (cancellable);
 
 	/* Chain up to parent's sync() method. */

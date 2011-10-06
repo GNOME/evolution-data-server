@@ -56,7 +56,7 @@ struct _CamelNNTPSummaryPrivate {
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
-static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
+static gboolean summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, GError **error);
 
 G_DEFINE_TYPE (CamelNNTPSummary, camel_nntp_summary, CAMEL_TYPE_FOLDER_SUMMARY)
@@ -97,8 +97,7 @@ camel_nntp_summary_new (CamelFolder *folder,
 {
 	CamelNNTPSummary *cns;
 
-	cns = g_object_new (CAMEL_TYPE_NNTP_SUMMARY, NULL);
-	((CamelFolderSummary *) cns)->folder = folder;
+	cns = g_object_new (CAMEL_TYPE_NNTP_SUMMARY, "folder", folder, NULL);
 
 	camel_folder_summary_set_filename ((CamelFolderSummary *) cns, path);
 	camel_folder_summary_set_build_content ((CamelFolderSummary *) cns, FALSE);
@@ -128,15 +127,15 @@ message_info_new_from_header (CamelFolderSummary *s,
 	return (CamelMessageInfo *) mi;
 }
 
-static gint
+static gboolean
 summary_header_from_db (CamelFolderSummary *s,
                         CamelFIRecord *mir)
 {
 	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
 	gchar *part;
 
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_from_db (s, mir) == -1)
-		return -1;
+	if (!CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_from_db (s, mir))
+		return FALSE;
 
 	part = mir->bdata;
 
@@ -144,7 +143,7 @@ summary_header_from_db (CamelFolderSummary *s,
 	cns->high = bdata_extract_digit (&part);
 	cns->low = bdata_extract_digit (&part);
 
-	return 0;
+	return TRUE;
 }
 
 static gint
@@ -229,10 +228,8 @@ add_range_xover (CamelNNTPSummary *cns,
 	gint ret;
 	guint n, count, total, size;
 	struct _xover_header *xover;
-	GHashTable *summary_table;
 
 	s = (CamelFolderSummary *) cns;
-	summary_table = camel_folder_summary_get_hashtable (s);
 
 	url = camel_service_get_camel_url (CAMEL_SERVICE (store));
 
@@ -301,7 +298,7 @@ add_range_xover (CamelNNTPSummary *cns,
 
 		/* truncated line? ignore? */
 		if (xover == NULL) {
-			if (!GPOINTER_TO_INT (g_hash_table_lookup (summary_table, cns->priv->uid))) {
+			if (!camel_folder_summary_check_uid (s, cns->priv->uid)) {
 				mi = (CamelMessageInfoBase *)
 					camel_folder_summary_add_from_header (s, headers);
 				if (mi) {
@@ -321,8 +318,6 @@ add_range_xover (CamelNNTPSummary *cns,
 	}
 
 	camel_operation_pop_message (cancellable);
-
-	camel_folder_summary_free_hashtable (summary_table);
 
 	return ret;
 }
@@ -344,11 +339,8 @@ add_range_head (CamelNNTPSummary *cns,
 	guint i, n, count, total;
 	CamelMessageInfo *mi;
 	CamelMimeParser *mp;
-	GHashTable *summary_table;
 
 	s = (CamelFolderSummary *) cns;
-
-	summary_table = camel_folder_summary_get_hashtable (s);
 
 	mp = camel_mime_parser_new ();
 
@@ -384,7 +376,7 @@ add_range_head (CamelNNTPSummary *cns,
 		if ((msgid = strchr (line, '<')) && (line = strchr (msgid + 1, '>'))) {
 			line[1] = 0;
 			cns->priv->uid = g_strdup_printf ("%u,%s\n", n, msgid);
-			if (!GPOINTER_TO_INT (g_hash_table_lookup (summary_table, cns->priv->uid))) {
+			if (!camel_folder_summary_check_uid (s, cns->priv->uid)) {
 				if (camel_mime_parser_init_with_stream (mp, (CamelStream *) store->stream, error) == -1)
 					goto error;
 				mi = camel_folder_summary_add_from_parser (s, mp);
@@ -429,8 +421,6 @@ ioerror:
 
 	camel_operation_pop_message (cancellable);
 
-	camel_folder_summary_free_hashtable (summary_table);
-
 	return ret;
 }
 
@@ -456,8 +446,8 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 
 	s = (CamelFolderSummary *) cns;
 
-	full_name = camel_folder_get_full_name (s->folder);
-	parent_store = camel_folder_get_parent_store (s->folder);
+	full_name = camel_folder_get_full_name (camel_folder_summary_get_folder (s));
+	parent_store = camel_folder_get_parent_store (camel_folder_summary_get_folder (s));
 
 	line +=3;
 	n = strtoul (line, &line, 10);
@@ -484,36 +474,37 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 
 	/* Check for messages no longer on the server */
 	if (cns->low != f) {
-		count = camel_folder_summary_count (s);
-		for (i = 0; i < count; i++) {
-			gchar *uid;
-			const gchar *msgid;
+		GPtrArray *known_uids;
 
-			uid  = camel_folder_summary_uid_from_index (s, i);
-			n = strtoul (uid, NULL, 10);
+		known_uids = camel_folder_summary_get_array (s);
+		if (known_uids) {
+			for (i = 0; i < known_uids->len; i++) {
+				const gchar *uid;
+				const gchar *msgid;
 
-			if (n < f || n > l) {
-				dd (printf ("nntp_summary: %u is lower/higher than lowest/highest article, removed\n", n));
-				/* Since we use a global cache this could prematurely remove
-				 * a cached message that might be in another folder - not that important as
-				 * it is a true cache */
-				msgid = strchr (uid, ',');
-				if (msgid)
-					camel_data_cache_remove (store->cache, "cache", msgid+1, NULL);
-				camel_folder_change_info_remove_uid (changes, uid);
-				del = g_list_prepend (del, uid);
-				camel_folder_summary_remove_uid_fast (s, uid);
-				uid = NULL; /*Lets not free it */
-				count--;
-				i--;
+				uid  = g_ptr_array_index (known_uids, i);
+				n = strtoul (uid, NULL, 10);
+
+				if (n < f || n > l) {
+					dd (printf ("nntp_summary: %u is lower/higher than lowest/highest article, removed\n", n));
+					/* Since we use a global cache this could prematurely remove
+					 * a cached message that might be in another folder - not that important as
+					 * it is a true cache */
+					msgid = strchr (uid, ',');
+					if (msgid)
+						camel_data_cache_remove (store->cache, "cache", msgid + 1, NULL);
+					camel_folder_change_info_remove_uid (changes, uid);
+					del = g_list_prepend (del, (gpointer) camel_pstring_strdup (uid));
+					camel_folder_summary_remove_uid (s, uid);
+				}
 			}
-			g_free (uid);
+			camel_folder_summary_free_array (known_uids);
 		}
 		cns->low = f;
 	}
 
 	camel_db_delete_uids (parent_store->cdb_w, full_name, del, NULL);
-	g_list_foreach (del, (GFunc) g_free, NULL);
+	g_list_foreach (del, (GFunc) camel_pstring_free, NULL);
 	g_list_free (del);
 
 	if (cns->high < l) {

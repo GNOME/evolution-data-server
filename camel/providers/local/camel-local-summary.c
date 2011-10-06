@@ -44,7 +44,7 @@
 #define EXTRACT_FIRST_DIGIT(val) val=strtoul (part, &part, 10);
 
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *, GError **error);
-static gint summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
+static gboolean summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
 
 static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
@@ -144,7 +144,7 @@ camel_local_summary_construct (CamelLocalSummary *new,
 		g_object_ref (index);
 }
 
-static gint
+static gboolean
 local_summary_load (CamelLocalSummary *cls,
                     gint forceindex,
                     GError **error)
@@ -154,7 +154,7 @@ local_summary_load (CamelLocalSummary *cls,
 }
 
 /* load/check the summary */
-gint
+gboolean
 camel_local_summary_load (CamelLocalSummary *cls,
                           gint forceindex,
                           GError **error)
@@ -166,13 +166,13 @@ camel_local_summary_load (CamelLocalSummary *cls,
 	class = CAMEL_LOCAL_SUMMARY_GET_CLASS (cls);
 
 	if ((forceindex && class->need_index ())
-	    || class->load (cls, forceindex, error) == -1) {
+	    || !class->load (cls, forceindex, error)) {
 		w(g_warning("Could not load summary: flags may be reset"));
-		camel_folder_summary_clear ((CamelFolderSummary *) cls);
-		return -1;
+		camel_folder_summary_clear ((CamelFolderSummary *) cls, NULL);
+		return FALSE;
 	}
 
-	return 0;
+	return TRUE;
 }
 
 void camel_local_summary_check_force (CamelLocalSummary *cls)
@@ -295,13 +295,16 @@ camel_local_summary_check (CamelLocalSummary *cls,
 	if (ret != -1) {
 		gint i;
 		CamelFolderSummary *s = (CamelFolderSummary *) cls;
+		GPtrArray *known_uids;
 		struct _stat_info stats = { 0 };
 
+		known_uids = camel_folder_summary_get_array (s);
 		for (i = 0; i < camel_folder_summary_count (s); i++) {
-			CamelMessageInfo *info = camel_folder_summary_index (s, i);
+			CamelMessageInfo *info = camel_folder_summary_get (s, g_ptr_array_index (known_uids, i));
 			do_stat_mi (cls, &stats, info);
 			camel_message_info_free (info);
 		}
+		camel_folder_summary_free_array (known_uids);
 
 		printf("\nMemory used by summary:\n\n");
 		printf("Total of %d messages\n", camel_folder_summary_count(s));
@@ -456,7 +459,7 @@ local_summary_sync (CamelLocalSummary *cls,
 
 	folder_summary = CAMEL_FOLDER_SUMMARY (cls);
 
-	if (camel_folder_summary_save_to_db (folder_summary, error) == -1) {
+	if (!camel_folder_summary_save_to_db (folder_summary, error)) {
 		g_warning ("Could not save summary for local providers");
 		return -1;
 	}
@@ -475,42 +478,6 @@ local_summary_need_index (void)
 	return 1;
 }
 
-static void
-update_summary (CamelFolderSummary *summary,
-                CamelMessageInfoBase *info,
-                CamelMessageInfoBase *old)
-{
-	gint unread = 0, deleted = 0, junk = 0;
-	guint32 flags = info->flags;
-	guint32 oldflags = old->flags;
-
-	if ((flags & CAMEL_MESSAGE_SEEN) != (oldflags & CAMEL_MESSAGE_SEEN))
-		unread = (oldflags & CAMEL_MESSAGE_SEEN) ? 1 : -1;
-
-	if ((flags & CAMEL_MESSAGE_DELETED) != (oldflags & CAMEL_MESSAGE_DELETED))
-		deleted = (oldflags & CAMEL_MESSAGE_DELETED) ? 1 : -1;
-
-	if ((flags & CAMEL_MESSAGE_JUNK) != (oldflags & CAMEL_MESSAGE_JUNK))
-		junk = (oldflags & CAMEL_MESSAGE_JUNK) ? 1 : -1;
-
-	/* Things would already be flagged */
-
-	if (summary) {
-
-		if (unread)
-			summary->unread_count -= unread;
-		if (deleted)
-			summary->deleted_count += deleted;
-		if (junk)
-			summary->junk_count += junk;
-		if (junk && !deleted)
-			summary->junk_not_deleted_count += junk;
-		if (junk ||  deleted)
-			summary->visible_count -= junk ? junk : deleted;
-	}
-
-}
-
 static CamelMessageInfo *
 local_summary_add (CamelLocalSummary *cls,
                    CamelMimeMessage *msg,
@@ -519,7 +486,6 @@ local_summary_add (CamelLocalSummary *cls,
                    GError **error)
 {
 	CamelLocalMessageInfo *mi;
-	CamelFolderSummary *s = (CamelFolderSummary *) cls;
 	gchar *xev;
 
 	d(printf("Adding message to summary\n"));
@@ -541,8 +507,7 @@ local_summary_add (CamelLocalSummary *cls,
 				tag = tag->next;
 			}
 
-			update_summary (s, (CamelMessageInfoBase *) mi, (CamelMessageInfoBase *) info);
-			mi->info.flags |= (camel_message_info_flags (info) & 0xffff);
+			camel_message_info_set_flags ((CamelMessageInfo *) mi, 0xffff, camel_message_info_flags (info));
 			mi->info.size = camel_message_info_size (info);
 		}
 
@@ -693,7 +658,7 @@ local_summary_decode_x_evolution (CamelLocalSummary *cls,
 	return 0;
 }
 
-static gint
+static gboolean
 summary_header_from_db (CamelFolderSummary *s,
                         CamelFIRecord *fir)
 {
@@ -702,8 +667,8 @@ summary_header_from_db (CamelFolderSummary *s,
 
 	/* We dont actually add our own headers, but version that we don't anyway */
 
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_local_summary_parent_class)->summary_header_from_db (s, fir) == -1)
-		return -1;
+	if (!CAMEL_FOLDER_SUMMARY_CLASS (camel_local_summary_parent_class)->summary_header_from_db (s, fir))
+		return FALSE;
 
 	part = fir->bdata;
 	if (part) {
@@ -715,7 +680,7 @@ summary_header_from_db (CamelFolderSummary *s,
 	g_free (fir->bdata);
 	fir->bdata = tmp;
 
-	return 0;
+	return TRUE;
 }
 
 static gint

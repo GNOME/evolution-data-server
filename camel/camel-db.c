@@ -1070,32 +1070,41 @@ camel_db_delete_uid_from_vfolder_transaction (CamelDB *db,
 }
 
 static gint
-read_uids_callback (gpointer ref,
+read_uids_callback (gpointer ref_array,
                     gint ncol,
                     gchar **cols,
                     gchar **name)
 {
-	GPtrArray *array = (GPtrArray *) ref;
+	GPtrArray *array = ref_array;
 
-	#if 0
-	gint i;
-	for (i = 0; i < ncol; ++i) {
-		if (!name[i] || !cols[i])
-			continue;
+	g_return_val_if_fail (ncol == 1, 0);
 
-		if (!strcmp (name [i], "uid"))
-			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[i])));
-	}
-	#else
-		if (cols[0])
-			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[0])));
-	#endif
+	if (cols[0])
+		g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[0])));
 
-	 return 0;
+	return 0;
+}
+
+static gint
+read_uids_to_hash_callback (gpointer ref_hash,
+			    gint ncol,
+			    gchar **cols,
+			    gchar **name)
+{
+	GHashTable *hash = ref_hash;
+
+	g_return_val_if_fail (ncol == 2, 0);
+
+	if (cols[0])
+		g_hash_table_insert (hash, (gchar *) camel_pstring_strdup (cols[0]), GUINT_TO_POINTER (cols[1] ? strtoul (cols[1], NULL, 10) : 0));
+
+	return 0;
 }
 
 /**
  * camel_db_get_folder_uids:
+ *
+ * Fills hash with uid->GUINT_TO_POINTER (flag)
  *
  * Since: 2.24
  **/
@@ -1104,15 +1113,15 @@ camel_db_get_folder_uids (CamelDB *db,
                           const gchar *folder_name,
                           const gchar *sort_by,
                           const gchar *collate,
-                          GPtrArray *array,
+                          GHashTable *hash,
                           GError **error)
 {
 	 gchar *sel_query;
 	 gint ret;
 
-	 sel_query = sqlite3_mprintf("SELECT uid FROM %Q%s%s%s%s", folder_name, sort_by ? " order by " : "", sort_by ? sort_by: "", (sort_by && collate) ? " collate " : "", (sort_by && collate) ? collate : "");
+	 sel_query = sqlite3_mprintf("SELECT uid,flags FROM %Q%s%s%s%s", folder_name, sort_by ? " order by " : "", sort_by ? sort_by: "", (sort_by && collate) ? " collate " : "", (sort_by && collate) ? collate : "");
 
-	 ret = camel_db_select (db, sel_query, read_uids_callback, array, error);
+	 ret = camel_db_select (db, sel_query, read_uids_to_hash_callback, hash, error);
 	 sqlite3_free (sel_query);
 
 	 return ret;
@@ -1172,13 +1181,19 @@ camel_db_get_folder_deleted_uids (CamelDB *db,
 	 return array;
 }
 
+struct ReadPreviewData
+{
+	GHashTable *columns_hash;
+	GHashTable *hash;
+};
+
 static gint
 read_preview_callback (gpointer ref,
                        gint ncol,
                        gchar **cols,
                        gchar **name)
 {
-	GHashTable *hash = (GHashTable *) ref;
+	struct ReadPreviewData *rpd = ref;
 	const gchar *uid = NULL;
 	gchar *msg = NULL;
 	gint i;
@@ -1187,13 +1202,20 @@ read_preview_callback (gpointer ref,
 		if (!name[i] || !cols[i])
 			continue;
 
-		if (!strcmp (name [i], "uid"))
-			uid = camel_pstring_strdup (cols[i]);
-		else if (!strcmp (name [i], "preview"))
-			msg = g_strdup (cols[i]);
+		switch (camel_db_get_column_ident (&rpd->columns_hash, i, ncol, name)) {
+			case CAMEL_DB_COLUMN_UID:
+				uid = camel_pstring_strdup (cols[i]);
+				break;
+			case CAMEL_DB_COLUMN_PREVIEW:
+				msg = g_strdup (cols[i]);
+				break;
+			default:
+				g_warn_if_reached ();
+				break;
+		}
 	}
 
-	g_hash_table_insert (hash, (gchar *) uid, msg);
+	g_hash_table_insert (rpd->hash, (gchar *) uid, msg);
 
 	return 0;
 }
@@ -1208,21 +1230,28 @@ camel_db_get_folder_preview (CamelDB *db,
                              const gchar *folder_name,
                              GError **error)
 {
-	 gchar *sel_query;
-	 gint ret;
-	 GHashTable *hash = g_hash_table_new (g_str_hash, g_str_equal);
+	gchar *sel_query;
+	gint ret;
+	struct ReadPreviewData rpd;
+	GHashTable *hash = g_hash_table_new (g_str_hash, g_str_equal);
 
-	 sel_query = sqlite3_mprintf("SELECT uid, preview FROM '%q_preview'", folder_name);
+	sel_query = sqlite3_mprintf ("SELECT uid, preview FROM '%q_preview'", folder_name);
 
-	 ret = camel_db_select (db, sel_query, read_preview_callback, hash, error);
-	 sqlite3_free (sel_query);
+	rpd.columns_hash = NULL;
+	rpd.hash = hash;
 
-	 if (!g_hash_table_size (hash) || ret != 0) {
-		 g_hash_table_destroy (hash);
-		 hash = NULL;
-	 }
+	ret = camel_db_select (db, sel_query, read_preview_callback, &rpd, error);
+	sqlite3_free (sel_query);
 
-	 return hash;
+	if (rpd.columns_hash)
+		g_hash_table_destroy (rpd.columns_hash);
+
+	if (!g_hash_table_size (hash) || ret != 0) {
+		g_hash_table_destroy (hash);
+		hash = NULL;
+	}
+
+	return hash;
 }
 
 /**
@@ -1256,20 +1285,8 @@ read_vuids_callback (gpointer ref,
 {
 	GPtrArray *array = (GPtrArray *) ref;
 
-	#if 0
-	gint i;
-
-	for (i = 0; i < ncol; ++i) {
-		if (!name[i] || !cols[i] || strlen (cols[i]) <= 8)
-			continue;
-
-		if (!strcmp (name [i], "vuid"))
-			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[i]+8)));
-	}
-	#else
-		if (cols[0] && strlen (cols[0]) > 8)
-			g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[0]+8)));
-	#endif
+	if (cols[0] && strlen (cols[0]) > 8)
+		g_ptr_array_add (array, (gchar *) (camel_pstring_strdup (cols[0]+8)));
 
 	return 0;
 }
@@ -1768,13 +1785,19 @@ camel_db_write_folder_info_record (CamelDB *cdb,
 	return ret;
 }
 
+struct ReadFirData
+{
+	GHashTable *columns_hash;
+	CamelFIRecord *record;
+};
+
 static gint
 read_fir_callback (gpointer ref,
                    gint ncol,
                    gchar **cols,
                    gchar **name)
 {
-	CamelFIRecord *record = *(CamelFIRecord **) ref;
+	struct ReadFirData *rfd = ref;
 	gint i;
 
 	d(g_print ("\nread_fir_callback called \n"));
@@ -1783,39 +1806,47 @@ read_fir_callback (gpointer ref,
 		if (!name[i] || !cols[i])
 			continue;
 
-		if (!strcmp (name [i], "folder_name"))
-			record->folder_name = g_strdup (cols[i]);
-
-		else if (!strcmp (name [i], "version"))
-			record->version = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-
-		else if (!strcmp (name [i], "flags"))
-			record->flags = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-
-		else if (!strcmp (name [i], "nextuid"))
-			record->nextuid = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-
-		else if (!strcmp (name [i], "time"))
-			record->time = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-
-		else if (!strcmp (name [i], "saved_count"))
-			record->saved_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-
-		else if (!strcmp (name [i], "unread_count"))
-			record->unread_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-
-		else if (!strcmp (name [i], "deleted_count"))
-			record->deleted_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-
-		else if (!strcmp (name [i], "junk_count"))
-			record->junk_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-		else if (!strcmp (name [i], "visible_count"))
-			record->visible_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-		else if (!strcmp (name [i], "jnd_count"))
-			record->jnd_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
-		else if (!strcmp (name [i], "bdata"))
-			record->bdata = g_strdup (cols[i]);
-
+		switch (camel_db_get_column_ident (&rfd->columns_hash, i, ncol, name)) {
+			case CAMEL_DB_COLUMN_FOLDER_NAME:
+				rfd->record->folder_name = g_strdup (cols[i]);
+				break;
+			case CAMEL_DB_COLUMN_VERSION:
+				rfd->record->version = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				break;
+			case CAMEL_DB_COLUMN_FLAGS:
+				rfd->record->flags = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				break;
+			case CAMEL_DB_COLUMN_NEXTUID:
+				rfd->record->nextuid = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				break;
+			case CAMEL_DB_COLUMN_TIME:
+				rfd->record->time = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				break;
+			case CAMEL_DB_COLUMN_SAVED_COUNT:
+				rfd->record->saved_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				break;
+			case CAMEL_DB_COLUMN_UNREAD_COUNT:
+				rfd->record->unread_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				break;
+			case CAMEL_DB_COLUMN_DELETED_COUNT:
+				rfd->record->deleted_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				break;
+			case CAMEL_DB_COLUMN_JUNK_COUNT:
+				rfd->record->junk_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				break;
+			case CAMEL_DB_COLUMN_VISIBLE_COUNT:
+				rfd->record->visible_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				break;
+			case CAMEL_DB_COLUMN_JND_COUNT:
+				rfd->record->jnd_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				break;
+			case CAMEL_DB_COLUMN_BDATA:
+				rfd->record->bdata = g_strdup (cols[i]);
+				break;
+			default:
+				g_warn_if_reached ();
+				break;
+		}
 	}
 
 	return 0;
@@ -1829,17 +1860,24 @@ read_fir_callback (gpointer ref,
 gint
 camel_db_read_folder_info_record (CamelDB *cdb,
                                   const gchar *folder_name,
-                                  CamelFIRecord **record,
+                                  CamelFIRecord *record,
                                   GError **error)
 {
+	struct ReadFirData rfd;
 	gchar *query;
 	gint ret;
 
-	query = sqlite3_mprintf ("SELECT * FROM folders WHERE folder_name = %Q", folder_name);
-	ret = camel_db_select (cdb, query, read_fir_callback, record, error);
+	rfd.columns_hash = NULL;
+	rfd.record = record;
 
+	query = sqlite3_mprintf ("SELECT * FROM folders WHERE folder_name = %Q", folder_name);
+	ret = camel_db_select (cdb, query, read_fir_callback, &rfd, error);
 	sqlite3_free (query);
-	return (ret);
+
+	if (rfd.columns_hash)
+		g_hash_table_destroy (rfd.columns_hash);
+
+	return ret;
 }
 
 /**
@@ -2369,4 +2407,95 @@ camel_db_flush_in_memory_transactions (CamelDB *cdb,
 	sqlite3_free (cmd);
 
 	return ret;
+}
+
+static struct _known_column_names {
+	const gchar *name;
+	CamelDBKnownColumnNames ident;
+} known_column_names[] = {
+	{ "attachment",			CAMEL_DB_COLUMN_ATTACHMENT },
+	{ "bdata",			CAMEL_DB_COLUMN_BDATA },
+	{ "bodystructure",		CAMEL_DB_COLUMN_BODYSTRUCTURE },
+	{ "cinfo",			CAMEL_DB_COLUMN_CINFO },
+	{ "deleted",			CAMEL_DB_COLUMN_DELETED },
+	{ "deleted_count",		CAMEL_DB_COLUMN_DELETED_COUNT },
+	{ "dreceived",			CAMEL_DB_COLUMN_DRECEIVED },
+	{ "dsent",			CAMEL_DB_COLUMN_DSENT },
+	{ "flags",			CAMEL_DB_COLUMN_FLAGS },
+	{ "folder_name",		CAMEL_DB_COLUMN_FOLDER_NAME },
+	{ "followup_completed_on",	CAMEL_DB_COLUMN_FOLLOWUP_COMPLETED_ON },
+	{ "followup_due_by",		CAMEL_DB_COLUMN_FOLLOWUP_DUE_BY },
+	{ "followup_flag",		CAMEL_DB_COLUMN_FOLLOWUP_FLAG },
+	{ "important",			CAMEL_DB_COLUMN_IMPORTANT },
+	{ "jnd_count",			CAMEL_DB_COLUMN_JND_COUNT },
+	{ "junk",			CAMEL_DB_COLUMN_JUNK },
+	{ "junk_count",			CAMEL_DB_COLUMN_JUNK_COUNT },
+	{ "labels",			CAMEL_DB_COLUMN_LABELS },
+	{ "mail_cc",			CAMEL_DB_COLUMN_MAIL_CC },
+	{ "mail_from",			CAMEL_DB_COLUMN_MAIL_FROM },
+	{ "mail_to",			CAMEL_DB_COLUMN_MAIL_TO },
+	{ "mlist",			CAMEL_DB_COLUMN_MLIST },
+	{ "nextuid",			CAMEL_DB_COLUMN_NEXTUID },
+	{ "part",			CAMEL_DB_COLUMN_PART },
+	{ "preview",			CAMEL_DB_COLUMN_PREVIEW },
+	{ "read",			CAMEL_DB_COLUMN_READ },
+	{ "replied",			CAMEL_DB_COLUMN_REPLIED },
+	{ "saved_count",		CAMEL_DB_COLUMN_SAVED_COUNT },
+	{ "size",			CAMEL_DB_COLUMN_SIZE },
+	{ "subject",			CAMEL_DB_COLUMN_SUBJECT },
+	{ "time",			CAMEL_DB_COLUMN_TIME },
+	{ "uid",			CAMEL_DB_COLUMN_UID },
+	{ "unread_count",		CAMEL_DB_COLUMN_UNREAD_COUNT },
+	{ "usertags",			CAMEL_DB_COLUMN_USERTAGS },
+	{ "version",			CAMEL_DB_COLUMN_VERSION },
+	{ "visible_count",		CAMEL_DB_COLUMN_VISIBLE_COUNT },
+	{ "vuid",			CAMEL_DB_COLUMN_VUID }
+};
+
+/**
+ * camel_db_get_column_ident:
+ * Traverses column name from index @index into an enum #CamelDBKnownColumnNames value;
+ * The @col_names contains @ncols columns. First time this is called is created
+ * the @hash from col_names indexes into the enum, and this is reused for every other call.
+ * The function expects that column names are returned always in the same order.
+ * When all rows are read the @hash table can be freed with g_hash_table_destroy().
+ **/
+CamelDBKnownColumnNames
+camel_db_get_column_ident (GHashTable **hash, gint index, gint ncols, gchar **col_names)
+{
+	gpointer value = NULL;
+
+	g_return_val_if_fail (hash != NULL, CAMEL_DB_COLUMN_UNKNOWN);
+	g_return_val_if_fail (col_names != NULL, CAMEL_DB_COLUMN_UNKNOWN);
+	g_return_val_if_fail (ncols > 0, CAMEL_DB_COLUMN_UNKNOWN);
+	g_return_val_if_fail (index >= 0, CAMEL_DB_COLUMN_UNKNOWN);
+	g_return_val_if_fail (index < ncols, CAMEL_DB_COLUMN_UNKNOWN);
+
+	if (!*hash) {
+		gint ii, jj, from, max = G_N_ELEMENTS (known_column_names);
+
+		*hash = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+		for (ii = 0, jj = 0; ii < ncols; ii++) {
+			const gchar *name = col_names[ii];
+			gboolean first = TRUE;
+
+			if (!name)
+				continue;
+
+			for (from = jj; first || jj != from; jj = (jj + 1) % max, first = FALSE) {
+				if (g_str_equal (name, known_column_names[jj].name)) {
+					g_hash_table_insert (*hash, GINT_TO_POINTER (ii), GINT_TO_POINTER (known_column_names[jj].ident));
+					break;
+				}
+			}
+
+			if (from == jj && !first)
+				g_warning ("%s: missing column name '%s' in a list of known columns", G_STRFUNC, name);
+		}
+	}
+
+	g_return_val_if_fail (g_hash_table_lookup_extended (*hash, GINT_TO_POINTER (index), NULL, &value), CAMEL_DB_COLUMN_UNKNOWN);
+
+	return GPOINTER_TO_INT (value);
 }

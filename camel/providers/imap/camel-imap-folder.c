@@ -192,6 +192,7 @@ static void
 imap_folder_dispose (GObject *object)
 {
 	CamelImapFolder *imap_folder;
+	CamelStore *parent_store;
 
 	imap_folder = CAMEL_IMAP_FOLDER (object);
 
@@ -214,6 +215,13 @@ imap_folder_dispose (GObject *object)
 		camel_offline_journal_write (imap_folder->journal, NULL);
 		g_object_unref (imap_folder->journal);
 		imap_folder->journal = NULL;
+	}
+
+	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (imap_folder));
+	if (parent_store) {
+		camel_store_summary_disconnect_folder_summary (
+			(CamelStoreSummary *) ((CamelImapStore *) parent_store)->summary,
+			CAMEL_FOLDER (imap_folder)->summary);
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -488,6 +496,10 @@ camel_imap_folder_new (CamelStore *parent,
 
 	imap_folder->search = camel_imap_search_new (folder_dir);
 
+	camel_store_summary_connect_folder_summary (
+		(CamelStoreSummary *) ((CamelImapStore *) parent)->summary,
+		folder_name, folder->summary);
+
 	return folder;
 }
 
@@ -557,7 +569,7 @@ camel_imap_folder_selected (CamelFolder *folder,
 	CamelMessageFlags perm_flags = 0;
 	GData *fetch_data;
 	gint i, count;
-	gchar *resp, *old_uid;
+	gchar *resp;
 
 	count = camel_folder_summary_count (folder->summary);
 
@@ -599,7 +611,7 @@ camel_imap_folder_selected (CamelFolder *folder,
 		imap_summary->validity = validity;
 	else if (validity != imap_summary->validity) {
 		imap_summary->validity = validity;
-		camel_folder_summary_clear (folder->summary);
+		camel_folder_summary_clear (folder->summary, NULL);
 		CAMEL_IMAP_FOLDER_REC_LOCK (imap_folder, cache_lock);
 		camel_imap_message_cache_clear (imap_folder->cache);
 		CAMEL_IMAP_FOLDER_REC_UNLOCK (imap_folder, cache_lock);
@@ -614,6 +626,8 @@ camel_imap_folder_selected (CamelFolder *folder,
 	else if (count != 0 && !imap_folder->need_rescan) {
 		CamelStore *parent_store;
 		CamelImapStore *store;
+		GPtrArray *known_uids;
+		const gchar *old_uid;
 
 		parent_store = camel_folder_get_parent_store (folder);
 		store = CAMEL_IMAP_STORE (parent_store);
@@ -649,13 +663,17 @@ camel_imap_folder_selected (CamelFolder *folder,
 		}
 		camel_imap_response_free_without_processing (store, response);
 
-		old_uid = camel_folder_summary_uid_from_index (folder->summary, count - 1);
+		known_uids = camel_folder_summary_get_array (folder->summary);
+		camel_folder_sort_uids (folder, known_uids);
+		old_uid = NULL;
+		if (known_uids && count - 1 >= 0 && count - 1 < known_uids->len)
+			old_uid = g_ptr_array_index (known_uids, count - 1);
 		if (old_uid) {
 			val = strtoul (old_uid, NULL, 10);
-			g_free (old_uid);
 			if (uid == 0 || uid != val)
 				imap_folder->need_rescan = TRUE;
 		}
+		camel_folder_summary_free_array (known_uids);
 	}
 
 	/* Now rescan if we need to */
@@ -882,7 +900,7 @@ imap_refresh_info_sync (CamelFolder *folder,
 		guint32 unread, total;
 
 		total = camel_folder_summary_count (folder->summary);
-		unread = folder->summary->unread_count;
+		unread = camel_folder_summary_get_unread_count (folder->summary);
 
 		if (si->total != total
 		    || si->unread != unread) {
@@ -905,7 +923,7 @@ imap_refresh_info_sync (CamelFolder *folder,
 			if (get_folder_status (folder, &server_total, &server_unread, cancellable, &local_error)) {
 
 				total = camel_folder_summary_count (folder->summary);
-				unread = folder->summary->unread_count;
+				unread = camel_folder_summary_get_unread_count (folder->summary);
 
 				if (total != server_total || unread != server_unread)
 					check_rescan = 1;
@@ -1035,6 +1053,7 @@ imap_rescan (CamelFolder *folder,
 	gboolean ok;
 	CamelFolderChangeInfo *changes = NULL;
 	gboolean success;
+	GPtrArray *known_uids;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	store = CAMEL_IMAP_STORE (parent_store);
@@ -1044,8 +1063,10 @@ imap_rescan (CamelFolder *folder,
 
 	imap_folder->need_rescan = FALSE;
 
-	summary_len = camel_folder_summary_count (folder->summary);
+	known_uids = camel_folder_summary_get_array (folder->summary);
+	summary_len = known_uids ? known_uids->len : 0;
 	if (summary_len == 0) {
+		camel_folder_summary_free_array (known_uids);
 		if (exists)
 			return camel_imap_folder_changed (
 				folder, exists, NULL, cancellable, error);
@@ -1056,19 +1077,22 @@ imap_rescan (CamelFolder *folder,
 	camel_operation_push_message (
 		cancellable, _("Scanning for changed messages in %s"),
 		camel_folder_get_display_name (folder));
-	uid = camel_folder_summary_uid_from_index (folder->summary, summary_len - 1);
 
+	camel_folder_sort_uids (folder, known_uids);
+
+	uid = g_ptr_array_index (known_uids, summary_len - 1);
 	if (!uid) {
 		camel_operation_pop_message (cancellable);
+		camel_folder_summary_free_array (known_uids);
 		return TRUE;
 	}
 
 	ok = camel_imap_command_start (
 		store, folder, cancellable, error,
 		"UID FETCH 1:%s (FLAGS)", uid);
-	g_free (uid);
 	if (!ok) {
 		camel_operation_pop_message (cancellable);
+		camel_folder_summary_free_array (known_uids);
 		return FALSE;
 	}
 
@@ -1110,6 +1134,7 @@ imap_rescan (CamelFolder *folder,
 		g_free (new);
 		g_free (resp);
 
+		camel_folder_summary_free_array (known_uids);
 		return TRUE;
 	}
 
@@ -1126,6 +1151,7 @@ imap_rescan (CamelFolder *folder,
 		if (type != CAMEL_IMAP_RESPONSE_ERROR && type != CAMEL_IMAP_RESPONSE_TAGGED)
 			camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
+		camel_folder_summary_free_array (known_uids);
 		return TRUE;
 	}
 
@@ -1146,12 +1172,11 @@ imap_rescan (CamelFolder *folder,
 	for (i = 0, j = 0; i < summary_len && new[j].uid; i++) {
 		gboolean changed = FALSE;
 
-		uid = camel_folder_summary_uid_from_index (folder->summary, i);
-
+		uid = g_ptr_array_index (known_uids, i);
 		if (!uid)
 			continue;
 
-		info = camel_folder_summary_uid (folder->summary, uid);
+		info = camel_folder_summary_get (folder->summary, uid);
 		if (!info) {
 			if (g_getenv("CRASH_IMAP")) { /* Debug logs to tackle on hard to get imap crasher */
 				printf ("CRASH: %s: %s",
@@ -1164,40 +1189,6 @@ imap_rescan (CamelFolder *folder,
 		iinfo = (CamelImapMessageInfo *) info;
 
 		if (strcmp (uid, new[j].uid) != 0) {
-			g_free (uid);
-
-			/* these will be deleted from db in a moment. So adjust the counts please */
-			if (info) {
-				CamelMessageInfoBase *dinfo = (CamelMessageInfoBase *) info;
-				gint unread = 0, deleted = 0, junk = 0;
-				guint32 flags;
-
-				flags = dinfo->flags;
-				if (!(flags & CAMEL_MESSAGE_SEEN))
-					unread = 1;
-
-				if (flags & CAMEL_MESSAGE_DELETED)
-					deleted = 1;
-
-				if (flags & CAMEL_MESSAGE_JUNK)
-					junk = 1;
-
-				if (unread)
-					folder->summary->unread_count--;
-
-				if (deleted)
-					folder->summary->deleted_count--;
-				if (junk)
-					folder->summary->junk_count--;
-
-				if (junk && !deleted)
-					folder->summary->junk_not_deleted_count--;
-
-				if (!junk &&  !deleted)
-					folder->summary->visible_count--;
-
-				folder->summary->saved_count--;
-			}
 			seq = i + 1 - del;
 			del++;
 			g_array_append_val (removed, seq);
@@ -1205,49 +1196,18 @@ imap_rescan (CamelFolder *folder,
 			continue;
 		}
 
-		g_free (uid);
-
 		/* Update summary flags */
 
 		if (new[j].flags != iinfo->server_flags) {
 			guint32 server_set, server_cleared;
-			gint read = 0, deleted = 0, junk = 0;
 
 			server_set = new[j].flags & ~iinfo->server_flags;
 			server_cleared = iinfo->server_flags & ~new[j].flags;
 
-			if (server_set & CAMEL_MESSAGE_SEEN)
-				read = 1;
-			else if (server_cleared & CAMEL_MESSAGE_SEEN)
-				read = -1;
-
-			if (server_set & CAMEL_MESSAGE_DELETED)
-				deleted = 1;
-			else if (server_cleared & CAMEL_MESSAGE_DELETED)
-				deleted = -1;
-
-			if (server_set & CAMEL_MESSAGE_JUNK)
-				junk = 1;
-			else if (server_cleared & CAMEL_MESSAGE_JUNK)
-				junk = -1;
-
-			d(printf("%s %s %s %s\n", iinfo->info.uid, read == 1 ? "read" : ( read == -1 ? "unread" : ""),
-				 deleted == 1 ? "deleted" : ( deleted == -1 ? "undeleted" : ""),
-				 junk == 1 ? "junk" : ( junk == -1 ? "unjunked" : "")));
-
-			if (read)
-				folder->summary->unread_count -= read;
-			if (deleted)
-				folder->summary->deleted_count += deleted;
-			if (junk)
-				folder->summary->junk_count += junk;
-			if (junk && !deleted)
-				folder->summary->junk_not_deleted_count += junk;
-			if (junk ||  deleted)
-				folder->summary->visible_count -= junk ? junk : deleted;
-
-			iinfo->info.flags = (iinfo->info.flags | server_set) & ~server_cleared;
+			camel_message_info_set_flags ((CamelMessageInfo *) iinfo, server_set | server_cleared, (iinfo->info.flags | server_set) & ~server_cleared);
 			iinfo->server_flags = new[j].flags;
+			/* unset folder_flagged, because these are flags received froma server */
+			iinfo->info.flags = iinfo->info.flags & (~CAMEL_MESSAGE_FOLDER_FLAGGED);
 			iinfo->info.dirty = TRUE;
 			if (info->summary)
 				camel_folder_summary_touch (info->summary);
@@ -1297,41 +1257,8 @@ imap_rescan (CamelFolder *folder,
 	 */
 
 	for (i = seq; i <= summary_len; i++) {
-		CamelMessageInfoBase *dinfo;
 		gint j;
-		dinfo = (CamelMessageInfoBase *) camel_folder_summary_index (folder->summary, i - 1);
-		if (dinfo) {
-			/* these will be deleted from db in a moment. So adjust the counts please */
-			gint unread = 0, deleted = 0, junk = 0;
-			guint32 flags;
 
-			flags = dinfo->flags;
-			if (!(flags & CAMEL_MESSAGE_SEEN))
-				unread = 1;
-
-			if (flags & CAMEL_MESSAGE_DELETED)
-				deleted = 1;
-
-			if (flags & CAMEL_MESSAGE_JUNK)
-				junk = 1;
-
-			if (unread)
-				folder->summary->unread_count--;
-
-			if (deleted)
-				folder->summary->deleted_count--;
-			if (junk)
-				folder->summary->junk_count--;
-
-			if (junk && !deleted)
-				folder->summary->junk_not_deleted_count--;
-
-			if (!junk &&  !deleted)
-				folder->summary->visible_count--;
-
-			folder->summary->saved_count--;
-			camel_message_info_free (dinfo);
-		}
 		j = seq - del;
 		g_array_append_val (removed, j);
 	}
@@ -1341,6 +1268,7 @@ imap_rescan (CamelFolder *folder,
 		folder, exists, removed, cancellable, error);
 	g_array_free (removed, TRUE);
 
+	camel_folder_summary_free_array (known_uids);
 	return success;
 }
 
@@ -1413,7 +1341,7 @@ get_matching (CamelFolder *folder,
 		uid = summary->pdata[i];
 
 		if (uid) {
-			info = (CamelImapMessageInfo *) camel_folder_summary_uid (folder->summary, uid);
+			info = (CamelImapMessageInfo *) camel_folder_summary_get (folder->summary, uid);
 		} else
 			continue;
 
@@ -1541,9 +1469,9 @@ imap_sync_offline (CamelFolder *folder,
 		full_name = camel_folder_get_full_name (folder);
 		si = camel_store_summary_path ((CamelStoreSummary *)((CamelImapStore *) parent_store)->summary, full_name);
 		if (si) {
-			if (si->total != folder->summary->saved_count || si->unread != folder->summary->unread_count) {
-				si->total = folder->summary->saved_count;
-				si->unread = folder->summary->unread_count;
+			if (si->total != camel_folder_summary_get_saved_count (folder->summary) || si->unread != camel_folder_summary_get_unread_count (folder->summary)) {
+				si->total = camel_folder_summary_get_saved_count (folder->summary);
+				si->unread = camel_folder_summary_get_unread_count (folder->summary);
 				camel_store_summary_touch ((CamelStoreSummary *)((CamelImapStore *) parent_store)->summary);
 			}
 
@@ -1720,7 +1648,7 @@ imap_synchronize_sync (CamelFolder *folder,
 		if (!uid) /* Possibly it was sync by matching flags, which we NULLify */
 			continue;
 
-		if (!(info = (CamelImapMessageInfo *) camel_folder_summary_uid (folder->summary, uid))) {
+		if (!(info = (CamelImapMessageInfo *) camel_folder_summary_get (folder->summary, uid))) {
 			continue;
 		}
 
@@ -1922,7 +1850,7 @@ imap_expunge_uids_offline (CamelFolder *folder,
 	changes = camel_folder_change_info_new ();
 
 	for (i = 0; i < uids->len; i++) {
-		camel_folder_summary_remove_uid_fast (folder->summary, uids->pdata[i]);
+		camel_folder_summary_remove_uid (folder->summary, uids->pdata[i]);
 		camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
 		list = g_list_prepend (list, (gpointer) uids->pdata[i]);
 		/* We intentionally don't remove it from the cache because
@@ -2025,7 +1953,7 @@ imap_expunge_uids_online (CamelFolder *folder,
 
 	changes = camel_folder_change_info_new ();
 	for (i = 0; i < uids->len; i++) {
-		camel_folder_summary_remove_uid_fast (folder->summary, uids->pdata[i]);
+		camel_folder_summary_remove_uid (folder->summary, uids->pdata[i]);
 		camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
 		list = g_list_prepend (list, (gpointer) uids->pdata[i]);
 		/* We intentionally don't remove it from the cache because
@@ -2050,7 +1978,7 @@ imap_expunge_sync (CamelFolder *folder,
 	CamelStore *parent_store;
 	GPtrArray *uids = NULL;
 	const gchar *full_name;
-	gboolean success;
+	gboolean success, real_trash = FALSE;
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
@@ -2066,7 +1994,8 @@ imap_expunge_sync (CamelFolder *folder,
 
 		if (local_error == NULL && trash && (folder == trash || g_ascii_strcasecmp (full_name, camel_folder_get_full_name (trash)) == 0)) {
 			/* it's a real trash folder, thus get all mails from there */
-			uids = camel_folder_summary_array (folder->summary);
+			real_trash = TRUE;
+			uids = camel_folder_summary_get_array (folder->summary);
 		}
 
 		if (local_error != NULL)
@@ -2086,8 +2015,12 @@ imap_expunge_sync (CamelFolder *folder,
 		success = imap_expunge_uids_offline (
 			folder, uids, cancellable, error);
 
-	g_ptr_array_foreach (uids, (GFunc) camel_pstring_free, NULL);
-	g_ptr_array_free (uids, TRUE);
+	if (real_trash) {
+		camel_folder_summary_free_array (uids);
+	} else {
+		g_ptr_array_foreach (uids, (GFunc) camel_pstring_free, NULL);
+		g_ptr_array_free (uids, TRUE);
+	}
 
 	return success;
 }
@@ -2616,7 +2549,7 @@ imap_transfer_offline (CamelFolder *source,
 
 		destuid = get_temp_uid ();
 
-		mi = camel_folder_summary_uid (source->summary, uid);
+		mi = camel_folder_summary_get (source->summary, uid);
 		g_return_val_if_fail (mi != NULL, FALSE);
 
 		message = camel_folder_get_message_sync (
@@ -2892,7 +2825,7 @@ do_copy (CamelFolder *source,
 				camel_folder_delete_message (
 					source, uids->pdata[i]);
 				if (mark_moved) {
-					CamelMessageInfoBase *info = (CamelMessageInfoBase *) camel_folder_summary_uid (source->summary, uids->pdata[i]);
+					CamelMessageInfoBase *info = (CamelMessageInfoBase *) camel_folder_summary_get (source->summary, uids->pdata[i]);
 
 					if (info)
 						info->flags |= CAMEL_MESSAGE_IMAP_MOVED;
@@ -3515,7 +3448,7 @@ imap_folder_summary_uid_or_error (CamelFolderSummary *summary,
                                   GError **error)
 {
 	CamelImapMessageInfo *mi;
-	mi = (CamelImapMessageInfo *) camel_folder_summary_uid (summary, uid);
+	mi = (CamelImapMessageInfo *) camel_folder_summary_get (summary, uid);
 	if (mi == NULL) {
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
@@ -3570,7 +3503,7 @@ imap_get_message_sync (CamelFolder *folder,
 		    || store->braindamaged
 		    || mi->info.size < IMAP_SMALL_BODY_SIZE
 		    || (!content_info_incomplete (mi->info.content) && !mi->info.content->childs)) {
-			CamelMessageInfoBase *info = (CamelMessageInfoBase *) camel_folder_summary_uid (folder->summary, uid);
+			CamelMessageInfoBase *info = (CamelMessageInfoBase *) camel_folder_summary_get (folder->summary, uid);
 			msg = get_message_simple (imap_folder, uid, NULL, cancellable, &local_error);
 			if (info && !info->preview && msg && camel_folder_summary_get_need_preview (folder->summary)) {
 				if (camel_mime_message_build_preview ((CamelMimePart *) msg, (CamelMessageInfo *) info) && info->preview)
@@ -3650,7 +3583,7 @@ imap_get_message_sync (CamelFolder *folder,
 			else
 				msg = get_message (imap_folder, uid, mi->info.content, cancellable, &local_error);
 			if (msg && camel_folder_summary_get_need_preview (folder->summary)) {
-				CamelMessageInfoBase *info = (CamelMessageInfoBase *) camel_folder_summary_uid (folder->summary, uid);
+				CamelMessageInfoBase *info = (CamelMessageInfoBase *) camel_folder_summary_get (folder->summary, uid);
 				if (info && !info->preview) {
 					if (camel_mime_message_build_preview ((CamelMimePart *) msg, (CamelMessageInfo *) info) && info->preview)
 						camel_folder_summary_add_preview (folder->summary, (CamelMessageInfo *) info);
@@ -3950,41 +3883,6 @@ construct_junk_headers (gchar *header,
 	}
 }
 
-static void
-update_summary (CamelFolderSummary *summary,
-                CamelMessageInfoBase *info)
-{
-	gint unread = 0, deleted = 0, junk = 0;
-	guint32 flags = info->flags;
-
-	if (!(flags & CAMEL_MESSAGE_SEEN))
-		unread = 1;
-
-	if (flags & CAMEL_MESSAGE_DELETED)
-		deleted = 1;
-
-	if (flags & CAMEL_MESSAGE_JUNK)
-		junk = 1;
-
-	if (summary) {
-
-		if (unread)
-			summary->unread_count += unread;
-		if (deleted)
-			summary->deleted_count += deleted;
-		if (junk)
-			summary->junk_count += junk;
-		if (junk && !deleted)
-			summary->junk_not_deleted_count += junk;
-		summary->visible_count++;
-		if (junk ||  deleted)
-			summary->visible_count -= junk ? junk : deleted;
-
-		summary->saved_count++;
-		camel_folder_summary_touch (summary);
-	}
-}
-
 #define CAMEL_MESSAGE_INFO_HEADERS "DATE FROM TO CC SUBJECT REFERENCES IN-REPLY-TO MESSAGE-ID MIME-VERSION CONTENT-TYPE CONTENT-CLASS X-CALENDAR-ATTACHMENT "
 
 /* FIXME: this needs to be kept in sync with camel-mime-utils.c's list
@@ -4067,11 +3965,19 @@ imap_update_summary (CamelFolder *folder,
 	seq = camel_folder_summary_count (folder->summary);
 	first = seq + 1;
 	if (seq > 0) {
-		tempuid = camel_folder_summary_uid_from_index (folder->summary, seq -1 );
+		GPtrArray *known_uids;
 
-		if (tempuid) {
-			uidval = strtoul (tempuid, NULL, 10);
-			g_free (tempuid);
+		known_uids = camel_folder_summary_get_array (folder->summary);
+		if (known_uids) {
+			camel_folder_sort_uids (folder, known_uids);
+
+			tempuid = g_ptr_array_index (known_uids, seq - 1);
+			if (tempuid)
+				uidval = strtoul (tempuid, NULL, 10);
+			else
+				uidval = 0;
+
+			camel_folder_summary_free_array (known_uids);
 		} else
 			uidval = 0;
 	} else
@@ -4322,7 +4228,7 @@ imap_update_summary (CamelFolder *folder,
 
 		/* FIXME: If it enters if (info) it will always match the exception. So stupid */
 		/* FIXME[disk-summary] Use a db query to see if the DB exists */
-/*		info = (CamelImapMessageInfo *)camel_folder_summary_uid(folder->summary, uid); */
+/*		info = (CamelImapMessageInfo *)camel_folder_summary_get (folder->summary, uid); */
 /*		if (info) { */
 /*			for (seq = 0; seq < camel_folder_summary_count (folder->summary); seq++) { */
 /*				if (folder->summary->messages->pdata[seq] == info) */
@@ -4333,7 +4239,6 @@ imap_update_summary (CamelFolder *folder,
 		if (((CamelMessageInfoBase *) mi)->summary)
 			camel_folder_summary_touch (((CamelMessageInfoBase *) mi)->summary);
 		camel_folder_summary_add (folder->summary, (CamelMessageInfo *) mi);
-		update_summary (folder->summary, (CamelMessageInfoBase *) mi);
 		camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
 
 		/* Report all new messages as recent, even without that flag, thus new
@@ -4389,7 +4294,6 @@ camel_imap_folder_changed (CamelFolder *folder,
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	CamelFolderChangeInfo *changes;
 	gint len;
-	gchar *uid;
 	gboolean success = TRUE;
 
 	changes = camel_folder_change_info_new ();
@@ -4398,30 +4302,35 @@ camel_imap_folder_changed (CamelFolder *folder,
 		gint i, id;
 		GList *deleted = NULL;
 		const gchar *full_name;
+		const gchar *uid;
+		GPtrArray *known_uids;
 
+		known_uids = camel_folder_summary_get_array (folder->summary);
+		camel_folder_sort_uids (folder, known_uids);
 		for (i = 0; i < expunged->len; i++) {
 			id = g_array_index (expunged, int, i);
-			uid = camel_folder_summary_uid_from_index (folder->summary, id - 1);
+			uid = id - 1 + i >= 0 && id - 1 + i < known_uids->len ? g_ptr_array_index (known_uids, id - 1 + i) : NULL;
 			if (uid == NULL) {
 				/* FIXME: danw: does this mean that the summary is corrupt? */
 				/* I guess a message that we never retrieved got expunged? */
 				continue;
 			}
 
-			deleted = g_list_prepend (deleted, uid);
+			deleted = g_list_prepend (deleted, (gpointer) uid);
 			camel_folder_change_info_remove_uid (changes, uid);
 			CAMEL_IMAP_FOLDER_REC_LOCK (imap_folder, cache_lock);
 			camel_imap_message_cache_remove (imap_folder->cache, uid);
 			CAMEL_IMAP_FOLDER_REC_UNLOCK (imap_folder, cache_lock);
-			camel_folder_summary_remove_index_fast (folder->summary, id - 1);
+			camel_folder_summary_remove_uid (folder->summary, uid);
 		}
 
 		/* Delete all in one transaction */
 		full_name = camel_folder_get_full_name (folder);
 		parent_store = camel_folder_get_parent_store (folder);
 		camel_db_delete_uids (parent_store->cdb_w, full_name, deleted, NULL);
-		g_list_foreach (deleted, (GFunc) g_free, NULL);
 		g_list_free (deleted);
+
+		camel_folder_summary_free_array (known_uids);
 	}
 
 	len = camel_folder_summary_count (folder->summary);

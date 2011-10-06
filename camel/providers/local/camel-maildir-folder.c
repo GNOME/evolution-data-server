@@ -54,8 +54,8 @@ maildir_folder_cmp_uids (CamelFolder *folder,
 	g_return_val_if_fail (folder != NULL, 0);
 	g_return_val_if_fail (folder->summary != NULL, 0);
 
-	a = camel_folder_summary_uid (folder->summary, uid1);
-	b = camel_folder_summary_uid (folder->summary, uid2);
+	a = camel_folder_summary_get (folder->summary, uid1);
+	b = camel_folder_summary_get (folder->summary, uid2);
 
 	g_return_val_if_fail (a != NULL, 0);
 	g_return_val_if_fail (b != NULL, 0);
@@ -94,7 +94,7 @@ maildir_folder_get_filename (CamelFolder *folder,
 	gchar *res;
 
 	/* get the message summary info */
-	if ((info = camel_folder_summary_uid (folder->summary, uid)) == NULL) {
+	if ((info = camel_folder_summary_get (folder->summary, uid)) == NULL) {
 		set_cannot_get_message_ex (
 			error, CAMEL_FOLDER_ERROR_INVALID_UID,
 			uid, lf->folder_path, _("No such message"));
@@ -327,7 +327,7 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 			CamelMaildirMessageInfo *mdi;
 			CamelMessageInfo *info;
 
-			if ((info = camel_folder_summary_uid (source->summary, uid)) == NULL) {
+			if ((info = camel_folder_summary_get (source->summary, uid)) == NULL) {
 				set_cannot_get_message_ex (
 					error, CAMEL_FOLDER_ERROR_INVALID_UID,
 					uid, lf->folder_path, _("No such message"));

@@ -36,6 +36,7 @@
 
 #include "camel-file-utils.h"
 #include "camel-store-summary.h"
+#include "camel-folder-summary.h"
 #include "camel-url.h"
 #include "camel-win32.h"
 
@@ -50,9 +51,11 @@
 #define CAMEL_STORE_SUMMARY_VERSION (2)
 
 struct _CamelStoreSummaryPrivate {
-	GMutex *summary_lock;	/* for the summary hashtable/array */
-	GMutex *io_lock;	/* load/save lock, for access to saved_count, etc */
-	GMutex *ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before CAMEL_STORE_SUMMARY_SUMMARY_LOCK */
+	GStaticRecMutex summary_lock;	/* for the summary hashtable/array */
+	GStaticRecMutex io_lock;	/* load/save lock, for access to saved_count, etc */
+	GStaticRecMutex ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before CAMEL_STORE_SUMMARY_SUMMARY_LOCK */
+
+	GHashTable *folder_summaries; /* CamelFolderSummary->path; doesn't add reference to CamelFolderSummary */
 };
 
 G_DEFINE_TYPE (CamelStoreSummary, camel_store_summary, CAMEL_TYPE_OBJECT)
@@ -65,15 +68,16 @@ store_summary_finalize (GObject *object)
 	camel_store_summary_clear (summary);
 	g_ptr_array_free (summary->folders, TRUE);
 	g_hash_table_destroy (summary->folders_path);
+	g_hash_table_destroy (summary->priv->folder_summaries);
 
 	g_free (summary->summary_path);
 
 	if (summary->store_info_chunks != NULL)
 		camel_memchunk_destroy (summary->store_info_chunks);
 
-	g_mutex_free (summary->priv->summary_lock);
-	g_mutex_free (summary->priv->io_lock);
-	g_mutex_free (summary->priv->ref_lock);
+	g_static_rec_mutex_free (&summary->priv->summary_lock);
+	g_static_rec_mutex_free (&summary->priv->io_lock);
+	g_static_rec_mutex_free (&summary->priv->ref_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_store_summary_parent_class)->finalize (object);
@@ -309,10 +313,11 @@ camel_store_summary_init (CamelStoreSummary *summary)
 
 	summary->folders = g_ptr_array_new ();
 	summary->folders_path = g_hash_table_new (g_str_hash, g_str_equal);
+	summary->priv->folder_summaries = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
 
-	summary->priv->summary_lock = g_mutex_new ();
-	summary->priv->io_lock = g_mutex_new ();
-	summary->priv->ref_lock = g_mutex_new ();
+	g_static_rec_mutex_init (&summary->priv->summary_lock);
+	g_static_rec_mutex_init (&summary->priv->io_lock);
+	g_static_rec_mutex_init (&summary->priv->ref_lock);
 }
 
 /**
@@ -1051,13 +1056,13 @@ camel_store_summary_lock (CamelStoreSummary *summary,
 
 	switch (lock) {
 		case CAMEL_STORE_SUMMARY_SUMMARY_LOCK:
-			g_mutex_lock (summary->priv->summary_lock);
+			g_static_rec_mutex_lock (&summary->priv->summary_lock);
 			break;
 		case CAMEL_STORE_SUMMARY_IO_LOCK:
-			g_mutex_lock (summary->priv->io_lock);
+			g_static_rec_mutex_lock (&summary->priv->io_lock);
 			break;
 		case CAMEL_STORE_SUMMARY_REF_LOCK:
-			g_mutex_lock (summary->priv->ref_lock);
+			g_static_rec_mutex_lock (&summary->priv->ref_lock);
 			break;
 		default:
 			g_return_if_reached ();
@@ -1081,15 +1086,138 @@ camel_store_summary_unlock (CamelStoreSummary *summary,
 
 	switch (lock) {
 		case CAMEL_STORE_SUMMARY_SUMMARY_LOCK:
-			g_mutex_unlock (summary->priv->summary_lock);
+			g_static_rec_mutex_unlock (&summary->priv->summary_lock);
 			break;
 		case CAMEL_STORE_SUMMARY_IO_LOCK:
-			g_mutex_unlock (summary->priv->io_lock);
+			g_static_rec_mutex_unlock (&summary->priv->io_lock);
 			break;
 		case CAMEL_STORE_SUMMARY_REF_LOCK:
-			g_mutex_unlock (summary->priv->ref_lock);
+			g_static_rec_mutex_unlock (&summary->priv->ref_lock);
 			break;
 		default:
 			g_return_if_reached ();
 	}
+}
+
+static void
+store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary, GParamSpec *param, CamelStoreSummary *summary)
+{
+	const gchar *path;
+	CamelStoreInfo *si;
+
+	g_return_if_fail (folder_summary != NULL);
+	g_return_if_fail (param != NULL);
+	g_return_if_fail (summary != NULL);
+	g_return_if_fail (summary->priv != NULL);
+
+	path = g_hash_table_lookup (summary->priv->folder_summaries, folder_summary);
+	g_return_if_fail (path != NULL);
+
+	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+	si = camel_store_summary_path (summary, path);
+	if (!si) {
+		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+		g_warning ("%s: Store summary %p doesn't hold path '%s'", G_STRFUNC, summary, path);
+		return;
+	}
+
+	if (g_strcmp0 (g_param_spec_get_name (param), "saved-count") == 0) {
+		si->total = camel_folder_summary_get_saved_count (folder_summary);
+		camel_store_summary_touch (summary);
+	} else if (g_strcmp0 (g_param_spec_get_name (param), "unread-count") == 0) {
+		si->unread = camel_folder_summary_get_unread_count (folder_summary);
+		camel_store_summary_touch (summary);
+	} else {
+		g_warn_if_reached ();
+	}
+
+	camel_store_summary_info_free (summary, si);
+
+	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+}
+
+/**
+ * camel_store_summary_connect_folder_summary:
+ * @summary: a #CamelStoreSummary object
+ * @path: used path for @folder_summary
+ * @folder_summary: a #CamelFolderSummary object
+ *
+ * Connects listeners for count changes on @folder_summary to keep CamelStoreInfo.total
+ * and CamelStoreInfo.unread in sync transparently. The @folder_summary is stored
+ * in @summary as @path. Use camel_store_summary_disconnect_folder_summary()
+ * to disconnect from listening.
+ *
+ * Returns: Whether successfully connect callbacks for count change notifications.
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_store_summary_connect_folder_summary (CamelStoreSummary *summary, const gchar *path, CamelFolderSummary *folder_summary)
+{
+	CamelStoreInfo *si;
+
+	g_return_val_if_fail (summary != NULL, FALSE);
+	g_return_val_if_fail (summary->priv != NULL, FALSE);
+	g_return_val_if_fail (path != NULL, FALSE);
+	g_return_val_if_fail (folder_summary != NULL, FALSE);
+
+	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+
+	si = camel_store_summary_path (summary, path);
+	if (!si) {
+		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+		g_warning ("%s: Store summary %p doesn't hold path '%s'", G_STRFUNC, summary, path);
+		return FALSE;
+	}
+
+	camel_store_summary_info_free (summary, si);
+
+	if (g_hash_table_lookup (summary->priv->folder_summaries, folder_summary)) {
+		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+		g_warning ("%s: Store summary %p already listens on folder summary %p", G_STRFUNC, summary, folder_summary);
+		return FALSE;
+	}
+
+	g_hash_table_insert (summary->priv->folder_summaries, folder_summary, g_strdup (path));
+	g_signal_connect (folder_summary, "notify::saved-count", G_CALLBACK (store_summary_sync_folder_summary_count_cb), summary);
+	g_signal_connect (folder_summary, "notify::unread-count", G_CALLBACK (store_summary_sync_folder_summary_count_cb), summary);
+
+	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+
+	return TRUE;
+}
+
+/**
+ * camel_store_summary_disconnect_folder_summary:
+ * @summary: a #CamelStoreSummary object
+ * @folder_summary: a #CamelFolderSummary object
+ *
+ * Diconnects count change listeners previously connected
+ * by camel_store_summary_connect_folder_summary().
+ *
+ * Returns: Whether such connection existed and whether was successfully removed.
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_store_summary_disconnect_folder_summary (CamelStoreSummary *summary, CamelFolderSummary *folder_summary)
+{
+	g_return_val_if_fail (summary != NULL, FALSE);
+	g_return_val_if_fail (summary->priv != NULL, FALSE);
+	g_return_val_if_fail (folder_summary != NULL, FALSE);
+
+	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+
+	if (!g_hash_table_lookup (summary->priv->folder_summaries, folder_summary)) {
+		camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+		g_warning ("%s: Store summary %p is not connected to folder summary %p", G_STRFUNC, summary, folder_summary);
+		return FALSE;
+	}
+
+	g_signal_handlers_disconnect_by_func (folder_summary, G_CALLBACK (store_summary_sync_folder_summary_count_cb), summary);
+	g_hash_table_remove (summary->priv->folder_summaries, folder_summary);
+
+	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+
+	return TRUE;
 }

@@ -43,11 +43,11 @@ static CamelMessageInfo *message_info_migrate (CamelFolderSummary *s, FILE *in);
 static gboolean info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state);
 static CamelMessageContentInfo *content_info_migrate (CamelFolderSummary *s, FILE *in);
 
-static gint summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
+static gboolean summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, GError **error);
 static CamelMIRecord * message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info);
 static CamelMessageInfo * message_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir);
-static gint content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir);
+static gboolean content_info_to_db (CamelFolderSummary *s, CamelMessageContentInfo *info, CamelMIRecord *mir);
 static CamelMessageContentInfo * content_info_from_db (CamelFolderSummary *s, CamelMIRecord *mir);
 
 G_DEFINE_TYPE (CamelImapSummary, camel_imap_summary, CAMEL_TYPE_FOLDER_SUMMARY)
@@ -123,23 +123,6 @@ sort_uid_cmp (gpointer enc,
 	return (a1 < a1) ? -1 : (a1 > a2) ? 1 : 0;
 }
 
-static gint
-uid_compare (gconstpointer va,
-             gconstpointer vb)
-{
-	const gchar **sa = (const gchar **) va, **sb = (const gchar **) vb;
-	gulong a, b;
-
-	a = strtoul (*sa, NULL, 10);
-	b = strtoul (*sb, NULL, 10);
-	if (a < b)
-		return -1;
-	else if (a == b)
-		return 0;
-	else
-		return 1;
-}
-
 /**
  * camel_imap_summary_new:
  * @folder: Parent folder.
@@ -159,8 +142,8 @@ camel_imap_summary_new (CamelFolder *folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 
-	summary = g_object_new (CAMEL_TYPE_IMAP_SUMMARY, NULL);
-	summary->folder = folder;
+	summary = g_object_new (CAMEL_TYPE_IMAP_SUMMARY, "folder", folder, NULL);
+
 	/* Don't do DB sort. Its pretty slow to load */
 	if (folder && 0) {
 		camel_db_set_collate (
@@ -173,27 +156,25 @@ camel_imap_summary_new (CamelFolder *folder,
 	camel_folder_summary_set_build_content (summary, TRUE);
 	camel_folder_summary_set_filename (summary, filename);
 
-	if (camel_folder_summary_load_from_db (summary, NULL) == -1) {
+	if (!camel_folder_summary_load_from_db (summary, NULL)) {
 		/* FIXME: Isn't this dangerous ? We clear the summary
 		if it cannot be loaded, for some random reason.
 		We need to pass the ex and find out why it is not loaded etc. ? */
-		camel_folder_summary_clear_db (summary);
+		camel_folder_summary_clear (summary, NULL);
 	}
-
-	g_ptr_array_sort (summary->uids, (GCompareFunc) uid_compare);
 
 	return summary;
 }
 
-static gint
+static gboolean
 summary_header_from_db (CamelFolderSummary *s,
                         CamelFIRecord *mir)
 {
 	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY (s);
 	gchar *part;
 
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->summary_header_from_db (s, mir) == -1)
-		return -1;
+	if (!CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->summary_header_from_db (s, mir))
+		return FALSE;
 
 	part = mir->bdata;
 
@@ -203,10 +184,10 @@ summary_header_from_db (CamelFolderSummary *s,
 	if (ims->version > CAMEL_IMAP_SUMMARY_VERSION) {
 		g_warning("Unkown summary version\n");
 		errno = EINVAL;
-		return -1;
+		return FALSE;
 	}
 
-	return 0;
+	return TRUE;
 }
 
 static gint
@@ -375,7 +356,7 @@ content_info_migrate (CamelFolderSummary *s,
 		return camel_folder_summary_content_info_new (s);
 }
 
-static gint
+static gboolean
 content_info_to_db (CamelFolderSummary *s,
                     CamelMessageContentInfo *info,
                     CamelMIRecord *mir)
@@ -390,7 +371,7 @@ content_info_to_db (CamelFolderSummary *s,
 		oldr = mir->cinfo;
 		mir->cinfo = oldr ? g_strdup_printf("%s 0", oldr) : g_strdup ("0");
 		g_free (oldr);
-		return 0;
+		return TRUE;
 	}
 }
 

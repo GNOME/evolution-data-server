@@ -89,7 +89,6 @@ void imapx_write_flags (CamelStream *stream, guint32 flags, struct _CamelFlag *u
 gboolean imapx_update_message_info_flags (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags, guint32 permanent_flags, CamelFolder *folder, gboolean unsolicited);
 void imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info, guint32 server_flags, CamelFlag *server_user_flags,
 							CamelFolder *folder);
-void imapx_update_summary_for_removed_message (CamelMessageInfo *info, CamelFolder *folder, gboolean unsolicited);
 void imapx_update_store_summary (CamelFolder *folder);
 
 /* ********************************************************************** */

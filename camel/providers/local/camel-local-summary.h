@@ -75,7 +75,7 @@ struct _CamelLocalSummary {
 struct _CamelLocalSummaryClass {
 	CamelFolderSummaryClass parent_class;
 
-	gint (*load)(CamelLocalSummary *cls, gint forceindex, GError **error);
+	gboolean (*load)(CamelLocalSummary *cls, gint forceindex, GError **error);
 	gint (*check)(CamelLocalSummary *cls, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 	gint (*sync)(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 	CamelMessageInfo *(*add)(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
@@ -89,7 +89,7 @@ GType	camel_local_summary_get_type	(void);
 void	camel_local_summary_construct	(CamelLocalSummary *new, const gchar *filename, const gchar *local_name, CamelIndex *index);
 
 /* load/check the summary */
-gint camel_local_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error);
+gboolean camel_local_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error);
 /* check for new/removed messages */
 gint camel_local_summary_check (CamelLocalSummary *cls, CamelFolderChangeInfo *, GCancellable *cancellable, GError **error);
 /* perform a folder sync or expunge, if needed */

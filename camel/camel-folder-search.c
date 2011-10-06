@@ -883,7 +883,7 @@ search_match_all (struct _ESExp *f,
 	for (i = 0; i < v->len; i++) {
 		const gchar *uid;
 
-		search->current = camel_folder_summary_uid (search->folder->summary, v->pdata[i]);
+		search->current = camel_folder_summary_get (search->folder->summary, v->pdata[i]);
 		if (!search->current)
 			continue;
 		uid = camel_message_info_uid (search->current);

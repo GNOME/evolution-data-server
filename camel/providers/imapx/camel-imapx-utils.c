@@ -264,13 +264,10 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
                                  gboolean unsolicited)
 {
 	gboolean changed = FALSE;
-	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
 
-	if (server_flags != xinfo->server_flags)
-	{
+	if (server_flags != xinfo->server_flags) {
 		guint32 server_set, server_cleared;
-		gint read = 0, deleted = 0, junk = 0;
 
 		server_set = server_flags & ~xinfo->server_flags;
 		server_cleared = xinfo->server_flags & ~server_flags;
@@ -281,44 +278,12 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
 		if (permanent_flags > 0)
 			server_cleared &= permanent_flags;
 
-		if (server_set & CAMEL_MESSAGE_SEEN)
-			read = 1;
-		else if (server_cleared & CAMEL_MESSAGE_SEEN)
-			read = -1;
+		camel_message_info_set_flags ((CamelMessageInfo *) xinfo, server_set | server_cleared, (xinfo->info.flags | server_set) & ~server_cleared);
 
-		if (server_set & CAMEL_MESSAGE_DELETED)
-			deleted = 1;
-		else if (server_cleared & CAMEL_MESSAGE_DELETED)
-			deleted = -1;
-
-		if (server_set & CAMEL_MESSAGE_JUNK)
-			junk = 1;
-		else if (server_cleared & CAMEL_MESSAGE_JUNK)
-			junk = -1;
-
-		d('?', "%s %s %s %s\n", xinfo->info.uid, read == 1 ? "read" : ( read == -1 ? "unread" : ""),
-		  deleted == 1 ? "deleted" : ( deleted == -1 ? "undeleted" : ""),
-		  junk == 1 ? "junk" : ( junk == -1 ? "unjunked" : ""));
-
-		if (read) {
-			folder->summary->unread_count -= read;
-			if (unsolicited)
-				ifolder->unread_on_server -= read;
-		}
-		if (deleted)
-			folder->summary->deleted_count += deleted;
-		if (junk)
-			folder->summary->junk_count += junk;
-		if (junk && !deleted)
-			folder->summary->junk_not_deleted_count += junk;
-		if (junk ||  deleted)
-			folder->summary->visible_count -= junk ? junk : deleted;
-
-		xinfo->info.flags = (xinfo->info.flags | server_set) & ~server_cleared;
 		xinfo->server_flags = server_flags;
+		xinfo->info.flags = xinfo->info.flags & ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 		xinfo->info.dirty = TRUE;
-		if (info->summary)
-			camel_folder_summary_touch (info->summary);
+
 		changed = TRUE;
 	}
 
@@ -336,85 +301,17 @@ imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info,
 {
 	CamelMessageInfoBase *binfo = (CamelMessageInfoBase *) info;
 	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
-	gint unread = 0, deleted = 0, junk = 0;
-	guint32 flags;
 
 	binfo->flags |= server_flags;
+	camel_message_info_set_flags (info, server_flags, binfo->flags | server_flags);
+
 	xinfo->server_flags = server_flags;
 
 	if (folder->permanent_flags & CAMEL_MESSAGE_USER)
 		imapx_update_user_flags (info, server_user_flags);
 
-	/* update the summary count */
-	flags = binfo->flags;
-
-	if (!(flags & CAMEL_MESSAGE_SEEN))
-		unread = 1;
-
-	if (flags & CAMEL_MESSAGE_DELETED)
-		deleted = 1;
-
-	if (flags & CAMEL_MESSAGE_JUNK)
-		junk = 1;
-
-	if (folder->summary) {
-
-		if (unread)
-			folder->summary->unread_count += unread;
-		if (deleted)
-			folder->summary->deleted_count += deleted;
-		if (junk)
-			folder->summary->junk_count += junk;
-		if (junk && !deleted)
-			folder->summary->junk_not_deleted_count += junk;
-		folder->summary->visible_count++;
-		if (junk ||  deleted)
-			folder->summary->visible_count -= junk ? junk : deleted;
-
-		folder->summary->saved_count++;
-		camel_folder_summary_touch (folder->summary);
-	}
-
 	binfo->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
-}
-
-void
-imapx_update_summary_for_removed_message (CamelMessageInfo *info,
-                                          CamelFolder *folder,
-                                          gboolean unsolicited)
-{
-	CamelMessageInfoBase *dinfo = (CamelMessageInfoBase *) info;
-	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
-	gint unread = 0, deleted = 0, junk = 0;
-	guint32 flags;
-
-	flags = dinfo->flags;
-	if (!(flags & CAMEL_MESSAGE_SEEN))
-		unread = 1;
-
-	if (flags & CAMEL_MESSAGE_DELETED)
-		deleted = 1;
-
-	if (flags & CAMEL_MESSAGE_JUNK)
-		junk = 1;
-
-	if (unread) {
-		folder->summary->unread_count--;
-		if (unsolicited)
-			ifolder->unread_on_server--;
-	}
-	if (deleted)
-		folder->summary->deleted_count--;
-	if (junk)
-		folder->summary->junk_count--;
-
-	if (junk && !deleted)
-		folder->summary->junk_not_deleted_count--;
-
-	if (!junk &&  !deleted)
-		folder->summary->visible_count--;
-
-	folder->summary->saved_count--;
+	binfo->dirty = TRUE;
 }
 
 void
@@ -432,7 +329,7 @@ imapx_update_store_summary (CamelFolder *folder)
 		guint32 unread, total;
 
 		total = camel_folder_summary_count (folder->summary);
-		unread = folder->summary->unread_count;
+		unread = camel_folder_summary_get_unread_count (folder->summary);
 
 		if (si->unread != unread || si->total != total) {
 			si->unread = unread;

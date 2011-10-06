@@ -218,9 +218,9 @@ fill_fi (CamelStore *store,
 		s = (CamelFolderSummary *) camel_mh_summary_new (
 			NULL, path, folderpath, NULL);
 		if (camel_folder_summary_header_load_from_db (
-			s, store, fi->full_name, NULL) != -1) {
-			fi->unread = s->unread_count;
-			fi->total = s->saved_count;
+			s, store, fi->full_name, NULL)) {
+			fi->unread = camel_folder_summary_get_unread_count (s);
+			fi->total = camel_folder_summary_get_saved_count (s);
 		}
 		g_object_unref (s);
 		g_free (folderpath);

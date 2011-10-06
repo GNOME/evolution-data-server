@@ -262,25 +262,27 @@ disco_expunge_sync (CamelFolder *folder,
 {
 	GPtrArray *uids;
 	gint i;
-	guint count;
 	CamelMessageInfo *info;
 	gboolean success;
+	GPtrArray *known_uids;
 
 	uids = g_ptr_array_new ();
 	camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
-	count = camel_folder_summary_count (folder->summary);
-	for (i = 0; i < count; i++) {
-		info = camel_folder_summary_index (folder->summary, i);
+	known_uids = camel_folder_summary_get_array (folder->summary);
+	for (i = 0; known_uids && i < known_uids->len; i++) {
+		const gchar *uid = g_ptr_array_index (known_uids, i);
+
+		info = camel_folder_summary_get (folder->summary, uid);
 		if (camel_message_info_flags (info) & CAMEL_MESSAGE_DELETED)
-			g_ptr_array_add (uids, g_strdup (camel_message_info_uid (info)));
+			g_ptr_array_add (uids, (gpointer) uid);
 		camel_message_info_free (info);
 	}
 
 	success = disco_expunge_uids (folder, uids, cancellable, error);
 
-	for (i = 0; i < uids->len; i++)
-		g_free (uids->pdata[i]);
 	g_ptr_array_free (uids, TRUE);
+	if (known_uids)
+		camel_folder_summary_free_array (known_uids);
 
 	return success;
 }

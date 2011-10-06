@@ -65,8 +65,6 @@ typedef struct _CamelFolderSummaryPrivate CamelFolderSummaryPrivate;
 typedef struct _CamelMessageInfo CamelMessageInfo;
 typedef struct _CamelMessageInfoBase CamelMessageInfoBase;
 
-typedef struct _CamelFolderMetaSummary CamelFolderMetaSummary;
-
 typedef struct _CamelMessageContentInfo CamelMessageContentInfo;
 
 /* A tree of message content info structures
@@ -239,31 +237,8 @@ struct _CamelFolderSummary {
 
 	/* header info */
 	guint32 version;	/* version of file loaded/loading */
-	CamelFolderSummaryFlags flags;
-	guint32 nextuid;	/* next uid? */
 	time_t time;		/* timestamp for this summary (for implementors to use) */
-	guint32 saved_count;	/* how many were saved/loaded */
-	guint32 unread_count;	/* handy totals */
-	guint32 deleted_count;
-	guint32 junk_count;
-	guint32 junk_not_deleted_count;
-	guint32 visible_count;
-
-	/* memory allocators (setup automatically) */
-	CamelMemChunk *message_info_chunks;
-	CamelMemChunk *content_info_chunks;
-
-	gchar *summary_path;
-	gboolean build_content;	/* do we try and parse/index the content, or not? */
-
-	/* New members to replace the above depreacted members */
-	GPtrArray *uids;
-	GHashTable *loaded_infos;
-
-	struct _CamelFolder *folder; /* parent folder, for events */
-	struct _CamelFolderMetaSummary *meta_summary; /* Meta summary */
-	time_t cache_load_time;
-	guint timeout_handle;
+	CamelFolderSummaryFlags flags;
 
 	const gchar *collate;
 	const gchar *sort_by;
@@ -287,12 +262,12 @@ struct _CamelFolderSummaryClass {
 	gint (*summary_header_save)(CamelFolderSummary *, FILE *);
 
 	/* Load/Save folder summary from DB*/
-	gint (*summary_header_from_db)(CamelFolderSummary *, struct _CamelFIRecord *);
+	gboolean (*summary_header_from_db)(CamelFolderSummary *, struct _CamelFIRecord *);
 	struct _CamelFIRecord * (*summary_header_to_db)(CamelFolderSummary *, GError **error);
 	CamelMessageInfo * (*message_info_from_db) (CamelFolderSummary *, struct _CamelMIRecord *);
 	struct _CamelMIRecord * (*message_info_to_db) (CamelFolderSummary *, CamelMessageInfo *);
 	CamelMessageContentInfo * (*content_info_from_db) (CamelFolderSummary *, struct _CamelMIRecord *);
-	gint (*content_info_to_db) (CamelFolderSummary *, CamelMessageContentInfo *, struct _CamelMIRecord *);
+	gboolean (*content_info_to_db) (CamelFolderSummary *, CamelMessageContentInfo *, struct _CamelMIRecord *);
 
 	/* create/save/load an individual message info */
 	CamelMessageInfo * (*message_info_new_from_header)(CamelFolderSummary *, struct _camel_header_raw *);
@@ -326,126 +301,204 @@ struct _CamelFolderSummaryClass {
 	gboolean (*info_set_flags)(CamelMessageInfo *mi, guint32 mask, guint32 set);
 };
 
-/* Meta-summary info */
-struct _CamelFolderMetaSummary {
-	guint32 major;		/* Major version of meta-summary */
-	guint32 minor;		/* Minor version of meta-summary */
-	guint32 uid_len;	/* Length of UID (for implementors to use) */
-	gboolean msg_expunged;	/* Whether any message is expunged or not */
-	gchar *path;		/* Path to meta-summary-file */
-};
+GType			camel_folder_summary_get_type	(void);
+CamelFolderSummary *	camel_folder_summary_new	(struct _CamelFolder *folder);
 
-GType			 camel_folder_summary_get_type	(void);
-CamelFolderSummary      *camel_folder_summary_new	(struct _CamelFolder *folder);
+struct _CamelFolder *	camel_folder_summary_get_folder	(CamelFolderSummary *summary);
+CamelFolderSummaryFlags	camel_folder_summary_get_flags	(CamelFolderSummary *summary);
 
-/* Deprecated */
-void camel_folder_summary_set_filename (CamelFolderSummary *summary, const gchar *filename);
+guint32			camel_folder_summary_get_saved_count
+							(CamelFolderSummary *summary);
+guint32			camel_folder_summary_get_unread_count
+							(CamelFolderSummary *summary);
+guint32			camel_folder_summary_get_deleted_count
+							(CamelFolderSummary *summary);
+guint32			camel_folder_summary_get_junk_count
+							(CamelFolderSummary *summary);
+guint32			camel_folder_summary_get_junk_not_deleted_count
+							(CamelFolderSummary *summary);
+guint32			camel_folder_summary_get_visible_count
+							(CamelFolderSummary *summary);
 
-void camel_folder_summary_set_index (CamelFolderSummary *summary, CamelIndex *index);
-void camel_folder_summary_set_build_content (CamelFolderSummary *summary, gboolean state);
-
-guint32  camel_folder_summary_next_uid        (CamelFolderSummary *summary);
-gchar    *camel_folder_summary_next_uid_string (CamelFolderSummary *summary);
-void	 camel_folder_summary_set_uid	      (CamelFolderSummary *summary, guint32 uid);
+void			camel_folder_summary_set_index	(CamelFolderSummary *summary,
+							 CamelIndex *index);
+CamelIndex *		camel_folder_summary_get_index	(CamelFolderSummary *summary);
+void			camel_folder_summary_set_build_content
+							(CamelFolderSummary *summary,
+							 gboolean state);
+gboolean		camel_folder_summary_get_build_content
+							(CamelFolderSummary *summary);
+void			camel_folder_summary_set_need_preview
+							(CamelFolderSummary *summary,
+							 gboolean preview);
+gboolean		camel_folder_summary_get_need_preview
+							(CamelFolderSummary *summary);
+guint32			camel_folder_summary_next_uid	(CamelFolderSummary *summary);
+void			camel_folder_summary_set_next_uid
+							(CamelFolderSummary *summary,
+							 guint32 uid);
+guint32			camel_folder_summary_get_next_uid
+							(CamelFolderSummary *summary);
+gchar *			camel_folder_summary_next_uid_string
+							(CamelFolderSummary *summary);
 
 /* load/save the full summary from/to the db */
-gint camel_folder_summary_save_to_db (CamelFolderSummary *s, GError **error);
-gint camel_folder_summary_load_from_db (CamelFolderSummary *s, GError **error);
+gboolean		camel_folder_summary_save_to_db	(CamelFolderSummary *s,
+							 GError **error);
+gboolean		camel_folder_summary_load_from_db
+							(CamelFolderSummary *s,
+							 GError **error);
 
 /* only load the header */
-gint camel_folder_summary_header_load_from_db (CamelFolderSummary *s, struct _CamelStore *store, const gchar *folder_name, GError **error);
-gint camel_folder_summary_header_save_to_db (CamelFolderSummary *s, GError **error);
+gboolean		camel_folder_summary_header_load_from_db
+							(CamelFolderSummary *s,
+							 struct _CamelStore *store,
+							 const gchar *folder_name,
+							 GError **error);
+gboolean		camel_folder_summary_header_save_to_db
+							(CamelFolderSummary *s,
+							 GError **error);
 
 /* set the dirty bit on the summary */
-void camel_folder_summary_touch (CamelFolderSummary *summary);
-
-/* add a new raw summary item */
-void camel_folder_summary_add (CamelFolderSummary *summary, CamelMessageInfo *info);
-
-/* Peek from mem only */
-CamelMessageInfo * camel_folder_summary_peek_info (CamelFolderSummary *s, const gchar *uid);
-
-/* Get only the uids of dirty/changed things to sync to server/db */
-GPtrArray * camel_folder_summary_get_changed (CamelFolderSummary *s);
-/* reload the summary at any required point if required */
-void camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s, GError **error);
-/* insert mi to summary */
-void camel_folder_summary_insert (CamelFolderSummary *s, CamelMessageInfo *info, gboolean load);
-
-void camel_folder_summary_remove_index_fast (CamelFolderSummary *s, gint index);
-void camel_folder_summary_remove_uid_fast (CamelFolderSummary *s, const gchar *uid);
-
-/* build/add raw summary items */
-CamelMessageInfo *camel_folder_summary_add_from_header (CamelFolderSummary *summary, struct _camel_header_raw *headers);
-CamelMessageInfo *camel_folder_summary_add_from_parser (CamelFolderSummary *summary, CamelMimeParser *parser);
-CamelMessageInfo *camel_folder_summary_add_from_message (CamelFolderSummary *summary, CamelMimeMessage *message);
+void			camel_folder_summary_touch	(CamelFolderSummary *summary);
 
 /* Just build raw summary items */
-CamelMessageInfo *camel_folder_summary_info_new_from_header (CamelFolderSummary *summary, struct _camel_header_raw *headers);
-CamelMessageInfo *camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary, CamelMimeParser *parser);
-CamelMessageInfo *camel_folder_summary_info_new_from_message (CamelFolderSummary *summary, CamelMimeMessage *message, const gchar *bodystructure);
+CamelMessageInfo *	camel_folder_summary_info_new_from_header
+							(CamelFolderSummary *summary,
+							 struct _camel_header_raw *headers);
+CamelMessageInfo *	camel_folder_summary_info_new_from_parser
+							(CamelFolderSummary *summary,
+							 CamelMimeParser *parser);
+CamelMessageInfo *	camel_folder_summary_info_new_from_message
+							(CamelFolderSummary *summary,
+							 CamelMimeMessage *message,
+							 const gchar *bodystructure);
 
-CamelMessageContentInfo *camel_folder_summary_content_info_new (CamelFolderSummary *summary);
-void camel_folder_summary_content_info_free (CamelFolderSummary *summary, CamelMessageContentInfo *ci);
+CamelMessageContentInfo *camel_folder_summary_content_info_new
+							(CamelFolderSummary *summary);
+void			camel_folder_summary_content_info_free
+							(CamelFolderSummary *summary,
+							 CamelMessageContentInfo *ci);
 
-/* removes a summary item, doesn't fix content offsets */
-void camel_folder_summary_remove (CamelFolderSummary *summary, CamelMessageInfo *info);
-void camel_folder_summary_remove_uid (CamelFolderSummary *summary, const gchar *uid);
-void camel_folder_summary_remove_index (CamelFolderSummary *summary, gint index);
-void camel_folder_summary_remove_range (CamelFolderSummary *summary, gint start, gint end);
+void			camel_folder_summary_add_preview
+							(CamelFolderSummary *s,
+							 CamelMessageInfo *info);
+
+/* Migration code */
+gint			camel_folder_summary_migrate_infos
+							(CamelFolderSummary *s);
+
+/* build/add raw summary items */
+CamelMessageInfo *	camel_folder_summary_add_from_header
+							(CamelFolderSummary *summary,
+							 struct _camel_header_raw *headers);
+CamelMessageInfo *	camel_folder_summary_add_from_parser
+							(CamelFolderSummary *summary,
+							 CamelMimeParser *parser);
+CamelMessageInfo *	camel_folder_summary_add_from_message
+							(CamelFolderSummary *summary,
+							 CamelMimeMessage *message);
+
+/* add a new raw summary item */
+void			camel_folder_summary_add	(CamelFolderSummary *summary,
+							 CamelMessageInfo *info);
+
+/* insert mi to summary */
+void			camel_folder_summary_insert	(CamelFolderSummary *s,
+							 CamelMessageInfo *info,
+							 gboolean load);
+
+gboolean		camel_folder_summary_remove	(CamelFolderSummary *summary,
+							 CamelMessageInfo *info);
+
+gboolean		camel_folder_summary_remove_uid	(CamelFolderSummary *summary,
+							 const gchar *uid);
 
 /* remove all items */
-void camel_folder_summary_clear (CamelFolderSummary *summary);
-void camel_folder_summary_clear_db (CamelFolderSummary *s);
-
-/* update visible/unread/... counts based on message flags */
-void camel_folder_summary_update_counts_by_flags (CamelFolderSummary *summary, guint32 flags, gboolean subtract);
+gboolean		camel_folder_summary_clear	(CamelFolderSummary *summary,
+							 GError **error);
 
 /* lookup functions */
-guint camel_folder_summary_count (CamelFolderSummary *summary);
-CamelMessageInfo *camel_folder_summary_index (CamelFolderSummary *summary, gint index);
-CamelMessageInfo *camel_folder_summary_uid (CamelFolderSummary *summary, const gchar *uid);
-gchar * camel_folder_summary_uid_from_index (CamelFolderSummary *s, gint i);
-gboolean camel_folder_summary_check_uid (CamelFolderSummary *s, const gchar *uid);
+guint			camel_folder_summary_count	(CamelFolderSummary *summary);
 
-GPtrArray *camel_folder_summary_array (CamelFolderSummary *summary);
-GHashTable *camel_folder_summary_get_hashtable (CamelFolderSummary *s);
-void camel_folder_summary_free_hashtable (GHashTable *ht);
+gboolean		camel_folder_summary_check_uid	(CamelFolderSummary *s,
+							 const gchar *uid);
+CamelMessageInfo *	camel_folder_summary_get	(CamelFolderSummary *summary,
+							 const gchar *uid);
+GPtrArray *		camel_folder_summary_get_array	(CamelFolderSummary *summary);
+void			camel_folder_summary_free_array	(GPtrArray *array);
+
+/* Peek from mem only */
+CamelMessageInfo *	camel_folder_summary_peek_loaded
+							(CamelFolderSummary *s,
+							 const gchar *uid);
+
+/* Get only the uids of dirty/changed things to sync to server/db */
+GPtrArray *		camel_folder_summary_get_changed
+							(CamelFolderSummary *s);
+
+/* reload the summary at any required point if required */
+void			camel_folder_summary_prepare_fetch_all
+							(CamelFolderSummary *s,
+							 GError **error);
+
+/* summary locking */
+void			camel_folder_summary_lock	(CamelFolderSummary *summary,
+							 CamelFolderSummaryLock lock);
+void			camel_folder_summary_unlock	(CamelFolderSummary *summary,
+							 CamelFolderSummaryLock lock);
 
 /* basically like strings, but certain keywords can be compressed and de-cased */
-gint camel_folder_summary_encode_token (FILE *out, const gchar *str);
-gint camel_folder_summary_decode_token (FILE *in, gchar **str);
+gint			camel_folder_summary_encode_token
+							(FILE *out,
+							 const gchar *str);
+gint			camel_folder_summary_decode_token
+							(FILE *in,
+							 gchar **str);
 
 /* message flag operations */
-gboolean	camel_flag_get (CamelFlag **list, const gchar *name);
-gboolean	camel_flag_set (CamelFlag **list, const gchar *name, gboolean value);
-gboolean	camel_flag_list_copy (CamelFlag **to, CamelFlag **from);
-gint		camel_flag_list_size (CamelFlag **list);
-void		camel_flag_list_free (CamelFlag **list);
+gboolean		camel_flag_get			(CamelFlag **list,
+							 const gchar *name);
+gboolean		camel_flag_set			(CamelFlag **list,
+							 const gchar *name,
+							 gboolean value);
+gboolean		camel_flag_list_copy		(CamelFlag **to,
+							 CamelFlag **from);
+gint			camel_flag_list_size		(CamelFlag **list);
+void			camel_flag_list_free		(CamelFlag **list);
 
-CamelMessageFlags
-		camel_system_flag (const gchar *name);
-gboolean	camel_system_flag_get (CamelMessageFlags flags, const gchar *name);
+CamelMessageFlags	camel_system_flag		(const gchar *name);
+gboolean		camel_system_flag_get		(CamelMessageFlags flags,
+							 const gchar *name);
 
 /* message tag operations */
-const gchar	*camel_tag_get (CamelTag **list, const gchar *name);
-gboolean	camel_tag_set (CamelTag **list, const gchar *name, const gchar *value);
-gboolean	camel_tag_list_copy (CamelTag **to, CamelTag **from);
-gint		camel_tag_list_size (CamelTag **list);
-void		camel_tag_list_free (CamelTag **list);
+const gchar *		camel_tag_get			(CamelTag **list,
+							 const gchar *name);
+gboolean		camel_tag_set			(CamelTag **list,
+							 const gchar *name,
+							 const gchar *value);
+gboolean		camel_tag_list_copy		(CamelTag **to,
+							 CamelTag **from);
+gint			camel_tag_list_size		(CamelTag **list);
+void			camel_tag_list_free		(CamelTag **list);
 
 /* Summary may be null */
 /* Use anonymous pointers to avoid tons of cast crap */
-gpointer camel_message_info_new (CamelFolderSummary *summary);
-gpointer camel_message_info_ref (gpointer info);
-CamelMessageInfo *camel_message_info_new_from_header (CamelFolderSummary *summary, struct _camel_header_raw *header);
-void camel_message_info_free (gpointer info);
-gpointer camel_message_info_clone (gconstpointer info);
+gpointer		camel_message_info_new		(CamelFolderSummary *summary);
+gpointer		camel_message_info_ref		(gpointer info);
+CamelMessageInfo *	camel_message_info_new_from_header
+							(CamelFolderSummary *summary,
+							 struct _camel_header_raw *header);
+void			camel_message_info_free		(gpointer info);
+gpointer		camel_message_info_clone	(gconstpointer info);
 
 /* accessors */
-gconstpointer camel_message_info_ptr (const CamelMessageInfo *mi, gint id);
-guint32 camel_message_info_uint32 (const CamelMessageInfo *mi, gint id);
-time_t camel_message_info_time (const CamelMessageInfo *mi, gint id);
+gconstpointer		camel_message_info_ptr		(const CamelMessageInfo *mi,
+							 gint id);
+guint32			camel_message_info_uint32	(const CamelMessageInfo *mi,
+							 gint id);
+time_t			camel_message_info_time		(const CamelMessageInfo *mi,
+							 gint id);
 
 #define camel_message_info_uid(mi) ((const gchar *)((const CamelMessageInfo *)mi)->uid)
 
@@ -497,33 +550,37 @@ time_t camel_message_info_time (const CamelMessageInfo *mi, gint id);
  **/
 #define camel_message_info_content(mi) ((const CamelMessageContentInfo *)camel_message_info_ptr((const CamelMessageInfo *)mi, CAMEL_MESSAGE_INFO_CONTENT))
 
-gboolean camel_message_info_user_flag (const CamelMessageInfo *mi, const gchar *id);
-const gchar *camel_message_info_user_tag (const CamelMessageInfo *mi, const gchar *id);
+gboolean		camel_message_info_user_flag	(const CamelMessageInfo *mi,
+							 const gchar *id);
+const gchar *		camel_message_info_user_tag	(const CamelMessageInfo *mi,
+							 const gchar *id);
 
-gboolean camel_message_info_set_flags (CamelMessageInfo *mi, CamelMessageFlags flags, guint32 set);
-gboolean camel_message_info_set_user_flag (CamelMessageInfo *mi, const gchar *id, gboolean state);
-gboolean camel_message_info_set_user_tag (CamelMessageInfo *mi, const gchar *id, const gchar *val);
-
-void camel_folder_summary_set_need_preview (CamelFolderSummary *summary, gboolean preview);
-void camel_folder_summary_add_preview (CamelFolderSummary *s, CamelMessageInfo *info);
-gboolean camel_folder_summary_get_need_preview (CamelFolderSummary *summary);
+gboolean		camel_message_info_set_flags	(CamelMessageInfo *mi,
+							 CamelMessageFlags flags,
+							 guint32 set);
+gboolean		camel_message_info_set_user_flag
+							(CamelMessageInfo *mi,
+							 const gchar *id,
+							 gboolean state);
+gboolean		camel_message_info_set_user_tag	(CamelMessageInfo *mi,
+							 const gchar *id,
+							 const gchar *val);
 
 const CamelMessageContentInfo * camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType *ctype);
 
+/* Deprecated */
+void			camel_folder_summary_set_filename
+							(CamelFolderSummary *summary,
+							 const gchar *filename);
+
 /* debugging functions */
-void camel_content_info_dump (CamelMessageContentInfo *ci, gint depth);
-
-void camel_message_info_dump (CamelMessageInfo *mi);
-
-/* Migration code */
-gint camel_folder_summary_migrate_infos (CamelFolderSummary *s);
-
-void camel_folder_summary_lock   (CamelFolderSummary *summary, CamelFolderSummaryLock lock);
-void camel_folder_summary_unlock (CamelFolderSummary *summary, CamelFolderSummaryLock lock);
+void			camel_content_info_dump		(CamelMessageContentInfo *ci,
+							 gint depth);
+void			camel_message_info_dump		(CamelMessageInfo *mi);
 
 /* utility functions for bdata string decomposition */
-gint   bdata_extract_digit (/* const */ gchar **part);
-gchar *bdata_extract_string (/* const */ gchar **part);
+gint			bdata_extract_digit		(/* const */ gchar **part);
+gchar *			bdata_extract_string		(/* const */ gchar **part);
 
 G_END_DECLS
 

@@ -1187,15 +1187,18 @@ imap_quote_string (const gchar *str)
 }
 
 static inline gulong
-get_summary_uid_numeric (CamelFolderSummary *summary,
+get_summary_uid_numeric (GPtrArray *known_uids,
                          gint index)
 {
 	gulong uid;
-	gchar *suid;
+	const gchar *suid;
 
-	suid = camel_folder_summary_uid_from_index (summary, index);
+	g_return_val_if_fail (known_uids != NULL, 0);
+	g_return_val_if_fail (index >= 0, 0);
+	g_return_val_if_fail (index < known_uids->len, 0);
+
+	suid = g_ptr_array_index (known_uids, index);
 	uid = strtoul (suid, NULL, 10);
-	g_free (suid);
 
 	return uid;
 }
@@ -1235,20 +1238,26 @@ imap_uid_array_to_set (CamelFolderSummary *summary,
 	gint si, scount;
 	GString *gset;
 	gchar *set;
+	GPtrArray *known_uids;
 
 	g_return_val_if_fail (uids->len > uid, NULL);
+
+	known_uids = camel_folder_summary_get_array (summary);
+	g_return_val_if_fail (known_uids != NULL, NULL);
+
+	camel_folder_sort_uids (camel_folder_summary_get_folder (summary), known_uids);
 
 	gset = g_string_new (uids->pdata[uid]);
 	last_uid = strtoul (uids->pdata[uid], NULL, 10);
 	next_summary_uid = 0;
-	scount = camel_folder_summary_count (summary);
+	scount = known_uids->len;
 
 	for (uid++, si = 0; uid < uids->len && !UID_SET_FULL (gset->len, maxlen); uid++) {
 		/* Find the next UID in the summary after the one we
 		 * just wrote out.
 		 */
 		for (; last_uid >= next_summary_uid && si < scount; si++)
-			next_summary_uid = get_summary_uid_numeric (summary, si);
+			next_summary_uid = get_summary_uid_numeric (known_uids, si);
 		if (last_uid >= next_summary_uid)
 			next_summary_uid = (gulong) -1;
 
@@ -1274,6 +1283,7 @@ imap_uid_array_to_set (CamelFolderSummary *summary,
 
 	set = gset->str;
 	g_string_free (gset, FALSE);
+	camel_folder_summary_free_array (known_uids);
 
 	return set;
 }
@@ -1299,10 +1309,15 @@ imap_uid_set_to_array (CamelFolderSummary *summary,
                        const gchar *uids)
 {
 	GPtrArray *arr;
+	GPtrArray *known_uids;
 	gchar *p, *q;
 	gulong uid, suid;
 	gint si, scount;
 
+	known_uids = camel_folder_summary_get_array (summary);
+	g_return_val_if_fail (known_uids != NULL, NULL);
+
+	camel_folder_sort_uids (camel_folder_summary_get_folder (summary), known_uids);
 	arr = g_ptr_array_new ();
 	scount = camel_folder_summary_count (summary);
 
@@ -1319,7 +1334,7 @@ imap_uid_set_to_array (CamelFolderSummary *summary,
 			 * we just saw.
 			 */
 			while (++si < scount) {
-				suid = get_summary_uid_numeric (summary, si);
+				suid = get_summary_uid_numeric (known_uids, si);
 				if (suid > uid)
 					break;
 			}
@@ -1336,7 +1351,7 @@ imap_uid_set_to_array (CamelFolderSummary *summary,
 			while (suid <= uid) {
 				g_ptr_array_add (arr, g_strdup_printf ("%lu", suid));
 				if (++si < scount)
-					suid = get_summary_uid_numeric (summary, si);
+					suid = get_summary_uid_numeric (known_uids, si);
 				else
 					suid++;
 			}
@@ -1344,10 +1359,12 @@ imap_uid_set_to_array (CamelFolderSummary *summary,
 			p = q;
 	} while (*p++ == ',');
 
+	camel_folder_summary_free_array (known_uids);
 	return arr;
 
  lose:
 	g_warning ("Invalid uid set %s", uids);
+	camel_folder_summary_free_array (known_uids);
 	imap_uid_array_free (arr);
 	return NULL;
 }

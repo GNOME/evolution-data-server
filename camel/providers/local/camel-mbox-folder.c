@@ -59,8 +59,8 @@ mbox_folder_cmp_uids (CamelFolder *folder,
 	g_return_val_if_fail (folder != NULL, 0);
 	g_return_val_if_fail (folder->summary != NULL, 0);
 
-	a = (CamelMboxMessageInfo *) camel_folder_summary_uid (folder->summary, uid1);
-	b = (CamelMboxMessageInfo *) camel_folder_summary_uid (folder->summary, uid2);
+	a = (CamelMboxMessageInfo *) camel_folder_summary_get (folder->summary, uid1);
+	b = (CamelMboxMessageInfo *) camel_folder_summary_get (folder->summary, uid2);
 
 	g_return_val_if_fail (a != NULL, 0);
 	g_return_val_if_fail (b != NULL, 0);
@@ -109,7 +109,7 @@ mbox_folder_get_filename (CamelFolder *folder,
 	}
 
 	/* get the message summary info */
-	info = (CamelMboxMessageInfo *) camel_folder_summary_uid (folder->summary, uid);
+	info = (CamelMboxMessageInfo *) camel_folder_summary_get (folder->summary, uid);
 
 	if (info == NULL) {
 		set_cannot_get_message_ex (
@@ -317,7 +317,7 @@ mbox_folder_get_message_sync (CamelFolder *folder,
 
 retry:
 	/* get the message summary info */
-	info = (CamelMboxMessageInfo *) camel_folder_summary_uid (folder->summary, uid);
+	info = (CamelMboxMessageInfo *) camel_folder_summary_get (folder->summary, uid);
 
 	if (info == NULL) {
 		set_cannot_get_message_ex (
