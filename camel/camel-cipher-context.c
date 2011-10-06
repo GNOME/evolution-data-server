@@ -288,10 +288,8 @@ cipher_context_sign_thread (GSimpleAsyncResult *simple,
 		async_context->ipart, async_context->opart,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -357,10 +355,8 @@ cipher_context_verify_thread (GSimpleAsyncResult *simple,
 		CAMEL_CIPHER_CONTEXT (object), async_context->ipart,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -432,10 +428,8 @@ cipher_context_encrypt_thread (GSimpleAsyncResult *simple,
 		async_context->ipart, async_context->opart,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -509,10 +503,8 @@ cipher_context_decrypt_thread (GSimpleAsyncResult *simple,
 		CAMEL_CIPHER_CONTEXT (object), async_context->ipart,
 		async_context->opart, cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -584,10 +576,8 @@ cipher_context_import_keys_thread (GSimpleAsyncResult *simple,
 		CAMEL_CIPHER_CONTEXT (object), async_context->stream,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -650,10 +640,8 @@ cipher_context_export_keys_thread (GSimpleAsyncResult *simple,
 		CAMEL_CIPHER_CONTEXT (object), async_context->strings,
 		async_context->stream, cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void

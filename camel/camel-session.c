@@ -148,10 +148,8 @@ session_do_job_cb (GSimpleAsyncResult *simple,
 		session, cancellable,
 		job_data->user_data, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static gboolean

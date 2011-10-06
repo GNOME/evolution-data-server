@@ -462,10 +462,8 @@ service_query_auth_types_thread (GSimpleAsyncResult *simple,
 	async_context->auth_types = camel_service_query_auth_types_sync (
 		CAMEL_SERVICE (object), cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void

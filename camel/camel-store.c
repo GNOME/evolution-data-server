@@ -429,10 +429,8 @@ store_get_folder_thread (GSimpleAsyncResult *simple,
 		CAMEL_STORE (object), async_context->folder_name_1,
 		async_context->flags, cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -498,10 +496,8 @@ store_get_folder_info_thread (GSimpleAsyncResult *simple,
 		CAMEL_STORE (object), async_context->folder_name_1,
 		async_context->flags, cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -572,10 +568,8 @@ store_get_inbox_folder_thread (GSimpleAsyncResult *simple,
 	async_context->folder = camel_store_get_inbox_folder_sync (
 		CAMEL_STORE (object), cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -638,10 +632,8 @@ store_get_junk_folder_thread (GSimpleAsyncResult *simple,
 	async_context->folder = camel_store_get_junk_folder_sync (
 		CAMEL_STORE (object), cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -704,10 +696,8 @@ store_get_trash_folder_thread (GSimpleAsyncResult *simple,
 	async_context->folder = camel_store_get_trash_folder_sync (
 		CAMEL_STORE (object), cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -771,10 +761,8 @@ store_create_folder_thread (GSimpleAsyncResult *simple,
 		CAMEL_STORE (object), async_context->folder_name_1,
 		async_context->folder_name_2, cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -844,10 +832,8 @@ store_delete_folder_thread (GSimpleAsyncResult *simple,
 		CAMEL_STORE (object), async_context->folder_name_1,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -907,10 +893,8 @@ store_rename_folder_thread (GSimpleAsyncResult *simple,
 		CAMEL_STORE (object), async_context->folder_name_1,
 		async_context->folder_name_2, cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -972,10 +956,8 @@ store_synchronize_thread (GSimpleAsyncResult *simple,
 		CAMEL_STORE (object), async_context->expunge,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -1030,10 +1012,8 @@ store_noop_thread (GSimpleAsyncResult *simple,
 
 	camel_store_noop_sync (CAMEL_STORE (object), cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void

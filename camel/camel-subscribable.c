@@ -140,10 +140,8 @@ subscribable_subscribe_folder_thread (GSimpleAsyncResult *simple,
 		async_context->folder_name,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -207,10 +205,8 @@ subscribable_unsubscribe_folder_thread (GSimpleAsyncResult *simple,
 		async_context->folder_name,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void

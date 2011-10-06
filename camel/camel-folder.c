@@ -952,10 +952,8 @@ folder_append_message_thread (GSimpleAsyncResult *simple,
 		async_context->info, &async_context->message_uid,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -1023,10 +1021,8 @@ folder_expunge_thread (GSimpleAsyncResult *simple,
 	camel_folder_expunge_sync (
 		CAMEL_FOLDER (object), cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -1078,10 +1074,8 @@ folder_get_message_thread (GSimpleAsyncResult *simple,
 		CAMEL_FOLDER (object), async_context->message_uid,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -1144,10 +1138,8 @@ folder_get_quota_info_thread (GSimpleAsyncResult *simple,
 	async_context->quota_info = camel_folder_get_quota_info_sync (
 		CAMEL_FOLDER (object), cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static CamelFolderQuotaInfo *
@@ -1224,10 +1216,8 @@ folder_refresh_info_thread (GSimpleAsyncResult *simple,
 	camel_folder_refresh_info_sync (
 		CAMEL_FOLDER (object), cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -1279,10 +1269,8 @@ folder_synchronize_thread (GSimpleAsyncResult *simple,
 		CAMEL_FOLDER (object), async_context->expunge,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -1342,10 +1330,8 @@ folder_synchronize_message_thread (GSimpleAsyncResult *simple,
 		CAMEL_FOLDER (object), async_context->message_uid,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -1409,10 +1395,8 @@ folder_transfer_messages_to_thread (GSimpleAsyncResult *simple,
 		async_context->destination, async_context->delete_originals,
 		&async_context->transferred_uids, cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void

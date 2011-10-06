@@ -455,29 +455,25 @@ load_book_source_thread (GSimpleAsyncResult *simple,
 
 	book = e_book_new (source, &error);
 	if (book == NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
+		g_simple_async_result_take_error (simple, error);
 		return;
 	}
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, &error)) {
-		g_simple_async_result_set_from_error (simple, error);
+		g_simple_async_result_take_error (simple, error);
 		g_object_unref (book);
-		g_error_free (error);
 		return;
 	}
 
 	if (!e_book_open (book, FALSE, &error)) {
-		g_simple_async_result_set_from_error (simple, error);
+		g_simple_async_result_take_error (simple, error);
 		g_object_unref (book);
-		g_error_free (error);
 		return;
 	}
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, &error)) {
-		g_simple_async_result_set_from_error (simple, error);
+		g_simple_async_result_take_error (simple, error);
 		g_object_unref (book);
-		g_error_free (error);
 		return;
 	}
 
@@ -489,9 +485,8 @@ load_book_source_thread (GSimpleAsyncResult *simple,
 
 prompt:
 	if (g_cancellable_set_error_if_cancelled (cancellable, &error)) {
-		g_simple_async_result_set_from_error (simple, error);
+		g_simple_async_result_take_error (simple, error);
 		g_object_unref (book);
-		g_error_free (error);
 		g_free (password);
 		return;
 	}
@@ -531,9 +526,8 @@ prompt:
 		goto prompt;
 
 	} else if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
+		g_simple_async_result_take_error (simple, error);
 		g_object_unref (book);
-		g_error_free (error);
 		return;
 	}
 

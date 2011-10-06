@@ -279,10 +279,8 @@ data_wrapper_write_to_stream_thread (GSimpleAsyncResult *simple,
 			async_context->stream,
 			cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -351,10 +349,8 @@ data_wrapper_decode_to_stream_thread (GSimpleAsyncResult *simple,
 			async_context->stream,
 			cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
@@ -421,10 +417,8 @@ data_wrapper_construct_from_stream_thread (GSimpleAsyncResult *simple,
 		CAMEL_DATA_WRAPPER (object), async_context->stream,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void

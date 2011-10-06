@@ -788,10 +788,8 @@ mime_part_construct_from_parser_thread (GSimpleAsyncResult *simple,
 		CAMEL_MIME_PART (object), async_context->parser,
 		cancellable, &error);
 
-	if (error != NULL) {
-		g_simple_async_result_set_from_error (simple, error);
-		g_error_free (error);
-	}
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
 }
 
 static void
