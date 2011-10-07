@@ -88,8 +88,8 @@ camel/camel-movemail.c
 camel/camel-multipart.c
 camel/camel-multipart-encrypted.c
 camel/camel-multipart-signed.c
-camel/camel-network-service.c
 camel/camel-net-utils.c
+camel/camel-network-service.c
 camel/camel-object.c
 camel/camel-offline-folder.c
 camel/camel-offline-journal.c
@@ -197,3 +197,5 @@ libedataserverui/e-name-selector-list.c
 libedataserverui/e-passwords.c
 libedataserverui/e-passwords-win32.c
 libedataserverui/e-source-selector-dialog.c
+services/evolution-addressbook-factory/evolution-addressbook-factory.c
+services/evolution-calendar-factory/evolution-calendar-factory.c
