@@ -238,7 +238,6 @@ build_sqlitedb (EBookBackendFilePrivate *bfpriv)
 			skipped_version = TRUE;
 		}
 
-		g_free (vcard_dbt.data);
 		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
 
 	}
