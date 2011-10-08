@@ -254,6 +254,8 @@ build_sqlitedb (EBookBackendFilePrivate *bfpriv)
 						   contacts, FALSE, &error)) {
 		g_warning ("Failed to build contact summary: %s", error->message);
 		g_error_free (error);
+		g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
+		g_slist_free (contacts);
 		return FALSE;
 	}
 
