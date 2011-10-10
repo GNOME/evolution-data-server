@@ -1438,8 +1438,7 @@ gdbus_proxy_call_sync (GDBusProxy *proxy,
 		 * from the main thread, then there is probably no other option.
 		*/
 		while (!e_flag_is_set (sync_data.flag)) {
-			g_usleep (1000);
-			g_main_context_iteration (NULL, FALSE);
+			g_main_context_iteration (NULL, TRUE);
 		}
 	} else {
 		/* is called in a dedicated thread */
