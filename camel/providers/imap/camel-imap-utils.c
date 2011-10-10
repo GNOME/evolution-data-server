@@ -977,7 +977,8 @@ imap_body_decode (const gchar **in,
 		}
 
 		camel_strdown (type);
-		camel_strdown (subtype);
+		if (subtype)
+			camel_strdown (subtype);
 		ctype = camel_content_type_new (type, subtype);
 		g_free (subtype);
 		g_free (type);
