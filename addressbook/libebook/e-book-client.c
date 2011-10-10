@@ -453,6 +453,27 @@ backend_property_changed_cb (EGdbusBook *object,
 	g_free (prop_value);
 }
 
+/*
+ * Converts a GSList of EContact objects into a NULL-terminated array of
+ * valid UTF-8 vcard strings, suitable for sending over DBus.
+ */
+static gchar **
+contact_slist_to_utf8_vcard_array (GSList *contacts)
+{
+	gchar **array;
+	const GSList *l;
+	gint i = 0;
+
+	array = g_new0 (gchar *, g_slist_length (contacts) + 1);
+	for (l = contacts; l != NULL; l = l->next) {
+		gchar *vcard = e_vcard_to_string (E_VCARD (l->data), EVC_FORMAT_VCARD_30);
+		array[i++] = e_util_utf8_make_valid (vcard);
+		g_free (vcard);
+	}
+
+	return array;
+}
+
 /**
  * e_book_client_new:
  * @source: An #ESource pointer
@@ -1410,17 +1431,10 @@ e_book_client_add_contacts (EBookClient *client,
                             gpointer user_data)
 {
 	gchar **array;
-	const GSList *l;
-	gint i = 0;
 
 	g_return_if_fail (contacts != NULL);
 
-	array = g_new0 (gchar *, g_slist_length (contacts) + 1);
-	for (l = contacts; l != NULL; l = l->next) {
-		gchar *vcard = e_vcard_to_string (E_VCARD (l->data), EVC_FORMAT_VCARD_30);
-		array[i++] = e_util_utf8_make_valid (vcard);
-		g_free (vcard);
-	}
+	array = contact_slist_to_utf8_vcard_array (contacts);
 
 	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_book_client_add_contacts,
 			e_gdbus_book_call_add_contacts,
@@ -1502,9 +1516,7 @@ e_book_client_add_contacts_sync	(EBookClient *client,
                                  GError **error)
 {
 	gboolean res;
-	gint i = 0;
 	gchar **array, **out_uids = NULL;
-	const GSList *l;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -1515,12 +1527,7 @@ e_book_client_add_contacts_sync	(EBookClient *client,
 		return FALSE;
 	}
 
-	array = g_new0 (gchar *, g_slist_length (contacts) + 1);
-	for (l = contacts; l != NULL; l = l->next) {
-		gchar *vcard = e_vcard_to_string (E_VCARD (l->data), EVC_FORMAT_VCARD_30);
-		array[i++] = e_util_utf8_make_valid (vcard);
-		g_free (vcard);
-	}
+	array = contact_slist_to_utf8_vcard_array (contacts);
 
 	res = e_client_proxy_call_sync_strv__strv (E_CLIENT (client), (const gchar * const*) array, &out_uids, cancellable, error, e_gdbus_book_call_add_contacts_sync);
 
@@ -1662,17 +1669,10 @@ e_book_client_modify_contacts (EBookClient *client,
                                gpointer user_data)
 {
 	gchar **array;
-	const GSList *l;
-	gint i = 0;
 
 	g_return_if_fail (contacts != NULL);
 
-	array = g_new0 (gchar *, g_slist_length (contacts) + 1);
-	for (l = contacts; l != NULL; l = l->next) {
-		gchar *vcard = e_vcard_to_string (E_VCARD (l->data), EVC_FORMAT_VCARD_30);
-		array[i++] = e_util_utf8_make_valid (vcard);
-		g_free (vcard);
-	}
+	array = contact_slist_to_utf8_vcard_array (contacts);
 
 	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_book_client_modify_contacts,
 			e_gdbus_book_call_modify_contacts,
@@ -1721,9 +1721,7 @@ e_book_client_modify_contacts_sync (EBookClient *client,
                                     GError **error)
 {
 	gboolean res;
-	gint i = 0;
 	gchar **array;
-	const GSList *l;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -1735,12 +1733,7 @@ e_book_client_modify_contacts_sync (EBookClient *client,
 		return FALSE;
 	}
 
-	array = g_new0 (gchar *, g_slist_length (contacts) + 1);
-	for (l = contacts; l != NULL; l = l->next) {
-		gchar *vcard = e_vcard_to_string (E_VCARD (l->data), EVC_FORMAT_VCARD_30);
-		array[i++] = e_util_utf8_make_valid (vcard);
-		g_free (vcard);
-	}
+	array = contact_slist_to_utf8_vcard_array (contacts);
 
 	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const*) array, cancellable, error, e_gdbus_book_call_modify_contacts_sync);
 
