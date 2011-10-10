@@ -1,7 +1,7 @@
 
 lib_LTLIBRARIES = libemail-utils.la
 
-AM_CFLAGS = @GNOME_PLATFORM_CFLAGS@ -Wall -Werror -g3 -O0 -ggdb -DPKGDATADIR="\"$(pkgdatadir)\""
+AM_CFLAGS = -I. -I$(top_builddir)/mail @GNOME_PLATFORM_CFLAGS@ -Wall -Werror -g3 -O0 -ggdb -DPKGDATADIR="\"$(pkgdatadir)\""
 AM_LDFLAGS = @GNOME_PLATFORM_LIBS@ 
 
 
@@ -26,14 +26,19 @@ libemail_utils_la_LDFLAGS =
 libemail_utils_la_SOURCES = 	\
 		e-marshal.c	\
 		e-account-utils.c	\
-		mail-mt.c
+		mail-mt.c	\
+		e-signature.c	\
+		e-signature-list.c
 
 
 libmailutilsincludedir = $(includedir)/libemail-utils
 libmailutilsinclude_HEADERS = 	\
 		e-marshal.h	\
 		e-account-utils.h	\
-		mail-mt.h
+		mail-mt.h	\
+		e-signature.h	\
+		e-signature-list.h
+
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libemail-utils.pc

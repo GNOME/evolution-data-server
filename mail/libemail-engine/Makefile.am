@@ -1,17 +1,19 @@
 
 lib_LTLIBRARIES = libemail-engine.la
 
-AM_CFLAGS = -I$(top_builddir) @GNOME_PLATFORM_CFLAGS@ -Wall -Werror -g3 -O0 -ggdb -DPKGDATADIR="\"$(pkgdatadir)\""
+AM_CFLAGS = -I$(top_builddir) -I$(top_builddir)/mail @GNOME_PLATFORM_CFLAGS@ -Wall -Werror -g3 -O0 -ggdb -DPKGDATADIR="\"$(pkgdatadir)\""
 AM_LDFLAGS = @GNOME_PLATFORM_LIBS@ 
 
 
 libemail_engine_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)	\
+	$(EMAIL_ENGINE_CFLAGS)	\
 	$(CAMEL_CFLAGS)		\
 	$(GNOME_PLATFORM_CFLAGS)
 
 libemail_engine_la_LIBADD = 	\
 		$(CAMEL_LIBS)		\
+		$(EMAIL_ENGINE_LIBS)	\
 		$(GNOME_PLATFORM_LIBS)	\
 		$(top_builddir)/camel/libcamel-1.2.la			\
 		$(top_builddir)/camel/libcamel-provider-1.2.la			\
@@ -22,6 +24,13 @@ libemail_engine_la_LIBADD = 	\
 libemail_engine_la_LDFLAGS = 
 
 libemail_engine_la_SOURCES = 	\
+		e-mail-local.c		\
+		e-mail-folder-utils.c	\
+		mail-tools.c		\
+		e-mail-utils.c		\
+		mail-config.c		\
+		e-mail-junk-filter.c	\
+		mail-ops.c		\
 		e-mail-session.c	\
 		mail-folder-cache.c	
 

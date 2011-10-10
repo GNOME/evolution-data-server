@@ -1,4 +1,4 @@
-SUBDIRS = libemailutils libemailengine libegdbus daemon
+SUBDIRS = libemail-utils libemail-engine libegdbus daemon
 
 DISTCHECK_CONFIGURE_FLAGS=
 

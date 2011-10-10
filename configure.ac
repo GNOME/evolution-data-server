@@ -1288,6 +1288,9 @@ AC_SUBST(E_BACKEND_LIBS)
 dnl ******************************
 dnl Email daemon
 dnl ******************************
+EVO_SET_COMPILE_FLAGS(EMAIL_ENGINE, libebook-1.2)
+AC_SUBST(E_BACKEND_CFLAGS)
+AC_SUBST(E_BACKEND_LIBS)
 
 dnl ******************************
 dnl evolution-addressbook flags
@@ -1577,10 +1580,10 @@ libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
 mail/Makefile
 mail/libegdbus/Makefile
-mail/libemailengine/Makefile
-mail/libemailengine/libemail-engine.pc
-mail/libemailutils/Makefile
-mail/libemailutils/libemail-utils.pc
+mail/libemail-engine/Makefile
+mail/libemail-engine/libemail-engine.pc
+mail/libemail-utils/Makefile
+mail/libemail-utils/libemail-utils.pc
 mail/daemon/Makefile
 services/Makefile
 services/evolution-addressbook-factory/Makefile
