@@ -42,7 +42,6 @@ enum
 	__BACKEND_ERROR_SIGNAL,
 	__READONLY_SIGNAL,
 	__ONLINE_SIGNAL,
-	__AUTH_REQUIRED_SIGNAL,
 	__OPENED_SIGNAL,
 	__BACKEND_PROPERTY_CHANGED_SIGNAL,
 	__OPEN_METHOD,
@@ -69,7 +68,6 @@ enum
 	__SET_BACKEND_PROPERTY_DONE_SIGNAL,
 	__GET_VIEW_METHOD,
 	__GET_VIEW_DONE_SIGNAL,
-	__AUTHENTICATE_USER_METHOD,
 	__CANCEL_OPERATION_METHOD,
 	__CANCEL_ALL_METHOD,
 	__CLOSE_METHOD,
@@ -125,8 +123,6 @@ E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_BOOLEAN (GDBUS_BOOK_INTERFACE_NAME,
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_BOOLEAN (GDBUS_BOOK_INTERFACE_NAME,
                                               online)
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_BOOK_INTERFACE_NAME,
-                                           auth_required)
-E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_BOOK_INTERFACE_NAME,
                                            opened)
 E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_BOOK_INTERFACE_NAME,
                                            backend_property_changed)
@@ -169,7 +165,6 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
 	E_INIT_GDBUS_SIGNAL_STRING		(EGdbusBookIface, "backend_error",	backend_error,	__BACKEND_ERROR_SIGNAL)
 	E_INIT_GDBUS_SIGNAL_BOOLEAN		(EGdbusBookIface, "readonly",		readonly,	__READONLY_SIGNAL)
 	E_INIT_GDBUS_SIGNAL_BOOLEAN		(EGdbusBookIface, "online",		online,		__ONLINE_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusBookIface, "auth_required", 	auth_required,	__AUTH_REQUIRED_SIGNAL)
 	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusBookIface, "opened", 		opened,		__OPENED_SIGNAL)
 	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusBookIface, "backend_property_changed", 	backend_property_changed,	__BACKEND_PROPERTY_CHANGED_SIGNAL)
 
@@ -186,7 +181,6 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
 	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "get_backend_property",	get_backend_property, __GET_BACKEND_PROPERTY_METHOD, __GET_BACKEND_PROPERTY_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "set_backend_property",	set_backend_property, __SET_BACKEND_PROPERTY_METHOD, __SET_BACKEND_PROPERTY_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "get_view",			get_view, __GET_VIEW_METHOD, __GET_VIEW_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_STRV		(EGdbusBookIface, "authenticate_user",		authenticate_user, __AUTHENTICATE_USER_METHOD)
 	E_INIT_GDBUS_METHOD_UINT		(EGdbusBookIface, "cancel_operation",		cancel_operation, __CANCEL_OPERATION_METHOD)
 	E_INIT_GDBUS_METHOD_VOID		(EGdbusBookIface, "cancel_all",			cancel_all, __CANCEL_ALL_METHOD)
 	E_INIT_GDBUS_METHOD_VOID		(EGdbusBookIface, "close",			close, __CLOSE_METHOD)
@@ -566,33 +560,6 @@ e_gdbus_book_call_get_view_sync (GDBusProxy *proxy,
 }
 
 void
-e_gdbus_book_call_authenticate_user (GDBusProxy *proxy,
-                                     const gchar * const *in_credentials,
-                                     GCancellable *cancellable,
-                                     GAsyncReadyCallback callback,
-                                     gpointer user_data)
-{
-	e_gdbus_proxy_method_call_strv ("authenticate_user", proxy, in_credentials, cancellable, callback, user_data);
-}
-
-gboolean
-e_gdbus_book_call_authenticate_user_finish (GDBusProxy *proxy,
-                                            GAsyncResult *result,
-                                            GError **error)
-{
-	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
-}
-
-gboolean
-e_gdbus_book_call_authenticate_user_sync (GDBusProxy *proxy,
-                                          const gchar * const *in_credentials,
-                                          GCancellable *cancellable,
-                                          GError **error)
-{
-	return e_gdbus_proxy_method_call_sync_strv__void ("authenticate_user", proxy, in_credentials, cancellable, error);
-}
-
-void
 e_gdbus_book_call_cancel_operation (GDBusProxy *proxy,
                                     guint in_opid,
                                     GCancellable *cancellable,
@@ -739,13 +706,6 @@ e_gdbus_book_emit_online (EGdbusBook *object,
 }
 
 void
-e_gdbus_book_emit_auth_required (EGdbusBook *object,
-                                 const gchar * const *arg_credentials)
-{
-	g_signal_emit (object, signals[__AUTH_REQUIRED_SIGNAL], 0, arg_credentials);
-}
-
-void
 e_gdbus_book_emit_opened (EGdbusBook *object,
                           const gchar * const *arg_error)
 {
@@ -762,7 +722,6 @@ e_gdbus_book_emit_backend_property_changed (EGdbusBook *object,
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, backend_error, message, "s")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, readonly, is_readonly, "b")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, online, is_online, "b")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, auth_required, credentials, "as")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, opened, error, "as")
 E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, backend_property_changed, name_value, "as")
 
@@ -781,7 +740,6 @@ E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_backend_property, prop_nam
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, set_backend_property, prop_name_value, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_view, query, "s", view, "s")
 
-E_DECLARE_GDBUS_SYNC_METHOD_1			(book, authenticate_user, credentials, "as")
 E_DECLARE_GDBUS_SYNC_METHOD_1			(book, cancel_operation, opid, "u")
 E_DECLARE_GDBUS_SYNC_METHOD_0 (book,
                                cancel_all)
@@ -802,7 +760,6 @@ static const GDBusMethodInfo * const e_gdbus_book_method_info_pointers[] =
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_backend_property),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, set_backend_property),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, get_view),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, authenticate_user),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, cancel_operation),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, cancel_all),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (book, close),
@@ -814,7 +771,6 @@ static const GDBusSignalInfo * const e_gdbus_book_signal_info_pointers[] =
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, backend_error),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, readonly),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, online),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, auth_required),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, opened),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (book, backend_property_changed),
 

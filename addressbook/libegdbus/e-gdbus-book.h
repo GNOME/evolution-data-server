@@ -115,7 +115,6 @@ struct _EGdbusBookIface
 	void	(*backend_error)		(EGdbusBook *object, const gchar *arg_message);
 	void	(*readonly)			(EGdbusBook *object, gboolean arg_is_readonly);
 	void	(*online)			(EGdbusBook *object, gboolean arg_is_online);
-	void	(*auth_required)		(EGdbusBook *object, const gchar * const *arg_credentials);
 	void	(*opened)			(EGdbusBook *object, const gchar * const *arg_error);
 	void	(*backend_property_changed)	(EGdbusBook *object, const gchar * const *arg_name_value);
 
@@ -156,7 +155,6 @@ struct _EGdbusBookIface
 	gboolean (*handle_get_view)		(EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar *in_query);
 	void	 (*get_view_done)		(EGdbusBook *object, guint arg_opid, const GError *arg_error, gchar **out_view);
 
-	gboolean (*handle_authenticate_user)	(EGdbusBook *object, GDBusMethodInvocation *invocation, const gchar * const *in_credentials);
 	gboolean (*handle_cancel_operation)	(EGdbusBook *object, GDBusMethodInvocation *invocation, guint in_opid);
 	gboolean (*handle_cancel_all)		(EGdbusBook *object, GDBusMethodInvocation *invocation);
 	gboolean (*handle_close)		(EGdbusBook *object, GDBusMethodInvocation *invocation);
@@ -216,10 +214,6 @@ void		e_gdbus_book_call_get_view (GDBusProxy *proxy, const gchar *in_query, GCan
 gboolean	e_gdbus_book_call_get_view_finish (GDBusProxy *proxy, GAsyncResult *result, gchar **out_view_path, GError **error);
 gboolean	e_gdbus_book_call_get_view_sync (GDBusProxy *proxy, const gchar *in_query, gchar **out_view_path, GCancellable *cancellable, GError **error);
 
-void		e_gdbus_book_call_authenticate_user (GDBusProxy *proxy, const gchar * const *in_credentials, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-gboolean	e_gdbus_book_call_authenticate_user_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error);
-gboolean	e_gdbus_book_call_authenticate_user_sync (GDBusProxy *proxy, const gchar * const *in_credentials, GCancellable *cancellable, GError **error);
-
 void		e_gdbus_book_call_cancel_operation (GDBusProxy *proxy, guint in_opid, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_gdbus_book_call_cancel_operation_finish (GDBusProxy *proxy, GAsyncResult *result, GError **error);
 gboolean	e_gdbus_book_call_cancel_operation_sync (GDBusProxy *proxy, guint in_opid, GCancellable *cancellable, GError **error);
@@ -245,7 +239,6 @@ gboolean	e_gdbus_book_call_close_sync (GDBusProxy *proxy, GCancellable *cancella
 #define e_gdbus_book_complete_get_backend_property		e_gdbus_complete_async_method
 #define e_gdbus_book_complete_set_backend_property		e_gdbus_complete_async_method
 #define e_gdbus_book_complete_get_view				e_gdbus_complete_async_method
-#define e_gdbus_book_complete_authenticate_user			e_gdbus_complete_sync_method_void
 #define e_gdbus_book_complete_cancel_operation			e_gdbus_complete_sync_method_void
 #define e_gdbus_book_complete_cancel_all			e_gdbus_complete_sync_method_void
 #define e_gdbus_book_complete_close				e_gdbus_complete_sync_method_void
@@ -267,7 +260,6 @@ void e_gdbus_book_emit_get_view_done			(EGdbusBook *object, guint arg_opid, cons
 void e_gdbus_book_emit_backend_error	(EGdbusBook *object, const gchar *arg_message);
 void e_gdbus_book_emit_readonly		(EGdbusBook *object, gboolean arg_is_readonly);
 void e_gdbus_book_emit_online		(EGdbusBook *object, gboolean arg_is_online);
-void e_gdbus_book_emit_auth_required	(EGdbusBook *object, const gchar * const *arg_credentials);
 void e_gdbus_book_emit_opened		(EGdbusBook *object, const gchar * const *arg_error);
 void e_gdbus_book_emit_backend_property_changed	(EGdbusBook *object, const gchar * const *arg_name_value);
 
