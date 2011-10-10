@@ -23,8 +23,8 @@
 #define E_MAIL_LOCAL_H
 
 #include <camel/camel.h>
-#include <e-mail-enums.h>
-#include <e-mail-session.h>
+#include <libemail-engine/e-mail-enums.h>
+#include <libemail-engine/e-mail-session.h>
 
 G_BEGIN_DECLS
 

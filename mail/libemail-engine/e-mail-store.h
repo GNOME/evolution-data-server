@@ -1,4 +1,6 @@
 /*
+ * e-mail-store.h
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -13,37 +15,33 @@
  * License along with the program; if not, see <http://www.gnu.org/licenses/>
  *
  *
- * Authors:
- *		Jeffrey Stedfast <fejj@ximian.com>
- *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
  */
 
-#ifndef MAIL_CONFIG_H
-#define MAIL_CONFIG_H
+#ifndef E_MAIL_STORE_H
+#define E_MAIL_STORE_H
 
+#include <camel/camel.h>
+#include <libedataserver/e-account.h>
 #include <libemail-engine/e-mail-session.h>
 
 G_BEGIN_DECLS
 
-/* Configuration */
-void		mail_config_init		(EMailSession *session);
-void		mail_config_write		(void);
-
-/* General Accessor functions */
-
-gint		mail_config_get_address_count	(void);
-
-/* static utility functions */
-gchar *		mail_config_folder_to_cachename	(CamelFolder *folder,
-						 const gchar *prefix);
-gint		mail_config_get_sync_timeout	(void);
-
-void		mail_config_reload_junk_headers	(EMailSession *session);
-gboolean	mail_config_get_lookup_book	(void);
-gboolean	mail_config_get_lookup_book_local_only (void);
+void		e_mail_store_init		(EMailSession *session,
+						 const gchar *data_dir);
+void		e_mail_store_add		(EMailSession *session,
+						 CamelStore *store);
+CamelStore *	e_mail_store_add_by_account	(EMailSession *session,
+						 EAccount *account);
+void		e_mail_store_remove		(EMailSession *session,
+						 CamelStore *store);
+void		e_mail_store_remove_by_account	(EMailSession *session,
+						 EAccount *account);
+void		e_mail_store_foreach		(EMailSession *session,
+						 GFunc func,
+						 gpointer user_data);
 
 G_END_DECLS
 
-#endif /* MAIL_CONFIG_H */
+#endif /* E_MAIL_STORE_H */

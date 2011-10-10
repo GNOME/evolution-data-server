@@ -27,7 +27,7 @@
 G_BEGIN_DECLS
 
 #include <camel/camel.h>
-#include <e-mail-session.h>
+#include <libemail-engine/e-mail-session.h>
 
 #include <libemail-utils/mail-mt.h>
 

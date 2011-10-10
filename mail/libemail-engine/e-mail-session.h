@@ -26,7 +26,7 @@
 #define E_MAIL_SESSION_H
 
 #include <camel/camel.h>
-#include <mail-folder-cache.h>
+#include <libemail-engine/mail-folder-cache.h>
 
 /* Standard GObject macros */
 #define E_TYPE_MAIL_SESSION \

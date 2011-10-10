@@ -36,7 +36,8 @@ libemail_engine_la_SOURCES = 	\
 		e-mail-session-utils.c	\
 		mail-ops.c		\
 		e-mail-junk-filter.c	\
-		e-mail-session.c	
+		e-mail-session.c	\
+		e-mail-store.c
 
 libmailengineincludedir = $(includedir)/libemail-engine
 libmailengineinclude_HEADERS = 	\
