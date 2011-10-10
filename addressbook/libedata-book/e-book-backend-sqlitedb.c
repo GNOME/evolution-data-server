@@ -113,6 +113,33 @@ e_book_backend_sqlitedb_error_quark (void)
 }
 
 static void
+e_book_backend_sqlitedb_dispose (GObject *object)
+{
+        EBookBackendSqliteDBPrivate *priv;
+
+	priv = E_BOOK_BACKEND_SQLITEDB (object)->priv;
+
+        g_static_mutex_lock (&dbcon_lock);
+	if (db_connections != NULL) {
+	        if (priv->hash_key != NULL) {
+		        g_hash_table_remove (db_connections, priv->hash_key);
+
+		        if (g_hash_table_size (db_connections) == 0) {
+			        g_hash_table_destroy (db_connections);
+			        db_connections = NULL;
+		        }
+
+		        g_free (priv->hash_key);
+		        priv->hash_key = NULL;
+		}
+	}
+	g_static_mutex_unlock (&dbcon_lock);
+	
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_book_backend_sqlitedb_parent_class)->dispose (object);
+}
+
+static void
 e_book_backend_sqlitedb_finalize (GObject *object)
 {
 	EBookBackendSqliteDBPrivate *priv;
@@ -126,20 +153,6 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 
 	g_free (priv->path);
 	priv->path = NULL;
-
-	g_static_mutex_lock (&dbcon_lock);
-	if (db_connections != NULL) {
-		g_hash_table_remove (db_connections, priv->hash_key);
-
-		if (g_hash_table_size (db_connections) == 0) {
-			g_hash_table_destroy (db_connections);
-			db_connections = NULL;
-		}
-
-		g_free (priv->hash_key);
-		priv->hash_key = NULL;
-	}
-	g_static_mutex_unlock (&dbcon_lock);
 
 	g_free (priv);
 	priv = NULL;
@@ -156,6 +169,7 @@ e_book_backend_sqlitedb_class_init (EBookBackendSqliteDBClass *class)
 	g_type_class_add_private (class, sizeof (EBookBackendSqliteDBPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = e_book_backend_sqlitedb_dispose;
 	object_class->finalize = e_book_backend_sqlitedb_finalize;
 }
 
@@ -540,13 +554,20 @@ e_book_backend_sqlitedb_new (const gchar *path,
 	ebsdb->priv->path = g_strdup (path);
 	ebsdb->priv->store_vcard = store_vcard;
 	if (g_mkdir_with_parents (path, 0777) < 0) {
+		g_static_mutex_unlock (&dbcon_lock);
 		g_set_error (error, E_BOOK_SDB_ERROR,
 				0, "Can not make parent directory: errno %d", errno);
 		return NULL;
 	}
 	filename = g_build_filename (path, DB_FILENAME, NULL);
 
-	book_backend_sqlitedb_load (ebsdb, filename, &err);
+	if (!book_backend_sqlitedb_load (ebsdb, filename, &err)) {
+        	g_static_mutex_unlock (&dbcon_lock);
+        	g_propagate_error (error, err);
+        	g_object_unref (ebsdb);
+        	g_free (filename);
+	        return NULL;
+	}
 	g_free (filename);
 
 	if (db_connections == NULL)
