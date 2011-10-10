@@ -17,8 +17,10 @@ libemail_engine_la_LIBADD = 	\
 		$(GNOME_PLATFORM_LIBS)	\
 		$(top_builddir)/camel/libcamel-1.2.la			\
 		$(top_builddir)/camel/libcamel-provider-1.2.la			\
+		$(top_builddir)/libebackend/libebackend-1.2.la		\
 		$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-		$(top_builddir)/mail/libemailutils/libemail-utils.la
+		$(top_builddir)/libedataserverui/libedataserverui-3.0.la		\
+		$(top_builddir)/mail/libemail-utils/libemail-utils.la
 		
 
 libemail_engine_la_LDFLAGS = 
@@ -26,13 +28,15 @@ libemail_engine_la_LDFLAGS =
 libemail_engine_la_SOURCES = 	\
 		e-mail-local.c		\
 		e-mail-folder-utils.c	\
+		e-mail-store-utils.c	\
 		mail-tools.c		\
 		e-mail-utils.c		\
 		mail-config.c		\
-		e-mail-junk-filter.c	\
+		mail-folder-cache.c	\
+		e-mail-session-utils.c	\
 		mail-ops.c		\
-		e-mail-session.c	\
-		mail-folder-cache.c	
+		e-mail-junk-filter.c	\
+		e-mail-session.c	
 
 libmailengineincludedir = $(includedir)/libemail-engine
 libmailengineinclude_HEADERS = 	\
