@@ -28,7 +28,9 @@ libemail_utils_la_SOURCES = 	\
 		e-account-utils.c	\
 		mail-mt.c	\
 		e-signature.c	\
-		e-signature-list.c
+		e-signature-list.c	\
+		e-signature-utils.c	\
+		gconf-bridge.c
 
 
 libmailutilsincludedir = $(includedir)/libemail-utils
@@ -37,7 +39,9 @@ libmailutilsinclude_HEADERS = 	\
 		e-account-utils.h	\
 		mail-mt.h	\
 		e-signature.h	\
-		e-signature-list.h
+		e-signature-list.h	\
+		e-signature-utils.h	\
+		gconf-bridge.h
 
 
 pkgconfigdir = $(libdir)/pkgconfig
