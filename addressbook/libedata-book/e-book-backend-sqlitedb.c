@@ -1072,13 +1072,14 @@ func_check (struct _ESExp *f,
 	if (argc == 2
 	    && argv[0]->type == ESEXP_RES_STRING
 	    && argv[1]->type == ESEXP_RES_STRING) {
-
-		gchar *query_name = argv[0]->value.string;
+		const gchar *query_name = argv[0]->value.string;
+		const gchar *query_value = argv[1]->value.string;
 		gint   i;
 
 		/* Special case, when testing the special symbolic 'any field' we can
 		 * consider it a summary query (it's similar to a 'no query'). */
-		if (!strcmp ("x-evolution-any-field", query_name))
+		if (g_strcmp0 (query_name, "x-evolution-any-field") == 0 &&
+		    g_strcmp0 (query_value, "") == 0)
 			truth = TRUE;
 
 		for (i = 0; truth == FALSE && i < G_N_ELEMENTS (summary_fields); i++) {
