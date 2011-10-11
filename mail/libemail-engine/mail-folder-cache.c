@@ -49,6 +49,7 @@
 #include "e-mail-folder-utils.h"
 #include "e-mail-local.h"
 #include "e-mail-store-utils.h"
+#include "mail-config.h"
 
 #define w(x)
 #define d(x)
@@ -92,6 +93,7 @@ struct _folder_info {
 	gboolean has_children;
 
 	gpointer folder;	/* if known (weak pointer) */
+	guint timeout;
 };
 
 /* pending list of updates */
@@ -315,6 +317,20 @@ update_1folder (MailFolderCache *self,
 }
 
 static void
+mail_sync_folder_done (CamelFolder *folder, gpointer data)
+{
+	/* We don't have to do anything here as of now */
+}
+
+static gboolean
+mail_folder_sync (struct _folder_info *mfi)
+{
+	mail_sync_folder (mfi->folder, mail_sync_folder_done, mfi);
+	mfi->timeout = 0;
+	return FALSE;
+}
+
+static void
 folder_changed_cb (CamelFolder *folder,
                    CamelFolderChangeInfo *changes,
                    MailFolderCache *self)
@@ -333,6 +349,7 @@ folder_changed_cb (CamelFolder *folder,
 	gint i;
 	guint32 flags;
 	gchar *uid = NULL, *sender = NULL, *subject = NULL;
+	gboolean sync_changes = FALSE;
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
@@ -385,6 +402,13 @@ folder_changed_cb (CamelFolder *folder,
 				camel_folder_free_message_info (folder, info);
 			}
 		}
+	} else if (!CAMEL_IS_VEE_FOLDER(folder)
+	    && folder != local_drafts
+	    && folder != local_outbox
+	    && folder != local_sent
+	    && changes && changes->uid_changed && changes->uid_changed->len > 0) {
+			/* We must sync this back. */
+			sync_changes = TRUE;
 	}
 
 	if (new > 0)
@@ -398,6 +422,15 @@ folder_changed_cb (CamelFolder *folder,
 	    && (mfi = g_hash_table_lookup (si->folders, full_name)) != NULL
 	    && mfi->folder == folder) {
 		update_1folder (self, mfi, new, uid, sender, subject, NULL);
+		if (sync_changes == TRUE) {
+			if (mfi->timeout) {
+				g_source_remove (mfi->timeout);
+			}
+			mfi->timeout = g_timeout_add_seconds (mail_config_get_sync_timeout (), 
+						(GSourceFunc)mail_folder_sync, 
+						mfi);
+			
+		}
 	}
 	g_mutex_unlock (self->priv->stores_mutex);
 
@@ -444,6 +477,7 @@ static void
 free_folder_info (struct _folder_info *mfi)
 {
 	g_free (mfi->full_name);
+	g_source_remove (mfi->timeout);
 	g_free (mfi);
 }
 
