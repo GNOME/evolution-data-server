@@ -1390,6 +1390,9 @@ user_delete_text (ENameSelectorEntry *name_selector_entry,
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	len = g_utf8_strlen (text, -1);
 
+	if (end_pos == -1)
+		end_pos = len;
+
 	gtk_editable_get_selection_bounds (
 		GTK_EDITABLE (name_selector_entry),
 		&selection_start, &selection_end);
