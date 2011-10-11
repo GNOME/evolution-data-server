@@ -95,6 +95,13 @@ enum {
 	PROP_JUNK_FILTER_NAME
 };
 
+enum {
+	FLUSH_OUTBOX,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 static gchar *mail_data_dir;
 static gchar *mail_cache_dir;
 static gchar *mail_config_dir;
@@ -270,7 +277,10 @@ forward_to_flush_outbox_cb (EMailSession *session)
 {
 
 	preparing_flush = 0;
-	//mail_send ();
+
+	/* Connect to this and call mail_send in the main email client.*/
+	g_signal_emit (session, signals[FLUSH_OUTBOX], 0);
+
 
 	return FALSE;
 }
@@ -1007,6 +1017,22 @@ e_mail_session_class_init (EMailSessionClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
+
+	/**
+	 * EMailSession::flush-outbox
+	 * @session: the email session
+	 *
+	 * Emitted if the send folder should be flushed.
+	 **/
+	signals[FLUSH_OUTBOX] = g_signal_new (
+		"flush-outbox",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_FIRST,
+		0, /* struct offset */
+		NULL, NULL, /* accumulator */
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
+
 }
 
 static void

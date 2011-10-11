@@ -33,8 +33,9 @@
 #include "libemail-engine/mail-config.h"
 #include "libemail-engine/mail-ops.h"
 #include "libemail-engine/e-mail-store.h"
-#include "e-dbus-manager.h"
 
+#include "mail-send-recv.h"
+#include "e-dbus-manager.h"
 #include "utils.h"
 
 EMailSession *session = NULL;
@@ -57,6 +58,9 @@ start_mail_engine ()
 	}
 
 	session = e_mail_session_new ();
+	/* When the session emits flush-outbox, just call mail_send to flush it */
+	g_signal_connect (session, "flush-outbox", G_CALLBACK(mail_send), session);
+
 	folder_cache = e_mail_session_get_folder_cache (session);
 
 	mail_config_init (session);
@@ -68,7 +72,7 @@ start_mail_engine ()
 	g_free(data_dir);
 
 	//e_mail_connection_connman_new();
-	//mail_autoreceive_init (session);
+	mail_autoreceive_init (session);
 	
 	//e_dbus_manager_new ();
 
