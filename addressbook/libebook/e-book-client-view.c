@@ -31,6 +31,7 @@
 #include "e-book-client-view-private.h"
 #include "e-book-marshal.h"
 #include "libedata-book/e-data-book-types.h"
+#include "libedataserver/e-data-server-util.h"
 #include "e-gdbus-book-view.h"
 
 G_DEFINE_TYPE (EBookClientView, e_book_client_view, G_TYPE_OBJECT);
@@ -72,8 +73,7 @@ objects_added_cb (EGdbusBookView *object,
 
 	g_signal_emit (view, signals[OBJECTS_ADDED], 0, contacts);
 
-	g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
-	g_slist_free (contacts);
+	e_util_free_object_slist (contacts);
 }
 
 static void
@@ -95,8 +95,7 @@ objects_modified_cb (EGdbusBookView *object,
 
 	g_signal_emit (view, signals[OBJECTS_MODIFIED], 0, contacts);
 
-	g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
-	g_slist_free (contacts);
+	e_util_free_object_slist (contacts);
 }
 
 static void
