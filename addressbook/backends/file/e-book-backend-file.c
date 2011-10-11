@@ -88,8 +88,9 @@ struct _EBookBackendFilePrivate {
 	gpointer reserved4;
 };
 
-G_LOCK_DEFINE_STATIC (global_env);
-static struct {
+G_LOCK_DEFINE_STATIC (db_environments);
+static GHashTable *db_environments = NULL;
+typedef struct {
 	gint ref_count;
 	DB_ENV *env;
 } global_env;
@@ -1316,6 +1317,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	DB               *db;
 	DB_ENV           *env;
 	GError           *local_error = NULL;
+	global_env       *genv = NULL;
 
 #ifdef CREATE_DEFAULT_VCARD
 	gboolean create_default_vcard = FALSE;
@@ -1334,15 +1336,18 @@ e_book_backend_file_open (EBookBackendSync *backend,
 		return;
 	}
 
-	G_LOCK (global_env);
-	if (global_env.ref_count > 0) {
-		env = global_env.env;
-		global_env.ref_count++;
+	G_LOCK (db_environments);
+	if (db_environments) {
+		genv = g_hash_table_lookup (db_environments, dirname);
+	}
+	if (genv && genv->ref_count > 0) {
+		genv->ref_count++;
+		env = genv->env;
 	} else {
 		db_error = db_env_create (&env, 0);
 		if (db_error != 0) {
 			g_warning ("db_env_create failed with %s", db_strerror (db_error));
-			G_UNLOCK (global_env);
+			G_UNLOCK (db_environments);
 			g_free (dirname);
 			g_free (filename);
 			db_error_to_gerror (db_error, perror);
@@ -1361,7 +1366,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 		if (!only_if_exists) {
 			if (!create_directory (dirname, perror)) {
 				g_warning ("failed to create directory at %s", dirname);
-				G_UNLOCK (global_env);
+				G_UNLOCK (db_environments);
 				g_free (dirname);
 				g_free (filename);
 				return;
@@ -1384,17 +1389,23 @@ e_book_backend_file_open (EBookBackendSync *backend,
 		if (db_error != 0) {
 			env->close (env, 0);
 			g_warning ("db_env_open failed with %s", db_strerror (db_error));
-			G_UNLOCK (global_env);
+			G_UNLOCK (db_environments);
 			g_free (dirname);
 			g_free (filename);
 			db_error_to_gerror (db_error, perror);
 			return;
 		}
 
-		global_env.env = env;
-		global_env.ref_count = 1;
+		/* Insert in the db_environments hash table */
+		if (!db_environments) {
+			db_environments = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+		}
+		genv = g_malloc0 (sizeof (global_env));
+		genv->ref_count = 1;
+		genv->env = env;
+		g_hash_table_insert (db_environments, g_strdup (dirname), genv);
 	}
-	G_UNLOCK (global_env);
+	G_UNLOCK (db_environments);
 
 	bf->priv->env = env;
 
@@ -1722,6 +1733,7 @@ static void
 e_book_backend_file_dispose (GObject *object)
 {
 	EBookBackendFile *bf;
+	global_env *genv;
 
 	bf = E_BOOK_BACKEND_FILE (object);
 
@@ -1730,13 +1742,21 @@ e_book_backend_file_dispose (GObject *object)
 		bf->priv->file_db = NULL;
 	}
 
-	G_LOCK (global_env);
-	global_env.ref_count--;
-	if (global_env.ref_count == 0) {
-		global_env.env->close (global_env.env, 0);
-		global_env.env = NULL;
+	G_LOCK (db_environments);
+	genv = g_hash_table_lookup (db_environments, bf->priv->dirname);
+	if (genv) {
+		genv->ref_count--;
+		if (genv->ref_count == 0) {
+			genv->env->close (genv->env, 0);
+			g_free (genv);
+			g_hash_table_remove (db_environments, bf->priv->dirname);
+		}
+		if (g_hash_table_size (db_environments) == 0) {
+			g_hash_table_destroy (db_environments);
+			db_environments = NULL;
+		}
 	}
-	G_UNLOCK (global_env);
+	G_UNLOCK (db_environments);
 
 	if (bf->priv->sqlitedb) {
 		g_object_unref (bf->priv->sqlitedb);
