@@ -25,96 +25,56 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
-#if 0
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserverui/e-passwords.h>
-#include "mail-session.h"
-#include "e-mail-store.h"
-#include "mail-folder-cache.h"
-#include "mail-mt.h"
-#include "mail-config.h"
-#include "mail-ops.h"
+#include "libemail-engine/e-mail-session.h"
+#include "libemail-engine/mail-folder-cache.h"
+#include "libemail-utils/mail-mt.h"
+#include "libemail-engine/mail-config.h"
+#include "libemail-engine/mail-ops.h"
+#include "libemail-engine/e-mail-store.h"
 #include "e-dbus-manager.h"
-#include "mail-send-recv.h"
-#include "e-mail-connection-connman.h"
 
 #include "utils.h"
 
-/* Yeah, the daemon shouldn't be a gtk+ app. But this code shuffling ends this up as a Gtk daemon. But once we solve password and alert issues, this should be a simple mainloop */
-
-extern CamelSession *session;
-static gint mail_sync_in_progress = 0;
-
-static void
-mail_sync_store_done_cb (CamelStore *store,
-                         gpointer user_data,
-			 GError *error)
-{
-	mail_sync_in_progress--;
-}
-
-static void
-mail_sync_store_cb (CamelStore *store,
-                    const gchar *display_name,
-                    gpointer not_used)
-{
-	CamelService *service = (CamelService *)store;
-	
-	/* Don't have to sync the local store. Only remote needs to be synced. */
-	if (strcmp(service->url->protocol, "mbox") == 0)
-		return;
-
-	mail_sync_in_progress++;
-
-	mail_sync_store (
-		store, FALSE,
-		mail_sync_store_done_cb,
-		NULL);
-}
-
-static gboolean
-mail_auto_sync ()
-{
-	/* If a sync is still in progress, skip this round. */
-	if (mail_sync_in_progress)
-		goto exit;
-
-	e_mail_store_foreach (
-		(GHFunc) mail_sync_store_cb,
-		NULL);
-
-exit:
-	return TRUE;
-}
+EMailSession *session = NULL;
+MailFolderCache *folder_cache = NULL;
 
 static gboolean
 start_mail_engine ()
 {
 	char *data_dir;
 
-	mail_debug_int ();
-	mail_session_start ();
-	mail_folder_cache_get_default ();
-	mail_config_init ();
-	mail_msg_init ();
+	mail_debug_init ();
+
+	if (camel_init (e_get_user_data_dir (), TRUE) != 0)
+		exit (0);
+	camel_provider_init ();
 
 	data_dir = g_build_filename (e_get_user_data_dir(), "mail", NULL);
 	if (!g_file_test (data_dir, G_FILE_TEST_EXISTS|G_FILE_TEST_IS_DIR)) {
 		g_mkdir_with_parents (data_dir, 0700);
 	}
+
+	session = e_mail_session_new ();
+	folder_cache = e_mail_session_get_folder_cache (session);
+
+	mail_config_init (session);
+	mail_msg_init ();
+
 	
-	e_mail_store_init (data_dir);
+	e_mail_store_init (session, data_dir);
 
 	g_free(data_dir);
 
-	e_mail_connection_connman_new();
-	mail_autoreceive_init (session);
+	//e_mail_connection_connman_new();
+	//mail_autoreceive_init (session);
 	
-	e_dbus_manager_new ();
+	//e_dbus_manager_new ();
 
 	return FALSE;
 }
-#endif
+
 int 
 main(int argc, char* argv[])
 {
@@ -127,9 +87,9 @@ main(int argc, char* argv[])
 	g_set_prgname ("evolution-mail-factory");
 	if (!g_thread_supported ()) g_thread_init (NULL);
 
-//	e_passwords_init ();
+	e_passwords_init ();
 
-//	g_idle_add ((GSourceFunc) start_mail_engine, NULL);
+	g_idle_add ((GSourceFunc) start_mail_engine, NULL);
 	gtk_main ();
 
    	return 0;
