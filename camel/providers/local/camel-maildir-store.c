@@ -628,7 +628,9 @@ maildir_store_get_folder_info_sync (CamelStore *store,
 		const gchar *name = strrchr (top, '/');
 
 		fi = scan_fi (store, flags, url, top, name ? name + 1 : top, cancellable);
-		if (scan_dirs (store, flags, &fi, url, cancellable, error) == -1)
+		if (g_strcmp0 (fi->full_name, CAMEL_VTRASH_NAME) != 0 &&
+		    g_strcmp0 (fi->full_name, CAMEL_VJUNK_NAME) != 0 &&
+		    scan_dirs (store, flags, &fi, url, cancellable, error) == -1)
 			goto fail;
 	}
 
