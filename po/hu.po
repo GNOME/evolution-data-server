@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-15 12:42+0200\n"
-"PO-Revision-Date: 2011-09-15 12:49+0200\n"
+"POT-Creation-Date: 2011-10-11 21:17+0200\n"
+"PO-Revision-Date: 2011-10-11 21:21+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: \n"
@@ -19,64 +19,64 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:828
+#: ../addressbook/backends/file/e-book-backend-file.c:830
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:478
 msgid "Loading..."
 msgstr "Betöltés…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:831
+#: ../addressbook/backends/file/e-book-backend-file.c:833
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4807
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:480
 msgid "Searching..."
 msgstr "Keresés…"
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:814
+#: ../addressbook/backends/google/e-book-backend-google.c:842
 msgid "Querying for updated contacts…"
 msgstr "Frissített névjegyek lekérése…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:865
-#: ../addressbook/libebook/e-book.c:3549 ../calendar/libecal/e-cal.c:1381
+#: ../addressbook/backends/google/e-book-backend-google.c:893
+#: ../addressbook/libebook/e-book.c:3506 ../calendar/libecal/e-cal.c:1381
 #: ../libedataserver/e-client.c:1951
 msgid "Personal"
 msgstr "Személyes"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:867
+#: ../addressbook/backends/google/e-book-backend-google.c:895
 msgid "Friends"
 msgstr "Barátok"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:869
+#: ../addressbook/backends/google/e-book-backend-google.c:897
 msgid "Family"
 msgstr "Család"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:871
+#: ../addressbook/backends/google/e-book-backend-google.c:899
 msgid "Coworkers"
 msgstr "Munkatársak"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:955
+#: ../addressbook/backends/google/e-book-backend-google.c:983
 msgid "Querying for updated groups…"
 msgstr "Frissített csoportok lekérése…"
 
 #. Insert the entry on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1374
+#: ../addressbook/backends/google/e-book-backend-google.c:1402
 msgid "Creating new contact…"
 msgstr "Új névjegy létrehozása…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1484
+#: ../addressbook/backends/google/e-book-backend-google.c:1512
 msgid "Deleting contact…"
 msgstr "Névjegy törlése…"
 
 #. Update the contact on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1762
+#: ../addressbook/backends/google/e-book-backend-google.c:1793
 msgid "Modifying contact…"
 msgstr "Névjegy módosítása…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1969
+#: ../addressbook/backends/google/e-book-backend-google.c:2000
 msgid "Loading…"
 msgstr "Betöltés…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2127
+#: ../addressbook/backends/google/e-book-backend-google.c:2158
 msgid "Authenticating with the server…"
 msgstr "Hitelesítés a kiszolgálóval…"
 
@@ -147,17 +147,17 @@ msgstr "Ismeretlen hiba"
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "„%s” erőforrás létrehozása meghiúsult ezen HTTP állapottal: %d (%s)"
 
-#: ../addressbook/libebook/e-book.c:3216
+#: ../addressbook/libebook/e-book.c:3173
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: a(z) „%s” UID-nak nem volt tárolva forrása a GConfban."
 
-#: ../addressbook/libebook/e-book.c:3532 ../calendar/libecal/e-cal.c:1361
+#: ../addressbook/libebook/e-book.c:3489 ../calendar/libecal/e-cal.c:1361
 #: ../libedataserver/e-client.c:1946
 msgid "On This Computer"
 msgstr "Ezen a számítógépen"
 
-#: ../addressbook/libebook/e-book.c:3658
+#: ../addressbook/libebook/e-book.c:3615
 #: ../addressbook/libebook/e-book-client.c:678
 #: ../addressbook/libedata-book/e-data-book.c:315
 msgid "Address book does not exist"
@@ -216,7 +216,7 @@ msgid "There was no source for UID '%s' stored in a source list."
 msgstr "A(z) „%s” UID-nak nem volt tárolva forrása a forráslistában."
 
 #: ../addressbook/libebook/e-book-client.c:2280
-#: ../calendar/libecal/e-cal-client.c:4475
+#: ../calendar/libecal/e-cal-client.c:4482
 msgid "Cannot get connection to view"
 msgstr "Nem lehet lekérni a megjelenítendő kapcsolatot"
 
@@ -798,7 +798,7 @@ msgstr "Ismeretlen címjegyzék-tulajdonság: „%s”"
 msgid "Cannot change value of book property '%s'"
 msgstr "Nem lehet módosítani a(z) „%s” címjegyzék-tulajdonság értékét"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:470
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:484
 #: ../camel/camel-db.c:481
 #, c-format
 msgid "Insufficient memory"
@@ -903,7 +903,7 @@ msgstr "Érvénytelen kiszolgálóverzió"
 #: ../calendar/libecal/e-cal.c:4561 ../calendar/libedata-cal/e-data-cal.c:443
 #: ../libedataserver/e-client.c:116
 msgid "Invalid argument"
-msgstr "Érvénytelen paraméter"
+msgstr "Érvénytelen argumentum"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:328
@@ -1381,98 +1381,107 @@ msgid "Cannot change value of calendar property '%s'"
 msgstr "Nem lehet módosítani a(z) „%s” naptártulajdonság értékét"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:72
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:714
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:736
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:851
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:882
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1082
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1112
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:728
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:750
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:865
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:896
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1096
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1126
 #, c-format
 msgid "\"%s\" expects no arguments"
-msgstr "a(z) „%s” nem vár paramétert"
+msgstr "a(z) „%s” nem vár argumentumot"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:108
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:224
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:269
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:308
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1153
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1167
 #, c-format
 msgid "\"%s\" expects one argument"
-msgstr "a(z) „%s” egy paramétert vár"
+msgstr "a(z) „%s” egy argumentumot vár"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:114
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:314
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:781
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:795
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
-msgstr "a(z) „%s” első paraméterként karakterláncot vár"
+msgstr "a(z) „%s” első argumentumként karakterláncot vár"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:129
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "a(z) „%s” első paraméterként ISO 8601 dátum/idő karakterláncot vár"
+msgstr "a(z) „%s” első argumentumként ISO 8601 dátum/idő karakterláncot vár"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:171
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:388
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:441
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:775
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:917
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:455
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:789
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:931
 #, c-format
 msgid "\"%s\" expects two arguments"
-msgstr "„%s” két paramétert vár"
+msgstr "„%s” két argumentumot vár"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:177
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:230
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:275
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:394
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:447
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:923
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1159
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:396
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:461
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:937
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1173
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
-msgstr "„%s” első paraméterként time_t-t vár"
+msgstr "„%s” első argumentumként time_t-t vár"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:185
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
-msgstr "„%s” második paraméterként egész számot vár"
+msgstr "„%s” második argumentumként egész számot vár"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:402
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:456
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:931
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:390
+#, c-format
+msgid "\"%s\" expects two or three arguments"
+msgstr "„%s” két vagy három argumentumot vár"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:404
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:945
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
-msgstr "„%s” második paraméterként time_t-t vár"
+msgstr "„%s” második argumentumként time_t-t vár"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:789
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:413
+#, c-format
+msgid "\"%s\" expects the third argument to be a string"
+msgstr "a(z) „%s” harmadik argumentumként karakterláncot vár"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:803
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
-msgstr "a(z) „%s” második paraméterként karakterláncot vár"
+msgstr "a(z) „%s” második argumentumként karakterláncot vár"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:819
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:833
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"„%s” első paraméterként a következők egyikét várja: „any”, „summary”, "
+"„%s” első argumentumként a következők egyikét várja: „any”, „summary”, "
 "„description”, „location”, „attendee”, „organizer” vagy „classification”"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:981
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:995
 #, c-format
 msgid "\"%s\" expects at least one argument"
-msgstr "„%s” legalább egy paramétert vár"
+msgstr "„%s” legalább egy argumentumot vár"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:995
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1009
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"a(z) „%s” elvárja, hogy minden paraméter karakterlánc legyen vagy, hogy egy "
-"és csak egy paraméter logikai hamis (#f) érték legyen"
+"a(z) „%s” elvárja, hogy minden argumentum karakterlánc legyen vagy, hogy egy "
+"és csak egy argumentum logikai hamis (#f) érték legyen"
 
 #: ../calendar/libedata-cal/e-data-cal.c:430
 msgid "Unsupported method"
@@ -1819,7 +1828,7 @@ msgstr "A kvótainformációk nem támogatottak a(z) „%s” mappához"
 msgid "Retrieving message '%s' in %s"
 msgstr "„%s” üzenet letöltése ebből: %s"
 
-#: ../camel/camel-folder.c:3396
+#: ../camel/camel-folder.c:3404
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Kvótainformációk lekérése a következőhöz: „%s”"
@@ -2687,7 +2696,7 @@ msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nem sikerült törölni a mappát: %s: Érvénytelen művelet"
 
 #: ../camel/camel-store.c:2795 ../camel/camel-vee-store.c:402
-#: ../camel/providers/local/camel-maildir-store.c:710
+#: ../camel/providers/local/camel-maildir-store.c:712
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Nem sikerült átnevezni a mappát: %s: Érvénytelen művelet"
@@ -2967,28 +2976,28 @@ msgstr "Nem sikerült létrehozni %s könyvtárat: %s"
 msgid "Could not load summary for %s"
 msgstr "Nem sikerült betölteni %s összefoglalóját"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1054
+#: ../camel/providers/imap/camel-imap-folder.c:1057
 #: ../camel/providers/imapx/camel-imapx-server.c:4065
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Megváltozott levelek keresése ebben: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3483
+#: ../camel/providers/imap/camel-imap-folder.c:3486
 msgid "Unable to retrieve message: "
 msgstr "Nem lehet lekérni a levelet: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3520
+#: ../camel/providers/imap/camel-imap-folder.c:3523
 #: ../camel/providers/imapx/camel-imapx-server.c:5344
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nem lehet letölteni a(z) %s azonosítójú levelet: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3521
+#: ../camel/providers/imap/camel-imap-folder.c:3524
 #: ../camel/providers/imapx/camel-imapx-server.c:5345
 msgid "No such message available."
 msgstr "Nincs ilyen üzenet."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3596
+#: ../camel/providers/imap/camel-imap-folder.c:3599
 #: ../camel/providers/imap/camel-imap-folder.c:4506
 #: ../camel/providers/nntp/camel-nntp-folder.c:438
 #, c-format
@@ -3158,7 +3167,7 @@ msgstr ""
 #: ../camel/providers/local/camel-maildir-store.c:273
 #: ../camel/providers/local/camel-maildir-store.c:619
 #: ../camel/providers/local/camel-maildir-store.c:625
-#: ../camel/providers/local/camel-maildir-store.c:711
+#: ../camel/providers/local/camel-maildir-store.c:713
 #: ../camel/providers/local/camel-spool-store.c:328
 msgid "Inbox"
 msgstr "Beérkezett üzenetek"
@@ -3537,7 +3546,7 @@ msgid "Cannot create folder: %s : Folder name cannot contain a dot"
 msgstr "Nem lehet létrehozni a mappát (%s): a mappanév nem tartalmazhat pontot"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
-#: ../camel/providers/local/camel-maildir-store.c:728
+#: ../camel/providers/local/camel-maildir-store.c:730
 #, c-format
 msgid "Folder %s already exists"
 msgstr "A mappa (%s) már létezik"
@@ -3581,14 +3590,14 @@ msgid "not a maildir directory"
 msgstr "nem maildir könyvtár"
 
 #: ../camel/providers/local/camel-maildir-store.c:510
-#: ../camel/providers/local/camel-maildir-store.c:885
+#: ../camel/providers/local/camel-maildir-store.c:887
 #: ../camel/providers/local/camel-spool-store.c:161
 #: ../camel/providers/local/camel-spool-store.c:180
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "Nem sikerült pásztázni a mappát: „%s”: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:719
+#: ../camel/providers/local/camel-maildir-store.c:721
 #, c-format
 msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
 msgstr "Nem lehet átnevezni a mappát (%s): a mappanév nem tartalmazhat pontot"
@@ -3903,17 +3912,17 @@ msgstr "Belső hiba: az UID érvénytelen formátumú: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:263
 #: ../camel/providers/nntp/camel-nntp-folder.c:267
-#: ../camel/providers/pop3/camel-pop3-folder.c:431
-#: ../camel/providers/pop3/camel-pop3-folder.c:696
+#: ../camel/providers/pop3/camel-pop3-folder.c:434
+#: ../camel/providers/pop3/camel-pop3-folder.c:699
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Nem sikerült betölteni a levelet: %s: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:274
 #: ../camel/providers/nntp/camel-nntp-folder.c:449
-#: ../camel/providers/pop3/camel-pop3-folder.c:368
-#: ../camel/providers/pop3/camel-pop3-folder.c:420
-#: ../camel/providers/pop3/camel-pop3-folder.c:440
+#: ../camel/providers/pop3/camel-pop3-folder.c:372
+#: ../camel/providers/pop3/camel-pop3-folder.c:424
+#: ../camel/providers/pop3/camel-pop3-folder.c:443
 #, c-format
 msgid "Cannot get message %s: "
 msgstr "Nem sikerült letölteni a levelet: %s: "
@@ -4074,34 +4083,34 @@ msgstr "Váratlan kiszolgálóválasz a head részéről: %s"
 msgid "Operation failed: %s"
 msgstr "Művelet sikertelen: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:285
-#: ../camel/providers/pop3/camel-pop3-folder.c:344
+#: ../camel/providers/pop3/camel-pop3-folder.c:289
+#: ../camel/providers/pop3/camel-pop3-folder.c:348
 #, c-format
 msgid "No message with UID %s"
 msgstr "Nincs %s felhasználóazonosítójú levél"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:352
+#: ../camel/providers/pop3/camel-pop3-folder.c:356
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "%d. POP-levél letöltése"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:432
+#: ../camel/providers/pop3/camel-pop3-folder.c:435
 msgid "Unknown reason"
 msgstr "Ismeretlen ok"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:472
+#: ../camel/providers/pop3/camel-pop3-folder.c:475
 msgid "Retrieving POP summary"
 msgstr "POP-összefoglaló letöltése"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:487
+#: ../camel/providers/pop3/camel-pop3-folder.c:490
 msgid "Cannot get POP summary: "
 msgstr "Nem sikerült letölteni a POP-összefoglalót: "
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:557
+#: ../camel/providers/pop3/camel-pop3-folder.c:560
 msgid "Expunging old messages"
 msgstr "Régi levelek eltávolítása"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:569
+#: ../camel/providers/pop3/camel-pop3-folder.c:572
 msgid "Expunging deleted messages"
 msgstr "A törlésre kijelölt levelek eltávolítása"
 
