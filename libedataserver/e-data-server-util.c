@@ -870,14 +870,18 @@ GSList *
 e_util_copy_string_slist (GSList *copy_to,
                           const GSList *strings)
 {
-	GSList *res = copy_to;
-	const GSList *iter;
+	if (strings != NULL) {
+		const GSList *iter;
+		GSList *strings_copy = NULL;
+		/* Make deep copy of strings */
+		for (iter = strings; iter; iter = iter->next)
+			strings_copy = g_slist_prepend (strings_copy, g_strdup (iter->data));
 
-	for (iter = strings; iter; iter = iter->next) {
-		res = g_slist_append (res, g_strdup (iter->data));
+		/* Concatenate the two lists */
+		return g_slist_concat (copy_to, g_slist_reverse (strings_copy));
 	}
 
-	return res;
+	return copy_to;
 }
 
 /**
@@ -896,14 +900,18 @@ GSList *
 e_util_copy_object_slist (GSList *copy_to,
                           const GSList *objects)
 {
-	GSList *res = copy_to;
-	const GSList *iter;
+	if (objects != NULL) {
+		const GSList *iter;
+		GSList *objects_copy = NULL;
+		/* Make deep copy of objects */
+		for (iter = objects; iter; iter = iter->next)
+			objects_copy = g_slist_prepend (objects_copy, g_object_ref (iter->data));
 
-	for (iter = objects; iter; iter = iter->next) {
-		res = g_slist_append (res, g_object_ref (iter->data));
+		/* Concatenate the two lists */
+		return g_slist_concat (copy_to, g_slist_reverse (objects_copy));
 	}
 
-	return res;
+	return copy_to;
 }
 
 /**
