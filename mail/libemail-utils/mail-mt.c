@@ -44,6 +44,29 @@ static GHashTable *mail_msg_active_table;
 static GMutex *mail_msg_lock;
 static GCond *mail_msg_cond;
 
+static MailMsgCreateActivityFunc create_activity = NULL;
+static MailMsgSubmitActivityFunc submit_acitivity = NULL;
+static MailMsgFreeActivityFunc free_activity = NULL;
+static MailMsgCompleteActivityFunc complete_activity = NULL;
+static MailMsgAlertErrorFunc alert_error = NULL;
+static MailMsgCancelActivityFunc cancel_activity = NULL;
+
+void mail_msg_register_activities (MailMsgCreateActivityFunc acreate,
+				   MailMsgSubmitActivityFunc asubmit,
+				   MailMsgFreeActivityFunc freeact,
+				   MailMsgCompleteActivityFunc comp_act,
+				   MailMsgCancelActivityFunc cancel_act,
+				   MailMsgAlertErrorFunc ealert)
+{
+	/* This is a utter hack to keep EActivity out of EDS and still let Evolution do EActivity */
+	create_activity = acreate;
+	submit_acitivity = asubmit;
+	free_activity = freeact;
+	complete_activity = comp_act;
+	cancel_activity = cancel_act;
+	alert_error = ealert;
+}
+
 static void
 mail_msg_cancelled (CamelOperation *operation,
                     gpointer user_data)
@@ -55,8 +78,9 @@ mail_msg_cancelled (CamelOperation *operation,
 static gboolean
 mail_msg_submit (CamelOperation *cancellable)
 {
-	/* FIXME: Add a way to pass this object to the clients for tracking*/
 
+	if (submit_acitivity)
+		submit_acitivity ((GCancellable *)cancellable);
 	return FALSE;
 }
 
@@ -73,6 +97,9 @@ mail_msg_new (MailMsgInfo *info)
 	msg->seq = mail_msg_seq++;
 
 	msg->cancellable = camel_operation_new ();
+	
+	if (create_activity)
+		create_activity (msg->cancellable);
 
 	g_signal_connect (
 		msg->cancellable, "cancelled",
@@ -117,6 +144,9 @@ static gboolean
 mail_msg_free (MailMsg *mail_msg)
 {
 	/* This is an idle callback. */
+
+	if (free_activity)
+		free_activity (mail_msg->cancellable);
 
 	if (mail_msg->cancellable != NULL)
 		g_object_unref (mail_msg->cancellable);
@@ -191,7 +221,12 @@ mail_msg_check_error (gpointer msg)
 	if (m->error == NULL)
 		return;
 
+	if (complete_activity)
+		complete_activity (m->cancellable);
+
 	if (g_error_matches (m->error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		if (cancel_activity)
+			cancel_activity (m->cancellable);
 		return;
 	}	
 
@@ -203,6 +238,15 @@ mail_msg_check_error (gpointer msg)
 		return;
 
 	/* FIXME: Submit an error on the dbus */
+	if (alert_error) {
+		char *what;
+
+		if (m->info->desc && (what = m->info->desc (m))) {
+			alert_error (what, m->error->message);
+			g_free (what);
+		} else
+			alert_error (NULL, m->error->message);
+	}
 }	
 
 void
@@ -528,6 +572,14 @@ do_call (struct _call_msg *m,
 		p5 = va_arg (ap, gpointer );
 		m->ret = m->func (p1, p2, i1, p3, p4, p5);
 		break;
+	}
+
+	if (g_cancellable_is_cancelled (cancellable)) {
+		if (cancel_activity)
+			cancel_activity (cancellable);
+	} else {
+		if (complete_activity)
+			complete_activity (cancellable);
 	}
 
 	if (m->done != NULL)

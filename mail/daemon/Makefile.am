@@ -24,7 +24,6 @@ test_email_client_LDADD = \
 		$(top_builddir)/mail/libemail-utils/libemail-utils.la	\
 		$(top_builddir)/mail/libegdbus/libegdbus-mail.la	\
 		$(top_builddir)/camel/libcamel-1.2.la			\
-		$(top_builddir)/camel/libcamel-provider-1.2.la		\
 		$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 		$(top_builddir)/libedataserverui/libedataserverui-3.0.la	\
 		$(GNOME_PLATFORM_LIBS)	\
@@ -45,7 +44,6 @@ evolution_mail_factory_LDADD = \
 		$(CAMEL_LIBS)		\
 		$(GNOME_PLATFORM_LIBS)	\
 		$(top_builddir)/camel/libcamel-1.2.la			\
-		$(top_builddir)/camel/libcamel-provider-1.2.la		\
 		$(top_builddir)/libedataserver/libedataserver-1.2.la	\
 		$(top_builddir)/libedataserverui/libedataserverui-3.0.la	\
 		$(top_builddir)/mail/libemail-utils/libemail-utils.la	\

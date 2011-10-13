@@ -36,6 +36,14 @@ typedef void	(*MailMsgDoneFunc)		(MailMsg *msg);
 typedef void	(*MailMsgFreeFunc)		(MailMsg *msg);
 typedef void	(*MailMsgDispatchFunc)		(gpointer msg);
 
+
+typedef void    (*MailMsgCreateActivityFunc)	(GCancellable *cancellable);
+typedef void    (*MailMsgSubmitActivityFunc)	(GCancellable *cancellable);
+typedef void    (*MailMsgFreeActivityFunc)	(GCancellable *cancellable);
+typedef void    (*MailMsgCompleteActivityFunc)	(GCancellable *cancellable);
+typedef void    (*MailMsgCancelActivityFunc)	(GCancellable *cancellable);
+typedef void    (*MailMsgAlertErrorFunc)	(const char *what, const char *message);
+
 struct _MailMsg {
 	MailMsgInfo *info;
 	volatile gint ref_count;
@@ -55,6 +63,12 @@ struct _MailMsgInfo {
 
 /* setup ports */
 void mail_msg_init (void);
+void mail_msg_register_activities (MailMsgCreateActivityFunc,
+				   MailMsgSubmitActivityFunc,
+				   MailMsgFreeActivityFunc,
+				   MailMsgCompleteActivityFunc,
+				   MailMsgCancelActivityFunc,				   
+				   MailMsgAlertErrorFunc);
 
 gboolean mail_in_main_thread (void);
 

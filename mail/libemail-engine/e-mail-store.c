@@ -197,11 +197,10 @@ mail_store_add (EMailSession *session,
 
 	g_hash_table_insert (store_table, store, store_info);
 
-	// FIXME: Launch a signal to indicate if we have to launch this
-
-	if (special_mail_store_is_enabled (store)) {}
-	/*	em_folder_tree_model_add_store (default_model, store);
-	*/
+	if (special_mail_store_is_enabled (store)) {
+		/* Listen to this in evolution and add to the folder tree model. */
+		g_signal_emit_by_name (session, "store-added", store);
+	}
 
 	mail_folder_cache_note_store (
 		folder_cache, CAMEL_SESSION (session), store, NULL,
@@ -409,11 +408,8 @@ e_mail_store_remove (EMailSession *session,
 	folder_cache = e_mail_session_get_folder_cache (session);
 	mail_folder_cache_note_store_remove (folder_cache, store);
 
-	//FIXME: Launch a signal to remove this from the folder tree model
-	/*
-	default_model = em_folder_tree_model_get_default ();
-	em_folder_tree_model_remove_store (default_model, store);
-	*/
+	g_signal_emit_by_name (session, "store-removed", store);
+
 	mail_disconnect_store (store);
 
 	g_object_unref (store);

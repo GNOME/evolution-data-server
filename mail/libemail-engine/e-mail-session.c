@@ -97,6 +97,8 @@ enum {
 
 enum {
 	FLUSH_OUTBOX,
+	STORE_ADDED,
+	STORE_REMOVED,
 	LAST_SIGNAL
 };
 
@@ -1032,6 +1034,42 @@ e_mail_session_class_init (EMailSessionClass *class)
 		NULL, NULL, /* accumulator */
 		g_cclosure_marshal_VOID__VOID,
 		G_TYPE_NONE, 0);
+
+	/**
+	 * EMailSession::store-added
+	 * @session: the email session
+	 * @store: the CamelStore
+	 *
+	 * Emitted when a store is added
+	 **/
+	signals[STORE_ADDED] = g_signal_new (
+		"store-added",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_FIRST,
+		0, /* struct offset */
+		NULL, NULL, /* accumulator */
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		CAMEL_TYPE_STORE);
+
+
+	/**
+	 * EMailSession::store-removed
+	 * @session: the email session
+	 * @store: the CamelStore
+	 *
+	 * Emitted when a store is removed 
+	 **/
+	signals[STORE_REMOVED] = g_signal_new (
+		"store-removed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_FIRST,
+		0, /* struct offset */
+		NULL, NULL, /* accumulator */
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		CAMEL_TYPE_STORE);
+
 
 }
 

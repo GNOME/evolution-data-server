@@ -18,7 +18,6 @@ libemail_utils_la_LIBADD = 	\
 		$(CAMEL_LIBS)		\
 		$(GNOME_PLATFORM_LIBS)	\
 		$(top_builddir)/camel/libcamel-1.2.la			\
-		$(top_builddir)/camel/libcamel-provider-1.2.la			\
 		$(top_builddir)/libedataserver/libedataserver-1.2.la
 
 libemail_utils_la_LDFLAGS = 
@@ -33,7 +32,7 @@ libemail_utils_la_SOURCES = 	\
 		gconf-bridge.c
 
 
-libmailutilsincludedir = $(includedir)/libemail-utils
+libmailutilsincludedir = $(privincludedir)/libemail-utils
 libmailutilsinclude_HEADERS = 	\
 		e-marshal.h	\
 		e-account-utils.h	\
