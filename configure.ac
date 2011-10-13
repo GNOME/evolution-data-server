@@ -40,7 +40,7 @@ m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([goa_minimum_version], [3.1.1])
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.31.2])
-m4_define([libgdata_minimum_version], [0.7.0])
+m4_define([libgdata_minimum_version], [0.10])
 m4_define([oauth_minimum_version], [0.9.4])
 m4_define([sqlite_minimum_version], [3.5])
 m4_define([libical_minimum_version], [0.43])
@@ -344,10 +344,6 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= libsoup_minimum_version
 	libgdata >= libgdata_minimum_version])
-
-if `$PKG_CONFIG --atleast-version=0.9.1 libgdata`; then
-	AC_DEFINE(HAVE_LIBGDATA_0_9, 1, [libgdata is 0.9.1 or higher])
-fi
 
 if test x$os_win32 = xno; then
 	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])

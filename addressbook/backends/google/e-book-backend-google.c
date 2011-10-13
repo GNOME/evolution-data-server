@@ -87,9 +87,7 @@ struct _EBookBackendGooglePrivate {
 	/* Time when the groups were last queried */
 	GTimeVal last_groups_update;
 
-	#ifdef HAVE_LIBGDATA_0_9
 	GDataAuthorizer *authorizer;
-	#endif
 	GDataService *service;
 	EProxy *proxy;
 	guint refresh_interval;
@@ -464,11 +462,7 @@ backend_is_authorized (EBookBackend *backend)
 		return TRUE;
 #endif
 
-#ifdef HAVE_LIBGDATA_0_9
 	return gdata_service_is_authorized (priv->service);
-#else
-	return gdata_service_is_authenticated (priv->service);
-#endif
 }
 
 static void
@@ -615,7 +609,6 @@ check_get_new_contacts_finished (GetContactsData *data)
 	g_slice_free (GetContactsData, data);
 }
 
-#ifdef HAVE_LIBGDATA_0_9
 typedef struct {
 	GetContactsData *parent_data;
 
@@ -682,7 +675,6 @@ process_contact_photo_cb (GDataContactsContact *gdata_contact,
 
 	g_slice_free (PhotoData, data);
 }
-#endif /* HAVE_LIBGDATA_0_9 */
 
 static void
 process_contact_cb (GDataEntry *entry,
@@ -706,7 +698,6 @@ process_contact_cb (GDataEntry *entry,
 			on_contact_removed (backend, uid);
 		}
 	} else {
-#ifdef HAVE_LIBGDATA_0_9
 		gchar *old_photo_etag = NULL;
 		const gchar *new_photo_etag;
 
@@ -766,7 +757,6 @@ process_contact_cb (GDataEntry *entry,
 		}
 
 		g_free (old_photo_etag);
-#endif /* HAVE_LIBGDATA_0_9 */
 
 		/* Since we're not downloading a photo, add the contact to the cache now. */
 		process_contact_finish (backend, entry);
@@ -853,9 +843,7 @@ get_new_contacts (EBookBackend *backend)
 		cancellable,
 		(GDataQueryProgressCallback) process_contact_cb,
 		data,
-#ifdef HAVE_LIBGDATA_0_9
 		(GDestroyNotify) NULL,
-#endif
 		(GAsyncReadyCallback) get_new_contacts_cb,
 		data);
 
@@ -986,9 +974,7 @@ get_groups (EBookBackend *backend)
 		cancellable,
 		(GDataQueryProgressCallback) process_group,
 		backend,
-#ifdef HAVE_LIBGDATA_0_9
 		(GDestroyNotify) NULL,
-#endif
 		(GAsyncReadyCallback) get_groups_cb,
 		backend);
 
@@ -1152,7 +1138,6 @@ request_authorization (EBookBackend *backend)
 	}
 #endif
 
-#ifdef HAVE_LIBGDATA_0_9
 	if (priv->authorizer == NULL) {
 		GDataClientLoginAuthorizer *authorizer;
 
@@ -1160,17 +1145,12 @@ request_authorization (EBookBackend *backend)
 			CLIENT_ID, GDATA_TYPE_CONTACTS_SERVICE);
 		priv->authorizer = GDATA_AUTHORIZER (authorizer);
 	}
-#endif
 
 	if (priv->service == NULL) {
 		GDataContactsService *contacts_service;
 
-#ifdef HAVE_LIBGDATA_0_9
 		contacts_service =
 			gdata_contacts_service_new (priv->authorizer);
-#else
-		contacts_service = gdata_contacts_service_new (CLIENT_ID);
-#endif
 		priv->service = GDATA_SERVICE (contacts_service);
 		proxy_settings_changed (priv->proxy, backend);
 	}
@@ -1191,11 +1171,9 @@ typedef struct {
 	EBookBackend *backend;
 	EDataBook *book;
 	guint32 opid;
-#ifdef HAVE_LIBGDATA_0_9
 	GCancellable *cancellable;
 	GDataContactsContact *new_contact;
 	EContactPhoto *photo;
-#endif /* HAVE_LIBGDATA_0_9 */
 } CreateContactData;
 
 static void
@@ -1225,7 +1203,6 @@ create_contact_finish (CreateContactData *data,
 
 	finish_operation (data->backend, data->opid, gdata_error);
 
-#ifdef HAVE_LIBGDATA_0_9
 	if (data->photo != NULL) {
 		e_contact_photo_free (data->photo);
 	}
@@ -1235,13 +1212,11 @@ create_contact_finish (CreateContactData *data,
 	}
 
 	g_object_unref (data->cancellable);
-#endif /* HAVE_LIBGDATA_0_9 */
 	g_object_unref (data->book);
 	g_object_unref (data->backend);
 	g_slice_free (CreateContactData, data);
 }
 
-#ifdef HAVE_LIBGDATA_0_9
 static void
 create_contact_photo_query_cb (GDataService *service,
                                GAsyncResult *async_result,
@@ -1316,7 +1291,6 @@ create_contact_photo_cb (GDataContactsContact *contact,
 
 	g_clear_error (&gdata_error);
 }
-#endif /* HAVE_LIBGDATA_0_9 */
 
 static void
 create_contact_cb (GDataService *service,
@@ -1335,7 +1309,6 @@ create_contact_cb (GDataService *service,
 		goto finish;
 	}
 
-#ifdef HAVE_LIBGDATA_0_9
 	data->new_contact = g_object_ref (new_contact);
 
 	/* Add a photo for the new contact, if appropriate. This has to be done before we respond to the contact creation operation so that
@@ -1347,7 +1320,6 @@ create_contact_cb (GDataService *service,
 							(GAsyncReadyCallback) create_contact_photo_cb, data);
 		return;
 	}
-#endif /* HAVE_LIBGDATA_0_9 */
 
 finish:
 	create_contact_finish (data, GDATA_CONTACTS_CONTACT (new_contact), gdata_error);
@@ -1420,11 +1392,9 @@ e_book_backend_google_create_contacts (EBookBackend *backend,
 	data->backend = g_object_ref (backend);
 	data->book = g_object_ref (book);
 	data->opid = opid;
-#ifdef HAVE_LIBGDATA_0_9
 	data->cancellable = g_object_ref (cancellable);
 	data->new_contact = NULL;
 	data->photo = g_object_steal_data (G_OBJECT (entry), "photo");
-#endif /* HAVE_LIBGDATA_0_9 */
 
 	gdata_contacts_service_insert_contact_async (GDATA_CONTACTS_SERVICE (priv->service), GDATA_CONTACTS_CONTACT (entry), cancellable,
 						     (GAsyncReadyCallback) create_contact_cb, data);
@@ -1532,35 +1502,27 @@ e_book_backend_google_remove_contacts (EBookBackend *backend,
 	data->uid = g_strdup (uid);
 
 	cancellable = start_operation (backend, opid, cancellable, _("Deleting contact…"));
-	#ifdef HAVE_LIBGDATA_0_9
 	gdata_service_delete_entry_async (GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
 					  entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
-	#else
-	gdata_service_delete_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) remove_contact_cb, data);
-	#endif
 	g_object_unref (cancellable);
 	g_object_unref (entry);
 }
 
-#ifdef HAVE_LIBGDATA_0_9
 typedef enum {
 	LEAVE_PHOTO,
 	ADD_PHOTO,
 	REMOVE_PHOTO,
 	UPDATE_PHOTO,
 } PhotoOperation;
-#endif /* HAVE_LIBGDATA_0_9 */
 
 typedef struct {
 	EBookBackend *backend;
 	EDataBook *book;
 	guint32 opid;
-#ifdef HAVE_LIBGDATA_0_9
 	GCancellable *cancellable;
 	GDataContactsContact *new_contact;
 	EContactPhoto *photo;
 	PhotoOperation photo_operation;
-#endif /* HAVE_LIBGDATA_0_9 */
 } ModifyContactData;
 
 static void
@@ -1589,7 +1551,6 @@ modify_contact_finish (ModifyContactData *data,
 
 	finish_operation (data->backend, data->opid, gdata_error);
 
-#ifdef HAVE_LIBGDATA_0_9
 	if (data->photo != NULL) {
 		e_contact_photo_free (data->photo);
 	}
@@ -1599,13 +1560,11 @@ modify_contact_finish (ModifyContactData *data,
 	}
 
 	g_object_unref (data->cancellable);
-#endif /* HAVE_LIBGDATA_0_9 */
 	g_object_unref (data->book);
 	g_object_unref (data->backend);
 	g_slice_free (ModifyContactData, data);
 }
 
-#ifdef HAVE_LIBGDATA_0_9
 static void
 modify_contact_photo_query_cb (GDataService *service,
                                GAsyncResult *async_result,
@@ -1684,7 +1643,6 @@ modify_contact_photo_cb (GDataContactsContact *contact,
 
 	g_clear_error (&gdata_error);
 }
-#endif /* HAVE_LIBGDATA_0_9 */
 
 static void
 modify_contact_cb (GDataService *service,
@@ -1710,7 +1668,6 @@ modify_contact_cb (GDataService *service,
 		g_free (xml);
 	}
 
-#ifdef HAVE_LIBGDATA_0_9
 	data->new_contact = g_object_ref (new_contact);
 
 	/* Add a photo for the new contact, if appropriate. This has to be done before we respond to the contact creation operation so that
@@ -1740,7 +1697,6 @@ modify_contact_cb (GDataService *service,
 		default:
 			g_assert_not_reached ();
 	}
-#endif /* HAVE_LIBGDATA_0_9 */
 
 finish:
 	modify_contact_finish (data, GDATA_CONTACTS_CONTACT (new_contact), gdata_error);
@@ -1770,9 +1726,7 @@ e_book_backend_google_modify_contacts (EBookBackend *backend,
 {
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EContact *contact, *cached_contact;
-#ifdef HAVE_LIBGDATA_0_9
 	EContactPhoto *old_photo, *new_photo;
-#endif /* HAVE_LIBGDATA_0_9 */
 	GDataEntry *entry = NULL;
 	const gchar *uid;
 	ModifyContactData *data;
@@ -1832,7 +1786,6 @@ e_book_backend_google_modify_contacts (EBookBackend *backend,
 	data->book = g_object_ref (book);
 	data->opid = opid;
 
-#ifdef HAVE_LIBGDATA_0_9
 	data->cancellable = g_object_ref (cancellable);
 	data->new_contact = NULL;
 	data->photo = g_object_steal_data (G_OBJECT (entry), "photo");
@@ -1867,14 +1820,9 @@ e_book_backend_google_modify_contacts (EBookBackend *backend,
 	if (old_photo != NULL) {
 		e_contact_photo_free (old_photo);
 	}
-#endif /* HAVE_LIBGDATA_0_9 */
 
-	#ifdef HAVE_LIBGDATA_0_9
 	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), gdata_contacts_service_get_primary_authorization_domain (),
 					  entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
-	#else
-	gdata_service_update_entry_async (GDATA_SERVICE (priv->service), entry, cancellable, (GAsyncReadyCallback) modify_contact_cb, data);
-	#endif
 	g_object_unref (cancellable);
 
 	g_object_unref (cached_contact);
@@ -2087,7 +2035,6 @@ typedef struct {
 	guint32 opid;
 } AuthenticateUserData;
 
-#ifdef HAVE_LIBGDATA_0_9
 static void
 authenticate_client_login_cb (GDataClientLoginAuthorizer *authorizer,
                               GAsyncResult *result,
@@ -2116,38 +2063,6 @@ authenticate_client_login_cb (GDataClientLoginAuthorizer *authorizer,
 
 	g_clear_error (&gdata_error);
 }
-#else
-static void
-authenticate_client_login_cb (GDataService *service,
-                              GAsyncResult *result,
-                              AuthenticateUserData *data)
-{
-	GError *gdata_error = NULL;
-	GError *book_error = NULL;
-
-	__debug__ (G_STRFUNC);
-
-	/* Finish authenticating */
-	gdata_service_authenticate_finish (service, result, &gdata_error);
-
-	if (gdata_error != NULL) {
-		data_book_error_from_gdata_error (&book_error, gdata_error);
-		__debug__ ("Authentication failed: %s", gdata_error->message);
-	}
-
-	finish_operation (data->backend, data->opid, gdata_error);
-	e_book_backend_notify_readonly (data->backend, gdata_error != NULL);
-	e_book_backend_notify_opened (data->backend, book_error);
-
-	g_object_unref (data->backend);
-	g_slice_free (AuthenticateUserData, data);
-
-	g_clear_error (&gdata_error);
-}
-#endif
-
-#ifdef HAVE_LIBGDATA_0_9
-#endif
 
 static void
 e_book_backend_google_authenticate_user (EBookBackend *backend,
@@ -2192,7 +2107,6 @@ e_book_backend_google_authenticate_user (EBookBackend *backend,
 		backend, opid, cancellable,
 		_("Authenticating with the server…"));
 
-#ifdef HAVE_LIBGDATA_0_9
 	gdata_client_login_authorizer_authenticate_async (
 		GDATA_CLIENT_LOGIN_AUTHORIZER (priv->authorizer),
 		e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME),
@@ -2200,15 +2114,6 @@ e_book_backend_google_authenticate_user (EBookBackend *backend,
 		cancellable,
 		(GAsyncReadyCallback) authenticate_client_login_cb,
 		data);
-#else
-	gdata_service_authenticate_async (
-		priv->service,
-		e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME),
-		e_credentials_peek (credentials, E_CREDENTIALS_KEY_PASSWORD),
-		cancellable,
-		(GAsyncReadyCallback) authenticate_client_login_cb,
-		data);
-#endif
 
 	g_object_unref (cancellable);
 }
@@ -2287,11 +2192,9 @@ e_book_backend_google_open (EBookBackend *backend,
 	if (is_online) {
 		request_authorization (backend);
 
-#ifdef HAVE_LIBGDATA_0_9
 		/* Refresh the authorizer.  This may block. */
 		gdata_authorizer_refresh_authorization (
 			priv->authorizer, cancellable, NULL);
-#endif
 	}
 
 	if (!is_online || backend_is_authorized (backend)) {
@@ -2431,9 +2334,7 @@ e_book_backend_google_get_backend_property (EBookBackend *backend,
 			E_CONTACT_BIRTH_DATE,
 			E_CONTACT_ANNIVERSARY,
 			E_CONTACT_NOTE,
-#ifdef HAVE_LIBGDATA_0_9
 			E_CONTACT_PHOTO,
-#endif /* HAVE_LIBGDATA_0_9 */
 			E_CONTACT_CATEGORIES,
 			E_CONTACT_CATEGORY_LIST
 		};
@@ -2530,11 +2431,9 @@ e_book_backend_google_dispose (GObject *object)
 		g_object_unref (priv->service);
 	priv->service = NULL;
 
-#ifdef HAVE_LIBGDATA_0_9
 	if (priv->authorizer != NULL)
 		g_object_unref (priv->authorizer);
 	priv->authorizer = NULL;
-#endif
 
 	if (priv->proxy)
 		g_object_unref (priv->proxy);
@@ -2620,40 +2519,20 @@ data_book_error_from_gdata_error (GError **dest_err,
 	/* only last error is used */
 	g_clear_error (dest_err);
 
-	#ifdef HAVE_LIBGDATA_0_9
 	if (error->domain == GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR) {
-	#else
-	if (error->domain == GDATA_AUTHENTICATION_ERROR) {
-	#endif
 		/* Authentication errors */
 		switch (error->code) {
-		#ifdef HAVE_LIBGDATA_0_9
 		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_BAD_AUTHENTICATION:
-		#else
-		case GDATA_AUTHENTICATION_ERROR_BAD_AUTHENTICATION:
-		#endif
 			g_propagate_error (dest_err, EDB_ERROR (AUTHENTICATION_FAILED));
 			return;
-		#ifdef HAVE_LIBGDATA_0_9
 		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_NOT_VERIFIED:
 		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_TERMS_NOT_AGREED:
 		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_CAPTCHA_REQUIRED:
 		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_ACCOUNT_DELETED:
 		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_ACCOUNT_DISABLED:
-		#else
-		case GDATA_AUTHENTICATION_ERROR_NOT_VERIFIED:
-		case GDATA_AUTHENTICATION_ERROR_TERMS_NOT_AGREED:
-		case GDATA_AUTHENTICATION_ERROR_CAPTCHA_REQUIRED:
-		case GDATA_AUTHENTICATION_ERROR_ACCOUNT_DELETED:
-		case GDATA_AUTHENTICATION_ERROR_ACCOUNT_DISABLED:
-		#endif
 			g_propagate_error (dest_err, EDB_ERROR (PERMISSION_DENIED));
 			return;
-		#ifdef HAVE_LIBGDATA_0_9
 		case GDATA_CLIENT_LOGIN_AUTHORIZER_ERROR_SERVICE_DISABLED:
-		#else
-		case GDATA_AUTHENTICATION_ERROR_SERVICE_DISABLED:
-		#endif
 			g_propagate_error (dest_err, EDB_ERROR (REPOSITORY_OFFLINE));
 			return;
 		default:
@@ -2761,9 +2640,7 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	GList *attributes, *iter, *category_names;
 	EContactName *name_struct = NULL;
-#ifdef HAVE_LIBGDATA_0_9
 	EContactPhoto *photo;
-#endif /* HAVE_LIBGDATA_0_9 */
 	gboolean have_email_primary = FALSE;
 	gboolean have_im_primary = FALSE;
 	gboolean have_phone_primary = FALSE;
@@ -3019,7 +2896,6 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 		g_free (category_id);
 	}
 
-#ifdef HAVE_LIBGDATA_0_9
 	/* PHOTO */
 	photo = e_contact_get (contact, E_CONTACT_PHOTO);
 
@@ -3032,7 +2908,6 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 			e_contact_photo_free (photo);
 		}
 	}
-#endif /* HAVE_LIBGDATA_0_9 */
 
 	return TRUE;
 }
@@ -3105,10 +2980,8 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 	EBookBackendGooglePrivate *priv = E_BOOK_BACKEND_GOOGLE (backend)->priv;
 	EVCard *vcard;
 	EVCardAttribute *attr;
-#ifdef HAVE_LIBGDATA_0_9
 	EContactPhoto *photo;
 	const gchar *photo_etag;
-#endif /* HAVE_LIBGDATA_0_9 */
 	GList *email_addresses, *im_addresses, *phone_numbers, *postal_addresses, *orgs, *category_names, *category_ids;
 	const gchar *uid, *note;
 	GList *itr;
@@ -3332,7 +3205,6 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 		break;
 	}
 
-#ifdef HAVE_LIBGDATA_0_9
 	/* PHOTO */
 	photo = g_object_get_data (G_OBJECT (entry), "photo");
 	photo_etag = gdata_contacts_contact_get_photo_etag (GDATA_CONTACTS_CONTACT (entry));
@@ -3348,7 +3220,6 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 		e_vcard_attribute_add_value (attr, photo_etag);
 		e_vcard_add_attribute (vcard, attr);
 	}
-#endif /* HAVE_LIBGDATA_0_9 */
 
 	return E_CONTACT (vcard);
 }
