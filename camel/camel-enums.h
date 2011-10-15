@@ -23,6 +23,25 @@
 #ifndef CAMEL_ENUMS_H
 #define CAMEL_ENUMS_H
 
+/**
+ * CamelAuthenticationResult:
+ * @CAMEL_AUTHENTICATION_ERROR:
+ *    An error occurred while authenticating.
+ * @CAMEL_AUTHENTICATION_ACCEPTED:
+ *    Server accepted our authentication attempt.
+ * @CAMEL_AUTHENTICATION_REJECTED:
+ *    Server rejected our authentication attempt.
+ *
+ * Authentication result codes used by #CamelService.
+ *
+ * Since: 3.4
+ **/
+typedef enum {
+	CAMEL_AUTHENTICATION_ERROR,
+	CAMEL_AUTHENTICATION_ACCEPTED,
+	CAMEL_AUTHENTICATION_REJECTED
+} CamelAuthenticationResult;
+
 typedef enum { /*< flags >*/
 	CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY = 1 << 0,
 	CAMEL_FOLDER_HAS_SEARCH_CAPABILITY  = 1 << 1,

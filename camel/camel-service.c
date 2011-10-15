@@ -71,6 +71,8 @@ struct _CamelServicePrivate {
 
 struct _AsyncContext {
 	GList *auth_types;
+	gchar *auth_mechanism;
+	CamelAuthenticationResult auth_result;
 };
 
 enum {
@@ -95,6 +97,8 @@ static void
 async_context_free (AsyncContext *async_context)
 {
 	g_list_free (async_context->auth_types);
+
+	g_free (async_context->auth_mechanism);
 
 	g_slice_free (AsyncContext, async_context);
 }
@@ -450,6 +454,72 @@ service_query_auth_types_sync (CamelService *service,
 }
 
 static void
+service_authenticate_thread (GSimpleAsyncResult *simple,
+                             GObject *object,
+                             GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->auth_result = camel_service_authenticate_sync (
+		CAMEL_SERVICE (object), async_context->auth_mechanism,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+service_authenticate (CamelService *service,
+                      const gchar *mechanism,
+                      gint io_priority,
+                      GCancellable *cancellable,
+                      GAsyncReadyCallback callback,
+                      gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->auth_mechanism = g_strdup (mechanism);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (service), callback, user_data, service_authenticate);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, service_authenticate_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static CamelAuthenticationResult
+service_authenticate_finish (CamelService *service,
+                             GAsyncResult *result,
+                             GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (service), service_authenticate),
+		CAMEL_AUTHENTICATION_REJECTED);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return CAMEL_AUTHENTICATION_ERROR;
+
+	return async_context->auth_result;
+}
+
+static void
 service_query_auth_types_thread (GSimpleAsyncResult *simple,
                                  GObject *object,
                                  GCancellable *cancellable)
@@ -605,6 +675,8 @@ camel_service_class_init (CamelServiceClass *class)
 	class->disconnect_sync = service_disconnect_sync;
 	class->query_auth_types_sync = service_query_auth_types_sync;
 
+	class->authenticate = service_authenticate;
+	class->authenticate_finish = service_authenticate_finish;
 	class->query_auth_types = service_query_auth_types;
 	class->query_auth_types_finish = service_query_auth_types_finish;
 
@@ -1247,6 +1319,147 @@ camel_service_unlock (CamelService *service,
 		default:
 			g_return_if_reached ();
 	}
+}
+
+/**
+ * camel_service_authenticate_sync:
+ * @service: a #CamelService
+ * @mechanism: a SASL mechanism name, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Attempts to authenticate @service using @mechanism and, if necessary,
+ * @service's #CamelService:password property.  The function makes only
+ * ONE attempt at authentication and does not loop.
+ *
+ * If the authentication attempt completed and the server accepted the
+ * credentials, the function returns #CAMEL_AUTHENTICATION_ACCEPTED.
+ *
+ * If the authentication attempt completed but the server rejected the
+ * credentials, the function returns #CAMEL_AUTHENTICATION_REJECTED.
+ *
+ * If the authentication attempt failed to complete due to a network
+ * communication issue or some other mishap, the function sets @error
+ * and returns #CAMEL_AUTHENTICATION_ERROR.
+ *
+ * Generally this function should only be called from a #CamelSession
+ * subclass in order to implement its own authentication loop.
+ *
+ * Returns: the authentication result
+ *
+ * Since: 3.4
+ **/
+CamelAuthenticationResult
+camel_service_authenticate_sync (CamelService *service,
+                                 const gchar *mechanism,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	CamelServiceClass *class;
+	CamelAuthenticationResult result;
+
+	g_return_val_if_fail (
+		CAMEL_IS_SERVICE (service),
+		CAMEL_AUTHENTICATION_REJECTED);
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (
+		class->authenticate_sync != NULL,
+		CAMEL_AUTHENTICATION_REJECTED);
+
+	result = class->authenticate_sync (
+		service, mechanism, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		service, authenticate_sync,
+		result != CAMEL_AUTHENTICATION_ERROR, error);
+
+	return result;
+}
+
+/**
+ * camel_service_authenticate:
+ * @service: a #CamelService
+ * @mechanism: a SASL mechanism name, or %NULL
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously attempts to authenticate @service using @mechanism and,
+ * if necessary, @service's #CamelService:password property.  The function
+ * makes only ONE attempt at authentication and does not loop.
+ *
+ * Generally this function should only be called from a #CamelSession
+ * subclass in order to implement its own authentication loop.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_service_authenticate_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.4
+ **/
+void
+camel_service_authenticate (CamelService *service,
+                            const gchar *mechanism,
+                            gint io_priority,
+                            GCancellable *cancellable,
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
+{
+	CamelServiceClass *class;
+
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_if_fail (class->authenticate != NULL);
+
+	class->authenticate (
+		service, mechanism, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_service_authenticate_finish:
+ * @service: a #CamelService
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_service_authenticate().
+ *
+ * If the authentication attempt completed and the server accepted the
+ * credentials, the function returns #CAMEL_AUTHENTICATION_ACCEPTED.
+ *
+ * If the authentication attempt completed but the server rejected the
+ * credentials, the function returns #CAMEL_AUTHENTICATION_REJECTED.
+ *
+ * If the authentication attempt failed to complete due to a network
+ * communication issue or some other mishap, the function sets @error
+ * and returns #CAMEL_AUTHENTICATION_ERROR.
+ *
+ * Returns: the authentication result
+ *
+ * Since: 3.4
+ **/
+CamelAuthenticationResult
+camel_service_authenticate_finish (CamelService *service,
+                                   GAsyncResult *result,
+                                   GError **error)
+{
+	CamelServiceClass *class;
+
+	g_return_val_if_fail (
+		CAMEL_IS_SERVICE (service),
+		CAMEL_AUTHENTICATION_REJECTED);
+	g_return_val_if_fail (
+		G_IS_ASYNC_RESULT (result),
+		CAMEL_AUTHENTICATION_REJECTED);
+
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (
+		class->authenticate_finish,
+		CAMEL_AUTHENTICATION_REJECTED);
+
+	return class->authenticate_finish (service, result, error);
 }
 
 /**

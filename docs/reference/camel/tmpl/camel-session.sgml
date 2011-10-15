@@ -91,22 +91,13 @@ CamelSession
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_session_set_socks_proxy ##### -->
-<para>
-
-</para>
-
-@session: 
-@socks_host: 
-@socks_port: 
-
-
 <!-- ##### FUNCTION camel_session_get_socks_proxy ##### -->
 <para>
 
 </para>
 
 @session: 
+@for_host: 
 @host_ret: 
 @port_ret: 
 
@@ -393,5 +384,43 @@ CamelSession
 
 @session: 
 @lock: 
+
+
+<!-- ##### FUNCTION camel_session_authenticate_sync ##### -->
+<para>
+
+</para>
+
+@session: 
+@service: 
+@mechanism: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_session_authenticate ##### -->
+<para>
+
+</para>
+
+@session: 
+@service: 
+@mechanism: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_session_authenticate_finish ##### -->
+<para>
+
+</para>
+
+@session: 
+@result: 
+@error: 
+@Returns: 
 
 

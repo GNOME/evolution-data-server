@@ -39,14 +39,15 @@
 
 #include "camel-debug.h"
 #include "camel-file-utils.h"
+#include "camel-folder.h"
 #include "camel-marshal.h"
+#include "camel-mime-message.h"
+#include "camel-sasl.h"
 #include "camel-session.h"
 #include "camel-store.h"
 #include "camel-string-utils.h"
 #include "camel-transport.h"
 #include "camel-url.h"
-#include "camel-folder.h"
-#include "camel-mime-message.h"
 
 #define CAMEL_SESSION_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -56,6 +57,7 @@
 
 #define d(x)
 
+typedef struct _AsyncContext AsyncContext;
 typedef struct _JobData JobData;
 
 struct _CamelSessionPrivate {
@@ -74,6 +76,11 @@ struct _CamelSessionPrivate {
 	guint check_junk        : 1;
 	guint network_available : 1;
 	guint online            : 1;
+};
+
+struct _AsyncContext {
+	CamelService *service;
+	gchar *auth_mechanism;
 };
 
 struct _JobData {
@@ -103,6 +110,17 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (CamelSession, camel_session, CAMEL_TYPE_OBJECT)
+
+static void
+async_context_free (AsyncContext *async_context)
+{
+	if (async_context->service != NULL)
+		g_object_unref (async_context->service);
+
+	g_free (async_context->auth_mechanism);
+
+	g_slice_free (AsyncContext, async_context);
+}
 
 static void
 job_data_free (JobData *job_data)
@@ -410,6 +428,174 @@ session_add_service (CamelSession *session,
 	return service;
 }
 
+static gboolean
+session_authenticate_sync (CamelSession *session,
+                           CamelService *service,
+                           const gchar *mechanism,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	CamelServiceAuthType *authtype = NULL;
+	CamelAuthenticationResult result;
+	GError *local_error = NULL;
+
+	/* XXX This authenticate_sync() implementation serves only as
+	 *     a rough example and is not intended to be used as is.
+	 *
+	 *     Any CamelSession subclass should override this method
+	 *     and implement a more complete authentication loop that
+	 *     handles user prompts and password storage.
+	 */
+
+	g_warning (
+		"The default CamelSession.authenticate_sync() "
+		"method is not intended for production use.");
+
+	/* If a SASL mechanism was given and we can't find
+	 * a CamelServiceAuthType for it, fail immediately. */
+	if (mechanism != NULL) {
+		authtype = camel_sasl_authtype (mechanism);
+		if (authtype == NULL) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("No support for %s authentication"),
+				mechanism);
+			return FALSE;
+		}
+	}
+
+	/* If the SASL mechanism does not involve a user
+	 * password, then it gets one shot to authenticate. */
+	if (authtype != NULL && !authtype->need_password) {
+		result = camel_service_authenticate_sync (
+			service, mechanism, cancellable, error);
+		if (result == CAMEL_AUTHENTICATION_REJECTED)
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("%s authentication failed"), mechanism);
+		return (result == CAMEL_AUTHENTICATION_ACCEPTED);
+	}
+
+	/* Some SASL mechanisms can attempt to authenticate without a
+	 * user password being provided (e.g. single-sign-on credentials),
+	 * but can fall back to a user password.  Handle that case next. */
+	if (mechanism != NULL) {
+		CamelProvider *provider;
+		CamelSasl *sasl;
+		const gchar *service_name;
+		gboolean success = FALSE;
+
+		provider = camel_service_get_provider (service);
+		service_name = provider->protocol;
+
+		/* XXX Would be nice if camel_sasl_try_empty_password_sync()
+		 *     returned CamelAuthenticationResult so it's easier to
+		 *     detect errors. */
+		sasl = camel_sasl_new (service_name, mechanism, service);
+		if (sasl != NULL) {
+			success = camel_sasl_try_empty_password_sync (
+				sasl, cancellable, &local_error);
+			g_object_unref (sasl);
+		}
+
+		if (success)
+			return TRUE;
+	}
+
+	/* Abort authentication if we got cancelled.
+	 * Otherwise clear any errors and press on. */
+	if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+		return FALSE;
+
+	g_clear_error (&local_error);
+
+retry:
+	/* XXX This is where things get bogus.  In a real implementation you
+	 *     would want to fetch a stored password or prompt the user here.
+	 *     Password should be stashed using camel_service_set_password()
+	 *     before calling camel_service_authenticate_sync(). */
+
+	result = camel_service_authenticate_sync (
+		service, mechanism, cancellable, error);
+
+	if (result == CAMEL_AUTHENTICATION_REJECTED) {
+		/* XXX Request a different password here. */
+		goto retry;
+	}
+
+	if (result == CAMEL_AUTHENTICATION_ACCEPTED) {
+		/* XXX Possibly store the password here using
+		 *     GNOME Keyring or something equivalent. */
+	}
+
+	return (result == CAMEL_AUTHENTICATION_ACCEPTED);
+}
+
+static void
+session_authenticate_thread (GSimpleAsyncResult *simple,
+                             GObject *object,
+                             GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_session_authenticate_sync (
+		CAMEL_SESSION (object), async_context->service,
+		async_context->auth_mechanism, cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+session_authenticate (CamelSession *session,
+                      CamelService *service,
+                      const gchar *mechanism,
+                      gint io_priority,
+                      GCancellable *cancellable,
+                      GAsyncReadyCallback callback,
+                      gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->service = g_object_ref (service);
+	async_context->auth_mechanism = g_strdup (mechanism);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (session), callback, user_data, session_authenticate);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, session_authenticate_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+session_authenticate_finish (CamelSession *session,
+                             GAsyncResult *result,
+                             GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (session), session_authenticate), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
 static void
 camel_session_class_init (CamelSessionClass *class)
 {
@@ -424,6 +610,11 @@ camel_session_class_init (CamelSessionClass *class)
 	object_class->finalize = session_finalize;
 
 	class->add_service = session_add_service;
+
+	class->authenticate_sync = session_authenticate_sync;
+
+	class->authenticate = session_authenticate;
+	class->authenticate_finish = session_authenticate_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -1394,3 +1585,123 @@ camel_session_get_socks_proxy (CamelSession *session,
 
 	klass->get_socks_proxy (session, for_host, host_ret, port_ret);
 }
+
+/**
+ * camel_session_authenticate_sync:
+ * @session: a #CamelSession
+ * @service: a #CamelService
+ * @mechanism: a SASL mechanism name, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Authenticates @service, which may involve repeated calls to
+ * camel_service_authenticate() or camel_service_authenticate_sync().
+ * A #CamelSession subclass is largely responsible for implementing this,
+ * and should handle things like user prompts and secure password storage.
+ * These issues are out-of-scope for Camel.
+ *
+ * If an error occurs, or if authentication is aborted, the function sets
+ * @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_session_authenticate_sync (CamelSession *session,
+                                 CamelService *service,
+                                 const gchar *mechanism,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	CamelSessionClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
+
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->authenticate_sync != NULL, FALSE);
+
+	success = class->authenticate_sync (
+		session, service, mechanism, cancellable, error);
+	CAMEL_CHECK_GERROR (session, authenticate_sync, success, error);
+
+	return success;
+}
+
+/**
+ * camel_session_authenticate:
+ * @session: a #CamelSession
+ * @service: a #CamelService
+ * @mechanism: a SASL mechanism name, or %NULL
+ * @io_priority: the I/O priority for the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously authenticates @service, which may involve repeated calls
+ * to camel_service_authenticate() or camel_service_authenticate_sync().
+ * A #CamelSession subclass is largely responsible for implementing this,
+ * and should handle things like user prompts and secure password storage.
+ * These issues are out-of-scope for Camel.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_session_authenticate_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.4
+ **/
+void
+camel_session_authenticate (CamelSession *session,
+                            CamelService *service,
+                            const gchar *mechanism,
+                            gint io_priority,
+                            GCancellable *cancellable,
+                            GAsyncReadyCallback callback,
+                            gpointer user_data)
+{
+	CamelSessionClass *class;
+
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_if_fail (class->authenticate != NULL);
+
+	class->authenticate (
+		session, service, mechanism, io_priority,
+		cancellable, callback, user_data);
+}
+
+/**
+ * camel_session_authenticate_finish:
+ * @session: a #CamelSession
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_session_authenticate().
+ *
+ * If an error occurred, or if authentication was aborted, the function
+ * sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_session_authenticate_finish (CamelSession *session,
+                                   GAsyncResult *result,
+                                   GError **error)
+{
+	CamelSessionClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->authenticate_finish != NULL, FALSE);
+
+	return class->authenticate_finish (session, result, error);
+}
+

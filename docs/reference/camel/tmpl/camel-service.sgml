@@ -281,6 +281,51 @@ CamelService
 @lock: 
 
 
+<!-- ##### ENUM CamelAuthenticationResult ##### -->
+<para>
+
+</para>
+
+@CAMEL_AUTHENTICATION_ERROR: 
+@CAMEL_AUTHENTICATION_ACCEPTED: 
+@CAMEL_AUTHENTICATION_REJECTED: 
+
+<!-- ##### FUNCTION camel_service_authenticate_sync ##### -->
+<para>
+
+</para>
+
+@service: 
+@mechanism: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_service_authenticate ##### -->
+<para>
+
+</para>
+
+@service: 
+@mechanism: 
+@io_priority: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION camel_service_authenticate_finish ##### -->
+<para>
+
+</para>
+
+@service: 
+@result: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_service_query_auth_types_sync ##### -->
 <para>
 

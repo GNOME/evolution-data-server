@@ -140,6 +140,25 @@ struct _CamelSessionClass {
 						 gchar **host_ret,
 						 gint *port_ret);
 
+	/* Synchronous I/O Methods */
+	gboolean	(*authenticate_sync)	(CamelSession *session,
+						 CamelService *service,
+						 const gchar *mechanism,
+						 GCancellable *cancellable,
+						 GError **error);
+
+	/* Asynchronous I/O Methods (all have defaults) */
+	void		(*authenticate)		(CamelSession *session,
+						 CamelService *service,
+						 const gchar *mechanism,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*authenticate_finish)	(CamelSession *session,
+						 GAsyncResult *result,
+						 GError **error);
+
 	/* Signals */
 	void		(*job_started)		(CamelSession *session,
 						 GCancellable *cancellable);
@@ -229,6 +248,23 @@ void		camel_session_lock		(CamelSession *session,
 						 CamelSessionLock lock);
 void		camel_session_unlock		(CamelSession *session,
 						 CamelSessionLock lock);
+
+gboolean	camel_session_authenticate_sync	(CamelSession *session,
+						 CamelService *service,
+						 const gchar *mechanism,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_session_authenticate	(CamelSession *session,
+						 CamelService *service,
+						 const gchar *mechanism,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_session_authenticate_finish
+						(CamelSession *session,
+						 GAsyncResult *result,
+						 GError **error);
 
 G_END_DECLS
 
