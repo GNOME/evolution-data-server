@@ -270,7 +270,7 @@ ensure_pending_flush_timeout (EDataCalView *view)
 
 static void
 notify_add (EDataCalView *view,
-            gchar *obj)
+            gchar        *obj)
 {
 	EDataCalViewPrivate *priv = view->priv;
 	ECalComponent *comp;
@@ -293,8 +293,37 @@ notify_add (EDataCalView *view,
 }
 
 static void
-notify_change (EDataCalView *view,
-               gchar *obj)
+notify_add_component (EDataCalView *view, icalcomponent *icalcomp)
+{
+	EDataCalViewPrivate *priv = view->priv;
+	icalcomponent       *icalclone;
+	ECalComponent       *comp;
+	gchar               *obj;
+
+	obj = e_data_cal_view_get_component_string (view, icalcomp);
+
+	send_pending_changes (view);
+	send_pending_removes (view);
+
+	if (priv->adds->len == THRESHOLD_ITEMS) {
+		send_pending_adds (view);
+	}
+	g_array_append_val (priv->adds, obj);
+
+	comp = e_cal_component_new ();
+	icalclone = icalcomponent_new_clone (icalcomp);
+	e_cal_component_set_icalcomponent (comp, icalclone);
+
+	g_hash_table_insert (priv->ids,
+			     e_cal_component_get_id (comp),
+			     GUINT_TO_POINTER (1));
+	g_object_unref (comp);
+
+	ensure_pending_flush_timeout (view);
+}
+
+static void
+notify_change (EDataCalView *view, gchar *obj)
 {
 	EDataCalViewPrivate *priv = view->priv;
 
@@ -311,8 +340,17 @@ notify_change (EDataCalView *view,
 }
 
 static void
-notify_remove (EDataCalView *view,
-               ECalComponentId *id)
+notify_change_component (EDataCalView *view, icalcomponent *comp)
+{
+	gchar *obj;
+
+	obj = e_data_cal_view_get_component_string (view, comp);
+
+	notify_change (view, obj);
+}
+
+static void
+notify_remove (EDataCalView *view, ECalComponentId *id)
 {
 	EDataCalViewPrivate *priv = view->priv;
 	gchar *ids;
@@ -672,6 +710,32 @@ e_data_cal_view_object_matches (EDataCalView *view,
 }
 
 /**
+ * e_data_cal_view_component_matches:
+ * @view: A view object.
+ * @component: the #ECalComponent object to match.
+ *
+ * Compares the given @component to the regular expression used for the
+ * given view.
+ *
+ * Returns: TRUE if the object matches the expression, FALSE if not.
+ *
+ * Since: 3.4
+ */
+gboolean
+e_data_cal_view_component_matches (EDataCalView *view, ECalComponent *component)
+{
+	EDataCalViewPrivate *priv;
+
+	g_return_val_if_fail (view != NULL, FALSE);
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), FALSE);
+	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), FALSE);
+
+	priv = view->priv;
+
+	return e_cal_backend_sexp_match_comp (priv->sexp, component, priv->backend);
+}
+
+/**
  * e_data_cal_view_is_started:
  * @view: A view object.
  *
@@ -748,12 +812,245 @@ e_data_cal_view_get_fields_of_interest (EDataCalView *view)
 	return view->priv->fields_of_interest;
 }
 
+static gboolean
+filter_component (icalcomponent *icomponent, GHashTable *fields_of_interest, GString *string)
+{
+	gchar             *str;
+
+	/* RFC 2445 explicitly says that the newline is *ALWAYS* a \r\n (CRLF)!!!! */
+	const gchar        newline[] = "\r\n";
+	
+	icalcomponent_kind kind;
+	const gchar       *kind_string;
+	icalproperty      *prop;
+	icalcomponent     *icomp;
+	gboolean           fail = FALSE;
+
+	/* Open iCalendar string */
+	g_string_append (string, "BEGIN:");
+
+	kind = icalcomponent_isa (icomponent);
+
+	/* if (kind != ICAL_X_COMPONENT) { */
+	/* 	kind_string  = icalcomponent_kind_to_string (kind); */
+	/* } else { */
+	/* 	kind_string = icomponent->x_name; */
+	/* } */
+
+	kind_string  = icalcomponent_kind_to_string (kind);
+
+	g_string_append (string, kind_string);
+	g_string_append (string, newline);
+
+	for (prop = icalcomponent_get_first_property (icomponent, ICAL_ANY_PROPERTY);
+	     prop;
+	     prop = icalcomponent_get_next_property (icomponent, ICAL_ANY_PROPERTY)) {
+		const gchar *name;
+		gboolean     is_field_of_interest;
+
+		name = icalproperty_get_property_name (prop);
+
+		if (!name) {
+			g_warning ("NULL ical property name encountered while serializing component");
+			fail = TRUE;
+			break;
+		}
+
+		is_field_of_interest = GPOINTER_TO_INT (g_hash_table_lookup (fields_of_interest, name));
+
+		/* Append any name that is mentioned in the fields-of-interest */
+		if (is_field_of_interest) {
+			str = icalproperty_as_ical_string_r (prop);
+			g_string_append (string, str);
+			g_free (str);
+		}
+	}
+
+	for (icomp = icalcomponent_get_first_component (icomponent, ICAL_ANY_COMPONENT);
+	     fail == FALSE && icomp;
+	     icomp = icalcomponent_get_next_component (icomponent, ICAL_ANY_COMPONENT)) {
+		
+		if (!filter_component (icomp, fields_of_interest, string)) {
+			fail = TRUE;
+			break;
+		}
+	}
+
+	g_string_append (string, "END:");
+	g_string_append (string, icalcomponent_kind_to_string (kind));
+	g_string_append (string, newline);
+
+	return fail == FALSE;
+}
+
+/**
+ * e_data_cal_view_get_component_string:
+ * @view: A view object.
+ * @component: The #icalcomponent to get the string for.
+ *
+ * This function is similar to e_cal_component_get_as_string() except
+ * that it takes into account the fields-of-interest that @view is 
+ * configured with and filters out any unneeded fields.
+ *
+ * Returns: (transfer full): A newly allocated string representation of @component suitable for @view.
+ *
+ * Since: 3.4
+ */
+gchar *
+e_data_cal_view_get_component_string (EDataCalView *view, icalcomponent *component)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
+	g_return_val_if_fail (component != NULL, NULL);
+
+	if (view->priv->fields_of_interest) {
+		GString *string = g_string_new ("");
+
+		if (filter_component (component, view->priv->fields_of_interest, string))
+			return g_string_free (string, FALSE);
+
+		g_string_free (string, TRUE);
+	}
+
+	return icalcomponent_as_ical_string_r (component);
+}
+
+/**
+ * e_data_cal_view_notify_components_added:
+ * @view: A view object.
+ * @components: List of components that have been added.
+ *
+ * Notifies all view listeners of the addition of a list of components.
+ *
+ * Like e_data_cal_view_notify_objects_added() except takes a list
+ * of #icalcomponents instead of ical string representations and uses the 
+ * #EDataCalView's fields-of-interest to filter out unwanted information 
+ * from ical strings sent over the bus.
+ *
+ * Since: 3.4
+ */
+void
+e_data_cal_view_notify_components_added (EDataCalView *view,
+					 const GSList *components)
+{
+	EDataCalViewPrivate *priv;
+	const GSList *l;
+
+	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
+	priv = view->priv;
+
+	if (components == NULL)
+		return;
+
+	g_mutex_lock (priv->pending_mutex);
+
+	for (l = components; l; l = l->next) {
+		icalcomponent *comp = l->data;
+
+		notify_add_component (view, comp);
+	}
+
+	g_mutex_unlock (priv->pending_mutex);
+}
+
+/**
+ * e_data_cal_view_notify_components_added_1:
+ * @view: A view object.
+ * @component: The #icalcomponent that has been added.
+ *
+ * Notifies all the view listeners of the addition of a single object.
+ *
+ * Like e_data_cal_view_notify_objects_added_1() except takes an #icalcomponent
+ * instead of an ical string representation and uses the #EDataCalView's fields-of-interest
+ * to filter out unwanted information from ical strings sent over the bus.
+ *
+ * Since: 3.4
+ */
+void
+e_data_cal_view_notify_components_added_1 (EDataCalView        *view,
+					   const icalcomponent *component)
+{
+	GSList l = {NULL,};
+
+	g_return_if_fail (E_IS_DATA_CAL_VIEW (view));
+	g_return_if_fail (component != NULL);
+
+	l.data = (gpointer) component;
+	e_data_cal_view_notify_components_added (view, &l);
+}
+
+/**
+ * e_data_cal_view_notify_components_modified:
+ * @view: A view object.
+ * @components: List of modified components.
+ *
+ * Notifies all view listeners of the modification of a list of components.
+ *
+ * Like e_data_cal_view_notify_objects_modified() except takes a list of #icalcomponents
+ * instead of a ical string representations and uses the #EDataCalView's fields-of-interest
+ * to filter out unwanted information from ical strings sent over the bus.
+ *
+ * Since: 3.4
+ */
+void
+e_data_cal_view_notify_components_modified (EDataCalView *view,
+					    const GSList *components)
+{
+	EDataCalViewPrivate *priv;
+	const GSList *l;
+
+	g_return_if_fail (view && E_IS_DATA_CAL_VIEW (view));
+	priv = view->priv;
+
+	if (components == NULL)
+		return;
+
+	g_mutex_lock (priv->pending_mutex);
+
+	for (l = components; l; l = l->next) {
+		/* TODO: send add/remove/change as relevant, based on ->ids */
+		icalcomponent *comp = l->data;
+
+		notify_change_component (view, comp);
+	}
+
+	g_mutex_unlock (priv->pending_mutex);
+}
+
+/**
+ * e_data_cal_view_notify_components_modified_1:
+ * @view: A view object.
+ * @component: The modified #icalcomponent.
+ *
+ * Notifies all view listeners of the modification of @component.
+ * 
+ * Like e_data_cal_view_notify_objects_modified_1() except takes an #icalcomponent
+ * instead of an ical string representation and uses the #EDataCalView's fields-of-interest
+ * to filter out unwanted information from ical strings sent over the bus.
+ *
+ * Since: 3.4
+ */
+void
+e_data_cal_view_notify_components_modified_1 (EDataCalView        *view,
+					      const icalcomponent *component)
+{
+	GSList l = {NULL,};
+
+	g_return_if_fail (E_IS_DATA_CAL_VIEW (view));
+	g_return_if_fail (component != NULL);
+
+	l.data = (gpointer) component;
+	e_data_cal_view_notify_components_modified (view, &l);
+}
+
 /**
  * e_data_cal_view_notify_objects_added:
  * @view: A view object.
  * @objects: List of objects that have been added.
  *
  * Notifies all view listeners of the addition of a list of objects.
+ *
+ * If possible e_data_cal_view_notify_components_added() should be used
+ * instead.
  */
 void
 e_data_cal_view_notify_objects_added (EDataCalView *view,
@@ -783,6 +1080,9 @@ e_data_cal_view_notify_objects_added (EDataCalView *view,
  * @object: The object that has been added.
  *
  * Notifies all the view listeners of the addition of a single object.
+ *
+ * If possible e_data_cal_view_notify_components_added_1() should be used
+ * instead.
  */
 void
 e_data_cal_view_notify_objects_added_1 (EDataCalView *view,
@@ -803,6 +1103,9 @@ e_data_cal_view_notify_objects_added_1 (EDataCalView *view,
  * @objects: List of modified objects.
  *
  * Notifies all view listeners of the modification of a list of objects.
+ *
+ * If possible e_data_cal_view_notify_components_modified() should be used
+ * instead.
  */
 void
 e_data_cal_view_notify_objects_modified (EDataCalView *view,
@@ -833,6 +1136,9 @@ e_data_cal_view_notify_objects_modified (EDataCalView *view,
  * @object: The modified object.
  *
  * Notifies all view listeners of the modification of a single object.
+ *
+ * If possible e_data_cal_view_notify_components_modified_1() should be used
+ * instead.
  */
 void
 e_data_cal_view_notify_objects_modified_1 (EDataCalView *view,

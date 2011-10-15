@@ -52,10 +52,18 @@ guint			e_data_cal_view_register_gdbus_object		(EDataCalView *view, GDBusConnect
 const gchar *		e_data_cal_view_get_text			(EDataCalView *view);
 ECalBackendSExp *	e_data_cal_view_get_object_sexp			(EDataCalView *view);
 gboolean		e_data_cal_view_object_matches			(EDataCalView *view, const gchar *object);
+gboolean		e_data_cal_view_component_matches		(EDataCalView *view, ECalComponent *component);
 gboolean		e_data_cal_view_is_started			(EDataCalView *view);
 gboolean		e_data_cal_view_is_completed			(EDataCalView *view);
 gboolean		e_data_cal_view_is_stopped			(EDataCalView *view);
 GHashTable *		e_data_cal_view_get_fields_of_interest		(EDataCalView *view);
+
+gchar                  *e_data_cal_view_get_component_string            (EDataCalView *view, icalcomponent *component);
+
+void			e_data_cal_view_notify_components_added	        (EDataCalView *view, const GSList *objects);
+void			e_data_cal_view_notify_components_added_1       (EDataCalView *view, const icalcomponent *component);
+void			e_data_cal_view_notify_components_modified      (EDataCalView *view, const GSList *objects);
+void			e_data_cal_view_notify_components_modified_1    (EDataCalView *view, const icalcomponent *component);
 
 void			e_data_cal_view_notify_objects_added		(EDataCalView *view, const GSList *objects);
 void			e_data_cal_view_notify_objects_added_1		(EDataCalView *view, const gchar *object);

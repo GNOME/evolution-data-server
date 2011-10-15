@@ -136,9 +136,9 @@ void		e_data_cal_respond_set_backend_property		(EDataCal *cal, guint32 opid, GEr
 void		e_data_cal_respond_get_object			(EDataCal *cal, guint32 opid, GError *error, const gchar *object);
 void		e_data_cal_respond_get_object_list		(EDataCal *cal, guint32 opid, GError *error, const GSList *objects);
 void		e_data_cal_respond_get_free_busy		(EDataCal *cal, guint32 opid, GError *error);
-void		e_data_cal_respond_create_object		(EDataCal *cal, guint32 opid, GError *error, const gchar *uid, const gchar *object);
-void		e_data_cal_respond_modify_object		(EDataCal *cal, guint32 opid, GError *error, const gchar *old_object, const gchar *object);
-void		e_data_cal_respond_remove_object		(EDataCal *cal, guint32 opid, GError *error, const ECalComponentId *id, const gchar *old_object, const gchar *object);
+void		e_data_cal_respond_create_object		(EDataCal *cal, guint32 opid, GError *error, const gchar *uid, icalcomponent *component);
+void		e_data_cal_respond_modify_object		(EDataCal *cal, guint32 opid, GError *error, icalcomponent *old_component, icalcomponent *component);
+void		e_data_cal_respond_remove_object		(EDataCal *cal, guint32 opid, GError *error, const ECalComponentId *id, icalcomponent *old_component, icalcomponent *component);
 void		e_data_cal_respond_receive_objects		(EDataCal *cal, guint32 opid, GError *error);
 void		e_data_cal_respond_send_objects			(EDataCal *cal, guint32 opid, GError *error, const GSList *users, const gchar *calobj);
 void		e_data_cal_respond_get_attachment_uris		(EDataCal *cal, guint32 opid, GError *error, const GSList *attachments);

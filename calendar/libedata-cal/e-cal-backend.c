@@ -1373,9 +1373,263 @@ e_cal_backend_stop_view (ECalBackend *backend,
 }
 
 static gboolean
-object_created_cb (EDataCalView *view,
-                   gpointer calobj)
+component_created_cb (EDataCalView *view, gpointer data)
 {
+	ECalComponent *comp     = (ECalComponent *)data;
+	icalcomponent *icalcomp = e_cal_component_get_icalcomponent (comp);
+
+	if (e_data_cal_view_component_matches (view, comp))
+		e_data_cal_view_notify_components_added_1 (view, icalcomp);
+
+	return TRUE;
+}
+
+static ECalComponent *
+ecal_comp_from_icalcomp (const icalcomponent *component)
+{
+	ECalComponent *comp = NULL;
+	icalcomponent *icalclone;
+
+	if (component) {
+		comp      = e_cal_component_new ();
+		icalclone = icalcomponent_new_clone ((icalcomponent *)component);
+
+		if (!e_cal_component_set_icalcomponent (comp, icalclone)) {
+			g_warning ("ecal_comp_from_icalcomp failed to set icalcomponent");
+
+			icalcomponent_free (icalclone);
+			g_object_unref (comp);
+			comp = NULL;
+		}
+	}
+
+	return comp;
+}
+
+/**
+ * e_cal_backend_notify_component_created:
+ * @backend: an #ECalBackend
+ * @component: the newly created #icalcomponent
+ *
+ * Notifies each of the backend's listeners about a new object.
+ *
+ * Like e_cal_backend_notify_object_created() except takes an #icalcomponent
+ * instead of an ical string representation and uses the #EDataCalView's fields-of-interest
+ * to filter out unwanted information from ical strings sent over the bus.
+ *
+ * Since: 3.4
+ **/
+void
+e_cal_backend_notify_component_created (ECalBackend         *backend,
+					const icalcomponent *component)
+{
+	ECalBackendPrivate *priv;
+	ECalComponent      *comp;
+
+	priv = backend->priv;
+
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_component_created (priv->notification_proxy, component);
+		return;
+	}
+
+	comp = ecal_comp_from_icalcomp (component);
+
+	e_cal_backend_foreach_view (backend, component_created_cb, (gpointer) comp);
+	g_object_unref (comp);
+}
+
+/**
+ * e_cal_backend_notify_components_added:
+ *
+ * Like e_cal_backend_notify_objects_added() except take a list of #icalcomponents
+ * instead of ical string representations and uses the #EDataCalView's fields-of-interest
+ * to filter out unwanted information from ical strings sent over the bus.
+ *
+ * Since: 3.4
+ **/
+void
+e_cal_backend_notify_components_added (ECalBackend  *backend,
+				       EDataCalView *view,
+				       const GSList *objects)
+{
+	e_data_cal_view_notify_components_added (view, objects);
+}
+
+static void
+match_view_and_notify_component (EDataCalView  *view,
+				 ECalComponent *old_component,
+				 ECalComponent *component)
+{
+	gboolean old_match = FALSE, new_match = FALSE;
+	icalcomponent *icalcomp;
+
+	if (old_component)
+		old_match = e_data_cal_view_component_matches (view, old_component);
+
+	new_match = e_data_cal_view_component_matches (view, component);
+	icalcomp  = e_cal_component_get_icalcomponent (component);
+
+	if (old_match && new_match)
+		e_data_cal_view_notify_components_modified_1 (view, icalcomp);
+	else if (new_match)
+		e_data_cal_view_notify_components_added_1 (view, icalcomp);
+	else if (old_match) {
+
+		ECalComponentId *id = e_cal_component_get_id (old_component);
+
+		e_data_cal_view_notify_objects_removed_1 (view, id);
+
+		e_cal_component_free_id (id);
+	}
+}
+
+struct component_call_data {
+	ECalComponent         *old_component;
+	ECalComponent         *component;
+	const ECalComponentId *id;
+};
+
+static gboolean
+call_match_and_notify_component (EDataCalView *view, gpointer user_data)
+{
+	struct component_call_data *cd = user_data;
+
+	g_return_val_if_fail (user_data != NULL, FALSE);
+
+	match_view_and_notify_component (view, cd->old_component, cd->component);
+
+	return TRUE;
+}
+
+/**
+ * e_cal_backend_notify_component_modified:
+ * @backend: an #ECalBackend
+ * @old_component: the #icalcomponent before the modification
+ * @component: the #icalcomponent after the modification
+ *
+ * Notifies each of the backend's listeners about a modified object.
+ *
+ * Like e_cal_backend_notify_object_modified() except takes an #icalcomponent
+ * instead of an ical string representation and uses the #EDataCalView's fields-of-interest
+ * to filter out unwanted information from ical strings sent over the bus.
+ *
+ * Since: 3.4
+ **/
+void
+e_cal_backend_notify_component_modified (ECalBackend         *backend,
+					 const icalcomponent *old_component,
+					 const icalcomponent *component)
+{
+	ECalBackendPrivate *priv;
+	struct component_call_data cd;
+
+	priv = backend->priv;
+
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_component_modified (priv->notification_proxy, old_component, component);
+		return;
+	}
+
+	cd.old_component = ecal_comp_from_icalcomp (old_component);
+	cd.component     = ecal_comp_from_icalcomp (component);
+	cd.id            = NULL;
+
+	e_cal_backend_foreach_view (backend, call_match_and_notify_component, &cd);
+
+	if (cd.old_component)
+		g_object_unref (cd.old_component);
+
+	if (cd.component)
+		g_object_unref (cd.component);
+}
+
+/**
+ * e_cal_backend_notify_components_modified:
+ *
+ * Like e_cal_backend_notify_objects_modified() except takes a list of #icalcomponents
+ * instead of a ical string representations and uses the #EDataCalView's fields-of-interest
+ * to filter out unwanted information from ical strings sent over the bus.
+ *
+ * Since: 3.4
+ **/
+void
+e_cal_backend_notify_components_modified (ECalBackend  *backend,
+					  EDataCalView *view,
+					  const GSList *objects)
+{
+	e_data_cal_view_notify_components_modified (view, objects);
+}
+
+static gboolean
+component_removed_cb (EDataCalView *view, gpointer user_data)
+{
+	struct component_call_data *cd = user_data;
+
+	g_return_val_if_fail (user_data != NULL, FALSE);
+
+	if (cd->component == NULL) {
+		/* if object == NULL, it means the object has been completely
+		   removed from the backend */
+		if (!cd->old_component || e_data_cal_view_component_matches (view, cd->old_component))
+			e_data_cal_view_notify_objects_removed_1 (view, cd->id);
+	} else
+		match_view_and_notify_component (view, cd->old_component, cd->component);
+
+	return TRUE;
+}
+
+/**
+ * e_cal_backend_notify_component_removed:
+ * @backend: an #ECalBackend
+ * @id: the Id of the removed object
+ * @old_component: the removed component
+ * @component: the component after the removal. This only applies to recurrent 
+ * appointments that had an instance removed. In that case, this function notifies a 
+ * modification instead of a removal.
+ *
+ * Notifies each of the backend's listeners about a removed object.
+ *
+ * Like e_cal_backend_notify_object_removed() except takes an #icalcomponent
+ * instead of an ical string representation and uses the #EDataCalView's fields-of-interest
+ * to filter out unwanted information from ical strings sent over the bus.
+ *
+ * Since: 3.4
+ **/
+void
+e_cal_backend_notify_component_removed (ECalBackend           *backend,
+					const ECalComponentId *id,
+					const icalcomponent   *old_component,
+					const icalcomponent   *component)
+{
+	ECalBackendPrivate *priv;
+	struct component_call_data cd;
+
+	priv = backend->priv;
+
+	if (priv->notification_proxy) {
+		e_cal_backend_notify_component_removed (priv->notification_proxy, id, old_component, component);
+		return;
+	}
+
+	cd.old_component = ecal_comp_from_icalcomp (old_component);
+	cd.component     = ecal_comp_from_icalcomp (component);
+	cd.id            = id;
+
+	e_cal_backend_foreach_view (backend, component_removed_cb, &cd);
+
+	if (cd.old_component)
+		g_object_unref (cd.old_component);
+
+	if (cd.component)
+		g_object_unref (cd.component);
+}
+
+static gboolean
+object_created_cb (EDataCalView *view, gpointer data)
+{
+	const gchar *calobj = data;
+
 	if (e_data_cal_view_object_matches (view, calobj))
 		e_data_cal_view_notify_objects_added_1 (view, calobj);
 
@@ -1385,7 +1639,7 @@ object_created_cb (EDataCalView *view,
 /**
  * e_cal_backend_notify_object_created:
  * @backend: an #ECalBackend
- * @calobj: iCalendar representation of new object
+ * @calobj: the newly created object
  *
  * Notifies each of the backend's listeners about a new object.
  *
@@ -1423,9 +1677,9 @@ e_cal_backend_notify_objects_added (ECalBackend *backend,
 }
 
 static void
-match_view_and_notify (EDataCalView *view,
-                       const gchar *old_object,
-                       const gchar *object)
+match_view_and_notify_object (EDataCalView *view,
+			      const gchar  *old_object,
+			      const gchar  *object)
 {
 	gboolean old_match = FALSE, new_match = FALSE;
 
@@ -1452,21 +1706,20 @@ match_view_and_notify (EDataCalView *view,
 	}
 }
 
-struct call_data {
+struct object_call_data {
 	const gchar *old_object;
 	const gchar *object;
 	const ECalComponentId *id;
 };
 
 static gboolean
-call_match_and_notify (EDataCalView *view,
-                       gpointer user_data)
+call_match_and_notify_object (EDataCalView *view, gpointer user_data)
 {
-	struct call_data *cd = user_data;
+	struct object_call_data *cd = user_data;
 
 	g_return_val_if_fail (user_data != NULL, FALSE);
 
-	match_view_and_notify (view, cd->old_object, cd->object);
+	match_view_and_notify_object (view, cd->old_object, cd->object);
 
 	return TRUE;
 }
@@ -1489,7 +1742,7 @@ e_cal_backend_notify_object_modified (ECalBackend *backend,
                                       const gchar *object)
 {
 	ECalBackendPrivate *priv;
-	struct call_data cd;
+	struct object_call_data cd;
 
 	priv = backend->priv;
 
@@ -1502,7 +1755,7 @@ e_cal_backend_notify_object_modified (ECalBackend *backend,
 	cd.object = object;
 	cd.id = NULL;
 
-	e_cal_backend_foreach_view (backend, call_match_and_notify, &cd);
+	e_cal_backend_foreach_view (backend, call_match_and_notify_object, &cd);
 }
 
 /**
@@ -1522,7 +1775,7 @@ static gboolean
 object_removed_cb (EDataCalView *view,
                    gpointer user_data)
 {
-	struct call_data *cd = user_data;
+	struct object_call_data *cd = user_data;
 
 	g_return_val_if_fail (user_data != NULL, FALSE);
 
@@ -1532,7 +1785,7 @@ object_removed_cb (EDataCalView *view,
 		if (!cd->old_object || e_data_cal_view_object_matches (view, cd->old_object))
 			e_data_cal_view_notify_objects_removed_1 (view, cd->id);
 	} else
-		match_view_and_notify (view, cd->old_object, cd->object);
+		match_view_and_notify_object (view, cd->old_object, cd->object);
 
 	return TRUE;
 }
@@ -1559,7 +1812,7 @@ e_cal_backend_notify_object_removed (ECalBackend *backend,
                                      const gchar *object)
 {
 	ECalBackendPrivate *priv;
-	struct call_data cd;
+	struct object_call_data cd;
 
 	priv = backend->priv;
 
@@ -1868,17 +2121,16 @@ e_cal_backend_empty_cache (ECalBackend *backend,
 	for (comps_in_cache = e_cal_backend_cache_get_components (cache);
 	     comps_in_cache;
 	     comps_in_cache = comps_in_cache->next) {
-		gchar *comp_str;
 		ECalComponentId *id;
-		ECalComponent *comp = comps_in_cache->data;
+		ECalComponent   *comp     = comps_in_cache->data;
+		icalcomponent   *icalcomp = e_cal_component_get_icalcomponent (comp);
 
 		id = e_cal_component_get_id (comp);
-		comp_str = e_cal_component_get_as_string (comp);
 
 		e_cal_backend_cache_remove_component (cache, id->uid, id->rid);
-		e_cal_backend_notify_object_removed (backend, id, comp_str, NULL);
 
-		g_free (comp_str);
+		e_cal_backend_notify_component_removed	(backend, id, icalcomp, NULL);
+
 		e_cal_component_free_id (id);
 		g_object_unref (comp);
 	}

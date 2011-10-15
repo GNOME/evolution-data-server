@@ -309,24 +309,24 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
  * @cancellable: a #GCancellable for the operation
  * @calobj: The object to be added.
  * @uid: Placeholder for server-generated UID.
- * @new_object: Placeholder for server-calobj, if it changed. Can be left as is if it's same as @calobj.
+ * @new_component: (out) (transfer full): Placeholder for returned #icalcomponent.
  * @error: Out parameter for a #GError.
  *
  * Calls the create_object_sync method on the given backend.
  */
 void
 e_cal_backend_sync_create_object (ECalBackendSync *backend,
-                                  EDataCal *cal,
-                                  GCancellable *cancellable,
-                                  const gchar *calobj,
-                                  gchar **uid,
-                                  gchar **new_object,
-                                  GError **error)
+				  EDataCal        *cal, 
+				  GCancellable    *cancellable, 
+				  const gchar     *calobj, 
+				  gchar          **uid, 
+				  icalcomponent  **new_component, 
+				  GError         **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->create_object_sync != NULL, UnsupportedMethod);
 
-	LOCK_WRAPPER (create_object_sync, (backend, cal, cancellable, calobj, uid, new_object, error));
+	LOCK_WRAPPER (create_object_sync, (backend, cal, cancellable, calobj, uid, new_component, error));
 }
 
 /**
@@ -336,9 +336,9 @@ e_cal_backend_sync_create_object (ECalBackendSync *backend,
  * @cancellable: a #GCancellable for the operation
  * @calobj: Object to be modified.
  * @mod: Type of modification to be done.
- * @old_object: Placeholder for returning the old object as it was stored on the
+ * @old_component: (out) (transfer full): Placeholder for returning the old component as it was stored on the
  * backend.
- * @new_object: Placeholder for returning the new object as it has been stored
+ * @new_component: (out) (transfer full): Placeholder for returning the new component as it has been stored
  * on the backend.
  * @error: Out parameter for a #GError.
  *
@@ -346,18 +346,18 @@ e_cal_backend_sync_create_object (ECalBackendSync *backend,
  */
 void
 e_cal_backend_sync_modify_object (ECalBackendSync *backend,
-                                  EDataCal *cal,
-                                  GCancellable *cancellable,
-                                  const gchar *calobj,
-                                  CalObjModType mod,
-                                  gchar **old_object,
-                                  gchar **new_object,
-                                  GError **error)
+				  EDataCal        *cal,
+				  GCancellable    *cancellable, 
+				  const gchar     *calobj,
+				  CalObjModType    mod,
+				  icalcomponent  **old_component,
+				  icalcomponent  **new_component,
+				  GError         **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync != NULL, UnsupportedMethod);
 
-	LOCK_WRAPPER (modify_object_sync, (backend, cal, cancellable, calobj, mod, old_object, new_object, error));
+	LOCK_WRAPPER (modify_object_sync, (backend, cal, cancellable, calobj, mod, old_component, new_component, error));
 }
 
 /**
@@ -369,30 +369,30 @@ e_cal_backend_sync_modify_object (ECalBackendSync *backend,
  * @rid: Recurrence ID of the instance to remove, or NULL if removing the
  * whole object.
  * @mod: Type of removal.
- * @old_object: Placeholder for returning the old object as it was stored on the
+ * @old_component: (out) (transfer full): Placeholder for returning the old component as it was stored on the
  * backend.
- * @new_object: Placeholder for returning the object after it has been modified (when
- * removing individual instances). If removing the whole object, this will be
- * NULL.
+ * @new_component: (out) (transfer full): Placeholder for returning the new component as it has been stored
+ * on the backend (when removing individual instances). If removing the whole object,
+ * this will be set to %NULL.
  * @error: Out parameter for a #GError.
  *
  * Calls the remove_object_sync method on the given backend.
  */
 void
 e_cal_backend_sync_remove_object (ECalBackendSync *backend,
-                                  EDataCal *cal,
-                                  GCancellable *cancellable,
-                                  const gchar *uid,
-                                  const gchar *rid,
-                                  CalObjModType mod,
-                                  gchar **old_object,
-                                  gchar **new_object,
-                                  GError **error)
+				  EDataCal        *cal,
+				  GCancellable    *cancellable,
+				  const gchar     *uid,
+				  const gchar     *rid,
+				  CalObjModType    mod,
+				  icalcomponent  **old_component,
+				  icalcomponent  **new_component,
+				  GError         **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync != NULL, UnsupportedMethod);
 
-	LOCK_WRAPPER (remove_object_sync, (backend, cal, cancellable, uid, rid, mod, old_object, new_object, error));
+	LOCK_WRAPPER (remove_object_sync, (backend, cal, cancellable, uid, rid, mod, old_component, new_component, error));
 }
 
 /**
@@ -732,14 +732,20 @@ cal_backend_create_object (ECalBackend *backend,
                            const gchar *calobj)
 {
 	GError *error = NULL;
-	gchar *uid = NULL, *new_object = NULL;
+	gchar *uid = NULL;
+	icalcomponent *new_component = NULL;
 
-	e_cal_backend_sync_create_object (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, &uid, &new_object, &error);
+	e_cal_backend_sync_create_object (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, &uid, &new_component, &error);
 
-	e_data_cal_respond_create_object (cal, opid, error, uid, new_object ? new_object : calobj);
+	if (!new_component)
+		new_component = icalparser_parse_string (calobj);
+
+	e_data_cal_respond_create_object (cal, opid, error, uid, new_component);
 
 	g_free (uid);
-	g_free (new_object);
+
+	if (new_component)
+		icalcomponent_free (new_component);
 }
 
 static void
@@ -751,38 +757,47 @@ cal_backend_modify_object (ECalBackend *backend,
                            CalObjModType mod)
 {
 	GError *error = NULL;
-	gchar *old_object = NULL, *new_object = NULL;
+	icalcomponent *old_component = NULL, *new_component = NULL;
 
-	e_cal_backend_sync_modify_object (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, mod, &old_object, &new_object, &error);
+	e_cal_backend_sync_modify_object (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, mod, &old_component, &new_component, &error);
 
-	e_data_cal_respond_modify_object (cal, opid, error, old_object ? old_object : calobj, new_object);
+	if (!old_component)
+		old_component = icalparser_parse_string (calobj);
 
-	g_free (old_object);
-	g_free (new_object);
+	e_data_cal_respond_modify_object (cal, opid, error, old_component, new_component);
+
+	if (old_component)
+		icalcomponent_free (old_component);
+
+	if (new_component)
+		icalcomponent_free (new_component);
 }
 
 static void
-cal_backend_remove_object (ECalBackend *backend,
-                           EDataCal *cal,
-                           guint32 opid,
+cal_backend_remove_object (ECalBackend  *backend,
+                           EDataCal     *cal,
+                           guint32       opid,
                            GCancellable *cancellable,
-                           const gchar *uid,
-                           const gchar *rid,
+                           const gchar  *uid,
+                           const gchar  *rid,
                            CalObjModType mod)
 {
 	GError *error = NULL;
-	gchar *old_object = NULL, *new_object = NULL;
+	icalcomponent *old_component = NULL, *new_component = NULL;
 	ECalComponentId compid;
 
 	compid.uid = (gchar *) uid;
 	compid.rid = (gchar *) ((mod == CALOBJ_MOD_THIS || mod == CALOBJ_MOD_ONLY_THIS) ? rid : NULL);
 
-	e_cal_backend_sync_remove_object (E_CAL_BACKEND_SYNC (backend), cal, cancellable, uid, rid, mod, &old_object, &new_object, &error);
+	e_cal_backend_sync_remove_object (E_CAL_BACKEND_SYNC (backend), cal, cancellable, uid, rid, mod, &old_component, &new_component, &error);
 
-	e_data_cal_respond_remove_object (cal, opid, error, &compid, old_object, new_object);
+	e_data_cal_respond_remove_object (cal, opid, error, &compid, old_component, new_component);
 
-	g_free (old_object);
-	g_free (new_object);
+	if (old_component)
+		icalcomponent_free (old_component);
+
+	if (new_component)
+		icalcomponent_free (new_component);
 }
 
 static void

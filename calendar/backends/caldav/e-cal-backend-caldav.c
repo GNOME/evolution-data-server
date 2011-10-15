@@ -3524,11 +3524,11 @@ replace_master (ECalBackendCalDAV *cbdav,
 
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
-do_create_object (ECalBackendCalDAV *cbdav,
-                  const gchar *in_calobj,
-                  gchar **uid,
-                  gchar **new_calobj,
-                  GError **perror)
+do_create_object (ECalBackendCalDAV *cbdav, 
+		  const gchar       *in_calobj, 
+		  gchar            **uid, 
+		  icalcomponent    **new_component,
+		  GError           **perror)
 {
 	ECalComponent            *comp;
 	gboolean                  online, did_put = FALSE;
@@ -3610,13 +3610,15 @@ do_create_object (ECalBackendCalDAV *cbdav,
 			icalcomponent *master = get_master_comp (cbdav, icalcomp);
 
 			if (!master)
-				*new_calobj = e_cal_component_get_as_string (comp);
+			  *new_component =
+			    icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
 			else
-				*new_calobj = icalcomponent_as_ical_string_r (master);
+			  *new_component = icalcomponent_new_clone (master);
 
 			icalcomponent_free (icalcomp);
 		} else {
-			*new_calobj = e_cal_component_get_as_string (comp);
+		  *new_component =
+		    icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
 		}
 	}
 
@@ -3626,11 +3628,11 @@ do_create_object (ECalBackendCalDAV *cbdav,
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
 do_modify_object (ECalBackendCalDAV *cbdav,
-                  const gchar *calobj,
-                  CalObjModType mod,
-                  gchar **old_object,
-                  gchar **new_object,
-                  GError **error)
+		  const gchar    *calobj,
+		  CalObjModType   mod,
+		  icalcomponent **old_component,
+		  icalcomponent **new_component,
+		  GError        **error)
 {
 	ECalBackendCalDAVPrivate *priv;
 	ECalComponent            *comp;
@@ -3642,8 +3644,8 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 
 	priv  = cbdav->priv;
 
-	if (new_object)
-		*new_object = NULL;
+	if (new_component)
+		*new_component = NULL;
 
 	if (!check_state (cbdav, &online, error))
 		return;
@@ -3689,26 +3691,28 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 		/*ecalcomp_set_synch_state (comp, ECALCOMP_LOCALLY_MODIFIED);*/
 	}
 
-	if (old_object) {
-		*old_object = NULL;
+	if (old_component) {
+		*old_component = NULL;
 
 		if (e_cal_component_is_instance (comp)) {
 			/* set detached instance as the old object, if any */
 			ECalComponent *old_instance = e_cal_backend_store_get_component (priv->store, id->uid, id->rid);
 
+			/* This will give a reference to 'old_component' */
 			if (old_instance) {
-				*old_object = e_cal_component_get_as_string (old_instance);
+				*old_component =
+					icalcomponent_new_clone (e_cal_component_get_icalcomponent
+								 (old_instance));
 				g_object_unref (old_instance);
 			}
 		}
 
-		if (!*old_object) {
+		if (!*old_component) {
 			icalcomponent *master = get_master_comp (cbdav, cache_comp);
 
-			if (master) {
-				/* set full component as the old object */
-				*old_object = icalcomponent_as_ical_string_r (master);
-			}
+			if (master)
+			  /* set full component as the old object */
+			  *old_component = icalcomponent_new_clone (master);
 		}
 	}
 
@@ -3719,8 +3723,8 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 			icalcomponent *new_comp = e_cal_component_get_icalcomponent (comp);
 
 			/* new object is only this instance */
-			if (new_object)
-				*new_object = e_cal_component_get_as_string (comp);
+			if (new_component)
+				*new_component = icalcomponent_new_clone (new_comp);
 
 			/* add the detached instance */
 			if (icalcomponent_isa (cache_comp) == ICAL_VCALENDAR_COMPONENT) {
@@ -3774,7 +3778,7 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 	}
 
 	if (did_put) {
-		if (new_object && !*new_object) {
+		if (new_component && !*new_component) {
 			/* read the comp from cache again, as some servers can modify it on put */
 			icalcomponent *newcomp = get_comp_from_cache (cbdav, id->uid, NULL, NULL, NULL), *master;
 
@@ -3784,7 +3788,7 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 			master = get_master_comp (cbdav, newcomp);
 
 			if (master)
-				*new_object = icalcomponent_as_ical_string_r (master);
+				*new_component = icalcomponent_new_clone (master);
 
 			if (cache_comp != newcomp)
 				icalcomponent_free (newcomp);
@@ -3801,12 +3805,12 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
 do_remove_object (ECalBackendCalDAV *cbdav,
-                  const gchar *uid,
-                  const gchar *rid,
-                  CalObjModType mod,
-                  gchar **old_object,
-                  gchar **object,
-                  GError **perror)
+		  const gchar       *uid,
+		  const gchar       *rid,
+		  CalObjModType      mod,
+		  icalcomponent    **old_component,
+		  icalcomponent    **component,
+		  GError           **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
 	icalcomponent            *cache_comp;
@@ -3815,8 +3819,8 @@ do_remove_object (ECalBackendCalDAV *cbdav,
 
 	priv  = cbdav->priv;
 
-	if (object)
-		*object = NULL;
+	if (component)
+		*component = NULL;
 
 	if (!check_state (cbdav, &online, perror))
 		return;
@@ -3828,17 +3832,18 @@ do_remove_object (ECalBackendCalDAV *cbdav,
 		return;
 	}
 
-	if (old_object) {
+	if (old_component) {
 		ECalComponent *old = e_cal_backend_store_get_component (priv->store, uid, rid);
 
 		if (old) {
-			*old_object = e_cal_component_get_as_string (old);
+			*old_component = 
+				icalcomponent_new_clone (e_cal_component_get_icalcomponent (old));
 			g_object_unref (old);
 		} else {
 			icalcomponent *master = get_master_comp (cbdav, cache_comp);
 
 			if (master)
-				*old_object = icalcomponent_as_ical_string_r (master);
+				*old_component = icalcomponent_new_clone (master);
 		}
 	}
 
@@ -3848,11 +3853,11 @@ do_remove_object (ECalBackendCalDAV *cbdav,
 		if (rid && *rid) {
 			/* remove one instance from the component */
 			if (remove_instance (cbdav, cache_comp, icaltime_from_string (rid), mod, mod != CALOBJ_MOD_ONLY_THIS)) {
-				if (object) {
+				if (component) {
 					icalcomponent *master = get_master_comp (cbdav, cache_comp);
 
 					if (master)
-						*object = icalcomponent_as_ical_string_r (master);
+						*component = icalcomponent_new_clone (master);
 				}
 			} else {
 				/* this was the last instance, thus delete whole component */
@@ -4012,60 +4017,69 @@ process_object (ECalBackendCalDAV *cbdav,
 		is_declined = e_cal_backend_user_declined (e_cal_component_get_icalcomponent (ecomp));
 		if (is_in_cache) {
 			if (!is_declined) {
-				gchar *new_object = NULL, *old_object = NULL;
+				icalcomponent *new_component = NULL, *old_component = NULL;
 
-				do_modify_object (cbdav, new_obj_str, mod, &old_object, &new_object, &err);
+				do_modify_object (cbdav, new_obj_str, mod, 
+						  &old_component, &new_component, &err);
 				if (!err) {
-					if (!old_object)
-						e_cal_backend_notify_object_created (backend, new_object);
+					if (!old_component)
+						e_cal_backend_notify_component_created (backend, new_component);
 					else
-						e_cal_backend_notify_object_modified (backend, old_object, new_object);
+						e_cal_backend_notify_component_modified (backend, old_component, new_component);
 				}
 
-				g_free (new_object);
-				g_free (old_object);
+				if (new_component)
+					icalcomponent_free (new_component);
+				if (old_component)
+					icalcomponent_free (old_component);
 			} else {
-				gchar *new_object = NULL, *old_object = NULL;
+				icalcomponent *new_component = NULL, *old_component = NULL;
 
-				do_remove_object (cbdav, id->uid, id->rid, mod, &old_object, &new_object, &err);
+				do_remove_object (cbdav, id->uid, id->rid, mod, &old_component, &new_component, &err);
 				if (!err) {
-					if (new_object) {
-						e_cal_backend_notify_object_modified (backend, old_object, new_object);
+					if (new_component) {
+						e_cal_backend_notify_component_modified (backend, old_component, new_component);
 					} else {
-						e_cal_backend_notify_object_removed (backend, id, old_object, NULL);
+						e_cal_backend_notify_component_removed (backend, id, old_component, NULL);
 					}
 				}
 
-				g_free (new_object);
-				g_free (old_object);
+				if (new_component)
+					icalcomponent_free (new_component);
+				if (old_component)
+					icalcomponent_free (old_component);
 			}
 		} else if (!is_declined) {
-			gchar *new_object = new_obj_str;
+			icalcomponent *new_component = NULL;
 
-			do_create_object (cbdav, new_object, NULL, &new_object, &err);
+			do_create_object (cbdav, new_obj_str, NULL, &new_component, &err);
+
 			if (!err) {
-				e_cal_backend_notify_object_created (backend, new_object);
+				e_cal_backend_notify_component_created (backend, new_component);
 			}
 
-			if (new_object != new_obj_str)
-				g_free (new_object);
+			if (new_component)
+				icalcomponent_free (new_component);
+
 		}
 		break;
 	case ICAL_METHOD_CANCEL:
 		if (is_in_cache) {
-			gchar *old_object = NULL, *new_object = NULL;
+			icalcomponent *new_component = NULL, *old_component = NULL;
 
-			do_remove_object (cbdav, id->uid, id->rid, CALOBJ_MOD_THIS, &old_object, &new_object, &err);
+			do_remove_object (cbdav, id->uid, id->rid, CALOBJ_MOD_THIS, &old_component, &new_component, &err);
 			if (!err) {
-				if (new_object) {
-					e_cal_backend_notify_object_modified (backend, old_object, new_object);
+				if (new_component) {
+					e_cal_backend_notify_component_modified (backend, old_component, new_component);
 				} else {
-					e_cal_backend_notify_object_removed (backend, id, old_object, NULL);
+					e_cal_backend_notify_component_removed (backend, id, old_component, NULL);
 				}
 			}
 
-			g_free (old_object);
-			g_free (new_object);
+			if (new_component)
+				icalcomponent_free (new_component);
+			if (old_component)
+				icalcomponent_free (old_component);
 		} else {
 			err = EDC_ERROR (ObjectNotFound);
 		}
@@ -4142,7 +4156,6 @@ do_receive_objects (ECalBackendSync *backend,
 		}
 
 		process_object (cbdav, ecomp, online, method, &err);
-
 		g_object_unref (ecomp);
 	}
 
@@ -4193,13 +4206,13 @@ caldav_busy_stub (
                   GCancellable *cancellable,
                   const gchar *in_calobj,
                   gchar **uid,
-                  gchar **new_calobj,
+                  icalcomponent **new_component,
                   GError **perror),
         do_create_object,
                   (cbdav,
                   in_calobj,
                   uid,
-                  new_calobj,
+                  new_component,
                   perror))
 
 caldav_busy_stub (
@@ -4209,15 +4222,15 @@ caldav_busy_stub (
                   GCancellable *cancellable,
                   const gchar *calobj,
                   CalObjModType mod,
-                  gchar **old_object,
-                  gchar **new_object,
+                  icalcomponent **old_component,
+                  icalcomponent **new_component,
                   GError **perror),
         do_modify_object,
                   (cbdav,
                   calobj,
                   mod,
-                  old_object,
-                  new_object,
+                  old_component,
+                  new_component,
                   perror))
 
 caldav_busy_stub (
@@ -4228,16 +4241,16 @@ caldav_busy_stub (
                   const gchar *uid,
                   const gchar *rid,
                   CalObjModType mod,
-                  gchar **old_object,
-                  gchar **object,
+                  icalcomponent **old_component,
+                  icalcomponent **component,
                   GError **perror),
         do_remove_object,
                   (cbdav,
                   uid,
                   rid,
                   mod,
-                  old_object,
-                  object,
+                  old_component,
+                  component,
                   perror))
 
 caldav_busy_stub (

@@ -214,6 +214,12 @@ icaltimezone *	e_cal_backend_internal_get_timezone	(ECalBackend *backend, const 
 void		e_cal_backend_start_view		(ECalBackend *backend, EDataCalView *view);
 void		e_cal_backend_stop_view			(ECalBackend *backend, EDataCalView *view);
 
+void		e_cal_backend_notify_component_created	(ECalBackend *backend, const icalcomponent *component);
+void		e_cal_backend_notify_components_added	(ECalBackend *backend, EDataCalView *view, const GSList *components);
+void		e_cal_backend_notify_component_modified	(ECalBackend *backend, const icalcomponent *old_component, const icalcomponent *new_component);
+void		e_cal_backend_notify_components_modified(ECalBackend *backend, EDataCalView *view, const GSList *components);
+void		e_cal_backend_notify_component_removed	(ECalBackend *backend, const ECalComponentId *id, const icalcomponent *old_component, const icalcomponent *component);
+
 void		e_cal_backend_notify_object_created	(ECalBackend *backend, const gchar *calobj);
 void		e_cal_backend_notify_objects_added	(ECalBackend *backend, EDataCalView *view, const GSList *objects);
 void		e_cal_backend_notify_object_modified	(ECalBackend *backend, const gchar *old_object, const gchar *object);

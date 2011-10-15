@@ -128,6 +128,7 @@ static void free_refresh_data (ECalBackendFile *cbfile);
 static icaltimezone *
 e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const gchar *tzid);
 
+
 /* g_hash_table_foreach() callback to destroy a ECalBackendFileObject */
 static void
 free_object_data (gpointer data)
@@ -1097,18 +1098,16 @@ notify_adds_modifies_cb (gpointer key,
 		if (!new_icomp)
 			return;
 
-		new_obj_str = icalcomponent_as_ical_string_r (new_icomp);
-		if (!new_obj_str)
-			return;
-
-		e_cal_backend_notify_object_created (context->backend, new_obj_str);
-		g_free (new_obj_str);
+		e_cal_backend_notify_component_created (context->backend, new_icomp);
 	} else {
 		old_icomp = e_cal_component_get_icalcomponent (old_obj_data->full_object);
 		new_icomp = e_cal_component_get_icalcomponent (new_obj_data->full_object);
 		if (!old_icomp || !new_icomp)
 			return;
 
+		/* There should be better ways to compare an icalcomponent
+		 * than serializing and comparing the strings...
+		 */
 		old_obj_str = icalcomponent_as_ical_string_r (old_icomp);
 		new_obj_str = icalcomponent_as_ical_string_r (new_icomp);
 		if (!old_obj_str || !new_obj_str)
@@ -1116,8 +1115,7 @@ notify_adds_modifies_cb (gpointer key,
 
 		if (strcmp (old_obj_str, new_obj_str)) {
 			/* Object was modified */
-
-			e_cal_backend_notify_object_modified (context->backend, old_obj_str, new_obj_str);
+			e_cal_backend_notify_component_modified (context->backend, old_icomp, new_icomp);
 		}
 		g_free (old_obj_str);
 		g_free (new_obj_str);
@@ -1590,7 +1588,23 @@ typedef struct {
 	const gchar *query;
 	ECalBackendSExp *obj_sexp;
 	ECalBackend *backend;
+	EDataCalView *view;
 } MatchObjectData;
+
+
+static GSList *
+prepend_component (GSList *list, MatchObjectData *match_data, icalcomponent *icalcomp)
+{
+	gchar *str;
+
+	if (match_data->view)
+		str = e_data_cal_view_get_component_string (match_data->view, icalcomp);
+	else
+		str = icalcomponent_as_ical_string_r (icalcomp);
+
+	return g_slist_prepend (list, str);
+}
+
 
 static void
 match_object_sexp_to_component (gpointer value,
@@ -1601,6 +1615,8 @@ match_object_sexp_to_component (gpointer value,
 	const gchar *uid;
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
+	icalcomponent *icalcomp;
+
 	e_cal_component_get_uid (comp, &uid);
 
 	g_return_if_fail (comp != NULL);
@@ -1613,9 +1629,11 @@ match_object_sexp_to_component (gpointer value,
 
 	g_return_if_fail (priv != NULL);
 
+	icalcomp = e_cal_component_get_icalcomponent (comp);
+
 	if ((!match_data->search_needed) ||
 	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {
-		match_data->obj_list = g_slist_append (match_data->obj_list, e_cal_component_get_as_string (comp));
+		match_data->obj_list = prepend_component (match_data->obj_list, match_data, icalcomp);
 	}
 }
 
@@ -1625,11 +1643,14 @@ match_recurrence_sexp (gpointer key,
                        gpointer data)
 {
 	ECalComponent *comp = value;
+	icalcomponent *icalcomp;
 	MatchObjectData *match_data = data;
+
+	icalcomp = e_cal_component_get_icalcomponent (comp);
 
 	if ((!match_data->search_needed) ||
 	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {
-		match_data->obj_list = g_slist_append (match_data->obj_list, e_cal_component_get_as_string (comp));
+		match_data->obj_list = prepend_component (match_data->obj_list, match_data, icalcomp);
 	}
 }
 
@@ -1643,8 +1664,13 @@ match_object_sexp (gpointer key,
 
 	if (obj_data->full_object) {
 		if ((!match_data->search_needed) ||
-		    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, obj_data->full_object, match_data->backend))) {
-			match_data->obj_list = g_slist_append (match_data->obj_list, e_cal_component_get_as_string (obj_data->full_object));
+		    (e_cal_backend_sexp_match_comp (match_data->obj_sexp,
+						    obj_data->full_object,
+						    match_data->backend))) {
+			icalcomponent *icalcomp =
+				e_cal_component_get_icalcomponent (obj_data->full_object);
+
+			match_data->obj_list = prepend_component (match_data->obj_list, match_data, icalcomp);
 		}
 	}
 
@@ -1665,7 +1691,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend,
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
-	MatchObjectData match_data;
+	MatchObjectData match_data = { 0, };
 	time_t occur_start = -1, occur_end = -1;
 	gboolean prunning_by_time;
 	GList * objs_occuring_in_tw;
@@ -1709,7 +1735,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend,
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
-	*objects = match_data.obj_list;
+	*objects = g_slist_reverse (match_data.obj_list);
 
 	if (objs_occuring_in_tw) {
 		g_list_foreach (objs_occuring_in_tw, (GFunc) g_object_unref, NULL);
@@ -1850,7 +1876,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 {
 	ECalBackendFile *cbfile;
 	ECalBackendFilePrivate *priv;
-	MatchObjectData match_data;
+	MatchObjectData match_data = { 0, };
 	time_t occur_start = -1, occur_end = -1;
 	gboolean prunning_by_time;
 	GList * objs_occuring_in_tw;
@@ -1865,6 +1891,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 	match_data.obj_list = NULL;
 	match_data.backend = backend;
 	match_data.obj_sexp = e_data_cal_view_get_object_sexp (query);
+	match_data.view = query;
 
 	if (!strcmp (match_data.query, "#t"))
 		match_data.search_needed = FALSE;
@@ -1908,6 +1935,8 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 
 	/* notify listeners of all objects */
 	if (match_data.obj_list) {
+		match_data.obj_list = g_slist_reverse (match_data.obj_list);
+
 		e_data_cal_view_notify_objects_added (query, match_data.obj_list);
 
 		/* free memory */
@@ -2169,7 +2198,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend,
                                   GCancellable *cancellable,
                                   const gchar *in_calobj,
                                   gchar **uid,
-                                  gchar **new_object,
+                                  icalcomponent **new_component,
                                   GError **error)
 {
 	ECalBackendFile *cbfile;
@@ -2184,7 +2213,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend,
 
 	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
 	e_return_data_cal_error_if_fail (in_calobj != NULL, ObjectNotFound);
-	e_return_data_cal_error_if_fail (new_object != NULL, ObjectNotFound);
+	e_return_data_cal_error_if_fail (new_component != NULL, ObjectNotFound);
 
 	/* Parse the icalendar text */
 	icalcomp = icalparser_parse_string (in_calobj);
@@ -2250,7 +2279,8 @@ e_cal_backend_file_create_object (ECalBackendSync *backend,
 	/* Return the UID and the modified component */
 	if (uid)
 		*uid = g_strdup (comp_uid);
-	*new_object = e_cal_component_get_as_string (comp);
+
+	*new_component = icalcomponent_new_clone (icalcomp);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
@@ -2297,8 +2327,8 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
                                   GCancellable *cancellable,
                                   const gchar *calobj,
                                   CalObjModType mod,
-                                  gchar **old_object,
-                                  gchar **new_object,
+                                  icalcomponent **old_component,
+                                  icalcomponent **new_component,
                                   GError **error)
 {
 	RemoveRecurrenceData rrdata;
@@ -2372,8 +2402,11 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 	switch (mod) {
 	case CALOBJ_MOD_THIS :
 		if (!rid || !*rid) {
-			if (old_object && obj_data->full_object)
-				*old_object = e_cal_component_get_as_string (obj_data->full_object);
+			if (old_component && obj_data->full_object) {
+				icalcomponent *old_icalcomp =
+					e_cal_component_get_icalcomponent (obj_data->full_object);
+				*old_component = icalcomponent_new_clone (old_icalcomp);
+			}
 
 			/* replace only the full object */
 			if (obj_data->full_object) {
@@ -2393,8 +2426,11 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 
 			save (cbfile);
 
-			if (new_object)
-				*new_object = e_cal_component_get_as_string (comp);
+			if (new_component) {
+				icalcomponent *new_icalcomp =
+					e_cal_component_get_icalcomponent (comp);
+				*new_component = icalcomponent_new_clone (new_icalcomp);
+			}
 
 			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_free (rid);
@@ -2402,8 +2438,11 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 		}
 
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (gpointer *) &real_rid, (gpointer *) &recurrence)) {
-			if (old_object)
-				*old_object = e_cal_component_get_as_string (recurrence);
+			if (old_component) {
+				icalcomponent *old_icalcomp =
+					e_cal_component_get_icalcomponent (recurrence);
+				*old_component = icalcomponent_new_clone (old_icalcomp);
+			}
 
 			/* remove the component from our data */
 			icalcomponent_remove_component (priv->icalcomp,
@@ -2426,8 +2465,12 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
 		if (!rid || !*rid) {
-			if (old_object && obj_data->full_object)
-				*old_object = e_cal_component_get_as_string (obj_data->full_object);
+
+			if (old_component && obj_data->full_object) {
+				icalcomponent *old_icalcomp =
+					e_cal_component_get_icalcomponent (obj_data->full_object);
+				*old_component = icalcomponent_new_clone (old_icalcomp);
+			}
 
 			remove_component (cbfile, comp_uid, obj_data);
 
@@ -2448,8 +2491,12 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 		/* now deal with the detached recurrence */
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
 						  (gpointer *) &real_rid, (gpointer *) &recurrence)) {
-			if (old_object)
-				*old_object = e_cal_component_get_as_string (recurrence);
+
+			if (old_component) {
+				icalcomponent *old_icalcomp =
+					e_cal_component_get_icalcomponent (recurrence);
+				*old_component = icalcomponent_new_clone (old_icalcomp);
+			}
 
 			/* remove the component from our data */
 			icalcomponent_remove_component (priv->icalcomp,
@@ -2458,8 +2505,12 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 			obj_data->recurrences_list = g_list_remove (obj_data->recurrences_list, recurrence);
 			g_hash_table_remove (obj_data->recurrences, rid);
 		} else {
-			if (old_object && obj_data->full_object)
-				*old_object = e_cal_component_get_as_string (obj_data->full_object);
+
+			if (old_component && obj_data->full_object) {
+				icalcomponent *old_icalcomp =
+					e_cal_component_get_icalcomponent (obj_data->full_object);
+				*old_component = icalcomponent_new_clone (old_icalcomp);
+			}
 		}
 
 		rrdata.cbfile = cbfile;
@@ -2489,8 +2540,11 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 		break;
 	case CALOBJ_MOD_ALL :
 		/* Remove the old version */
-		if (old_object && obj_data->full_object)
-			*old_object = e_cal_component_get_as_string (obj_data->full_object);
+		if (old_component && obj_data->full_object) {
+			icalcomponent *old_icalcomp =
+				e_cal_component_get_icalcomponent (obj_data->full_object);
+			*old_component = icalcomponent_new_clone (old_icalcomp);
+		}
 
 		if (obj_data->recurrences_list) {
 			/* has detached components, preserve them */
@@ -2534,8 +2588,11 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 	save (cbfile);
 	g_free (rid);
 
-	if (new_object)
-		*new_object = e_cal_component_get_as_string (comp);
+	if (new_component) {
+		icalcomponent *new_icalcomp =
+			e_cal_component_get_icalcomponent (comp);
+		*new_component = icalcomponent_new_clone (new_icalcomp);
+	}
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
@@ -2560,8 +2617,8 @@ remove_instance (ECalBackendFile *cbfile,
                  const gchar *uid,
                  const gchar *rid,
                  CalObjModType mod,
-                 gchar **old_object,
-                 gchar **object,
+                 icalcomponent **old_component,
+                 icalcomponent **component,
                  GError **error)
 {
 	gchar *hash_rid;
@@ -2578,9 +2635,13 @@ remove_instance (ECalBackendFile *cbfile,
 						  (gpointer *) &hash_rid, (gpointer *) &comp)) {
 			/* Removing without parent or not modifying parent?
 			 * Report removal to caller. */
-			if (old_object &&
-			    (!obj_data->full_object || mod == CALOBJ_MOD_ONLY_THIS))
-				*old_object = e_cal_component_get_as_string (comp);
+			if (old_component &&
+			    (!obj_data->full_object || mod == CALOBJ_MOD_ONLY_THIS)) {
+				icalcomponent *icalcomp =
+					e_cal_component_get_icalcomponent (comp);
+
+				*old_component = icalcomponent_new_clone (icalcomp);
+			}
 
 			/* Reporting parent modification to caller?
 			 * Report directly instead of going via caller. */
@@ -2629,8 +2690,13 @@ remove_instance (ECalBackendFile *cbfile,
 		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, obj_data->full_object);
 
 		/* add EXDATE or EXRULE to parent, report as update */
-		if (old_object)
-			*old_object = e_cal_component_get_as_string (obj_data->full_object);
+		if (old_component) {
+			icalcomponent *icalcomp =
+				e_cal_component_get_icalcomponent (obj_data->full_object);
+
+			*old_component = icalcomponent_new_clone (icalcomp);
+		}
+
 		e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object),
 					     icaltime_from_string (rid), CALOBJ_MOD_THIS);
 
@@ -2640,8 +2706,12 @@ remove_instance (ECalBackendFile *cbfile,
 		e_cal_component_set_last_modified (obj_data->full_object, &current);
 
 		/* report update */
-		if (object)
-			*object = e_cal_component_get_as_string (obj_data->full_object);
+		if (component) {
+			icalcomponent *icalcomp =
+				e_cal_component_get_icalcomponent (obj_data->full_object);
+
+			*component = icalcomponent_new_clone (icalcomp);
+		}
 
 		/* add the modified object to the beginning of the list,
 		 * so that it's always before any detached instance we
@@ -2670,8 +2740,12 @@ remove_instance (ECalBackendFile *cbfile,
 		cbfile->priv->comp = g_list_remove (cbfile->priv->comp, obj_data->full_object);
 
 		/* remove parent, report as removal */
-		if (old_object)
-			*old_object = e_cal_component_get_as_string (obj_data->full_object);
+		if (old_component) {
+			icalcomponent *icalcomp =
+				e_cal_component_get_icalcomponent (obj_data->full_object);
+
+			*old_component = icalcomponent_new_clone (icalcomp);
+		}
 		g_object_unref (obj_data->full_object);
 		obj_data->full_object = NULL;
 
@@ -2686,29 +2760,30 @@ remove_instance (ECalBackendFile *cbfile,
 	return obj_data;
 }
 
-static gchar *
-get_object_string_from_fileobject (ECalBackendFileObject *obj_data,
-                                   const gchar *rid)
+static icalcomponent *
+clone_icalcomp_from_fileobject (ECalBackendFileObject *obj_data, const gchar *rid)
 {
 	ECalComponent *comp = obj_data->full_object;
-	gchar *real_rid;
+	icalcomponent *icalcomp = NULL;
+	gchar         *real_rid;
 
 	if (!comp)
 		return NULL;
 
 	if (!rid) {
-		return e_cal_component_get_as_string (comp);
+		icalcomp = e_cal_component_get_icalcomponent (comp);
 	} else {
-		if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (gpointer *) &real_rid, (gpointer *) &comp))
-			return e_cal_component_get_as_string (comp);
+		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
+						  (gpointer *) &real_rid, (gpointer *) &comp))
+			icalcomp = e_cal_component_get_icalcomponent (comp);
 		else {
 			/* FIXME remove this once we delete an instance from master object through
 			 * modify request by setting exception */
-			return e_cal_component_get_as_string (comp);
+			icalcomp = e_cal_component_get_icalcomponent (comp);
 		}
 	}
 
-	return NULL;
+	return icalcomp ? icalcomponent_new_clone (icalcomp) : NULL;
 }
 
 static void
@@ -2742,8 +2817,8 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend,
                                   const gchar *uid,
                                   const gchar *rid,
                                   CalObjModType mod,
-                                  gchar **old_object,
-                                  gchar **object,
+                                  icalcomponent **old_component,
+                                  icalcomponent **component,
                                   GError **error)
 {
 	ECalBackendFile *cbfile;
@@ -2758,6 +2833,7 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend,
 
 	e_return_data_cal_error_if_fail (priv->icalcomp != NULL, NoSuchCal);
 	e_return_data_cal_error_if_fail (uid != NULL, ObjectNotFound);
+
 	switch (mod) {
 	case CALOBJ_MOD_THIS:
 	case CALOBJ_MOD_THISANDPRIOR:
@@ -2770,7 +2846,7 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend,
 		return;
 	}
 
-	*old_object = *object = NULL;
+	*old_component = *component = NULL;
 
 	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
 
@@ -2786,16 +2862,17 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend,
 
 	switch (mod) {
 	case CALOBJ_MOD_ALL :
-		*old_object = get_object_string_from_fileobject (obj_data, recur_id);
+		*old_component = clone_icalcomp_from_fileobject (obj_data, recur_id);
 		if (obj_data->recurrences_list)
 			g_list_foreach (obj_data->recurrences_list, notify_comp_removed_cb, cbfile);
 		remove_component (cbfile, uid, obj_data);
 
-		*object = NULL;
+		*component = NULL;
 		break;
 	case CALOBJ_MOD_ONLY_THIS:
 	case CALOBJ_MOD_THIS :
-		obj_data = remove_instance (cbfile, obj_data, uid, recur_id, mod, old_object, object, error);
+		obj_data = remove_instance (cbfile, obj_data, uid, recur_id, mod,
+					    old_component, component, error);
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
@@ -2808,7 +2885,9 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend,
 		}
 
 		if (comp) {
-			*old_object = e_cal_component_get_as_string (comp);
+			icalcomponent *icalcomp = 
+				e_cal_component_get_icalcomponent (comp);
+			*old_component = icalcomponent_new_clone (icalcomp);
 
 			/* remove the component from our data, temporarily */
 			icalcomponent_remove_component (priv->icalcomp,
@@ -2832,8 +2911,12 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend,
 		if (comp)
 			priv->comp = g_list_prepend (priv->comp, comp);
 
-		if (obj_data->full_object)
-			*object = e_cal_component_get_as_string (obj_data->full_object);
+		if (obj_data->full_object) {
+			icalcomponent *icalcomp =
+				e_cal_component_get_icalcomponent (obj_data->full_object);
+
+			*component = icalcomponent_new_clone (icalcomp);
+		}
 		break;
 	}
 
@@ -2845,8 +2928,8 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend,
 static gboolean
 cancel_received_object (ECalBackendFile *cbfile,
                         icalcomponent *icalcomp,
-                        gchar **old_object,
-                        gchar **new_object)
+                        icalcomponent **old_icalcomp,
+                        icalcomponent **new_icalcomp)
 {
 	ECalBackendFileObject *obj_data;
 	ECalBackendFilePrivate *priv;
@@ -2856,8 +2939,8 @@ cancel_received_object (ECalBackendFile *cbfile,
 
 	priv = cbfile->priv;
 
-	*old_object = NULL;
-	*new_object = NULL;
+	*old_icalcomp = NULL;
+	*new_icalcomp = NULL;
 
 	/* Find the old version of the component. */
 	obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
@@ -2873,13 +2956,20 @@ cancel_received_object (ECalBackendFile *cbfile,
 
 	rid = e_cal_component_get_recurid_as_string (comp);
 	if (rid && *rid) {
-		obj_data = remove_instance (cbfile, obj_data, uid, rid, CALOBJ_MOD_THIS, old_object, new_object, NULL);
-		if (obj_data && obj_data->full_object)
-			*new_object = e_cal_component_get_as_string (obj_data->full_object);
+		obj_data = remove_instance (cbfile, obj_data, uid, rid, CALOBJ_MOD_THIS,
+					    old_icalcomp, new_icalcomp, NULL);
+		if (obj_data && obj_data->full_object) {
+			icalcomponent *tmp_icalcomp =
+				e_cal_component_get_icalcomponent (obj_data->full_object);
+			*new_icalcomp = icalcomponent_new_clone (tmp_icalcomp);
+		}
 	} else {
-		/* report as removal by keeping *new_object NULL */
-		if (obj_data->full_object)
-			*old_object = e_cal_component_get_as_string (obj_data->full_object);
+		/* report as removal by keeping *new_component NULL */
+		if (obj_data->full_object) {
+			icalcomponent *tmp_icalcomp =
+				e_cal_component_get_icalcomponent (obj_data->full_object);
+			*old_icalcomp = icalcomponent_new_clone (tmp_icalcomp);
+		}
 		remove_component (cbfile, uid, obj_data);
 	}
 
@@ -3078,8 +3168,10 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 
 	/* Now we manipulate the components we care about */
 	for (l = comps; l; l = l->next) {
+		icalcomponent *old_component = NULL;
+		icalcomponent *component = NULL;
 		const gchar *uid;
-		gchar *object, *old_object = NULL, *rid, *new_object;
+		gchar *rid;
 		ECalBackendFileObject *obj_data;
 		gboolean is_declined;
 
@@ -3113,40 +3205,53 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 				fetch_attachments (backend, comp);
 			obj_data = g_hash_table_lookup (priv->comp_uid_hash, uid);
 			if (obj_data) {
+
 				if (rid) {
+					icalcomponent *ignore_icalcomp = NULL;
+
 					remove_instance (cbfile, obj_data, uid, rid, CALOBJ_MOD_THIS,
-							 &old_object, &new_object, NULL);
+							 &old_component, &ignore_icalcomp, NULL);
+
+					if (ignore_icalcomp)
+						icalcomponent_free (ignore_icalcomp);
 				} else {
-					if (obj_data->full_object)
-						old_object = e_cal_component_get_as_string (obj_data->full_object);
+					if (obj_data->full_object) {
+						icalcomponent *full_icalcomp =
+							e_cal_component_get_icalcomponent (obj_data->full_object);
+						old_component = icalcomponent_new_clone (full_icalcomp);
+					}
 					remove_component (cbfile, uid, obj_data);
 				}
 
 				if (!is_declined)
 					add_component (cbfile, comp, FALSE);
 
-				object = e_cal_component_get_as_string (comp);
+
+				component = icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
 				if (!is_declined)
-					e_cal_backend_notify_object_modified (E_CAL_BACKEND (backend), old_object, object);
+					e_cal_backend_notify_component_modified (E_CAL_BACKEND (backend),
+										 old_component, component);
 				else {
 					ECalComponentId *id = e_cal_component_get_id (comp);
 
-					if (rid)
-						e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend), id, old_object, object);
-					else
-						e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend), id, old_object, NULL);
+					e_cal_backend_notify_component_removed (E_CAL_BACKEND (backend),
+										id, old_component,
+										rid ? component : NULL);
 
 					e_cal_component_free_id (id);
 				}
 
-				g_free (object);
-				g_free (old_object);
+				if (component)
+					icalcomponent_free (component);
+				if (old_component)
+					icalcomponent_free (old_component);
+
 			} else if (!is_declined) {
 				add_component (cbfile, comp, FALSE);
 
-				object = e_cal_component_get_as_string (comp);
-				e_cal_backend_notify_object_created (E_CAL_BACKEND (backend), object);
-				g_free (object);
+				component = e_cal_component_get_icalcomponent (comp);
+
+				e_cal_backend_notify_component_created (E_CAL_BACKEND (backend), component);
 			}
 			g_free (rid);
 			break;
@@ -3167,22 +3272,25 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 			goto error;
 			break;
 		case ICAL_METHOD_CANCEL:
-			old_object = NULL;
-			new_object = NULL;
-			if (cancel_received_object (cbfile, subcomp, &old_object, &new_object)) {
+			old_component = NULL;
+			component = NULL;
+			if (cancel_received_object (cbfile, subcomp, &old_component, &component)) {
 				ECalComponentId *id;
 
 				id = e_cal_component_get_id (comp);
 
-				e_cal_backend_notify_object_removed (E_CAL_BACKEND (backend), id, old_object, new_object);
+				e_cal_backend_notify_component_removed (E_CAL_BACKEND (backend),
+									id, old_component, component);
 
 				/* remove the component from the toplevel VCALENDAR */
 				icalcomponent_remove_component (toplevel_comp, subcomp);
 				icalcomponent_free (subcomp);
 				e_cal_component_free_id (id);
 
-				g_free (new_object);
-				g_free (old_object);
+				if (component)
+					icalcomponent_free (component);
+				if (old_component)
+					icalcomponent_free (old_component);
 			}
 			g_free (rid);
 			break;
@@ -3485,7 +3593,7 @@ test_query_by_scanning_all_objects (ECalBackendFile *cbfile,
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
-	*objects = match_data.obj_list;
+	*objects = g_slist_reverse (match_data.obj_list);
 
 	g_object_unref (match_data.obj_sexp);
 }
