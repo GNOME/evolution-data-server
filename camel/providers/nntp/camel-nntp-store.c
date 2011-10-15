@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/*ed.txtcamel-unused.txt-*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
@@ -76,97 +76,6 @@ G_DEFINE_TYPE_WITH_CODE (
 	G_IMPLEMENT_INTERFACE (
 		CAMEL_TYPE_SUBSCRIBABLE,
 		camel_subscribable_init))
-
-static gint
-camel_nntp_try_authenticate (CamelNNTPStore *store,
-                             GCancellable *cancellable,
-                             GError **error)
-{
-	CamelService *service;
-	CamelSession *session;
-	CamelURL *url;
-	gint ret;
-	gchar *line = NULL;
-	const gchar *password;
-	GError *local_error = NULL;
-
-	service = CAMEL_SERVICE (store);
-	url = camel_service_get_camel_url (service);
-	session = camel_service_get_session (service);
-	password = camel_service_get_password (service);
-
-	if (!url->user) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Authentication requested but no username provided"));
-		return -1;
-	}
-
-	/* if nessecary, prompt for the password */
-	if (password == NULL) {
-		gchar *prompt, *base;
-		gchar *new_passwd;
-	retry:
-		base = camel_session_build_password_prompt (
-			"NNTP", url->user, url->host);
-		if (line) {
-			gchar *top = g_markup_printf_escaped (
-				_("Cannot authenticate to server: %s"), line);
-
-			prompt = g_strdup_printf("%s\n\n%s", top, base);
-			g_free (top);
-		} else {
-			prompt = base;
-			base = NULL;
-		}
-
-		/* XXX This is a tad awkward.  Maybe define a
-		 *     camel_service_ask_password() that calls
-		 *     camel_session_get_password() and caches
-		 *     the password itself? */
-		new_passwd = camel_session_get_password (
-			session, service, prompt, "password",
-			CAMEL_SESSION_PASSWORD_SECRET |
-			(store->password_reprompt ?
-				CAMEL_SESSION_PASSWORD_REPROMPT : 0),
-			error);
-		camel_service_set_password (service, new_passwd);
-		password = camel_service_get_password (service);
-		g_free (new_passwd);
-
-		g_free (prompt);
-		g_free (base);
-
-		if (password == NULL)
-			return -1;
-
-		store->password_reprompt = FALSE;
-	}
-
-	/* now, send auth info (currently, only authinfo user/pass is supported) */
-	ret = camel_nntp_raw_command(store, cancellable, &local_error, &line, "authinfo user %s", url->user);
-	if (ret == NNTP_AUTH_CONTINUE)
-		ret = camel_nntp_raw_command(store, cancellable, &local_error, &line, "authinfo pass %s", password);
-
-	if (ret != NNTP_AUTH_ACCEPTED) {
-		if (ret != -1) {
-			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) ||
-			    g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE)) {
-				g_propagate_error (error, local_error);
-				return ret;
-			}
-
-			/* To force password reprompt */
-			store->password_reprompt = TRUE;
-			camel_service_set_password (service, NULL);
-			password = camel_service_get_password (service);
-			goto retry;
-		}
-		return -1;
-	}
-
-	return ret;
-}
 
 static void
 nntp_store_dispose (GObject *object)
@@ -339,6 +248,7 @@ connect_to_server (CamelService *service,
 {
 	CamelNNTPStore *store = (CamelNNTPStore *) service;
 	CamelDiscoStore *disco_store = (CamelDiscoStore *) service;
+	CamelSession *session;
 	CamelURL *url;
 	CamelStream *tcp_stream;
 	const gchar *user_cache_dir;
@@ -348,6 +258,7 @@ connect_to_server (CamelService *service,
 	gchar *path;
 
 	url = camel_service_get_camel_url (service);
+	session = camel_service_get_session (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
@@ -387,9 +298,13 @@ connect_to_server (CamelService *service,
 	}
 
 	/* if we have username, try it here */
-	if (url->user != NULL && url->user[0]
-	    && camel_nntp_try_authenticate (store, cancellable, error) != NNTP_AUTH_ACCEPTED)
-		goto fail;
+	if (url->user != NULL && *url->user != '\0') {
+
+		/* XXX No SASL support. */
+		if (!camel_session_authenticate_sync (
+			session, service, NULL, cancellable, error))
+			goto fail;
+	}
 
 	/* set 'reader' mode & ignore return code, also ping the server, inn goes offline very quickly otherwise */
 	if (camel_nntp_raw_command_auth (store, cancellable, error, (gchar **) &buf, "mode reader") == -1
@@ -540,6 +455,66 @@ nntp_store_get_name (CamelService *service,
 }
 
 extern CamelServiceAuthType camel_nntp_password_authtype;
+
+static CamelAuthenticationResult
+nntp_store_authenticate_sync (CamelService *service,
+                              const gchar *mechanism,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	CamelNNTPStore *store;
+	CamelAuthenticationResult result;
+	CamelURL *url;
+	const gchar *password;
+	gchar *line = NULL;
+	gint status;
+
+	store = CAMEL_NNTP_STORE (service);
+
+	url = camel_service_get_camel_url (service);
+	password = camel_service_get_password (service);
+
+	if (url->user == NULL) {
+		g_set_error_literal (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			_("Cannot authenticate without a username"));
+		return CAMEL_AUTHENTICATION_ERROR;
+	}
+
+	if (password == NULL) {
+		g_set_error_literal (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			_("Authentication password not available"));
+		return CAMEL_AUTHENTICATION_ERROR;
+	}
+
+	/* XXX Currently only authinfo user/pass is supported. */
+	status = camel_nntp_raw_command (
+		store, cancellable, error, &line,
+		"authinfo user %s", url->user);
+	if (status == NNTP_AUTH_CONTINUE)
+		status = camel_nntp_raw_command (
+			store, cancellable, error, &line,
+			"authinfo pass %s", password);
+
+	switch (status) {
+		case NNTP_AUTH_ACCEPTED:
+			result = CAMEL_AUTHENTICATION_ACCEPTED;
+			break;
+
+		case NNTP_AUTH_REJECTED:
+			result = CAMEL_AUTHENTICATION_REJECTED;
+			break;
+
+		default:
+			result = CAMEL_AUTHENTICATION_ERROR;
+			break;
+	}
+
+	return result;
+}
 
 static GList *
 nntp_store_query_auth_types_sync (CamelService *service,
@@ -1477,6 +1452,7 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->settings_type = CAMEL_TYPE_NNTP_SETTINGS;
 	service_class->get_name = nntp_store_get_name;
+	service_class->authenticate_sync = nntp_store_authenticate_sync;
 	service_class->query_auth_types_sync = nntp_store_query_auth_types_sync;
 
 	store_class = CAMEL_STORE_CLASS (class);
@@ -1665,8 +1641,13 @@ camel_nntp_raw_command_auth (CamelNNTPStore *store,
                              const gchar *fmt,
                              ...)
 {
+	CamelService *service;
+	CamelSession *session;
 	gint ret, retry, go;
 	va_list ap;
+
+	service = CAMEL_SERVICE (store);
+	session = camel_service_get_session (service);
 
 	retry = 0;
 
@@ -1679,7 +1660,8 @@ camel_nntp_raw_command_auth (CamelNNTPStore *store,
 		va_end (ap);
 
 		if (ret == NNTP_AUTH_REQUIRED) {
-			if (camel_nntp_try_authenticate (store, cancellable, error) != NNTP_AUTH_ACCEPTED)
+			if (!camel_session_authenticate_sync (
+				session, service, NULL, cancellable, error))
 				return -1;
 			go = TRUE;
 		}
@@ -1697,12 +1679,17 @@ camel_nntp_command (CamelNNTPStore *store,
                     const gchar *fmt,
                     ...)
 {
+	CamelService *service;
+	CamelSession *session;
 	const gchar *full_name = NULL;
 	const guchar *p;
 	va_list ap;
 	gint ret, retry;
 	guint u;
 	GError *local_error = NULL;
+
+	service = CAMEL_SERVICE (store);
+	session = camel_service_get_session (service);
 
 	if (((CamelDiscoStore *) store)->status == CAMEL_DISCO_STORE_OFFLINE) {
 		g_set_error (
@@ -1720,7 +1707,7 @@ camel_nntp_command (CamelNNTPStore *store,
 		retry++;
 
 		if (store->stream == NULL
-		    && !camel_service_connect_sync (CAMEL_SERVICE (store), error))
+		    && !camel_service_connect_sync (service, error))
 			return -1;
 
 		/* Check for unprocessed data, !*/
@@ -1756,7 +1743,8 @@ camel_nntp_command (CamelNNTPStore *store,
 	error:
 		switch (ret) {
 		case NNTP_AUTH_REQUIRED:
-			if (camel_nntp_try_authenticate (store, cancellable, error) != NNTP_AUTH_ACCEPTED)
+			if (!camel_session_authenticate_sync (
+				session, service, NULL, cancellable, error))
 				return -1;
 			retry--;
 			ret = -1;
@@ -1770,11 +1758,11 @@ camel_nntp_command (CamelNNTPStore *store,
 		case 400:	/* service discontinued */
 		case 401:	/* wrong client state - this should quit but this is what the old code did */
 		case 503:	/* information not available - this should quit but this is what the old code did (?) */
-			camel_service_disconnect_sync (CAMEL_SERVICE (store), FALSE, NULL);
+			camel_service_disconnect_sync (service, FALSE, NULL);
 			ret = -1;
 			continue;
 		case -1:	/* i/o error */
-			camel_service_disconnect_sync (CAMEL_SERVICE (store), FALSE, NULL);
+			camel_service_disconnect_sync (service, FALSE, NULL);
 			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) || retry >= 3) {
 				g_propagate_error (error, local_error);
 				return -1;
