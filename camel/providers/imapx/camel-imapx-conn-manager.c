@@ -21,6 +21,7 @@
 
 #include "camel-imapx-conn-manager.h"
 #include "camel-imapx-settings.h"
+#include "camel-imapx-store.h"
 #include "camel-imapx-utils.h"
 
 #define c(...) camel_imapx_debug(conman, __VA_ARGS__)
@@ -350,20 +351,46 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man,
                              GError **error)
 {
 	CamelIMAPXServer *conn;
+	CamelIMAPXStore *imapx_store;
 	CamelStore *store = con_man->priv->store;
 	CamelService *service;
 	CamelURL *url;
 	ConnectionInfo *cinfo = NULL;
+	gboolean success;
 
 	service = CAMEL_SERVICE (store);
 	url = camel_service_get_camel_url (service);
+
+	imapx_store = CAMEL_IMAPX_STORE (store);
 
 	CON_LOCK (con_man);
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	conn = camel_imapx_server_new (store, url);
-	if (camel_imapx_server_connect (conn, cancellable, error)) {
+
+	/* XXX As part of the connect operation the CamelIMAPXServer will
+	 *     have to call camel_session_authenticate_sync(), but it has
+	 *     no way to pass itself through in that call so the service
+	 *     knows which CamelIMAPXServer is trying to authenticate.
+	 *
+	 *     IMAPX is the only provider that does multiple connections
+	 *     like this, so I didn't want to pollute the CamelSession and
+	 *     CamelService authentication APIs with an extra argument.
+	 *     Instead we do this little hack so the service knows which
+	 *     CamelIMAPXServer to act on in its authenticate_sync() method.
+	 *
+	 *     Because we're holding the CAMEL_SERVICE_REC_CONNECT_LOCK
+	 *     (and our own CON_LOCK for that matter) we should not have
+	 *     multiple IMAPX connections trying to authenticate at once,
+	 *     so this should be thread-safe.
+	 */
+	imapx_store->authenticating_server = g_object_ref (conn);
+	success = camel_imapx_server_connect (conn, cancellable, error);
+	g_object_unref (imapx_store->authenticating_server);
+	imapx_store->authenticating_server = NULL;
+
+	if (success) {
 		g_object_ref (conn);
 	} else {
 		g_object_unref (conn);

@@ -109,6 +109,11 @@ imapx_store_dispose (GObject *object)
 		imapx_store->con_man = NULL;
 	}
 
+	if (imapx_store->authenticating_server != NULL) {
+		g_object_unref (imapx_store->authenticating_server);
+		imapx_store->authenticating_server = NULL;
+	}
+
 	if (imapx_store->summary != NULL) {
 		g_object_unref (imapx_store->summary);
 		imapx_store->summary = NULL;
@@ -217,6 +222,31 @@ imapx_disconnect_sync (CamelService *service,
 	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return TRUE;
+}
+
+static CamelAuthenticationResult
+imapx_authenticate_sync (CamelService *service,
+                         const gchar *mechanism,
+                         GCancellable *cancellable,
+                         GError **error)
+{
+	CamelIMAPXStore *istore = CAMEL_IMAPX_STORE (service);
+	CamelIMAPXServer *server;
+
+	/* CamelIMAPXConnManager sets this before calling
+	 * camel_imapx_server_connect()(), and then clears it
+	 * immediately after, all while holding the recursive
+	 * connection lock (CAMEL_SERVICE_REC_CONNECT_LOCK).
+	 * Otherwise we'd have no way of knowing which server
+	 * is trying to authenticate. */
+	server = istore->authenticating_server;
+
+	g_return_val_if_fail (
+		CAMEL_IS_IMAPX_SERVER (server),
+		CAMEL_AUTHENTICATION_REJECTED);
+
+	return camel_imapx_server_authenticate (
+		server, mechanism, cancellable, error);
 }
 
 extern CamelServiceAuthType camel_imapx_password_authtype;
@@ -1664,6 +1694,7 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	service_class->get_name = imapx_get_name;
 	service_class->connect_sync = imapx_connect_sync;
 	service_class->disconnect_sync = imapx_disconnect_sync;
+	service_class->authenticate_sync = imapx_authenticate_sync;
 	service_class->query_auth_types_sync = imapx_query_auth_types_sync;
 
 	store_class = CAMEL_STORE_CLASS (class);

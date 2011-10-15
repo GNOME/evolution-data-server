@@ -3135,26 +3135,131 @@ exit:
 	return TRUE;
 }
 
+CamelAuthenticationResult
+camel_imapx_server_authenticate (CamelIMAPXServer *is,
+                                 const gchar *mechanism,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	CamelAuthenticationResult result;
+	CamelIMAPXCommand *ic;
+	CamelService *service;
+	CamelSasl *sasl = NULL;
+	CamelURL *url;
+
+	g_return_val_if_fail (
+		CAMEL_IS_IMAPX_SERVER (is),
+		CAMEL_AUTHENTICATION_REJECTED);
+
+	service = CAMEL_SERVICE (is->store);
+	url = camel_service_get_camel_url (service);
+
+	if (mechanism != NULL) {
+		if (!g_hash_table_lookup (is->cinfo->auth_types, mechanism)) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("IMAP server %s does not support %s "
+				  "authentication"), url->host, mechanism);
+			return CAMEL_AUTHENTICATION_ERROR;
+		}
+
+		sasl = camel_sasl_new ("imap", mechanism, service);
+		if (sasl != NULL) {
+			g_set_error (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("No support for %s authentication"),
+				mechanism);
+			return CAMEL_AUTHENTICATION_ERROR;
+		}
+	}
+
+	if (sasl != NULL) {
+		ic = camel_imapx_command_new (
+			is, "AUTHENTICATE", NULL, cancellable,
+			"AUTHENTICATE %A", sasl);
+	} else {
+		const gchar *password;
+
+		password = camel_service_get_password (service);
+
+		if (url->user == NULL) {
+			g_set_error_literal (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("Cannot authenticate without a username"));
+			return CAMEL_AUTHENTICATION_ERROR;
+		}
+
+		if (password == NULL) {
+			g_set_error_literal (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("Authentication password not available"));
+			return CAMEL_AUTHENTICATION_ERROR;
+		}
+
+		ic = camel_imapx_command_new (
+			is, "LOGIN", NULL, cancellable,
+			"LOGIN %s %s", url->user, password);
+	}
+
+	imapx_command_run (is, ic);
+
+	if (ic->error == NULL) {
+		if (ic->status->result == IMAPX_OK)
+			result = CAMEL_AUTHENTICATION_ACCEPTED;
+		else
+			result = CAMEL_AUTHENTICATION_REJECTED;
+	} else {
+		g_propagate_error (error, ic->error);
+		ic->error = NULL;
+		result = CAMEL_AUTHENTICATION_ERROR;
+	}
+
+	/* Forget old capabilities after login. */
+	if (result == CAMEL_AUTHENTICATION_ACCEPTED) {
+		if (is->cinfo) {
+			imapx_free_capability (is->cinfo);
+			is->cinfo = NULL;
+		}
+
+		if (ic->status->condition == IMAPX_CAPABILITY) {
+			is->cinfo = ic->status->u.cinfo;
+			ic->status->u.cinfo = NULL;
+			c(is->tagprefix, "got capability flags %08x\n", is->cinfo->capa);
+		}
+	}
+
+	camel_imapx_command_free (ic);
+
+	if (sasl != NULL)
+		g_object_unref (sasl);
+
+	return result;
+}
+
 static gboolean
 imapx_reconnect (CamelIMAPXServer *is,
                  GCancellable *cancellable,
                  GError **error)
 {
 	CamelIMAPXCommand *ic;
-	gchar *errbuf = NULL;
 	CamelService *service;
+	CamelSession *session;
 	CamelSettings *settings;
 	CamelURL *url;
-	gboolean authenticated = FALSE;
-	CamelServiceAuthType *authtype = NULL;
-	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
-	gboolean need_password = FALSE;
+	const gchar *mechanism;
 	gboolean use_idle;
 	gboolean use_qresync;
 
 	service = CAMEL_SERVICE (is->store);
-	url = camel_service_get_camel_url (service);
+	session = camel_service_get_session (service);
 	settings = camel_service_get_settings (service);
+
+	url = camel_service_get_camel_url (service);
+	mechanism = url->authmech;
 
 	use_idle = camel_imapx_settings_get_use_idle (
 		CAMEL_IMAPX_SETTINGS (settings));
@@ -3162,152 +3267,15 @@ imapx_reconnect (CamelIMAPXServer *is,
 	use_qresync = camel_imapx_settings_get_use_qresync (
 		CAMEL_IMAPX_SETTINGS (settings));
 
-	while (!authenticated) {
-		CamelSasl *sasl = NULL;
-		const gchar *password;
+	if (!imapx_connect_to_server (is, cancellable, error))
+		goto exception;
 
-		if (authtype && authtype->need_password && !need_password) {
-			/* We tried an empty password, but it didn't work */
-			need_password = TRUE;
-			g_free (errbuf);
-			errbuf = NULL;
-		} else if (errbuf) {
-			/* We need to un-cache the password before prompting again */
-			prompt_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-			camel_service_set_password (service, NULL);
-		}
+	if (is->state == IMAPX_AUTHENTICATED)
+		goto preauthed;
 
-		if (!imapx_connect_to_server (is, cancellable, error))
-			goto exception;
-
-		if (is->state == IMAPX_AUTHENTICATED)
-			goto preauthed;
-
-		if (!authtype && url->authmech) {
-			if (!g_hash_table_lookup (is->cinfo->auth_types, url->authmech)) {
-				if (error && !*error)
-					g_set_error (
-						error, CAMEL_SERVICE_ERROR,
-						CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-						_("IMAP server %s does not support requested "
-						"authentication type %s"),
-						url->host, url->authmech);
-				goto exception;
-			}
-
-			authtype = camel_sasl_authtype (url->authmech);
-			if (!authtype) {
-			noauth:
-				if (error && !*error)
-					g_set_error (
-						error, CAMEL_SERVICE_ERROR,
-						CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-						_("No support for authentication type %s"),
-						url->authmech);
-				goto exception;
-			}
-		}
-
-		if (authtype) {
-			sasl = camel_sasl_new ("imap", authtype->authproto, service);
-			if (!sasl)
-				goto noauth;
-
-			/* If this is the *first* attempt, set 'need_password'
-			 * as appropriate. */
-			if (!need_password)
-				need_password = authtype->need_password &&
-					!camel_sasl_try_empty_password_sync (sasl, cancellable, error);
-		} else
-			need_password = TRUE;
-
-		password = camel_service_get_password (service);
-
-		if (need_password && password == NULL) {
-			gchar *base_prompt;
-			gchar *full_prompt;
-			gchar *new_passwd;
-
-			base_prompt = camel_session_build_password_prompt (
-					"IMAP", url->user, url->host);
-
-			if (errbuf != NULL)
-				full_prompt = g_strconcat (errbuf, base_prompt, NULL);
-			else
-				full_prompt = g_strdup (base_prompt);
-
-			/* XXX This is a tad awkward.  Maybe define a
-			 *     camel_service_ask_password() that calls
-			 *     camel_session_get_password() and caches
-			 *     the password itself? */
-			new_passwd = camel_session_get_password (
-				is->session, (CamelService *) is->store,
-				full_prompt, "password", prompt_flags, error);
-			camel_service_set_password (service, new_passwd);
-			password = camel_service_get_password (service);
-			g_free (new_passwd);
-
-			g_free (base_prompt);
-			g_free (full_prompt);
-			g_free (errbuf);
-			errbuf = NULL;
-
-			if (password == NULL) {
-				if (error && !*error)
-					g_set_error (
-						error, G_IO_ERROR,
-						G_IO_ERROR_CANCELLED,
-						_("You did not enter a password."));
-				if (sasl)
-					g_object_unref (sasl);
-				goto exception;
-			}
-		}
-		if (sasl) {
-			ic = camel_imapx_command_new (
-				is, "AUTHENTICATE", NULL, cancellable,
-				"AUTHENTICATE %A", sasl);
-			g_object_unref (sasl);
-		} else {
-			ic = camel_imapx_command_new (
-				is, "LOGIN", NULL, cancellable,
-				"LOGIN %s %s", url->user, password);
-		}
-
-		imapx_command_run (is, ic);
-
-		if (ic->error == NULL && ic->status->result == IMAPX_OK) {
-			/* Forget old capabilities after login */
-			if (is->cinfo) {
-				imapx_free_capability (is->cinfo);
-				is->cinfo = NULL;
-			}
-
-			if (ic->status->condition == IMAPX_CAPABILITY) {
-				is->cinfo = ic->status->u.cinfo;
-				ic->status->u.cinfo = NULL;
-				c(is->tagprefix, "got capability flags %08x\n", is->cinfo->capa);
-			}
-
-			authenticated = TRUE;
-		} else {
-			/* If exception is set, it might be mostly due to cancellation and we would get an
-			 * io error, else re-prompt. If authentication fails for other reasons ic->status would be
-			 * set with the error message */
-			if (ic->error != NULL) {
-				g_propagate_error (error, ic->error);
-				ic->error = NULL;
-				camel_imapx_command_free (ic);
-				goto exception;
-			}
-
-			errbuf = g_markup_printf_escaped (
-					_("Unable to authenticate to IMAP server.\n%s\n\n"),
-					 ic->status->text);
-		}
-
-		camel_imapx_command_free (ic);
-	}
+	if (!camel_session_authenticate_sync (
+		session, service, mechanism, cancellable, error))
+		goto exception;
 
 	/* After login we re-capa unless the server already told us */
 	if (!is->cinfo) {

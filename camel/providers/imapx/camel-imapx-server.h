@@ -145,6 +145,11 @@ gboolean	camel_imapx_server_connect	(CamelIMAPXServer *is,
 gboolean	imapx_connect_to_server		(CamelIMAPXServer *is,
 						 GCancellable *cancellable,
 						 GError **error);
+CamelAuthenticationResult
+		camel_imapx_server_authenticate	(CamelIMAPXServer *is,
+						 const gchar *mechanism,
+						 GCancellable *cancellable,
+						 GError **error);
 GPtrArray *	camel_imapx_server_list		(CamelIMAPXServer *is,
 						 const gchar *top,
 						 guint32 flags,

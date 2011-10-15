@@ -60,6 +60,7 @@ struct _CamelIMAPXStore {
 	CamelIMAPXStorePrivate *priv;
 
 	CamelIMAPXConnManager *con_man;
+	CamelIMAPXServer *authenticating_server;
 
 	CamelIMAPXStoreSummary *summary; /* in-memory list of folders */
 	gchar dir_sep;
