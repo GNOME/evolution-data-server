@@ -607,86 +607,19 @@ connect_to_server_wrapper (CamelService *service,
 }
 
 static gboolean
-try_auth (CamelImapStore *store,
-          CamelSasl *sasl,
-          GCancellable *cancellable,
-          GError **error)
-{
-	CamelService *service;
-	CamelImapResponse *response;
-	CamelURL *url;
-	gchar *resp;
-	gchar *sasl_resp;
-
-	service = CAMEL_SERVICE (store);
-	url = camel_service_get_camel_url (service);
-
-	response = camel_imap_command (
-		store, NULL, cancellable, error,
-		"AUTHENTICATE %s", url->authmech);
-	if (!response) {
-		g_object_unref (sasl);
-		return FALSE;
-	}
-
-	while (!camel_sasl_get_authenticated (sasl)) {
-		resp = camel_imap_response_extract_continuation (store, response, error);
-		if (!resp)
-			goto lose;
-
-		sasl_resp = camel_sasl_challenge_base64_sync (
-			sasl, imap_next_word (resp), cancellable, error);
-		g_free (resp);
-		if (!sasl_resp)
-			goto break_and_lose;
-
-		response = camel_imap_command_continuation (store, sasl_resp, strlen (sasl_resp), cancellable, error);
-		g_free (sasl_resp);
-		if (!response)
-			goto lose;
-	}
-
-	resp = camel_imap_response_extract_continuation (store, response, NULL);
-	if (resp) {
-		/* Oops. SASL claims we're done, but the IMAP server
-		 * doesn't think so...
-		 */
-		g_free (resp);
-		goto lose;
-	}
-
-	g_object_unref (sasl);
-
-	return TRUE;
-
- break_and_lose:
-	/* Get the server out of "waiting for continuation data" mode. */
-	response = camel_imap_command_continuation (store, "*", 1, cancellable, NULL);
-	if (response)
-		camel_imap_response_free (store, response);
-
- lose:
-	g_object_unref (sasl);
-
-	return FALSE;
-}
-
-static gboolean
 imap_auth_loop (CamelService *service,
                 GCancellable *cancellable,
                 GError **error)
 {
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
-	CamelSession *session = camel_service_get_session (service);
-	CamelServiceAuthType *authtype = NULL;
-	CamelImapResponse *response;
-	CamelSasl *sasl = NULL;
+	CamelSession *session;
 	CamelURL *url;
-	gchar *errbuf = NULL;
-	gboolean authenticated = FALSE;
-	guint32 prompt_flags = CAMEL_SESSION_PASSWORD_SECRET;
+	const gchar *mechanism;
+
+	session = camel_service_get_session (service);
 
 	url = camel_service_get_camel_url (service);
+	mechanism = url->authmech;
 
 	if (store->preauthed) {
 		if (camel_verbose_debug)
@@ -695,139 +628,19 @@ imap_auth_loop (CamelService *service,
 		return TRUE;
 	}
 
-	if (url->authmech) {
-		if (!g_hash_table_lookup (store->authtypes, url->authmech)) {
+	if (mechanism != NULL) {
+		if (!g_hash_table_lookup (store->authtypes, mechanism)) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-				_("IMAP server %s does not support requested "
-				  "authentication type %s"),
-				url->host, url->authmech);
+				_("IMAP server %s does not support %s "
+				  "authentication"), url->host, mechanism);
 			return FALSE;
-		}
-
-		authtype = camel_sasl_authtype (url->authmech);
-		if (!authtype) {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-				_("No support for authentication type %s"),
-				url->authmech);
-			return FALSE;
-		}
-
-		sasl = camel_sasl_new (
-			"imap", url->authmech, service);
-		if (!sasl) {
-		nosasl:
-			g_set_error (
-				     error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				     _("Error creating SASL authentication object."));
-			return FALSE;
-		}
-
-		if (!authtype->need_password ||
-		    camel_sasl_try_empty_password_sync (sasl, cancellable, error)) {
-			authenticated = try_auth (store, sasl, cancellable, error);
-			if (!authenticated && !authtype->need_password)
-				return FALSE;
-			sasl = NULL;
 		}
 	}
 
-	while (!authenticated) {
-		const gchar *password;
-		GError *local_error = NULL;
-
-		if (errbuf) {
-			/* We need to un-cache the password before prompting again */
-			prompt_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-			camel_service_set_password (service, NULL);
-		}
-
-		password = camel_service_get_password (service);
-
-		if (password == NULL) {
-			gchar *base_prompt;
-			gchar *full_prompt;
-			gchar *new_passwd;
-
-			base_prompt = camel_session_build_password_prompt (
-				"IMAP", url->user, url->host);
-
-			if (errbuf != NULL)
-				full_prompt = g_strconcat (errbuf, base_prompt, NULL);
-			else
-				full_prompt = g_strdup (base_prompt);
-
-			/* XXX This is a tad awkward.  Maybe define a
-			 *     camel_service_ask_password() that calls
-			 *     camel_session_get_password() and caches
-			 *     the password itself? */
-			new_passwd = camel_session_get_password (
-				session, service, full_prompt,
-				"password", prompt_flags, error);
-			camel_service_set_password (service, new_passwd);
-			password = camel_service_get_password (service);
-			g_free (new_passwd);
-
-			g_free (base_prompt);
-			g_free (full_prompt);
-			g_free (errbuf);
-			errbuf = NULL;
-
-			if (password == NULL) {
-				g_set_error (
-					error, G_IO_ERROR,
-					G_IO_ERROR_CANCELLED,
-					_("You did not enter a password."));
-				if (sasl)
-					g_object_unref (sasl);
-				return FALSE;
-			}
-		}
-
-		if (!store->connected) {
-			/* Some servers (eg, courier) will disconnect on
-			 * a bad password. So reconnect here. */
-			if (!connect_to_server_wrapper (
-				service, cancellable, error))
-				return FALSE;
-		}
-
-		if (authtype) {
-			if (!sasl)
-				sasl = camel_sasl_new (
-					"imap", url->authmech, service);
-			if (!sasl)
-				goto nosasl;
-			authenticated = try_auth (store, sasl, cancellable,
-						  &local_error);
-			sasl = NULL;
-		} else {
-			response = camel_imap_command (
-				store, NULL, cancellable, &local_error,
-				"LOGIN %S %S", url->user, password);
-			if (response) {
-				camel_imap_response_free (store, response);
-				authenticated = TRUE;
-			}
-		}
-		if (local_error != NULL) {
-			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) ||
-			    g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE)) {
-				g_propagate_error (error, local_error);
-				return FALSE;
-			}
-
-			errbuf = g_markup_printf_escaped (
-				_("Unable to authenticate to IMAP server.\n%s\n\n"),
-				local_error->message);
-			g_clear_error (&local_error);
-		}
-	}
-
-	return TRUE;
+	return camel_session_authenticate_sync (
+		session, service, mechanism, cancellable, error);
 }
 
 static gboolean
@@ -1140,6 +953,143 @@ imap_store_disconnect_sync (CamelService *service,
 		camel_imap_settings_set_namespace (imap_settings, NULL);
 
 	return TRUE;
+}
+
+static CamelAuthenticationResult
+imap_store_authenticate_sync (CamelService *service,
+                              const gchar *mechanism,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	CamelImapStore *store = CAMEL_IMAP_STORE (service);
+	CamelAuthenticationResult result;
+	CamelImapResponse *response;
+	CamelSasl *sasl = NULL;
+	gchar *sasl_resp;
+	gchar *resp;
+	GError *local_error = NULL;
+
+	/* If not using SASL, do a simple LOGIN here. */
+	if (mechanism == NULL) {
+		CamelURL *url;
+		const gchar *password;
+
+		url = camel_service_get_camel_url (service);
+		password = camel_service_get_password (service);
+
+		if (url->user == NULL) {
+			g_set_error_literal (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("Cannot authenticate without a username"));
+			return CAMEL_AUTHENTICATION_ERROR;
+		}
+
+		if (password == NULL) {
+			g_set_error_literal (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("Authentication password not available"));
+			return CAMEL_AUTHENTICATION_ERROR;
+		}
+
+		response = camel_imap_command (
+			store, NULL, cancellable, &local_error,
+			"LOGIN %S %S", url->user, password);
+
+		if (response != NULL)
+			camel_imap_response_free (store, response);
+
+		goto exit;
+	}
+
+	/* Henceforth we're using SASL. */
+
+	sasl = camel_sasl_new ("imap", mechanism, service);
+	if (sasl == NULL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			_("No support for %s authentication"), mechanism);
+		return CAMEL_AUTHENTICATION_ERROR;
+	}
+
+	response = camel_imap_command (
+		store, NULL, cancellable, &local_error,
+		"AUTHENTICATE %s", mechanism);
+	if (response == NULL)
+		goto exit;
+
+	while (!camel_sasl_get_authenticated (sasl)) {
+		resp = camel_imap_response_extract_continuation (
+			store, response, &local_error);
+
+		if (resp == NULL)
+			goto exit;
+
+		sasl_resp = camel_sasl_challenge_base64_sync (
+			sasl, imap_next_word (resp),
+			cancellable, &local_error);
+
+		g_free (resp);
+
+		if (sasl_resp == NULL)
+			goto break_and_exit;
+
+		response = camel_imap_command_continuation (
+			store, sasl_resp, strlen (sasl_resp),
+			cancellable, &local_error);
+
+		g_free (sasl_resp);
+
+		if (response == NULL)
+			goto exit;
+	}
+
+	resp = camel_imap_response_extract_continuation (store, response, NULL);
+	if (resp != NULL) {
+		/* Oops. SASL claims we're done, but the IMAP server
+		 * doesn't think so... */
+		g_free (resp);
+		goto exit;
+	}
+
+	goto exit;
+
+break_and_exit:
+	/* Get the server out of "waiting for continuation data" mode. */
+	response = camel_imap_command_continuation (
+		store, "*", 1, cancellable, NULL);
+	if (response != NULL)
+		camel_imap_response_free (store, response);
+
+exit:
+	/* XXX Apparently the IMAP parser sets CAMEL_SERVICE_ERROR_INVALID
+	 *     for failed IMAP server responses, so I guess check for that
+	 *     to know if our authentication credentials were rejected. */
+	if (local_error == NULL) {
+		result = CAMEL_AUTHENTICATION_ACCEPTED;
+	} else if (g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_INVALID)) {
+		g_clear_error (&local_error);
+		result = CAMEL_AUTHENTICATION_REJECTED;
+
+		/* Some servers (eg, courier) will disconnect
+		 * on a bad password, so we reconnect here. */
+		if (!store->connected) {
+			if (!connect_to_server_wrapper (
+				service, cancellable, error))
+				result = CAMEL_AUTHENTICATION_ERROR;
+		}
+
+	} else {
+		g_propagate_error (error, local_error);
+		result = CAMEL_AUTHENTICATION_ERROR;
+	}
+
+	if (sasl != NULL)
+		g_object_unref (sasl);
+
+	return result;
 }
 
 static GList *
@@ -1465,6 +1415,7 @@ camel_imap_store_class_init (CamelImapStoreClass *class)
 	service_class->get_name = imap_store_get_name;
 	service_class->connect_sync = imap_store_connect_sync;
 	service_class->disconnect_sync = imap_store_disconnect_sync;
+	service_class->authenticate_sync = imap_store_authenticate_sync;
 	service_class->query_auth_types_sync = imap_store_query_auth_types_sync;
 
 	store_class = CAMEL_STORE_CLASS (class);
