@@ -60,10 +60,6 @@ static GHashTable *	esmtp_get_authtypes	(const guchar *buffer);
 static gboolean		smtp_helo		(CamelSmtpTransport *transport,
 						 GCancellable *cancellable,
 						 GError **error);
-static gboolean		smtp_auth		(CamelSmtpTransport *transport,
-						 CamelSasl *sasl,
-						 GCancellable *cancellable,
-						 GError **error);
 static gboolean		smtp_mail		(CamelSmtpTransport *transport,
 						 const gchar *sender,
 						 gboolean has_8bit_parts,
@@ -286,14 +282,16 @@ smtp_transport_connect_sync (CamelService *service,
                              GError **error)
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
-	CamelSasl *sasl = NULL;
 	CamelURL *url;
-	gboolean has_authtypes;
+	const gchar *mechanism;
+	gboolean auth_required;
+	gboolean success = TRUE;
 
 	url = camel_service_get_camel_url (service);
+	mechanism = url->authmech;
 
 	/* We (probably) need to check popb4smtp before we connect ... */
-	if (url->authmech && !strcmp (url->authmech, "POPB4SMTP")) {
+	if (g_strcmp0 (mechanism, "POPB4SMTP") == 0) {
 		gint truth;
 		GByteArray *chal;
 		CamelSasl *sasl;
@@ -315,141 +313,35 @@ smtp_transport_connect_sync (CamelService *service,
 		return FALSE;
 
 	/* check to see if AUTH is required, if so...then AUTH ourselves */
-	has_authtypes = transport->authtypes ? g_hash_table_size (transport->authtypes) > 0 : FALSE;
-	if (url->authmech && (transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP) && has_authtypes) {
-		CamelSession *session = camel_service_get_session (service);
-		CamelServiceAuthType *authtype;
-		gboolean authenticated = FALSE;
-		guint32 password_flags;
-		gchar *errbuf = NULL;
+	auth_required =
+		(mechanism != NULL) &&
+		(transport->authtypes != NULL) &&
+		(g_hash_table_size (transport->authtypes) > 0) &&
+		(transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP);
 
-		if (!g_hash_table_lookup (transport->authtypes, url->authmech)) {
+	if (auth_required) {
+		CamelSession *session;
+
+		session = camel_service_get_session (service);
+
+		if (g_hash_table_lookup (transport->authtypes, mechanism)) {
+			success = camel_session_authenticate_sync (
+				session, service, mechanism,
+				cancellable, error);
+		} else {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-				_("SMTP server %s does not support "
-				  "requested authentication type %s."),
-				url->host, url->authmech);
+				_("SMTP server %s does not support %s "
+				  "authentication"), url->host, mechanism);
+			success = FALSE;
+		}
+
+		if (!success)
 			camel_service_disconnect_sync (service, TRUE, NULL);
-			return FALSE;
-		}
-
-		authtype = camel_sasl_authtype (url->authmech);
-		if (!authtype) {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-				_("No support for authentication type %s"),
-				url->authmech);
-			camel_service_disconnect_sync (service, TRUE, NULL);
-			return FALSE;
-		}
-
-		sasl = camel_sasl_new ("smtp", url->authmech,
-				       CAMEL_SERVICE (transport));
-
-		if (!sasl) {
-		nosasl:
-			g_set_error (
-				     error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				     _("Error creating SASL authentication object."));
-			camel_service_disconnect_sync (service, TRUE, NULL);
-			return FALSE;
-		}
-		if (!authtype->need_password ||
-		    camel_sasl_try_empty_password_sync (sasl, cancellable, error)) {
-			authenticated = smtp_auth (transport, sasl, cancellable, error);
-			if (!authenticated && !authtype->need_password) {
-				/* authentication mechanism doesn't need a password,
-				 * so if it fails there's nothing we can do */
-				camel_service_disconnect_sync (
-					service, TRUE, NULL);
-				return FALSE;
-			}
-		}
-
-		password_flags = CAMEL_SESSION_PASSWORD_SECRET;
-
-		/* keep trying to login until either we succeed or the user cancels */
-		while (!authenticated) {
-			const gchar *password;
-			GError *local_error = NULL;
-
-			if (errbuf) {
-				/* We need to un-cache the password before prompting again */
-				password_flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-				camel_service_set_password (service, NULL);
-			}
-
-			password = camel_service_get_password (service);
-
-			if (password == NULL) {
-				gchar *base_prompt;
-				gchar *full_prompt;
-				gchar *new_passwd;
-
-				base_prompt = camel_session_build_password_prompt (
-					"SMTP", url->user, url->host);
-
-				if (errbuf != NULL)
-					full_prompt = g_strconcat (errbuf, base_prompt, NULL);
-				else
-					full_prompt = g_strdup (base_prompt);
-
-				/* XXX This is a tad awkward.  Maybe define a
-				 *     camel_service_ask_password() that calls
-				 *     camel_session_get_password() and caches
-				 *     the password itself? */
-				new_passwd = camel_session_get_password (
-					session, service, full_prompt,
-					"password", password_flags, error);
-				camel_service_set_password (service, new_passwd);
-				password = camel_service_get_password (service);
-				g_free (new_passwd);
-
-				g_free (base_prompt);
-				g_free (full_prompt);
-				g_free (errbuf);
-				errbuf = NULL;
-
-				if (password == NULL) {
-					camel_service_disconnect_sync (
-						service, TRUE, NULL);
-					return FALSE;
-				}
-			}
-			if (!sasl)
-				sasl = camel_sasl_new ("smtp", url->authmech,
-						       CAMEL_SERVICE (transport));
-			if (!sasl)
-				goto nosasl;
-
-			authenticated = smtp_auth (transport, sasl, cancellable, &local_error);
-			sasl = NULL;
-			if (!authenticated) {
-				if (g_cancellable_is_cancelled (cancellable) ||
-				    g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE)) {
-					camel_service_set_password (service, NULL);
-
-					if (local_error)
-						g_clear_error (&local_error);
-
-					return FALSE;
-				}
-
-				errbuf = g_markup_printf_escaped (
-					_("Unable to authenticate "
-					  "to SMTP server.\n%s\n\n"),
-					local_error ? local_error->message : _("Unknown error"));
-				g_clear_error (&local_error);
-
-				camel_service_set_password (service, NULL);
-			}
-
-		}
 	}
 
-	return TRUE;
+	return success;
 }
 
 static gboolean
@@ -497,6 +389,164 @@ smtp_transport_disconnect_sync (CamelService *service,
 	transport->connected = FALSE;
 
 	return TRUE;
+}
+
+static CamelAuthenticationResult
+smtp_transport_authenticate_sync (CamelService *service,
+                                  const gchar *mechanism,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
+	CamelAuthenticationResult result;
+	CamelSasl *sasl;
+	gchar *cmdbuf, *respbuf = NULL, *challenge;
+	gboolean auth_challenge = FALSE;
+
+	if (mechanism == NULL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			_("No SASL mechanism was specified"));
+		return CAMEL_AUTHENTICATION_ERROR;
+	}
+
+	sasl = camel_sasl_new ("smtp", mechanism, service);
+	if (sasl == NULL) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			_("No support for %s authentication"), mechanism);
+		return CAMEL_AUTHENTICATION_ERROR;
+	}
+
+	camel_operation_push_message (cancellable, _("SMTP Authentication"));
+
+	challenge = camel_sasl_challenge_base64_sync (
+		sasl, NULL, cancellable, error);
+	if (challenge) {
+		auth_challenge = TRUE;
+		cmdbuf = g_strdup_printf (
+			"AUTH %s %s\r\n", mechanism, challenge);
+		g_free (challenge);
+	} else {
+		cmdbuf = g_strdup_printf (
+			"AUTH %s\r\n", mechanism);
+	}
+
+	d(fprintf (stderr, "sending : %s", cmdbuf));
+	if (camel_stream_write_string (
+		transport->ostream, cmdbuf,
+		cancellable, error) == -1) {
+		g_free (cmdbuf);
+		g_prefix_error (error, _("AUTH command failed: "));
+		goto lose;
+	}
+	g_free (cmdbuf);
+
+	respbuf = camel_stream_buffer_read_line (
+		CAMEL_STREAM_BUFFER (transport->istream),
+		cancellable, error);
+
+	while (!camel_sasl_get_authenticated (sasl)) {
+		if (!respbuf) {
+			g_prefix_error (error, _("AUTH command failed: "));
+			transport->connected = FALSE;
+			goto lose;
+		}
+
+		/* the server may have accepted our initial response */
+		if (strncmp (respbuf, "235", 3) == 0)
+			break;
+
+		/* the server challenge/response should follow a 334 code */
+		if (strncmp (respbuf, "334", 3) != 0) {
+			smtp_set_error (
+				transport, respbuf, cancellable, error);
+			g_prefix_error (error, _("AUTH command failed: "));
+			goto lose;
+		}
+
+		if (FALSE) {
+		broken_smtp_server:
+			d(fprintf (stderr, "Your SMTP server's implementation of the %s SASL\n"
+				   "authentication mechanism is broken. Please report this to the\n"
+				   "appropriate vendor and suggest that they re-read rfc2554 again\n"
+				   "for the first time (specifically Section 4).\n",
+				   mechanism));
+		}
+
+		/* eat whtspc */
+		for (challenge = respbuf + 4; isspace (*challenge); challenge++);
+
+		challenge = camel_sasl_challenge_base64_sync (
+			sasl, challenge, cancellable, error);
+		if (challenge == NULL)
+			goto break_and_lose;
+
+		g_free (respbuf);
+
+		/* send our challenge */
+		cmdbuf = g_strdup_printf ("%s\r\n", challenge);
+		g_free (challenge);
+		d(fprintf (stderr, "sending : %s", cmdbuf));
+		if (camel_stream_write_string (
+			transport->ostream, cmdbuf,
+			cancellable, error) == -1) {
+			g_free (cmdbuf);
+			goto lose;
+		}
+		g_free (cmdbuf);
+
+		/* get the server's response */
+		respbuf = camel_stream_buffer_read_line (
+			CAMEL_STREAM_BUFFER (transport->istream),
+			cancellable, error);
+	}
+
+	if (respbuf == NULL)
+		goto lose;
+
+	/* Work around broken SASL implementations. */
+	if (auth_challenge && strncmp (respbuf, "334", 3) == 0)
+		goto broken_smtp_server;
+
+	/* If our authentication data was rejected, destroy the
+	 * password so that the user gets prompted to try again. */
+	if (strncmp (respbuf, "535", 3) == 0)
+		result = CAMEL_AUTHENTICATION_REJECTED;
+	else
+		result = CAMEL_AUTHENTICATION_ACCEPTED;
+
+	/* Catch any other errors. */
+	if (strncmp (respbuf, "235", 3) != 0) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			_("Bad authentication response from server."));
+		goto lose;
+	}
+
+	goto exit;
+
+break_and_lose:
+	/* Get the server out of "waiting for continuation data" mode. */
+	d(fprintf (stderr, "sending : *\n"));
+	camel_stream_write (transport->ostream, "*\r\n", 3, cancellable, NULL);
+	respbuf = camel_stream_buffer_read_line (
+		CAMEL_STREAM_BUFFER (transport->istream), cancellable, NULL);
+	d(fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
+
+lose:
+	result = CAMEL_AUTHENTICATION_ERROR;
+
+exit:
+	camel_operation_pop_message (cancellable);
+
+	g_object_unref (sasl);
+	g_free (respbuf);
+
+	return result;
 }
 
 static GList *
@@ -680,6 +730,7 @@ camel_smtp_transport_class_init (CamelSmtpTransportClass *class)
 	service_class->get_name = smtp_transport_get_name;
 	service_class->connect_sync = smtp_transport_connect_sync;
 	service_class->disconnect_sync = smtp_transport_disconnect_sync;
+	service_class->authenticate_sync = smtp_transport_authenticate_sync;
 	service_class->query_auth_types_sync = smtp_transport_query_auth_types_sync;
 
 	transport_class = CAMEL_TRANSPORT_CLASS (class);
@@ -1110,149 +1161,6 @@ smtp_helo (CamelSmtpTransport *transport,
 	camel_operation_pop_message (cancellable);
 
 	return TRUE;
-}
-
-static gboolean
-smtp_auth (CamelSmtpTransport *transport,
-           CamelSasl *sasl,
-           GCancellable *cancellable,
-           GError **error)
-{
-	CamelService *service;
-	CamelURL *url;
-	gchar *cmdbuf, *respbuf = NULL, *challenge;
-	gboolean auth_challenge = FALSE;
-
-	service = CAMEL_SERVICE (transport);
-	url = camel_service_get_camel_url (service);
-
-	camel_operation_push_message (cancellable, _("SMTP Authentication"));
-
-	challenge = camel_sasl_challenge_base64_sync (
-		sasl, NULL, cancellable, error);
-	if (challenge) {
-		auth_challenge = TRUE;
-		cmdbuf = g_strdup_printf (
-			"AUTH %s %s\r\n", url->authmech, challenge);
-		g_free (challenge);
-	} else {
-		cmdbuf = g_strdup_printf (
-			"AUTH %s\r\n", url->authmech);
-	}
-
-	d(fprintf (stderr, "sending : %s", cmdbuf));
-	if (camel_stream_write_string (
-		transport->ostream, cmdbuf,
-		cancellable, error) == -1) {
-		g_free (cmdbuf);
-		g_prefix_error (error, _("AUTH command failed: "));
-		goto lose;
-	}
-	g_free (cmdbuf);
-
-	respbuf = camel_stream_buffer_read_line (
-		CAMEL_STREAM_BUFFER (transport->istream),
-		cancellable, error);
-
-	while (!camel_sasl_get_authenticated (sasl)) {
-		if (!respbuf) {
-			g_prefix_error (error, _("AUTH command failed: "));
-			transport->connected = FALSE;
-			goto lose;
-		}
-
-		/* the server may have accepted our initial response */
-		if (strncmp (respbuf, "235", 3) == 0)
-			break;
-
-		/* the server challenge/response should follow a 334 code */
-		if (strncmp (respbuf, "334", 3) != 0) {
-			smtp_set_error (
-				transport, respbuf, cancellable, error);
-			g_prefix_error (error, _("AUTH command failed: "));
-			goto lose;
-		}
-
-		if (FALSE) {
-		broken_smtp_server:
-			d(fprintf (stderr, "Your SMTP server's implementation of the %s SASL\n"
-				   "authentication mechanism is broken. Please report this to the\n"
-				   "appropriate vendor and suggest that they re-read rfc2554 again\n"
-				   "for the first time (specifically Section 4).\n",
-				   url->authmech));
-		}
-
-		/* eat whtspc */
-		for (challenge = respbuf + 4; isspace (*challenge); challenge++);
-
-		challenge = camel_sasl_challenge_base64_sync (
-			sasl, challenge, cancellable, error);
-		if (challenge == NULL)
-			goto break_and_lose;
-
-		g_free (respbuf);
-
-		/* send our challenge */
-		cmdbuf = g_strdup_printf ("%s\r\n", challenge);
-		g_free (challenge);
-		d(fprintf (stderr, "sending : %s", cmdbuf));
-		if (camel_stream_write_string (
-			transport->ostream, cmdbuf,
-			cancellable, error) == -1) {
-			g_free (cmdbuf);
-			goto lose;
-		}
-		g_free (cmdbuf);
-
-		/* get the server's response */
-		respbuf = camel_stream_buffer_read_line (
-			CAMEL_STREAM_BUFFER (transport->istream),
-			cancellable, error);
-	}
-
-	if (respbuf == NULL)
-		goto lose;
-
-	/* Work around broken SASL implementations. */
-	if (auth_challenge && strncmp (respbuf, "334", 3) == 0)
-		goto broken_smtp_server;
-
-	/* If our authentication data was rejected, destroy the
-	 * password so that the user gets prompted to try again. */
-	if (strncmp (respbuf, "535", 3) == 0)
-		camel_service_set_password (service, NULL);
-
-	/* Catch any other errors. */
-	if (strncmp (respbuf, "235", 3) != 0) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-			_("Bad authentication response from server."));
-		goto lose;
-	}
-
-	g_object_unref (sasl);
-	camel_operation_pop_message (cancellable);
-
-	g_free (respbuf);
-
-	return TRUE;
-
- break_and_lose:
-	/* Get the server out of "waiting for continuation data" mode. */
-	d(fprintf (stderr, "sending : *\n"));
-	camel_stream_write (transport->ostream, "*\r\n", 3, cancellable, NULL);
-	respbuf = camel_stream_buffer_read_line (
-		CAMEL_STREAM_BUFFER (transport->istream), cancellable, NULL);
-	d(fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
-
- lose:
-	g_object_unref (sasl);
-	camel_operation_pop_message (cancellable);
-
-	g_free (respbuf);
-
-	return FALSE;
 }
 
 static gboolean
