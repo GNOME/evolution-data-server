@@ -207,13 +207,14 @@ connect_to_server (CamelService *service,
 	return FALSE;
 }
 
-static gint
+static CamelAuthenticationResult
 try_sasl (CamelPOP3Store *store,
-          const gchar *mech,
+          const gchar *mechanism,
           GCancellable *cancellable,
           GError **error)
 {
 	CamelPOP3Stream *stream = store->engine->stream;
+	CamelAuthenticationResult result;
 	CamelService *service;
 	CamelURL *url;
 	guchar *line, *resp;
@@ -225,18 +226,16 @@ try_sasl (CamelPOP3Store *store,
 	service = CAMEL_SERVICE (store);
 	url = camel_service_get_camel_url (service);
 
-	sasl = camel_sasl_new ("pop", mech, service);
+	sasl = camel_sasl_new ("pop", mechanism, service);
 	if (sasl == NULL) {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_URL_INVALID,
-			_("Unable to connect to POP server %s: "
-			  "No support for requested authentication mechanism."),
-			url->host);
-		return -1;
+			_("No support for %s authentication"), mechanism);
+		return CAMEL_AUTHENTICATION_ERROR;
 	}
 
-	string = g_strdup_printf ("AUTH %s\r\n", mech);
+	string = g_strdup_printf ("AUTH %s\r\n", mechanism);
 	ret = camel_stream_write_string (
 		CAMEL_STREAM (stream), string, cancellable, error);
 	g_free (string);
@@ -247,25 +246,20 @@ try_sasl (CamelPOP3Store *store,
 	while (1) {
 		if (camel_pop3_stream_line (stream, &line, &len, cancellable, error) == -1)
 			goto ioerror;
-		if (strncmp((gchar *) line, "+OK", 3) == 0)
+
+		if (strncmp ((gchar *) line, "+OK", 3) == 0) {
+			result = CAMEL_AUTHENTICATION_ACCEPTED;
 			break;
-		if (strncmp((gchar *) line, "-ERR", 4) == 0) {
-			gchar *tmp;
-
-			tmp = get_valid_utf8_error (
-				(gchar *) store->engine->line);
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-				/* Translators: Last %s is an optional explanation beginning with ": " separator */
-				_("SASL '%s' Login failed for POP server %s%s"),
-				mech, url->host, (tmp != NULL) ? tmp : "");
-			g_free (tmp);
-
-			goto done;
 		}
-		/* If we dont get continuation, or the sasl object's run out of work, or we dont get a challenge,
-		 * its a protocol error, so fail, and try reset the server */
+
+		if (strncmp ((gchar *) line, "-ERR", 4) == 0) {
+			result = CAMEL_AUTHENTICATION_REJECTED;
+			break;
+		}
+
+		/* If we dont get continuation, or the sasl object's run out
+		 * of work, or we dont get a challenge, its a protocol error,
+		 * so fail, and try reset the server. */
 		if (strncmp((gchar *) line, "+ ", 2) != 0
 		    || camel_sasl_get_authenticated (sasl)
 		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line + 2, cancellable, NULL)) == NULL) {
@@ -278,6 +272,7 @@ try_sasl (CamelPOP3Store *store,
 				_("Cannot login to POP server %s: "
 				  "SASL Protocol error"),
 				url->host);
+			result = CAMEL_AUTHENTICATION_ERROR;
 			goto done;
 		}
 
@@ -292,175 +287,19 @@ try_sasl (CamelPOP3Store *store,
 			goto ioerror;
 
 	}
-	g_object_unref (sasl);
-	return 0;
 
- ioerror:
+	goto done;
+
+ioerror:
 	g_prefix_error (
 		error, _("Failed to authenticate on POP server %s: "),
 		url->host);
+	result = CAMEL_AUTHENTICATION_ERROR;
 
- done:
+done:
 	g_object_unref (sasl);
-	return -1;
-}
 
-static gint
-pop3_try_authenticate (CamelService *service,
-                       gboolean reprompt,
-                       const gchar *errmsg,
-                       GCancellable *cancellable,
-                       GError **error)
-{
-	CamelPOP3Store *store = (CamelPOP3Store *) service;
-	CamelPOP3Command *pcu = NULL, *pcp = NULL;
-	CamelURL *url;
-	const gchar *password;
-	gint status;
-
-	url = camel_service_get_camel_url (service);
-	password = camel_service_get_password (service);
-
-	/* override, testing only */
-	/*printf("Forcing authmech to 'login'\n");
-	url->authmech = g_strdup("LOGIN");*/
-
-	if (password == NULL) {
-		gchar *base_prompt;
-		gchar *full_prompt;
-		gchar *new_passwd;
-		guint32 flags = CAMEL_SESSION_PASSWORD_SECRET;
-
-		if (reprompt)
-			flags |= CAMEL_SESSION_PASSWORD_REPROMPT;
-
-		base_prompt = camel_session_build_password_prompt (
-			"POP", url->user, url->host);
-
-		if (errmsg != NULL)
-			full_prompt = g_strconcat (errmsg, base_prompt, NULL);
-		else
-			full_prompt = g_strdup (base_prompt);
-
-		/* XXX This is a tad awkward.  Maybe define a
-		 *     camel_service_ask_password() that calls
-		 *     camel_session_get_password() and caches
-		 *     the password itself? */
-		new_passwd = camel_session_get_password (
-			camel_service_get_session (service), service,
-			full_prompt, "password", flags, error);
-		camel_service_set_password (service, new_passwd);
-		password = camel_service_get_password (service);
-		g_free (new_passwd);
-
-		g_free (base_prompt);
-		g_free (full_prompt);
-
-		if (password == NULL)
-			return -1;
-	}
-
-	if (!url->authmech) {
-		/* pop engine will take care of pipelining ability */
-		pcu = camel_pop3_engine_command_new (
-			store->engine, 0, NULL, NULL, cancellable, error,
-			"USER %s\r\n", url->user);
-		pcp = camel_pop3_engine_command_new (
-			store->engine, 0, NULL, NULL, cancellable, error,
-			"PASS %s\r\n", password);
-	} else if (strcmp (url->authmech, "+APOP") == 0 && store->engine->apop) {
-		gchar *secret, *md5asc, *d;
-
-		d = store->engine->apop;
-
-		while (*d != '\0') {
-			if (!isascii ((gint) * d)) {
-
-				/* README for Translators: The string APOP should not be translated */
-				g_set_error (
-					error, CAMEL_SERVICE_ERROR,
-					CAMEL_SERVICE_ERROR_URL_INVALID,
-					_("Unable to connect to POP server %s:	"
-					  "Invalid APOP ID received. Impersonation "
-					  "attack suspected. Please contact your admin."),
-					url->host);
-
-				return 0;
-			}
-			d++;
-		}
-
-		secret = g_alloca (strlen (store->engine->apop) + strlen (password) + 1);
-		sprintf(secret, "%s%s",  store->engine->apop, password);
-		md5asc = g_compute_checksum_for_string (G_CHECKSUM_MD5, secret, -1);
-		pcp = camel_pop3_engine_command_new (
-			store->engine, 0, NULL, NULL, cancellable, error,
-			"APOP %s %s\r\n", url->user, md5asc);
-		g_free (md5asc);
-	} else {
-		CamelServiceAuthType *auth;
-		GList *l;
-
-		l = store->engine->auth;
-		while (l) {
-			auth = l->data;
-			if (strcmp (auth->authproto, url->authmech) == 0)
-				return try_sasl (
-					store, url->authmech,
-					cancellable, error);
-			l = l->next;
-		}
-
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_URL_INVALID,
-			_("Unable to connect to POP server %s: "
-			  "No support for requested authentication mechanism."),
-			url->host);
-
-		return 0;
-	}
-
-	while ((status = camel_pop3_engine_iterate (store->engine, pcp, cancellable, error)) > 0)
-		;
-
-	if (status == -1) {
-		g_prefix_error (
-			error,
-			_("Unable to connect to POP server %s.\n"
-			  "Error sending password: "), url->host);
-	} else if (pcu && pcu->state != CAMEL_POP3_COMMAND_OK) {
-		gchar *tmp;
-
-		tmp = get_valid_utf8_error ((gchar *) store->engine->line);
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-			/* Translators: Last %s is an optional explanation beginning with ": " separator */
-			_("Unable to connect to POP server %s.\n"
-			  "Error sending username%s"),
-			url->host, (tmp != NULL) ? tmp : "");
-		g_free (tmp);
-	} else if (pcp->state != CAMEL_POP3_COMMAND_OK) {
-		gchar *tmp;
-
-		tmp = get_valid_utf8_error ((gchar *) store->engine->line);
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-			/* Translators: Last %s is an optional explanation beginning with ": " separator */
-			_("Unable to connect to POP server %s.\n"
-			  "Error sending password%s"),
-			url->host, (tmp != NULL) ? tmp : "");
-		g_free (tmp);
-	}
-
-	camel_pop3_engine_command_free (store->engine, pcp);
-
-	if (pcu)
-		camel_pop3_engine_command_free (store->engine, pcu);
-
-	return status;
+	return result;
 }
 
 static void
@@ -505,12 +344,17 @@ pop3_store_connect_sync (CamelService *service,
                          GError **error)
 {
 	CamelPOP3Store *store = (CamelPOP3Store *) service;
-	gboolean reprompt = FALSE;
+	CamelSession *session;
+	CamelURL *url;
+	const gchar *mechanism;
 	const gchar *user_data_dir;
-	gchar *errbuf = NULL;
-	GError *local_error = NULL;
+	gboolean success;
 
+	session = camel_service_get_session (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
+
+	url = camel_service_get_camel_url (service);
+	mechanism = url->authmech;
 
 	if (store->cache == NULL) {
 		store->cache = camel_data_cache_new (user_data_dir, error);
@@ -525,32 +369,10 @@ pop3_store_connect_sync (CamelService *service,
 	if (!connect_to_server (service, cancellable, error))
 		return FALSE;
 
-	while (1) {
-		pop3_try_authenticate (
-			service, reprompt, errbuf,
-			cancellable, &local_error);
-		g_free (errbuf);
-		errbuf = NULL;
+	success = camel_session_authenticate_sync (
+		session, service, mechanism, cancellable, error);
 
-		/* we only re-prompt if we failed to authenticate,
-		 * any other error and we just abort */
-		if (g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE)) {
-			gchar *tmp = camel_utf8_make_valid (local_error->message);
-			errbuf = g_markup_printf_escaped ("%s\n\n", tmp);
-			g_free (tmp);
-
-			g_clear_error (&local_error);
-
-			camel_service_set_password (service, NULL);
-			reprompt = TRUE;
-		} else
-			break;
-	}
-
-	g_free (errbuf);
-
-	if (local_error != NULL) {
-		g_propagate_error (error, local_error);
+	if (!success) {
 		camel_service_disconnect_sync (service, TRUE, NULL);
 		return FALSE;
 	}
@@ -591,6 +413,142 @@ pop3_store_disconnect_sync (CamelService *service,
 	store->engine = NULL;
 
 	return success;
+}
+
+static CamelAuthenticationResult
+pop3_store_authenticate_sync (CamelService *service,
+                              const gchar *mechanism,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	CamelPOP3Store *store = CAMEL_POP3_STORE (service);
+	CamelAuthenticationResult result;
+	CamelPOP3Command *pcu = NULL;
+	CamelPOP3Command *pcp = NULL;
+	CamelURL *url;
+	const gchar *password;
+	gint status;
+
+	url = camel_service_get_camel_url (service);
+	password = camel_service_get_password (service);
+
+	if (mechanism == NULL) {
+		if (password == NULL) {
+			g_set_error_literal (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("Authentication password not available"));
+			return CAMEL_AUTHENTICATION_ERROR;
+		}
+
+		/* pop engine will take care of pipelining ability */
+		pcu = camel_pop3_engine_command_new (
+			store->engine, 0, NULL, NULL, cancellable, error,
+			"USER %s\r\n", url->user);
+		pcp = camel_pop3_engine_command_new (
+			store->engine, 0, NULL, NULL, cancellable, error,
+			"PASS %s\r\n", password);
+
+	} else if (strcmp (mechanism, "+APOP") == 0 && store->engine->apop) {
+		gchar *secret, *md5asc, *d;
+
+		if (password == NULL) {
+			g_set_error_literal (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+				_("Authentication password not available"));
+			return CAMEL_AUTHENTICATION_ERROR;
+		}
+
+		d = store->engine->apop;
+
+		while (*d != '\0') {
+			if (!isascii ((gint) * d)) {
+
+				/* Translators: Do not translate APOP. */
+				g_set_error (
+					error, CAMEL_SERVICE_ERROR,
+					CAMEL_SERVICE_ERROR_URL_INVALID,
+					_("Unable to connect to POP server %s:	"
+					  "Invalid APOP ID received. Impersonation "
+					  "attack suspected. Please contact your admin."),
+					url->host);
+
+				return CAMEL_AUTHENTICATION_ERROR;
+			}
+			d++;
+		}
+
+		secret = g_alloca (
+			strlen (store->engine->apop) +
+			strlen (password) + 1);
+		sprintf (secret, "%s%s", store->engine->apop, password);
+		md5asc = g_compute_checksum_for_string (
+			G_CHECKSUM_MD5, secret, -1);
+		pcp = camel_pop3_engine_command_new (
+			store->engine, 0, NULL, NULL, cancellable, error,
+			"APOP %s %s\r\n", url->user, md5asc);
+		g_free (md5asc);
+
+	} else {
+		GList *link;
+
+		link = store->engine->auth;
+		while (link != NULL) {
+			CamelServiceAuthType *auth = link->data;
+
+			if (g_strcmp0 (auth->authproto, mechanism) == 0)
+				return try_sasl (
+					store, mechanism,
+					cancellable, error);
+			link = g_list_next (link);
+		}
+
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			_("No support for %s authentication"), mechanism);
+		return CAMEL_AUTHENTICATION_ERROR;
+	}
+
+	while ((status = camel_pop3_engine_iterate (store->engine, pcp, cancellable, error)) > 0)
+		;
+
+	if (status == -1) {
+		g_prefix_error (
+			error,
+			_("Unable to connect to POP server %s.\n"
+			  "Error sending password: "), url->host);
+		result = CAMEL_AUTHENTICATION_ERROR;
+
+	} else if (pcu && pcu->state != CAMEL_POP3_COMMAND_OK) {
+		gchar *tmp;
+
+		/* Abort authentication if the server rejects the user
+		 * name.  Reprompting for a password won't do any good. */
+		tmp = get_valid_utf8_error ((gchar *) store->engine->line);
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			/* Translators: Last %s is an optional explanation
+			 * beginning with ": " separator. */
+			_("Unable to connect to POP server %s.\n"
+			  "Error sending username%s"),
+			url->host, (tmp != NULL) ? tmp : "");
+		g_free (tmp);
+		result = CAMEL_AUTHENTICATION_ERROR;
+
+	} else if (pcp->state != CAMEL_POP3_COMMAND_OK)
+		result = CAMEL_AUTHENTICATION_REJECTED;
+	else
+		result = CAMEL_AUTHENTICATION_ACCEPTED;
+
+	camel_pop3_engine_command_free (store->engine, pcp);
+
+	if (pcu != NULL)
+		camel_pop3_engine_command_free (store->engine, pcu);
+
+	return result;
 }
 
 static GList *
@@ -734,6 +692,7 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 	service_class->get_name = pop3_store_get_name;
 	service_class->connect_sync = pop3_store_connect_sync;
 	service_class->disconnect_sync = pop3_store_disconnect_sync;
+	service_class->authenticate_sync = pop3_store_authenticate_sync;
 	service_class->query_auth_types_sync = pop3_store_query_auth_types_sync;
 
 	store_class = CAMEL_STORE_CLASS (class);
