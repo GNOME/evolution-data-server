@@ -726,7 +726,7 @@ camel_pop3_store_init (CamelPOP3Store *pop3_store)
  **/
 void
 camel_pop3_store_expunge (CamelPOP3Store *store,
-			  GCancellable *cancellable,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	CamelPOP3Command *pc;

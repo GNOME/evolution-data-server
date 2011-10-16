@@ -1183,7 +1183,7 @@ nntp_can_refresh_folder (CamelStore *store,
 }
 
 /* nntp stores part of its data in user_data_dir and part in user_cache_dir,
-   thus check whether to migrate based on folders.db file */
+ * thus check whether to migrate based on folders.db file */
 static void
 nntp_migrate_to_user_cache_dir (CamelService *service)
 {

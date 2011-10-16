@@ -329,3 +329,24 @@ CamelStoreSummary
 @lock: 
 
 
+<!-- ##### FUNCTION camel_store_summary_connect_folder_summary ##### -->
+<para>
+
+</para>
+
+@summary: 
+@path: 
+@folder_summary: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_store_summary_disconnect_folder_summary ##### -->
+<para>
+
+</para>
+
+@summary: 
+@folder_summary: 
+@Returns: 
+
+

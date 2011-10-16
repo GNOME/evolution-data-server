@@ -97,7 +97,7 @@ struct _CamelFolderSummaryPrivate {
 	gboolean build_content;	/* do we try and parse/index the content, or not? */
 
 	GHashTable *uids; /* uids of all known message infos; the 'value' are used flags for the message info */
-	GHashTable *loaded_infos; /* uid->CamelMessageInfo*, those currently in memory */
+	GHashTable *loaded_infos; /* uid->CamelMessageInfo *, those currently in memory */
 
 	struct _CamelFolder *folder; /* parent folder, for events */
 	time_t cache_load_time;
@@ -124,7 +124,7 @@ struct _node {
 	struct _node *next;
 };
 
-static void cfs_schedule_info_release_timer (CamelFolderSummary *s);
+static void cfs_schedule_info_release_timer (CamelFolderSummary *summary);
 
 static struct _node *my_list_append (struct _node **list, struct _node *n);
 static gint my_list_size (struct _node **list);
@@ -134,25 +134,25 @@ static gint summary_header_save (CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static CamelMessageInfo * message_info_new_from_parser (CamelFolderSummary *, CamelMimeParser *);
-static CamelMessageInfo * message_info_new_from_message (CamelFolderSummary *s, CamelMimeMessage *msg, const gchar *bodystructure);
+static CamelMessageInfo * message_info_new_from_message (CamelFolderSummary *summary, CamelMimeMessage *msg, const gchar *bodystructure);
 static CamelMessageInfo * message_info_migrate (CamelFolderSummary *, FILE *);
 static void		  message_info_free (CamelFolderSummary *, CamelMessageInfo *);
 
 static CamelMessageContentInfo * content_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static CamelMessageContentInfo * content_info_new_from_parser (CamelFolderSummary *, CamelMimeParser *);
-static CamelMessageContentInfo * content_info_new_from_message (CamelFolderSummary *s, CamelMimePart *mp);
+static CamelMessageContentInfo * content_info_new_from_message (CamelFolderSummary *summary, CamelMimePart *mp);
 static CamelMessageContentInfo * content_info_migrate (CamelFolderSummary *, FILE *);
 static void			 content_info_free (CamelFolderSummary *, CamelMessageContentInfo *);
 
-static gint save_message_infos_to_db (CamelFolderSummary *s, gboolean fresh_mir, GError **error);
+static gint save_message_infos_to_db (CamelFolderSummary *summary, gboolean fresh_mir, GError **error);
 static gint camel_read_mir_callback (gpointer  ref, gint ncol, gchar ** cols, gchar ** name);
 
-static gchar *next_uid_string (CamelFolderSummary *s);
+static gchar *next_uid_string (CamelFolderSummary *summary);
 
-static CamelMessageContentInfo * summary_build_content_info (CamelFolderSummary *s, CamelMessageInfo *msginfo, CamelMimeParser *mp);
-static CamelMessageContentInfo * summary_build_content_info_message (CamelFolderSummary *s, CamelMessageInfo *msginfo, CamelMimePart *object);
+static CamelMessageContentInfo * summary_build_content_info (CamelFolderSummary *summary, CamelMessageInfo *msginfo, CamelMimeParser *mp);
+static CamelMessageContentInfo * summary_build_content_info_message (CamelFolderSummary *summary, CamelMessageInfo *msginfo, CamelMimePart *object);
 
-static CamelMessageInfo * message_info_from_uid (CamelFolderSummary *s, const gchar *uid);
+static CamelMessageInfo * message_info_from_uid (CamelFolderSummary *summary, const gchar *uid);
 
 enum {
 	PROP_0,
@@ -259,21 +259,21 @@ folder_summary_finalize (GObject *object)
 }
 
 static void
-folder_summary_set_folder (CamelFolderSummary *summary, CamelFolder *folder)
+folder_summary_set_folder (CamelFolderSummary *summary,
+                           CamelFolder *folder)
 {
-	g_return_if_fail (summary != NULL);
-	g_return_if_fail (summary->priv != NULL);
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 	g_return_if_fail (summary->priv->folder == NULL);
 	/* folder can be NULL in certain cases, see maildir-store */
-	
+
 	summary->priv->folder = folder;
 }
 
 static void
 folder_summary_set_property (GObject *object,
-			     guint property_id,
-			     const GValue *value,
-			     GParamSpec *pspec)
+                             guint property_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_FOLDER:
@@ -300,9 +300,9 @@ folder_summary_set_property (GObject *object,
 
 static void
 folder_summary_get_property (GObject *object,
-			     guint property_id,
-			     GValue *value,
-			     GParamSpec *pspec)
+                             guint property_id,
+                             GValue *value,
+                             GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_FOLDER:
@@ -377,8 +377,7 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 	gboolean is_junk_folder = FALSE, is_trash_folder = FALSE;
 	GObject *summary_object;
 
-	g_return_if_fail (summary != NULL);
-	g_return_if_fail (summary->priv != NULL);
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
 	summary_object = G_OBJECT (summary);
 
@@ -443,44 +442,44 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 }
 
 static gboolean
-summary_header_from_db (CamelFolderSummary *s,
+summary_header_from_db (CamelFolderSummary *summary,
                         CamelFIRecord *record)
 {
 	io(printf("Loading header from db \n"));
 
-	s->version = record->version;
+	summary->version = record->version;
 
 	/* We may not worry, as we are setting a new standard here */
 #if 0
 	/* Legacy version check, before version 12 we have no upgrade knowledge */
-	if ((s->version > 0xff) && (s->version & 0xff) < 12) {
+	if ((summary->version > 0xff) && (summary->version & 0xff) < 12) {
 		io(printf ("Summary header version mismatch"));
 		errno = EINVAL;
 		return FALSE;
 	}
 
-	if (!(s->version < 0x100 && s->version >= 13))
+	if (!(summary->version < 0x100 && summary->version >= 13))
 		io(printf("Loading legacy summary\n"));
 	else
 		io(printf("loading new-format summary\n"));
 #endif
 
-	s->flags = record->flags;
-	s->priv->nextuid = record->nextuid;
-	s->time = record->time;
-	s->priv->saved_count = record->saved_count;
+	summary->flags = record->flags;
+	summary->priv->nextuid = record->nextuid;
+	summary->time = record->time;
+	summary->priv->saved_count = record->saved_count;
 
-	s->priv->unread_count = record->unread_count;
-	s->priv->deleted_count = record->deleted_count;
-	s->priv->junk_count = record->junk_count;
-	s->priv->visible_count = record->visible_count;
-	s->priv->junk_not_deleted_count = record->jnd_count;
+	summary->priv->unread_count = record->unread_count;
+	summary->priv->deleted_count = record->deleted_count;
+	summary->priv->junk_count = record->junk_count;
+	summary->priv->visible_count = record->visible_count;
+	summary->priv->junk_not_deleted_count = record->jnd_count;
 
 	return TRUE;
 }
 
 static	CamelFIRecord *
-summary_header_to_db (CamelFolderSummary *s,
+summary_header_to_db (CamelFolderSummary *summary,
                       GError **error)
 {
 	CamelFIRecord * record = g_new0 (CamelFIRecord, 1);
@@ -490,8 +489,8 @@ summary_header_to_db (CamelFolderSummary *s,
 
 	/* Though we are going to read, we do this during write,
 	 * so lets use it that way. */
-	table_name = camel_folder_get_full_name (s->priv->folder);
-	parent_store = camel_folder_get_parent_store (s->priv->folder);
+	table_name = camel_folder_get_full_name (summary->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	db = parent_store->cdb_w;
 
 	io(printf("Savining header to db\n"));
@@ -500,9 +499,9 @@ summary_header_to_db (CamelFolderSummary *s,
 
 	/* we always write out the current version */
 	record->version = CAMEL_FOLDER_SUMMARY_VERSION;
-	record->flags  = s->flags;
-	record->nextuid = s->priv->nextuid;
-	record->time = s->time;
+	record->flags  = summary->flags;
+	record->nextuid = summary->priv->nextuid;
+	record->time = summary->time;
 
 	/* FIXME: Ever heard of Constructors and initializing ? */
 	if (camel_db_count_total_message_info (db, table_name, &(record->saved_count), NULL))
@@ -518,17 +517,17 @@ summary_header_to_db (CamelFolderSummary *s,
 	if (camel_db_count_junk_not_deleted_message_info (db, table_name, &(record->jnd_count), NULL))
 		record->jnd_count = 0;
 
-	s->priv->unread_count = record->unread_count;
-	s->priv->deleted_count = record->deleted_count;
-	s->priv->junk_count = record->junk_count;
-	s->priv->visible_count = record->visible_count;
-	s->priv->junk_not_deleted_count = record->jnd_count;
+	summary->priv->unread_count = record->unread_count;
+	summary->priv->deleted_count = record->deleted_count;
+	summary->priv->junk_count = record->junk_count;
+	summary->priv->visible_count = record->visible_count;
+	summary->priv->junk_not_deleted_count = record->jnd_count;
 
 	return record;
 }
 
 static CamelMessageInfo *
-message_info_from_db (CamelFolderSummary *s,
+message_info_from_db (CamelFolderSummary *summary,
                       CamelMIRecord *record)
 {
 	CamelMessageInfoBase *mi;
@@ -536,7 +535,7 @@ message_info_from_db (CamelFolderSummary *s,
 	gint count;
 	gchar *part, *label;
 
-	mi = (CamelMessageInfoBase *) camel_message_info_new (s);
+	mi = (CamelMessageInfoBase *) camel_message_info_new (summary);
 
 	io(printf("Loading message info from db\n"));
 
@@ -608,7 +607,7 @@ message_info_from_db (CamelFolderSummary *s,
 }
 
 static CamelMIRecord *
-message_info_to_db (CamelFolderSummary *s,
+message_info_to_db (CamelFolderSummary *summary,
                     CamelMessageInfo *info)
 {
 	CamelMIRecord *record = g_new0 (CamelMIRecord, 1);
@@ -687,7 +686,7 @@ message_info_to_db (CamelFolderSummary *s,
 }
 
 static CamelMessageContentInfo *
-content_info_from_db (CamelFolderSummary *s,
+content_info_from_db (CamelFolderSummary *summary,
                       CamelMIRecord *record)
 {
 	CamelMessageContentInfo *ci;
@@ -701,7 +700,7 @@ content_info_from_db (CamelFolderSummary *s,
 	if (!part)
 		return NULL;
 
-	ci = camel_folder_summary_content_info_new (s);
+	ci = camel_folder_summary_content_info_new (summary);
 	if (*part == ' ') part++; /* Move off the space in the record */
 
 	type = bdata_extract_string (&part);
@@ -737,7 +736,7 @@ content_info_from_db (CamelFolderSummary *s,
 }
 
 static gboolean
-content_info_to_db (CamelFolderSummary *s,
+content_info_to_db (CamelFolderSummary *summary,
                     CamelMessageContentInfo *ci,
                     CamelMIRecord *record)
 {
@@ -804,7 +803,7 @@ content_info_to_db (CamelFolderSummary *s,
 }
 
 static gint
-summary_header_save (CamelFolderSummary *s,
+summary_header_save (CamelFolderSummary *summary,
                      FILE *out)
 {
 	gint unread = 0, deleted = 0, junk = 0, i;
@@ -816,13 +815,13 @@ summary_header_save (CamelFolderSummary *s,
 
 	/* we always write out the current version */
 	camel_file_util_encode_fixed_int32 (out, CAMEL_FOLDER_SUMMARY_VERSION);
-	camel_file_util_encode_fixed_int32 (out, s->flags);
-	camel_file_util_encode_fixed_int32 (out, s->priv->nextuid);
-	camel_file_util_encode_time_t (out, s->time);
+	camel_file_util_encode_fixed_int32 (out, summary->flags);
+	camel_file_util_encode_fixed_int32 (out, summary->priv->nextuid);
+	camel_file_util_encode_time_t (out, summary->time);
 
-	known_uids = camel_folder_summary_get_array (s);
+	known_uids = camel_folder_summary_get_array (summary);
 	for (i = 0; known_uids && i < known_uids->len; i++) {
-		CamelMessageInfo *info = camel_folder_summary_get (s, g_ptr_array_index (known_uids, i));
+		CamelMessageInfo *info = camel_folder_summary_get (summary, g_ptr_array_index (known_uids, i));
 		guint32 flags;
 
 		if (info == NULL)
@@ -849,15 +848,15 @@ summary_header_save (CamelFolderSummary *s,
 }
 
 static gboolean
-folder_summary_replace_flags (CamelFolderSummary *summary, CamelMessageInfo *info)
+folder_summary_replace_flags (CamelFolderSummary *summary,
+                              CamelMessageInfo *info)
 {
 	guint32 used_flags;
 	GObject *summary_object;
 	guint32 old_saved_count, old_unread_count, old_deleted_count, old_junk_count;
 	guint32 old_junk_not_deleted_count, old_visible_count;
 
-	g_return_val_if_fail (summary != NULL, FALSE);
-	g_return_val_if_fail (summary->priv != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (info != NULL, FALSE);
 
 	if (!camel_message_info_uid (info) ||
@@ -890,7 +889,7 @@ folder_summary_replace_flags (CamelFolderSummary *summary, CamelMessageInfo *inf
 	folder_summary_update_counts_by_flags (summary, camel_message_info_flags (info), FALSE);
 
 	/* this approach generates false notifications at least for "saved-count",
-	   but is it an issue? I suppose not.
+	 * but is it an issue? I suppose not.
 	*/
 	g_object_thaw_notify (summary_object);
 	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
@@ -904,14 +903,14 @@ folder_summary_replace_flags (CamelFolderSummary *summary, CamelMessageInfo *inf
 }
 
 static CamelMessageInfo *
-message_info_clone (CamelFolderSummary *s,
+message_info_clone (CamelFolderSummary *summary,
                     const CamelMessageInfo *mi)
 {
 	CamelMessageInfoBase *to, *from = (CamelMessageInfoBase *) mi;
 	CamelFlag *flag;
 	CamelTag *tag;
 
-	to = (CamelMessageInfoBase *) camel_message_info_new (s);
+	to = (CamelMessageInfoBase *) camel_message_info_new (summary);
 
 	to->flags = from->flags;
 	to->size = from->size;
@@ -1370,16 +1369,11 @@ camel_folder_summary_new (CamelFolder *folder)
  * Since: 3.4
  **/
 CamelFolder *
-camel_folder_summary_get_folder	(CamelFolderSummary *summary)
+camel_folder_summary_get_folder (CamelFolderSummary *summary)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
 
-	g_return_val_if_fail (summary != NULL, NULL);
-	g_return_val_if_fail (summary->priv != NULL, NULL);
-
-	priv = summary->priv;
-
-	return priv->folder;
+	return summary->priv->folder;
 }
 
 /**
@@ -1393,18 +1387,13 @@ camel_folder_summary_get_folder	(CamelFolderSummary *summary)
 guint32
 camel_folder_summary_get_saved_count (CamelFolderSummary *summary)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), 0);
 
-	g_return_val_if_fail (summary != NULL, 0);
-	g_return_val_if_fail (summary->priv != NULL, 0);
-
-	priv = summary->priv;
-
-	return priv->saved_count;
+	return summary->priv->saved_count;
 }
 
 /**
- * camel_folder_summary_get_saved_count:
+ * camel_folder_summary_get_unread_count:
  * @summary: a #CamelFolderSummary object
  *
  * Returns: Count of unread infos.
@@ -1414,14 +1403,9 @@ camel_folder_summary_get_saved_count (CamelFolderSummary *summary)
 guint32
 camel_folder_summary_get_unread_count (CamelFolderSummary *summary)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), 0);
 
-	g_return_val_if_fail (summary != NULL, 0);
-	g_return_val_if_fail (summary->priv != NULL, 0);
-
-	priv = summary->priv;
-
-	return priv->unread_count;
+	return summary->priv->unread_count;
 }
 
 /**
@@ -1435,14 +1419,9 @@ camel_folder_summary_get_unread_count (CamelFolderSummary *summary)
 guint32
 camel_folder_summary_get_deleted_count (CamelFolderSummary *summary)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), 0);
 
-	g_return_val_if_fail (summary != NULL, 0);
-	g_return_val_if_fail (summary->priv != NULL, 0);
-
-	priv = summary->priv;
-
-	return priv->deleted_count;
+	return summary->priv->deleted_count;
 }
 
 /**
@@ -1456,14 +1435,9 @@ camel_folder_summary_get_deleted_count (CamelFolderSummary *summary)
 guint32
 camel_folder_summary_get_junk_count (CamelFolderSummary *summary)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), 0);
 
-	g_return_val_if_fail (summary != NULL, 0);
-	g_return_val_if_fail (summary->priv != NULL, 0);
-
-	priv = summary->priv;
-
-	return priv->junk_count;
+	return summary->priv->junk_count;
 }
 
 /**
@@ -1477,14 +1451,9 @@ camel_folder_summary_get_junk_count (CamelFolderSummary *summary)
 guint32
 camel_folder_summary_get_junk_not_deleted_count (CamelFolderSummary *summary)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), 0);
 
-	g_return_val_if_fail (summary != NULL, 0);
-	g_return_val_if_fail (summary->priv != NULL, 0);
-
-	priv = summary->priv;
-
-	return priv->junk_not_deleted_count;
+	return summary->priv->junk_not_deleted_count;
 }
 
 /**
@@ -1498,14 +1467,9 @@ camel_folder_summary_get_junk_not_deleted_count (CamelFolderSummary *summary)
 guint32
 camel_folder_summary_get_visible_count (CamelFolderSummary *summary)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), 0);
 
-	g_return_val_if_fail (summary != NULL, 0);
-	g_return_val_if_fail (summary->priv != NULL, 0);
-
-	priv = summary->priv;
-
-	return priv->visible_count;
+	return summary->priv->visible_count;
 }
 
 /**
@@ -1522,20 +1486,15 @@ void
 camel_folder_summary_set_index (CamelFolderSummary *summary,
                                 CamelIndex *index)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
-	g_return_if_fail (summary != NULL);
-	g_return_if_fail (summary->priv != NULL);
-
-	priv = summary->priv;
-
-	if (index)
+	if (index != NULL)
 		g_object_ref (index);
 
-	if (priv->index)
-		g_object_unref (priv->index);
+	if (summary->priv->index != NULL)
+		g_object_unref (summary->priv->index);
 
-	priv->index = index;
+	summary->priv->index = index;
 }
 
 /**
@@ -1549,14 +1508,9 @@ camel_folder_summary_set_index (CamelFolderSummary *summary,
 CamelIndex *
 camel_folder_summary_get_index (CamelFolderSummary *summary)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
 
-	g_return_val_if_fail (summary != NULL, NULL);
-	g_return_val_if_fail (summary->priv != NULL, NULL);
-
-	priv = summary->priv;
-
-	return priv->index;
+	return summary->priv->index;
 }
 
 /**
@@ -1572,17 +1526,12 @@ void
 camel_folder_summary_set_build_content (CamelFolderSummary *summary,
                                         gboolean state)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
-	g_return_if_fail (summary != NULL);
-	g_return_if_fail (summary->priv != NULL);
-
-	priv = summary->priv;
-
-	if ((priv->build_content ? 1 : 0) == (state ? 1 : 0))
+	if ((summary->priv->build_content ? 1 : 0) == (state ? 1 : 0))
 		return;
 
-	priv->build_content = state;
+	summary->priv->build_content = state;
 
 	g_object_notify (G_OBJECT (summary), "build-content");
 }
@@ -1598,14 +1547,9 @@ camel_folder_summary_set_build_content (CamelFolderSummary *summary,
 gboolean
 camel_folder_summary_get_build_content (CamelFolderSummary *summary)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
-	g_return_val_if_fail (summary != NULL, FALSE);
-	g_return_val_if_fail (summary->priv != NULL, FALSE);
-
-	priv = summary->priv;
-
-	return priv->build_content;
+	return summary->priv->build_content;
 }
 
 /**
@@ -1617,14 +1561,9 @@ void
 camel_folder_summary_set_need_preview (CamelFolderSummary *summary,
                                        gboolean preview)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
-	g_return_if_fail (summary != NULL);
-	g_return_if_fail (summary->priv != NULL);
-
-	priv = summary->priv;
-
-	priv->need_preview = preview;
+	summary->priv->need_preview = preview;
 }
 
 /**
@@ -1635,14 +1574,9 @@ camel_folder_summary_set_need_preview (CamelFolderSummary *summary,
 gboolean
 camel_folder_summary_get_need_preview (CamelFolderSummary *summary)
 {
-	CamelFolderSummaryPrivate *priv;
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
-	g_return_val_if_fail (summary != NULL, FALSE);
-	g_return_val_if_fail (summary->priv != NULL, FALSE);
-
-	priv = summary->priv;
-
-	return priv->need_preview;
+	return summary->priv->need_preview;
 }
 
 /**
@@ -1655,16 +1589,16 @@ camel_folder_summary_get_need_preview (CamelFolderSummary *summary)
  * Returns: the next unique uid value
  **/
 guint32
-camel_folder_summary_next_uid (CamelFolderSummary *s)
+camel_folder_summary_next_uid (CamelFolderSummary *summary)
 {
 	guint32 uid;
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	uid = s->priv->nextuid++;
-	camel_folder_summary_touch (s);
+	uid = summary->priv->nextuid++;
+	camel_folder_summary_touch (summary);
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return uid;
 }
@@ -1679,15 +1613,15 @@ camel_folder_summary_next_uid (CamelFolderSummary *s)
  * ensure new uid's do not clash with existing uid's.
  **/
 void
-camel_folder_summary_set_next_uid (CamelFolderSummary *s,
-				   guint32 uid)
+camel_folder_summary_set_next_uid (CamelFolderSummary *summary,
+                                   guint32 uid)
 {
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	s->priv->nextuid = MAX (s->priv->nextuid, uid);
-	camel_folder_summary_touch (s);
+	summary->priv->nextuid = MAX (summary->priv->nextuid, uid);
+	camel_folder_summary_touch (summary);
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
 /**
@@ -1705,8 +1639,7 @@ camel_folder_summary_get_next_uid (CamelFolderSummary *summary)
 {
 	guint32 res;
 
-	g_return_val_if_fail (summary != NULL, 0);
-	g_return_val_if_fail (summary->priv != NULL, 0);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), 0);
 
 	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
@@ -1747,15 +1680,15 @@ camel_folder_summary_next_uid_string (CamelFolderSummary *summary)
  * Set the filename where the summary will be loaded to/saved from.
  **/
 void
-camel_folder_summary_set_filename (CamelFolderSummary *s,
+camel_folder_summary_set_filename (CamelFolderSummary *summary,
                                    const gchar *name)
 {
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	g_free (s->priv->summary_path);
-	s->priv->summary_path = g_strdup (name);
+	g_free (summary->priv->summary_path);
+	summary->priv->summary_path = g_strdup (name);
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
 /**
@@ -1769,15 +1702,14 @@ camel_folder_summary_set_filename (CamelFolderSummary *s,
 guint
 camel_folder_summary_count (CamelFolderSummary *summary)
 {
-	g_return_val_if_fail (summary != NULL, 0);
-	g_return_val_if_fail (summary->priv != NULL, 0);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), 0);
 
 	return g_hash_table_size (summary->priv->uids);
 }
 
 /**
  * camel_folder_summary_check_uid
- * @s: a #CamelFolderSummary object
+ * @summary: a #CamelFolderSummary object
  * @uid: a uid
  *
  * Check if the uid is valid. This isn't very efficient, so it shouldn't be called iteratively.
@@ -1788,26 +1720,27 @@ camel_folder_summary_count (CamelFolderSummary *summary)
  * Since: 2.24
  **/
 gboolean
-camel_folder_summary_check_uid (CamelFolderSummary *s,
+camel_folder_summary_check_uid (CamelFolderSummary *summary,
                                 const gchar *uid)
 {
 	gboolean ret;
 
-	g_return_val_if_fail (s != NULL, FALSE);
-	g_return_val_if_fail (s->priv != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	ret = g_hash_table_lookup_extended (s->priv->uids, uid, NULL, NULL);
+	ret = g_hash_table_lookup_extended (summary->priv->uids, uid, NULL, NULL);
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return ret;
 }
 
 static void
-folder_summary_dupe_uids_to_array (gpointer key_uid, gpointer value_flags, gpointer user_data)
+folder_summary_dupe_uids_to_array (gpointer key_uid,
+                                   gpointer value_flags,
+                                   gpointer user_data)
 {
 	g_ptr_array_add (user_data, (gpointer) camel_pstring_strdup (key_uid));
 }
@@ -1826,19 +1759,18 @@ folder_summary_dupe_uids_to_array (gpointer key_uid, gpointer value_flags, gpoin
  * Since: 3.4
  **/
 GPtrArray *
-camel_folder_summary_get_array (CamelFolderSummary *s)
+camel_folder_summary_get_array (CamelFolderSummary *summary)
 {
 	GPtrArray *res;
 
-	g_return_val_if_fail (s != NULL, NULL);
-	g_return_val_if_fail (s->priv != NULL, NULL);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	res = g_ptr_array_sized_new (g_hash_table_size (s->priv->uids));
-	g_hash_table_foreach (s->priv->uids, folder_summary_dupe_uids_to_array, res);
+	res = g_ptr_array_sized_new (g_hash_table_size (summary->priv->uids));
+	g_hash_table_foreach (summary->priv->uids, folder_summary_dupe_uids_to_array, res);
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return res;
 }
@@ -1852,7 +1784,7 @@ camel_folder_summary_get_array (CamelFolderSummary *s)
  * Since: 3.4
  **/
 void
-camel_folder_summary_free_array	(GPtrArray *array)
+camel_folder_summary_free_array (GPtrArray *array)
 {
 	if (!array)
 		return;
@@ -1867,15 +1799,14 @@ camel_folder_summary_free_array	(GPtrArray *array)
  * Since: 2.26
  **/
 CamelMessageInfo *
-camel_folder_summary_peek_loaded (CamelFolderSummary *s,
-				  const gchar *uid)
+camel_folder_summary_peek_loaded (CamelFolderSummary *summary,
+                                  const gchar *uid)
 {
 	CamelMessageInfo *info;
 
-	g_return_val_if_fail (s != NULL, NULL);
-	g_return_val_if_fail (s->priv != NULL, NULL);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
 
-	info = g_hash_table_lookup (s->priv->loaded_infos, uid);
+	info = g_hash_table_lookup (summary->priv->loaded_infos, uid);
 
 	if (info)
 		camel_message_info_ref (info);
@@ -1890,15 +1821,15 @@ struct _db_pass_data {
 };
 
 static CamelMessageInfo *
-message_info_from_uid (CamelFolderSummary *s,
+message_info_from_uid (CamelFolderSummary *summary,
                        const gchar *uid)
 {
 	CamelMessageInfo *info;
 	gint ret;
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	info = g_hash_table_lookup (s->priv->loaded_infos, uid);
+	info = g_hash_table_lookup (summary->priv->loaded_infos, uid);
 
 	if (!info) {
 		CamelDB *cdb;
@@ -1906,12 +1837,12 @@ message_info_from_uid (CamelFolderSummary *s,
 		const gchar *folder_name;
 		struct _db_pass_data data;
 
-		folder_name = camel_folder_get_full_name (s->priv->folder);
-		parent_store = camel_folder_get_parent_store (s->priv->folder);
+		folder_name = camel_folder_get_full_name (summary->priv->folder);
+		parent_store = camel_folder_get_parent_store (summary->priv->folder);
 		cdb = parent_store->cdb_r;
 
 		data.columns_hash = NULL;
-		data.summary = s;
+		data.summary = summary;
 		data.add = FALSE;
 
 		ret = camel_db_read_message_info_record_with_uid (
@@ -1921,20 +1852,20 @@ message_info_from_uid (CamelFolderSummary *s,
 			g_hash_table_destroy (data.columns_hash);
 
 		if (ret != 0) {
-			camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 			return NULL;
 		}
 
 		/* We would have double reffed at camel_read_mir_callback */
-		info = g_hash_table_lookup (s->priv->loaded_infos, uid);
+		info = g_hash_table_lookup (summary->priv->loaded_infos, uid);
 
-		cfs_schedule_info_release_timer (s);
+		cfs_schedule_info_release_timer (summary);
 	}
 
 	if (info)
 		camel_message_info_ref (info);
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return info;
 }
@@ -1950,10 +1881,12 @@ message_info_from_uid (CamelFolderSummary *s,
  * ref'd or free'd as appropriate.
  *
  * Returns: the summary item, or %NULL if the uid @uid is not available
+ *
+ * Since: 3.4
  **/
 CamelMessageInfo *
 camel_folder_summary_get (CamelFolderSummary *summary,
-			      const gchar *uid)
+                          const gchar *uid)
 {
 	CamelFolderSummaryClass *class;
 
@@ -1967,7 +1900,7 @@ camel_folder_summary_get (CamelFolderSummary *summary,
 }
 
 static CamelMessageContentInfo *
-perform_content_info_load_from_db (CamelFolderSummary *s,
+perform_content_info_load_from_db (CamelFolderSummary *summary,
                                    CamelMIRecord *mir)
 {
 	gint i;
@@ -1975,7 +1908,7 @@ perform_content_info_load_from_db (CamelFolderSummary *s,
 	CamelMessageContentInfo *ci, *pci;
 	gchar *part;
 
-	ci = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->content_info_from_db (s, mir);
+	ci = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->content_info_from_db (summary, mir);
 	if (ci == NULL)
 		return NULL;
 	part = mir->cinfo;
@@ -1986,13 +1919,13 @@ perform_content_info_load_from_db (CamelFolderSummary *s,
 
 	mir->cinfo = part;
 	for (i = 0; i < count; i++) {
-		pci = perform_content_info_load_from_db (s, mir);
+		pci = perform_content_info_load_from_db (summary, mir);
 		if (pci ) {
 			my_list_append ((struct _node **) &ci->childs, (struct _node *) pci);
 			pci->parent = ci;
 		} else {
 			d(fprintf (stderr, "Summary file format messed up?"));
-			camel_folder_summary_content_info_free (s, ci);
+			camel_folder_summary_content_info_free (summary, ci);
 			return NULL;
 		}
 	}
@@ -2001,30 +1934,30 @@ perform_content_info_load_from_db (CamelFolderSummary *s,
 
 /* loads the content descriptions, recursively */
 static CamelMessageContentInfo *
-perform_content_info_migrate (CamelFolderSummary *s,
+perform_content_info_migrate (CamelFolderSummary *summary,
                               FILE *in)
 {
 	gint i;
 	guint32 count;
 	CamelMessageContentInfo *ci, *part;
 
-	ci = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->content_info_migrate (s, in);
+	ci = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->content_info_migrate (summary, in);
 	if (ci == NULL)
 		return NULL;
 
 	if (camel_file_util_decode_uint32 (in, &count) == -1) {
-		camel_folder_summary_content_info_free (s, ci);
+		camel_folder_summary_content_info_free (summary, ci);
 		return NULL;
 	}
 
 	for (i = 0; i < count; i++) {
-		part = perform_content_info_migrate (s, in);
+		part = perform_content_info_migrate (summary, in);
 		if (part) {
 			my_list_append ((struct _node **) &ci->childs, (struct _node *) part);
 			part->parent = ci;
 		} else {
 			d(fprintf (stderr, "Summary file format messed up?"));
-			camel_folder_summary_content_info_free (s, ci);
+			camel_folder_summary_content_info_free (summary, ci);
 			return NULL;
 		}
 	}
@@ -2046,7 +1979,7 @@ append_changed_uids (gchar *key,
  * Since: 2.24
  **/
 GPtrArray *
-camel_folder_summary_get_changed (CamelFolderSummary *s)
+camel_folder_summary_get_changed (CamelFolderSummary *summary)
 {
 	GPtrArray *res = g_ptr_array_new ();
 
@@ -2054,9 +1987,9 @@ camel_folder_summary_get_changed (CamelFolderSummary *s)
 	 * We need to have collate or something to get the modified ones
 	 * from DB and merge */
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	g_hash_table_foreach (s->priv->loaded_infos, (GHFunc) append_changed_uids, res);
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	g_hash_table_foreach (summary->priv->loaded_infos, (GHFunc) append_changed_uids, res);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return res;
 }
@@ -2071,13 +2004,13 @@ count_changed_uids (gchar *key,
 }
 
 static gint
-cfs_count_dirty (CamelFolderSummary *s)
+cfs_count_dirty (CamelFolderSummary *summary)
 {
 	gint count = 0;
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	g_hash_table_foreach (s->priv->loaded_infos, (GHFunc) count_changed_uids, &count);
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	g_hash_table_foreach (summary->priv->loaded_infos, (GHFunc) count_changed_uids, &count);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return count;
 }
@@ -2151,11 +2084,11 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 }
 
 static void
-cfs_schedule_info_release_timer (CamelFolderSummary *s)
+cfs_schedule_info_release_timer (CamelFolderSummary *summary)
 {
-	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (s));
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
-	if (!s->priv->timeout_handle) {
+	if (!summary->priv->timeout_handle) {
 		static gboolean know_can_do = FALSE, can_do = TRUE;
 
 		if (!know_can_do) {
@@ -2165,21 +2098,21 @@ cfs_schedule_info_release_timer (CamelFolderSummary *s)
 
 		/* FIXME[disk-summary] LRU please and not timeouts */
 		if (can_do)
-			s->priv->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, s);
+			summary->priv->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, summary);
 	}
 
 	/* update also cache load time to the actual, to not release something just loaded */
-	s->priv->cache_load_time = time (NULL);
+	summary->priv->cache_load_time = time (NULL);
 }
 
 static gint
-cfs_cache_size (CamelFolderSummary *s)
+cfs_cache_size (CamelFolderSummary *summary)
 {
 	/* FIXME[disk-summary] this is a timely hack. fix it well */
-	if (!CAMEL_IS_VEE_FOLDER (s->priv->folder))
-		return g_hash_table_size (s->priv->loaded_infos);
+	if (!CAMEL_IS_VEE_FOLDER (summary->priv->folder))
+		return g_hash_table_size (summary->priv->loaded_infos);
 	else
-		return g_hash_table_size (s->priv->uids);
+		return g_hash_table_size (summary->priv->uids);
 }
 
 /* Update preview of cached messages */
@@ -2217,7 +2150,7 @@ pick_uids (const gchar *uid,
 
 static void
 copy_all_uids_to_hash (gpointer uid,
-		       gpointer hash)
+                       gpointer hash)
 {
 	g_return_if_fail (uid != NULL);
 
@@ -2287,7 +2220,7 @@ preview_update (CamelSession *session,
 /* end */
 
 static gint
-cfs_reload_from_db (CamelFolderSummary *s,
+cfs_reload_from_db (CamelFolderSummary *summary,
                     GError **error)
 {
 	CamelDB *cdb;
@@ -2301,13 +2234,13 @@ cfs_reload_from_db (CamelFolderSummary *s,
 	 * load better. */
 	d(printf ("\ncamel_folder_summary_reload_from_db called \n"));
 
-	folder_name = camel_folder_get_full_name (s->priv->folder);
-	parent_store = camel_folder_get_parent_store (s->priv->folder);
+	folder_name = camel_folder_get_full_name (summary->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
 	cdb = parent_store->cdb_r;
 
 	data.columns_hash = NULL;
-	data.summary = s;
+	data.summary = summary;
 	data.add = FALSE;
 
 	ret = camel_db_read_message_info_records (
@@ -2317,13 +2250,13 @@ cfs_reload_from_db (CamelFolderSummary *s,
 	if (data.columns_hash)
 		g_hash_table_destroy (data.columns_hash);
 
-	cfs_schedule_info_release_timer (s);
+	cfs_schedule_info_release_timer (summary);
 
-	if (s->priv->need_preview)
+	if (summary->priv->need_preview)
 		camel_session_submit_job (
 			session,
 			(CamelSessionCallback) preview_update,
-			g_object_ref (s->priv->folder),
+			g_object_ref (summary->priv->folder),
 			(GDestroyNotify) g_object_unref);
 
 	return ret == 0 ? 0 : -1;
@@ -2335,17 +2268,17 @@ cfs_reload_from_db (CamelFolderSummary *s,
  * Since: 2.28
  **/
 void
-camel_folder_summary_add_preview (CamelFolderSummary *s,
+camel_folder_summary_add_preview (CamelFolderSummary *summary,
                                   CamelMessageInfo *info)
 {
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	g_hash_table_insert (s->priv->preview_updates, (gchar *) info->uid, ((CamelMessageInfoBase *) info)->preview);
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	g_hash_table_insert (summary->priv->preview_updates, (gchar *) info->uid, ((CamelMessageInfoBase *) info)->preview);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
 /**
  * camel_folder_summary_prepare_fetch_all:
- * @s: #CamelFolderSummary object
+ * @summary: #CamelFolderSummary object
  * @error: return location for a #GError, or %NULL
  *
  * Loads all infos into memory, if they are not yet and ensures
@@ -2356,24 +2289,24 @@ camel_folder_summary_add_preview (CamelFolderSummary *s,
  * Since: 2.32
  **/
 void
-camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s,
+camel_folder_summary_prepare_fetch_all (CamelFolderSummary *summary,
                                         GError **error)
 {
 	guint loaded, known;
 
-	g_return_if_fail (s != NULL);
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
-	loaded = cfs_cache_size (s);
-	known = camel_folder_summary_count (s);
+	loaded = cfs_cache_size (summary);
+	known = camel_folder_summary_count (summary);
 
 	if (known - loaded > 50) {
-		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-		cfs_reload_from_db (s, error);
-		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		cfs_reload_from_db (summary, error);
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	}
 
 	/* update also cache load time, even when not loaded anything */
-	s->priv->cache_load_time = time (NULL);
+	summary->priv->cache_load_time = time (NULL);
 }
 
 /**
@@ -2382,7 +2315,7 @@ camel_folder_summary_prepare_fetch_all (CamelFolderSummary *s,
  * Since: 2.24
  **/
 gboolean
-camel_folder_summary_load_from_db (CamelFolderSummary *s,
+camel_folder_summary_load_from_db (CamelFolderSummary *summary,
                                    GError **error)
 {
 	CamelDB *cdb;
@@ -2391,24 +2324,23 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s,
 	gint ret = 0;
 	GError *local_error = NULL;
 
-	g_return_val_if_fail (s != NULL, FALSE);
-	g_return_val_if_fail (s->priv != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
-	camel_folder_summary_save_to_db (s, NULL);
+	camel_folder_summary_save_to_db (summary, NULL);
 
 	/* struct _db_pass_data data; */
 	d(printf ("\ncamel_folder_summary_load_from_db called \n"));
 
-	full_name = camel_folder_get_full_name (s->priv->folder);
-	parent_store = camel_folder_get_parent_store (s->priv->folder);
-	if (!camel_folder_summary_header_load_from_db (s, parent_store, full_name, error))
+	full_name = camel_folder_get_full_name (summary->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	if (!camel_folder_summary_header_load_from_db (summary, parent_store, full_name, error))
 		return FALSE;
 
 	cdb = parent_store->cdb_r;
 
 	ret = camel_db_get_folder_uids (
-		cdb, full_name, s->sort_by, s->collate,
-		s->priv->uids, &local_error);
+		cdb, full_name, summary->sort_by, summary->collate,
+		summary->priv->uids, &local_error);
 
 	if (local_error != NULL && local_error->message != NULL &&
 		strstr (local_error->message, "no such table") != NULL) {
@@ -2422,8 +2354,8 @@ camel_folder_summary_load_from_db (CamelFolderSummary *s,
 
 static void
 mir_from_cols (CamelMIRecord *mir,
-               CamelFolderSummary *s,
-	       GHashTable **columns_hash,
+               CamelFolderSummary *summary,
+               GHashTable **columns_hash,
                gint ncol,
                gchar **cols,
                gchar **name)
@@ -2525,32 +2457,32 @@ camel_read_mir_callback (gpointer ref,
                          gchar **name)
 {
 	struct _db_pass_data *data = (struct _db_pass_data *) ref;
-	CamelFolderSummary *s = data->summary;
+	CamelFolderSummary *summary = data->summary;
 	CamelMIRecord *mir;
 	CamelMessageInfo *info;
 	gint ret = 0;
 
 	mir = g_new0 (CamelMIRecord , 1);
-	mir_from_cols (mir, s, &data->columns_hash, ncol, cols, name);
+	mir_from_cols (mir, summary, &data->columns_hash, ncol, cols, name);
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	if (!mir->uid || g_hash_table_lookup (s->priv->loaded_infos, mir->uid)) {
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	if (!mir->uid || g_hash_table_lookup (summary->priv->loaded_infos, mir->uid)) {
 		/* Unlock and better return */
-		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		camel_db_camel_mir_free (mir);
 		return ret;
 	}
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	info = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->message_info_from_db (s, mir);
+	info = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->message_info_from_db (summary, mir);
 
 	if (info) {
 
-		if (s->priv->build_content) {
+		if (summary->priv->build_content) {
 			gchar *tmp;
 			tmp = mir->cinfo;
 			/* FIXME: this should be done differently, how i don't know */
-			((CamelMessageInfoBase *) info)->content = perform_content_info_load_from_db (s, mir);
+			((CamelMessageInfoBase *) info)->content = perform_content_info_load_from_db (summary, mir);
 			if (((CamelMessageInfoBase *) info)->content == NULL) {
 				camel_message_info_free (info);
 				info = NULL;
@@ -2566,9 +2498,9 @@ camel_read_mir_callback (gpointer ref,
 		/* Just now we are reading from the DB, it can't be dirty. */
 		((CamelMessageInfoBase *) info)->dirty = FALSE;
 		if (data->add)
-			camel_folder_summary_add (s, info);
+			camel_folder_summary_add (summary, info);
 		else
-			camel_folder_summary_insert (s, info, TRUE);
+			camel_folder_summary_insert (summary, info, TRUE);
 
 	} else {
 		g_warning ("Loading messageinfo from db failed");
@@ -2586,7 +2518,7 @@ camel_read_mir_callback (gpointer ref,
  * Since: 2.24
  **/
 gint
-camel_folder_summary_migrate_infos (CamelFolderSummary *s)
+camel_folder_summary_migrate_infos (CamelFolderSummary *summary)
 {
 	FILE *in;
 	gint i;
@@ -2597,40 +2529,40 @@ camel_folder_summary_migrate_infos (CamelFolderSummary *s)
 	CamelDB *cdb;
 	CamelFIRecord *record;
 
-	parent_store = camel_folder_get_parent_store (s->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
 
 	/* Kick off the gc thread cycle. */
-	if (s->priv->timeout_handle)
-		g_source_remove (s->priv->timeout_handle);
-	s->priv->timeout_handle = 0;
+	if (summary->priv->timeout_handle)
+		g_source_remove (summary->priv->timeout_handle);
+	summary->priv->timeout_handle = 0;
 
 	d(g_print ("\ncamel_folder_summary_load from FLAT FILE called \n"));
 
-	if (s->priv->summary_path == NULL) {
+	if (summary->priv->summary_path == NULL) {
 		g_warning ("No summary path set. Unable to migrate\n");
 		return -1;
 	}
 
-	in = g_fopen (s->priv->summary_path, "rb");
+	in = g_fopen (summary->priv->summary_path, "rb");
 	if (in == NULL)
 		return -1;
 
-	if (CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_load (s, in) == -1)
+	if (CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_load (summary, in) == -1)
 		goto error;
 
 	/* now read in each message ... */
-	for (i = 0; i < s->priv->saved_count; i++) {
+	for (i = 0; i < summary->priv->saved_count; i++) {
 		CamelTag *tag;
 
-		mi = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->message_info_migrate (s, in);
+		mi = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->message_info_migrate (summary, in);
 
 		if (mi == NULL)
 			goto error;
 
 		/* FIXME: this should be done differently, how i don't know */
-		if (s->priv->build_content) {
-			((CamelMessageInfoBase *) mi)->content = perform_content_info_migrate (s, in);
+		if (summary->priv->build_content) {
+			((CamelMessageInfoBase *) mi)->content = perform_content_info_migrate (summary, in);
 			if (((CamelMessageInfoBase *) mi)->content == NULL) {
 				camel_message_info_free (mi);
 				goto error;
@@ -2647,18 +2579,18 @@ camel_folder_summary_migrate_infos (CamelFolderSummary *s)
 		}
 
 		mi->dirty = TRUE;
-		g_hash_table_insert (s->priv->loaded_infos, (gpointer) mi->uid, mi);
+		g_hash_table_insert (summary->priv->loaded_infos, (gpointer) mi->uid, mi);
 	}
 
 	if (fclose (in) != 0)
 		return -1;
 
-	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_to_db (s, NULL);
+	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_to_db (summary, NULL);
 	if (!record) {
 		return -1;
 	}
 
-	ret = save_message_infos_to_db (s, TRUE, NULL);
+	ret = save_message_infos_to_db (summary, TRUE, NULL);
 
 	if (ret != 0) {
 		g_free (record->folder_name);
@@ -2683,7 +2615,7 @@ camel_folder_summary_migrate_infos (CamelFolderSummary *s)
 
 error:
 	if (errno != EINVAL)
-		g_warning ("Cannot load summary file: '%s': %s", s->priv->summary_path, g_strerror (errno));
+		g_warning ("Cannot load summary file: '%s': %s", summary->priv->summary_path, g_strerror (errno));
 
 	fclose (in);
 
@@ -2693,14 +2625,14 @@ error:
 
 /* saves the content descriptions, recursively */
 static gboolean
-perform_content_info_save_to_db (CamelFolderSummary *s,
+perform_content_info_save_to_db (CamelFolderSummary *summary,
                                  CamelMessageContentInfo *ci,
                                  CamelMIRecord *record)
 {
 	CamelMessageContentInfo *part;
 	gchar *oldr;
 
-	if (!CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->content_info_to_db (s, ci, record))
+	if (!CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->content_info_to_db (summary, ci, record))
 		return FALSE;
 
 	oldr = record->cinfo;
@@ -2709,7 +2641,7 @@ perform_content_info_save_to_db (CamelFolderSummary *s,
 
 	part = ci->childs;
 	while (part) {
-		if (perform_content_info_save_to_db (s, part, record) == -1)
+		if (perform_content_info_save_to_db (summary, part, record) == -1)
 			return FALSE;
 		part = part->next;
 	}
@@ -2731,23 +2663,23 @@ save_to_db_cb (gpointer key,
 	SaveToDBArgs *args = (SaveToDBArgs *) data;
 	GError **error = args->error;
 	CamelMessageInfoBase *mi = (CamelMessageInfoBase *) value;
-	CamelFolderSummary *s = (CamelFolderSummary *) mi->summary;
+	CamelFolderSummary *summary = (CamelFolderSummary *) mi->summary;
 	CamelStore *parent_store;
 	const gchar *full_name;
 	CamelDB *cdb;
 	CamelMIRecord *mir;
 
-	full_name = camel_folder_get_full_name (s->priv->folder);
-	parent_store = camel_folder_get_parent_store (s->priv->folder);
+	full_name = camel_folder_get_full_name (summary->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
 
 	if (!args->migration && !mi->dirty)
 		return;
 
-	mir = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->message_info_to_db (s, (CamelMessageInfo *) mi);
+	mir = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->message_info_to_db (summary, (CamelMessageInfo *) mi);
 
-	if (mir && s->priv->build_content) {
-		if (!perform_content_info_save_to_db (s, ((CamelMessageInfoBase *) mi)->content, mir)) {
+	if (mir && summary->priv->build_content) {
+		if (!perform_content_info_save_to_db (summary, ((CamelMessageInfoBase *) mi)->content, mir)) {
 			g_warning ("unable to save mir+cinfo for uid: %s\n", mir->uid);
 			camel_db_camel_mir_free (mir);
 			/* FIXME: Add exception here */
@@ -2785,7 +2717,7 @@ save_to_db_cb (gpointer key,
 }
 
 static gint
-save_message_infos_to_db (CamelFolderSummary *s,
+save_message_infos_to_db (CamelFolderSummary *summary,
                           gboolean fresh_mirs,
                           GError **error)
 {
@@ -2798,22 +2730,22 @@ save_message_infos_to_db (CamelFolderSummary *s,
 	args.migration = fresh_mirs;
 	args.progress = 0;
 
-	full_name = camel_folder_get_full_name (s->priv->folder);
-	parent_store = camel_folder_get_parent_store (s->priv->folder);
+	full_name = camel_folder_get_full_name (summary->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
 
 	if (camel_db_prepare_message_info_table (cdb, full_name, error) != 0)
 		return -1;
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	/* Push MessageInfo-es */
 	camel_db_begin_transaction (cdb, NULL);
-	g_hash_table_foreach (s->priv->loaded_infos, save_to_db_cb, &args);
+	g_hash_table_foreach (summary->priv->loaded_infos, save_to_db_cb, &args);
 	camel_db_end_transaction (cdb, NULL);
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	cfs_schedule_info_release_timer (s);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	cfs_schedule_info_release_timer (summary);
 
 	return 0;
 }
@@ -2839,7 +2771,7 @@ msg_save_preview (const gchar *uid,
  * Since: 2.24
  **/
 gboolean
-camel_folder_summary_save_to_db (CamelFolderSummary *s,
+camel_folder_summary_save_to_db (CamelFolderSummary *summary,
                                  GError **error)
 {
 	CamelStore *parent_store;
@@ -2847,34 +2779,34 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 	CamelFIRecord *record;
 	gint ret, count;
 
-	if (!(s->flags & CAMEL_SUMMARY_DIRTY))
+	if (!(summary->flags & CAMEL_SUMMARY_DIRTY))
 		return TRUE;
 
-	parent_store = camel_folder_get_parent_store (s->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
 
 	d(printf ("\ncamel_folder_summary_save_to_db called \n"));
-	if (s->priv->need_preview && g_hash_table_size (s->priv->preview_updates)) {
-		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	if (summary->priv->need_preview && g_hash_table_size (summary->priv->preview_updates)) {
+		camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 		camel_db_begin_transaction (parent_store->cdb_w, NULL);
-		g_hash_table_foreach (s->priv->preview_updates, (GHFunc) msg_save_preview, s->priv->folder);
-		g_hash_table_remove_all (s->priv->preview_updates);
+		g_hash_table_foreach (summary->priv->preview_updates, (GHFunc) msg_save_preview, summary->priv->folder);
+		g_hash_table_remove_all (summary->priv->preview_updates);
 		camel_db_end_transaction (parent_store->cdb_w, NULL);
 
-		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	}
 
-	s->flags &= ~CAMEL_SUMMARY_DIRTY;
+	summary->flags &= ~CAMEL_SUMMARY_DIRTY;
 
-	count = cfs_count_dirty (s);
+	count = cfs_count_dirty (summary);
 	if (!count)
-		return camel_folder_summary_header_save_to_db (s, error);
+		return camel_folder_summary_header_save_to_db (summary, error);
 
-	ret = save_message_infos_to_db (s, FALSE, error);
+	ret = save_message_infos_to_db (summary, FALSE, error);
 	if (ret != 0) {
 		/* Failed, so lets reset the flag */
-		s->flags |= CAMEL_SUMMARY_DIRTY;
+		summary->flags |= CAMEL_SUMMARY_DIRTY;
 		return FALSE;
 	}
 
@@ -2884,7 +2816,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 		strstr ((*error)->message, "26 columns but 28 values") != NULL) {
 		const gchar *full_name;
 
-		full_name = camel_folder_get_full_name (s->priv->folder);
+		full_name = camel_folder_get_full_name (summary->priv->folder);
 		g_warning ("Fixing up a broken summary migration on %s\n", full_name);
 
 		/* Begin everything again. */
@@ -2892,16 +2824,16 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 		camel_db_reset_folder_version (cdb, full_name, 0, NULL);
 		camel_db_end_transaction (cdb, NULL);
 
-		ret = save_message_infos_to_db (s, FALSE, error);
+		ret = save_message_infos_to_db (summary, FALSE, error);
 		if (ret != 0) {
-			s->flags |= CAMEL_SUMMARY_DIRTY;
+			summary->flags |= CAMEL_SUMMARY_DIRTY;
 			return FALSE;
 		}
 	}
 
-	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_to_db (s, error);
+	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_to_db (summary, error);
 	if (!record) {
-		s->flags |= CAMEL_SUMMARY_DIRTY;
+		summary->flags |= CAMEL_SUMMARY_DIRTY;
 		return FALSE;
 	}
 
@@ -2913,7 +2845,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
 
 	if (ret != 0) {
 		camel_db_abort_transaction (cdb, NULL);
-		s->flags |= CAMEL_SUMMARY_DIRTY;
+		summary->flags |= CAMEL_SUMMARY_DIRTY;
 		return FALSE;
 	}
 
@@ -2928,7 +2860,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *s,
  * Since: 2.24
  **/
 gboolean
-camel_folder_summary_header_save_to_db (CamelFolderSummary *s,
+camel_folder_summary_header_save_to_db (CamelFolderSummary *summary,
                                         GError **error)
 {
 	CamelStore *parent_store;
@@ -2936,12 +2868,12 @@ camel_folder_summary_header_save_to_db (CamelFolderSummary *s,
 	CamelDB *cdb;
 	gint ret;
 
-	parent_store = camel_folder_get_parent_store (s->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
 
 	d(printf ("\ncamel_folder_summary_header_save_to_db called \n"));
 
-	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_to_db (s, error);
+	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_to_db (summary, error);
 	if (!record) {
 		return FALSE;
 	}
@@ -2968,7 +2900,7 @@ camel_folder_summary_header_save_to_db (CamelFolderSummary *s,
  * Since: 2.24
  **/
 gboolean
-camel_folder_summary_header_load_from_db (CamelFolderSummary *s,
+camel_folder_summary_header_load_from_db (CamelFolderSummary *summary,
                                           CamelStore *store,
                                           const gchar *folder_name,
                                           GError **error)
@@ -2979,7 +2911,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *s,
 
 	d(printf ("\ncamel_folder_summary_header_load_from_db called \n"));
 
-	camel_folder_summary_save_to_db (s, NULL);
+	camel_folder_summary_save_to_db (summary, NULL);
 
 	cdb = store->cdb_r;
 
@@ -2987,7 +2919,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *s,
 	camel_db_read_folder_info_record (cdb, folder_name, record, error);
 
 	if (record) {
-		ret = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->summary_header_from_db (s, record);
+		ret = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_from_db (summary, record);
 	} else {
 		ret = FALSE;
 	}
@@ -3000,7 +2932,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *s,
 }
 
 static gboolean
-summary_assign_uid (CamelFolderSummary *s,
+summary_assign_uid (CamelFolderSummary *summary,
                     CamelMessageInfo *info)
 {
 	const gchar *uid;
@@ -3010,13 +2942,13 @@ summary_assign_uid (CamelFolderSummary *s,
 
 	if (uid == NULL || uid[0] == 0) {
 		camel_pstring_free (info->uid);
-		uid = info->uid = (gchar *) camel_pstring_add (camel_folder_summary_next_uid_string (s), TRUE);
+		uid = info->uid = (gchar *) camel_pstring_add (camel_folder_summary_next_uid_string (summary), TRUE);
 	}
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	while ((mi = g_hash_table_lookup (s->priv->loaded_infos, uid))) {
-		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	while ((mi = g_hash_table_lookup (summary->priv->loaded_infos, uid))) {
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 		if (mi == info)
 			return FALSE;
@@ -3024,13 +2956,13 @@ summary_assign_uid (CamelFolderSummary *s,
 		d(printf ("Trying to insert message with clashing uid (%s).  new uid re-assigned", camel_message_info_uid (info)));
 
 		camel_pstring_free (info->uid);
-		uid = info->uid = camel_pstring_add (camel_folder_summary_next_uid_string (s), TRUE);
+		uid = info->uid = camel_pstring_add (camel_folder_summary_next_uid_string (summary), TRUE);
 		camel_message_info_set_flags (info, CAMEL_MESSAGE_FOLDER_FLAGGED, CAMEL_MESSAGE_FOLDER_FLAGGED);
 
-		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	}
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return TRUE;
 }
@@ -3049,38 +2981,37 @@ summary_assign_uid (CamelFolderSummary *s,
  * class.  And MUST NOT be allocated directly using malloc.
  **/
 void
-camel_folder_summary_add (CamelFolderSummary *s,
+camel_folder_summary_add (CamelFolderSummary *summary,
                           CamelMessageInfo *info)
 {
 	CamelMessageInfoBase *base_info;
 
-	g_return_if_fail (s != NULL);
-	g_return_if_fail (s->priv != NULL);
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
 	if (info == NULL)
 		return;
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	if (!summary_assign_uid (s, info)) {
-		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	if (!summary_assign_uid (summary, info)) {
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		return;
 	}
 
 	base_info = (CamelMessageInfoBase *) info;
-	folder_summary_update_counts_by_flags (s, camel_message_info_flags (info), FALSE);
+	folder_summary_update_counts_by_flags (summary, camel_message_info_flags (info), FALSE);
 	base_info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 	base_info->dirty = TRUE;
 
-	g_hash_table_insert (s->priv->uids,
+	g_hash_table_insert (summary->priv->uids,
 		(gpointer) camel_pstring_strdup (camel_message_info_uid (info)),
 		GUINT_TO_POINTER (camel_message_info_flags (info)));
 
 	/* Summary always holds a ref for the loaded infos */
-	g_hash_table_insert (s->priv->loaded_infos, (gpointer) camel_message_info_uid (info), info);
+	g_hash_table_insert (summary->priv->loaded_infos, (gpointer) camel_message_info_uid (info), info);
 
-	s->flags |= CAMEL_SUMMARY_DIRTY;
+	summary->flags |= CAMEL_SUMMARY_DIRTY;
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
 /**
@@ -3089,36 +3020,35 @@ camel_folder_summary_add (CamelFolderSummary *s,
  * Since: 2.24
  **/
 void
-camel_folder_summary_insert (CamelFolderSummary *s,
+camel_folder_summary_insert (CamelFolderSummary *summary,
                              CamelMessageInfo *info,
                              gboolean load)
 {
-	g_return_if_fail (s != NULL);
-	g_return_if_fail (s->priv != NULL);
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
 	if (info == NULL)
 		return;
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	if (!load) {
 		CamelMessageInfoBase *base_info = (CamelMessageInfoBase *) info;
 
-		folder_summary_update_counts_by_flags (s, camel_message_info_flags (info), FALSE);
+		folder_summary_update_counts_by_flags (summary, camel_message_info_flags (info), FALSE);
 		base_info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 		base_info->dirty = TRUE;
 
-		g_hash_table_insert (s->priv->uids,
+		g_hash_table_insert (summary->priv->uids,
 			(gpointer) camel_pstring_strdup (camel_message_info_uid (info)),
 			GUINT_TO_POINTER (camel_message_info_flags (info)));
 
-		s->flags |= CAMEL_SUMMARY_DIRTY;
+		summary->flags |= CAMEL_SUMMARY_DIRTY;
 	}
 
 	/* Summary always holds a ref for the loaded infos */
-	g_hash_table_insert (s->priv->loaded_infos, (gchar *) camel_message_info_uid (info), info);
+	g_hash_table_insert (summary->priv->loaded_infos, (gchar *) camel_message_info_uid (info), info);
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
 /**
@@ -3163,17 +3093,17 @@ camel_folder_summary_add_from_header (CamelFolderSummary *summary,
  * Returns: the newly added record
  **/
 CamelMessageInfo *
-camel_folder_summary_add_from_parser (CamelFolderSummary *s,
+camel_folder_summary_add_from_parser (CamelFolderSummary *summary,
                                       CamelMimeParser *mp)
 {
 	CamelMessageInfo *info;
 
-	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (s), NULL);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
 	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (mp), NULL);
 
-	info = camel_folder_summary_info_new_from_parser (s, mp);
+	info = camel_folder_summary_info_new_from_parser (summary, mp);
 
-	camel_folder_summary_add (s, info);
+	camel_folder_summary_add (summary, info);
 
 	return info;
 }
@@ -3188,12 +3118,12 @@ camel_folder_summary_add_from_parser (CamelFolderSummary *s,
  * Returns: the newly added record
  **/
 CamelMessageInfo *
-camel_folder_summary_add_from_message (CamelFolderSummary *s,
+camel_folder_summary_add_from_message (CamelFolderSummary *summary,
                                        CamelMimeMessage *msg)
 {
-	CamelMessageInfo *info = camel_folder_summary_info_new_from_message (s, msg, NULL);
+	CamelMessageInfo *info = camel_folder_summary_info_new_from_message (summary, msg, NULL);
 
-	camel_folder_summary_add (s, info);
+	camel_folder_summary_add (summary, info);
 
 	return info;
 }
@@ -3244,13 +3174,13 @@ camel_folder_summary_info_new_from_header (CamelFolderSummary *summary,
  * camel_message_info_free()
  **/
 CamelMessageInfo *
-camel_folder_summary_info_new_from_parser (CamelFolderSummary *s,
+camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary,
                                            CamelMimeParser *mp)
 {
 	CamelMessageInfo *info = NULL;
 	gchar *buffer;
 	gsize len;
-	CamelFolderSummaryPrivate *p = s->priv;
+	CamelFolderSummaryPrivate *p = summary->priv;
 	goffset start;
 	CamelIndexName *name = NULL;
 
@@ -3258,16 +3188,16 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *s,
 
 	start = camel_mime_parser_tell (mp);
 	if (camel_mime_parser_step (mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_EOF) {
-		info = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->message_info_new_from_parser (s, mp);
+		info = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->message_info_new_from_parser (summary, mp);
 
 		camel_mime_parser_unstep (mp);
 
 		/* assign a unique uid, this is slightly 'wrong' as we do not really
 		 * know if we are going to store this in the summary, but no matter */
 		if (p->index)
-			summary_assign_uid (s, info);
+			summary_assign_uid (summary, info);
 
-		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
+		camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
 
 		if (p->index) {
 			if (p->filter_index == NULL)
@@ -3278,7 +3208,7 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *s,
 		}
 
 		/* always scan the content info, even if we dont save it */
-		((CamelMessageInfoBase *) info)->content = summary_build_content_info (s, info, mp);
+		((CamelMessageInfoBase *) info)->content = summary_build_content_info (summary, info, mp);
 
 		if (name && p->index) {
 			camel_index_write_name (p->index, name);
@@ -3287,7 +3217,7 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *s,
 				CAMEL_MIME_FILTER_INDEX (p->filter_index), NULL);
 		}
 
-		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
 
 		((CamelMessageInfoBase *) info)->size = camel_mime_parser_tell (mp) - start;
 	}
@@ -3306,22 +3236,22 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *s,
  * camel_message_info_free()
  **/
 CamelMessageInfo *
-camel_folder_summary_info_new_from_message (CamelFolderSummary *s,
+camel_folder_summary_info_new_from_message (CamelFolderSummary *summary,
                                             CamelMimeMessage *msg,
                                             const gchar *bodystructure)
 {
 	CamelMessageInfo *info;
-	CamelFolderSummaryPrivate *p = s->priv;
+	CamelFolderSummaryPrivate *p = summary->priv;
 	CamelIndexName *name = NULL;
 
-	info = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->message_info_new_from_message (s, msg, bodystructure);
+	info = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->message_info_new_from_message (summary, msg, bodystructure);
 
 	/* assign a unique uid, this is slightly 'wrong' as we do not really
 	 * know if we are going to store this in the summary, but we need it set for indexing */
 	if (p->index)
-		summary_assign_uid (s, info);
+		summary_assign_uid (summary, info);
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
 
 	if (p->index) {
 		if (p->filter_index == NULL)
@@ -3339,7 +3269,7 @@ camel_folder_summary_info_new_from_message (CamelFolderSummary *s,
 		}
 	}
 
-	((CamelMessageInfoBase *) info)->content = summary_build_content_info_message (s, info, (CamelMimePart *) msg);
+	((CamelMessageInfoBase *) info)->content = summary_build_content_info_message (summary, info, (CamelMimePart *) msg);
 
 	if (name) {
 		camel_index_write_name (p->index, name);
@@ -3348,7 +3278,7 @@ camel_folder_summary_info_new_from_message (CamelFolderSummary *s,
 			CAMEL_MIME_FILTER_INDEX (p->filter_index), NULL);
 	}
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_FILTER_LOCK);
 
 	return info;
 }
@@ -3361,16 +3291,16 @@ camel_folder_summary_info_new_from_message (CamelFolderSummary *s,
  * Free the content info @ci, and all associated memory.
  **/
 void
-camel_folder_summary_content_info_free (CamelFolderSummary *s,
+camel_folder_summary_content_info_free (CamelFolderSummary *summary,
                                         CamelMessageContentInfo *ci)
 {
 	CamelMessageContentInfo *pw, *pn;
 
 	pw = ci->childs;
-	CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->content_info_free (s, ci);
+	CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->content_info_free (summary, ci);
 	while (pw) {
 		pn = pw->next;
-		camel_folder_summary_content_info_free (s, pw);
+		camel_folder_summary_content_info_free (summary, pw);
 		pw = pn;
 	}
 }
@@ -3383,11 +3313,11 @@ camel_folder_summary_content_info_free (CamelFolderSummary *s,
  * written back to disk.
  **/
 void
-camel_folder_summary_touch (CamelFolderSummary *s)
+camel_folder_summary_touch (CamelFolderSummary *summary)
 {
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	s->flags |= CAMEL_SUMMARY_DIRTY;
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	summary->flags |= CAMEL_SUMMARY_DIRTY;
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
 /**
@@ -3397,7 +3327,8 @@ camel_folder_summary_touch (CamelFolderSummary *s)
  * Empty the summary contents.
  **/
 gboolean
-camel_folder_summary_clear (CamelFolderSummary *s, GError **error)
+camel_folder_summary_clear (CamelFolderSummary *summary,
+                            GError **error)
 {
 	GObject *summary_object;
 	CamelStore *parent_store;
@@ -3405,34 +3336,33 @@ camel_folder_summary_clear (CamelFolderSummary *s, GError **error)
 	const gchar *folder_name;
 	gboolean res;
 
-	g_return_val_if_fail (s != NULL, FALSE);
-	g_return_val_if_fail (s->priv != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	if (camel_folder_summary_count (s) == 0) {
-		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	if (camel_folder_summary_count (summary) == 0) {
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		return TRUE;
 	}
 
-	g_hash_table_remove_all (s->priv->uids);
-	g_hash_table_remove_all (s->priv->loaded_infos);
+	g_hash_table_remove_all (summary->priv->uids);
+	g_hash_table_remove_all (summary->priv->loaded_infos);
 
-	s->priv->saved_count = 0;
-	s->priv->unread_count = 0;
-	s->priv->deleted_count = 0;
-	s->priv->junk_count = 0;
-	s->priv->junk_not_deleted_count = 0;
-	s->priv->visible_count = 0;
+	summary->priv->saved_count = 0;
+	summary->priv->unread_count = 0;
+	summary->priv->deleted_count = 0;
+	summary->priv->junk_count = 0;
+	summary->priv->junk_not_deleted_count = 0;
+	summary->priv->visible_count = 0;
 
-	camel_folder_summary_touch (s);
+	camel_folder_summary_touch (summary);
 
-	folder_name = camel_folder_get_full_name (s->priv->folder);
-	parent_store = camel_folder_get_parent_store (s->priv->folder);
+	folder_name = camel_folder_get_full_name (summary->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
 
 	res = camel_db_clear_folder_summary (cdb, folder_name, error) == 0;
 
-	summary_object = G_OBJECT (s);
+	summary_object = G_OBJECT (summary);
 	g_object_freeze_notify (summary_object);
 	g_object_notify (summary_object, "saved-count");
 	g_object_notify (summary_object, "unread-count");
@@ -3442,7 +3372,7 @@ camel_folder_summary_clear (CamelFolderSummary *s, GError **error)
 	g_object_notify (summary_object, "visible-count");
 	g_object_thaw_notify (summary_object);
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return res;
 }
@@ -3457,14 +3387,13 @@ camel_folder_summary_clear (CamelFolderSummary *s, GError **error)
  * Returns: Whether the @info was found and removed from the @summary.
  **/
 gboolean
-camel_folder_summary_remove (CamelFolderSummary *s,
+camel_folder_summary_remove (CamelFolderSummary *summary,
                              CamelMessageInfo *info)
 {
-	g_return_val_if_fail (s != NULL, FALSE);
-	g_return_val_if_fail (s->priv != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (info != NULL, FALSE);
 
-	if (camel_folder_summary_remove_uid (s, camel_message_info_uid (info))) {
+	if (camel_folder_summary_remove_uid (summary, camel_message_info_uid (info))) {
 		camel_message_info_free (info);
 		return TRUE;
 	}
@@ -3482,7 +3411,7 @@ camel_folder_summary_remove (CamelFolderSummary *s,
  * Returns: Whether the @uid was found and removed from the @summary.
  **/
 gboolean
-camel_folder_summary_remove_uid (CamelFolderSummary *s,
+camel_folder_summary_remove_uid (CamelFolderSummary *summary,
                                  const gchar *uid)
 {
 	gpointer ptr_uid = NULL, ptr_flags = NULL;
@@ -3491,30 +3420,29 @@ camel_folder_summary_remove_uid (CamelFolderSummary *s,
 	const gchar *uid_copy;
 	gboolean res = TRUE;
 
-	g_return_val_if_fail (s != NULL, FALSE);
-	g_return_val_if_fail (s->priv != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	if (!g_hash_table_lookup_extended (s->priv->uids, uid, &ptr_uid, &ptr_flags)) {
-		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	if (!g_hash_table_lookup_extended (summary->priv->uids, uid, &ptr_uid, &ptr_flags)) {
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		return FALSE;
 	}
 
-	folder_summary_update_counts_by_flags (s, GPOINTER_TO_UINT (ptr_flags), TRUE);
+	folder_summary_update_counts_by_flags (summary, GPOINTER_TO_UINT (ptr_flags), TRUE);
 
 	uid_copy = camel_pstring_strdup (uid);
-	g_hash_table_remove (s->priv->uids, uid_copy);
-	g_hash_table_remove (s->priv->loaded_infos, uid_copy);
+	g_hash_table_remove (summary->priv->uids, uid_copy);
+	g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
 
-	full_name = camel_folder_get_full_name (s->priv->folder);
-	parent_store = camel_folder_get_parent_store (s->priv->folder);
+	full_name = camel_folder_get_full_name (summary->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	if (camel_db_delete_uid (parent_store->cdb_w, full_name, uid_copy, NULL) != 0)
 		res = FALSE;
 
 	camel_pstring_free (uid_copy);
 
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return res;
 }
@@ -3708,45 +3636,45 @@ my_list_size (struct _node **list)
 }
 
 static gint
-summary_header_load (CamelFolderSummary *s,
+summary_header_load (CamelFolderSummary *summary,
                      FILE *in)
 {
-	if (!s->priv->summary_path)
+	if (!summary->priv->summary_path)
 		return -1;
 
 	fseek (in, 0, SEEK_SET);
 
 	io(printf("Loading header\n"));
 
-	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &s->version) == -1)
+	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->version) == -1)
 		return -1;
 
 	/* Legacy version check, before version 12 we have no upgrade knowledge */
-	if ((s->version > 0xff) && (s->version & 0xff) < 12) {
+	if ((summary->version > 0xff) && (summary->version & 0xff) < 12) {
 		io(printf ("Summary header version mismatch"));
 		errno = EINVAL;
 		return -1;
 	}
 
-	if (!(s->version < 0x100 && s->version >= 13)) {
+	if (!(summary->version < 0x100 && summary->version >= 13)) {
 		io(printf("Loading legacy summary\n"));
 	} else {
 		io(printf("loading new-format summary\n"));
 	}
 
 	/* legacy version */
-	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &s->flags) == -1
-	    || camel_file_util_decode_fixed_int32 (in, (gint32 *) &s->priv->nextuid) == -1
-	    || camel_file_util_decode_time_t (in, &s->time) == -1
-	    || camel_file_util_decode_fixed_int32 (in, (gint32 *) &s->priv->saved_count) == -1) {
+	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->flags) == -1
+	    || camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->priv->nextuid) == -1
+	    || camel_file_util_decode_time_t (in, &summary->time) == -1
+	    || camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->priv->saved_count) == -1) {
 		return -1;
 	}
 
 	/* version 13 */
-	if (s->version < 0x100 && s->version >= 13
-	    && (camel_file_util_decode_fixed_int32 (in, (gint32 *) &s->priv->unread_count) == -1
-		|| camel_file_util_decode_fixed_int32 (in, (gint32 *) &s->priv->deleted_count) == -1
-		|| camel_file_util_decode_fixed_int32 (in, (gint32 *) &s->priv->junk_count) == -1)) {
+	if (summary->version < 0x100 && summary->version >= 13
+	    && (camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->priv->unread_count) == -1
+		|| camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->priv->deleted_count) == -1
+		|| camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->priv->junk_count) == -1)) {
 		return -1;
 	}
 
@@ -3755,7 +3683,7 @@ summary_header_load (CamelFolderSummary *s,
 
 /* are these even useful for anything??? */
 static CamelMessageInfo *
-message_info_new_from_parser (CamelFolderSummary *s,
+message_info_new_from_parser (CamelFolderSummary *summary,
                               CamelMimeParser *mp)
 {
 	CamelMessageInfo *mi = NULL;
@@ -3766,7 +3694,7 @@ message_info_new_from_parser (CamelFolderSummary *s,
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
-		mi = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->message_info_new_from_header (s, camel_mime_parser_headers_raw (mp));
+		mi = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->message_info_new_from_header (summary, camel_mime_parser_headers_raw (mp));
 		break;
 	default:
 		g_error("Invalid parser state");
@@ -3776,7 +3704,7 @@ message_info_new_from_parser (CamelFolderSummary *s,
 }
 
 static CamelMessageContentInfo *
-content_info_new_from_parser (CamelFolderSummary *s,
+content_info_new_from_parser (CamelFolderSummary *summary,
                               CamelMimeParser *mp)
 {
 	CamelMessageContentInfo *ci = NULL;
@@ -3785,7 +3713,7 @@ content_info_new_from_parser (CamelFolderSummary *s,
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
-		ci = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->content_info_new_from_header (s, camel_mime_parser_headers_raw (mp));
+		ci = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->content_info_new_from_header (summary, camel_mime_parser_headers_raw (mp));
 		if (ci) {
 			ci->type = camel_mime_parser_content_type (mp);
 			camel_content_type_ref (ci->type);
@@ -3799,25 +3727,25 @@ content_info_new_from_parser (CamelFolderSummary *s,
 }
 
 static CamelMessageInfo *
-message_info_new_from_message (CamelFolderSummary *s,
+message_info_new_from_message (CamelFolderSummary *summary,
                                CamelMimeMessage *msg,
                                const gchar *bodystructure)
 {
 	CamelMessageInfo *mi;
 
-	mi = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS (s)))->message_info_new_from_header (s, ((CamelMimePart *) msg)->headers);
+	mi = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS (summary)))->message_info_new_from_header (summary, ((CamelMimePart *) msg)->headers);
 	((CamelMessageInfoBase *) mi)->bodystructure = g_strdup (bodystructure);
 
 	return mi;
 }
 
 static CamelMessageContentInfo *
-content_info_new_from_message (CamelFolderSummary *s,
+content_info_new_from_message (CamelFolderSummary *summary,
                                CamelMimePart *mp)
 {
 	CamelMessageContentInfo *ci;
 
-	ci = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS (s)))->content_info_new_from_header (s, mp->headers);
+	ci = ((CamelFolderSummaryClass *)(CAMEL_OBJECT_GET_CLASS (summary)))->content_info_new_from_header (summary, mp->headers);
 
 	return ci;
 }
@@ -3879,22 +3807,22 @@ summary_format_string (struct _camel_header_raw *h,
  * Returns: a newly allocated #CamelMessageContentInfo
  **/
 CamelMessageContentInfo *
-camel_folder_summary_content_info_new (CamelFolderSummary *s)
+camel_folder_summary_content_info_new (CamelFolderSummary *summary)
 {
 	CamelFolderSummaryClass *class;
 	CamelMessageContentInfo *ci;
 
-	class = CAMEL_FOLDER_SUMMARY_GET_CLASS (s);
+	class = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary);
 
-	camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
 	ci = g_slice_alloc0 (class->content_info_size);
-	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
 
 	return ci;
 }
 
 static CamelMessageInfo *
-message_info_new_from_header (CamelFolderSummary *s,
+message_info_new_from_header (CamelFolderSummary *summary,
                               struct _camel_header_raw *h)
 {
 	const gchar *received, *date, *content, *charset = NULL;
@@ -3910,7 +3838,7 @@ message_info_new_from_header (CamelFolderSummary *s,
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
 	digest = g_alloca (length);
 
-	mi = (CamelMessageInfoBase *) camel_message_info_new (s);
+	mi = (CamelMessageInfoBase *) camel_message_info_new (summary);
 
 	if ((content = camel_header_raw_find(&h, "Content-Type", NULL))
 	     && (ct = camel_content_type_decode (content))
@@ -4003,7 +3931,7 @@ message_info_new_from_header (CamelFolderSummary *s,
 }
 
 static CamelMessageInfo *
-message_info_migrate (CamelFolderSummary *s,
+message_info_migrate (CamelFolderSummary *summary,
                       FILE *in)
 {
 	CamelMessageInfoBase *mi;
@@ -4011,7 +3939,7 @@ message_info_migrate (CamelFolderSummary *s,
 	gint i;
 	gchar *subject, *from, *to, *cc, *mlist, *uid;
 
-	mi = (CamelMessageInfoBase *) camel_message_info_new (s);
+	mi = (CamelMessageInfoBase *) camel_message_info_new (summary);
 
 	io(printf("Loading message info\n"));
 
@@ -4084,19 +4012,19 @@ error:
 }
 
 static void
-message_info_free (CamelFolderSummary *s,
+message_info_free (CamelFolderSummary *summary,
                    CamelMessageInfo *info)
 {
 	CamelFolderSummaryClass *class;
 	CamelMessageInfoBase *mi = (CamelMessageInfoBase *) info;
 
 	if (mi->uid) {
-		if (s) {
-			camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-			if (g_hash_table_lookup (s->priv->loaded_infos, mi->uid) == mi) {
-				g_hash_table_remove (s->priv->loaded_infos, mi->uid);
+		if (summary) {
+			camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			if (g_hash_table_lookup (summary->priv->loaded_infos, mi->uid) == mi) {
+				g_hash_table_remove (summary->priv->loaded_infos, mi->uid);
 			}
-			camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		}
 		camel_pstring_free (mi->uid);
 	}
@@ -4113,21 +4041,21 @@ message_info_free (CamelFolderSummary *s,
 	if (mi->headers)
 		camel_header_param_list_free (mi->headers);
 
-	if (s) {
-		class = CAMEL_FOLDER_SUMMARY_GET_CLASS (s);
+	if (summary) {
+		class = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary);
 		g_slice_free1 (class->message_info_size, mi);
 	} else
 		g_slice_free (CamelMessageInfoBase, mi);
 }
 
 static CamelMessageContentInfo *
-content_info_new_from_header (CamelFolderSummary *s,
+content_info_new_from_header (CamelFolderSummary *summary,
                               struct _camel_header_raw *h)
 {
 	CamelMessageContentInfo *ci;
 	const gchar *charset;
 
-	ci = camel_folder_summary_content_info_new (s);
+	ci = camel_folder_summary_content_info_new (summary);
 
 	charset = camel_iconv_locale_charset ();
 	ci->id = camel_header_msgid_decode (camel_header_raw_find (&h, "content-id", NULL));
@@ -4139,7 +4067,7 @@ content_info_new_from_header (CamelFolderSummary *s,
 }
 
 static CamelMessageContentInfo *
-content_info_migrate (CamelFolderSummary *s,
+content_info_migrate (CamelFolderSummary *summary,
                       FILE *in)
 {
 	CamelMessageContentInfo *ci;
@@ -4149,7 +4077,7 @@ content_info_migrate (CamelFolderSummary *s,
 
 	io(printf("Loading content info\n"));
 
-	ci = camel_folder_summary_content_info_new (s);
+	ci = camel_folder_summary_content_info_new (summary);
 
 	camel_folder_summary_decode_token (in, &type);
 	camel_folder_summary_decode_token (in, &subtype);
@@ -4186,17 +4114,17 @@ content_info_migrate (CamelFolderSummary *s,
 		return ci;
 
  error:
-	camel_folder_summary_content_info_free (s, ci);
+	camel_folder_summary_content_info_free (summary, ci);
 	return NULL;
 }
 
 static void
-content_info_free (CamelFolderSummary *s,
+content_info_free (CamelFolderSummary *summary,
                    CamelMessageContentInfo *ci)
 {
 	CamelFolderSummaryClass *class;
 
-	class = CAMEL_FOLDER_SUMMARY_GET_CLASS (s);
+	class = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary);
 
 	camel_content_type_unref (ci->type);
 	g_free (ci->id);
@@ -4206,9 +4134,9 @@ content_info_free (CamelFolderSummary *s,
 }
 
 static gchar *
-next_uid_string (CamelFolderSummary *s)
+next_uid_string (CamelFolderSummary *summary)
 {
-	return g_strdup_printf("%u", camel_folder_summary_next_uid(s));
+	return g_strdup_printf("%u", camel_folder_summary_next_uid(summary));
 }
 
 /*
@@ -4219,7 +4147,7 @@ next_uid_string (CamelFolderSummary *s)
 
 /* must have filter_lock before calling this function */
 static CamelMessageContentInfo *
-summary_build_content_info (CamelFolderSummary *s,
+summary_build_content_info (CamelFolderSummary *summary,
                             CamelMessageInfo *msginfo,
                             CamelMimeParser *mp)
 {
@@ -4229,7 +4157,7 @@ summary_build_content_info (CamelFolderSummary *s,
 	CamelMessageContentInfo *info = NULL;
 	CamelContentType *ct;
 	gint enc_id = -1, chr_id = -1, html_id = -1, idx_id = -1;
-	CamelFolderSummaryPrivate *p = s->priv;
+	CamelFolderSummaryPrivate *p = summary->priv;
 	CamelMimeFilter *mfc;
 	CamelMessageContentInfo *part;
 	const gchar *calendar_header;
@@ -4239,8 +4167,8 @@ summary_build_content_info (CamelFolderSummary *s,
 	/* start of this part */
 	state = camel_mime_parser_step (mp, &buffer, &len);
 
-	if (s->priv->build_content)
-		info = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->content_info_new_from_parser (s, mp);
+	if (summary->priv->build_content)
+		info = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->content_info_new_from_parser (summary, mp);
 
 	switch (state) {
 	case CAMEL_MIME_PARSER_STATE_HEADER:
@@ -4354,7 +4282,7 @@ summary_build_content_info (CamelFolderSummary *s,
 
 		while (camel_mime_parser_step (mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
 			camel_mime_parser_unstep (mp);
-			part = summary_build_content_info (s, msginfo, mp);
+			part = summary_build_content_info (summary, msginfo, mp);
 			if (part) {
 				part->parent = info;
 				my_list_append ((struct _node **) &info->childs, (struct _node *) part);
@@ -4366,7 +4294,7 @@ summary_build_content_info (CamelFolderSummary *s,
 		/* update attachments flag as we go */
 		camel_message_info_set_flags (msginfo, CAMEL_MESSAGE_ATTACHMENTS, CAMEL_MESSAGE_ATTACHMENTS);
 
-		part = summary_build_content_info (s, msginfo, mp);
+		part = summary_build_content_info (summary, msginfo, mp);
 		if (part) {
 			part->parent = info;
 			my_list_append ((struct _node **) &info->childs, (struct _node *) part);
@@ -4387,19 +4315,19 @@ summary_build_content_info (CamelFolderSummary *s,
 /* build the content-info, from a message */
 /* this needs the filter lock since it uses filters to perform indexing */
 static CamelMessageContentInfo *
-summary_build_content_info_message (CamelFolderSummary *s,
+summary_build_content_info_message (CamelFolderSummary *summary,
                                     CamelMessageInfo *msginfo,
                                     CamelMimePart *object)
 {
 	CamelDataWrapper *containee;
 	gint parts, i;
-	CamelFolderSummaryPrivate *p = s->priv;
+	CamelFolderSummaryPrivate *p = summary->priv;
 	CamelMessageContentInfo *info = NULL, *child;
 	CamelContentType *ct;
 	const struct _camel_header_raw *header;
 
-	if (s->priv->build_content)
-		info = CAMEL_FOLDER_SUMMARY_GET_CLASS (s)->content_info_new_from_message (s, object);
+	if (summary->priv->build_content)
+		info = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->content_info_new_from_message (summary, object);
 
 	containee = camel_medium_get_content (CAMEL_MEDIUM (object));
 
@@ -4449,7 +4377,7 @@ summary_build_content_info_message (CamelFolderSummary *s,
 		for (i = 0; i < parts; i++) {
 			CamelMimePart *part = camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
 			g_assert (part);
-			child = summary_build_content_info_message (s, msginfo, part);
+			child = summary_build_content_info_message (summary, msginfo, part);
 			if (child) {
 				child->parent = info;
 				my_list_append ((struct _node **) &info->childs, (struct _node *) child);
@@ -4457,7 +4385,7 @@ summary_build_content_info_message (CamelFolderSummary *s,
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
 		/* for messages we only look at its contents */
-		child = summary_build_content_info_message (s, msginfo, (CamelMimePart *) containee);
+		child = summary_build_content_info_message (summary, msginfo, (CamelMimePart *) containee);
 		if (child) {
 			child->parent = info;
 			my_list_append ((struct _node **) &info->childs, (struct _node *) child);
@@ -4872,22 +4800,22 @@ camel_system_flag_get (CamelMessageFlags flags,
  * Returns: a new #CamelMessageInfo
  **/
 gpointer
-camel_message_info_new (CamelFolderSummary *s)
+camel_message_info_new (CamelFolderSummary *summary)
 {
 	CamelFolderSummaryClass *class;
 	CamelMessageInfo *info;
 
-	if (s) {
-		camel_folder_summary_lock (s, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
-		class = CAMEL_FOLDER_SUMMARY_GET_CLASS (s);
+	if (summary) {
+		camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
+		class = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary);
 		info = g_slice_alloc0 (class->message_info_size);
-		camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_ALLOC_LOCK);
 	} else {
 		info = g_slice_alloc0 (sizeof (CamelMessageInfoBase));
 	}
 
 	info->refcount = 1;
-	info->summary = s;
+	info->summary = summary;
 
 	/* We assume that mi is always dirty unless freshly read or just saved*/
 	((CamelMessageInfoBase *) info)->dirty = TRUE;

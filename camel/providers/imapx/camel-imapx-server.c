@@ -1281,7 +1281,8 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *imap,
 }
 
 static gchar *
-imapx_get_uid_from_index (CamelFolderSummary *summary, guint id)
+imapx_get_uid_from_index (CamelFolderSummary *summary,
+                          guint id)
 {
 	GPtrArray *array;
 	gchar *uid;

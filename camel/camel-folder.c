@@ -3251,10 +3251,10 @@ camel_folder_get_message_sync (CamelFolder *folder,
 
 	if (class->get_message_cached) {
 		/* Return cached message, if available locally; this should not do any
-		   network I/O, only check if message is already downloaded and return
-		   it quicker, not being blocked by the folder's lock.
-		   Returning NULL is not considered as an error, it just means that
-		   the message is still to-be-downloaded.
+		 * network I/O, only check if message is already downloaded and return
+		 * it quicker, not being blocked by the folder's lock.
+		 * Returning NULL is not considered as an error, it just means that
+		 * the message is still to-be-downloaded.
 		*/
 		message = class->get_message_cached (
 			folder, message_uid, cancellable);

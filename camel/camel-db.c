@@ -1087,9 +1087,9 @@ read_uids_callback (gpointer ref_array,
 
 static gint
 read_uids_to_hash_callback (gpointer ref_hash,
-			    gint ncol,
-			    gchar **cols,
-			    gchar **name)
+                            gint ncol,
+                            gchar **cols,
+                            gchar **name)
 {
 	GHashTable *hash = ref_hash;
 
@@ -2454,14 +2454,21 @@ static struct _known_column_names {
 
 /**
  * camel_db_get_column_ident:
- * Traverses column name from index @index into an enum #CamelDBKnownColumnNames value;
- * The @col_names contains @ncols columns. First time this is called is created
- * the @hash from col_names indexes into the enum, and this is reused for every other call.
- * The function expects that column names are returned always in the same order.
- * When all rows are read the @hash table can be freed with g_hash_table_destroy().
+ *
+ * Traverses column name from index @index into an enum
+ * #CamelDBKnownColumnNames value.  The @col_names contains @ncols columns.
+ * First time this is called is created the @hash from col_names indexes into
+ * the enum, and this is reused for every other call.  The function expects
+ * that column names are returned always in the same order.  When all rows
+ * are read the @hash table can be freed with g_hash_table_destroy().
+ *
+ * Since: 3.4
  **/
 CamelDBKnownColumnNames
-camel_db_get_column_ident (GHashTable **hash, gint index, gint ncols, gchar **col_names)
+camel_db_get_column_ident (GHashTable **hash,
+                           gint index,
+                           gint ncols,
+                           gchar **col_names)
 {
 	gpointer value = NULL;
 

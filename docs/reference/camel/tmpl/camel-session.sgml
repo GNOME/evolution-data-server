@@ -91,6 +91,15 @@ CamelSession
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_session_get_user_cache_dir ##### -->
+<para>
+
+</para>
+
+@session: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_session_get_socks_proxy ##### -->
 <para>
 

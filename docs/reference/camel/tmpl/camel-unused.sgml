@@ -3293,6 +3293,17 @@ streams
 </para>
 
 
+<!-- ##### STRUCT CamelFolderMetaSummary ##### -->
+<para>
+
+</para>
+
+@major: 
+@minor: 
+@uid_len: 
+@msg_expunged: 
+@path: 
+
 <!-- ##### STRUCT CamelGroupwiseFolder ##### -->
 <para>
 
@@ -5525,6 +5536,14 @@ streams
 @folder: 
 @name: 
 
+<!-- ##### FUNCTION camel_folder_summary_array ##### -->
+<para>
+
+</para>
+
+@summary: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_folder_summary_array_free ##### -->
 <para>
 
@@ -5541,6 +5560,13 @@ streams
 @s: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_folder_summary_clear_db ##### -->
+<para>
+
+</para>
+
+@s: 
+
 <!-- ##### FUNCTION camel_folder_summary_ensure_infos_loaded ##### -->
 <para>
 
@@ -5550,12 +5576,27 @@ streams
 @at_least: 
 @ex: 
 
+<!-- ##### FUNCTION camel_folder_summary_free_hashtable ##### -->
+<para>
+
+</para>
+
+@ht: 
+
 <!-- ##### FUNCTION camel_folder_summary_get_flag_cache ##### -->
 <para>
 
 </para>
 
 @summary: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_summary_get_hashtable ##### -->
+<para>
+
+</para>
+
+@s: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_folder_summary_header_load ##### -->
@@ -5566,12 +5607,30 @@ streams
 @summary: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_folder_summary_index ##### -->
+<para>
+
+</para>
+
+@summary: 
+@index: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_folder_summary_load ##### -->
 <para>
 
 </para>
 
 @summary: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_summary_peek_info ##### -->
+<para>
+
+</para>
+
+@s: 
+@uid: 
 @Returns: 
 
 <!-- ##### FUNCTION camel_folder_summary_reload_from_db ##### -->
@@ -5583,6 +5642,39 @@ streams
 @ex: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_folder_summary_remove_index ##### -->
+<para>
+
+</para>
+
+@summary: 
+@index: 
+
+<!-- ##### FUNCTION camel_folder_summary_remove_index_fast ##### -->
+<para>
+
+</para>
+
+@s: 
+@index: 
+
+<!-- ##### FUNCTION camel_folder_summary_remove_range ##### -->
+<para>
+
+</para>
+
+@summary: 
+@start: 
+@end: 
+
+<!-- ##### FUNCTION camel_folder_summary_remove_uid_fast ##### -->
+<para>
+
+</para>
+
+@s: 
+@uid: 
+
 <!-- ##### FUNCTION camel_folder_summary_save ##### -->
 <para>
 
@@ -5590,6 +5682,41 @@ streams
 
 @summary: 
 @Returns: 
+
+<!-- ##### FUNCTION camel_folder_summary_set_uid ##### -->
+<para>
+
+</para>
+
+@summary: 
+@uid: 
+
+<!-- ##### FUNCTION camel_folder_summary_uid ##### -->
+<para>
+
+</para>
+
+@summary: 
+@uid: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_summary_uid_from_index ##### -->
+<para>
+
+</para>
+
+@s: 
+@i: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_folder_summary_update_counts_by_flags ##### -->
+<para>
+
+</para>
+
+@summary: 
+@flags: 
+@subtract: 
 
 <!-- ##### FUNCTION camel_folder_summary_update_flag_cache ##### -->
 <para>

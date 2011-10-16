@@ -93,7 +93,8 @@ camel_pop3_engine_init (CamelPOP3Engine *engine)
 }
 
 static gint
-read_greeting (CamelPOP3Engine *pe, GCancellable *cancellable)
+read_greeting (CamelPOP3Engine *pe,
+               GCancellable *cancellable)
 {
 	guchar *line, *apop, *apopend;
 	guint len;
@@ -130,7 +131,7 @@ read_greeting (CamelPOP3Engine *pe, GCancellable *cancellable)
 CamelPOP3Engine *
 camel_pop3_engine_new (CamelStream *source,
                        guint32 flags,
-		       GCancellable *cancellable)
+                       GCancellable *cancellable)
 {
 	CamelPOP3Engine *pe;
 
@@ -158,7 +159,8 @@ camel_pop3_engine_new (CamelStream *source,
  * Regets server capabilities (needed after a STLS command is issued for example).
  **/
 void
-camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine, GCancellable *cancellable)
+camel_pop3_engine_reget_capabilities (CamelPOP3Engine *engine,
+                                      GCancellable *cancellable)
 {
 	g_return_if_fail (CAMEL_IS_POP3_ENGINE (engine));
 
@@ -181,7 +183,7 @@ static struct {
 static void
 cmd_capa (CamelPOP3Engine *pe,
           CamelPOP3Stream *stream,
-	  GCancellable *cancellable,
+          GCancellable *cancellable,
           gpointer data)
 {
 	guchar *line, *tok, *next;
@@ -222,7 +224,8 @@ cmd_capa (CamelPOP3Engine *pe,
 }
 
 static void
-get_capabilities (CamelPOP3Engine *pe, GCancellable *cancellable)
+get_capabilities (CamelPOP3Engine *pe,
+                  GCancellable *cancellable)
 {
 	CamelPOP3Command *pc;
 

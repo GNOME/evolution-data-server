@@ -144,6 +144,15 @@ CamelService
 @Returns: 
 
 
+<!-- ##### FUNCTION camel_service_get_user_cache_dir ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+
 <!-- ##### FUNCTION camel_service_get_name ##### -->
 <para>
 

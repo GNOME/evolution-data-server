@@ -1100,7 +1100,9 @@ camel_store_summary_unlock (CamelStoreSummary *summary,
 }
 
 static void
-store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary, GParamSpec *param, CamelStoreSummary *summary)
+store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary,
+                                            GParamSpec *param,
+                                            CamelStoreSummary *summary)
 {
 	const gchar *path;
 	CamelStoreInfo *si;
@@ -1142,17 +1144,21 @@ store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary, 
  * @path: used path for @folder_summary
  * @folder_summary: a #CamelFolderSummary object
  *
- * Connects listeners for count changes on @folder_summary to keep CamelStoreInfo.total
- * and CamelStoreInfo.unread in sync transparently. The @folder_summary is stored
- * in @summary as @path. Use camel_store_summary_disconnect_folder_summary()
- * to disconnect from listening.
+ * Connects listeners for count changes on @folder_summary to keep
+ * CamelStoreInfo.total and CamelStoreInfo.unread in sync transparently.
+ * The @folder_summary is stored in @summary as @path. Use
+ * camel_store_summary_disconnect_folder_summary() to disconnect from
+ * listening.
  *
- * Returns: Whether successfully connect callbacks for count change notifications.
+ * Returns: Whether successfully connect callbacks for count change
+ * notifications.
  *
  * Since: 3.4
  **/
 gboolean
-camel_store_summary_connect_folder_summary (CamelStoreSummary *summary, const gchar *path, CamelFolderSummary *folder_summary)
+camel_store_summary_connect_folder_summary (CamelStoreSummary *summary,
+                                            const gchar *path,
+                                            CamelFolderSummary *folder_summary)
 {
 	CamelStoreInfo *si;
 
@@ -1195,12 +1201,14 @@ camel_store_summary_connect_folder_summary (CamelStoreSummary *summary, const gc
  * Diconnects count change listeners previously connected
  * by camel_store_summary_connect_folder_summary().
  *
- * Returns: Whether such connection existed and whether was successfully removed.
+ * Returns: Whether such connection existed and whether was successfully
+ * removed.
  *
  * Since: 3.4
  **/
 gboolean
-camel_store_summary_disconnect_folder_summary (CamelStoreSummary *summary, CamelFolderSummary *folder_summary)
+camel_store_summary_disconnect_folder_summary (CamelStoreSummary *summary,
+                                               CamelFolderSummary *folder_summary)
 {
 	g_return_val_if_fail (summary != NULL, FALSE);
 	g_return_val_if_fail (summary->priv != NULL, FALSE);

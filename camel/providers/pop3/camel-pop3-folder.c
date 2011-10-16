@@ -42,7 +42,7 @@ G_DEFINE_TYPE (CamelPOP3Folder, camel_pop3_folder, CAMEL_TYPE_FOLDER)
 static void
 cmd_uidl (CamelPOP3Engine *pe,
           CamelPOP3Stream *stream,
-	  GCancellable *cancellable,
+          GCancellable *cancellable,
           gpointer data)
 {
 	gint ret;
@@ -76,7 +76,7 @@ cmd_uidl (CamelPOP3Engine *pe,
 static void
 cmd_builduid (CamelPOP3Engine *pe,
               CamelPOP3Stream *stream,
-	      GCancellable *cancellable,
+              GCancellable *cancellable,
               gpointer data)
 {
 	GChecksum *checksum;
@@ -124,7 +124,7 @@ cmd_builduid (CamelPOP3Engine *pe,
 static void
 cmd_list (CamelPOP3Engine *pe,
           CamelPOP3Stream *stream,
-	  GCancellable *cancellable,
+          GCancellable *cancellable,
           gpointer data)
 {
 	gint ret;
@@ -158,7 +158,7 @@ cmd_list (CamelPOP3Engine *pe,
 static void
 cmd_tocache (CamelPOP3Engine *pe,
              CamelPOP3Stream *stream,
-	     GCancellable *cancellable,
+             GCancellable *cancellable,
              gpointer data)
 {
 	CamelPOP3FolderInfo *fi = data;

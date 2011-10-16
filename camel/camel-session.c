@@ -210,7 +210,7 @@ session_set_user_data_dir (CamelSession *session,
 
 static void
 session_set_user_cache_dir (CamelSession *session,
-			    const gchar *user_cache_dir)
+                            const gchar *user_cache_dir)
 {
 	g_return_if_fail (user_cache_dir != NULL);
 	g_return_if_fail (session->priv->user_cache_dir == NULL);
@@ -1569,7 +1569,7 @@ camel_session_unlock (CamelSession *session,
  */
 void
 camel_session_get_socks_proxy (CamelSession *session,
-			       const gchar *for_host,
+                               const gchar *for_host,
                                gchar **host_ret,
                                gint *port_ret)
 {

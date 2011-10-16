@@ -38,3 +38,20 @@ camel
 @void: 
 
 
+<!-- ##### ENUM CamelFetchHeadersType ##### -->
+<para>
+
+</para>
+
+@CAMEL_FETCH_HEADERS_BASIC: 
+@CAMEL_FETCH_HEADERS_BASIC_AND_MAILING_LIST: 
+@CAMEL_FETCH_HEADERS_ALL: 
+
+<!-- ##### ENUM CamelSortType ##### -->
+<para>
+
+</para>
+
+@CAMEL_SORT_ASCENDING: 
+@CAMEL_SORT_DESCENDING: 
+

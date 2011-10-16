@@ -200,6 +200,11 @@ typedef struct _CamelFIRecord {
 
 typedef struct _CamelDB CamelDB;
 
+/**
+ * CamelDBKnownColumnNames:
+ *
+ * Since: 3.4
+ **/
 typedef enum {
 	CAMEL_DB_COLUMN_UNKNOWN = -1,
 	CAMEL_DB_COLUMN_ATTACHMENT,

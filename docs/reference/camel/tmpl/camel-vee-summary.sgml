@@ -32,7 +32,7 @@ CamelVeeSummary
 </para>
 
 @info: 
-@summary: 
+@orig_summary: 
 @old_flags: 
 
 <!-- ##### FUNCTION camel_vee_summary_new ##### -->

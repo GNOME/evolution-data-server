@@ -305,7 +305,6 @@ GType			camel_folder_summary_get_type	(void);
 CamelFolderSummary *	camel_folder_summary_new	(struct _CamelFolder *folder);
 
 struct _CamelFolder *	camel_folder_summary_get_folder	(CamelFolderSummary *summary);
-CamelFolderSummaryFlags	camel_folder_summary_get_flags	(CamelFolderSummary *summary);
 
 guint32			camel_folder_summary_get_saved_count
 							(CamelFolderSummary *summary);
@@ -343,20 +342,20 @@ gchar *			camel_folder_summary_next_uid_string
 							(CamelFolderSummary *summary);
 
 /* load/save the full summary from/to the db */
-gboolean		camel_folder_summary_save_to_db	(CamelFolderSummary *s,
+gboolean		camel_folder_summary_save_to_db	(CamelFolderSummary *summary,
 							 GError **error);
 gboolean		camel_folder_summary_load_from_db
-							(CamelFolderSummary *s,
+							(CamelFolderSummary *summary,
 							 GError **error);
 
 /* only load the header */
 gboolean		camel_folder_summary_header_load_from_db
-							(CamelFolderSummary *s,
+							(CamelFolderSummary *summary,
 							 struct _CamelStore *store,
 							 const gchar *folder_name,
 							 GError **error);
 gboolean		camel_folder_summary_header_save_to_db
-							(CamelFolderSummary *s,
+							(CamelFolderSummary *summary,
 							 GError **error);
 
 /* set the dirty bit on the summary */
@@ -381,12 +380,12 @@ void			camel_folder_summary_content_info_free
 							 CamelMessageContentInfo *ci);
 
 void			camel_folder_summary_add_preview
-							(CamelFolderSummary *s,
+							(CamelFolderSummary *summary,
 							 CamelMessageInfo *info);
 
 /* Migration code */
 gint			camel_folder_summary_migrate_infos
-							(CamelFolderSummary *s);
+							(CamelFolderSummary *summary);
 
 /* build/add raw summary items */
 CamelMessageInfo *	camel_folder_summary_add_from_header
@@ -404,7 +403,7 @@ void			camel_folder_summary_add	(CamelFolderSummary *summary,
 							 CamelMessageInfo *info);
 
 /* insert mi to summary */
-void			camel_folder_summary_insert	(CamelFolderSummary *s,
+void			camel_folder_summary_insert	(CamelFolderSummary *summary,
 							 CamelMessageInfo *info,
 							 gboolean load);
 
@@ -421,7 +420,7 @@ gboolean		camel_folder_summary_clear	(CamelFolderSummary *summary,
 /* lookup functions */
 guint			camel_folder_summary_count	(CamelFolderSummary *summary);
 
-gboolean		camel_folder_summary_check_uid	(CamelFolderSummary *s,
+gboolean		camel_folder_summary_check_uid	(CamelFolderSummary *summary,
 							 const gchar *uid);
 CamelMessageInfo *	camel_folder_summary_get	(CamelFolderSummary *summary,
 							 const gchar *uid);
@@ -430,16 +429,16 @@ void			camel_folder_summary_free_array	(GPtrArray *array);
 
 /* Peek from mem only */
 CamelMessageInfo *	camel_folder_summary_peek_loaded
-							(CamelFolderSummary *s,
+							(CamelFolderSummary *summary,
 							 const gchar *uid);
 
 /* Get only the uids of dirty/changed things to sync to server/db */
 GPtrArray *		camel_folder_summary_get_changed
-							(CamelFolderSummary *s);
+							(CamelFolderSummary *summary);
 
 /* reload the summary at any required point if required */
 void			camel_folder_summary_prepare_fetch_all
-							(CamelFolderSummary *s,
+							(CamelFolderSummary *summary,
 							 GError **error);
 
 /* summary locking */
@@ -566,7 +565,10 @@ gboolean		camel_message_info_set_user_tag	(CamelMessageInfo *mi,
 							 const gchar *id,
 							 const gchar *val);
 
-const CamelMessageContentInfo * camel_folder_summary_guess_content_info (CamelMessageInfo *mi, CamelContentType *ctype);
+const CamelMessageContentInfo *
+			camel_folder_summary_guess_content_info
+							(CamelMessageInfo *mi,
+							 CamelContentType *ctype);
 
 /* Deprecated */
 void			camel_folder_summary_set_filename
