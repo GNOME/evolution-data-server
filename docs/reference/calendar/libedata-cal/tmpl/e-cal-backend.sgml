@@ -162,6 +162,18 @@ Base class for calendar/tasks backend implementations.
 @cache_dir: 
 
 
+<!-- ##### FUNCTION e_cal_backend_create_cache_filename ##### -->
+<para>
+
+</para>
+
+@backend: 
+@uid: 
+@filename: 
+@fileindex: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_cal_backend_add_client ##### -->
 <para>
 

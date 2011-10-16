@@ -420,7 +420,7 @@ func_occur_in_time_range (ESExp *esexp,
 					    "occur-in-time-range");
 			return NULL;
 		}
-		
+
 		default_zone = resolve_tzid (argv[2]->value.string, ctx);
 	}
 
@@ -442,9 +442,9 @@ func_occur_in_time_range (ESExp *esexp,
 
 static gboolean
 count_instances_time_range_cb (ECalComponent *comp,
-			       time_t instance_start,
-			       time_t instance_end,
-			       gpointer data)
+                               time_t instance_start,
+                               time_t instance_end,
+                               gpointer data)
 {
 	SearchContext *ctx = data;
 
@@ -1578,7 +1578,6 @@ e_cal_backend_sexp_new (const gchar *text)
 
 		ctx->expr_range_set = e_sexp_evaluate_occur_times (sexp->priv->search_sexp, &ctx->expr_range_start, &ctx->expr_range_end);
 	}
-		
 
 	return sexp;
 }

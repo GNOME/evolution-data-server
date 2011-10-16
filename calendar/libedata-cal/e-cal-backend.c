@@ -459,7 +459,10 @@ e_cal_backend_set_cache_dir (ECalBackend *backend,
  * Since: 3.4
  **/
 gchar *
-e_cal_backend_create_cache_filename (ECalBackend *backend, const gchar *uid, const gchar *filename, gint fileindex)
+e_cal_backend_create_cache_filename (ECalBackend *backend,
+                                     const gchar *uid,
+                                     const gchar *filename,
+                                     gint fileindex)
 {
 	g_return_val_if_fail (backend != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
