@@ -1,3 +1,47 @@
+Evolution-Data-Server 3.2.1 2011-10-17
+--------------------------------------
+
+Bug Fixes:
+	Bug 620382 - Do not delete also directory for custom local calendars
+	             (Milan Crha)
+	Bug 659438 - Checks junk in all folders despite restricting to INBOX
+	             (Milan Crha)
+	Bug 659553 - Fix e_vcard_unescape_string (Alexander Larsson)
+	Bug 659568 - One day delay in calendar view (Milan Crha)
+	Bug 659914 - e_book_get_changes: Fix crash caused by unref of a NULL
+	             pointer (Christophe Dumez)
+	Bug 660246 - EBookBackendSqliteDB: Bad loop iteration
+	             (Christophe Dumez)
+	Bug 660533 - Missing GOA cflags/libs in libedata-book (Cosimo Cecchi)
+	Bug 660615 - Make POP3 provider more cancellable ready (Milan Crha)
+	Bug 660829 - Allow 'Mark as read' in right click menu on spam folder
+	             (Milan Crha)
+	Bug 661432 - 'Any field contains' search doesn't work in contact view
+	             (Milan Crha)
+
+Translations:
+	Alexander Shopov (bg)
+	Gil Forcada (ca)
+	Carles Ferrando (ca@calencia)
+	Jiri Eischmann (cs)
+	Mario Blättermann (de)
+	Daniel Mustieles (es)
+	Inaki Larranaga Murgoitio (eu)
+	Alexandre Franke (fr)
+	Fran Dieguez (gl)
+	Gabor Kelemen (hu)
+	Algimantas Margevičius (lt)
+	Rudolfs Mazurs (lv)
+	Piotr Drąg (pl)
+	Duarte Loreto (pt)
+	Djavan Fagundes (pt_BR)
+	Yuri Myasoedov (ru)
+	Matej Urbančič (sl)
+	Daniel Nylander (sv)
+	Nguyễn Thái Ngọc Duy (vi)
+	YunQiang Su (zh_CN)
+
+
 Evolution-Data-Server 3.2.0 2011-09-26
 --------------------------------------
 
