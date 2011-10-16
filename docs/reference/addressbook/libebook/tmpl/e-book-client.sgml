@@ -220,6 +220,43 @@ EBookClient
 @Returns: 
 
 
+<!-- ##### FUNCTION e_book_client_add_contacts ##### -->
+<para>
+
+</para>
+
+@client: 
+@contacts: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION e_book_client_add_contacts_finish ##### -->
+<para>
+
+</para>
+
+@client: 
+@result: 
+@added_uids: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_client_add_contacts_sync ##### -->
+<para>
+
+</para>
+
+@client: 
+@contacts: 
+@added_uids: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_book_client_modify_contact ##### -->
 <para>
 
@@ -250,6 +287,41 @@ EBookClient
 
 @client: 
 @contact: 
+@cancellable: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_client_modify_contacts ##### -->
+<para>
+
+</para>
+
+@client: 
+@contacts: 
+@cancellable: 
+@callback: 
+@user_data: 
+
+
+<!-- ##### FUNCTION e_book_client_modify_contacts_finish ##### -->
+<para>
+
+</para>
+
+@client: 
+@result: 
+@error: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_book_client_modify_contacts_sync ##### -->
+<para>
+
+</para>
+
+@client: 
+@contacts: 
 @cancellable: 
 @error: 
 @Returns: 

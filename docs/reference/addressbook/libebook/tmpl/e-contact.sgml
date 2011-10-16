@@ -917,6 +917,16 @@ The URI of the contact's calendar.
 @Returns: 
 
 
+<!-- ##### FUNCTION e_contact_new_from_vcard_with_uid ##### -->
+<para>
+
+</para>
+
+@vcard: 
+@uid: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_contact_duplicate ##### -->
 <para>
 

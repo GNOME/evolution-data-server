@@ -46,6 +46,25 @@ Does the low-level parsing work for contact information. This data is more conve
 </para>
 
 
+<!-- ##### FUNCTION e_vcard_construct ##### -->
+<para>
+
+</para>
+
+@evc: 
+@str: 
+
+
+<!-- ##### FUNCTION e_vcard_construct_with_uid ##### -->
+<para>
+
+</para>
+
+@evc: 
+@str: 
+@uid: 
+
+
 <!-- ##### FUNCTION e_vcard_new ##### -->
 <para>
 
@@ -367,6 +386,16 @@ Does the low-level parsing work for contact information. This data is more conve
 
 
 <!-- ##### FUNCTION e_vcard_get_attribute ##### -->
+<para>
+
+</para>
+
+@evc: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_vcard_get_attribute_if_parsed ##### -->
 <para>
 
 </para>

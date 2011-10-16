@@ -1513,7 +1513,7 @@ e_book_client_add_contacts_finish (EBookClient *client,
  * Since: 3.4
  **/
 gboolean
-e_book_client_add_contacts_sync	(EBookClient *client,
+e_book_client_add_contacts_sync (EBookClient *client,
                                  /* const */ GSList *contacts,
                                  GSList **added_uids,
                                  GCancellable *cancellable,
@@ -1533,7 +1533,7 @@ e_book_client_add_contacts_sync	(EBookClient *client,
 
 	array = contact_slist_to_utf8_vcard_array (contacts);
 
-	res = e_client_proxy_call_sync_strv__strv (E_CLIENT (client), (const gchar * const*) array, &out_uids, cancellable, error, e_gdbus_book_call_add_contacts_sync);
+	res = e_client_proxy_call_sync_strv__strv (E_CLIENT (client), (const gchar * const *) array, &out_uids, cancellable, error, e_gdbus_book_call_add_contacts_sync);
 
 	if (res && out_uids && added_uids) {
 		*added_uids = e_client_util_strv_to_slist ((const gchar * const*) out_uids);
@@ -1743,7 +1743,7 @@ e_book_client_modify_contacts_sync (EBookClient *client,
 
 	array = contact_slist_to_utf8_vcard_array (contacts);
 
-	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const*) array, cancellable, error, e_gdbus_book_call_modify_contacts_sync);
+	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const *) array, cancellable, error, e_gdbus_book_call_modify_contacts_sync);
 
 	g_strfreev (array);
 

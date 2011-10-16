@@ -1321,9 +1321,12 @@ e_contact_new_from_vcard (const gchar *vcard)
  * Creates a new #EContact based on a vcard and a predefined UID.
  *
  * Returns: A new #EContact.
+ *
+ * Since: 3.4
  **/
 EContact *
-e_contact_new_from_vcard_with_uid (const gchar *vcard, const gchar *uid)
+e_contact_new_from_vcard_with_uid (const gchar *vcard,
+                                   const gchar *uid)
 {
 	EContact *contact;
 	g_return_val_if_fail (vcard != NULL, NULL);
@@ -1618,9 +1621,9 @@ e_contact_get (EContact *contact,
 	}
 	else if (info->t & E_CONTACT_FIELD_TYPE_STRING) {
 		EVCardAttribute *attr;
-		const char *cv = NULL;
+		const gchar *cv = NULL;
 		GList *v = NULL;
-		
+
 		/* Do our best to avoid vcard parsing by not calling
 		 * e_vcard_get_attributes */
 

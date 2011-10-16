@@ -668,11 +668,3 @@ Data sent back to the e-book object.
 
 @Returns: 
 
-<!-- ##### FUNCTION e_vcard_construct ##### -->
-<para>
-
-</para>
-
-@evc: 
-@str: 
-

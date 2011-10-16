@@ -142,9 +142,15 @@ e_book_client_is_self
 e_book_client_add_contact
 e_book_client_add_contact_finish
 e_book_client_add_contact_sync
+e_book_client_add_contacts
+e_book_client_add_contacts_finish
+e_book_client_add_contacts_sync
 e_book_client_modify_contact
 e_book_client_modify_contact_finish
 e_book_client_modify_contact_sync
+e_book_client_modify_contacts
+e_book_client_modify_contacts_finish
+e_book_client_modify_contacts_sync
 e_book_client_remove_contact
 e_book_client_remove_contact_finish
 e_book_client_remove_contact_sync
@@ -215,6 +221,7 @@ EContactDate
 EContactCert
 e_contact_new
 e_contact_new_from_vcard
+e_contact_new_from_vcard_with_uid
 e_contact_duplicate
 e_contact_get
 e_contact_get_const
@@ -280,6 +287,8 @@ EVCard
 EVCardFormat
 EVCardAttribute
 EVCardAttributeParam
+e_vcard_construct
+e_vcard_construct_with_uid
 e_vcard_new
 e_vcard_new_from_string
 e_vcard_to_string
@@ -316,6 +325,7 @@ e_vcard_attribute_param_remove_values
 e_vcard_attribute_param_get_name
 e_vcard_attribute_param_get_values
 e_vcard_get_attribute
+e_vcard_get_attribute_if_parsed
 e_vcard_get_attributes
 e_vcard_attribute_get_group
 e_vcard_attribute_get_name
@@ -411,7 +421,6 @@ e_vcard_attribute_get_type
 e_vcard_attribute_param_get_type
 <SUBSECTION Private>
 EVCardPrivate
-e_vcard_construct
 </SECTION>
 
 <SECTION>

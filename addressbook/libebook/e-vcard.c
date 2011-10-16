@@ -649,10 +649,10 @@ parse (EVCard *evc,
 
 			if (g_ascii_strcasecmp (next_attr->name, "end") == 0)
 				break;
-			
+
 			if (ignore_uid && g_ascii_strcasecmp (attr->name, EVC_UID) == 0)
 				continue;
-				
+
 			e_vcard_add_attribute (evc, next_attr);
 		}
 	}
@@ -785,6 +785,13 @@ e_vcard_construct (EVCard *evc,
 	e_vcard_construct_with_uid (evc, str, NULL);
 }
 
+/**
+ * e_vcard_construct_with_uid:
+ *
+ * FIXME: Document me!
+ *
+ * Since: 3.4
+ **/
 void
 e_vcard_construct_with_uid (EVCard *evc,
                             const gchar *str,
@@ -798,7 +805,7 @@ e_vcard_construct_with_uid (EVCard *evc,
 	/* Lazy construction */
 	if (*str)
 		evc->priv->vcard = g_strdup (str);
-		
+
 	/* Add UID attribute */
 	if (uid) {
 		EVCardAttribute *attr;
@@ -1241,9 +1248,9 @@ e_vcard_append_attribute (EVCard *evc,
 {
 	g_return_if_fail (E_IS_VCARD (evc));
 	g_return_if_fail (attr != NULL);
-	
+
 	/* Handle UID special case:
-	   No need to parse the vcard to append an UID attribute */
+	 * No need to parse the vcard to append an UID attribute */
 	if (evc->priv->vcard != NULL && g_strcmp0 (attr->name, EVC_UID) == 0) {
 		evc->priv->attributes = g_list_append (evc->priv->attributes, attr);
 	} else {
@@ -1321,9 +1328,9 @@ e_vcard_add_attribute (EVCard *evc,
 {
 	g_return_if_fail (E_IS_VCARD (evc));
 	g_return_if_fail (attr != NULL);
-	
+
 	/* Handle UID special case:
-	   No need to parse the vcard to append an UID attribute */
+	 * No need to parse the vcard to append an UID attribute */
 	if (evc->priv->vcard != NULL && g_strcmp0 (attr->name, EVC_UID) == 0) {
 		evc->priv->attributes = g_list_prepend (evc->priv->attributes, attr);
 	} else {
@@ -1933,7 +1940,7 @@ e_vcard_get_attribute (EVCard *evc,
 
 	g_return_val_if_fail (E_IS_VCARD (evc), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
-	
+
 	/* Handle UID special case */
 	if (evc->priv->vcard != NULL && g_ascii_strcasecmp (name, EVC_UID) == 0) {
 		for (l = evc->priv->attributes; l != NULL; l = l->next) {
@@ -1962,6 +1969,8 @@ e_vcard_get_attribute (EVCard *evc,
  * parse the vcard if not already parsed.
  *
  * Returns: (transfer none): An #EVCardAttribute if found, or #NULL.
+ *
+ * Since: 3.4
  **/
 EVCardAttribute *
 e_vcard_get_attribute_if_parsed (EVCard *evc,
@@ -1969,16 +1978,16 @@ e_vcard_get_attribute_if_parsed (EVCard *evc,
 {
 	GList *l;
 	EVCardAttribute *attr;
-	
+
 	g_return_val_if_fail (E_IS_VCARD (evc), NULL);
 	g_return_val_if_fail (name != NULL, NULL);
-	
+
 	for (l = evc->priv->attributes; l != NULL; l = l->next) {
 		attr = (EVCardAttribute *) l->data;
 		if (g_ascii_strcasecmp (attr->name, name) == 0)
 			return attr;
 	}
-	
+
 	return NULL;
 }
 

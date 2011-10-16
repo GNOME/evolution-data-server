@@ -2386,8 +2386,8 @@ e_book_get_changes (EBook *book,
 
 	e_return_error_if_fail (
 		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
-	
-	if (error) {	
+
+	if (error) {
 		*error = g_error_new (E_BOOK_ERROR, E_BOOK_ERROR_NOT_SUPPORTED, "Not supported");
 	}
 
