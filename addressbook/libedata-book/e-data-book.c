@@ -1011,6 +1011,13 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
 	}
 }
 
+/**
+ * e_data_book_respond_create_contacts:
+ *
+ * FIXME: Document me!
+ *
+ * Since: 3.4
+ **/
 void
 e_data_book_respond_create_contacts (EDataBook *book,
                                      guint32 opid,
@@ -1049,6 +1056,13 @@ e_data_book_respond_create_contacts (EDataBook *book,
 	}
 }
 
+/**
+ * e_data_book_respond_modify_contacts:
+ *
+ * FIXME: Document me!
+ *
+ * Since: 3.4
+ **/
 void
 e_data_book_respond_modify_contacts (EDataBook *book,
                                      guint32 opid,

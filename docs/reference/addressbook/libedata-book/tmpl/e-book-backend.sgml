@@ -236,7 +236,7 @@ EBookBackend
 @cancellable: 
 
 
-<!-- ##### FUNCTION e_book_backend_create_contact ##### -->
+<!-- ##### FUNCTION e_book_backend_create_contacts ##### -->
 <para>
 
 </para>
@@ -245,7 +245,7 @@ EBookBackend
 @book: 
 @opid: 
 @cancellable: 
-@vcard: 
+@vcards: 
 
 
 <!-- ##### FUNCTION e_book_backend_remove_contacts ##### -->
@@ -260,7 +260,7 @@ EBookBackend
 @id_list: 
 
 
-<!-- ##### FUNCTION e_book_backend_modify_contact ##### -->
+<!-- ##### FUNCTION e_book_backend_modify_contacts ##### -->
 <para>
 
 </para>
@@ -269,7 +269,7 @@ EBookBackend
 @book: 
 @opid: 
 @cancellable: 
-@vcard: 
+@vcards: 
 
 
 <!-- ##### FUNCTION e_book_backend_get_contact ##### -->
@@ -494,9 +494,9 @@ EBookBackend
 @remove: 
 @authenticate_user: 
 @refresh: 
-@create_contact: 
+@create_contacts: 
 @remove_contacts: 
-@modify_contact: 
+@modify_contacts: 
 @get_contact: 
 @get_contact_list: 
 @get_contact_list_uids: 

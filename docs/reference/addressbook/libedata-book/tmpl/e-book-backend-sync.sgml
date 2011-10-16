@@ -97,7 +97,7 @@ EBookBackendSync
 @Returns: 
 
 
-<!-- ##### FUNCTION e_book_backend_sync_create_contact ##### -->
+<!-- ##### FUNCTION e_book_backend_sync_create_contacts ##### -->
 <para>
 
 </para>
@@ -105,8 +105,8 @@ EBookBackendSync
 @backend: 
 @book: 
 @cancellable: 
-@vcard: 
-@contact: 
+@vcards: 
+@added_contacts: 
 @error: 
 
 
@@ -123,7 +123,7 @@ EBookBackendSync
 @error: 
 
 
-<!-- ##### FUNCTION e_book_backend_sync_modify_contact ##### -->
+<!-- ##### FUNCTION e_book_backend_sync_modify_contacts ##### -->
 <para>
 
 </para>
@@ -131,8 +131,8 @@ EBookBackendSync
 @backend: 
 @book: 
 @cancellable: 
-@vcard: 
-@contact: 
+@vcards: 
+@modified_contacts: 
 @error: 
 
 

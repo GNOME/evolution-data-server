@@ -71,6 +71,8 @@ e_book_backend_sync_open (EBookBackendSync *backend,
  * @error: #GError to set, when something fails
  *
  * Creates new contacts with the contents of @vcards in @backend.
+ *
+ * Since: 3.4
  **/
 void
 e_book_backend_sync_create_contacts (EBookBackendSync *backend,
@@ -245,6 +247,8 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
  *
  * Modifies the contacts specified by the IDs embedded in @vcards, to
  * reflect the full contents of @vcards.
+ *
+ * Since: 3.4
  **/
 void
 e_book_backend_sync_modify_contacts (EBookBackendSync *backend,

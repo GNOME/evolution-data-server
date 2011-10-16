@@ -239,7 +239,7 @@ notify_change (EDataBookView *view,
 
 	utf8_vcard = e_util_utf8_make_valid (vcard);
 	utf8_id = e_util_utf8_make_valid (id);
-	
+
 	g_array_append_val (priv->changes, utf8_vcard);
 	g_array_append_val (priv->changes, utf8_id);
 

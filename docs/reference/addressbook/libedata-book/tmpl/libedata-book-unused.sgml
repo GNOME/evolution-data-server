@@ -312,6 +312,17 @@ e-data-book-types
 @backend: 
 @Returns: 
 
+<!-- ##### FUNCTION e_book_backend_create_contact ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@cancellable: 
+@vcard: 
+
 <!-- ##### FUNCTION e_book_backend_factory_get_protocol ##### -->
 <para>
 
@@ -431,6 +442,17 @@ e-data-book-types
 @only_if_exists: 
 @error: 
 
+<!-- ##### FUNCTION e_book_backend_modify_contact ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@opid: 
+@cancellable: 
+@vcard: 
+
 <!-- ##### FUNCTION e_book_backend_notify_connection_status ##### -->
 <para>
 
@@ -479,6 +501,18 @@ e-data-book-types
 @backend: 
 @is_online: 
 
+<!-- ##### FUNCTION e_book_backend_sync_create_contact ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@cancellable: 
+@vcard: 
+@contact: 
+@error: 
+
 <!-- ##### FUNCTION e_book_backend_sync_get_changes ##### -->
 <para>
 
@@ -523,6 +557,18 @@ e-data-book-types
 @opid: 
 @fields: 
 @perror: 
+
+<!-- ##### FUNCTION e_book_backend_sync_modify_contact ##### -->
+<para>
+
+</para>
+
+@backend: 
+@book: 
+@cancellable: 
+@vcard: 
+@contact: 
+@error: 
 
 <!-- ##### FUNCTION e_data_book_factory_activate ##### -->
 <para>
@@ -644,6 +690,16 @@ e-data-book-types
 @opid: 
 @error: 
 
+<!-- ##### FUNCTION e_data_book_respond_create ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+@contact: 
+
 <!-- ##### FUNCTION e_data_book_respond_get_book_view ##### -->
 <para>
 
@@ -693,6 +749,16 @@ e-data-book-types
 @opid: 
 @error: 
 @fields: 
+
+<!-- ##### FUNCTION e_data_book_respond_modify ##### -->
+<para>
+
+</para>
+
+@book: 
+@opid: 
+@error: 
+@contact: 
 
 <!-- ##### FUNCTION e_data_book_view_get_listener ##### -->
 <para>

@@ -115,26 +115,26 @@ e_book_backend_sqlitedb_error_quark (void)
 static void
 e_book_backend_sqlitedb_dispose (GObject *object)
 {
-        EBookBackendSqliteDBPrivate *priv;
+	EBookBackendSqliteDBPrivate *priv;
 
 	priv = E_BOOK_BACKEND_SQLITEDB (object)->priv;
 
-        g_static_mutex_lock (&dbcon_lock);
+	g_static_mutex_lock (&dbcon_lock);
 	if (db_connections != NULL) {
-	        if (priv->hash_key != NULL) {
-		        g_hash_table_remove (db_connections, priv->hash_key);
+		if (priv->hash_key != NULL) {
+			g_hash_table_remove (db_connections, priv->hash_key);
 
-		        if (g_hash_table_size (db_connections) == 0) {
-			        g_hash_table_destroy (db_connections);
-			        db_connections = NULL;
-		        }
+			if (g_hash_table_size (db_connections) == 0) {
+				g_hash_table_destroy (db_connections);
+				db_connections = NULL;
+			}
 
-		        g_free (priv->hash_key);
-		        priv->hash_key = NULL;
+			g_free (priv->hash_key);
+			priv->hash_key = NULL;
 		}
 	}
 	g_static_mutex_unlock (&dbcon_lock);
-	
+
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_book_backend_sqlitedb_parent_class)->dispose (object);
 }
@@ -562,11 +562,11 @@ e_book_backend_sqlitedb_new (const gchar *path,
 	filename = g_build_filename (path, DB_FILENAME, NULL);
 
 	if (!book_backend_sqlitedb_load (ebsdb, filename, &err)) {
-        	g_static_mutex_unlock (&dbcon_lock);
-        	g_propagate_error (error, err);
-        	g_object_unref (ebsdb);
-        	g_free (filename);
-	        return NULL;
+		g_static_mutex_unlock (&dbcon_lock);
+		g_propagate_error (error, err);
+		g_object_unref (ebsdb);
+		g_free (filename);
+		return NULL;
 	}
 	g_free (filename);
 
@@ -1159,7 +1159,10 @@ e_book_backend_sqlitedb_is_summary_query (const gchar *query)
 }
 
 static ESExpResult *
-func_and (ESExp *f, gint argc, struct _ESExpTerm **argv, gpointer data)
+func_and (ESExp *f,
+          gint argc,
+          struct _ESExpTerm **argv,
+          gpointer data)
 {
 	ESExpResult *r, *r1;
 	GString *string;

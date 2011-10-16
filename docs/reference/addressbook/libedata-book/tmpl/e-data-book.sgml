@@ -167,7 +167,7 @@ EDataBook
 @error: 
 
 
-<!-- ##### FUNCTION e_data_book_respond_create ##### -->
+<!-- ##### FUNCTION e_data_book_respond_create_contacts ##### -->
 <para>
 
 </para>
@@ -175,7 +175,7 @@ EDataBook
 @book: 
 @opid: 
 @error: 
-@contact: 
+@contacts: 
 
 
 <!-- ##### FUNCTION e_data_book_respond_remove_contacts ##### -->
@@ -189,7 +189,7 @@ EDataBook
 @ids: 
 
 
-<!-- ##### FUNCTION e_data_book_respond_modify ##### -->
+<!-- ##### FUNCTION e_data_book_respond_modify_contacts ##### -->
 <para>
 
 </para>
@@ -197,7 +197,7 @@ EDataBook
 @book: 
 @opid: 
 @error: 
-@contact: 
+@contacts: 
 
 
 <!-- ##### FUNCTION e_data_book_respond_get_contact ##### -->

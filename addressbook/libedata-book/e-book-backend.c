@@ -439,6 +439,8 @@ e_book_backend_refresh (EBookBackend *backend,
  * Executes a 'create contacts' request specified by @opid on @book
  * using @backend.
  * This might be finished with e_data_book_respond_create_contacts().
+ *
+ * Since: 3.4
  **/
 void
 e_book_backend_create_contacts (EBookBackend *backend,
@@ -503,6 +505,8 @@ e_book_backend_remove_contacts (EBookBackend *backend,
  * Executes a 'modify contacts' request specified by @opid on @book
  * using @backend.
  * This might be finished with e_data_book_respond_modify_contacts().
+ *
+ * Since: 3.4
  **/
 void
 e_book_backend_modify_contacts (EBookBackend *backend,
