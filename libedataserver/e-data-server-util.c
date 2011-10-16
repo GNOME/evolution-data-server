@@ -758,7 +758,10 @@ e_filename_make_safe (gchar *string)
  * Since: 3.4
  **/
 gchar *
-e_filename_mkdir_encoded (const gchar *basepath, const gchar *fileprefix, const gchar *filename, gint fileindex)
+e_filename_mkdir_encoded (const gchar *basepath,
+                          const gchar *fileprefix,
+                          const gchar *filename,
+                          gint fileindex)
 {
 	gchar *elem1, *elem2, *res, *fn;
 
@@ -925,11 +928,7 @@ e_util_copy_object_slist (GSList *copy_to,
 void
 e_util_free_string_slist (GSList *strings)
 {
-	if (!strings)
-		return;
-
-	g_slist_foreach (strings, (GFunc) g_free, NULL);
-	g_slist_free (strings);
+	g_slist_free_full (strings, (GDestroyNotify) g_free);
 }
 
 /**
@@ -944,11 +943,7 @@ e_util_free_string_slist (GSList *strings)
 void
 e_util_free_object_slist (GSList *objects)
 {
-	if (!objects)
-		return;
-
-	g_slist_foreach (objects, (GFunc) g_object_unref, NULL);
-	g_slist_free (objects);
+	g_slist_free_full (objects, (GDestroyNotify) g_object_unref);
 }
 
 #ifdef G_OS_WIN32

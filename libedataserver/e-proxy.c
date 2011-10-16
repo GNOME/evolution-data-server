@@ -150,7 +150,9 @@ ep_free_proxy_host_addr (ProxyHostAddr *host)
 }
 
 static gboolean
-ep_read_key_boolean (EProxy *proxy, EProxyKey key, GConfClient *client)
+ep_read_key_boolean (EProxy *proxy,
+                     EProxyKey key,
+                     GConfClient *client)
 {
 	gboolean res = FALSE;
 
@@ -181,7 +183,9 @@ ep_read_key_boolean (EProxy *proxy, EProxyKey key, GConfClient *client)
 }
 
 static gint
-ep_read_key_int (EProxy *proxy, EProxyKey key, GConfClient *client)
+ep_read_key_int (EProxy *proxy,
+                 EProxyKey key,
+                 GConfClient *client)
 {
 	gint res = 0;
 
@@ -218,7 +222,9 @@ ep_read_key_int (EProxy *proxy, EProxyKey key, GConfClient *client)
 
 /* free returned pointer with g_free() */
 static gchar *
-ep_read_key_string (EProxy *proxy, EProxyKey key, GConfClient *client)
+ep_read_key_string (EProxy *proxy,
+                    EProxyKey key,
+                    GConfClient *client)
 {
 	gchar *res = NULL;
 
@@ -279,7 +285,9 @@ ep_read_key_string (EProxy *proxy, EProxyKey key, GConfClient *client)
 
 /* list of newly allocated strings, use g_free() for each member and free list itself too */
 static GSList *
-ep_read_key_list (EProxy *proxy, EProxyKey key, GConfClient *client)
+ep_read_key_list (EProxy *proxy,
+                  EProxyKey key,
+                  GConfClient *client)
 {
 	GSList *res = NULL;
 
@@ -866,7 +874,9 @@ ep_setting_changed (GConfClient *client,
 }
 
 static void
-ep_sys_proxy_changed_cb (GSettings *settings, const gchar *key, EProxy *proxy)
+ep_sys_proxy_changed_cb (GSettings *settings,
+                         const gchar *key,
+                         EProxy *proxy)
 {
 	g_return_if_fail (proxy != NULL);
 
@@ -877,7 +887,9 @@ ep_sys_proxy_changed_cb (GSettings *settings, const gchar *key, EProxy *proxy)
 }
 
 static void
-ep_sys_proxy_http_changed_cb (GSettings *settings, const gchar *key, EProxy *proxy)
+ep_sys_proxy_http_changed_cb (GSettings *settings,
+                              const gchar *key,
+                              EProxy *proxy)
 {
 	g_return_if_fail (proxy != NULL);
 
@@ -888,7 +900,9 @@ ep_sys_proxy_http_changed_cb (GSettings *settings, const gchar *key, EProxy *pro
 }
 
 static void
-ep_sys_proxy_https_changed_cb (GSettings *settings, const gchar *key, EProxy *proxy)
+ep_sys_proxy_https_changed_cb (GSettings *settings,
+                               const gchar *key,
+                               EProxy *proxy)
 {
 	g_return_if_fail (proxy != NULL);
 
@@ -899,7 +913,9 @@ ep_sys_proxy_https_changed_cb (GSettings *settings, const gchar *key, EProxy *pr
 }
 
 static void
-ep_sys_proxy_socks_changed_cb (GSettings *settings, const gchar *key, EProxy *proxy)
+ep_sys_proxy_socks_changed_cb (GSettings *settings,
+                               const gchar *key,
+                               EProxy *proxy)
 {
 	g_return_if_fail (proxy != NULL);
 

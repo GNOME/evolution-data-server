@@ -148,6 +148,18 @@ Miscellaneous utility functions for evolution-data-server.
 @string: 
 
 
+<!-- ##### FUNCTION e_filename_mkdir_encoded ##### -->
+<para>
+
+</para>
+
+@basepath: 
+@fileprefix: 
+@filename: 
+@fileindex: 
+@Returns: 
+
+
 <!-- ##### FUNCTION e_utf8_strftime ##### -->
 <para>
 
@@ -170,6 +182,60 @@ Miscellaneous utility functions for evolution-data-server.
 @fmt: 
 @tm: 
 @Returns: 
+
+
+<!-- ##### FUNCTION e_util_slist_to_strv ##### -->
+<para>
+
+</para>
+
+@strings: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_strv_to_slist ##### -->
+<para>
+
+</para>
+
+@strv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_copy_string_slist ##### -->
+<para>
+
+</para>
+
+@copy_to: 
+@strings: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_copy_object_slist ##### -->
+<para>
+
+</para>
+
+@copy_to: 
+@objects: 
+@Returns: 
+
+
+<!-- ##### FUNCTION e_util_free_string_slist ##### -->
+<para>
+
+</para>
+
+@strings: 
+
+
+<!-- ##### FUNCTION e_util_free_object_slist ##### -->
+<para>
+
+</para>
+
+@objects: 
 
 
 <!-- ##### FUNCTION e_util_get_prefix ##### -->
