@@ -23,8 +23,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.9x\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-09-21 11:03+0000\n"
-"PO-Revision-Date: 2011-09-21 20:50+0200\n"
+"POT-Creation-Date: 2011-09-26 10:49+0000\n"
+"PO-Revision-Date: 2011-10-17 09:53+0200\n"
 "Last-Translator: Luca Ferretti <lferrett@gnome.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,7 @@ msgid "Querying for updated contacts…"
 msgstr "Verifica dei contatti aggiornati..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:893
-#: ../addressbook/libebook/e-book.c:3549 ../calendar/libecal/e-cal.c:1381
+#: ../addressbook/libebook/e-book.c:3506 ../calendar/libecal/e-cal.c:1381
 #: ../libedataserver/e-client.c:1951
 msgid "Personal"
 msgstr "Personale"
@@ -164,18 +164,18 @@ msgstr "Errore sconosciuto"
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "Creazione della risorsa «%s» non riuscita con stato HTTP: %d (%s)"
 
-#: ../addressbook/libebook/e-book.c:3216
+#: ../addressbook/libebook/e-book.c:3173
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr ""
 "%s: non era presente alcuna sorgente per l'UID «%s» archiviato in GConf."
 
-#: ../addressbook/libebook/e-book.c:3532 ../calendar/libecal/e-cal.c:1361
+#: ../addressbook/libebook/e-book.c:3489 ../calendar/libecal/e-cal.c:1361
 #: ../libedataserver/e-client.c:1946
 msgid "On This Computer"
 msgstr "Su questo computer"
 
-#: ../addressbook/libebook/e-book.c:3658
+#: ../addressbook/libebook/e-book.c:3615
 #: ../addressbook/libebook/e-book-client.c:678
 #: ../addressbook/libedata-book/e-data-book.c:315
 msgid "Address book does not exist"
@@ -1425,12 +1425,12 @@ msgid "Cannot change value of calendar property '%s'"
 msgstr "Impossibile cambiare valore della proprietà di caledario «%s»"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:72
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:714
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:736
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:851
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:882
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1082
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1112
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:728
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:750
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:865
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:896
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1096
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1126
 #, c-format
 msgid "\"%s\" expects no arguments"
 msgstr "\"%s\" non prevede alcun argomento"
@@ -1439,7 +1439,7 @@ msgstr "\"%s\" non prevede alcun argomento"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:224
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:269
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:308
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1153
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1167
 #, c-format
 msgid "\"%s\" expects one argument"
 msgstr "\"%s\" prevede un argomento"
@@ -1447,7 +1447,7 @@ msgstr "\"%s\" prevede un argomento"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:114
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:121
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:314
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:781
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:795
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
 msgstr "\"%s\" prevede che il primo argomento sia una stringa"
@@ -1459,10 +1459,9 @@ msgstr ""
 "\"%s\" prevede che il primo argomento sia una stringa data/ora ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:171
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:388
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:441
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:775
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:917
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:455
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:789
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:931
 #, c-format
 msgid "\"%s\" expects two arguments"
 msgstr "\"%s\" prevede due argomenti"
@@ -1470,10 +1469,10 @@ msgstr "\"%s\" prevede due argomenti"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:177
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:230
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:275
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:394
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:447
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:923
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1159
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:396
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:461
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:937
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1173
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
 msgstr "\"%s\" prevede che il primo argomento sia un time_t"
@@ -1483,19 +1482,31 @@ msgstr "\"%s\" prevede che il primo argomento sia un time_t"
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "\"%s\" prevede che il secondo argomento sia un intero"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:402
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:456
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:931
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:390
+#, c-format
+#| msgid "\"%s\" expects two arguments"
+msgid "\"%s\" expects two or three arguments"
+msgstr "\"%s\" prevede due o tre argomenti"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:404
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:470
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:945
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
 msgstr "\"%s\" prevede che il secondo argomento sia un time_t"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:789
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:413
+#, c-format
+#| msgid "\"%s\" expects the first argument to be a string"
+msgid "\"%s\" expects the third argument to be a string"
+msgstr "\"%s\" prevede che il terzo argomento sia una stringa"
+
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:803
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
 msgstr "\"%s\" prevede che il secondo argomento sia una stringa"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:819
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:833
 #, c-format
 msgid ""
 "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1506,12 +1517,12 @@ msgstr ""
 "\"description\", \"location\", \"attendee\", \"organizer\" o \"classification"
 "\""
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:981
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:995
 #, c-format
 msgid "\"%s\" expects at least one argument"
 msgstr "\"%s\" prevede almeno un argomento"
 
-#: ../calendar/libedata-cal/e-cal-backend-sexp.c:995
+#: ../calendar/libedata-cal/e-cal-backend-sexp.c:1009
 #, c-format
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
@@ -3038,17 +3049,17 @@ msgstr "Impossibile creare la directory %s: %s"
 msgid "Could not load summary for %s"
 msgstr "Impossibile caricare l'indice per %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1054
+#: ../camel/providers/imap/camel-imap-folder.c:1057
 #: ../camel/providers/imapx/camel-imapx-server.c:4065
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Scansione per messaggi cambiati in %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3483
+#: ../camel/providers/imap/camel-imap-folder.c:3486
 msgid "Unable to retrieve message: "
 msgstr "Impossibile recuperare il messaggio: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3520
+#: ../camel/providers/imap/camel-imap-folder.c:3523
 #: ../camel/providers/imapx/camel-imapx-server.c:5344
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
@@ -3056,41 +3067,41 @@ msgstr "Impossibile ottenere il messaggio avente ID %s: %s"
 
 # eeeeeeeehhh????
 # che ci sta a fare il such?
-#: ../camel/providers/imap/camel-imap-folder.c:3521
+#: ../camel/providers/imap/camel-imap-folder.c:3524
 #: ../camel/providers/imapx/camel-imapx-server.c:5345
 msgid "No such message available."
 msgstr "Nessun messaggio disponibile."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3596
-#: ../camel/providers/imap/camel-imap-folder.c:4503
+#: ../camel/providers/imap/camel-imap-folder.c:3599
+#: ../camel/providers/imap/camel-imap-folder.c:4506
 #: ../camel/providers/nntp/camel-nntp-folder.c:438
 #, c-format
 msgid "This message is not currently available"
 msgstr "Questo messaggio non è al momento disponibile"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4087
-#: ../camel/providers/imap/camel-imap-folder.c:4170
+#: ../camel/providers/imap/camel-imap-folder.c:4090
+#: ../camel/providers/imap/camel-imap-folder.c:4173
 #: ../camel/providers/imapx/camel-imapx-server.c:4023
 #: ../camel/providers/imapx/camel-imapx-server.c:4173
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Recupero informazioni di indice per nuovi messaggi in %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4304
+#: ../camel/providers/imap/camel-imap-folder.c:4307
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Risposta del server incompleta: non è stata fornita alcuna informazione per "
 "il messaggio %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4314
+#: ../camel/providers/imap/camel-imap-folder.c:4317
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
 "Risposta del server incompleta: non è stato fornito alcun UID per il "
 "messaggio %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4543
+#: ../camel/providers/imap/camel-imap-folder.c:4546
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Impossibile trovare il corpo del messaggio nella risposta di FETCH."
@@ -3624,8 +3635,8 @@ msgstr "Impossibile trasferire il messaggio nella cartella di destinazione: %s"
 #, c-format
 msgid "Cannot create folder: %s : Folder name cannot contain a dot"
 msgstr ""
-"Impossibile creare la cartella «%s»: il nome di cartella non può contenere un "
-"punto."
+"Impossibile creare la cartella «%s»: il nome di cartella non può contenere "
+"un punto."
 
 #: ../camel/providers/local/camel-maildir-store.c:109
 #: ../camel/providers/local/camel-maildir-store.c:728
@@ -5029,7 +5040,8 @@ msgstr "Proprietà della categoria"
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
-msgstr "Esiste già una categoria «%s» nella configurazione. Usare un altro nome"
+msgstr ""
+"Esiste già una categoria «%s» nella configurazione. Usare un altro nome"
 
 #: ../libedataserverui/e-client-utils.c:856
 #, c-format
@@ -5271,8 +5283,8 @@ msgstr "_Destinazione"
 
 #~ msgid "Cannot retrieve calendar scheduling information: %s"
 #~ msgstr ""
-#~ "Impossibile recuperare le informazioni di pianificazione del calendario: %"
-#~ "s"
+#~ "Impossibile recuperare le informazioni di pianificazione del calendario: "
+#~ "%s"
 
 #~ msgid "Cannot discard calendar alarm: %s"
 #~ msgstr "Impossibile scartare l'allarme di calendario: %s"
