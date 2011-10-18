@@ -705,9 +705,11 @@ create_component (ECalBackendContacts *cbc,
 	ECalComponent             *cal_comp;
 	ECalComponentText          comp_summary;
 	icalcomponent             *ical_comp;
+	icalproperty		  *prop;
 	struct icaltimetype        itt;
 	ECalComponentDateTime      dt;
 	struct icalrecurrencetype  r;
+	gchar			  *since_year;
 	GSList recur_list;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbc), NULL);
@@ -716,6 +718,12 @@ create_component (ECalBackendContacts *cbc,
 		return NULL;
 
 	ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
+
+	since_year = g_strdup_printf ("%04d", cdate->year);
+	prop = icalproperty_new_x (since_year);
+	icalproperty_set_x_name (prop, "X-EVOLUTION-SINCE-YEAR");
+	icalcomponent_add_property (ical_comp, prop);
+	g_free (since_year);
 
 	/* Create the event object */
 	cal_comp = e_cal_component_new ();
