@@ -2516,7 +2516,7 @@ msgstr "Keine Unterstützung für Legitimationstyp %s"
 #: ../camel/camel-session.c:477
 #, c-format
 msgid "%s authentication failed"
-msgstr "%-Legitimation gescheitert"
+msgstr "%s-Legitimation gescheitert"
 
 #: ../camel/camel-session.c:1182
 #, c-format
