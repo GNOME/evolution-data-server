@@ -104,6 +104,42 @@ e_vcard_init (EVCard *evc)
 	evc->priv = g_new0 (EVCardPrivate, 1);
 }
 
+/* Case insensitive version of strstr */
+static gchar *
+strstr_nocase (const gchar *haystack,
+               const gchar *needle)
+{
+/* When _GNU_SOURCE is available, use the nonstandard extension of libc */
+#ifdef _GNU_SOURCE
+	g_return_val_if_fail (haystack, NULL);
+	g_return_Val_if_fail (needle, NULL);
+
+	return strcasestr (haystack, needle)
+#else
+/* Otherwise convert both, haystack and needle to lowercase and use good old strstr */
+	gchar *l_haystack;
+	gchar *l_needle;
+	gchar *pos;
+
+	g_return_val_if_fail (haystack, NULL);
+	g_return_val_if_fail (needle, NULL);
+
+	l_haystack = g_ascii_strdown (haystack, -1);
+	l_needle = g_ascii_strdown (needle, -1);
+	pos = strstr (l_haystack, l_needle);
+
+	/* Get actual position of the needle in the haystack instead of l_haystack or
+	 * leave it NULL */
+	if (pos)
+		pos = (gchar *)(haystack + (pos - l_haystack));
+
+	g_free (l_haystack);
+	g_free (l_needle);
+
+	return pos;
+#endif
+}
+
 /*  Skip newline characters and return the next character.
  *  This function takes care of folding lines, skipping
  *  newline characters if found, taking care of equal characters
@@ -687,6 +723,24 @@ e_vcard_ensure_attributes (EVCard *evc)
 	return evc->priv->attributes;
 }
 
+static gchar *
+e_vcard_escape_semicolons (const gchar *s)
+{
+	GString *str;
+	const gchar *p;
+
+	str = g_string_new ("");
+
+	for (p = s; p && *p; p++) {
+		if (*p == ';')
+			g_string_append (str, "\\");
+
+		g_string_append_c (str, *p);
+	}
+
+	return g_string_free (str, FALSE);
+}
+
 /**
  * e_vcard_escape_string:
  * @s: the string to escape
@@ -854,10 +908,186 @@ e_vcard_new_from_string (const gchar *str)
 }
 
 static gchar *
+e_vcard_qp_encode (const gchar *txt)
+{
+	const gchar *p = txt;
+	GString *escaped = g_string_new ("");
+	gint count = 0;
+
+	while (*p != '\0') {
+		if ((*p >= 33 && *p <= 60) || (*p >= 62 && *p <= 126)) {
+			if (count == 75) {
+				g_string_append (escaped, "=" CRLF " ");
+				count = 1; /* 1 for space needed for folding */
+			}
+
+			g_string_append_c (escaped, *p++);
+			count++;
+
+			continue;
+		}
+
+		if (count >= 73) {
+			g_string_append (escaped, "=" CRLF " ");
+			count = 1; /* 1 for space needed for folding */
+		}
+
+		g_string_append_printf (escaped, "=%2.2X", (unsigned char) *p++);
+		count += 3;
+	}
+
+	return g_string_free (escaped, FALSE);
+}
+
+static GHashTable *
+generate_dict_validator (const gchar *words)
+{
+	GHashTable *dict = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	gchar **list = g_strsplit (words, ",", 0);
+	gint i;
+
+	for (i = 0; list[i]; i++)
+		g_hash_table_insert (dict, list[i], NULL);
+
+	g_free (list);
+
+	return dict;
+}
+
+static gchar *
 e_vcard_to_string_vcard_21 (EVCard *evc)
 {
-	g_warning ("need to implement e_vcard_to_string_vcard_21");
-	return g_strdup ("");
+	GList *l, *v;
+	GString *str = g_string_new ("");
+	GHashTable *evc_prop = generate_dict_validator (E_VCARD_21_VALID_PROPERTIES);
+	GHashTable *evc_params = generate_dict_validator (E_VCARD_21_VALID_PARAMETERS);
+
+	g_string_append (str, "BEGIN:VCARD" CRLF);
+	g_string_append (str, "VERSION:2.1" CRLF);
+
+	for (l = e_vcard_ensure_attributes (evc); l; l = l->next) {
+		GList *list;
+		EVCardAttribute *attr = l->data;
+		GString *attr_str;
+		gboolean empty, encode;
+		gchar *upper_name;
+
+		if (g_ascii_strcasecmp (attr->name, "VERSION") == 0)
+			continue;
+
+		upper_name = g_ascii_strup (attr->name, -1);
+		/* Checking whether current property (attribute) is valid for vCard 2.1 */
+		if (!g_hash_table_lookup_extended (evc_prop, upper_name, NULL, NULL)) {
+			g_free (upper_name);
+
+			continue;
+		}
+		g_free (upper_name);
+
+		empty = TRUE; /* Empty fields should be omitted -- some headsets may choke on it */
+		encode = FALSE; /* Generally only new line MUST be encoded (Quoted Printable) */
+
+		for (v = attr->values; v; v = v->next) {
+			gchar *value = v->data;
+
+			if (value && *value)
+				empty = FALSE;
+			else
+				continue;
+
+			if (strstr (value, "\n") != NULL) {
+				encode = TRUE;
+				break;
+			}
+		}
+
+		if (empty)
+			continue;
+
+		attr_str = g_string_new ("");
+
+		/* From vCard 2.1 spec page 27, 28
+		 *
+		 * contentline  = [group "."] name *(";" param) ":" value CRLF
+		 */
+
+		if (attr->group) {
+			g_string_append (attr_str, attr->group);
+			g_string_append_c (attr_str, '.');
+		}
+		g_string_append (attr_str, attr->name);
+
+		/* handle the parameters */
+		for (list = attr->params; list; list = list->next) {
+			EVCardAttributeParam *param = list->data;
+
+			/* Page 28
+			 *
+			 * param        = param-name "=" param-value
+			 */
+
+			upper_name = g_ascii_strup (param->name, -1);
+			/* Checking whether current parameter is valid for vCard 2.1 */
+			if (!g_hash_table_lookup_extended (evc_params, upper_name, NULL, NULL)) {
+				g_free (upper_name);
+
+				continue;
+			}
+			g_free (upper_name);
+
+			g_string_append_c (attr_str, ';');
+			g_string_append (attr_str, param->name);
+			if (!param->values)
+				continue;
+
+			for (v = param->values; v; v = v->next) {
+				gchar *value = v->data;
+				gchar *escaped_value = e_vcard_escape_semicolons (value);
+
+				g_string_append_printf (attr_str, "=%s", escaped_value);
+
+				if (v->next)
+					g_string_append_printf (attr_str, ";%s", param->name);
+
+				g_free (escaped_value);
+			}
+		}
+
+		if (encode)
+			g_string_append (attr_str, ";ENCODING=QUOTED-PRINTABLE");
+
+		g_string_append_c (attr_str, ':');
+
+		for (v = attr->values; v; v = v->next) {
+			gchar *value = v->data;
+
+			if (encode) {
+				gchar *escaped_value;
+
+				escaped_value = e_vcard_qp_encode (value);
+				g_string_append (attr_str, escaped_value);
+
+				g_free (escaped_value);
+			} else
+				g_string_append (attr_str, value);
+
+			if (v->next)
+				g_string_append_c (attr_str, ';');
+		}
+
+		g_string_append (attr_str, CRLF);
+
+		g_string_append (str, attr_str->str);
+
+		g_string_free (attr_str, TRUE);
+	}
+
+	g_string_append (str, "END:VCARD");
+
+	g_hash_table_destroy (evc_params);
+	g_hash_table_destroy (evc_prop);
+
+	return g_string_free (str, FALSE);
 }
 
 static gchar *
@@ -1016,17 +1246,16 @@ e_vcard_to_string (EVCard *evc,
 {
 	g_return_val_if_fail (E_IS_VCARD (evc), NULL);
 
-	/* If the vcard is not parsed yet, and if we don't have a UID in priv->attributes
-	return priv->vcard directly */
-	/* XXX: The format is ignored but it does not really matter
-	 * since only 3.0 is supported at the moment */
-	if (evc->priv->vcard != NULL && evc->priv->attributes == NULL)
-		return g_strdup (evc->priv->vcard);
-
 	switch (format) {
 	case EVC_FORMAT_VCARD_21:
+		if (evc->priv->vcard && strstr_nocase (evc->priv->vcard, CRLF "VERSION:2.1" CRLF))
+			return g_strdup (evc->priv->vcard);
+
 		return e_vcard_to_string_vcard_21 (evc);
 	case EVC_FORMAT_VCARD_30:
+		if (evc->priv->vcard && strstr_nocase (evc->priv->vcard, CRLF "VERSION:3.0" CRLF))
+			return g_strdup (evc->priv->vcard);
+
 		return e_vcard_to_string_vcard_30 (evc);
 	default:
 		g_warning ("invalid format specifier passed to e_vcard_to_string");
