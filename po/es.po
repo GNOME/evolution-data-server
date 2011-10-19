@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2011-10-18 18:16+0000\n"
-"PO-Revision-Date: 2011-10-19 16:37+0200\n"
+"PO-Revision-Date: 2011-10-19 16:40+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -2482,16 +2482,16 @@ msgstr "El GType registrado no es válido para el protocolo «%s»"
 #: ../camel/providers/pop3/camel-pop3-store.c:234
 #: ../camel/providers/pop3/camel-pop3-store.c:510
 #: ../camel/providers/smtp/camel-smtp-transport.c:419
-#, fuzzy, c-format
+#, c-format
 #| msgid "No support for authentication type %s"
 msgid "No support for %s authentication"
-msgstr "No hay soporte para el tipo de autenticación %s"
+msgstr "No hay soporte para la autenticación %s"
 
 #: ../camel/camel-session.c:477
-#, fuzzy, c-format
+#, c-format
 #| msgid "Authentication failed"
 msgid "%s authentication failed"
-msgstr "Falló la autenticación"
+msgstr "Falló la autenticación %s"
 
 #: ../camel/camel-session.c:1182
 #, c-format
@@ -3235,10 +3235,10 @@ msgstr "Falló al conectar al servidor IMAP %s en modo seguro: "
 
 #: ../camel/providers/imap/camel-imap-store.c:636
 #: ../camel/providers/imapx/camel-imapx-server.c:3163
-#, fuzzy, c-format
+#, c-format
 #| msgid "IMAP server %s does not support requested authentication type %s"
 msgid "IMAP server %s does not support %s authentication"
-msgstr "El servidor IMAP %s no soporta el método de autenticación requerido %s"
+msgstr "El servidor IMAP %s no soporta la autenticación %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:693
 #: ../camel/providers/imapx/camel-imapx-store.c:147
@@ -3255,20 +3255,18 @@ msgstr "Servicio IMAP para %s en %s"
 #: ../camel/providers/imap/camel-imap-store.c:984
 #: ../camel/providers/imapx/camel-imapx-server.c:3192
 #: ../camel/providers/nntp/camel-nntp-store.c:481
-#, fuzzy
 #| msgid "Cannot authenticate to server: %s"
 msgid "Cannot authenticate without a username"
-msgstr "No se pudo autenticar con el servidor: %s"
+msgstr "No se pudo autenticar sin un nombre de usuario"
 
 #: ../camel/providers/imap/camel-imap-store.c:992
 #: ../camel/providers/imapx/camel-imapx-server.c:3200
 #: ../camel/providers/nntp/camel-nntp-store.c:489
 #: ../camel/providers/pop3/camel-pop3-store.c:440
 #: ../camel/providers/pop3/camel-pop3-store.c:459
-#, fuzzy
 #| msgid "Authentication Failed"
 msgid "Authentication password not available"
-msgstr "Falló en la autenticación"
+msgstr "La contraseña de la autenticación no está disponible"
 
 #: ../camel/providers/imap/camel-imap-store.c:1953
 #: ../camel/providers/imap/camel-imap-store.c:2157
@@ -4394,16 +4392,15 @@ msgid "SMTP mail delivery via %s"
 msgstr "Envío de correo SMTP vía %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:335
-#, fuzzy, c-format
+#, c-format
 #| msgid "SMTP server %s does not support requested authentication type %s."
 msgid "SMTP server %s does not support %s authentication"
-msgstr ""
-"El servidor SMTP %s no implementa el método de autenticación requerido %s."
+msgstr "El servidor SMTP %s no soporta la autenticación %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:410
 #, c-format
 msgid "No SASL mechanism was specified"
-msgstr ""
+msgstr "No se especificó ningún mecanismo SASL"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:423
 msgid "SMTP Authentication"
