@@ -510,13 +510,13 @@ e_data_book_factory_init (EDataBookFactory *factory)
 
 		g_signal_connect (
 			factory->priv->goa_client, "account_added",
-			e_data_book_factory_accounts_changed_cb, factory);
+			G_CALLBACK (e_data_book_factory_accounts_changed_cb), factory);
 		g_signal_connect (
 			factory->priv->goa_client, "account_removed",
-			e_data_book_factory_accounts_changed_cb, factory);
+			G_CALLBACK (e_data_book_factory_accounts_changed_cb), factory);
 		g_signal_connect (
 			factory->priv->goa_client, "account_changed",
-			e_data_book_factory_accounts_changed_cb, factory);
+			G_CALLBACK (e_data_book_factory_accounts_changed_cb), factory);
 	} else if (error != NULL) {
 		g_warning ("%s", error->message);
 		g_error_free (error);
