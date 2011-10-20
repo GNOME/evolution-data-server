@@ -157,6 +157,8 @@ parse_capability (CamelImapStore *store,
 	}
 }
 
+static gboolean free_key (gpointer key, gpointer value, gpointer user_data);
+
 static gboolean
 imap_get_capability (CamelService *service,
                      GCancellable *cancellable,
@@ -169,6 +171,10 @@ imap_get_capability (CamelService *service,
 	/* Find out the IMAP capabilities */
 	/* We assume we have utf8 capable search until a failed search tells us otherwise */
 	store->capabilities = IMAP_CAPABILITY_utf8_search;
+	if (store->authtypes) {
+		g_hash_table_foreach_remove (store->authtypes, free_key, NULL);
+		g_hash_table_destroy (store->authtypes);
+	}
 	store->authtypes = g_hash_table_new (g_str_hash, g_str_equal);
 	response = camel_imap_command (store, NULL, cancellable, error, "CAPABILITY");
 	if (!response)

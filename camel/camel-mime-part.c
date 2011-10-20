@@ -184,6 +184,9 @@ write_references (CamelStream *stream,
 static void
 init_header_name_table (void)
 {
+	if (header_name_table)
+		return;
+
 	header_name_table = g_hash_table_new (
 		camel_strcase_hash, camel_strcase_equal);
 	g_hash_table_insert (

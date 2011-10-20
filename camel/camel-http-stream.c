@@ -362,6 +362,9 @@ http_stream_finalize (GObject *object)
 	if (http->proxy)
 		camel_url_free (http->proxy);
 
+	if (http->user_agent)
+		g_free (http->user_agent);
+
 	g_free (http->authrealm);
 	g_free (http->authpass);
 
