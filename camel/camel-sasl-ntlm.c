@@ -27,6 +27,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "camel-network-settings.h"
 #include "camel-sasl-ntlm.h"
 #include "camel-stream-process.h"
 
@@ -685,18 +686,24 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	CamelSaslNTLM *ntlm = CAMEL_SASL_NTLM (sasl);
 	CamelSaslNTLMPrivate *priv = ntlm->priv;
 #endif
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
 	CamelService *service;
-	CamelURL *url;
 	GByteArray *ret;
-	gchar *user;
 	guchar nonce[8], hash[21], lm_resp[24], nt_resp[24];
 	GString *domain = NULL;
 	const gchar *password;
+	const gchar *user;
+	const gchar *cp;
 
 	service = camel_sasl_get_service (sasl);
 
-	url = camel_service_get_camel_url (service);
-	g_return_val_if_fail (url->user != NULL, NULL);
+	settings = camel_service_get_settings (service);
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	user = camel_network_settings_get_user (network_settings);
+	g_return_val_if_fail (user != NULL, NULL);
 
 	password = camel_service_get_password (service);
 	/* Assert a non-NULL password below, not here. */
@@ -799,12 +806,11 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	}
 
 	/* If a domain is supplied as part of the username, use it */
-	user = strchr (url->user, '\\');
-	if (user) {
-		domain = g_string_new_len (url->user, user - url->user);
-		user++;
-	} else
-		user = url->user;
+	cp = strchr (user, '\\');
+	if (cp != NULL) {
+		domain = g_string_new_len (user, cp - user);
+		user = cp + 1;
+	}
 
 	/* Otherwise, fall back to the domain of the server, if possible */
 	if (domain == NULL)
@@ -857,11 +863,13 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 {
 #ifndef G_OS_WIN32
 	CamelStream *stream = camel_stream_process_new ();
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
 	CamelService *service;
-	CamelURL *url;
 	CamelSaslNTLM *ntlm = CAMEL_SASL_NTLM (sasl);
 	CamelSaslNTLMPrivate *priv = ntlm->priv;
-	gchar *user;
+	const gchar *user;
+	const gchar *cp;
 	gchar buf[1024];
 	gsize s;
 	gchar *command;
@@ -871,22 +879,26 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 		return FALSE;
 
 	service = camel_sasl_get_service (sasl);
-	url = camel_service_get_camel_url (service);
-	g_return_val_if_fail (url->user != NULL, FALSE);
 
-	user = strchr (url->user, '\\');
-	if (user) {
+	settings = camel_service_get_settings (service);
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), FALSE);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	user = camel_network_settings_get_user (network_settings);
+	g_return_val_if_fail (user != NULL, FALSE);
+
+	cp = strchr (user, '\\');
+	if (cp != NULL) {
 		command = g_strdup_printf (
 			"%s --helper-protocol ntlmssp-client-1 "
 			"--use-cached-creds --username '%s' "
 			"--domain '%.*s'", NTLM_AUTH_HELPER,
-			user + 1, (gint)(user - url->user),
-			url->user);
+			cp + 1, (gint)(cp - user), user);
 	} else {
 		command = g_strdup_printf (
 			"%s --helper-protocol ntlmssp-client-1 "
 			"--use-cached-creds --username '%s'",
-			NTLM_AUTH_HELPER, url->user);
+			NTLM_AUTH_HELPER, user);
 	}
 	ret = camel_stream_process_connect (
 		CAMEL_STREAM_PROCESS (stream), command, NULL, error);

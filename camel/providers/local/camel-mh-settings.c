@@ -34,7 +34,7 @@ enum {
 G_DEFINE_TYPE (
 	CamelMhSettings,
 	camel_mh_settings,
-	CAMEL_TYPE_STORE_SETTINGS)
+	CAMEL_TYPE_LOCAL_SETTINGS)
 
 static void
 mh_settings_set_property (GObject *object,

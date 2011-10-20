@@ -47,6 +47,7 @@ struct _CamelIMAPXSettingsPrivate {
 
 enum {
 	PROP_0,
+	PROP_AUTH_MECHANISM,
 	PROP_BATCH_FETCH_COUNT,
 	PROP_CHECK_ALL,
 	PROP_CHECK_SUBSCRIBED,
@@ -54,9 +55,12 @@ enum {
 	PROP_FETCH_ORDER,
 	PROP_FILTER_JUNK,
 	PROP_FILTER_JUNK_INBOX,
+	PROP_HOST,
 	PROP_NAMESPACE,
+	PROP_PORT,
 	PROP_SECURITY_METHOD,
 	PROP_SHELL_COMMAND,
+	PROP_USER,
 	PROP_USE_IDLE,
 	PROP_USE_NAMESPACE,
 	PROP_USE_QRESYNC,
@@ -78,6 +82,12 @@ imapx_settings_set_property (GObject *object,
                              GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_AUTH_MECHANISM:
+			camel_network_settings_set_auth_mechanism (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_BATCH_FETCH_COUNT:
 			camel_imapx_settings_set_batch_fetch_count (
 				CAMEL_IMAPX_SETTINGS (object),
@@ -120,10 +130,22 @@ imapx_settings_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_HOST:
+			camel_network_settings_set_host (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_NAMESPACE:
 			camel_imapx_settings_set_namespace (
 				CAMEL_IMAPX_SETTINGS (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_PORT:
+			camel_network_settings_set_port (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_uint (value));
 			return;
 
 		case PROP_SECURITY_METHOD:
@@ -135,6 +157,12 @@ imapx_settings_set_property (GObject *object,
 		case PROP_SHELL_COMMAND:
 			camel_imapx_settings_set_shell_command (
 				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_USER:
+			camel_network_settings_set_user (
+				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_string (value));
 			return;
 
@@ -179,6 +207,13 @@ imapx_settings_get_property (GObject *object,
                              GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_AUTH_MECHANISM:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_auth_mechanism (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
 		case PROP_BATCH_FETCH_COUNT:
 			g_value_set_uint (
 				value,
@@ -228,11 +263,25 @@ imapx_settings_get_property (GObject *object,
 				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 
+		case PROP_HOST:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_host (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
 		case PROP_NAMESPACE:
 			g_value_set_string (
 				value,
 				camel_imapx_settings_get_namespace (
 				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_PORT:
+			g_value_set_uint (
+				value,
+				camel_network_settings_get_port (
+				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
 		case PROP_SECURITY_METHOD:
@@ -247,6 +296,13 @@ imapx_settings_get_property (GObject *object,
 				value,
 				camel_imapx_settings_get_shell_command (
 				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_USER:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_user (
+				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
 		case PROP_USE_IDLE:
@@ -313,6 +369,12 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 	object_class->set_property = imapx_settings_set_property;
 	object_class->get_property = imapx_settings_get_property;
 	object_class->finalize = imapx_settings_finalize;
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_AUTH_MECHANISM,
+		"auth-mechanism");
 
 	g_object_class_install_property (
 		object_class,
@@ -403,6 +465,12 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
 
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_HOST,
+		"host");
+
 	g_object_class_install_property (
 		object_class,
 		PROP_NAMESPACE,
@@ -414,6 +482,12 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_PORT,
+		"port");
 
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
@@ -432,6 +506,12 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_USER,
+		"user");
 
 	g_object_class_install_property (
 		object_class,

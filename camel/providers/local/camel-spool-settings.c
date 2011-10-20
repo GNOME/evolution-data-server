@@ -34,7 +34,7 @@ enum {
 G_DEFINE_TYPE (
 	CamelSpoolSettings,
 	camel_spool_settings,
-	CAMEL_TYPE_STORE_SETTINGS)
+	CAMEL_TYPE_LOCAL_SETTINGS)
 
 static void
 spool_settings_set_property (GObject *object,

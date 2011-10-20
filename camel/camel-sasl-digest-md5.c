@@ -35,6 +35,7 @@
 #include "camel-iconv.h"
 #include "camel-mime-utils.h"
 #include "camel-net-utils.h"
+#include "camel-network-settings.h"
 #ifdef G_OS_WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -800,8 +801,9 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 {
 	CamelSaslDigestMd5 *sasl_digest = CAMEL_SASL_DIGEST_MD5 (sasl);
 	struct _CamelSaslDigestMd5Private *priv = sasl_digest->priv;
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
 	CamelService *service;
-	CamelURL *url;
 	struct _param *rspauth;
 	GByteArray *ret = NULL;
 	gboolean abort = FALSE;
@@ -811,6 +813,8 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 	struct addrinfo *ai, hints;
 	const gchar *service_name;
 	const gchar *password;
+	const gchar *host;
+	const gchar *user;
 
 	/* Need to wait for the server */
 	if (!token)
@@ -819,8 +823,16 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 	service = camel_sasl_get_service (sasl);
 	service_name = camel_sasl_get_service_name (sasl);
 
-	url = camel_service_get_camel_url (service);
-	g_return_val_if_fail (url->user != NULL, NULL);
+	settings = camel_service_get_settings (service);
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	user = camel_network_settings_get_user (network_settings);
+	g_return_val_if_fail (user != NULL, NULL);
+
+	if (host == NULL)
+		host = "localhost";
 
 	password = camel_service_get_password (service);
 	g_return_val_if_fail (password != NULL, NULL);
@@ -858,8 +870,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 		memset (&hints, 0, sizeof (hints));
 		hints.ai_flags = AI_CANONNAME;
 		ai = camel_getaddrinfo (
-			url->host ? url->host : "localhost",
-			NULL, &hints, cancellable, NULL);
+			host, NULL, &hints, cancellable, NULL);
 		if (ai && ai->ai_canonname)
 			ptr = ai->ai_canonname;
 		else
@@ -867,7 +878,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 
 		priv->response = generate_response (
 			priv->challenge, ptr, service_name,
-			url->user, password);
+			user, password);
 		if (ai)
 			camel_freeaddrinfo (ai);
 		ret = digest_response (priv->response);

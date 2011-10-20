@@ -149,7 +149,7 @@ Base class for synchronous backends.
 @cancellable: 
 @calobj: 
 @uid: 
-@new_object: 
+@new_component: 
 @error: 
 
 
@@ -163,8 +163,8 @@ Base class for synchronous backends.
 @cancellable: 
 @calobj: 
 @mod: 
-@old_object: 
-@new_object: 
+@old_component: 
+@new_component: 
 @error: 
 
 
@@ -179,8 +179,8 @@ Base class for synchronous backends.
 @uid: 
 @rid: 
 @mod: 
-@old_object: 
-@new_object: 
+@old_component: 
+@new_component: 
 @error: 
 
 

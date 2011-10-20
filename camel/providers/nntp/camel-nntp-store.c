@@ -248,18 +248,25 @@ connect_to_server (CamelService *service,
 {
 	CamelNNTPStore *store = (CamelNNTPStore *) service;
 	CamelDiscoStore *disco_store = (CamelDiscoStore *) service;
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
 	CamelSession *session;
-	CamelURL *url;
 	CamelStream *tcp_stream;
 	const gchar *user_cache_dir;
+	const gchar *host;
+	const gchar *user;
 	gboolean retval = FALSE;
 	guchar *buf;
 	guint len;
 	gchar *path;
 
-	url = camel_service_get_camel_url (service);
 	session = camel_service_get_session (service);
+	settings = camel_service_get_settings (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	user = camel_network_settings_get_user (network_settings);
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
@@ -275,8 +282,7 @@ connect_to_server (CamelService *service,
 	/* Read the greeting, if any. */
 	if (camel_nntp_stream_line (store->stream, &buf, &len, cancellable, error) == -1) {
 		g_prefix_error (
-			error, _("Could not read greeting from %s: "),
-			url->host);
+			error, _("Could not read greeting from %s: "), host);
 
 		g_object_unref (store->stream);
 		store->stream = NULL;
@@ -289,7 +295,7 @@ connect_to_server (CamelService *service,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("NNTP server %s returned error code %d: %s"),
-			url->host, len, buf);
+			host, len, buf);
 
 		g_object_unref (store->stream);
 		store->stream = NULL;
@@ -298,7 +304,7 @@ connect_to_server (CamelService *service,
 	}
 
 	/* if we have username, try it here */
-	if (url->user != NULL && *url->user != '\0') {
+	if (user != NULL && *user != '\0') {
 
 		/* XXX No SASL support. */
 		if (!camel_session_authenticate_sync (
@@ -443,14 +449,19 @@ static gchar *
 nntp_store_get_name (CamelService *service,
                      gboolean brief)
 {
-	CamelURL *url;
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
+	const gchar *host;
 
-	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
 
 	if (brief)
-		return g_strdup_printf ("%s", url->host);
+		return g_strdup_printf ("%s", host);
 	else
-		return g_strdup_printf (_("USENET News via %s"), url->host);
+		return g_strdup_printf (_("USENET News via %s"), host);
 
 }
 
@@ -462,19 +473,24 @@ nntp_store_authenticate_sync (CamelService *service,
                               GCancellable *cancellable,
                               GError **error)
 {
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
 	CamelNNTPStore *store;
 	CamelAuthenticationResult result;
-	CamelURL *url;
 	const gchar *password;
+	const gchar *user;
 	gchar *line = NULL;
 	gint status;
 
 	store = CAMEL_NNTP_STORE (service);
 
-	url = camel_service_get_camel_url (service);
 	password = camel_service_get_password (service);
+	settings = camel_service_get_settings (service);
 
-	if (url->user == NULL) {
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	user = camel_network_settings_get_user (network_settings);
+
+	if (user == NULL) {
 		g_set_error_literal (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -493,7 +509,7 @@ nntp_store_authenticate_sync (CamelService *service,
 	/* XXX Currently only authinfo user/pass is supported. */
 	status = camel_nntp_raw_command (
 		store, cancellable, error, &line,
-		"authinfo user %s", url->user);
+		"authinfo user %s", user);
 	if (status == NNTP_AUTH_CONTINUE)
 		status = camel_nntp_raw_command (
 			store, cancellable, error, &line,

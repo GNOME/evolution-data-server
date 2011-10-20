@@ -128,7 +128,7 @@ typedef struct {
 typedef gint (*CamelProviderAutoDetectFunc) (CamelURL *url, GHashTable **auto_detected, GError **error);
 
 typedef struct {
-	/* Provider name used in CamelURLs. */
+	/* Provider protocol name (e.g. "imap", "smtp"). */
 	const gchar *protocol;
 
 	/* Provider name as used by people. (May be the same as protocol) */

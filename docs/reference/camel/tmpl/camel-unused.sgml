@@ -4443,6 +4443,12 @@ streams
 
 @parent: 
 
+<!-- ##### ARG CamelService:url ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### ARG CamelSession:data-dir ##### -->
 <para>
 
@@ -8869,7 +8875,23 @@ streams
 @error: 
 @Returns: 
 
+<!-- ##### FUNCTION camel_service_get_camel_url ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_service_get_path ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
+<!-- ##### FUNCTION camel_service_get_url ##### -->
 <para>
 
 </para>

@@ -61,12 +61,32 @@ struct _CamelNetworkSettingsInterface {
 
 GType		camel_network_settings_get_type
 					(void) G_GNUC_CONST;
+const gchar *	camel_network_settings_get_auth_mechanism
+					(CamelNetworkSettings *settings);
+void		camel_network_settings_set_auth_mechanism
+					(CamelNetworkSettings *settings,
+					 const gchar *auth_mechanism);
+const gchar *	camel_network_settings_get_host
+					(CamelNetworkSettings *settings);
+void		camel_network_settings_set_host
+					(CamelNetworkSettings *settings,
+					 const gchar *host);
+guint16		camel_network_settings_get_port
+					(CamelNetworkSettings *settings);
+void		camel_network_settings_set_port
+					(CamelNetworkSettings *settings,
+					 guint16 port);
 CamelNetworkSecurityMethod
 		camel_network_settings_get_security_method
 					(CamelNetworkSettings *settings);
 void		camel_network_settings_set_security_method
 					(CamelNetworkSettings *settings,
 					 CamelNetworkSecurityMethod method);
+const gchar *	camel_network_settings_get_user
+					(CamelNetworkSettings *settings);
+void		camel_network_settings_set_user
+					(CamelNetworkSettings *settings,
+					 const gchar *user);
 
 G_END_DECLS
 

@@ -208,7 +208,7 @@ Implementation of the calendar CORBA client interface.
 @opid: 
 @error: 
 @uid: 
-@object: 
+@component: 
 
 
 <!-- ##### FUNCTION e_data_cal_respond_modify_object ##### -->
@@ -219,8 +219,8 @@ Implementation of the calendar CORBA client interface.
 @cal: 
 @opid: 
 @error: 
-@old_object: 
-@object: 
+@old_component: 
+@component: 
 
 
 <!-- ##### FUNCTION e_data_cal_respond_remove_object ##### -->
@@ -232,8 +232,8 @@ Implementation of the calendar CORBA client interface.
 @opid: 
 @error: 
 @id: 
-@old_object: 
-@object: 
+@old_component: 
+@component: 
 
 
 <!-- ##### FUNCTION e_data_cal_respond_receive_objects ##### -->

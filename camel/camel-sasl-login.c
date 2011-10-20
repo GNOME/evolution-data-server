@@ -28,6 +28,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "camel-network-settings.h"
 #include "camel-sasl-login.h"
 #include "camel-service.h"
 
@@ -59,17 +60,23 @@ sasl_login_challenge_sync (CamelSasl *sasl,
                            GError **error)
 {
 	CamelSaslLoginPrivate *priv;
-	GByteArray *buf = NULL;
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
 	CamelService *service;
-	CamelURL *url;
+	GByteArray *buf = NULL;
 	const gchar *password;
+	const gchar *user;
 
 	priv = CAMEL_SASL_LOGIN (sasl)->priv;
 
 	service = camel_sasl_get_service (sasl);
 
-	url = camel_service_get_camel_url (service);
-	g_return_val_if_fail (url->user != NULL, NULL);
+	settings = camel_service_get_settings (service);
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	user = camel_network_settings_get_user (network_settings);
+	g_return_val_if_fail (user != NULL, NULL);
 
 	password = camel_service_get_password (service);
 	g_return_val_if_fail (password != NULL, NULL);
@@ -81,7 +88,7 @@ sasl_login_challenge_sync (CamelSasl *sasl,
 	switch (priv->state) {
 	case LOGIN_USER:
 		buf = g_byte_array_new ();
-		g_byte_array_append (buf, (guint8 *) url->user, strlen (url->user));
+		g_byte_array_append (buf, (guint8 *) user, strlen (user));
 		break;
 	case LOGIN_PASSWD:
 		buf = g_byte_array_new ();

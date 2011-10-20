@@ -865,6 +865,25 @@ camel_junk_filter_get_type
 </SECTION>
 
 <SECTION>
+<FILE>camel-local-settings</FILE>
+<TITLE>CamelLocalSettings</TITLE>
+CamelLocalSettings
+camel_local_settings_get_path
+camel_local_settings_set_path
+<SUBSECTION Standard>
+CAMEL_LOCAL_SETTINGS
+CAMEL_IS_LOCAL_SETTINGS
+CAMEL_TYPE_LOCAL_SETTINGS
+CAMEL_LOCAL_SETTINGS_CLASS
+CAMEL_IS_LOCAL_SETTINGS_CLASS
+CAMEL_LOCAL_SETTINGS_GET_CLASS
+CamelLocalSettingsClass
+<SUBSECTION Private>
+CamelLocalSettingsPrivate
+camel_local_settings_get_type
+</SECTION>
+
+<SECTION>
 <FILE>camel-medium</FILE>
 <TITLE>CamelMedium</TITLE>
 CamelMedium
@@ -1499,9 +1518,17 @@ camel_network_service_get_type
 <FILE>camel-network-settings</FILE>
 <TITLE>CamelNetworkSettings</TITLE>
 CamelNetworkSettings
+camel_network_settings_get_auth_mechanism
+camel_network_settings_set_auth_mechanism
+camel_network_settings_get_host
+camel_network_settings_set_host
+camel_network_settings_get_port
+camel_network_settings_set_port
 CamelNetworkSecurityMethod
 camel_network_settings_get_security_method
 camel_network_settings_set_security_method
+camel_network_settings_get_user
+camel_network_settings_set_user
 <SUBSECTION Standard>
 CAMEL_NETWORK_SETTINGS
 CAMEL_IS_NETWORK_SETTINGS
@@ -1955,6 +1982,8 @@ CAMEL_SERVICE_ERROR
 CamelServiceError
 CamelServiceConnectionStatus
 CamelServiceAuthType
+camel_service_migrate_files
+camel_service_new_camel_url
 camel_service_get_display_name
 camel_service_set_display_name
 camel_service_get_password
@@ -1967,8 +1996,6 @@ camel_service_get_session
 camel_service_get_settings
 camel_service_set_settings
 camel_service_get_uid
-camel_service_get_camel_url
-camel_service_get_url
 camel_service_cancel_connect
 camel_service_connect_sync
 camel_service_disconnect_sync

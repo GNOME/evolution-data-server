@@ -30,6 +30,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-mime-utils.h"
+#include "camel-network-settings.h"
 #include "camel-sasl-cram-md5.h"
 #include "camel-service.h"
 
@@ -59,12 +60,14 @@ sasl_cram_md5_challenge_sync (CamelSasl *sasl,
                               GCancellable *cancellable,
                               GError **error)
 {
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
 	CamelService *service;
 	GChecksum *checksum;
-	CamelURL *url;
 	guint8 *digest;
 	gsize length;
 	const gchar *hex;
+	const gchar *user;
 	const gchar *password;
 	GByteArray *ret = NULL;
 	guchar ipad[64];
@@ -77,8 +80,12 @@ sasl_cram_md5_challenge_sync (CamelSasl *sasl,
 
 	service = camel_sasl_get_service (sasl);
 
-	url = camel_service_get_camel_url (service);
-	g_return_val_if_fail (url->user != NULL, NULL);
+	settings = camel_service_get_settings (service);
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	user = camel_network_settings_get_user (network_settings);
+	g_return_val_if_fail (user != NULL, NULL);
 
 	password = camel_service_get_password (service);
 	g_return_val_if_fail (password != NULL, NULL);
@@ -122,7 +129,7 @@ sasl_cram_md5_challenge_sync (CamelSasl *sasl,
 	hex = g_checksum_get_string (checksum);
 
 	ret = g_byte_array_new ();
-	g_byte_array_append (ret, (guint8 *) url->user, strlen (url->user));
+	g_byte_array_append (ret, (guint8 *) user, strlen (user));
 	g_byte_array_append (ret, (guint8 *) " ", 1);
 	g_byte_array_append (ret, (guint8 *) hex, strlen (hex));
 

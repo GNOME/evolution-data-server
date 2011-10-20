@@ -29,9 +29,13 @@ struct _CamelNNTPSettingsPrivate {
 
 enum {
 	PROP_0,
+	PROP_AUTH_MECHANISM,
 	PROP_FOLDER_HIERARCHY_RELATIVE,
+	PROP_HOST,
+	PROP_PORT,
 	PROP_SECURITY_METHOD,
-	PROP_SHORT_FOLDER_NAMES
+	PROP_SHORT_FOLDER_NAMES,
+	PROP_USER
 };
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -48,10 +52,28 @@ nntp_settings_set_property (GObject *object,
                             GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_AUTH_MECHANISM:
+			camel_network_settings_set_auth_mechanism (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_FOLDER_HIERARCHY_RELATIVE:
 			camel_nntp_settings_set_folder_hierarchy_relative (
 				CAMEL_NNTP_SETTINGS (object),
 				g_value_get_boolean (value));
+			return;
+
+		case PROP_HOST:
+			camel_network_settings_set_host (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_PORT:
+			camel_network_settings_set_port (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_uint (value));
 			return;
 
 		case PROP_SECURITY_METHOD:
@@ -65,6 +87,12 @@ nntp_settings_set_property (GObject *object,
 				CAMEL_NNTP_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
+
+		case PROP_USER:
+			camel_network_settings_set_user (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -77,11 +105,32 @@ nntp_settings_get_property (GObject *object,
                             GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_AUTH_MECHANISM:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_auth_mechanism (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
 		case PROP_FOLDER_HIERARCHY_RELATIVE:
 			g_value_set_boolean (
 				value,
 				camel_nntp_settings_get_folder_hierarchy_relative (
 				CAMEL_NNTP_SETTINGS (object)));
+			return;
+
+		case PROP_HOST:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_host (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
+		case PROP_PORT:
+			g_value_set_uint (
+				value,
+				camel_network_settings_get_port (
+				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
 		case PROP_SECURITY_METHOD:
@@ -96,6 +145,13 @@ nntp_settings_get_property (GObject *object,
 				value,
 				camel_nntp_settings_get_short_folder_names (
 				CAMEL_NNTP_SETTINGS (object)));
+			return;
+
+		case PROP_USER:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_user (
+				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 	}
 
@@ -113,6 +169,12 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 	object_class->set_property = nntp_settings_set_property;
 	object_class->get_property = nntp_settings_get_property;
 
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_AUTH_MECHANISM,
+		"auth-mechanism");
+
 	g_object_class_install_property (
 		object_class,
 		PROP_FOLDER_HIERARCHY_RELATIVE,
@@ -124,6 +186,18 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_HOST,
+		"host");
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_PORT,
+		"port");
 
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
@@ -142,6 +216,12 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_USER,
+		"user");
 }
 
 static void

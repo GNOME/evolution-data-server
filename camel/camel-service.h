@@ -160,6 +160,8 @@ typedef struct {
 
 GType		camel_service_get_type		(void);
 GQuark		camel_service_error_quark	(void) G_GNUC_CONST;
+void		camel_service_migrate_files	(CamelService *service);
+CamelURL *	camel_service_new_camel_url	(CamelService *service);
 const gchar *	camel_service_get_display_name	(CamelService *service);
 void		camel_service_set_display_name	(CamelService *service,
 						 const gchar *display_name);
@@ -178,8 +180,6 @@ CamelSettings *	camel_service_get_settings	(CamelService *service);
 void		camel_service_set_settings	(CamelService *service,
 						 CamelSettings *settings);
 const gchar *	camel_service_get_uid		(CamelService *service);
-CamelURL *	camel_service_get_camel_url	(CamelService *service);
-gchar *		camel_service_get_url		(CamelService *service);
 void		camel_service_cancel_connect	(CamelService *service);
 gboolean	camel_service_connect_sync	(CamelService *service,
 						 GError **error);

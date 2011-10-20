@@ -337,11 +337,25 @@ camel_imap_command_response (CamelImapStore *store,
                              GCancellable *cancellable,
                              GError **error)
 {
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
+	CamelService *service;
+	CamelSession *session;
 	CamelImapResponseType type;
+	const gchar *host;
+	const gchar *user;
 	gchar *respbuf;
 
+	service = CAMEL_SERVICE (store);
+	session = camel_service_get_session (service);
+	settings = camel_service_get_settings (service);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	user = camel_network_settings_get_user (network_settings);
+
 	if (camel_imap_store_readline (store, &respbuf, cancellable, error) < 0) {
-		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+		camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return CAMEL_IMAP_RESPONSE_ERROR;
 	}
 
@@ -357,8 +371,7 @@ camel_imap_command_response (CamelImapStore *store,
 				err = g_strerror (104);
 
 			/* Connection was lost, no more data to fetch */
-			camel_service_disconnect_sync (
-				CAMEL_SERVICE (store), FALSE, NULL);
+			camel_service_disconnect_sync (service, FALSE, NULL);
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_UNAVAILABLE,
@@ -379,21 +392,14 @@ camel_imap_command_response (CamelImapStore *store,
 		else if (!g_ascii_strncasecmp (respbuf, "* OK [ALERT]", 12)
 			 || !g_ascii_strncasecmp (respbuf, "* NO [ALERT]", 12)
 			 || !g_ascii_strncasecmp (respbuf, "* BAD [ALERT]", 13)) {
-			CamelService *service;
-			CamelSession *session;
-			CamelURL *url;
 			gchar *msg;
 
 			/* for imap ALERT codes, account user@host */
 			/* we might get a ']' from a BAD response since we +12,
 			 * but who cares? */
-			service = CAMEL_SERVICE (store);
-			url = camel_service_get_camel_url (service);
-			session = camel_service_get_session (service);
-
 			msg = g_strdup_printf (
 				_("Alert from IMAP server %s@%s:\n%s"),
-				url->user, url->host, respbuf + 12);
+				user, host, respbuf + 12);
 			camel_session_alert_user (
 				session, CAMEL_SESSION_ALERT_WARNING,
 				msg, FALSE);
@@ -412,7 +418,7 @@ camel_imap_command_response (CamelImapStore *store,
 
 	if (type == CAMEL_IMAP_RESPONSE_ERROR ||
 	    type == CAMEL_IMAP_RESPONSE_TAGGED)
-		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+		camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return type;
 }

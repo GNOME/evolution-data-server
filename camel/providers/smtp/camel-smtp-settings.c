@@ -24,7 +24,11 @@
 
 enum {
 	PROP_0,
-	PROP_SECURITY_METHOD
+	PROP_AUTH_MECHANISM,
+	PROP_HOST,
+	PROP_PORT,
+	PROP_SECURITY_METHOD,
+	PROP_USER
 };
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -41,10 +45,34 @@ smtp_settings_set_property (GObject *object,
                             GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_AUTH_MECHANISM:
+			camel_network_settings_set_auth_mechanism (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_HOST:
+			camel_network_settings_set_host (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_PORT:
+			camel_network_settings_set_port (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_uint (value));
+			return;
+
 		case PROP_SECURITY_METHOD:
 			camel_network_settings_set_security_method (
 				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_enum (value));
+			return;
+
+		case PROP_USER:
+			camel_network_settings_set_user (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
 			return;
 	}
 
@@ -58,10 +86,38 @@ smtp_settings_get_property (GObject *object,
                             GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_AUTH_MECHANISM:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_auth_mechanism (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
+		case PROP_HOST:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_host (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
+		case PROP_PORT:
+			g_value_set_uint (
+				value,
+				camel_network_settings_get_port (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
 		case PROP_SECURITY_METHOD:
 			g_value_set_enum (
 				value,
 				camel_network_settings_get_security_method (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
+		case PROP_USER:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_user (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 	}
@@ -81,8 +137,32 @@ camel_smtp_settings_class_init (CamelSmtpSettingsClass *class)
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
 		object_class,
+		PROP_AUTH_MECHANISM,
+		"auth-mechanism");
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_HOST,
+		"host");
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_PORT,
+		"port");
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
 		PROP_SECURITY_METHOD,
 		"security-method");
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_USER,
+		"user");
 }
 
 static void

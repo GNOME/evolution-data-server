@@ -40,6 +40,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-net-utils.h"
+#include "camel-network-settings.h"
 #include "camel-sasl-gssapi.h"
 #include "camel-session.h"
 
@@ -196,7 +197,7 @@ sasl_gssapi_finalize (GObject *object)
 /* DBUS Specific code */
 
 static gboolean
-send_dbus_message (gchar *name)
+send_dbus_message (const gchar *name)
 {
 	gint success = FALSE;
 	GError *error = NULL;
@@ -266,8 +267,9 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
                             GError **error)
 {
 	CamelSaslGssapiPrivate *priv;
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
 	CamelService *service;
-	CamelURL *url;
 	OM_uint32 major, minor, flags, time;
 	gss_buffer_desc inbuf, outbuf;
 	GByteArray *challenge = NULL;
@@ -278,21 +280,31 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 	gchar *str;
 	struct addrinfo *ai, hints;
 	const gchar *service_name;
+	const gchar *host;
+	const gchar *user;
 
 	priv = CAMEL_SASL_GSSAPI (sasl)->priv;
 
 	service = camel_sasl_get_service (sasl);
 	service_name = camel_sasl_get_service_name (sasl);
 
-	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	user = camel_network_settings_get_user (network_settings);
+	g_return_val_if_fail (user != NULL, NULL);
+
+	if (host == NULL)
+		host = "localhost";
 
 	switch (priv->state) {
 	case GSSAPI_STATE_INIT:
 		memset (&hints, 0, sizeof (hints));
 		hints.ai_flags = AI_CANONNAME;
 		ai = camel_getaddrinfo (
-			url->host ? url->host : "localhost",
-			NULL, &hints, cancellable, error);
+			host, NULL, &hints, cancellable, error);
 		if (ai == NULL)
 			return NULL;
 
@@ -344,7 +356,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 			if (major == (OM_uint32) GSS_S_FAILURE &&
 			    (minor == (OM_uint32) KRB5KRB_AP_ERR_TKT_EXPIRED ||
 			     minor == (OM_uint32) KRB5KDC_ERR_NEVER_VALID) &&
-			    send_dbus_message (url->user))
+			    send_dbus_message (user))
 					goto challenge;
 
 			gssapi_set_exception (major, minor, error);
@@ -398,11 +410,11 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 			return NULL;
 		}
 
-		inbuf.length = 4 + strlen (url->user);
+		inbuf.length = 4 + strlen (user);
 		inbuf.value = str = g_malloc (inbuf.length);
 		memcpy (inbuf.value, outbuf.value, 4);
 		str[0] = DESIRED_SECURITY_LAYER;
-		memcpy (str + 4, url->user, inbuf.length - 4);
+		memcpy (str + 4, user, inbuf.length - 4);
 
 #ifndef HAVE_HEIMDAL_KRB5
 		gss_release_buffer (&minor, &outbuf);

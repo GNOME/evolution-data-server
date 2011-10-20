@@ -1426,8 +1426,6 @@ vee_folder_synchronize_sync (CamelFolder *folder,
 	}
 	camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 
-	camel_object_state_write (CAMEL_OBJECT (vf));
-
 	return TRUE;
 }
 
@@ -2079,7 +2077,6 @@ camel_vee_folder_new (CamelStore *parent_store,
                       guint32 flags)
 {
 	CamelVeeFolder *vf;
-	gchar *tmp;
 
 	g_return_val_if_fail (CAMEL_IS_STORE (parent_store), NULL);
 	g_return_val_if_fail (full != NULL, NULL);
@@ -2103,18 +2100,6 @@ camel_vee_folder_new (CamelStore *parent_store,
 
 	d (printf ("returning folder %s %p, count = %d\n", full, vf, camel_folder_get_message_count ((CamelFolder *)vf)));
 
-	if (vf) {
-		CamelObject *object = CAMEL_OBJECT (vf);
-		CamelURL *url;
-
-		url = camel_service_get_camel_url (CAMEL_SERVICE (parent_store));
-		tmp = g_strdup_printf ("%s/%s.cmeta", url->path, full);
-		camel_object_set_state_filename (object, tmp);
-		g_free (tmp);
-		if (camel_object_state_read (object) == -1) {
-			/* setup defaults: we have none currently */
-		}
-	}
 	return (CamelFolder *) vf;
 }
 
@@ -2358,7 +2343,7 @@ camel_vee_folder_hash_folder (CamelFolder *folder,
 	gsize length;
 	gint state = 0, save = 0;
 	const gchar *full_name;
-	gchar *tmp;
+	const gchar *uid;
 	gint i;
 
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
@@ -2366,9 +2351,8 @@ camel_vee_folder_hash_folder (CamelFolder *folder,
 
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	parent_store = camel_folder_get_parent_store (folder);
-	tmp = camel_service_get_url (CAMEL_SERVICE (parent_store));
-	g_checksum_update (checksum, (guchar *) tmp, -1);
-	g_free (tmp);
+	uid = camel_service_get_uid (CAMEL_SERVICE (parent_store));
+	g_checksum_update (checksum, (guchar *) uid, -1);
 
 	full_name = camel_folder_get_full_name (folder);
 	g_checksum_update (checksum, (guchar *) full_name, -1);

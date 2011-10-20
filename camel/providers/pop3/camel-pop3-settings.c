@@ -31,11 +31,15 @@ struct _CamelPOP3SettingsPrivate {
 
 enum {
 	PROP_0,
+	PROP_AUTH_MECHANISM,
 	PROP_DELETE_AFTER_DAYS,
 	PROP_DELETE_EXPUNGED,
 	PROP_DISABLE_EXTENSIONS,
+	PROP_HOST,
 	PROP_KEEP_ON_SERVER,
-	PROP_SECURITY_METHOD
+	PROP_PORT,
+	PROP_SECURITY_METHOD,
+	PROP_USER
 };
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -52,6 +56,12 @@ pop3_settings_set_property (GObject *object,
                             GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_AUTH_MECHANISM:
+			camel_network_settings_set_auth_mechanism (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_DELETE_AFTER_DAYS:
 			camel_pop3_settings_set_delete_after_days (
 				CAMEL_POP3_SETTINGS (object),
@@ -70,16 +80,34 @@ pop3_settings_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_HOST:
+			camel_network_settings_set_host (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_KEEP_ON_SERVER:
 			camel_pop3_settings_set_keep_on_server (
 				CAMEL_POP3_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_PORT:
+			camel_network_settings_set_port (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_uint (value));
+			return;
+
 		case PROP_SECURITY_METHOD:
 			camel_network_settings_set_security_method (
 				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_enum (value));
+			return;
+
+		case PROP_USER:
+			camel_network_settings_set_user (
+				CAMEL_NETWORK_SETTINGS (object),
+				g_value_get_string (value));
 			return;
 	}
 
@@ -93,6 +121,13 @@ pop3_settings_get_property (GObject *object,
                             GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_AUTH_MECHANISM:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_auth_mechanism (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
 		case PROP_DELETE_AFTER_DAYS:
 			g_value_set_int (
 				value,
@@ -114,6 +149,13 @@ pop3_settings_get_property (GObject *object,
 				CAMEL_POP3_SETTINGS (object)));
 			return;
 
+		case PROP_HOST:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_host (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
 		case PROP_KEEP_ON_SERVER:
 			g_value_set_boolean (
 				value,
@@ -121,10 +163,24 @@ pop3_settings_get_property (GObject *object,
 				CAMEL_POP3_SETTINGS (object)));
 			return;
 
+		case PROP_PORT:
+			g_value_set_uint (
+				value,
+				camel_network_settings_get_port (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
 		case PROP_SECURITY_METHOD:
 			g_value_set_enum (
 				value,
 				camel_network_settings_get_security_method (
+				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
+		case PROP_USER:
+			g_value_set_string (
+				value,
+				camel_network_settings_get_user (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 	}
@@ -142,6 +198,12 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = pop3_settings_set_property;
 	object_class->get_property = pop3_settings_get_property;
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_AUTH_MECHANISM,
+		"auth-mechanism");
 
 	g_object_class_install_property (
 		object_class,
@@ -181,6 +243,12 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
 
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_HOST,
+		"host");
+
 	g_object_class_install_property (
 		object_class,
 		PROP_KEEP_ON_SERVER,
@@ -196,8 +264,20 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 	/* Inherited from CamelNetworkSettings. */
 	g_object_class_override_property (
 		object_class,
+		PROP_PORT,
+		"port");
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
 		PROP_SECURITY_METHOD,
 		"security-method");
+
+	/* Inherited from CamelNetworkSettings. */
+	g_object_class_override_property (
+		object_class,
+		PROP_USER,
+		"user");
 }
 
 static void

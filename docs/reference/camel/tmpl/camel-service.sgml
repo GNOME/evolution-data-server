@@ -56,11 +56,6 @@ CamelService
 
 </para>
 
-<!-- ##### ARG CamelService:url ##### -->
-<para>
-
-</para>
-
 <!-- ##### MACRO CAMEL_SERVICE_ERROR ##### -->
 <para>
 
@@ -98,6 +93,23 @@ CamelService
 @description: 
 @authproto: 
 @need_password: 
+
+<!-- ##### FUNCTION camel_service_migrate_files ##### -->
+<para>
+
+</para>
+
+@service: 
+
+
+<!-- ##### FUNCTION camel_service_new_camel_url ##### -->
+<para>
+
+</para>
+
+@service: 
+@Returns: 
+
 
 <!-- ##### FUNCTION camel_service_get_display_name ##### -->
 <para>
@@ -200,24 +212,6 @@ CamelService
 
 
 <!-- ##### FUNCTION camel_service_get_uid ##### -->
-<para>
-
-</para>
-
-@service: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_service_get_camel_url ##### -->
-<para>
-
-</para>
-
-@service: 
-@Returns: 
-
-
-<!-- ##### FUNCTION camel_service_get_url ##### -->
 <para>
 
 </para>

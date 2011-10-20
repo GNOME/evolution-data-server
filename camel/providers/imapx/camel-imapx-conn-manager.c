@@ -354,12 +354,10 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man,
 	CamelIMAPXStore *imapx_store;
 	CamelStore *store = con_man->priv->store;
 	CamelService *service;
-	CamelURL *url;
 	ConnectionInfo *cinfo = NULL;
 	gboolean success;
 
 	service = CAMEL_SERVICE (store);
-	url = camel_service_get_camel_url (service);
 
 	imapx_store = CAMEL_IMAPX_STORE (store);
 
@@ -367,7 +365,7 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man,
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	conn = camel_imapx_server_new (store, url);
+	conn = camel_imapx_server_new (store);
 
 	/* XXX As part of the connect operation the CamelIMAPXServer will
 	 *     have to call camel_session_authenticate_sync(), but it has

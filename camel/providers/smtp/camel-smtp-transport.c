@@ -101,10 +101,11 @@ connect_to_server (CamelService *service,
                    GError **error)
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
+	CamelNetworkSettings *network_settings;
 	CamelNetworkSecurityMethod method;
 	CamelSettings *settings;
-	CamelURL *url;
 	CamelStream *tcp_stream;
+	const gchar *host;
 	gchar *respbuf = NULL;
 
 	if (!CAMEL_SERVICE_CLASS (camel_smtp_transport_parent_class)->
@@ -115,10 +116,11 @@ connect_to_server (CamelService *service,
 	transport->flags = 0;
 	transport->authtypes = NULL;
 
-	url = camel_service_get_camel_url (service);
 	settings = camel_service_get_settings (service);
 
-	g_object_get (settings, "security-method", &method, NULL);
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	method = camel_network_settings_get_security_method (network_settings);
 
 	tcp_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
@@ -184,7 +186,7 @@ connect_to_server (CamelService *service,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Failed to connect to SMTP server %s in secure mode: %s"),
-			url->host, _("STARTTLS not supported"));
+			host, _("STARTTLS not supported"));
 
 		goto exception_cleanup;
 	}
@@ -223,7 +225,7 @@ connect_to_server (CamelService *service,
 		g_prefix_error (
 			error,
 			_("Failed to connect to SMTP server %s in secure mode: "),
-			url->host);
+			host);
 		goto exception_cleanup;
 	}
 
@@ -262,18 +264,21 @@ static gchar *
 smtp_transport_get_name (CamelService *service,
                          gboolean brief)
 {
-	CamelURL *url;
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
+	const gchar *host;
 
-	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
 
 	if (brief)
 		return g_strdup_printf (
-			_("SMTP server %s"),
-			url->host);
+			_("SMTP server %s"), host);
 	else
 		return g_strdup_printf (
-			_("SMTP mail delivery via %s"),
-			url->host);
+			_("SMTP mail delivery via %s"), host);
 }
 
 static gboolean
@@ -282,13 +287,18 @@ smtp_transport_connect_sync (CamelService *service,
                              GError **error)
 {
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
-	CamelURL *url;
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
+	const gchar *host;
 	const gchar *mechanism;
 	gboolean auth_required;
 	gboolean success = TRUE;
 
-	url = camel_service_get_camel_url (service);
-	mechanism = url->authmech;
+	settings = camel_service_get_settings (service);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	mechanism = camel_network_settings_get_auth_mechanism (network_settings);
 
 	/* We (probably) need to check popb4smtp before we connect ... */
 	if (g_strcmp0 (mechanism, "POPB4SMTP") == 0) {
@@ -333,7 +343,7 @@ smtp_transport_connect_sync (CamelService *service,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("SMTP server %s does not support %s "
-				  "authentication"), url->host, mechanism);
+				  "authentication"), host, mechanism);
 			success = FALSE;
 		}
 

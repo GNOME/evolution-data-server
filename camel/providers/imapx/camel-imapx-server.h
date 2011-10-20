@@ -64,7 +64,6 @@ struct _CamelIMAPXServer {
 	CamelSession *session;
 
 	/* Info about the current connection */
-	CamelURL *url;
 	CamelIMAPXStream *stream;
 	struct _capability_info *cinfo;
 	gboolean is_process_stream;
@@ -137,8 +136,7 @@ struct _CamelIMAPXServerClass {
 
 GType		camel_imapx_server_get_type	(void);
 CamelIMAPXServer *
-		camel_imapx_server_new		(CamelStore *store,
-						 CamelURL *url);
+		camel_imapx_server_new		(CamelStore *store);
 gboolean	camel_imapx_server_connect	(CamelIMAPXServer *is,
 						 GCancellable *cancellable,
 						 GError **error);

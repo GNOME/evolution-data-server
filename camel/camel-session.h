@@ -107,7 +107,7 @@ struct _CamelSessionClass {
 
 	CamelService *	(*add_service)		(CamelSession *session,
 						 const gchar *uid,
-						 const gchar *url_string,
+						 const gchar *protocol,
 						 CamelProviderType type,
 						 GError **error);
 	gchar *		(*get_password)		(CamelSession *session,

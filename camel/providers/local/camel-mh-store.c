@@ -64,7 +64,7 @@ folders_update (const gchar *root,
 	folder_newline = g_strdup_printf ("%s\n", folder);
 
 	tmpnew = g_alloca (strlen (root) + 16);
-	sprintf (tmpnew, "%s.folders~", root);
+	sprintf (tmpnew, "%s" G_DIR_SEPARATOR_S ".folders~", root);
 
 	out = camel_stream_fs_new_with_name (
 		tmpnew, O_WRONLY | O_CREAT | O_TRUNC, 0666, NULL);
@@ -72,7 +72,7 @@ folders_update (const gchar *root,
 		goto fail;
 
 	tmp = g_alloca (strlen (root) + 16);
-	sprintf (tmp, "%s.folders", root);
+	sprintf (tmp, "%s" G_DIR_SEPARATOR_S ".folders", root);
 	stream = camel_stream_fs_new_with_name (tmp, O_RDONLY, 0, NULL);
 	if (stream) {
 		in = camel_stream_buffer_new (stream, CAMEL_STREAM_BUFFER_READ);
@@ -201,9 +201,20 @@ fill_fi (CamelStore *store,
 		g_object_unref (folder);
 
 	} else {
-		gchar *path, *folderpath;
+		CamelLocalSettings *local_settings;
+		CamelSettings *settings;
+		CamelService *service;
+		gchar *filename;
+		gchar *folderpath;
 		CamelFolderSummary *s;
-		const gchar *root;
+		const gchar *path;
+		gchar *basename;
+
+		service = CAMEL_SERVICE (store);
+		settings = camel_service_get_settings (service);
+
+		local_settings = CAMEL_LOCAL_SETTINGS (settings);
+		path = camel_local_settings_get_path (local_settings);
 
 		/* This should be fast enough not to have to test for INFO_FAST */
 
@@ -211,12 +222,13 @@ fill_fi (CamelStore *store,
 		 * scan of all messages for their status flags.  But its probably not worth
 		 * it as we need to read the top of every file, i.e. very very slow */
 
-		root = camel_local_store_get_toplevel_dir (local_store);
-		path = g_strdup_printf (
-			"%s/%s.ev-summary", root, fi->full_name);
-		folderpath = g_strdup_printf ("%s/%s", root, fi->full_name);
+		basename = g_strdup_printf ("%s.ev-summary", fi->full_name);
+		filename = g_build_filename (path, basename, NULL);
+		g_free (basename);
+
+		folderpath = g_strdup_printf ("%s/%s", path, fi->full_name);
 		s = (CamelFolderSummary *) camel_mh_summary_new (
-			NULL, path, folderpath, NULL);
+			NULL, filename, folderpath, NULL);
 		if (camel_folder_summary_header_load_from_db (
 			s, store, fi->full_name, NULL)) {
 			fi->unread = camel_folder_summary_get_unread_count (s);
@@ -224,7 +236,7 @@ fill_fi (CamelStore *store,
 		}
 		g_object_unref (s);
 		g_free (folderpath);
-		g_free (path);
+		g_free (filename);
 	}
 
 	if (camel_local_store_is_main_store (local_store) && fi->full_name
@@ -474,17 +486,19 @@ mh_store_get_folder_sync (CamelStore *store,
                           GError **error)
 {
 	CamelStoreClass *store_class;
-	CamelLocalStore *local_store;
-	CamelService *service;
+	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
+	CamelService *service;
 	gboolean use_dot_folders;
+	const gchar *path;
 	gchar *name;
 	struct stat st;
 
-	local_store = CAMEL_LOCAL_STORE (store);
-
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
 
 	use_dot_folders = camel_mh_settings_get_use_dot_folders (
 		CAMEL_MH_SETTINGS (settings));
@@ -495,7 +509,7 @@ mh_store_get_folder_sync (CamelStore *store,
 		store, folder_name, flags, cancellable, error) == NULL)
 		return NULL;
 
-	name = g_strconcat (local_store->toplevel_dir, folder_name, NULL);
+	name = g_build_filename (path, folder_name, NULL);
 
 	if (g_stat (name, &st) == -1) {
 		if (errno != ENOENT) {
@@ -532,8 +546,8 @@ mh_store_get_folder_sync (CamelStore *store,
 		/* FIXME: throw exception on error */
 		if (use_dot_folders)
 			folders_update (
-				local_store->toplevel_dir,
-				UPDATE_ADD, folder_name, NULL, cancellable);
+				path, UPDATE_ADD, folder_name,
+				NULL, cancellable);
 
 	} else if (!S_ISDIR (st.st_mode)) {
 		g_set_error (
@@ -566,15 +580,18 @@ mh_store_get_folder_info_sync (CamelStore *store,
                                GCancellable *cancellable,
                                GError **error)
 {
+	CamelLocalSettings *local_settings;
 	CamelService *service;
 	CamelSettings *settings;
 	CamelFolderInfo *fi = NULL;
-	CamelURL *url;
 	gboolean use_dot_folders;
+	const gchar *path;
 
 	service = CAMEL_SERVICE (store);
-	url = camel_service_get_camel_url (service);
 	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
 
 	use_dot_folders = camel_mh_settings_get_use_dot_folders (
 		CAMEL_MH_SETTINGS (settings));
@@ -582,7 +599,7 @@ mh_store_get_folder_info_sync (CamelStore *store,
 	/* use .folders if we are supposed to */
 	if (use_dot_folders) {
 		folders_scan (
-			store, url->path, top, &fi, flags, cancellable);
+			store, path, top, &fi, flags, cancellable);
 	} else {
 		GHashTable *visited;
 
@@ -592,8 +609,8 @@ mh_store_get_folder_info_sync (CamelStore *store,
 			top = "";
 
 		recursive_scan (
-			store, &fi, NULL, visited, url->path,
-			top, flags, cancellable);
+			store, &fi, NULL, visited,
+			path, top, flags, cancellable);
 
 		/* If we actually scanned from root,
 		 * we have a "" root node we dont want. */
@@ -629,22 +646,24 @@ mh_store_delete_folder_sync (CamelStore *store,
                              GError **error)
 {
 	CamelStoreClass *store_class;
-	CamelLocalStore *local_store;
-	CamelService *service;
+	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
+	CamelService *service;
 	gboolean use_dot_folders;
+	const gchar *path;
 	gchar *name;
-
-	local_store = CAMEL_LOCAL_STORE (store);
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
 
 	use_dot_folders = camel_mh_settings_get_use_dot_folders (
 		CAMEL_MH_SETTINGS (settings));
 
 	/* remove folder directory - will fail if not empty */
-	name = g_strconcat (local_store->toplevel_dir, folder_name, NULL);
+	name = g_build_filename (path, folder_name, NULL);
 	if (rmdir (name) == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
@@ -659,8 +678,8 @@ mh_store_delete_folder_sync (CamelStore *store,
 	/* remove from .folders if we are supposed to */
 	if (use_dot_folders)
 		folders_update (
-			local_store->toplevel_dir,
-			UPDATE_REMOVE, folder_name, NULL, cancellable);
+			path, UPDATE_REMOVE, folder_name,
+			NULL, cancellable);
 
 	/* Chain up to parent's delete_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);
@@ -676,15 +695,17 @@ mh_store_rename_folder_sync (CamelStore *store,
                              GError **error)
 {
 	CamelStoreClass *store_class;
-	CamelLocalStore *local_store;
-	CamelService *service;
+	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
+	CamelService *service;
 	gboolean use_dot_folders;
-
-	local_store = CAMEL_LOCAL_STORE (store);
+	const gchar *path;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
 
 	use_dot_folders = camel_mh_settings_get_use_dot_folders (
 		CAMEL_MH_SETTINGS (settings));
@@ -698,8 +719,7 @@ mh_store_rename_folder_sync (CamelStore *store,
 	if (use_dot_folders) {
 		/* yeah this is messy, but so is mh! */
 		folders_update (
-			local_store->toplevel_dir,
-			UPDATE_RENAME, old, new, cancellable);
+			path, UPDATE_RENAME, old, new, cancellable);
 	}
 
 	return TRUE;

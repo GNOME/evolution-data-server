@@ -63,10 +63,18 @@ xrename (const gchar *oldp,
          GError **error)
 {
 	struct stat st;
-	gchar *old = g_strconcat (prefix, oldp, suffix, NULL);
-	gchar *new = g_strconcat (prefix, newp, suffix, NULL);
+	gchar *old, *new;
+	gchar *basename;
 	gint ret = -1;
 	gint err = 0;
+
+	basename = g_strconcat (oldp, suffix, NULL);
+	old = g_build_filename (prefix, basename, NULL);
+	g_free (basename);
+
+	basename = g_strconcat (newp, suffix, NULL);
+	new = g_build_filename (prefix, basename, NULL);
+	g_free (basename);
 
 	d(printf("renaming %s%s to %s%s\n", oldp, suffix, newp, suffix));
 
@@ -134,24 +142,11 @@ local_store_get_property (GObject *object,
 }
 
 static void
-local_store_finalize (GObject *object)
-{
-	CamelLocalStore *local_store = CAMEL_LOCAL_STORE (object);
-
-	g_free (local_store->toplevel_dir);
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (camel_local_store_parent_class)->finalize (object);
-}
-
-static void
 local_store_constructed (GObject *object)
 {
 	CamelLocalStore *local_store;
 	CamelService *service;
-	CamelURL *url;
 	const gchar *uid;
-	gint len;
 
 	local_store = CAMEL_LOCAL_STORE (object);
 
@@ -160,13 +155,6 @@ local_store_constructed (GObject *object)
 
 	service = CAMEL_SERVICE (object);
 	uid = camel_service_get_uid (service);
-	url = camel_service_get_camel_url (service);
-
-	len = strlen (url->path);
-	if (!G_IS_DIR_SEPARATOR (url->path[len - 1]))
-		local_store->toplevel_dir = g_strdup_printf ("%s/", url->path);
-	else
-		local_store->toplevel_dir = g_strdup (url->path);
 
 	/* XXX This is Evolution-specific policy. */
 	local_store->is_main_store = (g_strcmp0 (uid, "local") == 0);
@@ -176,12 +164,19 @@ static gchar *
 local_store_get_name (CamelService *service,
                       gboolean brief)
 {
-	gchar *dir = ((CamelLocalStore *) service)->toplevel_dir;
+	CamelLocalSettings *local_settings;
+	CamelSettings *settings;
+	const gchar *path;
+
+	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
 
 	if (brief)
-		return g_strdup (dir);
+		return g_strdup (path);
 	else
-		return g_strdup_printf (_("Local mail file %s"), dir);
+		return g_strdup_printf (_("Local mail file %s"), path);
 }
 
 static gboolean
@@ -200,13 +195,17 @@ local_store_get_folder_sync (CamelStore *store,
                              GCancellable *cancellable,
                              GError **error)
 {
-	gint len = strlen (((CamelLocalStore *) store)->toplevel_dir);
-	gchar *path = g_alloca (len + 1);
+	CamelLocalSettings *local_settings;
+	CamelSettings *settings;
+	CamelService *service;
+	const gchar *path;
 	struct stat st;
 
-	strcpy (path, ((CamelLocalStore *) store)->toplevel_dir);
-	if (G_IS_DIR_SEPARATOR (path[len - 1]))
-		path[len - 1] = '\0';
+	service = CAMEL_SERVICE (store);
+	settings= camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
 
 	if (!g_path_is_absolute (path)) {
 		g_set_error (
@@ -342,11 +341,20 @@ local_store_create_folder_sync (CamelStore *store,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	gchar *path = ((CamelLocalStore *) store)->toplevel_dir;
-	gchar *name;
+	CamelLocalSettings *local_settings;
+	CamelSettings *settings;
+	CamelService *service;
 	CamelFolder *folder;
 	CamelFolderInfo *info = NULL;
+	const gchar *path;
+	gchar *name;
 	struct stat st;
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
 
 	/* This is a pretty hacky version of create folder, but should basically work */
 
@@ -400,13 +408,23 @@ local_store_delete_folder_sync (CamelStore *store,
                                 GCancellable *cancellable,
                                 GError **error)
 {
+	CamelLocalSettings *local_settings;
+	CamelSettings *settings;
+	CamelService *service;
 	CamelFolderInfo *fi;
 	CamelFolder *lf;
+	const gchar *path;
 	gchar *name;
 	gchar *str;
 
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
+
 	/* remove metadata only */
-	name = g_strdup_printf("%s%s", CAMEL_LOCAL_STORE(store)->toplevel_dir, folder_name);
+	name = g_build_filename (path, folder_name, NULL);
 	str = g_strdup_printf("%s.ibex", name);
 	if (camel_text_index_remove (str) == -1 && errno != ENOENT && errno != ENOTDIR) {
 		g_set_error (
@@ -469,10 +487,30 @@ local_store_rename_folder_sync (CamelStore *store,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	gchar *path = CAMEL_LOCAL_STORE (store)->toplevel_dir;
-	CamelLocalFolder *folder = NULL;
-	gchar *newibex = g_strdup_printf("%s%s.ibex", path, new);
-	gchar *oldibex = g_strdup_printf("%s%s.ibex", path, old);
+	CamelLocalFolder *folder;
+	CamelLocalSettings *local_settings;
+	CamelSettings *settings;
+	CamelService *service;
+	const gchar *path;
+	gchar *old_basename;
+	gchar *new_basename;
+	gchar *newibex;
+	gchar *oldibex;
+
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
+
+	old_basename = g_strdup_printf ("%s.ibex", old);
+	new_basename = g_strdup_printf ("%s.ibex", new);
+
+	oldibex = g_build_filename (path, old_basename, NULL);
+	newibex = g_build_filename (path, new_basename, NULL);
+
+	g_free (old_basename);
+	g_free (new_basename);
 
 	/* try to rollback failures, has obvious races */
 
@@ -542,7 +580,18 @@ static gchar *
 local_store_get_full_path (CamelLocalStore *ls,
                            const gchar *full_name)
 {
-	return g_strdup_printf ("%s%s", ls->toplevel_dir, full_name);
+	CamelLocalSettings *local_settings;
+	CamelSettings *settings;
+	CamelService *service;
+	const gchar *path;
+
+	service = CAMEL_SERVICE (ls);
+	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
+
+	return g_build_filename (path, full_name, NULL);
 }
 
 static gchar *
@@ -550,7 +599,24 @@ local_store_get_meta_path (CamelLocalStore *ls,
                            const gchar *full_name,
                            const gchar *ext)
 {
-	return g_strdup_printf ("%s%s%s", ls->toplevel_dir, full_name, ext);
+	CamelLocalSettings *local_settings;
+	CamelSettings *settings;
+	CamelService *service;
+	const gchar *path;
+	gchar *basename;
+	gchar *filename;
+
+	service = CAMEL_SERVICE (ls);
+	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
+
+	basename = g_strconcat (full_name, ext, NULL);
+	filename = g_build_filename (path, basename, NULL);
+	g_free (basename);
+
+	return filename;
 }
 
 static void
@@ -565,10 +631,10 @@ camel_local_store_class_init (CamelLocalStoreClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = local_store_set_property;
 	object_class->get_property = local_store_get_property;
-	object_class->finalize = local_store_finalize;
 	object_class->constructed = local_store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
+	service_class->settings_type = CAMEL_TYPE_LOCAL_SETTINGS;
 	service_class->get_name = local_store_get_name;
 
 	store_class = CAMEL_STORE_CLASS (class);
@@ -603,12 +669,6 @@ static void
 camel_local_store_init (CamelLocalStore *local_store)
 {
 	local_store->priv = CAMEL_LOCAL_STORE_GET_PRIVATE (local_store);
-}
-
-const gchar *
-camel_local_store_get_toplevel_dir (CamelLocalStore *store)
-{
-	return store->toplevel_dir;
 }
 
 /* Returns whether is this store used as 'On This Computer' main store */

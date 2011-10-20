@@ -151,10 +151,14 @@ local_folder_finalize (GObject *object)
 static void
 local_folder_constructed (GObject *object)
 {
+	CamelLocalSettings *local_settings;
+	CamelProvider *provider;
+	CamelSettings *settings;
+	CamelService *service;
 	CamelFolder *folder;
 	CamelStore *parent_store;
-	CamelURL *url;
 	const gchar *full_name;
+	const gchar *root_path;
 	const gchar *tmp;
 	gchar *description;
 	gchar *path;
@@ -163,11 +167,17 @@ local_folder_constructed (GObject *object)
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
-	url = camel_service_get_camel_url (CAMEL_SERVICE (parent_store));
-	if (url->path == NULL)
+	service = CAMEL_SERVICE (parent_store);
+	provider = camel_service_get_provider (service);
+	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	root_path = camel_local_settings_get_path (local_settings);
+
+	if (root_path == NULL)
 		return;
 
-	path = g_strdup_printf ("%s/%s", url->path, full_name);
+	path = g_strdup_printf ("%s/%s", root_path, full_name);
 
 	if ((tmp = getenv ("HOME")) && strncmp (tmp, path, strlen (tmp)) == 0)
 		/* Translators: This is used for a folder description,
@@ -177,7 +187,7 @@ local_folder_constructed (GObject *object)
 		description = g_strdup_printf (
 			_("~%s (%s)"),
 			path + strlen (tmp),
-			url->protocol);
+			provider->protocol);
 	else if ((tmp = "/var/spool/mail") && strncmp (tmp, path, strlen (tmp)) == 0)
 		/* Translators: This is used for a folder description, for
 		 * folders being under /var/spool/mail.  The first %s is
@@ -187,7 +197,7 @@ local_folder_constructed (GObject *object)
 		description = g_strdup_printf (
 			_("mailbox: %s (%s)"),
 			path + strlen (tmp),
-			url->protocol);
+			provider->protocol);
 	else if ((tmp = "/var/mail") && strncmp (tmp, path, strlen (tmp)) == 0)
 		/* Translators: This is used for a folder description, for
 		 * folders being under /var/mail.  The first %s is replaced
@@ -196,7 +206,7 @@ local_folder_constructed (GObject *object)
 		description = g_strdup_printf (
 			_("mailbox: %s (%s)"),
 			path + strlen (tmp),
-			url->protocol);
+			provider->protocol);
 	else
 		/* Translators: This is used for a folder description.
 		 * The first %s is replaced with a folder's full path,
@@ -204,7 +214,7 @@ local_folder_constructed (GObject *object)
 		 * mbox/maldir/... */
 		description = g_strdup_printf (
 			_("%s (%s)"), path,
-			url->protocol);
+			provider->protocol);
 
 	camel_folder_set_description (folder, description);
 
@@ -505,8 +515,10 @@ camel_local_folder_construct (CamelLocalFolder *lf,
                               GError **error)
 {
 	CamelFolder *folder;
-	const gchar *root_dir_path;
-	gchar *tmp, *statepath;
+	CamelLocalSettings *local_settings;
+	CamelSettings *settings;
+	CamelService *service;
+	gchar *statepath;
 #ifndef G_OS_WIN32
 #ifdef __GLIBC__
 	gchar *folder_path;
@@ -515,28 +527,27 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 #endif
 	struct stat st;
 #endif
-	gint forceindex, len;
+	gint forceindex;
 	CamelLocalStore *ls;
 	CamelStore *parent_store;
 	const gchar *full_name;
+	const gchar *path;
 	gboolean need_summary_check;
 
 	folder = CAMEL_FOLDER (lf);
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_get_path (local_settings);
+
 	ls = CAMEL_LOCAL_STORE (parent_store);
 	need_summary_check = camel_local_store_get_need_summary_check (ls);
 
-	root_dir_path = camel_local_store_get_toplevel_dir (ls);
-	/* strip the trailing '/' which is always present */
-	len = strlen (root_dir_path);
-	tmp = g_alloca (len + 1);
-	strcpy (tmp, root_dir_path);
-	if (len > 1 && G_IS_DIR_SEPARATOR (tmp[len - 1]))
-		tmp[len - 1] = 0;
-
-	lf->base_path = g_strdup (root_dir_path);
+	lf->base_path = g_strdup (path);
 
 	lf->folder_path = camel_local_store_get_full_path (ls, full_name);
 	lf->summary_path = camel_local_store_get_meta_path(ls, full_name, ".ev-summary");

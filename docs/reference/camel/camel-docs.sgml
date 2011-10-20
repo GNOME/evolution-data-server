@@ -99,6 +99,7 @@
       <xi:include href="xml/camel-settings.xml"/>
       <xi:include href="xml/camel-network-settings.xml"/>
       <xi:include href="xml/camel-store-settings.xml"/>
+      <xi:include href="xml/camel-local-settings.xml"/>
       <xi:include href="xml/camel-offline-settings.xml"/>
     </chapter>
 

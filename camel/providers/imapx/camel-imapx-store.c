@@ -138,17 +138,23 @@ static gchar *
 imapx_get_name (CamelService *service,
                 gboolean brief)
 {
-	CamelURL *url;
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
+	const gchar *host;
+	const gchar *user;
 
-	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	user = camel_network_settings_get_user (network_settings);
 
 	if (brief)
 		return g_strdup_printf (
-			_("IMAP server %s"), url->host);
+			_("IMAP server %s"), host);
 	else
 		return g_strdup_printf (
-			_("IMAP service for %s on %s"),
-			url->user, url->host);
+			_("IMAP service for %s on %s"), user, host);
 }
 
 CamelIMAPXServer *
@@ -258,7 +264,6 @@ imapx_query_auth_types_sync (CamelService *service,
 {
 	CamelIMAPXStore *istore = CAMEL_IMAPX_STORE (service);
 	CamelServiceAuthType *authtype;
-	CamelURL *url;
 	GList *sasl_types, *t, *next;
 	gboolean connected;
 	CamelIMAPXServer *server;
@@ -273,8 +278,7 @@ imapx_query_auth_types_sync (CamelService *service,
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	url = camel_service_get_camel_url (service);
-	server = camel_imapx_server_new ((CamelStore *) istore, url);
+	server = camel_imapx_server_new (CAMEL_STORE (istore));
 
 	connected = server->stream != NULL;
 	if (!connected)

@@ -1,0 +1,173 @@
+/*
+ * camel-local-settings.c
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with the program; if not, see <http://www.gnu.org/licenses/>
+ *
+ */
+
+#include "camel-local-settings.h"
+
+#include <string.h>
+
+#define CAMEL_LOCAL_SETTINGS_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_LOCAL_SETTINGS, CamelLocalSettingsPrivate))
+
+struct _CamelLocalSettingsPrivate {
+	gchar *path;
+};
+
+enum {
+	PROP_0,
+	PROP_PATH
+};
+
+G_DEFINE_TYPE (
+	CamelLocalSettings,
+	camel_local_settings,
+	CAMEL_TYPE_STORE_SETTINGS)
+
+static void
+local_settings_set_property (GObject *object,
+                             guint property_id,
+                             const GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_PATH:
+			camel_local_settings_set_path (
+				CAMEL_LOCAL_SETTINGS (object),
+				g_value_get_string (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+local_settings_get_property (GObject *object,
+                             guint property_id,
+                             GValue *value,
+                             GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_PATH:
+			g_value_set_string (
+				value,
+				camel_local_settings_get_path (
+				CAMEL_LOCAL_SETTINGS (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+local_settings_finalize (GObject *object)
+{
+	CamelLocalSettingsPrivate *priv;
+
+	priv = CAMEL_LOCAL_SETTINGS_GET_PRIVATE (object);
+
+	g_free (priv->path);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_local_settings_parent_class)->finalize (object);
+}
+
+static void
+camel_local_settings_class_init (CamelLocalSettingsClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelLocalSettingsPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = local_settings_set_property;
+	object_class->get_property = local_settings_get_property;
+	object_class->finalize = local_settings_finalize;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_PATH,
+		g_param_spec_string (
+			"path",
+			"Path",
+			"File path to the local store",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+}
+
+static void
+camel_local_settings_init (CamelLocalSettings *settings)
+{
+	settings->priv = CAMEL_LOCAL_SETTINGS_GET_PRIVATE (settings);
+}
+
+/**
+ * camel_local_settings_get_path:
+ * @settings: a #CamelLocalSettings
+ *
+ * Returns the file path to the root of the local mail store.
+ *
+ * Returns: the file path to the local store
+ *
+ * Since: 3.4
+ **/
+const gchar *
+camel_local_settings_get_path (CamelLocalSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings), NULL);
+
+	return settings->priv->path;
+}
+
+/**
+ * camel_local_settings_set_path:
+ * @settings: a #CamelLocalSettings
+ * @path: the file path to the local store
+ *
+ * Sets the file path to the root of the local mail store.  Any
+ * trailing directory separator characters will be stripped off
+ * of the #CamelLocalSettings:path property.
+ *
+ * Since: 3.4
+ **/
+void
+camel_local_settings_set_path (CamelLocalSettings *settings,
+                               const gchar *path)
+{
+	gsize length = 0;
+
+	g_return_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings));
+
+	/* Exclude trailing directory separators. */
+	if (path != NULL) {
+		length = strlen (path);
+		while (length > 0) {
+			if (G_IS_DIR_SEPARATOR (path[length - 1]))
+				length--;
+			else
+				break;
+		}
+	}
+
+	g_free (settings->priv->path);
+	settings->priv->path = g_strndup (path, length);
+
+	g_object_notify (G_OBJECT (settings), "path");
+}
+

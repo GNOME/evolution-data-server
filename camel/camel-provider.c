@@ -348,40 +348,35 @@ camel_provider_list (gboolean load)
 
 /**
  * camel_provider_get:
- * @url_string: the URL for the service whose provider you want
+ * @protocol: a #CamelProvider protocol name
  * @error: return location for a #GError, or %NULL
  *
- * This returns the CamelProvider that would be used to handle
- * @url_string, loading it in from disk if necessary.
+ * Returns the registered #CamelProvider for @protocol, loading it
+ * from disk if necessary.  If no #CamelProvider can be found for
+ * @protocol, or the provider module fails to load, the function
+ * sets @error and returns %NULL.
  *
- * Returns: the provider, or %NULL, in which case @error will be set.
+ * Returns: a #CamelProvider for %protocol, or %NULL
  **/
 CamelProvider *
-camel_provider_get (const gchar *url_string,
+camel_provider_get (const gchar *protocol,
                     GError **error)
 {
 	CamelProvider *provider = NULL;
-	gchar *protocol;
-	gsize len;
 
-	g_return_val_if_fail (url_string != NULL, NULL);
+	g_return_val_if_fail (protocol != NULL, NULL);
 	g_return_val_if_fail (provider_table != NULL, NULL);
-
-	len = strcspn(url_string, ":");
-	protocol = g_alloca (len + 1);
-	memcpy (protocol, url_string, len);
-	protocol[len] = 0;
 
 	LOCK ();
 
 	provider = g_hash_table_lookup (provider_table, protocol);
-	if (!provider) {
-		CamelProviderModule *m;
+	if (provider == NULL) {
+		CamelProviderModule *module;
 
-		m = g_hash_table_lookup (module_table, protocol);
-		if (m && !m->loaded) {
-			m->loaded = 1;
-			if (!camel_provider_load (m->path, error))
+		module = g_hash_table_lookup (module_table, protocol);
+		if (module != NULL && !module->loaded) {
+			module->loaded = 1;
+			if (!camel_provider_load (module->path, error))
 				goto fail;
 		}
 		provider = g_hash_table_lookup (provider_table, protocol);

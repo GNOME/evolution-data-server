@@ -245,19 +245,29 @@ imap_folder_finalize (GObject *object)
 static void
 imap_folder_constructed (GObject *object)
 {
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
+	CamelService *service;
 	CamelFolder *folder;
 	CamelStore *parent_store;
-	CamelURL *url;
 	const gchar *full_name;
+	const gchar *host;
+	const gchar *user;
 	gchar *description;
 
 	folder = CAMEL_FOLDER (object);
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
-	url = camel_service_get_camel_url (CAMEL_SERVICE (parent_store));
+
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	user = camel_network_settings_get_user (network_settings);
 
 	description = g_strdup_printf (
-		"%s@%s:%s", url->user, url->host, full_name);
+		"%s@%s:%s", user, host, full_name);
 	camel_folder_set_description (folder, description);
 	g_free (description);
 }
@@ -1503,20 +1513,23 @@ host_ends_with (const gchar *host,
 static gboolean
 is_google_account (CamelStore *store)
 {
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
 	CamelService *service;
-	CamelURL *url;
+	const gchar *host;
 
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
 
 	service = CAMEL_SERVICE (store);
-	g_return_val_if_fail (service != NULL, FALSE);
+	settings = camel_service_get_settings (service);
 
-	url = camel_service_get_camel_url (service);
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
 
-	return url != NULL && url->host != NULL && (
-		host_ends_with (url->host, "gmail.com") ||
-		host_ends_with (url->host, "googlemail.com"));
+	return host != NULL && (
+		host_ends_with (host, "gmail.com") ||
+		host_ends_with (host, "googlemail.com"));
 }
 
 static void

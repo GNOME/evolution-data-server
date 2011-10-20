@@ -47,12 +47,12 @@ typedef struct _CamelMhSettingsClass CamelMhSettingsClass;
 typedef struct _CamelMhSettingsPrivate CamelMhSettingsPrivate;
 
 struct _CamelMhSettings {
-	CamelStoreSettings parent;
+	CamelLocalSettings parent;
 	CamelMhSettingsPrivate *priv;
 };
 
 struct _CamelMhSettingsClass {
-	CamelStoreSettingsClass parent_class;
+	CamelLocalSettingsClass parent_class;
 };
 
 GType		camel_mh_settings_get_type	(void) G_GNUC_CONST;

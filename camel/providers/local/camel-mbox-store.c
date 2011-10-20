@@ -525,22 +525,30 @@ mbox_store_create_folder_sync (CamelStore *store,
 {
 	/* FIXME: this is almost an exact copy of CamelLocalStore::create_folder() except that we use
 	 * different path schemes... need to find a way to share parent's code? */
+	CamelLocalSettings *local_settings;
 	CamelLocalStore *local_store;
 	CamelFolderInfo *info = NULL;
-	const gchar *toplevel_dir;
+	CamelSettings *settings;
+	CamelService *service;
+	const gchar *root_path;
 	gchar *path, *name, *dir;
 	CamelFolder *folder;
 	struct stat st;
 
-	local_store = CAMEL_LOCAL_STORE (store);
-	toplevel_dir = local_store->toplevel_dir;
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
 
-	if (!g_path_is_absolute (toplevel_dir)) {
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	root_path = camel_local_settings_get_path (local_settings);
+
+	local_store = CAMEL_LOCAL_STORE (store);
+
+	if (!g_path_is_absolute (root_path)) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Store root %s is not an absolute path"),
-			toplevel_dir);
+			root_path);
 		return NULL;
 	}
 
@@ -895,9 +903,20 @@ static gchar *
 mbox_store_get_full_path (CamelLocalStore *ls,
                           const gchar *full_name)
 {
+	CamelLocalSettings *local_settings;
+	CamelSettings *settings;
+	CamelService *service;
 	const gchar *inptr = full_name;
+	const gchar *root_path;
 	gint subdirs = 0;
 	gchar *path, *p;
+
+	service = CAMEL_SERVICE (ls);
+	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	root_path = camel_local_settings_get_path (local_settings);
+	g_return_val_if_fail (root_path != NULL, NULL);
 
 	while (*inptr != '\0') {
 		if (G_IS_DIR_SEPARATOR (*inptr))
@@ -905,8 +924,8 @@ mbox_store_get_full_path (CamelLocalStore *ls,
 		inptr++;
 	}
 
-	path = g_malloc (strlen (ls->toplevel_dir) + (inptr - full_name) + (4 * subdirs) + 1);
-	p = g_stpcpy (path, ls->toplevel_dir);
+	path = g_malloc (strlen (root_path) + (inptr - full_name) + (4 * subdirs) + 1);
+	p = g_stpcpy (path, root_path);
 
 	inptr = full_name;
 	while (*inptr != '\0') {

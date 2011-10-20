@@ -26,10 +26,84 @@ CamelNetworkSettings
 </para>
 
 
+<!-- ##### ARG CamelNetworkSettings:auth-mechanism ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelNetworkSettings:host ##### -->
+<para>
+
+</para>
+
+<!-- ##### ARG CamelNetworkSettings:port ##### -->
+<para>
+
+</para>
+
 <!-- ##### ARG CamelNetworkSettings:security-method ##### -->
 <para>
 
 </para>
+
+<!-- ##### ARG CamelNetworkSettings:user ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION camel_network_settings_get_auth_mechanism ##### -->
+<para>
+
+</para>
+
+@settings: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_network_settings_set_auth_mechanism ##### -->
+<para>
+
+</para>
+
+@settings: 
+@auth_mechanism: 
+
+
+<!-- ##### FUNCTION camel_network_settings_get_host ##### -->
+<para>
+
+</para>
+
+@settings: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_network_settings_set_host ##### -->
+<para>
+
+</para>
+
+@settings: 
+@host: 
+
+
+<!-- ##### FUNCTION camel_network_settings_get_port ##### -->
+<para>
+
+</para>
+
+@settings: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_network_settings_set_port ##### -->
+<para>
+
+</para>
+
+@settings: 
+@port: 
+
 
 <!-- ##### ENUM CamelNetworkSecurityMethod ##### -->
 <para>
@@ -56,5 +130,23 @@ CamelNetworkSettings
 
 @settings: 
 @method: 
+
+
+<!-- ##### FUNCTION camel_network_settings_get_user ##### -->
+<para>
+
+</para>
+
+@settings: 
+@Returns: 
+
+
+<!-- ##### FUNCTION camel_network_settings_set_user ##### -->
+<para>
+
+</para>
+
+@settings: 
+@user: 
 
 

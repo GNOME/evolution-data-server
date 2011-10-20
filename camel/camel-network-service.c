@@ -40,33 +40,35 @@ network_service_connect_sync (CamelNetworkService *service,
                               GError **error)
 {
 	CamelNetworkSecurityMethod method;
+	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
 	CamelSession *session;
 	CamelStream *stream;
-	CamelURL *url;
 	const gchar *service_name;
+	const gchar *host;
 	guint16 default_port;
+	guint16 port;
 	gchar *socks_host;
 	gint socks_port;
 	gint status;
 
-	url = camel_service_get_camel_url (CAMEL_SERVICE (service));
 	session = camel_service_get_session (CAMEL_SERVICE (service));
 	settings = camel_service_get_settings (CAMEL_SERVICE (service));
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
-	if (CAMEL_IS_NETWORK_SETTINGS (settings))
-		g_object_get (settings, "security-method", &method, NULL);
-	else
-		method = CAMEL_NETWORK_SECURITY_METHOD_NONE;
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	method = camel_network_settings_get_security_method (network_settings);
+	host = camel_network_settings_get_host (network_settings);
+	port = camel_network_settings_get_port (network_settings);
 
 	service_name = camel_network_service_get_service_name (service, method);
 	default_port = camel_network_service_get_default_port (service, method);
 
 	/* If the URL explicitly gives a port number, make
 	 * it override the service name and default port. */
-	if (url->port > 0) {
+	if (port > 0) {
 		service_name = g_alloca (16);
-		sprintf ((gchar *) service_name, "%d", url->port);
+		sprintf ((gchar *) service_name, "%u", port);
 		default_port = 0;
 	}
 
@@ -77,13 +79,13 @@ network_service_connect_sync (CamelNetworkService *service,
 
 		case CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT:
 			stream = camel_tcp_stream_ssl_new_raw (
-				session, url->host,
+				session, host,
 				CAMEL_TCP_STREAM_SSL_ENABLE_TLS);
 			break;
 
 		case CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT:
 			stream = camel_tcp_stream_ssl_new (
-				session, url->host,
+				session, host,
 				CAMEL_TCP_STREAM_SSL_ENABLE_SSL2 |
 				CAMEL_TCP_STREAM_SSL_ENABLE_SSL3);
 			break;
@@ -92,7 +94,7 @@ network_service_connect_sync (CamelNetworkService *service,
 			g_return_val_if_reached (NULL);
 	}
 
-	camel_session_get_socks_proxy (session, url->host, &socks_host, &socks_port);
+	camel_session_get_socks_proxy (session, host, &socks_host, &socks_port);
 
 	if (socks_host != NULL) {
 		camel_tcp_stream_set_socks_proxy (
@@ -102,12 +104,12 @@ network_service_connect_sync (CamelNetworkService *service,
 	}
 
 	status = camel_tcp_stream_connect (
-		CAMEL_TCP_STREAM (stream), url->host,
+		CAMEL_TCP_STREAM (stream), host,
 		service_name, default_port, cancellable, error);
 
 	if (status == -1) {
 		g_prefix_error (
-			error, _("Could not connect to %s: "), url->host);
+			error, _("Could not connect to %s: "), host);
 		g_object_unref (stream);
 		stream = NULL;
 	}

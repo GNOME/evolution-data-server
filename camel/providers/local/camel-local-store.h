@@ -54,7 +54,6 @@ struct _CamelLocalStore {
 	CamelStore parent;
 	CamelLocalStorePrivate *priv;
 
-	gchar *toplevel_dir;
 	gboolean is_main_store;
 };
 
@@ -69,8 +68,6 @@ struct _CamelLocalStoreClass {
 };
 
 GType		camel_local_store_get_type	(void);
-const gchar *	camel_local_store_get_toplevel_dir
-						(CamelLocalStore *store);
 gboolean	camel_local_store_is_main_store	(CamelLocalStore *store);
 gchar *		camel_local_store_get_full_path	(CamelLocalStore *store,
 						 const gchar *full_name);

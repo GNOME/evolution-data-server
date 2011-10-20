@@ -360,11 +360,10 @@ session_finalize (GObject *object)
 static CamelService *
 session_add_service (CamelSession *session,
                      const gchar *uid,
-                     const gchar *url_string,
+                     const gchar *protocol,
                      CamelProviderType type,
                      GError **error)
 {
-	CamelURL *url;
 	CamelService *service;
 	CamelProvider *provider;
 	GType service_type = G_TYPE_INVALID;
@@ -373,12 +372,8 @@ session_add_service (CamelSession *session,
 	if (CAMEL_IS_SERVICE (service))
 		return service;
 
-	url = camel_url_new (url_string, error);
-	if (url == NULL)
-		return NULL;
-
 	/* Try to find a suitable CamelService subclass. */
-	provider = camel_provider_get (url->protocol, error);
+	provider = camel_provider_get (protocol, error);
 	if (provider != NULL)
 		service_type = provider->object_types[type];
 
@@ -387,8 +382,7 @@ session_add_service (CamelSession *session,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_URL_INVALID,
 			_("No provider available for protocol '%s'"),
-			url->protocol);
-		camel_url_free (url);
+			protocol);
 		return NULL;
 	}
 
@@ -397,20 +391,14 @@ session_add_service (CamelSession *session,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_INVALID,
 			_("Invalid GType registered for protocol '%s'"),
-			url->protocol);
-		camel_url_free (url);
+			protocol);
 		return NULL;
 	}
-
-	/* If the provider does not use paths but the URL contains one,
-	 * ignore it. */
-	if (!CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_PATH))
-		camel_url_set_path (url, NULL);
 
 	service = g_initable_new (
 		service_type, NULL, error,
 		"provider", provider, "session",
-		session, "uid", uid, "url", url, NULL);
+		session, "uid", uid, NULL);
 
 	/* The hash table takes ownership of the new CamelService. */
 	if (service != NULL) {
@@ -422,8 +410,6 @@ session_add_service (CamelSession *session,
 
 		camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
 	}
-
-	camel_url_free (url);
 
 	return service;
 }
@@ -772,23 +758,22 @@ camel_session_get_user_cache_dir (CamelSession *session)
  * camel_session_add_service:
  * @session: a #CamelSession
  * @uid: a unique identifier string
- * @uri_string: a URI string describing the service
- * @type: the provider type (#CAMEL_PROVIDER_STORE or
- * #CAMEL_PROVIDER_TRANSPORT) to get, since some URLs may be able to
- * specify either type
+ * @protocol: the service protocol
+ * @type: the service type
  * @error: return location for a #GError, or %NULL
  *
  * Instantiates a new #CamelService for @session.  The @uid identifies the
- * service for future lookup.  The @uri_string describes which provider to
- * use, authentication details, provider-specific options, etc.  The @type
+ * service for future lookup.  The @protocol indicates which #CamelProvider
+ * holds the #GType of the #CamelService subclass to instantiate.  The @type
  * explicitly designates the service as a #CamelStore or #CamelTransport.
  *
  * If the given @uid has already been added, the existing #CamelService
  * with that @uid is returned regardless of whether it agrees with the
- * given @uri_string and @type.
+ * given @protocol and @type.
  *
- * If the @uri_string is invalid or no #CamelProvider is available to
- * handle the @uri_string, the function sets @error and returns %NULL.
+ * If no #CamelProvider is available to handle the given @protocol, or
+ * if the #CamelProvider does not specify a valid #GType for @type, the
+ * function sets @error and returns %NULL.
  *
  * Returns: a #CamelService instance, or %NULL
  *
@@ -797,7 +782,7 @@ camel_session_get_user_cache_dir (CamelSession *session)
 CamelService *
 camel_session_add_service (CamelSession *session,
                            const gchar *uid,
-                           const gchar *uri_string,
+                           const gchar *protocol,
                            CamelProviderType type,
                            GError **error)
 {
@@ -806,12 +791,12 @@ camel_session_add_service (CamelSession *session,
 
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
-	g_return_val_if_fail (uri_string != NULL, NULL);
+	g_return_val_if_fail (protocol != NULL, NULL);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
 	g_return_val_if_fail (class->add_service != NULL, NULL);
 
-	service = class->add_service (session, uid, uri_string, type, error);
+	service = class->add_service (session, uid, protocol, type, error);
 	CAMEL_CHECK_GERROR (session, add_service, service != NULL, error);
 
 	return service;
@@ -911,10 +896,13 @@ camel_session_get_service_by_url (CamelSession *session,
 		CamelProvider *provider;
 		CamelService *service;
 		CamelURL *service_url;
+		gboolean url_equal;
 
 		service = CAMEL_SERVICE (iter->data);
 		provider = camel_service_get_provider (service);
-		service_url = camel_service_get_camel_url (service);
+
+		if (provider == NULL)
+			continue;
 
 		if (provider == NULL)
 			continue;
@@ -922,7 +910,11 @@ camel_session_get_service_by_url (CamelSession *session,
 		if (provider->url_equal == NULL)
 			continue;
 
-		if (!provider->url_equal (url, service_url))
+		service_url = camel_service_new_camel_url (service);
+		url_equal = provider->url_equal (url, service_url);
+		camel_url_free (service_url);
+
+		if (!url_equal)
 			continue;
 
 		switch (type) {

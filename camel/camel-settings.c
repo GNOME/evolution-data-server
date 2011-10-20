@@ -20,6 +20,10 @@
 
 #include <stdlib.h>
 
+/* Needed for CamelSettings <--> CamelURL conversions. */
+#include "camel-local-settings.h"
+#include "camel-network-settings.h"
+
 G_DEFINE_TYPE (CamelSettings, camel_settings, G_TYPE_OBJECT)
 
 static GParamSpec **
@@ -250,6 +254,26 @@ camel_settings_load_from_url (CamelSettings *settings,
 
 	g_object_freeze_notify (G_OBJECT (settings));
 
+	/* Some CamelNetworkSettings properties are read directly
+	 * from the CamelURL struct instead of from parameters. */
+
+	if (CAMEL_IS_NETWORK_SETTINGS (settings))
+		g_object_set (
+			settings,
+			"host", url->host,
+			"port", url->port,
+			"user", url->user,
+			NULL);
+
+	/* Some CamelLocalSettings properties are read directly
+	 * from the CamelURL struct instead of from parameters. */
+
+	if (CAMEL_IS_LOCAL_SETTINGS (settings))
+		g_object_set (
+			settings,
+			"path", url->path,
+			NULL);
+
 	for (ii = 0; ii < n_properties; ii++) {
 		GParamSpec *pspec = properties[ii];
 		const gchar *string;
@@ -416,6 +440,40 @@ camel_settings_save_to_url (CamelSettings *settings,
 		g_object_get_property (
 			G_OBJECT (settings),
 			pspec->name, &pvalue);
+
+		/* Some CamelNetworkSettings properties are put directly
+		 * in the CamelURL struct instead of in parameters. */
+
+		if (g_strcmp0 (pspec->name, "host") == 0) {
+			const gchar *host = g_value_get_string (&pvalue);
+			camel_url_set_host (url, host);
+			g_value_unset (&pvalue);
+			continue;
+		}
+
+		if (g_strcmp0 (pspec->name, "port") == 0) {
+			guint port = g_value_get_uint (&pvalue);
+			camel_url_set_port (url, port);
+			g_value_unset (&pvalue);
+			continue;
+		}
+
+		if (g_strcmp0 (pspec->name, "user") == 0) {
+			const gchar *user = g_value_get_string (&pvalue);
+			camel_url_set_user (url, user);
+			g_value_unset (&pvalue);
+			continue;
+		}
+
+		/* Some CamelLocalSettings properties are put directly
+		 * in the CamelURL struct instead of in parameters. */
+
+		if (g_strcmp0 (pspec->name, "path") == 0) {
+			const gchar *path = g_value_get_string (&pvalue);
+			camel_url_set_path (url, path);
+			g_value_unset (&pvalue);
+			continue;
+		}
 
 		/* If the property value matches the default value,
 		 * remove the corresponding URL parameter so we keep

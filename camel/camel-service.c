@@ -36,6 +36,8 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-debug.h"
+#include "camel-local-settings.h"
+#include "camel-network-settings.h"
 #include "camel-operation.h"
 #include "camel-service.h"
 #include "camel-session.h"
@@ -54,7 +56,6 @@ struct _CamelServicePrivate {
 
 	CamelSettings *settings;
 	CamelProvider *provider;
-	CamelURL *url;
 
 	gchar *display_name;
 	gchar *user_data_dir;
@@ -82,8 +83,7 @@ enum {
 	PROP_PROVIDER,
 	PROP_SESSION,
 	PROP_SETTINGS,
-	PROP_UID,
-	PROP_URL
+	PROP_UID
 };
 
 /* Forward Declarations */
@@ -120,7 +120,7 @@ service_find_old_data_dir (CamelService *service)
 
 	provider = camel_service_get_provider (service);
 	session = camel_service_get_session (service);
-	url = camel_service_get_camel_url (service);
+	url = camel_service_new_camel_url (service);
 
 	allows_host = CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_HOST);
 	allows_user = CAMEL_PROVIDER_ALLOWS (provider, CAMEL_URL_PART_USER);
@@ -183,6 +183,8 @@ service_find_old_data_dir (CamelService *service)
 		old_data_dir = NULL;
 	}
 
+	camel_url_free (url);
+
 	return old_data_dir;
 }
 
@@ -217,16 +219,6 @@ service_set_uid (CamelService *service,
 	g_return_if_fail (service->priv->uid == NULL);
 
 	service->priv->uid = g_strdup (uid);
-}
-
-static void
-service_set_url (CamelService *service,
-                 CamelURL *url)
-{
-	g_return_if_fail (url != NULL);
-	g_return_if_fail (service->priv->url == NULL);
-
-	service->priv->url = camel_url_copy (url);
 }
 
 static void
@@ -270,12 +262,6 @@ service_set_property (GObject *object,
 			service_set_uid (
 				CAMEL_SERVICE (object),
 				g_value_get_string (value));
-			return;
-
-		case PROP_URL:
-			service_set_url (
-				CAMEL_SERVICE (object),
-				g_value_get_boxed (value));
 			return;
 	}
 
@@ -324,12 +310,6 @@ service_get_property (GObject *object,
 				value, camel_service_get_uid (
 				CAMEL_SERVICE (object)));
 			return;
-
-		case PROP_URL:
-			g_value_set_boxed (
-				value, camel_service_get_url (
-				CAMEL_SERVICE (object)));
-			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -367,9 +347,6 @@ service_finalize (GObject *object)
 	if (priv->status == CAMEL_SERVICE_CONNECTED)
 		CAMEL_SERVICE_GET_CLASS (object)->disconnect_sync (
 			CAMEL_SERVICE (object), TRUE, NULL, NULL);
-
-	if (priv->url != NULL)
-		camel_url_free (priv->url);
 
 	g_free (priv->display_name);
 	g_free (priv->user_data_dir);
@@ -589,69 +566,10 @@ service_initable_init (GInitable *initable,
                        GCancellable *cancellable,
                        GError **error)
 {
-	CamelProvider *provider;
-	CamelService *service;
-	CamelURL *url;
-	gboolean success = FALSE;
-	const gchar *new_data_dir;
-	gchar *old_data_dir;
-	gchar *url_string;
+	/* Nothing to do here, but we may need add something in the future.
+	 * For now this is a placeholder so subclasses can safely chain up. */
 
-	service = CAMEL_SERVICE (initable);
-	url = camel_service_get_camel_url (service);
-	provider = camel_service_get_provider (service);
-
-	url_string = camel_url_to_string (url, 0);
-
-	if (CAMEL_PROVIDER_NEEDS (provider, CAMEL_URL_PART_USER)) {
-		if (url->user == NULL || *url->user == '\0') {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_URL_INVALID,
-				_("URL '%s' needs a user component"),
-				url_string);
-			goto exit;
-		}
-	}
-
-	if (CAMEL_PROVIDER_NEEDS (provider, CAMEL_URL_PART_HOST)) {
-		if (url->host == NULL || *url->host == '\0') {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_URL_INVALID,
-				_("URL '%s' needs a host component"),
-				url_string);
-			goto exit;
-		}
-	}
-
-	if (CAMEL_PROVIDER_NEEDS (provider, CAMEL_URL_PART_PATH)) {
-		if (url->path == NULL || *url->path == '\0') {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_URL_INVALID,
-				_("URL '%s' needs a path component"),
-				url_string);
-			goto exit;
-		}
-	}
-
-	new_data_dir = camel_service_get_user_data_dir (service);
-	old_data_dir = service_find_old_data_dir (service);
-
-	/* If the old data directory name exists, try renaming
-	 * it to the new data directory.  Failure is non-fatal. */
-	if (old_data_dir != NULL) {
-		g_rename (old_data_dir, new_data_dir);
-		g_free (old_data_dir);
-	}
-
-	success = TRUE;
-
-exit:
-	g_free (url_string);
-
-	return success;
+	return TRUE;
 }
 
 static void
@@ -750,18 +668,6 @@ camel_service_class_init (CamelServiceClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_URL,
-		g_param_spec_boxed (
-			"url",
-			"URL",
-			"The CamelURL for the service",
-			CAMEL_TYPE_URL,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -795,27 +701,89 @@ camel_service_error_quark (void)
 }
 
 /**
- * camel_service_cancel_connect:
+ * camel_service_migrate_files:
  * @service: a #CamelService
  *
- * If @service is currently attempting to connect to or disconnect
- * from a server, this causes it to stop and fail. Otherwise it is a
- * no-op.
+ * Performs any necessary file migrations for @service.  This should be
+ * called after installing or configuring the @service's #CamelSettings,
+ * since it requires building a URL string for @service.
+ *
+ * Since: 3.4
  **/
 void
-camel_service_cancel_connect (CamelService *service)
+camel_service_migrate_files (CamelService *service)
 {
-	CamelServiceClass *class;
+	const gchar *new_data_dir;
+	gchar *old_data_dir;
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	class = CAMEL_SERVICE_GET_CLASS (service);
-	g_return_if_fail (class->cancel_connect != NULL);
+	new_data_dir = camel_service_get_user_data_dir (service);
+	old_data_dir = service_find_old_data_dir (service);
 
-	camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
-	if (service->priv->connect_op)
-		class->cancel_connect (service);
-	camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
+	/* If the old data directory name exists, try renaming
+	 * it to the new data directory.  Failure is non-fatal. */
+	if (old_data_dir != NULL) {
+		g_rename (old_data_dir, new_data_dir);
+		g_free (old_data_dir);
+	}
+}
+
+/**
+ * camel_service_new_camel_url:
+ * @service: a #CamelService
+ *
+ * Returns a new #CamelURL representing @service.
+ * Free the returned #CamelURL with camel_url_free().
+ *
+ * Returns: a new #CamelURL
+ *
+ * Since: 3.2
+ **/
+CamelURL *
+camel_service_new_camel_url (CamelService *service)
+{
+	CamelURL *url;
+	CamelProvider *provider;
+	CamelSettings *settings;
+	const gchar *host = NULL;
+	const gchar *user = NULL;
+	const gchar *path = NULL;
+	guint16 port = 0;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+
+	provider = camel_service_get_provider (service);
+	settings = camel_service_get_settings (service);
+
+	g_return_val_if_fail (provider != NULL, NULL);
+
+	/* Allocate as camel_url_new_with_base() does. */
+	url = g_new0 (CamelURL, 1);
+
+	if (CAMEL_IS_NETWORK_SETTINGS (settings)) {
+		CamelNetworkSettings *network_settings;
+
+		network_settings = CAMEL_NETWORK_SETTINGS (settings);
+		host = camel_network_settings_get_host (network_settings);
+		port = camel_network_settings_get_port (network_settings);
+		user = camel_network_settings_get_user (network_settings);
+	}
+
+	if (CAMEL_IS_LOCAL_SETTINGS (settings)) {
+		CamelLocalSettings *local_settings;
+
+		local_settings = CAMEL_LOCAL_SETTINGS (settings);
+		path = camel_local_settings_get_path (local_settings);
+	}
+
+	camel_url_set_protocol (url, provider->protocol);
+	camel_url_set_host (url, host);
+	camel_url_set_port (url, port);
+	camel_url_set_user (url, user);
+	camel_url_set_path (url, path);
+
+	return url;
 }
 
 /**
@@ -973,7 +941,6 @@ camel_service_get_name (CamelService *service,
 	CamelServiceClass *class;
 
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
-	g_return_val_if_fail (service->priv->url, NULL);
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
 	g_return_val_if_fail (class->get_name != NULL, NULL);
@@ -1070,7 +1037,6 @@ camel_service_set_settings (CamelService *service,
 				class->settings_type,
 				CAMEL_TYPE_SETTINGS));
 		settings = g_object_new (class->settings_type, NULL);
-		camel_settings_load_from_url (settings, camel_service_get_camel_url (service));
 	}
 
 	if (service->priv->settings != NULL)
@@ -1100,42 +1066,27 @@ camel_service_get_uid (CamelService *service)
 }
 
 /**
- * camel_service_get_camel_url:
+ * camel_service_cancel_connect:
  * @service: a #CamelService
  *
- * Returns the #CamelURL representing @service.
- *
- * Returns: the #CamelURL representing @service
- *
- * Since: 3.2
+ * If @service is currently attempting to connect to or disconnect
+ * from a server, this causes it to stop and fail. Otherwise it is a
+ * no-op.
  **/
-CamelURL *
-camel_service_get_camel_url (CamelService *service)
+void
+camel_service_cancel_connect (CamelService *service)
 {
-	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
+	CamelServiceClass *class;
 
-	return service->priv->url;
-}
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-/**
- * camel_service_get_url:
- * @service: a #CamelService
- *
- * Gets the URL representing @service. The returned URL must be
- * freed when it is no longer needed.
- *
- * Returns: the URL representing @service
- **/
-gchar *
-camel_service_get_url (CamelService *service)
-{
-	CamelURL *url;
+	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_if_fail (class->cancel_connect != NULL);
 
-	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
-
-	url = camel_service_get_camel_url (service);
-
-	return camel_url_to_string (url, 0);
+	camel_service_lock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
+	if (service->priv->connect_op)
+		class->cancel_connect (service);
+	camel_service_unlock (service, CAMEL_SERVICE_CONNECT_OP_LOCK);
 }
 
 /**
@@ -1158,7 +1109,6 @@ camel_service_connect_sync (CamelService *service,
 
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
 	g_return_val_if_fail (service->priv->session != NULL, FALSE);
-	g_return_val_if_fail (service->priv->url != NULL, FALSE);
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
 	g_return_val_if_fail (class->connect_sync != NULL, FALSE);

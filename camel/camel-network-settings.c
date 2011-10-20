@@ -21,7 +21,11 @@
 #include <camel/camel-enumtypes.h>
 #include <camel/camel-settings.h>
 
+#define AUTH_MECHANISM_KEY  "CamelNetworkSettings:auth-mechanism"
+#define HOST_KEY            "CamelNetworkSettings:host"
+#define PORT_KEY            "CamelNetworkSettings:port"
 #define SECURITY_METHOD_KEY "CamelNetworkSettings:security-method"
+#define USER_KEY            "CamelNetworkSettings:user"
 
 G_DEFINE_INTERFACE (
 	CamelNetworkSettings,
@@ -33,6 +37,39 @@ camel_network_settings_default_init (CamelNetworkSettingsInterface *interface)
 {
 	g_object_interface_install_property (
 		interface,
+		g_param_spec_string (
+			"auth-mechanism",
+			"Auth Mechanism",
+			"Authentication mechanism name",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_interface_install_property (
+		interface,
+		g_param_spec_string (
+			"host",
+			"Host",
+			"Host name for the network service",
+			"localhost",
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_interface_install_property (
+		interface,
+		g_param_spec_uint (
+			"port",
+			"Port",
+			"Port number for the network service",
+			0, G_MAXUINT16, 0,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_interface_install_property (
+		interface,
 		g_param_spec_enum (
 			"security-method",
 			"Security Method",
@@ -42,6 +79,163 @@ camel_network_settings_default_init (CamelNetworkSettingsInterface *interface)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
+
+	g_object_interface_install_property (
+		interface,
+		g_param_spec_string (
+			"user",
+			"User",
+			"User name for the network account",
+			g_get_user_name (),
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+}
+
+/**
+ * camel_network_settings_get_auth_mechanism:
+ * @settings: a #CamelNetworkSettings
+ *
+ * Returns the mechanism name used to authenticate to a network service.
+ * Often this refers to a SASL mechanism such as "LOGIN" or "GSSAPI".
+ *
+ * Returns: the authentication mechanism name
+ *
+ * Since: 3.4
+ **/
+const gchar *
+camel_network_settings_get_auth_mechanism (CamelNetworkSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	return g_object_get_data (G_OBJECT (settings), AUTH_MECHANISM_KEY);
+}
+
+/**
+ * camel_network_settings_set_auth_mechanism:
+ * @settings: a #CamelNetworkSettings
+ * @auth_mechanism: an authentication mechanism name, or %NULL
+ *
+ * Sets the mechanism name used to authenticate to a network service.
+ * Often this refers to a SASL mechanism such as "LOGIN" or "GSSAPI".
+ * The #CamelNetworkSettings:auth-mechanism property is automatically
+ * stripped of leading and trailing whitespace.
+ *
+ * Since: 3.4
+ **/
+void
+camel_network_settings_set_auth_mechanism (CamelNetworkSettings *settings,
+                                           const gchar *auth_mechanism)
+{
+	gchar *stripped_auth_mechanism = NULL;
+
+	g_return_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings));
+
+	/* Strip leading and trailing whitespace. */
+	if (auth_mechanism != NULL)
+		stripped_auth_mechanism =
+			g_strstrip (g_strdup (auth_mechanism));
+
+	g_object_set_data_full (
+		G_OBJECT (settings),
+		AUTH_MECHANISM_KEY,
+		stripped_auth_mechanism,
+		(GDestroyNotify) g_free);
+
+	g_object_notify (G_OBJECT (settings), "auth-mechanism");
+}
+
+/**
+ * camel_network_settings_get_host:
+ * @settings: a #CamelNetworkSettings
+ *
+ * Returns the host name used to authenticate to a network service.
+ *
+ * Returns: the host name of a network service
+ *
+ * Since: 3.4
+ **/
+const gchar *
+camel_network_settings_get_host (CamelNetworkSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	return g_object_get_data (G_OBJECT (settings), HOST_KEY);
+}
+
+/**
+ * camel_network_settings_set_host:
+ * @settings: a #CamelNetworkSettings
+ * @host: a host name, or %NULL
+ *
+ * Sets the host name used to authenticate to a network service.  The
+ * #CamelNetworkSettings:host property is automatically stripped of
+ * leading and trailing whitespace.
+ *
+ * Since: 3.4
+ **/
+void
+camel_network_settings_set_host (CamelNetworkSettings *settings,
+                                 const gchar *host)
+{
+	gchar *stripped_host = NULL;
+
+	g_return_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings));
+
+	/* Strip leading and trailing whitespace. */
+	if (host != NULL)
+		stripped_host = g_strstrip (g_strdup (host));
+
+	g_object_set_data_full (
+		G_OBJECT (settings),
+		HOST_KEY, stripped_host,
+		(GDestroyNotify) g_free);
+
+	g_object_notify (G_OBJECT (settings), "host");
+}
+
+/**
+ * camel_network_settings_get_port:
+ * @settings: a #CamelNetworkSettings
+ *
+ * Returns the port number used to authenticate to a network service.
+ *
+ * Returns: the port number of a network service
+ *
+ * Since: 3.4
+ **/
+guint16
+camel_network_settings_get_port (CamelNetworkSettings *settings)
+{
+	gpointer data;
+
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), 0);
+
+	data = g_object_get_data (G_OBJECT (settings), PORT_KEY);
+
+	return (guint16) GPOINTER_TO_UINT (data);
+}
+
+/**
+ * camel_network_settings_set_port:
+ * @settings: a #CamelNetworkSettings
+ * @port: a port number
+ *
+ * Sets the port number used to authenticate to a network service.
+ *
+ * Since: 3.4
+ **/
+void
+camel_network_settings_set_port (CamelNetworkSettings *settings,
+                                 guint16 port)
+{
+	g_return_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings));
+
+	g_object_set_data (
+		G_OBJECT (settings), PORT_KEY,
+		GUINT_TO_POINTER ((guint) port));
+
+	g_object_notify (G_OBJECT (settings), "port");
 }
 
 /**
@@ -93,3 +287,53 @@ camel_network_settings_set_security_method (CamelNetworkSettings *settings,
 
 	g_object_notify (G_OBJECT (settings), "security-method");
 }
+
+/**
+ * camel_network_settings_get_user:
+ * @settings: a #CamelNetworkSettings
+ *
+ * Returns the user name used to authenticate to a network service.
+ *
+ * Returns: the user name of a network service
+ *
+ * Since: 3.4
+ **/
+const gchar *
+camel_network_settings_get_user (CamelNetworkSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	return g_object_get_data (G_OBJECT (settings), USER_KEY);
+}
+
+/**
+ * camel_network_settings_set_user:
+ * @settings: a #CamelNetworkSettings
+ * @user: a user name, or %NULL
+ *
+ * Sets the user name used to authenticate to a network service.  The
+ * #CamelNetworkSettings:user property is automatically stripped of
+ * leading and trailing whitespace.
+ *
+ * Since: 3.4
+ **/
+void
+camel_network_settings_set_user (CamelNetworkSettings *settings,
+                                 const gchar *user)
+{
+	gchar *stripped_user = NULL;
+
+	g_return_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings));
+
+	/* Strip leading and trailing whitespace. */
+	if (user != NULL)
+		stripped_user = g_strstrip (g_strdup (user));
+
+	g_object_set_data_full (
+		G_OBJECT (settings),
+		USER_KEY, stripped_user,
+		(GDestroyNotify) g_free);
+
+	g_object_notify (G_OBJECT (settings), "user");
+}
+

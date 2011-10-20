@@ -2839,34 +2839,52 @@ connect_to_server_process (CamelIMAPXServer *is,
                            const gchar *cmd,
                            GError **error)
 {
+	CamelNetworkSettings *network_settings;
+	CamelProvider *provider;
+	CamelSettings *settings;
 	CamelStream *cmd_stream;
 	CamelService *service;
+	CamelURL url;
 	gint ret, i = 0;
 	gchar *buf;
 	gchar *cmd_copy;
 	gchar *full_cmd;
 	gchar *child_env[7];
 	const gchar *password;
+	const gchar *host;
+	const gchar *user;
+	guint16 port;
+
+	memset (&url, 0, sizeof (CamelURL));
 
 	service = CAMEL_SERVICE (is->store);
 	password = camel_service_get_password (service);
+	provider = camel_service_get_provider (service);
+	settings = camel_service_get_settings (service);
 	g_return_val_if_fail (password != NULL, FALSE);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	port = camel_network_settings_get_port (network_settings);
+	user = camel_network_settings_get_user (network_settings);
 
 	/* Put full details in the environment, in case the connection
 	 * program needs them */
-	buf = camel_url_to_string (is->url, 0);
+	camel_url_set_protocol (&url, provider->protocol);
+	camel_url_set_host (&url, host);
+	camel_url_set_port (&url, port);
+	camel_url_set_user (&url, user);
+	buf = camel_url_to_string (&url, 0);
 	child_env[i++] = g_strdup_printf("URL=%s", buf);
 	g_free (buf);
 
-	child_env[i++] = g_strdup_printf("URLHOST=%s", is->url->host);
-	if (is->url->port)
-		child_env[i++] = g_strdup_printf("URLPORT=%d", is->url->port);
-	if (is->url->user)
-		child_env[i++] = g_strdup_printf("URLUSER=%s", is->url->user);
+	child_env[i++] = g_strdup_printf("URLHOST=%s", host);
+	if (port)
+		child_env[i++] = g_strdup_printf("URLPORT=%u", port);
+	if (user)
+		child_env[i++] = g_strdup_printf("URLUSER=%s", user);
 	if (password)
 		child_env[i++] = g_strdup_printf("URLPASSWD=%s", password);
-	if (is->url->path)
-		child_env[i++] = g_strdup_printf("URLPATH=%s", is->url->path);
 	child_env[i] = NULL;
 
 	/* Now do %h, %u, etc. substitution in cmd */
@@ -2877,7 +2895,7 @@ connect_to_server_process (CamelIMAPXServer *is,
 	for (;;) {
 		gchar *pc;
 		gchar *tmp;
-		gchar *var;
+		const gchar *var;
 		gint len;
 
 		pc = strchr (buf, '%');
@@ -2895,10 +2913,10 @@ connect_to_server_process (CamelIMAPXServer *is,
 
 		switch (pc[1]) {
 		case 'h':
-			var = is->url->host;
+			var = host;
 			break;
 		case 'u':
-			var = is->url->user;
+			var = user;
 			break;
 		}
 		if (!var) {
@@ -2945,6 +2963,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
                          GCancellable *cancellable,
                          GError **error)
 {
+	CamelNetworkSettings *network_settings;
 	CamelNetworkSecurityMethod method;
 	CamelStream * tcp_stream = NULL;
 	CamelSockOptData sockopt;
@@ -2954,6 +2973,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	guchar *token;
 	gint tok;
 	CamelIMAPXCommand *ic;
+	const gchar *host;
 	GError *local_error = NULL;
 
 #ifndef G_OS_WIN32
@@ -2964,7 +2984,9 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	service = CAMEL_SERVICE (is->store);
 	settings = camel_service_get_settings (service);
 
-	g_object_get (settings, "security-method", &method, NULL);
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	method = camel_network_settings_get_security_method (network_settings);
 
 #ifndef G_OS_WIN32
 	use_shell_command = camel_imapx_settings_get_use_shell_command (
@@ -3058,7 +3080,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 				&local_error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
 				_("Failed to connect to IMAP server %s in secure mode: %s"),
-				is->url->host, _("STARTTLS not supported"));
+				host, _("STARTTLS not supported"));
 			goto exit;
 		}
 
@@ -3097,7 +3119,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 			g_prefix_error (
 				&local_error,
 				_("Failed to connect to IMAP server %s in secure mode: "),
-				is->url->host);
+				host);
 			goto exit;
 		}
 		/* Get new capabilities if they weren't already given */
@@ -3142,18 +3164,25 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
                                  GCancellable *cancellable,
                                  GError **error)
 {
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
 	CamelAuthenticationResult result;
 	CamelIMAPXCommand *ic;
 	CamelService *service;
 	CamelSasl *sasl = NULL;
-	CamelURL *url;
+	const gchar *host;
+	const gchar *user;
 
 	g_return_val_if_fail (
 		CAMEL_IS_IMAPX_SERVER (is),
 		CAMEL_AUTHENTICATION_REJECTED);
 
 	service = CAMEL_SERVICE (is->store);
-	url = camel_service_get_camel_url (service);
+	settings = camel_service_get_settings (service);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_get_host (network_settings);
+	user = camel_network_settings_get_user (network_settings);
 
 	if (mechanism != NULL) {
 		if (!g_hash_table_lookup (is->cinfo->auth_types, mechanism)) {
@@ -3161,7 +3190,7 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("IMAP server %s does not support %s "
-				  "authentication"), url->host, mechanism);
+				  "authentication"), host, mechanism);
 			return CAMEL_AUTHENTICATION_ERROR;
 		}
 
@@ -3185,7 +3214,7 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 
 		password = camel_service_get_password (service);
 
-		if (url->user == NULL) {
+		if (user == NULL) {
 			g_set_error_literal (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -3203,7 +3232,7 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 
 		ic = camel_imapx_command_new (
 			is, "LOGIN", NULL, cancellable,
-			"LOGIN %s %s", url->user, password);
+			"LOGIN %s %s", user, password);
 	}
 
 	imapx_command_run (is, ic);
@@ -3250,7 +3279,6 @@ imapx_reconnect (CamelIMAPXServer *is,
 	CamelService *service;
 	CamelSession *session;
 	CamelSettings *settings;
-	CamelURL *url;
 	const gchar *mechanism;
 	gboolean use_idle;
 	gboolean use_qresync;
@@ -3259,8 +3287,8 @@ imapx_reconnect (CamelIMAPXServer *is,
 	session = camel_service_get_session (service);
 	settings = camel_service_get_settings (service);
 
-	url = camel_service_get_camel_url (service);
-	mechanism = url->authmech;
+	mechanism = camel_network_settings_get_auth_mechanism (
+		CAMEL_NETWORK_SETTINGS (settings));
 
 	use_idle = camel_imapx_settings_get_use_idle (
 		CAMEL_IMAPX_SETTINGS (settings));
@@ -5089,8 +5117,6 @@ imapx_server_finalize (GObject *object)
 {
 	CamelIMAPXServer *is = CAMEL_IMAPX_SERVER (object);
 
-	camel_url_free (is->url);
-
 	g_static_rec_mutex_free (&is->queue_lock);
 	g_static_rec_mutex_free (&is->ostream_lock);
 	g_mutex_free (is->fetch_mutex);
@@ -5184,8 +5210,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 }
 
 CamelIMAPXServer *
-camel_imapx_server_new (CamelStore *store,
-                        CamelURL *url)
+camel_imapx_server_new (CamelStore *store)
 {
 	CamelService *service;
 	CamelSession *session;
@@ -5197,7 +5222,6 @@ camel_imapx_server_new (CamelStore *store,
 	is = g_object_new (CAMEL_TYPE_IMAPX_SERVER, NULL);
 	is->session = g_object_ref (session);
 	is->store = store;
-	is->url = camel_url_copy (url);
 
 	return is;
 }

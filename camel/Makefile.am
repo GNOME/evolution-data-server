@@ -79,6 +79,7 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-internet-address.c		\
 	camel-junk-filter.c			\
 	camel-list-utils.c			\
+	camel-local-settings.c			\
 	camel-lock.c				\
 	camel-medium.c				\
 	camel-memchunk.c			\
@@ -199,6 +200,7 @@ libcamelinclude_HEADERS =			\
 	camel-internet-address.h		\
 	camel-junk-filter.h			\
 	camel-list-utils.h			\
+	camel-local-settings.h			\
 	camel-lock-client.h			\
 	camel-lock-helper.h			\
 	camel-lock.h				\
