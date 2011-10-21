@@ -156,6 +156,7 @@ AS_COMPILER_FLAGS(WARNING_FLAGS,
 	-Wno-sign-compare
 	-Wno-unused-parameter
 	-Wdeclaration-after-statement
+	-Werror-implicit-function-declaration
 	-Wformat-security -Winit-self
 	-Wmissing-declarations -Wmissing-include-dirs
 	-Wmissing-noreturn -Wnested-externs -Wpointer-arith
@@ -174,7 +175,6 @@ dnl	-Wformat-nonliteral
 dnl	-Wmissing-format-attribute
 dnl	-Wshadow
 dnl	-Wstrict-aliasing=2
-dnl	-Werror-implicit-function-declaration
 
 AM_CPPFLAGS="$WARNING_FLAGS -fno-strict-aliasing"
 AC_SUBST(AM_CPPFLAGS)
