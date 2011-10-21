@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-27 20:29+0200\n"
-"PO-Revision-Date: 2011-09-27 20:30+0200\n"
+"POT-Creation-Date: 2011-10-21 17:38+0200\n"
+"PO-Revision-Date: 2011-10-21 17:39+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -21,12 +21,12 @@ msgstr ""
 "X-Poedit-Language: Polish\n"
 "X-Poedit-Country: Poland\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:828
+#: ../addressbook/backends/file/e-book-backend-file.c:830
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:478
 msgid "Loading..."
 msgstr "Wczytywanie..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:831
+#: ../addressbook/backends/file/e-book-backend-file.c:833
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4807
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:480
 msgid "Searching..."
@@ -675,7 +675,7 @@ msgid "Birth Date"
 msgstr "Data urodzenia"
 
 #: ../addressbook/libebook/e-contact.c:265
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:756
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:764
 msgid "Anniversary"
 msgstr "Rocznica"
 
@@ -788,7 +788,7 @@ msgstr "Lista kontaktów bez nazwy"
 
 #: ../addressbook/libedata-book/e-book-backend.c:19
 msgid "Cannot process, book backend is opening"
-msgstr "Nie można przetworzyć, mechanizm książki jest otwierany"
+msgstr "Nie można przetworzyć, mechanizm książki jest uruchamiany"
 
 #: ../addressbook/libedata-book/e-book-backend.c:96
 #, c-format
@@ -798,9 +798,9 @@ msgstr "Nieznana właściwość książki \"%s\""
 #: ../addressbook/libedata-book/e-book-backend.c:113
 #, c-format
 msgid "Cannot change value of book property '%s'"
-msgstr "Nie można zmienić wartości własności książki \"%s\""
+msgstr "Nie można zmienić wartości właściwość książki \"%s\""
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:470
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:484
 #: ../camel/camel-db.c:481
 #, c-format
 msgid "Insufficient memory"
@@ -973,7 +973,7 @@ msgstr "Nie można odświeżyć książki adresowej: "
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:910
 msgid "Cannot get backend property: "
-msgstr "Nie można uzyskać własności mechanizmu: "
+msgstr "Nie można uzyskać właściwości mechanizmu: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:935
@@ -1028,16 +1028,16 @@ msgstr ""
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalendarz nie obsługuje zajętości"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:758
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:766
 msgid "Birthday"
 msgstr "Urodziny"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:788
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:796
 #, c-format
 msgid "Birthday: %s"
 msgstr "Urodziny: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:813
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:821
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Rocznica: %s"
@@ -1371,7 +1371,7 @@ msgstr "Nieokreślony"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:34
 msgid "Cannot process, calendar backend is opening"
-msgstr "Nie można przetworzyć, mechanizm kalendarza jest otwierany"
+msgstr "Nie można przetworzyć, mechanizm kalendarza jest uruchamiany"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:212
 #, c-format
@@ -1512,7 +1512,7 @@ msgstr "Nie można odświeżyć kalendarza: "
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1070
 msgid "Cannot retrieve backend property: "
-msgstr "Nie można pobrać właściwości kalendarza: "
+msgstr "Nie można pobrać właściwości mechanizmu: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1125
@@ -2456,7 +2456,7 @@ msgstr "Kompilacja wyrażenia regularnego się nie powiodła: %s: %s"
 #: ../camel/camel-service.c:524
 #, c-format
 msgid "URL '%s' needs a user component"
-msgstr "W adresie URL \"%s\" wymagana jest nazwa użytkownika"
+msgstr "W adresie URL \"%s\" wymagany jest użytkownik"
 
 #: ../camel/camel-service.c:535
 #, c-format
@@ -2714,7 +2714,7 @@ msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nie można usunąć katalogu: %s: nieprawidłowe działanie"
 
 #: ../camel/camel-store.c:2795 ../camel/camel-vee-store.c:402
-#: ../camel/providers/local/camel-maildir-store.c:710
+#: ../camel/providers/local/camel-maildir-store.c:712
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Nie można zmienić nazwy katalogu: %s: nieprawidłowe działanie"
@@ -3183,7 +3183,7 @@ msgstr ""
 #: ../camel/providers/local/camel-maildir-store.c:273
 #: ../camel/providers/local/camel-maildir-store.c:619
 #: ../camel/providers/local/camel-maildir-store.c:625
-#: ../camel/providers/local/camel-maildir-store.c:711
+#: ../camel/providers/local/camel-maildir-store.c:713
 #: ../camel/providers/local/camel-spool-store.c:328
 msgid "Inbox"
 msgstr "Odebrane"
@@ -3564,7 +3564,7 @@ msgstr ""
 "Nie można utworzyć katalogu: %s: nazwa katalogu nie może zawierać kropki"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
-#: ../camel/providers/local/camel-maildir-store.c:728
+#: ../camel/providers/local/camel-maildir-store.c:730
 #, c-format
 msgid "Folder %s already exists"
 msgstr "Katalog %s już istnieje"
@@ -3610,14 +3610,14 @@ msgid "not a maildir directory"
 msgstr "to nie katalog z wiadomościami w formacie maildir"
 
 #: ../camel/providers/local/camel-maildir-store.c:510
-#: ../camel/providers/local/camel-maildir-store.c:885
+#: ../camel/providers/local/camel-maildir-store.c:887
 #: ../camel/providers/local/camel-spool-store.c:161
 #: ../camel/providers/local/camel-spool-store.c:180
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "Nie można przeszukać katalogu \"%s\": %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:719
+#: ../camel/providers/local/camel-maildir-store.c:721
 #, c-format
 msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
 msgstr ""
@@ -3935,17 +3935,17 @@ msgstr "Błąd wewnętrzny: UID w nieprawidłowej postaci: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:263
 #: ../camel/providers/nntp/camel-nntp-folder.c:267
-#: ../camel/providers/pop3/camel-pop3-folder.c:431
-#: ../camel/providers/pop3/camel-pop3-folder.c:696
+#: ../camel/providers/pop3/camel-pop3-folder.c:434
+#: ../camel/providers/pop3/camel-pop3-folder.c:699
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Nie można pobrać wiadomości %s: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:274
 #: ../camel/providers/nntp/camel-nntp-folder.c:449
-#: ../camel/providers/pop3/camel-pop3-folder.c:368
-#: ../camel/providers/pop3/camel-pop3-folder.c:420
-#: ../camel/providers/pop3/camel-pop3-folder.c:440
+#: ../camel/providers/pop3/camel-pop3-folder.c:372
+#: ../camel/providers/pop3/camel-pop3-folder.c:424
+#: ../camel/providers/pop3/camel-pop3-folder.c:443
 #, c-format
 msgid "Cannot get message %s: "
 msgstr "Nie można pobrać wiadomości %s: "
@@ -4113,40 +4113,40 @@ msgstr "Nieoczekiwana odpowiedź serwera z początku: %s"
 msgid "Operation failed: %s"
 msgstr "Działanie się nie powiodło: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:285
-#: ../camel/providers/pop3/camel-pop3-folder.c:344
+#: ../camel/providers/pop3/camel-pop3-folder.c:289
+#: ../camel/providers/pop3/camel-pop3-folder.c:348
 #, c-format
 msgid "No message with UID %s"
 msgstr "Brak wiadomości o UID %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:352
+#: ../camel/providers/pop3/camel-pop3-folder.c:356
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "Pobieranie wiadomości %d. z serwera POP"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:432
+#: ../camel/providers/pop3/camel-pop3-folder.c:435
 msgid "Unknown reason"
 msgstr "Nieznana przyczyna"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:472
+#: ../camel/providers/pop3/camel-pop3-folder.c:475
 msgid "Retrieving POP summary"
 msgstr "Pobieranie zestawienia POP"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:487
+#: ../camel/providers/pop3/camel-pop3-folder.c:490
 msgid "Cannot get POP summary: "
 msgstr "Nie można pobrać zestawienia POP: "
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:557
+#: ../camel/providers/pop3/camel-pop3-folder.c:560
 msgid "Expunging old messages"
 msgstr "Oczyszczanie ze starych wiadomości"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:569
+#: ../camel/providers/pop3/camel-pop3-folder.c:572
 msgid "Expunging deleted messages"
 msgstr "Oczyszczanie z usuniętych wiadomości"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:39
 msgid "Message Storage"
-msgstr "Miejsce przechowywania wiadomości"
+msgstr "Przechowywanie wiadomości"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:41
 msgid "_Leave messages on server"
@@ -4563,7 +4563,7 @@ msgstr "Transakcja się nie powiodła"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:751
 msgid "A password transition is needed"
-msgstr "Potrzebna jest zmiana hasła"
+msgstr "Wymagana jest zmiana hasła"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:753
 msgid "Authentication mechanism is too weak"
@@ -4757,7 +4757,7 @@ msgstr "Źródło jest już wczytane"
 
 #: ../libedataserver/e-client.c:130
 msgid "Offline unavailable"
-msgstr "Tryb offline nie jest dostępny"
+msgstr "Tryb offline jest niedostępny"
 
 #: ../libedataserver/e-client.c:152
 msgid "D-Bus error"
