@@ -4753,7 +4753,7 @@ msgstr "Nie można wczytać źródła"
 
 #: ../libedataserver/e-client.c:122
 msgid "Source already loaded"
-msgstr "Źródło jest już wczytane"
+msgstr "Źródło zostało już wczytane"
 
 #: ../libedataserver/e-client.c:130
 msgid "Offline unavailable"
