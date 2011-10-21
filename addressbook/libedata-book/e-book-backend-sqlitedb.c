@@ -425,7 +425,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 		else if (summary_fields[i].fundamental_type == G_TYPE_BOOLEAN)
 			g_string_append (string, "INTEGER, ");
 		else
-			g_assert_not_reached ();
+			g_warn_if_reached ();
 	}
 	g_string_append (string, "vcard TEXT, bdata TEXT)");
 
@@ -626,7 +626,7 @@ insert_stmt_from_contact (EContact *contact,
 			g_string_append_printf (string, "%d", val ? 1 : 0);
 
 		} else
-			g_assert_not_reached ();
+			g_warn_if_reached ();
 	}
 
 	vcard_str = store_vcard ? e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30) : NULL;
@@ -1183,11 +1183,12 @@ func_and (ESExp *f,
 	g_string_append(string, " )");
 	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 
-	if (strlen (string->str) == 4)
+	if (strlen (string->str) == 4) {
 		r->value.string = g_strdup("");
-	else
-		r->value.string = string->str;
-	g_string_free (string, FALSE);
+		g_string_free (string, TRUE);
+	} else {
+		r->value.string = g_string_free (string, FALSE);
+	}
 
 	return r;
 }
@@ -1210,14 +1211,20 @@ func_or (ESExp *f,
 			e_sexp_result_free (f, r1);
 			continue;
 		}
-		g_string_append_printf(string, "%s%s", r1->value.string, ((argc>1) && (i != argc-1)) ?  " OR ":"");
+		if (r1->value.string && *r1->value.string)
+			g_string_append_printf(string, "%s%s", r1->value.string, ((argc>1) && (i != argc-1)) ?  " OR ":"");
 		e_sexp_result_free (f, r1);
 	}
 	g_string_append(string, " )");
 
 	r = e_sexp_result_new (f, ESEXP_RES_STRING);
-	r->value.string = string->str;
-	g_string_free (string, FALSE);
+	if (strlen (string->str) == 4) {
+		r->value.string = g_strdup("");
+		g_string_free (string, TRUE);
+	} else {
+		r->value.string = g_string_free (string, FALSE);
+	}
+
 	return r;
 }
 
@@ -1373,12 +1380,16 @@ sexp_to_sql_query (const gchar *query)
 	if (!r)
 		return NULL;
 	if (r->type == ESEXP_RES_STRING) {
-		res = g_strdup (r->value.string);
+		if (r->value.string && *r->value.string)
+			res = g_strdup (r->value.string);
+		else
+			res = NULL;
 	} else
-		g_assert (0);
+		g_warn_if_reached ();
 
 	e_sexp_result_free (sexp, r);
 	e_sexp_unref (sexp);
+
 	return res;
 }
 
@@ -1449,7 +1460,7 @@ store_data_to_vcard (gpointer ref,
 					gboolean val = cols[i] ? strtoul (cols[i], NULL, 10) != 0 : FALSE;
 					e_contact_set (contact, summary_fields[j].field, GINT_TO_POINTER (val ? TRUE : FALSE));
 				} else
-					g_assert_not_reached ();
+					g_warn_if_reached ();
 
 				if (summary_fields[j].field == E_CONTACT_UID)
 					search_data->uid = g_strdup (cols[i]);
