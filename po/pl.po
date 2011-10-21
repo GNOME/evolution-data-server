@@ -798,7 +798,7 @@ msgstr "Nieznana właściwość książki \"%s\""
 #: ../addressbook/libedata-book/e-book-backend.c:113
 #, c-format
 msgid "Cannot change value of book property '%s'"
-msgstr "Nie można zmienić wartości właściwość książki \"%s\""
+msgstr "Nie można zmienić wartości właściwości książki \"%s\""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:484
 #: ../camel/camel-db.c:481
