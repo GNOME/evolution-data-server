@@ -58,6 +58,11 @@ e_iterator_init (EIterator *card)
 /*
  * Virtual functions:
  *
+ */
+
+/**
+ * e_iterator_get:
+ *
  * Returns: (transfer none): the iterator.
  */
 gconstpointer
