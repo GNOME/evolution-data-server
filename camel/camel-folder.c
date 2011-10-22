@@ -3513,6 +3513,67 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
 }
 
 /**
+ * camel_folder_refresh_info:
+ * @folder: a #CamelFolder
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously synchronizes a folder's summary with its backing store.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_folder_refresh_info_finish() to get the result of the operation.
+ *
+ * Since: 3.2
+ **/
+void
+camel_folder_refresh_info (CamelFolder *folder,
+                           gint io_priority,
+                           GCancellable *cancellable,
+                           GAsyncReadyCallback callback,
+                           gpointer user_data)
+{
+	CamelFolderClass *class;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class->refresh_info != NULL);
+
+	class->refresh_info (
+		folder, io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_folder_refresh_info_finish:
+ * @folder: a #CamelFolder
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_folder_refresh_info().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_folder_refresh_info_finish (CamelFolder *folder,
+                                  GAsyncResult *result,
+                                  GError **error)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->refresh_info_finish != NULL, FALSE);
+
+	return class->refresh_info_finish (folder, result, error);
+}
+
+/**
  * camel_folder_synchronize_sync:
  * @folder: a #CamelFolder
  * @expunge: whether to expunge after synchronizing
