@@ -675,6 +675,9 @@ camel_session_get_service_by_url (CamelSession *session,
 		provider = camel_service_get_provider (service);
 		service_url = camel_service_get_camel_url (service);
 
+		if (provider == NULL)
+			continue;
+
 		if (provider->url_equal == NULL)
 			continue;
 
