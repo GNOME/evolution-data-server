@@ -1,3 +1,113 @@
+Evolution-Data-Server 3.3.1 2011-10-24
+--------------------------------------
+
+Bug Fixes:
+	Bug 527614 - Valgrind shows a nice amount of lost memory (Milan Crha)
+	Bug 601898 - SOCKS proxy does not work with mailer (Milan Crha)
+	Bug 620382 - Do not delete also directory for custom local calendars
+	             (Milan Crha)
+	Bug 632619 - Recurring events can clutter month view (Milan Crha)
+	Bug 642984 - Drop --enable-ssl configure option (nss/nspr always
+	             required) (Milan Crha)
+	Bug 655252 - Need to escape the comp_uid part of a path (Milan Crha)
+	Bug 656473 - Store server folder cache in user's cache directory
+	             (Milan Crha)
+	Bug 656603 - Add support for generating vCard 2.1 in libebook
+	             (Bartosz Szatkowski)
+	Bug 659438 - Checks junk in all folders despite restricting to INBOX
+	             (Milan Crha)
+	Bug 659553 - Fix e_vcard_unescape_string (Alexander Larsson)
+	Bug 659555 - Add custom icons in a folder Subscription dialog
+	             (Milan Crha)
+	Bug 659568 - One day delay in calendar view (Milan Crha)
+	Bug 659914 - e_book_get_changes: Fix crash caused by unref of a NULL
+	             pointer (Christophe Dumez)
+	Bug 660246 - EBookBackendSqliteDB: Bad loop iteration
+	             (Christophe Dumez)
+	Bug 660533 - Missing GOA cflags/libs in libedata-book (Cosimo Cecchi)
+	Bug 660615 - Make POP3 provider more cancellable ready (Milan Crha)
+	Bug 660656 - Fix e_iterator_get annotation (Alban Browaeys)
+	Bug 660829 - Allow 'Mark as read' in right click menu on spam folder
+	             (Milan Crha)
+	Bug 660870 - Empty Contacts list when pressing "To:" in composer
+	             (Milan Crha)
+	Bug 660884 - Missing libebackend LIBADD in calendar/backends
+	             (Christian Hilberg)
+	Bug 661432 - 'Any field contains' search doesn't work in contact view
+	             (Milan Crha)
+	Bug 661448 - e_util_copy_*_slist(): Avoid using append function
+	             (Christophe Dumez)
+	Bug 661549 - Avoid fetching from backend when calculating summary
+	             (Milan Crha)
+
+Other Changes:
+	* libebook.pc.in: camel-1.2 is a private requirement. (Matthew Barnes)
+	* Add CamelMemChunk (copy of EMemChunk). (Matthew Barnes)
+	* CamelService: Add "password" property. (Matthew Barnes)
+	* CamelProvider: Remove 'license' and 'license_file' members.
+	  (Matthew Barnes)
+	* Add EModule, EExtensible and EExtension (Matthew Barnes)
+	* Add various base classes for backends and servers. (Matthew Barnes)
+	* Provide CamelFolder::get_message_cached() (Milan Crha)
+	* Merge libcamel-provider into libcamel. (Matthew Barnes)
+	* Add a "services" directory. (Matthew Barnes)
+	* Require GLib 2.30. (Matthew Barnes)
+	* addressbook: Optimizations to avoid vcard parsing (Christophe Dumez)
+	* Provide EClient's GSList utility functions within
+	  e-data-server-util.h (Milan Crha)
+	* Increase dependency on gtk+ to 3.2 (Milan Crha)
+	* CamelFolderSummary API changes (Milan Crha)
+	* gdbus_proxy_call_sync: check sync flag more frequently
+	  (Christophe Dumez)
+	* Make all backends return NULL when calling get_contact() and the
+	  contact is not found. (Christophe Dumez)
+	* e-book-client: add e_book_client_add_contacts*() methods
+	  (Christophe Dumez)
+	* addressbook: Improve bulk contact removal code (Christophe Dumez)
+	* configure.ac: Bump ADDRESS_BOOK_DBUS_SERVICE_NAME to 2
+	  (Christophe Dumez)
+	* Workaround possible crash in imap_body_decode() (Milan Crha)
+	* e-book-client: Add bulk contact modification methods.
+	  (Christophe Dumez)
+	* e_book_backend_sqlitedb_new: Fix database connection reuse
+	  (Christophe Dumez)
+	* Don't free vcard memory in e_data_book_view_notify_update*_vcard()
+	  (Christophe Dumez)
+	* ENameSelectorEntry::user_delete_text: Delete whole text when user
+	  deleted it (Milan Crha)
+	* e-book-backend-file: Don't share DB_ENV between address books from
+	  different sources (Christophe Dumez)
+	* Require libgdata >= 0.10. (Matthew Barnes)
+	* Camel: New authentication API. (Matthew Barnes)
+	* Really implement e_cal_client_view_set_fields_of_interest()
+	  (Tristan Van Berkom)
+	* Add camel_folder_refresh_info()/_finish(). (Matthew Barnes)
+	* Avoid a crash in camel_session_get_service_by_url(). (Matthew Barnes)
+
+Translations:
+	Ihar Hrachyshka (be)
+	Alexander Shopov (bg)
+	Gil Forcada (ca)
+	Carles Ferrando (ca@valencia)
+	Jiri Eischmann (cs)
+	Mario Blättermann (de)
+	Bruce Cowan (en_GB)
+	Daniel Mustieles (es)
+	Inaki Larranaga Murgoitio (eu)
+	Alexandre Franke (fr)
+	Fran Dieguez (gl)
+	Gabor Kelemen (hu)
+	Luca Ferretti (it)
+	OKANO Takayoshi (ja)
+	Changwoo Ryu (ko)
+	Kjartan Maraas (nb)
+	Piotr Drąg (pl)
+	Matej Urbančič (sl)
+	Daniel Nylander (sv)
+	Nguyễn Thái Ngọc Duy (vi)
+	YunQiang Su (zh_CN)
+
+
 Evolution-Data-Server 3.2.0 2011-09-26
 --------------------------------------
 
