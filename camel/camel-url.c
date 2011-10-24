@@ -822,28 +822,26 @@ gchar *
 camel_url_decode_path (const gchar *path)
 {
 	gchar **comps;
-	gchar *new_path = NULL;
 	GString *str;
-	gint i = 0;
+	guint length, ii;
 
-	if (!path)
-                return g_strdup("");    /* ??? or NULL? */
+	if (path == NULL || *path == '\0')
+		return g_strdup ("");    /* ??? or NULL? */
 
 	str = g_string_new (NULL);
 
-        comps = g_strsplit (path, "/", -1);
-	while (comps[i]) {
-		camel_url_decode (comps[i]);
-		g_string_append (str, comps[i]);
-		g_string_append_c (str, '/');
-		i++;
+	comps = g_strsplit (path, "/", -1);
+	length = g_strv_length (comps);
+
+	for (ii = 0; ii < length; ii++) {
+		if (ii > 0)
+			g_string_append_c (str, '/');
+		camel_url_decode (comps[ii]);
+		g_string_append (str, comps[ii]);
 	}
 
-        /* Strip-off the trailing "/" */
-	new_path = g_strndup (str->str, str->len - 1);
-
 	g_strfreev (comps);
-	g_string_free (str, TRUE);
 
-	return new_path;
+	return g_string_free (str, FALSE);
 }
+
