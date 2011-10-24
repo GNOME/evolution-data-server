@@ -127,7 +127,9 @@ gint main (gint argc, gchar **argv)
 	if (argc < 2)
 		do_usage (argv[0]);
 
+	#if !GLIB_CHECK_VERSION(2,31,0)
 	g_thread_init (NULL);
+	#endif
 	camel_init (NULL, 0);
 
 	if (!strcmp(argv[1], "compress"))
