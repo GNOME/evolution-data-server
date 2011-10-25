@@ -143,6 +143,8 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 	object_class->set_property = pop3_settings_set_property;
 	object_class->get_property = pop3_settings_get_property;
 
+	/* Default to 0 days (i.e. do not delete) so we don't delete
+	 * mail on the POP server when the user's not expecting it. */
 	g_object_class_install_property (
 		object_class,
 		PROP_DELETE_AFTER_DAYS,
@@ -152,7 +154,7 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			"Delete messages left on server after N days",
 			0,
 			365,
-			7,
+			0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
