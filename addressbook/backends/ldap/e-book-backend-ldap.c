@@ -2008,8 +2008,9 @@ modify_contact_search_handler (LDAPOp *op,
 		modify_op->current_contact = build_contact_from_entry (bl, e,
 								       &modify_op->existing_objectclasses,
 								       &modify_op->ldap_uid);
-	}
-	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
+	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
+		/* ignore references */
+	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
 		gchar *ldap_error_msg;
 		gint ldap_error;
 		gint new_dn_needed;
@@ -2405,8 +2406,9 @@ get_contact_handler (LDAPOp *op,
 			printf ("get_contact_handler took %ld.%03ld seconds \n",
 				 diff / 1000, diff % 1000);
 		}
-	}
-	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
+	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
+		/* ignore references */
+	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
 		gchar *ldap_error_msg;
 		gint ldap_error;
 
@@ -2594,8 +2596,9 @@ contact_list_handler (LDAPOp *op,
 			e = ldap_next_entry (bl->priv->ldap, e);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		}
-	}
-	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
+	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
+		/* ignore references */
+	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
 		gchar *ldap_error_msg;
 		gint ldap_error;
 
@@ -2819,8 +2822,9 @@ contact_list_uids_handler (LDAPOp *op,
 			e = ldap_next_entry (bl->priv->ldap, e);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		}
-	}
-	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
+	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
+		/* ignore references */
+	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
 		gchar *ldap_error_msg;
 		gint ldap_error;
 
@@ -4709,8 +4713,9 @@ ldap_search_handler (LDAPOp *op,
 			e = ldap_next_entry (bl->priv->ldap, e);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		}
-	}
-	else if (msg_type == LDAP_RES_SEARCH_RESULT) {
+	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
+		/* ignore references */
+	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
 		GError *edb_err = NULL;
 		gchar *ldap_error_msg;
 		gint ldap_error;
