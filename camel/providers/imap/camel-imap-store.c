@@ -3188,22 +3188,38 @@ gboolean
 camel_imap_store_connected (CamelImapStore *store,
                             GError **error)
 {
+	CamelService *service;
+	CamelOfflineStore *offline_store;
+	gboolean success;
+	GError *local_error = NULL;
+
 	/* This looks stupid ... because it is.
 	 *
 	 * camel-service-connect will return OK if we connect in 'offline mode',
 	 * which isn't what we want at all.  So we have to recheck we actually
 	 * did connect anyway ... */
 
-	if (store->istream != NULL
-	    || (((camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
-		&& camel_service_connect_sync ((CamelService *) store, NULL)
-		&& store->istream != NULL)))
+	if (store->istream != NULL)
 		return TRUE;
 
-	g_set_error (
-		error, CAMEL_SERVICE_ERROR,
-		CAMEL_SERVICE_ERROR_UNAVAILABLE,
-		_("You must be working online to complete this operation"));
+	service = CAMEL_SERVICE (store);
+	offline_store = CAMEL_OFFLINE_STORE (store);
+
+	success =
+		camel_offline_store_get_online (offline_store) &&
+		camel_service_connect_sync (service, &local_error);
+
+	if (success && store->istream != NULL)
+		return TRUE;
+
+	if (local_error != NULL)
+		g_propagate_error (error, local_error);
+	else
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online "
+			  "to complete this operation"));
 
 	return FALSE;
 }
