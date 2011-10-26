@@ -36,9 +36,6 @@ main (gint argc,
 	}
 
 	uri = argv[1];
-	#if !GLIB_CHECK_VERSION(2,31,0)
-	g_thread_init (NULL);
-	#endif
 	system ("rm -rf /tmp/test-camel-imapx");
 	camel_init ("/tmp/test-camel-imapx", TRUE);
 	camel_provider_init ();

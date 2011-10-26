@@ -1862,9 +1862,6 @@ main (gint argc,
 
 	printf ("Camel text index tester!\n");
 
-	#if !GLIB_CHECK_VERSION(2,31,0)
-	g_thread_init (NULL);
-	#endif
 	camel_init (NULL, 0);
 
 	idx = (CamelIndex *)camel_text_index_new ("textindex", O_CREAT|O_RDWR|O_TRUNC);

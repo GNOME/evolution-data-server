@@ -81,9 +81,6 @@ main (gint argc,
       gchar **argv)
 {
 	gtk_init (&argc, &argv);
-	#if !GLIB_CHECK_VERSION(2,31,0)
-	g_thread_init (NULL);
-	#endif
 
 	camel_init (NULL, 0);
 
