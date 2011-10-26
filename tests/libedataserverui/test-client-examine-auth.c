@@ -412,8 +412,6 @@ gint
 main (gint argc,
       gchar **argv)
 {
-	g_type_init ();
-	g_thread_init (NULL);
 	gtk_init (&argc, &argv);
 
 	e_passwords_init ();

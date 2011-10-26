@@ -103,8 +103,6 @@ camel_test_init (gint argc,
 	setup = 1;
 
 	g_type_init ();
-	/* yeah, we do need ot thread init, even though camel isn't compiled with enable threads */
-	g_thread_init (NULL);
 
 	path = g_strdup_printf ("/tmp/camel-test");
 	if (mkdir (path, 0700) == -1 && errno != EEXIST)

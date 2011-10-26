@@ -3800,7 +3800,6 @@ main (gint argc,
 	FILE * fin = NULL;
 
 	g_type_init ();
-	g_thread_init (NULL);
 
 	context = g_option_context_new ("- test utility for e-d-s file backend");
 	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);

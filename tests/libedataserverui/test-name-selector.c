@@ -81,7 +81,6 @@ main (gint argc,
       gchar **argv)
 {
 	gtk_init (&argc, &argv);
-	g_thread_init (NULL);
 
 	camel_init (NULL, 0);
 

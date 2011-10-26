@@ -63,7 +63,6 @@ main_initialize (void)
 		return;
 
 	g_type_init ();
-	g_thread_init (NULL);
 
 	initialized = TRUE;
 }
