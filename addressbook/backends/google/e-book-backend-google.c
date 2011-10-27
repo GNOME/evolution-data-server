@@ -1,7 +1,7 @@
 /* e-book-backend-google.c - Google contact backendy.
  *
  * Copyright (C) 2008 Joergen Scheibengruber
- * Copyright (C) 2010 Philip Withnall
+ * Copyright (C) 2010, 2011 Philip Withnall
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -2336,7 +2336,16 @@ e_book_backend_google_get_backend_property (EBookBackend *backend,
 			E_CONTACT_NOTE,
 			E_CONTACT_PHOTO,
 			E_CONTACT_CATEGORIES,
+#if defined(GDATA_CHECK_VERSION)
+#if GDATA_CHECK_VERSION(0, 11, 0)
+			E_CONTACT_CATEGORY_LIST,
+			E_CONTACT_FILE_AS
+#else
 			E_CONTACT_CATEGORY_LIST
+#endif
+#else
+			E_CONTACT_CATEGORY_LIST
+#endif
 		};
 
 		/* Add all the fields above to the list */
@@ -2651,6 +2660,12 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 	EContactDate *bdate;
 	const gchar *url;
 
+#if defined(GDATA_CHECK_VERSION)
+#if GDATA_CHECK_VERSION(0, 11, 0)
+	const gchar *file_as;
+#endif
+#endif
+
 	attributes = e_vcard_get_attributes (E_VCARD (contact));
 
 	/* N and FN */
@@ -2676,6 +2691,17 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 		gdata_contacts_contact_set_name (GDATA_CONTACTS_CONTACT (entry), name);
 		g_object_unref (name);
 	}
+
+#if defined(GDATA_CHECK_VERSION)
+#if GDATA_CHECK_VERSION(0, 11, 0)
+	/* File as */
+	file_as = e_contact_get (contact, E_CONTACT_FILE_AS);
+	if (file_as && *file_as)
+		gdata_contacts_contact_set_file_as (GDATA_CONTACTS_CONTACT (entry), file_as);
+	else
+		gdata_contacts_contact_set_file_as (GDATA_CONTACTS_CONTACT (entry), NULL);
+#endif
+#endif
 
 	/* NOTE */
 	note = e_contact_get (contact, E_CONTACT_NOTE);
@@ -2997,6 +3023,12 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 	gboolean bdate_has_year;
 	gboolean have_uri_home = FALSE, have_uri_blog = FALSE;
 
+#if defined(GDATA_CHECK_VERSION)
+#if GDATA_CHECK_VERSION(0, 11, 0)
+	const gchar *file_as;
+#endif
+#endif
+
 	uid = gdata_entry_get_id (entry);
 	if (NULL == uid)
 		return NULL;
@@ -3025,6 +3057,15 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 
 		e_contact_set (E_CONTACT (vcard), E_CONTACT_NAME, &name_struct);
 	}
+
+#if defined(GDATA_CHECK_VERSION)
+#if GDATA_CHECK_VERSION(0, 11, 0)
+	/* File as */
+	file_as = gdata_contacts_contact_get_file_as (GDATA_CONTACTS_CONTACT (entry));
+	if (file_as && *file_as)
+		e_contact_set (E_CONTACT (vcard), E_CONTACT_FILE_AS, file_as);
+#endif
+#endif
 
 	/* NOTE */
 	note = gdata_entry_get_content (entry);
