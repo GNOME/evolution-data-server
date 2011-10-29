@@ -128,6 +128,11 @@ struct _CamelStore {
 	struct _CamelDB *cdb_w;
 
 	CamelStoreFlags flags;
+
+	/* XXX The default "mode" (read/write) is changed only by
+	 *     evolution-groupwise for non-writable proxy accounts.
+	 *     The mode is only checked by the account combo box in
+	 *     Evolution's composer window. */
 	CamelStorePermissionFlags mode;
 
 	/* Future ABI expansion */
