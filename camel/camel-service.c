@@ -167,7 +167,7 @@ service_find_old_data_dir (CamelService *service)
 		}
 	}
 
-	if (needs_path) {
+	if (needs_path && url->path) {
 		if (*url->path != '/')
 			g_string_append_c (path, '/');
 		g_string_append (path, url->path);
