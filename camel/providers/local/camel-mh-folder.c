@@ -64,6 +64,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
 	CamelStream *output_stream;
 	CamelMessageInfo *mi;
 	gchar *name;
+	gboolean has_attachment;
 
 	/* FIXME: probably needs additional locking (although mh doesn't appear do do it) */
 
@@ -78,8 +79,11 @@ mh_folder_append_message_sync (CamelFolder *folder,
 	if (mi == NULL)
 		goto check_changed;
 
-	if ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !camel_mime_message_has_attachment (message))
-		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, 0);
+	has_attachment = camel_mime_message_has_attachment (message);
+	if (((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
+	    ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
+	}
 
 	d(printf("Appending message: uid is %s\n", camel_message_info_uid(mi)));
 

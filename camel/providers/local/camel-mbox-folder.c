@@ -151,6 +151,7 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 	gchar *fromline = NULL;
 	struct stat st;
 	gint retval;
+	gboolean has_attachment;
 #if 0
 	gchar *xev;
 #endif
@@ -172,8 +173,11 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 
 	d(printf("Appending message: uid is %s\n", camel_message_info_uid(mi)));
 
-	if ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !camel_mime_message_has_attachment (message))
-		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, 0);
+	has_attachment = camel_mime_message_has_attachment (message);
+	if (((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
+	    ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
+	}
 
 	output_stream = camel_stream_fs_new_with_name (
 		lf->folder_path, O_WRONLY | O_APPEND |

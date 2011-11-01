@@ -158,7 +158,7 @@ maildir_folder_append_message_sync (CamelFolder *folder,
 	CamelMessageInfo *mi;
 	CamelMaildirMessageInfo *mdi;
 	gchar *name, *dest = NULL;
-	gboolean success = TRUE;
+	gboolean success = TRUE, has_attachment;
 
 	d(printf("Appending message\n"));
 
@@ -173,8 +173,11 @@ maildir_folder_append_message_sync (CamelFolder *folder,
 	if (mi == NULL)
 		goto check_changed;
 
-	if ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !camel_mime_message_has_attachment (message))
-		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, 0);
+	has_attachment = camel_mime_message_has_attachment (message);
+	if (((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
+	    ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {
+		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
+	}
 
 	mdi = (CamelMaildirMessageInfo *) mi;
 
