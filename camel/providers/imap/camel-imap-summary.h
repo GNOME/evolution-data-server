@@ -53,7 +53,9 @@
 G_BEGIN_DECLS
 
 enum {
-	CAMEL_IMAP_MESSAGE_RECENT = 1 << 17
+	CAMEL_IMAP_MESSAGE_RECENT = 1 << 17,
+	/* used when moving messages and has real trash folder set with a google account */
+	CAMEL_IMAP_MESSAGE_MOVED = 1 << 18
 };
 
 typedef struct _CamelImapSummary CamelImapSummary;
