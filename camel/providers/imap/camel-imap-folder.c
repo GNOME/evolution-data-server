@@ -68,11 +68,6 @@ enum {
 	PROP_CHECK_FOLDER = 0x2500
 };
 
-enum {
-	/* used when moving messages and has real trash folder set with a google account */
-	CAMEL_MESSAGE_IMAP_MOVED = CAMEL_MESSAGE_FOLDER_FLAGGED << 1
-};
-
 extern gint camel_application_is_exiting;
 
 static gboolean imap_rescan (CamelFolder *folder, gint exists, GCancellable *cancellable, GError **error);
@@ -1479,7 +1474,7 @@ get_matching (CamelFolder *folder,
 			}
 		}
 
-		if (deleted_uids && (info->info.flags & (CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_IMAP_MOVED)) == CAMEL_MESSAGE_DELETED) {
+		if (deleted_uids && (info->info.flags & (CAMEL_MESSAGE_DELETED | CAMEL_IMAP_MESSAGE_MOVED)) == CAMEL_MESSAGE_DELETED) {
 			g_ptr_array_add (deleted_uids, (gpointer) camel_pstring_strdup (camel_message_info_uid (info)));
 			info->info.flags &= ~CAMEL_MESSAGE_DELETED;
 		} else if (junked_uids && (info->info.flags & CAMEL_MESSAGE_JUNK) != 0) {
@@ -1806,7 +1801,7 @@ imap_synchronize_sync (CamelFolder *folder,
 					info->info.flags &= ~CAMEL_MESSAGE_DELETED;
 				}
 
-				info->info.flags &= ~(CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_IMAP_MOVED);
+				info->info.flags &= ~(CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_IMAP_MESSAGE_MOVED);
 				((CamelImapMessageInfo *) info)->server_flags =	info->info.flags & CAMEL_IMAP_SERVER_FLAGS;
 				info->info.dirty = TRUE; /* Sync it back to the DB */
 				if (((CamelMessageInfo *) info)->summary)
@@ -2895,7 +2890,7 @@ do_copy (CamelFolder *source,
 					CamelMessageInfoBase *info = (CamelMessageInfoBase *) camel_folder_summary_uid (source->summary, uids->pdata[i]);
 
 					if (info)
-						info->flags |= CAMEL_MESSAGE_IMAP_MOVED;
+						info->flags |= CAMEL_IMAP_MESSAGE_MOVED;
 				}
 			}
 			last = uid;
