@@ -444,6 +444,13 @@ camel_settings_save_to_url (CamelSettings *settings,
 		/* Some CamelNetworkSettings properties are put directly
 		 * in the CamelURL struct instead of in parameters. */
 
+		if (g_strcmp0 (pspec->name, "auth-mechanism") == 0) {
+			const gchar *auth = g_value_get_string (&pvalue);
+			camel_url_set_authmech (url, auth);
+			g_value_unset (&pvalue);
+			continue;
+		}
+
 		if (g_strcmp0 (pspec->name, "host") == 0) {
 			const gchar *host = g_value_get_string (&pvalue);
 			camel_url_set_host (url, host);
