@@ -74,8 +74,6 @@ void		camel_operation_uncancel	(CamelOperation *operation);
 /* called internally by camel, for the current thread */
 gboolean	camel_operation_cancel_check	(CamelOperation *operation);
 gint		camel_operation_cancel_fd	(CamelOperation *operation);
-struct PRFileDesc *
-		camel_operation_cancel_prfd	(CamelOperation *operation);
 
 /* Since Camel methods pass around GCancellable pointers instead of
  * CamelOperation pointers, it's more convenient to callers to take

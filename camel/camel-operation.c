@@ -44,11 +44,7 @@ struct _StatusNode {
 };
 
 struct _CamelOperationPrivate {
-
 	GQueue status_stack;
-
-	CamelMsgPort *cancel_port;
-	PRFileDesc *cancel_prfd;
 };
 
 enum {
@@ -136,41 +132,6 @@ operation_emit_status_cb (StatusNode *node)
 }
 
 static void
-operation_flush_msgport (CamelOperation *operation)
-{
-	CamelOperationPrivate *priv = operation->priv;
-	CamelMsg *msg;
-
-	LOCK ();
-
-	while ((msg = camel_msgport_try_pop (priv->cancel_port)) != NULL)
-		g_free (msg);
-
-	UNLOCK ();
-}
-
-static void
-operation_cancelled (GCancellable *cancellable)
-{
-	CamelOperation *operation;
-	CamelMsg *msg;
-
-	g_return_if_fail (cancellable != NULL);
-	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
-
-	operation = CAMEL_OPERATION (cancellable);
-	g_return_if_fail (operation != NULL);
-	g_return_if_fail (operation->priv != NULL);
-
-	LOCK ();
-
-	msg = g_malloc0 (sizeof (CamelMsg));
-	camel_msgport_push (operation->priv->cancel_port, msg);
-
-	UNLOCK ();
-}
-
-static void
 operation_finalize (GObject *object)
 {
 	CamelOperationPrivate *priv;
@@ -180,9 +141,6 @@ operation_finalize (GObject *object)
 	LOCK ();
 
 	g_queue_remove (&operation_list, object);
-
-	operation_flush_msgport (CAMEL_OPERATION (object));
-	camel_msgport_destroy (priv->cancel_port);
 
 	/* Because each StatusNode holds a reference to its
 	 * CamelOperation, the fact that we're being finalized
@@ -199,15 +157,11 @@ static void
 camel_operation_class_init (CamelOperationClass *class)
 {
 	GObjectClass *object_class;
-	GCancellableClass *cancellable_class;
 
 	g_type_class_add_private (class, sizeof (CamelOperationPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = operation_finalize;
-
-	cancellable_class = G_CANCELLABLE_CLASS (class);
-	cancellable_class->cancelled = operation_cancelled;
 
 	signals[STATUS] = g_signal_new (
 		"status",
@@ -228,7 +182,6 @@ camel_operation_init (CamelOperation *operation)
 		operation, CAMEL_TYPE_OPERATION, CamelOperationPrivate);
 
 	g_queue_init (&operation->priv->status_stack);
-	operation->priv->cancel_port = camel_msgport_new ();
 
 	LOCK ();
 	g_queue_push_tail (&operation_list, operation);
@@ -301,7 +254,6 @@ camel_operation_uncancel (CamelOperation *operation)
 {
 	if (operation != NULL) {
 		g_return_if_fail (CAMEL_IS_OPERATION (operation));
-		operation_flush_msgport (operation);
 		g_cancellable_reset (G_CANCELLABLE (operation));
 	}
 }
@@ -326,9 +278,6 @@ camel_operation_cancel_check (CamelOperation *operation)
 
 	cancelled = g_cancellable_is_cancelled (G_CANCELLABLE (operation));
 
-	if (cancelled)
-		operation_flush_msgport (operation);
-
 	UNLOCK ();
 
 	return cancelled;
@@ -351,38 +300,6 @@ camel_operation_cancel_fd (CamelOperation *operation)
 		return -1;
 
 	return g_cancellable_get_fd (G_CANCELLABLE (operation));
-}
-
-/**
- * camel_operation_cancel_prfd:
- * @operation: a #CamelOperation
- *
- * Retrieve a file descriptor that can be waited on (select, or poll)
- * for read, to asynchronously detect cancellation.
- *
- * Returns: The fd, or %NULL if cancellation has not been registered
- * for this thread.
- **/
-PRFileDesc *
-camel_operation_cancel_prfd (CamelOperation *operation)
-{
-	CamelOperationPrivate *priv;
-
-	if (operation == NULL)
-		return NULL;
-
-	g_return_val_if_fail (CAMEL_IS_OPERATION (operation), NULL);
-
-	LOCK ();
-
-	priv = operation->priv;
-
-	if (priv->cancel_prfd == NULL)
-		priv->cancel_prfd = camel_msgport_prfd (priv->cancel_port);
-
-	UNLOCK ();
-
-	return priv->cancel_prfd;
 }
 
 /**
