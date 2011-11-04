@@ -260,6 +260,7 @@ camel_settings_load_from_url (CamelSettings *settings,
 	if (CAMEL_IS_NETWORK_SETTINGS (settings))
 		g_object_set (
 			settings,
+			"auth-mechanism", url->authmech,
 			"host", url->host,
 			"port", url->port,
 			"user", url->user,
