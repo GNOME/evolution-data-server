@@ -4952,6 +4952,13 @@ parse_contents (CamelIMAPXServer *is,
 		g_propagate_error (error, local_error);
 }
 
+static void
+imapx_poll_cancelled (GCancellable *cancellable,
+                      PRThread *thread)
+{
+	PR_Interrupt (thread);
+}
+
 /*
  * The main processing (reading) loop.
  *
@@ -4987,31 +4994,34 @@ imapx_parser_thread (gpointer d)
 				g_usleep (1) /* ?? */ ;
 			else if (res == 0)
 				/* timed out */;
-			else if (fds[0].revents & G_IO_IN) {
+			else if (fds[0].revents & G_IO_IN)
 				parse_contents (is, cancellable, &local_error);
-			} else if (fds[1].revents & G_IO_IN)
-				errno = EINTR;
 			g_cancellable_release_fd (cancellable);
 		} else
 #endif
 		{
-			PRPollDesc pollfds[2] = { };
+			PRPollDesc pollfds = { };
+			gulong cancel_id;
 			gint res;
 
-			pollfds[0].fd = camel_tcp_stream_get_file_desc (CAMEL_TCP_STREAM (is->stream->source));
-			pollfds[0].in_flags = PR_POLL_READ;
-			pollfds[1].fd = camel_operation_cancel_prfd (CAMEL_OPERATION (cancellable));
-			pollfds[1].in_flags = PR_POLL_READ;
+			pollfds.fd = camel_tcp_stream_get_file_desc (CAMEL_TCP_STREAM (is->stream->source));
+			pollfds.in_flags = PR_POLL_READ;
+			pollfds.out_flags = 0;
 
-			res = PR_Poll (pollfds, 2, PR_INTERVAL_NO_TIMEOUT);
+			cancel_id = g_cancellable_connect (
+				cancellable, G_CALLBACK (imapx_poll_cancelled),
+				PR_GetCurrentThread (), (GDestroyNotify) NULL);
+
+			res = PR_Poll (&pollfds, 1, PR_INTERVAL_NO_TIMEOUT);
+
+			g_cancellable_disconnect (cancellable, cancel_id);
+
 			if (res == -1)
 				g_usleep (1) /* ?? */ ;
 			else if (res == 0) {
 				/* timed out */
-			} else if ((pollfds[0].out_flags & PR_POLL_READ)) {
+			} else if ((pollfds.out_flags & PR_POLL_READ))
 				parse_contents (is, cancellable, &local_error);
-			} else if (pollfds[1].out_flags & PR_POLL_READ)
-				errno = EINTR;
 		}
 
 		/* Jump out of the loop if an error occurred. */
@@ -5026,7 +5036,7 @@ imapx_parser_thread (gpointer d)
 			break;
 		}
 
-		if (camel_operation_cancel_check (CAMEL_OPERATION (cancellable))) {
+		if (g_cancellable_is_cancelled (cancellable)) {
 			gint is_empty;
 
 			QUEUE_LOCK (is);
@@ -5034,7 +5044,7 @@ imapx_parser_thread (gpointer d)
 			QUEUE_UNLOCK (is);
 
 			if ((is_empty || (imapx_idle_supported (is) && imapx_in_idle (is))))
-				camel_operation_uncancel (CAMEL_OPERATION (cancellable));
+				g_cancellable_reset (cancellable);
 			else
 				g_set_error (
 					&local_error, G_IO_ERROR,
