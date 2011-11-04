@@ -182,9 +182,12 @@ camel_network_settings_set_host (CamelNetworkSettings *settings,
 
 	g_return_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings));
 
+	/* Make sure this property is never NULL. */
+	if (host == NULL)
+		host = "";
+
 	/* Strip leading and trailing whitespace. */
-	if (host != NULL)
-		stripped_host = g_strstrip (g_strdup (host));
+	stripped_host = g_strstrip (g_strdup (host));
 
 	g_object_set_data_full (
 		G_OBJECT (settings),
@@ -325,9 +328,12 @@ camel_network_settings_set_user (CamelNetworkSettings *settings,
 
 	g_return_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings));
 
+	/* Make sure this property is never NULL. */
+	if (user == NULL)
+		user = "";
+
 	/* Strip leading and trailing whitespace. */
-	if (user != NULL)
-		stripped_user = g_strstrip (g_strdup (user));
+	stripped_user = g_strstrip (g_strdup (user));
 
 	g_object_set_data_full (
 		G_OBJECT (settings),
