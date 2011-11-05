@@ -45,14 +45,6 @@ camel-operation
 @operation: 
 
 
-<!-- ##### FUNCTION camel_operation_uncancel ##### -->
-<para>
-
-</para>
-
-@operation: 
-
-
 <!-- ##### FUNCTION camel_operation_push_message ##### -->
 <para>
 

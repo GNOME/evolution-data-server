@@ -8477,6 +8477,13 @@ streams
 @CAMEL_OPERATION_START: 
 @CAMEL_OPERATION_END: 
 
+<!-- ##### FUNCTION camel_operation_uncancel ##### -->
+<para>
+
+</para>
+
+@operation: 
+
 <!-- ##### FUNCTION camel_operation_unref ##### -->
 <para>
 

@@ -240,25 +240,6 @@ camel_operation_cancel (CamelOperation *operation)
 }
 
 /**
- * camel_operation_uncancel:
- * @operation: a #CamelOperation
- *
- * Uncancel a cancelled operation.
- *
- * This is useful, if e.g. you need to do some cleaning up where a
- * cancellation lying around in the same thread will abort any
- * processing.
- **/
-void
-camel_operation_uncancel (CamelOperation *operation)
-{
-	if (operation != NULL) {
-		g_return_if_fail (CAMEL_IS_OPERATION (operation));
-		g_cancellable_reset (G_CANCELLABLE (operation));
-	}
-}
-
-/**
  * camel_operation_push_message:
  * @cancellable: a #GCancellable or %NULL
  * @format: a standard printf() format string
