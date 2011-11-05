@@ -206,37 +206,28 @@ camel_operation_new (void)
 }
 
 /**
- * camel_operation_cancel:
- * @operation: a #CamelOperation
+ * camel_operation_cancel_all:
  *
- * Cancel a given operation.  If @operation is %NULL then all outstanding
- * operations are cancelled.
+ * Cancel all outstanding operations.
  **/
 void
-camel_operation_cancel (CamelOperation *operation)
+camel_operation_cancel_all (void)
 {
-	if (operation != NULL) {
-		g_return_if_fail (CAMEL_IS_OPERATION (operation));
+	GList *link;
 
-		g_cancellable_cancel (G_CANCELLABLE (operation));
-	} else {
-		GList *link;
+	LOCK ();
 
-		LOCK ();
+	link = g_queue_peek_head_link (&operation_list);
 
-		link = g_queue_peek_head_link (&operation_list);
+	while (link != NULL) {
+		GCancellable *cancellable = link->data;
 
-		while (link != NULL) {
-			operation = link->data;
+		g_cancellable_cancel (cancellable);
 
-			if (operation != NULL)
-				camel_operation_cancel (operation);
-
-			link = g_list_next (link);
-		}
-
-		UNLOCK ();
+		link = g_list_next (link);
 	}
+
+	UNLOCK ();
 }
 
 /**

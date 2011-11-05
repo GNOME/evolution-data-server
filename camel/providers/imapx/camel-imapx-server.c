@@ -2313,7 +2313,7 @@ imapx_command_idle_stop (CamelIMAPXServer *is,
 		is->state = IMAPX_SHUTDOWN;
 		is->parser_quit = TRUE;
 		if (is->cancellable)
-			camel_operation_cancel (CAMEL_OPERATION (is->cancellable));
+			g_cancellable_cancel (is->cancellable);
 		return FALSE;
 	}
 

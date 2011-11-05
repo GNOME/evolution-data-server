@@ -37,12 +37,12 @@ camel-operation
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_operation_cancel ##### -->
+<!-- ##### FUNCTION camel_operation_cancel_all ##### -->
 <para>
 
 </para>
 
-@operation: 
+@void: 
 
 
 <!-- ##### FUNCTION camel_operation_push_message ##### -->

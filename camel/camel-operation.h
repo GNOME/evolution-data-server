@@ -65,10 +65,8 @@ struct _CamelOperationClass {
 };
 
 GType		camel_operation_get_type	(void);
-
-/* main thread functions */
 GCancellable *	camel_operation_new		(void);
-void		camel_operation_cancel		(CamelOperation *operation);
+void		camel_operation_cancel_all	(void);
 
 /* Since Camel methods pass around GCancellable pointers instead of
  * CamelOperation pointers, it's more convenient to callers to take

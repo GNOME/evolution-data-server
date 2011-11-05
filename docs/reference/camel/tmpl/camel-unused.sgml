@@ -8368,6 +8368,13 @@ streams
 @store: 
 @stay_synchronized: 
 
+<!-- ##### FUNCTION camel_operation_cancel ##### -->
+<para>
+
+</para>
+
+@operation: 
+
 <!-- ##### FUNCTION camel_operation_cancel_block ##### -->
 <para>
 
