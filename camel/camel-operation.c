@@ -259,31 +259,6 @@ camel_operation_uncancel (CamelOperation *operation)
 }
 
 /**
- * camel_operation_cancel_check:
- * @operation: a #CamelOperation
- *
- * Check if cancellation has been applied to @operation.
- *
- * Returns: %TRUE if the operation has been cancelled
- **/
-gboolean
-camel_operation_cancel_check (CamelOperation *operation)
-{
-	gboolean cancelled;
-
-	if (operation == NULL)
-		return FALSE;
-
-	LOCK ();
-
-	cancelled = g_cancellable_is_cancelled (G_CANCELLABLE (operation));
-
-	UNLOCK ();
-
-	return cancelled;
-}
-
-/**
  * camel_operation_push_message:
  * @cancellable: a #GCancellable or %NULL
  * @format: a standard printf() format string

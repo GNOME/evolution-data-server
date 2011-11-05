@@ -1734,7 +1734,6 @@ CamelOperation
 camel_operation_new
 camel_operation_cancel
 camel_operation_uncancel
-camel_operation_cancel_check
 camel_operation_push_message
 camel_operation_pop_message
 camel_operation_progress

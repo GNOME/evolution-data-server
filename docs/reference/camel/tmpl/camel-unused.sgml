@@ -8375,6 +8375,14 @@ streams
 
 @cc: 
 
+<!-- ##### FUNCTION camel_operation_cancel_check ##### -->
+<para>
+
+</para>
+
+@operation: 
+@Returns: 
+
 <!-- ##### FUNCTION camel_operation_cancel_fd ##### -->
 <para>
 

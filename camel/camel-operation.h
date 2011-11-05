@@ -71,9 +71,6 @@ GCancellable *	camel_operation_new		(void);
 void		camel_operation_cancel		(CamelOperation *operation);
 void		camel_operation_uncancel	(CamelOperation *operation);
 
-/* called internally by camel, for the current thread */
-gboolean	camel_operation_cancel_check	(CamelOperation *operation);
-
 /* Since Camel methods pass around GCancellable pointers instead of
  * CamelOperation pointers, it's more convenient to callers to take
  * a GCancellable pointer and just return silently if the pointer is
