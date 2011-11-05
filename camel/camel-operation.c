@@ -284,25 +284,6 @@ camel_operation_cancel_check (CamelOperation *operation)
 }
 
 /**
- * camel_operation_cancel_fd:
- * @operation: a #CamelOperation
- *
- * Retrieve a file descriptor that can be waited on (select, or poll)
- * for read, to asynchronously detect cancellation.
- *
- * Returns: The fd, or -1 if cancellation has not been registered
- * for this thread.
- **/
-gint
-camel_operation_cancel_fd (CamelOperation *operation)
-{
-	if (operation == NULL)
-		return -1;
-
-	return g_cancellable_get_fd (G_CANCELLABLE (operation));
-}
-
-/**
  * camel_operation_push_message:
  * @cancellable: a #GCancellable or %NULL
  * @format: a standard printf() format string

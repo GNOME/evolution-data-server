@@ -62,15 +62,6 @@ camel-operation
 @Returns: 
 
 
-<!-- ##### FUNCTION camel_operation_cancel_fd ##### -->
-<para>
-
-</para>
-
-@operation: 
-@Returns: 
-
-
 <!-- ##### FUNCTION camel_operation_push_message ##### -->
 <para>
 
