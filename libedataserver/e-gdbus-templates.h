@@ -27,6 +27,8 @@
 
 G_BEGIN_DECLS
 
+void		e_gdbus_templates_init_main_thread		(void);
+
 #define E_TYPE_GDBUS_ASYNC_OP_KEEPER		(e_gdbus_async_op_keeper_get_type ())
 #define E_GDBUS_ASYNC_OP_KEEPER(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_GDBUS_ASYNC_OP_KEEPER, EGdbusAsyncOpKeeper))
 #define E_IS_GDBUS_ASYNC_OP_KEEPER(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_GDBUS_ASYNC_OP_KEEPER))

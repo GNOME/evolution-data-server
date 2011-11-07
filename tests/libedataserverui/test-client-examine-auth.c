@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 #include <libedataserver/e-source-group.h>
+#include <libedataserver/e-gdbus-templates.h>
 #include <libedataserverui/e-client-utils.h>
 #include <libedataserverui/e-passwords.h>
 
@@ -415,6 +416,7 @@ main (gint argc,
 	gtk_init (&argc, &argv);
 
 	e_passwords_init ();
+	e_gdbus_templates_init_main_thread ();
 
 	g_idle_add (in_main_thread_idle_cb, NULL);
 

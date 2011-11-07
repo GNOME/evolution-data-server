@@ -27,6 +27,18 @@
 #include "e-flag.h"
 #include "e-gdbus-templates.h"
 
+static GThread *main_thread = NULL;
+
+void
+e_gdbus_templates_init_main_thread (void)
+{
+	if (!main_thread) {
+		main_thread = g_thread_self ();
+	} else if (main_thread != g_thread_self ()) {
+		g_warning ("%s: Called in different main thread, stored: %p would use: %p", G_STRFUNC, main_thread, g_thread_self ());
+	}
+}
+
 gboolean
 e_gdbus_signal_emission_hook_void (GSignalInvocationHint *ihint,
                                    guint n_param_values,
@@ -897,8 +909,8 @@ async_op_complete (AsyncOpData *op_data,
 }
 
 static void
-gdbus_op_cancelled_cb (GCancellable *cancellable,
-                       AsyncOpData *op_data)
+e_gdbus_op_cancelled_cb (GCancellable *cancellable,
+			 AsyncOpData *op_data)
 {
 	GError *call_error = NULL;
 
@@ -921,9 +933,9 @@ gdbus_op_cancelled_cb (GCancellable *cancellable,
 }
 
 static void
-gdbus_async_call_opid_ready_cb (GObject *source_proxy,
-                                GAsyncResult *result,
-                                gpointer user_data)
+e_gdbus_async_call_opid_ready_cb (GObject *source_proxy,
+				  GAsyncResult *result,
+                                  gpointer user_data)
 {
 	GVariant *_result;
 	GError *error = NULL;
@@ -945,7 +957,7 @@ gdbus_async_call_opid_ready_cb (GObject *source_proxy,
 		g_variant_unref (_result);
 
 		if (op_data->cancellable && !g_cancellable_set_error_if_cancelled (op_data->cancellable, &error))
-			op_data->cancel_id = g_cancellable_connect (op_data->cancellable, G_CALLBACK (gdbus_op_cancelled_cb), op_data, NULL);
+			op_data->cancel_id = g_cancellable_connect (op_data->cancellable, G_CALLBACK (e_gdbus_op_cancelled_cb), op_data, NULL);
 		else
 			add_pending = op_data->cancellable == NULL;
 
@@ -981,11 +993,11 @@ copy_strv (const gchar * const *strv)
 }
 
 static void
-gdbus_proxy_async_method_done (guint e_gdbus_type,
-                               gconstpointer out_value,
-                               EGdbusAsyncOpKeeper *object,
-                               guint arg_opid,
-                               const GError *error)
+e_gdbus_proxy_async_method_done (guint e_gdbus_type,
+				 gconstpointer out_value,
+				 EGdbusAsyncOpKeeper *object,
+				 guint arg_opid,
+				 const GError *error)
 {
 	AsyncOpData *op_data;
 	GHashTable *pending_ops;
@@ -1035,7 +1047,7 @@ e_gdbus_proxy_async_method_done_void (EGdbusAsyncOpKeeper *proxy,
                                       guint arg_opid,
                                       const GError *error)
 {
-	gdbus_proxy_async_method_done (E_GDBUS_TYPE_VOID, NULL, proxy, arg_opid, error);
+	e_gdbus_proxy_async_method_done (E_GDBUS_TYPE_VOID, NULL, proxy, arg_opid, error);
 }
 
 void
@@ -1044,7 +1056,7 @@ e_gdbus_proxy_async_method_done_boolean (EGdbusAsyncOpKeeper *proxy,
                                          const GError *error,
                                          gboolean out_boolean)
 {
-	gdbus_proxy_async_method_done (E_GDBUS_TYPE_BOOLEAN, &out_boolean, proxy, arg_opid, error);
+	e_gdbus_proxy_async_method_done (E_GDBUS_TYPE_BOOLEAN, &out_boolean, proxy, arg_opid, error);
 }
 
 /* takes ownership of the out parameter */
@@ -1054,7 +1066,7 @@ e_gdbus_proxy_async_method_done_string (EGdbusAsyncOpKeeper *proxy,
                                         const GError *error,
                                         const gchar *out_string)
 {
-	gdbus_proxy_async_method_done (E_GDBUS_TYPE_STRING, out_string, proxy, arg_opid, error);
+	e_gdbus_proxy_async_method_done (E_GDBUS_TYPE_STRING, out_string, proxy, arg_opid, error);
 }
 
 /* takes ownership of the out parameter */
@@ -1064,7 +1076,7 @@ e_gdbus_proxy_async_method_done_strv (EGdbusAsyncOpKeeper *proxy,
                                       const GError *error,
                                       const gchar * const *out_strv)
 {
-	gdbus_proxy_async_method_done (E_GDBUS_TYPE_STRV, out_strv, proxy, arg_opid, error);
+	e_gdbus_proxy_async_method_done (E_GDBUS_TYPE_STRV, out_strv, proxy, arg_opid, error);
 }
 
 void
@@ -1073,18 +1085,18 @@ e_gdbus_proxy_async_method_done_uint (EGdbusAsyncOpKeeper *proxy,
                                       const GError *error,
                                       guint out_uint)
 {
-	gdbus_proxy_async_method_done (E_GDBUS_TYPE_UINT, &out_uint, proxy, arg_opid, error);
+	e_gdbus_proxy_async_method_done (E_GDBUS_TYPE_UINT, &out_uint, proxy, arg_opid, error);
 }
 
 /* takes ownership of _params */
 static void
-gdbus_proxy_call_with_params (GVariant *_params,
-                              const gchar *method_name,
-                              gpointer source_tag,
-                              EGdbusAsyncOpKeeper *proxy,
-                              GCancellable *cancellable,
-                              GAsyncReadyCallback callback,
-                              gpointer user_data)
+e_gdbus_proxy_call_with_params (GVariant *_params,
+				const gchar *method_name,
+				gpointer source_tag,
+				EGdbusAsyncOpKeeper *proxy,
+				GCancellable *cancellable,
+				GAsyncReadyCallback callback,
+				gpointer user_data)
 {
 	AsyncOpData *op_data;
 
@@ -1098,7 +1110,7 @@ gdbus_proxy_call_with_params (GVariant *_params,
 	if (op_data->cancellable)
 		g_object_ref (op_data->cancellable);
 
-	g_dbus_proxy_call (G_DBUS_PROXY (proxy), method_name, _params, G_DBUS_CALL_FLAGS_NONE, e_data_server_util_get_dbus_call_timeout (), cancellable, gdbus_async_call_opid_ready_cb, op_data);
+	g_dbus_proxy_call (G_DBUS_PROXY (proxy), method_name, _params, G_DBUS_CALL_FLAGS_NONE, e_data_server_util_get_dbus_call_timeout (), cancellable, e_gdbus_async_call_opid_ready_cb, op_data);
 }
 
 void
@@ -1109,7 +1121,7 @@ e_gdbus_proxy_call_void (const gchar *method_name,
                          GAsyncReadyCallback callback,
                          gpointer user_data)
 {
-	gdbus_proxy_call_with_params (NULL, method_name, source_tag, proxy, cancellable, callback, user_data);
+	e_gdbus_proxy_call_with_params (NULL, method_name, source_tag, proxy, cancellable, callback, user_data);
 }
 
 void
@@ -1125,7 +1137,7 @@ e_gdbus_proxy_call_boolean (const gchar *method_name,
 
 	_params = g_variant_new ("(b)", in_boolean);
 
-	gdbus_proxy_call_with_params (_params, method_name, source_tag, proxy, cancellable, callback, user_data);
+	e_gdbus_proxy_call_with_params (_params, method_name, source_tag, proxy, cancellable, callback, user_data);
 }
 
 void
@@ -1141,7 +1153,7 @@ e_gdbus_proxy_call_string (const gchar *method_name,
 
 	_params = g_variant_new ("(s)", in_string);
 
-	gdbus_proxy_call_with_params (_params, method_name, source_tag, proxy, cancellable, callback, user_data);
+	e_gdbus_proxy_call_with_params (_params, method_name, source_tag, proxy, cancellable, callback, user_data);
 }
 
 void
@@ -1157,7 +1169,7 @@ e_gdbus_proxy_call_strv (const gchar *method_name,
 
 	_params = g_variant_new ("(^as)", in_strv);
 
-	gdbus_proxy_call_with_params (_params, method_name, source_tag, proxy, cancellable, callback, user_data);
+	e_gdbus_proxy_call_with_params (_params, method_name, source_tag, proxy, cancellable, callback, user_data);
 }
 
 void
@@ -1173,7 +1185,7 @@ e_gdbus_proxy_call_uint (const gchar *method_name,
 
 	_params = g_variant_new ("(u)", in_uint);
 
-	gdbus_proxy_call_with_params (_params, method_name, source_tag, proxy, cancellable, callback, user_data);
+	e_gdbus_proxy_call_with_params (_params, method_name, source_tag, proxy, cancellable, callback, user_data);
 }
 
 gboolean
@@ -1317,9 +1329,9 @@ typedef struct _SyncOpData
 } SyncOpData;
 
 static void
-gdbus_proxy_sync_ready_cb (GObject *proxy,
-                           GAsyncResult *result,
-                           gpointer user_data)
+e_gdbus_proxy_sync_ready_cb (GObject *proxy,
+			     GAsyncResult *result,
+                             gpointer user_data)
 {
 	SyncOpData *sync_data = user_data;
 
@@ -1356,15 +1368,15 @@ gdbus_proxy_sync_ready_cb (GObject *proxy,
 }
 
 static gboolean
-gdbus_proxy_call_sync (GDBusProxy *proxy,
-                       GCancellable *cancellable,
-                       GError **error,
-                       gpointer start_func,
-                       gpointer finish_func,
-                       guint in_type,
-                       gconstpointer in_value,
-                       guint out_type,
-                       gpointer out_value)
+e_gdbus_proxy_call_sync (GDBusProxy *proxy,
+			 GCancellable *cancellable,
+			 GError **error,
+			 gpointer start_func,
+			 gpointer finish_func,
+			 guint in_type,
+			 gconstpointer in_value,
+			 guint out_type,
+			 gpointer out_value)
 {
 	SyncOpData sync_data = { 0 };
 
@@ -1404,23 +1416,23 @@ gdbus_proxy_call_sync (GDBusProxy *proxy,
 	switch (in_type) {
 	case E_GDBUS_TYPE_VOID: {
 		EGdbusCallStartVoid start = start_func;
-		start (proxy, cancellable, gdbus_proxy_sync_ready_cb, &sync_data);
+		start (proxy, cancellable, e_gdbus_proxy_sync_ready_cb, &sync_data);
 	} break;
 	case E_GDBUS_TYPE_BOOLEAN: {
 		EGdbusCallStartBoolean start = start_func;
-		start (proxy, * ((gboolean *) in_value), cancellable, gdbus_proxy_sync_ready_cb, &sync_data);
+		start (proxy, * ((gboolean *) in_value), cancellable, e_gdbus_proxy_sync_ready_cb, &sync_data);
 	} break;
 	case E_GDBUS_TYPE_STRING: {
 		EGdbusCallStartString start = start_func;
-		start (proxy, (const gchar *) in_value, cancellable, gdbus_proxy_sync_ready_cb, &sync_data);
+		start (proxy, (const gchar *) in_value, cancellable, e_gdbus_proxy_sync_ready_cb, &sync_data);
 	} break;
 	case E_GDBUS_TYPE_STRV: {
 		EGdbusCallStartStrv start = start_func;
-		start (proxy, (const gchar * const *) in_value, cancellable, gdbus_proxy_sync_ready_cb, &sync_data);
+		start (proxy, (const gchar * const *) in_value, cancellable, e_gdbus_proxy_sync_ready_cb, &sync_data);
 	} break;
 	case E_GDBUS_TYPE_UINT: {
 		EGdbusCallStartUint start = start_func;
-		start (proxy, * ((guint *) in_value), cancellable, gdbus_proxy_sync_ready_cb, &sync_data);
+		start (proxy, * ((guint *) in_value), cancellable, e_gdbus_proxy_sync_ready_cb, &sync_data);
 	} break;
 	default:
 		g_warning ("%s: Unknown 'in' E_GDBUS_TYPE %x", G_STRFUNC, in_type);
@@ -1429,9 +1441,17 @@ gdbus_proxy_call_sync (GDBusProxy *proxy,
 	}
 
 	/* check if called from the main thread */
-	if (g_main_context_is_owner (g_main_context_default ())
+	if ((main_thread && main_thread == g_thread_self ()) ||
+	    (!main_thread && (g_main_context_is_owner (g_main_context_default ())
 	    || g_main_context_default () == g_main_context_get_thread_default ()
-	    || !g_main_context_get_thread_default ()) {
+	    || !g_main_context_get_thread_default ()))) {
+		/* the call to e_gdbus_templates_init_main_thread() wasn't done, but no problem,
+		   check if the call was done in the main thread with main loop running,
+		   and if so, then remember it
+		*/
+		if (!main_thread && g_main_context_is_owner (g_main_context_default ()))
+			e_gdbus_templates_init_main_thread ();
+
 		/* Might not be the best thing here, but as the async operation
 		 * is divided into two-step process, invoking the method and
 		 * waiting for its "done" signal, then if the sync method is called
@@ -1461,7 +1481,7 @@ e_gdbus_proxy_call_sync_void__void (GDBusProxy *proxy,
 	g_return_val_if_fail (start_func != NULL, FALSE);
 	g_return_val_if_fail (finish_func != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_VOID, NULL);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_VOID, NULL);
 }
 
 gboolean
@@ -1477,7 +1497,7 @@ e_gdbus_proxy_call_sync_void__boolean (GDBusProxy *proxy,
 	g_return_val_if_fail (finish_func != NULL, FALSE);
 	g_return_val_if_fail (out_boolean != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_BOOLEAN, out_boolean);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_BOOLEAN, out_boolean);
 }
 
 gboolean
@@ -1493,7 +1513,7 @@ e_gdbus_proxy_call_sync_void__string (GDBusProxy *proxy,
 	g_return_val_if_fail (finish_func != NULL, FALSE);
 	g_return_val_if_fail (out_string != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_STRING, out_string);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_STRING, out_string);
 }
 
 gboolean
@@ -1509,7 +1529,7 @@ e_gdbus_proxy_call_sync_void__strv (GDBusProxy *proxy,
 	g_return_val_if_fail (finish_func != NULL, FALSE);
 	g_return_val_if_fail (out_strv != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_STRV, out_strv);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_STRV, out_strv);
 }
 
 gboolean
@@ -1525,7 +1545,7 @@ e_gdbus_proxy_call_sync_void__uint (GDBusProxy *proxy,
 	g_return_val_if_fail (finish_func != NULL, FALSE);
 	g_return_val_if_fail (out_uint != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_UINT, out_uint);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_UINT, out_uint);
 }
 
 gboolean
@@ -1540,7 +1560,7 @@ e_gdbus_proxy_call_sync_boolean__void (GDBusProxy *proxy,
 	g_return_val_if_fail (start_func != NULL, FALSE);
 	g_return_val_if_fail (finish_func != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_BOOLEAN, &in_boolean, E_GDBUS_TYPE_VOID, NULL);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_BOOLEAN, &in_boolean, E_GDBUS_TYPE_VOID, NULL);
 }
 
 gboolean
@@ -1556,7 +1576,7 @@ e_gdbus_proxy_call_sync_string__void (GDBusProxy *proxy,
 	g_return_val_if_fail (finish_func != NULL, FALSE);
 	g_return_val_if_fail (in_string != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRING, in_string, E_GDBUS_TYPE_VOID, NULL);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRING, in_string, E_GDBUS_TYPE_VOID, NULL);
 }
 
 gboolean
@@ -1572,7 +1592,7 @@ e_gdbus_proxy_call_sync_strv__void (GDBusProxy *proxy,
 	g_return_val_if_fail (finish_func != NULL, FALSE);
 	g_return_val_if_fail (in_strv != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRV, in_strv, E_GDBUS_TYPE_VOID, NULL);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRV, in_strv, E_GDBUS_TYPE_VOID, NULL);
 }
 
 gboolean
@@ -1587,7 +1607,7 @@ e_gdbus_proxy_call_sync_uint__void (GDBusProxy *proxy,
 	g_return_val_if_fail (start_func != NULL, FALSE);
 	g_return_val_if_fail (finish_func != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_UINT, &in_uint, E_GDBUS_TYPE_VOID, NULL);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_UINT, &in_uint, E_GDBUS_TYPE_VOID, NULL);
 }
 
 gboolean
@@ -1605,7 +1625,7 @@ e_gdbus_proxy_call_sync_string__string (GDBusProxy *proxy,
 	g_return_val_if_fail (in_string != NULL, FALSE);
 	g_return_val_if_fail (out_string != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRING, in_string, E_GDBUS_TYPE_STRING, out_string);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRING, in_string, E_GDBUS_TYPE_STRING, out_string);
 }
 
 gboolean
@@ -1623,7 +1643,7 @@ e_gdbus_proxy_call_sync_string__strv (GDBusProxy *proxy,
 	g_return_val_if_fail (in_string != NULL, FALSE);
 	g_return_val_if_fail (out_strv != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRING, in_string, E_GDBUS_TYPE_STRV, out_strv);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRING, in_string, E_GDBUS_TYPE_STRV, out_strv);
 }
 
 gboolean
@@ -1641,7 +1661,7 @@ e_gdbus_proxy_call_sync_strv__string (GDBusProxy *proxy,
 	g_return_val_if_fail (in_strv != NULL, FALSE);
 	g_return_val_if_fail (out_string != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRV, in_strv, E_GDBUS_TYPE_STRING, out_string);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRV, in_strv, E_GDBUS_TYPE_STRING, out_string);
 }
 
 gboolean
@@ -1659,7 +1679,7 @@ e_gdbus_proxy_call_sync_strv__strv (GDBusProxy *proxy,
 	g_return_val_if_fail (in_strv != NULL, FALSE);
 	g_return_val_if_fail (out_strv != NULL, FALSE);
 
-	return gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRV, in_strv, E_GDBUS_TYPE_STRV, out_strv);
+	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRV, in_strv, E_GDBUS_TYPE_STRV, out_strv);
 }
 
 static void

@@ -26,7 +26,6 @@ libedataserver_1_2_la_SOURCES =		\
 	e-client-private.h		\
 	e-credentials.c			\
 	e-flag.c			\
-	e-gdbus-templates.h		\
 	e-gdbus-templates.c		\
 	e-iterator.c			\
 	e-list.c			\
@@ -67,6 +66,8 @@ libedataserverinclude_HEADERS =		\
 	e-client.h			\
 	e-credentials.h			\
 	e-flag.h			\
+	e-gdbus-marshallers.h		\
+	e-gdbus-templates.h		\
 	e-iterator.h			\
 	e-list.h			\
 	e-list-iterator.h		\

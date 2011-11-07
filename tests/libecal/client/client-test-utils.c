@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+#include <libedataserver/e-gdbus-templates.h>
+
 #include "client-test-utils.h"
 
 void
@@ -63,6 +65,7 @@ main_initialize (void)
 		return;
 
 	g_type_init ();
+	e_gdbus_templates_init_main_thread ();
 
 	initialized = TRUE;
 }
