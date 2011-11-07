@@ -272,7 +272,7 @@ PKG_PROG_PKG_CONFIG
 dnl ******************************
 dnl Gtk Doc stuff
 dnl ******************************
-GTK_DOC_CHECK(1.9)
+GTK_DOC_CHECK([1.14],[--flavour no-tmpl])
 
 dnl This must appear after AC_CANONICAL_HOST, which defines $host.
 case "$host" in
