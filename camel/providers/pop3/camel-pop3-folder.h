@@ -79,7 +79,7 @@ GType		camel_pop3_folder_get_type	(void);
 CamelFolder *	camel_pop3_folder_new		(CamelStore *parent,
 						 GCancellable *cancellable,
 						 GError **error);
-gint		camel_pop3_delete_old		(CamelFolder *folder,
+gboolean	camel_pop3_delete_old		(CamelFolder *folder,
 						 gint days_to_delete,
 						 GCancellable *cancellable,
 						 GError **error);

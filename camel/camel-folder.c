@@ -3277,7 +3277,7 @@ camel_folder_get_message_sync (CamelFolder *folder,
 		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 	}
 
-	if (message) {
+	if (message && camel_mime_message_get_source (message) == NULL) {
 		CamelStore *store;
 
 		store = camel_folder_get_parent_store (folder);

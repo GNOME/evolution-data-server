@@ -99,6 +99,8 @@ read_greeting (CamelPOP3Engine *pe,
 	guchar *line, *apop, *apopend;
 	guint len;
 
+	g_return_val_if_fail (pe != NULL, -1);
+
 	/* first, read the greeting */
 	if (camel_pop3_stream_line (pe->stream, &line, &len, cancellable, NULL) == -1
 	    || strncmp ((gchar *) line, "+OK", 3) != 0)
@@ -194,6 +196,8 @@ cmd_capa (CamelPOP3Engine *pe,
 
 	dd(printf("cmd_capa\n"));
 
+	g_return_if_fail (pe != NULL);
+
 	do {
 		ret = camel_pop3_stream_line (stream, &line, &len, cancellable, NULL);
 		if (ret >= 0) {
@@ -229,6 +233,8 @@ get_capabilities (CamelPOP3Engine *pe,
 {
 	CamelPOP3Command *pc;
 
+	g_return_if_fail (pe != NULL);
+
 	if (!(pe->flags & CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS)) {
 		pc = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, cancellable, NULL, "CAPA\r\n");
 		while (camel_pop3_engine_iterate (pe, pc, cancellable, NULL) > 0)
@@ -256,6 +262,9 @@ engine_command_queue (CamelPOP3Engine *pe,
                       GCancellable *cancellable,
                       GError **error)
 {
+	g_return_val_if_fail (pe != NULL, FALSE);
+	g_return_val_if_fail (pc != NULL, FALSE);
+
 	if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen (pc->data)) > CAMEL_POP3_SEND_LIMIT)
 	    && pe->current != NULL) {
 		camel_dlist_addtail (&pe->queue, (CamelDListNode *) pc);
@@ -290,6 +299,8 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 	guchar *p;
 	guint len;
 	CamelPOP3Command *pc, *pw, *pn;
+
+	g_return_val_if_fail (pe != NULL, -1);
 
 	if (pcwait && pcwait->state >= CAMEL_POP3_COMMAND_OK)
 		return 0;
@@ -404,6 +415,8 @@ camel_pop3_engine_command_new (CamelPOP3Engine *pe,
 	CamelPOP3Command *pc;
 	va_list ap;
 
+	g_return_val_if_fail (pe != NULL, NULL);
+
 	pc = g_malloc0 (sizeof (*pc));
 	pc->func = func;
 	pc->func_data = data;
@@ -423,7 +436,7 @@ void
 camel_pop3_engine_command_free (CamelPOP3Engine *pe,
                                 CamelPOP3Command *pc)
 {
-	if (pe->current != pc)
+	if (pe && pe->current != pc)
 		camel_dlist_remove ((CamelDListNode *) pc);
 	g_free (pc->data);
 	g_free (pc);

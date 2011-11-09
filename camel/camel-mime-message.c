@@ -768,10 +768,9 @@ camel_mime_message_set_source (CamelMimeMessage *mime_message,
 	name = "X-Evolution-Source";
 	medium = CAMEL_MEDIUM (mime_message);
 
+	camel_medium_remove_header (medium, name);
 	if (source_uid != NULL)
 		camel_medium_add_header (medium, name, source_uid);
-	else
-		camel_medium_remove_header (medium, name);
 }
 
 const gchar *

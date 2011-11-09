@@ -68,7 +68,7 @@ struct _CamelPOP3StoreClass {
 };
 
 GType		camel_pop3_store_get_type	(void);
-void		camel_pop3_store_expunge	(CamelPOP3Store *store,
+gboolean	camel_pop3_store_expunge	(CamelPOP3Store *store,
 						 GCancellable *cancellable,
 						 GError **error);
 

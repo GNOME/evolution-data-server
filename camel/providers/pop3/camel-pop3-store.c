@@ -366,6 +366,14 @@ pop3_store_connect_sync (CamelService *service,
 	settings = camel_service_get_settings (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 
+	if (!camel_session_get_online (session)) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
 	mechanism = camel_network_settings_get_auth_mechanism (
 		CAMEL_NETWORK_SETTINGS (settings));
 
@@ -748,12 +756,20 @@ camel_pop3_store_init (CamelPOP3Store *pop3_store)
  * being closed, which may cause later commands to fail if they can't
  * reconnect.
  **/
-void
+gboolean
 camel_pop3_store_expunge (CamelPOP3Store *store,
                           GCancellable *cancellable,
                           GError **error)
 {
 	CamelPOP3Command *pc;
+
+	if (!camel_service_get_connection_status (CAMEL_SERVICE (store)) == CAMEL_SERVICE_CONNECTED) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
 
 	pc = camel_pop3_engine_command_new (
 		store->engine, 0, NULL, NULL, cancellable, error, "QUIT\r\n");
@@ -763,5 +779,5 @@ camel_pop3_store_expunge (CamelPOP3Store *store,
 
 	camel_pop3_engine_command_free (store->engine, pc);
 
-	camel_service_disconnect_sync (CAMEL_SERVICE (store), FALSE, error);
+	return TRUE;
 }

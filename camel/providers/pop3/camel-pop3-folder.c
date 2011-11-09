@@ -217,9 +217,10 @@ pop3_folder_dispose (GObject *object)
 
 	if (pop3_folder->uids) {
 		gint i;
+		gboolean is_online = camel_service_get_connection_status (CAMEL_SERVICE (parent_store)) == CAMEL_SERVICE_CONNECTED;
 
 		for (i = 0; i < pop3_folder->uids->len; i++, fi++) {
-			if (fi[0]->cmd && pop3_store) {
+			if (fi[0]->cmd && pop3_store && is_online) {
 				while (camel_pop3_engine_iterate (pop3_store->engine, fi[0]->cmd, NULL, NULL) > 0)
 					;
 				camel_pop3_engine_command_free (pop3_store->engine, fi[0]->cmd);
@@ -349,6 +350,14 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 		return NULL;
 	}
 
+	if (camel_service_get_connection_status (CAMEL_SERVICE (parent_store)) != CAMEL_SERVICE_CONNECTED) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
 	/* Sigh, most of the crap in this function is so that the cancel button
 	 * returns the proper exception code.  Sigh. */
 
@@ -471,6 +480,14 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 	parent_store = camel_folder_get_parent_store (folder);
 	pop3_store = CAMEL_POP3_STORE (parent_store);
 
+	if (camel_service_get_connection_status (CAMEL_SERVICE (parent_store)) != CAMEL_SERVICE_CONNECTED) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
 	camel_operation_push_message (
 		cancellable, _("Retrieving POP summary"));
 
@@ -517,9 +534,6 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 
 	camel_operation_pop_message (cancellable);
 
-	if (!success)
-		camel_service_disconnect_sync ((CamelService *) pop3_store, TRUE, NULL);
-
 	return success;
 }
 
@@ -538,6 +552,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 	gint delete_after_days;
 	gboolean delete_expunged;
 	gboolean keep_on_server;
+	gboolean is_online;
 	gint i;
 
 	parent_store = camel_folder_get_parent_store (folder);
@@ -547,6 +562,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 
 	service = CAMEL_SERVICE (parent_store);
 	settings = camel_service_get_settings (service);
+	is_online = camel_service_get_connection_status (service) == CAMEL_SERVICE_CONNECTED;
 
 	g_object_get (
 		settings,
@@ -555,7 +571,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 		"keep-on-server", &keep_on_server,
 		NULL);
 
-	if (delete_after_days > 0 && !expunge) {
+	if (is_online && delete_after_days > 0 && !expunge) {
 		camel_operation_push_message (
 			cancellable, _("Expunging old messages"));
 
@@ -567,6 +583,14 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 
 	if (!expunge || (keep_on_server && !delete_expunged))
 		return TRUE;
+
+	if (!is_online) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
 
 	camel_operation_push_message (
 		cancellable, _("Expunging deleted messages"));
@@ -611,9 +635,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 
 	camel_operation_pop_message (cancellable);
 
-	camel_pop3_store_expunge (pop3_store, cancellable, error);
-
-	return TRUE;
+	return camel_pop3_store_expunge (pop3_store, cancellable, error);
 }
 
 static void
@@ -656,6 +678,9 @@ camel_pop3_folder_new (CamelStore *parent,
 		CAMEL_TYPE_POP3_FOLDER,
 		"full-name", "inbox", "display-name", "inbox",
 		"parent-store", parent, NULL);
+
+	if (camel_service_get_connection_status (CAMEL_SERVICE (parent)) != CAMEL_SERVICE_CONNECTED)
+		return folder;
 
 	/* mt-ok, since we dont have the folder-lock for new() */
 	if (!camel_folder_refresh_info_sync (folder, cancellable, error)) {
@@ -717,7 +742,7 @@ pop3_get_message_time_from_cache (CamelFolder *folder,
 	return res;
 }
 
-gint
+gboolean
 camel_pop3_delete_old (CamelFolder *folder,
                        gint days_to_delete,
                        GCancellable *cancellable,
@@ -732,6 +757,14 @@ camel_pop3_delete_old (CamelFolder *folder,
 	time_t temp, message_time;
 
 	parent_store = camel_folder_get_parent_store (folder);
+
+	if (camel_service_get_connection_status (CAMEL_SERVICE (parent_store)) != CAMEL_SERVICE_CONNECTED) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
 
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (parent_store);
@@ -812,7 +845,5 @@ camel_pop3_delete_old (CamelFolder *folder,
 			cancellable, (i + 1) * 100 / pop3_folder->uids->len);
 	}
 
-	camel_pop3_store_expunge (pop3_store, cancellable, error);
-
-	return 0;
+	return camel_pop3_store_expunge (pop3_store, cancellable, error);
 }
