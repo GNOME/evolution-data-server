@@ -1411,7 +1411,6 @@ imapx_untagged (CamelIMAPXServer *imap,
 				break;
 
 			imapx_expunge_uid_from_summary (imap, uid, TRUE);
-			g_free (uid);
 		}
 
 		break;
