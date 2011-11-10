@@ -975,9 +975,15 @@ e_source_group_set_property (ESourceGroup *source_group,
                              const gchar *value)
 {
 	ESourceGroupPrivate *priv;
+	const gchar *old_value;
 
 	g_return_if_fail (E_IS_SOURCE_GROUP (source_group));
 	priv = source_group->priv;
+
+	old_value = g_hash_table_lookup (priv->properties, property);
+
+	if (g_strcmp0 (old_value, value) == 0)
+		return;
 
 	if (value)
 		g_hash_table_replace (priv->properties, g_strdup (property), g_strdup (value));

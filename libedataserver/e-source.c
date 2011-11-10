@@ -1151,8 +1151,15 @@ e_source_set_property (ESource *source,
                        const gchar *property_name,
                        const gchar *property_value)
 {
+	const gchar *old_value;
+
 	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (property_name != NULL);
+
+	old_value = g_hash_table_lookup (source->priv->properties, property_name);
+
+	if (g_strcmp0 (old_value, property_value) == 0)
+		return;
 
 	if (property_value != NULL)
 		g_hash_table_replace (
