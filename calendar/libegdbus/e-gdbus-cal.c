@@ -471,8 +471,6 @@ e_gdbus_cal_encode_get_free_busy (guint in_start,
 	gchar **strv;
 	gint ii;
 
-	g_return_val_if_fail (in_users != NULL, NULL);
-
 	strv = g_new0 (gchar *, g_slist_length ((GSList *) in_users) + 3);
 	strv[0] = g_strdup_printf ("%u", in_start);
 	strv[1] = g_strdup_printf ("%u", in_end);
@@ -1256,7 +1254,7 @@ E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_backend_property, propname,
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, set_backend_property, propnamevalue, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_object, uid_rid, "as", object, "s")
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_object_list, sexp, "s", objects, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_free_busy, start_stop_users, "as", freebusy, "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, get_free_busy, start_stop_users, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, create_object, object, "s", uid, "s")
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, modify_object, object_mod, "as")
 E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, remove_object, uid_rid_mod, "as")
@@ -1558,7 +1556,7 @@ e_gdbus_cal_proxy_init (EGdbusCalProxy *proxy)
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (set_backend_property);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRING (get_object);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRV   (get_object_list);
-	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRV   (get_free_busy);
+	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (get_free_busy);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRING (create_object);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (modify_object);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (remove_object);

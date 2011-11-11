@@ -3490,7 +3490,6 @@ e_cal_client_get_free_busy (ECalClient *client,
 
 	g_return_if_fail (start > 0);
 	g_return_if_fail (end > 0);
-	g_return_if_fail (users != NULL);
 
 	strv = e_gdbus_cal_encode_get_free_busy (start, end, users);
 
@@ -3552,7 +3551,6 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (client->priv != NULL, FALSE);
-	g_return_val_if_fail (users != NULL, FALSE);
 
 	if (!client->priv->gdbus_cal) {
 		set_proxy_gone_error (error);
