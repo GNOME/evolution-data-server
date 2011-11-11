@@ -38,14 +38,14 @@ static gint  imapx_url_equal (gconstpointer a, gconstpointer b);
 CamelProviderConfEntry imapx_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "mailcheck", NULL,
 	  N_("Checking for New Mail") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-qresync", NULL,
-	  N_("Use _Quick Resync if the server supports it"), "1" },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-idle", NULL,
-	  N_("Use I_dle if the server supports it"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check-all", NULL,
 	  N_("C_heck for new messages in all folders"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "check-subscribed", NULL,
 	  N_("Ch_eck for new messages in subscribed folders"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-qresync", NULL,
+	  N_("Use _Quick Resync if the server supports it"), "1" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-idle", NULL,
+	  N_("_Listen for server change notifications"), "1" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 #ifndef G_OS_WIN32
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "cmdsection", NULL,
