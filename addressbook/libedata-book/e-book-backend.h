@@ -121,6 +121,17 @@ G_BEGIN_DECLS
  **/
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
 
+/**
+ * BOOK_BACKEND_PROPERTY_REVISION:
+ *
+ * The current overall revision string, this can be used as
+ * a quick check to see if data has changed at all since the
+ * last time the addressbook revision was observed.
+ *
+ * Since: 3.4
+ **/
+#define BOOK_BACKEND_PROPERTY_REVISION			"revision"
+
 typedef struct _EBookBackendPrivate EBookBackendPrivate;
 
 struct _EBookBackend {

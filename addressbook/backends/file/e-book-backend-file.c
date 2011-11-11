@@ -61,6 +61,8 @@
 #define E_BOOK_BACKEND_FILE_VERSION_NAME "PAS-DB-VERSION"
 #define E_BOOK_BACKEND_FILE_VERSION "0.2"
 
+#define E_BOOK_BACKEND_FILE_REVISION_NAME "PAS-DB-REVISION"
+
 #define PAS_ID_PREFIX "pas-id-"
 
 #define SQLITEDB_EMAIL_ID    "addressbook@localbackend.com"
@@ -77,16 +79,12 @@ struct _EBookBackendFilePrivate {
 	gchar     *dirname;
 	gchar     *filename;
 	gchar     *photo_dirname;
+	gchar     *revision;
+	gint       rev_counter;
 	DB        *file_db;
 	DB_ENV    *env;
 
 	EBookBackendSqliteDB *sqlitedb;
-
-	/* for future use */
-	gpointer reserved1;
-	gpointer reserved2;
-	gpointer reserved3;
-	gpointer reserved4;
 };
 
 typedef enum {
@@ -690,6 +688,7 @@ build_sqlitedb (EBookBackendFilePrivate *bfpriv)
 	GSList         *contacts = NULL;
 	GError         *error = NULL;
 	gboolean        skipped_version = FALSE;
+	gboolean        skipped_revision = FALSE;
 
 	if (!db) {
 		g_warning (G_STRLOC ": Not opened yet");
@@ -708,13 +707,21 @@ build_sqlitedb (EBookBackendFilePrivate *bfpriv)
 	db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 
 	while (db_error == 0) {
-		/* don't include the version in the list of cards */
-		if (skipped_version || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
+		gboolean skip = FALSE;
+
+		/* don't include the version and revision in the list of cards */
+		if (!skipped_version && !strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
+			skipped_version = TRUE;
+			skip = TRUE;
+		} else if (!skipped_revision && !strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_REVISION_NAME)) {
+			skipped_revision = TRUE;
+			skip = TRUE;
+		}
+
+		if (!skip) {
 			EContact *contact = create_contact (id_dbt.data, vcard_dbt.data);
 
 			contacts = g_slist_prepend (contacts, contact);
-		} else {
-			skipped_version = TRUE;
 		}
 
 		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_NEXT);
@@ -758,6 +765,71 @@ e_book_backend_file_create_unique_id (void)
 	 * should be okay. */
 	static guint c = 0;
 	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", time(NULL), c++);
+}
+
+static gchar *
+e_book_backend_file_new_revision (EBookBackendFile *bf)
+{
+	gchar time_string[100] = {0};
+	const struct tm *tm = NULL;
+	time_t t;
+
+	t = time (NULL);
+	tm = gmtime (&t);
+	if (tm)
+		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+
+	return g_strdup_printf ("%s(%d)", time_string, bf->priv->rev_counter++);
+}
+
+/* For now just bump the revision and set it in the DB every
+ * time the revision bumps, this is the safest approach and
+ * its unclear so far if bumping the revision string for 
+ * every DB modification is going to really be an overhead.
+ */
+static void
+e_book_backend_file_bump_revision (EBookBackendFile *bf)
+{
+	DB   *db = bf->priv->file_db;
+	DBT  revision_name_dbt, revision_dbt;
+	gint  db_error;
+
+	g_free (bf->priv->revision);
+	bf->priv->revision = e_book_backend_file_new_revision (bf);
+
+	string_to_dbt (E_BOOK_BACKEND_FILE_REVISION_NAME, &revision_name_dbt);
+	string_to_dbt (bf->priv->revision,                &revision_dbt);
+	db_error = db->put (db, NULL, &revision_name_dbt, &revision_dbt, 0);
+
+	if (db_error != 0)
+		g_warning (G_STRLOC ": db->put failed while bumping the revision string: %s",
+			   db_strerror (db_error));
+
+	e_book_backend_notify_property_changed (E_BOOK_BACKEND (bf),
+						BOOK_BACKEND_PROPERTY_REVISION,
+						bf->priv->revision);
+}
+
+static void
+e_book_backend_file_load_revision (EBookBackendFile *bf)
+{
+	DB   *db = bf->priv->file_db;
+	DBT  version_name_dbt, version_dbt;
+	gint  db_error;
+
+	string_to_dbt (E_BOOK_BACKEND_FILE_REVISION_NAME, &version_name_dbt);
+	memset (&version_dbt, 0, sizeof (version_dbt));
+	version_dbt.flags = DB_DBT_MALLOC;
+
+	db_error = db->get (db, NULL, &version_name_dbt, &version_dbt, 0);
+	if (db_error == 0) {
+		/* success */
+		bf->priv->revision = version_dbt.data;
+	}
+	else {
+		/* key was not in file */
+		bf->priv->revision = e_book_backend_file_new_revision (bf);
+	}
 }
 
 static void
@@ -918,6 +990,8 @@ e_book_backend_file_create_contacts (EBookBackendSync *backend,
 			g_warning ("Failed to add contacts to summary: %s", error->message);
 			g_error_free (error);
 		}
+
+		e_book_backend_file_bump_revision (bf);
 	}
 }
 
@@ -1005,6 +1079,8 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 		*ids = NULL;
 		e_util_free_string_slist (removed_ids);
 	}
+
+	e_book_backend_file_bump_revision (bf);
 }
 
 static void
@@ -1154,6 +1230,8 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 	}
 
 	e_util_free_string_slist (ids);
+
+	e_book_backend_file_bump_revision (bf);
 }
 
 static void
@@ -1262,9 +1340,11 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 
 		while (db_error == 0) {
 
-			/* don't include the version in the list of cards */
-			if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
-			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
+			/* don't include the version or revision in the list of cards */
+			if ((id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
+			     || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) &&
+			    (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_REVISION_NAME) + 1
+			     || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_REVISION_NAME))) {
 
 				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
 					contact_list = g_slist_prepend (contact_list, vcard_dbt.data);
@@ -1353,9 +1433,11 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 
 		while (db_error == 0) {
 
-			/* don't include the version in the list of cards */
-			if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
-			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
+			/* don't include the version or revision in the list of cards */
+			if ((id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
+			     || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) &&
+			    (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_REVISION_NAME) + 1
+			     || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_REVISION_NAME))) {
 
 				if ((!search_needed) || (card_sexp != NULL && e_book_backend_sexp_match_vcard  (card_sexp, vcard_dbt.data))) {
 					uids = g_slist_prepend (uids, g_strdup (id_dbt.data));
@@ -1542,8 +1624,9 @@ book_view_thread (gpointer data)
 					break;
 
 				/* don't include the version in the list of cards */
-				if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
-					notify_update_vcard (book_view, allcontacts,
+				if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME) &&
+				    strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_REVISION_NAME)) {
+					notify_update_vcard (book_view, allcontacts, 
 							     id_dbt.data, vcard_dbt.data);
 				}
 
@@ -1667,8 +1750,10 @@ e_book_backend_file_upgrade_db (EBookBackendFile *bf,
 		db_error = dbc->c_get (dbc, &id_dbt, &vcard_dbt, DB_FIRST);
 
 		while (db_error == 0) {
-			if (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
-			    || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) {
+			if ((id_dbt.size != strlen (E_BOOK_BACKEND_FILE_VERSION_NAME) + 1
+			     || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME)) &&
+			    (id_dbt.size != strlen (E_BOOK_BACKEND_FILE_REVISION_NAME) + 1
+			     || strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_REVISION_NAME))) {
 				EContact *contact;
 
 				contact = create_contact (id_dbt.data, vcard_dbt.data);
@@ -2029,9 +2114,15 @@ e_book_backend_file_open (EBookBackendSync *backend,
 		return;
 	bf->priv->photo_dirname = dirname;
 
+	e_book_backend_file_load_revision (bf);
+
 	e_book_backend_notify_online (E_BOOK_BACKEND (backend), TRUE);
 	e_book_backend_notify_readonly (E_BOOK_BACKEND (backend), readonly);
 	e_book_backend_notify_opened (E_BOOK_BACKEND (backend), NULL /* Success */);
+
+	e_book_backend_notify_property_changed (E_BOOK_BACKEND (backend),
+						BOOK_BACKEND_PROPERTY_REVISION,
+						bf->priv->revision);
 }
 
 static gboolean
@@ -2134,6 +2225,7 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend,
                                           gchar **prop_value,
                                           GError **error)
 {
+	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
 	gboolean processed = TRUE;
 
 	g_return_val_if_fail (prop_name != NULL, FALSE);
@@ -2156,6 +2248,8 @@ e_book_backend_file_get_backend_property (EBookBackendSync *backend,
 		g_slist_free (fields);
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS)) {
 		*prop_value = NULL;
+	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REVISION)) {
+		*prop_value = g_strdup (bf->priv->revision);
 	} else {
 		processed = FALSE;
 	}
@@ -2281,6 +2375,7 @@ e_book_backend_file_finalize (GObject *object)
 	g_free (bf->priv->filename);
 	g_free (bf->priv->dirname);
 	g_free (bf->priv->photo_dirname);
+	g_free (bf->priv->revision);
 
 	g_free (bf->priv);
 
