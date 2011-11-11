@@ -355,9 +355,14 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 				}
 			} else {
 				CamelMessageInfo *clone;
+				CamelMaildirMessageInfo *mclone;
 
 				clone = camel_message_info_clone (info);
 				clone->summary = dest->summary;
+
+				mclone = (CamelMaildirMessageInfo *) clone;
+				/* preserve also UID, as it matches the file name */
+				mclone->info.info.uid = camel_pstring_strdup (camel_message_info_uid (info));
 				camel_maildir_info_set_filename (clone, g_strdup (new_filename));
 				/* unset deleted flag when transferring from trash folder */
 				if ((source->folder_flags & CAMEL_FOLDER_IS_TRASH) != 0)
