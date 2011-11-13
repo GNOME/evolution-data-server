@@ -625,7 +625,6 @@ camel_folder_summary_get_changed
 camel_folder_summary_prepare_fetch_all
 camel_folder_summary_lock
 camel_folder_summary_unlock
-camel_folder_summary_decode_token
 camel_flag_get
 camel_flag_set
 camel_flag_list_copy

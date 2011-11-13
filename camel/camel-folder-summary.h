@@ -437,11 +437,6 @@ void			camel_folder_summary_lock	(CamelFolderSummary *summary,
 void			camel_folder_summary_unlock	(CamelFolderSummary *summary,
 							 CamelFolderSummaryLock lock);
 
-/* basically like strings, but certain keywords can be compressed and de-cased */
-gint			camel_folder_summary_decode_token
-							(FILE *in,
-							 gchar **str);
-
 /* message flag operations */
 gboolean		camel_flag_get			(CamelFlag **list,
 							 const gchar *name);
