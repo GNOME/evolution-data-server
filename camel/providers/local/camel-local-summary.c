@@ -46,8 +46,6 @@
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *, GError **error);
 static gboolean summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
 
-static gint summary_header_save (CamelFolderSummary *, FILE *);
-
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 
 static gint local_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *mi);
@@ -103,7 +101,6 @@ camel_local_summary_class_init (CamelLocalSummaryClass *class)
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelLocalMessageInfo);
 	folder_summary_class->content_info_size = sizeof (CamelMessageContentInfo);
-	folder_summary_class->summary_header_save = summary_header_save;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
 	folder_summary_class->message_info_new_from_header  = message_info_new_from_header;
@@ -695,18 +692,6 @@ summary_header_to_db (CamelFolderSummary *s,
 		fir->bdata = g_strdup_printf ("%d", CAMEL_LOCAL_SUMMARY_VERSION);
 
 	return fir;
-}
-
-static gint
-summary_header_save (CamelFolderSummary *s,
-                     FILE *out)
-{
-	/*CamelLocalSummary *cls = (CamelLocalSummary *)s;*/
-
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_local_summary_parent_class)->summary_header_save (s, out) == -1)
-		return -1;
-
-	return camel_file_util_encode_fixed_int32 (out, CAMEL_LOCAL_SUMMARY_VERSION);
 }
 
 static CamelMessageInfo *

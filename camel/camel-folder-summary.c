@@ -129,8 +129,6 @@ static void cfs_schedule_info_release_timer (CamelFolderSummary *summary);
 static struct _node *my_list_append (struct _node **list, struct _node *n);
 static gint my_list_size (struct _node **list);
 
-static gint summary_header_save (CamelFolderSummary *, FILE *);
-
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static CamelMessageInfo * message_info_new_from_parser (CamelFolderSummary *, CamelMimeParser *);
 static CamelMessageInfo * message_info_new_from_message (CamelFolderSummary *summary, CamelMimeMessage *msg, const gchar *bodystructure);
@@ -799,51 +797,6 @@ content_info_to_db (CamelFolderSummary *summary,
 	return TRUE;
 }
 
-static gint
-summary_header_save (CamelFolderSummary *summary,
-                     FILE *out)
-{
-	gint unread = 0, deleted = 0, junk = 0, i;
-	GPtrArray *known_uids;
-
-	fseek (out, 0, SEEK_SET);
-
-	io(printf("Savining header\n"));
-
-	/* we always write out the current version */
-	camel_file_util_encode_fixed_int32 (out, CAMEL_FOLDER_SUMMARY_VERSION);
-	camel_file_util_encode_fixed_int32 (out, summary->flags);
-	camel_file_util_encode_fixed_int32 (out, summary->priv->nextuid);
-	camel_file_util_encode_time_t (out, summary->time);
-
-	known_uids = camel_folder_summary_get_array (summary);
-	for (i = 0; known_uids && i < known_uids->len; i++) {
-		CamelMessageInfo *info = camel_folder_summary_get (summary, g_ptr_array_index (known_uids, i));
-		guint32 flags;
-
-		if (info == NULL)
-			continue;
-
-		flags = camel_message_info_flags (info);
-		if ((flags & CAMEL_MESSAGE_SEEN) == 0)
-			unread++;
-		if ((flags & CAMEL_MESSAGE_DELETED) != 0)
-			deleted++;
-		if ((flags & CAMEL_MESSAGE_JUNK) != 0)
-			junk++;
-
-		camel_message_info_free (info);
-	}
-
-	camel_folder_summary_free_array (known_uids);
-
-	camel_file_util_encode_fixed_int32 (out, i); /* total count */
-	camel_file_util_encode_fixed_int32 (out, unread);
-	camel_file_util_encode_fixed_int32 (out, deleted);
-
-	return camel_file_util_encode_fixed_int32 (out, junk);
-}
-
 static gboolean
 folder_summary_replace_flags (CamelFolderSummary *summary,
                               CamelMessageInfo *info)
@@ -1139,8 +1092,6 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 
 	class->message_info_size = sizeof (CamelMessageInfoBase);
 	class->content_info_size = sizeof (CamelMessageContentInfo);
-
-	class->summary_header_save = summary_header_save;
 
 	class->summary_header_from_db = summary_header_from_db;
 	class->summary_header_to_db = summary_header_to_db;

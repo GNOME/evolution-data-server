@@ -54,7 +54,6 @@ struct _CamelNNTPSummaryPrivate {
 #define _PRIVATE(o) (((CamelNNTPSummary *)(o))->priv)
 
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
-static gint summary_header_save (CamelFolderSummary *, FILE *);
 static gboolean summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, GError **error);
 
@@ -71,7 +70,6 @@ camel_nntp_summary_class_init (CamelNNTPSummaryClass *class)
 	folder_summary_class->message_info_size = sizeof (CamelMessageInfoBase);
 	folder_summary_class->content_info_size = sizeof (CamelMessageContentInfo);
 	folder_summary_class->message_info_new_from_header = message_info_new_from_header;
-	folder_summary_class->summary_header_save = summary_header_save;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
 }
@@ -157,21 +155,6 @@ summary_header_to_db (CamelFolderSummary *s,
 	fir->bdata = g_strdup_printf ("%d %d %d", CAMEL_NNTP_SUMMARY_VERSION, cns->high, cns->low);
 
 	return fir;
-}
-
-static gint
-summary_header_save (CamelFolderSummary *s,
-                     FILE *out)
-{
-	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
-
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_save (s, out) == -1
-	    || camel_file_util_encode_fixed_int32 (out, CAMEL_NNTP_SUMMARY_VERSION) == -1
-	    || camel_file_util_encode_fixed_int32 (out, cns->high) == -1
-	    || camel_file_util_encode_fixed_int32 (out, cns->low) == -1)
-		return -1;
-
-	return 0;
 }
 
 /* ********************************************************************** */

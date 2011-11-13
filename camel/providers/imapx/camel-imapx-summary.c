@@ -35,8 +35,6 @@
 
 #define CAMEL_IMAPX_SUMMARY_VERSION (4)
 
-static gint summary_header_save (CamelFolderSummary *, FILE *);
-
 static gboolean info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state);
 
 static gboolean summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
@@ -78,7 +76,6 @@ camel_imapx_summary_class_init (CamelIMAPXSummaryClass *class)
 	folder_summary_class->message_info_size = sizeof (CamelIMAPXMessageInfo);
 	folder_summary_class->content_info_size = sizeof (CamelIMAPXMessageContentInfo);
 	folder_summary_class->message_info_clone = imapx_message_info_clone;
-	folder_summary_class->summary_header_save = summary_header_save;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->message_info_to_db = message_info_to_db;
@@ -216,14 +213,6 @@ summary_header_to_db (CamelFolderSummary *s,
 				      (guint64) ims->validity, ims->uidnext,
 				      (guint64) ims->modseq);
 	return fir;
-}
-
-static gint
-summary_header_save (CamelFolderSummary *s,
-                     FILE *out)
-{
-	g_warning("imapx %s called; should never happen!\n", __func__);
-	return -1;
 }
 
 static CamelMessageInfo *

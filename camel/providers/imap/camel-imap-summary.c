@@ -36,8 +36,6 @@
 
 #define CAMEL_IMAP_SUMMARY_VERSION (3)
 
-static gint summary_header_save (CamelFolderSummary *, FILE *);
-
 static gboolean info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state);
 
 static gboolean summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
@@ -74,7 +72,6 @@ camel_imap_summary_class_init (CamelImapSummaryClass *class)
 	folder_summary_class->message_info_size = sizeof (CamelImapMessageInfo);
 	folder_summary_class->content_info_size = sizeof (CamelImapMessageContentInfo);
 	folder_summary_class->message_info_clone = imap_message_info_clone;
-	folder_summary_class->summary_header_save = summary_header_save;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->message_info_to_db = message_info_to_db;
@@ -197,20 +194,6 @@ summary_header_to_db (CamelFolderSummary *s,
 	fir->bdata = g_strdup_printf ("%d %u", CAMEL_IMAP_SUMMARY_VERSION, ims->validity);
 
 	return fir;
-}
-
-static gint
-summary_header_save (CamelFolderSummary *s,
-                     FILE *out)
-{
-	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY (s);
-
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->summary_header_save (s, out) == -1)
-		return -1;
-
-	camel_file_util_encode_fixed_int32 (out, CAMEL_IMAP_SUMMARY_VERSION);
-
-	return camel_file_util_encode_fixed_int32 (out, ims->validity);
 }
 
 static CamelMessageInfo *
