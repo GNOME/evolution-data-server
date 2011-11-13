@@ -53,7 +53,6 @@ static gint summary_header_save (CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static CamelMessageInfo * message_info_new_from_parser (CamelFolderSummary *, CamelMimeParser *);
-static CamelMessageInfo * message_info_migrate (CamelFolderSummary *, FILE *);
 /*static void		  message_info_free (CamelFolderSummary *, CamelMessageInfo *);*/
 
 static gchar *mbox_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *mi);
@@ -141,7 +140,6 @@ camel_mbox_summary_class_init (CamelMboxSummaryClass *class)
 	folder_summary_class->message_info_to_db = message_info_to_db;
 	folder_summary_class->message_info_new_from_header  = message_info_new_from_header;
 	folder_summary_class->message_info_new_from_parser = message_info_new_from_parser;
-	folder_summary_class->message_info_migrate = message_info_migrate;
 	folder_summary_class->info_set_user_flag = mbox_info_set_user_flag;
 	folder_summary_class->info_set_user_tag = mbox_info_set_user_tag;
 #ifdef STATUS_PINE
@@ -417,31 +415,6 @@ message_info_from_db (CamelFolderSummary *s,
 	}
 
 	return mi;
-}
-
-static CamelMessageInfo *
-message_info_migrate (CamelFolderSummary *s,
-                      FILE *in)
-{
-	CamelMessageInfo *mi;
-
-	io(printf("loading mbox message info\n"));
-
-	mi = CAMEL_FOLDER_SUMMARY_CLASS (camel_mbox_summary_parent_class)->message_info_migrate (s, in);
-	if (mi) {
-		off_t ot = -1;
-		CamelMboxMessageInfo *mbi = (CamelMboxMessageInfo *) mi;
-
-		if (camel_file_util_decode_off_t (in, &ot) == -1)
-			goto error;
-
-		mbi->frompos = (goffset) ot;
-	}
-
-	return mi;
-error:
-	camel_message_info_free (mi);
-	return NULL;
 }
 
 static struct _CamelMIRecord *

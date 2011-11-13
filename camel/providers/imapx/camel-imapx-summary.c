@@ -38,7 +38,6 @@
 static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 
-static CamelMessageInfo *message_info_migrate (CamelFolderSummary *s, FILE *in);
 static gboolean info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state);
 static CamelMessageContentInfo *content_info_migrate (CamelFolderSummary *s, FILE *in);
 
@@ -83,7 +82,6 @@ camel_imapx_summary_class_init (CamelIMAPXSummaryClass *class)
 	folder_summary_class->message_info_clone = imapx_message_info_clone;
 	folder_summary_class->summary_header_load = summary_header_load;
 	folder_summary_class->summary_header_save = summary_header_save;
-	folder_summary_class->message_info_migrate = message_info_migrate;
 	folder_summary_class->content_info_migrate = content_info_migrate;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
@@ -302,31 +300,6 @@ message_info_from_db (CamelFolderSummary *s,
 	}
 
 	return info;
-}
-
-static CamelMessageInfo *
-message_info_migrate (CamelFolderSummary *s,
-                      FILE *in)
-{
-	CamelMessageInfo *info;
-	CamelIMAPXMessageInfo *iinfo;
-	CamelFolderSummaryClass *folder_summary_class;
-
-	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (
-		camel_imapx_summary_parent_class);
-
-	info = folder_summary_class->message_info_migrate (s, in);
-	if (info) {
-		iinfo = (CamelIMAPXMessageInfo *) info;
-
-		if (camel_file_util_decode_uint32 (in, &iinfo->server_flags) == -1)
-			goto error;
-	}
-
-	return info;
-error:
-	camel_message_info_free (info);
-	return NULL;
 }
 
 static CamelMIRecord *

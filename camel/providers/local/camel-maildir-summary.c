@@ -46,7 +46,6 @@
 
 #define CAMEL_MAILDIR_SUMMARY_VERSION (0x2000)
 
-static CamelMessageInfo *message_info_migrate (CamelFolderSummary *s, FILE *in);
 static CamelMessageInfo *message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static void message_info_free (CamelFolderSummary *, CamelMessageInfo *mi);
 
@@ -98,7 +97,6 @@ camel_maildir_summary_class_init (CamelMaildirSummaryClass *class)
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelMaildirMessageInfo);
 	folder_summary_class->content_info_size = sizeof (CamelMaildirMessageContentInfo);
-	folder_summary_class->message_info_migrate = message_info_migrate;
 	folder_summary_class->message_info_new_from_header = message_info_new_from_header;
 	folder_summary_class->message_info_free = message_info_free;
 	folder_summary_class->next_uid_string = maildir_summary_next_uid_string;
@@ -388,28 +386,6 @@ static gchar *maildir_summary_next_uid_string (CamelFolderSummary *s)
 		return uid;
 #endif
 	}
-}
-
-static CamelMessageInfo *
-message_info_migrate (CamelFolderSummary *s,
-                      FILE *in)
-{
-	CamelMessageInfo *mi;
-	CamelMaildirSummary *mds = (CamelMaildirSummary *) s;
-
-	mi = ((CamelFolderSummaryClass *) camel_maildir_summary_parent_class)->message_info_migrate (s, in);
-	if (mi) {
-		gchar *name;
-
-		if (mds->priv->load_map
-		    && (name = g_hash_table_lookup (mds->priv->load_map, camel_message_info_uid (mi)))) {
-			d(printf("Setting filename of %s to %s\n", camel_message_info_uid(mi), name));
-			camel_maildir_info_set_filename (mi, g_strdup (name));
-			camel_maildir_summary_name_to_info ((CamelMaildirMessageInfo *) mi, name);
-		}
-	}
-
-	return mi;
 }
 
 static gint

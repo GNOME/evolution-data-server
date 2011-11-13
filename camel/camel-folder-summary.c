@@ -135,7 +135,6 @@ static gint summary_header_save (CamelFolderSummary *, FILE *);
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static CamelMessageInfo * message_info_new_from_parser (CamelFolderSummary *, CamelMimeParser *);
 static CamelMessageInfo * message_info_new_from_message (CamelFolderSummary *summary, CamelMimeMessage *msg, const gchar *bodystructure);
-static CamelMessageInfo * message_info_migrate (CamelFolderSummary *, FILE *);
 static void		  message_info_free (CamelFolderSummary *, CamelMessageInfo *);
 
 static CamelMessageContentInfo * content_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
@@ -1156,7 +1155,6 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 	class->message_info_new_from_header  = message_info_new_from_header;
 	class->message_info_new_from_parser = message_info_new_from_parser;
 	class->message_info_new_from_message = message_info_new_from_message;
-	class->message_info_migrate = message_info_migrate;
 	class->message_info_free = message_info_free;
 	class->message_info_clone = message_info_clone;
 	class->message_info_from_uid = message_info_from_uid;
@@ -3785,87 +3783,6 @@ message_info_new_from_header (CamelFolderSummary *summary,
 	}
 
 	return (CamelMessageInfo *) mi;
-}
-
-static CamelMessageInfo *
-message_info_migrate (CamelFolderSummary *summary,
-                      FILE *in)
-{
-	CamelMessageInfoBase *mi;
-	guint32 count;
-	gint i;
-	gchar *subject, *from, *to, *cc, *mlist, *uid;
-
-	mi = (CamelMessageInfoBase *) camel_message_info_new (summary);
-
-	io(printf("Loading message info\n"));
-
-	camel_file_util_decode_string (in, &uid);
-	camel_file_util_decode_uint32 (in, (guint32 *) &mi->flags);
-	camel_file_util_decode_uint32 (in, &mi->size);
-	camel_file_util_decode_time_t (in, &mi->date_sent);
-	camel_file_util_decode_time_t (in, &mi->date_received);
-	camel_file_util_decode_string (in, &subject);
-	camel_file_util_decode_string (in, &from);
-	camel_file_util_decode_string (in, &to);
-	camel_file_util_decode_string (in, &cc);
-	camel_file_util_decode_string (in, &mlist);
-
-	mi->uid = camel_pstring_add (uid, TRUE);
-	mi->subject = camel_pstring_add (subject, TRUE);
-	mi->from = camel_pstring_add (from, TRUE);
-	mi->to = camel_pstring_add (to, TRUE);
-	mi->cc = camel_pstring_add (cc, TRUE);
-	mi->mlist = camel_pstring_add (mlist, TRUE);
-
-	mi->content = NULL;
-
-	camel_file_util_decode_fixed_int32 (in, (gint32 *) &mi->message_id.id.part.hi);
-	camel_file_util_decode_fixed_int32 (in, (gint32 *) &mi->message_id.id.part.lo);
-
-	if (camel_file_util_decode_uint32 (in, &count) == -1)
-		goto error;
-
-	if (count > 0) {
-		mi->references = g_malloc (sizeof (*mi->references) + ((count - 1) * sizeof (mi->references->references[0])));
-		mi->references->size = count;
-		for (i = 0; i < count; i++) {
-			camel_file_util_decode_fixed_int32 (in, (gint32 *) &mi->references->references[i].id.part.hi);
-			camel_file_util_decode_fixed_int32 (in, (gint32 *) &mi->references->references[i].id.part.lo);
-		}
-	}
-
-	if (camel_file_util_decode_uint32 (in, &count) == -1)
-		goto error;
-
-	for (i = 0; i < count; i++) {
-		gchar *name;
-		if (camel_file_util_decode_string (in, &name) == -1 || name == NULL)
-			goto error;
-		camel_flag_set (&mi->user_flags, name, TRUE);
-		g_free (name);
-	}
-
-	if (camel_file_util_decode_uint32 (in, &count) == -1)
-		goto error;
-
-	for (i = 0; i < count; i++) {
-		gchar *name, *value;
-		if (camel_file_util_decode_string (in, &name) == -1 || name == NULL
-		    || camel_file_util_decode_string (in, &value) == -1)
-			goto error;
-		camel_tag_set (&mi->user_tags, name, value);
-		g_free (name);
-		g_free (value);
-	}
-
-	if (!ferror (in))
-		return (CamelMessageInfo *) mi;
-
-error:
-	camel_message_info_free ((CamelMessageInfo *) mi);
-
-	return NULL;
 }
 
 static void
