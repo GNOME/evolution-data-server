@@ -318,8 +318,6 @@ void camel_db_free_sqlized_string (gchar *string);
 
 gchar * camel_db_get_column_name (const gchar *raw_name);
 gint camel_db_set_collate (CamelDB *cdb, const gchar *col, const gchar *collate, CamelDBCollate func);
-/* Migration APIS */
-gint camel_db_migrate_vfolders_to_14 (CamelDB *cdb, const gchar *folder, GError **error);
 
 gint camel_db_start_in_memory_transactions (CamelDB *cdb, GError **error);
 gint camel_db_flush_in_memory_transactions (CamelDB *cdb, const gchar * folder_name, GError **error);

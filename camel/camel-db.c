@@ -2339,26 +2339,6 @@ camel_db_get_column_name (const gchar *raw_name)
 }
 
 /**
- * camel_db_migrate_vfolders_to_14:
- *
- * Since: 2.24
- **/
-gint
-camel_db_migrate_vfolders_to_14 (CamelDB *cdb,
-                                 const gchar *folder,
-                                 GError **error)
-{
-	gchar *cmd = sqlite3_mprintf ("ALTER TABLE %Q ADD COLUMN flags INTEGER", folder);
-	gint ret;
-
-	ret = camel_db_command (cdb, cmd, error);
-	sqlite3_free (cmd);
-
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
-	return ret;
-}
-
-/**
  * camel_db_start_in_memory_transactions:
  *
  * Since: 2.26

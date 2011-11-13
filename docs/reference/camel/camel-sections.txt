@@ -313,7 +313,6 @@ camel_db_sqlize_string
 camel_db_free_sqlized_string
 camel_db_get_column_name
 camel_db_set_collate
-camel_db_migrate_vfolders_to_14
 camel_db_start_in_memory_transactions
 camel_db_flush_in_memory_transactions
 camel_db_get_folder_preview
