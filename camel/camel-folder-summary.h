@@ -383,10 +383,6 @@ void			camel_folder_summary_add_preview
 							(CamelFolderSummary *summary,
 							 CamelMessageInfo *info);
 
-/* Migration code */
-gint			camel_folder_summary_migrate_infos
-							(CamelFolderSummary *summary);
-
 /* build/add raw summary items */
 CamelMessageInfo *	camel_folder_summary_add_from_header
 							(CamelFolderSummary *summary,
