@@ -173,7 +173,6 @@ camel_mbox_summary_init (CamelMboxSummary *mbox_summary)
  **/
 CamelMboxSummary *
 camel_mbox_summary_new (CamelFolder *folder,
-                        const gchar *filename,
                         const gchar *mbox_name,
                         CamelIndex *index)
 {
@@ -192,7 +191,7 @@ camel_mbox_summary_new (CamelFolder *folder,
 		summary->collate = "mbox_frompos_sort";
 
 	}
-	camel_local_summary_construct ((CamelLocalSummary *) new, filename, mbox_name, index);
+	camel_local_summary_construct ((CamelLocalSummary *) new, mbox_name, index);
 	return new;
 }
 

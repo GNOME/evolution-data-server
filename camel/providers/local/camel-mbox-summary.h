@@ -92,7 +92,6 @@ struct _CamelMboxSummaryClass {
 GType		camel_mbox_summary_get_type	(void);
 CamelMboxSummary *
 		camel_mbox_summary_new		(CamelFolder *folder,
-						 const gchar *filename,
 						 const gchar *mbox_name,
 						 CamelIndex *index);
 

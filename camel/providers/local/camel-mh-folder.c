@@ -202,12 +202,11 @@ mh_folder_get_message_sync (CamelFolder *folder,
 
 static CamelLocalSummary *
 mh_folder_create_summary (CamelLocalFolder *lf,
-                          const gchar *path,
                           const gchar *folder,
                           CamelIndex *index)
 {
 	return (CamelLocalSummary *) camel_mh_summary_new (
-		CAMEL_FOLDER (lf), path, folder, index);
+		CAMEL_FOLDER (lf), folder, index);
 }
 
 static void

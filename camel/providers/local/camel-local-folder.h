@@ -62,7 +62,6 @@ struct _CamelLocalFolder {
 
 	gchar *base_path;	/* base path of the local folder */
 	gchar *folder_path;	/* the path to the folder itself */
-	gchar *summary_path;	/* where the summary lives */
 	gchar *index_path;	/* where the index file lives */
 
 	CamelIndex *index;	   /* index for this folder */
@@ -78,7 +77,6 @@ struct _CamelLocalFolderClass {
 	/* summary factory, only used at init */
 	CamelLocalSummary *
 			(*create_summary)	(CamelLocalFolder *lf,
-						 const gchar *path,
 						 const gchar *folder,
 						 CamelIndex *index);
 

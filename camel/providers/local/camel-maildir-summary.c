@@ -136,7 +136,6 @@ camel_maildir_summary_init (CamelMaildirSummary *maildir_summary)
 /**
  * camel_maildir_summary_new:
  * @folder: parent folder.
- * @filename: Path to root of this maildir directory (containing new/tmp/cur directories).
  * @index: Index if one is reqiured.
  *
  * Create a new CamelMaildirSummary object.
@@ -144,7 +143,7 @@ camel_maildir_summary_init (CamelMaildirSummary *maildir_summary)
  * Returns: A new #CamelMaildirSummary object.
  **/
 CamelMaildirSummary
-*camel_maildir_summary_new(struct _CamelFolder *folder, const gchar *filename, const gchar *maildirdir, CamelIndex *index)
+*camel_maildir_summary_new(struct _CamelFolder *folder, const gchar *maildirdir, CamelIndex *index)
 {
 	CamelMaildirSummary *o;
 
@@ -157,7 +156,7 @@ CamelMaildirSummary
 		((CamelFolderSummary *)o)->sort_by = "dreceived";
 		((CamelFolderSummary *) o)->collate = NULL;
 	}
-	camel_local_summary_construct ((CamelLocalSummary *) o, filename, maildirdir, index);
+	camel_local_summary_construct ((CamelLocalSummary *) o, maildirdir, index);
 	return o;
 }
 

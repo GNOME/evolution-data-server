@@ -127,12 +127,10 @@ camel_local_summary_init (CamelLocalSummary *local_summary)
 
 void
 camel_local_summary_construct (CamelLocalSummary *new,
-                               const gchar *filename,
                                const gchar *local_name,
                                CamelIndex *index)
 {
 	camel_folder_summary_set_build_content (CAMEL_FOLDER_SUMMARY (new), FALSE);
-	camel_folder_summary_set_filename (CAMEL_FOLDER_SUMMARY (new), filename);
 	new->folder_path = g_strdup (local_name);
 	new->index = index;
 	if (index)

@@ -204,11 +204,9 @@ fill_fi (CamelStore *store,
 		CamelLocalSettings *local_settings;
 		CamelSettings *settings;
 		CamelService *service;
-		gchar *filename;
 		gchar *folderpath;
 		CamelFolderSummary *s;
 		const gchar *path;
-		gchar *basename;
 
 		service = CAMEL_SERVICE (store);
 		settings = camel_service_get_settings (service);
@@ -222,13 +220,9 @@ fill_fi (CamelStore *store,
 		 * scan of all messages for their status flags.  But its probably not worth
 		 * it as we need to read the top of every file, i.e. very very slow */
 
-		basename = g_strdup_printf ("%s.ev-summary", fi->full_name);
-		filename = g_build_filename (path, basename, NULL);
-		g_free (basename);
-
 		folderpath = g_strdup_printf ("%s/%s", path, fi->full_name);
 		s = (CamelFolderSummary *) camel_mh_summary_new (
-			NULL, filename, folderpath, NULL);
+			NULL, folderpath, NULL);
 		if (camel_folder_summary_header_load_from_db (
 			s, store, fi->full_name, NULL)) {
 			fi->unread = camel_folder_summary_get_unread_count (s);
@@ -236,7 +230,6 @@ fill_fi (CamelStore *store,
 		}
 		g_object_unref (s);
 		g_free (folderpath);
-		g_free (filename);
 	}
 
 	if (camel_local_store_is_main_store (local_store) && fi->full_name

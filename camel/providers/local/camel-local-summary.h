@@ -86,7 +86,7 @@ struct _CamelLocalSummaryClass {
 };
 
 GType	camel_local_summary_get_type	(void);
-void	camel_local_summary_construct	(CamelLocalSummary *new, const gchar *filename, const gchar *local_name, CamelIndex *index);
+void	camel_local_summary_construct	(CamelLocalSummary *new, const gchar *local_name, CamelIndex *index);
 
 /* load/check the summary */
 gboolean camel_local_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error);

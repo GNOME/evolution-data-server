@@ -117,18 +117,16 @@ fill_fi (CamelStore *store,
 		g_object_unref (folder);
 	} else {
 		CamelLocalStore *local_store;
-		gchar *path, *folderpath;
+		gchar *folderpath;
 		CamelMboxSummary *mbs;
 
 		local_store = CAMEL_LOCAL_STORE (store);
 
 		/* This should be fast enough not to have to test for INFO_FAST */
-		path = camel_local_store_get_meta_path (
-			local_store, fi->full_name, ".ev-summary");
 		folderpath = camel_local_store_get_full_path (
 			local_store, fi->full_name);
 
-		mbs = (CamelMboxSummary *) camel_mbox_summary_new (NULL, path, folderpath, NULL);
+		mbs = (CamelMboxSummary *) camel_mbox_summary_new (NULL, folderpath, NULL);
 		/* FIXME[disk-summary] track exception */
 		if (camel_folder_summary_header_load_from_db ((CamelFolderSummary *) mbs, store, fi->full_name, NULL)) {
 			fi->unread = camel_folder_summary_get_unread_count ((CamelFolderSummary *) mbs);
@@ -137,7 +135,6 @@ fill_fi (CamelStore *store,
 
 		g_object_unref (mbs);
 		g_free (folderpath);
-		g_free (path);
 	}
 
 	if (camel_local_store_is_main_store (CAMEL_LOCAL_STORE (store)) && fi->full_name

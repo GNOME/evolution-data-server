@@ -376,7 +376,7 @@ camel_imap_folder_new (CamelStore *parent,
 	CamelFolder *folder;
 	CamelImapFolder *imap_folder;
 	const gchar *short_name;
-	gchar *summary_file, *state_file, *path;
+	gchar *state_file, *path;
 
 	if (g_mkdir_with_parents (folder_dir, S_IRWXU) != 0) {
 		g_set_error (
@@ -398,9 +398,7 @@ camel_imap_folder_new (CamelStore *parent,
 		"display-name", short_name,
 		"parent-store", parent, NULL);
 
-	summary_file = g_build_filename (folder_dir, "summary", NULL);
-	folder->summary = camel_imap_summary_new (folder, summary_file);
-	g_free (summary_file);
+	folder->summary = camel_imap_summary_new (folder);
 	if (!folder->summary) {
 		g_object_unref (folder);
 		g_set_error (
@@ -715,7 +713,7 @@ imap_rename (CamelFolder *folder,
 	CamelStore *parent_store;
 	CamelImapFolder *imap_folder = (CamelImapFolder *) folder;
 	const gchar *user_cache_dir;
-	gchar *folder_dir, *summary_path, *state_file;
+	gchar *folder_dir, *state_file;
 	gchar *folders;
 
 	parent_store = camel_folder_get_parent_store (folder);
@@ -727,19 +725,14 @@ imap_rename (CamelFolder *folder,
 	folder_dir = imap_path_to_physical (folders, new);
 	g_free (folders);
 
-	summary_path = g_build_filename (folder_dir, "summary", NULL);
-
 	CAMEL_IMAP_FOLDER_REC_LOCK (folder, cache_lock);
 	camel_imap_message_cache_set_path (imap_folder->cache, folder_dir);
 	CAMEL_IMAP_FOLDER_REC_UNLOCK (folder, cache_lock);
-
-	camel_folder_summary_set_filename (folder->summary, summary_path);
 
 	state_file = g_build_filename (folder_dir, "cmeta", NULL);
 	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
 	g_free (state_file);
 
-	g_free (summary_path);
 	g_free (folder_dir);
 
 	CAMEL_FOLDER_CLASS (camel_imap_folder_parent_class)->rename (folder, new);

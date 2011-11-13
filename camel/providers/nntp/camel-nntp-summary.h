@@ -65,8 +65,7 @@ struct _CamelNNTPSummaryClass {
 
 GType		camel_nntp_summary_get_type	(void);
 CamelNNTPSummary *
-		camel_nntp_summary_new		(CamelFolder *folder,
-						 const gchar *path);
+		camel_nntp_summary_new		(CamelFolder *folder);
 gint		camel_nntp_summary_check	(CamelNNTPSummary *cns,
 						 struct _CamelNNTPStore *store,
 						 gchar *line,

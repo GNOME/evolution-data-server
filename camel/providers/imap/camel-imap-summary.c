@@ -117,7 +117,6 @@ sort_uid_cmp (gpointer enc,
 /**
  * camel_imap_summary_new:
  * @folder: Parent folder.
- * @filename: the file to store the summary in.
  *
  * This will create a new CamelImapSummary object and read in the
  * summary data from disk, if it exists.
@@ -125,8 +124,7 @@ sort_uid_cmp (gpointer enc,
  * Returns: A new CamelImapSummary object.
  **/
 CamelFolderSummary *
-camel_imap_summary_new (CamelFolder *folder,
-                        const gchar *filename)
+camel_imap_summary_new (CamelFolder *folder)
 {
 	CamelStore *parent_store;
 	CamelFolderSummary *summary;
@@ -145,7 +143,6 @@ camel_imap_summary_new (CamelFolder *folder,
 	}
 
 	camel_folder_summary_set_build_content (summary, TRUE);
-	camel_folder_summary_set_filename (summary, filename);
 
 	if (!camel_folder_summary_load_from_db (summary, NULL)) {
 		/* FIXME: Isn't this dangerous ? We clear the summary

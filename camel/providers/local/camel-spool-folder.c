@@ -45,7 +45,6 @@ G_DEFINE_TYPE (CamelSpoolFolder, camel_spool_folder, CAMEL_TYPE_MBOX_FOLDER)
 
 static CamelLocalSummary *
 spool_folder_create_summary (CamelLocalFolder *lf,
-                             const gchar *path,
                              const gchar *folder,
                              CamelIndex *index)
 {

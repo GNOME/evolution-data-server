@@ -93,7 +93,6 @@ struct _CamelFolderSummaryPrivate {
 	guint32 junk_not_deleted_count;
 	guint32 visible_count;
 
-	gchar *summary_path;
 	gboolean build_content;	/* do we try and parse/index the content, or not? */
 
 	GHashTable *uids; /* uids of all known message infos; the 'value' are used flags for the message info */
@@ -240,8 +239,6 @@ folder_summary_finalize (GObject *object)
 	g_hash_table_destroy (priv->filter_charset);
 
 	g_hash_table_destroy (priv->preview_updates);
-
-	g_free (priv->summary_path);
 
 	g_static_rec_mutex_free (&priv->summary_lock);
 	g_static_rec_mutex_free (&priv->io_lock);
@@ -1615,25 +1612,6 @@ camel_folder_summary_next_uid_string (CamelFolderSummary *summary)
 	g_return_val_if_fail (class->next_uid_string != NULL, NULL);
 
 	return class->next_uid_string (summary);
-}
-
-/**
- * camel_folder_summary_set_filename:
- * @summary: a #CamelFolderSummary object
- * @filename: a filename
- *
- * Set the filename where the summary will be loaded to/saved from.
- **/
-void
-camel_folder_summary_set_filename (CamelFolderSummary *summary,
-                                   const gchar *name)
-{
-	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-
-	g_free (summary->priv->summary_path);
-	summary->priv->summary_path = g_strdup (name);
-
-	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
 /**

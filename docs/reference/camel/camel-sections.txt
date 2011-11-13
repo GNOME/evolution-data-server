@@ -670,7 +670,6 @@ camel_message_info_set_flags
 camel_message_info_set_user_flag
 camel_message_info_set_user_tag
 camel_folder_summary_guess_content_info
-camel_folder_summary_set_filename
 camel_content_info_dump
 camel_message_info_dump
 bdata_extract_digit

@@ -51,7 +51,7 @@ camel_imapx_folder_new (CamelStore *store,
 	CamelSettings *settings;
 	CamelIMAPXFolder *ifolder;
 	const gchar *short_name;
-	gchar *summary_file, *state_file;
+	gchar *state_file;
 	gboolean filter_inbox;
 	gboolean filter_junk;
 	gboolean filter_junk_inbox;
@@ -83,8 +83,7 @@ camel_imapx_folder_new (CamelStore *store,
 
 	((CamelIMAPXFolder *) folder)->raw_name = g_strdup (folder_name);
 
-	summary_file = g_build_filename (folder_dir, "summary", NULL);
-	folder->summary = camel_imapx_summary_new (folder, summary_file);
+	folder->summary = camel_imapx_summary_new (folder);
 	if (!folder->summary) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -122,8 +121,6 @@ camel_imapx_folder_new (CamelStore *store,
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
 	} else if (filter_junk && !filter_junk_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
-
-	g_free (summary_file);
 
 	camel_store_summary_connect_folder_summary (
 		(CamelStoreSummary *) ((CamelIMAPXStore *) store)->summary,

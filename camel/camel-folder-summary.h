@@ -560,11 +560,6 @@ const CamelMessageContentInfo *
 							(CamelMessageInfo *mi,
 							 CamelContentType *ctype);
 
-/* Deprecated */
-void			camel_folder_summary_set_filename
-							(CamelFolderSummary *summary,
-							 const gchar *filename);
-
 /* debugging functions */
 void			camel_content_info_dump		(CamelMessageContentInfo *ci,
 							 gint depth);

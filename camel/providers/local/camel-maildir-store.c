@@ -397,7 +397,7 @@ fill_fi (CamelStore *store,
 		CamelLocalSettings *local_settings;
 		CamelSettings *settings;
 		CamelService *service;
-		gchar *path, *folderpath, *dir_name;
+		gchar *folderpath, *dir_name;
 		CamelFolderSummary *s;
 		const gchar *root;
 
@@ -410,22 +410,18 @@ fill_fi (CamelStore *store,
 		/* This should be fast enough not to have to test for INFO_FAST */
 		dir_name = maildir_full_name_to_dir_name (fi->full_name);
 
-		if (!strcmp (dir_name, ".")) {
-			path = g_build_filename (root, ".ev-summary", NULL);
+		if (!strcmp (dir_name, "."))
 			folderpath = g_strdup (root);
-		} else {
-			path = g_build_filename (root, dir_name, ".ev-summary", NULL);
+		else
 			folderpath = g_build_filename (root, dir_name, NULL);
-		}
 
-		s = (CamelFolderSummary *) camel_maildir_summary_new (NULL, path, folderpath, NULL);
+		s = (CamelFolderSummary *) camel_maildir_summary_new (NULL, folderpath, NULL);
 		if (camel_folder_summary_header_load_from_db (s, store, fi->full_name, NULL)) {
 			fi->unread = camel_folder_summary_get_unread_count (s);
 			fi->total = camel_folder_summary_get_saved_count (s);
 		}
 		g_object_unref (s);
 		g_free (folderpath);
-		g_free (path);
 		g_free (dir_name);
 	}
 

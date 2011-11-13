@@ -414,11 +414,10 @@ fail:
 
 static CamelLocalSummary *
 mbox_folder_create_summary (CamelLocalFolder *lf,
-                            const gchar *path,
                             const gchar *folder,
                             CamelIndex *index)
 {
-	return (CamelLocalSummary *) camel_mbox_summary_new ((CamelFolder *) lf, path, folder, index);
+	return (CamelLocalSummary *) camel_mbox_summary_new ((CamelFolder *) lf, folder, index);
 }
 
 static gint

@@ -86,8 +86,7 @@ struct _CamelImapSummaryClass {
 
 GType		camel_imap_summary_get_type	(void);
 CamelFolderSummary *
-		camel_imap_summary_new		(CamelFolder *folder,
-						 const gchar *filename);
+		camel_imap_summary_new		(CamelFolder *folder);
 void		camel_imap_summary_add_offline	(CamelFolderSummary *summary,
 						 const gchar *uid,
 						 CamelMimeMessage *message,

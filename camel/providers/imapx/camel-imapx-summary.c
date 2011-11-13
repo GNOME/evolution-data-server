@@ -129,8 +129,7 @@ sort_uid_cmp (gpointer enc,
  * Returns: A new CamelIMAPXSummary object.
  **/
 CamelFolderSummary *
-camel_imapx_summary_new (CamelFolder *folder,
-                         const gchar *filename)
+camel_imapx_summary_new (CamelFolder *folder)
 {
 	CamelStore *parent_store;
 	CamelFolderSummary *summary;
@@ -148,7 +147,6 @@ camel_imapx_summary_new (CamelFolder *folder,
 	}
 
 	camel_folder_summary_set_build_content (summary, TRUE);
-	camel_folder_summary_set_filename (summary, filename);
 
 	if (!camel_folder_summary_load_from_db (summary, &local_error)) {
 		/* FIXME: Isn't this dangerous ? We clear the summary

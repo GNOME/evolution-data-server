@@ -92,7 +92,6 @@ camel_mh_summary_init (CamelMhSummary *mh_summary)
  **/
 CamelMhSummary *
 camel_mh_summary_new (CamelFolder *folder,
-                      const gchar *filename,
                       const gchar *mhdir,
                       CamelIndex *index)
 {
@@ -108,7 +107,7 @@ camel_mh_summary_new (CamelFolder *folder,
 		((CamelFolderSummary *)o)->collate = "mh_uid_sort";
 	}
 
-	camel_local_summary_construct ((CamelLocalSummary *) o, filename, mhdir, index);
+	camel_local_summary_construct ((CamelLocalSummary *) o, mhdir, index);
 	return o;
 }
 

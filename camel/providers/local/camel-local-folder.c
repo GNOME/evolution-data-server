@@ -137,7 +137,6 @@ local_folder_finalize (GObject *object)
 
 	g_free (local_folder->base_path);
 	g_free (local_folder->folder_path);
-	g_free (local_folder->summary_path);
 	g_free (local_folder->index_path);
 
 	camel_folder_change_info_free (local_folder->changes);
@@ -313,18 +312,15 @@ local_folder_rename (CamelFolder *folder,
 	/* Sync? */
 
 	g_free (lf->folder_path);
-	g_free (lf->summary_path);
 	g_free (lf->index_path);
 
 	lf->folder_path = camel_local_store_get_full_path (ls, newname);
-	lf->summary_path = camel_local_store_get_meta_path(ls, newname, ".ev-summary");
 	lf->index_path = camel_local_store_get_meta_path(ls, newname, ".ibex");
 	statepath = camel_local_store_get_meta_path(ls, newname, ".cmeta");
 	camel_object_set_state_filename (CAMEL_OBJECT (lf), statepath);
 	g_free (statepath);
 
 	/* FIXME: Poke some internals, sigh */
-	camel_folder_summary_set_filename (folder->summary, lf->summary_path);
 	g_free (((CamelLocalSummary *) folder->summary)->folder_path);
 	((CamelLocalSummary *) folder->summary)->folder_path = g_strdup (lf->folder_path);
 
@@ -550,7 +546,6 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	lf->base_path = g_strdup (path);
 
 	lf->folder_path = camel_local_store_get_full_path (ls, full_name);
-	lf->summary_path = camel_local_store_get_meta_path(ls, full_name, ".ev-summary");
 	lf->index_path = camel_local_store_get_meta_path(ls, full_name, ".ibex");
 	statepath = camel_local_store_get_meta_path(ls, full_name, ".cmeta");
 
@@ -618,7 +613,7 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 		forceindex = FALSE;
 	}
 
-	folder->summary = (CamelFolderSummary *) CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->create_summary (lf, lf->summary_path, lf->folder_path, lf->index);
+	folder->summary = (CamelFolderSummary *) CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->create_summary (lf, lf->folder_path, lf->index);
 	if (!(flags & CAMEL_STORE_IS_MIGRATING) && !camel_local_summary_load ((CamelLocalSummary *) folder->summary, forceindex, NULL)) {
 		/* ? */
 		if (need_summary_check &&

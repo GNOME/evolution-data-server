@@ -2890,7 +2890,7 @@ fill_fi (CamelStore *store,
 		if (folder->summary)
 			ims = (CamelImapSummary *) folder->summary;
 		else
-			ims = (CamelImapSummary *) camel_imap_summary_new (folder, NULL);
+			ims = (CamelImapSummary *) camel_imap_summary_new (folder);
 
 		fi->unread = camel_folder_summary_get_unread_count ((CamelFolderSummary *) ims);
 		fi->total = camel_folder_summary_get_saved_count ((CamelFolderSummary *) ims);

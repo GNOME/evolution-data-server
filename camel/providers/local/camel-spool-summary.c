@@ -95,7 +95,7 @@ camel_spool_summary_new (CamelFolder *folder,
 		((CamelFolderSummary *)new)->sort_by = "bdata";
 		((CamelFolderSummary *)new)->collate = "spool_frompos_sort";
 	}
-	camel_local_summary_construct ((CamelLocalSummary *) new, NULL, mbox_name, NULL);
+	camel_local_summary_construct ((CamelLocalSummary *) new, mbox_name, NULL);
 	camel_folder_summary_load_from_db ((CamelFolderSummary *) new, NULL);
 	return new;
 }

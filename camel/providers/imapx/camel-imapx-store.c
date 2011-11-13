@@ -394,7 +394,7 @@ fill_fi (CamelStore *store,
 		if (folder->summary)
 			ims = (CamelIMAPXSummary *) folder->summary;
 		else
-			ims = (CamelIMAPXSummary *) camel_imapx_summary_new (folder, NULL);
+			ims = (CamelIMAPXSummary *) camel_imapx_summary_new (folder);
 
 		fi->unread = camel_folder_summary_get_unread_count ((CamelFolderSummary *) ims);
 		fi->total = camel_folder_summary_get_saved_count ((CamelFolderSummary *) ims);

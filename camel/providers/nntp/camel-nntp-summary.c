@@ -88,14 +88,12 @@ camel_nntp_summary_init (CamelNNTPSummary *nntp_summary)
 }
 
 CamelNNTPSummary *
-camel_nntp_summary_new (CamelFolder *folder,
-                        const gchar *path)
+camel_nntp_summary_new (CamelFolder *folder)
 {
 	CamelNNTPSummary *cns;
 
 	cns = g_object_new (CAMEL_TYPE_NNTP_SUMMARY, "folder", folder, NULL);
 
-	camel_folder_summary_set_filename ((CamelFolderSummary *) cns, path);
 	camel_folder_summary_set_build_content ((CamelFolderSummary *) cns, FALSE);
 
 	return cns;
