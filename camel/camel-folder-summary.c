@@ -129,7 +129,6 @@ static void cfs_schedule_info_release_timer (CamelFolderSummary *summary);
 static struct _node *my_list_append (struct _node **list, struct _node *n);
 static gint my_list_size (struct _node **list);
 
-static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
@@ -1141,7 +1140,6 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 	class->message_info_size = sizeof (CamelMessageInfoBase);
 	class->content_info_size = sizeof (CamelMessageContentInfo);
 
-	class->summary_header_load = summary_header_load;
 	class->summary_header_save = summary_header_save;
 
 	class->summary_header_from_db = summary_header_from_db;
@@ -3486,52 +3484,6 @@ my_list_size (struct _node **list)
 		len++;
 	}
 	return len;
-}
-
-static gint
-summary_header_load (CamelFolderSummary *summary,
-                     FILE *in)
-{
-	if (!summary->priv->summary_path)
-		return -1;
-
-	fseek (in, 0, SEEK_SET);
-
-	io(printf("Loading header\n"));
-
-	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->version) == -1)
-		return -1;
-
-	/* Legacy version check, before version 12 we have no upgrade knowledge */
-	if ((summary->version > 0xff) && (summary->version & 0xff) < 12) {
-		io(printf ("Summary header version mismatch"));
-		errno = EINVAL;
-		return -1;
-	}
-
-	if (!(summary->version < 0x100 && summary->version >= 13)) {
-		io(printf("Loading legacy summary\n"));
-	} else {
-		io(printf("loading new-format summary\n"));
-	}
-
-	/* legacy version */
-	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->flags) == -1
-	    || camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->priv->nextuid) == -1
-	    || camel_file_util_decode_time_t (in, &summary->time) == -1
-	    || camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->priv->saved_count) == -1) {
-		return -1;
-	}
-
-	/* version 13 */
-	if (summary->version < 0x100 && summary->version >= 13
-	    && (camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->priv->unread_count) == -1
-		|| camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->priv->deleted_count) == -1
-		|| camel_file_util_decode_fixed_int32 (in, (gint32 *) &summary->priv->junk_count) == -1)) {
-		return -1;
-	}
-
-	return 0;
 }
 
 /* are these even useful for anything??? */

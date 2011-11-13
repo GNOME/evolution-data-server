@@ -36,7 +36,6 @@
 
 #define CAMEL_IMAP_SUMMARY_VERSION (3)
 
-static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 
 static gboolean info_set_user_flag (CamelMessageInfo *info, const gchar *id, gboolean state);
@@ -75,7 +74,6 @@ camel_imap_summary_class_init (CamelImapSummaryClass *class)
 	folder_summary_class->message_info_size = sizeof (CamelImapMessageInfo);
 	folder_summary_class->content_info_size = sizeof (CamelImapMessageContentInfo);
 	folder_summary_class->message_info_clone = imap_message_info_clone;
-	folder_summary_class->summary_header_load = summary_header_load;
 	folder_summary_class->summary_header_save = summary_header_save;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
@@ -184,43 +182,6 @@ summary_header_from_db (CamelFolderSummary *s,
 	}
 
 	return TRUE;
-}
-
-static gint
-summary_header_load (CamelFolderSummary *s,
-                     FILE *in)
-{
-	CamelImapSummary *ims = CAMEL_IMAP_SUMMARY (s);
-
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->summary_header_load (s, in) == -1)
-		return -1;
-
-	/* Legacy version */
-	if (s->version == 0x30c)
-		return camel_file_util_decode_uint32 (in, &ims->validity);
-
-	/* Version 1 */
-	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &ims->version) == -1)
-		return -1;
-
-	if (ims->version == 2) {
-		/* Version 2: for compat with version 2 of the imap4 summary files */
-		gint have_mlist;
-
-		if (camel_file_util_decode_fixed_int32 (in, &have_mlist) == -1)
-			return -1;
-	}
-
-	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &ims->validity) == -1)
-		return -1;
-
-	if (ims->version > CAMEL_IMAP_SUMMARY_VERSION) {
-		g_warning("Unkown summary version\n");
-		errno = EINVAL;
-		return -1;
-	}
-
-	return 0;
 }
 
 static CamelFIRecord *

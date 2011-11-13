@@ -48,7 +48,6 @@ static gboolean summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
 static CamelMessageInfo * message_info_from_db (CamelFolderSummary *s, CamelMIRecord *record);
 static CamelMIRecord * message_info_to_db (CamelFolderSummary *s, CamelMessageInfo *info);
 
-static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
@@ -132,7 +131,6 @@ camel_mbox_summary_class_init (CamelMboxSummaryClass *class)
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelMboxMessageInfo);
 	folder_summary_class->content_info_size = sizeof (CamelMboxMessageContentInfo);
-	folder_summary_class->summary_header_load = summary_header_load;
 	folder_summary_class->summary_header_save = summary_header_save;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
@@ -242,27 +240,6 @@ summary_header_from_db (CamelFolderSummary *s,
 	}
 
 	return TRUE;
-}
-
-static gint
-summary_header_load (CamelFolderSummary *s,
-                     FILE *in)
-{
-	CamelMboxSummary *mbs = CAMEL_MBOX_SUMMARY (s);
-
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_mbox_summary_parent_class)->summary_header_load (s, in) == -1)
-		return -1;
-
-	/* legacy version */
-	if (s->version == 0x120c)
-		return camel_file_util_decode_uint32 (in, (guint32 *) &mbs->folder_size);
-
-	/* version 1 */
-	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &mbs->version) == -1
-	    || camel_file_util_decode_gsize (in, &mbs->folder_size) == -1)
-		return -1;
-
-	return 0;
 }
 
 static CamelFIRecord *

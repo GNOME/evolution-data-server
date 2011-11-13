@@ -54,7 +54,6 @@ struct _CamelNNTPSummaryPrivate {
 #define _PRIVATE(o) (((CamelNNTPSummary *)(o))->priv)
 
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
-static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 static gboolean summary_header_from_db (CamelFolderSummary *s, CamelFIRecord *mir);
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *s, GError **error);
@@ -72,7 +71,6 @@ camel_nntp_summary_class_init (CamelNNTPSummaryClass *class)
 	folder_summary_class->message_info_size = sizeof (CamelMessageInfoBase);
 	folder_summary_class->content_info_size = sizeof (CamelMessageContentInfo);
 	folder_summary_class->message_info_new_from_header = message_info_new_from_header;
-	folder_summary_class->summary_header_load = summary_header_load;
 	folder_summary_class->summary_header_save = summary_header_save;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
@@ -144,37 +142,6 @@ summary_header_from_db (CamelFolderSummary *s,
 	cns->low = bdata_extract_digit (&part);
 
 	return TRUE;
-}
-
-static gint
-summary_header_load (CamelFolderSummary *s,
-                     FILE *in)
-{
-	CamelNNTPSummary *cns = CAMEL_NNTP_SUMMARY (s);
-
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_load (s, in) == -1)
-		return -1;
-
-	/* Legacy version */
-	if (s->version == 0x20c) {
-		camel_file_util_decode_fixed_int32 (in, (gint32 *) &cns->high);
-		return camel_file_util_decode_fixed_int32 (in, (gint32 *) &cns->low);
-	}
-
-	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &cns->version) == -1)
-		return -1;
-
-	if (cns->version > CAMEL_NNTP_SUMMARY_VERSION) {
-		g_warning ("Unknown NNTP summary version");
-		errno = EINVAL;
-		return -1;
-	}
-
-	if (camel_file_util_decode_fixed_int32 (in, (gint32 *) &cns->high) == -1
-	    || camel_file_util_decode_fixed_int32 (in, (gint32 *) &cns->low) == -1)
-		return -1;
-
-	return 0;
 }
 
 static CamelFIRecord *

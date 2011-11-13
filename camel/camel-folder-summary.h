@@ -258,7 +258,6 @@ struct _CamelFolderSummaryClass {
 	gsize content_info_size;
 
 	/* load/save the global info */
-	gint (*summary_header_load)(CamelFolderSummary *, FILE *);
 	gint (*summary_header_save)(CamelFolderSummary *, FILE *);
 
 	/* Load/Save folder summary from DB*/

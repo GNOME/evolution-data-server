@@ -46,7 +46,6 @@
 static CamelFIRecord * summary_header_to_db (CamelFolderSummary *, GError **error);
 static gboolean summary_header_from_db (CamelFolderSummary *, CamelFIRecord *);
 
-static gint summary_header_load (CamelFolderSummary *, FILE *);
 static gint summary_header_save (CamelFolderSummary *, FILE *);
 
 static CamelMessageInfo * message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
@@ -104,7 +103,6 @@ camel_local_summary_class_init (CamelLocalSummaryClass *class)
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelLocalMessageInfo);
 	folder_summary_class->content_info_size = sizeof (CamelMessageContentInfo);
-	folder_summary_class->summary_header_load = summary_header_load;
 	folder_summary_class->summary_header_save = summary_header_save;
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
@@ -681,25 +679,6 @@ summary_header_from_db (CamelFolderSummary *s,
 	fir->bdata = tmp;
 
 	return TRUE;
-}
-
-static gint
-summary_header_load (CamelFolderSummary *s,
-                     FILE *in)
-{
-	CamelLocalSummary *cls = (CamelLocalSummary *) s;
-
-	/* We dont actually add our own headers, but version that we don't anyway */
-
-	if (CAMEL_FOLDER_SUMMARY_CLASS (camel_local_summary_parent_class)->summary_header_load (s, in) == -1)
-		return -1;
-
-	/* Legacy version, version is in summary only */
-	if ((s->version & 0xfff) == 0x20c)
-		return 0;
-
-	/* otherwise load the version number */
-	return camel_file_util_decode_fixed_int32 (in, (gint32 *) &cls->version);
 }
 
 static struct _CamelFIRecord *
