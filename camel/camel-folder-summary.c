@@ -140,7 +140,6 @@ static void		  message_info_free (CamelFolderSummary *, CamelMessageInfo *);
 static CamelMessageContentInfo * content_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
 static CamelMessageContentInfo * content_info_new_from_parser (CamelFolderSummary *, CamelMimeParser *);
 static CamelMessageContentInfo * content_info_new_from_message (CamelFolderSummary *summary, CamelMimePart *mp);
-static CamelMessageContentInfo * content_info_migrate (CamelFolderSummary *, FILE *);
 static void			 content_info_free (CamelFolderSummary *, CamelMessageContentInfo *);
 
 static gint save_message_infos_to_db (CamelFolderSummary *summary, gboolean fresh_mir, GError **error);
@@ -1162,7 +1161,6 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 	class->content_info_new_from_header  = content_info_new_from_header;
 	class->content_info_new_from_parser = content_info_new_from_parser;
 	class->content_info_new_from_message = content_info_new_from_message;
-	class->content_info_migrate = content_info_migrate;
 	class->content_info_free = content_info_free;
 
 	class->next_uid_string = next_uid_string;
@@ -3838,58 +3836,6 @@ content_info_new_from_header (CamelFolderSummary *summary,
 	ci->type = camel_content_type_decode(camel_header_raw_find(&h, "content-type", NULL));
 
 	return ci;
-}
-
-static CamelMessageContentInfo *
-content_info_migrate (CamelFolderSummary *summary,
-                      FILE *in)
-{
-	CamelMessageContentInfo *ci;
-	gchar *type, *subtype;
-	guint32 count, i;
-	CamelContentType *ct;
-
-	io(printf("Loading content info\n"));
-
-	ci = camel_folder_summary_content_info_new (summary);
-
-	camel_folder_summary_decode_token (in, &type);
-	camel_folder_summary_decode_token (in, &subtype);
-	ct = camel_content_type_new (type, subtype);
-	g_free (type);		/* can this be removed? */
-	g_free (subtype);
-
-	if (camel_file_util_decode_uint32 (in, &count) == -1)
-		goto error;
-
-	for (i = 0; i < count; i++) {
-		gchar *name, *value;
-		camel_folder_summary_decode_token (in, &name);
-		camel_folder_summary_decode_token (in, &value);
-		if (!(name && value))
-			goto error;
-
-		camel_content_type_set_param (ct, name, value);
-		/* TODO: do this so we dont have to double alloc/free */
-		g_free (name);
-		g_free (value);
-	}
-	ci->type = ct;
-
-	camel_folder_summary_decode_token (in, &ci->id);
-	camel_folder_summary_decode_token (in, &ci->description);
-	camel_folder_summary_decode_token (in, &ci->encoding);
-
-	camel_file_util_decode_uint32 (in, &ci->size);
-
-	ci->childs = NULL;
-
-	if (!ferror (in))
-		return ci;
-
- error:
-	camel_folder_summary_content_info_free (summary, ci);
-	return NULL;
 }
 
 static void

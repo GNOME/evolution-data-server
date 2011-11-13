@@ -280,7 +280,6 @@ struct _CamelFolderSummaryClass {
 	CamelMessageContentInfo * (*content_info_new_from_header)(CamelFolderSummary *, struct _camel_header_raw *);
 	CamelMessageContentInfo * (*content_info_new_from_parser)(CamelFolderSummary *, CamelMimeParser *);
 	CamelMessageContentInfo * (*content_info_new_from_message)(CamelFolderSummary *, CamelMimePart *);
-	CamelMessageContentInfo * (*content_info_migrate)(CamelFolderSummary *, FILE *);
 	void			  (*content_info_free)(CamelFolderSummary *, CamelMessageContentInfo *);
 	CamelMessageInfo * (*message_info_from_uid) (CamelFolderSummary *, const gchar *);
 	/* get the next uid */
