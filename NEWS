@@ -1,3 +1,44 @@
+Evolution-Data-Server 3.2.2 2011-11-14
+--------------------------------------
+Bug Fixes:
+	Bug 660972 - Unable to publish free/busy information (Milan Crha)
+	Bug 662473 - Moving mails between local folders removes labels (Milan Crha)
+	Bug 659736 - Do not report change on property set when not changed (Milan Crha)
+	Bug 655167 - Messages moved from IMAP Inbox reappear (Michel Dänzer)
+	Bug 662524 - POP3: Use a safer default value for "delete-after-days" (Matthew Barnes)
+	Bug 662643 - camel_url_decode_path() crashes on empty string (Matthew Barnes)
+	Bug 660870 - Empty Contacts list when pressing "To:" in composer (Milan Crha)
+	Bug 660656 - Fix e_iterator_get annotation (Alban Browaeys)
+	Bug 661549 - Avoid fetching from backend when calculating summary (Milan Crha)
+	Bug 661432 - 'Any field contains' search doesn't work in contact view (Milan Crha)
+	Bug 660829 - Allow 'Mark as read' in right click menu on spam folder (Milan Crha)
+	Bug 660615 - Make POP3 provider more cancellable ready (Milan Crha)
+	Bug 660533 - Missing GOA cflags/libs in libedata-book (Cosimo Cecchi)
+	Bug 620382 - Do not delete also directory for custom local calendars (Milan Crha)
+	Bug 660246 - EBookBackendSqliteDB: Bad loop iteration. (Christophe Dumez)
+
+Miscellaneous Fixes:
+	Avoid a crash in camel_session_get_service_by_url(). (Matthew Barnes)
+	Add camel_folder_refresh_info()/_finish(). (Matthew Barnes)
+	Revert "gdbus_proxy_call_sync: stop using g_usleep()" (Christophe Dumez)
+	e_book_backend_sqlitedb_new: Fix database connection reuse (Christophe Dumez)
+	Workaround possible crash in imap_body_decode() (Milan Crha)
+	vi.po: import from Damned Lies (Nguyễn Thái Ngọc Duy)
+	build_sqlitedb: Fix possible memory leak (Christophe Dumez)
+	gdbus_proxy_call_sync: check sync flag more frequently (Christophe Dumez)
+
+Translations:
+	Changwoo Ryu (ko)
+	Algimantas Margevičius (lt)
+	Luca Ferretti (it)
+	Daniel Nylander (sv)
+	Piotr Drąg (pl)
+	Daniel Mustieles (es)
+	OKANO Takayoshi (ja)
+	Bruce Cowan (en_GB)
+	Gabor Kelemen (hu)
+	Rudolfs Mazurs (lv)
+
 Evolution-Data-Server 3.2.1 2011-10-17
 --------------------------------------
 
