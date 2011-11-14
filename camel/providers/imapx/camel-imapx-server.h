@@ -21,7 +21,6 @@
 #define CAMEL_IMAPX_SERVER_H
 
 #include <camel/camel.h>
-#include <libedataserver/e-flag.h>
 
 #include "camel-imapx-stream.h"
 #include "camel-imapx-store-summary.h"

@@ -32,7 +32,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "libedataserver/e-flag.h"
 
 #include <glib/gi18n-lib.h>
 
@@ -69,11 +68,17 @@ call_old_file_Sync (CamelSqlite3File *cFile,
 	return cFile->old_vfs_file->pMethods->xSync (cFile->old_vfs_file, flags);
 }
 
+typedef struct {
+	GCond *cond;
+	GMutex *mutex;
+	gboolean is_set;
+} SyncDone;
+
 struct SyncRequestData
 {
 	CamelSqlite3File *cFile;
 	guint32 flags;
-	EFlag *sync_op; /* not NULL when waiting for a finish; will be freed by the caller */
+	SyncDone *done; /* not NULL when waiting for a finish; will be freed by the caller */
 };
 
 static void
@@ -81,18 +86,22 @@ sync_request_thread_cb (gpointer task_data,
                         gpointer null_data)
 {
 	struct SyncRequestData *sync_data = task_data;
-	EFlag *sync_op;
+	SyncDone *done;
 
 	g_return_if_fail (sync_data != NULL);
 	g_return_if_fail (sync_data->cFile != NULL);
 
 	call_old_file_Sync (sync_data->cFile, sync_data->flags);
 
-	sync_op = sync_data->sync_op;
+	done = sync_data->done;
 	g_free (sync_data);
 
-	if (sync_op)
-		e_flag_set (sync_op);
+	if (done != NULL) {
+		g_mutex_lock (done->mutex);
+		done->is_set = TRUE;
+		g_cond_broadcast (done->cond);
+		g_mutex_unlock (done->mutex);
+	}
 }
 
 static void
@@ -100,7 +109,7 @@ sync_push_request (CamelSqlite3File *cFile,
                    gboolean wait_for_finish)
 {
 	struct SyncRequestData *data;
-	EFlag *sync_op = NULL;
+	SyncDone *done = NULL;
 	GError *error = NULL;
 
 	g_return_if_fail (cFile != NULL);
@@ -108,13 +117,17 @@ sync_push_request (CamelSqlite3File *cFile,
 
 	g_static_rec_mutex_lock (&cFile->sync_mutex);
 
-	if (wait_for_finish)
-		sync_op = e_flag_new ();
+	if (wait_for_finish) {
+		done = g_slice_new (SyncDone);
+		done->cond = g_cond_new ();
+		done->mutex = g_mutex_new ();
+		done->is_set = FALSE;
+	}
 
 	data = g_new0 (struct SyncRequestData, 1);
 	data->cFile = cFile;
 	data->flags = cFile->flags;
-	data->sync_op = sync_op;
+	data->done = done;
 
 	cFile->flags = 0;
 
@@ -126,15 +139,24 @@ sync_push_request (CamelSqlite3File *cFile,
 		g_warning ("%s: Failed to push to thread pool: %s\n", G_STRFUNC, error->message);
 		g_error_free (error);
 
-		if (sync_op)
-			e_flag_free (sync_op);
+		if (done != NULL) {
+			g_cond_free (done->cond);
+			g_mutex_free (done->mutex);
+			g_slice_free (SyncDone, done);
+		}
 
 		return;
 	}
 
-	if (sync_op) {
-		e_flag_wait (sync_op);
-		e_flag_free (sync_op);
+	if (done != NULL) {
+		g_mutex_lock (done->mutex);
+		while (!done->is_set)
+			g_cond_wait (done->cond, done->mutex);
+		g_mutex_unlock (done->mutex);
+
+		g_cond_free (done->cond);
+		g_mutex_free (done->mutex);
+		g_slice_free (SyncDone, done);
 	}
 }
 

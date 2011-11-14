@@ -151,7 +151,9 @@ struct _CamelIMAPXCommand {
 	CamelIMAPXCommandPart *current;
 
 	/* used for running some commands syncronously */
-	EFlag *flag;
+	gboolean run_sync_done;
+	GCond *run_sync_cond;
+	GMutex *run_sync_mutex;
 
 	/* responsible for free'ing the command */
 	CamelIMAPXCommandFunc complete;
@@ -329,8 +331,11 @@ enum _idle_state {
 
 struct _CamelIMAPXIdle {
 	GMutex *idle_lock;
-	EFlag *idle_start_watch;
 	GThread *idle_thread;
+
+	GCond *start_watch_cond;
+	GMutex *start_watch_mutex;
+	gboolean start_watch_is_set;
 
 	time_t started;
 	enum _idle_state state;
@@ -2134,7 +2139,10 @@ static void
 imapx_command_complete (CamelIMAPXServer *is,
                         CamelIMAPXCommand *ic)
 {
-	e_flag_set (ic->flag);
+	g_mutex_lock (ic->run_sync_mutex);
+	ic->run_sync_done = TRUE;
+	g_cond_broadcast (ic->run_sync_cond);
+	g_mutex_unlock (ic->run_sync_mutex);
 }
 
 /* The caller should free the command as well */
@@ -2142,16 +2150,25 @@ static void
 imapx_command_run_sync (CamelIMAPXServer *is,
                         CamelIMAPXCommand *ic)
 {
-	ic->flag = e_flag_new ();
+	ic->run_sync_done = FALSE;
+	ic->run_sync_cond = g_cond_new ();
+	ic->run_sync_mutex = g_mutex_new ();
 
 	if (!ic->complete)
 		ic->complete = imapx_command_complete;
 
 	imapx_command_queue (is, ic);
-	e_flag_wait (ic->flag);
 
-	e_flag_free (ic->flag);
-	ic->flag = NULL;
+	g_mutex_lock (ic->run_sync_mutex);
+	while (!ic->run_sync_done)
+		g_cond_wait (ic->run_sync_cond, ic->run_sync_mutex);
+	g_mutex_unlock (ic->run_sync_mutex);
+
+	g_cond_free (ic->run_sync_cond);
+	g_mutex_free (ic->run_sync_mutex);
+	ic->run_sync_done = FALSE;
+	ic->run_sync_cond = NULL;
+	ic->run_sync_mutex = NULL;
 }
 
 /* ********************************************************************** */
@@ -2426,7 +2443,9 @@ imapx_idle_thread (gpointer data)
 	while (TRUE) {
 		CamelIMAPXFolder *ifolder;
 
-		e_flag_clear (is->idle->idle_start_watch);
+		g_mutex_lock (is->idle->start_watch_mutex);
+		is->idle->start_watch_is_set = FALSE;
+		g_mutex_unlock (is->idle->start_watch_mutex);
 
 		IDLE_LOCK (is->idle);
 		while ((ifolder = (CamelIMAPXFolder *) is->select_folder) &&
@@ -2457,7 +2476,12 @@ imapx_idle_thread (gpointer data)
 		}
 		IDLE_UNLOCK (is->idle);
 
-		e_flag_wait (is->idle->idle_start_watch);
+		g_mutex_lock (is->idle->start_watch_mutex);
+		while (!is->idle->start_watch_is_set)
+			g_cond_wait (
+				is->idle->start_watch_cond,
+				is->idle->start_watch_mutex);
+		g_mutex_unlock (is->idle->start_watch_mutex);
 
 		if (is->idle->idle_exit)
 			break;
@@ -2526,7 +2550,11 @@ imapx_exit_idle (CamelIMAPXServer *is)
 
 	if (idle->idle_thread) {
 		idle->idle_exit = TRUE;
-		e_flag_set (idle->idle_start_watch);
+
+		g_mutex_lock (idle->start_watch_mutex);
+		idle->start_watch_is_set = TRUE;
+		g_cond_broadcast (idle->start_watch_cond);
+		g_mutex_unlock (idle->start_watch_mutex);
 
 		thread = idle->idle_thread;
 		idle->idle_thread = 0;
@@ -2539,8 +2567,12 @@ imapx_exit_idle (CamelIMAPXServer *is)
 		g_thread_join (thread);
 
 	g_mutex_free (idle->idle_lock);
-	if (idle->idle_start_watch)
-		e_flag_free (idle->idle_start_watch);
+
+	if (idle->start_watch_cond != NULL)
+		g_cond_free (idle->start_watch_cond);
+
+	if (idle->start_watch_mutex != NULL)
+		g_mutex_free (idle->start_watch_mutex);
 
 	g_free (is->idle);
 	is->idle = NULL;
@@ -2561,10 +2593,18 @@ imapx_start_idle (CamelIMAPXServer *is)
 	idle->state = IMAPX_IDLE_PENDING;
 
 	if (!idle->idle_thread) {
-		idle->idle_start_watch = e_flag_new ();
-		idle->idle_thread = g_thread_create ((GThreadFunc) imapx_idle_thread, is, TRUE, NULL);
-	} else
-		e_flag_set (idle->idle_start_watch);
+		idle->start_watch_cond = g_cond_new ();
+		idle->start_watch_mutex = g_mutex_new ();
+		idle->start_watch_is_set = FALSE;
+
+		idle->idle_thread = g_thread_create (
+			(GThreadFunc) imapx_idle_thread, is, TRUE, NULL);
+	} else {
+		g_mutex_lock (idle->start_watch_mutex);
+		idle->start_watch_is_set = TRUE;
+		g_cond_broadcast (idle->start_watch_cond);
+		g_mutex_unlock (idle->start_watch_mutex);
+	}
 
 	IDLE_UNLOCK (idle);
 }
