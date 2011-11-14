@@ -36,14 +36,15 @@ get_revision_compare_cycle (EBookClient *client)
        g_assert (strcmp (revision_before, revision_after) != 0);
 
        g_message ("Passed cycle, revision before '%s' revision after '%s'",
-                  revision_before, revision_after);
+		  revision_before, revision_after);
 
        g_free (revision_before);
        g_free (revision_after);
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book_client;
 	GError      *error = NULL;

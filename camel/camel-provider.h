@@ -202,7 +202,7 @@ gboolean	camel_provider_load		(const gchar *path,
 						 GError **error);
 void		camel_provider_register		(CamelProvider *provider);
 GList *		camel_provider_list		(gboolean load);
-CamelProvider *	camel_provider_get		(const gchar *url_string,
+CamelProvider *	camel_provider_get		(const gchar *protocol,
 						 GError **error);
 
 /* This is defined by each module, not by camel-provider.c. */

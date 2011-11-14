@@ -1174,11 +1174,11 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
  * Since: 3.2
  */
 void
-e_data_cal_respond_create_object (EDataCal      *cal,
-				  guint32        opid,
-				  GError        *error,
-				  const gchar   *uid,
-				  icalcomponent *component)
+e_data_cal_respond_create_object (EDataCal *cal,
+                                  guint32 opid,
+                                  GError *error,
+                                  const gchar *uid,
+                                  icalcomponent *component)
 {
 	gchar *gdbus_uid = NULL;
 
@@ -1208,11 +1208,11 @@ e_data_cal_respond_create_object (EDataCal      *cal,
  * Since: 3.2
  */
 void
-e_data_cal_respond_modify_object (EDataCal      *cal,
-				  guint32        opid,
-				  GError        *error,
-				  icalcomponent *old_component,
-				  icalcomponent *component)
+e_data_cal_respond_modify_object (EDataCal *cal,
+                                  guint32 opid,
+                                  GError *error,
+                                  icalcomponent *old_component,
+                                  icalcomponent *component)
 {
 	op_complete (cal, opid);
 
@@ -1231,7 +1231,7 @@ e_data_cal_respond_modify_object (EDataCal      *cal,
  * e_data_cal_respond_remove_object:
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
- * @uid: UID of the removed object.
+ * @id: ID of the removed object.
  * @old_component: The old #icalcomponent.
  * @component: The new #icalcomponent. This will not be NULL only
  * when removing instances of a recurring appointment.
@@ -1245,8 +1245,8 @@ e_data_cal_respond_remove_object (EDataCal *cal,
                                   guint32 opid,
                                   GError *error,
                                   const ECalComponentId *id,
-				  icalcomponent *old_component,
-				  icalcomponent *component)
+                                  icalcomponent *old_component,
+                                  icalcomponent *component)
 {
 	op_complete (cal, opid);
 

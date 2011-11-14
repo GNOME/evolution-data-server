@@ -270,7 +270,7 @@ ensure_pending_flush_timeout (EDataCalView *view)
 
 static void
 notify_add (EDataCalView *view,
-            gchar        *obj)
+            gchar *obj)
 {
 	EDataCalViewPrivate *priv = view->priv;
 	ECalComponent *comp;
@@ -293,7 +293,8 @@ notify_add (EDataCalView *view,
 }
 
 static void
-notify_add_component (EDataCalView *view, icalcomponent *icalcomp)
+notify_add_component (EDataCalView *view,
+                      icalcomponent *icalcomp)
 {
 	EDataCalViewPrivate *priv = view->priv;
 	icalcomponent       *icalclone;
@@ -323,7 +324,8 @@ notify_add_component (EDataCalView *view, icalcomponent *icalcomp)
 }
 
 static void
-notify_change (EDataCalView *view, gchar *obj)
+notify_change (EDataCalView *view,
+               gchar *obj)
 {
 	EDataCalViewPrivate *priv = view->priv;
 
@@ -340,7 +342,8 @@ notify_change (EDataCalView *view, gchar *obj)
 }
 
 static void
-notify_change_component (EDataCalView *view, icalcomponent *comp)
+notify_change_component (EDataCalView *view,
+                         icalcomponent *comp)
 {
 	gchar *obj;
 
@@ -350,7 +353,8 @@ notify_change_component (EDataCalView *view, icalcomponent *comp)
 }
 
 static void
-notify_remove (EDataCalView *view, ECalComponentId *id)
+notify_remove (EDataCalView *view,
+               ECalComponentId *id)
 {
 	EDataCalViewPrivate *priv = view->priv;
 	gchar *ids;
@@ -722,7 +726,8 @@ e_data_cal_view_object_matches (EDataCalView *view,
  * Since: 3.4
  */
 gboolean
-e_data_cal_view_component_matches (EDataCalView *view, ECalComponent *component)
+e_data_cal_view_component_matches (EDataCalView *view,
+                                   ECalComponent *component)
 {
 	EDataCalViewPrivate *priv;
 
@@ -813,13 +818,15 @@ e_data_cal_view_get_fields_of_interest (EDataCalView *view)
 }
 
 static gboolean
-filter_component (icalcomponent *icomponent, GHashTable *fields_of_interest, GString *string)
+filter_component (icalcomponent *icomponent,
+                  GHashTable *fields_of_interest,
+                  GString *string)
 {
 	gchar             *str;
 
 	/* RFC 2445 explicitly says that the newline is *ALWAYS* a \r\n (CRLF)!!!! */
 	const gchar        newline[] = "\r\n";
-	
+
 	icalcomponent_kind kind;
 	const gchar       *kind_string;
 	icalproperty      *prop;
@@ -869,7 +876,7 @@ filter_component (icalcomponent *icomponent, GHashTable *fields_of_interest, GSt
 	for (icomp = icalcomponent_get_first_component (icomponent, ICAL_ANY_COMPONENT);
 	     fail == FALSE && icomp;
 	     icomp = icalcomponent_get_next_component (icomponent, ICAL_ANY_COMPONENT)) {
-		
+
 		if (!filter_component (icomp, fields_of_interest, string)) {
 			fail = TRUE;
 			break;
@@ -892,12 +899,14 @@ filter_component (icalcomponent *icomponent, GHashTable *fields_of_interest, GSt
  * that it takes into account the fields-of-interest that @view is 
  * configured with and filters out any unneeded fields.
  *
- * Returns: (transfer full): A newly allocated string representation of @component suitable for @view.
+ * Returns: (transfer full): A newly allocated string representation of
+ * @component suitable for @view.
  *
  * Since: 3.4
  */
 gchar *
-e_data_cal_view_get_component_string (EDataCalView *view, icalcomponent *component)
+e_data_cal_view_get_component_string (EDataCalView *view,
+                                      icalcomponent *component)
 {
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
 	g_return_val_if_fail (component != NULL, NULL);
@@ -930,7 +939,7 @@ e_data_cal_view_get_component_string (EDataCalView *view, icalcomponent *compone
  */
 void
 e_data_cal_view_notify_components_added (EDataCalView *view,
-					 const GSList *components)
+                                         const GSList *components)
 {
 	EDataCalViewPrivate *priv;
 	const GSList *l;
@@ -960,14 +969,15 @@ e_data_cal_view_notify_components_added (EDataCalView *view,
  * Notifies all the view listeners of the addition of a single object.
  *
  * Like e_data_cal_view_notify_objects_added_1() except takes an #icalcomponent
- * instead of an ical string representation and uses the #EDataCalView's fields-of-interest
- * to filter out unwanted information from ical strings sent over the bus.
+ * instead of an ical string representation and uses the #EDataCalView's
+ * fields-of-interest to filter out unwanted information from ical strings
+ * sent over the bus.
  *
  * Since: 3.4
  */
 void
-e_data_cal_view_notify_components_added_1 (EDataCalView        *view,
-					   const icalcomponent *component)
+e_data_cal_view_notify_components_added_1 (EDataCalView *view,
+                                           const icalcomponent *component)
 {
 	GSList l = {NULL,};
 
@@ -985,15 +995,16 @@ e_data_cal_view_notify_components_added_1 (EDataCalView        *view,
  *
  * Notifies all view listeners of the modification of a list of components.
  *
- * Like e_data_cal_view_notify_objects_modified() except takes a list of #icalcomponents
- * instead of a ical string representations and uses the #EDataCalView's fields-of-interest
- * to filter out unwanted information from ical strings sent over the bus.
+ * Like e_data_cal_view_notify_objects_modified() except takes a list of
+ * #icalcomponents instead of a ical string representations and uses the
+ * #EDataCalView's fields-of-interest to filter out unwanted information
+ * from ical strings sent over the bus.
  *
  * Since: 3.4
  */
 void
 e_data_cal_view_notify_components_modified (EDataCalView *view,
-					    const GSList *components)
+                                            const GSList *components)
 {
 	EDataCalViewPrivate *priv;
 	const GSList *l;
@@ -1023,15 +1034,16 @@ e_data_cal_view_notify_components_modified (EDataCalView *view,
  *
  * Notifies all view listeners of the modification of @component.
  * 
- * Like e_data_cal_view_notify_objects_modified_1() except takes an #icalcomponent
- * instead of an ical string representation and uses the #EDataCalView's fields-of-interest
- * to filter out unwanted information from ical strings sent over the bus.
+ * Like e_data_cal_view_notify_objects_modified_1() except takes an
+ * #icalcomponent instead of an ical string representation and uses the
+ * #EDataCalView's fields-of-interest to filter out unwanted information
+ * from ical strings sent over the bus.
  *
  * Since: 3.4
  */
 void
-e_data_cal_view_notify_components_modified_1 (EDataCalView        *view,
-					      const icalcomponent *component)
+e_data_cal_view_notify_components_modified_1 (EDataCalView *view,
+                                              const icalcomponent *component)
 {
 	GSList l = {NULL,};
 

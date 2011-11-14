@@ -1269,7 +1269,7 @@ camel_session_get_junk_filter (CamelSession *session)
 /**
  * camel_session_set_junk_filter:
  * @session: a #CamelSession
- * @junk_filer: a #CamelJunkFilter, or %NULL
+ * @junk_filter: a #CamelJunkFilter, or %NULL
  *
  * Installs the #CamelJunkFilter instance used to classify messages as
  * junk or not junk during filtering.

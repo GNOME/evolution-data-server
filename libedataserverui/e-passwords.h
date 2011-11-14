@@ -60,8 +60,9 @@ typedef enum {
 	E_PASSWORDS_PASSPHRASE = 1<<12 /* We are asking a passphrase */
 } EPasswordsRememberType;
 
-gchar *      e_passwords_ask_password      (const gchar *title,
-					   const gchar *unused, const gchar *key,
+gchar *      e_passwords_ask_password     (const gchar *title,
+					   const gchar *unused,
+					   const gchar *key,
 					   const gchar *prompt,
 					   EPasswordsRememberType remember_type,
 					   gboolean *remember,

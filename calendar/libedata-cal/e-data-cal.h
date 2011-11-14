@@ -141,7 +141,7 @@ void		e_data_cal_respond_modify_object		(EDataCal *cal, guint32 opid, GError *er
 void		e_data_cal_respond_remove_object		(EDataCal *cal, guint32 opid, GError *error, const ECalComponentId *id, icalcomponent *old_component, icalcomponent *component);
 void		e_data_cal_respond_receive_objects		(EDataCal *cal, guint32 opid, GError *error);
 void		e_data_cal_respond_send_objects			(EDataCal *cal, guint32 opid, GError *error, const GSList *users, const gchar *calobj);
-void		e_data_cal_respond_get_attachment_uris		(EDataCal *cal, guint32 opid, GError *error, const GSList *attachments);
+void		e_data_cal_respond_get_attachment_uris		(EDataCal *cal, guint32 opid, GError *error, const GSList *attachment_uris);
 void		e_data_cal_respond_discard_alarm		(EDataCal *cal, guint32 opid, GError *error);
 void		e_data_cal_respond_get_view			(EDataCal *cal, guint32 opid, GError *error, const gchar *view_path);
 void		e_data_cal_respond_get_timezone			(EDataCal *cal, guint32 opid, GError *error, const gchar *tzobject);

@@ -320,9 +320,9 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
 	if (vcards->next != NULL) {
 		e_data_book_respond_create_contacts (book, opid,
-		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+						     EDB_ERROR_EX (NOT_SUPPORTED,
 		                                     _("The backend does not support bulk additions")),
-		                                     NULL);
+						     NULL);
 		return;
 	}
 
@@ -348,9 +348,9 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 			e_data_book_respond_create_contacts (book, opid, webdav_handle_auth_request (webdav), NULL);
 		} else {
 			e_data_book_respond_create_contacts (book, opid,
-				        e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+					e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
 				        _("Create resource '%s' failed with HTTP status: %d (%s)"), uid, status, status_reason),
-				        NULL);
+					NULL);
 		}
 		g_free (uid);
 		g_free (status_reason);
@@ -427,9 +427,9 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 	 * in our static capability list. */
 	if (id_list->next != NULL) {
 		e_data_book_respond_remove_contacts (book, opid,
-		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+						     EDB_ERROR_EX (NOT_SUPPORTED,
 		                                     _("The backend does not support bulk removals")),
-		                                     NULL);
+						     NULL);
 		return;
 	}
 
@@ -437,13 +437,13 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 	if (status != 204) {
 		if (status == 401 || status == 407) {
 			e_data_book_respond_remove_contacts (book, opid,
-			                                     webdav_handle_auth_request (webdav), NULL);
+							     webdav_handle_auth_request (webdav), NULL);
 		} else {
 			g_warning("DELETE failed with HTTP status %d", status);
 			e_data_book_respond_remove_contacts (book, opid,
-			                                     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+							     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
 						                         "DELETE failed with HTTP status %d", status),
-			                                     NULL);
+							     NULL);
 		}
 		return;
 	}
@@ -481,9 +481,9 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
 	if (vcards->next != NULL) {
 		e_data_book_respond_modify_contacts (book, opid,
-		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+						     EDB_ERROR_EX (NOT_SUPPORTED,
 		                                     _("The backend does not support bulk modifications")),
-		                                     NULL);
+						     NULL);
 		return;
 	}
 

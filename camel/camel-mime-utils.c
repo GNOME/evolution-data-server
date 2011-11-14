@@ -2108,13 +2108,15 @@ rfc2184_decode (const gchar *in,
  * Returns: the value of the @name param
  **/
 gchar *
-camel_header_param (struct _camel_header_param *p,
+camel_header_param (struct _camel_header_param *params,
                     const gchar *name)
 {
-	while (p && p->name && g_ascii_strcasecmp (p->name, name) != 0)
-		p = p->next;
-	if (p)
-		return p->value;
+	while (params && params->name &&
+	       g_ascii_strcasecmp (params->name, name) != 0)
+		params = params->next;
+	if (params)
+		return params->value;
+
 	return NULL;
 }
 

@@ -49,7 +49,7 @@ test_bulk_add_remove (EBookClient *client,
 	/* Make sure the uids are in the address book */
 	g_return_val_if_fail (e_book_client_get_contacts_uids_sync (client, sexp, &book_uids, NULL, NULL), FALSE);
 	for (l = added_uids; l != NULL; l = l->next) {
-		g_return_val_if_fail (check_string_in_slist (book_uids, (const gchar*) l->data), FALSE);
+		g_return_val_if_fail (check_string_in_slist (book_uids, (const gchar *) l->data), FALSE);
 	}
 	g_slist_free_full (book_uids, g_free);
 
@@ -61,7 +61,7 @@ test_bulk_add_remove (EBookClient *client,
 	book_uids = NULL;
 	g_return_val_if_fail (e_book_client_get_contacts_uids_sync (client, sexp, &book_uids, NULL, NULL), FALSE);
 	for (l = added_uids; l != NULL; l = l->next) {
-		g_return_val_if_fail (!check_string_in_slist (book_uids, (const gchar*) l->data), FALSE);
+		g_return_val_if_fail (!check_string_in_slist (book_uids, (const gchar *) l->data), FALSE);
 	}
 	g_slist_free_full (book_uids, g_free);
 
@@ -99,7 +99,7 @@ test_bulk_modify (EBookClient *client,
 	g_print ("  * Bulk modification of %d contacts...\n", batch_size);
 	ll = added_uids;
 	for (l = contacts; l != NULL; l = l->next) {
-		const gchar* uid = ll->data;
+		const gchar * uid = ll->data;
 		contact = E_CONTACT (l->data);
 
 		/* Set contact UID */
@@ -166,7 +166,7 @@ test_bulk_modify (EBookClient *client,
 	return TRUE;
 }
 
-int main (gint argc, gchar **argv)
+gint main (gint argc, gchar **argv)
 {
 	EBookClient *client = NULL;
 	const gchar

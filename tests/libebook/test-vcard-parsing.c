@@ -2,7 +2,9 @@
 #include <libebook/e-contact.h>
 
 static gboolean
-compare_single_value (EVCard *vcard, const gchar *attrname, const gchar *expected_value)
+compare_single_value (EVCard *vcard,
+                      const gchar *attrname,
+                      const gchar *expected_value)
 {
 	EVCardAttribute *attr;
 	gchar *str;
@@ -24,7 +26,8 @@ compare_single_value (EVCard *vcard, const gchar *attrname, const gchar *expecte
 }
 
 static gboolean
-has_only_one (EVCard *vcard, const gchar *attrname)
+has_only_one (EVCard *vcard,
+              const gchar *attrname)
 {
 	gboolean found = FALSE;
 	GList *iter;
@@ -75,7 +78,7 @@ test_vcard (const gchar *vcard_str)
 
 	g_free (str);
 	g_object_unref (vc1);
-	
+
 	/* do not parse */
 	vc1 = e_vcard_new_from_string (vcard_str);
 	/* Setting the UID does not cause vCard parsing */
@@ -217,7 +220,7 @@ test_econtact (const gchar *vcard_str)
 	return TRUE;
 }
 
-int main(int argc, char **argv)
+gint main (gint argc, gchar **argv)
 {
 	const gchar
 		*test_vcard_no_uid_str = 

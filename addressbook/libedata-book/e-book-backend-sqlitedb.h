@@ -87,7 +87,7 @@ GType		e_book_backend_sqlitedb_get_type	(void);
 
 EBookBackendSqliteDB *
 		e_book_backend_sqlitedb_new		(const gchar *path,
-							 const gchar *email_id,
+							 const gchar *emailid,
 							 const gchar *folderid,
 							 const gchar *folder_name,
 							 gboolean store_vcard,

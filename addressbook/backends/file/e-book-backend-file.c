@@ -214,8 +214,8 @@ load_vcard (EBookBackendFile *bf,
 
 static EContact *
 load_contact (EBookBackendFile *bf,
-	      const gchar      *uid,
-	      GError          **error)
+              const gchar *uid,
+              GError **error)
 {
 	EContact *contact = NULL;
 	gchar    *vcard;
@@ -229,9 +229,9 @@ load_contact (EBookBackendFile *bf,
 }
 
 static gchar *
-check_remove_uri_for_field (EContact         *old_contact,
-			    EContact         *new_contact,
-			    EContactField     field)
+check_remove_uri_for_field (EContact *old_contact,
+                            EContact *new_contact,
+                            EContactField field)
 {
 	EContactPhoto *old_photo = NULL, *new_photo = NULL;
 	gchar         *uri = NULL;
@@ -258,7 +258,7 @@ check_remove_uri_for_field (EContact         *old_contact,
 
 static void
 maybe_delete_uri (EBookBackendFile *bf,
-		  const gchar      *uri)
+                  const gchar *uri)
 {
 	GError *error = NULL;
 	gchar  *filename;
@@ -289,9 +289,9 @@ maybe_delete_uri (EBookBackendFile *bf,
 
 static void
 maybe_delete_unused_uris (EBookBackendFile *bf,
-			  const gchar      *id,
-			  EContact         *old_contact,
-			  EContact         *new_contact)
+                          const gchar *id,
+                          EContact *old_contact,
+                          EContact *new_contact)
 {
 	GError            *error = NULL;
 	gchar             *uri_photo, *uri_logo;
@@ -329,8 +329,8 @@ maybe_delete_unused_uris (EBookBackendFile *bf,
 }
 
 static gchar *
-e_book_backend_file_extract_path_from_source (ESource      *source, 
-					      GetPathType   path_type)
+e_book_backend_file_extract_path_from_source (ESource *source,
+                                              GetPathType path_type)
 {
 	const gchar *user_data_dir;
 	const gchar *source_dir;
@@ -348,11 +348,11 @@ e_book_backend_file_extract_path_from_source (ESource      *source,
 
 	switch (path_type) {
 	case GET_PATH_DB_DIR:
-		filename = g_build_filename 
+		filename = g_build_filename
 			(user_data_dir, "addressbook", mangled_source_dir, NULL);
 		break;
 	case GET_PATH_PHOTO_DIR:
-		filename = g_build_filename 
+		filename = g_build_filename
 			(user_data_dir, "addressbook", mangled_source_dir, "photos", NULL);
 		break;
 	default:
@@ -365,9 +365,9 @@ e_book_backend_file_extract_path_from_source (ESource      *source,
 
 static gchar *
 safe_name_for_photo (EBookBackendFile *bf,
-		     EContact         *contact,
-		     EContactPhoto    *photo,
-		     EContactField     field)
+                     EContact *contact,
+                     EContactPhoto *photo,
+                     EContactField field)
 {
 	gchar         *fullname = NULL, *name, *str;
 	gchar         *suffix = NULL;
@@ -376,14 +376,14 @@ safe_name_for_photo (EBookBackendFile *bf,
 	g_assert (photo->type == E_CONTACT_PHOTO_TYPE_INLINED);
 
 	/* Get a suitable filename extension */
-	if (photo->data.inlined.mime_type != NULL && 
+	if (photo->data.inlined.mime_type != NULL &&
 	    photo->data.inlined.mime_type[0] != '\0') {
 		suffix = g_uri_escape_string (photo->data.inlined.mime_type,
 					      NULL, TRUE);
 	} else {
 		gchar *mime_type = NULL;
 		gchar *content_type = NULL;
-		
+
 		content_type = g_content_type_guess (NULL,
 						     photo->data.inlined.data,
 						     photo->data.inlined.length,
@@ -424,10 +424,10 @@ safe_name_for_photo (EBookBackendFile *bf,
 
 static gchar *
 hard_link_photo (EBookBackendFile *bf,
-		 EContact         *contact,
-		 EContactField     field,
-		 const gchar      *src_filename,
-		 GError          **error)
+                 EContact *contact,
+                 EContactField field,
+                 const gchar *src_filename,
+                 GError **error)
 {
 	gchar *fullname = NULL, *name, *str;
 	gint   i = 0, ret;
@@ -464,7 +464,7 @@ hard_link_photo (EBookBackendFile *bf,
 			g_propagate_error (error, EDB_ERROR (PERMISSION_DENIED));
 		} else {
 			g_propagate_error (error, e_data_book_create_error_fmt
-					   (E_DATA_BOOK_STATUS_OTHER_ERROR, 
+					   (E_DATA_BOOK_STATUS_OTHER_ERROR,
 					    _("Failed to create hardlink for resource '%s': %s"),
 					    src_filename, g_strerror (errno)));
 		}
@@ -477,10 +477,9 @@ hard_link_photo (EBookBackendFile *bf,
 	return fullname;
 }
 
-
-static gboolean 
-is_backend_owned_uri (EBookBackendFile *bf, 
-		      const gchar      *uri)
+static gboolean
+is_backend_owned_uri (EBookBackendFile *bf,
+                      const gchar *uri)
 {
 	gchar     *filename;
 	gchar     *dirname;
@@ -502,13 +501,12 @@ is_backend_owned_uri (EBookBackendFile *bf,
 	return owned_uri;
 }
 
-
 static PhotoModifiedStatus
 maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
-				       EContact         *old_contact,
-				       EContact         *contact,
-				       EContactField     field,
-				       GError          **error)
+                                       EContact *old_contact,
+                                       EContact *contact,
+                                       EContactField field,
+                                       GError **error)
 {
 	PhotoModifiedStatus  status = STATUS_NORMAL;
 	EContactPhoto       *photo;
@@ -528,12 +526,12 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
 		/* Create a unique filename with an extension (hopefully) based on the mime type */
 		new_photo_path = safe_name_for_photo (bf, contact, photo, field);
 
-		if ((uri = 
+		if ((uri =
 		     g_filename_to_uri (new_photo_path, NULL, error)) == NULL) {
 
 			status = STATUS_ERROR;
 		} else if (!g_file_set_contents (new_photo_path,
-						 (const gchar *)photo->data.inlined.data,
+						 (const gchar *) photo->data.inlined.data,
 						 photo->data.inlined.length,
 						 error)) {
 
@@ -597,7 +595,7 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
 			 * logic to the file-system.
 			 */
 			filename = g_filename_from_uri (photo->data.uri, NULL, NULL);
-			g_assert (filename); /* we already checked this with 'is_backend_owned_uri()' */
+			g_assert (filename); /* we already checked this with 'is_backend_owned_uri ()' */
 
 			new_filename = hard_link_photo (bf, contact, field, filename, error);
 
@@ -649,10 +647,10 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
  */
 static PhotoModifiedStatus
 maybe_transform_vcard_for_photo (EBookBackendFile *bf,
-				 EContact         *old_contact,
-				 EContact         *contact,
-				 gchar           **vcard_ret,
-				 GError          **error)
+                                 EContact *old_contact,
+                                 EContact *contact,
+                                 gchar **vcard_ret,
+                                 GError **error)
 {
 	PhotoModifiedStatus status;
 	gboolean            modified = FALSE;
@@ -876,7 +874,7 @@ do_create (EBookBackendFile *bf,
 	}
 
 	/* Begin transaction */
-	db_error = env->txn_begin(env, NULL, &txn, 0);
+	db_error = env->txn_begin (env, NULL, &txn, 0);
 	if (db_error != 0) {
 		g_warning (G_STRLOC ": env->txn_begin failed with %s", db_strerror (db_error));
 		db_error_to_gerror (db_error, perror);
@@ -891,7 +889,7 @@ do_create (EBookBackendFile *bf,
 		const gchar     *vcard_req;
 		EContact        *contact;
 
-		vcard_req = (const gchar*) l->data;
+		vcard_req = (const gchar *) l->data;
 
 		id      = e_book_backend_file_create_unique_id ();
 		contact = e_contact_new_from_vcard_with_uid (vcard_req, id);
@@ -1017,7 +1015,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 	}
 
 	/* Begin transaction */
-	db_error = env->txn_begin(env, NULL, &txn, 0);
+	db_error = env->txn_begin (env, NULL, &txn, 0);
 	if (db_error != 0) {
 		g_warning (G_STRLOC ": env->txn_begin failed with %s", db_strerror (db_error));
 		db_error_to_gerror (db_error, perror);
@@ -1107,7 +1105,7 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 	}
 
 	/* Begin transaction */
-	db_error = env->txn_begin(env, NULL, &txn, 0);
+	db_error = env->txn_begin (env, NULL, &txn, 0);
 	if (db_error != 0) {
 		g_warning (G_STRLOC ": env->txn_begin failed with %s", db_strerror (db_error));
 		db_error_to_gerror (db_error, perror);
@@ -1212,7 +1210,7 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 		GError *error = NULL;
 		/* Update summary as well */
 		if (!e_book_backend_sqlitedb_remove_contacts (bf->priv->sqlitedb,
-					                      SQLITEDB_FOLDER_ID,
+							      SQLITEDB_FOLDER_ID,
 							      ids, &error)) {
 			g_warning ("Failed to remove contacts from the summary: %s", error->message);
 			g_error_free (error);
@@ -1626,7 +1624,7 @@ book_view_thread (gpointer data)
 				/* don't include the version in the list of cards */
 				if (strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_VERSION_NAME) &&
 				    strcmp (id_dbt.data, E_BOOK_BACKEND_FILE_REVISION_NAME)) {
-					notify_update_vcard (book_view, allcontacts, 
+					notify_update_vcard (book_view, allcontacts,
 							     id_dbt.data, vcard_dbt.data);
 				}
 
@@ -1918,7 +1916,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 				g_free);
 
 		/* Make sure the database directory is created
-		   or env->open will fail */
+		 * or env->open will fail */
 		if (!only_if_exists) {
 			if (!create_directory (dirname, perror)) {
 				g_warning ("failed to create directory at %s", dirname);

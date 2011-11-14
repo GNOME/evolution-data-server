@@ -390,7 +390,7 @@ e_name_selector_peek_model (ENameSelector *name_selector)
 
 /**
  * e_name_selector_peek_dialog:
- * @name_selelctor: an #ENameSelector
+ * @name_selector: an #ENameSelector
  *
  * Gets the #ENameSelectorDialog used by @name_selector.
  *

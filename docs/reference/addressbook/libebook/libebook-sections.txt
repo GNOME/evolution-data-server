@@ -124,6 +124,7 @@ EBookPrivate
 BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS
 BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS
 BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
+BOOK_BACKEND_PROPERTY_REVISION
 E_BOOK_CLIENT_ERROR
 EBookClientError
 e_book_client_error_to_string
@@ -195,6 +196,8 @@ e_book_client_view_is_running
 e_book_client_view_set_fields_of_interest
 e_book_client_view_start
 e_book_client_view_stop
+EBookClientViewFlags
+e_book_client_view_set_flags
 <SUBSECTION Standard>
 E_BOOK_CLIENT_VIEW
 E_IS_BOOK_CLIENT_VIEW
@@ -243,6 +246,7 @@ e_contact_photo_get_mime_type
 e_contact_photo_set_mime_type
 e_contact_photo_get_uri
 e_contact_photo_set_uri
+e_contact_inline_local_photos
 e_contact_photo_free
 e_contact_geo_free
 e_contact_address_new
@@ -406,6 +410,8 @@ EVC_PARENT_CL
 EVC_CL_UID
 EVC_X_DEST_EMAIL
 EVC_X_DEST_NAME
+E_VCARD_21_VALID_PROPERTIES
+E_VCARD_21_VALID_PARAMETERS
 <SUBSECTION Standard>
 E_VCARD
 E_IS_VCARD

@@ -629,39 +629,38 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
 /**
  * e_book_backend_start_book_view:
  * @backend: an #EBookBackend
- * @book_view: the #EDataBookView to start
+ * @view: the #EDataBookView to start
  *
- * Starts running the query specified by @book_view, emitting
- * signals for matching contacts.
+ * Starts running the query specified by @view, emitting signals for
+ * matching contacts.
  **/
 void
 e_book_backend_start_book_view (EBookBackend *backend,
-                                EDataBookView *book_view)
+                                EDataBookView *view)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->start_book_view);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->start_book_view) (backend, book_view);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->start_book_view) (backend, view);
 }
 
 /**
  * e_book_backend_stop_book_view:
  * @backend: an #EBookBackend
- * @book_view: the #EDataBookView to stop
+ * @view: the #EDataBookView to stop
  *
- * Stops running the query specified by @book_view, emitting
- * no more signals.
+ * Stops running the query specified by @view, emitting no more signals.
  **/
 void
 e_book_backend_stop_book_view (EBookBackend *backend,
-                               EDataBookView *book_view)
+                               EDataBookView *view)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
-	g_return_if_fail (E_IS_DATA_BOOK_VIEW (book_view));
+	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
 	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view) (backend, book_view);
+	(* E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view) (backend, view);
 }
 
 /**

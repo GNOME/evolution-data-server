@@ -1358,9 +1358,9 @@ e_book_backend_google_create_contacts (EBookBackend *backend,
 	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
 	if (vcards->next != NULL) {
 		e_data_book_respond_create_contacts (book, opid,
-		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+						     EDB_ERROR_EX (NOT_SUPPORTED,
 		                                     _("The backend does not support bulk additions")),
-		                                     NULL);
+						     NULL);
 		return;
 	}
 
@@ -1472,9 +1472,9 @@ e_book_backend_google_remove_contacts (EBookBackend *backend,
 	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
 	if (id_list->next != NULL) {
 		e_data_book_respond_remove_contacts (book, opid,
-		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+						     EDB_ERROR_EX (NOT_SUPPORTED,
 		                                     _("The backend does not support bulk removals")),
-		                                     NULL);
+						     NULL);
 		return;
 	}
 	g_return_if_fail (!id_list->next);
@@ -1745,9 +1745,9 @@ e_book_backend_google_modify_contacts (EBookBackend *backend,
 	 * in our static capability list. This is because there is no clean way to roll back changes in case of an error. */
 	if (vcards->next != NULL) {
 		e_data_book_respond_modify_contacts (book, opid,
-		                                     EDB_ERROR_EX (NOT_SUPPORTED,
+						     EDB_ERROR_EX (NOT_SUPPORTED,
 		                                     _("The backend does not support bulk modifications")),
-		                                     NULL);
+						     NULL);
 		return;
 	}
 
@@ -3376,7 +3376,7 @@ add_type_param_from_google_rel_im (EVCardAttribute *attr,
 
 static gboolean
 add_type_param_from_google_rel_uris (EVCardAttribute *attr,
-				     const gchar *rel)
+                                     const gchar *rel)
 {
 	return _add_type_param_from_google_rel (attr, rel_type_map_uris, G_N_ELEMENTS (rel_type_map_uris), rel);
 }
@@ -3403,7 +3403,7 @@ static gchar *
 _google_rel_from_types (GList *types,
                         const struct RelTypeMap rel_type_map[],
                         guint map_len,
-			gboolean use_prefix)
+                        gboolean use_prefix)
 {
 	const gchar *format = "http://schemas.google.com/g/2005#%s";
 	guint i;
@@ -3702,7 +3702,7 @@ add_attribute_from_gdata_gd_organization (EVCard *vcard,
 
 static void
 add_attribute_from_gc_contact_website (EVCard *vcard,
-				       GDataGContactWebsite *website)
+                                       GDataGContactWebsite *website)
 {
 	EVCardAttribute *attr;
 	gboolean has_type;
@@ -3939,7 +3939,7 @@ gdata_gd_organization_from_attribute (EVCardAttribute *attr,
 
 static GDataGContactWebsite *
 gdata_gc_contact_website_from_attribute (EVCardAttribute *attr,
-					 gboolean *have_primary)
+                                         gboolean *have_primary)
 {
 	GDataGContactWebsite *website = NULL;
 	GList *values;

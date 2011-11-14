@@ -77,7 +77,7 @@ struct _CamelSettingsClass {
 
 GType		camel_settings_get_type		(void) G_GNUC_CONST;
 GParamSpec **	camel_settings_class_list_settings
-						(CamelSettingsClass *klass,
+						(CamelSettingsClass *settings_class,
 						 guint *n_settings);
 CamelSettings *	camel_settings_clone		(CamelSettings *settings);
 gboolean	camel_settings_equal		(CamelSettings *settings_a,

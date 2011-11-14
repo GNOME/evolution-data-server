@@ -3165,7 +3165,8 @@ convert_to_url_attachment (ECalBackendCalDAV *cbdav,
 }
 
 static void
-remove_files (const gchar *dir, const gchar *fileprefix)
+remove_files (const gchar *dir,
+              const gchar *fileprefix)
 {
 	GDir *d;
 
@@ -3223,7 +3224,7 @@ remove_cached_attachment (ECalBackendCalDAV *cbdav,
 		fileprefix++;
 
 		if (*fileprefix)
-			fileprefix[strlen(fileprefix) - 1] = '\0';
+			fileprefix[strlen (fileprefix) - 1] = '\0';
 
 		remove_files (dir, fileprefix);
 	}
@@ -3524,11 +3525,11 @@ replace_master (ECalBackendCalDAV *cbdav,
 
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
-do_create_object (ECalBackendCalDAV *cbdav, 
-		  const gchar       *in_calobj, 
-		  gchar            **uid, 
-		  icalcomponent    **new_component,
-		  GError           **perror)
+do_create_object (ECalBackendCalDAV *cbdav,
+                  const gchar *in_calobj,
+                  gchar **uid,
+                  icalcomponent **new_component,
+                  GError **perror)
 {
 	ECalComponent            *comp;
 	gboolean                  online, did_put = FALSE;
@@ -3628,11 +3629,11 @@ do_create_object (ECalBackendCalDAV *cbdav,
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
 do_modify_object (ECalBackendCalDAV *cbdav,
-		  const gchar    *calobj,
-		  CalObjModType   mod,
-		  icalcomponent **old_component,
-		  icalcomponent **new_component,
-		  GError        **error)
+                  const gchar *calobj,
+                  CalObjModType mod,
+                  icalcomponent **old_component,
+                  icalcomponent **new_component,
+                  GError **error)
 {
 	ECalBackendCalDAVPrivate *priv;
 	ECalComponent            *comp;
@@ -3805,12 +3806,12 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
 do_remove_object (ECalBackendCalDAV *cbdav,
-		  const gchar       *uid,
-		  const gchar       *rid,
-		  CalObjModType      mod,
-		  icalcomponent    **old_component,
-		  icalcomponent    **component,
-		  GError           **perror)
+                  const gchar *uid,
+                  const gchar *rid,
+                  CalObjModType mod,
+                  icalcomponent **old_component,
+                  icalcomponent **component,
+                  GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
 	icalcomponent            *cache_comp;
@@ -4019,7 +4020,7 @@ process_object (ECalBackendCalDAV *cbdav,
 			if (!is_declined) {
 				icalcomponent *new_component = NULL, *old_component = NULL;
 
-				do_modify_object (cbdav, new_obj_str, mod, 
+				do_modify_object (cbdav, new_obj_str, mod,
 						  &old_component, &new_component, &err);
 				if (!err) {
 					if (!old_component)

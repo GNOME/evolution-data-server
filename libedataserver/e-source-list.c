@@ -602,27 +602,27 @@ e_source_list_peek_source_any (ESourceList *list)
 
 /**
  * e_source_list_peek_default_source:
- * @source_list: an #ESourceList
+ * @list: an #ESourceList
  *
- * Attempts to find a default #ESource in @source_list by looking for
+ * Attempts to find a default #ESource in @list by looking for
  * a source with a property named "default", or else a source with a
  * property named "system".  If no such #ESource exists, the function
  * returns %NULL.
  *
- * Returns: (transfer none): the default #ESource in @source_list, or %NULL
+ * Returns: (transfer none): the default #ESource in @list, or %NULL
  *
  * Since: 2.32
  **/
 ESource *
-e_source_list_peek_default_source (ESourceList *source_list)
+e_source_list_peek_default_source (ESourceList *list)
 {
 	ESource *system_source = NULL;
 	GSList *groups;
 	GSList *iter1;
 
-	g_return_val_if_fail (E_IS_SOURCE_LIST (source_list), NULL);
+	g_return_val_if_fail (E_IS_SOURCE_LIST (list), NULL);
 
-	groups = e_source_list_peek_groups (source_list);
+	groups = e_source_list_peek_groups (list);
 
 	for (iter1 = groups; iter1 != NULL; iter1 = iter1->next) {
 		ESourceGroup *source_group;

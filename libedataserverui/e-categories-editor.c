@@ -361,7 +361,7 @@ e_categories_editor_get_categories (ECategoriesEditor *editor)
 
 /**
  * e_categories_editor_set_categories:
- * @dialog: an #ECategoriesEditor
+ * @editor: an #ECategoriesEditor
  * @categories: comma-separated list of categories
  *
  * Sets the list of categories selected on the editor.

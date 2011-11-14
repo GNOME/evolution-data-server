@@ -172,36 +172,36 @@ e_gdbus_book_view_call_stop_sync (GDBusProxy *proxy,
 
 void
 e_gdbus_book_view_call_set_flags (GDBusProxy *proxy,
-				  guint in_flags,
-				  GCancellable *cancellable,
-				  GAsyncReadyCallback callback,
-				  gpointer user_data)
+                                  guint in_flags,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
 {
         e_gdbus_proxy_method_call_uint ("set_flags", proxy, in_flags, cancellable, callback, user_data);
 }
 
 gboolean
 e_gdbus_book_view_call_set_flags_finish (GDBusProxy *proxy,
-					 GAsyncResult *result,
-					 GError **error)
+                                         GAsyncResult *result,
+                                         GError **error)
 {
 	return e_gdbus_proxy_method_call_finish_void (proxy, result, error);
 }
 
 gboolean
 e_gdbus_book_view_call_set_flags_sync (GDBusProxy *proxy,
-				       guint in_flags,
-				       GCancellable *cancellable,
-				       GError **error)
+                                       guint in_flags,
+                                       GCancellable *cancellable,
+                                       GError **error)
 {
 	return e_gdbus_proxy_method_call_sync_uint__void ("set_flags", proxy, in_flags, cancellable, error);
 }
 
 void
 e_gdbus_book_view_call_dispose (GDBusProxy *proxy,
-				GCancellable *cancellable,
-				GAsyncReadyCallback callback,
-				gpointer user_data)
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
 	e_gdbus_proxy_method_call_void ("dispose", proxy, cancellable, callback, user_data);
 }

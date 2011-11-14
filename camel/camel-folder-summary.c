@@ -3008,7 +3008,7 @@ camel_folder_summary_info_new_from_parser (CamelFolderSummary *summary,
  * camel_folder_summary_info_new_from_message:
  * @summary: a #CamelFodlerSummary object
  * @message: a #CamelMimeMessage object
- * @boydstructure: a bodystructure or NULL
+ * @bodystructure: a bodystructure or NULL
  *
  * Create a summary item from a message.
  *

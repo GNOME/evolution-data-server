@@ -31,24 +31,25 @@ subtest_passed (SubTestId id)
 		stop_main_loop (0);
 }
 
-
 static struct icaltimetype
 get_last_modified (icalcomponent *component)
 {
-    icalcomponent *inner = icalcomponent_get_inner(component); 
+    icalcomponent *inner = icalcomponent_get_inner (component);
     icalproperty  *prop;
 
-    prop = icalcomponent_get_first_property(inner, ICAL_LASTMODIFIED_PROPERTY);
+    prop = icalcomponent_get_first_property (inner, ICAL_LASTMODIFIED_PROPERTY);
 
-    if (prop == 0){
-        return icaltime_null_time();
+    if (prop == 0) {
+	return icaltime_null_time ();
     }
 
     return icalproperty_get_lastmodified (prop);
 }
 
 static void
-objects_added_cb (GObject *object, const GSList *objects, gpointer data)
+objects_added_cb (GObject *object,
+                  const GSList *objects,
+                  gpointer data)
 {
 	const GSList *l;
 
@@ -69,7 +70,9 @@ objects_added_cb (GObject *object, const GSList *objects, gpointer data)
 }
 
 static void
-objects_modified_cb (GObject *object, const GSList *objects, gpointer data)
+objects_modified_cb (GObject *object,
+                     const GSList *objects,
+                     gpointer data)
 {
 	const GSList *l;
 
@@ -90,7 +93,9 @@ objects_modified_cb (GObject *object, const GSList *objects, gpointer data)
 }
 
 static void
-objects_removed_cb (GObject *object, const GSList *objects, gpointer data)
+objects_removed_cb (GObject *object,
+                    const GSList *objects,
+                    gpointer data)
 {
 	const GSList *l;
 
@@ -104,7 +109,9 @@ objects_removed_cb (GObject *object, const GSList *objects, gpointer data)
 }
 
 static void
-complete_cb (GObject *object, const GError *error, gpointer data)
+complete_cb (GObject *object,
+             const GError *error,
+             gpointer data)
 {
         g_print ("View complete (status: %d, error_msg:%s)\n", error ? error->code : 0, error ? error->message : "NULL");
 
@@ -136,7 +143,7 @@ alter_cal_client (gpointer user_data)
 	}
 
 	icalcomponent_set_uid (icalcomp, uid);
-	icalcomponent_set_recurrenceid (icalcomp, 
+	icalcomponent_set_recurrenceid (icalcomp,
 					icaltime_from_timet (icaltime_as_timet (now) + 60 * 60 * 60, 0));
 	icalcomponent_set_summary (icalcomp, "Modified event summary");
 
@@ -163,7 +170,9 @@ alter_cal_client (gpointer user_data)
 }
 
 static void
-async_get_view_ready (GObject *source_object, GAsyncResult *result, gpointer user_data)
+async_get_view_ready (GObject *source_object,
+                      GAsyncResult *result,
+                      gpointer user_data)
 {
 	ECalClient *cal_client = E_CAL_CLIENT (source_object);
 	ECalClientView *view = NULL;
@@ -213,7 +222,8 @@ get_view_async (gpointer user_data)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	ECalClientView *view = NULL;
 	ECalClient *cal_client;
@@ -225,7 +235,6 @@ main (gint argc, gchar **argv)
 	cal_client = new_temp_client (E_CAL_CLIENT_SOURCE_TYPE_EVENTS, NULL);
 	g_return_val_if_fail (cal_client != NULL, FALSE);
 
- 
 	if (!e_client_open_sync (E_CLIENT (cal_client), FALSE, NULL, &error)) {
 		report_error ("client open sync", &error);
 		g_object_unref (cal_client);

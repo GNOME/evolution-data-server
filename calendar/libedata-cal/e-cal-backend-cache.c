@@ -636,8 +636,8 @@ get_keys_key (const gchar *key)
 /**
  * e_cal_backend_cache_put_key_value:
  * @cache: An #ECalBackendCache object.
- * @keyp: The Key parameter to identify uniquely.
- * @valuep: The value for the keyp parameter.
+ * @key: The Key parameter to identify uniquely.
+ * @value: The value for the @key parameter.
  *
  * Returns: TRUE if the operation was successful, FALSE otherwise.
  */

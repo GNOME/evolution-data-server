@@ -319,7 +319,7 @@ e_book_backend_db_cache_get_contacts (DB *db,
 
 /**
  * e_book_backend_db_cache_search:
- * @backend: an #EBookBackend
+ * @db: DB handle
  * @query: an s-expression
  *
  * Returns an array of pointers to unique contact ID strings for contacts
@@ -373,7 +373,7 @@ e_book_backend_db_cache_exists (const gchar *uri)
 
 /**
  * e_book_backend_db_cache_set_populated:
- * @backend: an #EBookBackend
+ * @db: DB handle
  *
  * Flags @cache as being populated - that is, it is up-to-date on the
  * contents of the book it's caching.

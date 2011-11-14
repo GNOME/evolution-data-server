@@ -116,7 +116,7 @@ gchar *		e_source_group_get_property	(ESourceGroup *source,
 void		e_source_group_set_property	(ESourceGroup *source,
 						 const gchar *property,
 						 const gchar *value);
-void		e_source_group_foreach_property	(ESourceGroup *source,
+void		e_source_group_foreach_property	(ESourceGroup *group,
 						 GHFunc func,
 						 gpointer data);
 gchar *		e_source_group_to_xml		(ESourceGroup *group);

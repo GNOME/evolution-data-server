@@ -1262,26 +1262,26 @@ e_cal_backend_http_get_free_busy (ECalBackendSync *backend,
 }
 
 static void
-e_cal_backend_http_create_object (ECalBackendSync *backend, 
-				  EDataCal *cal, 
-				  GCancellable *cancellable, 
-				  const gchar *calobj, 
-				  gchar **uid, 
-				  icalcomponent **new_component, 
-				  GError **perror)
+e_cal_backend_http_create_object (ECalBackendSync *backend,
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *calobj,
+                                  gchar **uid,
+                                  icalcomponent **new_component,
+                                  GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
 
 static void
 e_cal_backend_http_modify_object (ECalBackendSync *backend,
-				  EDataCal      *cal,
-				  GCancellable  *cancellable,
-				  const gchar   *calobj,
-				  CalObjModType   mod,
-				  icalcomponent **old_component,
-				  icalcomponent **component,
-				  GError        **perror)
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *calobj,
+                                  CalObjModType mod,
+                                  icalcomponent **old_component,
+                                  icalcomponent **component,
+                                  GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
@@ -1289,14 +1289,14 @@ e_cal_backend_http_modify_object (ECalBackendSync *backend,
 /* Remove_object handler for the file backend */
 static void
 e_cal_backend_http_remove_object (ECalBackendSync *backend,
-				  EDataCal       *cal,
-				  GCancellable   *cancellable,
-				  const gchar    *uid,
-				  const gchar    *rid,
-				  CalObjModType   mod, 
-				  icalcomponent **old_component,
-				  icalcomponent **component,
-				  GError        **perror)
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *uid,
+                                  const gchar *rid,
+                                  CalObjModType mod,
+                                  icalcomponent **old_component,
+                                  icalcomponent **component,
+                                  GError **perror)
 {
 	*old_component = *component = NULL;
 

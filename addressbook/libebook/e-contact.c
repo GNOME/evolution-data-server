@@ -2252,7 +2252,6 @@ e_contact_photo_set_uri (EContactPhoto *photo,
 	photo->data.uri = g_strdup (uri);
 }
 
-
 /* Try to unescape a mime type which was encoded into
  * the filename, return the mime type if g_content_type_from_mime_type()
  * returns something for the decoded filename extension.
@@ -2285,8 +2284,8 @@ mime_type_from_filename (const gchar *filename)
 }
 
 static gboolean
-e_contact_photo_make_inline (EContactPhoto  *photo,
-			     GError        **error)
+e_contact_photo_make_inline (EContactPhoto *photo,
+                             GError **error)
 {
 	gchar *filename;
 	gchar *contents = NULL;
@@ -2307,7 +2306,7 @@ e_contact_photo_make_inline (EContactPhoto  *photo,
 		mime_type = mime_type_from_filename (filename);
 		if (!mime_type) {
 			gchar *content_type =
-				g_content_type_guess (NULL, (const guchar *)contents, length, NULL);
+				g_content_type_guess (NULL, (const guchar *) contents, length, NULL);
 
 			if (content_type)
 				mime_type = g_content_type_get_mime_type (content_type);
@@ -2318,8 +2317,8 @@ e_contact_photo_make_inline (EContactPhoto  *photo,
 		g_free (photo->data.uri);
 
 		photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
-		photo->data.inlined.data      = (guchar *)contents;
- 		photo->data.inlined.length    = length;
+		photo->data.inlined.data      = (guchar *) contents;
+		photo->data.inlined.length    = length;
 		photo->data.inlined.mime_type = mime_type;
 
 		success = TRUE;
@@ -2329,9 +2328,9 @@ e_contact_photo_make_inline (EContactPhoto  *photo,
 }
 
 static gboolean
-e_contact_inline_photo_field (EContact       *contact,
-			      EContactField   field,
-			      GError        **error)
+e_contact_inline_photo_field (EContact *contact,
+                              EContactField field,
+                              GError **error)
 {
 	EContactPhoto *photo;
 	gboolean       success = TRUE;
@@ -2367,8 +2366,8 @@ e_contact_inline_photo_field (EContact       *contact,
  * Since: 3.4
  */
 gboolean
-e_contact_inline_local_photos (EContact      *contact,
-			       GError       **error)
+e_contact_inline_local_photos (EContact *contact,
+                               GError **error)
 {
 	gboolean success = TRUE;
 
@@ -2380,7 +2379,6 @@ e_contact_inline_local_photos (EContact      *contact,
 
 	return success;
 }
-
 
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_photo, "EContactPhoto")
 

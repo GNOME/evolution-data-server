@@ -177,7 +177,7 @@ void            camel_session_get_socks_proxy   (CamelSession *session,
 						 gint *port_ret);
 CamelService *	camel_session_add_service	(CamelSession *session,
 						 const gchar *uid,
-						 const gchar *uri_string,
+						 const gchar *protocol,
 						 CamelProviderType type,
 						 GError **error);
 gboolean	camel_session_remove_service	(CamelSession *session,
@@ -230,7 +230,7 @@ gboolean	camel_session_get_network_available
 						(CamelSession *session);
 void		camel_session_set_network_available
 						(CamelSession *session,
-						 gboolean network_state);
+						 gboolean network_available);
 const GHashTable *
 		camel_session_get_junk_headers	(CamelSession *session);
 void		camel_session_set_junk_headers	(CamelSession *session,

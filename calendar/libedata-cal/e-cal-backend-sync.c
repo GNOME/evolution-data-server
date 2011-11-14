@@ -316,12 +316,12 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
  */
 void
 e_cal_backend_sync_create_object (ECalBackendSync *backend,
-				  EDataCal        *cal, 
-				  GCancellable    *cancellable, 
-				  const gchar     *calobj, 
-				  gchar          **uid, 
-				  icalcomponent  **new_component, 
-				  GError         **error)
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *calobj,
+                                  gchar **uid,
+                                  icalcomponent **new_component,
+                                  GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->create_object_sync != NULL, UnsupportedMethod);
@@ -346,13 +346,13 @@ e_cal_backend_sync_create_object (ECalBackendSync *backend,
  */
 void
 e_cal_backend_sync_modify_object (ECalBackendSync *backend,
-				  EDataCal        *cal,
-				  GCancellable    *cancellable, 
-				  const gchar     *calobj,
-				  CalObjModType    mod,
-				  icalcomponent  **old_component,
-				  icalcomponent  **new_component,
-				  GError         **error)
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *calobj,
+                                  CalObjModType mod,
+                                  icalcomponent **old_component,
+                                  icalcomponent **new_component,
+                                  GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_object_sync != NULL, UnsupportedMethod);
@@ -380,14 +380,14 @@ e_cal_backend_sync_modify_object (ECalBackendSync *backend,
  */
 void
 e_cal_backend_sync_remove_object (ECalBackendSync *backend,
-				  EDataCal        *cal,
-				  GCancellable    *cancellable,
-				  const gchar     *uid,
-				  const gchar     *rid,
-				  CalObjModType    mod,
-				  icalcomponent  **old_component,
-				  icalcomponent  **new_component,
-				  GError         **error)
+                                  EDataCal *cal,
+                                  GCancellable *cancellable,
+                                  const gchar *uid,
+                                  const gchar *rid,
+                                  CalObjModType mod,
+                                  icalcomponent **old_component,
+                                  icalcomponent **new_component,
+                                  GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->remove_object_sync != NULL, UnsupportedMethod);
@@ -774,12 +774,12 @@ cal_backend_modify_object (ECalBackend *backend,
 }
 
 static void
-cal_backend_remove_object (ECalBackend  *backend,
-                           EDataCal     *cal,
-                           guint32       opid,
+cal_backend_remove_object (ECalBackend *backend,
+                           EDataCal *cal,
+                           guint32 opid,
                            GCancellable *cancellable,
-                           const gchar  *uid,
-                           const gchar  *rid,
+                           const gchar *uid,
+                           const gchar *rid,
                            CalObjModType mod)
 {
 	GError *error = NULL;

@@ -1844,7 +1844,7 @@ camel_folder_get_display_name (CamelFolder *folder)
 /**
  * camel_folder_set_display_name:
  * @folder: a #CamelFolder
- * @name: a display name for the folder
+ * @display_name: a display name for the folder
  *
  * Sets the display name for the folder.
  *
@@ -2504,7 +2504,7 @@ camel_folder_search_by_expression (CamelFolder *folder,
 /**
  * camel_folder_count_by_expression:
  * @folder: a #CamelFolder
- * @expr: a search expression
+ * @expression: a search expression
  * @error: return location for a #GError, or %NULL
  *
  * Searches the folder for count of messages matching the given search expression.

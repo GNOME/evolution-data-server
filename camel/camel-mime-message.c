@@ -1311,16 +1311,17 @@ cmm_dump_rec (CamelMimeMessage *msg,
 
 /**
  * camel_mime_message_dump:
- * @msg:
+ * @message:
  * @body:
  *
  * Dump information about the mime message to stdout.
  *
- * If body is TRUE, then dump body content of the message as well (currently unimplemented).
+ * If body is TRUE, then dump body content of the message as well
+ * (currently unimplemented).
  **/
 void
-camel_mime_message_dump (CamelMimeMessage *msg,
+camel_mime_message_dump (CamelMimeMessage *message,
                          gint body)
 {
-	cmm_dump_rec (msg, (CamelMimePart *) msg, body, 0);
+	cmm_dump_rec (message, (CamelMimePart *) message, body, 0);
 }

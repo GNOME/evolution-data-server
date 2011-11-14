@@ -74,26 +74,26 @@ e_list_construct (EList *list,
 
 /**
  * e_list_duplicate:
- * @old: The #EList object.
+ * @list: The #EList object.
  *
  * Returns: (transfer full): The duplicated #EList.
  **/
 EList *
-e_list_duplicate (EList *old)
+e_list_duplicate (EList *list)
 {
-	EList *list = g_object_new (E_TYPE_LIST, NULL);
+	EList *dupe = g_object_new (E_TYPE_LIST, NULL);
 
-	list->copy    = old->copy;
-	list->free    = old->free;
-	list->closure = old->closure;
-	list->list    = g_list_copy (old->list);
-	if (list->copy) {
+	dupe->copy    = list->copy;
+	dupe->free    = list->free;
+	dupe->closure = list->closure;
+	dupe->list    = g_list_copy (list->list);
+	if (dupe->copy) {
 		GList *listlist;
-		for (listlist = list->list; listlist; listlist = listlist->next) {
-			listlist->data = list->copy (listlist->data, list->closure);
+		for (listlist = dupe->list; listlist; listlist = listlist->next) {
+			listlist->data = dupe->copy (listlist->data, dupe->closure);
 		}
 	}
-	return list;
+	return dupe;
 }
 
 /**

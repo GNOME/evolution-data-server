@@ -199,15 +199,16 @@ escape_values (gchar *str)
 
 /**
  * camel_sexp_to_sql:
- * @txt: A valid sexp expression
+ * @sexp: A valid sexp expression
  *
- * Converts a valid sexp expression to a sql statement with table fields converted into it.
- * This is very specific to Evolution. It might crash is the sexp is invalid. The callers must ensure that the sexp is valid
+ * Converts a valid sexp expression to a sql statement with table fields
+ * converted into it.  This is very specific to Evolution. It might crash
+ * is the sexp is invalid. The callers must ensure that the sexp is valid.
  *
  * Since: 2.24
  **/
 gchar *
-camel_sexp_to_sql (const gchar *txt)
+camel_sexp_to_sql (const gchar *sexp)
 {
 	GScanner *scanner = g_scanner_new (&config);
 	gchar *sql = NULL;
@@ -219,12 +220,12 @@ camel_sexp_to_sql (const gchar *txt)
 	GList *res = NULL;
 	gboolean last_sysnode = FALSE;
 
-	d(printf("len = %d\n", strlen (txt)));
+	d(printf("len = %d\n", strlen (sexp)));
 
-	if (!txt || !*txt)
+	if (!sexp || !*sexp)
 		return NULL;
 
-	g_scanner_input_text (scanner, txt, strlen (txt));
+	g_scanner_input_text (scanner, sexp, strlen (sexp));
 	while (!g_scanner_eof (scanner)) {
 		Node *mnode;
 		gint new_level = -1;

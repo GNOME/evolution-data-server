@@ -128,7 +128,6 @@ static void free_refresh_data (ECalBackendFile *cbfile);
 static icaltimezone *
 e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const gchar *tzid);
 
-
 /* g_hash_table_foreach() callback to destroy a ECalBackendFileObject */
 static void
 free_object_data (gpointer data)
@@ -1591,9 +1590,10 @@ typedef struct {
 	EDataCalView *view;
 } MatchObjectData;
 
-
 static GSList *
-prepend_component (GSList *list, MatchObjectData *match_data, icalcomponent *icalcomp)
+prepend_component (GSList *list,
+                   MatchObjectData *match_data,
+                   icalcomponent *icalcomp)
 {
 	gchar *str;
 
@@ -1604,7 +1604,6 @@ prepend_component (GSList *list, MatchObjectData *match_data, icalcomponent *ica
 
 	return g_slist_prepend (list, str);
 }
-
 
 static void
 match_object_sexp_to_component (gpointer value,
@@ -2070,7 +2069,7 @@ e_cal_backend_file_get_free_busy (ECalBackendSync *backend,
                                   EDataCal *cal,
                                   GCancellable *cancellable,
                                   const GSList *users,
-				  time_t start,
+                                  time_t start,
                                   time_t end,
                                   GSList **freebusy,
                                   GError **error)
@@ -2761,7 +2760,8 @@ remove_instance (ECalBackendFile *cbfile,
 }
 
 static icalcomponent *
-clone_icalcomp_from_fileobject (ECalBackendFileObject *obj_data, const gchar *rid)
+clone_icalcomp_from_fileobject (ECalBackendFileObject *obj_data,
+                                const gchar *rid)
 {
 	ECalComponent *comp = obj_data->full_object;
 	icalcomponent *icalcomp = NULL;
@@ -2885,7 +2885,7 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend,
 		}
 
 		if (comp) {
-			icalcomponent *icalcomp = 
+			icalcomponent *icalcomp =
 				e_cal_component_get_icalcomponent (comp);
 			*old_component = icalcomponent_new_clone (icalcomp);
 
@@ -3225,7 +3225,6 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 
 				if (!is_declined)
 					add_component (cbfile, comp, FALSE);
-
 
 				component = icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp));
 				if (!is_declined)

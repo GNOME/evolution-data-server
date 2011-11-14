@@ -242,7 +242,8 @@ e_book_backend_sync_remove_contacts (EBookBackendSync *backend,
  * @book: an #EDataBook
  * @cancellable: a #GCancellable for the operation
  * @vcards: the string representations of contacts
- * @contacts: a pointer to a location to store the resulting #EContact objects
+ * @modified_contacts: a pointer to a location to store the resulting
+ * #EContact objects
  * @error: #GError to set, when something fails
  *
  * Modifies the contacts specified by the IDs embedded in @vcards, to
@@ -255,16 +256,16 @@ e_book_backend_sync_modify_contacts (EBookBackendSync *backend,
                                     EDataBook *book,
                                     GCancellable *cancellable,
                                     const GSList *vcards,
-                                    GSList **contacts,
+                                    GSList **modified_contacts,
                                     GError **error)
 {
 	e_return_data_book_error_if_fail (E_IS_BOOK_BACKEND_SYNC (backend), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_IS_DATA_BOOK (book), E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (vcards, E_DATA_BOOK_STATUS_INVALID_ARG);
-	e_return_data_book_error_if_fail (contacts, E_DATA_BOOK_STATUS_INVALID_ARG);
+	e_return_data_book_error_if_fail (modified_contacts, E_DATA_BOOK_STATUS_INVALID_ARG);
 	e_return_data_book_error_if_fail (E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->modify_contacts_sync, E_DATA_BOOK_STATUS_NOT_SUPPORTED);
 
-	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->modify_contacts_sync) (backend, book, cancellable, vcards, contacts, error);
+	(* E_BOOK_BACKEND_SYNC_GET_CLASS (backend)->modify_contacts_sync) (backend, book, cancellable, vcards, modified_contacts, error);
 }
 
 /**

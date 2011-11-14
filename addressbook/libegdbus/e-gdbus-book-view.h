@@ -114,7 +114,7 @@ struct _EGdbusBookViewIface
 	/* Signal handlers for handling D-Bus method calls: */
 	gboolean (*handle_start)		(EGdbusBookView *object, GDBusMethodInvocation *invocation);
 	gboolean (*handle_stop)			(EGdbusBookView *object, GDBusMethodInvocation *invocation);
-        gboolean (*handle_set_flags)            (EGdbusBookView *object, GDBusMethodInvocation *invocation, guint in_flags);
+	gboolean (*handle_set_flags)            (EGdbusBookView *object, GDBusMethodInvocation *invocation, guint in_flags);
 	gboolean (*handle_dispose)		(EGdbusBookView *object, GDBusMethodInvocation *invocation);
 	gboolean (*handle_set_fields_of_interest)(EGdbusBookView *object, GDBusMethodInvocation *invocation, const gchar * const *in_only_fields);
 };
@@ -128,7 +128,7 @@ void		e_gdbus_book_view_call_stop		(GDBusProxy *proxy, GCancellable *cancellable
 gboolean	e_gdbus_book_view_call_stop_finish	(GDBusProxy *proxy, GAsyncResult *result, GError **error);
 gboolean	e_gdbus_book_view_call_stop_sync	(GDBusProxy *proxy, GCancellable *cancellable, GError **error);
 
-void            e_gdbus_book_view_call_set_flags        (GDBusProxy         *proxy, 
+void            e_gdbus_book_view_call_set_flags        (GDBusProxy         *proxy,
 							 guint               in_flags,
 							 GCancellable       *cancellable,
 							 GAsyncReadyCallback callback,

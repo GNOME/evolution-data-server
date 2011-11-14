@@ -1499,7 +1499,6 @@ camel_folder_info_free (CamelFolderInfo *fi)
 
 /**
  * camel_folder_info_new:
- * @store: a #CamelStore
  *
  * Allocates a new #CamelFolderInfo instance.  Free it with
  * camel_folder_info_free().

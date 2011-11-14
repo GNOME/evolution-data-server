@@ -274,7 +274,8 @@ binary_tree_insert (EIntervalTree *tree,
 /**
  * e_intervaltree_insert:
  * @tree: interval tree
- * @key: the key to insert.
+ * @start: start of the interval
+ * @end: end of the interval
  * @comp: Component
  * 
  * Since: 2.32

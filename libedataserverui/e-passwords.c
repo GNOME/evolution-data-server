@@ -1074,7 +1074,7 @@ e_passwords_add_password (const gchar *key,
  * @unused: this argument is no longer used
  * @key: key to store the password under
  * @prompt: prompt string
- * @type: whether or not to offer to remember the password,
+ * @remember_type: whether or not to offer to remember the password,
  * and for how long.
  * @remember: on input, the default state of the remember checkbox.
  * on output, the state of the checkbox when the dialog was closed.
@@ -1092,7 +1092,7 @@ e_passwords_ask_password (const gchar *title,
                           const gchar *unused,
                           const gchar *key,
                           const gchar *prompt,
-                          EPasswordsRememberType type,
+                          EPasswordsRememberType remember_type,
                           gboolean *remember,
                           GtkWindow *parent)
 {
@@ -1101,14 +1101,14 @@ e_passwords_ask_password (const gchar *title,
 
 	g_return_val_if_fail (key != NULL, NULL);
 
-	if ((type & E_PASSWORDS_ONLINE) && !ep_online_state)
+	if ((remember_type & E_PASSWORDS_ONLINE) && !ep_online_state)
 		return NULL;
 
 	msg = ep_msg_new (ep_ask_password);
 	msg->title = title;
 	msg->key = key;
 	msg->prompt = prompt;
-	msg->flags = type;
+	msg->flags = remember_type;
 	msg->remember = remember;
 	msg->parent = parent;
 

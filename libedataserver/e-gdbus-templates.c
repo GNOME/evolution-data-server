@@ -910,7 +910,7 @@ async_op_complete (AsyncOpData *op_data,
 
 static void
 e_gdbus_op_cancelled_cb (GCancellable *cancellable,
-			 AsyncOpData *op_data)
+                         AsyncOpData *op_data)
 {
 	GError *call_error = NULL;
 
@@ -934,7 +934,7 @@ e_gdbus_op_cancelled_cb (GCancellable *cancellable,
 
 static void
 e_gdbus_async_call_opid_ready_cb (GObject *source_proxy,
-				  GAsyncResult *result,
+                                  GAsyncResult *result,
                                   gpointer user_data)
 {
 	GVariant *_result;
@@ -994,10 +994,10 @@ copy_strv (const gchar * const *strv)
 
 static void
 e_gdbus_proxy_async_method_done (guint e_gdbus_type,
-				 gconstpointer out_value,
-				 EGdbusAsyncOpKeeper *object,
-				 guint arg_opid,
-				 const GError *error)
+                                 gconstpointer out_value,
+                                 EGdbusAsyncOpKeeper *object,
+                                 guint arg_opid,
+                                 const GError *error)
 {
 	AsyncOpData *op_data;
 	GHashTable *pending_ops;
@@ -1091,12 +1091,12 @@ e_gdbus_proxy_async_method_done_uint (EGdbusAsyncOpKeeper *proxy,
 /* takes ownership of _params */
 static void
 e_gdbus_proxy_call_with_params (GVariant *_params,
-				const gchar *method_name,
-				gpointer source_tag,
-				EGdbusAsyncOpKeeper *proxy,
-				GCancellable *cancellable,
-				GAsyncReadyCallback callback,
-				gpointer user_data)
+                                const gchar *method_name,
+                                gpointer source_tag,
+                                EGdbusAsyncOpKeeper *proxy,
+                                GCancellable *cancellable,
+                                GAsyncReadyCallback callback,
+                                gpointer user_data)
 {
 	AsyncOpData *op_data;
 
@@ -1330,7 +1330,7 @@ typedef struct _SyncOpData
 
 static void
 e_gdbus_proxy_sync_ready_cb (GObject *proxy,
-			     GAsyncResult *result,
+                             GAsyncResult *result,
                              gpointer user_data)
 {
 	SyncOpData *sync_data = user_data;
@@ -1369,14 +1369,14 @@ e_gdbus_proxy_sync_ready_cb (GObject *proxy,
 
 static gboolean
 e_gdbus_proxy_call_sync (GDBusProxy *proxy,
-			 GCancellable *cancellable,
-			 GError **error,
-			 gpointer start_func,
-			 gpointer finish_func,
-			 guint in_type,
-			 gconstpointer in_value,
-			 guint out_type,
-			 gpointer out_value)
+                         GCancellable *cancellable,
+                         GError **error,
+                         gpointer start_func,
+                         gpointer finish_func,
+                         guint in_type,
+                         gconstpointer in_value,
+                         guint out_type,
+                         gpointer out_value)
 {
 	SyncOpData sync_data = { 0 };
 
@@ -1446,8 +1446,8 @@ e_gdbus_proxy_call_sync (GDBusProxy *proxy,
 	    || g_main_context_default () == g_main_context_get_thread_default ()
 	    || !g_main_context_get_thread_default ()))) {
 		/* the call to e_gdbus_templates_init_main_thread() wasn't done, but no problem,
-		   check if the call was done in the main thread with main loop running,
-		   and if so, then remember it
+		 * check if the call was done in the main thread with main loop running,
+		 * and if so, then remember it
 		*/
 		if (!main_thread && g_main_context_is_owner (g_main_context_default ()))
 			e_gdbus_templates_init_main_thread ();

@@ -995,23 +995,20 @@ e_source_group_set_property (ESourceGroup *source_group,
 
 /**
  * e_source_group_foreach_property:
- * @source_group: the #ESourceGroup
+ * @group: the #ESourceGroup
  * @func: (scope call): the func to call on each property
  * @data: the user data
  *
  * Since: 1.12
  **/
 void
-e_source_group_foreach_property (ESourceGroup *source_group,
+e_source_group_foreach_property (ESourceGroup *group,
                                  GHFunc func,
                                  gpointer data)
 {
-	ESourceGroupPrivate *priv;
+	g_return_if_fail (E_IS_SOURCE_GROUP (group));
 
-	g_return_if_fail (E_IS_SOURCE_GROUP (source_group));
-	priv = source_group->priv;
-
-	g_hash_table_foreach (priv->properties, func, data);
+	g_hash_table_foreach (group->priv->properties, func, data);
 }
 
 #undef XC

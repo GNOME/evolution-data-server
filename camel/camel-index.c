@@ -122,21 +122,21 @@ camel_index_rename (CamelIndex *idx,
 
 /**
  * camel_index_set_normalize:
- * @idx: a #CamelIndex
+ * @index: a #CamelIndex
  * @func: normalization function
  * @data: user data for @func
  *
  * Since: 2.32
  **/
 void
-camel_index_set_normalize (CamelIndex *idx,
+camel_index_set_normalize (CamelIndex *index,
                            CamelIndexNorm func,
                            gpointer data)
 {
-	g_return_if_fail (CAMEL_IS_INDEX (idx));
+	g_return_if_fail (CAMEL_IS_INDEX (index));
 
-	idx->normalize = func;
-	idx->normalize_data = data;
+	index->normalize = func;
+	index->normalize_data = data;
 }
 
 gint

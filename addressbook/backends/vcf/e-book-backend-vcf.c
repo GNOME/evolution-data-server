@@ -287,12 +287,12 @@ e_book_backend_vcf_create_contacts (EBookBackendSync *backend,
 	 * in our static capability list. */
 	if (vcards->next != NULL) {
 		g_propagate_error (perror,
-		                   EDB_ERROR_EX (NOT_SUPPORTED,
+				   EDB_ERROR_EX (NOT_SUPPORTED,
 		                   _("The backend does not support bulk additions")));
 		return;
 	}
 
-	contact = do_create(bvcf, vcard, TRUE);
+	contact = do_create (bvcf, vcard, TRUE);
 	if (added_contacts) {
 		*added_contacts = g_slist_append (*added_contacts, contact);
 	} else {
@@ -319,7 +319,7 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 	 * in our static capability list. */
 	if (id_list->next != NULL) {
 		g_propagate_error (perror,
-		                   EDB_ERROR_EX (NOT_SUPPORTED,
+				   EDB_ERROR_EX (NOT_SUPPORTED,
 		                   _("The backend does not support bulk removals")));
 		return;
 	}
@@ -367,7 +367,7 @@ e_book_backend_vcf_modify_contacts (EBookBackendSync *backend,
 	 * in our static capability list. */
 	if (vcards->next != NULL) {
 		g_propagate_error (perror,
-		                   EDB_ERROR_EX (NOT_SUPPORTED,
+				   EDB_ERROR_EX (NOT_SUPPORTED,
 		                   _("The backend does not support bulk modifications")));
 		return;
 	}

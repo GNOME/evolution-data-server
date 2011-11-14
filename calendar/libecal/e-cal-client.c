@@ -1126,7 +1126,7 @@ e_cal_client_check_organizer_must_attend (ECalClient *client)
 }
 
 /**
- * e_cal_get_organizer_must_accept:
+ * e_cal_client_check_organizer_must_accept:
  * @client: A calendar client.
  *
  * Checks whether a calendar requires organizer to accept their attendance to
@@ -2699,7 +2699,7 @@ static gboolean
 complete_get_object (gboolean res,
                      gchar *out_string,
                      icalcomponent **icalcomp,
-		     gboolean ensure_unique_uid,
+                     gboolean ensure_unique_uid,
                      GError **error)
 {
 	g_return_val_if_fail (icalcomp != NULL, FALSE);

@@ -63,7 +63,7 @@ gboolean e_cal_backend_sync_get_backend_property (ECalBackendSync *backend, EDat
 gboolean e_cal_backend_sync_set_backend_property (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *prop_name, const gchar *prop_value, GError **error);
 void	e_cal_backend_sync_get_object		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, gchar **calobj, GError **error);
 void	e_cal_backend_sync_get_object_list	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *sexp, GSList **calobjs, GError **error);
-void	e_cal_backend_sync_get_free_busy	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users, time_t start, time_t end, GSList **freebusyobjs, GError **error);
+void	e_cal_backend_sync_get_free_busy	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users, time_t start, time_t end, GSList **freebusyobjects, GError **error);
 void	e_cal_backend_sync_create_object	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, gchar **uid, icalcomponent **new_component, GError **error);
 void	e_cal_backend_sync_modify_object	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, CalObjModType mod, icalcomponent **old_component, icalcomponent **new_component, GError **error);
 void	e_cal_backend_sync_remove_object	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, CalObjModType mod, icalcomponent **old_component, icalcomponent **new_component, GError **error);

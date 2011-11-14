@@ -38,6 +38,6 @@ EOperationPool *e_operation_pool_new (guint max_threads, GFunc thread_func, gpoi
 void		e_operation_pool_free (EOperationPool *pool);
 guint32		e_operation_pool_reserve_opid (EOperationPool *pool);
 void		e_operation_pool_release_opid (EOperationPool *pool, guint32 opid);
-void		e_operation_pool_push (EOperationPool *pool, gpointer data);
+void		e_operation_pool_push (EOperationPool *pool, gpointer opdata);
 
 #endif /* E_OPERATION_POOL_H */

@@ -692,10 +692,10 @@ impl_DataBookView_stop (EGdbusBookView *object,
 }
 
 static gboolean
-impl_DataBookView_setFlags (EGdbusBookView        *object, 
-			    GDBusMethodInvocation *invocation, 
-			    EBookClientViewFlags   flags, 
-			    EDataBookView         *book_view)
+impl_DataBookView_setFlags (EGdbusBookView *object,
+                            GDBusMethodInvocation *invocation,
+                            EBookClientViewFlags flags,
+                            EDataBookView *book_view)
 {
 	book_view->priv->flags = flags;
 

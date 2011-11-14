@@ -276,9 +276,9 @@ e_book_client_view_stop (EBookClientView *view,
  * Since: 3.4
  */
 void
-e_book_client_view_set_flags (EBookClientView      *view,
-			      EBookClientViewFlags  flags, 
-			      GError              **error)
+e_book_client_view_set_flags (EBookClientView *view,
+                              EBookClientViewFlags flags,
+                              GError **error)
 {
 	EBookClientViewPrivate *priv;
 

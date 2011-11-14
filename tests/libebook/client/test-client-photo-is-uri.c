@@ -4,33 +4,30 @@
 
 #include "client-test-utils.h"
 
-
 static const gchar *photo_data =
-"/9j/4AAQSkZJRgABAQEARwBHAAD//gAXQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q/9sAQwAIBgYHB\
+"/9j / 4AAQSkZJRgABAQEARwBHAAD//gAXQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q / 9sAQwAIBgYHB\
 gUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCMcHCg3KSwwMTQ0NB8nOT04Mjw\
-uMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyM\
-jIyMjIyMjIyMjIyMjIyMjIy/8AAEQgAMgAyAwEiAAIRAQMRAf/EABsAAQACAwEBAAAAAAAAAAA\
-AAAAHCAQFBgID/8QAMBAAAgEDAQYEBQQDAAAAAAAAAQIDAAQRBQYSEyExQQdhcYEiI0JRkRQVM\
-qFiguH/xAAaAQADAQEBAQAAAAAAAAAAAAAABAUCBgED/8QAIxEAAgICAQQCAwAAAAAAAAAAAAE\
-CAwQRQRITITEUYQUiUf/aAAwDAQACEQMRAD8An+sHUtWtNKjVrmQ7754cajLvjrgfbzPIdzWdV\
-fds9pJb3XdQkMrcFZGj+HqY0bdVV9Tz/wBia+N9vbjvkaxMb5E9N6SJB1HxLEEjJaWsUjD6QzS\
-MPXdGB7E1zV74t63HINy1s4F7CWCTn77wrA0TY86jY3N1qsUk6wxBxBDvYjLHkoUH4j3JP/a0V\
-3s1CvF/QM9tKpw0THeU+TLkj8VLnmzT8y0n9FujBx5bioba/rZLWx3iPZ7RzLp95GtnqRGVTez\
-HNjruH7/4n+67iqpq7Qi3uYWMMsNynfnE6sM8/Lr6VamFi0KMepUE1Sx7XZHbI+fjxos1H0z3S\
-lKYEjzISI2I64OKqsyu8sck2QYrmPjBvpIYg598Vauoh8VtlY7JW2isoBwpPl6hGByZTyD+o6E\
-+h7UtlVOcPHA/+PyI1Wal6Zp7vaC/06wnTTLtEeUDiKwzu4H8vI9AM9Tiuctkng1Nnk1G5cOoY\
-ifB4nI/jB7VjWuoT21qPmwXUCHKlphHKvqG5N6g0/cLi/Rg88FhbkbxlaUSu3kqpnn6kDzqGqb\
-NdPB0XyK4/svZr9RVntL50GePdcKEDqzhVBx7sKtPpayppNosxzKIlDHzxUFeG2zo2n2kivWhK\
+uMzQy / 9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyM\
+jIyMjIyMjIyMjIyMjIyMjIy / 8AAEQgAMgAyAwEiAAIRAQMRAf / EABsAAQACAwEBAAAAAAAAAAA\
+AAAAHCAQFBgID / 8QAMBAAAgEDAQYEBQQDAAAAAAAAAQIDAAQRBQYSEyExQQdhcYEiI0JRkRQVM\
+qFiguH / xAAaAQADAQEBAQAAAAAAAAAAAAAABAUCBgED / 8QAIxEAAgICAQQCAwAAAAAAAAAAAAE\
+CAwQRQRITITEUYQUiUf / aAAwDAQACEQMRAD8An + sHUtWtNKjVrmQ7754cajLvjrgfbzPIdzWdV\
+fds9pJb3XdQkMrcFZGj + HqY0bdVV9Tz / wBia + N9vbjvkaxMb5E9N6SJB1HxLEEjJaWsUjD6QzS\
+MPXdGB7E1zV74t63HINy1s4F7CWCTn77wrA0TY86jY3N1qsUk6wxBxBDvYjLHkoUH4j3JP / a0V\
+3s1CvF / QM9tKpw0THeU + TLkj8VLnmzT8y0n9FujBx5bioba / rZLWx3iPZ7RzLp95GtnqRGVTez\
+HNjruH7 / 4n + 67iqpq7Qi3uYWMMsNynfnE6sM8 / Lr6VamFi0KMepUE1Sx7XZHbI + fjxos1H0z3S\
+lKYEjzISI2I64OKqsyu8sck2QYrmPjBvpIYg598Vauoh8VtlY7JW2isoBwpPl6hGByZTyD + o6E\
++h7UtlVOcPHA/+PyI1Wal6Zp7vaC / 06wnTTLtEeUDiKwzu4H8vI9AM9Tiuctkng1Nnk1G5cOoY\
+ifB4nI / jB7VjWuoT21qPmwXUCHKlphHKvqG5N6g0 / cLi / Rg88FhbkbxlaUSu3kqpnn6kDzqGqb\
+NdPB0XyK4 / svZr9RVntL50GePdcKEDqzhVBx7sKtPpayppNosxzKIlDHzxUFeG2zo2n2kivWhK\
 6PpHwwoTnfk65J7kZyT9z5VYADAwKuYtfRA5zPv7tnjgUpSmREV8bq1hvbWW1uY1khlUo6MMhg\
 eor7UoAje18FtmLe9eeQT3EXPcglkJRPbv71EWu7Dajp2o3MGmlRCkjKQ30jPUe1WlrlNW0Rpt\
-TleNB84DnjkD0P9VlxT4Nqck9pmn8JuFp2zo0cgCWFi2e7555/NSHXLadso2m3sU0NxlV65HM+\
+TleNB84DnjkD0P9VlxT4Nqck9pmn8JuFp2zo0cgCWFi2e7555 / NSHXLadso2m3sU0NxlV65HM+\
 VdTW3rgwvsUpSvAFKUoAUxSlAClKUAKUpQB//2Q==";
-
 
 static GMainLoop *loop = NULL;
 static gchar     *micheal_jackson_uid = NULL;
 static gchar     *james_brown_uid = NULL;
-
 
 /* Decide what to do with every "view-completed" signal */
 enum {
@@ -41,7 +38,6 @@ enum {
 	ITERATION_FINISH
 };
 static gint       iteration = ITERATION_SWAP_FACE;
-
 
 static void
 print_contact (EContact *contact)
@@ -54,35 +50,37 @@ print_contact (EContact *contact)
 }
 
 static void
-objects_added (EBookView *book_view, const GSList *contacts)
+objects_added (EBookView *book_view,
+               const GSList *contacts)
 {
 	const GSList *l;
 
-	for (l = (GSList*)contacts; l; l = l->next) {
+	for (l = (GSList *) contacts; l; l = l->next) {
 		print_contact (l->data);
 	}
 }
 
 static void
-objects_modified (EBookView *book_view, const GSList *contacts)
+objects_modified (EBookView *book_view,
+                  const GSList *contacts)
 {
 	GSList *l;
 
-	for (l = (GSList*)contacts; l; l = l->next) {
+	for (l = (GSList *) contacts; l; l = l->next) {
 		print_contact (l->data);
 	}
 }
 
 static void
-objects_removed (EBookClientView *book_view, const GSList *ids)
+objects_removed (EBookClientView *book_view,
+                 const GSList *ids)
 {
 	GSList *l;
 
-	for (l = (GSList*)ids; l; l = l->next) {
+	for (l = (GSList *) ids; l; l = l->next) {
 		g_print ("Removed contact: %s\n", (gchar *)l->data);
 	}
 }
-
 
 /* This provokes the backend to handle a cross-referenced photo
  * between contacts, how the backend handles this is it's choice,
@@ -112,7 +110,7 @@ give_james_brown_micheal_jacksons_face (EBookClient *book)
 	james_face  = g_new (EContactPhoto, 1);
 	james_face->type     = E_CONTACT_PHOTO_TYPE_URI;
 	james_face->data.uri = g_strdup (micheal_face->data.uri);
-	
+
 	e_contact_set (james, E_CONTACT_PHOTO, james_face);
 
 	g_print ("Giving james brown micheal jacksons face: %s\n", micheal_face->data.uri);
@@ -122,8 +120,8 @@ give_james_brown_micheal_jacksons_face (EBookClient *book)
 }
 
 static void
-update_contact_inline (EBookClient *book, 
-		       const gchar *uid)
+update_contact_inline (EBookClient *book,
+                       const gchar *uid)
 {
 	EContact *contact = NULL;
 	EContactPhoto *photo;
@@ -156,7 +154,7 @@ update_contact_inline (EBookClient *book,
  * photo uris exist on disk while they should */
 static void
 assert_uri_exists (EBookClient *book,
-		   const gchar *uid)
+                   const gchar *uid)
 {
 	EContact      *contact;
 	EContactPhoto *photo;
@@ -180,7 +178,8 @@ assert_uri_exists (EBookClient *book,
 }
 
 static void
-complete (EBookClientView *view, const GError *error)
+complete (EBookClientView *view,
+          const GError *error)
 {
 	EBookClient *book = e_book_client_view_get_client (view);
 	GError *local_error = NULL;
@@ -299,7 +298,7 @@ add_contact_uri (EBookClient *book)
 }
 
 static void
-setup_book (EBookClient     **book_out)
+setup_book (EBookClient **book_out)
 {
 	EBookClient *book;
 	GError      *error = NULL;
@@ -318,7 +317,8 @@ setup_book (EBookClient     **book_out)
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	EBookClient *book;
 	EBookClientView *view;

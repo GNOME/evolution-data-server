@@ -113,7 +113,7 @@ gboolean	e_source_list_remove_group_by_base_uri
 						 const gchar *base_uri);
 gboolean	e_source_list_remove_source_by_uid
 						(ESourceList  *list,
-						 const gchar *uidj);
+						 const gchar *uid);
 gboolean	e_source_list_sync		(ESourceList *list,
 						 GError **error);
 gboolean	e_source_list_is_gconf_updated	(ESourceList *list);
