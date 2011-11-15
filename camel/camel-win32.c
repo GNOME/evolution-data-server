@@ -30,8 +30,6 @@
 
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-data-server-util.h>
-
 #include "camel.h"
 
 G_LOCK_DEFINE_STATIC (mutex);
@@ -45,19 +43,51 @@ static const gchar *localedir = NULL;
 static const gchar *libexecdir;
 static const gchar *providerdir;
 
+/* XXX Where do these get defined?  e-data-server-util.h just has
+ * declarations for e_util_get_prefix() and e_util_get_cp_prefix(). */
+static const gchar *	get_prefix		(void) G_GNUC_CONST;
+static const gchar *	get_cp_prefix		(void) G_GNUC_CONST;
+
+static gchar *
+replace_prefix (const gchar *configure_time_prefix,
+                const gchar *runtime_prefix,
+                const gchar *configure_time_path)
+{
+	gchar *c_t_prefix_slash;
+	gchar *retval;
+
+	c_t_prefix_slash = g_strconcat (configure_time_prefix, "/", NULL);
+
+	if (runtime_prefix != NULL &&
+	    g_str_has_prefix (configure_time_path, c_t_prefix_slash)) {
+		retval = g_strconcat (
+			runtime_prefix,
+			configure_time_path + strlen (configure_time_prefix),
+			NULL);
+	} else
+		retval = g_strdup (configure_time_path);
+
+	g_free (c_t_prefix_slash);
+
+	return retval;
+}
+
 static void
 setup (void)
 {
-        G_LOCK (mutex);
-        if (localedir != NULL) {
-                G_UNLOCK (mutex);
-                return;
-        }
+	G_LOCK (mutex);
 
-        localedir = e_util_replace_prefix (E_DATA_SERVER_PREFIX, e_util_get_cp_prefix (), LOCALEDIR);
+	if (localedir != NULL) {
+		G_UNLOCK (mutex);
+		return;
+	}
 
-	libexecdir = e_util_replace_prefix (E_DATA_SERVER_PREFIX, e_util_get_prefix (), CAMEL_LIBEXECDIR);
-	providerdir = e_util_replace_prefix (E_DATA_SERVER_PREFIX, e_util_get_prefix (), CAMEL_PROVIDERDIR);
+	localedir = replace_prefix (
+		E_DATA_SERVER_PREFIX, get_cp_prefix (), LOCALEDIR);
+	libexecdir = replace_prefix (
+		E_DATA_SERVER_PREFIX, get_prefix (), CAMEL_LIBEXECDIR);
+	providerdir = replace_prefix (
+		E_DATA_SERVER_PREFIX, get_prefix (), CAMEL_PROVIDERDIR);
 
 	G_UNLOCK (mutex);
 }
@@ -68,8 +98,8 @@ setup (void)
 const gchar *					\
 _camel_get_##varbl (void)			\
 {						\
-        setup ();				\
-        return varbl;				\
+	setup ();				\
+	return varbl;				\
 }
 
 GETTER(localedir)
