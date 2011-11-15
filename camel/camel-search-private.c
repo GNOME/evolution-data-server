@@ -54,7 +54,7 @@ gint
 camel_search_build_match_regex (regex_t *pattern,
                                 camel_search_flags_t type,
                                 gint argc,
-                                struct _ESExpResult **argv,
+                                struct _CamelSExpResult **argv,
                                 GError **error)
 {
 	GString *match = g_string_new("");
@@ -66,7 +66,7 @@ camel_search_build_match_regex (regex_t *pattern,
 	if (argc > 1)
 		g_string_append_c (match, '(');
 	for (i = 0; i < argc; i++) {
-		if (argv[i]->type == ESEXP_RES_STRING) {
+		if (argv[i]->type == CAMEL_SEXP_RES_STRING) {
 			if (count > 0)
 				g_string_append_c (match, '|');
 

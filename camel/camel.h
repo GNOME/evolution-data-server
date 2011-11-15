@@ -114,6 +114,7 @@
 #include <camel/camel-service.h>
 #include <camel/camel-session.h>
 #include <camel/camel-settings.h>
+#include <camel/camel-sexp.h>
 #include <camel/camel-smime-context.h>
 #include <camel/camel-store.h>
 #include <camel/camel-store-settings.h>

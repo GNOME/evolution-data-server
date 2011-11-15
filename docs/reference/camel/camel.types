@@ -69,6 +69,7 @@ camel_sasl_popb4smtp_get_type
 camel_service_get_type
 camel_session_get_type
 camel_settings_get_type
+camel_sexp_get_type
 camel_smime_context_get_type
 camel_store_get_type
 camel_store_settings_get_type

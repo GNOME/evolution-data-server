@@ -38,8 +38,6 @@
 #include <sys/wait.h>
 #endif
 
-#include <libedataserver/e-sexp.h>
-
 #include "camel-debug.h"
 #include "camel-file-utils.h"
 #include "camel-filter-driver.h"
@@ -48,6 +46,7 @@
 #include "camel-mime-message.h"
 #include "camel-service.h"
 #include "camel-session.h"
+#include "camel-sexp.h"
 #include "camel-store.h"
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
@@ -121,7 +120,7 @@ struct _CamelFilterDriverPrivate {
 	GError *error;
 
 	/* evaluator */
-	ESExp *eval;
+	CamelSExp *eval;
 };
 
 static void camel_filter_driver_log (CamelFilterDriver *driver, enum filter_log_t status, const gchar *desc, ...);
@@ -129,46 +128,46 @@ static void camel_filter_driver_log (CamelFilterDriver *driver, enum filter_log_
 static CamelFolder *open_folder (CamelFilterDriver *d, const gchar *folder_url);
 static gint close_folders (CamelFilterDriver *d);
 
-static ESExpResult *do_delete (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_forward_to (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_copy (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_move (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_stop (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_label (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_color (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_adjust_score (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *set_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *unset_flag (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_shell (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_beep (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *play_sound (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *do_only_once (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
-static ESExpResult *pipe_message (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_delete (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_forward_to (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_copy (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_move (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_stop (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_label (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_color (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_score (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_adjust_score (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *set_flag (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *unset_flag (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_shell (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_beep (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *play_sound (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *do_only_once (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
+static CamelSExpResult *pipe_message (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
 
 /* these are our filter actions - each must have a callback */
 static struct {
 	const gchar *name;
-	ESExpFunc *func;
+	CamelSExpFunc func;
 	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
 } symbols[] = {
-	{ "delete",            (ESExpFunc *) do_delete,    0 },
-	{ "forward-to",        (ESExpFunc *) do_forward_to, 0 },
-	{ "copy-to",           (ESExpFunc *) do_copy,      0 },
-	{ "move-to",           (ESExpFunc *) do_move,      0 },
-	{ "stop",              (ESExpFunc *) do_stop,      0 },
-	{ "set-label",         (ESExpFunc *) do_label,     0 },
-	{ "set-color",        (ESExpFunc *) do_color,    0 },
-	{ "set-score",         (ESExpFunc *) do_score,     0 },
-	{ "adjust-score",      (ESExpFunc *) do_adjust_score, 0 },
-	{ "set-system-flag",   (ESExpFunc *) set_flag,     0 },
-	{ "unset-system-flag", (ESExpFunc *) unset_flag,   0 },
-	{ "pipe-message",      (ESExpFunc *) pipe_message, 0 },
-	{ "shell",             (ESExpFunc *) do_shell,     0 },
-	{ "beep",              (ESExpFunc *) do_beep,      0 },
-	{ "play-sound",        (ESExpFunc *) play_sound,   0 },
-	{ "only-once",         (ESExpFunc *) do_only_once, 0 }
+	{ "delete",            (CamelSExpFunc) do_delete,    0 },
+	{ "forward-to",        (CamelSExpFunc) do_forward_to, 0 },
+	{ "copy-to",           (CamelSExpFunc) do_copy,      0 },
+	{ "move-to",           (CamelSExpFunc) do_move,      0 },
+	{ "stop",              (CamelSExpFunc) do_stop,      0 },
+	{ "set-label",         (CamelSExpFunc) do_label,     0 },
+	{ "set-color",         (CamelSExpFunc) do_color,    0 },
+	{ "set-score",         (CamelSExpFunc) do_score,     0 },
+	{ "adjust-score",      (CamelSExpFunc) do_adjust_score, 0 },
+	{ "set-system-flag",   (CamelSExpFunc) set_flag,     0 },
+	{ "unset-system-flag", (CamelSExpFunc) unset_flag,   0 },
+	{ "pipe-message",      (CamelSExpFunc) pipe_message, 0 },
+	{ "shell",             (CamelSExpFunc) do_shell,     0 },
+	{ "beep",              (CamelSExpFunc) do_beep,      0 },
+	{ "play-sound",        (CamelSExpFunc) play_sound,   0 },
+	{ "only-once",         (CamelSExpFunc) do_only_once, 0 }
 };
 
 G_DEFINE_TYPE (CamelFilterDriver, camel_filter_driver, CAMEL_TYPE_OBJECT)
@@ -222,7 +221,7 @@ filter_driver_finalize (GObject *object)
 	g_hash_table_foreach (priv->only_once, free_hash_strings, object);
 	g_hash_table_destroy (priv->only_once);
 
-	e_sexp_unref (priv->eval);
+	g_object_unref (priv->eval);
 
 	while ((node = (struct _filter_rule *) camel_dlist_remhead (&priv->rules))) {
 		g_free (node->match);
@@ -258,17 +257,17 @@ camel_filter_driver_init (CamelFilterDriver *filter_driver)
 
 	camel_dlist_init (&filter_driver->priv->rules);
 
-	filter_driver->priv->eval = e_sexp_new ();
+	filter_driver->priv->eval = camel_sexp_new ();
 
 	/* Load in builtin symbols */
 	for (ii = 0; ii < G_N_ELEMENTS (symbols); ii++) {
 		if (symbols[ii].type == 1) {
-			e_sexp_add_ifunction (
+			camel_sexp_add_ifunction (
 				filter_driver->priv->eval, 0,
-				symbols[ii].name, (ESExpIFunc *)
+				symbols[ii].name, (CamelSExpIFunc)
 				symbols[ii].func, filter_driver);
 		} else {
-			e_sexp_add_function (
+			camel_sexp_add_function (
 				filter_driver->priv->eval, 0,
 				symbols[ii].name, symbols[ii].func,
 				filter_driver);
@@ -445,10 +444,10 @@ camel_filter_driver_set_global (CamelFilterDriver *d,
 }
 #endif
 
-static ESExpResult *
-do_delete (struct _ESExp *f,
+static CamelSExpResult *
+do_delete (struct _CamelSExp *f,
            gint argc,
-           struct _ESExpResult **argv,
+           struct _CamelSExpResult **argv,
            CamelFilterDriver *driver)
 {
 	d(fprintf (stderr, "doing delete\n"));
@@ -458,10 +457,10 @@ do_delete (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_forward_to (struct _ESExp *f,
+static CamelSExpResult *
+do_forward_to (struct _CamelSExp *f,
                gint argc,
-               struct _ESExpResult **argv,
+               struct _CamelSExpResult **argv,
                CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
@@ -469,7 +468,7 @@ do_forward_to (struct _ESExp *f,
 	d(fprintf (stderr, "marking message for forwarding\n"));
 
 	/* requires one parameter, string with a destination address */
-	if (argc < 1 || argv[0]->type != ESEXP_RES_STRING)
+	if (argc < 1 || argv[0]->type != CAMEL_SEXP_RES_STRING)
 		return NULL;
 
 	/* make sure we have the message... */
@@ -487,10 +486,10 @@ do_forward_to (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_copy (struct _ESExp *f,
+static CamelSExpResult *
+do_copy (struct _CamelSExp *f,
          gint argc,
-         struct _ESExpResult **argv,
+         struct _CamelSExpResult **argv,
          CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
@@ -499,7 +498,7 @@ do_copy (struct _ESExp *f,
 	d(fprintf (stderr, "copying message...\n"));
 
 	for (i = 0; i < argc; i++) {
-		if (argv[i]->type == ESEXP_RES_STRING) {
+		if (argv[i]->type == CAMEL_SEXP_RES_STRING) {
 			/* open folders we intent to copy to */
 			gchar *folder = argv[i]->value.string;
 			CamelFolder *outbox;
@@ -547,10 +546,10 @@ do_copy (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_move (struct _ESExp *f,
+static CamelSExpResult *
+do_move (struct _CamelSExp *f,
          gint argc,
-         struct _ESExpResult **argv,
+         struct _CamelSExpResult **argv,
          CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
@@ -559,7 +558,7 @@ do_move (struct _ESExp *f,
 	d(fprintf (stderr, "moving message...\n"));
 
 	for (i = 0; i < argc; i++) {
-		if (argv[i]->type == ESEXP_RES_STRING) {
+		if (argv[i]->type == CAMEL_SEXP_RES_STRING) {
 			/* open folders we intent to move to */
 			gchar *folder = argv[i]->value.string;
 			CamelFolder *outbox;
@@ -629,10 +628,10 @@ do_move (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_stop (struct _ESExp *f,
+static CamelSExpResult *
+do_stop (struct _CamelSExp *f,
          gint argc,
-         struct _ESExpResult **argv,
+         struct _CamelSExpResult **argv,
          CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
@@ -644,16 +643,16 @@ do_stop (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_label (struct _ESExp *f,
+static CamelSExpResult *
+do_label (struct _CamelSExp *f,
           gint argc,
-          struct _ESExpResult **argv,
+          struct _CamelSExpResult **argv,
           CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
 	d(fprintf (stderr, "setting label tag\n"));
-	if (argc > 0 && argv[0]->type == ESEXP_RES_STRING) {
+	if (argc > 0 && argv[0]->type == CAMEL_SEXP_RES_STRING) {
 		/* This is a list of new labels, we should used these in case of passing in old names.
 		 * This all is required only because backward compatibility. */
 		const gchar *new_labels[] = { "$Labelimportant", "$Labelwork", "$Labelpersonal", "$Labeltodo", "$Labellater", NULL};
@@ -679,16 +678,16 @@ do_label (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_color (struct _ESExp *f,
+static CamelSExpResult *
+do_color (struct _CamelSExp *f,
           gint argc,
-          struct _ESExpResult **argv,
+          struct _CamelSExpResult **argv,
           CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
 	d(fprintf (stderr, "setting color tag\n"));
-	if (argc > 0 && argv[0]->type == ESEXP_RES_STRING) {
+	if (argc > 0 && argv[0]->type == CAMEL_SEXP_RES_STRING) {
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
 			camel_folder_set_message_user_tag (p->source, p->uid, "color", argv[0]->value.string);
 		else
@@ -699,16 +698,16 @@ do_color (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_score (struct _ESExp *f,
+static CamelSExpResult *
+do_score (struct _CamelSExp *f,
           gint argc,
-          struct _ESExpResult **argv,
+          struct _CamelSExpResult **argv,
           CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
 	d(fprintf (stderr, "setting score tag\n"));
-	if (argc > 0 && argv[0]->type == ESEXP_RES_INT) {
+	if (argc > 0 && argv[0]->type == CAMEL_SEXP_RES_INT) {
 		gchar *value;
 
 		value = g_strdup_printf ("%d", argv[0]->value.number);
@@ -720,16 +719,16 @@ do_score (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_adjust_score (struct _ESExp *f,
+static CamelSExpResult *
+do_adjust_score (struct _CamelSExp *f,
                  gint argc,
-                 struct _ESExpResult **argv,
+                 struct _CamelSExpResult **argv,
                  CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
 	d(fprintf (stderr, "adjusting score tag\n"));
-	if (argc > 0 && argv[0]->type == ESEXP_RES_INT) {
+	if (argc > 0 && argv[0]->type == CAMEL_SEXP_RES_INT) {
 		gchar *value;
 		gint old;
 
@@ -744,17 +743,17 @@ do_adjust_score (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-set_flag (struct _ESExp *f,
+static CamelSExpResult *
+set_flag (struct _CamelSExp *f,
           gint argc,
-          struct _ESExpResult **argv,
+          struct _CamelSExpResult **argv,
           CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 	guint32 flags;
 
 	d(fprintf (stderr, "setting flag\n"));
-	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
+	if (argc == 1 && argv[0]->type == CAMEL_SEXP_RES_STRING) {
 		flags = camel_system_flag (argv[0]->value.string);
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
 			camel_folder_set_message_flags (
@@ -769,17 +768,17 @@ set_flag (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-unset_flag (struct _ESExp *f,
+static CamelSExpResult *
+unset_flag (struct _CamelSExp *f,
             gint argc,
-            struct _ESExpResult **argv,
+            struct _CamelSExpResult **argv,
             CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 	guint32 flags;
 
 	d(fprintf (stderr, "unsetting flag\n"));
-	if (argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
+	if (argc == 1 && argv[0]->type == CAMEL_SEXP_RES_STRING) {
 		flags = camel_system_flag (argv[0]->value.string);
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
 			camel_folder_set_message_flags (
@@ -824,9 +823,9 @@ child_watch (GPid pid,
 }
 
 static gint
-pipe_to_system (struct _ESExp *f,
+pipe_to_system (struct _CamelSExp *f,
                 gint argc,
-                struct _ESExpResult **argv,
+                struct _CamelSExpResult **argv,
                 CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
@@ -958,17 +957,17 @@ pipe_to_system (struct _ESExp *f,
 #endif
 }
 
-static ESExpResult *
-pipe_message (struct _ESExp *f,
+static CamelSExpResult *
+pipe_message (struct _CamelSExp *f,
               gint argc,
-              struct _ESExpResult **argv,
+              struct _CamelSExpResult **argv,
               CamelFilterDriver *driver)
 {
 	gint i;
 
 	/* make sure all args are strings */
 	for (i = 0; i < argc; i++) {
-		if (argv[i]->type != ESEXP_RES_STRING)
+		if (argv[i]->type != CAMEL_SEXP_RES_STRING)
 			return NULL;
 	}
 
@@ -978,10 +977,10 @@ pipe_message (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_shell (struct _ESExp *f,
+static CamelSExpResult *
+do_shell (struct _CamelSExp *f,
           gint argc,
-          struct _ESExpResult **argv,
+          struct _CamelSExpResult **argv,
           CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
@@ -997,7 +996,7 @@ do_shell (struct _ESExp *f,
 
 	/* make sure all args are strings */
 	for (i = 0; i < argc; i++) {
-		if (argv[i]->type != ESEXP_RES_STRING)
+		if (argv[i]->type != CAMEL_SEXP_RES_STRING)
 			goto done;
 
 		g_ptr_array_add (args, argv[i]->value.string);
@@ -1022,10 +1021,10 @@ do_shell (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_beep (struct _ESExp *f,
+static CamelSExpResult *
+do_beep (struct _CamelSExp *f,
          gint argc,
-         struct _ESExpResult **argv,
+         struct _CamelSExpResult **argv,
          CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
@@ -1040,17 +1039,17 @@ do_beep (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-play_sound (struct _ESExp *f,
+static CamelSExpResult *
+play_sound (struct _CamelSExp *f,
             gint argc,
-            struct _ESExpResult **argv,
+            struct _CamelSExpResult **argv,
             CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
 
 	d(fprintf (stderr, "play sound\n"));
 
-	if (p->playfunc && argc == 1 && argv[0]->type == ESEXP_RES_STRING) {
+	if (p->playfunc && argc == 1 && argv[0]->type == CAMEL_SEXP_RES_STRING) {
 		p->playfunc (driver, argv[0]->value.string, p->playdata);
 		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Play sound");
 	}
@@ -1058,10 +1057,10 @@ play_sound (struct _ESExp *f,
 	return NULL;
 }
 
-static ESExpResult *
-do_only_once (struct _ESExp *f,
+static CamelSExpResult *
+do_only_once (struct _CamelSExp *f,
               gint argc,
-              struct _ESExpResult **argv,
+              struct _CamelSExpResult **argv,
               CamelFilterDriver *driver)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
@@ -1222,33 +1221,33 @@ run_only_once (gpointer key,
                struct _run_only_once *data)
 {
 	CamelFilterDriverPrivate *p = data->driver->priv;
-	ESExpResult *r;
+	CamelSExpResult *r;
 
 	d(printf ("evaluating: %s\n\n", action));
 
-	e_sexp_input_text (p->eval, action, strlen (action));
-	if (e_sexp_parse (p->eval) == -1) {
+	camel_sexp_input_text (p->eval, action, strlen (action));
+	if (camel_sexp_parse (p->eval) == -1) {
 		if (data->error == NULL)
 			g_set_error (
 				&data->error,
 				CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Error parsing filter: %s: %s"),
-				e_sexp_error (p->eval), action);
+				camel_sexp_error (p->eval), action);
 		goto done;
 	}
 
-	r = e_sexp_eval (p->eval);
+	r = camel_sexp_eval (p->eval);
 	if (r == NULL) {
 		if (data->error == NULL)
 			g_set_error (
 				&data->error,
 				CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Error executing filter: %s: %s"),
-				e_sexp_error (p->eval), action);
+				camel_sexp_error (p->eval), action);
 		goto done;
 	}
 
-	e_sexp_result_free (p->eval, r);
+	camel_sexp_result_free (p->eval, r);
 
  done:
 
@@ -1599,7 +1598,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 	struct _filter_rule *node;
 	gboolean freeinfo = FALSE;
 	gboolean filtered = FALSE;
-	ESExpResult *r;
+	CamelSExpResult *r;
 	gint result;
 
 	/* FIXME: make me into a g_return_if_fail/g_assert or whatever... */
@@ -1674,15 +1673,15 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 				       camel_message_info_subject(info)?camel_message_info_subject(info):"?no subject?", node->name);
 
 			/* perform necessary filtering actions */
-			e_sexp_input_text (p->eval, node->action, strlen (node->action));
-			if (e_sexp_parse (p->eval) == -1) {
+			camel_sexp_input_text (p->eval, node->action, strlen (node->action));
+			if (camel_sexp_parse (p->eval) == -1) {
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 					_("Error parsing filter: %s: %s"),
-					e_sexp_error (p->eval), node->action);
+					camel_sexp_error (p->eval), node->action);
 				goto error;
 			}
-			r = e_sexp_eval (p->eval);
+			r = camel_sexp_eval (p->eval);
 			if (p->error != NULL)
 				goto error;
 
@@ -1690,10 +1689,10 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 					_("Error executing filter: %s: %s"),
-					e_sexp_error (p->eval), node->action);
+					camel_sexp_error (p->eval), node->action);
 				goto error;
 			}
-			e_sexp_result_free (p->eval, r);
+			camel_sexp_result_free (p->eval, r);
 		default:
 			break;
 		}

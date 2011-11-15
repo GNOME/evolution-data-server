@@ -140,6 +140,7 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-service.c				\
 	camel-session.c				\
 	camel-settings.c			\
+	camel-sexp.c				\
 	camel-smime-context.c			\
 	camel-store-settings.c			\
 	camel-store-summary.c			\
@@ -263,6 +264,7 @@ libcamelinclude_HEADERS =			\
 	camel-service.h				\
 	camel-session.h				\
 	camel-settings.h			\
+	camel-sexp.h				\
 	camel-smime-context.h			\
 	camel-store-settings.h			\
 	camel-store-summary.h			\

@@ -89,7 +89,7 @@ struct _match_record {
 	GArray *matches;
 };
 
-static ESExpResult *imap_body_contains (struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+static CamelSExpResult *imap_body_contains (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFolderSearch *s);
 
 G_DEFINE_TYPE (CamelImapSearch, camel_imap_search, CAMEL_TYPE_FOLDER_SEARCH)
 
@@ -187,7 +187,7 @@ camel_imap_search_new (const gchar *cachedir)
 static void
 hash_match (gchar hash[17],
             gint argc,
-            struct _ESExpResult **argv)
+            struct _CamelSExpResult **argv)
 {
 	GChecksum *checksum;
 	guint8 *digest;
@@ -200,7 +200,7 @@ hash_match (gchar hash[17],
 
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	for (i = 0; i < argc; i++) {
-		if (argv[i]->type == ESEXP_RES_STRING)
+		if (argv[i]->type == CAMEL_SEXP_RES_STRING)
 			g_checksum_update (
 				checksum, (guchar *) argv[i]->value.string, -1);
 	}
@@ -264,7 +264,7 @@ static struct _match_record *
 load_match (CamelImapSearch *is,
             gchar hash[17],
             gint argc,
-            struct _ESExpResult **argv)
+            struct _CamelSExpResult **argv)
 {
 	struct _match_record *mr;
 	CamelStream *stream = NULL;
@@ -277,7 +277,7 @@ load_match (CamelImapSearch *is,
 	strcpy (mr->hash, hash);
 	mr->terms = g_malloc0 (sizeof (mr->terms[0]) * argc);
 	for (i = 0; i < argc; i++) {
-		if (argv[i]->type == ESEXP_RES_STRING) {
+		if (argv[i]->type == CAMEL_SEXP_RES_STRING) {
 			mr->termcount++;
 			mr->terms[i] = g_strdup (argv[i]->value.string);
 		}
@@ -396,7 +396,7 @@ sync_match (CamelImapSearch *is,
 static struct _match_record *
 get_match (CamelImapSearch *is,
            gint argc,
-           struct _ESExpResult **argv)
+           struct _CamelSExpResult **argv)
 {
 	gchar hash[17];
 	struct _match_record *mr;
@@ -432,17 +432,17 @@ get_match (CamelImapSearch *is,
 	return mr;
 }
 
-static ESExpResult *
-imap_body_contains (struct _ESExp *f,
+static CamelSExpResult *
+imap_body_contains (struct _CamelSExp *f,
                     gint argc,
-                    struct _ESExpResult **argv,
+                    struct _CamelSExpResult **argv,
                     CamelFolderSearch *s)
 {
 	CamelStore *parent_store;
 	CamelImapStore *store;
 	CamelImapSearch *is = (CamelImapSearch *) s;
 	gchar *uid;
-	ESExpResult *r;
+	CamelSExpResult *r;
 	GHashTable *uid_hash = NULL;
 	GPtrArray *array;
 	gint i, j;
@@ -463,10 +463,10 @@ imap_body_contains (struct _ESExp *f,
 	/* optimise the match "" case - match everything */
 	if (argc == 1 && argv[0]->value.string[0] == '\0') {
 		if (s->current) {
-			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+			r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
 			r->value.boolean = TRUE;
 		} else {
-			r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+			r = camel_sexp_result_new (f, CAMEL_SEXP_RES_ARRAY_PTR);
 			r->value.ptrarray = g_ptr_array_new ();
 			for (i = 0; i < s->summary->len; i++) {
 				g_ptr_array_add (r->value.ptrarray, (gchar *) g_ptr_array_index (s->summary, i));
@@ -475,10 +475,10 @@ imap_body_contains (struct _ESExp *f,
 	} else if (argc == 0 || s->summary->len == 0) {
 		/* nothing to match case, do nothing (should be handled higher up?) */
 		if (s->current) {
-			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+			r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
 			r->value.boolean = FALSE;
 		} else {
-			r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+			r = camel_sexp_result_new (f, CAMEL_SEXP_RES_ARRAY_PTR);
 			r->value.ptrarray = g_ptr_array_new ();
 		}
 	} else {
@@ -496,10 +496,10 @@ imap_body_contains (struct _ESExp *f,
 			j = mr->matches->len;
 			for (i = 0; i < j && !truth; i++)
 				truth = *uidp++ == uidn;
-			r = e_sexp_result_new (f, ESEXP_RES_BOOL);
+			r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
 			r->value.boolean = truth;
 		} else {
-			r = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
+			r = camel_sexp_result_new (f, CAMEL_SEXP_RES_ARRAY_PTR);
 			array = r->value.ptrarray = g_ptr_array_new ();
 
 			/* We use a hash to map the uid numbers to uid strings as required by the search api */

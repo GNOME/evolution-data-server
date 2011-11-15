@@ -26,9 +26,9 @@
 #ifndef CAMEL_FOLDER_SEARCH_H
 #define CAMEL_FOLDER_SEARCH_H
 
-#include <libedataserver/e-sexp.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-index.h>
+#include <camel/camel-sexp.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_FOLDER_SEARCH \
@@ -59,7 +59,7 @@ struct _CamelFolderSearch {
 	CamelObject parent;
 	CamelFolderSearchPrivate *priv;
 
-	ESExp *sexp;		/* s-exp evaluator */
+	CamelSExp *sexp;		/* s-exp evaluator */
 	gchar *last_search;	/* last searched expression */
 
 	/* these are only valid during the search, and are reset afterwards */
@@ -75,79 +75,79 @@ struct _CamelFolderSearchClass {
 	CamelObjectClass parent_class;
 
 	/* general bool/comparison options, usually these wont need to be set, unless it is compiling into another language */
-	ESExpResult * (*and)(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *s);
-	ESExpResult * (*or)(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *s);
-	ESExpResult * (*not)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
-	ESExpResult * (*lt)(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *s);
-	ESExpResult * (*gt)(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *s);
-	ESExpResult * (*eq)(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*and)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*or)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*not)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*lt)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*gt)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*eq)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
 
 	/* search options */
 	/* (match-all [boolean expression]) Apply match to all messages */
-	ESExpResult * (*match_all)(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*match_all)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
 
 	/* (match-threads "type" [array expression]) add all related threads */
-	ESExpResult * (*match_threads)(struct _ESExp *f, gint argc, struct _ESExpTerm **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*match_threads)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
 
 	/* (body-contains "string1" "string2" ...) Returns a list of matches, or true if in single-message mode */
-	ESExpResult * (*body_contains)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*body_contains)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (body-regex "regex") Returns a list of matches, or true if in single-message mode */
-	ESExpResult * (*body_regex)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*body_regex)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (header-contains "headername" "string1" ...) List of matches, or true if in single-message mode */
-	ESExpResult * (*header_contains)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*header_contains)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (header-matches "headername" "string") */
-	ESExpResult * (*header_matches)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*header_matches)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (header-starts-with "headername" "string") */
-	ESExpResult * (*header_starts_with)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*header_starts_with)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (header-ends-with "headername" "string") */
-	ESExpResult * (*header_ends_with)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*header_ends_with)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (header-exists "headername") */
-	ESExpResult * (*header_exists)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*header_exists)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (header-soundex "headername" "string") */
-	ESExpResult * (*header_soundex)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*header_soundex)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (header-regex "headername" "regex_string") */
-	ESExpResult * (*header_regex)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*header_regex)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (header-full-regex "regex") */
-	ESExpResult * (*header_full_regex)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*header_full_regex)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (user-flag "flagname" "flagname" ...) If one of user-flag set */
-	ESExpResult * (*user_flag)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*user_flag)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (user-tag "flagname") Returns the value of a user tag.  Can only be used in match-all */
-	ESExpResult * (*user_tag)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*user_tag)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (system-flag "flagname") Returns the value of a system flag.  Can only be used in match-all */
-	ESExpResult * (*system_flag)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*system_flag)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (get-sent-date) Retrieve the date that the message was sent on as a time_t */
-	ESExpResult * (*get_sent_date)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*get_sent_date)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (get-received-date) Retrieve the date that the message was received on as a time_t */
-	ESExpResult * (*get_received_date)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*get_received_date)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (get-current-date) Retrieve 'now' as a time_t */
-	ESExpResult * (*get_current_date)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*get_current_date)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (get-relative-months) Retrieve relative seconds from 'now' and specified number of months as a time_t */
-	ESExpResult * (*get_relative_months)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*get_relative_months)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (get-size) Retrieve message size as an gint (in kilobytes) */
-	ESExpResult * (*get_size)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*get_size)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (uid "uid" ...) True if the uid is in the list */
-	ESExpResult * (*uid)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*uid)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 	/* (message-location "folder_string") True if the message is in the folder's full name "folder_string" */
-	ESExpResult * (*message_location)(struct _ESExp *f, gint argc, struct _ESExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*message_location)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 
 };
 
