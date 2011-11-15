@@ -23,7 +23,7 @@
 #define E_DATA_SERVER_UTIL_H
 
 #include <sys/types.h>
-#include <glib.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -69,6 +69,18 @@ GSList *	e_util_copy_string_slist	(GSList *copy_to, const GSList *strings);
 GSList *	e_util_copy_object_slist	(GSList *copy_to, const GSList *objects);
 void		e_util_free_string_slist	(GSList *strings);
 void		e_util_free_object_slist	(GSList *objects);
+
+/* Useful GBinding transform functions */
+gboolean	e_binding_transform_enum_value_to_nick
+						(GBinding *binding,
+						 const GValue *source_value,
+						 GValue *target_value,
+						 gpointer not_used);
+gboolean	e_binding_transform_enum_nick_to_value
+						(GBinding *binding,
+						 const GValue *source_value,
+						 GValue *target_value,
+						 gpointer not_used);
 
 #ifdef G_OS_WIN32
 const gchar *	e_util_get_prefix		(void) G_GNUC_CONST;

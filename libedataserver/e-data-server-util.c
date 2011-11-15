@@ -946,6 +946,84 @@ e_util_free_object_slist (GSList *objects)
 	g_slist_free_full (objects, (GDestroyNotify) g_object_unref);
 }
 
+/**
+ * e_binding_transform_enum_value_to_nick:
+ * @binding: a #GBinding
+ * @source_value: a #GValue whose type is derived from #G_TYPE_ENUM
+ * @target_value: a #GValue of type #G_TYPE_STRING
+ * @not_used: not used
+ *
+ * Transforms an enumeration value to its corresponding nickname.
+ *
+ * Returns: %TRUE if the enum value has a corresponding nickname
+ *
+ * Since: 3.4
+ **/
+gboolean
+e_binding_transform_enum_value_to_nick (GBinding *binding,
+                                        const GValue *source_value,
+                                        GValue *target_value,
+                                        gpointer not_used)
+{
+	GEnumClass *enum_class;
+	GEnumValue *enum_value;
+	gint value;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (G_IS_BINDING (binding), FALSE);
+
+	enum_class = g_type_class_peek (G_VALUE_TYPE (source_value));
+	g_return_val_if_fail (G_IS_ENUM_CLASS (enum_class), FALSE);
+
+	value = g_value_get_enum (source_value);
+	enum_value = g_enum_get_value (enum_class, value);
+	if (enum_value != NULL) {
+		g_value_set_string (target_value, enum_value->value_nick);
+		success = TRUE;
+	}
+
+	return success;
+}
+
+/**
+ * e_binding_transform_enum_nick_to_value:
+ * @binding: a #GBinding
+ * @source_value: a #GValue of type #G_TYPE_STRING
+ * @target_value: a #GValue whose type is derived from #G_TYPE_ENUM
+ * @not_used: not used
+ *
+ * Transforms an enumeration nickname to its corresponding value.
+ *
+ * Returns: %TRUE if the enum nickname has a corresponding value
+ *
+ * Since: 3.4
+ **/
+gboolean
+e_binding_transform_enum_nick_to_value (GBinding *binding,
+                                        const GValue *source_value,
+                                        GValue *target_value,
+                                        gpointer not_used)
+{
+	GEnumClass *enum_class;
+	GEnumValue *enum_value;
+	const gchar *string;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (G_IS_BINDING (binding), FALSE);
+
+	enum_class = g_type_class_peek (G_VALUE_TYPE (target_value));
+	g_return_val_if_fail (G_IS_ENUM_CLASS (enum_class), FALSE);
+
+	string = g_value_get_string (source_value);
+	enum_value = g_enum_get_value_by_nick (enum_class, string);
+	if (enum_value != NULL) {
+		g_value_set_enum (target_value, enum_value->value);
+		success = TRUE;
+	}
+
+	return success;
+}
+
 #ifdef G_OS_WIN32
 
 #include <windows.h>
