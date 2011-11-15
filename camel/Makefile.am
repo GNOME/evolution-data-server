@@ -298,10 +298,9 @@ libcamelinclude_HEADERS =			\
 libcamel_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE) $(NO_UNDEFINED)
 
 libcamel_1_2_la_LIBADD =				\
-	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
-	$(CAMEL_LIBS)							\
-	$(SOCKET_LIBS)							\
-	$(ICONV_LIBS)							\
+	$(CAMEL_LIBS)					\
+	$(SOCKET_LIBS)					\
+	$(ICONV_LIBS)					\
 	$(REGEX_LIBS)
 
 camel_lock_helper_1_2_CPPFLAGS = \

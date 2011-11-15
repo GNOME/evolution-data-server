@@ -5,13 +5,12 @@ MIMEFILTER_TESTS_CPPFLAGS= \
 	-I$(top_srcdir)/camel				\
 	-I$(top_srcdir)/camel/tests/lib 		\
 	-DG_LOG_DOMAIN=\"evolution-tests\"		\
-	-DSOURCEDIR=\"$(srcdir)\"				\
+	-DSOURCEDIR=\"$(srcdir)\"			\
 	$(CAMEL_CFLAGS)
 
 MIMEFILTER_TESTS_LDADD= \
-	$(top_builddir)/camel/libcamel-${API_VERSION}.la 		\
-	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
-	$(top_builddir)/camel/tests/lib/libcameltest.a	\
+	$(top_builddir)/camel/libcamel-${API_VERSION}.la 	\
+	$(top_builddir)/camel/tests/lib/libcameltest.a		\
 	$(INTLLIBS)
 
 EXTRA_DIST =				\

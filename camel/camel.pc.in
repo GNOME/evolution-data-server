@@ -10,6 +10,6 @@ privincludedir=@privincludedir@
 Name: camel
 Description: the Evolution MIME message handling library
 Version: @VERSION@
-Requires: gio-2.0 libedataserver-@API_VERSION@ sqlite3 @mozilla_nss@ @mozilla_nspr@
+Requires: gio-2.0 sqlite3 @mozilla_nss@ @mozilla_nspr@
 Libs: -L${libdir} -lcamel-@API_VERSION@ @MANUAL_NSS_LIBS@
 Cflags: -I${privincludedir} @MANUAL_NSS_CFLAGS@

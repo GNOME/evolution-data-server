@@ -34,8 +34,7 @@ noinst_HEADERS =				\
 libcamelnntp_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
 
 libcamelnntp_la_LIBADD = \
-	$(top_builddir)/libedataserver/libedataserver-${API_VERSION}.la \
-	$(top_builddir)/camel/libcamel-1.2.la				\
+	$(top_builddir)/camel/libcamel-1.2.la	\
 	$(CAMEL_LIBS)
 
 EXTRA_DIST = libcamelnntp.urls
