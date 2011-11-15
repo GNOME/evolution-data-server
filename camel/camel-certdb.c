@@ -219,6 +219,10 @@ certdb_cert_load (CamelCertDB *certdb,
 	if (camel_file_util_decode_uint32 (istream, &cert->trust) == -1)
 		goto error;
 
+	/* unset temporary trusts on load */
+	if (cert->trust == CAMEL_CERT_TRUST_TEMPORARY)
+		cert->trust = CAMEL_CERT_TRUST_UNKNOWN;
+
 	return cert;
 
  error:

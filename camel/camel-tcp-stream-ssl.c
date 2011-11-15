@@ -455,35 +455,58 @@ ssl_bad_cert (gpointer data,
 	}
 
 	if (ccert->trust == CAMEL_CERT_TRUST_UNKNOWN) {
+		GSList *button_captions = NULL;
+		gint button_id;
+
 		status = CERT_VerifyCertNow (cert->dbhandle, cert, TRUE, certUsageSSLClient, NULL);
 		fingerprint = cert_fingerprint (cert);
-		cert_str = g_strdup_printf (_("Issuer:            %s\n"
-					      "Subject:           %s\n"
-					      "Fingerprint:       %s\n"
-					      "Signature:         %s"),
+		cert_str = g_strdup_printf (_("   Issuer:       %s\n"
+					      "   Subject:      %s\n"
+					      "   Fingerprint:  %s\n"
+					      "   Signature:    %s"),
 					    CERT_NameToAscii (&cert->issuer),
 					    CERT_NameToAscii (&cert->subject),
 					    fingerprint, status == SECSuccess?_("GOOD"):_("BAD"));
 		g_free (fingerprint);
 
 		/* construct our user prompt */
-		prompt = g_strdup_printf (_("SSL Certificate check for %s:\n\n%s\n\nDo you wish to accept?"),
+		prompt = g_strdup_printf (_("SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n\nDetailed information about the certificate:\n%s"),
 					  ssl->priv->expected_host, cert_str);
 		g_free (cert_str);
 
+		button_captions = g_slist_append (button_captions, _("_Reject"));
+		button_captions = g_slist_append (button_captions, _("Accept _temporarily"));
+		button_captions = g_slist_append (button_captions, _("_Accept permanently"));
+
 		/* query the user to find out if we want to accept this certificate */
-		accept = camel_session_alert_user (ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, TRUE);
+		button_id = camel_session_alert_user (ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, button_captions);
+		g_slist_free (button_captions);
 		g_free (prompt);
-		if (accept) {
-			camel_certdb_nss_cert_set (certdb, ccert, cert);
+
+		accept = button_id != 0;
+		camel_certdb_nss_cert_set (certdb, ccert, cert);
+
+		switch (button_id) {
+		case 0: /* Reject */
+			camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_NEVER);
+			break;
+		case 1: /* Accept temporarily */
+			camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_TEMPORARY);
+			break;
+		case 2: /* Accept permanently */
 			camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_FULLY);
-			camel_certdb_touch (certdb);
+			break;
+		default: /* anything else means failure and will ask again */
+			accept = FALSE;
+			break;
 		}
+		camel_certdb_touch (certdb);
 	} else {
 		accept = ccert->trust != CAMEL_CERT_TRUST_NEVER;
 	}
 
 	camel_certdb_cert_unref (certdb, ccert);
+	camel_certdb_save (certdb);
 	g_object_unref (certdb);
 
 	return accept ? SECSuccess : SECFailure;

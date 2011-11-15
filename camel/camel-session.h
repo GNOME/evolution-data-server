@@ -120,10 +120,10 @@ struct _CamelSessionClass {
 						 CamelService *service,
 						 const gchar *item,
 						 GError **error);
-	gboolean	(*alert_user)		(CamelSession *session,
+	gint		(*alert_user)		(CamelSession *session,
 						 CamelSessionAlertType type,
 						 const gchar *prompt,
-						 gboolean cancel);
+						 GSList *button_captions);
 	CamelFilterDriver *
 			(*get_filter_driver)	(CamelSession *session,
 						 const gchar *type,
@@ -200,10 +200,10 @@ gboolean	camel_session_forget_password	(CamelSession *session,
 						 CamelService *service,
 						 const gchar *item,
 						 GError **error);
-gboolean	camel_session_alert_user	(CamelSession *session,
+gint		camel_session_alert_user	(CamelSession *session,
 						 CamelSessionAlertType type,
 						 const gchar *prompt,
-						 gboolean cancel);
+						 GSList *button_captions);
 gchar *		camel_session_build_password_prompt
 						(const gchar *type,
 						 const gchar *user,

@@ -1091,30 +1091,29 @@ camel_session_forget_password (CamelSession *session,
  * @session: a #CamelSession
  * @type: the type of alert (info, warning, or error)
  * @prompt: the message for the user
- * @cancel: whether or not to provide a "Cancel" option in addition to
- * an "OK" option.
+ * @button_captions: List of button captions to use. If NULL, only "Dismiss" button is shown.
  *
  * Presents the given @prompt to the user, in the style indicated by
  * @type. If @cancel is %TRUE, the user will be able to accept or
  * cancel. Otherwise, the message is purely informational.
  *
- * Returns: %TRUE if the user accepts, %FALSE if they cancel.
+ * Returns: Index of pressed button from @button_captions, -1 if NULL.
  */
-gboolean
+gint
 camel_session_alert_user (CamelSession *session,
                           CamelSessionAlertType type,
                           const gchar *prompt,
-                          gboolean cancel)
+                          GSList *button_captions)
 {
 	CamelSessionClass *class;
 
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
-	g_return_val_if_fail (prompt != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), -1);
+	g_return_val_if_fail (prompt != NULL, -1);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->alert_user != NULL, FALSE);
+	g_return_val_if_fail (class->alert_user != NULL, -1);
 
-	return class->alert_user (session, type, prompt, cancel);
+	return class->alert_user (session, type, prompt, button_captions);
 }
 
 /**
