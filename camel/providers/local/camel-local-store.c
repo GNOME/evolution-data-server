@@ -32,8 +32,6 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-data-server-util.h>
-
 #include "camel-local-folder.h"
 #include "camel-local-store.h"
 
