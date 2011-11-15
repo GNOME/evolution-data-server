@@ -475,8 +475,8 @@ ssl_bad_cert (gpointer data,
 		g_free (cert_str);
 
 		button_captions = g_slist_append (button_captions, _("_Reject"));
-		button_captions = g_slist_append (button_captions, _("Accept _temporarily"));
-		button_captions = g_slist_append (button_captions, _("_Accept permanently"));
+		button_captions = g_slist_append (button_captions, _("Accept _Temporarily"));
+		button_captions = g_slist_append (button_captions, _("_Accept Permanently"));
 
 		/* query the user to find out if we want to accept this certificate */
 		button_id = camel_session_alert_user (ssl->priv->session, CAMEL_SESSION_ALERT_WARNING, prompt, button_captions);
