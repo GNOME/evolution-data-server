@@ -101,6 +101,12 @@ struct _camel_header_newsgroup {
 	gchar *newsgroup;
 };
 
+/* Time utilities */
+time_t		camel_mktime_utc		(struct tm *tm);
+void		camel_localtime_with_offset	(time_t tt,
+						 struct tm *tm,
+						 gint *offset);
+
 /* Address lists */
 struct _camel_header_address *camel_header_address_new (void);
 struct _camel_header_address *camel_header_address_new_name (const gchar *name, const gchar *addr);

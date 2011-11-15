@@ -2852,6 +2852,8 @@ CAMEL_UUDECODE_STATE_INIT
 CAMEL_UUDECODE_STATE_BEGIN
 CAMEL_UUDECODE_STATE_END
 CAMEL_UUDECODE_STATE_MASK
+camel_mktime_utc
+camel_localtime_with_offset
 CamelTransferEncoding
 camel_header_references
 camel_header_param

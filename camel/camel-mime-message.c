@@ -32,8 +32,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <libedataserver/e-time-utils.h>
-
 #include "camel-iconv.h"
 #include "camel-mime-filter-bestenc.h"
 #include "camel-mime-filter-charset.h"
@@ -434,7 +432,7 @@ camel_mime_message_set_date (CamelMimeMessage *message,
 		gint tz;
 
 		date = time (NULL);
-		e_localtime_with_offset (date, &local, &tz);
+		camel_localtime_with_offset (date, &local, &tz);
 		offset = (((tz / 60 / 60) * 100) + (tz / 60 % 60));
 	}
 	message->date = date;

@@ -41,8 +41,6 @@
 #define MAXHOSTNAMELEN 1024
 #endif
 
-#include <libedataserver/e-time-utils.h>
-
 #include "camel-charset-map.h"
 #include "camel-iconv.h"
 #include "camel-mime-utils.h"
@@ -70,6 +68,71 @@
 
 #define d(x)
 #define d2(x)
+
+/**
+ * camel_mktime_utc:
+ * @tm: the #tm to convert to a calendar time representation
+ *
+ * Like mktime(3), but assumes UTC instead of local timezone.
+ *
+ * Returns: the calendar time representation of @tm
+ *
+ * Since: 3.4
+ **/
+time_t
+camel_mktime_utc (struct tm *tm)
+{
+	time_t tt;
+
+	tm->tm_isdst = -1;
+	tt = mktime (tm);
+
+#if defined (HAVE_TM_GMTOFF)
+	tt += tm->tm_gmtoff;
+#elif defined (HAVE_TIMEZONE)
+	if (tm->tm_isdst > 0) {
+#if defined (HAVE_ALTZONE)
+		tt -= altzone;
+#else
+		tt -= (timezone - 3600);
+#endif
+	} else
+		tt -= timezone;
+#endif
+
+	return tt;
+}
+
+/**
+ * camel_localtime_with_offset:
+ * @tt: the #time_t to convert
+ * @tm: the #tm to store the result in
+ * @offset: the #gint to store the offset in
+ *
+ * Converts the calendar time representation @tt to a broken-down
+ * time representation, stored in @tm, and provides the offset in
+ * seconds from UTC time, stored in @offset.
+ **/
+void
+camel_localtime_with_offset (time_t tt,
+                             struct tm *tm,
+                             gint *offset)
+{
+	localtime_r (&tt, tm);
+
+#if defined (HAVE_TM_GMTOFF)
+	*offset = tm->tm_gmtoff;
+#elif defined (HAVE_TIMEZONE)
+	if (tm->tm_isdst > 0) {
+#if defined (HAVE_ALTZONE)
+		*offset = -altzone;
+#else
+		*offset = -(timezone - 3600);
+#endif
+	} else
+		*offset = -timezone;
+#endif
+}
 
 #define CAMEL_UUENCODE_CHAR(c)  ((c) ? (c) + ' ' : '`')
 #define	CAMEL_UUDECODE_CHAR(c)	(((c) - ' ') & 077)
@@ -4089,7 +4152,7 @@ parse_rfc822_date (struct _date_token *tokens,
 		offset = n;
 	}
 
-	t = e_mktime_utc (&tm);
+	t = camel_mktime_utc (&tm);
 
 	/* t is now GMT of the time we want, but not offset by the timezone ... */
 
@@ -4217,7 +4280,7 @@ parse_broken_date (struct _date_token *tokens,
 
 	d(printf ("\n"));
 
-	t = e_mktime_utc (&tm);
+	t = camel_mktime_utc (&tm);
 
 	/* t is now GMT of the time we want, but not offset by the timezone ... */
 

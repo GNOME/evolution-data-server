@@ -36,8 +36,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-time-utils.h>
-
 #include <camel/camel.h>
 
 #include "camel-imap-command.h"
@@ -3777,7 +3775,7 @@ decode_internaldate (const guchar *in)
 
 	n = strtol ((gchar *) inptr, NULL, 10);
 
-	date = e_mktime_utc (&tm);
+	date = camel_mktime_utc (&tm);
 
 	/* date is now GMT of the time we want, but not offset by the timezone ... */
 
