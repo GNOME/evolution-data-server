@@ -672,7 +672,7 @@ store_get_junk_folder_finish (CamelStore *store,
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), store_get_folder), NULL);
+		result, G_OBJECT (store), store_get_junk_folder), NULL);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
@@ -804,7 +804,7 @@ store_create_folder_finish (CamelStore *store,
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
-		result, G_OBJECT (store), store_create_folder_finish), NULL);
+		result, G_OBJECT (store), store_create_folder), NULL);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
