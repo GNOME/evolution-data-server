@@ -36,6 +36,7 @@ dnl Required Package Versions
 m4_define([glib_minimum_version], [2.32])
 m4_define([gtk_minimum_version], [3.2])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
+m4_define([gcr_minimum_version], [3.4])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([goa_minimum_version], [3.2])
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
@@ -396,6 +397,13 @@ if test x$os_win32 = xno; then
 	[gnome-keyring-1 >= gnome_keyring_minimum_version])
 fi
 
+
+dnl **********************************************************
+dnl gcr-base is needed for secure password exchange over D-Bus
+dnl **********************************************************
+PKG_CHECK_MODULES(GCR_BASE, [gcr-base-3 >= gcr_minimum_version])
+AC_SUBST(GCR_BASE_CFLAGS)
+AC_SUBST(GCR_BASE_LIBS)
 
 LIBICAL_REQUIRED=libical_minimum_version
 AC_SUBST(LIBICAL_REQUIRED)
