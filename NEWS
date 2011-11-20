@@ -1,3 +1,57 @@
+Evolution-Data-Server 3.3.2 2011-11-21
+--------------------------------------
+
+Bug Fixes:
+	Bug 440316 - Improve SSL Certificate check bad signature dialog
+	             (Milan Crha)
+	Bug 652171 - Added e_book_client_view_set_flags() (Tristan Van Berkom)
+	Bug 652175 - Add revision property to addressbook backend
+	             (Tristan Van Berkom)
+	Bug 655167 - Messages moved from IMAP Inbox reappear (Michel Dänzer)
+	Bug 659736 - Do not report change on property set when not changed
+	             (Milan Crha)
+	Bug 660182 - Error dialog on LDAP query with multiple referrals
+	             (Milan Crha)
+	Bug 660646 - »IDLE« should not be translated in settings dialog
+	             (Milan Crha)
+	Bug 660972 - Unable to publish free/busy information (Milan Crha)
+	Bug 660974 - sqlite backend: use INSERT OR IGNORE in
+	             add_folder_into_db() (Christophe Dumez)
+	Bug 661033 - Add support for E_CONTACT_FILE_AS field (Philip Withnall)
+	Bug 662473 - Moving mails between local folders removes labels
+	             (Milan Crha)
+	Bug 662524 - POP3: Use a safer default value for "delete-after-days"
+	             (Matthew Barnes)
+	Bug 662643 - camel_url_decode_path() crashes on empty string
+	             (Matthew Barnes)
+	Bug 662929 - POP3 prevents expunge of local Inbox in offline
+	             (Milan Crha)
+	Bug 663062 - Missing attachment icon on a message with it (Milan Crha)
+	Bug 663219 - Crash in imapx_completion at camel-imapx-server.c
+	             (Chenthill Palanisamy)
+
+Other Changes:
+	* Move remaining CamelURL elements to CamelSettings. (Matthew Barnes)
+	* IMAP: Split off a new mutex for commands and responses.
+	  (Matthew Barnes)
+	* Remove g_thread_init() calls. (Matthew Barnes)
+	* Avoid possible crash when url->path is NULL (Milan Crha)
+	* Make local addressbook backend store image data as URIs.
+	  (Tristan Van Berkom)
+	* CamelTcpStreamRaw: Use PR_Interrupt() to cancel blocked I/O.
+	  (Matthew Barnes)
+	* Use the same technique in imapx_parser_thread(). (Matthew Barnes)
+	* Kill gtk-doc tmpl files. (Matthew Barnes)
+	* Camel no longer depends on libedataserver. (Matthew Barnes)
+	* Add useful GBinding transform funcs from e-util. (Matthew Barnes)
+
+Translations:
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Kjartan Maraas (nb)
+	Matej Urbančič (sl)
+
+
 Evolution-Data-Server 3.3.1 2011-10-24
 --------------------------------------
 
