@@ -125,6 +125,17 @@ G_BEGIN_DECLS
  **/
 #define CAL_BACKEND_PROPERTY_DEFAULT_OBJECT		"default-object"
 
+/**
+ * CAL_BACKEND_PROPERTY_REVISION:
+ *
+ * The current overall revision string, this can be used as
+ * a quick check to see if data has changed at all since the
+ * last time the calendar revision was observed.
+ *
+ * Since: 3.4
+ **/
+#define CAL_BACKEND_PROPERTY_REVISION			"revision"
+
 struct _ECalBackendCache;
 
 typedef struct _ECalBackendPrivate ECalBackendPrivate;

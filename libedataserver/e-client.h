@@ -99,6 +99,17 @@
 #define CLIENT_BACKEND_PROPERTY_CAPABILITIES		"capabilities"
 
 /**
+ * CLIENT_BACKEND_PROPERTY_REVISION:
+ *
+ * The current overall revision string, this can be used as
+ * a quick check to see if data has changed at all since the
+ * last time the revision was observed.
+ *
+ * Since: 3.4
+ **/
+#define CLIENT_BACKEND_PROPERTY_REVISION		"revision"
+
+/**
  * E_CLIENT_ERROR:
  *
  * Error domain for #EClient operations.  Errors in this domain will be

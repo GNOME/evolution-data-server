@@ -52,6 +52,8 @@
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_NO_URI() e_data_cal_create_error (OtherError, "Cannot get URI")
 
+#define ECAL_REVISION_X_PROP  "X-EVOLUTION-DATA-REVISION"
+
 G_DEFINE_TYPE (ECalBackendFile, e_cal_backend_file, E_TYPE_CAL_BACKEND_SYNC)
 
 /* Placeholder for each component and its recurrences */
@@ -112,6 +114,9 @@ struct _ECalBackendFilePrivate {
 
 	/* timeour id for refresh type "2" */
 	guint refresh_timeout_id;
+
+	/* Just an incremental number to ensure uniqueness across revisions */
+	guint revision_counter;
 };
 
 
@@ -127,6 +132,8 @@ static void free_refresh_data (ECalBackendFile *cbfile);
 
 static icaltimezone *
 e_cal_backend_file_internal_get_timezone (ECalBackend *backend, const gchar *tzid);
+
+static void bump_revision (ECalBackendFile *cbfile);
 
 /* g_hash_table_foreach() callback to destroy a ECalBackendFileObject */
 static void
@@ -257,9 +264,13 @@ save_file_when_idle (gpointer user_data)
 }
 
 static void
-save (ECalBackendFile *cbfile)
+save (ECalBackendFile *cbfile,
+      gboolean         do_bump_revision)
 {
 	ECalBackendFilePrivate *priv;
+
+	if (do_bump_revision)
+		bump_revision (cbfile);
 
 	priv = cbfile->priv;
 
@@ -393,6 +404,82 @@ uid_in_use (ECalBackendFile *cbfile,
 
 
 
+static icalproperty *
+get_revision_property (ECalBackendFile *cbfile)
+{
+       ECalBackendFilePrivate *priv;
+       icalproperty           *prop;
+
+       priv = cbfile->priv;
+       prop = icalcomponent_get_first_property (priv->icalcomp, ICAL_X_PROPERTY);
+
+       while (prop != NULL) {
+	      const gchar *name = icalproperty_get_x_name (prop);
+
+	      if (name && strcmp (name, ECAL_REVISION_X_PROP) == 0)
+		     return prop;
+
+	      prop = icalcomponent_get_next_property (priv->icalcomp, ICAL_X_PROPERTY);
+       }
+
+       return NULL;
+}
+
+static gchar *
+make_revision_string (ECalBackendFile *cbfile)
+{
+       GTimeVal timeval;
+       gchar   *datestr;
+       gchar   *revision;
+
+       g_get_current_time (&timeval);
+
+       datestr = g_time_val_to_iso8601 (&timeval);
+       revision = g_strdup_printf ("%s(%d)", datestr, cbfile->priv->revision_counter++);
+
+       g_free (datestr);
+       return revision;
+}
+
+static icalproperty *
+ensure_revision (ECalBackendFile *cbfile)
+{
+       icalproperty* prop;
+
+       prop = get_revision_property (cbfile);
+
+       if (!prop) {
+	      gchar *revision = make_revision_string (cbfile);
+
+	      prop = icalproperty_new (ICAL_X_PROPERTY);
+
+	      icalproperty_set_x_name (prop, ECAL_REVISION_X_PROP);
+	      icalproperty_set_x (prop, revision);
+
+	      icalcomponent_add_property (cbfile->priv->icalcomp, prop);
+
+	      g_free (revision);
+       }
+
+       return prop;
+}
+
+static void
+bump_revision (ECalBackendFile *cbfile)
+{
+       /* Update the revision string */
+       icalproperty *prop     = ensure_revision (cbfile);
+       gchar        *revision = make_revision_string (cbfile);
+
+       icalproperty_set_x (prop, revision);
+
+       e_cal_backend_notify_property_changed (E_CAL_BACKEND (cbfile),
+					      CAL_BACKEND_PROPERTY_REVISION,
+					      revision);
+
+       g_free (revision);
+}
+
 /* Calendar backend methods */
 
 /* Get_email_address handler for the file backend */
@@ -444,6 +531,14 @@ e_cal_backend_file_get_backend_property (ECalBackendSync *backend,
 
 		*prop_value = e_cal_component_get_as_string (comp);
 		g_object_unref (comp);
+	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_REVISION)) {
+	       icalproperty *prop;
+	       const gchar  *revision;
+
+	       prop     = ensure_revision (E_CAL_BACKEND_FILE (backend));
+	       revision = icalproperty_get_x (prop);
+
+	       *prop_value = g_strdup (revision);
 	} else {
 		processed = FALSE;
 	}
@@ -522,7 +617,7 @@ check_dup_uid (ECalBackendFile *cbfile,
 	 * CREATED/DTSTAMP/LAST-MODIFIED.
 	 */
 
-	save (cbfile);
+	save (cbfile, FALSE);
 
  done:
 	g_free (rid);
@@ -737,7 +832,7 @@ remove_component (ECalBackendFile *cbfile,
 
 	g_hash_table_remove (priv->comp_uid_hash, uid);
 
-	save (cbfile);
+	save (cbfile, TRUE);
 }
 
 /* Scans the toplevel VCALENDAR component and stores the objects it finds */
@@ -1224,7 +1319,7 @@ create_cal (ECalBackendFile *cbfile,
 
 	priv->path = uri_to_path (E_CAL_BACKEND (cbfile));
 
-	save (cbfile);
+	save (cbfile, TRUE);
 
 	g_free (priv->custom_file);
 	priv->custom_file = g_strdup (uristr);
@@ -1573,7 +1668,8 @@ e_cal_backend_file_add_timezone (ECalBackendSync *backend,
 		if (!icalcomponent_get_timezone (priv->icalcomp,
 						 icaltimezone_get_tzid (zone))) {
 			icalcomponent_add_component (priv->icalcomp, tz_comp);
-			save (cbfile);
+
+			save (cbfile, TRUE);
 		}
 		g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 
@@ -2273,7 +2369,7 @@ e_cal_backend_file_create_object (ECalBackendSync *backend,
 	add_component (cbfile, comp, TRUE);
 
 	/* Save the file */
-	save (cbfile);
+	save (cbfile, TRUE);
 
 	/* Return the UID and the modified component */
 	if (uid)
@@ -2423,7 +2519,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 						     e_cal_component_get_icalcomponent (obj_data->full_object));
 			priv->comp = g_list_prepend (priv->comp, obj_data->full_object);
 
-			save (cbfile);
+			save (cbfile, TRUE);
 
 			if (new_component) {
 				icalcomponent *new_icalcomp =
@@ -2584,7 +2680,7 @@ e_cal_backend_file_modify_object (ECalBackendSync *backend,
 		break;
 	}
 
-	save (cbfile);
+	save (cbfile, TRUE);
 	g_free (rid);
 
 	if (new_component) {
@@ -2920,7 +3016,7 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend,
 		break;
 	}
 
-	save (cbfile);
+	save (cbfile, TRUE);
 
 	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
@@ -3335,7 +3431,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 	 * resolving any conflicting TZIDs. */
 	icalcomponent_merge_component (priv->icalcomp, toplevel_comp);
 
-	save (cbfile);
+	save (cbfile, TRUE);
 
  error:
 	g_hash_table_destroy (tzdata.zones);
