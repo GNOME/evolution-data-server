@@ -141,8 +141,14 @@ GSList *		e_book_backend_sqlitedb_search_uids
 							(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 const gchar *sexp,
-							 gboolean    *searched,
+							 gboolean *searched,
 							 GError **error);
+
+GHashTable *		e_book_backend_sqlitedb_get_uids_and_rev
+							(EBookBackendSqliteDB *ebsdb,
+							 const gchar *folderid,
+							 GError **error);
+
 gboolean	e_book_backend_sqlitedb_get_is_populated
 							(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,

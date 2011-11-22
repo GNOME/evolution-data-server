@@ -1675,6 +1675,49 @@ e_book_backend_sqlitedb_search_uids (EBookBackendSqliteDB *ebsdb,
 }
 
 static gint
+get_uids_and_rev_cb (gpointer user_data,
+		     gint col,
+                     gchar **cols,
+                     gchar **name)
+{
+	GHashTable *uids_and_rev = user_data;
+
+	if (col == 2 && cols[0])
+		g_hash_table_insert (uids_and_rev, g_strdup (cols [0]), g_strdup (cols [1] ? cols [1] : ""));
+
+	return 0;
+}
+
+/**
+ * e_book_backend_sqlitedb_get_uids_and_rev:
+ *
+ * Gets hash table of all uids (key) and rev (value) pairs stored
+ * for each contact in the cache. The hash table should be freed
+ * with g_hash_table_destroy(), if not needed anymore. Each key
+ * and value is a newly allocated string.
+ *
+ * Since: 3.4
+ **/
+GHashTable *
+e_book_backend_sqlitedb_get_uids_and_rev (EBookBackendSqliteDB *ebsdb,
+					  const gchar *folderid,
+					  GError **error)
+{
+	GHashTable *uids_and_rev = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	gchar *stmt;
+
+	READER_LOCK (ebsdb);
+
+	stmt = sqlite3_mprintf ("SELECT uid,rev FROM %Q", folderid);
+	book_backend_sql_exec (ebsdb->priv->db, stmt, get_uids_and_rev_cb, uids_and_rev, error);
+	sqlite3_free (stmt);
+
+	READER_UNLOCK (ebsdb);
+
+	return uids_and_rev;
+}
+
+static gint
 get_bool_cb (gpointer ref,
              gint col,
              gchar **cols,
