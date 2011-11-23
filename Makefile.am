@@ -4,6 +4,7 @@ DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --with-krb5=/usr --without-weather 
 
 SUBDIRS = camel libedataserver libebackend addressbook calendar libedataserverui services tests docs art po
 
+
 if HAVE_INTROSPECTION
 if HAVE_VALA
 SUBDIRS += vala
