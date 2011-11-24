@@ -216,7 +216,7 @@ notify_and_remove_from_cache (gpointer key,
 	ECalComponentId *id = e_cal_component_get_id (comp);
 
 	e_cal_backend_store_remove_component (cbhttp->priv->store, id->uid, id->rid);
-	e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbhttp), id, calobj, NULL);
+	e_cal_backend_notify_component_removed (E_CAL_BACKEND (cbhttp), id, comp, NULL);
 
 	e_cal_component_free_id (id);
 	g_object_unref (comp);
@@ -238,16 +238,13 @@ empty_cache (ECalBackendHttp *cbhttp)
 	comps = e_cal_backend_store_get_components (priv->store);
 
 	for (l = comps; l != NULL; l = g_slist_next (l)) {
-		gchar *comp_str;
 		ECalComponentId *id;
 		ECalComponent *comp = l->data;
 
 		id = e_cal_component_get_id (comp);
-		comp_str = e_cal_component_get_as_string (comp);
 
-		e_cal_backend_notify_object_removed ((ECalBackend *) cbhttp, id, comp_str, NULL);
+		e_cal_backend_notify_component_removed ((ECalBackend *) cbhttp, id, comp, NULL);
 
-		g_free (comp_str);
 		e_cal_component_free_id (id);
 		g_object_unref (comp);
 	}
@@ -497,21 +494,21 @@ retrieval_done (SoupSession *session,
 			if (e_cal_component_set_icalcomponent (comp, icalcomponent_new_clone (subcomp))) {
 				const gchar *uid;
 				gpointer orig_key, orig_value;
-				gchar *obj;
 
 				e_cal_component_get_uid (comp, &uid);
 
 				if (!put_component_to_store (cbhttp, comp)) {
 					g_hash_table_remove (old_cache, uid);
 				} else if (g_hash_table_lookup_extended (old_cache, uid, &orig_key, &orig_value)) {
-					obj = icalcomponent_as_ical_string_r (subcomp);
-					e_cal_backend_notify_object_modified (E_CAL_BACKEND (cbhttp), (const gchar *) orig_value, obj);
-					g_free (obj);
+					ECalComponent *orig_comp = e_cal_component_new_from_string (orig_value);
+
+					e_cal_backend_notify_component_modified (E_CAL_BACKEND (cbhttp), orig_comp, comp);
+
 					g_hash_table_remove (old_cache, uid);
+					if (orig_comp)
+						g_object_unref (orig_comp);
 				} else {
-					obj = icalcomponent_as_ical_string_r (subcomp);
-					e_cal_backend_notify_object_created (E_CAL_BACKEND (cbhttp), obj);
-					g_free (obj);
+					e_cal_backend_notify_component_created (E_CAL_BACKEND (cbhttp), comp);
 				}
 			}
 
@@ -1059,16 +1056,16 @@ e_cal_backend_http_start_view (ECalBackend *backend,
 		: e_cal_backend_store_get_components (priv->store);
 
 	for (l = components; l != NULL; l = g_slist_next (l)) {
-		if (e_cal_backend_sexp_match_comp (cbsexp, E_CAL_COMPONENT (l->data), E_CAL_BACKEND (backend))) {
-			objects = g_slist_append (objects, e_cal_component_get_as_string (l->data));
+		ECalComponent *comp = l->data;
+
+		if (e_cal_backend_sexp_match_comp (cbsexp, comp, E_CAL_BACKEND (backend))) {
+			objects = g_slist_append (objects, comp);
 		}
 	}
 
-	e_data_cal_view_notify_objects_added (query, objects);
+	e_data_cal_view_notify_components_added (query, objects);
 
-	g_slist_foreach (components, (GFunc) g_object_unref, NULL);
-	g_slist_free (components);
-	g_slist_foreach (objects, (GFunc) g_free, NULL);
+	g_slist_free_full (components, g_object_unref);
 	g_slist_free (objects);
 	g_object_unref (cbsexp);
 
@@ -1267,7 +1264,7 @@ e_cal_backend_http_create_object (ECalBackendSync *backend,
                                   GCancellable *cancellable,
                                   const gchar *calobj,
                                   gchar **uid,
-                                  icalcomponent **new_component,
+                                  ECalComponent **new_component,
                                   GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
@@ -1279,8 +1276,8 @@ e_cal_backend_http_modify_object (ECalBackendSync *backend,
                                   GCancellable *cancellable,
                                   const gchar *calobj,
                                   CalObjModType mod,
-                                  icalcomponent **old_component,
-                                  icalcomponent **component,
+                                  ECalComponent **old_component,
+                                  ECalComponent **new_component,
                                   GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
@@ -1294,11 +1291,11 @@ e_cal_backend_http_remove_object (ECalBackendSync *backend,
                                   const gchar *uid,
                                   const gchar *rid,
                                   CalObjModType mod,
-                                  icalcomponent **old_component,
-                                  icalcomponent **component,
+                                  ECalComponent **old_component,
+                                  ECalComponent **new_component,
                                   GError **perror)
 {
-	*old_component = *component = NULL;
+	*old_component = *new_component = NULL;
 
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }

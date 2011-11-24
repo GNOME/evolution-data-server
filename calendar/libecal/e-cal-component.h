@@ -204,6 +204,7 @@ gchar *e_cal_component_gen_uid (void);
 ECalComponent *e_cal_component_new (void);
 
 ECalComponent *e_cal_component_new_from_string (const gchar *calobj);
+ECalComponent *e_cal_component_new_from_icalcomponent (icalcomponent *icalcomp);
 
 ECalComponent *e_cal_component_clone (ECalComponent *comp);
 

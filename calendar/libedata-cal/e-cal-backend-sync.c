@@ -309,7 +309,7 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
  * @cancellable: a #GCancellable for the operation
  * @calobj: The object to be added.
  * @uid: Placeholder for server-generated UID.
- * @new_component: (out) (transfer full): Placeholder for returned #icalcomponent.
+ * @new_component: (out) (transfer full): Placeholder for returned #ECalComponent.
  * @error: Out parameter for a #GError.
  *
  * Calls the create_object_sync method on the given backend.
@@ -320,7 +320,7 @@ e_cal_backend_sync_create_object (ECalBackendSync *backend,
                                   GCancellable *cancellable,
                                   const gchar *calobj,
                                   gchar **uid,
-                                  icalcomponent **new_component,
+                                  ECalComponent **new_component,
                                   GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
@@ -350,8 +350,8 @@ e_cal_backend_sync_modify_object (ECalBackendSync *backend,
                                   GCancellable *cancellable,
                                   const gchar *calobj,
                                   CalObjModType mod,
-                                  icalcomponent **old_component,
-                                  icalcomponent **new_component,
+                                  ECalComponent **old_component,
+                                  ECalComponent **new_component,
                                   GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
@@ -385,8 +385,8 @@ e_cal_backend_sync_remove_object (ECalBackendSync *backend,
                                   const gchar *uid,
                                   const gchar *rid,
                                   CalObjModType mod,
-                                  icalcomponent **old_component,
-                                  icalcomponent **new_component,
+                                  ECalComponent **old_component,
+                                  ECalComponent **new_component,
                                   GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
@@ -733,19 +733,19 @@ cal_backend_create_object (ECalBackend *backend,
 {
 	GError *error = NULL;
 	gchar *uid = NULL;
-	icalcomponent *new_component = NULL;
+	ECalComponent *new_component = NULL;
 
 	e_cal_backend_sync_create_object (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, &uid, &new_component, &error);
 
 	if (!new_component)
-		new_component = icalparser_parse_string (calobj);
+		new_component = e_cal_component_new_from_string (calobj);
 
 	e_data_cal_respond_create_object (cal, opid, error, uid, new_component);
 
 	g_free (uid);
 
 	if (new_component)
-		icalcomponent_free (new_component);
+		g_object_unref (new_component);
 }
 
 static void
@@ -757,20 +757,20 @@ cal_backend_modify_object (ECalBackend *backend,
                            CalObjModType mod)
 {
 	GError *error = NULL;
-	icalcomponent *old_component = NULL, *new_component = NULL;
+	ECalComponent *old_component = NULL, *new_component = NULL;
 
 	e_cal_backend_sync_modify_object (E_CAL_BACKEND_SYNC (backend), cal, cancellable, calobj, mod, &old_component, &new_component, &error);
 
 	if (!old_component)
-		old_component = icalparser_parse_string (calobj);
+		old_component = e_cal_component_new_from_string (calobj);
 
 	e_data_cal_respond_modify_object (cal, opid, error, old_component, new_component);
 
 	if (old_component)
-		icalcomponent_free (old_component);
+		g_object_unref (old_component);
 
 	if (new_component)
-		icalcomponent_free (new_component);
+		g_object_unref (new_component);
 }
 
 static void
@@ -783,7 +783,7 @@ cal_backend_remove_object (ECalBackend *backend,
                            CalObjModType mod)
 {
 	GError *error = NULL;
-	icalcomponent *old_component = NULL, *new_component = NULL;
+	ECalComponent *old_component = NULL, *new_component = NULL;
 	ECalComponentId compid;
 
 	compid.uid = (gchar *) uid;
@@ -794,10 +794,10 @@ cal_backend_remove_object (ECalBackend *backend,
 	e_data_cal_respond_remove_object (cal, opid, error, &compid, old_component, new_component);
 
 	if (old_component)
-		icalcomponent_free (old_component);
+		g_object_unref (old_component);
 
 	if (new_component)
-		icalcomponent_free (new_component);
+		g_object_unref (new_component);
 }
 
 static void

@@ -58,17 +58,20 @@ gboolean		e_data_cal_view_is_completed			(EDataCalView *view);
 gboolean		e_data_cal_view_is_stopped			(EDataCalView *view);
 GHashTable *		e_data_cal_view_get_fields_of_interest		(EDataCalView *view);
 
-gchar                  *e_data_cal_view_get_component_string            (EDataCalView *view, icalcomponent *component);
+gchar *			e_data_cal_view_get_component_string		(EDataCalView *view, /* const */ ECalComponent *component);
 
-void			e_data_cal_view_notify_components_added		(EDataCalView *view, const GSList *components);
-void			e_data_cal_view_notify_components_added_1       (EDataCalView *view, const icalcomponent *component);
-void			e_data_cal_view_notify_components_modified      (EDataCalView *view, const GSList *components);
-void			e_data_cal_view_notify_components_modified_1    (EDataCalView *view, const icalcomponent *component);
+void			e_data_cal_view_notify_components_added		(EDataCalView *view, const GSList *ecalcomponents);
+void			e_data_cal_view_notify_components_added_1	(EDataCalView *view, /* const */ ECalComponent *component);
+void			e_data_cal_view_notify_components_modified	(EDataCalView *view, const GSList *ecalcomponents);
+void			e_data_cal_view_notify_components_modified_1	(EDataCalView *view, /* const */ ECalComponent *component);
 
+#ifndef E_CAL_DISABLE_DEPRECATED
 void			e_data_cal_view_notify_objects_added		(EDataCalView *view, const GSList *objects);
 void			e_data_cal_view_notify_objects_added_1		(EDataCalView *view, const gchar *object);
 void			e_data_cal_view_notify_objects_modified		(EDataCalView *view, const GSList *objects);
 void			e_data_cal_view_notify_objects_modified_1	(EDataCalView *view, const gchar *object);
+#endif
+
 void			e_data_cal_view_notify_objects_removed		(EDataCalView *view, const GSList *ids);
 void			e_data_cal_view_notify_objects_removed_1	(EDataCalView *view, const ECalComponentId *id);
 void			e_data_cal_view_notify_progress			(EDataCalView *view, gint percent, const gchar *message);

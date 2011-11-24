@@ -173,9 +173,7 @@ finished_retrieval_cb (WeatherInfo *info,
 {
 	ECalBackendWeatherPrivate *priv;
 	ECalComponent *comp;
-	icalcomponent *icomp;
-	GSList *l;
-	gchar *obj;
+	GSList *comps, *l;
 
 	priv = cbw->priv;
 
@@ -185,26 +183,20 @@ finished_retrieval_cb (WeatherInfo *info,
 	}
 
 	/* update cache */
-	l = e_cal_backend_store_get_components (priv->store);
+	comps = e_cal_backend_store_get_components (priv->store);
 
-	for (; l != NULL; l = g_slist_next (l)) {
+	for (l = comps; l != NULL; l = g_slist_next (l)) {
 		ECalComponentId *id;
-		gchar *obj;
 
-		icomp = e_cal_component_get_icalcomponent (E_CAL_COMPONENT (l->data));
-		id = e_cal_component_get_id (E_CAL_COMPONENT (l->data));
+		comp = E_CAL_COMPONENT (l->data);
+		id = e_cal_component_get_id (comp);
 
-		obj = icalcomponent_as_ical_string_r (icomp);
-		e_cal_backend_notify_object_removed (E_CAL_BACKEND (cbw),
-			id,
-			obj,
-			NULL);
+		e_cal_backend_notify_component_removed (E_CAL_BACKEND (cbw), id, comp, NULL);
 
 		e_cal_component_free_id (id);
-		g_free (obj);
-		g_object_unref (G_OBJECT (l->data));
+		g_object_unref (comp);
 	}
-	g_slist_free (l);
+	g_slist_free (comps);
 	e_cal_backend_store_clean (priv->store);
 
 	comp = create_weather (cbw, info, FALSE);
@@ -212,10 +204,7 @@ finished_retrieval_cb (WeatherInfo *info,
 		GSList *forecasts;
 
 		put_component_to_store (cbw, comp);
-		icomp = e_cal_component_get_icalcomponent (comp);
-		obj = icalcomponent_as_ical_string_r (icomp);
-		e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
-		g_free (obj);
+		e_cal_backend_notify_component_created (E_CAL_BACKEND (cbw), comp);
 		g_object_unref (comp);
 
 		forecasts = weather_info_get_forecast_list (info);
@@ -230,10 +219,7 @@ finished_retrieval_cb (WeatherInfo *info,
 					comp = create_weather (cbw, nfo, TRUE);
 					if (comp) {
 						put_component_to_store (cbw, comp);
-						icomp = e_cal_component_get_icalcomponent (comp);
-						obj = icalcomponent_as_ical_string_r (icomp);
-						e_cal_backend_notify_object_created (E_CAL_BACKEND (cbw), obj);
-						g_free (obj);
+						e_cal_backend_notify_component_created (E_CAL_BACKEND (cbw), comp);
 						g_object_unref (comp);
 					}
 				}
@@ -773,15 +759,13 @@ e_cal_backend_weather_start_view (ECalBackend *backend,
 
 	for (l = components; l != NULL; l = g_slist_next (l)) {
 		if (e_cal_backend_sexp_match_comp (sexp, E_CAL_COMPONENT (l->data), backend))
-			objects = g_slist_append (objects, e_cal_component_get_as_string (l->data));
+			objects = g_slist_prepend (objects, l->data);
 	}
 
 	if (objects)
-		e_data_cal_view_notify_objects_added (query, objects);
+		e_data_cal_view_notify_components_added (query, objects);
 
-	g_slist_foreach (components, (GFunc) g_object_unref, NULL);
-	g_slist_free (components);
-	g_slist_foreach (objects, (GFunc) g_free, NULL);
+	g_slist_free_full (components, g_object_unref);
 	g_slist_free (objects);
 
 	e_data_cal_view_notify_complete (query, NULL /* Success */);

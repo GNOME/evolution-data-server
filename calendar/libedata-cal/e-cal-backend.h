@@ -225,18 +225,24 @@ icaltimezone *	e_cal_backend_internal_get_timezone	(ECalBackend *backend, const 
 void		e_cal_backend_start_view		(ECalBackend *backend, EDataCalView *view);
 void		e_cal_backend_stop_view			(ECalBackend *backend, EDataCalView *view);
 
-void		e_cal_backend_notify_component_created	(ECalBackend *backend, const icalcomponent *component);
-void		e_cal_backend_notify_components_added	(ECalBackend *backend, EDataCalView *view, const GSList *components);
-void		e_cal_backend_notify_component_modified	(ECalBackend *backend, const icalcomponent *old_component, const icalcomponent *new_component);
-void		e_cal_backend_notify_components_modified (ECalBackend *backend, EDataCalView *view, const GSList *components);
-void		e_cal_backend_notify_component_removed	(ECalBackend *backend, const ECalComponentId *id, const icalcomponent *old_component, const icalcomponent *component);
+void		e_cal_backend_notify_component_created	(ECalBackend *backend,
+							 /* const */ ECalComponent *component);
+void		e_cal_backend_notify_component_modified	(ECalBackend *backend,
+							 /* const */ ECalComponent *old_component,
+							 /* const */ ECalComponent *new_component);
+void		e_cal_backend_notify_component_removed	(ECalBackend *backend,
+							 const ECalComponentId *id,
+							 /* const */ ECalComponent *old_component,
+							 /* const */ ECalComponent *new_component);
 
+#ifndef E_CAL_DISABLE_DEPRECATED
 void		e_cal_backend_notify_object_created	(ECalBackend *backend, const gchar *calobj);
 void		e_cal_backend_notify_objects_added	(ECalBackend *backend, EDataCalView *view, const GSList *objects);
 void		e_cal_backend_notify_object_modified	(ECalBackend *backend, const gchar *old_object, const gchar *object);
 void		e_cal_backend_notify_objects_modified	(ECalBackend *backend, EDataCalView *view, const GSList *objects);
 void		e_cal_backend_notify_object_removed	(ECalBackend *backend, const ECalComponentId *id, const gchar *old_object, const gchar *new_object);
 void		e_cal_backend_notify_objects_removed	(ECalBackend *backend, EDataCalView *view, const GSList *ids);
+#endif
 
 void		e_cal_backend_notify_error		(ECalBackend *backend, const gchar *message);
 void		e_cal_backend_notify_readonly		(ECalBackend *backend, gboolean is_readonly);

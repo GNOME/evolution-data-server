@@ -1167,7 +1167,7 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
  * @uid: UID of the object created.
- * @component: The newly created #icalcomponent.
+ * @new_component: The newly created #ECalComponent.
  *
  * Notifies listeners of the completion of the create_object method call.
  *
@@ -1178,7 +1178,7 @@ e_data_cal_respond_create_object (EDataCal *cal,
                                   guint32 opid,
                                   GError *error,
                                   const gchar *uid,
-                                  icalcomponent *component)
+                                  /* const */ ECalComponent *new_component)
 {
 	gchar *gdbus_uid = NULL;
 
@@ -1193,15 +1193,15 @@ e_data_cal_respond_create_object (EDataCal *cal,
 	if (error)
 		g_error_free (error);
 	else
-		e_cal_backend_notify_component_created (cal->priv->backend, component);
+		e_cal_backend_notify_component_created (cal->priv->backend, new_component);
 }
 
 /**
  * e_data_cal_respond_modify_object:
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
- * @old_component: The old #icalcomponent.
- * @component: The new #icalcomponent.
+ * @old_component: The old #ECalComponent.
+ * @new_component: The new #ECalComponent.
  *
  * Notifies listeners of the completion of the modify_object method call.
  *
@@ -1211,8 +1211,8 @@ void
 e_data_cal_respond_modify_object (EDataCal *cal,
                                   guint32 opid,
                                   GError *error,
-                                  icalcomponent *old_component,
-                                  icalcomponent *component)
+                                  /* const */ ECalComponent *old_component,
+                                  /* const */ ECalComponent *new_component)
 {
 	op_complete (cal, opid);
 
@@ -1224,7 +1224,7 @@ e_data_cal_respond_modify_object (EDataCal *cal,
 	if (error)
 		g_error_free (error);
 	else
-		e_cal_backend_notify_component_modified (cal->priv->backend, old_component, component);
+		e_cal_backend_notify_component_modified (cal->priv->backend, old_component, new_component);
 }
 
 /**
@@ -1232,8 +1232,8 @@ e_data_cal_respond_modify_object (EDataCal *cal,
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
  * @id: ID of the removed object.
- * @old_component: The old #icalcomponent.
- * @component: The new #icalcomponent. This will not be NULL only
+ * @old_component: The old #ECalComponent.
+ * @new_component: The new #ECalComponent. This will not be NULL only
  * when removing instances of a recurring appointment.
  *
  * Notifies listeners of the completion of the remove_object method call.
@@ -1245,8 +1245,8 @@ e_data_cal_respond_remove_object (EDataCal *cal,
                                   guint32 opid,
                                   GError *error,
                                   const ECalComponentId *id,
-                                  icalcomponent *old_component,
-                                  icalcomponent *component)
+                                  /* const */ ECalComponent *old_component,
+                                  /* const */ ECalComponent *new_component)
 {
 	op_complete (cal, opid);
 
@@ -1258,7 +1258,7 @@ e_data_cal_respond_remove_object (EDataCal *cal,
 	if (error)
 		g_error_free (error);
 	else
-		e_cal_backend_notify_component_removed (cal->priv->backend, id, old_component, component);
+		e_cal_backend_notify_component_removed (cal->priv->backend, id, old_component, new_component);
 }
 
 /**

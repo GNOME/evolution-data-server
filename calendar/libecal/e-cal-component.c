@@ -466,7 +466,6 @@ e_cal_component_new (void)
 ECalComponent *
 e_cal_component_new_from_string (const gchar *calobj)
 {
-	ECalComponent *comp;
 	icalcomponent *icalcomp;
 
 	g_return_val_if_fail (calobj != NULL, NULL);
@@ -474,6 +473,31 @@ e_cal_component_new_from_string (const gchar *calobj)
 	icalcomp = icalparser_parse_string (calobj);
 	if (!icalcomp)
 		return NULL;
+
+	return e_cal_component_new_from_icalcomponent (icalcomp);
+}
+
+/**
+ * e_cal_component_new_from_icalcomponent:
+ * @icalcomp: An #icalcomponent to use
+ *
+ * Creates a new #ECalComponent which will has set @icalcomp as
+ * an inner #icalcomponent. The newly created #ECalComponent takes
+ * ownership of the @icalcomp, and if the call
+ * to e_cal_component_set_icalcomponent() fails, then @icalcomp
+ * is freed.
+ *
+ * Returns: An #ECalComponet with @icalcomp assigned on success,
+ * NULL if the @icalcomp cannot be assigned to #ECalComponent.
+ *
+ * Since: 3.4
+ **/
+ECalComponent *
+e_cal_component_new_from_icalcomponent (icalcomponent *icalcomp)
+{
+	ECalComponent *comp;
+
+	g_return_val_if_fail (icalcomp != NULL, NULL);
 
 	comp = e_cal_component_new ();
 	if (!e_cal_component_set_icalcomponent (comp, icalcomp)) {
