@@ -148,7 +148,6 @@ dnl ******************************
 AS_COMPILER_FLAGS(WARNING_FLAGS,
 	"-DPANGO_DISABLE_DEPRECATED
 	-DGDK_PIXBUF_DISABLE_DEPRECATED
-	-DGSEAL_ENABLE
 	-Wall -Wextra
 	-Wno-missing-field-initializers
 	-Wno-sign-compare
