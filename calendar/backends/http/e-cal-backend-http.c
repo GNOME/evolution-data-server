@@ -93,6 +93,17 @@ e_cal_backend_http_dispose (GObject *object)
 	cbhttp = E_CAL_BACKEND_HTTP (object);
 	priv = cbhttp->priv;
 
+	if (priv->reload_timeout_id) {
+		g_source_remove (priv->reload_timeout_id);
+		priv->reload_timeout_id = 0;
+	}
+
+	if (priv->soup_session) {
+		soup_session_abort (priv->soup_session);
+		g_object_unref (priv->soup_session);
+		priv->soup_session = NULL;
+	}
+
 	e_credentials_free (priv->credentials);
 	priv->credentials = NULL;
 
@@ -128,17 +139,6 @@ e_cal_backend_http_finalize (GObject *object)
 	if (priv->uri) {
 		g_free (priv->uri);
 		priv->uri = NULL;
-	}
-
-	if (priv->soup_session) {
-		soup_session_abort (priv->soup_session);
-		g_object_unref (priv->soup_session);
-		priv->soup_session = NULL;
-	}
-
-	if (priv->reload_timeout_id) {
-		g_source_remove (priv->reload_timeout_id);
-		priv->reload_timeout_id = 0;
 	}
 
 	g_free (priv);
