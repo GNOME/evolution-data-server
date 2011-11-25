@@ -928,10 +928,12 @@ ep_sys_proxy_socks_changed_cb (GSettings *settings,
 static void
 e_proxy_dispose (GObject *object)
 {
+	EProxy *proxy;
 	EProxyPrivate *priv;
 	GConfClient * client;
 
-	priv = E_PROXY (object)->priv;
+	proxy = E_PROXY (object);
+	priv = proxy->priv;
 
 	client = gconf_client_get_default ();
 
@@ -943,21 +945,25 @@ e_proxy_dispose (GObject *object)
 	g_object_unref (client);
 
 	if (priv->proxy_settings) {
+		g_signal_handlers_disconnect_by_func (priv->proxy_settings, ep_sys_proxy_changed_cb, proxy);
 		g_object_unref (priv->proxy_settings);
 		priv->proxy_settings = NULL;
 	}
 
 	if (priv->proxy_http_settings) {
+		g_signal_handlers_disconnect_by_func (priv->proxy_http_settings, ep_sys_proxy_http_changed_cb, proxy);
 		g_object_unref (priv->proxy_http_settings);
 		priv->proxy_http_settings = NULL;
 	}
 
 	if (priv->proxy_https_settings) {
+		g_signal_handlers_disconnect_by_func (priv->proxy_https_settings, ep_sys_proxy_https_changed_cb, proxy);
 		g_object_unref (priv->proxy_https_settings);
 		priv->proxy_https_settings = NULL;
 	}
 
 	if (priv->proxy_socks_settings) {
+		g_signal_handlers_disconnect_by_func (priv->proxy_socks_settings, ep_sys_proxy_socks_changed_cb, proxy);
 		g_object_unref (priv->proxy_socks_settings);
 		priv->proxy_socks_settings = NULL;
 	}
