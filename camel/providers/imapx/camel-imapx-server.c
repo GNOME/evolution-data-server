@@ -226,8 +226,11 @@ struct _imapx_flag_change {
 };
 
 typedef struct _CamelIMAPXJob CamelIMAPXJob;
+
 struct _CamelIMAPXJob {
-	CamelMsg msg;
+	GCond *done_cond;
+	GMutex *done_mutex;
+	gboolean done_flag;
 
 	GCancellable *cancellable;
 	GError *error;
@@ -1226,14 +1229,16 @@ imapx_is_job_in_queue (CamelIMAPXServer *is,
                        guint32 type,
                        const gchar *uid)
 {
-	CamelDListNode *node;
+	GList *head, *link;
 	CamelIMAPXJob *job = NULL;
 	gboolean found = FALSE;
 
 	QUEUE_LOCK (is);
 
-	for (node = is->jobs.head; node->next; node = job->msg.ln.next) {
-		job = (CamelIMAPXJob *) node;
+	head = g_queue_peek_head_link (&is->jobs);
+
+	for (link = head; link != NULL; link = g_list_next (link)) {
+		job = (CamelIMAPXJob *) link->data;
 
 		if (!job || !(job->type & type))
 			continue;
@@ -2183,6 +2188,8 @@ imapx_job_new (GCancellable *cancellable)
 		g_object_ref (cancellable);
 
 	job = g_malloc0 (sizeof (CamelIMAPXJob));
+	job->done_cond = g_cond_new ();
+	job->done_mutex = g_mutex_new ();
 	job->cancellable = cancellable;
 
 	return job;
@@ -2193,6 +2200,9 @@ imapx_job_free (CamelIMAPXJob *job)
 {
 	if (!job)
 		return;
+
+	g_cond_free (job->done_cond);
+	g_mutex_free (job->done_mutex);
 
 	g_clear_error (&job->error);
 
@@ -2216,13 +2226,17 @@ imapx_job_done (CamelIMAPXServer *is,
                 CamelIMAPXJob *job)
 {
 	QUEUE_LOCK (is);
-	camel_dlist_remove ((CamelDListNode *) job);
+	g_queue_remove (&is->jobs, job);
 	QUEUE_UNLOCK (is);
 
 	if (job->noreply)
 		imapx_job_free (job);
-	else
-		camel_msgport_reply ((CamelMsg *) job);
+	else {
+		g_mutex_lock (job->done_mutex);
+		job->done_flag = TRUE;
+		g_cond_broadcast (job->done_cond);
+		g_mutex_unlock (job->done_mutex);
+	}
 }
 
 static gboolean
@@ -2232,7 +2246,7 @@ imapx_register_job (CamelIMAPXServer *is,
 {
 	if (is->state >= IMAPX_INITIALISED) {
 		QUEUE_LOCK (is);
-		camel_dlist_addhead (&is->jobs, (CamelDListNode *) job);
+		g_queue_push_head (&is->jobs, job);
 		QUEUE_UNLOCK (is);
 
 	} else {
@@ -2252,23 +2266,18 @@ imapx_run_job (CamelIMAPXServer *is,
                CamelIMAPXJob *job,
                GError **error)
 {
-	CamelMsgPort *reply = NULL;
+	g_warn_if_fail (job->done_flag == FALSE);
 
-	if (!job->noreply) {
-		reply = camel_msgport_new ();
-		job->msg.reply_port = reply;
-	}
+	if (g_cancellable_set_error_if_cancelled (is->cancellable, error))
+		return FALSE;
 
-	/* Any exceptions to the start should be reported async through our reply msgport */
 	job->start (is, job);
 
 	if (!job->noreply) {
-		CamelMsg *completed;
-
-		completed = camel_msgport_pop (reply);
-		camel_msgport_destroy (reply);
-
-		g_assert (completed == (CamelMsg *) job);
+		g_mutex_lock (job->done_mutex);
+		while (!job->done_flag)
+			g_cond_wait (job->done_cond, job->done_mutex);
+		g_mutex_unlock (job->done_mutex);
 	}
 
 	if (job->error != NULL) {
@@ -5240,7 +5249,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	camel_dlist_init (&is->queue);
 	camel_dlist_init (&is->active);
 	camel_dlist_init (&is->done);
-	camel_dlist_init (&is->jobs);
+	g_queue_init (&is->jobs);
 
 	/* not used at the moment. Use it in future */
 	is->job_timeout = 29 * 60 * 1000 * 1000;
@@ -6071,16 +6080,18 @@ IMAPXJobQueueInfo *
 camel_imapx_server_get_job_queue_info (CamelIMAPXServer *is)
 {
 	IMAPXJobQueueInfo *jinfo = g_new0 (IMAPXJobQueueInfo, 1);
-	CamelDListNode *node;
 	CamelIMAPXJob *job = NULL;
+	GList *head, *link;
 
 	QUEUE_LOCK (is);
 
-	jinfo->queue_len = camel_dlist_length (&is->jobs);
+	jinfo->queue_len = g_queue_get_length (&is->jobs);
 	jinfo->folders = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
 
-	for (node = is->jobs.head; node->next; node = job->msg.ln.next) {
-		job = (CamelIMAPXJob *) node;
+	head = g_queue_peek_head_link (&is->jobs);
+
+	for (link = head; link != NULL; link = g_list_next (link)) {
+		job = (CamelIMAPXJob *) link->data;
 
 		if (job->folder) {
 			const gchar *full_name = camel_folder_get_full_name (job->folder);

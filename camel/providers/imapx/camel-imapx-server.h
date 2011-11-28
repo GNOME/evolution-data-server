@@ -70,8 +70,8 @@ struct _CamelIMAPXServer {
 	CamelIMAPXNamespaceList *nsl;
 
 	/* incoming jobs */
-	CamelMsgPort *port;
-	CamelDList jobs;
+	GQueue jobs;
+
 	/* in micro seconds */
 	guint job_timeout;
 
