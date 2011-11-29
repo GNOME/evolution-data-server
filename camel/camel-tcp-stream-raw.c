@@ -276,21 +276,32 @@ _set_g_error_from_errno (GError **error,
 static void
 tcp_stream_set_error_from_pr_error (GError **error)
 {
-	gchar *error_message;
+	gchar *error_message = NULL;
 	PRInt32 length;
 
 	length = PR_GetErrorTextLength ();
-	g_return_if_fail (length > 0);
-
-	error_message = g_malloc0 (length + 1);
-	PR_GetErrorText (error_message);
+	if (length > 0) {
+		error_message = g_malloc0 (length + 1);
+		PR_GetErrorText (error_message);
+	} else {
+		g_warning (
+			"NSPR error code %d has no text",
+			PR_GetError ());
+	}
 
 	_set_errno_from_pr_error (PR_GetError ());
 
-	g_set_error_literal (
-		error, G_IO_ERROR,
-		g_io_error_from_errno (errno),
-		error_message);
+	if (error_message != NULL)
+		g_set_error_literal (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			error_message);
+	else
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("NSPR error code %d"),
+			PR_GetError ());
 
 	g_free (error_message);
 }
