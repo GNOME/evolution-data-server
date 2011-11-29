@@ -54,8 +54,11 @@ struct _CamelFolderPrivate {
 	GStaticMutex change_lock;
 	/* must require the 'change_lock' to access this */
 	gint frozen;
-	struct _CamelFolderChangeInfo *changed_frozen; /* queues changed events */
+	CamelFolderChangeInfo *changed_frozen; /* queues changed events */
 	gboolean skip_folder_lock;
+
+	/* Changes to be emitted from an idle callback. */
+	CamelFolderChangeInfo *pending_changes;
 
 	gpointer parent_store;  /* weak pointer */
 
@@ -88,7 +91,6 @@ struct _CamelFolderChangeInfoPrivate {
 
 struct _SignalData {
 	CamelFolder *folder;
-	CamelFolderChangeInfo *changes;
 	gchar *folder_name;
 };
 
@@ -159,9 +161,6 @@ signal_data_free (SignalData *data)
 	if (data->folder != NULL)
 		g_object_unref (data->folder);
 
-	if (data->changes != NULL)
-		camel_folder_change_info_free (data->changes);
-
 	g_free (data->folder_name);
 
 	g_slice_free (SignalData, data);
@@ -170,7 +169,16 @@ signal_data_free (SignalData *data)
 static gboolean
 folder_emit_changed_cb (SignalData *data)
 {
-	g_signal_emit (data->folder, signals[CHANGED], 0, data->changes);
+	CamelFolderChangeInfo *changes;
+
+	camel_folder_lock (data->folder, CAMEL_FOLDER_CHANGE_LOCK);
+	changes = data->folder->priv->pending_changes;
+	data->folder->priv->pending_changes = NULL;
+	camel_folder_unlock (data->folder, CAMEL_FOLDER_CHANGE_LOCK);
+
+	g_signal_emit (data->folder, signals[CHANGED], 0, changes);
+
+	camel_folder_change_info_free (changes);
 
 	return FALSE;
 }
@@ -548,6 +556,9 @@ folder_finalize (GObject *object)
 	g_free (priv->description);
 
 	camel_folder_change_info_free (priv->changed_frozen);
+
+	if (priv->pending_changes != NULL)
+		camel_folder_change_info_free (priv->pending_changes);
 
 	g_static_rec_mutex_free (&priv->lock);
 	g_static_mutex_free (&priv->change_lock);
@@ -2690,7 +2701,7 @@ camel_folder_rename (CamelFolder *folder,
  * @changes: change information for @folder
  *
  * Emits the #CamelFolder::changed signal from an idle source on the
- * main loop.  The idle source's priority is #G_PRIORITY_DEFAULT_IDLE.
+ * main loop.  The idle source's priority is #G_PRIORITY_LOW.
  *
  * Since: 2.32
  **/
@@ -2698,7 +2709,7 @@ void
 camel_folder_changed (CamelFolder *folder,
                       CamelFolderChangeInfo *changes)
 {
-	SignalData *data;
+	CamelFolderChangeInfo *pending_changes;
 
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 	g_return_if_fail (changes != NULL);
@@ -2710,16 +2721,34 @@ camel_folder_changed (CamelFolder *folder,
 		return;
 	}
 
-	data = g_slice_new0 (SignalData);
-	data->folder = g_object_ref (folder);
-	data->changes = camel_folder_change_info_new ();
+	/* If a "changed" signal has already been scheduled but not yet
+	 * emitted, just append our changes to the pending changes, and
+	 * skip scheduling our own "changed" signal.  This helps to cut
+	 * down on the frequency of signal emissions so virtual folders
+	 * won't have to work so hard. */
 
-	camel_folder_change_info_cat (data->changes, changes);
+	camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 
-	g_idle_add_full (
-		G_PRIORITY_DEFAULT_IDLE,
-		(GSourceFunc) folder_emit_changed_cb,
-		data, (GDestroyNotify) signal_data_free);
+	pending_changes = folder->priv->pending_changes;
+
+	if (pending_changes == NULL) {
+		SignalData *data;
+
+		pending_changes = camel_folder_change_info_new ();
+		folder->priv->pending_changes = pending_changes;
+
+		data = g_slice_new0 (SignalData);
+		data->folder = g_object_ref (folder);
+
+		g_idle_add_full (
+			G_PRIORITY_LOW,
+			(GSourceFunc) folder_emit_changed_cb,
+			data, (GDestroyNotify) signal_data_free);
+	}
+
+	camel_folder_change_info_cat (pending_changes, changes);
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 }
 
 /**
