@@ -334,6 +334,7 @@ dnl Check for base dependencies early.
 dnl ***********************************
 PKG_CHECK_MODULES(GNOME_PLATFORM,
 	[gio-2.0 >= glib_minimum_version
+	gmodule-2.0 >= glib_minimum_version
 	gtk+-3.0 >= gtk_minimum_version
 	gconf-2.0 >= gconf_minimum_version
 	libxml-2.0 >= libxml_minimum_version
@@ -1272,7 +1273,7 @@ PKG_CHECK_MODULES(SQLITE3, [sqlite3 >= sqlite_minimum_version])
 dnl ******************************
 dnl libedataserver flags
 dnl ******************************
-E_DATA_SERVER_DEPS="gio-2.0 libxml-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
+E_DATA_SERVER_DEPS="gio-2.0 gmodule-2.0 libxml-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $MANUAL_NSPR_CFLAGS, $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)
@@ -1294,7 +1295,7 @@ if test "x$enable_maintainer_mode" = "xyes" ; then
 	AC_SUBST(FACTORY_GTK_LIBS)
 fi
 
-E_BACKEND_DEPS="gio-2.0 libxml-2.0 gconf-2.0"
+E_BACKEND_DEPS="gio-2.0 gmodule-2.0 libxml-2.0 gconf-2.0"
 
 dnl ******************************
 dnl libebackend flags
@@ -1437,7 +1438,7 @@ fi
 
 AM_CONDITIONAL(ENABLE_LARGEFILE, [test "x$enable_largefile" = "xyes"])
 
-EVO_SET_COMPILE_FLAGS(CAMEL, gio-2.0 $mozilla_nss sqlite3 >= sqlite_minimum_version, $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS, -lz $KRB5_LIBS $MANUAL_NSS_LIBS)
+EVO_SET_COMPILE_FLAGS(CAMEL, gio-2.0 gmodule-2.0 $mozilla_nss sqlite3 >= sqlite_minimum_version, $KRB5_CFLAGS $MANUAL_NSS_CFLAGS $LARGEFILE_CFLAGS, -lz $KRB5_LIBS $MANUAL_NSS_LIBS)
 AC_SUBST(CAMEL_CFLAGS)
 AC_SUBST(CAMEL_LIBS)
 
