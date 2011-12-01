@@ -3163,7 +3163,9 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 
 		camel_imapx_command_free (ic);
 
-		if (camel_tcp_stream_ssl_enable_ssl (CAMEL_TCP_STREAM_SSL (tcp_stream), &local_error) == -1) {
+		if (camel_tcp_stream_ssl_enable_ssl (
+			CAMEL_TCP_STREAM_SSL (tcp_stream),
+			cancellable, &local_error) == -1) {
 			g_prefix_error (
 				&local_error,
 				_("Failed to connect to IMAP server %s in secure mode: "),

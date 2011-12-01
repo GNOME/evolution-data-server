@@ -426,6 +426,13 @@ get_nickname (CERTCertificate *cert)
 }
 #endif
 
+static void
+tcp_stream_cancelled (GCancellable *cancellable,
+                      PRThread *thread)
+{
+	PR_Interrupt (thread);
+}
+
 static SECStatus
 ssl_bad_cert (gpointer data,
               PRFileDesc *sockfd)
@@ -718,21 +725,38 @@ enable_ssl_or_close_fd (CamelTcpStreamSSL *ssl,
 
 static gboolean
 rehandshake_ssl (PRFileDesc *fd,
+                 GCancellable *cancellable,
                  GError **error)
 {
-	if (SSL_ResetHandshake (fd, FALSE) == SECFailure) {
+	SECStatus status = SECSuccess;
+	gulong cancel_id = 0;
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		return FALSE;
+
+	if (G_IS_CANCELLABLE (cancellable))
+		cancel_id = g_cancellable_connect (
+			cancellable, G_CALLBACK (tcp_stream_cancelled),
+			PR_GetCurrentThread (), (GDestroyNotify) NULL);
+
+	if (status == SECSuccess)
+		status = SSL_ResetHandshake (fd, FALSE);
+
+	if (status == SECSuccess)
+		status = SSL_ForceHandshake (fd);
+
+	if (cancel_id > 0)
+		g_cancellable_disconnect (cancellable, cancel_id);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		status = SECFailure;
+
+	} else if (status == SECFailure) {
 		_set_errno_from_pr_error (PR_GetError ());
 		_set_g_error_from_errno (error, FALSE);
-		return FALSE;
 	}
 
-	if (SSL_ForceHandshake (fd) == SECFailure) {
-		_set_errno_from_pr_error (PR_GetError ());
-		_set_g_error_from_errno (error, FALSE);
-		return FALSE;
-	}
-
-	return TRUE;
+	return (status == SECSuccess);
 }
 
 static gint
@@ -767,7 +791,7 @@ tcp_stream_ssl_connect (CamelTcpStream *stream,
 		} else {
 			d (g_print ("  re-handshaking SSL\n"));
 
-			if (!rehandshake_ssl (ssl_fd, error)) {
+			if (!rehandshake_ssl (ssl_fd, cancellable, error)) {
 				d (g_print ("  failed\n"));
 				return -1;
 			}
@@ -865,6 +889,7 @@ camel_tcp_stream_ssl_new_raw (CamelSession *session,
 /**
  * camel_tcp_stream_ssl_enable_ssl:
  * @ssl: a #CamelTcpStreamSSL object
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Toggles an ssl-capable stream into ssl mode (if it isn't already).
@@ -873,6 +898,7 @@ camel_tcp_stream_ssl_new_raw (CamelSession *session,
  **/
 gint
 camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	PRFileDesc *fd, *ssl_fd;
@@ -891,7 +917,7 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl,
 		_camel_tcp_stream_raw_replace_file_desc (CAMEL_TCP_STREAM_RAW (ssl), ssl_fd);
 		ssl->priv->ssl_mode = TRUE;
 
-		if (!rehandshake_ssl (ssl_fd, error))
+		if (!rehandshake_ssl (ssl_fd, cancellable, error))
 			return -1;
 	}
 

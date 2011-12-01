@@ -73,6 +73,7 @@ CamelStream *	camel_tcp_stream_ssl_new_raw	(CamelSession *session,
 						 const gchar *expected_host,
 						 CamelTcpStreamSSLFlags flags);
 gint		camel_tcp_stream_ssl_enable_ssl	(CamelTcpStreamSSL *ssl,
+						 GCancellable *cancellable,
 						 GError **error);
 
 G_END_DECLS

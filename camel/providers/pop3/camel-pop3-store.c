@@ -176,7 +176,7 @@ connect_to_server (CamelService *service,
 
 	/* Okay, now toggle SSL/TLS mode */
 	ret = camel_tcp_stream_ssl_enable_ssl (
-		CAMEL_TCP_STREAM_SSL (tcp_stream), error);
+		CAMEL_TCP_STREAM_SSL (tcp_stream), cancellable, error);
 
 	if (ret == -1) {
 		g_prefix_error (
