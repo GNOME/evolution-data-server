@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.3.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-19 11:53+0100\n"
-"PO-Revision-Date: 2011-11-19 11:55+0100\n"
+"POT-Creation-Date: 2011-12-01 17:44+0100\n"
+"PO-Revision-Date: 2011-12-01 17:58+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -26,11 +26,11 @@ msgstr ""
 #: ../addressbook/libedata-book/e-data-book.c:441
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:527
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:556
-#: ../calendar/backends/http/e-cal-backend-http.c:430
+#: ../calendar/backends/http/e-cal-backend-http.c:427
 #: ../calendar/libecal/e-cal.c:4595 ../calendar/libecal/e-cal-client.c:147
 #: ../camel/providers/imap/camel-imap-command.c:489
 #: ../camel/providers/imap/camel-imap-store.c:449
-#: ../camel/providers/imapx/camel-imapx-server.c:2309
+#: ../camel/providers/imapx/camel-imapx-server.c:2318
 #: ../libedataserver/e-client.c:161
 msgid "Unknown error"
 msgstr "Ukjent feil"
@@ -239,8 +239,8 @@ msgstr "Klarte ikke å kjøre fabrikk for bok"
 #: ../addressbook/libedata-book/e-data-book-factory.c:196
 #: ../addressbook/libedata-book/e-data-book-factory.c:228
 #: ../calendar/libecal/e-cal-client.c:610
-#: ../calendar/libedata-cal/e-data-cal-factory.c:215
-#: ../calendar/libedata-cal/e-data-cal-factory.c:244
+#: ../calendar/libedata-cal/e-data-cal-factory.c:213
+#: ../calendar/libedata-cal/e-data-cal-factory.c:242
 #, c-format
 msgid "Invalid source"
 msgstr "Ugyldig kilde"
@@ -719,7 +719,7 @@ msgid "Birth Date"
 msgstr "Fødselsdato"
 
 #: ../addressbook/libebook/e-contact.c:266
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:764
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:769
 msgid "Anniversary"
 msgstr "Jubileum"
 
@@ -1042,7 +1042,7 @@ msgstr "Kan ikke fjerne kontakter: "
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:184
 #: ../addressbook/libedata-book/e-data-book-factory.c:212
-#: ../calendar/libedata-cal/e-data-cal-factory.c:231
+#: ../calendar/libedata-cal/e-data-cal-factory.c:229
 #, c-format
 msgid "Empty URI"
 msgstr "Tom URI"
@@ -1057,8 +1057,8 @@ msgstr "Tjener kan ikke nås (%s)"
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Uventet HTTP-statuskode %d mottatt (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2181
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2540
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2167
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2526
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1067,92 +1067,92 @@ msgstr ""
 "Tjeneren kan ikke nås. Kalender åpnes i skrivebeskyttet modus.\n"
 "Feilmelding: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4494
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4485
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalender støtter ikke ledig/opptatt"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:766
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:771
 msgid "Birthday"
 msgstr "Fødselsdag"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:796
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:801
 #, c-format
 msgid "Birthday: %s"
 msgstr "Fødselsdag: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:821
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:826
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Bryllupsdag: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:241
+#: ../calendar/backends/file/e-cal-backend-file.c:248
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Kan ikke lagre kalenderdata: Feil i URI."
 
-#: ../calendar/backends/file/e-cal-backend-file.c:248
-#: ../calendar/backends/file/e-cal-backend-file.c:254
+#: ../calendar/backends/file/e-cal-backend-file.c:255
+#: ../calendar/backends/file/e-cal-backend-file.c:261
 msgid "Cannot save calendar data"
 msgstr "Kan ikke lagre kalenderdata"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:413
+#: ../calendar/backends/http/e-cal-backend-http.c:410
 msgid "Redirected to Invalid URI"
 msgstr "Omdirigert til ugyldig URI"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:451
+#: ../calendar/backends/http/e-cal-backend-http.c:448
 msgid "Bad file format."
 msgstr "Ugyldig filformat."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:458
+#: ../calendar/backends/http/e-cal-backend-http.c:455
 msgid "Not a calendar."
 msgstr "Ikke en kalender."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:779
-#: ../calendar/backends/http/e-cal-backend-http.c:780
-#: ../calendar/backends/weather/e-cal-backend-weather.c:536
+#: ../calendar/backends/http/e-cal-backend-http.c:776
+#: ../calendar/backends/http/e-cal-backend-http.c:777
+#: ../calendar/backends/weather/e-cal-backend-weather.c:522
 msgid "Could not create cache file"
 msgstr "Kunne ikke opprette bufferfil"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:183
+#: ../calendar/backends/weather/e-cal-backend-weather.c:181
 msgid "Could not retrieve weather data"
 msgstr "Kunne ikke hente værdata"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:291
+#: ../calendar/backends/weather/e-cal-backend-weather.c:277
 msgid "Weather: Fog"
 msgstr "Vær: Tåke"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:292
+#: ../calendar/backends/weather/e-cal-backend-weather.c:278
 msgid "Weather: Cloudy Night"
 msgstr "Vær: Overskyet natt"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:293
+#: ../calendar/backends/weather/e-cal-backend-weather.c:279
 msgid "Weather: Cloudy"
 msgstr "Vær: Overskyet"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:294
+#: ../calendar/backends/weather/e-cal-backend-weather.c:280
 msgid "Weather: Overcast"
 msgstr "Vær: Overskyet"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:295
+#: ../calendar/backends/weather/e-cal-backend-weather.c:281
 msgid "Weather: Showers"
 msgstr "Vær: Regnbyger"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:296
+#: ../calendar/backends/weather/e-cal-backend-weather.c:282
 msgid "Weather: Snow"
 msgstr "Vær: Snø"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:297
+#: ../calendar/backends/weather/e-cal-backend-weather.c:283
 msgid "Weather: Clear Night"
 msgstr "Vær: Klar natt"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:298
+#: ../calendar/backends/weather/e-cal-backend-weather.c:284
 msgid "Weather: Sunny"
 msgstr "Vær: Solskinn"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:299
+#: ../calendar/backends/weather/e-cal-backend-weather.c:285
 msgid "Weather: Thunderstorms"
 msgstr "Vær: Tordenvær"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:447
+#: ../calendar/backends/weather/e-cal-backend-weather.c:433
 msgid "Forecast"
 msgstr "Værmelding"
 
@@ -1263,7 +1263,7 @@ msgstr "Kalender eksisterer ikke."
 msgid "Invalid source type"
 msgstr "Ugyldig type kilde"
 
-#: ../calendar/libecal/e-cal-component.c:1326
+#: ../calendar/libecal/e-cal-component.c:1350
 msgid "Untitled appointment"
 msgstr "Avtale uten navn"
 
@@ -1626,7 +1626,7 @@ msgstr "Kunne ikke hente tidssone for kalender: "
 msgid "Could not add calendar time zone: "
 msgstr "Kunne ikke legge til tidssone for kalender: "
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:201
+#: ../calendar/libedata-cal/e-data-cal-factory.c:199
 #, c-format
 msgid "Invalid call"
 msgstr "Ugyldig kall"
@@ -1833,47 +1833,47 @@ msgstr "Ugyldige argumenter til (user-tag)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Feil under lagring av filtersøk: %s: %s"
 
-#: ../camel/camel-folder.c:243
+#: ../camel/camel-folder.c:251
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
 msgstr[0] "Lærer ny uønsket melding i «%s»"
 msgstr[1] "Lærer nye uønskede meldinger i «%s»"
 
-#: ../camel/camel-folder.c:283
+#: ../camel/camel-folder.c:291
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
 msgstr[0] "Lærer ny ønsket melding i «%s»"
 msgstr[1] "Lærer nye ønskede meldinger i «%s»"
 
-#: ../camel/camel-folder.c:331
+#: ../camel/camel-folder.c:339
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "Filtrerer ny melding i «%s»"
 msgstr[1] "Filtrerer nye meldinger i «%s»"
 
-#: ../camel/camel-folder.c:896
+#: ../camel/camel-folder.c:907
 #: ../camel/providers/local/camel-maildir-folder.c:322
 msgid "Moving messages"
 msgstr "Flytter meldinger"
 
-#: ../camel/camel-folder.c:899
+#: ../camel/camel-folder.c:910
 msgid "Copying messages"
 msgstr "Kopierer meldinger"
 
-#: ../camel/camel-folder.c:1146
+#: ../camel/camel-folder.c:1157
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "Kvoteinformasjon er ikke støttet for mappe «%s»"
 
-#: ../camel/camel-folder.c:3249
+#: ../camel/camel-folder.c:3278
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Henter melding «%s» i %s"
 
-#: ../camel/camel-folder.c:3395
+#: ../camel/camel-folder.c:3424
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Henter kvoteinformasjon for «%s»"
@@ -1985,8 +1985,8 @@ msgstr "Uventet forespørsel fra GnuPG for «%s»"
 
 #: ../camel/camel-gpg-context.c:844 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
-#: ../camel/providers/imapx/camel-imapx-server.c:5074
-#: ../camel/providers/imapx/camel-imapx-server.c:5091
+#: ../camel/providers/imapx/camel-imapx-server.c:5083
+#: ../camel/providers/imapx/camel-imapx-server.c:5100
 #: ../camel/providers/nntp/camel-nntp-summary.c:368
 #: ../libedataserver/e-client.c:136 ../libedataserverui/e-book-auth-util.c:227
 #, c-format
@@ -2475,7 +2475,7 @@ msgstr "Ugyldig GType registrert for protokoll «%s»"
 
 #: ../camel/camel-session.c:448
 #: ../camel/providers/imap/camel-imap-store.c:1093
-#: ../camel/providers/imapx/camel-imapx-server.c:3241
+#: ../camel/providers/imapx/camel-imapx-server.c:3250
 #: ../camel/providers/pop3/camel-pop3-store.c:242
 #: ../camel/providers/pop3/camel-pop3-store.c:538
 #: ../camel/providers/smtp/camel-smtp-transport.c:429
@@ -2748,80 +2748,85 @@ msgstr "Tilkobling avbrutt"
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Kunne ikke koble til med kommando «%s»: %s"
 
-#: ../camel/camel-tcp-stream-raw.c:629 ../camel/camel-tcp-stream-raw.c:640
+#: ../camel/camel-tcp-stream-raw.c:303
+#, c-format
+msgid "NSPR error code %d"
+msgstr "NSPR-feilkode %d"
+
+#: ../camel/camel-tcp-stream-raw.c:640 ../camel/camel-tcp-stream-raw.c:651
 #, c-format
 msgid "The proxy host does not support SOCKS4"
 msgstr "Proxy-verten støtter ikke SOCKS4"
 
-#: ../camel/camel-tcp-stream-raw.c:651
+#: ../camel/camel-tcp-stream-raw.c:662
 #, c-format
 msgid "The proxy host denied our request: code %d"
 msgstr "Proxy nektet vår forespørsel: kode %d"
 
-#: ../camel/camel-tcp-stream-raw.c:747 ../camel/camel-tcp-stream-raw.c:753
+#: ../camel/camel-tcp-stream-raw.c:758 ../camel/camel-tcp-stream-raw.c:764
 #, c-format
 msgid "The proxy host does not support SOCKS5"
 msgstr "Proxy-verten støtter ikke SOCKS5"
 
-#: ../camel/camel-tcp-stream-raw.c:759
+#: ../camel/camel-tcp-stream-raw.c:770
 #, c-format
 msgid "Could not find a suitable authentication type: code 0x%x"
 msgstr "Fant ingen passende autentiseringstype: kode 0x%x"
 
-#: ../camel/camel-tcp-stream-raw.c:771
+#: ../camel/camel-tcp-stream-raw.c:782
 msgid "General SOCKS server failure"
 msgstr "Generell SOCKS-tjener feil"
 
-#: ../camel/camel-tcp-stream-raw.c:772
+#: ../camel/camel-tcp-stream-raw.c:783
 msgid "SOCKS server's rules do not allow connection"
 msgstr "Reglene for SOCKS-tjener tillater ikke tilkobling"
 
-#: ../camel/camel-tcp-stream-raw.c:773
+#: ../camel/camel-tcp-stream-raw.c:784
 msgid "Network is unreachable from SOCKS server"
 msgstr "Nettverket kan ikke nås fra SOCKS-tjener"
 
-#: ../camel/camel-tcp-stream-raw.c:774
+#: ../camel/camel-tcp-stream-raw.c:785
 msgid "Host is unreachable from SOCKS server"
 msgstr "Verten kan ikke nås fra SOCKS-tjener"
 
-#: ../camel/camel-tcp-stream-raw.c:775
+#: ../camel/camel-tcp-stream-raw.c:786
 msgid "Connection refused"
 msgstr "Tilkobling nektet"
 
-#: ../camel/camel-tcp-stream-raw.c:776
+#: ../camel/camel-tcp-stream-raw.c:787
 msgid "Time-to-live expired"
 msgstr "Time-to-live utgått"
 
-#: ../camel/camel-tcp-stream-raw.c:777
+#: ../camel/camel-tcp-stream-raw.c:788
 msgid "Command not supported by SOCKS server"
 msgstr "Kommandoen støttes ikke av SOCKS-tjener"
 
-#: ../camel/camel-tcp-stream-raw.c:778
+#: ../camel/camel-tcp-stream-raw.c:789
 msgid "Address type not supported by SOCKS server"
 msgstr "Adressetypen er ikke støttet av SOCKS-tjener"
 
-#: ../camel/camel-tcp-stream-raw.c:779
+#: ../camel/camel-tcp-stream-raw.c:790
 msgid "Unknown error from SOCKS server"
 msgstr "Ukjent feil fra SOCKS-tjener"
 
-#: ../camel/camel-tcp-stream-raw.c:812
+#: ../camel/camel-tcp-stream-raw.c:823
 #, c-format
 msgid "Got unknown address type from SOCKS server"
 msgstr "Fikk en ukjent adressetype fra SOCKS-tjener"
 
-#: ../camel/camel-tcp-stream-raw.c:830
+#: ../camel/camel-tcp-stream-raw.c:841
 #, c-format
 msgid "Incomplete reply from SOCKS server"
 msgstr "Ufullstendig svar fra SOCKS-tjener"
 
-#: ../camel/camel-tcp-stream-raw.c:850
+#: ../camel/camel-tcp-stream-raw.c:861
 #, c-format
 msgid "Hostname is too long (maximum is 255 characters)"
 msgstr "Vertsnavnet er for langt (maks 255 tegn)"
 
 #. SOCKS5
 #. reserved - must be 0
-#: ../camel/camel-tcp-stream-raw.c:882 ../camel/camel-tcp-stream-raw.c:892
+#: ../camel/camel-tcp-stream-raw.c:893 ../camel/camel-tcp-stream-raw.c:903
 #, c-format
 msgid "Invalid reply from proxy server"
 msgstr "Ugyldig svar fra proxy-tjener"
@@ -3019,7 +3024,7 @@ msgid "Could not load summary for %s"
 msgstr "Kunne ikke laste sammendrag for %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:1074
-#: ../camel/providers/imapx/camel-imapx-server.c:4120
+#: ../camel/providers/imapx/camel-imapx-server.c:4129
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Søker etter endrede meldinger i %s"
@@ -3029,13 +3034,13 @@ msgid "Unable to retrieve message: "
 msgstr "Kan ikke hente melding: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3455
-#: ../camel/providers/imapx/camel-imapx-server.c:5400
+#: ../camel/providers/imapx/camel-imapx-server.c:5409
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan ikke hente melding med meldings-ID %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3456
-#: ../camel/providers/imapx/camel-imapx-server.c:5401
+#: ../camel/providers/imapx/camel-imapx-server.c:5410
 msgid "No such message available."
 msgstr "Ingen slik melding tilgjengelig."
 
@@ -3048,8 +3053,8 @@ msgstr "Denne meldingen er ikke tilgjengelig"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3988
 #: ../camel/providers/imap/camel-imap-folder.c:4071
-#: ../camel/providers/imapx/camel-imapx-server.c:4078
-#: ../camel/providers/imapx/camel-imapx-server.c:4228
+#: ../camel/providers/imapx/camel-imapx-server.c:4087
+#: ../camel/providers/imapx/camel-imapx-server.c:4237
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Henter sammendragsinformasjon for nye meldinger i %s"
@@ -3214,25 +3219,25 @@ msgstr "Innboks"
 
 #: ../camel/providers/imap/camel-imap-store.c:401
 #: ../camel/providers/imap/camel-imap-store.c:448
-#: ../camel/providers/imapx/camel-imapx-server.c:3121
+#: ../camel/providers/imapx/camel-imapx-server.c:3130
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Kunne ikke koble til IMAP-tjener %s i sikker modus: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:402
-#: ../camel/providers/imapx/camel-imapx-server.c:3122
+#: ../camel/providers/imapx/camel-imapx-server.c:3131
 #: ../camel/providers/smtp/camel-smtp-transport.c:189
 msgid "STARTTLS not supported"
 msgstr "STARTTLS er ikke støttet"
 
 #: ../camel/providers/imap/camel-imap-store.c:421
-#: ../camel/providers/imapx/camel-imapx-server.c:3160
+#: ../camel/providers/imapx/camel-imapx-server.c:3169
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Klarte ikke å koble til IMAP-tjener %s i sikker modus: "
 
 #: ../camel/providers/imap/camel-imap-store.c:703
-#: ../camel/providers/imapx/camel-imapx-server.c:3231
+#: ../camel/providers/imapx/camel-imapx-server.c:3240
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-tjener %s støtter ikke autentiseringstype %s"
@@ -3250,13 +3255,13 @@ msgid "IMAP service for %s on %s"
 msgstr "IMAP-tjeneste for %s på %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1064
-#: ../camel/providers/imapx/camel-imapx-server.c:3260
+#: ../camel/providers/imapx/camel-imapx-server.c:3269
 #: ../camel/providers/nntp/camel-nntp-store.c:497
 msgid "Cannot authenticate without a username"
 msgstr "Kan ikke autentisere uten brukernavn"
 
 #: ../camel/providers/imap/camel-imap-store.c:1072
-#: ../camel/providers/imapx/camel-imapx-server.c:3268
+#: ../camel/providers/imapx/camel-imapx-server.c:3277
 #: ../camel/providers/nntp/camel-nntp-store.c:505
 #: ../camel/providers/pop3/camel-pop3-store.c:468
 #: ../camel/providers/pop3/camel-pop3-store.c:487
@@ -3346,21 +3351,21 @@ msgstr "Forvalgt port for IMAP"
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1521
+#: ../camel/providers/imapx/camel-imapx-server.c:1526
 msgid "Error writing to cache stream: "
 msgstr "Feil under skriving til mellomlagerstrøm: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2243
+#: ../camel/providers/imapx/camel-imapx-server.c:2257
 #, c-format
 msgid "Not authenticated"
 msgstr "Ikke autentisert"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3514
+#: ../camel/providers/imapx/camel-imapx-server.c:3523
 msgid "Closing tmp stream failed: "
 msgstr "Feil ved lukking av midlertidig strøm: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5546
-#: ../camel/providers/imapx/camel-imapx-server.c:5561
+#: ../camel/providers/imapx/camel-imapx-server.c:5555
+#: ../camel/providers/imapx/camel-imapx-server.c:5570
 msgid "Cannot create spool file: "
 msgstr "Kan ikke spool-fil: "
 
