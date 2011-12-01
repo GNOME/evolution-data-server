@@ -2,12 +2,7 @@ ACLOCAL_AMFLAGS=-I m4
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --with-krb5=/usr --without-weather --enable-introspection
 
-if ENABLE_CALENDAR
-CALENDAR_DIR = calendar
-endif
-
-SUBDIRS = camel libedataserver libebackend addressbook $(CALENDAR_DIR) libedataserverui services tests docs art po
-DIST_SUBDIRS = camel libedataserver libebackend addressbook calendar libedataserverui services tests docs art po vala
+SUBDIRS = camel libedataserver libebackend addressbook calendar libedataserverui services tests docs art po
 
 if HAVE_INTROSPECTION
 if HAVE_VALA

@@ -1066,22 +1066,6 @@ AM_CONDITIONAL(ENABLE_IPv6, [test "x$enable_ipv6" = "xyes"])
 AC_CHECK_HEADER([wspiapi.h],
 	[AC_DEFINE([HAVE_WSPIAPI_H], 1, [Have <wspiapi.h>])],,)
 
-dnl ******************************
-dnl Calendar support
-dnl ******************************
-AC_MSG_CHECKING([if we should build the calendar])
-AC_ARG_ENABLE([calendar],
-	AS_HELP_STRING([--enable-calendar=yes/no],
-	[Enable the calendar components (default yes)]),
-	[enable_calendar=$enableval], [enable_calendar=yes])
-
-if test "x${enable_calendar}" != "xno"; then
-	AC_DEFINE(ENABLE_CALENDAR, 1, [Define if Calendar should be built])
-fi
-AM_CONDITIONAL(ENABLE_CALENDAR, [test x$enable_calendar = xyes])
-AC_MSG_RESULT([$enable_calendar])
-msg_calendar=$enable_calendar
-
 dnl **********************************
 dnl Weather calendar backend support
 dnl **********************************
@@ -1090,9 +1074,6 @@ AC_ARG_ENABLE([weather],
 	[AS_HELP_STRING([--enable-weather],
 	[Build the weather calendar backend (default=yes)])],
 	[use_gweather=$enableval], [use_gweather=yes])
-if test "$enable_calendar" = "no"; then
-	use_gweather="no (calendar support is disabled)"
-fi
 
 AC_MSG_RESULT([$use_gweather])
 if test "x$use_gweather" = "xyes"; then
@@ -1316,8 +1297,7 @@ AC_SUBST(EVOLUTION_ADDRESSBOOK_LIBS)
 dnl ******************************
 dnl evolution-calendar flags
 dnl ******************************
-if test "x${enable_calendar}" = "xyes"; then
-	EVOLUTION_CALENDAR_DEPS="gio-2.0 libical >= libical_minimum_version libxml-2.0 gconf-2.0"
+EVOLUTION_CALENDAR_DEPS="gio-2.0 libical >= libical_minimum_version libxml-2.0 gconf-2.0"
 
 dnl *****
 dnl libical.pc from libical-0.43 has a bug in it's CFlags.
@@ -1348,8 +1328,6 @@ dnl *****
 	CFLAGS=$save_cflags
 	LIBS=$save_libs
 	AC_MSG_RESULT([$ac_cv_have_iuth])
-
-fi
 
 dnl ******************************
 dnl Google flags
@@ -1624,7 +1602,6 @@ AC_OUTPUT
 
 echo "
 	evolution-data-server has been configured as follows:
-	Calendar:		$msg_calendar
 	Weather calendar:	$use_gweather
 	Mail Directory:		$system_mail_dir, $system_mail_perm
 	LDAP support:		$msg_ldap
