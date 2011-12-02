@@ -5002,13 +5002,6 @@ parse_contents (CamelIMAPXServer *is,
 		g_propagate_error (error, local_error);
 }
 
-static void
-imapx_poll_cancelled (GCancellable *cancellable,
-                      PRThread *thread)
-{
-	PR_Interrupt (thread);
-}
-
 /*
  * The main processing (reading) loop.
  *
@@ -5030,6 +5023,7 @@ imapx_parser_thread (gpointer d)
 
 	while (local_error == NULL && is->stream) {
 		g_cancellable_reset (cancellable);
+
 #ifndef G_OS_WIN32
 		if (is->is_process_stream)	{
 			GPollFD fds[2] = { {0, 0, 0}, {0, 0, 0} };
@@ -5050,41 +5044,11 @@ imapx_parser_thread (gpointer d)
 		} else
 #endif
 		{
-			PRPollDesc pollfds = { };
-			gulong cancel_id;
-			gint res;
-
-			pollfds.fd = camel_tcp_stream_get_file_desc (CAMEL_TCP_STREAM (is->stream->source));
-			pollfds.in_flags = PR_POLL_READ;
-			pollfds.out_flags = 0;
-
-			cancel_id = g_cancellable_connect (
-				cancellable, G_CALLBACK (imapx_poll_cancelled),
-				PR_GetCurrentThread (), (GDestroyNotify) NULL);
-
-			res = PR_Poll (&pollfds, 1, PR_INTERVAL_NO_TIMEOUT);
-
-			g_cancellable_disconnect (cancellable, cancel_id);
-
-			if (res == -1)
-				g_usleep (1) /* ?? */ ;
-			else if (res == 0) {
-				/* timed out */
-			} else if ((pollfds.out_flags & PR_POLL_READ))
-				parse_contents (is, cancellable, &local_error);
+			parse_contents (is, cancellable, &local_error);
 		}
 
-		/* Jump out of the loop if an error occurred. */
-		if (local_error != NULL)
-			break;
-
-		if (is->parser_quit) {
-			g_set_error (
-				&local_error, G_IO_ERROR,
-				G_IO_ERROR_CANCELLED,
-				_("Cancelled"));
-			break;
-		}
+		if (is->parser_quit)
+			g_cancellable_cancel (cancellable);
 
 		if (g_cancellable_is_cancelled (cancellable)) {
 			gint is_empty;
@@ -5093,14 +5057,18 @@ imapx_parser_thread (gpointer d)
 			is_empty = camel_dlist_empty (&is->active);
 			QUEUE_UNLOCK (is);
 
-			if ((is_empty || (imapx_idle_supported (is) && imapx_in_idle (is))))
+			if (is_empty || (imapx_idle_supported (is) && imapx_in_idle (is))) {
 				g_cancellable_reset (cancellable);
-			else
-				g_set_error (
-					&local_error, G_IO_ERROR,
-					G_IO_ERROR_CANCELLED,
-					_("Cancelled"));
+				g_clear_error (&local_error);
+			} else {
+				/* Cancelled error should be set. */
+				g_warn_if_fail (local_error != NULL);
+			}
 		}
+
+		/* Jump out of the loop if an error occurred. */
+		if (local_error != NULL)
+			break;
 	}
 
 	QUEUE_LOCK (is);
