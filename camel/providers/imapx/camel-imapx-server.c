@@ -2168,11 +2168,28 @@ imapx_command_complete (CamelIMAPXServer *is,
 	imapx_command_unref (ic);
 }
 
+static void
+imapx_command_cancelled (GCancellable *cancellable,
+                         CamelIMAPXCommand *ic)
+{
+	/* Unblock imapx_command_run_sync() immediately.
+	 *
+	 * If imapx_command_complete() is called sometime later,
+	 * the GCond will broadcast but no one will be listening. */
+
+	g_mutex_lock (ic->run_sync_mutex);
+	ic->run_sync_done = TRUE;
+	g_cond_broadcast (ic->run_sync_cond);
+	g_mutex_unlock (ic->run_sync_mutex);
+}
+
 /* The caller should free the command as well */
 static void
 imapx_command_run_sync (CamelIMAPXServer *is,
                         CamelIMAPXCommand *ic)
 {
+	guint cancel_id;
+
 	ic->run_sync_done = FALSE;
 	ic->run_sync_cond = g_cond_new ();
 	ic->run_sync_mutex = g_mutex_new ();
@@ -2188,6 +2205,13 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 	g_warn_if_fail (ic->complete == NULL);
 	ic->complete = imapx_command_complete;
 
+	if (G_IS_CANCELLABLE (ic->cancellable))
+		cancel_id = g_cancellable_connect (
+			ic->cancellable,
+			G_CALLBACK (imapx_command_cancelled),
+			imapx_command_ref (ic),
+			(GDestroyNotify) imapx_command_unref);
+
 	/* Unref'ed in imapx_command_complete(). */
 	imapx_command_ref (ic);
 
@@ -2197,6 +2221,11 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 	while (!ic->run_sync_done)
 		g_cond_wait (ic->run_sync_cond, ic->run_sync_mutex);
 	g_mutex_unlock (ic->run_sync_mutex);
+
+	if (cancel_id > 0)
+		g_cancellable_disconnect (ic->cancellable, cancel_id);
+
+	/* XXX Should we set the command's GError here if cancelled? */
 
 	g_cond_free (ic->run_sync_cond);
 	g_mutex_free (ic->run_sync_mutex);
