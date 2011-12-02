@@ -38,13 +38,15 @@
 
 #include <libedata-book/e-data-book-factory.h>
 
-/* Keep running after the last client is closed. */
 static gboolean opt_keep_running = FALSE;
+static gboolean opt_wait_for_client = FALSE;
 
 static GOptionEntry entries[] = {
 
 	{ "keep-running", 'r', 0, G_OPTION_ARG_NONE, &opt_keep_running,
 	  N_("Keep running after the last client is closed"), NULL },
+	{ "wait-for-client", 'w', 0, G_OPTION_ARG_NONE, &opt_wait_for_client,
+	  N_("Wait running until at least one client is connected"), NULL },
 	{ NULL }
 };
 
@@ -128,7 +130,7 @@ main (gint argc,
 	if (opt_keep_running)
 		e_dbus_server_hold (server);
 
-	e_dbus_server_run (server);
+	e_dbus_server_run (server, opt_wait_for_client);
 
 	g_object_unref (server);
 

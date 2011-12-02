@@ -46,6 +46,7 @@ struct _EDBusServerPrivate {
 
 	guint inactivity_timeout_id;
 	guint use_count;
+	gboolean wait_for_client;
 };
 
 enum {
@@ -128,7 +129,7 @@ static void
 dbus_server_bus_acquired (EDBusServer *server,
                           GDBusConnection *connection)
 {
-	if (server->priv->use_count == 0)
+	if (server->priv->use_count == 0 && !server->priv->wait_for_client)
 		server->priv->inactivity_timeout_id =
 			g_timeout_add_seconds (
 				INACTIVITY_TIMEOUT, (GSourceFunc)
@@ -212,6 +213,7 @@ e_dbus_server_init (EDBusServer *server)
 {
 	server->priv = E_DBUS_SERVER_GET_PRIVATE (server);
 	server->priv->main_loop = g_main_loop_new (NULL, FALSE);
+	server->priv->wait_for_client = FALSE;
 
 #ifdef G_OS_UNIX
 	server->priv->terminate_id = g_unix_signal_add (
@@ -220,7 +222,8 @@ e_dbus_server_init (EDBusServer *server)
 }
 
 void
-e_dbus_server_run (EDBusServer *server)
+e_dbus_server_run (EDBusServer *server,
+		   gboolean wait_for_client)
 {
 	EDBusServerClass *class;
 
@@ -228,6 +231,8 @@ e_dbus_server_run (EDBusServer *server)
 
 	if (g_main_loop_is_running (server->priv->main_loop))
 		return;
+
+	server->priv->wait_for_client = wait_for_client;
 
 	/* Try to acquire the well-known bus name. */
 
