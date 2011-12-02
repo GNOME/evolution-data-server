@@ -2210,23 +2210,26 @@ imapx_job_ref (CamelIMAPXJob *job)
 }
 
 static void
-imapx_job_free (CamelIMAPXJob *job)
+imapx_job_unref (CamelIMAPXJob *job)
 {
-	if (!job)
-		return;
+	g_return_if_fail (job != NULL);
+	g_return_if_fail (job->ref_count > 0);
 
-	g_cond_free (job->done_cond);
-	g_mutex_free (job->done_mutex);
+	if (g_atomic_int_dec_and_test (&job->ref_count)) {
 
-	g_clear_error (&job->error);
+		g_cond_free (job->done_cond);
+		g_mutex_free (job->done_mutex);
 
-	if (job->cancellable) {
-		if (job->with_operation_msg)
-			camel_operation_pop_message (job->cancellable);
-		g_object_unref (job->cancellable);
+		g_clear_error (&job->error);
+
+		if (job->cancellable) {
+			if (job->with_operation_msg)
+				camel_operation_pop_message (job->cancellable);
+			g_object_unref (job->cancellable);
+		}
+
+		g_slice_free (CamelIMAPXJob, job);
 	}
-
-	g_slice_free (CamelIMAPXJob, job);
 }
 
 static gboolean
@@ -2244,7 +2247,7 @@ imapx_job_done (CamelIMAPXServer *is,
 	QUEUE_UNLOCK (is);
 
 	if (job->noreply)
-		imapx_job_free (job);
+		imapx_job_unref (job);
 	else {
 		g_mutex_lock (job->done_mutex);
 		job->done_flag = TRUE;
@@ -2425,7 +2428,7 @@ camel_imapx_server_idle (CamelIMAPXServer *is,
 
 	success = imapx_submit_job (is, job, error);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	return success;
 }
@@ -2452,7 +2455,7 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is,
 	success = imapx_submit_job (is, job, error);
 
 	if (!async)
-		imapx_job_free (job);
+		imapx_job_unref (job);
 
 	return success;
 }
@@ -5422,7 +5425,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	else if (job->u.get_message.stream != NULL)
 		g_object_unref (job->u.get_message.stream);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	g_mutex_lock (is->fetch_mutex);
 	is->fetch_count++;
@@ -5580,7 +5583,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 
 	success = imapx_submit_job (is, job, error);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	return success;
 }
@@ -5602,7 +5605,7 @@ camel_imapx_server_noop (CamelIMAPXServer *is,
 
 	success = imapx_submit_job (is, job, error);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	return success;
 }
@@ -5648,7 +5651,7 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 
 	camel_folder_change_info_free (job->u.refresh_info.changes);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	return success;
 }
@@ -5824,7 +5827,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 
 	success = registered && imapx_run_job (is, job, error);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 done:
 	imapx_sync_free_user (on_user);
@@ -5877,7 +5880,7 @@ camel_imapx_server_expunge (CamelIMAPXServer *is,
 
 	success = registered && imapx_run_job (is, job, error);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	return success;
 }
@@ -5963,7 +5966,7 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 
 	g_hash_table_destroy (job->u.list.folders);
 	g_free (encoded_name);
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	return folders;
 }
@@ -5987,7 +5990,7 @@ camel_imapx_server_manage_subscription (CamelIMAPXServer *is,
 
 	success = imapx_submit_job (is, job, error);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	return success;
 }
@@ -6009,7 +6012,7 @@ camel_imapx_server_create_folder (CamelIMAPXServer *is,
 
 	success = imapx_submit_job (is, job, error);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	return success;
 }
@@ -6031,7 +6034,7 @@ camel_imapx_server_delete_folder (CamelIMAPXServer *is,
 
 	success = imapx_submit_job (is, job, error);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	return success;
 }
@@ -6055,7 +6058,7 @@ camel_imapx_server_rename_folder (CamelIMAPXServer *is,
 
 	success = imapx_submit_job (is, job, error);
 
-	imapx_job_free (job);
+	imapx_job_unref (job);
 
 	return success;
 }
