@@ -228,6 +228,8 @@ struct _imapx_flag_change {
 typedef struct _CamelIMAPXJob CamelIMAPXJob;
 
 struct _CamelIMAPXJob {
+	volatile gint ref_count;
+
 	GCond *done_cond;
 	GMutex *done_mutex;
 	gboolean done_flag;
@@ -2188,6 +2190,7 @@ imapx_job_new (GCancellable *cancellable)
 		g_object_ref (cancellable);
 
 	job = g_slice_new0 (CamelIMAPXJob);
+	job->ref_count = 1;
 	job->done_cond = g_cond_new ();
 	job->done_mutex = g_mutex_new ();
 	job->cancellable = cancellable;
