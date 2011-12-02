@@ -229,6 +229,7 @@ camel_provider_register (CamelProvider *provider)
 {
 	gint i;
 	CamelProviderConfEntry *conf;
+	CamelProviderPortEntry *port;
 	GList *l;
 
 	g_return_if_fail (provider != NULL);
@@ -265,8 +266,13 @@ camel_provider_register (CamelProvider *provider)
 		l = l->next;
 	}
 
-	if (provider->port_entries)
+	if (provider->port_entries) {
 		provider->url_flags |= CAMEL_URL_NEED_PORT;
+		port = provider->port_entries;
+		for (i = 0; port[i].port != 0; i++)
+			if (port[i].desc)
+				port[i].desc = P_(port[i].desc);
+	}
 	else
 		provider->url_flags &= ~CAMEL_URL_NEED_PORT;
 
