@@ -2198,6 +2198,17 @@ imapx_job_new (GCancellable *cancellable)
 	return job;
 }
 
+static CamelIMAPXJob *
+imapx_job_ref (CamelIMAPXJob *job)
+{
+	g_return_val_if_fail (job != NULL, NULL);
+	g_return_val_if_fail (job->ref_count > 0, NULL);
+
+	g_atomic_int_inc (&job->ref_count);
+
+	return job;
+}
+
 static void
 imapx_job_free (CamelIMAPXJob *job)
 {
