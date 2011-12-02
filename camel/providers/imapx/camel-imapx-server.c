@@ -2188,7 +2188,7 @@ static void
 imapx_command_run_sync (CamelIMAPXServer *is,
                         CamelIMAPXCommand *ic)
 {
-	guint cancel_id;
+	guint cancel_id = 0;
 
 	ic->run_sync_done = FALSE;
 	ic->run_sync_cond = g_cond_new ();
