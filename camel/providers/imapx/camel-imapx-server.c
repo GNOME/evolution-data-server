@@ -2187,7 +2187,7 @@ imapx_job_new (GCancellable *cancellable)
 	if (cancellable != NULL)
 		g_object_ref (cancellable);
 
-	job = g_malloc0 (sizeof (CamelIMAPXJob));
+	job = g_slice_new0 (CamelIMAPXJob);
 	job->done_cond = g_cond_new ();
 	job->done_mutex = g_mutex_new ();
 	job->cancellable = cancellable;
@@ -2212,7 +2212,7 @@ imapx_job_free (CamelIMAPXJob *job)
 		g_object_unref (job->cancellable);
 	}
 
-	g_free (job);
+	g_slice_free (CamelIMAPXJob, job);
 }
 
 static gboolean
