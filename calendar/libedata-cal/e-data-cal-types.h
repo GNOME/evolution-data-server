@@ -2,6 +2,8 @@
 #ifndef __E_DATA_CAL_TYPES_H__
 #define __E_DATA_CAL_TYPES_H__
 
+#include <glib.h>
+
 G_BEGIN_DECLS
 
 typedef enum {

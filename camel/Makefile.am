@@ -31,6 +31,7 @@ lib_LTLIBRARIES = libcamel-1.2.la
 
 include $(top_srcdir)/camel/glib-gen.mak
 glib_enum_headers=camel-enums.h
+glib_enum_output=camel-enumtypes
 glib_enum_define=CAMEL
 glib_enum_prefix=camel
 

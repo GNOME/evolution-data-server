@@ -1,5 +1,6 @@
 include $(top_srcdir)/glib-gen.mak
 glib_enum_headers=e-data-cal-types.h
+glib_enum_output=e-data-cal-enumtypes
 glib_enum_define=E_DATA_CAL
 glib_enum_prefix=e_data_cal
 

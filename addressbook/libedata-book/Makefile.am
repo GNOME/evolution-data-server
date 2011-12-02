@@ -1,5 +1,6 @@
 include $(top_srcdir)/glib-gen.mak
 glib_enum_headers=e-data-book-types.h
+glib_enum_output=e-data-book-enumtypes
 glib_enum_define=E_DATA_BOOK
 glib_enum_prefix=e_data_book
 
