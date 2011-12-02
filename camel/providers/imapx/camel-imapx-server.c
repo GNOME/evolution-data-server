@@ -2242,18 +2242,17 @@ static void
 imapx_job_done (CamelIMAPXServer *is,
                 CamelIMAPXJob *job)
 {
-	QUEUE_LOCK (is);
-	g_queue_remove (&is->jobs, job);
-	QUEUE_UNLOCK (is);
-
-	if (job->noreply)
-		imapx_job_unref (job);
-	else {
+	if (!job->noreply) {
 		g_mutex_lock (job->done_mutex);
 		job->done_flag = TRUE;
 		g_cond_broadcast (job->done_cond);
 		g_mutex_unlock (job->done_mutex);
 	}
+
+	QUEUE_LOCK (is);
+	if (g_queue_remove (&is->jobs, job))
+		imapx_job_unref (job);
+	QUEUE_UNLOCK (is);
 }
 
 static gboolean
@@ -2263,7 +2262,7 @@ imapx_register_job (CamelIMAPXServer *is,
 {
 	if (is->state >= IMAPX_INITIALISED) {
 		QUEUE_LOCK (is);
-		g_queue_push_head (&is->jobs, job);
+		g_queue_push_head (&is->jobs, imapx_job_ref (job));
 		QUEUE_UNLOCK (is);
 
 	} else {
