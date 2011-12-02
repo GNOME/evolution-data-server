@@ -130,6 +130,8 @@ typedef void (*CamelIMAPXCommandFunc)(struct _CamelIMAPXServer *engine, struct _
 struct _CamelIMAPXCommand {
 	struct _CamelIMAPXCommand *next, *prev;
 
+	volatile gint ref_count;
+
 	CamelIMAPXServer *is;
 	gint pri;
 
@@ -773,6 +775,7 @@ camel_imapx_command_new (CamelIMAPXServer *is,
 		g_object_ref (cancellable);
 
 	ic = g_slice_new0 (CamelIMAPXCommand);
+	ic->ref_count = 1;
 	ic->tag = tag++;
 	ic->name = name;
 	ic->mem = (CamelStreamMem *) camel_stream_mem_new ();
