@@ -2255,6 +2255,21 @@ imapx_job_done (CamelIMAPXServer *is,
 	QUEUE_UNLOCK (is);
 }
 
+static void
+imapx_job_cancelled (GCancellable *cancellable,
+                     CamelIMAPXJob *job)
+{
+	/* Unblock imapx_run_job() immediately.
+	 *
+	 * If imapx_job_done() is called sometime later, the
+	 * GCond will broadcast but no one will be listening. */
+
+	g_mutex_lock (job->done_mutex);
+	job->done_flag = TRUE;
+	g_cond_broadcast (job->done_cond);
+	g_mutex_unlock (job->done_mutex);
+}
+
 static gboolean
 imapx_register_job (CamelIMAPXServer *is,
                     CamelIMAPXJob *job,
@@ -2282,10 +2297,19 @@ imapx_run_job (CamelIMAPXServer *is,
                CamelIMAPXJob *job,
                GError **error)
 {
+	gulong cancel_id;
+
 	g_warn_if_fail (job->done_flag == FALSE);
 
 	if (g_cancellable_set_error_if_cancelled (is->cancellable, error))
 		return FALSE;
+
+	if (G_IS_CANCELLABLE (job->cancellable))
+		cancel_id = g_cancellable_connect (
+			job->cancellable,
+			G_CALLBACK (imapx_job_cancelled),
+			imapx_job_ref (job),
+			(GDestroyNotify) imapx_job_unref);
 
 	job->start (is, job);
 
@@ -2295,6 +2319,12 @@ imapx_run_job (CamelIMAPXServer *is,
 			g_cond_wait (job->done_cond, job->done_mutex);
 		g_mutex_unlock (job->done_mutex);
 	}
+
+	if (cancel_id > 0)
+		g_cancellable_disconnect (job->cancellable, cancel_id);
+
+	if (g_cancellable_set_error_if_cancelled (job->cancellable, error))
+		return FALSE;
 
 	if (job->error != NULL) {
 		g_propagate_error (error, job->error);
