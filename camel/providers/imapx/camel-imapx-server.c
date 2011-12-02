@@ -2164,6 +2164,8 @@ imapx_command_complete (CamelIMAPXServer *is,
 	ic->run_sync_done = TRUE;
 	g_cond_broadcast (ic->run_sync_cond);
 	g_mutex_unlock (ic->run_sync_mutex);
+
+	imapx_command_unref (ic);
 }
 
 /* The caller should free the command as well */
@@ -2175,8 +2177,19 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 	ic->run_sync_cond = g_cond_new ();
 	ic->run_sync_mutex = g_mutex_new ();
 
-	if (!ic->complete)
-		ic->complete = imapx_command_complete;
+	/* FIXME The only caller of this function currently does not set
+	 *       a "complete" callback function, so we can get away with
+	 *       referencing the command here and dropping the reference
+	 *       in imapx_command_complete().  The queueing/dequeueing
+	 *       of these things is too complex for my little mind, so
+	 *       we may have to revisit the reference counting if this
+	 *       function gets another caller. */
+
+	g_warn_if_fail (ic->complete == NULL);
+	ic->complete = imapx_command_complete;
+
+	/* Unref'ed in imapx_command_complete(). */
+	imapx_command_ref (ic);
 
 	imapx_command_queue (is, ic);
 
