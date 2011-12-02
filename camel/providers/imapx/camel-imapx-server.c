@@ -772,7 +772,7 @@ camel_imapx_command_new (CamelIMAPXServer *is,
 	if (cancellable != NULL)
 		g_object_ref (cancellable);
 
-	ic = g_malloc0 (sizeof (*ic));
+	ic = g_slice_new0 (CamelIMAPXCommand);
 	ic->tag = tag++;
 	ic->name = name;
 	ic->mem = (CamelStreamMem *) camel_stream_mem_new ();
@@ -840,7 +840,7 @@ camel_imapx_command_free (CamelIMAPXCommand *ic)
 	 * propagated to the CamelIMAPXJob, so it's either NULL or the
 	 * CamelIMAPXJob owns it now. */
 
-	g_free (ic);
+	g_slice_free (CamelIMAPXCommand, ic);
 }
 
 void
