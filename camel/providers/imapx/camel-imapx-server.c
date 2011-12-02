@@ -2225,7 +2225,8 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 	if (cancel_id > 0)
 		g_cancellable_disconnect (ic->cancellable, cancel_id);
 
-	/* XXX Should we set the command's GError here if cancelled? */
+	/* XXX Might this overwrite an existing error? */
+	g_cancellable_set_error_if_cancelled (ic->cancellable, &ic->error);
 
 	g_cond_free (ic->run_sync_cond);
 	g_mutex_free (ic->run_sync_mutex);
