@@ -818,40 +818,43 @@ imapx_command_ref (CamelIMAPXCommand *ic)
 }
 
 static void
-imapx_command_free (CamelIMAPXCommand *ic)
+imapx_command_unref (CamelIMAPXCommand *ic)
 {
-	CamelIMAPXCommandPart *cp;
+	g_return_if_fail (ic != NULL);
+	g_return_if_fail (ic->ref_count > 0);
 
-	if (ic == NULL)
-		return;
+	if (g_atomic_int_dec_and_test (&ic->ref_count)) {
+		CamelIMAPXCommandPart *cp;
 
-	if (ic->mem)
-		g_object_unref (ic->mem);
-	imapx_free_status (ic->status);
+		if (ic->mem != NULL)
+			g_object_unref (ic->mem);
 
-	while ((cp = ((CamelIMAPXCommandPart *) camel_dlist_remhead (&ic->parts)))) {
-		g_free (cp->data);
-		if (cp->ob) {
-			switch (cp->type & CAMEL_IMAPX_COMMAND_MASK) {
-			case CAMEL_IMAPX_COMMAND_FILE:
-			case CAMEL_IMAPX_COMMAND_STRING:
-				g_free (cp->ob);
-				break;
-			default:
-				g_object_unref (cp->ob);
+		imapx_free_status (ic->status);
+
+		while ((cp = ((CamelIMAPXCommandPart *) camel_dlist_remhead (&ic->parts)))) {
+			g_free (cp->data);
+			if (cp->ob) {
+				switch (cp->type & CAMEL_IMAPX_COMMAND_MASK) {
+				case CAMEL_IMAPX_COMMAND_FILE:
+				case CAMEL_IMAPX_COMMAND_STRING:
+					g_free (cp->ob);
+					break;
+				default:
+					g_object_unref (cp->ob);
+				}
 			}
+			g_free (cp);
 		}
-		g_free (cp);
+
+		if (ic->cancellable != NULL)
+			g_object_unref (ic->cancellable);
+
+		/* Do NOT try to free the GError.  If set it should have been
+		 * propagated to the CamelIMAPXJob, so it's either NULL or the
+		 * CamelIMAPXJob owns it now. */
+
+		g_slice_free (CamelIMAPXCommand, ic);
 	}
-
-	if (ic->cancellable != NULL)
-		g_object_unref (ic->cancellable);
-
-	/* Do NOT try to free the GError.  If set it should have been
-	 * propagated to the CamelIMAPXJob, so it's either NULL or the
-	 * CamelIMAPXJob owns it now. */
-
-	g_slice_free (CamelIMAPXCommand, ic);
 }
 
 static void
@@ -2417,7 +2420,7 @@ imapx_command_idle_done (CamelIMAPXServer *is,
 	IDLE_UNLOCK (idle);
 
 	imapx_job_done (is, ic->job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -2446,7 +2449,7 @@ imapx_job_idle_start (CamelIMAPXServer *is,
 		imapx_command_start (is, ic);
 	} else {
 		imapx_job_done (is, ic->job);
-		imapx_command_free (ic);
+		imapx_command_unref (ic);
 	}
 	IDLE_UNLOCK (is->idle);
 	QUEUE_UNLOCK (is);
@@ -2795,7 +2798,7 @@ imapx_command_select_done (CamelIMAPXServer *is,
 	}
 
 	is->select_pending = NULL;
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 
 	g_signal_emit (is, signals[SELECT_CHANGED], 0, selected_folder);
 }
@@ -3174,10 +3177,10 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 				ic->error = NULL;
 			}
 
-			imapx_command_free (ic);
+			imapx_command_unref (ic);
 			return FALSE;
 		}
-		imapx_command_free (ic);
+		imapx_command_unref (ic);
 	}
 
 	if (method == CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
@@ -3207,7 +3210,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 				ic->error = NULL;
 			}
 
-			imapx_command_free (ic);
+			imapx_command_unref (ic);
 			goto exit;
 		}
 
@@ -3220,7 +3223,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 			c(is->tagprefix, "got capability flags %08x\n", is->cinfo->capa);
 		}
 
-		imapx_command_free (ic);
+		imapx_command_unref (ic);
 
 		if (camel_tcp_stream_ssl_enable_ssl (
 			CAMEL_TCP_STREAM_SSL (tcp_stream),
@@ -3239,11 +3242,11 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 			if (!imapx_command_run (is, ic)) {
 				g_propagate_error (&local_error, ic->error);
 				ic->error = NULL;
-				imapx_command_free (ic);
+				imapx_command_unref (ic);
 				goto exit;
 			}
 
-			imapx_command_free (ic);
+			imapx_command_unref (ic);
 		}
 	}
 
@@ -3371,7 +3374,7 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 		}
 	}
 
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 
 	if (sasl != NULL)
 		g_object_unref (sasl);
@@ -3423,11 +3426,11 @@ imapx_reconnect (CamelIMAPXServer *is,
 		if (!imapx_command_run (is, ic)) {
 			g_propagate_error (error, ic->error);
 			ic->error = NULL;
-			imapx_command_free (ic);
+			imapx_command_unref (ic);
 			goto exception;
 		}
 
-		imapx_command_free (ic);
+		imapx_command_unref (ic);
 	}
 
 	is->state = IMAPX_AUTHENTICATED;
@@ -3446,11 +3449,11 @@ imapx_reconnect (CamelIMAPXServer *is,
 		if (!imapx_command_run (is, ic)) {
 			g_propagate_error (error, ic->error);
 			ic->error = NULL;
-			imapx_command_free (ic);
+			imapx_command_unref (ic);
 			goto exception;
 		}
 
-		imapx_command_free (ic);
+		imapx_command_unref (ic);
 	}
 
 	if (use_qresync && is->cinfo->capa & IMAPX_CAPABILITY_QRESYNC) {
@@ -3460,11 +3463,11 @@ imapx_reconnect (CamelIMAPXServer *is,
 		if (!imapx_command_run (is, ic)) {
 			g_propagate_error (error, ic->error);
 			ic->error = NULL;
-			imapx_command_free (ic);
+			imapx_command_unref (ic);
 			goto exception;
 		}
 
-		imapx_command_free (ic);
+		imapx_command_unref (ic);
 
 		is->use_qresync = TRUE;
 	} else
@@ -3529,7 +3532,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		 * time) until the data actually stop coming. */
 		if (job->u.get_message.fetch_offset < job->u.get_message.size ||
 		    job->u.get_message.fetch_offset == really_fetched) {
-			imapx_command_free (ic);
+			imapx_command_unref (ic);
 			camel_operation_progress (
 				job->cancellable,
 				(job->u.get_message.fetch_offset *100) / job->u.get_message.size);
@@ -3593,7 +3596,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		imapx_job_done (is, job);
 	}
 
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -3704,7 +3707,7 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 	}
 
 	if (i < uids->len) {
-		imapx_command_free (ic);
+		imapx_command_unref (ic);
 		imapx_command_copy_messages_step_start (is, job, i);
 		return;
 	}
@@ -3714,7 +3717,7 @@ cleanup:
 	g_object_unref (job->folder);
 
 	imapx_job_done (is, job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -3789,7 +3792,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 	g_object_unref (job->folder);
 
 	imapx_job_done (is, job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -3917,7 +3920,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	camel_folder_change_info_clear (job->u.refresh_info.changes);
 
 	if (i < infos->len) {
-		imapx_command_free (ic);
+		imapx_command_unref (ic);
 
 		ic = imapx_command_new (
 			is, "FETCH", job->folder,
@@ -3978,7 +3981,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		camel_folder_change_info_free (job->u.refresh_info.changes);
 
 	imapx_job_done (is, job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static gint
@@ -4173,7 +4176,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 	g_array_free (job->u.refresh_info.infos, TRUE);
 	imapx_job_done (is, job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -4241,7 +4244,7 @@ exception:
 	camel_folder_change_info_free (ic->job->u.refresh_info.changes);
 
 	imapx_job_done (is, ic->job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -4413,10 +4416,10 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is,
 
 			if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 				propagate_ic_error (job, ic, "Error refreshing folder: %s");
-				imapx_command_free (ic);
+				imapx_command_unref (ic);
 				goto done;
 			}
-			imapx_command_free (ic);
+			imapx_command_unref (ic);
 		}
 
 		/* Recalulate need_rescan */
@@ -4533,7 +4536,7 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 	}
 
 	imapx_job_done (is, ic->job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -4568,7 +4571,7 @@ imapx_command_list_done (CamelIMAPXServer *is,
 
 	e (is->tagprefix, "==== list or lsub completed ==== \n");
 	imapx_job_done (is, ic->job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -4620,7 +4623,7 @@ imapx_command_subscription_done (CamelIMAPXServer *is,
 	}
 
 	imapx_job_done (is, ic->job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -4662,7 +4665,7 @@ imapx_command_create_folder_done (CamelIMAPXServer *is,
 	}
 
 	imapx_job_done (is, ic->job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -4695,7 +4698,7 @@ imapx_command_delete_folder_done (CamelIMAPXServer *is,
 	}
 
 	imapx_job_done (is, ic->job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -4733,7 +4736,7 @@ imapx_command_rename_folder_done (CamelIMAPXServer *is,
 	}
 
 	imapx_job_done (is, ic->job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -4772,7 +4775,7 @@ imapx_command_noop_done (CamelIMAPXServer *is,
 	}
 
 	imapx_job_done (is, ic->job);
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
@@ -4902,7 +4905,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 
 		imapx_job_done (is, job);
 	}
-	imapx_command_free (ic);
+	imapx_command_unref (ic);
 }
 
 static void
