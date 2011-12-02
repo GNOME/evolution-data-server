@@ -806,6 +806,17 @@ imapx_command_add (CamelIMAPXCommand *ic,
 	}
 }
 
+static CamelIMAPXCommand *
+imapx_command_ref (CamelIMAPXCommand *ic)
+{
+	g_return_val_if_fail (ic != NULL, NULL);
+	g_return_val_if_fail (ic->ref_count > 0, NULL);
+
+	g_atomic_int_inc (&ic->ref_count);
+
+	return ic;
+}
+
 static void
 imapx_command_free (CamelIMAPXCommand *ic)
 {
