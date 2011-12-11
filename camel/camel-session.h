@@ -110,6 +110,8 @@ struct _CamelSessionClass {
 						 const gchar *protocol,
 						 CamelProviderType type,
 						 GError **error);
+	void		(*remove_service)	(CamelSession *session,
+						 CamelService *service);
 	gchar *		(*get_password)		(CamelSession *session,
 						 CamelService *service,
 						 const gchar *prompt,
@@ -180,8 +182,8 @@ CamelService *	camel_session_add_service	(CamelSession *session,
 						 const gchar *protocol,
 						 CamelProviderType type,
 						 GError **error);
-gboolean	camel_session_remove_service	(CamelSession *session,
-						 const gchar *uid);
+void		camel_session_remove_service	(CamelSession *session,
+						 CamelService *service);
 CamelService *	camel_session_get_service	(CamelSession *session,
 						 const gchar *uid);
 CamelService *	camel_session_get_service_by_url

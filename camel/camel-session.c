@@ -414,6 +414,20 @@ session_add_service (CamelSession *session,
 	return service;
 }
 
+static void
+session_remove_service (CamelSession *session,
+                        CamelService *service)
+{
+	const gchar *uid;
+
+	camel_session_lock (session, CAMEL_SESSION_SESSION_LOCK);
+
+	uid = camel_service_get_uid (service);
+	g_hash_table_remove (session->priv->services, uid);
+
+	camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
+}
+
 static gboolean
 session_authenticate_sync (CamelSession *session,
                            CamelService *service,
@@ -596,6 +610,7 @@ camel_session_class_init (CamelSessionClass *class)
 	object_class->finalize = session_finalize;
 
 	class->add_service = session_add_service;
+	class->remove_service = session_remove_service;
 
 	class->authenticate_sync = session_authenticate_sync;
 
@@ -805,33 +820,28 @@ camel_session_add_service (CamelSession *session,
 /**
  * camel_session_remove_service:
  * @session: a #CamelSession
- * @uid: a unique identifier for #CamelService to remove
+ * @service: the #CamelService to remove
  *
- * Removes previously added #CamelService by camel_session_add_service().
- * Internally stored #CamelService is unreffed, if found.
- *
- * Returns: %TRUE when service with given @uid was found and removed,
- *    %FALSE otherwise.
+ * Removes a #CamelService previously added by camel_session_add_service().
  *
  * Since: 3.2
  **/
-gboolean
+void
 camel_session_remove_service (CamelSession *session,
-                              const gchar *uid)
+                              CamelService *service)
 {
-	gboolean removed;
+	CamelSessionClass *class;
 
-	g_return_val_if_fail (session, FALSE);
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
-	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	camel_session_lock (session, CAMEL_SESSION_SESSION_LOCK);
+	/* Verify the service belongs to this session. */
+	g_return_if_fail (camel_service_get_session (service) == session);
 
-	removed = g_hash_table_remove (session->priv->services, uid);
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_if_fail (class->remove_service != NULL);
 
-	camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
-
-	return removed;
+	class->remove_service (session, service);
 }
 
 /**
