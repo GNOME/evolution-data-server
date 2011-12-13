@@ -132,7 +132,12 @@ book_record_new (ECalBackendContacts *cbc,
 	}
 
 	query = e_book_query_andv (
-		e_book_query_field_exists (E_CONTACT_FILE_AS),
+		e_book_query_orv (
+			e_book_query_field_exists (E_CONTACT_FILE_AS),
+			e_book_query_field_exists (E_CONTACT_FULL_NAME),
+			e_book_query_field_exists (E_CONTACT_GIVEN_NAME),
+			e_book_query_field_exists (E_CONTACT_NICKNAME),
+			NULL),
 		e_book_query_orv (
 			e_book_query_field_exists (E_CONTACT_BIRTH_DATE),
 			e_book_query_field_exists (E_CONTACT_ANNIVERSARY),
@@ -796,6 +801,12 @@ create_birthday (ECalBackendContacts *cbc,
 
 	cdate = e_contact_get (contact, E_CONTACT_BIRTH_DATE);
 	name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
+	if (!name || !*name)
+		name = e_contact_get_const (contact, E_CONTACT_FULL_NAME);
+	if (!name || !*name)
+		name = e_contact_get_const (contact, E_CONTACT_NICKNAME);
+	if (!name)
+		name = "";
 
 	uid = g_strdup_printf ("%s%s", (gchar *) e_contact_get_const (contact, E_CONTACT_UID), BIRTHDAY_UID_EXT);
 	summary = g_strdup_printf (_("Birthday: %s"), name);
@@ -821,6 +832,12 @@ create_anniversary (ECalBackendContacts *cbc,
 
 	cdate = e_contact_get (contact, E_CONTACT_ANNIVERSARY);
 	name = e_contact_get_const (contact, E_CONTACT_FILE_AS);
+	if (!name || !*name)
+		name = e_contact_get_const (contact, E_CONTACT_FULL_NAME);
+	if (!name || !*name)
+		name = e_contact_get_const (contact, E_CONTACT_NICKNAME);
+	if (!name)
+		name = "";
 
 	uid = g_strdup_printf ("%s%s", (gchar *) e_contact_get_const (contact, E_CONTACT_UID), ANNIVERSARY_UID_EXT);
 	summary = g_strdup_printf (_("Anniversary: %s"), name);
