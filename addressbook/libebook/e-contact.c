@@ -546,7 +546,15 @@ static gpointer
 fileas_getter (EContact *contact,
                EVCardAttribute *attr)
 {
-	if (!attr) {
+	GList *p = NULL;
+
+	if (attr) {
+		p = e_vcard_attribute_get_values (attr);
+		if (!p || !p->data || !*((const gchar *) p->data))
+			p = NULL;
+	}
+
+	if (!p) {
 		/* Generate a FILE_AS field */
 		EContactName *name;
 		gchar *new_file_as = NULL;
@@ -589,7 +597,7 @@ fileas_getter (EContact *contact,
 	}
 
 	if (attr) {
-		GList *p = e_vcard_attribute_get_values (attr);
+		p = e_vcard_attribute_get_values (attr);
 
 		return p && p->data ? p->data : (gpointer) "";
 	} else {
