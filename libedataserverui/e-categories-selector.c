@@ -403,6 +403,9 @@ e_categories_selector_get_checked (ECategoriesSelector *selector)
 
 	list = g_hash_table_get_values (selector->priv->selected_categories);
 
+	/* to get them always in the same order */
+	list = g_list_sort (list, (GCompareFunc) g_utf8_collate);
+
 	for (category = list; category != NULL; category = category->next) {
 		if (str->len > 0)
 			g_string_append_printf (
