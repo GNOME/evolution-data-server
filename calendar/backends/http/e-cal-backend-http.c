@@ -368,6 +368,12 @@ retrieval_done (SoupSession *session,
 	GHashTable *old_cache;
 	GSList *comps_in_cache;
 
+	if (!msg || msg->status_code == SOUP_STATUS_CANCELLED) {
+		/* the backend probably gone in this case, thus just return */
+		g_object_unref (cbhttp);
+		return;
+	}
+
 	priv = cbhttp->priv;
 
 	priv->is_loading = FALSE;
@@ -376,12 +382,14 @@ retrieval_done (SoupSession *session,
 	if (!priv->uri) {
 		/* uri changed meanwhile, retrieve again */
 		begin_retrieval_cb (cbhttp);
+		g_object_unref (cbhttp);
 		return;
 	}
 
 	if (msg->status_code == SOUP_STATUS_NOT_MODIFIED) {
 		/* attempts with ETag can result in 304 status code */
 		priv->opened = TRUE;
+		g_object_unref (cbhttp);
 		return;
 	}
 
@@ -399,7 +407,7 @@ retrieval_done (SoupSession *session,
 				uri_parsed = soup_uri_new (priv->uri);
 				soup_uri_set_path (uri_parsed, newuri);
 				soup_uri_set_query (uri_parsed, NULL);
-				// g_free (newuri);
+				/* g_free (newuri); */
 
 				newuri = soup_uri_to_string (uri_parsed, FALSE);
 				g_message ("Translated URI: %s\n", newuri);
@@ -417,6 +425,7 @@ retrieval_done (SoupSession *session,
 			}
 		}
 
+		g_object_unref (cbhttp);
 		return;
 	}
 
@@ -426,6 +435,7 @@ retrieval_done (SoupSession *session,
 			if (msg->status_code == 401 || msg->status_code == 403) {
 				priv->requires_auth = TRUE;
 				e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbhttp), TRUE, priv->credentials);
+				g_object_unref (cbhttp);
 				return;
 			} else
 				e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
@@ -434,6 +444,7 @@ retrieval_done (SoupSession *session,
 		}
 
 		empty_cache (cbhttp);
+		g_object_unref (cbhttp);
 		return;
 	}
 
@@ -453,6 +464,7 @@ retrieval_done (SoupSession *session,
 		if (!priv->opened)
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Bad file format."));
 		empty_cache (cbhttp);
+		g_object_unref (cbhttp);
 		return;
 	}
 
@@ -461,6 +473,7 @@ retrieval_done (SoupSession *session,
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), _("Not a calendar."));
 		icalcomponent_free (icalcomp);
 		empty_cache (cbhttp);
+		g_object_unref (cbhttp);
 		return;
 	}
 
@@ -542,6 +555,8 @@ retrieval_done (SoupSession *session,
 	icalcomponent_free (icalcomp);
 
 	priv->opened = TRUE;
+
+	g_object_unref (cbhttp);
 
 	d(g_message ("Retrieval really done.\n"));
 }
@@ -648,7 +663,7 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	}
 
 	soup_session_queue_message (priv->soup_session, soup_message,
-				    (SoupSessionCallback) retrieval_done, cbhttp);
+				    (SoupSessionCallback) retrieval_done, g_object_ref (cbhttp));
 
 	d(g_message ("Retrieval started.\n"));
 	return FALSE;
