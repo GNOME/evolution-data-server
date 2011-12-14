@@ -1616,7 +1616,7 @@ e_contact_get (EContact *contact,
 					g_string_append (str, (gchar *) v->data);
 					v = v->next;
 					if (v)
-						g_string_append (str, ", ");
+						g_string_append_c (str, ',');
 				}
 
 				rv = g_string_free (str, FALSE);
