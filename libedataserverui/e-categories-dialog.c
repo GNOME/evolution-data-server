@@ -116,12 +116,13 @@ e_categories_dialog_new (const gchar *categories)
  * Gets a comma-separated list of the categories currently selected
  * in the dialog.
  *
- * Returns: a comma-separated list of categories
+ * Returns: a comma-separated list of categories. Free returned
+ * pointer with g_free().
  **/
-const gchar *
+gchar *
 e_categories_dialog_get_categories (ECategoriesDialog *dialog)
 {
-	const gchar *categories;
+	gchar *categories;
 
 	g_return_val_if_fail (E_IS_CATEGORIES_DIALOG (dialog), NULL);
 

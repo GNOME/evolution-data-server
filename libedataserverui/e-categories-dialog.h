@@ -58,7 +58,7 @@ struct _ECategoriesDialogClass {
 
 GType		e_categories_dialog_get_type	(void);
 GtkWidget *	e_categories_dialog_new		(const gchar *categories);
-const gchar *	e_categories_dialog_get_categories
+gchar *		e_categories_dialog_get_categories
 						(ECategoriesDialog *dialog);
 void		e_categories_dialog_set_categories
 						(ECategoriesDialog *dialog,

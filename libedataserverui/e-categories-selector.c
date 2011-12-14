@@ -391,16 +391,19 @@ e_categories_selector_set_items_checkable (ECategoriesSelector *selector,
 /**
  * e_categories_selector_get_checked:
  *
+ * Free returned pointer with g_free().
+ *
  * Since: 3.2
  **/
-const gchar *
+gchar *
 e_categories_selector_get_checked (ECategoriesSelector *selector)
 {
-	GString *str = g_string_new ("");
+	GString *str;
 	GList *list, *category;
 
 	g_return_val_if_fail (E_IS_CATEGORIES_SELECTOR (selector), NULL);
 
+	str = g_string_new ("");
 	list = g_hash_table_get_values (selector->priv->selected_categories);
 
 	/* to get them always in the same order */
@@ -532,9 +535,11 @@ e_categories_selector_delete_selection (ECategoriesSelector *selector)
 /**
  * e_categories_selector_get_selected:
  *
+ * Free returned pointer with g_free().
+ *
  * Since: 3.2
  **/
-const gchar *
+gchar *
 e_categories_selector_get_selected (ECategoriesSelector *selector)
 {
 	GtkTreeModel *model;

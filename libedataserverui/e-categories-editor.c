@@ -91,12 +91,14 @@ category_checked_cb (ECategoriesSelector *selector,
                      ECategoriesEditor *editor)
 {
 	GtkEntry *entry;
-	const gchar *categories;
+	gchar *categories;
 
 	entry = GTK_ENTRY (editor->priv->categories_entry);
 	categories = e_categories_selector_get_checked (selector);
 
 	gtk_entry_set_text (entry, categories);
+
+	g_free (categories);
 }
 
 static void
@@ -115,7 +117,7 @@ edit_button_clicked_cb (GtkButton *button,
                         ECategoriesEditor *editor)
 {
 	ECategoryEditor *cat_editor = e_category_editor_new ();
-	const gchar *category;
+	gchar *category;
 
 	category = e_categories_selector_get_selected (
 		editor->priv->categories_list);
@@ -123,6 +125,7 @@ edit_button_clicked_cb (GtkButton *button,
 	e_category_editor_edit_category (cat_editor, category);
 
 	gtk_widget_destroy (GTK_WIDGET (cat_editor));
+	g_free (category);
 }
 
 static void
@@ -343,11 +346,12 @@ e_categories_editor_new (void)
  * Gets a comma-separated list of the categories currently selected
  * in the editor.
  *
- * Returns: a comma-separated list of categories
+ * Returns: a comma-separated list of categories. Free returned
+ * pointer with g_free().
  *
  * Since: 3.2
  **/
-const gchar *
+gchar *
 e_categories_editor_get_categories (ECategoriesEditor *editor)
 {
 	ECategoriesSelector *categories_list;

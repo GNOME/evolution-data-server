@@ -73,7 +73,7 @@ struct _ECategoriesSelectorClass {
 
 GType		e_categories_selector_get_type	(void);
 GtkWidget *	e_categories_selector_new	(void);
-const gchar *	e_categories_selector_get_checked
+gchar *		e_categories_selector_get_checked
 						(ECategoriesSelector *selector);
 void		e_categories_selector_set_checked
 						(ECategoriesSelector *selector,
@@ -85,7 +85,7 @@ void		e_categories_selector_set_items_checkable
 						 gboolean checkable);
 void		e_categories_selector_delete_selection
 						(ECategoriesSelector *selector);
-const gchar *	e_categories_selector_get_selected
+gchar *		e_categories_selector_get_selected
 						(ECategoriesSelector *selector);
 
 G_END_DECLS

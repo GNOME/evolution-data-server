@@ -68,7 +68,7 @@ struct _ECategoriesEditorClass {
 
 GType		e_categories_editor_get_type	(void);
 GtkWidget *	e_categories_editor_new		(void);
-const gchar *	e_categories_editor_get_categories
+gchar *		e_categories_editor_get_categories
 						(ECategoriesEditor *editor);
 void		e_categories_editor_set_categories
 						(ECategoriesEditor *editor,
