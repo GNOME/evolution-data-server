@@ -103,7 +103,7 @@ struct _ECalComponentPrivate {
 	icalproperty *status;
 	GSList *attendee_list;
 
-	icalproperty *categories;
+	GString *categories_str;
 
 	icalproperty *classification;
 
@@ -307,7 +307,9 @@ free_icalcomponent (ECalComponent *comp,
 	g_slist_free (priv->attendee_list);
 	priv->attendee_list = NULL;
 
-	priv->categories = NULL;
+	if (priv->categories_str)
+		g_string_free (priv->categories_str, TRUE);
+	priv->categories_str = NULL;
 
 	priv->classification = NULL;
 	priv->comment_list = free_slist (priv->comment_list);
@@ -712,7 +714,17 @@ scan_property (ECalComponent *comp,
 		break;
 
 	case ICAL_CATEGORIES_PROPERTY:
-		priv->categories = prop;
+		if (icalproperty_get_categories (prop)) {
+			const gchar *categories = icalproperty_get_categories (prop);
+			if (*categories) {
+				if (!priv->categories_str) {
+					priv->categories_str = g_string_new (categories);
+				} else {
+					g_string_append_c (priv->categories_str, ',');
+					g_string_append (priv->categories_str, categories);
+				}
+			}
+		}
 		break;
 
 	case ICAL_CLASS_PROPERTY:
@@ -1816,10 +1828,27 @@ e_cal_component_get_categories (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	if (priv->categories)
-		*categories = icalproperty_get_categories (priv->categories);
+	if (priv->categories_str)
+		*categories = priv->categories_str->str;
 	else
 		*categories = NULL;
+}
+
+static void
+remove_all_categories (icalcomponent *icalcomp)
+{
+	icalproperty *prop, *to_remove;
+
+	g_return_if_fail (icalcomp != NULL);
+
+	prop = icalcomponent_get_first_property (icalcomp, ICAL_CATEGORIES_PROPERTY);
+	while (prop) {
+		to_remove = prop;
+		prop = icalcomponent_get_next_property (icalcomp, ICAL_CATEGORIES_PROPERTY);
+
+		icalcomponent_remove_property (icalcomp, to_remove);
+		icalproperty_free (to_remove);
+	}
 }
 
 /**
@@ -1834,6 +1863,7 @@ e_cal_component_set_categories (ECalComponent *comp,
                                 const gchar *categories)
 {
 	ECalComponentPrivate *priv;
+	icalproperty *prop;
 
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
@@ -1842,21 +1872,22 @@ e_cal_component_set_categories (ECalComponent *comp,
 	g_return_if_fail (priv->icalcomp != NULL);
 
 	if (!categories || !(*categories)) {
-		if (priv->categories) {
-			icalcomponent_remove_property (priv->icalcomp, priv->categories);
-			icalproperty_free (priv->categories);
-			priv->url = NULL;
+		remove_all_categories (priv->icalcomp);
+		if (priv->categories_str) {
+			g_string_free (priv->categories_str, TRUE);
+			priv->categories_str = NULL;
 		}
 
 		return;
 	}
 
-	if (priv->categories)
-		icalproperty_set_categories (priv->categories, (gchar *) categories);
-	else {
-		priv->categories = icalproperty_new_categories ((gchar *) categories);
-		icalcomponent_add_property (priv->icalcomp, priv->categories);
-	}
+	remove_all_categories (priv->icalcomp);
+	prop = icalproperty_new_categories (categories);
+	icalcomponent_add_property (priv->icalcomp, prop);
+
+	if (priv->categories_str)
+		g_string_free (priv->categories_str, TRUE);
+	priv->categories_str = g_string_new (categories);
 }
 
 /**
@@ -1873,6 +1904,7 @@ e_cal_component_get_categories_list (ECalComponent *comp,
                                      GSList **categ_list)
 {
 	ECalComponentPrivate *priv;
+	icalproperty *prop;
 	const gchar *categories;
 	const gchar *p;
 	const gchar *cat_start;
@@ -1885,27 +1917,33 @@ e_cal_component_get_categories_list (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
-	if (!priv->categories) {
+	if (!priv->categories_str) {
 		*categ_list = NULL;
 		return;
 	}
 
-	categories = icalproperty_get_categories (priv->categories);
-	g_return_if_fail (categories != NULL);
-
-	cat_start = categories;
 	*categ_list = NULL;
 
-	for (p = categories; *p; p++)
-		if (*p == ',') {
-			str = g_strndup (cat_start, p - cat_start);
-			*categ_list = g_slist_prepend (*categ_list, str);
+	for (prop = icalcomponent_get_first_property (priv->icalcomp, ICAL_CATEGORIES_PROPERTY);
+	     prop;
+	     prop = icalcomponent_get_next_property (priv->icalcomp, ICAL_CATEGORIES_PROPERTY)) {
+		categories = icalproperty_get_categories (prop);
+		g_return_if_fail (categories != NULL);
 
-			cat_start = p + 1;
+		cat_start = categories;
+
+		for (p = categories; *p; p++) {
+			if (*p == ',') {
+				str = g_strndup (cat_start, p - cat_start);
+				*categ_list = g_slist_prepend (*categ_list, str);
+
+				cat_start = p + 1;
+			}
 		}
 
-	str = g_strndup (cat_start, p - cat_start);
-	*categ_list = g_slist_prepend (*categ_list, str);
+		str = g_strndup (cat_start, p - cat_start);
+		*categ_list = g_slist_prepend (*categ_list, str);
+	}
 
 	*categ_list = g_slist_reverse (*categ_list);
 }
@@ -1945,7 +1983,6 @@ e_cal_component_set_categories_list (ECalComponent *comp,
                                      GSList *categ_list)
 {
 	ECalComponentPrivate *priv;
-	gchar *categories_str;
 
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
@@ -1954,22 +1991,17 @@ e_cal_component_set_categories_list (ECalComponent *comp,
 	g_return_if_fail (priv->icalcomp != NULL);
 
 	if (!categ_list) {
-		if (priv->categories) {
-			icalcomponent_remove_property (priv->icalcomp, priv->categories);
-			icalproperty_free (priv->categories);
-		}
+		e_cal_component_set_categories (comp, NULL);
+	} else {
+		gchar *categories_str;
 
-		return;
+		/* Create a single string of categories */
+		categories_str = stringify_categories (categ_list);
+
+		/* Set the categories */
+		e_cal_component_set_categories (comp, categories_str);
+		g_free (categories_str);
 	}
-
-	/* Create a single string of categories */
-	categories_str = stringify_categories (categ_list);
-
-	/* Set the categories */
-	priv->categories = icalproperty_new_categories (categories_str);
-	g_free (categories_str);
-
-	icalcomponent_add_property (priv->icalcomp, priv->categories);
 }
 
 /**
