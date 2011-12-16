@@ -1226,7 +1226,7 @@ imap_store_initable_init (GInitable *initable,
 		CAMEL_STORE (service)->flags &= ~CAMEL_STORE_VJUNK;
 		CAMEL_STORE (service)->flags |= CAMEL_STORE_REAL_JUNK_FOLDER;
 	} else {
-		CAMEL_STORE (service)->flags &= CAMEL_STORE_REAL_JUNK_FOLDER;
+		CAMEL_STORE (service)->flags &= ~CAMEL_STORE_REAL_JUNK_FOLDER;
 		CAMEL_STORE (service)->flags |= CAMEL_STORE_VJUNK;
 	}
 
