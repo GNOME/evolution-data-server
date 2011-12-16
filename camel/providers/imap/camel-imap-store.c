@@ -159,7 +159,7 @@ imap_store_update_store_flags (CamelStore *store)
 		store->flags &= ~CAMEL_STORE_VJUNK;
 		store->flags |= CAMEL_STORE_REAL_JUNK_FOLDER;
 	} else {
-		store->flags &= CAMEL_STORE_REAL_JUNK_FOLDER;
+		store->flags &= ~CAMEL_STORE_REAL_JUNK_FOLDER;
 		store->flags |= CAMEL_STORE_VJUNK;
 	}
 
