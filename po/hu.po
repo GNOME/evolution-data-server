@@ -1702,7 +1702,7 @@ msgstr "A mappa tartalmáról helyi másolat készítése kapcsolat nélküli mu
 #: ../camel/providers/imapx/camel-imapx-store.c:1440
 #, c-format
 msgid "You must be working online to complete this operation"
-msgstr "A művelet befejezéséhez hálózati kapcsolattal kell rendelkezned"
+msgstr "A művelet befejezéséhez hálózati kapcsolattal kell rendelkeznie"
 
 #: ../camel/camel-file-utils.c:732
 #, c-format
@@ -3085,12 +3085,12 @@ msgstr "Mappák"
 #: ../camel/providers/imap/camel-imap-provider.c:58
 #: ../camel/providers/imapx/camel-imapx-provider.c:64
 msgid "_Show only subscribed folders"
-msgstr "Csak az elő_fizetett mappák megjelenítése"
+msgstr "Csak a _feliratkozott mappák megjelenítése"
 
 #: ../camel/providers/imap/camel-imap-provider.c:60
 #: ../camel/providers/imapx/camel-imapx-provider.c:67
 msgid "O_verride server-supplied folder namespace"
-msgstr "A kiszolgáló által _nyújtott mappanevek felülbírálata"
+msgstr "Kiszolgáló által _nyújtott mappanévtér felülbírálata"
 
 #: ../camel/providers/imap/camel-imap-provider.c:62
 msgid "Names_pace:"
@@ -3124,7 +3124,7 @@ msgstr "Levélsze_mét keresése csak a Beérkezett üzenetek mappában"
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #: ../camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Automatically synchroni_ze remote mail locally"
-msgstr "A tá_voli levelek automatikus szinkronizálása a helyiekkel"
+msgstr "Tá_voli levelek automatikus szinkronizálása a helyiekkel"
 
 #: ../camel/providers/imap/camel-imap-provider.c:78
 msgid "IMAP default port"
@@ -4120,7 +4120,7 @@ msgstr "Levéltároló"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:41
 msgid "_Leave messages on server"
-msgstr "Az üzenetek _maradjanak meg a kiszolgálón"
+msgstr "Üzenetek _megtartása a kiszolgálón"
 
 #. Translators: '%s' is replaced with a widget, where user can select how many days can be message left on the server
 #: ../camel/providers/pop3/camel-pop3-provider.c:44
@@ -4134,7 +4134,7 @@ msgstr "Tisztítottak törlése a _helyi Érkezett mappából"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:48
 msgid "Disable _support for all POP3 extensions"
-msgstr "Az összes P_OP3-kiterjesztés tiltása"
+msgstr "Minden P_OP3-kiterjesztés tiltása"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:54
 msgid "Default POP3 port"
