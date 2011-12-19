@@ -145,6 +145,7 @@ struct _GpgCtx {
 	guint send_passwd : 1;
 
 	guint bad_passwds : 2;
+	guint anonymous_recipient : 1;
 
 	guint hadsig : 1;
 	guint badsig : 1;
@@ -203,6 +204,7 @@ gpg_ctx_new (CamelCipherContext *context)
 	gpg->statusleft = 128;
 
 	gpg->bad_passwds = 0;
+	gpg->anonymous_recipient = FALSE;
 	gpg->need_passwd = FALSE;
 	gpg->send_passwd = FALSE;
 	gpg->need_id = NULL;
@@ -733,7 +735,26 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 
 	status += 9;
 
-	if (!strncmp ((gchar *) status, "USERID_HINT ", 12)) {
+	if (!strncmp ((gchar *) status, "ENC_TO ", 7)) {
+		gchar *key = NULL;
+
+		status += 7;
+
+		status = (const guchar *) next_token ((gchar *) status, &key);
+		if (key) {
+			gboolean all_zero = *key == '0';
+			gint i = 0;
+
+			while (key [i] && all_zero) {
+				all_zero = key[i] == '0';
+				i++;
+			}
+
+			gpg->anonymous_recipient = all_zero;
+
+			g_free (key);
+		}
+	} else if (!strncmp ((gchar *) status, "USERID_HINT ", 12)) {
 		gchar *hint, *user;
 
 		status += 12;
@@ -818,6 +839,16 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 			return -1;
 		}
 
+		if (gpg->anonymous_recipient) {
+			gchar *tmp = prompt;
+
+			prompt = g_strconcat (tmp, "\n",
+				_("Note the encrypted content doesn't contain information about a recipient,"
+				  " thus there will be a password prompt for each of stored private key."), NULL);
+
+			g_free (tmp);
+		}
+
 		flags = CAMEL_SESSION_PASSWORD_SECRET | CAMEL_SESSION_PASSPHRASE;
 		if ((passwd = camel_session_get_password (gpg->session, NULL, prompt, gpg->need_id, flags, &local_error))) {
 			if (!gpg->utf8) {
@@ -851,17 +882,21 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 	} else if (!strncmp ((gchar *) status, "GOOD_PASSPHRASE", 15)) {
 		gpg->bad_passwds = 0;
 	} else if (!strncmp ((gchar *) status, "BAD_PASSPHRASE", 14)) {
-		gpg->bad_passwds++;
+		/* with anonymous recipient is user asked for his/her password for each stored key,
+		   thus here cannot be counted wrong passwords */
+		if (!gpg->anonymous_recipient) {
+			gpg->bad_passwds++;
 
-		camel_session_forget_password (gpg->session, NULL, gpg->need_id, error);
+			camel_session_forget_password (gpg->session, NULL, gpg->need_id, error);
 
-		if (gpg->bad_passwds == 3) {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-				_("Failed to unlock secret key: "
-				  "3 bad passphrases given."));
-			return -1;
+			if (gpg->bad_passwds == 3) {
+				g_set_error (
+					error, CAMEL_SERVICE_ERROR,
+					CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+					_("Failed to unlock secret key: "
+					  "3 bad passphrases given."));
+				return -1;
+			}
 		}
 	} else if (!strncmp ((const gchar *) status, "UNEXPECTED ", 11)) {
 		/* this is an error */
