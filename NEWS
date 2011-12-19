@@ -1,3 +1,57 @@
+Evolution-Data-Server 3.3.3 2011-12-19
+--------------------------------------
+
+Bug Fixes:
+	Bug 665253 - "New folder" dialog does not show IMAP accounts (Milan Crha)
+	Bug 662068 - Crash in e-cal-backend-http.c:retrieval_done (Milan Crha)
+	Bug 666106 - libical 0.47 handles CATEGORIES as multiple parameters (Milan Crha)
+	Bug 652173 - EContact's file-as getter doesn't populate empty value (Milan Crha)
+	Bug 665337: Remove --disable-calendar (Matthew Barnes)
+	Bug 664819 - gmodule-2.0 dependency must be explicit (Diego López León)
+	Bug 664572 - Change e_cal_backend_notify_component* to use ECalComponent (Milan Crha)
+	Bug 652177 - Add "revision" property to calendar file backend (Tristan Van Berkom)
+
+Miscellaneous Fixes:
+	Fix leaks around categories editing (Milan Crha)
+	e_categories_selector_get_checked: Return them always in the same order (Milan Crha)
+	Contacts calendar - consider also other than only file-as field (Milan Crha)
+	Add CamelSession.remove_service() method. (Matthew Barnes)
+	Fix glib-gen.mak rules. (Matthew Barnes)
+	Call gettext on the short descriptions of port numbers. (Gabor Kelemen)
+	Add --wait-for-client factory processes command line option (Milan Crha)
+	Small correction to imapx_command_run_sync(). (Matthew Barnes)
+	CamelIMAPXCommand: Make imapx_command_run_sync() more responsive to cancellations. (Matthew Barnes)
+	CamelIMAPXCommand: Reference the command when running synchronously. (Matthew Barnes)
+	CamelIMAPXCommand: Remove imapx_command_free() with imapx_command_unref(). (Matthew Barnes)
+	CamelIMAPXCommand: Add imapx_command_ref(). (Matthew Barnes)
+	CamelIMAPXCommand: Make IMAPX command functions static. (Matthew Barnes)
+	CamelIMAPXCommand: Add a reference count. (Matthew Barnes)
+	CamelIMAPXCommand: Allocate with g_slice_new(). (Matthew Barnes)
+	CamelIMAPXJob: Make imapx_job_run() more responsive to cancellations. (Matthew Barnes)
+	CamelIMAPXJob: Reference the job when queueing. (Matthew Barnes)
+	CamelIMAPXJob: Replace imapx_job_free() with imapx_job_unref(). (Matthew Barnes)
+	CamelIMAPXJob: Add imapx_job_ref(). (Matthew Barnes)
+	CamelIMAPXJob: Add a reference count. (Matthew Barnes)
+	CamelIMAPXJob: Allocate with g_slice_new(). (Matthew Barnes)
+	imapx_parser_thread: Skip polling and just read the socket. (Matthew Barnes)
+	rehandshake_ssl(): Be more responsive to cancellations. (Matthew Barnes)
+	Reduce frequency of CamelFolder::changed emissions. (Matthew Barnes)
+	Better runtime warnings in tcp_stream_set_error_from_pr_error(). (Matthew Barnes)
+	Wean CamelIMAPXServer off CamelMsgPort. (Matthew Barnes)
+	Avoid crash in e-cal-backend-http.c:webcal_to_http_method (Milan Crha)
+	EProxy: Disconnect from signal handlers on dispose (Milan Crha)
+	Added test case for new ECal revision backend property (Tristan Van Berkom)
+	Pre-load all built-in timezones in libical on calendar factory start (Milan Crha)
+	Add e_book_backend_sqlitedb_get_uids_and_rev() (Milan Crha)
+
+Translations:
+	Matej Urbančič (sl)
+	Gabor Kelemen (hu)
+	Kjartan Maraas (nn)
+	Daniel Mustieles (es)
+	Xandru Armesto (ast)
+
+
 Evolution-Data-Server 3.3.2 2011-11-21
 --------------------------------------
 
