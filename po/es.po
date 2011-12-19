@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-12-02 13:12+0000\n"
-"PO-Revision-Date: 2011-12-02 18:16+0100\n"
+"POT-Creation-Date: 2011-12-19 10:14+0000\n"
+"PO-Revision-Date: 2011-12-19 17:03+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr ""
 #: ../addressbook/libedata-book/e-data-book.c:441
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:527
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:556
-#: ../calendar/backends/http/e-cal-backend-http.c:427
+#: ../calendar/backends/http/e-cal-backend-http.c:437
 #: ../calendar/libecal/e-cal.c:4595 ../calendar/libecal/e-cal-client.c:147
 #: ../camel/providers/imap/camel-imap-command.c:489
 #: ../camel/providers/imap/camel-imap-store.c:450
@@ -727,7 +727,7 @@ msgid "Birth Date"
 msgstr "Fecha de nacimiento"
 
 #: ../addressbook/libebook/e-contact.c:266
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:769
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:774
 msgid "Anniversary"
 msgstr "Aniversario"
 
@@ -833,7 +833,7 @@ msgstr "Nombre de Google Talk en el trabajo 3"
 msgid "Google Talk Name List"
 msgstr "Lista de nombres para Google Talk"
 
-#: ../addressbook/libebook/e-contact.c:1593
+#: ../addressbook/libebook/e-contact.c:1601
 #: ../addressbook/libebook/e-destination.c:884
 msgid "Unnamed List"
 msgstr "Lista de anónimos"
@@ -1080,16 +1080,16 @@ msgstr ""
 msgid "Calendar doesn't support Free/Busy"
 msgstr "El calendario no soporta disponibilidad"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:771
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:776
 msgid "Birthday"
 msgstr "Cumpleaños"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:801
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:812
 #, c-format
 msgid "Birthday: %s"
 msgstr "Cumpleaños: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:826
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:843
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aniversario: %s"
@@ -1103,20 +1103,20 @@ msgstr "No se pueden guardar los datos del calendario: URI malformado."
 msgid "Cannot save calendar data"
 msgstr "No se pueden guardar los datos del calendario"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:410
+#: ../calendar/backends/http/e-cal-backend-http.c:418
 msgid "Redirected to Invalid URI"
 msgstr "Redirigido a un URI no válido"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:448
+#: ../calendar/backends/http/e-cal-backend-http.c:459
 msgid "Bad file format."
 msgstr "Formato de archivo erróneo."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:455
+#: ../calendar/backends/http/e-cal-backend-http.c:467
 msgid "Not a calendar."
 msgstr "No es un calendario."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:776
-#: ../calendar/backends/http/e-cal-backend-http.c:777
+#: ../calendar/backends/http/e-cal-backend-http.c:791
+#: ../calendar/backends/http/e-cal-backend-http.c:792
 #: ../calendar/backends/weather/e-cal-backend-weather.c:522
 msgid "Could not create cache file"
 msgstr "No se pudo crear el archivo de caché"
@@ -1273,7 +1273,7 @@ msgstr "El calendatio no existe"
 msgid "Invalid source type"
 msgstr "Tipo de fuente no válida"
 
-#: ../calendar/libecal/e-cal-component.c:1350
+#: ../calendar/libecal/e-cal-component.c:1362
 msgid "Untitled appointment"
 msgstr "Cita sin título"
 
@@ -1939,18 +1939,18 @@ msgstr "(%s) espera un resultado «array»"
 msgid "(%s) requires the folder set"
 msgstr "(%s) requiere que se establezca una carpeta"
 
-#: ../camel/camel-gpg-context.c:657 ../camel/camel-gpg-context.c:662
-#: ../camel/camel-gpg-context.c:1288
+#: ../camel/camel-gpg-context.c:659 ../camel/camel-gpg-context.c:664
+#: ../camel/camel-gpg-context.c:1323
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Error al ejecutar gpg: %s"
 
-#: ../camel/camel-gpg-context.c:662
+#: ../camel/camel-gpg-context.c:664
 #: ../camel/providers/smtp/camel-smtp-transport.c:824
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: ../camel/camel-gpg-context.c:727
+#: ../camel/camel-gpg-context.c:729
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -1961,17 +1961,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:744
+#: ../camel/camel-gpg-context.c:765
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Falló al analizar el id del usuario gpg."
 
-#: ../camel/camel-gpg-context.c:769 ../camel/camel-gpg-context.c:784
+#: ../camel/camel-gpg-context.c:790 ../camel/camel-gpg-context.c:805
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Falló al analizar la solicitud de contraseña gpg."
 
-#: ../camel/camel-gpg-context.c:805
+#: ../camel/camel-gpg-context.c:826
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -1980,7 +1980,7 @@ msgstr ""
 "Necesita un NIP para desbloquear la clave para su \n"
 "SmartCard: «%s»"
 
-#: ../camel/camel-gpg-context.c:809
+#: ../camel/camel-gpg-context.c:830
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -1989,12 +1989,21 @@ msgstr ""
 "Necesita una contraseña para desbloquear la clave para \n"
 "el usuario: «%s»"
 
-#: ../camel/camel-gpg-context.c:815
+#: ../camel/camel-gpg-context.c:836
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Solicitud inesperada de GnuPG para «%s»"
 
-#: ../camel/camel-gpg-context.c:844 ../camel/camel-net-utils.c:523
+#: ../camel/camel-gpg-context.c:846
+msgid ""
+"Note the encrypted content doesn't contain information about a recipient, "
+"thus there will be a password prompt for each of stored private key."
+msgstr ""
+"Tenga en cuenta que el contenido cifrado no contiene información sobre un "
+"destinatario, así que se pedirá una contraseña por cada calve privada "
+"almacenada."
+
+#: ../camel/camel-gpg-context.c:875 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
 #: ../camel/providers/nntp/camel-nntp-summary.c:368
 #: ../libedataserver/e-client.c:136 ../libedataserverui/e-book-auth-util.c:227
@@ -2002,33 +2011,33 @@ msgstr "Solicitud inesperada de GnuPG para «%s»"
 msgid "Cancelled"
 msgstr "Cancelado"
 
-#: ../camel/camel-gpg-context.c:862
+#: ../camel/camel-gpg-context.c:896
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Falló al desbloquear la clave secreta: se dieron 3 contraseñas falsas."
 
-#: ../camel/camel-gpg-context.c:874
+#: ../camel/camel-gpg-context.c:909
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Respuesta inesperada del GNUPG: %s"
 
-#: ../camel/camel-gpg-context.c:1005
+#: ../camel/camel-gpg-context.c:1040
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "No se pudo cifrar este mensaje: no hay destinatarios."
 
-#: ../camel/camel-gpg-context.c:1552 ../camel/camel-smime-context.c:827
+#: ../camel/camel-gpg-context.c:1587 ../camel/camel-smime-context.c:827
 msgid "Could not generate signing data: "
 msgstr "No se pudo generar los datos de la firma: "
 
-#: ../camel/camel-gpg-context.c:1601 ../camel/camel-gpg-context.c:1805
-#: ../camel/camel-gpg-context.c:1915 ../camel/camel-gpg-context.c:2062
-#: ../camel/camel-gpg-context.c:2162 ../camel/camel-gpg-context.c:2210
+#: ../camel/camel-gpg-context.c:1636 ../camel/camel-gpg-context.c:1840
+#: ../camel/camel-gpg-context.c:1950 ../camel/camel-gpg-context.c:2097
+#: ../camel/camel-gpg-context.c:2197 ../camel/camel-gpg-context.c:2245
 msgid "Failed to execute gpg."
 msgstr "Falló al ejecutar gpg."
 
-#: ../camel/camel-gpg-context.c:1680 ../camel/camel-gpg-context.c:1688
-#: ../camel/camel-gpg-context.c:1696 ../camel/camel-gpg-context.c:1716
+#: ../camel/camel-gpg-context.c:1715 ../camel/camel-gpg-context.c:1723
+#: ../camel/camel-gpg-context.c:1731 ../camel/camel-gpg-context.c:1751
 #: ../camel/camel-smime-context.c:953 ../camel/camel-smime-context.c:967
 #: ../camel/camel-smime-context.c:976
 #, c-format
@@ -2036,30 +2045,30 @@ msgid "Cannot verify message signature: Incorrect message format"
 msgstr ""
 "No se pudo verificar la firma del mensaje: Formato de mensaje incorrecto"
 
-#: ../camel/camel-gpg-context.c:1758
+#: ../camel/camel-gpg-context.c:1793
 msgid "Cannot verify message signature: "
 msgstr "No se puede verificar la firma del mensaje: "
 
-#: ../camel/camel-gpg-context.c:1881
+#: ../camel/camel-gpg-context.c:1916
 msgid "Could not generate encrypting data: "
 msgstr "No se pudieron generar los datos de cifrado: "
 
-#: ../camel/camel-gpg-context.c:1934
+#: ../camel/camel-gpg-context.c:1969
 msgid "This is a digitally encrypted message part"
 msgstr "Esta parte del mensaje está cifrada digitalmente"
 
-#: ../camel/camel-gpg-context.c:1992 ../camel/camel-gpg-context.c:2001
-#: ../camel/camel-gpg-context.c:2024
+#: ../camel/camel-gpg-context.c:2027 ../camel/camel-gpg-context.c:2036
+#: ../camel/camel-gpg-context.c:2059
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "No se pudo descifrar el mensaje: Formato de mensaje incorrecto"
 
-#: ../camel/camel-gpg-context.c:2012
+#: ../camel/camel-gpg-context.c:2047
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Falló al descifrar la parte MIME: error del protocolo"
 
-#: ../camel/camel-gpg-context.c:2103 ../camel/camel-smime-context.c:1264
+#: ../camel/camel-gpg-context.c:2138 ../camel/camel-smime-context.c:1264
 msgid "Encrypted content"
 msgstr "Contenido cifrado"
 
@@ -2245,7 +2254,7 @@ msgstr "No se pudo cargar %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "No se pudo cargar %s: No hay código de inicialización en el módulo."
 
-#: ../camel/camel-provider.c:389 ../camel/camel-session.c:384
+#: ../camel/camel-provider.c:395 ../camel/camel-session.c:384
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "No hay proveedor disponible para el protocolo «%s»"
@@ -2488,7 +2497,7 @@ msgstr "Falló la compilación de la expresión regular: %s: %s"
 msgid "Invalid GType registered for protocol '%s'"
 msgstr "El GType registrado no es válido para el protocolo «%s»"
 
-#: ../camel/camel-session.c:448
+#: ../camel/camel-session.c:462
 #: ../camel/providers/imap/camel-imap-store.c:1094
 #: ../camel/providers/imapx/camel-imapx-server.c:3357
 #: ../camel/providers/pop3/camel-pop3-store.c:242
@@ -2498,12 +2507,12 @@ msgstr "El GType registrado no es válido para el protocolo «%s»"
 msgid "No support for %s authentication"
 msgstr "No hay soporte para la autenticación %s"
 
-#: ../camel/camel-session.c:463
+#: ../camel/camel-session.c:477
 #, c-format
 msgid "%s authentication failed"
 msgstr "Falló la autenticación %s"
 
-#: ../camel/camel-session.c:1176
+#: ../camel/camel-session.c:1186
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Escriba la contraseña %s para %s en el servidor %s."
@@ -4872,11 +4881,11 @@ msgstr "Acceder a un servidor LDAP anónimamente"
 msgid "Failed to authenticate.\n"
 msgstr "Falló al autenticar.\n"
 
-#: ../libedataserverui/e-categories-editor.c:221
+#: ../libedataserverui/e-categories-editor.c:224
 msgid "Currently _used categories:"
 msgstr "Categorías _usadas actualmente:"
 
-#: ../libedataserverui/e-categories-editor.c:230
+#: ../libedataserverui/e-categories-editor.c:233
 msgid "_Available Categories:"
 msgstr "Categorías _disponibles:"
 
@@ -5116,7 +5125,6 @@ msgstr "Mantener en ejecución después de cerrar el último cliente"
 
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:49
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:53
-#| msgid "Keep running after the last client is closed"
 msgid "Wait running until at least one client is connected"
 msgstr "Mantener en ejecución hasta que haya al menos un cliente conectado"
 
