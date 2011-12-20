@@ -128,7 +128,15 @@ mime_filter_charset_complete (CamelMimeFilter *mime_filter,
 	}
 
 	/* flush the iconv conversion */
-	camel_iconv (priv->ic, NULL, NULL, &outbuf, &outleft);
+	while (camel_iconv (priv->ic, NULL, NULL, &outbuf, &outleft) == (gsize) -1) {
+		if (errno != E2BIG)
+			break;
+		
+		converted = outbuf - mime_filter->outbuf;
+		camel_mime_filter_set_size (mime_filter, mime_filter->outsize + 16, TRUE);
+		outbuf = mime_filter->outbuf + converted;
+		outleft = mime_filter->outsize - converted;
+	}
 
 	*out = mime_filter->outbuf;
 	*outlen = mime_filter->outsize - outleft;
