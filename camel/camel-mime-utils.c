@@ -979,7 +979,17 @@ decode_8bit (const gchar *text,
 			}
 		} while (inleft > 0);
 
-		rc = iconv (cd, NULL, NULL, &outbuf, &outleft);
+		while ((rc = iconv (cd, NULL, NULL, &outbuf, &outleft)) == (gsize) -1) {
+			if (errno != E2BIG)
+				break;
+			
+			outlen += 16;
+			rc = (gsize) (outbuf - out);
+			out = g_realloc (out, outlen + 1);
+			outleft = outlen - rc;
+			outbuf = out + rc;
+		}
+		
 		*outbuf = '\0';
 
 		camel_iconv_close (cd);
