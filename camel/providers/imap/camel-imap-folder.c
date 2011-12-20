@@ -2801,12 +2801,15 @@ do_copy (CamelFolder *source,
 
 		/* use XGWMOVE only when none of the moving messages has set any user tag */
 		if ((store->capabilities & IMAP_CAPABILITY_XGWMOVE) != 0 && delete_originals && !any_has_user_tag (source, uidset)) {
+			camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 			response = camel_imap_command (
 				store, source, cancellable, &local_error,
 				"UID XGWMOVE %s %F", uidset, full_name);
 			/* returns only 'A00012 OK UID XGWMOVE completed' '* 2 XGWMOVE' so nothing useful */
 			camel_imap_response_free (store, response);
+			camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		} else {
+			camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 			response = camel_imap_command (
 				store, source, cancellable, &local_error,
 				"UID COPY %s %F", uidset, full_name);
@@ -2817,6 +2820,7 @@ do_copy (CamelFolder *source,
 					response, source, destination,
 					cancellable);
 			camel_imap_response_free (store, response);
+			camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		}
 
 		if (local_error == NULL && delete_originals && (mark_moved || !trash_path)) {
@@ -3533,7 +3537,6 @@ imap_get_message_sync (CamelFolder *folder,
 				}
 
 				response = camel_imap_command (store, folder, cancellable, &local_error, "UID FETCH %s BODY", uid);
-				camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 				if (response) {
 					for (i = 0, body = NULL; i < response->untagged->len; i++) {
@@ -3563,6 +3566,7 @@ imap_get_message_sync (CamelFolder *folder,
 				} else {
 					g_clear_error (&local_error);
 				}
+				camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 			}
 
 			if (camel_debug_start("imap:folder")) {
@@ -4420,8 +4424,6 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
 			"UID FETCH %s BODY.PEEK[%s]", uid,
 			section_text);
 	}
-	/* We won't need the connect_lock again after this. */
-	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (!response) {
 		CAMEL_IMAP_FOLDER_REC_UNLOCK (imap_folder, cache_lock);
@@ -4439,6 +4441,7 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
 		stream = NULL;
 	}
 	camel_imap_response_free (store, response);
+	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	CAMEL_IMAP_FOLDER_REC_UNLOCK (imap_folder, cache_lock);
 	if (!stream) {
 		g_set_error (
