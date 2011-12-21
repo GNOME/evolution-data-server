@@ -4427,6 +4427,7 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
 
 	if (!response) {
 		CAMEL_IMAP_FOLDER_REC_UNLOCK (imap_folder, cache_lock);
+		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return NULL;
 	}
 
@@ -4441,8 +4442,8 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
 		stream = NULL;
 	}
 	camel_imap_response_free (store, response);
-	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	CAMEL_IMAP_FOLDER_REC_UNLOCK (imap_folder, cache_lock);
+	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 	if (!stream) {
 		g_set_error (
 			error, CAMEL_ERROR,
