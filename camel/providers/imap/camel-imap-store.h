@@ -109,6 +109,8 @@ struct _CamelImapStore {
 	GHashTable *authtypes;
 
 	time_t refresh_stamp;
+
+	GHashTable *known_alerts;
 };
 
 struct _CamelImapStoreClass {

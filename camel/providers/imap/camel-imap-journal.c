@@ -312,7 +312,7 @@ journal_decode_folder (CamelIMAPJournal *journal,
 			camel_session_alert_user (
 				camel_service_get_session (CAMEL_SERVICE (parent_store)),
 				CAMEL_SESSION_ALERT_WARNING,
-				msg, FALSE);
+				msg, NULL);
 			g_free (msg);
 		}
 	}

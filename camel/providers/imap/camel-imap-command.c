@@ -388,21 +388,31 @@ camel_imap_command_response (CamelImapStore *store,
 			store, respbuf, cancellable, error);
 		if (!respbuf)
 			type = CAMEL_IMAP_RESPONSE_ERROR;
-		else if (!g_ascii_strncasecmp (respbuf, "* OK [ALERT]", 12)
-			 || !g_ascii_strncasecmp (respbuf, "* NO [ALERT]", 12)
-			 || !g_ascii_strncasecmp (respbuf, "* BAD [ALERT]", 13)) {
-			gchar *msg;
+		else {
+			gboolean ok_alert = g_ascii_strncasecmp (respbuf, "* OK [ALERT]", 12) == 0;
+			gboolean bad_alert = g_ascii_strncasecmp (respbuf, "* BAD [ALERT]", 13) == 0;
 
-			/* for imap ALERT codes, account user@host */
-			/* we might get a ']' from a BAD response since we +12,
-			 * but who cares? */
-			msg = g_strdup_printf (
-				_("Alert from IMAP server %s@%s:\n%s"),
-				user, host, respbuf + 12);
-			camel_session_alert_user (
-				session, CAMEL_SESSION_ALERT_WARNING,
-				msg, FALSE);
-			g_free (msg);
+			if (ok_alert || bad_alert || g_ascii_strncasecmp (respbuf, "* NO [ALERT]", 12) == 0) {
+				const gchar *alert;
+				gchar *msg;
+
+				alert = respbuf + 12 + (bad_alert ? 1 : 0);
+
+				if (ok_alert) {
+					if (g_hash_table_lookup (store->known_alerts, alert))
+						break;
+
+					g_hash_table_insert (store->known_alerts, g_strdup (alert), GINT_TO_POINTER (1));
+				}
+
+				msg = g_strdup_printf (
+					_("Alert from IMAP server %s@%s:\n%s"),
+					user, host, alert);
+				camel_session_alert_user (
+					session, CAMEL_SESSION_ALERT_WARNING,
+					msg, NULL);
+				g_free (msg);
+			}
 		}
 
 		break;

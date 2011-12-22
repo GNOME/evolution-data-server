@@ -745,6 +745,7 @@ imap_store_finalize (GObject *object)
 	camel_service_disconnect_sync (CAMEL_SERVICE (imap_store), TRUE, NULL);
 
 	g_static_rec_mutex_free (&imap_store->command_and_response_lock);
+	g_hash_table_destroy (imap_store->known_alerts);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imap_store_parent_class)->finalize (object);
@@ -1024,6 +1025,8 @@ imap_store_disconnect_sync (CamelService *service,
 		g_hash_table_destroy (store->authtypes);
 		store->authtypes = NULL;
 	}
+
+	g_hash_table_remove_all (store->known_alerts);
 
 	if (camel_imap_settings_get_use_namespace (imap_settings))
 		camel_imap_settings_set_namespace (imap_settings, NULL);
@@ -1526,6 +1529,8 @@ camel_imap_store_init (CamelImapStore *imap_store)
 	imap_store->tag_prefix = imap_tag_prefix++;
 	if (imap_tag_prefix > 'Z')
 		imap_tag_prefix = 'A';
+
+	imap_store->known_alerts = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 	g_signal_connect (
 		imap_store, "notify::settings",
