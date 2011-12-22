@@ -1121,7 +1121,7 @@ imap_store_authenticate_sync (CamelService *service,
 			goto break_and_exit;
 
 		response = camel_imap_command_continuation (
-			store, sasl_resp, strlen (sasl_resp),
+			store, NULL, sasl_resp, strlen (sasl_resp),
 			cancellable, &local_error);
 
 		g_free (sasl_resp);
@@ -1143,7 +1143,7 @@ imap_store_authenticate_sync (CamelService *service,
 break_and_exit:
 	/* Get the server out of "waiting for continuation data" mode. */
 	response = camel_imap_command_continuation (
-		store, "*", 1, cancellable, NULL);
+		store, NULL, "*", 1, cancellable, NULL);
 	if (response != NULL)
 		camel_imap_response_free (store, response);
 

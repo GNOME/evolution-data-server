@@ -53,6 +53,7 @@ CamelImapResponse *
 						 const gchar *fmt, ...);
 CamelImapResponse *
 		camel_imap_command_continuation	(CamelImapStore *store,
+						 CamelFolder *folder,
 						 const gchar *cmd,
 						 gsize cmdlen,
 						 GCancellable *cancellable,
@@ -77,6 +78,7 @@ gboolean	camel_imap_command_start	(CamelImapStore *store,
 						 const gchar *fmt, ...);
 CamelImapResponseType
 		camel_imap_command_response	(CamelImapStore *store,
+						 CamelFolder *folder,
 						 gchar **response,
 						 GCancellable *cancellable,
 						 GError **error);

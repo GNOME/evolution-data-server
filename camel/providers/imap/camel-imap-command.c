@@ -47,6 +47,7 @@ static gboolean imap_command_start (CamelImapStore *store, CamelFolder *folder,
 				    const gchar *cmd, GCancellable *cancellable,
 				    GError **error);
 static CamelImapResponse *imap_read_response (CamelImapStore *store,
+					      CamelFolder *folder,
 					      GCancellable *cancellable,
 					      GError **error);
 static gchar *imap_read_untagged (CamelImapStore *store, gchar *line,
@@ -119,7 +120,7 @@ camel_imap_command (CamelImapStore *store,
 	}
 	g_free (cmd);
 
-	return imap_read_response (store, cancellable, error);
+	return imap_read_response (store, folder, cancellable, error);
 }
 
 /**
@@ -264,6 +265,7 @@ imap_command_start (CamelImapStore *store,
 /**
  * camel_imap_command_continuation:
  * @store: the IMAP store
+ * @folder: a #CamelFolder on which the command was run; can be %NULL
  * @cmd: buffer containing the response/request data
  * @cmdlen: command length
  * @error: return location for a #GError, or %NULL
@@ -279,6 +281,7 @@ imap_command_start (CamelImapStore *store,
  **/
 CamelImapResponse *
 camel_imap_command_continuation (CamelImapStore *store,
+				 CamelFolder *folder,
                                  const gchar *cmd,
                                  gsize cmdlen,
                                  GCancellable *cancellable,
@@ -311,12 +314,13 @@ camel_imap_command_continuation (CamelImapStore *store,
 		return NULL;
 	}
 
-	return imap_read_response (store, cancellable, error);
+	return imap_read_response (store, folder, cancellable, error);
 }
 
 /**
  * camel_imap_command_response:
  * @store: the IMAP store
+ * @folder: a #CamelFolder on which the command was run; can be %NULL
  * @response: a pointer to pass back the response data in
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -332,6 +336,7 @@ camel_imap_command_continuation (CamelImapStore *store,
  **/
 CamelImapResponseType
 camel_imap_command_response (CamelImapStore *store,
+			     CamelFolder *folder,
                              gchar **response,
                              GCancellable *cancellable,
                              GError **error)
@@ -405,9 +410,14 @@ camel_imap_command_response (CamelImapStore *store,
 					g_hash_table_insert (store->known_alerts, g_strdup (alert), GINT_TO_POINTER (1));
 				}
 
-				msg = g_strdup_printf (
-					_("Alert from IMAP server %s@%s:\n%s"),
-					user, host, alert);
+				if (folder)
+					msg = g_strdup_printf (
+						_("Alert from IMAP server %s@%s in folder %s:\n%s"),
+						user, host, camel_folder_get_full_name (folder), alert);
+				else
+					msg = g_strdup_printf (
+						_("Alert from IMAP server %s@%s:\n%s"),
+						user, host, alert);
 				camel_session_alert_user (
 					session, CAMEL_SESSION_ALERT_WARNING,
 					msg, NULL);
@@ -434,6 +444,7 @@ camel_imap_command_response (CamelImapStore *store,
 
 static CamelImapResponse *
 imap_read_response (CamelImapStore *store,
+		    CamelFolder *folder,
                     GCancellable *cancellable,
                     GError **error)
 {
@@ -456,7 +467,7 @@ imap_read_response (CamelImapStore *store,
 
 	response->untagged = g_ptr_array_new ();
 	while ((type = camel_imap_command_response (
-		store, &respbuf, cancellable, error))
+		store, folder, &respbuf, cancellable, error))
 		== CAMEL_IMAP_RESPONSE_UNTAGGED)
 		g_ptr_array_add (response->untagged, respbuf);
 

@@ -1095,7 +1095,7 @@ imap_rescan (CamelFolder *folder,
 	resp = NULL;
 	new = g_malloc0 (summary_len * sizeof (*new));
 	summary_got = 0;
-	while ((type = camel_imap_command_response (store, &resp, cancellable, error)) == CAMEL_IMAP_RESPONSE_UNTAGGED && !camel_application_is_exiting) {
+	while ((type = camel_imap_command_response (store, folder, &resp, cancellable, error)) == CAMEL_IMAP_RESPONSE_UNTAGGED && !camel_application_is_exiting) {
 		GData *data;
 		gchar *uid;
 		guint32 flags;
@@ -2377,7 +2377,7 @@ retry:
 	}
 
 	/* send the rest of our data - the mime message */
-	response2 = camel_imap_command_continuation (store, (const gchar *) ba->data, ba->len, cancellable, error);
+	response2 = camel_imap_command_continuation (store, folder, (const gchar *) ba->data, ba->len, cancellable, error);
 	g_byte_array_free (ba, TRUE);
 
 	/* free it only after message is sent. This may cause more FETCHes. */
@@ -3999,7 +3999,7 @@ imap_update_summary (CamelFolder *folder,
 	fetch_data = g_ptr_array_new ();
 	messages = g_ptr_array_new ();
 	ct = exists - seq;
-	while ((type = camel_imap_command_response (store, &resp, cancellable, error)) ==
+	while ((type = camel_imap_command_response (store, folder, &resp, cancellable, error)) ==
 	       CAMEL_IMAP_RESPONSE_UNTAGGED && !camel_application_is_exiting) {
 		data = parse_fetch_response (imap_folder, resp);
 		g_free (resp);
@@ -4088,7 +4088,7 @@ imap_update_summary (CamelFolder *folder,
 			}
 			g_free (uidset);
 
-			while ((type = camel_imap_command_response (store, &resp, cancellable, error))
+			while ((type = camel_imap_command_response (store, folder, &resp, cancellable, error))
 			       == CAMEL_IMAP_RESPONSE_UNTAGGED && !camel_application_is_exiting) {
 				data = parse_fetch_response (imap_folder, resp);
 				g_free (resp);
