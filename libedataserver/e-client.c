@@ -882,11 +882,20 @@ client_process_authentication_idle_cb (gpointer user_data)
 	if (e_client_emit_authenticate (auth_data->client, auth_data->credentials)) {
 		client_handle_authentication (auth_data->client, auth_data->credentials);
 	} else {
-		GError *error;
+		/* Always pass credentials to backend to finish opening phase.
+		   Empty username indicates that either user cancelled password prompt
+		   or there was no authentication callback set.
+		*/
+		e_credentials_set (auth_data->credentials, E_CREDENTIALS_KEY_USERNAME, NULL);
+		client_handle_authentication (auth_data->client, auth_data->credentials);
 
-		error = e_client_error_create (E_CLIENT_ERROR_AUTHENTICATION_REQUIRED, NULL);
-		e_client_emit_opened (auth_data->client, error);
-		g_error_free (error);
+		if (g_strcmp0 (e_credentials_peek (auth_data->credentials, E_CREDENTIALS_KEY_FOREIGN_REQUEST), "1") != 0) {
+			GError *error;
+
+			error = e_client_error_create (E_CLIENT_ERROR_AUTHENTICATION_REQUIRED, NULL);
+			e_client_emit_opened (auth_data->client, error);
+			g_error_free (error);
+		}
 	}
 
 	e_credentials_free (auth_data->credentials);

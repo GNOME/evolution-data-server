@@ -9,7 +9,8 @@ libecalbackendcontacts_la_CPPFLAGS = \
 	-I$(top_builddir)/calendar			\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)			\
+	$(SOUP_CFLAGS)
 
 libecalbackendcontacts_la_SOURCES =		\
 	e-cal-backend-contacts-factory.c	\
@@ -22,7 +23,8 @@ libecalbackendcontacts_la_LIBADD =						\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
 	$(top_builddir)/libebackend/libebackend-1.2.la				\
-	$(EVOLUTION_CALENDAR_LIBS)
+	$(EVOLUTION_CALENDAR_LIBS)						\
+	$(SOUP_LIBS)
 
 libecalbackendcontacts_la_LDFLAGS =	\
 	-module -avoid-version $(NO_UNDEFINED)

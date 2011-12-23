@@ -2144,8 +2144,8 @@ e_book_backend_google_open (EBookBackend *backend,
 
 	__debug__ (G_STRFUNC);
 
-	if (priv->cancellables) {
-		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, "Source already loaded!"));
+	if (priv->cancellables && backend_is_authorized (backend)) {
+		e_book_backend_respond_opened (backend, book, opid, NULL);
 		return;
 	}
 
@@ -2171,9 +2171,12 @@ e_book_backend_google_open (EBookBackend *backend,
 		use_cache = FALSE;
 
 	/* Set up our object */
-	priv->groups_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-	priv->groups_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-	priv->cancellables = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
+	if (!priv->cancellables) {
+		priv->groups_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+		priv->groups_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+		priv->cancellables = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
+	}
+
 	cache_init (backend, use_cache);
 	priv->use_ssl = use_ssl;
 	priv->refresh_interval = refresh_interval;

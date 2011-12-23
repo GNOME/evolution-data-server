@@ -114,6 +114,16 @@ struct _ECredentials {
 #define E_CREDENTIALS_KEY_PROMPT_FLAGS	"prompt-flags"
 
 /**
+ * E_CREDENTIALS_KEY_FOREIGN_REQUEST:
+ *
+ * Set to "1" when the ECredentials is used to authenticate
+ * other than current EClient.
+ *
+ * Since: 3.4
+ **/
+#define E_CREDENTIALS_KEY_FOREIGN_REQUEST "foreign-request"
+
+/**
  * ECredentialsPromptFlags:
  *
  * FIXME Document me.
