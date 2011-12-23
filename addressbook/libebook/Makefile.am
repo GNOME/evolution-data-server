@@ -85,7 +85,7 @@ if HAVE_INTROSPECTION
 introspection_sources = $(libebook_1_2_la_SOURCES)
 EBook-1.2.gir: libebook-1.2.la
 
-EBook_1_2_gir_INCLUDES = GObject-2.0 EDataServer-1.2 GLib-2.0 libxml2-2.0 \
+EBook_1_2_gir_INCLUDES = GObject-2.0 GLib-2.0 libxml2-2.0 \
 	Gio-2.0 \
 	$(NULL)
 libxml_include = `$(PKG_CONFIG) --cflags libxml-2.0`
@@ -100,6 +100,7 @@ EBook_1_2_gir_CFLAGS = $(INCLUDES) \
 		       -I$(top_srcdir)/addressbook/libebook \
 		       -I$(top_builddir)/addressbook/libebook \
 			$(NULL)
+EBook_1_2_gir_SCANNERFLAGS = --include-uninstalled=$(top_builddir)/libedataserver/EDataServer-1.2.gir
 EBook_1_2_gir_LIBS = \
 	libebook-1.2.la $(top_builddir)/libedataserver/libedataserver-1.2.la
 EBook_1_2_gir_FILES = $(libebook_1_2_la_SOURCES) $(libebookinclude_HEADERS)
