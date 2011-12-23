@@ -2354,7 +2354,7 @@ imapx_run_job (CamelIMAPXServer *is,
                CamelIMAPXJob *job,
                GError **error)
 {
-	gulong cancel_id;
+	gulong cancel_id = 0;
 
 	g_warn_if_fail (job->done_flag == FALSE);
 
