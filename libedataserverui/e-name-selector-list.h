@@ -68,7 +68,7 @@ struct _ENameSelectorListClass {
 
 GType		e_name_selector_list_get_type	(void);
 ENameSelectorList *
-		e_name_selector_list_new	(void);
+		e_name_selector_list_new	(ESourceRegistry *registry);
 void		e_name_selector_list_expand_clicked
 						(ENameSelectorList *list);
 
