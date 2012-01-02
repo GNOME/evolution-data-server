@@ -482,6 +482,7 @@ maildir_dir_name_to_fullname (const gchar *dir_name)
 static gint
 scan_dirs (CamelStore *store,
            guint32 flags,
+	   gboolean can_inbox_sibling,
            CamelFolderInfo **topfi,
            CamelURL *url,
            GCancellable *cancellable,
@@ -547,9 +548,11 @@ scan_dirs (CamelStore *store,
 		else
 			short_name++;
 
-		if (g_ascii_strcasecmp ((*topfi)->full_name, "Inbox") != 0 
-					&& !g_str_has_prefix (full_name, (*topfi)->full_name)) {
-
+		if ((g_ascii_strcasecmp ((*topfi)->full_name, "Inbox") != 0 
+		    && !g_str_has_prefix (full_name, (*topfi)->full_name))
+		    || (!can_inbox_sibling
+		    && g_ascii_strcasecmp ((*topfi)->full_name, "Inbox") == 0 
+		    && !g_str_has_prefix (full_name, (*topfi)->full_name))) {
 			g_free (full_name);
 			continue;
 		}
@@ -617,7 +620,7 @@ maildir_store_get_folder_info_sync (CamelStore *store,
 	if (top == NULL || top[0] == 0) {
 		/* create a dummy "." parent inbox, use to scan, then put back at the top level */
 		fi = scan_fi(store, flags, url, "Inbox", _("Inbox"), cancellable);
-		if (scan_dirs (store, flags, &fi, url, cancellable, error) == -1)
+		if (scan_dirs (store, flags, TRUE, &fi, url, cancellable, error) == -1)
 			goto fail;
 
 		fi->flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
@@ -630,7 +633,7 @@ maildir_store_get_folder_info_sync (CamelStore *store,
 		fi = scan_fi (store, flags, url, top, name ? name + 1 : top, cancellable);
 		if (g_strcmp0 (fi->full_name, CAMEL_VTRASH_NAME) != 0 &&
 		    g_strcmp0 (fi->full_name, CAMEL_VJUNK_NAME) != 0 &&
-		    scan_dirs (store, flags, &fi, url, cancellable, error) == -1)
+		    scan_dirs (store, flags, FALSE, &fi, url, cancellable, error) == -1)
 			goto fail;
 	}
 
