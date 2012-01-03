@@ -173,8 +173,8 @@ add_range_xover (CamelNNTPSummary *cns,
 	CamelFolderSummary *s;
 	CamelMessageInfoBase *mi;
 	struct _camel_header_raw *headers = NULL;
-	const gchar *host;
 	gchar *line, *tab;
+	gchar *host;
 	guint len;
 	gint ret;
 	guint n, count, total, size;
@@ -186,10 +186,12 @@ add_range_xover (CamelNNTPSummary *cns,
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
 
 	camel_operation_push_message (
 		cancellable, _("%s: Scanning new messages"), host);
+
+	g_free (host);
 
 	if ((store->capabilities & NNTP_CAPABILITY_OVER) != 0)
 		ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "over %r", low, high);
@@ -296,7 +298,7 @@ add_range_head (CamelNNTPSummary *cns,
 	guint i, n, count, total;
 	CamelMessageInfo *mi;
 	CamelMimeParser *mp;
-	const gchar *host;
+	gchar *host;
 
 	s = (CamelFolderSummary *) cns;
 
@@ -306,10 +308,12 @@ add_range_head (CamelNNTPSummary *cns,
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
 
 	camel_operation_push_message (
 		cancellable, _("%s: Scanning new messages"), host);
+
+	g_free (host);
 
 	count = 0;
 	total = high - low + 1;

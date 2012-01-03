@@ -693,8 +693,9 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	guchar nonce[8], hash[21], lm_resp[24], nt_resp[24];
 	GString *domain = NULL;
 	const gchar *password;
-	const gchar *user;
+	const gchar *real_user;
 	const gchar *cp;
+	gchar *user = NULL;
 
 	service = camel_sasl_get_service (sasl);
 
@@ -702,7 +703,7 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	user = camel_network_settings_get_user (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 	g_return_val_if_fail (user != NULL, NULL);
 
 	password = camel_service_get_password (service);
@@ -726,7 +727,7 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 				g_free (priv->type1_msg);
 				priv->type1_msg = NULL;
 			}
-			return ret;
+			goto exit;
 		} else {
 			gchar *type2;
 			gchar *string;
@@ -749,13 +750,15 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 			g_free (string);
 			g_free (type2);
 		}
+
 		/* On failure, we just return an empty string. Setting the
 		 * GError would cause the providers to abort the whole
 		 * connection, and we want them to ask the user for a password
 		 * and continue. */
 		g_object_unref (priv->helper_stream);
 		priv->helper_stream = NULL;
-		return ret;
+
+		goto exit;
 	}
 #endif
 
@@ -809,8 +812,9 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	cp = strchr (user, '\\');
 	if (cp != NULL) {
 		domain = g_string_new_len (user, cp - user);
-		user = cp + 1;
-	}
+		real_user = cp + 1;
+	} else
+		real_user = user;
 
 	/* Otherwise, fall back to the domain of the server, if possible */
 	if (domain == NULL)
@@ -832,7 +836,7 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	ntlm_set_string (ret, NTLM_RESPONSE_DOMAIN_OFFSET,
 			 domain->str, domain->len);
 	ntlm_set_string (ret, NTLM_RESPONSE_USER_OFFSET,
-			 user, strlen (user));
+			 real_user, strlen (real_user));
 	ntlm_set_string (ret, NTLM_RESPONSE_HOST_OFFSET,
 			 "UNKNOWN", sizeof ("UNKNOWN") - 1);
 	ntlm_set_string (ret, NTLM_RESPONSE_LM_RESP_OFFSET,
@@ -853,6 +857,8 @@ fail:
 			     sizeof (NTLM_REQUEST) - 1);
 
 exit:
+	g_free (user);
+
 	return ret;
 }
 
@@ -868,8 +874,8 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 	CamelService *service;
 	CamelSaslNTLM *ntlm = CAMEL_SASL_NTLM (sasl);
 	CamelSaslNTLMPrivate *priv = ntlm->priv;
-	const gchar *user;
 	const gchar *cp;
+	gchar *user;
 	gchar buf[1024];
 	gsize s;
 	gchar *command;
@@ -884,7 +890,7 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), FALSE);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	user = camel_network_settings_get_user (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 	g_return_val_if_fail (user != NULL, FALSE);
 
 	cp = strchr (user, '\\');
@@ -900,22 +906,29 @@ sasl_ntlm_try_empty_password_sync (CamelSasl *sasl,
 			"--use-cached-creds --username '%s'",
 			NTLM_AUTH_HELPER, user);
 	}
+
 	ret = camel_stream_process_connect (
 		CAMEL_STREAM_PROCESS (stream), command, NULL, error);
+
 	g_free (command);
+	g_free (user);
+
 	if (ret) {
 		g_object_unref (stream);
 		return FALSE;
 	}
+
 	if (camel_stream_write_string (stream, "YR\n", cancellable, error) < 0) {
 		g_object_unref (stream);
 		return FALSE;
 	}
+
 	s = camel_stream_read (stream, buf, sizeof (buf), cancellable, NULL);
 	if (s < 4) {
 		g_object_unref (stream);
 		return FALSE;
 	}
+
 	if (buf[0] != 'Y' || buf[1] != 'R' || buf[2] != ' ' || buf[s - 1] != '\n') {
 		g_object_unref (stream);
 		return FALSE;

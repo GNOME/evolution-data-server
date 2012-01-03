@@ -59,7 +59,7 @@ sasl_plain_challenge_sync (CamelSasl *sasl,
 	CamelService *service;
 	GByteArray *buf = NULL;
 	const gchar *password;
-	const gchar *user;
+	gchar *user;
 
 	service = camel_sasl_get_service (sasl);
 
@@ -67,7 +67,7 @@ sasl_plain_challenge_sync (CamelSasl *sasl,
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	user = camel_network_settings_get_user (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 	g_return_val_if_fail (user != NULL, NULL);
 
 	password = camel_service_get_password (service);
@@ -81,6 +81,8 @@ sasl_plain_challenge_sync (CamelSasl *sasl,
 	g_byte_array_append (buf, (guint8 *) password, strlen (password));
 
 	camel_sasl_set_authenticated (sasl, TRUE);
+
+	g_free (user);
 
 	return buf;
 }

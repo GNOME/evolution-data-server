@@ -105,8 +105,9 @@ connect_to_server (CamelService *service,
 	CamelNetworkSecurityMethod method;
 	CamelSettings *settings;
 	CamelStream *tcp_stream;
-	const gchar *host;
 	gchar *respbuf = NULL;
+	gboolean success = TRUE;
+	gchar *host;
 
 	if (!CAMEL_SERVICE_CLASS (camel_smtp_transport_parent_class)->
 		connect_sync (service, cancellable, error))
@@ -119,14 +120,16 @@ connect_to_server (CamelService *service,
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
 	method = camel_network_settings_get_security_method (network_settings);
 
 	tcp_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
 
-	if (tcp_stream == NULL)
-		return FALSE;
+	if (tcp_stream == NULL) {
+		success = FALSE;
+		goto exit;
+	}
 
 	transport->connected = TRUE;
 
@@ -146,14 +149,16 @@ connect_to_server (CamelService *service,
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("Welcome response error: "));
 			transport->connected = FALSE;
-			return FALSE;
+			success = FALSE;
+			goto exit;
 		}
 		if (strncmp (respbuf, "220", 3)) {
 			smtp_set_error (
 				transport, respbuf, cancellable, error);
 			g_prefix_error (error, _("Welcome response error: "));
 			g_free (respbuf);
-			return FALSE;
+			success = FALSE;
+			goto exit;
 		}
 	} while (*(respbuf+3) == '-'); /* if we got "220-" then loop again */
 	g_free (respbuf);
@@ -161,8 +166,10 @@ connect_to_server (CamelService *service,
 	/* Try sending EHLO */
 	transport->flags |= CAMEL_SMTP_TRANSPORT_IS_ESMTP;
 	if (!smtp_helo (transport, cancellable, error)) {
-		if (!transport->connected)
-			return FALSE;
+		if (!transport->connected) {
+			success = FALSE;
+			goto exit;
+		}
 
 		/* Fall back to HELO */
 		g_clear_error (error);
@@ -171,8 +178,8 @@ connect_to_server (CamelService *service,
 		if (!smtp_helo (transport, cancellable, error)) {
 			camel_service_disconnect_sync (
 				(CamelService *) transport, TRUE, NULL);
-
-			return FALSE;
+			success = FALSE;
+			goto exit;
 		}
 	}
 
@@ -180,7 +187,7 @@ connect_to_server (CamelService *service,
 	g_clear_error (error);
 
 	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT)
-		return TRUE;  /* we're done */
+		goto exit;  /* we're done */
 
 	if (!(transport->flags & CAMEL_SMTP_TRANSPORT_STARTTLS)) {
 		g_set_error (
@@ -235,22 +242,27 @@ connect_to_server (CamelService *service,
 	if (!smtp_helo (transport, cancellable, error)) {
 		camel_service_disconnect_sync (
 			(CamelService *) transport, TRUE, NULL);
-
-		return FALSE;
+		success = FALSE;
 	}
 
-	return TRUE;
+	goto exit;
 
- exception_cleanup:
+exception_cleanup:
 
 	g_object_unref (transport->istream);
 	transport->istream = NULL;
+
 	g_object_unref (transport->ostream);
 	transport->ostream = NULL;
 
 	transport->connected = FALSE;
 
-	return FALSE;
+	success = FALSE;
+
+exit:
+	g_free (host);
+
+	return success;
 }
 
 static void
@@ -267,19 +279,24 @@ smtp_transport_get_name (CamelService *service,
 {
 	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
-	const gchar *host;
+	gchar *host;
+	gchar *name;
 
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
 
 	if (brief)
-		return g_strdup_printf (
+		name = g_strdup_printf (
 			_("SMTP server %s"), host);
 	else
-		return g_strdup_printf (
+		name = g_strdup_printf (
 			_("SMTP mail delivery via %s"), host);
+
+	g_free (host);
+
+	return name;
 }
 
 static gboolean
@@ -290,37 +307,41 @@ smtp_transport_connect_sync (CamelService *service,
 	CamelSmtpTransport *transport = CAMEL_SMTP_TRANSPORT (service);
 	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
-	const gchar *host;
-	const gchar *mechanism;
+	gchar *host;
+	gchar *mechanism;
 	gboolean auth_required;
 	gboolean success = TRUE;
 
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
-	mechanism = camel_network_settings_get_auth_mechanism (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
+	mechanism = camel_network_settings_dup_auth_mechanism (network_settings);
 
 	/* We (probably) need to check popb4smtp before we connect ... */
 	if (g_strcmp0 (mechanism, "POPB4SMTP") == 0) {
-		gint truth;
 		GByteArray *chal;
 		CamelSasl *sasl;
 
 		sasl = camel_sasl_new ("smtp", "POPB4SMTP", service);
 		chal = camel_sasl_challenge_sync (sasl, NULL, cancellable, error);
-		truth = camel_sasl_get_authenticated (sasl);
-		if (chal)
+		if (chal != NULL)
 			g_byte_array_free (chal, TRUE);
+
+		if (camel_sasl_get_authenticated (sasl))
+			success = connect_to_server (
+				service, cancellable, error);
+		else
+			success = FALSE;
+
 		g_object_unref (sasl);
 
-		if (!truth)
-			return FALSE;
-
-		return connect_to_server (service, cancellable, error);
+		goto exit;
 	}
 
-	if (!connect_to_server (service, cancellable, error))
+	success = connect_to_server (service, cancellable, error);
+
+	if (!success)
 		return FALSE;
 
 	/* check to see if AUTH is required, if so...then AUTH ourselves */
@@ -351,6 +372,10 @@ smtp_transport_connect_sync (CamelService *service,
 		if (!success)
 			camel_service_disconnect_sync (service, TRUE, NULL);
 	}
+
+exit:
+	g_free (host);
+	g_free (mechanism);
 
 	return success;
 }

@@ -67,11 +67,11 @@ sasl_cram_md5_challenge_sync (CamelSasl *sasl,
 	guint8 *digest;
 	gsize length;
 	const gchar *hex;
-	const gchar *user;
 	const gchar *password;
 	GByteArray *ret = NULL;
 	guchar ipad[64];
 	guchar opad[64];
+	gchar *user;
 	gint i, pw_len;
 
 	/* Need to wait for the server */
@@ -84,7 +84,7 @@ sasl_cram_md5_challenge_sync (CamelSasl *sasl,
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	user = camel_network_settings_get_user (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 	g_return_val_if_fail (user != NULL, NULL);
 
 	password = camel_service_get_password (service);
@@ -136,6 +136,8 @@ sasl_cram_md5_challenge_sync (CamelSasl *sasl,
 	g_checksum_free (checksum);
 
 	camel_sasl_set_authenticated (sasl, TRUE);
+
+	g_free (user);
 
 	return ret;
 }

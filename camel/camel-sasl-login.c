@@ -65,7 +65,11 @@ sasl_login_challenge_sync (CamelSasl *sasl,
 	CamelService *service;
 	GByteArray *buf = NULL;
 	const gchar *password;
-	const gchar *user;
+	gchar *user;
+
+	/* Need to wait for the server */
+	if (token == NULL)
+		return NULL;
 
 	priv = CAMEL_SASL_LOGIN (sasl)->priv;
 
@@ -75,15 +79,11 @@ sasl_login_challenge_sync (CamelSasl *sasl,
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	user = camel_network_settings_get_user (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 	g_return_val_if_fail (user != NULL, NULL);
 
 	password = camel_service_get_password (service);
 	g_return_val_if_fail (password != NULL, NULL);
-
-	/* Need to wait for the server */
-	if (!token)
-		return NULL;
 
 	switch (priv->state) {
 	case LOGIN_USER:
@@ -104,6 +104,8 @@ sasl_login_challenge_sync (CamelSasl *sasl,
 	}
 
 	priv->state++;
+
+	g_free (user);
 
 	return buf;
 }

@@ -67,14 +67,15 @@ spool_store_get_type (CamelSpoolStore *spool_store,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
+	camel_spool_store_t type;
 	struct stat st;
+	gchar *path;
 
 	service = CAMEL_SERVICE (spool_store);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	/* Check the path for validity while we have the opportunity. */
 
@@ -84,30 +85,34 @@ spool_store_get_type (CamelSpoolStore *spool_store,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Store root %s is not an absolute path"),
 			(path != NULL) ? path : "(null)");
-		return CAMEL_SPOOL_STORE_INVALID;
-	}
+		type = CAMEL_SPOOL_STORE_INVALID;
 
-	if (g_stat (path, &st) == -1) {
+	} else if (g_stat (path, &st) == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Spool '%s' cannot be opened: %s"),
 			path, g_strerror (errno));
-		return CAMEL_SPOOL_STORE_INVALID;
+		type = CAMEL_SPOOL_STORE_INVALID;
+
+	} else if (S_ISREG (st.st_mode)) {
+		type = CAMEL_SPOOL_STORE_MBOX;
+
+	} else if (S_ISDIR (st.st_mode)) {
+		type = CAMEL_SPOOL_STORE_ELM;
+
+	} else {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER,
+			_("Spool '%s' is not a regular file or directory"),
+			path);
+		type = CAMEL_SPOOL_STORE_INVALID;
 	}
 
-	if (S_ISREG (st.st_mode))
-		return CAMEL_SPOOL_STORE_MBOX;
+	g_free (path);
 
-	if (S_ISDIR (st.st_mode))
-		return CAMEL_SPOOL_STORE_ELM;
-
-	g_set_error (
-		error, CAMEL_STORE_ERROR,
-		CAMEL_STORE_ERROR_NO_FOLDER,
-		_("Spool '%s' is not a regular file or directory"), path);
-
-	return CAMEL_SPOOL_STORE_INVALID;
+	return type;
 }
 
 /* partially copied from mbox */
@@ -338,23 +343,27 @@ get_folder_info_elm (CamelStore *store,
 	CamelService *service;
 	CamelFolderInfo *fi = NULL;
 	GHashTable *visited;
-	const gchar *path;
-
-	visited = g_hash_table_new (inode_hash, inode_equal);
+	gchar *path;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
-	if (scan_dir (store, visited, path, top, flags, NULL, &fi, cancellable, error) == -1 && fi != NULL) {
+	visited = g_hash_table_new (inode_hash, inode_equal);
+
+	if (scan_dir (
+		store, visited, path, top, flags,
+		NULL, &fi, cancellable, error) == -1 && fi != NULL) {
 		camel_store_free_folder_info_full (store, fi);
 		fi = NULL;
 	}
 
 	g_hash_table_foreach (visited, inode_free, NULL);
 	g_hash_table_destroy (visited);
+
+	g_free (path);
 
 	return fi;
 }
@@ -389,17 +398,17 @@ spool_store_get_name (CamelService *service,
 	CamelLocalSettings *local_settings;
 	CamelSpoolStore *spool_store;
 	CamelSettings *settings;
-	const gchar *path;
 	gchar *name;
+	gchar *path;
 
 	spool_store = CAMEL_SPOOL_STORE (service);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	if (brief)
-		return g_strdup (path);
+		return path;
 
 	switch (spool_store_get_type (spool_store, NULL)) {
 		case CAMEL_SPOOL_STORE_MBOX:
@@ -414,6 +423,8 @@ spool_store_get_name (CamelService *service,
 			name = g_strdup (_("Invalid spool"));
 			break;
 	}
+
+	g_free (path);
 
 	return name;
 }
@@ -443,8 +454,8 @@ spool_store_get_folder_sync (CamelStore *store,
 	CamelFolder *folder = NULL;
 	camel_spool_store_t type;
 	struct stat st;
-	const gchar *path;
 	gchar *name;
+	gchar *path;
 
 	d(printf("opening folder %s on path %s\n", folder_name, path));
 
@@ -458,7 +469,7 @@ spool_store_get_folder_sync (CamelStore *store,
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	/* we only support an 'INBOX' in mbox mode */
 	if (type == CAMEL_SPOOL_STORE_MBOX) {
@@ -511,6 +522,8 @@ spool_store_get_folder_sync (CamelStore *store,
 		}
 		g_free (name);
 	}
+
+	g_free (path);
 
 	return folder;
 }
@@ -613,14 +626,14 @@ spool_store_get_full_path (CamelLocalStore *local_store,
 	CamelSpoolStore *spool_store;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
 	gchar *full_path;
+	gchar *path;
 
 	service = CAMEL_SERVICE (local_store);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	spool_store = CAMEL_SPOOL_STORE (local_store);
 
@@ -637,6 +650,8 @@ spool_store_get_full_path (CamelLocalStore *local_store,
 			full_path = NULL;
 			break;
 	}
+
+	g_free (path);
 
 	return full_path;
 }

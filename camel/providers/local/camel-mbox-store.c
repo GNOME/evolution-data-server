@@ -527,8 +527,10 @@ mbox_store_create_folder_sync (CamelStore *store,
 	CamelFolderInfo *info = NULL;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *root_path;
-	gchar *path, *name, *dir;
+	gchar *root_path = NULL;
+	gchar *name = NULL;
+	gchar *path = NULL;
+	gchar *dir;
 	CamelFolder *folder;
 	struct stat st;
 
@@ -536,7 +538,7 @@ mbox_store_create_folder_sync (CamelStore *store,
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	root_path = camel_local_settings_get_path (local_settings);
+	root_path = camel_local_settings_dup_path (local_settings);
 
 	local_store = CAMEL_LOCAL_STORE (store);
 
@@ -546,14 +548,14 @@ mbox_store_create_folder_sync (CamelStore *store,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Store root %s is not an absolute path"),
 			root_path);
-		return NULL;
+		goto exit;
 	}
 
 	if (folder_name[0] == '.' || ignore_file (folder_name, TRUE)) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot create a folder by this name."));
-		return NULL;
+		goto exit;
 	}
 
 	if (parent_name && *parent_name)
@@ -570,12 +572,8 @@ mbox_store_create_folder_sync (CamelStore *store,
 			g_io_error_from_errno (errno),
 			_("Cannot create directory '%s': %s."),
 			dir, g_strerror (errno));
-
-		g_free (path);
-		g_free (name);
 		g_free (dir);
-
-		return NULL;
+		goto exit;
 	}
 
 	g_free (dir);
@@ -587,14 +585,8 @@ mbox_store_create_folder_sync (CamelStore *store,
 			_("Cannot create folder: %s: %s"),
 			path, errno ? g_strerror (errno) :
 			_("Folder already exists"));
-
-		g_free (path);
-		g_free (name);
-
-		return NULL;
+		goto exit;
 	}
-
-	g_free (path);
 
 	folder = CAMEL_STORE_GET_CLASS (store)->get_folder_sync (
 		store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
@@ -604,7 +596,10 @@ mbox_store_create_folder_sync (CamelStore *store,
 			store, name, 0, cancellable, error);
 	}
 
+exit:
+	g_free (root_path);
 	g_free (name);
+	g_free (path);
 
 	return info;
 }
@@ -904,15 +899,15 @@ mbox_store_get_full_path (CamelLocalStore *ls,
 	CamelSettings *settings;
 	CamelService *service;
 	const gchar *inptr = full_name;
-	const gchar *root_path;
 	gint subdirs = 0;
+	gchar *root_path;
 	gchar *path, *p;
 
 	service = CAMEL_SERVICE (ls);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	root_path = camel_local_settings_get_path (local_settings);
+	root_path = camel_local_settings_dup_path (local_settings);
 	g_return_val_if_fail (root_path != NULL, NULL);
 
 	while (*inptr != '\0') {
@@ -923,6 +918,8 @@ mbox_store_get_full_path (CamelLocalStore *ls,
 
 	path = g_malloc (strlen (root_path) + (inptr - full_name) + (4 * subdirs) + 1);
 	p = g_stpcpy (path, root_path);
+
+	g_free (root_path);
 
 	inptr = full_name;
 	while (*inptr != '\0') {

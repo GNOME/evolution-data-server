@@ -346,21 +346,22 @@ camel_imap_command_response (CamelImapStore *store,
 	CamelService *service;
 	CamelSession *session;
 	CamelImapResponseType type;
-	const gchar *host;
-	const gchar *user;
 	gchar *respbuf;
+	gchar *host;
+	gchar *user;
 
 	service = CAMEL_SERVICE (store);
 	session = camel_service_get_session (service);
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
-	user = camel_network_settings_get_user (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 
 	if (camel_imap_store_readline (store, &respbuf, cancellable, error) < 0) {
 		g_static_rec_mutex_unlock (&store->command_and_response_lock);
-		return CAMEL_IMAP_RESPONSE_ERROR;
+		type = CAMEL_IMAP_RESPONSE_ERROR;
+		goto exit;
 	}
 
 	switch (*respbuf) {
@@ -438,6 +439,10 @@ camel_imap_command_response (CamelImapStore *store,
 	if (type == CAMEL_IMAP_RESPONSE_ERROR ||
 	    type == CAMEL_IMAP_RESPONSE_TAGGED)
 		g_static_rec_mutex_unlock (&store->command_and_response_lock);
+
+exit:
+	g_free (host);
+	g_free (user);
 
 	return type;
 }

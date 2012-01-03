@@ -82,8 +82,8 @@ maildir_store_create_folder_sync (CamelStore *store,
 	CamelService *service;
 	CamelFolder *folder;
 	CamelFolderInfo *info = NULL;
-	const gchar *path;
-	gchar *name;
+	gchar *name = NULL;
+	gchar *path;
 	struct stat st;
 
 	/* This is a pretty hacky version of create folder, but should basically work */
@@ -92,23 +92,24 @@ maildir_store_create_folder_sync (CamelStore *store,
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	if (!g_path_is_absolute (path)) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Store root %s is not an absolute path"), path);
-		return NULL;
+		goto exit;
 	}
 
 	if (g_strstr_len (folder_name, -1, ".")) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot create folder: %s : Folder name cannot contain a dot"), folder_name);
-		return NULL;
-
+			_("Cannot create folder: %s: "
+			  "Folder name cannot contain a dot"),
+			folder_name);
+		goto exit;
 	}
 
 	if (!g_ascii_strcasecmp (folder_name, "Inbox")) {
@@ -116,7 +117,7 @@ maildir_store_create_folder_sync (CamelStore *store,
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Folder %s already exists"), folder_name);
-		return NULL;
+		goto exit;
 	}
 
 	if (parent_name && *parent_name) {
@@ -132,25 +133,28 @@ maildir_store_create_folder_sync (CamelStore *store,
 			g_io_error_from_errno (errno),
 			_("Cannot get folder: %s: %s"),
 			name, g_strerror (errno));
-		g_free (name);
-		return NULL;
+		goto exit;
 	}
 
 	g_free (name);
+	name = NULL;
 
 	if (parent_name && *parent_name)
 		name = g_strdup_printf("%s/%s", parent_name, folder_name);
 	else
 		name = g_strdup_printf("%s", folder_name);
 
-	folder = maildir_store_get_folder_sync (store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
+	folder = maildir_store_get_folder_sync (
+		store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
 	if (folder) {
 		g_object_unref (folder);
 		info = CAMEL_STORE_GET_CLASS (store)->get_folder_info_sync (
 			store, name, 0, cancellable, error);
 	}
 
+exit:
 	g_free (name);
+	g_free (path);
 
 	return info;
 }
@@ -166,8 +170,8 @@ maildir_store_get_folder_sync (CamelStore *store,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
 	gchar *name, *tmp, *cur, *new, *dir_name;
+	gchar *path;
 	struct stat st;
 	CamelFolder *folder = NULL;
 
@@ -175,25 +179,27 @@ maildir_store_get_folder_sync (CamelStore *store,
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	folder_name = md_canon_name (folder_name);
 	dir_name = maildir_full_name_to_dir_name (folder_name);
 
+	/* maildir++ directory names start with a '.' */
+	name = g_build_filename (path, dir_name, NULL);
+
+	g_free (dir_name);
+	g_free (path);
+
 	/* Chain up to parent's get_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
 	if (!store_class->get_folder_sync (store, dir_name, flags, cancellable, error)) {
-		g_free (dir_name);
+		g_free (name);
 		return NULL;
 	}
 
-	/* maildir++ directory names start with a '.' */
-	name = g_build_filename (path, dir_name, NULL);
-	g_free (dir_name);
-
-	tmp = g_strdup_printf("%s/tmp", name);
-	cur = g_strdup_printf("%s/cur", name);
-	new = g_strdup_printf("%s/new", name);
+	tmp = g_strdup_printf ("%s/tmp", name);
+	cur = g_strdup_printf ("%s/cur", name);
+	new = g_strdup_printf ("%s/new", name);
 
 	if (!g_ascii_strcasecmp (folder_name, "Inbox")) {
 		/* special case "." (aka inbox), may need to be created */
@@ -282,16 +288,10 @@ maildir_store_delete_folder_sync (CamelStore *store,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
 	gchar *name, *tmp, *cur, *new, *dir_name;
+	gchar *path;
 	struct stat st;
 	gboolean success = TRUE;
-
-	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
-
-	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
 
 	if (g_ascii_strcasecmp (folder_name, "Inbox") == 0) {
 		g_set_error (
@@ -302,14 +302,22 @@ maildir_store_delete_folder_sync (CamelStore *store,
 		return FALSE;
 	}
 
+	service = CAMEL_SERVICE (store);
+	settings = camel_service_get_settings (service);
+
+	local_settings = CAMEL_LOCAL_SETTINGS (settings);
+	path = camel_local_settings_dup_path (local_settings);
+
 	/* maildir++ directory names start with a '.' */
 	dir_name = maildir_full_name_to_dir_name (folder_name);
 	name = g_build_filename (path, dir_name, NULL);
 	g_free (dir_name);
 
-	tmp = g_strdup_printf("%s/tmp", name);
-	cur = g_strdup_printf("%s/cur", name);
-	new = g_strdup_printf("%s/new", name);
+	g_free (path);
+
+	tmp = g_strdup_printf ("%s/tmp", name);
+	cur = g_strdup_printf ("%s/cur", name);
+	new = g_strdup_printf ("%s/new", name);
 
 	if (g_stat (name, &st) == -1 || !S_ISDIR (st.st_mode)
 	    || g_stat (tmp, &st) == -1 || !S_ISDIR (st.st_mode)
@@ -399,13 +407,13 @@ fill_fi (CamelStore *store,
 		CamelService *service;
 		gchar *folderpath, *dir_name;
 		CamelFolderSummary *s;
-		const gchar *root;
+		gchar *root;
 
 		service = CAMEL_SERVICE (store);
 		settings = camel_service_get_settings (service);
 
 		local_settings = CAMEL_LOCAL_SETTINGS (settings);
-		root = camel_local_settings_get_path (local_settings);
+		root = camel_local_settings_dup_path (local_settings);
 
 		/* This should be fast enough not to have to test for INFO_FAST */
 		dir_name = maildir_full_name_to_dir_name (fi->full_name);
@@ -414,6 +422,8 @@ fill_fi (CamelStore *store,
 			folderpath = g_strdup (root);
 		else
 			folderpath = g_build_filename (root, dir_name, NULL);
+
+		g_free (root);
 
 		s = (CamelFolderSummary *) camel_maildir_summary_new (NULL, folderpath, NULL);
 		if (camel_folder_summary_header_load_from_db (s, store, fi->full_name, NULL)) {
@@ -443,14 +453,14 @@ scan_fi (CamelStore *store,
 	CamelService *service;
 	CamelFolderInfo *fi;
 	gchar *tmp, *cur, *new, *dir_name;
-	const gchar *path;
+	gchar *path;
 	struct stat st;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 	g_return_val_if_fail (path != NULL, NULL);
 
 	fi = camel_folder_info_new ();
@@ -482,6 +492,8 @@ scan_fi (CamelStore *store,
 	g_free (dir_name);
 
 	fill_fi (store, fi, flags, cancellable);
+
+	g_free (path);
 
 	return fi;
 }
@@ -531,18 +543,18 @@ scan_dirs (CamelStore *store,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
 	GPtrArray *folders;
 	gint res = -1;
 	DIR *dir;
 	struct dirent *d;
 	gchar *meta_path = NULL;
+	gchar *path;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 	g_return_val_if_fail (path != NULL, -1);
 
 	folders = g_ptr_array_new ();
@@ -556,7 +568,7 @@ scan_dirs (CamelStore *store,
 			g_io_error_from_errno (errno),
 			_("Could not scan folder '%s': %s"),
 			path, g_strerror (errno));
-		goto fail;
+		goto exit;
 	}
 
 	meta_path = maildir_get_meta_path ((CamelLocalStore *) store, ".", "maildir++");
@@ -628,8 +640,10 @@ scan_dirs (CamelStore *store,
 	} else
 		res = -1;
 
-fail:
+exit:
 	g_ptr_array_free (folders, TRUE);
+
+	g_free (path);
 
 	return res;
 }
@@ -826,19 +840,21 @@ maildir_get_full_path (CamelLocalStore *ls,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
 	gchar *filename;
 	gchar *dir_name;
+	gchar *path;
 
 	service = CAMEL_SERVICE (ls);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	dir_name = maildir_full_name_to_dir_name (full_name);
 	filename = g_build_filename (path, dir_name, NULL);
 	g_free (dir_name);
+
+	g_free (path);
 
 	return filename;
 }
@@ -851,22 +867,24 @@ maildir_get_meta_path (CamelLocalStore *ls,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
 	gchar *filename;
 	gchar *dir_name;
+	gchar *path;
 	gchar *tmp;
 
 	service = CAMEL_SERVICE (ls);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	dir_name = maildir_full_name_to_dir_name (full_name);
 	tmp = g_build_filename (path, dir_name, NULL);
 	filename = g_strconcat (tmp, ext, NULL);
 	g_free (tmp);
 	g_free (dir_name);
+
+	g_free (path);
 
 	return filename;
 }
@@ -912,7 +930,7 @@ scan_old_dir_info (CamelStore *store,
 	CamelService *service;
 	CamelDList queue = CAMEL_DLIST_INITIALISER (queue);
 	struct _scan_node *sn;
-	const gchar *path;
+	gchar *path;
 	gchar *tmp;
 	GHashTable *visited;
 	struct stat st;
@@ -922,7 +940,7 @@ scan_old_dir_info (CamelStore *store,
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	visited = g_hash_table_new (scan_hash, scan_equal);
 
@@ -954,8 +972,7 @@ scan_old_dir_info (CamelStore *store,
 				g_io_error_from_errno (errno),
 				_("Could not scan folder '%s': %s"),
 				path, g_strerror (errno));
-
-			goto fail;
+			goto exit;
 		}
 
 		while ((d = readdir (dir))) {
@@ -1008,9 +1025,12 @@ scan_old_dir_info (CamelStore *store,
 	}
 
 	res = 0;
-fail:
+
+exit:
 	g_hash_table_foreach (visited, scan_free, NULL);
 	g_hash_table_destroy (visited);
+
+	g_free (path);
 
 	return res;
 }

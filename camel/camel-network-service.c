@@ -45,11 +45,11 @@ network_service_connect_sync (CamelNetworkService *service,
 	CamelSession *session;
 	CamelStream *stream;
 	const gchar *service_name;
-	const gchar *host;
 	guint16 default_port;
 	guint16 port;
 	gchar *socks_host;
 	gint socks_port;
+	gchar *host;
 	gint status;
 
 	session = camel_service_get_session (CAMEL_SERVICE (service));
@@ -58,7 +58,7 @@ network_service_connect_sync (CamelNetworkService *service,
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	method = camel_network_settings_get_security_method (network_settings);
-	host = camel_network_settings_get_host (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
 	port = camel_network_settings_get_port (network_settings);
 
 	service_name = camel_network_service_get_service_name (service, method);
@@ -113,6 +113,8 @@ network_service_connect_sync (CamelNetworkService *service,
 		g_object_unref (stream);
 		stream = NULL;
 	}
+
+	g_free (host);
 
 	return stream;
 }

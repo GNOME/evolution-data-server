@@ -746,9 +746,9 @@ camel_service_new_camel_url (CamelService *service)
 	CamelURL *url;
 	CamelProvider *provider;
 	CamelSettings *settings;
-	const gchar *host = NULL;
-	const gchar *user = NULL;
-	const gchar *path = NULL;
+	gchar *host = NULL;
+	gchar *user = NULL;
+	gchar *path = NULL;
 	guint16 port = 0;
 
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
@@ -765,16 +765,16 @@ camel_service_new_camel_url (CamelService *service)
 		CamelNetworkSettings *network_settings;
 
 		network_settings = CAMEL_NETWORK_SETTINGS (settings);
-		host = camel_network_settings_get_host (network_settings);
+		host = camel_network_settings_dup_host (network_settings);
 		port = camel_network_settings_get_port (network_settings);
-		user = camel_network_settings_get_user (network_settings);
+		user = camel_network_settings_dup_user (network_settings);
 	}
 
 	if (CAMEL_IS_LOCAL_SETTINGS (settings)) {
 		CamelLocalSettings *local_settings;
 
 		local_settings = CAMEL_LOCAL_SETTINGS (settings);
-		path = camel_local_settings_get_path (local_settings);
+		path = camel_local_settings_dup_path (local_settings);
 	}
 
 	camel_url_set_protocol (url, provider->protocol);
@@ -782,6 +782,10 @@ camel_service_new_camel_url (CamelService *service)
 	camel_url_set_port (url, port);
 	camel_url_set_user (url, user);
 	camel_url_set_path (url, path);
+
+	g_free (host);
+	g_free (user);
+	g_free (path);
 
 	return url;
 }

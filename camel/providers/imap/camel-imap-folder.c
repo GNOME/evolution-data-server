@@ -448,29 +448,29 @@ camel_imap_folder_new (CamelStore *parent,
 	} else {
 		CamelService *service;
 		CamelSettings *settings;
-		const gchar *junk_path;
-		const gchar *trash_path;
 		gboolean filter_junk;
 		gboolean filter_junk_inbox;
 		gboolean folder_is_junk;
 		gboolean folder_is_trash;
+		gchar *junk_path;
+		gchar *trash_path;
 
 		service = CAMEL_SERVICE (parent);
 		settings = camel_service_get_settings (service);
 
-		junk_path = camel_imap_settings_get_real_junk_path (
+		junk_path = camel_imap_settings_dup_real_junk_path (
 			CAMEL_IMAP_SETTINGS (settings));
 
 		/* So we can safely compare strings. */
 		if (junk_path == NULL)
-			junk_path = "";
+			junk_path = g_strdup ("");
 
-		trash_path = camel_imap_settings_get_real_trash_path (
+		trash_path = camel_imap_settings_dup_real_trash_path (
 			CAMEL_IMAP_SETTINGS (settings));
 
 		/* So we can safely compare strings. */
 		if (trash_path == NULL)
-			trash_path = "";
+			trash_path = g_strdup ("");
 
 		filter_junk = camel_imap_settings_get_filter_junk (
 			CAMEL_IMAP_SETTINGS (settings));
@@ -493,6 +493,9 @@ camel_imap_folder_new (CamelStore *parent,
 
 		if (folder_is_junk)
 			folder->folder_flags |= CAMEL_FOLDER_IS_JUNK;
+
+		g_free (junk_path);
+		g_free (trash_path);
 	}
 
 	imap_folder->search = camel_imap_search_new (folder_dir);
@@ -1502,7 +1505,8 @@ is_google_account (CamelStore *store)
 	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *host;
+	gboolean is_google;
+	gchar *host;
 
 	g_return_val_if_fail (store != NULL, FALSE);
 	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
@@ -1511,11 +1515,16 @@ is_google_account (CamelStore *store)
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
 
-	return host != NULL && (
+	is_google =
+		(host != NULL) && (
 		host_ends_with (host, "gmail.com") ||
 		host_ends_with (host, "googlemail.com"));
+
+	g_free (host);
+
+	return is_google;
 }
 
 static void
@@ -1558,7 +1567,7 @@ imap_synchronize_sync (CamelFolder *folder,
 	gboolean success, is_gmail;
 	CamelFolder *real_junk = NULL;
 	CamelFolder *real_trash = NULL;
-	const gchar *folder_path;
+	gchar *folder_path;
 	GError *local_error = NULL;
 
 	GPtrArray *matches, *summary, *deleted_uids = NULL, *junked_uids = NULL;
@@ -1594,7 +1603,7 @@ imap_synchronize_sync (CamelFolder *folder,
 	max = summary->len;
 
 	/* deleted_uids is NULL when not using real trash */
-	folder_path = camel_imap_settings_get_real_trash_path (
+	folder_path = camel_imap_settings_dup_real_trash_path (
 		CAMEL_IMAP_SETTINGS (settings));
 	if (folder_path != NULL) {
 		if ((folder->folder_flags & CAMEL_FOLDER_IS_TRASH) != 0) {
@@ -1611,12 +1620,13 @@ imap_synchronize_sync (CamelFolder *folder,
 			}
 		}
 	}
+	g_free (folder_path);
 
 	if (real_trash)
 		deleted_uids = g_ptr_array_new ();
 
 	/* junked_uids is NULL when not using real junk */
-	folder_path = camel_imap_settings_get_real_junk_path (
+	folder_path = camel_imap_settings_dup_real_junk_path (
 		CAMEL_IMAP_SETTINGS (settings));
 	if (folder_path != NULL) {
 		if ((folder->folder_flags & CAMEL_FOLDER_IS_JUNK) != 0) {
@@ -1634,6 +1644,7 @@ imap_synchronize_sync (CamelFolder *folder,
 			}
 		}
 	}
+	g_free (folder_path);
 
 	if (real_junk)
 		junked_uids = g_ptr_array_new ();
@@ -2776,12 +2787,13 @@ do_copy (CamelFolder *source,
 	CamelStore *parent_store;
 	CamelImapStore *store;
 	CamelImapResponse *response;
-	const gchar *trash_path;
 	const gchar *full_name;
+	gchar *trash_path;
 	gchar *uidset;
 	gint uid = 0, last = 0, i;
 	GError *local_error = NULL;
 	gboolean mark_moved;
+	gboolean success = TRUE;
 
 	parent_store = camel_folder_get_parent_store (source);
 	store = CAMEL_IMAP_STORE (parent_store);
@@ -2789,7 +2801,7 @@ do_copy (CamelFolder *source,
 	service = CAMEL_SERVICE (parent_store);
 	settings = camel_service_get_settings (service);
 
-	trash_path = camel_imap_settings_get_real_trash_path (
+	trash_path = camel_imap_settings_dup_real_trash_path (
 		CAMEL_IMAP_SETTINGS (settings));
 
 	mark_moved = is_google_account (parent_store) && trash_path != NULL;
@@ -2841,18 +2853,18 @@ do_copy (CamelFolder *source,
 
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
-		return FALSE;
-	}
+		success = FALSE;
 
 	/* There is a real trash folder set, which is not on a google account
 	 * and copied messages should be deleted, thus do not move them into
 	 * a trash folder, but just expunge them, because the copy part of
-	 * the operation was successful.
-	*/
-	if (trash_path && !mark_moved && delete_originals)
+	 * the operation was successful. */
+	} else if (trash_path && !mark_moved && delete_originals)
 		camel_imap_expunge_uids_only (source, uids, cancellable, NULL);
 
-	return TRUE;
+	g_free (trash_path);
+
+	return success;
 }
 
 static gboolean
@@ -3900,7 +3912,7 @@ imap_update_summary (CamelFolder *folder,
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
 	GPtrArray *fetch_data = NULL, *messages = NULL, *needheaders;
 	CamelFetchHeadersType fetch_headers;
-	const gchar * const *extra_headers;
+	gchar **extra_headers;
 	guint32 flags, uidval;
 	gint i, seq, first, size, got;
 	CamelImapResponseType type;
@@ -3919,7 +3931,7 @@ imap_update_summary (CamelFolder *folder,
 	fetch_headers = camel_imap_settings_get_fetch_headers (
 		CAMEL_IMAP_SETTINGS (settings));
 
-	extra_headers = camel_imap_settings_get_fetch_headers_extra (
+	extra_headers = camel_imap_settings_dup_fetch_headers_extra (
 		CAMEL_IMAP_SETTINGS (settings));
 
 	if (store->server_level >= IMAP_LEVEL_IMAP4REV1) {
@@ -3950,6 +3962,8 @@ imap_update_summary (CamelFolder *folder,
 		}
 	} else
 		header_spec = g_string_new ("0");
+
+	g_strfreev (extra_headers);
 
 	d(printf("Header is : %s", header_spec->str));
 

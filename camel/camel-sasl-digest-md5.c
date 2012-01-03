@@ -813,8 +813,8 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 	struct addrinfo *ai, hints;
 	const gchar *service_name;
 	const gchar *password;
-	const gchar *host;
-	const gchar *user;
+	gchar *host;
+	gchar *user;
 
 	/* Need to wait for the server */
 	if (!token)
@@ -827,12 +827,12 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
-	user = camel_network_settings_get_user (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 	g_return_val_if_fail (user != NULL, NULL);
 
 	if (host == NULL)
-		host = "localhost";
+		host = g_strdup ("localhost");
 
 	password = camel_service_get_password (service);
 	g_return_val_if_fail (password != NULL, NULL);
@@ -844,7 +844,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server challenge too long (>2048 octets)"));
-			return NULL;
+			goto exit;
 		}
 
 		tokens = g_strndup ((gchar *) token->data, token->len);
@@ -855,7 +855,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server challenge invalid\n"));
-			return NULL;
+			goto exit;
 		}
 
 		if (priv->challenge->qop == QOP_INVALID) {
@@ -864,7 +864,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server challenge contained invalid "
 				  "\"Quality of Protection\" token"));
-			return NULL;
+			goto exit;
 		}
 
 		memset (&hints, 0, sizeof (hints));
@@ -897,7 +897,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server response did not contain "
 				  "authorization data"));
-			return NULL;
+			goto exit;
 		}
 
 		rspauth = g_new0 (struct _param, 1);
@@ -918,7 +918,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server response contained incomplete "
 				  "authorization data"));
-			return NULL;
+			goto exit;
 		}
 
 		compute_response (priv->response, password, FALSE, out);
@@ -931,8 +931,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server response does not match"));
 			camel_sasl_set_authenticated (sasl, TRUE);
-
-			return NULL;
+			goto exit;
 		}
 
 		g_free (rspauth->name);
@@ -947,6 +946,10 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 	}
 
 	priv->state++;
+
+exit:
+	g_free (host);
+	g_free (user);
 
 	return ret;
 }

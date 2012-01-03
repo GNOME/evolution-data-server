@@ -140,21 +140,27 @@ imapx_get_name (CamelService *service,
 {
 	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
-	const gchar *host;
-	const gchar *user;
+	gchar *host;
+	gchar *user;
+	gchar *name;
 
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
-	user = camel_network_settings_get_user (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 
 	if (brief)
-		return g_strdup_printf (
+		name = g_strdup_printf (
 			_("IMAP server %s"), host);
 	else
-		return g_strdup_printf (
+		name = g_strdup_printf (
 			_("IMAP service for %s on %s"), user, host);
+
+	g_free (host);
+	g_free (user);
+
+	return name;
 }
 
 CamelIMAPXServer *
@@ -692,10 +698,10 @@ get_folder_info_offline (CamelStore *store,
 
 	/* get starting point */
 	if (top[0] == 0) {
-		const gchar *namespace = NULL;
+		gchar *namespace = NULL;
 
 		if (use_namespace)
-			namespace = camel_imapx_settings_get_namespace (
+			namespace = camel_imapx_settings_dup_namespace (
 				CAMEL_IMAPX_SETTINGS (settings));
 
 		if (namespace != NULL) {
@@ -703,6 +709,8 @@ get_folder_info_offline (CamelStore *store,
 			top = imapx_store->summary->namespaces->personal->path;
 		} else
 			name = g_strdup("");
+
+		g_free (namespace);
 	} else {
 		name = camel_imapx_store_summary_full_from_path (imapx_store->summary, top);
 		if (name == NULL)

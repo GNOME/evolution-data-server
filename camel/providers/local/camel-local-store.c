@@ -164,17 +164,22 @@ local_store_get_name (CamelService *service,
 {
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
-	const gchar *path;
+	gchar *path;
+	gchar *name;
 
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	if (brief)
-		return g_strdup (path);
+		name = g_strdup (path);
 	else
-		return g_strdup_printf (_("Local mail file %s"), path);
+		name = g_strdup_printf (_("Local mail file %s"), path);
+
+	g_free (path);
+
+	return name;
 }
 
 static gboolean
@@ -196,21 +201,22 @@ local_store_get_folder_sync (CamelStore *store,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
+	CamelFolder *folder = NULL;
 	struct stat st;
+	gchar *path;
 
 	service = CAMEL_SERVICE (store);
 	settings= camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	if (!g_path_is_absolute (path)) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Store root %s is not an absolute path"), path);
-		return NULL;
+		goto exit;
 	}
 
 	if (g_stat (path, &st) == 0) {
@@ -221,7 +227,8 @@ local_store_get_folder_sync (CamelStore *store,
 				_("Store root %s is not a regular directory"), path);
 			return NULL;
 		}
-		return (CamelFolder *) 0xdeadbeef;
+		folder = (CamelFolder *) 0xdeadbeef;
+		goto exit;
 	}
 
 	if (errno != ENOENT
@@ -231,7 +238,7 @@ local_store_get_folder_sync (CamelStore *store,
 			g_io_error_from_errno (errno),
 			_("Cannot get folder: %s: %s"),
 			path, g_strerror (errno));
-		return NULL;
+		goto exit;
 	}
 
 	/* need to create the dir heirarchy */
@@ -241,10 +248,15 @@ local_store_get_folder_sync (CamelStore *store,
 			g_io_error_from_errno (errno),
 			_("Cannot get folder: %s: %s"),
 			path, g_strerror (errno));
-		return NULL;
+		goto exit;
 	}
 
-	return (CamelFolder *) 0xdeadbeef;
+	folder = (CamelFolder *) 0xdeadbeef;
+
+exit:
+	g_free (path);
+
+	return folder;
 }
 
 static CamelFolderInfo *
@@ -344,15 +356,15 @@ local_store_create_folder_sync (CamelStore *store,
 	CamelService *service;
 	CamelFolder *folder;
 	CamelFolderInfo *info = NULL;
-	const gchar *path;
-	gchar *name;
+	gchar *name = NULL;
+	gchar *path;
 	struct stat st;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	/* This is a pretty hacky version of create folder, but should basically work */
 
@@ -361,7 +373,7 @@ local_store_create_folder_sync (CamelStore *store,
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Store root %s is not an absolute path"), path);
-		return NULL;
+		goto exit;
 	}
 
 	if (parent_name)
@@ -375,8 +387,7 @@ local_store_create_folder_sync (CamelStore *store,
 			g_io_error_from_errno (errno),
 			_("Cannot get folder: %s: %s"),
 			name, g_strerror (errno));
-		g_free (name);
-		return NULL;
+		goto exit;
 	}
 
 	g_free (name);
@@ -394,7 +405,9 @@ local_store_create_folder_sync (CamelStore *store,
 			store, name, 0, cancellable, error);
 	}
 
+exit:
 	g_free (name);
+	g_free (path);
 
 	return info;
 }
@@ -411,32 +424,33 @@ local_store_delete_folder_sync (CamelStore *store,
 	CamelService *service;
 	CamelFolderInfo *fi;
 	CamelFolder *lf;
-	const gchar *path;
+	gchar *str = NULL;
 	gchar *name;
-	gchar *str;
+	gchar *path;
+	gboolean success = TRUE;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	/* remove metadata only */
 	name = g_build_filename (path, folder_name, NULL);
-	str = g_strdup_printf("%s.ibex", name);
+	str = g_strdup_printf ("%s.ibex", name);
 	if (camel_text_index_remove (str) == -1 && errno != ENOENT && errno != ENOTDIR) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Could not delete folder index file '%s': %s"),
 			str, g_strerror (errno));
-		g_free (str);
-		g_free (name);
-		return FALSE;
+		success = FALSE;
+		goto exit;
 	}
-	g_free (str);
 
+	g_free (str);
 	str = NULL;
+
 	if ((lf = camel_store_get_folder_sync (store, folder_name, 0, cancellable, NULL))) {
 		CamelObject *object = CAMEL_OBJECT (lf);
 		const gchar *state_filename;
@@ -458,13 +472,9 @@ local_store_delete_folder_sync (CamelStore *store,
 			g_io_error_from_errno (errno),
 			_("Could not delete folder meta file '%s': %s"),
 			str, g_strerror (errno));
-		g_free (name);
-		g_free (str);
-		return FALSE;
+		success = FALSE;
+		goto exit;
 	}
-
-	g_free (str);
-	g_free (name);
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (folder_name);
@@ -474,7 +484,12 @@ local_store_delete_folder_sync (CamelStore *store,
 	camel_store_folder_deleted (store, fi);
 	camel_folder_info_free (fi);
 
-	return TRUE;
+exit:
+	g_free (name);
+	g_free (path);
+	g_free (str);
+
+	return success;
 }
 
 /* default implementation, rename all */
@@ -489,17 +504,18 @@ local_store_rename_folder_sync (CamelStore *store,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
 	gchar *old_basename;
 	gchar *new_basename;
 	gchar *newibex;
 	gchar *oldibex;
+	gchar *path;
+	gboolean success = TRUE;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	old_basename = g_strdup_printf ("%s.ibex", old);
 	new_basename = g_strdup_printf ("%s.ibex", new);
@@ -542,7 +558,7 @@ local_store_rename_folder_sync (CamelStore *store,
 	if (folder)
 		g_object_unref (folder);
 
-	return TRUE;
+	goto exit;
 
 	/* The (f)utility of this recovery effort is quesitonable */
 
@@ -571,7 +587,12 @@ ibex_failed:
 	if (folder)
 		g_object_unref (folder);
 
-	return FALSE;
+	success = FALSE;
+
+exit:
+	g_free (path);
+
+	return success;
 }
 
 static gchar *
@@ -581,15 +602,20 @@ local_store_get_full_path (CamelLocalStore *ls,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
+	gchar *filename;
+	gchar *path;
 
 	service = CAMEL_SERVICE (ls);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
-	return g_build_filename (path, full_name, NULL);
+	filename = g_build_filename (path, full_name, NULL);
+
+	g_free (path);
+
+	return filename;
 }
 
 static gchar *
@@ -600,19 +626,21 @@ local_store_get_meta_path (CamelLocalStore *ls,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *path;
 	gchar *basename;
 	gchar *filename;
+	gchar *path;
 
 	service = CAMEL_SERVICE (ls);
 	settings = camel_service_get_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	path = camel_local_settings_dup_path (local_settings);
 
 	basename = g_strconcat (full_name, ext, NULL);
 	filename = g_build_filename (path, basename, NULL);
 	g_free (basename);
+
+	g_free (path);
 
 	return filename;
 }

@@ -280,8 +280,8 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 	gchar *str;
 	struct addrinfo *ai, hints;
 	const gchar *service_name;
-	const gchar *host;
-	const gchar *user;
+	gchar *host;
+	gchar *user;
 
 	priv = CAMEL_SASL_GSSAPI (sasl)->priv;
 
@@ -292,12 +292,12 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
-	user = camel_network_settings_get_user (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 	g_return_val_if_fail (user != NULL, NULL);
 
 	if (host == NULL)
-		host = "localhost";
+		host = g_strdup ("localhost");
 
 	switch (priv->state) {
 	case GSSAPI_STATE_INIT:
@@ -306,7 +306,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		ai = camel_getaddrinfo (
 			host, NULL, &hints, cancellable, error);
 		if (ai == NULL)
-			return NULL;
+			goto exit;
 
 		str = g_strdup_printf("%s@%s", service_name, ai->ai_canonname);
 		camel_freeaddrinfo (ai);
@@ -318,7 +318,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 
 		if (major != GSS_S_COMPLETE) {
 			gssapi_set_exception (major, minor, error);
-			return NULL;
+			goto exit;
 		}
 
 		input_token = GSS_C_NO_BUFFER;
@@ -331,7 +331,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Bad authentication response from server."));
-			return NULL;
+			goto exit;
 		}
 
 		inbuf.value = token->data;
@@ -360,7 +360,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 					goto challenge;
 
 			gssapi_set_exception (major, minor, error);
-			return NULL;
+			goto exit;
 		}
 
 		challenge = g_byte_array_new ();
@@ -375,7 +375,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Bad authentication response from server."));
-			return NULL;
+			goto exit;
 		}
 
 		inbuf.value = token->data;
@@ -384,7 +384,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		major = gss_unwrap (&minor, priv->ctx, &inbuf, &outbuf, &conf_state, &qop);
 		if (major != GSS_S_COMPLETE) {
 			gssapi_set_exception (major, minor, error);
-			return NULL;
+			goto exit;
 		}
 
 		if (outbuf.length < 4) {
@@ -395,7 +395,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 #ifndef HAVE_HEIMDAL_KRB5
 			gss_release_buffer (&minor, &outbuf);
 #endif
-			return NULL;
+			goto exit;
 		}
 
 		/* check that our desired security layer is supported */
@@ -407,7 +407,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 #ifndef HAVE_HEIMDAL_KRB5
 			gss_release_buffer (&minor, &outbuf);
 #endif
-			return NULL;
+			goto exit;
 		}
 
 		inbuf.length = 4 + strlen (user);
@@ -424,7 +424,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		if (major != GSS_S_COMPLETE) {
 			gssapi_set_exception (major, minor, error);
 			g_free (str);
-			return NULL;
+			goto exit;
 		}
 
 		g_free (str);
@@ -440,8 +440,12 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		camel_sasl_set_authenticated (sasl, TRUE);
 		break;
 	default:
-		return NULL;
+		break;
 	}
+
+exit:
+	g_free (host);
+	g_free (user);
 
 	return challenge;
 }

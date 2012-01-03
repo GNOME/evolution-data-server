@@ -98,7 +98,8 @@ connect_to_server (CamelService *service,
 	CamelStream *tcp_stream;
 	CamelPOP3Command *pc;
 	gboolean disable_extensions;
-	const gchar *host;
+	gboolean success = TRUE;
+	gchar *host;
 	guint32 flags = 0;
 	gint clean_quit = TRUE;
 	gint ret;
@@ -106,19 +107,22 @@ connect_to_server (CamelService *service,
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
 
 	tcp_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
 
-	if (tcp_stream == NULL)
-		return FALSE;
+	if (tcp_stream == NULL) {
+		success = FALSE;
+		goto exit;
+	}
 
 	/* parent class connect initialization */
 	if (CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class)->
 		connect_sync (service, cancellable, error) == FALSE) {
 		g_object_unref (tcp_stream);
-		return FALSE;
+		success = FALSE;
+		goto exit;
 	}
 
 	disable_extensions = camel_pop3_settings_get_disable_extensions (
@@ -133,14 +137,15 @@ connect_to_server (CamelService *service,
 			_("Failed to read a valid greeting from POP server %s"),
 			host);
 		g_object_unref (tcp_stream);
-		return FALSE;
+		success = FALSE;
+		goto exit;
 	}
 
 	g_object_get (settings, "security-method", &method, NULL);
 
 	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
 		g_object_unref (tcp_stream);
-		return TRUE;
+		goto exit;
 	}
 
 	/* as soon as we send a STLS command, all hope is lost of a clean QUIT if problems arise */
@@ -192,9 +197,9 @@ connect_to_server (CamelService *service,
 	 * command, the client MUST discard prior CAPA responses */
 	camel_pop3_engine_reget_capabilities (store->engine, cancellable);
 
-	return TRUE;
+	goto exit;
 
- stls_exception:
+stls_exception:
 	if (clean_quit) {
 		/* try to disconnect cleanly */
 		pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, cancellable, NULL, "QUIT\r\n");
@@ -207,7 +212,12 @@ connect_to_server (CamelService *service,
 	g_object_unref (tcp_stream);
 	store->engine = NULL;
 
-	return FALSE;
+	success = FALSE;
+
+exit:
+	g_free (host);
+
+	return success;
 }
 
 static CamelAuthenticationResult
@@ -222,9 +232,9 @@ try_sasl (CamelPOP3Store *store,
 	CamelSettings *settings;
 	CamelService *service;
 	guchar *line, *resp;
-	const gchar *host;
-	CamelSasl *sasl;
+	CamelSasl *sasl = NULL;
 	gchar *string;
+	gchar *host;
 	guint len;
 	gint ret;
 
@@ -232,7 +242,7 @@ try_sasl (CamelPOP3Store *store,
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
 
 	sasl = camel_sasl_new ("pop", mechanism, service);
 	if (sasl == NULL) {
@@ -240,7 +250,8 @@ try_sasl (CamelPOP3Store *store,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_URL_INVALID,
 			_("No support for %s authentication"), mechanism);
-		return CAMEL_AUTHENTICATION_ERROR;
+		result = CAMEL_AUTHENTICATION_ERROR;
+		goto exit;
 	}
 
 	string = g_strdup_printf ("AUTH %s\r\n", mechanism);
@@ -280,7 +291,7 @@ try_sasl (CamelPOP3Store *store,
 				_("Cannot login to POP server %s: "
 				  "SASL Protocol error"), host);
 			result = CAMEL_AUTHENTICATION_ERROR;
-			goto done;
+			goto exit;
 		}
 
 		string = g_strdup_printf ("%s\r\n", resp);
@@ -295,15 +306,18 @@ try_sasl (CamelPOP3Store *store,
 
 	}
 
-	goto done;
+	goto exit;
 
 ioerror:
 	g_prefix_error (
 		error, _("Failed to authenticate on POP server %s: "), host);
 	result = CAMEL_AUTHENTICATION_ERROR;
 
-done:
-	g_object_unref (sasl);
+exit:
+	if (sasl != NULL)
+		g_object_unref (sasl);
+
+	g_free (host);
 
 	return result;
 }
@@ -333,21 +347,27 @@ pop3_store_get_name (CamelService *service,
 {
 	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
-	const gchar *host;
-	const gchar *user;
+	gchar *host;
+	gchar *user;
+	gchar *name;
 
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
-	user = camel_network_settings_get_user (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 
 	if (brief)
-		return g_strdup_printf (
+		name = g_strdup_printf (
 			_("POP3 server %s"), host);
 	else
-		return g_strdup_printf (
+		name = g_strdup_printf (
 			_("POP3 server for %s on %s"), user, host);
+
+	g_free (host);
+	g_free (user);
+
+	return name;
 }
 
 static gboolean
@@ -358,24 +378,25 @@ pop3_store_connect_sync (CamelService *service,
 	CamelPOP3Store *store = (CamelPOP3Store *) service;
 	CamelSettings *settings;
 	CamelSession *session;
-	const gchar *mechanism;
 	const gchar *user_data_dir;
-	gboolean success;
+	gboolean success = TRUE;
+	gchar *mechanism;
 
 	session = camel_service_get_session (service);
 	settings = camel_service_get_settings (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
+
+	mechanism = camel_network_settings_dup_auth_mechanism (
+		CAMEL_NETWORK_SETTINGS (settings));
 
 	if (!camel_session_get_online (session)) {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("You must be working online to complete this operation"));
-		return FALSE;
+		success = FALSE;
+		goto exit;
 	}
-
-	mechanism = camel_network_settings_get_auth_mechanism (
-		CAMEL_NETWORK_SETTINGS (settings));
 
 	if (store->cache == NULL) {
 		store->cache = camel_data_cache_new (user_data_dir, error);
@@ -387,15 +408,17 @@ pop3_store_connect_sync (CamelService *service,
 		}
 	}
 
-	if (!connect_to_server (service, cancellable, error))
-		return FALSE;
+	success = connect_to_server (service, cancellable, error);
+
+	if (!success)
+		goto exit;
 
 	success = camel_session_authenticate_sync (
 		session, service, mechanism, cancellable, error);
 
 	if (!success) {
 		camel_service_disconnect_sync (service, TRUE, NULL);
-		return FALSE;
+		goto exit;
 	}
 
 	/* Now that we are in the TRANSACTION state,
@@ -403,7 +426,10 @@ pop3_store_connect_sync (CamelService *service,
 	store->engine->state = CAMEL_POP3_ENGINE_TRANSACTION;
 	camel_pop3_engine_reget_capabilities (store->engine, cancellable);
 
-	return TRUE;
+exit:
+	g_free (mechanism);
+
+	return success;
 }
 
 static gboolean
@@ -449,16 +475,16 @@ pop3_store_authenticate_sync (CamelService *service,
 	CamelPOP3Command *pcu = NULL;
 	CamelPOP3Command *pcp = NULL;
 	const gchar *password;
-	const gchar *host;
-	const gchar *user;
+	gchar *host;
+	gchar *user;
 	gint status;
 
 	password = camel_service_get_password (service);
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
-	user = camel_network_settings_get_user (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
 
 	if (mechanism == NULL) {
 		if (password == NULL) {
@@ -466,7 +492,8 @@ pop3_store_authenticate_sync (CamelService *service,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Authentication password not available"));
-			return CAMEL_AUTHENTICATION_ERROR;
+			result = CAMEL_AUTHENTICATION_ERROR;
+			goto exit;
 		}
 
 		/* pop engine will take care of pipelining ability */
@@ -485,7 +512,8 @@ pop3_store_authenticate_sync (CamelService *service,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Authentication password not available"));
-			return CAMEL_AUTHENTICATION_ERROR;
+			result = CAMEL_AUTHENTICATION_ERROR;
+			goto exit;
 		}
 
 		d = store->engine->apop;
@@ -502,7 +530,8 @@ pop3_store_authenticate_sync (CamelService *service,
 					  "attack suspected. Please contact your admin."),
 					host);
 
-				return CAMEL_AUTHENTICATION_ERROR;
+				result = CAMEL_AUTHENTICATION_ERROR;
+				goto exit;
 			}
 			d++;
 		}
@@ -525,10 +554,12 @@ pop3_store_authenticate_sync (CamelService *service,
 		while (link != NULL) {
 			CamelServiceAuthType *auth = link->data;
 
-			if (g_strcmp0 (auth->authproto, mechanism) == 0)
-				return try_sasl (
+			if (g_strcmp0 (auth->authproto, mechanism) == 0) {
+				result = try_sasl (
 					store, mechanism,
 					cancellable, error);
+				goto exit;
+			}
 			link = g_list_next (link);
 		}
 
@@ -536,7 +567,8 @@ pop3_store_authenticate_sync (CamelService *service,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("No support for %s authentication"), mechanism);
-		return CAMEL_AUTHENTICATION_ERROR;
+		result = CAMEL_AUTHENTICATION_ERROR;
+		goto exit;
 	}
 
 	while ((status = camel_pop3_engine_iterate (store->engine, pcp, cancellable, error)) > 0)
@@ -576,6 +608,10 @@ pop3_store_authenticate_sync (CamelService *service,
 	if (pcu != NULL)
 		camel_pop3_engine_command_free (store->engine, pcu);
 
+exit:
+	g_free (host);
+	g_free (user);
+
 	return result;
 }
 
@@ -589,7 +625,7 @@ pop3_store_query_auth_types_sync (CamelService *service,
 	CamelNetworkSettings *network_settings;
 	CamelSettings *settings;
 	GList *types = NULL;
-	const gchar *host;
+	gchar *host;
 	GError *local_error = NULL;
 
 	/* Chain up to parent's query_auth_types() method. */
@@ -605,7 +641,7 @@ pop3_store_query_auth_types_sync (CamelService *service,
 	settings = camel_service_get_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
 
 	if (connect_to_server (service, cancellable, NULL)) {
 		types = g_list_concat (types, g_list_copy (store->engine->auth));
@@ -616,6 +652,8 @@ pop3_store_query_auth_types_sync (CamelService *service,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("Could not connect to POP server %s"), host);
 	}
+
+	g_free (host);
 
 	return types;
 }
