@@ -69,6 +69,7 @@ struct _CamelLocalSettingsClass {
 
 GType		camel_local_settings_get_type	(void) G_GNUC_CONST;
 const gchar *	camel_local_settings_get_path	(CamelLocalSettings *settings);
+gchar *		camel_local_settings_dup_path	(CamelLocalSettings *settings);
 void		camel_local_settings_set_path	(CamelLocalSettings *settings,
 						 const gchar *path);
 

@@ -25,6 +25,7 @@
 	((obj), CAMEL_TYPE_LOCAL_SETTINGS, CamelLocalSettingsPrivate))
 
 struct _CamelLocalSettingsPrivate {
+	GMutex *property_lock;
 	gchar *path;
 };
 
@@ -63,9 +64,9 @@ local_settings_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_PATH:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_local_settings_get_path (
+				camel_local_settings_dup_path (
 				CAMEL_LOCAL_SETTINGS (object)));
 			return;
 	}
@@ -79,6 +80,8 @@ local_settings_finalize (GObject *object)
 	CamelLocalSettingsPrivate *priv;
 
 	priv = CAMEL_LOCAL_SETTINGS_GET_PRIVATE (object);
+
+	g_mutex_free (priv->property_lock);
 
 	g_free (priv->path);
 
@@ -115,6 +118,7 @@ static void
 camel_local_settings_init (CamelLocalSettings *settings)
 {
 	settings->priv = CAMEL_LOCAL_SETTINGS_GET_PRIVATE (settings);
+	settings->priv->property_lock = g_mutex_new ();
 }
 
 /**
@@ -133,6 +137,37 @@ camel_local_settings_get_path (CamelLocalSettings *settings)
 	g_return_val_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings), NULL);
 
 	return settings->priv->path;
+}
+
+/**
+ * camel_local_settings_dup_path:
+ * @settings: a #CamelLocalSettings
+ *
+ * Thread-safe variation of camel_local_settings_get_path().
+ * Use this function when accessing @settings from a worker thread.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelLocalSettings:path
+ *
+ * Since: 3.4
+ **/
+gchar *
+camel_local_settings_dup_path (CamelLocalSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings), NULL);
+
+	g_mutex_lock (settings->priv->property_lock);
+
+	protected = camel_local_settings_get_path (settings);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (settings->priv->property_lock);
+
+	return duplicate;
 }
 
 /**
@@ -165,8 +200,12 @@ camel_local_settings_set_path (CamelLocalSettings *settings,
 		}
 	}
 
+	g_mutex_lock (settings->priv->property_lock);
+
 	g_free (settings->priv->path);
 	settings->priv->path = g_strndup (path, length);
+
+	g_mutex_unlock (settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "path");
 }

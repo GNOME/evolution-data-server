@@ -23,6 +23,7 @@
 	((obj), CAMEL_TYPE_IMAP_SETTINGS, CamelImapSettingsPrivate))
 
 struct _CamelImapSettingsPrivate {
+	GMutex *property_lock;
 	gchar *namespace;
 	gchar *shell_command;
 	gchar *real_junk_path;
@@ -212,9 +213,9 @@ imap_settings_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_AUTH_MECHANISM:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_network_settings_get_auth_mechanism (
+				camel_network_settings_dup_auth_mechanism (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
@@ -240,9 +241,9 @@ imap_settings_get_property (GObject *object,
 			return;
 
 		case PROP_FETCH_HEADERS_EXTRA:
-			g_value_set_boxed (
+			g_value_take_boxed (
 				value,
-				camel_imap_settings_get_fetch_headers_extra (
+				camel_imap_settings_dup_fetch_headers_extra (
 				CAMEL_IMAP_SETTINGS (object)));
 			return;
 
@@ -261,16 +262,16 @@ imap_settings_get_property (GObject *object,
 			return;
 
 		case PROP_HOST:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_network_settings_get_host (
+				camel_network_settings_dup_host (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
 		case PROP_NAMESPACE:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_imap_settings_get_namespace (
+				camel_imap_settings_dup_namespace (
 				CAMEL_IMAP_SETTINGS (object)));
 			return;
 
@@ -282,16 +283,16 @@ imap_settings_get_property (GObject *object,
 			return;
 
 		case PROP_REAL_JUNK_PATH:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_imap_settings_get_real_junk_path (
+				camel_imap_settings_dup_real_junk_path (
 				CAMEL_IMAP_SETTINGS (object)));
 			return;
 
 		case PROP_REAL_TRASH_PATH:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_imap_settings_get_real_trash_path (
+				camel_imap_settings_dup_real_trash_path (
 				CAMEL_IMAP_SETTINGS (object)));
 			return;
 
@@ -303,16 +304,16 @@ imap_settings_get_property (GObject *object,
 			return;
 
 		case PROP_SHELL_COMMAND:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_imap_settings_get_shell_command (
+				camel_imap_settings_dup_shell_command (
 				CAMEL_IMAP_SETTINGS (object)));
 			return;
 
 		case PROP_USER:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_network_settings_get_user (
+				camel_network_settings_dup_user (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
@@ -361,6 +362,8 @@ imap_settings_finalize (GObject *object)
 	CamelImapSettingsPrivate *priv;
 
 	priv = CAMEL_IMAP_SETTINGS_GET_PRIVATE (object);
+
+	g_mutex_free (priv->property_lock);
 
 	g_free (priv->namespace);
 	g_free (priv->shell_command);
@@ -601,6 +604,7 @@ static void
 camel_imap_settings_init (CamelImapSettings *settings)
 {
 	settings->priv = CAMEL_IMAP_SETTINGS_GET_PRIVATE (settings);
+	settings->priv->property_lock = g_mutex_new ();
 }
 
 /**
@@ -747,6 +751,38 @@ camel_imap_settings_get_fetch_headers_extra (CamelImapSettings *settings)
 }
 
 /**
+ * camel_imap_settings_dup_fetch_headers_extra:
+ * @settings: a #CamelImapSettings
+ *
+ * Thread-safe variation of camel_imap_settings_get_fetch_headers_extra().
+ * Use this function when accessing @extension from a worker thread.
+ *
+ * The returned string array should be freed with g_strfreev() when no
+ * longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelImapSettings:fetch-headers-extra
+ *
+ * Since: 3.4
+ **/
+gchar **
+camel_imap_settings_dup_fetch_headers_extra (CamelImapSettings *settings)
+{
+	const gchar * const *protected;
+	gchar **duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), NULL);
+
+	g_mutex_lock (settings->priv->property_lock);
+
+	protected = camel_imap_settings_get_fetch_headers_extra (settings);
+	duplicate = g_strdupv ((gchar **) protected);
+
+	g_mutex_unlock (settings->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_imap_settings_set_fetch_headers_extra:
  * @settings: a #CamelImapSettings
  * @fetch_headers_extra: a %NULL-terminated list of extra headers to fetch,
@@ -763,23 +799,15 @@ void
 camel_imap_settings_set_fetch_headers_extra (CamelImapSettings *settings,
                                              const gchar * const *fetch_headers_extra)
 {
-	gchar **strv = NULL;
-
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
+	g_mutex_lock (settings->priv->property_lock);
+
 	g_strfreev (settings->priv->fetch_headers_extra);
+	settings->priv->fetch_headers_extra =
+		g_strdupv ((gchar **) fetch_headers_extra);
 
-	if (fetch_headers_extra != NULL) {
-		guint ii, length;
-
-		length = g_strv_length ((gchar **) fetch_headers_extra);
-		strv = g_new0 (gchar *, length + 1);
-
-		for (ii = 0; ii < length; ii++)
-			strv[ii] = g_strdup (fetch_headers_extra[ii]);
-	}
-
-	settings->priv->fetch_headers_extra = strv;
+	g_mutex_unlock (settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "fetch-headers-extra");
 }
@@ -883,6 +911,37 @@ camel_imap_settings_get_namespace (CamelImapSettings *settings)
 }
 
 /**
+ * camel_imap_settings_dup_namespace:
+ * @settings: a #CamelImapSettings
+ *
+ * Thread-safe variation of camel_imap_settings_get_namespace().
+ * Use this function when accessing @settings from a worker thread.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelImapSettings:namespace
+ *
+ * Since: 3.4
+ **/
+gchar *
+camel_imap_settings_dup_namespace (CamelImapSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), NULL);
+
+	g_mutex_lock (settings->priv->property_lock);
+
+	protected = camel_imap_settings_get_namespace (settings);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (settings->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_imap_settings_set_namespace:
  * @settings: a #CamelImapSettings
  * @namespace: an IMAP namespace, or %NULL
@@ -902,8 +961,12 @@ camel_imap_settings_set_namespace (CamelImapSettings *settings,
 	if (namespace == NULL)
 		namespace = "";
 
+	g_mutex_lock (settings->priv->property_lock);
+
 	g_free (settings->priv->namespace);
 	settings->priv->namespace = g_strdup (namespace);
+
+	g_mutex_unlock (settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "namespace");
 }
@@ -928,6 +991,37 @@ camel_imap_settings_get_real_junk_path (CamelImapSettings *settings)
 }
 
 /**
+ * camel_imap_settings_dup_real_junk_path:
+ * @settings: a #CamelImapSettings
+ *
+ * Thread-safe variation of camel_imap_settings_get_real_junk_path().
+ * Use this function when accessing @settings from a worker thread.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelImapSettings:real-junk-path
+ *
+ * Since: 3.4
+ **/
+gchar *
+camel_imap_settings_dup_real_junk_path (CamelImapSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), NULL);
+
+	g_mutex_lock (settings->priv->property_lock);
+
+	protected = camel_imap_settings_get_real_junk_path (settings);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (settings->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_imap_settings_set_real_junk_path:
  * @settings: a #CamelImapSettings
  * @real_junk_path: path to a real Junk folder, or %NULL
@@ -947,8 +1041,12 @@ camel_imap_settings_set_real_junk_path (CamelImapSettings *settings,
 	if (real_junk_path != NULL && *real_junk_path == '\0')
 		real_junk_path = NULL;
 
+	g_mutex_lock (settings->priv->property_lock);
+
 	g_free (settings->priv->real_junk_path);
 	settings->priv->real_junk_path = g_strdup (real_junk_path);
+
+	g_mutex_unlock (settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "real-junk-path");
 }
@@ -973,6 +1071,37 @@ camel_imap_settings_get_real_trash_path (CamelImapSettings *settings)
 }
 
 /**
+ * camel_imap_settings_dup_real_trash_path:
+ * @settings: a #CamelImapSettings
+ *
+ * Thread-safe variation of camel_imap_settings_get_real_trash_path().
+ * Use this function when accessing @settings from a worker thread.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelImapSettings:real-trash-path
+ *
+ * Since: 3.4
+ **/
+gchar *
+camel_imap_settings_dup_real_trash_path (CamelImapSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), NULL);
+
+	g_mutex_lock (settings->priv->property_lock);
+
+	protected = camel_imap_settings_get_real_trash_path (settings);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (settings->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_imap_settings_set_real_trash_path:
  * @settings: a #CamelImapSettings
  * @real_trash_path: path to a real Trash folder, or %NULL
@@ -992,8 +1121,12 @@ camel_imap_settings_set_real_trash_path (CamelImapSettings *settings,
 	if (real_trash_path != NULL && *real_trash_path == '\0')
 		real_trash_path = NULL;
 
+	g_mutex_lock (settings->priv->property_lock);
+
 	g_free (settings->priv->real_trash_path);
 	settings->priv->real_trash_path = g_strdup (real_trash_path);
+
+	g_mutex_unlock (settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "real-trash-path");
 }
@@ -1024,6 +1157,37 @@ camel_imap_settings_get_shell_command (CamelImapSettings *settings)
 }
 
 /**
+ * camel_imap_settings_dup_shell_command:
+ * @settings: a #CamelImapSettings
+ *
+ * Thread-safe variation of camel_imap_settings_get_shell_command().
+ * Use this function when accessing @settings from a worker thread.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelImapSettings:shell-command
+ *
+ * Since: 3.4
+ **/
+gchar *
+camel_imap_settings_dup_shell_command (CamelImapSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), NULL);
+
+	g_mutex_lock (settings->priv->property_lock);
+
+	protected = camel_imap_settings_get_shell_command (settings);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (settings->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_imap_settings_set_shell_command:
  * @settings: a #CamelImapSettings
  * @shell_command: shell command for connecting to the server, or %NULL
@@ -1049,8 +1213,12 @@ camel_imap_settings_set_shell_command (CamelImapSettings *settings,
 	if (shell_command != NULL && *shell_command == '\0')
 		shell_command = NULL;
 
+	g_mutex_lock (settings->priv->property_lock);
+
 	g_free (settings->priv->shell_command);
 	settings->priv->shell_command = g_strdup (shell_command);
+
+	g_mutex_unlock (settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "shell-command");
 }

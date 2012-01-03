@@ -76,6 +76,8 @@ void		camel_imap_settings_set_fetch_headers
 const gchar * const *
 		camel_imap_settings_get_fetch_headers_extra
 					(CamelImapSettings *settings);
+gchar **	camel_imap_settings_dup_fetch_headers_extra
+					(CamelImapSettings *settings);
 void		camel_imap_settings_set_fetch_headers_extra
 					(CamelImapSettings *settings,
 					 const gchar * const *fetch_headers_extra);
@@ -91,20 +93,28 @@ void		camel_imap_settings_set_filter_junk_inbox
 					 gboolean filter_junk_inbox);
 const gchar *	camel_imap_settings_get_namespace
 					(CamelImapSettings *settings);
+gchar *		camel_imap_settings_dup_namespace
+					(CamelImapSettings *settings);
 void		camel_imap_settings_set_namespace
 					(CamelImapSettings *settings,
 					 const gchar *namespace_);
 const gchar *	camel_imap_settings_get_real_junk_path
+					(CamelImapSettings *settings);
+gchar *		camel_imap_settings_dup_real_junk_path
 					(CamelImapSettings *settings);
 void		camel_imap_settings_set_real_junk_path
 					(CamelImapSettings *settings,
 					 const gchar *real_junk_path);
 const gchar *	camel_imap_settings_get_real_trash_path
 					(CamelImapSettings *settings);
+gchar *		camel_imap_settings_dup_real_trash_path
+					(CamelImapSettings *settings);
 void		camel_imap_settings_set_real_trash_path
 					(CamelImapSettings *settings,
 					 const gchar *real_trash_path);
 const gchar *	camel_imap_settings_get_shell_command
+					(CamelImapSettings *settings);
+gchar *		camel_imap_settings_dup_shell_command
 					(CamelImapSettings *settings);
 void		camel_imap_settings_set_shell_command
 					(CamelImapSettings *settings,

@@ -27,6 +27,11 @@
 #define SECURITY_METHOD_KEY "CamelNetworkSettings:security-method"
 #define USER_KEY            "CamelNetworkSettings:user"
 
+/* XXX Because interfaces have no initialization method, we can't
+ *     allocate a per-instance mutex in a thread-safe manner.  So
+ *     we have to use a single static mutex for all instances. */
+G_LOCK_DEFINE_STATIC (property_lock);
+
 G_DEFINE_INTERFACE (
 	CamelNetworkSettings,
 	camel_network_settings,
@@ -112,6 +117,37 @@ camel_network_settings_get_auth_mechanism (CamelNetworkSettings *settings)
 }
 
 /**
+ * camel_network_settings_dup_auth_mechanism:
+ * @settings: a #CamelNetworkSettings
+ *
+ * Thread-safe variation of camel_network_settings_get_auth_mechanism().
+ * Use this function when accessing @settings from a worker thread.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelNetworkSettings:auth-mechanism
+ *
+ * Since: 3.4
+ **/
+gchar *
+camel_network_settings_dup_auth_mechanism (CamelNetworkSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	G_LOCK (property_lock);
+
+	protected = camel_network_settings_get_auth_mechanism (settings);
+	duplicate = g_strdup (protected);
+
+	G_UNLOCK (property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_network_settings_set_auth_mechanism:
  * @settings: a #CamelNetworkSettings
  * @auth_mechanism: an authentication mechanism name, or %NULL
@@ -136,11 +172,15 @@ camel_network_settings_set_auth_mechanism (CamelNetworkSettings *settings,
 		stripped_auth_mechanism =
 			g_strstrip (g_strdup (auth_mechanism));
 
+	G_LOCK (property_lock);
+
 	g_object_set_data_full (
 		G_OBJECT (settings),
 		AUTH_MECHANISM_KEY,
 		stripped_auth_mechanism,
 		(GDestroyNotify) g_free);
+
+	G_UNLOCK (property_lock);
 
 	g_object_notify (G_OBJECT (settings), "auth-mechanism");
 }
@@ -161,6 +201,37 @@ camel_network_settings_get_host (CamelNetworkSettings *settings)
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	return g_object_get_data (G_OBJECT (settings), HOST_KEY);
+}
+
+/**
+ * camel_network_settings_dup_host:
+ * @settings: a #CamelNetworkSettings
+ *
+ * Thread-safe variation of camel_network_settings_get_host().
+ * Use this function when accessing @settings from a worker thread.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelNetworkSettings:host
+ *
+ * Since: 3.4
+ **/
+gchar *
+camel_network_settings_dup_host (CamelNetworkSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	G_LOCK (property_lock);
+
+	protected = camel_network_settings_get_host (settings);
+	duplicate = g_strdup (protected);
+
+	G_UNLOCK (property_lock);
+
+	return duplicate;
 }
 
 /**
@@ -189,10 +260,14 @@ camel_network_settings_set_host (CamelNetworkSettings *settings,
 	/* Strip leading and trailing whitespace. */
 	stripped_host = g_strstrip (g_strdup (host));
 
+	G_LOCK (property_lock);
+
 	g_object_set_data_full (
 		G_OBJECT (settings),
 		HOST_KEY, stripped_host,
 		(GDestroyNotify) g_free);
+
+	G_UNLOCK (property_lock);
 
 	g_object_notify (G_OBJECT (settings), "host");
 }
@@ -310,6 +385,37 @@ camel_network_settings_get_user (CamelNetworkSettings *settings)
 }
 
 /**
+ * camel_network_settings_dup_user:
+ * @settings: a #CamelNetworkSettings
+ *
+ * Thread-safe variation of camel_network_settings_get_user().
+ * Use this function when accessing @settings from a worker thread.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelNetworkSettings:user
+ *
+ * Since: 3.4
+ **/
+gchar *
+camel_network_settings_dup_user (CamelNetworkSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	G_LOCK (property_lock);
+
+	protected = camel_network_settings_get_user (settings);
+	duplicate = g_strdup (protected);
+
+	G_UNLOCK (property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_network_settings_set_user:
  * @settings: a #CamelNetworkSettings
  * @user: a user name, or %NULL
@@ -335,10 +441,14 @@ camel_network_settings_set_user (CamelNetworkSettings *settings,
 	/* Strip leading and trailing whitespace. */
 	stripped_user = g_strstrip (g_strdup (user));
 
+	G_LOCK (property_lock);
+
 	g_object_set_data_full (
 		G_OBJECT (settings),
 		USER_KEY, stripped_user,
 		(GDestroyNotify) g_free);
+
+	G_UNLOCK (property_lock);
 
 	g_object_notify (G_OBJECT (settings), "user");
 }

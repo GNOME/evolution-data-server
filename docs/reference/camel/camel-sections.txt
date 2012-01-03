@@ -864,6 +864,7 @@ camel_junk_filter_get_type
 <TITLE>CamelLocalSettings</TITLE>
 CamelLocalSettings
 camel_local_settings_get_path
+camel_local_settings_dup_path
 camel_local_settings_set_path
 <SUBSECTION Standard>
 CAMEL_LOCAL_SETTINGS
@@ -1514,8 +1515,10 @@ camel_network_service_get_type
 <TITLE>CamelNetworkSettings</TITLE>
 CamelNetworkSettings
 camel_network_settings_get_auth_mechanism
+camel_network_settings_dup_auth_mechanism
 camel_network_settings_set_auth_mechanism
 camel_network_settings_get_host
+camel_network_settings_dup_host
 camel_network_settings_set_host
 camel_network_settings_get_port
 camel_network_settings_set_port
@@ -1523,6 +1526,7 @@ CamelNetworkSecurityMethod
 camel_network_settings_get_security_method
 camel_network_settings_set_security_method
 camel_network_settings_get_user
+camel_network_settings_dup_user
 camel_network_settings_set_user
 <SUBSECTION Standard>
 CAMEL_NETWORK_SETTINGS

@@ -26,6 +26,7 @@
 	((obj), CAMEL_TYPE_IMAPX_SETTINGS, CamelIMAPXSettingsPrivate))
 
 struct _CamelIMAPXSettingsPrivate {
+	GMutex *property_lock;
 	gchar *namespace;
 	gchar *shell_command;
 
@@ -208,9 +209,9 @@ imapx_settings_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_AUTH_MECHANISM:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_network_settings_get_auth_mechanism (
+				camel_network_settings_dup_auth_mechanism (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
@@ -264,16 +265,16 @@ imapx_settings_get_property (GObject *object,
 			return;
 
 		case PROP_HOST:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_network_settings_get_host (
+				camel_network_settings_dup_host (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
 		case PROP_NAMESPACE:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_imapx_settings_get_namespace (
+				camel_imapx_settings_dup_namespace (
 				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 
@@ -292,16 +293,16 @@ imapx_settings_get_property (GObject *object,
 			return;
 
 		case PROP_SHELL_COMMAND:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_imapx_settings_get_shell_command (
+				camel_imapx_settings_dup_shell_command (
 				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 
 		case PROP_USER:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_network_settings_get_user (
+				camel_network_settings_dup_user (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
@@ -350,6 +351,8 @@ imapx_settings_finalize (GObject *object)
 	CamelIMAPXSettingsPrivate *priv;
 
 	priv = CAMEL_IMAPX_SETTINGS_GET_PRIVATE (object);
+
+	g_mutex_free (priv->property_lock);
 
 	g_free (priv->namespace);
 	g_free (priv->shell_command);
@@ -579,6 +582,7 @@ static void
 camel_imapx_settings_init (CamelIMAPXSettings *settings)
 {
 	settings->priv = CAMEL_IMAPX_SETTINGS_GET_PRIVATE (settings);
+	settings->priv->property_lock = g_mutex_new ();
 }
 
 /**
@@ -891,6 +895,37 @@ camel_imapx_settings_get_namespace (CamelIMAPXSettings *settings)
 }
 
 /**
+ * camel_imapx_settings_dup_namespace:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Thread-safe variation of camel_imapx_settings_get_namespace().
+ * Use this function when accessing @settings from a worker thread.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelIMAPXSettings:namespace
+ *
+ * Since: 3.4
+ **/
+gchar *
+camel_imapx_settings_dup_namespace (CamelIMAPXSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), NULL);
+
+	g_mutex_lock (settings->priv->property_lock);
+
+	protected = camel_imapx_settings_get_namespace (settings);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (settings->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_imapx_settings_set_namespace:
  * @settings: a #CamelIMAPXSettings
  * @namespace: an IMAP namespace, or %NULL
@@ -910,8 +945,12 @@ camel_imapx_settings_set_namespace (CamelIMAPXSettings *settings,
 	if (namespace == NULL)
 		namespace = "";
 
+	g_mutex_lock (settings->priv->property_lock);
+
 	g_free (settings->priv->namespace);
 	settings->priv->namespace = g_strdup (namespace);
+
+	g_mutex_unlock (settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "namespace");
 }
@@ -942,6 +981,37 @@ camel_imapx_settings_get_shell_command (CamelIMAPXSettings *settings)
 }
 
 /**
+ * camel_imapx_settings_dup_shell_command:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Thread-safe variation of camel_imapx_settings_get_shell_command().
+ * Use this function when accessing @settings from a worker thread.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #CamelIMAPXSettings:shell-command
+ *
+ * Since: 3.4
+ **/
+gchar *
+camel_imapx_settings_dup_shell_command (CamelIMAPXSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), NULL);
+
+	g_mutex_lock (settings->priv->property_lock);
+
+	protected = camel_imapx_settings_get_shell_command (settings);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (settings->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
  * camel_imapx_settings_set_shell_command:
  * @settings: a #CamelIMAPXSettings
  * @shell_command: shell command for connecting to the server, or %NULL
@@ -967,8 +1037,12 @@ camel_imapx_settings_set_shell_command (CamelIMAPXSettings *settings,
 	if (shell_command != NULL && *shell_command == '\0')
 		shell_command = NULL;
 
+	g_mutex_lock (settings->priv->property_lock);
+
 	g_free (settings->priv->shell_command);
 	settings->priv->shell_command = g_strdup (shell_command);
+
+	g_mutex_unlock (settings->priv->property_lock);
 
 	g_object_notify (G_OBJECT (settings), "shell-command");
 }

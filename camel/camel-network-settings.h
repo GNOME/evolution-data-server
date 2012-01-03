@@ -63,10 +63,14 @@ GType		camel_network_settings_get_type
 					(void) G_GNUC_CONST;
 const gchar *	camel_network_settings_get_auth_mechanism
 					(CamelNetworkSettings *settings);
+gchar *		camel_network_settings_dup_auth_mechanism
+					(CamelNetworkSettings *settings);
 void		camel_network_settings_set_auth_mechanism
 					(CamelNetworkSettings *settings,
 					 const gchar *auth_mechanism);
 const gchar *	camel_network_settings_get_host
+					(CamelNetworkSettings *settings);
+gchar *		camel_network_settings_dup_host
 					(CamelNetworkSettings *settings);
 void		camel_network_settings_set_host
 					(CamelNetworkSettings *settings,
@@ -83,6 +87,8 @@ void		camel_network_settings_set_security_method
 					(CamelNetworkSettings *settings,
 					 CamelNetworkSecurityMethod method);
 const gchar *	camel_network_settings_get_user
+					(CamelNetworkSettings *settings);
+gchar *		camel_network_settings_dup_user
 					(CamelNetworkSettings *settings);
 void		camel_network_settings_set_user
 					(CamelNetworkSettings *settings,

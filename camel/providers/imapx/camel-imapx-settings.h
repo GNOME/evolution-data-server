@@ -93,10 +93,14 @@ void		camel_imapx_settings_set_filter_junk_inbox
 						 gboolean filter_junk_inbox);
 const gchar *	camel_imapx_settings_get_namespace
 						(CamelIMAPXSettings *settings);
+gchar *		camel_imapx_settings_dup_namespace
+						(CamelIMAPXSettings *settings);
 void		camel_imapx_settings_set_namespace
 						(CamelIMAPXSettings *settings,
 						 const gchar *namespace_);
 const gchar *	camel_imapx_settings_get_shell_command
+						(CamelIMAPXSettings *settings);
+gchar *		camel_imapx_settings_dup_shell_command
 						(CamelIMAPXSettings *settings);
 void		camel_imapx_settings_set_shell_command
 						(CamelIMAPXSettings *settings,

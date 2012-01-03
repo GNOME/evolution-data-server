@@ -122,9 +122,9 @@ pop3_settings_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_AUTH_MECHANISM:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_network_settings_get_auth_mechanism (
+				camel_network_settings_dup_auth_mechanism (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
@@ -150,9 +150,9 @@ pop3_settings_get_property (GObject *object,
 			return;
 
 		case PROP_HOST:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_network_settings_get_host (
+				camel_network_settings_dup_host (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 
@@ -178,9 +178,9 @@ pop3_settings_get_property (GObject *object,
 			return;
 
 		case PROP_USER:
-			g_value_set_string (
+			g_value_take_string (
 				value,
-				camel_network_settings_get_user (
+				camel_network_settings_dup_user (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
 	}
