@@ -1089,6 +1089,7 @@ SoupURI *
 e_proxy_peek_uri_for (EProxy *proxy,
                       const gchar *uri)
 {
+	SoupURI *res = NULL;
 	SoupURI *soup_uri;
 
 	g_return_val_if_fail (E_IS_PROXY (proxy), NULL);
@@ -1099,15 +1100,15 @@ e_proxy_peek_uri_for (EProxy *proxy,
 		return NULL;
 
 	if (soup_uri->scheme == SOUP_URI_SCHEME_HTTP)
-		return proxy->priv->uri_http;
+		res = proxy->priv->uri_http;
+	else if (soup_uri->scheme == SOUP_URI_SCHEME_HTTPS)
+		res = proxy->priv->uri_https;
+	else if (soup_uri->scheme && g_ascii_strcasecmp (soup_uri->scheme, "socks") == 0)
+		res = proxy->priv->uri_socks;
 
-	if (soup_uri->scheme == SOUP_URI_SCHEME_HTTPS)
-		return proxy->priv->uri_https;
+	soup_uri_free (soup_uri);
 
-	if (soup_uri->scheme && g_ascii_strcasecmp (soup_uri->scheme, "socks") == 0)
-		return proxy->priv->uri_socks;
-
-	return NULL;
+	return res;
 }
 
 /**

@@ -3133,6 +3133,9 @@ member_ber (EContact *contact)
 		}
 	}
 	result[i] = NULL;
+
+	g_list_free_full (members, (GDestroyNotify) e_vcard_attribute_free);
+
 	return result;
 }
 
@@ -3157,6 +3160,9 @@ member_compare (EContact *contact_new,
 	else
 		equal = (!!list_name1 == !!list_name2);
 
+	g_free (list_name1);
+	g_free (list_name2);
+
 	if (!equal)
 		return equal;
 
@@ -3164,8 +3170,12 @@ member_compare (EContact *contact_new,
 	len1 = g_list_length (members_new);
 	members_cur = e_contact_get_attributes (contact_current, E_CONTACT_EMAIL);
 	len2 = g_list_length (members_cur);
-	if (len1 != len2)
+	if (len1 != len2) {
+		g_list_free_full (members_new, (GDestroyNotify) e_vcard_attribute_free);
+		g_list_free_full (members_cur, (GDestroyNotify) e_vcard_attribute_free);
+
 		return FALSE;
+	}
 
 	for (l1 = members_new; l1 != NULL; l1 = g_list_next (l1)) {
 		EVCardAttribute *attr_new = l1->data;
@@ -3203,6 +3213,8 @@ member_compare (EContact *contact_new,
 						}
 					}
 					if (!found) {
+						g_list_free_full (members_new, (GDestroyNotify) e_vcard_attribute_free);
+						g_list_free_full (members_cur, (GDestroyNotify) e_vcard_attribute_free);
 						return FALSE;
 					}
 				}
@@ -3211,6 +3223,10 @@ member_compare (EContact *contact_new,
 		next_member:
 		continue;
 	}
+
+	g_list_free_full (members_new, (GDestroyNotify) e_vcard_attribute_free);
+	g_list_free_full (members_cur, (GDestroyNotify) e_vcard_attribute_free);
+
 	return TRUE;
 }
 

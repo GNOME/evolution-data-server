@@ -502,14 +502,14 @@ e_destination_set_contact (EDestination *dest,
 				if (attr->next) {
 					attr = attr->next;
 					if (remove) {
-						attrs = g_list_remove_link (attrs, attr->prev);
+						attrs = g_list_delete_link (attrs, attr->prev);
 						list_length--;
 					}
 					continue;
 				/* Or return to first attribute */
 				} else if (attrs) {
 					if (remove) {
-						attrs = g_list_remove_link (attrs, attr);
+						attrs = g_list_delete_link (attrs, attr);
 						list_length--;
 					}
 					attr = attrs;
