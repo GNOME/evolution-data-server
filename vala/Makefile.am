@@ -9,7 +9,11 @@ dist_vapi_DATA = \
 	libecalendar-1.2.deps \
 	$(NULL)
 
-EXTRA_DIST = EBook-1.2.metadata ECalendar-1.2.metadata
+EXTRA_DIST = \
+	EBook-1.2.metadata \
+	ECalendar-1.2.metadata \
+	EDataServer-1.2.metadata \
+	$(NULL)
 
 BUILT_SOURCES = \
 	$(vapi_DATA) \
@@ -21,6 +25,7 @@ libedataserver-1.2.vapi: $(top_builddir)/libedataserver/EDataServer-1.2.gir
 	$(VAPIGEN_V)$(VAPIGEN) \
 		--pkg gio-2.0 \
 		--library libedataserver-1.2 \
+		--metadatadir=$(srcdir) \
 		$< \
 		$(NULL)
 	@mv $@ libedataserver-1.2.vapi.tmp

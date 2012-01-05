@@ -609,7 +609,7 @@ e_source_list_peek_source_any (ESourceList *list)
  * property named "system".  If no such #ESource exists, the function
  * returns %NULL.
  *
- * Returns: (transfer none): the default #ESource in @list, or %NULL
+ * Returns: (transfer none) (allow-none): the default #ESource in @list, or %NULL
  *
  * Since: 2.32
  **/

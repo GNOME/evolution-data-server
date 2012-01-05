@@ -1478,7 +1478,7 @@ e_contact_field_id_from_vcard (const gchar *vcard_field)
  *
  * Gets the value of @contact's field specified by @field_id.
  *
- * Returns: (transfer full): Depends on the field's type, owned by the caller.
+ * Returns: (transfer full) (allow-none): Depends on the field's type, owned by the caller. This may be %NULL if the field isn't set.
  **/
 gpointer
 e_contact_get (EContact *contact,
@@ -2143,8 +2143,8 @@ e_contact_photo_copy (EContactPhoto *photo)
  *
  * Gets the @photo's data.
  *
- * Returns: (transfer none) (array length=len): the inlined image in the
- * #EContactPhoto.
+ * Returns: (transfer none) (array length=len) (allow-none): the inlined image in the
+ * #EContactPhoto, or %NULL if it has not been set.
  *
  * Since: 3.2
  **/
@@ -2188,7 +2188,7 @@ e_contact_photo_set_inlined (EContactPhoto *photo,
  *
  * Gets the @photo's mime type.
  *
- * Returns: (transfer none): the mime type of the image
+ * Returns: (transfer none) (allow-none): the MIME type of the image, or %NULL if it has not been set.
  *
  * Since: 3.2
  **/
@@ -2227,7 +2227,7 @@ e_contact_photo_set_mime_type (EContactPhoto *photo,
  *
  * Gets the @photo's URI.
  *
- * Returns: (transfer none): the URI of the image
+ * Returns: (transfer none) (allow-none): the URI of the image, or %NULL if it has not been set
  *
  * Since: 3.2
  **/
