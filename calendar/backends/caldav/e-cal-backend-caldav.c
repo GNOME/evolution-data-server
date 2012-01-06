@@ -1090,6 +1090,40 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 	return FALSE;
 }
 
+static void
+caldav_notify_auth_required (ECalBackendCalDAV *cbdav)
+{
+	ECredentials *credentials;
+	guint prompt_flags;
+	gchar *prompt_flags_str;
+
+	g_return_if_fail (cbdav != NULL);
+	g_return_if_fail (cbdav->priv != NULL);
+
+	cbdav->priv->opened = FALSE;
+	cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+
+	if (!e_cal_backend_is_online (E_CAL_BACKEND (cbdav)))
+		return;
+
+	if (cbdav->priv->credentials)
+		credentials = e_credentials_new_clone (cbdav->priv->credentials);
+	else
+		credentials = e_credentials_new ();
+	prompt_flags = E_CREDENTIALS_PROMPT_FLAG_REMEMBER_FOREVER
+		     | E_CREDENTIALS_PROMPT_FLAG_SECRET
+		     | E_CREDENTIALS_PROMPT_FLAG_ONLINE
+		     | E_CREDENTIALS_PROMPT_FLAG_REPROMPT;
+
+	prompt_flags_str = e_credentials_util_prompt_flags_to_string (prompt_flags);
+	e_credentials_set (credentials, E_CREDENTIALS_KEY_PROMPT_FLAGS, prompt_flags_str);
+	g_free (prompt_flags_str);
+
+	e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbdav), TRUE, credentials);
+
+	e_credentials_free (credentials);
+}
+
 /* Returns whether calendar changed on the server. This works only when server
  * supports 'getctag' extension. */
 static gboolean
@@ -1149,7 +1183,9 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 	xmlFreeDoc (doc);
 
 	/* Check the result */
-	if (message->status_code != 207) {
+	if (message->status_code == 401) {
+		caldav_notify_auth_required (cbdav);
+	} else if (message->status_code != 207) {
 		/* does not support it, but report calendar changed to update cache */
 		priv->ctag_supported = FALSE;
 	} else {
@@ -1301,8 +1337,12 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 		case SOUP_STATUS_CANT_CONNECT:
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
 			priv->opened = FALSE;
+			priv->slave_cmd = SLAVE_SHOULD_SLEEP;
 			priv->read_only = TRUE;
 			e_cal_backend_notify_readonly (E_CAL_BACKEND (cbdav), priv->read_only);
+			break;
+		case 401:
+			caldav_notify_auth_required (cbdav);
 			break;
 		default:
 			g_warning ("Server did not response with 207, but with code %d (%s)", message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
@@ -1347,6 +1387,9 @@ caldav_server_download_attachment (ECalBackendCalDAV *cbdav,
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		status_code_to_result (message, cbdav->priv, error);
 
+		if (message->status_code == 401)
+			caldav_notify_auth_required (cbdav);
+
 		g_object_unref (message);
 		return FALSE;
 	}
@@ -1389,7 +1432,10 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav,
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		status_code_to_result (message, priv, perror);
 
-		g_warning ("Could not fetch object '%s' from server, status:%d (%s)", uri, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
+		if (message->status_code == 401)
+			caldav_notify_auth_required (cbdav);
+		else
+			g_warning ("Could not fetch object '%s' from server, status:%d (%s)", uri, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
 		g_object_unref (message);
 		g_free (uri);
 		return FALSE;
@@ -1455,7 +1501,11 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav,
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		status_code_to_result (message, priv, error);
-		g_warning ("Could not post free/busy request to '%s', status:%d (%s)", url, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
+		if (message->status_code == 401)
+			caldav_notify_auth_required (cbdav);
+		else
+			g_warning ("Could not post free/busy request to '%s', status:%d (%s)", url, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
+
 		g_object_unref (message);
 
 		return;
@@ -1577,6 +1627,8 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 			if (use_comp != icalcomp)
 				icalcomponent_free (use_comp);
 		}
+	} else if (message->status_code == 401) {
+		caldav_notify_auth_required (cbdav);
 	}
 
 	g_object_unref (message);
@@ -1616,6 +1668,9 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav,
 	send_and_handle_redirection (priv->session, message, NULL);
 
 	status_code_to_result (message, priv, perror);
+
+	if (message->status_code == 401)
+		caldav_notify_auth_required (cbdav);
 
 	g_object_unref (message);
 }
@@ -1733,6 +1788,8 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 		/* Clean up the memory */
 		xmlOutputBufferClose (buf);
 		xmlFreeDoc (doc);
+	} else if (message->status_code == 401) {
+		caldav_notify_auth_required (cbdav);
 	}
 
 	if (message)
