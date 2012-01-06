@@ -158,7 +158,7 @@ void camel_folder_search_construct (CamelFolderSearch *search);
 /* This stuff currently gets cleared when you run a search ... what on earth was i thinking ... */
 void camel_folder_search_set_folder (CamelFolderSearch *search, CamelFolder *folder);
 void camel_folder_search_set_summary (CamelFolderSearch *search, GPtrArray *summary);
-void camel_folder_search_set_body_index (CamelFolderSearch *search, CamelIndex *index);
+void camel_folder_search_set_body_index (CamelFolderSearch *search, CamelIndex *body_index);
 /* this interface is deprecated */
 GPtrArray *camel_folder_search_execute_expression (CamelFolderSearch *search, const gchar *expr, GError **error);
 

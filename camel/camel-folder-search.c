@@ -266,6 +266,9 @@ void
 camel_folder_search_set_folder (CamelFolderSearch *search,
                                 CamelFolder *folder)
 {
+	g_return_if_fail (CAMEL_IS_FOLDER_SEARCH (search));
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
 	search->folder = folder;
 }
 
@@ -283,13 +286,15 @@ void
 camel_folder_search_set_summary (CamelFolderSearch *search,
                                  GPtrArray *summary)
 {
+	g_return_if_fail (CAMEL_IS_FOLDER_SEARCH (search));
+
 	search->summary = summary;
 }
 
 /**
  * camel_folder_search_set_body_index:
  * @search:
- * @index:
+ * @body_index:
  *
  * Set the index representing the contents of all messages
  * in this folder.  If this is not set, then the folder implementation
@@ -298,13 +303,19 @@ camel_folder_search_set_summary (CamelFolderSearch *search,
  **/
 void
 camel_folder_search_set_body_index (CamelFolderSearch *search,
-                                    CamelIndex *index)
+                                    CamelIndex *body_index)
 {
-	if (search->body_index)
+	g_return_if_fail (CAMEL_IS_FOLDER_SEARCH (search));
+
+	if (body_index != NULL) {
+		g_return_if_fail (CAMEL_IS_INDEX (body_index));
+		g_object_ref (body_index);
+	}
+
+	if (search->body_index != NULL)
 		g_object_unref (search->body_index);
-	search->body_index = index;
-	if (index)
-		g_object_ref (index);
+
+	search->body_index = body_index;
 }
 
 /**
