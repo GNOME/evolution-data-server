@@ -189,6 +189,13 @@ imap_folder_dispose (GObject *object)
 
 	imap_folder = CAMEL_IMAP_FOLDER (object);
 
+	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (imap_folder));
+	if (parent_store) {
+		camel_store_summary_disconnect_folder_summary (
+			(CamelStoreSummary *) ((CamelImapStore *) parent_store)->summary,
+			CAMEL_FOLDER (imap_folder)->summary);
+	}
+
 	if (imap_folder->search != NULL) {
 		g_object_unref (imap_folder->search);
 		imap_folder->search = NULL;
@@ -208,13 +215,6 @@ imap_folder_dispose (GObject *object)
 		camel_offline_journal_write (imap_folder->journal, NULL);
 		g_object_unref (imap_folder->journal);
 		imap_folder->journal = NULL;
-	}
-
-	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (imap_folder));
-	if (parent_store) {
-		camel_store_summary_disconnect_folder_summary (
-			(CamelStoreSummary *) ((CamelImapStore *) parent_store)->summary,
-			CAMEL_FOLDER (imap_folder)->summary);
 	}
 
 	/* Chain up to parent's dispose() method. */
