@@ -87,28 +87,36 @@ key_reservation_free (CamelObjectBag *bag,
 }
 
 static void
-object_bag_notify (CamelObjectBag *bag,
-                   GObject *where_the_object_was)
+object_bag_toggle_notify (gpointer user_data,
+			  GObject *object,
+			  gboolean is_last_ref)
 {
+	CamelObjectBag *bag = user_data;
 	gpointer key;
 
-	g_mutex_lock (bag->mutex);
+	if (is_last_ref) {
+		g_mutex_lock (bag->mutex);
 
-	key = g_hash_table_lookup (bag->key_table, where_the_object_was);
-	if (key != NULL) {
-		g_hash_table_remove (bag->key_table, where_the_object_was);
-		g_hash_table_remove (bag->object_table, key);
+		/* first remove from bag */
+		key = g_hash_table_lookup (bag->key_table, object);
+		if (key != NULL) {
+			g_hash_table_remove (bag->key_table, object);
+			g_hash_table_remove (bag->object_table, key);
+		}
+
+		g_mutex_unlock (bag->mutex);
+
+		/* then free the object */
+		g_object_remove_toggle_ref (object, object_bag_toggle_notify, bag);
 	}
-
-	g_mutex_unlock (bag->mutex);
 }
 
 static void
-object_bag_weak_unref (gpointer key,
-                       GObject *object,
-                       CamelObjectBag *bag)
+object_bag_toggle_unref (gpointer key,
+			 GObject *object,
+			 CamelObjectBag *bag)
 {
-	g_object_weak_unref (object, (GWeakNotify) object_bag_notify, bag);
+	g_object_remove_toggle_ref (object, object_bag_toggle_notify, bag);
 }
 
 static void
@@ -362,9 +370,8 @@ camel_object_bag_add (CamelObjectBag *bag,
 		g_hash_table_insert (bag->object_table, copied_key, object);
 		object_bag_unreserve (bag, key);
 
-		g_object_weak_ref (
-			G_OBJECT (object), (GWeakNotify)
-			object_bag_notify, bag);
+		g_object_add_toggle_ref (G_OBJECT (object),
+			object_bag_toggle_notify, bag);
 	}
 
 	g_mutex_unlock (bag->mutex);
@@ -492,7 +499,7 @@ camel_object_bag_remove (CamelObjectBag *bag,
 
 	key = g_hash_table_lookup (bag->key_table, object);
 	if (key != NULL) {
-		object_bag_weak_unref (key, object, bag);
+		object_bag_toggle_unref (key, object, bag);
 		g_hash_table_remove (bag->key_table, object);
 		g_hash_table_remove (bag->object_table, key);
 	}
@@ -513,10 +520,10 @@ camel_object_bag_destroy (CamelObjectBag *bag)
 	g_return_if_fail (bag != NULL);
 	g_return_if_fail (bag->reserved == NULL);
 
-	/* Drop remaining weak references. */
+	/* Drop remaining toggle references. */
 	g_hash_table_foreach (
 		bag->object_table, (GHFunc)
-		object_bag_weak_unref, bag);
+		object_bag_toggle_unref, bag);
 
 	g_hash_table_destroy (bag->key_table);
 	g_hash_table_destroy (bag->object_table);

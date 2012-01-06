@@ -345,8 +345,11 @@ camel_folder_search_execute_expression (CamelFolderSearch *search,
 	GPtrArray *matches;
 	gint i;
 	GHashTable *results;
-	CamelFolderSearchPrivate *p = search->priv;
+	CamelFolderSearchPrivate *p;
 
+	g_return_val_if_fail (search != NULL, NULL);
+
+	p = search->priv;
 	p->error = error;
 
 	/* only re-parse if the search has changed */
@@ -446,7 +449,11 @@ camel_folder_search_count (CamelFolderSearch *search,
 	GHashTable *results;
 	guint32 count = 0;
 
-	CamelFolderSearchPrivate *p = search->priv;
+	CamelFolderSearchPrivate *p;
+
+	g_return_val_if_fail (search != NULL, 0);
+
+	p = search->priv;
 
 	g_assert (search->folder);
 
@@ -605,7 +612,11 @@ camel_folder_search_search (CamelFolderSearch *search,
 	gchar *sql_query, *tmp, *tmp1;
 	GHashTable *results;
 
-	CamelFolderSearchPrivate *p = search->priv;
+	CamelFolderSearchPrivate *p;
+
+	g_return_val_if_fail (search != NULL, NULL);
+
+	p = search->priv;
 
 	g_assert (search->folder);
 
