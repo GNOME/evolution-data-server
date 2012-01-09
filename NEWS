@@ -1,3 +1,31 @@
+Evolution-Data-Server 3.2.3 2012-01-09
+--------------------------------------
+
+Bug Fixes:
+	Bug #638810 - Crash in camel_folder_search_set_folder with IMAP
+	              account (Milan Crha)
+	Bug #652173 - EContact's file-as getter doesn't populate empty value
+	              (Milan Crha)
+	Bug #661743 - Return maildir Inbox sibling folders only when requested
+	              (Milan Crha)
+	Bug #662068 - Crash in e-cal-backend-http.c:retrieval_done (Milan Crha)
+	Bug #665253 - "New folder" dialog does not show IMAP accounts
+	              (Milan Crha)
+	Bug #666757 - [CalDAV] Manage authentication requests even after open
+	              (Milan Crha)
+
+Other Changes:
+	* Pre-load all built-in timezones in libical on calendar factory start
+	  (Milan Crha)
+	* Remove all *_DISABLE_DEPRECATED_FLAGS. (Matthew Barnes)
+	* Call gettext on the short descriptions of port numbers.
+	  (Gabor Kelemen)
+	* [EClient] Always note backend of finished opening phase (Milan Crha)
+
+Translations:
+	Gabor Kelemen (hu)
+
+
 Evolution-Data-Server 3.2.2 2011-11-14
 --------------------------------------
 Bug Fixes:
