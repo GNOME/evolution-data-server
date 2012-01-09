@@ -92,6 +92,12 @@ EBookBackendSqliteDB *
 							 const gchar *folder_name,
 							 gboolean store_vcard,
 							 GError **error);
+gboolean	e_book_backend_sqlitedb_lock_updates	(EBookBackendSqliteDB *ebsdb,
+							 GError **error);
+gboolean	e_book_backend_sqlitedb_unlock_updates	(EBookBackendSqliteDB *ebsdb,
+							 gboolean do_commit,
+							 GError **error);
+
 gboolean	e_book_backend_sqlitedb_add_contact	(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 EContact *contact,
@@ -129,7 +135,7 @@ gchar *         e_book_backend_sqlitedb_get_vcard_string
 							 gboolean             *with_all_required_fields,
 							 GError              **error);
 
-GSList *		e_book_backend_sqlitedb_search	(EBookBackendSqliteDB *ebsdb,
+GSList *	e_book_backend_sqlitedb_search		(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 const gchar *sexp,
 							 /* const */ GHashTable *fields_of_interest,
@@ -137,14 +143,13 @@ GSList *		e_book_backend_sqlitedb_search	(EBookBackendSqliteDB *ebsdb,
 							 gboolean    *with_all_required_fields,
 							 GError     **error);
 
-GSList *		e_book_backend_sqlitedb_search_uids
-							(EBookBackendSqliteDB *ebsdb,
+GSList *	e_book_backend_sqlitedb_search_uids	(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 const gchar *sexp,
 							 gboolean *searched,
 							 GError **error);
 
-GHashTable *		e_book_backend_sqlitedb_get_uids_and_rev
+GHashTable *	e_book_backend_sqlitedb_get_uids_and_rev
 							(EBookBackendSqliteDB *ebsdb,
 							 const gchar *folderid,
 							 GError **error);

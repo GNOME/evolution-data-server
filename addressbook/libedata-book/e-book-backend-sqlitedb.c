@@ -51,6 +51,9 @@ struct _EBookBackendSqliteDBPrivate {
 
 	gboolean store_vcard;
 	GStaticRWLock rwlock;
+
+	GMutex *in_transaction_lock;
+	guint32 in_transaction;
 };
 
 G_DEFINE_TYPE (EBookBackendSqliteDB, e_book_backend_sqlitedb, G_TYPE_OBJECT)
@@ -154,6 +157,9 @@ e_book_backend_sqlitedb_finalize (GObject *object)
 	g_free (priv->path);
 	priv->path = NULL;
 
+	g_mutex_free (priv->in_transaction_lock);
+	priv->in_transaction_lock = NULL;
+
 	g_free (priv);
 	priv = NULL;
 
@@ -180,6 +186,9 @@ e_book_backend_sqlitedb_init (EBookBackendSqliteDB *ebsdb)
 
 	ebsdb->priv->store_vcard = TRUE;
 	g_static_rw_lock_init (&ebsdb->priv->rwlock);
+
+	ebsdb->priv->in_transaction = 0;
+	ebsdb->priv->in_transaction_lock = g_mutex_new ();
 }
 
 static void
@@ -233,7 +242,7 @@ e_book_sqlitedb_match_func (sqlite3_context *ctx,
  *  Callers should hold the rw lock depending on read or write operation
  * Returns:
  **/
-static gint
+static gboolean
 book_backend_sql_exec (sqlite3 *db,
                        const gchar *stmt,
                        gint (*callback)(gpointer ,gint,gchar **,gchar **),
@@ -259,7 +268,7 @@ book_backend_sql_exec (sqlite3 *db,
 			0, "%s", errmsg);
 		sqlite3_free (errmsg);
 		errmsg = NULL;
-		return -1;
+		return FALSE;
 	}
 
 	if (errmsg) {
@@ -267,24 +276,72 @@ book_backend_sql_exec (sqlite3 *db,
 		errmsg = NULL;
 	}
 
-	return 0;
+	return TRUE;
 }
 
-static void
+/* the first caller holds the writer lock too */
+static gboolean
 book_backend_sqlitedb_start_transaction (EBookBackendSqliteDB *ebsdb,
                                          GError **error)
 {
-	book_backend_sql_exec (ebsdb->priv->db, "BEGIN", NULL, NULL, error);
+	gboolean res = TRUE;
+
+	g_return_val_if_fail (ebsdb != NULL, FALSE);
+	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
+	g_return_val_if_fail (ebsdb->priv->db != NULL, FALSE);
+
+	g_mutex_lock (ebsdb->priv->in_transaction_lock);
+
+	ebsdb->priv->in_transaction++;
+	if (ebsdb->priv->in_transaction == 0) {
+		g_mutex_unlock (ebsdb->priv->in_transaction_lock);
+
+		g_return_val_if_fail (ebsdb->priv->in_transaction != 0, FALSE);
+		return FALSE;
+	}
+
+	if (ebsdb->priv->in_transaction == 1) {
+		WRITER_LOCK (ebsdb);
+
+		res = book_backend_sql_exec (ebsdb->priv->db, "BEGIN", NULL, NULL, error);
+	}
+
+	g_mutex_unlock (ebsdb->priv->in_transaction_lock);
+
+	return res;
 }
 
-static void
+/* the last caller releases the writer lock too */
+static gboolean
 book_backend_sqlitedb_end_transaction (EBookBackendSqliteDB *ebsdb,
+				       gboolean do_commit,
                                        GError **error)
 {
-	if (!error || !*error)
-		book_backend_sql_exec (ebsdb->priv->db, "COMMIT", NULL, NULL, error);
-	else
-		book_backend_sql_exec (ebsdb->priv->db, "ROLLBACK", NULL, NULL, NULL);
+	gboolean res = TRUE;
+
+	g_return_val_if_fail (ebsdb != NULL, FALSE);
+	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
+	g_return_val_if_fail (ebsdb->priv->db != NULL, FALSE);
+
+	g_mutex_lock (ebsdb->priv->in_transaction_lock);
+	if (ebsdb->priv->in_transaction == 0) {
+		g_mutex_unlock (ebsdb->priv->in_transaction_lock);
+
+		g_return_val_if_fail (ebsdb->priv->in_transaction > 0, FALSE);
+		return FALSE;
+	}
+
+	ebsdb->priv->in_transaction--;
+
+	if (ebsdb->priv->in_transaction == 0) {
+		res = book_backend_sql_exec (ebsdb->priv->db, do_commit ? "COMMIT" : "ROLLBACK", NULL, NULL, error);
+
+		WRITER_UNLOCK (ebsdb);
+	}
+
+	g_mutex_unlock (ebsdb->priv->in_transaction_lock);
+
+	return res;
 }
 
 static void
@@ -309,7 +366,6 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 			     "  partial_content INTEGER,"
 			     " version INTEGER)";
 
-	WRITER_LOCK (ebsdb);
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err)
@@ -328,8 +384,7 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 		book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 	}
 
-	book_backend_sqlitedb_end_transaction (ebsdb, &err);
-	WRITER_UNLOCK (ebsdb);
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
 	if (err)
 		g_propagate_error (error, err);
@@ -346,7 +401,6 @@ add_folder_into_db (EBookBackendSqliteDB *ebsdb,
 	gchar *stmt;
 	GError *err = NULL;
 
-	WRITER_LOCK (ebsdb);
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
@@ -358,8 +412,7 @@ add_folder_into_db (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 	}
 
-	book_backend_sqlitedb_end_transaction (ebsdb, &err);
-	WRITER_UNLOCK (ebsdb);
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
 	if (err)
 		g_propagate_error (error, err);
@@ -368,12 +421,13 @@ add_folder_into_db (EBookBackendSqliteDB *ebsdb,
 }
 
 /* The column names match the fields used in book-backend-sexp */
-static gint
+static gboolean
 create_contacts_table (EBookBackendSqliteDB *ebsdb,
                        const gchar *folderid,
                        GError **error)
 {
-	gint ret, i;
+	gint i;
+	gboolean ret;
 	gchar *stmt, *tmp;
 	GError *err = NULL;
 	GString *string;
@@ -554,6 +608,27 @@ exit:
 	return ebsdb;
 }
 
+gboolean
+e_book_backend_sqlitedb_lock_updates (EBookBackendSqliteDB *ebsdb,
+				      GError **error)
+{
+	g_return_val_if_fail (ebsdb != NULL, FALSE);
+	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
+
+	return book_backend_sqlitedb_start_transaction (ebsdb, error);
+}
+
+gboolean
+e_book_backend_sqlitedb_unlock_updates (EBookBackendSqliteDB *ebsdb,
+					gboolean do_commit,
+					GError **error)
+{
+	g_return_val_if_fail (ebsdb != NULL, FALSE);
+	g_return_val_if_fail (ebsdb->priv != NULL, FALSE);
+
+	return book_backend_sqlitedb_end_transaction (ebsdb, do_commit, error);
+}
+
 /* Add Contact (free the result with g_free() ) */
 static gchar *
 insert_stmt_from_contact (EContact *contact,
@@ -663,7 +738,6 @@ e_book_backend_sqlitedb_add_contacts (EBookBackendSqliteDB *ebsdb,
 
 	priv = ebsdb->priv;
 
-	WRITER_LOCK (ebsdb);
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	for (l = contacts; !err && l != NULL; l = g_slist_next (l)) {
@@ -677,9 +751,7 @@ e_book_backend_sqlitedb_add_contacts (EBookBackendSqliteDB *ebsdb,
 		g_free (stmt);
 	}
 
-	book_backend_sqlitedb_end_transaction (ebsdb, &err);
-
-	WRITER_UNLOCK (ebsdb);
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
 	if (err)
 		g_propagate_error (error, err);
@@ -745,16 +817,12 @@ e_book_backend_sqlitedb_remove_contacts (EBookBackendSqliteDB *ebsdb,
 	g_string_truncate (str, str->len - 1);
 	g_string_append (str, ")");
 
-	WRITER_LOCK (ebsdb);
-
-	if (!err)
-		book_backend_sqlitedb_start_transaction (ebsdb, &err);
+	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err)
 		book_backend_sql_exec (priv->db, str->str, NULL, NULL, &err);
 
-	book_backend_sqlitedb_end_transaction (ebsdb, &err);
-	WRITER_UNLOCK (ebsdb);
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
 	g_string_free (str, TRUE);
 
@@ -1773,7 +1841,6 @@ e_book_backend_sqlitedb_set_is_populated (EBookBackendSqliteDB *ebsdb,
 	gchar *stmt = NULL;
 	GError *err = NULL;
 
-	WRITER_LOCK (ebsdb);
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
@@ -1783,8 +1850,7 @@ e_book_backend_sqlitedb_set_is_populated (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 	}
 
-	book_backend_sqlitedb_end_transaction (ebsdb, &err);
-	WRITER_UNLOCK (ebsdb);
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
 	if (err)
 		g_propagate_error (error, err);
@@ -1839,7 +1905,6 @@ e_book_backend_sqlitedb_set_has_partial_content (EBookBackendSqliteDB *ebsdb,
 	gchar *stmt = NULL;
 	GError *err = NULL;
 
-	WRITER_LOCK (ebsdb);
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
@@ -1849,8 +1914,7 @@ e_book_backend_sqlitedb_set_has_partial_content (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 	}
 
-	book_backend_sqlitedb_end_transaction (ebsdb, &err);
-	WRITER_UNLOCK (ebsdb);
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
 	if (err)
 		g_propagate_error (error, err);
@@ -1914,7 +1978,6 @@ e_book_backend_sqlitedb_set_contact_bdata (EBookBackendSqliteDB *ebsdb,
 	gchar *stmt = NULL;
 	GError *err = NULL;
 
-	WRITER_LOCK (ebsdb);
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
@@ -1924,8 +1987,7 @@ e_book_backend_sqlitedb_set_contact_bdata (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 	}
 
-	book_backend_sqlitedb_end_transaction (ebsdb, &err);
-	WRITER_UNLOCK (ebsdb);
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
 	if (err)
 		g_propagate_error (error, err);
@@ -1974,7 +2036,6 @@ e_book_backend_sqlitedb_set_sync_data (EBookBackendSqliteDB *ebsdb,
 	gchar *stmt = NULL;
 	GError *err = NULL;
 
-	WRITER_LOCK (ebsdb);
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
@@ -1984,8 +2045,7 @@ e_book_backend_sqlitedb_set_sync_data (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 	}
 
-	book_backend_sqlitedb_end_transaction (ebsdb, &err);
-	WRITER_UNLOCK (ebsdb);
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
 	if (err)
 		g_propagate_error (error, err);
@@ -2037,7 +2097,6 @@ e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
 	gchar *stmt = NULL;
 	GError *err = NULL;
 
-	WRITER_LOCK (ebsdb);
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	if (!err) {
@@ -2047,8 +2106,7 @@ e_book_backend_sqlitedb_set_key_value (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 	}
 
-	book_backend_sqlitedb_end_transaction (ebsdb, &err);
-	WRITER_UNLOCK (ebsdb);
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
 	if (err)
 		g_propagate_error (error, err);
@@ -2098,7 +2156,6 @@ e_book_backend_sqlitedb_delete_addressbook (EBookBackendSqliteDB *ebsdb,
 	gchar *stmt;
 	GError *err = NULL;
 
-	WRITER_LOCK (ebsdb);
 	book_backend_sqlitedb_start_transaction (ebsdb, &err);
 
 	/* delete the contacts table */
@@ -2122,8 +2179,7 @@ e_book_backend_sqlitedb_delete_addressbook (EBookBackendSqliteDB *ebsdb,
 		sqlite3_free (stmt);
 	}
 
-	book_backend_sqlitedb_end_transaction (ebsdb, &err);
-	WRITER_UNLOCK (ebsdb);
+	book_backend_sqlitedb_end_transaction (ebsdb, !err, err ? NULL : &err);
 
 	if (err)
 		g_propagate_error (error, err);
