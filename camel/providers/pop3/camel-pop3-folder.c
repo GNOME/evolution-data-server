@@ -333,6 +333,9 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	gchar buffer[1];
 	gint i, last;
 	CamelStream *stream = NULL;
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean auto_fetch;
 
 	g_return_val_if_fail (uid != NULL, NULL);
 
@@ -340,6 +343,15 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 
 	pop3_folder = CAMEL_POP3_FOLDER (folder);
 	pop3_store = CAMEL_POP3_STORE (parent_store);
+
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+
+	g_object_get (
+		settings,
+		"auto-fetch", &auto_fetch,
+		NULL);
+
 
 	fi = g_hash_table_lookup (pop3_folder->uids_fi, uid);
 	if (fi == NULL) {
@@ -399,7 +411,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 		pcr = camel_pop3_engine_command_new(pop3_store->engine, CAMEL_POP3_COMMAND_MULTI, cmd_tocache, fi, cancellable, NULL, "RETR %u\r\n", fi->id);
 
 		/* Also initiate retrieval of some of the following messages, assume we'll be receiving them */
-		if (pop3_store->cache != NULL) {
+		if (auto_fetch && pop3_store->cache != NULL) {
 			/* This should keep track of the last one retrieved, also how many are still
 			 * oustanding incase of random access on large folders */
 			i = fi->index + 1;

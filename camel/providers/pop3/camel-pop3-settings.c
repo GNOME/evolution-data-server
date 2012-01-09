@@ -27,6 +27,7 @@ struct _CamelPOP3SettingsPrivate {
 	gboolean delete_expunged;
 	gboolean disable_extensions;
 	gboolean keep_on_server;
+	gboolean auto_fetch;
 };
 
 enum {
@@ -39,7 +40,8 @@ enum {
 	PROP_KEEP_ON_SERVER,
 	PROP_PORT,
 	PROP_SECURITY_METHOD,
-	PROP_USER
+	PROP_USER,
+	PROP_AUTO_FETCH	
 };
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -108,6 +110,10 @@ pop3_settings_set_property (GObject *object,
 			camel_network_settings_set_user (
 				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_string (value));
+		case PROP_AUTO_FETCH:
+			camel_pop3_settings_set_auto_fetch  (
+				CAMEL_POP3_SETTINGS (object),
+				g_value_get_boolean (value));
 			return;
 	}
 
@@ -183,6 +189,11 @@ pop3_settings_get_property (GObject *object,
 				camel_network_settings_dup_user (
 				CAMEL_NETWORK_SETTINGS (object)));
 			return;
+		case PROP_AUTO_FETCH:
+			g_value_set_boolean (
+				value,
+				camel_pop3_settings_get_auto_fetch (
+				CAMEL_POP3_SETTINGS (object)));
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -259,6 +270,18 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			"Keep On Server",
 			"Leave messages on POP3 server",
 			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_KEEP_ON_SERVER,
+		g_param_spec_boolean (
+			"auto-fetch",
+			"Auto Fetch mails",
+			"Automatically fetch additional mails that may be downloaded later.",
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -461,4 +484,43 @@ camel_pop3_settings_set_keep_on_server (CamelPOP3Settings *settings,
 
 	g_object_notify (G_OBJECT (settings), "keep-on-server");
 }
+
+/**
+ * camel_pop3_settings_get_auto_fetch :
+ * @settings: a #CamelPOP3Settings
+ *
+ * Returns whether to download additional mails that may be downloaded later on
+ *
+ * Returns: whether to download additional mails
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_pop3_settings_get_auto_fetch (CamelPOP3Settings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_POP3_SETTINGS (settings), FALSE);
+
+	return settings->priv->auto_fetch;
+}
+
+/**
+ * camel_pop3_settings_set_auto_fetch :
+ * @settings: a #CamelPOP3Settings
+ * @keep_on_server: whether to download additional mails
+ *
+ * Sets whether to download additional mails that may be downloaded later on
+ *
+ * Since: 3.4
+ **/
+void
+camel_pop3_settings_set_auto_fetch (CamelPOP3Settings *settings,
+                                        gboolean auto_fetch)
+{
+	g_return_if_fail (CAMEL_IS_POP3_SETTINGS (settings));
+
+	settings->priv->auto_fetch = auto_fetch;
+
+	g_object_notify (G_OBJECT (settings), "auto_fetch");
+}
+
 
