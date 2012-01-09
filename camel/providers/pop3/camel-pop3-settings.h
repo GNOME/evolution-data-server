@@ -76,6 +76,11 @@ gboolean	camel_pop3_settings_get_keep_on_server
 void		camel_pop3_settings_set_keep_on_server
 						(CamelPOP3Settings *settings,
 						 gboolean keep_on_server);
+gboolean	camel_pop3_settings_get_auto_fetch 
+						(CamelPOP3Settings *settings);
+void		camel_pop3_settings_set_auto_fetch
+						(CamelPOP3Settings *settings,
+						 gboolean auto_fetch);
 
 G_END_DECLS
 
