@@ -76,10 +76,15 @@ struct _AsyncContext {
 	gchar *message_uid;         /* also a result */
 	gboolean delete_originals;
 	gboolean expunge;
+	CamelFetchType fetch_type;
+	int limit;
+	gchar *start_uid;
+	gchar *end_uid;
 
 	/* results */
 	GPtrArray *transferred_uids;
 	CamelFolderQuotaInfo *quota_info;
+	gboolean success; /* A result that mention that there are more messages in fetch_messages operation */
 };
 
 struct _CamelFolderChangeInfoPrivate {
@@ -151,6 +156,8 @@ async_context_free (AsyncContext *async_context)
 		camel_folder_quota_info_free (async_context->quota_info);
 
 	g_free (async_context->message_uid);
+	g_free (async_context->start_uid);
+	g_free (async_context->end_uid);
 
 	g_slice_free (AsyncContext, async_context);
 }
@@ -1066,6 +1073,72 @@ folder_expunge_finish (CamelFolder *folder,
 }
 
 static void
+fetch_messages_thread (GSimpleAsyncResult *simple,
+                       GObject *object,
+                       GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->success = camel_folder_fetch_messages_sync (
+		CAMEL_FOLDER (object), async_context->fetch_type, async_context->limit, cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+fetch_messages (CamelFolder *folder,
+		CamelFetchType type,
+		int limit,
+                gint io_priority,
+                GCancellable *cancellable,
+                GAsyncReadyCallback callback,
+                gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->fetch_type = type;
+	async_context->limit = limit;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (folder), callback, user_data, fetch_messages);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, fetch_messages_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+fetch_messages_finish (CamelFolder *folder,
+                       GAsyncResult *result,
+                       GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (folder), fetch_messages), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	/* Assume success unless a GError is set. */
+	g_simple_async_result_propagate_error (simple, error);
+
+	return async_context->success;
+}
+
+static void
 folder_get_message_thread (GSimpleAsyncResult *simple,
                            GObject *object,
                            GCancellable *cancellable)
@@ -1209,6 +1282,72 @@ folder_get_quota_info_finish (CamelFolder *folder,
 	async_context->quota_info = NULL;
 
 	return quota_info;
+}
+
+static void
+purge_message_cache_thread (GSimpleAsyncResult *simple,
+                       GObject *object,
+                       GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	async_context->success = camel_folder_purge_message_cache_sync (
+		CAMEL_FOLDER (object), async_context->start_uid, async_context->end_uid, cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+purge_message_cache (CamelFolder *folder,
+		     gchar *start_uid,
+		     gchar *end_uid,
+		     gint io_priority,
+		     GCancellable *cancellable,
+		     GAsyncReadyCallback callback,
+		     gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->start_uid = g_strdup (start_uid);
+	async_context->end_uid = g_strdup (end_uid);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (folder), callback, user_data, purge_message_cache);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, purge_message_cache_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+purge_message_cache_finish (CamelFolder *folder,
+     	                    GAsyncResult *result,
+			    GError **error)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (folder), purge_message_cache), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	/* Assume success unless a GError is set. */
+	g_simple_async_result_propagate_error (simple, error);
+
+	return async_context->success;
 }
 
 static void
@@ -1608,10 +1747,14 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->append_message_finish = folder_append_message_finish;
 	class->expunge = folder_expunge;
 	class->expunge_finish = folder_expunge_finish;
+	class->fetch_messages= fetch_messages;
+	class->fetch_messages_finish = fetch_messages_finish;	
 	class->get_message = folder_get_message;
 	class->get_message_finish = folder_get_message_finish;
 	class->get_quota_info = folder_get_quota_info;
 	class->get_quota_info_finish = folder_get_quota_info_finish;
+	class->purge_message_cache= purge_message_cache;
+	class->purge_message_cache_finish = purge_message_cache_finish;		
 	class->refresh_info = folder_refresh_info;
 	class->refresh_info_finish = folder_refresh_info_finish;
 	class->synchronize = folder_synchronize;
@@ -3247,6 +3390,118 @@ camel_folder_expunge_finish (CamelFolder *folder,
 }
 
 /**
+ * camel_folder_fetch_messages_sync :
+ * @folder: a #CamelFolder
+ * @type: Type to specify fetch old or new messages.
+ * #limit: Limit to specify the number of messages to download.
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Downloads old or new specified number of messages from the server. It is optimized for mobile client usage. Desktop clients should keep away from this api and use @camel_folder_refresh_info.
+ *
+ * Returns: %TRUE if there are more messages to fetch, %FALSE if there are no more messages. 
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_folder_fetch_messages_sync (CamelFolder *folder,
+				  CamelFetchType type,
+				  int limit,
+                           	  GCancellable *cancellable,
+                               	  GError **error)
+{
+	CamelFolderClass *class;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+
+	/* Some backends that wont support mobile mode, won't have this api implemented. */
+	if (class->fetch_messages_sync == NULL)
+		return FALSE;
+
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		return FALSE;
+	}
+
+	success = class->fetch_messages_sync (folder, type, limit, cancellable, error);
+	CAMEL_CHECK_GERROR (folder, fetch_messages_sync, success, error);
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	return success;
+}
+
+/**
+ * camel_folder_fetch_messages:
+ * @folder: a #CamelFolder
+ * @type: Type to specify fetch old or new messages.
+ * #limit: Limit to specify the number of messages to download.
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously download new or old messages from the server.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_folder_fetch_messages_finish() to get the result of the operation.
+ *
+ * Since: 3.4
+ **/
+void
+camel_folder_fetch_messages (CamelFolder *folder,
+			     CamelFetchType type,
+			     int limit,
+	                     gint io_priority,
+			     GCancellable *cancellable,
+			     GAsyncReadyCallback callback,
+			     gpointer user_data)
+{
+	CamelFolderClass *class;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class->fetch_messages != NULL);
+
+	class->fetch_messages (folder, type, limit, io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_folder_fetch_messages_finish:
+ * @folder: a #CamelFolder
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_folder_fetch_messages().
+ *
+ * Returns: %TRUE if there are more messages to fetch, %FALSE if there are no more messages.
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_folder_fetch_messages_finish (CamelFolder *folder,
+                             	    GAsyncResult *result,
+				    GError **error)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->fetch_messages_finish != NULL, FALSE);
+
+	return class->fetch_messages_finish (folder, result, error);
+}
+
+/**
  * camel_folder_get_message_sync:
  * @folder: a #CamelFolder
  * @message_uid: the message UID
@@ -3498,6 +3753,118 @@ camel_folder_get_quota_info_finish (CamelFolder *folder,
 	g_return_val_if_fail (class->get_quota_info_finish != NULL, NULL);
 
 	return class->get_quota_info_finish (folder, result, error);
+}
+
+/**
+ * camel_folder_purge_message_cache_sync :
+ * @folder: a #CamelFolder
+ * @start_uid: the start message UID
+ * @end_uid: the end message UID
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Delete the local cache of all messages between these uids.
+ *
+ * Returns: %TRUE if success, %FALSE if there are any errors. 
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_folder_purge_message_cache_sync (CamelFolder *folder,
+				       gchar *start_uid,
+				       gchar *end_uid,
+				       GCancellable *cancellable,
+				       GError **error)
+{
+	CamelFolderClass *class;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+
+	/* Some backends that wont support mobile mode, won't have this api implemented. */
+	if (class->purge_message_cache_sync == NULL)
+		return FALSE;
+
+	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+		return FALSE;
+	}
+
+	success = class->purge_message_cache_sync (folder, start_uid, end_uid, cancellable, error);
+	CAMEL_CHECK_GERROR (folder, purge_message_cache_sync, success, error);
+
+	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
+
+	return success;
+}
+
+/**
+ * camel_folder_purge_message_cache:
+ * @folder: a #CamelFolder
+ * @start_uid: the start message UID
+ * @end_uid: the end message UID 
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Delete the local cache of all messages between these uids.
+ * 
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_folder_purge_message_cache_finish() to get the result of the operation.
+ *
+ * Since: 3.4
+ **/
+void
+camel_folder_purge_message_cache (CamelFolder *folder,
+				  gchar *start_uid,
+				  gchar *end_uid,
+				  gint io_priority,
+				  GCancellable *cancellable,
+				  GAsyncReadyCallback callback,
+				  gpointer user_data)
+{
+	CamelFolderClass *class;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class->purge_message_cache != NULL);
+
+	class->purge_message_cache (folder, start_uid, end_uid, io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_folder_purge_message_cache_finish:
+ * @folder: a #CamelFolder
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_folder_purge_message_cache().
+ *
+ * Returns: %TRUE if cache is deleted, %FALSE if there are any errors.
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_folder_purge_message_cache_finish (CamelFolder *folder,
+                             	    GAsyncResult *result,
+				    GError **error)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class->purge_message_cache_finish != NULL, FALSE);
+
+	return class->purge_message_cache_finish (folder, result, error);
 }
 
 /**
