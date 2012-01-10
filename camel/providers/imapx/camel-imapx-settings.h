@@ -91,6 +91,11 @@ gboolean	camel_imapx_settings_get_filter_junk_inbox
 void		camel_imapx_settings_set_filter_junk_inbox
 						(CamelIMAPXSettings *settings,
 						 gboolean filter_junk_inbox);
+gboolean	camel_imapx_settings_get_mobile_mode
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_mobile_mode
+						(CamelIMAPXSettings *settings,
+						 gboolean mobile);
 const gchar *	camel_imapx_settings_get_namespace
 						(CamelIMAPXSettings *settings);
 gchar *		camel_imapx_settings_dup_namespace
