@@ -87,6 +87,16 @@ typedef enum {
 } CamelFolderError;
 
 /**
+ * CamelFetchType:
+ *
+ * Since: 3.4
+ **/
+typedef enum {
+	CAMEL_FETCH_OLD_MESSAGES,
+	CAMEL_FETCH_NEW_MESSAGES
+} CamelFetchType;
+
+/**
  * CamelFolderLock:
  *
  * Since: 2.32
@@ -208,7 +218,7 @@ struct _CamelFolderClass {
 			(*get_message_cached)	(CamelFolder *folder,
 						 const gchar *message_uid,
 						 GCancellable *cancellable);
-
+		
 	/* Synchronous I/O Methods */
 	gboolean	(*append_message_sync)	(CamelFolder *folder,
 						 CamelMimeMessage *message,
@@ -217,6 +227,11 @@ struct _CamelFolderClass {
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*expunge_sync)		(CamelFolder *folder,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean 	(*fetch_messages_sync)	(CamelFolder *folder,
+						 CamelFetchType type,
+						 int limit,
 						 GCancellable *cancellable,
 						 GError **error);
 	CamelMimeMessage *
@@ -228,6 +243,12 @@ struct _CamelFolderClass {
 			(*get_quota_info_sync)	(CamelFolder *folder,
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean 	(*purge_message_cache_sync)	
+						(CamelFolder *folder,
+						 gchar *start_uid,
+						 gchar *end_uid,
+						 GCancellable *cancellable,
+						 GError **error);	
 	gboolean	(*refresh_info_sync)	(CamelFolder *folder,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -270,6 +291,17 @@ struct _CamelFolderClass {
 	gboolean	(*expunge_finish)	(CamelFolder *folder,
 						 GAsyncResult *result,
 						 GError **error);
+	void 		(*fetch_messages)	(CamelFolder *folder,
+						 CamelFetchType type,
+						 int limit,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*fetch_messages_finish)	
+						(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);	
 	void		(*get_message)		(CamelFolder *folder,
 						 const gchar *message_uid,
 						 gint io_priority,
@@ -290,6 +322,18 @@ struct _CamelFolderClass {
 						(CamelFolder *folder,
 						 GAsyncResult *result,
 						 GError **error);
+	void 		(*purge_message_cache)	(CamelFolder *folder,
+						 gchar *start_uid,
+						 gchar *end_uid,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*purge_message_cache_finish)	
+						(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);	
+
 	void		(*refresh_info)		(CamelFolder *folder,
 						 gint io_priority,
 						 GCancellable *cancellable,
@@ -498,6 +542,23 @@ void		camel_folder_expunge		(CamelFolder *folder,
 gboolean	camel_folder_expunge_finish	(CamelFolder *folder,
 						 GAsyncResult *result,
 						 GError **error);
+gboolean 	camel_folder_fetch_messages_sync
+						(CamelFolder *folder,
+						 CamelFetchType type,
+						 int limit,
+						 GCancellable *cancellable,
+						 GError **error);
+void	 	camel_folder_fetch_messages	(CamelFolder *folder,
+						 CamelFetchType type,
+						 int limit,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean 	camel_folder_fetch_messages_finish
+						(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
 CamelMimeMessage *
 		camel_folder_get_message_sync	(CamelFolder *folder,
 						 const gchar *message_uid,
@@ -525,6 +586,24 @@ void		camel_folder_get_quota_info	(CamelFolder *folder,
 						 gpointer user_data);
 CamelFolderQuotaInfo *
 		camel_folder_get_quota_info_finish
+						(CamelFolder *folder,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean 	camel_folder_purge_message_cache_sync
+						(CamelFolder *folder,
+						 gchar *start_uid,
+						 gchar *end_uid,
+						 GCancellable *cancellable,
+						 GError **error);
+void	 	camel_folder_purge_message_cache
+						(CamelFolder *folder,
+						 gchar *start_uid,
+						 gchar *end_uid,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean 	camel_folder_purge_message_cache_finish
 						(CamelFolder *folder,
 						 GAsyncResult *result,
 						 GError **error);

@@ -276,6 +276,13 @@ typedef enum {
  *   Provider may use a real trash folder instead of a virtual folder.
  * @CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER:
  *   Provider may use a real junk folder instead of a virtual folder.
+ * @CAMEL_PROVIDER_SUPPORTS_MOBILE_DEVICES:
+ *  Download limited set of emails instead of operating on full cache.
+ * @CAMEL_PROVIDER_SUPPORTS_BATCH_FETCH:
+ *  Support to fetch messages in batch.
+ * @CAMEL_PROVIDER_SUPPORTS_PURGE_MESSAGE_CACHE:
+ *  Support to remove oldest downloaded messages to conserve space.
+ *
  **/
 typedef enum { /*< flags >*/
 	CAMEL_PROVIDER_IS_REMOTE               = 1 << 0,
@@ -287,7 +294,10 @@ typedef enum { /*< flags >*/
 	CAMEL_PROVIDER_HAS_LICENSE             = 1 << 6,
 	CAMEL_PROVIDER_DISABLE_SENT_FOLDER     = 1 << 7,
 	CAMEL_PROVIDER_ALLOW_REAL_TRASH_FOLDER = 1 << 8,
-	CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER  = 1 << 9
+	CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER  = 1 << 9,
+	CAMEL_PROVIDER_SUPPORTS_MOBILE_DEVICES = 1 << 10,
+	CAMEL_PROVIDER_SUPPORTS_BATCH_FETCH    = 1 << 11,
+	CAMEL_PROVIDER_SUPPORTS_PURGE_MESSAGE_CACHE = 1 << 12
 } CamelProviderFlags;
 
 typedef enum {
