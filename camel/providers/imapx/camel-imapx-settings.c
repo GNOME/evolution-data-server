@@ -38,6 +38,7 @@ struct _CamelIMAPXSettingsPrivate {
 	gboolean filter_junk;
 	gboolean filter_junk_inbox;
 	gboolean use_idle;
+	gboolean use_mobile_mode;
 	gboolean use_namespace;
 	gboolean use_qresync;
 	gboolean use_shell_command;
@@ -57,6 +58,7 @@ enum {
 	PROP_FILTER_JUNK,
 	PROP_FILTER_JUNK_INBOX,
 	PROP_HOST,
+	PROP_MOBILE_MODE,
 	PROP_NAMESPACE,
 	PROP_PORT,
 	PROP_SECURITY_METHOD,
@@ -135,6 +137,12 @@ imapx_settings_set_property (GObject *object,
 			camel_network_settings_set_host (
 				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_MOBILE_MODE:
+			camel_imapx_settings_set_mobile_mode (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
 			return;
 
 		case PROP_NAMESPACE:
@@ -269,6 +277,13 @@ imapx_settings_get_property (GObject *object,
 				value,
 				camel_network_settings_dup_host (
 				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
+		case PROP_MOBILE_MODE:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_mobile_mode (
+				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 
 		case PROP_NAMESPACE:
@@ -463,6 +478,18 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"filter-junk-inbox",
 			"Filter Junk Inbox",
 			"Whether to filter junk from Inbox only",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_MOBILE_MODE,
+		g_param_spec_boolean (
+			"mobile-mode",
+			"Mobile Mode",
+			"Mobile mode which adjusts the IMAPX for Mobile clients",
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -874,6 +901,44 @@ camel_imapx_settings_set_filter_junk_inbox (CamelIMAPXSettings *settings,
 	settings->priv->filter_junk_inbox = filter_junk_inbox;
 
 	g_object_notify (G_OBJECT (settings), "filter-junk-inbox");
+}
+
+/**
+ * camel_imapx_settings_get_mobile_mode:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether the backend is operating in mobile mode.
+ *
+ * Since: 3.2
+ **/
+gboolean
+camel_imapx_settings_get_mobile_mode (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (
+		CAMEL_IS_IMAPX_SETTINGS (settings),
+		CAMEL_SORT_ASCENDING);
+
+	return settings->priv->use_mobile_mode;
+}
+
+/**
+ * camel_imapx_settings_set_mobile_mode:
+ * @settings: a #CamelIMAPXSettings
+ * @mobile_mode: whether to operate in mobile mode.
+ *
+ * Sets the mode of operation as mobile or not for the backend.
+ *
+ * Since: 3.2
+ **/
+void
+camel_imapx_settings_set_mobile_mode (CamelIMAPXSettings *settings,
+                                      gboolean mobile_mode)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->use_mobile_mode = mobile_mode;
+
+	g_object_notify (G_OBJECT (settings), "mobile-mode");
 }
 
 /**
