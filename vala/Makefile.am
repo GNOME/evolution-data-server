@@ -39,7 +39,7 @@ libecalendar-1.2.vapi: $(top_builddir)/calendar/libecal/ECalendar-1.2.gir libeda
 		--pkg gio-2.0 \
 		--pkg libxml-2.0 \
 		--library libecalendar-1.2 \
-		--metadatadir=. \
+		--metadatadir=$(srcdir) \
 		$< \
 		$(NULL)
 
@@ -50,7 +50,7 @@ libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedatase
 		--pkg libedataserver-1.2 \
 		--pkg gio-2.0 \
 		--library libebook-1.2 \
-		--metadatadir=. \
+		--metadatadir=$(srcdir) \
 		$< \
 		$(NULL)
 
