@@ -276,7 +276,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				s = va_arg (ap, gchar *);
 				c(ic->is->tagprefix, "got string '%s'\n", g_str_has_prefix (format, "LOGIN") ? "***" : s);
 			output_string:
-				if (*s) {
+				if (s && *s) {
 					guchar mask = imapx_is_mask (s);
 
 					if (mask & IMAPX_TYPE_ATOM_CHAR)

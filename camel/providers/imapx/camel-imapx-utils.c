@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "camel-imapx-folder.h"
+#include "camel-imapx-settings.h"
 #include "camel-imapx-stream.h"
 #include "camel-imapx-summary.h"
 #include "camel-imapx-store.h"
@@ -310,9 +311,16 @@ imapx_update_store_summary (CamelFolder *folder)
 	CamelStoreInfo *si;
 	CamelStore *parent_store;
 	const gchar *full_name;
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean mobile_mode;
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
+	service = CAMEL_SERVICE (parent_store);
+	settings = camel_service_get_settings (service);
+	mobile_mode = camel_imapx_settings_get_mobile_mode (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelIMAPXStore *) parent_store)->summary, full_name);
 	if (si) {
@@ -322,7 +330,11 @@ imapx_update_store_summary (CamelFolder *folder)
 		unread = camel_folder_summary_get_unread_count (folder->summary);
 
 		if (si->unread != unread || si->total != total) {
-			si->unread = unread;
+
+			if (!mobile_mode)
+				si->unread = unread;
+			else 
+				si->unread =  ((CamelIMAPXFolder *)folder)->unread_on_server;
 			si->total = total;
 
 			camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
