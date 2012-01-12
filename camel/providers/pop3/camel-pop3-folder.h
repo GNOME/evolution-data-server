@@ -69,6 +69,13 @@ struct _CamelPOP3Folder {
 	GPtrArray *uids;
 	GHashTable *uids_fi;	/* messageinfo uid to CamelPOP3FolderInfo *, which is stored in uids array */
 	GHashTable *uids_id;	/* messageinfo by id */
+
+	GKeyFile *key_file;
+	gboolean mobile_mode;
+	int fetch_more;
+	CamelFetchType fetch_type;
+	int first_id;
+	int latest_id;
 };
 
 struct _CamelPOP3FolderClass {
