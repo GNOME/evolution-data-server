@@ -6216,7 +6216,9 @@ camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
 	gboolean success = TRUE;
 	unsigned long long firstuid, newfirstuid;
 	gchar *uid;
- 
+ 	int old_len;
+
+	old_len = camel_folder_summary_count (folder->summary);
 	uid = imapx_get_uid_from_index (folder->summary, 0);
 	firstuid = strtoull(uid, NULL, 10);
 	g_free (uid);
@@ -6267,7 +6269,13 @@ camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
 
 	camel_imapx_job_unref (job);
 
-	return firstuid != newfirstuid;
+	if (type == CAMEL_FETCH_OLD_MESSAGES && firstuid == newfirstuid)
+		return FALSE; /* No more old messages */
+	else if (type == CAMEL_FETCH_NEW_MESSAGES &&
+			old_len == camel_folder_summary_count (folder->summary))
+		return FALSE; /* No more new messages */
+
+	return TRUE;
 }
 
 gboolean
