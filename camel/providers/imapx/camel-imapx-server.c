@@ -197,6 +197,7 @@ enum {
 	IMAPX_JOB_CREATE_FOLDER = 1 << 11,
 	IMAPX_JOB_DELETE_FOLDER = 1 << 12,
 	IMAPX_JOB_RENAME_FOLDER = 1 << 13,
+	IMAPX_JOB_FETCH_MESSAGES = 1 << 14,
 };
 
 /* Operations on the store (folder_tree) will have highest priority as we know for sure they are sync
@@ -265,6 +266,8 @@ struct _CamelIMAPXJob {
 			/* used for biulding uidset stuff */
 			gint index;
 			gint last_index;
+			gint fetch_msg_limit;
+			CamelFetchType fetch_type;
 			gboolean update_unseen;
 			struct _uidset_state uidset;
 			/* changes during refresh */
@@ -647,7 +650,7 @@ imapx_command_addv (CamelIMAPXCommand *ic,
 					s = va_arg (ap, gchar *);
 					c(ic->is->tagprefix, "got string '%s'\n", g_str_has_prefix (fmt, "LOGIN") ? "***" : s);
 				output_string:
-					if (*s) {
+					if (s && *s) {
 						guchar mask = imapx_is_mask (s);
 
 						if (mask & IMAPX_TYPE_ATOM_CHAR)
@@ -939,10 +942,10 @@ static gboolean duplicate_fetch_or_refresh (CamelIMAPXServer *is, CamelIMAPXComm
 	if (!ic->job)
 		return FALSE;
 
-	if (!(ic->job->type & (IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO)))
+	if (!(ic->job->type & (IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO | IMAPX_JOB_FETCH_MESSAGES)))
 		return FALSE;
 
-	if (imapx_match_active_job (is, IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO, NULL)) {
+	if (imapx_match_active_job (is, IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO | IMAPX_JOB_FETCH_MESSAGES, NULL)) {
 		c(is->tagprefix, "Not yet sending duplicate fetch/refresh %s command\n", ic->name);
 		return TRUE;
 	}
@@ -1202,6 +1205,7 @@ imapx_job_matches (CamelFolder *folder,
 			break;
 		case IMAPX_JOB_FETCH_NEW_MESSAGES:
 		case IMAPX_JOB_REFRESH_INFO:
+		case IMAPX_JOB_FETCH_MESSAGES:
 		case IMAPX_JOB_SYNC_CHANGES:
 		case IMAPX_JOB_EXPUNGE:
 			if (folder == job->folder)
@@ -1311,7 +1315,7 @@ imapx_get_uid_from_index (CamelFolderSummary *summary,
                           guint id)
 {
 	GPtrArray *array;
-	gchar *uid;
+	gchar *uid = NULL;
 
 	g_return_val_if_fail (summary != NULL, NULL);
 
@@ -1544,7 +1548,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 		}
 
 		if ((finfo->got & FETCH_FLAGS) && !(finfo->got & FETCH_HEADER)) {
-			CamelIMAPXJob *job = imapx_match_active_job (imap, IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO, NULL);
+			CamelIMAPXJob *job = imapx_match_active_job (imap, IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO | IMAPX_JOB_FETCH_MESSAGES, NULL);
 			/* This is either a refresh_info job, check to see if it is and update
 			 * if so, otherwise it must've been an unsolicited response, so update
 			 * the summary to match */
@@ -1613,7 +1617,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 		}
 
 		if ((finfo->got & (FETCH_HEADER | FETCH_UID)) == (FETCH_HEADER | FETCH_UID)) {
-			CamelIMAPXJob *job = imapx_match_active_job (imap, IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO, NULL);
+			CamelIMAPXJob *job = imapx_match_active_job (imap, IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO | IMAPX_JOB_FETCH_MESSAGES, NULL);
 
 			/* This must be a refresh info job as well, but it has asked for
 			 * new messages to be added to the index */
@@ -2537,6 +2541,7 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is,
 	job->noreply = async;
 	job->u.refresh_info.changes = camel_folder_change_info_new ();
 	job->u.refresh_info.update_unseen = update_unseen;
+	job->u.refresh_info.fetch_msg_limit = -1;
 
 	success = imapx_submit_job (is, job, error);
 
@@ -3983,6 +3988,17 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	CamelIMAPXJob *job = ic->job;
 	gint i = job->u.refresh_info.index;
 	GArray *infos = job->u.refresh_info.infos;
+	CamelSettings *settings;
+	CamelService *service;
+	guint batch_count;
+	gboolean mobile_mode;
+	service = CAMEL_SERVICE (is->store);
+	settings = camel_service_get_settings (service);
+
+	batch_count = camel_imapx_settings_get_batch_fetch_count (
+		CAMEL_IMAPX_SETTINGS (settings));
+	mobile_mode = camel_imapx_settings_get_mobile_mode (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 		propagate_ic_error (job, ic, "Error fetching message headers");
@@ -3998,6 +4014,9 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	camel_folder_change_info_clear (job->u.refresh_info.changes);
 
 	if (i < infos->len) {
+		int total = camel_folder_summary_count (job->folder->summary);
+		int fetch_limit = job->u.refresh_info.fetch_msg_limit;
+
 		imapx_command_unref (ic);
 
 		ic = imapx_command_new (
@@ -4008,7 +4027,9 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		ic->pri = job->pri - 1;
 		job->u.refresh_info.last_index = i;
 
-		for (; i < infos->len; i++) {
+		/* If its mobile client and  when total=0 (new account setup) fetch only one batch of mails,
+ 		 * on futher attempts download all new mails as per the limit. */
+		for (; i < infos->len && (!mobile_mode || total || ((fetch_limit != -1 && i < fetch_limit) || (fetch_limit == -1 && i < batch_count))); i++) {
 			gint res;
 			struct _refresh_info *r = &g_array_index (infos, struct _refresh_info, i);
 
@@ -4023,7 +4044,9 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 			}
 		}
 
-		job->u.refresh_info.index = i;
+		e('S', "Existing : %d Gonna fetch in %s for %d/%d\n", total, camel_folder_get_full_name(job->folder), i, infos->len);
+		job->u.refresh_info.index = infos->len;
+
 		if (imapx_uidset_done (&job->u.refresh_info.uidset, ic)) {
 			imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER)");
 			imapx_command_queue (is, ic);
@@ -4055,7 +4078,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		g_free (r->uid);
 	}
 	g_array_free (job->u.refresh_info.infos, TRUE);
-	if (job->type == IMAPX_JOB_FETCH_NEW_MESSAGES)
+	if (job->type == IMAPX_JOB_FETCH_NEW_MESSAGES || job->type == IMAPX_JOB_FETCH_MESSAGES)
 		camel_folder_change_info_free (job->u.refresh_info.changes);
 
 	imapx_job_done (is, job);
@@ -4097,11 +4120,14 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 	gint i;
 	GArray *infos = job->u.refresh_info.infos;
 	guint uidset_size;
+	gboolean mobile_mode;
 
 	service = CAMEL_SERVICE (is->store);
 	settings = camel_service_get_settings (service);
 
 	uidset_size = camel_imapx_settings_get_batch_fetch_count (
+		CAMEL_IMAPX_SETTINGS (settings));
+	mobile_mode = camel_imapx_settings_get_mobile_mode (
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	if (ic->error == NULL && ic->status->result == IMAPX_OK) {
@@ -4249,8 +4275,12 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 	}
 
 	/* There's no sane way to get the server-side unseen count on the
-	 * select mailbox. So just work it out from the flags */
-	((CamelIMAPXFolder *) job->folder)->unread_on_server = camel_folder_summary_get_unread_count (job->folder->summary);
+	 * select mailbox. So just work it out from the flags if its not in
+	 * mobile mode. In mobile mode we would have this filled up already
+	 * with a STATUS command. 
+	 **/
+	if (!mobile_mode)
+		((CamelIMAPXFolder *) job->folder)->unread_on_server = camel_folder_summary_get_unread_count (job->folder->summary);
 
 	g_array_free (job->u.refresh_info.infos, TRUE);
 	imapx_job_done (is, job);
@@ -4262,6 +4292,7 @@ imapx_job_scan_changes_start (CamelIMAPXServer *is,
                               CamelIMAPXJob *job)
 {
 	CamelIMAPXCommand *ic;
+	gchar *uid = imapx_get_uid_from_index (job->folder->summary, 0);
 
 	if (imapx_job_can_operation_msg (job)) {
 		job->with_operation_msg = TRUE;
@@ -4272,14 +4303,16 @@ imapx_job_scan_changes_start (CamelIMAPXServer *is,
 			camel_folder_get_display_name (job->folder));
 	}
 
+	e('E', "Scanning from %s in %s\n", uid, camel_folder_get_full_name (job->folder));
 	ic = imapx_command_new (
 		is, "FETCH", job->folder, job->cancellable,
-		"UID FETCH 1:* (UID FLAGS)");
+		"UID FETCH %s:* (UID FLAGS)", uid ? uid : "1");
 	ic->job = job;
 	ic->complete = imapx_job_scan_changes_done;
 	ic->pri = job->pri;
 	job->u.refresh_info.infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 	imapx_command_queue (is, ic);
+	g_free (uid);
 }
 
 static void
@@ -4406,6 +4439,115 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
 }
 
 static void
+imapx_job_fetch_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job)
+{
+	CamelIMAPXCommand *ic;
+	CamelFolder *folder = job->folder;
+	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
+	guint32 total, diff;
+	gchar *start_uid = NULL, *end_uid = NULL;
+	CamelFetchType ftype;
+	gint fetch_limit;
+	CamelSortType fetch_order;
+	CamelService *service;
+	CamelSettings *settings;
+	guint uidset_size;
+
+	service = CAMEL_SERVICE (is->store);
+	settings = camel_service_get_settings (service);
+
+	fetch_order = camel_imapx_settings_get_fetch_order (
+		CAMEL_IMAPX_SETTINGS (settings));
+
+	total = camel_folder_summary_count (folder->summary);
+	diff = ifolder->exists_on_server - total;
+
+	ftype = job->u.refresh_info.fetch_type;
+	fetch_limit = job->u.refresh_info.fetch_msg_limit;
+
+	uidset_size = camel_imapx_settings_get_batch_fetch_count (
+		CAMEL_IMAPX_SETTINGS (settings));
+
+	if (ftype == CAMEL_FETCH_NEW_MESSAGES || 
+		(ftype ==  CAMEL_FETCH_OLD_MESSAGES && total <=0 )) {
+
+		char *uid;
+
+		if (total > 0) {
+			/* This means that we are fetching limited number of new mails */
+			uid = g_strdup_printf("%d", total);
+		} else {
+			/* For empty accounts, we always fetch the specified number of new mails independent of 
+			 * being asked to fetch old or new.
+			 */
+			uid = g_strdup ("1"); 
+		}
+
+		if (ftype == CAMEL_FETCH_NEW_MESSAGES) {
+			/* We need to issue Status command to get the total unread count */
+			ic = imapx_command_new (
+				is, "STATUS", NULL, job->cancellable, 
+				"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT)", folder);
+
+			ic->job = job;
+			ic->pri = job->pri;
+
+			imapx_command_run_sync (is, ic);
+
+			if (ic->error != NULL || ic->status->result != IMAPX_OK) {
+				propagate_ic_error (job, ic, "Error while fetching messages: %s");
+			}
+			imapx_command_unref (ic);
+		}
+
+		camel_operation_push_message (
+			job->cancellable, _("Fetching summary information for %d messages in %s"),
+			job->u.refresh_info.fetch_msg_limit, camel_folder_get_full_name (folder));		
+		/* New account and fetching old messages, we would return just the limited number of newest messages */
+		ic = imapx_command_new (
+			is, "FETCH", job->folder, job->cancellable,
+			"UID FETCH %s:* (UID FLAGS)", uid);
+		imapx_uidset_init (&job->u.refresh_info.uidset, uidset_size, 0);
+		job->u.refresh_info.infos = g_array_new (0, 0, sizeof (struct _refresh_info));
+		ic->pri = job->pri;
+
+		if (fetch_order == CAMEL_SORT_DESCENDING)
+			ic->complete = imapx_command_fetch_new_uids_done;
+		else
+			ic->complete = imapx_command_step_fetch_done;
+
+		g_free (uid);
+		ic->job = job;
+		imapx_command_queue (is, ic);
+
+		return;
+	} else if (ftype == CAMEL_FETCH_OLD_MESSAGES && total > 0) {
+			unsigned long long uidl;
+			start_uid = imapx_get_uid_from_index (folder->summary, 0);
+			uidl = strtoull(start_uid, NULL, 10);
+			end_uid = g_strdup_printf("%lld", (((int)uidl)-fetch_limit > 0) ? (uidl-fetch_limit) : 1);
+
+			camel_operation_push_message(
+				job->cancellable, _("Fetching summary information for %d messages in %s"),
+				job->u.refresh_info.fetch_msg_limit, camel_folder_get_full_name (folder));		
+
+			ic = imapx_command_new (is, "FETCH", job->folder, job->cancellable,
+						"UID FETCH %s:%s (RFC822.SIZE RFC822.HEADER FLAGS)", start_uid, end_uid);
+			ic->pri = job->pri;
+			ic->complete = imapx_command_fetch_new_messages_done;
+
+			g_free (start_uid);
+			g_free (end_uid);
+
+			ic->job = job;
+			imapx_command_queue (is, ic);
+
+	} else {
+		g_error ("Shouldn't reach here. Incorrect fetch type");
+	}
+}
+
+static void
 imapx_job_refresh_info_start (CamelIMAPXServer *is,
                               CamelIMAPXJob *job)
 {
@@ -4417,6 +4559,14 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is,
 	gboolean need_rescan = FALSE;
 	gboolean is_selected = FALSE;
 	gboolean can_qresync = FALSE;
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean mobile_mode;
+
+	service = CAMEL_SERVICE (is->store);
+	settings = camel_service_get_settings (service);
+	mobile_mode = camel_imapx_settings_get_mobile_mode (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	full_name = camel_folder_get_full_name (folder);
 
@@ -4507,6 +4657,25 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is,
 		    (!is_selected && isum->modseq != ifolder->modseq_on_server))
 			need_rescan = TRUE;
 
+	} else if (mobile_mode) {
+		/* We need to issue Status command to get the total unread count */
+		CamelIMAPXCommand *ic;
+
+		ic = imapx_command_new (
+			is, "STATUS", NULL, job->cancellable, 
+			"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT)", folder);
+
+		ic->job = job;
+		ic->pri = job->pri;
+
+		imapx_command_run_sync (is, ic);
+
+		if (ic->error != NULL || ic->status->result != IMAPX_OK) {
+			propagate_ic_error (job, ic, "Error refreshing folder: %s");
+			imapx_command_unref (ic);
+			goto done;
+		}
+		imapx_command_unref (ic);
 	}
 
 	if (is->use_qresync && isum->modseq && ifolder->uidvalidity_on_server)
@@ -4909,6 +5078,14 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	CamelStore *parent_store;
 	const gchar *full_name;
 	gboolean failed = FALSE;
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean mobile_mode;
+
+	service = CAMEL_SERVICE (is->store);
+	settings = camel_service_get_settings (service);
+	mobile_mode = camel_imapx_settings_get_mobile_mode (
+		CAMEL_IMAPX_SETTINGS (settings));
 
 	job->commands--;
 
@@ -4970,7 +5147,8 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 				if (si->total != camel_folder_summary_get_saved_count (job->folder->summary) ||
 				    si->unread != camel_folder_summary_get_unread_count (job->folder->summary)) {
 					si->total = camel_folder_summary_get_saved_count (job->folder->summary);
-					si->unread = camel_folder_summary_get_unread_count (job->folder->summary);
+					if (!mobile_mode) /* Don't mess with server's unread count in mobile mode, as what we have downloaded is little */
+						si->unread = camel_folder_summary_get_unread_count (job->folder->summary);
 					camel_store_summary_touch ((CamelStoreSummary *)((CamelIMAPXStore *) parent_store)->summary);
 				}
 
@@ -5748,7 +5926,9 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 
 	QUEUE_LOCK (is);
 
-	if (imapx_is_job_in_queue (is, folder, IMAPX_JOB_REFRESH_INFO, NULL)) {
+	/* Both RefreshInfo and Fetch messages can't operate simultaneously */
+	if (imapx_is_job_in_queue (is, folder, IMAPX_JOB_REFRESH_INFO, NULL) ||
+		imapx_is_job_in_queue (is, folder, IMAPX_JOB_FETCH_MESSAGES, NULL)) {
 		QUEUE_UNLOCK (is);
 		return TRUE;
 	}
@@ -6160,6 +6340,68 @@ camel_imapx_server_delete_folder (CamelIMAPXServer *is,
 	imapx_job_unref (job);
 
 	return success;
+}
+
+gboolean	
+camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
+				   CamelFolder *folder,
+				   CamelFetchType type,
+				   int limit,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	CamelIMAPXJob *job;
+	gboolean registered = TRUE;
+	const gchar *full_name;
+	gboolean success = TRUE;
+	unsigned long long firstuid, newfirstuid;
+	gchar *uid;
+ 
+	uid = imapx_get_uid_from_index (folder->summary, 0);
+	firstuid = strtoull(uid, NULL, 10);
+	g_free (uid);
+
+	QUEUE_LOCK (is);
+
+	/* Both RefreshInfo and Fetch messages can't operate simultaneously */
+	if (imapx_is_job_in_queue (is, folder, IMAPX_JOB_REFRESH_INFO, NULL) ||
+		imapx_is_job_in_queue (is, folder, IMAPX_JOB_FETCH_MESSAGES, NULL)) {
+		QUEUE_UNLOCK (is);
+		return TRUE;
+	}
+
+	job = imapx_job_new (cancellable);
+	job->type = IMAPX_JOB_FETCH_MESSAGES;
+	job->start = imapx_job_fetch_messages_start;
+	job->folder = folder;
+	job->u.refresh_info.changes = camel_folder_change_info_new();
+	job->u.refresh_info.fetch_msg_limit = limit;
+	job->u.refresh_info.fetch_type = type;
+	job->pri = IMAPX_PRIORITY_NEW_MESSAGES;
+
+	full_name = camel_folder_get_full_name (folder);
+	
+	if (g_ascii_strcasecmp(full_name, "INBOX") == 0)
+		job->pri += 10;
+
+	registered = imapx_register_job (is, job, error);
+
+	QUEUE_UNLOCK (is);
+
+	success = registered && imapx_run_job (is, job, error);
+
+	if (success && camel_folder_change_info_changed (job->u.refresh_info.changes))
+		camel_folder_changed (folder, job->u.refresh_info.changes);
+
+	camel_folder_change_info_free (job->u.refresh_info.changes);
+
+	uid = imapx_get_uid_from_index (folder->summary, 0);
+	newfirstuid = strtoull(uid, NULL, 10);
+	g_free (uid);
+
+	imapx_job_unref (job);
+
+	return firstuid != newfirstuid;
 }
 
 gboolean

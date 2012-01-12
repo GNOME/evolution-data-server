@@ -378,6 +378,42 @@ imapx_expunge_sync (CamelFolder *folder,
 	return FALSE;
 }
 
+static gboolean
+imapx_fetch_messages_sync (CamelFolder *folder,
+			   CamelFetchType type,
+			   int limit,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	CamelStore *parent_store;
+	CamelIMAPXStore *istore;
+	CamelIMAPXServer *server;
+	gboolean success = FALSE;
+
+	parent_store = camel_folder_get_parent_store (folder);
+	istore = CAMEL_IMAPX_STORE (parent_store);
+
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
+
+	if (!camel_service_connect_sync ((CamelService *) istore, error))
+		return FALSE;
+
+	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
+	if (server != NULL) {
+		success = camel_imapx_server_fetch_messages (server, folder, type, limit, cancellable, error);
+		camel_imapx_store_op_done (istore, server, camel_folder_get_full_name (folder));
+		g_object_unref (server);
+	}
+
+	return success;
+}
+
 static CamelMimeMessage *
 imapx_get_message_sync (CamelFolder *folder,
                         const gchar *uid,
@@ -444,6 +480,17 @@ imapx_get_message_sync (CamelFolder *folder,
 	}
 
 	return msg;
+}
+
+static gboolean
+imapx_purge_message_cache_sync (CamelFolder *folder,
+				gchar *start_uid,
+				gchar *end_uid,
+				GCancellable *cancellable,
+				GError **error)
+{
+	/* Not Implemented for now. */
+	return TRUE;
 }
 
 static gboolean
@@ -607,7 +654,9 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class->get_filename = imapx_get_filename;
 	folder_class->append_message_sync = imapx_append_message_sync;
 	folder_class->expunge_sync = imapx_expunge_sync;
+	folder_class->fetch_messages_sync = imapx_fetch_messages_sync;
 	folder_class->get_message_sync = imapx_get_message_sync;
+	folder_class->purge_message_cache_sync = imapx_purge_message_cache_sync;
 	folder_class->refresh_info_sync = imapx_refresh_info_sync;
 	folder_class->synchronize_sync = imapx_synchronize_sync;
 	folder_class->synchronize_message_sync = imapx_synchronize_message_sync;

@@ -146,7 +146,7 @@ camel_imapx_store_summary_full_to_path (CamelIMAPXStoreSummary *s,
 
 	p = path = g_strdup (full_name);
 
-	if (dir_sep != '/') {
+	if (dir_sep && dir_sep != '/') {
 		while (*p) {
 			if (*p == '/')
 				*p = dir_sep;
