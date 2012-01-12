@@ -476,8 +476,14 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 
 	/* requesting scan of specific folder */
 	if (g_stat (path, &st) == -1 || !S_ISREG (st.st_mode)) {
-		g_free (path);
-		return NULL;
+		char *test_if_subdir = g_strdup_printf("%s.sbd", path);
+
+		if (g_stat(test_if_subdir, &st) == -1) {
+			g_free(path);
+			g_free (test_if_subdir);
+			return NULL;
+		}
+		g_free (test_if_subdir);
 	}
 
 	visited = g_hash_table_new (inode_hash, inode_equal);
