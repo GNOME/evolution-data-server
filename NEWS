@@ -1,3 +1,43 @@
+Evolution-Data-Server 3.3.4 2012-01-16
+--------------------------------------
+
+Bug Fixes:
+	Bug 666327 - IMAP deadlock when moving message and checking new mail
+	             (Alban Browaeys)
+	Bug 666327 - [IMAP] Missing unlock in camel_imap_folder_fetch_data
+	             (Alban Browaeys)
+	Bug 357175 - IMAP alerts still too intrusive (Milan Crha)
+	Bug 482171 - IMAP warnings are presented without folder context
+	             (Milan Crha)
+	Bug 662888 - Use --include-uninstalled for internal .gir files
+	             (Colin Walters)
+	Bug 592906 - Birthdays from WebDAV contacts do not show up in calendar
+	             (Milan Crha)
+	Bug 666770 - Add gmodule-2.0 to libedataserver.pc (Matthew Barnes)
+	Bug 661743 - Return maildir Inbox sibling folders only when requested
+	             (Milan Crha)
+	Bug 665036 - Memory leaks spot in Contacts view (Milan Crha)
+	Bug 666757 - [CalDAV] Manage authentication requests even after open
+	             (Milan Crha)
+	Bug 638810 - Crash in camel_folder_search_set_folder with IMAP account
+	             (Milan Crha)
+	Bug 644817 - Slow addressbook cache (Milan Crha)
+	Bug 667698 - vapigen: fix builddir != srcdir issue (Ryan Lortie)
+	Bug 667388 - Introspection annotation fixes for nullable return types
+	             (Philip Withnall)
+
+Miscellaneous Changes:
+	* Camel: Various iconv improvements (Jeffrey Steadfast)
+	* Camel: Add thread-safe accessors for string settings (Matthew Barnes)
+
+Translations:
+	Ihar Hrachyshka (be)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	OKANO Takayoshi (ja)
+	Kjartan Maraas (nb)
+
+
 Evolution-Data-Server 3.3.3 2011-12-19
 --------------------------------------
 
