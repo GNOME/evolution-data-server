@@ -1104,6 +1104,7 @@ store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary,
                                             GParamSpec *param,
                                             CamelStoreSummary *summary)
 {
+	gint new_count;
 	const gchar *path;
 	CamelStoreInfo *si;
 
@@ -1126,11 +1127,19 @@ store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary,
 	}
 
 	if (g_strcmp0 (g_param_spec_get_name (param), "saved-count") == 0) {
-		si->total = camel_folder_summary_get_saved_count (folder_summary);
-		camel_store_summary_touch (summary);
+		new_count = camel_folder_summary_get_saved_count (folder_summary);
+		if (si->total != new_count) {
+			si->total = new_count;
+			camel_store_summary_touch (summary);
+			camel_store_summary_save (summary);
+		}
 	} else if (g_strcmp0 (g_param_spec_get_name (param), "unread-count") == 0) {
-		si->unread = camel_folder_summary_get_unread_count (folder_summary);
-		camel_store_summary_touch (summary);
+		new_count = camel_folder_summary_get_unread_count (folder_summary);
+		if (si->unread != new_count) {
+			si->unread = new_count;
+			camel_store_summary_touch (summary);
+			camel_store_summary_save (summary);
+		}
 	} else {
 		g_warn_if_reached ();
 	}
