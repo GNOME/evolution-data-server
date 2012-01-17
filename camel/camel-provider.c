@@ -312,7 +312,10 @@ add_to_list (gpointer key,
  * is %TRUE, it will first load in all available providers that haven't
  * yet been loaded.
  *
- * Returns: a GList of providers, which the caller must free.
+ * Free the returned list with g_list_free().  The #CamelProvider structs
+ * in the list are owned by Camel and should not be modified or freed.
+ *
+ * Returns: a #GList of #CamelProvider structs
  **/
 GList *
 camel_provider_list (gboolean load)
@@ -361,6 +364,9 @@ camel_provider_list (gboolean load)
  * from disk if necessary.  If no #CamelProvider can be found for
  * @protocol, or the provider module fails to load, the function
  * sets @error and returns %NULL.
+ *
+ * The returned #CamelProvider is owned by Camel and should not be
+ * modified or freed.
  *
  * Returns: a #CamelProvider for %protocol, or %NULL
  **/
