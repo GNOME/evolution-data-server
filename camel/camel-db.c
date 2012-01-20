@@ -1526,13 +1526,27 @@ camel_db_migrate_folder_recreate (CamelDB *cdb,
 	/* Migration stage two: writing back the old data */
 
 	if (version < 2) {
+		GError *local_error = NULL;
+
 		table_creation_query = sqlite3_mprintf ("INSERT INTO %Q SELECT uid , flags , msg_type , read , deleted , replied , important , junk , attachment , dirty , size , dsent , dreceived , subject , mail_from , mail_to , mail_cc , mlist , followup_flag , followup_completed_on , followup_due_by , part , labels , usertags , cinfo , bdata, created, modified FROM 'mem.%q'", folder_name, folder_name);
-		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
+		ret = camel_db_add_to_transaction (cdb, table_creation_query, &local_error);
 		sqlite3_free (table_creation_query);
 
-		table_creation_query = sqlite3_mprintf ("DROP TABLE 'mem.%q'", folder_name);
-		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
-		sqlite3_free (table_creation_query);
+		if (!local_error) {
+			table_creation_query = sqlite3_mprintf ("DROP TABLE 'mem.%q'", folder_name);
+			ret = camel_db_add_to_transaction (cdb, table_creation_query, &local_error);
+			sqlite3_free (table_creation_query);
+		}
+
+		if (local_error) {
+			if (local_error->message && strstr (local_error->message, "no such table") != NULL) {
+				/* ignore 'no such table' errors here */
+				g_clear_error (&local_error);
+				ret = 0;
+			} else {
+				g_propagate_error (error, local_error);
+			}
+		}
 	}
 
 	/* Add later version migrations here */
