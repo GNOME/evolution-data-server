@@ -359,11 +359,15 @@ folder_changed_change (CamelSession *session,
 	/* See vee_folder_rebuild_folder. */
 	gboolean correlating = expression_is_correlating (vf->expression);
 
+	camel_operation_push_message (
+		cancellable, _("Updating %s folder"),
+		camel_folder_get_display_name (folder));
+
 	/* Check the folder hasn't beem removed while we weren't watching */
 	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 	if (g_list_find (vf->priv->folders, sub) == NULL) {
 		camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
-		return;
+		goto exit;
 	}
 
 	camel_vee_folder_hash_folder (sub, hash);
@@ -624,6 +628,9 @@ folder_changed_change (CamelSession *session,
 		camel_folder_changed (CAMEL_FOLDER (vf), vf_changes);
 		camel_folder_change_info_free (vf_changes);
 	}
+
+exit:
+	camel_operation_pop_message (cancellable);
 }
 
 static void
