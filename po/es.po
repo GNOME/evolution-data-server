@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-01-06 17:19+0000\n"
-"PO-Revision-Date: 2012-01-06 20:26+0100\n"
+"POT-Creation-Date: 2012-01-21 03:45+0000\n"
+"PO-Revision-Date: 2012-01-21 11:43+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -852,7 +852,7 @@ msgstr "Propiedad «%s» de la libreta desconocida"
 msgid "Cannot change value of book property '%s'"
 msgstr "No se puede cambiar el valor de la propiedad «%s» de la libreta"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:449
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:503
 #: ../camel/camel-db.c:503
 #, c-format
 msgid "Insufficient memory"
@@ -1907,8 +1907,8 @@ msgstr "Obteniendo mensaje «%s» en «%s»"
 msgid "Retrieving quota information for '%s'"
 msgstr "Obteniendo la información de la cuota «%s»"
 
-#: ../camel/camel-folder-search.c:359 ../camel/camel-folder-search.c:469
-#: ../camel/camel-folder-search.c:640
+#: ../camel/camel-folder-search.c:362 ../camel/camel-folder-search.c:476
+#: ../camel/camel-folder-search.c:651
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1917,8 +1917,8 @@ msgstr ""
 "No se pudo analizar la expresión de búsqueda: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:371 ../camel/camel-folder-search.c:481
-#: ../camel/camel-folder-search.c:652
+#: ../camel/camel-folder-search.c:374 ../camel/camel-folder-search.c:488
+#: ../camel/camel-folder-search.c:663
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1928,31 +1928,31 @@ msgstr ""
 "%s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:866 ../camel/camel-folder-search.c:909
+#: ../camel/camel-folder-search.c:877 ../camel/camel-folder-search.c:920
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) requiere un único resultado booleano"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:970
+#: ../camel/camel-folder-search.c:981
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) no se permite dentro de (%s)"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:977 ../camel/camel-folder-search.c:985
+#: ../camel/camel-folder-search.c:988 ../camel/camel-folder-search.c:996
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) requiere una cadena de coincidencia"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1013
+#: ../camel/camel-folder-search.c:1024
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) espera un resultado «array»"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1023
+#: ../camel/camel-folder-search.c:1034
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) requiere que se establezca una carpeta"
@@ -2272,7 +2272,7 @@ msgstr "No se pudo cargar %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "No se pudo cargar %s: No hay código de inicialización en el módulo."
 
-#: ../camel/camel-provider.c:395 ../camel/camel-session.c:384
+#: ../camel/camel-provider.c:401 ../camel/camel-session.c:384
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "No hay proveedor disponible para el protocolo «%s»"
@@ -2962,17 +2962,23 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "No se pudo analizar el URL «%s»"
 
-#: ../camel/camel-vee-folder.c:1286 ../camel/camel-vee-folder.c:1443
+#: ../camel/camel-vee-folder.c:363
+#, c-format
+#| msgid "Storing folder"
+msgid "Updating %s folder"
+msgstr "Actualizando la carpeta %s"
+
+#: ../camel/camel-vee-folder.c:1293 ../camel/camel-vee-folder.c:1450
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "No se pueden copiar o mover mensajes a una Carpeta Virtual"
 
-#: ../camel/camel-vee-folder.c:1319
+#: ../camel/camel-vee-folder.c:1326
 #, c-format
 msgid "No such message %s in %s"
 msgstr "El mensaje %s no existe en %s"
 
-#: ../camel/camel-vee-folder.c:1387
+#: ../camel/camel-vee-folder.c:1394
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Error al almacenar «%s»: "
@@ -3620,7 +3626,6 @@ msgstr "No se puede transferir el mensaje a la carpeta de destino: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
 #, c-format
-#| msgid "Cannot create folder: %s : Folder name cannot contain a dot"
 msgid "Cannot create folder: %s: Folder name cannot contain a dot"
 msgstr ""
 "No se puede crear la carpeta: %s: la carpeta no puede contener un punto"
