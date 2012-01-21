@@ -52,6 +52,10 @@ struct _CamelVeeFolderPrivate {
 	GHashTable *ignore_changed;	/* hash of subfolder pointers to ignore the next folder's 'changed' signal */
 	GHashTable *skipped_changes;	/* CamelFolder -> CamelFolderChangeInfo accumulating ignored changes */
 
+	/* Processing queue for folder changes. */
+	GAsyncQueue *change_queue;
+	gboolean change_queue_busy;
+
 	GMutex *summary_lock;		/* for locking vfolder summary */
 	GMutex *subfolder_lock;		/* for locking the subfolder list */
 	GMutex *changed_lock;		/* for locking the folders-changed list */
@@ -73,7 +77,6 @@ struct _update_data {
 struct _FolderChangedData {
 	CamelFolderChangeInfo *changes;
 	CamelFolder *sub;
-	CamelVeeFolder *vee_folder;
 };
 
 G_DEFINE_TYPE (CamelVeeFolder, camel_vee_folder, CAMEL_TYPE_FOLDER)
@@ -82,7 +85,6 @@ static void
 folder_changed_data_free (FolderChangedData *data)
 {
 	camel_folder_change_info_free (data->changes);
-	g_object_unref (data->vee_folder);
 	g_object_unref (data->sub);
 
 	g_slice_free (FolderChangedData, data);
@@ -331,14 +333,13 @@ vfolder_add_remove_transaction (CamelStore *parent_store,
 }
 
 static void
-folder_changed_change (CamelSession *session,
+folder_changed_change (CamelVeeFolder *vf,
                        GCancellable *cancellable,
                        FolderChangedData *data,
                        GError **error)
 {
 	CamelFolder *sub = data->sub;
-	CamelFolder *folder = CAMEL_FOLDER (data->vee_folder);
-	CamelVeeFolder *vf = data->vee_folder;
+	CamelFolder *folder = CAMEL_FOLDER (vf);
 	CamelFolderChangeInfo *changes = data->changes;
 	gchar *vuid = NULL, hash[8];
 	const gchar *uid;
@@ -359,15 +360,11 @@ folder_changed_change (CamelSession *session,
 	/* See vee_folder_rebuild_folder. */
 	gboolean correlating = expression_is_correlating (vf->expression);
 
-	camel_operation_push_message (
-		cancellable, _("Updating %s folder"),
-		camel_folder_get_display_name (folder));
-
 	/* Check the folder hasn't beem removed while we weren't watching */
 	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 	if (g_list_find (vf->priv->folders, sub) == NULL) {
 		camel_vee_folder_unlock (vf, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
-		goto exit;
+		return;
 	}
 
 	camel_vee_folder_hash_folder (sub, hash);
@@ -628,8 +625,37 @@ folder_changed_change (CamelSession *session,
 		camel_folder_changed (CAMEL_FOLDER (vf), vf_changes);
 		camel_folder_change_info_free (vf_changes);
 	}
+}
 
-exit:
+static void
+vee_folder_process_changes (CamelSession *session,
+                            GCancellable *cancellable,
+                            CamelVeeFolder *vee_folder,
+                            GError **error)
+{
+	CamelFolder *folder;
+	FolderChangedData *data;
+	GAsyncQueue *change_queue;
+	const gchar *display_name;
+
+	folder = CAMEL_FOLDER (vee_folder);
+	display_name = camel_folder_get_display_name (folder);
+
+	change_queue = vee_folder->priv->change_queue;
+
+	camel_operation_push_message (
+		cancellable, _("Updating %s folder"), display_name);
+
+	while ((data = g_async_queue_try_pop (change_queue)) != NULL) {
+		folder_changed_change (vee_folder, cancellable, data, error);
+		folder_changed_data_free (data);
+
+		if (g_cancellable_is_cancelled (cancellable))
+			break;
+	}
+
+	vee_folder->priv->change_queue_busy = FALSE;
+
 	camel_operation_pop_message (cancellable);
 }
 
@@ -1011,6 +1037,8 @@ vee_folder_finalize (GObject *object)
 	g_hash_table_destroy (vf->hashes);
 	g_hash_table_destroy (vf->priv->ignore_changed);
 	g_hash_table_destroy (vf->priv->skipped_changes);
+
+	g_async_queue_unref (vf->priv->change_queue);
 
 	/* Chain up to parent's finalize () method. */
 	G_OBJECT_CLASS (camel_vee_folder_parent_class)->finalize (object);
@@ -1943,25 +1971,36 @@ vee_folder_folder_changed (CamelVeeFolder *vee_folder,
 {
 	CamelVeeFolderPrivate *p = vee_folder->priv;
 	FolderChangedData *data;
+	CamelFolder *folder;
 	CamelStore *parent_store;
 	CamelSession *session;
 
 	if (p->destroyed)
 		return;
 
-	parent_store = camel_folder_get_parent_store (CAMEL_FOLDER (vee_folder));
+	folder = CAMEL_FOLDER (vee_folder);
+	parent_store = camel_folder_get_parent_store (folder);
 	session = camel_service_get_session (CAMEL_SERVICE (parent_store));
+
+	g_async_queue_lock (vee_folder->priv->change_queue);
 
 	data = g_slice_new0 (FolderChangedData);
 	data->changes = camel_folder_change_info_new ();
 	camel_folder_change_info_cat (data->changes, changes);
 	data->sub = g_object_ref (sub);
-	data->vee_folder = g_object_ref (vee_folder);
 
-	camel_session_submit_job (
-		session, (CamelSessionCallback)
-		folder_changed_change, data,
-		(GDestroyNotify) folder_changed_data_free);
+	g_async_queue_push_unlocked (vee_folder->priv->change_queue, data);
+
+	if (!vee_folder->priv->change_queue_busy) {
+		camel_session_submit_job (
+			session, (CamelSessionCallback)
+			vee_folder_process_changes,
+			g_object_ref (vee_folder),
+			(GDestroyNotify) g_object_unref);
+		vee_folder->priv->change_queue_busy = TRUE;
+	}
+
+	g_async_queue_unlock (vee_folder->priv->change_queue);
 }
 
 static void
@@ -2049,6 +2088,9 @@ camel_vee_folder_init (CamelVeeFolder *vee_folder)
 	vee_folder->priv->changed_lock = g_mutex_new ();
 	vee_folder->priv->ignore_changed = g_hash_table_new (g_direct_hash, g_direct_equal);
 	vee_folder->priv->skipped_changes = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	vee_folder->priv->change_queue = g_async_queue_new_full (
+		(GDestroyNotify) folder_changed_data_free);
 }
 
 void
