@@ -2101,7 +2101,7 @@ imapx_completion (CamelIMAPXServer *imap,
 	return TRUE;
 }
 
-static void
+static gboolean
 imapx_step (CamelIMAPXServer *is,
             GCancellable *cancellable,
             GError **error)
@@ -2113,18 +2113,20 @@ imapx_step (CamelIMAPXServer *is,
 	// poll ?  wait for other stuff? loop?
 	tok = camel_imapx_stream_token (is->stream, &token, &len, cancellable, error);
 	if (tok < 0)
-		return;
+		return FALSE;
 
 	if (tok == '*')
-		imapx_untagged (is, cancellable, error);
+		return imapx_untagged (is, cancellable, error);
 	else if (tok == IMAPX_TOK_TOKEN)
-		imapx_completion (is, token, len, cancellable, error);
+		return imapx_completion (is, token, len, cancellable, error);
 	else if (tok == '+')
-		imapx_continuation (is, FALSE, cancellable, error);
-	else
-		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
-			"unexpected server response:");
+		return imapx_continuation (is, FALSE, cancellable, error);
+
+	g_set_error (
+		error, CAMEL_IMAPX_ERROR, 1,
+		"unexpected server response:");
+
+	return FALSE;
 }
 
 /* Used to run 1 command synchronously,
