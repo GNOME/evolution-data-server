@@ -91,7 +91,7 @@ void imapx_uidset_init (struct _uidset_state *ss, gint total, gint limit);
 gint imapx_uidset_done (struct _uidset_state *ss, struct _CamelIMAPXCommand *ic);
 gint imapx_uidset_add (struct _uidset_state *ss, struct _CamelIMAPXCommand *ic, const gchar *uid);
 static gboolean imapx_command_idle_stop (CamelIMAPXServer *is, GError **error);
-static gint imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GCancellable *cancellable, GError **error);
+static gboolean imapx_continuation (CamelIMAPXServer *imap, gboolean litplus, GCancellable *cancellable, GError **error);
 static gboolean imapx_disconnect (CamelIMAPXServer *is);
 static gint imapx_uid_cmp (gconstpointer ap, gconstpointer bp, gpointer data);
 
@@ -1878,7 +1878,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 
 /* handle any continuation requests
  * either data continuations, or auth continuation */
-static gint
+static gboolean
 imapx_continuation (CamelIMAPXServer *imap,
                     gboolean litplus,
                     GCancellable *cancellable,
@@ -1905,7 +1905,7 @@ imapx_continuation (CamelIMAPXServer *imap,
 			 * immediately. */
 			if (!imapx_command_idle_stop (imap, error)) {
 				IDLE_UNLOCK (imap->idle);
-				return -1;
+				return FALSE;
 			}
 			imap->idle->state = IMAPX_IDLE_OFF;
 		} else {
@@ -1919,7 +1919,7 @@ imapx_continuation (CamelIMAPXServer *imap,
 		imapx_command_start_next (imap, cancellable, error);
 		QUEUE_UNLOCK (imap);
 
-		return 1;
+		return TRUE;
 	}
 
 	ic = imap->literal;
@@ -1927,7 +1927,7 @@ imapx_continuation (CamelIMAPXServer *imap,
 		if (ic == NULL) {
 			camel_imapx_stream_skip (imap->stream, cancellable, error);
 			c(imap->tagprefix, "got continuation response with no outstanding continuation requests?\n");
-			return 1;
+			return TRUE;
 		}
 		c(imap->tagprefix, "got continuation response for data\n");
 	} else {
@@ -1949,14 +1949,14 @@ imapx_continuation (CamelIMAPXServer *imap,
 		guchar *token;
 
 		if (camel_imapx_stream_text (imap->stream, &token, cancellable, error))
-			return -1;
+			return FALSE;
 
 		resp = camel_sasl_challenge_base64_sync (
 			(CamelSasl *) cp->ob, (const gchar *) token,
 			cancellable, error);
 		g_free (token);
 		if (resp == NULL)
-			return -1;
+			return FALSE;
 		c(imap->tagprefix, "got auth continuation, feeding token '%s' back to auth mech\n", resp);
 
 		camel_stream_write ((CamelStream *) imap->stream, resp, strlen (resp), cancellable, NULL);
@@ -1989,7 +1989,7 @@ imapx_continuation (CamelIMAPXServer *imap,
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
 			"continuation response for non-continuation request");
-		return -1;
+		return FALSE;
 	}
 
 	if (!litplus)
@@ -2018,7 +2018,7 @@ imapx_continuation (CamelIMAPXServer *imap,
 		imapx_command_start_next (imap, cancellable, error);
 	QUEUE_UNLOCK (imap);
 
-	return 1;
+	return TRUE;
 }
 
 /* handle a completion line */
