@@ -1219,6 +1219,9 @@ camel_session_set_online (CamelSession *session,
 {
 	g_return_if_fail (CAMEL_IS_SESSION (session));
 
+	if (online == session->priv->online)
+		return;
+
 	session->priv->online = online;
 
 	g_object_notify (G_OBJECT (session), "online");
