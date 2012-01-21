@@ -5127,18 +5127,9 @@ parse_contents (CamelIMAPXServer *is,
                 GCancellable *cancellable,
                 GError **error)
 {
-	gint buffered = 0;
-	GError *local_error = NULL;
-
-	do {
-		imapx_step (is, cancellable, &local_error);
-
-		buffered = camel_imapx_stream_buffered (is->stream);
-
-	} while (buffered && local_error == NULL);
-
-	if (local_error != NULL)
-		g_propagate_error (error, local_error);
+	while (imapx_step (is, cancellable, error))
+		if (camel_imapx_stream_buffered (is->stream) == 0)
+			break;
 }
 
 /*
