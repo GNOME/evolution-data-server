@@ -1053,16 +1053,29 @@ imapx_refresh_finfo (CamelSession *session,
                      CamelIMAPXStore *store,
                      GError **error)
 {
+	CamelService *service;
+	const gchar *display_name;
+
+	service = CAMEL_SERVICE (store);
+	display_name = camel_service_get_display_name (service);
+
+	camel_operation_push_message (
+		cancellable, _("Retrieving folder list for %s"),
+		display_name);
+
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
-		return;
+		goto exit;
 
 	if (!camel_service_connect_sync (CAMEL_SERVICE (store), error))
-		return;
+		goto exit;
 
 	/* look in all namespaces */
 	sync_folders (store, "", FALSE, cancellable, error);
 
 	camel_store_summary_save (CAMEL_STORE_SUMMARY (store->summary));
+
+exit:
+	camel_operation_pop_message (cancellable);
 }
 
 static void
