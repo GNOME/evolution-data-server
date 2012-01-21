@@ -2022,7 +2022,7 @@ imapx_continuation (CamelIMAPXServer *imap,
 }
 
 /* handle a completion line */
-static gint
+static gboolean
 imapx_completion (CamelIMAPXServer *imap,
                   guchar *token,
                   gint len,
@@ -2036,18 +2036,16 @@ imapx_completion (CamelIMAPXServer *imap,
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
 			"Server sent unexpected response: %s", token);
-
-		return -1;
+		return FALSE;
 	}
 
-	tag = strtoul ( (const gchar *) token + 1, NULL, 10);
+	tag = strtoul ((gchar *) token + 1, NULL, 10);
 
 	if ((ic = imapx_find_command_tag (imap, tag)) == NULL) {
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
 			"got response tag unexpectedly: %s", token);
-
-		return -1;
+		return FALSE;
 	}
 
 	c(imap->tagprefix, "Got completion response for command %05u '%s'\n", ic->tag, ic->name);
@@ -2085,8 +2083,7 @@ imapx_completion (CamelIMAPXServer *imap,
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
 			"command still has unsent parts? %s", ic->name);
-
-		return -1;
+		return FALSE;
 	}
 
 	camel_dlist_remove ((CamelDListNode *) ic);
@@ -2101,7 +2098,7 @@ imapx_completion (CamelIMAPXServer *imap,
 	imapx_command_start_next (imap, cancellable, error);
 	QUEUE_UNLOCK (imap);
 
-	return 1;
+	return TRUE;
 }
 
 static void
