@@ -127,8 +127,9 @@ struct _CamelIMAPXServerClass {
 	CamelObjectClass parent_class;
 
 	/* Signals */
-	void	(*select_changed)	(CamelIMAPXServer *server, const gchar *selected_folder);
-	void	(*shutdown)		(CamelIMAPXServer *server);
+	void	(*select_changed)	(CamelIMAPXServer *is,
+					 const gchar *selected_folder);
+	void	(*shutdown)		(CamelIMAPXServer *is);
 
 	gchar tagprefix;
 };
@@ -188,7 +189,7 @@ gboolean	camel_imapx_server_append_message
 						 const CamelMessageInfo *mi,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_sync_message (CamelIMAPXServer *is,
+gboolean	camel_imapx_server_sync_message	(CamelIMAPXServer *is,
 						 CamelFolder *folder,
 						 const gchar *uid,
 						 GCancellable *cancellable,
@@ -199,15 +200,18 @@ gboolean	camel_imapx_server_manage_subscription
 						 gboolean subscribe,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_create_folder (CamelIMAPXServer *is,
+gboolean	camel_imapx_server_create_folder
+						(CamelIMAPXServer *is,
 						 const gchar *folder_name,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_delete_folder (CamelIMAPXServer *is,
+gboolean	camel_imapx_server_delete_folder
+						(CamelIMAPXServer *is,
 						 const gchar *folder_name,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_imapx_server_rename_folder (CamelIMAPXServer *is,
+gboolean	camel_imapx_server_rename_folder
+						(CamelIMAPXServer *is,
 						 const gchar *old_name,
 						 const gchar *new_name,
 						 GCancellable *cancellable,
