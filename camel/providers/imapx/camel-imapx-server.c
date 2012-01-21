@@ -1366,7 +1366,7 @@ invalidate_local_cache (CamelIMAPXFolder *ifolder,
 }
 
 /* handle any untagged responses */
-static gint
+static gboolean
 imapx_untagged (CamelIMAPXServer *imap,
                 GCancellable *cancellable,
                 GError **error)
@@ -1390,20 +1390,20 @@ imapx_untagged (CamelIMAPXServer *imap,
 	id = 0;
 	tok = camel_imapx_stream_token (imap->stream, &token, &len, cancellable, error);
 	if (tok < 0)
-		return -1;
+		return FALSE;
 
 	if (tok == IMAPX_TOK_INT) {
 		id = strtoul ((gchar *) token, NULL, 10);
 		tok = camel_imapx_stream_token (imap->stream, &token, &len, cancellable, error);
 		if (tok < 0)
-			return -1;
+			return FALSE;
 	}
 
 	if (tok == '\n') {
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
 			"truncated server response");
-		return -1;
+		return FALSE;
 	}
 
 	e(imap->tagprefix, "Have token '%s' id %d\n", token, id);
@@ -1417,9 +1417,9 @@ imapx_untagged (CamelIMAPXServer *imap,
 			imapx_free_capability (imap->cinfo);
 		imap->cinfo = imapx_parse_capability (imap->stream, cancellable, error);
 		if (imap->cinfo == NULL)
-			return -1;
+			return FALSE;
 		c(imap->tagprefix, "got capability flags %08x\n", imap->cinfo->capa);
-		return 0;
+		return TRUE;
 	case IMAPX_EXPUNGE: {
 		guint32 expunge = id;
 		CamelIMAPXJob *job = imapx_match_active_job (imap, IMAPX_JOB_EXPUNGE, NULL);
@@ -1451,21 +1451,21 @@ imapx_untagged (CamelIMAPXServer *imap,
 
 		tok = camel_imapx_stream_token (imap->stream, &token, &len, cancellable, error);
 		if (tok < 0)
-			return -1;
+			return FALSE;
 		if (tok == '(') {
 			unsolicited = FALSE;
 			while (tok != ')') {
 				/* We expect this to be 'EARLIER' */
 				tok = camel_imapx_stream_token (imap->stream, &token, &len, cancellable, error);
 				if (tok < 0)
-					return -1;
+					return FALSE;
 			}
 		} else
 			camel_imapx_stream_ungettoken (imap->stream, tok, token, len);
 
 		uids = imapx_parse_uids (imap->stream, cancellable, error);
 		if (uids == NULL)
-			return -1;
+			return FALSE;
 		for (i = 0; i < uids->len; i++) {
 			gchar *uid = g_strdup_printf("%u", GPOINTER_TO_UINT(g_ptr_array_index (uids, i)));
 			c(imap->tagprefix, "vanished: %s\n", uid);
@@ -1491,7 +1491,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 				imapx_store->dir_sep = ns->sep;
 		}
 
-		return 0;
+		return TRUE;
 	}
 	case IMAPX_EXISTS:
 		c(imap->tagprefix, "exists: %d\n", id);
@@ -1520,7 +1520,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 		finfo = imapx_parse_fetch (imap->stream, cancellable, error);
 		if (finfo == NULL) {
 			imapx_free_fetch (finfo);
-			return -1;
+			return FALSE;
 		}
 
 		if ((finfo->got & (FETCH_BODY | FETCH_UID)) == (FETCH_BODY | FETCH_UID)) {
@@ -1803,7 +1803,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 				"IMAP server said BYE: %s", token);
 		}
 		imap->state = IMAPX_SHUTDOWN;
-		return -1;
+		return FALSE;
 	}
 	case IMAPX_PREAUTH:
 		c(imap->tagprefix, "preauthenticated\n");
@@ -1816,7 +1816,7 @@ imapx_untagged (CamelIMAPXServer *imap,
 		camel_imapx_stream_ungettoken (imap->stream, tok, token, len);
 		sinfo = imapx_parse_status (imap->stream, cancellable, error);
 		if (sinfo == NULL)
-			return -1;
+			return FALSE;
 		switch (sinfo->condition) {
 		case IMAPX_CLOSED:
 			c(imap->tagprefix, "previously selected folder is now closed\n");
@@ -1867,13 +1867,13 @@ imapx_untagged (CamelIMAPXServer *imap,
 			break;
 		}
 		imapx_free_status (sinfo);
-		return 0;
+		return TRUE;
 	default:
 		/* unknown response, just ignore it */
 		c(imap->tagprefix, "unknown token: %s\n", token);
 	}
 
-	return camel_imapx_stream_skip (imap->stream, cancellable, error);
+	return (camel_imapx_stream_skip (imap->stream, cancellable, error) == 0);
 }
 
 /* handle any continuation requests
