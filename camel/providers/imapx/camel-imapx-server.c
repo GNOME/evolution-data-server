@@ -1299,9 +1299,9 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 		imapx_update_store_summary (is->select_folder);
 		camel_folder_changed (is->select_folder, is->changes);
 
-		g_list_foreach (is->expunged, (GFunc) g_free, NULL);
-		g_list_free (is->expunged);
+		g_list_free_full (is->expunged, (GDestroyNotify) g_free);
 		is->expunged = NULL;
+
 		camel_folder_change_info_clear (is->changes);
 	}
 }
@@ -2062,11 +2062,8 @@ imapx_completion (CamelIMAPXServer *is,
 			camel_db_delete_uids (is->store->cdb_w, full_name, is->expunged, NULL);
 		}
 
-		if (is->expunged) {
-			g_list_foreach (is->expunged, (GFunc) g_free, NULL);
-			g_list_free (is->expunged);
-			is->expunged = NULL;
-		}
+		g_list_free_full (is->expunged, (GDestroyNotify) g_free);
+		is->expunged = NULL;
 
 		imapx_update_store_summary (is->select_folder);
 		camel_folder_changed (is->select_folder, is->changes);
@@ -4203,13 +4200,12 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 			camel_folder_summary_remove_uid (s, uid);
 		}
 
-		if (removed) {
+		if (removed != NULL) {
 			const gchar *full_name;
 
 			full_name = camel_folder_get_full_name (camel_folder_summary_get_folder (s));
 			camel_db_delete_uids (is->store->cdb_w, full_name, removed, NULL);
-			g_list_foreach (removed, (GFunc) g_free, NULL);
-			g_list_free (removed);
+			g_list_free_full (removed, (GDestroyNotify) g_free);
 		}
 
 		imapx_update_store_summary (job->folder);
