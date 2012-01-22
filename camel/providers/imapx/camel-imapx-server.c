@@ -235,7 +235,10 @@ struct _CamelIMAPXJob {
 
 	GCancellable *cancellable;
 	GError *error;
-	gboolean with_operation_msg;
+
+	/* Whether to pop a status message off the
+	 * GCancellable when the job is finalized. */
+	gboolean pop_operation_msg;
 
 	void (*start)(CamelIMAPXServer *is, struct _CamelIMAPXJob *job);
 
@@ -2277,11 +2280,11 @@ imapx_job_unref (CamelIMAPXJob *job)
 
 		g_clear_error (&job->error);
 
-		if (job->cancellable) {
-			if (job->with_operation_msg)
-				camel_operation_pop_message (job->cancellable);
+		if (job->pop_operation_msg)
+			camel_operation_pop_message (job->cancellable);
+
+		if (job->cancellable != NULL)
 			g_object_unref (job->cancellable);
-		}
 
 		g_slice_free (CamelIMAPXJob, job);
 	}
@@ -4212,7 +4215,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 		/* If we have any new messages, download their headers, but only a few (100?) at a time */
 		if (fetch_new) {
-			job->with_operation_msg = TRUE;
+			job->pop_operation_msg = TRUE;
 
 			camel_operation_push_message (
 				job->cancellable,
@@ -4252,7 +4255,7 @@ imapx_job_scan_changes_start (CamelIMAPXServer *is,
 {
 	CamelIMAPXCommand *ic;
 
-	job->with_operation_msg = TRUE;
+	job->pop_operation_msg = TRUE;
 
 	camel_operation_push_message (
 		job->cancellable,
@@ -4358,7 +4361,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
 	} else
 		uid = g_strdup ("1");
 
-	job->with_operation_msg = TRUE;
+	job->pop_operation_msg = TRUE;
 
 	camel_operation_push_message (
 		job->cancellable,
