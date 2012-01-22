@@ -2287,12 +2287,6 @@ imapx_job_unref (CamelIMAPXJob *job)
 	}
 }
 
-static gboolean
-imapx_job_can_operation_msg (CamelIMAPXJob *job)
-{
-	return job && job->cancellable && CAMEL_IS_OPERATION (job->cancellable);
-}
-
 static void
 imapx_job_done (CamelIMAPXServer *is,
                 CamelIMAPXJob *job)
@@ -4218,14 +4212,12 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 		/* If we have any new messages, download their headers, but only a few (100?) at a time */
 		if (fetch_new) {
-			if (imapx_job_can_operation_msg (job)) {
-				job->with_operation_msg = TRUE;
+			job->with_operation_msg = TRUE;
 
-				camel_operation_push_message (
-					job->cancellable,
-					_("Fetching summary information for new messages in %s"),
-					camel_folder_get_display_name (job->folder));
-			}
+			camel_operation_push_message (
+				job->cancellable,
+				_("Fetching summary information for new messages in %s"),
+				camel_folder_get_display_name (job->folder));
 
 			imapx_uidset_init (&job->u.refresh_info.uidset, uidset_size, 0);
 			/* These are new messages which arrived since we last knew the unseen count;
@@ -4260,14 +4252,12 @@ imapx_job_scan_changes_start (CamelIMAPXServer *is,
 {
 	CamelIMAPXCommand *ic;
 
-	if (imapx_job_can_operation_msg (job)) {
-		job->with_operation_msg = TRUE;
+	job->with_operation_msg = TRUE;
 
-		camel_operation_push_message (
-			job->cancellable,
-			_("Scanning for changed messages in %s"),
-			camel_folder_get_display_name (job->folder));
-	}
+	camel_operation_push_message (
+		job->cancellable,
+		_("Scanning for changed messages in %s"),
+		camel_folder_get_display_name (job->folder));
 
 	ic = imapx_command_new (
 		is, "FETCH", job->folder, job->cancellable,
@@ -4368,14 +4358,12 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
 	} else
 		uid = g_strdup ("1");
 
-	if (imapx_job_can_operation_msg (job)) {
-		job->with_operation_msg = TRUE;
+	job->with_operation_msg = TRUE;
 
-		camel_operation_push_message (
-			job->cancellable,
-			_("Fetching summary information for new messages in %s"),
-			camel_folder_get_display_name (folder));
-	}
+	camel_operation_push_message (
+		job->cancellable,
+		_("Fetching summary information for new messages in %s"),
+		camel_folder_get_display_name (folder));
 
 	if (diff > uidset_size || fetch_order == CAMEL_SORT_DESCENDING) {
 		ic = imapx_command_new (
