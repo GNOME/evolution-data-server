@@ -42,6 +42,8 @@
 typedef struct _ConnectionInfo ConnectionInfo;
 
 struct _CamelIMAPXConnManagerPrivate {
+	/* XXX Might be easier for this to be a hash table,
+	 *     with CamelIMAPXServer pointers as the keys. */
 	GList *connections;
 	gpointer store;  /* weak pointer */
 	GStaticRWLock rw_lock;
