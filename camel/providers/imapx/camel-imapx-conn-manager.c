@@ -43,8 +43,9 @@ struct _CamelIMAPXConnManagerPrivate {
 };
 
 struct _ConnectionInfo {
-	GHashTable *folders;
+	GMutex *lock;
 	CamelIMAPXServer *is;
+	GHashTable *folder_names;
 	gchar *selected_folder;
 	volatile gint ref_count;
 };
@@ -63,17 +64,18 @@ static ConnectionInfo *
 connection_info_new (CamelIMAPXServer *is)
 {
 	ConnectionInfo *cinfo;
-	GHashTable *folders;
+	GHashTable *folder_names;
 
-	folders = g_hash_table_new_full (
+	folder_names = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) NULL);
 
 	cinfo = g_slice_new0 (ConnectionInfo);
-	cinfo->folders = folders;
+	cinfo->lock = g_mutex_new ();
 	cinfo->is = g_object_ref (is);
+	cinfo->folder_names = folder_names;
 	cinfo->ref_count = 1;
 
 	return cinfo;
@@ -99,12 +101,111 @@ connection_info_unref (ConnectionInfo *cinfo)
 	if (g_atomic_int_dec_and_test (&cinfo->ref_count)) {
 		camel_imapx_server_connect (cinfo->is, NULL, NULL);
 
+		g_mutex_free (cinfo->lock);
 		g_object_unref (cinfo->is);
-		g_hash_table_destroy (cinfo->folders);
+		g_hash_table_destroy (cinfo->folder_names);
 		g_free (cinfo->selected_folder);
 
 		g_slice_free (ConnectionInfo, cinfo);
 	}
+}
+
+static gboolean
+connection_info_is_available (ConnectionInfo *cinfo)
+{
+	gboolean available;
+
+	g_return_val_if_fail (cinfo != NULL, FALSE);
+
+	g_mutex_lock (cinfo->lock);
+
+	/* Available means it's not tracking any folder names. */
+	available = (g_hash_table_size (cinfo->folder_names) == 0);
+
+	g_mutex_unlock (cinfo->lock);
+
+	return available;
+}
+
+static gboolean
+connection_info_has_folder_name (ConnectionInfo *cinfo,
+                                 const gchar *folder_name)
+{
+	gpointer value;
+
+	g_return_val_if_fail (cinfo != NULL, FALSE);
+
+	if (folder_name == NULL)
+		return FALSE;
+
+	g_mutex_lock (cinfo->lock);
+
+	value = g_hash_table_lookup (cinfo->folder_names, folder_name);
+
+	g_mutex_unlock (cinfo->lock);
+
+	return (value != NULL);
+}
+
+static void
+connection_info_insert_folder_name (ConnectionInfo *cinfo,
+                                    const gchar *folder_name)
+{
+	g_return_if_fail (cinfo != NULL);
+	g_return_if_fail (folder_name != NULL);
+
+	g_mutex_lock (cinfo->lock);
+
+	g_hash_table_insert (
+		cinfo->folder_names,
+		g_strdup (folder_name),
+		GINT_TO_POINTER (1));
+
+	g_mutex_unlock (cinfo->lock);
+}
+
+static void
+connection_info_remove_folder_name (ConnectionInfo *cinfo,
+                                    const gchar *folder_name)
+{
+	g_return_if_fail (cinfo != NULL);
+	g_return_if_fail (folder_name != NULL);
+
+	g_mutex_lock (cinfo->lock);
+
+	g_hash_table_remove (cinfo->folder_names, folder_name);
+
+	g_mutex_unlock (cinfo->lock);
+}
+
+static gchar *
+connection_info_dup_selected_folder (ConnectionInfo *cinfo)
+{
+	gchar *selected_folder;
+
+	g_return_val_if_fail (cinfo != NULL, NULL);
+
+	g_mutex_lock (cinfo->lock);
+
+	selected_folder = g_strdup (cinfo->selected_folder);
+
+	g_mutex_unlock (cinfo->lock);
+
+	return selected_folder;
+}
+
+static void
+connection_info_set_selected_folder (ConnectionInfo *cinfo,
+                                     const gchar *selected_folder)
+{
+	g_return_if_fail (cinfo != NULL);
+
+	g_mutex_lock (cinfo->lock);
+
+	g_free (cinfo->selected_folder);
+	cinfo->selected_folder = g_strdup (selected_folder);
+
+	g_mutex_unlock (cinfo->lock);
 }
 
 static void
@@ -296,19 +397,24 @@ imapx_conn_update_select (CamelIMAPXServer *is,
 	}
 
 	if (found) {
-		if (cinfo->selected_folder) {
+		gchar *old_selected_folder;
+
+		old_selected_folder =
+			connection_info_dup_selected_folder (cinfo);
+
+		if (old_selected_folder != NULL) {
 			IMAPXJobQueueInfo *jinfo;
 
 			jinfo = camel_imapx_server_get_job_queue_info (cinfo->is);
-			if (!g_hash_table_lookup (jinfo->folders, cinfo->selected_folder)) {
-				g_hash_table_remove (cinfo->folders, cinfo->selected_folder);
-				c(is->tagprefix, "Removed folder %s from connection folder list - select changed \n", cinfo->selected_folder);
+			if (!g_hash_table_lookup (jinfo->folders, old_selected_folder)) {
+				connection_info_remove_folder_name (cinfo, old_selected_folder);
+				c(is->tagprefix, "Removed folder %s from connection folder list - select changed \n", old_selected_folder);
 			}
 			camel_imapx_destroy_job_queue_info (jinfo);
-			g_free (cinfo->selected_folder);
+			g_free (old_selected_folder);
 		}
 
-		cinfo->selected_folder = g_strdup (selected_folder);
+		connection_info_set_selected_folder (cinfo, selected_folder);
 	}
 
 	CON_UNLOCK (con_man);
@@ -353,11 +459,10 @@ imapx_find_connection (CamelIMAPXConnManager *con_man,
 
 		camel_imapx_destroy_job_queue_info (jinfo);
 
-		if (folder_name && (g_hash_table_lookup (cinfo->folders, folder_name) || g_hash_table_size (cinfo->folders) == 0)) {
+		if (folder_name != NULL && (connection_info_has_folder_name (cinfo, folder_name) || connection_info_is_available (cinfo))) {
 			is = g_object_ref (cinfo->is);
 
-			if (folder_name)
-				g_hash_table_insert (cinfo->folders, g_strdup (folder_name), GINT_TO_POINTER (1));
+			connection_info_insert_folder_name (cinfo, folder_name);
 			c(is->tagprefix, "Found connection for %s and connection number %d \n", folder_name, i+1);
 			break;
 		}
@@ -367,8 +472,8 @@ imapx_find_connection (CamelIMAPXConnManager *con_man,
 		cinfo = g_list_nth_data (con_man->priv->connections, n);
 		is = g_object_ref (cinfo->is);
 
-		if (folder_name) {
-			g_hash_table_insert (cinfo->folders, g_strdup (folder_name), GINT_TO_POINTER (1));
+		if (folder_name != NULL) {
+			connection_info_insert_folder_name (cinfo, folder_name);
 			c(is->tagprefix, "Adding folder %s to connection number %d \n", folder_name, n+1);
 		}
 	}
@@ -445,8 +550,8 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man,
 
 	g_object_unref (is);
 
-	if (folder_name)
-		g_hash_table_insert (cinfo->folders, g_strdup (folder_name), GINT_TO_POINTER (1));
+	if (folder_name != NULL)
+		connection_info_insert_folder_name (cinfo, folder_name);
 
 	con_man->priv->connections = g_list_prepend (con_man->priv->connections, cinfo);
 
@@ -542,7 +647,7 @@ camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man,
 
 		jinfo = camel_imapx_server_get_job_queue_info (cinfo->is);
 		if (!g_hash_table_lookup (jinfo->folders, folder_name)) {
-			g_hash_table_remove (cinfo->folders, folder_name);
+			connection_info_remove_folder_name (cinfo, folder_name);
 			c(is->tagprefix, "Removed folder %s from connection folder list - op done \n", folder_name);
 		}
 		camel_imapx_destroy_job_queue_info (jinfo);
