@@ -46,6 +46,7 @@ struct _ConnectionInfo {
 	GHashTable *folders;
 	CamelIMAPXServer *is;
 	gchar *selected_folder;
+	volatile gint ref_count;
 };
 
 enum {
@@ -58,20 +59,52 @@ G_DEFINE_TYPE (
 	camel_imapx_conn_manager,
 	CAMEL_TYPE_OBJECT)
 
-static void
-free_connection (gpointer data,
-                 gpointer user_data)
+static ConnectionInfo *
+connection_info_new (CamelIMAPXServer *is)
 {
-	ConnectionInfo *cinfo = (ConnectionInfo *) data;
-	CamelIMAPXServer *is = cinfo->is;
+	ConnectionInfo *cinfo;
+	GHashTable *folders;
 
-	camel_imapx_server_connect (is, NULL, NULL);
+	folders = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) NULL);
 
-	g_object_unref (is);
-	g_hash_table_destroy (cinfo->folders);
-	g_free (cinfo->selected_folder);
+	cinfo = g_slice_new0 (ConnectionInfo);
+	cinfo->folders = folders;
+	cinfo->is = g_object_ref (is);
+	cinfo->ref_count = 1;
 
-	g_free (cinfo);
+	return cinfo;
+}
+
+static ConnectionInfo *
+connection_info_ref (ConnectionInfo *cinfo)
+{
+	g_return_val_if_fail (cinfo != NULL, NULL);
+	g_return_val_if_fail (cinfo->ref_count > 0, NULL);
+
+	g_atomic_int_inc (&cinfo->ref_count);
+
+	return cinfo;
+}
+
+static void
+connection_info_unref (ConnectionInfo *cinfo)
+{
+	g_return_if_fail (cinfo != NULL);
+	g_return_if_fail (cinfo->ref_count > 0);
+
+	if (g_atomic_int_dec_and_test (&cinfo->ref_count)) {
+		camel_imapx_server_connect (cinfo->is, NULL, NULL);
+
+		g_object_unref (cinfo->is);
+		g_hash_table_destroy (cinfo->folders);
+		g_free (cinfo->selected_folder);
+
+		g_slice_free (ConnectionInfo, cinfo);
+	}
 }
 
 static void
@@ -80,7 +113,9 @@ imapx_prune_connections (CamelIMAPXConnManager *con_man)
 	CON_LOCK (con_man);
 
 	con_man->priv->clearing_connections = TRUE;
-	g_list_foreach (con_man->priv->connections, (GFunc) free_connection, NULL);
+	g_list_free_full (
+		con_man->priv->connections,
+		(GDestroyNotify) connection_info_unref);
 	con_man->priv->connections = NULL;
 	con_man->priv->clearing_connections = FALSE;
 
@@ -235,7 +270,7 @@ imapx_conn_shutdown (CamelIMAPXServer *is,
 
 	if (found) {
 		con_man->priv->connections = g_list_remove (con_man->priv->connections, cinfo);
-		free_connection (cinfo, GINT_TO_POINTER (1));
+		connection_info_unref (cinfo);
 	}
 
 	CON_UNLOCK (con_man);
@@ -406,9 +441,9 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man,
 
 	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	cinfo = g_new0 (ConnectionInfo, 1);
-	cinfo->is = is;
-	cinfo->folders = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) g_free, NULL);
+	cinfo = connection_info_new (is);
+
+	g_object_unref (is);
 
 	if (folder_name)
 		g_hash_table_insert (cinfo->folders, g_strdup (folder_name), GINT_TO_POINTER (1));
