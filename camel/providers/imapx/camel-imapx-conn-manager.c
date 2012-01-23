@@ -26,8 +26,14 @@
 
 #define c(...) camel_imapx_debug(conman, __VA_ARGS__)
 
-#define CON_LOCK(x) (g_static_rec_mutex_lock(&(x)->priv->con_man_lock))
-#define CON_UNLOCK(x) (g_static_rec_mutex_unlock(&(x)->priv->con_man_lock))
+#define CON_READ_LOCK(x) \
+	(g_static_rw_lock_reader_lock (&(x)->priv->rw_lock))
+#define CON_READ_UNLOCK(x) \
+	(g_static_rw_lock_reader_unlock (&(x)->priv->rw_lock))
+#define CON_WRITE_LOCK(x) \
+	(g_static_rw_lock_writer_lock (&(x)->priv->rw_lock))
+#define CON_WRITE_UNLOCK(x) \
+	(g_static_rw_lock_writer_unlock (&(x)->priv->rw_lock))
 
 #define CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -38,8 +44,7 @@ typedef struct _ConnectionInfo ConnectionInfo;
 struct _CamelIMAPXConnManagerPrivate {
 	GList *connections;
 	gpointer store;  /* weak pointer */
-	GStaticRecMutex con_man_lock;
-	gboolean clearing_connections;
+	GStaticRWLock rw_lock;
 };
 
 struct _ConnectionInfo {
@@ -215,12 +220,12 @@ imapx_conn_manager_list_info (CamelIMAPXConnManager *con_man)
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), NULL);
 
-	CON_LOCK (con_man);
+	CON_READ_LOCK (con_man);
 
 	list = g_list_copy (con_man->priv->connections);
 	g_list_foreach (list, (GFunc) connection_info_ref, NULL);
 
-	CON_UNLOCK (con_man);
+	CON_READ_UNLOCK (con_man);
 
 	return list;
 }
@@ -235,7 +240,7 @@ imapx_conn_manager_lookup_info (CamelIMAPXConnManager *con_man,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), NULL);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
 
-	CON_LOCK (con_man);
+	CON_READ_LOCK (con_man);
 
 	list = con_man->priv->connections;
 
@@ -248,7 +253,7 @@ imapx_conn_manager_lookup_info (CamelIMAPXConnManager *con_man,
 		}
 	}
 
-	CON_UNLOCK (con_man);
+	CON_READ_UNLOCK (con_man);
 
 	return cinfo;
 }
@@ -263,7 +268,7 @@ imapx_conn_manager_remove_info (CamelIMAPXConnManager *con_man,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), FALSE);
 	g_return_val_if_fail (cinfo != NULL, FALSE);
 
-	CON_LOCK (con_man);
+	CON_WRITE_LOCK (con_man);
 
 	list = con_man->priv->connections;
 	link = g_list_find (list, cinfo);
@@ -276,24 +281,9 @@ imapx_conn_manager_remove_info (CamelIMAPXConnManager *con_man,
 
 	con_man->priv->connections = list;
 
-	CON_UNLOCK (con_man);
+	CON_WRITE_UNLOCK (con_man);
 
 	return removed;
-}
-
-static void
-imapx_prune_connections (CamelIMAPXConnManager *con_man)
-{
-	CON_LOCK (con_man);
-
-	con_man->priv->clearing_connections = TRUE;
-	g_list_free_full (
-		con_man->priv->connections,
-		(GDestroyNotify) connection_info_unref);
-	con_man->priv->connections = NULL;
-	con_man->priv->clearing_connections = FALSE;
-
-	CON_UNLOCK (con_man);
 }
 
 static void
@@ -351,7 +341,10 @@ imapx_conn_manager_dispose (GObject *object)
 
 	priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (object);
 
-	imapx_prune_connections (CAMEL_IMAPX_CONN_MANAGER (object));
+	g_list_free_full (
+		priv->connections,
+		(GDestroyNotify) connection_info_unref);
+	priv->connections = NULL;
 
 	if (priv->store != NULL) {
 		g_object_remove_weak_pointer (
@@ -370,7 +363,7 @@ imapx_conn_manager_finalize (GObject *object)
 
 	priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (object);
 
-	g_static_rec_mutex_free (&priv->con_man_lock);
+	g_static_rw_lock_free (&priv->rw_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_conn_manager_parent_class)->finalize (object);
@@ -407,7 +400,7 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 {
 	con_man->priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (con_man);
 
-	g_static_rec_mutex_init (&con_man->priv->con_man_lock);
+	g_static_rw_lock_init (&con_man->priv->rw_lock);
 }
 
 /* Static functions go here */
@@ -418,15 +411,6 @@ imapx_conn_shutdown (CamelIMAPXServer *is,
                      CamelIMAPXConnManager *con_man)
 {
 	ConnectionInfo *cinfo;
-
-	/* when clearing connections then other thread than a parser thread,
-	 * in which this function is called, holds the CON_LOCK, thus skip
-	 * this all, because otherwise a deadlock will happen.
-	 * The connection will be freed later anyway. */
-	if (con_man->priv->clearing_connections) {
-		c(is->tagprefix, "%s: called on %p when clearing connections, skipping it...\n", G_STRFUNC, is);
-		return;
-	}
 
 	/* Returns a new ConnectionInfo reference. */
 	cinfo = imapx_conn_manager_lookup_info (con_man, is);
@@ -473,8 +457,8 @@ imapx_conn_update_select (CamelIMAPXServer *is,
 
 /* This should find a connection if the slots are full, returns NULL if there are slots available for a new connection for a folder */
 static CamelIMAPXServer *
-imapx_find_connection (CamelIMAPXConnManager *con_man,
-                       const gchar *folder_name)
+imapx_find_connection_unlocked (CamelIMAPXConnManager *con_man,
+                                const gchar *folder_name)
 {
 	CamelService *service;
 	CamelSettings *settings;
@@ -484,7 +468,7 @@ imapx_find_connection (CamelIMAPXConnManager *con_man,
 	guint concurrent_connections;
 	guint min_jobs = G_MAXUINT;
 
-	CON_LOCK (con_man);
+	/* Caller must be holding CON_WRITE_LOCK. */
 
 	service = CAMEL_SERVICE (con_man->priv->store);
 	settings = camel_service_get_settings (service);
@@ -554,31 +538,33 @@ exit:
 	if (camel_debug_flag (conman))
 		g_assert (!(concurrent_connections == g_list_length (con_man->priv->connections) && is == NULL));
 
-	CON_UNLOCK (con_man);
-
 	return is;
 }
 
 static CamelIMAPXServer *
-imapx_create_new_connection (CamelIMAPXConnManager *con_man,
-                             const gchar *folder_name,
-                             GCancellable *cancellable,
-                             GError **error)
+imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
+                                      const gchar *folder_name,
+                                      GCancellable *cancellable,
+                                      GError **error)
 {
-	CamelIMAPXServer *is;
+	CamelIMAPXServer *is = NULL;
 	CamelIMAPXStore *imapx_store;
 	CamelStore *store = con_man->priv->store;
 	CamelService *service;
 	ConnectionInfo *cinfo = NULL;
 	gboolean success;
 
+	/* Caller must be holding CON_WRITE_LOCK. */
+
 	service = CAMEL_SERVICE (store);
 
 	imapx_store = CAMEL_IMAPX_STORE (store);
 
-	CON_LOCK (con_man);
-
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+
+	/* Check if we got cancelled while we were waiting. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		goto exit;
 
 	is = camel_imapx_server_new (store);
 
@@ -594,34 +580,28 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man,
 	 *     CamelIMAPXServer to act on in its authenticate_sync() method.
 	 *
 	 *     Because we're holding the CAMEL_SERVICE_REC_CONNECT_LOCK
-	 *     (and our own CON_LOCK for that matter) we should not have
-	 *     multiple IMAPX connections trying to authenticate at once,
-	 *     so this should be thread-safe.
+	 *     we should not have multiple IMAPX connections trying to
+	 *     authenticate at once, so this should be thread-safe.
 	 */
 	imapx_store->authenticating_server = g_object_ref (is);
 	success = camel_imapx_server_connect (is, cancellable, error);
 	g_object_unref (imapx_store->authenticating_server);
 	imapx_store->authenticating_server = NULL;
 
-	if (success) {
-		g_object_ref (is);
-	} else {
+	if (!success) {
 		g_object_unref (is);
-
-		camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-		CON_UNLOCK (con_man);
-
-		return NULL;
+		is = NULL;
+		goto exit;
 	}
 
-	g_signal_connect (is, "shutdown", G_CALLBACK (imapx_conn_shutdown), con_man);
-	g_signal_connect (is, "select_changed", G_CALLBACK (imapx_conn_update_select), con_man);
-
-	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
+	g_signal_connect (
+		is, "shutdown",
+		G_CALLBACK (imapx_conn_shutdown), con_man);
+	g_signal_connect (
+		is, "select_changed",
+		G_CALLBACK (imapx_conn_update_select), con_man);
 
 	cinfo = connection_info_new (is);
-
-	g_object_unref (is);
 
 	if (folder_name != NULL)
 		connection_info_insert_folder_name (cinfo, folder_name);
@@ -632,7 +612,8 @@ imapx_create_new_connection (CamelIMAPXConnManager *con_man,
 
 	c(is->tagprefix, "Created new connection for %s and total connections %d \n", folder_name, g_list_length (con_man->priv->connections));
 
-	CON_UNLOCK (con_man);
+exit:
+	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return is;
 }
@@ -666,13 +647,19 @@ camel_imapx_conn_manager_get_connection (CamelIMAPXConnManager *con_man,
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), NULL);
 
-	CON_LOCK (con_man);
+	/* Hold the writer lock while we requisition a CamelIMAPXServer
+	 * to prevent other threads from adding or removing connections. */
+	CON_WRITE_LOCK (con_man);
 
-	is = imapx_find_connection (con_man, folder_name);
-	if (is == NULL)
-		is = imapx_create_new_connection (con_man, folder_name, cancellable, error);
+	/* Check if we got cancelled while waiting for the lock. */
+	if (!g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		is = imapx_find_connection_unlocked (con_man, folder_name);
+		if (is == NULL)
+			is = imapx_create_new_connection_unlocked (
+				con_man, folder_name, cancellable, error);
+	}
 
-	CON_UNLOCK (con_man);
+	CON_WRITE_UNLOCK (con_man);
 
 	return is;
 }
@@ -728,5 +715,13 @@ camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
 
-	imapx_prune_connections (con_man);
+	CON_WRITE_LOCK (con_man);
+
+	g_list_free_full (
+		con_man->priv->connections,
+		(GDestroyNotify) connection_info_unref);
+	con_man->priv->connections = NULL;
+
+	CON_WRITE_UNLOCK (con_man);
 }
+
