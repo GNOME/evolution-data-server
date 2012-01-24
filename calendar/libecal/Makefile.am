@@ -18,7 +18,9 @@ libecal_1_2_la_CPPFLAGS =			\
 	$(libecal_INCLUDES)			\
 	-DG_LOG_DOMAIN=\"libecal\"		\
 	$(LIBICAL_CFLAGS)			\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)		\
+	$(CODE_COVERAGE_CFLAGS)			\
+	$(NULL)
 
 libecal_1_2_la_SOURCES =			\
 	$(MARSHAL_GENERATED)			\
@@ -43,7 +45,9 @@ libecal_1_2_la_LIBADD = 					\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 libecal_1_2_la_LDFLAGS = 					\
-	-version-info $(LIBECAL_CURRENT):$(LIBECAL_REVISION):$(LIBECAL_AGE) $(NO_UNDEFINED)
+	-version-info $(LIBECAL_CURRENT):$(LIBECAL_REVISION):$(LIBECAL_AGE) $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libecalincludedir = $(privincludedir)/libecal
 

@@ -10,7 +10,9 @@ libecalbackendcontacts_la_CPPFLAGS = \
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
-	$(SOUP_CFLAGS)
+	$(SOUP_CFLAGS)					\
+	$(CODE_COVERAGE_CFLAGS)				\
+	$(NULL)
 
 libecalbackendcontacts_la_SOURCES =		\
 	e-cal-backend-contacts-factory.c	\
@@ -27,6 +29,8 @@ libecalbackendcontacts_la_LIBADD =						\
 	$(SOUP_LIBS)
 
 libecalbackendcontacts_la_LDFLAGS =	\
-	-module -avoid-version $(NO_UNDEFINED)
+	-module -avoid-version $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

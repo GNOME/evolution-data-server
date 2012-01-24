@@ -15,7 +15,9 @@ libedataserver_1_2_la_CPPFLAGS = \
 	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"				\
 	-DDEFAULT_EDS_DBUS_TIMEOUT=$(DEFAULT_EDS_DBUS_TIMEOUT)		\
 	$(E_DATA_SERVER_CFLAGS)						\
-	$(SOUP_CFLAGS)
+	$(SOUP_CFLAGS)							\
+	$(CODE_COVERAGE_CFLAGS)						\
+	$(NULL)
 
 libedataserver_1_2_la_SOURCES =		\
 	$(MARSHAL_GENERATED)		\
@@ -55,7 +57,9 @@ libedataserver_1_2_la_LIBADD =				\
 	$(LIBDWFL_LIBS)
 
 libedataserver_1_2_la_LDFLAGS = \
-	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE) $(NO_UNDEFINED)
+	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE) $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libedataserverincludedir = $(privincludedir)/libedataserver
 

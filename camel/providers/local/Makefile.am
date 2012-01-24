@@ -16,7 +16,9 @@ libcamellocal_la_CPPFLAGS = \
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)				\
 	$(CAMEL_CFLAGS)				\
-	-DG_LOG_DOMAIN=\"camel-local-provider\"
+	-DG_LOG_DOMAIN=\"camel-local-provider\"	\
+	$(CODE_COVERAGE_CFLAGS)			\
+	$(NULL)
 
 libcamellocal_la_SOURCES = 			\
 	camel-local-folder.c			\
@@ -56,7 +58,9 @@ noinst_HEADERS =				\
 	camel-spool-summary.h			\
 	camel-local-private.h
 
-libcamellocal_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
+libcamellocal_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libcamellocal_la_LIBADD = \
 	$(top_builddir)/camel/libcamel-1.2.la	\

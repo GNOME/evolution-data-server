@@ -21,6 +21,7 @@ evolution_calendar_factory_CPPFLAGS = \
 	$(EVOLUTION_CALENDAR_CFLAGS) \
 	$(FACTORY_GTK_CFLAGS) \
 	$(DBUS_GLIB_CFLAGS) \
+	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
 
 evolution_calendar_factory_SOURCES = \
@@ -35,6 +36,11 @@ evolution_calendar_factory_LDADD = \
 	$(EVOLUTION_CALENDAR_LIBS) \
 	$(FACTORY_GTK_LIBS) \
 	$(DBUS_GLIB_LIBS) \
+	$(NULL)
+
+evolution_calendar_factory_LDFLAGS = \
+	$(AM_LDFLAGS) \
+	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk

@@ -10,7 +10,9 @@ libcamelnntp_la_CPPFLAGS = \
 	$(CAMEL_CFLAGS)				\
 	$(GNOME_INCLUDEDIR)			\
 	$(GTK_INCLUDEDIR)			\
-	-DG_LOG_DOMAIN=\"camel-nntp-provider\"
+	-DG_LOG_DOMAIN=\"camel-nntp-provider\"	\
+	$(CODE_COVERAGE_CFLAGS)			\
+	$(NULL)
 
 libcamelnntp_la_SOURCES = 			\
 	camel-nntp-folder.c			\
@@ -31,7 +33,9 @@ noinst_HEADERS =				\
 	camel-nntp-stream.h			\
 	camel-nntp-summary.h
 
-libcamelnntp_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
+libcamelnntp_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libcamelnntp_la_LIBADD = \
 	$(top_builddir)/camel/libcamel-1.2.la	\

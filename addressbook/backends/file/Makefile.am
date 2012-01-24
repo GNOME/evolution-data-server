@@ -8,7 +8,9 @@ libebookbackendfile_la_CPPFLAGS = \
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	$(DB_CFLAGS)					\
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
+	$(CODE_COVERAGE_CFLAGS)				\
+	$(NULL)
 
 libebookbackendfile_la_SOURCES =			\
 	e-book-backend-file.c				\
@@ -23,6 +25,8 @@ libebookbackendfile_la_LIBADD =						\
 	$(DB_LIBS)							\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
-libebookbackendfile_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED)
+libebookbackendfile_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

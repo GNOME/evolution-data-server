@@ -21,7 +21,9 @@ libedata_book_1_2_la_CPPFLAGS = \
 	$(DB_CFLAGS) \
 	$(SQLITE3_CFLAGS) \
 	$(GOA_CFLAGS) \
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(CODE_COVERAGE_CFLAGS) \
+	$(NULL)
 
 libedata_book_1_2_la_SOURCES = \
 	$(ENUM_GENERATED) \
@@ -49,7 +51,9 @@ libedata_book_1_2_la_LIBADD = \
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 libedata_book_1_2_la_LDFLAGS = \
-	-version-info $(LIBEDATABOOK_CURRENT):$(LIBEDATABOOK_REVISION):$(LIBEDATABOOK_AGE) $(NO_UNDEFINED)
+	-version-info $(LIBEDATABOOK_CURRENT):$(LIBEDATABOOK_REVISION):$(LIBEDATABOOK_AGE) $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libedata_bookincludedir = $(privincludedir)/libedata-book
 

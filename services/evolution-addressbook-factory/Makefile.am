@@ -22,6 +22,7 @@ evolution_addressbook_factory_CPPFLAGS = \
 	$(FACTORY_GTK_CFLAGS) \
 	$(DBUS_GLIB_CFLAGS) \
 	$(GOA_CFLAGS) \
+	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
 
 evolution_addressbook_factory_SOURCES = \
@@ -37,6 +38,11 @@ evolution_addressbook_factory_LDADD = \
 	$(FACTORY_GTK_LIBS) \
 	$(DBUS_GLIB_LIBS) \
 	$(GOA_LIBS) \
+	$(NULL)
+
+evolution_addressbook_factory_LDFLAGS = \
+	$(AM_LDFLAGS) \
+	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk

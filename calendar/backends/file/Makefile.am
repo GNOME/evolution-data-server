@@ -7,7 +7,9 @@ libecalbackendfile_la_CPPFLAGS = \
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)			\
+	$(CODE_COVERAGE_CFLAGS)				\
+	$(NULL)
 
 noinst_PROGRAMS = test-interval-searches
 
@@ -30,7 +32,9 @@ libecalbackendfile_la_LIBADD =						\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 libecalbackendfile_la_LDFLAGS =		\
-	-module -avoid-version $(NO_UNDEFINED)
+	-module -avoid-version $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 test_interval_searches_SOURCES = e-cal-backend-file.c
 

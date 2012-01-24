@@ -7,7 +7,9 @@ libebookbackendvcf_la_CPPFLAGS = \
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
-        $(EVOLUTION_ADDRESSBOOK_CFLAGS)
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
+	$(CODE_COVERAGE_CFLAGS)				\
+	$(NULL)
 
 libebookbackendvcf_la_SOURCES =			\
 	e-book-backend-vcf.c			\
@@ -22,6 +24,8 @@ libebookbackendvcf_la_LIBADD =						\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 libebookbackendvcf_la_LDFLAGS =		\
-	-module -avoid-version $(NO_UNDEFINED)
+	-module -avoid-version $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

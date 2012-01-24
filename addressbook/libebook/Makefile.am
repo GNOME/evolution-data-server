@@ -19,7 +19,9 @@ libebook_1_2_la_CPPFLAGS = \
 	-I$(top_builddir)/addressbook/libegdbus		\
 	-I$(top_builddir)/addressbook/libebook		\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
-	$(CAMEL_CFLAGS)
+	$(CAMEL_CFLAGS)					\
+	$(CODE_COVERAGE_CFLAGS)				\
+	$(NULL)
 
 libebook_1_2_la_SOURCES =				\
 	$(MARSHAL_GENERATED)				\
@@ -46,7 +48,9 @@ libebook_1_2_la_LIBADD =					\
 	$(CAMEL_LIBS)
 
 libebook_1_2_la_LDFLAGS = 							\
-	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE) $(NO_UNDEFINED)
+	-version-info $(LIBEBOOK_CURRENT):$(LIBEBOOK_REVISION):$(LIBEBOOK_AGE) $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libebookincludedir = $(privincludedir)/libebook
 

@@ -6,7 +6,9 @@ libegdbus_cal_la_CPPFLAGS =			\
 	-DG_LOG_DOMAIN=\"libegdbus-cal\"	\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/calendar		\
-	$(E_DATA_SERVER_CFLAGS)
+	$(E_DATA_SERVER_CFLAGS)			\
+	$(CODE_COVERAGE_CFLAGS)			\
+	$(NULL)
 
 libegdbus_cal_la_SOURCES =			\
 	e-gdbus-cal.h				\
@@ -19,6 +21,8 @@ libegdbus_cal_la_SOURCES =			\
 libegdbus_cal_la_LIBADD =			\
 	$(E_DATA_SERVER_LIBS)
 
-libegdbus_cal_la_LDFLAGS = $(NO_UNDEFINED)
+libegdbus_cal_la_LDFLAGS = $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

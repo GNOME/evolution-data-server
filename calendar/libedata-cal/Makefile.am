@@ -19,7 +19,9 @@ libedata_cal_1_2_la_CPPFLAGS = 			\
 	-I$(top_builddir)			\
 	-I$(top_builddir)/calendar		\
 	$(LIBICAL_CFLAGS)			\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)		\
+	$(CODE_COVERAGE_CFLAGS)			\
+	$(NULL)
 
 libedata_cal_1_2_la_SOURCES =		\
 	$(ENUM_GENERATED)		\
@@ -45,7 +47,9 @@ libedata_cal_1_2_la_LIBADD =					\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 libedata_cal_1_2_la_LDFLAGS =								\
-	-version-info $(LIBEDATACAL_CURRENT):$(LIBEDATACAL_REVISION):$(LIBEDATACAL_AGE) $(NO_UNDEFINED)
+	-version-info $(LIBEDATACAL_CURRENT):$(LIBEDATACAL_REVISION):$(LIBEDATACAL_AGE) $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libedata_calincludedir = $(privincludedir)/libedata-cal
 

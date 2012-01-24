@@ -6,7 +6,9 @@ libcamelpop3_la_CPPFLAGS = \
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/camel			\
 	$(CAMEL_CFLAGS)				\
-	-DG_LOG_DOMAIN=\"camel-pop3-provider\"
+	-DG_LOG_DOMAIN=\"camel-pop3-provider\"	\
+	$(CODE_COVERAGE_CFLAGS)			\
+	$(NULL)
 
 libcamelpop3_la_SOURCES = 			\
 	camel-pop3-engine.c			\
@@ -23,7 +25,9 @@ noinst_HEADERS =			\
 	camel-pop3-stream.h			\
 	camel-pop3-store.h
 
-libcamelpop3_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
+libcamelpop3_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libcamelpop3_la_LIBADD = \
 	$(top_builddir)/camel/libcamel-1.2.la	\

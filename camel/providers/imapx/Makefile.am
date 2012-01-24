@@ -8,7 +8,9 @@ libcamelimapx_la_CPPFLAGS = \
 	-I$(top_srcdir)/camel			\
 	-I$(top_srcdir)				\
 	$(CAMEL_CFLAGS)				\
-	-DG_LOG_DOMAIN=\"camel-imapx\"
+	-DG_LOG_DOMAIN=\"camel-imapx\"		\
+	$(CODE_COVERAGE_CFLAGS)			\
+	$(NULL)
 
 libcamelimapx_la_SOURCES =			\
 	camel-imapx-command.c			\
@@ -44,7 +46,9 @@ libcamelimapx_la_LIBADD = \
         $(top_builddir)/camel/libcamel-1.2.la	\
         $(CAMEL_LIBS)
 
-libcamelimapx_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
+libcamelimapx_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 noinst_PROGRAMS = test-imapx
 

@@ -10,7 +10,9 @@ libcamelimap_la_CPPFLAGS = \
 	$(CAMEL_CFLAGS)				\
 	$(GNOME_INCLUDEDIR)			\
 	$(GTK_INCLUDEDIR)			\
-	-DG_LOG_DOMAIN=\"camel-imap-provider\"
+	-DG_LOG_DOMAIN=\"camel-imap-provider\"	\
+	$(CODE_COVERAGE_CFLAGS)			\
+	$(NULL)
 
 libcamelimap_la_SOURCES = 			\
 	camel-imap-command.c			\
@@ -40,7 +42,9 @@ noinst_HEADERS =			\
 	camel-imap-wrapper.h                    \
 	camel-imap-private.h
 
-libcamelimap_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED)
+libcamelimap_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libcamelimap_la_LIBADD = \
 	$(top_builddir)/camel/libcamel-1.2.la	\

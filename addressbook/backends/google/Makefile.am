@@ -17,7 +17,9 @@ libebookbackendgoogle_la_CPPFLAGS = \
 	$(SOUP_CFLAGS) \
 	$(GDATA_CFLAGS) \
 	$(GOA_CFLAGS) \
-	$(OAUTH_CFLAGS)
+	$(OAUTH_CFLAGS) \
+	$(CODE_COVERAGE_CFLAGS) \
+	$(NULL)
 
 libebookbackendgoogle_la_SOURCES = \
 	e-book-backend-google-factory.c \
@@ -37,6 +39,8 @@ libebookbackendgoogle_la_LIBADD = \
 	$(OAUTH_LIBS)
 
 libebookbackendgoogle_la_LDFLAGS = \
-	-module -avoid-version $(NO_UNDEFINED)
+	-module -avoid-version $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

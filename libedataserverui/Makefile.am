@@ -71,7 +71,10 @@ libedataserverui_3_0_la_SOURCES =	\
 	e-tree-model-generator.c	\
 	e-cell-renderer-color.c
 
-libedataserverui_3_0_la_CPPFLAGS = $(CPPFLAGS)
+libedataserverui_3_0_la_CPPFLAGS = \
+	$(CPPFLAGS) \
+	$(CODE_COVERAGE_CFLAGS) \
+	$(NULL)
 
 libedataserverui_3_0_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
@@ -84,7 +87,9 @@ libedataserverui_3_0_la_LIBADD = 				\
 	$(SOUP_LIBS)
 
 libedataserverui_3_0_la_LDFLAGS = \
-	-version-info $(LIBEDATASERVERUI_CURRENT):$(LIBEDATASERVERUI_REVISION):$(LIBEDATASERVERUI_AGE) $(NO_UNDEFINED)
+	-version-info $(LIBEDATASERVERUI_CURRENT):$(LIBEDATASERVERUI_REVISION):$(LIBEDATASERVERUI_AGE) $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libedataserveruiincludedir = $(privincludedir)/libedataserverui
 

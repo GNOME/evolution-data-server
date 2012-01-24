@@ -8,7 +8,9 @@ libecalbackendhttp_la_CPPFLAGS = \
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
-	$(SOUP_CFLAGS)
+	$(SOUP_CFLAGS)					\
+	$(CODE_COVERAGE_CFLAGS)				\
+	$(NULL)
 
 libecalbackendhttp_la_SOURCES =		\
 	e-cal-backend-http-factory.c	\
@@ -24,6 +26,8 @@ libecalbackendhttp_la_LIBADD =						\
 	$(SOUP_LIBS)
 
 libecalbackendhttp_la_LDFLAGS =		\
-	-module -avoid-version $(NO_UNDEFINED)
+	-module -avoid-version $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

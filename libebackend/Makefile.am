@@ -7,7 +7,9 @@ libebackend_1_2_la_CPPFLAGS = \
 	$(DB_CFLAGS)						\
 	$(SQLITE3_CFLAGS)					\
 	$(E_BACKEND_CFLAGS)					\
-	$(GIO_UNIX_CFLAGS)
+	$(GIO_UNIX_CFLAGS)					\
+	$(CODE_COVERAGE_CFLAGS)					\
+	$(NULL)
 
 libebackend_1_2_la_SOURCES =		\
 	e-backend.c			\
@@ -31,7 +33,9 @@ libebackend_1_2_la_LIBADD = 				\
 	$(DB_LIBS)
 
 libebackend_1_2_la_LDFLAGS = \
-	-version-info $(LIBEBACKEND_CURRENT):$(LIBEBACKEND_REVISION):$(LIBEBACKEND_AGE) $(NO_UNDEFINED)
+	-version-info $(LIBEBACKEND_CURRENT):$(LIBEBACKEND_REVISION):$(LIBEBACKEND_AGE) $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libebackendincludedir = $(privincludedir)/libebackend
 

@@ -13,7 +13,9 @@ libecalbackendweather_la_CPPFLAGS = \
 	-DWEATHER_DATADIR=\""$(weatherdatadir)"\"	\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
 	$(SOUP_CFLAGS)					\
-	$(LIBGWEATHER_CFLAGS)
+	$(LIBGWEATHER_CFLAGS)				\
+	$(CODE_COVERAGE_CFLAGS)				\
+	$(NULL)
 
 libecalbackendweather_la_SOURCES =	\
 	e-cal-backend-weather-factory.c	\
@@ -34,6 +36,8 @@ libecalbackendweather_la_LIBADD =						\
 	$(LIBGWEATHER_LIBS)
 
 libecalbackendweather_la_LDFLAGS =		\
-	-module -avoid-version $(NO_UNDEFINED)
+	-module -avoid-version $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

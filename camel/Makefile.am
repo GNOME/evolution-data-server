@@ -48,7 +48,9 @@ libcamel_1_2_la_CPPFLAGS = \
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"			\
 	-DLOCALEDIR=\""$(localedir)"\"				\
 	-DCAMEL_COMPILATION					\
-	$(CAMEL_CFLAGS)
+	$(CAMEL_CFLAGS)						\
+	$(CODE_COVERAGE_CFLAGS)					\
+	$(NULL)
 
 libcamel_1_2_la_SOURCES = 			\
 	$(ENUM_GENERATED)			\
@@ -294,7 +296,9 @@ libcamelinclude_HEADERS =			\
 	camel-vtrash-folder.h			\
 	camel.h
 
-libcamel_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE) $(NO_UNDEFINED)
+libcamel_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE) $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libcamel_1_2_la_LIBADD =				\
 	$(CAMEL_LIBS)					\

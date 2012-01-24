@@ -8,7 +8,9 @@ libebookbackendldap_la_CPPFLAGS = \
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	$(LDAP_CFLAGS)					\
-        $(EVOLUTION_ADDRESSBOOK_CFLAGS)
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
+	$(CODE_COVERAGE_CFLAGS)				\
+	$(NULL)
 
 libebookbackendldap_la_SOURCES =			\
 	e-book-backend-ldap.c				\
@@ -23,7 +25,9 @@ libebookbackendldap_la_LIBADD =						\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)					\
 	$(LDAP_LIBS)
 
-libebookbackendldap_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED)
+libebookbackendldap_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 LDAP_SCHEMA = \
 	evolutionperson.schema

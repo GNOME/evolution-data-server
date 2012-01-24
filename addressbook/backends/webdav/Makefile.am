@@ -8,7 +8,9 @@ libebookbackendwebdav_la_CPPFLAGS = \
 	-I$(top_srcdir)/addressbook 			\
 	-I$(top_builddir)/addressbook 			\
 	$(SOUP_CFLAGS) 					\
-	$(EVOLUTION_ADDRESSBOOK_CFLAGS)
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
+	$(CODE_COVERAGE_CFLAGS)				\
+	$(NULL)
 
 libebookbackendwebdav_la_SOURCES = \
 	e-book-backend-webdav-factory.c \
@@ -23,6 +25,8 @@ libebookbackendwebdav_la_LIBADD = \
 	$(SOUP_LIBS) \
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
-libebookbackendwebdav_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED)
+libebookbackendwebdav_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 -include $(top_srcdir)/git.mk

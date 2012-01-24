@@ -1249,6 +1249,24 @@ EVO_MARSHAL_RULE=$srcdir/marshal.mk
 AC_SUBST_FILE(EVO_MARSHAL_RULE)
 
 dnl ******************************
+dnl Code coverage flags
+dnl ******************************
+
+AC_ARG_ENABLE([code-coverage],
+	AS_HELP_STRING([--enable-code-coverage], [compile with code coverage code]),
+	[enable_code_coverage=$enableval], [enable_code_coverage=no])
+
+if test "x$GCC" = "xyes"; then
+	if test "x$enable_code_coverage" = "xyes"; then
+		CODE_COVERAGE_CFLAGS="-fprofile-arcs -ftest-coverage -O0 -ggdb"
+		CODE_COVERAGE_LDFLAGS="-lgcov"
+	fi
+fi
+
+AC_SUBST([CODE_COVERAGE_CFLAGS])
+AC_SUBST([CODE_COVERAGE_LDFLAGS])
+
+dnl ******************************
 dnl Utility macro to set compiler flags for a specific lib.
 dnl EVO_SET_COMPILE_FLAGS(VAR-PREFIX, DEPS, EXTRA-CFLAGS, EXTRA-LIBS)
 dnl ******************************
@@ -1628,4 +1646,5 @@ echo "
 	Introspection:		$enable_introspection
 	Vala bindings:		$enable_vala_bindings
 	GNOME Online Accounts	$enable_goa
+	Code coverage (gcov):	$enable_code_coverage
 "

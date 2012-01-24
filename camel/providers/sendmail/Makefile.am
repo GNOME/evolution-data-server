@@ -10,7 +10,9 @@ libcamelsendmail_la_CPPFLAGS = \
 	$(CAMEL_CFLAGS)					\
 	$(GNOME_INCLUDEDIR)				\
 	$(GTK_INCLUDEDIR) 				\
-	-DG_LOG_DOMAIN=\"camel-sendmail-provider\"
+	-DG_LOG_DOMAIN=\"camel-sendmail-provider\"	\
+	$(CODE_COVERAGE_CFLAGS)				\
+	$(NULL)
 
 libcamelsendmail_la_SOURCES = 			\
 	camel-sendmail-provider.c		\
@@ -19,7 +21,9 @@ libcamelsendmail_la_SOURCES = 			\
 noinst_HEADERS =		\
 	camel-sendmail-transport.h
 
-libcamelsendmail_la_LDFLAGS = -avoid-version -module
+libcamelsendmail_la_LDFLAGS = -avoid-version -module \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 libcamelsendmail_la_LIBADD = \
 	$(top_builddir)/camel/libcamel-1.2.la				\
