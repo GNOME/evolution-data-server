@@ -302,8 +302,10 @@ store_get_inbox_folder_sync (CamelStore *store,
 	CamelStoreClass *class;
 	CamelFolder *folder;
 
-	/* Assume the inbox's name is "inbox" and open with default flags. */
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->get_folder_sync != NULL, NULL);
+
+	/* Assume the inbox's name is "inbox" and open with default flags. */
 	folder = class->get_folder_sync (store, "inbox", 0, cancellable, error);
 	CAMEL_CHECK_GERROR (store, get_folder_sync, folder != NULL, error);
 
