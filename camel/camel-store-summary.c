@@ -56,6 +56,8 @@ struct _CamelStoreSummaryPrivate {
 	GStaticRecMutex ref_lock;	/* for reffing/unreffing messageinfo's ALWAYS obtain before CAMEL_STORE_SUMMARY_SUMMARY_LOCK */
 
 	GHashTable *folder_summaries; /* CamelFolderSummary->path; doesn't add reference to CamelFolderSummary */
+
+	guint scheduled_save_id;
 };
 
 G_DEFINE_TYPE (CamelStoreSummary, camel_store_summary, CAMEL_TYPE_OBJECT)
@@ -81,6 +83,26 @@ store_summary_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_store_summary_parent_class)->finalize (object);
+}
+
+static void
+store_summary_dispose (GObject *object)
+{
+	CamelStoreSummary *summary = CAMEL_STORE_SUMMARY (object);
+
+	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
+	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+
+	if (summary->priv->scheduled_save_id != 0) {
+		g_source_remove (summary->priv->scheduled_save_id);
+		summary->priv->scheduled_save_id = 0;
+		camel_store_summary_save (summary);
+	}
+
+	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
+
+	G_OBJECT_CLASS (camel_store_summary_parent_class)->dispose (object);
 }
 
 static gint
@@ -285,6 +307,7 @@ camel_store_summary_class_init (CamelStoreSummaryClass *class)
 	g_type_class_add_private (class, sizeof (CamelStoreSummaryPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = store_summary_dispose;
 	object_class->finalize = store_summary_finalize;
 
 	class->summary_header_load = store_summary_summary_header_load;
@@ -314,6 +337,7 @@ camel_store_summary_init (CamelStoreSummary *summary)
 	summary->folders = g_ptr_array_new ();
 	summary->folders_path = g_hash_table_new (g_str_hash, g_str_equal);
 	summary->priv->folder_summaries = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
+	summary->priv->scheduled_save_id = 0;
 
 	g_static_rec_mutex_init (&summary->priv->summary_lock);
 	g_static_rec_mutex_init (&summary->priv->io_lock);
@@ -1099,6 +1123,40 @@ camel_store_summary_unlock (CamelStoreSummary *summary,
 	}
 }
 
+static gboolean
+store_summary_save_timeout (gpointer user_data)
+{
+	CamelStoreSummary *summary = user_data;
+
+	g_return_val_if_fail (summary != NULL, FALSE);
+	g_return_val_if_fail (summary->priv != NULL, FALSE);
+
+	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
+	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+
+	if (summary->priv->scheduled_save_id) {
+		summary->priv->scheduled_save_id = 0;
+		camel_store_summary_save (summary);
+	}
+
+	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
+	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
+
+	return FALSE;
+}
+
+static void
+store_summary_schedule_save (CamelStoreSummary *summary)
+{
+	g_return_if_fail (summary != NULL);
+	g_return_if_fail (summary->priv != NULL);
+
+	if (summary->priv->scheduled_save_id != 0)
+		g_source_remove (summary->priv->scheduled_save_id);
+
+	summary->priv->scheduled_save_id = g_timeout_add_seconds (5, store_summary_save_timeout, summary);
+}
+
 static void
 store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary,
                                             GParamSpec *param,
@@ -1131,14 +1189,14 @@ store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary,
 		if (si->total != new_count) {
 			si->total = new_count;
 			camel_store_summary_touch (summary);
-			camel_store_summary_save (summary);
+			store_summary_schedule_save (summary);
 		}
 	} else if (g_strcmp0 (g_param_spec_get_name (param), "unread-count") == 0) {
 		new_count = camel_folder_summary_get_unread_count (folder_summary);
 		if (si->unread != new_count) {
 			si->unread = new_count;
 			camel_store_summary_touch (summary);
-			camel_store_summary_save (summary);
+			store_summary_schedule_save (summary);
 		}
 	} else {
 		g_warn_if_reached ();
@@ -1242,6 +1300,13 @@ camel_store_summary_disconnect_folder_summary (CamelStoreSummary *summary,
 
 	g_signal_handlers_disconnect_by_func (folder_summary, G_CALLBACK (store_summary_sync_folder_summary_count_cb), summary);
 	g_hash_table_remove (summary->priv->folder_summaries, folder_summary);
+
+	if (summary->priv->scheduled_save_id != 0) {
+		g_source_remove (summary->priv->scheduled_save_id);
+		summary->priv->scheduled_save_id = 0;
+	}
+
+	camel_store_summary_save (summary);
 
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 	camel_store_summary_unlock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
