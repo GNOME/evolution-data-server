@@ -6267,8 +6267,8 @@ camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
 
 	success = registered && imapx_run_job (is, job, error);
 
-	if (success && camel_folder_change_info_changed (job->u.refresh_info.changes))
-		camel_folder_changed (folder, job->u.refresh_info.changes);
+	if (success && camel_folder_change_info_changed (data->changes) && camel_folder_change_info_changed (data->changes))
+		camel_folder_changed (folder, data->changes);
 
 	uid = imapx_get_uid_from_index (folder->summary, 0);
 	newfirstuid = strtoull(uid, NULL, 10);
