@@ -3631,6 +3631,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 
 	i = data->index;
 
+	//printf("%s: Mobile mode: %d Fetch Count %d\n", camel_folder_get_display_name (job->folder), mobile_mode, batch_count);
 	if (camel_imapx_command_set_error_if_failed (ic, error)) {
 		g_prefix_error (
 			error, "%s: ",
@@ -3658,11 +3659,15 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		ic->complete = imapx_command_step_fetch_done;
 		ic->job = job;
 		ic->pri = job->pri - 1;
+
+		//printf("Total: %d: %d, %d, %d\n", total, fetch_limit, i, data->last_index);	
 		data->last_index = i;
 
 		/* If its mobile client and  when total=0 (new account setup) fetch only one batch of mails,
  		 * on futher attempts download all new mails as per the limit. */
-		for (; i < data->infos->len && (!mobile_mode || total || ((fetch_limit != -1 && i < fetch_limit) || (fetch_limit == -1 && i < batch_count))); i++) {
+		//printf("Total: %d: %d\n", total, fetch_limit);
+		for (; i < data->infos->len && (!mobile_mode || (total && i == 0) || ((fetch_limit != -1 && i < fetch_limit) || (fetch_limit == -1 && i < batch_count))); i++) {
+
 			gint res;
 			struct _refresh_info *r = &g_array_index (data->infos, struct _refresh_info, i);
 
@@ -3677,10 +3682,11 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 			}
 		}
 
-		e('S', "Existing : %d Gonna fetch in %s for %d/%d\n", total, camel_folder_get_full_name(job->folder), i, data->infos->len);
+		//printf("Existing : %d Gonna fetch in %s for %d/%d\n", total, camel_folder_get_full_name(job->folder), i, data->infos->len);
 		data->index = data->infos->len;
 		if (imapx_uidset_done (&data->uidset, ic)) {
 			camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER)");
+
 			imapx_command_queue (is, ic);
 			return TRUE;
 		}
@@ -4076,6 +4082,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 		_("Fetching summary information for new messages in %s"),
 		camel_folder_get_display_name (folder));
 
+	//printf("Fetch order: %d/%d\n", fetch_order, CAMEL_SORT_DESCENDING);
 	if (diff > uidset_size || fetch_order == CAMEL_SORT_DESCENDING) {
 		ic = camel_imapx_command_new (
 			is, "FETCH", job->folder,
