@@ -11,6 +11,7 @@ libcamelimapx_la_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"camel-imapx\"
 
 libcamelimapx_la_SOURCES =			\
+	camel-imapx-command.c			\
 	camel-imapx-conn-manager.c		\
 	camel-imapx-folder.c			\
 	camel-imapx-provider.c			\
@@ -23,6 +24,7 @@ libcamelimapx_la_SOURCES =			\
 	camel-imapx-utils.c
 
 noinst_HEADERS =				\
+	camel-imapx-command.h			\
 	camel-imapx-conn-manager.h		\
 	camel-imapx-folder.h			\
 	camel-imapx-server.h			\
