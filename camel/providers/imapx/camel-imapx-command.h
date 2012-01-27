@@ -58,8 +58,6 @@ struct _CamelIMAPXCommandPart {
 	CamelIMAPXCommandPart *next;
 	CamelIMAPXCommandPart *prev;
 
-	CamelIMAPXCommand *parent;
-
 	gint data_size;
 	gchar *data;
 
