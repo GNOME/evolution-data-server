@@ -18,8 +18,10 @@
 
 #include "camel-imapx-command.h"
 
+#include <config.h>
 #include <string.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n-lib.h>
 
 #include "camel-imapx-store.h"
 
@@ -499,3 +501,25 @@ camel_imapx_command_done (CamelIMAPXCommand *ic)
 	g_cond_broadcast (real_ic->done_sync_cond);
 	g_mutex_unlock (real_ic->done_sync_mutex);
 }
+
+gboolean
+camel_imapx_command_set_error_if_failed (CamelIMAPXCommand *ic,
+                                         GError **error)
+{
+	g_return_val_if_fail (ic != NULL, FALSE);
+
+	if (ic->status != NULL && ic->status->result != IMAPX_OK) {
+		if (ic->status->text != NULL)
+			g_set_error (
+				error, CAMEL_IMAPX_ERROR, 1,
+				"%s", ic->status->text);
+		else
+			g_set_error (
+				error, CAMEL_IMAPX_ERROR, 1,
+				"%s", _("Unknown error"));
+		return TRUE;
+	}
+
+	return FALSE;
+}
+

@@ -82,10 +82,6 @@ struct _CamelIMAPXCommand {
 	/* Status for command, indicates it is complete if != NULL. */
 	struct _status_info *status;
 
-	/* If the GError is set, it means we were not able to parse
-	 * above status, possibly due to cancellation or I/O error. */
-	GError *error;
-
 	guint32 tag;
 
 	CamelDList parts;
@@ -117,6 +113,9 @@ void		camel_imapx_command_add_part	(CamelIMAPXCommand *ic,
 void		camel_imapx_command_close	(CamelIMAPXCommand *ic);
 void		camel_imapx_command_wait	(CamelIMAPXCommand *ic);
 void		camel_imapx_command_done	(CamelIMAPXCommand *ic);
+gboolean	camel_imapx_command_set_error_if_failed
+						(CamelIMAPXCommand *ic,
+						 GError **error);
 
 G_END_DECLS
 
