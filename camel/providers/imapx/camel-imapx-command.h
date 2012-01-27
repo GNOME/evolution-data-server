@@ -92,8 +92,7 @@ struct _CamelIMAPXCommand {
 	guint32 tag;
 
 	/* For building the part. */
-	/* TODO: just use a GString? */
-	CamelStreamMem *mem;
+	GString *buffer;
 
 	CamelDList parts;
 	CamelIMAPXCommandPart *current;

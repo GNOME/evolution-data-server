@@ -44,7 +44,7 @@ camel_imapx_command_new (CamelIMAPXServer *is,
 	ic->ref_count = 1;
 	ic->tag = tag++;
 	ic->name = name;
-	ic->mem = (CamelStreamMem *) camel_stream_mem_new ();
+	ic->buffer = g_string_sized_new (512);
 	ic->select = select;
 	ic->cancellable = cancellable;
 	ic->is = is;
@@ -79,8 +79,7 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 	if (g_atomic_int_dec_and_test (&ic->ref_count)) {
 		CamelIMAPXCommandPart *cp;
 
-		if (ic->mem != NULL)
-			g_object_unref (ic->mem);
+		g_string_free (ic->buffer, TRUE);
 
 		imapx_free_status (ic->status);
 
@@ -118,7 +117,6 @@ camel_imapx_command_add (CamelIMAPXCommand *ic,
 	va_list ap;
 
 	g_return_if_fail (ic != NULL);
-	g_return_if_fail (ic->mem != NULL);  /* gets reset on queue */
 
 	if (format != NULL && *format != '\0') {
 		va_start (ap, format);
@@ -162,13 +160,13 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 		switch (c) {
 		case '%':
 			if (*p == '%') {
-				camel_stream_write ((CamelStream *) ic->mem, ps, p - ps, ic->cancellable, NULL);
+				g_string_append_len (ic->buffer, ps, p - ps);
 				p++;
 				ps = p;
 				continue;
 			}
 
-			camel_stream_write ((CamelStream *) ic->mem, ps, p - ps - 1, ic->cancellable, NULL);
+			g_string_append_len (ic->buffer, ps, p - ps - 1);
 			start = p - 1;
 			width = 0;
 			llong = 0;
@@ -217,7 +215,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				break;
 			case 't': /* token */
 				s = va_arg (ap, gchar *);
-				camel_stream_write ((CamelStream *) ic->mem, s, strlen (s), ic->cancellable, NULL);
+				g_string_append (ic->buffer, s);
 				break;
 			case 's': /* simple string */
 				s = va_arg (ap, gchar *);
@@ -227,27 +225,27 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 					guchar mask = imapx_is_mask (s);
 
 					if (mask & IMAPX_TYPE_ATOM_CHAR)
-						camel_stream_write ((CamelStream *) ic->mem, s, strlen (s), ic->cancellable, NULL);
+						g_string_append (ic->buffer, s);
 					else if (mask & IMAPX_TYPE_TEXT_CHAR) {
-						camel_stream_write((CamelStream *)ic->mem, "\"", 1, ic->cancellable, NULL);
+						g_string_append_c (ic->buffer, '"');
 						while (*s) {
 							gchar *start = s;
 
 							while (*s && imapx_is_quoted_char (*s))
 								s++;
-							camel_stream_write ((CamelStream *) ic->mem, start, s - start, ic->cancellable, NULL);
+							g_string_append_len (ic->buffer, start, s - start);
 							if (*s) {
-								camel_stream_write((CamelStream *)ic->mem, "\\", 1, ic->cancellable, NULL);
-								camel_stream_write ((CamelStream *) ic->mem, s, 1, ic->cancellable, NULL);
+								g_string_append_c (ic->buffer, '\\');
+								g_string_append_c (ic->buffer, *s);
 								s++;
 							}
 						}
-						camel_stream_write((CamelStream *)ic->mem, "\"", 1, ic->cancellable, NULL);
+						g_string_append_c (ic->buffer, '"');
 					} else {
 						camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_STRING, s);
 					}
 				} else {
-					camel_stream_write((CamelStream *)ic->mem, "\"\"", 2, ic->cancellable, NULL);
+					g_string_append (ic->buffer, "\"\"");
 				}
 				if (encoded) {
 					g_free (encoded);
@@ -270,48 +268,39 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 					s = encoded;
 					goto output_string;
 				} else
-					camel_stream_write((CamelStream *)ic->mem, "\"\"", 2, ic->cancellable, NULL);
+					g_string_append (ic->buffer, "\"\"");
 
 				break;
 			case 'F': /* IMAP flags set */
 				f = va_arg (ap, guint32);
 				F = va_arg (ap, CamelFlag *);
-				imapx_write_flags ((CamelStream *) ic->mem, f, F, ic->cancellable, NULL);
+				imapx_write_flags (ic->buffer, f, F);
 				break;
 			case 'c':
 				d = va_arg (ap, gint);
 				ch = d;
-				camel_stream_write ((CamelStream *) ic->mem, &ch, 1, ic->cancellable, NULL);
+				g_string_append_c (ic->buffer, ch);
 				break;
 			case 'd': /* int/unsigned */
 			case 'u':
 				if (llong == 1) {
-					gchar *string;
 					l = va_arg (ap, glong);
 					c(ic->is->tagprefix, "got glong '%d'\n", (gint)l);
 					memcpy (buffer, start, p - start);
 					buffer[p - start] = 0;
-					string = g_strdup_printf (buffer, l);
-					camel_stream_write_string ((CamelStream *) ic->mem, string, ic->cancellable, NULL);
-					g_free (string);
+					g_string_append_printf (ic->buffer, buffer, l);
 				} else if (llong == 2) {
-					gchar *string;
 					guint64 i64 = va_arg (ap, guint64);
 					c(ic->is->tagprefix, "got guint64 '%d'\n", (gint)i64);
 					memcpy (buffer, start, p - start);
 					buffer[p - start] = 0;
-					string = g_strdup_printf (buffer, i64);
-					camel_stream_write_string ((CamelStream *) ic->mem, string, ic->cancellable, NULL);
-					g_free (string);
+					g_string_append_printf (ic->buffer, buffer, i64);
 				} else {
-					gchar *string;
 					d = va_arg (ap, gint);
 					c(ic->is->tagprefix, "got gint '%d'\n", d);
 					memcpy (buffer, start, p - start);
 					buffer[p - start] = 0;
-					string = g_strdup_printf (buffer, d);
-					camel_stream_write_string ((CamelStream *) ic->mem, string, ic->cancellable, NULL);
-					g_free (string);
+					g_string_append_printf (ic->buffer, buffer, d);
 				}
 				break;
 			}
@@ -323,14 +312,14 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 			c = *p;
 			if (c) {
 				g_assert (c == '\\');
-				camel_stream_write ((CamelStream *) ic->mem, ps, p - ps, ic->cancellable, NULL);
+				g_string_append_len (ic->buffer, ps, p - ps);
 				p++;
 				ps = p;
 			}
 		}
 	}
 
-	camel_stream_write ((CamelStream *) ic->mem, ps, p - ps - 1, ic->cancellable, NULL);
+	g_string_append_len (ic->buffer, ps, p - ps - 1);
 }
 
 void
@@ -340,7 +329,6 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 {
 	CamelIMAPXCommandPart *cp;
 	CamelStreamNull *null;
-	GByteArray *byte_array;
 	guint ob_size = 0;
 
 	/* TODO: literal+? */
@@ -367,13 +355,12 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 	}
 	case CAMEL_IMAPX_COMMAND_AUTH: {
 		CamelObject *ob = data;
+		const gchar *mechanism;
 
 		/* we presume we'll need to get additional data only if we're not authenticated yet */
 		g_object_ref (ob);
-		camel_stream_write_string (
-			(CamelStream *) ic->mem,
-			camel_sasl_get_mechanism (CAMEL_SASL (ob)),
-			NULL, NULL);
+		mechanism = camel_sasl_get_mechanism (CAMEL_SASL (ob));
+		g_string_append (ic->buffer, mechanism);
 		if (!camel_sasl_get_authenticated ((CamelSasl *) ob))
 			type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
 		break;
@@ -401,36 +388,25 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 	}
 
 	if (type & CAMEL_IMAPX_COMMAND_LITERAL_PLUS) {
-		gchar *string;
-
+		g_string_append_c (ic->buffer, '{');
+		g_string_append_printf (ic->buffer, "%u", ob_size);
 		if (ic->is->cinfo && ic->is->cinfo->capa & IMAPX_CAPABILITY_LITERALPLUS) {
-			string = g_strdup_printf ("{%u+}", ob_size);
+			g_string_append_c (ic->buffer, '+');
 		} else {
 			type &= ~CAMEL_IMAPX_COMMAND_LITERAL_PLUS;
 			type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
-			string = g_strdup_printf ("{%u}", ob_size);
 		}
-
-		camel_stream_write_string ((CamelStream *) ic->mem, string, NULL, NULL);
-
-		g_free (string);
+		g_string_append_c (ic->buffer, '}');
 	}
-
-	byte_array = camel_stream_mem_get_byte_array (ic->mem);
 
 	cp = g_malloc0 (sizeof (*cp));
 	cp->type = type;
 	cp->ob_size = ob_size;
 	cp->ob = data;
-	cp->data_size = byte_array->len;
-	cp->data = g_malloc (cp->data_size + 1);
-	memcpy (cp->data, byte_array->data, cp->data_size);
-	cp->data[cp->data_size] = 0;
+	cp->data_size = ic->buffer->len;
+	cp->data = g_strdup (ic->buffer->str);
 
-	g_seekable_seek (G_SEEKABLE (ic->mem), 0, G_SEEK_SET, NULL, NULL);
-
-	/* FIXME: hackish? */
-	g_byte_array_set_size (byte_array, 0);
+	g_string_set_size (ic->buffer, 0);
 
 	camel_dlist_addtail (&ic->parts, (CamelDListNode *) cp);
 }
@@ -438,24 +414,16 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 void
 camel_imapx_command_close (CamelIMAPXCommand *ic)
 {
-	GByteArray *byte_array;
-
 	g_return_if_fail (ic != NULL);
 
-	if (ic->mem == NULL)
-		return;
-
-	byte_array = camel_stream_mem_get_byte_array (ic->mem);
-
-	if (byte_array->len > 5 && g_ascii_strncasecmp ((gchar *) byte_array->data, "LOGIN", 5)) {
-		c(ic->is->tagprefix, "completing command buffer is [%d] 'LOGIN...'\n", byte_array->len);
+	if (ic->buffer->len > 5 && g_ascii_strncasecmp (ic->buffer->str, "LOGIN", 5) == 0) {
+		c(ic->is->tagprefix, "completing command buffer is [%d] 'LOGIN...'\n", ic->buffer->len);
 	} else {
-		c(ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", byte_array->len, (gint)byte_array->len, byte_array->data);
+		c(ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", ic->buffer->len, ic->buffer->len, ic->buffer->str);
 	}
-	if (byte_array->len > 0)
+	if (ic->buffer->len > 0)
 		camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_SIMPLE, NULL);
 
-	g_object_unref (ic->mem);
-	ic->mem = NULL;
+	g_string_set_size (ic->buffer, 0);
 }
 

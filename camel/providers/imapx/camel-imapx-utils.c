@@ -184,53 +184,43 @@ rename_label_flag (const gchar *flag,
 }
 
 void
-imapx_write_flags (CamelStream *stream,
+imapx_write_flags (GString *string,
                    guint32 flags,
-                   CamelFlag *user_flags,
-                   GCancellable *cancellable,
-                   GError **error)
-/* throws IO exception */
+                   CamelFlag *user_flags)
 {
 	gint i;
 	gboolean first = TRUE;
 
-	if (camel_stream_write(stream, "(", 1, cancellable, error) == -1) {
-		return;
-	}
+	g_string_append_c (string, '(');
 
 	for (i = 0; flags != 0 && i< G_N_ELEMENTS (flag_table); i++) {
 		if (flag_table[i].flag & flags) {
 			if (flags & CAMEL_IMAPX_MESSAGE_RECENT)
 				continue;
-			if (!first && camel_stream_write(stream, " ", 1, cancellable, error) == -1) {
-				return;
-			}
+			if (!first)
+				g_string_append_c (string, ' ');
 			first = FALSE;
-			if (camel_stream_write (stream, flag_table[i].name, strlen (flag_table[i].name), cancellable, error) == -1) {
-				return;
-			}
+			g_string_append (string, flag_table[i].name);
 
 			flags &= ~flag_table[i].flag;
 		}
 	}
 
 	while (user_flags) {
-		const gchar *flag_name = rename_label_flag (user_flags->name, strlen (user_flags->name), FALSE);
+		const gchar *flag_name;
 
-		if (!first && camel_stream_write(stream, " ", 1, cancellable, error) == -1) {
-			return;
-		}
+		flag_name = rename_label_flag (
+			user_flags->name, strlen (user_flags->name), FALSE);
+
+		if (!first)
+			g_string_append_c (string, ' ');
 		first = FALSE;
-		if (camel_stream_write (stream, flag_name, strlen (flag_name), cancellable, error) == -1) {
-			return;
-		}
+		g_string_append (string, flag_name);
 
 		user_flags = user_flags->next;
 	}
 
-	if (camel_stream_write(stream, ")", 1, cancellable, error) == -1) {
-		return;
-	}
+	g_string_append_c (string, ')');
 }
 
 static gboolean
