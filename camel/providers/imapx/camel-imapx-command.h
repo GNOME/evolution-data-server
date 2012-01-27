@@ -32,8 +32,10 @@ struct _CamelIMAPXJob;
 typedef struct _CamelIMAPXCommand CamelIMAPXCommand;
 typedef struct _CamelIMAPXCommandPart CamelIMAPXCommandPart;
 
-typedef void	(*CamelIMAPXCommandFunc)	(CamelIMAPXServer *is,
-						 CamelIMAPXCommand *ic);
+typedef gboolean
+		(*CamelIMAPXCommandFunc)	(CamelIMAPXServer *is,
+						 CamelIMAPXCommand *ic,
+						 GError **error);
 
 typedef enum {
 	CAMEL_IMAPX_COMMAND_SIMPLE = 0,
