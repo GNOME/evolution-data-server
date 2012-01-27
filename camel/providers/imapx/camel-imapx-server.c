@@ -392,7 +392,9 @@ imapx_uidset_add (struct _uidset_state *ss,
 /* Must hold QUEUE_LOCK */
 static gboolean
 imapx_command_start (CamelIMAPXServer *is,
-                     CamelIMAPXCommand *ic)
+                     CamelIMAPXCommand *ic,
+                     GCancellable *cancellable,
+                     GError **error)
 {
 	CamelIMAPXCommandPart *cp;
 	gint retval;
@@ -417,32 +419,36 @@ imapx_command_start (CamelIMAPXServer *is,
 		gchar *string;
 
 		string = g_strdup_printf ("%c%05u %s\r\n", is->tagprefix, ic->tag, cp->data);
-		retval = camel_stream_write_string ((CamelStream *) is->stream, string, ic->cancellable, NULL);
+		retval = camel_stream_write_string ((CamelStream *) is->stream, string, cancellable, NULL);
 		g_free (string);
 	} else
 		retval = -1;
 	if (retval == -1) {
 		g_set_error (
-			&ic->error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, 1,
 			"Failed to issue the command");
-	err:
-		g_static_rec_mutex_unlock (&is->ostream_lock);
-
-		camel_dlist_remove ((CamelDListNode *) ic);
-		if (ic && ic->complete)
-			ic->complete (is, ic);
-		return FALSE;
+		goto err;
 	}
 	while (is->literal == ic &&
 	       ic->current->type & CAMEL_IMAPX_COMMAND_LITERAL_PLUS) {
 		/* Sent LITERAL+ continuation immediately */
-		if (!imapx_continuation (is, TRUE, ic->cancellable, &ic->error))
+		if (!imapx_continuation (is, TRUE, cancellable, error))
 			goto err;
 	}
 
 	g_static_rec_mutex_unlock (&is->ostream_lock);
 
 	return TRUE;
+
+err:
+	g_static_rec_mutex_unlock (&is->ostream_lock);
+
+	camel_dlist_remove ((CamelDListNode *) ic);
+
+	if (ic != NULL && ic->complete != NULL)
+		ic->complete (is, ic);
+
+	return FALSE;
 }
 
 static gboolean
@@ -506,7 +512,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 				c(is->tagprefix, "--> starting '%s'\n", ic->name);
 				pri = ic->pri;
 				camel_dlist_remove ((CamelDListNode *) ic);
-				imapx_command_start (is, ic);
+				imapx_command_start (is, ic, cancellable, error);
 				count++;
 			}
 			ic = nc;
@@ -573,7 +579,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 				c(is->tagprefix, "--> starting '%s'\n", ic->name);
 				pri = ic->pri;
 				camel_dlist_remove ((CamelDListNode *) ic);
-				imapx_command_start (is, ic);
+				imapx_command_start (is, ic, cancellable, error);
 				count++;
 			} else {
 				/* This job isn't for the selected folder, but we don't want to
@@ -607,7 +613,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 				c(is->tagprefix, "* queueing job %3d '%s'\n", (gint)ic->pri, ic->name);
 				pri = ic->pri;
 				camel_dlist_remove ((CamelDListNode *) ic);
-				imapx_command_start (is, ic);
+				imapx_command_start (is, ic, cancellable, error);
 				count++;
 			}
 			ic = nc;
@@ -1656,7 +1662,7 @@ imapx_command_run (CamelIMAPXServer *is,
 	camel_imapx_command_close (ic);
 
 	QUEUE_LOCK (is);
-	imapx_command_start (is, ic);
+	imapx_command_start (is, ic, cancellable, error);
 	QUEUE_UNLOCK (is);
 
 	while (success && ic->status == NULL)
@@ -1999,7 +2005,7 @@ imapx_job_idle_start (CamelIMAPXServer *is,
 	/* Don't issue it if the idle was cancelled already */
 	if (is->idle->state == IMAPX_IDLE_PENDING) {
 		is->idle->state = IMAPX_IDLE_ISSUED;
-		imapx_command_start (is, ic);
+		imapx_command_start (is, ic, job->cancellable, &job->error);
 	} else {
 		imapx_job_done (is, ic->job);
 		camel_imapx_command_unref (ic);
@@ -2488,7 +2494,7 @@ imapx_select (CamelIMAPXServer *is,
 	}
 
 	ic->complete = imapx_command_select_done;
-	imapx_command_start (is, ic);
+	imapx_command_start (is, ic, cancellable, error);
 
 	return TRUE;
 }
