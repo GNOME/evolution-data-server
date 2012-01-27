@@ -25,6 +25,23 @@
 
 #define c(...) camel_imapx_debug(command, __VA_ARGS__)
 
+typedef struct _CamelIMAPXRealCommand CamelIMAPXRealCommand;
+
+/* CamelIMAPXCommand + some private bits */
+struct _CamelIMAPXRealCommand {
+	CamelIMAPXCommand public;
+
+	volatile gint ref_count;
+
+	/* For building the part. */
+	GString *buffer;
+
+	/* Used for running some commands synchronously. */
+	GCond *done_sync_cond;
+	GMutex *done_sync_mutex;
+	gboolean done_sync_flag;
+};
+
 CamelIMAPXCommand *
 camel_imapx_command_new (CamelIMAPXServer *is,
                          const gchar *name,
@@ -33,39 +50,50 @@ camel_imapx_command_new (CamelIMAPXServer *is,
                          const gchar *format,
                          ...)
 {
-	CamelIMAPXCommand *ic;
+	CamelIMAPXRealCommand *real_ic;
 	static gint tag = 0;
 	va_list ap;
 
 	if (cancellable != NULL)
 		g_object_ref (cancellable);
 
-	ic = g_slice_new0 (CamelIMAPXCommand);
-	ic->ref_count = 1;
-	ic->tag = tag++;
-	ic->name = name;
-	ic->buffer = g_string_sized_new (512);
-	ic->select = select;
-	ic->cancellable = cancellable;
-	ic->is = is;
-	camel_dlist_init (&ic->parts);
+	real_ic = g_slice_new0 (CamelIMAPXRealCommand);
+
+	/* Initialize private bits. */
+	real_ic->ref_count = 1;
+	real_ic->buffer = g_string_sized_new (512);
+	real_ic->done_sync_cond = g_cond_new ();
+	real_ic->done_sync_mutex = g_mutex_new ();
+
+	/* Initialize public bits. */
+	real_ic->public.is = is;
+	real_ic->public.tag = tag++;
+	real_ic->public.name = name;
+	real_ic->public.select = select;
+	real_ic->public.cancellable = cancellable;
+	camel_dlist_init (&real_ic->public.parts);
 
 	if (format != NULL && *format != '\0') {
 		va_start (ap, format);
-		camel_imapx_command_addv (ic, format, ap);
+		camel_imapx_command_addv (
+			(CamelIMAPXCommand *) real_ic, format, ap);
 		va_end (ap);
 	}
 
-	return ic;
+	return (CamelIMAPXCommand *) real_ic;
 }
 
 CamelIMAPXCommand *
 camel_imapx_command_ref (CamelIMAPXCommand *ic)
 {
-	g_return_val_if_fail (ic != NULL, NULL);
-	g_return_val_if_fail (ic->ref_count > 0, NULL);
+	CamelIMAPXRealCommand *real_ic;
 
-	g_atomic_int_inc (&ic->ref_count);
+	real_ic = (CamelIMAPXRealCommand *) ic;
+
+	g_return_val_if_fail (real_ic != NULL, NULL);
+	g_return_val_if_fail (real_ic->ref_count > 0, NULL);
+
+	g_atomic_int_inc (&real_ic->ref_count);
 
 	return ic;
 }
@@ -73,13 +101,17 @@ camel_imapx_command_ref (CamelIMAPXCommand *ic)
 void
 camel_imapx_command_unref (CamelIMAPXCommand *ic)
 {
-	g_return_if_fail (ic != NULL);
-	g_return_if_fail (ic->ref_count > 0);
+	CamelIMAPXRealCommand *real_ic;
 
-	if (g_atomic_int_dec_and_test (&ic->ref_count)) {
+	real_ic = (CamelIMAPXRealCommand *) ic;
+
+	g_return_if_fail (real_ic != NULL);
+	g_return_if_fail (real_ic->ref_count > 0);
+
+	if (g_atomic_int_dec_and_test (&real_ic->ref_count)) {
 		CamelIMAPXCommandPart *cp;
 
-		g_string_free (ic->buffer, TRUE);
+		/* Free the public stuff. */
 
 		imapx_free_status (ic->status);
 
@@ -101,11 +133,18 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 		if (ic->cancellable != NULL)
 			g_object_unref (ic->cancellable);
 
+		/* Free the private stuff. */
+
+		g_string_free (real_ic->buffer, TRUE);
+
+		g_cond_free (real_ic->done_sync_cond);
+		g_mutex_free (real_ic->done_sync_mutex);
+
 		/* Do NOT try to free the GError.  If set it should have been
 		 * propagated to the CamelIMAPXJob, so it's either NULL or the
 		 * CamelIMAPXJob owns it now. */
 
-		g_slice_free (CamelIMAPXCommand, ic);
+		g_slice_free (CamelIMAPXRealCommand, real_ic);
 	}
 }
 
@@ -144,9 +183,10 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 	CamelStream *S;
 	CamelDataWrapper *D;
 	CamelSasl *A;
-	gchar buffer[16];
+	gchar literal_format[16];
 	CamelFolder *folder;
 	CamelStore *parent_store;
+	GString *buffer;
 	gchar *fname = NULL, *encoded = NULL;
 	const gchar *full_name;
 
@@ -154,19 +194,21 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 
 	c(ic->is->tagprefix, "adding command, format = '%s'\n", format);
 
+	buffer = ((CamelIMAPXRealCommand *) ic)->buffer;
+
 	p = format;
 	ps = format;
 	while ((c = *p++) != '\0') {
 		switch (c) {
 		case '%':
 			if (*p == '%') {
-				g_string_append_len (ic->buffer, ps, p - ps);
+				g_string_append_len (buffer, ps, p - ps);
 				p++;
 				ps = p;
 				continue;
 			}
 
-			g_string_append_len (ic->buffer, ps, p - ps - 1);
+			g_string_append_len (buffer, ps, p - ps - 1);
 			start = p - 1;
 			width = 0;
 			llong = 0;
@@ -215,7 +257,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				break;
 			case 't': /* token */
 				s = va_arg (ap, gchar *);
-				g_string_append (ic->buffer, s);
+				g_string_append (buffer, s);
 				break;
 			case 's': /* simple string */
 				s = va_arg (ap, gchar *);
@@ -225,27 +267,27 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 					guchar mask = imapx_is_mask (s);
 
 					if (mask & IMAPX_TYPE_ATOM_CHAR)
-						g_string_append (ic->buffer, s);
+						g_string_append (buffer, s);
 					else if (mask & IMAPX_TYPE_TEXT_CHAR) {
-						g_string_append_c (ic->buffer, '"');
+						g_string_append_c (buffer, '"');
 						while (*s) {
 							gchar *start = s;
 
 							while (*s && imapx_is_quoted_char (*s))
 								s++;
-							g_string_append_len (ic->buffer, start, s - start);
+							g_string_append_len (buffer, start, s - start);
 							if (*s) {
-								g_string_append_c (ic->buffer, '\\');
-								g_string_append_c (ic->buffer, *s);
+								g_string_append_c (buffer, '\\');
+								g_string_append_c (buffer, *s);
 								s++;
 							}
 						}
-						g_string_append_c (ic->buffer, '"');
+						g_string_append_c (buffer, '"');
 					} else {
 						camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_STRING, s);
 					}
 				} else {
-					g_string_append (ic->buffer, "\"\"");
+					g_string_append (buffer, "\"\"");
 				}
 				if (encoded) {
 					g_free (encoded);
@@ -268,39 +310,39 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 					s = encoded;
 					goto output_string;
 				} else
-					g_string_append (ic->buffer, "\"\"");
+					g_string_append (buffer, "\"\"");
 
 				break;
 			case 'F': /* IMAP flags set */
 				f = va_arg (ap, guint32);
 				F = va_arg (ap, CamelFlag *);
-				imapx_write_flags (ic->buffer, f, F);
+				imapx_write_flags (buffer, f, F);
 				break;
 			case 'c':
 				d = va_arg (ap, gint);
 				ch = d;
-				g_string_append_c (ic->buffer, ch);
+				g_string_append_c (buffer, ch);
 				break;
 			case 'd': /* int/unsigned */
 			case 'u':
 				if (llong == 1) {
 					l = va_arg (ap, glong);
 					c(ic->is->tagprefix, "got glong '%d'\n", (gint)l);
-					memcpy (buffer, start, p - start);
-					buffer[p - start] = 0;
-					g_string_append_printf (ic->buffer, buffer, l);
+					memcpy (literal_format, start, p - start);
+					literal_format[p - start] = 0;
+					g_string_append_printf (buffer, literal_format, l);
 				} else if (llong == 2) {
 					guint64 i64 = va_arg (ap, guint64);
 					c(ic->is->tagprefix, "got guint64 '%d'\n", (gint)i64);
-					memcpy (buffer, start, p - start);
-					buffer[p - start] = 0;
-					g_string_append_printf (ic->buffer, buffer, i64);
+					memcpy (literal_format, start, p - start);
+					literal_format[p - start] = 0;
+					g_string_append_printf (buffer, literal_format, i64);
 				} else {
 					d = va_arg (ap, gint);
 					c(ic->is->tagprefix, "got gint '%d'\n", d);
-					memcpy (buffer, start, p - start);
-					buffer[p - start] = 0;
-					g_string_append_printf (ic->buffer, buffer, d);
+					memcpy (literal_format, start, p - start);
+					literal_format[p - start] = 0;
+					g_string_append_printf (buffer, literal_format, d);
 				}
 				break;
 			}
@@ -312,14 +354,14 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 			c = *p;
 			if (c) {
 				g_assert (c == '\\');
-				g_string_append_len (ic->buffer, ps, p - ps);
+				g_string_append_len (buffer, ps, p - ps);
 				p++;
 				ps = p;
 			}
 		}
 	}
 
-	g_string_append_len (ic->buffer, ps, p - ps - 1);
+	g_string_append_len (buffer, ps, p - ps - 1);
 }
 
 void
@@ -329,7 +371,10 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 {
 	CamelIMAPXCommandPart *cp;
 	CamelStreamNull *null;
+	GString *buffer;
 	guint ob_size = 0;
+
+	buffer = ((CamelIMAPXRealCommand *) ic)->buffer;
 
 	/* TODO: literal+? */
 
@@ -360,7 +405,7 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 		/* we presume we'll need to get additional data only if we're not authenticated yet */
 		g_object_ref (ob);
 		mechanism = camel_sasl_get_mechanism (CAMEL_SASL (ob));
-		g_string_append (ic->buffer, mechanism);
+		g_string_append (buffer, mechanism);
 		if (!camel_sasl_get_authenticated ((CamelSasl *) ob))
 			type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
 		break;
@@ -388,25 +433,25 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 	}
 
 	if (type & CAMEL_IMAPX_COMMAND_LITERAL_PLUS) {
-		g_string_append_c (ic->buffer, '{');
-		g_string_append_printf (ic->buffer, "%u", ob_size);
+		g_string_append_c (buffer, '{');
+		g_string_append_printf (buffer, "%u", ob_size);
 		if (ic->is->cinfo && ic->is->cinfo->capa & IMAPX_CAPABILITY_LITERALPLUS) {
-			g_string_append_c (ic->buffer, '+');
+			g_string_append_c (buffer, '+');
 		} else {
 			type &= ~CAMEL_IMAPX_COMMAND_LITERAL_PLUS;
 			type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
 		}
-		g_string_append_c (ic->buffer, '}');
+		g_string_append_c (buffer, '}');
 	}
 
 	cp = g_malloc0 (sizeof (*cp));
 	cp->type = type;
 	cp->ob_size = ob_size;
 	cp->ob = data;
-	cp->data_size = ic->buffer->len;
-	cp->data = g_strdup (ic->buffer->str);
+	cp->data_size = buffer->len;
+	cp->data = g_strdup (buffer->str);
 
-	g_string_set_size (ic->buffer, 0);
+	g_string_set_size (buffer, 0);
 
 	camel_dlist_addtail (&ic->parts, (CamelDListNode *) cp);
 }
@@ -414,16 +459,51 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 void
 camel_imapx_command_close (CamelIMAPXCommand *ic)
 {
+	GString *buffer;
+
 	g_return_if_fail (ic != NULL);
 
-	if (ic->buffer->len > 5 && g_ascii_strncasecmp (ic->buffer->str, "LOGIN", 5) == 0) {
-		c(ic->is->tagprefix, "completing command buffer is [%d] 'LOGIN...'\n", ic->buffer->len);
+	buffer = ((CamelIMAPXRealCommand *) ic)->buffer;
+
+	if (buffer->len > 5 && g_ascii_strncasecmp (buffer->str, "LOGIN", 5) == 0) {
+		c(ic->is->tagprefix, "completing command buffer is [%d] 'LOGIN...'\n", buffer->len);
 	} else {
-		c(ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", ic->buffer->len, ic->buffer->len, ic->buffer->str);
+		c(ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", buffer->len, buffer->len, buffer->str);
 	}
-	if (ic->buffer->len > 0)
+	if (buffer->len > 0)
 		camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_SIMPLE, NULL);
 
-	g_string_set_size (ic->buffer, 0);
+	g_string_set_size (buffer, 0);
 }
 
+void
+camel_imapx_command_wait (CamelIMAPXCommand *ic)
+{
+	CamelIMAPXRealCommand *real_ic;
+
+	g_return_if_fail (ic != NULL);
+
+	real_ic = (CamelIMAPXRealCommand *) ic;
+
+	g_mutex_lock (real_ic->done_sync_mutex);
+	while (!real_ic->done_sync_flag)
+		g_cond_wait (
+			real_ic->done_sync_cond,
+			real_ic->done_sync_mutex);
+	g_mutex_unlock (real_ic->done_sync_mutex);
+}
+
+void
+camel_imapx_command_done (CamelIMAPXCommand *ic)
+{
+	CamelIMAPXRealCommand *real_ic;
+
+	g_return_if_fail (ic != NULL);
+
+	real_ic = (CamelIMAPXRealCommand *) ic;
+
+	g_mutex_lock (real_ic->done_sync_mutex);
+	real_ic->done_sync_flag = TRUE;
+	g_cond_broadcast (real_ic->done_sync_cond);
+	g_mutex_unlock (real_ic->done_sync_mutex);
+}

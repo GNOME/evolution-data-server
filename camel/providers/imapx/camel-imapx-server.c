@@ -1682,11 +1682,7 @@ static void
 imapx_command_complete (CamelIMAPXServer *is,
                         CamelIMAPXCommand *ic)
 {
-	g_mutex_lock (ic->run_sync_mutex);
-	ic->run_sync_done = TRUE;
-	g_cond_broadcast (ic->run_sync_cond);
-	g_mutex_unlock (ic->run_sync_mutex);
-
+	camel_imapx_command_done (ic);
 	camel_imapx_command_unref (ic);
 }
 
@@ -1696,13 +1692,10 @@ imapx_command_cancelled (GCancellable *cancellable,
 {
 	/* Unblock imapx_command_run_sync() immediately.
 	 *
-	 * If imapx_command_complete() is called sometime later,
+	 * If camel_imapx_command_done() is called sometime later,
 	 * the GCond will broadcast but no one will be listening. */
 
-	g_mutex_lock (ic->run_sync_mutex);
-	ic->run_sync_done = TRUE;
-	g_cond_broadcast (ic->run_sync_cond);
-	g_mutex_unlock (ic->run_sync_mutex);
+	camel_imapx_command_done (ic);
 }
 
 /* The caller should free the command as well */
@@ -1711,10 +1704,6 @@ imapx_command_run_sync (CamelIMAPXServer *is,
                         CamelIMAPXCommand *ic)
 {
 	guint cancel_id = 0;
-
-	ic->run_sync_done = FALSE;
-	ic->run_sync_cond = g_cond_new ();
-	ic->run_sync_mutex = g_mutex_new ();
 
 	/* FIXME The only caller of this function currently does not set
 	 *       a "complete" callback function, so we can get away with
@@ -1739,22 +1728,13 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 
 	imapx_command_queue (is, ic);
 
-	g_mutex_lock (ic->run_sync_mutex);
-	while (!ic->run_sync_done)
-		g_cond_wait (ic->run_sync_cond, ic->run_sync_mutex);
-	g_mutex_unlock (ic->run_sync_mutex);
+	camel_imapx_command_wait (ic);
 
 	if (cancel_id > 0)
 		g_cancellable_disconnect (ic->cancellable, cancel_id);
 
 	/* XXX Might this overwrite an existing error? */
 	g_cancellable_set_error_if_cancelled (ic->cancellable, &ic->error);
-
-	g_cond_free (ic->run_sync_cond);
-	g_mutex_free (ic->run_sync_mutex);
-	ic->run_sync_done = FALSE;
-	ic->run_sync_cond = NULL;
-	ic->run_sync_mutex = NULL;
 }
 
 /* ********************************************************************** */

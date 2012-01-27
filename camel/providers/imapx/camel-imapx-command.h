@@ -70,8 +70,6 @@ struct _CamelIMAPXCommandPart {
 struct _CamelIMAPXCommand {
 	CamelIMAPXCommand *next, *prev;
 
-	volatile gint ref_count;
-
 	CamelIMAPXServer *is;
 	gint pri;
 
@@ -91,16 +89,8 @@ struct _CamelIMAPXCommand {
 
 	guint32 tag;
 
-	/* For building the part. */
-	GString *buffer;
-
 	CamelDList parts;
 	CamelIMAPXCommandPart *current;
-
-	/* Used for running some commands syncronously. */
-	gboolean run_sync_done;
-	GCond *run_sync_cond;
-	GMutex *run_sync_mutex;
 
 	/* Responsible for free'ing the command. */
 	CamelIMAPXCommandFunc complete;
@@ -127,6 +117,8 @@ void		camel_imapx_command_add_part	(CamelIMAPXCommand *ic,
 						 CamelIMAPXCommandPartType type,
 						 gpointer data);
 void		camel_imapx_command_close	(CamelIMAPXCommand *ic);
+void		camel_imapx_command_wait	(CamelIMAPXCommand *ic);
+void		camel_imapx_command_done	(CamelIMAPXCommand *ic);
 
 G_END_DECLS
 
