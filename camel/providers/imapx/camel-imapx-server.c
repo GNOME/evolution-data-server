@@ -1646,17 +1646,21 @@ imapx_step (CamelIMAPXServer *is,
  * use for capa, login, and namespaces only. */
 static gboolean
 imapx_command_run (CamelIMAPXServer *is,
-                   CamelIMAPXCommand *ic)
+                   CamelIMAPXCommand *ic,
+                   GCancellable *cancellable,
+                   GError **error)
 /* throws IO,PARSE exception */
 {
+	gboolean success = TRUE;
+
 	camel_imapx_command_close (ic);
 
 	QUEUE_LOCK (is);
 	imapx_command_start (is, ic);
 	QUEUE_UNLOCK (is);
 
-	while (ic->status == NULL && ic->error == NULL)
-		imapx_step (is, ic->cancellable, &ic->error);
+	while (success && ic->status == NULL)
+		success = imapx_step (is, cancellable, error);
 
 	if (is->literal == ic)
 		is->literal = NULL;
@@ -1665,7 +1669,7 @@ imapx_command_run (CamelIMAPXServer *is,
 	camel_dlist_remove ((CamelDListNode *) ic);
 	QUEUE_UNLOCK (is);
 
-	return (ic->error == NULL);
+	return success;
 }
 
 static void
@@ -2731,24 +2735,23 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		ic = camel_imapx_command_new (
 			is, "CAPABILITY", NULL,
 			cancellable, "CAPABILITY");
-		imapx_command_run (is, ic);
-
-		if (ic->error != NULL || ic->status->result != IMAPX_OK) {
-			if (ic->error == NULL)
-				g_set_error (
-					error, CAMEL_ERROR,
-					CAMEL_ERROR_GENERIC,
-					"%s", ic->status->text);
-			else {
-				g_propagate_error (error, ic->error);
-				ic->error = NULL;
-			}
-
+		if (!imapx_command_run (is, ic, cancellable, error)) {
 			camel_imapx_command_unref (ic);
 			success = FALSE;
-
 			goto exit;
 		}
+
+		/* Server reported error. */
+		if (ic->status->result != IMAPX_OK) {
+			g_set_error (
+				error, CAMEL_ERROR,
+				CAMEL_ERROR_GENERIC,
+				"%s", ic->status->text);
+			camel_imapx_command_unref (ic);
+			success = FALSE;
+			goto exit;
+		}
+
 		camel_imapx_command_unref (ic);
 	}
 
@@ -2766,20 +2769,20 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		ic = camel_imapx_command_new (
 			is, "STARTTLS", NULL,
 			cancellable, "STARTTLS");
-		imapx_command_run (is, ic);
-
-		if (ic->error != NULL || ic->status->result != IMAPX_OK) {
-			if (ic->error == NULL)
-				g_set_error (
-					&local_error, CAMEL_ERROR,
-					CAMEL_ERROR_GENERIC,
-					"%s", ic->status->text);
-			else {
-				g_propagate_error (&local_error, ic->error);
-				ic->error = NULL;
-			}
-
+		if (!imapx_command_run (is, ic, cancellable, error)) {
 			camel_imapx_command_unref (ic);
+			success = FALSE;
+			goto exit;
+		}
+
+		/* Server reported error. */
+		if (ic->status->result != IMAPX_OK) {
+			g_set_error (
+				error, CAMEL_ERROR,
+				CAMEL_ERROR_GENERIC,
+				"%s", ic->status->text);
+			camel_imapx_command_unref (ic);
+			success = FALSE;
 			goto exit;
 		}
 
@@ -2808,10 +2811,9 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 			ic = camel_imapx_command_new (
 				is, "CAPABILITY", NULL,
 				cancellable, "CAPABILITY");
-			if (!imapx_command_run (is, ic)) {
-				g_propagate_error (&local_error, ic->error);
-				ic->error = NULL;
+			if (!imapx_command_run (is, ic, cancellable, error)) {
 				camel_imapx_command_unref (ic);
+				success = FALSE;
 				goto exit;
 			}
 
@@ -2820,20 +2822,16 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	}
 
 exit:
-	if (local_error != NULL) {
-		e(is->tagprefix, "Unable to connect %d %s \n",
-		  local_error->code, local_error->message);
-		g_propagate_error (error, local_error);
-		local_error = NULL;
-		g_object_unref (is->stream);
-		is->stream = NULL;
+	if (!success) {
+		if (is->stream != NULL) {
+			g_object_unref (is->stream);
+			is->stream = NULL;
+		}
 
-		if (is->cinfo) {
+		if (is->cinfo != NULL) {
 			imapx_free_capability (is->cinfo);
 			is->cinfo = NULL;
 		}
-
-		success = FALSE;
 	}
 
 	g_free (host);
@@ -2922,18 +2920,12 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 			"LOGIN %s %s", user, password);
 	}
 
-	imapx_command_run (is, ic);
-
-	if (ic->error == NULL) {
-		if (ic->status->result == IMAPX_OK)
-			result = CAMEL_AUTHENTICATION_ACCEPTED;
-		else
-			result = CAMEL_AUTHENTICATION_REJECTED;
-	} else {
-		g_propagate_error (error, ic->error);
-		ic->error = NULL;
+	if (!imapx_command_run (is, ic, cancellable, error))
 		result = CAMEL_AUTHENTICATION_ERROR;
-	}
+	else if (ic->status->result == IMAPX_OK)
+		result = CAMEL_AUTHENTICATION_ACCEPTED;
+	else
+		result = CAMEL_AUTHENTICATION_REJECTED;
 
 	/* Forget old capabilities after login. */
 	if (result == CAMEL_AUTHENTICATION_ACCEPTED) {
@@ -3002,9 +2994,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		ic = camel_imapx_command_new (
 			is, "CAPABILITY", NULL,
 			cancellable, "CAPABILITY");
-		if (!imapx_command_run (is, ic)) {
-			g_propagate_error (error, ic->error);
-			ic->error = NULL;
+		if (!imapx_command_run (is, ic, cancellable, error)) {
 			camel_imapx_command_unref (ic);
 			goto exception;
 		}
@@ -3025,9 +3015,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		ic = camel_imapx_command_new (
 			is, "NAMESPACE", NULL,
 			cancellable, "NAMESPACE");
-		if (!imapx_command_run (is, ic)) {
-			g_propagate_error (error, ic->error);
-			ic->error = NULL;
+		if (!imapx_command_run (is, ic, cancellable, error)) {
 			camel_imapx_command_unref (ic);
 			goto exception;
 		}
@@ -3039,9 +3027,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 		ic = camel_imapx_command_new (
 			is, "ENABLE", NULL, cancellable,
 			"ENABLE CONDSTORE QRESYNC");
-		if (!imapx_command_run (is, ic)) {
-			g_propagate_error (error, ic->error);
-			ic->error = NULL;
+		if (!imapx_command_run (is, ic, cancellable, error)) {
 			camel_imapx_command_unref (ic);
 			goto exception;
 		}
