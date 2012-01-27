@@ -84,7 +84,6 @@ struct _CamelIMAPXCommand {
 
 	/* If the GError is set, it means we were not able to parse
 	 * above status, possibly due to cancellation or I/O error. */
-	GCancellable *cancellable;
 	GError *error;
 
 	guint32 tag;
@@ -101,7 +100,6 @@ CamelIMAPXCommand *
 		camel_imapx_command_new		(CamelIMAPXServer *is,
 						 const gchar *name,
 						 CamelFolder *select,
-						 GCancellable *cancellable,
 						 const gchar *format,
 						 ...);
 CamelIMAPXCommand *

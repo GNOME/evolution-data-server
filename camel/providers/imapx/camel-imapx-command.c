@@ -46,16 +46,12 @@ CamelIMAPXCommand *
 camel_imapx_command_new (CamelIMAPXServer *is,
                          const gchar *name,
                          CamelFolder *select,
-                         GCancellable *cancellable,
                          const gchar *format,
                          ...)
 {
 	CamelIMAPXRealCommand *real_ic;
 	static gint tag = 0;
 	va_list ap;
-
-	if (cancellable != NULL)
-		g_object_ref (cancellable);
 
 	real_ic = g_slice_new0 (CamelIMAPXRealCommand);
 
@@ -70,7 +66,6 @@ camel_imapx_command_new (CamelIMAPXServer *is,
 	real_ic->public.tag = tag++;
 	real_ic->public.name = name;
 	real_ic->public.select = select;
-	real_ic->public.cancellable = cancellable;
 	camel_dlist_init (&real_ic->public.parts);
 
 	if (format != NULL && *format != '\0') {
@@ -129,9 +124,6 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 			}
 			g_free (cp);
 		}
-
-		if (ic->cancellable != NULL)
-			g_object_unref (ic->cancellable);
 
 		/* Free the private stuff. */
 
