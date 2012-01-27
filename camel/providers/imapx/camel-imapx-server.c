@@ -937,7 +937,9 @@ imapx_command_start (CamelIMAPXServer *is,
 	return TRUE;
 }
 
-static gboolean duplicate_fetch_or_refresh (CamelIMAPXServer *is, CamelIMAPXCommand *ic)
+static gboolean
+duplicate_fetch_or_refresh (CamelIMAPXServer *is,
+                            CamelIMAPXCommand *ic)
 {
 	if (!ic->job)
 		return FALSE;
@@ -952,6 +954,7 @@ static gboolean duplicate_fetch_or_refresh (CamelIMAPXServer *is, CamelIMAPXComm
 
 	return FALSE;
 }
+
 /* See if we can start another task yet.
  *
  * If we're waiting for a literal, we cannot proceed.
