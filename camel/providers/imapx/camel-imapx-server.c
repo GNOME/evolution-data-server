@@ -1699,9 +1699,11 @@ imapx_command_cancelled (GCancellable *cancellable,
 }
 
 /* The caller should free the command as well */
-static void
+static gboolean
 imapx_command_run_sync (CamelIMAPXServer *is,
-                        CamelIMAPXCommand *ic)
+                        CamelIMAPXCommand *ic,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	guint cancel_id = 0;
 
@@ -1716,9 +1718,9 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 	g_warn_if_fail (ic->complete == NULL);
 	ic->complete = imapx_command_complete;
 
-	if (G_IS_CANCELLABLE (ic->cancellable))
+	if (G_IS_CANCELLABLE (cancellable))
 		cancel_id = g_cancellable_connect (
-			ic->cancellable,
+			cancellable,
 			G_CALLBACK (imapx_command_cancelled),
 			camel_imapx_command_ref (ic),
 			(GDestroyNotify) camel_imapx_command_unref);
@@ -1731,10 +1733,13 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 	camel_imapx_command_wait (ic);
 
 	if (cancel_id > 0)
-		g_cancellable_disconnect (ic->cancellable, cancel_id);
+		g_cancellable_disconnect (cancellable, cancel_id);
 
 	/* XXX Might this overwrite an existing error? */
-	g_cancellable_set_error_if_cancelled (ic->cancellable, &ic->error);
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		return FALSE;
+
+	return TRUE;
 }
 
 /* ********************************************************************** */
@@ -3961,7 +3966,13 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is,
 			ic->job = job;
 			ic->pri = job->pri;
 
-			imapx_command_run_sync (is, ic);
+			if (!imapx_command_run_sync (is, ic, job->cancellable, &job->error)) {
+				g_prefix_error (
+					&job->error,
+					_("Error refreshing folder: "));
+				camel_imapx_command_unref (ic);
+				goto done;
+			}
 
 			if (ic->error != NULL || ic->status->result != IMAPX_OK) {
 				propagate_ic_error (job, ic, "Error refreshing folder: %s");
