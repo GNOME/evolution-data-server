@@ -51,11 +51,11 @@ static void
 offline_journal_finalize (GObject *object)
 {
 	CamelOfflineJournal *journal = CAMEL_OFFLINE_JOURNAL (object);
-	CamelDListNode *entry;
+	gpointer entry;
 
 	g_free (journal->filename);
 
-	while ((entry = camel_dlist_remhead (&journal->queue)))
+	while ((entry = g_queue_pop_head (&journal->queue)))
 		CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_free (journal, entry);
 
 	/* Chain up to parent's finalize() method. */
@@ -74,9 +74,7 @@ camel_offline_journal_class_init (CamelOfflineJournalClass *class)
 static void
 camel_offline_journal_init (CamelOfflineJournal *journal)
 {
-	journal->folder = NULL;
-	journal->filename = NULL;
-	camel_dlist_init (&journal->queue);
+	g_queue_init (&journal->queue);
 }
 
 /**
@@ -92,7 +90,7 @@ camel_offline_journal_construct (CamelOfflineJournal *journal,
                                  CamelFolder *folder,
                                  const gchar *filename)
 {
-	CamelDListNode *entry;
+	gpointer entry;
 	FILE *fp;
 
 	journal->filename = g_strdup (filename);
@@ -100,7 +98,7 @@ camel_offline_journal_construct (CamelOfflineJournal *journal,
 
 	if ((fp = g_fopen (filename, "rb"))) {
 		while ((entry = CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_load (journal, fp)))
-			camel_dlist_addtail (&journal->queue, entry);
+			g_queue_push_tail (&journal->queue, entry);
 
 		fclose (fp);
 	}
@@ -136,7 +134,7 @@ gint
 camel_offline_journal_write (CamelOfflineJournal *journal,
                              GError **error)
 {
-	CamelDListNode *entry;
+	GList *head, *link;
 	FILE *fp;
 	gint fd;
 
@@ -154,11 +152,13 @@ camel_offline_journal_write (CamelOfflineJournal *journal,
 	if (!fp)
 		goto exception;
 
-	entry = journal->queue.head;
-	while (entry->next) {
+	head = g_queue_peek_head_link (&journal->queue);
+
+	for (link = head; link != NULL; link = g_list_next (link)) {
+		gpointer entry = link->data;
+
 		if (CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_write (journal, entry, fp) == -1)
 			goto exception;
-		entry = entry->next;
 	}
 
 	if (fsync (fd) == -1)
@@ -199,13 +199,16 @@ camel_offline_journal_replay (CamelOfflineJournal *journal,
                               GCancellable *cancellable,
                               GError **error)
 {
-	CamelDListNode *entry, *next;
+	GList *head, *link;
+	GQueue trash = G_QUEUE_INIT;
 	GError *local_error = NULL;
 	gint failed = 0;
 
-	entry = journal->queue.head;
-	while (entry->next) {
-		next = entry->next;
+	head = g_queue_peek_head_link (&journal->queue);
+
+	for (link = head; link != NULL; link = g_list_next (link)) {
+		gpointer entry = link->data;
+
 		if (CAMEL_OFFLINE_JOURNAL_GET_CLASS (journal)->entry_play (
 			journal, entry, cancellable, &local_error) == -1) {
 			if (failed == 0) {
@@ -215,10 +218,14 @@ camel_offline_journal_replay (CamelOfflineJournal *journal,
 			g_clear_error (&local_error);
 			failed++;
 		} else {
-			camel_dlist_remove (entry);
+			g_queue_push_tail (&trash, link);
 		}
-		entry = next;
 	}
+
+	/* Remove successfully played entries.
+	 * XXX Are we leaking entries here? */
+	while ((link = g_queue_pop_head (&trash)) != NULL)
+		g_queue_delete_link (&journal->queue, link);
 
 	if (failed > 0)
 		return -1;

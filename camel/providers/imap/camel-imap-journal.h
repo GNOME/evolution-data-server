@@ -61,8 +61,6 @@ typedef enum {
 } CamelOfflineAction;
 
 struct _CamelIMAPJournalEntry {
-	CamelDListNode node;
-
 	CamelOfflineAction type;
 
 	GPtrArray *uids;

@@ -41,10 +41,10 @@
 
 #define d(x)
 
-static void imap_entry_free (CamelOfflineJournal *journal, CamelDListNode *entry);
-static CamelDListNode *imap_entry_load (CamelOfflineJournal *journal, FILE *in);
-static gint imap_entry_write (CamelOfflineJournal *journal, CamelDListNode *entry, FILE *out);
-static gint imap_entry_play (CamelOfflineJournal *journal, CamelDListNode *entry, GCancellable *cancellable, GError **error);
+static void imap_entry_free (CamelOfflineJournal *journal, gpointer entry);
+static gpointer imap_entry_load (CamelOfflineJournal *journal, FILE *in);
+static gint imap_entry_write (CamelOfflineJournal *journal, gpointer entry, FILE *out);
+static gint imap_entry_play (CamelOfflineJournal *journal, gpointer entry, GCancellable *cancellable, GError **error);
 static void unref_folder (gpointer key, gpointer value, gpointer data);
 static void free_uids (GPtrArray *array);
 
@@ -112,9 +112,9 @@ unref_folder (gpointer key,
 
 static void
 imap_entry_free (CamelOfflineJournal *journal,
-                 CamelDListNode *entry)
+                 gpointer entry)
 {
-	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
+	CamelIMAPJournalEntry *imap_entry = entry;
 
 	switch (imap_entry->type) {
 		case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
@@ -179,7 +179,7 @@ decode_uids (FILE *file)
 	return uids;
 }
 
-static CamelDListNode *
+static gpointer
 imap_entry_load (CamelOfflineJournal *journal,
                  FILE *in)
 {
@@ -215,7 +215,7 @@ imap_entry_load (CamelOfflineJournal *journal,
 		goto exception;
 	}
 
-	return (CamelDListNode *) entry;
+	return entry;
 
  exception:
 	switch (entry->type) {
@@ -245,10 +245,10 @@ encode_uids (FILE *file,
 
 static gint
 imap_entry_write (CamelOfflineJournal *journal,
-                  CamelDListNode *entry,
+                  gpointer entry,
                   FILE *out)
 {
-	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
+	CamelIMAPJournalEntry *imap_entry = entry;
 	GPtrArray *uids = NULL;
 
 	if (camel_file_util_encode_uint32 (out, imap_entry->type) == -1)
@@ -322,11 +322,11 @@ journal_decode_folder (CamelIMAPJournal *journal,
 
 static gint
 imap_entry_play (CamelOfflineJournal *journal,
-                 CamelDListNode *entry,
+                 gpointer entry,
                  GCancellable *cancellable,
                  GError **error)
 {
-	CamelIMAPJournalEntry *imap_entry = (CamelIMAPJournalEntry *) entry;
+	CamelIMAPJournalEntry *imap_entry = entry;
 
 	d(g_print ("DEBUG: PLaying the journal \n"));
 
@@ -461,7 +461,7 @@ camel_imap_journal_log (CamelOfflineJournal *journal,
 
 	va_end (ap);
 
-	camel_dlist_addtail (&journal->queue, (CamelDListNode *) entry);
+	g_queue_push_tail (&journal->queue, entry);
 	camel_offline_journal_write (journal, NULL);
 }
 

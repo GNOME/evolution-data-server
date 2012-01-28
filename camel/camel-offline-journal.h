@@ -30,8 +30,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include <camel/camel-list-utils.h>
-#include <camel/camel-object.h>
+#include <camel/camel-folder.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_OFFLINE_JOURNAL \
@@ -58,28 +57,26 @@ typedef struct _CamelOfflineJournal CamelOfflineJournal;
 typedef struct _CamelOfflineJournalClass CamelOfflineJournalClass;
 typedef struct _CamelOfflineJournalEntry CamelOfflineJournalEntry;
 
-struct _CamelFolder;
-
 struct _CamelOfflineJournal {
 	CamelObject parent;
 
-	struct _CamelFolder *folder;
+	CamelFolder *folder;
 	gchar *filename;
-	CamelDList queue;
+	GQueue queue;
 };
 
 struct _CamelOfflineJournalClass {
 	CamelObjectClass parent_class;
 
 	void		(*entry_free)		(CamelOfflineJournal *journal,
-						 CamelDListNode *entry);
-	CamelDListNode *(*entry_load)		(CamelOfflineJournal *journal,
+						 gpointer entry);
+	gpointer	(*entry_load)		(CamelOfflineJournal *journal,
 						 FILE *in);
 	gint		(*entry_write)		(CamelOfflineJournal *journal,
-						 CamelDListNode *entry,
+						 gpointer entry,
 						 FILE *out);
 	gint		(*entry_play)		(CamelOfflineJournal *journal,
-						 CamelDListNode *entry,
+						 gpointer entry,
 						 GCancellable *cancellable,
 						 GError **error);
 };
