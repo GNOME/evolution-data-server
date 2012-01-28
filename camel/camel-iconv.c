@@ -42,14 +42,7 @@
 
 #define cd(x)
 
-#ifdef G_THREADS_ENABLED
-static GStaticMutex lock = G_STATIC_MUTEX_INIT;
-#define LOCK() g_static_mutex_lock(&lock)
-#define UNLOCK() g_static_mutex_unlock(&lock)
-#else
-#define LOCK()
-#define UNLOCK()
-#endif
+G_LOCK_DEFINE_STATIC (iconv);
 
 struct _iconv_cache_node {
 	struct _iconv_cache *parent;
@@ -205,11 +198,11 @@ iconv_init (gint keep)
 	gchar *from, *to, *locale;
 	gint i;
 
-	LOCK ();
+	G_LOCK (iconv);
 
 	if (iconv_charsets != NULL) {
 		if (!keep)
-			UNLOCK ();
+			G_UNLOCK (iconv);
 		return;
 	}
 
@@ -281,7 +274,7 @@ iconv_init (gint keep)
 	g_free (locale);
 #endif
 	if (!keep)
-		UNLOCK ();
+		G_UNLOCK (iconv);
 }
 
 const gchar *
@@ -299,7 +292,7 @@ camel_iconv_charset_name (const gchar *charset)
 	iconv_init (TRUE);
 	ret = g_hash_table_lookup (iconv_charsets, name);
 	if (ret != NULL) {
-		UNLOCK ();
+		G_UNLOCK (iconv);
 		return ret;
 	}
 
@@ -356,7 +349,7 @@ camel_iconv_charset_name (const gchar *charset)
 	}
 
 	g_hash_table_insert (iconv_charsets, g_strdup (name), ret);
-	UNLOCK ();
+	G_UNLOCK (iconv);
 
 	return ret;
 }
@@ -400,7 +393,7 @@ camel_iconv_open (const gchar *oto,
 	tofrom = g_alloca (strlen (to) + strlen (from) + 2);
 	sprintf(tofrom, "%s%%%s", to, from);
 
-	LOCK ();
+	G_LOCK (iconv);
 
 	ic = g_hash_table_lookup (iconv_cache, tofrom);
 	if (ic) {
@@ -472,7 +465,7 @@ camel_iconv_open (const gchar *oto,
 		}
 	}
 
-	UNLOCK ();
+	G_UNLOCK (iconv);
 
 	return ip;
 }
@@ -495,7 +488,7 @@ camel_iconv_close (iconv_t ip)
 	if (ip == (iconv_t) - 1)
 		return;
 
-	LOCK ();
+	G_LOCK (iconv);
 	in = g_hash_table_lookup (iconv_cache_open, ip);
 	if (in) {
 		cd(printf("closing iconv converter '%s'\n", in->parent->conv));
@@ -506,7 +499,7 @@ camel_iconv_close (iconv_t ip)
 		g_warning("trying to close iconv i dont know about: %p", ip);
 		iconv_close (ip);
 	}
-	UNLOCK ();
+	G_UNLOCK (iconv);
 }
 
 const gchar *
