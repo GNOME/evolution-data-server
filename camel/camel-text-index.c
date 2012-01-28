@@ -36,7 +36,6 @@
 #include <glib/gstdio.h>
 
 #include "camel-block-file.h"
-#include "camel-list-utils.h"
 #include "camel-mempool.h"
 #include "camel-object.h"
 #include "camel-partition-table.h"
@@ -113,9 +112,8 @@ struct _CamelTextIndexPrivate {
 	CamelPartitionTable *name_hash;
 
 	/* Cache of words to write */
-	gint word_cache_limit;
-	gint word_cache_count;
-	CamelDList word_cache;
+	guint word_cache_limit;
+	GQueue word_cache;
 	GHashTable *words;
 	GStaticRecMutex lock;
 };
@@ -138,9 +136,6 @@ struct _CamelTextIndexRoot {
 };
 
 struct _CamelTextIndexWord {
-	struct _CamelTextIndexWord *next;
-	struct _CamelTextIndexWord *prev;
-
 	camel_block_t data;	/* where the data starts */
 	camel_key_t wordid;
 	gchar *word;
@@ -206,7 +201,7 @@ text_index_finalize (GObject *object)
 
 	priv = CAMEL_TEXT_INDEX (object)->priv;
 
-	g_assert (camel_dlist_empty (&priv->word_cache));
+	g_assert (g_queue_is_empty (&priv->word_cache));
 	g_assert (g_hash_table_size (priv->words) == 0);
 
 	g_hash_table_destroy (priv->words);
@@ -223,7 +218,7 @@ text_index_add_name_to_word (CamelIndex *idx,
                              const gchar *word,
                              camel_key_t nameid)
 {
-	struct _CamelTextIndexWord *w, *wp, *ww;
+	struct _CamelTextIndexWord *w;
 	CamelTextIndexPrivate *p = CAMEL_TEXT_INDEX (idx)->priv;
 	camel_key_t wordid;
 	camel_block_t data;
@@ -231,6 +226,10 @@ text_index_add_name_to_word (CamelIndex *idx,
 
 	w = g_hash_table_lookup (p->words, word);
 	if (w == NULL) {
+		GQueue trash = G_QUEUE_INIT;
+		GList *link;
+		guint length;
+
 		wordid = camel_partition_table_lookup (p->word_hash, word);
 		if (wordid == 0) {
 			data = 0;
@@ -264,11 +263,14 @@ text_index_add_name_to_word (CamelIndex *idx,
 
 		w->names[0] = nameid;
 		g_hash_table_insert (p->words, w->word, w);
-		camel_dlist_addhead (&p->word_cache, (CamelDListNode *) w);
-		p->word_cache_count++;
-		ww = (struct _CamelTextIndexWord *) p->word_cache.tailpred;
-		wp = ww->prev;
-		while (wp && p->word_cache_count > p->word_cache_limit) {
+		g_queue_push_head (&p->word_cache, w);
+
+		length = p->word_cache.length;
+		link = g_queue_peek_tail_link (&p->word_cache);
+
+		while (link != NULL && length > p->word_cache_limit) {
+			struct _CamelTextIndexWord *ww = link->data;
+
 			io (printf ("writing key file entry '%s' [%x]\n", ww->word, ww->data));
 			if (camel_key_file_write (p->links, &ww->data, ww->used, ww->names) != -1) {
 				io (printf ("  new data [%x]\n", ww->data));
@@ -277,18 +279,24 @@ text_index_add_name_to_word (CamelIndex *idx,
 				/* if this call fails - we still point to the old data - not fatal */
 				camel_key_table_set_data (
 					p->word_index, ww->wordid, ww->data);
-				camel_dlist_remove ((CamelDListNode *) ww);
 				g_hash_table_remove (p->words, ww->word);
+				g_queue_push_tail (&trash, link);
+				link->data = NULL;
 				g_free (ww->word);
 				g_free (ww);
-				p->word_cache_count--;
+				length--;
 			}
-			ww = wp;
-			wp = wp->prev;
+
+			link = g_list_previous (link);
 		}
+
+		/* Remove deleted words from the cache. */
+		while ((link = g_queue_pop_head (&trash)) != NULL)
+			g_queue_delete_link (&p->word_cache, link);
+
 	} else {
-		camel_dlist_remove ((CamelDListNode *) w);
-		camel_dlist_addhead (&p->word_cache, (CamelDListNode *) w);
+		g_queue_remove (&p->word_cache, w);
+		g_queue_push_head (&p->word_cache, w);
 		w->names[w->used] = nameid;
 		w->used++;
 		if (w->used == G_N_ELEMENTS (w->names)) {
@@ -332,7 +340,7 @@ text_index_sync (CamelIndex *idx)
 	/* this doesn't really need to be dropped, its only used in updates anyway */
 	p->word_cache_limit = 1024;
 
-	while ((ww = (struct _CamelTextIndexWord *) camel_dlist_remhead (&p->word_cache))) {
+	while ((ww = g_queue_pop_head (&p->word_cache))) {
 		if (ww->used > 0) {
 			io (printf ("writing key file entry '%s' [%x]\n", ww->word, ww->data));
 			if (camel_key_file_write (p->links, &ww->data, ww->used, ww->names) != -1) {
@@ -825,9 +833,8 @@ camel_text_index_init (CamelTextIndex *text_index)
 	text_index->priv = G_TYPE_INSTANCE_GET_PRIVATE (
 		text_index, CAMEL_TYPE_TEXT_INDEX, CamelTextIndexPrivate);
 
-	camel_dlist_init (&text_index->priv->word_cache);
+	g_queue_init (&text_index->priv->word_cache);
 	text_index->priv->words = g_hash_table_new (g_str_hash, g_str_equal);
-	text_index->priv->word_cache_count = 0;
 
 	/* This cache size and the block cache size have been tuned for
 	 * about the best with moderate memory usage.  Doubling the memory
