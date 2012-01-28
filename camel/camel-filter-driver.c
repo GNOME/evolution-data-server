@@ -42,7 +42,6 @@
 #include "camel-file-utils.h"
 #include "camel-filter-driver.h"
 #include "camel-filter-search.h"
-#include "camel-list-utils.h"
 #include "camel-mime-message.h"
 #include "camel-service.h"
 #include "camel-session.h"
@@ -66,9 +65,6 @@ enum filter_log_t {
 
 /* list of rule nodes */
 struct _filter_rule {
-	struct _filter_rule *next;
-	struct _filter_rule *prev;
-
 	gchar *match;
 	gchar *action;
 	gchar *name;
@@ -115,7 +111,7 @@ struct _CamelFilterDriverPrivate {
 
 	FILE *logfile;             /* log file */
 
-	CamelDList rules;		   /* list of _filter_rule structs */
+	GQueue rules;		   /* queue of _filter_rule structs */
 
 	GError *error;
 
@@ -181,6 +177,13 @@ free_hash_strings (gpointer key,
 	g_free (value);
 }
 
+static gint
+filter_rule_compare_by_name (struct _filter_rule *rule,
+                             const gchar *name)
+{
+	return g_strcmp0 (rule->name, name);
+}
+
 static void
 filter_driver_dispose (GObject *object)
 {
@@ -223,7 +226,7 @@ filter_driver_finalize (GObject *object)
 
 	g_object_unref (priv->eval);
 
-	while ((node = (struct _filter_rule *) camel_dlist_remhead (&priv->rules))) {
+	while ((node = g_queue_pop_head (&priv->rules)) != NULL) {
 		g_free (node->match);
 		g_free (node->action);
 		g_free (node->name);
@@ -255,7 +258,7 @@ camel_filter_driver_init (CamelFilterDriver *filter_driver)
 		filter_driver, CAMEL_TYPE_FILTER_DRIVER,
 		CamelFilterDriverPrivate);
 
-	camel_dlist_init (&filter_driver->priv->rules);
+	g_queue_init (&filter_driver->priv->rules);
 
 	filter_driver->priv->eval = camel_sexp_new ();
 
@@ -381,28 +384,31 @@ camel_filter_driver_add_rule (CamelFilterDriver *d,
 	node->match = g_strdup (match);
 	node->action = g_strdup (action);
 	node->name = g_strdup (name);
-	camel_dlist_addtail (&d->priv->rules, (CamelDListNode *) node);
+
+	g_queue_push_tail (&d->priv->rules, node);
 }
 
 gint
 camel_filter_driver_remove_rule_by_name (CamelFilterDriver *d,
                                          const gchar *name)
 {
-	struct _filter_rule *node;
+	GList *link;
 
-	node = (struct _filter_rule *) d->priv->rules.head;
-	while (node->next) {
-		if (!strcmp (node->name, name)) {
-			camel_dlist_remove ((CamelDListNode *) node);
-			g_free (node->match);
-			g_free (node->action);
-			g_free (node->name);
-			g_free (node);
+	link = g_queue_find_custom (
+		&d->priv->rules, name,
+		(GCompareFunc) filter_rule_compare_by_name);
 
-			return 0;
-		}
+	if (link != NULL) {
+		struct _filter_rule *rule = link->data;
 
-		node = node->next;
+		g_queue_delete_link (&d->priv->rules, link);
+
+		g_free (rule->match);
+		g_free (rule->action);
+		g_free (rule->name);
+		g_free (rule);
+
+		return 0;
 	}
 
 	return -1;
@@ -1595,10 +1601,10 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
                                     GError **error)
 {
 	CamelFilterDriverPrivate *p = driver->priv;
-	struct _filter_rule *node;
 	gboolean freeinfo = FALSE;
 	gboolean filtered = FALSE;
 	CamelSExpResult *r;
+	GList *list, *link;
 	gint result;
 
 	/* FIXME: make me into a g_return_if_fail/g_assert or whatever... */
@@ -1644,12 +1650,17 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 	if (message != NULL && camel_mime_message_get_source (message) == NULL)
 		camel_mime_message_set_source (message, original_store_uid);
 
-	node = (struct _filter_rule *) p->rules.head;
+	list = g_queue_peek_head_link (&p->rules);
 	result = CAMEL_SEARCH_NOMATCH;
-	while (node->next && !p->terminated) {
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		struct _filter_rule *rule = link->data;
 		struct _get_message data;
 
-		d(printf("applying rule %s\naction %s\n", node->match, node->action));
+		if (p->terminated)
+			break;
+
+		d(printf("applying rule %s\naction %s\n", rule->match, rule->action));
 
 		data.priv = p;
 		data.store_uid = original_store_uid;
@@ -1659,26 +1670,26 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 
 		result = camel_filter_search_match (
 			p->session, get_message_cb, &data, p->info,
-			original_store_uid, node->match, &p->error);
+			original_store_uid, rule->match, &p->error);
 
 		switch (result) {
 		case CAMEL_SEARCH_ERROR:
 			goto error;
 		case CAMEL_SEARCH_MATCHED:
 			filtered = TRUE;
-			camel_filter_driver_log (driver, FILTER_LOG_START, "%s", node->name);
+			camel_filter_driver_log (driver, FILTER_LOG_START, "%s", rule->name);
 
 			if (camel_debug(":filter"))
 				printf("filtering '%s' applying rule %s\n",
-				       camel_message_info_subject(info)?camel_message_info_subject(info):"?no subject?", node->name);
+				       camel_message_info_subject(info)?camel_message_info_subject(info):"?no subject?", rule->name);
 
 			/* perform necessary filtering actions */
-			camel_sexp_input_text (p->eval, node->action, strlen (node->action));
+			camel_sexp_input_text (p->eval, rule->action, strlen (rule->action));
 			if (camel_sexp_parse (p->eval) == -1) {
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 					_("Error parsing filter: %s: %s"),
-					camel_sexp_error (p->eval), node->action);
+					camel_sexp_error (p->eval), rule->action);
 				goto error;
 			}
 			r = camel_sexp_eval (p->eval);
@@ -1689,15 +1700,13 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 					_("Error executing filter: %s: %s"),
-					camel_sexp_error (p->eval), node->action);
+					camel_sexp_error (p->eval), rule->action);
 				goto error;
 			}
 			camel_sexp_result_free (p->eval, r);
 		default:
 			break;
 		}
-
-		node = node->next;
 	}
 
 	/* *Now* we can set the DELETED flag... */
