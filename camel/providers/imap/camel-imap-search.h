@@ -62,7 +62,7 @@ struct _CamelImapSearch {
 
 	/* cache of body search matches */
 	guint matches_count;
-	CamelDList matches;
+	GQueue matches;
 	GHashTable *matches_hash;
 };
 
