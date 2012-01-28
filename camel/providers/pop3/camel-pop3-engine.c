@@ -86,9 +86,9 @@ camel_pop3_engine_class_init (CamelPOP3EngineClass *class)
 static void
 camel_pop3_engine_init (CamelPOP3Engine *engine)
 {
-	camel_dlist_init (&engine->active);
-	camel_dlist_init (&engine->queue);
-	camel_dlist_init (&engine->done);
+	g_queue_init (&engine->active);
+	g_queue_init (&engine->queue);
+	g_queue_init (&engine->done);
 	engine->state = CAMEL_POP3_ENGINE_DISCONNECT;
 }
 
@@ -267,13 +267,13 @@ engine_command_queue (CamelPOP3Engine *pe,
 
 	if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen (pc->data)) > CAMEL_POP3_SEND_LIMIT)
 	    && pe->current != NULL) {
-		camel_dlist_addtail (&pe->queue, (CamelDListNode *) pc);
+		g_queue_push_tail (&pe->queue, pc);
 		return FALSE;
 	}
 
 	/* ??? */
 	if (camel_stream_write ((CamelStream *) pe->stream, pc->data, strlen (pc->data), cancellable, error) == -1) {
-		camel_dlist_addtail (&pe->queue, (CamelDListNode *) pc);
+		g_queue_push_tail (&pe->queue, pc);
 		return FALSE;
 	}
 
@@ -284,7 +284,7 @@ engine_command_queue (CamelPOP3Engine *pe,
 	if (pe->current == NULL)
 		pe->current = pc;
 	else
-		camel_dlist_addtail (&pe->active, (CamelDListNode *) pc);
+		g_queue_push_tail (&pe->active, pc);
 
 	return TRUE;
 }
@@ -298,7 +298,8 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 {
 	guchar *p;
 	guint len;
-	CamelPOP3Command *pc, *pw, *pn;
+	CamelPOP3Command *pc;
+	GList *link;
 
 	g_return_val_if_fail (pe != NULL, -1);
 
@@ -343,36 +344,35 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 		break;
 	}
 
-	camel_dlist_addtail (&pe->done, (CamelDListNode *) pc);
+	g_queue_push_tail (&pe->done, pc);
 	pe->sentlen -= strlen (pc->data);
 
 	/* Set next command */
-	pe->current = (CamelPOP3Command *) camel_dlist_remhead (&pe->active);
+	pe->current = g_queue_pop_head (&pe->active);
 
-	/* check the queue for sending any we can now send also */
-	pw = (CamelPOP3Command *) pe->queue.head;
-	pn = pw->next;
+	/* Check the queue for any commands we can now send also. */
+	link = g_queue_peek_head_link (&pe->queue);
 
-	while (pn) {
-		if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen (pw->data)) > CAMEL_POP3_SEND_LIMIT)
+	while (link != NULL) {
+		pc = (CamelPOP3Command *) link->data;
+
+		if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen (pc->data)) > CAMEL_POP3_SEND_LIMIT)
 		    && pe->current != NULL)
 			break;
 
-		if (camel_stream_write ((CamelStream *) pe->stream, pw->data, strlen (pw->data), cancellable, NULL) == -1)
+		if (camel_stream_write ((CamelStream *) pe->stream, pc->data, strlen (pc->data), cancellable, NULL) == -1)
 			goto ioerror;
 
-		camel_dlist_remove ((CamelDListNode *) pw);
-
-		pe->sentlen += strlen (pw->data);
-		pw->state = CAMEL_POP3_COMMAND_DISPATCHED;
+		pe->sentlen += strlen (pc->data);
+		pc->state = CAMEL_POP3_COMMAND_DISPATCHED;
 
 		if (pe->current == NULL)
-			pe->current = pw;
+			pe->current = pc;
 		else
-			camel_dlist_addtail (&pe->active, (CamelDListNode *) pw);
+			g_queue_push_tail (&pe->active, pc);
 
-		pw = pn;
-		pn = pn->next;
+		g_queue_delete_link (&pe->queue, link);
+		link = g_queue_peek_head_link (&pe->queue);
 	}
 
 	/* UNLOCK */
@@ -381,21 +381,23 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 		return 0;
 
 	return pe->current == NULL ? 0 : 1;
+
 ioerror:
-	/* we assume all outstanding commands are gunna fail now */
-	while ((pw = (CamelPOP3Command *) camel_dlist_remhead (&pe->active))) {
-		pw->state = CAMEL_POP3_COMMAND_ERR;
-		camel_dlist_addtail (&pe->done, (CamelDListNode *) pw);
+	/* We assume all outstanding commands will fail. */
+
+	while ((pc = g_queue_pop_head (&pe->active)) != NULL) {
+		pc->state = CAMEL_POP3_COMMAND_ERR;
+		g_queue_push_tail (&pe->done, pc);
 	}
 
-	while ((pw = (CamelPOP3Command *) camel_dlist_remhead (&pe->queue))) {
-		pw->state = CAMEL_POP3_COMMAND_ERR;
-		camel_dlist_addtail (&pe->done, (CamelDListNode *) pw);
+	while ((pc = g_queue_pop_head (&pe->queue)) != NULL) {
+		pc->state = CAMEL_POP3_COMMAND_ERR;
+		g_queue_push_tail (&pe->done, pc);
 	}
 
-	if (pe->current) {
+	if (pe->current != NULL) {
 		pe->current->state = CAMEL_POP3_COMMAND_ERR;
-		camel_dlist_addtail (&pe->done, (CamelDListNode *) pe->current);
+		g_queue_push_tail (&pe->done, pe->current);
 		pe->current = NULL;
 	}
 
@@ -437,7 +439,7 @@ camel_pop3_engine_command_free (CamelPOP3Engine *pe,
                                 CamelPOP3Command *pc)
 {
 	if (pe && pe->current != pc)
-		camel_dlist_remove ((CamelDListNode *) pc);
+		g_queue_remove (&pe->done, pc);
 	g_free (pc->data);
 	g_free (pc);
 }

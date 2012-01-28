@@ -93,9 +93,6 @@ enum {
 typedef void (*CamelPOP3CommandFunc)(CamelPOP3Engine *pe, CamelPOP3Stream *stream, GCancellable *cancellable, gpointer data);
 
 struct _CamelPOP3Command {
-	struct _CamelPOP3Command *next;
-	struct _CamelPOP3Command *prev;
-
 	guint32 flags;
 	camel_pop3_command_t state;
 
@@ -121,13 +118,13 @@ struct _CamelPOP3Engine {
 	guchar *line;	/* current line buffer */
 	guint linelen;
 
-	struct _CamelPOP3Stream *stream;
+	CamelPOP3Stream *stream;
 
 	guint sentlen;	/* data sent (so we dont overflow network buffer) */
 
-	CamelDList active;	/* active commands */
-	CamelDList queue;	/* queue of waiting commands */
-	CamelDList done;	/* list of done commands, awaiting free */
+	GQueue active;	/* active commands */
+	GQueue queue;	/* queue of waiting commands */
+	GQueue done;	/* list of done commands, awaiting free */
 
 	CamelPOP3Command *current; /* currently busy (downloading) response */
 };
