@@ -892,9 +892,6 @@ maildir_get_meta_path (CamelLocalStore *ls,
 /* Migration from old to maildir++ hierarchy */
 
 struct _scan_node {
-	struct _scan_node *next;
-	struct _scan_node *prev;
-
 	CamelFolderInfo *fi;
 
 	dev_t dnode;
@@ -928,7 +925,7 @@ scan_old_dir_info (CamelStore *store,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	CamelDList queue = CAMEL_DLIST_INITIALISER (queue);
+	GQueue queue = G_QUEUE_INIT;
 	struct _scan_node *sn;
 	gchar *path;
 	gchar *tmp;
@@ -946,16 +943,16 @@ scan_old_dir_info (CamelStore *store,
 
 	sn = g_malloc0 (sizeof (*sn));
 	sn->fi = topfi;
-	camel_dlist_addtail (&queue, (CamelDListNode *) sn);
+	g_queue_push_tail (&queue, sn);
 	g_hash_table_insert (visited, sn, sn);
 
-	while (!camel_dlist_empty (&queue)) {
+	while (!g_queue_is_empty (&queue)) {
 		gchar *name;
 		DIR *dir;
 		struct dirent *d;
 		CamelFolderInfo *last;
 
-		sn = (struct _scan_node *) camel_dlist_remhead (&queue);
+		sn = g_queue_pop_head (&queue);
 
 		last = (CamelFolderInfo *) &sn->fi->child;
 
@@ -1015,7 +1012,7 @@ scan_old_dir_info (CamelStore *store,
 					snew->fi->parent = sn->fi;
 
 					g_hash_table_insert (visited, snew, snew);
-					camel_dlist_addtail (&queue, (CamelDListNode *) snew);
+					g_queue_push_tail (&queue, snew);
 				}
 			}
 			g_free (tmp);
