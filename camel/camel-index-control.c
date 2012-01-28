@@ -15,7 +15,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "camel-list-utils.h"
 #include "camel-object.h"
 #include "camel-text-index.h"
 
