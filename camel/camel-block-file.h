@@ -26,7 +26,6 @@
 #define CAMEL_BLOCK_FILE_H
 
 #include <camel/camel-object.h>
-#include <camel/camel-list-utils.h>
 #include <stdio.h>
 #include <sys/types.h>
 
@@ -103,9 +102,6 @@ struct _CamelBlockRoot {
 
 /* LRU cache of blocks */
 struct _CamelBlock {
-	struct _CamelBlock *next;
-	struct _CamelBlock *prev;
-
 	camel_block_t id;
 	CamelBlockFlags flags;
 	guint32 refcount;
@@ -131,7 +127,7 @@ struct _CamelBlockFile {
 	/* make private? */
 	gint block_cache_limit;
 	gint block_cache_count;
-	CamelDList block_cache;
+	GQueue block_cache;
 	GHashTable *blocks;
 };
 

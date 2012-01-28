@@ -28,7 +28,6 @@
 #include <camel/camel-object.h>
 
 #include "camel-block-file.h"
-#include "camel-list-utils.h"
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_PARTITION_TABLE \
@@ -116,7 +115,7 @@ struct _CamelPartitionTable {
 	gpointer is_key_data;
 
 	/* we keep a list of partition blocks active at all times */
-	CamelDList partition;
+	GQueue partition;
 };
 
 struct _CamelPartitionTableClass {

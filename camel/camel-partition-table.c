@@ -32,7 +32,6 @@
 #include <unistd.h>
 
 #include "camel-block-file.h"
-#include "camel-list-utils.h"
 #include "camel-partition-table.h"
 
 /* Do we synchronously write table updates - makes the
@@ -58,8 +57,8 @@ partition_table_finalize (GObject *object)
 	CamelPartitionTable *table = CAMEL_PARTITION_TABLE (object);
 	CamelBlock *bl;
 
-	if (table->blocks) {
-		while ((bl = (CamelBlock *) camel_dlist_remhead (&table->partition))) {
+	if (table->blocks != NULL) {
+		while ((bl = g_queue_pop_head (&table->partition)) != NULL) {
 			camel_block_file_sync_block (table->blocks, bl);
 			camel_block_file_unref_block (table->blocks, bl);
 		}
@@ -91,7 +90,7 @@ camel_partition_table_init (CamelPartitionTable *cpi)
 	cpi->priv = G_TYPE_INSTANCE_GET_PRIVATE (
 		cpi, CAMEL_TYPE_PARTITION_TABLE, CamelPartitionTablePrivate);
 
-	camel_dlist_init (&cpi->partition);
+	g_queue_init (&cpi->partition);
 	g_static_mutex_init (&cpi->priv->lock);
 }
 
@@ -127,16 +126,22 @@ static camel_hash_t hash_key (const gchar *key)
 }
 
 /* Call with lock held */
-static CamelBlock *find_partition (CamelPartitionTable *cpi, camel_hash_t id, gint *indexp)
+static GList *
+find_partition (CamelPartitionTable *cpi,
+                camel_hash_t id,
+                gint *indexp)
 {
 	gint index, jump;
-	CamelBlock *bl;
 	CamelPartitionMapBlock *ptb;
 	CamelPartitionMap *part;
+	GList *head, *link;
 
 	/* first, find the block this key might be in, then binary search the block */
-	bl = (CamelBlock *) cpi->partition.head;
-	while (bl->next) {
+	head = g_queue_peek_head_link (&cpi->partition);
+
+	for (link = head; link != NULL; link = g_list_next (link)) {
+		CamelBlock *bl = link->data;
+
 		ptb = (CamelPartitionMapBlock *) &bl->data;
 		part = ptb->partition;
 		if (ptb->used > 0 && id <= part[ptb->used - 1].hashid) {
@@ -162,9 +167,8 @@ static CamelBlock *find_partition (CamelPartitionTable *cpi, camel_hash_t id, gi
 			}
 			*indexp = index;
 
-			return bl;
+			return link;
 		}
-		bl = bl->next;
 	}
 
 	g_warning ("could not find a partition that could fit!  partition table corrupt!");
@@ -200,7 +204,7 @@ camel_partition_table_new (CamelBlockFile *bs,
 		d (printf ("Adding partition block, used = %d, hashid = %08x\n", ptb->used, ptb->partition[0].hashid));
 
 		/* if we have no data, prime initial block */
-		if (ptb->used == 0 && camel_dlist_empty (&cpi->partition) && ptb->next == 0) {
+		if (ptb->used == 0 && g_queue_is_empty (&cpi->partition) && ptb->next == 0) {
 			pblock = camel_block_file_new_block (bs);
 			if (pblock == NULL) {
 				camel_block_file_unref_block (bs, block);
@@ -221,7 +225,7 @@ camel_partition_table_new (CamelBlockFile *bs,
 
 		root = ptb->next;
 		camel_block_file_detach_block (bs, block);
-		camel_dlist_addtail (&cpi->partition, (CamelDListNode *) block);
+		g_queue_push_tail (&cpi->partition, block);
 	} while (root);
 
 	return cpi;
@@ -235,7 +239,6 @@ fail:
 gint
 camel_partition_table_sync (CamelPartitionTable *cpi)
 {
-	CamelBlock *bl, *bn;
 	gint ret = 0;
 
 	g_return_val_if_fail (CAMEL_IS_PARTITION_TABLE (cpi), -1);
@@ -243,16 +246,19 @@ camel_partition_table_sync (CamelPartitionTable *cpi)
 	CAMEL_PARTITION_TABLE_LOCK (cpi, lock);
 
 	if (cpi->blocks) {
-		bl = (CamelBlock *) cpi->partition.head;
-		bn = bl->next;
-		while (bn) {
+		GList *head, *link;
+
+		head = g_queue_peek_head_link (&cpi->partition);
+
+		for (link = head; link != NULL; link = g_list_next (link)) {
+			CamelBlock *bl = link->data;
+
 			ret = camel_block_file_sync_block (cpi->blocks, bl);
 			if (ret == -1)
 				goto fail;
-			bl = bn;
-			bn = bn->next;
 		}
 	}
+
 fail:
 	CAMEL_PARTITION_TABLE_UNLOCK (cpi, lock);
 
@@ -268,6 +274,7 @@ camel_partition_table_lookup (CamelPartitionTable *cpi,
 	CamelBlock *block, *ptblock;
 	camel_hash_t hashid;
 	camel_key_t keyid = 0;
+	GList *ptblock_link;
 	gint index, i;
 
 	g_return_val_if_fail (CAMEL_IS_PARTITION_TABLE (cpi), 0);
@@ -277,11 +284,13 @@ camel_partition_table_lookup (CamelPartitionTable *cpi,
 
 	CAMEL_PARTITION_TABLE_LOCK (cpi, lock);
 
-	ptblock = find_partition (cpi, hashid, &index);
-	if (ptblock == NULL) {
+	ptblock_link = find_partition (cpi, hashid, &index);
+	if (ptblock_link == NULL) {
 		CAMEL_PARTITION_TABLE_UNLOCK (cpi, lock);
 		return 0;
 	}
+
+	ptblock = (CamelBlock *) ptblock_link->data;
 	ptb = (CamelPartitionMapBlock *) &ptblock->data;
 	block = camel_block_file_get_block (
 		cpi->blocks, ptb->partition[index].blockid);
@@ -317,6 +326,7 @@ camel_partition_table_remove (CamelPartitionTable *cpi,
 	CamelPartitionMapBlock *ptb;
 	CamelBlock *block, *ptblock;
 	camel_hash_t hashid;
+	GList *ptblock_link;
 	gint index, i;
 
 	g_return_val_if_fail (CAMEL_IS_PARTITION_TABLE (cpi), FALSE);
@@ -326,11 +336,13 @@ camel_partition_table_remove (CamelPartitionTable *cpi,
 
 	CAMEL_PARTITION_TABLE_LOCK (cpi, lock);
 
-	ptblock = find_partition (cpi, hashid, &index);
-	if (ptblock == NULL) {
+	ptblock_link = find_partition (cpi, hashid, &index);
+	if (ptblock_link == NULL) {
 		CAMEL_PARTITION_TABLE_UNLOCK (cpi, lock);
 		return TRUE;
 	}
+
+	ptblock = (CamelBlock *) ptblock_link->data;
 	ptb = (CamelPartitionMapBlock *) &ptblock->data;
 	block = camel_block_file_get_block (
 		cpi->blocks, ptb->partition[index].blockid);
@@ -391,6 +403,7 @@ camel_partition_table_add (CamelPartitionTable *cpi,
 	CamelBlock *block, *ptblock, *ptnblock;
 	gint i, half, len;
 	CamelPartitionKey keys[CAMEL_BLOCK_SIZE / 4];
+	GList *ptblock_link;
 	gint ret = -1;
 
 	g_return_val_if_fail (CAMEL_IS_PARTITION_TABLE (cpi), -1);
@@ -399,11 +412,13 @@ camel_partition_table_add (CamelPartitionTable *cpi,
 	hashid = hash_key (key);
 
 	CAMEL_PARTITION_TABLE_LOCK (cpi, lock);
-	ptblock = find_partition (cpi, hashid, &index);
-	if (ptblock == NULL) {
+	ptblock_link = find_partition (cpi, hashid, &index);
+	if (ptblock_link == NULL) {
 		CAMEL_PARTITION_TABLE_UNLOCK (cpi, lock);
 		return -1;
 	}
+
+	ptblock = (CamelBlock *) ptblock_link->data;
 	ptb = (CamelPartitionMapBlock *) &ptblock->data;
 	block = camel_block_file_get_block (
 		cpi->blocks, ptb->partition[index].blockid);
@@ -490,10 +505,9 @@ camel_partition_table_add (CamelPartitionTable *cpi,
 				memcpy (ptn->partition, &ptb->partition[len], ptn->used * sizeof (ptb->partition[0]));
 
 				/* link in-memory */
-				ptnblock->next = ptblock->next;
-				ptblock->next->prev = ptnblock;
-				ptblock->next = ptnblock;
-				ptnblock->prev = ptblock;
+				g_queue_insert_after (
+					&cpi->partition,
+					ptblock_link, ptnblock);
 
 				/* write in right order to ensure structure */
 				camel_block_file_touch_block (cpi->blocks, ptnblock);
