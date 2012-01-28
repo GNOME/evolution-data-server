@@ -27,7 +27,6 @@
 #ifndef CAMEL_CIPHER_CONTEXT_H
 #define CAMEL_CIPHER_CONTEXT_H
 
-#include <camel/camel-list-utils.h>
 #include <camel/camel-mime-part.h>
 #include <camel/camel-session.h>
 
@@ -93,9 +92,6 @@ typedef enum _camel_cipher_validity_mode_t {
 } camel_cipher_validity_mode_t;
 
 struct _CamelCipherCertInfo {
-	struct _CamelCipherCertInfo *next;
-	struct _CamelCipherCertInfo *prev;
-
 	gchar *name;		/* common name */
 	gchar *email;
 
@@ -105,19 +101,18 @@ struct _CamelCipherCertInfo {
 };
 
 struct _CamelCipherValidity {
-	struct _CamelCipherValidity *next;
-	struct _CamelCipherValidity *prev;
-	CamelDList children;
+	GQueue children;
 
 	struct {
 		enum _camel_cipher_validity_sign_t status;
 		gchar *description;
-		CamelDList signers;	/* CamelCipherCertInfo's */
+		GQueue signers;	/* CamelCipherCertInfo's */
 	} sign;
+
 	struct {
 		enum _camel_cipher_validity_encrypt_t status;
 		gchar *description;
-		CamelDList encrypters;	/* CamelCipherCertInfo's */
+		GQueue encrypters;	/* CamelCipherCertInfo's */
 	} encrypt;
 };
 
