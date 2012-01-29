@@ -2824,21 +2824,6 @@ camel_iconv_close
 </SECTION>
 
 <SECTION>
-<FILE>camel-list-utils</FILE>
-CamelDList
-CamelDListNode
-CAMEL_DLIST_INITIALISER
-camel_dlist_init
-camel_dlist_addhead
-camel_dlist_addtail
-camel_dlist_remove
-camel_dlist_remhead
-camel_dlist_remtail
-camel_dlist_empty
-camel_dlist_length
-</SECTION>
-
-<SECTION>
 <FILE>camel-lock-client</FILE>
 camel_lock_helper_lock
 camel_lock_helper_unlock
