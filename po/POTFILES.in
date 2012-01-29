@@ -58,7 +58,6 @@ camel/camel-index.c
 camel/camel-index-control.c
 camel/camel-internet-address.c
 camel/camel-junk-filter.c
-camel/camel-list-utils.c
 camel/camel-lock.c
 camel/camel-lock-client.c
 camel/camel-lock-helper.c
