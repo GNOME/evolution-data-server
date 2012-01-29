@@ -68,7 +68,7 @@ camel_imapx_command_new (CamelIMAPXServer *is,
 	real_ic->public.tag = tag++;
 	real_ic->public.name = name;
 	real_ic->public.select = select;
-	camel_dlist_init (&real_ic->public.parts);
+	g_queue_init (&real_ic->public.parts);
 
 	if (format != NULL && *format != '\0') {
 		va_start (ap, format);
@@ -112,7 +112,7 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 
 		imapx_free_status (ic->status);
 
-		while ((cp = ((CamelIMAPXCommandPart *) camel_dlist_remhead (&ic->parts)))) {
+		while ((cp = g_queue_pop_head (&ic->parts)) != NULL) {
 			g_free (cp->data);
 			if (cp->ob) {
 				switch (cp->type & CAMEL_IMAPX_COMMAND_MASK) {
@@ -140,6 +140,19 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 
 		g_slice_free (CamelIMAPXRealCommand, real_ic);
 	}
+}
+
+gint
+camel_imapx_command_compare (CamelIMAPXCommand *ic1,
+                             CamelIMAPXCommand *ic2)
+{
+	g_return_val_if_fail (ic1 != NULL, 0);
+	g_return_val_if_fail (ic2 != NULL, 0);
+
+	if (ic1->pri == ic2->pri)
+		return 0;
+
+	return (ic1->pri < ic2->pri) ? -1 : 1;
 }
 
 void
@@ -447,7 +460,7 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 
 	g_string_set_size (buffer, 0);
 
-	camel_dlist_addtail (&ic->parts, (CamelDListNode *) cp);
+	g_queue_push_tail (&ic->parts, cp);
 }
 
 void

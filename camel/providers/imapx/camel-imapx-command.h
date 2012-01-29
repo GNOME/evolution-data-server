@@ -55,9 +55,6 @@ typedef enum {
 } CamelIMAPXCommandPartType;
 
 struct _CamelIMAPXCommandPart {
-	CamelIMAPXCommandPart *next;
-	CamelIMAPXCommandPart *prev;
-
 	gint data_size;
 	gchar *data;
 
@@ -68,8 +65,6 @@ struct _CamelIMAPXCommandPart {
 };
 
 struct _CamelIMAPXCommand {
-	CamelIMAPXCommand *next, *prev;
-
 	CamelIMAPXServer *is;
 	gint pri;
 
@@ -84,8 +79,8 @@ struct _CamelIMAPXCommand {
 
 	guint32 tag;
 
-	CamelDList parts;
-	CamelIMAPXCommandPart *current;
+	GQueue parts;
+	GList *current_part;
 
 	/* Responsible for free'ing the command. */
 	CamelIMAPXCommandFunc complete;
@@ -101,6 +96,8 @@ CamelIMAPXCommand *
 CamelIMAPXCommand *
 		camel_imapx_command_ref		(CamelIMAPXCommand *ic);
 void		camel_imapx_command_unref	(CamelIMAPXCommand *ic);
+gint		camel_imapx_command_compare	(CamelIMAPXCommand *ic1,
+						 CamelIMAPXCommand *ic2);
 void		camel_imapx_command_add		(CamelIMAPXCommand *ic,
 						 const gchar *format,
 						 ...);

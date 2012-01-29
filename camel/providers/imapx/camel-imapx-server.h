@@ -82,9 +82,9 @@ struct _CamelIMAPXServer {
 	 * all the time, so they can be cleaned up in exception cases */
 	GStaticRecMutex queue_lock;
 	CamelIMAPXCommand *literal;
-	CamelDList queue;
-	CamelDList active;
-	CamelDList done;
+	GQueue queue;
+	GQueue active;
+	GQueue done;
 
 	/* info on currently selected folder */
 	CamelFolder *select_folder;
