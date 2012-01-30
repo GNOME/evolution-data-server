@@ -42,8 +42,8 @@ struct _CamelIMAPXJob {
 	 * GCancellable when the job is finalized. */
 	gboolean pop_operation_msg;
 
-	void		(*start)		(CamelIMAPXServer *is,
-						 CamelIMAPXJob *job);
+	void		(*start)		(CamelIMAPXJob *job,
+						 CamelIMAPXServer *is);
 
 	guint noreply:1;	/* dont wait for reply */
 	guint32 type;		/* operation type */

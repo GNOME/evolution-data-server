@@ -151,7 +151,7 @@ struct _imapx_flag_change {
 static CamelIMAPXJob *imapx_match_active_job (CamelIMAPXServer *is, guint32 type, const gchar *uid);
 static void imapx_job_done (CamelIMAPXServer *is, CamelIMAPXJob *job);
 static gboolean imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job, GError **error);
-static void imapx_job_fetch_new_messages_start (CamelIMAPXServer *is, CamelIMAPXJob *job);
+static void imapx_job_fetch_new_messages_start (CamelIMAPXJob *job, CamelIMAPXServer *is);
 static gint imapx_refresh_info_uid_cmp (gconstpointer ap, gconstpointer bp, gboolean ascending);
 static gint imapx_uids_array_cmp (gconstpointer ap, gconstpointer bp);
 static gboolean imapx_server_sync_changes (CamelIMAPXServer *is, CamelFolder *folder, gint pri, GCancellable *cancellable, GError **error);
@@ -1805,7 +1805,7 @@ imapx_run_job (CamelIMAPXServer *is,
 			camel_imapx_job_ref (job),
 			(GDestroyNotify) camel_imapx_job_unref);
 
-	job->start (is, job);
+	job->start (job, is);
 
 	if (!job->noreply)
 		camel_imapx_job_wait (job);
@@ -1885,8 +1885,8 @@ imapx_command_idle_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_idle_start (CamelIMAPXServer *is,
-                      CamelIMAPXJob *job)
+imapx_job_idle_start (CamelIMAPXJob *job,
+                      CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 	CamelIMAPXCommandPart *cp;
@@ -3096,8 +3096,8 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_get_message_start (CamelIMAPXServer *is,
-                             CamelIMAPXJob *job)
+imapx_job_get_message_start (CamelIMAPXJob *job,
+                             CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 	gint i;
@@ -3225,8 +3225,8 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_copy_messages_start (CamelIMAPXServer *is,
-                               CamelIMAPXJob *job)
+imapx_job_copy_messages_start (CamelIMAPXJob *job,
+                               CamelIMAPXServer *is)
 {
 	if (!imapx_server_sync_changes (
 		is, job->folder, job->pri, job->cancellable, &job->error))
@@ -3306,8 +3306,8 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_append_message_start (CamelIMAPXServer *is,
-                                CamelIMAPXJob *job)
+imapx_job_append_message_start (CamelIMAPXJob *job,
+                                CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 
@@ -3700,8 +3700,8 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_scan_changes_start (CamelIMAPXServer *is,
-                              CamelIMAPXJob *job)
+imapx_job_scan_changes_start (CamelIMAPXJob *job,
+                              CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 
@@ -3789,8 +3789,8 @@ imapx_command_fetch_new_uids_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
-                                    CamelIMAPXJob *job)
+imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
+                                    CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder = job->folder;
@@ -3856,8 +3856,8 @@ imapx_job_fetch_new_messages_start (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_refresh_info_start (CamelIMAPXServer *is,
-                              CamelIMAPXJob *job)
+imapx_job_refresh_info_start (CamelIMAPXJob *job,
+                              CamelIMAPXServer *is)
 {
 	guint32 total;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
@@ -4019,7 +4019,7 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is,
 		}
 	}
 
-	imapx_job_scan_changes_start (is, job);
+	imapx_job_scan_changes_start (job, is);
 	return;
 
 done:
@@ -4085,8 +4085,8 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_expunge_start (CamelIMAPXServer *is,
-                         CamelIMAPXJob *job)
+imapx_job_expunge_start (CamelIMAPXJob *job,
+                         CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 
@@ -4127,8 +4127,8 @@ imapx_command_list_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_list_start (CamelIMAPXServer *is,
-                      CamelIMAPXJob *job)
+imapx_job_list_start (CamelIMAPXJob *job,
+                      CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 
@@ -4187,8 +4187,8 @@ imapx_command_subscription_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_manage_subscription_start (CamelIMAPXServer *is,
-                                     CamelIMAPXJob *job)
+imapx_job_manage_subscription_start (CamelIMAPXJob *job,
+                                     CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 	gchar *encoded_fname = NULL;
@@ -4236,8 +4236,8 @@ imapx_command_create_folder_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_create_folder_start (CamelIMAPXServer *is,
-                               CamelIMAPXJob *job)
+imapx_job_create_folder_start (CamelIMAPXJob *job,
+                               CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 	gchar *encoded_fname = NULL;
@@ -4277,8 +4277,8 @@ imapx_command_delete_folder_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_delete_folder_start (CamelIMAPXServer *is,
-                               CamelIMAPXJob *job)
+imapx_job_delete_folder_start (CamelIMAPXJob *job,
+                               CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 	gchar *encoded_fname = NULL;
@@ -4323,8 +4323,8 @@ imapx_command_rename_folder_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_rename_folder_start (CamelIMAPXServer *is,
-                               CamelIMAPXJob *job)
+imapx_job_rename_folder_start (CamelIMAPXJob *job,
+                               CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 	gchar *en_ofname = NULL, *en_nfname = NULL;
@@ -4370,8 +4370,8 @@ imapx_command_noop_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_noop_start (CamelIMAPXServer *is,
-                      CamelIMAPXJob *job)
+imapx_job_noop_start (CamelIMAPXJob *job,
+                      CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 
@@ -4499,8 +4499,8 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_sync_changes_start (CamelIMAPXServer *is,
-                              CamelIMAPXJob *job)
+imapx_job_sync_changes_start (CamelIMAPXJob *job,
+                              CamelIMAPXServer *is)
 {
 	guint32 i, j;
 	struct _uidset_state ss;
