@@ -150,7 +150,6 @@ struct _imapx_flag_change {
 
 static CamelIMAPXJob *imapx_match_active_job (CamelIMAPXServer *is, guint32 type, const gchar *uid);
 static void imapx_job_done (CamelIMAPXServer *is, CamelIMAPXJob *job);
-static gboolean imapx_run_job (CamelIMAPXServer *is, CamelIMAPXJob *job, GError **error);
 static void imapx_job_fetch_new_messages_start (CamelIMAPXJob *job, CamelIMAPXServer *is);
 static gint imapx_refresh_info_uid_cmp (gconstpointer ap, gconstpointer bp, gboolean ascending);
 static gint imapx_uids_array_cmp (gconstpointer ap, gconstpointer bp);
@@ -1754,18 +1753,6 @@ imapx_job_done (CamelIMAPXServer *is,
 	QUEUE_UNLOCK (is);
 }
 
-static void
-imapx_job_cancelled (GCancellable *cancellable,
-                     CamelIMAPXJob *job)
-{
-	/* Unblock imapx_run_job() immediately.
-	 *
-	 * If camel_imapx_job_done() is called sometime later,
-	 * the GCond will broadcast but no one will be listening. */
-
-	camel_imapx_job_done (job);
-}
-
 static gboolean
 imapx_register_job (CamelIMAPXServer *is,
                     CamelIMAPXJob *job,
@@ -1789,43 +1776,6 @@ imapx_register_job (CamelIMAPXServer *is,
 }
 
 static gboolean
-imapx_run_job (CamelIMAPXServer *is,
-               CamelIMAPXJob *job,
-               GError **error)
-{
-	gulong cancel_id = 0;
-
-	if (g_cancellable_set_error_if_cancelled (is->cancellable, error))
-		return FALSE;
-
-	if (G_IS_CANCELLABLE (job->cancellable))
-		cancel_id = g_cancellable_connect (
-			job->cancellable,
-			G_CALLBACK (imapx_job_cancelled),
-			camel_imapx_job_ref (job),
-			(GDestroyNotify) camel_imapx_job_unref);
-
-	job->start (job, is);
-
-	if (!job->noreply)
-		camel_imapx_job_wait (job);
-
-	if (cancel_id > 0)
-		g_cancellable_disconnect (job->cancellable, cancel_id);
-
-	if (g_cancellable_set_error_if_cancelled (job->cancellable, error))
-		return FALSE;
-
-	if (job->error != NULL) {
-		g_propagate_error (error, job->error);
-		job->error = NULL;
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static gboolean
 imapx_submit_job (CamelIMAPXServer *is,
                   CamelIMAPXJob *job,
                   GError **error)
@@ -1833,7 +1783,7 @@ imapx_submit_job (CamelIMAPXServer *is,
 	if (!imapx_register_job (is, job, error))
 		return FALSE;
 
-	return imapx_run_job (is, job, error);
+	return camel_imapx_job_run (job, is, error);
 }
 
 /* ********************************************************************** */
@@ -5043,7 +4993,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 
 	QUEUE_UNLOCK (is);
 
-	success = registered && imapx_run_job (is, job, error);
+	success = registered && camel_imapx_job_run (job, is, error);
 
 	if (success)
 		stream = job->u.get_message.stream;
@@ -5269,7 +5219,7 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 
 	QUEUE_UNLOCK (is);
 
-	success = registered && imapx_run_job (is, job, error);
+	success = registered && camel_imapx_job_run (job, is, error);
 
 	if (success && camel_folder_change_info_changed (job->u.refresh_info.changes))
 		camel_folder_changed (folder, job->u.refresh_info.changes);
@@ -5450,7 +5400,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 
 	QUEUE_UNLOCK (is);
 
-	success = registered && imapx_run_job (is, job, error);
+	success = registered && camel_imapx_job_run (job, is, error);
 
 	camel_imapx_job_unref (job);
 
@@ -5503,7 +5453,7 @@ camel_imapx_server_expunge (CamelIMAPXServer *is,
 
 	QUEUE_UNLOCK (is);
 
-	success = registered && imapx_run_job (is, job, error);
+	success = registered && camel_imapx_job_run (job, is, error);
 
 	camel_imapx_job_unref (job);
 

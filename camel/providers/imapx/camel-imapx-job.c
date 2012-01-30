@@ -36,6 +36,18 @@ struct _CamelIMAPXRealJob {
 	GDestroyNotify destroy_data;
 };
 
+static void
+imapx_job_cancelled_cb (GCancellable *cancellable,
+                        CamelIMAPXJob *job)
+{
+	/* Unblock camel_imapx_run_job() immediately.
+	 *
+	 * If camel_imapx_job_done() is called sometime later,
+	 * the GCond will broadcast but no one will be listening. */
+
+	camel_imapx_job_done (job);
+}
+
 CamelIMAPXJob *
 camel_imapx_job_new (GCancellable *cancellable)
 {
@@ -137,6 +149,47 @@ camel_imapx_job_done (CamelIMAPXJob *job)
 	real_job->done_flag = TRUE;
 	g_cond_broadcast (real_job->done_cond);
 	g_mutex_unlock (real_job->done_mutex);
+}
+
+gboolean
+camel_imapx_job_run (CamelIMAPXJob *job,
+                     CamelIMAPXServer *is,
+                     GError **error)
+{
+	gulong cancel_id = 0;
+
+	g_return_val_if_fail (job != NULL, FALSE);
+	g_return_val_if_fail (job->start != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+
+	if (g_cancellable_set_error_if_cancelled (job->cancellable, error))
+		return FALSE;
+
+	if (G_IS_CANCELLABLE (job->cancellable))
+		cancel_id = g_cancellable_connect (
+			job->cancellable,
+			G_CALLBACK (imapx_job_cancelled_cb),
+			camel_imapx_job_ref (job),
+			(GDestroyNotify) camel_imapx_job_unref);
+
+	job->start (job, is);
+
+	if (!job->noreply)
+		camel_imapx_job_wait (job);
+
+	if (cancel_id > 0)
+		g_cancellable_disconnect (job->cancellable, cancel_id);
+
+	if (g_cancellable_set_error_if_cancelled (job->cancellable, error))
+		return FALSE;
+
+	if (job->error != NULL) {
+		g_propagate_error (error, job->error);
+		job->error = NULL;
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 gpointer

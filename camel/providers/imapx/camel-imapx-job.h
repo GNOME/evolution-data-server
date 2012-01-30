@@ -122,6 +122,9 @@ CamelIMAPXJob *	camel_imapx_job_ref		(CamelIMAPXJob *job);
 void		camel_imapx_job_unref		(CamelIMAPXJob *job);
 void		camel_imapx_job_wait		(CamelIMAPXJob *job);
 void		camel_imapx_job_done		(CamelIMAPXJob *job);
+gboolean	camel_imapx_job_run		(CamelIMAPXJob *job,
+						 CamelIMAPXServer *is,
+						 GError **error);
 gpointer	camel_imapx_job_get_data	(CamelIMAPXJob *job);
 void		camel_imapx_job_set_data	(CamelIMAPXJob *job,
 						 gpointer data,
