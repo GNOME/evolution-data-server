@@ -14,6 +14,7 @@ libcamelimapx_la_SOURCES =			\
 	camel-imapx-command.c			\
 	camel-imapx-conn-manager.c		\
 	camel-imapx-folder.c			\
+	camel-imapx-job.c			\
 	camel-imapx-provider.c			\
 	camel-imapx-server.c			\
 	camel-imapx-settings.c			\
@@ -27,6 +28,7 @@ noinst_HEADERS =				\
 	camel-imapx-command.h			\
 	camel-imapx-conn-manager.h		\
 	camel-imapx-folder.h			\
+	camel-imapx-job.h			\
 	camel-imapx-server.h			\
 	camel-imapx-settings.h			\
 	camel-imapx-store-summary.h		\
