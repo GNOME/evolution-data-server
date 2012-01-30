@@ -398,7 +398,7 @@ http_stream_read (CamelStream *stream,
 	if (!http->raw) {
 		if (http_connect (
 			http, http->proxy ? http->proxy :
-			http->url, NULL, error) == NULL)
+			http->url, cancellable, error) == NULL)
 			return -1;
 
 		if (http_method_invoke (http, cancellable, error) == -1) {
