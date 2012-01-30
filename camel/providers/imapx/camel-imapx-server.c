@@ -676,32 +676,6 @@ exit:
 	return ic;
 }
 
-static gboolean
-imapx_job_matches (CamelFolder *folder,
-                   CamelIMAPXJob *job,
-                   guint32 type,
-                   const gchar *uid)
-{
-	switch (job->type) {
-		case IMAPX_JOB_GET_MESSAGE:
-			if (folder == job->folder &&
-			    strcmp (job->u.get_message.uid, uid) == 0)
-				return TRUE;
-			break;
-		case IMAPX_JOB_FETCH_NEW_MESSAGES:
-		case IMAPX_JOB_REFRESH_INFO:
-		case IMAPX_JOB_SYNC_CHANGES:
-		case IMAPX_JOB_EXPUNGE:
-			if (folder == job->folder)
-				return TRUE;
-			break;
-		case IMAPX_JOB_LIST:
-			return TRUE;
-	}
-
-	return FALSE;
-}
-
 /* Must not have QUEUE lock */
 static CamelIMAPXJob *
 imapx_match_active_job (CamelIMAPXServer *is,
@@ -724,7 +698,7 @@ imapx_match_active_job (CamelIMAPXServer *is,
 		if (!(ic->job->type & type))
 			continue;
 
-		if (imapx_job_matches (is->select_folder, ic->job, type, uid)) {
+		if (camel_imapx_job_matches (ic->job, is->select_folder, uid)) {
 			job = ic->job;
 			break;
 		}
@@ -755,7 +729,7 @@ imapx_is_job_in_queue (CamelIMAPXServer *is,
 		if (!job || !(job->type & type))
 			continue;
 
-		if (imapx_job_matches (folder, job, type, uid)) {
+		if (camel_imapx_job_matches (job, folder, uid)) {
 			found = TRUE;
 			break;
 		}
@@ -1883,6 +1857,14 @@ camel_imapx_server_idle (CamelIMAPXServer *is,
 }
 
 static gboolean
+imapx_job_fetch_new_messages_matches (CamelIMAPXJob *job,
+                                      CamelFolder *folder,
+                                      const gchar *uid)
+{
+	return (folder == job->folder);
+}
+
+static gboolean
 imapx_server_fetch_new_messages (CamelIMAPXServer *is,
                                  CamelFolder *folder,
                                  gboolean async,
@@ -1896,6 +1878,7 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is,
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_FETCH_NEW_MESSAGES;
 	job->start = imapx_job_fetch_new_messages_start;
+	job->matches = imapx_job_fetch_new_messages_matches;
 	job->folder = folder;
 	job->noreply = async;
 	job->u.refresh_info.changes = camel_folder_change_info_new ();
@@ -3076,6 +3059,20 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
 	}
 }
 
+static gboolean
+imapx_job_get_message_matches (CamelIMAPXJob *job,
+                               CamelFolder *folder,
+                               const gchar *uid)
+{
+	if (folder != job->folder)
+		return FALSE;
+
+	if (g_strcmp0 (uid, job->u.get_message.uid) != 0)
+		return FALSE;
+
+	return TRUE;
+}
+
 /* ********************************************************************** */
 
 static gboolean
@@ -3972,6 +3969,14 @@ done:
 	imapx_unregister_job (is, job);
 }
 
+static gboolean
+imapx_job_refresh_info_matches (CamelIMAPXJob *job,
+                                CamelFolder *folder,
+                                const gchar *uid)
+{
+	return (folder == job->folder);
+}
+
 /* ********************************************************************** */
 
 static gboolean
@@ -4049,6 +4054,14 @@ imapx_job_expunge_start (CamelIMAPXJob *job,
 	imapx_command_queue (is, ic);
 }
 
+static gboolean
+imapx_job_expunge_matches (CamelIMAPXJob *job,
+                           CamelFolder *folder,
+                           const gchar *uid)
+{
+	return (folder == job->folder);
+}
+
 /* ********************************************************************** */
 
 static gboolean
@@ -4094,6 +4107,15 @@ imapx_job_list_start (CamelIMAPXJob *job,
 	ic->complete = imapx_command_list_done;
 	imapx_command_queue (is, ic);
 }
+
+static gboolean
+imapx_job_list_matches (CamelIMAPXJob *job,
+                        CamelFolder *folder,
+                        const gchar *uid)
+{
+	return TRUE;  /* matches everything */
+}
+
 /* ********************************************************************** */
 
 static gchar *
@@ -4549,6 +4571,14 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 	}
 }
 
+static gboolean
+imapx_job_sync_changes_matches (CamelIMAPXJob *job,
+                                CamelFolder *folder,
+                                const gchar *uid)
+{
+	return (folder == job->folder);
+}
+
 /* we cancel all the commands and their jobs, so associated jobs will be notified */
 static void
 cancel_all_jobs (CamelIMAPXServer *is,
@@ -4976,6 +5006,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	job->pri = pri;
 	job->type = IMAPX_JOB_GET_MESSAGE;
 	job->start = imapx_job_get_message_start;
+	job->matches = imapx_job_get_message_matches;
 	job->folder = folder;
 	job->u.get_message.uid = (gchar *) uid;
 	job->u.get_message.stream = tmp_stream;
@@ -5204,6 +5235,7 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_REFRESH_INFO;
 	job->start = imapx_job_refresh_info_start;
+	job->matches = imapx_job_refresh_info_matches;
 	job->folder = folder;
 	job->u.refresh_info.changes = camel_folder_change_info_new ();
 	job->pri = IMAPX_PRIORITY_REFRESH_INFO;
@@ -5384,6 +5416,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_SYNC_CHANGES;
 	job->start = imapx_job_sync_changes_start;
+	job->matches = imapx_job_sync_changes_matches;
 	job->pri = pri;
 	job->folder = folder;
 	job->u.sync_changes.changed_uids = uids;
@@ -5442,6 +5475,7 @@ camel_imapx_server_expunge (CamelIMAPXServer *is,
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_EXPUNGE;
 	job->start = imapx_job_expunge_start;
+	job->matches = imapx_job_expunge_matches;
 	job->pri = IMAPX_PRIORITY_EXPUNGE;
 	job->folder = folder;
 
@@ -5515,6 +5549,7 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_LIST;
 	job->start = imapx_job_list_start;
+	job->matches = imapx_job_list_matches;
 	job->pri = IMAPX_PRIORITY_LIST;
 	job->u.list.ext = ext;
 	job->u.list.flags = flags;

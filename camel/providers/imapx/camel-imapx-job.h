@@ -44,6 +44,9 @@ struct _CamelIMAPXJob {
 
 	void		(*start)		(CamelIMAPXJob *job,
 						 CamelIMAPXServer *is);
+	gboolean	(*matches)		(CamelIMAPXJob *job,
+						 CamelFolder *folder,
+						 const gchar *uid);
 
 	guint noreply:1;	/* dont wait for reply */
 	guint32 type;		/* operation type */
@@ -125,6 +128,9 @@ void		camel_imapx_job_done		(CamelIMAPXJob *job);
 gboolean	camel_imapx_job_run		(CamelIMAPXJob *job,
 						 CamelIMAPXServer *is,
 						 GError **error);
+gboolean	camel_imapx_job_matches		(CamelIMAPXJob *job,
+						 CamelFolder *folder,
+						 const gchar *uid);
 gpointer	camel_imapx_job_get_data	(CamelIMAPXJob *job);
 void		camel_imapx_job_set_data	(CamelIMAPXJob *job,
 						 gpointer data,

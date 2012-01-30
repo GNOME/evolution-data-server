@@ -192,6 +192,25 @@ camel_imapx_job_run (CamelIMAPXJob *job,
 	return TRUE;
 }
 
+gboolean
+camel_imapx_job_matches (CamelIMAPXJob *job,
+                         CamelFolder *folder,
+                         const gchar *uid)
+{
+	/* XXX CamelFolder can be NULL.  I'm less sure about the
+	 *     message UID but let's assume that can be NULL too. */
+
+	g_return_val_if_fail (job != NULL, FALSE);
+
+	if (folder != NULL)
+		g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+
+	if (job->matches == NULL)
+		return FALSE;
+
+	return job->matches (job, folder, uid);
+}
+
 gpointer
 camel_imapx_job_get_data (CamelIMAPXJob *job)
 {
