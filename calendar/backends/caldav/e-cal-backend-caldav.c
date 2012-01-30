@@ -422,6 +422,24 @@ ecalcomp_get_etag (ECalComponent *comp)
 
 	str =  icomp_x_prop_get (icomp, X_E_CALDAV "ETAG");
 
+	/* libical 0.48 escapes quotes, thus unescape them */
+	if (str && strchr (str, '\\')) {
+		gint ii, jj;
+
+		for (ii = 0, jj = 0; str[ii]; ii++) {
+			if (str[ii] == '\\') {
+				ii++;
+				if (!str[ii])
+					break;
+			}
+
+			str[jj] = str[ii];
+			jj++;
+		}
+
+		str[jj] = 0;
+	}
+
 	return str;
 }
 
