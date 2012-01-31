@@ -57,17 +57,6 @@ struct _CamelIMAPXJob {
 
 	union {
 		struct {
-			/* array of refresh info's */
-			GArray *infos;
-			/* used for biulding uidset stuff */
-			gint index;
-			gint last_index;
-			gboolean update_unseen;
-			struct _uidset_state uidset;
-			/* changes during refresh */
-			CamelFolderChangeInfo *changes;
-		} refresh_info;
-		struct {
 			GPtrArray *changed_uids;
 			guint32 on_set;
 			guint32 off_set;
