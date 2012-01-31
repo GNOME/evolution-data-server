@@ -80,6 +80,8 @@ typedef struct _CopyMessagesData CopyMessagesData;
 typedef struct _ListData ListData;
 typedef struct _ManageSubscriptionsData ManageSubscriptionsData;
 typedef struct _RenameFolderData RenameFolderData;
+typedef struct _CreateFolderData CreateFolderData;
+typedef struct _DeleteFolderData DeleteFolderData;
 
 struct _GetMessageData {
 	/* in: uid requested */
@@ -145,6 +147,14 @@ struct _ManageSubscriptionsData {
 struct _RenameFolderData {
 	gchar *old_folder_name;
 	gchar *new_folder_name;
+};
+
+struct _CreateFolderData {
+	gchar *folder_name;
+};
+
+struct _DeleteFolderData {
+	gchar *folder_name;
 };
 
 enum {
@@ -366,6 +376,22 @@ rename_folder_data_free (RenameFolderData *data)
 	g_free (data->new_folder_name);
 
 	g_slice_free (RenameFolderData, data);
+}
+
+static void
+create_folder_data_free (CreateFolderData *data)
+{
+	g_free (data->folder_name);
+
+	g_slice_free (CreateFolderData, data);
+}
+
+static void
+delete_folder_data_free (DeleteFolderData *data)
+{
+	g_free (data->folder_name);
+
+	g_slice_free (DeleteFolderData, data);
 }
 
 /*
@@ -4460,9 +4486,13 @@ imapx_job_create_folder_start (CamelIMAPXJob *job,
                                CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
+	CreateFolderData *data;
 	gchar *encoded_fname = NULL;
 
-	encoded_fname = camel_utf8_utf7 (job->u.folder_name);
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
+
+	encoded_fname = camel_utf8_utf7 (data->folder_name);
 	ic = camel_imapx_command_new (
 		is, "CREATE", NULL,
 		"CREATE %s", encoded_fname);
@@ -4501,9 +4531,13 @@ imapx_job_delete_folder_start (CamelIMAPXJob *job,
                                CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
+	DeleteFolderData *data;
 	gchar *encoded_fname = NULL;
 
-	encoded_fname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.folder_name);
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
+
+	encoded_fname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, data->folder_name);
 
 	job->folder = camel_store_get_folder_sync (
 		is->store, "INBOX", 0, job->cancellable, &job->error);
@@ -5912,13 +5946,19 @@ camel_imapx_server_create_folder (CamelIMAPXServer *is,
                                   GError **error)
 {
 	CamelIMAPXJob *job;
+	CreateFolderData *data;
 	gboolean success;
+
+	data = g_slice_new0 (CreateFolderData);
+	data->folder_name = g_strdup (folder_name);
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_CREATE_FOLDER;
 	job->start = imapx_job_create_folder_start;
 	job->pri = IMAPX_PRIORITY_CREATE_FOLDER;
-	job->u.folder_name = folder_name;
+
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) create_folder_data_free);
 
 	success = imapx_submit_job (is, job, error);
 
@@ -5934,13 +5974,19 @@ camel_imapx_server_delete_folder (CamelIMAPXServer *is,
                                   GError **error)
 {
 	CamelIMAPXJob *job;
+	DeleteFolderData *data;
 	gboolean success;
+
+	data = g_slice_new0 (DeleteFolderData);
+	data->folder_name = g_strdup (folder_name);
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_DELETE_FOLDER;
 	job->start = imapx_job_delete_folder_start;
 	job->pri = IMAPX_PRIORITY_DELETE_FOLDER;
-	job->u.folder_name = folder_name;
+
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) delete_folder_data_free);
 
 	success = imapx_submit_job (is, job, error);
 

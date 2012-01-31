@@ -54,10 +54,6 @@ struct _CamelIMAPXJob {
 	gshort commands;	/* counts how many commands are outstanding */
 
 	CamelFolder *folder;
-
-	union {
-		const gchar *folder_name;
-	} u;
 };
 
 CamelIMAPXJob *	camel_imapx_job_new		(GCancellable *cancellable);
