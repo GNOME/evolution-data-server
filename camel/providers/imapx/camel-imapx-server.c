@@ -76,6 +76,7 @@ typedef struct _GetMessageData GetMessageData;
 typedef struct _RefreshInfoData RefreshInfoData;
 typedef struct _SyncChangesData SyncChangesData;
 typedef struct _AppendMessageData AppendMessageData;
+typedef struct _CopyMessagesData CopyMessagesData;
 
 struct _GetMessageData {
 	/* in: uid requested */
@@ -115,6 +116,15 @@ struct _SyncChangesData {
 struct _AppendMessageData {
 	gchar *path;
 	CamelMessageInfo *info;
+};
+
+struct _CopyMessagesData {
+	CamelFolder *dest;
+	GPtrArray *uids;
+	gboolean delete_originals;
+	gint index;
+	gint last_index;
+	struct _uidset_state uidset;
 };
 
 enum {
@@ -294,6 +304,20 @@ append_message_data_free (AppendMessageData *data)
 	camel_message_info_free (data->info);
 
 	g_slice_free (AppendMessageData, data);
+}
+
+static void
+copy_messages_data_free (CopyMessagesData *data)
+{
+	if (data->dest != NULL)
+		g_object_unref (data->dest);
+
+	if (data->uids != NULL) {
+		g_ptr_array_foreach (data->uids, (GFunc) g_free, NULL);
+		g_ptr_array_free (data->uids, TRUE);
+	}
+
+	g_slice_free (CopyMessagesData, data);
 }
 
 /*
@@ -3205,9 +3229,16 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
                                        GError **error)
 {
 	CamelIMAPXJob *job = ic->job;
-	gint i = job->u.copy_messages.index;
-	GPtrArray *uids = job->u.copy_messages.uids;
+	CopyMessagesData *data;
+	GPtrArray *uids;
+	gint i;
 	gboolean success = TRUE;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_val_if_fail (data != NULL, FALSE);
+
+	uids = data->uids;
+	i = data->index;
 
 	if (camel_imapx_command_set_error_if_failed (ic, error)) {
 		g_prefix_error (
@@ -3217,10 +3248,10 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 		goto cleanup;
 	}
 
-	if (job->u.copy_messages.delete_originals) {
+	if (data->delete_originals) {
 		gint j;
 
-		for (j = job->u.copy_messages.last_index; j < i; j++)
+		for (j = data->last_index; j < i; j++)
 			camel_folder_delete_message (job->folder, uids->pdata[j]);
 	}
 
@@ -3231,7 +3262,7 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 		for (i = 0; i < ic->status->u.copyuid.copied_uids->len; i++) {
 			guint32 uid = GPOINTER_TO_UINT (g_ptr_array_index (ic->status->u.copyuid.copied_uids, i));
 			gchar *str = g_strdup_printf ("%d",uid);
-			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->u.copy_messages.dest;
+			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) data->dest;
 
 			g_hash_table_insert (ifolder->ignore_recent, str, GINT_TO_POINTER (1));
 		}
@@ -3245,7 +3276,6 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 	}
 
 cleanup:
-	g_object_unref (job->u.copy_messages.dest);
 	g_object_unref (job->folder);
 
 	imapx_unregister_job (is, job);
@@ -3260,32 +3290,38 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is,
                                         gint index)
 {
 	CamelIMAPXCommand *ic;
-	GPtrArray *uids = job->u.copy_messages.uids;
+	CopyMessagesData *data;
+	GPtrArray *uids;
 	gint i = index;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
+
+	uids = data->uids;
 
 	ic = camel_imapx_command_new (
 		is, "COPY", job->folder, "UID COPY ");
 	ic->complete = imapx_command_copy_messages_step_done;
 	ic->job = job;
 	ic->pri = job->pri;
-	job->u.copy_messages.last_index = i;
+	data->last_index = i;
 
 	for (; i < uids->len; i++) {
 		gint res;
 		const gchar *uid = (gchar *) g_ptr_array_index (uids, i);
 
-		res = imapx_uidset_add (&job->u.copy_messages.uidset, ic, uid);
+		res = imapx_uidset_add (&data->uidset, ic, uid);
 		if (res == 1) {
-			camel_imapx_command_add (ic, " %f", job->u.copy_messages.dest);
-			job->u.copy_messages.index = i;
+			camel_imapx_command_add (ic, " %f", data->dest);
+			data->index = i;
 			imapx_command_queue (is, ic);
 			return;
 		}
 	}
 
-	job->u.copy_messages.index = i;
-	if (imapx_uidset_done (&job->u.copy_messages.uidset, ic)) {
-		camel_imapx_command_add (ic, " %f", job->u.copy_messages.dest);
+	data->index = i;
+	if (imapx_uidset_done (&data->uidset, ic)) {
+		camel_imapx_command_add (ic, " %f", data->dest);
 		imapx_command_queue (is, ic);
 		return;
 	}
@@ -3295,12 +3331,17 @@ static void
 imapx_job_copy_messages_start (CamelIMAPXJob *job,
                                CamelIMAPXServer *is)
 {
+	CopyMessagesData *data;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
+
 	if (!imapx_server_sync_changes (
 		is, job->folder, job->pri, job->cancellable, &job->error))
 		imapx_unregister_job (is, job);
 
-	g_ptr_array_sort (job->u.copy_messages.uids, (GCompareFunc) imapx_uids_array_cmp);
-	imapx_uidset_init (&job->u.copy_messages.uidset, 0, MAX_COMMAND_LEN);
+	g_ptr_array_sort (data->uids, (GCompareFunc) imapx_uids_array_cmp);
+	imapx_uidset_init (&data->uidset, 0, MAX_COMMAND_LEN);
 	imapx_command_copy_messages_step_start (is, job, 0);
 }
 
@@ -5261,18 +5302,25 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
                                  GError **error)
 {
 	CamelIMAPXJob *job;
+	CopyMessagesData *data;
+	gint ii;
+
+	data = g_slice_new0 (CopyMessagesData);
+	data->dest = g_object_ref (dest);
+	data->uids = g_ptr_array_new ();
+	data->delete_originals = delete_originals;
+
+	for (ii = 0; ii < uids->len; ii++)
+		g_ptr_array_add (data->uids, g_strdup (uids->pdata[ii]));
 
 	job = camel_imapx_job_new (cancellable);
 	job->pri = IMAPX_PRIORITY_APPEND_MESSAGE;
 	job->type = IMAPX_JOB_COPY_MESSAGE;
 	job->start = imapx_job_copy_messages_start;
-	job->folder = source;
-	job->u.copy_messages.dest = dest;
-	job->u.copy_messages.uids = uids;
-	job->u.copy_messages.delete_originals = delete_originals;
+	job->folder = g_object_ref (source);
 
-	g_object_ref (source);
-	g_object_ref (dest);
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) copy_messages_data_free);
 
 	return imapx_submit_job (is, job, error);
 }

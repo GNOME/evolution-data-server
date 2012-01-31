@@ -57,14 +57,6 @@ struct _CamelIMAPXJob {
 
 	union {
 		struct {
-			CamelFolder *dest;
-			GPtrArray *uids;
-			gboolean delete_originals;
-			gint index;
-			gint last_index;
-			struct _uidset_state uidset;
-		} copy_messages;
-		struct {
 			gchar *pattern;
 			guint32 flags;
 			const gchar *ext;
