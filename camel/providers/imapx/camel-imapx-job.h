@@ -57,14 +57,6 @@ struct _CamelIMAPXJob {
 
 	union {
 		struct {
-			GPtrArray *changed_uids;
-			guint32 on_set;
-			guint32 off_set;
-			GArray *on_user; /* imapx_flag_change */
-			GArray *off_user;
-			gint unread_change;
-		} sync_changes;
-		struct {
 			gchar *path;
 			CamelMessageInfo *info;
 		} append_message;

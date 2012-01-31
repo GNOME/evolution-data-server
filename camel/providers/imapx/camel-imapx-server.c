@@ -74,6 +74,7 @@ extern gint camel_application_is_exiting;
 /* Job-specific structs */
 typedef struct _GetMessageData GetMessageData;
 typedef struct _RefreshInfoData RefreshInfoData;
+typedef struct _SyncChangesData SyncChangesData;
 
 struct _GetMessageData {
 	/* in: uid requested */
@@ -98,6 +99,16 @@ struct _RefreshInfoData {
 	struct _uidset_state uidset;
 	/* changes during refresh */
 	CamelFolderChangeInfo *changes;
+};
+
+struct _SyncChangesData {
+	CamelFolder *folder;
+	GPtrArray *changed_uids;
+	guint32 on_set;
+	guint32 off_set;
+	GArray *on_user; /* imapx_flag_change */
+	GArray *off_user;
+	gint unread_change;
 };
 
 enum {
@@ -182,6 +193,7 @@ static void imapx_job_fetch_new_messages_start (CamelIMAPXJob *job, CamelIMAPXSe
 static gint imapx_refresh_info_uid_cmp (gconstpointer ap, gconstpointer bp, gboolean ascending);
 static gint imapx_uids_array_cmp (gconstpointer ap, gconstpointer bp);
 static gboolean imapx_server_sync_changes (CamelIMAPXServer *is, CamelFolder *folder, gint pri, GCancellable *cancellable, GError **error);
+static void imapx_sync_free_user (GArray *user_set);
 
 static void	imapx_command_copy_messages_step_start
 						(CamelIMAPXServer *is,
@@ -252,6 +264,20 @@ refresh_info_data_free (RefreshInfoData *data)
 	camel_folder_change_info_free (data->changes);
 
 	g_slice_free (RefreshInfoData, data);
+}
+
+static void
+sync_changes_data_free (SyncChangesData *data)
+{
+	if (data->folder != NULL) {
+		camel_folder_free_uids (data->folder, data->changed_uids);
+		g_object_unref (data->folder);
+	}
+
+	imapx_sync_free_user (data->on_user);
+	imapx_sync_free_user (data->off_user);
+
+	g_slice_free (SyncChangesData, data);
 }
 
 /*
@@ -4492,8 +4518,12 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 {
 	CamelIMAPXJob *job = ic->job;
 	CamelStore *parent_store;
+	SyncChangesData *data;
 	const gchar *full_name;
 	gboolean success = TRUE;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_val_if_fail (data != NULL, FALSE);
 
 	job->commands--;
 
@@ -4520,9 +4550,9 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	} else {
 		gint i;
 
-		for (i = 0; i < job->u.sync_changes.changed_uids->len; i++) {
+		for (i = 0; i < data->changed_uids->len; i++) {
 			CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) camel_folder_summary_get (job->folder->summary,
-					job->u.sync_changes.changed_uids->pdata[i]);
+					data->changed_uids->pdata[i]);
 
 			if (!xinfo)
 				continue;
@@ -4537,7 +4567,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 		}
 		/* Apply the changes to server-side unread count; it won't tell
 		 * us of these changes, of course. */
-		((CamelIMAPXFolder *) job->folder)->unread_on_server += job->u.sync_changes.unread_change;
+		((CamelIMAPXFolder *) job->folder)->unread_on_server += data->unread_change;
 	}
 
 	if (job->commands == 0) {
@@ -4573,14 +4603,20 @@ static void
 imapx_job_sync_changes_start (CamelIMAPXJob *job,
                               CamelIMAPXServer *is)
 {
+	SyncChangesData *data;
 	guint32 i, j;
 	struct _uidset_state ss;
-	GPtrArray *uids = job->u.sync_changes.changed_uids;
+	GPtrArray *uids;
 	gint on;
 
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
+
+	uids = data->changed_uids;
+
 	for (on = 0; on < 2; on++) {
-		guint32 orset = on ? job->u.sync_changes.on_set : job->u.sync_changes.off_set;
-		GArray *user_set = on ? job->u.sync_changes.on_user : job->u.sync_changes.off_user;
+		guint32 orset = on ? data->on_set : data->off_set;
+		GArray *user_set = on ? data->on_user : data->off_user;
 
 		for (j = 0; j < G_N_ELEMENTS (flags_table); j++) {
 			guint32 flag = flags_table[j].flag;
@@ -4627,9 +4663,9 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 					/* Remember how the server's unread count will change if this
 					 * command succeeds */
 					if (on)
-						job->u.sync_changes.unread_change--;
+						data->unread_change--;
 					else
-						job->u.sync_changes.unread_change++;
+						data->unread_change++;
 				}
 				camel_message_info_free (info);
 			}
@@ -5403,6 +5439,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	GArray *on_user = NULL, *off_user = NULL;
 	CamelIMAPXMessageInfo *info;
 	CamelIMAPXJob *job;
+	SyncChangesData *data;
 	gboolean registered;
 	gboolean success = TRUE;
 
@@ -5505,8 +5542,11 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	}
 
 	if ((on_orset | off_orset) == 0 && on_user == NULL && off_user == NULL) {
-		success = TRUE;
-		goto done;
+		imapx_sync_free_user (on_user);
+		imapx_sync_free_user (off_user);
+		camel_folder_free_uids (folder, uids);
+
+		return TRUE;
 	}
 
 	/* TODO above code should go into changes_start */
@@ -5518,8 +5558,21 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 			job->pri = pri;
 
 		QUEUE_UNLOCK (is);
-		goto done;
+
+		imapx_sync_free_user (on_user);
+		imapx_sync_free_user (off_user);
+		camel_folder_free_uids (folder, uids);
+
+		return TRUE;
 	}
+
+	data = g_slice_new0 (SyncChangesData);
+	data->folder = g_object_ref (folder);
+	data->changed_uids = uids;  /* takes ownership */
+	data->on_set = on_orset;
+	data->off_set = off_orset;
+	data->on_user = on_user;  /* takes ownership */
+	data->off_user = off_user;  /* takes ownership */
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_SYNC_CHANGES;
@@ -5527,11 +5580,9 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	job->matches = imapx_job_sync_changes_matches;
 	job->pri = pri;
 	job->folder = folder;
-	job->u.sync_changes.changed_uids = uids;
-	job->u.sync_changes.on_set = on_orset;
-	job->u.sync_changes.off_set = off_orset;
-	job->u.sync_changes.on_user = on_user;
-	job->u.sync_changes.off_user = off_user;
+
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) sync_changes_data_free);
 
 	registered = imapx_register_job (is, job, error);
 
@@ -5540,12 +5591,6 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	success = registered && camel_imapx_job_run (job, is, error);
 
 	camel_imapx_job_unref (job);
-
-done:
-	imapx_sync_free_user (on_user);
-	imapx_sync_free_user (off_user);
-
-	camel_folder_free_uids (folder, uids);
 
 	return success;
 }
