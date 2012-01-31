@@ -57,10 +57,6 @@ struct _CamelIMAPXJob {
 
 	union {
 		struct {
-			gchar *path;
-			CamelMessageInfo *info;
-		} append_message;
-		struct {
 			CamelFolder *dest;
 			GPtrArray *uids;
 			gboolean delete_originals;

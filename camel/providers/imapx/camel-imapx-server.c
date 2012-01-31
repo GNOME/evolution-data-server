@@ -75,6 +75,7 @@ extern gint camel_application_is_exiting;
 typedef struct _GetMessageData GetMessageData;
 typedef struct _RefreshInfoData RefreshInfoData;
 typedef struct _SyncChangesData SyncChangesData;
+typedef struct _AppendMessageData AppendMessageData;
 
 struct _GetMessageData {
 	/* in: uid requested */
@@ -109,6 +110,11 @@ struct _SyncChangesData {
 	GArray *on_user; /* imapx_flag_change */
 	GArray *off_user;
 	gint unread_change;
+};
+
+struct _AppendMessageData {
+	gchar *path;
+	CamelMessageInfo *info;
 };
 
 enum {
@@ -278,6 +284,16 @@ sync_changes_data_free (SyncChangesData *data)
 	imapx_sync_free_user (data->off_user);
 
 	g_slice_free (SyncChangesData, data);
+}
+
+static void
+append_message_data_free (AppendMessageData *data)
+{
+	g_free (data->path);
+
+	camel_message_info_free (data->info);
+
+	g_slice_free (AppendMessageData, data);
 }
 
 /*
@@ -3298,16 +3314,20 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 	CamelIMAPXJob *job = ic->job;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
 	CamelMessageInfo *mi;
+	AppendMessageData *data;
 	gchar *cur, *old_uid;
 	gboolean success = TRUE;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_val_if_fail (data != NULL, FALSE);
 
 	/* Append done.  If we the server supports UIDPLUS we will get an APPENDUID response
 	 * with the new uid.  This lets us move the message we have directly to the cache
 	 * and also create a correctly numbered MessageInfo, without losing any information.
 	 * Otherwise we have to wait for the server to less us know it was appended. */
 
-	mi = camel_message_info_clone (job->u.append_message.info);
-	old_uid = g_strdup (job->u.append_message.info->uid);
+	mi = camel_message_info_clone (data->info);
+	old_uid = g_strdup (data->info->uid);
 
 	if (camel_imapx_command_set_error_if_failed (ic, error)) {
 		g_prefix_error (
@@ -3325,13 +3345,13 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 			mi->uid = camel_pstring_add (uid, TRUE);
 
 			cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid, NULL);
-			g_rename (job->u.append_message.path, cur);
+			g_rename (data->path, cur);
 
 			/* should we update the message count ? */
 			camel_folder_summary_add (job->folder->summary, mi);
 			imapx_set_message_info_flags_for_new_message (mi,
-								      ((CamelMessageInfoBase *) job->u.append_message.info)->flags,
-								      ((CamelMessageInfoBase *) job->u.append_message.info)->user_flags,
+								      ((CamelMessageInfoBase *) data->info)->flags,
+								      ((CamelMessageInfoBase *) data->info)->user_flags,
 								      job->folder);
 			changes = camel_folder_change_info_new ();
 			camel_folder_change_info_add_uid (changes, mi->uid);
@@ -3346,8 +3366,6 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 
 	camel_data_cache_remove (ifolder->cache, "new", old_uid, NULL);
 	g_free (old_uid);
-	camel_message_info_free (job->u.append_message.info);
-	g_free (job->u.append_message.path);
 	g_object_unref (job->folder);
 
 	imapx_unregister_job (is, job);
@@ -3361,14 +3379,18 @@ imapx_job_append_message_start (CamelIMAPXJob *job,
                                 CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
+	AppendMessageData *data;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
 
 	/* TODO: we could supply the original append date from the file timestamp */
 	ic = camel_imapx_command_new (
 		is, "APPEND", NULL,
 		"APPEND %f %F %P", job->folder,
-		((CamelMessageInfoBase *) job->u.append_message.info)->flags,
-		((CamelMessageInfoBase *) job->u.append_message.info)->user_flags,
-		job->u.append_message.path);
+		((CamelMessageInfoBase *) data->info)->flags,
+		((CamelMessageInfoBase *) data->info)->user_flags,
+		data->path);
 	ic->complete = imapx_command_append_message_done;
 	ic->job = job;
 	ic->pri = job->pri;
@@ -5263,12 +5285,13 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
                                    GCancellable *cancellable,
                                    GError **error)
 {
-	gchar *uid = NULL, *tmp = NULL;
+	gchar *uid = NULL, *path = NULL;
 	CamelStream *stream, *filter;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	CamelMimeFilter *canon;
 	CamelIMAPXJob *job;
 	CamelMessageInfo *info;
+	AppendMessageData *data;
 	gint res;
 	gboolean success;
 
@@ -5302,7 +5325,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 		return FALSE;
 	}
 
-	tmp = camel_data_cache_get_filename (ifolder->cache, "new", uid, NULL);
+	path = camel_data_cache_get_filename (ifolder->cache, "new", uid, NULL);
 	info = camel_folder_summary_info_new_from_message ((CamelFolderSummary *) folder->summary, message, NULL);
 	info->uid = camel_pstring_strdup (uid);
 	if (mi)
@@ -5314,14 +5337,19 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	 * mechanism is used for normal uploading as well as
 	 * offline re-syncing when we go back online */
 
+	data = g_slice_new0 (AppendMessageData);
+	data->info = info;  /* takes ownership */
+	data->path = path;  /* takes ownership */
+
 	job = camel_imapx_job_new (cancellable);
 	job->pri = IMAPX_PRIORITY_APPEND_MESSAGE;
 	job->type = IMAPX_JOB_APPEND_MESSAGE;
 	job->start = imapx_job_append_message_start;
 	job->folder = g_object_ref (folder);
 	job->noreply = FALSE;
-	job->u.append_message.info = info;
-	job->u.append_message.path = tmp;
+
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) append_message_data_free);
 
 	success = imapx_submit_job (is, job, error);
 
