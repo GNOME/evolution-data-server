@@ -921,7 +921,7 @@ e_book_backend_sqlitedb_get_contact (EBookBackendSqliteDB *ebsdb,
 	EContact *contact = NULL;
 	gchar *vcard = e_book_backend_sqlitedb_get_vcard_string (ebsdb, folderid, uid,
 								 fields_of_interest, with_all_required_fields, &err);
-	if (!err) {
+	if (!err && vcard) {
 		contact = e_contact_new_from_vcard_with_uid (vcard, uid);
 		g_free (vcard);
 	} else
@@ -1089,6 +1089,10 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 
 	if (with_all_required_fields)
 		*with_all_required_fields = local_with_all_required_fields;
+
+	if (!vcard_str && error && !*error)
+		g_set_error (error, E_BOOK_SDB_ERROR, 0,
+			_("Contact '%s' no found"), uid ? uid : "NULL");
 
 	return vcard_str;
 }
