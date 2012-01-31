@@ -78,6 +78,7 @@ typedef struct _SyncChangesData SyncChangesData;
 typedef struct _AppendMessageData AppendMessageData;
 typedef struct _CopyMessagesData CopyMessagesData;
 typedef struct _ListData ListData;
+typedef struct _ManageSubscriptionsData ManageSubscriptionsData;
 
 struct _GetMessageData {
 	/* in: uid requested */
@@ -133,6 +134,11 @@ struct _ListData {
 	guint32 flags;
 	gchar *ext;
 	GHashTable *folders;
+};
+
+struct _ManageSubscriptionsData {
+	gchar *folder_name;
+	gboolean subscribe;
 };
 
 enum {
@@ -337,6 +343,14 @@ list_data_free (ListData *data)
 	g_hash_table_destroy (data->folders);
 
 	g_slice_free (ListData, data);
+}
+
+static void
+manage_subscriptions_data_free (ManageSubscriptionsData *data)
+{
+	g_free (data->folder_name);
+
+	g_slice_free (ManageSubscriptionsData, data);
 }
 
 /*
@@ -4378,12 +4392,16 @@ imapx_job_manage_subscription_start (CamelIMAPXJob *job,
                                      CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
+	ManageSubscriptionsData *data;
 	gchar *encoded_fname = NULL;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
 
 	encoded_fname = imapx_encode_folder_name (
 		(CamelIMAPXStore *) is->store,
-		job->u.manage_subscriptions.folder_name);
-	if (job->u.manage_subscriptions.subscribe)
+		data->folder_name);
+	if (data->subscribe)
 		ic = camel_imapx_command_new (
 			is, "SUBSCRIBE", NULL,
 			"SUBSCRIBE %s", encoded_fname);
@@ -5846,14 +5864,20 @@ camel_imapx_server_manage_subscription (CamelIMAPXServer *is,
                                         GError **error)
 {
 	CamelIMAPXJob *job;
+	ManageSubscriptionsData *data;
 	gboolean success;
+
+	data = g_slice_new0 (ManageSubscriptionsData);
+	data->folder_name = g_strdup (folder_name);
+	data->subscribe = subscribe;
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_MANAGE_SUBSCRIPTION;
 	job->start = imapx_job_manage_subscription_start;
 	job->pri = IMAPX_PRIORITY_MANAGE_SUBSCRIPTION;
-	job->u.manage_subscriptions.subscribe = subscribe;
-	job->u.manage_subscriptions.folder_name = folder_name;
+
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) manage_subscriptions_data_free);
 
 	success = imapx_submit_job (is, job, error);
 

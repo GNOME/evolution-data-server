@@ -57,11 +57,6 @@ struct _CamelIMAPXJob {
 
 	union {
 		struct {
-			const gchar *folder_name;
-			gboolean subscribe;
-		} manage_subscriptions;
-
-		struct {
 			const gchar *ofolder_name;
 			const gchar *nfolder_name;
 		} rename_folder;
