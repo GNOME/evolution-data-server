@@ -79,6 +79,7 @@ typedef struct _AppendMessageData AppendMessageData;
 typedef struct _CopyMessagesData CopyMessagesData;
 typedef struct _ListData ListData;
 typedef struct _ManageSubscriptionsData ManageSubscriptionsData;
+typedef struct _RenameFolderData RenameFolderData;
 
 struct _GetMessageData {
 	/* in: uid requested */
@@ -139,6 +140,11 @@ struct _ListData {
 struct _ManageSubscriptionsData {
 	gchar *folder_name;
 	gboolean subscribe;
+};
+
+struct _RenameFolderData {
+	gchar *old_folder_name;
+	gchar *new_folder_name;
 };
 
 enum {
@@ -351,6 +357,15 @@ manage_subscriptions_data_free (ManageSubscriptionsData *data)
 	g_free (data->folder_name);
 
 	g_slice_free (ManageSubscriptionsData, data);
+}
+
+static void
+rename_folder_data_free (RenameFolderData *data)
+{
+	g_free (data->old_folder_name);
+	g_free (data->new_folder_name);
+
+	g_slice_free (RenameFolderData, data);
 }
 
 /*
@@ -4532,13 +4547,17 @@ imapx_job_rename_folder_start (CamelIMAPXJob *job,
                                CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
+	RenameFolderData *data;
 	gchar *en_ofname = NULL, *en_nfname = NULL;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
 
 	job->folder = camel_store_get_folder_sync (
 		is->store, "INBOX", 0, job->cancellable, &job->error);
 
-	en_ofname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.rename_folder.ofolder_name);
-	en_nfname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, job->u.rename_folder.nfolder_name);
+	en_ofname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, data->old_folder_name);
+	en_nfname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, data->new_folder_name);
 
 	ic = camel_imapx_command_new (
 		is, "RENAME", job->folder,
@@ -5938,14 +5957,20 @@ camel_imapx_server_rename_folder (CamelIMAPXServer *is,
                                   GError **error)
 {
 	CamelIMAPXJob *job;
+	RenameFolderData *data;
 	gboolean success;
+
+	data = g_slice_new0 (RenameFolderData);
+	data->old_folder_name = g_strdup (old_name);
+	data->new_folder_name = g_strdup (new_name);
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_RENAME_FOLDER;
 	job->start = imapx_job_rename_folder_start;
 	job->pri = IMAPX_PRIORITY_RENAME_FOLDER;
-	job->u.rename_folder.ofolder_name = old_name;
-	job->u.rename_folder.nfolder_name = new_name;
+
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) rename_folder_data_free);
 
 	success = imapx_submit_job (is, job, error);
 
