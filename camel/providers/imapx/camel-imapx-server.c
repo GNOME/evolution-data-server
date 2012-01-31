@@ -71,6 +71,22 @@
 
 extern gint camel_application_is_exiting;
 
+/* Job-specific structs */
+typedef struct _GetMessageData GetMessageData;
+
+struct _GetMessageData {
+	/* in: uid requested */
+	gchar *uid;
+	/* in/out: message content stream output */
+	CamelStream *stream;
+	/* working variables */
+	gsize body_offset;
+	gssize body_len;
+	gsize fetch_offset;
+	gsize size;
+	gboolean use_multi_fetch;
+};
+
 enum {
 	SELECT_CHANGED,
 	SHUTDOWN,
@@ -205,6 +221,17 @@ enum {
 static gboolean imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean force, GCancellable *cancellable, GError **error);
 
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
+
+static void
+get_message_data_free (GetMessageData *data)
+{
+	g_free (data->uid);
+
+	if (data->stream != NULL)
+		g_object_unref (data->stream);
+
+	g_slice_free (GetMessageData, data);
+}
 
 /*
   this creates a uid (or sequence number) set directly into a command,
@@ -995,18 +1022,22 @@ imapx_untagged (CamelIMAPXServer *is,
 
 		if ((finfo->got & (FETCH_BODY | FETCH_UID)) == (FETCH_BODY | FETCH_UID)) {
 			CamelIMAPXJob *job = imapx_match_active_job (is, IMAPX_JOB_GET_MESSAGE, finfo->uid);
+			GetMessageData *data;
+
+			data = camel_imapx_job_get_data (job);
+			g_return_val_if_fail (data != NULL, FALSE);
 
 			/* This must've been a get-message request, fill out the body stream,
 			 * in the right spot */
 
 			if (job && job->error == NULL) {
-				if (job->u.get_message.use_multi_fetch) {
-					job->u.get_message.body_offset = finfo->offset;
-					g_seekable_seek (G_SEEKABLE (job->u.get_message.stream), finfo->offset, G_SEEK_SET, NULL, NULL);
+				if (data->use_multi_fetch) {
+					data->body_offset = finfo->offset;
+					g_seekable_seek (G_SEEKABLE (data->stream), finfo->offset, G_SEEK_SET, NULL, NULL);
 				}
 
-				job->u.get_message.body_len = camel_stream_write_to_stream (finfo->body, job->u.get_message.stream, job->cancellable, &job->error);
-				if (job->u.get_message.body_len == -1)
+				data->body_len = camel_stream_write_to_stream (finfo->body, data->stream, job->cancellable, &job->error);
+				if (data->body_len == -1)
 					g_prefix_error (
 						&job->error,
 						_("Error writing to cache stream: "));
@@ -2925,8 +2956,12 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
                                   GError **error)
 {
 	CamelIMAPXJob *job = ic->job;
+	GetMessageData *data;
 	gboolean success = TRUE;
 	GError *local_error = NULL;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_val_if_fail (data != NULL, FALSE);
 
 	/* We either have more to fetch (partial mode?), we are complete,
 	 * or we failed.  Failure is handled in the fetch code, so
@@ -2938,31 +2973,31 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		g_prefix_error (
 			&local_error, "%s: ",
 			_("Error fetching message"));
-		job->u.get_message.body_len = -1;
+		data->body_len = -1;
 
-	} else if (job->u.get_message.use_multi_fetch) {
-		gsize really_fetched = g_seekable_tell (G_SEEKABLE (job->u.get_message.stream));
+	} else if (data->use_multi_fetch) {
+		gsize really_fetched = g_seekable_tell (G_SEEKABLE (data->stream));
 		/* Don't automatically stop when we reach the reported message
 		 * size -- some crappy servers (like Microsoft Exchange) have
 		 * a tendency to lie about it. Keep going (one request at a
 		 * time) until the data actually stop coming. */
-		if (job->u.get_message.fetch_offset < job->u.get_message.size ||
-		    job->u.get_message.fetch_offset == really_fetched) {
+		if (data->fetch_offset < data->size ||
+		    data->fetch_offset == really_fetched) {
 			camel_imapx_command_unref (ic);
 			camel_operation_progress (
 				job->cancellable,
-				(job->u.get_message.fetch_offset *100) / job->u.get_message.size);
+				(data->fetch_offset *100) / data->size);
 
 			ic = camel_imapx_command_new (
 				is, "FETCH", job->folder,
 				"UID FETCH %t (BODY.PEEK[]",
-				job->u.get_message.uid);
-			camel_imapx_command_add (ic, "<%u.%u>", job->u.get_message.fetch_offset, MULTI_SIZE);
+				data->uid);
+			camel_imapx_command_add (ic, "<%u.%u>", data->fetch_offset, MULTI_SIZE);
 			camel_imapx_command_add (ic, ")");
 			ic->complete = imapx_command_fetch_message_done;
 			ic->job = job;
 			ic->pri = job->pri - 1;
-			job->u.get_message.fetch_offset += MULTI_SIZE;
+			data->fetch_offset += MULTI_SIZE;
 			job->commands++;
 			imapx_command_queue (is, ic);
 			return TRUE;
@@ -2971,13 +3006,13 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 
 	if (job->commands == 0) {
 		CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
-		CamelStream *stream = job->u.get_message.stream;
+		CamelStream *stream = data->stream;
 
 		/* return the exception from last command */
 		if (local_error != NULL) {
 			if (stream)
 				g_object_unref (stream);
-			job->u.get_message.stream = NULL;
+			data->stream = NULL;
 
 			g_propagate_error (error, local_error);
 			local_error = NULL;
@@ -2987,10 +3022,10 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
 
 			if (stream) {
-				gchar *tmp = camel_data_cache_get_filename (ifolder->cache, "tmp", job->u.get_message.uid, NULL);
+				gchar *tmp = camel_data_cache_get_filename (ifolder->cache, "tmp", data->uid, NULL);
 
 				if (camel_stream_flush (stream, job->cancellable, &job->error) == 0 && camel_stream_close (stream, job->cancellable, &job->error) == 0) {
-					gchar *cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", job->u.get_message.uid, NULL);
+					gchar *cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", data->uid, NULL);
 					gchar *temp = g_strrstr (cache_file, "/"), *dir;
 
 					dir = g_strndup (cache_file, temp - cache_file);
@@ -3008,12 +3043,12 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 						_("Closing tmp stream failed: "));
 
 				g_free (tmp);
-				g_object_unref (job->u.get_message.stream);
-				job->u.get_message.stream = camel_data_cache_get (ifolder->cache, "cur", job->u.get_message.uid, NULL);
+				g_object_unref (data->stream);
+				data->stream = camel_data_cache_get (ifolder->cache, "cur", data->uid, NULL);
 			}
 		}
 
-		camel_data_cache_remove (ifolder->cache, "tmp", job->u.get_message.uid, NULL);
+		camel_data_cache_remove (ifolder->cache, "tmp", data->uid, NULL);
 		imapx_unregister_job (is, job);
 	}
 
@@ -3029,20 +3064,24 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
                              CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
+	GetMessageData *data;
 	gint i;
 
-	if (job->u.get_message.use_multi_fetch) {
-		for (i = 0; i < 3 && job->u.get_message.fetch_offset < job->u.get_message.size; i++) {
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
+
+	if (data->use_multi_fetch) {
+		for (i = 0; i < 3 && data->fetch_offset < data->size; i++) {
 			ic = camel_imapx_command_new (
 				is, "FETCH", job->folder,
 				"UID FETCH %t (BODY.PEEK[]",
-				job->u.get_message.uid);
-			camel_imapx_command_add (ic, "<%u.%u>", job->u.get_message.fetch_offset, MULTI_SIZE);
+				data->uid);
+			camel_imapx_command_add (ic, "<%u.%u>", data->fetch_offset, MULTI_SIZE);
 			camel_imapx_command_add (ic, ")");
 			ic->complete = imapx_command_fetch_message_done;
 			ic->job = job;
 			ic->pri = job->pri;
-			job->u.get_message.fetch_offset += MULTI_SIZE;
+			data->fetch_offset += MULTI_SIZE;
 			job->commands++;
 			imapx_command_queue (is, ic);
 		}
@@ -3050,7 +3089,7 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
 		ic = camel_imapx_command_new (
 			is, "FETCH", job->folder,
 			"UID FETCH %t (BODY.PEEK[])",
-			job->u.get_message.uid);
+			data->uid);
 		ic->complete = imapx_command_fetch_message_done;
 		ic->job = job;
 		ic->pri = job->pri;
@@ -3064,10 +3103,15 @@ imapx_job_get_message_matches (CamelIMAPXJob *job,
                                CamelFolder *folder,
                                const gchar *uid)
 {
+	GetMessageData *data;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_val_if_fail (data != NULL, FALSE);
+
 	if (folder != job->folder)
 		return FALSE;
 
-	if (g_strcmp0 (uid, job->u.get_message.uid) != 0)
+	if (g_strcmp0 (uid, data->uid) != 0)
 		return FALSE;
 
 	return TRUE;
@@ -4945,10 +4989,11 @@ imapx_server_get_message (CamelIMAPXServer *is,
                           GCancellable *cancellable,
                           GError **error)
 {
-	CamelStream *stream = NULL, *tmp_stream;
+	CamelStream *stream = NULL;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 	CamelIMAPXJob *job;
 	CamelMessageInfo *mi;
+	GetMessageData *data;
 	gboolean registered;
 	gboolean success;
 
@@ -5000,7 +5045,12 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		return NULL;
 	}
 
-	tmp_stream = camel_data_cache_add (ifolder->cache, "tmp", uid, NULL);
+	data = g_slice_new0 (GetMessageData);
+	data->uid = g_strdup (uid);
+	data->stream = camel_data_cache_add (ifolder->cache, "tmp", uid, NULL);
+	data->size = ((CamelMessageInfoBase *) mi)->size;
+	if (data->size > MULTI_SIZE)
+		data->use_multi_fetch = TRUE;
 
 	job = camel_imapx_job_new (cancellable);
 	job->pri = pri;
@@ -5008,13 +5058,10 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	job->start = imapx_job_get_message_start;
 	job->matches = imapx_job_get_message_matches;
 	job->folder = folder;
-	job->u.get_message.uid = (gchar *) uid;
-	job->u.get_message.stream = tmp_stream;
 
-	if (((CamelMessageInfoBase *) mi)->size > MULTI_SIZE)
-		job->u.get_message.use_multi_fetch = TRUE;
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) get_message_data_free);
 
-	job->u.get_message.size = ((CamelMessageInfoBase *) mi)->size;
 	camel_message_info_free (mi);
 	registered = imapx_register_job (is, job, error);
 
@@ -5023,9 +5070,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	success = registered && camel_imapx_job_run (job, is, error);
 
 	if (success)
-		stream = job->u.get_message.stream;
-	else if (job->u.get_message.stream != NULL)
-		g_object_unref (job->u.get_message.stream);
+		stream = g_object_ref (data->stream);
 
 	camel_imapx_job_unref (job);
 

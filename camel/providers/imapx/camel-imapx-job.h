@@ -57,18 +57,6 @@ struct _CamelIMAPXJob {
 
 	union {
 		struct {
-			/* in: uid requested */
-			gchar *uid;
-			/* in/out: message content stream output */
-			CamelStream *stream;
-			/* working variables */
-			gsize body_offset;
-			gssize body_len;
-			gsize fetch_offset;
-			gsize size;
-			gboolean use_multi_fetch;
-		} get_message;
-		struct {
 			/* array of refresh info's */
 			GArray *infos;
 			/* used for biulding uidset stuff */
