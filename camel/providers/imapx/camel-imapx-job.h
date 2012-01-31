@@ -57,13 +57,6 @@ struct _CamelIMAPXJob {
 
 	union {
 		struct {
-			gchar *pattern;
-			guint32 flags;
-			const gchar *ext;
-			GHashTable *folders;
-		} list;
-
-		struct {
 			const gchar *folder_name;
 			gboolean subscribe;
 		} manage_subscriptions;

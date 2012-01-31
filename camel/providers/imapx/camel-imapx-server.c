@@ -77,6 +77,7 @@ typedef struct _RefreshInfoData RefreshInfoData;
 typedef struct _SyncChangesData SyncChangesData;
 typedef struct _AppendMessageData AppendMessageData;
 typedef struct _CopyMessagesData CopyMessagesData;
+typedef struct _ListData ListData;
 
 struct _GetMessageData {
 	/* in: uid requested */
@@ -125,6 +126,13 @@ struct _CopyMessagesData {
 	gint index;
 	gint last_index;
 	struct _uidset_state uidset;
+};
+
+struct _ListData {
+	gchar *pattern;
+	guint32 flags;
+	gchar *ext;
+	GHashTable *folders;
 };
 
 enum {
@@ -318,6 +326,17 @@ copy_messages_data_free (CopyMessagesData *data)
 	}
 
 	g_slice_free (CopyMessagesData, data);
+}
+
+static void
+list_data_free (ListData *data)
+{
+	g_free (data->pattern);
+	g_free (data->ext);
+
+	g_hash_table_destroy (data->folders);
+
+	g_slice_free (ListData, data);
 }
 
 /*
@@ -1327,25 +1346,29 @@ imapx_untagged (CamelIMAPXServer *is,
 	case IMAPX_LIST: {
 		struct _list_info *linfo = imapx_parse_list (is->stream, cancellable, error);
 		CamelIMAPXJob *job;
+		ListData *data;
 
 		if (!linfo)
 			break;
 
 		job = imapx_match_active_job (is, IMAPX_JOB_LIST, linfo->name);
 
+		data = camel_imapx_job_get_data (job);
+		g_return_val_if_fail (data != NULL, FALSE);
+
 		// TODO: we want to make sure the names match?
 
-		if (job->u.list.flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) {
+		if (data->flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) {
 			c(is->tagprefix, "lsub: '%s' (%c)\n", linfo->name, linfo->separator);
 
 		} else {
 			c(is->tagprefix, "list: '%s' (%c)\n", linfo->name, linfo->separator);
 		}
 
-		if (job && g_hash_table_lookup (job->u.list.folders, linfo->name) == NULL) {
+		if (job && g_hash_table_lookup (data->folders, linfo->name) == NULL) {
 			if (lsub)
 				linfo->flags |= CAMEL_FOLDER_SUBSCRIBED;
-			g_hash_table_insert (job->u.list.folders, linfo->name, linfo);
+			g_hash_table_insert (data->folders, linfo->name, linfo);
 		} else {
 			g_warning("got list response but no current listing job happening?\n");
 			imapx_free_list (linfo);
@@ -4282,17 +4305,21 @@ imapx_job_list_start (CamelIMAPXJob *job,
                       CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
+	ListData *data;
+
+	data = camel_imapx_job_get_data (job);
+	g_return_if_fail (data != NULL);
 
 	ic = camel_imapx_command_new (
 		is, "LIST", NULL,
 		"%s \"\" %s",
-		(job->u.list.flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ?
+		(data->flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ?
 			"LSUB" : "LIST",
-		job->u.list.pattern);
-	if (job->u.list.ext) {
+		data->pattern);
+	if (data->ext) {
 		/* Hm, we need a way to add atoms _without_ quoting or using literals */
 		camel_imapx_command_add (ic, " ");
-		camel_imapx_command_add (ic, job->u.list.ext);
+		camel_imapx_command_add (ic, data->ext);
 	}
 	ic->pri = job->pri;
 	ic->job = job;
@@ -5771,23 +5798,29 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 {
 	CamelIMAPXJob *job;
 	GPtrArray *folders = NULL;
+	ListData *data;
 	gchar *encoded_name;
 
 	encoded_name = camel_utf8_utf7 (top);
+
+	data = g_slice_new0 (ListData);
+	data->flags = flags;
+	data->ext = g_strdup (ext);
+	data->folders = g_hash_table_new (imapx_name_hash, imapx_name_equal);
+
+	if (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)
+		data->pattern = g_strdup_printf ("%s*", encoded_name);
+	else
+		data->pattern = g_strdup (encoded_name);
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_LIST;
 	job->start = imapx_job_list_start;
 	job->matches = imapx_job_list_matches;
 	job->pri = IMAPX_PRIORITY_LIST;
-	job->u.list.ext = ext;
-	job->u.list.flags = flags;
-	job->u.list.folders = g_hash_table_new (imapx_name_hash, imapx_name_equal);
-	job->u.list.pattern = g_alloca (strlen (encoded_name) + 5);
-	if (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE)
-		sprintf(job->u.list.pattern, "%s*", encoded_name);
-	else
-		sprintf(job->u.list.pattern, "%s", encoded_name);
+
+	camel_imapx_job_set_data (
+		job, data, (GDestroyNotify) list_data_free);
 
 	/* sync operation which is triggered by user */
 	if (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST)
@@ -5795,11 +5828,10 @@ camel_imapx_server_list (CamelIMAPXServer *is,
 
 	if (imapx_submit_job (is, job, error)) {
 		folders = g_ptr_array_new ();
-		g_hash_table_foreach (job->u.list.folders, imapx_list_flatten, folders);
+		g_hash_table_foreach (data->folders, imapx_list_flatten, folders);
 		qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), imapx_list_cmp);
 	}
 
-	g_hash_table_destroy (job->u.list.folders);
 	g_free (encoded_name);
 	camel_imapx_job_unref (job);
 
