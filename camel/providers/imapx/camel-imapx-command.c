@@ -23,6 +23,7 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
+#include "camel-imapx-server.h"
 #include "camel-imapx-store.h"
 
 #define c(...) camel_imapx_debug(command, __VA_ARGS__)
@@ -42,6 +43,11 @@ struct _CamelIMAPXRealCommand {
 	GCond *done_sync_cond;
 	GMutex *done_sync_mutex;
 	gboolean done_sync_flag;
+};
+
+/* Safe to cast to a GQueue. */
+struct _CamelIMAPXCommandQueue {
+	GQueue g_queue;
 };
 
 CamelIMAPXCommand *
@@ -534,5 +540,129 @@ camel_imapx_command_set_error_if_failed (CamelIMAPXCommand *ic,
 	}
 
 	return FALSE;
+}
+
+CamelIMAPXCommandQueue *
+camel_imapx_command_queue_new (void)
+{
+	/* An initialized GQueue is simply zero-filled,
+	 * so we can skip calling g_queue_init() here. */
+	return g_slice_new0 (CamelIMAPXCommandQueue);
+}
+
+void
+camel_imapx_command_queue_free (CamelIMAPXCommandQueue *queue)
+{
+	CamelIMAPXCommand *ic;
+
+	g_return_if_fail (queue != NULL);
+
+	while ((ic = g_queue_pop_head ((GQueue *) queue)) != NULL)
+		camel_imapx_command_unref (ic);
+
+	g_slice_free (CamelIMAPXCommandQueue, queue);
+}
+
+void
+camel_imapx_command_queue_transfer (CamelIMAPXCommandQueue *from,
+                                    CamelIMAPXCommandQueue *to)
+{
+	GList *link;
+
+	g_return_if_fail (from != NULL);
+	g_return_if_fail (to != NULL);
+
+	while ((link = g_queue_pop_head_link ((GQueue *) from)) != NULL)
+		g_queue_push_tail_link ((GQueue *) to, link);
+}
+
+void
+camel_imapx_command_queue_push_tail (CamelIMAPXCommandQueue *queue,
+                                     CamelIMAPXCommand *ic)
+{
+	g_return_if_fail (queue != NULL);
+	g_return_if_fail (ic != NULL);
+
+	camel_imapx_command_ref (ic);
+
+	g_queue_push_tail ((GQueue *) queue, ic);
+}
+
+void
+camel_imapx_command_queue_insert_sorted (CamelIMAPXCommandQueue *queue,
+                                         CamelIMAPXCommand *ic)
+{
+	g_return_if_fail (queue != NULL);
+	g_return_if_fail (ic != NULL);
+
+	camel_imapx_command_ref (ic);
+
+	g_queue_insert_sorted (
+		(GQueue *) queue, ic, (GCompareDataFunc)
+		camel_imapx_command_compare, NULL);
+}
+
+gboolean
+camel_imapx_command_queue_is_empty (CamelIMAPXCommandQueue *queue)
+{
+	g_return_val_if_fail (queue != NULL, TRUE);
+
+	return g_queue_is_empty ((GQueue *) queue);
+}
+
+guint
+camel_imapx_command_queue_get_length (CamelIMAPXCommandQueue *queue)
+{
+	g_return_val_if_fail (queue != NULL, 0);
+
+	return g_queue_get_length ((GQueue *) queue);
+}
+
+CamelIMAPXCommand *
+camel_imapx_command_queue_peek_head (CamelIMAPXCommandQueue *queue)
+{
+	g_return_val_if_fail (queue != NULL, NULL);
+
+	return g_queue_peek_head ((GQueue *) queue);
+}
+
+GList *
+camel_imapx_command_queue_peek_head_link (CamelIMAPXCommandQueue *queue)
+{
+	g_return_val_if_fail (queue != NULL, NULL);
+
+	return g_queue_peek_head_link ((GQueue *) queue);
+}
+
+gboolean
+camel_imapx_command_queue_remove (CamelIMAPXCommandQueue *queue,
+                                  CamelIMAPXCommand *ic)
+{
+	g_return_val_if_fail (queue != NULL, FALSE);
+	g_return_val_if_fail (ic != NULL, FALSE);
+
+	if (g_queue_remove ((GQueue *) queue, ic)) {
+		camel_imapx_command_unref (ic);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+void
+camel_imapx_command_queue_delete_link (CamelIMAPXCommandQueue *queue,
+                                       GList *link)
+{
+	g_return_if_fail (queue != NULL);
+	g_return_if_fail (link != NULL);
+
+	/* Verify the link is actually in the queue. */
+	if (g_queue_link_index ((GQueue *) queue, link) == -1) {
+		g_warning ("%s: Link not found in queue", G_STRFUNC);
+		return;
+	}
+
+	camel_imapx_command_unref ((CamelIMAPXCommand *) link->data);
+	g_queue_delete_link ((GQueue *) queue, link);
 }
 

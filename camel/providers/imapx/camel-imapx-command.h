@@ -21,19 +21,19 @@
 
 #include <camel.h>
 
-#include "camel-imapx-server.h"
 #include "camel-imapx-utils.h"
 
 G_BEGIN_DECLS
 
 /* Avoid a circular reference. */
 struct _CamelIMAPXJob;
+struct _CamelIMAPXServer;
 
 typedef struct _CamelIMAPXCommand CamelIMAPXCommand;
 typedef struct _CamelIMAPXCommandPart CamelIMAPXCommandPart;
 
 typedef gboolean
-		(*CamelIMAPXCommandFunc)	(CamelIMAPXServer *is,
+		(*CamelIMAPXCommandFunc)	(struct _CamelIMAPXServer *is,
 						 CamelIMAPXCommand *ic,
 						 GError **error);
 
@@ -65,7 +65,7 @@ struct _CamelIMAPXCommandPart {
 };
 
 struct _CamelIMAPXCommand {
-	CamelIMAPXServer *is;
+	struct _CamelIMAPXServer *is;
 	gint pri;
 
 	/* Command name/type (e.g. FETCH) */
@@ -88,7 +88,7 @@ struct _CamelIMAPXCommand {
 };
 
 CamelIMAPXCommand *
-		camel_imapx_command_new		(CamelIMAPXServer *is,
+		camel_imapx_command_new		(struct _CamelIMAPXServer *is,
 						 const gchar *name,
 						 CamelFolder *select,
 						 const gchar *format,
@@ -113,6 +113,40 @@ void		camel_imapx_command_done	(CamelIMAPXCommand *ic);
 gboolean	camel_imapx_command_set_error_if_failed
 						(CamelIMAPXCommand *ic,
 						 GError **error);
+
+/* These are simple GQueue wrappers for CamelIMAPXCommands.
+ * They help make sure reference counting is done properly.
+ * Add more wrappers as needed, don't circumvent them. */
+
+typedef struct _CamelIMAPXCommandQueue CamelIMAPXCommandQueue;
+
+CamelIMAPXCommandQueue *
+		camel_imapx_command_queue_new	(void);
+void		camel_imapx_command_queue_free	(CamelIMAPXCommandQueue *queue);
+void		camel_imapx_command_queue_transfer
+						(CamelIMAPXCommandQueue *from,
+						 CamelIMAPXCommandQueue *to);
+void		camel_imapx_command_queue_push_tail
+						(CamelIMAPXCommandQueue *queue,
+						 CamelIMAPXCommand *ic);
+void		camel_imapx_command_queue_insert_sorted
+						(CamelIMAPXCommandQueue *queue,
+						 CamelIMAPXCommand *ic);
+gboolean	camel_imapx_command_queue_is_empty
+						(CamelIMAPXCommandQueue *queue);
+guint		camel_imapx_command_queue_get_length
+						(CamelIMAPXCommandQueue *queue);
+CamelIMAPXCommand *
+		camel_imapx_command_queue_peek_head
+						(CamelIMAPXCommandQueue *queue);
+GList *		camel_imapx_command_queue_peek_head_link
+						(CamelIMAPXCommandQueue *queue);
+gboolean	camel_imapx_command_queue_remove
+						(CamelIMAPXCommandQueue *queue,
+						 CamelIMAPXCommand *ic);
+void		camel_imapx_command_queue_delete_link
+						(CamelIMAPXCommandQueue *queue,
+						 GList *link);
 
 G_END_DECLS
 

@@ -22,6 +22,7 @@
 
 #include <camel/camel.h>
 
+#include "camel-imapx-command.h"
 #include "camel-imapx-stream.h"
 #include "camel-imapx-store-summary.h"
 
@@ -82,9 +83,9 @@ struct _CamelIMAPXServer {
 	 * all the time, so they can be cleaned up in exception cases */
 	GStaticRecMutex queue_lock;
 	CamelIMAPXCommand *literal;
-	GQueue queue;
-	GQueue active;
-	GQueue done;
+	CamelIMAPXCommandQueue *queue;
+	CamelIMAPXCommandQueue *active;
+	CamelIMAPXCommandQueue *done;
 
 	/* info on currently selected folder */
 	CamelFolder *select_folder;

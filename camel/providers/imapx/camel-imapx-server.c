@@ -508,11 +508,11 @@ imapx_command_start (CamelIMAPXServer *is,
 	if (cp_continuation || cp_literal_plus)
 		is->literal = ic;
 
-	g_queue_push_tail (&is->active, ic);
+	camel_imapx_command_queue_push_tail (is->active, ic);
 
 	g_static_rec_mutex_lock (&is->ostream_lock);
 
-	c(is->tagprefix, "Starting command (active=%d,%s) %c%05u %s\r\n", g_queue_get_length (&is->active), is->literal?" literal":"", is->tagprefix, ic->tag, cp->data && g_str_has_prefix (cp->data, "LOGIN") ? "LOGIN..." : cp->data);
+	c(is->tagprefix, "Starting command (active=%d,%s) %c%05u %s\r\n", camel_imapx_command_queue_get_length (is->active), is->literal?" literal":"", is->tagprefix, ic->tag, cp->data && g_str_has_prefix (cp->data, "LOGIN") ? "LOGIN..." : cp->data);
 	if (is->stream != NULL) {
 		gchar *string;
 
@@ -540,7 +540,7 @@ imapx_command_start (CamelIMAPXServer *is,
 err:
 	g_static_rec_mutex_unlock (&is->ostream_lock);
 
-	g_queue_remove (&is->active, ic);
+	camel_imapx_command_queue_remove (is->active, ic);
 
 	/* Send a NULL GError since we've already set a
 	 * GError to get here, and we're not interested
@@ -607,7 +607,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 
 		c(is->tagprefix, "-- Checking job queue for non-folder jobs\n");
 
-		head = g_queue_peek_head_link (&is->queue);
+		head = camel_imapx_command_queue_peek_head_link (is->queue);
 
 		/* Tag which commands in the queue to start. */
 		for (link = head; link != NULL; link = g_list_next (link)) {
@@ -633,7 +633,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		/* Start the tagged commands. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
 			CamelIMAPXCommand *ic = link->data;
-			g_queue_delete_link (&is->queue, link);
+			camel_imapx_command_queue_delete_link (is->queue, link);
 			imapx_command_start (is, ic, cancellable, error);
 		}
 
@@ -643,7 +643,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 	if (imapx_idle_supported (is) && is->state == IMAPX_SELECTED) {
 		gboolean empty = imapx_is_command_queue_empty (is);
 
-		if (imapx_in_idle (is) && !g_queue_is_empty (&is->queue)) {
+		if (imapx_in_idle (is) && !camel_imapx_command_queue_is_empty (is->queue)) {
 			/* if imapx_stop_idle() returns FALSE, it was only
 			 * pending and we can go ahead and send a new command
 			 * immediately. If it returns TRUE, either it sent the
@@ -660,7 +660,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		}
 	}
 
-	if (g_queue_is_empty (&is->queue)) {
+	if (camel_imapx_command_queue_is_empty (is->queue)) {
 		c(is->tagprefix, "* no, no jobs\n");
 		return;
 	}
@@ -674,7 +674,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		c(is->tagprefix, "- we're selected on '%s', current jobs?\n",
 		  camel_folder_get_full_name (is->select_folder));
 
-		head = g_queue_peek_head_link (&is->active);
+		head = camel_imapx_command_queue_peek_head_link (is->active);
 
 		/* Find the highest priority in the active queue. */
 		for (link = head; link != NULL; link = g_list_next (link)) {
@@ -684,14 +684,14 @@ imapx_command_start_next (CamelIMAPXServer *is,
 			c(is->tagprefix, "-  %3d '%s'\n", (gint)ic->pri, ic->name);
 		}
 
-		if (g_queue_get_length (&is->active) >= MAX_COMMANDS) {
+		if (camel_imapx_command_queue_get_length (is->active) >= MAX_COMMANDS) {
 			c(is->tagprefix, "** too many jobs busy, waiting for results for now\n");
 			return;
 		}
 
 		c(is->tagprefix, "-- Checking job queue\n");
 
-		head = g_queue_peek_head_link (&is->queue);
+		head = camel_imapx_command_queue_peek_head_link (is->queue);
 
 		/* Tag which commands in the queue to start. */
 		for (link = head; link != NULL; link = g_list_next (link)) {
@@ -723,7 +723,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		/* Start the tagged commands. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
 			CamelIMAPXCommand *ic = link->data;
-			g_queue_delete_link (&is->queue, link);
+			camel_imapx_command_queue_delete_link (is->queue, link);
 			imapx_command_start (is, ic, cancellable, error);
 			commands_started = TRUE;
 		}
@@ -733,7 +733,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 	}
 
 	/* This won't be NULL because we checked for an empty queue above. */
-	first_ic = g_queue_peek_head (&is->queue);
+	first_ic = camel_imapx_command_queue_peek_head (is->queue);
 
 	/* If we need to select a folder for the first command, do it now,
 	 * once it is complete it will re-call us if it succeeded. */
@@ -748,7 +748,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 
 		min_pri = first_ic->pri;
 
-		head = g_queue_peek_head_link (&is->queue);
+		head = camel_imapx_command_queue_peek_head_link (is->queue);
 
 		/* Tag which commands in the queue to start. */
 		for (link = head; link != NULL; link = g_list_next (link)) {
@@ -774,7 +774,7 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		/* Start the tagged commands. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
 			CamelIMAPXCommand *ic = link->data;
-			g_queue_delete_link (&is->queue, link);
+			camel_imapx_command_queue_delete_link (is->queue, link);
 			imapx_command_start (is, ic, cancellable, error);
 		}
 	}
@@ -783,10 +783,10 @@ imapx_command_start_next (CamelIMAPXServer *is,
 static gboolean
 imapx_is_command_queue_empty (CamelIMAPXServer *is)
 {
-	if (!g_queue_is_empty (&is->queue))
+	if (!camel_imapx_command_queue_is_empty (is->queue))
 		return FALSE;
 
-	if (!g_queue_is_empty (&is->active))
+	if (!camel_imapx_command_queue_is_empty (is->active))
 		return FALSE;
 
 	return TRUE;
@@ -821,9 +821,7 @@ imapx_command_queue (CamelIMAPXServer *is,
 		return;
 	}
 
-	g_queue_insert_sorted (
-		&is->queue, ic, (GCompareDataFunc)
-		camel_imapx_command_compare, NULL);
+	camel_imapx_command_queue_insert_sorted (is->queue, ic);
 
 	imapx_command_start_next (is, ic->job->cancellable, NULL);
 
@@ -847,7 +845,7 @@ imapx_find_command_tag (CamelIMAPXServer *is,
 		goto exit;
 	}
 
-	head = g_queue_peek_head_link (&is->active);
+	head = camel_imapx_command_queue_peek_head_link (is->active);
 
 	for (link = head; link != NULL; link = g_list_next (link)) {
 		CamelIMAPXCommand *candidate = link->data;
@@ -875,7 +873,7 @@ imapx_match_active_job (CamelIMAPXServer *is,
 
 	QUEUE_LOCK (is);
 
-	head = g_queue_peek_head_link (&is->active);
+	head = camel_imapx_command_queue_peek_head_link (is->active);
 
 	for (link = head; link != NULL; link = g_list_next (link)) {
 		CamelIMAPXCommand *ic = link->data;
@@ -1757,8 +1755,10 @@ imapx_completion (CamelIMAPXServer *is,
 
 	QUEUE_LOCK (is);
 
-	g_queue_remove (&is->active, ic);
-	g_queue_push_tail (&is->done, ic);
+	camel_imapx_command_ref (ic);
+	camel_imapx_command_queue_remove (is->active, ic);
+	camel_imapx_command_queue_push_tail (is->done, ic);
+	camel_imapx_command_unref (ic);
 
 	if (is->literal == ic)
 		is->literal = NULL;
@@ -1771,7 +1771,7 @@ imapx_completion (CamelIMAPXServer *is,
 		return FALSE;
 	}
 
-	g_queue_remove (&is->done, ic);
+	camel_imapx_command_queue_remove (is->done, ic);
 
 	QUEUE_UNLOCK (is);
 
@@ -1843,7 +1843,7 @@ imapx_command_run (CamelIMAPXServer *is,
 		is->literal = NULL;
 
 	QUEUE_LOCK (is);
-	g_queue_remove (&is->active, ic);
+	camel_imapx_command_queue_remove (is->active, ic);
 	QUEUE_UNLOCK (is);
 
 	return success;
@@ -2319,10 +2319,10 @@ imapx_command_select_done (CamelIMAPXServer *is,
 
 		QUEUE_LOCK (is);
 
-		head = g_queue_peek_head_link (&is->queue);
+		head = camel_imapx_command_queue_peek_head_link (is->queue);
 
 		if (is->select_pending) {
-			head = g_queue_peek_head_link (&is->queue);
+			head = camel_imapx_command_queue_peek_head_link (is->queue);
 
 			for (link = head; link != NULL; link = g_list_next (link)) {
 				CamelIMAPXCommand *cw = link->data;
@@ -2337,7 +2337,7 @@ imapx_command_select_done (CamelIMAPXServer *is,
 
 		while ((link = g_queue_pop_head (&trash)) != NULL) {
 			CamelIMAPXCommand *cw = link->data;
-			g_queue_delete_link (&is->queue, link);
+			camel_imapx_command_queue_delete_link (is->queue, link);
 			g_queue_push_tail (&failed, cw);
 		}
 
@@ -2446,7 +2446,7 @@ imapx_select (CamelIMAPXServer *is,
 	if (is->select_folder == folder && !forced)
 		return TRUE;
 
-	if (!g_queue_is_empty (&is->active))
+	if (!camel_imapx_command_queue_is_empty (is->active))
 		return TRUE;
 
 	is->select_pending = folder;
@@ -4884,20 +4884,26 @@ static void
 cancel_all_jobs (CamelIMAPXServer *is,
                  GError *error)
 {
-	CamelIMAPXCommand *ic;
-	GQueue queue = G_QUEUE_INIT;
+	CamelIMAPXCommandQueue *queue;
+	GList *head, *link;
+
+	/* Transfer all pending and active commands to a separate
+	 * command queue to complete them without holding QUEUE_LOCK. */
+
+	queue = camel_imapx_command_queue_new ();
 
 	QUEUE_LOCK (is);
 
-	while ((ic = g_queue_pop_head (&is->queue)) != NULL)
-		g_queue_push_tail (&queue, ic);
-
-	while ((ic = g_queue_pop_head (&is->active)) != NULL)
-		g_queue_push_tail (&queue, ic);
+	camel_imapx_command_queue_transfer (is->queue, queue);
+	camel_imapx_command_queue_transfer (is->active, queue);
 
 	QUEUE_UNLOCK (is);
 
-	while ((ic = g_queue_pop_head (&queue)) != NULL) {
+	head = camel_imapx_command_queue_peek_head_link (queue);
+
+	for (link = head; link != NULL; link = g_list_next (link)) {
+		CamelIMAPXCommand *ic = link->data;
+
 		if (ic->job->error == NULL)
 			ic->job->error = g_error_copy (error);
 
@@ -4906,6 +4912,8 @@ cancel_all_jobs (CamelIMAPXServer *is,
 		 * in individual command errors. */
 		ic->complete (is, ic, NULL);
 	}
+
+	camel_imapx_command_queue_free (queue);
 }
 
 /* ********************************************************************** */
@@ -4972,7 +4980,7 @@ imapx_parser_thread (gpointer d)
 			gint is_empty;
 
 			QUEUE_LOCK (is);
-			is_empty = g_queue_is_empty (&is->active);
+			is_empty = camel_imapx_command_queue_is_empty (is->active);
 			QUEUE_UNLOCK (is);
 
 			if (is_empty || (imapx_idle_supported (is) && imapx_in_idle (is))) {
@@ -5134,9 +5142,10 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 static void
 camel_imapx_server_init (CamelIMAPXServer *is)
 {
-	g_queue_init (&is->queue);
-	g_queue_init (&is->active);
-	g_queue_init (&is->done);
+	is->queue = camel_imapx_command_queue_new ();
+	is->active = camel_imapx_command_queue_new ();
+	is->done = camel_imapx_command_queue_new ();
+
 	g_queue_init (&is->jobs);
 
 	/* not used at the moment. Use it in future */

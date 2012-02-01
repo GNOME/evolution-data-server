@@ -121,8 +121,6 @@ CamelServiceAuthType camel_imapx_password_authtype = {
 
 void camel_imapx_module_init (void);
 
-extern void imapx_utils_init (void);
-
 void
 camel_imapx_module_init (void)
 {
