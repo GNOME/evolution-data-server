@@ -19,7 +19,7 @@
 #ifndef CAMEL_IMAPX_JOB_H
 #define CAMEL_IMAPX_JOB_H
 
-#include <camel.h>
+#include <camel/camel.h>
 
 #include "camel-imapx-server.h"
 

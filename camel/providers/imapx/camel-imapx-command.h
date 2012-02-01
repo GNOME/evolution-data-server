@@ -19,7 +19,7 @@
 #ifndef CAMEL_IMAPX_COMMAND_H
 #define CAMEL_IMAPX_COMMAND_H
 
-#include <camel.h>
+#include <camel/camel.h>
 
 #include "camel-imapx-utils.h"
 
