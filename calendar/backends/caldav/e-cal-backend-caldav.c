@@ -2425,7 +2425,7 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	ECalBackend              *backend;
 	ESource                  *source;
 	const gchar		 *os_val;
-	const gchar               *uri;
+	gchar			 *uri;
 	gsize                     len;
 	const gchar              *refresh;
 	const gchar              *cache_dir;
@@ -2463,8 +2463,10 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 		}
 
 		priv->uri = g_strconcat (proto, uri + 9, NULL);
+
+		g_free (uri);
 	} else {
-		priv->uri = g_strdup (uri);
+		priv->uri = uri;
 	}
 
 	if (priv->uri) {

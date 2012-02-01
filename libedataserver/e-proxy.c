@@ -378,8 +378,10 @@ ep_need_proxy_http (EProxy *proxy,
 		/* This will never happen, since we have already called
 		 * soup_address_resolve_sync ().
 		*/
-		if (!so_addr)
+		if (!so_addr) {
+			g_object_unref (addr);
 			return TRUE;
+		}
 
 		if (so_addr->sa_family == AF_INET) {
 			struct in_addr in, *mask, *addr_in;
@@ -394,6 +396,7 @@ ep_need_proxy_http (EProxy *proxy,
 						   in.s_addr, mask->s_addr, addr_in->s_addr));
 					if ((in.s_addr & mask->s_addr) == addr_in->s_addr) {
 						d(g_print ("Host [%s] doesn't require proxy\n", host));
+						g_object_unref (addr);
 						return FALSE;
 					}
 				}
@@ -409,6 +412,7 @@ ep_need_proxy_http (EProxy *proxy,
 				if (p_addr->type == PROXY_IPV6) {
 					if (IN6_ARE_ADDR_EQUAL (&net6, (struct in6_addr *) p_addr->addr)) {
 						d(g_print ("Host [%s] doesn't require proxy\n", host));
+						g_object_unref (addr);
 						return FALSE;
 					}
 				} else if (p_addr->type == PROXY_IPV6 &&
@@ -424,6 +428,7 @@ ep_need_proxy_http (EProxy *proxy,
 						| net6.s6_addr[15];
 					if ((v4addr & mask->s_addr) != addr_in->s_addr) {
 						d(g_print ("Host [%s] doesn't require proxy\n", host));
+						g_object_unref (addr);
 						return FALSE;
 					}
 				}
@@ -432,6 +437,8 @@ ep_need_proxy_http (EProxy *proxy,
 	}
 
 	d(g_print ("%s needs a proxy to connect to internet\n", host));
+	g_object_unref (addr);
+
 	return TRUE;
 }
 

@@ -603,10 +603,12 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	if (priv->uri == NULL) {
 		ESource *source = e_backend_get_source (E_BACKEND (cbhttp));
 		const gchar *secure_prop = e_source_get_property (source, "use_ssl");
+		gchar *uri = e_source_get_uri (source);
 
-		priv->uri = webcal_to_http_method (
-			e_source_get_uri (source),
+		priv->uri = webcal_to_http_method (uri,
 			(secure_prop && g_str_equal(secure_prop, "1")));
+
+		g_free (uri);
 	}
 
 	/* create the Soup session if not already created */
