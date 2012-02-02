@@ -3652,7 +3652,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		int total = camel_folder_summary_count (job->folder->summary);
 		int fetch_limit = data->fetch_msg_limit;
 
-		imapx_command_unref (ic);
+		camel_imapx_command_unref (ic);
 
 		ic = camel_imapx_command_new (
 			is, "FETCH", job->folder, "UID FETCH ");
@@ -4109,8 +4109,8 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 }
 
 static void
-imapx_job_fetch_messages_start (CamelIMAPXServer *is, 
-				CamelIMAPXJob *job)
+imapx_job_fetch_messages_start (CamelIMAPXJob *job,
+				CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder = job->folder;
@@ -4167,7 +4167,7 @@ imapx_job_fetch_messages_start (CamelIMAPXServer *is,
 			ic->job = job;
 			ic->pri = job->pri;
 
-			imapx_command_run_sync (is, ic);
+			imapx_command_run_sync (is, ic, job->cancellable, &job->error);
 
 			if (ic->job->error == NULL)
                                 camel_imapx_command_set_error_if_failed (ic, &ic->job->error);
@@ -4181,13 +4181,14 @@ imapx_job_fetch_messages_start (CamelIMAPXServer *is,
 
 		camel_operation_push_message (
 			job->cancellable, _("Fetching summary information for %d messages in %s"),
-			job->u.refresh_info.fetch_msg_limit, camel_folder_get_full_name (folder));		
+			data->fetch_msg_limit, camel_folder_get_full_name (folder));		
 		/* New account and fetching old messages, we would return just the limited number of newest messages */
 		ic = camel_imapx_command_new (
 			is, "FETCH", job->folder, 
 			"UID FETCH %s:* (UID FLAGS)", uid);
-		imapx_uidset_init (&job->u.refresh_info.uidset, uidset_size, 0);
-		job->u.refresh_info.infos = g_array_new (0, 0, sizeof (struct _refresh_info));
+
+		imapx_uidset_init (&data->uidset, uidset_size, 0);
+		data->infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 		ic->pri = job->pri;
 
 		if (fetch_order == CAMEL_SORT_DESCENDING)
@@ -4208,7 +4209,7 @@ imapx_job_fetch_messages_start (CamelIMAPXServer *is,
 
 			camel_operation_push_message(
 				job->cancellable, _("Fetching summary information for %d messages in %s"),
-				job->u.refresh_info.fetch_msg_limit, camel_folder_get_full_name (folder));		
+				data->fetch_msg_limit, camel_folder_get_full_name (folder));		
 
 			ic = camel_imapx_command_new (is, "FETCH", job->folder,
 						"UID FETCH %s:%s (RFC822.SIZE RFC822.HEADER FLAGS)", start_uid, end_uid);
@@ -4227,8 +4228,8 @@ imapx_job_fetch_messages_start (CamelIMAPXServer *is,
 }
 
 static void
-imapx_job_refresh_info_start (CamelIMAPXServer *is,
-                              CamelIMAPXJob *job)
+imapx_job_refresh_info_start (CamelIMAPXJob *job,
+                              CamelIMAPXServer *is)
 {
 	guint32 total;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
@@ -4348,21 +4349,27 @@ imapx_job_refresh_info_start (CamelIMAPXServer *is,
 		/* We need to issue Status command to get the total unread count */
 		CamelIMAPXCommand *ic;
 
-		ic = imapx_command_new (
-			is, "STATUS", NULL, job->cancellable, 
+		ic = camel_imapx_command_new (
+			is, "STATUS", NULL, 
 			"STATUS %f (MESSAGES UNSEEN UIDVALIDITY UIDNEXT)", folder);
 
 		ic->job = job;
 		ic->pri = job->pri;
 
-		imapx_command_run_sync (is, ic);
+		imapx_command_run_sync (is, ic, job->cancellable, &job->error);
 
-		if (ic->error != NULL || ic->status->result != IMAPX_OK) {
-			propagate_ic_error (job, ic, "Error refreshing folder: %s");
-			imapx_command_unref (ic);
+		if (ic->job->error == NULL)
+			camel_imapx_command_set_error_if_failed (ic, &ic->job->error);
+
+		g_prefix_error (
+			&ic->job->error, "%s: ",
+			_("Error refreshing folder"));
+		
+		if (ic->job->error != NULL) {
+			camel_imapx_command_unref (ic);
 			goto done;
 		}
-		imapx_command_unref (ic);
+		camel_imapx_command_unref (ic);
 	}
 
 	if (is->use_qresync && isum->modseq && ifolder->uidvalidity_on_server)
@@ -6242,7 +6249,6 @@ camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
 
 	data = g_slice_new0 (RefreshInfoData);
 	data->changes = camel_folder_change_info_new ();
-	data->update_unseen = update_unseen;
 	data->fetch_msg_limit = limit;
 	data->fetch_type = type;
 
@@ -6265,7 +6271,7 @@ camel_imapx_server_fetch_messages (CamelIMAPXServer *is,
 
 	QUEUE_UNLOCK (is);
 
-	success = registered && imapx_run_job (is, job, error);
+	success = registered && camel_imapx_job_run (job, is, error);
 
 	if (success && camel_folder_change_info_changed (data->changes) && camel_folder_change_info_changed (data->changes))
 		camel_folder_changed (folder, data->changes);

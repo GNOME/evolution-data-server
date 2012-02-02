@@ -53,7 +53,6 @@ G_BEGIN_DECLS
 typedef struct _CamelIMAPXServer CamelIMAPXServer;
 typedef struct _CamelIMAPXServerClass CamelIMAPXServerClass;
 
-typedef struct _CamelIMAPXCommand CamelIMAPXCommand;
 typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
 struct _IMAPXJobQueueInfo;
 
