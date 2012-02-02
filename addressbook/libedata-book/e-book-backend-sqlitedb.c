@@ -1092,7 +1092,7 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 
 	if (!vcard_str && error && !*error)
 		g_set_error (error, E_BOOK_SDB_ERROR, 0,
-			_("Contact '%s' no found"), uid ? uid : "NULL");
+			_("Contact '%s' not found"), uid ? uid : "NULL");
 
 	return vcard_str;
 }
