@@ -3447,7 +3447,11 @@ camel_folder_fetch_messages_sync (CamelFolder *folder,
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
- * Asynchronously download new or old messages from the server.
+ * Asynchronously download new or old messages from the server. It is assumes that the client has only a 
+ * window of interested messages of what server has. And old/new type helps to expand that window.
+ *
+ * type = CAMEL_FETCH_OLD_MESSAGES: Downloads messages older than what the client already has. 
+ * type = CAMEL_FETCH_NEW_MESSAGES: Downloads messages newer than what the client already has.
  *
  * When the operation is finished, @callback will be called.  You can then
  * call camel_folder_fetch_messages_finish() to get the result of the operation.
