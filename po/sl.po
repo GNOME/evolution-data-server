@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-01-28 14:39+0000\n"
-"PO-Revision-Date: 2012-01-28 21:03+0100\n"
+"POT-Creation-Date: 2012-02-02 12:05+0000\n"
+"PO-Revision-Date: 2012-02-02 20:59+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -27,14 +27,14 @@ msgstr ""
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:937
 #: ../addressbook/libebook/e-book-client.c:103
 #: ../addressbook/libedata-book/e-data-book.c:441
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:527
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:556
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:545
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:574
 #: ../calendar/backends/http/e-cal-backend-http.c:437
 #: ../calendar/libecal/e-cal.c:4595
 #: ../calendar/libecal/e-cal-client.c:147
 #: ../camel/providers/imap/camel-imap-command.c:515
 #: ../camel/providers/imap/camel-imap-store.c:464
-#: ../camel/providers/imapx/camel-imapx-command.c:519
+#: ../camel/providers/imapx/camel-imapx-command.c:538
 #: ../libedataserver/e-client.c:161
 msgid "Unknown error"
 msgstr "Neznana napaka"
@@ -856,6 +856,11 @@ msgstr "Ni mogoče spremeniti vrednosti lastnosti imenika '%s'"
 msgid "Insufficient memory"
 msgstr "Nezadostna količina pomnilnika"
 
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1095
+#, c-format
+msgid "Contact '%s' not found"
+msgstr "Stika '%s' ni mogoče najti"
+
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:206
 #: ../addressbook/libedata-book/e-data-book.c:219
@@ -1067,18 +1072,18 @@ msgstr "Ni mogoče odstraniti stika:"
 msgid "Empty URI"
 msgstr "Prazen naslov URI"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:525
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:543
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Strežnik ni na voljo (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:553
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:571
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Odgovor HTTP je vrnil napačno kodo stanja %d (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2224
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2583
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2242
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2603
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1087,7 +1092,7 @@ msgstr ""
 "Strežnik ni dosegljiv; koledar je odprt v načinu le za branje. \n"
 "Sporočilo napake: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4542
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4562
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Koledar ne podpira možnosti prostosti/zasedenosti"
 
@@ -1142,8 +1147,8 @@ msgstr "Napačna oblika datoteke."
 msgid "Not a calendar."
 msgstr "Ni koledar."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:791
-#: ../calendar/backends/http/e-cal-backend-http.c:792
+#: ../calendar/backends/http/e-cal-backend-http.c:793
+#: ../calendar/backends/http/e-cal-backend-http.c:794
 #: ../calendar/backends/weather/e-cal-backend-weather.c:522
 msgid "Could not create cache file"
 msgstr "Ni mogoče ustvariti datoteke predpomnilnika"
@@ -1767,19 +1772,20 @@ msgstr "Kopiraj vsebino mape krajevno za delo brez povezave"
 #: ../camel/providers/imap/camel-imap-store.c:3282
 #: ../camel/providers/imapx/camel-imapx-folder.c:333
 #: ../camel/providers/imapx/camel-imapx-folder.c:366
-#: ../camel/providers/imapx/camel-imapx-folder.c:420
-#: ../camel/providers/imapx/camel-imapx-folder.c:466
-#: ../camel/providers/imapx/camel-imapx-folder.c:500
-#: ../camel/providers/imapx/camel-imapx-folder.c:540
-#: ../camel/providers/imapx/camel-imapx-folder.c:576
+#: ../camel/providers/imapx/camel-imapx-folder.c:400
+#: ../camel/providers/imapx/camel-imapx-folder.c:456
+#: ../camel/providers/imapx/camel-imapx-folder.c:513
+#: ../camel/providers/imapx/camel-imapx-folder.c:547
+#: ../camel/providers/imapx/camel-imapx-folder.c:587
+#: ../camel/providers/imapx/camel-imapx-folder.c:623
 #: ../camel/providers/imapx/camel-imapx-store.c:276
-#: ../camel/providers/imapx/camel-imapx-store.c:1354
-#: ../camel/providers/imapx/camel-imapx-store.c:1442
-#: ../camel/providers/imapx/camel-imapx-store.c:1488
-#: ../camel/providers/pop3/camel-pop3-folder.c:357
-#: ../camel/providers/pop3/camel-pop3-folder.c:487
-#: ../camel/providers/pop3/camel-pop3-folder.c:591
-#: ../camel/providers/pop3/camel-pop3-folder.c:765
+#: ../camel/providers/imapx/camel-imapx-store.c:1367
+#: ../camel/providers/imapx/camel-imapx-store.c:1455
+#: ../camel/providers/imapx/camel-imapx-store.c:1501
+#: ../camel/providers/pop3/camel-pop3-folder.c:527
+#: ../camel/providers/pop3/camel-pop3-folder.c:657
+#: ../camel/providers/pop3/camel-pop3-folder.c:834
+#: ../camel/providers/pop3/camel-pop3-folder.c:1032
 #: ../camel/providers/pop3/camel-pop3-store.c:396
 #: ../camel/providers/pop3/camel-pop3-store.c:808
 #, c-format
@@ -1791,71 +1797,71 @@ msgstr "Za dokončanje tega opravila je treba biti povezan v omrežje"
 msgid "Canceled"
 msgstr "Preklicano"
 
-#: ../camel/camel-filter-driver.c:877
+#: ../camel/camel-filter-driver.c:883
 #: ../camel/camel-filter-search.c:695
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Ustvarjanje podrejenega opravila '%s' je spodletelo: %s"
 
-#: ../camel/camel-filter-driver.c:925
+#: ../camel/camel-filter-driver.c:931
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Neveljaven tok sporočil, sprejet iz %s: %s"
 
-#: ../camel/camel-filter-driver.c:1130
-#: ../camel/camel-filter-driver.c:1139
+#: ../camel/camel-filter-driver.c:1136
+#: ../camel/camel-filter-driver.c:1145
 msgid "Syncing folders"
 msgstr "Usklajevanje mape"
 
-#: ../camel/camel-filter-driver.c:1234
-#: ../camel/camel-filter-driver.c:1680
+#: ../camel/camel-filter-driver.c:1240
+#: ../camel/camel-filter-driver.c:1695
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Napaka med razčlenjevanem filtra: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1245
-#: ../camel/camel-filter-driver.c:1691
+#: ../camel/camel-filter-driver.c:1251
+#: ../camel/camel-filter-driver.c:1706
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Napaka filtriranja: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1343
+#: ../camel/camel-filter-driver.c:1349
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Ni mogoče odprti vrstilne mape"
 
-#: ../camel/camel-filter-driver.c:1354
+#: ../camel/camel-filter-driver.c:1360
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Ni mogoče obdelati vrstilne mape"
 
-#: ../camel/camel-filter-driver.c:1372
+#: ../camel/camel-filter-driver.c:1378
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Pridobivanje sporočila %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1379
-#: ../camel/camel-filter-driver.c:1401
+#: ../camel/camel-filter-driver.c:1385
+#: ../camel/camel-filter-driver.c:1407
 #, c-format
 msgid "Failed on message %d"
 msgstr "Spodletelo opravilo na sporočilu %d"
 
-#: ../camel/camel-filter-driver.c:1416
-#: ../camel/camel-filter-driver.c:1517
+#: ../camel/camel-filter-driver.c:1422
+#: ../camel/camel-filter-driver.c:1527
 msgid "Syncing folder"
 msgstr "Usklajevanje mape"
 
-#: ../camel/camel-filter-driver.c:1421
-#: ../camel/camel-filter-driver.c:1523
+#: ../camel/camel-filter-driver.c:1427
+#: ../camel/camel-filter-driver.c:1533
 msgid "Complete"
 msgstr "Končano"
 
-#: ../camel/camel-filter-driver.c:1481
+#: ../camel/camel-filter-driver.c:1487
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Dobivanje sporočila %d od %d"
 
-#: ../camel/camel-filter-driver.c:1499
+#: ../camel/camel-filter-driver.c:1505
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Opravilo je spodletelo pri sporočilu %d od %d"
@@ -1878,7 +1884,7 @@ msgstr "Neveljavni argumenti pri (user-tag)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Napaka med izvajanjem iskanja s filtrom: %s: %s"
 
-#: ../camel/camel-folder.c:251
+#: ../camel/camel-folder.c:258
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
@@ -1887,7 +1893,7 @@ msgstr[1] "Preiskovanje novih neželenih sporočil v %s"
 msgstr[2] "Preiskovanje novih neželenih sporočil v %s"
 msgstr[3] "Preiskovanje novih neželenih sporočil v %s"
 
-#: ../camel/camel-folder.c:291
+#: ../camel/camel-folder.c:298
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
@@ -1896,7 +1902,7 @@ msgstr[1] "Preiskovanje novih želenih sporočil v %s"
 msgstr[2] "Preiskovanje novih želenih sporočil v %s"
 msgstr[3] "Preiskovanje novih želenih sporočil v %s"
 
-#: ../camel/camel-folder.c:339
+#: ../camel/camel-folder.c:346
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
@@ -1905,26 +1911,26 @@ msgstr[1] "Filtriranje novih sporočil v '%s'"
 msgstr[2] "Filtriranje novih sporočil v '%s'"
 msgstr[3] "Filtriranje novih sporočil v '%s'"
 
-#: ../camel/camel-folder.c:907
+#: ../camel/camel-folder.c:914
 #: ../camel/providers/local/camel-maildir-folder.c:322
 msgid "Moving messages"
 msgstr "Premikanje sporočil"
 
-#: ../camel/camel-folder.c:910
+#: ../camel/camel-folder.c:917
 msgid "Copying messages"
 msgstr "Kopiranje sporočil"
 
-#: ../camel/camel-folder.c:1157
+#: ../camel/camel-folder.c:1230
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "Podatki količinske omejitve za mapo '%s' niso podprti."
 
-#: ../camel/camel-folder.c:3278
+#: ../camel/camel-folder.c:3537
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Pridobivanje sporočila '%s' v %s"
 
-#: ../camel/camel-folder.c:3424
+#: ../camel/camel-folder.c:3683
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Pridobivanje podatkov količinske omejitve porabe za '%s'"
@@ -2276,7 +2282,7 @@ msgstr "Ni se mogoče povezati s strežnikom %s:"
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Usklajevanje sporočil v mapi '%s' z diskom"
 
-#: ../camel/camel-offline-journal.c:147
+#: ../camel/camel-offline-journal.c:145
 #: ../camel/camel-offline-journal.c:177
 #, c-format
 msgid "Cannot write offline journal for folder '%s': %s"
@@ -2520,7 +2526,7 @@ msgstr "Vpisan je neveljaven predmet GType za protokol '%s'"
 
 #: ../camel/camel-session.c:462
 #: ../camel/providers/imap/camel-imap-store.c:1143
-#: ../camel/providers/imapx/camel-imapx-server.c:2884
+#: ../camel/providers/imapx/camel-imapx-server.c:2947
 #: ../camel/providers/pop3/camel-pop3-store.c:252
 #: ../camel/providers/pop3/camel-pop3-store.c:569
 #: ../camel/providers/smtp/camel-smtp-transport.c:455
@@ -3097,7 +3103,7 @@ msgid "Could not load summary for %s"
 msgstr "Ni mogoče naložiti povzetka za %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:1077
-#: ../camel/providers/imapx/camel-imapx-server.c:3795
+#: ../camel/providers/imapx/camel-imapx-server.c:3950
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Preiskovanje spremenjenih sporočil v %s"
@@ -3107,13 +3113,13 @@ msgid "Unable to retrieve message: "
 msgstr "Ni mogoče pridobiti sporočila:"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3471
-#: ../camel/providers/imapx/camel-imapx-server.c:5110
+#: ../camel/providers/imapx/camel-imapx-server.c:5508
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Ni mogoče dobiti sporočila zID %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3472
-#: ../camel/providers/imapx/camel-imapx-server.c:5111
+#: ../camel/providers/imapx/camel-imapx-server.c:5509
 msgid "No such message available."
 msgstr "Na voljo ni takšnega sporočila."
 
@@ -3126,8 +3132,8 @@ msgstr "To sporočilo trenutno ni na voljo"
 
 #: ../camel/providers/imap/camel-imap-folder.c:4006
 #: ../camel/providers/imap/camel-imap-folder.c:4089
-#: ../camel/providers/imapx/camel-imapx-server.c:3756
-#: ../camel/providers/imapx/camel-imapx-server.c:3913
+#: ../camel/providers/imapx/camel-imapx-server.c:3902
+#: ../camel/providers/imapx/camel-imapx-server.c:4082
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Prenašanje povzetkov novih sporočil v %s"
@@ -3263,14 +3269,14 @@ msgid "For reading and storing mail on IMAP servers."
 msgstr "Za branje in hranjenje pošte na strežnikih IMAP."
 
 #: ../camel/providers/imap/camel-imap-provider.c:105
-#: ../camel/providers/imapx/camel-imapx-provider.c:113
+#: ../camel/providers/imapx/camel-imapx-provider.c:116
 #: ../camel/providers/nntp/camel-nntp-provider.c:80
-#: ../camel/providers/pop3/camel-pop3-provider.c:81
+#: ../camel/providers/pop3/camel-pop3-provider.c:82
 msgid "Password"
 msgstr "Geslo"
 
 #: ../camel/providers/imap/camel-imap-provider.c:107
-#: ../camel/providers/imapx/camel-imapx-provider.c:115
+#: ../camel/providers/imapx/camel-imapx-provider.c:118
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "Ta možnost bo vzpostavila povezavo s strežnikom IMAP z nešifriranim geslom."
 
@@ -3278,7 +3284,7 @@ msgstr "Ta možnost bo vzpostavila povezavo s strežnikom IMAP z nešifriranim g
 #: ../camel/providers/imap/camel-imap-store.c:272
 #: ../camel/providers/imap/camel-imap-store.c:2694
 #: ../camel/providers/imapx/camel-imapx-store.c:373
-#: ../camel/providers/imapx/camel-imapx-store.c:831
+#: ../camel/providers/imapx/camel-imapx-store.c:844
 #: ../camel/providers/local/camel-maildir-folder.c:471
 #: ../camel/providers/local/camel-maildir-store.c:301
 #: ../camel/providers/local/camel-maildir-store.c:675
@@ -3290,25 +3296,25 @@ msgstr "Dohodna pošta"
 
 #: ../camel/providers/imap/camel-imap-store.c:409
 #: ../camel/providers/imap/camel-imap-store.c:463
-#: ../camel/providers/imapx/camel-imapx-server.c:2766
+#: ../camel/providers/imapx/camel-imapx-server.c:2829
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Povezava s strežnikom IMAP %s v varnem načinu je spodletela: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:410
-#: ../camel/providers/imapx/camel-imapx-server.c:2767
+#: ../camel/providers/imapx/camel-imapx-server.c:2830
 #: ../camel/providers/smtp/camel-smtp-transport.c:196
 msgid "STARTTLS not supported"
 msgstr "STARTTLS ni podprt"
 
 #: ../camel/providers/imap/camel-imap-store.c:435
-#: ../camel/providers/imapx/camel-imapx-server.c:2806
+#: ../camel/providers/imapx/camel-imapx-server.c:2869
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Povezava s strežnikom IMAP %s v varnem načinu je spodletela:"
 
 #: ../camel/providers/imap/camel-imap-store.c:734
-#: ../camel/providers/imapx/camel-imapx-server.c:2873
+#: ../camel/providers/imapx/camel-imapx-server.c:2936
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Strežnik IMAP %s ne podpira zahtevanega načina overitve %s."
@@ -3326,13 +3332,13 @@ msgid "IMAP service for %s on %s"
 msgstr "Storitev IMAP za %s na %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1111
-#: ../camel/providers/imapx/camel-imapx-server.c:2903
+#: ../camel/providers/imapx/camel-imapx-server.c:2966
 #: ../camel/providers/nntp/camel-nntp-store.c:505
 msgid "Cannot authenticate without a username"
 msgstr "Brez uporabniškega imena ni mogoče overiti povezave."
 
 #: ../camel/providers/imap/camel-imap-store.c:1119
-#: ../camel/providers/imapx/camel-imapx-server.c:2912
+#: ../camel/providers/imapx/camel-imapx-server.c:2975
 #: ../camel/providers/nntp/camel-nntp-store.c:514
 #: ../camel/providers/pop3/camel-pop3-store.c:494
 #: ../camel/providers/pop3/camel-pop3-store.c:514
@@ -3348,14 +3354,14 @@ msgstr "Mapa %s ne obstaja"
 
 #: ../camel/providers/imap/camel-imap-store.c:2079
 #: ../camel/providers/imap/camel-imap-store.c:2538
-#: ../camel/providers/imapx/camel-imapx-store.c:1375
+#: ../camel/providers/imapx/camel-imapx-store.c:1388
 #, c-format
 msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Ime mape \"%s\" je neveljavno, ker vsebuje znak \"%c\""
 
 #: ../camel/providers/imap/camel-imap-store.c:2143
 #: ../camel/providers/imap/camel-imap-store.c:2602
-#: ../camel/providers/imapx/camel-imapx-store.c:1396
+#: ../camel/providers/imapx/camel-imapx-store.c:1409
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "V nadrejeni mapi ni dovoljeno vsebovati podmape"
@@ -3369,7 +3375,7 @@ msgid "Cannot create folder '%s': folder exists."
 msgstr "Ni mogoče ustvariti mape '%s': mapa že obstaja."
 
 #: ../camel/providers/imap/camel-imap-store.c:2551
-#: ../camel/providers/imapx/camel-imapx-store.c:1386
+#: ../camel/providers/imapx/camel-imapx-store.c:1399
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Neznana nadrejena mapa: %s"
@@ -3421,98 +3427,110 @@ msgstr "Privzeta vrata IMAP"
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:663
+#: ../camel/providers/imapx/camel-imapx-server.c:816
 msgid "Server disconnected"
 msgstr "Povezava s strežnikom je prekinjena"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1074
+#: ../camel/providers/imapx/camel-imapx-server.c:1205
 msgid "Error writing to cache stream: "
 msgstr "Napaka med pisanjem v predpomnilnik pretoka:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1867
+#: ../camel/providers/imapx/camel-imapx-server.c:1939
 #, c-format
 msgid "Not authenticated"
 msgstr "Ni overjeno"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1962
+#: ../camel/providers/imapx/camel-imapx-server.c:2004
 msgid "Error performing IDLE"
 msgstr "Napaka med izvajanjem ukaza IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3094
+#: ../camel/providers/imapx/camel-imapx-server.c:3161
 msgid "Error fetching message"
 msgstr "Napaka med pridobivanjem sporočila"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3162
+#: ../camel/providers/imapx/camel-imapx-server.c:3229
 msgid "Closing tmp stream failed: "
 msgstr "Zapiranje začasnega pretoka je spodletelo:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3231
+#: ../camel/providers/imapx/camel-imapx-server.c:3328
 msgid "Error copying messages"
 msgstr "Napaka med kopiranjem sporočil"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3347
+#: ../camel/providers/imapx/camel-imapx-server.c:3458
 msgid "Error appending message"
 msgstr "Napaka med pripenjanjem sporočila"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3507
+#: ../camel/providers/imapx/camel-imapx-server.c:3638
 msgid "Error fetching message headers"
 msgstr "Napaka med pridobivanjem glave sporočila"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3633
+#: ../camel/providers/imapx/camel-imapx-server.c:3779
 msgid "Error retrieving message"
 msgstr "Napaka med pridobivanjem sporočila"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3820
+#: ../camel/providers/imapx/camel-imapx-server.c:3983
 msgid "Error fetching new messages"
 msgstr "Napaka med pridobivanjem novih sporočil"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4034
+#: ../camel/providers/imapx/camel-imapx-server.c:4177
+msgid "Error while fetching messages"
+msgstr "Napaka med pridobivanjem sporočil"
+
+# multiple plural!
+#: ../camel/providers/imapx/camel-imapx-server.c:4183
+#: ../camel/providers/imapx/camel-imapx-server.c:4211
+#, c-format
+msgid "Fetching summary information for %d messages in %s"
+msgstr "Pridobivanje podatkov povzetka za %d novih sporočil v %s"
+
+#: ../camel/providers/imapx/camel-imapx-server.c:4331
+#: ../camel/providers/imapx/camel-imapx-server.c:4366
 msgid "Error refreshing folder"
 msgstr "Napaka med osveževanjem mape"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4124
+#: ../camel/providers/imapx/camel-imapx-server.c:4454
 msgid "Error expunging message"
 msgstr "Napaka med uničevanjem sporočila"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4201
+#: ../camel/providers/imapx/camel-imapx-server.c:4539
 msgid "Error fetching folders"
 msgstr "Napaka med pridobivanjem map"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4262
+#: ../camel/providers/imapx/camel-imapx-server.c:4613
 msgid "Error subscribing to folder"
 msgstr "Napaka naročanja na mapo"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4311
+#: ../camel/providers/imapx/camel-imapx-server.c:4666
 msgid "Error creating folder"
 msgstr "Napaka med ustvarjanjem mape"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4352
+#: ../camel/providers/imapx/camel-imapx-server.c:4711
 msgid "Error deleting folder"
 msgstr "Napaka med brisanjem mape"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4398
+#: ../camel/providers/imapx/camel-imapx-server.c:4761
 msgid "Error renaming folder"
 msgstr "Napaka med preimenovanjem mape"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4445
+#: ../camel/providers/imapx/camel-imapx-server.c:4812
 msgid "Error performing NOOP"
 msgstr "Napaka med izvajanjem ukaza NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4528
+#: ../camel/providers/imapx/camel-imapx-server.c:4907
 msgid "Error syncing changes"
 msgstr "Napaka med usklajevanjem sprememb"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5256
-#: ../camel/providers/imapx/camel-imapx-server.c:5271
+#: ../camel/providers/imapx/camel-imapx-server.c:5663
+#: ../camel/providers/imapx/camel-imapx-server.c:5678
 msgid "Cannot create spool file: "
 msgstr "Ni mogoče ustvariti vrstilne datoteke:"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1063
+#: ../camel/providers/imapx/camel-imapx-store.c:1076
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Pridobivanje seznama map za %s"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1163
+#: ../camel/providers/imapx/camel-imapx-store.c:1176
 #: ../camel/providers/nntp/camel-nntp-store.c:1785
 #, c-format
 msgid "No such folder: %s"
@@ -3624,7 +3642,7 @@ msgstr "Krajevna poštna datoteka %s"
 #: ../camel/providers/local/camel-local-store.c:218
 #: ../camel/providers/local/camel-local-store.c:375
 #: ../camel/providers/local/camel-maildir-store.c:101
-#: ../camel/providers/local/camel-mbox-store.c:549
+#: ../camel/providers/local/camel-mbox-store.c:555
 #: ../camel/providers/local/camel-spool-store.c:86
 #, c-format
 msgid "Store root %s is not an absolute path"
@@ -3649,13 +3667,13 @@ msgid "Local stores do not have an inbox"
 msgstr "Krajevne shrambe nimajo mape za dohodno pošto"
 
 #: ../camel/providers/local/camel-local-store.c:445
-#: ../camel/providers/local/camel-mbox-store.c:716
+#: ../camel/providers/local/camel-mbox-store.c:722
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
 msgstr "Ni mogoče izbrisati datoteke kazala mape '%s': %s"
 
 #: ../camel/providers/local/camel-local-store.c:473
-#: ../camel/providers/local/camel-mbox-store.c:746
+#: ../camel/providers/local/camel-mbox-store.c:752
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
 msgstr "Ni mogoče izbrisati metadatoteke mape '%s': %s"
@@ -3747,7 +3765,7 @@ msgid "not a maildir directory"
 msgstr "ni mapa vrste maildir"
 
 #: ../camel/providers/local/camel-maildir-store.c:569
-#: ../camel/providers/local/camel-maildir-store.c:973
+#: ../camel/providers/local/camel-maildir-store.c:970
 #: ../camel/providers/local/camel-spool-store.c:209
 #: ../camel/providers/local/camel-spool-store.c:228
 #, c-format
@@ -3802,7 +3820,7 @@ msgid "Cannot create folder lock on %s: %s"
 msgstr "Ni mogoče ustvariti zaklepa na mapi: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:377
-#: ../camel/providers/local/camel-mbox-store.c:557
+#: ../camel/providers/local/camel-mbox-store.c:563
 #, c-format
 msgid "Cannot create a folder by this name."
 msgstr "Ni mogoče ustvariti mape s tem imenom."
@@ -3812,23 +3830,23 @@ msgstr "Ni mogoče ustvariti mape s tem imenom."
 msgid "Cannot get folder '%s': not a regular file."
 msgstr "Ni mogoče pridobiti mape '%s': ni običajna datoteka."
 
-#: ../camel/providers/local/camel-mbox-store.c:573
+#: ../camel/providers/local/camel-mbox-store.c:579
 #, c-format
 msgid "Cannot create directory '%s': %s."
 msgstr "Ni mogoče ustvariti mape '%s': %s."
 
-#: ../camel/providers/local/camel-mbox-store.c:585
+#: ../camel/providers/local/camel-mbox-store.c:591
 #, c-format
 msgid "Cannot create folder: %s: %s"
 msgstr "Ni mogoče ustvariti mape: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:587
+#: ../camel/providers/local/camel-mbox-store.c:593
 msgid "Folder already exists"
 msgstr "Mapa že obstaja"
 
-#: ../camel/providers/local/camel-mbox-store.c:627
-#: ../camel/providers/local/camel-mbox-store.c:640
-#: ../camel/providers/local/camel-mbox-store.c:669
+#: ../camel/providers/local/camel-mbox-store.c:633
+#: ../camel/providers/local/camel-mbox-store.c:646
+#: ../camel/providers/local/camel-mbox-store.c:675
 #, c-format
 msgid ""
 "Could not delete folder '%s':\n"
@@ -3837,33 +3855,33 @@ msgstr ""
 "Ni mogoče izbrisati mape '%s':\n"
 "%s"
 
-#: ../camel/providers/local/camel-mbox-store.c:650
+#: ../camel/providers/local/camel-mbox-store.c:656
 #, c-format
 msgid "'%s' is not a regular file."
 msgstr "'%s' ni običajna datoteka."
 
-#: ../camel/providers/local/camel-mbox-store.c:659
+#: ../camel/providers/local/camel-mbox-store.c:665
 #, c-format
 msgid "Folder '%s' is not empty. Not deleted."
 msgstr "Mapa '%s' ni prazna, zato ni izbrisana."
 
-#: ../camel/providers/local/camel-mbox-store.c:686
-#: ../camel/providers/local/camel-mbox-store.c:701
+#: ../camel/providers/local/camel-mbox-store.c:692
+#: ../camel/providers/local/camel-mbox-store.c:707
 #, c-format
 msgid "Could not delete folder summary file '%s': %s"
 msgstr "Ni mogoče izbrisati datoteke povzetka mape '%s': %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:783
+#: ../camel/providers/local/camel-mbox-store.c:789
 #, c-format
 msgid "The new folder name is illegal."
 msgstr "Novo ime mape ni dovoljeno."
 
-#: ../camel/providers/local/camel-mbox-store.c:799
+#: ../camel/providers/local/camel-mbox-store.c:805
 #, c-format
 msgid "Could not rename '%s': '%s': %s"
 msgstr "Ni mogoče preimenovati '%s': '%s': %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:882
+#: ../camel/providers/local/camel-mbox-store.c:888
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Ni mogoče preimenovati '%s' v %s: %s"
@@ -4071,17 +4089,17 @@ msgstr "Notranja napaka: UID je neveljavne oblike: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:271
 #: ../camel/providers/nntp/camel-nntp-folder.c:275
-#: ../camel/providers/pop3/camel-pop3-folder.c:443
-#: ../camel/providers/pop3/camel-pop3-folder.c:724
+#: ../camel/providers/pop3/camel-pop3-folder.c:613
+#: ../camel/providers/pop3/camel-pop3-folder.c:991
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Ni mogoče pridobiti sporočila %s: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:282
 #: ../camel/providers/nntp/camel-nntp-folder.c:457
-#: ../camel/providers/pop3/camel-pop3-folder.c:381
-#: ../camel/providers/pop3/camel-pop3-folder.c:433
-#: ../camel/providers/pop3/camel-pop3-folder.c:452
+#: ../camel/providers/pop3/camel-pop3-folder.c:551
+#: ../camel/providers/pop3/camel-pop3-folder.c:603
+#: ../camel/providers/pop3/camel-pop3-folder.c:622
 #, c-format
 msgid "Cannot get message %s: "
 msgstr "Ni mogoče pridobiti sporočila %s:"
@@ -4228,34 +4246,34 @@ msgstr "Nepričakovan odziv strežnika iz head: %s"
 msgid "Operation failed: %s"
 msgstr "Opravilo je spodletelo: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:290
-#: ../camel/providers/pop3/camel-pop3-folder.c:349
+#: ../camel/providers/pop3/camel-pop3-folder.c:448
+#: ../camel/providers/pop3/camel-pop3-folder.c:519
 #, c-format
 msgid "No message with UID %s"
 msgstr "Ni sporočil z UID %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:365
+#: ../camel/providers/pop3/camel-pop3-folder.c:535
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "Pridobivanje sporočila POP %d"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:444
+#: ../camel/providers/pop3/camel-pop3-folder.c:614
 msgid "Unknown reason"
 msgstr "Neznan vzrok"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:492
+#: ../camel/providers/pop3/camel-pop3-folder.c:662
 msgid "Retrieving POP summary"
 msgstr "Pridobivanje povzetka POP"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:507
+#: ../camel/providers/pop3/camel-pop3-folder.c:707
 msgid "Cannot get POP summary: "
 msgstr "Ni mogoče pridobiti povzetka POP:"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:576
+#: ../camel/providers/pop3/camel-pop3-folder.c:819
 msgid "Expunging old messages"
 msgstr "Uničevanje starih sporočil"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:596
+#: ../camel/providers/pop3/camel-pop3-folder.c:839
 msgid "Expunging deleted messages"
 msgstr "Uničevanje izbrisanih sporočil"
 
@@ -4297,11 +4315,11 @@ msgstr "POP"
 msgid "For connecting to and downloading mail from POP servers."
 msgstr "Za povezovanje in prejemanje pošte s strežnikov POP."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:83
+#: ../camel/providers/pop3/camel-pop3-provider.c:84
 msgid "This option will connect to the POP server using a plaintext password. This is the only option supported by many POP servers."
 msgstr "Možnost omogoča vzpostavitev povezave s strežnikom POP z običajnim besedilnim geslom. To je edina možnost, ki jo podpira večina strežnikov POP."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:93
+#: ../camel/providers/pop3/camel-pop3-provider.c:94
 msgid "This option will connect to the POP server using an encrypted password via the APOP protocol. This may not work for all users even on servers that claim to support it."
 msgstr "Možnost omogoča vzpostavitev povezave s strežnikom POP z uporabo šifriranega gesla preko protokola APOP. Možnost morda ne bo delovala pri vseh uporabnikih, niti na strežnikih, ki trdijo, da jo podpirajo."
 
