@@ -666,8 +666,14 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 		gint i;
 		CamelPOP3FolderInfo *last_fi;
 
-		last_fi = pop3_folder->uids->pdata[pop3_folder->uids->len-1];
-		pop3_folder->latest_id = last_fi->id;
+		if (pop3_folder->uids->len) {
+			last_fi = pop3_folder->uids->pdata[pop3_folder->uids->len-1];
+			if (last_fi)
+				pop3_folder->latest_id = last_fi->id;
+			else
+				pop3_folder->latest_id = -1;
+		} else
+			pop3_folder->latest_id = -1;
 
 		for (i = 0; i < pop3_folder->uids->len; i++) {
 			CamelPOP3FolderInfo *fi = pop3_folder->uids->pdata[i];

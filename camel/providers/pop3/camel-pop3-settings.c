@@ -114,6 +114,7 @@ pop3_settings_set_property (GObject *object,
 			camel_network_settings_set_user (
 				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_string (value));
+                        return;
 		case PROP_AUTO_FETCH:
 			camel_pop3_settings_set_auto_fetch  (
 				CAMEL_POP3_SETTINGS (object),
@@ -208,11 +209,13 @@ pop3_settings_get_property (GObject *object,
 				value,
 				camel_pop3_settings_get_auto_fetch (
 				CAMEL_POP3_SETTINGS (object)));
+                        return;
 		case PROP_USE_MOBILE_MODE:
 			g_value_set_boolean (
 				value,
 				camel_pop3_settings_get_mobile_mode (
 				CAMEL_POP3_SETTINGS (object)));
+                        return;
 		case PROP_BATCH_FETCH_COUNT:
 			g_value_set_int (
 				value,
@@ -331,7 +334,7 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			"batch-fetch-count",
 			"Batch fetch count",
 			"Number of messages to download in a batch.",
-			0,
+			-1,
 			G_MAXINT,
 			-1,
 			G_PARAM_READWRITE |
