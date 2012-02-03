@@ -318,8 +318,10 @@ e_cal_backend_file_store_put_timezone (ECalBackendStore *store,
 {
 	ECalBackendFileStore *fstore = E_CAL_BACKEND_FILE_STORE (store);
 	ECalBackendFileStorePrivate *priv;
-	gboolean ret_val = FALSE;
 	icaltimezone *copy;
+
+	g_return_val_if_fail (fstore != NULL, FALSE);
+	g_return_val_if_fail (zone != NULL, FALSE);
 
 	priv = fstore->priv;
 
@@ -328,14 +330,12 @@ e_cal_backend_file_store_put_timezone (ECalBackendStore *store,
 	g_hash_table_insert (priv->timezones, g_strdup (icaltimezone_get_tzid ((icaltimezone *) zone)), copy);
 	g_static_rw_lock_writer_unlock (&priv->lock);
 
-	if (ret_val) {
-		priv->dirty = TRUE;
+	priv->dirty = TRUE;
 
-		if (!priv->freeze_changes)
-			save_cache (fstore);
-	}
+	if (!priv->freeze_changes)
+		save_cache (fstore);
 
-	return ret_val;
+	return TRUE;
 }
 
 static gboolean
