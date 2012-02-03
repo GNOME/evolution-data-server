@@ -1515,13 +1515,14 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 				CAMEL_MESSAGE_DELETED |
 				CAMEL_MESSAGE_SEEN, ~0);
 
+		camel_uid_cache_save_uid (cache, uids->pdata[i]);
 		if (cache && i%10 == 0)
-			camel_uid_cache_save_uid (cache, uids->pdata[i]);
+			camel_uid_cache_save (cache);
 	}
 
 	/* Save the cache of any pending mails. */
 	if (cache)
-			camel_uid_cache_save_uid (cache, uids->pdata[i]);
+		camel_uid_cache_save (cache);
 
 	if (p->defaultfolder) {
 		report_status (driver, CAMEL_FILTER_STATUS_PROGRESS, 100, _("Syncing folder"));
