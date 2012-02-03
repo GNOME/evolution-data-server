@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-02-02 11:04+0000\n"
-"PO-Revision-Date: 2012-02-02 12:21+0100\n"
+"POT-Creation-Date: 2012-02-02 12:00+0000\n"
+"PO-Revision-Date: 2012-02-03 10:15+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -860,7 +860,8 @@ msgstr "Memoria insuficiente"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1095
 #, c-format
-msgid "Contact '%s' no found"
+#| msgid "Contact '%s' no found"
+msgid "Contact '%s' not found"
 msgstr "Contacto «%s» no encontrado"
 
 #. Translators: This is prefix to a detailed error message
@@ -3466,14 +3467,12 @@ msgid "Error fetching new messages"
 msgstr "Error al obtener mensajes nuevos"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4177
-#| msgid "Error fetching message"
 msgid "Error while fetching messages"
 msgstr "Error al obtener los mensajes"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4183
 #: ../camel/providers/imapx/camel-imapx-server.c:4211
 #, c-format
-#| msgid "Fetching summary information for new messages in %s"
 msgid "Fetching summary information for %d messages in %s"
 msgstr "Obteniendo recopilación de información sobre %d mensajes nuevos en %s"
 
