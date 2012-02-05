@@ -1,3 +1,43 @@
+Evolution-Data-Server 3.3.5 2012-02-06
+--------------------------------------
+
+Bug Fixes:
+	Bug 666764 - SQL error migrating folders (Milan Crha)
+	Bug 649141 - Return only system timezones known to libical (Milan Crha)
+	Bug 669005 - Partial hang with unresponsive HTML email image source
+	             (Milan Crha)
+	Bug 669003 - CalDAV: Cannot modify calendar object (libical 0.48)
+	             (Milan Crha)
+	Bug 668811 - EBookBackendSqliteDB can be asked for an unknown contact
+	             (Milan Crha)
+	Bug 669238 - Warning while creating appointments/meetings (Punit Jain)
+
+Other Changes:
+	* Remove CamelDList and use GQueues instead. (Matthew Barnes)
+	* Improved deadlock and crash avoidance in IMAPX.  (Matthew Barnes)
+	* CamelStoreSummary: Save count changes from CamelFolderSummary
+	  immediately (Milan Crha)
+	* CamelVeeFolder: Process folder changes more efficiently.
+	  (Matthew Barnes)
+	* CamelStoreSummary: Schedule save rather than save immediately
+	  (Milan Crha)
+	* Fix few memory leaks (Milan Crha)
+	* Add auto_fetch param to avoid autofetching next mails.
+	  (Srinivasa Ragavan)
+	* Add sync+async apis for Fetch Messages and Purge Message Cache.
+	  (Srinivasa Ragavan)
+	* Add flags to the Provider and code for mobile mode in settings.
+	  (Srinivasa Ragavan)
+	* Added Mobile support and specific apis to imapx. (Srinivasa Ragavan)
+	* Add mobile mode settings to POP3. (Srinivasa Ragavan)
+
+Translations:
+	Daniel Mustieles (es)
+	Kjartan Maraas (nb)
+	Matej Urbančič (sl)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.3.4 2012-01-16
 --------------------------------------
 
