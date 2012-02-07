@@ -25,7 +25,6 @@
 #include "e-data-factory.h"
 
 #include <config.h>
-#include <gconf/gconf-client.h>
 
 #include <libebackend/e-extensible.h>
 #include <libebackend/e-backend-factory.h>
@@ -47,8 +46,7 @@ struct _EDataFactoryPrivate {
 	/* Hash Key -> EBackendFactory */
 	GHashTable *backend_factories;
 
-	GConfClient *gconf_client;
-	guint gconf_cnxn_id;
+	GSettings *settings;
 
 	gboolean online;
 };
@@ -67,16 +65,14 @@ G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 
 static void
-data_factory_online_changed (GConfClient *client,
-                             guint cnxn_id,
-                             GConfEntry *entry,
+data_factory_online_changed (GSettings *settings,
+                             const gchar *key,
                              EDataFactory *factory)
 {
-	GConfValue *value;
 	gboolean start_offline;
 
-	value = gconf_entry_get_value (entry);
-	start_offline = gconf_value_get_bool (value);
+	start_offline = g_settings_get_boolean (
+		factory->priv->settings, "start-offline");
 
 	e_data_factory_set_online (factory, !start_offline);
 }
@@ -84,8 +80,8 @@ data_factory_online_changed (GConfClient *client,
 static void
 data_factory_init_online_monitoring (EDataFactory *factory)
 {
+	const gchar *schema;
 	gboolean start_offline;
-	GError *error = NULL;
 
 	/* XXX For the record, we're doing this completely wrong.
 	 *     EDataFactory should monitor network availability itself
@@ -93,34 +89,17 @@ data_factory_init_online_monitoring (EDataFactory *factory)
 	 *     to tell us when we're offline.  But I'll deal with this
 	 *     at some later date. */
 
-	factory->priv->gconf_client = gconf_client_get_default ();
+	schema = "org.gnome.evolution.eds-shell";
+	factory->priv->settings = g_settings_new (schema);
 
-	gconf_client_add_dir (
-		factory->priv->gconf_client,
-		"/apps/evolution/shell",
-		GCONF_CLIENT_PRELOAD_RECURSIVE, NULL);
+	g_signal_connect (
+		factory->priv->settings, "changed::start-offline",
+		G_CALLBACK (data_factory_online_changed), factory);
 
-	gconf_client_notify_add (
-		factory->priv->gconf_client,
-		"/apps/evolution/shell/start_offline",
-		(GConfClientNotifyFunc) data_factory_online_changed,
-		factory, (GFreeFunc) NULL, &error);
+	start_offline = g_settings_get_boolean (
+		factory->priv->settings, "start-offline");
 
-	if (error != NULL) {
-		g_warning ("%s", error->message);
-		g_clear_error (&error);
-	}
-
-	start_offline = gconf_client_get_bool (
-		factory->priv->gconf_client,
-		"/apps/evolution/shell/start_offline", &error);
-
-	if (error == NULL) {
-		e_data_factory_set_online (factory, !start_offline);
-	} else {
-		g_warning ("%s", error->message);
-		g_clear_error (&error);
-	}
+	e_data_factory_set_online (factory, !start_offline);
 }
 
 static void
@@ -183,11 +162,9 @@ data_factory_dispose (GObject *object)
 	g_hash_table_remove_all (priv->backends);
 	g_hash_table_remove_all (priv->backend_factories);
 
-	if (priv->gconf_client != NULL) {
-		gconf_client_notify_remove (
-			priv->gconf_client, priv->gconf_cnxn_id);
-		g_object_unref (priv->gconf_client);
-		priv->gconf_client = NULL;
+	if (priv->settings != NULL) {
+		g_object_unref (priv->settings);
+		priv->settings = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */

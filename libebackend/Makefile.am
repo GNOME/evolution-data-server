@@ -55,7 +55,13 @@ libebackendinclude_HEADERS =		\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebackend-$(API_VERSION).pc
 
+gsettings_SCHEMAS = \
+	org.gnome.evolution.eds-shell.gschema.xml
+
+@GSETTINGS_RULES@
+
 EXTRA_DIST = 						\
+	$(gsettings_SCHEMAS)				\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
 DISTCLEANFILES = $(pkgconfig_DATA)

@@ -55,6 +55,8 @@ EDS_MAJOR_VERSION=eds_major_version
 EDS_MINOR_VERSION=eds_minor_version
 EDS_MICRO_VERSION=eds_micro_version
 
+GLIB_GSETTINGS
+
 dnl ******************************
 dnl D-Bus versioning
 dnl ******************************
