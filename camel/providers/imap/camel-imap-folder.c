@@ -63,7 +63,8 @@
  * It still identifies the property in state files. */
 enum {
 	PROP_0,
-	PROP_CHECK_FOLDER = 0x2500
+	PROP_CHECK_FOLDER = 0x2500,
+	PROP_APPLY_FILTERS
 };
 
 extern gint camel_application_is_exiting;
@@ -137,6 +138,30 @@ static gboolean	imap_transfer_messages		(CamelFolder *source,
 						 GCancellable *cancellable,
 						 GError **error);
 
+static gboolean
+imap_folder_get_apply_filters (CamelImapFolder *folder)
+{
+	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAP_FOLDER (folder), FALSE);
+
+	return folder->priv->apply_filters;
+}
+
+static void
+imap_folder_set_apply_filters (CamelImapFolder *folder,
+			       gboolean apply_filters)
+{
+	g_return_if_fail (folder != NULL);
+	g_return_if_fail (CAMEL_IS_IMAP_FOLDER (folder));
+
+	if ((folder->priv->apply_filters ? 1 : 0) == (apply_filters ? 1 : 0))
+		return;
+
+	folder->priv->apply_filters = apply_filters;
+
+	g_object_notify (G_OBJECT (folder), "apply-filters");
+}
+
 #ifdef G_OS_WIN32
 /* The strtok() in Microsoft's C library is MT-safe (but still uses
  * only one buffer pointer per thread, but for the use of strtok_r()
@@ -159,6 +184,12 @@ imap_folder_set_property (GObject *object,
 				CAMEL_IMAP_FOLDER (object),
 				g_value_get_boolean (value));
 			return;
+
+		case PROP_APPLY_FILTERS:
+			imap_folder_set_apply_filters (
+				CAMEL_IMAP_FOLDER (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -174,6 +205,12 @@ imap_folder_get_property (GObject *object,
 		case PROP_CHECK_FOLDER:
 			g_value_set_boolean (
 				value, camel_imap_folder_get_check_folder (
+				CAMEL_IMAP_FOLDER (object)));
+			return;
+
+		case PROP_APPLY_FILTERS:
+			g_value_set_boolean (
+				value, imap_folder_get_apply_filters (
 				CAMEL_IMAP_FOLDER (object)));
 			return;
 	}
@@ -308,6 +345,17 @@ camel_imap_folder_class_init (CamelImapFolderClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			CAMEL_PARAM_PERSISTENT));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_APPLY_FILTERS,
+		g_param_spec_boolean (
+			"apply-filters",
+			"Apply Filters",
+			_("Apply message filters to this folder"),
+			FALSE,
+			G_PARAM_READWRITE |
+			CAMEL_PARAM_PERSISTENT));
 }
 
 static void
@@ -375,6 +423,12 @@ camel_imap_folder_new (CamelStore *parent,
 	CamelImapFolder *imap_folder;
 	const gchar *short_name;
 	gchar *state_file, *path;
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean filter_all;
+	gboolean filter_inbox;
+	gboolean filter_junk;
+	gboolean filter_junk_inbox;
 
 	if (g_mkdir_with_parents (folder_dir, S_IRWXU) != 0) {
 		g_set_error (
@@ -422,41 +476,28 @@ camel_imap_folder_new (CamelStore *parent,
 		return NULL;
 	}
 
+	service = CAMEL_SERVICE (parent);
+	settings = camel_service_get_settings (service);
+
+	g_object_get (
+		settings,
+		"filter-all", &filter_all,
+		"filter-inbox", &filter_inbox,
+		"filter-junk", &filter_junk,
+		"filter-junk-inbox", &filter_junk_inbox,
+		NULL);
+
 	if (g_ascii_strcasecmp (folder_name, "INBOX") == 0) {
-		CamelService *service;
-		CamelSettings *settings;
-		gboolean filter_inbox;
-		gboolean filter_junk;
-		gboolean filter_junk_inbox;
-
-		service = CAMEL_SERVICE (parent);
-		settings = camel_service_get_settings (service);
-
-		g_object_get (
-			settings,
-			"filter-inbox", &filter_inbox,
-			"filter-junk", &filter_junk,
-			"filter-junk-inbox", &filter_junk_inbox,
-			NULL);
-
-		if (filter_inbox)
+		if (filter_inbox || filter_all)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 		if (filter_junk)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
 		if (filter_junk_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
 	} else {
-		CamelService *service;
-		CamelSettings *settings;
-		gboolean filter_junk;
-		gboolean filter_junk_inbox;
-		gboolean folder_is_junk;
-		gboolean folder_is_trash;
+		gboolean folder_is_trash, folder_is_junk;
 		gchar *junk_path;
 		gchar *trash_path;
-
-		service = CAMEL_SERVICE (parent);
-		settings = camel_service_get_settings (service);
 
 		junk_path = camel_imap_settings_dup_real_junk_path (
 			CAMEL_IMAP_SETTINGS (settings));
@@ -471,11 +512,6 @@ camel_imap_folder_new (CamelStore *parent,
 		/* So we can safely compare strings. */
 		if (trash_path == NULL)
 			trash_path = g_strdup ("");
-
-		filter_junk = camel_imap_settings_get_filter_junk (
-			CAMEL_IMAP_SETTINGS (settings));
-		filter_junk_inbox = camel_imap_settings_get_filter_junk_inbox (
-			CAMEL_IMAP_SETTINGS (settings));
 
 		if (filter_junk && !filter_junk_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
@@ -493,6 +529,9 @@ camel_imap_folder_new (CamelStore *parent,
 
 		if (folder_is_junk)
 			folder->folder_flags |= CAMEL_FOLDER_IS_JUNK;
+
+		if (filter_all || imap_folder_get_apply_filters (imap_folder))
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 
 		g_free (junk_path);
 		g_free (trash_path);

@@ -32,6 +32,7 @@ struct _CamelImapSettingsPrivate {
 
 	gboolean check_all;
 	gboolean check_subscribed;
+	gboolean filter_all;
 	gboolean filter_junk;
 	gboolean filter_junk_inbox;
 	gboolean use_namespace;
@@ -50,6 +51,7 @@ enum {
 	PROP_CHECK_SUBSCRIBED,
 	PROP_FETCH_HEADERS,
 	PROP_FETCH_HEADERS_EXTRA,
+	PROP_FILTER_ALL,
 	PROP_FILTER_JUNK,
 	PROP_FILTER_JUNK_INBOX,
 	PROP_HOST,
@@ -109,6 +111,12 @@ imap_settings_set_property (GObject *object,
 			camel_imap_settings_set_fetch_headers_extra (
 				CAMEL_IMAP_SETTINGS (object),
 				g_value_get_boxed (value));
+			return;
+
+		case PROP_FILTER_ALL:
+			camel_imap_settings_set_filter_all (
+				CAMEL_IMAP_SETTINGS (object),
+				g_value_get_boolean (value));
 			return;
 
 		case PROP_FILTER_JUNK:
@@ -244,6 +252,13 @@ imap_settings_get_property (GObject *object,
 			g_value_take_boxed (
 				value,
 				camel_imap_settings_dup_fetch_headers_extra (
+				CAMEL_IMAP_SETTINGS (object)));
+			return;
+
+		case PROP_FILTER_ALL:
+			g_value_set_boolean (
+				value,
+				camel_imap_settings_get_filter_all (
 				CAMEL_IMAP_SETTINGS (object)));
 			return;
 
@@ -438,6 +453,18 @@ camel_imap_settings_class_init (CamelImapSettingsClass *class)
 			"Fetch Headers Extra",
 			"Additional headers to fetch in message summaries",
 			G_TYPE_STRV,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_FILTER_ALL,
+		g_param_spec_boolean (
+			"filter-all",
+			"Filter All",
+			"Whether to apply filters in all folders",
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -850,6 +877,44 @@ camel_imap_settings_set_filter_junk (CamelImapSettings *settings,
 	settings->priv->filter_junk = filter_junk;
 
 	g_object_notify (G_OBJECT (settings), "filter-junk");
+}
+
+/**
+ * camel_imap_settings_get_filter_all:
+ * @settings: a #CamelImapSettings
+ *
+ * Returns whether apply filters in all folders.
+ *
+ * Returns: whether to apply filters in all folders
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_imap_settings_get_filter_all (CamelImapSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAP_SETTINGS (settings), FALSE);
+
+	return settings->priv->filter_all;
+}
+
+/**
+ * camel_imap_settings_set_filter_all:
+ * @settings: a #CamelImapSettings
+ * @filter_all: whether to apply filters in all folders
+ *
+ * Sets whether to apply filters in all folders.
+ *
+ * Since: 3.4
+ **/
+void
+camel_imap_settings_set_filter_all (CamelImapSettings *settings,
+                                    gboolean filter_all)
+{
+	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
+
+	settings->priv->filter_all = filter_all;
+
+	g_object_notify (G_OBJECT (settings), "filter-all");
 }
 
 /**

@@ -57,6 +57,11 @@ struct _CamelNNTPSettingsClass {
 
 GType		camel_nntp_settings_get_type
 					(void) G_GNUC_CONST;
+gboolean	camel_nntp_settings_get_filter_all
+					(CamelNNTPSettings *settings);
+void		camel_nntp_settings_set_filter_all
+					(CamelNNTPSettings *settings,
+					 gboolean filter_all);
 gboolean	camel_nntp_settings_get_folder_hierarchy_relative
 					(CamelNNTPSettings *settings);
 void		camel_nntp_settings_set_folder_hierarchy_relative

@@ -23,6 +23,7 @@
 	((obj), CAMEL_TYPE_NNTP_SETTINGS, CamelNNTPSettingsPrivate))
 
 struct _CamelNNTPSettingsPrivate {
+	gboolean filter_all;
 	gboolean folder_hierarchy_relative;
 	gboolean short_folder_names;
 };
@@ -30,6 +31,7 @@ struct _CamelNNTPSettingsPrivate {
 enum {
 	PROP_0,
 	PROP_AUTH_MECHANISM,
+	PROP_FILTER_ALL,
 	PROP_FOLDER_HIERARCHY_RELATIVE,
 	PROP_HOST,
 	PROP_PORT,
@@ -56,6 +58,12 @@ nntp_settings_set_property (GObject *object,
 			camel_network_settings_set_auth_mechanism (
 				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_FILTER_ALL:
+			camel_nntp_settings_set_filter_all (
+				CAMEL_NNTP_SETTINGS (object),
+				g_value_get_boolean (value));
 			return;
 
 		case PROP_FOLDER_HIERARCHY_RELATIVE:
@@ -110,6 +118,13 @@ nntp_settings_get_property (GObject *object,
 				value,
 				camel_network_settings_dup_auth_mechanism (
 				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
+		case PROP_FILTER_ALL:
+			g_value_set_boolean (
+				value,
+				camel_nntp_settings_get_filter_all (
+				CAMEL_NNTP_SETTINGS (object)));
 			return;
 
 		case PROP_FOLDER_HIERARCHY_RELATIVE:
@@ -222,12 +237,62 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 		object_class,
 		PROP_USER,
 		"user");
+
+	g_object_class_install_property (
+		object_class,
+		PROP_FILTER_ALL,
+		g_param_spec_boolean (
+			"filter-all",
+			"Filter All",
+			"Whether to apply filters in all folders",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
 camel_nntp_settings_init (CamelNNTPSettings *settings)
 {
 	settings->priv = CAMEL_NNTP_SETTINGS_GET_PRIVATE (settings);
+}
+
+/**
+ * camel_nntp_settings_get_filter_all:
+ * @settings: a #CamelNNTPSettings
+ *
+ * Returns whether apply filters in all folders.
+ *
+ * Returns: whether to apply filters in all folders
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_nntp_settings_get_filter_all (CamelNNTPSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_NNTP_SETTINGS (settings), FALSE);
+
+	return settings->priv->filter_all;
+}
+
+/**
+ * camel_nntp_settings_set_filter_all:
+ * @settings: a #CamelNNTPSettings
+ * @filter_all: whether to apply filters in all folders
+ *
+ * Sets whether to apply filters in all folders.
+ *
+ * Since: 3.4
+ **/
+void
+camel_nntp_settings_set_filter_all (CamelNNTPSettings *settings,
+                                    gboolean filter_all)
+{
+	g_return_if_fail (CAMEL_IS_NNTP_SETTINGS (settings));
+
+	settings->priv->filter_all = filter_all;
+
+	g_object_notify (G_OBJECT (settings), "filter-all");
 }
 
 /**

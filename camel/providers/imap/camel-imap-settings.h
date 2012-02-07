@@ -81,6 +81,11 @@ gchar **	camel_imap_settings_dup_fetch_headers_extra
 void		camel_imap_settings_set_fetch_headers_extra
 					(CamelImapSettings *settings,
 					 const gchar * const *fetch_headers_extra);
+gboolean	camel_imap_settings_get_filter_all
+					(CamelImapSettings *settings);
+void		camel_imap_settings_set_filter_all
+					(CamelImapSettings *settings,
+					 gboolean filter_all);
 gboolean	camel_imap_settings_get_filter_junk
 					(CamelImapSettings *settings);
 void		camel_imap_settings_set_filter_junk

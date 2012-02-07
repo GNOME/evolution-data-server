@@ -35,6 +35,7 @@ struct _CamelIMAPXSettingsPrivate {
 
 	gboolean check_all;
 	gboolean check_subscribed;
+	gboolean filter_all;
 	gboolean filter_junk;
 	gboolean filter_junk_inbox;
 	gboolean use_idle;
@@ -55,6 +56,7 @@ enum {
 	PROP_CHECK_SUBSCRIBED,
 	PROP_CONCURRENT_CONNECTIONS,
 	PROP_FETCH_ORDER,
+	PROP_FILTER_ALL,
 	PROP_FILTER_JUNK,
 	PROP_FILTER_JUNK_INBOX,
 	PROP_HOST,
@@ -119,6 +121,12 @@ imapx_settings_set_property (GObject *object,
 			camel_imapx_settings_set_fetch_order (
 				CAMEL_IMAPX_SETTINGS (object),
 				g_value_get_enum (value));
+			return;
+
+		case PROP_FILTER_ALL:
+			camel_imapx_settings_set_filter_all (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
 			return;
 
 		case PROP_FILTER_JUNK:
@@ -255,6 +263,13 @@ imapx_settings_get_property (GObject *object,
 			g_value_set_enum (
 				value,
 				camel_imapx_settings_get_fetch_order (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_FILTER_ALL:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_filter_all (
 				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 
@@ -455,6 +470,18 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"Order in which new messages should be fetched",
 			CAMEL_TYPE_SORT_TYPE,
 			CAMEL_SORT_ASCENDING,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_FILTER_ALL,
+		g_param_spec_boolean (
+			"filter-all",
+			"Filter All",
+			"Whether to apply filters in all folders",
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -821,6 +848,44 @@ camel_imapx_settings_set_fetch_order (CamelIMAPXSettings *settings,
 	settings->priv->fetch_order = fetch_order;
 
 	g_object_notify (G_OBJECT (settings), "fetch-order");
+}
+
+/**
+ * camel_imapx_settings_get_filter_all:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether apply filters in all folders.
+ *
+ * Returns: whether to apply filters in all folders
+ *
+ * Since: 3.4
+ **/
+gboolean
+camel_imapx_settings_get_filter_all (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->filter_all;
+}
+
+/**
+ * camel_imapx_settings_set_filter_all:
+ * @settings: a #CamelIMAPXSettings
+ * @filter_all: whether to apply filters in all folders
+ *
+ * Sets whether to apply filters in all folders.
+ *
+ * Since: 3.4
+ **/
+void
+camel_imapx_settings_set_filter_all (CamelIMAPXSettings *settings,
+                                     gboolean filter_all)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	settings->priv->filter_all = filter_all;
+
+	g_object_notify (G_OBJECT (settings), "filter-all");
 }
 
 /**

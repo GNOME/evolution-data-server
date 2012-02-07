@@ -37,7 +37,72 @@
 #include "camel-nntp-store.h"
 #include "camel-nntp-summary.h"
 
+/* The custom property ID is a CamelArg artifact.
+ * It still identifies the property in state files. */
+enum {
+	PROP_0,
+	PROP_APPLY_FILTERS = 0x2501
+};
+
 G_DEFINE_TYPE (CamelNNTPFolder, camel_nntp_folder, CAMEL_TYPE_DISCO_FOLDER)
+
+static gboolean
+nntp_folder_get_apply_filters (CamelNNTPFolder *folder)
+{
+	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_NNTP_FOLDER (folder), FALSE);
+
+	return folder->priv->apply_filters;
+}
+
+static void
+nntp_folder_set_apply_filters (CamelNNTPFolder *folder,
+			       gboolean apply_filters)
+{
+	g_return_if_fail (folder != NULL);
+	g_return_if_fail (CAMEL_IS_NNTP_FOLDER (folder));
+
+	if ((folder->priv->apply_filters ? 1 : 0) == (apply_filters ? 1 : 0))
+		return;
+
+	folder->priv->apply_filters = apply_filters;
+
+	g_object_notify (G_OBJECT (folder), "apply-filters");
+}
+
+static void
+nntp_folder_set_property (GObject *object,
+			  guint property_id,
+			  const GValue *value,
+			  GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_APPLY_FILTERS:
+			nntp_folder_set_apply_filters (
+				CAMEL_NNTP_FOLDER (object),
+				g_value_get_boolean (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+nntp_folder_get_property (GObject *object,
+			  guint property_id,
+			  GValue *value,
+			  GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_APPLY_FILTERS:
+			g_value_set_boolean (
+				value, nntp_folder_get_apply_filters (
+				CAMEL_NNTP_FOLDER (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
 
 static void
 nntp_folder_dispose (GObject *object)
@@ -180,7 +245,7 @@ nntp_folder_sync (CamelFolder *folder,
 		g_ptr_array_free (changed, TRUE);
 		camel_folder_summary_touch (folder->summary);
 	}
-	success = !camel_folder_summary_save_to_db (folder->summary, error);
+	success = camel_folder_summary_save_to_db (folder->summary, error);
 	camel_service_unlock (CAMEL_SERVICE (parent_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
@@ -653,6 +718,8 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 	g_type_class_add_private (class, sizeof (CamelNNTPFolderPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = nntp_folder_set_property;
+	object_class->get_property = nntp_folder_get_property;
 	object_class->dispose = nntp_folder_dispose;
 	object_class->finalize = nntp_folder_finalize;
 
@@ -679,6 +746,17 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 	disco_folder_class->expunge_uids_online = nntp_folder_expunge_uids_offline;
 	disco_folder_class->expunge_uids_offline = nntp_folder_expunge_uids_offline;
 	disco_folder_class->expunge_uids_resyncing = nntp_folder_expunge_uids_offline;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_APPLY_FILTERS,
+		g_param_spec_boolean (
+			"apply-filters",
+			"Apply Filters",
+			_("Apply message filters to this folder"),
+			FALSE,
+			G_PARAM_READWRITE |
+			CAMEL_PARAM_PERSISTENT));
 }
 
 static void
@@ -702,12 +780,20 @@ camel_nntp_folder_new (CamelStore *parent,
 	CamelNNTPFolder *nntp_folder;
 	gchar *root;
 	CamelService *service;
+	CamelSettings *settings;
 	CamelStoreInfo *si;
 	const gchar *user_cache_dir;
 	gboolean subscribed = TRUE;
+	gboolean filter_all;
 
 	service = CAMEL_SERVICE (parent);
+	settings = camel_service_get_settings (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	g_object_get (
+		settings,
+		"filter-all", &filter_all,
+		NULL);
 
 	folder = g_object_new (
 		CAMEL_TYPE_NNTP_FOLDER,
@@ -730,6 +816,9 @@ camel_nntp_folder_new (CamelStore *parent,
 
 	folder->summary = (CamelFolderSummary *) camel_nntp_summary_new (folder);
 
+	if (filter_all || nntp_folder_get_apply_filters (nntp_folder))
+		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+
 	camel_folder_summary_load_from_db (folder->summary, NULL);
 
 	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelNNTPStore *) parent)->summary, folder_name);
@@ -738,15 +827,15 @@ camel_nntp_folder_new (CamelStore *parent,
 		camel_store_summary_info_free ((CamelStoreSummary *) ((CamelNNTPStore *) parent)->summary, si);
 	}
 
+	camel_store_summary_connect_folder_summary (
+		(CamelStoreSummary *) ((CamelNNTPStore *) parent)->summary,
+		folder_name, folder->summary);
+
 	if (subscribed && !camel_folder_refresh_info_sync (
 			folder, cancellable, error)) {
 		g_object_unref (folder);
 		folder = NULL;
 	}
-
-	camel_store_summary_connect_folder_summary (
-		(CamelStoreSummary *) ((CamelNNTPStore *) parent)->summary,
-		folder_name, folder->summary);
 
 	return folder;
 }

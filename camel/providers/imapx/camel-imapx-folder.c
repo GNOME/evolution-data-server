@@ -38,7 +38,16 @@
 
 #define d(...) camel_imapx_debug(debug, '?', __VA_ARGS__)
 
+/* The custom property ID is a CamelArg artifact.
+ * It still identifies the property in state files. */
+enum {
+	PROP_0,
+	PROP_APPLY_FILTERS = 0x2501
+};
+
 G_DEFINE_TYPE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
+
+static gboolean imapx_folder_get_apply_filters (CamelIMAPXFolder *folder);
 
 CamelFolder *
 camel_imapx_folder_new (CamelStore *store,
@@ -52,6 +61,7 @@ camel_imapx_folder_new (CamelStore *store,
 	CamelIMAPXFolder *ifolder;
 	const gchar *short_name;
 	gchar *state_file;
+	gboolean filter_all;
 	gboolean filter_inbox;
 	gboolean filter_junk;
 	gboolean filter_junk_inbox;
@@ -63,6 +73,7 @@ camel_imapx_folder_new (CamelStore *store,
 
 	g_object_get (
 		settings,
+		"filter-all", &filter_all,
 		"filter-inbox", &filter_inbox,
 		"filter-junk", &filter_junk,
 		"filter-junk-inbox", &filter_junk_inbox,
@@ -115,18 +126,81 @@ camel_imapx_folder_new (CamelStore *store,
 	ifolder->uidnext_on_server = 0;
 
 	if (!g_ascii_strcasecmp (folder_name, "INBOX")) {
-		if (filter_inbox)
+		if (filter_inbox || filter_all)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 		if (filter_junk)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
-	} else if (filter_junk && !filter_junk_inbox)
+	} else {
+		if (filter_junk && !filter_junk_inbox)
 			folder->folder_flags |= CAMEL_FOLDER_FILTER_JUNK;
+
+		if (filter_all || imapx_folder_get_apply_filters (ifolder))
+			folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+	}
 
 	camel_store_summary_connect_folder_summary (
 		(CamelStoreSummary *) ((CamelIMAPXStore *) store)->summary,
 		folder_name, folder->summary);
 
 	return folder;
+}
+
+static gboolean
+imapx_folder_get_apply_filters (CamelIMAPXFolder *folder)
+{
+	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), FALSE);
+
+	return folder->apply_filters;
+}
+
+static void
+imapx_folder_set_apply_filters (CamelIMAPXFolder *folder,
+				gboolean apply_filters)
+{
+	g_return_if_fail (folder != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+
+	if ((folder->apply_filters ? 1 : 0) == (apply_filters ? 1 : 0))
+		return;
+
+	folder->apply_filters = apply_filters;
+
+	g_object_notify (G_OBJECT (folder), "apply-filters");
+}
+
+static void
+imapx_folder_set_property (GObject *object,
+			   guint property_id,
+			   const GValue *value,
+			   GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_APPLY_FILTERS:
+			imapx_folder_set_apply_filters (
+				CAMEL_IMAPX_FOLDER (object),
+				g_value_get_boolean (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+imapx_folder_get_property (GObject *object,
+			   guint property_id,
+			   GValue *value,
+			   GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_APPLY_FILTERS:
+			g_value_set_boolean (
+				value, imapx_folder_get_apply_filters (
+				CAMEL_IMAPX_FOLDER (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -643,6 +717,8 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	CamelFolderClass *folder_class;
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = imapx_folder_set_property;
+	object_class->get_property = imapx_folder_get_property;
 	object_class->dispose = imapx_folder_dispose;
 	object_class->finalize = imapx_folder_finalize;
 
@@ -661,6 +737,17 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class->synchronize_sync = imapx_synchronize_sync;
 	folder_class->synchronize_message_sync = imapx_synchronize_message_sync;
 	folder_class->transfer_messages_to_sync = imapx_transfer_messages_to_sync;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_APPLY_FILTERS,
+		g_param_spec_boolean (
+			"apply-filters",
+			"Apply Filters",
+			_("Apply message filters to this folder"),
+			FALSE,
+			G_PARAM_READWRITE |
+			CAMEL_PARAM_PERSISTENT));
 }
 
 static void

@@ -178,9 +178,12 @@ add_range_xover (CamelNNTPSummary *cns,
 	guint len;
 	gint ret;
 	guint n, count, total, size;
+	gboolean folder_filter_recent;
 	struct _xover_header *xover;
 
 	s = (CamelFolderSummary *) cns;
+	folder_filter_recent = camel_folder_summary_get_folder (s) &&
+		(camel_folder_summary_get_folder (s)->folder_flags & CAMEL_FOLDER_FILTER_RECENT) != 0;
 
 	service = CAMEL_SERVICE (store);
 	settings = camel_service_get_settings (service);
@@ -262,6 +265,8 @@ add_range_xover (CamelNNTPSummary *cns,
 					mi->size = size;
 					cns->high = n;
 					camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
+					if (folder_filter_recent)
+						camel_folder_change_info_recent_uid (changes, camel_message_info_uid (mi));
 				}
 			}
 		}
@@ -299,8 +304,11 @@ add_range_head (CamelNNTPSummary *cns,
 	CamelMessageInfo *mi;
 	CamelMimeParser *mp;
 	gchar *host;
+	gboolean folder_filter_recent;
 
 	s = (CamelFolderSummary *) cns;
+	folder_filter_recent = camel_folder_summary_get_folder (s) &&
+		(camel_folder_summary_get_folder (s)->folder_flags & CAMEL_FOLDER_FILTER_RECENT) != 0;
 
 	mp = camel_mime_parser_new ();
 
@@ -353,6 +361,8 @@ add_range_head (CamelNNTPSummary *cns,
 				}
 				cns->high = i;
 				camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
+				if (folder_filter_recent)
+					camel_folder_change_info_recent_uid (changes, camel_message_info_uid (mi));
 			}
 			if (cns->priv->uid) {
 				g_free (cns->priv->uid);

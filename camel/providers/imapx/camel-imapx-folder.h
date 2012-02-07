@@ -68,6 +68,8 @@ struct _CamelIMAPXFolder {
 
 	GMutex *search_lock;
 	GMutex *stream_lock;
+
+	gboolean apply_filters;		/* persistent property */
 };
 
 struct _CamelIMAPXFolderClass {

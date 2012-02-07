@@ -224,6 +224,8 @@ object_state_read (CamelObject *object,
 
 			/* Sanity check. */
 			g_warn_if_fail (pspec->flags & CAMEL_PARAM_PERSISTENT);
+			if ((pspec->flags & CAMEL_PARAM_PERSISTENT) == 0)
+				continue;
 
 			g_object_set_property (
 				G_OBJECT (object), pspec->name, &value);

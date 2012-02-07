@@ -15,6 +15,7 @@ struct _CamelImapFolderPrivate {
 	GStaticRecMutex cache_lock;	/* for locking the cache object */
 	GHashTable *ignore_recent;	/* hash table of UIDs to ignore as recent when updating folder */
 	gboolean check_folder;		/* persistent property */
+	gboolean apply_filters;		/* persistent property */
 };
 
 #define CAMEL_IMAP_FOLDER_LOCK(f, l) \

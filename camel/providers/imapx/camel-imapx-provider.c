@@ -70,7 +70,9 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 #endif
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
-	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-all", NULL,
+	  N_("Apply _filters to new messages in all folders"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", "!filter-all",
 	  N_("_Apply filters to new messages in Inbox on this server"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk", NULL,
 	  N_("Check new messages for Jun_k contents"), "0" },

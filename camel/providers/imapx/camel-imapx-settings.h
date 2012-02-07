@@ -81,6 +81,11 @@ CamelSortType	camel_imapx_settings_get_fetch_order
 void		camel_imapx_settings_set_fetch_order
 						(CamelIMAPXSettings *settings,
 						 CamelSortType fetch_order);
+gboolean	camel_imapx_settings_get_filter_all
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_filter_all
+						(CamelIMAPXSettings *settings,
+						 gboolean filter_all);
 gboolean	camel_imapx_settings_get_filter_junk
 						(CamelIMAPXSettings *settings);
 void		camel_imapx_settings_set_filter_junk

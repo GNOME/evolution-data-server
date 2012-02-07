@@ -38,6 +38,10 @@ static gint check_equal (gchar *s1, gchar *s2);
 static gint nntp_url_equal (gconstpointer a, gconstpointer b);
 
 static CamelProviderConfEntry nntp_conf_entries[] = {
+	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-all", NULL,
+	  N_("Apply _filters to new messages in all folders"), "0" },
+	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
 	  N_("Folders") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "short-folder-names", NULL,
