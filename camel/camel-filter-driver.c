@@ -1515,8 +1515,9 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 				CAMEL_MESSAGE_DELETED |
 				CAMEL_MESSAGE_SEEN, ~0);
 
-		camel_uid_cache_save_uid (cache, uids->pdata[i]);
-		if (cache && i%10 == 0)
+		if (cache)
+			camel_uid_cache_save_uid (cache, uids->pdata[i]);
+		if (cache && (i % 10) == 0)
 			camel_uid_cache_save (cache);
 	}
 
