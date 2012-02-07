@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-02-02 12:00+0000\n"
-"PO-Revision-Date: 2012-02-03 10:15+0100\n"
+"POT-Creation-Date: 2012-02-07 11:57+0000\n"
+"PO-Revision-Date: 2012-02-07 17:23+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -860,7 +860,6 @@ msgstr "Memoria insuficiente"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1095
 #, c-format
-#| msgid "Contact '%s' no found"
 msgid "Contact '%s' not found"
 msgstr "Contacto «%s» no encontrado"
 
@@ -1762,22 +1761,22 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-store.c:2028
 #: ../camel/providers/imap/camel-imap-store.c:2523
 #: ../camel/providers/imap/camel-imap-store.c:3282
-#: ../camel/providers/imapx/camel-imapx-folder.c:333
-#: ../camel/providers/imapx/camel-imapx-folder.c:366
-#: ../camel/providers/imapx/camel-imapx-folder.c:400
-#: ../camel/providers/imapx/camel-imapx-folder.c:456
-#: ../camel/providers/imapx/camel-imapx-folder.c:513
-#: ../camel/providers/imapx/camel-imapx-folder.c:547
+#: ../camel/providers/imapx/camel-imapx-folder.c:407
+#: ../camel/providers/imapx/camel-imapx-folder.c:440
+#: ../camel/providers/imapx/camel-imapx-folder.c:474
+#: ../camel/providers/imapx/camel-imapx-folder.c:530
 #: ../camel/providers/imapx/camel-imapx-folder.c:587
-#: ../camel/providers/imapx/camel-imapx-folder.c:623
+#: ../camel/providers/imapx/camel-imapx-folder.c:621
+#: ../camel/providers/imapx/camel-imapx-folder.c:661
+#: ../camel/providers/imapx/camel-imapx-folder.c:697
 #: ../camel/providers/imapx/camel-imapx-store.c:276
 #: ../camel/providers/imapx/camel-imapx-store.c:1367
 #: ../camel/providers/imapx/camel-imapx-store.c:1455
 #: ../camel/providers/imapx/camel-imapx-store.c:1501
 #: ../camel/providers/pop3/camel-pop3-folder.c:527
 #: ../camel/providers/pop3/camel-pop3-folder.c:657
-#: ../camel/providers/pop3/camel-pop3-folder.c:834
-#: ../camel/providers/pop3/camel-pop3-folder.c:1032
+#: ../camel/providers/pop3/camel-pop3-folder.c:840
+#: ../camel/providers/pop3/camel-pop3-folder.c:1038
 #: ../camel/providers/pop3/camel-pop3-store.c:396
 #: ../camel/providers/pop3/camel-pop3-store.c:808
 #, c-format
@@ -1803,12 +1802,12 @@ msgstr "Flujo de mensaje inválido recibido desde %s: %s"
 msgid "Syncing folders"
 msgstr "Sincronizando carpetas"
 
-#: ../camel/camel-filter-driver.c:1240 ../camel/camel-filter-driver.c:1695
+#: ../camel/camel-filter-driver.c:1240 ../camel/camel-filter-driver.c:1697
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Error analizando filtro: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1251 ../camel/camel-filter-driver.c:1706
+#: ../camel/camel-filter-driver.c:1251 ../camel/camel-filter-driver.c:1708
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Error ejecutando filtro: %s: %s"
@@ -1833,11 +1832,11 @@ msgstr "Obteniendo mensaje %d (%d%%)"
 msgid "Failed on message %d"
 msgstr "Falló en el mensaje %d"
 
-#: ../camel/camel-filter-driver.c:1422 ../camel/camel-filter-driver.c:1527
+#: ../camel/camel-filter-driver.c:1422 ../camel/camel-filter-driver.c:1529
 msgid "Syncing folder"
 msgstr "Sincronizando carpeta"
 
-#: ../camel/camel-filter-driver.c:1427 ../camel/camel-filter-driver.c:1533
+#: ../camel/camel-filter-driver.c:1427 ../camel/camel-filter-driver.c:1535
 msgid "Complete"
 msgstr "Completo"
 
@@ -2029,7 +2028,7 @@ msgstr ""
 
 #: ../camel/camel-gpg-context.c:875 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
-#: ../camel/providers/nntp/camel-nntp-summary.c:372
+#: ../camel/providers/nntp/camel-nntp-summary.c:382
 #: ../libedataserver/e-client.c:136 ../libedataserverui/e-book-auth-util.c:227
 #, c-format
 msgid "Cancelled"
@@ -3072,71 +3071,78 @@ msgstr "La respuesta del servidor IMAP no contenía información de %s"
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "El servidor IMAP inesperadamente ha respondido OK: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:307
+#: ../camel/providers/imap/camel-imap-folder.c:344
 msgid "Always check for new mail in this folder"
 msgstr "Comprobar siempre si hay correo nuevo en esta carpeta"
 
-#: ../camel/providers/imap/camel-imap-folder.c:383
+#: ../camel/providers/imap/camel-imap-folder.c:355
+#: ../camel/providers/imapx/camel-imapx-folder.c:747
+#: ../camel/providers/nntp/camel-nntp-folder.c:756
+#| msgid "Cannot copy messages to the Trash folder"
+msgid "Apply message filters to this folder"
+msgstr "Aplicar filtros de mensajes a esta carpeta"
+
+#: ../camel/providers/imap/camel-imap-folder.c:437
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "No se pudo crear el directorio %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:404
+#: ../camel/providers/imap/camel-imap-folder.c:458
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "No se puede cargar la recopilación de %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1077
+#: ../camel/providers/imap/camel-imap-folder.c:1116
 #: ../camel/providers/imapx/camel-imapx-server.c:3950
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Buscando mensajes modificados en %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3434
+#: ../camel/providers/imap/camel-imap-folder.c:3473
 msgid "Unable to retrieve message: "
 msgstr "No se pudo obtener el mensaje: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3471
+#: ../camel/providers/imap/camel-imap-folder.c:3510
 #: ../camel/providers/imapx/camel-imapx-server.c:5508
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "No se puede obtener el mensaje con ID de mensaje %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3472
+#: ../camel/providers/imap/camel-imap-folder.c:3511
 #: ../camel/providers/imapx/camel-imapx-server.c:5509
 msgid "No such message available."
 msgstr "Dicho mensaje no está disponible."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3547
-#: ../camel/providers/imap/camel-imap-folder.c:4425
-#: ../camel/providers/nntp/camel-nntp-folder.c:446
+#: ../camel/providers/imap/camel-imap-folder.c:3586
+#: ../camel/providers/imap/camel-imap-folder.c:4464
+#: ../camel/providers/nntp/camel-nntp-folder.c:511
 #, c-format
 msgid "This message is not currently available"
 msgstr "Este mensaje no está disponible actualmente"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4006
-#: ../camel/providers/imap/camel-imap-folder.c:4089
+#: ../camel/providers/imap/camel-imap-folder.c:4045
+#: ../camel/providers/imap/camel-imap-folder.c:4128
 #: ../camel/providers/imapx/camel-imapx-server.c:3902
 #: ../camel/providers/imapx/camel-imapx-server.c:4082
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Obteniendo recopilación de información sobre los mensajes nuevos en %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4223
+#: ../camel/providers/imap/camel-imap-folder.c:4262
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Respuesta del servidor incompleta: no hay información proporcionada para el "
 "mensaje %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4233
+#: ../camel/providers/imap/camel-imap-folder.c:4272
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
 "Respuesta incompleta del servidor: No se proporcionó un UID para el mensaje %"
 "d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4465
+#: ../camel/providers/imap/camel-imap-folder.c:4504
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "No se pudo encontrar el cuerpo del mensaje en la respuesta de FETCH."
@@ -3192,7 +3198,7 @@ msgstr "Co_mando:"
 
 #: ../camel/providers/imap/camel-imap-provider.c:56
 #: ../camel/providers/imapx/camel-imapx-provider.c:62
-#: ../camel/providers/nntp/camel-nntp-provider.c:42
+#: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid "Folders"
 msgstr "Carpetas"
 
@@ -3215,58 +3221,66 @@ msgstr "_Espacio de nombres:"
 #: ../camel/providers/local/camel-local-provider.c:42
 #: ../camel/providers/local/camel-local-provider.c:84
 #: ../camel/providers/local/camel-local-provider.c:105
+#: ../camel/providers/nntp/camel-nntp-provider.c:41
 msgid "Options"
 msgstr "Opciones"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imapx/camel-imapx-provider.c:74
+#: ../camel/providers/nntp/camel-nntp-provider.c:43
+#| msgid "_Apply filters to new messages in INBOX"
+msgid "Apply _filters to new messages in all folders"
+msgstr "_Aplicar filtros a los mensajes nuevos en todas las carpetas"
+
+#: ../camel/providers/imap/camel-imap-provider.c:68
+#: ../camel/providers/imapx/camel-imapx-provider.c:76
 msgid "_Apply filters to new messages in Inbox on this server"
 msgstr ""
 "_Aplicar filtros a los mensajes nuevos en la bandeja de entrada de este "
 "servidor"
 
-#: ../camel/providers/imap/camel-imap-provider.c:68
-#: ../camel/providers/imapx/camel-imapx-provider.c:76
+#: ../camel/providers/imap/camel-imap-provider.c:70
+#: ../camel/providers/imapx/camel-imapx-provider.c:78
 msgid "Check new messages for Jun_k contents"
 msgstr "Comprobar si el contenido de los mensajes nuevos es _spam"
 
-#: ../camel/providers/imap/camel-imap-provider.c:70
-#: ../camel/providers/imapx/camel-imapx-provider.c:78
+#: ../camel/providers/imap/camel-imap-provider.c:72
+#: ../camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Only check for Junk messages in the IN_BOX folder"
 msgstr "Sólo comprobar si hay spam en la carpeta _Bandeja de entrada"
 
-#: ../camel/providers/imap/camel-imap-provider.c:72
-#: ../camel/providers/imapx/camel-imapx-provider.c:80
+#: ../camel/providers/imap/camel-imap-provider.c:74
+#: ../camel/providers/imapx/camel-imapx-provider.c:82
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "_Sincronizar automáticamente el correo remoto localmente"
 
-#: ../camel/providers/imap/camel-imap-provider.c:78
+#: ../camel/providers/imap/camel-imap-provider.c:80
 msgid "IMAP default port"
 msgstr "Puerto IMAP predeterminado"
 
-#: ../camel/providers/imap/camel-imap-provider.c:79
-#: ../camel/providers/imapx/camel-imapx-provider.c:87
+#: ../camel/providers/imap/camel-imap-provider.c:81
+#: ../camel/providers/imapx/camel-imapx-provider.c:89
 msgid "IMAP over SSL"
 msgstr "IMAP sobre SSL"
 
-#: ../camel/providers/imap/camel-imap-provider.c:85
+#: ../camel/providers/imap/camel-imap-provider.c:87
 msgid "IMAP"
 msgstr "IMAP"
 
-#: ../camel/providers/imap/camel-imap-provider.c:87
-#: ../camel/providers/imapx/camel-imapx-provider.c:96
+#: ../camel/providers/imap/camel-imap-provider.c:89
+#: ../camel/providers/imapx/camel-imapx-provider.c:98
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Para leer y almacenar correo en los servidores IMAP."
 
-#: ../camel/providers/imap/camel-imap-provider.c:105
-#: ../camel/providers/imapx/camel-imapx-provider.c:116
-#: ../camel/providers/nntp/camel-nntp-provider.c:80
+#: ../camel/providers/imap/camel-imap-provider.c:107
+#: ../camel/providers/imapx/camel-imapx-provider.c:118
+#: ../camel/providers/nntp/camel-nntp-provider.c:84
 #: ../camel/providers/pop3/camel-pop3-provider.c:82
 msgid "Password"
 msgstr "Contraseña"
 
-#: ../camel/providers/imap/camel-imap-provider.c:107
-#: ../camel/providers/imapx/camel-imapx-provider.c:118
+#: ../camel/providers/imap/camel-imap-provider.c:109
+#: ../camel/providers/imapx/camel-imapx-provider.c:120
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Esta opción conectará con el servidor IMAP usando una contraseña de texto "
@@ -3383,12 +3397,12 @@ msgstr "El servidor se desconectó inesperadamente"
 msgid "Server unexpectedly disconnected: "
 msgstr "El servidor se desconectó inesperadamente: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:90
+#: ../camel/providers/imapx/camel-imapx-folder.c:101
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "No se pudo crear el resumen de carpetas para %s"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:98
+#: ../camel/providers/imapx/camel-imapx-folder.c:109
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "No se pudo crear la caché para %s: "
@@ -3413,11 +3427,11 @@ msgstr "Núme_ro de conexiones cacheadas que usar"
 msgid "Namespace:"
 msgstr "Espacio de nombres:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:86
+#: ../camel/providers/imapx/camel-imapx-provider.c:88
 msgid "Default IMAP port"
 msgstr "Puerto IMAP predeterminado"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:94
+#: ../camel/providers/imapx/camel-imapx-provider.c:96
 msgid "IMAP+"
 msgstr "IMAP+"
 
@@ -4086,23 +4100,23 @@ msgstr ""
 "No se pudo sincronizar la carpeta de correo %s: %s\n"
 "La carpeta puede estar corrupta, copia guardada en «%s»"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:221
-#: ../camel/providers/nntp/camel-nntp-folder.c:310
-#: ../camel/providers/nntp/camel-nntp-folder.c:432
+#: ../camel/providers/nntp/camel-nntp-folder.c:286
+#: ../camel/providers/nntp/camel-nntp-folder.c:375
+#: ../camel/providers/nntp/camel-nntp-folder.c:497
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
 msgstr "Error interno: UID en formato inválido: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:271
-#: ../camel/providers/nntp/camel-nntp-folder.c:275
+#: ../camel/providers/nntp/camel-nntp-folder.c:336
+#: ../camel/providers/nntp/camel-nntp-folder.c:340
 #: ../camel/providers/pop3/camel-pop3-folder.c:613
-#: ../camel/providers/pop3/camel-pop3-folder.c:991
+#: ../camel/providers/pop3/camel-pop3-folder.c:997
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "No se puede obtener el mensaje %s: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:282
-#: ../camel/providers/nntp/camel-nntp-folder.c:457
+#: ../camel/providers/nntp/camel-nntp-folder.c:347
+#: ../camel/providers/nntp/camel-nntp-folder.c:522
 #: ../camel/providers/pop3/camel-pop3-folder.c:551
 #: ../camel/providers/pop3/camel-pop3-folder.c:603
 #: ../camel/providers/pop3/camel-pop3-folder.c:622
@@ -4110,54 +4124,54 @@ msgstr "No se puede obtener el mensaje %s: %s"
 msgid "Cannot get message %s: "
 msgstr "No se puede obtener el mensaje %s: "
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:516
-#: ../camel/providers/nntp/camel-nntp-folder.c:522
-#: ../camel/providers/nntp/camel-nntp-folder.c:569
+#: ../camel/providers/nntp/camel-nntp-folder.c:581
+#: ../camel/providers/nntp/camel-nntp-folder.c:587
+#: ../camel/providers/nntp/camel-nntp-folder.c:634
 #, c-format
 msgid "Posting failed: %s"
 msgstr "La publicación falló: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:564
+#: ../camel/providers/nntp/camel-nntp-folder.c:629
 msgid "Posting failed: "
 msgstr "Falló la publicación: "
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:593
+#: ../camel/providers/nntp/camel-nntp-folder.c:658
 #, c-format
 msgid "You cannot post NNTP messages while working offline!"
 msgstr "No puede publicar mensajes NNTP mientras trabaja desconectado."
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:613
+#: ../camel/providers/nntp/camel-nntp-folder.c:678
 #, c-format
 msgid "You cannot copy messages from a NNTP folder!"
 msgstr "No puede copiar mensajes desde una carpeta NNTP."
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:44
+#: ../camel/providers/nntp/camel-nntp-provider.c:48
 msgid ""
 "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
 "_Mostrar carpetas en notación corta (ej: c.o.linux en vez de comp.os.linux)"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:46
+#: ../camel/providers/nntp/camel-nntp-provider.c:50
 msgid "In the subscription _dialog, show relative folder names"
 msgstr "En el _diálogo de subscripción, mostrar nombres de carpetas relativos"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:52
+#: ../camel/providers/nntp/camel-nntp-provider.c:56
 msgid "Default NNTP port"
 msgstr "Puerto NNTP predeterminado"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:53
+#: ../camel/providers/nntp/camel-nntp-provider.c:57
 msgid "NNTP over SSL"
 msgstr "NNTP sobre SSL"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:59
+#: ../camel/providers/nntp/camel-nntp-provider.c:63
 msgid "USENET news"
 msgstr "Noticias USENET"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:61
+#: ../camel/providers/nntp/camel-nntp-provider.c:65
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr "Este es un proveedor para leer y enviar noticias a grupos de USENET."
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:82
+#: ../camel/providers/nntp/camel-nntp-provider.c:86
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
@@ -4241,23 +4255,23 @@ msgstr "El comando NNTP ha fallado: "
 msgid "Not connected."
 msgstr "No conectado."
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:192
-#: ../camel/providers/nntp/camel-nntp-summary.c:314
+#: ../camel/providers/nntp/camel-nntp-summary.c:195
+#: ../camel/providers/nntp/camel-nntp-summary.c:322
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: Buscando correos nuevos"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:210
+#: ../camel/providers/nntp/camel-nntp-summary.c:213
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "Respuesta inesperada del servidor desde xover: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:332
+#: ../camel/providers/nntp/camel-nntp-summary.c:340
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "Respuesta inesperada del servidor desde head: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:377
+#: ../camel/providers/nntp/camel-nntp-summary.c:387
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Falló la operación: %s"
@@ -4281,15 +4295,15 @@ msgstr "Razón desconocida"
 msgid "Retrieving POP summary"
 msgstr "Obteniendo resumen POP"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:707
+#: ../camel/providers/pop3/camel-pop3-folder.c:713
 msgid "Cannot get POP summary: "
 msgstr "No se pudo obtener el resumen POP: "
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:819
+#: ../camel/providers/pop3/camel-pop3-folder.c:825
 msgid "Expunging old messages"
 msgstr "Compactando los correos antiguos"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:839
+#: ../camel/providers/pop3/camel-pop3-folder.c:845
 msgid "Expunging deleted messages"
 msgstr "Compactando los correos borrados"
 
