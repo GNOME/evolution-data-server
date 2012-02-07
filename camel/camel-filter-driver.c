@@ -694,11 +694,16 @@ do_color (struct _CamelSExp *f,
 
 	d(fprintf (stderr, "setting color tag\n"));
 	if (argc > 0 && argv[0]->type == CAMEL_SEXP_RES_STRING) {
+		const gchar *color = argv[0]->value.string;
+
+		if (color && !*color)
+			color = NULL;
+
 		if (p->source && p->uid && camel_folder_has_summary_capability (p->source))
-			camel_folder_set_message_user_tag (p->source, p->uid, "color", argv[0]->value.string);
+			camel_folder_set_message_user_tag (p->source, p->uid, "color", color);
 		else
-			camel_message_info_set_user_tag(p->info, "color", argv[0]->value.string);
-		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set color to %s", argv[0]->value.string);
+			camel_message_info_set_user_tag(p->info, "color", color);
+		camel_filter_driver_log (driver, FILTER_LOG_ACTION, "Set color to %s", color ? color : "None");
 	}
 
 	return NULL;
