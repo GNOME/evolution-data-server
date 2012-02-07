@@ -2201,7 +2201,8 @@ e_book_backend_google_open (EBookBackend *backend,
 	}
 
 	if (!is_online || backend_is_authorized (backend)) {
-		e_book_backend_notify_readonly (backend, FALSE);
+		if (is_online)
+			e_book_backend_notify_readonly (backend, FALSE);
 		e_book_backend_notify_opened (backend, NULL /* Success */);
 	}
 
@@ -2404,6 +2405,8 @@ e_book_backend_google_notify_online_cb (EBookBackend *backend,
 
 	if (is_online && e_book_backend_is_opened (backend)) {
 		request_authorization (backend);
+		if (backend_is_authorized (backend))
+			e_book_backend_notify_readonly (backend, FALSE);
 	} else {
 		/* Going offline, so cancel all running operations */
 		google_cancel_all_operations (backend);
