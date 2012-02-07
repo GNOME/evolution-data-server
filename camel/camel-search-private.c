@@ -338,9 +338,7 @@ header_match (const gchar *value,
               const gchar *match,
               camel_search_match_t how)
 {
-	const guchar *p;
 	gint vlen, mlen;
-	gunichar c;
 
 	if (how == CAMEL_SEARCH_MATCH_SOUNDEX)
 		return header_soundex (value, match);
@@ -349,27 +347,6 @@ header_match (const gchar *value,
 	mlen = strlen (match);
 	if (vlen < mlen)
 		return FALSE;
-
-	/* from dan the man, if we have mixed case, perform a case-sensitive match,
-	 * otherwise not */
-	p = (const guchar *) match;
-	while ((c = camel_utf8_getc (&p))) {
-		if (g_unichar_isupper (c)) {
-			switch (how) {
-			case CAMEL_SEARCH_MATCH_EXACT:
-				return strcmp (value, match) == 0;
-			case CAMEL_SEARCH_MATCH_CONTAINS:
-				return strstr (value, match) != NULL;
-			case CAMEL_SEARCH_MATCH_STARTS:
-				return strncmp (value, match, mlen) == 0;
-			case CAMEL_SEARCH_MATCH_ENDS:
-				return strcmp (value + vlen - mlen, match) == 0;
-			default:
-				break;
-			}
-			return FALSE;
-		}
-	}
 
 	switch (how) {
 	case CAMEL_SEARCH_MATCH_EXACT:
