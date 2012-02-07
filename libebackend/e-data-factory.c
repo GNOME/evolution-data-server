@@ -26,6 +26,10 @@
 
 #include <config.h>
 
+#if GLIB_CHECK_VERSION(2,31,0)
+#define USE_NETWORK_MONITOR
+#endif
+
 #include <libebackend/e-extensible.h>
 #include <libebackend/e-backend-factory.h>
 
@@ -46,7 +50,9 @@ struct _EDataFactoryPrivate {
 	/* Hash Key -> EBackendFactory */
 	GHashTable *backend_factories;
 
+#ifndef USE_NETWORK_MONITOR
 	GSettings *settings;
+#endif
 
 	gboolean online;
 };
@@ -63,6 +69,33 @@ G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	EDataFactory, e_data_factory, E_TYPE_DBUS_SERVER,
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_data_factory_initable_init)
 	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
+
+#ifdef USE_NETWORK_MONITOR
+
+static void
+network_changed (GNetworkMonitor *monitor,
+                 gboolean available,
+                 EDataFactory *factory)
+{
+	e_data_factory_set_online (factory, available);
+}
+
+static void
+data_factory_init_online_monitoring (EDataFactory *factory)
+{
+	GNetworkMonitor *monitor;
+	gboolean network_available;
+
+	monitor = g_network_monitor_get_default ();
+	g_signal_connect (
+		monitor, "network-changed",
+		G_CALLBACK (network_changed), factory);
+
+	network_available = g_network_monitor_get_network_available (monitor);
+	e_data_factory_set_online (factory, network_available);
+}
+
+#else
 
 static void
 data_factory_online_changed (GSettings *settings,
@@ -101,6 +134,8 @@ data_factory_init_online_monitoring (EDataFactory *factory)
 
 	e_data_factory_set_online (factory, !start_offline);
 }
+
+#endif
 
 static void
 data_factory_last_client_gone_cb (EBackend *backend,
@@ -162,10 +197,16 @@ data_factory_dispose (GObject *object)
 	g_hash_table_remove_all (priv->backends);
 	g_hash_table_remove_all (priv->backend_factories);
 
+#ifdef USE_NETWORK_MONITOR
+	g_signal_handlers_disconnect_by_func (
+		g_network_monitor_get_default (),
+		G_CALLBACK (network_changed), object);
+#else
 	if (priv->settings != NULL) {
 		g_object_unref (priv->settings);
 		priv->settings = NULL;
 	}
+#endif
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_data_factory_parent_class)->dispose (object);
