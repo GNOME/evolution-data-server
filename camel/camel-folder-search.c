@@ -573,7 +573,17 @@ static gboolean
 do_search_in_memory (const gchar *expr)
 {
 	/* if the expression contains any of these tokens, then perform a memory search, instead of the SQL one */
-	const gchar *in_memory_tokens[] = { "body-contains", "body-regex", "match-threads", "message-location", "header-soundex", "header-regex", "header-full-regex", "header-contains", NULL };
+	const gchar *in_memory_tokens[] = {
+		"body-contains",
+		"body-regex",
+		"match-threads",
+		"message-location",
+		"header-soundex",
+		"header-regex",
+		"header-full-regex",
+		"header-contains",
+		"header-has-words",
+		NULL };
 	gint i;
 
 	if (!expr)

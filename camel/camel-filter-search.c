@@ -70,6 +70,7 @@ typedef struct {
 
 /* CamelSExp callbacks */
 static CamelSExpResult *header_contains (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
+static CamelSExpResult *header_has_words (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 static CamelSExpResult *header_matches (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 static CamelSExpResult *header_starts_with (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 static CamelSExpResult *header_ends_with (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
@@ -103,6 +104,7 @@ static struct {
 	{ "body-contains",      (CamelSExpFunc) body_contains,      0 },
 	{ "body-regex",         (CamelSExpFunc) body_regex,         0 },
 	{ "header-contains",    (CamelSExpFunc) header_contains,    0 },
+	{ "header-has-words",   (CamelSExpFunc) header_has_words,   0 },
 	{ "header-matches",     (CamelSExpFunc) header_matches,     0 },
 	{ "header-starts-with", (CamelSExpFunc) header_starts_with, 0 },
 	{ "header-ends-with",   (CamelSExpFunc) header_ends_with,   0 },
@@ -267,6 +269,15 @@ header_contains (struct _CamelSExp *f,
                  FilterMessageSearch *fms)
 {
 	return check_header (f, argc, argv, fms, CAMEL_SEARCH_MATCH_CONTAINS);
+}
+
+static CamelSExpResult *
+header_has_words (struct _CamelSExp *f,
+		  gint argc,
+		  struct _CamelSExpResult **argv,
+		  FilterMessageSearch *fms)
+{
+	return check_header (f, argc, argv, fms, CAMEL_SEARCH_MATCH_WORD);
 }
 
 static CamelSExpResult *

@@ -384,7 +384,7 @@ check_header (struct _CamelSExp *f,
 				gchar *value = NULL, *tstr = NULL;
 				if (argv[i]->value.string[0] == 0)
 					continue;
-				if (how == CAMEL_SEARCH_MATCH_CONTAINS) {
+				if (how == CAMEL_SEARCH_MATCH_CONTAINS || how == CAMEL_SEARCH_MATCH_WORD) {
 					tstr = g_strdup_printf ("%c%s%c", '%', argv[i]->value.string, '%');
 					value = get_db_safe_string (tstr);
 					g_free (tstr);
@@ -424,6 +424,17 @@ header_contains (struct _CamelSExp *f,
 	d(printf("executing header-contains: %d", argc));
 
 	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_CONTAINS);
+}
+
+static CamelSExpResult *
+header_has_words (struct _CamelSExp *f,
+                  gint argc,
+                  struct _CamelSExpResult **argv,
+                  gpointer data)
+{
+	d(printf("executing header-has-word: %d", argc));
+
+	return check_header (f, argc, argv, data, CAMEL_SEARCH_MATCH_WORD);
 }
 
 static CamelSExpResult *
@@ -675,6 +686,7 @@ static struct {
 	{ "match-threads", (CamelSExpFunc)match_threads, 1 },
 /*	{ "body-contains", body_contains}, */ /* We don't store body on the db. */
 	{ "header-contains", header_contains, 0},
+	{ "header-has-words", header_has_words, 0},
 	{ "header-matches", header_matches, 0},
 	{ "header-starts-with", header_starts_with, 0},
 	{ "header-ends-with", header_ends_with, 0},

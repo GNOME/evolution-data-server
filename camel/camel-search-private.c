@@ -294,6 +294,65 @@ camel_ustrcasecmp (const gchar *ps1,
 	return 0;
 }
 
+static gchar *
+depunct_string (const gchar *str)
+{
+	gchar *res;
+	gint ii;
+
+	g_return_val_if_fail (str != NULL, NULL);
+
+	res = g_strdup (str);
+	for (ii = 0; res[ii]; ii++) {
+		if (ispunct (res[ii]))
+			res[ii] = ' ';
+	}
+
+	return res;
+}
+
+static gboolean
+camel_uwordcase (const gchar *haystack,
+		 const gchar *needle)
+{
+	struct _camel_search_words *hwords, *nwords;
+	gchar *copy_haystack, *copy_needle;
+	gboolean found_all;
+	gint ii, jj;
+
+	g_return_val_if_fail (haystack != NULL, FALSE);
+	g_return_val_if_fail (needle != NULL, FALSE);
+
+	if (!*needle)
+		return TRUE;
+	if (!*haystack)
+		return FALSE;
+
+	copy_haystack = depunct_string (haystack);
+	copy_needle = depunct_string (needle);
+	hwords = camel_search_words_split ((const guchar *) copy_haystack);
+	nwords = camel_search_words_split ((const guchar *) copy_needle);
+	g_free (copy_haystack);
+	g_free (copy_needle);
+
+	found_all = TRUE;
+	for (ii = 0; ii < nwords->len && found_all; ii++) {
+		found_all = FALSE;
+
+		for (jj = 0; jj < hwords->len; jj++) {
+			if (camel_ustrcasecmp (hwords->words[jj]->word, nwords->words[ii]->word) == 0) {
+				found_all = TRUE;
+				break;
+			}
+		}
+	}
+
+	camel_search_words_free (hwords);
+	camel_search_words_free (nwords);
+
+	return found_all;
+}
+
 static gint
 camel_ustrncasecmp (const gchar *ps1,
                     const gchar *ps2,
@@ -353,6 +412,8 @@ header_match (const gchar *value,
 		return camel_ustrcasecmp (value, match) == 0;
 	case CAMEL_SEARCH_MATCH_CONTAINS:
 		return camel_ustrstrcase (value, match) != NULL;
+	case CAMEL_SEARCH_MATCH_WORD:
+		return camel_uwordcase (value, match);
 	case CAMEL_SEARCH_MATCH_STARTS:
 		return camel_ustrncasecmp (value, match, mlen) == 0;
 	case CAMEL_SEARCH_MATCH_ENDS:
