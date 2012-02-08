@@ -185,7 +185,7 @@ check_header_in_message_info (CamelMessageInfo *info,
 		}
 	}
 
-	if (!found)
+	if (!found || !value)
 		return FALSE;
 
 	for (ii = 1; ii < argc && !*matched; ii++) {
@@ -223,7 +223,7 @@ check_header (struct _CamelSExp *f,
 						matched = camel_search_header_match (list, argv[i]->value.string, how, CAMEL_SEARCH_TYPE_MLIST, NULL);
 				}
 			}
-		} else if (!check_header_in_message_info (fms->info, argc, argv, how, &matched)) {
+		} else if (fms->message || !check_header_in_message_info (fms->info, argc, argv, how, &matched)) {
 			CamelMimeMessage *message;
 			CamelMimePart *mime_part;
 			struct _camel_header_raw *header;
