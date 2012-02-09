@@ -4180,7 +4180,9 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 		}
 
 		camel_operation_push_message (
-			job->cancellable, _("Fetching summary information for %d messages in %s"),
+			job->cancellable,
+			ngettext ("Fetching summary information for %d message in %s",
+				  "Fetching summary information for %d messages in %s", data->fetch_msg_limit),
 			data->fetch_msg_limit, camel_folder_get_full_name (folder));		
 		/* New account and fetching old messages, we would return just the limited number of newest messages */
 		ic = camel_imapx_command_new (
@@ -4208,7 +4210,9 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 			end_uid = g_strdup_printf("%lld", (((int)uidl)-fetch_limit > 0) ? (uidl-fetch_limit) : 1);
 
 			camel_operation_push_message(
-				job->cancellable, _("Fetching summary information for %d messages in %s"),
+				job->cancellable,
+				ngettext ("Fetching summary information for %d message in %s",
+					  "Fetching summary information for %d messages in %s", data->fetch_msg_limit),
 				data->fetch_msg_limit, camel_folder_get_full_name (folder));		
 
 			ic = camel_imapx_command_new (is, "FETCH", job->folder,
