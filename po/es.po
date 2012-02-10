@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-02-07 11:57+0000\n"
-"PO-Revision-Date: 2012-02-07 17:23+0100\n"
+"POT-Creation-Date: 2012-02-09 16:37+0000\n"
+"PO-Revision-Date: 2012-02-10 14:55+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1788,81 +1788,81 @@ msgstr "Para completar esta operación debe estar trabajando conectado a la red"
 msgid "Canceled"
 msgstr "Cancelado"
 
-#: ../camel/camel-filter-driver.c:883 ../camel/camel-filter-search.c:695
+#: ../camel/camel-filter-driver.c:888 ../camel/camel-filter-search.c:762
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Error al crear proceso hijo «%s»: %s"
 
-#: ../camel/camel-filter-driver.c:931
+#: ../camel/camel-filter-driver.c:936
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Flujo de mensaje inválido recibido desde %s: %s"
 
-#: ../camel/camel-filter-driver.c:1136 ../camel/camel-filter-driver.c:1145
+#: ../camel/camel-filter-driver.c:1141 ../camel/camel-filter-driver.c:1150
 msgid "Syncing folders"
 msgstr "Sincronizando carpetas"
 
-#: ../camel/camel-filter-driver.c:1240 ../camel/camel-filter-driver.c:1697
+#: ../camel/camel-filter-driver.c:1245 ../camel/camel-filter-driver.c:1702
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Error analizando filtro: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1251 ../camel/camel-filter-driver.c:1708
+#: ../camel/camel-filter-driver.c:1256 ../camel/camel-filter-driver.c:1713
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Error ejecutando filtro: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1349
+#: ../camel/camel-filter-driver.c:1354
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "No se pudo abrir la carpeta «spool»"
 
-#: ../camel/camel-filter-driver.c:1360
+#: ../camel/camel-filter-driver.c:1365
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "No se pudo procesar la carpeta temporal"
 
-#: ../camel/camel-filter-driver.c:1378
+#: ../camel/camel-filter-driver.c:1383
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Obteniendo mensaje %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1385 ../camel/camel-filter-driver.c:1407
+#: ../camel/camel-filter-driver.c:1390 ../camel/camel-filter-driver.c:1412
 #, c-format
 msgid "Failed on message %d"
 msgstr "Falló en el mensaje %d"
 
-#: ../camel/camel-filter-driver.c:1422 ../camel/camel-filter-driver.c:1529
+#: ../camel/camel-filter-driver.c:1427 ../camel/camel-filter-driver.c:1534
 msgid "Syncing folder"
 msgstr "Sincronizando carpeta"
 
-#: ../camel/camel-filter-driver.c:1427 ../camel/camel-filter-driver.c:1535
+#: ../camel/camel-filter-driver.c:1432 ../camel/camel-filter-driver.c:1540
 msgid "Complete"
 msgstr "Completo"
 
-#: ../camel/camel-filter-driver.c:1487
+#: ../camel/camel-filter-driver.c:1492
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Obteniendo mensaje %d de %d"
 
-#: ../camel/camel-filter-driver.c:1505
+#: ../camel/camel-filter-driver.c:1510
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Falló en el mensaje %d de %d"
 
-#: ../camel/camel-filter-search.c:136
+#: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
 msgstr "Falló al obtener el mensaje"
 
-#: ../camel/camel-filter-search.c:445
+#: ../camel/camel-filter-search.c:512
 msgid "Invalid arguments to (system-flag)"
 msgstr "Argumentos inválidos a (system-flag)"
 
-#: ../camel/camel-filter-search.c:463
+#: ../camel/camel-filter-search.c:530
 msgid "Invalid arguments to (user-tag)"
 msgstr "Argumentos inválidos a (user-tag)"
 
-#: ../camel/camel-filter-search.c:872 ../camel/camel-filter-search.c:881
+#: ../camel/camel-filter-search.c:939 ../camel/camel-filter-search.c:948
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Error ejecutando la búsqueda del filtro: %s: %s"
@@ -1913,7 +1913,7 @@ msgid "Retrieving quota information for '%s'"
 msgstr "Obteniendo la información de la cuota «%s»"
 
 #: ../camel/camel-folder-search.c:362 ../camel/camel-folder-search.c:476
-#: ../camel/camel-folder-search.c:651
+#: ../camel/camel-folder-search.c:661
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1923,7 +1923,7 @@ msgstr ""
 "%s"
 
 #: ../camel/camel-folder-search.c:374 ../camel/camel-folder-search.c:488
-#: ../camel/camel-folder-search.c:663
+#: ../camel/camel-folder-search.c:673
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1933,31 +1933,31 @@ msgstr ""
 "%s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:877 ../camel/camel-folder-search.c:920
+#: ../camel/camel-folder-search.c:887 ../camel/camel-folder-search.c:930
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) requiere un único resultado booleano"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:981
+#: ../camel/camel-folder-search.c:991
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) no se permite dentro de (%s)"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:988 ../camel/camel-folder-search.c:996
+#: ../camel/camel-folder-search.c:998 ../camel/camel-folder-search.c:1006
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) requiere una cadena de coincidencia"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1024
+#: ../camel/camel-folder-search.c:1034
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) espera un resultado «array»"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1034
+#: ../camel/camel-folder-search.c:1044
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) requiere que se establezca una carpeta"
@@ -3078,7 +3078,6 @@ msgstr "Comprobar siempre si hay correo nuevo en esta carpeta"
 #: ../camel/providers/imap/camel-imap-folder.c:355
 #: ../camel/providers/imapx/camel-imapx-folder.c:747
 #: ../camel/providers/nntp/camel-nntp-folder.c:756
-#| msgid "Cannot copy messages to the Trash folder"
 msgid "Apply message filters to this folder"
 msgstr "Aplicar filtros de mensajes a esta carpeta"
 
@@ -3103,13 +3102,13 @@ msgid "Unable to retrieve message: "
 msgstr "No se pudo obtener el mensaje: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3510
-#: ../camel/providers/imapx/camel-imapx-server.c:5508
+#: ../camel/providers/imapx/camel-imapx-server.c:5512
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "No se puede obtener el mensaje con ID de mensaje %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3511
-#: ../camel/providers/imapx/camel-imapx-server.c:5509
+#: ../camel/providers/imapx/camel-imapx-server.c:5513
 msgid "No such message available."
 msgstr "Dicho mensaje no está disponible."
 
@@ -3228,7 +3227,6 @@ msgstr "Opciones"
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imapx/camel-imapx-provider.c:74
 #: ../camel/providers/nntp/camel-nntp-provider.c:43
-#| msgid "_Apply filters to new messages in INBOX"
 msgid "Apply _filters to new messages in all folders"
 msgstr "_Aplicar filtros a los mensajes nuevos en todas las carpetas"
 
@@ -3484,51 +3482,54 @@ msgstr "Error al obtener mensajes nuevos"
 msgid "Error while fetching messages"
 msgstr "Error al obtener los mensajes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4183
-#: ../camel/providers/imapx/camel-imapx-server.c:4211
+#: ../camel/providers/imapx/camel-imapx-server.c:4184
+#: ../camel/providers/imapx/camel-imapx-server.c:4214
 #, c-format
-msgid "Fetching summary information for %d messages in %s"
-msgstr "Obteniendo recopilación de información sobre %d mensajes nuevos en %s"
+#| msgid "Fetching summary information for %d messages in %s"
+msgid "Fetching summary information for %d message in %s"
+msgid_plural "Fetching summary information for %d messages in %s"
+msgstr[0] "Obteniendo recopilación de información sobre %d mensaje en %s"
+msgstr[1] "Obteniendo recopilación de información sobre %d mensajes en %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4331
-#: ../camel/providers/imapx/camel-imapx-server.c:4366
+#: ../camel/providers/imapx/camel-imapx-server.c:4335
+#: ../camel/providers/imapx/camel-imapx-server.c:4370
 msgid "Error refreshing folder"
 msgstr "Error al actualizar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4454
+#: ../camel/providers/imapx/camel-imapx-server.c:4458
 msgid "Error expunging message"
 msgstr "Error al compactar el mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4539
+#: ../camel/providers/imapx/camel-imapx-server.c:4543
 msgid "Error fetching folders"
 msgstr "Error al obtener las carpetas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4613
+#: ../camel/providers/imapx/camel-imapx-server.c:4617
 msgid "Error subscribing to folder"
 msgstr "Error al suscribirse a las carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4666
+#: ../camel/providers/imapx/camel-imapx-server.c:4670
 msgid "Error creating folder"
 msgstr "Error al crear la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4711
+#: ../camel/providers/imapx/camel-imapx-server.c:4715
 msgid "Error deleting folder"
 msgstr "Error al eliminar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4761
+#: ../camel/providers/imapx/camel-imapx-server.c:4765
 msgid "Error renaming folder"
 msgstr "Error al renombrar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4812
+#: ../camel/providers/imapx/camel-imapx-server.c:4816
 msgid "Error performing NOOP"
 msgstr "Error realizar la no operación"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4907
+#: ../camel/providers/imapx/camel-imapx-server.c:4911
 msgid "Error syncing changes"
 msgstr "Error al sincronizar los cambios"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5663
-#: ../camel/providers/imapx/camel-imapx-server.c:5678
+#: ../camel/providers/imapx/camel-imapx-server.c:5667
+#: ../camel/providers/imapx/camel-imapx-server.c:5682
 msgid "Cannot create spool file: "
 msgstr "No se puede crear el archivo de cola de correo: "
 
