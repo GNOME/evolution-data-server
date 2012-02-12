@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product"
 "=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-02-07 11:57+0000\n"
-"PO-Revision-Date: 2012-02-11 10:36+0200\n"
+"POT-Creation-Date: 2012-02-11 09:51+0000\n"
+"PO-Revision-Date: 2012-02-12 16:39+0200\n"
 "Last-Translator: Miroslav Nikolić <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian <gnom@prevod.org>\n"
 "Language: sr\n"
@@ -39,19 +39,16 @@ msgstr "Nepoznata greška"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:150
 #, c-format
-#| msgid "Failed to create pipe to '%s': %s"
 msgid "Failed to remove file '%s': %s"
 msgstr "Nisam uspeo da uklonim datoteku „%s“: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:173
 #, c-format
-#| msgid "Could not create directory %s: %s"
 msgid "Failed to make directory %s: %s"
 msgstr "Nisam uspeo da napravim direktorijum „%s“: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:468
 #, c-format
-#| msgid "Failed to create child process '%s': %s"
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "Nisam uspeo da napravim čvrstu vezu za izvor „%s“: %s"
 
@@ -119,7 +116,6 @@ msgstr "Stvaram novi kontakt..."
 #: ../addressbook/backends/google/e-book-backend-google.c:1476
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:323
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:431
-#| msgid "Calendar doesn't support Free/Busy"
 msgid "The backend does not support bulk removals"
 msgstr "Pozadinac ne podržava grupno uklanjanje"
 
@@ -131,7 +127,6 @@ msgstr "Brišem kontakt..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2292
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:371
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:485
-#| msgid "Key usage does not support certificate signing"
 msgid "The backend does not support bulk modifications"
 msgstr "Pozadinac ne podržava grupno uređivanje"
 
@@ -859,7 +854,6 @@ msgstr "Nedovoljno memorije"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1095
 #, c-format
-#| msgid "Contact not found"
 msgid "Contact '%s' not found"
 msgstr "Kontakt „%s“ nije pronađen"
 
@@ -1003,7 +997,6 @@ msgstr "Ne mogu da dodam kontakt: "
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:651
 #: ../addressbook/libedata-book/e-data-book.c:1075
-#| msgid "Cannot modify contact: "
 msgid "Cannot modify contacts: "
 msgstr "Ne mogu da izmenim kontakte: "
 
@@ -1516,7 +1509,6 @@ msgstr "„%s“ očekuje da drugi argument bude ceo broj"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:395
 #, c-format
-#| msgid "\"%s\" expects two arguments"
 msgid "\"%s\" expects two or three arguments"
 msgstr "„%s“ očekuje dva ili tri argumenta"
 
@@ -1530,13 +1522,11 @@ msgstr "„%s“ očekuje da drugi argument bude time_t"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:418
 #, c-format
-#| msgid "\"%s\" expects the first argument to be a string"
 msgid "\"%s\" expects the third argument to be a string"
 msgstr "„%s“ očekuje da treći argument bude niska"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:478
 #, c-format
-#| msgid "\"%s\" expects two arguments"
 msgid "\"%s\" expects none or two arguments"
 msgstr "„%s“ očekuje nijedan ili dva argumenta"
 
@@ -1788,81 +1778,81 @@ msgstr "Morate da budete na mreži da bi završili ovu operaciju"
 msgid "Canceled"
 msgstr "Otkazano"
 
-#: ../camel/camel-filter-driver.c:883 ../camel/camel-filter-search.c:695
+#: ../camel/camel-filter-driver.c:888 ../camel/camel-filter-search.c:762
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Nisam uspeo da napravim sadržani proces „%s“: %s"
 
-#: ../camel/camel-filter-driver.c:931
+#: ../camel/camel-filter-driver.c:936
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Neispravan niz poruka primljen od „%s“: %s"
 
-#: ../camel/camel-filter-driver.c:1136 ../camel/camel-filter-driver.c:1145
+#: ../camel/camel-filter-driver.c:1141 ../camel/camel-filter-driver.c:1150
 msgid "Syncing folders"
 msgstr "Usklađujem fascikle"
 
-#: ../camel/camel-filter-driver.c:1240 ../camel/camel-filter-driver.c:1697
+#: ../camel/camel-filter-driver.c:1245 ../camel/camel-filter-driver.c:1702
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Greška prilikom čitanja filtera: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1251 ../camel/camel-filter-driver.c:1708
+#: ../camel/camel-filter-driver.c:1256 ../camel/camel-filter-driver.c:1713
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Greška prilikom primene filtera: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1349
+#: ../camel/camel-filter-driver.c:1354
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Ne mogu da otvorim fasciklu pripreme"
 
-#: ../camel/camel-filter-driver.c:1360
+#: ../camel/camel-filter-driver.c:1365
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Ne mogu da obradim fasciklu pripreme"
 
-#: ../camel/camel-filter-driver.c:1378
+#: ../camel/camel-filter-driver.c:1383
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Primam poruku %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1385 ../camel/camel-filter-driver.c:1407
+#: ../camel/camel-filter-driver.c:1390 ../camel/camel-filter-driver.c:1412
 #, c-format
 msgid "Failed on message %d"
 msgstr "Greška kod poruke %d"
 
-#: ../camel/camel-filter-driver.c:1422 ../camel/camel-filter-driver.c:1529
+#: ../camel/camel-filter-driver.c:1427 ../camel/camel-filter-driver.c:1534
 msgid "Syncing folder"
 msgstr "Usklađujem fasciklu"
 
-#: ../camel/camel-filter-driver.c:1427 ../camel/camel-filter-driver.c:1535
+#: ../camel/camel-filter-driver.c:1432 ../camel/camel-filter-driver.c:1540
 msgid "Complete"
 msgstr "Završeno"
 
-#: ../camel/camel-filter-driver.c:1487
+#: ../camel/camel-filter-driver.c:1492
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Primam poruku %d od %d"
 
-#: ../camel/camel-filter-driver.c:1505
+#: ../camel/camel-filter-driver.c:1510
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Greška kod poruke %d od %d"
 
-#: ../camel/camel-filter-search.c:136
+#: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
 msgstr "Nisam uspeo da dovučem poruku"
 
-#: ../camel/camel-filter-search.c:445
+#: ../camel/camel-filter-search.c:512
 msgid "Invalid arguments to (system-flag)"
 msgstr "Neispravni argumenti za (sistemska-oznaka)"
 
-#: ../camel/camel-filter-search.c:463
+#: ../camel/camel-filter-search.c:530
 msgid "Invalid arguments to (user-tag)"
 msgstr "Neispravni argumenti za (korisnička-oznaka)"
 
-#: ../camel/camel-filter-search.c:872 ../camel/camel-filter-search.c:881
+#: ../camel/camel-filter-search.c:939 ../camel/camel-filter-search.c:948
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Greška u primeni filtera za pretragu: %s: %s"
@@ -1919,7 +1909,7 @@ msgid "Retrieving quota information for '%s'"
 msgstr "Dovlačim obaveštenje o količini za „%s“"
 
 #: ../camel/camel-folder-search.c:362 ../camel/camel-folder-search.c:476
-#: ../camel/camel-folder-search.c:651
+#: ../camel/camel-folder-search.c:661
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1929,7 +1919,7 @@ msgstr ""
 "%s"
 
 #: ../camel/camel-folder-search.c:374 ../camel/camel-folder-search.c:488
-#: ../camel/camel-folder-search.c:663
+#: ../camel/camel-folder-search.c:673
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1939,31 +1929,31 @@ msgstr ""
 "%s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:877 ../camel/camel-folder-search.c:920
+#: ../camel/camel-folder-search.c:887 ../camel/camel-folder-search.c:930
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) zahteva samo jedan logički rezultat"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:981
+#: ../camel/camel-folder-search.c:991
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) nije dozvoljeno unutar %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:988 ../camel/camel-folder-search.c:996
+#: ../camel/camel-folder-search.c:998 ../camel/camel-folder-search.c:1006
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) zahteva nisku sa tipom poklapanja"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1024
+#: ../camel/camel-folder-search.c:1034
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) očekuje niz kao rezultat"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1034
+#: ../camel/camel-folder-search.c:1044
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) zahteva skup fascikli"
@@ -2528,13 +2518,11 @@ msgstr "Neispravna Gvrsta registrovana za protokol „%s“"
 #: ../camel/providers/pop3/camel-pop3-store.c:569
 #: ../camel/providers/smtp/camel-smtp-transport.c:455
 #, c-format
-#| msgid "No support for authentication type %s"
 msgid "No support for %s authentication"
 msgstr "Nema podrške za „%s“ potvrđivanja identiteta"
 
 #: ../camel/camel-session.c:477
 #, c-format
-#| msgid "Authentication failed"
 msgid "%s authentication failed"
 msgstr "Nije uspelo %s potvrđivanje identiteta"
 
@@ -2884,11 +2872,6 @@ msgstr "Neispravan odgovor servera posrednika"
 
 #: ../camel/camel-tcp-stream-ssl.c:470
 #, c-format
-#| msgid ""
-#| "Issuer:            %s\n"
-#| "Subject:           %s\n"
-#| "Fingerprint:       %s\n"
-#| "Signature:         %s"
 msgid ""
 "   Issuer:       %s\n"
 "   Subject:      %s\n"
@@ -2977,7 +2960,6 @@ msgstr "Ne mogu da analiziram adresu „%s“"
 
 #: ../camel/camel-vee-folder.c:647
 #, c-format
-#| msgid "Storing folder"
 msgid "Updating %s folder"
 msgstr "Ažuriram „%s“ fasciklu"
 
@@ -3039,9 +3021,6 @@ msgstr "Veza sa serverom je neočekivano isključena: %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:416
 #, c-format
-#| msgid ""
-#| "Alert from IMAP server %s@%s:\n"
-#| "%s"
 msgid ""
 "Alert from IMAP server %s@%s in folder %s:\n"
 "%s"
@@ -3090,7 +3069,6 @@ msgstr "Uvek proveri nove poruke u ovoj fascikli"
 #: ../camel/providers/imap/camel-imap-folder.c:355
 #: ../camel/providers/imapx/camel-imapx-folder.c:747
 #: ../camel/providers/nntp/camel-nntp-folder.c:756
-#| msgid "Cannot copy messages to the Trash folder"
 msgid "Apply message filters to this folder"
 msgstr "Primeni filtere poruke nad ovom fasciklom"
 
@@ -3115,13 +3093,13 @@ msgid "Unable to retrieve message: "
 msgstr "Ne mogu da dovučem poruku: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3510
-#: ../camel/providers/imapx/camel-imapx-server.c:5508
+#: ../camel/providers/imapx/camel-imapx-server.c:5512
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Ne mogu da nabavim poruku sa IB „%s“: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3511
-#: ../camel/providers/imapx/camel-imapx-server.c:5509
+#: ../camel/providers/imapx/camel-imapx-server.c:5513
 msgid "No such message available."
 msgstr "Nema takve poruke."
 
@@ -3236,7 +3214,6 @@ msgstr "Opcije"
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imapx/camel-imapx-provider.c:74
 #: ../camel/providers/nntp/camel-nntp-provider.c:43
-#| msgid "_Apply filters to new messages in INBOX"
 msgid "Apply _filters to new messages in all folders"
 msgstr "Primeni filtere na nove poruke u svim _fasciklama"
 
@@ -3327,7 +3304,6 @@ msgstr "Nisam uspeo da se povežem na IMAP server „%s“ u bezbednom režimu: 
 #: ../camel/providers/imap/camel-imap-store.c:734
 #: ../camel/providers/imapx/camel-imapx-server.c:2936
 #, c-format
-#| msgid "IMAP server %s does not support requested authentication type %s"
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP server „%s“ ne podržava „%s“ prijavljivanje identiteta"
 
@@ -3346,7 +3322,6 @@ msgstr "IMAP servis za „%s“ na „%s"
 #: ../camel/providers/imap/camel-imap-store.c:1111
 #: ../camel/providers/imapx/camel-imapx-server.c:2966
 #: ../camel/providers/nntp/camel-nntp-store.c:505
-#| msgid "Cannot authenticate to server: %s"
 msgid "Cannot authenticate without a username"
 msgstr "Ne mogu da potvrdim identitet bez korisničkog imena"
 
@@ -3355,7 +3330,6 @@ msgstr "Ne mogu da potvrdim identitet bez korisničkog imena"
 #: ../camel/providers/nntp/camel-nntp-store.c:514
 #: ../camel/providers/pop3/camel-pop3-store.c:494
 #: ../camel/providers/pop3/camel-pop3-store.c:514
-#| msgid "Authentication Failed"
 msgid "Authentication password not available"
 msgstr "Lozinka potvrđivanja identiteta nije dostupna"
 
@@ -3443,7 +3417,6 @@ msgid "IMAP+"
 msgstr "IMAP+"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:816
-#| msgid "Server unexpectedly disconnected"
 msgid "Server disconnected"
 msgstr "Veza sa serverom je isključena"
 
@@ -3457,12 +3430,10 @@ msgid "Not authenticated"
 msgstr "Nepotvrđenog identiteta"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:2004
-#| msgid "Error performing search"
 msgid "Error performing IDLE"
 msgstr "Greška prilikom izvršavanja IDLE-a"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3161
-#| msgid "Encrypting message"
 msgid "Error fetching message"
 msgstr "Greška prilikom preuzimanja poruke"
 
@@ -3471,12 +3442,10 @@ msgid "Closing tmp stream failed: "
 msgstr "Zatvaranje privremenog toka nije uspelo:"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3328
-#| msgid "Copying messages"
 msgid "Error copying messages"
 msgstr "Greška prilikom umnožavanja poruka"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3458
-#| msgid "Sending message"
 msgid "Error appending message"
 msgstr "Greška prilikom prikačinjanja poruka"
 
@@ -3485,83 +3454,72 @@ msgid "Error fetching message headers"
 msgstr "Greška prilikom preuzimanja zaglavlja poruke"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3779
-#| msgid ""
-#| "Error retrieving newsgroups:\n"
-#| "\n"
-#| "%s"
 msgid "Error retrieving message"
 msgstr "Greška prilikom dovlačenja poruke"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3983
-#| msgid "Checking for new messages"
 msgid "Error fetching new messages"
 msgstr "Greška prilikom preuzimanja novih poruka"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4177
-#| msgid "Verifying message"
 msgid "Error while fetching messages"
 msgstr "Greška za vreme preuzimanja poruka"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4183
-#: ../camel/providers/imapx/camel-imapx-server.c:4211
+#: ../camel/providers/imapx/camel-imapx-server.c:4184
+#: ../camel/providers/imapx/camel-imapx-server.c:4214
 #, c-format
-#| msgid "Fetching summary information for new messages in %s"
-msgid "Fetching summary information for %d messages in %s"
-msgstr "Prikupljam pregled podataka za %d poruke u „%s“"
+#| msgid "Fetching summary information for %d messages in %s"
+msgid "Fetching summary information for %d message in %s"
+msgid_plural "Fetching summary information for %d messages in %s"
+msgstr[0] "Prikupljam pregled podataka za %d poruku u „%s“"
+msgstr[1] "Prikupljam pregled podataka za %d poruke u „%s“"
+msgstr[2] "Prikupljam pregled podataka za %d poruka u „%s“"
+msgstr[3] "Prikupljam pregled podataka za %d u „%s“"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4331
-#: ../camel/providers/imapx/camel-imapx-server.c:4366
-#| msgid "Error performing search"
+#: ../camel/providers/imapx/camel-imapx-server.c:4335
+#: ../camel/providers/imapx/camel-imapx-server.c:4370
 msgid "Error refreshing folder"
 msgstr "Greška tokom pretrage"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4454
-#| msgid "Expunging old messages"
+#: ../camel/providers/imapx/camel-imapx-server.c:4458
 msgid "Error expunging message"
 msgstr "Greška prilikom izbacivanja poruke"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4539
-#| msgid "Creating folder '%s'"
+#: ../camel/providers/imapx/camel-imapx-server.c:4543
 msgid "Error fetching folders"
 msgstr "Greška prilikom preuzimanja fascikle"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4613
-#| msgid "_Show only subscribed folders"
+#: ../camel/providers/imapx/camel-imapx-server.c:4617
 msgid "Error subscribing to folder"
 msgstr "Greška prilikom prijavljivanja na fasciklu"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4666
-#| msgid "Storing folder"
+#: ../camel/providers/imapx/camel-imapx-server.c:4670
 msgid "Error creating folder"
 msgstr "Greška prilikom stvaranja fascikle"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4711
-#| msgid "Storing folder"
+#: ../camel/providers/imapx/camel-imapx-server.c:4715
 msgid "Error deleting folder"
 msgstr "Greška prilikom brisanja fascikle"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4761
-#| msgid "Storing folder"
+#: ../camel/providers/imapx/camel-imapx-server.c:4765
 msgid "Error renaming folder"
 msgstr "Greška prilikom preimenovanja fascikle"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4812
-#| msgid "Error performing search"
+#: ../camel/providers/imapx/camel-imapx-server.c:4816
 msgid "Error performing NOOP"
 msgstr "Greška prilikom obavljanja NOOP-a"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4907
+#: ../camel/providers/imapx/camel-imapx-server.c:4911
 msgid "Error syncing changes"
 msgstr "Greška prilikom usklađivanja izmena"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5663
-#: ../camel/providers/imapx/camel-imapx-server.c:5678
+#: ../camel/providers/imapx/camel-imapx-server.c:5667
+#: ../camel/providers/imapx/camel-imapx-server.c:5682
 msgid "Cannot create spool file: "
 msgstr "Ne mogu da napravim datoteku pripreme: "
 
 #: ../camel/providers/imapx/camel-imapx-store.c:1076
 #, c-format
-#| msgid "Retrieving quota information for '%s'"
 msgid "Retrieving folder list for %s"
 msgstr "Dovlačim spisak fascikle za „%s“"
 
@@ -3757,7 +3715,6 @@ msgstr "Ne mogu da prebacim poruku u odredišnu fasciklu: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
 #, c-format
-#| msgid "Cannot create folder: %s : Folder name cannot contain a dot"
 msgid "Cannot create folder: %s: Folder name cannot contain a dot"
 msgstr ""
 "Ne mogu da napravim fasciklu „%s“: Naziv fascikle ne može da sadrži tačku"
@@ -4054,7 +4011,6 @@ msgid "Spool folder tree %s"
 msgstr "Stablo fascikle za pripremu „%s“"
 
 #: ../camel/providers/local/camel-spool-store.c:423
-#| msgid "Invalid source"
 msgid "Invalid spool"
 msgstr "Neispravna priprema"
 
@@ -4590,7 +4546,6 @@ msgstr "SMTP dostava pošte preko „%s“"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:367
 #, c-format
-#| msgid "SMTP server %s does not support requested authentication type %s."
 msgid "SMTP server %s does not support %s authentication"
 msgstr "SMTP server „%s“ ne podržava „%s“ potvrđivanje identiteta"
 
