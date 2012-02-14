@@ -141,7 +141,7 @@ session_finish_job_cb (CamelSession *session,
 	JobData *job_data;
 	GError *error = NULL;
 
-	g_warn_if_fail (g_simple_async_result_propagate_error (simple, &error));
+	g_simple_async_result_propagate_error (simple, &error);
 	job_data = g_simple_async_result_get_op_res_gpointer (simple);
 
 	g_signal_emit (
