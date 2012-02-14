@@ -4365,7 +4365,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 		}
 		else {
 			if (bl->priv->ldap_search_filter && *bl->priv->ldap_search_filter
-				&& g_ascii_strncasecmp(bl->priv->ldap_search_filter,"(objectClass=*)",sizeof(bl->priv->ldap_search_filter))) {
+				&& g_ascii_strcasecmp (bl->priv->ldap_search_filter, "(objectClass=*)") != 0) {
 				strings = g_new0 (gchar *, 5);
 				strings[0] = g_strdup ("(&");
 				strings[1] = g_strdup_printf ("%s", bl->priv->ldap_search_filter);
@@ -4646,9 +4646,12 @@ poll_ldap (EBookBackendLDAP *bl)
 	if (rc != 0) {/* rc == 0 means timeout exceeded */
 		if (rc == -1) {
 			EDataBookView *book_view = find_book_view (bl);
-			g_warning ("ldap_result returned -1, restarting ops");
+			g_warning ("%s: ldap_result returned -1, restarting ops", G_STRFUNC);
 
-			e_book_backend_ldap_reconnect (bl, book_view, LDAP_SERVER_DOWN);
+			if (!e_book_backend_ldap_reconnect (bl, book_view, LDAP_SERVER_DOWN)) {
+				g_warning ("%s: Failed to reconnect to LDAP server", G_STRFUNC);
+				return FALSE;
+			}
 #if 0
 			if (bl->priv->connected)
 				restart_ops (bl);
@@ -4852,9 +4855,9 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
-		view_limit = -1;
-		if (view_limit == -1 || view_limit > bl->priv->ldap_limit)
-			view_limit = bl->priv->ldap_limit;
+		view_limit = bl->priv->ldap_limit;
+		/* if (view_limit == -1 || view_limit > bl->priv->ldap_limit)
+			view_limit = bl->priv->ldap_limit; */
 
 		if (enable_debug)
 			printf ("searching server using filter: %s (expecting max %d results)\n", ldap_query, view_limit);

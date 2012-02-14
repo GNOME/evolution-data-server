@@ -288,12 +288,12 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 
 		filename = g_build_filename (
 			g_get_home_dir (), ".camel_certs", fingerprint, NULL);
-		g_file_get_contents (filename, &contents, &length, &error);
-		if (error != NULL) {
+		if (!g_file_get_contents (filename, &contents, &length, &error) ||
+		    error != NULL) {
 			g_warning (
 				"Could not load cert %s: %s",
-				filename, error->message);
-			g_error_free (error);
+				filename, error ? error->message : "Unknown error");
+			g_clear_error (&error);
 
 			camel_cert_set_trust (
 				certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);

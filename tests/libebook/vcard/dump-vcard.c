@@ -20,6 +20,10 @@ main (gint argc,
 	g_type_init_with_debug_flags (G_TYPE_DEBUG_OBJECTS);
 
 	fp = fopen (argv[1], "r");
+	if (fp == NULL) {
+		g_warning ("Faile to open vCard file '%s'", argv[1]);
+		return 1;
+	}
 
 	while (!feof (fp)) {
 		gchar buf[1024];

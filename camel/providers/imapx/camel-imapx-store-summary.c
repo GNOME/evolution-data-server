@@ -666,5 +666,5 @@ camel_imapx_store_summary_set_namespaces (CamelIMAPXStoreSummary *summary,
 {
 	if (summary->namespaces)
 		camel_imapx_namespace_list_clear (summary->namespaces);
-	summary->namespaces = camel_imapx_namespace_list_copy (summary->namespaces);
+	summary->namespaces = camel_imapx_namespace_list_copy (nsl);
 }

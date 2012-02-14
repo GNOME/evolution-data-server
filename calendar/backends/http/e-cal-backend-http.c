@@ -1181,8 +1181,6 @@ create_user_free_busy (ECalBackendHttp *cbhttp,
 
 	if (!obj_sexp)
 		return vfb;
-	if (!obj_sexp)
-		return vfb;
 
 	slist = e_cal_backend_store_get_components (store);
 

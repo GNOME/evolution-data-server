@@ -317,7 +317,7 @@ camel_object_bag_reserve (CamelObjectBag *bag,
 	/* If no such key exists in the bag, create a reservation. */
 	reservation = key_reservation_lookup (bag, key);
 	if (reservation == NULL) {
-		reservation = key_reservation_new (bag, key);
+		key_reservation_new (bag, key);
 		g_mutex_unlock (bag->mutex);
 		return NULL;
 	}

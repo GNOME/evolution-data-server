@@ -1406,7 +1406,7 @@ e_vcard_attribute_get_type (void)
  * e_vcard_remove_attributes:
  * @evc: vcard object
  * @attr_group: (allow-none): group name of attributes to be removed
- * @attr_name: (allow-none): name of the arributes to be removed
+ * @attr_name: name of the arributes to be removed
  *
  * Removes all the attributes with group name and attribute name equal to
  * passed in values. If @attr_group is %NULL or an empty string,
@@ -1432,7 +1432,7 @@ e_vcard_remove_attributes (EVCard *evc,
 
 		if (((!attr_group || *attr_group == '\0') ||
 		     (attr_group && !g_ascii_strcasecmp (attr_group, a->group))) &&
-		    ((!attr_name && !a->name) || !g_ascii_strcasecmp (attr_name, a->name))) {
+		    ((!a->name) || !g_ascii_strcasecmp (attr_name, a->name))) {
 
 			/* matches, remove/delete the attribute */
 			evc->priv->attributes = g_list_delete_link (evc->priv->attributes, attr);

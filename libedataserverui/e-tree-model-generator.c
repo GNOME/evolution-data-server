@@ -329,6 +329,8 @@ child_offset_to_generated_offset (GArray *group,
 	gint accum_offset = 0;
 	gint i;
 
+	g_return_val_if_fail (group != NULL, -1);
+
 	for (i = 0; i < group->len && i < offset; i++) {
 		Node *node = &g_array_index (group, Node, i);
 
@@ -894,6 +896,8 @@ e_tree_model_generator_convert_child_iter_to_iter (ETreeModelGenerator *tree_mod
 		}
 	}
 
+	g_return_if_fail (group != NULL);
+
 	index = child_offset_to_generated_offset (group, index);
 	ITER_SET (tree_model_generator, generator_iter, group, index);
 	gtk_tree_path_free (path);
@@ -1095,10 +1099,10 @@ e_tree_model_generator_get_path (GtkTreeModel *tree_model,
 
 		group = node->parent_group;
 		index = node->parent_index;
-		generated_index = child_offset_to_generated_offset (group, index);
-
-		if (group)
+		if (group) {
+			generated_index = child_offset_to_generated_offset (group, index);
 			gtk_tree_path_prepend_index (path, generated_index);
+		}
 	}
 
 	return path;
@@ -1190,7 +1194,7 @@ e_tree_model_generator_iter_has_child (GtkTreeModel *tree_model,
 
 	ITER_GET (iter, &group, &index);
 	index = generated_offset_to_child_offset (group, index, NULL);
-	if (!index < 0)
+	if (index < 0)
 		return FALSE;
 
 	node = &g_array_index (group, Node, index);

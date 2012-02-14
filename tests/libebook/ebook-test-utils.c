@@ -142,10 +142,10 @@ add_contact_cb (EBook *book,
 
         test_print ("successfully asynchronously added the contact "
                         "addressbook\n");
-	if (closure) {
+	if (closure->cb)
 		(*closure->cb) (closure);
-		g_free (closure);
-	}
+
+	g_free (closure);
 }
 
 void
@@ -197,10 +197,10 @@ commit_contact_cb (EBook *book,
 
         test_print ("successfully asynchronously committed the contact to the "
                         "addressbook\n");
-	if (closure) {
+	if (closure->cb)
 		(*closure->cb) (closure);
-		g_free (closure);
-	}
+
+	g_free (closure);
 }
 
 void
@@ -258,10 +258,10 @@ get_contact_cb (EBook *book,
         test_print ("successfully asynchronously retrieved the contact '%s'\n",
 			uid);
 
-	if (closure) {
+	if (closure->cb)
 		(*closure->cb) (closure);
-		g_free (closure);
-	}
+
+	g_free (closure);
 }
 
 void
@@ -317,10 +317,10 @@ get_required_fields_cb (EBook *book,
 
         test_print ("successfully asynchronously retrieved the required fields\n");
 
-	if (closure) {
+	if (closure->cb)
 		(*closure->cb) (closure);
-		g_free (closure);
-	}
+
+	g_free (closure);
 }
 
 void
@@ -394,10 +394,9 @@ get_supported_auth_methods_cb (EBook *book,
         test_print ("successfully asynchronously retrieved the supported auth "
                         "methods\n");
 
-	if (closure) {
+	if (closure->cb)
 		(*closure->cb) (closure);
-		g_free (closure);
-	}
+	g_free (closure);
 }
 
 void
@@ -452,10 +451,9 @@ get_supported_fields_cb (EBook *book,
 
         test_print ("successfully asynchronously retrieved the supported fields\n");
 
-	if (closure) {
+	if (closure->cb)
 		(*closure->cb) (closure);
-		g_free (closure);
-	}
+	g_free (closure);
 }
 
 void
@@ -505,10 +503,10 @@ remove_contact_cb (EBook *book,
 
         test_print ("successfully asynchronously removed the contact\n");
 
-	if (closure) {
+	if (closure->cb)
 		(*closure->cb) (closure);
-		g_free (closure);
-	}
+
+	g_free (closure);
 }
 
 void
@@ -543,10 +541,10 @@ remove_contact_by_id_cb (EBook *book,
 
         test_print ("successfully asynchronously removed the contact by id\n");
 
-	if (closure) {
+	if (closure->cb)
 		(*closure->cb) (closure);
-		g_free (closure);
-	}
+
+	g_free (closure);
 }
 
 void
@@ -597,10 +595,10 @@ remove_contacts_cb (EBook *book,
 
         test_print ("successfully asynchronously removed the contacts\n");
 
-	if (closure) {
+	if (closure->cb)
 		(*closure->cb) (closure);
-		g_free (closure);
-	}
+
+	g_free (closure);
 }
 
 void
@@ -710,7 +708,7 @@ remove_cb (EBook *book,
 
         test_print ("successfully asynchronously removed the temporary "
                         "addressbook\n");
-	if (closure)
+	if (closure->cb)
 		(*closure->cb) (closure);
 }
 
@@ -763,7 +761,7 @@ get_book_view_cb (EBook *book,
 	closure->view = view;
 
         test_print ("successfully asynchronously retrieved the book view\n");
-	if (closure)
+	if (closure->cb)
 		(*closure->cb) (closure);
 }
 

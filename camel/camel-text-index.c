@@ -661,7 +661,7 @@ text_index_add_name (CamelIndex *idx,
 	CAMEL_TEXT_INDEX_LOCK (idx, lock);
 
 	/* if we're adding words, up the cache limits a lot */
-	if (p->blocks) {
+	if (p->word_cache_limit < 8192) {
 		p->blocks->block_cache_limit = 1024;
 		p->word_cache_limit = 8192;
 	}

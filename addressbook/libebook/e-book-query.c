@@ -118,7 +118,6 @@ conjoinv (EBookQueryType type,
 		g_ptr_array_add (qs, q);
 		q = va_arg (ap, EBookQuery *);
 	}
-	va_end (ap);
 
 	ret->type = type;
 	ret->query.andor.nqs = qs->len;
@@ -140,10 +139,14 @@ conjoinv (EBookQueryType type,
 EBookQuery *
 e_book_query_andv (EBookQuery *q, ...)
 {
+	EBookQuery *res;
 	va_list ap;
 
 	va_start (ap, q);
-	return conjoinv (E_BOOK_QUERY_TYPE_AND, q, ap);
+	res = conjoinv (E_BOOK_QUERY_TYPE_AND, q, ap);
+	va_end (ap);
+
+	return res;
 }
 
 /**
@@ -158,10 +161,14 @@ e_book_query_andv (EBookQuery *q, ...)
 EBookQuery *
 e_book_query_orv (EBookQuery *q, ...)
 {
+	EBookQuery *res;
 	va_list ap;
 
 	va_start (ap, q);
-	return conjoinv (E_BOOK_QUERY_TYPE_OR, q, ap);
+	res = conjoinv (E_BOOK_QUERY_TYPE_OR, q, ap);
+	va_end (ap);
+
+	return res;
 }
 
 /**

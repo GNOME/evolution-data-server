@@ -250,7 +250,6 @@ add_contact_inline (EBookClient *book)
 {
 	EContact *contact;
 	EContactPhoto *photo;
-	GError *error = NULL;
 	guchar *data;
 	gsize length = 0;
 
@@ -269,7 +268,7 @@ add_contact_inline (EBookClient *book)
 	e_contact_set (contact, E_CONTACT_FULL_NAME, "Micheal Jackson");
 
 	if (!add_contact_verify  (book, contact))
-	  g_error ("Failed to add contact: %s", error->message);
+		g_error ("Failed to add contact");
 
 	micheal_jackson_uid = e_contact_get (contact, E_CONTACT_UID);
 }
@@ -279,7 +278,6 @@ add_contact_uri (EBookClient *book)
 {
 	EContact *contact;
 	EContactPhoto *photo;
-	GError *error = NULL;
 
 	contact = e_contact_new ();
 
@@ -292,7 +290,7 @@ add_contact_uri (EBookClient *book)
 	e_contact_set (contact, E_CONTACT_FULL_NAME, "James Brown");
 
 	if (!add_contact_verify  (book, contact))
-	  g_error ("Failed to add contact: %s", error->message);
+		g_error ("Failed to add contact");
 
 	james_brown_uid = e_contact_get (contact, E_CONTACT_UID);
 }

@@ -101,7 +101,6 @@ connect_to_server (CamelService *service,
 	gboolean success = TRUE;
 	gchar *host;
 	guint32 flags = 0;
-	gint clean_quit = TRUE;
 	gint ret;
 
 	settings = camel_service_get_settings (service);
@@ -147,9 +146,6 @@ connect_to_server (CamelService *service,
 		g_object_unref (tcp_stream);
 		goto exit;
 	}
-
-	/* as soon as we send a STLS command, all hope is lost of a clean QUIT if problems arise */
-	clean_quit = FALSE;
 
 	if (!(store->engine->capa & CAMEL_POP3_CAP_STLS)) {
 		g_set_error (
@@ -200,13 +196,14 @@ connect_to_server (CamelService *service,
 	goto exit;
 
 stls_exception:
-	if (clean_quit) {
-		/* try to disconnect cleanly */
+	/* as soon as we send a STLS command, all hope is lost of a clean QUIT if problems arise */
+	/* if (clean_quit) {
+		/ * try to disconnect cleanly * /
 		pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, cancellable, NULL, "QUIT\r\n");
 		while (camel_pop3_engine_iterate (store->engine, NULL, cancellable, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (store->engine, pc);
-	}
+	}*/
 
 	g_object_unref (store->engine);
 	g_object_unref (tcp_stream);
@@ -801,7 +798,7 @@ camel_pop3_store_expunge (CamelPOP3Store *store,
 {
 	CamelPOP3Command *pc;
 
-	if (!camel_service_get_connection_status (CAMEL_SERVICE (store)) == CAMEL_SERVICE_CONNECTED) {
+	if (camel_service_get_connection_status (CAMEL_SERVICE (store)) != CAMEL_SERVICE_CONNECTED) {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,

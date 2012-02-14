@@ -1411,7 +1411,7 @@ get_matching (CamelFolder *folder,
 
 			if (!list1) {
 				for (flag = camel_message_info_user_flags (master_info); flag; flag = flag->next) {
-					if (flag->name && *flag->name) {
+					if (*flag->name) {
 						count1++;
 						list1 = g_list_prepend (list1, (gchar *) flag->name);
 					}
@@ -1421,7 +1421,7 @@ get_matching (CamelFolder *folder,
 			}
 
 			for (flag = camel_message_info_user_flags (info); flag; flag = flag->next) {
-				if (flag->name && *flag->name) {
+				if (*flag->name) {
 					count2++;
 					list2 = g_list_prepend (list2, (gchar *) flag->name);
 				}
@@ -2602,7 +2602,7 @@ imap_transfer_offline (CamelFolder *source,
 		g_return_val_if_fail (mi != NULL, FALSE);
 
 		message = camel_folder_get_message_sync (
-			source, uid, cancellable, NULL);
+			source, uid, cancellable, &local_error);
 
 		if (message) {
 			camel_imap_summary_add_offline (

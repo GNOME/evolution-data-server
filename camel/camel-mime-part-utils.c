@@ -206,8 +206,6 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 			/* We should fetch just 200 unquoted lines. */
 			while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *) bstream, NULL, NULL)) && str->len < 200) {
 				gchar *tmp = line;
-				if (!line)
-					continue;
 
 				if (*line == '>' || strstr(line, "wrote:")) {
 					g_free (tmp);

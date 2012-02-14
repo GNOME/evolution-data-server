@@ -365,7 +365,6 @@ static void
 pop3_folder_dispose (GObject *object)
 {
 	CamelPOP3Folder *pop3_folder = CAMEL_POP3_FOLDER (object);
-	CamelPOP3FolderInfo **fi = (CamelPOP3FolderInfo **) pop3_folder->uids->pdata;
 	CamelPOP3Store *pop3_store = NULL;
 	CamelStore *parent_store;
 
@@ -375,6 +374,7 @@ pop3_folder_dispose (GObject *object)
 
 	if (pop3_folder->uids) {
 		gint i;
+		CamelPOP3FolderInfo **fi = (CamelPOP3FolderInfo **) pop3_folder->uids->pdata;
 		gboolean is_online = camel_service_get_connection_status (CAMEL_SERVICE (parent_store)) == CAMEL_SERVICE_CONNECTED;
 
 		for (i = 0; i < pop3_folder->uids->len; i++, fi++) {

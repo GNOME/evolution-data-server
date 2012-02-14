@@ -2434,7 +2434,7 @@ editor_closed_cb (GtkWidget *editor,
 	if (book_client) {
 		contact = NULL;
 
-		e_book_client_get_contact_sync (book_client, contact_uid, &contact, NULL, NULL);
+		g_warn_if_fail (e_book_client_get_contact_sync (book_client, contact_uid, &contact, NULL, NULL));
 		email_num = e_destination_get_email_num (destination);
 		e_destination_set_contact (destination, contact, email_num);
 		e_destination_set_client (destination, book_client);

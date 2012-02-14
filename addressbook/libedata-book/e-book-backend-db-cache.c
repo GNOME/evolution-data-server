@@ -32,7 +32,7 @@ void
 string_to_dbt (const gchar *str,
                DBT *dbt)
 {
-	memset (dbt, 0, sizeof (dbt));
+	memset (dbt, 0, sizeof (DBT));
 	dbt->data = (gpointer) str;
 	dbt->size = strlen (str) + 1;
 	dbt->flags = DB_DBT_USERMEM;
@@ -299,7 +299,7 @@ e_book_backend_db_cache_get_contacts (DB *db,
 		if (vcard_dbt.data && !strncmp (vcard_dbt.data, "BEGIN:VCARD", 11)) {
 			contact = e_contact_new_from_vcard (vcard_dbt.data);
 
-			if (e_book_backend_sexp_match_contact (sexp, contact))
+			if (!sexp || e_book_backend_sexp_match_contact (sexp, contact))
 				list = g_list_prepend (list, contact);
 			else
 				g_object_unref (contact);

@@ -157,6 +157,7 @@ save_file_when_idle (gpointer user_data)
 	GError *e = NULL;
 	GFile *file, *backup_file;
 	GFileOutputStream *stream;
+	gboolean succeeded;
 	gchar *tmp, *backup_uristr;
 	gchar *buf;
 	ECalBackendFile *cbfile = user_data;
@@ -208,20 +209,20 @@ save_file_when_idle (gpointer user_data)
 	}
 
 	buf = icalcomponent_as_ical_string_r (priv->icalcomp);
-	g_output_stream_write_all (G_OUTPUT_STREAM (stream), buf, strlen (buf) * sizeof (gchar), NULL, NULL, &e);
+	succeeded = g_output_stream_write_all (G_OUTPUT_STREAM (stream), buf, strlen (buf) * sizeof (gchar), NULL, NULL, &e);
 	g_free (buf);
 
-	if (e) {
+	if (!succeeded || e) {
 		g_object_unref (stream);
 		g_object_unref (file);
 		g_object_unref (backup_file);
 		goto error;
 	}
 
-	g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, &e);
+	succeeded = g_output_stream_close (G_OUTPUT_STREAM (stream), NULL, &e);
 	g_object_unref (stream);
 
-	if (e) {
+	if (!succeeded || e) {
 		g_object_unref (file);
 		g_object_unref (backup_file);
 		goto error;
@@ -2900,8 +2901,8 @@ e_cal_backend_file_remove_object (ECalBackendSync *backend,
 		break;
 	case CALOBJ_MOD_ONLY_THIS:
 	case CALOBJ_MOD_THIS :
-		obj_data = remove_instance (cbfile, obj_data, uid, recur_id, mod,
-					    old_component, new_component, error);
+		remove_instance (cbfile, obj_data, uid, recur_id, mod,
+				 old_component, new_component, error);
 		break;
 	case CALOBJ_MOD_THISANDPRIOR :
 	case CALOBJ_MOD_THISANDFUTURE :
@@ -3824,10 +3825,9 @@ main (gint argc,
 	}
 
 	cbfile = g_object_new (E_TYPE_CAL_BACKEND_FILE, NULL);
-	open_cal (cbfile, calendar_fname, NULL);
-	if (cbfile == NULL)
-	{
-		g_message (G_STRLOC " Could not open calendar %s", calendar_fname);
+	open_cal (cbfile, calendar_fname, &error);
+	if (error != NULL) {
+		g_message (G_STRLOC " Could not open calendar %s: %s", calendar_fname, error->message);
 		exit (-1);
 	}
 

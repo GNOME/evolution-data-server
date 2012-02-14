@@ -141,7 +141,8 @@ camel_provider_init (void)
 		}
 
 		p = strrchr (name, '.');
-		strcpy (p, "." G_MODULE_SUFFIX);
+		if (p)
+			strcpy (p, "." G_MODULE_SUFFIX);
 
 		m = g_malloc0 (sizeof (*m));
 		m->path = name;

@@ -2794,7 +2794,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 	 * We need to rename them atomically with renaming the actual
 	 * folder path. */
 	folders = camel_object_bag_list (store->folders);
-	for (i = 0; i < folders->len; i++) {
+	for (i = 0; folders && i < folders->len; i++) {
 		const gchar *full_name;
 
 		folder = folders->pdata[i];

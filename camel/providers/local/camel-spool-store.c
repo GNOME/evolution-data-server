@@ -499,13 +499,15 @@ spool_store_get_folder_sync (CamelStore *store,
 					_("Folder '%s' does not exist."),
 					folder_name);
 			} else {
-				if (creat (name, 0600) == -1) {
+				gint fd = creat (name, 0600);
+				if (fd == -1) {
 					g_set_error (
 						error, G_IO_ERROR,
 						g_io_error_from_errno (errno),
 						_("Could not create folder '%s':\n%s"),
 						folder_name, g_strerror (errno));
 				} else {
+					close (fd);
 					folder = camel_spool_folder_new (
 						store, folder_name, flags,
 						cancellable, error);

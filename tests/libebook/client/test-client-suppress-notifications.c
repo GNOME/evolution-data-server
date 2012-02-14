@@ -13,7 +13,7 @@ static gboolean loading_view;
 static void
 add_contact (EBookClient *book_client)
 {
-	add_contact_from_test_case_verify (book_client, "name-only", NULL);
+	g_return_if_fail (add_contact_from_test_case_verify (book_client, "name-only", NULL));
 }
 
 static gboolean

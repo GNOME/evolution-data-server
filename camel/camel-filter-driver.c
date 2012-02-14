@@ -428,6 +428,7 @@ report_status (CamelFilterDriver *driver,
 	if (driver->priv->statusfunc) {
 		va_start (ap, desc);
 		str = g_strdup_vprintf (desc, ap);
+		va_end (ap);
 		driver->priv->statusfunc (driver, status, pc, str, driver->priv->statusdata);
 		g_free (str);
 	}
@@ -1184,6 +1185,7 @@ camel_filter_driver_log (CamelFilterDriver *driver,
 
 			va_start (ap, desc);
 			str = g_strdup_vprintf (desc, ap);
+			va_end (ap);
 		}
 
 		switch (status) {
@@ -1355,7 +1357,8 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		goto fail;
 	}
 	/* to get the filesize */
-	fstat (fd, &st);
+	if (fstat (fd, &st) != 0)
+		st.st_size = 0;
 
 	mp = camel_mime_parser_new ();
 	camel_mime_parser_scan_from (mp, TRUE);

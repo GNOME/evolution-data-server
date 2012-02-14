@@ -1133,9 +1133,8 @@ fetch_messages_finish (CamelFolder *folder,
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	/* Assume success unless a GError is set. */
-	g_simple_async_result_propagate_error (simple, error);
-
-	return async_context->success;
+	return !g_simple_async_result_propagate_error (simple, error)
+		&& async_context->success;
 }
 
 static void
@@ -1345,9 +1344,8 @@ purge_message_cache_finish (CamelFolder *folder,
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	/* Assume success unless a GError is set. */
-	g_simple_async_result_propagate_error (simple, error);
-
-	return async_context->success;
+	return !g_simple_async_result_propagate_error (simple, error)
+		&& async_context->success;
 }
 
 static void

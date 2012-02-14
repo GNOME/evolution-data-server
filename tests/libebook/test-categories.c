@@ -22,8 +22,6 @@ main (gint argc,
 
 	e_contact_set (contact, E_CONTACT_CATEGORY_LIST, category_list);
 
-	category_list = e_contact_get (contact, E_CONTACT_CATEGORY_LIST);
-
 	printf ("vcard = \n%s\n", e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30));
 
 	categories = e_contact_get (contact, E_CONTACT_CATEGORIES);

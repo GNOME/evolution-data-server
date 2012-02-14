@@ -2467,15 +2467,17 @@ save_to_db_cb (gpointer key,
 		}
 	}
 
+	g_return_if_fail (mir != NULL);
+
 	if (!args->migration) {
 		if (camel_db_write_message_info_record (cdb, full_name, mir, error) != 0) {
-				camel_db_camel_mir_free (mir);
-				return;
+			camel_db_camel_mir_free (mir);
+			return;
 		}
 	} else {
 		if (camel_db_write_fresh_message_info_record (cdb, CAMEL_DB_IN_MEMORY_TABLE, mir, error) != 0) {
-				camel_db_camel_mir_free (mir);
-				return;
+			camel_db_camel_mir_free (mir);
+			return;
 		}
 
 		if (args->progress > CAMEL_DB_IN_MEMORY_TABLE_LIMIT) {
@@ -2558,6 +2560,8 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 	CamelDB *cdb;
 	CamelFIRecord *record;
 	gint ret, count;
+
+	g_return_val_if_fail (summary != NULL, FALSE);
 
 	if (!(summary->flags & CAMEL_SUMMARY_DIRTY))
 		return TRUE;
@@ -2698,11 +2702,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *summary,
 	record = g_new0 (CamelFIRecord, 1);
 	camel_db_read_folder_info_record (cdb, folder_name, record, error);
 
-	if (record) {
-		ret = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_from_db (summary, record);
-	} else {
-		ret = FALSE;
-	}
+	ret = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_from_db (summary, record);
 
 	g_free (record->folder_name);
 	g_free (record->bdata);

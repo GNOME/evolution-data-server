@@ -257,8 +257,10 @@ foreach_configured_source_async_start (ESource **source)
 	if (!async_data->current_group) {
 		gpointer ad = async_data;
 
-		foreach_configured_source_async_next (&ad, source);
-		return ad;
+		if (foreach_configured_source_async_next (&ad, source))
+			return ad;
+
+		return NULL;
 	}
 
 	async_data->current_source = e_source_group_peek_sources (async_data->current_group->data);

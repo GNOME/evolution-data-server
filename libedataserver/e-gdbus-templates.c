@@ -594,6 +594,7 @@ e_gdbus_proxy_emit_signal (GDBusProxy *proxy,
 			g_variant_get (parameters, "(u&s&su)", &arg_opid, &dbus_error_name, &dbus_error_message, &arg_uint);
 			break;
 		default:
+			/* fix below too, if this is reached */
 			g_warning ("%s: Unknown E_GDBUS_TYPE %x", G_STRFUNC, signal_type);
 			return;
 		}
@@ -617,9 +618,6 @@ e_gdbus_proxy_emit_signal (GDBusProxy *proxy,
 			break;
 		case E_GDBUS_TYPE_UINT:
 			g_signal_emit (proxy, signal_id, 0, arg_opid, arg_error, arg_uint);
-			break;
-		default:
-			g_warning ("%s: Unknown E_GDBUS_TYPE %x", G_STRFUNC, signal_type);
 			break;
 		}
 

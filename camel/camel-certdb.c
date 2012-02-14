@@ -248,6 +248,10 @@ camel_certdb_load (CamelCertDB *certdb)
 		return -1;
 
 	class = CAMEL_CERTDB_GET_CLASS (certdb);
+	if (!class->header_load || !class->cert_load) {
+		fclose (in);
+		in = NULL;
+	}
 	g_return_val_if_fail (class->header_load != NULL, -1);
 	g_return_val_if_fail (class->cert_load != NULL, -1);
 
@@ -348,6 +352,10 @@ camel_certdb_save (CamelCertDB *certdb)
 	}
 
 	class = CAMEL_CERTDB_GET_CLASS (certdb);
+	if (!class->header_save || !class->cert_save) {
+		fclose (out);
+		out = NULL;
+	}
 	g_return_val_if_fail (class->header_save != NULL, -1);
 	g_return_val_if_fail (class->cert_save != NULL, -1);
 

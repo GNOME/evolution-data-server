@@ -391,7 +391,7 @@ folder_changed_change (CamelVeeFolder *vf,
 			always_changed = g_ptr_array_new ();
 			for (i = 0; i < changed->len; i++) {
 				uid = changed->pdata[i];
-				if (strlen (uid) + 9 > vuidlen) {
+				if (!vuid || strlen (uid) + 9 > vuidlen) {
 					vuidlen = strlen (uid) + 64;
 					vuid = g_realloc (vuid, vuidlen);
 				}
@@ -1709,7 +1709,7 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
 	/* Since the source of a correlating vfolder has to be requeried in
 	 * full every time it changes, caching the results in the db is not
 	 * worth the effort.  Thus, DB use is conditioned on !correlating. */
-	gboolean correlating = expression_is_correlating (vee_folder->expression);
+	gboolean correlating = vee_folder->expression && expression_is_correlating (vee_folder->expression);
 
 	if (vee_folder == folder_unmatched)
 		return 0;

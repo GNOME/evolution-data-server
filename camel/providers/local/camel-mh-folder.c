@@ -71,7 +71,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
 	d(printf("Appending message\n"));
 
 	/* If we can't lock, don't do anything */
-	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
+	if (!lf || camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
 		return FALSE;
 
 	/* add it to the summary/assign the uid, etc */
@@ -128,7 +128,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
  check_changed:
 	camel_local_folder_unlock (lf);
 
-	if (lf && camel_folder_change_info_changed (lf->changes)) {
+	if (camel_folder_change_info_changed (lf->changes)) {
 		camel_folder_changed (folder, lf->changes);
 		camel_folder_change_info_clear (lf->changes);
 	}
@@ -150,7 +150,7 @@ mh_folder_get_message_sync (CamelFolder *folder,
 
 	d(printf("getting message: %s\n", uid));
 
-	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
+	if (!lf || camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
 		return NULL;
 
 	/* get the message summary info */
@@ -192,7 +192,7 @@ mh_folder_get_message_sync (CamelFolder *folder,
 
 	camel_local_folder_unlock (lf);
 
-	if (lf && camel_folder_change_info_changed (lf->changes)) {
+	if (camel_folder_change_info_changed (lf->changes)) {
 		camel_folder_changed (folder, lf->changes);
 		camel_folder_change_info_clear (lf->changes);
 	}

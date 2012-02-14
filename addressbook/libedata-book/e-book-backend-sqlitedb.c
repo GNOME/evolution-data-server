@@ -1421,8 +1421,10 @@ sexp_to_sql_query (const gchar *query)
 			res = g_strdup (r->value.string);
 		else
 			res = NULL;
-	} else
+	} else {
 		g_warn_if_reached ();
+		res = NULL;
+	}
 
 	e_sexp_result_free (sexp, r);
 	e_sexp_unref (sexp);

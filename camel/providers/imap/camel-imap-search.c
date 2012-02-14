@@ -297,7 +297,9 @@ load_match (CamelImapSearch *is,
 		    && header.termcount == 0) {
 			d(printf(" found %d matches\n", header.matchcount));
 			g_array_set_size (mr->matches, header.matchcount);
-			camel_stream_read (stream, mr->matches->data, sizeof (guint32) * header.matchcount, NULL, NULL);
+			if (camel_stream_read (stream, mr->matches->data, sizeof (guint32) * header.matchcount, NULL, NULL) == -1) {
+				memset (&header, 0, sizeof (header));
+			}
 		} else {
 			d(printf(" file format invalid/validity changed\n"));
 			memset (&header, 0, sizeof (header));

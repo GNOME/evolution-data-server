@@ -313,7 +313,10 @@ camel_sexp_to_sql (const gchar *sexp)
 
 				/* These should be normal tokens */
 				if (i >= G_N_ELEMENTS (elements)) {
-					Node *pnode = operands->data;
+					Node *pnode;
+
+					g_return_val_if_fail (operands != NULL, NULL);
+					pnode = operands->data;
 
 					node = g_new0 (Node, 1);
 					node->token = g_strdup (token);
@@ -353,8 +356,11 @@ camel_sexp_to_sql (const gchar *sexp)
 			all = g_list_prepend (all, node);
 		} else if (token == '+') {
 			gchar *astr = NULL, *bstr = NULL;
-			Node *node, *pnode = operands->data;
+			Node *node, *pnode;
 			gint lvl = 0, lval = 0;
+
+			g_return_val_if_fail (operands != NULL, NULL);
+			pnode = operands->data;
 
 			if (g_ascii_strcasecmp (pnode->token, "user-flag") == 0) {
 				    /* Colloct all after '+' and append them to one token. Go till you find ')' */
@@ -413,8 +419,11 @@ camel_sexp_to_sql (const gchar *sexp)
 			level--;
 		} else if (token == '-') {
 			gchar *bstr = NULL;
-			Node *node, *pnode = operands->data;
+			Node *node, *pnode;
 			gint lvl = 0, lval = 0;
+
+			g_return_val_if_fail (operands != NULL, NULL);
+			pnode = operands->data;
 
 			/* Colloct all after '+' and append them to one token. Go till you find ')' */
 			token = g_scanner_get_next_token (scanner);
@@ -471,7 +480,10 @@ camel_sexp_to_sql (const gchar *sexp)
 				operators = g_list_prepend (operators, node);
 				all = g_list_prepend (all, node);
 		} else if (token == G_TOKEN_INT) {
-			Node *pnode = operands->data, *node;
+			Node *pnode, *node;
+
+			g_return_val_if_fail (operands != NULL, NULL);
+			pnode = operands->data;
 
 			node = g_new0 (Node, 1);
 			node->token = g_strdup_printf ("%ld", scanner->value.v_int);
@@ -664,7 +676,7 @@ camel_sexp_to_sql (const gchar *sexp)
 								dbl = TRUE;
 							}
 						}
-						str = g_strdup_printf("(%s %c%s %s)", n2->exact_token, prefix ? prefix : ' ', opnode->exact_token, n1->exact_token);
+						str = g_strdup_printf("(%s %c%s %s)", n2->exact_token, prefix ? prefix : ' ', opnode ? opnode->exact_token : "", n1->exact_token);
 
 						if (opnode) {
 							free_node (opnode);

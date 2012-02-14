@@ -935,7 +935,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 					i++;
 				}
 
-				if (str && *str && i == 2) {
+				if (*str && i == 2) {
 					struct {
 						gint gpg_hash_algo;
 						CamelCipherHash camel_hash_algo;

@@ -127,7 +127,7 @@ open_ex_cb (ECal *cal,
 
         test_print ("successfully asynchronously removed the temporary "
                         "calendar\n");
-	if (closure)
+	if (closure->cb)
 		(*closure->cb) (closure);
 
 	g_signal_handlers_disconnect_by_func (cal, open_ex_cb, closure);
@@ -486,7 +486,7 @@ cal_set_mode_cb (ECal *cal,
 	closure->mode = mode;
 
         test_print ("successfully set the calendar mode to %d\n", mode);
-	if (closure)
+	if (closure->cb)
 		(*closure->cb) (closure);
 
 	g_signal_handlers_disconnect_by_func (cal, cal_set_mode_cb, closure);

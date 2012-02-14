@@ -3059,7 +3059,7 @@ imap_store_get_folder_info_sync (CamelStore *store,
 			goto fail;
 
 		if (top[0] == 0) {
-			pattern = g_alloca (2);
+			pattern = g_alloca (3);
 			pattern[0] = '*';
 			pattern[1] = 0;
 			i = 0;

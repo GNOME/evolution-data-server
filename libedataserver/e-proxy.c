@@ -681,12 +681,11 @@ update_proxy_uri (const gchar *uri,
 	/*  here can be only http or https and nothing else */
 	is_https = g_str_has_prefix (uri, "https://");
 
-	res = g_strdup_printf ("%s://%s%s%s%s%s",
+	res = g_strdup_printf ("%s://%s%s%s@%s",
 		is_https ? "https" : "http",
-		user ? user : "",
+		user,
 		pw ? ":" : "",
 		pw ? pw : "",
-		(user || pw) ? "@" : "",
 		uri + strlen ("http://") + (is_https ? 1 : 0));
 
 	g_free (user);

@@ -639,10 +639,9 @@ e_cal_backend_weather_get_object_list (ECalBackendSync *backend,
 	}
 
 	*objects = NULL;
-	components = e_cal_backend_store_get_components (priv->store);
 	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp,
-									    &occur_start,
-									    &occur_end);
+								    &occur_start,
+								    &occur_end);
 
 	components = prunning_by_time ?
 		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)

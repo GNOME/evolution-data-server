@@ -153,9 +153,11 @@ sendmail_send_to_sync (CamelTransport *transport,
 		/* Child process */
 		nullfd = open ("/dev/null", O_RDWR);
 		dup2 (fd[0], STDIN_FILENO);
-		/*dup2 (nullfd, STDOUT_FILENO);
-		  dup2 (nullfd, STDERR_FILENO);*/
-		close (nullfd);
+		if (nullfd != -1) {
+			/*dup2 (nullfd, STDOUT_FILENO);
+			  dup2 (nullfd, STDERR_FILENO);*/
+			close (nullfd);
+		}
 		close (fd[1]);
 
 		execv (SENDMAIL_PATH, (gchar **) argv);

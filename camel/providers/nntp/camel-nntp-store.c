@@ -738,7 +738,8 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store,
 	short_folder_names = camel_nntp_settings_get_short_folder_names (
 		CAMEL_NNTP_SETTINGS (settings));
 
-	for (i = 0;(si = camel_store_summary_index ((CamelStoreSummary *) store->summary, i)); i++) {
+	for (i = 0; i < camel_store_summary_count ((CamelStoreSummary *) store->summary); i++) {
+		si = camel_store_summary_index ((CamelStoreSummary *) store->summary, i);
 		if (si == NULL)
 			continue;
 
@@ -757,10 +758,11 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store,
 					CamelFolderChangeInfo *changes = NULL;
 
 					camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-					camel_nntp_command (store, cancellable, NULL, folder, &line, NULL);
-					if (camel_folder_change_info_changed (folder->changes)) {
-						changes = folder->changes;
-						folder->changes = camel_folder_change_info_new ();
+					if (camel_nntp_command (store, cancellable, NULL, folder, &line, NULL) != -1) {
+						if (camel_folder_change_info_changed (folder->changes)) {
+							changes = folder->changes;
+							folder->changes = camel_folder_change_info_new ();
+						}
 					}
 					camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 					if (changes) {
@@ -913,8 +915,11 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 				if (!last ||
 				    strncmp (si->path, last->full_name, strlen (last->full_name)) != 0 ||
 				    si->path[strlen (last->full_name)] != '.') {
+					gchar *dot;
 					tmpname = g_strdup (si->path);
-					*(strchr(tmpname + toplen, '.')) = '\0';
+					dot = strchr(tmpname + toplen, '.');
+					if (dot)
+						*dot = '\0';
 					fi = nntp_folder_info_from_name (store, FALSE, tmpname);
 					if (!fi)
 						continue;
@@ -1740,7 +1745,7 @@ camel_nntp_command (CamelNNTPStore *store,
 			return -1;
 
 		/* Check for unprocessed data, !*/
-		if (store->stream->mode == CAMEL_NNTP_STREAM_DATA) {
+		if (store->stream && store->stream->mode == CAMEL_NNTP_STREAM_DATA) {
 			g_warning("Unprocessed data left in stream, flushing");
 			while (camel_nntp_stream_getd (store->stream, (guchar **) &p, &u, cancellable, error) > 0)
 				;

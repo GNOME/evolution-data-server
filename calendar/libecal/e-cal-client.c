@@ -1593,7 +1593,7 @@ get_objects_sync (ECalClient *client,
 
  try_again:
 		if (!e_cal_client_get_objects_for_uid_sync (client, uid, &objects, NULL, &error)) {
-			if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY) && tries >= 10) {
+			if (g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_BUSY) && tries <= 10) {
 				tries++;
 				g_usleep (500);
 				g_clear_error (&error);

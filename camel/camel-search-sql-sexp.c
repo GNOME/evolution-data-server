@@ -729,7 +729,10 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 	}
 
 	camel_sexp_input_text (sexp, sql, strlen (sql));
-	camel_sexp_parse (sexp);
+	if (camel_sexp_parse (sexp)) {
+		g_object_unref (sexp);
+		return NULL;
+	}
 
 	r = camel_sexp_eval (sexp);
 	if (!r) {

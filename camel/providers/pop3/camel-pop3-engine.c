@@ -426,6 +426,7 @@ camel_pop3_engine_command_new (CamelPOP3Engine *pe,
 
 	va_start (ap, fmt);
 	pc->data = g_strdup_vprintf (fmt, ap);
+	va_end (ap);
 	pc->state = CAMEL_POP3_COMMAND_IDLE;
 
 	/* TODO: what about write errors? */

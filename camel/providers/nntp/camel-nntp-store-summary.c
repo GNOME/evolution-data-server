@@ -297,9 +297,7 @@ summary_header_load (CamelStoreSummary *s,
 	if (fread (is->last_newslist, 1, NNTP_DATE_SIZE, in) < NNTP_DATE_SIZE)
 		return -1;
 
-	camel_file_util_decode_fixed_int32 (in, &nil);
-
-	return 0;
+	return camel_file_util_decode_fixed_int32 (in, &nil);
 }
 
 static gint

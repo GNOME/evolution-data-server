@@ -558,7 +558,6 @@ func_due_in_time_range (ESExp *esexp,
 
 	if (dt.value != NULL) {
 		zone = resolve_tzid (dt.tzid, ctx);
-		result = e_sexp_result_new (esexp, ESEXP_RES_INT);
 		if (zone)
 			due_t = icaltime_as_timet_with_zone (*dt.value,zone);
 		else

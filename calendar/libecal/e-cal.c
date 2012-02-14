@@ -3063,6 +3063,8 @@ process_detached_instances (GList *instances,
 		ECalComponentRange recur_id, instance_recur_id;
 
 		processed = FALSE;
+		recur_id.type = E_CAL_COMPONENT_RANGE_SINGLE;
+		instance_recur_id.type = E_CAL_COMPONENT_RANGE_SINGLE;
 
 		cid = dl->data;
 		e_cal_component_get_uid (cid->comp, &uid);
@@ -4377,7 +4379,7 @@ e_cal_get_timezone (ECal *ecal,
 	g_hash_table_insert (priv->timezones, (gpointer) icaltimezone_get_tzid (*zone), *zone);
 
 	UNLOCK_CACHE ();
-	E_CALENDAR_CHECK_STATUS (status, error);
+	return TRUE;
 }
 
 /**

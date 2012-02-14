@@ -148,7 +148,7 @@ soundexify (const gchar *sound,
 
 	for (c = (guchar *) sound; *c && !isalpha (*c); c++);
 	code[0] = toupper (*c);
-	memset (code + 1, '0', 3);
+	memset (code + 1, 0, 3);
 	for (n = 1; *c && n < 5; c++) {
 		guchar ch = soundex_table[*c];
 
@@ -211,7 +211,8 @@ camel_ustrstrcase (const gchar *haystack,
 	if (strlen (haystack) == 0)
 		return NULL;
 
-	puni = nuni = g_alloca (sizeof (gunichar) * strlen (needle));
+	puni = nuni = g_alloca (sizeof (gunichar) * (strlen (needle) + 1));
+	nuni[0] = 0;
 
 	p = (const guchar *) needle;
 	while ((u = camel_utf8_getc (&p)))

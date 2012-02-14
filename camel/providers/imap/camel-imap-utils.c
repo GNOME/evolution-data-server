@@ -527,7 +527,7 @@ imap_create_flag_list (guint32 flags,
 		/* FIXME: All the custom flags are sent to the server. Not just the changed ones */
 		flag = camel_message_info_user_flags (info);
 		while (flag) {
-			if (flag->name && *flag->name) {
+			if (*flag->name) {
 				name = rename_label_flag (flag->name, strlen (flag->name), FALSE);
 
 				if (name && *name)
@@ -629,7 +629,7 @@ imap_parse_flag_list (gchar **flag_list_p,
 	*flag_list_p = flag_list;
 	*flags_out = flags;
 
-	if (custom_flags_out && custom_flags->len) {
+	if (custom_flags_out && custom_flags && custom_flags->len) {
 		*custom_flags_out = g_string_free (custom_flags, FALSE);
 	} else if (custom_flags)
 		g_string_free (custom_flags, TRUE);

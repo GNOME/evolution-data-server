@@ -1718,7 +1718,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 	nsdav = xmlNewNs (root, (xmlChar *) "DAV:", NULL);
 
 	node = xmlNewTextChild (root, nsdav, (xmlChar *) "prop", NULL);
-	node = xmlNewTextChild (node, nsdav, (xmlChar *) "owner", NULL);
+	xmlNewTextChild (node, nsdav, (xmlChar *) "owner", NULL);
 
 	buf = xmlAllocOutputBuffer (NULL);
 	xmlNodeDumpOutput (buf, doc, root, 0, 1, NULL);
@@ -1768,7 +1768,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 		nscd = xmlNewNs (root, (xmlChar *) "urn:ietf:params:xml:ns:caldav", (xmlChar *) "C");
 
 		node = xmlNewTextChild (root, nsdav, (xmlChar *) "prop", NULL);
-		node = xmlNewTextChild (node, nscd, (xmlChar *) "schedule-outbox-URL", NULL);
+		xmlNewTextChild (node, nscd, (xmlChar *) "schedule-outbox-URL", NULL);
 
 		buf = xmlAllocOutputBuffer (NULL);
 		xmlNodeDumpOutput (buf, doc, root, 0, 1, NULL);
@@ -2500,6 +2500,8 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 
 		soup_uri_free (suri);
 	}
+
+	g_return_val_if_fail (priv->uri != NULL, FALSE);
 
 	/* remove trailing slashes... */
 	len = strlen (priv->uri);
@@ -4451,8 +4453,6 @@ caldav_get_object_list (ECalBackendSync *backend,
 	*objects = NULL;
 
 	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp, &occur_start, &occur_end);
-
-	bkend = E_CAL_BACKEND (backend);
 
 	list = prunning_by_time ?
 		e_cal_backend_store_get_components_occuring_in_range (priv->store, occur_start, occur_end)

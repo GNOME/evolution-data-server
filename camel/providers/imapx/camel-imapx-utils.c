@@ -885,9 +885,8 @@ imapx_parse_address_list (CamelIMAPXStream *is,
 
 	tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 	if (tok == '(') {
+		struct _camel_header_address *addr, *group = NULL;
 		while (1) {
-			struct _camel_header_address *addr, *group = NULL;
-
 			/* address         ::= "(" addr_name SPACE addr_adl SPACE addr_mailbox
 			 * SPACE addr_host ")" */
 			tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
@@ -930,7 +929,7 @@ imapx_parse_address_list (CamelIMAPXStream *is,
 					group = addr;
 				}
 			} else {
-				addr->v.addr = g_strdup_printf("%s%s%s", mbox? mbox:"", host?"@":"", host?(gchar *)host:"");
+				addr->v.addr = g_strdup_printf ("%s@%s", mbox? mbox :"", (const gchar *) host);
 				g_free (mbox);
 				d(is->tagprefix, "adding address '%s'\n", addr->v.addr);
 				if (group != NULL)
@@ -1082,7 +1081,6 @@ imapx_parse_body (CamelIMAPXStream *is,
 	struct _CamelMessageContentInfo * cinfo = NULL;
 	struct _CamelMessageContentInfo *subinfo, *last;
 	struct _CamelContentDisposition * dinfo = NULL;
-	struct _CamelMessageInfo * minfo = NULL;
 	GError *local_error = NULL;
 
 	/* body            ::= "(" body_type_1part / body_type_mpart ")" */
@@ -1161,6 +1159,8 @@ imapx_parse_body (CamelIMAPXStream *is,
 		tok = camel_imapx_stream_token (is, &token, &len, cancellable, &local_error);
 		camel_imapx_stream_ungettoken (is, tok, token, len);
 		if (tok == '(') {
+			struct _CamelMessageInfo * minfo = NULL;
+
 			/* what do we do with the envelope?? */
 			minfo = imapx_parse_envelope (is, cancellable, &local_error);
 			/* what do we do with the message content info?? */
@@ -1220,8 +1220,6 @@ imapx_parse_body (CamelIMAPXStream *is,
 			imapx_free_body (cinfo);
 		if (dinfo)
 			camel_content_disposition_unref (dinfo);
-		if (minfo)
-			camel_message_info_free (minfo);
 		return NULL;
 	}
 

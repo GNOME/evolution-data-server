@@ -722,7 +722,6 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 			g_strerror (errno));
 		goto error;
 	}
-	tmpname = NULL;
 
 	camel_operation_pop_message (cancellable);
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
@@ -735,8 +734,7 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 	if (fdout != -1)
 		close (fdout);
 
-	if (tmpname)
-		g_unlink (tmpname);
+	g_unlink (tmpname);
 
 	camel_operation_pop_message (cancellable);
 	camel_folder_summary_unlock (s, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
@@ -1153,7 +1151,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 			((CamelMessageInfo *) info)->dirty = TRUE;
 			fromline = camel_mime_parser_from_line (mp);
 			d(printf("Saving %s:%d\n", camel_message_info_uid(info), info->frompos));
-			write (fdout, fromline, strlen (fromline));
+			g_warn_if_fail (write (fdout, fromline, strlen (fromline)) != -1);
 		}
 
 		if (info && info->info.info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV | CAMEL_MESSAGE_FOLDER_FLAGGED)) {
@@ -1264,9 +1262,8 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 	return 0;
  error:
 	g_free (xevnew);
+	g_object_unref (mp);
 
-	if (mp)
-		g_object_unref (mp);
 	if (info)
 		camel_message_info_free ((CamelMessageInfo *) info);
 

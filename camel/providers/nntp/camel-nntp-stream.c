@@ -282,6 +282,10 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 	gint newlen, oldlen;
 	guchar *e;
 
+	g_return_val_if_fail (is != NULL, -1);
+	g_return_val_if_fail (data != NULL, -1);
+	g_return_val_if_fail (len != NULL, -1);
+
 	if (is->mode == CAMEL_NNTP_STREAM_EOD) {
 		*data = is->linebuf;
 		*len = 0;
@@ -368,6 +372,10 @@ camel_nntp_stream_gets (CamelNNTPStream *is,
 	gint max;
 	guchar *end;
 
+	g_return_val_if_fail (is != NULL, -1);
+	g_return_val_if_fail (start != NULL, -1);
+	g_return_val_if_fail (len != NULL, -1);
+
 	*len = 0;
 
 	max = is->end - is->ptr;
@@ -394,6 +402,8 @@ void
 camel_nntp_stream_set_mode (CamelNNTPStream *is,
                             camel_nntp_stream_mode_t mode)
 {
+	g_return_if_fail (is != NULL);
+
 	is->mode = mode;
 }
 
@@ -407,6 +417,10 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 {
 	guchar *p, *e, *s;
 	gint state;
+
+	g_return_val_if_fail (is != NULL, -1);
+	g_return_val_if_fail (start != NULL, -1);
+	g_return_val_if_fail (len != NULL, -1);
 
 	*len = 0;
 

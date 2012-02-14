@@ -100,7 +100,7 @@ source_list_changed_cb (ESourceList *source_list,
 	 *     hardly a performance issue here since source lists
 	 *     are short. */
 
-	gtk_tree_model_get_iter_first (model, &iter);
+	iter_valid = gtk_tree_model_get_iter_first (model, &iter);
 
 	for (groups = e_source_list_peek_groups (source_list);
 		groups != NULL; groups = groups->next) {
@@ -110,7 +110,7 @@ source_list_changed_cb (ESourceList *source_list,
 			continue;
 
 		name = e_source_group_peek_name (groups->data);
-		if (!gtk_list_store_iter_is_valid (store, &iter))
+		if (!iter_valid)
 			gtk_list_store_append (store, &iter);
 		gtk_list_store_set (
 			store, &iter,
@@ -119,7 +119,7 @@ source_list_changed_cb (ESourceList *source_list,
 			COLUMN_SENSITIVE, FALSE,
 			COLUMN_SOURCE, groups->data,
 			-1);
-		gtk_tree_model_iter_next (model, &iter);
+		iter_valid = gtk_tree_model_iter_next (model, &iter);
 
 		sources = e_source_group_peek_sources (groups->data);
 
@@ -141,7 +141,7 @@ source_list_changed_cb (ESourceList *source_list,
 				visible = TRUE;
 			}
 
-			if (!gtk_list_store_iter_is_valid (store, &iter))
+			if (!iter_valid)
 				gtk_list_store_append (store, &iter);
 			gtk_list_store_set (
 				store, &iter,
@@ -157,7 +157,7 @@ source_list_changed_cb (ESourceList *source_list,
 				priv->uid_index, g_strdup (uid),
 				gtk_tree_row_reference_new (model, path));
 			gtk_tree_path_free (path);
-			gtk_tree_model_iter_next (model, &iter);
+			iter_valid = gtk_tree_model_iter_next (model, &iter);
 
 			g_free (indented_name);
 		}

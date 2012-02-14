@@ -727,8 +727,7 @@ e_book_backend_summary_save (EBookBackendSummary *summary)
  lose:
 	if (fp)
 		fclose (fp);
-	if (new_filename)
-		g_unlink (new_filename);
+	g_unlink (new_filename);
 	g_free (new_filename);
 	return FALSE;
 }
