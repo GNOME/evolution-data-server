@@ -320,7 +320,7 @@ camel_offline_folder_class_init (CamelOfflineFolderClass *class)
 		g_param_spec_boolean (
 			"offline-sync",
 			"Offline Sync",
-			_("Copy folder content locally for offline operation"),
+			_("Copy folder content locally for _offline operation"),
 			FALSE,
 			G_PARAM_READWRITE |
 			CAMEL_PARAM_PERSISTENT));

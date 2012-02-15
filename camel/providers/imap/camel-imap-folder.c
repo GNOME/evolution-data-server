@@ -341,7 +341,7 @@ camel_imap_folder_class_init (CamelImapFolderClass *class)
 		g_param_spec_boolean (
 			"check-folder",
 			"Check Folder",
-			_("Always check for new mail in this folder"),
+			_("Always check for _new mail in this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
 			CAMEL_PARAM_PERSISTENT));
@@ -352,7 +352,7 @@ camel_imap_folder_class_init (CamelImapFolderClass *class)
 		g_param_spec_boolean (
 			"apply-filters",
 			"Apply Filters",
-			_("Apply message filters to this folder"),
+			_("Apply message _filters to this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
 			CAMEL_PARAM_PERSISTENT));

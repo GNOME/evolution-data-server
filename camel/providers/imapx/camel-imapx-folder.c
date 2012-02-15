@@ -744,7 +744,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 		g_param_spec_boolean (
 			"apply-filters",
 			"Apply Filters",
-			_("Apply message filters to this folder"),
+			_("Apply message _filters to this folder"),
 			FALSE,
 			G_PARAM_READWRITE |
 			CAMEL_PARAM_PERSISTENT));
