@@ -93,13 +93,28 @@ libedataserverinclude_HEADERS =		\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedataserver-$(API_VERSION).pc
 
+gsettings_SCHEMAS =							\
+	org.gnome.evolution.shell.network-config.gschema.xml
+
+@INTLTOOL_XML_NOMERGE_RULE@
+
+@GSETTINGS_RULES@
+
+convertdir = $(datadir)/GConf/gsettings
+convert_DATA = libedataserver.convert
+
 EXTRA_DIST = 						\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
-	eds-version.h.in
+	eds-version.h.in				\
+	$(convert_DATA)					\
+	$(gsettings_SCHEMAS:.xml=.xml.in)
 
 BUILT_SOURCES = $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
-DISTCLEANFILES = eds-version.h $(pkgconfig_DATA)
+
+DISTCLEANFILES = eds-version.h				\
+	$(pkgconfig_DATA)				\
+	$(gsettings_SCHEMAS)
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =

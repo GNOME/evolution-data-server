@@ -183,6 +183,7 @@ camel/providers/smtp/camel-smtp-transport.c
 libedataserver/e-categories.c
 libedataserver/e-client.c
 libedataserver/e-time-utils.c
+libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in
 libedataserverui/e-book-auth-util.c
 libedataserverui/e-categories-dialog.c
 libedataserverui/e-categories-editor.c
