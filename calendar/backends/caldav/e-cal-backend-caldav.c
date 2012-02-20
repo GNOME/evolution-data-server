@@ -2675,7 +2675,7 @@ caldav_refresh (ECalBackendSync *backend,
 	g_mutex_lock (cbdav->priv->busy_lock);
 
 	if (!cbdav->priv->loaded
-	    || cbdav->priv->slave_cmd != SLAVE_SHOULD_SLEEP
+	    || cbdav->priv->slave_cmd == SLAVE_SHOULD_DIE
 	    || !check_state (cbdav, &online, NULL)
 	    || !online) {
 		g_mutex_unlock (cbdav->priv->busy_lock);
