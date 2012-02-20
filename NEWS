@@ -1,3 +1,39 @@
+Evolution-Data-Server 3.3.90 2012-02-20
+---------------------------------------
+
+Bug Fixes:
+	Bug 662920 - Creates MH folders, but needs restart to update folder list (Milan Crha)
+	Bug 658348 - Harmonize wording for "Check new messages in INBOX" (Milan Crha)
+	Bug 658347 - Harmonize mnemonic for "Check new messages for Junk contents" (Milan Crha)
+	Bug 637200 - Add mnemonics to Folder Properties dialog checkboxes (Milan Crha)
+	Bug 669341 - Plural forms in imapx (Milan Crha)
+	Bug 391472 - Add ability to match headers by words (Milan Crha)
+	Bug 669847 - Fix up online notification (part 2) (Alexander Larsson)
+	Bug 669487 - Fix up online notification (part 1) (Alexander Larsson)
+	Bug 535978 - Filtering on IMAP accounts causes message to be downloaded (Milan Crha)
+	Bug 553796 - Unable to Reset Message Color (Milan Crha)
+	Bug 485283 - Filter is not working for mix letter case (Milan Crha)
+	Bug 309945 - Ability to filter folders other than INBOX too (Milan Crha)
+	Bug 669545 - Crash invoking filters in IMAP folder (Milan Crha)
+
+Miscellaneous Fixes:
+	Use GSettings for EProxy (Milan Crha)
+	Revert one change from the previous commit, it emitted incorrect warnings (Milan Crha)
+	Fix issues found by Coverity Scan (Milan Crha)
+	Crash on message send, under check_header_in_message_info() (Milan Crha)
+	Fix google contacts going online after being offline (Alexander Larsson)
+
+Translations:
+	Daniel Mustieles (es)
+	Мирослав Николић (sr)
+	Daniel Nylander (sv)
+	Yuri Myasoedov (ru)
+	Ihar Hrachyshka (be)
+	Aurimas Černius (lt)
+	Fran Diéguez (gl)
+	Kjartan Maraas (nn)
+
+
 Evolution-Data-Server 3.3.5 2012-02-06
 --------------------------------------
 
