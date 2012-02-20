@@ -22,6 +22,7 @@
 #define E_DATA_CAL_VIEW_H
 
 #include <gio/gio.h>
+#include <libecal/e-cal-client-view.h>
 #include <libedata-cal/e-data-cal-common.h>
 #include <libedata-cal/e-cal-backend-sexp.h>
 #include <libedata-cal/e-data-cal-types.h>
@@ -57,6 +58,7 @@ gboolean		e_data_cal_view_is_started			(EDataCalView *view);
 gboolean		e_data_cal_view_is_completed			(EDataCalView *view);
 gboolean		e_data_cal_view_is_stopped			(EDataCalView *view);
 GHashTable *		e_data_cal_view_get_fields_of_interest		(EDataCalView *view);
+ECalClientViewFlags    e_data_cal_view_get_flags			(EDataCalView *view);
 
 gchar *			e_data_cal_view_get_component_string		(EDataCalView *view, /* const */ ECalComponent *component);
 

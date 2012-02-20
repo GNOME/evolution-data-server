@@ -38,6 +38,24 @@ typedef struct _ECalClientViewPrivate	ECalClientViewPrivate;
 struct _ECalClient;
 
 /**
+ * ECalClientViewFlags:
+ * @E_CAL_CLIENT_VIEW_FLAGS_NONE:
+ *   Symbolic value for no flags
+ * @E_CAL_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL:
+ *   If this flag is set then all objects matching the view's query will
+ *   be sent as notifications when starting the view, otherwise only future
+ *   changes will be reported.  The default for a #ECalClientView is %TRUE.
+ *
+ * Flags that control the behaviour of an #ECalClientView.
+ *
+ * Since: 3.6
+ */
+typedef enum {
+	E_CAL_CLIENT_VIEW_FLAGS_NONE           = 0,
+	E_CAL_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL = (1 << 0)
+} ECalClientViewFlags;
+
+/**
  * ECalClientView:
  *
  * Contains only private data that should be read and manipulated using the
@@ -70,6 +88,7 @@ gboolean		e_cal_client_view_is_running		(ECalClientView *view);
 void			e_cal_client_view_set_fields_of_interest (ECalClientView *view, const GSList *fields_of_interest, GError **error);
 void			e_cal_client_view_start			(ECalClientView *view, GError **error);
 void			e_cal_client_view_stop			(ECalClientView *view, GError **error);
+void			e_cal_client_view_set_flags		(ECalClientView *view, ECalClientViewFlags flags, GError **error);
 
 G_END_DECLS
 

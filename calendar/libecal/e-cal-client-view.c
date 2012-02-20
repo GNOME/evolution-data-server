@@ -573,3 +573,37 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *view,
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot set fields of interest, D-Bus proxy gone");
 	}
 }
+
+/**
+ * e_cal_client_view_set_flags:
+ * @view: an #ECalClientView
+ * @flags: the #ECalClientViewFlags for @view.
+ * @error: a return location for a #GError, or %NULL.
+ *
+ * Sets the @flags which control the behaviour of @view.
+ *
+ * Since: 3.6
+ */
+void
+e_cal_client_view_set_flags (ECalClientView      *view,
+                             ECalClientViewFlags  flags,
+                             GError              **error)
+{
+	ECalClientViewPrivate *priv;
+
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
+
+	priv = view->priv;
+
+	if (priv->gdbus_calview) {
+		GError *local_error = NULL;
+
+		e_gdbus_cal_view_call_set_flags_sync (priv->gdbus_calview, flags, NULL, &local_error);
+
+		e_client_unwrap_dbus_error (E_CLIENT (priv->client), local_error, error);
+	} else {
+		/* do not translate this string, it should ideally never happen */
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_DBUS_ERROR, "Cannot set fields of interest, D-Bus proxy gone");
+	}
+}

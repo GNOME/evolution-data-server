@@ -64,6 +64,9 @@ struct _EDataCalViewPrivate {
 	GMutex *pending_mutex;
 	guint flush_id;
 
+	/* view flags */
+	ECalClientViewFlags flags;
+
 	/* which fields is listener interested in */
 	GHashTable *fields_of_interest;
 };
@@ -278,22 +281,27 @@ notify_add (EDataCalView *view,
 {
 	EDataCalViewPrivate *priv = view->priv;
 	ECalComponent *comp;
+	ECalClientViewFlags flags;
 
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	if (priv->adds->len == THRESHOLD_ITEMS) {
-		send_pending_adds (view);
+	/* Do not send object add notifications during initial stage */
+	flags = e_data_cal_view_get_flags (view);
+	if (priv->complete || (flags & E_CAL_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL) != 0) {
+		if (priv->adds->len == THRESHOLD_ITEMS) {
+			send_pending_adds (view);
+		}
+		g_array_append_val (priv->adds, obj);
+
+		ensure_pending_flush_timeout (view);
 	}
-	g_array_append_val (priv->adds, obj);
 
 	comp = e_cal_component_new_from_string (obj);
 	g_hash_table_insert (priv->ids,
 			     e_cal_component_get_id (comp),
 			     GUINT_TO_POINTER (1));
 	g_object_unref (comp);
-
-	ensure_pending_flush_timeout (view);
 }
 
 static void
@@ -302,22 +310,27 @@ notify_add_component (EDataCalView *view,
 {
 	EDataCalViewPrivate *priv = view->priv;
 	gchar               *obj;
+	ECalClientViewFlags flags;
 
 	obj = e_data_cal_view_get_component_string (view, comp);
 
 	send_pending_changes (view);
 	send_pending_removes (view);
 
-	if (priv->adds->len == THRESHOLD_ITEMS) {
-		send_pending_adds (view);
+	/* Do not send component add notifications during initial stage */
+	flags = e_data_cal_view_get_flags (view);
+	if (priv->complete || (flags & E_CAL_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL) != 0) {
+		if (priv->adds->len == THRESHOLD_ITEMS) {
+			send_pending_adds (view);
+		}
+		g_array_append_val (priv->adds, obj);
+
+		ensure_pending_flush_timeout (view);
 	}
-	g_array_append_val (priv->adds, obj);
 
 	g_hash_table_insert (priv->ids,
 			     e_cal_component_get_id (comp),
 			     GUINT_TO_POINTER (1));
-
-	ensure_pending_flush_timeout (view);
 }
 
 static void
@@ -458,6 +471,19 @@ impl_DataCalView_stop (EGdbusCalView *object,
 }
 
 static gboolean
+impl_DataCalView_setFlags (EGdbusCalView         *object,
+                           GDBusMethodInvocation *invocation,
+                           ECalClientViewFlags    flags,
+                           EDataCalView          *view)
+{
+	view->priv->flags = flags;
+
+	e_gdbus_cal_view_complete_set_flags (object, invocation, NULL);
+
+	return TRUE;
+}
+
+static gboolean
 impl_DataCalView_dispose (EGdbusCalView *object,
                           GDBusMethodInvocation *invocation,
                           EDataCalView *view)
@@ -562,6 +588,8 @@ e_data_cal_view_init (EDataCalView *view)
 {
 	view->priv = E_DATA_CAL_VIEW_GET_PRIVATE (view);
 
+	view->priv->flags = E_CAL_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL;
+
 	view->priv->gdbus_object = e_gdbus_cal_view_stub_new ();
 	g_signal_connect (
 		view->priv->gdbus_object, "handle-start",
@@ -569,6 +597,9 @@ e_data_cal_view_init (EDataCalView *view)
 	g_signal_connect (
 		view->priv->gdbus_object, "handle-stop",
 		G_CALLBACK (impl_DataCalView_stop), view);
+	g_signal_connect (
+		view->priv->gdbus_object, "handle-set-flags",
+		G_CALLBACK (impl_DataCalView_setFlags), view);
 	g_signal_connect (
 		view->priv->gdbus_object, "handle-dispose",
 		G_CALLBACK (impl_DataCalView_dispose), view);
@@ -824,6 +855,24 @@ e_data_cal_view_get_fields_of_interest (EDataCalView *view)
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
 
 	return view->priv->fields_of_interest;
+}
+
+/**
+ * e_data_cal_view_get_flags:
+ * @view: A view object.
+ *
+ * Gets the #ECalClientViewFlags that control the behaviour of @view.
+ *
+ * Returns: the flags for @view.
+ *
+ * Since: 3.6
+ **/
+ECalClientViewFlags
+e_data_cal_view_get_flags (EDataCalView *view)
+{
+	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), 0);
+
+	return view->priv->flags;
 }
 
 static gboolean
