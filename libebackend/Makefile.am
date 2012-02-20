@@ -64,6 +64,8 @@ EXTRA_DIST = 						\
 	$(gsettings_SCHEMAS)				\
 	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
 
+CLEANFILES = $(gsettings_SCHEMAS:.xml=.valid)
+
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 -include $(top_srcdir)/git.mk

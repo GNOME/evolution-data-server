@@ -110,7 +110,7 @@ EXTRA_DIST = 						\
 	$(gsettings_SCHEMAS:.xml=.xml.in)
 
 BUILT_SOURCES = $(MARSHAL_GENERATED)
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) $(gsettings_SCHEMAS:.xml=.valid)
 
 DISTCLEANFILES = eds-version.h				\
 	$(pkgconfig_DATA)				\
