@@ -239,6 +239,7 @@ ECalComponentOrganizer
 e_cal_component_gen_uid
 e_cal_component_new
 e_cal_component_new_from_string
+e_cal_component_new_from_icalcomponent
 e_cal_component_clone
 e_cal_component_set_new_vtype
 e_cal_component_set_icalcomponent
