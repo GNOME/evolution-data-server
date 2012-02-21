@@ -947,6 +947,26 @@ e_util_free_object_slist (GSList *objects)
 }
 
 /**
+ * e_util_free_nullable_object_slist:
+ * @objects: a #GSList of nullable #GObject-s
+ *
+ * Calls g_object_unref() on each member of @objects if non-NULL and then frees
+ * also @objects itself.
+ *
+ * Since: 3.6
+ **/
+void
+e_util_free_nullable_object_slist (GSList *objects)
+{
+	const GSList *l;
+	for (l = objects; l; l = l->next) {
+		if (l->data)
+			g_object_unref (l->data);
+	}
+	g_slist_free (objects);
+}
+
+/**
  * e_binding_transform_enum_value_to_nick:
  * @binding: a #GBinding
  * @source_value: a #GValue whose type is derived from #G_TYPE_ENUM

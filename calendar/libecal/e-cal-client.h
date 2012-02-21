@@ -206,13 +206,25 @@ void		e_cal_client_create_object			(ECalClient *client, /* const */ icalcomponen
 gboolean	e_cal_client_create_object_finish		(ECalClient *client, GAsyncResult *result, gchar **uid, GError **error);
 gboolean	e_cal_client_create_object_sync			(ECalClient *client, /* const */ icalcomponent *icalcomp, gchar **uid, GCancellable *cancellable, GError **error);
 
+void		e_cal_client_create_objects			(ECalClient *client, GSList *icalcomps, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_cal_client_create_objects_finish	(ECalClient *client, GAsyncResult *result, GSList **uids, GError **error);
+gboolean	e_cal_client_create_objects_sync	(ECalClient *client, GSList *icalcomps, GSList **uids, GCancellable *cancellable, GError **error);
+
 void		e_cal_client_modify_object			(ECalClient *client, /* const */ icalcomponent *icalcomp, CalObjModType mod, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_cal_client_modify_object_finish		(ECalClient *client, GAsyncResult *result, GError **error);
 gboolean	e_cal_client_modify_object_sync			(ECalClient *client, /* const */ icalcomponent *icalcomp, CalObjModType mod, GCancellable *cancellable, GError **error);
 
+void		e_cal_client_modify_objects			(ECalClient *client, /* const */ GSList *icalcomps, CalObjModType mod, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_cal_client_modify_objects_finish	(ECalClient *client, GAsyncResult *result, GError **error);
+gboolean	e_cal_client_modify_objects_sync	(ECalClient *client, /* const */ GSList *icalcomps, CalObjModType mod, GCancellable *cancellable, GError **error);
+
 void		e_cal_client_remove_object			(ECalClient *client, const gchar *uid, const gchar *rid, CalObjModType mod, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_cal_client_remove_object_finish		(ECalClient *client, GAsyncResult *result, GError **error);
 gboolean	e_cal_client_remove_object_sync			(ECalClient *client, const gchar *uid, const gchar *rid, CalObjModType mod, GCancellable *cancellable, GError **error);
+
+void		e_cal_client_remove_objects			(ECalClient *client, const GSList *ids, CalObjModType mod, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_cal_client_remove_objects_finish	(ECalClient *client, GAsyncResult *result, GError **error);
+gboolean	e_cal_client_remove_objects_sync	(ECalClient *client, const GSList *ids, CalObjModType mod, GCancellable *cancellable, GError **error);
 
 void		e_cal_client_receive_objects			(ECalClient *client, /* const */ icalcomponent *icalcomp, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_cal_client_receive_objects_finish		(ECalClient *client, GAsyncResult *result, GError **error);

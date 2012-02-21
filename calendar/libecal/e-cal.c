@@ -3917,7 +3917,9 @@ e_cal_create_object (ECal *ecal,
                      GError **error)
 {
 	ECalPrivate *priv;
-	gchar *obj, *muid = NULL, *gdbus_obj = NULL;
+	gchar *obj, *gdbus_obj = NULL;
+	const gchar *strv[2];
+	gchar **muids = NULL;
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp != NULL, E_CALENDAR_STATUS_INVALID_ARG);
@@ -3930,8 +3932,10 @@ e_cal_create_object (ECal *ecal,
 	}
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
-	if (!e_gdbus_cal_call_create_object_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (obj, &gdbus_obj), &muid, NULL, error)) {
-		g_free (muid);
+	strv[0] = e_util_ensure_gdbus_string (obj, &gdbus_obj);
+	strv[1] = NULL;
+
+	if (!e_gdbus_cal_call_create_objects_sync (priv->gdbus_cal, strv, &muids, NULL, error)) {
 		g_free (obj);
 		g_free (gdbus_obj);
 
@@ -3941,15 +3945,15 @@ e_cal_create_object (ECal *ecal,
 	g_free (obj);
 	g_free (gdbus_obj);
 
-	if (!muid) {
+	if (!muids) {
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OTHER_ERROR, error);
 	} else {
-		icalcomponent_set_uid (icalcomp, muid);
+		icalcomponent_set_uid (icalcomp, muids[0]);
 
 		if (uid)
-			*uid = muid;
-		else
-			g_free (muid);
+			*uid = g_strdup (muids[0]);
+
+		g_strfreev (muids);
 
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_OK, error);
 	}
@@ -3982,6 +3986,7 @@ e_cal_modify_object (ECal *ecal,
 {
 	ECalPrivate *priv;
 	gchar *obj, **strv;
+	GSList objs = {0,};
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (icalcomp, E_CALENDAR_STATUS_INVALID_ARG);
@@ -4003,8 +4008,9 @@ e_cal_modify_object (ECal *ecal,
 	}
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
-	strv = e_gdbus_cal_encode_modify_object (obj, mod);
-	if (!e_gdbus_cal_call_modify_object_sync (priv->gdbus_cal, (const gchar * const *) strv, NULL, error)) {
+	objs.data = obj;
+	strv = e_gdbus_cal_encode_modify_objects (&objs, mod);
+	if (!e_gdbus_cal_call_modify_objects_sync (priv->gdbus_cal, (const gchar * const *) strv, NULL, error)) {
 		g_free (obj);
 		g_strfreev (strv);
 
@@ -4073,6 +4079,8 @@ e_cal_remove_object_with_mod (ECal *ecal,
 {
 	ECalPrivate *priv;
 	gchar **strv;
+	GSList ids = {0,};
+	ECalComponentId id;
 
 	e_return_error_if_fail (E_IS_CAL (ecal), E_CALENDAR_STATUS_INVALID_ARG);
 	e_return_error_if_fail (uid, E_CALENDAR_STATUS_INVALID_ARG);
@@ -4093,8 +4101,11 @@ e_cal_remove_object_with_mod (ECal *ecal,
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	strv = e_gdbus_cal_encode_remove_object (uid, rid, mod);
-	if (!e_gdbus_cal_call_remove_object_sync (priv->gdbus_cal, (const gchar * const *) strv, NULL, error)) {
+	id.uid = (gchar *)uid;
+	id.rid = (gchar *)rid;
+	ids.data = &id;
+	strv = e_gdbus_cal_encode_remove_objects (&ids, mod);
+	if (!e_gdbus_cal_call_remove_objects_sync (priv->gdbus_cal, (const gchar * const *) strv, NULL, error)) {
 		g_strfreev (strv);
 
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);

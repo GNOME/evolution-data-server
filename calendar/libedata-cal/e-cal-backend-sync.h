@@ -39,9 +39,9 @@ struct _ECalBackendSyncClass {
 	void	(* get_object_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, gchar **calobj, GError **error);
 	void	(* get_object_list_sync)	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *sexp, GSList **calobjs, GError **error);
 	void	(* get_free_busy_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users, time_t start, time_t end, GSList **freebusyobjs, GError **error);
-	void	(* create_object_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, gchar **uid, ECalComponent **new_component, GError **error);
-	void	(* modify_object_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, CalObjModType mod, ECalComponent **old_component, ECalComponent **new_component, GError **error);
-	void	(* remove_object_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, CalObjModType mod, ECalComponent **old_component, ECalComponent **new_component, GError **error);
+	void	(* create_objects_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *calobjs, GSList **uids, GSList **new_components, GError **error);
+	void	(* modify_objects_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *calobjs, CalObjModType mod, GSList **old_components, GSList **new_components, GError **error);
+	void	(* remove_objects_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *ids, CalObjModType mod, GSList **old_components, GSList **new_components, GError **error);
 	void	(* receive_objects_sync)	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **error);
 	void	(* send_objects_sync)		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GSList **users, gchar **modified_calobj, GError **error);
 	void	(* get_attachment_uris_sync)	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, GSList **attachments, GError **error);
@@ -64,9 +64,9 @@ gboolean e_cal_backend_sync_set_backend_property (ECalBackendSync *backend, EDat
 void	e_cal_backend_sync_get_object		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, gchar **calobj, GError **error);
 void	e_cal_backend_sync_get_object_list	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *sexp, GSList **calobjs, GError **error);
 void	e_cal_backend_sync_get_free_busy	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *users, time_t start, time_t end, GSList **freebusyobjects, GError **error);
-void	e_cal_backend_sync_create_object	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, gchar **uid, ECalComponent **new_component, GError **error);
-void	e_cal_backend_sync_modify_object	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, CalObjModType mod, ECalComponent **old_component, ECalComponent **new_component, GError **error);
-void	e_cal_backend_sync_remove_object	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, CalObjModType mod, ECalComponent **old_component, ECalComponent **new_component, GError **error);
+void	e_cal_backend_sync_create_objects	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *calobjs, GSList **uids, GSList **new_components, GError **error);
+void	e_cal_backend_sync_modify_objects	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *calobjs, CalObjModType mod, GSList **old_components, GSList **new_components, GError **error);
+void	e_cal_backend_sync_remove_objects	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const GSList *ids, CalObjModType mod, GSList **old_components, GSList **new_components, GError **error);
 void	e_cal_backend_sync_receive_objects	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GError **error);
 void	e_cal_backend_sync_send_objects		(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *calobj, GSList **users, gchar **modified_calobj, GError **error);
 void	e_cal_backend_sync_get_attachment_uris	(ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *uid, const gchar *rid, GSList **attachments, GError **error);

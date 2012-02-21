@@ -1014,105 +1014,103 @@ e_cal_backend_get_free_busy (ECalBackend *backend,
 }
 
 /**
- * e_cal_backend_create_object:
+ * e_cal_backend_create_objects:
  * @backend: an #ECalBackend
  * @cal: an #EDataCal
  * @opid: the ID to use for this operation
  * @cancellable: a #GCancellable for the operation
- * @calobj: The object to create.
+ * @calobjs: The objects to create (list of gchar *).
  *
  * Calls the create_object method on the given backend.
- * This might be finished with e_data_cal_respond_create_object().
+ * This might be finished with e_data_cal_respond_create_objects().
  **/
 void
-e_cal_backend_create_object (ECalBackend *backend,
-                             EDataCal *cal,
-                             guint32 opid,
-                             GCancellable *cancellable,
-                             const gchar *calobj)
+e_cal_backend_create_objects (ECalBackend *backend,
+                              EDataCal *cal,
+                              guint32 opid,
+                              GCancellable *cancellable,
+                              const GSList *calobjs)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (calobj != NULL);
+	g_return_if_fail (calobjs != NULL);
 
 	if (e_cal_backend_is_opening (backend))
-		e_data_cal_respond_create_object (cal, opid, EDC_OPENING_ERROR, NULL, NULL);
-	else if (!E_CAL_BACKEND_GET_CLASS (backend)->create_object)
-		e_data_cal_respond_create_object (cal, opid, EDC_ERROR (UnsupportedMethod), NULL, NULL);
+		e_data_cal_respond_create_objects (cal, opid, EDC_OPENING_ERROR, NULL, NULL);
+	else if (!E_CAL_BACKEND_GET_CLASS (backend)->create_objects)
+		e_data_cal_respond_create_objects (cal, opid, EDC_ERROR (UnsupportedMethod), NULL, NULL);
 	else if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_create_object (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
+		e_data_cal_respond_create_objects (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
 	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->create_object) (backend, cal, opid, cancellable, calobj);
+		(* E_CAL_BACKEND_GET_CLASS (backend)->create_objects) (backend, cal, opid, cancellable, calobjs);
 }
 
 /**
- * e_cal_backend_modify_object:
+ * e_cal_backend_modify_objects:
  * @backend: an #ECalBackend
  * @cal: an #EDataCal
  * @opid: the ID to use for this operation
  * @cancellable: a #GCancellable for the operation
- * @calobj: Object to be modified.
+ * @calobjs: Objects to be modified (list of gchar *).
  * @mod: Type of modification.
  *
- * Calls the modify_object method on the given backend.
- * This might be finished with e_data_cal_respond_modify_object().
+ * Calls the modify_objects method on the given backend.
+ * This might be finished with e_data_cal_respond_modify_objects().
  **/
 void
-e_cal_backend_modify_object (ECalBackend *backend,
-                             EDataCal *cal,
-                             guint32 opid,
-                             GCancellable *cancellable,
-                             const gchar *calobj,
-                             CalObjModType mod)
+e_cal_backend_modify_objects (ECalBackend *backend,
+                              EDataCal *cal,
+                              guint32 opid,
+                              GCancellable *cancellable,
+                              const GSList *calobjs,
+                              CalObjModType mod)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (calobj != NULL);
+	g_return_if_fail (calobjs != NULL);
 
 	if (e_cal_backend_is_opening (backend))
-		e_data_cal_respond_modify_object (cal, opid, EDC_OPENING_ERROR, NULL, NULL);
-	else if (!E_CAL_BACKEND_GET_CLASS (backend)->modify_object)
-		e_data_cal_respond_modify_object (cal, opid, EDC_ERROR (UnsupportedMethod), NULL, NULL);
+		e_data_cal_respond_modify_objects (cal, opid, EDC_OPENING_ERROR, NULL, NULL);
+	else if (!E_CAL_BACKEND_GET_CLASS (backend)->modify_objects)
+		e_data_cal_respond_modify_objects (cal, opid, EDC_ERROR (UnsupportedMethod), NULL, NULL);
 	else if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_modify_object (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
+		e_data_cal_respond_modify_objects (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL);
 	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->modify_object) (backend, cal, opid, cancellable, calobj, mod);
+		(* E_CAL_BACKEND_GET_CLASS (backend)->modify_objects) (backend, cal, opid, cancellable, calobjs, mod);
 }
 
 /**
- * e_cal_backend_remove_object:
+ * e_cal_backend_remove_objects:
  * @backend: an #ECalBackend
  * @cal: an #EDataCal
  * @opid: the ID to use for this operation
  * @cancellable: a #GCancellable for the operation
- * @uid: Unique identifier of the object to remove.
- * @rid: A recurrence ID.
+ * @ids: List of #ECalComponentId objects identifying the objects to remove
  * @mod: Type of removal.
  *
- * Removes an object in a calendar backend.  The backend will notify all of its
+ * Removes objects in a calendar backend.  The backend will notify all of its
  * clients about the change.
- * This might be finished with e_data_cal_respond_remove_object().
+ * This might be finished with e_data_cal_respond_remove_objects().
  **/
 void
-e_cal_backend_remove_object (ECalBackend *backend,
-                             EDataCal *cal,
-                             guint32 opid,
-                             GCancellable *cancellable,
-                             const gchar *uid,
-                             const gchar *rid,
-                             CalObjModType mod)
+e_cal_backend_remove_objects (ECalBackend *backend,
+                              EDataCal *cal,
+                              guint32 opid,
+                              GCancellable *cancellable,
+                              const GSList *ids,
+                              CalObjModType mod)
 {
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (uid != NULL);
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->remove_object != NULL);
+	g_return_if_fail (ids != NULL);
+	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->remove_objects != NULL);
 
 	if (e_cal_backend_is_opening (backend))
-		e_data_cal_respond_remove_object (cal, opid, EDC_OPENING_ERROR, NULL, NULL, NULL);
+		e_data_cal_respond_remove_objects (cal, opid, EDC_OPENING_ERROR, NULL, NULL, NULL);
 	else if (!e_cal_backend_is_opened (backend))
-		e_data_cal_respond_remove_object (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL, NULL);
+		e_data_cal_respond_remove_objects (cal, opid, EDC_NOT_OPENED_ERROR, NULL, NULL, NULL);
 	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->remove_object) (backend, cal, opid, cancellable, uid, rid, mod);
+		(* E_CAL_BACKEND_GET_CLASS (backend)->remove_objects) (backend, cal, opid, cancellable, ids, mod);
 }
 
 /**

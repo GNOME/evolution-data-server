@@ -1582,13 +1582,13 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 }
 
 static void
-e_cal_backend_contacts_create_object (ECalBackendSync *backend,
-                                      EDataCal *cal,
-                                      GCancellable *cancellable,
-                                      const gchar *calobj,
-                                      gchar **uid,
-                                      ECalComponent **new_component,
-                                      GError **perror)
+e_cal_backend_contacts_create_objects (ECalBackendSync *backend,
+                                       EDataCal *cal,
+                                       GCancellable *cancellable,
+                                       const GSList *calobjs,
+                                       GSList **uids,
+                                       GSList **new_components,
+                                       GError **perror)
 {
 	g_propagate_error (perror, EDC_ERROR (PermissionDenied));
 }
@@ -1612,7 +1612,7 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 	sync_class->get_backend_property_sync	= e_cal_backend_contacts_get_backend_property;
 	sync_class->open_sync			= e_cal_backend_contacts_open;
 	sync_class->remove_sync			= e_cal_backend_contacts_remove;
-	sync_class->create_object_sync		= e_cal_backend_contacts_create_object;
+	sync_class->create_objects_sync		= e_cal_backend_contacts_create_objects;
 	sync_class->receive_objects_sync	= e_cal_backend_contacts_receive_objects;
 	sync_class->send_objects_sync		= e_cal_backend_contacts_send_objects;
 	sync_class->get_object_sync		= e_cal_backend_contacts_get_object;

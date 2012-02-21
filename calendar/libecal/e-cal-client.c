@@ -562,6 +562,43 @@ convert_type (ECalClientSourceType type)
 	return AnyType;
 }
 
+/*
+ * Converts a GSList of icalcomponents into a NULL-terminated array of
+ * valid UTF-8 strings, suitable for sending over DBus.
+ */
+static gchar **
+icalcomponent_slist_to_utf8_icomp_array (GSList *icalcomponents)
+{
+	gchar **array;
+	const GSList *l;
+	gint i = 0;
+
+	array = g_new0 (gchar *, g_slist_length (icalcomponents) + 1);
+	for (l = icalcomponents; l != NULL; l = l->next) {
+		gchar *comp_str = icalcomponent_as_ical_string_r ((icalcomponent *) l->data);
+		array[i++] = e_util_utf8_make_valid (comp_str);
+		g_free (comp_str);
+	}
+
+	return array;
+}
+
+/*
+ * Converts a GSList of icalcomponents into a GSList of strings.
+ */
+static GSList *
+icalcomponent_slist_to_string_slist (GSList *icalcomponents)
+{
+	GSList *strings = NULL;
+	const GSList *l;
+
+	for (l = icalcomponents; l != NULL; l = l->next) {
+		strings = g_slist_prepend (strings, icalcomponent_as_ical_string_r ((icalcomponent *) l->data));
+	}
+
+	return g_slist_reverse (strings);
+}
+
 /**
  * e_cal_client_new:
  * @source: An #ESource pointer
@@ -2693,6 +2730,29 @@ complete_string_exchange (gboolean res,
 }
 
 static gboolean
+complete_strv_exchange (gboolean res,
+                        gchar **out_strings,
+                        GSList **result,
+                        GError **error)
+{
+	g_return_val_if_fail (result != NULL, FALSE);
+
+	if (res && out_strings) {
+		*result = e_client_util_strv_to_slist ((const gchar * const*) out_strings);
+	} else {
+		*result = NULL;
+		res = FALSE;
+
+		if (error && !*error)
+			g_propagate_error (error, e_client_error_create (E_CLIENT_ERROR_INVALID_ARG, NULL));
+	}
+
+	g_strfreev (out_strings);
+
+	return res;
+}
+
+static gboolean
 cal_client_get_default_object_from_cache_finish (EClient *client,
                                                  GAsyncResult *result,
                                                  gchar **prop_value,
@@ -3644,14 +3704,19 @@ e_cal_client_create_object (ECalClient *client,
                             gpointer user_data)
 {
 	gchar *comp_str, *gdbus_comp = NULL;
+	const gchar *strv[2];
 
 	g_return_if_fail (icalcomp != NULL);
 
 	comp_str = icalcomponent_as_ical_string_r (icalcomp);
+	strv[0] = e_util_ensure_gdbus_string (comp_str, &gdbus_comp);
+	strv[1] = NULL;
 
-	e_client_proxy_call_string (E_CLIENT (client), e_util_ensure_gdbus_string (comp_str, &gdbus_comp), cancellable, callback, user_data, e_cal_client_create_object,
-			e_gdbus_cal_call_create_object,
-			NULL, NULL, e_gdbus_cal_call_create_object_finish, NULL, NULL);
+	g_return_if_fail (strv[0] != NULL);
+
+	e_client_proxy_call_strv (E_CLIENT (client), strv, cancellable, callback, user_data, e_cal_client_create_object,
+			e_gdbus_cal_call_create_objects,
+			NULL, NULL, NULL, e_gdbus_cal_call_create_objects_finish, NULL);
 
 	g_free (comp_str);
 	g_free (gdbus_comp);
@@ -3679,11 +3744,17 @@ e_cal_client_create_object_finish (ECalClient *client,
                                    GError **error)
 {
 	gboolean res;
+	gchar **out_strings = NULL;
 	gchar *out_string = NULL;
 
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	res = e_client_proxy_call_finish_string (E_CLIENT (client), result, &out_string, error, e_cal_client_create_object);
+	res = e_client_proxy_call_finish_strv (E_CLIENT (client), result, &out_strings, error, e_cal_client_create_object);
+
+	if (res && out_strings) {
+		out_string = g_strdup (out_strings[0]);
+		g_strfreev (out_strings);
+	}
 
 	return complete_string_exchange (res, out_string, uid, error);
 }
@@ -3715,6 +3786,8 @@ e_cal_client_create_object_sync (ECalClient *client,
 {
 	gboolean res;
 	gchar *comp_str, *gdbus_comp = NULL;
+	const gchar *strv[2];
+	gchar **out_strings = NULL;
 	gchar *out_string = NULL;
 
 	g_return_val_if_fail (client != NULL, FALSE);
@@ -3729,13 +3802,141 @@ e_cal_client_create_object_sync (ECalClient *client,
 	}
 
 	comp_str = icalcomponent_as_ical_string_r (icalcomp);
+	strv[0] = e_util_ensure_gdbus_string (comp_str, &gdbus_comp);
+	strv[1] = NULL;
 
-	res = e_client_proxy_call_sync_string__string (E_CLIENT (client), e_util_ensure_gdbus_string (comp_str, &gdbus_comp), &out_string, cancellable, error, e_gdbus_cal_call_create_object_sync);
+	g_return_val_if_fail (strv[0] != NULL, FALSE);
+
+	res = e_client_proxy_call_sync_strv__strv (E_CLIENT (client), strv, &out_strings, cancellable, error, e_gdbus_cal_call_create_objects_sync);
 
 	g_free (comp_str);
 	g_free (gdbus_comp);
 
+	if (res && out_strings) {
+		out_string = g_strdup (out_strings[0]);
+		g_strfreev (out_strings);
+	}
+
 	return complete_string_exchange (res, out_string, uid, error);
+}
+
+/**
+ * e_cal_client_create_objects:
+ * @client: an #ECalClient
+ * @icalcomps: The components to create
+ * @cancellable: a #GCancellable; can be %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * Requests the calendar backend to create the objects specified by the @icalcomps
+ * argument. Some backends would assign a specific UID to the newly created object,
+ * but this function does not modify the original @icalcomps if their UID changes.
+ * The call is finished by e_cal_client_create_objects_finish() from
+ * the @callback.
+ *
+ * Since: 3.6
+ **/
+void
+e_cal_client_create_objects (ECalClient *client,
+                             GSList *icalcomps,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	gchar **array;
+
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
+	g_return_if_fail (client->priv != NULL);
+	g_return_if_fail (icalcomps != NULL);
+
+	array = icalcomponent_slist_to_utf8_icomp_array (icalcomps);
+
+	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) array, cancellable, callback, user_data, e_cal_client_create_objects,
+			e_gdbus_cal_call_create_objects,
+			NULL, NULL, NULL, e_gdbus_cal_call_create_objects_finish, NULL);
+
+	g_strfreev (array);
+}
+
+/**
+ * e_cal_client_create_objects_finish:
+ * @client: an #ECalClient
+ * @result: a #GAsyncResult
+ * @uids: (out): Return value for the UIDs assigned to the new components by the calendar backend
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Finishes previous call of e_cal_client_create_objects() and
+ * sets @uids to newly assigned UIDs for the created objects.
+ * This @uids should be freed with e_client_util_free_string_slist().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_cal_client_create_objects_finish (ECalClient *client,
+                                    GAsyncResult *result,
+                                    GSList **uids,
+                                    GError **error)
+{
+	gboolean res;
+	gchar **out_strings = NULL;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+	g_return_val_if_fail (client->priv != NULL, FALSE);
+	g_return_val_if_fail (uids != NULL, FALSE);
+
+	res = e_client_proxy_call_finish_strv (E_CLIENT (client), result, &out_strings, error, e_cal_client_create_objects);
+
+	return complete_strv_exchange (res, out_strings, uids, error);
+}
+
+/**
+ * e_cal_client_create_objects_sync:
+ * @client: an #ECalClient
+ * @icalcomps: The components to create
+ * @uids: (out): Return value for the UIDs assigned to the new components by the calendar backend
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Requests the calendar backend to create the objects specified by the @icalcomps
+ * argument. Some backends would assign a specific UID to the newly created objects,
+ * in those cases these UIDs would be returned in the @uids argument. This function
+ * does not modify the original @icalcomps if their UID changes.
+ * Returned @uid should be freed with e_client_util_free_string_slist().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_cal_client_create_objects_sync (ECalClient *client,
+                                  GSList *icalcomps,
+                                  GSList **uids,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	gboolean res;
+	gchar **array, **out_strings = NULL;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+	g_return_val_if_fail (client->priv != NULL, FALSE);
+	g_return_val_if_fail (icalcomps != NULL, FALSE);
+	g_return_val_if_fail (uids != NULL, FALSE);
+
+	if (!client->priv->gdbus_cal) {
+		set_proxy_gone_error (error);
+		return FALSE;
+	}
+
+	array = icalcomponent_slist_to_utf8_icomp_array (icalcomps);
+
+	res = e_client_proxy_call_sync_strv__strv (E_CLIENT (client), (const gchar * const *) array, &out_strings, cancellable, error, e_gdbus_cal_call_create_objects_sync);
+
+	return complete_strv_exchange (res, out_strings, uids, error);
 }
 
 /**
@@ -3769,15 +3970,17 @@ e_cal_client_modify_object (ECalClient *client,
                             gpointer user_data)
 {
 	gchar *comp_str, **strv;
+	GSList comp_strings = {0,};
 
 	g_return_if_fail (icalcomp != NULL);
 
 	comp_str = icalcomponent_as_ical_string_r (icalcomp);
-	strv = e_gdbus_cal_encode_modify_object (comp_str, mod);
+	comp_strings.data = comp_str;
+	strv = e_gdbus_cal_encode_modify_objects (&comp_strings, mod);
 
 	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_modify_object,
-			e_gdbus_cal_call_modify_object,
-			e_gdbus_cal_call_modify_object_finish, NULL, NULL, NULL, NULL);
+			e_gdbus_cal_call_modify_objects,
+			e_gdbus_cal_call_modify_objects_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (strv);
 	g_free (comp_str);
@@ -3832,6 +4035,7 @@ e_cal_client_modify_object_sync (ECalClient *client,
 {
 	gboolean res;
 	gchar *comp_str, **strv;
+	GSList comp_strings = {0,};
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
@@ -3844,12 +4048,138 @@ e_cal_client_modify_object_sync (ECalClient *client,
 	}
 
 	comp_str = icalcomponent_as_ical_string_r (icalcomp);
-	strv = e_gdbus_cal_encode_modify_object (comp_str, mod);
+	comp_strings.data = comp_str;
+	strv = e_gdbus_cal_encode_modify_objects (&comp_strings, mod);
 
-	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const *) strv, cancellable, error, e_gdbus_cal_call_modify_object_sync);
+	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const *) strv, cancellable, error, e_gdbus_cal_call_modify_objects_sync);
 
 	g_strfreev (strv);
 	g_free (comp_str);
+
+	return res;
+}
+
+/**
+ * e_cal_client_modify_objects:
+ * @client: an #ECalClient
+ * @comps: Components to modify
+ * @mod: Type of modification
+ * @cancellable: a #GCancellable; can be %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * Requests the calendar backend to modify existing objects. If an object
+ * does not exist on the calendar, an error will be returned.
+ *
+ * For recurrent appointments, the @mod argument specifies what to modify,
+ * if all instances (CALOBJ_MOD_ALL), a single instance (CALOBJ_MOD_THIS),
+ * or a specific set of instances (CALOBJ_MOD_THISNADPRIOR and
+ * CALOBJ_MOD_THISANDFUTURE).
+ *
+ * The call is finished by e_cal_client_modify_objects_finish() from
+ * the @callback.
+ *
+ * Since: 3.6
+ **/
+void
+e_cal_client_modify_objects (ECalClient *client,
+                             /* const */ GSList *comps,
+                             CalObjModType mod,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	GSList *comp_strings;
+	gchar **strv;
+
+	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
+	g_return_if_fail (client->priv != NULL);
+	g_return_if_fail (comps != NULL);
+
+	comp_strings = icalcomponent_slist_to_string_slist(comps);
+	strv = e_gdbus_cal_encode_modify_objects (comp_strings, mod);
+
+	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_modify_objects,
+			e_gdbus_cal_call_modify_objects,
+			e_gdbus_cal_call_modify_objects_finish, NULL, NULL, NULL, NULL);
+
+	g_strfreev (strv);
+	e_client_util_free_string_slist (comp_strings);
+}
+
+/**
+ * e_cal_client_modify_objects_finish:
+ * @client: an #ECalClient
+ * @result: a #GAsyncResult
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Finishes previous call of e_cal_client_modify_objects().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_cal_client_modify_objects_finish (ECalClient *client,
+                                    GAsyncResult *result,
+                                    GError **error)
+{
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+	g_return_val_if_fail (client->priv != NULL, FALSE);
+
+	return e_client_proxy_call_finish_void (E_CLIENT (client), result, error, e_cal_client_modify_objects);
+}
+
+/**
+ * e_cal_client_modify_objects_sync:
+ * @client: an #ECalClient
+ * @comps: Components to modify
+ * @mod: Type of modification
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Requests the calendar backend to modify existing objects. If an object
+ * does not exist on the calendar, an error will be returned.
+ *
+ * For recurrent appointments, the @mod argument specifies what to modify,
+ * if all instances (CALOBJ_MOD_ALL), a single instance (CALOBJ_MOD_THIS),
+ * or a specific set of instances (CALOBJ_MOD_THISNADPRIOR and
+ * CALOBJ_MOD_THISANDFUTURE).
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_cal_client_modify_objects_sync (ECalClient *client,
+                                  /* const */ GSList *comps,
+                                  CalObjModType mod,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	gboolean res;
+	gchar **strv;
+	GSList *comp_strings;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+	g_return_val_if_fail (client->priv != NULL, FALSE);
+	g_return_val_if_fail (comps != NULL, FALSE);
+
+	if (!client->priv->gdbus_cal) {
+		set_proxy_gone_error (error);
+		return FALSE;
+	}
+
+	comp_strings = icalcomponent_slist_to_string_slist(comps);
+	strv = e_gdbus_cal_encode_modify_objects (comp_strings, mod);
+
+	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const *) strv, cancellable, error, e_gdbus_cal_call_modify_objects_sync);
+
+	g_strfreev (strv);
+	e_client_util_free_string_slist (comp_strings);
 
 	return res;
 }
@@ -3885,14 +4215,19 @@ e_cal_client_remove_object (ECalClient *client,
                             gpointer user_data)
 {
 	gchar **strv;
+	GSList ids = {0,};
+	ECalComponentId id;
 
 	g_return_if_fail (uid != NULL);
 
-	strv = e_gdbus_cal_encode_remove_object (uid, rid, mod);
+	id.uid = (gchar *)uid;
+	id.rid = (gchar *)rid;
+	ids.data = &id;
+	strv = e_gdbus_cal_encode_remove_objects (&ids, mod);
 
 	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_remove_object,
-			e_gdbus_cal_call_remove_object,
-			e_gdbus_cal_call_remove_object_finish, NULL, NULL, NULL, NULL);
+			e_gdbus_cal_call_remove_objects,
+			e_gdbus_cal_call_remove_objects_finish, NULL, NULL, NULL, NULL);
 
 	g_strfreev (strv);
 }
@@ -3946,6 +4281,8 @@ e_cal_client_remove_object_sync (ECalClient *client,
 {
 	gboolean res;
 	gchar **strv;
+	GSList ids = {0,};
+	ECalComponentId id;
 
 	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
@@ -3957,9 +4294,118 @@ e_cal_client_remove_object_sync (ECalClient *client,
 		return FALSE;
 	}
 
-	strv = e_gdbus_cal_encode_remove_object (uid, rid, mod);
+	id.uid = (gchar *)uid;
+	id.rid = (gchar *)rid;
+	ids.data = &id;
+	strv = e_gdbus_cal_encode_remove_objects (&ids, mod);
 
-	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const *) strv, cancellable, error, e_gdbus_cal_call_remove_object_sync);
+	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const *) strv, cancellable, error, e_gdbus_cal_call_remove_objects_sync);
+
+	g_strfreev (strv);
+
+	return res;
+}
+
+/**
+ * e_cal_client_remove_objects:
+ * @client: an #ECalClient
+ * @ids: A list of #ECalComponentId objects identifying the objects to remove
+ * @mod: Type of the removal
+ * @cancellable: a #GCancellable; can be %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * This function allows the removal of instances of recurrent
+ * appointments. #ECalComponentId objects can identify specific instances (if rid is not NULL).
+ * If what you want is to remove all instances, use a #NULL rid in the #ECalComponentId and CALOBJ_MOD_ALL
+ * for the @mod.
+ *
+ * The call is finished by e_cal_client_remove_objects_finish() from
+ * the @callback.
+ *
+ * Since: 3.6
+ **/
+void
+e_cal_client_remove_objects (ECalClient *client,
+                             const GSList *ids,
+                             CalObjModType mod,
+                             GCancellable *cancellable,
+                             GAsyncReadyCallback callback,
+                             gpointer user_data)
+{
+	gchar **strv;
+
+	g_return_if_fail (ids != NULL);
+
+	strv = e_gdbus_cal_encode_remove_objects (ids, mod);
+
+	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_remove_objects,
+			e_gdbus_cal_call_remove_objects,
+			e_gdbus_cal_call_remove_objects_finish, NULL, NULL, NULL, NULL);
+
+	g_strfreev (strv);
+}
+
+/**
+ * e_cal_client_remove_objects_finish:
+ * @client: an #ECalClient
+ * @result: a #GAsyncResult
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Finishes previous call of e_cal_client_remove_objects().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_cal_client_remove_objects_finish (ECalClient *client,
+                                    GAsyncResult *result,
+                                    GError **error)
+{
+	return e_client_proxy_call_finish_void (E_CLIENT (client), result, error, e_cal_client_remove_objects);
+}
+
+/**
+ * e_cal_client_remove_objects_sync:
+ * @client: an #ECalClient
+ * @ids: A list of #ECalComponentId objects identifying the objects to remove
+ * @mod: Type of the removal
+ * @cancellable: a #GCancellable; can be %NULL
+ * @error: (out): a #GError to set an error, if any
+ *
+ * This function allows the removal of instances of recurrent
+ * appointments. #ECalComponentId objects can identify specific instances (if rid is not NULL).
+ * If what you want is to remove all instances, use a #NULL rid in the #ECalComponentId and CALOBJ_MOD_ALL
+ * for the @mod.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_cal_client_remove_objects_sync (ECalClient *client,
+                                  const GSList *ids,
+                                  CalObjModType mod,
+                                  GCancellable *cancellable,
+                                  GError **error)
+{
+	gboolean res;
+	gchar **strv;
+
+	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+	g_return_val_if_fail (client->priv != NULL, FALSE);
+	g_return_val_if_fail (ids != NULL, FALSE);
+
+	if (!client->priv->gdbus_cal) {
+		set_proxy_gone_error (error);
+		return FALSE;
+	}
+
+	strv = e_gdbus_cal_encode_remove_objects (ids, mod);
+
+	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const *) strv, cancellable, error, e_gdbus_cal_call_remove_objects_sync);
 
 	g_strfreev (strv);
 

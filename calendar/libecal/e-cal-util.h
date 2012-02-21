@@ -113,6 +113,33 @@ gboolean e_cal_util_event_dates_match (icalcomponent *icalcomp1, icalcomponent *
 #define CAL_STATIC_CAPABILITY_NO_TRANSPARENCY             "no-transparency"
 
 /**
+ * CAL_STATIC_CAPABILITY_BULK_ADDS:
+ *
+ * Flag indicating that the backend supports bulk additions.
+ *
+ * Since: 3.6
+ */
+#define CAL_STATIC_CAPABILITY_BULK_ADDS                   "bulk-adds"
+
+/**
+ * CAL_STATIC_CAPABILITY_BULK_MODIFIES:
+ *
+ * Flag indicating that the backend supports bulk modifications.
+ *
+ * Since: 3.6
+ */
+#define CAL_STATIC_CAPABILITY_BULK_MODIFIES               "bulk-modifies"
+
+/**
+ * CAL_STATIC_CAPABILITY_BULK_REMOVES:
+ *
+ * Flag indicating that the backend supports bulk removals.
+ *
+ * Since: 3.6
+ */
+#define CAL_STATIC_CAPABILITY_BULK_REMOVES                "bulk-removes"
+
+/**
  * CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS:
  *
  * FIXME: Document me.

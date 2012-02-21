@@ -71,9 +71,9 @@ typedef enum {
 	OP_GET_OBJECT,
 	OP_GET_OBJECT_LIST,
 	OP_GET_FREE_BUSY,
-	OP_CREATE_OBJECT,
-	OP_MODIFY_OBJECT,
-	OP_REMOVE_OBJECT,
+	OP_CREATE_OBJECTS,
+	OP_MODIFY_OBJECTS,
+	OP_REMOVE_OBJECTS,
 	OP_RECEIVE_OBJECTS,
 	OP_SEND_OBJECTS,
 	OP_GET_ATTACHMENT_URIS,
@@ -117,21 +117,21 @@ typedef struct {
 			time_t start, end;
 			GSList *users;
 		} fb;
-		/* OP_CREATE_OBJECT */
+		/* OP_CREATE_OBJECTS */
+		GSList *calobjs;
 		/* OP_RECEIVE_OBJECTS */
 		/* OP_SEND_OBJECTS */
 		struct _co {
 			gchar *calobj;
 		} co;
-		/* OP_MODIFY_OBJECT */
+		/* OP_MODIFY_OBJECTS */
 		struct _mo {
-			gchar *calobj;
+			GSList *calobjs;
 			EDataCalObjModType mod;
 		} mo;
-		/* OP_REMOVE_OBJECT */
+		/* OP_REMOVE_OBJECTS */
 		struct _ro {
-			gchar *uid;
-			gchar *rid;
+			GSList *ids;
 			EDataCalObjModType mod;
 		} ro;
 		/* OP_GET_TIMEZONE */
@@ -214,21 +214,19 @@ operation_thread (gpointer data,
 		break;
 	case OP_GET_FREE_BUSY:
 		e_cal_backend_get_free_busy (backend, op->cal, op->id, op->cancellable, op->d.fb.users, op->d.fb.start, op->d.fb.end);
-		g_slist_foreach (op->d.fb.users, (GFunc) g_free, NULL);
-		g_slist_free (op->d.fb.users);
+		g_slist_free_full (op->d.fb.users, g_free);
 		break;
-	case OP_CREATE_OBJECT:
-		e_cal_backend_create_object (backend, op->cal, op->id, op->cancellable, op->d.co.calobj);
-		g_free (op->d.co.calobj);
+	case OP_CREATE_OBJECTS:
+		e_cal_backend_create_objects (backend, op->cal, op->id, op->cancellable, op->d.calobjs);
+		g_slist_free_full (op->d.calobjs, g_free);
 		break;
-	case OP_MODIFY_OBJECT:
-		e_cal_backend_modify_object (backend, op->cal, op->id, op->cancellable, op->d.mo.calobj, op->d.mo.mod);
-		g_free (op->d.mo.calobj);
+	case OP_MODIFY_OBJECTS:
+		e_cal_backend_modify_objects (backend, op->cal, op->id, op->cancellable, op->d.mo.calobjs, op->d.mo.mod);
+		g_slist_free_full (op->d.mo.calobjs, g_free);
 		break;
-	case OP_REMOVE_OBJECT:
-		e_cal_backend_remove_object (backend, op->cal, op->id, op->cancellable, op->d.ro.uid, op->d.ro.rid && *op->d.ro.rid ? op->d.ro.rid : NULL, op->d.ro.mod);
-		g_free (op->d.ro.uid);
-		g_free (op->d.ro.rid);
+	case OP_REMOVE_OBJECTS:
+		e_cal_backend_remove_objects (backend, op->cal, op->id, op->cancellable, op->d.ro.ids, op->d.ro.mod);
+		g_slist_free_full (op->d.ro.ids, (GDestroyNotify)e_cal_component_free_id);
 		break;
 	case OP_RECEIVE_OBJECTS:
 		e_cal_backend_receive_objects (backend, op->cal, op->id, op->cancellable, op->d.co.calobj);
@@ -679,55 +677,55 @@ impl_Cal_get_free_busy (EGdbusCal *object,
 }
 
 static gboolean
-impl_Cal_create_object (EGdbusCal *object,
-                        GDBusMethodInvocation *invocation,
-                        const gchar *in_calobj,
-                        EDataCal *cal)
+impl_Cal_create_objects (EGdbusCal *object,
+                         GDBusMethodInvocation *invocation,
+                         const gchar * const *in_calobjs,
+                         EDataCal *cal)
 {
 	OperationData *op;
 
-	op = op_new (OP_CREATE_OBJECT, cal);
-	op->d.co.calobj = g_strdup (in_calobj);
+	op = op_new (OP_CREATE_OBJECTS, cal);
+	op->d.calobjs = e_util_strv_to_slist (in_calobjs);
 
-	e_gdbus_cal_complete_create_object (cal->priv->gdbus_object, invocation, op->id);
+	e_gdbus_cal_complete_create_objects (cal->priv->gdbus_object, invocation, op->id);
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
 }
 
 static gboolean
-impl_Cal_modify_object (EGdbusCal *object,
-                        GDBusMethodInvocation *invocation,
-                        const gchar * const *in_calobj_mod,
-                        EDataCal *cal)
+impl_Cal_modify_objects (EGdbusCal *object,
+                         GDBusMethodInvocation *invocation,
+                         const gchar * const *in_mod_calobjs,
+                         EDataCal *cal)
 {
 	OperationData *op;
 	guint mod;
 
-	op = op_new (OP_MODIFY_OBJECT, cal);
-	g_return_val_if_fail (e_gdbus_cal_decode_modify_object (in_calobj_mod, &op->d.mo.calobj, &mod), FALSE);
+	op = op_new (OP_MODIFY_OBJECTS, cal);
+	g_return_val_if_fail (e_gdbus_cal_decode_modify_objects (in_mod_calobjs, &op->d.mo.calobjs, &mod), FALSE);
 	op->d.mo.mod = mod;
 
-	e_gdbus_cal_complete_modify_object (cal->priv->gdbus_object, invocation, op->id);
+	e_gdbus_cal_complete_modify_objects (cal->priv->gdbus_object, invocation, op->id);
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
 }
 
 static gboolean
-impl_Cal_remove_object (EGdbusCal *object,
-                        GDBusMethodInvocation *invocation,
-                        const gchar * const *in_uid_rid_mod,
-                        EDataCal *cal)
+impl_Cal_remove_objects (EGdbusCal *object,
+                         GDBusMethodInvocation *invocation,
+                         const gchar * const *in_mod_ids,
+                         EDataCal *cal)
 {
 	OperationData *op;
 	guint mod = 0;
 
-	op = op_new (OP_REMOVE_OBJECT, cal);
-	g_return_val_if_fail (e_gdbus_cal_decode_remove_object (in_uid_rid_mod, &op->d.ro.uid, &op->d.ro.rid, &mod), FALSE);
+	op = op_new (OP_REMOVE_OBJECTS, cal);
+	g_return_val_if_fail (e_gdbus_cal_decode_remove_objects (in_mod_ids, &op->d.ro.ids, &mod), FALSE);
 	op->d.ro.mod = mod;
 
-	e_gdbus_cal_complete_remove_object (cal->priv->gdbus_object, invocation, op->id);
+	e_gdbus_cal_complete_remove_objects (cal->priv->gdbus_object, invocation, op->id);
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -1163,102 +1161,125 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
 }
 
 /**
- * e_data_cal_respond_create_object:
+ * e_data_cal_respond_create_objects:
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
- * @uid: UID of the object created.
- * @new_component: The newly created #ECalComponent.
+ * @uids: UIDs of the objects created.
+ * @new_components: The newly created #ECalComponent objects.
  *
- * Notifies listeners of the completion of the create_object method call.
+ * Notifies listeners of the completion of the create_objects method call.
  *
- * Since: 3.2
+ * Since: 3.6
  */
 void
-e_data_cal_respond_create_object (EDataCal *cal,
-                                  guint32 opid,
-                                  GError *error,
-                                  const gchar *uid,
-                                  /* const */ ECalComponent *new_component)
+e_data_cal_respond_create_objects (EDataCal *cal,
+                                   guint32 opid,
+                                   GError *error,
+                                   const GSList *uids,
+                                   /* const */ GSList *new_components)
 {
-	gchar *gdbus_uid = NULL;
+	gchar **array = NULL;
+	const GSList *l;
+	gint i = 0;
 
 	op_complete (cal, opid);
+
+	array = g_new0 (gchar *, g_slist_length ((GSList *) uids) + 1);
+	for (l = uids; l != NULL; l = l->next) {
+		array[i++] = e_util_utf8_make_valid (l->data);
+	}
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot create calendar object: "));
 
-	e_gdbus_cal_emit_create_object_done (cal->priv->gdbus_object, opid, error, e_util_ensure_gdbus_string (uid, &gdbus_uid));
+	e_gdbus_cal_emit_create_objects_done (cal->priv->gdbus_object, opid, error, (const gchar * const *)array);
 
-	g_free (gdbus_uid);
+	g_strfreev (array);
 	if (error)
 		g_error_free (error);
-	else
-		e_cal_backend_notify_component_created (cal->priv->backend, new_component);
+	else {
+		for (l = new_components; l; l = l->next) {
+			e_cal_backend_notify_component_created (cal->priv->backend, l->data);
+		}
+	}
 }
 
 /**
- * e_data_cal_respond_modify_object:
+ * e_data_cal_respond_modify_objects:
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
- * @old_component: The old #ECalComponent.
- * @new_component: The new #ECalComponent.
+ * @old_components: The old #ECalComponents.
+ * @new_components: The new #ECalComponents.
  *
- * Notifies listeners of the completion of the modify_object method call.
+ * Notifies listeners of the completion of the modify_objects method call.
  *
- * Since: 3.2
+ * Since: 3.6
  */
 void
-e_data_cal_respond_modify_object (EDataCal *cal,
-                                  guint32 opid,
-                                  GError *error,
-                                  /* const */ ECalComponent *old_component,
-                                  /* const */ ECalComponent *new_component)
+e_data_cal_respond_modify_objects (EDataCal *cal,
+                                   guint32 opid,
+                                   GError *error,
+                                   /* const */ GSList *old_components,
+                                   /* const */ GSList *new_components)
 {
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot modify calendar object: "));
 
-	e_gdbus_cal_emit_modify_object_done (cal->priv->gdbus_object, opid, error);
+	e_gdbus_cal_emit_modify_objects_done (cal->priv->gdbus_object, opid, error);
 
 	if (error)
 		g_error_free (error);
-	else
-		e_cal_backend_notify_component_modified (cal->priv->backend, old_component, new_component);
+	else {
+		const GSList *lold = old_components, *lnew = new_components;
+		while (lold && lnew) {
+			e_cal_backend_notify_component_modified (cal->priv->backend, lold->data, lnew->data);
+			lold = lold->next;
+			lnew = lnew->next;
+		}
+	}
 }
 
 /**
- * e_data_cal_respond_remove_object:
+ * e_data_cal_respond_remove_objects:
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
- * @id: ID of the removed object.
- * @old_component: The old #ECalComponent.
- * @new_component: The new #ECalComponent. This will not be NULL only
- * when removing instances of a recurring appointment.
+ * @ids: IDs of the removed objects.
+ * @old_components: The old #ECalComponents.
+ * @new_components: The new #ECalComponents. They will not be NULL only
+ * when removing instances of recurring appointments.
  *
- * Notifies listeners of the completion of the remove_object method call.
+ * Notifies listeners of the completion of the remove_objects method call.
  *
- * Since: 3.2
+ * Since: 3.6
  */
 void
-e_data_cal_respond_remove_object (EDataCal *cal,
+e_data_cal_respond_remove_objects (EDataCal *cal,
                                   guint32 opid,
                                   GError *error,
-                                  const ECalComponentId *id,
-                                  /* const */ ECalComponent *old_component,
-                                  /* const */ ECalComponent *new_component)
+                                  const GSList *ids,
+                                  /* const */ GSList *old_components,
+                                  /* const */ GSList *new_components)
 {
 	op_complete (cal, opid);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot remove calendar object: "));
 
-	e_gdbus_cal_emit_remove_object_done (cal->priv->gdbus_object, opid, error);
+	e_gdbus_cal_emit_remove_objects_done (cal->priv->gdbus_object, opid, error);
 
 	if (error)
 		g_error_free (error);
-	else
-		e_cal_backend_notify_component_removed (cal->priv->backend, id, old_component, new_component);
+	else {
+		const GSList *lid = ids, *lold = old_components, *lnew = new_components;
+		while (lid && lold && lnew) {
+			e_cal_backend_notify_component_removed (cal->priv->backend, lid->data, lold->data, lnew->data);
+			lid = lid->next;
+			lold = lold->next;
+			lnew = lnew->next;
+		}
+	}
 }
 
 /**
@@ -1768,14 +1789,14 @@ e_data_cal_init (EDataCal *ecal)
 		gdbus_object, "handle-get-free-busy",
 		G_CALLBACK (impl_Cal_get_free_busy), ecal);
 	g_signal_connect (
-		gdbus_object, "handle-create-object",
-		G_CALLBACK (impl_Cal_create_object), ecal);
+		gdbus_object, "handle-create-objects",
+		G_CALLBACK (impl_Cal_create_objects), ecal);
 	g_signal_connect (
-		gdbus_object, "handle-modify-object",
-		G_CALLBACK (impl_Cal_modify_object), ecal);
+		gdbus_object, "handle-modify-objects",
+		G_CALLBACK (impl_Cal_modify_objects), ecal);
 	g_signal_connect (
-		gdbus_object, "handle-remove-object",
-		G_CALLBACK (impl_Cal_remove_object), ecal);
+		gdbus_object, "handle-remove-objects",
+		G_CALLBACK (impl_Cal_remove_objects), ecal);
 	g_signal_connect (
 		gdbus_object, "handle-receive-objects",
 		G_CALLBACK (impl_Cal_receive_objects), ecal);

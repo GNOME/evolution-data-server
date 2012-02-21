@@ -31,6 +31,7 @@ TESTS = 					\
 	test-client-get-revision		\
 	test-client-send-objects		\
 	test-client-receive-objects		\
+        test-client-bulk-methods		\
 	test-client-get-attachment-uris		\
 	test-client-get-view			\
 	test-client-revision-view		\
@@ -77,6 +78,8 @@ test_client_open_LDADD=$(TEST_LIBS)
 test_client_open_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_receive_objects_LDADD=$(TEST_LIBS)
 test_client_receive_objects_CPPFLAGS=$(TEST_CPPFLAGS)
+test_client_bulk_methods_LDADD=$(TEST_LIBS)
+test_client_bulk_methods_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_refresh_LDADD=$(TEST_LIBS)
 test_client_refresh_CPPFLAGS=$(TEST_CPPFLAGS)
 test_client_remove_object_LDADD=$(TEST_LIBS)

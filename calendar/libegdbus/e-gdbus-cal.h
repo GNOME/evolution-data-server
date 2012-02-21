@@ -136,14 +136,14 @@ struct _EGdbusCalIface
 	gboolean (*handle_get_free_busy)		(EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_start_end_userlist);
 	void	 (*get_free_busy_done)			(EGdbusCal *object, guint arg_opid, const GError *arg_error);
 
-	gboolean (*handle_create_object)		(EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *in_calobj);
-	void	 (*create_object_done)			(EGdbusCal *object, guint arg_opid, const GError *arg_error, gchar **out_uid);
+	gboolean (*handle_create_objects)		(EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *const *in_calobjs);
+	void	 (*create_objects_done)			(EGdbusCal *object, guint arg_opid, const GError *arg_error, gchar ***out_uids);
 
-	gboolean (*handle_modify_object)		(EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_calobj_mod);
-	void	 (*modify_object_done)			(EGdbusCal *object, guint arg_opid, const GError *arg_error);
+	gboolean (*handle_modify_objects)		(EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_mod_calobjs);
+	void	 (*modify_objects_done)			(EGdbusCal *object, guint arg_opid, const GError *arg_error);
 
-	gboolean (*handle_remove_object)		(EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_uid_rid_mod);
-	void	 (*remove_object_done)			(EGdbusCal *object, guint arg_opid, const GError *arg_error);
+	gboolean (*handle_remove_objects)		(EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar * const *in_mod_ids);
+	void	 (*remove_objects_done)			(EGdbusCal *object, guint arg_opid, const GError *arg_error);
 
 	gboolean (*handle_receive_objects)		(EGdbusCal *object, GDBusMethodInvocation *invocation, const gchar *in_calobj);
 	void	 (*receive_objects_done)		(EGdbusCal *object, guint arg_opid, const GError *arg_error);
@@ -211,21 +211,21 @@ void		e_gdbus_cal_call_get_free_busy			(GDBusProxy *proxy, const gchar * const *
 gboolean	e_gdbus_cal_call_get_free_busy_finish		(GDBusProxy *proxy, GAsyncResult *result, GError **error);
 gboolean	e_gdbus_cal_call_get_free_busy_sync		(GDBusProxy *proxy, const gchar * const *in_start_end_userlist, GCancellable *cancellable, GError **error);
 
-void		e_gdbus_cal_call_create_object			(GDBusProxy *proxy, const gchar *in_calobj, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-gboolean	e_gdbus_cal_call_create_object_finish		(GDBusProxy *proxy, GAsyncResult *result, gchar **out_uid, GError **error);
-gboolean	e_gdbus_cal_call_create_object_sync		(GDBusProxy *proxy, const gchar *in_calobj, gchar **out_uid, GCancellable *cancellable, GError **error);
+void		e_gdbus_cal_call_create_objects			(GDBusProxy *proxy, const gchar * const *in_calobjs, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_gdbus_cal_call_create_objects_finish	(GDBusProxy *proxy, GAsyncResult *result, gchar ***out_uids, GError **error);
+gboolean	e_gdbus_cal_call_create_objects_sync	(GDBusProxy *proxy, const gchar * const *in_calobjs, gchar ***out_uids, GCancellable *cancellable, GError **error);
 
-gchar **	e_gdbus_cal_encode_modify_object		(const gchar *in_calobj, guint in_mod);
-gboolean	e_gdbus_cal_decode_modify_object		(const gchar * const *in_strv, gchar **out_calobj, guint *out_mod);
-void		e_gdbus_cal_call_modify_object			(GDBusProxy *proxy, const gchar * const *in_calobj_mod, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-gboolean	e_gdbus_cal_call_modify_object_finish		(GDBusProxy *proxy, GAsyncResult *result, GError **error);
-gboolean	e_gdbus_cal_call_modify_object_sync		(GDBusProxy *proxy, const gchar * const *in_calobj_mod, GCancellable *cancellable, GError **error);
+gchar **	e_gdbus_cal_encode_modify_objects		(const GSList *in_calobjs, guint in_mod);
+gboolean	e_gdbus_cal_decode_modify_objects		(const gchar * const *in_strv, GSList **out_calobjs, guint *out_mod);
+void		e_gdbus_cal_call_modify_objects			(GDBusProxy *proxy, const gchar * const *in_mod_calobjs, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_gdbus_cal_call_modify_objects_finish	(GDBusProxy *proxy, GAsyncResult *result, GError **error);
+gboolean	e_gdbus_cal_call_modify_objects_sync	(GDBusProxy *proxy, const gchar * const *in_mod_calobjs, GCancellable *cancellable, GError **error);
 
-gchar **	e_gdbus_cal_encode_remove_object		(const gchar *in_uid, const gchar *in_rid, guint in_mod);
-gboolean	e_gdbus_cal_decode_remove_object		(const gchar * const *in_strv, gchar **out_uid, gchar **out_rid, guint *out_mod);
-void		e_gdbus_cal_call_remove_object			(GDBusProxy *proxy, const gchar * const *in_uid_rid_mod, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-gboolean	e_gdbus_cal_call_remove_object_finish		(GDBusProxy *proxy, GAsyncResult *result, GError **error);
-gboolean	e_gdbus_cal_call_remove_object_sync		(GDBusProxy *proxy, const gchar * const *in_uid_rid_mod, GCancellable *cancellable, GError **error);
+gchar **	e_gdbus_cal_encode_remove_objects		(const GSList *in_ids, guint in_mod);
+gboolean	e_gdbus_cal_decode_remove_objects		(const gchar * const *in_strv, GSList **out_ids, guint *out_mod);
+void		e_gdbus_cal_call_remove_objects			(GDBusProxy *proxy, const gchar * const *in_mod_ids, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_gdbus_cal_call_remove_objects_finish	(GDBusProxy *proxy, GAsyncResult *result, GError **error);
+gboolean	e_gdbus_cal_call_remove_objects_sync	(GDBusProxy *proxy, const gchar * const *in_mod_ids, GCancellable *cancellable, GError **error);
 
 void		e_gdbus_cal_call_receive_objects		(GDBusProxy *proxy, const gchar *in_calobj, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_gdbus_cal_call_receive_objects_finish		(GDBusProxy *proxy, GAsyncResult *result, GError **error);
@@ -286,9 +286,9 @@ gboolean	e_gdbus_cal_call_close_sync			(GDBusProxy *proxy, GCancellable *cancell
 #define e_gdbus_cal_complete_get_object			e_gdbus_complete_async_method
 #define e_gdbus_cal_complete_get_object_list		e_gdbus_complete_async_method
 #define e_gdbus_cal_complete_get_free_busy		e_gdbus_complete_async_method
-#define e_gdbus_cal_complete_create_object		e_gdbus_complete_async_method
-#define e_gdbus_cal_complete_modify_object		e_gdbus_complete_async_method
-#define e_gdbus_cal_complete_remove_object		e_gdbus_complete_async_method
+#define e_gdbus_cal_complete_create_objects		e_gdbus_complete_async_method
+#define e_gdbus_cal_complete_modify_objects		e_gdbus_complete_async_method
+#define e_gdbus_cal_complete_remove_objects		e_gdbus_complete_async_method
 #define e_gdbus_cal_complete_receive_objects		e_gdbus_complete_async_method
 #define e_gdbus_cal_complete_send_objects		e_gdbus_complete_async_method
 #define e_gdbus_cal_complete_get_attachment_uris	e_gdbus_complete_async_method
@@ -310,9 +310,9 @@ void e_gdbus_cal_emit_get_object_done			(EGdbusCal *object, guint arg_opid, cons
 void e_gdbus_cal_emit_get_object_list_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error, const gchar * const *out_objects);
 void e_gdbus_cal_emit_get_free_busy_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_cal_emit_get_free_busy_data		(EGdbusCal *object, guint arg_opid, const GError *arg_error, const gchar * const *out_freebusy);
-void e_gdbus_cal_emit_create_object_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error, const gchar *out_uid);
-void e_gdbus_cal_emit_modify_object_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error);
-void e_gdbus_cal_emit_remove_object_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error);
+void e_gdbus_cal_emit_create_objects_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error, const gchar * const *out_uids);
+void e_gdbus_cal_emit_modify_objects_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error);
+void e_gdbus_cal_emit_remove_objects_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_cal_emit_receive_objects_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_cal_emit_send_objects_done			(EGdbusCal *object, guint arg_opid, const GError *arg_error, const gchar * const *out_calobj_users);
 void e_gdbus_cal_emit_get_attachment_uris_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error, const gchar * const *out_attachments);

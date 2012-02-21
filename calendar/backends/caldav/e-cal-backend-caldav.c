@@ -3562,20 +3562,28 @@ get_ecalcomp_master_from_cache_or_fallback (ECalBackendCalDAV *cbdav,
 
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
-do_create_object (ECalBackendCalDAV *cbdav,
-                  const gchar *in_calobj,
-                  gchar **uid,
-                  ECalComponent **new_component,
-                  GError **perror)
+do_create_objects (ECalBackendCalDAV *cbdav,
+                   const GSList *in_calobjs,
+                   GSList **uids,
+                   GSList **new_components,
+                   GError **perror)
 {
 	ECalComponent            *comp;
 	gboolean                  online, did_put = FALSE;
 	struct icaltimetype current;
 	icalcomponent *icalcomp;
+	const gchar *in_calobj = in_calobjs->data;
 	const gchar *comp_uid;
 
 	if (!check_state (cbdav, &online, perror))
 		return;
+
+	/* We make the assumption that the in_calobjs list we're passed is always exactly one element long, since we haven't specified "bulk-adds"
+	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
+	if (in_calobjs->next != NULL) {
+		g_propagate_error (perror, e_data_cal_create_error (UnsupportedMethod, _("CalDAV does not support bulk additions")));
+		return;
+	}
 
 	comp = e_cal_component_new_from_string (in_calobj);
 
@@ -3639,11 +3647,11 @@ do_create_object (ECalBackendCalDAV *cbdav,
 	}
 
 	if (did_put) {
-		if (uid)
-			*uid = g_strdup (comp_uid);
+		if (uids)
+			*uids = g_slist_prepend (*uids, g_strdup (comp_uid));
 
-		if (new_component)
-			*new_component = get_ecalcomp_master_from_cache_or_fallback (cbdav, comp_uid, NULL, comp);
+		if (new_components)
+			*new_components = g_slist_prepend(*new_components, get_ecalcomp_master_from_cache_or_fallback (cbdav, comp_uid, NULL, comp));
 	}
 
 	g_object_unref (comp);
@@ -3651,12 +3659,12 @@ do_create_object (ECalBackendCalDAV *cbdav,
 
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
-do_modify_object (ECalBackendCalDAV *cbdav,
-                  const gchar *calobj,
-                  CalObjModType mod,
-                  ECalComponent **old_component,
-                  ECalComponent **new_component,
-                  GError **error)
+do_modify_objects (ECalBackendCalDAV *cbdav,
+                   const GSList *calobjs,
+                   CalObjModType mod,
+                   GSList **old_components,
+                   GSList **new_components,
+                   GError **error)
 {
 	ECalComponent            *comp;
 	icalcomponent            *cache_comp;
@@ -3664,12 +3672,20 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 	ECalComponentId		 *id;
 	struct icaltimetype current;
 	gchar *href = NULL, *etag = NULL;
+	const gchar *calobj = calobjs->data;
 
-	if (new_component)
-		*new_component = NULL;
+	if (new_components)
+		*new_components = NULL;
 
 	if (!check_state (cbdav, &online, error))
 		return;
+
+	/* We make the assumption that the calobjs list we're passed is always exactly one element long, since we haven't specified "bulk-modifies"
+	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
+	if (calobjs->next != NULL) {
+		g_propagate_error (error, e_data_cal_create_error (UnsupportedMethod, _("CalDAV does not support bulk modifications")));
+		return;
+	}
 
 	comp = e_cal_component_new_from_string (calobj);
 
@@ -3712,8 +3728,8 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 		/*ecalcomp_set_synch_state (comp, ECALCOMP_LOCALLY_MODIFIED);*/
 	}
 
-	if (old_component) {
-		*old_component = NULL;
+	if (old_components) {
+		*old_components = NULL;
 
 		if (e_cal_component_is_instance (comp)) {
 			/* set detached instance as the old object, if any */
@@ -3721,17 +3737,17 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 
 			/* This will give a reference to 'old_component' */
 			if (old_instance) {
-				*old_component = e_cal_component_clone (old_instance);
+				*old_components = g_slist_prepend (*old_components, e_cal_component_clone (old_instance));
 				g_object_unref (old_instance);
 			}
 		}
 
-		if (!*old_component) {
+		if (!*old_components) {
 			icalcomponent *master = get_master_comp (cbdav, cache_comp);
 
 			if (master) {
 				/* set full component as the old object */
-				*old_component = e_cal_component_new_from_icalcomponent (icalcomponent_new_clone (master));
+				*old_components = g_slist_prepend (*old_components, e_cal_component_new_from_icalcomponent (icalcomponent_new_clone (master)));
 			}
 		}
 	}
@@ -3743,8 +3759,8 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 			icalcomponent *new_comp = e_cal_component_get_icalcomponent (comp);
 
 			/* new object is only this instance */
-			if (new_component)
-				*new_component = e_cal_component_clone (comp);
+			if (new_components)
+				*new_components = g_slist_prepend (*new_components, e_cal_component_clone (comp));
 
 			/* add the detached instance */
 			if (icalcomponent_isa (cache_comp) == ICAL_VCALENDAR_COMPONENT) {
@@ -3798,11 +3814,9 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 	}
 
 	if (did_put) {
-		if (new_component && !*new_component) {
+		if (new_components && !*new_components) {
 			/* read the comp from cache again, as some servers can modify it on put */
-			*new_component = get_ecalcomp_master_from_cache_or_fallback (cbdav, id->uid, id->rid, NULL);
-
-			g_warn_if_fail (*new_component != NULL);
+			*new_components = g_slist_prepend (*new_components, get_ecalcomp_master_from_cache_or_fallback (cbdav, id->uid, id->rid, NULL));
 		}
 	}
 
@@ -3815,23 +3829,31 @@ do_modify_object (ECalBackendCalDAV *cbdav,
 
 /* a busy_lock is supposed to be locked already, when calling this function */
 static void
-do_remove_object (ECalBackendCalDAV *cbdav,
-                  const gchar *uid,
-                  const gchar *rid,
-                  CalObjModType mod,
-                  ECalComponent **old_component,
-                  ECalComponent **new_component,
-                  GError **perror)
+do_remove_objects (ECalBackendCalDAV *cbdav,
+                   const GSList *ids,
+                   CalObjModType mod,
+                   GSList **old_components,
+                   GSList **new_components,
+                   GError **perror)
 {
 	icalcomponent            *cache_comp;
 	gboolean                  online;
 	gchar *href = NULL, *etag = NULL;
+	const gchar *uid = ((ECalComponentId *)ids->data)->uid;
+	const gchar *rid = ((ECalComponentId *)ids->data)->rid;
 
-	if (new_component)
-		*new_component = NULL;
+	if (new_components)
+		*new_components = NULL;
 
 	if (!check_state (cbdav, &online, perror))
 		return;
+
+	/* We make the assumption that the ids list we're passed is always exactly one element long, since we haven't specified "bulk-removes"
+	 * in our static capability list. This simplifies a lot of the logic, especially around asynchronous results. */
+	if (ids->next != NULL) {
+		g_propagate_error (perror, e_data_cal_create_error (UnsupportedMethod, _("CalDAV does not support bulk removals")));
+		return;
+	}
 
 	cache_comp = get_comp_from_cache (cbdav, uid, NULL, &href, &etag);
 
@@ -3840,17 +3862,16 @@ do_remove_object (ECalBackendCalDAV *cbdav,
 		return;
 	}
 
-	if (old_component) {
+	if (old_components) {
 		ECalComponent *old = e_cal_backend_store_get_component (cbdav->priv->store, uid, rid);
 
 		if (old) {
-			*old_component = e_cal_component_clone (old);
+			*old_components = g_slist_prepend (*old_components, e_cal_component_clone (old));
 			g_object_unref (old);
 		} else {
 			icalcomponent *master = get_master_comp (cbdav, cache_comp);
-
 			if (master) {
-				*old_component = e_cal_component_new_from_icalcomponent (icalcomponent_new_clone (master));
+				*old_components = g_slist_prepend (*old_components, e_cal_component_new_from_icalcomponent (icalcomponent_new_clone (master)));
 			}
 		}
 	}
@@ -3861,11 +3882,11 @@ do_remove_object (ECalBackendCalDAV *cbdav,
 		if (rid && *rid) {
 			/* remove one instance from the component */
 			if (remove_instance (cbdav, cache_comp, icaltime_from_string (rid), mod, mod != CALOBJ_MOD_ONLY_THIS)) {
-				if (new_component) {
+				if (new_components) {
 					icalcomponent *master = get_master_comp (cbdav, cache_comp);
-
-					if (master)
-						*new_component = e_cal_component_new_from_icalcomponent (icalcomponent_new_clone (master));
+					if (master) {
+						*new_components = g_slist_prepend (*new_components, e_cal_component_new_from_icalcomponent (icalcomponent_new_clone (master)));
+					}
 				}
 			} else {
 				/* this was the last instance, thus delete whole component */
@@ -4022,69 +4043,72 @@ process_object (ECalBackendCalDAV *cbdav,
 		is_declined = e_cal_backend_user_declined (e_cal_component_get_icalcomponent (ecomp));
 		if (is_in_cache) {
 			if (!is_declined) {
-				ECalComponent *new_component = NULL, *old_component = NULL;
+				GSList *new_components = NULL, *old_components = NULL;
+				GSList new_obj_strs = {0,};
 
-				do_modify_object (cbdav, new_obj_str, mod,
-						  &old_component, &new_component, &err);
-				if (!err) {
-					if (!old_component)
-						e_cal_backend_notify_component_created (backend, new_component);
-					else
-						e_cal_backend_notify_component_modified (backend, old_component, new_component);
-				}
-
-				if (new_component)
-					g_object_unref (new_component);
-				if (old_component)
-					g_object_unref (old_component);
-			} else {
-				ECalComponent *new_component = NULL, *old_component = NULL;
-
-				do_remove_object (cbdav, id->uid, id->rid, mod, &old_component, &new_component, &err);
-				if (!err) {
-					if (new_component) {
-						e_cal_backend_notify_component_modified (backend, old_component, new_component);
+				new_obj_strs.data = new_obj_str;
+				do_modify_objects (cbdav, &new_obj_strs, mod,
+						  &old_components, &new_components, &err);
+				if (!err && new_components && new_components->data) {
+					if (!old_components || !old_components->data) {
+						e_cal_backend_notify_component_created (backend, new_components->data);
 					} else {
-						e_cal_backend_notify_component_removed (backend, id, old_component, NULL);
+						e_cal_backend_notify_component_modified (backend, old_components->data, new_components->data);
 					}
 				}
 
-				if (new_component)
-					g_object_unref (new_component);
-				if (old_component)
-					g_object_unref (old_component);
+				e_util_free_nullable_object_slist (old_components);
+				e_util_free_nullable_object_slist (new_components);
+			} else {
+				GSList *new_components = NULL, *old_components = NULL;
+				GSList ids = {0,};
+
+				ids.data = id;
+				do_remove_objects (cbdav, &ids, mod, &old_components, &new_components, &err);
+				if (!err && old_components && old_components->data) {
+					if (new_components && new_components->data) {
+						e_cal_backend_notify_component_modified (backend, old_components->data, new_components->data);
+					} else {
+						e_cal_backend_notify_component_removed (backend, id, old_components->data, NULL);
+					}
+				}
+
+				e_util_free_nullable_object_slist (old_components);
+				e_util_free_nullable_object_slist (new_components);
 			}
 		} else if (!is_declined) {
-			ECalComponent *new_component = NULL;
+			GSList *new_components = NULL;
+			GSList new_objs = {0,};
 
-			do_create_object (cbdav, new_obj_str, NULL, &new_component, &err);
+			new_objs.data = new_obj_str;
+
+			do_create_objects (cbdav, &new_objs, NULL, &new_components, &err);
 
 			if (!err) {
-				e_cal_backend_notify_component_created (backend, new_component);
+				if (new_components && new_components->data)
+					e_cal_backend_notify_component_created (backend, new_components->data);
 			}
 
-			if (new_component)
-				g_object_unref (new_component);
-
+			e_util_free_nullable_object_slist (new_components);
 		}
 		break;
 	case ICAL_METHOD_CANCEL:
 		if (is_in_cache) {
-			ECalComponent *new_component = NULL, *old_component = NULL;
+			GSList *new_components = NULL, *old_components = NULL;
+			GSList ids = {0,};
 
-			do_remove_object (cbdav, id->uid, id->rid, CALOBJ_MOD_THIS, &old_component, &new_component, &err);
-			if (!err) {
-				if (new_component) {
-					e_cal_backend_notify_component_modified (backend, old_component, new_component);
+			ids.data = id;
+			do_remove_objects (cbdav, &ids, CALOBJ_MOD_THIS, &old_components, &new_components, &err);
+			if (!err && old_components && old_components->data) {
+				if (new_components && new_components->data) {
+					e_cal_backend_notify_component_modified (backend, old_components->data, new_components->data);
 				} else {
-					e_cal_backend_notify_component_removed (backend, id, old_component, NULL);
+					e_cal_backend_notify_component_removed (backend, id, old_components->data, NULL);
 				}
 			}
 
-			if (new_component)
-				g_object_unref (new_component);
-			if (old_component)
-				g_object_unref (old_component);
+			e_util_free_nullable_object_slist (old_components);
+			e_util_free_nullable_object_slist (new_components);
 		} else {
 			err = EDC_ERROR (ObjectNotFound);
 		}
@@ -4203,57 +4227,55 @@ _func_name _params							\
 }
 
 caldav_busy_stub (
-        caldav_create_object,
+        caldav_create_objects,
                   (ECalBackendSync *backend,
                   EDataCal *cal,
                   GCancellable *cancellable,
-                  const gchar *in_calobj,
-                  gchar **uid,
-                  ECalComponent **new_component,
+                  const GSList *in_calobjs,
+                  GSList **uids,
+                  GSList **new_components,
                   GError **perror),
-        do_create_object,
+        do_create_objects,
                   (cbdav,
-                  in_calobj,
-                  uid,
-                  new_component,
+                  in_calobjs,
+                  uids,
+                  new_components,
                   perror))
 
 caldav_busy_stub (
-        caldav_modify_object,
+        caldav_modify_objects,
                   (ECalBackendSync *backend,
                   EDataCal *cal,
                   GCancellable *cancellable,
-                  const gchar *calobj,
+                  const GSList *calobjs,
                   CalObjModType mod,
-                  ECalComponent **old_component,
-                  ECalComponent **new_component,
+                  GSList **old_components,
+                  GSList **new_components,
                   GError **perror),
-        do_modify_object,
+        do_modify_objects,
                   (cbdav,
-                  calobj,
+                  calobjs,
                   mod,
-                  old_component,
-                  new_component,
+                  old_components,
+                  new_components,
                   perror))
 
 caldav_busy_stub (
-        caldav_remove_object,
+        caldav_remove_objects,
                   (ECalBackendSync *backend,
                   EDataCal *cal,
                   GCancellable *cancellable,
-                  const gchar *uid,
-                  const gchar *rid,
+                  const GSList *ids,
                   CalObjModType mod,
-                  ECalComponent **old_component,
-                  ECalComponent **new_component,
+                  GSList **old_components,
+                  GSList **new_components,
                   GError **perror),
-        do_remove_object,
+        do_remove_objects,
                   (cbdav,
-                  uid,
-                  rid,
+                  ids,
                   mod,
-                  old_component,
-                  new_component,
+                  old_components,
+                  new_components,
                   perror))
 
 caldav_busy_stub (
@@ -4862,9 +4884,9 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	sync_class->refresh_sync		= caldav_refresh;
 	sync_class->remove_sync			= caldav_remove;
 
-	sync_class->create_object_sync		= caldav_create_object;
-	sync_class->modify_object_sync		= caldav_modify_object;
-	sync_class->remove_object_sync		= caldav_remove_object;
+	sync_class->create_objects_sync		= caldav_create_objects;
+	sync_class->modify_objects_sync		= caldav_modify_objects;
+	sync_class->remove_objects_sync		= caldav_remove_objects;
 
 	sync_class->receive_objects_sync	= caldav_receive_objects;
 	sync_class->send_objects_sync		= caldav_send_objects;
