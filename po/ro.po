@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ro\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2011-08-10 16:14+0000\n"
+"POT-Creation-Date: 2012-02-22 19:44+0000\n"
 "PO-Revision-Date: 2011-07-07 08:14+0300\n"
 "Last-Translator: Cristian Buzduga <cristianbzdg@gmail.com>\n"
 "Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
@@ -4890,32 +4890,32 @@ msgid "Category"
 msgstr "Categorie"
 
 #: ../libedataserverui/e-categories-dialog.ui.h:1
-msgid "Category Properties"
-msgstr "Proprietăți categorie"
+msgid "categories"
+msgstr "categorii"
 
 #: ../libedataserverui/e-categories-dialog.ui.h:2
-msgid "Category _Icon"
-msgstr "_Iconiță categorie"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:3
-msgid "Category _Name"
-msgstr "_Nume categorie"
-
-#: ../libedataserverui/e-categories-dialog.ui.h:4
 msgid "Currently _used categories:"
 msgstr "Categorii _recent folosite:"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:5
+#: ../libedataserverui/e-categories-dialog.ui.h:3
 msgid "_Available Categories:"
 msgstr "Categorii _disponibile:"
 
-#: ../libedataserverui/e-categories-dialog.ui.h:6
+#: ../libedataserverui/e-categories-dialog.ui.h:4
 msgid "_Edit"
 msgstr "_Editează"
 
+#: ../libedataserverui/e-categories-dialog.ui.h:5
+msgid "Category Properties"
+msgstr "Proprietăți categorie"
+
+#: ../libedataserverui/e-categories-dialog.ui.h:6
+msgid "Category _Name"
+msgstr "_Nume categorie"
+
 #: ../libedataserverui/e-categories-dialog.ui.h:7
-msgid "categories"
-msgstr "categorii"
+msgid "Category _Icon"
+msgstr "_Iconiță categorie"
 
 #: ../libedataserverui/e-category-completion.c:298
 #, c-format
@@ -4935,45 +4935,45 @@ msgid "_Remove"
 msgstr "Ște_rge"
 
 #: ../libedataserverui/e-name-selector-dialog.c:906
-#: ../libedataserverui/e-name-selector-dialog.ui.h:6
+#: ../libedataserverui/e-name-selector-dialog.ui.h:1
 msgid "Any Category"
 msgstr "Orice categorie"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:1
-msgid "*"
-msgstr "*"
-
 #: ../libedataserverui/e-name-selector-dialog.ui.h:2
-msgid "<b>Co_ntacts</b>"
-msgstr "<b>Co_ntacte</b>"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:3
 msgid "<b>Show Contacts</b>"
 msgstr "<b>Afișează contacte</b>"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:4
+#: ../libedataserverui/e-name-selector-dialog.ui.h:3
 msgid "Address B_ook:"
 msgstr "A_gendă:"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:5
-msgid "Address Book"
-msgstr "Agendă"
-
-#: ../libedataserverui/e-name-selector-dialog.ui.h:7
+#: ../libedataserverui/e-name-selector-dialog.ui.h:4
 msgid "Cate_gory:"
 msgstr "Cate_gorie:"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:8
-msgid "Contacts"
-msgstr "Contacte"
+#: ../libedataserverui/e-name-selector-dialog.ui.h:5
+msgid "*"
+msgstr "*"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:9
+#: ../libedataserverui/e-name-selector-dialog.ui.h:6
 msgid "Search"
 msgstr "Caută"
 
-#: ../libedataserverui/e-name-selector-dialog.ui.h:10
+#: ../libedataserverui/e-name-selector-dialog.ui.h:7
 msgid "_Search:"
 msgstr "_Caută:"
+
+#: ../libedataserverui/e-name-selector-dialog.ui.h:8
+msgid "Address Book"
+msgstr "Agendă"
+
+#: ../libedataserverui/e-name-selector-dialog.ui.h:9
+msgid "<b>Co_ntacts</b>"
+msgstr "<b>Co_ntacte</b>"
+
+#: ../libedataserverui/e-name-selector-dialog.ui.h:10
+msgid "Contacts"
+msgstr "Contacte"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
 #: ../libedataserverui/e-name-selector-entry.c:2641
