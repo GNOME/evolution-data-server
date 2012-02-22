@@ -8,50 +8,51 @@
 # Eugen Paiuc <eug_paiuc@bluewin.ch>, 2005.
 # Dan Damian <dand@gnome.ro>, 2005-2006.
 # Mugurel Tudor <mugurelu@gnome.ro>, 2006, 2007.
-# Adi Roiban https://launchpad.net/~adiroiban, 2008, 2009
+# Adi Roiban https://launchpad.net/~adiroiban, 2008, 2009.
 # Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2009, 2010.
+# Cristian Buzduga <cristianbzdg@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.ro\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=evolution-data-server&component=Misc.\n"
-"POT-Creation-Date: 2010-07-29 21:27+0000\n"
-"PO-Revision-Date: 2010-02-12 14:57+0300\n"
-"Last-Translator: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>\n"
-"Language-Team: Romanian GNOME Team <gnomero-list@lists.sourceforge.net>\n"
+"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
+"POT-Creation-Date: 2011-08-10 16:14+0000\n"
+"PO-Revision-Date: 2011-07-07 08:14+0300\n"
+"Last-Translator: Cristian Buzduga <cristianbzdg@gmail.com>\n"
+"Language-Team: Gnome Romanian Team <gnomero-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ro\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2);;\n"
-"X-Generator: Virtaal 0.5.2\n"
+"X-Generator: Lokalize 1.2\n"
 "X-Poedit-Bookmarks: 129,-1,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:570
+#: ../addressbook/backends/file/e-book-backend-file.c:574
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2330
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:475
 msgid "Loading..."
-msgstr "Se încărcă..."
+msgstr "Se încarcă..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:573
+#: ../addressbook/backends/file/e-book-backend-file.c:577
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2261
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2283
 #: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2328
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4491
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4505
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:477
 msgid "Searching..."
 msgstr "Se caută..."
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2698
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4650
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2699
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4664
 #, c-format
 msgid "Downloading contacts (%d)... "
 msgstr "Se descarcă contacte (%d)... "
 
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2846
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3029
-#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3073
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:2847
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3030
+#: ../addressbook/backends/groupwise/e-book-backend-groupwise.c:3077
 #, c-format
 msgid "Updating contacts cache (%d)... "
 msgstr "Se actualizează memoria cache pentru contacte (%d)... "
@@ -60,50 +61,65 @@ msgstr "Se actualizează memoria cache pentru contacte (%d)... "
 msgid "Not connected"
 msgstr "Neconectat"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:753
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:763
 msgid "Using Distinguished Name (DN)"
 msgstr "Se folosește nume distinct (ND)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:756
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:766
 msgid "Using Email Address"
 msgstr "Se folosește adresa de email"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1031
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1032
 msgid "Reconnecting to LDAP server..."
 msgstr "Se reconectează la serverul LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1156
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1157
 msgid "Invalid DN syntax"
 msgstr "Sintaxă ND nevalidă"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1672
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1674
 msgid "Adding contact to LDAP server..."
 msgstr "Se adaugă contactul pe serverul LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1804
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1806
 msgid "Removing contact from LDAP server..."
 msgstr "Se șterge contactul de pe serverul LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2238
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2242
 msgid "Modifying contact from LDAP server..."
 msgstr "Se modifică contactul pe serverul LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4341
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4355
 msgid "Receiving LDAP search results..."
-msgstr "Se primeșc rezultatele căutării LDAP..."
+msgstr "Se primesc rezultatele căutării LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4513
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4527
 msgid "Error performing search"
 msgstr "Eroare la căutare"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:329
 #, c-format
-msgid "Create resource '%s' failed with http status: %d"
-msgstr ""
+msgid "Create resource '%s' failed with HTTP status: %d"
+msgstr "Crearea resursei „%s” a eșuat cu starea HTTP: %d"
 
-#: ../addressbook/libebook/e-book.c:2940
+#: ../addressbook/libebook/e-book.c:3000
+#, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: nu există în Gconf o sursă pentru UID-ul „%s”."
+
+#: ../addressbook/libebook/e-book.c:3298 ../calendar/libecal/e-cal.c:1046
+msgid "On This Computer"
+msgstr "Pe acest calculator"
+
+#: ../addressbook/libebook/e-book.c:3315 ../calendar/libecal/e-cal.c:1066
+#: ../libedataserver/e-categories.c:62
+msgid "Personal"
+msgstr "Personal"
+
+#: ../addressbook/libebook/e-book.c:3422
+#: ../addressbook/libedata-book/e-data-book.c:181
+msgid "Address book does not exist"
+msgstr "Agenda nu există"
 
 #. Dummy row as EContactField starts from 1
 #: ../addressbook/libebook/e-contact.c:115
@@ -291,7 +307,7 @@ msgstr "Adresă jurnal web"
 
 #. Contact categories
 #: ../addressbook/libebook/e-contact.c:178
-#: ../libedataserverui/e-categories-dialog.c:671
+#: ../libedataserverui/e-categories-dialog.c:691
 msgid "Categories"
 msgstr "Categorii"
 
@@ -336,15 +352,15 @@ msgstr "Nume cont AIM de acasă 3"
 
 #: ../addressbook/libebook/e-contact.c:194
 msgid "AIM Work Screen Name 1"
-msgstr "Nume cont AIM de servici 1"
+msgstr "Nume cont AIM de serviciu 1"
 
 #: ../addressbook/libebook/e-contact.c:195
 msgid "AIM Work Screen Name 2"
-msgstr "Nume cont AIM de servici 2"
+msgstr "Nume cont AIM de serviciu 2"
 
 #: ../addressbook/libebook/e-contact.c:196
 msgid "AIM Work Screen Name 3"
-msgstr "Nume cont AIM de servici 3"
+msgstr "Nume cont AIM de serviciu 3"
 
 #: ../addressbook/libebook/e-contact.c:197
 msgid "GroupWise Home Screen Name 1"
@@ -360,15 +376,15 @@ msgstr "Nume cont Groupwise de acasă 3"
 
 #: ../addressbook/libebook/e-contact.c:200
 msgid "GroupWise Work Screen Name 1"
-msgstr "Nume cont Groupwise de servici 1"
+msgstr "Nume cont Groupwise de serviciu 1"
 
 #: ../addressbook/libebook/e-contact.c:201
 msgid "GroupWise Work Screen Name 2"
-msgstr "Nume cont Groupwise de servici 2"
+msgstr "Nume cont Groupwise de serviciu 2"
 
 #: ../addressbook/libebook/e-contact.c:202
 msgid "GroupWise Work Screen Name 3"
-msgstr "Nume cont Groupwise de servici 3"
+msgstr "Nume cont Groupwise de serviciu 3"
 
 #: ../addressbook/libebook/e-contact.c:203
 msgid "Jabber Home ID 1"
@@ -384,15 +400,15 @@ msgstr "Nume cont Jabber de acasă 3"
 
 #: ../addressbook/libebook/e-contact.c:206
 msgid "Jabber Work ID 1"
-msgstr "Nume cont Jabber de servici 1"
+msgstr "Nume cont Jabber de serviciu 1"
 
 #: ../addressbook/libebook/e-contact.c:207
 msgid "Jabber Work ID 2"
-msgstr "Nume cont Jabber de servici 2"
+msgstr "Nume cont Jabber de serviciu 2"
 
 #: ../addressbook/libebook/e-contact.c:208
 msgid "Jabber Work ID 3"
-msgstr "Nume cont Jabber de servici 3"
+msgstr "Nume cont Jabber de serviciu 3"
 
 #: ../addressbook/libebook/e-contact.c:209
 msgid "Yahoo! Home Screen Name 1"
@@ -408,15 +424,15 @@ msgstr "Nume cont Yahoo! de acasă 3"
 
 #: ../addressbook/libebook/e-contact.c:212
 msgid "Yahoo! Work Screen Name 1"
-msgstr "Nume cont Yahoo! de la servici 1"
+msgstr "Nume cont Yahoo! de la serviciu 1"
 
 #: ../addressbook/libebook/e-contact.c:213
 msgid "Yahoo! Work Screen Name 2"
-msgstr "Nume cont de Yahoo! de la servici 2"
+msgstr "Nume cont de Yahoo! de la serviciu 2"
 
 #: ../addressbook/libebook/e-contact.c:214
 msgid "Yahoo! Work Screen Name 3"
-msgstr "Nume cont Yahoo! de la servici 3"
+msgstr "Nume cont Yahoo! de la serviciu 3"
 
 #: ../addressbook/libebook/e-contact.c:215
 msgid "MSN Home Screen Name 1"
@@ -432,15 +448,15 @@ msgstr "Nume cont MSN de acasă 3"
 
 #: ../addressbook/libebook/e-contact.c:218
 msgid "MSN Work Screen Name 1"
-msgstr "Nume cont MSN de servici 1"
+msgstr "Nume cont MSN de serviciu 1"
 
 #: ../addressbook/libebook/e-contact.c:219
 msgid "MSN Work Screen Name 2"
-msgstr "Nume cont MSN de servici 2"
+msgstr "Nume cont MSN de serviciu 2"
 
 #: ../addressbook/libebook/e-contact.c:220
 msgid "MSN Work Screen Name 3"
-msgstr "Nume cont MSN de servici 3"
+msgstr "Nume cont MSN de serviciu 3"
 
 #: ../addressbook/libebook/e-contact.c:221
 msgid "ICQ Home ID 1"
@@ -456,15 +472,15 @@ msgstr "Nume cont ICQ de acasă 3"
 
 #: ../addressbook/libebook/e-contact.c:224
 msgid "ICQ Work ID 1"
-msgstr "Nume cont ICQ de servici 1"
+msgstr "Nume cont ICQ de serviciu 1"
 
 #: ../addressbook/libebook/e-contact.c:225
 msgid "ICQ Work ID 2"
-msgstr "Nume cont ICQ de servici 2"
+msgstr "Nume cont ICQ de serviciu 2"
 
 #: ../addressbook/libebook/e-contact.c:226
 msgid "ICQ Work ID 3"
-msgstr "Nume cont ICQ de servici 3"
+msgstr "Nume cont ICQ de serviciu 3"
 
 #. Last modified time
 #: ../addressbook/libebook/e-contact.c:229
@@ -556,8 +572,8 @@ msgid "Birth Date"
 msgstr "Data nașterii"
 
 #: ../addressbook/libebook/e-contact.c:262
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:717
-#: ../libedataserver/e-categories.c:44
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:723
+#: ../libedataserver/e-categories.c:47
 msgid "Anniversary"
 msgstr "Aniversare"
 
@@ -580,15 +596,15 @@ msgstr "Nume cont Gadu-Gadu de acasă 3"
 
 #: ../addressbook/libebook/e-contact.c:270
 msgid "Gadu-Gadu Work ID 1"
-msgstr "Nume cont Gadu-Gadu de servici 1"
+msgstr "Nume cont Gadu-Gadu de serviciu 1"
 
 #: ../addressbook/libebook/e-contact.c:271
 msgid "Gadu-Gadu Work ID 2"
-msgstr "Nume cont Gadu-Gadu de servici 2"
+msgstr "Nume cont Gadu-Gadu de serviciu 2"
 
 #: ../addressbook/libebook/e-contact.c:272
 msgid "Gadu-Gadu Work ID 3"
-msgstr "Nume cont Gadu-Gadu de servici 3"
+msgstr "Nume cont Gadu-Gadu de serviciu 3"
 
 #: ../addressbook/libebook/e-contact.c:273
 msgid "Gadu-Gadu ID List"
@@ -617,15 +633,15 @@ msgstr "Nume cont Skype de acasă 3"
 
 #: ../addressbook/libebook/e-contact.c:283
 msgid "Skype Work Name 1"
-msgstr "Nume cont Skype de servici 1"
+msgstr "Nume cont Skype de serviciu 1"
 
 #: ../addressbook/libebook/e-contact.c:284
 msgid "Skype Work Name 2"
-msgstr "Nume cont Skype de servici 2"
+msgstr "Nume cont Skype de serviciu 2"
 
 #: ../addressbook/libebook/e-contact.c:285
 msgid "Skype Work Name 3"
-msgstr "Nume cont Skype de servici 3"
+msgstr "Nume cont Skype de serviciu 3"
 
 #: ../addressbook/libebook/e-contact.c:286
 msgid "Skype Name List"
@@ -635,486 +651,497 @@ msgstr "Listă conturi Skype"
 msgid "SIP address"
 msgstr "Adresă SIP"
 
-#: ../addressbook/libebook/e-contact.c:1517
+#: ../addressbook/libebook/e-contact.c:1516
 #: ../addressbook/libebook/e-destination.c:739
 msgid "Unnamed List"
 msgstr "Listă fără nume"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:287
+#: ../addressbook/libedata-book/e-data-book-factory.c:298
+#: ../addressbook/libedata-book/e-data-book-factory.c:331
+#: ../calendar/libedata-cal/e-data-cal-factory.c:358
 #, c-format
 msgid "Empty URI"
 msgstr "URI gol"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:306
-#: ../addressbook/libedata-book/e-data-book-factory.c:344
-#: ../calendar/libedata-cal/e-data-cal-factory.c:331
-#: ../calendar/libedata-cal/e-data-cal-factory.c:343
+#: ../addressbook/libedata-book/e-data-book-factory.c:317
+#: ../addressbook/libedata-book/e-data-book-factory.c:367
+#: ../calendar/libedata-cal/e-data-cal-factory.c:346
 #, c-format
 msgid "Invalid source"
 msgstr "Sursă nevalidă"
 
-#: ../addressbook/libedata-book/e-data-book.c:166
-#: ../calendar/libedata-cal/e-data-cal.c:104
+#: ../addressbook/libedata-book/e-data-book.c:171
+#: ../calendar/libedata-cal/e-data-cal.c:109
 msgid "Success"
 msgstr "Succes"
 
-#: ../addressbook/libedata-book/e-data-book.c:167
-#: ../calendar/libedata-cal/e-data-cal.c:105
+#: ../addressbook/libedata-book/e-data-book.c:172
+#: ../calendar/libedata-cal/e-data-cal.c:110
 msgid "Repository offline"
 msgstr "Arhivă deconectată"
 
-#: ../addressbook/libedata-book/e-data-book.c:168
-#: ../calendar/libecal/e-cal.c:3945 ../calendar/libedata-cal/e-data-cal.c:106
+#: ../addressbook/libedata-book/e-data-book.c:173
+#: ../calendar/libecal/e-cal.c:4175 ../calendar/libedata-cal/e-data-cal.c:111
 msgid "Permission denied"
-msgstr "Acces interzis"
+msgstr "Permisiune refuzată"
 
-#: ../addressbook/libedata-book/e-data-book.c:169
+#: ../addressbook/libedata-book/e-data-book.c:174
 msgid "Contact not found"
 msgstr "Contactul nu a fost găsit"
 
-#: ../addressbook/libedata-book/e-data-book.c:170
+#: ../addressbook/libedata-book/e-data-book.c:175
 msgid "Contact ID already exists"
 msgstr "Identificatorul contactului există deja"
 
-#: ../addressbook/libedata-book/e-data-book.c:171
-#: ../calendar/libedata-cal/e-data-cal.c:111
+#: ../addressbook/libedata-book/e-data-book.c:176
+#: ../calendar/libedata-cal/e-data-cal.c:116
 msgid "Authentication Failed"
 msgstr "Autentificare eșuată"
 
-#: ../addressbook/libedata-book/e-data-book.c:172
-#: ../calendar/libedata-cal/e-data-cal.c:112
+#: ../addressbook/libedata-book/e-data-book.c:177
+#: ../calendar/libedata-cal/e-data-cal.c:117
 msgid "Authentication Required"
 msgstr "Necesită autentificare"
 
-#: ../addressbook/libedata-book/e-data-book.c:173
-#: ../calendar/libedata-cal/e-data-cal.c:113
+#: ../addressbook/libedata-book/e-data-book.c:178
+#: ../calendar/libedata-cal/e-data-cal.c:118
 msgid "Unsupported field"
 msgstr "Câmp nesuportat"
 
-#: ../addressbook/libedata-book/e-data-book.c:174
-#: ../calendar/libedata-cal/e-data-cal.c:115
+#: ../addressbook/libedata-book/e-data-book.c:179
+#: ../calendar/libedata-cal/e-data-cal.c:120
 msgid "Unsupported authentication method"
 msgstr "Metodă de autentificare nesuportată"
 
-#: ../addressbook/libedata-book/e-data-book.c:175
-#: ../calendar/libedata-cal/e-data-cal.c:116
+#: ../addressbook/libedata-book/e-data-book.c:180
+#: ../calendar/libedata-cal/e-data-cal.c:121
 msgid "TLS not available"
 msgstr "TLS nu este disponibil"
 
-#: ../addressbook/libedata-book/e-data-book.c:176
-msgid "Address Book does not exist"
-msgstr "Agenda nu există"
-
-#: ../addressbook/libedata-book/e-data-book.c:177
-msgid "Book removed"
-msgstr "Agenda eliminată"
-
-#: ../addressbook/libedata-book/e-data-book.c:178
-#: ../calendar/libedata-cal/e-data-cal.c:119
-msgid "Not available in offline mode"
-msgstr "Nu este disponibil în modul deconectat"
-
-#: ../addressbook/libedata-book/e-data-book.c:179
-#: ../calendar/libedata-cal/e-data-cal.c:120
-msgid "Search size limit exceeded"
-msgstr "Limita numărului de căutări a fost depășită"
-
-#: ../addressbook/libedata-book/e-data-book.c:180
-#: ../calendar/libedata-cal/e-data-cal.c:121
-msgid "Search time limit exceeded"
-msgstr "Limita de timp alocată căutării a fost depășită"
-
-#: ../addressbook/libedata-book/e-data-book.c:181
-#: ../calendar/libedata-cal/e-data-cal.c:122
-msgid "Invalid query"
-msgstr "Interogare nevalidă"
-
 #: ../addressbook/libedata-book/e-data-book.c:182
-#: ../calendar/libedata-cal/e-data-cal.c:123
-msgid "Query refused"
-msgstr "Interogare refuzată"
+msgid "Book removed"
+msgstr "Agendă eliminată"
 
 #: ../addressbook/libedata-book/e-data-book.c:183
 #: ../calendar/libedata-cal/e-data-cal.c:124
+msgid "Not available in offline mode"
+msgstr "Nu este disponibil în modul deconectat"
+
+#: ../addressbook/libedata-book/e-data-book.c:184
+#: ../calendar/libedata-cal/e-data-cal.c:125
+msgid "Search size limit exceeded"
+msgstr "Limita numărului de căutări a fost depășită"
+
+#: ../addressbook/libedata-book/e-data-book.c:185
+#: ../calendar/libedata-cal/e-data-cal.c:126
+msgid "Search time limit exceeded"
+msgstr "Limita de timp alocată căutării a fost depășită"
+
+#: ../addressbook/libedata-book/e-data-book.c:186
+#: ../calendar/libedata-cal/e-data-cal.c:127
+msgid "Invalid query"
+msgstr "Interogare nevalidă"
+
+#: ../addressbook/libedata-book/e-data-book.c:187
+#: ../calendar/libedata-cal/e-data-cal.c:128
+msgid "Query refused"
+msgstr "Interogare refuzată"
+
+#: ../addressbook/libedata-book/e-data-book.c:188
+#: ../calendar/libedata-cal/e-data-cal.c:129
 msgid "Could not cancel"
 msgstr "Nu s-a putut anula"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:185
-#: ../calendar/libedata-cal/e-data-cal.c:126
+#: ../addressbook/libedata-book/e-data-book.c:190
+#: ../calendar/libedata-cal/e-data-cal.c:131
 msgid "Invalid server version"
 msgstr "Versiune server nevalidă"
 
-#: ../addressbook/libedata-book/e-data-book.c:186
+#: ../addressbook/libedata-book/e-data-book.c:191
 msgid "No space"
 msgstr "Nu mai există spațiu"
 
-#: ../addressbook/libedata-book/e-data-book.c:187
-#: ../calendar/libecal/e-cal.c:3929 ../calendar/libedata-cal/e-data-cal.c:127
+#: ../addressbook/libedata-book/e-data-book.c:192
+#: ../calendar/libecal/e-cal.c:4159 ../calendar/libedata-cal/e-data-cal.c:132
 msgid "Invalid argument"
 msgstr "Argument nevalid"
 
-#: ../addressbook/libedata-book/e-data-book.c:188
-#: ../calendar/libecal/e-cal.c:3967 ../calendar/libedata-cal/e-data-cal.c:128
+#: ../addressbook/libedata-book/e-data-book.c:193
+#: ../calendar/libecal/e-cal.c:4197 ../calendar/libedata-cal/e-data-cal.c:133
 msgid "Not supported"
 msgstr "Nesuportat"
 
-#: ../addressbook/libedata-book/e-data-book.c:196
-#: ../calendar/libedata-cal/e-data-cal.c:136
+#: ../addressbook/libedata-book/e-data-book.c:201
+#: ../calendar/libedata-cal/e-data-cal.c:141
 msgid "Other error"
 msgstr "Altă eroare"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:307
+#: ../addressbook/libedata-book/e-data-book.c:322
+#, c-format
 msgid "Cannot open book: %s"
 msgstr "Nu s-a putut deschide cartea: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:329
+#: ../addressbook/libedata-book/e-data-book.c:344
+#, c-format
 msgid "Cannot remove book: %s"
 msgstr "Nu s-a putut șterge cartea: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:346
-#: ../addressbook/libedata-book/e-data-book.c:365
+#: ../addressbook/libedata-book/e-data-book.c:361
+#: ../addressbook/libedata-book/e-data-book.c:380
+#, c-format
 msgid "Cannot get contact: %s"
 msgstr "Nu s-a putut obține contactul: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:380
+#: ../addressbook/libedata-book/e-data-book.c:395
+#, c-format
 msgid "Empty query: %s"
 msgstr "Cerere goală: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:396
+#: ../addressbook/libedata-book/e-data-book.c:411
+#, c-format
 msgid "Cannot get contact list: %s"
 msgstr "Nu s-a putut obține lista de contacte: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:433
+#: ../addressbook/libedata-book/e-data-book.c:448
+#, c-format
 msgid "Cannot authenticate user: %s"
 msgstr "Nu s-a putut autentifica utilizatorul: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:448
-#: ../addressbook/libedata-book/e-data-book.c:467
+#: ../addressbook/libedata-book/e-data-book.c:463
+#: ../addressbook/libedata-book/e-data-book.c:482
+#, c-format
 msgid "Cannot add contact: %s"
 msgstr "Nu s-a putut adăuga contactul: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:485
-#: ../addressbook/libedata-book/e-data-book.c:504
+#: ../addressbook/libedata-book/e-data-book.c:500
+#: ../addressbook/libedata-book/e-data-book.c:519
+#, c-format
 msgid "Cannot modify contact: %s"
 msgstr "Nu s-a putut modifica contactul: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:543
+#: ../addressbook/libedata-book/e-data-book.c:558
+#, c-format
 msgid "Cannot remove contacts: %s"
 msgstr "Nu s-au putut șterge contactele: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:580
+#: ../addressbook/libedata-book/e-data-book.c:595
+#, c-format
 msgid "Cannot get supported fields: %s"
 msgstr "Nu s-au putut obține câmpurile suportate: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:595
+#: ../addressbook/libedata-book/e-data-book.c:610
+#, c-format
 msgid "Cannot get required fields: %s"
 msgstr "Nu s-au putut obține câmpurile necesare: %s"
 
-
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:610
-msgid "Cannot get supported auth methods: %s"
+#: ../addressbook/libedata-book/e-data-book.c:625
+#, c-format
+msgid "Cannot get supported authentication methods: %s"
 msgstr "Nu s-au putut obține metodele de autentificare suportate: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:636
-#: ../addressbook/libedata-book/e-data-book.c:647
+#: ../addressbook/libedata-book/e-data-book.c:651
+#: ../addressbook/libedata-book/e-data-book.c:662
+#, c-format
 msgid "Invalid query: %s"
 msgstr "Interogare nevalidă: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:683
+#: ../addressbook/libedata-book/e-data-book.c:698
+#, c-format
 msgid "Cannot get changes: %s"
 msgstr "Nu s-au putut obține modificările: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:722
+#: ../addressbook/libedata-book/e-data-book.c:738
+#, c-format
 msgid "Cancel operation failed: %s"
 msgstr "Anularea operației a eșuat: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:498
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:530
+#, c-format
 msgid "Unexpected HTTP status code %d returned"
 msgstr "S-a întors un cod de stare HTTP %d neașteptat"
 
-
-
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4094
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4142
 msgid "Calendar doesn't support Free/Busy"
-msgstr ""
+msgstr "Calendarul nu acceptă Liber/Ocupat"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:719
-#: ../libedataserver/e-categories.c:45
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:725
+#: ../libedataserver/e-categories.c:48
 msgid "Birthday"
-msgstr "Ziua de naștere"
+msgstr "Zi de naștere"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:748
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:754
 #, c-format
 msgid "Birthday: %s"
-msgstr "Ziua de naștere: %s"
+msgstr "Zi de naștere: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:772
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:778
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aniversare: %s"
 
-#: ../calendar/backends/file/e-cal-backend-file.c:239
+#: ../calendar/backends/file/e-cal-backend-file.c:251
 msgid "Cannot save calendar data: Malformed URI."
 msgstr "Nu s-au putut salva datele calendarului: Adresă (URI) malformată."
 
-#: ../calendar/backends/file/e-cal-backend-file.c:246
-#: ../calendar/backends/file/e-cal-backend-file.c:252
+#: ../calendar/backends/file/e-cal-backend-file.c:258
+#: ../calendar/backends/file/e-cal-backend-file.c:264
 msgid "Cannot save calendar data"
 msgstr "Nu s-au putut salva datele din calendar"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1121
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2224
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1130
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2251
 msgid "Reply Requested: by "
 msgstr "Răspuns cerut: de "
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1126
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2229
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise-utils.c:1135
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2256
 msgid "Reply Requested: When convenient"
 msgstr "Răspuns cerut: Când este convenabil"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:295
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:330
 #, c-format
 msgid "Loading %s items"
 msgstr "Se încarcă %s elemente"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:926
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:959
 msgid "Calendar"
 msgstr "Calendar"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:989
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1022
 msgid "Invalid server URI"
 msgstr "Adresă (URI) server nevalidă"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1082
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1343
-#: ../calendar/backends/http/e-cal-backend-http.c:659
-#: ../calendar/backends/weather/e-cal-backend-weather.c:487
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1123
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1383
+#: ../calendar/backends/http/e-cal-backend-http.c:782
+#: ../calendar/backends/weather/e-cal-backend-weather.c:520
 msgid "Could not create cache file"
 msgstr "Nu s-a putut crea fișierul cache"
 
-#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1095
+#: ../calendar/backends/groupwise/e-cal-backend-groupwise.c:1135
 msgid "Could not create thread for populating cache"
 msgstr "Nu s-a putut crea firul de execuție pentru popularea cache-ului"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:327
+#: ../calendar/backends/http/e-cal-backend-http.c:423
 msgid "Redirected to Invalid URI"
 msgstr "Redirecționat la o adresă (URI) nevalidă"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:350
+#: ../calendar/backends/http/e-cal-backend-http.c:455
 msgid "Bad file format."
 msgstr "Format de fișier eronat."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:357
+#: ../calendar/backends/http/e-cal-backend-http.c:462
 msgid "Not a calendar."
 msgstr "Nu este un calendar"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:154
+#: ../calendar/backends/weather/e-cal-backend-weather.c:186
 msgid "Could not retrieve weather data"
 msgstr "Nu s-au putut descărca datele meteorologice"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:253
+#: ../calendar/backends/weather/e-cal-backend-weather.c:286
 msgid "Weather: Fog"
 msgstr "Vreme: Ceață"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:254
+#: ../calendar/backends/weather/e-cal-backend-weather.c:287
 msgid "Weather: Cloudy Night"
 msgstr "Vreme: Noapte înnorată"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:255
+#: ../calendar/backends/weather/e-cal-backend-weather.c:288
 msgid "Weather: Cloudy"
 msgstr "Vreme: Înnorat"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:256
+#: ../calendar/backends/weather/e-cal-backend-weather.c:289
 msgid "Weather: Overcast"
 msgstr "Vreme: Cer noros"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:257
+#: ../calendar/backends/weather/e-cal-backend-weather.c:290
 msgid "Weather: Showers"
 msgstr "Vreme: Ploi torențiale"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:258
+#: ../calendar/backends/weather/e-cal-backend-weather.c:291
 msgid "Weather: Snow"
 msgstr "Vreme: Ninsoare"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:259
+#: ../calendar/backends/weather/e-cal-backend-weather.c:292
 msgid "Weather: Clear Night"
 msgstr "Vreme: Noapte senină"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:260
+#: ../calendar/backends/weather/e-cal-backend-weather.c:293
 msgid "Weather: Sunny"
 msgstr "Vreme: Însorit"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:261
+#: ../calendar/backends/weather/e-cal-backend-weather.c:294
 msgid "Weather: Thunderstorms"
 msgstr "Vreme: Furtuni"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:407
+#: ../calendar/backends/weather/e-cal-backend-weather.c:440
 msgid "Forecast"
 msgstr "Previziune vreme"
 
-#: ../calendar/libecal/e-cal-component.c:1286
+#: ../calendar/libecal/e-cal-component.c:1306
 msgid "Untitled appointment"
 msgstr "Întâlnire fără nume"
 
-#: ../calendar/libecal/e-cal-recur.c:3951
+#: ../calendar/libecal/e-cal-recur.c:3979
 msgid "1st"
 msgstr "1"
 
-#: ../calendar/libecal/e-cal-recur.c:3952
+#: ../calendar/libecal/e-cal-recur.c:3980
 msgid "2nd"
 msgstr "2"
 
-#: ../calendar/libecal/e-cal-recur.c:3953
+#: ../calendar/libecal/e-cal-recur.c:3981
 msgid "3rd"
 msgstr "3"
 
-#: ../calendar/libecal/e-cal-recur.c:3954
+#: ../calendar/libecal/e-cal-recur.c:3982
 msgid "4th"
 msgstr "4"
 
-#: ../calendar/libecal/e-cal-recur.c:3955
+#: ../calendar/libecal/e-cal-recur.c:3983
 msgid "5th"
 msgstr "5"
 
-#: ../calendar/libecal/e-cal-recur.c:3956
+#: ../calendar/libecal/e-cal-recur.c:3984
 msgid "6th"
 msgstr "6"
 
-#: ../calendar/libecal/e-cal-recur.c:3957
+#: ../calendar/libecal/e-cal-recur.c:3985
 msgid "7th"
 msgstr "7"
 
-#: ../calendar/libecal/e-cal-recur.c:3958
+#: ../calendar/libecal/e-cal-recur.c:3986
 msgid "8th"
 msgstr "8"
 
-#: ../calendar/libecal/e-cal-recur.c:3959
+#: ../calendar/libecal/e-cal-recur.c:3987
 msgid "9th"
 msgstr "9"
 
-#: ../calendar/libecal/e-cal-recur.c:3960
+#: ../calendar/libecal/e-cal-recur.c:3988
 msgid "10th"
 msgstr "10"
 
-#: ../calendar/libecal/e-cal-recur.c:3961
+#: ../calendar/libecal/e-cal-recur.c:3989
 msgid "11th"
 msgstr "11"
 
-#: ../calendar/libecal/e-cal-recur.c:3962
+#: ../calendar/libecal/e-cal-recur.c:3990
 msgid "12th"
 msgstr "12"
 
-#: ../calendar/libecal/e-cal-recur.c:3963
+#: ../calendar/libecal/e-cal-recur.c:3991
 msgid "13th"
 msgstr "13"
 
-#: ../calendar/libecal/e-cal-recur.c:3964
+#: ../calendar/libecal/e-cal-recur.c:3992
 msgid "14th"
 msgstr "14"
 
-#: ../calendar/libecal/e-cal-recur.c:3965
+#: ../calendar/libecal/e-cal-recur.c:3993
 msgid "15th"
 msgstr "15"
 
-#: ../calendar/libecal/e-cal-recur.c:3966
+#: ../calendar/libecal/e-cal-recur.c:3994
 msgid "16th"
 msgstr "16"
 
-#: ../calendar/libecal/e-cal-recur.c:3967
+#: ../calendar/libecal/e-cal-recur.c:3995
 msgid "17th"
 msgstr "17"
 
-#: ../calendar/libecal/e-cal-recur.c:3968
+#: ../calendar/libecal/e-cal-recur.c:3996
 msgid "18th"
 msgstr "18"
 
-#: ../calendar/libecal/e-cal-recur.c:3969
+#: ../calendar/libecal/e-cal-recur.c:3997
 msgid "19th"
 msgstr "19"
 
-#: ../calendar/libecal/e-cal-recur.c:3970
+#: ../calendar/libecal/e-cal-recur.c:3998
 msgid "20th"
 msgstr "20"
 
-#: ../calendar/libecal/e-cal-recur.c:3971
+#: ../calendar/libecal/e-cal-recur.c:3999
 msgid "21st"
 msgstr "21"
 
-#: ../calendar/libecal/e-cal-recur.c:3972
+#: ../calendar/libecal/e-cal-recur.c:4000
 msgid "22nd"
 msgstr "22"
 
-#: ../calendar/libecal/e-cal-recur.c:3973
+#: ../calendar/libecal/e-cal-recur.c:4001
 msgid "23rd"
 msgstr "23"
 
-#: ../calendar/libecal/e-cal-recur.c:3974
+#: ../calendar/libecal/e-cal-recur.c:4002
 msgid "24th"
 msgstr "24"
 
-#: ../calendar/libecal/e-cal-recur.c:3975
+#: ../calendar/libecal/e-cal-recur.c:4003
 msgid "25th"
 msgstr "25"
 
-#: ../calendar/libecal/e-cal-recur.c:3976
+#: ../calendar/libecal/e-cal-recur.c:4004
 msgid "26th"
 msgstr "26"
 
-#: ../calendar/libecal/e-cal-recur.c:3977
+#: ../calendar/libecal/e-cal-recur.c:4005
 msgid "27th"
 msgstr "27"
 
-#: ../calendar/libecal/e-cal-recur.c:3978
+#: ../calendar/libecal/e-cal-recur.c:4006
 msgid "28th"
 msgstr "28"
 
-#: ../calendar/libecal/e-cal-recur.c:3979
+#: ../calendar/libecal/e-cal-recur.c:4007
 msgid "29th"
 msgstr "29"
 
-#: ../calendar/libecal/e-cal-recur.c:3980
+#: ../calendar/libecal/e-cal-recur.c:4008
 msgid "30th"
 msgstr "30"
 
-#: ../calendar/libecal/e-cal-recur.c:3981
+#: ../calendar/libecal/e-cal-recur.c:4009
 msgid "31st"
 msgstr "31"
 
-#: ../calendar/libecal/e-cal-util.c:688 ../calendar/libecal/e-cal-util.c:715
+#: ../calendar/libecal/e-cal-util.c:678 ../calendar/libecal/e-cal-util.c:705
 msgid "High"
 msgstr "Ridicat"
 
-#: ../calendar/libecal/e-cal-util.c:690 ../calendar/libecal/e-cal-util.c:717
+#: ../calendar/libecal/e-cal-util.c:680 ../calendar/libecal/e-cal-util.c:707
 msgid "Normal"
 msgstr "Normal"
 
-#: ../calendar/libecal/e-cal-util.c:692 ../calendar/libecal/e-cal-util.c:719
+#: ../calendar/libecal/e-cal-util.c:682 ../calendar/libecal/e-cal-util.c:709
 msgid "Low"
 msgstr "Scăzut"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:713
+#: ../calendar/libecal/e-cal-util.c:703
 msgid "Undefined"
 msgstr "Nedefinit"
 
-#: ../calendar/libecal/e-cal.c:1128 ../libedataserverui/e-book-auth-util.c:206
+#: ../calendar/libecal/e-cal.c:1291 ../libedataserverui/e-book-auth-util.c:206
+#: ../libedataserverui/e-book-auth-util.c:435
 #, c-format
 msgid "Enter password for %s (user %s)"
 msgstr "Introduceți parola pentru %s (utilizator %s)"
@@ -1123,66 +1150,66 @@ msgstr "Introduceți parola pentru %s (utilizator %s)"
 #. This password prompt will be prompted rarely. Since the key that is passed to
 #. the auth_func corresponds to the parent user.
 #.
-#: ../calendar/libecal/e-cal.c:1142
+#: ../calendar/libecal/e-cal.c:1305
 #, c-format
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr ""
 "Introduceți parola pentru %s pentru activarea proxy-ului pentru utilizatorul "
 "%s"
 
-#: ../calendar/libecal/e-cal.c:3931
+#: ../calendar/libecal/e-cal.c:4161
 msgid "Backend is busy"
 msgstr "Backend-ul este ocupat"
 
-#: ../calendar/libecal/e-cal.c:3933
+#: ../calendar/libecal/e-cal.c:4163
 msgid "Repository is offline"
 msgstr "Arhiva este deconectată"
 
-#: ../calendar/libecal/e-cal.c:3935
+#: ../calendar/libecal/e-cal.c:4165
 msgid "No such calendar"
 msgstr "Nu există calendarul căutat"
 
-#: ../calendar/libecal/e-cal.c:3937 ../calendar/libedata-cal/e-data-cal.c:108
+#: ../calendar/libecal/e-cal.c:4167 ../calendar/libedata-cal/e-data-cal.c:113
 #: ../servers/groupwise/e-gw-connection.c:235
 msgid "Object not found"
 msgstr "Obiectul nu a fost găsit"
 
-#: ../calendar/libecal/e-cal.c:3939 ../calendar/libedata-cal/e-data-cal.c:109
+#: ../calendar/libecal/e-cal.c:4169 ../calendar/libedata-cal/e-data-cal.c:114
 #: ../servers/groupwise/e-gw-connection.c:229
 msgid "Invalid object"
 msgstr "Obiect nevalid"
 
-#: ../calendar/libecal/e-cal.c:3941
+#: ../calendar/libecal/e-cal.c:4171
 msgid "URI not loaded"
 msgstr "Adresă (URI) neîncărcată"
 
-#: ../calendar/libecal/e-cal.c:3943
+#: ../calendar/libecal/e-cal.c:4173
 msgid "URI already loaded"
 msgstr "Adresă (URI) deja încărcată"
 
-#: ../calendar/libecal/e-cal.c:3947 ../servers/groupwise/e-gw-connection.c:237
+#: ../calendar/libecal/e-cal.c:4177 ../servers/groupwise/e-gw-connection.c:237
 msgid "Unknown User"
 msgstr "Utilizator necunoscut"
 
-#: ../calendar/libecal/e-cal.c:3949 ../calendar/libedata-cal/e-data-cal.c:110
+#: ../calendar/libecal/e-cal.c:4179 ../calendar/libedata-cal/e-data-cal.c:115
 msgid "Object ID already exists"
 msgstr "Identificatorul obiectului există deja"
 
-#: ../calendar/libecal/e-cal.c:3951
+#: ../calendar/libecal/e-cal.c:4181
 msgid "Protocol not supported"
 msgstr "Protocol nesuportat"
 
-#: ../calendar/libecal/e-cal.c:3953
+#: ../calendar/libecal/e-cal.c:4183
 msgid "Operation has been canceled"
 msgstr "Operația a fost anulată"
 
-#: ../calendar/libecal/e-cal.c:3955
+#: ../calendar/libecal/e-cal.c:4185
 msgid "Could not cancel operation"
 msgstr "Nu s-a putut anula operația"
 
-#: ../calendar/libecal/e-cal.c:3957
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1434
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1452
+#: ../calendar/libecal/e-cal.c:4187
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1466
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1484
 #: ../camel/providers/groupwise/camel-groupwise-store.c:618
 #: ../camel/providers/groupwise/camel-groupwise-store.c:793
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:85
@@ -1191,25 +1218,26 @@ msgstr "Nu s-a putut anula operația"
 msgid "Authentication failed"
 msgstr "Autentificare eșuată"
 
-#: ../calendar/libecal/e-cal.c:3959
+#: ../calendar/libecal/e-cal.c:4189
 #: ../camel/providers/smtp/camel-smtp-transport.c:166
 msgid "Authentication required"
 msgstr "Necesită autentificare"
 
-#: ../calendar/libecal/e-cal.c:3961
-msgid "A DBUS exception has occurred"
-msgstr "S-a produs o excepție DBUS"
+#: ../calendar/libecal/e-cal.c:4191
+msgid "A D-Bus exception has occurred"
+msgstr "S-a produs o excepție D-Bus"
 
-#: ../calendar/libecal/e-cal.c:3963
+#: ../calendar/libecal/e-cal.c:4193
 #: ../camel/providers/groupwise/camel-groupwise-transport.c:158
 #: ../camel/providers/imap/camel-imap-command.c:457
-#: ../camel/providers/imap/camel-imap-store.c:626
-#: ../camel/providers/pop3/camel-pop3-store.c:495
+#: ../camel/providers/imap/camel-imap-store.c:627
+#: ../camel/providers/pop3/camel-pop3-store.c:474
+#: ../camel/providers/smtp/camel-smtp-transport.c:535
 #: ../servers/groupwise/e-gw-connection.c:243
 msgid "Unknown error"
 msgstr "Eroare necunoscută"
 
-#: ../calendar/libecal/e-cal.c:3965
+#: ../calendar/libecal/e-cal.c:4195
 msgid "No error"
 msgstr "Fără eroare"
 
@@ -1222,7 +1250,7 @@ msgstr "Fără eroare"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1052
 #, c-format
 msgid "\"%s\" expects no arguments"
-msgstr "„%s” nu necesită nici un argument"
+msgstr "„%s” nu acceptă niciun argument"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:102
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:212
@@ -1310,148 +1338,171 @@ msgstr ""
 "„%s” necesită ca toate sau doar un argument să fie șiruri și doar un singur "
 "argument să fie de tip boolean cu valoare falsă (#f)"
 
-#: ../calendar/libedata-cal/e-data-cal.c:107
+#: ../calendar/libedata-cal/e-data-cal.c:112
 msgid "Invalid range"
 msgstr "Domeniu nevalid"
 
-#: ../calendar/libedata-cal/e-data-cal.c:114
+#: ../calendar/libedata-cal/e-data-cal.c:119
 msgid "Unsupported method"
 msgstr "Metodă nesuportată"
 
-#: ../calendar/libedata-cal/e-data-cal.c:117
+#: ../calendar/libedata-cal/e-data-cal.c:122
 msgid "Calendar does not exist"
 msgstr "Dosarul nu există"
 
-#: ../calendar/libedata-cal/e-data-cal.c:118
-msgid "UnknownUser"
-msgstr "UtilizatorNecunoscut"
+#: ../calendar/libedata-cal/e-data-cal.c:123
+msgid "Unknown user"
+msgstr "Utilizator necunoscut"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:589
+#: ../calendar/libedata-cal/e-data-cal.c:608
+#, c-format
 msgid "Cannot retrieve calendar address: %s"
 msgstr "Nu s-a putut obține adresa calendarului: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:609
+#: ../calendar/libedata-cal/e-data-cal.c:628
+#, c-format
 msgid "Cannot retrieve calendar alarm e-mail address: %s"
 msgstr "Nu s-a putut obține adresa de email a alarmei calendarului: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:629
-msgid "Cannot retrieve calendar's ldap attribute: %s"
-msgstr "Nu s-a putut obține atributul ldap al calendarului: %s"
+#: ../calendar/libedata-cal/e-data-cal.c:648
+#, c-format
+msgid "Cannot retrieve calendar's LDAP attribute: %s"
+msgstr "Nu s-a putut obține atributul LDAP al calendarului: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:649
+#: ../calendar/libedata-cal/e-data-cal.c:668
+#, c-format
 msgid "Cannot retrieve calendar scheduling information: %s"
 msgstr "Nu s-au putut obține informațiile de planificare ale calendarului: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:668
+#: ../calendar/libedata-cal/e-data-cal.c:687
+#, c-format
 msgid "Cannot open calendar: %s"
 msgstr "Nu s-a putut deschide calendarul: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:689
+#: ../calendar/libedata-cal/e-data-cal.c:708
+#, c-format
 msgid "Cannot refresh calendar: %s"
 msgstr "Nu s-a putut reîncărca calendarul: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:708
+#: ../calendar/libedata-cal/e-data-cal.c:727
+#, c-format
 msgid "Cannot remove calendar: %s"
 msgstr "Nu s-a putut șterge calendarul: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:729
+#: ../calendar/libedata-cal/e-data-cal.c:748
+#, c-format
 msgid "Cannot create calendar object: %s"
 msgstr "Nu s-a putut crea un obiect calendar: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:753
+#: ../calendar/libedata-cal/e-data-cal.c:772
+#, c-format
 msgid "Cannot modify calendar object: %s"
 msgstr "Nu s-a putut modifica obiectul calendar: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:779
+#: ../calendar/libedata-cal/e-data-cal.c:798
+#, c-format
 msgid "Cannot remove calendar object: %s"
 msgstr "Nu s-a putut șterge obiectul calendar: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:800
+#: ../calendar/libedata-cal/e-data-cal.c:819
+#, c-format
 msgid "Cannot receive calendar objects: %s"
 msgstr "Nu s-au putut primi obiecte calendar: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:819
+#: ../calendar/libedata-cal/e-data-cal.c:838
+#, c-format
 msgid "Cannot discard calendar alarm: %s"
 msgstr "Nu s-a putut anula alarma din calendar: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:840
+#: ../calendar/libedata-cal/e-data-cal.c:859
+#, c-format
 msgid "Cannot send calendar objects: %s"
 msgstr "Nu s-au putut trimite obiecte calendar: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:865
+#: ../calendar/libedata-cal/e-data-cal.c:884
+#, c-format
 msgid "Cannot retrieve default calendar object path: %s"
 msgstr "Nu s-a putut obține calea implicită a obiectelor calendar: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:885
+#: ../calendar/libedata-cal/e-data-cal.c:904
+#, c-format
 msgid "Cannot retrieve calendar object path: %s"
 msgstr "Nu s-a putut obține calea obiectelor calendar: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:905
+#: ../calendar/libedata-cal/e-data-cal.c:924
+#, c-format
 msgid "Cannot retrieve calendar object list: %s"
 msgstr "Nu s-a putut obține lista obiectelor calendar: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:933
+#: ../calendar/libedata-cal/e-data-cal.c:952
+#, c-format
 msgid "Could not retrieve attachment list: %s"
 msgstr "Nu s-a putut obține lista atașamentelor: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:959
+#: ../calendar/libedata-cal/e-data-cal.c:978
+#, c-format
 msgid "Could not complete calendar query: %s"
 msgstr "Nu s-a putut completa cererea de calendar: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:979
+#: ../calendar/libedata-cal/e-data-cal.c:998
+#, c-format
 msgid "Could not retrieve calendar time zone: %s"
 msgstr "Nu s-a putut obține fusul orar al calendarului: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:999
+#: ../calendar/libedata-cal/e-data-cal.c:1018
+#, c-format
 msgid "Could not add calendar time zone: %s"
 msgstr "Nu s-a putut adăuga fusul orar al calendarului: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1018
+#: ../calendar/libedata-cal/e-data-cal.c:1037
+#, c-format
 msgid "Could not set default calendar time zone: %s"
 msgstr "Nu s-a putut configura fusul orar implicit al calendarului: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1041
+#: ../calendar/libedata-cal/e-data-cal.c:1060
+#, c-format
 msgid "Cannot retrieve calendar changes: %s"
 msgstr "Nu s-au putut obține modificările calendarului: %s"
 
 #. Translators: The '%s' is replaced with a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1072
+#: ../calendar/libedata-cal/e-data-cal.c:1091
+#, c-format
 msgid "Cannot retrieve calendar free/busy list: %s"
 msgstr "Nu s-a putut obține lista liber/ocupat a calendarului: %s"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:353
+#: ../calendar/libedata-cal/e-data-cal-factory.c:371
 #, c-format
 msgid "Invalid URI"
 msgstr "URI nevalid"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:371
+#: ../calendar/libedata-cal/e-data-cal-factory.c:389
 #, c-format
 msgid "No backend factory for '%s' of '%s'"
 msgstr "Nici un șablon de suport pentru „%s” a „%s”"
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:421
+#: ../calendar/libedata-cal/e-data-cal-factory.c:439
 #, c-format
 msgid "Could not instantiate backend"
 msgstr "Nu s-a putut inițializa suportul"
@@ -1507,12 +1558,13 @@ msgstr "Nu puteți exporta chei cu acest cifru"
 msgid "Unable to create cache path"
 msgstr "Nu s-a putut crea calea pentru cache"
 
-#: ../camel/camel-data-cache.c:494
+#: ../camel/camel-data-cache.c:499
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Nu s-a putut șterge înregistrarea din cache: %s: %s"
 
 #: ../camel/camel-data-wrapper.c:89
+#, c-format
 msgid "No stream available"
 msgstr "Niciun flux nu este disponibil."
 
@@ -1552,25 +1604,32 @@ msgstr "Se resincronizează cu serverul"
 msgid "Downloading new messages for offline mode"
 msgstr "Se transferă noile mesaje pentru modul deconectat"
 
-#: ../camel/camel-disco-folder.c:379
+#: ../camel/camel-disco-folder.c:392
 #, c-format
 msgid "Preparing folder '%s' for offline"
 msgstr "Se pregătește dosarul „%s” pentru modul deconectat"
 
-#: ../camel/camel-disco-folder.c:445 ../camel/camel-offline-folder.c:224
+#: ../camel/camel-disco-folder.c:458 ../camel/camel-offline-folder.c:224
 msgid "Copy folder content locally for offline operation"
 msgstr "Copiază local conținutul dosarului pentru modul de lucru deconectat"
 
-#: ../camel/camel-disco-store.c:395
+#: ../camel/camel-disco-store.c:398
 #: ../camel/providers/groupwise/camel-groupwise-store.c:230
-#: ../camel/providers/imap/camel-imap-store.c:895
-#: ../camel/providers/imap/camel-imap-store.c:1739
-#: ../camel/providers/imap/camel-imap-store.c:2197
-#: ../camel/providers/imap/camel-imap-store.c:3041
-#: ../camel/providers/imapx/camel-imapx-store.c:185
-#: ../camel/providers/imapx/camel-imapx-store.c:709
-#: ../camel/providers/imapx/camel-imapx-store.c:772
-#: ../camel/providers/imapx/camel-imapx-store.c:831
+#: ../camel/providers/imap/camel-imap-store.c:876
+#: ../camel/providers/imap/camel-imap-store.c:1720
+#: ../camel/providers/imap/camel-imap-store.c:2178
+#: ../camel/providers/imap/camel-imap-store.c:3022
+#: ../camel/providers/imapx/camel-imapx-folder.c:164
+#: ../camel/providers/imapx/camel-imapx-folder.c:195
+#: ../camel/providers/imapx/camel-imapx-folder.c:224
+#: ../camel/providers/imapx/camel-imapx-folder.c:282
+#: ../camel/providers/imapx/camel-imapx-folder.c:325
+#: ../camel/providers/imapx/camel-imapx-folder.c:357
+#: ../camel/providers/imapx/camel-imapx-folder.c:388
+#: ../camel/providers/imapx/camel-imapx-store.c:193
+#: ../camel/providers/imapx/camel-imapx-store.c:720
+#: ../camel/providers/imapx/camel-imapx-store.c:783
+#: ../camel/providers/imapx/camel-imapx-store.c:842
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Pentru a completa această operație trebuie să fiți în modul conectat"
@@ -1578,16 +1637,19 @@ msgstr "Pentru a completa această operație trebuie să fiți în modul conecta
 #: ../camel/camel-file-utils.c:430 ../camel/camel-file-utils.c:489
 #: ../camel/camel-file-utils.c:529 ../camel/camel-file-utils.c:599
 #: ../camel/camel-file-utils.c:691 ../camel/camel-gpg-context.c:887
-#: ../camel/camel-gpg-context.c:1175 ../camel/camel-net-utils.c:512
-#: ../camel/camel-net-utils.c:689 ../camel/camel-net-utils.c:838
-#: ../camel/providers/imapx/camel-imapx-server.c:4678
-#: ../camel/providers/imapx/camel-imapx-server.c:4695
+#: ../camel/camel-gpg-context.c:1175 ../camel/camel-net-utils.c:514
+#: ../camel/camel-net-utils.c:691 ../camel/camel-net-utils.c:840
+#: ../camel/camel-tcp-stream-raw.c:255
+#: ../camel/providers/imapx/camel-imapx-server.c:4757
+#: ../camel/providers/imapx/camel-imapx-server.c:4774
+#: ../camel/providers/imapx/camel-imapx-store.c:241
 #: ../camel/providers/nntp/camel-nntp-summary.c:396
 #: ../camel/providers/pop3/camel-pop3-folder.c:269
-#: ../camel/providers/pop3/camel-pop3-folder.c:625
-#: ../camel/providers/pop3/camel-pop3-folder.c:690
-#: ../camel/providers/pop3/camel-pop3-store.c:487
+#: ../camel/providers/pop3/camel-pop3-folder.c:626
+#: ../camel/providers/pop3/camel-pop3-folder.c:691
+#: ../camel/providers/pop3/camel-pop3-store.c:466
 #: ../libedataserverui/e-book-auth-util.c:229
+#, c-format
 msgid "Cancelled"
 msgstr "Anulat"
 
@@ -1722,31 +1784,28 @@ msgid "(%s) requires the folder set"
 msgstr "(%s) necesită un set de dosare"
 
 #: ../camel/camel-folder.c:125
-#, fuzzy, c-format
-#| msgid "Scanning for changed messages in %s"
+#, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
-msgstr[0] "Se analizează mesajele schimbate în %s"
-msgstr[1] "Se analizează mesajele schimbate în %s"
-msgstr[2] "Se analizează mesajele schimbate în %s"
+msgstr[0] "Se învață un nou mesaj nedorit în „%s”"
+msgstr[1] "Se învață noi mesaje nedorite în „%s”"
+msgstr[2] "Se învață noi mesaje nedorite in „%s”"
 
 #: ../camel/camel-folder.c:147
-#, fuzzy, c-format
-#| msgid "Scanning for changed messages in %s"
+#, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
-msgstr[0] "Se analizează mesajele schimbate în %s"
-msgstr[1] "Se analizează mesajele schimbate în %s"
-msgstr[2] "Se analizează mesajele schimbate în %s"
+msgstr[0] "Se învață un nou mesaj dorit în „%s”"
+msgstr[1] "Se învață noi mesaje dorite în „%s”"
+msgstr[2] "Se învață noi mesaje dorite în „%s”"
 
 #: ../camel/camel-folder.c:171
-#, fuzzy, c-format
-#| msgid "Filtering new message(s)"
+#, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
-msgstr[0] "Se filtrează mesajul(ele) noi"
-msgstr[1] "Se filtrează mesajul(ele) noi"
-msgstr[2] "Se filtrează mesajul(ele) noi"
+msgstr[0] "Se filtrează un mesaj nou în „%s”"
+msgstr[1] "Se filtrează mesaje noi în „%s”"
+msgstr[2] "Se filtrează mesaje noi în „%s”"
 
 #: ../camel/camel-folder.c:688
 #: ../camel/providers/local/camel-maildir-folder.c:366
@@ -1849,8 +1908,7 @@ msgstr ""
 
 #: ../camel/camel-gpg-context.c:1695
 msgid "Cannot verify message signature: "
-msgstr ""
-"Nu s-a putut verifica semnătura mesajului: "
+msgstr "Nu s-a putut verifica semnătura mesajului: "
 
 #: ../camel/camel-gpg-context.c:1814
 msgid "Could not generate encrypting data: "
@@ -1901,6 +1959,7 @@ msgid "Could not create lock file for %s: %s"
 msgstr "Nu s-a putut crea fișierul de blocare pentru %s: %s"
 
 #: ../camel/camel-lock.c:145
+#, c-format
 msgid "Timed out trying to get lock file on %s.  Try again later."
 msgstr ""
 "Timp expirat la încercarea de blocare a fișierului %s. Încercați mai târziu."
@@ -1970,10 +2029,12 @@ msgid "Error copying mail temp file: %s"
 msgstr "Eroare la copierea fișierului temporar de mesaje: %s"
 
 #: ../camel/camel-multipart-signed.c:285
+#, c-format
 msgid "No content available"
 msgstr "Niciun conținut disponibil"
 
 #: ../camel/camel-multipart-signed.c:293
+#, c-format
 msgid "No signature available"
 msgstr "Nici o semnătură disponibilă"
 
@@ -1982,29 +2043,29 @@ msgstr "Nici o semnătură disponibilă"
 msgid "parse error"
 msgstr "eroare de analizare"
 
-#: ../camel/camel-net-utils.c:693
+#: ../camel/camel-net-utils.c:695
 #, c-format
 msgid "Resolving: %s"
 msgstr "Se rezolvă: %s"
 
-#: ../camel/camel-net-utils.c:715
+#: ../camel/camel-net-utils.c:717
 msgid "Host lookup failed"
 msgstr "Eroare la căutarea gazdei"
 
-#: ../camel/camel-net-utils.c:719
+#: ../camel/camel-net-utils.c:721
 #, c-format
 msgid "Host lookup failed: %s: %s"
 msgstr "Eroare la căutarea gazdei: %s: %s"
 
-#: ../camel/camel-net-utils.c:842
+#: ../camel/camel-net-utils.c:844
 msgid "Resolving address"
 msgstr "Se rezolvă adresa"
 
-#: ../camel/camel-net-utils.c:862
+#: ../camel/camel-net-utils.c:864
 msgid "Name lookup failed"
 msgstr "Eroare la căutarea numelui"
 
-#: ../camel/camel-net-utils.c:867
+#: ../camel/camel-net-utils.c:869
 #, c-format
 msgid "Name lookup failed: %s"
 msgstr "Eroare la căutarea numelui: %s"
@@ -2014,7 +2075,7 @@ msgstr "Eroare la căutarea numelui: %s"
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Se sincronizează mesajele pe disc în dosarul „%s”"
 
-#: ../camel/camel-offline-journal.c:144 ../camel/camel-offline-journal.c:170
+#: ../camel/camel-offline-journal.c:144 ../camel/camel-offline-journal.c:174
 #, c-format
 msgid "Cannot write offline journal for folder '%s': %s"
 msgstr ""
@@ -2105,11 +2166,11 @@ msgstr ""
 "Această opțiune vă va conecta la serverul specificat folosind o parolă "
 "criptată prin CRAM-MD5, dacă serverul suportă acest mod de autentificare."
 
-#: ../camel/camel-sasl-digest-md5.c:56
+#: ../camel/camel-sasl-digest-md5.c:58
 msgid "DIGEST-MD5"
 msgstr "DIGEST-MD5"
 
-#: ../camel/camel-sasl-digest-md5.c:58
+#: ../camel/camel-sasl-digest-md5.c:60
 msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
@@ -2117,48 +2178,48 @@ msgstr ""
 "Această opțiune vă va conecta la serverul specificat folosind o parolă "
 "criptată prin DIGEST-MD5, dacă serverul suportă acest mod de autentificare."
 
-#: ../camel/camel-sasl-digest-md5.c:818
+#: ../camel/camel-sasl-digest-md5.c:820
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
 msgstr "Răspunsul serverului este prea lung (>2048 octeți)"
 
-#: ../camel/camel-sasl-digest-md5.c:829
+#: ../camel/camel-sasl-digest-md5.c:831
 #, c-format
 msgid "Server challenge invalid\n"
 msgstr "Răspunsul serverului nu este valid\n"
 
-#: ../camel/camel-sasl-digest-md5.c:837
+#: ../camel/camel-sasl-digest-md5.c:839
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
 "Răspunsul serverului a conținut un marcaj nevalid „Calitatea protecției”"
 
-#: ../camel/camel-sasl-digest-md5.c:869
+#: ../camel/camel-sasl-digest-md5.c:871
 #, c-format
 msgid "Server response did not contain authorization data"
 msgstr "Răspunsul serverului nu a conținut date de autorizare"
 
-#: ../camel/camel-sasl-digest-md5.c:890
+#: ../camel/camel-sasl-digest-md5.c:892
 #, c-format
 msgid "Server response contained incomplete authorization data"
 msgstr "Răspunsul serverului a conținut date de autorizare incomplete"
 
-#: ../camel/camel-sasl-digest-md5.c:903
+#: ../camel/camel-sasl-digest-md5.c:905
 #, c-format
 msgid "Server response does not match"
 msgstr "Răspuns server nepotrivit"
 
-#: ../camel/camel-sasl-gssapi.c:80
+#: ../camel/camel-sasl-gssapi.c:90
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:82
+#: ../camel/camel-sasl-gssapi.c:92
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 "Această opțiune este pentru conectarea la server folosind auntentificare "
 "Kerberos 5."
 
-#: ../camel/camel-sasl-gssapi.c:119
+#: ../camel/camel-sasl-gssapi.c:133
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2166,11 +2227,11 @@ msgstr ""
 "Mecanismul specificat nu este suportat de informația de credibilitate "
 "oferită, sau nu este recunoscut de implementare."
 
-#: ../camel/camel-sasl-gssapi.c:124
+#: ../camel/camel-sasl-gssapi.c:138
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Parametrul furnizat target_name a fost formatat greșit."
 
-#: ../camel/camel-sasl-gssapi.c:127
+#: ../camel/camel-sasl-gssapi.c:141
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2178,7 +2239,7 @@ msgstr ""
 "Parametrul furnizat target_name a conținut un nume nevalid sau de tip "
 "nesuportat."
 
-#: ../camel/camel-sasl-gssapi.c:131
+#: ../camel/camel-sasl-gssapi.c:145
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2186,7 +2247,7 @@ msgstr ""
 "input_toket conține legături de canale diferite de cele specificate prin "
 "parametrul input_chan_bindings."
 
-#: ../camel/camel-sasl-gssapi.c:136
+#: ../camel/camel-sasl-gssapi.c:150
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2194,7 +2255,7 @@ msgstr ""
 "input_token nu conține o semnătură validă, sau o semnătură care nu a putut "
 "fi verificată."
 
-#: ../camel/camel-sasl-gssapi.c:140
+#: ../camel/camel-sasl-gssapi.c:154
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2203,30 +2264,30 @@ msgstr ""
 "contextului, sau operatorul de certificare nu are referită nici o informație "
 "de certificare."
 
-#: ../camel/camel-sasl-gssapi.c:145
+#: ../camel/camel-sasl-gssapi.c:159
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "Descriptorul de context furnizat nu se referă la un context valid."
 
-#: ../camel/camel-sasl-gssapi.c:148
+#: ../camel/camel-sasl-gssapi.c:162
 msgid "The consistency checks performed on the input_token failed."
 msgstr "Verificările pentru consistență a input_token au eșuat."
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:165
 msgid "The consistency checks performed on the credential failed."
 msgstr "Verificările pentru consistență a certificării au eșuat."
 
-#: ../camel/camel-sasl-gssapi.c:154
+#: ../camel/camel-sasl-gssapi.c:168
 msgid "The referenced credentials have expired."
 msgstr "Referințele certificării au expirat."
 
-#: ../camel/camel-sasl-gssapi.c:160 ../camel/camel-sasl-gssapi.c:296
-#: ../camel/camel-sasl-gssapi.c:340 ../camel/camel-sasl-gssapi.c:357
-#: ../camel/providers/smtp/camel-smtp-transport.c:1192
+#: ../camel/camel-sasl-gssapi.c:174 ../camel/camel-sasl-gssapi.c:310
+#: ../camel/camel-sasl-gssapi.c:354 ../camel/camel-sasl-gssapi.c:371
+#: ../camel/providers/smtp/camel-smtp-transport.c:1183
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Răspunsul serverului de autentificare este greșit."
 
-#: ../camel/camel-sasl-gssapi.c:369
+#: ../camel/camel-sasl-gssapi.c:383
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Nivel de securitate nesuportat."
@@ -2275,32 +2336,32 @@ msgstr "URI pentru sursă POP"
 
 #: ../camel/camel-sasl-popb4smtp.c:89
 #, c-format
-msgid "POP Before SMTP auth using an unknown transport"
+msgid "POP Before SMTP authentication using an unknown transport"
 msgstr ""
 "Autentificare POP înainte de SMTP folosind o modalitate de transport "
 "necunoscută"
 
 #: ../camel/camel-sasl-popb4smtp.c:97
 #, c-format
-msgid "POP Before SMTP auth using a non-pop source"
-msgstr "Autentificare POP înainte de SMTP folosind o sursă ne-pop"
+msgid "POP Before SMTP authentication using a non-POP source"
+msgstr "Autentificare POP înainte de SMTP folosind o sursă non-POP"
 
 #: ../camel/camel-search-private.c:112
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "Compilarea eșuată a expresiei regulate: %s: %s"
 
-#: ../camel/camel-service.c:88
+#: ../camel/camel-service.c:90
 #, c-format
 msgid "URL '%s' needs a username component"
 msgstr "URL-ul „%s” necesită o componentă nume utilizator"
 
-#: ../camel/camel-service.c:92
+#: ../camel/camel-service.c:94
 #, c-format
 msgid "URL '%s' needs a host component"
 msgstr "URL-ul „%s” necesită o componentă gazdă"
 
-#: ../camel/camel-service.c:96
+#: ../camel/camel-service.c:98
 #, c-format
 msgid "URL '%s' needs a path component"
 msgstr "URL-ul „%s” necesită o componentă de cale"
@@ -2533,16 +2594,86 @@ msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Nu s-a putut redenumi dosarul: %s: Operație nevalidă"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:1128 ../camel/camel-vtrash-folder.c:48
+#: ../camel/camel-store.c:1129 ../camel/camel-store.c:1139
+#: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Coșul de gunoi"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:1131 ../camel/camel-vtrash-folder.c:50
+#: ../camel/camel-store.c:1132 ../camel/camel-store.c:1143
+#: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Spam"
 
-#: ../camel/camel-tcp-stream-ssl.c:786
+#: ../camel/camel-tcp-stream-raw.c:816
+#, c-format
+msgid "The proxy host does not support SOCKS5"
+msgstr "Proxy-ul nu acceptă SOCKS5"
+
+#: ../camel/camel-tcp-stream-raw.c:822
+#, c-format
+msgid "Could not find a suitable authentication type: code 0x%x"
+msgstr "Nu s-a putut găsi un tip de autentificare potrivit: cod 0x%x"
+
+#: ../camel/camel-tcp-stream-raw.c:834
+msgid "General SOCKS server failure"
+msgstr "Eroare generală în serverul SOCKS"
+
+#: ../camel/camel-tcp-stream-raw.c:835
+msgid "SOCKS server's rules do not allow connection"
+msgstr "Regulile serverului SOCKS nu permit conexiunea"
+
+#: ../camel/camel-tcp-stream-raw.c:836
+msgid "Network is unreachable from SOCKS server"
+msgstr "Rețeaua este inaccesibilă de pe serverul SOCKS"
+
+#: ../camel/camel-tcp-stream-raw.c:837
+msgid "Host is unreachable from SOCKS server"
+msgstr "Gazda este inaccesibilă de pe serverul SOCKS"
+
+#: ../camel/camel-tcp-stream-raw.c:838
+msgid "Connection refused"
+msgstr "Conexiune refuzată"
+
+#: ../camel/camel-tcp-stream-raw.c:839
+msgid "Time-to-live expired"
+msgstr "Timpul de viață (TTL, Time-To-Live) a expirat"
+
+#: ../camel/camel-tcp-stream-raw.c:840
+msgid "Command not supported by SOCKS server"
+msgstr "Comanda nu este acceptată de serverul SOCKS"
+
+#: ../camel/camel-tcp-stream-raw.c:841
+msgid "Address type not supported by SOCKS server"
+msgstr "Tipul de adresă nu este acceptat de serverul SOCKS"
+
+#: ../camel/camel-tcp-stream-raw.c:842
+msgid "Unknown error from SOCKS server"
+msgstr "Eroare necunoscută de la serverul SOCKS"
+
+#: ../camel/camel-tcp-stream-raw.c:872
+#, c-format
+msgid "Got unknown address type from SOCKS server"
+msgstr "S-a primit o adresă cu tip necunoscut de la serverul SOCKS"
+
+#: ../camel/camel-tcp-stream-raw.c:889
+#, c-format
+msgid "Incomplete reply from SOCKS server"
+msgstr "Răspuns incomplet de la serverul SOCKS"
+
+#: ../camel/camel-tcp-stream-raw.c:904
+#, c-format
+msgid "Hostname is too long (maximum is 255 characters)"
+msgstr "Numele gazdei este prea lung (maximum 255 caractere)"
+
+#. SOCKS5
+#. reserved - must be 0
+#: ../camel/camel-tcp-stream-raw.c:936 ../camel/camel-tcp-stream-raw.c:946
+#, c-format
+msgid "Invalid reply from proxy server"
+msgstr "Răspuns nevalid de la serverul proxy"
+
+#: ../camel/camel-tcp-stream-ssl.c:457
 #, c-format
 msgid ""
 "Issuer:            %s\n"
@@ -2555,16 +2686,16 @@ msgstr ""
 "Amprentă: %s\n"
 "Semnătură: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:792
+#: ../camel/camel-tcp-stream-ssl.c:463
 msgid "GOOD"
 msgstr "BUN"
 
-#: ../camel/camel-tcp-stream-ssl.c:792
+#: ../camel/camel-tcp-stream-ssl.c:463
 msgid "BAD"
 msgstr "RĂU"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:796
+#: ../camel/camel-tcp-stream-ssl.c:467
 #, c-format
 msgid ""
 "SSL Certificate check for %s:\n"
@@ -2579,7 +2710,7 @@ msgstr ""
 "\n"
 "Doriți să-l acceptați?"
 
-#: ../camel/camel-tcp-stream-ssl.c:840
+#: ../camel/camel-tcp-stream-ssl.c:511
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2588,7 +2719,7 @@ msgstr ""
 "Problemă cu certificatul: %s\n"
 "Emițător: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:892
+#: ../camel/camel-tcp-stream-ssl.c:563
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2597,7 +2728,7 @@ msgstr ""
 "Domeniul certificatului incorect: %s\n"
 "Emițător: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:910
+#: ../camel/camel-tcp-stream-ssl.c:581
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2606,7 +2737,7 @@ msgstr ""
 "Certificat expirat: %s\n"
 "Emițător: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:927
+#: ../camel/camel-tcp-stream-ssl.c:598
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -2620,16 +2751,17 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "Nu se poate analiza URL-ul „%s”"
 
-#: ../camel/camel-vee-folder.c:1044
+#: ../camel/camel-vee-folder.c:1068
+#, c-format
 msgid "Error storing '%s': "
 msgstr "Eroare la stocarea „%s”: "
 
-#: ../camel/camel-vee-folder.c:1117
+#: ../camel/camel-vee-folder.c:1142
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Nu există mesajul %s în %s"
 
-#: ../camel/camel-vee-folder.c:1133 ../camel/camel-vee-folder.c:1148
+#: ../camel/camel-vee-folder.c:1158 ../camel/camel-vee-folder.c:1173
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Nu s-au putut copia sau muta mesajele într-un dosar virtual"
@@ -2679,54 +2811,55 @@ msgstr "Nici un asemenea mesaj"
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:158
 #: ../camel/providers/nntp/camel-nntp-folder.c:244
 #: ../camel/providers/nntp/camel-nntp-folder.c:337
-#: ../camel/providers/pop3/camel-pop3-folder.c:714
+#: ../camel/providers/pop3/camel-pop3-folder.c:715
+#, c-format
 msgid "Cannot get message %s: "
 msgstr "Nu s-a putut obține mesajul %s: "
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:176
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:186
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2644
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2672
 #, c-format
 msgid "This message is not available in offline mode."
 msgstr "Acest mesaj nu este disponibil în modul deconectat."
 
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:203
 #: ../camel/providers/groupwise/camel-groupwise-folder.c:213
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2109
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2163
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2136
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2190
 #, c-format
 msgid "Could not get message"
 msgstr "Nu s-a putut obține mesajul"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1038
-#: ../camel/providers/imap/camel-imap-folder.c:376
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1070
+#: ../camel/providers/imap/camel-imap-folder.c:381
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Nu s-a putut încărca sumarul pentru %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1112
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1144
 #, c-format
 msgid "Checking for deleted messages %s"
 msgstr "Se verifică mesajele șterse %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:1637
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:1670
 #: ../camel/providers/groupwise/camel-groupwise-store.c:654
 #: ../camel/providers/groupwise/camel-groupwise-store.c:779
-#: ../camel/providers/imap/camel-imap-folder.c:3814
-#: ../camel/providers/imap/camel-imap-folder.c:3892
-#: ../camel/providers/imapx/camel-imapx-server.c:3721
-#: ../camel/providers/imapx/camel-imapx-server.c:3845
+#: ../camel/providers/imap/camel-imap-folder.c:3860
+#: ../camel/providers/imap/camel-imap-folder.c:3938
+#: ../camel/providers/imapx/camel-imapx-server.c:3796
+#: ../camel/providers/imapx/camel-imapx-server.c:3924
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Transfer sumarul pentru noile mesaje în %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2474
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2524
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2502
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2552
 #, c-format
 msgid "Cannot append message to folder '%s': %s"
 msgstr "Nu s-a putut adăuga mesajul în dosarul „%s:” %s"
 
-#: ../camel/providers/groupwise/camel-groupwise-folder.c:2510
+#: ../camel/providers/groupwise/camel-groupwise-folder.c:2538
 #, c-format
 msgid "Cannot create message: %s"
 msgstr "Nu s-a putut crea mesajul: %s"
@@ -2751,13 +2884,13 @@ msgstr "Se verifică mesajele noi"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:50
 #: ../camel/providers/imap/camel-imap-provider.c:42
-#: ../camel/providers/imapx/camel-imapx-provider.c:47
+#: ../camel/providers/imapx/camel-imapx-provider.c:46
 msgid "C_heck for new messages in all folders"
 msgstr "_Verifică mesajele noi din toate dosarele"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:53
 #: ../camel/providers/imap/camel-imap-provider.c:64
-#: ../camel/providers/imapx/camel-imapx-provider.c:73
+#: ../camel/providers/imapx/camel-imapx-provider.c:72
 #: ../camel/providers/local/camel-local-provider.c:42
 #: ../camel/providers/local/camel-local-provider.c:82
 #: ../camel/providers/local/camel-local-provider.c:102
@@ -2774,7 +2907,7 @@ msgstr "Verifică mesajele noi pentru conținut _Spam"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:59
 #: ../camel/providers/imap/camel-imap-provider.c:70
-#: ../camel/providers/imapx/camel-imapx-provider.c:79
+#: ../camel/providers/imapx/camel-imapx-provider.c:78
 msgid "Only check for Junk messages in the IN_BOX folder"
 msgstr "Verifică mesajele Spam doar în dosarul IN_BOX"
 
@@ -2800,7 +2933,7 @@ msgstr "Pentru accesarea serverelor Novell GroupWise"
 
 #: ../camel/providers/groupwise/camel-groupwise-provider.c:98
 #: ../camel/providers/imap/camel-imap-provider.c:97
-#: ../camel/providers/imapx/camel-imapx-provider.c:105
+#: ../camel/providers/imapx/camel-imapx-provider.c:104
 #: ../camel/providers/nntp/camel-nntp-provider.c:72
 #: ../camel/providers/pop3/camel-pop3-provider.c:70
 msgid "Password"
@@ -2819,8 +2952,8 @@ msgid "Host or user not available in url"
 msgstr "Gazdă sau utilizator nu este disponibil în url"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:207
-#: ../camel/providers/imap/camel-imap-store.c:1207
-#: ../camel/providers/imapx/camel-imapx-server.c:2975
+#: ../camel/providers/imap/camel-imap-store.c:1188
+#: ../camel/providers/imapx/camel-imapx-server.c:3035
 #, c-format
 msgid "You did not enter a password."
 msgstr "Nu ați introdus o parolă."
@@ -2830,9 +2963,9 @@ msgid "Some features may not work correctly with your current server version"
 msgstr "Unele facilități nu vor funcționa cu versiunea curentă a serverului"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:550
-#: ../camel/providers/imap/camel-imap-store.c:1776
-#: ../camel/providers/imap/camel-imap-store.c:1971
-#: ../camel/providers/imapx/camel-imapx-store.c:410
+#: ../camel/providers/imap/camel-imap-store.c:1757
+#: ../camel/providers/imap/camel-imap-store.c:1952
+#: ../camel/providers/imapx/camel-imapx-store.c:421
 #, c-format
 msgid "No such folder %s"
 msgstr "Nu există dosarul %s"
@@ -2843,13 +2976,14 @@ msgid "Cannot create GroupWise folders in offline mode."
 msgstr "Nu s-au putut crea dosarele GroupWise în modul deconectat."
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1196
+#, c-format
 msgid "Cannot create a special system folder"
 msgstr "Nu s-a putut crea un dosar sistem special"
 
 #: ../camel/providers/groupwise/camel-groupwise-store.c:1206
-#: ../camel/providers/imap/camel-imap-store.c:1854
-#: ../camel/providers/imap/camel-imap-store.c:2276
-#: ../camel/providers/imapx/camel-imapx-store.c:873
+#: ../camel/providers/imap/camel-imap-store.c:1835
+#: ../camel/providers/imap/camel-imap-store.c:2257
+#: ../camel/providers/imapx/camel-imapx-store.c:884
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr ""
@@ -2960,57 +3094,57 @@ msgstr "Răspunsul dat de serverului IMAP nu conține informația %s"
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Răspuns neașteptat de OK din partea serverului IMAP: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:281
+#: ../camel/providers/imap/camel-imap-folder.c:286
 msgid "Always check for new mail in this folder"
 msgstr "Verifică întotdeauna mesajele noi din acest dosar"
 
-#: ../camel/providers/imap/camel-imap-folder.c:353
+#: ../camel/providers/imap/camel-imap-folder.c:358
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "Nu s-a putut crea dosarul %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:960
-#: ../camel/providers/imapx/camel-imapx-server.c:3760
+#: ../camel/providers/imap/camel-imap-folder.c:965
+#: ../camel/providers/imapx/camel-imapx-server.c:3838
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Se analizează mesajele schimbate în %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3231
+#: ../camel/providers/imap/camel-imap-folder.c:3277
 msgid "Unable to retrieve message: "
 msgstr "Nu s-a putut obține mesajul: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3266
-#: ../camel/providers/imapx/camel-imapx-server.c:4957
+#: ../camel/providers/imap/camel-imap-folder.c:3312
+#: ../camel/providers/imapx/camel-imapx-server.c:5065
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nu se poate obține mesajul cu ID-ul %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3267
-#: ../camel/providers/imapx/camel-imapx-server.c:4958
+#: ../camel/providers/imap/camel-imap-folder.c:3313
+#: ../camel/providers/imapx/camel-imapx-server.c:5066
 msgid "No such message available."
 msgstr "Nici un astfel de mesaj nu este disponibil."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3341
-#: ../camel/providers/imap/camel-imap-folder.c:4211
+#: ../camel/providers/imap/camel-imap-folder.c:3387
+#: ../camel/providers/imap/camel-imap-folder.c:4257
 #: ../camel/providers/nntp/camel-nntp-folder.c:326
 #, c-format
 msgid "This message is not currently available"
 msgstr "Mesajul nu este disponibil curent"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4021
+#: ../camel/providers/imap/camel-imap-folder.c:4067
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Răspunsul serverului a fost incomplet: nici o informație furnizată pentru "
 "mesajul %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4031
+#: ../camel/providers/imap/camel-imap-folder.c:4077
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr ""
 "Răspunsul serverului a fost incomplet: nici un UID furnizat pentru mesajul %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4251
+#: ../camel/providers/imap/camel-imap-folder.c:4297
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Nu s-a putut găsi corpul mesajului în răspunsul căutat."
@@ -3026,30 +3160,32 @@ msgid "Failed to cache message %s: %s"
 msgstr "Eroare la adăugarea în cache a mesajului %s: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:388
+#, c-format
 msgid "Failed to cache message %s: "
 msgstr "Eroare la adăugarea în cache a mesajului %s: "
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:525
+#, c-format
 msgid "Failed to cache %s: "
 msgstr "Eroare la adăugarea în cache %s: "
 
 #: ../camel/providers/imap/camel-imap-provider.c:40
-#: ../camel/providers/imapx/camel-imapx-provider.c:41
+#: ../camel/providers/imapx/camel-imapx-provider.c:40
 msgid "Checking for New Mail"
 msgstr "Se verifică noile mesaje"
 
 #: ../camel/providers/imap/camel-imap-provider.c:44
-#: ../camel/providers/imapx/camel-imapx-provider.c:49
+#: ../camel/providers/imapx/camel-imapx-provider.c:48
 msgid "Ch_eck for new messages in subscribed folders"
 msgstr "V_erifică mesajele noi din dosarele abonate"
 
 #: ../camel/providers/imap/camel-imap-provider.c:48
-#: ../camel/providers/imapx/camel-imapx-provider.c:53
+#: ../camel/providers/imapx/camel-imapx-provider.c:52
 msgid "Connection to Server"
 msgstr "Conexiune la server"
 
 #: ../camel/providers/imap/camel-imap-provider.c:50
-#: ../camel/providers/imapx/camel-imapx-provider.c:55
+#: ../camel/providers/imapx/camel-imapx-provider.c:54
 msgid "_Use custom command to connect to server"
 msgstr "_Folosește comandă personalizată pentru conectarea la server"
 
@@ -3058,18 +3194,18 @@ msgid "Co_mmand:"
 msgstr "Co_mandă:"
 
 #: ../camel/providers/imap/camel-imap-provider.c:56
-#: ../camel/providers/imapx/camel-imapx-provider.c:63
+#: ../camel/providers/imapx/camel-imapx-provider.c:62
 #: ../camel/providers/nntp/camel-nntp-provider.c:42
 msgid "Folders"
 msgstr "Dosare"
 
 #: ../camel/providers/imap/camel-imap-provider.c:58
-#: ../camel/providers/imapx/camel-imapx-provider.c:65
+#: ../camel/providers/imapx/camel-imapx-provider.c:64
 msgid "_Show only subscribed folders"
 msgstr "Arată doar do_sare obonate"
 
 #: ../camel/providers/imap/camel-imap-provider.c:60
-#: ../camel/providers/imapx/camel-imapx-provider.c:68
+#: ../camel/providers/imapx/camel-imapx-provider.c:67
 msgid "O_verride server-supplied folder namespace"
 msgstr "Suprascrie spațiul de nume furnizat de ser_ver pentru dosare"
 
@@ -3078,17 +3214,17 @@ msgid "Names_pace:"
 msgstr "S_pațiu nume:"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
-#: ../camel/providers/imapx/camel-imapx-provider.c:75
+#: ../camel/providers/imapx/camel-imapx-provider.c:74
 msgid "_Apply filters to new messages in INBOX on this server"
 msgstr "_Aplică pe acest server filtrele pe mesajele noi din INBOX"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
-#: ../camel/providers/imapx/camel-imapx-provider.c:77
+#: ../camel/providers/imapx/camel-imapx-provider.c:76
 msgid "Check new messages for Jun_k contents"
 msgstr "Verifică mesajele noi pentru conținut S_pam"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
-#: ../camel/providers/imapx/camel-imapx-provider.c:81
+#: ../camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "Sincroni_zează automat mesajul la distanță cu cel local"
 
@@ -3097,30 +3233,30 @@ msgid "IMAP"
 msgstr "IMAP"
 
 #: ../camel/providers/imap/camel-imap-provider.c:81
-#: ../camel/providers/imapx/camel-imapx-provider.c:91
+#: ../camel/providers/imapx/camel-imapx-provider.c:90
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Pentru citirea și stocarea mesajelor pe servere IMAP."
 
 #: ../camel/providers/imap/camel-imap-provider.c:99
-#: ../camel/providers/imapx/camel-imapx-provider.c:107
+#: ../camel/providers/imapx/camel-imapx-provider.c:106
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Această opțiune vă va conecta la serverul IMAP specificat, folosind o parolă "
 "în clar."
 
 #: ../camel/providers/imap/camel-imap-store.c:310
-#: ../camel/providers/imapx/camel-imapx-store.c:220
+#: ../camel/providers/imapx/camel-imapx-store.c:228
 #, c-format
 msgid "IMAP server %s"
 msgstr "Server IMAP %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:312
-#: ../camel/providers/imapx/camel-imapx-store.c:222
+#: ../camel/providers/imapx/camel-imapx-store.c:230
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "Serviciu IMAP pentru %s pe %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:446
+#: ../camel/providers/imap/camel-imap-store.c:447
 #: ../camel/providers/nntp/camel-nntp-store.c:234
 #: ../camel/providers/pop3/camel-pop3-store.c:132
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
@@ -3128,85 +3264,86 @@ msgstr "Serviciu IMAP pentru %s pe %s"
 msgid "Could not connect to %s: %s"
 msgstr "Nu s-a putut realiza conexiunea la %s: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:447
+#: ../camel/providers/imap/camel-imap-store.c:448
 #: ../camel/providers/nntp/camel-nntp-store.c:235
 #: ../camel/providers/pop3/camel-pop3-store.c:133
 #: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "SSL unavailable"
 msgstr "SSL nedisponibil"
 
-#: ../camel/providers/imap/camel-imap-store.c:465
+#: ../camel/providers/imap/camel-imap-store.c:466
 #: ../camel/providers/nntp/camel-nntp-store.c:252
+#, c-format
 msgid "Could not connect to %s: "
 msgstr "Nu s-a putut realiza conexiunea la %s: "
 
-#: ../camel/providers/imap/camel-imap-store.c:571
-#: ../camel/providers/imap/camel-imap-store.c:591
-#: ../camel/providers/imap/camel-imap-store.c:598
-#: ../camel/providers/imap/camel-imap-store.c:625
-#: ../camel/providers/imapx/camel-imapx-server.c:2828
-#: ../camel/providers/imapx/camel-imapx-server.c:2864
+#: ../camel/providers/imap/camel-imap-store.c:572
+#: ../camel/providers/imap/camel-imap-store.c:592
+#: ../camel/providers/imap/camel-imap-store.c:599
+#: ../camel/providers/imap/camel-imap-store.c:626
+#: ../camel/providers/imapx/camel-imapx-server.c:2884
+#: ../camel/providers/imapx/camel-imapx-server.c:2922
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Eroare la conectarea securizată la serverul IMAP %s: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:572
-#: ../camel/providers/imapx/camel-imapx-server.c:2829
+#: ../camel/providers/imap/camel-imap-store.c:573
+#: ../camel/providers/imapx/camel-imapx-server.c:2885
 #: ../camel/providers/smtp/camel-smtp-transport.c:295
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nu este suportat"
 
-#: ../camel/providers/imap/camel-imap-store.c:592
-#: ../camel/providers/imapx/camel-imapx-server.c:2865
+#: ../camel/providers/imap/camel-imap-store.c:593
+#: ../camel/providers/imapx/camel-imapx-server.c:2923
 msgid "SSL negotiations failed"
 msgstr "Eroare la negocierea SSL"
 
-#: ../camel/providers/imap/camel-imap-store.c:599
+#: ../camel/providers/imap/camel-imap-store.c:600
 #: ../camel/providers/smtp/camel-smtp-transport.c:339
 msgid "SSL is not available in this build"
 msgstr "Această versiune compilată nu are suport SSL"
 
-#: ../camel/providers/imap/camel-imap-store.c:747
-#: ../camel/providers/imapx/camel-imapx-server.c:2648
+#: ../camel/providers/imap/camel-imap-store.c:748
+#: ../camel/providers/imapx/camel-imapx-server.c:2719
 #, c-format
 msgid "Connection cancelled"
 msgstr "Conexiune anulată"
 
-#: ../camel/providers/imap/camel-imap-store.c:752
-#: ../camel/providers/imapx/camel-imapx-server.c:2653
+#: ../camel/providers/imap/camel-imap-store.c:753
+#: ../camel/providers/imapx/camel-imapx-server.c:2724
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Nu s-a putut realiza conexiunea folosind comanda „%s”: %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:945
-#: ../camel/providers/imap/camel-imap-store.c:2369
-#: ../camel/providers/imapx/camel-imapx-store.c:457
-#: ../camel/providers/imapx/camel-imapx-store.c:1054
+#: ../camel/providers/imap/camel-imap-store.c:926
+#: ../camel/providers/imap/camel-imap-store.c:2350
+#: ../camel/providers/imapx/camel-imapx-store.c:468
+#: ../camel/providers/imapx/camel-imapx-store.c:1065
 #: ../camel/providers/local/camel-maildir-folder.c:90
 #: ../camel/providers/local/camel-maildir-store.c:225
 #: ../camel/providers/local/camel-maildir-store.c:315
-#: ../camel/providers/local/camel-maildir-store.c:562
-#: ../camel/providers/local/camel-maildir-store.c:575
+#: ../camel/providers/local/camel-maildir-store.c:567
+#: ../camel/providers/local/camel-maildir-store.c:580
 #: ../camel/providers/local/camel-spool-store.c:508
 msgid "Inbox"
 msgstr "Inbox"
 
-#: ../camel/providers/imap/camel-imap-store.c:1148
-#: ../camel/providers/imapx/camel-imapx-server.c:2931
+#: ../camel/providers/imap/camel-imap-store.c:1129
+#: ../camel/providers/imapx/camel-imapx-server.c:2991
 #, c-format
 msgid "IMAP server %s does not support requested authentication type %s"
 msgstr "Serverul IMAP %s nu suportă tipul cerut de autentificare %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1160
-#: ../camel/providers/imapx/camel-imapx-server.c:2943
-#: ../camel/providers/smtp/camel-smtp-transport.c:483
+#: ../camel/providers/imap/camel-imap-store.c:1141
+#: ../camel/providers/imapx/camel-imapx-server.c:3003
+#: ../camel/providers/smtp/camel-smtp-transport.c:462
 #, c-format
 msgid "No support for authentication type %s"
 msgstr "Tip de autentificare nesuportat %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:1239
-#: ../camel/providers/imapx/camel-imapx-server.c:3013
+#: ../camel/providers/imap/camel-imap-store.c:1220
+#: ../camel/providers/imapx/camel-imapx-server.c:3074
 #, c-format
 msgid ""
 "Unable to authenticate to IMAP server.\n"
@@ -3217,15 +3354,15 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/imap/camel-imap-store.c:1790
-#: ../camel/providers/imap/camel-imap-store.c:2212
-#: ../camel/providers/imapx/camel-imapx-store.c:852
+#: ../camel/providers/imap/camel-imap-store.c:1771
+#: ../camel/providers/imap/camel-imap-store.c:2193
+#: ../camel/providers/imapx/camel-imapx-store.c:863
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Numele dosarului „%s” nu este valid deoarece conține caracterul „%c”"
 
-#: ../camel/providers/imap/camel-imap-store.c:1906
+#: ../camel/providers/imap/camel-imap-store.c:1887
 #: ../camel/providers/local/camel-maildir-store.c:189
 #: ../camel/providers/local/camel-mbox-store.c:193
 #: ../camel/providers/local/camel-mh-store.c:255
@@ -3233,91 +3370,91 @@ msgstr "Numele dosarului „%s” nu este valid deoarece conține caracterul „
 msgid "Cannot create folder '%s': folder exists."
 msgstr "Dosarul „%s” nu poate fi creat: există deja."
 
-#: ../camel/providers/imap/camel-imap-store.c:2225
-#: ../camel/providers/imapx/camel-imapx-store.c:863
+#: ../camel/providers/imap/camel-imap-store.c:2206
+#: ../camel/providers/imapx/camel-imapx-store.c:874
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Dosar părinte necunoscut: %s"
 
-#: ../camel/providers/imap/camel-imap-store.c:3081
+#: ../camel/providers/imap/camel-imap-store.c:3062
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "Deconectare neașteptată de la server"
 
-#: ../camel/providers/imap/camel-imap-store.c:3084
+#: ../camel/providers/imap/camel-imap-store.c:3065
 msgid "Server unexpectedly disconnected: "
 msgstr "Deconectare neașteptată de la server: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:75
+#: ../camel/providers/imapx/camel-imapx-folder.c:74
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nu s-a putut crea sumarul dosarului pentru %s"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:83
+#: ../camel/providers/imapx/camel-imapx-folder.c:82
+#, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nu s-a putut crea fișierul cache pentru %s: "
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:43
+#: ../camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
 msgstr "Folosește „_Quick Resync” dacă serverul suportă această opțiune"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:45
+#: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Use I_dle if the server supports it"
 msgstr "Folosește „I_dle” dacă serverul suportă această opțiune"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:57
+#: ../camel/providers/imapx/camel-imapx-provider.c:56
 msgid "Command:"
 msgstr "Comandă:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:59
+#: ../camel/providers/imapx/camel-imapx-provider.c:58
 msgid "Numbe_r of cached connections to use"
 msgstr "Numă_rul de conexiuni stocate temporar de folosit"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:70
+#: ../camel/providers/imapx/camel-imapx-provider.c:69
 msgid "Namespace:"
 msgstr "Spațiu nume:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:89
+#: ../camel/providers/imapx/camel-imapx-provider.c:88
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1365
+#: ../camel/providers/imapx/camel-imapx-server.c:1396
 msgid "Error writing to cache stream: "
 msgstr "Eroare la scrierea în fluxul cache-ului: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2008
+#: ../camel/providers/imapx/camel-imapx-server.c:2054
+#, c-format
 msgid "Not authenticated"
 msgstr "Neautentificat"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2756
+#: ../camel/providers/imapx/camel-imapx-server.c:2810
+#, c-format
 msgid "Could not connect to %s (port %s): "
 msgstr "Nu s-a putut realiza conexiunea la %s (port %s): "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3185
+#: ../camel/providers/imapx/camel-imapx-server.c:3251
 msgid "Closing tmp stream failed: "
 msgstr "Închiderea fluxului temporar a eșuat: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5081
-#, fuzzy, c-format
-msgid "Cannot create spool file: %s"
-msgstr "Nu s-a putut crea fișierul coadă-de-așteptare: %s"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:5096
+#: ../camel/providers/imapx/camel-imapx-server.c:5188
+#: ../camel/providers/imapx/camel-imapx-server.c:5203
 msgid "Cannot create spool file: "
 msgstr "Nu s-a putut crea fișierul coadă-de-așteptare: "
 
-#: ../camel/providers/imapx/camel-imapx-store.c:426
-#: ../camel/providers/nntp/camel-nntp-store.c:1529
+#: ../camel/providers/imapx/camel-imapx-store.c:437
+#: ../camel/providers/nntp/camel-nntp-store.c:1510
 #, c-format
 msgid "No such folder: %s"
 msgstr "Nu există dosarul: %s"
 
-#: ../camel/providers/imapx/camel-imapx-stream.c:71
+#: ../camel/providers/imapx/camel-imapx-stream.c:68
 #, c-format
 msgid "Source stream returned no data"
-msgstr ""
+msgstr "Fluxul sursă nu a întors date"
 
-#: ../camel/providers/imapx/camel-imapx-stream.c:80
+#: ../camel/providers/imapx/camel-imapx-stream.c:77
+#, c-format
 msgid "Source stream unavailable"
 msgstr "Fluxul sursă nu este disponibil"
 
@@ -3341,8 +3478,8 @@ msgstr "%s (%s)"
 msgid "Index message body data"
 msgstr "Indexează datele din corpul mesajului"
 
-
-#: ../camel/providers/local/camel-local-folder.c:686
+#: ../camel/providers/local/camel-local-folder.c:677
+#, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
 "%s"
@@ -3409,53 +3546,53 @@ msgstr ""
 msgid "Standard Unix mbox spool directory"
 msgstr "Dosar spool mbox Unix standard"
 
-#: ../camel/providers/local/camel-local-store.c:149
-#: ../camel/providers/local/camel-local-store.c:284
+#: ../camel/providers/local/camel-local-store.c:170
+#: ../camel/providers/local/camel-local-store.c:305
 #: ../camel/providers/local/camel-mbox-store.c:371
 #: ../camel/providers/local/camel-spool-store.c:109
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "Stocarea root %s nu e o cale absolută"
 
-#: ../camel/providers/local/camel-local-store.c:158
+#: ../camel/providers/local/camel-local-store.c:179
 #, c-format
 msgid "Store root %s is not a regular directory"
 msgstr "Stocarea root %s nu e un dosar obișnuit"
 
-#: ../camel/providers/local/camel-local-store.c:169
-#: ../camel/providers/local/camel-local-store.c:179
-#: ../camel/providers/local/camel-local-store.c:297
+#: ../camel/providers/local/camel-local-store.c:190
+#: ../camel/providers/local/camel-local-store.c:200
+#: ../camel/providers/local/camel-local-store.c:318
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "Nu s-a putut obține dosarul: %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:193
+#: ../camel/providers/local/camel-local-store.c:214
 #, c-format
 msgid "Local stores do not have an inbox"
 msgstr "Stocările locale nu au un inbox"
 
-#: ../camel/providers/local/camel-local-store.c:250
+#: ../camel/providers/local/camel-local-store.c:271
 #, c-format
 msgid "Local mail file %s"
 msgstr "Fișier local de mesaje %s"
 
-#: ../camel/providers/local/camel-local-store.c:358
+#: ../camel/providers/local/camel-local-store.c:379
 #, c-format
 msgid "Could not rename folder %s to %s: %s"
 msgstr "Nu s-a putut redenumi dosarul %s în %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:431
+#: ../camel/providers/local/camel-local-store.c:452
 #, c-format
 msgid "Could not rename '%s': %s"
 msgstr "Nu s-a putut redenumi „%s”: %s"
 
-#: ../camel/providers/local/camel-local-store.c:461
+#: ../camel/providers/local/camel-local-store.c:482
 #: ../camel/providers/local/camel-mbox-store.c:304
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
 msgstr "Nu s-a putut șterge fișierul index al dosarului „%s”: %s"
 
-#: ../camel/providers/local/camel-local-store.c:489
+#: ../camel/providers/local/camel-local-store.c:510
 #: ../camel/providers/local/camel-mbox-store.c:333
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
@@ -3467,6 +3604,7 @@ msgid "Unable to add message to summary: unknown reason"
 msgstr "Nu s-a putut adăuga mesajul la sumar: motiv necunoscut"
 
 #: ../camel/providers/local/camel-maildir-folder.c:195
+#, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr "Nu s-a putut adăuga mesajul la dosarul maildir: %s: "
 
@@ -3475,11 +3613,12 @@ msgstr "Nu s-a putut adăuga mesajul la dosarul maildir: %s: "
 #: ../camel/providers/local/camel-mbox-folder.c:440
 #: ../camel/providers/local/camel-mh-folder.c:227
 #: ../camel/providers/local/camel-mh-folder.c:235
+#, c-format
 msgid "Cannot get message %s from folder %s: "
-msgstr ""
-"Nu s-a putut obține mesajul %s din dosarul %s: "
+msgstr "Nu s-a putut obține mesajul %s din dosarul %s: "
 
 #: ../camel/providers/local/camel-maildir-folder.c:399
+#, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "Nu s-au putut transfera mesaje în dosarul destinație: %s"
 
@@ -3521,28 +3660,28 @@ msgstr "Nu s-a putut șterge dosarul „%s”: %s"
 msgid "not a maildir directory"
 msgstr "nu este un dosar maildir"
 
-#: ../camel/providers/local/camel-maildir-store.c:482
+#: ../camel/providers/local/camel-maildir-store.c:487
 #: ../camel/providers/local/camel-spool-store.c:364
 #: ../camel/providers/local/camel-spool-store.c:380
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "Nu s-a putut scana dosarul „%s”: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:435
-#: ../camel/providers/local/camel-maildir-summary.c:558
+#: ../camel/providers/local/camel-maildir-summary.c:439
+#: ../camel/providers/local/camel-maildir-summary.c:562
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Nu s-a putut deschide calea către dosarul maildir: %s: %s"
 
-#: ../camel/providers/local/camel-maildir-summary.c:549
+#: ../camel/providers/local/camel-maildir-summary.c:553
 msgid "Checking folder consistency"
 msgstr "Se verifică consistența dosarului"
 
-#: ../camel/providers/local/camel-maildir-summary.c:641
+#: ../camel/providers/local/camel-maildir-summary.c:645
 msgid "Checking for new messages"
 msgstr "Se verifică mesajele noi"
 
-#: ../camel/providers/local/camel-maildir-summary.c:732
+#: ../camel/providers/local/camel-maildir-summary.c:736
 #: ../camel/providers/local/camel-mbox-summary.c:465
 #: ../camel/providers/local/camel-mbox-summary.c:679
 #: ../camel/providers/local/camel-mbox-summary.c:809
@@ -3558,10 +3697,12 @@ msgstr "Nu s-a putut crea blocarea dosarului %s: %s"
 
 # fost... msgstr "Nu pot crea directorul blocat la %s: %s"
 #: ../camel/providers/local/camel-mbox-folder.c:194
+#, c-format
 msgid "Cannot open mailbox: %s: "
 msgstr "Nu s-a putut deschide căsuța poștală: %s: "
 
 #: ../camel/providers/local/camel-mbox-folder.c:260
+#, c-format
 msgid "Cannot append message to mbox file: %s: "
 msgstr "Nu s-a putut adăuga mesajul la fișierul mbox: %s: "
 
@@ -3642,9 +3783,9 @@ msgid "Could not open folder: %s: %s"
 msgstr "Nu s-a putut deschide dosarul: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:533
+#, c-format
 msgid "Fatal mail parser error near position %s in folder %s"
-msgstr ""
-"Eroare fatală la analizatoru de mesaje lângă poziția %s din dosarul %s"
+msgstr "Eroare fatală la analizatoru de mesaje lângă poziția %s din dosarul %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:615
 #, c-format
@@ -3666,7 +3807,7 @@ msgstr "Nu s-a putut deschide momentan căsuța poștală: %s"
 
 # fost...msgstr "Nu pot deschide căsuța poștală temporară: %s"
 #: ../camel/providers/local/camel-mbox-summary.c:715
-#: ../camel/providers/local/camel-mbox-summary.c:933
+#: ../camel/providers/local/camel-mbox-summary.c:932
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Nu s-a putut închide dosarul sursă %s: %s"
@@ -3682,37 +3823,46 @@ msgid "Could not rename folder: %s"
 msgstr "Nu s-a putut redenumi dosarul: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:829
-#: ../camel/providers/local/camel-mbox-summary.c:1071
+#: ../camel/providers/local/camel-mbox-summary.c:1070
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Nu s-a putut stoca dosarul: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:870
-#: ../camel/providers/local/camel-mbox-summary.c:879
-#: ../camel/providers/local/camel-mbox-summary.c:1104
-#: ../camel/providers/local/camel-mbox-summary.c:1113
+#: ../camel/providers/local/camel-mbox-summary.c:869
+#: ../camel/providers/local/camel-mbox-summary.c:1102
+#, c-format
+msgid ""
+"MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
+"it.)"
+msgstr ""
+"Fișierul MBOX este deteriorat, trebuie să-l reparați. (Se aștepta o linie "
+"„From”, dar nu a fost găsită.)"
+
+#: ../camel/providers/local/camel-mbox-summary.c:878
+#: ../camel/providers/local/camel-mbox-summary.c:1111
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Sumarul și dosarul nu se potrivesc, chiar și după o sincronizare"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1030
+#: ../camel/providers/local/camel-mbox-summary.c:1029
 #: ../camel/providers/local/camel-spool-summary.c:337
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Eroare necunoscută: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1183
-#: ../camel/providers/local/camel-mbox-summary.c:1213
+#: ../camel/providers/local/camel-mbox-summary.c:1181
+#: ../camel/providers/local/camel-mbox-summary.c:1211
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Eroare la scrierea în căsuța poștală temporară: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1202
+#: ../camel/providers/local/camel-mbox-summary.c:1200
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Eroare la scrierea în căsuța poștală temporară: %s: %s"
 
 #: ../camel/providers/local/camel-mh-folder.c:165
+#, c-format
 msgid "Cannot append message to mh folder: %s: "
 msgstr "Nu s-a putut adăuga mesajul la dosarul MH: %s: "
 
@@ -3804,24 +3954,24 @@ msgstr "Dosarele spool nu pot fi șterse"
 #: ../camel/providers/local/camel-spool-summary.c:178
 #: ../camel/providers/local/camel-spool-summary.c:190
 #, c-format
-msgid "Could not sync temporary folder %s: %s"
+msgid "Could not synchronize temporary folder %s: %s"
 msgstr "Nu s-a putut sincroniza dosarul temporar %s: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:208
 #, c-format
-msgid "Could not sync spool folder %s: %s"
-msgstr "Nu s-a putut sincroniza dosarul spool %s: %s"
+msgid "Could not synchronize spool folder %s: %s"
+msgstr "Nu s-a putut sincroniza dosarul coadă de așteptare %s: %s"
 
 #: ../camel/providers/local/camel-spool-summary.c:240
 #: ../camel/providers/local/camel-spool-summary.c:259
 #: ../camel/providers/local/camel-spool-summary.c:272
 #, c-format
 msgid ""
-"Could not sync spool folder %s: %s\n"
+"Could not synchronize spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in '%s'"
 msgstr ""
-"Nu s-a putut putut sincroniza dosarul coadă de așteptare (spool) %s: %s\n"
-"Dosarul poate fi corupt, o copie a fost salvată în „%s”"
+"Nu s-a putut putut sincroniza dosarul coadă de așteptare %s: %s\n"
+"Dosarul poate fi deteriorat, o copie a fost salvată în „%s”"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:197
 #: ../camel/providers/nntp/camel-nntp-folder.c:271
@@ -3833,9 +3983,9 @@ msgstr "Eroare internă: UID în format invalid: %s"
 #: ../camel/providers/nntp/camel-nntp-folder.c:234
 #: ../camel/providers/nntp/camel-nntp-folder.c:238
 #: ../camel/providers/pop3/camel-pop3-folder.c:402
-#: ../camel/providers/pop3/camel-pop3-folder.c:630
-#: ../camel/providers/pop3/camel-pop3-folder.c:695
-#: ../camel/providers/pop3/camel-pop3-folder.c:706
+#: ../camel/providers/pop3/camel-pop3-folder.c:631
+#: ../camel/providers/pop3/camel-pop3-folder.c:696
+#: ../camel/providers/pop3/camel-pop3-folder.c:707
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Nu s-a putut obține mesajul %s: %s"
@@ -3848,10 +3998,8 @@ msgid "Posting failed: %s"
 msgstr "Trimitere eșuată: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:513
-#, fuzzy
-#| msgid "Posting failed: %s"
 msgid "Posting failed: "
-msgstr "Trimitere eșuată: %s"
+msgstr "Trimitere eșuată: "
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:541
 #, c-format
@@ -3893,22 +4041,21 @@ msgstr ""
 "Această optiune vă va autentifica la serverul NNTP printr-o parolă în clar."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:265
-#, fuzzy, c-format
-#| msgid "Could not read greeting from %s: %s"
+#, c-format
 msgid "Could not read greeting from %s: "
-msgstr "Nu s-a putut citi mesajul de întâmpinare de la %s: %s"
+msgstr "Nu s-a putut citi mesajul de întâmpinare de la %s: "
 
 #: ../camel/providers/nntp/camel-nntp-store.c:278
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "Serverul NNTP %s a returnat codul de eroare %d: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:453
+#: ../camel/providers/nntp/camel-nntp-store.c:434
 #, c-format
 msgid "USENET News via %s"
 msgstr "Știri USENET via %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:946
+#: ../camel/providers/nntp/camel-nntp-store.c:927
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -3919,7 +4066,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1043
+#: ../camel/providers/nntp/camel-nntp-store.c:1024
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -3931,7 +4078,7 @@ msgstr ""
 "Acest grup de știri nu există. Elementul selectat este probabil un dosar "
 "părinte."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1083
+#: ../camel/providers/nntp/camel-nntp-store.c:1064
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -3942,40 +4089,40 @@ msgstr ""
 "\n"
 "grupul de știri nu există!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1113
+#: ../camel/providers/nntp/camel-nntp-store.c:1094
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
 "Nu puteți crea un dosar într-o stocare de știri: trebuie în schimb să vă "
 "abonați."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1125
+#: ../camel/providers/nntp/camel-nntp-store.c:1106
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Nu puteți redenumi un dosar într-o stocare de știri"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1138
+#: ../camel/providers/nntp/camel-nntp-store.c:1119
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
-"Nu s-a putut muta un dosar într-o stocare de știri: trebuie să vă dezabonați."
+"Nu puteți muta un dosar într-o stocare de știri: trebuie să vă dezabonați."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1276
+#: ../camel/providers/nntp/camel-nntp-store.c:1257
 #, c-format
 msgid "Authentication requested but no username provided"
 msgstr ""
 "Autentificarea a fost cerută, dar nu a fost specificat un nume de utilizator"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1288
+#: ../camel/providers/nntp/camel-nntp-store.c:1269
 #, c-format
 msgid "Cannot authenticate to server: %s"
 msgstr "Nu s-a putut autentifica la server: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1414
+#: ../camel/providers/nntp/camel-nntp-store.c:1395
 msgid "NNTP Command failed: "
 msgstr "Comanda NNTP a eșuat: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1472
+#: ../camel/providers/nntp/camel-nntp-store.c:1453
 #, c-format
 msgid "Not connected."
 msgstr "Neconectat."
@@ -4018,20 +4165,20 @@ msgstr "Șterge definitiv mesajele vechi"
 msgid "Expunging deleted messages"
 msgstr "Șterge definitiv mesajele șterse"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:566
-#: ../camel/providers/pop3/camel-pop3-folder.c:596
+#: ../camel/providers/pop3/camel-pop3-folder.c:567
+#: ../camel/providers/pop3/camel-pop3-folder.c:597
 #, c-format
 msgid "No message with UID %s"
 msgstr "Nici un mesaj cu UID %s"
 
 #. Sigh, most of the crap in this function is so that the cancel button
 #. returns the proper exception code.  Sigh.
-#: ../camel/providers/pop3/camel-pop3-folder.c:603
+#: ../camel/providers/pop3/camel-pop3-folder.c:604
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "Se primește mesajul POP %d"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:707
+#: ../camel/providers/pop3/camel-pop3-folder.c:708
 msgid "Unknown reason"
 msgstr "Motiv necunoscut"
 
@@ -4081,7 +4228,7 @@ msgstr ""
 #. Translators: This is the separator between an error and an explanation
 #: ../camel/providers/pop3/camel-pop3-store.c:98
 msgid ": "
-msgstr ""
+msgstr ": "
 
 #: ../camel/providers/pop3/camel-pop3-store.c:168
 #, c-format
@@ -4113,8 +4260,8 @@ msgstr "Eroare la negocierea TLS"
 msgid "TLS is not available in this build"
 msgstr "Această versiune compilată nu are suport TLS"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:321
-#: ../camel/providers/pop3/camel-pop3-store.c:473
+#: ../camel/providers/pop3/camel-pop3-store.c:300
+#: ../camel/providers/pop3/camel-pop3-store.c:452
 #, c-format
 msgid ""
 "Unable to connect to POP server %s: No support for requested authentication "
@@ -4124,21 +4271,22 @@ msgstr ""
 "autentificare cerut nu este suportat."
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:344
+#: ../camel/providers/pop3/camel-pop3-store.c:323
 #, c-format
 msgid "SASL '%s' Login failed for POP server %s%s"
 msgstr "Autentificarea SASL „%s” a eșuat pentru serverul POP %s%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:361
+#: ../camel/providers/pop3/camel-pop3-store.c:340
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "Nu s-a putut autentifica la serverul POP %s: eroare de protocol SASL"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:378
+#: ../camel/providers/pop3/camel-pop3-store.c:357
+#, c-format
 msgid "Failed to authenticate on POP server %s: "
 msgstr "Autentificare eșuată la serverul POP %s: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:442
+#: ../camel/providers/pop3/camel-pop3-store.c:421
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4148,7 +4296,7 @@ msgstr ""
 "Se suspectează un atac prin impersonare. Vă rugăm contactați administratorul "
 "de rețea."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:492
+#: ../camel/providers/pop3/camel-pop3-store.c:471
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4158,7 +4306,7 @@ msgstr ""
 "Eroare la trimiterea parolei: %s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:505
+#: ../camel/providers/pop3/camel-pop3-store.c:484
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4168,7 +4316,7 @@ msgstr ""
 "Eroare la trimiterea numelui de utilizator%s"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:518
+#: ../camel/providers/pop3/camel-pop3-store.c:497
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4177,32 +4325,30 @@ msgstr ""
 "Nu s-a putut realiza conexiunea la serverul POP %s.\n"
 "Eroare la trimiterea parolei%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:674
+#: ../camel/providers/pop3/camel-pop3-store.c:653
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "Nu s-a putut realiza conexiunea la serverul POP %s."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:687
-#, fuzzy, c-format
-#| msgid "IMAP server %s"
+#: ../camel/providers/pop3/camel-pop3-store.c:666
+#, c-format
 msgid "POP3 server %s"
-msgstr "Server IMAP %s"
+msgstr "Server POP3 %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:691
-#, fuzzy, c-format
-#| msgid "IMAP service for %s on %s"
+#: ../camel/providers/pop3/camel-pop3-store.c:670
+#, c-format
 msgid "POP3 server for %s on %s"
-msgstr "Serviciu IMAP pentru %s pe %s"
+msgstr "Server POP3 pentru %s pe %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:706
+#: ../camel/providers/pop3/camel-pop3-store.c:685
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Dosarul „%s” nu există."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:730
+#: ../camel/providers/pop3/camel-pop3-store.c:709
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
-msgstr ""
+msgstr "Stocarea POP3 nu suportă ierarhie de dosare"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:36
 msgid "Sendmail"
@@ -4233,15 +4379,13 @@ msgid "Could not fork sendmail: %s: mail not sent"
 msgstr "Nu s-a putut executa cu fork sendmail: %s: mesajul nu a fost trimis."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:194
-#, fuzzy
-#| msgid "Could not send message: %s"
 msgid "Could not send message: "
-msgstr "Nu s-a putut trimite mesajul: %s"
+msgstr "Nu s-a putut trimite mesajul: "
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:222
 #, c-format
 msgid "sendmail exited with signal %s: mail not sent."
-msgstr "Sendmail a ieșit cu semnal %s: mesajul nu a fost trimis."
+msgstr "sendmail a ieșit cu semnal %s: mesajul nu a fost trimis."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:229
 #, c-format
@@ -4373,10 +4517,8 @@ msgstr "Eșuare temporară a autentificării"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:252
 #: ../camel/providers/smtp/camel-smtp-transport.c:258
-#, fuzzy
-#| msgid "Welcome response error"
 msgid "Welcome response error: "
-msgstr "Eroare la răspunsul de întâmpinare"
+msgstr "Eroare la răspunsul de întâmpinare: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:294
 #: ../camel/providers/smtp/camel-smtp-transport.c:331
@@ -4388,18 +4530,16 @@ msgstr "Conectarea în mod securizat la serverul SMTP %s a eșuat: %s"
 #: ../camel/providers/smtp/camel-smtp-transport.c:302
 #: ../camel/providers/smtp/camel-smtp-transport.c:314
 #: ../camel/providers/smtp/camel-smtp-transport.c:320
-#, fuzzy
-#| msgid "STARTTLS command failed: %s"
 msgid "STARTTLS command failed: "
-msgstr "Comanda STARTTLS a eșuat: %s"
+msgstr "Comanda STARTTLS a eșuat: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:471
+#: ../camel/providers/smtp/camel-smtp-transport.c:450
 #, c-format
 msgid "SMTP server %s does not support requested authentication type %s."
 msgstr "Serverul SMTP %s nu suportă tipul cerut de autentificare %s."
 
 # fost...msgstr "%sIntroduceți, vă rog, parola SMTP pentru %s@%s"
-#: ../camel/providers/smtp/camel-smtp-transport.c:547
+#: ../camel/providers/smtp/camel-smtp-transport.c:533
 #, c-format
 msgid ""
 "Unable to authenticate to SMTP server.\n"
@@ -4410,201 +4550,182 @@ msgstr ""
 "%s\n"
 "\n"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:685
+#: ../camel/providers/smtp/camel-smtp-transport.c:676
 #, c-format
 msgid "SMTP server %s"
 msgstr "Server SMTP %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:687
+#: ../camel/providers/smtp/camel-smtp-transport.c:678
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "Mesaj SMTP livrat prin %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:707
+#: ../camel/providers/smtp/camel-smtp-transport.c:698
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Nu s-a putut trimite mesajul: serviciul nu este conectat."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:714
+#: ../camel/providers/smtp/camel-smtp-transport.c:705
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Nu s-a putut trimite mesajul: adresa expeditorului nu este validă."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:718
+#: ../camel/providers/smtp/camel-smtp-transport.c:709
 msgid "Sending message"
 msgstr "Se trimite mesajul"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:734
+#: ../camel/providers/smtp/camel-smtp-transport.c:725
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Nu s-a putut trimite mesajul: destinatar neprecizat."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:746
+#: ../camel/providers/smtp/camel-smtp-transport.c:737
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr ""
 "Nu s-a putut trimite mesajul: unul sau mai mulți destinatari nu sunt valizi"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:982
+#: ../camel/providers/smtp/camel-smtp-transport.c:973
 msgid "SMTP Greeting"
 msgstr "Mesaj SMTP de întâmpinare"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1006
-#: ../camel/providers/smtp/camel-smtp-transport.c:1021
-#: ../camel/providers/smtp/camel-smtp-transport.c:1028
-#, fuzzy
-#| msgid "HELO command failed: %s"
+#: ../camel/providers/smtp/camel-smtp-transport.c:997
+#: ../camel/providers/smtp/camel-smtp-transport.c:1012
+#: ../camel/providers/smtp/camel-smtp-transport.c:1019
 msgid "HELO command failed: "
-msgstr "Eroare la comanda HELO: %s"
+msgstr "Comanda HELO a eșuat: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1095
+#: ../camel/providers/smtp/camel-smtp-transport.c:1086
 msgid "SMTP Authentication"
 msgstr "Autentificare SMTP"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1102
+#: ../camel/providers/smtp/camel-smtp-transport.c:1093
 #, c-format
 msgid "Error creating SASL authentication object."
-msgstr "Eroare la crearea obiectului de autentificare SASL"
+msgstr "Eroare la crearea obiectului de autentificare SASL."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1118
-#: ../camel/providers/smtp/camel-smtp-transport.c:1128
-#: ../camel/providers/smtp/camel-smtp-transport.c:1136
-#, fuzzy
-#| msgid "AUTH command failed: %s"
+#: ../camel/providers/smtp/camel-smtp-transport.c:1109
+#: ../camel/providers/smtp/camel-smtp-transport.c:1119
+#: ../camel/providers/smtp/camel-smtp-transport.c:1127
 msgid "AUTH command failed: "
-msgstr "Eroare la comanda AUTH: %s"
+msgstr "Comanda AUTH a eșuat: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1233
+#: ../camel/providers/smtp/camel-smtp-transport.c:1226
+#: ../camel/providers/smtp/camel-smtp-transport.c:1238
 #: ../camel/providers/smtp/camel-smtp-transport.c:1245
-#: ../camel/providers/smtp/camel-smtp-transport.c:1252
-#, fuzzy
-#| msgid "MAIL FROM command failed"
 msgid "MAIL FROM command failed: "
-msgstr "Eroare la comanda MAIL FROM"
+msgstr "Comanda MAIL FROM a eșuat: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1275
-#, fuzzy
-#| msgid "RSET command failed: %s"
+#: ../camel/providers/smtp/camel-smtp-transport.c:1268
 msgid "RCPT TO command failed: "
-msgstr "Eroare la comanda RSET: %s"
+msgstr "Comanda RCPT TO a eșuat: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1289
-#: ../camel/providers/smtp/camel-smtp-transport.c:1297
-#, fuzzy, c-format
-#| msgid "RCPT TO <%s> failed"
+#: ../camel/providers/smtp/camel-smtp-transport.c:1282
+#: ../camel/providers/smtp/camel-smtp-transport.c:1290
+#, c-format
 msgid "RCPT TO <%s> failed: "
-msgstr "RCPT TO <%s> a eșuat"
+msgstr "Comanda RCPT TO <%s> a eșuat: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1335
-#: ../camel/providers/smtp/camel-smtp-transport.c:1344
-#: ../camel/providers/smtp/camel-smtp-transport.c:1354
-#: ../camel/providers/smtp/camel-smtp-transport.c:1411
-#: ../camel/providers/smtp/camel-smtp-transport.c:1427
+#: ../camel/providers/smtp/camel-smtp-transport.c:1328
+#: ../camel/providers/smtp/camel-smtp-transport.c:1337
+#: ../camel/providers/smtp/camel-smtp-transport.c:1347
+#: ../camel/providers/smtp/camel-smtp-transport.c:1404
+#: ../camel/providers/smtp/camel-smtp-transport.c:1420
+#: ../camel/providers/smtp/camel-smtp-transport.c:1431
 #: ../camel/providers/smtp/camel-smtp-transport.c:1438
-#: ../camel/providers/smtp/camel-smtp-transport.c:1445
-#, fuzzy
-#| msgid "DATA command failed"
 msgid "DATA command failed: "
-msgstr "Eroare la comanda DATA"
+msgstr "Comanda DATA a eșuat: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1467
+#: ../camel/providers/smtp/camel-smtp-transport.c:1460
+#: ../camel/providers/smtp/camel-smtp-transport.c:1472
 #: ../camel/providers/smtp/camel-smtp-transport.c:1479
-#: ../camel/providers/smtp/camel-smtp-transport.c:1486
-#, fuzzy
-#| msgid "RSET command failed: %s"
 msgid "RSET command failed: "
-msgstr "Eroare la comanda RSET: %s"
+msgstr "Comanda RSET a eșuat: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1508
-#: ../camel/providers/smtp/camel-smtp-transport.c:1521
-#: ../camel/providers/smtp/camel-smtp-transport.c:1527
-#, fuzzy
-#| msgid "QUIT command failed: %s"
+#: ../camel/providers/smtp/camel-smtp-transport.c:1501
+#: ../camel/providers/smtp/camel-smtp-transport.c:1514
+#: ../camel/providers/smtp/camel-smtp-transport.c:1520
 msgid "QUIT command failed: "
-msgstr "Eroare la comanda QUIT: %s"
+msgstr "Comanda QUIT a eșuat: "
 
-#: ../libedataserver/e-categories.c:46
+#: ../libedataserver/e-categories.c:49
 msgid "Business"
 msgstr "Serviciu"
 
-#: ../libedataserver/e-categories.c:47
+#: ../libedataserver/e-categories.c:50
 msgid "Competition"
 msgstr "Concurență"
 
-#: ../libedataserver/e-categories.c:48
+#: ../libedataserver/e-categories.c:51
 msgid "Favorites"
 msgstr "Favorite"
 
-#: ../libedataserver/e-categories.c:49
+#: ../libedataserver/e-categories.c:52
 msgid "Gifts"
 msgstr "Cadouri"
 
-#: ../libedataserver/e-categories.c:50
+#: ../libedataserver/e-categories.c:53
 msgid "Goals/Objectives"
 msgstr "Scopuri/Obiective"
 
-#: ../libedataserver/e-categories.c:51
+#: ../libedataserver/e-categories.c:54
 msgid "Holiday"
 msgstr "Vacanță"
 
-#: ../libedataserver/e-categories.c:52
+#: ../libedataserver/e-categories.c:55
 msgid "Holiday Cards"
 msgstr "Vederi de vacanță"
 
 #. important people (e.g. new business partners)
-#: ../libedataserver/e-categories.c:54
+#: ../libedataserver/e-categories.c:57
 msgid "Hot Contacts"
 msgstr "Contacte importante"
 
-#: ../libedataserver/e-categories.c:55
+#: ../libedataserver/e-categories.c:58
 msgid "Ideas"
 msgstr "Idei"
 
-#: ../libedataserver/e-categories.c:56
+#: ../libedataserver/e-categories.c:59
 msgid "International"
 msgstr "Internațional"
 
-#: ../libedataserver/e-categories.c:57
+#: ../libedataserver/e-categories.c:60
 msgid "Key Customer"
 msgstr "Client cheie"
 
-#: ../libedataserver/e-categories.c:58
+#: ../libedataserver/e-categories.c:61
 msgid "Miscellaneous"
 msgstr "Diverse"
 
-#: ../libedataserver/e-categories.c:59
-msgid "Personal"
-msgstr "Personal"
-
-#: ../libedataserver/e-categories.c:60
+#: ../libedataserver/e-categories.c:63
 msgid "Phone Calls"
 msgstr "Apeluri telefonice"
 
 # sau msgstr "Legături telefonice"
 #. Translators: "Status" is a category name; it can mean anything user wants to
-#: ../libedataserver/e-categories.c:62
+#: ../libedataserver/e-categories.c:65
 msgid "Status"
 msgstr "Stare"
 
-#: ../libedataserver/e-categories.c:63
+#: ../libedataserver/e-categories.c:66
 msgid "Strategies"
 msgstr "Strategii"
 
-#: ../libedataserver/e-categories.c:64
+#: ../libedataserver/e-categories.c:67
 msgid "Suppliers"
 msgstr "Furnizori"
 
-#: ../libedataserver/e-categories.c:65
+#: ../libedataserver/e-categories.c:68
 msgid "Time & Expenses"
 msgstr "Timp și cheltuieli"
 
-#: ../libedataserver/e-categories.c:66
+#: ../libedataserver/e-categories.c:69
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:67
+#: ../libedataserver/e-categories.c:70
 msgid "Waiting"
-msgstr "Se așteaptă"
+msgstr "În așteptare"
 
 #. strptime format of a weekday, a date and a time,
 #. in 12-hour format.
@@ -4727,7 +4848,7 @@ msgstr "%H:%M"
 #. strptime format for time of day, without seconds 24-hour format, and no colon.
 #: ../libedataserver/e-time-utils.c:1842
 msgid "%H%M"
-msgstr "%O%M"
+msgstr "%H%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../libedataserver/e-time-utils.c:1846
@@ -4735,22 +4856,24 @@ msgid "%I %p"
 msgstr "%I %p"
 
 #: ../libedataserverui/e-book-auth-util.c:93
+#: ../libedataserverui/e-book-auth-util.c:668
 msgid "Accessing LDAP Server anonymously"
 msgstr "Se accesează serverul LDAP ca utilizator anonim"
 
 #: ../libedataserverui/e-book-auth-util.c:199
+#: ../libedataserverui/e-book-auth-util.c:430
 msgid "Failed to authenticate.\n"
 msgstr "Autentificare eșuată.\n"
 
-#: ../libedataserverui/e-categories-dialog.c:145
+#: ../libedataserverui/e-categories-dialog.c:166
 msgid "Category Icon"
 msgstr "Iconiță categorie"
 
-#: ../libedataserverui/e-categories-dialog.c:151
+#: ../libedataserverui/e-categories-dialog.c:172
 msgid "_No Image"
 msgstr "_Nicio imagine"
 
-#: ../libedataserverui/e-categories-dialog.c:372
+#: ../libedataserverui/e-categories-dialog.c:392
 #, c-format
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
@@ -4758,11 +4881,11 @@ msgid ""
 msgstr ""
 "Există deja o categorie „%s” în configurări. Vă rugăm folosiți alt nume"
 
-#: ../libedataserverui/e-categories-dialog.c:680
+#: ../libedataserverui/e-categories-dialog.c:700
 msgid "Icon"
 msgstr "Iconiță"
 
-#: ../libedataserverui/e-categories-dialog.c:685
+#: ../libedataserverui/e-categories-dialog.c:705
 msgid "Category"
 msgstr "Categorie"
 
@@ -4780,7 +4903,7 @@ msgstr "_Nume categorie"
 
 #: ../libedataserverui/e-categories-dialog.ui.h:4
 msgid "Currently _used categories:"
-msgstr ""
+msgstr "Categorii _recent folosite:"
 
 #: ../libedataserverui/e-categories-dialog.ui.h:5
 msgid "_Available Categories:"
@@ -4794,24 +4917,24 @@ msgstr "_Editează"
 msgid "categories"
 msgstr "categorii"
 
-#: ../libedataserverui/e-category-completion.c:292
+#: ../libedataserverui/e-category-completion.c:298
 #, c-format
 msgid "Create category \"%s\""
 msgstr "Creare categorie „%s”"
 
-#: ../libedataserverui/e-name-selector-dialog.c:319
+#: ../libedataserverui/e-name-selector-dialog.c:335
 msgid "Select Contacts from Address Book"
 msgstr "Alegeți contacte din agendă"
 
-#: ../libedataserverui/e-name-selector-dialog.c:658
+#: ../libedataserverui/e-name-selector-dialog.c:674
 msgid "_Add"
 msgstr "_Adaugă"
 
-#: ../libedataserverui/e-name-selector-dialog.c:662
+#: ../libedataserverui/e-name-selector-dialog.c:678
 msgid "_Remove"
 msgstr "Ște_rge"
 
-#: ../libedataserverui/e-name-selector-dialog.c:858
+#: ../libedataserverui/e-name-selector-dialog.c:906
 #: ../libedataserverui/e-name-selector-dialog.ui.h:6
 msgid "Any Category"
 msgstr "Orice categorie"
@@ -4853,30 +4976,30 @@ msgid "_Search:"
 msgstr "_Caută:"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2559
+#: ../libedataserverui/e-name-selector-entry.c:2641
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_xpandează %s intercalat"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2574
+#: ../libedataserverui/e-name-selector-entry.c:2656
 #, c-format
 msgid "Cop_y %s"
 msgstr "Cop_iază %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2584
+#: ../libedataserverui/e-name-selector-entry.c:2666
 #, c-format
 msgid "C_ut %s"
 msgstr "_Taie %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2601
+#: ../libedataserverui/e-name-selector-entry.c:2683
 #, c-format
 msgid "_Edit %s"
 msgstr "_Editează %s"
 
-#: ../libedataserverui/e-name-selector-list.c:517
+#: ../libedataserverui/e-name-selector-list.c:516
 #, c-format
 msgid "_Delete %s"
 msgstr "Ș_terge %s"
@@ -4888,23 +5011,23 @@ msgstr ""
 "Cheia din inelul de chei nu este utilizabilă: nu există utilizator sau nume "
 "gazdă"
 
-#: ../libedataserverui/e-passwords.c:1116
+#: ../libedataserverui/e-passwords.c:1120
 msgid "You have the Caps Lock key on."
 msgstr "Tasta Caps Lock este activată."
 
-#: ../libedataserverui/e-passwords.c:1238
+#: ../libedataserverui/e-passwords.c:1243
 msgid "_Remember this passphrase"
 msgstr "Memo_reză această parolă"
 
-#: ../libedataserverui/e-passwords.c:1239
+#: ../libedataserverui/e-passwords.c:1244
 msgid "_Remember this passphrase for the remainder of this session"
 msgstr "Memo_reză această parolă pentru restul acestei sesiuni"
 
-#: ../libedataserverui/e-passwords.c:1244
+#: ../libedataserverui/e-passwords.c:1249
 msgid "_Remember this password"
 msgstr "Memo_reză această parolă"
 
-#: ../libedataserverui/e-passwords.c:1245
+#: ../libedataserverui/e-passwords.c:1250
 msgid "_Remember this password for the remainder of this session"
 msgstr "Memo_reză această parolă pentru restul acestei sesiuni"
 
@@ -4913,7 +5036,7 @@ msgstr "Memo_reză această parolă pentru restul acestei sesiuni"
 msgid "Select destination"
 msgstr "Alegere destinație"
 
-#: ../libedataserverui/e-source-selector-dialog.c:172
+#: ../libedataserverui/e-source-selector-dialog.c:174
 msgid "_Destination"
 msgstr "_Destinație"
 
@@ -4932,562 +5055,3 @@ msgstr "Serverul căutat nu răspunde"
 #: ../servers/groupwise/e-gw-connection.c:239
 msgid "Bad parameter"
 msgstr "Parametru incorect"
-
-#~ msgid "Cannot complete operation"
-#~ msgstr "Nu s-a putut completa operația"
-
-#~ msgid "Could not create thread for getting deltas"
-#~ msgstr "Nu s-a putut crea firul de execuție pentru obținerea diferențelor"
-
-#~ msgid "Offline mode unavailable"
-#~ msgstr "Mod deconectat nedisponibil"
-
-#~ msgid "Cannot open message"
-#~ msgstr "Nu s-a putut deschide mesajul"
-
-#~ msgid "Canceled."
-#~ msgstr "Anulat."
-
-#~ msgid "Cannot verify message signature: could not create temp file: %s"
-#~ msgstr ""
-#~ "Nu s-a putut verifica semnătura mesajului: nu s-a putut crea fișierul "
-#~ "temporar: %s"
-
-#~ msgid "Unable to parse message content"
-#~ msgstr "Nu s-a putut analiza conținutul mesajului"
-
-#~ msgid "cannot create thread"
-#~ msgstr "nu s-a putut crea firul de execuție"
-
-#~ msgid "User canceled"
-#~ msgstr "Anulată de către utilizator"
-
-#~ msgid "Trash Folder Full. Please Empty."
-#~ msgstr "Coșul de gunoi este plin. Vă rugăm să-l goliți."
-
-#~ msgid "Unexpected response status '%s' after APPEND command"
-#~ msgstr "Stare răspuns neașteptată „%s” după comanda „APPEND”"
-
-#~ msgid "No response on continuation after APPEND command"
-#~ msgstr "Nici un răspund de continuarea după comanda APPEND"
-
-#~ msgid "Unknown error occurred during APPEND command!"
-#~ msgstr "Eroare necunoscută în timpul comenzii APPEND!"
-
-#~ msgid "Maildir append message canceled"
-#~ msgstr "Adăugarea mesajului la maildir anulată"
-
-#~ msgid "Invalid message contents"
-#~ msgstr "Conținutul mesajului nu este valid"
-
-#~ msgid "Mail append canceled"
-#~ msgstr "Adăugarea mesajului a fost anulată"
-
-#~ msgid "Message construction failed."
-#~ msgstr "Construirea mesajului a eșuat."
-
-#~ msgid "MH append message canceled"
-#~ msgstr "Adăugarea de mesaj MH anulată"
-
-#, fuzzy
-#~| msgid "Cannot complete operation"
-#~ msgid "User cancelled the operation"
-#~ msgstr "Nu s-a putut completa operația"
-
-#~ msgid "Connection canceled"
-#~ msgstr "Conexiune anulată"
-
-#~ msgid "STARTTLS command failed"
-#~ msgstr "Comanda STARTTLS a eșuat"
-
-#~ msgid "HELO command failed"
-#~ msgstr "Eroare la comanda HELO"
-
-#~ msgid "AUTH command failed"
-#~ msgstr "Eroare la comanda AUTH"
-
-#~ msgid "Bad authentication response from server.\n"
-#~ msgstr "Răspuns greșit la autentificare din partea serverului.\n"
-
-#~ msgid "MAIL FROM command failed: %s: mail not sent"
-#~ msgstr "Eroare la comanda MAIL FROM: %s: mesajul nu a fost trimis"
-
-#~ msgid "RCPT TO command failed: %s: mail not sent"
-#~ msgstr "Eroare la comanda RCPT TO: %s: mesajul nu a fost trimis"
-
-#~ msgid "DATA command failed: %s: mail not sent"
-#~ msgstr "Eroare la comanda DATA: %s: mesajul nu a fost trimis"
-
-#~ msgid "RSET command failed"
-#~ msgstr "Eroare la comanda RSET"
-
-#~ msgid "QUIT command failed"
-#~ msgstr "Eroare la comanda QUIT"
-
-#~ msgid "Unsupported operation: append message: for %s"
-#~ msgstr "Operație nesuportată: adăugare mesaj: pentru %s"
-
-#~ msgid "Unsupported operation: search by expression: for %s"
-#~ msgstr "Operație nesuportată: căutare după expresie: pentru %s"
-
-#~ msgid "Unsupported operation: count by expression: for %s"
-#~ msgstr "Operație nesuportată: numărare după expresie: pentru %s"
-
-#~ msgid "Unsupported operation: search by UIDs: for %s"
-#~ msgstr "Operație nesuportată: căutare dupa UID-uri: pentru %s"
-
-#~ msgid "Learning junk"
-#~ msgstr "Se învață identificarea mesajele spam"
-
-#~ msgid "Learning non-junk"
-#~ msgstr "Se învăță identificarerea mesajele non-spam"
-
-#~ msgid "Camel session doesn't support forwarding of a message."
-#~ msgstr "Sesiunea Camel nu suportă înaintarea unui mesaj."
-
-#~ msgid "import keys: unimplemented"
-#~ msgstr "import de chei: neimplementat"
-
-#~ msgid "export keys: unimplemented"
-#~ msgstr "export de chei: neimplementat"
-
-#~ msgid "Cannot create folder: Invalid operation on this store"
-#~ msgstr "Nu s-a putut crea dosarul: Operație nevalidă pe acest depozit"
-
-#~ msgid "Hula"
-#~ msgstr "Hula"
-
-#~ msgid "For accessing Hula servers"
-#~ msgstr "Pentru accesarea serverelor Hula"
-
-#~ msgid ""
-#~ "This option will connect to the Hula server using a plaintext password."
-#~ msgstr ""
-#~ "Această opțiune vă va conecta la serverul Hula specificat, folosind o "
-#~ "parolă în clar."
-
-#~ msgid "Failed sending command to IMAP server %s: %s"
-#~ msgstr "Eroare la trimiterea comenzii către serverul IMAP %s: %s"
-
-#~ msgid "Unexpected response from IMAP4 server %s: %s"
-#~ msgstr "Răspuns neașteptat de la server-ul IMAP4 %s: %s"
-
-#~ msgid "Unexpected greeting from IMAP server %s."
-#~ msgstr "Răspuns neașteptat de la serverul IMAP %s."
-
-#~ msgid "Cannot select folder '%s': Invalid mailbox name"
-#~ msgstr "Dosarul „%s” nu poate fi selectat: nume căsuță de mesaje nevalid"
-
-#~ msgid "Cannot select folder '%s': Bad command"
-#~ msgstr "Dosarul „%s” nu poate fi selectat: comandă greșită"
-
-#~ msgid "Failed to send command to IMAP server %s: %s"
-#~ msgstr "Comanda cătrea serverul IMAP a eșuat %s: %s"
-
-#~ msgid "IMAP4 server %s unexpectedly disconnected: %s"
-#~ msgstr "Serverul IMAP4 %s deconectat neașteptat: %s"
-
-#~ msgid ""
-#~ "Enable extended Mailing-List detection required for some filter and "
-#~ "vFolder rules"
-#~ msgstr ""
-#~ "Activați detecția extinsă pentru liste de discuții, necesară pentru unele "
-#~ "filtre și reguli vFolder"
-
-#~ msgid "Expire cached messages that haven't been read in X seconds"
-#~ msgstr "Expiră mesajele salvate temporar care n-au fost citit de X secunde"
-
-#~ msgid "Expire cached messages older than X seconds"
-#~ msgstr "Expiră mesajele salvate temporar mai vechi de X secunde"
-
-#~ msgid "Cannot access folder '%s': %s"
-#~ msgstr "Dosarul „%s” nu poate fi accesat: %s"
-
-#~ msgid "Cannot sync flags to folder '%s': Unknown error"
-#~ msgstr ""
-#~ "Nu s-au putut sincroniza marcajele în dosarul „%s”: Eroare necunoscută"
-
-#~ msgid "Cannot sync flags to folder '%s': Bad command"
-#~ msgstr "Nu s-au putut sincroniza marcajele în dosarul „%s”: Comandă greșită"
-
-#~ msgid "Cannot expunge folder '%s': Unknown error"
-#~ msgstr "Nu s-a putut elimina dosarul „%s”: eroare necunoscută"
-
-#~ msgid "Cannot expunge folder '%s': Bad command"
-#~ msgstr "Nu s-a putut elimina dosarul „%s”: comandă greșită"
-
-#~ msgid "Cannot get message %s from folder '%s': No such message"
-#~ msgstr ""
-#~ "Nu s-a putut obține mesajul %s din dosarul „%s”: Nu exista acest mesaj"
-
-#~ msgid "Cannot get message %s from folder '%s': Bad command"
-#~ msgstr "Nu s-a putut obține mesajul %s din dosarul „%s”: comandă greșită"
-
-#~ msgid "Cannot append message to folder '%s': Folder is read-only"
-#~ msgstr ""
-#~ "Nu s-a putut adăuga mesajul la dosarul „%s”: dosarul este doar pentru "
-#~ "citire"
-
-#~ msgid "Cannot append message to folder '%s': Unknown error"
-#~ msgstr "Nu s-a putut adăuga mesajul la dosarul „%s”: eroare necunoscută"
-
-#~ msgid "Cannot append message to folder '%s': Bad command"
-#~ msgstr "Nu s-a putut adăuga mesajul la dosarul „%s”: comandă greșită"
-
-#~ msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
-#~ msgstr ""
-#~ "Nu s-au putut muta mesajele din dosarul „%s” în dosarul „%s”: eroare "
-#~ "necunoscută"
-
-#~ msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
-#~ msgstr ""
-#~ "Nu s-au putut copia mesajele din dosarul „%s” în dosarul „%s”: eroare "
-#~ "necunoscută"
-
-#~ msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
-#~ msgstr ""
-#~ "Nu s-au putut muta mesajele din dosarul „%s” în dosarul „%s”: comandă "
-#~ "greșită"
-
-#~ msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
-#~ msgstr ""
-#~ "Nu s-au putut muta mesajele din dosarul „%s” în dosarul „%s”: comandă "
-#~ "greșită"
-
-#~ msgid "Check new messages for _Junk contents"
-#~ msgstr "Verifică conținutul _spam în mesajele noi"
-
-#~ msgid "Only check for Junk messa_ges in the INBOX folder"
-#~ msgstr "Verifică mesa_jele spam doar în dosarul INBOX"
-
-#~ msgid "IMAP4rev1"
-#~ msgstr "IMAP4rev1"
-
-#~ msgid "For reading and storing mail on IMAPv4rev1 servers."
-#~ msgstr "Pentru citirea și stocarea mesajelor pe servere IMAPv4rev1."
-
-#~ msgid ""
-#~ "This option will connect to the IMAPv4rev1 server using a plaintext "
-#~ "password."
-#~ msgstr ""
-#~ "Această opțiune vă va conecta la serverul IMAPrev1 folosind o parolă în "
-#~ "clar."
-
-#~ msgid ""
-#~ "Failed to connect to IMAP server %s in secure mode: Server does not "
-#~ "support STARTTLS"
-#~ msgstr ""
-#~ "Eroare la conectarea la serverul IMAP %s în mod securizat: Serverul nu "
-#~ "suportă STARTTLS"
-
-#~ msgid ""
-#~ "Cannot authenticate to IMAP server %s using the %s authentication "
-#~ "mechanism"
-#~ msgstr ""
-#~ "Nu s-a putut autentifica la serverul IMAP %s folosind mecanismul de "
-#~ "autentificare %s"
-
-#~ msgid "Cannot authenticate to IMAP server %s using %s"
-#~ msgstr "Nu s-a putut autentifica la serverul IMAP %s folosind %s"
-
-#~ msgid "Cannot create IMAP folders in offline mode."
-#~ msgstr "Nu s-au putut crea dosare IMAP în modul deconectat."
-
-#~ msgid "Cannot get folder '%s' on IMAP server %s: Unknown error"
-#~ msgstr ""
-#~ "Nu s-a putut obține dosarul „%s” de pe serverul IMAP „%s”: eroare "
-#~ "necunoscută"
-
-#~ msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
-#~ msgstr ""
-#~ "Nu s-a putut primi informația LIST pentru „%s” de pe serverul IMAP „%s”: %"
-#~ "s"
-
-#~ msgid "Bad command"
-#~ msgstr "Comandă eronată"
-
-#~ msgid "Cannot create folder '%s': Invalid mailbox name"
-#~ msgstr "Nu s-a putut crea dosarul „%s”: nume nevalid pentru căsuța poștală"
-
-#~ msgid "Cannot create folder '%s': Bad command"
-#~ msgstr "Nu s-a putut crea dosarul „%s”: comandă greșită"
-
-#~ msgid "Cannot delete IMAP folders in offline mode."
-#~ msgstr "Nu s-au putut șterge dosarele IMAP în modul deconectat."
-
-#~ msgid "Cannot delete folder '%s': Invalid mailbox name"
-#~ msgstr ""
-#~ "Nu s-a putut șterge dosarul „%s”: nume nevalid pentru căsuța poștală"
-
-#~ msgid "Cannot delete folder '%s': Bad command"
-#~ msgstr "Nu s-a putut șterge dosarul „%s”: comandă greșită"
-
-#~ msgid "Cannot rename folder '%s' to '%s': Special folder"
-#~ msgstr "Nu s-a putut redenumi dosarul „%s” la „%s”: dosar special"
-
-#~ msgid "Cannot rename IMAP folders in offline mode."
-#~ msgstr "Nu s-au putut redenumi dosarele IMAP în modul deconectat."
-
-#~ msgid "Cannot rename folder '%s' to '%s': Invalid mailbox name"
-#~ msgstr ""
-#~ "Nu s-a putut redenumi dosarul „%s” la „%s”: nume nevalid pentru căsuța "
-#~ "poștală"
-
-#~ msgid "Cannot rename folder '%s' to '%s': Bad command"
-#~ msgstr "Nu s-a putut redenumi dosarul „%s” la „%s”: comandă greșită"
-
-#~ msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
-#~ msgstr ""
-#~ "Nu s-a putut obține informația %s pentru șablonul „%s” de pe serverul "
-#~ "IMAP „%s”: „%s”"
-
-#~ msgid "Cannot subscribe to IMAP folders in offline mode."
-#~ msgstr "Modul deconectat nu permite abonarea la dosare IMAP."
-
-#~ msgid "Cannot subscribe to folder '%s': Invalid mailbox name"
-#~ msgstr ""
-#~ "Nu s-a putut abona la dosarul „%s”: nume nevalid pentru căsuța poștală"
-
-#~ msgid "Cannot subscribe to folder '%s': Bad command"
-#~ msgstr "Nu s-a putut abona la dosarul „%s”: comandă greșită"
-
-#~ msgid "Cannot unsubscribe from IMAP folders in offline mode."
-#~ msgstr "Modul deconectat nu permite dezabonarea de la dosare IMAP"
-
-#~ msgid "Cannot unsubscribe from folder '%s': Invalid mailbox name"
-#~ msgstr ""
-#~ "Nu s-a putut dezabona de la dosarul „%s”: nume nevalid de căsuță poștală"
-
-#~ msgid "Cannot unsubscribe from folder '%s': Bad command"
-#~ msgstr "Nu s-a putut dezabona de la dosarul „%s”: comandă greșită"
-
-#~ msgid "Scanning for changed messages"
-#~ msgstr "Se verifică mesajele modificate"
-
-#~ msgid "IMAP server %s is in an inconsistent state."
-#~ msgstr "Serverul IMAP %s este într-o stare inconsistentă."
-
-#~ msgid "Fetching envelopes of new messages"
-#~ msgstr "Se descarcă sumarul mesajelor noi"
-
-#~ msgid "Unexpected token in response from IMAP server %s: "
-#~ msgstr "Răspuns neașteptat de la serverul IMAP %s: "
-
-#~ msgid "No data"
-#~ msgstr "Nu există date"
-
-# fost msgstr "Nu există sarcini"
-#~ msgid "IMAP server %s unexpectedly disconnected: %s"
-#~ msgstr "Serverul IMAP %s a fost deconectat neașteptat: %s"
-
-#~ msgid "%sPlease enter the IMAP password for %s@%s"
-#~ msgstr "%sIntroduceți parola IMAP pentru %s@%s."
-
-#~ msgid "Use cancel"
-#~ msgstr "Folosește anularea"
-
-#~ msgid "Item(s) _belong to these categories:"
-#~ msgstr "Elementul/elementele aparțin acestor cate_gorii:"
-
-#~ msgid "Color Info"
-#~ msgstr "Informații culoare"
-
-#~ msgid "The color to render"
-#~ msgstr "Culoare pentru afișare"
-
-#~ msgid "This is a digitally signed message part"
-#~ msgstr "Aceast fragment din mesaj este semnat digital"
-
-#~ msgid ""
-#~ "Experimental IMAP 4(.1) client\n"
-#~ "This is untested and unsupported code, you want to use plain imap "
-#~ "instead.\n"
-#~ "\n"
-#~ " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
-#~ msgstr ""
-#~ "Client experimental IMAP4(.1)\n"
-#~ "Acesta este cod netestat si nesuportat, doriți sa folosiți imap obișnuit "
-#~ "în locul lui.\n"
-#~ "\n"
-#~ " !!! NU FOLOSIȚI PENTRU PRODUCȚIE !!!\n"
-
-#~ msgid "Could not connect to POP server on %s"
-#~ msgstr "Nu s-a putut realiza conexiunea la serverul POP pe %s."
-
-#~ msgid "%s: there was no self contact UID stored in gconf"
-#~ msgstr "%s: nu există un UID pentru contactul propriu stocat în gconf"
-
-#~ msgid "\"%s\" on book before \"%s\""
-#~ msgstr "„%s” înainte de „%s”"
-
-#~ msgid "book busy"
-#~ msgstr "resursă ocupată"
-
-#~ msgid "CORBA exception making \"%s\" call"
-#~ msgstr "Excepție CORBA la apelul „%s”"
-
-#~ msgid "%s: there is no current operation"
-#~ msgstr "%s: nu există o operație curentă"
-
-#~ msgid "\"%s\" on book after \"%s\""
-#~ msgstr "„%s” după „%s”"
-
-#~ msgid "%s: canceled"
-#~ msgstr "%s: anulat"
-
-#~ msgid "%s: no factories available for URI `%s'"
-#~ msgstr "%s: nici un șablon disponibil pentru URI „%s”"
-
-#~ msgid "%s: Could not create EBookListener"
-#~ msgstr "%s: Nu s-a putut crea EBookListener"
-
-#~ msgid "Kerberos 4"
-#~ msgstr "Kerberos 4"
-
-#~ msgid ""
-#~ "This option will connect to the server using Kerberos 4 authentication."
-#~ msgstr ""
-#~ "Acestă opțiune este pentru conectarea la server folosind autentificarea "
-#~ "Kerberos 4."
-
-#~ msgid ""
-#~ "Could not get Kerberos ticket:\n"
-#~ "%s"
-#~ msgstr ""
-#~ "Nu s-a putut obține tichetul Kerberos:\n"
-#~ "%s"
-
-#~ msgid "Unable to get issuer's certificate"
-#~ msgstr "Nu s-a putut obține certificatul emițătorului"
-
-#~ msgid "Unable to get Certificate Revocation List"
-#~ msgstr "Nu s-a putut obține lista de revocare a certificatelor"
-
-#~ msgid "Unable to decrypt certificate signature"
-#~ msgstr "Eroare la decriptarea semnăturii certificatului"
-
-#~ msgid "Unable to decrypt Certificate Revocation List signature"
-#~ msgstr "Nu s-a putut decripta semnătura listei de revocare a certificatelor"
-
-#~ msgid "Unable to decode issuer's public key"
-#~ msgstr "Nu s-a putut decoda cheia publică a emițătorului"
-
-#~ msgid "Certificate signature failure"
-#~ msgstr "Semnarea certificatului a eșuat"
-
-#~ msgid "Certificate Revocation List signature failure"
-#~ msgstr "Semnarea listei de revocare a certificatelor a eșuat"
-
-#~ msgid "Certificate not yet valid"
-#~ msgstr "Certificatul nu este încă valid"
-
-#~ msgid "Certificate has expired"
-#~ msgstr "Certificatul a expirat"
-
-#~ msgid "Certificate Revocation List (CRL) not yet valid"
-#~ msgstr "Lista de revocare a certificatelor (CRL) nu este încă validă"
-
-#~ msgid "Certificate Revocation List (CRL) has expired"
-#~ msgstr "Lista de revocare a certificatelor (CRL) a expirat"
-
-#~ msgid "Error in Certificate Revocation List (CRL)"
-#~ msgstr "Eroare în lista de revocare a certificatelor (CRL)"
-
-#~ msgid "Out of memory"
-#~ msgstr "Nu mai există memorie disponibilă"
-
-#~ msgid "Zero-depth self-signed certificate"
-#~ msgstr "Certificat auto-semnat fără acoperire"
-
-#~ msgid "Self-signed certificate in chain"
-#~ msgstr "Certificat auto-semnat în lanț"
-
-#~ msgid "Unable to get issuer's certificate locally"
-#~ msgstr "Nu s-au putut obține local certificatul emițătorului"
-
-#~ msgid "Unable to verify leaf signature"
-#~ msgstr "Eroare la verificarea semnăturii finale"
-
-#~ msgid "Certificate chain too long"
-#~ msgstr "Lanțul certificatului este prea lung"
-
-#~ msgid "Certificate Revoked"
-#~ msgstr "Certificat revocat"
-
-#~ msgid "Invalid Certificate Authority (CA)"
-#~ msgstr "Autoritate de certificare (CA) nevalidă"
-
-#~ msgid "Path length exceeded"
-#~ msgstr "Lungime cale prea mare"
-
-#~ msgid "Invalid purpose"
-#~ msgstr "Scop nevalid"
-
-#~ msgid "Certificate untrusted"
-#~ msgstr "Certificat neverificat"
-
-#~ msgid "Certificate rejected"
-#~ msgstr "Certificat respins"
-
-#~ msgid "Subject/Issuer mismatch"
-#~ msgstr "Nepotrivire Subiect/Emițător"
-
-#~ msgid "AKID/SKID mismatch"
-#~ msgstr "Nepotrivire AKID/SKID"
-
-#~ msgid "AKID/Issuer serial mismatch"
-#~ msgstr "Nepotrivire AKID/Serial emițător"
-
-#~ msgid "Key usage does not support certificate signing"
-#~ msgstr "Folosirea cheii nu suportă semnarea certificatului"
-
-#~ msgid "Error in application verification"
-#~ msgstr "Eroare la verificarea aplicației"
-
-#~ msgid ""
-#~ "Bad certificate from %s:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Do you wish to accept anyway?"
-#~ msgstr ""
-#~ "Certificat eronat de la %s:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Doriți, totuși, să-l  acceptați ?"
-
-#~ msgid "Enter password for %s"
-#~ msgstr "Introduceți parola pentru %s"
-
-#~ msgid "Enter password"
-#~ msgstr "Introduceți parola"
-
-#~ msgid "Owner"
-#~ msgstr "Proprietar"
-
-#~ msgid "Publishing Editor"
-#~ msgstr "Editor primar"
-
-#~ msgid "Editor"
-#~ msgstr "Editor"
-
-#~ msgid "Publishing Author"
-#~ msgstr "Autor primar"
-
-#~ msgid "Author"
-#~ msgstr "Autor"
-
-#~ msgid "Non-editing Author"
-#~ msgstr "Autor secundar"
-
-#~ msgid "Reviewer"
-#~ msgstr "Revizor"
-
-#: ../calendar/libecal/e-cal.c:1046
-msgid "On This Computer"
-msgstr "Pe acest calculator"
