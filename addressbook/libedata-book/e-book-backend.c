@@ -712,6 +712,7 @@ e_book_backend_add_book_view (EBookBackend *backend,
 
 	g_mutex_lock (backend->priv->views_mutex);
 
+	e_data_book_view_ref (view);
 	backend->priv->views = g_slist_append (backend->priv->views, view);
 
 	g_mutex_unlock (backend->priv->views_mutex);
@@ -733,6 +734,7 @@ e_book_backend_remove_book_view (EBookBackend *backend,
 	g_mutex_lock (backend->priv->views_mutex);
 
 	backend->priv->views = g_slist_remove (backend->priv->views, view);
+	e_data_book_view_unref (view);
 
 	g_mutex_unlock (backend->priv->views_mutex);
 }
@@ -824,10 +826,7 @@ e_book_backend_foreach_view (EBookBackend *backend,
 
 	for (views = backend->priv->views; views && !stop; views = views->next) {
 		view = E_DATA_BOOK_VIEW (views->data);
-
-		e_data_book_view_ref (view);
 		stop = !callback (view, user_data);
-		e_data_book_view_unref (view);
 	}
 
 	g_mutex_unlock (backend->priv->views_mutex);
