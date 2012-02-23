@@ -37,6 +37,7 @@
 #endif
 
 #include <libedata-book/e-data-book-factory.h>
+#include <libedataserver/e-gdbus-templates.h>
 
 static gboolean opt_keep_running = FALSE;
 static gboolean opt_wait_for_client = FALSE;
@@ -115,6 +116,8 @@ main (gint argc,
 
 	/* Migrate user data from ~/.evolution to XDG base directories. */
 	evolution_addressbook_factory_migrate_basedir ();
+
+	e_gdbus_templates_init_main_thread ();
 
 	server = e_data_book_factory_new (NULL, &error);
 
