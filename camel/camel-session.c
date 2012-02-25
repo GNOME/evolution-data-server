@@ -432,6 +432,16 @@ session_remove_service (CamelSession *session,
 	camel_session_unlock (session, CAMEL_SESSION_SESSION_LOCK);
 }
 
+static void
+session_get_socks_proxy (CamelSession *session,
+                         const gchar *for_host,
+                         gchar **host_ret,
+                         gint *port_ret)
+{
+	*host_ret = NULL;
+	*port_ret = 0;
+}
+
 static gboolean
 session_authenticate_sync (CamelSession *session,
                            CamelService *service,
@@ -615,6 +625,7 @@ camel_session_class_init (CamelSessionClass *class)
 
 	class->add_service = session_add_service;
 	class->remove_service = session_remove_service;
+	class->get_socks_proxy = session_get_socks_proxy;
 
 	class->authenticate_sync = session_authenticate_sync;
 
