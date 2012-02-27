@@ -952,10 +952,7 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 	camel_folder_change_info_remove_uid (is->changes, uid);
 
 	if (imapx_idle_supported (is) && imapx_in_idle (is)) {
-		const gchar *full_name;
-
-		full_name = camel_folder_get_full_name (is->select_folder);
-		camel_db_delete_uids (is->store->cdb_w, full_name, is->expunged, NULL);
+		camel_folder_summary_save_to_db (is->select_folder->summary, NULL);
 		imapx_update_store_summary (is->select_folder);
 		camel_folder_changed (is->select_folder, is->changes);
 
@@ -1740,14 +1737,7 @@ imapx_completion (CamelIMAPXServer *is,
 	c(is->tagprefix, "Got completion response for command %05u '%s'\n", ic->tag, ic->name);
 
 	if (camel_folder_change_info_changed (is->changes)) {
-		if (is->changes->uid_changed->len)
-			camel_folder_summary_save_to_db (is->select_folder->summary, NULL);
-		else {
-			const gchar *full_name;
-
-			full_name = camel_folder_get_full_name (is->select_folder);
-			camel_db_delete_uids (is->store->cdb_w, full_name, is->expunged, NULL);
-		}
+		camel_folder_summary_save_to_db (is->select_folder->summary, NULL);
 
 		g_list_free_full (is->expunged, (GDestroyNotify) g_free);
 		is->expunged = NULL;
@@ -3877,13 +3867,12 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 		}
 
 		if (removed != NULL) {
-			const gchar *full_name;
+			camel_folder_summary_touch (s);
 
-			full_name = camel_folder_get_full_name (camel_folder_summary_get_folder (s));
-			camel_db_delete_uids (is->store->cdb_w, full_name, removed, NULL);
 			g_list_free_full (removed, (GDestroyNotify) g_free);
 		}
 
+		camel_folder_summary_save_to_db (s, NULL);
 		imapx_update_store_summary (job->folder);
 
 		if (camel_folder_change_info_changed (data->changes))
@@ -3985,8 +3974,8 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is,
 	}
 
 	if (camel_folder_change_info_changed (data->changes)) {
-		imapx_update_store_summary (job->folder);
 		camel_folder_summary_save_to_db (job->folder->summary, NULL);
+		imapx_update_store_summary (job->folder);
 		camel_folder_changed (job->folder, data->changes);
 		camel_folder_change_info_clear (data->changes);
 	}
@@ -4481,7 +4470,6 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 				removed = g_list_prepend (removed, (gpointer) uids->pdata[i]);
 			}
 
-			camel_db_delete_uids (parent_store->cdb_w, full_name, removed, NULL);
 			camel_folder_summary_save_to_db (folder->summary, NULL);
 			camel_folder_changed (folder, changes);
 			camel_folder_change_info_free (changes);

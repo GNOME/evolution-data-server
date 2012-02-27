@@ -2167,6 +2167,7 @@ camel_folder_summary_add_preview (CamelFolderSummary *summary,
 {
 	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	g_hash_table_insert (summary->priv->preview_updates, (gchar *) info->uid, ((CamelMessageInfoBase *) info)->preview);
+	camel_folder_summary_touch (summary);
 	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
@@ -2792,7 +2793,7 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 	/* Summary always holds a ref for the loaded infos */
 	g_hash_table_insert (summary->priv->loaded_infos, (gpointer) camel_message_info_uid (info), info);
 
-	summary->flags |= CAMEL_SUMMARY_DIRTY;
+	camel_folder_summary_touch (summary);
 
 	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
@@ -2825,7 +2826,7 @@ camel_folder_summary_insert (CamelFolderSummary *summary,
 			(gpointer) camel_pstring_strdup (camel_message_info_uid (info)),
 			GUINT_TO_POINTER (camel_message_info_flags (info)));
 
-		summary->flags |= CAMEL_SUMMARY_DIRTY;
+		camel_folder_summary_touch (summary);
 	}
 
 	/* Summary always holds a ref for the loaded infos */
@@ -3225,6 +3226,7 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 
 	camel_pstring_free (uid_copy);
 
+	camel_folder_summary_touch (summary);
 	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return res;
