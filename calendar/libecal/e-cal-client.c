@@ -1946,6 +1946,9 @@ process_instances (ECalComponent *comp,
 
 	rid = e_cal_component_get_recurid_as_string (comp);
 
+	/* Reverse the instances list because the add_instance() function is prepending */
+	instances = g_slist_reverse (instances);
+
 	/* now only return back the instances for the given object */
 	result = TRUE;
 	while (instances != NULL) {
