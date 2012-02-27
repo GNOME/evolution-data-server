@@ -54,7 +54,7 @@
 
 #define E_BOOK_BACKEND_WEBDAV_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_BACKEND, EBookBackendWebdavPrivate))
+	((obj), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdavPrivate))
 
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
@@ -1472,6 +1472,8 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 	GObjectClass      *object_class = G_OBJECT_CLASS (class);
 	EBookBackendClass *backend_class;
 
+	g_type_class_add_private (class, sizeof (EBookBackendWebdavPrivate));
+
 	backend_class = E_BOOK_BACKEND_CLASS (class);
 
 	/* Set the virtual methods. */
@@ -1490,8 +1492,6 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 	backend_class->remove			= e_book_backend_webdav_remove;
 
 	object_class->dispose			= e_book_backend_webdav_dispose;
-
-	g_type_class_add_private (object_class, sizeof (EBookBackendWebdavPrivate));
 }
 
 static void

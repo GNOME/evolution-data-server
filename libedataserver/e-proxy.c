@@ -75,10 +75,6 @@ typedef enum {
 	E_PROXY_KEY_AUTOCONFIG_URL
 } EProxyKey;
 
-#define E_PROXY_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_PROXY, EProxyPrivate))
-
 struct _EProxyPrivate {
 	SoupURI *uri_http, *uri_https, *uri_socks;
 	GSList * ign_hosts;	/* List of hostnames. (Strings)		*/

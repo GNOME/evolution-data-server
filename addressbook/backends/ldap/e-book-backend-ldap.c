@@ -139,7 +139,7 @@
 
 #define E_BOOK_BACKEND_LDAP_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_BOOK_BACKEND, EBookBackendLDAPPrivate))
+	((obj), E_TYPE_BOOK_BACKEND_LDAP, EBookBackendLDAPPrivate))
 
 typedef enum {
 	E_BOOK_BACKEND_LDAP_TLS_NO,

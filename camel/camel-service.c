@@ -51,10 +51,6 @@
 
 typedef struct _AsyncContext AsyncContext;
 
-#define CAMEL_SERVICE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SERVICE, CamelServicePrivate))
-
 struct _CamelServicePrivate {
 	gpointer session;  /* weak pointer */
 

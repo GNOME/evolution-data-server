@@ -60,10 +60,6 @@
 typedef struct _AsyncContext AsyncContext;
 typedef struct _JobData JobData;
 
-#define CAMEL_SESSION_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), CAMEL_TYPE_SESSION, CamelSessionPrivate))
-
 struct _CamelSessionPrivate {
 	GMutex *lock;		/* for locking everything basically */
 	GMutex *thread_lock;	/* locking threads */
