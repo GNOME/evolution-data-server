@@ -1243,6 +1243,7 @@ struct comp_instance {
 struct instances_info {
 	GSList **instances;
 	icaltimezone *start_zone;
+	icaltimezone *end_zone;
 };
 
 /* Called from cal_recur_generate_instances(); adds an instance to the list */
@@ -1254,7 +1255,6 @@ add_instance (ECalComponent *comp,
 {
 	GSList **list;
 	struct comp_instance *ci;
-	struct icaltimetype itt;
 	icalcomponent *icalcomp;
 	struct instances_info *instances_hold;
 
@@ -1269,38 +1269,59 @@ add_instance (ECalComponent *comp,
 	ci->comp = e_cal_component_new ();
 	e_cal_component_set_icalcomponent (ci->comp, icalcomp);
 
-	/* set the RECUR-ID for the instance */
-	if (e_cal_util_component_has_recurrences (icalcomp)) {
-		if (!(icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))) {
-			ECalComponentRange *range;
-			ECalComponentDateTime datetime;
+	/* make sure we return an instance */
+	if (e_cal_util_component_has_recurrences (icalcomp) &&
+	    !(icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY))) {
+		ECalComponentRange *range;
+		struct icaltimetype itt;
+		ECalComponentDateTime dtstart, dtend;
 
-			e_cal_component_get_dtstart (comp, &datetime);
+		/* update DTSTART */
+		e_cal_component_get_dtstart (comp, &dtstart);
 
-			if (instances_hold->start_zone)
-				itt = icaltime_from_timet_with_zone (start, datetime.value->is_date, instances_hold->start_zone);
-			else {
-				itt = icaltime_from_timet (start, datetime.value->is_date);
-
-				if (datetime.tzid) {
-					g_free ((gchar *) datetime.tzid);
-					datetime.tzid = NULL;
-				}
+		if (instances_hold->start_zone)
+			itt = icaltime_from_timet_with_zone (start, dtstart.value->is_date, instances_hold->start_zone);
+		else {
+			itt = icaltime_from_timet (start, dtstart.value->is_date);
+			if (dtstart.tzid) {
+				g_free ((gchar *) dtstart.tzid);
+				dtstart.tzid = NULL;
 			}
-
-			g_free (datetime.value);
-			datetime.value = &itt;
-
-			range = g_new0 (ECalComponentRange, 1);
-			range->type = E_CAL_COMPONENT_RANGE_SINGLE;
-			range->datetime = datetime;
-
-			e_cal_component_set_recurid (ci->comp, range);
-
-			if (datetime.tzid)
-				g_free ((gchar *) datetime.tzid);
-			g_free (range);
 		}
+
+
+		g_free (dtstart.value);
+		dtstart.value = &itt;
+		e_cal_component_set_dtstart(ci->comp, &dtstart);
+
+		/* set the RECUR-ID for the instance */
+		range = g_new0 (ECalComponentRange, 1);
+		range->type = E_CAL_COMPONENT_RANGE_SINGLE;
+		range->datetime = dtstart;
+
+		e_cal_component_set_recurid (ci->comp, range);
+
+		g_free (range);
+		g_free ((gchar *) dtstart.tzid);
+
+		/* Update DTEND */
+		e_cal_component_get_dtend (comp, &dtend);
+
+		if (instances_hold->end_zone)
+			itt = icaltime_from_timet_with_zone (end, dtend.value->is_date, instances_hold->end_zone);
+		else {
+			itt = icaltime_from_timet (end, dtend.value->is_date);
+			if (dtend.tzid) {
+				g_free ((gchar *) dtend.tzid);
+				dtend.tzid = NULL;
+			}
+		}
+
+		g_free (dtend.value);
+		dtend.value = &itt;
+		e_cal_component_set_dtend(ci->comp, &dtend);
+
+		g_free ((gchar *) dtend.tzid);
 	}
 
 	ci->start = start;
@@ -1513,7 +1534,7 @@ generate_instances (ECalClient *client,
 			}
 		} else {
 			ECalComponentDateTime datetime;
-			icaltimezone *start_zone = NULL;
+			icaltimezone *start_zone = NULL, *end_zone = NULL;
 			struct instances_info *instances_hold;
 
 			/* Get the start timezone */
@@ -1524,9 +1545,18 @@ generate_instances (ECalClient *client,
 				start_zone = NULL;
 			e_cal_component_free_datetime (&datetime);
 
+			/* Get the end timezone */
+			e_cal_component_get_dtend (comp, &datetime);
+			if (datetime.tzid)
+				e_cal_client_get_timezone_sync (client, datetime.tzid, &end_zone, cancellable, NULL);
+			else
+				end_zone = NULL;
+			e_cal_component_free_datetime (&datetime);
+
 			instances_hold = g_new0 (struct instances_info, 1);
 			instances_hold->instances = &instances;
 			instances_hold->start_zone = start_zone;
+			instances_hold->end_zone = end_zone;
 
 			e_cal_recur_generate_instances (comp, start, end, add_instance, instances_hold,
 							e_cal_client_resolve_tzid_cb, client,
@@ -1651,6 +1681,7 @@ struct get_objects_async_data
 	guint tries;
 	void (* ready_cb) (struct get_objects_async_data *goad, GSList *objects);
 	icaltimezone *start_zone;
+	icaltimezone *end_zone;
 	ECalComponent *comp;
 };
 
@@ -1990,6 +2021,7 @@ generate_instances_for_object_got_objects_cb (struct get_objects_async_data *goa
 	instances_hold = g_new0 (struct instances_info, 1);
 	instances_hold->instances = &instances;
 	instances_hold->start_zone = goad->start_zone;
+	instances_hold->end_zone = goad->end_zone;
 
 	/* generate all instances in the given time range */
 	generate_instances (goad->client, goad->start, goad->end, objects, goad->cancellable, add_instance, instances_hold);
@@ -2037,7 +2069,7 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 	ECalComponent *comp;
 	const gchar *uid;
 	ECalComponentDateTime datetime;
-	icaltimezone *start_zone = NULL;
+	icaltimezone *start_zone = NULL, *end_zone = NULL;
 	gboolean is_single_instance = FALSE;
 	struct get_objects_async_data *goad;
 	GCancellable *use_cancellable;
@@ -2079,6 +2111,14 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 		start_zone = NULL;
 	e_cal_component_free_datetime (&datetime);
 
+	/* Get the end timezone */
+	e_cal_component_get_dtend (comp, &datetime);
+	if (datetime.tzid)
+		e_cal_client_get_timezone_sync (client, datetime.tzid, &end_zone, NULL, NULL);
+	else
+		end_zone = NULL;
+	e_cal_component_free_datetime (&datetime);
+
 	use_cancellable = cancellable;
 	if (!use_cancellable)
 		use_cancellable = g_cancellable_new ();
@@ -2092,6 +2132,7 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 	goad->cb_data = cb_data;
 	goad->destroy_cb_data = destroy_cb_data;
 	goad->start_zone = start_zone;
+	goad->end_zone = end_zone;
 	goad->comp = comp;
 	goad->uid = g_strdup (uid);
 
@@ -2132,7 +2173,7 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 	const gchar *uid;
 	GSList *instances = NULL;
 	ECalComponentDateTime datetime;
-	icaltimezone *start_zone = NULL;
+	icaltimezone *start_zone = NULL, *end_zone = NULL;
 	struct instances_info *instances_hold;
 	gboolean is_single_instance = FALSE;
 
@@ -2170,9 +2211,18 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 		start_zone = NULL;
 	e_cal_component_free_datetime (&datetime);
 
+	/* Get the end timezone */
+	e_cal_component_get_dtend (comp, &datetime);
+	if (datetime.tzid)
+		e_cal_client_get_timezone_sync (client, datetime.tzid, &end_zone, NULL, NULL);
+	else
+		end_zone = NULL;
+	e_cal_component_free_datetime (&datetime);
+
 	instances_hold = g_new0 (struct instances_info, 1);
 	instances_hold->instances = &instances;
 	instances_hold->start_zone = start_zone;
+	instances_hold->end_zone = end_zone;
 
 	/* generate all instances in the given time range */
 	generate_instances (client, start, end, get_objects_sync (client, start, end, uid), NULL, add_instance, instances_hold);
