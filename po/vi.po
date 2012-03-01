@@ -1138,7 +1138,7 @@ msgstr "Không thể tạo tập tin nhớ tạm"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:186
 msgid "Could not retrieve weather data"
-msgstr "Không thể gọi dữ liệu thơi tiết: %s"
+msgstr "Không thể lấy dữ liệu thời tiết: %s"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:288
 msgid "Weather: Fog"
@@ -3158,7 +3158,7 @@ msgstr "Tín hiệu trả lời chưa hoàn tắt: chưa nhận UID cho thư %d"
 #: ../camel/providers/imap/camel-imap-folder.c:4546
 #, c-format
 msgid "Could not find message body in FETCH response."
-msgstr "Không thể tìm thấy phần thân thư trong tín hiệu trả lời FETCH (gọi)"
+msgstr "Không thể tìm thấy phần thân thư trong tín hiệu trả lời FETCH (lấy)"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:197
 #: ../camel/providers/imap/camel-imap-message-cache.c:257
@@ -4273,7 +4273,7 @@ msgstr "Không biết sao"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:472
 msgid "Retrieving POP summary"
-msgstr "Đang gọi bản tóm tắt POP"
+msgstr "Đang lấy tóm tắt POP"
 
 #: ../camel/providers/pop3/camel-pop3-folder.c:487
 #| msgid "Cannot get POP summary: %s"
