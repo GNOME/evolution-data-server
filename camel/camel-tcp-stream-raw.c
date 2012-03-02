@@ -284,9 +284,16 @@ tcp_stream_set_error_from_pr_error (GError **error)
 		error_message = g_malloc0 (length + 1);
 		PR_GetErrorText (error_message);
 	} else {
-		g_warning (
-			"NSPR error code %d has no text",
-			PR_GetError ());
+		const gchar *str = PR_ErrorToString (PR_GetError (), PR_LANGUAGE_I_DEFAULT);
+		if (!str || !*str)
+			str = PR_ErrorToName (PR_GetError ());
+
+		if (str && *str)
+			error_message = g_strdup (str);
+		else
+			g_warning (
+				"NSPR error code %d has no text",
+				PR_GetError ());
 	}
 
 	_set_errno_from_pr_error (PR_GetError ());
