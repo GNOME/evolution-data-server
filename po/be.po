@@ -3,18 +3,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-02-23 12:45+0000\n"
-"PO-Revision-Date: 2012-02-25 22:45+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-02 12:11+0300\n"
+"PO-Revision-Date: 2012-03-02 12:11+0300\n"
 "Last-Translator: Ihar Hrachyshka <ihar.hrachyshka@gmail.com>\n"
 "Language-Team: Belarusian <i18n-bel-gnome@googlegroups.com>\n"
+"Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: be\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:129
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:278
@@ -28,7 +27,7 @@ msgstr ""
 #: ../camel/providers/imap/camel-imap-command.c:515
 #: ../camel/providers/imap/camel-imap-store.c:464
 #: ../camel/providers/imapx/camel-imapx-command.c:538
-#: ../libedataserver/e-client.c:164
+#: ../libedataserver/e-client.c:166
 msgid "Unknown error"
 msgstr "Невядомая памылка"
 
@@ -75,7 +74,7 @@ msgstr "Запыт абноўленых кантактаў..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:923
 #: ../addressbook/libebook/e-book.c:3531 ../calendar/libecal/e-cal.c:1380
-#: ../libedataserver/e-client.c:1918
+#: ../libedataserver/e-client.c:1920
 msgid "Personal"
 msgstr "Асабістыя"
 
@@ -195,7 +194,7 @@ msgid "%s: there was no source for UID '%s' stored in GConf."
 msgstr "%s: крыніца для UID \"%s\" не захаваная ў GConf."
 
 #: ../addressbook/libebook/e-book.c:3514 ../calendar/libecal/e-cal.c:1360
-#: ../libedataserver/e-client.c:1913
+#: ../libedataserver/e-client.c:1915
 msgid "On This Computer"
 msgstr "На гэтым камп'ютары"
 
@@ -259,7 +258,7 @@ msgid "There was no source for UID '%s' stored in a source list."
 msgstr "Крыніца для UID \"%s\" не захаваная ў адпаведным спісе."
 
 #: ../addressbook/libebook/e-book-client.c:2566
-#: ../calendar/libecal/e-cal-client.c:4483
+#: ../calendar/libecal/e-cal-client.c:4536
 msgid "Cannot get connection to view"
 msgstr "Не ўдалося ўсталяваць злучэнне для прагляду"
 
@@ -269,13 +268,15 @@ msgid "Unique ID"
 msgstr "Унікальны ідэнтыфікатар"
 
 #. FILE_AS is not really a structured field - we use a getter/setter
-#. *         so we can generate its value if necessary in the getter
-#: ../addressbook/libebook/e-contact.c:124
+#. * so we can generate its value if necessary in the getter
+#. Translators: This is an EContact field description, in this case it's a
+#. preferred user's description (or display name) of the contact. Note 'File' is a verb here.
+#: ../addressbook/libebook/e-contact.c:126
 msgid "File Under"
-msgstr ""
+msgstr "Назва кантакта"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook/e-contact.c:126
+#: ../addressbook/libebook/e-contact.c:128
 msgid "Book URI"
 msgstr "URI-адрас кнігі"
 
@@ -283,546 +284,558 @@ msgstr "URI-адрас кнігі"
 #. FN isn't really a structured field - we use a getter/setter
 #. * so we can set the N property (since evo 1.4 works fine with
 #. * vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook/e-contact.c:132
+#: ../addressbook/libebook/e-contact.c:134
 msgid "Full Name"
 msgstr "Поўнае імя"
 
-#: ../addressbook/libebook/e-contact.c:133
+#: ../addressbook/libebook/e-contact.c:135
 msgid "Given Name"
 msgstr "Імя"
 
-#: ../addressbook/libebook/e-contact.c:134
+#: ../addressbook/libebook/e-contact.c:136
 msgid "Family Name"
 msgstr "Прозвішча"
 
-#: ../addressbook/libebook/e-contact.c:135
+#: ../addressbook/libebook/e-contact.c:137
 msgid "Nickname"
 msgstr "Мянушка"
 
 #. Email fields
-#: ../addressbook/libebook/e-contact.c:138
+#: ../addressbook/libebook/e-contact.c:140
 msgid "Email 1"
 msgstr "Электронная пошта 1"
 
-#: ../addressbook/libebook/e-contact.c:139
+#: ../addressbook/libebook/e-contact.c:141
 msgid "Email 2"
 msgstr "Электронная пошта 2"
 
-#: ../addressbook/libebook/e-contact.c:140
+#: ../addressbook/libebook/e-contact.c:142
 msgid "Email 3"
 msgstr "Электронная пошта 3"
 
-#: ../addressbook/libebook/e-contact.c:141
+#: ../addressbook/libebook/e-contact.c:143
 msgid "Email 4"
 msgstr "Электронная пошта 4"
 
-#: ../addressbook/libebook/e-contact.c:143
+#: ../addressbook/libebook/e-contact.c:145
 msgid "Mailer"
 msgstr "Паштовая праграма"
 
 #. Address Labels
-#: ../addressbook/libebook/e-contact.c:146
+#: ../addressbook/libebook/e-contact.c:148
 msgid "Home Address Label"
 msgstr "Дамашні адрас"
 
-#: ../addressbook/libebook/e-contact.c:147
+#: ../addressbook/libebook/e-contact.c:149
 msgid "Work Address Label"
 msgstr "Працоўны адрас"
 
-#: ../addressbook/libebook/e-contact.c:148
+#: ../addressbook/libebook/e-contact.c:150
 msgid "Other Address Label"
 msgstr "Іншы адрас"
 
 #. Phone fields
-#: ../addressbook/libebook/e-contact.c:151
+#: ../addressbook/libebook/e-contact.c:153
 msgid "Assistant Phone"
 msgstr "Тэлефон сакратара"
 
-#: ../addressbook/libebook/e-contact.c:152
+#: ../addressbook/libebook/e-contact.c:154
 msgid "Business Phone"
 msgstr "Працоўны тэлефон"
 
-#: ../addressbook/libebook/e-contact.c:153
+#: ../addressbook/libebook/e-contact.c:155
 msgid "Business Phone 2"
 msgstr "Працоўны тэлефон 2"
 
-#: ../addressbook/libebook/e-contact.c:154
+#: ../addressbook/libebook/e-contact.c:156
 msgid "Business Fax"
 msgstr "Працоўны факс"
 
-#: ../addressbook/libebook/e-contact.c:155
+#: ../addressbook/libebook/e-contact.c:157
 msgid "Callback Phone"
 msgstr "Тэлефон callback"
 
-#: ../addressbook/libebook/e-contact.c:156
+#: ../addressbook/libebook/e-contact.c:158
 msgid "Car Phone"
 msgstr "Тэлефон у аўтамабіле"
 
-#: ../addressbook/libebook/e-contact.c:157
+#: ../addressbook/libebook/e-contact.c:159
 msgid "Company Phone"
 msgstr "Тэлефон фірмы"
 
-#: ../addressbook/libebook/e-contact.c:158
+#: ../addressbook/libebook/e-contact.c:160
 msgid "Home Phone"
 msgstr "Дамашні тэлефон"
 
-#: ../addressbook/libebook/e-contact.c:159
+#: ../addressbook/libebook/e-contact.c:161
 msgid "Home Phone 2"
 msgstr "Дамашні тэлефон 2"
 
-#: ../addressbook/libebook/e-contact.c:160
+#: ../addressbook/libebook/e-contact.c:162
 msgid "Home Fax"
 msgstr "Дамашні факс"
 
-#: ../addressbook/libebook/e-contact.c:161
+#: ../addressbook/libebook/e-contact.c:163
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../addressbook/libebook/e-contact.c:162
+#: ../addressbook/libebook/e-contact.c:164
 msgid "Mobile Phone"
 msgstr "Мабільны тэлефон"
 
-#: ../addressbook/libebook/e-contact.c:163
+#: ../addressbook/libebook/e-contact.c:165
 msgid "Other Phone"
 msgstr "Іншы тэлефон"
 
-#: ../addressbook/libebook/e-contact.c:164
+#: ../addressbook/libebook/e-contact.c:166
 msgid "Other Fax"
 msgstr "Іншы факс"
 
-#: ../addressbook/libebook/e-contact.c:165
+#: ../addressbook/libebook/e-contact.c:167
 msgid "Pager"
 msgstr "Пэйджар"
 
-#: ../addressbook/libebook/e-contact.c:166
+#: ../addressbook/libebook/e-contact.c:168
 msgid "Primary Phone"
 msgstr "Асноўны тэлефон"
 
-#: ../addressbook/libebook/e-contact.c:167
+#: ../addressbook/libebook/e-contact.c:169
 msgid "Radio"
 msgstr "Радыётэлефон"
 
-#: ../addressbook/libebook/e-contact.c:168
+#: ../addressbook/libebook/e-contact.c:170
 msgid "Telex"
 msgstr "Тэлекс"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook/e-contact.c:170
+#: ../addressbook/libebook/e-contact.c:172
 msgid "TTY"
 msgstr "Тэлетайп"
 
 #. Organizational fields
-#: ../addressbook/libebook/e-contact.c:173
+#: ../addressbook/libebook/e-contact.c:175
 msgid "Organization"
 msgstr "Установа"
 
-#: ../addressbook/libebook/e-contact.c:174
+#: ../addressbook/libebook/e-contact.c:176
 msgid "Organizational Unit"
 msgstr "Аддзел установы"
 
-#: ../addressbook/libebook/e-contact.c:175
+#: ../addressbook/libebook/e-contact.c:177
 msgid "Office"
 msgstr "Офіс"
 
-#: ../addressbook/libebook/e-contact.c:176
+#: ../addressbook/libebook/e-contact.c:178
 msgid "Title"
 msgstr "Званне"
 
-#: ../addressbook/libebook/e-contact.c:177
+#: ../addressbook/libebook/e-contact.c:179
 msgid "Role"
 msgstr "Роля"
 
-#: ../addressbook/libebook/e-contact.c:178
+#: ../addressbook/libebook/e-contact.c:180
 msgid "Manager"
 msgstr "Менеджар"
 
-#: ../addressbook/libebook/e-contact.c:179
+#: ../addressbook/libebook/e-contact.c:181
 msgid "Assistant"
 msgstr "Сакратар"
 
 #. Web fields
-#: ../addressbook/libebook/e-contact.c:182
+#: ../addressbook/libebook/e-contact.c:184
 msgid "Homepage URL"
 msgstr "Сеціўная старонка"
 
-#: ../addressbook/libebook/e-contact.c:183
+#: ../addressbook/libebook/e-contact.c:185
 msgid "Weblog URL"
 msgstr "Блог"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:186
+#: ../addressbook/libebook/e-contact.c:188
 #: ../libedataserverui/e-categories-dialog.c:88
 msgid "Categories"
 msgstr "Катэгорыі"
 
 #. Collaboration fields
-#: ../addressbook/libebook/e-contact.c:189
+#: ../addressbook/libebook/e-contact.c:191
 msgid "Calendar URI"
 msgstr "URI-адрас календара"
 
-#: ../addressbook/libebook/e-contact.c:190
+#: ../addressbook/libebook/e-contact.c:192
 msgid "Free/Busy URL"
 msgstr "URL-адрас з інфармацыяй аб занятасці"
 
-#: ../addressbook/libebook/e-contact.c:191
+#: ../addressbook/libebook/e-contact.c:193
 msgid "ICS Calendar"
 msgstr "ICS-каляндар"
 
-#: ../addressbook/libebook/e-contact.c:192
+#: ../addressbook/libebook/e-contact.c:194
 msgid "Video Conferencing URL"
 msgstr "URL-адрас відэаканферэнцыі"
 
 #. Misc fields
-#: ../addressbook/libebook/e-contact.c:195
+#: ../addressbook/libebook/e-contact.c:197
 msgid "Spouse's Name"
 msgstr "Імя мужа/жонкі"
 
-#: ../addressbook/libebook/e-contact.c:196
+#: ../addressbook/libebook/e-contact.c:198
 msgid "Note"
 msgstr "Заўвага"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:199
+#: ../addressbook/libebook/e-contact.c:201
 msgid "AIM Home Screen Name 1"
 msgstr "Дамашні AIM 1"
 
-#: ../addressbook/libebook/e-contact.c:200
+#: ../addressbook/libebook/e-contact.c:202
 msgid "AIM Home Screen Name 2"
 msgstr "Дамашні AIM 2"
 
-#: ../addressbook/libebook/e-contact.c:201
+#: ../addressbook/libebook/e-contact.c:203
 msgid "AIM Home Screen Name 3"
 msgstr "Дамашні AIM 3"
 
-#: ../addressbook/libebook/e-contact.c:202
+#: ../addressbook/libebook/e-contact.c:204
 msgid "AIM Work Screen Name 1"
 msgstr "Працоўны AIM 1"
 
-#: ../addressbook/libebook/e-contact.c:203
+#: ../addressbook/libebook/e-contact.c:205
 msgid "AIM Work Screen Name 2"
 msgstr "Працоўны AIM 2"
 
-#: ../addressbook/libebook/e-contact.c:204
+#: ../addressbook/libebook/e-contact.c:206
 msgid "AIM Work Screen Name 3"
 msgstr "Працоўны AIM 3"
 
-#: ../addressbook/libebook/e-contact.c:205
+#: ../addressbook/libebook/e-contact.c:207
 msgid "GroupWise Home Screen Name 1"
 msgstr "Дамашні GroupWise 1"
 
-#: ../addressbook/libebook/e-contact.c:206
+#: ../addressbook/libebook/e-contact.c:208
 msgid "GroupWise Home Screen Name 2"
 msgstr "Дамашні GroupWise 2"
 
-#: ../addressbook/libebook/e-contact.c:207
+#: ../addressbook/libebook/e-contact.c:209
 msgid "GroupWise Home Screen Name 3"
 msgstr "Дамашні GroupWise 3"
 
-#: ../addressbook/libebook/e-contact.c:208
+#: ../addressbook/libebook/e-contact.c:210
 msgid "GroupWise Work Screen Name 1"
 msgstr "Працоўны GroupWise 1"
 
-#: ../addressbook/libebook/e-contact.c:209
+#: ../addressbook/libebook/e-contact.c:211
 msgid "GroupWise Work Screen Name 2"
 msgstr "Працоўны GroupWise 2"
 
-#: ../addressbook/libebook/e-contact.c:210
+#: ../addressbook/libebook/e-contact.c:212
 msgid "GroupWise Work Screen Name 3"
 msgstr "Працоўны GroupWise 3"
 
-#: ../addressbook/libebook/e-contact.c:211
+#: ../addressbook/libebook/e-contact.c:213
 msgid "Jabber Home ID 1"
 msgstr "Дамашні Jabber 1"
 
-#: ../addressbook/libebook/e-contact.c:212
+#: ../addressbook/libebook/e-contact.c:214
 msgid "Jabber Home ID 2"
 msgstr "Дамашні Jabber 2"
 
-#: ../addressbook/libebook/e-contact.c:213
+#: ../addressbook/libebook/e-contact.c:215
 msgid "Jabber Home ID 3"
 msgstr "Дамашні Jabber 3"
 
-#: ../addressbook/libebook/e-contact.c:214
+#: ../addressbook/libebook/e-contact.c:216
 msgid "Jabber Work ID 1"
 msgstr "Працоўны Jabber 1"
 
-#: ../addressbook/libebook/e-contact.c:215
+#: ../addressbook/libebook/e-contact.c:217
 msgid "Jabber Work ID 2"
 msgstr "Працоўны Jabber 2"
 
-#: ../addressbook/libebook/e-contact.c:216
+#: ../addressbook/libebook/e-contact.c:218
 msgid "Jabber Work ID 3"
 msgstr "Працоўны Jabber 3"
 
-#: ../addressbook/libebook/e-contact.c:217
+#: ../addressbook/libebook/e-contact.c:219
 msgid "Yahoo! Home Screen Name 1"
 msgstr "Дамашні Yahoo! 1"
 
-#: ../addressbook/libebook/e-contact.c:218
+#: ../addressbook/libebook/e-contact.c:220
 msgid "Yahoo! Home Screen Name 2"
 msgstr "Дамашні Yahoo! 2"
 
-#: ../addressbook/libebook/e-contact.c:219
+#: ../addressbook/libebook/e-contact.c:221
 msgid "Yahoo! Home Screen Name 3"
 msgstr "Дамашні Yahoo! 3"
 
-#: ../addressbook/libebook/e-contact.c:220
+#: ../addressbook/libebook/e-contact.c:222
 msgid "Yahoo! Work Screen Name 1"
 msgstr "Працоўны Yahoo! 1"
 
-#: ../addressbook/libebook/e-contact.c:221
+#: ../addressbook/libebook/e-contact.c:223
 msgid "Yahoo! Work Screen Name 2"
 msgstr "Працоўны Yahoo! 2"
 
-#: ../addressbook/libebook/e-contact.c:222
+#: ../addressbook/libebook/e-contact.c:224
 msgid "Yahoo! Work Screen Name 3"
 msgstr "Працоўны Yahoo! 3"
 
-#: ../addressbook/libebook/e-contact.c:223
+#: ../addressbook/libebook/e-contact.c:225
 msgid "MSN Home Screen Name 1"
 msgstr "Дамашні MSN 1"
 
-#: ../addressbook/libebook/e-contact.c:224
+#: ../addressbook/libebook/e-contact.c:226
 msgid "MSN Home Screen Name 2"
 msgstr "Дамашні MSN 2"
 
-#: ../addressbook/libebook/e-contact.c:225
+#: ../addressbook/libebook/e-contact.c:227
 msgid "MSN Home Screen Name 3"
 msgstr "Дамашні MSN 3"
 
-#: ../addressbook/libebook/e-contact.c:226
+#: ../addressbook/libebook/e-contact.c:228
 msgid "MSN Work Screen Name 1"
 msgstr "Працоўны MSN 1"
 
-#: ../addressbook/libebook/e-contact.c:227
+#: ../addressbook/libebook/e-contact.c:229
 msgid "MSN Work Screen Name 2"
 msgstr "Працоўны MSN 2"
 
-#: ../addressbook/libebook/e-contact.c:228
+#: ../addressbook/libebook/e-contact.c:230
 msgid "MSN Work Screen Name 3"
 msgstr "Працоўны MSN 3"
 
-#: ../addressbook/libebook/e-contact.c:229
+#: ../addressbook/libebook/e-contact.c:231
 msgid "ICQ Home ID 1"
 msgstr "Дамашні ICQ 1"
 
-#: ../addressbook/libebook/e-contact.c:230
+#: ../addressbook/libebook/e-contact.c:232
 msgid "ICQ Home ID 2"
 msgstr "Дамашні ICQ 2"
 
-#: ../addressbook/libebook/e-contact.c:231
+#: ../addressbook/libebook/e-contact.c:233
 msgid "ICQ Home ID 3"
 msgstr "Дамашні ICQ 3"
 
-#: ../addressbook/libebook/e-contact.c:232
+#: ../addressbook/libebook/e-contact.c:234
 msgid "ICQ Work ID 1"
 msgstr "Працоўны ICQ 1"
 
-#: ../addressbook/libebook/e-contact.c:233
+#: ../addressbook/libebook/e-contact.c:235
 msgid "ICQ Work ID 2"
 msgstr "Працоўны ICQ 2"
 
-#: ../addressbook/libebook/e-contact.c:234
+#: ../addressbook/libebook/e-contact.c:236
 msgid "ICQ Work ID 3"
 msgstr "Працоўны ICQ 3"
 
 #. Last modified time
-#: ../addressbook/libebook/e-contact.c:237
+#: ../addressbook/libebook/e-contact.c:239
 msgid "Last Revision"
 msgstr "Дата апошняга абнаўлення"
 
-#: ../addressbook/libebook/e-contact.c:238
+#. Translators: This is an EContact field description, in this case it's a
+#. virtual field, which returns either name of the contact or the organization
+#. name, recognized by multiple other fields, where the first filled is used.
+#: ../addressbook/libebook/e-contact.c:243
 msgid "Name or Org"
 msgstr "Імя ці ўстанова"
 
 #. Address fields
-#: ../addressbook/libebook/e-contact.c:241
+#: ../addressbook/libebook/e-contact.c:246
 msgid "Address List"
 msgstr "Спіс адрасоў"
 
-#: ../addressbook/libebook/e-contact.c:242
+#: ../addressbook/libebook/e-contact.c:247
 msgid "Home Address"
 msgstr "Дамашні адрас"
 
-#: ../addressbook/libebook/e-contact.c:243
+#: ../addressbook/libebook/e-contact.c:248
 msgid "Work Address"
 msgstr "Працоўны адрас"
 
-#: ../addressbook/libebook/e-contact.c:244
+#: ../addressbook/libebook/e-contact.c:249
 msgid "Other Address"
 msgstr "Іншы адрас"
 
 #. Contact categories
-#: ../addressbook/libebook/e-contact.c:247
+#: ../addressbook/libebook/e-contact.c:252
 msgid "Category List"
 msgstr "Спіс катэгорый"
 
 #. Photo/Logo
-#: ../addressbook/libebook/e-contact.c:250
+#: ../addressbook/libebook/e-contact.c:255
 msgid "Photo"
 msgstr "Фатаграфія"
 
-#: ../addressbook/libebook/e-contact.c:251
+#: ../addressbook/libebook/e-contact.c:256
 msgid "Logo"
 msgstr "Лагатып"
 
-#: ../addressbook/libebook/e-contact.c:253
+#. Translators: This is an EContact field description, in this case it's a name
+#. of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
+#: ../addressbook/libebook/e-contact.c:260
 msgid "Name"
-msgstr ""
+msgstr "Імя"
 
-#: ../addressbook/libebook/e-contact.c:254
+#: ../addressbook/libebook/e-contact.c:261
 msgid "Email List"
 msgstr "Спіс адрасоў электроннай пошты"
 
 #. Instant messaging fields
-#: ../addressbook/libebook/e-contact.c:257
+#: ../addressbook/libebook/e-contact.c:264
 msgid "AIM Screen Name List"
 msgstr "Спіс кантактаў AIM"
 
-#: ../addressbook/libebook/e-contact.c:258
+#: ../addressbook/libebook/e-contact.c:265
 msgid "GroupWise ID List"
 msgstr "Спіс кантактаў GroupWise"
 
-#: ../addressbook/libebook/e-contact.c:259
+#: ../addressbook/libebook/e-contact.c:266
 msgid "Jabber ID List"
 msgstr "Спіс кантактаў Jabber"
 
-#: ../addressbook/libebook/e-contact.c:260
+#: ../addressbook/libebook/e-contact.c:267
 msgid "Yahoo! Screen Name List"
 msgstr "Спіс кантактаў Yahoo!"
 
-#: ../addressbook/libebook/e-contact.c:261
+#: ../addressbook/libebook/e-contact.c:268
 msgid "MSN Screen Name List"
 msgstr "Спіс кантактаў MSN"
 
-#: ../addressbook/libebook/e-contact.c:262
+#: ../addressbook/libebook/e-contact.c:269
 msgid "ICQ ID List"
 msgstr "Спіс кантактаў ICQ"
 
-#: ../addressbook/libebook/e-contact.c:264
+#: ../addressbook/libebook/e-contact.c:271
 msgid "Wants HTML Mail"
 msgstr "Аддае перавагу HTML-лістам"
 
-#: ../addressbook/libebook/e-contact.c:266
+#. Translators: This is an EContact field description, in this case it's a
+#. field describing whether it's a Contact list (list of email addresses) or a
+#. regular contact for one person/organization/...
+#: ../addressbook/libebook/e-contact.c:276
 msgid "List"
 msgstr "Спіс"
 
-#: ../addressbook/libebook/e-contact.c:267
+#. Translators: This is an EContact field description, in this case it's a flag
+#. used to determine whether when sending to Contact lists the addresses should be
+#. shown or not to other recipients - basically whether to use BCC field or CC
+#. message header when sending messages to this Contact list.
+#: ../addressbook/libebook/e-contact.c:281
 msgid "List Show Addresses"
 msgstr "Разгортваць спіс адрасоў"
 
-#: ../addressbook/libebook/e-contact.c:269
+#: ../addressbook/libebook/e-contact.c:283
 msgid "Birth Date"
 msgstr "Дата нараджэння"
 
-#: ../addressbook/libebook/e-contact.c:270
+#: ../addressbook/libebook/e-contact.c:284
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:1063
 msgid "Anniversary"
 msgstr "Гадавіна"
 
 #. Security fields
-#: ../addressbook/libebook/e-contact.c:273
+#: ../addressbook/libebook/e-contact.c:287
 msgid "X.509 Certificate"
 msgstr "X.509-сертыфікат"
 
-#: ../addressbook/libebook/e-contact.c:275
+#: ../addressbook/libebook/e-contact.c:289
 msgid "Gadu-Gadu Home ID 1"
 msgstr "Дамашні Gadu-Gadu 1"
 
-#: ../addressbook/libebook/e-contact.c:276
+#: ../addressbook/libebook/e-contact.c:290
 msgid "Gadu-Gadu Home ID 2"
 msgstr "Дамашні Gadu-Gadu 2"
 
-#: ../addressbook/libebook/e-contact.c:277
+#: ../addressbook/libebook/e-contact.c:291
 msgid "Gadu-Gadu Home ID 3"
 msgstr "Дамашні Gadu-Gadu 3"
 
-#: ../addressbook/libebook/e-contact.c:278
+#: ../addressbook/libebook/e-contact.c:292
 msgid "Gadu-Gadu Work ID 1"
 msgstr "Працоўны Gadu-Gadu 1"
 
-#: ../addressbook/libebook/e-contact.c:279
+#: ../addressbook/libebook/e-contact.c:293
 msgid "Gadu-Gadu Work ID 2"
 msgstr "Працоўны Gadu-Gadu 2"
 
-#: ../addressbook/libebook/e-contact.c:280
+#: ../addressbook/libebook/e-contact.c:294
 msgid "Gadu-Gadu Work ID 3"
 msgstr "Працоўны Gadu-Gadu 3"
 
-#: ../addressbook/libebook/e-contact.c:281
+#: ../addressbook/libebook/e-contact.c:295
 msgid "Gadu-Gadu ID List"
 msgstr "Спіс кантактаў Gadu-Gadu"
 
 #. Geo information
-#: ../addressbook/libebook/e-contact.c:284
+#: ../addressbook/libebook/e-contact.c:298
 msgid "Geographic Information"
 msgstr "Геаграфічная інфармацыя"
 
-#: ../addressbook/libebook/e-contact.c:286
+#: ../addressbook/libebook/e-contact.c:300
 msgid "Telephone"
 msgstr "Тэлефон"
 
-#: ../addressbook/libebook/e-contact.c:288
+#: ../addressbook/libebook/e-contact.c:302
 msgid "Skype Home Name 1"
 msgstr "Дамашні Skype 1"
 
-#: ../addressbook/libebook/e-contact.c:289
+#: ../addressbook/libebook/e-contact.c:303
 msgid "Skype Home Name 2"
 msgstr "Дамашні Skype 2"
 
-#: ../addressbook/libebook/e-contact.c:290
+#: ../addressbook/libebook/e-contact.c:304
 msgid "Skype Home Name 3"
 msgstr "Дамашні Skype 3"
 
-#: ../addressbook/libebook/e-contact.c:291
+#: ../addressbook/libebook/e-contact.c:305
 msgid "Skype Work Name 1"
 msgstr "Працоўны Skype 1"
 
-#: ../addressbook/libebook/e-contact.c:292
+#: ../addressbook/libebook/e-contact.c:306
 msgid "Skype Work Name 2"
 msgstr "Працоўны Skype 2"
 
-#: ../addressbook/libebook/e-contact.c:293
+#: ../addressbook/libebook/e-contact.c:307
 msgid "Skype Work Name 3"
 msgstr "Працоўны Skype 3"
 
-#: ../addressbook/libebook/e-contact.c:294
+#: ../addressbook/libebook/e-contact.c:308
 msgid "Skype Name List"
 msgstr "Спіс кантактаў Skype"
 
-#: ../addressbook/libebook/e-contact.c:296
+#: ../addressbook/libebook/e-contact.c:310
 msgid "SIP address"
 msgstr "SIP-адрас"
 
-#: ../addressbook/libebook/e-contact.c:298
+#: ../addressbook/libebook/e-contact.c:312
 msgid "Google Talk Home Name 1"
 msgstr "Дамашні Google Talk 1"
 
-#: ../addressbook/libebook/e-contact.c:299
+#: ../addressbook/libebook/e-contact.c:313
 msgid "Google Talk Home Name 2"
 msgstr "Дамашні Google Talk 2"
 
-#: ../addressbook/libebook/e-contact.c:300
+#: ../addressbook/libebook/e-contact.c:314
 msgid "Google Talk Home Name 3"
 msgstr "Дамашні Google Talk 3"
 
-#: ../addressbook/libebook/e-contact.c:301
+#: ../addressbook/libebook/e-contact.c:315
 msgid "Google Talk Work Name 1"
 msgstr "Працоўны Google Talk 1"
 
-#: ../addressbook/libebook/e-contact.c:302
+#: ../addressbook/libebook/e-contact.c:316
 msgid "Google Talk Work Name 2"
 msgstr "Працоўны Google Talk 2"
 
-#: ../addressbook/libebook/e-contact.c:303
+#: ../addressbook/libebook/e-contact.c:317
 msgid "Google Talk Work Name 3"
 msgstr "Працоўны Google Talk 3"
 
-#: ../addressbook/libebook/e-contact.c:304
+#: ../addressbook/libebook/e-contact.c:318
 msgid "Google Talk Name List"
 msgstr "Спіс кантактаў Google Talk"
 
-#: ../addressbook/libebook/e-contact.c:1597
+#: ../addressbook/libebook/e-contact.c:1611
 #: ../addressbook/libebook/e-destination.c:878
 msgid "Unnamed List"
 msgstr "Спіс без назвы"
@@ -877,7 +890,7 @@ msgstr "Сховішча па-за сеткай"
 
 #: ../addressbook/libedata-book/e-data-book.c:314
 #: ../calendar/libecal/e-cal.c:4578 ../calendar/libedata-cal/e-data-cal.c:430
-#: ../libedataserver/e-client.c:137
+#: ../libedataserver/e-client.c:139
 msgid "Permission denied"
 msgstr "Адмоўлена ў доступе"
 
@@ -897,12 +910,12 @@ msgid "Unsupported field"
 msgstr "Графа не падтрымліваецца"
 
 #: ../addressbook/libedata-book/e-data-book.c:320
-#: ../calendar/libedata-cal/e-data-cal.c:439 ../libedataserver/e-client.c:145
+#: ../calendar/libedata-cal/e-data-cal.c:439 ../libedataserver/e-client.c:147
 msgid "Unsupported authentication method"
 msgstr "Спосаб ідэнтыфікацыі не падтрымліваецца"
 
 #: ../addressbook/libedata-book/e-data-book.c:321
-#: ../calendar/libedata-cal/e-data-cal.c:440 ../libedataserver/e-client.c:147
+#: ../calendar/libedata-cal/e-data-cal.c:440 ../libedataserver/e-client.c:149
 msgid "TLS not available"
 msgstr "TLS недаступны"
 
@@ -916,27 +929,27 @@ msgid "Not available in offline mode"
 msgstr "Недаступна ў пазасеткавым рэжыме"
 
 #: ../addressbook/libedata-book/e-data-book.c:325
-#: ../calendar/libedata-cal/e-data-cal.c:444 ../libedataserver/e-client.c:149
+#: ../calendar/libedata-cal/e-data-cal.c:444 ../libedataserver/e-client.c:151
 msgid "Search size limit exceeded"
 msgstr "Дасягнута абмежаванне памеру пошуку"
 
 #: ../addressbook/libedata-book/e-data-book.c:326
-#: ../calendar/libedata-cal/e-data-cal.c:445 ../libedataserver/e-client.c:151
+#: ../calendar/libedata-cal/e-data-cal.c:445 ../libedataserver/e-client.c:153
 msgid "Search time limit exceeded"
 msgstr "Дасягнута абмежаванне працягласці пошуку"
 
 #: ../addressbook/libedata-book/e-data-book.c:327
-#: ../calendar/libedata-cal/e-data-cal.c:446 ../libedataserver/e-client.c:153
+#: ../calendar/libedata-cal/e-data-cal.c:446 ../libedataserver/e-client.c:155
 msgid "Invalid query"
 msgstr "Хібны запыт"
 
 #: ../addressbook/libedata-book/e-data-book.c:328
-#: ../calendar/libedata-cal/e-data-cal.c:447 ../libedataserver/e-client.c:155
+#: ../calendar/libedata-cal/e-data-cal.c:447 ../libedataserver/e-client.c:157
 msgid "Query refused"
 msgstr "Адмоўлена ў выкананні запыту"
 
 #: ../addressbook/libedata-book/e-data-book.c:329
-#: ../calendar/libedata-cal/e-data-cal.c:448 ../libedataserver/e-client.c:141
+#: ../calendar/libedata-cal/e-data-cal.c:448 ../libedataserver/e-client.c:143
 msgid "Could not cancel"
 msgstr "Не ўдалося скасаваць аперацыю"
 
@@ -956,18 +969,18 @@ msgstr "Хібны аргумент"
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:335
 #: ../calendar/libecal/e-cal.c:4601 ../calendar/libedata-cal/e-data-cal.c:453
-#: ../libedataserver/e-client.c:143
+#: ../libedataserver/e-client.c:145
 msgid "Not supported"
 msgstr "Не падтрымліваецца"
 
 #: ../addressbook/libedata-book/e-data-book.c:336
-#: ../calendar/libedata-cal/e-data-cal.c:454 ../libedataserver/e-client.c:161
+#: ../calendar/libedata-cal/e-data-cal.c:454 ../libedataserver/e-client.c:163
 msgid "Backend is not opened yet"
 msgstr "Драйвер адраснай кнігі яшчэ не адкрыты"
 
 #: ../addressbook/libedata-book/e-data-book.c:344
 #: ../calendar/libecal/e-cal-client.c:621
-#: ../calendar/libedata-cal/e-data-cal.c:462 ../libedataserver/e-client.c:159
+#: ../calendar/libedata-cal/e-data-cal.c:462 ../libedataserver/e-client.c:161
 msgid "Other error"
 msgstr "Іншая памылка"
 
@@ -2019,7 +2032,7 @@ msgstr ""
 #: ../camel/camel-gpg-context.c:879 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
 #: ../camel/providers/nntp/camel-nntp-summary.c:382
-#: ../libedataserver/e-client.c:139 ../libedataserverui/e-book-auth-util.c:227
+#: ../libedataserver/e-client.c:141 ../libedataserverui/e-book-auth-util.c:227
 #, c-format
 msgid "Cancelled"
 msgstr "Скасавана"
@@ -2271,7 +2284,7 @@ msgstr "Не ўдалося загрузіць %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "Не ўдалося загрузіць %s: модуль не мае коду ініцыяцыі."
 
-#: ../camel/camel-provider.c:402 ../camel/camel-session.c:388
+#: ../camel/camel-provider.c:402 ../camel/camel-session.c:384
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Для пратакола \"%s\" адсутнічае адпаведны правайдар"
@@ -2504,14 +2517,14 @@ msgstr "Спроба ідэнтыфікацыі \"POP перад SMTP\" для %
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "Не ўдалося скампіляваць рэгулярны выраз: %s: %s"
 
-#: ../camel/camel-session.c:397
+#: ../camel/camel-session.c:393
 #, c-format
 msgid "Invalid GType registered for protocol '%s'"
 msgstr "Для пратакола \"%s\" зарэгістраваны хібны GType"
 
-#: ../camel/camel-session.c:466
+#: ../camel/camel-session.c:472
 #: ../camel/providers/imap/camel-imap-store.c:1143
-#: ../camel/providers/imapx/camel-imapx-server.c:2946
+#: ../camel/providers/imapx/camel-imapx-server.c:2936
 #: ../camel/providers/pop3/camel-pop3-store.c:249
 #: ../camel/providers/pop3/camel-pop3-store.c:566
 #: ../camel/providers/smtp/camel-smtp-transport.c:455
@@ -2519,12 +2532,12 @@ msgstr "Для пратакола \"%s\" зарэгістраваны хібны
 msgid "No support for %s authentication"
 msgstr "Ідэнтыфікацыя %s не падтрымліваецца"
 
-#: ../camel/camel-session.c:481
+#: ../camel/camel-session.c:487
 #, c-format
 msgid "%s authentication failed"
 msgstr "Няўдалая ідэнтыфікацыя %s"
 
-#: ../camel/camel-session.c:1187
+#: ../camel/camel-session.c:1194
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Упішыце пароль %s для %s на машыне %s."
@@ -3084,7 +3097,7 @@ msgid "Could not load summary for %s"
 msgstr "Не ўдалося загрузіць рэзюмэ для %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:1119
-#: ../camel/providers/imapx/camel-imapx-server.c:3949
+#: ../camel/providers/imapx/camel-imapx-server.c:3938
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Пошук змененых паведамленняў у %s"
@@ -3094,13 +3107,13 @@ msgid "Unable to retrieve message: "
 msgstr "Не ўдалося атрымаць паведамленне: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3515
-#: ../camel/providers/imapx/camel-imapx-server.c:5509
+#: ../camel/providers/imapx/camel-imapx-server.c:5497
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Не ўдалося атрымаць паведамленне з ідэнтыфікатарам %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3516
-#: ../camel/providers/imapx/camel-imapx-server.c:5510
+#: ../camel/providers/imapx/camel-imapx-server.c:5498
 msgid "No such message available."
 msgstr "Такое паведамленне адсутнічае."
 
@@ -3113,8 +3126,8 @@ msgstr "Гэта паведамленне недаступна"
 
 #: ../camel/providers/imap/camel-imap-folder.c:4050
 #: ../camel/providers/imap/camel-imap-folder.c:4133
-#: ../camel/providers/imapx/camel-imapx-server.c:3901
-#: ../camel/providers/imapx/camel-imapx-server.c:4081
+#: ../camel/providers/imapx/camel-imapx-server.c:3890
+#: ../camel/providers/imapx/camel-imapx-server.c:4070
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Атрыманне рэзюмэ аб новых паведамленнях у %s"
@@ -3284,25 +3297,25 @@ msgstr "Уваходная пошта"
 
 #: ../camel/providers/imap/camel-imap-store.c:409
 #: ../camel/providers/imap/camel-imap-store.c:463
-#: ../camel/providers/imapx/camel-imapx-server.c:2828
+#: ../camel/providers/imapx/camel-imapx-server.c:2818
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Не ўдалося злучыцца з IMAP-серверам %s у бяспечным рэжыме: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:410
-#: ../camel/providers/imapx/camel-imapx-server.c:2829
+#: ../camel/providers/imapx/camel-imapx-server.c:2819
 #: ../camel/providers/smtp/camel-smtp-transport.c:196
 msgid "STARTTLS not supported"
 msgstr "STARTTLS не падтрымліваецца"
 
 #: ../camel/providers/imap/camel-imap-store.c:435
-#: ../camel/providers/imapx/camel-imapx-server.c:2868
+#: ../camel/providers/imapx/camel-imapx-server.c:2858
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Не ўдалося злучыцца з IMAP-серверам %s у бяспечным рэжыме: "
 
 #: ../camel/providers/imap/camel-imap-store.c:734
-#: ../camel/providers/imapx/camel-imapx-server.c:2935
+#: ../camel/providers/imapx/camel-imapx-server.c:2925
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-сервер %s не падтрымлівае тыпу ідэнтыфікацыі %s"
@@ -3320,13 +3333,13 @@ msgid "IMAP service for %s on %s"
 msgstr "IMAP-паслуга для %s на %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1111
-#: ../camel/providers/imapx/camel-imapx-server.c:2965
+#: ../camel/providers/imapx/camel-imapx-server.c:2955
 #: ../camel/providers/nntp/camel-nntp-store.c:505
 msgid "Cannot authenticate without a username"
 msgstr "Не ўдалося ідэнтыфікаваць сябе без імя карыстальніка"
 
 #: ../camel/providers/imap/camel-imap-store.c:1119
-#: ../camel/providers/imapx/camel-imapx-server.c:2974
+#: ../camel/providers/imapx/camel-imapx-server.c:2964
 #: ../camel/providers/nntp/camel-nntp-store.c:514
 #: ../camel/providers/pop3/camel-pop3-store.c:491
 #: ../camel/providers/pop3/camel-pop3-store.c:511
@@ -3420,53 +3433,53 @@ msgstr "IMAP+"
 msgid "Server disconnected"
 msgstr "Сервер адлучыўся"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1206
+#: ../camel/providers/imapx/camel-imapx-server.c:1203
 msgid "Error writing to cache stream: "
 msgstr "Памылка запісу ў кэш-струмень: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1940
+#: ../camel/providers/imapx/camel-imapx-server.c:1930
 #, c-format
 msgid "Not authenticated"
 msgstr "Не ідэнтыфікаваны"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2005
+#: ../camel/providers/imapx/camel-imapx-server.c:1995
 msgid "Error performing IDLE"
 msgstr "Памылка выканання IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3160
+#: ../camel/providers/imapx/camel-imapx-server.c:3150
 msgid "Error fetching message"
 msgstr "Памылка атрымання паведамлення"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3228
+#: ../camel/providers/imapx/camel-imapx-server.c:3218
 msgid "Closing tmp stream failed: "
 msgstr "Не ўдалося закрыць часовы струмень: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3327
+#: ../camel/providers/imapx/camel-imapx-server.c:3317
 msgid "Error copying messages"
 msgstr "Памылка капіравання паведамленняў"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3457
+#: ../camel/providers/imapx/camel-imapx-server.c:3447
 msgid "Error appending message"
 msgstr "Памылка дадавання паведамлення ў канец"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3637
+#: ../camel/providers/imapx/camel-imapx-server.c:3627
 msgid "Error fetching message headers"
 msgstr "Памылка атрымання загалоўкаў паведамленняў"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3778
+#: ../camel/providers/imapx/camel-imapx-server.c:3768
 msgid "Error retrieving message"
 msgstr "Памылка атрымання паведамлення"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3982
+#: ../camel/providers/imapx/camel-imapx-server.c:3971
 msgid "Error fetching new messages"
 msgstr "Памылка атрымання новых паведамленняў"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4172
+#: ../camel/providers/imapx/camel-imapx-server.c:4161
 msgid "Error while fetching messages"
 msgstr "Памылка падчас атрымання паведамленняў"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4180
-#: ../camel/providers/imapx/camel-imapx-server.c:4210
+#: ../camel/providers/imapx/camel-imapx-server.c:4169
+#: ../camel/providers/imapx/camel-imapx-server.c:4199
 #, c-format
 msgid "Fetching summary information for %d message in %s"
 msgid_plural "Fetching summary information for %d messages in %s"
@@ -3474,45 +3487,45 @@ msgstr[0] "Атрыманне рэзюмэ для %d паведамлення ў
 msgstr[1] "Атрыманне рэзюмэ для %d паведамленняў у %s"
 msgstr[2] "Атрыманне рэзюмэ для %d паведамленняў у %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4332
-#: ../camel/providers/imapx/camel-imapx-server.c:4366
+#: ../camel/providers/imapx/camel-imapx-server.c:4321
+#: ../camel/providers/imapx/camel-imapx-server.c:4355
 msgid "Error refreshing folder"
 msgstr "Памылка абнаўлення папкі"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4455
+#: ../camel/providers/imapx/camel-imapx-server.c:4444
 msgid "Error expunging message"
 msgstr "Памылка выдалення паведамлення"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4540
+#: ../camel/providers/imapx/camel-imapx-server.c:4528
 msgid "Error fetching folders"
 msgstr "Памылка атрымання папак"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4614
+#: ../camel/providers/imapx/camel-imapx-server.c:4602
 msgid "Error subscribing to folder"
 msgstr "Памылка падпіскі на папку"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4667
+#: ../camel/providers/imapx/camel-imapx-server.c:4655
 msgid "Error creating folder"
 msgstr "Памылка стварэння папкі"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4712
+#: ../camel/providers/imapx/camel-imapx-server.c:4700
 msgid "Error deleting folder"
 msgstr "Памылка выдалення папкі"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4762
+#: ../camel/providers/imapx/camel-imapx-server.c:4750
 msgid "Error renaming folder"
 msgstr "Памылка пераназывання папкі"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4813
+#: ../camel/providers/imapx/camel-imapx-server.c:4801
 msgid "Error performing NOOP"
 msgstr "Памылка выканання NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4908
+#: ../camel/providers/imapx/camel-imapx-server.c:4896
 msgid "Error syncing changes"
 msgstr "Памылка сінхранізацыі зменаў"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5664
-#: ../camel/providers/imapx/camel-imapx-server.c:5679
+#: ../camel/providers/imapx/camel-imapx-server.c:5652
+#: ../camel/providers/imapx/camel-imapx-server.c:5667
 msgid "Cannot create spool file: "
 msgstr "Не ўдалося стварыць спул-файл: "
 
@@ -4857,11 +4870,13 @@ msgstr "Крыніца не загружана"
 msgid "Source already loaded"
 msgstr "Крыніца ўжо загружана"
 
-#: ../libedataserver/e-client.c:135
+#. Translators: This means that the EClient does not support offline mode, or
+#. it's not set to by a user, thus it is unavailable while user is not connected.
+#: ../libedataserver/e-client.c:137
 msgid "Offline unavailable"
 msgstr "Пазасеткавы рэжым недаступны"
 
-#: ../libedataserver/e-client.c:157
+#: ../libedataserver/e-client.c:159
 msgid "D-Bus error"
 msgstr "Памылка D-Bus"
 
@@ -5002,7 +5017,8 @@ msgid ""
 "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" "
 "means manual proxy."
 msgstr ""
-"Патрэбны тып проксі-сервера. \"0\" азначае сістэмны тып, \"1\" азначае адсутнасць проксі-сервера, \"2\" азначае яго ручную настройку."
+"Патрэбны тып проксі-сервера. \"0\" азначае сістэмны тып, \"1\" азначае "
+"адсутнасць проксі-сервера, \"2\" азначае яго ручную настройку."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "Whether to use http-proxy"
