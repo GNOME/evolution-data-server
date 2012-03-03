@@ -1848,7 +1848,7 @@ e_book_backend_file_maybe_upgrade_db (EBookBackendFile *bf)
 #endif
 
 static void
-#if DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 3
+#if (DB_VERSION_MAJOR > 4) || (DB_VERSION_MAJOR == 4 && DB_VERSION_MINOR >= 3)
 file_errcall (const DB_ENV *env,
               const gchar *buf1,
               const gchar *buf2)
