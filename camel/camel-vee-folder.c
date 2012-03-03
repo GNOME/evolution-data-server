@@ -559,7 +559,8 @@ folder_changed_change (CamelVeeFolder *vf,
 	}
 
 	if (matches_changed || matches_added || changes->uid_removed->len || present) {
-		const gchar *full_name, *unm_full_name;
+		const gchar *full_name;
+		const gchar *unm_full_name = NULL;
 		CamelStore *parent_store;
 
 		parent_store = camel_folder_get_parent_store (folder);
