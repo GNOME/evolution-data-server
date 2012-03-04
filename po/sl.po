@@ -13,10 +13,10 @@ msgstr ""
 "PO-Revision-Date: 2012-03-01 21:42+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);\n"
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-Language: Slovenian\n"
@@ -1762,9 +1762,8 @@ msgstr "Pripravljanje mape '%s' na stanje brez povezave"
 
 #: ../camel/camel-disco-folder.c:482
 #: ../camel/camel-offline-folder.c:327
-#, fuzzy
 msgid "Copy folder content locally for _offline operation"
-msgstr "Kopiraj vsebino mape krajevno za delo brez povezave"
+msgstr "Krajevno kopiraj vsebino mape za delo _brez povezave"
 
 #: ../camel/camel-disco-store.c:456
 #: ../camel/providers/imap/camel-imap-store.c:1239
@@ -3090,16 +3089,14 @@ msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Nepričakovan odziv OK strežnika IMAP: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:348
-#, fuzzy
 msgid "Always check for _new mail in this folder"
-msgstr "Vedno preveri novo pošto v tej mapi"
+msgstr "Vedno preveri _novo pošto v tej mapi"
 
 #: ../camel/providers/imap/camel-imap-folder.c:359
 #: ../camel/providers/imapx/camel-imapx-folder.c:747
 #: ../camel/providers/nntp/camel-nntp-folder.c:760
-#, fuzzy
 msgid "Apply message _filters to this folder"
-msgstr "Uvelj_avi filtre sporočil v tej mapi"
+msgstr "Uve_ljavi filtre sporočil v tej mapi"
 
 #: ../camel/providers/imap/camel-imap-folder.c:440
 #, c-format
@@ -3243,9 +3240,8 @@ msgstr "Možnosti"
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imapx/camel-imapx-provider.c:74
 #: ../camel/providers/nntp/camel-nntp-provider.c:43
-#, fuzzy
 msgid "Apply _filters to new messages in all folders"
-msgstr "Uvelj_avi filtre na novih sporočilih v mapi dohodne pošta na tem strežniku"
+msgstr "Uve_ljavi filtre na novih sporočilih v vseh mapah"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imapx/camel-imapx-provider.c:76
@@ -3254,9 +3250,8 @@ msgstr "Uvelj_avi filtre na novih sporočilih v mapi dohodne pošta na tem stre�
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imapx/camel-imapx-provider.c:78
-#, fuzzy
 msgid "Check new messages for _Junk contents"
-msgstr "Med novimi sporočili preveri za neželeno pošto"
+msgstr "Med novimi sporočili preveri za _neželeno pošto"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
 #: ../camel/providers/imapx/camel-imapx-provider.c:80
@@ -3497,13 +3492,13 @@ msgstr "Napaka med pridobivanjem sporočil"
 # multiple plural!
 #: ../camel/providers/imapx/camel-imapx-server.c:4169
 #: ../camel/providers/imapx/camel-imapx-server.c:4199
-#, fuzzy, c-format
+#, c-format
 msgid "Fetching summary information for %d message in %s"
 msgid_plural "Fetching summary information for %d messages in %s"
 msgstr[0] "Pridobivanje podatkov povzetka za %d novih sporočil v %s"
-msgstr[1] "Pridobivanje podatkov povzetka za %d novih sporočil v %s"
-msgstr[2] "Pridobivanje podatkov povzetka za %d novih sporočil v %s"
-msgstr[3] "Pridobivanje podatkov povzetka za %d novih sporočil v %s"
+msgstr[1] "Pridobivanje podatkov povzetka za %d novo sporočilo v %s"
+msgstr[2] "Pridobivanje podatkov povzetka za %d novi sporočili v %s"
+msgstr[3] "Pridobivanje podatkov povzetka za %d nova sporočila v %s"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4321
 #: ../camel/providers/imapx/camel-imapx-server.c:4355
@@ -3585,9 +3580,8 @@ msgid "%s (%s)"
 msgstr "%s (%s)"
 
 #: ../camel/providers/local/camel-local-folder.c:483
-#, fuzzy
 msgid "_Index message body data"
-msgstr "Ustvari kazalo podatkov telesa sporočila"
+msgstr "_Ustvari kazalo podatkov telesa sporočila"
 
 #: ../camel/providers/local/camel-local-folder.c:712
 #, c-format
@@ -3620,9 +3614,8 @@ msgstr "Za pridobivanje (premikanje) krajevne pošte iz običajnih vrstilnih map
 
 #: ../camel/providers/local/camel-local-provider.c:86
 #: ../camel/providers/local/camel-local-provider.c:107
-#, fuzzy
 msgid "_Apply filters to new messages in Inbox"
-msgstr "_Uveljavi filtre na novih sporočilih v mapi INBOX"
+msgstr "_Uveljavi filtre na novih sporočilih v dohodni mapi"
 
 #: ../camel/providers/local/camel-local-provider.c:93
 msgid "Maildir-format mail directories"
@@ -5004,28 +4997,24 @@ msgid "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" m
 msgstr "Katera vrsta posredniškega strežnika naj se uporabi. Vrednost \"0\" predstavlja sistemsko nastavitev, \"1\" pomeni brez posredovanja in \"2\" pomeni ročna nastavitev."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
-#, fuzzy
 msgid "Whether to use http-proxy"
-msgstr "Ali naj se uporabi sistemska pisava"
+msgstr "Ali naj bo uporabljen posredovalni strežnik za http"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
 msgid "Whether to use proxy for HTTP requests."
 msgstr "Ali naj bo uporabljen posredniški strežnik za zahteve HTTP."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
-#, fuzzy
 msgid "Whether proxy server requires authentication"
-msgstr "Overitev ni uspela. Strežnik zahteva pravilno prijavo."
+msgstr "Ali posredovalni strežnik zahteva overitev"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
-#, fuzzy
 msgid "Whether authentication is required to access proxy server."
-msgstr "Strežnik ni sprejel odziva podatkov overitve."
+msgstr "Ali je za dostop do posredovalnega strežnika zahtevana overitev."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
-#, fuzzy
 msgid "Host name for HTTP requests"
-msgstr "Ime gostitelja posredniškega strežnika varnega HTTP"
+msgstr "Ime gostitelja za zahteve HTTP"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
 msgid "Host name to use for HTTP requests."
@@ -5036,35 +5025,24 @@ msgid "Port number for HTTP requests"
 msgstr "Številka vrat za zahteve HTTP"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
-#, fuzzy
 msgid "Port number to use for HTTP requests."
-msgstr "Vrata pri uporabi tunelov RTSP/RTP preko HTTP."
+msgstr "Številka vrat za zahteve HTTP."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
-#, fuzzy
 msgid "Proxy authentication user name"
-msgstr "_Uporabniško ime (Poveži ime domene)"
+msgstr "Uporabniško ime za overitev pri posredovalnem strežniku"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
-#, fuzzy
 msgid "User name to use to authenticate against proxy server."
-msgstr ""
-"Ni se mogoče overiti s strežnikom IMAP.\n"
-"%s\n"
-"\n"
+msgstr "Uporabniško ime za overitev pri posredovalnem strežniku."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
-#, fuzzy
 msgid "Proxy authentication password"
-msgstr "Protokol overitve gesla"
+msgstr "Geslo za overitev pri posredovalnem strežniku"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-#, fuzzy
 msgid "Password to use to authenticate against proxy server."
-msgstr ""
-"Ni se mogoče overiti s strežnikom IMAP.\n"
-"%s\n"
-"\n"
+msgstr "Geslo, zahtevano za overitev pri posredovalnem strežniku."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:15
 msgid "List of hosts to connect to without proxy"
@@ -5075,9 +5053,8 @@ msgid "List of hosts for which do not use proxy."
 msgstr "Seznam gostiteljev za katere ne bo uporabljen posredniški strežnik."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:17
-#, fuzzy
 msgid "Host name for HTTPS requests"
-msgstr "Družina naslova za razreševanje imena gostitelja"
+msgstr "Ime gostitelja za zahteve HTTPS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:18
 msgid "Host name to use for HTTPS requests."
@@ -5092,9 +5069,8 @@ msgid "Port number to use for HTTPS requests."
 msgstr "Številka vrat za zahteve HTTPS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:21
-#, fuzzy
 msgid "Host name for SOCKS requests"
-msgstr "Družina naslova za razreševanje imena gostitelja"
+msgstr "Ime gostitelja za zahteve SOCKS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:22
 msgid "Host name to use for SOCKS requests."
@@ -5109,9 +5085,8 @@ msgid "Port number to use for SOCKS requests."
 msgstr "Številka vrat za uporabo pri zahtevah SOCKS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:25
-#, fuzzy
 msgid "Automatic proxy configuration URL"
-msgstr "URL za samodejno nastavitev posredniškega strežnika"
+msgstr "Naslov URL za samodejno nastavitev posredniškega strežnika"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:26
 msgid "Where to read automatic proxy configuration from."
@@ -5353,84 +5328,3 @@ msgstr "Nadaljuj izvajanje po končanju zadnjega podrejenega okna"
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:54
 msgid "Wait running until at least one client is connected"
 msgstr "Nadaljuj izvajanje dokler je povezan vsaj en odjemalec"
-
-#~ msgid ""
-#~ "SSL Certificate check for %s:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Do you wish to accept?"
-#~ msgstr ""
-#~ "Preverjanje potrdila SSL za %s:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Ali ga želite vseeno sprejeti?"
-
-#~ msgid "Use I_dle if the server supports it"
-#~ msgstr "Uporabi _čas nedejavnosti, če strežnik možnost podpira"
-
-#~ msgid "URL '%s' needs a user component"
-#~ msgstr "Naslov URL '%s' zahteva podatek uporabniškega imena"
-
-#~ msgid "URL '%s' needs a host component"
-#~ msgstr "Naslov URL '%s' zahteva podatek gostitelja"
-
-#~ msgid "URL '%s' needs a path component"
-#~ msgstr "Naslov URL '%s' zahteva podatek poti"
-
-#~ msgid "Invalid URI"
-#~ msgstr "Neveljaven URI"
-
-#~ msgid "No backend factory for '%s' of '%s'"
-#~ msgstr "Ni tovarne zaledja za '%s' od '%s'"
-
-#~ msgid "Could not instantiate backend"
-#~ msgstr "Ni mogoče začeti zaledja"
-
-#~ msgid "Could not connect to %s: %s"
-#~ msgstr "Ni se mogoče povezati s %s: %s"
-
-#~ msgid "SSL unavailable"
-#~ msgstr "SSL ni na voljo"
-
-#~ msgid "SSL is not available in this build"
-#~ msgstr "SSL v tej izdaji ni na voljo"
-
-#~ msgid "Error creating SASL authentication object."
-#~ msgstr "Napaka med ustvarjanjem overitvenega predmeta SASL."
-
-#~ msgid "You did not enter a password."
-#~ msgstr "Niste vnesli gesla."
-
-#~ msgid "Authentication requested but no username provided"
-#~ msgstr "Zahtevana je overitev, vendar uporabniško ime ni podano"
-
-#~ msgid "TLS is not available in this build"
-#~ msgstr "TLS s to izdajo ni na voljo"
-
-#~ msgid ""
-#~ "Unable to connect to POP server %s: No support for requested "
-#~ "authentication mechanism."
-#~ msgstr ""
-#~ "Ni se mogoče povezati s strežnikom POP %s: zahtevan način overitve ni "
-#~ "podprt."
-
-#~ msgid "SASL '%s' Login failed for POP server %s%s"
-#~ msgstr "Prijava SASL '%s'  je spodletela na strežniku POP %s%s"
-
-#~ msgid ""
-#~ "Unable to connect to POP server %s.\n"
-#~ "Error sending password%s"
-#~ msgstr ""
-#~ "Ni se mogoče povezati s strežnikom POP %s.\n"
-#~ "Napaka med pošiljanjem gesla %s"
-
-#~ msgid ""
-#~ "Unable to authenticate to SMTP server.\n"
-#~ "%s\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Ni mogoča overitev s strežnikom SMTP.\n"
-#~ "%s\n"
-#~ "\n"
