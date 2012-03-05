@@ -1,3 +1,43 @@
+Evolution-Data-Server 3.3.91 2012-03-05
+---------------------------------------
+
+Bug Fixes:
+	Bug 610988 - Filter can't set labels on IMAP messages (Milan Crha)
+	Bug 658742 - Gettext messages require translator comments (Milan Crha)
+	Bug 663224 - Deleted message not deleted on other machine (Milan Crha)
+	Bug 668639 - Sexps on VEVENT / VJOURNAL statuses are not supported
+	             (Christophe Dumez)
+	Bug 670887 - e_cal_client_generate_instances_for_object() returns
+	             instances in reverse order (Christophe Dumez)
+	Bug 670938 - e_cal_client_generate_instances_for_object() returns
+	             invalid instances (Christophe Dumez)
+
+Other Changes:
+	* Manual Refresh on a CalDAV calendar does not work (Milan Crha)
+	* Initialize EGdbusTemplates main thread in book/calendar factories
+	  (Milan Crha)
+	* CamelSession: Add a default method for get_socks_proxy().
+	  (Matthew Barnes)
+	* Provide at least some NSPR error text, rather than cryptic error
+	  code (Milan Crha)
+	* EBookBackendFile: Fix a warning caused by Berkeley DB v5.
+	  (Matthew Barnes)
+	* EContact: fix "parse vcard + update contact + commit" (Patrick Ohly)
+
+Translations:
+	Ihar Hrachyshka (be)
+	Petr Kovar (cs)
+	Inaki Larranaga Murgoitio (eu)
+	Changwoo Ryu (ko)
+	Jonh Wendell (pt_BR)
+	Yuri Myasoedov (ru)
+	Matej Urbančič (sl)
+	Martin Srebotnjak (sl)
+	Gheyret Kenji (ug)
+	Nguyễn Thái Ngọc Duy (vi)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.3.90 2012-02-20
 ---------------------------------------
 
