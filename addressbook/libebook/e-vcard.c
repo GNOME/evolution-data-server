@@ -1251,12 +1251,14 @@ e_vcard_to_string (EVCard *evc,
 
 	switch (format) {
 	case EVC_FORMAT_VCARD_21:
-		if (evc->priv->vcard && strstr_nocase (evc->priv->vcard, CRLF "VERSION:2.1" CRLF))
+		if (evc->priv->vcard && evc->priv->attributes == NULL &&
+		    strstr_nocase (evc->priv->vcard, CRLF "VERSION:2.1" CRLF))
 			return g_strdup (evc->priv->vcard);
 
 		return e_vcard_to_string_vcard_21 (evc);
 	case EVC_FORMAT_VCARD_30:
-		if (evc->priv->vcard && strstr_nocase (evc->priv->vcard, CRLF "VERSION:3.0" CRLF))
+		if (evc->priv->vcard && evc->priv->attributes == NULL &&
+		    strstr_nocase (evc->priv->vcard, CRLF "VERSION:3.0" CRLF))
 			return g_strdup (evc->priv->vcard);
 
 		return e_vcard_to_string_vcard_30 (evc);
