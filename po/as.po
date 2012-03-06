@@ -3489,8 +3489,8 @@ msgstr "বাৰ্তাসমূহ উদ্ধাৰ কৰোতে ত্
 #| msgid "Fetching summary information for new messages in %s"
 msgid "Fetching summary information for %d message in %s"
 msgid_plural "Fetching summary information for %d messages in %s"
-msgstr[0] "%s ত %d বাৰ্তাৰ বাবে সাৰাংশ তথ্য প্ৰাপ্ত কৰা"
-msgstr[1] "%s ত %d বাৰ্তাসমূহৰ বাবে সাৰাংশ তথ্য প্ৰাপ্ত কৰা"
+msgstr[0] "সাৰাংশ তথ্য প্ৰাপ্ত কৰা %d বাৰ্তাৰ বাবে %s ত"
+msgstr[1] "সাৰাংশ তথ্য প্ৰাপ্ত কৰা %d বাৰ্তাসমূহৰ বাবে %s ত"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4332
 #: ../camel/providers/imapx/camel-imapx-server.c:4366
