@@ -479,9 +479,9 @@ camel_imapx_command_close (CamelIMAPXCommand *ic)
 	buffer = ((CamelIMAPXRealCommand *) ic)->buffer;
 
 	if (buffer->len > 5 && g_ascii_strncasecmp (buffer->str, "LOGIN", 5) == 0) {
-		c(ic->is->tagprefix, "completing command buffer is [%d] 'LOGIN...'\n", buffer->len);
+		c(ic->is->tagprefix, "completing command buffer is [%d] 'LOGIN...'\n", (gint) buffer->len);
 	} else {
-		c(ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", buffer->len, buffer->len, buffer->str);
+		c(ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", (gint) buffer->len, (gint) buffer->len, buffer->str);
 	}
 	if (buffer->len > 0)
 		camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_SIMPLE, NULL);

@@ -4192,7 +4192,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 			guint64 uidl;
 			start_uid = imapx_get_uid_from_index (folder->summary, 0);
 			uidl = strtoull (start_uid, NULL, 10);
-			end_uid = g_strdup_printf("%lld", (((int)uidl)-fetch_limit > 0) ? (uidl-fetch_limit) : 1);
+			end_uid = g_strdup_printf ("%" G_GINT64_MODIFIER "d", (((int)uidl)-fetch_limit > 0) ? (uidl-fetch_limit) : 1);
 
 			camel_operation_push_message (
 				job->cancellable,
