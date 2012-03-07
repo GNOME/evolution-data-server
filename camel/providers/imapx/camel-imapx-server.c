@@ -5094,6 +5094,12 @@ cancel_all_jobs (CamelIMAPXServer *is,
 	for (link = head; link != NULL; link = g_list_next (link)) {
 		CamelIMAPXCommand *ic = link->data;
 
+		/* Sanity check the CamelIMAPXCommand before proceeding.
+		 * XXX We are actually getting reports of crashes here...
+		 *     not sure how this is happening but it's happening. */
+		if (ic == NULL || ic->job == NULL)
+			continue;
+
 		if (ic->job->error == NULL)
 			ic->job->error = g_error_copy (error);
 
