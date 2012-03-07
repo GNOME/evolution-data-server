@@ -1733,6 +1733,7 @@ e_contact_set (EContact *contact,
 
 	/* set the cached slot to NULL so we'll re-get the new string
 	 * if e_contact_get_const is called again */
+        g_free (contact->priv->cached_strings[field_id]);
 	contact->priv->cached_strings[field_id] = NULL;
 
 	g_object_set (contact,
@@ -2343,6 +2344,7 @@ e_contact_photo_make_inline (EContactPhoto *photo,
 		success = TRUE;
 	}
 
+	g_free (filename);
 	return success;
 }
 

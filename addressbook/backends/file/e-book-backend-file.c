@@ -256,6 +256,7 @@ check_remove_uri_for_field (EContact *old_contact,
 	}
 
 	e_contact_photo_free (old_photo);
+	e_contact_photo_free (new_photo);
 
 	return uri;
 }
@@ -565,14 +566,15 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
 		 * if not then we do nothing
 		 */
 		if (!is_backend_owned_uri (bf, photo->data.uri))
-			return status;
+			goto done;
 
 		/* Now check if the uri is changed from the BDB copy
 		 */
 		uid = e_contact_get_const (contact, E_CONTACT_UID);
 		if (uid == NULL) {
 			g_propagate_error (error, EDB_ERROR_EX (OTHER_ERROR, _("No UID in the contact")));
-			return STATUS_ERROR;
+			status = STATUS_ERROR;
+			goto done;
 		}
 
 		if (old_contact)
@@ -635,6 +637,7 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
 
 	}
 
+ done:
 	e_contact_photo_free (photo);
 
 	return status;

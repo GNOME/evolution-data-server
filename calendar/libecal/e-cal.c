@@ -3931,6 +3931,7 @@ e_cal_create_object (ECal *ecal,
 
 	obj = icalcomponent_as_ical_string_r (icalcomp);
 	if (!e_gdbus_cal_call_create_object_sync (priv->gdbus_cal, e_util_ensure_gdbus_string (obj, &gdbus_obj), &muid, NULL, error)) {
+		g_free (muid);
 		g_free (obj);
 		g_free (gdbus_obj);
 
