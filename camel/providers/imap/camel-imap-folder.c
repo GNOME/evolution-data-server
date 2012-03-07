@@ -778,7 +778,15 @@ imap_rename (CamelFolder *folder,
 
 	g_free (folder_dir);
 
+	camel_store_summary_disconnect_folder_summary (
+		(CamelStoreSummary *) ((CamelImapStore *) parent_store)->summary,
+		folder->summary);
+
 	CAMEL_FOLDER_CLASS (camel_imap_folder_parent_class)->rename (folder, new);
+
+	camel_store_summary_connect_folder_summary (
+		(CamelStoreSummary *) ((CamelImapStore *) parent_store)->summary,
+		camel_folder_get_full_name (folder), folder->summary);
 }
 
 /* called with connect_lock locked */

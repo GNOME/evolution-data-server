@@ -711,6 +711,25 @@ imapx_transfer_messages_to_sync (CamelFolder *source,
 }
 
 static void
+imapx_rename (CamelFolder *folder,
+	      const gchar *new_name)
+{
+	CamelStore *parent_store;
+
+	parent_store = camel_folder_get_parent_store (folder);
+
+	camel_store_summary_disconnect_folder_summary (
+		(CamelStoreSummary *) ((CamelIMAPXStore *) parent_store)->summary,
+		folder->summary);
+
+	CAMEL_FOLDER_CLASS (camel_imapx_folder_parent_class)->rename (folder, new_name);
+
+	camel_store_summary_connect_folder_summary (
+		(CamelStoreSummary *) ((CamelIMAPXStore *) parent_store)->summary,
+		camel_folder_get_full_name (folder), folder->summary);
+}
+
+static void
 camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 {
 	GObjectClass *object_class;
@@ -723,6 +742,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	object_class->finalize = imapx_folder_finalize;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
+	folder_class->rename = imapx_rename;
 	folder_class->search_by_expression = imapx_search_by_expression;
 	folder_class->search_by_uids = imapx_search_by_uids;
 	folder_class->count_by_expression = imapx_count_by_expression;
