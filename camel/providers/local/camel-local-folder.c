@@ -239,7 +239,10 @@ local_folder_search_by_expression (CamelFolder *folder,
 		local_folder->search = camel_folder_search_new ();
 
 	camel_folder_search_set_folder (local_folder->search, folder);
-	camel_folder_search_set_body_index (local_folder->search, local_folder->index);
+	if (camel_local_folder_get_index_body (local_folder))
+		camel_folder_search_set_body_index (local_folder->search, local_folder->index);
+	else
+		camel_folder_search_set_body_index (local_folder->search, NULL);
 	matches = camel_folder_search_search (local_folder->search, expression, NULL, error);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK (folder, search_lock);
@@ -265,7 +268,10 @@ local_folder_search_by_uids (CamelFolder *folder,
 		local_folder->search = camel_folder_search_new ();
 
 	camel_folder_search_set_folder (local_folder->search, folder);
-	camel_folder_search_set_body_index (local_folder->search, local_folder->index);
+	if (camel_local_folder_get_index_body (local_folder))
+		camel_folder_search_set_body_index (local_folder->search, local_folder->index);
+	else
+		camel_folder_search_set_body_index (local_folder->search, NULL);
 	matches = camel_folder_search_search (local_folder->search, expression, uids, error);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK (folder, search_lock);
@@ -345,7 +351,10 @@ local_folder_count_by_expression (CamelFolder *folder,
 		local_folder->search = camel_folder_search_new ();
 
 	camel_folder_search_set_folder (local_folder->search, folder);
-	camel_folder_search_set_body_index (local_folder->search, local_folder->index);
+	if (camel_local_folder_get_index_body (local_folder))
+		camel_folder_search_set_body_index (local_folder->search, local_folder->index);
+	else
+		camel_folder_search_set_body_index (local_folder->search, NULL);
 	matches = camel_folder_search_count (local_folder->search, expression, error);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK (folder, search_lock);

@@ -474,8 +474,10 @@ camel_maildir_folder_new (CamelStore *parent_store,
 
 	folder = g_object_new (
 		CAMEL_TYPE_MAILDIR_FOLDER,
-		"display-name", basename, "full-name", full_name,
-		"parent-store", parent_store, NULL);
+		"display-name", basename,
+		"full-name", full_name,
+		"parent-store", parent_store,
+		NULL);
 
 	service = CAMEL_SERVICE (parent_store);
 	settings = camel_service_get_settings (service);
@@ -490,6 +492,9 @@ camel_maildir_folder_new (CamelStore *parent_store,
 		CAMEL_LOCAL_FOLDER (folder), flags, cancellable, error);
 
 	g_free (basename);
+
+	/* indexing doesn't work with maildir properly, thus disable it */
+	g_object_set (folder, "index-body", FALSE, NULL);
 
 	return folder;
 }
