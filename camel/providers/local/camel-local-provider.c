@@ -38,7 +38,6 @@
 #ifndef G_OS_WIN32
 
 static CamelProviderConfEntry mh_conf_entries[] = {
-	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-dot-folders", NULL,
 	  N_("_Use the '.folders' folder summary file (exmh)"), "0" },
@@ -60,11 +59,6 @@ static CamelProvider mh_provider = {
 
 #endif
 
-static CamelProviderConfEntry mbox_conf_entries[] = {
-	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
-	{ CAMEL_PROVIDER_CONF_END }
-};
-
 static CamelProvider mbox_provider = {
 	"mbox",
 	N_("Local delivery"),
@@ -72,7 +66,7 @@ static CamelProvider mbox_provider = {
 	"mail",
 	CAMEL_PROVIDER_IS_SOURCE | CAMEL_PROVIDER_IS_STORAGE | CAMEL_PROVIDER_IS_LOCAL,
 	CAMEL_URL_NEED_PATH | CAMEL_URL_PATH_IS_ABSOLUTE | CAMEL_URL_FRAGMENT_IS_PATH,
-	mbox_conf_entries,
+	NULL,  /* no conf entries */
 	NULL,
 	/* ... */
 };
@@ -80,7 +74,6 @@ static CamelProvider mbox_provider = {
 #ifndef G_OS_WIN32
 
 static CamelProviderConfEntry maildir_conf_entries[] = {
-	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
 	  N_("_Apply filters to new messages in Inbox"), "0" },
@@ -101,7 +94,6 @@ static CamelProvider maildir_provider = {
 };
 
 static CamelProviderConfEntry spool_conf_entries[] = {
-	CAMEL_PROVIDER_CONF_DEFAULT_PATH,
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
 	  N_("_Apply filters to new messages in Inbox"), "0" },
@@ -219,9 +211,6 @@ local_url_equal (gconstpointer v,
 void
 camel_provider_module_init (void)
 {
-#ifndef G_OS_WIN32
-	gchar *path;
-#endif
 	static gint init = 0;
 
 	if (init)
@@ -237,13 +226,6 @@ camel_provider_module_init (void)
 	camel_provider_register (&mh_provider);
 #endif
 
-#ifndef G_OS_WIN32
-	if (!(path = getenv ("MAIL")))
-		path = g_strdup_printf (SYSTEM_MAIL_DIR "/%s", g_get_user_name ());
-	mbox_conf_entries[0].value = path;  /* default path */
-#else
-	mbox_conf_entries[0].value = "";  /* default path */
-#endif
 	mbox_provider.object_types[CAMEL_PROVIDER_STORE] = CAMEL_TYPE_MBOX_STORE;
 	mbox_provider.url_hash = local_url_hash;
 	mbox_provider.url_equal = local_url_equal;
@@ -251,7 +233,6 @@ camel_provider_module_init (void)
 	camel_provider_register (&mbox_provider);
 
 #ifndef G_OS_WIN32
-	spool_conf_entries[0].value = path;  /* default path - same as mbox; it's for both file and directory */
 	spool_file_provider.object_types[CAMEL_PROVIDER_STORE] = camel_spool_store_get_type ();
 	spool_file_provider.url_hash = local_url_hash;
 	spool_file_provider.url_equal = local_url_equal;
@@ -264,8 +245,6 @@ camel_provider_module_init (void)
 	spool_directory_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register (&spool_directory_provider);
 
-	path = getenv("MAILDIR");
-	maildir_conf_entries[0].value = path ? path : "";  /* default path */
 	maildir_provider.object_types[CAMEL_PROVIDER_STORE] = camel_maildir_store_get_type ();
 	maildir_provider.url_hash = local_url_hash;
 	maildir_provider.url_equal = local_url_equal;
