@@ -2760,6 +2760,18 @@ header_decode_mailbox (const gchar **in,
 			addr = out;
 		}
 
+		if (!name) {
+			gchar *text;
+
+			text = rfc2047_decode_word (addr->str, addr->len, charset);
+			if (text) {
+				g_string_truncate (addr, 0);
+				g_string_append (addr, text);
+				g_free (text);
+			}
+
+		}
+
 		address = camel_header_address_new_name(name ? name->str : "", addr->str);
 	}
 
