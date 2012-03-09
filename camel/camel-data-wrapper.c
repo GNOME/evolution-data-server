@@ -257,6 +257,8 @@ data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
 	bytes_written = camel_stream_write_to_stream (
 		stream, memory_stream, cancellable, error);
 
+	g_object_unref (memory_stream);
+
 	camel_data_wrapper_unlock (
 		data_wrapper, CAMEL_DATA_WRAPPER_STREAM_LOCK);
 
