@@ -4,6 +4,7 @@
 # ChiDeok Hwang <hwang@mizi.co.kr>, 2001.
 # Young-Ho Cha <ganadist@mizi.com>, 2000, 2002.
 # Changwoo Ryu <cwryu@debian.org>, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012.
+# Seong-ho Cho <darkcircle.0426@gmail.com>, 2012.
 #
 # 참고:
 # - "Evolution"은 "에볼루션"으로 음역.
@@ -15,16 +16,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: \n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-03-04 17:12+0900\n"
-"PO-Revision-Date: 2012-03-04 18:01+0900\n"
-"Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
+"POT-Creation-Date: 2012-03-08 15:43+0000\n"
+"PO-Revision-Date: 2012-03-07 00:39+0900\n"
+"Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
-"Language: Korean\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: Korean\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:129
@@ -35,7 +36,7 @@ msgstr ""
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:548
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:577
 #: ../calendar/backends/http/e-cal-backend-http.c:424
-#: ../calendar/libecal/e-cal.c:4596 ../calendar/libecal/e-cal-client.c:150
+#: ../calendar/libecal/e-cal.c:4597 ../calendar/libecal/e-cal-client.c:150
 #: ../camel/providers/imap/camel-imap-command.c:515
 #: ../camel/providers/imap/camel-imap-store.c:464
 #: ../camel/providers/imapx/camel-imapx-command.c:538
@@ -53,28 +54,28 @@ msgstr "'%s' 파일을 제거하는데 실패했습니다: %s"
 msgid "Failed to make directory %s: %s"
 msgstr "'%s' 디렉터리를 만드는데 실패했습니다: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:472
+#: ../addressbook/backends/file/e-book-backend-file.c:473
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "'%s' 리소스의 하드링크를 만드는데 실패했습니다: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:574
-#: ../addressbook/backends/file/e-book-backend-file.c:1129
+#: ../addressbook/backends/file/e-book-backend-file.c:575
+#: ../addressbook/backends/file/e-book-backend-file.c:1132
 msgid "No UID in the contact"
 msgstr "연락처에 UID가 없습니다"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1563
+#: ../addressbook/backends/file/e-book-backend-file.c:1566
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:516
 msgid "Loading..."
 msgstr "읽어들이는 중입니다..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1566
+#: ../addressbook/backends/file/e-book-backend-file.c:1569
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4870
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:518
 msgid "Searching..."
 msgstr "찾는 중입니다..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:2108
+#: ../addressbook/backends/file/e-book-backend-file.c:2111
 #, c-format
 msgid "Failed to build summary for an address book %s"
 msgstr "%s 주소록의 요약을 만드는데 실패했습니다"
@@ -890,7 +891,7 @@ msgid "Success"
 msgstr "성공"
 
 #: ../addressbook/libedata-book/e-data-book.c:312
-#: ../calendar/libecal/e-cal.c:4564 ../calendar/libedata-cal/e-data-cal.c:428
+#: ../calendar/libecal/e-cal.c:4565 ../calendar/libedata-cal/e-data-cal.c:428
 #: ../libedataserver/e-client.c:123
 msgid "Backend is busy"
 msgstr "백엔드가 사용중입니다"
@@ -901,7 +902,7 @@ msgid "Repository offline"
 msgstr "저장고가 연결 중지 상태입니다"
 
 #: ../addressbook/libedata-book/e-data-book.c:314
-#: ../calendar/libecal/e-cal.c:4578 ../calendar/libedata-cal/e-data-cal.c:430
+#: ../calendar/libecal/e-cal.c:4579 ../calendar/libedata-cal/e-data-cal.c:430
 #: ../libedataserver/e-client.c:139
 msgid "Permission denied"
 msgstr "권한이 거부되었습니다"
@@ -973,14 +974,14 @@ msgid "Invalid server version"
 msgstr "서버 버전이 잘못되었습니다"
 
 #: ../addressbook/libedata-book/e-data-book.c:333
-#: ../calendar/libecal/e-cal.c:4562 ../calendar/libedata-cal/e-data-cal.c:451
+#: ../calendar/libecal/e-cal.c:4563 ../calendar/libedata-cal/e-data-cal.c:451
 #: ../libedataserver/e-client.c:121
 msgid "Invalid argument"
 msgstr "인자가 잘못되었습니다"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:335
-#: ../calendar/libecal/e-cal.c:4601 ../calendar/libedata-cal/e-data-cal.c:453
+#: ../calendar/libecal/e-cal.c:4602 ../calendar/libedata-cal/e-data-cal.c:453
 #: ../libedataserver/e-client.c:145
 msgid "Not supported"
 msgstr "지원되지 않습니다"
@@ -1214,68 +1215,68 @@ msgstr "%s(사용자 %s)의 암호를 입력하십시오"
 msgid "Enter password for %s to enable proxy for user %s"
 msgstr "%2$s 사용자의 프록시를 사용하려면 %1$s의 암호를 입력하십시오"
 
-#: ../calendar/libecal/e-cal.c:4566
+#: ../calendar/libecal/e-cal.c:4567
 msgid "Repository is offline"
 msgstr "저장고가 연결 중지 상태입니다"
 
-#: ../calendar/libecal/e-cal.c:4568 ../calendar/libecal/e-cal-client.c:137
+#: ../calendar/libecal/e-cal.c:4569 ../calendar/libecal/e-cal-client.c:137
 msgid "No such calendar"
 msgstr "그런 달력이 없습니다"
 
-#: ../calendar/libecal/e-cal.c:4570 ../calendar/libecal/e-cal-client.c:139
+#: ../calendar/libecal/e-cal.c:4571 ../calendar/libecal/e-cal-client.c:139
 #: ../calendar/libedata-cal/e-data-cal.c:432
 msgid "Object not found"
 msgstr "오브젝트를 찾을 수 없습니다"
 
-#: ../calendar/libecal/e-cal.c:4572 ../calendar/libecal/e-cal-client.c:141
+#: ../calendar/libecal/e-cal.c:4573 ../calendar/libecal/e-cal-client.c:141
 #: ../calendar/libedata-cal/e-data-cal.c:433
 msgid "Invalid object"
 msgstr "오브젝트가 잘못되었습니다"
 
-#: ../calendar/libecal/e-cal.c:4574
+#: ../calendar/libecal/e-cal.c:4575
 msgid "URI not loaded"
 msgstr "URI를 읽어들이지 못했습니다"
 
-#: ../calendar/libecal/e-cal.c:4576
+#: ../calendar/libecal/e-cal.c:4577
 msgid "URI already loaded"
 msgstr "URI를 이미 읽어들였습니다"
 
-#: ../calendar/libecal/e-cal.c:4580
+#: ../calendar/libecal/e-cal.c:4581
 msgid "Unknown User"
 msgstr "알 수 없는 사용자"
 
-#: ../calendar/libecal/e-cal.c:4582 ../calendar/libecal/e-cal-client.c:145
+#: ../calendar/libecal/e-cal.c:4583 ../calendar/libecal/e-cal-client.c:145
 #: ../calendar/libedata-cal/e-data-cal.c:434
 msgid "Object ID already exists"
 msgstr "오브젝트 ID가 이미 있습니다"
 
-#: ../calendar/libecal/e-cal.c:4584
+#: ../calendar/libecal/e-cal.c:4585
 msgid "Protocol not supported"
 msgstr "프로토콜이 지원되지 않습니다"
 
-#: ../calendar/libecal/e-cal.c:4586
+#: ../calendar/libecal/e-cal.c:4587
 msgid "Operation has been canceled"
 msgstr "작업을 취소했습니다"
 
-#: ../calendar/libecal/e-cal.c:4588
+#: ../calendar/libecal/e-cal.c:4589
 msgid "Could not cancel operation"
 msgstr "작업을 취소할 수 없습니다"
 
-#: ../calendar/libecal/e-cal.c:4590 ../libedataserver/e-client.c:129
+#: ../calendar/libecal/e-cal.c:4591 ../libedataserver/e-client.c:129
 msgid "Authentication failed"
 msgstr "인증이 실패했습니다"
 
-#: ../calendar/libecal/e-cal.c:4592
+#: ../calendar/libecal/e-cal.c:4593
 #: ../camel/providers/smtp/camel-smtp-transport.c:846
 #: ../libedataserver/e-client.c:131
 msgid "Authentication required"
 msgstr "인증이 필요합니다"
 
-#: ../calendar/libecal/e-cal.c:4594
+#: ../calendar/libecal/e-cal.c:4595
 msgid "A D-Bus exception has occurred"
 msgstr "D-BUS 예외가 발생했습니다"
 
-#: ../calendar/libecal/e-cal.c:4598
+#: ../calendar/libecal/e-cal.c:4599
 msgid "No error"
 msgstr "오류 없음"
 
@@ -2027,7 +2028,9 @@ msgstr "'%s'에 대해 GnuPG로부터 예상치 못한 요청"
 msgid ""
 "Note the encrypted content doesn't contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
-msgstr "암호화된 내용 안에는 수신자에 대한 정보가 들어 있지 않습니다. 그러므로 저장된 개인 키 하나하나에 대해 암호를 묻습니다."
+msgstr ""
+"암호화된 내용 안에는 수신자에 대한 정보가 들어 있지 않습니다. 그러므로 저장"
+"된 개인 키 하나하나에 대해 암호를 묻습니다."
 
 #: ../camel/camel-gpg-context.c:879 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
@@ -2745,7 +2748,7 @@ msgstr "'%s'의 폴더 검사하는 중"
 #: ../camel/camel-store.c:2039 ../camel/camel-store.c:2049
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
-msgstr "휴지통"
+msgstr "지운 메시지"
 
 #. the name of the Junk folder, used for spam messages
 #: ../camel/camel-store.c:2042 ../camel/camel-store.c:2053
@@ -2770,7 +2773,7 @@ msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "폴더를 삭제할 수 없습니다: %s: 잘못된 동작"
 
 #: ../camel/camel-store.c:2776 ../camel/camel-vee-store.c:402
-#: ../camel/providers/local/camel-maildir-store.c:764
+#: ../camel/providers/local/camel-maildir-store.c:768
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "폴더 이름을 바꿀 수 없습니다: %s: 잘못된 동작"
@@ -2998,7 +3001,7 @@ msgstr "폴더 이름을 바꿀 수 없습니다: %s: 그런 폴더가 없습니
 
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
-msgstr "휴지통 폴더로 메시지를 복사할 수 없습니다"
+msgstr "지운 메시지 폴더로 메시지를 복사할 수 없습니다"
 
 #: ../camel/camel-vtrash-folder.c:51
 msgid "Cannot copy messages to the Junk folder"
@@ -3069,7 +3072,7 @@ msgid "Always check for _new mail in this folder"
 msgstr "항상 이 폴더에서 새 메일 확인(_N)"
 
 #: ../camel/providers/imap/camel-imap-folder.c:359
-#: ../camel/providers/imapx/camel-imapx-folder.c:747
+#: ../camel/providers/imapx/camel-imapx-folder.c:767
 #: ../camel/providers/nntp/camel-nntp-folder.c:760
 msgid "Apply message _filters to this folder"
 msgstr "이 폴더에 메시지 필터 적용(_F)"
@@ -3084,53 +3087,53 @@ msgstr "%s 디렉터리를 만들 수 없습니다: %s"
 msgid "Could not load summary for %s"
 msgstr "%s에 대한 요약을 읽어들일 수 없습니다"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1119
+#: ../camel/providers/imap/camel-imap-folder.c:1127
 #: ../camel/providers/imapx/camel-imapx-server.c:3938
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "%s에 있는 바뀐 메시지를 검사하는 중입니다"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3478
+#: ../camel/providers/imap/camel-imap-folder.c:3486
 msgid "Unable to retrieve message: "
 msgstr "메시지를 가져올 수 없습니다: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3515
-#: ../camel/providers/imapx/camel-imapx-server.c:5497
+#: ../camel/providers/imap/camel-imap-folder.c:3523
+#: ../camel/providers/imapx/camel-imapx-server.c:5503
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "메시지 ID가 %s인 메시지를 얻을 수 없습니다: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3516
-#: ../camel/providers/imapx/camel-imapx-server.c:5498
+#: ../camel/providers/imap/camel-imap-folder.c:3524
+#: ../camel/providers/imapx/camel-imapx-server.c:5504
 msgid "No such message available."
 msgstr "그런 메시지가 없습니다."
 
-#: ../camel/providers/imap/camel-imap-folder.c:3591
-#: ../camel/providers/imap/camel-imap-folder.c:4469
+#: ../camel/providers/imap/camel-imap-folder.c:3599
+#: ../camel/providers/imap/camel-imap-folder.c:4477
 #: ../camel/providers/nntp/camel-nntp-folder.c:515
 #, c-format
 msgid "This message is not currently available"
 msgstr "이 메시지는 현재 보여줄 수가 없습니다"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4050
-#: ../camel/providers/imap/camel-imap-folder.c:4133
+#: ../camel/providers/imap/camel-imap-folder.c:4058
+#: ../camel/providers/imap/camel-imap-folder.c:4141
 #: ../camel/providers/imapx/camel-imapx-server.c:3890
 #: ../camel/providers/imapx/camel-imapx-server.c:4070
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s에 있는 새 메시지의 요약 정보를 가져오는 중입니다"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4267
+#: ../camel/providers/imap/camel-imap-folder.c:4275
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "서버 응답이 불완전합니다: %d번 메시지에 대한 정보가 없습니다"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4277
+#: ../camel/providers/imap/camel-imap-folder.c:4285
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "서버 응답이 불완전합니다: %d번 메시지에 대한 UID가 없습니다"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4509
+#: ../camel/providers/imap/camel-imap-folder.c:4517
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH 응답에서 메시지 본문을 찾을 수 없습니다."
@@ -3208,9 +3211,9 @@ msgstr "이름 공간(_P):"
 
 #: ../camel/providers/imap/camel-imap-provider.c:64
 #: ../camel/providers/imapx/camel-imapx-provider.c:72
-#: ../camel/providers/local/camel-local-provider.c:42
-#: ../camel/providers/local/camel-local-provider.c:84
-#: ../camel/providers/local/camel-local-provider.c:105
+#: ../camel/providers/local/camel-local-provider.c:41
+#: ../camel/providers/local/camel-local-provider.c:77
+#: ../camel/providers/local/camel-local-provider.c:97
 #: ../camel/providers/nntp/camel-nntp-provider.c:41
 msgid "Options"
 msgstr "옵션"
@@ -3278,9 +3281,9 @@ msgstr "이 옵션을 켜면 일반 텍스트 암호를 이용해 IMAP 서버에
 #: ../camel/providers/imapx/camel-imapx-store.c:844
 #: ../camel/providers/local/camel-maildir-folder.c:471
 #: ../camel/providers/local/camel-maildir-store.c:301
-#: ../camel/providers/local/camel-maildir-store.c:675
-#: ../camel/providers/local/camel-maildir-store.c:681
-#: ../camel/providers/local/camel-maildir-store.c:765
+#: ../camel/providers/local/camel-maildir-store.c:679
+#: ../camel/providers/local/camel-maildir-store.c:685
+#: ../camel/providers/local/camel-maildir-store.c:769
 #: ../camel/providers/local/camel-spool-store.c:387
 msgid "Inbox"
 msgstr "받은 편지함"
@@ -3516,8 +3519,8 @@ msgstr "NOOP 수행하는데 오류 발생"
 msgid "Error syncing changes"
 msgstr "변경 사항을 동기화하는데 오류 발생"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5652
-#: ../camel/providers/imapx/camel-imapx-server.c:5667
+#: ../camel/providers/imapx/camel-imapx-server.c:5658
+#: ../camel/providers/imapx/camel-imapx-server.c:5673
 msgid "Cannot create spool file: "
 msgstr "메일 모음 파일을 만들 수 없습니다: "
 
@@ -3558,11 +3561,11 @@ msgstr "메일함: %s (%s)"
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:483
+#: ../camel/providers/local/camel-local-folder.c:492
 msgid "_Index message body data"
 msgstr "메시지 본문의 데이터를 인덱스로 만들기(_I)"
 
-#: ../camel/providers/local/camel-local-folder.c:712
+#: ../camel/providers/local/camel-local-folder.c:721
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3571,23 +3574,23 @@ msgstr ""
 "메시지를 얻을 수 없음: %2$s 폴더에서 %1$s\n"
 "%3$s"
 
-#: ../camel/providers/local/camel-local-provider.c:44
+#: ../camel/providers/local/camel-local-provider.c:43
 msgid "_Use the '.folders' folder summary file (exmh)"
 msgstr "'.folders' 폴더 요약 파일 사용(_U) (exmh)"
 
-#: ../camel/providers/local/camel-local-provider.c:51
+#: ../camel/providers/local/camel-local-provider.c:50
 msgid "MH-format mail directories"
 msgstr "MH-형식 메일 디렉터리"
 
-#: ../camel/providers/local/camel-local-provider.c:52
+#: ../camel/providers/local/camel-local-provider.c:51
 msgid "For storing local mail in MH-like mail directories."
 msgstr "MH와 같은 메일 디렉터리로 로컬 메일을 저장하는데 쓰입니다."
 
-#: ../camel/providers/local/camel-local-provider.c:70
+#: ../camel/providers/local/camel-local-provider.c:64
 msgid "Local delivery"
 msgstr "로컬 배달"
 
-#: ../camel/providers/local/camel-local-provider.c:71
+#: ../camel/providers/local/camel-local-provider.c:65
 msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
@@ -3595,29 +3598,29 @@ msgstr ""
 "표준 mbox 형식의 메일 모음에 들어 있는 로컬 메일을 에볼루션이 관리하는 폴더"
 "로 가져올 때 (옮겨올 때) 쓰입니다."
 
-#: ../camel/providers/local/camel-local-provider.c:86
-#: ../camel/providers/local/camel-local-provider.c:107
+#: ../camel/providers/local/camel-local-provider.c:79
+#: ../camel/providers/local/camel-local-provider.c:99
 msgid "_Apply filters to new messages in Inbox"
 msgstr "필터를 받은 편지함의 새 메시지에 적용(_A)"
 
-#: ../camel/providers/local/camel-local-provider.c:93
+#: ../camel/providers/local/camel-local-provider.c:86
 msgid "Maildir-format mail directories"
 msgstr "maildir-형식 메일 디렉터리"
 
-#: ../camel/providers/local/camel-local-provider.c:94
+#: ../camel/providers/local/camel-local-provider.c:87
 msgid "For storing local mail in maildir directories."
 msgstr "maildir 디렉터리의 로컬 메일을 저장할 때 사용됩니다."
 
-#: ../camel/providers/local/camel-local-provider.c:108
+#: ../camel/providers/local/camel-local-provider.c:100
 msgid "_Store status headers in Elm/Pine/Mutt format"
 msgstr "상태 헤더를 ELM/PINE/MUTT 형식으로 저장(_S)"
 
-#: ../camel/providers/local/camel-local-provider.c:115
+#: ../camel/providers/local/camel-local-provider.c:107
 msgid "Standard Unix mbox spool file"
 msgstr "표준 유닉스 MBOX 메일 모음 파일"
 
-#: ../camel/providers/local/camel-local-provider.c:116
-#: ../camel/providers/local/camel-local-provider.c:128
+#: ../camel/providers/local/camel-local-provider.c:108
+#: ../camel/providers/local/camel-local-provider.c:120
 msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
@@ -3625,7 +3628,7 @@ msgstr ""
 "외부 표준 mbox 메일 모음 파일에서 로컬 메일로 읽거나 저장할 때 사용합니다. 또"
 "한 Elm, Pine 또는 Mutt방식의 폴더를 읽을 때도 쓰입니다."
 
-#: ../camel/providers/local/camel-local-provider.c:127
+#: ../camel/providers/local/camel-local-provider.c:119
 msgid "Standard Unix mbox spool directory"
 msgstr "표준 유닉스 MBOX 메일 모음 디렉터리"
 
@@ -3721,7 +3724,7 @@ msgid "Cannot create folder: %s: Folder name cannot contain a dot"
 msgstr "폴더를 만들 수 없습니다: %s: 폴더 이름에 점이 들어 있습니다"
 
 #: ../camel/providers/local/camel-maildir-store.c:119
-#: ../camel/providers/local/camel-maildir-store.c:782
+#: ../camel/providers/local/camel-maildir-store.c:786
 #, c-format
 msgid "Folder %s already exists"
 msgstr "'%s' 폴더가 이미 있습니다"
@@ -3765,14 +3768,14 @@ msgid "not a maildir directory"
 msgstr "메일폴더 디렉터리가 아닙니다"
 
 #: ../camel/providers/local/camel-maildir-store.c:569
-#: ../camel/providers/local/camel-maildir-store.c:970
+#: ../camel/providers/local/camel-maildir-store.c:974
 #: ../camel/providers/local/camel-spool-store.c:209
 #: ../camel/providers/local/camel-spool-store.c:228
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "'%s' 폴더를 검사할 수 없습니다: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:773
+#: ../camel/providers/local/camel-maildir-store.c:777
 #, c-format
 msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
 msgstr "폴더 이름을 바꿀 수 없습니다: %s: 폴더 이름에 점이 들어 있습니다"
@@ -4991,7 +4994,9 @@ msgstr "사용할 프록시 종류"
 msgid ""
 "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" "
 "means manual proxy."
-msgstr "어떤 종류의 프록시를 사용할지 결정합니다. \"0\"은 시스템, \"1\"은 프록시 없음, \"2\"는 프록시 수동 설정."
+msgstr ""
+"어떤 종류의 프록시를 사용할지 결정합니다. \"0\"은 시스템, \"1\"은 프록시 없"
+"음, \"2\"는 프록시 수동 설정."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "Whether to use http-proxy"
