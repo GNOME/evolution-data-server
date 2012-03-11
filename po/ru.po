@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-02-23 12:45+0000\n"
-"PO-Revision-Date: 2012-02-27 20:26+0300\n"
+"POT-Creation-Date: 2012-02-28 11:54+0000\n"
+"PO-Revision-Date: 2012-03-12 00:26+0300\n"
 "Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -118,7 +118,6 @@ msgstr "Создание нового контакта…"
 #: ../addressbook/backends/google/e-book-backend-google.c:1540
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:327
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:433
-#| msgid "Calendar doesn't support Free/Busy"
 msgid "The backend does not support bulk removals"
 msgstr "Драйвер не поддерживает общие удаления"
 
@@ -268,7 +267,7 @@ msgid "There was no source for UID '%s' stored in a source list."
 msgstr "Здесь нет источника для UID «%s», сохранённого в списке источников."
 
 #: ../addressbook/libebook/e-book-client.c:2566
-#: ../calendar/libecal/e-cal-client.c:4483
+#: ../calendar/libecal/e-cal-client.c:4486
 msgid "Cannot get connection to view"
 msgstr "Не удалось подключиться для просмотра"
 
@@ -1762,7 +1761,6 @@ msgstr "Подготовка папки «%s» для автономной ра�
 
 #: ../camel/camel-disco-folder.c:482
 #: ../camel/camel-offline-folder.c:327
-#| msgid "Copy folder content locally for offline operation"
 msgid "Copy folder content locally for _offline operation"
 msgstr "Скопировать содержимое папки на локальную машину для _автономной работы"
 
@@ -2308,7 +2306,7 @@ msgid "Could not load %s: No initialization code in module."
 msgstr "Не удалось загрузить %s: в модуле нет инициализирующего кода."
 
 #: ../camel/camel-provider.c:402
-#: ../camel/camel-session.c:388
+#: ../camel/camel-session.c:384
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Провайдер для протокола «%s» не доступен"
@@ -2515,14 +2513,14 @@ msgstr "Аутентификация POP до SMTP посредством слу
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "Сбой компиляции регулярного выражения: %s: %s"
 
-#: ../camel/camel-session.c:397
+#: ../camel/camel-session.c:393
 #, c-format
 msgid "Invalid GType registered for protocol '%s'"
 msgstr "Некорректный зарегистрированный GType для протокола «%s»"
 
-#: ../camel/camel-session.c:466
+#: ../camel/camel-session.c:472
 #: ../camel/providers/imap/camel-imap-store.c:1143
-#: ../camel/providers/imapx/camel-imapx-server.c:2946
+#: ../camel/providers/imapx/camel-imapx-server.c:2936
 #: ../camel/providers/pop3/camel-pop3-store.c:249
 #: ../camel/providers/pop3/camel-pop3-store.c:566
 #: ../camel/providers/smtp/camel-smtp-transport.c:455
@@ -2530,12 +2528,12 @@ msgstr "Некорректный зарегистрированный GType дл
 msgid "No support for %s authentication"
 msgstr "Аутентификация %s не поддерживается"
 
-#: ../camel/camel-session.c:481
+#: ../camel/camel-session.c:487
 #, c-format
 msgid "%s authentication failed"
 msgstr "Сбой при проверке подлинности %s"
 
-#: ../camel/camel-session.c:1187
+#: ../camel/camel-session.c:1194
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Введите пароль %s для %s на узле %s."
@@ -2892,7 +2890,7 @@ msgid "Invalid reply from proxy server"
 msgstr "Недопустимый ответ от прокси-сервера"
 
 #: ../camel/camel-tcp-stream-ssl.c:474
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Issuer:            %s\n"
 #| "Subject:           %s\n"
@@ -2904,10 +2902,10 @@ msgid ""
 "   Fingerprint:  %s\n"
 "   Signature:    %s"
 msgstr ""
-"Поставщик:         %s\n"
-"Предмет:           %s\n"
-"Отпечаток:         %s\n"
-"Подпись:           %s"
+"   Поставщик:    %s\n"
+"   Предмет:      %s\n"
+"   Отпечаток:    %s\n"
+"   Подпись:      %s"
 
 #: ../camel/camel-tcp-stream-ssl.c:480
 msgid "GOOD"
@@ -3090,14 +3088,12 @@ msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Неожиданный ответ «OK» от сервера IMAP: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:348
-#| msgid "Always check for new mail in this folder"
 msgid "Always check for _new mail in this folder"
 msgstr "Всегда проверять наличие _новой почты в этой папке"
 
 #: ../camel/providers/imap/camel-imap-folder.c:359
 #: ../camel/providers/imapx/camel-imapx-folder.c:747
 #: ../camel/providers/nntp/camel-nntp-folder.c:760
-#| msgid "Apply message filters to this folder"
 msgid "Apply message _filters to this folder"
 msgstr "Применять _фильтры сообщений к этой папке"
 
@@ -3112,7 +3108,7 @@ msgid "Could not load summary for %s"
 msgstr "Не удалось загрузить краткую информацию о %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:1119
-#: ../camel/providers/imapx/camel-imapx-server.c:3949
+#: ../camel/providers/imapx/camel-imapx-server.c:3938
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Поиск изменённых сообщений в %s"
@@ -3122,13 +3118,13 @@ msgid "Unable to retrieve message: "
 msgstr "Не удалось получить сообщение: "
 
 #: ../camel/providers/imap/camel-imap-folder.c:3515
-#: ../camel/providers/imapx/camel-imapx-server.c:5509
+#: ../camel/providers/imapx/camel-imapx-server.c:5497
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Не удалось получить сообщение с идентификатором %s: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:3516
-#: ../camel/providers/imapx/camel-imapx-server.c:5510
+#: ../camel/providers/imapx/camel-imapx-server.c:5498
 msgid "No such message available."
 msgstr "Нет такого сообщения."
 
@@ -3141,8 +3137,8 @@ msgstr "Это сообщение в настоящий момент недос�
 
 #: ../camel/providers/imap/camel-imap-folder.c:4050
 #: ../camel/providers/imap/camel-imap-folder.c:4133
-#: ../camel/providers/imapx/camel-imapx-server.c:3901
-#: ../camel/providers/imapx/camel-imapx-server.c:4081
+#: ../camel/providers/imapx/camel-imapx-server.c:3890
+#: ../camel/providers/imapx/camel-imapx-server.c:4070
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Получение краткой информации по новым сообщениям из %s"
@@ -3253,7 +3249,6 @@ msgstr "_Применить фильтры к новым сообщениям в
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
 #: ../camel/providers/imapx/camel-imapx-provider.c:78
-#| msgid "Check new messages for Jun_k contents"
 msgid "Check new messages for _Junk contents"
 msgstr "Проверять новые _сообщения на наличие спама"
 
@@ -3313,25 +3308,25 @@ msgstr "Входящие"
 
 #: ../camel/providers/imap/camel-imap-store.c:409
 #: ../camel/providers/imap/camel-imap-store.c:463
-#: ../camel/providers/imapx/camel-imapx-server.c:2828
+#: ../camel/providers/imapx/camel-imapx-server.c:2818
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Не удалось подключиться к IMAP-серверу %s в защищенном режиме:%s"
 
 #: ../camel/providers/imap/camel-imap-store.c:410
-#: ../camel/providers/imapx/camel-imapx-server.c:2829
+#: ../camel/providers/imapx/camel-imapx-server.c:2819
 #: ../camel/providers/smtp/camel-smtp-transport.c:196
 msgid "STARTTLS not supported"
 msgstr "STARTTLS не поддерживается"
 
 #: ../camel/providers/imap/camel-imap-store.c:435
-#: ../camel/providers/imapx/camel-imapx-server.c:2868
+#: ../camel/providers/imapx/camel-imapx-server.c:2858
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Не удалось подключиться к IMAP-серверу %s в защищённом режиме: "
 
 #: ../camel/providers/imap/camel-imap-store.c:734
-#: ../camel/providers/imapx/camel-imapx-server.c:2935
+#: ../camel/providers/imapx/camel-imapx-server.c:2925
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Сервер IMAP %s не поддерживает аутентификацию %s"
@@ -3349,13 +3344,13 @@ msgid "IMAP service for %s on %s"
 msgstr "Сервис IMAP для %s на %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:1111
-#: ../camel/providers/imapx/camel-imapx-server.c:2965
+#: ../camel/providers/imapx/camel-imapx-server.c:2955
 #: ../camel/providers/nntp/camel-nntp-store.c:505
 msgid "Cannot authenticate without a username"
 msgstr "Невозможно выполнить проверку подлинности без имени пользователя"
 
 #: ../camel/providers/imap/camel-imap-store.c:1119
-#: ../camel/providers/imapx/camel-imapx-server.c:2974
+#: ../camel/providers/imapx/camel-imapx-server.c:2964
 #: ../camel/providers/nntp/camel-nntp-store.c:514
 #: ../camel/providers/pop3/camel-pop3-store.c:491
 #: ../camel/providers/pop3/camel-pop3-store.c:511
@@ -3448,104 +3443,99 @@ msgstr "IMAP+"
 msgid "Server disconnected"
 msgstr "Сервер отключился"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1206
+#: ../camel/providers/imapx/camel-imapx-server.c:1203
 msgid "Error writing to cache stream: "
 msgstr "Ошибка записи в поток кэша: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1940
+#: ../camel/providers/imapx/camel-imapx-server.c:1930
 #, c-format
 msgid "Not authenticated"
 msgstr "Не удалось выполнить аутентификацию"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2005
-#| msgid "Error performing search"
+#: ../camel/providers/imapx/camel-imapx-server.c:1995
 msgid "Error performing IDLE"
 msgstr "Ошибка выполнения команды IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3160
+#: ../camel/providers/imapx/camel-imapx-server.c:3150
 msgid "Error fetching message"
 msgstr "Ошибка при получении сообщения"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3228
+#: ../camel/providers/imapx/camel-imapx-server.c:3218
 msgid "Closing tmp stream failed: "
 msgstr "Произошёл сбок при попытке закрыть временный поток: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3327
+#: ../camel/providers/imapx/camel-imapx-server.c:3317
 msgid "Error copying messages"
 msgstr "Ошибка при копировании сообщений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3457
+#: ../camel/providers/imapx/camel-imapx-server.c:3447
 msgid "Error appending message"
 msgstr "Ошибка при присоединении сообщения"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3637
+#: ../camel/providers/imapx/camel-imapx-server.c:3627
 msgid "Error fetching message headers"
 msgstr "Ошибка при получении заголовков сообщений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3778
+#: ../camel/providers/imapx/camel-imapx-server.c:3768
 msgid "Error retrieving message"
 msgstr "Ошибка при получении сообщения"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3982
+#: ../camel/providers/imapx/camel-imapx-server.c:3971
 msgid "Error fetching new messages"
 msgstr "Ошибка при получении новых сообщений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4172
+#: ../camel/providers/imapx/camel-imapx-server.c:4161
 msgid "Error while fetching messages"
 msgstr "Ошибка при получении сообщений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4180
-#: ../camel/providers/imapx/camel-imapx-server.c:4210
+#: ../camel/providers/imapx/camel-imapx-server.c:4169
+#: ../camel/providers/imapx/camel-imapx-server.c:4199
 #, c-format
-#| msgid "Fetching summary information for new messages in %s"
 msgid "Fetching summary information for %d message in %s"
 msgid_plural "Fetching summary information for %d messages in %s"
 msgstr[0] "Получение информации об %d новом сообщении в %s"
 msgstr[1] "Получение информации о %d новых сообщениях в %s"
 msgstr[2] "Получение информации о %d новых сообщениях в %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4332
-#: ../camel/providers/imapx/camel-imapx-server.c:4366
+#: ../camel/providers/imapx/camel-imapx-server.c:4321
+#: ../camel/providers/imapx/camel-imapx-server.c:4355
 msgid "Error refreshing folder"
 msgstr "Ошибка при обновлении папки"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4455
-#| msgid "Expunging old messages"
+#: ../camel/providers/imapx/camel-imapx-server.c:4444
 msgid "Error expunging message"
 msgstr "Ошибка уничтожения сообщений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4540
+#: ../camel/providers/imapx/camel-imapx-server.c:4528
 msgid "Error fetching folders"
 msgstr "Ошибка при получении папок"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4614
-#| msgid "_Show only subscribed folders"
+#: ../camel/providers/imapx/camel-imapx-server.c:4602
 msgid "Error subscribing to folder"
 msgstr "Ошибка подписывания на папку"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4667
+#: ../camel/providers/imapx/camel-imapx-server.c:4655
 msgid "Error creating folder"
 msgstr "Ошибка при создании папки"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4712
+#: ../camel/providers/imapx/camel-imapx-server.c:4700
 msgid "Error deleting folder"
 msgstr "Ошибка при удалении папки"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4762
+#: ../camel/providers/imapx/camel-imapx-server.c:4750
 msgid "Error renaming folder"
 msgstr "Ошибка при переименовании папки"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4813
-#| msgid "Error performing search"
+#: ../camel/providers/imapx/camel-imapx-server.c:4801
 msgid "Error performing NOOP"
 msgstr "Ошибка выполнения команды NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4908
+#: ../camel/providers/imapx/camel-imapx-server.c:4896
 msgid "Error syncing changes"
 msgstr "Ошибка при синхронизации изменений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5664
-#: ../camel/providers/imapx/camel-imapx-server.c:5679
+#: ../camel/providers/imapx/camel-imapx-server.c:5652
+#: ../camel/providers/imapx/camel-imapx-server.c:5667
 msgid "Cannot create spool file: "
 msgstr "Не удалось создать файл спула: "
 
@@ -3587,7 +3577,6 @@ msgid "%s (%s)"
 msgstr "%s (%s)"
 
 #: ../camel/providers/local/camel-local-folder.c:483
-#| msgid "Index message body data"
 msgid "_Index message body data"
 msgstr "_Индексировать данные тела сообщения"
 
@@ -3622,7 +3611,6 @@ msgstr "Для получения (перемещения) локальной п
 
 #: ../camel/providers/local/camel-local-provider.c:86
 #: ../camel/providers/local/camel-local-provider.c:107
-#| msgid "_Apply filters to new messages in INBOX"
 msgid "_Apply filters to new messages in Inbox"
 msgstr "_Применить фильтры к новым сообщениям в папке «Входящие»"
 
@@ -4033,7 +4021,6 @@ msgid "Spool folder tree %s"
 msgstr "Дерево папки спула %s"
 
 #: ../camel/providers/local/camel-spool-store.c:423
-#| msgid "Invalid source"
 msgid "Invalid spool"
 msgstr "Неверный спул"
 
@@ -5002,7 +4989,7 @@ msgstr "Тип прокси"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
 msgid "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" means manual proxy."
-msgstr ""
+msgstr "Тип используемого прокси. «0» — системный; «1» — без прокси; «2» — прокси, настроенный вручную."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "Whether to use http-proxy"
@@ -5017,7 +5004,6 @@ msgid "Whether proxy server requires authentication"
 msgstr "Требуется ли аутентификация дли прокси-сервера"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
-#| msgid "Bad authentication response from server."
 msgid "Whether authentication is required to access proxy server."
 msgstr "Требуется ли для доступа к серверу прокси аутентификация."
 
@@ -5038,28 +5024,18 @@ msgid "Port number to use for HTTP requests."
 msgstr "Номер порта для запросов HTTP."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
-#| msgid "Cannot authenticate without a username"
 msgid "Proxy authentication user name"
 msgstr "Имя пользователя аутентификации для прокси"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
-#| msgid ""
-#| "Unable to authenticate to IMAP server.\n"
-#| "%s\n"
-#| "\n"
 msgid "User name to use to authenticate against proxy server."
 msgstr "Имя пользователя для аутентификации через сервер прокси."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
-#| msgid "%s authentication failed"
 msgid "Proxy authentication password"
 msgstr "Пароль аутентификации для прокси"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-#| msgid ""
-#| "Unable to authenticate to IMAP server.\n"
-#| "%s\n"
-#| "\n"
 msgid "Password to use to authenticate against proxy server."
 msgstr "Пароль для аутентификации через сервер прокси."
 
@@ -5088,7 +5064,6 @@ msgid "Port number to use for HTTPS requests."
 msgstr "Номер порта для запросов HTTPS."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:21
-#| msgid "Host is unreachable from SOCKS server"
 msgid "Host name for SOCKS requests"
 msgstr "Имя узла для запросов SOCKS"
 
@@ -5255,6 +5230,7 @@ msgstr "Адресная книга"
 msgid "Contacts"
 msgstr "Контакты"
 
+# Заголовок диалогового окна
 #: ../libedataserverui/e-name-selector-dialog.c:433
 msgid "Select Contacts from Address Book"
 msgstr "Выбор контактов из адресной книги"
@@ -5294,7 +5270,7 @@ msgstr "В_ырезать %s"
 #: ../libedataserverui/e-name-selector-entry.c:2865
 #, c-format
 msgid "_Edit %s"
-msgstr "_Правка %s"
+msgstr "_Изменить %s"
 
 #: ../libedataserverui/e-name-selector-list.c:524
 #, c-format
