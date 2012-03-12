@@ -612,9 +612,9 @@ scan_dirs (CamelStore *store,
 			 full_name[strlen((*topfi)->full_name)] != '/')))
 		    || (!can_inbox_sibling
 		    && g_ascii_strcasecmp ((*topfi)->full_name, "Inbox") == 0 
-		    && !g_str_has_prefix (full_name, (*topfi)->full_name)) ||
+		    && (!g_str_has_prefix (full_name, (*topfi)->full_name) ||
 			(full_name[strlen((*topfi)->full_name)] != '\0' &&
-			 full_name[strlen((*topfi)->full_name)] != '/')) {
+			 full_name[strlen((*topfi)->full_name)] != '/')))) {
 			g_free (full_name);
 			continue;
 		}
