@@ -637,8 +637,8 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		/* Start the tagged commands. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
 			CamelIMAPXCommand *ic = link->data;
-			camel_imapx_command_queue_delete_link (is->queue, link);
 			imapx_command_start (is, ic, cancellable, error);
+			camel_imapx_command_queue_delete_link (is->queue, link);
 		}
 
 		return;
@@ -727,8 +727,8 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		/* Start the tagged commands. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
 			CamelIMAPXCommand *ic = link->data;
-			camel_imapx_command_queue_delete_link (is->queue, link);
 			imapx_command_start (is, ic, cancellable, error);
+			camel_imapx_command_queue_delete_link (is->queue, link);
 			commands_started = TRUE;
 		}
 
@@ -778,8 +778,8 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		/* Start the tagged commands. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
 			CamelIMAPXCommand *ic = link->data;
-			camel_imapx_command_queue_delete_link (is->queue, link);
 			imapx_command_start (is, ic, cancellable, error);
+			camel_imapx_command_queue_delete_link (is->queue, link);
 		}
 	}
 }
