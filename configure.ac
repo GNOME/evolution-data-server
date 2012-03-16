@@ -348,6 +348,15 @@ if test x$os_win32 = xno; then
 	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
 fi
 
+dnl ******************************
+dnl DBus-glib stuff, to initialize thread for GConf, which is using it
+dnl this is returned back only temporarily and wil lbe removed as soon
+dnl as eds will stop using GConf completely
+dnl ******************************
+PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1 >= 0.6)
+AC_SUBST(DBUS_GLIB_CFLAGS)
+AC_SUBST(DBUS_GLIB_LIBS)
+
 dnl *******************************
 dnl Check for GNOME Online Accounts
 dnl *******************************

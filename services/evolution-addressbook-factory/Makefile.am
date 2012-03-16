@@ -20,6 +20,7 @@ evolution_addressbook_factory_CPPFLAGS = \
 	-I$(top_builddir)/addressbook \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(FACTORY_GTK_CFLAGS) \
+	$(DBUS_GLIB_CFLAGS) \
 	$(GOA_CFLAGS) \
 	$(NULL)
 
@@ -34,6 +35,7 @@ evolution_addressbook_factory_LDADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(EVOLUTION_ADDRESSBOOK_LIBS) \
 	$(FACTORY_GTK_LIBS) \
+	$(DBUS_GLIB_LIBS) \
 	$(GOA_LIBS) \
 	$(NULL)
 

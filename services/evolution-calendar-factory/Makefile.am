@@ -20,6 +20,7 @@ evolution_calendar_factory_CPPFLAGS = \
 	-I$(top_builddir)/calendar \
 	$(EVOLUTION_CALENDAR_CFLAGS) \
 	$(FACTORY_GTK_CFLAGS) \
+	$(DBUS_GLIB_CFLAGS) \
 	$(NULL)
 
 evolution_calendar_factory_SOURCES = \
@@ -33,6 +34,7 @@ evolution_calendar_factory_LDADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(EVOLUTION_CALENDAR_LIBS) \
 	$(FACTORY_GTK_LIBS) \
+	$(DBUS_GLIB_LIBS) \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
