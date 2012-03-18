@@ -1520,7 +1520,7 @@ e_vcard_append_attribute_with_value (EVCard *evcard,
  * e_vcard_append_attribute_with_values:
  * @evcard: an @EVCard
  * @attr: (transfer full): an #EVCardAttribute to append
- * @Varargs: a %NULL-terminated list of values to assign to the attribute
+ * @...: a %NULL-terminated list of values to assign to the attribute
  *
  * Appends @attr to @evcard, assigning the list of values to it.
  * For attribute addition is used e_vcard_append_attribute().
@@ -1598,7 +1598,7 @@ e_vcard_add_attribute_with_value (EVCard *evcard,
  * e_vcard_add_attribute_with_values:
  * @evcard: an @EVCard
  * @attr: (transfer full): an #EVCardAttribute to add
- * @Varargs: a %NULL-terminated list of values to assign to the attribute
+ * @...: a %NULL-terminated list of values to assign to the attribute
  *
  * Adds @attr to @evcard, assigning the list of values to it.
  * For attribute addition is used e_vcard_add_attribute().
@@ -1684,7 +1684,7 @@ e_vcard_attribute_add_value_decoded (EVCardAttribute *attr,
 /**
  * e_vcard_attribute_add_values:
  * @attr: an #EVCardAttribute
- * @Varargs: a %NULL-terminated list of strings
+ * @...: a %NULL-terminated list of strings
  *
  * Adds a list of values to @attr.
  **/
@@ -2006,7 +2006,7 @@ e_vcard_attribute_param_add_value (EVCardAttributeParam *param,
 /**
  * e_vcard_attribute_param_add_values:
  * @param: an #EVCardAttributeParam
- * @Varargs: a %NULL-terminated list of strings
+ * @...: a %NULL-terminated list of strings
  *
  * Adds a list of values to @param.
  **/
@@ -2053,7 +2053,7 @@ e_vcard_attribute_add_param_with_value (EVCardAttribute *attr,
  * e_vcard_attribute_add_param_with_values:
  * @attr: an #EVCardAttribute
  * @param: (transfer full): an #EVCardAttributeParam
- * @Varargs: a %NULL-terminated list of strings
+ * @...: a %NULL-terminated list of strings
  *
  * Adds the list of values to @param, then adds @param
  * to @attr.

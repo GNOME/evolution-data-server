@@ -529,4 +529,6 @@ E_IS_DESTINATION_CLASS
 E_DESTINATION_GET_CLASS
 EDestinationClass
 e_destination_get_type
+<SUBSECTION Private>
+EDestinationPrivate
 </SECTION>

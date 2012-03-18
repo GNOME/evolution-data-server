@@ -237,7 +237,7 @@ camel_operation_cancel_all (void)
  * camel_operation_push_message:
  * @cancellable: a #GCancellable or %NULL
  * @format: a standard printf() format string
- * @Varargs: the parameters to insert into the format string
+ * @...: the parameters to insert into the format string
  *
  * Call this function to describe an operation being performed.
  * Call camel_operation_progress() to report progress on the operation.
