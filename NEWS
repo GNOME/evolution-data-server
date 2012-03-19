@@ -1,6 +1,41 @@
 Evolution-Data-Server 3.3.92 2012-03-19
 ---------------------------------------
 
+Bug Fixes:
+	Bug 736655 (bnc) - Deadlocks when auto-completing address in email composer (Chenthill Palanisamy)
+	Bug 659756 - Initialize dbus-glib threading for GConf (Milan Crha)
+	Bug 665025 - Memory leak in camel mime (Milan Crha)
+	Bug 664186 - Maildir scan checks incorrectly for folder name prefix (Milan Crha)
+	Bug 671470 - Mail search on body doesn't work (local mail) (Milan Crha)
+	Bug 664186 - Fix regression after commit for bug #664186 (Milan Crha)
+
+Miscellaneous Fixes:
+	Update API documentation. (Matthew Barnes)
+	Fix some crashes in imapx_command_start_next(). (Matthew Barnes)
+	EDS: memory leak fixes (Patrick Ohly)
+	Update store<=>folder summaries connection on folder rename (Milan Crha)
+	CamelIMAPXServer: Avoid crashing in cancel_all_jobs(). (Matthew Barnes)
+	camel-local-provider.c: Remove superfluous conf entries. (Matthew Barnes)
+	Fix compiler format warnings in IMAPX code (Milan Crha)
+	Try to RC2047-decode address-only string when parsing email addresses (Milan Crha)
+
+Translations:
+	Jiri Eischmann (cs)
+	Piotr Drąg (pl)
+	Mario Blättermann (de)
+	Gabor Kelemen (hu)
+	Hannie Dumoleyn (nl)
+	Timo Jyrinki (fi)
+	Seong-ho Cho (ko)
+	Yuri Myasoedov (ru)
+	Sweta Kothari (gu)
+	Duarte Loreto (pt)
+	Nilamdyuti Goswami (as)
+	Bruno Brouard (fr)
+	Bruce Cowan (en_GB)
+	Khoem Sokhem (km)
+	Rudolfs Mazurs (lv)
+
 * The dbus-glib dependency has temporarily returned.  GConf now uses
   dbus-glib instead of libbonobo but it does not initialize threading
   support, so we have to initialize it to avoid thread-safety issues.
