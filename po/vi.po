@@ -1,6 +1,6 @@
 # Vietnamese translation for Evolution Data Server.
 # Copyright © 2009 GNOME i18n Project for Vietnamese.
-# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002-2004,2007,2011.
+# Nguyễn Thái Ngọc Duy <pclouds@gmail.com>, 2002-2004,2007,2011-2012.
 # Clytie Siddall <clytie@riverland.net.au>, 2005-2009.
 #
 msgid ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-03-01 07:22+0000\n"
-"PO-Revision-Date: 2012-03-21 08:51+0700\n"
+"PO-Revision-Date: 2012-03-21 09:09+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -35,27 +35,27 @@ msgid "Unknown error"
 msgstr "Không biết lỗi"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:154
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to create child process '%s': %s"
 msgid "Failed to remove file '%s': %s"
-msgstr "Lỗi tạo tiến trình con '%s': %s"
+msgstr "Lỗi loại bỏ tập tin '%s': %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:177
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not create directory %s: %s"
 msgid "Failed to make directory %s: %s"
-msgstr "Không thể tạo thư mục %s: %s"
+msgstr "Lỗi tạo thư mục %s: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:472
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to create child process '%s': %s"
 msgid "Failed to create hardlink for resource '%s': %s"
-msgstr "Lỗi tạo tiến trình con '%s': %s"
+msgstr "Lỗi tạo liên kết cứng đến tài nguyên '%s': %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:574
 #: ../addressbook/backends/file/e-book-backend-file.c:1129
 msgid "No UID in the contact"
-msgstr ""
+msgstr "Không có UID trong liên lạc"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1563
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:516
@@ -71,7 +71,7 @@ msgstr "Đang tìm kiếm..."
 #: ../addressbook/backends/file/e-book-backend-file.c:2108
 #, c-format
 msgid "Failed to build summary for an address book %s"
-msgstr ""
+msgstr "Lỗi tạo tóm tắt cho sổ địa chỉ %s"
 
 #. Query for new contacts asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:874
@@ -106,7 +106,7 @@ msgstr "Truy vấn nhóm đã cập nhật…"
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:295
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:326
 msgid "The backend does not support bulk additions"
-msgstr ""
+msgstr "Mặt sau không hỗ trợ thêm hàng loạt"
 
 #. Insert the entry on the server asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:1451
@@ -116,10 +116,9 @@ msgstr "Tạo liên lạc mới…"
 #: ../addressbook/backends/google/e-book-backend-google.c:1540
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:327
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:433
-#, fuzzy
 #| msgid "Calendar doesn't support Free/Busy"
 msgid "The backend does not support bulk removals"
-msgstr "Lịch không hỗ trợ Bận/Rảnh"
+msgstr "Mặt sau không hỗ trợ xoá hàng loạt"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1568
 msgid "Deleting contact…"
@@ -129,10 +128,9 @@ msgstr "Xoá liên lạc…"
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2296
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:375
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:487
-#, fuzzy
 #| msgid "Key usage does not support certificate signing"
 msgid "The backend does not support bulk modifications"
-msgstr "Cách sử dụng khóa không hỗ trợ ký chứng nhận"
+msgstr "Mặt sau không hỗ trợ sửa hàng loạt"
 
 #. Update the contact on the server asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:1851
@@ -857,10 +855,10 @@ msgid "Insufficient memory"
 msgstr "Không đủ bộ nhớ"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1093
-#, fuzzy, c-format
+#, c-format
 #| msgid "Contact not found"
 msgid "Contact '%s' not found"
-msgstr "Không tìm thấy liên lạc"
+msgstr "Không tìm thấy liên lạc '%s'"
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:206
@@ -1002,7 +1000,6 @@ msgstr "Không thể thêm liên lạc: "
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:651
 #: ../addressbook/libedata-book/e-data-book.c:1075
-#, fuzzy
 #| msgid "Cannot modify contact: "
 msgid "Cannot modify contacts: "
 msgstr "Không thể sửa liên lạc: "
@@ -1534,10 +1531,10 @@ msgid "\"%s\" expects the third argument to be a string"
 msgstr "\"%s\" cần tham số thứ ba là chuỗi"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:480
-#, fuzzy, c-format
+#, c-format
 #| msgid "\"%s\" expects two arguments"
 msgid "\"%s\" expects none or two arguments"
-msgstr "\"%s\" cần đến hai tham số"
+msgstr "\"%s\" cần hai tham số hoặc không có tham số"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:894
 #, c-format
@@ -1752,11 +1749,10 @@ msgid "Preparing folder '%s' for offline"
 msgstr "Đang chuẩn bị thư mục '%s' để dùng ngoại tuyến"
 
 #: ../camel/camel-disco-folder.c:482 ../camel/camel-offline-folder.c:327
-#, fuzzy
 #| msgid "Copy folder content locally for offline operation"
 msgid "Copy folder content locally for _offline operation"
 msgstr ""
-"Sao chép nội dung thư mục về máy địa phương để phục vụ các thao tác ngoại "
+"Sao chép nội dung thư mục về máy địa phương để phục vụ các thao tác _ngoại "
 "tuyến"
 
 #: ../camel/camel-disco-store.c:456
@@ -1880,7 +1876,7 @@ msgstr[0] "Học thư rác mới trong '%s'"
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
-msgstr[0] ""
+msgstr[0] "Học thư tốt mới trong '%s'"
 
 #: ../camel/camel-folder.c:350
 #, c-format
@@ -2518,16 +2514,16 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:249
 #: ../camel/providers/pop3/camel-pop3-store.c:566
 #: ../camel/providers/smtp/camel-smtp-transport.c:455
-#, fuzzy, c-format
+#, c-format
 #| msgid "No support for authentication type %s"
 msgid "No support for %s authentication"
-msgstr "Không hỗ trợ kiểu xác thực %s"
+msgstr "Không hỗ trợ xác thực %s"
 
 #: ../camel/camel-session.c:487
-#, fuzzy, c-format
+#, c-format
 #| msgid "Authentication failed"
 msgid "%s authentication failed"
-msgstr "Xác thực thất bại"
+msgstr "Xác thực %s thất bại"
 
 #: ../camel/camel-session.c:1194
 #, c-format
@@ -2793,7 +2789,7 @@ msgstr "Không thể kết nối bằng lệnh \"%s\": %s"
 #: ../camel/camel-tcp-stream-raw.c:303
 #, c-format
 msgid "NSPR error code %d"
-msgstr ""
+msgstr "Mã lỗi NSPR %d"
 
 #: ../camel/camel-tcp-stream-raw.c:640 ../camel/camel-tcp-stream-raw.c:651
 #, c-format
@@ -2874,7 +2870,7 @@ msgid "Invalid reply from proxy server"
 msgstr "Hồi đáp không hợp lệ từ máy uỷ nhiệm"
 
 #: ../camel/camel-tcp-stream-ssl.c:474
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Issuer:            %s\n"
 #| "Subject:           %s\n"
@@ -2886,10 +2882,10 @@ msgid ""
 "   Fingerprint:  %s\n"
 "   Signature:    %s"
 msgstr ""
-"Nhà phát hành:            %s\n"
-"Chủ đề:           %s\n"
-"Dấu điểm chỉ:       %s\n"
-"Chữ ký:         %s"
+"    Nhà phát hành: %s\n"
+"    Chủ đề:        %s\n"
+"    Vân tay:       %s\n"
+"    Chữ ký:        %s"
 
 #: ../camel/camel-tcp-stream-ssl.c:480
 msgid "GOOD"
@@ -2908,18 +2904,22 @@ msgid ""
 "Detailed information about the certificate:\n"
 "%s"
 msgstr ""
+"Chứng nhận SSL cho '%s' không được tin cậy. Bạn có muốn chấp nhận nó không?\n"
+"\n"
+"Thông tin chi tiết về chứng nhận:\n"
+"%s"
 
 #: ../camel/camel-tcp-stream-ssl.c:488
 msgid "_Reject"
-msgstr ""
+msgstr "_Từ chối"
 
 #: ../camel/camel-tcp-stream-ssl.c:489
 msgid "Accept _Temporarily"
-msgstr ""
+msgstr "Chấp nhận _tạm thời"
 
 #: ../camel/camel-tcp-stream-ssl.c:490
 msgid "_Accept Permanently"
-msgstr ""
+msgstr "_Chấp nhận vĩnh viễn"
 
 #: ../camel/camel-tcp-stream-ssl.c:548
 #, c-format
@@ -2963,10 +2963,10 @@ msgid "Could not parse URL '%s'"
 msgstr "Không thể phân tích URL '%s'"
 
 #: ../camel/camel-vee-folder.c:651
-#, fuzzy, c-format
+#, c-format
 #| msgid "Storing folder"
 msgid "Updating %s folder"
-msgstr "Đang lưu thư mục"
+msgstr "Đang cập nhật thư mục %s"
 
 #: ../camel/camel-vee-folder.c:1325 ../camel/camel-vee-folder.c:1482
 #, c-format
@@ -3025,7 +3025,7 @@ msgid "Server unexpectedly disconnected: %s"
 msgstr "Máy chủ đã ngắt kết nối bất ngờ: %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:416
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Alert from IMAP server %s@%s:\n"
 #| "%s"
@@ -3033,7 +3033,7 @@ msgid ""
 "Alert from IMAP server %s@%s in folder %s:\n"
 "%s"
 msgstr ""
-"Báo động từ máy phục vụ IMAP %s@%s:\n"
+"Báo động từ máy phục vụ IMAP %s@%s trong thư mục %s:\n"
 "%s"
 
 #: ../camel/providers/imap/camel-imap-command.c:420
@@ -3071,18 +3071,16 @@ msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Tín hiệu trả lời «Đồng ý» không mong đợi từ máy phục vụ IMAP: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:348
-#, fuzzy
 #| msgid "Always check for new mail in this folder"
 msgid "Always check for _new mail in this folder"
-msgstr "Luôn luôn kiểm tra tìm thư mới trong thư mục này"
+msgstr "Luôn luôn kiểm tra tìm thư _mới trong thư mục này"
 
 #: ../camel/providers/imap/camel-imap-folder.c:359
 #: ../camel/providers/imapx/camel-imapx-folder.c:747
 #: ../camel/providers/nntp/camel-nntp-folder.c:760
-#, fuzzy
 #| msgid "Cannot copy messages to the Trash folder"
 msgid "Apply message _filters to this folder"
-msgstr "Không thể sao chép các thư vào thư mục Rác"
+msgstr "_Lọc thư cho thư mục này"
 
 #: ../camel/providers/imap/camel-imap-folder.c:440
 #, c-format
@@ -3226,10 +3224,9 @@ msgstr "Tùy chọn"
 #: ../camel/providers/imap/camel-imap-provider.c:66
 #: ../camel/providers/imapx/camel-imapx-provider.c:74
 #: ../camel/providers/nntp/camel-nntp-provider.c:43
-#, fuzzy
 #| msgid "_Apply filters to new messages in INBOX"
 msgid "Apply _filters to new messages in all folders"
-msgstr "Á_p dụng bộ lọc vào thư mới trong hộp Thư Đến"
+msgstr "_Lọc thư mới trong mọi thư mục"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
 #: ../camel/providers/imapx/camel-imapx-provider.c:76
@@ -3320,10 +3317,10 @@ msgstr "Lỗi kết nối tới máy phục vụ IMAP %s trong chế độ an to
 
 #: ../camel/providers/imap/camel-imap-store.c:734
 #: ../camel/providers/imapx/camel-imapx-server.c:2925
-#, fuzzy, c-format
+#, c-format
 #| msgid "IMAP server %s does not support requested authentication type %s"
 msgid "IMAP server %s does not support %s authentication"
-msgstr "Máy phục vụ IMAP %s không hỗ trợ kiểu xác thực được yêu cầu %s"
+msgstr "Máy phục vụ IMAP %s không hỗ trợ xác thực %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:809
 #: ../camel/providers/imapx/camel-imapx-store.c:155
@@ -3340,20 +3337,18 @@ msgstr "Dịch vụ IMAP cho %s trên %s"
 #: ../camel/providers/imap/camel-imap-store.c:1111
 #: ../camel/providers/imapx/camel-imapx-server.c:2955
 #: ../camel/providers/nntp/camel-nntp-store.c:505
-#, fuzzy
 #| msgid "Cannot authenticate to server: %s"
 msgid "Cannot authenticate without a username"
-msgstr "Không thể xác thực với máy phục vụ: %s"
+msgstr "Không thể xác thực mà không có tên người dùng"
 
 #: ../camel/providers/imap/camel-imap-store.c:1119
 #: ../camel/providers/imapx/camel-imapx-server.c:2964
 #: ../camel/providers/nntp/camel-nntp-store.c:514
 #: ../camel/providers/pop3/camel-pop3-store.c:491
 #: ../camel/providers/pop3/camel-pop3-store.c:511
-#, fuzzy
 #| msgid "Authentication Failed"
 msgid "Authentication password not available"
-msgstr "Xác thực thất bại"
+msgstr "Không có mật khẩu xác thực"
 
 #: ../camel/providers/imap/camel-imap-store.c:2065
 #: ../camel/providers/imap/camel-imap-store.c:2269
@@ -3416,7 +3411,7 @@ msgstr "Dùng Đồng bộ _nhanh nếu máy chủ hỗ trợ"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:48
 msgid "_Listen for server change notifications"
-msgstr ""
+msgstr "_Lắng nghe thông báo thay đổi máy chủ"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:56
 msgid "Command:"
@@ -3439,10 +3434,9 @@ msgid "IMAP+"
 msgstr "IMAP+"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:817
-#, fuzzy
 #| msgid "Server unexpectedly disconnected"
 msgid "Server disconnected"
-msgstr "Máy chủ ngắt kết nối bất ngờ"
+msgstr "Máy chủ ngắt kết nối"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:1203
 msgid "Error writing to cache stream: "
@@ -3454,121 +3448,103 @@ msgid "Not authenticated"
 msgstr "Chưa xác thực"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:1995
-#, fuzzy
 #| msgid "Error performing search"
 msgid "Error performing IDLE"
-msgstr "Gặp lỗi khi tìm kiếm"
+msgstr "Lỗi thực hiện IDLE"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3150
-#, fuzzy
 #| msgid "Encrypting message"
 msgid "Error fetching message"
-msgstr "Đang mã hóa thư"
+msgstr "Lỗi lấy thư"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3218
 msgid "Closing tmp stream failed: "
 msgstr "Lỗi đóng luồng tmp: "
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3317
-#, fuzzy
 #| msgid "Copying messages"
 msgid "Error copying messages"
-msgstr "Đang chép thư"
+msgstr "Lỗi chép thư"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3447
-#, fuzzy
 #| msgid "Sending message"
 msgid "Error appending message"
-msgstr "Đang gửi thư"
+msgstr "Lỗi nối thư"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3627
 msgid "Error fetching message headers"
-msgstr ""
+msgstr "Lỗi lấy dòng đầu thư"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3768
-#, fuzzy
 #| msgid ""
 #| "Error retrieving newsgroups:\n"
 #| "\n"
 #| "%s"
 msgid "Error retrieving message"
-msgstr ""
-"Lỗi nhận nhóm tin:\n"
-"\n"
-"%s"
+msgstr "Lỗi nhận thư"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3971
-#, fuzzy
 #| msgid "Checking for new messages"
 msgid "Error fetching new messages"
-msgstr "Đang kiểm tra tìm thư mới"
+msgstr "Lỗi lấy thư mới"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4161
-#, fuzzy
 #| msgid "Verifying message"
 msgid "Error while fetching messages"
-msgstr "Đang xác minh thư"
+msgstr "Lỗi khi lấy thư"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4169
 #: ../camel/providers/imapx/camel-imapx-server.c:4199
-#, fuzzy, c-format
+#, c-format
 #| msgid "Fetching summary information for new messages in %s"
 msgid "Fetching summary information for %d message in %s"
 msgid_plural "Fetching summary information for %d messages in %s"
-msgstr[0] "Đang lấy thông tin tóm tắt cho các thư mới trong %s"
+msgstr[0] "Đang lấy thông tin tóm tắt cho %d thư mới trong %s"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4321
 #: ../camel/providers/imapx/camel-imapx-server.c:4355
-#, fuzzy
 #| msgid "Error performing search"
 msgid "Error refreshing folder"
-msgstr "Gặp lỗi khi tìm kiếm"
+msgstr "Lỗi nạp lại thư mục"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4444
-#, fuzzy
 #| msgid "Expunging old messages"
 msgid "Error expunging message"
-msgstr "Đang xóa hẳn các thư cũ"
+msgstr "Lỗi xóa hẳn thư cũ"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4528
-#, fuzzy
 #| msgid "Creating folder '%s'"
 msgid "Error fetching folders"
-msgstr "Đang tạo thư mục '%s'"
+msgstr "Lỗi lấy thư mục"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4602
-#, fuzzy
 #| msgid "_Show only subscribed folders"
 msgid "Error subscribing to folder"
-msgstr "Chỉ _hiện những thư mục đăng ký"
+msgstr "Lỗi đă_ng ký thư mục"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4655
-#, fuzzy
 #| msgid "Storing folder"
 msgid "Error creating folder"
-msgstr "Đang lưu thư mục"
+msgstr "Lỗi tạo thư mục"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4700
-#, fuzzy
 #| msgid "Storing folder"
 msgid "Error deleting folder"
-msgstr "Đang lưu thư mục"
+msgstr "Lỗi xoá thư mục"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4750
-#, fuzzy
 #| msgid "Storing folder"
 msgid "Error renaming folder"
-msgstr "Đang lưu thư mục"
+msgstr "Lỗi đổi tên thư mục"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4801
-#, fuzzy
 #| msgid "Error performing search"
 msgid "Error performing NOOP"
-msgstr "Gặp lỗi khi tìm kiếm"
+msgstr "Lỗi thực hiện NOOP"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4896
 msgid "Error syncing changes"
-msgstr ""
+msgstr "Lỗi đồng bộ thay đổi"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:5652
 #: ../camel/providers/imapx/camel-imapx-server.c:5667
@@ -3576,10 +3552,10 @@ msgid "Cannot create spool file: "
 msgstr ""
 
 #: ../camel/providers/imapx/camel-imapx-store.c:1076
-#, fuzzy, c-format
+#, c-format
 #| msgid "Retrieving quota information for '%s'"
 msgid "Retrieving folder list for %s"
-msgstr "Đang lấy thông tin chỉ tiêu cho '%s'"
+msgstr "Đang lấy danh sách thư mục cho %s"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:1176
 #: ../camel/providers/nntp/camel-nntp-store.c:1790
@@ -3614,10 +3590,9 @@ msgid "%s (%s)"
 msgstr "%s (%s)"
 
 #: ../camel/providers/local/camel-local-folder.c:483
-#, fuzzy
 #| msgid "Index message body data"
 msgid "_Index message body data"
-msgstr "Chỉ mục các dữ liệu trong phần thân thư"
+msgstr "Đánh _chỉ mục nội dung thư"
 
 #: ../camel/providers/local/camel-local-folder.c:712
 #, c-format
@@ -3654,10 +3629,9 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:86
 #: ../camel/providers/local/camel-local-provider.c:107
-#, fuzzy
 #| msgid "_Apply filters to new messages in INBOX"
 msgid "_Apply filters to new messages in Inbox"
-msgstr "Á_p dụng bộ lọc vào thư mới trong hộp Thư Đến"
+msgstr "Á_p dụng bộ lọc cho thư mới trong hộp Thư Đến"
 
 #: ../camel/providers/local/camel-local-provider.c:93
 msgid "Maildir-format mail directories"
@@ -3776,10 +3750,10 @@ msgid "Cannot transfer message to destination folder: %s"
 msgstr "Không thể truyền thư đến thư mục đích: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:109
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create folder: %s : Folder name cannot contain a dot"
 msgid "Cannot create folder: %s: Folder name cannot contain a dot"
-msgstr "Không thể tạo thư mục: %s : tên thư mục không được chứa dấu chấm"
+msgstr "Không thể tạo thư mục: %s: tên thư mục không được chứa dấu chấm"
 
 #: ../camel/providers/local/camel-maildir-store.c:119
 #: ../camel/providers/local/camel-maildir-store.c:782
@@ -4070,10 +4044,9 @@ msgid "Spool folder tree %s"
 msgstr "Cây thư mục hàng đợi ghi %s"
 
 #: ../camel/providers/local/camel-spool-store.c:423
-#, fuzzy
 #| msgid "Invalid source"
 msgid "Invalid spool"
-msgstr "Nguồn không hợp lệ"
+msgstr ""
 
 #: ../camel/providers/local/camel-spool-store.c:480
 #, c-format
@@ -4364,7 +4337,7 @@ msgstr "_Xoá sau %s ngày"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Delete _expunged from local Inbox"
-msgstr ""
+msgstr "Xoá _hẳn khỏi hộp thư đến nội bộ"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:48
 msgid "Disable _support for all POP3 extensions"
@@ -4606,15 +4579,15 @@ msgid "SMTP mail delivery via %s"
 msgstr "Gửi thư (SMTP) thông qua %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:367
-#, fuzzy, c-format
+#, c-format
 #| msgid "SMTP server %s does not support requested authentication type %s."
 msgid "SMTP server %s does not support %s authentication"
-msgstr "Máy phục vụ SMTP %s không hỗ trợ kiểu xác thực yêu cầu %s."
+msgstr "Máy phục vụ SMTP %s không hỗ trợ xác thực %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:446
 #, c-format
 msgid "No SASL mechanism was specified"
-msgstr ""
+msgstr "Chưa xác định cơ chế SASL"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:459
 msgid "SMTP Authentication"
@@ -5052,7 +5025,7 @@ msgstr "%I %p"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "Proxy type to use"
-msgstr ""
+msgstr "Loại uỷ nhiệm cần dùng"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
 msgid ""
@@ -5062,7 +5035,7 @@ msgstr ""
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "Whether to use http-proxy"
-msgstr ""
+msgstr "Có dùng http-proxy không"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
 msgid "Whether to use proxy for HTTP requests."
@@ -5073,102 +5046,93 @@ msgid "Whether proxy server requires authentication"
 msgstr ""
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
-#, fuzzy
 #| msgid "Bad authentication response from server."
 msgid "Whether authentication is required to access proxy server."
-msgstr "Trả lời xác thực sai từ máy phục vụ."
+msgstr "Cần xác thực để truy cập máy chủ uỷ nhiệm."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
 msgid "Host name for HTTP requests"
-msgstr ""
+msgstr "Tên máy chủ cho yêu cầu HTTP"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
 msgid "Host name to use for HTTP requests."
-msgstr ""
+msgstr "Tên máy chủ cho yêu cầu HTTP."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
 msgid "Port number for HTTP requests"
-msgstr ""
+msgstr "Số cổng cho yêu cầu HTTP"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
 msgid "Port number to use for HTTP requests."
-msgstr ""
+msgstr "Số cổng cho yêu cầu HTTP."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
-#, fuzzy
 #| msgid "Cannot authenticate user: "
 msgid "Proxy authentication user name"
-msgstr "Không thể xác thực người dùng: "
+msgstr "Tên người dùng xác thực uỷ nhiệm"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
-#, fuzzy
 #| msgid ""
 #| "Unable to authenticate to IMAP server.\n"
 #| "%s\n"
 #| "\n"
 msgid "User name to use to authenticate against proxy server."
 msgstr ""
-"Không thể xác thực với máy phục vụ IMAP.\n"
-"%s\n"
-"\n"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
-#, fuzzy
 #| msgid "Temporary authentication failure"
 msgid "Proxy authentication password"
-msgstr "Lỗi xác thực tạm"
+msgstr "Mật khẩu xác thực uỷ nhiệm"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-#, fuzzy
 #| msgid "Cannot authenticate to server: %s"
 msgid "Password to use to authenticate against proxy server."
-msgstr "Không thể xác thực với máy phục vụ: %s"
+msgstr ""
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:15
 msgid "List of hosts to connect to without proxy"
-msgstr ""
+msgstr "Danh sách máy có thể kết nối không dùng uỷ nhiệm"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:16
 msgid "List of hosts for which do not use proxy."
-msgstr ""
+msgstr "Danh sách máy có thể kết nối không dùng uỷ nhiệm."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:17
 msgid "Host name for HTTPS requests"
-msgstr ""
+msgstr "Tên máy chủ cho yêu cầu HTTPS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:18
 msgid "Host name to use for HTTPS requests."
-msgstr ""
+msgstr "Tên máy chủ cho yêu cầu HTTPS."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:19
 msgid "Port number for HTTPS requests"
-msgstr ""
+msgstr "Số cổng cho yêu cầu HTTPS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:20
 msgid "Port number to use for HTTPS requests."
-msgstr ""
+msgstr "Số cổng cho yêu cầu HTTPS."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:21
-#, fuzzy
 #| msgid "Host is unreachable from SOCKS server"
 msgid "Host name for SOCKS requests"
-msgstr "Không thể tiếp cận máy chủ SOCKS"
+msgstr "Tên máy cho yêu cầu SOCKS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:22
 msgid "Host name to use for SOCKS requests."
-msgstr ""
+msgstr "Tên máy cho yêu cầu SOCKS."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:23
 msgid "Port number for SOCKS requests"
-msgstr ""
+msgstr "Số cổng cho yêu cầu SOCKS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:24
 msgid "Port number to use for SOCKS requests."
-msgstr ""
+msgstr "Số cổng cho yêu cầu SOCKS."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:25
 msgid "Automatic proxy configuration URL"
-msgstr ""
+msgstr "URL cấu hình uỷ nhiệm tự động"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:26
 msgid "Where to read automatic proxy configuration from."
