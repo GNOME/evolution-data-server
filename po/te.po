@@ -3518,7 +3518,7 @@ msgid "Fetching summary information for %d message in %s"
 msgid_plural "Fetching summary information for %d messages in %s"
 msgstr[0] "%d సందేశం కొరకు %s నందు సారాంశ సమాచారం వెతికితెచ్చుచున్నది"
 msgstr[1] ""
-"%s లో కొత్త సందేశాల కొరకు సంక్షింప్తమైన సమాచారాన్ని తీసుకువస్తున్నది"
+"%d సందేశాల కొరకు %s నందు సారాంశ సమాచారం వెతికితెచ్చుచున్నది"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4332
 #: ../camel/providers/imapx/camel-imapx-server.c:4366
