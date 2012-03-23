@@ -18,6 +18,8 @@
 
 #include "camel-imapx-job.h"
 
+#include <string.h>
+
 typedef struct _CamelIMAPXRealJob CamelIMAPXRealJob;
 
 /* CamelIMAPXJob + some private bits */
@@ -112,6 +114,15 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 
 		if (real_job->destroy_data != NULL)
 			real_job->destroy_data (real_job->data);
+
+		/* Fill the memory with a bit pattern before releasing
+		 * it back to the slab allocator, so we can more easily
+		 * identify dangling CamelIMAPXJob pointers. */
+		memset (real_job, 0xaa, sizeof (CamelIMAPXRealJob));
+
+		/* But leave the reference count set to zero, so
+		 * CAMEL_IS_IMAPX_JOB can identify it as bad. */
+		real_job->ref_count = 0;
 
 		g_slice_free (CamelIMAPXRealJob, real_job);
 	}
