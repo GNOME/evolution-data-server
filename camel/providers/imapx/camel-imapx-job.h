@@ -23,6 +23,9 @@
 
 #include "camel-imapx-server.h"
 
+#define CAMEL_IS_IMAPX_JOB(job) \
+	(camel_imapx_job_check (job))
+
 G_BEGIN_DECLS
 
 typedef struct _CamelIMAPXJob CamelIMAPXJob;
@@ -59,6 +62,7 @@ struct _CamelIMAPXJob {
 CamelIMAPXJob *	camel_imapx_job_new		(GCancellable *cancellable);
 CamelIMAPXJob *	camel_imapx_job_ref		(CamelIMAPXJob *job);
 void		camel_imapx_job_unref		(CamelIMAPXJob *job);
+gboolean	camel_imapx_job_check		(CamelIMAPXJob *job);
 void		camel_imapx_job_wait		(CamelIMAPXJob *job);
 void		camel_imapx_job_done		(CamelIMAPXJob *job);
 gboolean	camel_imapx_job_run		(CamelIMAPXJob *job,

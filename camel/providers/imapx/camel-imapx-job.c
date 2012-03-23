@@ -74,10 +74,9 @@ camel_imapx_job_ref (CamelIMAPXJob *job)
 {
 	CamelIMAPXRealJob *real_job;
 
-	real_job = (CamelIMAPXRealJob *) job;
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), NULL);
 
-	g_return_val_if_fail (real_job != NULL, NULL);
-	g_return_val_if_fail (real_job->ref_count > 0, NULL);
+	real_job = (CamelIMAPXRealJob *) job;
 
 	g_atomic_int_inc (&real_job->ref_count);
 
@@ -89,10 +88,9 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 {
 	CamelIMAPXRealJob *real_job;
 
-	real_job = (CamelIMAPXRealJob *) job;
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	g_return_if_fail (real_job != NULL);
-	g_return_if_fail (real_job->ref_count > 0);
+	real_job = (CamelIMAPXRealJob *) job;
 
 	if (g_atomic_int_dec_and_test (&real_job->ref_count)) {
 
@@ -119,14 +117,24 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 	}
 }
 
-void
-camel_imapx_job_wait (CamelIMAPXJob *job)
+gboolean
+camel_imapx_job_check (CamelIMAPXJob *job)
 {
 	CamelIMAPXRealJob *real_job;
 
 	real_job = (CamelIMAPXRealJob *) job;
 
-	g_return_if_fail (real_job != NULL);
+	return (real_job != NULL && real_job->ref_count > 0);
+}
+
+void
+camel_imapx_job_wait (CamelIMAPXJob *job)
+{
+	CamelIMAPXRealJob *real_job;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+
+	real_job = (CamelIMAPXRealJob *) job;
 
 	g_mutex_lock (real_job->done_mutex);
 	while (!real_job->done_flag)
@@ -141,9 +149,9 @@ camel_imapx_job_done (CamelIMAPXJob *job)
 {
 	CamelIMAPXRealJob *real_job;
 
-	real_job = (CamelIMAPXRealJob *) job;
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	g_return_if_fail (real_job != NULL);
+	real_job = (CamelIMAPXRealJob *) job;
 
 	g_mutex_lock (real_job->done_mutex);
 	real_job->done_flag = TRUE;
@@ -158,9 +166,9 @@ camel_imapx_job_run (CamelIMAPXJob *job,
 {
 	gulong cancel_id = 0;
 
-	g_return_val_if_fail (job != NULL, FALSE);
-	g_return_val_if_fail (job->start != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+	g_return_val_if_fail (job->start != NULL, FALSE);
 
 	if (g_cancellable_set_error_if_cancelled (job->cancellable, error))
 		return FALSE;
@@ -200,7 +208,7 @@ camel_imapx_job_matches (CamelIMAPXJob *job,
 	/* XXX CamelFolder can be NULL.  I'm less sure about the
 	 *     message UID but let's assume that can be NULL too. */
 
-	g_return_val_if_fail (job != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
 
 	if (folder != NULL)
 		g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
@@ -216,9 +224,9 @@ camel_imapx_job_get_data (CamelIMAPXJob *job)
 {
 	CamelIMAPXRealJob *real_job;
 
-	real_job = (CamelIMAPXRealJob *) job;
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), NULL);
 
-	g_return_val_if_fail (real_job != NULL, NULL);
+	real_job = (CamelIMAPXRealJob *) job;
 
 	return real_job->data;
 }
@@ -230,9 +238,9 @@ camel_imapx_job_set_data (CamelIMAPXJob *job,
 {
 	CamelIMAPXRealJob *real_job;
 
-	real_job = (CamelIMAPXRealJob *) job;
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
-	g_return_if_fail (real_job != NULL);
+	real_job = (CamelIMAPXRealJob *) job;
 
 	if (real_job->destroy_data != NULL)
 		real_job->destroy_data (real_job->data);
