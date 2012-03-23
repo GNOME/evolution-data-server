@@ -546,6 +546,14 @@ err:
 
 	camel_imapx_command_queue_remove (is->active, ic);
 
+	/* HACK: Since we're failing, make sure the command has a status
+	 *       structure and the result code indicates failure, so the
+	 *       ic->complete() callback does not start a new command. */
+	if (ic->status == NULL)
+		ic->status = g_malloc0 (sizeof (struct _status_info));
+	if (ic->status->result == IMAPX_OK)
+		ic->status->result = IMAPX_UNKNOWN;
+
 	/* Send a NULL GError since we've already set a
 	 * GError to get here, and we're not interested
 	 * in individual command errors. */
