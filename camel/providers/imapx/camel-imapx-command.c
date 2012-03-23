@@ -23,6 +23,7 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
+#include "camel-imapx-job.h"
 #include "camel-imapx-server.h"
 #include "camel-imapx-store.h"
 
@@ -35,6 +36,8 @@ struct _CamelIMAPXRealCommand {
 	CamelIMAPXCommand public;
 
 	volatile gint ref_count;
+
+	CamelIMAPXJob *job;
 
 	/* For building the part. */
 	GString *buffer;
@@ -133,6 +136,9 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 
 		/* Free the private stuff. */
 
+		if (real_ic->job != NULL)
+			camel_imapx_job_unref (real_ic->job);
+
 		g_string_free (real_ic->buffer, TRUE);
 
 		g_cond_free (real_ic->done_sync_cond);
@@ -176,6 +182,39 @@ camel_imapx_command_compare (CamelIMAPXCommand *ic1,
 		return 0;
 
 	return (ic1->pri < ic2->pri) ? -1 : 1;
+}
+
+CamelIMAPXJob *
+camel_imapx_command_get_job (CamelIMAPXCommand *ic)
+{
+	CamelIMAPXRealCommand *real_ic;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), NULL);
+
+	real_ic = (CamelIMAPXRealCommand *) ic;
+
+	return real_ic->job;
+}
+
+void
+camel_imapx_command_set_job (CamelIMAPXCommand *ic,
+                             CamelIMAPXJob *job)
+{
+	CamelIMAPXRealCommand *real_ic;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
+
+	real_ic = (CamelIMAPXRealCommand *) ic;
+
+	if (job != NULL) {
+		g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+		camel_imapx_job_ref (job);
+	}
+
+	if (real_ic->job != NULL)
+		camel_imapx_job_unref (real_ic->job);
+
+	real_ic->job = job;
 }
 
 void

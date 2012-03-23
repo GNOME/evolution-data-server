@@ -87,7 +87,6 @@ struct _CamelIMAPXCommand {
 
 	/* Responsible for free'ing the command. */
 	CamelIMAPXCommandFunc complete;
-	struct _CamelIMAPXJob *job;
 };
 
 CamelIMAPXCommand *
@@ -102,6 +101,10 @@ void		camel_imapx_command_unref	(CamelIMAPXCommand *ic);
 gboolean	camel_imapx_command_check	(CamelIMAPXCommand *ic);
 gint		camel_imapx_command_compare	(CamelIMAPXCommand *ic1,
 						 CamelIMAPXCommand *ic2);
+struct _CamelIMAPXJob *
+		camel_imapx_command_get_job	(CamelIMAPXCommand *ic);
+void		camel_imapx_command_set_job	(CamelIMAPXCommand *ic,
+						 struct _CamelIMAPXJob *job);
 void		camel_imapx_command_add		(CamelIMAPXCommand *ic,
 						 const gchar *format,
 						 ...);
