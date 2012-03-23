@@ -142,6 +142,15 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 		 * propagated to the CamelIMAPXJob, so it's either NULL or the
 		 * CamelIMAPXJob owns it now. */
 
+		/* Fill the memory with a bit pattern before releasing
+		 * it back to the slab allocator, so we can more easily
+		 * identify dangling CamelIMAPXCommand pointers. */
+		memset (real_ic, 0xaa, sizeof (CamelIMAPXRealCommand));
+
+		/* But leave the reference count set to zero, so
+		 * CAMEL_IS_IMAPX_COMMAND can identify it as bad. */
+		real_ic->ref_count = 0;
+
 		g_slice_free (CamelIMAPXRealCommand, real_ic);
 	}
 }
