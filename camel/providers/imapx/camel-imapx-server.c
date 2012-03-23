@@ -638,11 +638,17 @@ imapx_command_start_next (CamelIMAPXServer *is,
 		if (g_queue_is_empty (&start))
 			c(is->tagprefix, "* no, waiting for pending select '%s'\n", camel_folder_get_full_name (is->select_pending));
 
-		/* Start the tagged commands. */
+		/* Start the tagged commands.
+		 *
+		 * Each command must be removed from 'is->queue' before
+		 * starting it, so we temporarily reference the command
+		 * to avoid accidentally finalizing it. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
-			CamelIMAPXCommand *ic = link->data;
-			imapx_command_start (is, ic, cancellable, error);
+			CamelIMAPXCommand *ic;
+			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
+			imapx_command_start (is, ic, cancellable, error);
+			camel_imapx_command_unref (ic);
 		}
 
 		return;
@@ -728,11 +734,17 @@ imapx_command_start_next (CamelIMAPXServer *is,
 				break;
 		}
 
-		/* Start the tagged commands. */
+		/* Start the tagged commands.
+		 *
+		 * Each command must be removed from 'is->queue' before
+		 * starting it, so we temporarily reference the command
+		 * to avoid accidentally finalizing it. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
-			CamelIMAPXCommand *ic = link->data;
-			imapx_command_start (is, ic, cancellable, error);
+			CamelIMAPXCommand *ic;
+			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
+			imapx_command_start (is, ic, cancellable, error);
+			camel_imapx_command_unref (ic);
 			commands_started = TRUE;
 		}
 
@@ -779,11 +791,17 @@ imapx_command_start_next (CamelIMAPXServer *is,
 				break;
 		}
 
-		/* Start the tagged commands. */
+		/* Start the tagged commands.
+		 *
+		 * Each command must be removed from 'is->queue' before
+		 * starting it, so we temporarily reference the command
+		 * to avoid accidentally finalizing it. */
 		while ((link = g_queue_pop_head (&start)) != NULL) {
-			CamelIMAPXCommand *ic = link->data;
-			imapx_command_start (is, ic, cancellable, error);
+			CamelIMAPXCommand *ic;
+			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
+			imapx_command_start (is, ic, cancellable, error);
+			camel_imapx_command_unref (ic);
 		}
 	}
 }
