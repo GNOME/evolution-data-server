@@ -23,6 +23,9 @@
 
 #include "camel-imapx-utils.h"
 
+#define CAMEL_IS_IMAPX_COMMAND(command) \
+	(camel_imapx_command_check (command))
+
 G_BEGIN_DECLS
 
 /* Avoid a circular reference. */
@@ -96,6 +99,7 @@ CamelIMAPXCommand *
 CamelIMAPXCommand *
 		camel_imapx_command_ref		(CamelIMAPXCommand *ic);
 void		camel_imapx_command_unref	(CamelIMAPXCommand *ic);
+gboolean	camel_imapx_command_check	(CamelIMAPXCommand *ic);
 gint		camel_imapx_command_compare	(CamelIMAPXCommand *ic1,
 						 CamelIMAPXCommand *ic2);
 void		camel_imapx_command_add		(CamelIMAPXCommand *ic,

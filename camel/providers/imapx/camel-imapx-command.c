@@ -91,10 +91,9 @@ camel_imapx_command_ref (CamelIMAPXCommand *ic)
 {
 	CamelIMAPXRealCommand *real_ic;
 
-	real_ic = (CamelIMAPXRealCommand *) ic;
+	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), NULL);
 
-	g_return_val_if_fail (real_ic != NULL, NULL);
-	g_return_val_if_fail (real_ic->ref_count > 0, NULL);
+	real_ic = (CamelIMAPXRealCommand *) ic;
 
 	g_atomic_int_inc (&real_ic->ref_count);
 
@@ -106,10 +105,9 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 {
 	CamelIMAPXRealCommand *real_ic;
 
-	real_ic = (CamelIMAPXRealCommand *) ic;
+	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
-	g_return_if_fail (real_ic != NULL);
-	g_return_if_fail (real_ic->ref_count > 0);
+	real_ic = (CamelIMAPXRealCommand *) ic;
 
 	if (g_atomic_int_dec_and_test (&real_ic->ref_count)) {
 		CamelIMAPXCommandPart *cp;
@@ -148,12 +146,22 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 	}
 }
 
+gboolean
+camel_imapx_command_check (CamelIMAPXCommand *ic)
+{
+	CamelIMAPXRealCommand *real_ic;
+
+	real_ic = (CamelIMAPXRealCommand *) ic;
+
+	return (real_ic != NULL && real_ic->ref_count > 0);
+}
+
 gint
 camel_imapx_command_compare (CamelIMAPXCommand *ic1,
                              CamelIMAPXCommand *ic2)
 {
-	g_return_val_if_fail (ic1 != NULL, 0);
-	g_return_val_if_fail (ic2 != NULL, 0);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic1), 0);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic2), 0);
 
 	if (ic1->pri == ic2->pri)
 		return 0;
@@ -168,7 +176,7 @@ camel_imapx_command_add (CamelIMAPXCommand *ic,
 {
 	va_list ap;
 
-	g_return_if_fail (ic != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
 	if (format != NULL && *format != '\0') {
 		va_start (ap, format);
@@ -203,7 +211,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 	gchar *fname = NULL, *encoded = NULL;
 	const gchar *full_name;
 
-	g_return_if_fail (ic != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
 	c(ic->is->tagprefix, "adding command, format = '%s'\n", format);
 
@@ -474,7 +482,7 @@ camel_imapx_command_close (CamelIMAPXCommand *ic)
 {
 	GString *buffer;
 
-	g_return_if_fail (ic != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
 	buffer = ((CamelIMAPXRealCommand *) ic)->buffer;
 
@@ -494,7 +502,7 @@ camel_imapx_command_wait (CamelIMAPXCommand *ic)
 {
 	CamelIMAPXRealCommand *real_ic;
 
-	g_return_if_fail (ic != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
 	real_ic = (CamelIMAPXRealCommand *) ic;
 
@@ -511,7 +519,7 @@ camel_imapx_command_done (CamelIMAPXCommand *ic)
 {
 	CamelIMAPXRealCommand *real_ic;
 
-	g_return_if_fail (ic != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
 	real_ic = (CamelIMAPXRealCommand *) ic;
 
@@ -525,7 +533,7 @@ gboolean
 camel_imapx_command_set_error_if_failed (CamelIMAPXCommand *ic,
                                          GError **error)
 {
-	g_return_val_if_fail (ic != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), FALSE);
 
 	if (ic->status != NULL && ic->status->result != IMAPX_OK) {
 		if (ic->status->text != NULL)
@@ -581,7 +589,7 @@ camel_imapx_command_queue_push_tail (CamelIMAPXCommandQueue *queue,
                                      CamelIMAPXCommand *ic)
 {
 	g_return_if_fail (queue != NULL);
-	g_return_if_fail (ic != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
 	camel_imapx_command_ref (ic);
 
@@ -593,7 +601,7 @@ camel_imapx_command_queue_insert_sorted (CamelIMAPXCommandQueue *queue,
                                          CamelIMAPXCommand *ic)
 {
 	g_return_if_fail (queue != NULL);
-	g_return_if_fail (ic != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
 	camel_imapx_command_ref (ic);
 
@@ -639,7 +647,7 @@ camel_imapx_command_queue_remove (CamelIMAPXCommandQueue *queue,
                                   CamelIMAPXCommand *ic)
 {
 	g_return_val_if_fail (queue != NULL, FALSE);
-	g_return_val_if_fail (ic != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), FALSE);
 
 	if (g_queue_remove ((GQueue *) queue, ic)) {
 		camel_imapx_command_unref (ic);
