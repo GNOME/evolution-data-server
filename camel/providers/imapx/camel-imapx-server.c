@@ -3158,23 +3158,27 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		 * time) until the data actually stop coming. */
 		if (data->fetch_offset < data->size ||
 		    data->fetch_offset == really_fetched) {
-			camel_imapx_command_unref (ic);
+			CamelIMAPXCommand *new_ic;
+
 			camel_operation_progress (
 				job->cancellable,
 				(data->fetch_offset *100) / data->size);
 
-			ic = camel_imapx_command_new (
+			new_ic = camel_imapx_command_new (
 				is, "FETCH", job->folder,
 				"UID FETCH %t (BODY.PEEK[]",
 				data->uid);
-			camel_imapx_command_add (ic, "<%u.%u>", data->fetch_offset, MULTI_SIZE);
-			camel_imapx_command_add (ic, ")");
-			ic->complete = imapx_command_fetch_message_done;
-			ic->job = job;
-			ic->pri = job->pri - 1;
+			camel_imapx_command_add (new_ic, "<%u.%u>", data->fetch_offset, MULTI_SIZE);
+			camel_imapx_command_add (new_ic, ")");
+			new_ic->complete = imapx_command_fetch_message_done;
+			new_ic->job = job;
+			new_ic->pri = job->pri - 1;
 			data->fetch_offset += MULTI_SIZE;
 			job->commands++;
-			imapx_command_queue (is, ic);
+			imapx_command_queue (is, new_ic);
+
+			camel_imapx_command_unref (ic);
+
 			return TRUE;
 		}
 	}
