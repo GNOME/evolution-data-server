@@ -25,9 +25,7 @@ libecalbackendweather_la_SOURCES =	\
 	e-source-weather.c		\
 	e-source-weather.h		\
 	e-weather-source.c		\
-	e-weather-source.h		\
-	e-weather-source-ccf.c		\
-	e-weather-source-ccf.h
+	e-weather-source.h
 
 libecalbackendweather_la_LIBADD =					\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\

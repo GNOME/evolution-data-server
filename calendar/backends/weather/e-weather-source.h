@@ -25,7 +25,7 @@
 #include <time.h>
 
 #define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
-#include <libgweather/weather.h>
+#include <libgweather/gweather-weather.h>
 #undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
 
 /* Standard GObject macros */
@@ -49,35 +49,7 @@
 
 G_BEGIN_DECLS
 
-typedef enum {
-	WEATHER_FAIR,
-	WEATHER_SNOW_SHOWERS,
-	WEATHER_SNOW,
-	WEATHER_PARTLY_CLOUDY,
-	WEATHER_SMOKE,
-	WEATHER_THUNDERSTORMS,
-	WEATHER_CLOUDY,
-	WEATHER_DRIZZLE,
-	WEATHER_SUNNY,
-	WEATHER_DUST,
-	WEATHER_CLEAR,
-	WEATHER_MOSTLY_CLOUDY,
-	WEATHER_WINDY,
-	WEATHER_RAIN_SHOWERS,
-	WEATHER_FOGGY,
-	WEATHER_RAIN_OR_SNOW_MIXED,
-	WEATHER_SLEET,
-	WEATHER_VERY_HOT_OR_HOT_HUMID,
-	WEATHER_BLIZZARD,
-	WEATHER_FREEZING_RAIN,
-	WEATHER_HAZE,
-	WEATHER_BLOWING_SNOW,
-	WEATHER_FREEZING_DRIZZLE,
-	WEATHER_VERY_COLD_WIND_CHILL,
-	WEATHER_RAIN,
-} WeatherConditions;
-
-typedef void (*EWeatherSourceFinished)(WeatherInfo *result, gpointer data);
+typedef void (*EWeatherSourceFinished)(GWeatherInfo *result, gpointer data);
 
 typedef struct _EWeatherSource EWeatherSource;
 typedef struct _EWeatherSourceClass EWeatherSourceClass;
@@ -87,16 +59,16 @@ typedef struct _EWeatherSourceClass EWeatherSourceClass;
  * to know how to do is parse the specific format. */
 struct _EWeatherSource {
 	GObject parent;
+
+	GWeatherLocation *location;
+	GWeatherInfo *info;
+
+	EWeatherSourceFinished done;
+	gpointer finished_data;
 };
 
 struct _EWeatherSourceClass {
 	GObjectClass parent_class;
-
-	/* Returns a list of WeatherForecast objects containing the
-	 * data for the forecast. */
-	void		(*parse)	(EWeatherSource *source,
-					 EWeatherSourceFinished done,
-					 gpointer data);
 };
 
 GType		e_weather_source_get_type	(void);

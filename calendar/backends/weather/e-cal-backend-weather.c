@@ -27,7 +27,7 @@
 #include "e-weather-source.h"
 
 #define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
-#include <libgweather/weather.h>
+#include <libgweather/gweather-weather.h>
 #undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
 
 #define WEATHER_UID_EXT "-weather"
@@ -43,7 +43,7 @@ G_DEFINE_TYPE (ECalBackendWeather, e_cal_backend_weather, E_TYPE_CAL_BACKEND_SYN
 
 static gboolean reload_cb (ECalBackendWeather *cbw);
 static gboolean begin_retrieval_cb (ECalBackendWeather *cbw);
-static ECalComponent * create_weather (ECalBackendWeather *cbw, WeatherInfo *report, gboolean is_forecast);
+static ECalComponent * create_weather (ECalBackendWeather *cbw, GWeatherInfo *report, gboolean is_forecast);
 static void e_cal_backend_weather_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
 
 /* Private part of the ECalBackendWeather structure */
@@ -158,7 +158,7 @@ put_component_to_store (ECalBackendWeather *cb,
 }
 
 static void
-finished_retrieval_cb (WeatherInfo *info,
+finished_retrieval_cb (GWeatherInfo *info,
                        ECalBackendWeather *cbw)
 {
 	ECalBackendWeatherPrivate *priv;
@@ -197,13 +197,13 @@ finished_retrieval_cb (WeatherInfo *info,
 		e_cal_backend_notify_component_created (E_CAL_BACKEND (cbw), comp);
 		g_object_unref (comp);
 
-		forecasts = weather_info_get_forecast_list (info);
+		forecasts = gweather_info_get_forecast_list (info);
 		if (forecasts) {
 			GSList *f;
 
 			/* skip the first one, it's for today, which has been added above */
 			for (f = forecasts->next; f; f = f->next) {
-				WeatherInfo *nfo = f->data;
+				GWeatherInfo *nfo = f->data;
 
 				if (nfo) {
 					comp = create_weather (cbw, nfo, TRUE);
@@ -267,7 +267,7 @@ begin_retrieval_cb (ECalBackendWeather *cbw)
 }
 
 static const gchar *
-getCategory (WeatherInfo *report)
+getCategory (GWeatherInfo *report)
 {
 	struct {
 		const gchar *description;
@@ -286,7 +286,7 @@ getCategory (WeatherInfo *report)
 	};
 
 	gint i;
-	const gchar *icon_name = weather_info_get_icon_name (report);
+	const gchar *icon_name = gweather_info_get_icon_name (report);
 
 	if (!icon_name)
 		return NULL;
@@ -302,7 +302,7 @@ getCategory (WeatherInfo *report)
 
 static ECalComponent *
 create_weather (ECalBackendWeather *cbw,
-                WeatherInfo *report,
+                GWeatherInfo *report,
                 gboolean is_forecast)
 {
 	ECalBackendWeatherPrivate *priv;
@@ -314,33 +314,18 @@ create_weather (ECalBackendWeather *cbw,
 	gchar			  *uid;
 	GSList                    *text_list = NULL;
 	ECalComponentText         *description;
-	ESource                   *source;
-	const gchar               *tmp;
+	gchar                     *tmp;
 	time_t			   update_time;
 	icaltimezone		  *update_zone = NULL;
-	ESourceWeather            *extension;
-	const gchar               *extension_name;
-	const WeatherLocation     *location;
-	ESourceWeatherUnits        units;
+	const GWeatherLocation    *location;
+	const GWeatherTimezone    *w_timezone;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
 
-	if (!weather_info_get_value_update (report, &update_time))
+	if (!gweather_info_get_value_update (report, &update_time))
 		return NULL;
 
 	priv = cbw->priv;
-
-	source = e_backend_get_source (E_BACKEND (cbw));
-
-	extension_name = E_SOURCE_EXTENSION_WEATHER_BACKEND;
-	extension = e_source_get_extension (source, extension_name);
-	units = e_source_weather_get_units (extension);
-
-	/* Prefer metric if units is invalid. */
-	if (units == E_SOURCE_WEATHER_UNITS_IMPERIAL)
-		weather_info_to_imperial (report);
-	else
-		weather_info_to_metric (report);
 
 	/* create the component and event object */
 	ical_comp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
@@ -353,9 +338,9 @@ create_weather (ECalBackendWeather *cbw,
 	g_free (uid);
 
 	/* use timezone of the location to determine date for which this is set */
-	location = weather_info_get_location (report);
-	if (location && location->tz_hint && *location->tz_hint)
-		update_zone = icaltimezone_get_builtin_timezone (location->tz_hint);
+	location = gweather_info_get_location (report);
+	if (location && (w_timezone = gweather_location_get_timezone ((GWeatherLocation *)location)))
+		update_zone = icaltimezone_get_builtin_timezone (gweather_timezone_get_tzid ((GWeatherTimezone*)w_timezone));
 
 	if (!update_zone)
 		update_zone = icaltimezone_get_utc_timezone ();
@@ -380,53 +365,56 @@ create_weather (ECalBackendWeather *cbw,
 	/* We have to add 1 day to DTEND, as it is not inclusive. */
 	e_cal_component_set_dtend (cal_comp, &dt);
 
-	if (is_forecast) {
+	{
 		gdouble tmin = 0.0, tmax = 0.0;
 
-		if (weather_info_get_value_temp_min (report, TEMP_UNIT_DEFAULT, &tmin) &&
-		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax) &&
+		if (gweather_info_get_value_temp_min (report, GWEATHER_TEMP_UNIT_DEFAULT, &tmin) &&
+		    gweather_info_get_value_temp_max (report, GWEATHER_TEMP_UNIT_DEFAULT, &tmax) &&
 		    tmin != tmax) {
-			/* because weather_info_get_temp* uses one internal buffer, thus finally
-			 * the last value is shown for both, which is obviously wrong */
-			GString *str = g_string_new (priv->city);
+			gchar *min, *max;
 
-			g_string_append (str, " : ");
-			g_string_append (str, weather_info_get_temp_min (report));
-			g_string_append (str, "/");
-			g_string_append (str, weather_info_get_temp_max (report));
+			min = gweather_info_get_temp_min (report);
+			max = gweather_info_get_temp_max (report);
+			comp_summary.value = g_strdup_printf ("%s : %s / %s", priv->city, min, max);
 
-			comp_summary.value = g_string_free (str, FALSE);
+			g_free (min); g_free (max);
 		} else {
-			comp_summary.value = g_strdup_printf ("%s : %s", priv->city, weather_info_get_temp (report));
-		}
-	} else {
-		gdouble tmin = 0.0, tmax = 0.0;
-		/* because weather_info_get_temp* uses one internal buffer, thus finally
-		 * the last value is shown for both, which is obviously wrong */
-		GString *str = g_string_new (priv->city);
+			gchar *temp;
 
-		g_string_append (str, " : ");
-		if (weather_info_get_value_temp_min (report, TEMP_UNIT_DEFAULT, &tmin) &&
-		    weather_info_get_value_temp_max (report, TEMP_UNIT_DEFAULT, &tmax) &&
-		    tmin != tmax) {
-			g_string_append (str, weather_info_get_temp_min (report));
-			g_string_append (str, "/");
-			g_string_append (str, weather_info_get_temp_max (report));
-		} else {
-			g_string_append (str, weather_info_get_temp (report));
-		}
+			temp = gweather_info_get_temp (report);
+			comp_summary.value = g_strdup_printf ("%s : %s", priv->city, temp);
 
-		comp_summary.value = g_string_free (str, FALSE);
+			g_free (temp);
+		}
 	}
 	comp_summary.altrep = NULL;
 	e_cal_component_set_summary (cal_comp, &comp_summary);
 	g_free ((gchar *) comp_summary.value);
 
-	tmp = weather_info_get_forecast (report);
-	comp_summary.value = weather_info_get_weather_summary (report);
+	tmp = gweather_info_get_forecast (report);
+	comp_summary.value = gweather_info_get_weather_summary (report);
 
 	description = g_new0 (ECalComponentText, 1);
-	description->value = g_strconcat (is_forecast ? "" : comp_summary.value, is_forecast ? "" : "\n", tmp ? _("Forecast") : "", tmp ? ":" : "", tmp && !is_forecast ? "\n" : "", tmp ? tmp : "", NULL);
+	{
+		GString *builder;
+
+		builder = g_string_new (NULL);
+
+		if (!is_forecast) {
+			g_string_append (builder, comp_summary.value);
+			g_string_append_c (builder, '\n');
+		}
+		if (tmp) {
+			g_string_append (builder, _("Forecast"));
+			g_string_append_c (builder, ':');
+			if (!is_forecast)
+				g_string_append_c (builder, '\n');
+			g_string_append (builder, tmp);
+		}
+
+		description->value = g_string_free (builder, FALSE);
+		g_free (tmp);
+	}
 	description->altrep = "";
 	text_list = g_slist_append (text_list, description);
 	e_cal_component_set_description_list (cal_comp, text_list);
