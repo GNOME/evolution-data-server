@@ -2628,7 +2628,6 @@ connect_to_server_process (CamelIMAPXServer *is,
 	password = camel_service_get_password (service);
 	provider = camel_service_get_provider (service);
 	settings = camel_service_get_settings (service);
-	g_return_val_if_fail (password != NULL, FALSE);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
