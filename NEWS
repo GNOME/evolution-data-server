@@ -1,3 +1,18 @@
+Evolution-Data-Server 3.4.0 2012-03-26
+--------------------------------------
+
+Miscellaneous Fixes:
+	* Various last-minute IMAPX crash fixes. (Matthew Barnes)
+
+Translations:
+	Runa Bhattacharjee (bn_IN)
+	Flemming Christensen (da)
+	Kristjan SCHMIDT (eo)
+	A S Alam (pa)
+	Krishnababu Krothapalli (te)
+	Nguyễn Thái Ngọc Duy (vi)
+
+
 Evolution-Data-Server 3.3.92 2012-03-19
 ---------------------------------------
 
