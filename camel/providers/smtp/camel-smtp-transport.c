@@ -1153,13 +1153,13 @@ smtp_helo (CamelSmtpTransport *transport,
 		token = respbuf + 4;
 
 		if (transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP) {
-			if (!strncmp (token, "8BITMIME", 8)) {
+			if (!g_ascii_strncasecmp (token, "8BITMIME", 8)) {
 				transport->flags |= CAMEL_SMTP_TRANSPORT_8BITMIME;
-			} else if (!strncmp (token, "ENHANCEDSTATUSCODES", 19)) {
+			} else if (!g_ascii_strncasecmp (token, "ENHANCEDSTATUSCODES", 19)) {
 				transport->flags |= CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES;
-			} else if (!strncmp (token, "STARTTLS", 8)) {
+			} else if (!g_ascii_strncasecmp (token, "STARTTLS", 8)) {
 				transport->flags |= CAMEL_SMTP_TRANSPORT_STARTTLS;
-			} else if (!strncmp (token, "AUTH", 4)) {
+			} else if (!g_ascii_strncasecmp (token, "AUTH", 4)) {
 				if (!transport->authtypes || transport->flags & CAMEL_SMTP_TRANSPORT_AUTH_EQUAL) {
 					/* Don't bother parsing any authtypes if we already have a list.
 					 * Some servers will list AUTH twice, once the standard way and
