@@ -354,6 +354,9 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 						_("Cannot transfer message to destination folder: %s"),
 						g_strerror (errno));
 					camel_message_info_free (info);
+					g_free (s_filename);
+					g_free (d_filename);
+					g_free (new_filename);
 					break;
 				}
 			} else {
