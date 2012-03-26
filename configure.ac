@@ -1091,6 +1091,11 @@ AC_MSG_RESULT([$use_gweather])
 if test "x$use_gweather" = "xyes"; then
 	PKG_CHECK_MODULES([LIBGWEATHER], [gweather-3.0 >= gweather_minimum_version],[],
 	[AC_MSG_ERROR([The weather calendar backend requires GWeather >= gweather_minimum_version. Alternatively, you may specify --disable-weather as a configure option to avoid building the backend.])])
+
+	dnl gweather-3.5 introduces API changes we do not yet support.
+	if `$PKG_CONFIG --atleast-version=3.5 gweather-3.0`; then
+		AC_MSG_ERROR([gweather-3.5 is not yet supported.  Install gweather-3.4 or specify --disable-weather as a configure option to avoid building the backend.])
+	fi
 fi
 AM_CONDITIONAL(ENABLE_WEATHER, [test $use_gweather = yes])
 
