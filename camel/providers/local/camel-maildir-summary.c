@@ -51,6 +51,7 @@
 #define CAMEL_MAILDIR_SUMMARY_VERSION (0x2000)
 
 static CamelMessageInfo *message_info_new_from_header (CamelFolderSummary *, struct _camel_header_raw *);
+static CamelMessageInfo *maildir_message_info_from_db (CamelFolderSummary *summary, CamelMIRecord *record);
 static void message_info_free (CamelFolderSummary *, CamelMessageInfo *mi);
 
 static gint maildir_summary_load (CamelLocalSummary *cls, gint forceindex, GError **error);
@@ -102,6 +103,7 @@ camel_maildir_summary_class_init (CamelMaildirSummaryClass *class)
 	folder_summary_class->message_info_size = sizeof (CamelMaildirMessageInfo);
 	folder_summary_class->content_info_size = sizeof (CamelMaildirMessageContentInfo);
 	folder_summary_class->message_info_new_from_header = message_info_new_from_header;
+	folder_summary_class->message_info_from_db = maildir_message_info_from_db;
 	folder_summary_class->message_info_free = message_info_free;
 	folder_summary_class->next_uid_string = maildir_summary_next_uid_string;
 
@@ -328,6 +330,22 @@ message_info_new_from_header (CamelFolderSummary *s,
 			camel_maildir_info_set_filename (mdi, camel_maildir_summary_info_to_name (mdi));
 			d(printf("Setting filename to %s\n", camel_maildir_info_filename(mi)));
 		}
+	}
+
+	return mi;
+}
+
+static CamelMessageInfo *
+maildir_message_info_from_db (CamelFolderSummary *summary,
+			      CamelMIRecord *record)
+{
+	CamelMessageInfo *mi;
+
+	mi = ((CamelFolderSummaryClass *) camel_maildir_summary_parent_class)->message_info_from_db (summary, record);
+	if (mi) {
+		CamelMaildirMessageInfo *mdi = (CamelMaildirMessageInfo *) mi;
+
+		camel_maildir_info_set_filename (mdi, camel_maildir_summary_info_to_name (mdi));
 	}
 
 	return mi;
