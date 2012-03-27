@@ -88,6 +88,8 @@ struct _EBookBackendGooglePrivate {
 	GHashTable *groups_by_id;
 	/* Mapping from (human readable) group name to group ID */
 	GHashTable *groups_by_name;
+	/* Mapping system_group_id to entry ID */
+	GHashTable *system_groups_by_id;
 	/* Time when the groups were last queried */
 	GTimeVal last_groups_update;
 
@@ -115,7 +117,7 @@ gboolean __e_book_backend_google_debug__;
 static void data_book_error_from_gdata_error (GError **dest_err, const GError *error);
 
 static GDataEntry *_gdata_entry_new_from_e_contact (EBookBackend *backend, EContact *contact);
-static gboolean _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EContact *contact);
+static gboolean _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EContact *contact, gboolean ensure_personal_group);
 
 static EContact *_e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry);
 static void _e_contact_add_gdata_entry_xml (EContact *contact, GDataEntry *entry);
@@ -912,21 +914,49 @@ sanitise_group_id (const gchar *group_id)
 	return id;
 }
 
+static const gchar *
+map_google_with_evo_group (const gchar *group_name,
+			   gboolean google_to_evo)
+{
+	struct _GroupsMap {
+		const gchar *google_id;
+		const gchar *evo_name;
+	} groups_map[] = {
+		{ GDATA_CONTACTS_GROUP_CONTACTS,  N_("Personal") }, /* System Group: My Contacts */
+		{ GDATA_CONTACTS_GROUP_FRIENDS,   N_("Friends")  }, /* System Group: Friends */
+		{ GDATA_CONTACTS_GROUP_FAMILY,    N_("Family")   }, /* System Group: Family */
+		{ GDATA_CONTACTS_GROUP_COWORKERS, N_("Coworkers") } /* System Group: Coworkers */
+	};
+	gint ii;
+
+	if (!group_name)
+		return NULL;
+
+	for (ii = 0; ii < G_N_ELEMENTS (groups_map); ii++) {
+		if (google_to_evo) {
+			if (g_str_equal (group_name, groups_map[ii].google_id))
+				return _(groups_map[ii].evo_name);
+		} else {
+			if (g_str_equal (group_name, _(groups_map[ii].evo_name)))
+				return groups_map[ii].google_id;
+		}
+	}
+
+	return NULL;
+}
+
 static gchar *
 sanitise_group_name (GDataEntry *group)
 {
 	const gchar *system_group_id = gdata_contacts_group_get_system_group_id (GDATA_CONTACTS_GROUP (group));
+	const gchar *evo_name;
+
+	evo_name = map_google_with_evo_group (system_group_id, TRUE);
 
 	if (system_group_id == NULL) {
 		return g_strdup (gdata_entry_get_title (group)); /* Non-system group */
-	} else if (strcmp (system_group_id, GDATA_CONTACTS_GROUP_CONTACTS) == 0) {
-		return g_strdup (_("Personal")); /* System Group: My Contacts */
-	} else if (strcmp (system_group_id, GDATA_CONTACTS_GROUP_FRIENDS) == 0) {
-		return g_strdup (_("Friends")); /* System Group: Friends */
-	} else if (strcmp (system_group_id, GDATA_CONTACTS_GROUP_FAMILY) == 0) {
-		return g_strdup (_("Family")); /* System Group: Family */
-	} else if (strcmp (system_group_id, GDATA_CONTACTS_GROUP_COWORKERS) == 0) {
-		return g_strdup (_("Coworkers")); /* System Group: Coworkers */
+	} else if (evo_name) {
+		return g_strdup (evo_name);
 	} else {
 		g_warning ("Unknown system group '%s' for group with ID '%s'.", system_group_id, gdata_entry_get_id (group));
 		return g_strdup (gdata_entry_get_title (group));
@@ -940,7 +970,7 @@ process_group (GDataEntry *entry,
                EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv;
-	const gchar *uid;
+	const gchar *uid, *system_group_id;
 	gchar *name;
 	gboolean is_deleted;
 
@@ -950,7 +980,26 @@ process_group (GDataEntry *entry,
 	uid = gdata_entry_get_id (entry);
 	name = sanitise_group_name (entry);
 
+	system_group_id = gdata_contacts_group_get_system_group_id (GDATA_CONTACTS_GROUP (entry));
 	is_deleted = gdata_contacts_group_is_deleted (GDATA_CONTACTS_GROUP (entry));
+
+	if (system_group_id) {
+		__debug__ ("Processing %ssystem group %s, %s", is_deleted ? "(deleted) " : "", system_group_id, uid);
+
+		if (is_deleted)
+			g_hash_table_remove (priv->system_groups_by_id, system_group_id);
+		else
+			g_hash_table_replace (priv->system_groups_by_id, g_strdup (system_group_id), sanitise_group_id (uid));
+
+		g_free (name);
+
+		/* use evolution's names for google's system groups */
+		name = g_strdup (map_google_with_evo_group (system_group_id, TRUE));
+
+		g_warn_if_fail (name != NULL);
+		if (!name)
+			name = g_strdup (system_group_id);
+	}
 
 	if (is_deleted) {
 		__debug__ ("Processing (deleting) group %s, %s", uid, name);
@@ -1039,8 +1088,18 @@ create_group (EBookBackend *backend,
 	EBookBackendGooglePrivate *priv;
 	GDataEntry *group, *new_group;
 	gchar *uid;
+	const gchar *system_group_id;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
+
+	system_group_id = map_google_with_evo_group (category_name, FALSE);
+	if (system_group_id) {
+		const gchar *group_entry_id = g_hash_table_lookup (priv->system_groups_by_id, system_group_id);
+
+		g_return_val_if_fail (group_entry_id != NULL, NULL);
+
+		return g_strdup (group_entry_id);
+	}
 
 	group = GDATA_ENTRY (gdata_contacts_group_new (NULL));
 
@@ -1110,7 +1169,8 @@ cache_refresh_if_needed (EBookBackend *backend)
 		get_groups (backend);
 		get_new_contacts (backend);
 		remaining_secs = priv->refresh_interval;
-	}
+	} else if (g_hash_table_size (priv->system_groups_by_id) == 0)
+		get_groups (backend);
 
 	if (install_timeout) {
 		__debug__ ("Installing timeout with %d seconds", remaining_secs);
@@ -1838,7 +1898,7 @@ e_book_backend_google_modify_contacts (EBookBackend *backend,
 	}
 
 	/* Update the old GDataEntry from the new contact */
-	_gdata_entry_update_from_e_contact (backend, entry, contact);
+	_gdata_entry_update_from_e_contact (backend, entry, contact, FALSE);
 
 	/* Output debug XML */
 	if (__e_book_backend_google_debug__) {
@@ -2255,6 +2315,7 @@ e_book_backend_google_open (EBookBackend *backend,
 	if (!priv->cancellables) {
 		priv->groups_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 		priv->groups_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+		priv->system_groups_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 		priv->cancellables = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 	}
 
@@ -2558,6 +2619,7 @@ e_book_backend_google_finalize (GObject *object)
 	if (priv->cancellables) {
 		g_hash_table_destroy (priv->groups_by_id);
 		g_hash_table_destroy (priv->groups_by_name);
+		g_hash_table_destroy (priv->system_groups_by_id);
 		g_hash_table_destroy (priv->cancellables);
 	}
 
@@ -2703,7 +2765,7 @@ _gdata_entry_new_from_e_contact (EBookBackend *backend,
 {
 	GDataEntry *entry = GDATA_ENTRY (gdata_contacts_contact_new (NULL));
 
-	if (_gdata_entry_update_from_e_contact (backend, entry, contact))
+	if (_gdata_entry_update_from_e_contact (backend, entry, contact, TRUE))
 		return entry;
 
 	g_object_unref (entry);
@@ -2738,7 +2800,8 @@ remove_anniversary (GDataContactsContact *contact)
 static gboolean
 _gdata_entry_update_from_e_contact (EBookBackend *backend,
                                     GDataEntry *entry,
-                                    EContact *contact)
+                                    EContact *contact,
+				    gboolean ensure_personal_group)
 {
 	EBookBackendGooglePrivate *priv;
 	GList *attributes, *iter, *category_names;
@@ -2996,13 +3059,24 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 
 	/* CATEGORIES */
 	for (category_names = e_contact_get (contact, E_CONTACT_CATEGORY_LIST); category_names != NULL; category_names = category_names->next) {
-		gchar *category_id;
+		gchar *category_id = NULL;
 		const gchar *category_name = category_names->data;
+		const gchar *system_group_id;
 
 		if (category_name == NULL || *category_name == '\0')
 			continue;
 
-		category_id = g_strdup (g_hash_table_lookup (priv->groups_by_name, category_name));
+		system_group_id = map_google_with_evo_group (category_name, FALSE);
+		if (system_group_id) {
+			const gchar *group_entry_id = g_hash_table_lookup (priv->system_groups_by_id, system_group_id);
+
+			g_warn_if_fail (group_entry_id != NULL);
+
+			category_id = g_strdup (group_entry_id);
+		}
+
+		if (category_id == NULL)
+			category_id = g_strdup (g_hash_table_lookup (priv->groups_by_name, category_name));
 		if (category_id == NULL) {
 			GError *error = NULL;
 
@@ -3015,7 +3089,21 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 		}
 
 		gdata_contacts_contact_add_group (GDATA_CONTACTS_CONTACT (entry), category_id);
+		if (g_strcmp0 (system_group_id, GDATA_CONTACTS_GROUP_CONTACTS) == 0)
+			ensure_personal_group = FALSE;
 		g_free (category_id);
+	}
+
+	/* to have contacts shown in My Contacts by default,
+	   see https://bugzilla.gnome.org/show_bug.cgi?id=663324
+	   for more details */
+	if (ensure_personal_group) {
+		const gchar *group_entry_id = g_hash_table_lookup (priv->system_groups_by_id, GDATA_CONTACTS_GROUP_CONTACTS);
+
+		g_warn_if_fail (group_entry_id != NULL);
+
+		if (group_entry_id)
+			gdata_contacts_contact_add_group (GDATA_CONTACTS_CONTACT (entry), group_entry_id);
 	}
 
 	/* PHOTO */
@@ -3249,9 +3337,10 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 		category_id = sanitise_group_id (itr->data);
 		category_name = g_hash_table_lookup (priv->groups_by_id, category_id);
 
-		if (category_name != NULL)
-			category_names = g_list_prepend (category_names, category_name);
-		else
+		if (category_name != NULL) {
+			if (g_list_find_custom (category_names, category_name, (GCompareFunc) g_strcmp0) == NULL)
+				category_names = g_list_prepend (category_names, category_name);
+		} else
 			g_warning ("Couldn't find name for category with ID '%s'.", category_id);
 
 		g_free (category_id);
