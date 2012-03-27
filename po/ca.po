@@ -15,9 +15,9 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-03-27 18:31+0000\n"
-"PO-Revision-Date: 2012-03-24 23:23+0100\n"
+"PO-Revision-Date: 2012-03-27 22:19+0200\n"
 "Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
-"Language-Team: Catalan <tradgnome@softcatala.org>\n"
+"Language-Team: català; valencià <tradgnome@softcatala.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bits\n"
@@ -738,10 +738,9 @@ msgstr "Llista"
 #. shown or not to other recipients - basically whether to use BCC field or CC
 #. message header when sending messages to this Contact list.
 #: ../addressbook/libebook/e-contact.c:281
-#, fuzzy
 #| msgid "List Show Addresses"
 msgid "List Shows Addresses"
-msgstr "Mostra la llista d'adreces"
+msgstr "La llista mostra les adreces"
 
 #: ../addressbook/libebook/e-contact.c:283
 msgid "Birth Date"
@@ -1104,22 +1103,19 @@ msgstr ""
 "El missatge d'error fou: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3584
-#, fuzzy
 #| msgid "The backend does not support bulk additions"
 msgid "CalDAV does not support bulk additions"
-msgstr "El rerefons no permet les addicions en bloc"
+msgstr "El CalDAV no permet les addicions en bloc"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3686
-#, fuzzy
 #| msgid "The backend does not support bulk modifications"
 msgid "CalDAV does not support bulk modifications"
-msgstr "El rerefons no permet les modificacions en bloc"
+msgstr "El CalDAV no permet les modificacions en bloc"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3854
-#, fuzzy
 #| msgid "The backend does not support bulk removals"
 msgid "CalDAV does not support bulk removals"
-msgstr "El rerefons no permet les supressions en bloc"
+msgstr "El CalDAV no permet les supressions en bloc"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4504
 msgid "Calendar doesn't support Free/Busy"
@@ -1530,8 +1526,8 @@ msgstr "«%s» espera que el primer argument sigui una cadena"
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
-"«%s» espera que el primer argument sigui una cadena de data/hora en el format "
-"ISO 8601"
+"«%s» espera que el primer argument sigui una cadena de data/hora en el "
+"format ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:178
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:537
@@ -1593,9 +1589,10 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"«%s» espera que el primer argument sigui «any» (qualsevol), «summary» (resum), "
-"«description» (descripció), «location» (ubicació), «attendee» (assistent), "
-"«organizer» (organitzador), o «classification» (classificació)"
+"«%s» espera que el primer argument sigui «any» (qualsevol), "
+"«summary» (resum), «description» (descripció), «location» (ubicació), "
+"«attendee» (assistent), «organizer» (organitzador), o "
+"«classification» (classificació)"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1086
 #, c-format
@@ -2181,8 +2178,8 @@ msgstr "No s'ha pogut crear un procés fill per a l'ajudant per bloquejar: %s"
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
 msgstr ""
-"No s'ha pogut bloquejar «%s»: hi ha un error en el protocol amb l'ajudant per "
-"bloquejar"
+"No s'ha pogut bloquejar «%s»: hi ha un error en el protocol amb l'ajudant "
+"per bloquejar"
 
 #: ../camel/camel-lock-client.c:227
 #, c-format
@@ -2408,8 +2405,8 @@ msgstr "El desafiament del servidor no és vàlid\n"
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
-"El desafiament del servidor contenia un element «Qualitat de la protecció» no "
-"vàlid"
+"El desafiament del servidor contenia un element «Qualitat de la protecció» "
+"no vàlid"
 
 #: ../camel/camel-sasl-digest-md5.c:902
 #, c-format
@@ -5936,8 +5933,8 @@ msgstr "Continua funcionant fins que es connecti com a mínim un client"
 
 #~ msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
-#~ "No es poden moure els missatges de la carpeta «%s» a la carpeta «%s»: error "
-#~ "desconegut"
+#~ "No es poden moure els missatges de la carpeta «%s» a la carpeta «%s»: "
+#~ "error desconegut"
 
 #~ msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
@@ -5946,8 +5943,8 @@ msgstr "Continua funcionant fins que es connecti com a mínim un client"
 
 #~ msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
 #~ msgstr ""
-#~ "No es poden moure els missatges de la carpeta «%s» a la carpeta «%s»: ordre "
-#~ "incorrecta"
+#~ "No es poden moure els missatges de la carpeta «%s» a la carpeta «%s»: "
+#~ "ordre incorrecta"
 
 #~ msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
 #~ msgstr ""
@@ -5992,7 +5989,8 @@ msgstr "Continua funcionant fins que es connecti com a mínim un client"
 
 #~ msgid "Cannot get folder '%s' on IMAP server %s: Unknown error"
 #~ msgstr ""
-#~ "No s'ha pogut obtenir la carpeta «%s» al servidor IMAP %s: error desconegut"
+#~ "No s'ha pogut obtenir la carpeta «%s» al servidor IMAP %s: error "
+#~ "desconegut"
 
 #~ msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
 #~ msgstr ""
@@ -6022,16 +6020,16 @@ msgstr "Continua funcionant fins que es connecti com a mínim un client"
 
 #~ msgid "Cannot rename folder '%s' to '%s': Special folder"
 #~ msgstr ""
-#~ "No s'ha pogut canviar el nom de la carpeta «%s» com a «%s»: és una carpeta "
-#~ "especial"
+#~ "No s'ha pogut canviar el nom de la carpeta «%s» com a «%s»: és una "
+#~ "carpeta especial"
 
 #~ msgid "Cannot rename IMAP folders in offline mode."
 #~ msgstr "No es pot canviar el nom d'una carpeta IMAP en mode fora de línia."
 
 #~ msgid "Cannot rename folder '%s' to '%s': Invalid mailbox name"
 #~ msgstr ""
-#~ "No s'ha pogut canviar el nom de la carpeta «%s» a «%s»: el nom de la bústia "
-#~ "no és vàlid"
+#~ "No s'ha pogut canviar el nom de la carpeta «%s» a «%s»: el nom de la "
+#~ "bústia no és vàlid"
 
 #~ msgid "Cannot rename folder '%s' to '%s': Bad command"
 #~ msgstr ""
@@ -6040,8 +6038,8 @@ msgstr "Continua funcionant fins que es connecti com a mínim un client"
 
 #~ msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
 #~ msgstr ""
-#~ "No es pot obtenir informació de %s per al patró «%s» en el servidor IMAP %"
-#~ "s: %s"
+#~ "No es pot obtenir informació de %s per al patró «%s» en el servidor IMAP "
+#~ "%s: %s"
 
 #~ msgid "Cannot subscribe to IMAP folders in offline mode."
 #~ msgstr "No us podeu subscriure a carpetes IMAP en mode fora de línia."
