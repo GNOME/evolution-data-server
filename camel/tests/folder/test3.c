@@ -18,7 +18,7 @@ test_folder_search_sub (CamelFolder *folder,
 	gint i;
 	GError *error = NULL;
 
-	uids = camel_folder_search_by_expression (folder, expr, &error);
+	uids = camel_folder_search_by_expression (folder, expr, NULL, &error);
 	check (uids != NULL);
 	check_msg (uids->len == expected, "search %s expected %d got %d", expr, expected, uids->len);
 	check_msg (error == NULL, "%s", error->message);

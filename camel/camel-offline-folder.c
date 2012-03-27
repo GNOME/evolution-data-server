@@ -207,7 +207,7 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 		camel_folder_get_full_name (folder));
 
 	if (expression)
-		uids = camel_folder_search_by_expression (folder, expression, NULL);
+		uids = camel_folder_search_by_expression (folder, expression, cancellable, NULL);
 	else
 		uids = camel_folder_get_uids (folder);
 

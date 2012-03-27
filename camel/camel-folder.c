@@ -2627,6 +2627,7 @@ camel_folder_has_search_capability (CamelFolder *folder)
  * camel_folder_search_by_expression:
  * @folder: a #CamelFolder
  * @expr: a search expression
+ * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
  *
  * Searches the folder for messages matching the given search expression.
@@ -2637,6 +2638,7 @@ camel_folder_has_search_capability (CamelFolder *folder)
 GPtrArray *
 camel_folder_search_by_expression (CamelFolder *folder,
                                    const gchar *expression,
+				   GCancellable *cancellable,
                                    GError **error)
 {
 	CamelFolderClass *class;
@@ -2650,7 +2652,7 @@ camel_folder_search_by_expression (CamelFolder *folder,
 
 	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
 
-	matches = class->search_by_expression (folder, expression, error);
+	matches = class->search_by_expression (folder, expression, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, search_by_expression, matches != NULL, error);
 
 	return matches;
@@ -2660,6 +2662,7 @@ camel_folder_search_by_expression (CamelFolder *folder,
  * camel_folder_count_by_expression:
  * @folder: a #CamelFolder
  * @expression: a search expression
+ * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
  *
  * Searches the folder for count of messages matching the given search expression.
@@ -2671,6 +2674,7 @@ camel_folder_search_by_expression (CamelFolder *folder,
 guint32
 camel_folder_count_by_expression (CamelFolder *folder,
                                   const gchar *expression,
+				  GCancellable *cancellable,
                                   GError **error)
 {
 	CamelFolderClass *class;
@@ -2683,7 +2687,7 @@ camel_folder_count_by_expression (CamelFolder *folder,
 
 	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
 
-	return class->count_by_expression (folder, expression, error);
+	return class->count_by_expression (folder, expression, cancellable, error);
 }
 
 /**
@@ -2691,6 +2695,7 @@ camel_folder_count_by_expression (CamelFolder *folder,
  * @folder: a #CamelFolder
  * @expr: search expression
  * @uids: array of uid's to match against.
+ * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
  *
  * Search a subset of uid's for an expression match.
@@ -2702,6 +2707,7 @@ GPtrArray *
 camel_folder_search_by_uids (CamelFolder *folder,
                              const gchar *expr,
                              GPtrArray *uids,
+			     GCancellable *cancellable,
                              GError **error)
 {
 	CamelFolderClass *class;
@@ -2715,7 +2721,7 @@ camel_folder_search_by_uids (CamelFolder *folder,
 
 	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
 
-	matches = class->search_by_uids (folder, expr, uids, error);
+	matches = class->search_by_uids (folder, expr, uids, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, search_by_uids, matches != NULL, error);
 
 	return matches;

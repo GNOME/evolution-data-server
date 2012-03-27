@@ -71,7 +71,7 @@ worker (gpointer d)
 		sub = g_strdup_printf ("(match-all (header-contains \"subject\" \"message %08x subject\"))", id+i);
 
 		push ("searching for message %d\n\tusing: %s", id+i, sub);
-		res = camel_folder_search_by_expression (info->folder, sub, &error);
+		res = camel_folder_search_by_expression (info->folder, sub, NULL, &error);
 		check_msg (error == NULL, "%s", error->message);
 		check_msg (res->len == 1, "res->len = %d", res->len);
 		g_clear_error (&error);

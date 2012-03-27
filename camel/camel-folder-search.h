@@ -159,11 +159,9 @@ void camel_folder_search_construct (CamelFolderSearch *search);
 void camel_folder_search_set_folder (CamelFolderSearch *search, CamelFolder *folder);
 void camel_folder_search_set_summary (CamelFolderSearch *search, GPtrArray *summary);
 void camel_folder_search_set_body_index (CamelFolderSearch *search, CamelIndex *body_index);
-/* this interface is deprecated */
-GPtrArray *camel_folder_search_execute_expression (CamelFolderSearch *search, const gchar *expr, GError **error);
 
-GPtrArray *camel_folder_search_search (CamelFolderSearch *search, const gchar *expr, GPtrArray *uids, GError **error);
-guint32 camel_folder_search_count (CamelFolderSearch *search, const gchar *expr, GError **error);
+GPtrArray *camel_folder_search_search (CamelFolderSearch *search, const gchar *expr, GPtrArray *uids, GCancellable *cancellable, GError **error);
+guint32 camel_folder_search_count (CamelFolderSearch *search, const gchar *expr, GCancellable *cancellable, GError **error);
 void camel_folder_search_free_result (CamelFolderSearch *search, GPtrArray *);
 
 time_t camel_folder_search_util_add_months (time_t t, gint months);

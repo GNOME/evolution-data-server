@@ -378,7 +378,7 @@ folder_changed_change (CamelVeeFolder *vf,
 	/* Find newly added that match */
 	if (changes->uid_added->len > 0) {
 		dd (printf (" Searching for added matches '%s'\n", vf->expression));
-		matches_added = camel_folder_search_by_uids (sub, vf->expression, changes->uid_added, NULL);
+		matches_added = camel_folder_search_by_uids (sub, vf->expression, changes->uid_added, cancellable, NULL);
 	}
 
 	/* TODO:
@@ -413,9 +413,9 @@ folder_changed_change (CamelVeeFolder *vf,
 		}
 
 		if (changed->len)
-			matches_changed = camel_folder_search_by_uids (sub, vf->expression, changed, NULL);
+			matches_changed = camel_folder_search_by_uids (sub, vf->expression, changed, cancellable, NULL);
 		if (always_changed && always_changed->len)
-			present = camel_folder_search_by_uids (sub, vf->expression, always_changed, NULL);
+			present = camel_folder_search_by_uids (sub, vf->expression, always_changed, cancellable, NULL);
 	}
 
 	camel_vee_folder_lock (vf, CAMEL_VEE_FOLDER_SUMMARY_LOCK);
@@ -1082,6 +1082,7 @@ vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
 static GPtrArray *
 vee_folder_search_by_expression (CamelFolder *folder,
                                  const gchar *expression,
+				 GCancellable *cancellable,
                                  GError **error)
 {
 	GList *node;
@@ -1104,7 +1105,7 @@ vee_folder_search_by_expression (CamelFolder *folder,
 	}
 
 	node = p->folders;
-	while (node) {
+	while (node && !g_cancellable_is_cancelled (cancellable)) {
 		CamelFolder *f = node->data;
 		gint i;
 		gchar hash[8];
@@ -1112,7 +1113,7 @@ vee_folder_search_by_expression (CamelFolder *folder,
 		/* make sure we only search each folder once - for unmatched folder to work right */
 		if (g_hash_table_lookup (searched, f) == NULL) {
 			camel_vee_folder_hash_folder (f, hash);
-			matches = camel_folder_search_by_expression (f, expr, NULL);
+			matches = camel_folder_search_by_expression (f, expr, cancellable, NULL);
 			if (matches) {
 				for (i = 0; i < matches->len; i++) {
 					gchar *uid = matches->pdata[i], *vuid;
@@ -1143,6 +1144,7 @@ static GPtrArray *
 vee_folder_search_by_uids (CamelFolder *folder,
                            const gchar *expression,
                            GPtrArray *uids,
+			   GCancellable *cancellable,
                            GError **error)
 {
 	GList *node;
@@ -1159,7 +1161,7 @@ vee_folder_search_by_uids (CamelFolder *folder,
 
 	expr = g_strdup_printf ("(and %s %s)", vf->expression ? vf->expression : "", expression);
 	node = p->folders;
-	while (node) {
+	while (node && !g_cancellable_is_cancelled (cancellable)) {
 		CamelFolder *f = node->data;
 		gint i;
 		gchar hash[8];
@@ -1177,7 +1179,7 @@ vee_folder_search_by_uids (CamelFolder *folder,
 					g_ptr_array_add (folder_uids, uid + 8);
 			}
 			if (folder_uids->len > 0) {
-				matches = camel_folder_search_by_uids (f, expr, folder_uids, error);
+				matches = camel_folder_search_by_uids (f, expr, folder_uids, cancellable, error);
 				if (matches) {
 					for (i = 0; i < matches->len; i++) {
 						gchar *uid = matches->pdata[i], *vuid;
@@ -1208,6 +1210,7 @@ vee_folder_search_by_uids (CamelFolder *folder,
 static guint32
 vee_folder_count_by_expression (CamelFolder *folder,
                                 const gchar *expression,
+				GCancellable *cancellable,
                                 GError **error)
 {
 	GList *node;
@@ -1226,12 +1229,12 @@ vee_folder_count_by_expression (CamelFolder *folder,
 		expr = g_strdup (expression);
 
 	node = p->folders;
-	while (node) {
+	while (node && !g_cancellable_is_cancelled (cancellable)) {
 		CamelFolder *f = node->data;
 
 		/* make sure we only search each folder once - for unmatched folder to work right */
 		if (g_hash_table_lookup (searched, f) == NULL) {
-			count += camel_folder_count_by_expression (f, expr, NULL);
+			count += camel_folder_count_by_expression (f, expr, cancellable, NULL);
 			g_hash_table_insert (searched, f, f);
 		}
 		node = g_list_next (node);
@@ -1740,7 +1743,7 @@ vee_folder_rebuild_folder (CamelVeeFolder *vee_folder,
 			/* We take this to mean the results have not been cached.
 			 * XXX: It will also trigger if the result set is empty. */
 			match == NULL) {
-			match = camel_folder_search_by_expression (source, vee_folder->expression, error);
+			match = camel_folder_search_by_expression (source, vee_folder->expression, NULL, error);
 			if (match == NULL) /* Search failed */
 				return 0;
 			rebuilded = TRUE;

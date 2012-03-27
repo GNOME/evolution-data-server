@@ -228,6 +228,7 @@ local_folder_constructed (GObject *object)
 static GPtrArray *
 local_folder_search_by_expression (CamelFolder *folder,
                                    const gchar *expression,
+				   GCancellable *cancellable,
                                    GError **error)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER (folder);
@@ -243,7 +244,7 @@ local_folder_search_by_expression (CamelFolder *folder,
 		camel_folder_search_set_body_index (local_folder->search, local_folder->index);
 	else
 		camel_folder_search_set_body_index (local_folder->search, NULL);
-	matches = camel_folder_search_search (local_folder->search, expression, NULL, error);
+	matches = camel_folder_search_search (local_folder->search, expression, NULL, cancellable, error);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK (folder, search_lock);
 
@@ -254,6 +255,7 @@ static GPtrArray *
 local_folder_search_by_uids (CamelFolder *folder,
                              const gchar *expression,
                              GPtrArray *uids,
+			     GCancellable *cancellable,
                              GError **error)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER (folder);
@@ -272,7 +274,7 @@ local_folder_search_by_uids (CamelFolder *folder,
 		camel_folder_search_set_body_index (local_folder->search, local_folder->index);
 	else
 		camel_folder_search_set_body_index (local_folder->search, NULL);
-	matches = camel_folder_search_search (local_folder->search, expression, uids, error);
+	matches = camel_folder_search_search (local_folder->search, expression, uids, cancellable, error);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK (folder, search_lock);
 
@@ -340,6 +342,7 @@ local_folder_rename (CamelFolder *folder,
 static guint32
 local_folder_count_by_expression (CamelFolder *folder,
                                   const gchar *expression,
+				  GCancellable *cancellable,
                                   GError **error)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER (folder);
@@ -355,7 +358,7 @@ local_folder_count_by_expression (CamelFolder *folder,
 		camel_folder_search_set_body_index (local_folder->search, local_folder->index);
 	else
 		camel_folder_search_set_body_index (local_folder->search, NULL);
-	matches = camel_folder_search_count (local_folder->search, expression, error);
+	matches = camel_folder_search_count (local_folder->search, expression, cancellable, error);
 
 	CAMEL_LOCAL_FOLDER_UNLOCK (folder, search_lock);
 

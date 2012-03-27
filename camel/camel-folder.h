@@ -185,10 +185,12 @@ struct _CamelFolderClass {
 	gboolean	(*has_search_capability)(CamelFolder *folder);
 	GPtrArray *	(*search_by_expression)	(CamelFolder *folder,
 						 const gchar *expression,
+						 GCancellable *cancellable,
 						 GError **error);
 	GPtrArray *	(*search_by_uids)	(CamelFolder *folder,
 						 const gchar *expression,
 						 GPtrArray *uids,
+						 GCancellable *cancellable,
 						 GError **error);
 	void		(*search_free)		(CamelFolder *folder,
 						 GPtrArray *result);
@@ -207,6 +209,7 @@ struct _CamelFolderClass {
 	gboolean	(*is_frozen)		(CamelFolder *folder);
 	guint32		(*count_by_expression)	(CamelFolder *folder,
 						 const gchar *expression,
+						 GCancellable *cancellable,
 						 GError **error);
 	GPtrArray *	(*get_uncached_uids)	(CamelFolder *folder,
 						 GPtrArray *uids,
@@ -463,15 +466,18 @@ gboolean	camel_folder_has_search_capability
 GPtrArray *	camel_folder_search_by_expression
 						(CamelFolder *folder,
 						 const gchar *expr,
+						 GCancellable *cancellable,
 						 GError **error);
 GPtrArray *	camel_folder_search_by_uids	(CamelFolder *folder,
 						 const gchar *expr,
 						 GPtrArray *uids,
+						 GCancellable *cancellable,
 						 GError **error);
 void		camel_folder_search_free	(CamelFolder *folder,
 						 GPtrArray *result);
 guint32		camel_folder_count_by_expression (CamelFolder *folder,
 						 const gchar *expression,
+						 GCancellable *cancellable,
 						 GError **error);
 CamelMessageInfo *
 		camel_folder_get_message_info	(CamelFolder *folder,

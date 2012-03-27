@@ -330,6 +330,7 @@ static GPtrArray *
 imapx_search_by_uids (CamelFolder *folder,
                       const gchar *expression,
                       GPtrArray *uids,
+		      GCancellable *cancellable,
                       GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
@@ -341,7 +342,7 @@ imapx_search_by_uids (CamelFolder *folder,
 	g_mutex_lock (ifolder->search_lock);
 
 	camel_folder_search_set_folder (ifolder->search, folder);
-	matches = camel_folder_search_search (ifolder->search, expression, uids, error);
+	matches = camel_folder_search_search (ifolder->search, expression, uids, cancellable, error);
 
 	g_mutex_unlock (ifolder->search_lock);
 
@@ -351,6 +352,7 @@ imapx_search_by_uids (CamelFolder *folder,
 static guint32
 imapx_count_by_expression (CamelFolder *folder,
                            const gchar *expression,
+			   GCancellable *cancellable,
                            GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
@@ -359,7 +361,7 @@ imapx_count_by_expression (CamelFolder *folder,
 	g_mutex_lock (ifolder->search_lock);
 
 	camel_folder_search_set_folder (ifolder->search, folder);
-	matches = camel_folder_search_count (ifolder->search, expression, error);
+	matches = camel_folder_search_count (ifolder->search, expression, cancellable, error);
 
 	g_mutex_unlock (ifolder->search_lock);
 
@@ -369,6 +371,7 @@ imapx_count_by_expression (CamelFolder *folder,
 static GPtrArray *
 imapx_search_by_expression (CamelFolder *folder,
                             const gchar *expression,
+			    GCancellable *cancellable,
                             GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
@@ -377,7 +380,7 @@ imapx_search_by_expression (CamelFolder *folder,
 	g_mutex_lock (ifolder->search_lock);
 
 	camel_folder_search_set_folder (ifolder->search, folder);
-	matches = camel_folder_search_search (ifolder->search, expression, NULL, error);
+	matches = camel_folder_search_search (ifolder->search, expression, NULL, cancellable, error);
 
 	g_mutex_unlock (ifolder->search_lock);
 

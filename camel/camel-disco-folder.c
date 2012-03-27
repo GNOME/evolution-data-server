@@ -417,7 +417,7 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 		camel_folder_get_full_name (folder));
 
 	if (expression)
-		uids = camel_folder_search_by_expression (folder, expression, error);
+		uids = camel_folder_search_by_expression (folder, expression, cancellable, error);
 	else
 		uids = camel_folder_get_uids (folder);
 

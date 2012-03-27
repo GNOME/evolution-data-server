@@ -114,9 +114,9 @@ static gboolean	imap_transfer_offline		(CamelFolder *source,
 						 GError **error);
 
 /* searching */
-static GPtrArray *imap_search_by_expression (CamelFolder *folder, const gchar *expression, GError **error);
-static guint32 imap_count_by_expression (CamelFolder *folder, const gchar *expression, GError **error);
-static GPtrArray *imap_search_by_uids	    (CamelFolder *folder, const gchar *expression, GPtrArray *uids, GError **error);
+static GPtrArray *imap_search_by_expression (CamelFolder *folder, const gchar *expression, GCancellable *cancellable, GError **error);
+static guint32 imap_count_by_expression (CamelFolder *folder, const gchar *expression, GCancellable *cancellable, GError **error);
+static GPtrArray *imap_search_by_uids	    (CamelFolder *folder, const gchar *expression, GPtrArray *uids, GCancellable *cancellable, GError **error);
 static void       imap_search_free          (CamelFolder *folder, GPtrArray *uids);
 
 static void imap_thaw (CamelFolder *folder);
@@ -3074,6 +3074,7 @@ camel_imap_transfer_resyncing (CamelFolder *source,
 static GPtrArray *
 imap_search_by_expression (CamelFolder *folder,
                            const gchar *expression,
+			   GCancellable *cancellable,
                            GError **error)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
@@ -3085,7 +3086,7 @@ imap_search_by_expression (CamelFolder *folder,
 	CAMEL_IMAP_FOLDER_LOCK (folder, search_lock);
 
 	camel_folder_search_set_folder (imap_folder->search, folder);
-	matches = camel_folder_search_search (imap_folder->search, expression, NULL, error);
+	matches = camel_folder_search_search (imap_folder->search, expression, NULL, cancellable, error);
 
 	CAMEL_IMAP_FOLDER_UNLOCK (folder, search_lock);
 
@@ -3095,6 +3096,7 @@ imap_search_by_expression (CamelFolder *folder,
 static guint32
 imap_count_by_expression (CamelFolder *folder,
                           const gchar *expression,
+			  GCancellable *cancellable,
                           GError **error)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
@@ -3106,7 +3108,7 @@ imap_count_by_expression (CamelFolder *folder,
 	CAMEL_IMAP_FOLDER_LOCK (folder, search_lock);
 
 	camel_folder_search_set_folder (imap_folder->search, folder);
-	matches = camel_folder_search_count (imap_folder->search, expression, error);
+	matches = camel_folder_search_count (imap_folder->search, expression, cancellable, error);
 
 	CAMEL_IMAP_FOLDER_UNLOCK (folder, search_lock);
 
@@ -3117,6 +3119,7 @@ static GPtrArray *
 imap_search_by_uids (CamelFolder *folder,
                      const gchar *expression,
                      GPtrArray *uids,
+		     GCancellable *cancellable,
                      GError **error)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
@@ -3128,7 +3131,7 @@ imap_search_by_uids (CamelFolder *folder,
 	CAMEL_IMAP_FOLDER_LOCK (folder, search_lock);
 
 	camel_folder_search_set_folder (imap_folder->search, folder);
-	matches = camel_folder_search_search (imap_folder->search, expression, uids, error);
+	matches = camel_folder_search_search (imap_folder->search, expression, uids, cancellable, error);
 
 	CAMEL_IMAP_FOLDER_UNLOCK (folder, search_lock);
 

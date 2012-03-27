@@ -398,6 +398,7 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 static GPtrArray *
 nntp_folder_search_by_expression (CamelFolder *folder,
                                   const gchar *expression,
+				  GCancellable *cancellable,
                                   GError **error)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
@@ -409,7 +410,7 @@ nntp_folder_search_by_expression (CamelFolder *folder,
 		nntp_folder->search = camel_folder_search_new ();
 
 	camel_folder_search_set_folder (nntp_folder->search, folder);
-	matches = camel_folder_search_search (nntp_folder->search, expression, NULL, error);
+	matches = camel_folder_search_search (nntp_folder->search, expression, NULL, cancellable, error);
 
 	CAMEL_NNTP_FOLDER_UNLOCK (nntp_folder, search_lock);
 
@@ -419,6 +420,7 @@ nntp_folder_search_by_expression (CamelFolder *folder,
 static guint32
 nntp_folder_count_by_expression (CamelFolder *folder,
                                  const gchar *expression,
+				 GCancellable *cancellable,
                                  GError **error)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
@@ -430,7 +432,7 @@ nntp_folder_count_by_expression (CamelFolder *folder,
 		nntp_folder->search = camel_folder_search_new ();
 
 	camel_folder_search_set_folder (nntp_folder->search, folder);
-	count = camel_folder_search_count (nntp_folder->search, expression, error);
+	count = camel_folder_search_count (nntp_folder->search, expression, cancellable, error);
 
 	CAMEL_NNTP_FOLDER_UNLOCK (nntp_folder, search_lock);
 
@@ -441,6 +443,7 @@ static GPtrArray *
 nntp_folder_search_by_uids (CamelFolder *folder,
                             const gchar *expression,
                             GPtrArray *uids,
+			    GCancellable *cancellable,
                             GError **error)
 {
 	CamelNNTPFolder *nntp_folder = (CamelNNTPFolder *) folder;
@@ -455,7 +458,7 @@ nntp_folder_search_by_uids (CamelFolder *folder,
 		nntp_folder->search = camel_folder_search_new ();
 
 	camel_folder_search_set_folder (nntp_folder->search, folder);
-	matches = camel_folder_search_search (nntp_folder->search, expression, uids, error);
+	matches = camel_folder_search_search (nntp_folder->search, expression, uids, cancellable, error);
 
 	CAMEL_NNTP_FOLDER_UNLOCK (folder, search_lock);
 
