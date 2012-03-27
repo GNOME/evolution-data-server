@@ -3248,12 +3248,13 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 
 		category_id = sanitise_group_id (itr->data);
 		category_name = g_hash_table_lookup (priv->groups_by_id, category_id);
-		g_free (category_id);
 
 		if (category_name != NULL)
 			category_names = g_list_prepend (category_names, category_name);
 		else
 			g_warning ("Couldn't find name for category with ID '%s'.", category_id);
+
+		g_free (category_id);
 	}
 
 	e_contact_set (E_CONTACT (vcard), E_CONTACT_CATEGORY_LIST, category_names);
