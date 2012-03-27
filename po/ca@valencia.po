@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-27 22:19+0200\n"
-"PO-Revision-Date: 2012-03-27 22:19+0200\n"
+"POT-Creation-Date: 2012-03-27 22:20+0200\n"
+"PO-Revision-Date: 2012-03-27 22:20+0200\n"
 "Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
 "Language-Team: català; valencià <tradgnome@softcatala.org>\n"
 "Language: ca-XV\n"
@@ -737,7 +737,6 @@ msgstr "Llista"
 #. shown or not to other recipients - basically whether to use BCC field or CC
 #. message header when sending messages to this Contact list.
 #: ../addressbook/libebook/e-contact.c:281
-#, fuzzy
 msgid "List Show Addresses"
 msgstr "La llista mostra les adreces"
 
