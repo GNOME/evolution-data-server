@@ -3530,8 +3530,8 @@ msgstr "ସନ୍ଦେଶଗୁଡ଼ିକୁ  କାଢ଼ିବା ସମୟ
 #| msgid "Fetching summary information for new messages in %s"
 msgid "Fetching summary information for %d message in %s"
 msgid_plural "Fetching summary information for %d messages in %s"
-msgstr[0] "%s ରେ %d ସନ୍ଦେଶପାଇଁ ସୂଚନା ସାରାଂଶକୁ ଆନୟନ କରିଅଛି"
-msgstr[1] "%s ରେ %d ସନ୍ଦେଶଗୁଡ଼ିକ ପାଇଁ ସୂଚନା ସାରାଂଶକୁ ଆନୟନ କରିଅଛି"
+msgstr[0] "%d ସନ୍ଦେଶପାଇଁ %s ରେ ସୂଚନା ସାରାଂଶକୁ ଆନୟନ କରିଅଛି"
+msgstr[1] "%d ସନ୍ଦେଶଗୁଡ଼ିକ ପାଇଁ %s ରେ ସୂଚନା ସାରାଂଶକୁ ଆନୟନ କରିଅଛି"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4332
 #: ../camel/providers/imapx/camel-imapx-server.c:4366
