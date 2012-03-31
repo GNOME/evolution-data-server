@@ -20,6 +20,8 @@
  * Author: Sivaiah Nallagatla <snallagatla@novell.com>
  */
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #ifndef E_OFFLINE_LISTENER_H
 #define E_OFFLINE_LISTENER_H
 
@@ -98,3 +100,6 @@ EOfflineListenerState
 G_END_DECLS
 
 #endif /* E_OFFLINE_LISTENER_H */
+
+#endif /* EDS_DISABLE_DEPRECATED */
+

@@ -22,19 +22,15 @@
 
 /**
  * SECTION: e-offline-listener
- * @short_description: Tracks Evolution's online/offline state
+ * @short_description: (Deprecated) Tracks Evolution's online/offline state
  *
  * An #EOfflineListener basically just tracks Evolution's online/offline
  * state and emits a #EOfflineListener:changed signal when a state change
  * is detected.
  *
- * This class is highly Evolution-centric and probably not suitable for
- * general purpose use.  Frankly it should be deprecated and replaced
- * with a D-Bus method.
+ * This class is highly Evolution-centric and for that reason has been
+ * deprecated.  Use #GNetworkMonitor instead.
  **/
-
-/*Note : Copied from src/offline_listener.c . This should be replaced */
-/* with network manager code */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
