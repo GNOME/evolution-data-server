@@ -22,7 +22,6 @@
 #include <libxml/parser.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
-#include <gconf/gconf-client.h>
 #include "e-data-server-util.h"
 #include "e-categories.h"
 
@@ -410,65 +409,6 @@ exit:
 }
 
 static void
-migrate_old_icon_file (gpointer key,
-                       gpointer value,
-                       gpointer user_data)
-{
-	CategoryInfo *info = value;
-	gchar *basename;
-
-	if (info->icon_file == NULL)
-		return;
-
-	/* We can't be sure where the old icon files were stored, but
-	 * a good guess is (E_DATA_SERVER_IMAGESDIR "-2.x").  Convert
-	 * any such paths to just E_DATA_SERVER_IMAGESDIR. */
-	if (g_str_has_prefix (info->icon_file, E_DATA_SERVER_IMAGESDIR)) {
-		basename = g_path_get_basename (info->icon_file);
-		g_free (info->icon_file);
-		info->icon_file = g_build_filename (
-			E_DATA_SERVER_IMAGESDIR, basename, NULL);
-		g_free (basename);
-	}
-}
-
-static gboolean
-migrate_old_categories (void)
-{
-	/* Try migrating old category settings from GConf to the new
-	 * category XML file.  If successful, unset the old GConf key
-	 * so that this is a one-time-only operation. */
-
-	const gchar *key = "/apps/evolution/general/category_master_list";
-
-	GConfClient *client;
-	gchar *string;
-	gint n_added = 0;
-
-	client = gconf_client_get_default ();
-	string = gconf_client_get_string (client, key, NULL);
-	if (string == NULL || *string == '\0')
-		goto exit;
-
-	d(g_debug ("Loading categories from GConf key \"%s\"", key));
-
-	n_added = parse_categories (string, strlen (string));
-	if (n_added == 0)
-		goto exit;
-
-	/* Default icon files are now in an unversioned directory. */
-	g_hash_table_foreach (categories_table, migrate_old_icon_file, NULL);
-
-	gconf_client_unset (client, key, NULL);
-
-exit:
-	g_object_unref (client);
-	g_free (string);
-
-	return n_added;
-}
-
-static void
 load_default_categories (void)
 {
 	DefaultCategory *cat_info = default_categories;
@@ -537,13 +477,6 @@ initialize_categories (void)
 	if (n_added > 0) {
 		d(g_debug ("Loaded %d categories", n_added));
 		save_is_pending = FALSE;
-		return;
-	}
-
-	n_added = migrate_old_categories ();
-	if (n_added > 0) {
-		d(g_debug ("Loaded %d categories", n_added));
-		save_categories ();
 		return;
 	}
 
