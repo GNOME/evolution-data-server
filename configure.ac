@@ -38,13 +38,15 @@ m4_define([gtk_minimum_version], [3.2])
 m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([gcr_minimum_version], [3.4])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
-m4_define([goa_minimum_version], [3.2])
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libsoup_minimum_version], [2.38.1])
 m4_define([libgdata_minimum_version], [0.10])
 m4_define([oauth_minimum_version], [0.9.4])
 m4_define([sqlite_minimum_version], [3.5])
 m4_define([libical_minimum_version], [0.43])
+
+dnl Optional Packages
+m4_define([goa_minimum_version], [3.2])
 m4_define([gweather_minimum_version], [2.90.0])
 
 AC_SUBST([BASE_VERSION],[base_version])
@@ -403,6 +405,11 @@ if test "x$enable_goa" = xyes; then
 	fi
 fi
 AM_CONDITIONAL(HAVE_GOA, [test x$enable_goa = xyes])
+
+dnl GoaPasswordBased was introduced in version 3.5.
+if `$PKG_CONFIG --atleast-version=3.5 goa-1.0`; then
+	AC_DEFINE(HAVE_GOA_PASSWORD_BASED,1,[Have GoaPasswordBased in goa-1.0])
+fi
 
 if test x$os_win32 = xno; then
 	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
@@ -1655,6 +1662,8 @@ libedataserver/eds-version.h
 libedataserver/libedataserver.pc
 libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
+modules/Makefile
+modules/online-accounts/Makefile
 private/Makefile
 services/Makefile
 services/evolution-addressbook-factory/Makefile
