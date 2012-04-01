@@ -53,6 +53,8 @@ enum {
 	BUS_ACQUIRED,
 	BUS_NAME_ACQUIRED,
 	BUS_NAME_LOST,
+	RUN_SERVER,
+	QUIT_SERVER,
 	LAST_SIGNAL
 };
 
@@ -164,6 +166,36 @@ dbus_server_bus_name_lost (EDBusServer *server,
 }
 
 static void
+dbus_server_run_server (EDBusServer *server)
+{
+	EDBusServerClass *class;
+
+	/* Try to acquire the well-known bus name. */
+
+	class = E_DBUS_SERVER_GET_CLASS (server);
+	g_return_if_fail (class->bus_name != NULL);
+
+	server->priv->bus_owner_id = g_bus_own_name (
+		G_BUS_TYPE_SESSION,
+		class->bus_name,
+		G_BUS_NAME_OWNER_FLAGS_REPLACE |
+		G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT,
+		(GBusAcquiredCallback) dbus_server_bus_acquired_cb,
+		(GBusNameAcquiredCallback) dbus_server_name_acquired_cb,
+		(GBusNameLostCallback) dbus_server_name_lost_cb,
+		g_object_ref (server),
+		(GDestroyNotify) g_object_unref);
+
+	g_main_loop_run (server->priv->main_loop);
+}
+
+static void
+dbus_server_quit_server (EDBusServer *server)
+{
+	g_main_loop_quit (server->priv->main_loop);
+}
+
+static void
 e_dbus_server_class_init (EDBusServerClass *class)
 {
 	GObjectClass *object_class;
@@ -176,6 +208,8 @@ e_dbus_server_class_init (EDBusServerClass *class)
 	class->bus_acquired = dbus_server_bus_acquired;
 	class->bus_name_acquired = dbus_server_bus_name_acquired;
 	class->bus_name_lost = dbus_server_bus_name_lost;
+	class->run_server = dbus_server_run_server;
+	class->quit_server = dbus_server_quit_server;
 
 	signals[BUS_ACQUIRED] = g_signal_new (
 		"bus-acquired",
@@ -206,6 +240,24 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		g_cclosure_marshal_VOID__OBJECT,
 		G_TYPE_NONE, 1,
 		G_TYPE_DBUS_CONNECTION);
+
+	signals[RUN_SERVER] = g_signal_new (
+		"run-server",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDBusServerClass, run_server),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 0);
+
+	signals[QUIT_SERVER] = g_signal_new (
+		"quit-server",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EDBusServerClass, quit_server),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 0);
 }
 
 static void
@@ -225,32 +277,14 @@ void
 e_dbus_server_run (EDBusServer *server,
                    gboolean wait_for_client)
 {
-	EDBusServerClass *class;
-
 	g_return_if_fail (E_IS_DBUS_SERVER (server));
+
+	server->priv->wait_for_client = wait_for_client;
 
 	if (g_main_loop_is_running (server->priv->main_loop))
 		return;
 
-	server->priv->wait_for_client = wait_for_client;
-
-	/* Try to acquire the well-known bus name. */
-
-	class = E_DBUS_SERVER_GET_CLASS (server);
-	g_return_if_fail (class->bus_name != NULL);
-
-	server->priv->bus_owner_id = g_bus_own_name (
-		G_BUS_TYPE_SESSION,
-		class->bus_name,
-		G_BUS_NAME_OWNER_FLAGS_REPLACE |
-		G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT,
-		(GBusAcquiredCallback) dbus_server_bus_acquired_cb,
-		(GBusNameAcquiredCallback) dbus_server_name_acquired_cb,
-		(GBusNameLostCallback) dbus_server_name_lost_cb,
-		g_object_ref (server),
-		(GDestroyNotify) g_object_unref);
-
-	g_main_loop_run (server->priv->main_loop);
+	g_signal_emit (server, signals[RUN_SERVER], 0);
 }
 
 void
@@ -258,7 +292,7 @@ e_dbus_server_quit (EDBusServer *server)
 {
 	g_return_if_fail (E_IS_DBUS_SERVER (server));
 
-	g_main_loop_quit (server->priv->main_loop);
+	g_signal_emit (server, signals[QUIT_SERVER], 0);
 }
 
 /**

@@ -72,8 +72,10 @@ struct _EDBusServerClass {
 						 GDBusConnection *connection);
 	void		(*bus_name_lost)	(EDBusServer *server,
 						 GDBusConnection *connection);
+	void		(*run_server)		(EDBusServer *server);
+	void		(*quit_server)		(EDBusServer *server);
 
-	gpointer reserved[16];
+	gpointer reserved[14];
 };
 
 GType		e_dbus_server_get_type		(void) G_GNUC_CONST;
