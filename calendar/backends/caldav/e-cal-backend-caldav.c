@@ -310,6 +310,19 @@ static gboolean put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *ical
 
 /* ************************************************************************* */
 /* Misc. utility functions */
+
+static void
+update_slave_cmd (ECalBackendCalDAVPrivate *priv,
+		  SlaveCommand slave_cmd)
+{
+	g_return_if_fail (priv != NULL);
+
+	if (priv->slave_cmd == SLAVE_SHOULD_DIE)
+		return;
+
+	priv->slave_cmd = slave_cmd;
+}
+
 #define X_E_CALDAV "X-EVOLUTION-CALDAV-"
 #define X_E_CALDAV_ATTACHMENT_NAME X_E_CALDAV "ATTACHMENT-NAME"
 
@@ -1107,7 +1120,7 @@ caldav_notify_auth_required (ECalBackendCalDAV *cbdav)
 	g_return_if_fail (cbdav->priv != NULL);
 
 	cbdav->priv->opened = FALSE;
-	cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+	update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
 
 	if (!e_backend_get_online (E_BACKEND (cbdav)))
 		return;
@@ -1339,7 +1352,7 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 		case SOUP_STATUS_CANT_CONNECT:
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
 			cbdav->priv->opened = FALSE;
-			cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+			update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
 			cbdav->priv->read_only = TRUE;
 			e_cal_backend_notify_readonly (
 				E_CAL_BACKEND (cbdav), cbdav->priv->read_only);
@@ -2195,7 +2208,7 @@ caldav_synch_slave_loop (gpointer data)
 
 			if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
 				cbdav->priv->opened = TRUE;
-				cbdav->priv->slave_cmd = SLAVE_SHOULD_WORK;
+				update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
 				g_cond_signal (cbdav->priv->cond);
 
 				cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
@@ -2512,7 +2525,7 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	if (!cbdav->priv->synch_slave) {
 		GThread *slave;
 
-		cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
 		slave = g_thread_create (caldav_synch_slave_loop, cbdav, FALSE, NULL);
 
 		if (slave == NULL) {
@@ -2556,7 +2569,7 @@ open_calendar (ECalBackendCalDAV *cbdav,
 	proxy_settings_changed (cbdav->priv->proxy, cbdav->priv);
 
 	if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
-		cbdav->priv->slave_cmd = SLAVE_SHOULD_WORK;
+		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
 		g_cond_signal (cbdav->priv->cond);
 
 		cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
@@ -2682,7 +2695,7 @@ caldav_refresh (ECalBackendSync *backend,
 		return;
 	}
 
-	cbdav->priv->slave_cmd = SLAVE_SHOULD_WORK;
+	update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
 
 	/* wake it up */
 	g_cond_signal (cbdav->priv->cond);
@@ -2701,7 +2714,7 @@ caldav_remove (ECalBackendSync *backend,
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 
 	/* first tell it to die, then wait for its lock */
-	cbdav->priv->slave_cmd = SLAVE_SHOULD_DIE;
+	update_slave_cmd (cbdav->priv, SLAVE_SHOULD_DIE);
 
 	g_mutex_lock (cbdav->priv->busy_lock);
 
@@ -4211,7 +4224,7 @@ _func_name _params							\
 	was_slave_busy = cbdav->priv->slave_busy;			\
 	if (was_slave_busy) {						\
 		/* let it pause its work and do our job */		\
-		cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;		\
+		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);	\
 	}								\
 									\
 	g_mutex_lock (cbdav->priv->busy_lock);				\
@@ -4219,7 +4232,7 @@ _func_name _params							\
 									\
 	/* this is done before unlocking */				\
 	if (was_slave_busy) {						\
-		cbdav->priv->slave_cmd = old_slave_cmd;			\
+		update_slave_cmd (cbdav->priv, old_slave_cmd);		\
 		g_cond_signal (cbdav->priv->cond);			\
 	}								\
 									\
@@ -4682,11 +4695,11 @@ caldav_notify_online_cb (ECalBackend *backend,
 
 	if (online) {
 		/* Wake up the slave thread */
-		cbdav->priv->slave_cmd = SLAVE_SHOULD_WORK;
+		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
 		g_cond_signal (cbdav->priv->cond);
 	} else {
 		soup_session_abort (cbdav->priv->session);
-		cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
 	}
 
 	e_cal_backend_notify_online (backend, online);
@@ -4726,7 +4739,7 @@ caldav_source_changed_cb (ESource *source,
 	old_slave_cmd = cbdav->priv->slave_cmd;
 	old_slave_busy = cbdav->priv->slave_busy;
 	if (old_slave_busy) {
-		cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
+		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
 		g_mutex_lock (cbdav->priv->busy_lock);
 	}
 
@@ -4736,7 +4749,7 @@ caldav_source_changed_cb (ESource *source,
 	g_cond_signal (cbdav->priv->cond);
 
 	if (old_slave_busy) {
-		cbdav->priv->slave_cmd = old_slave_cmd;
+		update_slave_cmd (cbdav->priv, old_slave_cmd);
 		g_mutex_unlock (cbdav->priv->busy_lock);
 	}
 }
@@ -4756,7 +4769,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 
 	/* tell the slave to stop before acquiring a lock,
 	 * as it can work at the moment, and lock can be locked */
-	priv->slave_cmd = SLAVE_SHOULD_DIE;
+	update_slave_cmd (priv, SLAVE_SHOULD_DIE);
 
 	g_mutex_lock (priv->busy_lock);
 
