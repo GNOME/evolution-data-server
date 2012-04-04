@@ -836,6 +836,7 @@ typedef struct _AsyncOpData
 
 	GCancellable *cancellable;
 	gulong cancel_id;
+	guint cancel_idle_id;
 
 	gpointer async_source_tag;
 	GAsyncReadyCallback async_callback;
@@ -856,6 +857,18 @@ async_op_data_free (AsyncOpData *op_data)
 	GHashTable *pending_ops;
 
 	g_return_if_fail (op_data != NULL);
+
+	if (op_data->cancel_idle_id) {
+		GError *error = NULL;
+
+		g_source_remove (op_data->cancel_idle_id);
+		op_data->cancel_idle_id = 0;
+
+		if (!e_gdbus_async_op_keeper_cancel_op_sync (op_data->proxy, op_data->opid, NULL, &error)) {
+			g_debug ("%s: Failed to cancel operation: %s\n", G_STRFUNC, error ? error->message : "Unknown error");
+			g_clear_error (&error);
+		}
+	}
 
 	if (op_data->cancellable) {
 		if (op_data->cancel_id)
@@ -906,28 +919,41 @@ async_op_complete (AsyncOpData *op_data,
 	g_object_unref (simple);
 }
 
+static gboolean
+e_gdbus_op_cancelled_idle_cb (gpointer user_data)
+{
+	AsyncOpData *op_data = user_data;
+	GCancellable *cancellable;
+	GError *error = NULL;
+
+	g_return_val_if_fail (op_data != NULL, FALSE);
+
+	cancellable = op_data->cancellable;
+	op_data->cancel_idle_id = 0;
+
+	if (!e_gdbus_async_op_keeper_cancel_op_sync (op_data->proxy, op_data->opid, NULL, &error)) {
+		g_debug ("%s: Failed to cancel operation: %s\n", G_STRFUNC, error ? error->message : "Unknown error");
+		g_clear_error (&error);
+	}
+
+	g_return_val_if_fail (g_cancellable_set_error_if_cancelled (cancellable, &error), FALSE);
+
+	async_op_complete (op_data, error, TRUE);
+	g_clear_error (&error);
+
+	return FALSE;
+}
+
 static void
 e_gdbus_op_cancelled_cb (GCancellable *cancellable,
                          AsyncOpData *op_data)
 {
-	GError *call_error = NULL;
-
 	g_return_if_fail (op_data != NULL);
+	g_return_if_fail (op_data->cancellable == cancellable);
 
-	if (!e_gdbus_async_op_keeper_cancel_op_sync (op_data->proxy, op_data->opid, NULL, &call_error)) {
-		/* only if failed, because otherwise will receive cancelled signal from the server */
-		GError *error = NULL;
-
-		g_return_if_fail (g_cancellable_set_error_if_cancelled (cancellable, &error));
-
-		async_op_complete (op_data, error, TRUE);
-		g_error_free (error);
-	}
-
-	if (call_error) {
-		g_debug ("%s: Failed to cancel operation: %s\n", G_STRFUNC, call_error->message);
-		g_error_free (call_error);
-	}
+	/* do this on idle, because this callback should be left
+	   as soon as possible, with no sync calls being done */
+	op_data->cancel_idle_id = g_idle_add (e_gdbus_op_cancelled_idle_cb, op_data);
 }
 
 static void

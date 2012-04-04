@@ -598,6 +598,9 @@ client_utils_open_new_auth_cb (EClient *client,
 	g_return_val_if_fail (async_data != NULL, FALSE);
 	g_return_val_if_fail (async_data->auth_handler != NULL, FALSE);
 
+	if (async_data->cancellable && g_cancellable_is_cancelled (async_data->cancellable))
+		return FALSE;
+
 	if (async_data->used_credentials) {
 		const gchar *reason = e_credentials_peek (async_data->used_credentials, E_CREDENTIALS_KEY_PROMPT_REASON);
 

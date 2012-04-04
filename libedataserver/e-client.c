@@ -880,9 +880,17 @@ struct EClientAuthData {
 static gboolean
 client_process_authentication_idle_cb (gpointer user_data)
 {
+	static gboolean processing_one = FALSE;
 	struct EClientAuthData *auth_data = user_data;
 
 	g_return_val_if_fail (auth_data != NULL, FALSE);
+
+	/* there is one currently processing, postpone this request for later */
+	if (processing_one)
+		return TRUE;
+
+	/* no need for locking, this is always main-thread's idle */
+	processing_one = TRUE;
 
 	if (e_client_emit_authenticate (auth_data->client, auth_data->credentials)) {
 		client_handle_authentication (auth_data->client, auth_data->credentials);
@@ -906,6 +914,8 @@ client_process_authentication_idle_cb (gpointer user_data)
 	e_credentials_free (auth_data->credentials);
 	g_object_unref (auth_data->client);
 	g_free (auth_data);
+
+	processing_one = FALSE;
 
 	return FALSE;
 }
