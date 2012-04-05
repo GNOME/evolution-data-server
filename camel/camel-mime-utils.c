@@ -1534,17 +1534,9 @@ rfc2047_encode_word (GString *outstring,
 		camel_iconv_close (ic);
 }
 
-/* TODO: Should this worry about quotes?? */
-/**
- * camel_header_encode_string:
- * @in: input string
- *
- * Encodes a 'text' header according to the rules of rfc2047.
- *
- * Returns: the rfc2047 encoded header
- **/
-gchar *
-camel_header_encode_string (const guchar *in)
+static gchar *
+header_encode_string_rfc2047 (const guchar *in,
+			      gboolean include_lwsp)
 {
 	const guchar *inptr = in, *start, *word;
 	gboolean last_was_encoded = FALSE;
@@ -1589,7 +1581,7 @@ camel_header_encode_string (const guchar *in)
 			continue;
 		}
 
-		if (c < 256 && camel_mime_is_lwsp (c) && !last_was_space) {
+		if (c < 256 && !include_lwsp && camel_mime_is_lwsp (c) && !last_was_space) {
 			/* we've reached the end of a 'word' */
 			if (word && !(last_was_encoded && encoding)) {
 				/* output lwsp between non-encoded words */
@@ -1630,11 +1622,11 @@ camel_header_encode_string (const guchar *in)
 		} else if (c >= 256) {
 			encoding = MAX (encoding, 2);
 			last_was_space = FALSE;
-		} else if (!camel_mime_is_lwsp (c)) {
+		} else if (include_lwsp || !camel_mime_is_lwsp (c)) {
 			last_was_space = FALSE;
 		}
 
-		if (!(c < 256 && camel_mime_is_lwsp (c)) && !word)
+		if (!(c < 256 && !include_lwsp && camel_mime_is_lwsp (c)) && !word)
 			word = inptr;
 
 		inptr = (const guchar *) newinptr;
@@ -1671,6 +1663,21 @@ camel_header_encode_string (const guchar *in)
 	g_string_free (out, FALSE);
 
 	return outstr;
+}
+
+/* TODO: Should this worry about quotes?? */
+/**
+ * camel_header_encode_string:
+ * @in: input string
+ *
+ * Encodes a 'text' header according to the rules of rfc2047.
+ *
+ * Returns: the rfc2047 encoded header
+ **/
+gchar *
+camel_header_encode_string (const guchar *in)
+{
+	return header_encode_string_rfc2047 (in, FALSE);
 }
 
 /* apply quoted-string rules to a string */
@@ -3428,7 +3435,7 @@ header_encode_param (const guchar *in,
 		}
 
 		/* do not set encoded flag for file names */
-		str = camel_header_encode_string (inptr);
+		str = header_encode_string_rfc2047 (inptr, TRUE);
 		g_free (outbuf);
 
 		return str;
