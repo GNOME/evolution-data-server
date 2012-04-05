@@ -1663,6 +1663,7 @@ libedataserver/libedataserver.pc
 libedataserverui/Makefile
 libedataserverui/libedataserverui.pc
 modules/Makefile
+modules/google-backend/Makefile
 modules/online-accounts/Makefile
 private/Makefile
 services/Makefile

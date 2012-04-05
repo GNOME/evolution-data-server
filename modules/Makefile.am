@@ -5,6 +5,7 @@ ONLINE_ACCOUNTS_DIR = online-accounts
 endif
 
 SUBDIRS = \
+	google-backend \
 	$(ONLINE_ACCOUNTS_DIR) \
 	$(NULL)
 
