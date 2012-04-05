@@ -190,6 +190,7 @@ create_contact (const gchar *uid,
 
 static gchar *
 load_vcard (EBookBackendFile *bf,
+            DB_TXN *txn,
             const gchar *uid,
             GError **error)
 {
@@ -203,7 +204,7 @@ load_vcard (EBookBackendFile *bf,
 	memset (&vcard_dbt, 0, sizeof (vcard_dbt));
 	vcard_dbt.flags = DB_DBT_MALLOC;
 
-	db_error = db->get (db, NULL, &id_dbt, &vcard_dbt, 0);
+	db_error = db->get (db, txn, &id_dbt, &vcard_dbt, 0);
 
 	if (db_error == 0) {
 		vcard = vcard_dbt.data;
@@ -218,13 +219,14 @@ load_vcard (EBookBackendFile *bf,
 
 static EContact *
 load_contact (EBookBackendFile *bf,
+              DB_TXN *txn,
               const gchar *uid,
               GError **error)
 {
 	EContact *contact = NULL;
 	gchar    *vcard;
 
-	if ((vcard = load_vcard (bf, uid, error)) != NULL) {
+	if ((vcard = load_vcard (bf, txn, uid, error)) != NULL) {
 		contact = create_contact (uid, vcard);
 		g_free (vcard);
 	}
@@ -294,23 +296,12 @@ maybe_delete_uri (EBookBackendFile *bf,
 
 static void
 maybe_delete_unused_uris (EBookBackendFile *bf,
-                          const gchar *id,
                           EContact *old_contact,
                           EContact *new_contact)
 {
-	GError            *error = NULL;
 	gchar             *uri_photo, *uri_logo;
 
-	if (!old_contact) {
-		old_contact = load_contact (bf, id, &error);
-
-		if (!old_contact) {
-			g_warning (G_STRLOC ": failed to load contact %s", error->message);
-			g_error_free (error);
-			return;
-		}
-	} else
-		g_object_ref (old_contact);
+	g_return_if_fail (old_contact != NULL);
 
 	/* If there is no new contact, collect all the uris to delete from old_contact
 	 *
@@ -329,8 +320,6 @@ maybe_delete_unused_uris (EBookBackendFile *bf,
 		maybe_delete_uri (bf, uri_logo);
 		g_free (uri_logo);
 	}
-
-	g_object_unref (old_contact);
 }
 
 static gchar *
@@ -1013,7 +1002,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 	DB_ENV           *env = bf->priv->env;
 	DB_TXN           *txn = NULL;
 	gint              db_error;
-	GSList           *removed_ids = NULL;
+	GSList           *removed_ids = NULL, *removed_contacts = NULL;
 	const GSList     *l;
 
 	if (!db) {
@@ -1031,12 +1020,14 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 
 	for (l = id_list; l != NULL; l = l->next) {
 		const gchar *id;
+		EContact *contact;
 		DBT id_dbt;
 
 		id = l->data;
 
-		/* First collect uris to delete */
-		maybe_delete_unused_uris (bf, id, NULL, NULL);
+		contact = load_contact(bf, txn, id, NULL);
+		if (contact)
+			removed_contacts = g_slist_prepend (removed_contacts, contact);
 
 		/* Then go on to delete from the db */
 		string_to_dbt (id, &id_dbt);
@@ -1071,6 +1062,12 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 
 	if (db_error == 0) {
 		GError *error = NULL;
+
+		/* Delete URI associated to those contacts */
+		for (l = removed_contacts; l; l=l->next) {
+			maybe_delete_unused_uris (bf, E_CONTACT(l->data), NULL);
+		}
+
 		/* Remove from summary as well */
 		if (!e_book_backend_sqlitedb_remove_contacts (bf->priv->sqlitedb,
 						      SQLITEDB_FOLDER_ID,
@@ -1086,6 +1083,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 	}
 
 	e_book_backend_file_bump_revision (bf);
+	g_slist_free_full (removed_contacts, g_object_unref);
 }
 
 static void
@@ -1101,8 +1099,8 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 	DB_ENV           *env = bf->priv->env;
 	DB_TXN           *txn = NULL;
 	gint              db_error;
-	const GSList     *l;
-	GSList           *modified_contacts = NULL;
+	const GSList     *lold, *l;
+	GSList           *old_contacts = NULL, *modified_contacts = NULL;
 	GSList           *ids = NULL;
 	PhotoModifiedStatus status = STATUS_NORMAL;
 
@@ -1134,7 +1132,7 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 			break;
 		}
 
-		old_contact = load_contact (bf, id, perror);
+		old_contact = load_contact (bf, txn, id, perror);
 		if (!old_contact) {
 			g_warning (G_STRLOC ": Failed to load contact %s", id);
 			status = STATUS_ERROR;
@@ -1143,6 +1141,7 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 			g_object_unref (contact);
 			break;
 		}
+		old_contacts = g_slist_prepend (old_contacts, old_contact);
 
 		/* Transform incomming photo blobs to uris before storing this to the DB */
 		status = maybe_transform_vcard_for_photo (bf, old_contact, contact, NULL, perror);
@@ -1155,11 +1154,6 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 			g_object_unref (contact);
 			break;
 		}
-
-		/* Delete old photo file uris if need be (this will compare the new contact
-		 * with the current copy in the BDB to extract the uris to delete) */
-		maybe_delete_unused_uris (bf, id, old_contact, contact);
-		g_object_unref (old_contact);
 
 		/* update the revision (modified time of contact) */
 		set_revision (contact);
@@ -1215,6 +1209,17 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 
 	if (db_error == 0 && status != STATUS_ERROR) {
 		GError *error = NULL;
+
+		/* Delete old photo file uris if need be (this will compare the new contact
+		 * with the current copy in the BDB to extract the uris to delete) */
+		lold = old_contacts;
+		l = modified_contacts;
+		while (lold && l) {
+			maybe_delete_unused_uris (bf, E_CONTACT(lold->data), E_CONTACT(l->data));
+			lold = lold->next;
+			l = l->next;
+		}
+
 		/* Update summary as well */
 		if (!e_book_backend_sqlitedb_remove_contacts (bf->priv->sqlitedb,
 							      SQLITEDB_FOLDER_ID,
@@ -1235,6 +1240,7 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 	}
 
 	e_util_free_string_slist (ids);
+	g_slist_free_full (old_contacts, g_object_unref);
 
 	e_book_backend_file_bump_revision (bf);
 }
@@ -1254,7 +1260,7 @@ e_book_backend_file_get_contact (EBookBackendSync *backend,
 		return;
 	}
 
-	*vcard = load_vcard (bf, id, perror);
+	*vcard = load_vcard (bf, NULL, id, perror);
 }
 
 static void
@@ -1305,7 +1311,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 				 */
 				gchar *vcard;
 
-				vcard = load_vcard (bf, data->uid, perror);
+				vcard = load_vcard (bf, NULL, data->uid, perror);
 
 				/* Break out on the first BDB error */
 				if (!vcard)
@@ -1592,7 +1598,7 @@ book_view_thread (gpointer data)
 
 				/* The sqlitedb summary did not satisfy 'fields-of-interest',
 				 * load the complete vcard here. */
-				vcard = load_vcard (bf, data->uid, &error);
+				vcard = load_vcard (bf, NULL, data->uid, &error);
 
 				if (error) {
 					g_warning ("Error loading contact %s: %s",
