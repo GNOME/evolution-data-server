@@ -520,12 +520,22 @@ static gpointer
 fn_getter (EContact *contact,
            EVCardAttribute *attr)
 {
+	/* this fills FN, if not there yet */
+	if (!attr) {
+		EContactName *name;
+
+		name = e_contact_get (contact, E_CONTACT_NAME);
+		if (name)
+			e_contact_name_free (name);
+
+		attr = e_vcard_get_attribute (E_VCARD (contact), EVC_FN);
+	}
+
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
 
 		return p && p->data ? p->data : (gpointer) "";
-	}
-	else
+	} else
 		return NULL;
 }
 
