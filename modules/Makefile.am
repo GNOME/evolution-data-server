@@ -6,6 +6,7 @@ endif
 
 SUBDIRS = \
 	google-backend \
+	yahoo-backend \
 	$(ONLINE_ACCOUNTS_DIR) \
 	$(NULL)
 

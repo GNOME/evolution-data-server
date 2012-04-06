@@ -1665,6 +1665,7 @@ libedataserverui/libedataserverui.pc
 modules/Makefile
 modules/google-backend/Makefile
 modules/online-accounts/Makefile
+modules/yahoo-backend/Makefile
 private/Makefile
 services/Makefile
 services/evolution-addressbook-factory/Makefile
