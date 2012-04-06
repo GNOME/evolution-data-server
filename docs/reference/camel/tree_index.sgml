@@ -52,7 +52,6 @@
         <link linkend="CamelSession">CamelSession</link>
         <link linkend="CamelStoreSummary">CamelStoreSummary</link>
         <link linkend="CamelStream">CamelStream</link>
-            <link linkend="CamelHttpStream">CamelHttpStream</link>
             <link linkend="CamelSeekableStream">CamelSeekableStream</link>
                 <link linkend="CamelSeekableSubstream">CamelSeekableSubstream</link>
                 <link linkend="CamelStreamFs">CamelStreamFs</link>

@@ -16,7 +16,6 @@ camel_folder_search_get_type
 camel_folder_summary_get_type
 camel_gpg_context_get_type
 camel_html_parser_get_type
-camel_http_stream_get_type
 camel_index_cursor_get_type
 camel_index_name_get_type
 camel_index_get_type

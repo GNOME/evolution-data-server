@@ -49,7 +49,6 @@
 #include <camel/camel-folder-thread.h>
 #include <camel/camel-gpg-context.h>
 #include <camel/camel-html-parser.h>
-#include <camel/camel-http-stream.h>
 #include <camel/camel-iconv.h>
 #include <camel/camel-index.h>
 #include <camel/camel-internet-address.h>
