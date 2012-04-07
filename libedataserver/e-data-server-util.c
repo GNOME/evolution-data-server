@@ -966,6 +966,181 @@ e_util_free_nullable_object_slist (GSList *objects)
 	g_slist_free (objects);
 }
 
+/* Helper for e_file_recursive_delete() */
+static void
+file_recursive_delete_thread (GSimpleAsyncResult *simple,
+                              GObject *object,
+                              GCancellable *cancellable)
+{
+	GError *error = NULL;
+
+	e_file_recursive_delete_sync (G_FILE (object), cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+/**
+ * e_file_recursive_delete_sync:
+ * @file: a #GFile to delete
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes @file.  If @file is a directory, its contents are deleted
+ * recursively before @file itself is deleted.  The recursive delete
+ * operation will stop on the first error.
+ *
+ * If @cancellable is not %NULL, then the operation can be cancelled
+ * by triggering the cancellable object from another thread.  If the
+ * operation was cancelled, the error #G_IO_ERROR_CANCELLED will be
+ * returned.
+ *
+ * Returns: %TRUE if the file was deleted, %FALSE otherwise
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_file_recursive_delete_sync (GFile *file,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	GFileEnumerator *file_enumerator;
+	GFileInfo *file_info;
+	GFileType file_type;
+	gboolean success = TRUE;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (G_IS_FILE (file), FALSE);
+
+	file_type = g_file_query_file_type (
+		file, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, cancellable);
+
+	/* If this is not a directory, delete like normal. */
+	if (file_type != G_FILE_TYPE_DIRECTORY)
+		return g_file_delete (file, cancellable, error);
+
+	/* Note, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS is critical here
+	 * so we only delete files inside the directory being deleted. */
+	file_enumerator = g_file_enumerate_children (
+		file, G_FILE_ATTRIBUTE_STANDARD_NAME,
+		G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+		cancellable, error);
+
+	if (file_enumerator == NULL)
+		return FALSE;
+
+	file_info = g_file_enumerator_next_file (
+		file_enumerator, cancellable, &local_error);
+
+	while (file_info != NULL) {
+		GFile *child;
+		const gchar *name;
+
+		name = g_file_info_get_name (file_info);
+
+		/* Here's the recursive part. */
+		child = g_file_get_child (file, name);
+		success = e_file_recursive_delete_sync (
+			child, cancellable, error);
+		g_object_unref (child);
+
+		g_object_unref (file_info);
+
+		if (!success)
+			break;
+
+		file_info = g_file_enumerator_next_file (
+			file_enumerator, cancellable, &local_error);
+	}
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		success = FALSE;
+	}
+
+	g_object_unref (file_enumerator);
+
+	if (!success)
+		return FALSE;
+
+	/* The directory should be empty now. */
+	return g_file_delete (file, cancellable, error);
+}
+
+/**
+ * e_file_recursive_delete:
+ * @file: a #GFile to delete
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously deletes @file.  If @file is a directory, its contents
+ * are deleted recursively before @file itself is deleted.  The recursive
+ * delete operation will stop on the first error.
+ *
+ * If @cancellable is not %NULL, then the operation can be cancelled
+ * by triggering the cancellable object before the operation finishes.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_file_recursive_delete_finish() to get the result of the operation.
+ *
+ * Since: 3.6
+ **/
+void
+e_file_recursive_delete (GFile *file,
+                         gint io_priority,
+                         GCancellable *cancellable,
+                         GAsyncReadyCallback callback,
+                         gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_if_fail (G_IS_FILE (file));
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (file), callback, user_data,
+		e_file_recursive_delete);
+
+	g_simple_async_result_run_in_thread (
+		simple, file_recursive_delete_thread,
+		io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_file_recursive_delete_finish:
+ * @file: a #GFile to delete
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_file_recursive_delete().
+ *
+ * If the operation was cancelled, the error #G_IO_ERROR_CANCELLED will be
+ * returned.
+ *
+ * Returns: %TRUE if the file was deleted, %FALSE otherwise
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_file_recursive_delete_finish (GFile *file,
+                                GAsyncResult *result,
+                                GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (file), e_file_recursive_delete), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
 /**
  * e_binding_transform_enum_value_to_nick:
  * @binding: a #GBinding

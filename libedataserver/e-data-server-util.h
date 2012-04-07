@@ -23,7 +23,7 @@
 #define E_DATA_SERVER_UTIL_H
 
 #include <sys/types.h>
-#include <glib-object.h>
+#include <gio/gio.h>
 
 G_BEGIN_DECLS
 
@@ -70,6 +70,18 @@ GSList *	e_util_copy_object_slist	(GSList *copy_to, const GSList *objects);
 void		e_util_free_string_slist	(GSList *strings);
 void		e_util_free_object_slist	(GSList *objects);
 void		e_util_free_nullable_object_slist	(GSList *objects);
+
+gboolean	e_file_recursive_delete_sync	(GFile *file,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_file_recursive_delete		(GFile *file,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_file_recursive_delete_finish	(GFile *file,
+						 GAsyncResult *result,
+						 GError **error);
 
 /* Useful GBinding transform functions */
 gboolean	e_binding_transform_enum_value_to_nick
