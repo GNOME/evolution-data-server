@@ -247,7 +247,7 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EDBusServerClass, run_server),
 		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		g_cclosure_marshal_VOID__VOID,
 		G_TYPE_NONE, 0);
 
 	signals[QUIT_SERVER] = g_signal_new (
@@ -256,7 +256,7 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EDBusServerClass, quit_server),
 		NULL, NULL,
-		g_cclosure_marshal_VOID__OBJECT,
+		g_cclosure_marshal_VOID__VOID,
 		G_TYPE_NONE, 0);
 }
 
