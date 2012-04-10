@@ -211,6 +211,13 @@ e_dbus_server_class_init (EDBusServerClass *class)
 	class->run_server = dbus_server_run_server;
 	class->quit_server = dbus_server_quit_server;
 
+	/**
+	 * EDBusServer::bus-acquired:
+	 * @server: the #EDBusServer which emitted the signal
+	 * @connection: the #GDBusConnection to the session bus
+	 *
+	 * Emitted when @server acquires a connection to the session bus.
+	 **/
 	signals[BUS_ACQUIRED] = g_signal_new (
 		"bus-acquired",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -221,6 +228,13 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		G_TYPE_NONE, 1,
 		G_TYPE_DBUS_CONNECTION);
 
+	/**
+	 * EDBusServer::bus-name-acquired:
+	 * @server: the #EDBusServer which emitted the signal
+	 * @connection: the #GDBusConnection to the session bus
+	 *
+	 * Emitted when @server acquires its well-known session bus name.
+	 **/
 	signals[BUS_NAME_ACQUIRED] = g_signal_new (
 		"bus-name-acquired",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -231,6 +245,15 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		G_TYPE_NONE, 1,
 		G_TYPE_DBUS_CONNECTION);
 
+	/**
+	 * EDBusServer::bus-name-lost:
+	 * @server: the #EDBusServer which emitted the signal
+	 * @connection: the #GDBusconnection to the session bus,
+	 *              or %NULL if the connection has been closed
+	 *
+	 * Emitted when @server loses its well-known session bus name
+	 * or the session bus connection has been closed.
+	 **/
 	signals[BUS_NAME_LOST] = g_signal_new (
 		"bus-name-lost",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -241,6 +264,13 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		G_TYPE_NONE, 1,
 		G_TYPE_DBUS_CONNECTION);
 
+	/**
+	 * EDBusServer::run-server:
+	 * @server: the #EDBusServer which emitted the signal
+	 *
+	 * Emitted to request that @server start its main loop and
+	 * attempt to acquire its well-known session bus name.
+	 **/
 	signals[RUN_SERVER] = g_signal_new (
 		"run-server",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -250,6 +280,12 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		g_cclosure_marshal_VOID__VOID,
 		G_TYPE_NONE, 0);
 
+	/**
+	 * EDBusServer::quit-server:
+	 * @server: the #EDBusServer which emitted the signal
+	 *
+	 * Emitted to request that @server quit its main loop.
+	 **/
 	signals[QUIT_SERVER] = g_signal_new (
 		"quit-server",
 		G_OBJECT_CLASS_TYPE (object_class),
@@ -273,6 +309,23 @@ e_dbus_server_init (EDBusServer *server)
 #endif
 }
 
+/**
+ * e_dbus_server_run:
+ * @server: an #EDBusServer
+ * @wait_for_client: continue running until a client connects
+ *
+ * Emits the #EDBusServer::run signal.
+ *
+ * By default the @server will start its main loop and attempt to acquire
+ * its well-known session bus name.  If the @server's main loop is already
+ * running this function does nothing.
+ *
+ * If @wait_for_client is %TRUE, the @server will continue running until
+ * the first client connection is made instead of terminating on its own
+ * if no client connection is made within the first few seconds.
+ *
+ * Since: 3.4
+ **/
 void
 e_dbus_server_run (EDBusServer *server,
                    gboolean wait_for_client)
@@ -287,6 +340,16 @@ e_dbus_server_run (EDBusServer *server,
 	g_signal_emit (server, signals[RUN_SERVER], 0);
 }
 
+/**
+ * e_dbus_server_quit:
+ * @server: an #EDBusServer
+ *
+ * Emits the #EDBusServer::quit signal.
+ *
+ * By default the @server will quit its main loop.
+ *
+ * Since: 3.4
+ **/
 void
 e_dbus_server_quit (EDBusServer *server)
 {
@@ -348,6 +411,15 @@ e_dbus_server_release (EDBusServer *server)
 				server);
 }
 
+/**
+ * e_dbus_server_load_modules:
+ * @server: an #EDBusServer
+ *
+ * This function should be called once during @server initialization to
+ * load all available library modules to extend the @server's functionality.
+ *
+ * Since: 3.4
+ **/
 void
 e_dbus_server_load_modules (EDBusServer *server)
 {
