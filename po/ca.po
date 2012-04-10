@@ -8,19 +8,21 @@
 # Xavier A. Conde Rueda <xavi.conde@gmail.com>, 2004, 2005, 2006.
 # David Planella Molas <david.planella@googlemail.com>, 2007, 2008, 2009, 2010, 2011.
 # Gil Forcada <gilforcada@guifi.net>, 2011, 2012.
+# Jordi Serratosa <jordis@softcatala.cat>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-27 22:19+0200\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
+"POT-Creation-Date: 2012-04-07 17:49+0000\n"
 "PO-Revision-Date: 2012-03-27 22:20+0200\n"
 "Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
 "Language-Team: català; valencià <tradgnome@softcatala.org>\n"
-"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bits\n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:129
@@ -28,8 +30,8 @@ msgstr ""
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:939
 #: ../addressbook/libebook/e-book-client.c:106
 #: ../addressbook/libedata-book/e-data-book.c:441
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:548
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:577
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:561
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:590
 #: ../calendar/backends/http/e-cal-backend-http.c:424
 #: ../calendar/libecal/e-cal.c:4597 ../calendar/libecal/e-cal-client.c:150
 #: ../camel/providers/imap/camel-imap-command.c:515
@@ -49,28 +51,28 @@ msgstr "No s'ha pogut suprimir el fitxer «%s»: %s"
 msgid "Failed to make directory %s: %s"
 msgstr "No s'ha pogut crear el directori %s: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:473
+#: ../addressbook/backends/file/e-book-backend-file.c:462
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "No s'ha pogut crear un enllaç fort pel recurs «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:575
-#: ../addressbook/backends/file/e-book-backend-file.c:1132
+#: ../addressbook/backends/file/e-book-backend-file.c:564
+#: ../addressbook/backends/file/e-book-backend-file.c:1130
 msgid "No UID in the contact"
 msgstr "El contacte no conté cap UID"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1566
+#: ../addressbook/backends/file/e-book-backend-file.c:1572
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:516
 msgid "Loading..."
 msgstr "S'està carregant..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1569
+#: ../addressbook/backends/file/e-book-backend-file.c:1575
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4870
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:518
 msgid "Searching..."
 msgstr "S'està cercant..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:2111
+#: ../addressbook/backends/file/e-book-backend-file.c:2117
 #, c-format
 msgid "Failed to build summary for an address book %s"
 msgstr "No s'ha pogut construir el resum per la llibreta d'adreces %s"
@@ -82,7 +84,7 @@ msgstr "S'està consultant si hi ha contactes actualitzats…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:925
 #: ../addressbook/libebook/e-book.c:3531 ../calendar/libecal/e-cal.c:1380
-#: ../libedataserver/e-client.c:1920
+#: ../libedataserver/e-client.c:1930
 msgid "Personal"
 msgstr "Personal"
 
@@ -207,7 +209,7 @@ msgstr ""
 "GConf."
 
 #: ../addressbook/libebook/e-book.c:3514 ../calendar/libecal/e-cal.c:1360
-#: ../libedataserver/e-client.c:1915
+#: ../libedataserver/e-client.c:1925
 msgid "On This Computer"
 msgstr "En aquest ordinador"
 
@@ -851,7 +853,7 @@ msgstr "Primer nom del Google Talk a la feina 3"
 msgid "Google Talk Name List"
 msgstr "Llista de noms del Google Talk"
 
-#: ../addressbook/libebook/e-contact.c:1611
+#: ../addressbook/libebook/e-contact.c:1621
 #: ../addressbook/libebook/e-destination.c:878
 msgid "Unnamed List"
 msgstr "Llista sense nom"
@@ -1022,7 +1024,7 @@ msgstr "No es pot afegir el contacte: "
 #: ../addressbook/libedata-book/e-data-book.c:651
 #: ../addressbook/libedata-book/e-data-book.c:1075
 msgid "Cannot modify contacts: "
-msgstr "No s'ha pogut modificar els contactes: "
+msgstr "No s'han pogut modificar els contactes: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:759
@@ -1079,18 +1081,18 @@ msgstr "No es poden suprimir els contactes: "
 msgid "Empty URI"
 msgstr "URI buit"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:546
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:559
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "El servidor no és accessible (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:574
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:587
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "S'ha obtingut el codi d'estat HTTP inesperat %d (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2212
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2567
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2225
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2580
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1100,12 +1102,12 @@ msgstr ""
 "lectura.\n"
 "El missatge d'error fou: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4482
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4495
 msgid "Calendar doesn't support Free/Busy"
 msgstr "El calendari no implementa l'estat lliure/ocupat"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:219
-#: ../libedataserverui/e-client-utils.c:875
+#: ../libedataserverui/e-client-utils.c:878
 #, c-format
 msgid ""
 "Enter password for address book %s (user %s)\n"
@@ -1115,7 +1117,7 @@ msgstr ""
 "Raó: %s"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:221
-#: ../libedataserverui/e-client-utils.c:877
+#: ../libedataserverui/e-client-utils.c:880
 #, c-format
 msgid "Enter password for address book %s (user %s)"
 msgstr "Introduïu la contrasenya per la llibreta d'adreces %s (usuari %s)"
@@ -1509,8 +1511,8 @@ msgstr "«%s» espera que el primer argument sigui una cadena"
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
-"«%s» espera que el primer argument sigui una cadena de data/hora en el "
-"format ISO 8601"
+"«%s» espera que el primer argument sigui una cadena de data/hora en el format "
+"ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:178
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:537
@@ -1572,10 +1574,9 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"«%s» espera que el primer argument sigui «any» (qualsevol), "
-"«summary» (resum), «description» (descripció), «location» (ubicació), "
-"«attendee» (assistent), «organizer» (organitzador), o "
-"«classification» (classificació)"
+"«%s» espera que el primer argument sigui «any» (qualsevol), «summary» (resum), "
+"«description» (descripció), «location» (ubicació), «attendee» (assistent), "
+"«organizer» (organitzador), o «classification» (classificació)"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1086
 #, c-format
@@ -1658,7 +1659,7 @@ msgstr "No es poden enviar els objectes de calendari: "
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1344
 msgid "Could not retrieve attachment uris: "
-msgstr "No s'ha pogut obtenir els URI de les adjuncions: "
+msgstr "No s'han pogut obtenir els URI de les adjuncions: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1372
@@ -2046,7 +2047,7 @@ msgid ""
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
 "Adoneu-vos que el contingut encriptat no conté informació sobre el "
-"destinatari, de manera que s'us demanarà la contrasenya per a cada clau "
+"destinatari, de manera que se us demanarà la contrasenya per a cada clau "
 "privada emmagatzemada."
 
 #: ../camel/camel-gpg-context.c:879 ../camel/camel-net-utils.c:523
@@ -2163,8 +2164,8 @@ msgstr "No s'ha pogut crear un procés fill per a l'ajudant per bloquejar: %s"
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
 msgstr ""
-"No s'ha pogut bloquejar «%s»: hi ha un error en el protocol amb l'ajudant "
-"per bloquejar"
+"No s'ha pogut bloquejar «%s»: hi ha un error en el protocol amb l'ajudant per "
+"bloquejar"
 
 #: ../camel/camel-lock-client.c:227
 #, c-format
@@ -2390,8 +2391,8 @@ msgstr "El desafiament del servidor no és vàlid\n"
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
-"El desafiament del servidor contenia un element «Qualitat de la protecció» "
-"no vàlid"
+"El desafiament del servidor contenia un element «Qualitat de la protecció» no "
+"vàlid"
 
 #: ../camel/camel-sasl-digest-md5.c:902
 #, c-format
@@ -5082,7 +5083,7 @@ msgstr "Si s'utilitza un servidor intermediari HTTP"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
 msgid "Whether to use proxy for HTTP requests."
-msgstr "Si s'ha d'utilitzar un servidor intermediari per les peticions HTTP."
+msgstr "Si s'ha d'utilitzar un servidor intermediari per les sol·licituds HTTP."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
 msgid "Whether proxy server requires authentication"
@@ -5094,19 +5095,19 @@ msgstr "Si fa falta 'autenticació per accedir al servidor intermediari."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
 msgid "Host name for HTTP requests"
-msgstr "Nom de l'ordinador on fer les peticions HTTP"
+msgstr "Nom de l'ordinador on fer les sol·licituds HTTP"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
 msgid "Host name to use for HTTP requests."
-msgstr "El nom de l'ordinador que es farà servir per les peticions HTTP."
+msgstr "El nom de l'ordinador que es farà servir per les sol·licituds HTTP."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
 msgid "Port number for HTTP requests"
-msgstr "Número de port on fer les peticions HTTP"
+msgstr "Número de port on fer les sol·licituds HTTP"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
 msgid "Port number to use for HTTP requests."
-msgstr "El número de port que es farà servir per les peticions HTTP."
+msgstr "El número de port que es farà servir per les sol·licituds HTTP."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
 msgid "Proxy authentication user name"
@@ -5138,35 +5139,35 @@ msgstr ""
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:17
 msgid "Host name for HTTPS requests"
-msgstr "Nom de l'ordinador on fer les peticions HTTPS"
+msgstr "Nom de l'ordinador on fer les sol·licituds HTTPS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:18
 msgid "Host name to use for HTTPS requests."
-msgstr "El nom de l'ordinador que es farà servir per les peticions HTTPS."
+msgstr "El nom de l'ordinador que es farà servir per les sol·licituds HTTPS."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:19
 msgid "Port number for HTTPS requests"
-msgstr "Número de port on fer les peticions HTTPS"
+msgstr "Número de port on fer les sol·licituds HTTPS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:20
 msgid "Port number to use for HTTPS requests."
-msgstr "El número de port que es farà servir per les peticions HTTPS."
+msgstr "El número de port que es farà servir per les sol·licituds HTTPS."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:21
 msgid "Host name for SOCKS requests"
-msgstr "Nom de l'ordinador per les peticions SOCKS"
+msgstr "Nom de l'ordinador per les sol·licituds SOCKS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:22
 msgid "Host name to use for SOCKS requests."
-msgstr "El nom de l'ordinador que es farà servir per les peticions SOCKS."
+msgstr "El nom de l'ordinador que es farà servir per les sol·licituds SOCKS."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:23
 msgid "Port number for SOCKS requests"
-msgstr "\"Número de port on fer les peticions SOCKS"
+msgstr "\"Número de port on fer les sol·licituds SOCKS"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:24
 msgid "Port number to use for SOCKS requests."
-msgstr "El número de port que es farà servir per les peticions SOCKS."
+msgstr "El número de port que es farà servir per les sol·licituds SOCKS."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:25
 msgid "Automatic proxy configuration URL"
@@ -5235,7 +5236,7 @@ msgid ""
 "name"
 msgstr "Ja hi ha una categoria «%s» en la configuració. Utilitzeu un altre nom"
 
-#: ../libedataserverui/e-client-utils.c:856
+#: ../libedataserverui/e-client-utils.c:859
 #, c-format
 msgid ""
 "Enter password for calendar %s (user %s)\n"
@@ -5244,12 +5245,12 @@ msgstr ""
 "Introduïu la contrasenya pel calendari %s (usuari %s)\n"
 "Raó: %s"
 
-#: ../libedataserverui/e-client-utils.c:858
+#: ../libedataserverui/e-client-utils.c:861
 #, c-format
 msgid "Enter password for calendar %s (user %s)"
 msgstr "Introduïu la contrasenya pel calendari %s (usuari %s)"
 
-#: ../libedataserverui/e-client-utils.c:862
+#: ../libedataserverui/e-client-utils.c:865
 #, c-format
 msgid ""
 "Enter password for task list %s (user %s)\n"
@@ -5258,12 +5259,12 @@ msgstr ""
 "Introduïu la contrasenya per la llista de tasques %s (usuari %s)\n"
 "Raó: %s"
 
-#: ../libedataserverui/e-client-utils.c:864
+#: ../libedataserverui/e-client-utils.c:867
 #, c-format
 msgid "Enter password for task list %s (user %s)"
 msgstr "Introduïu la contrasenya per la llista de tasques %s (usuari %s)"
 
-#: ../libedataserverui/e-client-utils.c:868
+#: ../libedataserverui/e-client-utils.c:871
 #, c-format
 msgid ""
 "Enter password for memo list %s (user %s)\n"
@@ -5272,16 +5273,16 @@ msgstr ""
 "Introduïu la contrasenya per la llista d'anotacions %s (usuari %s)\n"
 "Raó: %s"
 
-#: ../libedataserverui/e-client-utils.c:870
+#: ../libedataserverui/e-client-utils.c:873
 #, c-format
 msgid "Enter password for memo list %s (user %s)"
 msgstr "Introduïu la contrasenya per la llista d'anotacions %s (usuari %s)"
 
-#: ../libedataserverui/e-client-utils.c:981
+#: ../libedataserverui/e-client-utils.c:984
 msgid "Enter Passphrase"
 msgstr "Introduïu la contrasenya"
 
-#: ../libedataserverui/e-client-utils.c:983
+#: ../libedataserverui/e-client-utils.c:986
 msgid "Enter Password"
 msgstr "Introduïu la contrasenya"
 
@@ -5930,8 +5931,8 @@ msgstr "Continua funcionant fins que es connecti com a mínim un client"
 
 #~ msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
-#~ "No es poden moure els missatges de la carpeta «%s» a la carpeta «%s»: "
-#~ "error desconegut"
+#~ "No es poden moure els missatges de la carpeta «%s» a la carpeta «%s»: error "
+#~ "desconegut"
 
 #~ msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
@@ -5940,8 +5941,8 @@ msgstr "Continua funcionant fins que es connecti com a mínim un client"
 
 #~ msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
 #~ msgstr ""
-#~ "No es poden moure els missatges de la carpeta «%s» a la carpeta «%s»: "
-#~ "ordre incorrecta"
+#~ "No es poden moure els missatges de la carpeta «%s» a la carpeta «%s»: ordre "
+#~ "incorrecta"
 
 #~ msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
 #~ msgstr ""
@@ -5986,8 +5987,7 @@ msgstr "Continua funcionant fins que es connecti com a mínim un client"
 
 #~ msgid "Cannot get folder '%s' on IMAP server %s: Unknown error"
 #~ msgstr ""
-#~ "No s'ha pogut obtenir la carpeta «%s» al servidor IMAP %s: error "
-#~ "desconegut"
+#~ "No s'ha pogut obtenir la carpeta «%s» al servidor IMAP %s: error desconegut"
 
 #~ msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
 #~ msgstr ""
@@ -6017,16 +6017,16 @@ msgstr "Continua funcionant fins que es connecti com a mínim un client"
 
 #~ msgid "Cannot rename folder '%s' to '%s': Special folder"
 #~ msgstr ""
-#~ "No s'ha pogut canviar el nom de la carpeta «%s» com a «%s»: és una "
-#~ "carpeta especial"
+#~ "No s'ha pogut canviar el nom de la carpeta «%s» com a «%s»: és una carpeta "
+#~ "especial"
 
 #~ msgid "Cannot rename IMAP folders in offline mode."
 #~ msgstr "No es pot canviar el nom d'una carpeta IMAP en mode fora de línia."
 
 #~ msgid "Cannot rename folder '%s' to '%s': Invalid mailbox name"
 #~ msgstr ""
-#~ "No s'ha pogut canviar el nom de la carpeta «%s» a «%s»: el nom de la "
-#~ "bústia no és vàlid"
+#~ "No s'ha pogut canviar el nom de la carpeta «%s» a «%s»: el nom de la bústia "
+#~ "no és vàlid"
 
 #~ msgid "Cannot rename folder '%s' to '%s': Bad command"
 #~ msgstr ""
@@ -6035,8 +6035,8 @@ msgstr "Continua funcionant fins que es connecti com a mínim un client"
 
 #~ msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
 #~ msgstr ""
-#~ "No es pot obtenir informació de %s per al patró «%s» en el servidor IMAP "
-#~ "%s: %s"
+#~ "No es pot obtenir informació de %s per al patró «%s» en el servidor IMAP %"
+#~ "s: %s"
 
 #~ msgid "Cannot subscribe to IMAP folders in offline mode."
 #~ msgstr "No us podeu subscriure a carpetes IMAP en mode fora de línia."
