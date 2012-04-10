@@ -60,6 +60,10 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
+static GHashTable *directories_loaded;
+G_LOCK_DEFINE_STATIC (directories_loaded);
+
+
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	EDBusServer, e_dbus_server, G_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
@@ -424,12 +428,26 @@ void
 e_dbus_server_load_modules (EDBusServer *server)
 {
 	EDBusServerClass *class;
+	gboolean already_loaded;
+	const gchar *directory;
 	GList *list;
 
 	g_return_if_fail (E_IS_DBUS_SERVER (server));
 
 	class = E_DBUS_SERVER_GET_CLASS (server);
 	g_return_if_fail (class->module_directory != NULL);
+
+	/* This ensures a module directory is only loaded once. */
+	G_LOCK (directories_loaded);
+	if (directories_loaded == NULL)
+		directories_loaded = g_hash_table_new (NULL, NULL);
+	directory = g_intern_string (class->module_directory);
+	already_loaded = g_hash_table_contains (directories_loaded, directory);
+	g_hash_table_add (directories_loaded, (gpointer) directory);
+	G_UNLOCK (directories_loaded);
+
+	if (already_loaded)
+		return;
 
 	list = e_module_load_all_in_directory (class->module_directory);
 	g_list_free_full (list, (GDestroyNotify) g_type_module_unuse);
