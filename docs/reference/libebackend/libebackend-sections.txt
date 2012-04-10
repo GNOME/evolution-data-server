@@ -61,6 +61,7 @@ e_data_factory_get_type
 <FILE>e-dbus-server</FILE>
 <TITLE>EDBusServer</TITLE>
 EDBusServer
+EDBusServerExitCode
 e_dbus_server_run
 e_dbus_server_quit
 e_dbus_server_hold
@@ -73,10 +74,12 @@ E_TYPE_DBUS_SERVER
 E_DBUS_SERVER_CLASS
 E_IS_DBUS_SERVER_CLASS
 E_DBUS_SERVER_GET_CLASS
+E_TYPE_DBUS_SERVER_EXIT_CODE
 EDBusServerClass
 <SUBSECTION Private>
 EDBusServerPrivate
 e_dbus_server_get_type
+e_dbus_server_exit_code_get_type
 </SECTION>
 
 <SECTION>

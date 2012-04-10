@@ -1,3 +1,13 @@
+include $(top_srcdir)/glib-gen.mak
+glib_enum_headers=e-backend-enums.h
+glib_enum_output=e-backend-enumtypes
+glib_enum_define=E
+glib_enum_prefix=e
+
+ENUM_GENERATED = e-backend-enumtypes.h e-backend-enumtypes.c
+
+BUILT_SOURCES = $(ENUM_GENERATED)
+
 lib_LTLIBRARIES = libebackend-1.2.la
 
 libebackend_1_2_la_CPPFLAGS = \
@@ -12,6 +22,7 @@ libebackend_1_2_la_CPPFLAGS = \
 	$(NULL)
 
 libebackend_1_2_la_SOURCES =		\
+	$(BUILT_SOURCES)		\
 	e-backend.c			\
 	e-backend-factory.c		\
 	e-data-factory.c		\
@@ -41,6 +52,7 @@ libebackendincludedir = $(privincludedir)/libebackend
 
 libebackendinclude_HEADERS =		\
 	e-backend.h			\
+	e-backend-enums.h		\
 	e-backend-factory.h		\
 	e-data-factory.h		\
 	e-dbus-server.h			\
