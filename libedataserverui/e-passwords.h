@@ -20,6 +20,8 @@
  * USA.
  */
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #ifndef _E_PASSWORD_H_
 #define _E_PASSWORD_H_
 
@@ -71,3 +73,5 @@ gchar *      e_passwords_ask_password     (const gchar *title,
 G_END_DECLS
 
 #endif /* _E_PASSWORD_H_ */
+
+#endif /* EDS_DISABLE_DEPRECATED */
