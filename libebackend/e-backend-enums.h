@@ -25,13 +25,20 @@
  *   The server's run state is unchanged.
  * @E_DBUS_SERVER_EXIT_NORMAL:
  *   Normal termination.  The process itself may now terminate.
+ * @E_DBUS_SERVER_EXIT_RELOAD:
+ *   The server should reload its configuration and start again.
+ *   Servers that do not support reloading may wish to intercept
+ *   this exit code and stop the #EDBusServer::quit-server emission.
  *
  * Exit codes submitted to e_dbus_server_quit() and returned by
  * e_dbus_server_run().
+ *
+ * Since: 3.6
  **/
 typedef enum {
 	E_DBUS_SERVER_EXIT_NONE,
-	E_DBUS_SERVER_EXIT_NORMAL
+	E_DBUS_SERVER_EXIT_NORMAL,
+	E_DBUS_SERVER_EXIT_RELOAD
 } EDBusServerExitCode;
 
 #endif /* E_BACKEND_ENUMS_H */

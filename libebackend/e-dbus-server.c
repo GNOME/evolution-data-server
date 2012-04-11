@@ -43,6 +43,7 @@
 struct _EDBusServerPrivate {
 	GMainLoop *main_loop;
 	guint bus_owner_id;
+	guint hang_up_id;
 	guint terminate_id;
 
 	guint inactivity_timeout_id;
@@ -103,6 +104,15 @@ dbus_server_inactivity_timeout_cb (EDBusServer *server)
 
 #ifdef G_OS_UNIX
 static gboolean
+dbus_server_hang_up_cb (EDBusServer *server)
+{
+	g_print ("Received hang up signal.\n");
+	e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_RELOAD);
+
+	return FALSE;
+}
+
+static gboolean
 dbus_server_terminate_cb (EDBusServer *server)
 {
 	g_print ("Received terminate signal.\n");
@@ -123,6 +133,9 @@ dbus_server_finalize (GObject *object)
 
 	if (priv->bus_owner_id > 0)
 		g_bus_unown_name (priv->bus_owner_id);
+
+	if (priv->hang_up_id > 0)
+		g_source_remove (priv->hang_up_id);
 
 	if (priv->terminate_id > 0)
 		g_source_remove (priv->terminate_id);
@@ -204,6 +217,13 @@ static void
 dbus_server_quit_server (EDBusServer *server,
                          EDBusServerExitCode code)
 {
+	/* If we're reloading, voluntarily relinquish our bus
+	 * name to avoid triggering a "bus-name-lost" signal. */
+	if (code == E_DBUS_SERVER_EXIT_RELOAD) {
+		g_bus_unown_name (server->priv->bus_owner_id);
+		server->priv->bus_owner_id = 0;
+	}
+
 	server->priv->exit_code = code;
 	g_main_loop_quit (server->priv->main_loop);
 }
@@ -319,6 +339,8 @@ e_dbus_server_init (EDBusServer *server)
 	server->priv->wait_for_client = FALSE;
 
 #ifdef G_OS_UNIX
+	server->priv->hang_up_id = g_unix_signal_add (
+		SIGHUP, (GSourceFunc) dbus_server_hang_up_cb, server);
 	server->priv->terminate_id = g_unix_signal_add (
 		SIGTERM, (GSourceFunc) dbus_server_terminate_cb, server);
 #endif

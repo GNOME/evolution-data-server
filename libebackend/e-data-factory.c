@@ -196,9 +196,26 @@ data_factory_initable_init (GInitable *initable,
 }
 
 static void
+data_factory_quit_server (EDBusServer *server,
+                          EDBusServerExitCode exit_code)
+{
+	/* EDataFactory does not support reloading, so stop the signal
+	 * emission and return without chaining up to prevent quitting. */
+	if (exit_code == E_DBUS_SERVER_EXIT_RELOAD) {
+		g_signal_stop_emission_by_name (server, "quit-server");
+		return;
+	}
+
+	/* Chain up to parent's quit_server() method. */
+	E_DBUS_SERVER_CLASS (e_data_factory_parent_class)->
+		quit_server (server, exit_code);
+}
+
+static void
 e_data_factory_class_init (EDataFactoryClass *class)
 {
 	GObjectClass *object_class;
+	EDBusServerClass *dbus_server_class;
 
 	g_type_class_add_private (class, sizeof (EDataFactoryPrivate));
 
@@ -207,6 +224,9 @@ e_data_factory_class_init (EDataFactoryClass *class)
 	object_class->get_property = data_factory_get_property;
 	object_class->dispose = data_factory_dispose;
 	object_class->finalize = data_factory_finalize;
+
+	dbus_server_class = E_DBUS_SERVER_CLASS (class);
+	dbus_server_class->quit_server = data_factory_quit_server;
 
 	g_object_class_install_property (
 		object_class,
