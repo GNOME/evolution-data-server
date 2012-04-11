@@ -32,6 +32,7 @@
 
 #include <libebackend/e-module.h>
 #include <libebackend/e-extensible.h>
+#include <libebackend/e-backend-enumtypes.h>
 
 #define E_DBUS_SERVER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -47,6 +48,7 @@ struct _EDBusServerPrivate {
 	guint inactivity_timeout_id;
 	guint use_count;
 	gboolean wait_for_client;
+	EDBusServerExitCode exit_code;
 };
 
 enum {
@@ -62,7 +64,6 @@ static guint signals[LAST_SIGNAL];
 
 static GHashTable *directories_loaded;
 G_LOCK_DEFINE_STATIC (directories_loaded);
-
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	EDBusServer, e_dbus_server, G_TYPE_OBJECT,
@@ -95,7 +96,7 @@ dbus_server_name_lost_cb (GDBusConnection *connection,
 static gboolean
 dbus_server_inactivity_timeout_cb (EDBusServer *server)
 {
-	e_dbus_server_quit (server);
+	e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_NORMAL);
 
 	return FALSE;
 }
@@ -105,7 +106,7 @@ static gboolean
 dbus_server_terminate_cb (EDBusServer *server)
 {
 	g_print ("Received terminate signal.\n");
-	e_dbus_server_quit (server);
+	e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_NORMAL);
 
 	return FALSE;
 }
@@ -119,7 +120,9 @@ dbus_server_finalize (GObject *object)
 	priv = E_DBUS_SERVER_GET_PRIVATE (object);
 
 	g_main_loop_unref (priv->main_loop);
-	g_bus_unown_name (priv->bus_owner_id);
+
+	if (priv->bus_owner_id > 0)
+		g_bus_unown_name (priv->bus_owner_id);
 
 	if (priv->terminate_id > 0)
 		g_source_remove (priv->terminate_id);
@@ -166,10 +169,10 @@ dbus_server_bus_name_lost (EDBusServer *server,
 
 	g_print ("Bus name '%s' lost.\n", class->bus_name);
 
-	e_dbus_server_quit (server);
+	e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_NORMAL);
 }
 
-static void
+static EDBusServerExitCode
 dbus_server_run_server (EDBusServer *server)
 {
 	EDBusServerClass *class;
@@ -177,7 +180,9 @@ dbus_server_run_server (EDBusServer *server)
 	/* Try to acquire the well-known bus name. */
 
 	class = E_DBUS_SERVER_GET_CLASS (server);
-	g_return_if_fail (class->bus_name != NULL);
+	g_return_val_if_fail (
+		class->bus_name != NULL,
+		E_DBUS_SERVER_EXIT_NONE);
 
 	server->priv->bus_owner_id = g_bus_own_name (
 		G_BUS_TYPE_SESSION,
@@ -191,11 +196,15 @@ dbus_server_run_server (EDBusServer *server)
 		(GDestroyNotify) g_object_unref);
 
 	g_main_loop_run (server->priv->main_loop);
+
+	return server->priv->exit_code;
 }
 
 static void
-dbus_server_quit_server (EDBusServer *server)
+dbus_server_quit_server (EDBusServer *server,
+                         EDBusServerExitCode code)
 {
+	server->priv->exit_code = code;
 	g_main_loop_quit (server->priv->main_loop);
 }
 
@@ -274,19 +283,21 @@ e_dbus_server_class_init (EDBusServerClass *class)
 	 *
 	 * Emitted to request that @server start its main loop and
 	 * attempt to acquire its well-known session bus name.
+	 *
+	 * Returns: an #EDBusServerExitCode
 	 **/
 	signals[RUN_SERVER] = g_signal_new (
 		"run-server",
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EDBusServerClass, run_server),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
-		G_TYPE_NONE, 0);
+		NULL, NULL, NULL,
+		E_TYPE_DBUS_SERVER_EXIT_CODE, 0);
 
 	/**
 	 * EDBusServer::quit-server:
 	 * @server: the #EDBusServer which emitted the signal
+	 * @code: an #EDBusServerExitCode
 	 *
 	 * Emitted to request that @server quit its main loop.
 	 **/
@@ -295,9 +306,9 @@ e_dbus_server_class_init (EDBusServerClass *class)
 		G_OBJECT_CLASS_TYPE (object_class),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EDBusServerClass, quit_server),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
-		G_TYPE_NONE, 0);
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		E_TYPE_DBUS_SERVER_EXIT_CODE);
 }
 
 static void
@@ -322,44 +333,56 @@ e_dbus_server_init (EDBusServer *server)
  *
  * By default the @server will start its main loop and attempt to acquire
  * its well-known session bus name.  If the @server's main loop is already
- * running this function does nothing.
+ * running, the function will immediately return #E_DBUS_SERVER_EXIT_NONE.
+ * Otherwise the function blocks until e_dbus_server_quit() is called.
  *
  * If @wait_for_client is %TRUE, the @server will continue running until
- * the first client connection is made instead of terminating on its own
- * if no client connection is made within the first few seconds.
+ * the first client connection is made instead of quitting on its own if
+ * no client connection is made within the first few seconds.
+ *
+ * Returns: the exit code passed to e_dbus_server_quit()
  *
  * Since: 3.4
  **/
-void
+EDBusServerExitCode
 e_dbus_server_run (EDBusServer *server,
                    gboolean wait_for_client)
 {
-	g_return_if_fail (E_IS_DBUS_SERVER (server));
+	EDBusServerExitCode exit_code;
+
+	g_return_val_if_fail (
+		E_IS_DBUS_SERVER (server),
+		E_DBUS_SERVER_EXIT_NONE);
 
 	server->priv->wait_for_client = wait_for_client;
 
 	if (g_main_loop_is_running (server->priv->main_loop))
-		return;
+		return E_DBUS_SERVER_EXIT_NONE;
 
-	g_signal_emit (server, signals[RUN_SERVER], 0);
+	g_signal_emit (server, signals[RUN_SERVER], 0, &exit_code);
+
+	return exit_code;
 }
 
 /**
  * e_dbus_server_quit:
  * @server: an #EDBusServer
+ * @code: an #EDBusServerExitCode
  *
- * Emits the #EDBusServer::quit signal.
+ * Emits the #EDBusServer::quit signal with the given @code.
  *
- * By default the @server will quit its main loop.
+ * By default the @server will quit its main loop and cause
+ * e_dbus_server_run() to return @code.
  *
  * Since: 3.4
  **/
 void
-e_dbus_server_quit (EDBusServer *server)
+e_dbus_server_quit (EDBusServer *server,
+                    EDBusServerExitCode code)
 {
 	g_return_if_fail (E_IS_DBUS_SERVER (server));
 
-	g_signal_emit (server, signals[QUIT_SERVER], 0);
+	g_signal_emit (server, signals[QUIT_SERVER], 0, code);
 }
 
 /**

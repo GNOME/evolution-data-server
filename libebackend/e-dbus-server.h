@@ -20,6 +20,7 @@
 #define E_DBUS_SERVER_H
 
 #include <gio/gio.h>
+#include <libebackend/e-backend-enums.h>
 
 /* Standard GObject macros */
 #define E_TYPE_DBUS_SERVER \
@@ -72,16 +73,20 @@ struct _EDBusServerClass {
 						 GDBusConnection *connection);
 	void		(*bus_name_lost)	(EDBusServer *server,
 						 GDBusConnection *connection);
-	void		(*run_server)		(EDBusServer *server);
-	void		(*quit_server)		(EDBusServer *server);
+	EDBusServerExitCode
+			(*run_server)		(EDBusServer *server);
+	void		(*quit_server)		(EDBusServer *server,
+						 EDBusServerExitCode code);
 
 	gpointer reserved[14];
 };
 
 GType		e_dbus_server_get_type		(void) G_GNUC_CONST;
-void		e_dbus_server_run		(EDBusServer *server,
+EDBusServerExitCode
+		e_dbus_server_run		(EDBusServer *server,
 						 gboolean wait_for_client);
-void		e_dbus_server_quit		(EDBusServer *server);
+void		e_dbus_server_quit		(EDBusServer *server,
+						 EDBusServerExitCode code);
 void		e_dbus_server_hold		(EDBusServer *server);
 void		e_dbus_server_release		(EDBusServer *server);
 void		e_dbus_server_load_modules	(EDBusServer *server);
