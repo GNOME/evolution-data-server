@@ -1274,15 +1274,14 @@ generate_instances_for_chunk (ECalComponent *comp,
 	/* Add on specific exception dates. */
 	for (elem = exdates; elem; elem = elem->next) {
 		ECalComponentDateTime *cdt;
+		struct icaltimetype tt;
 
 		cdt = elem->data;
+		tt = icaltime_convert_to_zone (*cdt->value, zone);
 
-		/* FIXME: We currently assume EXDATEs are in the same timezone
-		 * as DTSTART. We should get the EXDATE timezone and convert
-		 * to the DTSTART timezone first. */
-		cotime.year     = cdt->value->year;
-		cotime.month    = cdt->value->month - 1;
-		cotime.day      = cdt->value->day;
+		cotime.year     = tt.year;
+		cotime.month    = tt.month - 1;
+		cotime.day      = tt.day;
 
 		/* If the EXDATE has a DATE value, set the time to the start
 		 * of the day and set flags to TRUE so we know to skip all
@@ -1293,9 +1292,9 @@ generate_instances_for_chunk (ECalComponent *comp,
 			cotime.second   = 0;
 			cotime.flags    = TRUE;
 		} else {
-			cotime.hour     = cdt->value->hour;
-			cotime.minute   = cdt->value->minute;
-			cotime.second   = cdt->value->second;
+			cotime.hour     = tt.hour;
+			cotime.minute   = tt.minute;
+			cotime.second   = tt.second;
 			cotime.flags    = FALSE;
 		}
 
