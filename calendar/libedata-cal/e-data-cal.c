@@ -1273,11 +1273,14 @@ e_data_cal_respond_remove_objects (EDataCal *cal,
 		g_error_free (error);
 	else {
 		const GSList *lid = ids, *lold = old_components, *lnew = new_components;
-		while (lid && lold && lnew) {
-			e_cal_backend_notify_component_removed (cal->priv->backend, lid->data, lold->data, lnew->data);
+		while (lid && lold) {
+			e_cal_backend_notify_component_removed (cal->priv->backend, lid->data, lold->data, lnew ? lnew->data : NULL);
+
 			lid = lid->next;
 			lold = lold->next;
-			lnew = lnew->next;
+
+			if (lnew)
+				lnew = lnew->next;
 		}
 	}
 }
