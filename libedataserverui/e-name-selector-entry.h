@@ -58,13 +58,6 @@
  **/
 #define FORCE_SHOW_ADDRESS   "/apps/evolution/addressbook/completion/show_address"
 
-/**
- * USER_QUERY_FIELDS:
- *
- * Since: 2.24
- **/
-#define USER_QUERY_FIELDS "/apps/evolution/addressbook/completion/user_query_fields"
-
 G_BEGIN_DECLS
 
 typedef struct _ENameSelectorEntry ENameSelectorEntry;

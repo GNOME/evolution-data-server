@@ -391,9 +391,6 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	gconf_client = gconf_client_get_default ();
 	uid = gconf_client_get_string (gconf_client, "/apps/evolution/addressbook/display/primary_addressbook",
 			NULL);
-	/* read user_query_fields here, because we are using it in call of setup_name_selector_model */
-	name_selector_dialog->priv->user_query_fields = gconf_client_get_list (
-		gconf_client, USER_QUERY_FIELDS, GCONF_VALUE_STRING, NULL);
 	g_object_unref (gconf_client);
 
 	setup_name_selector_model (name_selector_dialog);

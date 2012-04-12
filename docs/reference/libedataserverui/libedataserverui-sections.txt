@@ -253,7 +253,6 @@ e_name_selector_dialog_get_type
 <TITLE>ENameSelectorEntry</TITLE>
 MINIMUM_QUERY_LENGTH
 FORCE_SHOW_ADDRESS
-USER_QUERY_FIELDS
 ENameSelectorEntry
 e_name_selector_entry_new
 e_name_selector_entry_peek_contact_store

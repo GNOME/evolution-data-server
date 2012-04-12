@@ -3024,8 +3024,6 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 		else COMPLETION_CUE_MIN_LEN = 3;
 	}
 	COMPLETION_FORCE_SHOW_ADDRESS = gconf_client_get_bool (gconf, FORCE_SHOW_ADDRESS, NULL);
-	name_selector_entry->priv->user_query_fields = gconf_client_get_list (
-		gconf, USER_QUERY_FIELDS, GCONF_VALUE_STRING, NULL);
 	g_object_unref (G_OBJECT (gconf));
 
 	/* Edit signals */
