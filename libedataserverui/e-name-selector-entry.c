@@ -30,8 +30,10 @@
 #include <libebook/e-book-client.h>
 #include <libebook/e-contact.h>
 #include <libebook/e-destination.h>
-#include <libedataserverui/e-client-utils.h>
+
 #include <libedataserver/e-sexp.h>
+#include <libebackend/e-extensible.h>
+#include <libedataserverui/e-client-utils.h>
 
 #include "e-name-selector-entry.h"
 
@@ -80,7 +82,12 @@ static guint COMPLETION_CUE_MIN_LEN = 0;
 static gboolean COMPLETION_FORCE_SHOW_ADDRESS = FALSE;
 #define ENS_DEBUG(x)
 
-G_DEFINE_TYPE (ENameSelectorEntry, e_name_selector_entry, GTK_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_CODE (
+	ENameSelectorEntry,
+	e_name_selector_entry,
+	GTK_TYPE_ENTRY,
+	G_IMPLEMENT_INTERFACE (
+		E_TYPE_EXTENSIBLE, NULL))
 
 /* 1/3 of the second to wait until invoking autocomplete lookup */
 #define AUTOCOMPLETE_TIMEOUT 333
@@ -148,6 +155,16 @@ name_selector_entry_dispose (GObject *object)
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_name_selector_entry_parent_class)->dispose (object);
+}
+
+static void
+name_selector_entry_constructed (GObject *object)
+{
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_name_selector_entry_parent_class)->
+		constructed (object);
+
+	e_extensible_load_extensions (E_EXTENSIBLE (object));
 }
 
 static void
@@ -231,6 +248,7 @@ e_name_selector_entry_class_init (ENameSelectorEntryClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = name_selector_entry_dispose;
+	object_class->constructed = name_selector_entry_constructed;
 
 	widget_class = GTK_WIDGET_CLASS (class);
 	widget_class->realize = name_selector_entry_realize;
