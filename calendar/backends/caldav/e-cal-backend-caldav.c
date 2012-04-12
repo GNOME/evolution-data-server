@@ -1527,6 +1527,41 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav,
 	g_object_unref (message);
 }
 
+static gchar *
+caldav_gen_file_from_uid_cal (ECalBackendCalDAV *cbdav,
+			      icalcomponent *icalcomp)
+{
+	icalcomponent_kind my_kind;
+	const gchar *uid = NULL;
+	gchar *filename, *res;
+
+	g_return_val_if_fail (cbdav != NULL, NULL);
+	g_return_val_if_fail (icalcomp != NULL, NULL);
+
+	my_kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav));
+	if (icalcomponent_isa (icalcomp) == ICAL_VCALENDAR_COMPONENT) {
+		icalcomponent *subcomp;
+
+		for (subcomp = icalcomponent_get_first_component (icalcomp, my_kind);
+		     subcomp;
+		     subcomp = icalcomponent_get_next_component (icalcomp, my_kind)) {
+			uid = icalcomponent_get_uid (subcomp);
+			break;
+		}
+	} else if (icalcomponent_isa (icalcomp) == my_kind) {
+		uid = icalcomponent_get_uid (icalcomp);
+	}
+
+	if (!uid)
+		return NULL;
+
+	filename = g_strconcat (uid, ".ics", NULL);
+	res = soup_uri_encode (filename, NULL);
+	g_free (filename);
+
+	return res;
+}
+
 static gboolean
 caldav_server_put_object (ECalBackendCalDAV *cbdav,
                           CalDAVObject *object,
@@ -1591,7 +1626,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 	}
 
 	if (status_code_to_result (message, cbdav->priv, perror)) {
-		gboolean was_get = FALSE;
+		GError *local_error = NULL;
 
 		hdr = soup_message_headers_get (message->response_headers, "ETag");
 		if (hdr != NULL) {
@@ -1617,12 +1652,38 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 			}
 		}
 
-		was_get = TRUE;
+		if (!caldav_server_get_object (cbdav, object, &local_error)) {
+			if (g_error_matches (local_error, E_DATA_CAL_ERROR, NoSuchCal)) {
+				gchar *file;
 
-		if (caldav_server_get_object (cbdav, object, perror)) {
+				/* OK, the event was properly created, but cannot be found on the place
+				   where it was PUT - why didn't server tell us where it saved it? */
+				g_clear_error (&local_error);
+
+				/* try whether it's saved as its UID.ics file */
+				file = caldav_gen_file_from_uid_cal (cbdav, icalcomp);
+				if (file) {
+					g_free (object->href);
+					object->href = file;
+
+					if (!caldav_server_get_object (cbdav, object, &local_error)) {
+						if (g_error_matches (local_error, E_DATA_CAL_ERROR, NoSuchCal)) {
+							g_clear_error (&local_error);
+
+							/* not sure what can happen, but do not need to guess for ever,
+							   thus report success and update the calendar to get fresh info */
+							update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
+							g_cond_signal (cbdav->priv->cond);
+						}
+					}
+				}
+			}
+		}
+
+		if (!local_error) {
 			icalcomponent *use_comp = NULL;
 
-			if (object->cdata && was_get) {
+			if (object->cdata) {
 				/* maybe server also modified component, thus rather store the server's */
 				use_comp = icalparser_parse_string (object->cdata);
 			}
@@ -1634,6 +1695,8 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 
 			if (use_comp != icalcomp)
 				icalcomponent_free (use_comp);
+		} else {
+			g_propagate_error (perror, local_error);
 		}
 	} else if (message->status_code == 401) {
 		caldav_notify_auth_required (cbdav);
