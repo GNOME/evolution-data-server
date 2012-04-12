@@ -29,7 +29,6 @@
 #include <string.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n-lib.h>
-#include <gconf/gconf-client.h>
 
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-categories.h>
@@ -155,8 +154,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkCellRenderer   *cell_renderer;
 	GtkTreeSelection  *selection;
 	ESourceList       *source_list;
-	GConfClient *gconf_client;
-	gchar *uid, *tmp_str;
+	gchar *tmp_str;
 	GtkWidget *name_selector_box;
 	GtkWidget *show_contacts_label;
 	GtkWidget *hbox2;
@@ -388,11 +386,6 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	name_selector_dialog->priv->sections =
 		g_array_new (FALSE, FALSE, sizeof (Section));
 
-	gconf_client = gconf_client_get_default ();
-	uid = gconf_client_get_string (gconf_client, "/apps/evolution/addressbook/display/primary_addressbook",
-			NULL);
-	g_object_unref (gconf_client);
-
 	setup_name_selector_model (name_selector_dialog);
 
 	/* Create source menu */
@@ -402,12 +395,6 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 		source_combo, "changed",
 		G_CALLBACK (source_changed), name_selector_dialog);
 	g_object_unref (source_list);
-
-	if (uid) {
-		e_source_combo_box_set_active_uid (
-			E_SOURCE_COMBO_BOX (source_combo), uid);
-		g_free (uid);
-	}
 
 	gtk_label_set_mnemonic_widget (GTK_LABEL (AddressBookLabel), source_combo);
 	gtk_widget_show (source_combo);
