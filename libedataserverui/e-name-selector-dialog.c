@@ -34,6 +34,8 @@
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-categories.h>
 
+#include <libebackend/e-extensible.h>
+
 #include <libebook/e-book-client.h>
 #include <libebook/e-book-client-view.h>
 #include <libebook/e-book-query.h>
@@ -109,7 +111,12 @@ static void     destination_column_formatter  (GtkTreeViewColumn *column, GtkCel
  * Class/object setup *
  * ------------------ */
 
-G_DEFINE_TYPE (ENameSelectorDialog, e_name_selector_dialog, GTK_TYPE_DIALOG)
+G_DEFINE_TYPE_WITH_CODE (
+	ENameSelectorDialog,
+	e_name_selector_dialog,
+	GTK_TYPE_DIALOG,
+	G_IMPLEMENT_INTERFACE (
+		E_TYPE_EXTENSIBLE, NULL))
 
 static void
 e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_dialog)
@@ -435,7 +442,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 }
 
 static void
-e_name_selector_dialog_dispose (GObject *object)
+name_selector_dialog_dispose (GObject *object)
 {
 	remove_books (E_NAME_SELECTOR_DIALOG (object));
 	shutdown_name_selector_model (E_NAME_SELECTOR_DIALOG (object));
@@ -445,7 +452,7 @@ e_name_selector_dialog_dispose (GObject *object)
 }
 
 static void
-e_name_selector_dialog_finalize (GObject *object)
+name_selector_dialog_finalize (GObject *object)
 {
 	ENameSelectorDialogPrivate *priv;
 
@@ -463,6 +470,16 @@ e_name_selector_dialog_finalize (GObject *object)
 }
 
 static void
+name_selector_dialog_constructed (GObject *object)
+{
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->
+		constructed (object);
+
+	e_extensible_load_extensions (E_EXTENSIBLE (object));
+}
+
+static void
 e_name_selector_dialog_class_init (ENameSelectorDialogClass *class)
 {
 	GObjectClass *object_class;
@@ -470,8 +487,9 @@ e_name_selector_dialog_class_init (ENameSelectorDialogClass *class)
 	g_type_class_add_private (class, sizeof (ENameSelectorDialogPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->dispose = e_name_selector_dialog_dispose;
-	object_class->finalize = e_name_selector_dialog_finalize;
+	object_class->dispose = name_selector_dialog_dispose;
+	object_class->finalize = name_selector_dialog_finalize;
+	object_class->constructed = name_selector_dialog_constructed;
 }
 
 /**
