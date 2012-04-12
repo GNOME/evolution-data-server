@@ -32,9 +32,6 @@
     <xi:include href="xml/e-credentials.xml"/>
     <xi:include href="xml/e-debug-log.xml"/>
     <xi:include href="xml/e-flag.xml"/>
-    <xi:include href="xml/e-iterator.xml"/>
-    <xi:include href="xml/e-list.xml"/>
-    <xi:include href="xml/e-list-iterator.xml"/>
     <xi:include href="xml/e-memory.xml"/>
     <xi:include href="xml/e-operation-pool.xml"/>
     <xi:include href="xml/e-proxy.xml"/>
@@ -46,6 +43,13 @@
     <xi:include href="xml/e-url.xml"/>
     <xi:include href="xml/e-xml-hash-utils.xml"/>
     <xi:include href="xml/eds-version.xml"/>
+  </chapter>
+
+  <chapter>
+    <title>Deprecated Classes</title>
+    <xi:include href="xml/e-iterator.xml"/>
+    <xi:include href="xml/e-list.xml"/>
+    <xi:include href="xml/e-list-iterator.xml"/>
   </chapter>
 
   <index id="api-index-full">

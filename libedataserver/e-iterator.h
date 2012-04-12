@@ -6,6 +6,8 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #ifndef E_ITERATOR_H
 #define E_ITERATOR_H
 
@@ -86,3 +88,6 @@ void		e_iterator_invalidate		(EIterator *iterator);
 G_END_DECLS
 
 #endif /* E_ITERATOR_H */
+
+#endif /* EDS_DISABLE_DEPRECATED */
+

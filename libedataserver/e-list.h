@@ -6,6 +6,8 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #ifndef E_LIST_H
 #define E_LIST_H
 
@@ -83,3 +85,6 @@ void		e_list_invalidate_iterators	(EList *list,
 G_END_DECLS
 
 #endif /* E_LIST_H */
+
+#endif /* EDS_DISABLE_DEPRECATED */
+
