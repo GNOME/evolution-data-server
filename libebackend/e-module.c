@@ -159,7 +159,7 @@ module_load (GTypeModule *type_module)
 	return TRUE;
 
 fail:
-	g_warning ("%s", g_module_error ());
+	g_warning ("%s: %s", G_STRFUNC, g_module_error ());
 
 	if (priv->module != NULL)
 		g_module_close (priv->module);
@@ -289,7 +289,7 @@ e_module_load_all_in_directory (const gchar *dirname)
 
 	dir = g_dir_open (dirname, 0, &error);
 	if (dir == NULL) {
-		g_warning ("%s", error->message);
+		g_warning ("%s: %s", G_STRFUNC, error->message);
 		g_error_free (error);
 		return NULL;
 	}

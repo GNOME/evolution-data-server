@@ -78,7 +78,7 @@ ENameSelectorList *
 						(ENameSelector *name_selector,
 						 const gchar *name);
 void		e_name_selector_show_dialog	(ENameSelector *name_selector,
-						 GtkWidget     *for_transient_widget);
+						 GtkWidget *for_transient_widget);
 void		e_name_selector_load_books	(ENameSelector *name_selector);
 void		e_name_selector_cancel_loading	(ENameSelector *name_selector);
 
