@@ -66,6 +66,8 @@ e_backend_factory_init (EBackendFactory *factory)
  * the hash key need only be unique among subclasses, not among instances of
  * each subclass.
  *
+ * Returns: a hash key which uniquely identifies @factory
+ *
  * Since: 3.4
  **/
 const gchar *
