@@ -45,13 +45,6 @@ struct _EDataFactoryPrivate {
 
 	/* Hash Key -> EBackendFactory */
 	GHashTable *backend_factories;
-
-	gboolean online;
-};
-
-enum {
-	PROP_0,
-	PROP_ONLINE
 };
 
 /* Forward Declarations */
@@ -76,40 +69,6 @@ data_factory_last_client_gone_cb (EBackend *backend,
 	g_mutex_lock (factory->priv->mutex);
 	g_hash_table_remove (factory->priv->backends, uid);
 	g_mutex_unlock (factory->priv->mutex);
-}
-
-static void
-data_factory_set_property (GObject *object,
-                           guint property_id,
-                           const GValue *value,
-                           GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_ONLINE:
-			e_data_factory_set_online (
-				E_DATA_FACTORY (object),
-				g_value_get_boolean (value));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-}
-
-static void
-data_factory_get_property (GObject *object,
-                           guint property_id,
-                           GValue *value,
-                           GParamSpec *pspec)
-{
-	switch (property_id) {
-		case PROP_ONLINE:
-			g_value_set_boolean (
-				value, e_data_factory_get_online (
-				E_DATA_FACTORY (object)));
-			return;
-	}
-
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
@@ -148,19 +107,9 @@ data_factory_initable_init (GInitable *initable,
                             GError **error)
 {
 	EDataFactoryPrivate *priv;
-	GNetworkMonitor *monitor;
 	GList *list, *link;
 
 	priv = E_DATA_FACTORY_GET_PRIVATE (initable);
-
-	/* Synchronize network monitoring. */
-
-	monitor = g_network_monitor_get_default ();
-
-	g_object_bind_property (
-		monitor, "network-available",
-		initable, "online",
-		G_BINDING_SYNC_CREATE);
 
 	/* Load all module libraries containing extensions. */
 
@@ -220,24 +169,11 @@ e_data_factory_class_init (EDataFactoryClass *class)
 	g_type_class_add_private (class, sizeof (EDataFactoryPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->set_property = data_factory_set_property;
-	object_class->get_property = data_factory_get_property;
 	object_class->dispose = data_factory_dispose;
 	object_class->finalize = data_factory_finalize;
 
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
 	dbus_server_class->quit_server = data_factory_quit_server;
-
-	g_object_class_install_property (
-		object_class,
-		PROP_ONLINE,
-		g_param_spec_boolean (
-			"online",
-			"Online",
-			"Whether the server is online",
-			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -303,11 +239,6 @@ e_data_factory_get_backend (EDataFactory *factory,
 	if (backend == NULL)
 		goto exit;
 
-	g_object_bind_property (
-		factory, "online",
-		backend, "online",
-		G_BINDING_SYNC_CREATE);
-
 	g_signal_connect (
 		backend, "last-client-gone",
 		G_CALLBACK (data_factory_last_client_gone_cb), factory);
@@ -322,30 +253,3 @@ exit:
 	return backend;
 }
 
-gboolean
-e_data_factory_get_online (EDataFactory *factory)
-{
-	g_return_val_if_fail (E_IS_DATA_FACTORY (factory), FALSE);
-
-	return factory->priv->online;
-}
-
-void
-e_data_factory_set_online (EDataFactory *factory,
-                           gboolean online)
-{
-	g_return_if_fail (E_IS_DATA_FACTORY (factory));
-
-	/* Avoid unnecessary "notify" signals. */
-	if (online == factory->priv->online)
-		return;
-
-	factory->priv->online = online;
-
-	g_object_notify (G_OBJECT (factory), "online");
-
-	g_print (
-		"%s is now %s.\n",
-		G_OBJECT_TYPE_NAME (factory),
-		online ? "online" : "offline");
-}

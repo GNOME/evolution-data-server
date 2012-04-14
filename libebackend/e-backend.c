@@ -34,6 +34,7 @@
 #include "e-backend.h"
 
 #include <config.h>
+#include <gio/gio.h>
 
 #define E_BACKEND_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -132,6 +133,24 @@ backend_dispose (GObject *object)
 }
 
 static void
+backend_constructed (GObject *object)
+{
+	GNetworkMonitor *monitor;
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_backend_parent_class)->constructed (object);
+
+	/* Synchronize network monitoring. */
+
+	monitor = g_network_monitor_get_default ();
+
+	g_object_bind_property (
+		monitor, "network-available",
+		object, "online",
+		G_BINDING_SYNC_CREATE);
+}
+
+static void
 e_backend_class_init (EBackendClass *class)
 {
 	GObjectClass *object_class;
@@ -142,6 +161,7 @@ e_backend_class_init (EBackendClass *class)
 	object_class->set_property = backend_set_property;
 	object_class->get_property = backend_get_property;
 	object_class->dispose = backend_dispose;
+	object_class->constructed = backend_constructed;
 
 	g_object_class_install_property (
 		object_class,

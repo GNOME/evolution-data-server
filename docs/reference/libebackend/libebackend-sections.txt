@@ -43,8 +43,6 @@ e_backend_factory_get_type
 <TITLE>EDataFactory</TITLE>
 EDataFactory
 e_data_factory_get_backend
-e_data_factory_get_online
-e_data_factory_set_online
 <SUBSECTION Standard>
 E_DATA_FACTORY
 E_IS_DATA_FACTORY

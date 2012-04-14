@@ -70,9 +70,6 @@ GType		e_data_factory_get_type		(void) G_GNUC_CONST;
 EBackend *	e_data_factory_get_backend	(EDataFactory *factory,
 						 const gchar *hash_key,
 						 ESource *source);
-gboolean	e_data_factory_get_online	(EDataFactory *factory);
-void		e_data_factory_set_online	(EDataFactory *factory,
-						 gboolean online);
 
 G_END_DECLS
 
