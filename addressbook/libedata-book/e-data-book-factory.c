@@ -417,6 +417,7 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 {
 	GObjectClass *object_class;
 	EDBusServerClass *dbus_server_class;
+	EDataFactoryClass *data_factory_class;
 
 	g_type_class_add_private (class, sizeof (EDataBookFactoryPrivate));
 
@@ -429,6 +430,9 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 	dbus_server_class->module_directory = BACKENDDIR;
 	dbus_server_class->bus_acquired = data_book_factory_bus_acquired;
 	dbus_server_class->bus_name_lost = data_book_factory_bus_name_lost;
+
+	data_factory_class = E_DATA_FACTORY_CLASS (class);
+	data_factory_class->backend_factory_type = E_TYPE_BOOK_BACKEND_FACTORY;
 }
 
 #ifdef HAVE_GOA
