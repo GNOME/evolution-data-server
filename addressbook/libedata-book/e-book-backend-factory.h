@@ -52,6 +52,7 @@ typedef struct _EBookBackendFactoryPrivate EBookBackendFactoryPrivate;
 
 struct _EBookBackendFactory {
 	EBackendFactory parent;
+	EBookBackendFactoryPrivate *priv;
 };
 
 struct _EBookBackendFactoryClass {
