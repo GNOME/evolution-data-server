@@ -11,6 +11,7 @@
 
 #include "e-book-backend.h"
 #include "e-book-backend-factory.h"
+#include "e-data-book-factory.h"
 
 G_DEFINE_ABSTRACT_TYPE (
 	EBookBackendFactory,
@@ -48,7 +49,11 @@ book_backend_factory_new_backend (EBackendFactory *factory,
 static void
 e_book_backend_factory_class_init (EBookBackendFactoryClass *class)
 {
+	EExtensionClass *extension_class;
 	EBackendFactoryClass *factory_class;
+
+	extension_class = E_EXTENSION_CLASS (class);
+	extension_class->extensible_type = E_TYPE_DATA_BOOK_FACTORY;
 
 	factory_class = E_BACKEND_FACTORY_CLASS (class);
 	factory_class->get_hash_key = book_backend_factory_get_hash_key;
