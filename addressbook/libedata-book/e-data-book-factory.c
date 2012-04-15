@@ -303,7 +303,7 @@ remove_data_book_cb (EDataBook *data_book)
 }
 
 static void
-e_data_book_factory_dispose (GObject *object)
+data_book_factory_dispose (GObject *object)
 {
 	EDataBookFactoryPrivate *priv;
 
@@ -328,7 +328,7 @@ e_data_book_factory_dispose (GObject *object)
 }
 
 static void
-e_data_book_factory_finalize (GObject *object)
+data_book_factory_finalize (GObject *object)
 {
 	EDataBookFactoryPrivate *priv;
 
@@ -421,8 +421,8 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 	g_type_class_add_private (class, sizeof (EDataBookFactoryPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->dispose = e_data_book_factory_dispose;
-	object_class->finalize = e_data_book_factory_finalize;
+	object_class->dispose = data_book_factory_dispose;
+	object_class->finalize = data_book_factory_finalize;
 
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
 	dbus_server_class->bus_name = ADDRESS_BOOK_DBUS_SERVICE_NAME;
