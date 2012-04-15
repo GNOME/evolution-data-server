@@ -47,12 +47,8 @@ struct _EDataFactoryPrivate {
 	GHashTable *backend_factories;
 };
 
-/* Forward Declarations */
-static void	e_data_factory_initable_init	(GInitableIface *interface);
-
-G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
-	EDataFactory, e_data_factory, E_TYPE_DBUS_SERVER,
-	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_data_factory_initable_init))
+G_DEFINE_ABSTRACT_TYPE (
+	EDataFactory, e_data_factory, E_TYPE_DBUS_SERVER)
 
 static void
 data_factory_last_client_gone_cb (EBackend *backend,
@@ -100,24 +96,25 @@ data_factory_finalize (GObject *object)
 	G_OBJECT_CLASS (e_data_factory_parent_class)->finalize (object);
 }
 
-static gboolean
-data_factory_initable_init (GInitable *initable,
-                            GCancellable *cancellable,
-                            GError **error)
+static void
+data_factory_constructed (GObject *object)
 {
 	EDataFactoryPrivate *priv;
 	GList *list, *link;
 
-	priv = E_DATA_FACTORY_GET_PRIVATE (initable);
+	priv = E_DATA_FACTORY_GET_PRIVATE (object);
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_data_factory_parent_class)->constructed (object);
 
 	/* Load all module libraries containing extensions. */
 
-	e_dbus_server_load_modules (E_DBUS_SERVER (initable));
+	e_dbus_server_load_modules (E_DBUS_SERVER (object));
 
 	/* Collect all backend factories into a hash table. */
 
 	list = e_extensible_list_extensions (
-		E_EXTENSIBLE (initable), E_TYPE_BACKEND_FACTORY);
+		E_EXTENSIBLE (object), E_TYPE_BACKEND_FACTORY);
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		EBackendFactory *backend_factory;
@@ -139,8 +136,6 @@ data_factory_initable_init (GInitable *initable,
 	}
 
 	g_list_free (list);
-
-	return TRUE;
 }
 
 static void
@@ -170,15 +165,10 @@ e_data_factory_class_init (EDataFactoryClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = data_factory_dispose;
 	object_class->finalize = data_factory_finalize;
+	object_class->constructed = data_factory_constructed;
 
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
 	dbus_server_class->quit_server = data_factory_quit_server;
-}
-
-static void
-e_data_factory_initable_init (GInitableIface *interface)
-{
-	interface->init = data_factory_initable_init;
 }
 
 static void
