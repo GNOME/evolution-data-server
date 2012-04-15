@@ -52,8 +52,7 @@ static void	e_data_factory_initable_init	(GInitableIface *interface);
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	EDataFactory, e_data_factory, E_TYPE_DBUS_SERVER,
-	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_data_factory_initable_init)
-	G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
+	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, e_data_factory_initable_init))
 
 static void
 data_factory_last_client_gone_cb (EBackend *backend,
