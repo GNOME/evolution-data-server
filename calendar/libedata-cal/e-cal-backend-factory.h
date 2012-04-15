@@ -53,6 +53,7 @@ typedef struct _ECalBackendFactoryPrivate ECalBackendFactoryPrivate;
 
 struct _ECalBackendFactory {
 	EBackendFactory parent;
+	ECalBackendFactoryPrivate *priv;
 };
 
 struct _ECalBackendFactoryClass {
