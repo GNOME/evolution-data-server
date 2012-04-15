@@ -107,10 +107,6 @@ data_factory_constructed (GObject *object)
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_data_factory_parent_class)->constructed (object);
 
-	/* Load all module libraries containing extensions. */
-
-	e_dbus_server_load_modules (E_DBUS_SERVER (object));
-
 	/* Collect all backend factories into a hash table. */
 
 	list = e_extensible_list_extensions (

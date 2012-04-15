@@ -148,6 +148,17 @@ dbus_server_finalize (GObject *object)
 }
 
 static void
+dbus_server_constructed (GObject *object)
+{
+	e_dbus_server_load_modules (E_DBUS_SERVER (object));
+
+	e_extensible_load_extensions (E_EXTENSIBLE (object));
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_dbus_server_parent_class)->constructed (object);
+}
+
+static void
 dbus_server_bus_acquired (EDBusServer *server,
                           GDBusConnection *connection)
 {
@@ -237,6 +248,7 @@ e_dbus_server_class_init (EDBusServerClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = dbus_server_finalize;
+	object_class->constructed = dbus_server_constructed;
 
 	class->bus_acquired = dbus_server_bus_acquired;
 	class->bus_name_acquired = dbus_server_bus_name_acquired;
