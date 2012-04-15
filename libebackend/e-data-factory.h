@@ -63,6 +63,8 @@ struct _EDataFactory {
 struct _EDataFactoryClass {
 	EDBusServerClass parent_class;
 
+	GType backend_factory_type;
+
 	gpointer reserved[16];
 };
 

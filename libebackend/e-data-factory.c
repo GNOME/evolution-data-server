@@ -99,9 +99,11 @@ data_factory_finalize (GObject *object)
 static void
 data_factory_constructed (GObject *object)
 {
+	EDataFactoryClass *class;
 	EDataFactoryPrivate *priv;
 	GList *list, *link;
 
+	class = E_DATA_FACTORY_GET_CLASS (object);
 	priv = E_DATA_FACTORY_GET_PRIVATE (object);
 
 	/* Chain up to parent's constructed() method. */
@@ -110,7 +112,7 @@ data_factory_constructed (GObject *object)
 	/* Collect all backend factories into a hash table. */
 
 	list = e_extensible_list_extensions (
-		E_EXTENSIBLE (object), E_TYPE_BACKEND_FACTORY);
+		E_EXTENSIBLE (object), class->backend_factory_type);
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		EBackendFactory *backend_factory;
@@ -165,6 +167,8 @@ e_data_factory_class_init (EDataFactoryClass *class)
 
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
 	dbus_server_class->quit_server = data_factory_quit_server;
+
+	class->backend_factory_type = E_TYPE_BACKEND_FACTORY;
 }
 
 static void
