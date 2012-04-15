@@ -12,6 +12,7 @@
 
 #include "e-cal-backend.h"
 #include "e-cal-backend-factory.h"
+#include "e-data-cal-factory.h"
 
 G_DEFINE_ABSTRACT_TYPE (
 	ECalBackendFactory,
@@ -72,7 +73,11 @@ cal_backend_factory_new_backend (EBackendFactory *factory,
 static void
 e_cal_backend_factory_class_init (ECalBackendFactoryClass *class)
 {
+	EExtensionClass *extension_class;
 	EBackendFactoryClass *factory_class;
+
+	extension_class = E_EXTENSION_CLASS (class);
+	extension_class->extensible_type = E_TYPE_DATA_CAL_FACTORY;
 
 	factory_class = E_BACKEND_FACTORY_CLASS (class);
 	factory_class->get_hash_key = cal_backend_factory_get_hash_key;
