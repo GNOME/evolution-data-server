@@ -296,7 +296,7 @@ remove_data_cal_cb (EDataCal *data_cal)
 }
 
 static void
-e_data_cal_factory_dispose (GObject *object)
+data_cal_factory_dispose (GObject *object)
 {
 	EDataCalFactoryPrivate *priv;
 
@@ -312,7 +312,7 @@ e_data_cal_factory_dispose (GObject *object)
 }
 
 static void
-e_data_cal_factory_finalize (GObject *object)
+data_cal_factory_finalize (GObject *object)
 {
 	EDataCalFactoryPrivate *priv;
 
@@ -401,8 +401,8 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 	g_type_class_add_private (class, sizeof (EDataCalFactoryPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->dispose = e_data_cal_factory_dispose;
-	object_class->finalize = e_data_cal_factory_finalize;
+	object_class->dispose = data_cal_factory_dispose;
+	object_class->finalize = data_cal_factory_finalize;
 
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
 	dbus_server_class->bus_name = CALENDAR_DBUS_SERVICE_NAME;
