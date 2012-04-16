@@ -1,3 +1,33 @@
+Evolution-Data-Server 3.4.1 2012-04-16
+--------------------------------------
+
+Bug Fixes:
+	Bug 673894 - Adding events to Google Calendar is broken (Milan Crha)
+	Bug 667477 - EXDATE containing time are not handle correctly (Milan Crha)
+	Bug 666896 - Workaround Improper GB-2312 Mail Encodings (Palmer Dabbelt)
+	Bug 666438 - Contact's Full name field not displayed in list view (Milan Crha)
+	Bug 673563 - Encoded filename for Outlook broken by spaces (Milan Crha)
+	Bug 673527 - Addressbook bulk methods are broken (Christophe Dumez)
+	Bug 664793 - Deadlock on EClient operation cancel (Milan Crha)
+	Bug 663324 - Categories not correctly aligned with Google contacts (Milan Crha)
+	Bug 672258 - Error while moving messages in local folders (Milan Crha)
+	Bug 671172 - camel: smtp: Make EHLO keywords check case insensitive (Pawel Moll)
+	Bug 670470 - Do not force password for IMAPx connection (Yanko Kaneti)
+
+Miscellaneous Fixes:
+	Add "new symbols in 3.4" indices to API docs. (Matthew Barnes)
+	CalDAV backend could starve on its dispose waiting for slave finish (Milan Crha)
+	Avoid possible use-after-free in Google's addressbook backend (Milan Crha)
+
+Translations:
+	Gil Forcada (ca)
+	Rajesh Ranjan (hi)
+	Valencian translation  (ca)
+	ManojKumar Giri (or)
+	Jordi Serratosa (ca)
+	Sandeep Sheshrao Shedmake (mr)
+
+
 Evolution-Data-Server 3.4.0 2012-03-26
 --------------------------------------
 
