@@ -15,6 +15,7 @@ test_e_sexp_CPPFLAGS =							\
 test_e_sexp_LDADD =							\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la 		\
+	$(top_builddir)/libebackend/libebackend-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(EVOLUTION_CALENDAR_LIBS)					\
 	$(E_DATA_SERVER_LIBS)
@@ -31,6 +32,7 @@ test_intervaltree_CPPFLAGS =						\
 test_intervaltree_LDADD =						\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
+	$(top_builddir)/libebackend/libebackend-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(EVOLUTION_CALENDAR_LIBS)
 
@@ -46,6 +48,7 @@ test_intervaltree_coverage_CPPFLAGS =					\
 test_intervaltree_coverage_LDADD = \
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
+	$(top_builddir)/libebackend/libebackend-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(EVOLUTION_CALENDAR_LIBS)					\
 	-lgcov
