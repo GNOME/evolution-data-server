@@ -48,8 +48,6 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_DATA_BOOK_FACTORY, EDataBookFactoryPrivate))
 
-G_DEFINE_TYPE (EDataBookFactory, e_data_book_factory, E_TYPE_DATA_FACTORY);
-
 struct _EDataBookFactoryPrivate {
 	EGdbusBookFactory *gdbus_object;
 
@@ -66,6 +64,18 @@ struct _EDataBookFactoryPrivate {
 	GHashTable *goa_accounts;
 #endif
 };
+
+/* Forward Declarations */
+static void	e_data_book_factory_initable_init
+						(GInitableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	EDataBookFactory,
+	e_data_book_factory,
+	E_TYPE_DATA_FACTORY,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_data_book_factory_initable_init))
 
 static gchar *
 e_data_book_factory_extract_proto_from_uri (const gchar *uri)
@@ -412,6 +422,16 @@ data_book_factory_bus_name_lost (EDBusServer *server,
 		bus_name_lost (server, connection);
 }
 
+static gboolean
+data_book_factory_initable_init (GInitable *initable,
+                                 GCancellable *cancellable,
+                                 GError **error)
+{
+	/* XXX Nothing to do here just yet.  More to come soon. */
+
+	return TRUE;
+}
+
 static void
 e_data_book_factory_class_init (EDataBookFactoryClass *class)
 {
@@ -433,6 +453,12 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 
 	data_factory_class = E_DATA_FACTORY_CLASS (class);
 	data_factory_class->backend_factory_type = E_TYPE_BOOK_BACKEND_FACTORY;
+}
+
+static void
+e_data_book_factory_initable_init (GInitableIface *interface)
+{
+	interface->init = data_book_factory_initable_init;
 }
 
 #ifdef HAVE_GOA
