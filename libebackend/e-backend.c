@@ -51,13 +51,6 @@ enum {
 	PROP_SOURCE
 };
 
-enum {
-	LAST_CLIENT_GONE,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
-
 G_DEFINE_ABSTRACT_TYPE (EBackend, e_backend, G_TYPE_OBJECT)
 
 static void
@@ -186,15 +179,6 @@ e_backend_class_init (EBackendClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
-
-	signals[LAST_CLIENT_GONE] = g_signal_new (
-		"last-client-gone",
-		G_OBJECT_CLASS_TYPE (object_class),
-		G_SIGNAL_RUN_LAST,
-		G_STRUCT_OFFSET (EBackendClass, last_client_gone),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
-		G_TYPE_NONE, 0);
 }
 
 static void
@@ -267,21 +251,3 @@ e_backend_get_source (EBackend *backend)
 	return backend->priv->source;
 }
 
-/**
- * e_backend_last_client_gone:
- * @backend: an #EBackend
- *
- * Emits the #EBackend::last-client-gone signal to indicate the last
- * client connection to @backend has been closed.  The @backend may be
- * finalized after a short period to reclaim resources if no new client
- * connections are established.
- *
- * Since: 3.4
- **/
-void
-e_backend_last_client_gone (EBackend *backend)
-{
-	g_return_if_fail (E_IS_BACKEND (backend));
-
-	g_signal_emit (backend, signals[LAST_CLIENT_GONE], 0);
-}

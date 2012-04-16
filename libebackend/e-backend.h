@@ -62,9 +62,6 @@ struct _EBackend {
 struct _EBackendClass {
 	GObjectClass parent_class;
 
-	/* Signals */
-	void		(*last_client_gone)	(EBackend *backend);
-
 	gpointer reserved[16];
 };
 
@@ -73,7 +70,6 @@ gboolean	e_backend_get_online		(EBackend *backend);
 void		e_backend_set_online		(EBackend *backend,
 						 gboolean online);
 ESource *	e_backend_get_source		(EBackend *backend);
-void		e_backend_last_client_gone	(EBackend *backend);
 
 G_END_DECLS
 

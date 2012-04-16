@@ -776,22 +776,15 @@ e_book_backend_remove_client (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK (book));
 
-	/* up our backend's refcount here so that last_client_gone
-	 * doesn't end up unreffing us (while we're holding the
-	 * lock) */
+	/* Make sure the backend stays alive while holding the mutex. */
 	g_object_ref (backend);
 
 	/* Disconnect */
 	g_mutex_lock (backend->priv->clients_mutex);
 	backend->priv->clients = g_slist_remove (backend->priv->clients, book);
 
-	/* When all clients go away, notify the parent factory about it so that
-	 * it may decide whether to kill the backend or not.
-	 */
-	if (!backend->priv->clients) {
+	if (backend->priv->clients == NULL)
 		backend->priv->opening = FALSE;
-		e_backend_last_client_gone (E_BACKEND (backend));
-	}
 
 	g_mutex_unlock (backend->priv->clients_mutex);
 

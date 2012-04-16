@@ -5,7 +5,6 @@ EBackend
 e_backend_get_online
 e_backend_set_online
 e_backend_get_source
-e_backend_last_client_gone
 <SUBSECTION Standard>
 E_BACKEND
 E_IS_BACKEND

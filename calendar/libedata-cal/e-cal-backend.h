@@ -173,9 +173,6 @@ struct _ECalBackendClass {
 	void	(* start_view)			(ECalBackend *backend, EDataCalView *view);
 	void	(* stop_view)			(ECalBackend *backend, EDataCalView *view);
 
-	/* Notification signals */
-	void	(* last_client_gone)		(ECalBackend *backend);
-
 	/* Internal methods for use only in the pcs */
 	icaltimezone *(* internal_get_timezone) (ECalBackend *backend, const gchar *tzid);
 };

@@ -580,33 +580,25 @@ e_cal_backend_remove_client_private (ECalBackend *backend,
                                      EDataCal *cal,
                                      gboolean weak_unref)
 {
-	ECalBackendPrivate *priv;
-
-	/* XXX this needs a bit more thinking wrt the mutex - we
-	 * should be holding it when we check to see if clients is
-	 * NULL */
-	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (cal != NULL);
 	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	priv = backend->priv;
 
 	if (weak_unref)
 		g_object_weak_unref (G_OBJECT (cal), cal_destroy_cb, backend);
 
-	/* Disconnect */
-	g_mutex_lock (priv->clients_mutex);
-	priv->clients = g_slist_remove (priv->clients, cal);
-	g_mutex_unlock (priv->clients_mutex);
+	/* Make sure the backend stays alive while holding the mutex. */
+	g_object_ref (backend);
 
-	/* When all clients go away, notify the parent factory about it so that
-	 * it may decide whether to kill the backend or not.
-	 */
-	if (!priv->clients) {
-		priv->opening = FALSE;
-		e_backend_last_client_gone (E_BACKEND (backend));
-	}
+	/* Disconnect */
+	g_mutex_lock (backend->priv->clients_mutex);
+	backend->priv->clients = g_slist_remove (backend->priv->clients, cal);
+
+	if (backend->priv->clients == NULL)
+		backend->priv->opening = FALSE;
+
+	g_mutex_unlock (backend->priv->clients_mutex);
+
+	g_object_unref (backend);
 }
 
 /**
