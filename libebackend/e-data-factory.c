@@ -53,11 +53,8 @@ G_DEFINE_ABSTRACT_TYPE (
 static GWeakRef *
 data_factory_weak_ref_new (void)
 {
-	/* XXX GWeakRef documentation is a little confusing on when
-	 *     g_weak_ref_init() must be called.  The code just zero
-	 *     fills the struct, so it looks like g_weak_ref_init()
-	 *     is only needed when the GWeakRef is a local variable
-	 *     in a call stack frame.  The docs should be clarified. */
+	/* A GWeakRef allocated in zero-filled memory is sufficiently
+	 * initialized without calling g_weak_ref_init(weak_ref, NULL). */
 	return g_slice_new0 (GWeakRef);
 }
 
