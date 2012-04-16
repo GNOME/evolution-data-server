@@ -93,9 +93,9 @@ e_data_book_factory_extract_proto_from_uri (const gchar *uri)
 }
 
 static EBackend *
-e_data_book_factory_get_backend (EDataBookFactory *factory,
-                                 ESource *source,
-                                 const gchar *uri)
+data_book_factory_ref_backend (EDataBookFactory *factory,
+                               ESource *source,
+                               const gchar *uri)
 {
 	EBackend *backend;
 	gchar *hash_key;
@@ -106,7 +106,7 @@ e_data_book_factory_get_backend (EDataBookFactory *factory,
 		return NULL;
 	}
 
-	backend = e_data_factory_get_backend (
+	backend = e_data_factory_ref_backend (
 		E_DATA_FACTORY (factory), hash_key, source);
 
 	g_free (hash_key);
@@ -226,7 +226,7 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 		return TRUE;
 	}
 
-	backend = e_data_book_factory_get_backend (factory, source, uri);
+	backend = data_book_factory_ref_backend (factory, source, uri);
 
 	if (backend == NULL) {
 		g_free (uri);
@@ -275,6 +275,8 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 	g_object_weak_ref (
 		G_OBJECT (book), (GWeakNotify)
 		book_freed_cb, factory);
+
+	g_object_unref (backend);
 
 	/* Update the hash of open connections. */
 	g_mutex_lock (priv->connections_lock);

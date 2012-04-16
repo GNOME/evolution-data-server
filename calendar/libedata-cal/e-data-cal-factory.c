@@ -102,10 +102,10 @@ e_data_cal_factory_extract_proto_from_uri (const gchar *uri)
 }
 
 static EBackend *
-e_data_cal_factory_get_backend (EDataCalFactory *factory,
-                                ESource *source,
-                                const gchar *uri,
-                                EDataCalObjType type)
+data_cal_factory_ref_backend (EDataCalFactory *factory,
+                              ESource *source,
+                              const gchar *uri,
+                              EDataCalObjType type)
 {
 	EBackend *backend;
 	gchar *protocol;
@@ -120,7 +120,7 @@ e_data_cal_factory_get_backend (EDataCalFactory *factory,
 	hash_key = g_strdup_printf (
 		"%s:%s", protocol, calobjtype_to_string (type));
 
-	backend = e_data_factory_get_backend (
+	backend = e_data_factory_ref_backend (
 		E_DATA_FACTORY (factory), hash_key, source);
 
 	g_free (hash_key);
@@ -243,7 +243,7 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 		return TRUE;
 	}
 
-	backend = e_data_cal_factory_get_backend (factory, source, uri, type);
+	backend = data_cal_factory_ref_backend (factory, source, uri, type);
 
 	if (backend == NULL) {
 		error = g_error_new (
@@ -268,6 +268,8 @@ impl_CalFactory_get_cal (EGdbusCalFactory *object,
 	g_object_weak_ref (
 		G_OBJECT (calendar), (GWeakNotify)
 		calendar_freed_cb, factory);
+
+	g_object_unref (backend);
 
 	/* Update the hash of open connections. */
 	g_mutex_lock (priv->connections_lock);

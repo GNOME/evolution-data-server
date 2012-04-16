@@ -40,7 +40,7 @@ struct _EDataFactoryPrivate {
 	 * and is read-only thereafter. */
 	GMutex *mutex;
 
-	/* ESource UID -> EBackend */
+	/* ESource UID -> GWeakRef (EBackend) */
 	GHashTable *backends;
 
 	/* Hash Key -> EBackendFactory */
@@ -50,20 +50,40 @@ struct _EDataFactoryPrivate {
 G_DEFINE_ABSTRACT_TYPE (
 	EDataFactory, e_data_factory, E_TYPE_DBUS_SERVER)
 
-static void
-data_factory_last_client_gone_cb (EBackend *backend,
-                                  EDataFactory *factory)
+static GWeakRef *
+data_factory_weak_ref_new (void)
 {
-	ESource *source;
-	const gchar *uid;
+	/* XXX GWeakRef documentation is a little confusing on when
+	 *     g_weak_ref_init() must be called.  The code just zero
+	 *     fills the struct, so it looks like g_weak_ref_init()
+	 *     is only needed when the GWeakRef is a local variable
+	 *     in a call stack frame.  The docs should be clarified. */
+	return g_slice_new0 (GWeakRef);
+}
 
-	source = e_backend_get_source (backend);
-	uid = e_source_peek_uid (source);
-	g_return_if_fail (uid != NULL);
+static void
+data_factory_weak_ref_free (GWeakRef *weak_ref)
+{
+	g_weak_ref_clear (weak_ref);
+	g_slice_free (GWeakRef, weak_ref);
+}
 
-	g_mutex_lock (factory->priv->mutex);
-	g_hash_table_remove (factory->priv->backends, uid);
-	g_mutex_unlock (factory->priv->mutex);
+static GWeakRef *
+data_factory_backends_lookup (EDataFactory *factory,
+                              const gchar *uid)
+{
+	GHashTable *backends;
+	GWeakRef *weak_ref;
+
+	backends = factory->priv->backends;
+	weak_ref = g_hash_table_lookup (backends, uid);
+
+	if (weak_ref == NULL) {
+		weak_ref = data_factory_weak_ref_new ();
+		g_hash_table_insert (backends, g_strdup (uid), weak_ref);
+	}
+
+	return weak_ref;
 }
 
 static void
@@ -182,7 +202,7 @@ e_data_factory_init (EDataFactory *factory)
 		(GHashFunc) g_str_hash,
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
-		(GDestroyNotify) g_object_unref);
+		(GDestroyNotify) data_factory_weak_ref_free);
 
 	factory->priv->backend_factories = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -191,12 +211,35 @@ e_data_factory_init (EDataFactory *factory)
 		(GDestroyNotify) g_object_unref);
 }
 
+/**
+ * e_data_factory_ref_backend:
+ * @factory: an #EDataFactory
+ * @hash_key: hash key for an #EBackendFactory
+ * @source: an #ESource
+ *
+ * Returns either a newly-created or existing #EBackend for #ESource.
+ * The returned #EBackend is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * The @factory retains a weak reference to @backend so it can return the
+ * same instance while @backend is in use.  When the last strong reference
+ * to @backend is dropped, @factory will lose its weak reference and will
+ * create a new #EBackend instance the next time the same @hash_key and
+ * @source are requested.
+ *
+ * If no suitable #EBackendFactory exists, the function returns %NULL.
+ *
+ * Returns: an #EBackend for @source, or %NULL
+ *
+ * Since: 3.6
+ **/
 EBackend *
-e_data_factory_get_backend (EDataFactory *factory,
+e_data_factory_ref_backend (EDataFactory *factory,
                             const gchar *hash_key,
                             ESource *source)
 {
 	EBackendFactory *backend_factory;
+	GWeakRef *weak_ref;
 	EBackend *backend;
 	const gchar *uid;
 
@@ -209,8 +252,11 @@ e_data_factory_get_backend (EDataFactory *factory,
 
 	g_mutex_lock (factory->priv->mutex);
 
+	/* The weak ref is already inserted in the hash table. */
+	weak_ref = data_factory_backends_lookup (factory, uid);
+
 	/* Check if we already have a backend for the given source. */
-	backend = g_hash_table_lookup (factory->priv->backends, uid);
+	backend = g_weak_ref_get (weak_ref);
 
 	if (backend != NULL)
 		goto exit;
@@ -225,16 +271,8 @@ e_data_factory_get_backend (EDataFactory *factory,
 	/* Create a new backend for the given source and store it. */
 	backend = e_backend_factory_new_backend (backend_factory, source);
 
-	if (backend == NULL)
-		goto exit;
-
-	g_signal_connect (
-		backend, "last-client-gone",
-		G_CALLBACK (data_factory_last_client_gone_cb), factory);
-
-	g_hash_table_insert (
-		factory->priv->backends,
-		g_strdup (uid), backend);
+	/* This still does the right thing if backend is NULL. */
+	g_weak_ref_set (weak_ref, backend);
 
 exit:
 	g_mutex_unlock (factory->priv->mutex);
