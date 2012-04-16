@@ -219,7 +219,7 @@ struct _EBookBackendLDAPPrivate {
 	GStaticRecMutex op_hash_mutex;
 	GHashTable *id_to_op;
 	gint active_ops;
-	gint poll_timeout;
+	guint poll_timeout;
 
 	/* summary file related */
 	gchar *summary_file_name;
@@ -1135,11 +1135,10 @@ ldap_op_add (LDAPOp *op,
 
 	bl->priv->active_ops++;
 
-	if (bl->priv->poll_timeout == -1) {
-		bl->priv->poll_timeout = g_timeout_add (LDAP_POLL_INTERVAL,
-							(GSourceFunc) poll_ldap,
-							bl);
-	}
+	if (bl->priv->poll_timeout == 0)
+		bl->priv->poll_timeout = g_timeout_add (
+			LDAP_POLL_INTERVAL,
+			(GSourceFunc) poll_ldap, bl);
 	g_static_rec_mutex_unlock (&bl->priv->op_hash_mutex);
 }
 
@@ -1167,9 +1166,10 @@ ldap_op_finished (LDAPOp *op)
 	bl->priv->active_ops--;
 
 	if (bl->priv->active_ops == 0) {
-		if (bl->priv->poll_timeout != -1)
+		if (bl->priv->poll_timeout > 0) {
 			g_source_remove (bl->priv->poll_timeout);
-		bl->priv->poll_timeout = -1;
+			bl->priv->poll_timeout = 0;
+		}
 	}
 	g_static_rec_mutex_unlock (&bl->priv->op_hash_mutex);
 }
@@ -4625,14 +4625,14 @@ poll_ldap (EBookBackendLDAP *bl)
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-		bl->priv->poll_timeout = -1;
+		bl->priv->poll_timeout = 0;
 		return FALSE;
 	}
 	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 	if (!bl->priv->active_ops) {
 		g_warning ("poll_ldap being called for backend with no active operations");
-		bl->priv->poll_timeout = -1;
+		bl->priv->poll_timeout = 0;
 		return FALSE;
 	}
 
@@ -5669,7 +5669,7 @@ e_book_backend_ldap_finalize (GObject *object)
 		ldap_unbind (priv->ldap);
 	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
-	if (priv->poll_timeout != -1)
+	if (priv->poll_timeout > 0)
 		g_source_remove (priv->poll_timeout);
 
 	g_slist_foreach (priv->supported_fields, (GFunc) g_free, NULL);
@@ -5739,7 +5739,6 @@ e_book_backend_ldap_init (EBookBackendLDAP *backend)
 
 	backend->priv->ldap_limit = 100;
 	backend->priv->id_to_op = g_hash_table_new (g_int_hash, g_int_equal);
-	backend->priv->poll_timeout = -1;
 
 	g_static_rec_mutex_init (&backend->priv->op_hash_mutex);
 
