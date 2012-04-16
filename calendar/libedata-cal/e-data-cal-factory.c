@@ -404,6 +404,22 @@ data_cal_factory_bus_name_lost (EDBusServer *server,
 		bus_name_lost (server, connection);
 }
 
+static void
+data_cal_factory_quit_server (EDBusServer *server,
+                              EDBusServerExitCode exit_code)
+{
+	/* This factory does not support reloading, so stop the signal
+	 * emission and return without chaining up to prevent quitting. */
+	if (exit_code == E_DBUS_SERVER_EXIT_RELOAD) {
+		g_signal_stop_emission_by_name (server, "quit-server");
+		return;
+	}
+
+	/* Chain up to parent's quit_server() method. */
+	E_DBUS_SERVER_CLASS (e_data_cal_factory_parent_class)->
+		quit_server (server, exit_code);
+}
+
 static gboolean
 data_cal_factory_initable_init (GInitable *initable,
                                 GCancellable *cancellable,
@@ -432,6 +448,7 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 	dbus_server_class->module_directory = BACKENDDIR;
 	dbus_server_class->bus_acquired = data_cal_factory_bus_acquired;
 	dbus_server_class->bus_name_lost = data_cal_factory_bus_name_lost;
+	dbus_server_class->quit_server = data_cal_factory_quit_server;
 
 	data_factory_class = E_DATA_FACTORY_CLASS (class);
 	data_factory_class->backend_factory_type = E_TYPE_CAL_BACKEND_FACTORY;
