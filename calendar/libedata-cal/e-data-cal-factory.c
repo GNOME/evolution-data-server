@@ -57,7 +57,17 @@ struct _EDataCalFactoryPrivate {
 	GHashTable *connections;
 };
 
-G_DEFINE_TYPE (EDataCalFactory, e_data_cal_factory, E_TYPE_DATA_FACTORY);
+/* Forward Declarations */
+static void	e_data_cal_factory_initable_init
+						(GInitableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	EDataCalFactory,
+	e_data_cal_factory,
+	E_TYPE_DATA_FACTORY,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_data_cal_factory_initable_init))
 
 static const gchar *
 calobjtype_to_string (const EDataCalObjType type)
@@ -392,6 +402,16 @@ data_cal_factory_bus_name_lost (EDBusServer *server,
 		bus_name_lost (server, connection);
 }
 
+static gboolean
+data_cal_factory_initable_init (GInitable *initable,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	/* XXX Nothing to do here just yet.  More to come soon. */
+
+	return TRUE;
+}
+
 static void
 e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 {
@@ -413,6 +433,12 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 
 	data_factory_class = E_DATA_FACTORY_CLASS (class);
 	data_factory_class->backend_factory_type = E_TYPE_CAL_BACKEND_FACTORY;
+}
+
+static void
+e_data_cal_factory_initable_init (GInitableIface *interface)
+{
+	interface->init = data_cal_factory_initable_init;
 }
 
 static void
