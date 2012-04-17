@@ -19,8 +19,8 @@
 #ifndef E_DATA_FACTORY_H
 #define E_DATA_FACTORY_H
 
-#include <libebackend/e-backend.h>
 #include <libebackend/e-dbus-server.h>
+#include <libebackend/e-backend-factory.h>
 
 /* Standard GObject macros */
 #define E_TYPE_DATA_FACTORY \
@@ -72,6 +72,10 @@ GType		e_data_factory_get_type		(void) G_GNUC_CONST;
 EBackend *	e_data_factory_ref_backend	(EDataFactory *factory,
 						 const gchar *hash_key,
 						 ESource *source);
+EBackendFactory *
+		e_data_factory_ref_backend_factory
+						(EDataFactory *factory,
+						 const gchar *hash_key);
 
 G_END_DECLS
 

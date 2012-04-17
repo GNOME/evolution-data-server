@@ -42,6 +42,7 @@ e_backend_factory_get_type
 <TITLE>EDataFactory</TITLE>
 EDataFactory
 e_data_factory_ref_backend
+e_data_factory_ref_backend_factory
 <SUBSECTION Standard>
 E_DATA_FACTORY
 E_IS_DATA_FACTORY

@@ -239,8 +239,8 @@ e_data_factory_ref_backend (EDataFactory *factory,
 		goto exit;
 
 	/* Find a suitable backend factory using the hash key. */
-	backend_factory = g_hash_table_lookup (
-		factory->priv->backend_factories, hash_key);
+	backend_factory =
+		e_data_factory_ref_backend_factory (factory, hash_key);
 
 	if (backend_factory == NULL)
 		goto exit;
@@ -251,9 +251,53 @@ e_data_factory_ref_backend (EDataFactory *factory,
 	/* This still does the right thing if backend is NULL. */
 	g_weak_ref_set (weak_ref, backend);
 
+	g_object_unref (backend_factory);
+
 exit:
 	g_mutex_unlock (factory->priv->mutex);
 
 	return backend;
+}
+
+/**
+ * e_data_factory_ref_backend_factory:
+ * @factory: an #EDataFactory
+ * @hash_key: hash key for an #EBackendFactory
+ *
+ * Returns the #EBackendFactory for @hash_key, or %NULL if no such factory
+ * is registered.
+ *
+ * The returned #EBackendFactory is referenced for thread-safety.
+ * Unreference the #EBackendFactory with g_object_unref() when finished
+ * with it.
+ *
+ * Returns: the #EBackendFactory for @hash_key, or %NULL
+ *
+ * Since: 3.6
+ **/
+EBackendFactory *
+e_data_factory_ref_backend_factory (EDataFactory *factory,
+                                    const gchar *hash_key)
+{
+	GHashTable *backend_factories;
+	EBackendFactory *backend_factory;
+
+	g_return_val_if_fail (E_IS_DATA_FACTORY (factory), NULL);
+	g_return_val_if_fail (hash_key != NULL, NULL);
+
+	/* It should be safe to lookup backend factories without a mutex
+	 * because once initially populated the hash table remains fixed.
+	 *
+	 * XXX Which might imply the returned factory doesn't *really* need
+	 *     to be referenced for thread-safety, but better to do it when
+	 *     not really needed than wish we had in the future. */
+
+	backend_factories = factory->priv->backend_factories;
+	backend_factory = g_hash_table_lookup (backend_factories, hash_key);
+
+	if (backend_factory != NULL)
+		g_object_ref (backend_factory);
+
+	return backend_factory;
 }
 
