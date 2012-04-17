@@ -69,12 +69,12 @@ struct _EDataFactoryClass {
 };
 
 GType		e_data_factory_get_type		(void) G_GNUC_CONST;
-EBackend *	e_data_factory_ref_backend	(EDataFactory *factory,
+EBackend *	e_data_factory_ref_backend	(EDataFactory *data_factory,
 						 const gchar *hash_key,
 						 ESource *source);
 EBackendFactory *
 		e_data_factory_ref_backend_factory
-						(EDataFactory *factory,
+						(EDataFactory *data_factory,
 						 const gchar *hash_key);
 
 G_END_DECLS

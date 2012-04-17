@@ -66,13 +66,13 @@ data_factory_weak_ref_free (GWeakRef *weak_ref)
 }
 
 static GWeakRef *
-data_factory_backends_lookup (EDataFactory *factory,
+data_factory_backends_lookup (EDataFactory *data_factory,
                               const gchar *uid)
 {
 	GHashTable *backends;
 	GWeakRef *weak_ref;
 
-	backends = factory->priv->backends;
+	backends = data_factory->priv->backends;
 	weak_ref = g_hash_table_lookup (backends, uid);
 
 	if (weak_ref == NULL) {
@@ -169,19 +169,19 @@ e_data_factory_class_init (EDataFactoryClass *class)
 }
 
 static void
-e_data_factory_init (EDataFactory *factory)
+e_data_factory_init (EDataFactory *data_factory)
 {
-	factory->priv = E_DATA_FACTORY_GET_PRIVATE (factory);
+	data_factory->priv = E_DATA_FACTORY_GET_PRIVATE (data_factory);
 
-	factory->priv->mutex = g_mutex_new ();
+	data_factory->priv->mutex = g_mutex_new ();
 
-	factory->priv->backends = g_hash_table_new_full (
+	data_factory->priv->backends = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) data_factory_weak_ref_free);
 
-	factory->priv->backend_factories = g_hash_table_new_full (
+	data_factory->priv->backend_factories = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
@@ -190,7 +190,7 @@ e_data_factory_init (EDataFactory *factory)
 
 /**
  * e_data_factory_ref_backend:
- * @factory: an #EDataFactory
+ * @data_factory: an #EDataFactory
  * @hash_key: hash key for an #EBackendFactory
  * @source: an #ESource
  *
@@ -198,11 +198,11 @@ e_data_factory_init (EDataFactory *factory)
  * The returned #EBackend is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * The @factory retains a weak reference to @backend so it can return the
- * same instance while @backend is in use.  When the last strong reference
- * to @backend is dropped, @factory will lose its weak reference and will
- * create a new #EBackend instance the next time the same @hash_key and
- * @source are requested.
+ * The @data_factory retains a weak reference to @backend so it can return
+ * the same instance while @backend is in use.  When the last strong reference
+ * to @backend is dropped, @data_factory will lose its weak reference and will
+ * have to create a new #EBackend instance the next time the same @hash_key
+ * and @source are requested.
  *
  * If no suitable #EBackendFactory exists, the function returns %NULL.
  *
@@ -211,7 +211,7 @@ e_data_factory_init (EDataFactory *factory)
  * Since: 3.6
  **/
 EBackend *
-e_data_factory_ref_backend (EDataFactory *factory,
+e_data_factory_ref_backend (EDataFactory *data_factory,
                             const gchar *hash_key,
                             ESource *source)
 {
@@ -220,17 +220,17 @@ e_data_factory_ref_backend (EDataFactory *factory,
 	EBackend *backend;
 	const gchar *uid;
 
-	g_return_val_if_fail (E_IS_DATA_FACTORY (factory), NULL);
+	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
 	g_return_val_if_fail (hash_key != NULL, NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	uid = e_source_peek_uid (source);
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	g_mutex_lock (factory->priv->mutex);
+	g_mutex_lock (data_factory->priv->mutex);
 
 	/* The weak ref is already inserted in the hash table. */
-	weak_ref = data_factory_backends_lookup (factory, uid);
+	weak_ref = data_factory_backends_lookup (data_factory, uid);
 
 	/* Check if we already have a backend for the given source. */
 	backend = g_weak_ref_get (weak_ref);
@@ -240,7 +240,7 @@ e_data_factory_ref_backend (EDataFactory *factory,
 
 	/* Find a suitable backend factory using the hash key. */
 	backend_factory =
-		e_data_factory_ref_backend_factory (factory, hash_key);
+		e_data_factory_ref_backend_factory (data_factory, hash_key);
 
 	if (backend_factory == NULL)
 		goto exit;
@@ -254,14 +254,14 @@ e_data_factory_ref_backend (EDataFactory *factory,
 	g_object_unref (backend_factory);
 
 exit:
-	g_mutex_unlock (factory->priv->mutex);
+	g_mutex_unlock (data_factory->priv->mutex);
 
 	return backend;
 }
 
 /**
  * e_data_factory_ref_backend_factory:
- * @factory: an #EDataFactory
+ * @data_factory: an #EDataFactory
  * @hash_key: hash key for an #EBackendFactory
  *
  * Returns the #EBackendFactory for @hash_key, or %NULL if no such factory
@@ -276,13 +276,13 @@ exit:
  * Since: 3.6
  **/
 EBackendFactory *
-e_data_factory_ref_backend_factory (EDataFactory *factory,
+e_data_factory_ref_backend_factory (EDataFactory *data_factory,
                                     const gchar *hash_key)
 {
 	GHashTable *backend_factories;
 	EBackendFactory *backend_factory;
 
-	g_return_val_if_fail (E_IS_DATA_FACTORY (factory), NULL);
+	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
 	g_return_val_if_fail (hash_key != NULL, NULL);
 
 	/* It should be safe to lookup backend factories without a mutex
@@ -292,7 +292,7 @@ e_data_factory_ref_backend_factory (EDataFactory *factory,
 	 *     to be referenced for thread-safety, but better to do it when
 	 *     not really needed than wish we had in the future. */
 
-	backend_factories = factory->priv->backend_factories;
+	backend_factories = data_factory->priv->backend_factories;
 	backend_factory = g_hash_table_lookup (backend_factories, hash_key);
 
 	if (backend_factory != NULL)
