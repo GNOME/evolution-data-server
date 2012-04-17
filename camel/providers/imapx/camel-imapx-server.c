@@ -1410,8 +1410,8 @@ imapx_untagged (CamelIMAPXServer *is,
 						data = camel_imapx_job_get_data (job);
 						g_return_val_if_fail (data != NULL, FALSE);
 
-						camel_folder_summary_add (job->folder->summary, mi);
 						imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, job->folder);
+						camel_folder_summary_add (job->folder->summary, mi);
 						camel_folder_change_info_add_uid (data->changes, mi->uid);
 
 						if (!g_hash_table_lookup (ifolder->ignore_recent, mi->uid)) {
@@ -3523,11 +3523,11 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 			g_rename (data->path, cur);
 
 			/* should we update the message count ? */
-			camel_folder_summary_add (job->folder->summary, mi);
 			imapx_set_message_info_flags_for_new_message (mi,
 								      ((CamelMessageInfoBase *) data->info)->flags,
 								      ((CamelMessageInfoBase *) data->info)->user_flags,
 								      job->folder);
+			camel_folder_summary_add (job->folder->summary, mi);
 			changes = camel_folder_change_info_new ();
 			camel_folder_change_info_add_uid (changes, mi->uid);
 			camel_folder_changed (job->folder, changes);
