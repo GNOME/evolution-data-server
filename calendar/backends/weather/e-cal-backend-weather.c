@@ -812,7 +812,6 @@ e_cal_backend_weather_internal_get_timezone (ECalBackend *backend,
 		ECalBackendWeather *cbw = E_CAL_BACKEND_WEATHER (backend);
 
 		g_return_val_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw), NULL);
-		g_return_val_if_fail (cbw->priv != NULL, NULL);
 
 		zone = g_hash_table_lookup (cbw->priv->zones, tzid);
 

@@ -1116,8 +1116,7 @@ caldav_notify_auth_required (ECalBackendCalDAV *cbdav)
 	guint prompt_flags;
 	gchar *prompt_flags_str;
 
-	g_return_if_fail (cbdav != NULL);
-	g_return_if_fail (cbdav->priv != NULL);
+	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
 
 	cbdav->priv->opened = FALSE;
 	update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
@@ -1385,8 +1384,7 @@ caldav_server_download_attachment (ECalBackendCalDAV *cbdav,
 {
 	SoupMessage *message;
 
-	g_return_val_if_fail (cbdav != NULL, FALSE);
-	g_return_val_if_fail (cbdav->priv != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), FALSE);
 	g_return_val_if_fail (attachment_uri != NULL, FALSE);
 	g_return_val_if_fail (content != NULL, FALSE);
 	g_return_val_if_fail (len != NULL, FALSE);
@@ -1753,9 +1751,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 	xmlNsPtr nsdav;
 	gchar *owner = NULL;
 
-	g_return_val_if_fail (cbdav != NULL, FALSE);
-
-	g_return_val_if_fail (cbdav->priv != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), FALSE);
 	g_return_val_if_fail (cbdav->priv->schedule_outbox_url == NULL, TRUE);
 
 	/* Prepare the soup message */
@@ -3047,8 +3043,7 @@ is_stored_on_server (ECalBackendCalDAV *cbdav,
 	SoupURI *my_uri, *test_uri;
 	gboolean res;
 
-	g_return_val_if_fail (cbdav != NULL, FALSE);
-	g_return_val_if_fail (cbdav->priv != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), FALSE);
 	g_return_val_if_fail (cbdav->priv->uri != NULL, FALSE);
 	g_return_val_if_fail (uri != NULL, FALSE);
 

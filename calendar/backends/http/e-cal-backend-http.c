@@ -702,8 +702,7 @@ source_changed_cb (ESource *source,
 {
 	ECalBackendHttpPrivate *priv;
 
-	g_return_if_fail (cbhttp != NULL);
-	g_return_if_fail (cbhttp->priv != NULL);
+	g_return_if_fail (E_IS_CAL_BACKEND_HTTP (cbhttp));
 
 	priv = cbhttp->priv;
 

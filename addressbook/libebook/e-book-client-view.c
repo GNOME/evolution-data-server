@@ -219,7 +219,6 @@ e_book_client_view_start (EBookClientView *view,
 {
 	EBookClientViewPrivate *priv;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
 	priv = view->priv;
@@ -251,7 +250,6 @@ e_book_client_view_stop (EBookClientView *view,
 {
 	EBookClientViewPrivate *priv;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
 	priv = view->priv;
@@ -286,7 +284,6 @@ e_book_client_view_set_flags (EBookClientView *view,
 {
 	EBookClientViewPrivate *priv;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
 	priv = view->priv;
@@ -327,7 +324,6 @@ e_book_client_view_set_fields_of_interest (EBookClientView *view,
 {
 	EBookClientViewPrivate *priv;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT_VIEW (view));
 
 	priv = view->priv;

@@ -721,9 +721,7 @@ void
 camel_certdb_lock (CamelCertDB *certdb,
                    CamelCertDBLock lock)
 {
-	g_return_if_fail (certdb != NULL);
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
-	g_return_if_fail (certdb->priv != NULL);
 
 	switch (lock) {
 	case CAMEL_CERTDB_DB_LOCK:
@@ -756,9 +754,7 @@ void
 camel_certdb_unlock (CamelCertDB *certdb,
                      CamelCertDBLock lock)
 {
-	g_return_if_fail (certdb != NULL);
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
-	g_return_if_fail (certdb->priv != NULL);
 
 	switch (lock) {
 	case CAMEL_CERTDB_DB_LOCK:

@@ -157,9 +157,7 @@ e_name_selector_load_books (ENameSelector *name_selector)
 	GSList *groups;
 	GSList *iter1;
 
-	g_return_if_fail (name_selector != NULL);
 	g_return_if_fail (E_IS_NAME_SELECTOR (name_selector));
-	g_return_if_fail (name_selector->priv != NULL);
 	g_return_if_fail (!name_selector->priv->books_loaded);
 
 	name_selector->priv->books_loaded = TRUE;
@@ -221,9 +219,7 @@ e_name_selector_load_books (ENameSelector *name_selector)
 void
 e_name_selector_cancel_loading (ENameSelector *name_selector)
 {
-	g_return_if_fail (name_selector != NULL);
 	g_return_if_fail (E_IS_NAME_SELECTOR (name_selector));
-	g_return_if_fail (name_selector->priv != NULL);
 	g_return_if_fail (name_selector->priv->cancellable != NULL);
 
 	g_cancellable_cancel (name_selector->priv->cancellable);

@@ -387,9 +387,7 @@ gdbus_cal_client_connection_gone_cb (GDBusConnection *connection,
 static void
 gdbus_cal_client_disconnect (ECalClient *client)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 
 	/* Ensure that everything relevant is NULL */
 	LOCK_FACTORY ();
@@ -414,7 +412,6 @@ backend_error_cb (EGdbusCal *object,
                   const gchar *message,
                   ECalClient *client)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (message != NULL);
 
@@ -426,7 +423,6 @@ readonly_cb (EGdbusCal *object,
              gboolean readonly,
              ECalClient *client)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 
 	e_client_set_readonly (E_CLIENT (client), readonly);
@@ -437,7 +433,6 @@ online_cb (EGdbusCal *object,
            gboolean is_online,
            ECalClient *client)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 
 	e_client_set_online (E_CLIENT (client), is_online);
@@ -450,7 +445,6 @@ auth_required_cb (EGdbusCal *object,
 {
 	ECredentials *credentials;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 
 	if (credentials_strv)
@@ -470,7 +464,6 @@ opened_cb (EGdbusCal *object,
 {
 	GError *error = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (error_strv != NULL);
 	g_return_if_fail (e_gdbus_templates_decode_error (error_strv, &error));
@@ -489,7 +482,6 @@ free_busy_data_cb (EGdbusCal *object,
 	GSList *ecalcomps = NULL;
 	gint ii;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (free_busy_strv != NULL);
 
@@ -531,7 +523,6 @@ backend_property_changed_cb (EGdbusCal *object,
 {
 	gchar *prop_name = NULL, *prop_value = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (name_value_strv != NULL);
 	g_return_if_fail (e_gdbus_templates_decode_two_strings (name_value_strv, &prop_name, &prop_value));
@@ -624,7 +615,6 @@ e_cal_client_new (ESource *source,
 	gchar *xml, **strv;
 	gchar *path = NULL;
 
-	g_return_val_if_fail (source != NULL, NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 	g_return_val_if_fail (source_type == E_CAL_CLIENT_SOURCE_TYPE_EVENTS || source_type == E_CAL_CLIENT_SOURCE_TYPE_TASKS || source_type == E_CAL_CLIENT_SOURCE_TYPE_MEMOS, NULL);
 
@@ -872,9 +862,7 @@ e_cal_client_set_default (ECalClient *client,
 {
 	ESource *source;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	source = e_client_get_source (E_CLIENT (client));
 	g_return_val_if_fail (source != NULL, FALSE);
@@ -903,7 +891,6 @@ e_cal_client_set_default_source (ESource *source,
 	ESourceList *source_list = NULL;
 	gboolean res = FALSE;
 
-	g_return_val_if_fail (source != NULL, FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	if (!e_cal_client_get_sources (&source_list, source_type, error))
@@ -983,9 +970,7 @@ e_cal_client_get_sources (ESourceList **sources,
 ECalClientSourceType
 e_cal_client_get_source_type (ECalClient *client)
 {
-	g_return_val_if_fail (client != NULL, E_CAL_CLIENT_SOURCE_TYPE_LAST);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), E_CAL_CLIENT_SOURCE_TYPE_LAST);
-	g_return_val_if_fail (client->priv != NULL, E_CAL_CLIENT_SOURCE_TYPE_LAST);
 
 	return client->priv->source_type;
 }
@@ -1011,9 +996,7 @@ e_cal_client_get_local_attachment_store (ECalClient *client)
 	gchar *cache_dir = NULL;
 	GError *error = NULL;
 
-	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv != NULL, NULL);
 
 	if (client->priv->cache_dir || !client->priv->gdbus_cal)
 		return client->priv->cache_dir;
@@ -1074,9 +1057,7 @@ copy_timezone (icaltimezone *ozone)
 void
 e_cal_client_set_default_timezone (ECalClient *client, /* const */ icaltimezone *zone)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (zone != NULL);
 
 	if (client->priv->default_zone != icaltimezone_get_utc_timezone ())
@@ -1100,9 +1081,7 @@ e_cal_client_set_default_timezone (ECalClient *client, /* const */ icaltimezone 
 /* const */ icaltimezone *
 e_cal_client_get_default_timezone (ECalClient *client)
 {
-	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv != NULL, NULL);
 
 	return client->priv->default_zone;
 }
@@ -1120,7 +1099,6 @@ e_cal_client_get_default_timezone (ECalClient *client)
 gboolean
 e_cal_client_check_one_alarm_only (ECalClient *client)
 {
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	return e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_ONE_ALARM_ONLY);
@@ -1139,7 +1117,6 @@ e_cal_client_check_one_alarm_only (ECalClient *client)
 gboolean
 e_cal_client_check_save_schedules (ECalClient *client)
 {
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	return e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_SAVE_SCHEDULES);
@@ -1159,7 +1136,6 @@ e_cal_client_check_save_schedules (ECalClient *client)
 gboolean
 e_cal_client_check_organizer_must_attend (ECalClient *client)
 {
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	return e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ATTEND);
@@ -1180,7 +1156,6 @@ e_cal_client_check_organizer_must_attend (ECalClient *client)
 gboolean
 e_cal_client_check_organizer_must_accept (ECalClient *client)
 {
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	return e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_ORGANIZER_MUST_ACCEPT);
@@ -1200,7 +1175,6 @@ e_cal_client_check_organizer_must_accept (ECalClient *client)
 gboolean
 e_cal_client_check_recurrences_no_master (ECalClient *client)
 {
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	return e_client_check_capability (E_CLIENT (client), CAL_STATIC_CAPABILITY_RECURRENCES_NO_MASTER);
@@ -1258,7 +1232,6 @@ e_cal_client_resolve_tzid_cb (const gchar *tzid,
 	icaltimezone *zone = NULL;
 	GError *error = NULL;
 
-	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
 
 	e_cal_client_get_timezone_sync (client, tzid, &zone, NULL, &error);
@@ -1930,7 +1903,6 @@ e_cal_client_generate_instances (ECalClient *client,
 	struct get_objects_async_data *goad;
 	GCancellable *use_cancellable;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
 
@@ -1983,7 +1955,6 @@ e_cal_client_generate_instances_sync (ECalClient *client,
 {
 	GSList *objects = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
 
@@ -2111,7 +2082,6 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 	struct get_objects_async_data *goad;
 	GCancellable *use_cancellable;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
 
@@ -2214,7 +2184,6 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 	struct instances_info *instances_hold;
 	gboolean is_single_instance = FALSE;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (e_client_is_opened (E_CLIENT (client)));
 
@@ -2358,9 +2327,7 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	ForeachTZIDCallbackData cbdata;
 	gchar *obj_string;
 
-	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv != NULL, NULL);
 	g_return_val_if_fail (icalcomp != NULL, NULL);
 
 	timezone_hash = g_hash_table_new (g_str_hash, g_str_equal);
@@ -2414,7 +2381,6 @@ cal_client_get_backend_property_from_cache_finish (EClient *client,
 	GSimpleAsyncResult *simple;
 	GError *local_error = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (prop_value != NULL, FALSE);
@@ -2490,12 +2456,9 @@ cal_client_get_backend_property_sync (EClient *client,
 	gchar *prop_val;
 	gboolean res;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	cal_client = E_CAL_CLIENT (client);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-	g_return_val_if_fail (cal_client->priv != NULL, FALSE);
 
 	if (!cal_client->priv->gdbus_cal) {
 		set_proxy_gone_error (error);
@@ -2557,12 +2520,9 @@ cal_client_set_backend_property_sync (EClient *client,
 	gboolean res;
 	gchar **prop_name_value;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	cal_client = E_CAL_CLIENT (client);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-	g_return_val_if_fail (cal_client->priv != NULL, FALSE);
 
 	if (!cal_client->priv->gdbus_cal) {
 		set_proxy_gone_error (error);
@@ -2604,12 +2564,9 @@ cal_client_open_sync (EClient *client,
 {
 	ECalClient *cal_client;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	cal_client = E_CAL_CLIENT (client);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-	g_return_val_if_fail (cal_client->priv != NULL, FALSE);
 
 	if (!cal_client->priv->gdbus_cal) {
 		set_proxy_gone_error (error);
@@ -2645,12 +2602,9 @@ cal_client_remove_sync (EClient *client,
 {
 	ECalClient *cal_client;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	cal_client = E_CAL_CLIENT (client);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-	g_return_val_if_fail (cal_client->priv != NULL, FALSE);
 
 	if (!cal_client->priv->gdbus_cal) {
 		set_proxy_gone_error (error);
@@ -2686,12 +2640,9 @@ cal_client_refresh_sync (EClient *client,
 {
 	ECalClient *cal_client;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	cal_client = E_CAL_CLIENT (client);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-	g_return_val_if_fail (cal_client->priv != NULL, FALSE);
 
 	if (!cal_client->priv->gdbus_cal) {
 		set_proxy_gone_error (error);
@@ -2761,7 +2712,6 @@ cal_client_get_default_object_from_cache_finish (EClient *client,
 	GSimpleAsyncResult *simple;
 	GError *local_error = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (prop_value != NULL, FALSE);
@@ -2902,9 +2852,7 @@ e_cal_client_get_default_object_sync (ECalClient *client,
 	gboolean res;
 	gchar *out_string = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
 	if (!client->priv->gdbus_cal) {
@@ -3101,9 +3049,7 @@ e_cal_client_get_object_sync (ECalClient *client,
 	gboolean res;
 	gchar *out_string = NULL, **strv;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
@@ -3270,9 +3216,7 @@ e_cal_client_get_objects_for_uid_sync (ECalClient *client,
 	gboolean res;
 	gchar *out_string = NULL, **strv = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (ecalcomps != NULL, FALSE);
 
@@ -3412,9 +3356,7 @@ e_cal_client_get_object_list_sync (ECalClient *client,
 	gboolean res;
 	gchar **out_strv = NULL, *gdbus_sexp = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (icalcomps != NULL, FALSE);
 
@@ -3558,9 +3500,7 @@ e_cal_client_get_object_list_as_comps_sync (ECalClient *client,
 	gboolean res;
 	gchar **out_strv = NULL, *gdbus_sexp = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (ecalcomps != NULL, FALSE);
 
@@ -3664,9 +3604,7 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
 	gboolean res;
 	gchar **strv;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	if (!client->priv->gdbus_cal) {
 		set_proxy_gone_error (error);
@@ -3790,9 +3728,7 @@ e_cal_client_create_object_sync (ECalClient *client,
 	gchar **out_strings = NULL;
 	gchar *out_string = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
@@ -3845,9 +3781,7 @@ e_cal_client_create_objects (ECalClient *client,
 {
 	gchar **array;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (icalcomps != NULL);
 
 	array = icalcomponent_slist_to_utf8_icomp_array (icalcomps);
@@ -3883,9 +3817,7 @@ e_cal_client_create_objects_finish (ECalClient *client,
 	gboolean res;
 	gchar **out_strings = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
 	res = e_client_proxy_call_finish_strv (E_CLIENT (client), result, &out_strings, error, e_cal_client_create_objects);
@@ -3921,9 +3853,7 @@ e_cal_client_create_objects_sync (ECalClient *client,
 	gboolean res;
 	gchar **array, **out_strings = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (icalcomps != NULL, FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
@@ -4037,9 +3967,7 @@ e_cal_client_modify_object_sync (ECalClient *client,
 	gchar *comp_str, **strv;
 	GSList comp_strings = {0,};
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
 	if (!client->priv->gdbus_cal) {
@@ -4092,9 +4020,7 @@ e_cal_client_modify_objects (ECalClient *client,
 	GSList *comp_strings;
 	gchar **strv;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (comps != NULL);
 
 	comp_strings = icalcomponent_slist_to_string_slist(comps);
@@ -4125,9 +4051,7 @@ e_cal_client_modify_objects_finish (ECalClient *client,
                                     GAsyncResult *result,
                                     GError **error)
 {
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	return e_client_proxy_call_finish_void (E_CLIENT (client), result, error, e_cal_client_modify_objects);
 }
@@ -4163,9 +4087,7 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 	gchar **strv;
 	GSList *comp_strings;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (comps != NULL, FALSE);
 
 	if (!client->priv->gdbus_cal) {
@@ -4284,9 +4206,7 @@ e_cal_client_remove_object_sync (ECalClient *client,
 	GSList ids = {0,};
 	ECalComponentId id;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
 	if (!client->priv->gdbus_cal) {
@@ -4393,9 +4313,7 @@ e_cal_client_remove_objects_sync (ECalClient *client,
 	gboolean res;
 	gchar **strv;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (ids != NULL, FALSE);
 
 	if (!client->priv->gdbus_cal) {
@@ -4494,9 +4412,7 @@ e_cal_client_receive_objects_sync (ECalClient *client,
 	gboolean res;
 	gchar *comp_str, *gdbus_comp = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	if (!client->priv->gdbus_cal) {
 		set_proxy_gone_error (error);
@@ -4654,9 +4570,7 @@ e_cal_client_send_objects_sync (ECalClient *client,
 	gboolean res;
 	gchar **out_strv = NULL, *comp_str, *gdbus_comp = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 	g_return_val_if_fail (users != NULL, FALSE);
 	g_return_val_if_fail (modified_icalcomp != NULL, FALSE);
@@ -4778,9 +4692,7 @@ e_cal_client_get_attachment_uris_sync (ECalClient *client,
 	gboolean res;
 	gchar **strv, **out_strv = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (attachment_uris != NULL, FALSE);
 
@@ -4891,9 +4803,7 @@ e_cal_client_discard_alarm_sync (ECalClient *client,
 	gboolean res;
 	gchar **strv;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (auid != NULL, FALSE);
 
@@ -5044,9 +4954,7 @@ e_cal_client_get_view_sync (ECalClient *client,
 	gchar *gdbus_sexp = NULL;
 	gchar *view_path = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (view != NULL, FALSE);
 
@@ -5068,9 +4976,7 @@ cal_client_get_timezone_from_cache (ECalClient *client,
 {
 	icaltimezone *zone = NULL;
 
-	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv != NULL, NULL);
 	g_return_val_if_fail (tzid != NULL, NULL);
 	g_return_val_if_fail (client->priv->zone_cache != NULL, NULL);
 	g_return_val_if_fail (client->priv->zone_cache_lock != NULL, NULL);
@@ -5149,7 +5055,6 @@ cal_client_get_timezone_from_cache_finish (ECalClient *client,
 	GSimpleAsyncResult *simple;
 	GError *local_error = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
@@ -5306,9 +5211,7 @@ e_cal_client_get_timezone_sync (ECalClient *client,
 	gboolean res;
 	gchar *gdbus_tzid = NULL, *out_string = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (tzid != NULL, FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
 
@@ -5413,9 +5316,7 @@ e_cal_client_add_timezone_sync (ECalClient *client,
 	icalcomponent *icalcomp;
 	gchar *zone_str, *gdbus_zone = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
 
 	if (zone == icaltimezone_get_utc_timezone ())
@@ -5447,11 +5348,9 @@ cal_client_get_dbus_proxy (EClient *client)
 {
 	ECalClient *cal_client;
 
-	g_return_val_if_fail (client != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
 
 	cal_client = E_CAL_CLIENT (client);
-	g_return_val_if_fail (cal_client != NULL, NULL);
-	g_return_val_if_fail (cal_client->priv != NULL, NULL);
 
 	return cal_client->priv->gdbus_cal;
 }
@@ -5472,12 +5371,10 @@ cal_client_handle_authentication (EClient *client,
 	GError *error = NULL;
 	gchar **strv;
 
-	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (credentials != NULL);
 
 	cal_client = E_CAL_CLIENT (client);
-	g_return_if_fail (cal_client != NULL);
-	g_return_if_fail (cal_client->priv != NULL);
 
 	if (!cal_client->priv->gdbus_cal)
 		return;
@@ -5501,13 +5398,7 @@ cal_client_retrieve_capabilities (EClient *client,
                                   GAsyncReadyCallback callback,
                                   gpointer user_data)
 {
-	ECalClient *cal_client;
-
-	g_return_if_fail (client != NULL);
-
-	cal_client = E_CAL_CLIENT (client);
-	g_return_if_fail (cal_client != NULL);
-	g_return_if_fail (cal_client->priv != NULL);
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
 
 	cal_client_get_backend_property (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, cancellable, callback, user_data);
 }
@@ -5518,13 +5409,7 @@ cal_client_retrieve_capabilities_finish (EClient *client,
                                          gchar **capabilities,
                                          GError **error)
 {
-	ECalClient *cal_client;
-
-	g_return_val_if_fail (client != NULL, FALSE);
-
-	cal_client = E_CAL_CLIENT (client);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-	g_return_val_if_fail (cal_client->priv != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	return cal_client_get_backend_property_finish (client, result, capabilities, error);
 }
@@ -5535,13 +5420,7 @@ cal_client_retrieve_capabilities_sync (EClient *client,
                                        GCancellable *cancellable,
                                        GError **error)
 {
-	ECalClient *cal_client;
-
-	g_return_val_if_fail (client != NULL, FALSE);
-
-	cal_client = E_CAL_CLIENT (client);
-	g_return_val_if_fail (cal_client != NULL, FALSE);
-	g_return_val_if_fail (cal_client->priv != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
 
 	return cal_client_get_backend_property_sync (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, capabilities, cancellable, error);
 }
@@ -5573,8 +5452,6 @@ cal_client_dispose (GObject *object)
 	EClient *client;
 
 	client = E_CLIENT (object);
-	g_return_if_fail (client != NULL);
-	g_return_if_fail (client->priv != NULL);
 
 	e_client_cancel_all (client);
 
@@ -5591,8 +5468,6 @@ cal_client_finalize (GObject *object)
 	ECalClientPrivate *priv;
 
 	client = E_CAL_CLIENT (object);
-	g_return_if_fail (client != NULL);
-	g_return_if_fail (client->priv != NULL);
 
 	priv = client->priv;
 

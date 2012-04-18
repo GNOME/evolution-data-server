@@ -1626,9 +1626,6 @@ gdbus_cal_proxy_finalize (GObject *object)
 {
 	EGdbusCalProxy *proxy = E_GDBUS_CAL_PROXY (object);
 
-	g_return_if_fail (proxy != NULL);
-	g_return_if_fail (proxy->priv != NULL);
-
 	if (g_hash_table_size (proxy->priv->pending_ops))
 		g_debug ("%s: Kept %d items in pending_ops", G_STRFUNC, g_hash_table_size (proxy->priv->pending_ops));
 
@@ -1662,12 +1659,9 @@ gdbus_cal_get_pending_ops (EGdbusAsyncOpKeeper *object)
 {
 	EGdbusCalProxy *proxy;
 
-	g_return_val_if_fail (object != NULL, NULL);
 	g_return_val_if_fail (E_IS_GDBUS_CAL_PROXY (object), NULL);
 
 	proxy = E_GDBUS_CAL_PROXY (object);
-	g_return_val_if_fail (proxy != NULL, NULL);
-	g_return_val_if_fail (proxy->priv != NULL, NULL);
 
 	return proxy->priv->pending_ops;
 }

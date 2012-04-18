@@ -1978,9 +1978,7 @@ e_cal_backend_notify_property_changed (ECalBackend *backend,
 	ECalBackendPrivate *priv;
 	GSList *clients;
 
-	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (backend->priv != NULL);
 	g_return_if_fail (prop_name != NULL);
 	g_return_if_fail (*prop_name != '\0');
 	g_return_if_fail (prop_value != NULL);

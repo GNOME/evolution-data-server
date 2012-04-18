@@ -136,9 +136,7 @@ ep_read_key_boolean (EProxy *proxy,
 {
 	gboolean res = FALSE;
 
-	g_return_val_if_fail (proxy != NULL, FALSE);
 	g_return_val_if_fail (E_IS_PROXY (proxy), FALSE);
-	g_return_val_if_fail (proxy->priv != NULL, FALSE);
 
 	switch (key) {
 	case E_PROXY_KEY_USE_HTTP_PROXY:
@@ -168,9 +166,7 @@ ep_read_key_int (EProxy *proxy,
 {
 	gint res = 0;
 
-	g_return_val_if_fail (proxy != NULL, 0);
 	g_return_val_if_fail (E_IS_PROXY (proxy), 0);
-	g_return_val_if_fail (proxy->priv != NULL, 0);
 
 	switch (key) {
 	case E_PROXY_KEY_HTTP_PORT:
@@ -206,9 +202,7 @@ ep_read_key_string (EProxy *proxy,
 {
 	gchar *res = NULL;
 
-	g_return_val_if_fail (proxy != NULL, NULL);
 	g_return_val_if_fail (E_IS_PROXY (proxy), NULL);
-	g_return_val_if_fail (proxy->priv != NULL, NULL);
 
 	switch (key) {
 	case E_PROXY_KEY_MODE:
@@ -269,9 +263,7 @@ ep_read_key_list (EProxy *proxy,
 	GSList *res = NULL;
 	gchar **strv = NULL;
 
-	g_return_val_if_fail (proxy != NULL, NULL);
 	g_return_val_if_fail (E_IS_PROXY (proxy), NULL);
-	g_return_val_if_fail (proxy->priv != NULL, NULL);
 
 	switch (key) {
 	case E_PROXY_KEY_HTTP_IGNORE_HOSTS:
@@ -807,8 +799,7 @@ ep_evo_proxy_changed_cb (GSettings *settings,
 {
 	EProxyPrivate *priv;
 
-	g_return_if_fail (proxy != NULL);
-	g_return_if_fail (proxy->priv != NULL);
+	g_return_if_fail (E_IS_PROXY (proxy));
 
 	priv = proxy->priv;
 

@@ -1133,10 +1133,9 @@ camel_store_summary_unlock (CamelStoreSummary *summary,
 static gboolean
 store_summary_save_timeout (gpointer user_data)
 {
-	CamelStoreSummary *summary = user_data;
+	CamelStoreSummary *summary = CAMEL_STORE_SUMMARY (user_data);
 
 	g_return_val_if_fail (summary != NULL, FALSE);
-	g_return_val_if_fail (summary->priv != NULL, FALSE);
 
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
@@ -1155,8 +1154,7 @@ store_summary_save_timeout (gpointer user_data)
 static void
 store_summary_schedule_save (CamelStoreSummary *summary)
 {
-	g_return_if_fail (summary != NULL);
-	g_return_if_fail (summary->priv != NULL);
+	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
 
 	if (summary->priv->scheduled_save_id != 0)
 		g_source_remove (summary->priv->scheduled_save_id);
@@ -1173,10 +1171,9 @@ store_summary_sync_folder_summary_count_cb (CamelFolderSummary *folder_summary,
 	const gchar *path;
 	CamelStoreInfo *si;
 
-	g_return_if_fail (folder_summary != NULL);
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (folder_summary));
 	g_return_if_fail (param != NULL);
-	g_return_if_fail (summary != NULL);
-	g_return_if_fail (summary->priv != NULL);
+	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
 
 	path = g_hash_table_lookup (summary->priv->folder_summaries, folder_summary);
 	g_return_if_fail (path != NULL);
@@ -1239,10 +1236,9 @@ camel_store_summary_connect_folder_summary (CamelStoreSummary *summary,
 {
 	CamelStoreInfo *si;
 
-	g_return_val_if_fail (summary != NULL, FALSE);
-	g_return_val_if_fail (summary->priv != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (path != NULL, FALSE);
-	g_return_val_if_fail (folder_summary != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (folder_summary), FALSE);
 
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
@@ -1291,9 +1287,8 @@ gboolean
 camel_store_summary_disconnect_folder_summary (CamelStoreSummary *summary,
                                                CamelFolderSummary *folder_summary)
 {
-	g_return_val_if_fail (summary != NULL, FALSE);
-	g_return_val_if_fail (summary->priv != NULL, FALSE);
-	g_return_val_if_fail (folder_summary != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (folder_summary), FALSE);
 
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_REF_LOCK);
 	camel_store_summary_lock (summary, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);

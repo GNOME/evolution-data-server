@@ -1041,10 +1041,9 @@ free_refresh_data (ECalBackendFile *cbfile)
 {
 	ECalBackendFilePrivate *priv;
 
-	g_return_if_fail (cbfile != NULL);
+	g_return_if_fail (E_IS_CAL_BACKEND_FILE (cbfile));
 
 	priv = cbfile->priv;
-	g_return_if_fail (priv != NULL);
 
 	g_mutex_lock (priv->refresh_lock);
 
@@ -1664,20 +1663,12 @@ match_object_sexp_to_component (gpointer value,
 	ECalComponent * comp = value;
 	MatchObjectData *match_data = data;
 	const gchar *uid;
-	ECalBackendFile *cbfile;
-	ECalBackendFilePrivate *priv;
 
 	e_cal_component_get_uid (comp, &uid);
 
 	g_return_if_fail (comp != NULL);
 
-	cbfile = E_CAL_BACKEND_FILE (match_data->backend);
-
 	g_return_if_fail (match_data->backend != NULL);
-
-	priv = cbfile->priv;
-
-	g_return_if_fail (priv != NULL);
 
 	if ((!match_data->search_needed) ||
 	    (e_cal_backend_sexp_match_comp (match_data->obj_sexp, comp, match_data->backend))) {

@@ -295,7 +295,6 @@ cal_client_view_finalize (GObject *object)
 	ECalClientView *view;
 	ECalClientViewPrivate *priv;
 
-	g_return_if_fail (object != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (object));
 
 	view = E_CAL_CLIENT_VIEW (object);
@@ -478,7 +477,6 @@ e_cal_client_view_start (ECalClientView *view,
 {
 	ECalClientViewPrivate *priv;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
 	priv = view->priv;
@@ -512,7 +510,6 @@ e_cal_client_view_stop (ECalClientView *view,
 {
 	ECalClientViewPrivate *priv;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
 	priv = view->priv;
@@ -554,7 +551,6 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *view,
 {
 	ECalClientViewPrivate *priv;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
 	priv = view->priv;
@@ -591,7 +587,6 @@ e_cal_client_view_set_flags (ECalClientView      *view,
 {
 	ECalClientViewPrivate *priv;
 
-	g_return_if_fail (view != NULL);
 	g_return_if_fail (E_IS_CAL_CLIENT_VIEW (view));
 
 	priv = view->priv;

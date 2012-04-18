@@ -341,9 +341,7 @@ gdbus_book_client_connection_gone_cb (GDBusConnection *connection,
 static void
 gdbus_book_client_disconnect (EBookClient *client)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 
 	/* Ensure that everything relevant is NULL */
 	LOCK_FACTORY ();
@@ -368,7 +366,6 @@ backend_error_cb (EGdbusBook *object,
                   const gchar *message,
                   EBookClient *client)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (message != NULL);
 
@@ -380,7 +377,6 @@ readonly_cb (EGdbusBook *object,
              gboolean readonly,
              EBookClient *client)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 
 	e_client_set_readonly (E_CLIENT (client), readonly);
@@ -391,7 +387,6 @@ online_cb (EGdbusBook *object,
            gboolean is_online,
            EBookClient *client)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 
 	e_client_set_online (E_CLIENT (client), is_online);
@@ -404,7 +399,6 @@ auth_required_cb (EGdbusBook *object,
 {
 	ECredentials *credentials;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 
 	if (credentials_strv)
@@ -424,7 +418,6 @@ opened_cb (EGdbusBook *object,
 {
 	GError *error = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (error_strv != NULL);
 	g_return_if_fail (e_gdbus_templates_decode_error (error_strv, &error));
@@ -442,7 +435,6 @@ backend_property_changed_cb (EGdbusBook *object,
 {
 	gchar *prop_name = NULL, *prop_value = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (name_value_strv != NULL);
 	g_return_if_fail (e_gdbus_templates_decode_two_strings (name_value_strv, &prop_name, &prop_value));
@@ -730,9 +722,7 @@ e_book_client_set_default (EBookClient *client,
 {
 	ESource *source;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	source = e_client_get_source (E_CLIENT (client));
 	g_return_val_if_fail (source != NULL, FALSE);
@@ -867,7 +857,7 @@ e_book_client_get_self (EContact **contact,
 	gchar *uid;
 
 	g_return_val_if_fail (contact != NULL, FALSE);
-	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	*client = e_book_client_new_system (&local_error);
 	if (!*client) {
@@ -938,7 +928,7 @@ e_book_client_set_self (EBookClient *client,
 {
 	GConfClient *gconf;
 
-	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (contact != NULL, FALSE);
 	g_return_val_if_fail (e_contact_get_const (contact, E_CONTACT_UID) != NULL, FALSE);
 
@@ -988,7 +978,6 @@ book_client_get_backend_property_from_cache_finish (EClient *client,
 	GSimpleAsyncResult *simple;
 	GError *local_error = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (prop_value != NULL, FALSE);
@@ -1064,12 +1053,9 @@ book_client_get_backend_property_sync (EClient *client,
 	gchar *prop_val;
 	gboolean res;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	book_client = E_BOOK_CLIENT (client);
-	g_return_val_if_fail (book_client != NULL, FALSE);
-	g_return_val_if_fail (book_client->priv != NULL, FALSE);
 
 	if (!book_client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
@@ -1131,12 +1117,9 @@ book_client_set_backend_property_sync (EClient *client,
 	gboolean res;
 	gchar **prop_name_value;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	book_client = E_BOOK_CLIENT (client);
-	g_return_val_if_fail (book_client != NULL, FALSE);
-	g_return_val_if_fail (book_client->priv != NULL, FALSE);
 
 	if (!book_client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
@@ -1178,12 +1161,9 @@ book_client_open_sync (EClient *client,
 {
 	EBookClient *book_client;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	book_client = E_BOOK_CLIENT (client);
-	g_return_val_if_fail (book_client != NULL, FALSE);
-	g_return_val_if_fail (book_client->priv != NULL, FALSE);
 
 	if (!book_client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
@@ -1219,12 +1199,9 @@ book_client_remove_sync (EClient *client,
 {
 	EBookClient *book_client;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	book_client = E_BOOK_CLIENT (client);
-	g_return_val_if_fail (book_client != NULL, FALSE);
-	g_return_val_if_fail (book_client->priv != NULL, FALSE);
 
 	if (!book_client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
@@ -1260,12 +1237,9 @@ book_client_refresh_sync (EClient *client,
 {
 	EBookClient *book_client;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	book_client = E_BOOK_CLIENT (client);
-	g_return_val_if_fail (book_client != NULL, FALSE);
-	g_return_val_if_fail (book_client->priv != NULL, FALSE);
 
 	if (!book_client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
@@ -1385,9 +1359,7 @@ e_book_client_add_contact_sync (EBookClient *client,
 	gchar *vcard, *gdbus_vcard = NULL, **out_uids = NULL;
 	const gchar *strv[2];
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	if (!client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
@@ -1525,9 +1497,7 @@ e_book_client_add_contacts_sync (EBookClient *client,
 	gboolean res;
 	gchar **array, **out_uids = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	if (!client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
@@ -1635,9 +1605,7 @@ e_book_client_modify_contact_sync (EBookClient *client,
 	gchar *vcard, *gdbus_vcard = NULL;
 	const gchar *strv[2];
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	if (!client->priv->gdbus_book) {
 		set_proxy_gone_error (error);
@@ -1734,9 +1702,7 @@ e_book_client_modify_contacts_sync (EBookClient *client,
 	gboolean res;
 	gchar **array;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (contacts != NULL, FALSE);
 
 	if (!client->priv->gdbus_book) {
@@ -1841,10 +1807,7 @@ e_book_client_remove_contact_sync (EBookClient *client,
 	const gchar *uid, *safe_uid;
 	gchar *gdbus_uid = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
-	g_return_val_if_fail (contact != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
 
 	if (!client->priv->gdbus_book) {
@@ -1952,9 +1915,7 @@ e_book_client_remove_contact_by_uid_sync (EBookClient *client,
 	gchar *gdbus_uid = NULL;
 	const gchar *strv[2];
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
 	if (!client->priv->gdbus_book) {
@@ -2058,9 +2019,7 @@ e_book_client_remove_contacts_sync (EBookClient *client,
 	gboolean res;
 	gchar **strv;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
 	if (!client->priv->gdbus_book) {
@@ -2179,9 +2138,7 @@ e_book_client_get_contact_sync (EBookClient *client,
 	const gchar *safe_uid;
 	gchar *vcard = NULL, *gdbus_uid = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (contact != NULL, FALSE);
 
@@ -2317,9 +2274,7 @@ e_book_client_get_contacts_sync (EBookClient *client,
 	gchar *gdbus_sexp = NULL;
 	gchar **vcards = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (contacts != NULL, FALSE);
 
@@ -2460,9 +2415,7 @@ e_book_client_get_contacts_uids_sync (EBookClient *client,
 	gchar *gdbus_sexp = NULL;
 	gchar **uids = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (contacts_uids != NULL, FALSE);
 
@@ -2631,9 +2584,7 @@ e_book_client_get_view_sync (EBookClient *client,
 	gchar *gdbus_sexp = NULL;
 	gchar *view_path = NULL;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (sexp != NULL, FALSE);
 	g_return_val_if_fail (view != NULL, FALSE);
 
@@ -2654,11 +2605,9 @@ book_client_get_dbus_proxy (EClient *client)
 {
 	EBookClient *book_client;
 
-	g_return_val_if_fail (client != NULL, NULL);
+	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
 
 	book_client = E_BOOK_CLIENT (client);
-	g_return_val_if_fail (book_client != NULL, NULL);
-	g_return_val_if_fail (book_client->priv != NULL, NULL);
 
 	return book_client->priv->gdbus_book;
 }
@@ -2679,12 +2628,10 @@ book_client_handle_authentication (EClient *client,
 	GError *error = NULL;
 	gchar **strv;
 
-	g_return_if_fail (client != NULL);
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (credentials != NULL);
 
 	book_client = E_BOOK_CLIENT (client);
-	g_return_if_fail (book_client != NULL);
-	g_return_if_fail (book_client->priv != NULL);
 
 	if (!book_client->priv->gdbus_book)
 		return;
@@ -2708,13 +2655,7 @@ book_client_retrieve_capabilities (EClient *client,
                                    GAsyncReadyCallback callback,
                                    gpointer user_data)
 {
-	EBookClient *book_client;
-
-	g_return_if_fail (client != NULL);
-
-	book_client = E_BOOK_CLIENT (client);
-	g_return_if_fail (book_client != NULL);
-	g_return_if_fail (book_client->priv != NULL);
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 
 	book_client_get_backend_property (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, cancellable, callback, user_data);
 }
@@ -2725,13 +2666,7 @@ book_client_retrieve_capabilities_finish (EClient *client,
                                           gchar **capabilities,
                                           GError **error)
 {
-	EBookClient *book_client;
-
-	g_return_val_if_fail (client != NULL, FALSE);
-
-	book_client = E_BOOK_CLIENT (client);
-	g_return_val_if_fail (book_client != NULL, FALSE);
-	g_return_val_if_fail (book_client->priv != NULL, FALSE);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	return book_client_get_backend_property_finish (client, result, capabilities, error);
 }
@@ -2742,13 +2677,7 @@ book_client_retrieve_capabilities_sync (EClient *client,
                                         GCancellable *cancellable,
                                         GError **error)
 {
-	EBookClient *book_client;
-
-	g_return_val_if_fail (client != NULL, FALSE);
-
-	book_client = E_BOOK_CLIENT (client);
-	g_return_val_if_fail (book_client != NULL, FALSE);
-	g_return_val_if_fail (book_client->priv != NULL, FALSE);
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 
 	return book_client_get_backend_property_sync (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, capabilities, cancellable, error);
 }
@@ -2769,8 +2698,6 @@ book_client_dispose (GObject *object)
 	EClient *client;
 
 	client = E_CLIENT (object);
-	g_return_if_fail (client != NULL);
-	g_return_if_fail (client->priv != NULL);
 
 	e_client_cancel_all (client);
 
@@ -2783,12 +2710,6 @@ book_client_dispose (GObject *object)
 static void
 book_client_finalize (GObject *object)
 {
-	EBookClient *client;
-
-	client = E_BOOK_CLIENT (object);
-	g_return_if_fail (client != NULL);
-	g_return_if_fail (client->priv != NULL);
-
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_client_parent_class)->finalize (object);
 

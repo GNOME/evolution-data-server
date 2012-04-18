@@ -211,8 +211,6 @@ client_dispose (GObject *object)
 	EClient *client;
 
 	client = E_CLIENT (object);
-	g_return_if_fail (client != NULL);
-	g_return_if_fail (client->priv != NULL);
 
 	e_client_cancel_all (client);
 
@@ -227,8 +225,6 @@ client_finalize (GObject *object)
 	EClientPrivate *priv;
 
 	client = E_CLIENT (object);
-	g_return_if_fail (client != NULL);
-	g_return_if_fail (client->priv != NULL);
 
 	priv = client->priv;
 
@@ -433,10 +429,7 @@ static void
 client_set_source (EClient *client,
                    ESource *source)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
-	g_return_if_fail (source != NULL);
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	g_object_ref (source);
@@ -460,9 +453,7 @@ client_set_source (EClient *client,
 ESource *
 e_client_get_source (EClient *client)
 {
-	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv != NULL, NULL);
 
 	return client->priv->source;
 }
@@ -480,9 +471,7 @@ e_client_get_source (EClient *client)
 const gchar *
 e_client_get_uri (EClient *client)
 {
-	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv != NULL, NULL);
 
 	if (!client->priv->uri)
 		client->priv->uri = e_source_get_uri (e_client_get_source (client));
@@ -495,9 +484,7 @@ client_ensure_capabilities (EClient *client)
 {
 	gchar *capabilities;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 
 	if (client->priv->capabilities_retrieved || client->priv->capabilities)
 		return;
@@ -530,9 +517,7 @@ client_ensure_capabilities (EClient *client)
 const GSList *
 e_client_get_capabilities (EClient *client)
 {
-	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv != NULL, NULL);
 
 	client_ensure_capabilities (client);
 
@@ -557,9 +542,7 @@ e_client_check_capability (EClient *client,
 {
 	GSList *iter;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (capability, FALSE);
 
 	g_static_rec_mutex_lock (&client->priv->prop_mutex);
@@ -594,7 +577,6 @@ e_client_check_capability (EClient *client,
 gboolean
 e_client_check_refresh_supported (EClient *client)
 {
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 
 	return e_client_check_capability (client, "refresh-supported");
@@ -605,9 +587,7 @@ void
 e_client_set_capabilities (EClient *client,
                            const gchar *capabilities)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 
 	g_static_rec_mutex_lock (&client->priv->prop_mutex);
 
@@ -636,9 +616,7 @@ e_client_set_capabilities (EClient *client,
 gboolean
 e_client_is_readonly (EClient *client)
 {
-	g_return_val_if_fail (client != NULL, TRUE);
 	g_return_val_if_fail (E_IS_CLIENT (client), TRUE);
-	g_return_val_if_fail (client->priv != NULL, TRUE);
 
 	return client->priv->readonly;
 }
@@ -647,9 +625,7 @@ void
 e_client_set_readonly (EClient *client,
                        gboolean readonly)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 
 	g_static_rec_mutex_lock (&client->priv->prop_mutex);
 	if ((readonly ? 1 : 0) == (client->priv->readonly ? 1 : 0)) {
@@ -677,9 +653,7 @@ e_client_set_readonly (EClient *client,
 gboolean
 e_client_is_online (EClient *client)
 {
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	return client->priv->online;
 }
@@ -688,9 +662,7 @@ void
 e_client_set_online (EClient *client,
                      gboolean is_online)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 
 	/* newly connected/disconnected => make sure capabilities will be correct */
 	e_client_set_capabilities (client, NULL);
@@ -725,9 +697,7 @@ e_client_set_online (EClient *client,
 gboolean
 e_client_is_opened (EClient *client)
 {
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	return client->priv->opened;
 }
@@ -749,9 +719,7 @@ client_cancel_op (EClient *client,
 {
 	GCancellable *cancellable;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (client->priv->ops != NULL);
 
 	g_static_rec_mutex_lock (&client->priv->ops_mutex);
@@ -795,9 +763,7 @@ e_client_cancel_all (EClient *client)
 {
 	GSList *opids = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (client->priv->ops != NULL);
 
 	g_static_rec_mutex_lock (&client->priv->ops_mutex);
@@ -816,9 +782,7 @@ e_client_register_op (EClient *client,
 {
 	guint32 opid;
 
-	g_return_val_if_fail (client != NULL, 0);
 	g_return_val_if_fail (E_IS_CLIENT (client), 0);
-	g_return_val_if_fail (client->priv != NULL, 0);
 	g_return_val_if_fail (client->priv->ops != NULL, 0);
 	g_return_val_if_fail (cancellable != NULL, 0);
 
@@ -845,9 +809,7 @@ void
 e_client_unregister_op (EClient *client,
                         guint32 opid)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (client->priv->ops != NULL);
 
 	g_static_rec_mutex_lock (&client->priv->ops_mutex);
@@ -861,7 +823,6 @@ client_handle_authentication (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (credentials != NULL);
 
@@ -934,7 +895,6 @@ e_client_process_authentication (EClient *client,
 {
 	struct EClientAuthData *auth_data;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 
 	auth_data = g_new0 (struct EClientAuthData, 1);
@@ -950,7 +910,6 @@ e_client_emit_authenticate (EClient *client,
 {
 	gboolean handled = FALSE;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (credentials != NULL, FALSE);
 
@@ -965,9 +924,7 @@ e_client_emit_opened (EClient *client,
 {
 	GError *local_error = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 
 	client->priv->opened = dbus_error == NULL;
 
@@ -987,7 +944,6 @@ void
 e_client_emit_backend_error (EClient *client,
                              const gchar *error_msg)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (error_msg != NULL);
 
@@ -997,7 +953,6 @@ e_client_emit_backend_error (EClient *client,
 void
 e_client_emit_backend_died (EClient *client)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 
 	g_signal_emit (client, signals[BACKEND_DIED], 0);
@@ -1008,9 +963,7 @@ e_client_emit_backend_property_changed (EClient *client,
                                         const gchar *prop_name,
                                         const gchar *prop_value)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (prop_name != NULL);
 	g_return_if_fail (*prop_name);
 	g_return_if_fail (prop_value != NULL);
@@ -1025,9 +978,7 @@ e_client_update_backend_property_cache (EClient *client,
                                         const gchar *prop_name,
                                         const gchar *prop_value)
 {
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (prop_name != NULL);
 	g_return_if_fail (*prop_name);
 	g_return_if_fail (prop_value != NULL);
@@ -1046,9 +997,7 @@ e_client_get_backend_property_from_cache (EClient *client,
 {
 	gchar *prop_value = NULL;
 
-	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv != NULL, NULL);
 	g_return_val_if_fail (prop_name != NULL, NULL);
 	g_return_val_if_fail (*prop_name, NULL);
 
@@ -1086,9 +1035,7 @@ e_client_retrieve_capabilities (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (callback != NULL);
 
 	class = E_CLIENT_GET_CLASS (client);
@@ -1122,9 +1069,7 @@ e_client_retrieve_capabilities_finish (EClient *client,
 	EClientClass *class;
 	gboolean res;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (capabilities != NULL, FALSE);
 
 	class = E_CLIENT_GET_CLASS (client);
@@ -1165,7 +1110,7 @@ e_client_retrieve_capabilities_sync (EClient *client,
 	EClientClass *class;
 	gboolean res = FALSE;
 
-	g_return_val_if_fail (client != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (capabilities != NULL, FALSE);
 
 	class = E_CLIENT_GET_CLASS (client);
@@ -1204,9 +1149,7 @@ e_client_get_backend_property (EClient *client,
 	EClientClass *class;
 
 	g_return_if_fail (callback != NULL);
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (prop_name != NULL);
 
 	class = E_CLIENT_GET_CLASS (client);
@@ -1237,9 +1180,7 @@ e_client_get_backend_property_finish (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (prop_value != NULL, FALSE);
 
 	class = E_CLIENT_GET_CLASS (client);
@@ -1272,9 +1213,7 @@ e_client_get_backend_property_sync (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (prop_name != NULL, FALSE);
 	g_return_val_if_fail (prop_value != NULL, FALSE);
 
@@ -1311,9 +1250,7 @@ e_client_set_backend_property (EClient *client,
 	EClientClass *class;
 
 	g_return_if_fail (callback != NULL);
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (prop_name != NULL);
 	g_return_if_fail (prop_value != NULL);
 
@@ -1343,9 +1280,7 @@ e_client_set_backend_property_finish (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	class = E_CLIENT_GET_CLASS (client);
 	g_return_val_if_fail (class != NULL, FALSE);
@@ -1378,9 +1313,7 @@ e_client_set_backend_property_sync (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 	g_return_val_if_fail (prop_name != NULL, FALSE);
 	g_return_val_if_fail (prop_value != NULL, FALSE);
 
@@ -1414,9 +1347,7 @@ e_client_open (EClient *client,
 	EClientClass *class;
 
 	g_return_if_fail (callback != NULL);
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 
 	class = E_CLIENT_GET_CLASS (client);
 	g_return_if_fail (class != NULL);
@@ -1444,9 +1375,7 @@ e_client_open_finish (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	class = E_CLIENT_GET_CLASS (client);
 	g_return_val_if_fail (class != NULL, FALSE);
@@ -1504,9 +1433,7 @@ e_client_remove (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (callback != NULL);
 
 	class = E_CLIENT_GET_CLASS (client);
@@ -1535,9 +1462,7 @@ e_client_remove_finish (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	class = E_CLIENT_GET_CLASS (client);
 	g_return_val_if_fail (class != NULL, FALSE);
@@ -1596,9 +1521,7 @@ e_client_refresh (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
-	g_return_if_fail (client->priv != NULL);
 	g_return_if_fail (callback != NULL);
 
 	class = E_CLIENT_GET_CLASS (client);
@@ -1627,9 +1550,7 @@ e_client_refresh_finish (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv != NULL, FALSE);
 
 	class = E_CLIENT_GET_CLASS (client);
 	g_return_val_if_fail (class != NULL, FALSE);
@@ -2008,7 +1929,6 @@ e_client_finish_async_without_dbus (EClient *client,
 	GSimpleAsyncResult *simple;
 	guint32 opid;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (source_tag != NULL);
@@ -2034,7 +1954,6 @@ e_client_get_dbus_proxy (EClient *client)
 {
 	EClientClass *class;
 
-	g_return_val_if_fail (client != NULL, NULL);
 	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
 
 	class = E_CLIENT_GET_CLASS (client);
@@ -2062,7 +1981,6 @@ e_client_unwrap_dbus_error (EClient *client,
 {
 	EClientClass *class;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 
 	class = E_CLIENT_GET_CLASS (client);
@@ -2404,7 +2322,6 @@ e_client_proxy_return_async_error (EClient *client,
 {
 	EClientAsyncOpData *async_data;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (error != NULL);
 	g_return_if_fail (callback != NULL);
@@ -2434,7 +2351,6 @@ e_client_proxy_call_void (EClient *client,
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (source_tag != NULL);
@@ -2467,7 +2383,6 @@ e_client_proxy_call_boolean (EClient *client,
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (source_tag != NULL);
@@ -2500,7 +2415,6 @@ e_client_proxy_call_string (EClient *client,
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (source_tag != NULL);
@@ -2535,7 +2449,6 @@ e_client_proxy_call_string_with_res_op_data (EClient *client,
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (source_tag != NULL);
@@ -2571,7 +2484,6 @@ e_client_proxy_call_strv (EClient *client,
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (source_tag != NULL);
@@ -2605,7 +2517,6 @@ e_client_proxy_call_uint (EClient *client,
 	EClientAsyncOpData *async_data;
 	GDBusProxy *proxy = NULL;
 
-	g_return_if_fail (client != NULL);
 	g_return_if_fail (E_IS_CLIENT (client));
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (source_tag != NULL);
@@ -2627,7 +2538,6 @@ e_client_proxy_call_finish_void (EClient *client,
 	GError *local_error = NULL;
 	EClientAsyncOpData *async_data;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (source_tag != NULL, FALSE);
@@ -2657,7 +2567,6 @@ e_client_proxy_call_finish_boolean (EClient *client,
 	GError *local_error = NULL;
 	EClientAsyncOpData *async_data;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (source_tag != NULL, FALSE);
@@ -2690,7 +2599,6 @@ e_client_proxy_call_finish_string (EClient *client,
 	GError *local_error = NULL;
 	EClientAsyncOpData *async_data;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (source_tag != NULL, FALSE);
@@ -2724,7 +2632,6 @@ e_client_proxy_call_finish_strv (EClient *client,
 	GError *local_error = NULL;
 	EClientAsyncOpData *async_data;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (source_tag != NULL, FALSE);
@@ -2758,7 +2665,6 @@ e_client_proxy_call_finish_uint (EClient *client,
 	GError *local_error = NULL;
 	EClientAsyncOpData *async_data;
 
-	g_return_val_if_fail (client != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (result != NULL, FALSE);
 	g_return_val_if_fail (source_tag != NULL, FALSE);
@@ -2787,7 +2693,6 @@ e_client_proxy_call_finish_uint (EClient *client,
 	gboolean result;					\
 	GError *local_error = NULL;				\
 								\
-	g_return_val_if_fail (client != NULL, FALSE);		\
 	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);	\
 	g_return_val_if_fail (func != NULL, FALSE);		\
 	g_return_val_if_fail (_out_test != NULL, FALSE);	\
