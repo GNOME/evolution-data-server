@@ -833,8 +833,8 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 	return LDAP_SUCCESS;
 }
 
-static GError *
-e_book_backend_ldap_connect (EBookBackendLDAP *bl)
+static gboolean
+e_book_backend_ldap_connect (EBookBackendLDAP *bl, GError **error)
 {
 	EBookBackendLDAPPrivate *blpriv = bl->priv;
 	gint protocol_version = LDAP_VERSION3;
@@ -891,7 +891,8 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 				ldap_unbind (blpriv->ldap);
 				blpriv->ldap = NULL;
 				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-				return EDB_ERROR (TLS_NOT_AVAILABLE);
+				g_propagate_error (error, EDB_ERROR (TLS_NOT_AVAILABLE));
+				return FALSE;
 			}
 
 			if (bl->priv->ldap_port == LDAPS_PORT && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
@@ -941,7 +942,8 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 						ldap_unbind (blpriv->ldap);
 						blpriv->ldap = NULL;
 						g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-						return EDB_ERROR (TLS_NOT_AVAILABLE);
+						g_propagate_error (error, EDB_ERROR (TLS_NOT_AVAILABLE));
+						return FALSE;
 					}
 					else {
 						g_message ("TLS not available (ldap_error 0x%02x)", ldap_error);
@@ -970,18 +972,33 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 
 		if (ldap_error == LDAP_PROTOCOL_ERROR) {
 			g_warning ("failed to bind using either v3 or v2 binds.");
+			if (blpriv->ldap) {
+				ldap_unbind (blpriv->ldap);
+				blpriv->ldap = NULL;
+			}
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-			return e_data_book_create_error (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to bind using either v3 or v2 binds");
+			g_propagate_error (error, e_data_book_create_error (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to bind using either v3 or v2 binds"));
+			return FALSE;
 		}
 		else if (ldap_error == LDAP_SERVER_DOWN) {
 			/* we only want this to be fatal if the server is down. */
 			g_warning ("failed to bind anonymously while connecting (ldap_error 0x%02x)", ldap_error);
+			if (blpriv->ldap) {
+				ldap_unbind (blpriv->ldap);
+				blpriv->ldap = NULL;
+			}
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-			return EDB_ERROR (REPOSITORY_OFFLINE);
+			g_propagate_error (error, EDB_ERROR (REPOSITORY_OFFLINE));
+			return FALSE;
 		} else if (ldap_error == LDAP_INVALID_CREDENTIALS) {
 			g_warning ("Invalid credentials while connecting (ldap_error 0x%02x)", ldap_error);
+			if (blpriv->ldap) {
+				ldap_unbind (blpriv->ldap);
+				blpriv->ldap = NULL;
+			}
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-			return EDB_ERROR (AUTHENTICATION_FAILED);
+			g_propagate_error (error, EDB_ERROR (AUTHENTICATION_FAILED));
+			return FALSE;
 		}
 
 		if (ldap_error == LDAP_INSUFFICIENT_ACCESS)
@@ -1018,17 +1035,28 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 				printf("e_book_backend_ldap_connect took %ld.%03ld seconds\n",
 					diff / 1000,diff % 1000);
 			}
-			return EDB_ERROR (SUCCESS);
+			return TRUE;
 		} else if (ldap_error == LDAP_UNWILLING_TO_PERFORM) {
-			e_book_backend_notify_auth_required (E_BOOK_BACKEND (bl), TRUE, NULL);
+			if (blpriv->ldap) {
+				ldap_unbind (blpriv->ldap);
+				blpriv->ldap = NULL;
+			}
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-			return EDB_ERROR (SUCCESS);
+			g_propagate_error (error, EDB_ERROR (AUTHENTICATION_FAILED));
+			return FALSE;
 		} else {
+			if (blpriv->ldap) {
+				ldap_unbind (blpriv->ldap);
+				blpriv->ldap = NULL;
+			}
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 			g_warning ("Failed to perform root dse query anonymously, (ldap_error 0x%02x)", ldap_error);
 		}
-	}
-	else {
+	} else {
+		if (blpriv->ldap) {
+			ldap_unbind (blpriv->ldap);
+			blpriv->ldap = NULL;
+		}
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 	}
 
@@ -1038,7 +1066,8 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl)
 		   blpriv->ldap_port,
 		   blpriv->ldap_rootdn ? blpriv->ldap_rootdn : "");
 	blpriv->connected = FALSE;
-	return EDB_ERROR (REPOSITORY_OFFLINE);
+	g_propagate_error (error, EDB_ERROR (REPOSITORY_OFFLINE));
+	return FALSE;
 }
 
 static gboolean
@@ -1065,18 +1094,16 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl,
 
 	/* we need to reconnect if we were previously connected */
 	if (bl->priv->connected && ldap_status == LDAP_SERVER_DOWN) {
-		GError *error;
+		GError *error = NULL;
 		gint ldap_error = LDAP_SUCCESS;
 
 		book_view_notify_status (bl, book_view, _("Reconnecting to LDAP server..."));
 
-		error = e_book_backend_ldap_connect (bl);
-
-		if (error) {
+		if (!e_book_backend_ldap_connect (bl, &error)) {
 			book_view_notify_status (bl, book_view, "");
 			if (enable_debug)
 				printf ("e_book_backend_ldap_reconnect ... failed (server down?)\n");
-			g_error_free (error);
+			g_clear_error (&error);
 			return FALSE;
 		}
 
@@ -5194,13 +5221,13 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 			printf ("simple auth as %s\n", dn);
 		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		if (!bl->priv->connected || !bl->priv->ldap) {
-			GError *error;
+			GError *error = NULL;
 
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
-			error = e_book_backend_ldap_connect (bl);
-			if (error) {
-				e_book_backend_notify_opened (backend, error);
+			if (!e_book_backend_ldap_connect (bl, &error)) {
+				if (error)
+					e_book_backend_notify_opened (backend, error);
 				return;
 			}
 		}
@@ -5229,13 +5256,13 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 		g_print ("sasl bind (mech = %s) as %s", auth_method + strlen (SASL_PREFIX), user);
 		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 		if (!bl->priv->connected || !bl->priv->ldap) {
-			GError *error;
+			GError *error = NULL;
 
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 
-			error = e_book_backend_ldap_connect (bl);
-			if (error) {
-				e_book_backend_notify_opened (backend, error);
+			if (!e_book_backend_ldap_connect (bl)) {
+				if (error)
+					e_book_backend_notify_opened (backend, error);
 				return;
 			}
 		}
@@ -5325,7 +5352,7 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	const gchar *str;
 	const gchar *offline;
 	gchar *filename;
-	GError *err;
+	GError *err = NULL;
 	gboolean auth_required;
 
 	g_assert (bl->priv->connected == FALSE);
@@ -5440,8 +5467,7 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	}
 
 	/* Online */
-	err = e_book_backend_ldap_connect (bl);
-	if (err) {
+	if (!e_book_backend_ldap_connect (bl, &err)) {
 		if (enable_debug)
 			printf ("%s ... failed to connect to server \n", G_STRFUNC);
 		e_book_backend_respond_opened (backend, book, opid, err);
@@ -5615,13 +5641,12 @@ e_book_backend_ldap_notify_online_cb (EBookBackend *backend,
 		e_book_backend_notify_online (backend, TRUE);
 
 		if (e_book_backend_is_opened (backend)) {
-			GError *error;
+			GError *error = NULL;
 
-			error = e_book_backend_ldap_connect (bl);
-			e_book_backend_notify_auth_required (backend, TRUE, NULL);
+			if (e_book_backend_ldap_connect (bl, &error))
+				e_book_backend_notify_auth_required (backend, TRUE, NULL);
 
-			if (error)
-				g_error_free (error);
+			g_clear_error (&error);
 #if 0
 			start_views (backend);
 #endif

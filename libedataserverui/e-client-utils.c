@@ -479,6 +479,7 @@ client_utils_open_new_done (EClientUtilsAsyncOpData *async_data)
 }
 
 static gboolean client_utils_retry_open_timeout_cb (gpointer user_data);
+static void client_utils_opened_cb (EClient *client, const GError *error, EClientUtilsAsyncOpData *async_data);
 
 static void
 finish_or_retry_open (EClientUtilsAsyncOpData *async_data,
@@ -487,6 +488,9 @@ finish_or_retry_open (EClientUtilsAsyncOpData *async_data,
 	g_return_if_fail (async_data != NULL);
 
 	if (async_data->auth_handler && error && g_error_matches (error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_FAILED)) {
+		/* reconnect to the signal */
+		g_signal_connect (async_data->client, "opened", G_CALLBACK (client_utils_opened_cb), async_data);
+
 		if (async_data->used_credentials) {
 			const gchar *prompt_key;
 
@@ -578,6 +582,9 @@ client_utils_retry_open_timeout_cb (gpointer user_data)
 	g_return_val_if_fail (async_data != NULL, FALSE);
 
 	g_signal_handlers_disconnect_matched (async_data->cancellable, G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, async_data);
+
+	/* reconnect to the signal */
+	g_signal_connect (async_data->client, "opened", G_CALLBACK (client_utils_opened_cb), async_data);
 
 	e_client_open (async_data->client, async_data->only_if_exists, async_data->cancellable, client_utils_open_new_async_cb, async_data);
 
