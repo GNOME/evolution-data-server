@@ -344,7 +344,7 @@ ESourceComboBox
 e_source_combo_box_new
 e_source_combo_box_get_source_list
 e_source_combo_box_set_source_list
-e_source_combo_box_get_active
+e_source_combo_box_ref_active
 e_source_combo_box_set_active
 <SUBSECTION Standard>
 E_SOURCE_COMBO_BOX

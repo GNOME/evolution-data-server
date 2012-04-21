@@ -994,7 +994,7 @@ source_changed (ENameSelectorDialog *name_selector_dialog,
 	ESource *source;
 	gpointer parent;
 
-	source = e_source_combo_box_get_active (source_combo_box);
+	source = e_source_combo_box_ref_active (source_combo_box);
 
 	parent = gtk_widget_get_toplevel (GTK_WIDGET (name_selector_dialog));
 	parent = gtk_widget_is_toplevel (parent) ? parent : NULL;
@@ -1013,6 +1013,8 @@ source_changed (ENameSelectorDialog *name_selector_dialog,
 		source, E_CLIENT_SOURCE_TYPE_CONTACTS, TRUE, cancellable,
 		e_client_utils_authenticate_handler, parent,
 		book_loaded_cb, g_object_ref (name_selector_dialog));
+
+	g_object_unref (source);
 }
 
 /* --------------- *

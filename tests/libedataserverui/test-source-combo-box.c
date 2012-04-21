@@ -27,8 +27,15 @@ source_changed_cb (ESourceComboBox *combo_box)
 {
 	ESource *source;
 
-	source = e_source_combo_box_get_active (combo_box);
-	g_print ("source selected: \"%s\"\n", e_source_get_display_name (source));
+	source = e_source_combo_box_ref_active (combo_box);
+	if (source != NULL) {
+		const gchar *display_name;
+		display_name = e_source_get_display_name (source);
+		g_print ("source selected: \"%s\"\n", display_name);
+		g_object_unref (source);
+	} else {
+		g_print ("source selected: (none)\n");
+	}
 }
 
 static gint

@@ -67,10 +67,8 @@ ESourceList *	e_source_combo_box_get_source_list
 void		e_source_combo_box_set_source_list
 						(ESourceComboBox *combo_box,
 						 ESourceList *source_list);
-ESource *	e_source_combo_box_get_active
-						(ESourceComboBox *combo_box);
-void		e_source_combo_box_set_active
-						(ESourceComboBox *combo_box,
+ESource *	e_source_combo_box_ref_active	(ESourceComboBox *combo_box);
+void		e_source_combo_box_set_active	(ESourceComboBox *combo_box,
 						 ESource *source);
 
 G_END_DECLS

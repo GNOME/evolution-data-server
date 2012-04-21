@@ -425,18 +425,21 @@ e_source_combo_box_set_source_list (ESourceComboBox *combo_box,
 }
 
 /**
- * e_source_combo_box_get_active:
+ * e_source_combo_box_ref_active:
  * @combo_box: an #ESourceComboBox
  *
  * Returns the #ESource corresponding to the currently active item,
  * or %NULL if there is no active item.
  *
+ * The returned #ESource is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
  * Returns: an #ESource or %NULL
  *
- * Since: 2.22
+ * Since: 3.6
  **/
 ESource *
-e_source_combo_box_get_active (ESourceComboBox *combo_box)
+e_source_combo_box_ref_active (ESourceComboBox *combo_box)
 {
 	GtkComboBox *gtk_combo_box;
 	GtkTreeIter iter;
@@ -452,9 +455,6 @@ e_source_combo_box_get_active (ESourceComboBox *combo_box)
 	gtk_tree_model_get (
 		gtk_combo_box_get_model (gtk_combo_box),
 		&iter, COLUMN_SOURCE, &source, -1);
-
-	if (source != NULL)
-		g_object_unref (source);
 
 	return source;
 }
