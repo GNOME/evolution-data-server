@@ -834,7 +834,8 @@ query_ldap_root_dse (EBookBackendLDAP *bl)
 }
 
 static gboolean
-e_book_backend_ldap_connect (EBookBackendLDAP *bl, GError **error)
+e_book_backend_ldap_connect (EBookBackendLDAP *bl,
+                             GError **error)
 {
 	EBookBackendLDAPPrivate *blpriv = bl->priv;
 	gint protocol_version = LDAP_VERSION3;
@@ -860,8 +861,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl, GError **error)
 		const gchar *user_data_dir = e_get_user_data_dir ();
 		ldap_flag = ldapssl_client_init (user_data_dir, NULL);
 		blpriv->ldap = ldapssl_init (blpriv->ldap_host, blpriv->ldap_port, 1);
-	}
-	else
+	} else
 		blpriv->ldap = ldap_init (blpriv->ldap_host, blpriv->ldap_port);
 #else
 	blpriv->ldap = ldap_init (blpriv->ldap_host, blpriv->ldap_port);
@@ -877,11 +877,10 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl, GError **error)
 	}
 #endif
 		ldap_error = ldap_set_option (blpriv->ldap, LDAP_OPT_PROTOCOL_VERSION, &protocol_version);
-		if (LDAP_SUCCESS != ldap_error) {
+		if (ldap_error != LDAP_SUCCESS) {
 			g_warning ("failed to set protocol version to LDAPv3");
 			bl->priv->ldap_v3 = FALSE;
-		}
-		else
+		} else
 			bl->priv->ldap_v3 = TRUE;
 
 		if (bl->priv->use_tls != E_BOOK_BACKEND_LDAP_TLS_NO) {
@@ -897,7 +896,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl, GError **error)
 
 			if (bl->priv->ldap_port == LDAPS_PORT && bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 #ifdef SUNLDAP
-				if (LDAP_SUCCESS == ldap_error) {
+				if (ldap_error == LDAP_SUCCESS) {
 					ldap_set_option (blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
 				}
 #else
@@ -914,10 +913,9 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl, GError **error)
 				g_message ("TLS option not available");
 #endif
 #endif
-			}
-			else if (bl->priv->use_tls) {
+			} else if (bl->priv->use_tls) {
 #ifdef SUNLDAP
-				if (LDAP_SUCCESS == ldap_error) {
+				if (ldap_error == LDAP_SUCCESS) {
 					ldap_set_option (blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
 				}
 #else
@@ -936,7 +934,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl, GError **error)
 				ldap_error = ldap_start_tls_s (blpriv->ldap, NULL, NULL);
 #endif /* _WIN32 */
 #endif
-				if (LDAP_SUCCESS != ldap_error) {
+				if (ldap_error != LDAP_SUCCESS) {
 					if (bl->priv->use_tls == E_BOOK_BACKEND_LDAP_TLS_ALWAYS) {
 						g_message ("TLS not available (fatal version), (ldap_error 0x%02x)", ldap_error);
 						ldap_unbind (blpriv->ldap);
@@ -944,8 +942,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl, GError **error)
 						g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 						g_propagate_error (error, EDB_ERROR (TLS_NOT_AVAILABLE));
 						return FALSE;
-					}
-					else {
+					} else {
 						g_message ("TLS not available (ldap_error 0x%02x)", ldap_error);
 					}
 				} else if (enable_debug)
@@ -977,10 +974,13 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl, GError **error)
 				blpriv->ldap = NULL;
 			}
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-			g_propagate_error (error, e_data_book_create_error (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to bind using either v3 or v2 binds"));
+			g_propagate_error (
+				error, e_data_book_create_error (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				"Failed to bind using either v3 or v2 binds"));
 			return FALSE;
-		}
-		else if (ldap_error == LDAP_SERVER_DOWN) {
+
+		} else if (ldap_error == LDAP_SERVER_DOWN) {
 			/* we only want this to be fatal if the server is down. */
 			g_warning ("failed to bind anonymously while connecting (ldap_error 0x%02x)", ldap_error);
 			if (blpriv->ldap) {
@@ -1066,7 +1066,9 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl, GError **error)
 		   blpriv->ldap_port,
 		   blpriv->ldap_rootdn ? blpriv->ldap_rootdn : "");
 	blpriv->connected = FALSE;
+
 	g_propagate_error (error, EDB_ERROR (REPOSITORY_OFFLINE));
+
 	return FALSE;
 }
 
@@ -1094,16 +1096,14 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl,
 
 	/* we need to reconnect if we were previously connected */
 	if (bl->priv->connected && ldap_status == LDAP_SERVER_DOWN) {
-		GError *error = NULL;
 		gint ldap_error = LDAP_SUCCESS;
 
 		book_view_notify_status (bl, book_view, _("Reconnecting to LDAP server..."));
 
-		if (!e_book_backend_ldap_connect (bl, &error)) {
+		if (!e_book_backend_ldap_connect (bl, NULL)) {
 			book_view_notify_status (bl, book_view, "");
 			if (enable_debug)
 				printf ("e_book_backend_ldap_reconnect ... failed (server down?)\n");
-			g_clear_error (&error);
 			return FALSE;
 		}
 
@@ -5427,8 +5427,8 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	g_free (uri);
 
 	if (!e_backend_get_online (E_BACKEND (backend))) {
-		/* Offline */
 
+		/* Offline */
 		e_book_backend_notify_readonly (backend, TRUE);
 		e_book_backend_notify_online (backend, FALSE);
 
