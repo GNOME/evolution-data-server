@@ -124,7 +124,7 @@
 #include <sys/time.h>
 
 #include <glib/gi18n-lib.h>
-#include "libedataserver/e-sexp.h"
+#include <libedataserver/e-sexp.h>
 #include <libebook/e-contact.h>
 
 #include <libedata-book/e-book-backend-sexp.h>
@@ -192,7 +192,7 @@ struct _EBookBackendLDAPPrivate {
 	gint      ldap_timeout; /* the search timeout */
 
 	gchar   *auth_dn;
-	gchar   *auth_passwd;
+	gchar   *auth_secret;
 
 	gboolean ldap_v3;      /* TRUE if the server supports protocol
                                   revision 3 (necessary for TLS) */
@@ -954,7 +954,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 		 * authenticate the user properly later (in
 		 * authenticate_user) if they've selected
 		 * authentication */
-		ldap_error = ldap_simple_bind_s (blpriv->ldap, blpriv->auth_dn, blpriv->auth_passwd);
+		ldap_error = ldap_simple_bind_s (blpriv->ldap, blpriv->auth_dn, blpriv->auth_secret);
 		if (ldap_error == LDAP_PROTOCOL_ERROR) {
 			g_warning ("failed to bind using v3.  trying v2.");
 			/* server doesn't support v3 binds, so let's
@@ -964,7 +964,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 			protocol_version = LDAP_VERSION2;
 			ldap_set_option (blpriv->ldap, LDAP_OPT_PROTOCOL_VERSION, &protocol_version);
 
-			ldap_error = ldap_simple_bind_s (blpriv->ldap, blpriv->auth_dn, blpriv->auth_passwd);
+			ldap_error = ldap_simple_bind_s (blpriv->ldap, blpriv->auth_dn, blpriv->auth_secret);
 		}
 
 		if (ldap_error == LDAP_PROTOCOL_ERROR) {
@@ -1111,7 +1111,7 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl,
 			g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 			ldap_error = ldap_simple_bind_s (bl->priv->ldap,
 							bl->priv->auth_dn,
-							bl->priv->auth_passwd);
+							bl->priv->auth_secret);
 			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		}
 		book_view_notify_status (bl, book_view, "");
@@ -5211,10 +5211,10 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 		}
 
 		g_free (bl->priv->auth_dn);
-		e_credentials_util_safe_free_string (bl->priv->auth_passwd);
+		e_credentials_util_safe_free_string (bl->priv->auth_secret);
 
 		bl->priv->auth_dn = dn;
-		bl->priv->auth_passwd = e_credentials_get (credentials, E_CREDENTIALS_KEY_PASSWORD);
+		bl->priv->auth_secret = e_credentials_get (credentials, E_CREDENTIALS_KEY_PASSWORD);
 
 		/* now authenticate against the DN we were either supplied or queried for */
 		if (enable_debug)
@@ -5234,7 +5234,7 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 
 		ldap_error = ldap_simple_bind_s (bl->priv->ldap,
 						bl->priv->auth_dn,
-						bl->priv->auth_passwd);
+						bl->priv->auth_secret);
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		/* Some ldap servers are returning (ex active directory ones) LDAP_SERVER_DOWN
 		 * when we try to do an ldap operation  after being  idle

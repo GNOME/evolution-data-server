@@ -30,11 +30,14 @@ G_BEGIN_DECLS
  * Functions for accessing mail configuration
  */
 
-gboolean e_cal_backend_mail_account_get_default (gchar **address, gchar **name);
-gboolean e_cal_backend_mail_account_is_valid (gchar *user, gchar **name);
-
-gboolean e_cal_backend_user_declined (icalcomponent *icalcomp);
+gboolean	e_cal_backend_mail_account_get_default
+						(gchar **address,
+						 gchar **name);
+gboolean	e_cal_backend_mail_account_is_valid
+						(gchar *user,
+						 gchar **name);
+gboolean	e_cal_backend_user_declined	(icalcomponent *icalcomp);
 
 G_END_DECLS
 
-#endif
+#endif /* E_CAL_BACKEND_UTIL_H */

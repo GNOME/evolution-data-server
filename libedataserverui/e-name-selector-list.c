@@ -701,5 +701,5 @@ e_name_selector_list_init (ENameSelectorList *list)
 ENameSelectorList *
 e_name_selector_list_new (void)
 {
-	return g_object_new (e_name_selector_list_get_type (), NULL);
+	return g_object_new (E_TYPE_NAME_SELECTOR_LIST, NULL);
 }

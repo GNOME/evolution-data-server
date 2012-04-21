@@ -1645,9 +1645,7 @@ e_cal_open (ECal *ecal,
 	GError *err = NULL;
 	gboolean result;
 
-	result = open_calendar (ecal, only_if_exists, &err,
-		&status,
-		FALSE, FALSE);
+	result = open_calendar (ecal, only_if_exists, &err, &status, FALSE, FALSE);
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED], 0, status);
 	g_signal_emit (G_OBJECT (ecal), e_cal_signals[CAL_OPENED_EX], 0, err);
 
@@ -1743,9 +1741,7 @@ e_cal_open_async (ECal *ecal,
 		break;
 	}
 
-	open_calendar (ecal, only_if_exists, &error,
-		&status,
-		FALSE, TRUE);
+	open_calendar (ecal, only_if_exists, &error, &status, FALSE, TRUE);
 
 	if (error)
 		async_report_idle (ecal, error);

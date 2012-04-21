@@ -179,7 +179,8 @@ struct _ECalBackendClass {
 
 GType		e_cal_backend_get_type			(void);
 
-icalcomponent_kind e_cal_backend_get_kind		(ECalBackend *backend);
+icalcomponent_kind
+		e_cal_backend_get_kind			(ECalBackend *backend);
 gboolean	e_cal_backend_is_opened			(ECalBackend *backend);
 gboolean	e_cal_backend_is_opening		(ECalBackend *backend);
 gboolean	e_cal_backend_is_readonly		(ECalBackend *backend);

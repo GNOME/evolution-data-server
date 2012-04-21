@@ -214,10 +214,11 @@ e_book_backend_class_init (EBookBackendClass *class)
 		PROP_CACHE_DIR,
 		g_param_spec_string (
 			"cache-dir",
+			"Cache Dir",
+			"The backend's cache directory",
 			NULL,
-			NULL,
-			NULL,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void

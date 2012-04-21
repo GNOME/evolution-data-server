@@ -46,7 +46,10 @@
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
-G_DEFINE_TYPE (ECalBackendHttp, e_cal_backend_http, E_TYPE_CAL_BACKEND_SYNC)
+G_DEFINE_TYPE (
+	ECalBackendHttp,
+	e_cal_backend_http,
+	E_TYPE_CAL_BACKEND_SYNC)
 
 /* Private part of the ECalBackendHttp structure */
 struct _ECalBackendHttpPrivate {
@@ -72,12 +75,8 @@ struct _ECalBackendHttpPrivate {
 	ECredentials *credentials;
 };
 
-
-
 #define d(x)
 
-static void e_cal_backend_http_dispose (GObject *object);
-static void e_cal_backend_http_finalize (GObject *object);
 static gboolean begin_retrieval_cb (ECalBackendHttp *cbhttp);
 static void e_cal_backend_http_add_timezone (ECalBackendSync *backend, EDataCal *cal, GCancellable *cancellable, const gchar *tzobj, GError **perror);
 
@@ -106,7 +105,9 @@ e_cal_backend_http_dispose (GObject *object)
 	priv->credentials = NULL;
 
 	if (priv->source_changed_id) {
-		g_signal_handler_disconnect (e_backend_get_source (E_BACKEND (cbhttp)), priv->source_changed_id);
+		g_signal_handler_disconnect (
+			e_backend_get_source (E_BACKEND (cbhttp)),
+			priv->source_changed_id);
 		priv->source_changed_id = 0;
 	}
 
@@ -134,8 +135,6 @@ e_cal_backend_http_finalize (GObject *object)
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_http_parent_class)->finalize (object);
 }
-
-
 
 /* Calendar backend methods */
 
@@ -376,12 +375,12 @@ retrieval_done (SoupSession *session,
 
 	/* Handle redirection ourselves */
 	if (SOUP_STATUS_IS_REDIRECTION (msg->status_code)) {
-		newuri = soup_message_headers_get (msg->response_headers,
-						   "Location");
+		newuri = soup_message_headers_get (
+			msg->response_headers, "Location");
 
 		d(g_message ("Redirected from %s to %s\n", priv->uri, newuri));
 
-		if (newuri) {
+		if (newuri != NULL) {
 			if (newuri[0]=='/') {
 				g_warning ("Hey! Relative URI returned! Working around...\n");
 
@@ -432,7 +431,7 @@ retrieval_done (SoupSession *session,
 	if (priv->store) {
 		const gchar *etag = soup_message_headers_get_one (msg->response_headers, "ETag");
 
-		if (!etag || !*etag)
+		if (etag != NULL && *etag == '\0')
 			etag = NULL;
 
 		e_cal_backend_store_put_key_value (priv->store, "ETag", etag);
@@ -700,13 +699,9 @@ static void
 source_changed_cb (ESource *source,
                    ECalBackendHttp *cbhttp)
 {
-	ECalBackendHttpPrivate *priv;
-
 	g_return_if_fail (E_IS_CAL_BACKEND_HTTP (cbhttp));
 
-	priv = cbhttp->priv;
-
-	if (priv->uri) {
+	if (cbhttp->priv->uri != NULL) {
 		ESource *source;
 		const gchar *secure_prop;
 		gchar *new_uri;
@@ -718,12 +713,12 @@ source_changed_cb (ESource *source,
 			e_source_get_uri (source),
 			(secure_prop && g_str_equal(secure_prop, "1")));
 
-		if (new_uri && !g_str_equal (priv->uri, new_uri)) {
+		if (new_uri && !g_str_equal (cbhttp->priv->uri, new_uri)) {
 			/* uri changed, do reload some time soon */
-			g_free (priv->uri);
-			priv->uri = NULL;
+			g_free (cbhttp->priv->uri);
+			cbhttp->priv->uri = NULL;
 
-			if (!priv->is_loading)
+			if (!cbhttp->priv->is_loading)
 				g_idle_add ((GSourceFunc) begin_retrieval_cb, cbhttp);
 		}
 
@@ -757,7 +752,9 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	source = e_backend_get_source (E_BACKEND (backend));
 
 	if (priv->source_changed_id == 0) {
-		priv->source_changed_id = g_signal_connect (source, "changed", G_CALLBACK (source_changed_cb), cbhttp);
+		priv->source_changed_id = g_signal_connect (
+			source, "changed",
+			G_CALLBACK (source_changed_cb), cbhttp);
 	}
 
 	/* always read uri again */
@@ -765,7 +762,7 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	priv->uri = NULL;
 	g_free (tmp);
 
-	if (!priv->store) {
+	if (priv->store == NULL) {
 		const gchar *cache_dir;
 
 		cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
@@ -776,8 +773,13 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 		e_cal_backend_store_load (priv->store);
 
 		if (!priv->store) {
-			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create cache file")));
-			e_cal_backend_notify_opened (E_CAL_BACKEND (backend), EDC_ERROR_EX (OtherError, _("Could not create cache file")));
+			g_propagate_error (
+				perror, EDC_ERROR_EX (OtherError,
+				_("Could not create cache file")));
+			e_cal_backend_notify_opened (
+				E_CAL_BACKEND (backend),
+				EDC_ERROR_EX (OtherError,
+				_("Could not create cache file")));
 			return;
 		}
 	}

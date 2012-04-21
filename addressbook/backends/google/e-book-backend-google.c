@@ -63,7 +63,10 @@
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
 
-G_DEFINE_TYPE (EBookBackendGoogle, e_book_backend_google, E_TYPE_BOOK_BACKEND)
+G_DEFINE_TYPE (
+	EBookBackendGoogle,
+	e_book_backend_google,
+	E_TYPE_BOOK_BACKEND)
 
 typedef enum {
 	NO_CACHE,
@@ -1275,8 +1278,7 @@ request_authorization (EBookBackend *backend)
 #ifdef HAVE_GOA
 	/* If we're using OAuth tokens, then as far as the backend
 	 * is concerned it's always authorized.  The GDataAuthorizer
-	 * will take care of everything in the background without
-	 * bothering clients with "auth-required" signals. */
+	 * will take care of everything in the background. */
 	if (E_IS_GDATA_GOA_AUTHORIZER (priv->authorizer))
 		return;
 #endif

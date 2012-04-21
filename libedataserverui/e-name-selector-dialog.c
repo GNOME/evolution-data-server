@@ -118,7 +118,7 @@ G_DEFINE_TYPE_WITH_CODE (
 		E_TYPE_EXTENSIBLE, NULL))
 
 static void
-e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_dialog)
+name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_dialog)
 {
 	GtkWidget *combo_box;
 	GList *category_list, *iter;
@@ -147,8 +147,37 @@ e_name_selector_dialog_populate_categories (ENameSelectorDialog *name_selector_d
 }
 
 static void
-e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
+name_selector_dialog_dispose (GObject *object)
 {
+	remove_books (E_NAME_SELECTOR_DIALOG (object));
+	shutdown_name_selector_model (E_NAME_SELECTOR_DIALOG (object));
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose (object);
+}
+
+static void
+name_selector_dialog_finalize (GObject *object)
+{
+	ENameSelectorDialogPrivate *priv;
+
+	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (object);
+
+	g_slist_foreach (priv->user_query_fields, (GFunc) g_free, NULL);
+	g_slist_free (priv->user_query_fields);
+
+	g_array_free (priv->sections, TRUE);
+	g_object_unref (priv->button_size_group);
+	g_object_unref (priv->dest_label_size_group);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize (object);
+}
+
+static void
+name_selector_dialog_constructed (GObject *object)
+{
+	ENameSelectorDialogPrivate *priv;
 	GtkTreeSelection  *contact_selection;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer   *cell_renderer;
@@ -182,8 +211,10 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	GtkWidget *status_message;
 	GtkWidget *source_combo;
 
-	name_selector_dialog->priv =
-		E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
+	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (object);
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->constructed (object);
 
 	name_selector_box = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (name_selector_box);
@@ -266,7 +297,7 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	g_free (tmp_str);
 
 	scrolledwindow0 = gtk_scrolled_window_new (NULL, NULL);
-	name_selector_dialog->priv->contact_window = scrolledwindow0;
+	priv->contact_window = scrolledwindow0;
 	gtk_widget_show (scrolledwindow0);
 	gtk_box_pack_start (GTK_BOX (name_selector_box), scrolledwindow0,
 			    TRUE, TRUE, 0);
@@ -334,24 +365,24 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 		return;
 	}
 
-	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (name_selector_dialog))), name_selector_box, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))), name_selector_box, TRUE, TRUE, 0);
 
 	/* Store pointers to relevant widgets */
 
-	name_selector_dialog->priv->contact_view = GTK_TREE_VIEW (source_tree_view);
-	name_selector_dialog->priv->status_label = GTK_LABEL (status_message);
-	name_selector_dialog->priv->destination_box = GTK_BOX (destination_box);
-	name_selector_dialog->priv->search_entry = GTK_ENTRY (search);
-	name_selector_dialog->priv->category_combobox = combobox_category;
+	priv->contact_view = GTK_TREE_VIEW (source_tree_view);
+	priv->status_label = GTK_LABEL (status_message);
+	priv->destination_box = GTK_BOX (destination_box);
+	priv->search_entry = GTK_ENTRY (search);
+	priv->category_combobox = combobox_category;
 
 	/* Create size group for transfer buttons */
 
-	name_selector_dialog->priv->button_size_group =
+	priv->button_size_group =
 		gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	/* Create size group for destination labels */
 
-	name_selector_dialog->priv->dest_label_size_group =
+	priv->dest_label_size_group =
 		gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
 	/* Set up contacts view */
@@ -359,52 +390,51 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 	column = gtk_tree_view_column_new ();
 	cell_renderer = GTK_CELL_RENDERER (gtk_cell_renderer_text_new ());
 	gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func (column, cell_renderer,
-						 (GtkTreeCellDataFunc) contact_column_formatter,
-						 name_selector_dialog, NULL);
+	gtk_tree_view_column_set_cell_data_func (
+		column, cell_renderer, (GtkTreeCellDataFunc)
+		contact_column_formatter, object, NULL);
 
-	selection = gtk_tree_view_get_selection (
-		name_selector_dialog->priv->contact_view);
+	selection = gtk_tree_view_get_selection (priv->contact_view);
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
-	gtk_tree_view_append_column (
-		name_selector_dialog->priv->contact_view, column);
+	gtk_tree_view_append_column (priv->contact_view, column);
 	g_signal_connect_swapped (
-		name_selector_dialog->priv->contact_view, "row-activated",
-		G_CALLBACK (contact_activated), name_selector_dialog);
+		priv->contact_view, "row-activated",
+		G_CALLBACK (contact_activated), object);
 
 	/* Listen for changes to the contact selection */
 
-	contact_selection = gtk_tree_view_get_selection (
-		name_selector_dialog->priv->contact_view);
-	g_signal_connect_swapped (contact_selection, "changed",
-				  G_CALLBACK (contact_selection_changed), name_selector_dialog);
+	contact_selection = gtk_tree_view_get_selection (priv->contact_view);
+	g_signal_connect_swapped (
+		contact_selection, "changed",
+		G_CALLBACK (contact_selection_changed), object);
 
 	/* Set up our data structures */
 
-	name_selector_dialog->priv->name_selector_model =
-		e_name_selector_model_new ();
-	name_selector_dialog->priv->sections =
-		g_array_new (FALSE, FALSE, sizeof (Section));
+	priv->name_selector_model = e_name_selector_model_new ();
+	priv->sections = g_array_new (FALSE, FALSE, sizeof (Section));
 
-	setup_name_selector_model (name_selector_dialog);
+	setup_name_selector_model (E_NAME_SELECTOR_DIALOG (object));
 
 	/* Create source menu */
 
 	source_combo = e_source_combo_box_new (source_list);
 	g_signal_connect_swapped (
 		source_combo, "changed",
-		G_CALLBACK (source_changed), name_selector_dialog);
+		G_CALLBACK (source_changed), object);
 	g_object_unref (source_list);
 
 	gtk_label_set_mnemonic_widget (GTK_LABEL (AddressBookLabel), source_combo);
 	gtk_widget_show (source_combo);
 	gtk_box_pack_start (GTK_BOX (source_menu_box), source_combo, TRUE, TRUE, 0);
 
-	e_name_selector_dialog_populate_categories (name_selector_dialog);
+	name_selector_dialog_populate_categories (
+		E_NAME_SELECTOR_DIALOG (object));
 
 	/* Set up search-as-you-type signal */
 
-	g_signal_connect_swapped (search, "changed", G_CALLBACK (search_changed), name_selector_dialog);
+	g_signal_connect_swapped (
+		search, "changed",
+		G_CALLBACK (search_changed), object);
 
 	/* Display initial source */
 
@@ -412,53 +442,21 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 
 	/* Set up dialog defaults */
 
-	gtk_dialog_add_buttons (GTK_DIALOG (name_selector_dialog),
-				GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
-				NULL);
+	gtk_dialog_add_buttons (
+		GTK_DIALOG (object),
+		GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
+		NULL);
 
-	gtk_dialog_set_default_response (GTK_DIALOG (name_selector_dialog), GTK_RESPONSE_CLOSE);
-	gtk_window_set_modal            (GTK_WINDOW (name_selector_dialog), TRUE);
-	gtk_window_set_default_size     (GTK_WINDOW (name_selector_dialog), 700, -1);
-	gtk_window_set_resizable        (GTK_WINDOW (name_selector_dialog), TRUE);
-	gtk_container_set_border_width  (GTK_CONTAINER (name_selector_dialog), 4);
-	gtk_window_set_title            (GTK_WINDOW (name_selector_dialog), _("Select Contacts from Address Book"));
+	gtk_dialog_set_default_response (
+		GTK_DIALOG (object), GTK_RESPONSE_CLOSE);
+	gtk_window_set_modal (GTK_WINDOW (object), TRUE);
+	gtk_window_set_default_size (GTK_WINDOW (object), 700, -1);
+	gtk_window_set_resizable (GTK_WINDOW (object), TRUE);
+	gtk_container_set_border_width (GTK_CONTAINER (object), 4);
+	gtk_window_set_title (
+		GTK_WINDOW (object),
+		_("Select Contacts from Address Book"));
 	gtk_widget_grab_focus (search);
-}
-
-static void
-name_selector_dialog_dispose (GObject *object)
-{
-	remove_books (E_NAME_SELECTOR_DIALOG (object));
-	shutdown_name_selector_model (E_NAME_SELECTOR_DIALOG (object));
-
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->dispose (object);
-}
-
-static void
-name_selector_dialog_finalize (GObject *object)
-{
-	ENameSelectorDialogPrivate *priv;
-
-	priv = E_NAME_SELECTOR_DIALOG_GET_PRIVATE (object);
-
-	g_slist_foreach (priv->user_query_fields, (GFunc) g_free, NULL);
-	g_slist_free (priv->user_query_fields);
-
-	g_array_free (priv->sections, TRUE);
-	g_object_unref (priv->button_size_group);
-	g_object_unref (priv->dest_label_size_group);
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->finalize (object);
-}
-
-static void
-name_selector_dialog_constructed (GObject *object)
-{
-	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_name_selector_dialog_parent_class)->
-		constructed (object);
 
 	e_extensible_load_extensions (E_EXTENSIBLE (object));
 }
@@ -476,6 +474,13 @@ e_name_selector_dialog_class_init (ENameSelectorDialogClass *class)
 	object_class->constructed = name_selector_dialog_constructed;
 }
 
+static void
+e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
+{
+	name_selector_dialog->priv =
+		E_NAME_SELECTOR_DIALOG_GET_PRIVATE (name_selector_dialog);
+}
+
 /**
  * e_name_selector_dialog_new:
  *
@@ -486,7 +491,7 @@ e_name_selector_dialog_class_init (ENameSelectorDialogClass *class)
 ENameSelectorDialog *
 e_name_selector_dialog_new (void)
 {
-	  return g_object_new (E_TYPE_NAME_SELECTOR_DIALOG, NULL);
+	return g_object_new (E_TYPE_NAME_SELECTOR_DIALOG, NULL);
 }
 
 /* --------- *
@@ -996,6 +1001,9 @@ source_changed (ENameSelectorDialog *name_selector_dialog,
 
 	/* Remove any previous books being shown or loaded */
 	remove_books (name_selector_dialog);
+
+	if (source == NULL)
+		return;
 
 	cancellable = g_cancellable_new ();
 	name_selector_dialog->priv->cancellable = cancellable;

@@ -1257,7 +1257,8 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 			NULL,
 			NULL,
 			E_TYPE_SOURCE,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -1268,7 +1269,8 @@ e_source_selector_class_init (ESourceSelectorClass *class)
 			NULL,
 			E_TYPE_SOURCE_LIST,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 
 	signals[SELECTION_CHANGED] = g_signal_new (
 		"selection-changed",

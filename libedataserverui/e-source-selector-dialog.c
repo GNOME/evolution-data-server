@@ -100,7 +100,7 @@ source_selector_dialog_dispose (GObject *object)
 		priv->source_list = NULL;
 	}
 
-	if (priv->selected_source) {
+	if (priv->selected_source != NULL) {
 		g_object_unref (priv->selected_source);
 		priv->selected_source = NULL;
 	}
@@ -110,23 +110,13 @@ source_selector_dialog_dispose (GObject *object)
 }
 
 static void
-e_source_selector_dialog_class_init (ESourceSelectorDialogClass *class)
+source_selector_dialog_constructed (GObject *object)
 {
-	GObjectClass *object_class;
-
-	g_type_class_add_private (class, sizeof (ESourceSelectorDialogPrivate));
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->dispose = source_selector_dialog_dispose;
-}
-
-static void
-e_source_selector_dialog_init (ESourceSelectorDialog *dialog)
-{
+	ESourceSelectorDialog *dialog;
 	GtkWidget *action_area;
 	GtkWidget *content_area;
 
-	dialog->priv = E_SOURCE_SELECTOR_DIALOG_GET_PRIVATE (dialog);
+	dialog = E_SOURCE_SELECTOR_DIALOG (object);
 
 	action_area = gtk_dialog_get_action_area (GTK_DIALOG (dialog));
 	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
@@ -142,6 +132,24 @@ e_source_selector_dialog_init (ESourceSelectorDialog *dialog)
 				NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
 	gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, FALSE);
+}
+
+static void
+e_source_selector_dialog_class_init (ESourceSelectorDialogClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (ESourceSelectorDialogPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = source_selector_dialog_dispose;
+	object_class->constructed = source_selector_dialog_constructed;
+}
+
+static void
+e_source_selector_dialog_init (ESourceSelectorDialog *dialog)
+{
+	dialog->priv = E_SOURCE_SELECTOR_DIALOG_GET_PRIVATE (dialog);
 }
 
 /* Public API */

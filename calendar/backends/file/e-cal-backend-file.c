@@ -910,7 +910,9 @@ refresh_thread_func (gpointer data)
 	g_return_val_if_fail (priv->custom_file != NULL, NULL);
 
 	file = g_file_new_for_path (priv->custom_file);
-	info = g_file_query_info (file, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, NULL);
+	info = g_file_query_info (
+		file, G_FILE_ATTRIBUTE_TIME_MODIFIED,
+		G_FILE_QUERY_INFO_NONE, NULL, NULL);
 	g_return_val_if_fail (info != NULL, NULL);
 
 	last_modified = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
@@ -3491,10 +3493,9 @@ cal_backend_file_constructed (GObject *object)
 
 	filename = g_build_filename (
 		user_data_dir, component_type, mangled_source_dir, NULL);
-
 	e_cal_backend_set_cache_dir (backend, filename);
-
 	g_free (filename);
+
 	g_free (mangled_source_dir);
 }
 

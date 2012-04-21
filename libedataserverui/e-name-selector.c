@@ -258,7 +258,9 @@ name_selector_dispose (GObject *object)
 
 		section = &g_array_index (priv->sections, Section, ii);
 		if (section->entry)
-			g_object_weak_unref (G_OBJECT (section->entry), reset_pointer_cb, object);
+			g_object_weak_unref (
+				G_OBJECT (section->entry),
+				reset_pointer_cb, object);
 		g_free (section->name);
 	}
 
@@ -556,7 +558,8 @@ e_name_selector_peek_section_list (ENameSelector *name_selector,
 		gchar         *text;
 		gint           i;
 
-		section->entry = (ENameSelectorEntry *) e_name_selector_list_new ();
+		section->entry = (ENameSelectorEntry *)
+			e_name_selector_list_new ();
 		g_object_weak_ref (G_OBJECT (section->entry), reset_pointer_cb, name_selector);
 		if (pango_parse_markup (name, -1, '_', NULL,
 					&text, NULL, NULL))  {

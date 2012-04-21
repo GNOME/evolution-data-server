@@ -18,9 +18,6 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
- * Authors: Hans Petter Jansson <hpj@novell.com>
- *
- * Mostly taken from Evolution's addressbook/gui/component/addressbook.c
  */
 
 #ifndef E_BOOK_AUTH_UTIL_H

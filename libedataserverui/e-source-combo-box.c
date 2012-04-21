@@ -29,8 +29,6 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_SOURCE_COMBO_BOX, ESourceComboBoxPrivate))
 
-G_DEFINE_TYPE (ESourceComboBox, e_source_combo_box, GTK_TYPE_COMBO_BOX)
-
 struct _ESourceComboBoxPrivate {
 	ESourceList *source_list;
 	GHashTable *uid_index;
@@ -51,7 +49,7 @@ enum {
 	NUM_COLUMNS
 };
 
-static gpointer parent_class = NULL;
+G_DEFINE_TYPE (ESourceComboBox, e_source_combo_box, GTK_TYPE_COMBO_BOX)
 
 static gint
 compare_source_names (ESource *source_a,
@@ -191,7 +189,7 @@ e_source_combo_box_constructor (GType type,
 	GObject *object;
 
 	/* Chain up to parent's "constructor" method. */
-	object = G_OBJECT_CLASS (parent_class)->constructor (
+	object = G_OBJECT_CLASS (e_source_combo_box_parent_class)->constructor (
 		type, n_construct_properties, construct_properties);
 
 	store = gtk_list_store_new (
@@ -277,7 +275,7 @@ e_source_combo_box_dispose (GObject *object)
 	g_hash_table_remove_all (priv->uid_index);
 
 	/* Chain up to parent's "dispose" method. */
-	G_OBJECT_CLASS (parent_class)->dispose (object);
+	G_OBJECT_CLASS (e_source_combo_box_parent_class)->dispose (object);
 }
 
 static void
@@ -290,15 +288,13 @@ e_source_combo_box_finalize (GObject *object)
 	g_hash_table_destroy (priv->uid_index);
 
 	/* Chain up to parent's "finalize" method. */
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_source_combo_box_parent_class)->finalize (object);
 }
 
 static void
 e_source_combo_box_class_init (ESourceComboBoxClass *class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (class);
-
-	parent_class = g_type_class_peek_parent (class);
 
 	g_type_class_add_private (class, sizeof (ESourceComboBoxPrivate));
 

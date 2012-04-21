@@ -114,13 +114,6 @@ cal_backend_set_default_cache_dir (ECalBackend *backend)
 }
 
 static void
-cal_backend_set_kind (ECalBackend *backend,
-                      icalcomponent_kind kind)
-{
-	backend->priv->kind = kind;
-}
-
-static void
 cal_backend_get_backend_property (ECalBackend *backend,
                                   EDataCal *cal,
                                   guint32 opid,
@@ -164,6 +157,13 @@ cal_backend_set_backend_property (ECalBackend *backend,
 }
 
 static void
+cal_backend_set_kind (ECalBackend *backend,
+                      icalcomponent_kind kind)
+{
+	backend->priv->kind = kind;
+}
+
+static void
 cal_backend_set_property (GObject *object,
                           guint property_id,
                           const GValue *value,
@@ -175,6 +175,7 @@ cal_backend_set_property (GObject *object,
 				E_CAL_BACKEND (object),
 				g_value_get_string (value));
 			return;
+
 		case PROP_KIND:
 			cal_backend_set_kind (
 				E_CAL_BACKEND (object),
@@ -197,6 +198,7 @@ cal_backend_get_property (GObject *object,
 				value, e_cal_backend_get_cache_dir (
 				E_CAL_BACKEND (object)));
 			return;
+
 		case PROP_KIND:
 			g_value_set_ulong (
 				value, e_cal_backend_get_kind (
@@ -258,23 +260,26 @@ e_cal_backend_class_init (ECalBackendClass *class)
 		PROP_CACHE_DIR,
 		g_param_spec_string (
 			"cache-dir",
+			"Cache Dir",
+			"The backend's cache directory",
 			NULL,
-			NULL,
-			NULL,
-			G_PARAM_READWRITE));
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
 		PROP_KIND,
 		g_param_spec_ulong (
 			"kind",
-			NULL,
-			NULL,
+			"Kind",
+			"The kind of iCalendar components "
+			"this backend manages",
 			ICAL_NO_COMPONENT,
 			ICAL_XLICMIMEPART_COMPONENT,
 			ICAL_NO_COMPONENT,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void

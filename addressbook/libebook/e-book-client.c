@@ -26,6 +26,8 @@
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
+#include <gconf/gconf-client.h>
+
 #include "libedataserver/e-data-server-util.h"
 #include "libedataserver/e-client-private.h"
 

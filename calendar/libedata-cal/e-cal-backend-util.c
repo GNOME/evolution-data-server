@@ -32,8 +32,8 @@ static EAccountList *accounts;
 
 /**
  * e_cal_backend_mail_account_get_default:
- * @address: Placeholder for default address.
- * @name: Placeholder for name.
+ * @address: placeholder for default address
+ * @name: placeholder for name
  *
  * Retrieve the default mail account as stored in Evolution configuration.
  *
@@ -64,8 +64,8 @@ e_cal_backend_mail_account_get_default (gchar **address,
 
 /**
  * e_cal_backend_mail_account_is_valid:
- * @user: User name for the account to check.
- * @name: Placeholder for the account name.
+ * @user: user name for the account to check
+ * @name: placeholder for the account name
  *
  * Checks that a mail account is valid, and returns its name.
  *
@@ -143,7 +143,7 @@ is_attendee_declined (icalcomponent *icalcomp,
 
 /**
  * e_cal_backend_user_declined:
- * @icalcomp: Component where to check.
+ * @icalcomp: component where to check
  *
  * Returns: Whether icalcomp contains attendee with a mail same as any of
  *          configured enabled mail account and whether this user declined.

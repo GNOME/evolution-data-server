@@ -127,12 +127,13 @@ maybe_start_reload_timeout (ECalBackendWeather *cbw)
 
 	refresh_str = e_source_get_property (source, "refresh");
 
-	/* By default, reload every 4 hours. At least for CCF, the forecasts only come out
-	 * twice a day, and chances are while the NWS and similar organizations have some
-	 * serious bandwidth, they would appreciate it if we didn't hammer their servers
-	 */
-	priv->reload_timeout_id = g_timeout_add ((refresh_str ? atoi (refresh_str) : 240) * 60000,
-						 (GSourceFunc) reload_cb, cbw);
+	/* By default, reload every 4 hours. At least for CCF, the forecasts
+	 * only come out twice a day, and chances are while the NWS and similar
+	 * organizations have some serious bandwidth, they would appreciate it
+	 * if we didn't hammer their servers. */
+	priv->reload_timeout_id = g_timeout_add (
+		(refresh_str ? atoi (refresh_str) : 240) * 60000,
+		(GSourceFunc) reload_cb, cbw);
 
 }
 

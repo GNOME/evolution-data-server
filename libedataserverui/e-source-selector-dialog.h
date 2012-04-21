@@ -26,6 +26,7 @@
 
 #include <gtk/gtk.h>
 #include <libedataserver/e-source-list.h>
+#include <libedataserverui/e-source-selector.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_SELECTOR_DIALOG \
@@ -64,6 +65,9 @@ struct _ESourceSelectorDialogClass {
 GType		e_source_selector_dialog_get_type (void);
 GtkWidget *	e_source_selector_dialog_new	(GtkWindow *parent,
 						 ESourceList *source_list);
+ESourceSelector *
+		e_source_selector_dialog_get_selector
+						(ESourceSelectorDialog *dialog);
 gboolean	e_source_selector_dialog_select_default_source
 						(ESourceSelectorDialog *dialog);
 ESource *	e_source_selector_dialog_peek_primary_selection

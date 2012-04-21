@@ -2541,12 +2541,14 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	g_return_val_if_fail (cbdav->priv->uri != NULL, FALSE);
 
 	/* remove trailing slashes... */
-	len = strlen (cbdav->priv->uri);
-	while (len--) {
-		if (cbdav->priv->uri[len] == '/') {
-			cbdav->priv->uri[len] = '\0';
-		} else {
-			break;
+	if (cbdav->priv->uri != NULL) {
+		len = strlen (cbdav->priv->uri);
+		while (len--) {
+			if (cbdav->priv->uri[len] == '/') {
+				cbdav->priv->uri[len] = '\0';
+			} else {
+				break;
+			}
 		}
 	}
 
@@ -2615,19 +2617,23 @@ proxy_settings_changed (EProxy *proxy,
 	g_object_set (priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
 }
 
-static void
+static gboolean
 open_calendar (ECalBackendCalDAV *cbdav,
                GError **error)
 {
 	gboolean server_unreachable = FALSE;
+	gboolean success;
 	GError *local_error = NULL;
 
-	g_return_if_fail (cbdav != NULL);
+	g_return_val_if_fail (cbdav != NULL, FALSE);
 
 	/* set forward proxy */
 	proxy_settings_changed (cbdav->priv->proxy, cbdav->priv);
 
-	if (caldav_server_open_calendar (cbdav, &server_unreachable, &local_error)) {
+	success = caldav_server_open_calendar (
+		cbdav, &server_unreachable, &local_error);
+
+	if (success) {
 		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
 		g_cond_signal (cbdav->priv->cond);
 
@@ -2640,10 +2646,14 @@ open_calendar (ECalBackendCalDAV *cbdav,
 			e_cal_backend_notify_error (E_CAL_BACKEND (cbdav), msg);
 			g_free (msg);
 			g_clear_error (&local_error);
+			success = TRUE;
 		}
-	} else if (local_error) {
-		g_propagate_error (error, local_error);
 	}
+
+	if (local_error != NULL)
+		g_propagate_error (error, local_error);
+
+	return success;
 }
 
 static void
@@ -2654,6 +2664,7 @@ caldav_do_open (ECalBackendSync *backend,
                 GError **perror)
 {
 	ECalBackendCalDAV        *cbdav;
+	gboolean opened = TRUE;
 	gboolean online;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
@@ -2683,23 +2694,26 @@ caldav_do_open (ECalBackendSync *backend,
 	if (online) {
 		GError *local_error = NULL;
 
-		open_calendar (cbdav, &local_error);
+		opened = open_calendar (cbdav, &local_error);
 
 		if (g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationRequired) || g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed)) {
 			g_clear_error (&local_error);
 			e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbdav), TRUE, cbdav->priv->credentials);
-		} else {
-			e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
+			opened = FALSE;
 		}
 
-		if (local_error)
+		if (local_error != NULL)
 			g_propagate_error (perror, local_error);
+
 	} else {
 		cbdav->priv->read_only = TRUE;
-		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
 	}
 
-	e_cal_backend_notify_readonly (E_CAL_BACKEND (backend), cbdav->priv->read_only);
+	if (opened)
+		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
+
+	e_cal_backend_notify_readonly (
+		E_CAL_BACKEND (backend), cbdav->priv->read_only);
 	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
 
 	g_mutex_unlock (cbdav->priv->busy_lock);
@@ -4111,7 +4125,8 @@ process_object (ECalBackendCalDAV *cbdav,
 	case ICAL_METHOD_PUBLISH:
 	case ICAL_METHOD_REQUEST:
 	case ICAL_METHOD_REPLY:
-		is_declined = e_cal_backend_user_declined (e_cal_component_get_icalcomponent (ecomp));
+		is_declined = e_cal_backend_user_declined (
+			e_cal_component_get_icalcomponent (ecomp));
 		if (is_in_cache) {
 			if (!is_declined) {
 				GSList *new_components = NULL, *old_components = NULL;
@@ -4560,9 +4575,10 @@ caldav_get_free_busy (ECalBackendSync *backend,
 	ECalComponentDateTime dt;
 	struct icaltimetype dtvalue;
 	icaltimezone *utc;
-	gchar *str, *usermail;
+	gchar *str;
 	const GSList *u;
 	GSList *attendees = NULL, *to_free = NULL;
+	gchar *usermail;
 	GError *err = NULL;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
@@ -4606,7 +4622,7 @@ caldav_get_free_busy (ECalBackendSync *backend,
 	e_cal_component_set_dtend (comp, &dt);
 
 	usermail = get_usermail (E_CAL_BACKEND (backend));
-	if (usermail && !*usermail) {
+	if (usermail != NULL && *usermail == '\0') {
 		g_free (usermail);
 		usermail = NULL;
 	}
@@ -4815,7 +4831,10 @@ caldav_source_changed_cb (ESource *source,
 /* ************************************************************************* */
 /* ***************************** GObject Foo ******************************* */
 
-G_DEFINE_TYPE (ECalBackendCalDAV, e_cal_backend_caldav, E_TYPE_CAL_BACKEND_SYNC)
+G_DEFINE_TYPE (
+	ECalBackendCalDAV,
+	e_cal_backend_caldav,
+	E_TYPE_CAL_BACKEND_SYNC)
 
 static void
 e_cal_backend_caldav_dispose (GObject *object)

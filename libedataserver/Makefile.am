@@ -1,5 +1,7 @@
 # The marshallers
-MARSHAL_GENERATED = e-gdbus-marshallers.c e-gdbus-marshallers.h
+MARSHAL_GENERATED = \
+	e-gdbus-marshallers.c \
+	e-gdbus-marshallers.h
 @EVO_MARSHAL_RULE@
 
 lib_LTLIBRARIES = libedataserver-1.2.la

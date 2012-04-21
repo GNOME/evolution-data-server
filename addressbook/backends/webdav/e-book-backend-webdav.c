@@ -63,7 +63,10 @@
 #define WEBDAV_CLOSURE_NAME   "EBookBackendWebdav.BookView::closure"
 #define WEBDAV_CTAG_KEY "WEBDAV_CTAG"
 
-G_DEFINE_TYPE (EBookBackendWebdav, e_book_backend_webdav, E_TYPE_BOOK_BACKEND)
+G_DEFINE_TYPE (
+	EBookBackendWebdav,
+	e_book_backend_webdav,
+	E_TYPE_BOOK_BACKEND)
 
 struct _EBookBackendWebdavPrivate {
 	gboolean           marked_for_offline;
@@ -1229,8 +1232,12 @@ e_book_backend_webdav_authenticate_user (EBookBackend *backend,
 }
 
 /** authentication callback for libsoup */
-static void soup_authenticate (SoupSession *session, SoupMessage *message,
-                              SoupAuth *auth, gboolean retrying, gpointer data)
+static void
+soup_authenticate (SoupSession *session,
+                   SoupMessage *message,
+                   SoupAuth *auth,
+                   gboolean retrying,
+                   gpointer data)
 {
 	EBookBackendWebdav        *webdav = data;
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
@@ -1363,13 +1370,16 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	g_free (filename);
 
 	session = soup_session_sync_new ();
-	g_signal_connect(session, "authenticate", G_CALLBACK(soup_authenticate),
-			 webdav);
+	g_signal_connect (
+		session, "authenticate",
+		G_CALLBACK (soup_authenticate), webdav);
 
 	priv->session = session;
 	priv->proxy = e_proxy_new ();
 	e_proxy_setup_proxy (priv->proxy);
-	g_signal_connect (priv->proxy, "changed", G_CALLBACK (proxy_settings_changed), priv);
+	g_signal_connect (
+		priv->proxy, "changed",
+		G_CALLBACK (proxy_settings_changed), priv);
 	proxy_settings_changed (priv->proxy, priv);
 	webdav_debug_setup (priv->session);
 
@@ -1451,17 +1461,16 @@ e_book_backend_webdav_dispose (GObject *object)
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 
 	#define do_unref(x) { if (x) g_object_unref (x); x = NULL; }
-	#define do_free(x) { if (x) g_free (x); x = NULL; }
 
 	do_unref (priv->session);
 	do_unref (priv->proxy);
 	do_unref (priv->cache);
-	do_free (priv->uri);
-	do_free (priv->username);
+
+	g_free (priv->uri);
+	g_free (priv->username);
 	if (priv->password) { e_credentials_util_safe_free_string (priv->password); priv->password = NULL; }
 
 	#undef do_unref
-	#undef do_free
 
 	G_OBJECT_CLASS (e_book_backend_webdav_parent_class)->dispose (object);
 }

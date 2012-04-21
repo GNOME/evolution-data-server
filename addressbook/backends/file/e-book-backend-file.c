@@ -1891,7 +1891,8 @@ e_book_backend_file_open (EBookBackendSync *backend,
 #endif
 
 	source = e_backend_get_source (E_BACKEND (backend));
-	dirname = e_book_backend_file_extract_path_from_source (source, GET_PATH_DB_DIR);
+	dirname = e_book_backend_file_extract_path_from_source (
+		source, GET_PATH_DB_DIR);
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 
 	db_error = e_db3_utils_maybe_recover (filename);
@@ -2120,7 +2121,8 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	}
 
 	/* Resolve the photo directory here */
-	dirname = e_book_backend_file_extract_path_from_source (source, GET_PATH_PHOTO_DIR);
+	dirname = e_book_backend_file_extract_path_from_source (
+		source, GET_PATH_PHOTO_DIR);
 	if (!only_if_exists && !create_directory (dirname, perror))
 		return;
 	bf->priv->photo_dirname = dirname;
@@ -2202,7 +2204,7 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 		while ((name = g_dir_read_name (dir))) {
 			if (select_changes (name)) {
 				gchar *full_path = g_build_filename (bf->priv->dirname, name, NULL);
-				if (-1 == g_unlink (full_path)) {
+				if (g_unlink (full_path) == -1) {
 					g_warning ("failed to remove change db `%s': %s", full_path, g_strerror (errno));
 				}
 				g_free (full_path);

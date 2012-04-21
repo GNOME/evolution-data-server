@@ -3028,55 +3028,84 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 
 	/* Edit signals */
 
-	g_signal_connect (name_selector_entry, "insert-text", G_CALLBACK (user_insert_text), name_selector_entry);
-	g_signal_connect (name_selector_entry, "delete-text", G_CALLBACK (user_delete_text), name_selector_entry);
-	g_signal_connect (name_selector_entry, "focus-out-event", G_CALLBACK (user_focus_out), name_selector_entry);
-	g_signal_connect_after (name_selector_entry, "focus-in-event", G_CALLBACK (user_focus_in), name_selector_entry);
+	g_signal_connect (
+		name_selector_entry, "insert-text",
+		G_CALLBACK (user_insert_text), name_selector_entry);
+	g_signal_connect (
+		name_selector_entry, "delete-text",
+		G_CALLBACK (user_delete_text), name_selector_entry);
+	g_signal_connect (
+		name_selector_entry, "focus-out-event",
+		G_CALLBACK (user_focus_out), name_selector_entry);
+	g_signal_connect_after (
+		name_selector_entry, "focus-in-event",
+		G_CALLBACK (user_focus_in), name_selector_entry);
 
 	/* Drawing */
 
-	g_signal_connect (name_selector_entry, "draw", G_CALLBACK (draw_event), name_selector_entry);
+	g_signal_connect (
+		name_selector_entry, "draw",
+		G_CALLBACK (draw_event), name_selector_entry);
 
 	/* Activation: Complete current entry if possible */
 
-	g_signal_connect (name_selector_entry, "activate", G_CALLBACK (entry_activate), name_selector_entry);
+	g_signal_connect (
+		name_selector_entry, "activate",
+		G_CALLBACK (entry_activate), name_selector_entry);
 
 	/* Pop-up menu */
 
-	g_signal_connect (name_selector_entry, "button-press-event", G_CALLBACK (prepare_popup_destination), name_selector_entry);
-	g_signal_connect (name_selector_entry, "populate-popup", G_CALLBACK (populate_popup), name_selector_entry);
+	g_signal_connect (
+		name_selector_entry, "button-press-event",
+		G_CALLBACK (prepare_popup_destination), name_selector_entry);
+	g_signal_connect (
+		name_selector_entry, "populate-popup",
+		G_CALLBACK (populate_popup), name_selector_entry);
 
 	/* Clipboard signals */
-	g_signal_connect (name_selector_entry, "copy-clipboard", G_CALLBACK (copy_clipboard), name_selector_entry);
-	g_signal_connect (name_selector_entry, "cut-clipboard", G_CALLBACK (cut_clipboard), name_selector_entry);
+	g_signal_connect (
+		name_selector_entry, "copy-clipboard",
+		G_CALLBACK (copy_clipboard), name_selector_entry);
+	g_signal_connect (
+		name_selector_entry, "cut-clipboard",
+		G_CALLBACK (cut_clipboard), name_selector_entry);
 
 	/* Completion */
 
 	name_selector_entry->priv->email_generator = NULL;
 
 	name_selector_entry->priv->entry_completion = gtk_entry_completion_new ();
-	gtk_entry_completion_set_match_func (name_selector_entry->priv->entry_completion,
-				       (GtkEntryCompletionMatchFunc) completion_match_cb, NULL, NULL);
-	g_signal_connect_swapped (name_selector_entry->priv->entry_completion, "match-selected",
-			    G_CALLBACK (completion_match_selected), name_selector_entry);
+	gtk_entry_completion_set_match_func (
+		name_selector_entry->priv->entry_completion,
+		(GtkEntryCompletionMatchFunc) completion_match_cb, NULL, NULL);
+	g_signal_connect_swapped (
+		name_selector_entry->priv->entry_completion, "match-selected",
+		G_CALLBACK (completion_match_selected), name_selector_entry);
 
-	gtk_entry_set_completion (GTK_ENTRY (name_selector_entry), name_selector_entry->priv->entry_completion);
+	gtk_entry_set_completion (
+		GTK_ENTRY (name_selector_entry),
+		name_selector_entry->priv->entry_completion);
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion), renderer, FALSE);
-	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion),
+	gtk_cell_layout_pack_start (
+		GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion),
+		renderer, FALSE);
+	gtk_cell_layout_set_cell_data_func (
+		GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion),
 		GTK_CELL_RENDERER (renderer),
 		(GtkCellLayoutDataFunc) contact_layout_pixbuffer,
 		name_selector_entry, NULL);
 
 	/* Completion list name renderer */
 	renderer = gtk_cell_renderer_text_new ();
-	gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion),
-			      renderer, TRUE);
-	gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion),
-				      GTK_CELL_RENDERER (renderer),
-				      (GtkCellLayoutDataFunc) contact_layout_formatter,
-				      name_selector_entry, NULL);
+	gtk_cell_layout_pack_start (
+		GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion),
+		renderer, TRUE);
+	gtk_cell_layout_set_cell_data_func (
+		GTK_CELL_LAYOUT (name_selector_entry->priv->entry_completion),
+		GTK_CELL_RENDERER (renderer),
+		(GtkCellLayoutDataFunc) contact_layout_formatter,
+		name_selector_entry, NULL);
 
 	/* Destination store */
 
@@ -3095,7 +3124,7 @@ e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 ENameSelectorEntry *
 e_name_selector_entry_new (void)
 {
-	  return g_object_new (e_name_selector_entry_get_type (), NULL);
+	return g_object_new (E_TYPE_NAME_SELECTOR_ENTRY, NULL);
 }
 
 /**
