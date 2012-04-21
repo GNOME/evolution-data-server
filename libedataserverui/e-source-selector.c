@@ -353,7 +353,14 @@ rebuild_model (ESourceSelector *selector)
 	store = GTK_TREE_STORE (model);
 
 	rebuild_data = create_rebuild_data (selector);
-	set_primary = e_source_selector_get_primary_selection (selector) != NULL;
+	source = e_source_selector_ref_primary_selection (selector);
+
+	if (source != NULL) {
+		set_primary = TRUE;
+		g_object_unref (source);
+	} else {
+		set_primary = FALSE;
+	}
 
 	gtk_tree_model_foreach (model, rebuild_existing_cb, rebuild_data);
 
@@ -452,11 +459,13 @@ rebuild_model (ESourceSelector *selector)
 	if (rebuild_data->selection_changed)
 		g_signal_emit (selector, signals[SELECTION_CHANGED], 0);
 
-	source = e_source_selector_get_primary_selection (selector);
+	source = e_source_selector_ref_primary_selection (selector);
 	if (set_primary && source == NULL) {
 		ESourceList *source_list = selector->priv->list;
 		source = e_source_list_peek_source_any (source_list);
 		e_source_selector_set_primary_selection (selector, source);
+	} else if (source != NULL) {
+		g_object_unref (source);
 	}
 
 	free_rebuild_data (rebuild_data);
@@ -830,9 +839,9 @@ source_selector_get_property (GObject *object,
 {
 	switch (property_id) {
 		case PROP_PRIMARY_SELECTION:
-			g_value_set_object (
+			g_value_take_object (
 				value,
-				e_source_selector_get_primary_selection (
+				e_source_selector_ref_primary_selection (
 				E_SOURCE_SELECTOR (object)));
 			return;
 
@@ -893,6 +902,7 @@ source_selector_button_press_event (GtkWidget *widget,
 	GtkWidgetClass *widget_class;
 	GtkTreePath *path;
 	ESource *source = NULL;
+	ESource *primary;
 	gboolean right_click = FALSE;
 	gboolean triple_click = FALSE;
 	gboolean row_exists;
@@ -943,8 +953,11 @@ source_selector_button_press_event (GtkWidget *widget,
 	if (source == NULL)
 		goto chainup;
 
-	if (source != e_source_selector_get_primary_selection (selector))
+	primary = e_source_selector_ref_primary_selection (selector);
+	if (source != primary)
 		e_source_selector_set_primary_selection (selector, source);
+	if (primary != NULL)
+		g_object_unref (primary);
 
 	if (right_click)
 		g_signal_emit (
@@ -1117,8 +1130,11 @@ source_selector_popup_menu (GtkWidget *widget)
 	gboolean res = FALSE;
 
 	selector = E_SOURCE_SELECTOR (widget);
-	source = e_source_selector_get_primary_selection (selector);
+	source = e_source_selector_ref_primary_selection (selector);
 	g_signal_emit (selector, signals[POPUP_EVENT], 0, source, NULL, &res);
+
+	if (source != NULL)
+		g_object_unref (source);
 
 	return res;
 }
@@ -1769,7 +1785,7 @@ e_source_selector_edit_primary_selection (ESourceSelector *selector)
 }
 
 /**
- * e_source_selector_get_primary_selection:
+ * e_source_selector_ref_primary_selection:
  * @selector: An #ESourceSelector widget
  *
  * Get the primary selected source.  The primary selection is the one that is
@@ -1777,10 +1793,15 @@ e_source_selector_edit_primary_selection (ESourceSelector *selector)
  * to the "normal" selection, which is the set of source whose checkboxes are
  * checked).
  *
+ * The returned #ESource is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
  * Returns: The selected source.
+ *
+ * Since: 3.6
  **/
 ESource *
-e_source_selector_get_primary_selection (ESourceSelector *selector)
+e_source_selector_ref_primary_selection (ESourceSelector *selector)
 {
 	GtkTreeRowReference *reference;
 	GtkTreeSelection *selection;
@@ -1822,8 +1843,6 @@ e_source_selector_get_primary_selection (ESourceSelector *selector)
 		g_object_unref (data);
 		return NULL;
 	}
-
-	g_object_unref (data);
 
 	return E_SOURCE (data);
 }

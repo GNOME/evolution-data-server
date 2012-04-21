@@ -105,7 +105,7 @@ void		e_source_selector_set_select_new
 						 gboolean state);
 void		e_source_selector_edit_primary_selection
 						(ESourceSelector *selector);
-ESource *	e_source_selector_get_primary_selection
+ESource *	e_source_selector_ref_primary_selection
 						(ESourceSelector *selector);
 void		e_source_selector_set_primary_selection
 						(ESourceSelector *selector,

@@ -45,6 +45,50 @@ G_DEFINE_TYPE (
 	GTK_TYPE_DIALOG)
 
 static void
+source_selector_dialog_row_activated_cb (GtkTreeView *tree_view,
+                                         GtkTreePath *path,
+                                         GtkTreeViewColumn *column,
+                                         GtkWidget *dialog)
+{
+	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+}
+
+static void
+primary_selection_changed_cb (ESourceSelector *selector,
+                              ESourceSelectorDialog *dialog)
+{
+	ESourceSelectorDialogPrivate *priv = dialog->priv;
+
+	if (priv->selected_source != NULL)
+		g_object_unref (priv->selected_source);
+	priv->selected_source =
+		e_source_selector_ref_primary_selection (selector);
+
+	/* FIXME Add an API for "except-source" or to
+	 *       get the ESourceSelector from outside. */
+	if (priv->selected_source != NULL) {
+		ESource *except_source;
+
+		except_source = g_object_get_data (
+			G_OBJECT (dialog), "except-source");
+
+		if (except_source != NULL) {
+			const gchar *except_uid, *selected_uid;
+
+			except_uid = e_source_peek_uid (except_source);
+			selected_uid = e_source_peek_uid (priv->selected_source);
+
+			if (except_uid && selected_uid && g_str_equal (except_uid, selected_uid))
+				priv->selected_source = NULL;
+		}
+	}
+
+	gtk_dialog_set_response_sensitive (
+		GTK_DIALOG (dialog), GTK_RESPONSE_OK,
+		(priv->selected_source != NULL));
+}
+
+static void
 source_selector_dialog_dispose (GObject *object)
 {
 	ESourceSelectorDialogPrivate *priv;
@@ -102,101 +146,68 @@ e_source_selector_dialog_init (ESourceSelectorDialog *dialog)
 
 /* Public API */
 
-static void
-row_activated_cb (GtkTreeView *tree_view,
-                  GtkTreePath *path,
-                  GtkTreeViewColumn *column,
-                  GtkWidget *dialog)
-{
-	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
-}
-
-static void
-primary_selection_changed_cb (ESourceSelector *selector,
-                              gpointer user_data)
-{
-	ESourceSelectorDialog *dialog = user_data;
-	ESourceSelectorDialogPrivate *priv = dialog->priv;
-
-	if (priv->selected_source)
-		g_object_unref (priv->selected_source);
-	priv->selected_source = e_source_selector_get_primary_selection (selector);
-
-	/* FIXME: add an API to "except-source" or to get the ESourceSelector from outside */
-	if (priv->selected_source) {
-		ESource *except_source = g_object_get_data (G_OBJECT (dialog), "except-source");
-
-		if (except_source) {
-			const gchar *except_uid, *selected_uid;
-
-			except_uid = e_source_peek_uid (except_source);
-			selected_uid = e_source_peek_uid (priv->selected_source);
-
-			if (except_uid && selected_uid && g_str_equal (except_uid, selected_uid))
-				priv->selected_source = NULL;
-		}
-	}
-
-	if (priv->selected_source) {
-		g_object_ref (priv->selected_source);
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, TRUE);
-	} else
-		gtk_dialog_set_response_sensitive (GTK_DIALOG (dialog), GTK_RESPONSE_OK, FALSE);
-}
-
 static GtkWidget *
 setup_dialog (GtkWindow *parent,
               ESourceSelectorDialog *dialog,
               ESourceList *source_list)
 {
-	GtkWidget *vbox, *label, *scroll, *hbox, *spacer;
-	GtkWidget *content_area;
+	GtkWidget *label, *hbox;
+	GtkWidget *container;
+	GtkWidget *widget;
 	gchar *label_text;
 	ESourceSelectorDialogPrivate *priv = dialog->priv;
 
 	priv->source_list = g_object_ref (source_list);
 
-	content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+	container = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
-	vbox = gtk_vbox_new (FALSE, 12);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
-	gtk_box_pack_start (GTK_BOX (content_area), vbox, TRUE, TRUE, 0);
-	gtk_widget_show (vbox);
+	widget = gtk_vbox_new (FALSE, 12);
+	gtk_container_set_border_width (GTK_CONTAINER (widget), 12);
+	gtk_box_pack_start (GTK_BOX (container), widget, TRUE, TRUE, 0);
+	gtk_widget_show (widget);
+
+	container = widget;
 
 	label_text = g_strdup_printf ("<b>%s</b>", _("_Destination"));
 	label = gtk_label_new_with_mnemonic (label_text);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
-	g_free (label_text);
+	gtk_box_pack_start (GTK_BOX (container), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+	g_free (label_text);
 
 	hbox = gtk_hbox_new (FALSE, 12);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (container), hbox, TRUE, TRUE, 0);
 	gtk_widget_show (hbox);
 
-	spacer = gtk_label_new ("");
-	gtk_box_pack_start (GTK_BOX (hbox), spacer, FALSE, FALSE, 0);
-	gtk_widget_show (spacer);
+	widget = gtk_label_new ("");
+	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_widget_show (widget);
 
-	scroll = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scroll),
-					     GTK_SHADOW_IN);
-	gtk_widget_show (scroll);
-	priv->source_selector = e_source_selector_new (source_list);
-	e_source_selector_show_selection (E_SOURCE_SELECTOR (priv->source_selector), FALSE);
-	g_signal_connect (G_OBJECT (priv->source_selector), "row_activated",
-			  G_CALLBACK (row_activated_cb), dialog);
-	g_signal_connect (G_OBJECT (priv->source_selector), "primary_selection_changed",
-			  G_CALLBACK (primary_selection_changed_cb), dialog);
-	gtk_widget_show (priv->source_selector);
-	gtk_container_add (GTK_CONTAINER (scroll), priv->source_selector);
-	gtk_box_pack_start (GTK_BOX (hbox), scroll, TRUE, TRUE, 0);
+	widget = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (
+		GTK_SCROLLED_WINDOW (widget),
+		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (
+		GTK_SCROLLED_WINDOW (widget), GTK_SHADOW_IN);
+	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	gtk_widget_show (widget);
 
-	gtk_label_set_mnemonic_widget (GTK_LABEL (label), priv->source_selector);
+	container = widget;
+
+	widget = e_source_selector_new (source_list);
+	e_source_selector_show_selection (E_SOURCE_SELECTOR (widget), FALSE);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (label), widget);
+	gtk_container_add (GTK_CONTAINER (container), widget);
+	dialog->priv->source_selector = widget;
+	gtk_widget_show (widget);
+
+	g_signal_connect (
+		widget, "row_activated",
+		G_CALLBACK (source_selector_dialog_row_activated_cb), dialog);
+	g_signal_connect (
+		widget, "primary_selection_changed",
+		G_CALLBACK (primary_selection_changed_cb), dialog);
 
 	return GTK_WIDGET (dialog);
 }
