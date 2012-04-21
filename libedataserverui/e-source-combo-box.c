@@ -45,6 +45,7 @@ enum {
 	COLUMN_NAME,		/* G_TYPE_STRING */
 	COLUMN_SENSITIVE,	/* G_TYPE_BOOLEAN */
 	COLUMN_SOURCE,		/* G_TYPE_OBJECT */
+	COLUMN_UID,		/* G_TYPE_STRING */
 	COLUMN_VISIBLE,		/* G_TYPE_BOOLEAN */
 	NUM_COLUMNS
 };
@@ -134,6 +135,7 @@ source_list_changed_cb (ESourceList *source_list,
 			const gchar *color_spec;
 			GdkColor color;
 
+			uid = e_source_get_uid (s->data);
 			name = e_source_get_display_name (s->data);
 			indented_name = g_strconcat ("    ", name, NULL);
 
@@ -151,9 +153,9 @@ source_list_changed_cb (ESourceList *source_list,
 				COLUMN_NAME, indented_name,
 				COLUMN_SENSITIVE, TRUE,
 				COLUMN_SOURCE, s->data,
+				COLUMN_UID, uid,
 				-1);
 
-			uid = e_source_get_uid (s->data);
 			path = gtk_tree_model_get_path (model, &iter);
 			g_hash_table_replace (
 				priv->uid_index, g_strdup (uid),
@@ -184,7 +186,9 @@ e_source_combo_box_constructor (GType type,
                                 guint n_construct_properties,
                                 GObjectConstructParam *construct_properties)
 {
+	ESourceComboBox *combo_box;
 	GtkCellRenderer *renderer;
+	GtkCellLayout *layout;
 	GtkListStore *store;
 	GObject *object;
 
@@ -192,31 +196,38 @@ e_source_combo_box_constructor (GType type,
 	object = G_OBJECT_CLASS (e_source_combo_box_parent_class)->constructor (
 		type, n_construct_properties, construct_properties);
 
+	combo_box = E_SOURCE_COMBO_BOX (object);
+
 	store = gtk_list_store_new (
 		NUM_COLUMNS,
 		GDK_TYPE_COLOR,		/* COLUMN_COLOR */
 		G_TYPE_STRING,		/* COLUMN_NAME */
 		G_TYPE_BOOLEAN,		/* COLUMN_SENSITIVE */
 		G_TYPE_OBJECT,		/* COLUMN_SOURCE */
+		G_TYPE_STRING,		/* COLUMN_UID */
 		G_TYPE_BOOLEAN);	/* COLUMN_VISIBLE */
 	gtk_combo_box_set_model (
-		GTK_COMBO_BOX (object), GTK_TREE_MODEL (store));
+		GTK_COMBO_BOX (combo_box),
+		GTK_TREE_MODEL (store));
+	g_object_unref (store);
+
+	gtk_combo_box_set_id_column (GTK_COMBO_BOX (combo_box), COLUMN_UID);
+
+	layout = GTK_CELL_LAYOUT (combo_box);
 
 	renderer = e_cell_renderer_color_new ();
-	gtk_cell_layout_pack_start (
-		GTK_CELL_LAYOUT (object), renderer, FALSE);
+	gtk_cell_layout_pack_start (layout, renderer, FALSE);
 	gtk_cell_layout_set_attributes (
-		GTK_CELL_LAYOUT (object), renderer,
+		layout, renderer,
 		"color", COLUMN_COLOR,
 		"sensitive", COLUMN_SENSITIVE,
 		"visible", COLUMN_VISIBLE,
 		NULL);
 
 	renderer = gtk_cell_renderer_text_new ();
-	gtk_cell_layout_pack_start (
-		GTK_CELL_LAYOUT (object), renderer, TRUE);
+	gtk_cell_layout_pack_start (layout, renderer, TRUE);
 	gtk_cell_layout_set_attributes (
-		GTK_CELL_LAYOUT (object), renderer,
+		layout, renderer,
 		"text", COLUMN_NAME,
 		"sensitive", COLUMN_SENSITIVE,
 		NULL);
@@ -417,8 +428,8 @@ e_source_combo_box_set_source_list (ESourceComboBox *combo_box,
  * e_source_combo_box_get_active:
  * @combo_box: an #ESourceComboBox
  *
- * Returns the #ESource corresponding to the currently active item, or %NULL
- * if there is no active item.
+ * Returns the #ESource corresponding to the currently active item,
+ * or %NULL if there is no active item.
  *
  * Returns: an #ESource or %NULL
  *
@@ -442,6 +453,9 @@ e_source_combo_box_get_active (ESourceComboBox *combo_box)
 		gtk_combo_box_get_model (gtk_combo_box),
 		&iter, COLUMN_SOURCE, &source, -1);
 
+	if (source != NULL)
+		g_object_unref (source);
+
 	return source;
 }
 
@@ -458,81 +472,15 @@ void
 e_source_combo_box_set_active (ESourceComboBox *combo_box,
                                ESource *source)
 {
+	GtkComboBox *gtk_combo_box;
+	const gchar *uid;
+
 	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box));
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	e_source_combo_box_set_active_uid (
-		combo_box, e_source_get_uid (source));
-}
+	uid = e_source_get_uid (source);
 
-/**
- * e_source_combo_box_get_active_uid:
- * @combo_box: an #ESourceComboBox
- *
- * Returns the unique ID of the #ESource corresponding to the currently
- * active item, or %NULL if there is no active item.
- *
- * Returns: a unique ID string or %NULL
- *
- * Since: 2.22
- **/
-const gchar *
-e_source_combo_box_get_active_uid (ESourceComboBox *combo_box)
-{
-	ESource *source;
-
-	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), NULL);
-
-	source = e_source_combo_box_get_active (combo_box);
-	if (source == NULL)
-		return NULL;
-
-	return e_source_get_uid (source);
-}
-
-/**
- * e_source_combo_box_set_active_uid:
- * @combo_box: an #ESourceComboBox
- * @uid: a unique ID of an #ESource
- *
- * Sets the active item to the one corresponding to @uid.
- *
- * Returns: whether found such @uid
- *
- * Since: 2.22
- **/
-gboolean
-e_source_combo_box_set_active_uid (ESourceComboBox *combo_box,
-                                   const gchar *uid)
-{
-	ESourceComboBoxPrivate *priv;
-	GtkTreeRowReference *reference;
-	GtkComboBox *gtk_combo_box;
-	GtkTreeIter iter;
-	GtkTreePath *path;
-	gboolean iter_was_set;
-
-	g_return_val_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box), FALSE);
-	g_return_val_if_fail (uid != NULL, FALSE);
-
-	priv = combo_box->priv;
 	gtk_combo_box = GTK_COMBO_BOX (combo_box);
-
-	reference = g_hash_table_lookup (priv->uid_index, uid);
-	if (!reference)
-		return FALSE;
-
-	g_return_val_if_fail (gtk_tree_row_reference_valid (reference), FALSE);
-
-	path = gtk_tree_row_reference_get_path (reference);
-	iter_was_set = gtk_tree_model_get_iter (
-		gtk_combo_box_get_model (gtk_combo_box), &iter,
-		path);
-	gtk_tree_path_free (path);
-
-	g_return_val_if_fail (iter_was_set, FALSE);
-
-	gtk_combo_box_set_active_iter (gtk_combo_box, &iter);
-
-	return TRUE;
+	gtk_combo_box_set_active_id (gtk_combo_box, uid);
 }
+
