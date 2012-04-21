@@ -89,8 +89,8 @@ dump_source (ESource *source)
 	gchar *uri = e_source_get_uri (source);
 	const gchar *color_spec;
 
-	g_print ("\tSource %s\n", e_source_peek_uid (source));
-	g_print ("\t\tname: %s\n", e_source_peek_name (source));
+	g_print ("\tSource %s\n", e_source_get_uid (source));
+	g_print ("\t\tname: %s\n", e_source_get_display_name (source));
 	g_print ("\t\trelative_uri: %s\n", e_source_peek_relative_uri (source));
 	g_print ("\t\tabsolute_uri: %s\n", uri);
 
@@ -162,7 +162,7 @@ source_changed_callback (ESource *source)
 {
 	static gint count = 0;
 
-	g_print ("** Event: source \"%s\" changed (%d)\n", e_source_peek_name (source), ++count);
+	g_print ("** Event: source \"%s\" changed (%d)\n", e_source_get_display_name (source), ++count);
 
 	dump_on_idle ();
 }
@@ -246,7 +246,7 @@ source_added_callback (ESourceGroup *group,
 {
 	static gint count = 0;
 
-	g_print ("** Event: source \"%s\" added (%d)\n", e_source_peek_name (source), ++count);
+	g_print ("** Event: source \"%s\" added (%d)\n", e_source_get_display_name (source), ++count);
 
 	connect_source (source);
 	dump_on_idle ();
@@ -258,7 +258,7 @@ source_removed_callback (ESourceGroup *group,
 {
 	static gint count = 0;
 
-	g_print ("** Event: source \"%s\" removed (%d)\n", e_source_peek_name (source), ++count);
+	g_print ("** Event: source \"%s\" removed (%d)\n", e_source_get_display_name (source), ++count);
 
 	disconnect_source (source);
 	dump_on_idle ();

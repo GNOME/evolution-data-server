@@ -855,7 +855,7 @@ e_client_utils_authenticate_handler (EClient *client,
 
 		reason = e_credentials_get (credentials, E_CREDENTIALS_KEY_PROMPT_REASON);
 		username_markup = g_markup_printf_escaped ("<b>%s</b>", e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME));
-		source_name_markup = g_markup_printf_escaped ("<b>%s</b>", e_source_peek_name (source));
+		source_name_markup = g_markup_printf_escaped ("<b>%s</b>", e_source_get_display_name (source));
 
 		if (is_cal) {
 			switch (e_cal_client_get_source_type (E_CAL_CLIENT (client))) {

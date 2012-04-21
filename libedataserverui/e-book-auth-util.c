@@ -202,7 +202,7 @@ addressbook_authenticate (EBook *book,
 		}
 
 		password_prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
-						   e_source_peek_name (source), user);
+						   e_source_get_display_name (source), user);
 
 		prompt = g_strconcat (failed_auth, password_prompt, NULL);
 		g_free (password_prompt);
@@ -426,7 +426,7 @@ load_book_source_password_prompt (EBook *book,
 
 	g_string_append_printf (
 		string, _("Enter password for %s (user %s)"),
-		e_source_peek_name (source), context->auth_username);
+		e_source_get_display_name (source), context->auth_username);
 
 	/* XXX Dialog windows should not have titles. */
 	title = "";

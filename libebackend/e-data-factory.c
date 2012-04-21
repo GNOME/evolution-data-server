@@ -224,7 +224,7 @@ e_data_factory_ref_backend (EDataFactory *data_factory,
 	g_return_val_if_fail (hash_key != NULL, NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	uid = e_source_peek_uid (source);
+	uid = e_source_get_uid (source);
 	g_return_val_if_fail (uid != NULL, NULL);
 
 	g_mutex_lock (data_factory->priv->mutex);

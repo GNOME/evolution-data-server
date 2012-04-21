@@ -2398,7 +2398,7 @@ find_client_by_contact (GSList *clients,
 			if (!source)
 				continue;
 
-			if (g_strcmp0 (source_uid, e_source_peek_uid (source)) == 0)
+			if (g_strcmp0 (source_uid, e_source_get_uid (source)) == 0)
 				return client;
 		}
 	}

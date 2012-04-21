@@ -761,7 +761,7 @@ e_book_client_set_default_source (ESource *source,
 		res = e_source_list_sync (source_list, error);
 	else
 		g_set_error (error, E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG,
-			_("There was no source for UID '%s' stored in a source list."), e_source_peek_uid (source));
+			_("There was no source for UID '%s' stored in a source list."), e_source_get_uid (source));
 
 	g_object_unref (source_list);
 

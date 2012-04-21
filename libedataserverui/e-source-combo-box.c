@@ -63,8 +63,8 @@ compare_source_names (ESource *source_a,
 	g_return_val_if_fail (E_IS_SOURCE (source_a), -1);
 	g_return_val_if_fail (E_IS_SOURCE (source_b),  1);
 
-	name_a = e_source_peek_name (source_a);
-	name_b = e_source_peek_name (source_b);
+	name_a = e_source_get_display_name (source_a);
+	name_b = e_source_get_display_name (source_b);
 
 	return g_utf8_collate (name_a, name_b);
 }
@@ -136,7 +136,7 @@ source_list_changed_cb (ESourceList *source_list,
 			const gchar *color_spec;
 			GdkColor color;
 
-			name = e_source_peek_name (s->data);
+			name = e_source_get_display_name (s->data);
 			indented_name = g_strconcat ("    ", name, NULL);
 
 			color_spec = e_source_peek_color_spec (s->data);
@@ -155,7 +155,7 @@ source_list_changed_cb (ESourceList *source_list,
 				COLUMN_SOURCE, s->data,
 				-1);
 
-			uid = e_source_peek_uid (s->data);
+			uid = e_source_get_uid (s->data);
 			path = gtk_tree_model_get_path (model, &iter);
 			g_hash_table_replace (
 				priv->uid_index, g_strdup (uid),
@@ -466,7 +466,7 @@ e_source_combo_box_set_active (ESourceComboBox *combo_box,
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	e_source_combo_box_set_active_uid (
-		combo_box, e_source_peek_uid (source));
+		combo_box, e_source_get_uid (source));
 }
 
 /**
@@ -491,7 +491,7 @@ e_source_combo_box_get_active_uid (ESourceComboBox *combo_box)
 	if (source == NULL)
 		return NULL;
 
-	return e_source_peek_uid (source);
+	return e_source_get_uid (source);
 }
 
 /**

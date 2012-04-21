@@ -703,7 +703,7 @@ e_source_group_peek_source_by_uid (ESourceGroup *group,
 	GSList *p;
 
 	for (p = group->priv->sources; p != NULL; p = p->next) {
-		if (strcmp (e_source_peek_uid (E_SOURCE (p->data)), uid) == 0)
+		if (strcmp (e_source_get_uid (E_SOURCE (p->data)), uid) == 0)
 			return E_SOURCE (p->data);
 	}
 
@@ -722,7 +722,7 @@ e_source_group_peek_source_by_name (ESourceGroup *group,
 	GSList *p;
 
 	for (p = group->priv->sources; p != NULL; p = p->next) {
-		if (strcmp (e_source_peek_name (E_SOURCE (p->data)), name) == 0)
+		if (strcmp (e_source_get_display_name (E_SOURCE (p->data)), name) == 0)
 			return E_SOURCE (p->data);
 	}
 
@@ -739,7 +739,7 @@ e_source_group_add_source (ESourceGroup *group,
 	if (group->priv->readonly)
 		return FALSE;
 
-	if (e_source_group_peek_source_by_uid (group, e_source_peek_uid (source)) != NULL)
+	if (e_source_group_peek_source_by_uid (group, e_source_get_uid (source)) != NULL)
 		return FALSE;
 
 	e_source_set_group (source, group);
@@ -798,7 +798,7 @@ e_source_group_remove_source_by_uid (ESourceGroup *group,
 	for (p = group->priv->sources; p != NULL; p = p->next) {
 		ESource *source = E_SOURCE (p->data);
 
-		if (strcmp (e_source_peek_uid (source), uid) == 0) {
+		if (strcmp (e_source_get_uid (source), uid) == 0) {
 			group->priv->sources = g_slist_remove_link (group->priv->sources, p);
 			g_signal_handlers_disconnect_by_func (source,
 							      G_CALLBACK (source_changed_callback),
@@ -858,7 +858,7 @@ static gint
 find_esource_from_uid (gconstpointer a,
                        gconstpointer b)
 {
-	return g_ascii_strcasecmp (e_source_peek_uid ((ESource *)(a)), (gchar *)(b));
+	return g_ascii_strcasecmp (e_source_get_uid ((ESource *)(a)), (gchar *)(b));
 }
 
 static gboolean
@@ -872,7 +872,7 @@ compare_source_lists (GSList *a,
 		return FALSE;
 
 	for (l = a; l != NULL && retval; l = l->next) {
-		GSList *elem = g_slist_find_custom (b, e_source_peek_uid ((ESource *)(l->data)), (GCompareFunc) find_esource_from_uid);
+		GSList *elem = g_slist_find_custom (b, e_source_get_uid ((ESource *)(l->data)), (GCompareFunc) find_esource_from_uid);
 
 		if (!elem || !e_source_equal ((ESource *)(l->data), (ESource *)(elem->data)))
 			retval = FALSE;

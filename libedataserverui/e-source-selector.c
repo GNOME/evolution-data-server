@@ -272,7 +272,7 @@ rebuild_existing_cb (GtkTreeModel *model,
 			rebuild_data->deleted_uids = g_slist_append (
 				rebuild_data->deleted_uids, reference);
 	} else {
-		uid = e_source_peek_uid (E_SOURCE (node));
+		uid = e_source_get_uid (E_SOURCE (node));
 
 		if (e_source_list_peek_source_by_uid (source_list, uid)) {
 			g_hash_table_insert (
@@ -332,8 +332,8 @@ compare_source_names (gconstpointer a,
 	g_return_val_if_fail (E_IS_SOURCE (a), -1);
 	g_return_val_if_fail (E_IS_SOURCE (b),  1);
 
-	name_a = e_source_peek_name (E_SOURCE (a));
-	name_b = e_source_peek_name (E_SOURCE (b));
+	name_a = e_source_get_display_name (E_SOURCE (a));
+	name_b = e_source_get_display_name (E_SOURCE (b));
 
 	return g_utf8_collate (name_a, name_b);
 }
@@ -431,7 +431,7 @@ rebuild_model (ESourceSelector *selector)
 
 			reference = g_hash_table_lookup (
 				rebuild_data->remaining_uids,
-				e_source_peek_uid (source));
+				e_source_get_uid (source));
 
 			if (reference == NULL) {
 				if (selector->priv->select_new) {
@@ -493,7 +493,7 @@ same_source_name_exists (ESourceSelector *selector,
 					gtk_tree_model_get (model, &source_iter, 0, &data, -1);
 					g_assert (E_IS_SOURCE (data));
 
-					source_name = e_source_peek_name (E_SOURCE (data));
+					source_name = e_source_get_display_name (E_SOURCE (data));
 					if (source_name && g_str_equal (name, source_name)) {
 						g_object_unref (data);
 
@@ -589,7 +589,7 @@ text_cell_data_func (GtkTreeViewColumn *column,
 		source = E_SOURCE (data);
 
 		g_object_set (renderer,
-			      "text", e_source_peek_name (source),
+			      "text", e_source_get_display_name (source),
 			      "weight", PANGO_WEIGHT_NORMAL,
 			      "foreground_set", FALSE,
 			      NULL);
@@ -778,7 +778,7 @@ group_search_function (GtkTreeModel *model,
 	else {
 		g_assert (E_IS_SOURCE (data));
 
-		name = e_source_peek_name (E_SOURCE (data));
+		name = e_source_get_display_name (E_SOURCE (data));
 	}
 
 	if (name)
@@ -1913,7 +1913,7 @@ e_source_selector_set_primary_selection (ESourceSelector *selector,
 		gtk_tree_path_free (path);
 	} else {
 		g_warning (G_STRLOC ": Cannot find source %p (%s) in selector %p",
-			   (gpointer) source, e_source_peek_name (source),
+			   (gpointer) source, e_source_get_display_name (source),
 			   (gpointer) selector);
 	}
 }

@@ -560,7 +560,7 @@ e_destination_set_book (EDestination *dest,
 	g_return_if_fail (book && E_IS_BOOK (book));
 
 	source = e_book_get_source (book);
-	uid = e_source_peek_uid (source);
+	uid = e_source_get_uid (source);
 	g_return_if_fail (uid != NULL);
 
 	if (!dest->priv->source_uid || strcmp (uid, dest->priv->source_uid)) {
@@ -592,7 +592,7 @@ e_destination_set_client (EDestination *dest,
 	g_return_if_fail (client && E_IS_BOOK_CLIENT (client));
 
 	source = e_client_get_source (E_CLIENT (client));
-	uid = e_source_peek_uid (source);
+	uid = e_source_get_uid (source);
 	g_return_if_fail (uid != NULL);
 
 	if (!dest->priv->source_uid || strcmp (uid, dest->priv->source_uid)) {

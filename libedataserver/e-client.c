@@ -1875,7 +1875,7 @@ e_client_util_set_default (ESourceList *source_list,
 	g_return_val_if_fail (source != NULL, FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	uid = e_source_peek_uid (source);
+	uid = e_source_get_uid (source);
 
 	/* make sure the source is actually in the ESourceList.  If
 	 * it's not we don't bother adding it, just return an error */

@@ -3484,7 +3484,7 @@ cal_backend_file_constructed (GObject *object)
 
 	source_dir = e_source_peek_relative_uri (source);
 	if (!source_dir || !g_str_equal (source_dir, "system"))
-		source_dir = e_source_peek_uid (source);
+		source_dir = e_source_get_uid (source);
 
 	/* Mangle the URI to not contain invalid characters. */
 	mangled_source_dir = g_strdelimit (g_strdup (source_dir), ":/", '_');

@@ -889,7 +889,7 @@ call_authenticate_user (ECal *cal,
 		}
 
 		prompt = g_strdup_printf (_("Enter password for %s (user %s)"),
-				e_source_peek_name (priv->source), username);
+				e_source_get_display_name (priv->source), username);
 
 		auth_type = e_source_get_duped_property (priv->source, "auth-type");
 		if (auth_type)
@@ -902,7 +902,7 @@ call_authenticate_user (ECal *cal,
 				 * This password prompt will be prompted rarely. Since the key that is passed to
 				 * the auth_func corresponds to the parent user.
 				 */
-				prompt = g_strdup_printf (_("Enter password for %s to enable proxy for user %s"), e_source_peek_name (priv->source), parent_user);
+				prompt = g_strdup_printf (_("Enter password for %s to enable proxy for user %s"), e_source_get_display_name (priv->source), parent_user);
 				g_free (parent_user);
 			} else
 				key = g_strdup (e_cal_get_uri (cal));
@@ -4723,7 +4723,7 @@ set_default_source (ESourceList *sources,
 	GError *err = NULL;
 	GSList *g;
 
-	uid = e_source_peek_uid (source);
+	uid = e_source_get_uid (source);
 
 	/* make sure the source is actually in the ESourceList.  if
 	 * it's not we don't bother adding it, just return an error */

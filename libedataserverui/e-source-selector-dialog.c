@@ -75,8 +75,8 @@ primary_selection_changed_cb (ESourceSelector *selector,
 		if (except_source != NULL) {
 			const gchar *except_uid, *selected_uid;
 
-			except_uid = e_source_peek_uid (except_source);
-			selected_uid = e_source_peek_uid (priv->selected_source);
+			except_uid = e_source_get_uid (except_source);
+			selected_uid = e_source_get_uid (priv->selected_source);
 
 			if (except_uid && selected_uid && g_str_equal (except_uid, selected_uid))
 				priv->selected_source = NULL;

@@ -28,7 +28,7 @@ source_changed_cb (ESourceComboBox *combo_box)
 	ESource *source;
 
 	source = e_source_combo_box_get_active (combo_box);
-	g_print ("source selected: \"%s\"\n", e_source_peek_name (source));
+	g_print ("source selected: \"%s\"\n", e_source_get_display_name (source));
 }
 
 static gint

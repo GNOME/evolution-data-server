@@ -38,7 +38,7 @@ dump_selection (ESourceSelector *selector)
 			ESource *source = E_SOURCE (p->data);
 
 			g_print ("\tSource %s (group %s)\n",
-				 e_source_peek_name (source),
+				 e_source_get_display_name (source),
 				 e_source_group_peek_name (e_source_peek_group (source)));
 		}
 	}

@@ -122,7 +122,7 @@ identify_source (ESource *source)
 
 	g_return_if_fail (source != NULL);
 
-	name = e_source_peek_name (source);
+	name = e_source_get_display_name (source);
 	if (!name)
 		name = "Unknown name";
 

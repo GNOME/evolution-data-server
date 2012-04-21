@@ -134,7 +134,7 @@ book_client_authenticate_cb (EClient *client,
 
 	source = e_client_get_source (client);
 
-	source_uid = e_source_peek_uid (source);
+	source_uid = e_source_get_uid (source);
 	g_return_val_if_fail (source_uid != NULL, FALSE);
 
 	use_credentials = g_hash_table_lookup (cbc->priv->credentials, source_uid);
@@ -213,7 +213,7 @@ book_client_authenticate_cb (EClient *client,
 
 		reason = e_credentials_get (credentials, E_CREDENTIALS_KEY_PROMPT_REASON);
 		username_markup = g_markup_printf_escaped ("<b>%s</b>", e_credentials_peek (credentials, E_CREDENTIALS_KEY_USERNAME));
-		source_name_markup = g_markup_printf_escaped ("<b>%s</b>", e_source_peek_name (source));
+		source_name_markup = g_markup_printf_escaped ("<b>%s</b>", e_source_get_display_name (source));
 
 		if (reason && *reason)
 			prompt = g_strdup_printf (_("Enter password for address book %s (user %s)\nReason: %s"), source_name_markup, username_markup, reason);
@@ -229,7 +229,7 @@ book_client_authenticate_cb (EClient *client,
 	}
 
 	e_credentials_set (credentials, E_CREDENTIALS_KEY_FOREIGN_REQUEST, "1");
-	e_credentials_set (credentials, CBC_CREDENTIALS_KEY_SOURCE_UID, e_source_peek_uid (source));
+	e_credentials_set (credentials, CBC_CREDENTIALS_KEY_SOURCE_UID, e_source_get_uid (source));
 
 	/* this is a reprompt, set proper flags */
 	if (use_credentials) {
@@ -330,7 +330,7 @@ book_client_opened_cb (EBookClient *book_client,
 	g_signal_handlers_disconnect_by_func (book_client, G_CALLBACK (book_client_opened_cb), cbc);
 
 	source = e_client_get_source (E_CLIENT (book_client));
-	source_uid = e_source_peek_uid (source);
+	source_uid = e_source_get_uid (source);
 	g_return_if_fail (source_uid != NULL);
 
 	if (source_uid) {
@@ -372,7 +372,7 @@ book_client_opened_cb (EBookClient *book_client,
 		e_book_query_unref (query);
 
 		if (!e_book_client_get_view_sync (book_client, query_sexp, &book_view, NULL, &error))
-			g_warning ("%s: Failed to get book view on '%s': %s", G_STRFUNC, e_source_peek_name (source), error ? error->message : "Unknown error");
+			g_warning ("%s: Failed to get book view on '%s': %s", G_STRFUNC, e_source_get_display_name (source), error ? error->message : "Unknown error");
 		g_free (query_sexp);
 		g_clear_error (&error);
 
@@ -622,7 +622,7 @@ add_source (ECalBackendContacts *cbc,
             ESource *source)
 {
 	BookRecord *br = book_record_new (cbc, source);
-	const gchar *uid = e_source_peek_uid (source);
+	const gchar *uid = e_source_get_uid (source);
 
 	if (!br)
 		return;
@@ -649,7 +649,7 @@ source_removed_cb (ESourceGroup *group,
                    gpointer user_data)
 {
 	ECalBackendContacts *cbc = E_CAL_BACKEND_CONTACTS (user_data);
-	const gchar          *uid = e_source_peek_uid (source);
+	const gchar          *uid = e_source_get_uid (source);
 
 	g_return_if_fail (cbc);
 
@@ -679,7 +679,7 @@ source_list_changed_cb (ESourceList *source_list,
 			if (!source)
 				continue;
 
-			uid = e_source_peek_uid (source);
+			uid = e_source_get_uid (source);
 			if (!uid)
 				continue;
 
@@ -726,7 +726,7 @@ source_group_removed_cb (ESourceList *source_list,
         /* Unload all address books from this group */
 	for (i = e_source_group_peek_sources (group); i; i = i->next) {
 		ESource *source = E_SOURCE (i->data);
-		const gchar *uid = e_source_peek_uid (source);
+		const gchar *uid = e_source_get_uid (source);
 
 		g_hash_table_remove (cbc->priv->addressbooks, uid);
 		g_hash_table_remove (cbc->priv->credentials, uid);

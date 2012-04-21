@@ -740,7 +740,7 @@ e_source_peek_group (ESource *source)
 }
 
 /**
- * e_source_peek_uid:
+ * e_source_get_uid:
  * @source: an #ESource
  *
  * Returns the unique identifier string for @source.
@@ -748,7 +748,7 @@ e_source_peek_group (ESource *source)
  * Returns: the source's unique ID
  **/
 const gchar *
-e_source_peek_uid (ESource *source)
+e_source_get_uid (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
@@ -756,7 +756,7 @@ e_source_peek_uid (ESource *source)
 }
 
 /**
- * e_source_peek_name:
+ * e_source_get_display_name:
  * @source: an #ESource
  *
  * Returns the display name for @source.
@@ -764,7 +764,7 @@ e_source_peek_uid (ESource *source)
  * Returns: the source's display name
  **/
 const gchar *
-e_source_peek_name (ESource *source)
+e_source_get_display_name (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
@@ -895,8 +895,8 @@ dump_common_to_xml_node (ESource *source,
 	else
 		node = xmlNewNode (NULL, (xmlChar *)"source");
 
-	xmlSetProp (node, (xmlChar *)"uid", (xmlChar *)e_source_peek_uid (source));
-	xmlSetProp (node, (xmlChar *)"name", (xmlChar *)e_source_peek_name (source));
+	xmlSetProp (node, (xmlChar *)"uid", (xmlChar *)e_source_get_uid (source));
+	xmlSetProp (node, (xmlChar *)"name", (xmlChar *)e_source_get_display_name (source));
 	abs_uri = e_source_peek_absolute_uri (source);
 	/* do not store absolute uris for local:system sources */
 	relative_uri = e_source_peek_relative_uri (source);
@@ -1230,9 +1230,9 @@ e_source_copy (ESource *source)
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	new_source = g_object_new (E_TYPE_SOURCE, NULL);
-	new_source->priv->uid = g_strdup (e_source_peek_uid (source));
+	new_source->priv->uid = g_strdup (e_source_get_uid (source));
 
-	e_source_set_name (new_source, e_source_peek_name (source));
+	e_source_set_name (new_source, e_source_get_display_name (source));
 
 	new_source->priv->color_spec =
 		g_strdup (source->priv->color_spec);

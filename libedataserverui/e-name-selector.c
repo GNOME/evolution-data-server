@@ -107,7 +107,7 @@ name_selector_book_loaded_cb (GObject *source_object,
 		    && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
 			g_warning (
 				"ENameSelector: Could not load \"%s\": %s",
-				e_source_peek_name (source), error->message);
+				e_source_get_display_name (source), error->message);
 		g_error_free (error);
 		goto exit;
 	}

@@ -3182,7 +3182,7 @@ e_book_set_default_source (ESource *source,
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	uid = e_source_peek_uid (source);
+	uid = e_source_get_uid (source);
 
 	if (!e_book_get_addressbooks (&sources, &err)) {
 		if (error)
