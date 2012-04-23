@@ -478,7 +478,8 @@ e_destination_set_contact (EDestination *dest,
 						e_destination_set_name (s_dest, name);
 						g_free (name);
 
-						g_hash_table_insert (hash_table, g_strdup (id), s_dest);
+						if (id)
+							g_hash_table_insert (hash_table, g_strdup (id), s_dest);
 						lists_count--;
 					}
 
