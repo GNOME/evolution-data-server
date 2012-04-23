@@ -1369,7 +1369,10 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	priv->cache = e_book_backend_cache_new (filename);
 	g_free (filename);
 
-	session = soup_session_sync_new ();
+	session = soup_session_sync_new_with_options (
+		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE,
+		g_strcmp0 (e_source_get_property (source, "ignore-invalid-cert"), "1") != 0,
+		NULL);
 	g_signal_connect (
 		session, "authenticate",
 		G_CALLBACK (soup_authenticate), webdav);

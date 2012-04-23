@@ -2627,6 +2627,15 @@ open_calendar (ECalBackendCalDAV *cbdav,
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 
+	if (cbdav->priv->session) {
+		ESource *source = e_backend_get_source (E_BACKEND (cbdav));
+
+		g_object_set (G_OBJECT (cbdav->priv->session),
+			SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE,
+			g_strcmp0 (e_source_get_property (source, "ignore-invalid-cert"), "1") != 0,
+			NULL);
+	}
+
 	/* set forward proxy */
 	proxy_settings_changed (cbdav->priv->proxy, cbdav->priv);
 

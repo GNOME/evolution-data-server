@@ -601,8 +601,12 @@ begin_retrieval_cb (ECalBackendHttp *cbhttp)
 	if (!priv->soup_session) {
 		EProxy *proxy;
 		SoupURI *proxy_uri = NULL;
+		ESource *source = e_backend_get_source (E_BACKEND (cbhttp));
 
-		priv->soup_session = soup_session_async_new ();
+		priv->soup_session = soup_session_async_new_with_options (
+			SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE,
+			g_strcmp0 (e_source_get_property (source, "ignore-invalid-cert"), "1") != 0,
+			NULL);
 
 		g_signal_connect (priv->soup_session, "authenticate",
 				  G_CALLBACK (soup_authenticate), cbhttp);
@@ -790,6 +794,12 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	e_cal_backend_notify_online (E_CAL_BACKEND (backend), online);
 
 	if (online) {
+		if (priv->soup_session)
+			g_object_set (G_OBJECT (priv->soup_session),
+				SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE,
+				g_strcmp0 (e_source_get_property (source, "ignore-invalid-cert"), "1") != 0,
+				NULL);
+
 		if (e_source_get_property (source, "auth")) {
 			e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbhttp), TRUE, priv->credentials);
 		} else if (priv->requires_auth && perror && !*perror) {
