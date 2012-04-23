@@ -116,12 +116,6 @@ ESource *	e_source_selector_ref_source_by_path
 						(ESourceSelector *selector,
 						 GtkTreePath *path);
 
-/* For backward-compatibility */
-#ifndef EDS_DISABLE_DEPRECATED
-#define e_source_selector_peek_primary_selection \
-	e_source_selector_get_primary_selection
-#endif
-
 G_END_DECLS
 
 #endif /* E_SOURCE_SELECTOR_H */
