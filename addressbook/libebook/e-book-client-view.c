@@ -69,7 +69,7 @@ objects_added_cb (EGdbusBookView *object,
 		return;
 
 	/* array contains both UID and vcard */
-	for (p = vcards; *p; p += 2) {
+	for (p = vcards; p[0] && p[1]; p += 2) {
 		contacts = g_slist_prepend (contacts, e_contact_new_from_vcard_with_uid (p[0], p[1]));
 	}
 
@@ -92,7 +92,7 @@ objects_modified_cb (EGdbusBookView *object,
 		return;
 
 	/* array contains both UID and vcard */
-	for (p = vcards; *p; p += 2) {
+	for (p = vcards; p[0] && p[1]; p += 2) {
 		contacts = g_slist_prepend (contacts, e_contact_new_from_vcard_with_uid (p[0], p[1]));
 	}
 	contacts = g_slist_reverse (contacts);
