@@ -99,8 +99,8 @@ void		e_source_set_readonly		(ESource *source,
 						 gboolean readonly);
 struct _ESourceGroup *
 		e_source_peek_group		(ESource *source);
-const gchar *	e_source_get_uid		(ESource *source);
-const gchar *	e_source_get_display_name	(ESource *source);
+const gchar *	e_source_peek_uid		(ESource *source);
+const gchar *	e_source_peek_name		(ESource *source);
 const gchar *	e_source_peek_relative_uri	(ESource *source);
 const gchar *	e_source_peek_absolute_uri	(ESource *source);
 const gchar *	e_source_peek_color_spec	(ESource *source);
@@ -125,10 +125,9 @@ gboolean	e_source_equal			(ESource *a,
 gboolean	e_source_xmlstr_equal		(const gchar *a,
 						 const gchar *b);
 
-#ifndef EDS_DISABLE_DEPRECATED
-#define e_source_peek_uid		e_source_get_uid
-#define e_source_peek_name		e_source_get_display_name
-#endif /* EDS_DISABLE_DEPRECATED */
+/* New names to be used in the upcoming ESource rewrite. */
+#define e_source_get_uid		e_source_peek_uid
+#define e_source_get_display_name	e_source_peek_name
 
 G_END_DECLS
 

@@ -397,8 +397,8 @@ e_source_set_absolute_uri
 e_source_set_color_spec
 e_source_set_readonly
 e_source_peek_group
-e_source_get_uid
-e_source_get_display_name
+e_source_peek_uid
+e_source_peek_name
 e_source_peek_relative_uri
 e_source_peek_absolute_uri
 e_source_peek_color_spec
@@ -413,8 +413,8 @@ e_source_get_duped_property
 e_source_build_absolute_uri
 e_source_equal
 e_source_xmlstr_equal
-e_source_peek_uid
-e_source_peek_name
+e_source_get_uid
+e_source_get_display_name
 <SUBSECTION Standard>
 E_SOURCE
 E_IS_SOURCE

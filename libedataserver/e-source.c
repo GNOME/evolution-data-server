@@ -740,7 +740,7 @@ e_source_peek_group (ESource *source)
 }
 
 /**
- * e_source_get_uid:
+ * e_source_peek_uid:
  * @source: an #ESource
  *
  * Returns the unique identifier string for @source.
@@ -748,7 +748,7 @@ e_source_peek_group (ESource *source)
  * Returns: the source's unique ID
  **/
 const gchar *
-e_source_get_uid (ESource *source)
+e_source_peek_uid (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
@@ -756,7 +756,7 @@ e_source_get_uid (ESource *source)
 }
 
 /**
- * e_source_get_display_name:
+ * e_source_peek_name:
  * @source: an #ESource
  *
  * Returns the display name for @source.
@@ -764,7 +764,7 @@ e_source_get_uid (ESource *source)
  * Returns: the source's display name
  **/
 const gchar *
-e_source_get_display_name (ESource *source)
+e_source_peek_name (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
