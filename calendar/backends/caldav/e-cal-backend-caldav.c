@@ -2478,10 +2478,7 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 		g_signal_connect (G_OBJECT (source), "changed", G_CALLBACK (caldav_source_changed_cb), cbdav);
 
 	os_val = e_source_get_property (source, "offline_sync");
-
-	if (!os_val || !g_str_equal (os_val, "1")) {
-		cbdav->priv->do_offline = FALSE;
-	}
+	cbdav->priv->do_offline = os_val && g_str_equal (os_val, "1");
 
 	os_val = e_source_get_property (source, "auth");
 	cbdav->priv->auth_required = os_val != NULL;
