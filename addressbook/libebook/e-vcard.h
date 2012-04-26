@@ -111,6 +111,14 @@ G_BEGIN_DECLS
 #define EVC_X_GOOGLE_TALK		"X-GOOGLE_TALK"
 
 /**
+ * EVC_X_TWITTER
+ * Twitter name(s).
+ *
+ * Since: 3.6
+ **/
+#define EVC_X_TWITTER			"X-TWITTER"
+
+/**
  * EVC_X_SIP:
  *
  * Since: 2.26

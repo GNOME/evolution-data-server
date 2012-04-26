@@ -215,6 +215,8 @@ typedef enum {
 	E_CONTACT_IM_GOOGLE_TALK_WORK_3,     /* Synthetic string field */
 	E_CONTACT_IM_GOOGLE_TALK,		/* Multi-valued */
 
+	E_CONTACT_IM_TWITTER,		/* Multi-valued */
+
 	E_CONTACT_FIELD_LAST,
 	E_CONTACT_FIELD_FIRST        = E_CONTACT_UID,
 

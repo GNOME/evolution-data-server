@@ -316,6 +316,8 @@ static const EContactFieldInfo field_info[] = {
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GOOGLE_TALK_WORK_2,  EVC_X_GOOGLE_TALK,  "im_google_talk_work_2",  N_("Google Talk Work Name 2"),         FALSE, "WORK", 1),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GOOGLE_TALK_WORK_3,  EVC_X_GOOGLE_TALK,  "im_google_talk_work_3",  N_("Google Talk Work Name 3"),         FALSE, "WORK", 2),
 	MULTI_LIST_FIELD (E_CONTACT_IM_GOOGLE_TALK,	  EVC_X_GOOGLE_TALK,     "im_google_talk",     N_("Google Talk Name List"),         FALSE),
+
+	MULTI_LIST_FIELD (E_CONTACT_IM_TWITTER,	  EVC_X_TWITTER,     "im_twitter",     N_("Twitter Name List"),         FALSE)
 };
 
 #undef LIST_ELEM_STR_FIELD
