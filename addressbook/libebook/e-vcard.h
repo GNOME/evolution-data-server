@@ -108,7 +108,7 @@ G_BEGIN_DECLS
  *
  * Since: 3.2
  **/
-#define EVC_X_GOOGLE_TALK		"X-GOOGLE_TALK"
+#define EVC_X_GOOGLE_TALK		"X-GOOGLE-TALK"
 
 /**
  * EVC_X_TWITTER
