@@ -2973,6 +2973,10 @@ refresh_refresh (CamelSession *session,
 
 	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
+	camel_operation_push_message (cancellable,
+		_("Retrieving list of folders at '%s'"),
+		camel_service_get_display_name (service));
+
 	if (!camel_imap_store_connected (store, error))
 		goto done;
 
@@ -2990,6 +2994,7 @@ refresh_refresh (CamelSession *session,
 	camel_store_summary_save (CAMEL_STORE_SUMMARY (store->summary));
 
 done:
+	camel_operation_pop_message (cancellable);
 	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	g_free (namespace);
