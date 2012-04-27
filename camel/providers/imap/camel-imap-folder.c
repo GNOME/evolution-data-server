@@ -2448,7 +2448,8 @@ retry:
 	if (!response2)
 		return response2;
 
-	if (store->capabilities & IMAP_CAPABILITY_UIDPLUS) {
+	if ((store->capabilities & IMAP_CAPABILITY_UIDPLUS) != 0 ||
+	    is_google_account (parent_store)) {
 		*uid = camel_strstrcase (response2->status, "[APPENDUID ");
 		if (*uid)
 			*uid = strchr (*uid + 11, ' ');

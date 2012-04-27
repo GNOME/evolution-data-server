@@ -194,6 +194,7 @@ gboolean	camel_imapx_server_append_message
 						 CamelFolder *folder,
 						 CamelMimeMessage *message,
 						 const CamelMessageInfo *mi,
+						 gchar **append_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_sync_message	(CamelIMAPXServer *is,

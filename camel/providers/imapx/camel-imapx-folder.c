@@ -417,7 +417,7 @@ imapx_append_message_sync (CamelFolder *folder,
 	server = camel_imapx_store_get_server (istore, NULL, cancellable, error);
 	if (server) {
 		success = camel_imapx_server_append_message (
-			server, folder, message, info, cancellable, error);
+			server, folder, message, info, appended_uid, cancellable, error);
 		g_object_unref (server);
 	}
 

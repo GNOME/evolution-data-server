@@ -123,6 +123,7 @@ struct _SyncChangesData {
 struct _AppendMessageData {
 	gchar *path;
 	CamelMessageInfo *info;
+	gchar *appended_uid;
 };
 
 struct _CopyMessagesData {
@@ -333,6 +334,7 @@ static void
 append_message_data_free (AppendMessageData *data)
 {
 	g_free (data->path);
+	g_free (data->appended_uid);
 
 	camel_message_info_free (data->info);
 
@@ -3514,10 +3516,9 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 		c(is->tagprefix, "Got appenduid %d %d\n", (gint)ic->status->u.appenduid.uidvalidity, (gint)ic->status->u.appenduid.uid);
 		if (ic->status->u.appenduid.uidvalidity == ifolder->uidvalidity_on_server) {
 			CamelFolderChangeInfo *changes;
-			gchar *uid;
 
-			uid = g_strdup_printf("%u", (guint)ic->status->u.appenduid.uid);
-			mi->uid = camel_pstring_add (uid, TRUE);
+			data->appended_uid = g_strdup_printf ("%u", (guint) ic->status->u.appenduid.uid);
+			mi->uid = camel_pstring_add (data->appended_uid, FALSE);
 
 			cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid, NULL);
 			g_rename (data->path, cur);
@@ -5758,6 +5759,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
                                    CamelFolder *folder,
                                    CamelMimeMessage *message,
                                    const CamelMessageInfo *mi,
+				   gchar **appended_uid,
                                    GCancellable *cancellable,
                                    GError **error)
 {
@@ -5816,6 +5818,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	data = g_slice_new0 (AppendMessageData);
 	data->info = info;  /* takes ownership */
 	data->path = path;  /* takes ownership */
+	data->appended_uid = NULL;
 
 	job = camel_imapx_job_new (cancellable);
 	job->pri = IMAPX_PRIORITY_APPEND_MESSAGE;
@@ -5828,6 +5831,11 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 		job, data, (GDestroyNotify) append_message_data_free);
 
 	success = imapx_submit_job (is, job, error);
+
+	if (appended_uid) {
+		*appended_uid = data->appended_uid;
+		data->appended_uid = NULL;
+	}
 
 	camel_imapx_job_unref (job);
 
