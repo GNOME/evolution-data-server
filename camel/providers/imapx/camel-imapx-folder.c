@@ -551,6 +551,23 @@ imapx_get_message_sync (CamelFolder *folder,
 		}
 		g_mutex_unlock (ifolder->stream_lock);
 		g_object_unref (stream);
+
+		if (msg) {
+			CamelMessageInfo *mi = camel_folder_summary_get (folder->summary, uid);
+
+			if (mi) {
+				gboolean has_attachment;
+
+				has_attachment = camel_mime_message_has_attachment (msg);
+				if (((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
+				    ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {
+					camel_message_info_set_flags (mi,
+						CAMEL_MESSAGE_ATTACHMENTS, has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
+				}
+
+				camel_message_info_free (mi);
+			}
+		}
 	}
 
 	return msg;
