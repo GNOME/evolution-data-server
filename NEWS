@@ -1,3 +1,98 @@
+Evolution-Data-Server 3.5.1 2012-04-30
+--------------------------------------
+
+Bug Fixes:
+	Bug 658742 - Change EContact property description string (Milan Crha)
+	Bug 663324 - Categories not correctly aligned with Google contacts
+	             (Milan Crha)
+	Bug 664639 - [IMAPX] Doesn't quit gracefully on account disable
+	             (Milan Crha)
+	Bug 664793 - Deadlock on EClient operation cancel (Milan Crha)
+	Bug 665381 - LDAP backend crash when query_ldap_root_dse() fails
+	             (Milan Crha)
+	Bug 666438 - Contact's Full name field not displayed in list view
+	             (Milan Crha)
+	Bug 666896 - Workaround Improper GB-2312 Mail Encodings
+	             (Palmer Dabbelt)
+	Bug 667477 - EXDATE containing time are not handle correctly
+	             (Milan Crha)
+	Bug 667891 - Rapid message list regen when downloading a folder
+	             (Milan Crha)
+	Bug 668549 - Crash in objects_added_cb() in e-book-client-view.c
+	             (Milan Crha)
+	Bug 668679 - Crash on insertion of NULL in e_destination_set_contact()
+	             (Milan Crha)
+	Bug 668989 - Add a twitter username to IM in contacts (Milan Crha)
+	Bug 669034 - [IMAP] Shows "Unknown background operation" on start
+	             (Milan Crha)
+	Bug 669085 - Saving draft on Google server emits runtime warning
+	             (Milan Crha)
+	Bug 670435 - Added e_cal_client_view_set_flags() (Christophe Dumez)
+	Bug 670457 - Add bulk methods to ECalClient (Christophe Dumez)
+	Bug 670470 - Do not force password for IMAPx connection (Yanko Kaneti)
+	Bug 671172 - camel: smtp: Make EHLO keywords check case insensitive
+	             (Pawel Moll)
+	Bug 671537 - Option to validate SLL certificates with libsoup
+	             (Milan Crha)
+	Bug 672175 - Make CamelFolderSearch cancellable (Milan Crha)
+	Bug 672258 - Error while moving messages in local folders (Milan Crha)
+	Bug 672398 - CalDAV backend doesn't respect "Copy for offline" option
+	             (Milan Crha)
+	Bug 673527 - Addressbook bulk methods are broken (Christophe Dumez)
+	Bug 673563 - Encoded filename for Outlook broken by spaces (Milan Crha)
+	Bug 673894 - Adding events to Google Calendar is broken (Milan Crha)
+	Bug 674257 - Recheck attachment availability on message download
+	             (Milan Crha)
+	Bug 674309 - Crash when calling oauth_init_nss() from two threads
+	             (Milan Crha)
+
+Miscellaneous Changes:
+	* Add an --enable-code-coverage configure option to enable gcov
+	  support (Philip Withnall)
+	* Limit supported gweather to < 3.5. (Matthew Barnes)
+	* Require GLib >= 2.32. (Matthew Barnes)
+	* EDataFactory: Use GNetworkMonitor always. (Matthew Barnes)
+	* Deprecate and gut EOfflineListener. (Matthew Barnes)
+	* Remove migration of categories from GConf. (Matthew Barnes)
+	* EDBusServer: Add run/quit signals. (Matthew Barnes)
+	* CalDAV backend could starve on its dispose waiting for slave
+	  finish (Milan Crha)
+	* Remove CamelHttpStream. (Matthew Barnes)
+	* Add e_file_recursive_delete(). (Matthew Barnes)
+	* Make e_dbus_server_load_modules() idempotent. (Matthew Barnes)
+	* EDBusServer: Add exit codes to run() and quit(). (Matthew Barnes)
+	* ENameSelectorEntry: Remove USER_QUERY_FIELDS macro. (Matthew Barnes)
+	* ENameSelectorDialog: Remove use of "primary_addressbook".
+	  (Matthew Barnes)
+	* Remove EDataFactory's "online" property. (Matthew Barnes)
+	* Remove EBackend::last-client-gone signal. (Matthew Barnes)
+	* Add e_data_factory_ref_backend_factory(). (Matthew Barnes)
+	* Bump libedataserverui shared object name. (Matthew Barnes)
+	* ESourceSelector: Add e_source_selector_ref_source_by_path().
+	  (Matthew Barnes)
+	* ESourceSelector: Add e_source_selector_ref_primary_selection().
+	  (Matthew Barnes)
+	* Remove e_source_combo_box_get/set_active_uid(). (Matthew Barnes)
+	* ESourceComboBox: Add e_source_combo_box_ref_active().
+	  (Matthew Barnes)
+	* Remove deprecated API from ESourceSelector (Milan Crha)
+	* Fix Google Talk vCard attribute name definition (Milan Crha)
+
+Translations:
+	Gil Forcada (ca)
+	Jordi Serratosa (ca)
+	Carles Ferrando (ca@valencia)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Rajesh Ranjan (hi)
+	Sandeep Sheshrao Shedmake (mr)
+	Kjartan Maraas (nb)
+	ManojKumar Giri (or)
+	Daniel Nylander (sv)
+	Krishnababu Krothapalli (te)
+	Sasi Bhushan (te)
+
+
 Evolution-Data-Server 3.4.0 2012-03-26
 --------------------------------------
 
