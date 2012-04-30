@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-27 17:16+0200\n"
-"PO-Revision-Date: 2012-04-27 17:16+0200\n"
+"POT-Creation-Date: 2012-04-30 16:28+0200\n"
+"PO-Revision-Date: 2012-04-30 16:28+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -3433,9 +3433,9 @@ msgid "Unknown parent folder: %s"
 msgstr "Cartafol pai descoñecido: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:2977
-#, fuzzy, c-format
+#, c-format
 msgid "Retrieving list of folders at '%s'"
-msgstr "Obtendo a lista de cartafoles para %s"
+msgstr "Obtendo a lista de cartafoles para «%s»"
 
 #: ../camel/providers/imap/camel-imap-store.c:3331
 #, c-format
