@@ -425,9 +425,22 @@ e_name_selector_dialog_init (ENameSelectorDialog *name_selector_dialog)
 				GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE,
 				NULL);
 
+	/* Try to figure out a sane default size for the dialog. We used to hard
+	 * code this to 512 so keep using 512 if the screen is big enough,
+	 * otherwise use -1 (use as little as possible, use the
+	 * GtkScrolledWindow's scrollbars).
+	 *
+	 * This should allow scrolling on tiny netbook resolutions and let
+	 * others see as much of the dialog as possible.
+	 *
+	 * 600 pixels seems to be a good lower bound resolution to allow room
+	 * above or below for other UI (window manager's?)
+	 */
+	gtk_window_set_default_size (GTK_WINDOW (name_selector_dialog), 700,
+		gdk_screen_height () >= 600 ? 512 : -1);
+
 	gtk_dialog_set_default_response (GTK_DIALOG (name_selector_dialog), GTK_RESPONSE_CLOSE);
 	gtk_window_set_modal            (GTK_WINDOW (name_selector_dialog), TRUE);
-	gtk_window_set_default_size     (GTK_WINDOW (name_selector_dialog), 700, -1);
 	gtk_window_set_resizable        (GTK_WINDOW (name_selector_dialog), TRUE);
 	gtk_container_set_border_width  (GTK_CONTAINER (name_selector_dialog), 4);
 	gtk_window_set_title            (GTK_WINDOW (name_selector_dialog), _("Select Contacts from Address Book"));
