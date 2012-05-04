@@ -226,8 +226,8 @@ ssl_auth_cert (gpointer data,
 }
 #endif
 
-CamelCert *camel_certdb_nss_cert_get (CamelCertDB *certdb, CERTCertificate *cert);
-CamelCert *camel_certdb_nss_cert_add (CamelCertDB *certdb, CERTCertificate *cert);
+CamelCert *camel_certdb_nss_cert_get (CamelCertDB *certdb, CERTCertificate *cert, const gchar *hostname);
+CamelCert *camel_certdb_nss_cert_convert (CamelCertDB *certdb, CERTCertificate *cert);
 void camel_certdb_nss_cert_set (CamelCertDB *certdb, CamelCert *ccert, CERTCertificate *cert);
 
 static gchar *
@@ -271,16 +271,21 @@ cert_fingerprint (CERTCertificate *cert)
 /* lookup a cert uses fingerprint to index an on-disk file */
 CamelCert *
 camel_certdb_nss_cert_get (CamelCertDB *certdb,
-                           CERTCertificate *cert)
+                           CERTCertificate *cert,
+                           const gchar *hostname)
 {
 	gchar *fingerprint;
 	CamelCert *ccert;
 
+	ccert = camel_certdb_get_host (certdb, hostname);
+	if (ccert == NULL)
+		return NULL;
+
 	fingerprint = cert_fingerprint (cert);
-	ccert = camel_certdb_get_cert (certdb, fingerprint);
-	if (ccert == NULL) {
+	if (strcmp (fingerprint, ccert->fingerprint) != 0) {
+		/* The saved certificate is not the one we wanted. */
 		g_free (fingerprint);
-		return ccert;
+		return NULL;
 	}
 
 	if (ccert->rawcert == NULL) {
@@ -327,10 +332,10 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 	return ccert;
 }
 
-/* add a cert to the certdb */
+/* Create a CamelCert corresponding to the NSS cert, with unknown trust. */
 CamelCert *
-camel_certdb_nss_cert_add (CamelCertDB *certdb,
-                           CERTCertificate *cert)
+camel_certdb_nss_cert_convert (CamelCertDB *certdb,
+                               CERTCertificate *cert)
 {
 	CamelCert *ccert;
 	gchar *fingerprint;
@@ -345,10 +350,6 @@ camel_certdb_nss_cert_add (CamelCertDB *certdb,
 	camel_cert_set_fingerprint (certdb, ccert, fingerprint);
 	camel_cert_set_trust (certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
 	g_free (fingerprint);
-
-	camel_certdb_nss_cert_set (certdb, ccert, cert);
-
-	camel_certdb_add (certdb, ccert);
 
 	return ccert;
 }
@@ -444,6 +445,7 @@ ssl_bad_cert (gpointer data,
 	gboolean accept;
 	CamelCertDB *certdb = NULL;
 	CamelCert *ccert = NULL;
+	gboolean ccert_is_new = FALSE;
 	gchar *prompt, *cert_str, *fingerprint;
 	CamelTcpStreamSSL *ssl;
 	CERTCertificate *cert;
@@ -459,10 +461,14 @@ ssl_bad_cert (gpointer data,
 		return SECFailure;
 
 	certdb = camel_certdb_get_default ();
-	ccert = camel_certdb_nss_cert_get (certdb, cert);
+	ccert = camel_certdb_nss_cert_get (certdb, cert, ssl->priv->expected_host);
 	if (ccert == NULL) {
-		ccert = camel_certdb_nss_cert_add (certdb, cert);
+		ccert = camel_certdb_nss_cert_convert (certdb, cert);
 		camel_cert_set_hostname (certdb, ccert, ssl->priv->expected_host);
+		/* Don't put in the certdb yet.  Since we can only store one
+		 * entry per hostname, we'd rather not ruin any existing entry
+		 * for this hostname if the user rejects the new certificate. */
+		ccert_is_new = TRUE;
 	}
 
 	if (ccert->trust == CAMEL_CERT_TRUST_UNKNOWN) {
@@ -495,7 +501,10 @@ ssl_bad_cert (gpointer data,
 		g_free (prompt);
 
 		accept = button_id != 0;
-		camel_certdb_nss_cert_set (certdb, ccert, cert);
+		if (ccert_is_new) {
+			camel_certdb_nss_cert_set (certdb, ccert, cert);
+			camel_certdb_put (certdb, ccert);
+		}
 
 		switch (button_id) {
 		case 0: /* Reject */

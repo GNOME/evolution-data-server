@@ -63,6 +63,16 @@ static void cert_set_string (CamelCertDB *certdb, CamelCert *cert, gint string, 
 
 G_DEFINE_TYPE (CamelCertDB, camel_certdb, CAMEL_TYPE_OBJECT)
 
+static gboolean
+certdb_str_equal_casecmp (gconstpointer str1,
+			  gconstpointer str2)
+{
+	if (!str1 || !str2)
+		return str1 == str2;
+
+	return g_ascii_strcasecmp (str1, str2) == 0;
+}
+
 static void
 certdb_finalize (GObject *object)
 {
@@ -127,7 +137,7 @@ camel_certdb_init (CamelCertDB *certdb)
 	certdb->cert_chunks = NULL;
 
 	certdb->certs = g_ptr_array_new ();
-	certdb->cert_hash = g_hash_table_new (g_str_hash, g_str_equal);
+	certdb->cert_hash = g_hash_table_new (g_str_hash, certdb_str_equal_casecmp);
 
 	certdb->priv->db_lock = g_mutex_new ();
 	certdb->priv->io_lock = g_mutex_new ();
@@ -269,7 +279,13 @@ camel_certdb_load (CamelCertDB *certdb)
 		if (cert == NULL)
 			goto error;
 
-		camel_certdb_add (certdb, cert);
+		/* NOTE: If we are upgrading from an evolution-data-server version
+		 * prior to the change to look up certs by hostname (bug 606181),
+		 * this "put" will result in duplicate entries for the same
+		 * hostname being dropped.  The change will become permanent on
+		 * disk the next time the certdb is dirtied for some reason and
+		 * has to be saved. */
+		camel_certdb_put (certdb, cert);
 	}
 
 	camel_certdb_unlock (certdb, CAMEL_CERTDB_IO_LOCK);
@@ -427,8 +443,8 @@ camel_certdb_touch (CamelCertDB *certdb)
 }
 
 CamelCert *
-camel_certdb_get_cert (CamelCertDB *certdb,
-                       const gchar *fingerprint)
+camel_certdb_get_host (CamelCertDB *certdb,
+                       const gchar *hostname)
 {
 	CamelCert *cert;
 
@@ -436,7 +452,7 @@ camel_certdb_get_cert (CamelCertDB *certdb,
 
 	camel_certdb_lock (certdb, CAMEL_CERTDB_DB_LOCK);
 
-	cert = g_hash_table_lookup (certdb->cert_hash, fingerprint);
+	cert = g_hash_table_lookup (certdb->cert_hash, hostname);
 	if (cert)
 		camel_certdb_cert_ref (certdb, cert);
 
@@ -446,21 +462,26 @@ camel_certdb_get_cert (CamelCertDB *certdb,
 }
 
 void
-camel_certdb_add (CamelCertDB *certdb,
+camel_certdb_put (CamelCertDB *certdb,
                   CamelCert *cert)
 {
+	CamelCert *old_cert;
+
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 
 	camel_certdb_lock (certdb, CAMEL_CERTDB_DB_LOCK);
 
-	if (g_hash_table_lookup (certdb->cert_hash, cert->fingerprint)) {
-		camel_certdb_unlock (certdb, CAMEL_CERTDB_DB_LOCK);
-		return;
+	/* Replace an existing entry with the same hostname. */
+	old_cert = g_hash_table_lookup (certdb->cert_hash, cert->hostname);
+	if (old_cert) {
+		g_hash_table_remove (certdb->cert_hash, cert->hostname);
+		g_ptr_array_remove (certdb->certs, old_cert);
+		camel_certdb_cert_unref (certdb, old_cert);
 	}
 
 	camel_certdb_cert_ref (certdb, cert);
 	g_ptr_array_add (certdb->certs, cert);
-	g_hash_table_insert (certdb->cert_hash, cert->fingerprint, cert);
+	g_hash_table_insert (certdb->cert_hash, cert->hostname, cert);
 
 	certdb->flags |= CAMEL_CERTDB_DIRTY;
 
@@ -468,15 +489,18 @@ camel_certdb_add (CamelCertDB *certdb,
 }
 
 void
-camel_certdb_remove (CamelCertDB *certdb,
-                     CamelCert *cert)
+camel_certdb_remove_host (CamelCertDB *certdb,
+                          const gchar *hostname)
 {
+	CamelCert *cert;
+
 	g_return_if_fail (CAMEL_IS_CERTDB (certdb));
 
 	camel_certdb_lock (certdb, CAMEL_CERTDB_DB_LOCK);
 
-	if (g_hash_table_lookup (certdb->cert_hash, cert->fingerprint)) {
-		g_hash_table_remove (certdb->cert_hash, cert->fingerprint);
+	cert = g_hash_table_lookup (certdb->cert_hash, hostname);
+	if (cert) {
+		g_hash_table_remove (certdb->cert_hash, hostname);
 		g_ptr_array_remove (certdb->certs, cert);
 		camel_certdb_cert_unref (certdb, cert);
 

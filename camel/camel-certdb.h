@@ -147,10 +147,17 @@ gint camel_certdb_save (CamelCertDB *certdb);
 
 void camel_certdb_touch (CamelCertDB *certdb);
 
-CamelCert *camel_certdb_get_cert (CamelCertDB *certdb, const gchar *fingerprint);
+/* The lookup key was changed from fingerprint to hostname to fix bug 606181. */
 
-void camel_certdb_add (CamelCertDB *certdb, CamelCert *cert);
-void camel_certdb_remove (CamelCertDB *certdb, CamelCert *cert);
+/* Get the certificate for the given hostname, if any. */
+CamelCert *camel_certdb_get_host (CamelCertDB *certdb, const gchar *hostname);
+
+/* Store cert for cert->hostname, replacing any existing certificate for the
+ * same hostname. */
+void camel_certdb_put (CamelCertDB *certdb, CamelCert *cert);
+
+/* Remove any user-accepted certificate for the given hostname. */
+void camel_certdb_remove_host (CamelCertDB *certdb, const gchar *hostname);
 
 CamelCert *camel_certdb_cert_new (CamelCertDB *certdb);
 void camel_certdb_cert_ref (CamelCertDB *certdb, CamelCert *cert);
