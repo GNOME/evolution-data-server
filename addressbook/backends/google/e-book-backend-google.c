@@ -3440,8 +3440,6 @@ _e_contact_new_from_gdata_entry (EBookBackend *backend,
 	photo = g_object_get_data (G_OBJECT (entry), "photo");
 	photo_etag = gdata_contacts_contact_get_photo_etag (GDATA_CONTACTS_CONTACT (entry));
 
-	g_return_val_if_fail ((photo == NULL) == (photo_etag == NULL), NULL);
-
 	if (photo != NULL) {
 		/* Photo */
 		e_contact_set (E_CONTACT (vcard), E_CONTACT_PHOTO, photo);
