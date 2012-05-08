@@ -256,7 +256,15 @@ imapx_authenticate_sync (CamelService *service,
 		server, mechanism, cancellable, error);
 }
 
-extern CamelServiceAuthType camel_imapx_password_authtype;
+CamelServiceAuthType camel_imapx_password_authtype = {
+	N_("Password"),
+
+	N_("This option will connect to the IMAP server using a "
+	   "plaintext password."),
+
+	"",
+	TRUE
+};
 
 static GList *
 imapx_query_auth_types_sync (CamelService *service,

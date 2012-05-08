@@ -141,6 +141,17 @@
 #include <camel/camel-vee-store.h>
 #include <camel/camel-vee-summary.h>
 #include <camel/camel-vtrash-folder.h>
+#include <camel/camel-imapx-command.h>
+#include <camel/camel-imapx-job.h>
+#include <camel/camel-imapx-conn-manager.h>
+#include <camel/camel-imapx-folder.h>
+#include <camel/camel-imapx-server.h>
+#include <camel/camel-imapx-store-summary.h>
+#include <camel/camel-imapx-store.h>
+#include <camel/camel-imapx-stream.h>
+#include <camel/camel-imapx-summary.h>
+#include <camel/camel-imapx-settings.h>
+#include <camel/camel-imapx-utils.h>
 
 #undef __CAMEL_H_INSIDE__
 

@@ -13,34 +13,7 @@ libcamelimapx_la_CPPFLAGS = \
 	$(NULL)
 
 libcamelimapx_la_SOURCES =			\
-	camel-imapx-command.c			\
-	camel-imapx-conn-manager.c		\
-	camel-imapx-folder.c			\
-	camel-imapx-job.c			\
-	camel-imapx-provider.c			\
-	camel-imapx-server.c			\
-	camel-imapx-settings.c			\
-	camel-imapx-store-summary.c		\
-	camel-imapx-store.c			\
-	camel-imapx-stream.c			\
-	camel-imapx-summary.c			\
-	camel-imapx-utils.c
-
-noinst_HEADERS =				\
-	camel-imapx-command.h			\
-	camel-imapx-conn-manager.h		\
-	camel-imapx-folder.h			\
-	camel-imapx-job.h			\
-	camel-imapx-server.h			\
-	camel-imapx-settings.h			\
-	camel-imapx-store-summary.h		\
-	camel-imapx-store.h			\
-	camel-imapx-stream.h			\
-	camel-imapx-summary.h			\
-	camel-imapx-utils.h
-
-camel-imapx-tokenise.h: camel-imapx-tokens.txt
-	@GPERF@ -H imapx_hash -N imapx_tokenise_struct -L ANSI-C -o -t -k1,$$ $< --output-file=$@
+	camel-imapx-provider.c
 
 libcamelimapx_la_LIBADD = \
         $(top_builddir)/camel/libcamel-1.2.la	\
@@ -65,9 +38,6 @@ test_imapx_LDADD =				\
 	$(CAMEL_LIBS)				\
 	$(top_builddir)/camel/libcamel-1.2.la
 
-BUILT_SOURCES = camel-imapx-tokenise.h
-CLEANFILES = $(BUILT_SOURCES)
-
-EXTRA_DIST = libcamelimapx.urls camel-imapx-tokens.txt
+EXTRA_DIST = libcamelimapx.urls
 
 -include $(top_srcdir)/git.mk

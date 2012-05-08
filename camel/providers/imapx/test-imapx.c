@@ -17,8 +17,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "camel-imapx-store.h"
-#include "camel-imapx-folder.h"
 #include <camel/camel.h>
 
 gint

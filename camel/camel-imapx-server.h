@@ -17,10 +17,16 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__CAMEL_H_INSIDE__) && !defined (CAMEL_COMPILATION)
+#error "Only <camel/camel.h> can be included directly."
+#endif
+
+
 #ifndef CAMEL_IMAPX_SERVER_H
 #define CAMEL_IMAPX_SERVER_H
 
-#include <camel/camel.h>
+#include <camel/camel-session.h>
+#include <camel/camel-store.h>
 
 #include "camel-imapx-command.h"
 #include "camel-imapx-stream.h"

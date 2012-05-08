@@ -30,8 +30,6 @@
 #include <camel/camel.h>
 #include <glib/gi18n-lib.h>
 
-#include "camel-imapx-store.h"
-
 static guint imapx_url_hash (gconstpointer key);
 static gint  imapx_url_equal (gconstpointer a, gconstpointer b);
 
@@ -114,15 +112,8 @@ static CamelProvider imapx_provider = {
 	/* ... */
 };
 
-CamelServiceAuthType camel_imapx_password_authtype = {
-	N_("Password"),
 
-	N_("This option will connect to the IMAP server using a "
-	   "plaintext password."),
-
-	"",
-	TRUE
-};
+extern CamelServiceAuthType camel_imapx_password_authtype;
 
 void camel_imapx_module_init (void);
 

@@ -22,6 +22,9 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_in_files = camel.pc.in
 pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=-$(API_VERSION).pc)
 
+camel-imapx-tokenise.h: camel-imapx-tokens.txt
+	@GPERF@ -H imapx_hash -N imapx_tokenise_struct -L ANSI-C -o -t -k1,$$ $< --output-file=$@
+
 libcamelincludedir = $(privincludedir)/camel
 
 camellibexecdir = $(libexecdir)
@@ -35,7 +38,7 @@ glib_enum_output=camel-enumtypes
 glib_enum_define=CAMEL
 glib_enum_prefix=camel
 
-ENUM_GENERATED = camel-enumtypes.h camel-enumtypes.c
+ENUM_GENERATED = camel-enumtypes.h camel-enumtypes.c camel-imapx-tokenise.h
 
 libcamel_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)						\
@@ -169,6 +172,17 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-vee-store.c			\
 	camel-vee-summary.c			\
 	camel-vtrash-folder.c			\
+	camel-imapx-command.c			\
+	camel-imapx-job.c			\
+	camel-imapx-settings.c			\
+	camel-imapx-server.c			\
+	camel-imapx-conn-manager.c		\
+	camel-imapx-folder.c			\
+	camel-imapx-store-summary.c		\
+	camel-imapx-store.c			\
+	camel-imapx-stream.c			\
+	camel-imapx-summary.c			\
+	camel-imapx-utils.c			\
 	camel.c					\
 	$(LIBCAMEL_PLATFORM_DEP_SOURCES)
 
@@ -292,6 +306,17 @@ libcamelinclude_HEADERS =			\
 	camel-vee-store.h			\
 	camel-vee-summary.h			\
 	camel-vtrash-folder.h			\
+	camel-imapx-command.h			\
+	camel-imapx-conn-manager.h		\
+	camel-imapx-folder.h			\
+	camel-imapx-job.h			\
+	camel-imapx-settings.h			\
+	camel-imapx-server.h			\
+	camel-imapx-store-summary.h		\
+	camel-imapx-store.h			\
+	camel-imapx-stream.h			\
+	camel-imapx-summary.h			\
+	camel-imapx-utils.h			\
 	camel.h
 
 libcamel_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION):$(LIBCAMEL_AGE) $(NO_UNDEFINED) \
@@ -394,6 +419,7 @@ BUILT_SOURCES =					\
 
 EXTRA_DIST =					\
 	$(pkgconfig_in_files)	 		\
+	camel-imapx-tokens.txt			\
 	camel-marshal.list			\
 	gentables.pl				\
 	README

@@ -29,6 +29,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <camel/camel-file-utils.h>
 #include "camel-imapx-utils.h"
 #include "camel-imapx-store-summary.h"
 
