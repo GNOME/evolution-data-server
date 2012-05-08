@@ -1219,6 +1219,142 @@ e_binding_transform_enum_nick_to_value (GBinding *binding,
 	return success;
 }
 
+/**
+ * EAsyncClosure:
+ *
+ * #EAsyncClosure provides a simple way to run an asynchronous function
+ * synchronously without blocking a running #GMainLoop or using threads.
+ *
+ * 1) Create an #EAsyncClosure with e_async_closure_new().
+ *
+ * 2) Call the asynchronous function passing e_async_closure_callback() as
+ *    the #GAsyncReadyCallback argument and the #EAsyncClosure as the data
+ *    argument.
+ *
+ * 3) Call e_async_closure_wait() and collect the #GAsyncResult.
+ *
+ * 4) Call the corresponding asynchronous "finish" function, passing the
+ *    #GAsyncResult returned by e_async_closure_wait().
+ *
+ * 5) If needed, repeat steps 2-4 for additional asynchronous functions
+ *    using the same #EAsyncClosure.
+ *
+ * 6) Finally, free the #EAsyncClosure with e_async_closure_free().
+ *
+ * Since: 3.6
+ **/
+struct _EAsyncClosure {
+	GMainLoop *loop;
+	GMainContext *context;
+	GAsyncResult *result;
+};
+
+/**
+ * e_async_closure_new:
+ *
+ * Creates a new #EAsyncClosure for use with asynchronous functions.
+ *
+ * Returns: a new #EAsyncClosure
+ *
+ * Since: 3.6
+ **/
+EAsyncClosure *
+e_async_closure_new (void)
+{
+	EAsyncClosure *closure;
+
+	closure = g_slice_new0 (EAsyncClosure);
+	closure->context = g_main_context_new ();
+	closure->loop = g_main_loop_new (closure->context, FALSE);
+
+	g_main_context_push_thread_default (closure->context);
+
+	return closure;
+}
+
+/**
+ * e_async_closure_wait:
+ * @closure: an #EAsyncClosure
+ *
+ * Call this function immediately after starting an asynchronous operation.
+ * The function waits for the asynchronous operation to complete and returns
+ * its #GAsyncResult to be passed to the operation's "finish" function.
+ *
+ * This function can be called repeatedly on the same #EAsyncClosure to
+ * easily string together multiple asynchronous operations.
+ *
+ * Returns: a #GAsyncResult
+ *
+ * Since: 3.6
+ **/
+GAsyncResult *
+e_async_closure_wait (EAsyncClosure *closure)
+{
+	g_return_val_if_fail (closure != NULL, NULL);
+
+	g_main_loop_run (closure->loop);
+
+	return closure->result;
+}
+
+/**
+ * e_async_closure_free:
+ * @closure: an #EAsyncClosure
+ *
+ * Frees the @closure and the resources it holds.
+ *
+ * Since: 3.6
+ **/
+void
+e_async_closure_free (EAsyncClosure *closure)
+{
+	g_return_if_fail (closure != NULL);
+
+	g_main_context_pop_thread_default (closure->context);
+
+	g_main_loop_unref (closure->loop);
+	g_main_context_unref (closure->context);
+
+	if (closure->result != NULL)
+		g_object_unref (closure->result);
+
+	g_slice_free (EAsyncClosure, closure);
+}
+
+/**
+ * e_async_closure_callback:
+ * @object: a #GObject
+ * @result: a #GAsyncResult
+ * @closure: an #EAsyncClosure
+ *
+ * Pass this function as the #GAsyncReadyCallback argument of an asynchronous
+ * function, and the #EAsyncClosure as the data argument.
+ *
+ * This causes e_async_closure_wait() to terminate and return @result.
+ *
+ * Since: 3.6
+ **/
+void
+e_async_closure_callback (GObject *object,
+                          GAsyncResult *result,
+                          gpointer closure)
+{
+	EAsyncClosure *real_closure;
+
+	g_return_if_fail (G_IS_OBJECT (object));
+	g_return_if_fail (G_IS_ASYNC_RESULT (result));
+	g_return_if_fail (closure != NULL);
+
+	real_closure = closure;
+
+	/* Replace any previous result. */
+	if (real_closure->result != NULL)
+		g_object_unref (real_closure->result);
+	real_closure->result = g_object_ref (result);
+
+	g_main_loop_quit (real_closure->loop);
+}
+
 #ifdef G_OS_WIN32
 
 #include <windows.h>

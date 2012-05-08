@@ -95,6 +95,15 @@ gboolean	e_binding_transform_enum_nick_to_value
 						 GValue *target_value,
 						 gpointer not_used);
 
+typedef struct _EAsyncClosure EAsyncClosure;
+
+EAsyncClosure *	e_async_closure_new		(void);
+GAsyncResult *	e_async_closure_wait		(EAsyncClosure *closure);
+void		e_async_closure_free		(EAsyncClosure *closure);
+void		e_async_closure_callback	(GObject *object,
+						 GAsyncResult *result,
+						 gpointer closure);
+
 #ifdef G_OS_WIN32
 const gchar *	e_util_get_prefix		(void) G_GNUC_CONST;
 const gchar *	e_util_get_cp_prefix		(void) G_GNUC_CONST;

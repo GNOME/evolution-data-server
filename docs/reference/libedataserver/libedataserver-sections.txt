@@ -559,6 +559,11 @@ e_file_recursive_delete
 e_file_recursive_delete_finish
 e_binding_transform_enum_value_to_nick
 e_binding_transform_enum_nick_to_value
+EAsyncClosure
+e_async_closure_new
+e_async_closure_wait
+e_async_closure_free
+e_async_closure_callback
 e_util_get_prefix
 e_util_get_cp_prefix
 e_util_get_localedir
