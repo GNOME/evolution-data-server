@@ -1586,6 +1586,10 @@ imapx_untagged (CamelIMAPXServer *is,
 		imapx_free_status (sinfo);
 		return TRUE;
 	default:
+		/* If there is a extended untagged response handler registered, call it */
+		if (is->untagged_handler_func)
+			return is->untagged_handler_func (is, cancellable, error);
+
 		/* unknown response, just ignore it */
 		c(is->tagprefix, "unknown token: %s\n", token);
 	}
@@ -6477,4 +6481,13 @@ camel_imapx_server_get_job_queue_info (CamelIMAPXServer *is)
 	QUEUE_UNLOCK (is);
 
 	return jinfo;
+}
+
+void		
+camel_imapx_server_set_extended_token_handler	(CamelIMAPXServer *is,
+						 IMAPXExtUntaggedResponseHander handler_func)
+{
+	g_return_if_fail (is != NULL);
+
+	is->untagged_handler_func = handler_func;
 }

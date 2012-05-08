@@ -62,6 +62,11 @@ typedef struct _CamelIMAPXServerClass CamelIMAPXServerClass;
 typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
 struct _IMAPXJobQueueInfo;
 
+typedef gboolean (*IMAPXExtUntaggedResponseHander)
+					(CamelIMAPXServer *server, 
+					 GCancellable *cancellable, 
+					 GError **error);
+
 struct _CamelIMAPXServer {
 	CamelObject parent;
 
@@ -74,6 +79,8 @@ struct _CamelIMAPXServer {
 	gboolean is_process_stream;
 
 	CamelIMAPXNamespaceList *nsl;
+
+	IMAPXExtUntaggedResponseHander untagged_handler_func;
 
 	/* incoming jobs */
 	GQueue jobs;
@@ -233,6 +240,11 @@ gboolean	camel_imapx_server_rename_folder
 struct _IMAPXJobQueueInfo *
 		camel_imapx_server_get_job_queue_info
 						(CamelIMAPXServer *is);
+
+void		camel_imapx_server_set_extended_token_handler 
+						(CamelIMAPXServer *is,
+						 IMAPXExtUntaggedResponseHander handler_func);
+
 
 G_END_DECLS
 
