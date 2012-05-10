@@ -541,10 +541,16 @@ quote_etag (const gchar *etag)
 
 static gboolean
 status_code_to_result (SoupMessage *message,
-                       ECalBackendCalDAVPrivate *priv,
+                       ECalBackendCalDAV *cbdav,
+		       gboolean is_opening,
                        GError **perror)
 {
+	ECalBackendCalDAVPrivate *priv;
+
+	g_return_val_if_fail (cbdav != NULL, FALSE);
 	g_return_val_if_fail (message != NULL, FALSE);
+
+	priv = cbdav->priv;
 
 	if (SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		return TRUE;
@@ -565,7 +571,10 @@ status_code_to_result (SoupMessage *message,
 		}
 		break;
 	case 404:
-		g_propagate_error (perror, EDC_ERROR (NoSuchCal));
+		if (is_opening)
+			g_propagate_error (perror, EDC_ERROR (NoSuchCal));
+		else
+			g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
 		break;
 
 	case 403:
@@ -1072,7 +1081,7 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 			break;
 		}
 
-		status_code_to_result (message, cbdav->priv, perror);
+		status_code_to_result (message, cbdav, TRUE, perror);
 
 		g_object_unref (message);
 		return FALSE;
@@ -1399,7 +1408,7 @@ caldav_server_download_attachment (ECalBackendCalDAV *cbdav,
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		status_code_to_result (message, cbdav->priv, error);
+		status_code_to_result (message, cbdav, FALSE, error);
 
 		if (message->status_code == 401)
 			caldav_notify_auth_required (cbdav);
@@ -1441,7 +1450,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav,
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		status_code_to_result (message, cbdav->priv, perror);
+		status_code_to_result (message, cbdav, FALSE, perror);
 
 		if (message->status_code == 401)
 			caldav_notify_auth_required (cbdav);
@@ -1508,7 +1517,7 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav,
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
-		status_code_to_result (message, cbdav->priv, error);
+		status_code_to_result (message, cbdav, FALSE, error);
 		if (message->status_code == 401)
 			caldav_notify_auth_required (cbdav);
 		else
@@ -1623,7 +1632,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 		g_free (uri);
 	}
 
-	if (status_code_to_result (message, cbdav->priv, perror)) {
+	if (status_code_to_result (message, cbdav, FALSE, perror)) {
 		GError *local_error = NULL;
 
 		hdr = soup_message_headers_get (message->response_headers, "ETag");
@@ -1733,7 +1742,7 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav,
 
 	send_and_handle_redirection (cbdav->priv->session, message, NULL);
 
-	status_code_to_result (message, cbdav->priv, perror);
+	status_code_to_result (message, cbdav, FALSE, perror);
 
 	if (message->status_code == 401)
 		caldav_notify_auth_required (cbdav);
