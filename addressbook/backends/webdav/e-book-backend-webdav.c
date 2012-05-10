@@ -1208,7 +1208,6 @@ e_book_backend_webdav_authenticate_user (EBookBackend *backend,
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
 	SoupMessage               *message;
-	guint                      status;
 
 	priv->username = e_credentials_get (credentials, E_CREDENTIALS_KEY_USERNAME);
 	priv->password = e_credentials_get (credentials, E_CREDENTIALS_KEY_PASSWORD);
@@ -1216,19 +1215,44 @@ e_book_backend_webdav_authenticate_user (EBookBackend *backend,
 	/* Evolution API requires a direct feedback on the authentication,
 	 * so we send a PROPFIND to test wether user/password is correct */
 	message = send_propfind (webdav);
-	status  = message->status_code;
-	g_object_unref (message);
 
-	if (status == 401 || status == 407) {
+	if (message->status_code == 401 || message->status_code == 407) {
 		g_free (priv->username);
 		priv->username = NULL;
 		e_credentials_util_safe_free_string (priv->password);
 		priv->password = NULL;
 
 		e_book_backend_notify_opened (backend, EDB_ERROR (AUTHENTICATION_FAILED));
-	} else {
+	} else if (SOUP_STATUS_IS_SUCCESSFUL (message->status_code) || message->status_code == 207) {
 		e_book_backend_notify_opened (backend, EDB_ERROR (SUCCESS));
+	} else if (message->status_code == SOUP_STATUS_SSL_FAILED) {
+		ESource *source = e_backend_get_source (E_BACKEND (backend));
+
+		if (g_strcmp0 (e_source_get_property (source, "ignore-invalid-cert"), "1") == 0) {
+			e_book_backend_notify_opened (backend,
+				e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Failed to connect to a server using SSL: %s"),
+				message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
+				(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error"))));
+		} else {
+			e_book_backend_notify_opened (backend, EDB_ERROR_EX (OTHER_ERROR,
+				_("Failed to connect to a server using SSL. "
+				"One possible reason is an invalid certificate being used by the server. "
+				"If this is expected, like self-signed certificate being used on the server, "
+				"then disable certificate validity tests by selecting 'Ignore invalid SSL certificate' option "
+				"in Properties")));
+		}
+	} else {
+		e_book_backend_notify_opened (backend,
+			e_data_book_create_error_fmt (
+				E_DATA_BOOK_STATUS_OTHER_ERROR,
+				_("Unexpected HTTP status code %d returned (%s)"),
+					message->status_code,
+					message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
+					(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error"))));
 	}
+
+	g_object_unref (message);
 }
 
 /** authentication callback for libsoup */

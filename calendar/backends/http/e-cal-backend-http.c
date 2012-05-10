@@ -417,6 +417,24 @@ retrieval_done (SoupSession *session,
 				e_cal_backend_notify_auth_required (E_CAL_BACKEND (cbhttp), TRUE, priv->credentials);
 				g_object_unref (cbhttp);
 				return;
+			} else if (msg->status_code == SOUP_STATUS_SSL_FAILED) {
+				ESource *source = e_backend_get_source (E_BACKEND (cbhttp));
+				gchar *err_msg;
+
+				if (g_strcmp0 (e_source_get_property (source, "ignore-invalid-cert"), "1") == 0) {
+					err_msg = g_strdup_printf (_("Failed to connect to a server using SSL: %s"),
+						msg->reason_phrase && *msg->reason_phrase ? msg->reason_phrase :
+						(soup_status_get_phrase (msg->status_code) ? soup_status_get_phrase (msg->status_code) : _("Unknown error")));
+				} else {
+					err_msg = g_strdup (_("Failed to connect to a server using SSL. "
+						"One possible reason is an invalid certificate being used by the server. "
+						"If this is expected, like self-signed certificate being used on the server, "
+						"then disable certificate validity tests by selecting 'Ignore invalid SSL certificate' option "
+						"in Properties"));
+				}
+		
+				e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), err_msg);
+				g_free (err_msg);
 			} else
 				e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp),
 					msg->reason_phrase && *msg->reason_phrase ? msg->reason_phrase :

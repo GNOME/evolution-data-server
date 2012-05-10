@@ -546,6 +546,7 @@ status_code_to_result (SoupMessage *message,
                        GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
+	ESource *source;
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 	g_return_val_if_fail (message != NULL, FALSE);
@@ -555,6 +556,8 @@ status_code_to_result (SoupMessage *message,
 	if (SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		return TRUE;
 	}
+
+	source = e_backend_get_source (E_BACKEND (cbdav));
 
 	switch (message->status_code) {
 	case SOUP_STATUS_CANT_CONNECT:
@@ -586,6 +589,23 @@ status_code_to_result (SoupMessage *message,
 			g_propagate_error (perror, EDC_ERROR (AuthenticationFailed));
 		else
 			g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
+		break;
+
+	case SOUP_STATUS_SSL_FAILED:
+		if (g_strcmp0 (e_source_get_property (source, "ignore-invalid-cert"), "1") == 0) {
+			g_propagate_error (perror,
+				e_data_cal_create_error_fmt ( OtherError,
+				_("Failed to connect to a server using SSL: %s"),
+				message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
+				(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error"))));
+		} else {
+			g_propagate_error (perror, EDC_ERROR_EX (OtherError,
+				_("Failed to connect to a server using SSL. "
+				"One possible reason is an invalid certificate being used by the server. "
+				"If this is expected, like self-signed certificate being used on the server, "
+				"then disable certificate validity tests by selecting 'Ignore invalid SSL certificate' option "
+				"in Properties")));
+		}
 		break;
 
 	default:
