@@ -917,11 +917,11 @@ impl_Cal_close (EGdbusCal *object,
 	OperationData *op;
 
 	op = op_new (OP_CLOSE, cal);
+	/* unref here makes sure the cal is freed in a separate thread */
+	g_object_unref (cal);
 
 	e_gdbus_cal_complete_close (cal->priv->gdbus_object, invocation, NULL);
 	e_operation_pool_push (ops_pool, op);
-
-	g_object_unref (cal);
 
 	return TRUE;
 }
