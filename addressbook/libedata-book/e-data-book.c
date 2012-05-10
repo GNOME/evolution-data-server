@@ -810,11 +810,11 @@ impl_Book_close (EGdbusBook *object,
 	OperationData *op;
 
 	op = op_new (OP_CLOSE, book);
+	/* unref here makes sure the book is freed in a separate thread */
+	g_object_unref (book);
 
 	e_gdbus_book_complete_close (book->priv->gdbus_object, invocation, NULL);
 	e_operation_pool_push (ops_pool, op);
-
-	g_object_unref (book);
 
 	return TRUE;
 }
