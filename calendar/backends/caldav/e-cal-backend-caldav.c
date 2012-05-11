@@ -1680,7 +1680,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 		}
 
 		if (!caldav_server_get_object (cbdav, object, &local_error)) {
-			if (g_error_matches (local_error, E_DATA_CAL_ERROR, NoSuchCal)) {
+			if (g_error_matches (local_error, E_DATA_CAL_ERROR, ObjectNotFound)) {
 				gchar *file;
 
 				/* OK, the event was properly created, but cannot be found on the place
@@ -1694,7 +1694,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 					object->href = file;
 
 					if (!caldav_server_get_object (cbdav, object, &local_error)) {
-						if (g_error_matches (local_error, E_DATA_CAL_ERROR, NoSuchCal)) {
+						if (g_error_matches (local_error, E_DATA_CAL_ERROR, ObjectNotFound)) {
 							g_clear_error (&local_error);
 
 							/* not sure what can happen, but do not need to guess for ever,
