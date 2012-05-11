@@ -159,6 +159,9 @@ calendar_freed_cb (EDataCalFactory *factory,
 
 	d (g_debug ("in factory %p (%p) is dead", factory, dead));
 
+	g_mutex_lock (priv->calendars_lock);
+	g_mutex_lock (priv->connections_lock);
+
 	g_hash_table_foreach_remove (
 		priv->calendars, remove_dead_calendar_cb, dead);
 
@@ -178,6 +181,9 @@ calendar_freed_cb (EDataCalFactory *factory,
 			break;
 		}
 	}
+
+	g_mutex_unlock (priv->connections_lock);
+	g_mutex_unlock (priv->calendars_lock);
 
 	e_dbus_server_release (E_DBUS_SERVER (factory));
 }
