@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-05-10 10:55+0000\n"
-"PO-Revision-Date: 2012-05-11 11:48+0200\n"
+"PO-Revision-Date: 2012-05-12 19:55+0200\n"
 "Last-Translator: Luca Ferretti <lferrett@gnome.org>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
@@ -4900,7 +4900,7 @@ msgstr "Regali"
 #: ../libedataserver/e-categories.c:53
 msgctxt "CategoryName"
 msgid "Goals/Objectives"
-msgstr "Obbiettivi"
+msgstr "Obiettivi"
 
 #: ../libedataserver/e-categories.c:54
 msgctxt "CategoryName"
