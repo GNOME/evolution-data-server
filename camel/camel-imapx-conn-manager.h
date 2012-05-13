@@ -23,7 +23,6 @@
 #error "Only <camel/camel.h> can be included directly."
 #endif
 
-
 #ifndef _CAMEL_IMAPX_CONN_MANAGER_H
 #define _CAMEL_IMAPX_CONN_MANAGER_H
 

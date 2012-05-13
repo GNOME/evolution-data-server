@@ -1025,7 +1025,7 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 
 		id = l->data;
 
-		contact = load_contact(bf, txn, id, NULL);
+		contact = load_contact (bf, txn, id, NULL);
 		if (contact)
 			removed_contacts = g_slist_prepend (removed_contacts, contact);
 
@@ -1064,8 +1064,8 @@ e_book_backend_file_remove_contacts (EBookBackendSync *backend,
 		GError *error = NULL;
 
 		/* Delete URI associated to those contacts */
-		for (l = removed_contacts; l; l=l->next) {
-			maybe_delete_unused_uris (bf, E_CONTACT(l->data), NULL);
+		for (l = removed_contacts; l; l = l->next) {
+			maybe_delete_unused_uris (bf, E_CONTACT (l->data), NULL);
 		}
 
 		/* Remove from summary as well */
@@ -1215,7 +1215,7 @@ e_book_backend_file_modify_contacts (EBookBackendSync *backend,
 		lold = old_contacts;
 		l = modified_contacts;
 		while (lold && l) {
-			maybe_delete_unused_uris (bf, E_CONTACT(lold->data), E_CONTACT(l->data));
+			maybe_delete_unused_uris (bf, E_CONTACT (lold->data), E_CONTACT (l->data));
 			lold = lold->next;
 			l = l->next;
 		}

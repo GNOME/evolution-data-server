@@ -313,7 +313,7 @@ static gboolean put_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *ical
 
 static void
 update_slave_cmd (ECalBackendCalDAVPrivate *priv,
-		  SlaveCommand slave_cmd)
+                  SlaveCommand slave_cmd)
 {
 	g_return_if_fail (priv != NULL);
 
@@ -1556,7 +1556,7 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav,
 
 static gchar *
 caldav_gen_file_from_uid_cal (ECalBackendCalDAV *cbdav,
-			      icalcomponent *icalcomp)
+                              icalcomponent *icalcomp)
 {
 	icalcomponent_kind my_kind;
 	const gchar *uid = NULL;
@@ -1684,7 +1684,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 				gchar *file;
 
 				/* OK, the event was properly created, but cannot be found on the place
-				   where it was PUT - why didn't server tell us where it saved it? */
+				 * where it was PUT - why didn't server tell us where it saved it? */
 				g_clear_error (&local_error);
 
 				/* try whether it's saved as its UID.ics file */
@@ -1698,7 +1698,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 							g_clear_error (&local_error);
 
 							/* not sure what can happen, but do not need to guess for ever,
-							   thus report success and update the calendar to get fresh info */
+							 * thus report success and update the calendar to get fresh info */
 							update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
 							g_cond_signal (cbdav->priv->cond);
 						}
@@ -3959,8 +3959,8 @@ do_remove_objects (ECalBackendCalDAV *cbdav,
 	icalcomponent            *cache_comp;
 	gboolean                  online;
 	gchar *href = NULL, *etag = NULL;
-	const gchar *uid = ((ECalComponentId *)ids->data)->uid;
-	const gchar *rid = ((ECalComponentId *)ids->data)->rid;
+	const gchar *uid = ((ECalComponentId *) ids->data)->uid;
+	const gchar *rid = ((ECalComponentId *) ids->data)->rid;
 
 	if (new_components)
 		*new_components = NULL;

@@ -581,9 +581,9 @@ e_cal_client_view_set_fields_of_interest (ECalClientView *view,
  * Since: 3.6
  */
 void
-e_cal_client_view_set_flags (ECalClientView      *view,
-                             ECalClientViewFlags  flags,
-                             GError              **error)
+e_cal_client_view_set_flags (ECalClientView *view,
+                             ECalClientViewFlags flags,
+                             GError **error)
 {
 	ECalClientViewPrivate *priv;
 

@@ -226,7 +226,7 @@ operation_thread (gpointer data,
 		break;
 	case OP_REMOVE_OBJECTS:
 		e_cal_backend_remove_objects (backend, op->cal, op->id, op->cancellable, op->d.ro.ids, op->d.ro.mod);
-		g_slist_free_full (op->d.ro.ids, (GDestroyNotify)e_cal_component_free_id);
+		g_slist_free_full (op->d.ro.ids, (GDestroyNotify) e_cal_component_free_id);
 		break;
 	case OP_RECEIVE_OBJECTS:
 		e_cal_backend_receive_objects (backend, op->cal, op->id, op->cancellable, op->d.co.calobj);
@@ -1192,7 +1192,7 @@ e_data_cal_respond_create_objects (EDataCal *cal,
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot create calendar object: "));
 
-	e_gdbus_cal_emit_create_objects_done (cal->priv->gdbus_object, opid, error, (const gchar * const *)array);
+	e_gdbus_cal_emit_create_objects_done (cal->priv->gdbus_object, opid, error, (const gchar * const *) array);
 
 	g_strfreev (array);
 	if (error)

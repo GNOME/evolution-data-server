@@ -133,7 +133,7 @@ e_client_error_to_string (EClientError code)
 		return _("Repository offline");
 	case E_CLIENT_ERROR_OFFLINE_UNAVAILABLE:
 		/* Translators: This means that the EClient does not support offline mode, or
-		   it's not set to by a user, thus it is unavailable while user is not connected. */
+		 * it's not set to by a user, thus it is unavailable while user is not connected. */
 		return _("Offline unavailable");
 	case E_CLIENT_ERROR_PERMISSION_DENIED:
 		return _("Permission denied");

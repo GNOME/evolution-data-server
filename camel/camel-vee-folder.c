@@ -1082,7 +1082,7 @@ vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
 static GPtrArray *
 vee_folder_search_by_expression (CamelFolder *folder,
                                  const gchar *expression,
-				 GCancellable *cancellable,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	GList *node;
@@ -1144,7 +1144,7 @@ static GPtrArray *
 vee_folder_search_by_uids (CamelFolder *folder,
                            const gchar *expression,
                            GPtrArray *uids,
-			   GCancellable *cancellable,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	GList *node;
@@ -1210,7 +1210,7 @@ vee_folder_search_by_uids (CamelFolder *folder,
 static guint32
 vee_folder_count_by_expression (CamelFolder *folder,
                                 const gchar *expression,
-				GCancellable *cancellable,
+                                GCancellable *cancellable,
                                 GError **error)
 {
 	GList *node;

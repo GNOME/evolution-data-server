@@ -122,7 +122,7 @@ static const EContactFieldInfo field_info[] = {
 	/* FILE_AS is not really a structured field - we use a getter/setter
 	 * so we can generate its value if necessary in the getter */
 	/* Translators: This is an EContact field description, in this case it's a
-	   preferred user's description (or display name) of the contact. Note 'File' is a verb here. */
+	 * preferred user's description (or display name) of the contact. Note 'File' is a verb here. */
 	GETSET_FIELD (E_CONTACT_FILE_AS,    EVC_X_FILE_AS, "file_as", N_("File Under"),    FALSE, fileas_getter, fileas_setter),
 	/* URI of the book to which the contact belongs to */
 	STRING_FIELD (E_CONTACT_BOOK_URI, EVC_X_BOOK_URI, "book_uri", N_("Book URI"), FALSE),
@@ -238,8 +238,8 @@ static const EContactFieldInfo field_info[] = {
 	/* Last modified time */
 	STRING_FIELD (E_CONTACT_REV, EVC_REV, "Rev", N_("Last Revision"), FALSE),
 	/* Translators: This is an EContact field description, in this case it's a
-	   virtual field, which returns either name of the contact or the organization
-	   name, recognized by multiple other fields, where the first filled is used. */
+	 * virtual field, which returns either name of the contact or the organization
+	 * name, recognized by multiple other fields, where the first filled is used. */
 	SYNTH_STR_FIELD     (E_CONTACT_NAME_OR_ORG,               "name_or_org", N_("Name or Org"), TRUE),
 
 	/* Address fields */
@@ -256,7 +256,7 @@ static const EContactFieldInfo field_info[] = {
 	STRUCT_FIELD    (E_CONTACT_LOGO,  EVC_LOGO,  "logo",  N_("Logo"),  FALSE, photo_getter, photo_setter, e_contact_photo_get_type),
 
 	/* Translators: This is an EContact field description, in this case it's a name
-	   of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2 */
+	 * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2 */
 	STRUCT_FIELD        (E_CONTACT_NAME,        EVC_N,        "name", N_("Name"),        FALSE, n_getter, n_setter, e_contact_name_get_type),
 	MULTI_LIST_FIELD     (E_CONTACT_EMAIL,      EVC_EMAIL,        "email",      N_("Email List"),      FALSE),
 
@@ -271,13 +271,13 @@ static const EContactFieldInfo field_info[] = {
 	BOOLEAN_FIELD        (E_CONTACT_WANTS_HTML, EVC_X_WANTS_HTML, "wants_html", N_("Wants HTML Mail"), FALSE),
 
 	/* Translators: This is an EContact field description, in this case it's a
-	   field describing whether it's a Contact list (list of email addresses) or a
-	   regular contact for one person/organization/... */
+	 * field describing whether it's a Contact list (list of email addresses) or a
+	 * regular contact for one person/organization/... */
 	BOOLEAN_FIELD (E_CONTACT_IS_LIST,             EVC_X_LIST, "list", N_("List"), FALSE),
 	/* Translators: This is an EContact field description, in this case it's a flag
-	   used to determine whether when sending to Contact lists the addresses should be
-	   shown or not to other recipients - basically whether to use BCC field or CC
-	   message header when sending messages to this Contact list. */
+	 * used to determine whether when sending to Contact lists the addresses should be
+	 * shown or not to other recipients - basically whether to use BCC field or CC
+	 * message header when sending messages to this Contact list. */
 	BOOLEAN_FIELD (E_CONTACT_LIST_SHOW_ADDRESSES, EVC_X_LIST_SHOW_ADDRESSES, "list_show_addresses", N_("List Shows Addresses"), FALSE),
 
 	STRUCT_FIELD (E_CONTACT_BIRTH_DATE,  EVC_BDAY,          "birth_date",  N_("Birth Date"), FALSE, date_getter, date_setter, e_contact_date_get_type),
@@ -1745,7 +1745,7 @@ e_contact_set (EContact *contact,
 
 	/* set the cached slot to NULL so we'll re-get the new string
 	 * if e_contact_get_const is called again */
-        g_free (contact->priv->cached_strings[field_id]);
+	g_free (contact->priv->cached_strings[field_id]);
 	contact->priv->cached_strings[field_id] = NULL;
 
 	g_object_set (contact,

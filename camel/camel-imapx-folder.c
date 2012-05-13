@@ -330,7 +330,7 @@ static GPtrArray *
 imapx_search_by_uids (CamelFolder *folder,
                       const gchar *expression,
                       GPtrArray *uids,
-		      GCancellable *cancellable,
+                      GCancellable *cancellable,
                       GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
@@ -352,7 +352,7 @@ imapx_search_by_uids (CamelFolder *folder,
 static guint32
 imapx_count_by_expression (CamelFolder *folder,
                            const gchar *expression,
-			   GCancellable *cancellable,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
@@ -371,7 +371,7 @@ imapx_count_by_expression (CamelFolder *folder,
 static GPtrArray *
 imapx_search_by_expression (CamelFolder *folder,
                             const gchar *expression,
-			    GCancellable *cancellable,
+                            GCancellable *cancellable,
                             GError **error)
 {
 	CamelIMAPXFolder *ifolder = CAMEL_IMAPX_FOLDER (folder);
@@ -732,7 +732,7 @@ imapx_transfer_messages_to_sync (CamelFolder *source,
 
 static void
 imapx_rename (CamelFolder *folder,
-	      const gchar *new_name)
+              const gchar *new_name)
 {
 	CamelStore *parent_store;
 

@@ -2638,7 +2638,7 @@ camel_folder_has_search_capability (CamelFolder *folder)
 GPtrArray *
 camel_folder_search_by_expression (CamelFolder *folder,
                                    const gchar *expression,
-				   GCancellable *cancellable,
+                                   GCancellable *cancellable,
                                    GError **error)
 {
 	CamelFolderClass *class;
@@ -2674,7 +2674,7 @@ camel_folder_search_by_expression (CamelFolder *folder,
 guint32
 camel_folder_count_by_expression (CamelFolder *folder,
                                   const gchar *expression,
-				  GCancellable *cancellable,
+                                  GCancellable *cancellable,
                                   GError **error)
 {
 	CamelFolderClass *class;
@@ -2707,7 +2707,7 @@ GPtrArray *
 camel_folder_search_by_uids (CamelFolder *folder,
                              const gchar *expr,
                              GPtrArray *uids,
-			     GCancellable *cancellable,
+                             GCancellable *cancellable,
                              GError **error)
 {
 	CamelFolderClass *class;

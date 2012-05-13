@@ -20,7 +20,6 @@
 #error "Only <camel/camel.h> can be included directly."
 #endif
 
-
 #ifndef CAMEL_IMAPX_JOB_H
 #define CAMEL_IMAPX_JOB_H
 

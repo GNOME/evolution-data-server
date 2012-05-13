@@ -166,9 +166,9 @@ E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRV (GDBUS_CAL_INTERFACE_NAME,
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
                                                       get_free_busy)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRV (GDBUS_CAL_INTERFACE_NAME,
-													  create_objects)
+                                                                                                          create_objects)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
-													  modify_objects)
+                                                                                                          modify_objects)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
                                                       remove_objects)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
@@ -590,7 +590,7 @@ e_gdbus_cal_encode_modify_objects (const GSList *in_calobjs,
 
 	g_return_val_if_fail (in_calobjs != NULL, NULL);
 
-	strv = g_new0 (gchar *, g_slist_length ((GSList *)in_calobjs) + 2);
+	strv = g_new0 (gchar *, g_slist_length ((GSList *) in_calobjs) + 2);
 	strv[i++] = g_strdup_printf ("%u", (guint32) in_mod);
 
 	for (l = in_calobjs; l; l = l->next) {
@@ -668,7 +668,7 @@ e_gdbus_cal_encode_remove_objects (const GSList *in_ids,
 
 	g_return_val_if_fail (in_ids != NULL, NULL);
 
-	strv = g_new0 (gchar *, 2 + 2 * g_slist_length ((GSList *)in_ids));
+	strv = g_new0 (gchar *, 2 + 2 * g_slist_length ((GSList *) in_ids));
 	strv[i++] = g_strdup_printf ("%u", (guint32) in_mod);
 
 	for (l = in_ids; l; l = l->next) {
@@ -686,7 +686,7 @@ e_gdbus_cal_encode_remove_objects (const GSList *in_ids,
 /* free ids g_slist_free_full(ids, g_free) */
 gboolean
 e_gdbus_cal_decode_remove_objects (const gchar * const *in_strv,
-																	 GSList **out_ids,
+                                                                                                                                         GSList **out_ids,
                                    guint *out_mod)
 {
 	gint ii;

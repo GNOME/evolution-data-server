@@ -1299,10 +1299,9 @@ add_instance (ECalComponent *comp,
 			}
 		}
 
-
 		g_free (dtstart.value);
 		dtstart.value = &itt;
-		e_cal_component_set_dtstart(ci->comp, &dtstart);
+		e_cal_component_set_dtstart (ci->comp, &dtstart);
 
 		/* set the RECUR-ID for the instance */
 		range = g_new0 (ECalComponentRange, 1);
@@ -1329,7 +1328,7 @@ add_instance (ECalComponent *comp,
 
 		g_free (dtend.value);
 		dtend.value = &itt;
-		e_cal_component_set_dtend(ci->comp, &dtend);
+		e_cal_component_set_dtend (ci->comp, &dtend);
 
 		g_free ((gchar *) dtend.tzid);
 	}
@@ -4023,7 +4022,7 @@ e_cal_client_modify_objects (ECalClient *client,
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
 	g_return_if_fail (comps != NULL);
 
-	comp_strings = icalcomponent_slist_to_string_slist(comps);
+	comp_strings = icalcomponent_slist_to_string_slist (comps);
 	strv = e_gdbus_cal_encode_modify_objects (comp_strings, mod);
 
 	e_client_proxy_call_strv (E_CLIENT (client), (const gchar * const *) strv, cancellable, callback, user_data, e_cal_client_modify_objects,
@@ -4095,7 +4094,7 @@ e_cal_client_modify_objects_sync (ECalClient *client,
 		return FALSE;
 	}
 
-	comp_strings = icalcomponent_slist_to_string_slist(comps);
+	comp_strings = icalcomponent_slist_to_string_slist (comps);
 	strv = e_gdbus_cal_encode_modify_objects (comp_strings, mod);
 
 	res = e_client_proxy_call_sync_strv__void (E_CLIENT (client), (const gchar * const *) strv, cancellable, error, e_gdbus_cal_call_modify_objects_sync);
@@ -4142,8 +4141,8 @@ e_cal_client_remove_object (ECalClient *client,
 
 	g_return_if_fail (uid != NULL);
 
-	id.uid = (gchar *)uid;
-	id.rid = (gchar *)rid;
+	id.uid = (gchar *) uid;
+	id.rid = (gchar *) rid;
 	ids.data = &id;
 	strv = e_gdbus_cal_encode_remove_objects (&ids, mod);
 
@@ -4214,8 +4213,8 @@ e_cal_client_remove_object_sync (ECalClient *client,
 		return FALSE;
 	}
 
-	id.uid = (gchar *)uid;
-	id.rid = (gchar *)rid;
+	id.uid = (gchar *) uid;
+	id.rid = (gchar *) rid;
 	ids.data = &id;
 	strv = e_gdbus_cal_encode_remove_objects (&ids, mod);
 

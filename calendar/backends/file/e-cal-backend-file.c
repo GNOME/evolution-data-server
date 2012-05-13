@@ -2916,7 +2916,7 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 				/* Check that it has a recurrence id if mod is CALOBJ_MOD_THISANDPRIOR
 					 or CALOBJ_MOD_THISANDFUTURE */
 		if ((mod == CALOBJ_MOD_THISANDPRIOR || mod == CALOBJ_MOD_THISANDFUTURE) &&
-		        (!id->rid || !*(id->rid))) {
+			(!id->rid || !*(id->rid))) {
 			g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 			return;

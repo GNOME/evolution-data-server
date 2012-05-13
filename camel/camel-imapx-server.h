@@ -21,7 +21,6 @@
 #error "Only <camel/camel.h> can be included directly."
 #endif
 
-
 #ifndef CAMEL_IMAPX_SERVER_H
 #define CAMEL_IMAPX_SERVER_H
 
@@ -63,8 +62,8 @@ typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
 struct _IMAPXJobQueueInfo;
 
 typedef gboolean (*IMAPXExtUntaggedResponseHander)
-					(CamelIMAPXServer *server, 
-					 GCancellable *cancellable, 
+					(CamelIMAPXServer *server,
+					 GCancellable *cancellable,
 					 GError **error);
 
 struct _CamelIMAPXServer {
@@ -241,10 +240,9 @@ struct _IMAPXJobQueueInfo *
 		camel_imapx_server_get_job_queue_info
 						(CamelIMAPXServer *is);
 
-void		camel_imapx_server_set_extended_token_handler 
+void		camel_imapx_server_set_extended_token_handler
 						(CamelIMAPXServer *is,
 						 IMAPXExtUntaggedResponseHander handler_func);
-
 
 G_END_DECLS
 

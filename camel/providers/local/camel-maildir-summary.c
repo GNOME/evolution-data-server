@@ -337,7 +337,7 @@ message_info_new_from_header (CamelFolderSummary *s,
 
 static CamelMessageInfo *
 maildir_message_info_from_db (CamelFolderSummary *summary,
-			      CamelMIRecord *record)
+                              CamelMIRecord *record)
 {
 	CamelMessageInfo *mi;
 

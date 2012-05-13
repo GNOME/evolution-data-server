@@ -3075,7 +3075,7 @@ camel_imap_transfer_resyncing (CamelFolder *source,
 static GPtrArray *
 imap_search_by_expression (CamelFolder *folder,
                            const gchar *expression,
-			   GCancellable *cancellable,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
@@ -3097,7 +3097,7 @@ imap_search_by_expression (CamelFolder *folder,
 static guint32
 imap_count_by_expression (CamelFolder *folder,
                           const gchar *expression,
-			  GCancellable *cancellable,
+                          GCancellable *cancellable,
                           GError **error)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
@@ -3120,7 +3120,7 @@ static GPtrArray *
 imap_search_by_uids (CamelFolder *folder,
                      const gchar *expression,
                      GPtrArray *uids,
-		     GCancellable *cancellable,
+                     GCancellable *cancellable,
                      GError **error)
 {
 	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);

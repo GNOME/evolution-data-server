@@ -4097,8 +4097,8 @@ e_cal_remove_object_with_mod (ECal *ecal,
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_URI_NOT_LOADED, error);
 	}
 
-	id.uid = (gchar *)uid;
-	id.rid = (gchar *)rid;
+	id.uid = (gchar *) uid;
+	id.rid = (gchar *) rid;
 	ids.data = &id;
 	strv = e_gdbus_cal_encode_remove_objects (&ids, mod);
 	if (!e_gdbus_cal_call_remove_objects_sync (priv->gdbus_cal, (const gchar * const *) strv, NULL, error)) {

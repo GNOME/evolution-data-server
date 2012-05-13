@@ -351,13 +351,13 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
  */
 void
 e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
-								   EDataCal *cal,
-								   GCancellable *cancellable,
-								   const GSList *calobjs,
-								   CalObjModType mod,
-								   GSList **old_components,
-								   GSList **new_components,
-								   GError **error)
+                                                                   EDataCal *cal,
+                                                                   GCancellable *cancellable,
+                                                                   const GSList *calobjs,
+                                                                   CalObjModType mod,
+                                                                   GSList **old_components,
+                                                                   GSList **new_components,
+                                                                   GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_objects_sync != NULL, UnsupportedMethod);

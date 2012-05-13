@@ -5763,7 +5763,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
                                    CamelFolder *folder,
                                    CamelMimeMessage *message,
                                    const CamelMessageInfo *mi,
-				   gchar **appended_uid,
+                                   gchar **appended_uid,
                                    GCancellable *cancellable,
                                    GError **error)
 {
@@ -6483,9 +6483,9 @@ camel_imapx_server_get_job_queue_info (CamelIMAPXServer *is)
 	return jinfo;
 }
 
-void		
-camel_imapx_server_set_extended_token_handler	(CamelIMAPXServer *is,
-						 IMAPXExtUntaggedResponseHander handler_func)
+void
+camel_imapx_server_set_extended_token_handler (CamelIMAPXServer *is,
+                                                 IMAPXExtUntaggedResponseHander handler_func)
 {
 	g_return_if_fail (is != NULL);
 

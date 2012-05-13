@@ -952,7 +952,7 @@ e_gdbus_op_cancelled_cb (GCancellable *cancellable,
 	g_return_if_fail (op_data->cancellable == cancellable);
 
 	/* do this on idle, because this callback should be left
-	   as soon as possible, with no sync calls being done */
+	 * as soon as possible, with no sync calls being done */
 	op_data->cancel_idle_id = g_idle_add (e_gdbus_op_cancelled_idle_cb, op_data);
 }
 

@@ -340,7 +340,7 @@ camel_folder_search_set_body_index (CamelFolderSearch *search,
 guint32
 camel_folder_search_count (CamelFolderSearch *search,
                            const gchar *expr,
-			   GCancellable *cancellable,
+                           GCancellable *cancellable,
                            GError **error)
 {
 	CamelSExpResult *r;
@@ -519,7 +519,7 @@ GPtrArray *
 camel_folder_search_search (CamelFolderSearch *search,
                             const gchar *expr,
                             GPtrArray *uids,
-			    GCancellable *cancellable,
+                            GCancellable *cancellable,
                             GError **error)
 {
 	CamelSExpResult *r;
@@ -1403,7 +1403,7 @@ static gboolean
 match_words_1message (CamelDataWrapper *object,
                       struct _camel_search_words *words,
                       guint32 *mask,
-		      GCancellable *cancellable)
+                      GCancellable *cancellable)
 {
 	CamelDataWrapper *containee;
 	gint truth = FALSE;

@@ -471,10 +471,10 @@ impl_DataCalView_stop (EGdbusCalView *object,
 }
 
 static gboolean
-impl_DataCalView_setFlags (EGdbusCalView         *object,
+impl_DataCalView_setFlags (EGdbusCalView *object,
                            GDBusMethodInvocation *invocation,
-                           ECalClientViewFlags    flags,
-                           EDataCalView          *view)
+                           ECalClientViewFlags flags,
+                           EDataCalView *view)
 {
 	view->priv->flags = flags;
 

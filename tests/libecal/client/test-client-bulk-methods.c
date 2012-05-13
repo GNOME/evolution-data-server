@@ -10,7 +10,7 @@
 
 static gboolean
 test_icalcomps (icalcomponent *icalcomp1,
-				icalcomponent *icalcomp2)
+                                icalcomponent *icalcomp2)
 {
 	struct icaltimetype t1, t2;
 
@@ -50,7 +50,7 @@ test_icalcomps (icalcomponent *icalcomp1,
 
 static gboolean
 check_removed (ECalClient *cal_client,
-			   const GSList *uids)
+                           const GSList *uids)
 {
 	g_return_val_if_fail (cal_client != NULL, FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
@@ -59,7 +59,7 @@ check_removed (ECalClient *cal_client,
 		GError *error = NULL;
 		icalcomponent *icalcomp = NULL;
 
-		if (!e_cal_client_get_object_sync(cal_client, uids->data, NULL, &icalcomp, NULL, &error) &&
+		if (!e_cal_client_get_object_sync (cal_client, uids->data, NULL, &icalcomp, NULL, &error) &&
 				g_error_matches (error, E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND)) {
 			g_clear_error (&error);
 		} else {
@@ -75,7 +75,7 @@ check_removed (ECalClient *cal_client,
 }
 
 static GSList *
-uid_slist_to_ecalcomponentid_slist(GSList *uids)
+uid_slist_to_ecalcomponentid_slist (GSList *uids)
 {
 	GSList *ids = NULL;
 	const GSList *l;
@@ -91,7 +91,7 @@ uid_slist_to_ecalcomponentid_slist(GSList *uids)
 
 static gboolean
 check_icalcomps_exist (ECalClient *cal_client,
-					   GSList *icalcomps)
+                                           GSList *icalcomps)
 {
 	const GSList *l;
 
@@ -99,9 +99,9 @@ check_icalcomps_exist (ECalClient *cal_client,
 		GError *error = NULL;
 		icalcomponent *icalcomp = l->data;
 		icalcomponent *icalcomp2 = NULL;
-		const char *uid = icalcomponent_get_uid(icalcomp);
+		const gchar *uid = icalcomponent_get_uid (icalcomp);
 
-		if (!e_cal_client_get_object_sync(cal_client, uid, NULL, &icalcomp2, NULL, &error)) {
+		if (!e_cal_client_get_object_sync (cal_client, uid, NULL, &icalcomp2, NULL, &error)) {
 			report_error ("get object sync", &error);
 			return FALSE;
 		}
@@ -120,7 +120,7 @@ check_icalcomps_exist (ECalClient *cal_client,
 }
 
 static gboolean
-test_bulk_methods(GSList *icalcomps)
+test_bulk_methods (GSList *icalcomps)
 {
 	ECalClient *cal_client;
 	GError *error = NULL;
@@ -171,14 +171,14 @@ test_bulk_methods(GSList *icalcomps)
 		icalcomponent *icalcomp = lcomp->data;
 
 		summary = g_strdup_printf ("Edited test summary %d", i);
-		icalcomponent_set_summary(icalcomp, summary);
+		icalcomponent_set_summary (icalcomp, summary);
 
 		g_free (summary);
 		++i;
 	}
 
 	/* Save the modified objects in bulk */
-	if (!e_cal_client_modify_objects_sync(cal_client, icalcomps, CALOBJ_MOD_ALL, NULL, &error)) {
+	if (!e_cal_client_modify_objects_sync (cal_client, icalcomps, CALOBJ_MOD_ALL, NULL, &error)) {
 		report_error ("modify objects sync", &error);
 		g_object_unref (cal_client);
 		g_slist_free_full (uids, g_free);
@@ -195,7 +195,7 @@ test_bulk_methods(GSList *icalcomps)
 	/* Remove all the objects in bulk */
 	ids = uid_slist_to_ecalcomponentid_slist (uids);
 
-	if (!e_cal_client_remove_objects_sync(cal_client, ids, CALOBJ_MOD_ALL, NULL, &error)) {
+	if (!e_cal_client_remove_objects_sync (cal_client, ids, CALOBJ_MOD_ALL, NULL, &error)) {
 		report_error ("remove objects sync", &error);
 		g_object_unref (cal_client);
 		g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
@@ -205,7 +205,7 @@ test_bulk_methods(GSList *icalcomps)
 	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
 
 	/* Check that the objects don't exist anymore */
-	if (!check_removed(cal_client, uids)) {
+	if (!check_removed (cal_client, uids)) {
 		g_object_unref (cal_client);
 		g_slist_free_full (uids, g_free);
 		return FALSE;
@@ -218,7 +218,7 @@ test_bulk_methods(GSList *icalcomps)
 
 gint
 main (gint argc,
-	  gchar **argv)
+          gchar **argv)
 {
 	GSList *icalcomps = NULL;
 	struct icaltimetype now;
@@ -247,7 +247,7 @@ main (gint argc,
 	/* Test synchronous bulk methods */
 	res = test_bulk_methods (icalcomps);
 
-	g_slist_free_full (icalcomps, (GDestroyNotify)icalcomponent_free);
+	g_slist_free_full (icalcomps, (GDestroyNotify) icalcomponent_free);
 
 	return (res != TRUE);
 }

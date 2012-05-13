@@ -919,7 +919,7 @@ sanitise_group_id (const gchar *group_id)
 
 static const gchar *
 map_google_with_evo_group (const gchar *group_name,
-			   gboolean google_to_evo)
+                           gboolean google_to_evo)
 {
 	struct _GroupsMap {
 		const gchar *google_id;
@@ -2803,7 +2803,7 @@ static gboolean
 _gdata_entry_update_from_e_contact (EBookBackend *backend,
                                     GDataEntry *entry,
                                     EContact *contact,
-				    gboolean ensure_personal_group)
+                                    gboolean ensure_personal_group)
 {
 	EBookBackendGooglePrivate *priv;
 	GList *attributes, *iter, *category_names;
@@ -3097,8 +3097,8 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 	}
 
 	/* to have contacts shown in My Contacts by default,
-	   see https://bugzilla.gnome.org/show_bug.cgi?id=663324
-	   for more details */
+	 * see https://bugzilla.gnome.org/show_bug.cgi?id=663324
+	 * for more details */
 	if (ensure_personal_group) {
 		const gchar *group_entry_id = g_hash_table_lookup (priv->system_groups_by_id, GDATA_CONTACTS_GROUP_CONTACTS);
 

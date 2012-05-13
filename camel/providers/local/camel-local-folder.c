@@ -228,7 +228,7 @@ local_folder_constructed (GObject *object)
 static GPtrArray *
 local_folder_search_by_expression (CamelFolder *folder,
                                    const gchar *expression,
-				   GCancellable *cancellable,
+                                   GCancellable *cancellable,
                                    GError **error)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER (folder);
@@ -255,7 +255,7 @@ static GPtrArray *
 local_folder_search_by_uids (CamelFolder *folder,
                              const gchar *expression,
                              GPtrArray *uids,
-			     GCancellable *cancellable,
+                             GCancellable *cancellable,
                              GError **error)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER (folder);
@@ -342,7 +342,7 @@ local_folder_rename (CamelFolder *folder,
 static guint32
 local_folder_count_by_expression (CamelFolder *folder,
                                   const gchar *expression,
-				  GCancellable *cancellable,
+                                  GCancellable *cancellable,
                                   GError **error)
 {
 	CamelLocalFolder *local_folder = CAMEL_LOCAL_FOLDER (folder);

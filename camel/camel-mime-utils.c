@@ -1536,7 +1536,7 @@ rfc2047_encode_word (GString *outstring,
 
 static gchar *
 header_encode_string_rfc2047 (const guchar *in,
-			      gboolean include_lwsp)
+                              gboolean include_lwsp)
 {
 	const guchar *inptr = in, *start, *word;
 	gboolean last_was_encoded = FALSE;

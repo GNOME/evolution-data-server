@@ -65,7 +65,7 @@ G_DEFINE_TYPE (CamelCertDB, camel_certdb, CAMEL_TYPE_OBJECT)
 
 static gboolean
 certdb_str_equal_casecmp (gconstpointer str1,
-			  gconstpointer str2)
+                          gconstpointer str2)
 {
 	if (!str1 || !str2)
 		return str1 == str2;

@@ -112,7 +112,6 @@ static CamelProvider imapx_provider = {
 	/* ... */
 };
 
-
 extern CamelServiceAuthType camel_imapx_password_authtype;
 
 void camel_imapx_module_init (void);

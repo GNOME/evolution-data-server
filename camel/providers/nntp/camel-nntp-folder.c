@@ -398,7 +398,7 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 static GPtrArray *
 nntp_folder_search_by_expression (CamelFolder *folder,
                                   const gchar *expression,
-				  GCancellable *cancellable,
+                                  GCancellable *cancellable,
                                   GError **error)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
@@ -420,7 +420,7 @@ nntp_folder_search_by_expression (CamelFolder *folder,
 static guint32
 nntp_folder_count_by_expression (CamelFolder *folder,
                                  const gchar *expression,
-				 GCancellable *cancellable,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (folder);
@@ -443,7 +443,7 @@ static GPtrArray *
 nntp_folder_search_by_uids (CamelFolder *folder,
                             const gchar *expression,
                             GPtrArray *uids,
-			    GCancellable *cancellable,
+                            GCancellable *cancellable,
                             GError **error)
 {
 	CamelNNTPFolder *nntp_folder = (CamelNNTPFolder *) folder;
