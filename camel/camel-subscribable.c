@@ -162,6 +162,8 @@ subscribable_subscribe_folder (CamelSubscribable *subscribable,
 		G_OBJECT (subscribable), callback,
 		user_data, subscribable_subscribe_folder);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -226,6 +228,8 @@ subscribable_unsubscribe_folder (CamelSubscribable *subscribable,
 	simple = g_simple_async_result_new (
 		G_OBJECT (subscribable), callback,
 		user_data, subscribable_unsubscribe_folder);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);

@@ -1940,9 +1940,16 @@ e_client_finish_async_without_dbus (EClient *client,
 	opid = e_client_register_op (client, use_cancellable);
 	g_return_if_fail (opid > 0);
 
-	simple = g_simple_async_result_new (G_OBJECT (client), callback, user_data, source_tag);
-	g_simple_async_result_set_op_res_gpointer (simple, op_res, destroy_op_res);
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data, source_tag);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, op_res, destroy_op_res);
+
 	g_simple_async_result_complete_in_idle (simple);
+
 	g_object_unref (simple);
 
 	if (use_cancellable != cancellable)

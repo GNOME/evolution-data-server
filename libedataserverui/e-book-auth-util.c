@@ -593,6 +593,8 @@ e_load_book_source_async (ESource *source,
 		G_OBJECT (source), callback,
 		user_data, e_load_book_source_async);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, context, (GDestroyNotify)
 		load_book_source_context_free);

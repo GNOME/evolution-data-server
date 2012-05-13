@@ -322,6 +322,8 @@ sasl_challenge (CamelSasl *sasl,
 	simple = g_simple_async_result_new (
 		G_OBJECT (sasl), callback, user_data, sasl_challenge);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -383,6 +385,8 @@ sasl_try_empty_password (CamelSasl *sasl,
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (sasl), callback, user_data, sasl_try_empty_password);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_run_in_thread (
 		simple, sasl_try_empty_password_thread,
@@ -906,6 +910,8 @@ camel_sasl_challenge_base64 (CamelSasl *sasl,
 	simple = g_simple_async_result_new (
 		G_OBJECT (sasl), callback, user_data,
 		camel_sasl_challenge_base64);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);

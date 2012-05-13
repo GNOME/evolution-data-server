@@ -992,6 +992,8 @@ folder_append_message (CamelFolder *folder,
 		G_OBJECT (folder), callback,
 		user_data, folder_append_message);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -1053,6 +1055,8 @@ folder_expunge (CamelFolder *folder,
 	simple = g_simple_async_result_new (
 		G_OBJECT (folder), callback, user_data, folder_expunge);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_run_in_thread (
 		simple, folder_expunge_thread, io_priority, cancellable);
 
@@ -1111,6 +1115,8 @@ fetch_messages (CamelFolder *folder,
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (folder), callback, user_data, fetch_messages);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
@@ -1175,6 +1181,8 @@ folder_get_message (CamelFolder *folder,
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (folder), callback, user_data, folder_get_message);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
@@ -1252,6 +1260,8 @@ folder_get_quota_info (CamelFolder *folder,
 		G_OBJECT (folder), callback,
 		user_data, folder_get_quota_info);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -1323,6 +1333,8 @@ purge_message_cache (CamelFolder *folder,
 	simple = g_simple_async_result_new (
 		G_OBJECT (folder), callback, user_data, purge_message_cache);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -1377,6 +1389,8 @@ folder_refresh_info (CamelFolder *folder,
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (folder), callback, user_data, folder_refresh_info);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_run_in_thread (
 		simple, folder_refresh_info_thread, io_priority, cancellable);
@@ -1435,6 +1449,8 @@ folder_synchronize (CamelFolder *folder,
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (folder), callback, user_data, folder_synchronize);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
@@ -1497,6 +1513,8 @@ folder_synchronize_message (CamelFolder *folder,
 	simple = g_simple_async_result_new (
 		G_OBJECT (folder), callback,
 		user_data, folder_synchronize_message);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
@@ -1572,6 +1590,8 @@ folder_transfer_messages_to (CamelFolder *source,
 	simple = g_simple_async_result_new (
 		G_OBJECT (source), callback,
 		user_data, folder_transfer_messages_to);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);

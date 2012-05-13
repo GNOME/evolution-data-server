@@ -119,6 +119,8 @@ transport_send_to (CamelTransport *transport,
 	simple = g_simple_async_result_new (
 		G_OBJECT (transport), callback, user_data, transport_send_to);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 

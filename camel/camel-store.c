@@ -454,6 +454,8 @@ store_get_folder (CamelStore *store,
 	simple = g_simple_async_result_new (
 		G_OBJECT (store), callback, user_data, store_get_folder);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -521,6 +523,8 @@ store_get_folder_info (CamelStore *store,
 	simple = g_simple_async_result_new (
 		G_OBJECT (store), callback,
 		user_data, store_get_folder_info);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
@@ -590,6 +594,8 @@ store_get_inbox_folder (CamelStore *store,
 		G_OBJECT (store), callback,
 		user_data, store_get_inbox_folder);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -654,6 +660,8 @@ store_get_junk_folder (CamelStore *store,
 		G_OBJECT (store), callback,
 		user_data, store_get_junk_folder);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -717,6 +725,8 @@ store_get_trash_folder (CamelStore *store,
 	simple = g_simple_async_result_new (
 		G_OBJECT (store), callback,
 		user_data, store_get_trash_folder);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
@@ -785,6 +795,8 @@ store_create_folder (CamelStore *store,
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (store), callback, user_data, store_create_folder);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
@@ -855,6 +867,8 @@ store_delete_folder (CamelStore *store,
 	simple = g_simple_async_result_new (
 		G_OBJECT (store), callback, user_data, store_delete_folder);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -918,6 +932,8 @@ store_rename_folder (CamelStore *store,
 	simple = g_simple_async_result_new (
 		G_OBJECT (store), callback, user_data, store_rename_folder);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -979,6 +995,8 @@ store_synchronize (CamelStore *store,
 	simple = g_simple_async_result_new (
 		G_OBJECT (store), callback, user_data, store_synchronize);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -1029,6 +1047,8 @@ store_noop (CamelStore *store,
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (store), callback, user_data, store_noop);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_run_in_thread (
 		simple, store_noop_thread, io_priority, cancellable);

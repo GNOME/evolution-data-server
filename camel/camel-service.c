@@ -465,6 +465,8 @@ service_authenticate (CamelService *service,
 	simple = g_simple_async_result_new (
 		G_OBJECT (service), callback, user_data, service_authenticate);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -528,6 +530,8 @@ service_query_auth_types (CamelService *service,
 	simple = g_simple_async_result_new (
 		G_OBJECT (service), callback,
 		user_data, service_query_auth_types);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);

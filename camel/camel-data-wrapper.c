@@ -303,6 +303,8 @@ data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
 		G_OBJECT (data_wrapper), callback,
 		user_data, data_wrapper_write_to_stream);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -373,6 +375,8 @@ data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
 		G_OBJECT (data_wrapper), callback,
 		user_data, data_wrapper_decode_to_stream);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -440,6 +444,8 @@ data_wrapper_construct_from_stream (CamelDataWrapper *data_wrapper,
 	simple = g_simple_async_result_new (
 		G_OBJECT (data_wrapper), callback, user_data,
 		data_wrapper_construct_from_stream);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);

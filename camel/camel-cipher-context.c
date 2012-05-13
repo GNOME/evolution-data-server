@@ -321,6 +321,8 @@ cipher_context_sign (CamelCipherContext *context,
 	simple = g_simple_async_result_new (
 		G_OBJECT (context), callback, user_data, cipher_context_sign);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -382,6 +384,8 @@ cipher_context_verify (CamelCipherContext *context,
 	simple = g_simple_async_result_new (
 		G_OBJECT (context), callback,
 		user_data, cipher_context_verify);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
@@ -468,6 +472,8 @@ cipher_context_encrypt (CamelCipherContext *context,
 		G_OBJECT (context), callback,
 		user_data, cipher_context_encrypt);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -532,6 +538,8 @@ cipher_context_decrypt (CamelCipherContext *context,
 	simple = g_simple_async_result_new (
 		G_OBJECT (context), callback,
 		user_data, cipher_context_decrypt);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
@@ -604,6 +612,8 @@ cipher_context_import_keys (CamelCipherContext *context,
 		G_OBJECT (context), callback,
 		user_data, cipher_context_import_keys);
 
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
@@ -675,6 +685,8 @@ cipher_context_export_keys (CamelCipherContext *context,
 	simple = g_simple_async_result_new (
 		G_OBJECT (context), callback,
 		user_data, cipher_context_export_keys);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);

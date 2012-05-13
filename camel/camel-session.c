@@ -185,6 +185,9 @@ session_start_job_cb (JobData *job_data)
 		(GAsyncReadyCallback) session_finish_job_cb,
 		NULL, camel_session_submit_job);
 
+	g_simple_async_result_set_check_cancellable (
+		simple, job_data->cancellable);
+
 	g_simple_async_result_set_op_res_gpointer (
 		simple, job_data, (GDestroyNotify) job_data_free);
 
@@ -579,6 +582,8 @@ session_authenticate (CamelSession *session,
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (session), callback, user_data, session_authenticate);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
