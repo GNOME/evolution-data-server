@@ -250,7 +250,7 @@ name_selector_dialog_constructed (GObject *object)
 	gtk_label_set_justify (GTK_LABEL (AddressBookLabel), GTK_JUSTIFY_CENTER);
 	gtk_misc_set_alignment (GTK_MISC (AddressBookLabel), 0, 0.5);
 
-	label31 = gtk_label_new_with_mnemonic (_("Cate_gory:"));
+	label31 = gtk_label_new_with_mnemonic (_("Cat_egory:"));
 	gtk_widget_show (label31);
 	gtk_table_attach (GTK_TABLE (show_contacts_table), label31, 0, 1, 1, 2,
 			  (GtkAttachOptions) (GTK_FILL),
