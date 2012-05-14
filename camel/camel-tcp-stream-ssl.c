@@ -81,6 +81,33 @@ struct _CamelTcpStreamSSLPrivate {
 
 G_DEFINE_TYPE (CamelTcpStreamSSL, camel_tcp_stream_ssl, CAMEL_TYPE_TCP_STREAM_RAW)
 
+static const gchar *
+tcp_stream_ssl_get_cert_dir (void)
+{
+	static gchar *cert_dir = NULL;
+
+	if (G_UNLIKELY (cert_dir == NULL)) {
+		const gchar *data_dir;
+		const gchar *home_dir;
+		gchar *old_dir;
+
+		home_dir = g_get_home_dir ();
+		data_dir = g_get_user_data_dir ();
+
+		cert_dir = g_build_filename (data_dir, "camel_certs", NULL);
+
+		/* Move the old certificate directory if present. */
+		old_dir = g_build_filename (home_dir, ".camel_certs", NULL);
+		if (g_file_test (old_dir, G_FILE_TEST_IS_DIR))
+			g_rename (old_dir, cert_dir);
+		g_free (old_dir);
+
+		g_mkdir_with_parents (cert_dir, 0700);
+	}
+
+	return cert_dir;
+}
+
 static void
 tcp_stream_ssl_dispose (GObject *object)
 {
@@ -293,10 +320,11 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 		gchar *filename;
 		gchar *contents;
 		gsize length;
+		const gchar *cert_dir;
 		GError *error = NULL;
 
-		filename = g_build_filename (
-			g_get_home_dir (), ".camel_certs", fingerprint, NULL);
+		cert_dir = tcp_stream_ssl_get_cert_dir ();
+		filename = g_build_filename (cert_dir, fingerprint, NULL);
 		if (!g_file_get_contents (filename, &contents, &length, &error) ||
 		    error != NULL) {
 			g_warning (
@@ -360,8 +388,9 @@ camel_certdb_nss_cert_set (CamelCertDB *certdb,
                            CamelCert *ccert,
                            CERTCertificate *cert)
 {
-	gchar *dir, *path, *fingerprint;
+	gchar *filename, *fingerprint;
 	CamelStream *stream;
+	const gchar *cert_dir;
 	struct stat st;
 
 	fingerprint = ccert->fingerprint;
@@ -372,36 +401,29 @@ camel_certdb_nss_cert_set (CamelCertDB *certdb,
 	g_byte_array_set_size (ccert->rawcert, cert->derCert.len);
 	memcpy (ccert->rawcert->data, cert->derCert.data, cert->derCert.len);
 
-#ifndef G_OS_WIN32
-	dir = g_strdup_printf ("%s/.camel_certs", getenv ("HOME"));
-#else
-	dir = g_build_filename (g_get_home_dir (), ".camel_certs", NULL);
-#endif
-	if (g_stat (dir, &st) == -1 && g_mkdir (dir, 0700) == -1) {
-		g_warning ("Could not create cert directory '%s': %s", dir, g_strerror (errno));
-		g_free (dir);
-		return;
-	}
-
-	path = g_strdup_printf ("%s/%s", dir, fingerprint);
-	g_free (dir);
+	cert_dir = tcp_stream_ssl_get_cert_dir ();
+	filename = g_build_filename (cert_dir, fingerprint, NULL);
 
 	stream = camel_stream_fs_new_with_name (
-		path, O_WRONLY | O_CREAT | O_TRUNC, 0600, NULL);
+		filename, O_WRONLY | O_CREAT | O_TRUNC, 0600, NULL);
 	if (stream != NULL) {
 		if (camel_stream_write (
 			stream, (const gchar *) ccert->rawcert->data,
 			ccert->rawcert->len, NULL, NULL) == -1) {
-			g_warning ("Could not save cert: %s: %s", path, g_strerror (errno));
-			g_unlink (path);
+			g_warning (
+				"Could not save cert: %s: %s",
+				filename, g_strerror (errno));
+			g_unlink (filename);
 		}
 		camel_stream_close (stream, NULL, NULL);
 		g_object_unref (stream);
 	} else {
-		g_warning ("Could not save cert: %s: %s", path, g_strerror (errno));
+		g_warning (
+			"Could not save cert: %s: %s",
+			filename, g_strerror (errno));
 	}
 
-	g_free (path);
+	g_free (filename);
 }
 
 #if 0
