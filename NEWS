@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.4.2 2012-05-14
+--------------------------------------
+
+Bug Fixes:
+	Bug 669191 - Address book dialog has incorrect default size (Mathieu Trudel-Lapierre)
+	Bug 674257 - Recheck attachment availability on message download (Milan Crha)
+	Bug 672398 - CalDAV backend doesn't respect "Copy for offline" option (Milan Crha)
+	Bug 674309 - Crash when calling oauth_init_nss() from two threads (Milan Crha)
+	Bug 667891 - Rapid message list regen when downloading a folder (Milan Crha)
+
+Miscellaneous Fixes:
+	Make sure data-book/cal is closed/freed in a separate thread (Milan Crha)
+	Remove extra test on Google server photo data validity (Milan Crha)
+
+Translations:
+	Luca Ferretti (it)
+
+
 Evolution-Data-Server 3.4.1 2012-04-16
 --------------------------------------
 
