@@ -67,6 +67,13 @@ G_DEFINE_TYPE (
 	camel_imapx_conn_manager,
 	CAMEL_TYPE_OBJECT)
 
+static void
+imapx_conn_shutdown (CamelIMAPXServer *is, CamelIMAPXConnManager *con_man);
+
+static void
+imapx_conn_update_select (CamelIMAPXServer *is, const gchar *selected_folder,
+                          CamelIMAPXConnManager *con_man);
+
 static ConnectionInfo *
 connection_info_new (CamelIMAPXServer *is)
 {
@@ -107,7 +114,6 @@ connection_info_unref (ConnectionInfo *cinfo)
 
 	if (g_atomic_int_dec_and_test (&cinfo->ref_count)) {
 		camel_imapx_server_connect (cinfo->is, NULL, NULL);
-
 		g_mutex_free (cinfo->lock);
 		g_object_unref (cinfo->is);
 		g_hash_table_destroy (cinfo->folder_names);
@@ -115,6 +121,18 @@ connection_info_unref (ConnectionInfo *cinfo)
 
 		g_slice_free (ConnectionInfo, cinfo);
 	}
+}
+
+static void
+connection_info_cancel_and_unref (ConnectionInfo *cinfo)
+{
+	g_return_if_fail (cinfo != NULL);
+	g_return_if_fail (cinfo->ref_count > 0);
+	
+	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_shutdown, NULL);
+	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_update_select, NULL);
+	g_cancellable_cancel (cinfo->is->cancellable);
+	connection_info_unref (cinfo);
 }
 
 static gboolean
@@ -721,7 +739,7 @@ camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man)
 
 	g_list_free_full (
 		con_man->priv->connections,
-		(GDestroyNotify) connection_info_unref);
+		(GDestroyNotify) connection_info_cancel_and_unref);
 	con_man->priv->connections = NULL;
 
 	CON_WRITE_UNLOCK (con_man);
