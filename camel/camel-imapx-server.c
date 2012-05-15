@@ -5340,8 +5340,7 @@ imapx_parser_thread (gpointer d)
 	QUEUE_UNLOCK (is);
 
 	is->parser_quit = FALSE;
-	if (is->state != IMAPX_SHUTDOWN)
-		g_signal_emit (is, signals[SHUTDOWN], 0);
+	g_signal_emit (is, signals[SHUTDOWN], 0);
 
 	return NULL;
 }
