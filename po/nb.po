@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.5.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-30 09:59+0200\n"
-"PO-Revision-Date: 2012-04-30 10:00+0200\n"
+"POT-Creation-Date: 2012-05-15 14:13+0200\n"
+"PO-Revision-Date: 2012-05-15 14:16+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -21,15 +21,19 @@ msgstr ""
 #: ../addressbook/backends/file/e-book-backend-file.c:129
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:281
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:942
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1236
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1252
 #: ../addressbook/libebook/e-book-client.c:108
 #: ../addressbook/libedata-book/e-data-book.c:441
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:561
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:590
-#: ../calendar/backends/http/e-cal-backend-http.c:423
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:570
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:600
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:619
+#: ../calendar/backends/http/e-cal-backend-http.c:427
+#: ../calendar/backends/http/e-cal-backend-http.c:441
 #: ../calendar/libecal/e-cal.c:4604 ../calendar/libecal/e-cal-client.c:150
+#: ../camel/camel-imapx-command.c:594
 #: ../camel/providers/imap/camel-imap-command.c:515
 #: ../camel/providers/imap/camel-imap-store.c:464
-#: ../camel/providers/imapx/camel-imapx-command.c:594
 #: ../libedataserver/e-client.c:166
 msgid "Unknown error"
 msgstr "Ukjent feil"
@@ -194,6 +198,29 @@ msgstr "Laster ned kontakter (%d) …"
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "Oppretting av ressurs «%s» feilet med HTTP-status: %d (%s)"
 
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1234
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:598
+#: ../calendar/backends/http/e-cal-backend-http.c:425
+#, c-format
+msgid "Failed to connect to a server using SSL: %s"
+msgstr "Klarte ikke å koble til en tjener med SSL: %s"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1239
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:603
+#: ../calendar/backends/http/e-cal-backend-http.c:429
+msgid ""
+"Failed to connect to a server using SSL. One possible reason is an invalid "
+"certificate being used by the server. If this is expected, like self-signed "
+"certificate being used on the server, then disable certificate validity "
+"tests by selecting 'Ignore invalid SSL certificate' option in Properties"
+msgstr "Klarte ikke å koble til en tjener med SSL. En mulig årsak er at tjeneren bruker et ugyldig sertifikat. Hvis dette er forventet, som hvis et selvsignert sertifikat brukes på tjeneren kan du slå av sjekk av validitet for sertifikat ved å velge «Ignorer ugyldige SSL-sertifikater» i egenskaper"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1249
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:616
+#, c-format
+msgid "Unexpected HTTP status code %d returned (%s)"
+msgstr "Uventet HTTP-statuskode %d mottatt (%s)"
+
 #: ../addressbook/libebook/e-book.c:3198
 #, c-format
 msgid "%s: there was no source for UID '%s' stored in GConf."
@@ -238,11 +265,11 @@ msgid "Failed to run book factory"
 msgstr "Klarte ikke å kjøre fabrikk for bok"
 
 #: ../addressbook/libebook/e-book-client.c:519
-#: ../addressbook/libedata-book/e-data-book-factory.c:206
-#: ../addressbook/libedata-book/e-data-book-factory.c:238
+#: ../addressbook/libedata-book/e-data-book-factory.c:212
+#: ../addressbook/libedata-book/e-data-book-factory.c:244
 #: ../calendar/libecal/e-cal-client.c:640
-#: ../calendar/libedata-cal/e-data-cal-factory.c:223
-#: ../calendar/libedata-cal/e-data-cal-factory.c:252
+#: ../calendar/libedata-cal/e-data-cal-factory.c:229
+#: ../calendar/libedata-cal/e-data-cal-factory.c:258
 #, c-format
 msgid "Invalid source"
 msgstr "Ugyldig kilde"
@@ -264,7 +291,7 @@ msgid "There was no source for UID '%s' stored in a source list."
 msgstr "Ingen kilde lagret i en kildeliste for UID «%s»."
 
 #: ../addressbook/libebook/e-book-client.c:2521
-#: ../calendar/libecal/e-cal-client.c:4892
+#: ../calendar/libecal/e-cal-client.c:4891
 msgid "Cannot get connection to view"
 msgstr "Kan ikke hente tilkobling som skal vises"
 
@@ -276,7 +303,7 @@ msgstr "Unik ID"
 #. FILE_AS is not really a structured field - we use a getter/setter
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
-#. preferred user's description (or display name) of the contact. Note 'File' is a verb here.
+#. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
 #: ../addressbook/libebook/e-contact.c:126
 msgid "File Under"
 msgstr "Arkiver under"
@@ -639,8 +666,8 @@ msgid "Last Revision"
 msgstr "Siste versjon"
 
 #. Translators: This is an EContact field description, in this case it's a
-#. virtual field, which returns either name of the contact or the organization
-#. name, recognized by multiple other fields, where the first filled is used.
+#. * virtual field, which returns either name of the contact or the organization
+#. * name, recognized by multiple other fields, where the first filled is used.
 #: ../addressbook/libebook/e-contact.c:243
 msgid "Name or Org"
 msgstr "Navn eller organisasjon"
@@ -677,7 +704,7 @@ msgid "Logo"
 msgstr "Logo"
 
 #. Translators: This is an EContact field description, in this case it's a name
-#. of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
+#. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
 #: ../addressbook/libebook/e-contact.c:260
 msgid "Name"
 msgstr "Navn"
@@ -716,16 +743,16 @@ msgid "Wants HTML Mail"
 msgstr "Vil ha meldinger som HTML"
 
 #. Translators: This is an EContact field description, in this case it's a
-#. field describing whether it's a Contact list (list of email addresses) or a
-#. regular contact for one person/organization/...
+#. * field describing whether it's a Contact list (list of email addresses) or a
+#. * regular contact for one person/organization/...
 #: ../addressbook/libebook/e-contact.c:276
 msgid "List"
 msgstr "Liste"
 
 #. Translators: This is an EContact field description, in this case it's a flag
-#. used to determine whether when sending to Contact lists the addresses should be
-#. shown or not to other recipients - basically whether to use BCC field or CC
-#. message header when sending messages to this Contact list.
+#. * used to determine whether when sending to Contact lists the addresses should be
+#. * shown or not to other recipients - basically whether to use BCC field or CC
+#. * message header when sending messages to this Contact list.
 #: ../addressbook/libebook/e-contact.c:281
 msgid "List Shows Addresses"
 msgstr "Listen viser adresser"
@@ -735,7 +762,7 @@ msgid "Birth Date"
 msgstr "Fødselsdato"
 
 #: ../addressbook/libebook/e-contact.c:284
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1063
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1088
 msgid "Anniversary"
 msgstr "Jubileum"
 
@@ -1065,25 +1092,20 @@ msgstr "Kan ikke hente UIDer for kontaktliste: "
 msgid "Cannot remove contacts: "
 msgstr "Kan ikke fjerne kontakter: "
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:194
-#: ../addressbook/libedata-book/e-data-book-factory.c:222
-#: ../calendar/libedata-cal/e-data-cal-factory.c:239
+#: ../addressbook/libedata-book/e-data-book-factory.c:200
+#: ../addressbook/libedata-book/e-data-book-factory.c:228
+#: ../calendar/libedata-cal/e-data-cal-factory.c:245
 #, c-format
 msgid "Empty URI"
 msgstr "Tom URI"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:559
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:568
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Tjener kan ikke nås (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:587
-#, c-format
-msgid "Unexpected HTTP status code %d returned (%s)"
-msgstr "Uventet HTTP-statuskode %d mottatt (%s)"
-
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2284
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2651
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2313
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2680
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1092,23 +1114,23 @@ msgstr ""
 "Tjeneren kan ikke nås. Kalender åpnes i skrivebeskyttet modus.\n"
 "Feilmelding: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3675
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3704
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV støtter ikke å legge til flere oppføringer samtidig"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3777
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3806
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV støtter ikke å endre flere oppføringer samtidig"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3945
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3974
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV støtter ikke fjerning av flere oppføringer samtidig"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4597
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4626
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalender støtter ikke ledig/opptatt"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:219
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:225
 #: ../libedataserverui/e-client-utils.c:885
 #, c-format
 msgid ""
@@ -1118,22 +1140,22 @@ msgstr ""
 "Oppgi passord for adressebok %s (bruker %s)\n"
 "Årsak: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:221
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:227
 #: ../libedataserverui/e-client-utils.c:887
 #, c-format
 msgid "Enter password for address book %s (user %s)"
 msgstr "Oppgi passord for adressebok %s (bruker %s)"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1065
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1090
 msgid "Birthday"
 msgstr "Fødselsdag"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1101
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1126
 #, c-format
 msgid "Birthday: %s"
 msgstr "Fødselsdag: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1132
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1157
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Bryllupsdag: %s"
@@ -1151,16 +1173,16 @@ msgstr "Kan ikke lagre kalenderdata"
 msgid "Redirected to Invalid URI"
 msgstr "Omdirigert til ugyldig URI"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:445
+#: ../calendar/backends/http/e-cal-backend-http.c:463
 msgid "Bad file format."
 msgstr "Ugyldig filformat."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:453
+#: ../calendar/backends/http/e-cal-backend-http.c:471
 msgid "Not a calendar."
 msgstr "Ikke en kalender."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:782
-#: ../calendar/backends/http/e-cal-backend-http.c:786
+#: ../calendar/backends/http/e-cal-backend-http.c:800
+#: ../calendar/backends/http/e-cal-backend-http.c:804
 #: ../calendar/backends/weather/e-cal-backend-weather.c:525
 msgid "Could not create cache file"
 msgstr "Kunne ikke opprette bufferfil"
@@ -1679,7 +1701,7 @@ msgstr "Kunne ikke hente tidssone for kalender: "
 msgid "Could not add calendar time zone: "
 msgstr "Kunne ikke legge til tidssone for kalender: "
 
-#: ../calendar/libedata-cal/e-data-cal-factory.c:209
+#: ../calendar/libedata-cal/e-data-cal-factory.c:215
 #, c-format
 msgid "Invalid call"
 msgstr "Ugyldig kall"
@@ -1714,15 +1736,15 @@ msgstr "Du kan ikke importere nøkler med dette cipheret"
 msgid "You may not export keys with this cipher"
 msgstr "Du kan ikke eksportere nøkler med dette cipheret"
 
-#: ../camel/camel-cipher-context.c:805
+#: ../camel/camel-cipher-context.c:817
 msgid "Signing message"
 msgstr "Signerer melding"
 
-#: ../camel/camel-cipher-context.c:1046
+#: ../camel/camel-cipher-context.c:1058
 msgid "Encrypting message"
 msgstr "Krypterer melding"
 
-#: ../camel/camel-cipher-context.c:1173
+#: ../camel/camel-cipher-context.c:1185
 msgid "Decrypting message"
 msgstr "Dekrypterer melding"
 
@@ -1772,27 +1794,21 @@ msgstr "Laster ned nye meldinger for frakoblet modus"
 msgid "Preparing folder '%s' for offline"
 msgstr "Forbereder mappe «%s» på frakobling"
 
-#: ../camel/camel-disco-folder.c:482 ../camel/camel-offline-folder.c:327
+#: ../camel/camel-disco-folder.c:482 ../camel/camel-offline-folder.c:329
 msgid "Copy folder content locally for _offline operation"
 msgstr "Kopier mappeinnhold lokalt for å jobbe frak_oblet"
 
-#: ../camel/camel-disco-store.c:456
+#: ../camel/camel-disco-store.c:456 ../camel/camel-imapx-folder.c:410
+#: ../camel/camel-imapx-folder.c:443 ../camel/camel-imapx-folder.c:477
+#: ../camel/camel-imapx-folder.c:533 ../camel/camel-imapx-folder.c:607
+#: ../camel/camel-imapx-folder.c:641 ../camel/camel-imapx-folder.c:681
+#: ../camel/camel-imapx-folder.c:717 ../camel/camel-imapx-store.c:284
+#: ../camel/camel-imapx-store.c:1375 ../camel/camel-imapx-store.c:1463
+#: ../camel/camel-imapx-store.c:1509
 #: ../camel/providers/imap/camel-imap-store.c:1239
 #: ../camel/providers/imap/camel-imap-store.c:2028
 #: ../camel/providers/imap/camel-imap-store.c:2523
 #: ../camel/providers/imap/camel-imap-store.c:3287
-#: ../camel/providers/imapx/camel-imapx-folder.c:410
-#: ../camel/providers/imapx/camel-imapx-folder.c:443
-#: ../camel/providers/imapx/camel-imapx-folder.c:477
-#: ../camel/providers/imapx/camel-imapx-folder.c:533
-#: ../camel/providers/imapx/camel-imapx-folder.c:607
-#: ../camel/providers/imapx/camel-imapx-folder.c:641
-#: ../camel/providers/imapx/camel-imapx-folder.c:681
-#: ../camel/providers/imapx/camel-imapx-folder.c:717
-#: ../camel/providers/imapx/camel-imapx-store.c:276
-#: ../camel/providers/imapx/camel-imapx-store.c:1367
-#: ../camel/providers/imapx/camel-imapx-store.c:1455
-#: ../camel/providers/imapx/camel-imapx-store.c:1501
 #: ../camel/providers/pop3/camel-pop3-folder.c:525
 #: ../camel/providers/pop3/camel-pop3-folder.c:655
 #: ../camel/providers/pop3/camel-pop3-folder.c:838
@@ -1917,17 +1933,17 @@ msgstr "Flytter meldinger"
 msgid "Copying messages"
 msgstr "Kopierer meldinger"
 
-#: ../camel/camel-folder.c:1233
+#: ../camel/camel-folder.c:1241
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "Kvoteinformasjon er ikke støttet for mappe «%s»"
 
-#: ../camel/camel-folder.c:3555
+#: ../camel/camel-folder.c:3575
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Henter melding «%s» i %s"
 
-#: ../camel/camel-folder.c:3704
+#: ../camel/camel-folder.c:3724
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Henter kvoteinformasjon for «%s»"
@@ -2111,6 +2127,278 @@ msgstr "Feil under dekryptering av MIME-del: protokollfeil"
 msgid "Encrypted content"
 msgstr "Kryptert innhold"
 
+#: ../camel/camel-imapx-folder.c:101
+#, c-format
+msgid "Could not create folder summary for %s"
+msgstr "Kunne ikke lage sammendrag for mappe %s"
+
+#: ../camel/camel-imapx-folder.c:109
+#, c-format
+msgid "Could not create cache for %s: "
+msgstr "Kunne ikke lage mellomlager for %s: "
+
+#: ../camel/camel-imapx-folder.c:787
+#: ../camel/providers/imap/camel-imap-folder.c:359
+#: ../camel/providers/nntp/camel-nntp-folder.c:763
+msgid "Apply message _filters to this folder"
+msgstr "Bruk mappe_filter på denne mappen"
+
+#: ../camel/camel-imapx-server.c:854
+msgid "Server disconnected"
+msgstr "Tjener frakoblet"
+
+#: ../camel/camel-imapx-server.c:1243
+msgid "Error writing to cache stream: "
+msgstr "Feil under skriving til mellomlagerstrøm: "
+
+#: ../camel/camel-imapx-server.c:1974
+#, c-format
+msgid "Not authenticated"
+msgstr "Ikke autentisert"
+
+#: ../camel/camel-imapx-server.c:2043
+msgid "Error performing IDLE"
+msgstr "Feil ved utføring av IDLE"
+
+#: ../camel/camel-imapx-server.c:2872
+#: ../camel/providers/imap/camel-imap-store.c:409
+#: ../camel/providers/imap/camel-imap-store.c:463
+#, c-format
+msgid "Failed to connect to IMAP server %s in secure mode: %s"
+msgstr "Kunne ikke koble til IMAP-tjener %s i sikker modus: %s"
+
+#: ../camel/camel-imapx-server.c:2873
+#: ../camel/providers/imap/camel-imap-store.c:410
+#: ../camel/providers/smtp/camel-smtp-transport.c:196
+msgid "STARTTLS not supported"
+msgstr "STARTTLS er ikke støttet"
+
+#: ../camel/camel-imapx-server.c:2912
+#: ../camel/providers/imap/camel-imap-store.c:435
+#, c-format
+msgid "Failed to connect to IMAP server %s in secure mode: "
+msgstr "Klarte ikke å koble til IMAP-tjener %s i sikker modus: "
+
+#: ../camel/camel-imapx-server.c:2979
+#: ../camel/providers/imap/camel-imap-store.c:734
+#, c-format
+msgid "IMAP server %s does not support %s authentication"
+msgstr "IMAP-tjener %s støtter ikke autentiseringstype %s"
+
+#: ../camel/camel-imapx-server.c:2990 ../camel/camel-session.c:475
+#: ../camel/providers/imap/camel-imap-store.c:1143
+#: ../camel/providers/pop3/camel-pop3-store.c:249
+#: ../camel/providers/pop3/camel-pop3-store.c:566
+#: ../camel/providers/smtp/camel-smtp-transport.c:455
+#, c-format
+msgid "No support for %s authentication"
+msgstr "Ingen støtte for autentiseringstype %s"
+
+#: ../camel/camel-imapx-server.c:3009
+#: ../camel/providers/imap/camel-imap-store.c:1111
+#: ../camel/providers/nntp/camel-nntp-store.c:505
+msgid "Cannot authenticate without a username"
+msgstr "Kan ikke autentisere uten brukernavn"
+
+#: ../camel/camel-imapx-server.c:3018
+#: ../camel/providers/imap/camel-imap-store.c:1119
+#: ../camel/providers/nntp/camel-nntp-store.c:514
+#: ../camel/providers/pop3/camel-pop3-store.c:491
+#: ../camel/providers/pop3/camel-pop3-store.c:511
+msgid "Authentication password not available"
+msgstr "Passord for autentisering er ikke tilgjengelig"
+
+#: ../camel/camel-imapx-server.c:3207
+msgid "Error fetching message"
+msgstr "Feil ved henting av melding"
+
+#: ../camel/camel-imapx-server.c:3279
+msgid "Closing tmp stream failed: "
+msgstr "Feil ved lukking av midlertidig strøm: "
+
+#: ../camel/camel-imapx-server.c:3381
+msgid "Error copying messages"
+msgstr "Feil ved kopiering av meldinger"
+
+#: ../camel/camel-imapx-server.c:3516
+msgid "Error appending message"
+msgstr "Feil ved forsøk på å legge til en melding"
+
+#: ../camel/camel-imapx-server.c:3701
+msgid "Error fetching message headers"
+msgstr "Feil ved henting av meldingshoder"
+
+#: ../camel/camel-imapx-server.c:3845
+msgid "Error retrieving message"
+msgstr "Feil ved henting av melding"
+
+#: ../camel/camel-imapx-server.c:3967 ../camel/camel-imapx-server.c:4155
+#: ../camel/providers/imap/camel-imap-folder.c:4062
+#: ../camel/providers/imap/camel-imap-folder.c:4145
+#, c-format
+msgid "Fetching summary information for new messages in %s"
+msgstr "Henter sammendragsinformasjon for nye meldinger i %s"
+
+#: ../camel/camel-imapx-server.c:4015
+#: ../camel/providers/imap/camel-imap-folder.c:1127
+#, c-format
+msgid "Scanning for changed messages in %s"
+msgstr "Søker etter endrede meldinger i %s"
+
+#: ../camel/camel-imapx-server.c:4053
+msgid "Error fetching new messages"
+msgstr "Feil ved henting av nye meldinger"
+
+#: ../camel/camel-imapx-server.c:4248
+msgid "Error while fetching messages"
+msgstr "Feil ved henting av meldinger"
+
+#: ../camel/camel-imapx-server.c:4256 ../camel/camel-imapx-server.c:4286
+#, c-format
+msgid "Fetching summary information for %d message in %s"
+msgid_plural "Fetching summary information for %d messages in %s"
+msgstr[0] "Henter sammendragsinformasjon for %d melding i %s"
+msgstr[1] "Henter sammendragsinformasjon for %d meldinger i %s"
+
+#: ../camel/camel-imapx-server.c:4411 ../camel/camel-imapx-server.c:4447
+msgid "Error refreshing folder"
+msgstr "Feil ved oppdatering av mappe"
+
+#: ../camel/camel-imapx-server.c:4540
+msgid "Error expunging message"
+msgstr "Feil ved tømming av melding"
+
+#: ../camel/camel-imapx-server.c:4629
+msgid "Error fetching folders"
+msgstr "Feil ved henting av mapper"
+
+#: ../camel/camel-imapx-server.c:4708
+msgid "Error subscribing to folder"
+msgstr "Feil ved abonnering på mappe"
+
+#: ../camel/camel-imapx-server.c:4765
+msgid "Error creating folder"
+msgstr "Feil ved oppretting av mappe"
+
+#: ../camel/camel-imapx-server.c:4814
+msgid "Error deleting folder"
+msgstr "Feil ved sletting av mappe"
+
+#: ../camel/camel-imapx-server.c:4868
+msgid "Error renaming folder"
+msgstr "Feil ved endring av navn på mappe"
+
+#: ../camel/camel-imapx-server.c:4923
+msgid "Error performing NOOP"
+msgstr "Feil ved utføring av NOOP"
+
+#: ../camel/camel-imapx-server.c:5021
+msgid "Error syncing changes"
+msgstr "Feil ved synkronisering av endringer"
+
+#: ../camel/camel-imapx-server.c:5632
+#: ../camel/providers/imap/camel-imap-folder.c:3527
+#, c-format
+msgid "Cannot get message with message ID %s: %s"
+msgstr "Kan ikke hente melding med meldings-ID %s: %s"
+
+#: ../camel/camel-imapx-server.c:5633
+#: ../camel/providers/imap/camel-imap-folder.c:3528
+msgid "No such message available."
+msgstr "Ingen slik melding tilgjengelig."
+
+#: ../camel/camel-imapx-server.c:5788 ../camel/camel-imapx-server.c:5803
+msgid "Cannot create spool file: "
+msgstr "Kan ikke spool-fil: "
+
+#: ../camel/camel-imapx-store.c:155
+#: ../camel/providers/imap/camel-imap-store.c:809
+#, c-format
+msgid "IMAP server %s"
+msgstr "IMAP-tjener %s"
+
+#: ../camel/camel-imapx-store.c:158
+#: ../camel/providers/imap/camel-imap-store.c:812
+#, c-format
+msgid "IMAP service for %s on %s"
+msgstr "IMAP-tjeneste for %s på %s"
+
+#: ../camel/camel-imapx-store.c:260
+#: ../camel/providers/imap/camel-imap-provider.c:107
+#: ../camel/providers/nntp/camel-nntp-provider.c:84
+#: ../camel/providers/pop3/camel-pop3-provider.c:82
+msgid "Password"
+msgstr "Passord"
+
+#: ../camel/camel-imapx-store.c:262
+#: ../camel/providers/imap/camel-imap-provider.c:109
+msgid "This option will connect to the IMAP server using a plaintext password."
+msgstr ""
+"Dette valget vil la deg koble til en IMAP-tjener ved å bruke et klartekst-"
+"passord."
+
+#: ../camel/camel-imapx-store.c:356
+#: ../camel/providers/imap/camel-imap-store.c:2065
+#: ../camel/providers/imap/camel-imap-store.c:2269
+#, c-format
+msgid "No such folder %s"
+msgstr "Mappen %s eksisterer ikke"
+
+#. create a dummy "." parent inbox, use to scan, then put back at the top level
+#: ../camel/camel-imapx-store.c:381 ../camel/camel-imapx-store.c:852
+#: ../camel/providers/imap/camel-imap-store.c:272
+#: ../camel/providers/imap/camel-imap-store.c:2694
+#: ../camel/providers/local/camel-maildir-folder.c:474
+#: ../camel/providers/local/camel-maildir-store.c:301
+#: ../camel/providers/local/camel-maildir-store.c:679
+#: ../camel/providers/local/camel-maildir-store.c:685
+#: ../camel/providers/local/camel-maildir-store.c:769
+#: ../camel/providers/local/camel-spool-store.c:387
+msgid "Inbox"
+msgstr "Innboks"
+
+#: ../camel/camel-imapx-store.c:1084
+#, c-format
+msgid "Retrieving folder list for %s"
+msgstr "Henter mappeliste for %s"
+
+#: ../camel/camel-imapx-store.c:1184
+#: ../camel/providers/nntp/camel-nntp-store.c:1790
+#, c-format
+msgid "No such folder: %s"
+msgstr "Ingen slik mappe: %s"
+
+#: ../camel/camel-imapx-store.c:1396
+#: ../camel/providers/imap/camel-imap-store.c:2079
+#: ../camel/providers/imap/camel-imap-store.c:2538
+#, c-format
+msgid ""
+"The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgstr "Mappenavn «%s» er ugyldig fordi det inneholder tegnet «%c»"
+
+#: ../camel/camel-imapx-store.c:1407
+#: ../camel/providers/imap/camel-imap-store.c:2551
+#, c-format
+msgid "Unknown parent folder: %s"
+msgstr "Ukjent opphavsmappe: %s"
+
+#: ../camel/camel-imapx-store.c:1417
+#: ../camel/providers/imap/camel-imap-store.c:2143
+#: ../camel/providers/imap/camel-imap-store.c:2602
+#, c-format
+msgid "The parent folder is not allowed to contain subfolders"
+msgstr "Opphavsmappen tillates ikke å ha undermapper"
+
+#: ../camel/camel-imapx-stream.c:72
+#, c-format
+msgid "Source stream returned no data"
+msgstr "Kildestrøm returnerte ingen data"
+
+#: ../camel/camel-imapx-stream.c:81
+#, c-format
+msgid "Source stream unavailable"
+msgstr "Kildestrøm er ikke tilgjengelig"
+
 #: ../camel/camel-lock.c:102
 #, c-format
 msgid "Could not create lock file for %s: %s"
@@ -2285,7 +2573,7 @@ msgstr "Kunne ikke laste %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "Kunne ikke laste %s: Ingen initieringskode i modulen."
 
-#: ../camel/camel-provider.c:402 ../camel/camel-session.c:384
+#: ../camel/camel-provider.c:402 ../camel/camel-session.c:387
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Ingen tilbyder tilgjengelig for protokoll «%s»"
@@ -2522,27 +2810,17 @@ msgstr "POP før SMTP autentisering forsøkt med en %s-tjeneste"
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "Kompilering av regulært uttrykk feilet: %s: %s"
 
-#: ../camel/camel-session.c:393
+#: ../camel/camel-session.c:396
 #, c-format
 msgid "Invalid GType registered for protocol '%s'"
 msgstr "Ugyldig GType registrert for protokoll «%s»"
 
-#: ../camel/camel-session.c:472
-#: ../camel/providers/imap/camel-imap-store.c:1143
-#: ../camel/providers/imapx/camel-imapx-server.c:2986
-#: ../camel/providers/pop3/camel-pop3-store.c:249
-#: ../camel/providers/pop3/camel-pop3-store.c:566
-#: ../camel/providers/smtp/camel-smtp-transport.c:455
-#, c-format
-msgid "No support for %s authentication"
-msgstr "Ingen støtte for autentiseringstype %s"
-
-#: ../camel/camel-session.c:487
+#: ../camel/camel-session.c:490
 #, c-format
 msgid "%s authentication failed"
 msgstr "Autentisering med %s feilet"
 
-#: ../camel/camel-session.c:1194
+#: ../camel/camel-session.c:1199
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Vennligst oppgi %s-passord for %s på vert %s"
@@ -2739,50 +3017,50 @@ msgstr "Klarte ikke å legge til data for koder"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME dekryptering: Fant ikke kryptert innhold"
 
-#: ../camel/camel-store.c:1799
+#: ../camel/camel-store.c:1819
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "Kan ikke opprette mappe «%s»: mappen eksisterer"
 
-#: ../camel/camel-store.c:1842
+#: ../camel/camel-store.c:1862
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Åpner mappe «%s»"
 
-#: ../camel/camel-store.c:2027
+#: ../camel/camel-store.c:2047
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Søker etter mapper i «%s»"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:2039 ../camel/camel-store.c:2049
+#: ../camel/camel-store.c:2059 ../camel/camel-store.c:2069
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Papirkurv"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:2042 ../camel/camel-store.c:2053
+#: ../camel/camel-store.c:2062 ../camel/camel-store.c:2073
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Søppel"
 
-#: ../camel/camel-store.c:2501
+#: ../camel/camel-store.c:2521
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Kan ikke opprette mappe: «%s»: mappen eksisterer"
 
-#: ../camel/camel-store.c:2515
+#: ../camel/camel-store.c:2535
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Lager mappe «%s»"
 
-#: ../camel/camel-store.c:2633 ../camel/camel-vee-store.c:352
+#: ../camel/camel-store.c:2653 ../camel/camel-vee-store.c:352
 #: ../camel/providers/local/camel-maildir-store.c:300
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Kan ikke slette mappe: %s: Ugyldig operasjon"
 
-#: ../camel/camel-store.c:2776 ../camel/camel-vee-store.c:402
+#: ../camel/camel-store.c:2796 ../camel/camel-vee-store.c:402
 #: ../camel/providers/local/camel-maildir-store.c:768
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -2889,7 +3167,7 @@ msgstr "Vertsnavnet er for langt (maks 255 tegn)"
 msgid "Invalid reply from proxy server"
 msgstr "Ugyldig svar fra proxy-tjener"
 
-#: ../camel/camel-tcp-stream-ssl.c:474
+#: ../camel/camel-tcp-stream-ssl.c:501
 #, c-format
 msgid ""
 "   Issuer:       %s\n"
@@ -2902,16 +3180,16 @@ msgstr ""
 "   Fingeravtrykk:  %s\n"
 "   Signatur:       %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:480
+#: ../camel/camel-tcp-stream-ssl.c:507
 msgid "GOOD"
 msgstr "GODTATT"
 
-#: ../camel/camel-tcp-stream-ssl.c:480
+#: ../camel/camel-tcp-stream-ssl.c:507
 msgid "BAD"
 msgstr "UGYLDIG"
 
 #. construct our user prompt
-#: ../camel/camel-tcp-stream-ssl.c:484
+#: ../camel/camel-tcp-stream-ssl.c:511
 #, c-format
 msgid ""
 "SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n"
@@ -2924,19 +3202,19 @@ msgstr ""
 "Detaljert informasjon om sertifikatet:\n"
 "%s"
 
-#: ../camel/camel-tcp-stream-ssl.c:488
+#: ../camel/camel-tcp-stream-ssl.c:515
 msgid "_Reject"
 msgstr "A_vvis"
 
-#: ../camel/camel-tcp-stream-ssl.c:489
+#: ../camel/camel-tcp-stream-ssl.c:516
 msgid "Accept _Temporarily"
 msgstr "Godta midler_tidig"
 
-#: ../camel/camel-tcp-stream-ssl.c:490
+#: ../camel/camel-tcp-stream-ssl.c:517
 msgid "_Accept Permanently"
 msgstr "Godt_a permanent"
 
-#: ../camel/camel-tcp-stream-ssl.c:548
+#: ../camel/camel-tcp-stream-ssl.c:578
 #, c-format
 msgid ""
 "Certificate problem: %s\n"
@@ -2945,7 +3223,7 @@ msgstr ""
 "Sertifikatproblem: %s\n"
 "Utsteder: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:600
+#: ../camel/camel-tcp-stream-ssl.c:630
 #, c-format
 msgid ""
 "Bad certificate domain: %s\n"
@@ -2954,7 +3232,7 @@ msgstr ""
 "Ugyldig sertifikatdomene: %s\n"
 "Utsteder: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:618
+#: ../camel/camel-tcp-stream-ssl.c:648
 #, c-format
 msgid ""
 "Certificate expired: %s\n"
@@ -2963,7 +3241,7 @@ msgstr ""
 "Sertifikatet har gått ut: %s\n"
 "Utsteder: %s"
 
-#: ../camel/camel-tcp-stream-ssl.c:635
+#: ../camel/camel-tcp-stream-ssl.c:665
 #, c-format
 msgid ""
 "Certificate revocation list expired: %s\n"
@@ -3085,12 +3363,6 @@ msgstr "Uventet svar «OK» fra IMAP-tjener: %s"
 msgid "Always check for _new mail in this folder"
 msgstr "Alltid se etter _nye meldinger i denne mappen"
 
-#: ../camel/providers/imap/camel-imap-folder.c:359
-#: ../camel/providers/imapx/camel-imapx-folder.c:787
-#: ../camel/providers/nntp/camel-nntp-folder.c:763
-msgid "Apply message _filters to this folder"
-msgstr "Bruk mappe_filter på denne mappen"
-
 #: ../camel/providers/imap/camel-imap-folder.c:440
 #, c-format
 msgid "Could not create directory %s: %s"
@@ -3101,26 +3373,9 @@ msgstr "Kan ikke opprette katalog %s: %s"
 msgid "Could not load summary for %s"
 msgstr "Kunne ikke laste sammendrag for %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1127
-#: ../camel/providers/imapx/camel-imapx-server.c:4011
-#, c-format
-msgid "Scanning for changed messages in %s"
-msgstr "Søker etter endrede meldinger i %s"
-
 #: ../camel/providers/imap/camel-imap-folder.c:3490
 msgid "Unable to retrieve message: "
 msgstr "Kan ikke hente melding: "
-
-#: ../camel/providers/imap/camel-imap-folder.c:3527
-#: ../camel/providers/imapx/camel-imapx-server.c:5629
-#, c-format
-msgid "Cannot get message with message ID %s: %s"
-msgstr "Kan ikke hente melding med meldings-ID %s: %s"
-
-#: ../camel/providers/imap/camel-imap-folder.c:3528
-#: ../camel/providers/imapx/camel-imapx-server.c:5630
-msgid "No such message available."
-msgstr "Ingen slik melding tilgjengelig."
 
 #: ../camel/providers/imap/camel-imap-folder.c:3603
 #: ../camel/providers/imap/camel-imap-folder.c:4481
@@ -3128,14 +3383,6 @@ msgstr "Ingen slik melding tilgjengelig."
 #, c-format
 msgid "This message is not currently available"
 msgstr "Denne meldingen er ikke tilgjengelig"
-
-#: ../camel/providers/imap/camel-imap-folder.c:4062
-#: ../camel/providers/imap/camel-imap-folder.c:4145
-#: ../camel/providers/imapx/camel-imapx-server.c:3963
-#: ../camel/providers/imapx/camel-imapx-server.c:4151
-#, c-format
-msgid "Fetching summary information for new messages in %s"
-msgstr "Henter sammendragsinformasjon for nye meldinger i %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:4279
 #, c-format
@@ -3173,27 +3420,27 @@ msgid "Failed to cache %s: "
 msgstr "Feil ved mellomlagring av %s: "
 
 #: ../camel/providers/imap/camel-imap-provider.c:40
-#: ../camel/providers/imapx/camel-imapx-provider.c:40
+#: ../camel/providers/imapx/camel-imapx-provider.c:38
 msgid "Checking for New Mail"
 msgstr "Ser etter nye meldinger"
 
 #: ../camel/providers/imap/camel-imap-provider.c:42
-#: ../camel/providers/imapx/camel-imapx-provider.c:42
+#: ../camel/providers/imapx/camel-imapx-provider.c:40
 msgid "C_heck for new messages in all folders"
 msgstr "_Se etter nye meldinger i alle mapper"
 
 #: ../camel/providers/imap/camel-imap-provider.c:44
-#: ../camel/providers/imapx/camel-imapx-provider.c:44
+#: ../camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Ch_eck for new messages in subscribed folders"
 msgstr "S_e etter nye meldinger i abonnerte mapper"
 
 #: ../camel/providers/imap/camel-imap-provider.c:48
-#: ../camel/providers/imapx/camel-imapx-provider.c:52
+#: ../camel/providers/imapx/camel-imapx-provider.c:50
 msgid "Connection to Server"
 msgstr "Tilkobling til tjener"
 
 #: ../camel/providers/imap/camel-imap-provider.c:50
-#: ../camel/providers/imapx/camel-imapx-provider.c:54
+#: ../camel/providers/imapx/camel-imapx-provider.c:52
 msgid "_Use custom command to connect to server"
 msgstr "Br_uk egendefinert kommando for å koble til tjener"
 
@@ -3202,18 +3449,18 @@ msgid "Co_mmand:"
 msgstr "Ko_mmando:"
 
 #: ../camel/providers/imap/camel-imap-provider.c:56
-#: ../camel/providers/imapx/camel-imapx-provider.c:62
+#: ../camel/providers/imapx/camel-imapx-provider.c:60
 #: ../camel/providers/nntp/camel-nntp-provider.c:46
 msgid "Folders"
 msgstr "Mapper"
 
 #: ../camel/providers/imap/camel-imap-provider.c:58
-#: ../camel/providers/imapx/camel-imapx-provider.c:64
+#: ../camel/providers/imapx/camel-imapx-provider.c:62
 msgid "_Show only subscribed folders"
 msgstr "Vi_s kun abonnerte mapper"
 
 #: ../camel/providers/imap/camel-imap-provider.c:60
-#: ../camel/providers/imapx/camel-imapx-provider.c:67
+#: ../camel/providers/imapx/camel-imapx-provider.c:65
 msgid "O_verride server-supplied folder namespace"
 msgstr "O_verstyr tjeners navneområde for mapper"
 
@@ -3222,7 +3469,7 @@ msgid "Names_pace:"
 msgstr "_Navneområde:"
 
 #: ../camel/providers/imap/camel-imap-provider.c:64
-#: ../camel/providers/imapx/camel-imapx-provider.c:72
+#: ../camel/providers/imapx/camel-imapx-provider.c:70
 #: ../camel/providers/local/camel-local-provider.c:41
 #: ../camel/providers/local/camel-local-provider.c:77
 #: ../camel/providers/local/camel-local-provider.c:97
@@ -3231,28 +3478,28 @@ msgid "Options"
 msgstr "Alternativer"
 
 #: ../camel/providers/imap/camel-imap-provider.c:66
-#: ../camel/providers/imapx/camel-imapx-provider.c:74
+#: ../camel/providers/imapx/camel-imapx-provider.c:72
 #: ../camel/providers/nntp/camel-nntp-provider.c:43
 msgid "Apply _filters to new messages in all folders"
 msgstr "Bruk filtre for nye meldinger i alle mapper"
 
 #: ../camel/providers/imap/camel-imap-provider.c:68
-#: ../camel/providers/imapx/camel-imapx-provider.c:76
+#: ../camel/providers/imapx/camel-imapx-provider.c:74
 msgid "_Apply filters to new messages in Inbox on this server"
 msgstr "_Bruk filtre for nye meldinger i Innboks på denne tjeneren"
 
 #: ../camel/providers/imap/camel-imap-provider.c:70
-#: ../camel/providers/imapx/camel-imapx-provider.c:78
+#: ../camel/providers/imapx/camel-imapx-provider.c:76
 msgid "Check new messages for _Junk contents"
 msgstr "Se etter søppelinn_hold i nye meldinger"
 
 #: ../camel/providers/imap/camel-imap-provider.c:72
-#: ../camel/providers/imapx/camel-imapx-provider.c:80
+#: ../camel/providers/imapx/camel-imapx-provider.c:78
 msgid "Only check for Junk messages in the IN_BOX folder"
 msgstr "Se kun etter søppelinnhold i nye meldinger i inn_boksen"
 
 #: ../camel/providers/imap/camel-imap-provider.c:74
-#: ../camel/providers/imapx/camel-imapx-provider.c:82
+#: ../camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Automatically synchroni_ze remote mail locally"
 msgstr "S_ynkroniser eksterne meldinger med lokale meldinger automatisk"
 
@@ -3261,7 +3508,7 @@ msgid "IMAP default port"
 msgstr "Forvalgt port for IMAP"
 
 #: ../camel/providers/imap/camel-imap-provider.c:81
-#: ../camel/providers/imapx/camel-imapx-provider.c:89
+#: ../camel/providers/imapx/camel-imapx-provider.c:87
 msgid "IMAP over SSL"
 msgstr "IMAP over SSL"
 
@@ -3270,110 +3517,9 @@ msgid "IMAP"
 msgstr "IMAP"
 
 #: ../camel/providers/imap/camel-imap-provider.c:89
-#: ../camel/providers/imapx/camel-imapx-provider.c:98
+#: ../camel/providers/imapx/camel-imapx-provider.c:96
 msgid "For reading and storing mail on IMAP servers."
 msgstr "For lesing og lagring av e-post på IMAP-tjenere."
-
-#: ../camel/providers/imap/camel-imap-provider.c:107
-#: ../camel/providers/imapx/camel-imapx-provider.c:118
-#: ../camel/providers/nntp/camel-nntp-provider.c:84
-#: ../camel/providers/pop3/camel-pop3-provider.c:82
-msgid "Password"
-msgstr "Passord"
-
-#: ../camel/providers/imap/camel-imap-provider.c:109
-#: ../camel/providers/imapx/camel-imapx-provider.c:120
-msgid "This option will connect to the IMAP server using a plaintext password."
-msgstr ""
-"Dette valget vil la deg koble til en IMAP-tjener ved å bruke et klartekst-"
-"passord."
-
-#. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imap/camel-imap-store.c:272
-#: ../camel/providers/imap/camel-imap-store.c:2694
-#: ../camel/providers/imapx/camel-imapx-store.c:373
-#: ../camel/providers/imapx/camel-imapx-store.c:844
-#: ../camel/providers/local/camel-maildir-folder.c:474
-#: ../camel/providers/local/camel-maildir-store.c:301
-#: ../camel/providers/local/camel-maildir-store.c:679
-#: ../camel/providers/local/camel-maildir-store.c:685
-#: ../camel/providers/local/camel-maildir-store.c:769
-#: ../camel/providers/local/camel-spool-store.c:387
-msgid "Inbox"
-msgstr "Innboks"
-
-#: ../camel/providers/imap/camel-imap-store.c:409
-#: ../camel/providers/imap/camel-imap-store.c:463
-#: ../camel/providers/imapx/camel-imapx-server.c:2868
-#, c-format
-msgid "Failed to connect to IMAP server %s in secure mode: %s"
-msgstr "Kunne ikke koble til IMAP-tjener %s i sikker modus: %s"
-
-#: ../camel/providers/imap/camel-imap-store.c:410
-#: ../camel/providers/imapx/camel-imapx-server.c:2869
-#: ../camel/providers/smtp/camel-smtp-transport.c:196
-msgid "STARTTLS not supported"
-msgstr "STARTTLS er ikke støttet"
-
-#: ../camel/providers/imap/camel-imap-store.c:435
-#: ../camel/providers/imapx/camel-imapx-server.c:2908
-#, c-format
-msgid "Failed to connect to IMAP server %s in secure mode: "
-msgstr "Klarte ikke å koble til IMAP-tjener %s i sikker modus: "
-
-#: ../camel/providers/imap/camel-imap-store.c:734
-#: ../camel/providers/imapx/camel-imapx-server.c:2975
-#, c-format
-msgid "IMAP server %s does not support %s authentication"
-msgstr "IMAP-tjener %s støtter ikke autentiseringstype %s"
-
-#: ../camel/providers/imap/camel-imap-store.c:809
-#: ../camel/providers/imapx/camel-imapx-store.c:155
-#, c-format
-msgid "IMAP server %s"
-msgstr "IMAP-tjener %s"
-
-#: ../camel/providers/imap/camel-imap-store.c:812
-#: ../camel/providers/imapx/camel-imapx-store.c:158
-#, c-format
-msgid "IMAP service for %s on %s"
-msgstr "IMAP-tjeneste for %s på %s"
-
-#: ../camel/providers/imap/camel-imap-store.c:1111
-#: ../camel/providers/imapx/camel-imapx-server.c:3005
-#: ../camel/providers/nntp/camel-nntp-store.c:505
-msgid "Cannot authenticate without a username"
-msgstr "Kan ikke autentisere uten brukernavn"
-
-#: ../camel/providers/imap/camel-imap-store.c:1119
-#: ../camel/providers/imapx/camel-imapx-server.c:3014
-#: ../camel/providers/nntp/camel-nntp-store.c:514
-#: ../camel/providers/pop3/camel-pop3-store.c:491
-#: ../camel/providers/pop3/camel-pop3-store.c:511
-msgid "Authentication password not available"
-msgstr "Passord for autentisering er ikke tilgjengelig"
-
-#: ../camel/providers/imap/camel-imap-store.c:2065
-#: ../camel/providers/imap/camel-imap-store.c:2269
-#: ../camel/providers/imapx/camel-imapx-store.c:348
-#, c-format
-msgid "No such folder %s"
-msgstr "Mappen %s eksisterer ikke"
-
-#: ../camel/providers/imap/camel-imap-store.c:2079
-#: ../camel/providers/imap/camel-imap-store.c:2538
-#: ../camel/providers/imapx/camel-imapx-store.c:1388
-#, c-format
-msgid ""
-"The folder name \"%s\" is invalid because it contains the character \"%c\""
-msgstr "Mappenavn «%s» er ugyldig fordi det inneholder tegnet «%c»"
-
-#: ../camel/providers/imap/camel-imap-store.c:2143
-#: ../camel/providers/imap/camel-imap-store.c:2602
-#: ../camel/providers/imapx/camel-imapx-store.c:1409
-#, c-format
-msgid "The parent folder is not allowed to contain subfolders"
-msgstr "Opphavsmappen tillates ikke å ha undermapper"
 
 #: ../camel/providers/imap/camel-imap-store.c:2196
 #: ../camel/providers/local/camel-maildir-store.c:268
@@ -3382,12 +3528,6 @@ msgstr "Opphavsmappen tillates ikke å ha undermapper"
 #, c-format
 msgid "Cannot create folder '%s': folder exists."
 msgstr "Kan ikke opprette mappe «%s»: mappen eksisterer."
-
-#: ../camel/providers/imap/camel-imap-store.c:2551
-#: ../camel/providers/imapx/camel-imapx-store.c:1399
-#, c-format
-msgid "Unknown parent folder: %s"
-msgstr "Ukjent opphavsmappe: %s"
 
 #: ../camel/providers/imap/camel-imap-store.c:2977
 #, c-format
@@ -3403,163 +3543,33 @@ msgstr "Tjener koblet fra uventet"
 msgid "Server unexpectedly disconnected: "
 msgstr "Tjener koblet fra uventet: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:101
-#, c-format
-msgid "Could not create folder summary for %s"
-msgstr "Kunne ikke lage sammendrag for mappe %s"
-
-#: ../camel/providers/imapx/camel-imapx-folder.c:109
-#, c-format
-msgid "Could not create cache for %s: "
-msgstr "Kunne ikke lage mellomlager for %s: "
-
-#: ../camel/providers/imapx/camel-imapx-provider.c:46
+#: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Use _Quick Resync if the server supports it"
 msgstr "Bruk _rask omsynkronisering hvis tjeneren støtter det"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:48
+#: ../camel/providers/imapx/camel-imapx-provider.c:46
 msgid "_Listen for server change notifications"
 msgstr "_Lytt etter endringsvarsling fra tjener"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:56
+#: ../camel/providers/imapx/camel-imapx-provider.c:54
 msgid "Command:"
 msgstr "Kommando:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:58
+#: ../camel/providers/imapx/camel-imapx-provider.c:56
 msgid "Numbe_r of cached connections to use"
 msgstr "Antall mellomlag_rede tilkoblinger som skal brukes"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:69
+#: ../camel/providers/imapx/camel-imapx-provider.c:67
 msgid "Namespace:"
 msgstr "Navneområde:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:88
+#: ../camel/providers/imapx/camel-imapx-provider.c:86
 msgid "Default IMAP port"
 msgstr "Forvalgt port for IMAP"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:96
+#: ../camel/providers/imapx/camel-imapx-provider.c:94
 msgid "IMAP+"
 msgstr "IMAP+"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:854
-msgid "Server disconnected"
-msgstr "Tjener frakoblet"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:1243
-msgid "Error writing to cache stream: "
-msgstr "Feil under skriving til mellomlagerstrøm: "
-
-#: ../camel/providers/imapx/camel-imapx-server.c:1970
-#, c-format
-msgid "Not authenticated"
-msgstr "Ikke autentisert"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:2039
-msgid "Error performing IDLE"
-msgstr "Feil ved utføring av IDLE"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:3203
-msgid "Error fetching message"
-msgstr "Feil ved henting av melding"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:3275
-msgid "Closing tmp stream failed: "
-msgstr "Feil ved lukking av midlertidig strøm: "
-
-#: ../camel/providers/imapx/camel-imapx-server.c:3377
-msgid "Error copying messages"
-msgstr "Feil ved kopiering av meldinger"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:3512
-msgid "Error appending message"
-msgstr "Feil ved forsøk på å legge til en melding"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:3697
-msgid "Error fetching message headers"
-msgstr "Feil ved henting av meldingshoder"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:3841
-msgid "Error retrieving message"
-msgstr "Feil ved henting av melding"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4049
-msgid "Error fetching new messages"
-msgstr "Feil ved henting av nye meldinger"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4244
-msgid "Error while fetching messages"
-msgstr "Feil ved henting av meldinger"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4252
-#: ../camel/providers/imapx/camel-imapx-server.c:4282
-#, c-format
-msgid "Fetching summary information for %d message in %s"
-msgid_plural "Fetching summary information for %d messages in %s"
-msgstr[0] "Henter sammendragsinformasjon for %d melding i %s"
-msgstr[1] "Henter sammendragsinformasjon for %d meldinger i %s"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4407
-#: ../camel/providers/imapx/camel-imapx-server.c:4443
-msgid "Error refreshing folder"
-msgstr "Feil ved oppdatering av mappe"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4536
-msgid "Error expunging message"
-msgstr "Feil ved tømming av melding"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4625
-msgid "Error fetching folders"
-msgstr "Feil ved henting av mapper"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4704
-msgid "Error subscribing to folder"
-msgstr "Feil ved abonnering på mappe"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4761
-msgid "Error creating folder"
-msgstr "Feil ved oppretting av mappe"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4810
-msgid "Error deleting folder"
-msgstr "Feil ved sletting av mappe"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4864
-msgid "Error renaming folder"
-msgstr "Feil ved endring av navn på mappe"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4919
-msgid "Error performing NOOP"
-msgstr "Feil ved utføring av NOOP"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:5017
-msgid "Error syncing changes"
-msgstr "Feil ved synkronisering av endringer"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:5785
-#: ../camel/providers/imapx/camel-imapx-server.c:5800
-msgid "Cannot create spool file: "
-msgstr "Kan ikke spool-fil: "
-
-#: ../camel/providers/imapx/camel-imapx-store.c:1076
-#, c-format
-msgid "Retrieving folder list for %s"
-msgstr "Henter mappeliste for %s"
-
-#: ../camel/providers/imapx/camel-imapx-store.c:1176
-#: ../camel/providers/nntp/camel-nntp-store.c:1790
-#, c-format
-msgid "No such folder: %s"
-msgstr "Ingen slik mappe: %s"
-
-#: ../camel/providers/imapx/camel-imapx-stream.c:70
-#, c-format
-msgid "Source stream returned no data"
-msgstr "Kildestrøm returnerte ingen data"
-
-#: ../camel/providers/imapx/camel-imapx-stream.c:79
-#, c-format
-msgid "Source stream unavailable"
-msgstr "Kildestrøm er ikke tilgjengelig"
 
 #: ../camel/providers/local/camel-local-folder.c:191
 #, c-format
@@ -4874,7 +4884,7 @@ msgid "Source already loaded"
 msgstr "Kilden er allerede lastet"
 
 #. Translators: This means that the EClient does not support offline mode, or
-#. it's not set to by a user, thus it is unavailable while user is not connected.
+#. * it's not set to by a user, thus it is unavailable while user is not connected.
 #: ../libedataserver/e-client.c:137
 msgid "Offline unavailable"
 msgstr "Frakoblet modus er ikke tilgjengelig"
@@ -5120,7 +5130,7 @@ msgid "Where to read automatic proxy configuration from."
 msgstr "Lokasjon for innlesing av automatisk konfigurasjon av proxy."
 
 #: ../libedataserverui/e-book-auth-util.c:96
-#: ../libedataserverui/e-book-auth-util.c:656
+#: ../libedataserverui/e-book-auth-util.c:658
 msgid "Accessing LDAP Server anonymously"
 msgstr "Kobler til LDAP-tjener anonymt"
 
@@ -5238,15 +5248,15 @@ msgid "Address B_ook:"
 msgstr "Adresseb_ok:"
 
 #: ../libedataserverui/e-name-selector-dialog.c:253
-msgid "Cate_gory:"
-msgstr "Kate_gori"
+msgid "Cat_egory:"
+msgstr "Kat_egori"
 
 #: ../libedataserverui/e-name-selector-dialog.c:271
 msgid "_Search:"
 msgstr "_Søk:"
 
 #: ../libedataserverui/e-name-selector-dialog.c:289
-#: ../libedataserverui/e-name-selector-dialog.c:1050
+#: ../libedataserverui/e-name-selector-dialog.c:1063
 msgid "Any Category"
 msgstr "Hvilken som helst kategori"
 
@@ -5266,19 +5276,19 @@ msgstr "Adressebok"
 msgid "Contacts"
 msgstr "Kontakter"
 
-#: ../libedataserverui/e-name-selector-dialog.c:458
+#: ../libedataserverui/e-name-selector-dialog.c:471
 msgid "Select Contacts from Address Book"
 msgstr "Velg kontakter fra adresseboken"
 
-#: ../libedataserverui/e-name-selector-dialog.c:788
+#: ../libedataserverui/e-name-selector-dialog.c:801
 msgid "_Add"
 msgstr "_Legg til"
 
-#: ../libedataserverui/e-name-selector-dialog.c:792
+#: ../libedataserverui/e-name-selector-dialog.c:805
 msgid "_Remove"
 msgstr "_Fjern"
 
-#: ../libedataserverui/e-name-selector-dialog.c:964
+#: ../libedataserverui/e-name-selector-dialog.c:977
 #, c-format
 msgid "Error loading address book: %s"
 msgstr "Feil under lasting av adressebok: %s"
