@@ -391,7 +391,6 @@ camel_certdb_nss_cert_set (CamelCertDB *certdb,
 	gchar *filename, *fingerprint;
 	CamelStream *stream;
 	const gchar *cert_dir;
-	struct stat st;
 
 	fingerprint = ccert->fingerprint;
 
