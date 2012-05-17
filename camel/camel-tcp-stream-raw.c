@@ -273,8 +273,8 @@ _set_g_error_from_errno (GError **error,
 			"%s", g_strerror (errn));
 }
 
-static void
-tcp_stream_set_error_from_pr_error (GError **error)
+void
+_set_error_from_pr_error (GError **error)
 {
 	gchar *error_message = NULL;
 	PRInt32 length;
@@ -339,7 +339,7 @@ read_from_prfd (PRFileDesc *fd,
 		return -1;
 
 	if (bytes_read == -1) {
-		tcp_stream_set_error_from_pr_error (error);
+		_set_error_from_pr_error (error);
 		return -1;
 	}
 
@@ -393,7 +393,7 @@ write_to_prfd (PRFileDesc *fd,
 		return -1;
 
 	if (bytes_written == -1) {
-		tcp_stream_set_error_from_pr_error (error);
+		_set_error_from_pr_error (error);
 		return -1;
 	}
 
@@ -534,7 +534,7 @@ socket_connect (struct addrinfo *host,
 		goto fail;
 
 	if (status == PR_FAILURE) {
-		tcp_stream_set_error_from_pr_error (error);
+		_set_error_from_pr_error (error);
 		goto fail;
 	}
 

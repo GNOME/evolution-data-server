@@ -332,8 +332,9 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 				filename, error ? error->message : "Unknown error");
 			g_clear_error (&error);
 
-			camel_cert_set_trust (
-				certdb, ccert, CAMEL_CERT_TRUST_UNKNOWN);
+			/* failed to load the certificate, thus remove it from
+			   the CertDB, thus it can be re-added and properly saved */
+			camel_certdb_remove_host (certdb, hostname);
 			camel_certdb_touch (certdb);
 			g_free (fingerprint);
 			g_free (filename);
@@ -786,8 +787,7 @@ rehandshake_ssl (PRFileDesc *fd,
 		status = SECFailure;
 
 	} else if (status == SECFailure) {
-		_set_errno_from_pr_error (PR_GetError ());
-		_set_g_error_from_errno (error, FALSE);
+		_set_error_from_pr_error (error);
 	}
 
 	return (status == SECSuccess);
@@ -942,8 +942,7 @@ camel_tcp_stream_ssl_enable_ssl (CamelTcpStreamSSL *ssl,
 
 	if (fd && !ssl->priv->ssl_mode) {
 		if (!(ssl_fd = enable_ssl (ssl, fd))) {
-			_set_errno_from_pr_error (PR_GetError ());
-			_set_g_error_from_errno (error, FALSE);
+			_set_error_from_pr_error (error);
 			return -1;
 		}
 
