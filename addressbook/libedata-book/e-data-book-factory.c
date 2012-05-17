@@ -134,6 +134,9 @@ book_freed_cb (EDataBookFactory *factory,
 
 	d (g_debug ("in factory %p (%p) is dead", factory, dead));
 
+	g_mutex_lock (priv->books_lock);
+	g_mutex_lock (priv->connections_lock);
+
 	g_hash_table_foreach_remove (
 		priv->books, remove_dead_pointer_cb, dead);
 
@@ -153,6 +156,9 @@ book_freed_cb (EDataBookFactory *factory,
 			break;
 		}
 	}
+
+	g_mutex_unlock (priv->connections_lock);
+	g_mutex_unlock (priv->books_lock);
 
 	e_dbus_server_release (E_DBUS_SERVER (factory));
 }
