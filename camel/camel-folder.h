@@ -461,8 +461,6 @@ gint		camel_folder_cmp_uids		(CamelFolder *folder,
 						 const gchar *uid2);
 void		camel_folder_sort_uids		(CamelFolder *folder,
 						 GPtrArray *uids);
-gboolean	camel_folder_has_search_capability
-						(CamelFolder *folder);
 GPtrArray *	camel_folder_search_by_expression
 						(CamelFolder *folder,
 						 const gchar *expr,

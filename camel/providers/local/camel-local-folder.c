@@ -506,8 +506,7 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 	local_folder->priv = CAMEL_LOCAL_FOLDER_GET_PRIVATE (local_folder);
 	local_folder->priv->search_lock = g_mutex_new ();
 
-	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
-				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
+	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |
 	    CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |

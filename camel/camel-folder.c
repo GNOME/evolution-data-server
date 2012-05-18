@@ -2628,22 +2628,6 @@ camel_folder_free_summary (CamelFolder *folder,
 }
 
 /**
- * camel_folder_has_search_capability:
- * @folder: a #CamelFolder
- *
- * Checks if a folder supports searching.
- *
- * Returns: %TRUE if the folder supports searching or %FALSE otherwise
- **/
-gboolean
-camel_folder_has_search_capability (CamelFolder *folder)
-{
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
-
-	return folder->folder_flags & CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
-}
-
-/**
  * camel_folder_search_by_expression:
  * @folder: a #CamelFolder
  * @expr: a search expression
@@ -2665,7 +2649,6 @@ camel_folder_search_by_expression (CamelFolder *folder,
 	GPtrArray *matches;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
-	g_return_val_if_fail (folder->folder_flags & CAMEL_FOLDER_HAS_SEARCH_CAPABILITY, NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->search_by_expression != NULL, NULL);
@@ -2700,7 +2683,6 @@ camel_folder_count_by_expression (CamelFolder *folder,
 	CamelFolderClass *class;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), 0);
-	g_return_val_if_fail (folder->folder_flags & CAMEL_FOLDER_HAS_SEARCH_CAPABILITY, 0);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->count_by_expression != NULL, 0);
@@ -2734,7 +2716,6 @@ camel_folder_search_by_uids (CamelFolder *folder,
 	GPtrArray *matches;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
-	g_return_val_if_fail (folder->folder_flags & CAMEL_FOLDER_HAS_SEARCH_CAPABILITY, NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->search_by_uids != NULL, NULL);

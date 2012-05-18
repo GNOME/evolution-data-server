@@ -2072,8 +2072,7 @@ camel_vee_folder_init (CamelVeeFolder *vee_folder)
 
 	vee_folder->priv = CAMEL_VEE_FOLDER_GET_PRIVATE (vee_folder);
 
-	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
-				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
+	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 
 	/* FIXME: what to do about user flags if the subfolder doesn't support them? */
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |

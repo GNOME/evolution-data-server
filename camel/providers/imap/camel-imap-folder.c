@@ -372,8 +372,7 @@ camel_imap_folder_init (CamelImapFolder *imap_folder)
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED | CAMEL_MESSAGE_DELETED |
 		CAMEL_MESSAGE_DRAFT | CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN;
 
-	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
-				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
+	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 
 	g_static_mutex_init (&imap_folder->priv->search_lock);
 	g_static_rec_mutex_init (&imap_folder->priv->cache_lock);

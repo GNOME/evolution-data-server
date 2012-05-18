@@ -795,8 +795,7 @@ camel_imapx_folder_init (CamelIMAPXFolder *imapx_folder)
 {
 	CamelFolder *folder = CAMEL_FOLDER (imapx_folder);
 
-	folder->folder_flags |= (CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
-				 CAMEL_FOLDER_HAS_SEARCH_CAPABILITY);
+	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 
 	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |
 		CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |

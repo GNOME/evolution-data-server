@@ -44,7 +44,6 @@ typedef enum {
 
 typedef enum { /*< flags >*/
 	CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY = 1 << 0,
-	CAMEL_FOLDER_HAS_SEARCH_CAPABILITY  = 1 << 1,
 	CAMEL_FOLDER_FILTER_RECENT          = 1 << 2,
 	CAMEL_FOLDER_HAS_BEEN_DELETED       = 1 << 3,
 	CAMEL_FOLDER_IS_TRASH               = 1 << 4,

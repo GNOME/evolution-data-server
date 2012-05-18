@@ -808,9 +808,7 @@ camel_nntp_folder_new (CamelStore *parent,
 		"parent-store", parent, NULL);
 	nntp_folder = (CamelNNTPFolder *) folder;
 
-	folder->folder_flags |=
-		CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY |
-		CAMEL_FOLDER_HAS_SEARCH_CAPABILITY;
+	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 
 	nntp_folder->storage_path =
 		g_build_filename (user_cache_dir, folder_name, NULL);
