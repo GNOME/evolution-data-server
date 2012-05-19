@@ -930,7 +930,7 @@ map_google_with_evo_group (const gchar *group_name,
 		{ GDATA_CONTACTS_GROUP_FAMILY,    N_("Family")   }, /* System Group: Family */
 		{ GDATA_CONTACTS_GROUP_COWORKERS, N_("Coworkers") } /* System Group: Coworkers */
 	};
-	gint ii;
+	guint ii;
 
 	if (!group_name)
 		return NULL;
