@@ -2026,6 +2026,7 @@ camel_session_get_check_junk
 camel_session_set_check_junk
 camel_session_get_junk_filter
 camel_session_set_junk_filter
+camel_session_idle_add
 CamelSessionCallback
 camel_session_submit_job
 camel_session_get_network_available

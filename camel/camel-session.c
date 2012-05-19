@@ -1361,6 +1361,59 @@ camel_session_set_junk_filter (CamelSession *session,
 }
 
 /**
+ * camel_session_idle_add:
+ * @session: a #CamelSession
+ * @priority: the priority of the idle source
+ * @function: a function to call
+ * @data: data to pass to @function
+ * @notify: function to call when the idle is removed, or %NULL
+ *
+ * Adds a function to be called whenever there are no higher priority events
+ * pending.  If @function returns %FALSE it is automatically removed from the
+ * list of event sources and will not be called again.
+ *
+ * This internally creates a main loop source using g_idle_source_new()
+ * and attaches it to @session's own #CamelSession:main-context using
+ * g_source_attach().
+ *
+ * The @priority is typically in the range between %G_PRIORITY_DEFAULT_IDLE
+ * and %G_PRIORITY_HIGH_IDLE.
+ *
+ * Returns: the ID (greater than 0) of the event source
+ *
+ * Since: 3.6
+ **/
+guint
+camel_session_idle_add (CamelSession *session,
+                        gint priority,
+                        GSourceFunc function,
+                        gpointer data,
+                        GDestroyNotify notify)
+{
+	GMainContext *main_context;
+	GSource *source;
+	guint source_id;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), 0);
+	g_return_val_if_fail (function != NULL, 0);
+
+	main_context = camel_session_get_main_context (session);
+
+	source = g_idle_source_new ();
+
+	if (priority != G_PRIORITY_DEFAULT_IDLE)
+		g_source_set_priority (source, priority);
+
+	g_source_set_callback (source, function, data, notify);
+
+	source_id = g_source_attach (source, main_context);
+
+	g_source_unref (source);
+
+	return source_id;
+}
+
+/**
  * camel_session_submit_job:
  * @session: a #CamelSession
  * @callback: a #CamelSessionCallback
