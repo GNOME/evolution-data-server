@@ -170,6 +170,7 @@ struct _CamelSessionClass {
 };
 
 GType		camel_session_get_type		(void);
+GMainContext *	camel_session_get_main_context	(CamelSession *session);
 const gchar *	camel_session_get_user_data_dir	(CamelSession *session);
 const gchar *	camel_session_get_user_cache_dir
 						(CamelSession *session);

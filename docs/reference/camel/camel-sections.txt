@@ -2005,6 +2005,7 @@ camel_service_error_quark
 <TITLE>CamelSession</TITLE>
 CamelSession
 CamelSessionAlertType
+camel_session_get_main_context
 camel_session_get_user_data_dir
 camel_session_get_user_cache_dir
 camel_session_get_socks_proxy

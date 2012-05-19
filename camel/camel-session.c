@@ -71,7 +71,7 @@ struct _CamelSessionPrivate {
 	GHashTable *junk_headers;
 	CamelJunkFilter *junk_filter;
 
-	GMainContext *context;
+	GMainContext *main_context;
 
 	guint check_junk        : 1;
 	guint network_available : 1;
@@ -95,6 +95,7 @@ enum {
 	PROP_0,
 	PROP_CHECK_JUNK,
 	PROP_JUNK_FILTER,
+	PROP_MAIN_CONTEXT,
 	PROP_NETWORK_AVAILABLE,
 	PROP_ONLINE,
 	PROP_USER_DATA_DIR,
@@ -287,6 +288,12 @@ session_get_property (GObject *object,
 				CAMEL_SESSION (object)));
 			return;
 
+		case PROP_MAIN_CONTEXT:
+			g_value_set_boxed (
+				value, camel_session_get_main_context (
+				CAMEL_SESSION (object)));
+			return;
+
 		case PROP_NETWORK_AVAILABLE:
 			g_value_set_boolean (
 				value, camel_session_get_network_available (
@@ -345,8 +352,8 @@ session_finalize (GObject *object)
 
 	g_hash_table_destroy (priv->services);
 
-	if (priv->context != NULL)
-		g_main_context_unref (priv->context);
+	if (priv->main_context != NULL)
+		g_main_context_unref (priv->main_context);
 
 	g_mutex_free (priv->lock);
 	g_mutex_free (priv->thread_lock);
@@ -658,6 +665,17 @@ camel_session_class_init (CamelSessionClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_MAIN_CONTEXT,
+		g_param_spec_boxed (
+			"main-context",
+			"Main Context",
+			"The GMainContext used for signal emissions",
+			G_TYPE_MAIN_CONTEXT,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_NETWORK_AVAILABLE,
 		g_param_spec_boolean (
 			"network-available",
@@ -744,9 +762,27 @@ camel_session_init (CamelSession *session)
 	session->priv->services = services;
 	session->priv->junk_headers = NULL;
 
-	session->priv->context = g_main_context_get_thread_default ();
-	if (session->priv->context != NULL)
-		g_main_context_ref (session->priv->context);
+	session->priv->main_context = g_main_context_ref_thread_default ();
+}
+
+/**
+ * camel_session_get_main_context:
+ * @session: a #CamelSession
+ *
+ * Returns the #GMainContext from which signals are emitted.  This
+ * was the thread-default #GMainContext for the thread where @session
+ * was instantiated.
+ *
+ * Returns: the #GMainContext for signal emissions
+ *
+ * Since: 3.6
+ **/
+GMainContext *
+camel_session_get_main_context (CamelSession *session)
+{
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+
+	return session->priv->main_context;
 }
 
 /**
@@ -1375,7 +1411,7 @@ camel_session_submit_job (CamelSession *session,
 	g_source_set_callback (
 		source, (GSourceFunc) session_start_job_cb,
 		job_data, (GDestroyNotify) NULL);
-	g_source_attach (source, job_data->session->priv->context);
+	g_source_attach (source, job_data->session->priv->main_context);
 	g_source_unref (source);
 }
 
