@@ -177,7 +177,8 @@ connect_to_server (CamelService *service,
 
 		if (!smtp_helo (transport, cancellable, error)) {
 			camel_service_disconnect_sync (
-				(CamelService *) transport, TRUE, NULL);
+				CAMEL_SERVICE (transport),
+				TRUE, cancellable, NULL);
 			success = FALSE;
 			goto exit;
 		}
@@ -241,7 +242,8 @@ connect_to_server (CamelService *service,
 	 * re-fetch any supported extensions. */
 	if (!smtp_helo (transport, cancellable, error)) {
 		camel_service_disconnect_sync (
-			(CamelService *) transport, TRUE, NULL);
+			CAMEL_SERVICE (transport),
+			TRUE, cancellable, NULL);
 		success = FALSE;
 	}
 
@@ -370,7 +372,8 @@ smtp_transport_connect_sync (CamelService *service,
 		}
 
 		if (!success)
-			camel_service_disconnect_sync (service, TRUE, NULL);
+			camel_service_disconnect_sync (
+				service, TRUE, cancellable, NULL);
 	}
 
 exit:
@@ -1123,7 +1126,8 @@ smtp_helo (CamelSmtpTransport *transport,
 		camel_operation_pop_message (cancellable);
 
 		camel_service_disconnect_sync (
-			(CamelService *) transport, FALSE, NULL);
+			CAMEL_SERVICE (transport),
+			FALSE, cancellable, NULL);
 
 		return FALSE;
 	}
@@ -1221,7 +1225,8 @@ smtp_mail (CamelSmtpTransport *transport,
 		g_free (cmdbuf);
 		g_prefix_error (error, _("MAIL FROM command failed: "));
 		camel_service_disconnect_sync (
-			(CamelService *) transport, FALSE, NULL);
+			CAMEL_SERVICE (transport),
+			FALSE, cancellable, NULL);
 		return FALSE;
 	}
 	g_free (cmdbuf);
@@ -1235,7 +1240,8 @@ smtp_mail (CamelSmtpTransport *transport,
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("MAIL FROM command failed: "));
 			camel_service_disconnect_sync (
-				CAMEL_SERVICE (transport), FALSE, NULL);
+				CAMEL_SERVICE (transport),
+				FALSE, cancellable, NULL);
 			return FALSE;
 		}
 		if (strncmp (respbuf, "250", 3)) {
@@ -1271,7 +1277,8 @@ smtp_rcpt (CamelSmtpTransport *transport,
 		g_free (cmdbuf);
 		g_prefix_error (error, _("RCPT TO command failed: "));
 		camel_service_disconnect_sync (
-			(CamelService *) transport, FALSE, NULL);
+			CAMEL_SERVICE (transport),
+			FALSE, cancellable, NULL);
 
 		return FALSE;
 	}
@@ -1287,7 +1294,8 @@ smtp_rcpt (CamelSmtpTransport *transport,
 			g_prefix_error (
 				error, _("RCPT TO <%s> failed: "), recipient);
 			camel_service_disconnect_sync (
-				CAMEL_SERVICE (transport), FALSE, NULL);
+				CAMEL_SERVICE (transport),
+				FALSE, cancellable, NULL);
 			return FALSE;
 		}
 		if (strncmp (respbuf, "250", 3)) {
@@ -1338,7 +1346,8 @@ smtp_data (CamelSmtpTransport *transport,
 		g_free (cmdbuf);
 		g_prefix_error (error, _("DATA command failed: "));
 		camel_service_disconnect_sync (
-			(CamelService *) transport, FALSE, NULL);
+			CAMEL_SERVICE (transport),
+			FALSE, cancellable, NULL);
 		return FALSE;
 	}
 	g_free (cmdbuf);
@@ -1348,7 +1357,8 @@ smtp_data (CamelSmtpTransport *transport,
 	if (respbuf == NULL) {
 		g_prefix_error (error, _("DATA command failed: "));
 		camel_service_disconnect_sync (
-			CAMEL_SERVICE (transport), FALSE, NULL);
+			CAMEL_SERVICE (transport),
+			FALSE, cancellable, NULL);
 		return FALSE;
 	}
 	if (strncmp (respbuf, "354", 3) != 0) {
@@ -1420,7 +1430,8 @@ smtp_data (CamelSmtpTransport *transport,
 		g_object_unref (filtered_stream);
 
 		camel_service_disconnect_sync (
-			(CamelService *) transport, FALSE, NULL);
+			CAMEL_SERVICE (transport),
+			FALSE, cancellable, NULL);
 		return FALSE;
 	}
 
@@ -1436,7 +1447,8 @@ smtp_data (CamelSmtpTransport *transport,
 		cancellable, error) == -1) {
 		g_prefix_error (error, _("DATA command failed: "));
 		camel_service_disconnect_sync (
-			(CamelService *) transport, FALSE, NULL);
+			CAMEL_SERVICE (transport),
+			FALSE, cancellable, NULL);
 		return FALSE;
 	}
 
@@ -1449,7 +1461,8 @@ smtp_data (CamelSmtpTransport *transport,
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("DATA command failed: "));
 			camel_service_disconnect_sync (
-				CAMEL_SERVICE (transport), FALSE, NULL);
+				CAMEL_SERVICE (transport),
+				FALSE, cancellable, NULL);
 			return FALSE;
 		}
 		if (strncmp (respbuf, "250", 3) != 0) {
@@ -1482,7 +1495,8 @@ smtp_rset (CamelSmtpTransport *transport,
 		g_free (cmdbuf);
 		g_prefix_error (error, _("RSET command failed: "));
 		camel_service_disconnect_sync (
-			(CamelService *) transport, FALSE, NULL);
+			CAMEL_SERVICE (transport),
+			FALSE, cancellable, NULL);
 		return FALSE;
 	}
 	g_free (cmdbuf);
@@ -1496,7 +1510,8 @@ smtp_rset (CamelSmtpTransport *transport,
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("RSET command failed: "));
 			camel_service_disconnect_sync (
-				CAMEL_SERVICE (transport), FALSE, NULL);
+				CAMEL_SERVICE (transport),
+				FALSE, cancellable, NULL);
 			return FALSE;
 		}
 		if (strncmp (respbuf, "250", 3) != 0) {

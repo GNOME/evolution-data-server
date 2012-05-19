@@ -327,7 +327,8 @@ pop3_store_finalize (GObject *object)
 	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
 	/* SIGH */
 
-	camel_service_disconnect_sync ((CamelService *) pop3_store, TRUE, NULL);
+	camel_service_disconnect_sync (
+		CAMEL_SERVICE (pop3_store), TRUE, NULL, NULL);
 
 	if (pop3_store->engine)
 		g_object_unref (pop3_store->engine);
@@ -414,7 +415,8 @@ pop3_store_connect_sync (CamelService *service,
 		session, service, mechanism, cancellable, error);
 
 	if (!success) {
-		camel_service_disconnect_sync (service, TRUE, NULL);
+		camel_service_disconnect_sync (
+			service, TRUE, cancellable, NULL);
 		goto exit;
 	}
 

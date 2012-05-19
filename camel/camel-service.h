@@ -107,7 +107,6 @@ struct _CamelServiceClass {
 	/* Non-Blocking Methods */
 	gchar *		(*get_name)		(CamelService *service,
 						 gboolean brief);
-	void		(*cancel_connect)	(CamelService *service);
 
 	/* Synchronous I/O Methods */
 	gboolean	(*connect_sync)		(CamelService *service,
@@ -128,6 +127,23 @@ struct _CamelServiceClass {
 						 GError **error);
 
 	/* Asynchronous I/O Methods (all have defaults) */
+	void		(*connect)		(CamelService *service,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*connect_finish)	(CamelService *service,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*disconnect)		(CamelService *service,
+						 gboolean clean,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*disconnect_finish)	(CamelService *service,
+						 GAsyncResult *result,
+						 GError **error);
 	void		(*authenticate)		(CamelService *service,
 						 const gchar *mechanism,
 						 gint io_priority,
@@ -162,6 +178,9 @@ GType		camel_service_get_type		(void);
 GQuark		camel_service_error_quark	(void) G_GNUC_CONST;
 void		camel_service_migrate_files	(CamelService *service);
 CamelURL *	camel_service_new_camel_url	(CamelService *service);
+CamelServiceConnectionStatus
+		camel_service_get_connection_status
+						(CamelService *service);
 const gchar *	camel_service_get_display_name	(CamelService *service);
 void		camel_service_set_display_name	(CamelService *service,
 						 const gchar *display_name);
@@ -180,20 +199,35 @@ CamelSettings *	camel_service_get_settings	(CamelService *service);
 void		camel_service_set_settings	(CamelService *service,
 						 CamelSettings *settings);
 const gchar *	camel_service_get_uid		(CamelService *service);
-void		camel_service_cancel_connect	(CamelService *service);
-gboolean	camel_service_connect_sync	(CamelService *service,
-						 GError **error);
-gboolean	camel_service_disconnect_sync	(CamelService *service,
-						 gboolean clean,
-						 GError **error);
-CamelServiceConnectionStatus
-		camel_service_get_connection_status
-						(CamelService *service);
 void		camel_service_lock		(CamelService *service,
 						 CamelServiceLock lock);
 void		camel_service_unlock		(CamelService *service,
 						 CamelServiceLock lock);
 
+gboolean	camel_service_connect_sync	(CamelService *service,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_service_connect		(CamelService *service,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_service_connect_finish	(CamelService *service,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	camel_service_disconnect_sync	(CamelService *service,
+						 gboolean clean,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_service_disconnect	(CamelService *service,
+						 gboolean clean,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_service_disconnect_finish	(CamelService *service,
+						 GAsyncResult *result,
+						 GError **error);
 CamelAuthenticationResult
 		camel_service_authenticate_sync	(CamelService *service,
 						 const gchar *mechanism,

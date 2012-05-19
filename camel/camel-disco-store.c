@@ -41,6 +41,21 @@
 G_DEFINE_TYPE (CamelDiscoStore, camel_disco_store, CAMEL_TYPE_STORE)
 
 static void
+disco_store_update_status (CamelDiscoStore *disco)
+{
+	CamelService *service = CAMEL_SERVICE (disco);
+
+	switch (camel_service_get_connection_status (service)) {
+		case CAMEL_SERVICE_CONNECTED:
+			disco->status = CAMEL_DISCO_STORE_ONLINE;
+			break;
+		default:
+			disco->status = CAMEL_DISCO_STORE_OFFLINE;
+			break;
+	}
+}
+
+static void
 disco_store_constructed (GObject *object)
 {
 	CamelDiscoStore *disco;
@@ -59,16 +74,10 @@ disco_store_constructed (GObject *object)
 		disco->status = CAMEL_DISCO_STORE_ONLINE;
 	else
 		disco->status = CAMEL_DISCO_STORE_OFFLINE;
-}
 
-static void
-disco_store_cancel_connect (CamelService *service)
-{
-	CamelDiscoStore *store = CAMEL_DISCO_STORE (service);
-
-	/* Fall back */
-	store->status = CAMEL_DISCO_STORE_OFFLINE;
-	CAMEL_SERVICE_CLASS (camel_disco_store_parent_class)->cancel_connect (service);
+	g_signal_connect (
+		service, "notify::connection-status",
+		G_CALLBACK (disco_store_update_status), NULL);
 }
 
 static gboolean
@@ -116,9 +125,9 @@ disco_store_connect_sync (CamelService *service,
 			return FALSE;
 		}
 
-		if (!camel_service_disconnect_sync (service, TRUE, error))
+		if (!camel_service_disconnect_sync (service, TRUE, cancellable, error))
 			return FALSE;
-		return camel_service_connect_sync (service, error);
+		return camel_service_connect_sync (service, cancellable, error);
 
 	case CAMEL_DISCO_STORE_OFFLINE:
 		return CAMEL_DISCO_STORE_GET_CLASS (service)->connect_offline (service, cancellable, error);
@@ -319,12 +328,14 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 	}
 
 	if (!camel_service_disconnect_sync (
-		CAMEL_SERVICE (disco_store), network_available, error))
+		CAMEL_SERVICE (disco_store),
+		network_available, cancellable, error))
 		return FALSE;
 
 	disco_store->status = status;
 
-	return camel_service_connect_sync (CAMEL_SERVICE (disco_store), error);
+	return camel_service_connect_sync (
+		CAMEL_SERVICE (disco_store), cancellable, error);
 }
 
 static void
@@ -339,7 +350,6 @@ camel_disco_store_class_init (CamelDiscoStoreClass *class)
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->settings_type = CAMEL_TYPE_OFFLINE_SETTINGS;
-	service_class->cancel_connect = disco_store_cancel_connect;
 	service_class->connect_sync = disco_store_connect_sync;
 	service_class->disconnect_sync = disco_store_disconnect_sync;
 

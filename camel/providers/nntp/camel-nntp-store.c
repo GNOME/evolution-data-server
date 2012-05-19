@@ -86,7 +86,7 @@ nntp_store_dispose (GObject *object)
 	/* Only run this the first time. */
 	if (nntp_store->summary != NULL)
 		camel_service_disconnect_sync (
-			CAMEL_SERVICE (object), TRUE, NULL);
+			CAMEL_SERVICE (object), TRUE, NULL, NULL);
 
 	if (nntp_store->summary != NULL) {
 		camel_store_summary_save (
@@ -1741,7 +1741,7 @@ camel_nntp_command (CamelNNTPStore *store,
 		retry++;
 
 		if (store->stream == NULL
-		    && !camel_service_connect_sync (service, error))
+		    && !camel_service_connect_sync (service, cancellable, error))
 			return -1;
 
 		/* Check for unprocessed data, !*/
@@ -1792,11 +1792,13 @@ camel_nntp_command (CamelNNTPStore *store,
 		case 400:	/* service discontinued */
 		case 401:	/* wrong client state - this should quit but this is what the old code did */
 		case 503:	/* information not available - this should quit but this is what the old code did (?) */
-			camel_service_disconnect_sync (service, FALSE, NULL);
+			camel_service_disconnect_sync (
+				service, FALSE, cancellable, NULL);
 			ret = -1;
 			continue;
 		case -1:	/* i/o error */
-			camel_service_disconnect_sync (service, FALSE, NULL);
+			camel_service_disconnect_sync (
+				service, FALSE, cancellable, NULL);
 			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) || retry >= 3) {
 				g_propagate_error (error, local_error);
 				return -1;

@@ -141,7 +141,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 	}
 
 	/* connect to pop session */
-	if (camel_service_connect_sync (service, error)) {
+	if (camel_service_connect_sync (service, cancellable, error)) {
 		camel_sasl_set_authenticated (sasl, TRUE);
 		*timep = now;
 	} else {

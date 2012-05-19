@@ -462,6 +462,7 @@ imapx_fetch_messages_sync (CamelFolder *folder,
                            GCancellable *cancellable,
                            GError **error)
 {
+	CamelService *service;
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
 	CamelIMAPXServer *server;
@@ -469,6 +470,7 @@ imapx_fetch_messages_sync (CamelFolder *folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 	istore = CAMEL_IMAPX_STORE (parent_store);
+	service = CAMEL_SERVICE (parent_store);
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
 		g_set_error (
@@ -478,7 +480,7 @@ imapx_fetch_messages_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	if (!camel_service_connect_sync ((CamelService *) istore, error))
+	if (!camel_service_connect_sync (service, cancellable, error))
 		return FALSE;
 
 	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);
@@ -592,6 +594,7 @@ imapx_refresh_info_sync (CamelFolder *folder,
                          GCancellable *cancellable,
                          GError **error)
 {
+	CamelService *service;
 	CamelStore *parent_store;
 	CamelIMAPXStore *istore;
 	CamelIMAPXServer *server;
@@ -599,6 +602,7 @@ imapx_refresh_info_sync (CamelFolder *folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 	istore = CAMEL_IMAPX_STORE (parent_store);
+	service = CAMEL_SERVICE (parent_store);
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
 		g_set_error (
@@ -608,7 +612,7 @@ imapx_refresh_info_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	if (!camel_service_connect_sync ((CamelService *) istore, error))
+	if (!camel_service_connect_sync (service, cancellable, error))
 		return FALSE;
 
 	server = camel_imapx_store_get_server (istore, camel_folder_get_full_name (folder), cancellable, error);

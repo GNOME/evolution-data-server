@@ -44,7 +44,7 @@ main (gint argc,
 
 	service = camel_session_add_service (
 		session, "text-imapx", uri, CAMEL_PROVIDER_STORE, NULL);
-	camel_service_connect_sync (service, NULL);
+	camel_service_connect_sync (service, NULL, NULL);
 
 	camel_store_get_folder_info_sync (
 		CAMEL_STORE (service), "", 3, NULL, NULL);

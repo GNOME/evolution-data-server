@@ -255,7 +255,7 @@ imap_command_start (CamelImapStore *store,
 
 	if (nwritten == -1) {
 		camel_service_disconnect_sync (
-			CAMEL_SERVICE (store), FALSE, NULL);
+			CAMEL_SERVICE (store), FALSE, cancellable, NULL);
 		return FALSE;
 	}
 
@@ -309,7 +309,7 @@ camel_imap_command_continuation (CamelImapStore *store,
 	if (camel_stream_write (store->ostream, cmd, cmdlen, cancellable, error) == -1 ||
 	    camel_stream_write (store->ostream, "\r\n", 2, cancellable, error) == -1) {
 		camel_service_disconnect_sync (
-			CAMEL_SERVICE (store), FALSE, NULL);
+			CAMEL_SERVICE (store), FALSE, cancellable, NULL);
 		g_static_rec_mutex_unlock (&store->command_and_response_lock);
 		return NULL;
 	}
@@ -376,7 +376,8 @@ camel_imap_command_response (CamelImapStore *store,
 				err = g_strerror (104);
 
 			/* Connection was lost, no more data to fetch */
-			camel_service_disconnect_sync (service, FALSE, NULL);
+			camel_service_disconnect_sync (
+				service, FALSE, cancellable, NULL);
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_UNAVAILABLE,
@@ -579,7 +580,8 @@ imap_read_untagged (CamelImapStore *store,
 				cancellable, error);
 			if (n == -1) {
 				camel_service_disconnect_sync (
-					CAMEL_SERVICE (store), FALSE, NULL);
+					CAMEL_SERVICE (store),
+					FALSE, cancellable, NULL);
 				g_string_free (str, TRUE);
 				goto lose;
 			}
@@ -593,7 +595,8 @@ imap_read_untagged (CamelImapStore *store,
 				CAMEL_SERVICE_ERROR_UNAVAILABLE,
 				_("Server response ended too soon."));
 			camel_service_disconnect_sync (
-				CAMEL_SERVICE (store), FALSE, NULL);
+				CAMEL_SERVICE (store),
+				FALSE, cancellable, NULL);
 			g_string_free (str, TRUE);
 			goto lose;
 		}

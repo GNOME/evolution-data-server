@@ -104,7 +104,7 @@ imapx_store_dispose (GObject *object)
 	 * after we've cleaned up some stuff. */
 	if (imapx_store->con_man != NULL) {
 		camel_service_disconnect_sync (
-			CAMEL_SERVICE (imapx_store), TRUE, NULL);
+			CAMEL_SERVICE (imapx_store), TRUE, NULL, NULL);
 		g_object_unref (imapx_store->con_man);
 		imapx_store->con_man = NULL;
 	}
@@ -1087,7 +1087,8 @@ imapx_refresh_finfo (CamelSession *session,
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
 		goto exit;
 
-	if (!camel_service_connect_sync (CAMEL_SERVICE (store), error))
+	if (!camel_service_connect_sync (
+		CAMEL_SERVICE (store), cancellable, error))
 		goto exit;
 
 	/* look in all namespaces */
@@ -1244,7 +1245,8 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		return fi;
 	}
 
-	if (!camel_service_connect_sync ((CamelService *) store, error)) {
+	if (!camel_service_connect_sync (
+		CAMEL_SERVICE (store), cancellable, error)) {
 		g_mutex_unlock (istore->get_finfo_lock);
 		return NULL;
 	}

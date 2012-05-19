@@ -779,7 +779,8 @@ imap_store_finalize (GObject *object)
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (object);
 
 	/* This frees current_folder, folders, authtypes, streams, and namespace. */
-	camel_service_disconnect_sync (CAMEL_SERVICE (imap_store), TRUE, NULL);
+	camel_service_disconnect_sync (
+		CAMEL_SERVICE (imap_store), TRUE, NULL, NULL);
 
 	g_static_rec_mutex_free (&imap_store->command_and_response_lock);
 	g_hash_table_destroy (imap_store->known_alerts);
@@ -841,7 +842,8 @@ imap_store_connect_sync (CamelService *service,
 	if (!connect_to_server_wrapper (service, cancellable, error) ||
 	    !imap_auth_loop (service, cancellable, error)) {
 		camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-		camel_service_disconnect_sync (service, TRUE, NULL);
+		camel_service_disconnect_sync (
+			service, TRUE, cancellable, NULL);
 		return FALSE;
 	}
 
@@ -1016,7 +1018,8 @@ done:
 	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (local_error != NULL) {
-		camel_service_disconnect_sync (service, TRUE, NULL);
+		camel_service_disconnect_sync (
+			service, TRUE, cancellable, NULL);
 		g_propagate_error (error, local_error);
 		return FALSE;
 	}
@@ -3273,7 +3276,7 @@ camel_imap_store_connected (CamelImapStore *store,
 
 	success =
 		camel_offline_store_get_online (offline_store) &&
-		camel_service_connect_sync (service, &local_error);
+		camel_service_connect_sync (service, NULL, &local_error);
 
 	if (success && store->istream != NULL)
 		return TRUE;
@@ -3334,7 +3337,7 @@ camel_imap_store_readline (CamelImapStore *store,
 				error, _("Server unexpectedly disconnected: "));
 
 		camel_service_disconnect_sync (
-			CAMEL_SERVICE (store), FALSE, NULL);
+			CAMEL_SERVICE (store), FALSE, cancellable, NULL);
 		g_byte_array_free (ba, TRUE);
 		return -1;
 	}
