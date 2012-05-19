@@ -172,8 +172,9 @@ session_do_job_cb (GSimpleAsyncResult *simple,
 }
 
 static gboolean
-session_start_job_cb (JobData *job_data)
+session_start_job_cb (gpointer user_data)
 {
+	JobData *job_data = user_data;
 	GSimpleAsyncResult *simple;
 
 	g_signal_emit (
@@ -1446,7 +1447,6 @@ camel_session_submit_job (CamelSession *session,
                           gpointer user_data,
                           GDestroyNotify notify)
 {
-	GSource *source;
 	JobData *job_data;
 
 	g_return_if_fail (CAMEL_IS_SESSION (session));
@@ -1459,13 +1459,10 @@ camel_session_submit_job (CamelSession *session,
 	job_data->user_data = user_data;
 	job_data->notify = notify;
 
-	source = g_idle_source_new ();
-	g_source_set_priority (source, JOB_PRIORITY);
-	g_source_set_callback (
-		source, (GSourceFunc) session_start_job_cb,
+	camel_session_idle_add (
+		session, JOB_PRIORITY,
+		session_start_job_cb,
 		job_data, (GDestroyNotify) NULL);
-	g_source_attach (source, job_data->session->priv->main_context);
-	g_source_unref (source);
 }
 
 /**

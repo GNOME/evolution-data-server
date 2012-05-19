@@ -111,63 +111,71 @@ async_context_free (AsyncContext *async_context)
 }
 
 static void
-signal_data_free (SignalData *data)
+signal_data_free (SignalData *signal_data)
 {
-	if (data->store != NULL)
-		g_object_unref (data->store);
+	if (signal_data->store != NULL)
+		g_object_unref (signal_data->store);
 
-	if (data->folder != NULL)
-		g_object_unref (data->folder);
+	if (signal_data->folder != NULL)
+		g_object_unref (signal_data->folder);
 
-	if (data->folder_info != NULL)
-		camel_folder_info_free (data->folder_info);
+	if (signal_data->folder_info != NULL)
+		camel_folder_info_free (signal_data->folder_info);
 
-	g_free (data->folder_name);
+	g_free (signal_data->folder_name);
 
-	g_slice_free (SignalData, data);
+	g_slice_free (SignalData, signal_data);
 }
 
 static gboolean
-store_emit_folder_created_cb (SignalData *data)
+store_emit_folder_created_cb (gpointer user_data)
 {
+	SignalData *signal_data = user_data;
+
 	g_signal_emit (
-		data->store,
+		signal_data->store,
 		signals[FOLDER_CREATED], 0,
-		data->folder_info);
+		signal_data->folder_info);
 
 	return FALSE;
 }
 
 static gboolean
-store_emit_folder_deleted_cb (SignalData *data)
+store_emit_folder_deleted_cb (gpointer user_data)
 {
+	SignalData *signal_data = user_data;
+
 	g_signal_emit (
-		data->store,
+		signal_data->store,
 		signals[FOLDER_DELETED], 0,
-		data->folder_info);
+		signal_data->folder_info);
 
 	return FALSE;
 }
 
 static gboolean
-store_emit_folder_opened_cb (SignalData *data)
+store_emit_folder_opened_cb (gpointer user_data)
 {
+	SignalData *signal_data = user_data;
+
 	g_signal_emit (
-		data->store,
+		signal_data->store,
 		signals[FOLDER_OPENED], 0,
-		data->folder);
+		signal_data->folder);
 
 	return FALSE;
 }
 
 static gboolean
-store_emit_folder_renamed_cb (SignalData *data)
+store_emit_folder_renamed_cb (gpointer user_data)
 {
+	SignalData *signal_data = user_data;
+
 	g_signal_emit (
-		data->store,
+		signal_data->store,
 		signals[FOLDER_RENAMED], 0,
-		data->folder_name,
-		data->folder_info);
+		signal_data->folder_name,
+		signal_data->folder_info);
 
 	return FALSE;
 }
@@ -1266,19 +1274,22 @@ void
 camel_store_folder_created (CamelStore *store,
                             CamelFolderInfo *folder_info)
 {
-	SignalData *data;
+	CamelSession *session;
+	SignalData *signal_data;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (folder_info != NULL);
 
-	data = g_slice_new0 (SignalData);
-	data->store = g_object_ref (store);
-	data->folder_info = camel_folder_info_clone (folder_info);
+	session = camel_service_get_session (CAMEL_SERVICE (store));
 
-	g_idle_add_full (
-		G_PRIORITY_DEFAULT_IDLE,
-		(GSourceFunc) store_emit_folder_created_cb,
-		data, (GDestroyNotify) signal_data_free);
+	signal_data = g_slice_new0 (SignalData);
+	signal_data->store = g_object_ref (store);
+	signal_data->folder_info = camel_folder_info_clone (folder_info);
+
+	camel_session_idle_add (
+		session, G_PRIORITY_DEFAULT_IDLE,
+		store_emit_folder_created_cb,
+		signal_data, (GDestroyNotify) signal_data_free);
 }
 
 /**
@@ -1297,19 +1308,22 @@ void
 camel_store_folder_deleted (CamelStore *store,
                             CamelFolderInfo *folder_info)
 {
-	SignalData *data;
+	CamelSession *session;
+	SignalData *signal_data;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (folder_info != NULL);
 
-	data = g_slice_new0 (SignalData);
-	data->store = g_object_ref (store);
-	data->folder_info = camel_folder_info_clone (folder_info);
+	session = camel_service_get_session (CAMEL_SERVICE (store));
 
-	g_idle_add_full (
-		G_PRIORITY_DEFAULT_IDLE,
-		(GSourceFunc) store_emit_folder_deleted_cb,
-		data, (GDestroyNotify) signal_data_free);
+	signal_data = g_slice_new0 (SignalData);
+	signal_data->store = g_object_ref (store);
+	signal_data->folder_info = camel_folder_info_clone (folder_info);
+
+	camel_session_idle_add (
+		session, G_PRIORITY_DEFAULT_IDLE,
+		store_emit_folder_deleted_cb,
+		signal_data, (GDestroyNotify) signal_data_free);
 }
 
 /**
@@ -1328,19 +1342,22 @@ void
 camel_store_folder_opened (CamelStore *store,
                            CamelFolder *folder)
 {
-	SignalData *data;
+	CamelSession *session;
+	SignalData *signal_data;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
-	data = g_slice_new0 (SignalData);
-	data->store = g_object_ref (store);
-	data->folder = g_object_ref (folder);
+	session = camel_service_get_session (CAMEL_SERVICE (store));
 
-	g_idle_add_full (
-		G_PRIORITY_DEFAULT_IDLE,
-		(GSourceFunc) store_emit_folder_opened_cb,
-		data, (GDestroyNotify) signal_data_free);
+	signal_data = g_slice_new0 (SignalData);
+	signal_data->store = g_object_ref (store);
+	signal_data->folder = g_object_ref (folder);
+
+	camel_session_idle_add (
+		session, G_PRIORITY_DEFAULT_IDLE,
+		store_emit_folder_opened_cb,
+		signal_data, (GDestroyNotify) signal_data_free);
 }
 
 /**
@@ -1361,21 +1378,24 @@ camel_store_folder_renamed (CamelStore *store,
                             const gchar *old_name,
                             CamelFolderInfo *folder_info)
 {
-	SignalData *data;
+	CamelSession *session;
+	SignalData *signal_data;
 
 	g_return_if_fail (CAMEL_IS_STORE (store));
 	g_return_if_fail (old_name != NULL);
 	g_return_if_fail (folder_info != NULL);
 
-	data = g_slice_new0 (SignalData);
-	data->store = g_object_ref (store);
-	data->folder_info = camel_folder_info_clone (folder_info);
-	data->folder_name = g_strdup (old_name);
+	session = camel_service_get_session (CAMEL_SERVICE (store));
 
-	g_idle_add_full (
-		G_PRIORITY_DEFAULT_IDLE,
-		(GSourceFunc) store_emit_folder_renamed_cb,
-		data, (GDestroyNotify) signal_data_free);
+	signal_data = g_slice_new0 (SignalData);
+	signal_data->store = g_object_ref (store);
+	signal_data->folder_info = camel_folder_info_clone (folder_info);
+	signal_data->folder_name = g_strdup (old_name);
+
+	camel_session_idle_add (
+		session, G_PRIORITY_DEFAULT_IDLE,
+		store_emit_folder_renamed_cb,
+		signal_data, (GDestroyNotify) signal_data_free);
 }
 
 static void

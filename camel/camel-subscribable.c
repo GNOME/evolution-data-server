@@ -19,6 +19,7 @@
 #include "camel-subscribable.h"
 
 #include "camel-debug.h"
+#include "camel-session.h"
 #include "camel-vtrash-folder.h"
 
 typedef struct _AsyncContext AsyncContext;
@@ -64,8 +65,10 @@ signal_data_free (SignalData *signal_data)
 }
 
 static gboolean
-subscribable_emit_folder_subscribed_cb (SignalData *signal_data)
+subscribable_emit_folder_subscribed_cb (gpointer user_data)
 {
+	SignalData *signal_data = user_data;
+
 	g_signal_emit (
 		signal_data->subscribable,
 		signals[FOLDER_SUBSCRIBED], 0,
@@ -75,8 +78,10 @@ subscribable_emit_folder_subscribed_cb (SignalData *signal_data)
 }
 
 static gboolean
-subscribable_emit_folder_unsubscribed_cb (SignalData *signal_data)
+subscribable_emit_folder_unsubscribed_cb (gpointer user_data)
 {
+	SignalData *signal_data = user_data;
+
 	g_signal_emit (
 		signal_data->subscribable,
 		signals[FOLDER_UNSUBSCRIBED], 0,
@@ -591,18 +596,23 @@ void
 camel_subscribable_folder_subscribed (CamelSubscribable *subscribable,
                                       CamelFolderInfo *folder_info)
 {
+	CamelService *service;
+	CamelSession *session;
 	SignalData *signal_data;
 
 	g_return_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable));
 	g_return_if_fail (folder_info != NULL);
 
+	service = CAMEL_SERVICE (subscribable);
+	session = camel_service_get_session (service);
+
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->subscribable = g_object_ref (subscribable);
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
-	g_idle_add_full (
-		G_PRIORITY_DEFAULT_IDLE,
-		(GSourceFunc) subscribable_emit_folder_subscribed_cb,
+	camel_session_idle_add (
+		session, G_PRIORITY_DEFAULT_IDLE,
+		subscribable_emit_folder_subscribed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
 
@@ -622,18 +632,23 @@ void
 camel_subscribable_folder_unsubscribed (CamelSubscribable *subscribable,
                                         CamelFolderInfo *folder_info)
 {
+	CamelService *service;
+	CamelSession *session;
 	SignalData *signal_data;
 
 	g_return_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable));
 	g_return_if_fail (folder_info != NULL);
 
+	service = CAMEL_SERVICE (subscribable);
+	session = camel_service_get_session (service);
+
 	signal_data = g_slice_new0 (SignalData);
 	signal_data->subscribable = g_object_ref (subscribable);
 	signal_data->folder_info = camel_folder_info_clone (folder_info);
 
-	g_idle_add_full (
-		G_PRIORITY_DEFAULT_IDLE,
-		(GSourceFunc) subscribable_emit_folder_unsubscribed_cb,
+	camel_session_idle_add (
+		session, G_PRIORITY_DEFAULT_IDLE,
+		subscribable_emit_folder_unsubscribed_cb,
 		signal_data, (GDestroyNotify) signal_data_free);
 }
 
