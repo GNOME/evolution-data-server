@@ -3,6 +3,7 @@
 [encoding: UTF-8]
 addressbook/backends/file/e-book-backend-file.c
 addressbook/backends/google/e-book-backend-google.c
+addressbook/backends/google/e-book-google-utils.c
 addressbook/backends/ldap/e-book-backend-ldap.c
 addressbook/backends/vcf/e-book-backend-vcf.c
 addressbook/backends/webdav/e-book-backend-webdav.c
