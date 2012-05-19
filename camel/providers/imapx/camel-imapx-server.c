@@ -1138,6 +1138,7 @@ imapx_untagged (CamelIMAPXServer *is,
 	}
 	case IMAPX_VANISHED: {
 		GPtrArray *uids;
+		GList *uid_list = NULL;
 		gboolean unsolicited = TRUE;
 		gint i;
 		guint len;
@@ -1161,11 +1162,30 @@ imapx_untagged (CamelIMAPXServer *is,
 		uids = imapx_parse_uids (is->stream, cancellable, error);
 		if (uids == NULL)
 			return FALSE;
+
+		if (unsolicited) {
+			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)is->select_folder;
+
+			if (ifolder->exists_on_server < uids->len) {
+				c(is->tagprefix, "Error: exists_on_folder %d is fewer than vanished %d\n",
+				  ifolder->exists_on_server, uids->len);
+				ifolder->exists_on_server = 0;
+			} else
+				ifolder->exists_on_server -= uids->len;
+		}
+		if (is->changes == NULL)
+			is->changes = camel_folder_change_info_new ();
+
 		for (i = 0; i < uids->len; i++) {
 			gchar *uid = g_strdup_printf("%u", GPOINTER_TO_UINT(g_ptr_array_index (uids, i)));
+
 			c(is->tagprefix, "vanished: %s\n", uid);
-			imapx_expunge_uid_from_summary (is, uid, unsolicited);
+
+			uid_list = g_list_append(uid_list, uid);
+			camel_folder_change_info_remove_uid (is->changes, uid);
 		}
+		camel_folder_summary_remove_uids(is->select_folder->summary, uid_list);
+		is->expunged = g_list_concat(is->expunged, uid_list);
 		g_ptr_array_free (uids, FALSE);
 		break;
 	}
@@ -3935,10 +3955,10 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 			gchar *uid = (gchar *) l->data;
 
 			camel_folder_change_info_remove_uid (data->changes, uid);
-			camel_folder_summary_remove_uid (s, uid);
 		}
 
 		if (removed != NULL) {
+			camel_folder_summary_remove_uids (s, removed);
 			camel_folder_summary_touch (s);
 
 			g_list_free_full (removed, (GDestroyNotify) g_free);

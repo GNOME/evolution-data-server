@@ -3232,6 +3232,54 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 	return res;
 }
 
+/**
+ * camel_folder_summary_remove_uids:
+ * @summary: a #CamelFolderSummary object
+ * @uids: a GList of uids
+ *
+ * Remove a specific info record from the summary, by @uid.
+ *
+ * Returns: Whether the @uid was found and removed from the @summary.
+ *
+ * Since: 3.4.3
+ **/
+gboolean
+camel_folder_summary_remove_uids (CamelFolderSummary *summary,
+				  GList *uids)
+{
+	CamelStore *parent_store;
+	const gchar *full_name;
+	GList *l;
+	gboolean res = TRUE;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
+	g_return_val_if_fail (uids != NULL, FALSE);
+
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	for (l = g_list_first(uids); l; l = g_list_next(l)) {
+		gpointer ptr_uid = NULL, ptr_flags = NULL;
+		if (g_hash_table_lookup_extended (summary->priv->uids, l->data, &ptr_uid, &ptr_flags)) {
+			const gchar *uid_copy = camel_pstring_strdup (l->data);
+			folder_summary_update_counts_by_flags (summary, GPOINTER_TO_UINT (ptr_flags), TRUE);
+			g_hash_table_remove (summary->priv->uids, uid_copy);
+			g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
+			camel_pstring_free (uid_copy);
+		}
+	}
+
+	full_name = camel_folder_get_full_name (summary->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	if (camel_db_delete_uids (parent_store->cdb_w, full_name, uids, NULL) != 0)
+		res = FALSE;
+
+	camel_folder_summary_touch (summary);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	return res;
+}
+
+
 static struct _node *
 my_list_append (struct _node **list,
                 struct _node *n)
