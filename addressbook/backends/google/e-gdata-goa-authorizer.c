@@ -69,7 +69,7 @@ gdata_goa_authorizer_get_parameters (SoupMessage *message,
 	GHashTable *parameters;
 	GHashTableIter iter;
 	SoupURI *soup_uri;
-	GList *keys, *link;
+	GList *keys, *i;
 	gchar *string;
 	gchar *request_uri;
 	gpointer key;
@@ -128,16 +128,16 @@ gdata_goa_authorizer_get_parameters (SoupMessage *message,
 	query = g_string_sized_new (512);
 	keys = g_hash_table_get_keys (parameters);
 	keys = g_list_sort (keys, (GCompareFunc) g_strcmp0);
-	for (link = keys; link != NULL; link = g_list_next (link)) {
-		const gchar *key = link->data;
+	for (i = keys; i != NULL; i = g_list_next (i)) {
+		const gchar *_key = i->data;
 		const gchar *val;
 
-		val = g_hash_table_lookup (parameters, key);
+		val = g_hash_table_lookup (parameters, _key);
 
-		if (link != keys)
+		if (i != keys)
 			g_string_append_c (query, '&');
 
-		g_string_append_uri_escaped (query, key, NULL, FALSE);
+		g_string_append_uri_escaped (query, _key, NULL, FALSE);
 		g_string_append_c (query, '=');
 		g_string_append_uri_escaped (query, val, NULL, FALSE);
 	}
@@ -193,7 +193,7 @@ gdata_goa_authorizer_add_authorization (GDataAuthorizer *authorizer,
 	GString *authorization;
 	const gchar *consumer_key;
 	const gchar *consumer_secret;
-	gint ii;
+	guint ii;
 
 	const gchar *oauth_keys[] = {
 		"oauth_version",
@@ -298,6 +298,8 @@ gdata_goa_authorizer_set_property (GObject *object,
 				E_GDATA_GOA_AUTHORIZER (object),
 				g_value_get_object (value));
 			return;
+		default:
+			g_assert_not_reached ();
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -316,6 +318,8 @@ gdata_goa_authorizer_get_property (GObject *object,
 				e_gdata_goa_authorizer_get_goa_object (
 				E_GDATA_GOA_AUTHORIZER (object)));
 			return;
+		default:
+			g_assert_not_reached ();
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
