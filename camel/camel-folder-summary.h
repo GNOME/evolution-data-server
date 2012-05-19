@@ -402,6 +402,8 @@ gboolean		camel_folder_summary_remove	(CamelFolderSummary *summary,
 
 gboolean		camel_folder_summary_remove_uid	(CamelFolderSummary *summary,
 							 const gchar *uid);
+gboolean		camel_folder_summary_remove_uids(CamelFolderSummary *summary,
+							 GList *uids);
 
 /* remove all items */
 gboolean		camel_folder_summary_clear	(CamelFolderSummary *summary,
