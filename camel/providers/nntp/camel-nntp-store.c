@@ -268,8 +268,6 @@ connect_to_server (CamelService *service,
 	host = camel_network_settings_dup_host (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
 
-	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	tcp_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
 
@@ -332,8 +330,6 @@ connect_to_server (CamelService *service,
 	store->current_folder = NULL;
 
 fail:
-	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	g_free (host);
 	g_free (user);
 
@@ -360,15 +356,12 @@ nntp_connect_online (CamelService *service,
 	store->capabilities = 0;
 
 	/* disconnect and reconnect without capability check */
-	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (store->stream)
 		g_object_unref (store->stream);
 	store->stream = NULL;
 	g_free (store->current_folder);
 	store->current_folder = NULL;
-
-	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return connect_to_server (service, cancellable, error);
 }
@@ -418,8 +411,6 @@ nntp_disconnect_online (CamelService *service,
 	CamelNNTPStore *store = CAMEL_NNTP_STORE (service);
 	gchar *line;
 
-	camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	if (clean)
 		camel_nntp_raw_command (store, cancellable, NULL, &line, "quit");
 
@@ -427,8 +418,6 @@ nntp_disconnect_online (CamelService *service,
 	store->stream = NULL;
 	g_free (store->current_folder);
 	store->current_folder = NULL;
-
-	camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return TRUE;
 }
@@ -560,21 +549,8 @@ nntp_get_folder (CamelStore *store,
                  GCancellable *cancellable,
                  GError **error)
 {
-	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
-	CamelFolder *folder;
-
-	camel_service_lock (
-		CAMEL_SERVICE (nntp_store),
-		CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	folder = camel_nntp_folder_new (
+	return camel_nntp_folder_new (
 		store, folder_name, cancellable, error);
-
-	camel_service_unlock (
-		CAMEL_SERVICE (nntp_store),
-		CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	return folder;
 }
 
 /*
@@ -757,14 +733,12 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store,
 				if (folder) {
 					CamelFolderChangeInfo *changes = NULL;
 
-					camel_service_lock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 					if (camel_nntp_command (store, cancellable, NULL, folder, &line, NULL) != -1) {
 						if (camel_folder_change_info_changed (folder->changes)) {
 							changes = folder->changes;
 							folder->changes = camel_folder_change_info_new ();
 						}
 					}
-					camel_service_unlock (CAMEL_SERVICE (store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 					if (changes) {
 						camel_folder_changed (CAMEL_FOLDER (folder), changes);
 						camel_folder_change_info_free (changes);
@@ -1024,8 +998,6 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 	gint ret = -1;
 	CamelFolderInfo *fi = NULL;
 
-	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	if (top == NULL)
 		top = "";
 
@@ -1095,8 +1067,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 	}
 
 	fi = nntp_store_get_cached_folder_info (nntp_store, top, flags, error);
- error:
-	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
+error:
 
 	return fi;
 }
@@ -1392,8 +1363,6 @@ nntp_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 	short_folder_names = camel_nntp_settings_get_short_folder_names (
 		CAMEL_NNTP_SETTINGS (settings));
 
-	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	si = camel_store_summary_path (CAMEL_STORE_SUMMARY (nntp_store->summary), folder_name);
 	if (!si) {
 		g_set_error (
@@ -1410,14 +1379,10 @@ nntp_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 			fi->flags |= CAMEL_FOLDER_NOINFERIORS | CAMEL_FOLDER_NOCHILDREN;
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
-			camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 			camel_subscribable_folder_subscribed (subscribable, fi);
 			camel_folder_info_free (fi);
-			return TRUE;
 		}
 	}
-
-	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
 }
@@ -1442,8 +1407,6 @@ nntp_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 	short_folder_names = camel_nntp_settings_get_short_folder_names (
 		CAMEL_NNTP_SETTINGS (settings));
 
-	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	fitem = camel_store_summary_path (CAMEL_STORE_SUMMARY (nntp_store->summary), folder_name);
 
 	if (!fitem) {
@@ -1459,14 +1422,10 @@ nntp_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 			fi = nntp_folder_info_from_store_info (nntp_store, short_folder_names, fitem);
 			camel_store_summary_touch ((CamelStoreSummary *) nntp_store->summary);
 			camel_store_summary_save ((CamelStoreSummary *) nntp_store->summary);
-			camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 			camel_subscribable_folder_unsubscribed (subscribable, fi);
 			camel_folder_info_free (fi);
-			return TRUE;
 		}
 	}
-
-	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
 }

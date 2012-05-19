@@ -169,15 +169,8 @@ camel_imapx_store_get_server (CamelIMAPXStore *istore,
                               GCancellable *cancellable,
                               GError **error)
 {
-	CamelIMAPXServer *server = NULL;
-
-	camel_service_lock (CAMEL_SERVICE (istore), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	server = camel_imapx_conn_manager_get_connection (istore->con_man, folder_name, cancellable, error);
-
-	camel_service_unlock (CAMEL_SERVICE (istore), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	return server;
+	return camel_imapx_conn_manager_get_connection (
+		istore->con_man, folder_name, cancellable, error);
 }
 
 void
@@ -187,7 +180,8 @@ camel_imapx_store_op_done (CamelIMAPXStore *istore,
 {
 	g_return_if_fail (server != NULL);
 
-	camel_imapx_conn_manager_update_con_info (istore->con_man, server, folder_name);
+	camel_imapx_conn_manager_update_con_info (
+		istore->con_man, server, folder_name);
 }
 
 static gboolean
@@ -220,13 +214,8 @@ imapx_disconnect_sync (CamelService *service,
 	if (!service_class->disconnect_sync (service, clean, cancellable, error))
 		return FALSE;
 
-	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	if (istore->con_man) {
+	if (istore->con_man != NULL)
 		camel_imapx_conn_manager_close_connections (istore->con_man);
-	}
-
-	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return TRUE;
 }
@@ -285,14 +274,11 @@ imapx_query_auth_types_sync (CamelService *service,
 		return NULL;
 	}
 
-	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	server = camel_imapx_server_new (CAMEL_STORE (istore));
 
 	connected = server->stream != NULL;
 	if (!connected)
 		connected = imapx_connect_to_server (server, cancellable, error);
-	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 	if (!connected)
 		return NULL;
 

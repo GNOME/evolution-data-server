@@ -84,16 +84,6 @@ typedef enum {
 	CAMEL_SERVICE_ERROR_NOT_CONNECTED
 } CamelServiceError;
 
-/**
- * CamelServiceLock:
- *
- * Since: 2.32
- **/
-typedef enum {
-	CAMEL_SERVICE_REC_CONNECT_LOCK,
-	CAMEL_SERVICE_CONNECT_OP_LOCK
-} CamelServiceLock;
-
 struct _CamelService {
 	CamelObject parent;
 	CamelServicePrivate *priv;
@@ -199,10 +189,6 @@ CamelSettings *	camel_service_get_settings	(CamelService *service);
 void		camel_service_set_settings	(CamelService *service,
 						 CamelSettings *settings);
 const gchar *	camel_service_get_uid		(CamelService *service);
-void		camel_service_lock		(CamelService *service,
-						 CamelServiceLock lock);
-void		camel_service_unlock		(CamelService *service,
-						 CamelServiceLock lock);
 
 gboolean	camel_service_connect_sync	(CamelService *service,
 						 GCancellable *cancellable,

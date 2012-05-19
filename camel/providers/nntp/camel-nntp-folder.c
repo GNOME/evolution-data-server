@@ -189,8 +189,6 @@ nntp_folder_refresh_info_online (CamelFolder *folder,
 	nntp_folder = CAMEL_NNTP_FOLDER (folder);
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
-	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	/* When invoked with no fmt, camel_nntp_command() just selects the folder
 	 * and should return zero. */
 	success = !camel_nntp_command (
@@ -200,8 +198,6 @@ nntp_folder_refresh_info_online (CamelFolder *folder,
 		changes = nntp_folder->changes;
 		nntp_folder->changes = camel_folder_change_info_new ();
 	}
-
-	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (changes) {
 		camel_folder_changed (folder, changes);
@@ -234,13 +230,7 @@ static gboolean
 nntp_folder_sync (CamelFolder *folder,
                   GError **error)
 {
-	CamelStore *parent_store;
 	GPtrArray *changed;
-	gboolean success;
-
-	parent_store = camel_folder_get_parent_store (folder);
-
-	camel_service_lock (CAMEL_SERVICE (parent_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	changed = camel_folder_summary_get_changed (folder->summary);
 	if (changed) {
@@ -249,10 +239,8 @@ nntp_folder_sync (CamelFolder *folder,
 		g_ptr_array_free (changed, TRUE);
 		camel_folder_summary_touch (folder->summary);
 	}
-	success = camel_folder_summary_save_to_db (folder->summary, error);
-	camel_service_unlock (CAMEL_SERVICE (parent_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
-	return success;
+	return camel_folder_summary_save_to_db (folder->summary, error);
 }
 
 static gboolean
@@ -359,16 +347,9 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
                            GCancellable *cancellable,
                            GError **error)
 {
-	CamelFolder *folder;
-	CamelStore *parent_store;
-	CamelNNTPStore *nntp_store;
 	CamelStream *stream;
 	gchar *article, *msgid;
 	gboolean success = TRUE;
-
-	folder = CAMEL_FOLDER (disco_folder);
-	parent_store = camel_folder_get_parent_store (folder);
-	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
 	article = alloca (strlen (uid) + 1);
 	strcpy (article, uid);
@@ -381,16 +362,12 @@ nntp_folder_cache_message (CamelDiscoFolder *disco_folder,
 	}
 	*msgid++ = 0;
 
-	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	stream = nntp_folder_download_message (
 		(CamelNNTPFolder *) disco_folder, article, msgid, cancellable, error);
 	if (stream)
 		g_object_unref (stream);
 	else
 		success = FALSE;
-
-	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
 }
@@ -506,8 +483,6 @@ nntp_folder_get_message_sync (CamelFolder *folder,
 	}
 	*msgid++ = 0;
 
-	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	/* Lookup in cache, NEWS is global messageid's so use a global cache path */
 	stream = camel_data_cache_get (nntp_store->cache, "cache", msgid, NULL);
 	if (stream == NULL) {
@@ -539,8 +514,6 @@ fail:
 	} else {
 		changes = NULL;
 	}
-
-	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	if (changes) {
 		camel_folder_changed (folder, changes);
@@ -576,8 +549,6 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 	stream = CAMEL_STREAM (nntp_store->stream);
 
-	camel_service_lock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
-
 	/* send 'POST' command */
 	ret = camel_nntp_command (nntp_store, cancellable, error, NULL, &line, "post");
 	if (ret != 340) {
@@ -594,7 +565,6 @@ nntp_folder_append_message_online (CamelFolder *folder,
 				_("Posting failed: %s"), line);
 			success = FALSE;
 		}
-		camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 		return success;
 	}
 
@@ -645,8 +615,6 @@ nntp_folder_append_message_online (CamelFolder *folder,
 	g_object_unref (filtered_stream);
 	g_free (group);
 	header->next = savedhdrs;
-
-	camel_service_unlock (CAMEL_SERVICE (nntp_store), CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return success;
 }

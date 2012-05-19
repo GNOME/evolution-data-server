@@ -66,9 +66,6 @@ struct _CamelServicePrivate {
 	gchar *uid;
 	gchar *password;
 
-	GStaticRecMutex connect_lock;	/* for locking connection operations */
-	GStaticMutex connect_op_lock;	/* for locking the connection_op */
-
 	GMutex *connection_lock;
 	ConnectionOp *connection_op;
 	CamelServiceConnectionStatus status;
@@ -674,9 +671,6 @@ service_finalize (GObject *object)
 	g_free (priv->uid);
 	g_free (priv->password);
 
-	g_static_rec_mutex_free (&priv->connect_lock);
-	g_static_mutex_free (&priv->connect_op_lock);
-
 	/* There should be no outstanding connection operations. */
 	g_warn_if_fail (priv->connection_op == NULL);
 	g_mutex_free (priv->connection_lock);
@@ -1139,9 +1133,6 @@ camel_service_init (CamelService *service)
 {
 	service->priv = CAMEL_SERVICE_GET_PRIVATE (service);
 
-	g_static_rec_mutex_init (&service->priv->connect_lock);
-	g_static_mutex_init (&service->priv->connect_op_lock);
-
 	service->priv->connection_lock = g_mutex_new ();
 	service->priv->status = CAMEL_SERVICE_DISCONNECTED;
 }
@@ -1546,60 +1537,6 @@ camel_service_get_uid (CamelService *service)
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
 	return service->priv->uid;
-}
-
-/**
- * camel_service_lock:
- * @service: a #CamelService
- * @lock: lock type to lock
- *
- * Locks @service's @lock. Unlock it with camel_service_unlock().
- *
- * Since: 2.32
- **/
-void
-camel_service_lock (CamelService *service,
-                    CamelServiceLock lock)
-{
-	g_return_if_fail (CAMEL_IS_SERVICE (service));
-
-	switch (lock) {
-		case CAMEL_SERVICE_REC_CONNECT_LOCK:
-			g_static_rec_mutex_lock (&service->priv->connect_lock);
-			break;
-		case CAMEL_SERVICE_CONNECT_OP_LOCK:
-			g_static_mutex_lock (&service->priv->connect_op_lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
-}
-
-/**
- * camel_service_unlock:
- * @service: a #CamelService
- * @lock: lock type to unlock
- *
- * Unlocks @service's @lock, previously locked with camel_service_lock().
- *
- * Since: 2.32
- **/
-void
-camel_service_unlock (CamelService *service,
-                      CamelServiceLock lock)
-{
-	g_return_if_fail (CAMEL_IS_SERVICE (service));
-
-	switch (lock) {
-		case CAMEL_SERVICE_REC_CONNECT_LOCK:
-			g_static_rec_mutex_unlock (&service->priv->connect_lock);
-			break;
-		case CAMEL_SERVICE_CONNECT_OP_LOCK:
-			g_static_mutex_unlock (&service->priv->connect_op_lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
 }
 
 /**
@@ -2111,20 +2048,13 @@ camel_service_query_auth_types_sync (CamelService *service,
                                      GError **error)
 {
 	CamelServiceClass *class;
-	GList *list;
 
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
 	g_return_val_if_fail (class->query_auth_types_sync != NULL, NULL);
 
-	/* Note that we get the connect lock here, which means the
-	 * callee must not call the connect functions itself. */
-	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-	list = class->query_auth_types_sync (service, cancellable, error);
-	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
-
-	return list;
+	return class->query_auth_types_sync (service, cancellable, error);
 }
 
 /**

@@ -1973,9 +1973,6 @@ camel_service_get_session
 camel_service_get_settings
 camel_service_set_settings
 camel_service_get_uid
-CamelServiceLock
-camel_service_lock
-camel_service_unlock
 camel_service_connect_sync
 camel_service_connect
 camel_service_connect_finish

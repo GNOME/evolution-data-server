@@ -570,21 +570,16 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 	CamelIMAPXServer *is = NULL;
 	CamelIMAPXStore *imapx_store;
 	CamelStore *store = con_man->priv->store;
-	CamelService *service;
 	ConnectionInfo *cinfo = NULL;
 	gboolean success;
 
 	/* Caller must be holding CON_WRITE_LOCK. */
 
-	service = CAMEL_SERVICE (store);
-
 	imapx_store = CAMEL_IMAPX_STORE (store);
-
-	camel_service_lock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	/* Check if we got cancelled while we were waiting. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
-		goto exit;
+		return NULL;
 
 	is = camel_imapx_server_new (store);
 
@@ -610,8 +605,7 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 
 	if (!success) {
 		g_object_unref (is);
-		is = NULL;
-		goto exit;
+		return NULL;
 	}
 
 	g_signal_connect (
@@ -631,9 +625,6 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 		con_man->priv->connections, cinfo);
 
 	c(is->tagprefix, "Created new connection for %s and total connections %d \n", folder_name, g_list_length (con_man->priv->connections));
-
-exit:
-	camel_service_unlock (service, CAMEL_SERVICE_REC_CONNECT_LOCK);
 
 	return is;
 }
