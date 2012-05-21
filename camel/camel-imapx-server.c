@@ -1372,7 +1372,7 @@ imapx_untagged (CamelIMAPXServer *is,
 						g_return_val_if_fail (data != NULL, FALSE);
 
 						min = data->last_index;
-						max = data->index;
+						max = data->index - 1;
 
 						/* array is sorted, so use a binary search */
 						do {
@@ -3468,7 +3468,7 @@ imapx_command_copy_messages_step_start (CamelIMAPXServer *is,
 		res = imapx_uidset_add (&data->uidset, ic, uid);
 		if (res == 1) {
 			camel_imapx_command_add (ic, " %f", data->dest);
-			data->index = i;
+			data->index = i + 1;
 			imapx_command_queue (is, ic);
 			return;
 		}
@@ -3758,7 +3758,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 				res = imapx_uidset_add (&data->uidset, ic, r->uid);
 				if (res == 1) {
 					camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER)");
-					data->index = i;
+					data->index = i + 1;
 					imapx_command_queue (is, ic);
 					return TRUE;
 				}
