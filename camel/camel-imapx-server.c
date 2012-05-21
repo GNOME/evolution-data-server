@@ -105,6 +105,7 @@ struct _RefreshInfoData {
 	gint fetch_msg_limit;
 	CamelFetchType fetch_type;
 	gboolean update_unseen;
+	gboolean scan_changes;
 	struct _uidset_state uidset;
 	/* changes during refresh */
 	CamelFolderChangeInfo *changes;
@@ -1266,16 +1267,18 @@ imapx_untagged (CamelIMAPXServer *is,
 
 		if ((finfo->got & FETCH_FLAGS) && !(finfo->got & FETCH_HEADER)) {
 			CamelIMAPXJob *job = imapx_match_active_job (is, IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO | IMAPX_JOB_FETCH_MESSAGES, NULL);
+			RefreshInfoData *data = NULL;
+
+			if (job) {
+				data = camel_imapx_job_get_data (job);
+				g_return_val_if_fail (data != NULL, FALSE);
+			}
+
 			/* This is either a refresh_info job, check to see if it is and update
 			 * if so, otherwise it must've been an unsolicited response, so update
 			 * the summary to match */
-
-			if (job && (finfo->got & FETCH_UID)) {
-				RefreshInfoData *data;
+			if (data && (finfo->got & FETCH_UID) && data->scan_changes) {
 				struct _refresh_info r;
-
-				data = camel_imapx_job_get_data (job);
-				g_return_val_if_fail (data != NULL, FALSE);
 
 				r.uid = finfo->uid;
 				finfo->uid = NULL;
@@ -2458,10 +2461,25 @@ imapx_command_select_done (CamelIMAPXServer *is,
 		ifolder->exists_on_server = is->exists;
 		ifolder->modseq_on_server = is->highestmodseq;
 		if (ifolder->uidnext_on_server < is->uidnext) {
+			/* We don't want to fetch new messages if the command we selected this
+			   folder for is *already* fetching all messages (i.e. scan_changes).
+			   Bug #667725. */
+			CamelIMAPXJob *job = imapx_is_job_in_queue (is, is->select_pending,
+								    IMAPX_JOB_REFRESH_INFO, NULL);
+			if (job) {
+				RefreshInfoData *data = camel_imapx_job_get_data (job);
+
+				if (data->scan_changes) {
+					c(is->tagprefix, "Will not fetch_new_messages when already in scan_changes\n");
+					goto no_fetch_new;
+				}
+			}
 			imapx_server_fetch_new_messages (is, is->select_pending, TRUE, TRUE, NULL, NULL);
 			/* We don't do this right now because we want the new messages to
 			 * update the unseen count. */
 			//ifolder->uidnext_on_server = is->uidnext;
+		no_fetch_new:
+			;
 		}
 		ifolder->uidvalidity_on_server = is->uidvalidity;
 		selected_folder = camel_folder_get_full_name (is->select_folder);
@@ -3701,6 +3719,8 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	data->scan_changes = FALSE;
+
 	ifolder = (CamelIMAPXFolder *) job->folder;
 	isum = (CamelIMAPXSummary *) job->folder->summary;
 
@@ -3850,6 +3870,8 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
+
+	data->scan_changes = FALSE;
 
 	service = CAMEL_SERVICE (is->store);
 	settings = camel_service_get_settings (service);
@@ -4054,6 +4076,8 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 		"UID FETCH %s:* (UID FLAGS)", uid ? uid : "1");
 	camel_imapx_command_set_job (ic, job);
 	ic->complete = imapx_job_scan_changes_done;
+
+	data->scan_changes = TRUE;
 	ic->pri = job->pri;
 	data->infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 	imapx_command_queue (is, ic);
@@ -4133,6 +4157,8 @@ imapx_command_fetch_new_uids_done (CamelIMAPXServer *is,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
+	data->scan_changes = FALSE;
+
 	qsort (
 		data->infos->data,
 		data->infos->len,
@@ -4196,6 +4222,8 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 		imapx_uidset_init (&data->uidset, uidset_size, 0);
 		data->infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 		ic->pri = job->pri;
+
+		data->scan_changes = TRUE;
 
 		if (fetch_order == CAMEL_SORT_DESCENDING)
 			ic->complete = imapx_command_fetch_new_uids_done;
@@ -4297,6 +4325,8 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 		imapx_uidset_init (&data->uidset, uidset_size, 0);
 		data->infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 		ic->pri = job->pri;
+
+		data->scan_changes = TRUE;
 
 		if (fetch_order == CAMEL_SORT_DESCENDING)
 			ic->complete = imapx_command_fetch_new_uids_done;
