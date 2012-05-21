@@ -4018,7 +4018,18 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 {
 	CamelIMAPXCommand *ic;
 	RefreshInfoData *data;
-	gchar *uid = imapx_get_uid_from_index (job->folder->summary, 0);
+	CamelService *service;
+	CamelSettings *settings;
+	gboolean mobile_mode;
+	gchar *uid = NULL;
+
+	service = CAMEL_SERVICE (is->store);
+	settings = camel_service_get_settings (service);
+	mobile_mode = camel_imapx_settings_get_mobile_mode (
+		CAMEL_IMAPX_SETTINGS (settings));
+
+	if (mobile_mode)
+		uid = imapx_get_uid_from_index (job->folder->summary, 0);
 
 	data = camel_imapx_job_get_data (job);
 	g_return_if_fail (data != NULL);
@@ -4030,7 +4041,9 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 		_("Scanning for changed messages in %s"),
 		camel_folder_get_display_name (job->folder));
 
-	e('E', "Scanning from %s in %s\n", uid, camel_folder_get_full_name (job->folder));	
+	e('E', "Scanning from %s in %s\n", uid ? uid : "start",
+	  camel_folder_get_full_name (job->folder));
+
 	ic = camel_imapx_command_new (
 		is, "FETCH", job->folder,
 		"UID FETCH %s:* (UID FLAGS)", uid ? uid : "1");
