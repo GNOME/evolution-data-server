@@ -10,6 +10,7 @@
 
 #include <config.h>
 #define _XOPEN_SOURCE
+#define _XOPEN_SOURCE_EXTENDED 1  /* for strptime */
 
 /* For tm_gmtoff */
 #define _BSD_SOURCE
