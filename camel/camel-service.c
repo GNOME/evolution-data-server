@@ -1837,6 +1837,7 @@ camel_service_disconnect (CamelService *service,
 				cancellable,
 				service_shared_disconnect_cb,
 				connection_op_ref (op));
+			break;
 
 		/* If a disconnect operation is already in progress,
 		 * queue this operation so it completes at the same
