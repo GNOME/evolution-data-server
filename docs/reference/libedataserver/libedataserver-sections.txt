@@ -534,6 +534,7 @@ tm
 e_get_user_cache_dir
 e_get_user_config_dir
 e_get_user_data_dir
+e_util_strdup_strip
 e_util_strstrcase
 e_util_unicode_get_utf8
 e_util_utf8_strstrcase

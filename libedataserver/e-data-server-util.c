@@ -124,6 +124,37 @@ e_get_user_data_dir (void)
 }
 
 /**
+ * e_util_strdup_strip:
+ * @string: (allow-none): a string value, or %NULL
+ *
+ * Duplicates @string and strips off any leading or trailing whitespace.
+ * The resulting string is returned unless it is empty or %NULL, in which
+ * case the function returns %NULL.
+ *
+ * Free the returned string with g_free().
+ *
+ * Returns: a newly-allocated, stripped copy of @string, or %NULL
+ *
+ * Since: 3.6
+ **/
+gchar *
+e_util_strdup_strip (const gchar *string)
+{
+	gchar *duplicate;
+
+	duplicate = g_strdup (string);
+	if (duplicate != NULL) {
+		g_strstrip (duplicate);
+		if (*duplicate == '\0') {
+			g_free (duplicate);
+			duplicate = NULL;
+		}
+	}
+
+	return duplicate;
+}
+
+/**
  * e_util_strstrcase:
  * @haystack: The string to search in.
  * @needle: The string to search for.
