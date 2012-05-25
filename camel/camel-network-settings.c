@@ -121,7 +121,7 @@ camel_network_settings_get_auth_mechanism (CamelNetworkSettings *settings)
  * @settings: a #CamelNetworkSettings
  *
  * Thread-safe variation of camel_network_settings_get_auth_mechanism().
- * Use this function when accessing @settings from a worker thread.
+ * Use this function when accessing @settings from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
@@ -208,7 +208,7 @@ camel_network_settings_get_host (CamelNetworkSettings *settings)
  * @settings: a #CamelNetworkSettings
  *
  * Thread-safe variation of camel_network_settings_get_host().
- * Use this function when accessing @settings from a worker thread.
+ * Use this function when accessing @settings from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
@@ -389,7 +389,7 @@ camel_network_settings_get_user (CamelNetworkSettings *settings)
  * @settings: a #CamelNetworkSettings
  *
  * Thread-safe variation of camel_network_settings_get_user().
- * Use this function when accessing @settings from a worker thread.
+ * Use this function when accessing @settings from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.
  *

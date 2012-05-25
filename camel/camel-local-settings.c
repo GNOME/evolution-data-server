@@ -144,7 +144,7 @@ camel_local_settings_get_path (CamelLocalSettings *settings)
  * @settings: a #CamelLocalSettings
  *
  * Thread-safe variation of camel_local_settings_get_path().
- * Use this function when accessing @settings from a worker thread.
+ * Use this function when accessing @settings from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.
  *

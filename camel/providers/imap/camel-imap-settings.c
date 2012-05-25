@@ -782,7 +782,7 @@ camel_imap_settings_get_fetch_headers_extra (CamelImapSettings *settings)
  * @settings: a #CamelImapSettings
  *
  * Thread-safe variation of camel_imap_settings_get_fetch_headers_extra().
- * Use this function when accessing @extension from a worker thread.
+ * Use this function when accessing @extension from multiple threads.
  *
  * The returned string array should be freed with g_strfreev() when no
  * longer needed.
@@ -980,7 +980,7 @@ camel_imap_settings_get_namespace (CamelImapSettings *settings)
  * @settings: a #CamelImapSettings
  *
  * Thread-safe variation of camel_imap_settings_get_namespace().
- * Use this function when accessing @settings from a worker thread.
+ * Use this function when accessing @settings from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
@@ -1060,7 +1060,7 @@ camel_imap_settings_get_real_junk_path (CamelImapSettings *settings)
  * @settings: a #CamelImapSettings
  *
  * Thread-safe variation of camel_imap_settings_get_real_junk_path().
- * Use this function when accessing @settings from a worker thread.
+ * Use this function when accessing @settings from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
@@ -1140,7 +1140,7 @@ camel_imap_settings_get_real_trash_path (CamelImapSettings *settings)
  * @settings: a #CamelImapSettings
  *
  * Thread-safe variation of camel_imap_settings_get_real_trash_path().
- * Use this function when accessing @settings from a worker thread.
+ * Use this function when accessing @settings from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
@@ -1226,7 +1226,7 @@ camel_imap_settings_get_shell_command (CamelImapSettings *settings)
  * @settings: a #CamelImapSettings
  *
  * Thread-safe variation of camel_imap_settings_get_shell_command().
- * Use this function when accessing @settings from a worker thread.
+ * Use this function when accessing @settings from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.
  *

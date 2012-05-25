@@ -1029,7 +1029,7 @@ camel_imapx_settings_get_namespace (CamelIMAPXSettings *settings)
  * @settings: a #CamelIMAPXSettings
  *
  * Thread-safe variation of camel_imapx_settings_get_namespace().
- * Use this function when accessing @settings from a worker thread.
+ * Use this function when accessing @settings from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
@@ -1115,7 +1115,7 @@ camel_imapx_settings_get_shell_command (CamelIMAPXSettings *settings)
  * @settings: a #CamelIMAPXSettings
  *
  * Thread-safe variation of camel_imapx_settings_get_shell_command().
- * Use this function when accessing @settings from a worker thread.
+ * Use this function when accessing @settings from multiple threads.
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
