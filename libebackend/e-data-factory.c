@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-data-factory
- * @short_description: an abstract base class for a D-Bus server
+ * @short_description: An abstract base class for a backend-based server
  * @include: libebackend/e-data-factory
  **/
 

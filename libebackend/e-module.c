@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-module
- * @short_description: a module loader
+ * @short_description: A module loader
  * @include: libebackend/e-module.h
  **/
 

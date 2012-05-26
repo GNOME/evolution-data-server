@@ -22,7 +22,7 @@
 
 /**
  * SECTION: e-offline-listener
- * @short_description: (Deprecated) Tracks Evolution's online/offline state
+ * @short_description: Tracks Evolution's online/offline state
  *
  * An #EOfflineListener basically just tracks Evolution's online/offline
  * state and emits a #EOfflineListener:changed signal when a state change

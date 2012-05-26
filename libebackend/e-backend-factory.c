@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-backend-factory
- * @short_description: an abstract base class for backend factories
+ * @short_description: An abstract base class for backend factories
  * @include: libebackend/e-backend-factory.h
  *
  * An #EBackendFactory's job is to create an #EBackend instance for a

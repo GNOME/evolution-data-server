@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-extension
- * @short_description: abstract base class for extensions
+ * @short_description: An abstract base class for extensions
  * @include: libebackend/e-extension.h
  *
  * #EExtension provides a way to extend the functionality of objects
