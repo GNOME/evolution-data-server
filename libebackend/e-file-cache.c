@@ -49,7 +49,6 @@ struct _EFileCachePrivate {
 	guint32 frozen;
 };
 
-/* Property IDs */
 enum {
 	PROP_0,
 	PROP_FILENAME
@@ -58,78 +57,52 @@ enum {
 G_DEFINE_TYPE (EFileCache, e_file_cache, G_TYPE_OBJECT)
 
 static void
-e_file_cache_set_property (GObject *object,
-                           guint property_id,
-                           const GValue *value,
-                           GParamSpec *pspec)
+file_cache_set_filename (EFileCache *cache,
+                         const gchar *filename)
 {
-	EFileCache *cache;
-	EFileCachePrivate *priv;
-	gchar *dirname;
-	gint result;
+	g_return_if_fail (filename != NULL);
+	g_return_if_fail (cache->priv->filename == NULL);
 
-	cache = E_FILE_CACHE (object);
-	priv = cache->priv;
-
-	/* FIXME: the property is being set twice. Need to investigate
-	 * why and fix. Until then, we just return when called the
-	 * second time*/
-	if (priv->filename)
-		return;
-
-	switch (property_id) {
-	case PROP_FILENAME :
-		/* make sure the directory for the cache exists */
-		priv->filename = g_strdup ( g_value_get_string (value));
-		dirname = g_path_get_dirname (priv->filename);
-		result = g_mkdir_with_parents (dirname, 0700);
-		g_free (dirname);
-		if (result != 0)
-			break;
-
-		if (priv->xml_hash)
-			e_xmlhash_destroy (priv->xml_hash);
-		priv->xml_hash = e_xmlhash_new (g_value_get_string (value));
-
-		/* if opening the cache file fails, remove it and try again */
-		if (!priv->xml_hash) {
-			g_unlink (g_value_get_string (value));
-			priv->xml_hash = e_xmlhash_new (g_value_get_string (value));
-			if (priv->xml_hash) {
-				g_message (
-					"%s: could not re-create cache file %s",
-					G_STRFUNC, g_value_get_string (value));
-			}
-		}
-		break;
-	default :
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-	}
+	cache->priv->filename = g_strdup (filename);
 }
 
 static void
-e_file_cache_get_property (GObject *object,
-                           guint property_id,
-                           GValue *value,
-                           GParamSpec *pspec)
+file_cache_set_property (GObject *object,
+                         guint property_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
 {
-	EFileCache *cache;
-	EFileCachePrivate *priv;
-
-	cache = E_FILE_CACHE (object);
-	priv = cache->priv;
-
 	switch (property_id) {
-	case PROP_FILENAME :
-		g_value_set_string (value, priv->filename);
-		break;
-	default :
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		case PROP_FILENAME :
+			file_cache_set_filename (
+				E_FILE_CACHE (object),
+				g_value_get_string (value));
+			return;
 	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
 static void
-e_file_cache_finalize (GObject *object)
+file_cache_get_property (GObject *object,
+                         guint property_id,
+                         GValue *value,
+                         GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_FILENAME :
+			g_value_set_string (
+				value,
+				e_file_cache_get_filename (
+				E_FILE_CACHE (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+file_cache_finalize (GObject *object)
 {
 	EFileCachePrivate *priv;
 
@@ -145,6 +118,38 @@ e_file_cache_finalize (GObject *object)
 }
 
 static void
+file_cache_constructed (GObject *object)
+{
+	EFileCache *cache;
+	const gchar *filename;
+	gchar *dirname;
+
+	cache = E_FILE_CACHE (object);
+
+	filename = e_file_cache_get_filename (cache);
+
+	/* Make sure the directory for the cache exists. */
+	dirname = g_path_get_dirname (filename);
+	g_mkdir_with_parents (dirname, 0700);
+	g_free (dirname);
+
+	cache->priv->xml_hash = e_xmlhash_new (filename);
+
+	/* If opening the cache file fails, remove it and try again. */
+	if (cache->priv->xml_hash == NULL) {
+		g_unlink (filename);
+		cache->priv->xml_hash = e_xmlhash_new (filename);
+		if (cache->priv->xml_hash == NULL)
+			g_warning (
+				"%s: could not re-create cache file %s",
+				G_STRFUNC, filename);
+	}
+
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_file_cache_parent_class)->constructed (object);
+}
+
+static void
 e_file_cache_class_init (EFileCacheClass *class)
 {
 	GObjectClass *object_class;
@@ -152,9 +157,10 @@ e_file_cache_class_init (EFileCacheClass *class)
 	g_type_class_add_private (class, sizeof (EFileCachePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->set_property = e_file_cache_set_property;
-	object_class->get_property = e_file_cache_get_property;
-	object_class->finalize = e_file_cache_finalize;
+	object_class->set_property = file_cache_set_property;
+	object_class->get_property = file_cache_get_property;
+	object_class->finalize = file_cache_finalize;
+	object_class->constructed = file_cache_constructed;
 
 	/**
 	 * EFileCache:filename
@@ -162,15 +168,16 @@ e_file_cache_class_init (EFileCacheClass *class)
 	 * The filename of the cache.
 	 **/
 	g_object_class_install_property (
-		object_class, PROP_FILENAME,
+		object_class,
+		PROP_FILENAME,
 		g_param_spec_string (
 			"filename",
-			NULL,
-			NULL,
+			"Filename",
+			"The filename of the cache",
 			"",
-			G_PARAM_READABLE |
-			G_PARAM_WRITABLE |
-			G_PARAM_CONSTRUCT_ONLY));
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -191,11 +198,9 @@ e_file_cache_init (EFileCache *cache)
 EFileCache *
 e_file_cache_new (const gchar *filename)
 {
-	EFileCache *cache;
+	g_return_val_if_fail (filename != NULL, NULL);
 
-	cache = g_object_new (E_TYPE_FILE_CACHE, "filename", filename, NULL);
-
-	return cache;
+	return g_object_new (E_TYPE_FILE_CACHE, "filename", filename, NULL);
 }
 
 /**
