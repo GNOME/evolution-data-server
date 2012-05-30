@@ -161,8 +161,7 @@ camel_pstring_add (gchar *str,
                    gboolean own)
 {
 	gpointer pcount;
-	gchar *pstr;
-	gint count;
+	gpointer pstr;
 
 	if (str == NULL)
 		return NULL;
@@ -175,16 +174,18 @@ camel_pstring_add (gchar *str,
 
 	g_static_mutex_lock (&pstring_lock);
 	if (pstring_table == NULL)
-		pstring_table = g_hash_table_new (g_str_hash, g_str_equal);
+		pstring_table = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
 
-	if (g_hash_table_lookup_extended (pstring_table, str, (gpointer *) &pstr, &pcount)) {
-		count = GPOINTER_TO_INT (pcount) + 1;
-		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (count));
+	if (g_hash_table_lookup_extended (pstring_table, str, &pstr, &pcount)) {
+		gint *count = pcount;
+		*count = (*count) + 1;
 		if (own)
 			g_free (str);
 	} else {
+		gint *count = g_new0 (gint, 1);
+		*count = 1;
 		pstr = own ? str : g_strdup (str);
-		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (1));
+		g_hash_table_insert (pstring_table, pstr, count);
 	}
 
 	g_static_mutex_unlock (&pstring_lock);
@@ -209,7 +210,7 @@ const gchar *
 camel_pstring_peek (const gchar *str)
 {
 	gpointer pcount;
-	gchar *pstr;
+	gpointer pstr;
 
 	if (str == NULL)
 		return NULL;
@@ -220,11 +221,13 @@ camel_pstring_peek (const gchar *str)
 
 	g_static_mutex_lock (&pstring_lock);
 	if (pstring_table == NULL)
-		pstring_table = g_hash_table_new (g_str_hash, g_str_equal);
+		pstring_table = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_free);
 
-	if (!g_hash_table_lookup_extended (pstring_table, str, (gpointer *) &pstr, &pcount)) {
+	if (!g_hash_table_lookup_extended (pstring_table, str, &pstr, &pcount)) {
+		gint *count = g_new0 (gint, 1);
+		*count = 1;
 		pstr = g_strdup (str);
-		g_hash_table_insert (pstring_table, pstr, GINT_TO_POINTER (1));
+		g_hash_table_insert (pstring_table, pstr, count);
 	}
 
 	g_static_mutex_unlock (&pstring_lock);
@@ -262,9 +265,8 @@ camel_pstring_strdup (const gchar *s)
 void
 camel_pstring_free (const gchar *s)
 {
-	gchar *p;
+	gpointer pstr;
 	gpointer pcount;
-	gint count;
 
 	if (pstring_table == NULL)
 		return;
@@ -272,17 +274,16 @@ camel_pstring_free (const gchar *s)
 		return;
 
 	g_static_mutex_lock (&pstring_lock);
-	if (g_hash_table_lookup_extended (pstring_table, s, (gpointer *) &p, &pcount)) {
-		count = GPOINTER_TO_INT (pcount) - 1;
-		if (count == 0) {
-			g_hash_table_remove (pstring_table, p);
-			g_free (p);
+	if (g_hash_table_lookup_extended (pstring_table, s, &pstr, &pcount)) {
+		gint *count = pcount;
+		*count = (*count) - 1;
+		if ((*count) == 0) {
+			g_hash_table_remove (pstring_table, pstr);
+			g_free (pstr);
 			if (g_getenv("CDS_DEBUG")) {
-				if (p != s) /* Only for debugging purposes */
+				if (pstr != s) /* Only for debugging purposes */
 					g_assert (0);
 			}
-		} else {
-			g_hash_table_insert (pstring_table, p, GINT_TO_POINTER (count));
 		}
 	} else {
 		if (g_getenv("CDS_DEBUG")) {
@@ -291,5 +292,41 @@ camel_pstring_free (const gchar *s)
 			g_assert (0);
 		}
 	}
+	g_static_mutex_unlock (&pstring_lock);
+}
+
+static void
+count_pstring_memory_cb (gpointer key,
+			 gpointer value,
+			 gpointer user_data)
+{
+	const gchar *str = key;
+	guint64 *pbytes = user_data;
+
+	g_return_if_fail (str != NULL);
+	g_return_if_fail (pbytes != NULL);
+
+	*pbytes += strlen (str);
+}
+
+/**
+ * camel_pstring_dump_stat:
+ *
+ * Dumps to stdout memory statistic about the string pool.
+ **/
+void
+camel_pstring_dump_stat (void)
+{
+	g_static_mutex_lock (&pstring_lock);
+
+	if (!pstring_table) {
+		g_print ("   String Pool Statistics: Not used yet\n");
+	} else {
+		guint64 bytes = 0;
+
+		g_hash_table_foreach (pstring_table, count_pstring_memory_cb, &bytes);
+		g_print ("   String Pool Statistics: Holds %d strings of total %" G_GUINT64_FORMAT " bytes\n", g_hash_table_size (pstring_table), bytes);
+	}
+
 	g_static_mutex_unlock (&pstring_lock);
 }

@@ -27,6 +27,7 @@
 #define CAMEL_VEE_STORE_H
 
 #include <camel/camel-store.h>
+#include <camel/camel-vee-data-cache.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_VEE_STORE \
@@ -50,32 +51,41 @@
 G_BEGIN_DECLS
 
 typedef struct _CamelVeeStore CamelVeeStore;
+typedef struct _CamelVeeStorePrivate CamelVeeStorePrivate;
 typedef struct _CamelVeeStoreClass CamelVeeStoreClass;
-
-/* open mode for folder, vee folder auto-update */
-#define CAMEL_STORE_VEE_FOLDER_AUTO (1 << 16)
-
-/**
- * CAMEL_STORE_VEE_FOLDER_SPECIAL:
- *
- * Since: 2.24
- **/
-#define CAMEL_STORE_VEE_FOLDER_SPECIAL (1 << 17)
 
 struct _CamelVeeStore {
 	CamelStore parent;
 
-	/* Unmatched folder, set up in camel_vee_store_init */
-	struct _CamelVeeFolder *folder_unmatched;
-	GHashTable *unmatched_uids;
+	CamelVeeStorePrivate *priv;
 };
 
 struct _CamelVeeStoreClass {
 	CamelStoreClass parent_class;
 };
 
-GType		camel_vee_store_get_type	(void);
-CamelVeeStore *	camel_vee_store_new		(void);
+GType			camel_vee_store_get_type			(void);
+CamelVeeStore *		camel_vee_store_new				(void);
+CamelVeeDataCache *	camel_vee_store_get_vee_data_cache		(CamelVeeStore *vstore);
+struct _CamelVeeFolder *camel_vee_store_get_unmatched_folder		(CamelVeeStore *vstore);
+gboolean		camel_vee_store_get_unmatched_enabled		(CamelVeeStore *vstore);
+void			camel_vee_store_set_unmatched_enabled		(CamelVeeStore *vstore,
+									 gboolean is_enabled);
+void			camel_vee_store_note_subfolder_used		(CamelVeeStore *vstore,
+									 CamelFolder *subfolder,
+									 struct _CamelVeeFolder *used_by);
+void			camel_vee_store_note_subfolder_unused		(CamelVeeStore *vstore,
+									 CamelFolder *subfolder,
+									 struct _CamelVeeFolder *unused_by);
+void			camel_vee_store_note_vuid_used			(CamelVeeStore *vstore,
+									 CamelVeeMessageInfoData *mi_data,
+									 struct _CamelVeeFolder *used_by);
+void			camel_vee_store_note_vuid_unused		(CamelVeeStore *vstore,
+									 CamelVeeMessageInfoData *mi_data,
+									 struct _CamelVeeFolder *unused_by);
+void			camel_vee_store_rebuild_unmatched_folder	(CamelVeeStore *vstore,
+									 GCancellable *cancellable,
+									 GError **error);
 
 G_END_DECLS
 

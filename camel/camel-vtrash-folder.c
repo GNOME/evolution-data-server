@@ -260,9 +260,7 @@ camel_vtrash_folder_new (CamelStore *parent_store,
 	camel_vee_folder_construct (
 		CAMEL_VEE_FOLDER (vtrash),
 		CAMEL_STORE_FOLDER_PRIVATE |
-		CAMEL_STORE_FOLDER_CREATE |
-		CAMEL_STORE_VEE_FOLDER_AUTO |
-		CAMEL_STORE_VEE_FOLDER_SPECIAL);
+		CAMEL_STORE_FOLDER_CREATE);
 
 	((CamelFolder *) vtrash)->folder_flags |= vdata[type].flags;
 	camel_vee_folder_set_expression ((CamelVeeFolder *) vtrash, vdata[type].expr);

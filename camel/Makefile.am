@@ -168,6 +168,7 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-url-scanner.c			\
 	camel-url.c				\
 	camel-utf8.c				\
+	camel-vee-data-cache.c			\
 	camel-vee-folder.c			\
 	camel-vee-store.c			\
 	camel-vee-summary.c			\
@@ -302,6 +303,7 @@ libcamelinclude_HEADERS =			\
 	camel-url-scanner.h			\
 	camel-url.h				\
 	camel-utf8.h				\
+	camel-vee-data-cache.h			\
 	camel-vee-folder.h			\
 	camel-vee-store.h			\
 	camel-vee-summary.h			\

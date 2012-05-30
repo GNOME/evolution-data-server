@@ -110,7 +110,7 @@ subscribable_delete_cached_folder (CamelStore *store,
 		folder_name = CAMEL_VTRASH_NAME;
 		vfolder = camel_object_bag_get (store->folders, folder_name);
 		if (vfolder != NULL) {
-			camel_vee_folder_remove_folder (vfolder, folder);
+			camel_vee_folder_remove_folder (vfolder, folder, NULL);
 			g_object_unref (vfolder);
 		}
 	}
@@ -119,7 +119,7 @@ subscribable_delete_cached_folder (CamelStore *store,
 		folder_name = CAMEL_VJUNK_NAME;
 		vfolder = camel_object_bag_get (store->folders, folder_name);
 		if (vfolder != NULL) {
-			camel_vee_folder_remove_folder (vfolder, folder);
+			camel_vee_folder_remove_folder (vfolder, folder, NULL);
 			g_object_unref (vfolder);
 		}
 	}

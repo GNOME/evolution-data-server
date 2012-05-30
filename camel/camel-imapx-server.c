@@ -5109,7 +5109,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	}
 
 	if (job->commands == 0) {
-		if (job->folder->summary && (job->folder->summary->flags & CAMEL_SUMMARY_DIRTY) != 0) {
+		if (job->folder->summary && (job->folder->summary->flags & CAMEL_FOLDER_SUMMARY_DIRTY) != 0) {
 			CamelStoreInfo *si;
 
 			/* ... and store's summary when folder's summary is dirty */

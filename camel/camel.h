@@ -137,6 +137,7 @@
 #include <camel/camel-url.h>
 #include <camel/camel-url-scanner.h>
 #include <camel/camel-utf8.h>
+#include <camel/camel-vee-data-cache.h>
 #include <camel/camel-vee-folder.h>
 #include <camel/camel-vee-store.h>
 #include <camel/camel-vee-summary.h>

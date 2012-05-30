@@ -213,7 +213,7 @@ cs_delete_cached_folder (CamelStore *store,
 		vfolder = camel_object_bag_get (
 			store->folders, CAMEL_VTRASH_NAME);
 		if (vfolder != NULL) {
-			camel_vee_folder_remove_folder (vfolder, folder);
+			camel_vee_folder_remove_folder (vfolder, folder, NULL);
 			g_object_unref (vfolder);
 		}
 	}
@@ -222,7 +222,7 @@ cs_delete_cached_folder (CamelStore *store,
 		vfolder = camel_object_bag_get (
 			store->folders, CAMEL_VJUNK_NAME);
 		if (vfolder != NULL) {
-			camel_vee_folder_remove_folder (vfolder, folder);
+			camel_vee_folder_remove_folder (vfolder, folder, NULL);
 			g_object_unref (vfolder);
 		}
 	}
@@ -245,7 +245,7 @@ store_get_special (CamelStore *store,
 	folders = camel_object_bag_list (store->folders);
 	for (i = 0; i < folders->len; i++) {
 		if (!CAMEL_IS_VTRASH_FOLDER (folders->pdata[i]))
-			camel_vee_folder_add_folder ((CamelVeeFolder *) folder, (CamelFolder *) folders->pdata[i]);
+			camel_vee_folder_add_folder ((CamelVeeFolder *) folder, (CamelFolder *) folders->pdata[i], NULL);
 		g_object_unref (folders->pdata[i]);
 	}
 	g_ptr_array_free (folders, TRUE);
@@ -402,8 +402,7 @@ store_synchronize_sync (CamelStore *store,
 			camel_folder_synchronize_sync (
 				folder, expunge, cancellable, &local_error);
 			ignore_no_such_table_exception (&local_error);
-		} else if (CAMEL_IS_VEE_FOLDER (folder))
-			camel_vee_folder_sync_headers (folder, NULL); /* Literally don't care of vfolder exceptions */
+		}
 		g_object_unref (folder);
 	}
 
@@ -1924,7 +1923,7 @@ camel_store_get_folder_sync (CamelStore *store,
 		 * virtual Junk folder, let the virtual Junk folder
 		 * track this folder. */
 		if (vjunk != NULL) {
-			camel_vee_folder_add_folder (vjunk, folder);
+			camel_vee_folder_add_folder (vjunk, folder, NULL);
 			g_object_unref (vjunk);
 		}
 
@@ -1932,7 +1931,7 @@ camel_store_get_folder_sync (CamelStore *store,
 		 * virtual Trash folder, let the virtual Trash folder
 		 * track this folder. */
 		if (vtrash != NULL) {
-			camel_vee_folder_add_folder (vtrash, folder);
+			camel_vee_folder_add_folder (vtrash, folder, NULL);
 			g_object_unref (vtrash);
 		}
 

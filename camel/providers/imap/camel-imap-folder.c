@@ -1505,7 +1505,7 @@ imap_sync_offline (CamelFolder *folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 
-	if (folder->summary && (folder->summary->flags & CAMEL_SUMMARY_DIRTY) != 0) {
+	if (folder->summary && (folder->summary->flags & CAMEL_FOLDER_SUMMARY_DIRTY) != 0) {
 		CamelStoreInfo *si;
 		const gchar *full_name;
 

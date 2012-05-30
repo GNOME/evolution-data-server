@@ -273,7 +273,6 @@ gint camel_db_delete_folder (CamelDB *cdb, const gchar *folder, GError **error);
 gint camel_db_delete_uid (CamelDB *cdb, const gchar *folder, const gchar *uid, GError **error);
 /*int camel_db_delete_uids (CamelDB *cdb, GError **error, gint nargs, ... );*/
 gint camel_db_delete_uids (CamelDB *cdb, const gchar * folder_name, GList *uids, GError **error);
-gint camel_db_delete_vuids (CamelDB *cdb, const gchar * folder_name, const gchar *shash, GList *uids, GError **error);
 
 gint camel_db_create_folders_table (CamelDB *cdb, GError **error);
 gint camel_db_select (CamelDB *cdb, const gchar * stmt, CamelDBSelectCB callback, gpointer data, GError **error);
@@ -299,14 +298,6 @@ gint camel_db_count_visible_unread_message_info (CamelDB *cdb, const gchar *tabl
 gint camel_db_count_junk_not_deleted_message_info (CamelDB *cdb, const gchar *table_name, guint32 *count, GError **error);
 gint camel_db_count_message_info (CamelDB *cdb, const gchar *query, guint32 *count, GError **error);
 void camel_db_camel_mir_free (CamelMIRecord *record);
-
-gint camel_db_create_vfolder (CamelDB *db, const gchar *folder_name, GError **error);
-gint camel_db_recreate_vfolder (CamelDB *db, const gchar *folder_name, GError **error);
-gint camel_db_delete_uid_from_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, GError **error);
-gint camel_db_delete_uid_from_vfolder_transaction (CamelDB *db, const gchar *folder_name, const gchar *vuid, GError **error);
-GPtrArray * camel_db_get_vuids_from_vfolder (CamelDB *db, const gchar *folder_name, gchar *filter, GError **error);
-gint camel_db_add_to_vfolder (CamelDB *db, gchar *folder_name, gchar *vuid, GError **error);
-gint camel_db_add_to_vfolder_transaction (CamelDB *db, const gchar *folder_name, const gchar *vuid, GError **error);
 
 gint camel_db_get_folder_uids (CamelDB *db, const gchar *folder_name, const gchar *sort_by, const gchar *collate, GHashTable *hash, GError **error);
 

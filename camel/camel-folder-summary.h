@@ -214,8 +214,17 @@ struct _CamelMessageInfoBase {
 	gchar *bodystructure;
 };
 
+/**
+ * CamelFolderSummaryFlags:
+ * @CAMEL_FOLDER_SUMMARY_DIRTY:
+ *    There are changes in summary, which should be saved.
+ * @CAMEL_FOLDER_SUMMARY_IN_MEMORY_ONLY:
+ *    Summary with this flag doesn't use DB for storing its content,
+ *    it is always created on the fly.
+ **/
 typedef enum {
-	CAMEL_SUMMARY_DIRTY = 1 << 0
+	CAMEL_FOLDER_SUMMARY_DIRTY		= 1 << 0,
+	CAMEL_FOLDER_SUMMARY_IN_MEMORY_ONLY	= 1 << 1
 } CamelFolderSummaryFlags;
 
 /**
@@ -418,6 +427,12 @@ CamelMessageInfo *	camel_folder_summary_get	(CamelFolderSummary *summary,
 							 const gchar *uid);
 GPtrArray *		camel_folder_summary_get_array	(CamelFolderSummary *summary);
 void			camel_folder_summary_free_array	(GPtrArray *array);
+
+GHashTable *		camel_folder_summary_get_hash	(CamelFolderSummary *summary);
+
+gboolean		camel_folder_summary_replace_flags
+							(CamelFolderSummary *summary,
+							 CamelMessageInfo *info);
 
 /* Peek from mem only */
 CamelMessageInfo *	camel_folder_summary_peek_loaded

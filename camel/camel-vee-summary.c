@@ -41,6 +41,11 @@
 
 #define d(x)
 
+struct _CamelVeeSummaryPrivate
+{
+	GHashTable *vuids_by_subfolder; /* CamelFolder * => GHashTable * of gchar *vuid */
+};
+
 G_DEFINE_TYPE (CamelVeeSummary, camel_vee_summary, CAMEL_TYPE_FOLDER_SUMMARY)
 
 static void
@@ -49,8 +54,9 @@ vee_message_info_free (CamelFolderSummary *s,
 {
 	CamelVeeMessageInfo *mi = (CamelVeeMessageInfo *) info;
 
-	camel_pstring_free (info->uid);
 	g_object_unref (mi->orig_summary);
+
+	CAMEL_FOLDER_SUMMARY_CLASS (camel_vee_summary_parent_class)->message_info_free (s, info);
 }
 
 static CamelMessageInfo *
@@ -144,6 +150,22 @@ vee_info_user_tag (const CamelMessageInfo *mi,
 	return ret;
 }
 
+static void
+vee_summary_notify_mi_changed (CamelVeeFolder *vfolder,
+			       CamelMessageInfo *mi)
+{
+	CamelFolderChangeInfo *changes;
+
+	g_return_if_fail (vfolder != NULL);
+	g_return_if_fail (mi != NULL);
+
+	changes = camel_folder_change_info_new ();
+
+	camel_folder_change_info_change_uid (changes, camel_message_info_uid (mi));
+	camel_folder_changed (CAMEL_FOLDER (vfolder), changes);
+	camel_folder_change_info_free (changes);
+}
+
 static gboolean
 vee_info_set_user_flag (CamelMessageInfo *mi,
                         const gchar *name,
@@ -152,25 +174,23 @@ vee_info_set_user_flag (CamelMessageInfo *mi,
 	gint res = FALSE;
 	CamelVeeFolder *vf = (CamelVeeFolder *) camel_folder_summary_get_folder (mi->summary);
 
-	if (camel_debug("vfolderexp"))
-		printf (
-			"Expression for vfolder '%s' is '%s'\n",
-			camel_folder_get_full_name (camel_folder_summary_get_folder (mi->summary)),
-			g_strescape (vf->expression, ""));
-
 	if (mi->uid) {
 		CamelMessageInfo *rmi = camel_folder_summary_get (((CamelVeeMessageInfo *) mi)->orig_summary, mi->uid + 8);
+		gboolean ignore_changes = !CAMEL_IS_VTRASH_FOLDER (vf);
 
 		HANDLE_NULL_INFO (FALSE);
 
 		/* ignore changes done in the folder itself,
 		 * unless it's a vTrash or vJunk folder */
-		if (!CAMEL_IS_VTRASH_FOLDER (vf))
+		if (ignore_changes)
 			camel_vee_folder_ignore_next_changed_event (vf, camel_folder_summary_get_folder (rmi->summary));
 
 		res = camel_message_info_set_user_flag (rmi, name, value);
 
 		camel_message_info_free (rmi);
+
+		if (ignore_changes)
+			vee_summary_notify_mi_changed (vf, mi);
 	}
 
 	return res;
@@ -185,17 +205,21 @@ vee_info_set_user_tag (CamelMessageInfo *mi,
 
 	if (mi->uid) {
 		CamelMessageInfo *rmi = camel_folder_summary_get (((CamelVeeMessageInfo *) mi)->orig_summary, mi->uid + 8);
-		CamelFolder *folder = camel_folder_summary_get_folder (mi->summary);
+		CamelVeeFolder *vf = (CamelVeeFolder *) camel_folder_summary_get_folder (mi->summary);
+		gboolean ignore_changes = !CAMEL_IS_VTRASH_FOLDER (vf);
 
 		HANDLE_NULL_INFO (FALSE);
 
 		/* ignore changes done in the folder itself,
 		 * unless it's a vTrash or vJunk folder */
-		if (!CAMEL_IS_VTRASH_FOLDER (folder))
-			camel_vee_folder_ignore_next_changed_event ((CamelVeeFolder *) folder, camel_folder_summary_get_folder (rmi->summary));
+		if (ignore_changes)
+			camel_vee_folder_ignore_next_changed_event (vf, camel_folder_summary_get_folder (rmi->summary));
 
 		res = camel_message_info_set_user_tag (rmi, name, value);
 		camel_message_info_free (rmi);
+
+		if (ignore_changes)
+			vee_summary_notify_mi_changed (vf, mi);
 	}
 
 	return res;
@@ -209,21 +233,16 @@ vee_info_set_flags (CamelMessageInfo *mi,
 	gint res = FALSE;
 	CamelVeeFolder *vf = CAMEL_VEE_FOLDER (camel_folder_summary_get_folder (mi->summary));
 
-	if (camel_debug("vfolderexp"))
-		printf (
-			"Expression for vfolder '%s' is '%s'\n",
-			camel_folder_get_full_name (CAMEL_FOLDER (vf)),
-			g_strescape (vf->expression, ""));
-
 	/* first update original message info... */
 	if (mi->uid) {
 		CamelMessageInfo *rmi = camel_folder_summary_get (((CamelVeeMessageInfo *) mi)->orig_summary, mi->uid + 8);
+		gboolean ignore_changes = !CAMEL_IS_VTRASH_FOLDER (vf);
 
 		HANDLE_NULL_INFO (FALSE);
 
 		/* ignore changes done in the folder itself,
 		 * unless it's a vTrash or vJunk folder */
-		if (!CAMEL_IS_VTRASH_FOLDER (vf))
+		if (ignore_changes)
 			camel_vee_folder_ignore_next_changed_event (vf, camel_folder_summary_get_folder (rmi->summary));
 
 		camel_folder_freeze (camel_folder_summary_get_folder (rmi->summary));
@@ -231,11 +250,24 @@ vee_info_set_flags (CamelMessageInfo *mi,
 		((CamelVeeMessageInfo *) mi)->old_flags = camel_message_info_flags (rmi);
 		camel_folder_thaw (camel_folder_summary_get_folder (rmi->summary));
 
+		if (res) {
+			/* update flags on itself too */
+			camel_folder_summary_replace_flags (mi->summary, mi);
+		}
+
 		camel_message_info_free (rmi);
+
+		if (ignore_changes)
+			vee_summary_notify_mi_changed (vf, mi);
 	}
 
-	if (res)
-		CAMEL_FOLDER_SUMMARY_CLASS (camel_vee_summary_parent_class)->info_set_flags (mi, flags, set);
+	/* Do not call parent class' info_set_flags, to not do flood
+	   of change notifications, rather wait for a notification
+	   from original folder, and propagate the change in counts
+	   through camel_vee_summary_replace_flags().
+	*/
+	/*if (res)
+		CAMEL_FOLDER_SUMMARY_CLASS (camel_vee_summary_parent_class)->info_set_flags (mi, flags, set);*/
 
 	return res;
 }
@@ -249,7 +281,7 @@ message_info_from_uid (CamelFolderSummary *s,
 	info = camel_folder_summary_peek_loaded (s, uid);
 	if (!info) {
 		CamelVeeMessageInfo *vinfo;
-		gchar tmphash[9];
+		CamelFolder *orig_folder;
 
 		/* This function isn't really nice. But no great way
 		 * But in vfolder case, this may not be so bad, as vuid has the hash in first 8 bytes.
@@ -264,14 +296,19 @@ message_info_from_uid (CamelFolderSummary *s,
 
 		/* Create the info and load it, its so easy. */
 		info = camel_message_info_new (s);
-		camel_message_info_ref (info);
 		info->dirty = FALSE;
-		vinfo = (CamelVeeMessageInfo *) info;
 		info->uid = camel_pstring_strdup (uid);
-		strncpy (tmphash, uid, 8);
-		tmphash[8] = 0;
-		vinfo->orig_summary = g_hash_table_lookup (((CamelVeeFolder *) camel_folder_summary_get_folder (s))->hashes, tmphash);
+
+		orig_folder = camel_vee_folder_get_vee_uid_folder (
+			(CamelVeeFolder *) camel_folder_summary_get_folder (s), uid);
+		g_return_val_if_fail (orig_folder != NULL, NULL);
+
+		vinfo = (CamelVeeMessageInfo *) info;
+		vinfo->orig_summary = orig_folder->summary;
+
 		g_object_ref (vinfo->orig_summary);
+		camel_message_info_ref (info);
+
 		camel_folder_summary_insert (s, info, FALSE);
 	}
 
@@ -279,9 +316,26 @@ message_info_from_uid (CamelFolderSummary *s,
 }
 
 static void
+vee_summary_finalize (GObject *object)
+{
+	CamelVeeSummary *vsummary = CAMEL_VEE_SUMMARY (object);
+
+	g_hash_table_destroy (vsummary->priv->vuids_by_subfolder);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_vee_summary_parent_class)->finalize (object);
+}
+
+static void
 camel_vee_summary_class_init (CamelVeeSummaryClass *class)
 {
+	GObjectClass *object_class;
 	CamelFolderSummaryClass *folder_summary_class;
+
+	g_type_class_add_private (class, sizeof (CamelVeeSummaryPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = vee_summary_finalize;
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_size = sizeof (CamelVeeMessageInfo);
@@ -302,6 +356,11 @@ camel_vee_summary_class_init (CamelVeeSummaryClass *class)
 static void
 camel_vee_summary_init (CamelVeeSummary *vee_summary)
 {
+	vee_summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (vee_summary,
+		CAMEL_TYPE_VEE_SUMMARY, CamelVeeSummaryPrivate);
+
+	vee_summary->priv->vuids_by_subfolder =
+		g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify) g_hash_table_destroy);
 }
 
 /**
@@ -316,81 +375,171 @@ camel_vee_summary_init (CamelVeeSummary *vee_summary)
 CamelFolderSummary *
 camel_vee_summary_new (CamelFolder *parent)
 {
-	CamelVeeSummary *s;
+	CamelFolderSummary *summary;
 	CamelStore *parent_store;
 	const gchar *full_name;
 
-	s = g_object_new (CAMEL_TYPE_VEE_SUMMARY, "folder", parent, NULL);
+	summary = g_object_new (CAMEL_TYPE_VEE_SUMMARY, "folder", parent, NULL);
+	summary->flags |= CAMEL_FOLDER_SUMMARY_IN_MEMORY_ONLY;
 
+	/* not using DB for vee folder summaries, drop the table */
 	full_name = camel_folder_get_full_name (parent);
 	parent_store = camel_folder_get_parent_store (parent);
-	camel_db_create_vfolder (parent_store->cdb_w, full_name, NULL);
+	camel_db_delete_folder (parent_store->cdb_w, full_name, NULL);
 
-	return (CamelFolderSummary *) s;
+	return summary;
 }
 
-/**
- * camel_vee_summary_get_ids:
- *
- * Since: 2.24
- **/
-GPtrArray *
-camel_vee_summary_get_ids (CamelVeeSummary *summary,
-                           gchar hash[8])
+static void
+get_uids_for_subfolder (gpointer key,
+			gpointer value,
+			gpointer user_data)
 {
-	gchar *shash = g_strdup_printf("%c%c%c%c%c%c%c%c", hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7]);
-	CamelFolderSummary *cfs = (CamelFolderSummary *) summary;
-	CamelStore *parent_store;
-	GPtrArray *array;
-	const gchar *full_name;
-
-	/* FIXME[disk-summary] fix exception passing */
-	full_name = camel_folder_get_full_name (camel_folder_summary_get_folder (cfs));
-	parent_store = camel_folder_get_parent_store (camel_folder_summary_get_folder (cfs));
-	array = camel_db_get_vuids_from_vfolder (parent_store->cdb_r, full_name, shash, NULL);
-
-	g_free (shash);
-
-	return array;
+	g_hash_table_insert (user_data, (gpointer) camel_pstring_strdup (key), GINT_TO_POINTER (1));
 }
 
-CamelVeeMessageInfo *
-camel_vee_summary_add (CamelVeeSummary *s,
-                       CamelFolderSummary *summary,
-                       const gchar *uid,
-                       const gchar hash[8])
+GHashTable *
+camel_vee_summary_get_uids_for_subfolder (CamelVeeSummary *summary,
+					  CamelFolder *subfolder)
 {
-	CamelVeeMessageInfo *mi;
-	CamelMessageInfo *rmi;
-	gchar *vuid;
-	vuid = g_malloc (strlen (uid) + 9);
-	memcpy (vuid, hash, 8);
-	strcpy (vuid + 8, uid);
+	GHashTable *vuids, *known_uids;
 
-	mi = (CamelVeeMessageInfo *) camel_folder_summary_peek_loaded (&s->summary, vuid);
-	if (mi) {
-		/* Possible that the entry is loaded, see if it has the summary */
-		d(g_message ("%s - already there\n", vuid));
-		g_free (vuid);
-		if (!mi->orig_summary)
-			mi->orig_summary = g_object_ref (summary);
-		return mi;
+	g_return_val_if_fail (CAMEL_IS_VEE_SUMMARY (summary), NULL);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (subfolder), NULL);
+
+	camel_folder_summary_lock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	/* uses direct hash, because strings are supposed to be from the string pool */
+	known_uids = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
+
+	vuids = g_hash_table_lookup (summary->priv->vuids_by_subfolder, subfolder);
+	if (vuids) {
+		g_hash_table_foreach (vuids, get_uids_for_subfolder, known_uids);
 	}
 
-	mi = (CamelVeeMessageInfo *) camel_message_info_new (&s->summary);
-	mi->orig_summary = g_object_ref (summary);
-	mi->info.uid = (gchar *) camel_pstring_strdup (vuid);
-	g_free (vuid);
-	camel_message_info_ref (mi);
+	camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	return known_uids;
+}
+
+/* free returned pointer with camel_message_info_free() */
+CamelVeeMessageInfo *
+camel_vee_summary_add (CamelVeeSummary *s,
+                       CamelVeeMessageInfoData *mi_data)
+{
+	CamelVeeMessageInfo *vmi;
+	CamelMessageInfo *rmi;
+	const gchar *uid, *vuid;
+	CamelVeeSubfolderData *sf_data;
+	CamelFolder *orig_folder;
+	GHashTable *vuids;
+
+	g_return_val_if_fail (CAMEL_IS_VEE_SUMMARY (s), NULL);
+	g_return_val_if_fail (CAMEL_IS_VEE_MESSAGE_INFO_DATA (mi_data), NULL);
+
+	camel_folder_summary_lock (&s->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	sf_data = camel_vee_message_info_data_get_subfolder_data (mi_data);
+	uid = camel_vee_message_info_data_get_orig_message_uid (mi_data);
+	vuid = camel_vee_message_info_data_get_vee_message_uid (mi_data);
+	orig_folder = camel_vee_subfolder_data_get_folder (sf_data);
+
+	vmi = (CamelVeeMessageInfo *) camel_folder_summary_peek_loaded (&s->summary, vuid);
+	if (vmi) {
+		/* Possible that the entry is loaded, see if it has the summary */
+		d(g_message ("%s - already there\n", vuid));
+		if (!vmi->orig_summary)
+			vmi->orig_summary = g_object_ref (orig_folder->summary);
+
+		camel_folder_summary_unlock (&s->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+		return vmi;
+	}
+
+	vmi = (CamelVeeMessageInfo *) camel_message_info_new (&s->summary);
+	vmi->orig_summary = g_object_ref (orig_folder->summary);
+	vmi->info.uid = (gchar *) camel_pstring_strdup (vuid);
+
+	camel_message_info_ref (vmi);
 
 	/* Get actual flags and store it */
-	rmi = camel_folder_summary_get (summary, uid);
+	rmi = camel_folder_summary_get (orig_folder->summary, uid);
 	if (rmi) {
-		mi->old_flags = camel_message_info_flags (rmi);
+		vmi->old_flags = camel_message_info_flags (rmi);
 		camel_message_info_free (rmi);
 	}
 
-	camel_folder_summary_insert (&s->summary, (CamelMessageInfo *) mi, FALSE);
+	vuids = g_hash_table_lookup (s->priv->vuids_by_subfolder, orig_folder);
+	if (vuids) {
+		g_hash_table_insert (vuids, (gpointer) camel_pstring_strdup (vuid), GINT_TO_POINTER (1));
+	} else {
+		vuids = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
+		g_hash_table_insert (vuids, (gpointer) camel_pstring_strdup (vuid), GINT_TO_POINTER (1));
+		g_hash_table_insert (s->priv->vuids_by_subfolder, orig_folder, vuids);
+	}
 
-	return mi;
+	camel_folder_summary_insert (&s->summary, (CamelMessageInfo *) vmi, FALSE);
+	camel_folder_summary_unlock (&s->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	return vmi;
+}
+
+void
+camel_vee_summary_remove (CamelVeeSummary *summary,
+			  const gchar *vuid,
+			  CamelFolder *subfolder)
+{
+	GHashTable *vuids;
+
+	g_return_if_fail (CAMEL_IS_VEE_SUMMARY (summary));
+	g_return_if_fail (vuid != NULL);
+	g_return_if_fail (subfolder != NULL);
+
+	camel_folder_summary_lock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	vuids = g_hash_table_lookup (summary->priv->vuids_by_subfolder, subfolder);
+	if (vuids) {
+		g_hash_table_remove (vuids, vuid);
+		if (!g_hash_table_size (vuids))
+			g_hash_table_remove (summary->priv->vuids_by_subfolder, subfolder);
+	}
+	camel_folder_summary_remove_uid (&summary->summary, vuid);
+
+	camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+}
+
+/**
+ * camel_vee_summary_replace_flags:
+ * @summary: a #CamelVeeSummary
+ * @uid: a message UID to update flags for
+ *
+ * Makes sure @summary flags on @uid corresponds to those 
+ * in the subfolder of vee-folder, and updates internal counts
+ * on @summary as well.
+ **/
+void
+camel_vee_summary_replace_flags (CamelVeeSummary *summary,
+				 const gchar *uid)
+{
+	CamelMessageInfo *mi;
+	CamelVeeMessageInfo *vmi;
+
+	g_return_if_fail (CAMEL_IS_VEE_SUMMARY (summary));
+	g_return_if_fail (uid != NULL);
+
+	camel_folder_summary_lock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	mi = camel_folder_summary_get (&summary->summary, uid);
+	if (!mi) {
+		camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		return;
+	}
+
+	vmi = (CamelVeeMessageInfo *) mi;
+	vmi->old_flags = camel_message_info_flags (mi);
+
+	camel_folder_summary_replace_flags (&summary->summary, mi);
+	camel_message_info_free (mi);
+
+	camel_folder_summary_unlock (&summary->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }

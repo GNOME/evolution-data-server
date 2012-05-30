@@ -851,6 +851,8 @@ folder_freeze (CamelFolder *folder)
 	camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 
 	folder->priv->frozen++;
+	if (folder->summary)
+		g_object_freeze_notify (G_OBJECT (folder->summary));
 
 	d (printf ("freeze (%p '%s') = %d\n", folder, folder->full_name, folder->priv->frozen));
 	camel_folder_unlock (folder, CAMEL_FOLDER_CHANGE_LOCK);
@@ -866,6 +868,8 @@ folder_thaw (CamelFolder *folder)
 	camel_folder_lock (folder, CAMEL_FOLDER_CHANGE_LOCK);
 
 	folder->priv->frozen--;
+	if (folder->summary)
+		g_object_thaw_notify (G_OBJECT (folder->summary));
 
 	d (printf ("thaw (%p '%s') = %d\n", folder, folder->full_name, folder->priv->frozen));
 

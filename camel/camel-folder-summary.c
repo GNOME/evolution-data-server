@@ -359,21 +359,32 @@ folder_summary_get_property (GObject *object,
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 }
 
-/**
- * folder_summary_update_counts_by_flags:
- *
- * Since: 3.0
- **/
-static void
+static gboolean
+is_in_memory_summary (CamelFolderSummary *summary)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
+
+	return (summary->flags & CAMEL_FOLDER_SUMMARY_IN_MEMORY_ONLY) != 0;
+}
+
+#define UPDATE_COUNTS_ADD		(1)
+#define UPDATE_COUNTS_SUB		(2)
+#define UPDATE_COUNTS_ADD_WITHOUT_TOTAL (3)
+#define UPDATE_COUNTS_SUB_WITHOUT_TOTAL (4)
+
+static gboolean
 folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
                                        guint32 flags,
-                                       gboolean subtract)
+                                       gint op_type)
 {
 	gint unread = 0, deleted = 0, junk = 0;
 	gboolean is_junk_folder = FALSE, is_trash_folder = FALSE;
+	gboolean subtract = op_type == UPDATE_COUNTS_SUB || op_type == UPDATE_COUNTS_SUB_WITHOUT_TOTAL;
+	gboolean without_total = op_type == UPDATE_COUNTS_ADD_WITHOUT_TOTAL || op_type == UPDATE_COUNTS_SUB_WITHOUT_TOTAL;
+	gboolean changed = FALSE;
 	GObject *summary_object;
 
-	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
 	summary_object = G_OBJECT (summary);
 
@@ -400,21 +411,25 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 	if (deleted) {
 		summary->priv->deleted_count += deleted;
 		g_object_notify (summary_object, "deleted-count");
+		changed = TRUE;
 	}
 
 	if (junk) {
 		summary->priv->junk_count += junk;
 		g_object_notify (summary_object, "junk-count");
+		changed = TRUE;
 	}
 
 	if (junk && !deleted) {
 		summary->priv->junk_not_deleted_count += junk;
 		g_object_notify (summary_object, "junk-not-deleted-count");
+		changed = TRUE;
 	}
 
 	if (!junk && !deleted) {
 		summary->priv->visible_count += subtract ? -1 : 1;
 		g_object_notify (summary_object, "visible-count");
+		changed = TRUE;
 	}
 
 	if (junk && !is_junk_folder)
@@ -425,16 +440,23 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 	if (unread) {
 		summary->priv->unread_count += unread;
 		g_object_notify (summary_object, "unread-count");
+		changed = TRUE;
 	}
 
-	summary->priv->saved_count += subtract ? -1 : 1;
-	g_object_notify (summary_object, "saved-count");
+	if (!without_total) {
+		summary->priv->saved_count += subtract ? -1 : 1;
+		g_object_notify (summary_object, "saved-count");
+		changed = TRUE;
+	}
 
-	camel_folder_summary_touch (summary);
+	if (changed)
+		camel_folder_summary_touch (summary);
 
 	g_object_thaw_notify (summary_object);
 
 	dd(printf("%p: %d %d %d | %d %d %d\n", (gpointer) summary, unread, deleted, junk, summary->priv->unread_count, summary->priv->visible_count, summary->priv->saved_count));
+
+	return changed;
 }
 
 static gboolean
@@ -499,19 +521,21 @@ summary_header_to_db (CamelFolderSummary *summary,
 	record->nextuid = summary->priv->nextuid;
 	record->time = summary->time;
 
-	/* FIXME: Ever heard of Constructors and initializing ? */
-	if (camel_db_count_total_message_info (db, table_name, &(record->saved_count), NULL))
-		record->saved_count = 0;
-	if (camel_db_count_junk_message_info (db, table_name, &(record->junk_count), NULL))
-		record->junk_count = 0;
-	if (camel_db_count_deleted_message_info (db, table_name, &(record->deleted_count), NULL))
-		record->deleted_count = 0;
-	if (camel_db_count_unread_message_info (db, table_name, &(record->unread_count), NULL))
-		record->unread_count = 0;
-	if (camel_db_count_visible_message_info (db, table_name, &(record->visible_count), NULL))
-		record->visible_count = 0;
-	if (camel_db_count_junk_not_deleted_message_info (db, table_name, &(record->jnd_count), NULL))
-		record->jnd_count = 0;
+	if (!is_in_memory_summary (summary)) {
+		/* FIXME: Ever heard of Constructors and initializing ? */
+		if (camel_db_count_total_message_info (db, table_name, &(record->saved_count), NULL))
+			record->saved_count = 0;
+		if (camel_db_count_junk_message_info (db, table_name, &(record->junk_count), NULL))
+			record->junk_count = 0;
+		if (camel_db_count_deleted_message_info (db, table_name, &(record->deleted_count), NULL))
+			record->deleted_count = 0;
+		if (camel_db_count_unread_message_info (db, table_name, &(record->unread_count), NULL))
+			record->unread_count = 0;
+		if (camel_db_count_visible_message_info (db, table_name, &(record->visible_count), NULL))
+			record->visible_count = 0;
+		if (camel_db_count_junk_not_deleted_message_info (db, table_name, &(record->jnd_count), NULL))
+			record->jnd_count = 0;
+	}
 
 	summary->priv->unread_count = record->unread_count;
 	summary->priv->deleted_count = record->deleted_count;
@@ -798,14 +822,24 @@ content_info_to_db (CamelFolderSummary *summary,
 	return TRUE;
 }
 
-static gboolean
-folder_summary_replace_flags (CamelFolderSummary *summary,
-                              CamelMessageInfo *info)
+/**
+ * camel_folder_summary_replace_flags:
+ * @summary: a #CamelFolderSummary
+ * @info: a #CamelMessageInfo
+ *
+ * Updates internal counts based on the flags in @info.
+ *
+ * Returns: Whether any count changed
+ *
+ * Since: 3.6
+ **/
+gboolean
+camel_folder_summary_replace_flags (CamelFolderSummary *summary,
+				    CamelMessageInfo *info)
 {
-	guint32 used_flags;
+	guint32 old_flags, new_flags, added_flags, removed_flags;
 	GObject *summary_object;
-	guint32 old_saved_count, old_unread_count, old_deleted_count, old_junk_count;
-	guint32 old_junk_not_deleted_count, old_visible_count;
+	gboolean changed = FALSE;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (info != NULL, FALSE);
@@ -819,38 +853,41 @@ folder_summary_replace_flags (CamelFolderSummary *summary,
 	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	g_object_freeze_notify (summary_object);
 
-	used_flags = GPOINTER_TO_UINT (g_hash_table_lookup (summary->priv->uids, camel_message_info_uid (info)));
+	old_flags = GPOINTER_TO_UINT (g_hash_table_lookup (summary->priv->uids, camel_message_info_uid (info)));
+	new_flags = camel_message_info_flags (info);
 
-	old_saved_count = summary->priv->saved_count;
-	old_unread_count = summary->priv->unread_count;
-	old_deleted_count = summary->priv->deleted_count;
-	old_junk_count = summary->priv->junk_count;
-	old_junk_not_deleted_count = summary->priv->junk_not_deleted_count;
-	old_visible_count = summary->priv->visible_count;
+	if ((old_flags & ~CAMEL_MESSAGE_FOLDER_FLAGGED) == (new_flags & ~CAMEL_MESSAGE_FOLDER_FLAGGED)) {
+		g_object_thaw_notify (summary_object);
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		return FALSE;
+	}
 
-	/* decrement counts with old flags */
-	folder_summary_update_counts_by_flags (summary, used_flags, TRUE);
+	added_flags = new_flags & (~(old_flags & new_flags));
+	removed_flags = old_flags & (~(old_flags & new_flags));
+
+	if ((old_flags & CAMEL_MESSAGE_SEEN) == (new_flags & CAMEL_MESSAGE_SEEN)) {
+		/* unread count is different from others, it asks for nonexistence
+		   of the flag, thus if it wasn't changed, then simply set it
+		   in added/removed, thus there are no false notifications
+		   on unread counts */
+		added_flags |= CAMEL_MESSAGE_SEEN;
+		removed_flags |= CAMEL_MESSAGE_SEEN;
+	}
+
+	/* decrement counts with removed flags */
+	changed = folder_summary_update_counts_by_flags (summary, removed_flags, UPDATE_COUNTS_SUB_WITHOUT_TOTAL) || changed;
+	/* increment counts with added flags */
+	changed = folder_summary_update_counts_by_flags (summary, added_flags, UPDATE_COUNTS_ADD_WITHOUT_TOTAL) || changed;
 
 	/* update current flags on the summary */
 	g_hash_table_insert (summary->priv->uids,
 		(gpointer) camel_pstring_strdup (camel_message_info_uid (info)),
-		GUINT_TO_POINTER (camel_message_info_flags (info)));
+		GUINT_TO_POINTER (new_flags));
 
-	/* increment counts with new flags */
-	folder_summary_update_counts_by_flags (summary, camel_message_info_flags (info), FALSE);
-
-	/* this approach generates false notifications at least for "saved-count",
-	 * but is it an issue? I suppose not.
-	*/
 	g_object_thaw_notify (summary_object);
 	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	return  old_saved_count != summary->priv->saved_count ||
-		old_unread_count != summary->priv->unread_count ||
-		old_deleted_count != summary->priv->deleted_count ||
-		old_junk_count != summary->priv->junk_count ||
-		old_junk_not_deleted_count != summary->priv->junk_not_deleted_count ||
-		old_visible_count != summary->priv->visible_count;
+	return changed;
 }
 
 static CamelMessageInfo *
@@ -1051,7 +1088,7 @@ info_set_flags (CamelMessageInfo *info,
 	if (mi->summary) {
 		camel_folder_summary_lock (mi->summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		g_object_freeze_notify (G_OBJECT (mi->summary));
-		counts_changed = folder_summary_replace_flags (mi->summary, info);
+		counts_changed = camel_folder_summary_replace_flags (mi->summary, info);
 	}
 
 	if (!counts_changed && ((old & ~CAMEL_MESSAGE_SYSTEM_MASK) == (mi->flags & ~CAMEL_MESSAGE_SYSTEM_MASK)) && !((set & CAMEL_MESSAGE_JUNK_LEARN) && !(set & CAMEL_MESSAGE_JUNK))) {
@@ -1719,6 +1756,47 @@ camel_folder_summary_free_array (GPtrArray *array)
 	g_ptr_array_free (array, TRUE);
 }
 
+static void
+cfs_copy_uids_cb (gpointer key,
+		  gpointer value,
+		  gpointer user_data)
+{
+	const gchar *uid = key;
+	GHashTable *copy_hash = user_data;
+
+	g_hash_table_insert (copy_hash, (gpointer) camel_pstring_strdup (uid), GINT_TO_POINTER (1));
+}
+
+/**
+ * camel_folder_summary_get_hash:
+ * @summary: a #CamelFolderSummary object
+ *
+ * Returns hash of current stored 'uids' in summary, where key is 'uid'
+ * from the string pool, and value is 1. The returned pointer should
+ * be freed with g_hash_table_destroy().
+ *
+ * Note: When searching for values always use uids from the string pool.
+ *
+ * Since: 3.6
+ **/
+GHashTable *
+camel_folder_summary_get_hash (CamelFolderSummary *summary)
+{
+	GHashTable *uids;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
+
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	/* using direct hash because of strings being from the string pool */
+	uids = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
+	g_hash_table_foreach (summary->priv->uids, cfs_copy_uids_cb, uids);
+
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	return uids;
+}
+
 /**
  * camel_folder_summary_peek_loaded:
  *
@@ -1764,6 +1842,14 @@ message_info_from_uid (CamelFolderSummary *summary,
 		struct _db_pass_data data;
 
 		folder_name = camel_folder_get_full_name (summary->priv->folder);
+
+		if (is_in_memory_summary (summary)) {
+			camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			g_warning ("%s: Tried to load uid '%s' from DB on in-memory summary of '%s'",
+				G_STRFUNC, uid, folder_name);
+			return NULL;
+		}
+
 		parent_store = camel_folder_get_parent_store (summary->priv->folder);
 		cdb = parent_store->cdb_r;
 
@@ -1956,7 +2042,9 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 	CamelSession *session;
 
 	/* If folder is freed or if the cache is nil then clean up */
-	if (!summary->priv->folder || !g_hash_table_size (summary->priv->loaded_infos)) {
+	if (!summary->priv->folder ||
+	    !g_hash_table_size (summary->priv->loaded_infos) ||
+	    is_in_memory_summary (summary)) {
 		summary->priv->cache_load_time = 0;
 		summary->priv->timeout_handle = 0;
 		return FALSE;
@@ -1981,6 +2069,9 @@ static void
 cfs_schedule_info_release_timer (CamelFolderSummary *summary)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
+
+	if (is_in_memory_summary (summary))
+		return;
 
 	if (!summary->priv->timeout_handle) {
 		static gboolean know_can_do = FALSE, can_do = TRUE;
@@ -2027,8 +2118,10 @@ msg_update_preview (const gchar *uid,
 	/* FIXME Pass a GCancellable */
 	msg = camel_folder_get_message_sync (folder, uid, NULL, NULL);
 	if (msg != NULL) {
-		if (camel_mime_message_build_preview ((CamelMimePart *) msg, (CamelMessageInfo *) info) && info->preview)
-			camel_db_write_preview_record (parent_store->cdb_w, full_name, info->uid, info->preview, NULL);
+		if (camel_mime_message_build_preview ((CamelMimePart *) msg, (CamelMessageInfo *) info) && info->preview) {
+			if (!is_in_memory_summary (folder->summary))
+				camel_db_write_preview_record (parent_store->cdb_w, full_name, info->uid, info->preview, NULL);
+		}
 	}
 	camel_message_info_free (info);
 }
@@ -2077,6 +2170,7 @@ preview_update (CamelSession *session,
 	GHashTable *preview_data, *uids_hash;
 	CamelStore *parent_store;
 	const gchar *full_name;
+	gboolean is_in_memory = is_in_memory_summary (folder->summary);
 	gint i;
 
 	uids_array = camel_folder_summary_get_array (folder->summary);
@@ -2088,7 +2182,7 @@ preview_update (CamelSession *session,
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
-	preview_data = camel_db_get_folder_preview (parent_store->cdb_r, full_name, NULL);
+	preview_data = is_in_memory ? NULL : camel_db_get_folder_preview (parent_store->cdb_r, full_name, NULL);
 	if (preview_data) {
 		g_hash_table_foreach_remove (preview_data, (GHRFunc) fill_mi, folder);
 		g_hash_table_destroy (preview_data);
@@ -2103,9 +2197,11 @@ preview_update (CamelSession *session,
 	}
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
-	camel_db_begin_transaction (parent_store->cdb_w, NULL);
+	if (!is_in_memory)
+		camel_db_begin_transaction (parent_store->cdb_w, NULL);
 	g_hash_table_foreach (uids_hash, (GHFunc) msg_update_preview, folder);
-	camel_db_end_transaction (parent_store->cdb_w, NULL);
+	if (!is_in_memory)
+		camel_db_end_transaction (parent_store->cdb_w, NULL);
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 	camel_folder_free_uids (folder, uids_uncached);
 	g_hash_table_destroy (uids_hash);
@@ -2127,6 +2223,9 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 	/* FIXME[disk-summary] baseclass this, and vfolders we may have to
 	 * load better. */
 	d(printf ("\ncamel_folder_summary_reload_from_db called \n"));
+
+	if (is_in_memory_summary (summary))
+		return 0;
 
 	folder_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
@@ -2220,6 +2319,9 @@ camel_folder_summary_load_from_db (CamelFolderSummary *summary,
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
+
+	if (is_in_memory_summary (summary))
+		return TRUE;
 
 	camel_folder_summary_save_to_db (summary, NULL);
 
@@ -2512,6 +2614,9 @@ save_message_infos_to_db (CamelFolderSummary *summary,
 	const gchar *full_name;
 	SaveToDBArgs args;
 
+	if (is_in_memory_summary (summary))
+		return 0;
+
 	args.error = error;
 	args.migration = fresh_mirs;
 	args.progress = 0;
@@ -2567,7 +2672,8 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 
 	g_return_val_if_fail (summary != NULL, FALSE);
 
-	if (!(summary->flags & CAMEL_SUMMARY_DIRTY))
+	if (!(summary->flags & CAMEL_FOLDER_SUMMARY_DIRTY) ||
+	    is_in_memory_summary (summary))
 		return TRUE;
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
@@ -2585,7 +2691,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	}
 
-	summary->flags &= ~CAMEL_SUMMARY_DIRTY;
+	summary->flags &= ~CAMEL_FOLDER_SUMMARY_DIRTY;
 
 	count = cfs_count_dirty (summary);
 	if (!count)
@@ -2594,7 +2700,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 	ret = save_message_infos_to_db (summary, FALSE, error);
 	if (ret != 0) {
 		/* Failed, so lets reset the flag */
-		summary->flags |= CAMEL_SUMMARY_DIRTY;
+		summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
 		return FALSE;
 	}
 
@@ -2614,14 +2720,14 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 
 		ret = save_message_infos_to_db (summary, FALSE, error);
 		if (ret != 0) {
-			summary->flags |= CAMEL_SUMMARY_DIRTY;
+			summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
 			return FALSE;
 		}
 	}
 
 	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_to_db (summary, error);
 	if (!record) {
-		summary->flags |= CAMEL_SUMMARY_DIRTY;
+		summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
 		return FALSE;
 	}
 
@@ -2633,7 +2739,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 
 	if (ret != 0) {
 		camel_db_abort_transaction (cdb, NULL);
-		summary->flags |= CAMEL_SUMMARY_DIRTY;
+		summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
 		return FALSE;
 	}
 
@@ -2655,6 +2761,9 @@ camel_folder_summary_header_save_to_db (CamelFolderSummary *summary,
 	CamelFIRecord *record;
 	CamelDB *cdb;
 	gint ret;
+
+	if (is_in_memory_summary (summary))
+		return TRUE;
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
@@ -2698,6 +2807,9 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *summary,
 	gboolean ret = FALSE;
 
 	d(printf ("\ncamel_folder_summary_header_load_from_db called \n"));
+
+	if (is_in_memory_summary (summary))
+		return TRUE;
 
 	camel_folder_summary_save_to_db (summary, NULL);
 
@@ -2782,7 +2894,7 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 	}
 
 	base_info = (CamelMessageInfoBase *) info;
-	folder_summary_update_counts_by_flags (summary, camel_message_info_flags (info), FALSE);
+	folder_summary_update_counts_by_flags (summary, camel_message_info_flags (info), UPDATE_COUNTS_ADD);
 	base_info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 	base_info->dirty = TRUE;
 
@@ -2818,7 +2930,7 @@ camel_folder_summary_insert (CamelFolderSummary *summary,
 	if (!load) {
 		CamelMessageInfoBase *base_info = (CamelMessageInfoBase *) info;
 
-		folder_summary_update_counts_by_flags (summary, camel_message_info_flags (info), FALSE);
+		folder_summary_update_counts_by_flags (summary, camel_message_info_flags (info), UPDATE_COUNTS_ADD);
 		base_info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 		base_info->dirty = TRUE;
 
@@ -3100,7 +3212,7 @@ void
 camel_folder_summary_touch (CamelFolderSummary *summary)
 {
 	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-	summary->flags |= CAMEL_SUMMARY_DIRTY;
+	summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
 	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 }
 
@@ -3144,7 +3256,10 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
 
-	res = camel_db_clear_folder_summary (cdb, folder_name, error) == 0;
+	if (!is_in_memory_summary (summary))
+		res = camel_db_clear_folder_summary (cdb, folder_name, error) == 0;
+	else
+		res = TRUE;
 
 	summary_object = G_OBJECT (summary);
 	g_object_freeze_notify (summary_object);
@@ -3213,16 +3328,18 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 		return FALSE;
 	}
 
-	folder_summary_update_counts_by_flags (summary, GPOINTER_TO_UINT (ptr_flags), TRUE);
+	folder_summary_update_counts_by_flags (summary, GPOINTER_TO_UINT (ptr_flags), UPDATE_COUNTS_SUB);
 
 	uid_copy = camel_pstring_strdup (uid);
 	g_hash_table_remove (summary->priv->uids, uid_copy);
 	g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
 
-	full_name = camel_folder_get_full_name (summary->priv->folder);
-	parent_store = camel_folder_get_parent_store (summary->priv->folder);
-	if (camel_db_delete_uid (parent_store->cdb_w, full_name, uid_copy, NULL) != 0)
-		res = FALSE;
+	if (!is_in_memory_summary (summary)) {
+		full_name = camel_folder_get_full_name (summary->priv->folder);
+		parent_store = camel_folder_get_parent_store (summary->priv->folder);
+		if (camel_db_delete_uid (parent_store->cdb_w, full_name, uid_copy, NULL) != 0)
+			res = FALSE;
+	}
 
 	camel_pstring_free (uid_copy);
 
@@ -3255,26 +3372,30 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
+	g_object_freeze_notify (G_OBJECT (summary));
 	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	for (l = g_list_first(uids); l; l = g_list_next(l)) {
 		gpointer ptr_uid = NULL, ptr_flags = NULL;
 		if (g_hash_table_lookup_extended (summary->priv->uids, l->data, &ptr_uid, &ptr_flags)) {
 			const gchar *uid_copy = camel_pstring_strdup (l->data);
-			folder_summary_update_counts_by_flags (summary, GPOINTER_TO_UINT (ptr_flags), TRUE);
+			folder_summary_update_counts_by_flags (summary, GPOINTER_TO_UINT (ptr_flags), UPDATE_COUNTS_SUB);
 			g_hash_table_remove (summary->priv->uids, uid_copy);
 			g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
 			camel_pstring_free (uid_copy);
 		}
 	}
 
-	full_name = camel_folder_get_full_name (summary->priv->folder);
-	parent_store = camel_folder_get_parent_store (summary->priv->folder);
-	if (camel_db_delete_uids (parent_store->cdb_w, full_name, uids, NULL) != 0)
-		res = FALSE;
+	if (is_in_memory_summary (summary)) {
+		full_name = camel_folder_get_full_name (summary->priv->folder);
+		parent_store = camel_folder_get_parent_store (summary->priv->folder);
+		if (camel_db_delete_uids (parent_store->cdb_w, full_name, uids, NULL) != 0)
+			res = FALSE;
+	}
 
 	camel_folder_summary_touch (summary);
 	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+	g_object_thaw_notify (G_OBJECT (summary));
 
 	return res;
 }

@@ -322,6 +322,40 @@ camel_folder_search_set_body_index (CamelFolderSearch *search,
 	search->body_index = body_index;
 }
 
+static gboolean
+do_search_in_memory (CamelFolder *search_in_folder,
+		     const gchar *expr)
+{
+	/* if the expression contains any of these tokens, then perform a memory search, instead of the SQL one */
+	const gchar *in_memory_tokens[] = {
+		"body-contains",
+		"body-regex",
+		"match-threads",
+		"message-location",
+		"header-soundex",
+		"header-regex",
+		"header-full-regex",
+		"header-contains",
+		"header-has-words",
+		NULL };
+	gint i;
+
+	if (search_in_folder &&
+	    search_in_folder->summary &&
+	    (search_in_folder->summary->flags & CAMEL_FOLDER_SUMMARY_IN_MEMORY_ONLY) != 0)
+		return TRUE;
+
+	if (!expr)
+		return FALSE;
+
+	for (i = 0; in_memory_tokens[i]; i++) {
+		if (strstr (expr, in_memory_tokens[i]))
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
 /**
  * camel_folder_search_count:
  * @search:
@@ -363,9 +397,11 @@ camel_folder_search_count (CamelFolderSearch *search,
 	p->error = error;
 
 	/* We route body-contains search and thread based search through memory and not via db. */
-	if (strstr((const gchar *) expr, "body-contains") || strstr((const gchar *) expr, "match-threads")) {
+	if (do_search_in_memory (search->folder, expr)) {
 		/* setup our search list only contains those we're interested in */
 		search->summary = camel_folder_get_summary (search->folder);
+		if (search->folder->summary)
+			camel_folder_summary_prepare_fetch_all (search->folder->summary, NULL);
 
 		summary_set = search->summary;
 
@@ -474,34 +510,6 @@ fail:
 	return count;
 }
 
-static gboolean
-do_search_in_memory (const gchar *expr)
-{
-	/* if the expression contains any of these tokens, then perform a memory search, instead of the SQL one */
-	const gchar *in_memory_tokens[] = {
-		"body-contains",
-		"body-regex",
-		"match-threads",
-		"message-location",
-		"header-soundex",
-		"header-regex",
-		"header-full-regex",
-		"header-contains",
-		"header-has-words",
-		NULL };
-	gint i;
-
-	if (!expr)
-		return FALSE;
-
-	for (i = 0; in_memory_tokens[i]; i++) {
-		if (strstr (expr, in_memory_tokens[i]))
-			return TRUE;
-	}
-
-	return FALSE;
-}
-
 /**
  * camel_folder_search_search:
  * @search:
@@ -541,7 +549,7 @@ camel_folder_search_search (CamelFolderSearch *search,
 	p->error = error;
 
 	/* We route body-contains / thread based search and uid search through memory and not via db. */
-	if (uids || do_search_in_memory (expr)) {
+	if (uids || do_search_in_memory (search->folder, expr)) {
 		/* setup our search list only contains those we're interested in */
 		search->summary = camel_folder_get_summary (search->folder);
 
@@ -556,6 +564,8 @@ camel_folder_search_search (CamelFolderSearch *search,
 					g_ptr_array_add (search->summary_set, search->summary->pdata[i]);
 			g_hash_table_destroy (uids_hash);
 		} else {
+			if (search->folder->summary)
+				camel_folder_summary_prepare_fetch_all (search->folder->summary, NULL);
 			summary_set = search->summary;
 		}
 
