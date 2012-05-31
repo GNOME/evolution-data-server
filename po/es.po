@@ -17,7 +17,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-05-30 16:46+0000\n"
+"POT-Creation-Date: 2012-05-31 10:10+0000\n"
 "PO-Revision-Date: 2012-05-31 12:08+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
@@ -1015,7 +1015,7 @@ msgstr "Versión del servidor no válida"
 #: ../calendar/libecal/e-cal.c:4570 ../calendar/libedata-cal/e-data-cal.c:449
 #: ../libedataserver/e-client.c:121
 msgid "Invalid argument"
-msgstr "Argumento inválido"
+msgstr "Argumento no válido"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:335
@@ -1279,7 +1279,7 @@ msgstr "Objeto no encontrado"
 #: ../calendar/libecal/e-cal.c:4580 ../calendar/libecal/e-cal-client.c:141
 #: ../calendar/libedata-cal/e-data-cal.c:431
 msgid "Invalid object"
-msgstr "Objeto inválido"
+msgstr "Objeto no válido"
 
 #: ../calendar/libecal/e-cal.c:4582
 msgid "URI not loaded"
@@ -1850,7 +1850,7 @@ msgstr "Error al crear proceso hijo «%s»: %s"
 #: ../camel/camel-filter-driver.c:943
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr "Flujo de mensaje inválido recibido desde %s: %s"
+msgstr "Flujo de mensaje no válido recibido desde %s: %s"
 
 #: ../camel/camel-filter-driver.c:1139 ../camel/camel-filter-driver.c:1146
 msgid "Syncing folders"
@@ -1910,11 +1910,11 @@ msgstr "Falló al obtener el mensaje"
 
 #: ../camel/camel-filter-search.c:512
 msgid "Invalid arguments to (system-flag)"
-msgstr "Argumentos inválidos a (system-flag)"
+msgstr "Argumentos no válidos a (system-flag)"
 
 #: ../camel/camel-filter-search.c:530
 msgid "Invalid arguments to (user-tag)"
-msgstr "Argumentos inválidos a (user-tag)"
+msgstr "Argumentos no válidos a (user-tag)"
 
 #: ../camel/camel-filter-search.c:939 ../camel/camel-filter-search.c:948
 #, c-format
@@ -2395,7 +2395,7 @@ msgstr "No existe la carpeta: %s"
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr ""
-"El nombre de la carpeta «%s» es inválido porque contiene el carácter «%c»"
+"El nombre de la carpeta «%s» es no válido porque contiene el carácter «%c»"
 
 #: ../camel/camel-imapx-store.c:1395
 #: ../camel/providers/imap/camel-imap-store.c:2489
@@ -2631,7 +2631,7 @@ msgid ""
 "Invalid opaque trace information:\n"
 "%s"
 msgstr ""
-"Información de traza opaca inválida:\n"
+"Información de traza opaca no válida:\n"
 "%s"
 
 #: ../camel/camel-sasl-anonymous.c:109
@@ -2640,7 +2640,7 @@ msgid ""
 "Invalid trace information:\n"
 "%s"
 msgstr ""
-"Información de traza inválida:\n"
+"Información de traza no válida:\n"
 "%s"
 
 #: ../camel/camel-sasl-cram-md5.c:46
@@ -2681,7 +2681,7 @@ msgstr "El reto del servidor no es válido\n"
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
-"El reto del servidor contiene un token inválido para «Calidad de Protección»"
+"El reto del servidor contiene un token no válido para «Calidad de Protección»"
 
 #: ../camel/camel-sasl-digest-md5.c:902
 #, c-format
@@ -2723,7 +2723,7 @@ msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
 msgstr ""
-"El parámetro target_name proporcionado contenía un tipo de nombre inválido o "
+"El parámetro target_name proporcionado contenía un tipo de nombre no válido o "
 "no soportado."
 
 #: ../camel/camel-sasl-gssapi.c:146
@@ -2739,7 +2739,7 @@ msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr ""
-"El input_token contiene una firma inválida, o una firma que no se pudo "
+"El input_token contiene una firma no válida, o una firma que no se pudo "
 "verificar."
 
 #: ../camel/camel-sasl-gssapi.c:155
@@ -3192,7 +3192,7 @@ msgstr ""
 #: ../camel/camel-tcp-stream-raw.c:900 ../camel/camel-tcp-stream-raw.c:910
 #, c-format
 msgid "Invalid reply from proxy server"
-msgstr "Respuesta inválida del servidor proxy"
+msgstr "Respuesta no válida del servidor proxy"
 
 #: ../camel/camel-tcp-stream-ssl.c:502
 #, c-format
@@ -4164,7 +4164,7 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-folder.c:481
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
-msgstr "Error interno: UID en formato inválido: %s"
+msgstr "Error interno: UID en formato no válido: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:328
 #: ../camel/providers/nntp/camel-nntp-folder.c:332
@@ -4663,7 +4663,7 @@ msgstr "No se puede enviar el correo: no hay destinatarios."
 #: ../camel/providers/smtp/camel-smtp-transport.c:695
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
-msgstr "No se puede enviar el correo: uno o más destinatarios inválidos"
+msgstr "No se puede enviar el correo: uno o más destinatarios no válidos"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:799
 msgid "Syntax error, command unrecognized"
