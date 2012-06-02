@@ -48,6 +48,8 @@ IGNORE_HFILES = 			\
 	camel-i18n.h			\
 	camel-imap-private.h		\
 	camel-imap-types.h		\
+	camel-imapx-tokenise.h		\
+	camel-imapx-utils.h		\
 	camel-local-private.h		\
 	camel-marshal.h			\
 	camel-net-utils-win32.h		\

@@ -125,7 +125,6 @@ sort_uid_cmp (gpointer enc,
 /**
  * camel_imapx_summary_new:
  * @folder: Parent folder.
- * @filename: the file to store the summary in.
  *
  * This will create a new CamelIMAPXSummary object and read in the
  * summary data from disk, if it exists.

@@ -28,6 +28,7 @@
 
 #include "camel-imapx-server.h"
 
+/* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_CONN_MANAGER \
 	(camel_imapx_conn_manager_get_type ())
 #define CAMEL_IMAPX_CONN_MANAGER(obj) \
@@ -39,7 +40,7 @@
 #define CAMEL_IS_IMAPX_CONN_MANAGER(obj) \
 	(G_TYPE_CHECK_INSTANCE_TYPE \
 	((obj), CAMEL_TYPE_IMAPX_CONN_MANAGER))
-#define CAMEL_IS_CONN_MANAGER_CLASS(obj) \
+#define CAMEL_IS_IMAPX_CONN_MANAGER_CLASS(cls) \
 	(G_TYPE_CHECK_CLASS_TYPE \
 	((cls), CAMEL_TYPE_IMAPX_CONN_MANAGER))
 #define CAMEL_IMAPX_CONN_MANAGER_GET_CLASS(obj) \

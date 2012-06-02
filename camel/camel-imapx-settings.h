@@ -104,7 +104,7 @@ gboolean	camel_imapx_settings_get_mobile_mode
 						(CamelIMAPXSettings *settings);
 void		camel_imapx_settings_set_mobile_mode
 						(CamelIMAPXSettings *settings,
-						 gboolean mobile);
+						 gboolean mobile_mode);
 const gchar *	camel_imapx_settings_get_namespace
 						(CamelIMAPXSettings *settings);
 gchar *		camel_imapx_settings_dup_namespace

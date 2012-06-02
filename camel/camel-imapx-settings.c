@@ -1058,27 +1058,27 @@ camel_imapx_settings_dup_namespace (CamelIMAPXSettings *settings)
 /**
  * camel_imapx_settings_set_namespace:
  * @settings: a #CamelIMAPXSettings
- * @namespace: an IMAP namespace, or %NULL
+ * @namespace_: an IMAP namespace, or %NULL
  *
- * Sets the custom IMAP namespace in which to find folders.  If @namespace
+ * Sets the custom IMAP namespace in which to find folders.  If @namespace_
  * is %NULL, the default namespace is used.
  *
  * Since: 3.2
  **/
 void
 camel_imapx_settings_set_namespace (CamelIMAPXSettings *settings,
-                                    const gchar *namespace)
+                                    const gchar *namespace_)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
 
 	/* The default namespace is an empty string. */
-	if (namespace == NULL)
-		namespace = "";
+	if (namespace_ == NULL)
+		namespace_ = "";
 
 	g_mutex_lock (settings->priv->property_lock);
 
 	g_free (settings->priv->namespace);
-	settings->priv->namespace = g_strdup (namespace);
+	settings->priv->namespace = g_strdup (namespace_);
 
 	g_mutex_unlock (settings->priv->property_lock);
 

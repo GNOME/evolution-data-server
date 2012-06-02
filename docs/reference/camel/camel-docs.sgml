@@ -119,12 +119,15 @@
       <xi:include href="xml/camel-offline-journal.xml"/>
     </chapter>
 
-    <chapter id="Search-Folders">
-      <title>Search Folders</title>
+    <chapter id="Virtual-Folders">
+      <title>Virtual ("Search") Folders</title>
       <xi:include href="xml/camel-vee-folder.xml"/>
       <xi:include href="xml/camel-vee-store.xml"/>
       <xi:include href="xml/camel-vee-summary.xml"/>
       <xi:include href="xml/camel-vtrash-folder.xml"/>
+      <xi:include href="xml/camel-vee-data-cache.xml"/>
+      <xi:include href="xml/camel-vee-message-info-data.xml"/>
+      <xi:include href="xml/camel-vee-subfolder-data.xml"/>
     </chapter>
 
     <chapter id="Addresses">
@@ -195,6 +198,20 @@
       <xi:include href="xml/camel-uid-cache.xml"/>
       <xi:include href="xml/camel-url-scanner.xml"/>
       <xi:include href="xml/camel-utf8.xml"/>
+    </chapter>
+
+    <chapter id="IMAP">
+      <title>Extensible IMAP</title>
+      <xi:include href="xml/camel-imapx-command.xml"/>
+      <xi:include href="xml/camel-imapx-conn-manager.xml"/>
+      <xi:include href="xml/camel-imapx-folder.xml"/>
+      <xi:include href="xml/camel-imapx-job.xml"/>
+      <xi:include href="xml/camel-imapx-server.xml"/>
+      <xi:include href="xml/camel-imapx-settings.xml"/>
+      <xi:include href="xml/camel-imapx-store.xml"/>
+      <xi:include href="xml/camel-imapx-store-summary.xml"/>
+      <xi:include href="xml/camel-imapx-stream.xml"/>
+      <xi:include href="xml/camel-imapx-summary.xml"/>
     </chapter>
 
     <chapter id="Deprecated">
