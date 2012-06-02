@@ -432,7 +432,7 @@ retrieval_done (SoupSession *session,
 						"then disable certificate validity tests by selecting 'Ignore invalid SSL certificate' option "
 						"in Properties"));
 				}
-		
+
 				e_cal_backend_notify_error (E_CAL_BACKEND (cbhttp), err_msg);
 				g_free (err_msg);
 			} else

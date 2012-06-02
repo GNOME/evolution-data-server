@@ -152,7 +152,7 @@ vee_info_user_tag (const CamelMessageInfo *mi,
 
 static void
 vee_summary_notify_mi_changed (CamelVeeFolder *vfolder,
-			       CamelMessageInfo *mi)
+                               CamelMessageInfo *mi)
 {
 	CamelFolderChangeInfo *changes;
 
@@ -262,9 +262,9 @@ vee_info_set_flags (CamelMessageInfo *mi,
 	}
 
 	/* Do not call parent class' info_set_flags, to not do flood
-	   of change notifications, rather wait for a notification
-	   from original folder, and propagate the change in counts
-	   through camel_vee_summary_replace_flags().
+	 * of change notifications, rather wait for a notification
+	 * from original folder, and propagate the change in counts
+	 * through camel_vee_summary_replace_flags().
 	*/
 	/*if (res)
 		CAMEL_FOLDER_SUMMARY_CLASS (camel_vee_summary_parent_class)->info_set_flags (mi, flags, set);*/
@@ -392,15 +392,15 @@ camel_vee_summary_new (CamelFolder *parent)
 
 static void
 get_uids_for_subfolder (gpointer key,
-			gpointer value,
-			gpointer user_data)
+                        gpointer value,
+                        gpointer user_data)
 {
 	g_hash_table_insert (user_data, (gpointer) camel_pstring_strdup (key), GINT_TO_POINTER (1));
 }
 
 GHashTable *
 camel_vee_summary_get_uids_for_subfolder (CamelVeeSummary *summary,
-					  CamelFolder *subfolder)
+                                          CamelFolder *subfolder)
 {
 	GHashTable *vuids, *known_uids;
 
@@ -486,8 +486,8 @@ camel_vee_summary_add (CamelVeeSummary *s,
 
 void
 camel_vee_summary_remove (CamelVeeSummary *summary,
-			  const gchar *vuid,
-			  CamelFolder *subfolder)
+                          const gchar *vuid,
+                          CamelFolder *subfolder)
 {
 	GHashTable *vuids;
 
@@ -519,7 +519,7 @@ camel_vee_summary_remove (CamelVeeSummary *summary,
  **/
 void
 camel_vee_summary_replace_flags (CamelVeeSummary *summary,
-				 const gchar *uid)
+                                 const gchar *uid)
 {
 	CamelMessageInfo *mi;
 	CamelVeeMessageInfo *vmi;

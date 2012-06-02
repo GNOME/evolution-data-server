@@ -74,7 +74,7 @@ camel_vee_subfolder_data_init (CamelVeeSubfolderData *data)
 
 static void
 vee_subfolder_data_hash_folder (CamelFolder *folder,
-				gchar buffer[8])
+                                gchar buffer[8])
 {
 	CamelStore *parent_store;
 	GChecksum *checksum;
@@ -200,7 +200,7 @@ camel_vee_message_info_data_init (CamelVeeMessageInfoData *data)
 
 CamelVeeMessageInfoData *
 camel_vee_message_info_data_new (CamelVeeSubfolderData *subfolder_data,
-				 const gchar *orig_message_uid)
+                                 const gchar *orig_message_uid)
 {
 	CamelVeeMessageInfoData *data;
 	gchar *vee_message_uid;
@@ -277,7 +277,7 @@ vee_data_hash (gconstpointer ptr)
 
 static gboolean
 vee_data_equal (gconstpointer v1,
-		gconstpointer v2)
+                gconstpointer v2)
 {
 	const VeeData *vee_data1 = v1, *vee_data2 = v2;
 
@@ -354,7 +354,7 @@ camel_vee_data_cache_new (void)
 
 void
 camel_vee_data_cache_add_subfolder (CamelVeeDataCache *data_cache,
-				    CamelFolder *subfolder)
+                                    CamelFolder *subfolder)
 {
 	CamelVeeSubfolderData *sf_data;
 
@@ -373,9 +373,9 @@ camel_vee_data_cache_add_subfolder (CamelVeeDataCache *data_cache,
 		g_hash_table_insert (data_cache->priv->subfolder_hash, subfolder, sf_data);
 
 		/* camel_vee_data_cache_get_message_info_data() caches uids on demand,
-		   while here are cached all known uids in once - it is better when
-		   the folder is used in Unmatched folder, where the uid/vuid will
-		   be used in the vfolder or Unmatched folder anyway */
+		 * while here are cached all known uids in once - it is better when
+		 * the folder is used in Unmatched folder, where the uid/vuid will
+		 * be used in the vfolder or Unmatched folder anyway */
 		uids = camel_folder_get_uids (subfolder);
 		if (uids) {
 			for (ii = 0; ii < uids->len; ii++) {
@@ -415,8 +415,8 @@ camel_vee_data_cache_add_subfolder (CamelVeeDataCache *data_cache,
 
 static gboolean
 remove_vee_by_folder_cb (gpointer key,
-			 gpointer value,
-			 gpointer user_data)
+                         gpointer value,
+                         gpointer user_data)
 {
 	CamelVeeMessageInfoData *mi_data = value;
 	CamelVeeSubfolderData *sf_data;
@@ -431,8 +431,8 @@ remove_vee_by_folder_cb (gpointer key,
 
 static gboolean
 remove_orig_by_folder_cb (gpointer key,
-			  gpointer value,
-			  gpointer user_data)
+                          gpointer value,
+                          gpointer user_data)
 {
 	VeeData *vee_data = key;
 	CamelFolder *folder = user_data;
@@ -442,7 +442,7 @@ remove_orig_by_folder_cb (gpointer key,
 
 void
 camel_vee_data_cache_remove_subfolder (CamelVeeDataCache *data_cache,
-				       CamelFolder *subfolder)
+                                       CamelFolder *subfolder)
 {
 	g_return_if_fail (CAMEL_IS_VEE_DATA_CACHE (data_cache));
 	g_return_if_fail (CAMEL_IS_FOLDER (subfolder));
@@ -460,7 +460,7 @@ camel_vee_data_cache_remove_subfolder (CamelVeeDataCache *data_cache,
 
 CamelVeeSubfolderData *
 camel_vee_data_cache_get_subfolder_data (CamelVeeDataCache *data_cache,
-					 CamelFolder *folder)
+                                         CamelFolder *folder)
 {
 	CamelVeeSubfolderData *res;
 
@@ -484,8 +484,8 @@ camel_vee_data_cache_get_subfolder_data (CamelVeeDataCache *data_cache,
 
 CamelVeeMessageInfoData *
 camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
-					    CamelFolder *folder,
-					    const gchar *orig_message_uid)
+                                            CamelFolder *folder,
+                                            const gchar *orig_message_uid)
 {
 	CamelVeeMessageInfoData *res;
 	VeeData vdata;
@@ -538,7 +538,7 @@ camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
 
 CamelVeeMessageInfoData *
 camel_vee_data_cache_get_message_info_data_by_vuid (CamelVeeDataCache *data_cache,
-						    const gchar *vee_message_uid)
+                                                    const gchar *vee_message_uid)
 {
 	CamelVeeMessageInfoData *res;
 	const gchar *vuid;
@@ -573,8 +573,8 @@ struct ForeachMiData
 
 static void
 cvdc_foreach_mi_data_cb (gpointer key,
-			 gpointer value,
-			 gpointer user_data)
+                         gpointer value,
+                         gpointer user_data)
 {
 	VeeData *vdata = key;
 	CamelVeeMessageInfoData *mi_data = value;
@@ -590,11 +590,11 @@ cvdc_foreach_mi_data_cb (gpointer key,
 
 void
 camel_vee_data_cache_foreach_message_info_data (CamelVeeDataCache *data_cache,
-						CamelFolder *fromfolder,
-						void (* func) (CamelVeeMessageInfoData *mi_data,
-								CamelFolder *subfolder,
-								gpointer user_data),
-						gpointer user_data)
+                                                CamelFolder *fromfolder,
+                                                void (* func) (CamelVeeMessageInfoData *mi_data,
+                                                                CamelFolder *subfolder,
+                                                                gpointer user_data),
+                                                gpointer user_data)
 {
 	struct ForeachMiData fmd;
 
@@ -614,7 +614,7 @@ camel_vee_data_cache_foreach_message_info_data (CamelVeeDataCache *data_cache,
 
 void
 camel_vee_data_cache_remove_message_info_data (CamelVeeDataCache *data_cache,
-					       CamelVeeMessageInfoData *mi_data)
+                                               CamelVeeMessageInfoData *mi_data)
 {
 	VeeData vdata;
 	CamelVeeSubfolderData *sf_data;
@@ -622,7 +622,7 @@ camel_vee_data_cache_remove_message_info_data (CamelVeeDataCache *data_cache,
 
 	g_return_if_fail (CAMEL_IS_VEE_DATA_CACHE (data_cache));
 	g_return_if_fail (CAMEL_IS_VEE_MESSAGE_INFO_DATA (mi_data));
-	
+
 	g_mutex_lock (data_cache->priv->mi_mutex);
 
 	sf_data = camel_vee_message_info_data_get_subfolder_data (mi_data);

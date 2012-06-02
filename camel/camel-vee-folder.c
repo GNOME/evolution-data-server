@@ -54,8 +54,8 @@ struct _CamelVeeFolderPrivate {
 	GList *subfolders;		/* lock using subfolder_lock before changing/accessing */
 	GHashTable *ignore_changed;	/* hash of subfolder pointers to ignore the next folder's 'changed' signal */
 	GHashTable *skipped_changes;	/* CamelFolder -> CamelFolderChangeInfo accumulating ignored changes */
-	GHashTable *unmatched_add_changed; /* CamelVeeMessageInfoData -> 1, for unmatched folder, postponed additions from camel_vee_folder_add_vuid() */
-	GHashTable *unmatched_remove_changed; /* CamelVeeMessageInfoData -> 1, for unmatched folder, postponed removal from camel_vee_folder_remove_vuid() */
+	GHashTable *unmatched_add_changed; /* CamelVeeMessageInfoData -> 1, for unmatched folder, postponed additions from camel_vee_folder_add_vuid () */
+	GHashTable *unmatched_remove_changed; /* CamelVeeMessageInfoData -> 1, for unmatched folder, postponed removal from camel_vee_folder_remove_vuid () */
 	gboolean auto_update;
 
 	/* Processing queue for folder changes. */
@@ -91,7 +91,7 @@ struct _FolderChangedData {
 
 static FolderChangedData *
 vee_folder_changed_data_new (CamelFolder *subfolder,
-			     CamelFolderChangeInfo *changes)
+                             CamelFolderChangeInfo *changes)
 {
 	FolderChangedData *data;
 
@@ -134,10 +134,10 @@ vee_folder_is_unmatched (CamelVeeFolder *vfolder)
 
 static void
 vee_folder_note_added_uid (CamelVeeFolder *vfolder,
-			   CamelVeeSummary *vsummary,
-			   CamelVeeMessageInfoData *added_mi_data,
-			   CamelFolderChangeInfo *changes,
-			   gboolean included_as_changed)
+                           CamelVeeSummary *vsummary,
+                           CamelVeeMessageInfoData *added_mi_data,
+                           CamelFolderChangeInfo *changes,
+                           gboolean included_as_changed)
 {
 	const gchar *vuid;
 
@@ -164,10 +164,10 @@ vee_folder_note_added_uid (CamelVeeFolder *vfolder,
 
 static void
 vee_folder_note_unmatch_uid (CamelVeeFolder *vfolder,
-			     CamelVeeSummary *vsummary,
-			     CamelFolder *subfolder,
-			     CamelVeeMessageInfoData *unmatched_mi_data,
-			     CamelFolderChangeInfo *changes)
+                             CamelVeeSummary *vsummary,
+                             CamelFolder *subfolder,
+                             CamelVeeMessageInfoData *unmatched_mi_data,
+                             CamelFolderChangeInfo *changes)
 {
 	const gchar *vuid;
 
@@ -189,12 +189,13 @@ vee_folder_note_unmatch_uid (CamelVeeFolder *vfolder,
 
 static void
 vee_folder_remove_unmatched (CamelVeeFolder *vfolder,
-			     CamelVeeSummary *vsummary,
-			     CamelVeeDataCache *data_cache,
-			     CamelFolderChangeInfo *changes,
-			     CamelFolder *subfolder,
-			     const gchar *orig_message_uid,
-			     gboolean is_orig_message_uid) /* if not, then it's 'vee_message_uid' */
+                             CamelVeeSummary *vsummary,
+                             CamelVeeDataCache *data_cache,
+                             CamelFolderChangeInfo *changes,
+                             CamelFolder *subfolder,
+                             const gchar *orig_message_uid,
+                             gboolean is_orig_message_uid) /* if not,
+                             then it's 'vee_message_uid' */
 {
 	CamelVeeMessageInfoData *mi_data;
 
@@ -223,8 +224,8 @@ struct RemoveUnmatchedData
 
 static void
 vee_folder_remove_unmatched_cb (gpointer key,
-				gpointer value,
-				gpointer user_data)
+                                gpointer value,
+                                gpointer user_data)
 {
 	struct RemoveUnmatchedData *rud = user_data;
 	const gchar *uid = key;
@@ -236,11 +237,11 @@ vee_folder_remove_unmatched_cb (gpointer key,
 
 static void
 vee_folder_merge_matching (CamelVeeFolder *vfolder,
-			   CamelFolder *subfolder,
-			   GHashTable *all_uids,
-			   GPtrArray *match,
-			   CamelFolderChangeInfo *changes,
-			   gboolean included_as_changed)
+                           CamelFolder *subfolder,
+                           GHashTable *all_uids,
+                           GPtrArray *match,
+                           CamelFolderChangeInfo *changes,
+                           gboolean included_as_changed)
 {
 	CamelVeeDataCache *data_cache;
 	CamelVeeMessageInfoData *mi_data;
@@ -288,9 +289,9 @@ vee_folder_merge_matching (CamelVeeFolder *vfolder,
 
 static void
 vee_folder_rebuild_folder_with_changes (CamelVeeFolder *vfolder,
-					CamelFolder *subfolder,
-					CamelFolderChangeInfo *changes,
-					GCancellable *cancellable)
+                                        CamelFolder *subfolder,
+                                        CamelFolderChangeInfo *changes,
+                                        GCancellable *cancellable)
 {
 	GPtrArray *match = NULL;
 
@@ -323,7 +324,7 @@ vee_folder_rebuild_folder_with_changes (CamelVeeFolder *vfolder,
 
 static void
 vee_folder_rebuild_all (CamelVeeFolder *vfolder,
-			GCancellable *cancellable)
+                        GCancellable *cancellable)
 {
 	CamelFolderChangeInfo *changes;
 	GList *iter;
@@ -355,10 +356,10 @@ vee_folder_rebuild_all (CamelVeeFolder *vfolder,
 
 static void
 vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
-			      CamelFolder *subfolder,
-			      CamelFolderChangeInfo *subfolder_changes,
-			      GCancellable *cancellable,
-			      GError **error)
+                              CamelFolder *subfolder,
+                              CamelFolderChangeInfo *subfolder_changes,
+                              GCancellable *cancellable,
+                              GError **error)
 {
 	CamelVeeDataCache *data_cache;
 	CamelFolderChangeInfo *changes;
@@ -371,7 +372,7 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 	g_return_if_fail (subfolder_changes != NULL);
 
 	camel_vee_folder_lock (vfolder, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
-	if (!g_list_find (vfolder->priv->subfolders, subfolder)){
+	if (!g_list_find (vfolder->priv->subfolders, subfolder)) {
 		camel_vee_folder_unlock (vfolder, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 		return;
 	}
@@ -413,7 +414,7 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 				const gchar *vuid;
 
 				/* all common from test_uids and stored uids
-				   in the unmatched folder should be updated */
+				 * in the unmatched folder should be updated */
 				for (ii = 0; ii < test_uids->len; ii++) {
 					mi_data = camel_vee_data_cache_get_message_info_data (data_cache, subfolder, test_uids->pdata[ii]);
 					if (!mi_data)
@@ -427,7 +428,7 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 			}
 		} else {
 			/* sadly, if there are threads involved, then searching by uids doesn't work,
-			   because just changed uids can be brought in by the thread condition */
+			 * because just changed uids can be brought in by the thread condition */
 			if (strstr (vfolder->priv->expression, "match-threads") != NULL)
 				match = camel_folder_search_by_expression (subfolder, vfolder->priv->expression, cancellable, NULL);
 			else
@@ -498,7 +499,7 @@ vee_folder_process_changes (CamelSession *session,
 
 static void
 subfolder_changed (CamelFolder *subfolder,
-		   CamelFolderChangeInfo *changes,
+                   CamelFolderChangeInfo *changes,
                    CamelVeeFolder *vfolder)
 {
 	g_return_if_fail (vfolder != NULL);
@@ -601,9 +602,9 @@ vee_folder_finalize (GObject *object)
 
 static void
 vee_folder_get_property (GObject *object,
-			 guint property_id,
-			 GValue *value,
-			 GParamSpec *pspec)
+                         guint property_id,
+                         GValue *value,
+                         GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_AUTO_UPDATE:
@@ -618,9 +619,9 @@ vee_folder_get_property (GObject *object,
 
 static void
 vee_folder_set_property (GObject *object,
-			 guint property_id,
-			 const GValue *value,
-			 GParamSpec *pspec)
+                         guint property_id,
+                         const GValue *value,
+                         GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_AUTO_UPDATE:
@@ -761,7 +762,7 @@ vee_folder_count_by_expression (CamelFolder *folder,
 
 static void
 vee_folder_search_free (CamelFolder *folder,
-			GPtrArray *result)
+                        GPtrArray *result)
 {
 	camel_folder_search_free_result (NULL, result);
 }
@@ -906,7 +907,7 @@ vee_folder_synchronize_sync (CamelFolder *folder,
 	vee_folder_propagate_skipped_changes (vfolder);
 
 	/* basically no-op here, especially do not call synchronize on subfolders
-	   if not expunging, they are responsible for themselfs */
+	 * if not expunging, they are responsible for themselfs */
 	if (!expunge ||
 	    vee_folder_is_unmatched (vfolder))
 		return TRUE;
@@ -978,7 +979,7 @@ vee_folder_set_expression (CamelVeeFolder *vee_folder,
 static void
 vee_folder_rebuild_folder (CamelVeeFolder *vfolder,
                            CamelFolder *subfolder,
-			   GCancellable *cancellable)
+                           GCancellable *cancellable)
 {
 	CamelFolderChangeInfo *changes;
 	CamelFolder *v_folder;
@@ -998,7 +999,7 @@ vee_folder_rebuild_folder (CamelVeeFolder *vfolder,
 static void
 vee_folder_add_folder (CamelVeeFolder *vfolder,
                        CamelFolder *subfolder,
-		       GCancellable *cancellable)
+                       GCancellable *cancellable)
 {
 	if (vfolder->priv->parent_vee_store)
 		camel_vee_store_note_subfolder_used (vfolder->priv->parent_vee_store, subfolder, vfolder);
@@ -1007,8 +1008,8 @@ vee_folder_add_folder (CamelVeeFolder *vfolder,
 
 static gboolean
 vee_folder_remove_from_unmatched_changed_cb (gpointer key,
-					     gpointer value,
-					     gpointer user_data)
+                                             gpointer value,
+                                             gpointer user_data)
 {
 	CamelVeeMessageInfoData *mi_data = key;
 	CamelFolder *subfolder = user_data;
@@ -1024,7 +1025,7 @@ vee_folder_remove_from_unmatched_changed_cb (gpointer key,
 static void
 vee_folder_remove_folder (CamelVeeFolder *vfolder,
                           CamelFolder *subfolder,
-			  GCancellable *cancellable)
+                          GCancellable *cancellable)
 {
 	CamelFolderChangeInfo *changes;
 	CamelFolder *v_folder;
@@ -1277,7 +1278,7 @@ camel_vee_folder_set_expression (CamelVeeFolder *vfolder,
 }
 
 const gchar *
-camel_vee_folder_get_expression	(CamelVeeFolder *vfolder)
+camel_vee_folder_get_expression (CamelVeeFolder *vfolder)
 {
 	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (vfolder), NULL);
 
@@ -1294,7 +1295,7 @@ camel_vee_folder_get_expression	(CamelVeeFolder *vfolder)
 void
 camel_vee_folder_add_folder (CamelVeeFolder *vfolder,
                              CamelFolder *subfolder,
-			     GCancellable *cancellable)
+                             GCancellable *cancellable)
 {
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
 
@@ -1336,7 +1337,7 @@ camel_vee_folder_add_folder (CamelVeeFolder *vfolder,
 void
 camel_vee_folder_remove_folder (CamelVeeFolder *vfolder,
                                 CamelFolder *subfolder,
-				GCancellable *cancellable)
+                                GCancellable *cancellable)
 {
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
 
@@ -1370,7 +1371,7 @@ camel_vee_folder_remove_folder (CamelVeeFolder *vfolder,
 void
 camel_vee_folder_rebuild_folder (CamelVeeFolder *vfolder,
                                  CamelFolder *subfolder,
-				 GCancellable *cancellable)
+                                 GCancellable *cancellable)
 {
 	vee_folder_propagate_skipped_changes (vfolder);
 
@@ -1396,7 +1397,7 @@ remove_folders (CamelFolder *folder,
 void
 camel_vee_folder_set_folders (CamelVeeFolder *vf,
                               GList *folders,
-			      GCancellable *cancellable)
+                              GCancellable *cancellable)
 {
 	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
 	GHashTable *remove = g_hash_table_new (NULL, NULL);
@@ -1442,8 +1443,8 @@ camel_vee_folder_set_folders (CamelVeeFolder *vf,
 
 void
 camel_vee_folder_add_vuid (CamelVeeFolder *vfolder,
-			   CamelVeeMessageInfoData *mi_data,
-			   CamelFolderChangeInfo *changes)
+                           CamelVeeMessageInfoData *mi_data,
+                           CamelFolderChangeInfo *changes)
 {
 	CamelVeeSummary *vsummary;
 	CamelVeeSubfolderData *sf_data;
@@ -1466,7 +1467,7 @@ camel_vee_folder_add_vuid (CamelVeeFolder *vfolder,
 
 		if (g_list_find (vfolder->priv->subfolders, subfolder)) {
 			/* postpone addition to the Unmatched folder, if the change was done
-			   in the Unmatched folder itself or auto-update is disabled */
+			 * in the Unmatched folder itself or auto-update is disabled */
 			g_hash_table_insert (vfolder->priv->unmatched_add_changed,
 				g_object_ref (mi_data), GINT_TO_POINTER (1));
 		}
@@ -1485,8 +1486,8 @@ camel_vee_folder_add_vuid (CamelVeeFolder *vfolder,
 
 void
 camel_vee_folder_remove_vuid (CamelVeeFolder *vfolder,
-			      CamelVeeMessageInfoData *mi_data,
-			      CamelFolderChangeInfo *changes)
+                              CamelVeeMessageInfoData *mi_data,
+                              CamelFolderChangeInfo *changes)
 {
 	CamelVeeSummary *vsummary;
 	CamelVeeSubfolderData *sf_data;
@@ -1509,7 +1510,7 @@ camel_vee_folder_remove_vuid (CamelVeeFolder *vfolder,
 
 		if (g_list_find (vfolder->priv->subfolders, subfolder)) {
 			/* postpone removal from the Unmatched folder, if the change was done
-			   in the Unmatched folder itself or auto-update is disabled */
+			 * in the Unmatched folder itself or auto-update is disabled */
 			g_hash_table_insert (vfolder->priv->unmatched_remove_changed,
 				g_object_ref (mi_data), GINT_TO_POINTER (1));
 		}
@@ -1569,7 +1570,7 @@ camel_vee_folder_get_location (CamelVeeFolder *vf,
 
 CamelFolder *
 camel_vee_folder_get_vee_uid_folder (CamelVeeFolder *vf,
-				     const gchar *vee_message_uid)
+                                     const gchar *vee_message_uid)
 {
 	CamelFolder *res;
 	CamelVeeDataCache *data_cache;
@@ -1596,7 +1597,7 @@ camel_vee_folder_get_vee_uid_folder (CamelVeeFolder *vf,
 
 void
 camel_vee_folder_set_auto_update (CamelVeeFolder *vfolder,
-				  gboolean auto_update)
+                                  gboolean auto_update)
 {
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
 

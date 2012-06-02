@@ -297,8 +297,8 @@ camel_pstring_free (const gchar *s)
 
 static void
 count_pstring_memory_cb (gpointer key,
-			 gpointer value,
-			 gpointer user_data)
+                         gpointer value,
+                         gpointer user_data)
 {
 	const gchar *str = key;
 	guint64 *pbytes = user_data;

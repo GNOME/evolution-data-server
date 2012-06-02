@@ -324,7 +324,7 @@ camel_folder_search_set_body_index (CamelFolderSearch *search,
 
 static gboolean
 do_search_in_memory (CamelFolder *search_in_folder,
-		     const gchar *expr)
+                     const gchar *expr)
 {
 	/* if the expression contains any of these tokens, then perform a memory search, instead of the SQL one */
 	const gchar *in_memory_tokens[] = {

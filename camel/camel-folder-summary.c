@@ -835,7 +835,7 @@ content_info_to_db (CamelFolderSummary *summary,
  **/
 gboolean
 camel_folder_summary_replace_flags (CamelFolderSummary *summary,
-				    CamelMessageInfo *info)
+                                    CamelMessageInfo *info)
 {
 	guint32 old_flags, new_flags, added_flags, removed_flags;
 	GObject *summary_object;
@@ -867,9 +867,9 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 
 	if ((old_flags & CAMEL_MESSAGE_SEEN) == (new_flags & CAMEL_MESSAGE_SEEN)) {
 		/* unread count is different from others, it asks for nonexistence
-		   of the flag, thus if it wasn't changed, then simply set it
-		   in added/removed, thus there are no false notifications
-		   on unread counts */
+		 * of the flag, thus if it wasn't changed, then simply set it
+		 * in added/removed, thus there are no false notifications
+		 * on unread counts */
 		added_flags |= CAMEL_MESSAGE_SEEN;
 		removed_flags |= CAMEL_MESSAGE_SEEN;
 	}
@@ -1758,8 +1758,8 @@ camel_folder_summary_free_array (GPtrArray *array)
 
 static void
 cfs_copy_uids_cb (gpointer key,
-		  gpointer value,
-		  gpointer user_data)
+                  gpointer value,
+                  gpointer user_data)
 {
 	const gchar *uid = key;
 	GHashTable *copy_hash = user_data;
@@ -3362,7 +3362,7 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
  **/
 gboolean
 camel_folder_summary_remove_uids (CamelFolderSummary *summary,
-				  GList *uids)
+                                  GList *uids)
 {
 	CamelStore *parent_store;
 	const gchar *full_name;
@@ -3375,7 +3375,7 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 	g_object_freeze_notify (G_OBJECT (summary));
 	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
-	for (l = g_list_first(uids); l; l = g_list_next(l)) {
+	for (l = g_list_first (uids); l; l = g_list_next (l)) {
 		gpointer ptr_uid = NULL, ptr_flags = NULL;
 		if (g_hash_table_lookup_extended (summary->priv->uids, l->data, &ptr_uid, &ptr_flags)) {
 			const gchar *uid_copy = camel_pstring_strdup (l->data);
@@ -3399,7 +3399,6 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 
 	return res;
 }
-
 
 static struct _node *
 my_list_append (struct _node **list,

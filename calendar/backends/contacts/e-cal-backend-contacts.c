@@ -436,7 +436,7 @@ e_cal_backend_contacts_authenticate_user (ECalBackendSync *backend,
 /* BookRecord methods */
 static void
 create_book_record (ECalBackendContacts *cbc,
-		    ESource *source)
+                    ESource *source)
 {
 	EBookClient *book_client;
 	BookRecord *br;

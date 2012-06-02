@@ -333,7 +333,7 @@ camel_certdb_nss_cert_get (CamelCertDB *certdb,
 			g_clear_error (&error);
 
 			/* failed to load the certificate, thus remove it from
-			   the CertDB, thus it can be re-added and properly saved */
+			 * the CertDB, thus it can be re-added and properly saved */
 			camel_certdb_remove_host (certdb, hostname);
 			camel_certdb_touch (certdb);
 			g_free (fingerprint);

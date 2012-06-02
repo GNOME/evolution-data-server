@@ -542,7 +542,7 @@ quote_etag (const gchar *etag)
 static gboolean
 status_code_to_result (SoupMessage *message,
                        ECalBackendCalDAV *cbdav,
-		       gboolean is_opening,
+                       gboolean is_opening,
                        GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;

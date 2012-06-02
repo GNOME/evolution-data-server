@@ -154,9 +154,9 @@ vee_store_constructed (GObject *object)
 
 static void
 vee_store_get_property (GObject *object,
-			guint property_id,
-			GValue *value,
-			GParamSpec *pspec)
+                        guint property_id,
+                        GValue *value,
+                        GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_UNMATCHED_ENABLED:
@@ -171,9 +171,9 @@ vee_store_get_property (GObject *object,
 
 static void
 vee_store_set_property (GObject *object,
-			guint property_id,
-			const GValue *value,
-			GParamSpec *pspec)
+                        guint property_id,
+                        const GValue *value,
+                        GParamSpec *pspec)
 {
 	switch (property_id) {
 		case PROP_UNMATCHED_ENABLED:
@@ -589,7 +589,7 @@ camel_vee_store_get_unmatched_enabled (CamelVeeStore *vstore)
 
 void
 camel_vee_store_set_unmatched_enabled (CamelVeeStore *vstore,
-				       gboolean is_enabled)
+                                       gboolean is_enabled)
 {
 	CamelFolderInfo *fi_unmatched;
 
@@ -621,10 +621,10 @@ struct AddToUnmatchedData
 	GHashTable *vuid_usage_counts;
 };
 
-static void 
+static void
 add_to_unmatched_folder_cb (CamelVeeMessageInfoData *mi_data,
-			    CamelFolder *subfolder,
-			    gpointer user_data)
+                            CamelFolder *subfolder,
+                            gpointer user_data)
 {
 	struct AddToUnmatchedData *atud = user_data;
 	const gchar *vuid;
@@ -641,8 +641,8 @@ add_to_unmatched_folder_cb (CamelVeeMessageInfoData *mi_data,
 
 void
 camel_vee_store_note_subfolder_used (CamelVeeStore *vstore,
-				     CamelFolder *subfolder,
-				     CamelVeeFolder *used_by)
+                                     CamelFolder *subfolder,
+                                     CamelVeeFolder *used_by)
 {
 	gint counts;
 
@@ -698,8 +698,8 @@ camel_vee_store_note_subfolder_used (CamelVeeStore *vstore,
 
 static void
 remove_vuid_count_record_cb (CamelVeeMessageInfoData *mi_data,
-			     CamelFolder *subfolder,
-			     gpointer user_data)
+                             CamelFolder *subfolder,
+                             gpointer user_data)
 {
 	GHashTable *vuid_usage_counts = user_data;
 
@@ -711,8 +711,8 @@ remove_vuid_count_record_cb (CamelVeeMessageInfoData *mi_data,
 
 void
 camel_vee_store_note_subfolder_unused (CamelVeeStore *vstore,
-				       CamelFolder *subfolder,
-				       CamelVeeFolder *unused_by)
+                                       CamelFolder *subfolder,
+                                       CamelVeeFolder *unused_by)
 {
 	gint counts;
 
@@ -751,8 +751,8 @@ camel_vee_store_note_subfolder_unused (CamelVeeStore *vstore,
 
 void
 camel_vee_store_note_vuid_used (CamelVeeStore *vstore,
-				CamelVeeMessageInfoData *mi_data,
-				CamelVeeFolder *used_by)
+                                CamelVeeMessageInfoData *mi_data,
+                                CamelVeeFolder *used_by)
 {
 	gint counts;
 	const gchar *vuid;
@@ -799,8 +799,8 @@ camel_vee_store_note_vuid_used (CamelVeeStore *vstore,
 
 void
 camel_vee_store_note_vuid_unused (CamelVeeStore *vstore,
-				  CamelVeeMessageInfoData *mi_data,
-				  CamelVeeFolder *unused_by)
+                                  CamelVeeMessageInfoData *mi_data,
+                                  CamelVeeFolder *unused_by)
 {
 	gint counts;
 	const gchar *vuid;
@@ -861,8 +861,8 @@ struct RebuildUnmatchedData
 
 static void
 rebuild_unmatched_folder_cb (gpointer key,
-			     gpointer value,
-			     gpointer user_data)
+                             gpointer value,
+                             gpointer user_data)
 {
 	const gchar *vuid = key;
 	gint counts = GPOINTER_TO_INT (value);
@@ -890,9 +890,9 @@ rebuild_unmatched_folder_cb (gpointer key,
 
 static void
 vee_store_rebuild_unmatched_folder (CamelSession *session,
-				    GCancellable *cancellable,
-				    CamelVeeStore *vstore,
-				    GError **error)
+                                    GCancellable *cancellable,
+                                    CamelVeeStore *vstore,
+                                    GError **error)
 {
 	struct RebuildUnmatchedData rud;
 	CamelVeeFolder *vunmatched;
@@ -934,13 +934,13 @@ vee_store_rebuild_unmatched_folder (CamelSession *session,
 
 void
 camel_vee_store_rebuild_unmatched_folder (CamelVeeStore *vstore,
-					  GCancellable *cancellable,
-					  GError **error)
+                                          GCancellable *cancellable,
+                                          GError **error)
 {
 	g_return_if_fail (CAMEL_IS_VEE_STORE (vstore));
 
 	/* this operation requires cancellable, thus if called
-	   without it then run in a dedicated thread */
+	 * without it then run in a dedicated thread */
 	if (!cancellable) {
 		CamelSession *session;
 

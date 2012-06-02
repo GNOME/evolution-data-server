@@ -1167,7 +1167,7 @@ imapx_untagged (CamelIMAPXServer *is,
 			return FALSE;
 
 		if (unsolicited) {
-			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *)is->select_folder;
+			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) is->select_folder;
 
 			if (ifolder->exists_on_server < uids->len) {
 				c(is->tagprefix, "Error: exists_on_folder %d is fewer than vanished %d\n",
@@ -1184,11 +1184,11 @@ imapx_untagged (CamelIMAPXServer *is,
 
 			c(is->tagprefix, "vanished: %s\n", uid);
 
-			uid_list = g_list_append(uid_list, uid);
+			uid_list = g_list_append (uid_list, uid);
 			camel_folder_change_info_remove_uid (is->changes, uid);
 		}
-		camel_folder_summary_remove_uids(is->select_folder->summary, uid_list);
-		is->expunged = g_list_concat(is->expunged, uid_list);
+		camel_folder_summary_remove_uids (is->select_folder->summary, uid_list);
+		is->expunged = g_list_concat (is->expunged, uid_list);
 		g_ptr_array_free (uids, FALSE);
 		break;
 	}
@@ -2462,8 +2462,8 @@ imapx_command_select_done (CamelIMAPXServer *is,
 		ifolder->modseq_on_server = is->highestmodseq;
 		if (ifolder->uidnext_on_server < is->uidnext) {
 			/* We don't want to fetch new messages if the command we selected this
-			   folder for is *already* fetching all messages (i.e. scan_changes).
-			   Bug #667725. */
+			 * folder for is *already* fetching all messages (i.e. scan_changes).
+			 * Bug #667725. */
 			CamelIMAPXJob *job = imapx_is_job_in_queue (is, is->select_pending,
 								    IMAPX_JOB_REFRESH_INFO, NULL);
 			if (job) {

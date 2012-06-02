@@ -2094,7 +2094,7 @@ camel_imap_expunge_uids_resyncing (CamelFolder *folder,
 		return FALSE;
 
 	response = camel_imap_command (store, folder, cancellable, error, "UID SEARCH DELETED");
-	if (!response) 
+	if (!response)
 		return FALSE;
 
 	result = camel_imap_response_extract (store, response, "SEARCH", error);
@@ -2665,7 +2665,6 @@ handle_copyuid (CamelImapResponse *response,
  lose:
 	g_warning ("Bad COPYUID response from server");
 }
-
 
 /* Call with lock held on destination folder cache */
 static void

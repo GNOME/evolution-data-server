@@ -71,7 +71,8 @@ static void
 imapx_conn_shutdown (CamelIMAPXServer *is, CamelIMAPXConnManager *con_man);
 
 static void
-imapx_conn_update_select (CamelIMAPXServer *is, const gchar *selected_folder,
+imapx_conn_update_select (CamelIMAPXServer *is,
+                          const gchar *selected_folder,
                           CamelIMAPXConnManager *con_man);
 
 static ConnectionInfo *
@@ -128,7 +129,7 @@ connection_info_cancel_and_unref (ConnectionInfo *cinfo)
 {
 	g_return_if_fail (cinfo != NULL);
 	g_return_if_fail (cinfo->ref_count > 0);
-	
+
 	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_shutdown, NULL);
 	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_update_select, NULL);
 	g_cancellable_cancel (cinfo->is->cancellable);
