@@ -1,3 +1,58 @@
+Evolution-Data-Server 3.5.2 2012-06-04
+--------------------------------------
+
+Bug Fixes:
+	Bug 606181 - Accepting bad SSL certificate applies to any hostname
+	             (Matt McCutchen)
+	Bug 664639 - [IMAPX] Doesn't quit gracefully on account disable
+	             (Chenthill Palanisamy)
+	Bug 666327 - IMAP deadlock when moving message and checking new mail
+	             (Alban Browaeys)
+	Bug 667725 - imapx_untagged: code should not be reached
+	             (David Woodhouse)
+	Bug 669191 - Address book dialog has incorrect default size
+	             (Mathieu Trudel-Lapierre)
+	Bug 670279 - "Category" selector mnemonic not shown (Milan Crha)
+	Bug 671603 - Birthday calendar broken since 3.3.4 (Milan Crha)
+	Bug 673946 - Cannot delete search folders (Milan Crha)
+	Bug 675387 - Store certificates under $XDG_DATA_HOME (Matthew Barnes)
+	Bug 676108 - OpenBSD needs _XOPEN_SOURCE_EXTENDED for strptime(3)
+	             (Antoine Jacoutot)
+	Bug 676403 - imapx: Syncing folder after server-side deletion of
+	             many messages is *very* slow (David Woodhouse)
+	Bug 676506 - imapx: After QRESYNC leaves us out of sync, a "full
+	             resync" doesn't work either. (David Woodhouse)
+
+Other Changes:
+	* Require libsoup >= 2.38.1. (Matthew Barnes)
+	* Remove extra test on Google server photo data validity (Milan Crha)
+	* Split camel-imapx library and merge into camel so that providers
+	  can be written on top of imapx (Chenthill Palanisamy)
+	* Add a extended response handler for unhandled imapx tokens to be
+	  handled by the derived providers. (Chenthill Palanisamy)
+	* Add EAsyncClosure. (Matthew Barnes)
+	* Make sure data-book/cal is closed/freed in a separate thread
+	  (Milan Crha)
+	* CalDAV: Report NoSuchCal only when opening, ObjectNotFound
+	  otherwise (Milan Crha)
+	* Better error message for SOUP_STATUS_SSL_FAILED response (Milan Crha)
+	* CalDAV: Also rename NoSuchCal to ObjectNotFound in
+	  caldav_server_put_object() (Milan Crha)
+	* Camel: Allow SSL certificate resave and use detailed errors from
+	  SSL stream (Milan Crha)
+	* Remove camel_folder_has_search_capability() (Milan Crha)
+	* CamelService: Rewrite connect/disconnect API. (Matthew Barnes)
+	* Simplify vFolder's code and other bunch of related time
+	  optimizations (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Luca Ferretti (it)
+	Kjartan Maraas (nb)
+	Matej Urbančič (sl)
+
+
 Evolution-Data-Server 3.5.1 2012-04-30
 --------------------------------------
 
