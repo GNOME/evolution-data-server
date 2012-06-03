@@ -16,6 +16,10 @@
  *
  */
 
+#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
+#error "Only <libebackend/libebackend.h> should be included directly."
+#endif
+
 #ifndef E_BACKEND_ENUMS_H
 #define E_BACKEND_ENUMS_H
 

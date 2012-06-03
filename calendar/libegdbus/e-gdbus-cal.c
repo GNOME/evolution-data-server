@@ -23,11 +23,6 @@
 #include <stdlib.h>
 #include <gio/gio.h>
 
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-gdbus-marshallers.h>
-/* We only need the ECalComponentId structure from the following header */
-#include <libecal/e-cal-component.h>
-
 #include "e-gdbus-cal.h"
 
 #define E_GDBUS_CAL_PROXY_GET_PRIVATE(obj) \
@@ -89,6 +84,12 @@ enum
 	__CLOSE_METHOD,
 	__LAST_SIGNAL
 };
+
+/* This is also defined in e-cal-component.h */
+typedef struct {
+	gchar *uid;
+	gchar *rid;
+} ECalComponentId;
 
 static guint signals[__LAST_SIGNAL] = {0};
 

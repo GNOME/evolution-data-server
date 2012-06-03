@@ -14,12 +14,14 @@ libebackend_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)						\
 	-I$(top_srcdir)						\
 	-I$(top_srcdir)/private					\
+	-DLIBEBACKEND_COMPILATION				\
 	-DG_LOG_DOMAIN=\"libebackend\"				\
 	-DMODULE_DIRECTORY=\"$(moduledir)\"			\
 	-DE_DATA_SERVER_PRIVDATADIR=\"$(privdatadir)\"		\
 	-DSYSTEM_WIDE_RO_SOURCES_DIRECTORY=\"$(ro_sourcesdir)\"	\
 	-DSYSTEM_WIDE_RW_SOURCES_DIRECTORY=\"$(rw_sourcesdir)\"	\
 	$(DB_CFLAGS)						\
+	$(CAMEL_CFLAGS)						\
 	$(SQLITE3_CFLAGS)					\
 	$(E_BACKEND_CFLAGS)					\
 	$(GCR_BASE_CFLAGS)					\
@@ -52,6 +54,7 @@ libebackend_1_2_la_LIBADD = 				\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/private/libedbus-private.la	\
 	$(E_BACKEND_LIBS)				\
+	$(CAMEL_LIBS)					\
 	$(SQLITE3_LIBS)					\
 	$(GCR_BASE_LIBS)				\
 	$(GIO_UNIX_LIBS)				\
@@ -65,10 +68,12 @@ libebackend_1_2_la_LDFLAGS = \
 libebackendincludedir = $(privincludedir)/libebackend
 
 libebackendinclude_HEADERS =		\
+	libebackend.h			\
 	e-authentication-mediator.h	\
 	e-authentication-session.h	\
 	e-backend.h			\
 	e-backend-enums.h		\
+	e-backend-enumtypes.h		\
 	e-backend-factory.h		\
 	e-collection-backend.h		\
 	e-collection-backend-factory.h	\

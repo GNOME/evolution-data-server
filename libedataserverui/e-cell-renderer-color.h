@@ -18,6 +18,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+
 #ifndef _E_CELL_RENDERER_COLOR_H_
 #define _E_CELL_RENDERER_COLOR_H_
 

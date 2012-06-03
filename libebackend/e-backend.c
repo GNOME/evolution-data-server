@@ -18,8 +18,8 @@
 
 /**
  * SECTION: e-backend
+ * @include: libebackend/libebackend.h
  * @short_description: An abstract base class for backends
- * @include: libebackend/e-backend.h
  *
  * An #EBackend is paired with an #ESource to facilitate performing
  * actions on the local or remote resource described by the #ESource.

@@ -21,7 +21,7 @@
 
 /**
  * SECTION: e-source-calendar
- * @include: libedataserver/e-source-calendar.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for a calendar
  *
  * The #ESourceCalendar extension identifies the #ESource as a calendar.
@@ -39,7 +39,7 @@
 
 /**
  * SECTION: e-source-memo-list
- * @include: libedataserver/e-source-calendar.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for a memo list
  *
  * The #ESourceCalendar extension identifies the #ESource as a memo list.
@@ -57,7 +57,7 @@
 
 /**
  * SECTION: e-source-task-list
- * @include: libedataserver/e-source-calendar.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for a task list
  *
  * The #ESourceCalendar extension identifies the #ESource as a task list.

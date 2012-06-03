@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-mdn
- * @include: libedataserver/e-source-mdn.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for MDN settings
  *
  * The #ESourceMDN extension tracks Message Disposition Notification

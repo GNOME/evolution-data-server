@@ -32,20 +32,6 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-url.h>
-#include <libedataserver/e-flag.h>
-#include <libedataserver/e-proxy.h>
-#include <libedataserver/e-source-authentication.h>
-#include <libedataserver/e-source-offline.h>
-#include <libedataserver/e-source-webdav.h>
-#include <libebook/e-contact.h>
-#include <libebook/e-address-western.h>
-
-#include <libedata-book/e-book-backend-sexp.h>
-#include <libedata-book/e-book-backend-summary.h>
-#include <libedata-book/e-data-book.h>
-#include <libedata-book/e-data-book-view.h>
-#include <libedata-book/e-book-backend-cache.h>
 #include "e-book-backend-webdav.h"
 
 #include <libsoup/soup.h>

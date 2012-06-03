@@ -37,8 +37,6 @@
 
 #ifdef G_OS_WIN32
 
-#include "libedataserver/e-data-server-util.h"
-
 #ifdef localtime_r
 #undef localtime_r
 #endif

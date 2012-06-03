@@ -34,11 +34,6 @@
 
 #include <glib/gstdio.h>
 
-#include "libedataserver/e-sexp.h"
-#include "libedataserver/e-data-server-util.h"
-
-#include "libebook/e-contact.h"
-
 #include "e-book-backend-summary.h"
 
 #define E_BOOK_BACKEND_SUMMARY_GET_PRIVATE(obj) \

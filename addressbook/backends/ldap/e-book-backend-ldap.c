@@ -124,16 +124,7 @@
 #include <sys/time.h>
 
 #include <glib/gi18n-lib.h>
-#include <libedataserver/e-sexp.h>
-#include <libedataserver/e-source-authentication.h>
-#include <libedataserver/e-source-offline.h>
-#include <libebook/e-contact.h>
 
-#include <libedata-book/e-book-backend-sexp.h>
-#include <libedata-book/e-data-book.h>
-#include <libedata-book/e-data-book-view.h>
-#include <libedata-book/e-book-backend-cache.h>
-#include <libedata-book/e-book-backend-summary.h>
 #include "e-book-backend-ldap.h"
 #include "e-source-ldap.h"
 

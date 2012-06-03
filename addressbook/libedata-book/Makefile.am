@@ -1,16 +1,9 @@
-include $(top_srcdir)/glib-gen.mak
-glib_enum_headers=e-data-book-types.h
-glib_enum_output=e-data-book-enumtypes
-glib_enum_define=E_DATA_BOOK
-glib_enum_prefix=e_data_book
-
-ENUM_GENERATED = e-data-book-enumtypes.h e-data-book-enumtypes.c
-
 # The library
 lib_LTLIBRARIES = libedata-book-1.2.la
 
 libedata_book_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
+	-DLIBEDATA_BOOK_COMPILATION \
 	-DG_LOG_DOMAIN=\"libedata-book\" \
 	-DBACKENDDIR=\"$(ebook_backenddir)\" \
 	-I$(top_srcdir) \
@@ -19,6 +12,7 @@ libedata_book_1_2_la_CPPFLAGS = \
 	-I$(top_builddir) \
 	-I$(top_builddir)/addressbook \
 	$(DB_CFLAGS) \
+	$(CAMEL_CFLAGS) \
 	$(SQLITE3_CFLAGS) \
 	$(GOA_CFLAGS) \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
@@ -26,7 +20,6 @@ libedata_book_1_2_la_CPPFLAGS = \
 	$(NULL)
 
 libedata_book_1_2_la_SOURCES = \
-	$(ENUM_GENERATED) \
 	e-book-backend-factory.c \
 	e-book-backend-sexp.c \
 	e-book-backend-summary.c \
@@ -46,6 +39,7 @@ libedata_book_1_2_la_LIBADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(DB_LIBS) \
+	$(CAMEL_LIBS) \
 	$(SQLITE3_LIBS) \
 	$(GOA_LIBS) \
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
@@ -58,13 +52,13 @@ libedata_book_1_2_la_LDFLAGS = \
 libedata_bookincludedir = $(privincludedir)/libedata-book
 
 libedata_bookinclude_HEADERS = \
+	libedata-book.h \
 	e-book-backend-factory.h \
 	e-book-backend-sexp.h \
 	e-book-backend-summary.h \
 	e-book-backend-sync.h \
 	e-book-backend.h \
 	e-data-book-factory.h \
-	e-data-book-types.h \
 	e-data-book-view.h \
 	e-data-book.h \
 	e-book-backend-cache.h \
@@ -88,8 +82,6 @@ e_book_backend_sqlitedb_test_LDADD = \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedata-book-$(API_VERSION).pc
 
-BUILT_SOURCES = $(ENUM_GENERATED)
-CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = \

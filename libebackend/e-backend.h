@@ -16,10 +16,14 @@
  *
  */
 
+#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
+#error "Only <libebackend/libebackend.h> should be included directly."
+#endif
+
 #ifndef E_BACKEND_H
 #define E_BACKEND_H
 
-#include <libedataserver/e-source.h>
+#include <libedataserver/libedataserver.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BACKEND \

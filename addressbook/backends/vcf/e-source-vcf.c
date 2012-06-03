@@ -18,8 +18,6 @@
 
 #include "e-source-vcf.h"
 
-#include <libedataserver/e-data-server-util.h>
-
 #define E_SOURCE_VCF_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_SOURCE_VCF, ESourceVCFPrivate))

@@ -19,12 +19,15 @@
  *
  */
 
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+
 #ifndef E_CLIENT_UTILS_H
 #define E_CLIENT_UTILS_H
 
 #include <gtk/gtk.h>
-
-#include <libedataserver/e-client.h>
+#include <libedataserver/libedataserver.h>
 
 G_BEGIN_DECLS
 

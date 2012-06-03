@@ -19,12 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__LIBEDATA_CAL_H_INSIDE__) && !defined (LIBEDATA_CAL_COMPILATION)
+#error "Only <libedata-cal/libedata-cal.h> should be included directly."
+#endif
+
 #ifndef E_CAL_BACKEND_CACHE_H
 #define E_CAL_BACKEND_CACHE_H
 
-#include "libebackend/e-file-cache.h"
-#include <libecal/e-cal-component.h>
-#include <libecal/e-cal.h>
+#include <libecal/libecal.h>
+#include <libebackend/libebackend.h>
 
 /* Standard GObject macros */
 #define E_TYPE_CAL_BACKEND_CACHE \

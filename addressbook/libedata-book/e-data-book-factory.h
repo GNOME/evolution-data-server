@@ -18,11 +18,14 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
+#error "Only <libedata-book/libedata-book.h> should be included directly."
+#endif
+
 #ifndef E_DATA_BOOK_FACTORY_H
 #define E_DATA_BOOK_FACTORY_H
 
-#include <libebackend/e-data-factory.h>
-#include <libedataserver/e-source-registry.h>
+#include <libebackend/libebackend.h>
 
 /* Standard GObject macros */
 #define E_TYPE_DATA_BOOK_FACTORY \

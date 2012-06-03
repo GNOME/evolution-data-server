@@ -22,7 +22,7 @@
 #ifndef _ECAL_TEST_UTILS_H
 #define _ECAL_TEST_UTILS_H
 
-#include <libecal/e-cal.h>
+#include <libecal/libecal.h>
 
 typedef struct {
         GSourceFunc  cb;

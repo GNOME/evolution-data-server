@@ -20,13 +20,17 @@
  *
  */
 
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+
 #ifndef E_BOOK_AUTH_UTIL_H
 #define E_BOOK_AUTH_UTIL_H
 
 #ifndef E_BOOK_DISABLE_DEPRECATED
 
 #include <gtk/gtk.h>
-#include <libebook/e-book.h>
+#include <libebook/libebook.h>
 
 G_BEGIN_DECLS
 

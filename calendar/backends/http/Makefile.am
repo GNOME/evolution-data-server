@@ -8,6 +8,7 @@ libecalbackendhttp_la_CPPFLAGS = \
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
+	$(CAMEL_CFLAGS)					\
 	$(SOUP_CFLAGS)					\
 	$(CODE_COVERAGE_CFLAGS)				\
 	$(NULL)
@@ -23,6 +24,7 @@ libecalbackendhttp_la_LIBADD =						\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(top_builddir)/libebackend/libebackend-1.2.la			\
 	$(EVOLUTION_CALENDAR_LIBS)					\
+	$(CAMEL_LIBS)							\
 	$(SOUP_LIBS)
 
 libecalbackendhttp_la_LDFLAGS =		\

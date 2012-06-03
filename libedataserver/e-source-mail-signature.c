@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-mail-signature
- * @include: libedataserver/e-source-mail-signature.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for email signatures
  *
  * The #ESourceMailSignature extension refers to a personalized email

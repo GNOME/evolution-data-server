@@ -19,9 +19,7 @@
 #include <string.h>
 #include <gio/gunixoutputstream.h>
 
-#include <libedataserver/e-source.h>
-#include <libedataserver/e-source-authentication.h>
-#include <libedataserver/e-uid.h>
+#include <libedataserver/libedataserver.h>
 
 #define SIMPLE_KEY_FILE \
 	"[Data Source]\n" \

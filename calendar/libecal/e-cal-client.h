@@ -19,12 +19,15 @@
  *
  */
 
+#if !defined (__LIBECAL_H_INSIDE__) && !defined (LIBECAL_COMPILATION)
+#error "Only <libecal/libecal.h> should be included directly."
+#endif
+
 #ifndef E_CAL_CLIENT_H
 #define E_CAL_CLIENT_H
 
-#include <gio/gio.h>
+#include <libedataserver/libedataserver.h>
 
-#include <libedataserver/e-client.h>
 #include <libecal/e-cal-client-view.h>
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>

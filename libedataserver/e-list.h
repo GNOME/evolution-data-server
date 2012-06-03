@@ -6,6 +6,10 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
+#endif
+
 #ifndef EDS_DISABLE_DEPRECATED
 
 #ifndef E_LIST_H

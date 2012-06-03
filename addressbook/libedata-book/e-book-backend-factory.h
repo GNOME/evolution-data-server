@@ -20,10 +20,14 @@
  * Author: Chris Toshok <toshok@ximian.com>
  */
 
+#if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
+#error "Only <libedata-book/libedata-book.h> should be included directly."
+#endif
+
 #ifndef E_BOOK_BACKEND_FACTORY_H
 #define E_BOOK_BACKEND_FACTORY_H
 
-#include <libebackend/e-backend-factory.h>
+#include <libebackend/libebackend.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BOOK_BACKEND_FACTORY \

@@ -22,8 +22,6 @@
 #include <config.h>
 #endif
 
-#include <libedataserver/e-source-selectable.h>
-
 #include "e-source-combo-box.h"
 #include "e-cell-renderer-color.h"
 

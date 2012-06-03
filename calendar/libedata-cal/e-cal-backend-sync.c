@@ -10,8 +10,9 @@
 #include <config.h>
 #endif
 
+#include <libedataserver/libedataserver.h>
+
 #include "e-cal-backend-sync.h"
-#include "libedataserver/e-data-server-util.h"
 #include <libical/icaltz-util.h>
 
 #define E_CAL_BACKEND_SYNC_GET_PRIVATE(obj) \

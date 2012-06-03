@@ -30,8 +30,6 @@
 #include <unistd.h>
 #include <glib/gi18n.h>
 
-#include <libedataserver/e-source-calendar.h>
-
 #include "e-cal-backend.h"
 #include "e-cal-backend-factory.h"
 #include "e-data-cal.h"

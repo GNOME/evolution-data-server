@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-registry-server
- * @include: libebackend/e-source-registry-server.h
+ * @include: libebackend/libebackend.h
  * @short_description: Server-side repository for data sources
  *
  * The #ESourceRegistryServer is the heart of the registry D-Bus service.
@@ -43,10 +43,7 @@
 #include <e-dbus-source.h>
 #include <e-dbus-source-manager.h>
 
-#include <libedataserver/e-uid.h>
 #include <libedataserver/e-marshal.h>
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-source-collection.h>
 
 #include <libebackend/e-authentication-mediator.h>
 #include <libebackend/e-authentication-session.h>

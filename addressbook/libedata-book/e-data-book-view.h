@@ -21,14 +21,15 @@
  * Author: Ross Burton <ross@linux.intel.com>
  */
 
+#if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
+#error "Only <libedata-book/libedata-book.h> should be included directly."
+#endif
+
 #ifndef __E_DATA_BOOK_VIEW_H__
 #define __E_DATA_BOOK_VIEW_H__
 
-#include <gio/gio.h>
-#include <libebook/e-contact.h>
-#include <libebook/e-book-client-view.h>
-#include <libedata-book/e-data-book-types.h>
-#include <libedata-book/e-book-backend.h>
+#include <libebook/libebook.h>
+
 #include <libedata-book/e-book-backend-sexp.h>
 
 G_BEGIN_DECLS
@@ -40,6 +41,11 @@ G_BEGIN_DECLS
 #define E_IS_DATA_BOOK_VIEW_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_DATA_BOOK_VIEW))
 #define E_DATA_BOOK_VIEW_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_DATA_BOOK_VIEW, EDataBookView))
 
+struct _EDataBook;
+struct _EBookBackend;
+
+typedef struct _EDataBookView EDataBookView;
+typedef struct _EDataBookViewClass EDataBookViewClass;
 typedef struct _EDataBookViewPrivate EDataBookViewPrivate;
 
 struct _EDataBookView {
@@ -52,12 +58,12 @@ struct _EDataBookViewClass {
 };
 
 GType			e_data_book_view_get_type		(void);
-EDataBookView *		e_data_book_view_new			(EDataBook *book, const gchar *card_query, EBookBackendSExp *card_sexp);
+EDataBookView *		e_data_book_view_new			(struct _EDataBook *book, const gchar *card_query, EBookBackendSExp *card_sexp);
 guint			e_data_book_view_register_gdbus_object	(EDataBookView *query, GDBusConnection *connection, const gchar *object_path, GError **error);
 
 const gchar *		e_data_book_view_get_card_query		(EDataBookView *book_view);
 EBookBackendSExp *	e_data_book_view_get_card_sexp		(EDataBookView *book_view);
-EBookBackend *		e_data_book_view_get_backend		(EDataBookView *book_view);
+struct _EBookBackend *	e_data_book_view_get_backend		(EDataBookView *book_view);
 EBookClientViewFlags    e_data_book_view_get_flags              (EDataBookView *book_view);
 void			e_data_book_view_notify_update		(EDataBookView *book_view, const EContact *contact);
 

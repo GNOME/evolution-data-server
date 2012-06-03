@@ -26,16 +26,14 @@
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
-#include "libedataserver/e-data-server-util.h"
-#include "libedataserver/e-client-private.h"
-
-#include "libedata-cal/e-data-cal-types.h"
+#include <libedataserver/e-client-private.h>
 
 #include "e-cal-client.h"
 #include "e-cal-client-view-private.h"
 #include "e-cal-component.h"
 #include "e-cal-check-timezones.h"
 #include "e-cal-time-util.h"
+#include "e-cal-types.h"
 
 #include "e-gdbus-cal.h"
 #include "e-gdbus-cal-factory.h"

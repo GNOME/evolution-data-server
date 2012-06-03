@@ -20,11 +20,15 @@
  * Author: Chris Toshok <toshok@ximian.com>
  */
 
+#if !defined (__LIBEDATA_CAL_H_INSIDE__) && !defined (LIBEDATA_CAL_COMPILATION)
+#error "Only <libedata-cal/libedata-cal.h> should be included directly."
+#endif
+
 #ifndef E_CAL_BACKEND_FACTORY_H
 #define E_CAL_BACKEND_FACTORY_H
 
 #include <libical/ical.h>
-#include <libebackend/e-backend-factory.h>
+#include <libebackend/libebackend.h>
 
 /* Standard GObject macros */
 #define E_TYPE_CAL_BACKEND_FACTORY \

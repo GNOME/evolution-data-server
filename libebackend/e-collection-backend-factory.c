@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-collection-backend-factory
- * @include: libebackend/e-collection-backend-factory.h
+ * @include: libebackend/libebackend.h
  * @short_description: An abstract base class for a data source collection
  *                     backend factory
  *
@@ -28,10 +28,7 @@
 
 #include "e-collection-backend-factory.h"
 
-#include <libedataserver/e-source-mail-account.h>
-#include <libedataserver/e-source-mail-identity.h>
-#include <libedataserver/e-source-mail-submission.h>
-#include <libedataserver/e-source-mail-transport.h>
+#include <libedataserver/libedataserver.h>
 
 #include <libebackend/e-collection-backend.h>
 #include <libebackend/e-source-registry-server.h>

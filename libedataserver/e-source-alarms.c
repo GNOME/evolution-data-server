@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-alarms
- * @include: libedataserver/e-source-alarms.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for alarm state
  *
  * The #ESourceAlarms extension tracks alarm state for a calendar.

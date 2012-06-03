@@ -1,5 +1,4 @@
-#include <libebook/e-vcard.h>
-#include <libebook/e-contact.h>
+#include <libebook/libebook.h>
 
 static gboolean
 compare_single_value (EVCard *vcard,

@@ -18,7 +18,7 @@
 
 #include <errno.h>
 #include <glib/gstdio.h>
-#include <libedataserver/e-data-server-util.h>
+#include <libedataserver/libedataserver.h>
 
 /* Forward Declarations */
 void evolution_source_registry_migrate_basedir (void);

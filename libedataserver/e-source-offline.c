@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-offline
- * @include: libedataserver/e-source-offline.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for offline settings
  *
  * The #ESourceOffline extension tracks whether data from a remote

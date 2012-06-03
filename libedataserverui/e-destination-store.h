@@ -20,11 +20,15 @@
  * Authors: Hans Petter Jansson <hpj@novell.com>
  */
 
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+
 #ifndef E_DESTINATION_STORE_H
 #define E_DESTINATION_STORE_H
 
 #include <gtk/gtk.h>
-#include <libebook/e-destination.h>
+#include <libebook/libebook.h>
 
 /* Standard GObject macros */
 #define E_TYPE_DESTINATION_STORE \

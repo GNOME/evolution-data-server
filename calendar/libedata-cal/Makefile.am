@@ -1,16 +1,9 @@
-include $(top_srcdir)/glib-gen.mak
-glib_enum_headers=e-data-cal-types.h
-glib_enum_output=e-data-cal-enumtypes
-glib_enum_define=E_DATA_CAL
-glib_enum_prefix=e_data_cal
-
-ENUM_GENERATED = e-data-cal-enumtypes.h e-data-cal-enumtypes.c
-
 # The libraray
 lib_LTLIBRARIES = libedata-cal-1.2.la
 
 libedata_cal_1_2_la_CPPFLAGS = 			\
 	$(AM_CPPFLAGS)				\
+	-DLIBEDATA_CAL_COMPILATION		\
 	-DG_LOG_DOMAIN=\"libedata-cal\"		\
 	-DBACKENDDIR=\"$(ecal_backenddir)\"	\
 	-I$(top_srcdir)				\
@@ -20,11 +13,11 @@ libedata_cal_1_2_la_CPPFLAGS = 			\
 	-I$(top_builddir)/calendar		\
 	$(LIBICAL_CFLAGS)			\
 	$(EVOLUTION_CALENDAR_CFLAGS)		\
+	$(CAMEL_CFLAGS)				\
 	$(CODE_COVERAGE_CFLAGS)			\
 	$(NULL)
 
 libedata_cal_1_2_la_SOURCES =		\
-	$(ENUM_GENERATED)		\
 	e-cal-backend.c			\
 	e-cal-backend-cache.c		\
 	e-cal-backend-factory.c		\
@@ -44,7 +37,8 @@ libedata_cal_1_2_la_LIBADD =					\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
 	$(top_builddir)/libebackend/libebackend-1.2.la 		\
 	$(LIBICAL_LIBS)						\
-	$(EVOLUTION_CALENDAR_LIBS)
+	$(EVOLUTION_CALENDAR_LIBS)				\
+	$(CAMEL_LIBS)
 
 libedata_cal_1_2_la_LDFLAGS =								\
 	-version-info $(LIBEDATACAL_CURRENT):$(LIBEDATACAL_REVISION):$(LIBEDATACAL_AGE) $(NO_UNDEFINED) \
@@ -54,7 +48,7 @@ libedata_cal_1_2_la_LDFLAGS =								\
 libedata_calincludedir = $(privincludedir)/libedata-cal
 
 libedata_calinclude_HEADERS = 		\
-	e-data-cal-types.h		\
+	libedata-cal.h			\
 	e-cal-backend.h			\
 	e-cal-backend-cache.h		\
 	e-cal-backend-factory.h		\
@@ -75,8 +69,6 @@ libedata_calinclude_HEADERS = 		\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedata-cal-$(API_VERSION).pc
 
-BUILT_SOURCES = $(ENUM_GENERATED)
-CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\

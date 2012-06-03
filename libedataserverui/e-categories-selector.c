@@ -19,7 +19,9 @@
 
 #include <config.h>
 #include <glib/gi18n-lib.h>
-#include "libedataserver/e-categories.h"
+
+#include <libedataserver/libedataserver.h>
+
 #include "e-categories-selector.h"
 #include "e-data-server-ui-marshal.h"
 

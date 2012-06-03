@@ -2,10 +2,13 @@
 /*
  */
 
+#if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
+#error "Only <libedata-book/libedata-book.h> should be included directly."
+#endif
+
 #ifndef __E_BOOK_BACKEND_SYNC_H__
 #define __E_BOOK_BACKEND_SYNC_H__
 
-#include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-book-backend.h>
 
 G_BEGIN_DECLS
@@ -17,6 +20,8 @@ G_BEGIN_DECLS
 #define E_IS_BOOK_BACKEND_SYNC_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_BOOK_BACKEND_SYNC))
 #define E_BOOK_BACKEND_SYNC_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((k), E_TYPE_BOOK_BACKEND_SYNC, EBookBackendSyncClass))
 
+typedef struct _EBookBackendSync EBookBackendSync;
+typedef struct _EBookBackendSyncClass EBookBackendSyncClass;
 typedef struct _EBookBackendSyncPrivate EBookBackendSyncPrivate;
 
 struct _EBookBackendSync {

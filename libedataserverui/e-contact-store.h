@@ -20,14 +20,15 @@
  * Authors: Hans Petter Jansson <hpj@novell.com>
  */
 
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+
 #ifndef E_CONTACT_STORE_H
 #define E_CONTACT_STORE_H
 
 #include <gtk/gtk.h>
-#include <libebook/e-contact.h>
-#include <libebook/e-book-client.h>
-#include <libebook/e-book-client-view.h>
-#include <libebook/e-book-query.h>
+#include <libebook/libebook.h>
 
 /* Standard GObject macros */
 #define E_TYPE_CONTACT_STORE \

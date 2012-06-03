@@ -22,9 +22,7 @@
 #ifndef E_GDBUS_CAL_VIEW_H
 #define E_GDBUS_CAL_VIEW_H
 
-#include <gio/gio.h>
-
-#include <libedataserver/e-gdbus-templates.h>
+#include <libedataserver/libedataserver.h>
 
 G_BEGIN_DECLS
 

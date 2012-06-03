@@ -48,9 +48,9 @@
 #include <glib/gi18n-lib.h>
 #include <gnome-keyring.h>
 
+#include <libedataserver/libedataserver.h>
+
 #include "e-passwords.h"
-#include "libedataserver/e-flag.h"
-#include "libedataserver/e-url.h"
 
 #define d(x)
 

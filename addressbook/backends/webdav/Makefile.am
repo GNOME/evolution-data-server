@@ -9,6 +9,7 @@ libebookbackendwebdav_la_CPPFLAGS = \
 	-I$(top_builddir)/addressbook 			\
 	$(SOUP_CFLAGS) 					\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
+	$(CAMEL_CFLAGS)					\
 	$(CODE_COVERAGE_CFLAGS)				\
 	$(NULL)
 
@@ -23,7 +24,8 @@ libebookbackendwebdav_la_LIBADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(SOUP_LIBS) \
-	$(EVOLUTION_ADDRESSBOOK_LIBS)
+	$(EVOLUTION_ADDRESSBOOK_LIBS) \
+	$(CAMEL_LIBS)
 
 libebookbackendwebdav_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED) \
 	$(CODE_COVERAGE_LDFLAGS) \

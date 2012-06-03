@@ -10,7 +10,8 @@ test_e_sexp_CPPFLAGS =							\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/calendar					\
 	-I$(top_builddir)/calendar					\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)					\
+	$(CAMEL_CFLAGS)
 
 test_e_sexp_LDADD =							\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
@@ -18,7 +19,8 @@ test_e_sexp_LDADD =							\
 	$(top_builddir)/libebackend/libebackend-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(EVOLUTION_CALENDAR_LIBS)					\
-	$(E_DATA_SERVER_LIBS)
+	$(E_DATA_SERVER_LIBS)						\
+	$(CAMEL_LIBS)
 
 test_intervaltree_SOURCES = test-intervaltree.c
 
@@ -27,14 +29,16 @@ test_intervaltree_CPPFLAGS =						\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/calendar					\
 	-I$(top_builddir)/calendar					\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)					\
+	$(CAMEL_CFLAGS)
 
 test_intervaltree_LDADD =						\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
 	$(top_builddir)/libebackend/libebackend-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-	$(EVOLUTION_CALENDAR_LIBS)
+	$(EVOLUTION_CALENDAR_LIBS)					\
+	$(CAMEL_LIBS)
 
 test_intervaltree_coverage_SOURCES = test-intervaltree.c
 
@@ -43,7 +47,8 @@ test_intervaltree_coverage_CPPFLAGS =					\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/calendar					\
 	-I$(top_builddir)/calendar					\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)					\
+	$(CAMEL_CFLAGS)
 
 test_intervaltree_coverage_LDADD = \
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
@@ -51,6 +56,7 @@ test_intervaltree_coverage_LDADD = \
 	$(top_builddir)/libebackend/libebackend-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(EVOLUTION_CALENDAR_LIBS)					\
+	$(CAMEL_LIBS)							\
 	-lgcov
 
 .PHONY: coverage

@@ -23,29 +23,7 @@
 #include <libsoup/soup.h>
 #include <gnome-keyring.h>
 
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserver/e-source-alarms.h>
-#include <libedataserver/e-source-authentication.h>
-#include <libedataserver/e-source-autocomplete.h>
-#include <libedataserver/e-source-calendar.h>
-#include <libedataserver/e-source-camel.h>
-#include <libedataserver/e-source-collection.h>
-#include <libedataserver/e-source-mail-account.h>
-#include <libedataserver/e-source-mail-composition.h>
-#include <libedataserver/e-source-mail-identity.h>
-#include <libedataserver/e-source-mail-signature.h>
-#include <libedataserver/e-source-mail-submission.h>
-#include <libedataserver/e-source-mail-transport.h>
-#include <libedataserver/e-source-mdn.h>
-#include <libedataserver/e-source-offline.h>
-#include <libedataserver/e-source-openpgp.h>
-#include <libedataserver/e-source-refresh.h>
-#include <libedataserver/e-source-security.h>
-#include <libedataserver/e-source-smime.h>
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-uid.h>
-
-#include <libebackend/e-server-side-source.h>
+#include <libebackend/libebackend.h>
 
 /* These constants are collected from various e-source-*.h files
  * throughout evolution-data-server and known extension packages. */

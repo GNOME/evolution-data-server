@@ -1,8 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 #include <stdlib.h>
-#include <libebook/e-book-client.h>
-#include <libebook/e-book-query.h>
+#include <libebook/libebook.h>
 
 #include "client-test-utils.h"
 

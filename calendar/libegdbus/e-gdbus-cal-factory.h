@@ -22,9 +22,7 @@
 #ifndef E_GDBUS_CAL_FACTORY_H
 #define E_GDBUS_CAL_FACTORY_H
 
-#include <gio/gio.h>
-
-#include <libedataserver/e-gdbus-templates.h>
+#include <libedataserver/libedataserver.h>
 
 G_BEGIN_DECLS
 

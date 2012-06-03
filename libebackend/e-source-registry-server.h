@@ -16,14 +16,19 @@
  *
  */
 
+#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
+#error "Only <libebackend/libebackend.h> should be included directly."
+#endif
+
 #ifndef E_SOURCE_REGISTRY_SERVER_H
 #define E_SOURCE_REGISTRY_SERVER_H
+
+#include <libedataserver/libedataserver.h>
 
 #include <libebackend/e-authentication-session.h>
 #include <libebackend/e-backend-enums.h>
 #include <libebackend/e-data-factory.h>
 #include <libebackend/e-collection-backend-factory.h>
-#include <libedataserver/e-source.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_REGISTRY_SERVER \

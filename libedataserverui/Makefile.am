@@ -9,6 +9,7 @@ CPPFLAGS = \
 	-I$(top_builddir)/addressbook		\
 	-I$(top_srcdir)/calendar		\
 	-I$(top_builddir)/calendar		\
+	-DLIBEDATASERVERUI_COMPILATION		\
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"	\
 	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"	\
 	$(E_DATA_SERVER_UI_CFLAGS)		\
@@ -19,6 +20,7 @@ CPPFLAGS = \
 lib_LTLIBRARIES = libedataserverui-3.0.la
 
 libedataserveruiinclude_HEADERS =	\
+	libedataserverui.h		\
 	e-categories-dialog.h		\
 	e-categories-editor.h		\
 	e-categories-selector.h		\

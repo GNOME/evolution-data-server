@@ -42,8 +42,7 @@
 #endif
 #endif
 
-#include <libedata-cal/e-data-cal-factory.h>
-#include <libedataserver/e-gdbus-templates.h>
+#include <libedata-cal/libedata-cal.h>
 
 static gboolean opt_keep_running = FALSE;
 static gboolean opt_wait_for_client = FALSE;

@@ -24,6 +24,7 @@ libedataserver_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)							\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/private						\
+	-DLIBEDATASERVER_COMPILATION					\
 	-DG_LOG_DOMAIN=\"e-data-server\"				\
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"				\
 	-DE_DATA_SERVER_LOCALEDIR=\""$(localedir)"\"			\
@@ -110,6 +111,7 @@ libedataserver_1_2_la_LDFLAGS = \
 libedataserverincludedir = $(privincludedir)/libedataserver
 
 libedataserverinclude_HEADERS =		\
+	libedataserver.h		\
 	e-categories.h			\
 	e-client.h			\
 	e-credentials.h			\
@@ -192,8 +194,7 @@ DISTCLEANFILES = eds-version.h				\
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
 INTROSPECTION_SCANNER_ARGS = --identifier-prefix E --pkg-export \
-	libedataserver-1.2  --c-include="libedataserver/e-account.h" \
-	--c-include="libedataserver/e-source.h"
+	libedataserver-1.2  --c-include="libedataserver/libedataserver.h"
 INTROSPECTION_COMPILER_ARGS =
 
 if HAVE_INTROSPECTION
@@ -203,7 +204,7 @@ introspection_sources = \
 
 EDataServer-1.2.gir: libedataserver-1.2.la
 EDataServer_1_2_gir_INCLUDES = GObject-2.0 libxml2-2.0 Gio-2.0
-EDataServer_1_2_gir_CFLAGS = -I$(top_srcdir) -I$(top_builddir) $(E_DATA_SERVER_CFLAGS) \
+EDataServer_1_2_gir_CFLAGS = -I$(top_srcdir) -I$(top_builddir) -DLIBEDATASERVER_COMPILATION $(E_DATA_SERVER_CFLAGS) \
 	$(SOUP_CFLAGS)
 EDataServer_1_2_gir_LIBS = libedataserver-1.2.la
 EDataServer_1_2_gir_FILES = $(introspection_sources)

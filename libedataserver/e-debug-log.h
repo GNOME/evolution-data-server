@@ -21,6 +21,10 @@
  * Author: Federico Mena-Quintero <federico@novell.com>
  */
 
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
+#endif
+
 #ifndef E_DEBUG_LOG_H
 #define E_DEBUG_LOG_H
 

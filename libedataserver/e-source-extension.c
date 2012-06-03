@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-extension
- * @include: libedataserver/e-source-extension.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: Base class for #ESource extensions
  *
  * #ESourceExtension is an abstract base class for #ESource extension

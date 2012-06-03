@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-mail-transport
- * @include: libedataserver/e-source-mail-transport.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for an email transport
  *
  * The #ESourceMailTransport extension identifies the #ESource as a

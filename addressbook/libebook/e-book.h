@@ -8,14 +8,18 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
+#if !defined (__LIBEBOOK_H_INSIDE__) && !defined (LIBEBOOK_COMPILATION)
+#error "Only <libebook/libebook.h> should be included directly."
+#endif
+
 #ifndef __E_BOOK_H__
 #define __E_BOOK_H__
 
 /* e-book deprecated since 3.2, use e-book-client instead */
 #ifndef E_BOOK_DISABLE_DEPRECATED
 
-#include <libedataserver/e-list.h>
-#include <libedataserver/e-source-registry.h>
+#include <libedataserver/libedataserver.h>
+
 #include <libebook/e-contact.h>
 #include <libebook/e-book-query.h>
 #include <libebook/e-book-view.h>

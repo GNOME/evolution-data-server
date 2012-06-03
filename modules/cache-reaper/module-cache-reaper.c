@@ -20,10 +20,7 @@
 #include <time.h>
 #include <glib/gstdio.h>
 
-#include <libedataserver/e-data-server-util.h>
-
-#include <libebackend/e-extension.h>
-#include <libebackend/e-source-registry-server.h>
+#include <libebackend/libebackend.h>
 
 #include "e-cache-reaper-utils.h"
 

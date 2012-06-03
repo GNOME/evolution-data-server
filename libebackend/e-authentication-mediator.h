@@ -16,10 +16,14 @@
  *
  */
 
+#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
+#error "Only <libebackend/libebackend.h> should be included directly."
+#endif
+
 #ifndef E_AUTHENTICATION_MEDIATOR_H
 #define E_AUTHENTICATION_MEDIATOR_H
 
-#include <libedataserver/e-source-authenticator.h>
+#include <libedataserver/libedataserver.h>
 
 /* Standard GObject macros */
 #define E_TYPE_AUTHENTICATION_MEDIATOR \

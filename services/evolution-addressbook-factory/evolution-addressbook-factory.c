@@ -38,8 +38,7 @@
 #endif
 #endif
 
-#include <libedata-book/e-data-book-factory.h>
-#include <libedataserver/e-gdbus-templates.h>
+#include <libedata-book/libedata-book.h>
 
 static gboolean opt_keep_running = FALSE;
 static gboolean opt_wait_for_client = FALSE;

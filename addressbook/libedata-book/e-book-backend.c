@@ -10,8 +10,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-data-server-util.h>
-
 #include "e-data-book-view.h"
 #include "e-data-book.h"
 #include "e-book-backend.h"

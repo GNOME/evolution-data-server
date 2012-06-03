@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <glib/gi18n.h>
 
-#include <libebackend/e-source-registry-server.h>
+#include <libebackend/libebackend.h>
 
 /* Forward Declarations */
 void evolution_source_registry_migrate_basedir (void);

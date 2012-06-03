@@ -28,10 +28,9 @@
 #include <glib/gstdio.h>
 
 #include <sqlite3.h>
+#include <libebackend/libebackend.h>
 
-#include "libedataserver/e-sexp.h"
-#include "libedata-book/e-book-backend-sexp.h"
-#include "libebackend/e-sqlite3-vfs.h"
+#include "e-book-backend-sexp.h"
 #include "e-book-backend-sqlitedb.h"
 
 #define E_BOOK_BACKEND_SQLITEDB_GET_PRIVATE(obj) \

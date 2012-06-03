@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 #include <gio/gio.h>
-#include <libecal/e-cal.h>
+#include <libecal/libecal.h>
 
 #include "ecal-test-utils.h"
 

@@ -25,8 +25,6 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-data-server-util.h>
-
 #include "e-cal-backend.h"
 #include "e-cal-backend-cache.h"
 

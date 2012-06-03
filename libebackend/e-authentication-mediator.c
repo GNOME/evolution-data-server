@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-authentication-mediator
- * @include: libebackend/e-authentication-mediator.h
+ * @include: libebackend/libebackend.h
  * @short_description: Authenticator proxy for remote clients
  *
  * #EAuthenticationMediator runs on the registry D-Bus service.  It mediates
@@ -36,9 +36,6 @@
 #include <config.h>
 #include <glib/gi18n-lib.h>
 #include <gcr/gcr-base.h>
-
-#include <libedataserver/e-flag.h>
-#include <libedataserver/e-data-server-util.h>
 
 /* Private D-Bus classes. */
 #include <e-dbus-authenticator.h>

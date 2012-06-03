@@ -27,16 +27,8 @@
 #include <gconf/gconf-client.h>
 
 #include <camel/camel.h>
-#include <libebook/e-book-client.h>
-#include <libebook/e-contact.h>
-#include <libebook/e-destination.h>
+#include <libebackend/libebackend.h>
 
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserver/e-source-autocomplete.h>
-#include <libedataserver/e-source-registry.h>
-
-#include <libedataserver/e-sexp.h>
-#include <libebackend/e-extensible.h>
 #include <libedataserverui/e-client-utils.h>
 
 #include "e-name-selector-entry.h"

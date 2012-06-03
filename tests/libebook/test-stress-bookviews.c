@@ -1,7 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 #include <stdlib.h>
-#include <libebook/e-book.h>
+#include <libebook/libebook.h>
 
 static void
 print_contact (EContact *contact)

@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-autocomplete
- * @include: libedataserver/e-source-autocomplete.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for autocomplete settings
  *
  * The #ESourceAutocomplete extension tracks contact autocompletion

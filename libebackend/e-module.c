@@ -18,8 +18,8 @@
 
 /**
  * SECTION: e-module
+ * @include: libebackend/libebackend.h
  * @short_description: A module loader
- * @include: libebackend/e-module.h
  **/
 
 #include "e-module.h"

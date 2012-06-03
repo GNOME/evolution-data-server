@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-address-book
- * @include: libedataserver/e-source-address-book.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for an address book
  *
  * The #ESourceAddressBook extension identifies the #ESource as an

@@ -18,6 +18,10 @@
  *
  */
 
+#if !defined (__LIBEBOOK_H_INSIDE__) && !defined (LIBEBOOK_COMPILATION)
+#error "Only <libebook/libebook.h> should be included directly."
+#endif
+
 #ifndef E_BOOK_CLIENT_VIEW_H
 #define E_BOOK_CLIENT_VIEW_H
 

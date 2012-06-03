@@ -18,6 +18,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__LIBECAL_H_INSIDE__) && !defined (LIBECAL_COMPILATION)
+#error "Only <libecal/libecal.h> should be included directly."
+#endif
+
 #ifndef E_CAL_VIEW_H
 #define E_CAL_VIEW_H
 

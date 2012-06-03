@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-security
- * @include: libedataserver/e-source-security.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for security settings
  *
  * The #ESourceSecurity extension tracks settings for establishing a

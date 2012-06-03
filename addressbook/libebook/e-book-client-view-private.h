@@ -22,8 +22,7 @@
 #ifndef E_BOOK_CLIENT_VIEW_PRIVATE_H
 #define E_BOOK_CLIENT_VIEW_PRIVATE_H
 
-#include "e-book-client.h"
-#include "e-book-view.h"
+#include <libebook/libebook.h>
 
 struct _EGdbusBookView;
 

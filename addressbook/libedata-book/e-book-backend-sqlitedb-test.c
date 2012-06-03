@@ -20,9 +20,7 @@
  */
 
 #include <config.h>
-#include <glib.h>
-#include <glib-object.h>
-#include <libebook/e-book-query.h>
+#include <libebook/libebook.h>
 #include "e-book-backend-sqlitedb.h"
 
 static GMainLoop *main_loop;

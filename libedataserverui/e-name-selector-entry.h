@@ -21,12 +21,16 @@
  * Authors: Hans Petter Jansson <hpj@novell.com>
  */
 
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+
 #ifndef E_NAME_SELECTOR_ENTRY_H
 #define E_NAME_SELECTOR_ENTRY_H
 
 #include <gtk/gtk.h>
-#include <libebook/e-contact.h>
-#include <libedataserver/e-source-registry.h>
+#include <libebook/libebook.h>
+
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-destination-store.h>
 #include <libedataserverui/e-tree-model-generator.h>

@@ -23,7 +23,6 @@
 
 #include <config.h>
 
-#include <libedata-book/e-book-backend-factory.h>
 #include "e-book-backend-file.h"
 
 #define FACTORY_NAME "local"

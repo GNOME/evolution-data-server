@@ -18,7 +18,7 @@
 
 #include "e-cache-reaper-utils.h"
 
-#include <libedataserver/e-data-server-util.h>
+#include <libedataserver/libedataserver.h>
 
 #define REAPING_DIRECTORY_NAME ".reaping"
 

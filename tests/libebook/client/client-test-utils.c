@@ -2,10 +2,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <libedataserver/e-source-registry.h>
-#include <libedataserver/e-source-address-book.h>
 
-#include <libedataserver/e-gdbus-templates.h>
+#include <libedataserver/libedataserver.h>
 
 #include "client-test-utils.h"
 

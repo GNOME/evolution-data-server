@@ -1,3 +1,11 @@
+include $(top_srcdir)/glib-gen.mak
+glib_enum_headers=e-cal-types.h
+glib_enum_output=e-cal-enumtypes
+glib_enum_define=E_CAL
+glib_enum_prefix=e_cal
+
+ENUM_GENERATED = e-cal-enumtypes.h e-cal-enumtypes.c
+
 # The marshallers
 MARSHAL_GENERATED = e-cal-marshal.c e-cal-marshal.h
 @EVO_MARSHAL_RULE@
@@ -16,13 +24,16 @@ libecal_INCLUDES = \
 libecal_1_2_la_CPPFLAGS =			\
 	$(AM_CPPFLAGS)				\
 	$(libecal_INCLUDES)			\
+	-DLIBECAL_COMPILATION			\
 	-DG_LOG_DOMAIN=\"libecal\"		\
 	$(LIBICAL_CFLAGS)			\
 	$(EVOLUTION_CALENDAR_CFLAGS)		\
+	$(CAMEL_CFLAGS)				\
 	$(CODE_COVERAGE_CFLAGS)			\
 	$(NULL)
 
 libecal_1_2_la_SOURCES =			\
+	$(ENUM_GENERATED)			\
 	$(MARSHAL_GENERATED)			\
 	e-cal.c					\
 	e-cal-client.c				\
@@ -42,7 +53,8 @@ libecal_1_2_la_LIBADD = 					\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
 	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la	\
 	$(LIBICAL_LIBS)						\
-	$(EVOLUTION_CALENDAR_LIBS)
+	$(EVOLUTION_CALENDAR_LIBS)				\
+	$(CAMEL_LIBS)
 
 libecal_1_2_la_LDFLAGS = 					\
 	-version-info $(LIBECAL_CURRENT):$(LIBECAL_REVISION):$(LIBECAL_AGE) $(NO_UNDEFINED) \
@@ -52,10 +64,12 @@ libecal_1_2_la_LDFLAGS = 					\
 libecalincludedir = $(privincludedir)/libecal
 
 libecalinclude_HEADERS =	\
+	libecal.h		\
 	e-cal.h			\
 	e-cal-client.h		\
 	e-cal-client-view.h	\
 	e-cal-component.h	\
+	e-cal-enumtypes.h	\
 	e-cal-recur.h		\
 	e-cal-time-util.h	\
         e-cal-check-timezones.h \
@@ -70,14 +84,14 @@ libecalinclude_HEADERS =	\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libecal-$(API_VERSION).pc
 
-BUILT_SOURCES = $(MARSHAL_GENERATED)
+BUILT_SOURCES = $(ENUM_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(top_builddir)/libedataserver --identifier-prefix E --pkg-export libecal-1.2 \
-	--c-include="libecal/e-cal.h"
+	--c-include="libecal/libecal.h"
 INTROSPECTION_COMPILER_ARGS = --includedir=$(top_builddir)/libedataserver
 
 if HAVE_INTROSPECTION
@@ -87,7 +101,7 @@ introspection_sources = \
 
 ECalendar-1.2.gir: libecal-1.2.la
 ECalendar_1_2_gir_INCLUDES = GObject-2.0 EDataServer-1.2 GLib-2.0
-ECalendar_1_2_gir_CFLAGS = $(libecal_INCLUDES) $(LIBICAL_CFLAGS) $(EVOLUTION_CALENDAR_CFLAGS)
+ECalendar_1_2_gir_CFLAGS = $(libecal_INCLUDES) -DLIBECAL_COMPILATION $(LIBICAL_CFLAGS) $(EVOLUTION_CALENDAR_CFLAGS)
 ECalendar_1_2_gir_LIBS = libecal-1.2.la $(top_builddir)/calendar/libegdbus/libegdbus-cal.la $(top_builddir)/libedataserver/libedataserver-1.2.la $(LIBICAL_LIBS)
 ECalendar_1_2_gir_FILES = $(introspection_sources)
 INTROSPECTION_GIRS += ECalendar-1.2.gir

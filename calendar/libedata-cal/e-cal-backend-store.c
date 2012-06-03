@@ -21,7 +21,6 @@
 
 #include "e-cal-backend-store.h"
 #include "e-cal-backend-intervaltree.h"
-#include <libedataserver/e-data-server-util.h>
 
 #define E_CAL_BACKEND_STORE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

@@ -20,11 +20,14 @@
  *
  */
 
+#if !defined (__LIBEDATA_CAL_H_INSIDE__) && !defined (LIBEDATA_CAL_COMPILATION)
+#error "Only <libedata-cal/libedata-cal.h> should be included directly."
+#endif
+
 #ifndef E_INTERVALTREE_H
 #define E_INTERVALTREE_H
 
-#include <libecal/e-cal-component.h>
-#include <libecal/e-cal-recur.h>
+#include <libecal/libecal.h>
 
 #define E_INTERVALTREE_DEBUG 1
 

@@ -18,8 +18,8 @@
 
 /**
  * SECTION: e-server-side-source
+ * @include: libebackend/libebackend.h
  * @short_description: A server-side data source
- * @include: libebackend/e-server-side-source.h
  *
  * An #EServerSideSource is an #ESource with some additional capabilities
  * exclusive to the registry D-Bus service.
@@ -32,9 +32,6 @@
 
 /* Private D-Bus classes. */
 #include <e-dbus-source.h>
-
-#include <libedataserver/e-uid.h>
-#include <libedataserver/e-data-server-util.h>
 
 #define E_SERVER_SIDE_SOURCE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

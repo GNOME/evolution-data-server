@@ -32,17 +32,7 @@
 #include <fcntl.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
-#include <gio/gio.h>
-#include "libedataserver/e-data-server-util.h"
-#include "libedataserver/e-xml-hash-utils.h"
-#include "libedataserver/e-debug-log.h"
-#include <libecal/e-cal-recur.h>
-#include <libecal/e-cal-time-util.h>
-#include <libecal/e-cal-util.h>
-#include <libecal/e-cal-check-timezones.h>
-#include <libedata-cal/e-cal-backend-util.h>
-#include <libedata-cal/e-cal-backend-sexp.h>
-#include <libedata-cal/e-cal-backend-intervaltree.h>
+
 #include "e-cal-backend-file-events.h"
 #include "e-source-local.h"
 

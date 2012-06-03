@@ -21,11 +21,14 @@
  * 02110-1301, USA.
  */
 
+#if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
+#error "Only <libedata-book/libedata-book.h> should be included directly."
+#endif
+
 #ifndef E_BOOK_BACKEND_SEXP_H
 #define E_BOOK_BACKEND_SEXP_H
 
-#include <libebook/e-contact.h>
-#include <libedata-book/e-data-book-types.h>
+#include <libebook/libebook.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BOOK_BACKEND_SEXP \

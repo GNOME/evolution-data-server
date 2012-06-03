@@ -19,16 +19,18 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
+#if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
+#error "Only <libedata-book/libedata-book.h> should be included directly."
+#endif
+
 #ifndef __E_BOOK_BACKEND_H__
 #define __E_BOOK_BACKEND_H__
 
-#include <gio/gio.h>
+#include <libebook/libebook.h>
+#include <libebackend/libebackend.h>
 
-#include <libebook/e-contact.h>
-#include <libebackend/e-backend.h>
-#include <libedata-book/e-data-book-types.h>
 #include <libedata-book/e-data-book.h>
-#include <libedataserver/e-source-registry.h>
+#include <libedata-book/e-data-book-view.h>
 
 G_BEGIN_DECLS
 
@@ -131,6 +133,8 @@ G_BEGIN_DECLS
  **/
 #define BOOK_BACKEND_PROPERTY_REVISION			"revision"
 
+typedef struct _EBookBackend EBookBackend;
+typedef struct _EBookBackendClass EBookBackendClass;
 typedef struct _EBookBackendPrivate EBookBackendPrivate;
 
 struct _EBookBackend {

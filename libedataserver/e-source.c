@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source
- * @include: libedataserver/e-source.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: Hierarchical data sources
  *
  * An #ESource (or "data source") is a description of a file or network

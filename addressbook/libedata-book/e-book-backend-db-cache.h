@@ -19,16 +19,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
+#error "Only <libedata-book/libedata-book.h> should be included directly."
+#endif
+
 #ifndef E_BOOK_BACKEND_DB_CACHE_H
 #define E_BOOK_BACKEND_DB_CACHE_H
 
-#include <libebook/e-contact.h>
+#include <libebook/libebook.h>
 #include "db.h"
 
 G_BEGIN_DECLS
 
 EContact * e_book_backend_db_cache_get_contact (DB *db, const gchar *uid);
-void string_to_dbt (const gchar *str, DBT *dbt);
 gchar *e_book_backend_db_cache_get_filename (DB *db);
 void e_book_backend_db_cache_set_filename (DB *db, const gchar *filename);
 gboolean e_book_backend_db_cache_add_contact (DB *db,

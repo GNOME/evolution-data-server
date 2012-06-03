@@ -23,7 +23,9 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
-#include "libedataserver/e-categories.h"
+
+#include <libedataserver/libedataserver.h>
+
 #include "e-category-editor.h"
 
 #define E_CATEGORY_EDITOR_GET_PRIVATE(obj) \

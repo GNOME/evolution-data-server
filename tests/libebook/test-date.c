@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <libebook/e-contact.h>
+#include <libebook/libebook.h>
 
 gint
 main (gint argc,

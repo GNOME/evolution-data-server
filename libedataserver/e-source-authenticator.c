@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-authenticator
- * @include: libedataserver/e-source-authenticator.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: Interface for authentication attempts
  *
  * An object implementing the #ESourceAuthenticator interface gets passed

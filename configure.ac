@@ -1333,7 +1333,7 @@ AC_SUBST(E_DATA_SERVER_LIBS)
 dnl ******************************
 dnl libedataserverui
 dnl ******************************
-E_DATA_SERVER_UI_DEPS="gtk+-3.0 libxml-2.0 gconf-2.0"
+E_DATA_SERVER_UI_DEPS="gtk+-3.0 libxml-2.0 gconf-2.0 libsoup-2.4"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, , )
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
@@ -1346,7 +1346,7 @@ if test "x$enable_maintainer_mode" = "xyes" ; then
 	AC_SUBST(FACTORY_GTK_LIBS)
 fi
 
-E_BACKEND_DEPS="gio-2.0 gmodule-2.0 gnome-keyring-1 libxml-2.0 gconf-2.0"
+E_BACKEND_DEPS="gio-2.0 gmodule-2.0 gnome-keyring-1 libsoup-2.4 libxml-2.0 gconf-2.0"
 
 dnl ******************************
 dnl libebackend flags
@@ -1358,7 +1358,7 @@ AC_SUBST(E_BACKEND_LIBS)
 dnl ******************************
 dnl evolution-addressbook flags
 dnl ******************************
-EVOLUTION_ADDRESSBOOK_DEPS="gio-2.0 libxml-2.0 gconf-2.0"
+EVOLUTION_ADDRESSBOOK_DEPS="gio-2.0 libxml-2.0 gconf-2.0 libsoup-2.4 gnome-keyring-1"
 
 EVO_SET_COMPILE_FLAGS(EVOLUTION_ADDRESSBOOK, $EVOLUTION_ADDRESSBOOK_DEPS)
 AC_SUBST(EVOLUTION_ADDRESSBOOK_CFLAGS)
@@ -1367,7 +1367,7 @@ AC_SUBST(EVOLUTION_ADDRESSBOOK_LIBS)
 dnl ******************************
 dnl evolution-calendar flags
 dnl ******************************
-EVOLUTION_CALENDAR_DEPS="gio-2.0 libical >= libical_minimum_version libxml-2.0 gconf-2.0"
+EVOLUTION_CALENDAR_DEPS="gio-2.0 libical >= libical_minimum_version libsoup-2.4 libxml-2.0 gconf-2.0 gnome-keyring-1"
 
 dnl *****
 dnl libical.pc from libical-0.43 has a bug in it's CFlags.

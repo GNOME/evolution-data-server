@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-collection-backend
- * @include: libebackend/e-collection-backend.h
+ * @include: libebackend/libebackend.h
  * @short_description: An abstract base class for a data source
  *                     collection backend
  *
@@ -41,14 +41,7 @@
 
 #include "e-collection-backend.h"
 
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserver/e-source-calendar.h>
-#include <libedataserver/e-source-collection.h>
-#include <libedataserver/e-source-mail-account.h>
-#include <libedataserver/e-source-mail-identity.h>
-#include <libedataserver/e-source-mail-transport.h>
-#include <libedataserver/e-uid.h>
+#include <libedataserver/libedataserver.h>
 
 #include <libebackend/e-server-side-source.h>
 #include <libebackend/e-source-registry-server.h>

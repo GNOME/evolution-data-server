@@ -19,12 +19,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__LIBECAL_H_INSIDE__) && !defined (LIBECAL_COMPILATION)
+#error "Only <libecal/libecal.h> should be included directly."
+#endif
+
 #ifndef E_CAL_H
 #define E_CAL_H
 
 #ifndef E_CAL_DISABLE_DEPRECATED
 
-#include <libedataserver/e-source.h>
+#include <libedataserver/libedataserver.h>
+
 #include <libecal/e-cal-recur.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-view.h>

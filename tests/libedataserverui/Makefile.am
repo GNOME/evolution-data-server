@@ -22,6 +22,7 @@ TEST_EDATASERVERUI_LDFLAGS =						\
 	$(top_builddir)/libebackend/libebackend-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(top_builddir)/libedataserverui/libedataserverui-3.0.la	\
+	$(CAMEL_LIBS)							\
 	$(GNOME_KEYRING_LIBS)						\
 	$(E_DATA_SERVER_UI_LIBS)
 

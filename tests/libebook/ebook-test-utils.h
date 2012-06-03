@@ -22,7 +22,7 @@
 #ifndef _EBOOK_TEST_UTILS_H
 #define _EBOOK_TEST_UTILS_H
 
-#include <libebook/e-book.h>
+#include <libebook/libebook.h>
 
 #define EBOOK_TEST_UTILS_DATA_DIR "data"
 #define EBOOK_TEST_UTILS_VCARDS_DIR "vcards"

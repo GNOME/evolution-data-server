@@ -22,10 +22,7 @@
 #ifndef E_CLIENT_PRIVATE_H
 #define E_CLIENT_PRIVATE_H
 
-#include <gio/gio.h>
-
-#include "libedataserver/e-source.h"
-#include "libedataserver/e-client.h"
+#include <libedataserver/libedataserver.h>
 
 G_BEGIN_DECLS
 

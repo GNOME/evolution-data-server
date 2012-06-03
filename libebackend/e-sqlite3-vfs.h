@@ -18,6 +18,10 @@
  * USA
  */
 
+#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
+#error "Only <libebackend/libebackend.h> should be included directly."
+#endif
+
 #ifndef E_SQLITE3_VFS_H
 #define E_SQLITE3_VFS_H
 

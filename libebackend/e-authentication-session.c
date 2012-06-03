@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-authentication-session
- * @include: libedataserver/e-authentication-session.h
+ * @include: libebackend/libebackend.h
  * @short_description: Centralized authentication management
  *
  * #EAuthenticationSession provides centralized password management and

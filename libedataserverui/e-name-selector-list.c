@@ -28,13 +28,10 @@
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n-lib.h>
 
-#include <libebook/e-book.h>
-#include <libebook/e-contact.h>
-#include <libebook/e-destination.h>
 #include <libedataserverui/e-book-auth-util.h>
-#include "libedataserver/e-sexp.h"
 #include <libedataserverui/e-data-server-ui-marshal.h>
 #include <libedataserverui/e-name-selector-entry.h>
+
 #include "e-name-selector-list.h"
 
 #define E_NAME_SELECTOR_LIST_GET_PRIVATE(obj) \

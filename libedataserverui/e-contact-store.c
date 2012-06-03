@@ -26,6 +26,7 @@
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
+
 #include "e-contact-store.h"
 
 #define ITER_IS_VALID(contact_store, iter) \

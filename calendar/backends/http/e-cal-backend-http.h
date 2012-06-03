@@ -21,7 +21,7 @@
 #ifndef E_CAL_BACKEND_HTTP_H
 #define E_CAL_BACKEND_HTTP_H
 
-#include <libedata-cal/e-cal-backend-sync.h>
+#include <libedata-cal/libedata-cal.h>
 
 #define E_TYPE_CAL_BACKEND_HTTP \
 	(e_cal_backend_http_get_type ())

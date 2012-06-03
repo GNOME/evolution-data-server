@@ -30,15 +30,8 @@
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-sexp.h>
-#include <libedataserver/e-categories.h>
-#include <libedataserver/e-source-address-book.h>
-
-#include <libebackend/e-extensible.h>
-
-#include <libebook/e-book-client.h>
-#include <libebook/e-book-client-view.h>
-#include <libebook/e-book-query.h>
+#include <libebook/libebook.h>
+#include <libebackend/libebackend.h>
 
 #include "e-source-combo-box.h"
 #include "e-destination-store.h"

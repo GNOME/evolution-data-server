@@ -1,11 +1,4 @@
-#include <libedata-book/e-book-backend.h>
-#include <libedata-book/e-book-backend-cache.h>
-#include <libedata-book/e-book-backend-factory.h>
-#include <libedata-book/e-book-backend-sexp.h>
-#include <libedata-book/e-book-backend-summary.h>
-#include <libedata-book/e-book-backend-sync.h>
-#include <libedata-book/e-data-book.h>
-#include <libedata-book/e-data-book-view.h>
+#include <libedata-book/libedata-book.h>
 
 e_book_backend_get_type
 e_book_backend_cache_get_type

@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-mail-identity
- * @include: libedataserver/e-source-mail-identity.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for an email identity
  *
  * The #ESourceMailIdentity extension describes an "identity" for a mail

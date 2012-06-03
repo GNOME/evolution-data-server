@@ -16,6 +16,10 @@
  *
  */
 
+#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
+#error "Only <libebackend/libebackend.h> should be included directly."
+#endif
+
 #ifndef E_AUTHENTICATION_SESSION_H
 #define E_AUTHENTICATION_SESSION_H
 
@@ -25,8 +29,9 @@
  * reusing the GnomeKeyringResult enum for error codes. */
 #include <gnome-keyring.h>
 
+#include <libedataserver/libedataserver.h>
+
 #include <libebackend/e-backend-enums.h>
-#include <libedataserver/e-source-authenticator.h>
 
 /* Standard GObject macros */
 #define E_TYPE_AUTHENTICATION_SESSION \

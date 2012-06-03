@@ -1,8 +1,7 @@
 #ifndef CLIENT_TEST_UTILS_H
 #define CLIENT_TEST_UTILS_H
 
-#include <libebook/e-book-client.h>
-#include <libebook/e-contact.h>
+#include <libebook/libebook.h>
 
 void report_error (const gchar *operation, GError **error);
 void print_email (EContact *contact);

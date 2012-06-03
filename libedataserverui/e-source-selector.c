@@ -27,8 +27,6 @@
 
 #include <string.h>
 
-#include <libedataserver/e-source-selectable.h>
-
 #include "e-cell-renderer-color.h"
 #include "e-data-server-ui-marshal.h"
 #include "e-source-selector.h"

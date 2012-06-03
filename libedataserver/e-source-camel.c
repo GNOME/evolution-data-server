@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-camel
- * @include: libedataserver/e-source-camel.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for #CamelSettings
  *
  * #ESourceCamel itself is abstract.  Its sole function is to

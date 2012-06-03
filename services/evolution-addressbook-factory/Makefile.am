@@ -22,6 +22,7 @@ evolution_addressbook_factory_CPPFLAGS = \
 	$(GNOME_KEYRING_CFLAGS) \
 	$(FACTORY_GTK_CFLAGS) \
 	$(DBUS_GLIB_CFLAGS) \
+	$(CAMEL_CFLAGS) \
 	$(SOUP_CFLAGS) \
 	$(GOA_CFLAGS) \
 	$(CODE_COVERAGE_CFLAGS) \
@@ -40,6 +41,7 @@ evolution_addressbook_factory_LDADD = \
 	$(GNOME_KEYRING_LIBS) \
 	$(FACTORY_GTK_LIBS) \
 	$(DBUS_GLIB_LIBS) \
+	$(CAMEL_LIBS) \
 	$(SOUP_LIBS) \
 	$(GOA_LIBS) \
 	$(NULL)

@@ -24,7 +24,7 @@
 
 #include <gio/gio.h>
 
-#include <libedataserver/e-gdbus-templates.h>
+#include <libedataserver/libedataserver.h>
 
 G_BEGIN_DECLS
 

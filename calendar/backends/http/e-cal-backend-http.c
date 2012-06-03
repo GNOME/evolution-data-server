@@ -26,21 +26,7 @@
 #include <unistd.h>
 #include <gconf/gconf-client.h>
 #include <glib/gi18n-lib.h>
-#include "libedataserver/e-xml-hash-utils.h"
-#include "libedataserver/e-proxy.h"
-#include "libedataserver/e-source-authentication.h"
-#include "libedataserver/e-source-authenticator.h"
-#include "libedataserver/e-source-refresh.h"
-#include "libedataserver/e-source-security.h"
-#include "libedataserver/e-source-webdav.h"
-#include <libecal/e-cal-recur.h>
-#include <libecal/e-cal-util.h>
-#include <libecal/e-cal-time-util.h>
-#include <libedata-cal/e-cal-backend-cache.h>
-#include <libedata-cal/e-cal-backend-store.h>
-#include <libedata-cal/e-cal-backend-file-store.h>
-#include <libedata-cal/e-cal-backend-util.h>
-#include <libedata-cal/e-cal-backend-sexp.h>
+
 #include <libsoup/soup.h>
 #include "e-cal-backend-http.h"
 

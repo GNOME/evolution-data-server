@@ -1,6 +1,10 @@
 #ifndef __E_NAME_WESTERN_H__
 #define __E_NAME_WESTERN_H__
 
+#if !defined (__LIBEBOOK_H_INSIDE__) && !defined (LIBEBOOK_COMPILATION)
+#error "Only <libebook/libebook.h> should be included directly."
+#endif
+
 #include <glib.h>
 
 G_BEGIN_DECLS

@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <libecal/e-cal-client.h>
+#include <libecal/libecal.h>
 
 #include "client-test-utils.h"
 

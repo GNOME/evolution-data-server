@@ -23,8 +23,8 @@
 #include "e-book.h"
 #include "e-book-view.h"
 #include "e-book-view-private.h"
+#include "e-book-enumtypes.h"
 #include "e-book-marshal.h"
-#include "libedata-book/e-data-book-types.h"
 #include "e-gdbus-book-view.h"
 
 G_DEFINE_TYPE (EBookView, e_book_view, G_TYPE_OBJECT);

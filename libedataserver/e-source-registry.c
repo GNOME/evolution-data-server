@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-registry
- * @include: libedataserver/e-source-registry.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: A central repository for data sources
  *
  * The #ESourceRegistry is a global singleton store for all #ESource

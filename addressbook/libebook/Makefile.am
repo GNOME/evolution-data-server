@@ -1,5 +1,13 @@
 CLEANFILES=
 
+include $(top_srcdir)/glib-gen.mak
+glib_enum_headers=e-book-types.h
+glib_enum_output=e-book-enumtypes
+glib_enum_define=E_BOOK
+glib_enum_prefix=e_book
+
+ENUM_GENERATED = e-book-enumtypes.h e-book-enumtypes.c
+
 # The marshallers
 MARSHAL_GENERATED = e-book-marshal.c e-book-marshal.h
 @EVO_MARSHAL_RULE@
@@ -9,6 +17,7 @@ lib_LTLIBRARIES = libebook-1.2.la
 
 libebook_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)					\
+	-DLIBEBOOK_COMPILATION				\
 	-DLOCALEDIR=\""$(localedir)"\"			\
 	-DG_LOG_DOMAIN=\"libebook\"			\
 	-I$(top_srcdir)					\
@@ -24,6 +33,7 @@ libebook_1_2_la_CPPFLAGS = \
 	$(NULL)
 
 libebook_1_2_la_SOURCES =				\
+	$(ENUM_GENERATED)				\
 	$(MARSHAL_GENERATED)				\
 	e-address-western.c				\
 	e-book-client.c					\
@@ -55,9 +65,11 @@ libebook_1_2_la_LDFLAGS = 							\
 libebookincludedir = $(privincludedir)/libebook
 
 libebookinclude_HEADERS =				\
+	libebook.h					\
 	e-address-western.h				\
 	e-book-client.h					\
 	e-book-client-view.h				\
+	e-book-enumtypes.h				\
 	e-book-query.h					\
 	e-book-view.h					\
 	e-book-types.h					\
@@ -103,6 +115,9 @@ EBook_1_2_gir_CFLAGS = $(INCLUDES) \
 		       -I$(top_builddir)/addressbook/ \
 		       -I$(top_srcdir)/addressbook/libebook \
 		       -I$(top_builddir)/addressbook/libebook \
+		       -DLIBEBOOK_COMPILATION \
+		       $(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+		       $(CAMEL_CFLAGS) \
 			$(NULL)
 EBook_1_2_gir_SCANNERFLAGS = --include-uninstalled=$(top_builddir)/libedataserver/EDataServer-1.2.gir
 EBook_1_2_gir_LIBS = \
@@ -120,7 +135,7 @@ typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 CLEANFILES += $(dist_gir_DATA) $(typelib_DATA)
 endif
 
-BUILT_SOURCES = $(MARSHAL_GENERATED)
+BUILT_SOURCES = $(ENUM_GENERATED) $(MARSHAL_GENERATED)
 CLEANFILES    += $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 

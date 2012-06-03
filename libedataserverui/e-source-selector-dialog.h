@@ -21,6 +21,10 @@
  * Author: Rodrigo Moya <rodrigo@novell.com>
  */
 
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+
 #ifndef E_SOURCE_SELECTOR_DIALOG_H
 #define E_SOURCE_SELECTOR_DIALOG_H
 

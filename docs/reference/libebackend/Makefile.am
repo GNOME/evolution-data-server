@@ -19,12 +19,14 @@ GTKDOC_CFLAGS  =					\
 	-I$(top_srcdir)/libebackend			\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir)				\
-	$(E_BACKEND_CFLAGS)
+	$(E_BACKEND_CFLAGS)				\
+	$(CAMEL_CFLAGS)
 
 GTKDOC_LIBS = 							\
 	$(top_builddir)/libebackend/libebackend-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(E_BACKEND_LIBS)
+	$(E_BACKEND_LIBS)					\
+	$(CAMEL_LIBS)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

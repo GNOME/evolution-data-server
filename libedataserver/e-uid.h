@@ -20,6 +20,10 @@
  * Author: Dan Winship <danw@ximian.com>
  */
 
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
+#endif
+
 #ifndef E_UID_H
 #define E_UID_H
 

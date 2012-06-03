@@ -10,6 +10,7 @@ TEST_CPPFLAGS =					\
 	-I$(top_builddir)/addressbook		\
 	-DSRCDIR=\""$(srcdir)"\"		\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)		\
+	$(CAMEL_CFLAGS)				\
 	$(NULL)
 
 TEST_LIBS =					\
@@ -33,11 +34,13 @@ libebook_test_utils_la_CPPFLAGS = \
 	-I$(top_builddir)/addressbook   \
 	-DSRCDIR=\""$(srcdir)"\"        \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(CAMEL_CFLAGS) \
 	$(NULL)
 
 libebook_test_utils_la_LIBADD = \
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)                           \
+	$(CAMEL_LIBS) \
 	$(NULL)
 
 TEST_CPPFLAGS =					\

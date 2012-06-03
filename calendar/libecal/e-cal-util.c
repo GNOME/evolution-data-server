@@ -23,7 +23,9 @@
 #include <string.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
-#include "libedataserver/e-data-server-util.h"
+
+#include <libedataserver/libedataserver.h>
+
 #include "e-cal-util.h"
 #include "e-cal-system-timezone.h"
 

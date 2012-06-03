@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-mail-composition
- * @include: libedataserver/e-source-mail-composition.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for mail composition settings
  *
  * The #ESourceMailComposition extension tracks settings to be applied

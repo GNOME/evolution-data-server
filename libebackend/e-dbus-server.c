@@ -18,8 +18,8 @@
 
 /**
  * SECTION: e-dbus-server
+ * @include: libebackend/libebackend.h
  * @short_description: An abstract base class for a D-Bus server
- * @include: libebackend/e-dbus-server
  **/
 
 #include "e-dbus-server.h"

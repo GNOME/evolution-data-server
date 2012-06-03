@@ -18,8 +18,8 @@
 
 /**
  * SECTION: e-extensible
+ * @include: libebackend/libebackend.h
  * @short_description: An interface for extending objects
- * @include: libebackend/e-extensible.h
  *
  * #EExtension objects can be tacked on to any #GObject instance that
  * implements the #EExtensible interface.  A #GObject type can be made

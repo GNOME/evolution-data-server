@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include <libebook/e-contact.h>
+#include <libebook/libebook.h>
 
 #define TEST_ID "test-uid"
 

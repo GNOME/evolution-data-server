@@ -9,7 +9,6 @@
 
 #include <config.h>
 
-#include <libedata-cal/e-cal-backend-factory.h>
 #include "e-cal-backend-file-events.h"
 #include "e-cal-backend-file-journal.h"
 #include "e-cal-backend-file-todos.h"

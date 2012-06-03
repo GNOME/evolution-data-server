@@ -22,9 +22,6 @@
 #include <stdio.h>
 #include <gio/gio.h>
 
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-gdbus-marshallers.h>
-
 #include "e-gdbus-book-factory.h"
 
 #define GDBUS_BOOK_FACTORY_INTERFACE_NAME "org.gnome.evolution.dataserver.AddressBookFactory"

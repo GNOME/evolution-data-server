@@ -33,10 +33,9 @@
 #include <unistd.h>
 
 #include <glib/gstdio.h>
+#include <libedataserver/libedataserver.h>
 
 #include "e-file-cache.h"
-#include "libedataserver/e-data-server-util.h"
-#include "libedataserver/e-xml-hash-utils.h"
 
 #define E_FILE_CACHE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

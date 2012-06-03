@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
-#include <libecal/e-cal-client.h>
+#include <libecal/libecal.h>
 
 #include "client-test-utils.h"
 

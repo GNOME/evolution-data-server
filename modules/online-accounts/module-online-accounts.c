@@ -23,20 +23,7 @@
 #include <goa/goa.h>
 #include <gnome-keyring.h>
 
-#include <libedataserver/e-uid.h>
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-source-authentication.h>
-#include <libedataserver/e-source-camel.h>
-#include <libedataserver/e-source-collection.h>
-#include <libedataserver/e-source-goa.h>
-#include <libedataserver/e-source-mail-account.h>
-#include <libedataserver/e-source-mail-identity.h>
-#include <libedataserver/e-source-mail-submission.h>
-#include <libedataserver/e-source-mail-transport.h>
-
-#include <libebackend/e-extension.h>
-#include <libebackend/e-server-side-source.h>
-#include <libebackend/e-source-registry-server.h>
+#include <libebackend/libebackend.h>
 
 #include "goaewsclient.h"
 

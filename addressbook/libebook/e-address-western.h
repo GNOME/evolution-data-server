@@ -1,3 +1,7 @@
+#if !defined (__LIBEBOOK_H_INSIDE__) && !defined (LIBEBOOK_COMPILATION)
+#error "Only <libebook/libebook.h> should be included directly."
+#endif
+
 #ifndef __E_ADDRESS_WESTERN_H__
 #define __E_ADDRESS_WESTERN_H__
 

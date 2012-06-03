@@ -31,9 +31,6 @@
 #include <goa/goa.h>
 #endif
 
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserver/e-source-goa.h>
-
 #include "e-book-backend.h"
 #include "e-book-backend-factory.h"
 #include "e-data-book.h"

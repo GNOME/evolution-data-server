@@ -6,6 +6,7 @@ libecalbackendcaldav_la_CPPFLAGS = \
 	-I$(top_srcdir)/calendar \
 	-I$(top_builddir)/calendar \
 	$(EVOLUTION_CALENDAR_CFLAGS) \
+	$(CAMEL_CFLAGS) \
 	$(SOUP_CFLAGS) \
 	-DG_LOG_DOMAIN=\"e-cal-backend-caldav\" \
 	$(CODE_COVERAGE_CFLAGS) \
@@ -22,6 +23,7 @@ libecalbackendcaldav_la_LIBADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(EVOLUTION_CALENDAR_LIBS) \
+	$(CAMEL_CFLAGS) \
 	$(SOUP_LIBS)
 
 libecalbackendcaldav_la_LDFLAGS = \

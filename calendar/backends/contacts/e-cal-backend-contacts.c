@@ -34,17 +34,7 @@
 #include <gconf/gconf-client.h>
 #include <libsoup/soup.h>
 
-#include <libedataserver/e-xml-hash-utils.h>
-#include <libedataserver/e-source-registry.h>
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserver/e-flag.h>
-#include <libecal/e-cal-recur.h>
-#include <libecal/e-cal-util.h>
-#include <libedata-cal/e-cal-backend-util.h>
-#include <libedata-cal/e-cal-backend-sexp.h>
-#include <libebook/e-book-client.h>
-#include <libebook/e-book-query.h>
-#include <libebook/e-contact.h>
+#include <libebook/libebook.h>
 
 #include "e-source-contacts.h"
 

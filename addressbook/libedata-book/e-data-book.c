@@ -25,13 +25,12 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-operation-pool.h>
+#include <libebook/libebook.h>
 
-#include "e-data-book-enumtypes.h"
 #include "e-data-book-factory.h"
 #include "e-data-book.h"
 #include "e-data-book-view.h"
+#include "e-book-backend.h"
 #include "e-book-backend-sexp.h"
 
 #include "e-gdbus-book.h"

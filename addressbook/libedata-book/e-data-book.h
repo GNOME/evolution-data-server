@@ -20,15 +20,14 @@
  * Author: Ross Burton <ross@linux.intel.com>
  */
 
+#if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
+#error "Only <libedata-book/libedata-book.h> should be included directly."
+#endif
+
 #ifndef E_DATA_BOOK_H
 #define E_DATA_BOOK_H
 
-#include <gio/gio.h>
-
-#include <libedataserver/e-source.h>
-
-#include "e-book-backend.h"
-#include "e-data-book-types.h"
+#include <libedataserver/libedataserver.h>
 
 G_BEGIN_DECLS
 
@@ -39,6 +38,10 @@ G_BEGIN_DECLS
 #define E_IS_DATA_BOOK_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_DATA_BOOK))
 #define E_DATA_BOOK_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), E_TYPE_DATA_BOOK, EDataBookClass))
 
+struct _EBookBackend;
+
+typedef struct _EDataBook EDataBook;
+typedef struct _EDataBookClass EDataBookClass;
 typedef struct _EDataBookPrivate EDataBookPrivate;
 
 struct _EDataBook {
@@ -125,8 +128,9 @@ const gchar *e_data_book_status_to_string (EDataBookStatus status);
 	} G_STMT_END
 
 GType		e_data_book_get_type				(void);
-EDataBook *	e_data_book_new					(EBookBackend *backend);
-EBookBackend *	e_data_book_get_backend				(EDataBook *book);
+EDataBook *	e_data_book_new					(struct _EBookBackend *backend);
+struct _EBookBackend *
+		e_data_book_get_backend				(EDataBook *book);
 
 guint		e_data_book_register_gdbus_object		(EDataBook *cal, GDBusConnection *connection, const gchar *object_path, GError **error);
 

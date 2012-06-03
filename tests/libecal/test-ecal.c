@@ -23,10 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <glib/gi18n.h>
-#include <libecal/e-cal.h>
-#include <libecal/e-cal-component.h>
-#include <libecal/e-cal-time-util.h>
-#include <libedataserver/e-data-server-util.h>
+#include <libecal/libecal.h>
 #include <libical/ical.h>
 
 /* start_testing_scaffold */

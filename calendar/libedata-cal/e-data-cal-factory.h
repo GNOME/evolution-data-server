@@ -19,11 +19,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__LIBEDATA_CAL_H_INSIDE__) && !defined (LIBEDATA_CAL_COMPILATION)
+#error "Only <libedata-cal/libedata-cal.h> should be included directly."
+#endif
+
 #ifndef E_DATA_CAL_FACTORY_H
 #define E_DATA_CAL_FACTORY_H
 
-#include <libebackend/e-data-factory.h>
-#include <libedataserver/e-source-registry.h>
+#include <libebackend/libebackend.h>
 
 /* Standard GObject macros */
 #define E_TYPE_DATA_CAL_FACTORY \

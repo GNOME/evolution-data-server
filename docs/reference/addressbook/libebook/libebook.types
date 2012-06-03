@@ -1,10 +1,4 @@
-#include <libebook/e-book.h>
-#include <libebook/e-book-client.h>
-#include <libebook/e-book-client-view.h>
-#include <libebook/e-book-view.h>
-#include <libebook/e-contact.h>
-#include <libebook/e-destination.h>
-#include <libebook/e-vcard.h>
+#include <libebook/libebook.h>
 
 e_book_get_type
 e_book_client_get_type

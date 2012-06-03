@@ -25,8 +25,7 @@
 
 #include <string.h>
 #include <glib/gstdio.h>
-#include <libecal/e-cal-util.h>
-#include <libedataserver/e-data-server-util.h>
+
 #include "e-cal-backend-cache.h"
 
 #define E_CAL_BACKEND_CACHE_GET_PRIVATE(obj) \

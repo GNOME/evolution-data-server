@@ -23,7 +23,8 @@
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
-#include <libedataserver/e-categories.h>
+
+#include <libedataserver/libedataserver.h>
 
 #define E_CATEGORY_COMPLETION_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

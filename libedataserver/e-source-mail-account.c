@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-mail-account
- * @include: libedataserver/e-source-mail-account.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for an email account
  *
  * The #ESourceMailAccount extension identifies the #ESource as a

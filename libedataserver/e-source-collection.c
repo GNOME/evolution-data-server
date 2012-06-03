@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-collection
- * @include: libedataserver/e-source-collection.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for grouping related resources
  *
  * The #ESourceCollection extension identifies the #ESource as the root

@@ -20,6 +20,10 @@
  * Authors: Hans Petter Jansson <hpj@novell.com>
  */
 
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+
 #ifndef E_TREE_MODEL_GENERATOR_H
 #define E_TREE_MODEL_GENERATOR_H
 

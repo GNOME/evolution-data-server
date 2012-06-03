@@ -26,17 +26,6 @@
 #include <errno.h>
 
 #include <glib/gi18n-lib.h>
-#include <libedataserver/e-proxy.h>
-#include <libedataserver/e-source-authentication.h>
-#include <libedataserver/e-source-authenticator.h>
-#include <libedataserver/e-source-offline.h>
-#include <libedataserver/e-source-refresh.h>
-#include <libedataserver/e-source-security.h>
-#include <libebook/e-contact.h>
-#include <libedata-book/e-data-book.h>
-#include <libedata-book/e-data-book-view.h>
-#include <libedata-book/e-book-backend-sexp.h>
-#include <libedata-book/e-book-backend-cache.h>
 #include <gdata/gdata.h>
 
 #include "e-book-backend-google.h"

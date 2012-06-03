@@ -21,7 +21,7 @@
  * Author: Hans Petter Jansson <hpj@novell.com>
  */
 
-#include <libedataserverui/e-contact-store.h>
+#include <libedataserverui/libedataserverui.h>
 
 static void
 entry_changed (GtkWidget *entry,

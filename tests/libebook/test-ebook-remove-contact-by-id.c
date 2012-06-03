@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
-#include <libebook/e-book.h>
+#include <libebook/libebook.h>
 
 #include "ebook-test-utils.h"
 

@@ -17,6 +17,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
+#endif
+
 #ifndef E_FLAG_H
 #define E_FLAG_H
 

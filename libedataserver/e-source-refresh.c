@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-refresh
- * @include: libedataserver/e-source-refresh.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for refresh settings
  *
  * The #ESourceRefresh extension tracks the interval for fetching

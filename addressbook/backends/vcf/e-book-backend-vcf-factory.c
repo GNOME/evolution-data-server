@@ -25,7 +25,6 @@
 #include <config.h>
 #endif
 
-#include <libedata-book/e-book-backend-factory.h>
 #include "e-book-backend-vcf.h"
 #include "e-source-vcf.h"
 

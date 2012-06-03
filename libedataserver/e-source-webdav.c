@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-webdav
- * @include: libedataserver/e-source-webdav.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for WebDAV settings
  *
  * The #ESourceWebdav extension tracks settings for accessing resources

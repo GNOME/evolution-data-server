@@ -10,6 +10,7 @@ libecalbackendcontacts_la_CPPFLAGS = \
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
+	$(CAMEL_CFLAGS)					\
 	$(SOUP_CFLAGS)					\
 	$(CODE_COVERAGE_CFLAGS)				\
 	$(NULL)
@@ -21,13 +22,14 @@ libecalbackendcontacts_la_SOURCES =		\
 	e-source-contacts.c			\
 	e-source-contacts.h
 
-libecalbackendcontacts_la_LIBADD =						\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
-	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
-	$(top_builddir)/addressbook/libebook/libebook-1.2.la			\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
-	$(top_builddir)/libebackend/libebackend-1.2.la				\
-	$(EVOLUTION_CALENDAR_LIBS)						\
+libecalbackendcontacts_la_LIBADD =					\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
+	$(top_builddir)/addressbook/libebook/libebook-1.2.la		\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
+	$(top_builddir)/libebackend/libebackend-1.2.la			\
+	$(EVOLUTION_CALENDAR_LIBS)					\
+	$(CAMEL_CFLAGS)							\
 	$(SOUP_LIBS)
 
 libecalbackendcontacts_la_LDFLAGS =	\

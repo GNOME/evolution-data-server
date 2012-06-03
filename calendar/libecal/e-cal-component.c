@@ -24,9 +24,11 @@
 #include <unistd.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
+
+#include <libedataserver/libedataserver.h>
+
 #include "e-cal-component.h"
 #include "e-cal-time-util.h"
-#include "libedataserver/e-data-server-util.h"
 
 #ifdef G_OS_WIN32
 #define getgid() 0

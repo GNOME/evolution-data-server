@@ -1,18 +1,4 @@
-#include <libedataserverui/e-categories-dialog.h>
-#include <libedataserverui/e-categories-editor.h>
-#include <libedataserverui/e-categories-selector.h>
-#include <libedataserverui/e-category-editor.h>
-#include <libedataserverui/e-contact-store.h>
-#include <libedataserverui/e-destination-store.h>
-#include <libedataserverui/e-name-selector.h>
-#include <libedataserverui/e-name-selector-dialog.h>
-#include <libedataserverui/e-name-selector-entry.h>
-#include <libedataserverui/e-name-selector-list.h>
-#include <libedataserverui/e-name-selector-model.h>
-#include <libedataserverui/e-source-combo-box.h>
-#include <libedataserverui/e-source-selector.h>
-#include <libedataserverui/e-source-selector-dialog.h>
-#include <libedataserverui/e-tree-model-generator.h>
+#include <libedataserverui/libedataserverui.h>
 
 e_categories_dialog_get_type
 e_categories_editor_get_type

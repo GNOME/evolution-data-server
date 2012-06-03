@@ -1,10 +1,4 @@
-#include <libedata-cal/e-cal-backend.h>
-#include <libedata-cal/e-cal-backend-cache.h>
-#include <libedata-cal/e-cal-backend-factory.h>
-#include <libedata-cal/e-cal-backend-sexp.h>
-#include <libedata-cal/e-cal-backend-sync.h>
-#include <libedata-cal/e-data-cal.h>
-#include <libedata-cal/e-data-cal-view.h>
+#include <libedata-cal/libedata-cal.h>
 
 e_cal_backend_get_type
 e_cal_backend_cache_get_type

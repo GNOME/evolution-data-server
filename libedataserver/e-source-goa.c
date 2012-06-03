@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-goa
- * @include: libedataserver/e-source-goa.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for GNOME Online Accounts
  *
  * The #ESourceGoa extension associates an #ESource with a #GoaAccount.

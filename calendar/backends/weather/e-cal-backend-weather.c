@@ -19,13 +19,9 @@
  */
 
 #include <config.h>
-#include <libedata-cal/e-cal-backend-cache.h>
-#include <libedata-cal/e-cal-backend-file-store.h>
-#include <libedata-cal/e-cal-backend-util.h>
-#include <libedata-cal/e-cal-backend-sexp.h>
-#include <libedataserver/e-source-refresh.h>
 #include <glib/gi18n-lib.h>
 #include <string.h>
+
 #include "e-cal-backend-weather.h"
 #include "e-source-weather.h"
 #include "e-weather-source.h"

@@ -39,15 +39,6 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
-#include "libedataserver/e-data-server-util.h"
-#include "libedataserver/e-flag.h"
-
-#include "libebook/e-contact.h"
-
-#include "libedata-book/e-data-book.h"
-#include "libedata-book/e-data-book-view.h"
-#include "libedata-book/e-book-backend-sexp.h"
-
 #include "e-book-backend-vcf.h"
 #include "e-source-vcf.h"
 

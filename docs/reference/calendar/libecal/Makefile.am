@@ -27,12 +27,14 @@ GTKDOC_CFLAGS = \
 	-I$(top_builddir)/calendar				\
 	-I$(top_builddir)/calendar/libecal			\
 	$(LIBICAL_CFLAGS)					\
-	$(EVOLUTION_CALENDAR_CFLAGS)
+	$(EVOLUTION_CALENDAR_CFLAGS)				\
+	$(CAMEL_CFLAGS)
 
 GTKDOC_LIBS = \
 	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la	\
-	$(EVOLUTION_CALENDAR_LIBS)
+	$(EVOLUTION_CALENDAR_LIBS)				\
+	$(CAMEL_LIBS)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

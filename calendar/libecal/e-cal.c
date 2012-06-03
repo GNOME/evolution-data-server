@@ -41,12 +41,6 @@
 #include <glib/gi18n-lib.h>
 
 #include <libical/ical.h>
-#include <libedataserver/e-url.h>
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-source-calendar.h>
-#include <libedataserver/e-source-registry.h>
-
-#include "libedata-cal/e-data-cal-types.h"
 
 #include "e-cal-check-timezones.h"
 #include "e-cal-marshal.h"

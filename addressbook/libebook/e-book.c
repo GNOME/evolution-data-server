@@ -39,8 +39,6 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 #include <gconf/gconf-client.h>
-#include <libedataserver/e-source-registry.h>
-#include <libedataserver/e-data-server-util.h>
 #include "e-book.h"
 #include "e-error.h"
 #include "e-contact.h"

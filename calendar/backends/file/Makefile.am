@@ -8,6 +8,7 @@ libecalbackendfile_la_CPPFLAGS = \
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
+	$(CAMEL_CFLAGS)					\
 	$(CODE_COVERAGE_CFLAGS)				\
 	$(NULL)
 
@@ -31,7 +32,8 @@ libecalbackendfile_la_LIBADD =						\
 	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(top_builddir)/libebackend/libebackend-1.2.la			\
-	$(EVOLUTION_CALENDAR_LIBS)
+	$(EVOLUTION_CALENDAR_LIBS)					\
+	$(CAMEL_LIBS)
 
 libecalbackendfile_la_LDFLAGS =		\
 	-module -avoid-version $(NO_UNDEFINED) \
@@ -55,6 +57,7 @@ test_interval_searches_CPPFLAGS = \
 	-I$(top_srcdir)			\
 	-I$(top_srcdir)/calendar	\
 	$(EVOLUTION_CALENDAR_CFLAGS)	\
+	$(CAMEL_CFLAGS)			\
 	-DTEST_QUERY_RESULT=1
 
 -include $(top_srcdir)/git.mk

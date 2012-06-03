@@ -20,13 +20,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__LIBEDATA_CAL_H_INSIDE__) && !defined (LIBEDATA_CAL_COMPILATION)
+#error "Only <libedata-cal/libedata-cal.h> should be included directly."
+#endif
+
 #ifndef E_DATA_CAL_H
 #define E_DATA_CAL_H
 
 #include <gio/gio.h>
 #include <libedata-cal/e-data-cal-common.h>
 #include <libedata-cal/e-data-cal-view.h>
-#include <libedata-cal/e-data-cal-types.h>
 
 G_BEGIN_DECLS
 

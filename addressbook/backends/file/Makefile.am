@@ -8,6 +8,7 @@ libebookbackendfile_la_CPPFLAGS = \
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_builddir)/addressbook			\
 	$(DB_CFLAGS)					\
+	$(CAMEL_CFLAGS)					\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
 	$(CODE_COVERAGE_CFLAGS)				\
 	$(NULL)
@@ -23,6 +24,7 @@ libebookbackendfile_la_LIBADD =						\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(top_builddir)/libebackend/libebackend-1.2.la			\
 	$(DB_LIBS)							\
+	$(CAMEL_LIBS)							\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)
 
 libebookbackendfile_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED) \

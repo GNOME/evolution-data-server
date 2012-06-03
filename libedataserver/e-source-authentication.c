@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-authentication
- * @include: libedataserver/e-source-authentication.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for authentication settings
  *
  * The #ESourceAuthentication extension tracks authentication settings

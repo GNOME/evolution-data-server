@@ -18,10 +18,9 @@
 
 /**
  * SECTION: e-source-selectable
- * @include: libedataserver/e-source-selectable.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: Base class for selectable data sources
- * @see_also: #ESourceAddressBook, #ESourceCalendar, #ESourceMemoList,
- *            #ESourceTaskList
+ * @see_also: #ESourceCalendar, #ESourceMemoList, #ESourceTaskList
  *
  * #ESourceSelectable is an abstract base class for data sources
  * that can be selected in an #ESourceSelector or similar widget.

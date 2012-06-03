@@ -23,9 +23,6 @@
 #include <stdlib.h>
 #include <gio/gio.h>
 
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-gdbus-marshallers.h>
-
 #include "e-gdbus-cal-factory.h"
 
 #define GDBUS_CAL_FACTORY_INTERFACE_NAME "org.gnome.evolution.dataserver.CalendarFactory"

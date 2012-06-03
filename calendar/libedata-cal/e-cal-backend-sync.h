@@ -2,6 +2,10 @@
 /*
  */
 
+#if !defined (__LIBEDATA_CAL_H_INSIDE__) && !defined (LIBEDATA_CAL_COMPILATION)
+#error "Only <libedata-cal/libedata-cal.h> should be included directly."
+#endif
+
 #ifndef __E_CAL_BACKEND_SYNC_H__
 #define __E_CAL_BACKEND_SYNC_H__
 

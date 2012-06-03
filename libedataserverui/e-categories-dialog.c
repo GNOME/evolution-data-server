@@ -25,8 +25,10 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n-lib.h>
-#include "libedataserver/e-categories.h"
-#include "libedataserver/libedataserver-private.h"
+
+#include <libedataserver/libedataserver.h>
+#include <libedataserver/libedataserver-private.h>
+
 #include "e-categories-dialog.h"
 #include "e-categories-editor.h"
 #include "e-categories-selector.h"

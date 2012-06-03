@@ -21,11 +21,15 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+
 #ifndef E_SOURCE_SELECTOR_H
 #define E_SOURCE_SELECTOR_H
 
 #include <gtk/gtk.h>
-#include <libedataserver/e-source-registry.h>
+#include <libedataserver/libedataserver.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_SELECTOR \

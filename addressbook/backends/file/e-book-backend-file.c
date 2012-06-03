@@ -39,19 +39,6 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
-#include "libebackend/e-dbhash.h"
-#include "libebackend/e-db3-utils.h"
-
-#include "libedataserver/e-data-server-util.h"
-#include "libedataserver/e-flag.h"
-
-#include "libebook/e-contact.h"
-
-#include "libedata-book/e-book-backend-sexp.h"
-#include "libedata-book/e-book-backend-sqlitedb.h"
-#include "libedata-book/e-data-book.h"
-#include "libedata-book/e-data-book-view.h"
-
 #include "e-book-backend-file.h"
 
 #define E_BOOK_BACKEND_FILE_GET_PRIVATE(obj) \

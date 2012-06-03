@@ -21,7 +21,7 @@
 #ifndef E_CAL_BACKEND_FILE_H
 #define E_CAL_BACKEND_FILE_H
 
-#include <libedata-cal/e-cal-backend-sync.h>
+#include <libedata-cal/libedata-cal.h>
 
 /* Standard GObject macros */
 #define E_TYPE_CAL_BACKEND_FILE \

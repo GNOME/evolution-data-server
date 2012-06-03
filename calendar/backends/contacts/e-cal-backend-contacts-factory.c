@@ -9,7 +9,6 @@
 
 #include <config.h>
 
-#include <libedata-cal/e-cal-backend-factory.h>
 #include "e-cal-backend-contacts.h"
 #include "e-source-contacts.h"
 

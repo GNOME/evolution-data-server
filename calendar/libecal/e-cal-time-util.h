@@ -8,6 +8,10 @@
  *          Damon Chaplin <damon@ximian.com>
  */
 
+#if !defined (__LIBECAL_H_INSIDE__) && !defined (LIBECAL_COMPILATION)
+#error "Only <libecal/libecal.h> should be included directly."
+#endif
+
 #ifndef TIMEUTIL_H
 #define TIMEUTIL_H
 

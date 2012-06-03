@@ -21,12 +21,16 @@
  * 02110-1301, USA.
  */
 
+#if !defined (__LIBEDATA_CAL_H_INSIDE__) && !defined (LIBEDATA_CAL_COMPILATION)
+#error "Only <libedata-cal/libedata-cal.h> should be included directly."
+#endif
+
 #ifndef __E_CAL_BACKEND_SEXP_H__
 #define __E_CAL_BACKEND_SEXP_H__
 
-#include <libecal/e-cal-component.h>
+#include <libecal/libecal.h>
+
 #include <libedata-cal/e-cal-backend.h>
-#include <libedataserver/e-sexp.h>
 
 #define E_TYPE_CAL_BACKEND_SEXP        (e_cal_backend_sexp_get_type ())
 #define E_CAL_BACKEND_SEXP(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_CAL_BACKEND_SEXP, ECalBackendSExp))

@@ -23,7 +23,8 @@ GTKDOC_CFLAGS  =					\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir)				\
-	$(E_DATA_SERVER_UI_CFLAGS)
+	$(E_DATA_SERVER_UI_CFLAGS)			\
+	$(CAMEL_CFLAGS)
 
 GTKDOC_LIBS = 								\
 	$(top_builddir)/libedataserverui/libedataserverui-3.0.la	\
@@ -31,7 +32,8 @@ GTKDOC_LIBS = 								\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la		\
 	$(top_builddir)/libebackend/libebackend-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-	$(E_DATA_SERVER_UI_LIBS)
+	$(E_DATA_SERVER_UI_LIBS)					\
+	$(CAMEL_LIBS)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

@@ -20,6 +20,10 @@
  * Author: Chris Toshok (toshok@ximian.com)
  */
 
+#if !defined (__LIBEBOOK_H_INSIDE__) && !defined (LIBEBOOK_COMPILATION)
+#error "Only <libebook/libebook.h> should be included directly."
+#endif
+
 #ifndef _EVCARD_H
 #define _EVCARD_H
 

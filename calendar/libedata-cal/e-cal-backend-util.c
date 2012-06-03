@@ -25,9 +25,8 @@
 
 #include <string.h>
 #include <glib/gi18n-lib.h>
+
 #include "e-cal-backend-util.h"
-#include <libedataserver/e-source-mail-account.h>
-#include <libedataserver/e-source-mail-identity.h>
 
 /**
  * e_cal_backend_mail_account_get_default:

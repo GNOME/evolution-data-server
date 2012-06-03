@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-smime
- * @include: libedataserver/e-source-smime.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for S/MIME settings
  *
  * The #ESourceSMIME extension tracks Secure/Multipurpose Internet Mail

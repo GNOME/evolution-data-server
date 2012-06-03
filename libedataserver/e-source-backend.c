@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-backend
- * @include: libedataserver/e-source-backend.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: Base class for backend-based data sources
  *
  * #ESourceBackend is an abstract base class for data sources requiring

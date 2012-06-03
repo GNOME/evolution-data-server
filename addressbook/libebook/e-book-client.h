@@ -19,13 +19,15 @@
  *
  */
 
+#if !defined (__LIBEBOOK_H_INSIDE__) && !defined (LIBEBOOK_COMPILATION)
+#error "Only <libebook/libebook.h> should be included directly."
+#endif
+
 #ifndef E_BOOK_CLIENT_H
 #define E_BOOK_CLIENT_H
 
-#include <gio/gio.h>
+#include <libedataserver/libedataserver.h>
 
-#include <libedataserver/e-client.h>
-#include <libedataserver/e-source-registry.h>
 #include <libebook/e-book-client-view.h>
 #include <libebook/e-contact.h>
 

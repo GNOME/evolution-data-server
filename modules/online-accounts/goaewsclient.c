@@ -32,7 +32,7 @@
 #include <libsoup/soup.h>
 #include <libxml/xmlIO.h>
 
-#include <libedataserver/e-data-server-util.h>
+#include <libedataserver/libedataserver.h>
 
 #include "goaewsclient.h"
 

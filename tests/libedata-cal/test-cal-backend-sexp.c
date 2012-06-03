@@ -1,4 +1,4 @@
-#include <libedata-cal/e-cal-backend-sexp.h>
+#include <libedata-cal/libedata-cal.h>
 
 static void
 test_query (const gchar *query)

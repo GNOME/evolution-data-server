@@ -24,7 +24,7 @@
 #endif
 
 #include <string.h>
-#include <libedataserver/e-data-server-util.h>
+
 #include "e-book-backend-cache.h"
 #include "e-book-backend-sexp.h"
 

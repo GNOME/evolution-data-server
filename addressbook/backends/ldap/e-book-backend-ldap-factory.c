@@ -25,7 +25,6 @@
 #include <config.h>
 #endif
 
-#include <libedata-book/e-book-backend-factory.h>
 #include "e-book-backend-ldap.h"
 #include "e-source-ldap.h"
 

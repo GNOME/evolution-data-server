@@ -19,8 +19,7 @@
  */
 
 #include <string.h>
-#include "libedataserver/e-sexp.h"
-#include "libedataserver/e-data-server-util.h"
+
 #include "e-book-backend-sexp.h"
 
 #define E_BOOK_BACKEND_SEXP_GET_PRIVATE(obj) \

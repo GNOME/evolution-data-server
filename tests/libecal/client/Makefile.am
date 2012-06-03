@@ -10,11 +10,13 @@ libclient_test_utils_la_CPPFLAGS =				\
 	-I$(top_builddir)/calendar				\
 	-DSRCDIR=\""$(srcdir)"\"				\
 	$(EVOLUTION_CALENDAR_CFLAGS)				\
+	$(CAMEL_CFLAGS)						\
 	$(NULL)
 
 libclient_test_utils_la_LIBADD = 				\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la		\
 	$(EVOLUTION_CALENDAR_LIBS)				\
+	$(CAMEL_LIBS)						\
 	$(NULL)
 
 # ordered by relative complexity

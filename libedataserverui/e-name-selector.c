@@ -27,10 +27,9 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
-#include <libebook/e-book-client.h>
-#include <libebook/e-contact.h>
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserver/e-source-autocomplete.h>
+
+#include <libebook/libebook.h>
+
 #include <libedataserverui/e-client-utils.h>
 #include <libedataserverui/e-contact-store.h>
 #include <libedataserverui/e-destination-store.h>

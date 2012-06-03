@@ -30,10 +30,9 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
-#include <libebook/e-book.h>
+
 #include <libedataserverui/e-passwords.h>
-#include <libedataserver/e-url.h>
-#include <libedataserver/e-source-authentication.h>
+
 #include "e-book-auth-util.h"
 
 typedef struct {

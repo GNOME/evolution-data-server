@@ -19,22 +19,7 @@
 #include <config.h>
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-uid.h>
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserver/e-source-authentication.h>
-#include <libedataserver/e-source-calendar.h>
-#include <libedataserver/e-source-camel.h>
-#include <libedataserver/e-source-collection.h>
-#include <libedataserver/e-source-mail-account.h>
-#include <libedataserver/e-source-mail-identity.h>
-#include <libedataserver/e-source-mail-transport.h>
-#include <libedataserver/e-source-security.h>
-#include <libedataserver/e-source-webdav.h>
-
-#include <libebackend/e-collection-backend.h>
-#include <libebackend/e-collection-backend-factory.h>
-#include <libebackend/e-server-side-source.h>
-#include <libebackend/e-source-registry-server.h>
+#include <libebackend/libebackend.h>
 
 /* Standard GObject macros */
 #define E_TYPE_YAHOO_BACKEND \

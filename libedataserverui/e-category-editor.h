@@ -17,6 +17,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__LIBEDATASERVERUI_H_INSIDE__) && !defined (LIBEDATASERVERUI_COMPILATION)
+#error "Only <libedataserverui/libedataserverui.h> should be included directly."
+#endif
+
 #ifndef E_CATEGORY_EDITOR_H
 #define E_CATEGORY_EDITOR_H
 

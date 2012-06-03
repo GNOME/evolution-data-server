@@ -22,7 +22,7 @@
 #ifndef E_BOOK_BACKEND_GOOGLE_H
 #define E_BOOK_BACKEND_GOOGLE_H
 
-#include <libedata-book/e-book-backend.h>
+#include <libedata-book/libedata-book.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BOOK_BACKEND_GOOGLE \

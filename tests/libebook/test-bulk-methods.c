@@ -1,6 +1,4 @@
-#include <libebook/e-book-client.h>
-#include <libebook/e-book-query.h>
-#include <libebook/e-contact.h>
+#include <libebook/libebook.h>
 
 #define BATCH_SIZE 50
 

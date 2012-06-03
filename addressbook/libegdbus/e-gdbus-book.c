@@ -22,9 +22,6 @@
 #include <stdio.h>
 #include <gio/gio.h>
 
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-gdbus-marshallers.h>
-
 #include "e-gdbus-book.h"
 
 #define E_GDBUS_BOOK_PROXY_GET_PRIVATE(obj) \

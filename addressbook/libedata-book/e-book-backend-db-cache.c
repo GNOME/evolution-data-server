@@ -23,12 +23,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <libedataserver/e-data-server-util.h>
 #include "e-book-backend-db-cache.h"
 #include "e-book-backend.h"
 #include "e-book-backend-sexp.h"
 
-void
+static void
 string_to_dbt (const gchar *str,
                DBT *dbt)
 {

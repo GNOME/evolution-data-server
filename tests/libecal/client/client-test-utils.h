@@ -1,8 +1,7 @@
 #ifndef CLIENT_TEST_UTILS_H
 #define CLIENT_TEST_UTILS_H
 
-#include <libecal/e-cal-client.h>
-#include <libedataserver/e-source-registry.h>
+#include <libecal/libecal.h>
 
 void print_ecomp (ECalComponent *ecalcomp);
 void print_icomp (icalcomponent *icalcomp);

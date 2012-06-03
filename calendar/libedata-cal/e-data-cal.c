@@ -30,11 +30,9 @@
 #include <glib/gi18n-lib.h>
 #include <unistd.h>
 
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-operation-pool.h>
+#include <libedataserver/libedataserver.h>
 
 #include "e-data-cal.h"
-#include "e-data-cal-enumtypes.h"
 #include "e-gdbus-cal.h"
 
 #define E_DATA_CAL_GET_PRIVATE(obj) \

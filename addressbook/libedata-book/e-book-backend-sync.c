@@ -10,8 +10,9 @@
 #include <config.h>
 #endif
 
+#include <libedataserver/libedataserver.h>
+
 #include "e-book-backend-sync.h"
-#include "libedataserver/e-data-server-util.h"
 
 G_DEFINE_TYPE (EBookBackendSync, e_book_backend_sync, E_TYPE_BOOK_BACKEND)
 

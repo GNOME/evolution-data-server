@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <libebook/e-book.h>
+#include <libebook/libebook.h>
 
 #include "client-test-utils.h"
 

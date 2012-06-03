@@ -12,6 +12,7 @@ libecalbackendweather_la_CPPFLAGS = \
 	-DE_DATA_SERVER_PREFIX=\"$(prefix)\"		\
 	-DWEATHER_DATADIR=\""$(weatherdatadir)"\"	\
 	$(EVOLUTION_CALENDAR_CFLAGS)			\
+	$(CAMEL_CFLAGS)					\
 	$(SOUP_CFLAGS)					\
 	$(LIBGWEATHER_CFLAGS)				\
 	$(CODE_COVERAGE_CFLAGS)				\
@@ -28,13 +29,14 @@ libecalbackendweather_la_SOURCES =	\
 	e-weather-source-ccf.c		\
 	e-weather-source-ccf.h
 
-libecalbackendweather_la_LIBADD =						\
-	$(top_builddir)/calendar/libecal/libecal-1.2.la				\
-	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la		\
-	$(top_builddir)/libedataserver/libedataserver-1.2.la			\
-	$(top_builddir)/libebackend/libebackend-1.2.la				\
-	$(EVOLUTION_CALENDAR_LIBS)						\
-	$(SOUP_LIBS)								\
+libecalbackendweather_la_LIBADD =					\
+	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
+	$(top_builddir)/calendar/libedata-cal/libedata-cal-1.2.la	\
+	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
+	$(top_builddir)/libebackend/libebackend-1.2.la			\
+	$(EVOLUTION_CALENDAR_LIBS)					\
+	$(CAMEL_LIBS)							\
+	$(SOUP_LIBS)							\
 	$(LIBGWEATHER_LIBS)
 
 libecalbackendweather_la_LDFLAGS =		\

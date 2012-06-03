@@ -21,8 +21,7 @@
  * Author: Ettore Perazzoli <ettore@ximian.com>
  */
 
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserverui/e-source-selector.h>
+#include <libedataserverui/libedataserverui.h>
 
 static const gchar *extension_name;
 

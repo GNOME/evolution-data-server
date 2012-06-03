@@ -23,8 +23,7 @@
 #include <config.h>
 #include <gtk/gtk.h>
 
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserverui/e-source-combo-box.h>
+#include <libedataserverui/libedataserverui.h>
 
 static const gchar *extension_name;
 

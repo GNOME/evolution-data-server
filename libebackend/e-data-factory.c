@@ -18,8 +18,8 @@
 
 /**
  * SECTION: e-data-factory
+ * @include: libebackend/libebackend.h
  * @short_description: An abstract base class for a backend-based server
- * @include: libebackend/e-data-factory
  **/
 
 #include "e-data-factory.h"

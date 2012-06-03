@@ -19,6 +19,10 @@
  *
  */
 
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
+#endif
+
 #ifndef EDS_DISABLE_DEPRECATED
 
 #ifndef E_CREDENTIALS_H

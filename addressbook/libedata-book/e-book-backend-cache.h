@@ -20,11 +20,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
+#error "Only <libedata-book/libedata-book.h> should be included directly."
+#endif
+
 #ifndef E_BOOK_BACKEND_CACHE_H
 #define E_BOOK_BACKEND_CACHE_H
 
-#include "libebackend/e-file-cache.h"
-#include <libebook/e-contact.h>
+#include <libebook/libebook.h>
+#include <libebackend/libebackend.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BOOK_BACKEND_CACHE \

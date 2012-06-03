@@ -28,9 +28,8 @@
 
 #include <gconf/gconf-client.h>
 
-#include "libedataserver/e-data-server-util.h"
-#include "libedataserver/e-client-private.h"
-#include "libedataserver/e-source-registry.h"
+#include <libedataserver/libedataserver.h>
+#include <libedataserver/e-client-private.h>
 
 #include "e-book-client.h"
 #include "e-contact.h"

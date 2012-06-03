@@ -21,7 +21,6 @@
 
 #include <config.h>
 
-#include <libedata-book/e-book-backend-factory.h>
 #include "e-book-backend-google.h"
 
 #define FACTORY_NAME "google"

@@ -1,10 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
 #include <stdio.h>
-#include <libedataserver/e-source-registry.h>
-#include <libedataserver/e-source-calendar.h>
-
-#include <libedataserver/e-gdbus-templates.h>
+#include <libedataserver/libedataserver.h>
 
 #include "client-test-utils.h"
 

@@ -1,12 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 
-#include <config.h>
-
 #include "e-book-query.h"
-#include "libedataserver/e-sexp.h"
+
+#include <config.h>
 
 #include <stdarg.h>
 #include <string.h>
+
+#include <libedataserver/libedataserver.h>
 
 typedef enum {
 	E_BOOK_QUERY_TYPE_AND,

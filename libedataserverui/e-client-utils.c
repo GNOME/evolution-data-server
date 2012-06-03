@@ -27,12 +27,10 @@
 #include <gtk/gtk.h>
 #include <libsoup/soup.h>
 
-#include <libedataserver/e-client.h>
-#include <libedataserver/e-source-authentication.h>
-#include <libebook/e-book-client.h>
-#include <libecal/e-cal-client.h>
+#include <libebook/libebook.h>
+#include <libecal/libecal.h>
 
-#include "libedataserver/e-client-private.h"
+#include <libedataserver/e-client-private.h>
 
 #include "e-passwords.h"
 #include "e-client-utils.h"

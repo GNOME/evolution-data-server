@@ -19,11 +19,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include <string.h>
 #include "e-cal-backend-file-store.h"
-#include "libebackend/e-file-cache.h"
+
+#include <string.h>
 #include <glib/gstdio.h>
-#include "libecal/e-cal-util.c" 
+
+#include <libecal/libecal.h>
+#include <libebackend/libebackend.h>
 
 #define CACHE_FILE_NAME "calendar.ics"
 #define KEY_FILE_NAME "keys.xml"

@@ -10,6 +10,7 @@ libebookbackendldap_la_CPPFLAGS = \
 	$(LDAP_CFLAGS)					\
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS)			\
 	$(CODE_COVERAGE_CFLAGS)				\
+	$(CAMEL_CFLAGS)					\
 	$(NULL)
 
 libebookbackendldap_la_SOURCES =			\
@@ -25,6 +26,7 @@ libebookbackendldap_la_LIBADD =						\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(top_builddir)/libebackend/libebackend-1.2.la			\
 	$(EVOLUTION_ADDRESSBOOK_LIBS)					\
+	$(CAMEL_LIBS)							\
 	$(LDAP_LIBS)
 
 libebookbackendldap_la_LDFLAGS = -module -avoid-version $(NO_UNDEFINED) \

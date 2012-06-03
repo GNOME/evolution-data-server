@@ -24,7 +24,6 @@
 
 #include <config.h>
 
-#include <libedata-cal/e-cal-backend-factory.h>
 #include "e-cal-backend-caldav.h"
 
 #define FACTORY_NAME "caldav"

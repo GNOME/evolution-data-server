@@ -21,10 +21,8 @@
  * Author: Hans Petter Jansson <hpj@novell.com>
  */
 
-#include <libedataserverui/e-name-selector-model.h>
-#include <libedataserverui/e-name-selector-dialog.h>
-#include <libedataserverui/e-name-selector-entry.h>
 #include <camel/camel.h>
+#include <libedataserverui/libedataserverui.h>
 
 static ENameSelectorDialog *name_selector_dialog;
 static GtkWidget           *name_selector_entry_window;

@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-openpgp
- * @include: libedataserver/e-source-openpgp.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for OpenPGP settings
  *
  * The #ESourceOpenPGP extension tracks OpenPGP (RFC 4880) settings to be

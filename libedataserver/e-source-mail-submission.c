@@ -18,7 +18,7 @@
 
 /**
  * SECTION: e-source-mail-submission
- * @include: libedataserver/e-source-mail-submission.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: #ESource extension for submitting emails
  *
  * The #ESourceMailSubmission extension tracks settings to be applied

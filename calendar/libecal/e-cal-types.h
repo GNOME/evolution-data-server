@@ -19,6 +19,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#if !defined (__LIBECAL_H_INSIDE__) && !defined (LIBECAL_COMPILATION)
+#error "Only <libecal/libecal.h> should be included directly."
+#endif
+
 #ifndef E_CAL_TYPES_H
 #define E_CAL_TYPES_H
 
@@ -72,6 +76,56 @@ typedef enum {
 
 #define E_CALENDAR_STATUS_CORBA_EXCEPTION E_CALENDAR_STATUS_DBUS_EXCEPTION
 #endif
+
+typedef enum {
+	Success,
+	Busy,
+	RepositoryOffline,
+	PermissionDenied,
+	InvalidRange,
+	ObjectNotFound,
+	InvalidObject,
+	ObjectIdAlreadyExists,
+	AuthenticationFailed,
+	AuthenticationRequired,
+	UnsupportedField,
+	UnsupportedMethod,
+	UnsupportedAuthenticationMethod,
+	TLSNotAvailable,
+	NoSuchCal,
+	UnknownUser,
+	OfflineUnavailable,
+
+	/* These can be returned for successful searches, but
+		indicate the result set was truncated */
+	SearchSizeLimitExceeded,
+	SearchTimeLimitExceeded,
+
+	InvalidQuery,
+	QueryRefused,
+
+	CouldNotCancel,
+
+	OtherError,
+	InvalidServerVersion,
+	InvalidArg,
+	NotSupported,
+	NotOpened
+} EDataCalCallStatus;
+
+typedef enum {
+	Event = 1 << 0,
+	Todo = 1 << 1,
+	Journal = 1 << 2,
+	AnyType = 0x07
+} EDataCalObjType;
+
+typedef enum {
+	This = 1 << 0,
+	ThisAndPrior = 1 << 1,
+	ThisAndFuture = 1 << 2,
+	All = 0x07
+} EDataCalObjModType;
 
 G_END_DECLS
 

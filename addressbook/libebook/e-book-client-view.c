@@ -26,12 +26,12 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <libedataserver/libedataserver.h>
+
 #include "e-book-client.h"
 #include "e-book-client-view.h"
 #include "e-book-client-view-private.h"
 #include "e-book-marshal.h"
-#include "libedata-book/e-data-book-types.h"
-#include "libedataserver/e-data-server-util.h"
 #include "e-gdbus-book-view.h"
 
 #define E_BOOK_CLIENT_VIEW_GET_PRIVATE(obj) \
