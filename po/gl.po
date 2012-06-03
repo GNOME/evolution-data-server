@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-20 17:59+0200\n"
-"PO-Revision-Date: 2012-05-20 17:59+0200\n"
+"POT-Creation-Date: 2012-06-03 03:20+0200\n"
+"PO-Revision-Date: 2012-06-03 03:21+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Gtranslator 2.91.4\n"
 "X-Poedit-Language: Galician\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:129
@@ -1951,31 +1951,31 @@ msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "Filtrando a nova mensaxe en «%s»"
 msgstr[1] "Filtrando as novas mensaxes en «%s»"
 
-#: ../camel/camel-folder.c:926
+#: ../camel/camel-folder.c:930
 #: ../camel/providers/local/camel-maildir-folder.c:322
 msgid "Moving messages"
 msgstr "Movendo as mensaxes"
 
-#: ../camel/camel-folder.c:929
+#: ../camel/camel-folder.c:933
 msgid "Copying messages"
 msgstr "Copiando as mensaxes"
 
-#: ../camel/camel-folder.c:1249
+#: ../camel/camel-folder.c:1253
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "Información de cota non admitida para o cartafol «%s»"
 
-#: ../camel/camel-folder.c:3582
+#: ../camel/camel-folder.c:3586
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Recuperando a mensaxe «%s» en «%s»"
 
-#: ../camel/camel-folder.c:3731
+#: ../camel/camel-folder.c:3735
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Recollendo a información da cota «%s»"
 
-#: ../camel/camel-folder-search.c:379 ../camel/camel-folder-search.c:569
+#: ../camel/camel-folder-search.c:415 ../camel/camel-folder-search.c:579
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1984,7 +1984,7 @@ msgstr ""
 "Non é posíbel analizar a expresión de busca: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:391 ../camel/camel-folder-search.c:581
+#: ../camel/camel-folder-search.c:427 ../camel/camel-folder-search.c:591
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1994,31 +1994,31 @@ msgstr ""
 "%s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:797 ../camel/camel-folder-search.c:840
+#: ../camel/camel-folder-search.c:807 ../camel/camel-folder-search.c:850
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) require un único resultado booleano"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:901
+#: ../camel/camel-folder-search.c:911
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) non está permitido dentro de %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:908 ../camel/camel-folder-search.c:916
+#: ../camel/camel-folder-search.c:918 ../camel/camel-folder-search.c:926
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) require unha cadea de coincidencia"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:944
+#: ../camel/camel-folder-search.c:954
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) require como resultado unha matriz"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:954
+#: ../camel/camel-folder-search.c:964
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) require un conxunto de cartafoles"
@@ -2177,24 +2177,24 @@ msgstr "Non foi posíbel crear a caché para %s:"
 msgid "Apply message _filters to this folder"
 msgstr "Aplicar _filtros de mensaxes a este cartafol"
 
-#: ../camel/camel-imapx-server.c:854
+#: ../camel/camel-imapx-server.c:855
 msgid "Server disconnected"
 msgstr "Servidor desconectado"
 
-#: ../camel/camel-imapx-server.c:1243
+#: ../camel/camel-imapx-server.c:1264
 msgid "Error writing to cache stream: "
 msgstr "Produciuse un erro de escritura ao fluxo da caché: %s"
 
-#: ../camel/camel-imapx-server.c:1974
+#: ../camel/camel-imapx-server.c:1997
 #, c-format
 msgid "Not authenticated"
 msgstr "Non autenticado"
 
-#: ../camel/camel-imapx-server.c:2043
+#: ../camel/camel-imapx-server.c:2066
 msgid "Error performing IDLE"
 msgstr "Produciuse un erro ao estar inactivo"
 
-#: ../camel/camel-imapx-server.c:2872
+#: ../camel/camel-imapx-server.c:2910
 #: ../camel/providers/imap/camel-imap-store.c:409
 #: ../camel/providers/imap/camel-imap-store.c:463
 #, c-format
@@ -2202,25 +2202,25 @@ msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "Non foi posíbel realizar a conexión co servidor IMAP %s en modo seguro: %s"
 
-#: ../camel/camel-imapx-server.c:2873
+#: ../camel/camel-imapx-server.c:2911
 #: ../camel/providers/imap/camel-imap-store.c:410
 #: ../camel/providers/smtp/camel-smtp-transport.c:197
 msgid "STARTTLS not supported"
 msgstr "O STARTTLS non é compatíbel"
 
-#: ../camel/camel-imapx-server.c:2912
+#: ../camel/camel-imapx-server.c:2950
 #: ../camel/providers/imap/camel-imap-store.c:435
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Produciuse un fallo ao conectarse co servidor IMAP %s en modo seguro:"
 
-#: ../camel/camel-imapx-server.c:2979
+#: ../camel/camel-imapx-server.c:3017
 #: ../camel/providers/imap/camel-imap-store.c:734
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "O servidor IMAP %s non permite a autenticación %s "
 
-#: ../camel/camel-imapx-server.c:2990 ../camel/camel-session.c:483
+#: ../camel/camel-imapx-server.c:3028 ../camel/camel-session.c:483
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/pop3/camel-pop3-store.c:249
 #: ../camel/providers/pop3/camel-pop3-store.c:568
@@ -2229,13 +2229,13 @@ msgstr "O servidor IMAP %s non permite a autenticación %s "
 msgid "No support for %s authentication"
 msgstr "Non compatíbel coa autenticación %s"
 
-#: ../camel/camel-imapx-server.c:3009
+#: ../camel/camel-imapx-server.c:3047
 #: ../camel/providers/imap/camel-imap-store.c:1110
 #: ../camel/providers/nntp/camel-nntp-store.c:494
 msgid "Cannot authenticate without a username"
 msgstr "Non é posíbel autenticar sen un nome de usuario"
 
-#: ../camel/camel-imapx-server.c:3018
+#: ../camel/camel-imapx-server.c:3056
 #: ../camel/providers/imap/camel-imap-store.c:1118
 #: ../camel/providers/nntp/camel-nntp-store.c:503
 #: ../camel/providers/pop3/camel-pop3-store.c:493
@@ -2243,106 +2243,106 @@ msgstr "Non é posíbel autenticar sen un nome de usuario"
 msgid "Authentication password not available"
 msgstr "O contrasinal de autenticación non está dispoñíbel"
 
-#: ../camel/camel-imapx-server.c:3207
+#: ../camel/camel-imapx-server.c:3245
 msgid "Error fetching message"
 msgstr "Produciuse un erro ao obter a mensaxe"
 
-#: ../camel/camel-imapx-server.c:3279
+#: ../camel/camel-imapx-server.c:3317
 msgid "Closing tmp stream failed: "
 msgstr "Produciuse un fallo no peche do fluxo temporal:"
 
-#: ../camel/camel-imapx-server.c:3381
+#: ../camel/camel-imapx-server.c:3419
 msgid "Error copying messages"
 msgstr "Produciuse un erro ao copiar as mensaxes"
 
-#: ../camel/camel-imapx-server.c:3516
+#: ../camel/camel-imapx-server.c:3554
 msgid "Error appending message"
 msgstr "Produciuse un erro ao engadir a mensaxe"
 
-#: ../camel/camel-imapx-server.c:3701
+#: ../camel/camel-imapx-server.c:3741
 msgid "Error fetching message headers"
 msgstr "Produciuse un erro ao obter as cabeceiras das mensaxes"
 
-#: ../camel/camel-imapx-server.c:3845
+#: ../camel/camel-imapx-server.c:3887
 msgid "Error retrieving message"
 msgstr "Produciuse un erro ao obter a mensaxe"
 
-#: ../camel/camel-imapx-server.c:3967 ../camel/camel-imapx-server.c:4155
-#: ../camel/providers/imap/camel-imap-folder.c:4006
-#: ../camel/providers/imap/camel-imap-folder.c:4086
+#: ../camel/camel-imapx-server.c:4009 ../camel/camel-imapx-server.c:4214
+#: ../camel/providers/imap/camel-imap-folder.c:4002
+#: ../camel/providers/imap/camel-imap-folder.c:4082
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Recollendo a información de resumo para as mensaxes novas en %s"
 
-#: ../camel/camel-imapx-server.c:4015
+#: ../camel/camel-imapx-server.c:4068
 #: ../camel/providers/imap/camel-imap-folder.c:1124
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Buscando mensaxes modificadas en %s"
 
-#: ../camel/camel-imapx-server.c:4053
+#: ../camel/camel-imapx-server.c:4110
 msgid "Error fetching new messages"
 msgstr "Produciuse un erro ao obter as mensaxes novas"
 
-#: ../camel/camel-imapx-server.c:4248
+#: ../camel/camel-imapx-server.c:4309
 msgid "Error while fetching messages"
 msgstr "Produciuse un erro ao obter as mensaxes"
 
-#: ../camel/camel-imapx-server.c:4256 ../camel/camel-imapx-server.c:4286
+#: ../camel/camel-imapx-server.c:4317 ../camel/camel-imapx-server.c:4349
 #, c-format
 msgid "Fetching summary information for %d message in %s"
 msgid_plural "Fetching summary information for %d messages in %s"
 msgstr[0] "Obtendo recopilación de informacińo sobre %d mensaxe en %s"
 msgstr[1] "Obtendo recopilación de informacińo sobre %d mensaxes en %s"
 
-#: ../camel/camel-imapx-server.c:4411 ../camel/camel-imapx-server.c:4447
+#: ../camel/camel-imapx-server.c:4474 ../camel/camel-imapx-server.c:4510
 msgid "Error refreshing folder"
 msgstr "Produciuse un erro ao actualizar o cartafol"
 
-#: ../camel/camel-imapx-server.c:4540
+#: ../camel/camel-imapx-server.c:4603
 msgid "Error expunging message"
 msgstr "Produciuse un erro ao compactar a mensaxe"
 
-#: ../camel/camel-imapx-server.c:4629
+#: ../camel/camel-imapx-server.c:4692
 msgid "Error fetching folders"
 msgstr "Produciuse un erro ao obter os cartafoles"
 
-#: ../camel/camel-imapx-server.c:4708
+#: ../camel/camel-imapx-server.c:4771
 msgid "Error subscribing to folder"
 msgstr "Produciuse un erro ao subscribirse aos cartafoles"
 
-#: ../camel/camel-imapx-server.c:4765
+#: ../camel/camel-imapx-server.c:4828
 msgid "Error creating folder"
 msgstr "Produciuse un erro ao crear o cartafol"
 
-#: ../camel/camel-imapx-server.c:4814
+#: ../camel/camel-imapx-server.c:4877
 msgid "Error deleting folder"
 msgstr "Produciuse un erro ao eliminar o cartafol"
 
-#: ../camel/camel-imapx-server.c:4868
+#: ../camel/camel-imapx-server.c:4931
 msgid "Error renaming folder"
 msgstr "Produciuse un erro ao renomear o cartafol"
 
-#: ../camel/camel-imapx-server.c:4923
+#: ../camel/camel-imapx-server.c:4986
 msgid "Error performing NOOP"
 msgstr "Produciuse un erro ao realizar NOOP"
 
-#: ../camel/camel-imapx-server.c:5021
+#: ../camel/camel-imapx-server.c:5084
 msgid "Error syncing changes"
 msgstr "Produciuse un erro ao sincronizar os cambios"
 
-#: ../camel/camel-imapx-server.c:5632
-#: ../camel/providers/imap/camel-imap-folder.c:3474
+#: ../camel/camel-imapx-server.c:5695
+#: ../camel/providers/imap/camel-imap-folder.c:3470
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Non é posíbel obter a mensaxe co ID de mensaxe %s: %s"
 
-#: ../camel/camel-imapx-server.c:5633
-#: ../camel/providers/imap/camel-imap-folder.c:3475
+#: ../camel/camel-imapx-server.c:5696
+#: ../camel/providers/imap/camel-imap-folder.c:3471
 msgid "No such message available."
 msgstr "A mensaxe non está dispoñíbel."
 
-#: ../camel/camel-imapx-server.c:5788 ../camel/camel-imapx-server.c:5803
+#: ../camel/camel-imapx-server.c:5851 ../camel/camel-imapx-server.c:5866
 msgid "Cannot create spool file: "
 msgstr "Non é posíbel crear o ficheiro de cola de correo: "
 
@@ -3061,50 +3061,50 @@ msgstr "Produciuse un fallo ao engadir os datos ao codificador"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Descifrado S/MIME: non se atoou contido cifrado"
 
-#: ../camel/camel-store.c:1839
+#: ../camel/camel-store.c:1838
 #, c-format
 msgid "Cannot create folder '%s': folder exists"
 msgstr "Non é posíbel crear o cartafol «%s»: o cartafol xa existe"
 
-#: ../camel/camel-store.c:1882
+#: ../camel/camel-store.c:1881
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Abrindo o cartafol «%s»"
 
-#: ../camel/camel-store.c:2067
+#: ../camel/camel-store.c:2066
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Analizando os cartafoles en «%s»"
 
 #. the name of the Trash folder, used for deleted messages
-#: ../camel/camel-store.c:2079 ../camel/camel-store.c:2089
+#: ../camel/camel-store.c:2078 ../camel/camel-store.c:2088
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Lixo"
 
 #. the name of the Junk folder, used for spam messages
-#: ../camel/camel-store.c:2082 ../camel/camel-store.c:2093
+#: ../camel/camel-store.c:2081 ../camel/camel-store.c:2092
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Correo lixo"
 
-#: ../camel/camel-store.c:2541
+#: ../camel/camel-store.c:2540
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Non é posíbel crear o cartafol: %s: o cartafol xa existe"
 
-#: ../camel/camel-store.c:2555
+#: ../camel/camel-store.c:2554
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Creando o cartafol «%s»"
 
-#: ../camel/camel-store.c:2673 ../camel/camel-vee-store.c:352
+#: ../camel/camel-store.c:2672 ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:300
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Non é posíbel eliminar o cartafol: %s: a operación non é valida"
 
-#: ../camel/camel-store.c:2816 ../camel/camel-vee-store.c:402
+#: ../camel/camel-store.c:2815 ../camel/camel-vee-store.c:460
 #: ../camel/providers/local/camel-maildir-store.c:768
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3299,41 +3299,49 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "Non foi posíbel analizar o URL «%s»"
 
-#: ../camel/camel-vee-folder.c:652
+#: ../camel/camel-vee-folder.c:485
 #, c-format
 msgid "Updating %s folder"
 msgstr "Actualizando o cartafol %s"
 
-#: ../camel/camel-vee-folder.c:1329 ../camel/camel-vee-folder.c:1486
+#: ../camel/camel-vee-folder.c:842 ../camel/camel-vee-folder.c:952
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Non é posíbel copiar ou mover as mensaxes a un cartafol virtual"
 
-#: ../camel/camel-vee-folder.c:1362
+#: ../camel/camel-vee-folder.c:875
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Non existe a mensaxe %s en %s"
 
-#: ../camel/camel-vee-folder.c:1430
+#: ../camel/camel-vee-folder.c:928
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Produciuse un erro ao almacenar «%s»:"
 
+#: ../camel/camel-vee-folder.c:1153
+msgid "Automatically _update on change in source folders"
+msgstr "Actualizar a_utomaticamente ao cambiar os cartafoles de fontes"
+
 #. Translators: 'Unmatched' is a folder name under Search folders where are shown
 #. * all messages not belonging into any other configured search folder
-#: ../camel/camel-vee-store.c:37
+#: ../camel/camel-vee-store.c:38
 msgid "Unmatched"
 msgstr "Sen equivalencia"
 
-#: ../camel/camel-vee-store.c:378
+#: ../camel/camel-vee-store.c:436
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Non é posíbel eliminar o cartafol: %s: ese cartafol non existe"
 
-#: ../camel/camel-vee-store.c:412
+#: ../camel/camel-vee-store.c:470
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Non é posíbel renomear o cartafol: %s: ese cartafol non existe"
+
+#: ../camel/camel-vee-store.c:532
+msgid "Enable _Unmatched folder"
+msgstr "Activar o cartafol non _coincidente"
 
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
@@ -3417,30 +3425,30 @@ msgstr "Non foi posíbel crear o directorio %s: %s"
 msgid "Could not load summary for %s"
 msgstr "Non foi posíbel cargar o resumo de %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3437
+#: ../camel/providers/imap/camel-imap-folder.c:3433
 msgid "Unable to retrieve message: "
 msgstr "Non foi posíbel obter a mensaxe:"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3548
-#: ../camel/providers/imap/camel-imap-folder.c:4418
+#: ../camel/providers/imap/camel-imap-folder.c:3544
+#: ../camel/providers/imap/camel-imap-folder.c:4414
 #: ../camel/providers/nntp/camel-nntp-folder.c:493
 #, c-format
 msgid "This message is not currently available"
 msgstr "Esta mensaxe non está dispoñíbel actualmente"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4217
+#: ../camel/providers/imap/camel-imap-folder.c:4213
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Resposta do servidor incompleta: non se forneceu información para a mensaxe "
 "%d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4227
+#: ../camel/providers/imap/camel-imap-folder.c:4223
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Resposta do servidor incompleta: non se forneceu UID para a mensaxe %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4455
+#: ../camel/providers/imap/camel-imap-folder.c:4451
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Non foi posíbel atopar o corpo da mensaxe na resposta FETCH."
@@ -4967,7 +4975,7 @@ msgstr "Erro de D-Bus"
 #. * in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1646 ../libedataserver/e-time-utils.c:1944
+#: ../libedataserver/e-time-utils.c:1647 ../libedataserver/e-time-utils.c:1945
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %d/%m/%Y %I:%M:%S %p"
 
@@ -4975,7 +4983,7 @@ msgstr "%a %d/%m/%Y %I:%M:%S %p"
 #. * in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1651 ../libedataserver/e-time-utils.c:1935
+#: ../libedataserver/e-time-utils.c:1652 ../libedataserver/e-time-utils.c:1936
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %d/%m/%Y %H:%M:%S"
 
@@ -4983,7 +4991,7 @@ msgstr "%a %d/%m/%Y %H:%M:%S"
 #. * in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1656 ../libedataserver/e-time-utils.c:1940
+#: ../libedataserver/e-time-utils.c:1657 ../libedataserver/e-time-utils.c:1941
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %d/%m/%Y %I:%M %p"
 
@@ -4991,79 +4999,79 @@ msgstr "%a %d/%m/%Y %I:%M %p"
 #. * in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1661 ../libedataserver/e-time-utils.c:1931
+#: ../libedataserver/e-time-utils.c:1662 ../libedataserver/e-time-utils.c:1932
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d/%m/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1666
+#: ../libedataserver/e-time-utils.c:1667
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a %d/%m/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1671
+#: ../libedataserver/e-time-utils.c:1672
 msgid "%a %m/%d/%Y %H"
 msgstr "%a %d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1674 ../libedataserver/e-time-utils.c:1794
-#: ../libedataserver/e-time-utils.c:1926
+#: ../libedataserver/e-time-utils.c:1675 ../libedataserver/e-time-utils.c:1795
+#: ../libedataserver/e-time-utils.c:1927
 msgid "%a %m/%d/%Y"
 msgstr "%a %d/%m/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1681
+#: ../libedataserver/e-time-utils.c:1682
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%d/%m/%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1685
+#: ../libedataserver/e-time-utils.c:1686
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%d/%m/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1690
+#: ../libedataserver/e-time-utils.c:1691
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%d/%m/%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1695
+#: ../libedataserver/e-time-utils.c:1696
 msgid "%m/%d/%Y %H:%M"
 msgstr "%d/%m/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. * without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1700
+#: ../libedataserver/e-time-utils.c:1701
 msgid "%m/%d/%Y %I %p"
 msgstr "%d/%m/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1705
+#: ../libedataserver/e-time-utils.c:1706
 msgid "%m/%d/%Y %H"
 msgstr "%d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1708 ../libedataserver/e-time-utils.c:1797
+#: ../libedataserver/e-time-utils.c:1709 ../libedataserver/e-time-utils.c:1798
 msgid "%m/%d/%Y"
 msgstr "%d/%m/%Y"
 
 # (pofilter) variables: do not translate: %I, %p
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1868 ../libedataserver/e-time-utils.c:1988
+#: ../libedataserver/e-time-utils.c:1869 ../libedataserver/e-time-utils.c:1989
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1872 ../libedataserver/e-time-utils.c:1980
+#: ../libedataserver/e-time-utils.c:1873 ../libedataserver/e-time-utils.c:1981
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -5071,24 +5079,24 @@ msgstr "%H:%M:%S"
 #. * in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1877 ../libedataserver/e-time-utils.c:1985
+#: ../libedataserver/e-time-utils.c:1878 ../libedataserver/e-time-utils.c:1986
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1881 ../libedataserver/e-time-utils.c:1977
+#: ../libedataserver/e-time-utils.c:1882 ../libedataserver/e-time-utils.c:1978
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format, and no colon.
-#: ../libedataserver/e-time-utils.c:1884
+#: ../libedataserver/e-time-utils.c:1885
 msgid "%H%M"
 msgstr "%H%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1888
+#: ../libedataserver/e-time-utils.c:1889
 msgid "%I %p"
 msgstr "%I %p"
 
