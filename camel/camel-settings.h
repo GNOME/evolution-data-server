@@ -83,10 +83,6 @@ CamelSettings *	camel_settings_clone		(CamelSettings *settings);
 gboolean	camel_settings_equal		(CamelSettings *settings_a,
 						 CamelSettings *settings_b);
 
-/* XXX These functions are temporary.  Fair warning. */
-void		camel_settings_save_to_url	(CamelSettings *settings,
-						 CamelURL *url);
-
 G_END_DECLS
 
 #endif /* CAMEL_SETTINGS_H */

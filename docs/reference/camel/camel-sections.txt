@@ -2347,7 +2347,6 @@ CamelSettings
 camel_settings_class_list_settings
 camel_settings_clone
 camel_settings_equal
-camel_settings_save_to_url
 <SUBSECTION Standard>
 CAMEL_SETTINGS
 CAMEL_IS_SETTINGS
