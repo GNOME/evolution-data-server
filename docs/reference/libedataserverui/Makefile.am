@@ -23,6 +23,7 @@ GTKDOC_CFLAGS  =					\
 	-I$(top_srcdir)/addressbook			\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir)				\
+	-I$(top_builddir)/addressbook			\
 	$(E_DATA_SERVER_UI_CFLAGS)			\
 	$(CAMEL_CFLAGS)
 

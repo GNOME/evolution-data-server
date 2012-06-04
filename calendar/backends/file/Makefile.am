@@ -56,6 +56,8 @@ test_interval_searches_CPPFLAGS = \
 	$(AM_CPPFLAGS)			\
 	-I$(top_srcdir)			\
 	-I$(top_srcdir)/calendar	\
+	-I$(top_builddir)		\
+	-I$(top_builddir)/calendar	\
 	$(EVOLUTION_CALENDAR_CFLAGS)	\
 	$(CAMEL_CFLAGS)			\
 	-DTEST_QUERY_RESULT=1

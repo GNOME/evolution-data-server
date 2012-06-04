@@ -595,7 +595,7 @@ test_folder_message_ops (CamelSession *session,
 		if (!local) {
 			push ("disconneect service");
 			camel_service_disconnect_sync (
-				CAMEL_SERVICE (store), TRUE, &error);
+				CAMEL_SERVICE (store), TRUE, NULL, &error);
 			check_msg (error == NULL, "%s", error->message);
 			g_clear_error (&error);
 			pull ();
