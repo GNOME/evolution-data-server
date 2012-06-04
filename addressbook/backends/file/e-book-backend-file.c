@@ -277,7 +277,8 @@ maybe_delete_uri (EBookBackendFile *bf,
 
 	/* If the file is in our path it belongs to us and we need to delete it.
 	 */
-	if (!strncmp (bf->priv->photo_dirname, filename, strlen (bf->priv->photo_dirname))) {
+	if (bf->priv->photo_dirname &&
+	    !strncmp (bf->priv->photo_dirname, filename, strlen (bf->priv->photo_dirname))) {
 
 		d(g_print ("Deleting uri file: %s\n", filename));
 
@@ -487,7 +488,7 @@ is_backend_owned_uri (EBookBackendFile *bf,
 
 	dirname = g_path_get_dirname (filename);
 
-	owned_uri = (strcmp (dirname, bf->priv->photo_dirname) == 0);
+	owned_uri = bf->priv->photo_dirname && (strcmp (dirname, bf->priv->photo_dirname) == 0);
 
 	g_free (filename);
 	g_free (dirname);
@@ -1892,6 +1893,13 @@ e_book_backend_file_open (EBookBackendSync *backend,
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	dirname = e_book_backend_file_extract_path_from_source (source, GET_PATH_DB_DIR);
+
+	if (!g_file_test (dirname, G_FILE_TEST_IS_DIR)) {
+		g_free (dirname);
+		g_propagate_error (perror, EDB_ERROR (NO_SUCH_BOOK));
+		return;
+	}
+
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 
 	db_error = e_db3_utils_maybe_recover (filename);
@@ -2159,6 +2167,9 @@ remove_photos (const gchar *dirname)
 {
 	GDir *dir;
 
+	if (!dirname)
+		return;
+
 	dir = g_dir_open (dirname, 0, NULL);
 	if (dir) {
 		const gchar *name;
@@ -2195,30 +2206,32 @@ e_book_backend_file_remove (EBookBackendSync *backend,
 	g_object_unref (bf->priv->sqlitedb);
 	bf->priv->sqlitedb = NULL;
 
-	dir = g_dir_open (bf->priv->dirname, 0, NULL);
-	if (dir) {
-		const gchar *name;
+	if (bf->priv->dirname) {
+		dir = g_dir_open (bf->priv->dirname, 0, NULL);
+		if (dir) {
+			const gchar *name;
 
-		while ((name = g_dir_read_name (dir))) {
-			if (select_changes (name)) {
-				gchar *full_path = g_build_filename (bf->priv->dirname, name, NULL);
-				if (-1 == g_unlink (full_path)) {
-					g_warning ("failed to remove change db `%s': %s", full_path, g_strerror (errno));
+			while ((name = g_dir_read_name (dir))) {
+				if (select_changes (name)) {
+					gchar *full_path = g_build_filename (bf->priv->dirname, name, NULL);
+					if (-1 == g_unlink (full_path)) {
+						g_warning ("failed to remove change db `%s': %s", full_path, g_strerror (errno));
+					}
+					g_free (full_path);
 				}
-				g_free (full_path);
 			}
-		}
 
-		g_dir_close (dir);
+			g_dir_close (dir);
+		}
 	}
 
 	/* Remove photos and the photo directory */
 	remove_photos (bf->priv->photo_dirname);
-	if (-1 == g_rmdir (bf->priv->photo_dirname))
+	if (bf->priv->photo_dirname && -1 == g_rmdir (bf->priv->photo_dirname))
 		g_warning ("failed to remove directory `%s`: %s", bf->priv->photo_dirname, g_strerror (errno));
 
 	/* Try removing the base directory now */
-	if (-1 == g_rmdir (bf->priv->dirname))
+	if (bf->priv->dirname && -1 == g_rmdir (bf->priv->dirname))
 		g_warning ("failed to remove directory `%s`: %s", bf->priv->dirname, g_strerror (errno));
 
 	/* we may not have actually succeeded in removing the
@@ -2353,17 +2366,19 @@ e_book_backend_file_dispose (GObject *object)
 	}
 
 	G_LOCK (db_environments);
-	genv = g_hash_table_lookup (db_environments, bf->priv->dirname);
-	if (genv) {
-		genv->ref_count--;
-		if (genv->ref_count == 0) {
-			genv->env->close (genv->env, 0);
-			g_free (genv);
-			g_hash_table_remove (db_environments, bf->priv->dirname);
-		}
-		if (g_hash_table_size (db_environments) == 0) {
-			g_hash_table_destroy (db_environments);
-			db_environments = NULL;
+	if (bf->priv->dirname) {
+		genv = g_hash_table_lookup (db_environments, bf->priv->dirname);
+		if (genv) {
+			genv->ref_count--;
+			if (genv->ref_count == 0) {
+				genv->env->close (genv->env, 0);
+				g_free (genv);
+				g_hash_table_remove (db_environments, bf->priv->dirname);
+			}
+			if (g_hash_table_size (db_environments) == 0) {
+				g_hash_table_destroy (db_environments);
+				db_environments = NULL;
+			}
 		}
 	}
 	G_UNLOCK (db_environments);
