@@ -187,10 +187,10 @@ camel_index_delete (CamelIndex *idx)
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
 	class = CAMEL_INDEX_GET_CLASS (idx);
-	g_return_val_if_fail (class->delete != NULL, -1);
+	g_return_val_if_fail (class->delete_ != NULL, -1);
 
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0) {
-		ret = class->delete (idx);
+		ret = class->delete_ (idx);
 		idx->state |= CAMEL_INDEX_DELETED;
 	} else {
 		errno = ENOENT;

@@ -179,7 +179,7 @@ CamelTextIndex *camel_text_index_new		(const gchar *path,
 /* static utility functions */
 gint		camel_text_index_check		(const gchar *path);
 gint		camel_text_index_rename		(const gchar *old,
-						 const gchar *new);
+						 const gchar *new_);
 gint		camel_text_index_remove		(const gchar *old);
 
 void		camel_text_index_dump		(CamelTextIndex *idx);

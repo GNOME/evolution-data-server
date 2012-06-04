@@ -790,7 +790,7 @@ vee_folder_delete (CamelFolder *folder)
 	}
 	camel_vee_folder_unlock (vfolder, CAMEL_VEE_FOLDER_SUBFOLDER_LOCK);
 
-	((CamelFolderClass *) camel_vee_folder_parent_class)->delete (folder);
+	((CamelFolderClass *) camel_vee_folder_parent_class)->delete_ (folder);
 }
 
 static void
@@ -1128,7 +1128,7 @@ camel_vee_folder_class_init (CamelVeeFolderClass *class)
 	folder_class->search_by_uids = vee_folder_search_by_uids;
 	folder_class->count_by_expression = vee_folder_count_by_expression;
 	folder_class->search_free = vee_folder_search_free;
-	folder_class->delete = vee_folder_delete;
+	folder_class->delete_ = vee_folder_delete;
 	folder_class->freeze = vee_folder_freeze;
 	folder_class->thaw = vee_folder_thaw;
 	folder_class->append_message_sync = vee_folder_append_message_sync;

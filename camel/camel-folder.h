@@ -201,7 +201,7 @@ struct _CamelFolderClass {
 						 CamelMessageInfo *info);
 	void		(*free_message_info)	(CamelFolder *folder,
 						 CamelMessageInfo *info);
-	void		(*delete)		(CamelFolder *folder);
+	void		(*delete_)		(CamelFolder *folder);
 	void		(*rename)		(CamelFolder *folder,
 						 const gchar *newname);
 	void		(*freeze)		(CamelFolder *folder);

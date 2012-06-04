@@ -1767,7 +1767,7 @@ camel_folder_class_init (CamelFolderClass *class)
 	class->get_message_info = folder_get_message_info;
 	class->ref_message_info = folder_ref_message_info;
 	class->free_message_info = folder_free_message_info;
-	class->delete = folder_delete;
+	class->delete_ = folder_delete;
 	class->rename = folder_rename;
 	class->freeze = folder_freeze;
 	class->thaw = folder_thaw;
@@ -2787,7 +2787,7 @@ camel_folder_delete (CamelFolder *folder)
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
-	g_return_if_fail (class->delete != NULL);
+	g_return_if_fail (class->delete_ != NULL);
 
 	camel_folder_lock (folder, CAMEL_FOLDER_REC_LOCK);
 	if (folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED) {
@@ -2797,7 +2797,7 @@ camel_folder_delete (CamelFolder *folder)
 
 	folder->folder_flags |= CAMEL_FOLDER_HAS_BEEN_DELETED;
 
-	class->delete (folder);
+	class->delete_ (folder);
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 

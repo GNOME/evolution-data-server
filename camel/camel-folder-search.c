@@ -136,7 +136,7 @@ camel_folder_search_class_init (CamelFolderSearchClass *class)
 	object_class->dispose = folder_search_dispose;
 	object_class->finalize = folder_search_finalize;
 
-	class->not = search_not;
+	class->not_ = search_not;
 	class->match_all = search_match_all;
 	class->match_threads = search_match_threads;
 	class->body_contains = search_body_contains;
@@ -174,10 +174,10 @@ static struct {
 	gint flags;		/* 0x02 = immediate, 0x01 = always enter */
 } builtins[] = {
 	/* these have default implementations in e-sexp */
-	{ "and", G_STRUCT_OFFSET(CamelFolderSearchClass, and), 2 },
-	{ "or", G_STRUCT_OFFSET(CamelFolderSearchClass, or), 2 },
+	{ "and", G_STRUCT_OFFSET(CamelFolderSearchClass, and_), 2 },
+	{ "or", G_STRUCT_OFFSET(CamelFolderSearchClass, or_), 2 },
 	/* we need to override this one though to implement an 'array not' */
-	{ "not", G_STRUCT_OFFSET(CamelFolderSearchClass, not), 0 },
+	{ "not", G_STRUCT_OFFSET(CamelFolderSearchClass, not_), 0 },
 	{ "<", G_STRUCT_OFFSET(CamelFolderSearchClass, lt), 2 },
 	{ ">", G_STRUCT_OFFSET(CamelFolderSearchClass, gt), 2 },
 	{ "=", G_STRUCT_OFFSET(CamelFolderSearchClass, eq), 2 },

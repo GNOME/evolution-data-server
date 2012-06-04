@@ -831,7 +831,7 @@ camel_text_index_class_init (CamelTextIndexClass *class)
 	index_class = CAMEL_INDEX_CLASS (class);
 	index_class->sync = text_index_sync;
 	index_class->compress = text_index_compress;
-	index_class->delete = text_index_delete;
+	index_class->delete_ = text_index_delete;
 	index_class->rename = text_index_rename;
 	index_class->has_name = text_index_has_name;
 	index_class->add_name = text_index_add_name;

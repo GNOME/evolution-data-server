@@ -75,9 +75,9 @@ struct _CamelFolderSearchClass {
 	CamelObjectClass parent_class;
 
 	/* general bool/comparison options, usually these wont need to be set, unless it is compiling into another language */
-	CamelSExpResult * (*and)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
-	CamelSExpResult * (*or)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
-	CamelSExpResult * (*not)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*and_)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*or_)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
+	CamelSExpResult * (*not_)(CamelSExp *f, gint argc, CamelSExpResult **argv, CamelFolderSearch *s);
 	CamelSExpResult * (*lt)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
 	CamelSExpResult * (*gt)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);
 	CamelSExpResult * (*eq)(CamelSExp *f, gint argc, CamelSExpTerm **argv, CamelFolderSearch *s);

@@ -304,7 +304,7 @@ local_folder_delete (CamelFolder *folder)
 	if (lf->index)
 		camel_index_delete (lf->index);
 
-	CAMEL_FOLDER_CLASS (camel_local_folder_parent_class)->delete (folder);
+	CAMEL_FOLDER_CLASS (camel_local_folder_parent_class)->delete_ (folder);
 }
 
 static void
@@ -475,7 +475,7 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 	folder_class->search_by_expression = local_folder_search_by_expression;
 	folder_class->search_by_uids = local_folder_search_by_uids;
 	folder_class->search_free = local_folder_search_free;
-	folder_class->delete = local_folder_delete;
+	folder_class->delete_ = local_folder_delete;
 	folder_class->rename = local_folder_rename;
 	folder_class->count_by_expression = local_folder_count_by_expression;
 	folder_class->get_uncached_uids = local_folder_get_uncached_uids;

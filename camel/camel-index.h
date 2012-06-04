@@ -170,7 +170,7 @@ struct _CamelIndexClass {
 
 	gint		(*sync)			(CamelIndex *index);
 	gint		(*compress)		(CamelIndex *index);
-	gint		(*delete)		(CamelIndex *index);
+	gint		(*delete_)		(CamelIndex *index);
 	gint		(*rename)		(CamelIndex *index,
 						 const gchar *path);
 	gint		(*has_name)		(CamelIndex *index,
