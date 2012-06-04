@@ -84,8 +84,6 @@ gboolean	camel_settings_equal		(CamelSettings *settings_a,
 						 CamelSettings *settings_b);
 
 /* XXX These functions are temporary.  Fair warning. */
-void		camel_settings_load_from_url	(CamelSettings *settings,
-						 CamelURL *url);
 void		camel_settings_save_to_url	(CamelSettings *settings,
 						 CamelURL *url);
 
