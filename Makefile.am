@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS=-I m4
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --with-krb5=/usr --enable-introspection
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc --with-private-docs --with-krb5=/usr --enable-introspection
 
 SUBDIRS = camel data private libedataserver libebackend addressbook calendar libedataserverui modules services tests docs art po
 
