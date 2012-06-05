@@ -1198,8 +1198,6 @@ e_source_class_init (ESourceClass *class)
 	REGISTER_TYPE (E_TYPE_SOURCE_SMIME);
 	REGISTER_TYPE (E_TYPE_SOURCE_TASK_LIST);
 	REGISTER_TYPE (E_TYPE_SOURCE_WEBDAV);
-
-	e_source_camel_register_types ();
 }
 
 static void
@@ -1212,6 +1210,11 @@ static void
 e_source_init (ESource *source)
 {
 	GHashTable *extensions;
+
+	/* Don't do this as part of class initialization because it
+	 * loads Camel modules and can screw up introspection, which
+	 * occurs at compile-time before Camel modules are installed. */
+	e_source_camel_register_types ();
 
 	extensions = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,

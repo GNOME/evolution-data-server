@@ -457,17 +457,9 @@ e_source_camel_init (ESourceCamel *extension)
 	extension->priv->value_array = value_array;
 }
 
-/**
- * e_source_camel_register_types:
- *
- * Creates and registers subclasses of #ESourceCamel for each available
- * #CamelProvider.  This function should be called once during application
- * or library initialization.
- *
- * Since: 3.6
- **/
-void
-e_source_camel_register_types (void)
+/* Helper for e_source_camel_register_types() */
+static gpointer
+source_camel_register_types_once (gpointer unused)
 {
 	GList *list, *link;
 
@@ -502,6 +494,25 @@ e_source_camel_register_types (void)
 	}
 
 	g_list_free (list);
+
+	return NULL;
+}
+
+/**
+ * e_source_camel_register_types:
+ *
+ * Creates and registers subclasses of #ESourceCamel for each available
+ * #CamelProvider.  This function should be called once during application
+ * or library initialization.
+ *
+ * Since: 3.6
+ **/
+void
+e_source_camel_register_types (void)
+{
+	static GOnce register_types_once = G_ONCE_INIT;
+
+	g_once (&register_types_once, source_camel_register_types_once, NULL);
 }
 
 /**
