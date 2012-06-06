@@ -243,18 +243,6 @@ if test "x${GCC}" = "xyes"; then
 fi
 
 dnl ******************************
-dnl Test whether jw is installed
-dnl ******************************
-AC_PATH_PROG(JW,jw,no)
-if test "x$JW" = "xno"; then
-	HAVE_JW="no"
-else
-	HAVE_JW="yes"
-fi
-AM_CONDITIONAL(HAVE_JW, test "x$HAVE_JW" = "xyes")
-AC_SUBST(HAVE_JW)
-
-dnl ******************************
 dnl I18N stuff
 dnl ******************************
 IT_PROG_INTLTOOL([0.35.5])
