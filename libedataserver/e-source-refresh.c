@@ -191,13 +191,37 @@ source_refresh_update_timeouts (ESourceRefresh *extension,
 	g_mutex_unlock (extension->priv->timeout_lock);
 }
 
+static gboolean
+source_refresh_idle_cb (gpointer user_data)
+{
+	ESource *source = E_SOURCE (user_data);
+
+	if (e_source_get_enabled (source))
+		e_source_refresh_force_timeout (source);
+
+	return FALSE;
+}
+
 static void
 source_refresh_notify_enabled_cb (ESource *source,
                                   GParamSpec *pspec,
                                   ESourceRefresh *extension)
 {
-	if (e_source_get_enabled (source))
-		e_source_refresh_force_timeout (source);
+	GSource *idle_source;
+	GMainContext *main_context;
+
+	main_context = e_source_ref_main_context (source);
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		source_refresh_idle_cb,
+		g_object_ref (source),
+		(GDestroyNotify) g_object_unref);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 }
 
 static void
