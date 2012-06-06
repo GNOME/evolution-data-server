@@ -2266,12 +2266,12 @@ source_registry_prune_nodes (GNode *node,
                              const gchar *extension_name)
 {
 	GQueue queue = G_QUEUE_INIT;
-	GNode *child;
+	GNode *child_node;
 
 	/* Unlink all the child nodes and place them in a queue. */
-	while ((child = g_node_first_child (node)) != NULL) {
-		g_node_unlink (child);
-		g_queue_push_tail (&queue, child);
+	while ((child_node = g_node_first_child (node)) != NULL) {
+		g_node_unlink (child_node);
+		g_queue_push_tail (&queue, child_node);
 	}
 
 	/* Sort the queue by source name. */
@@ -2282,33 +2282,24 @@ source_registry_prune_nodes (GNode *node,
 	/* Pop nodes off the head of the queue until the queue is empty.
 	 * If the node has either its own children or the given extension
 	 * name, put it back under the parent node (preserving the sorted
-	 * order).  Otherwise delete the node. */
-	while ((child = g_queue_pop_head (&queue)) != NULL) {
-		ESource *source = E_SOURCE (child->data);
+	 * order).  Otherwise delete the node and its descendants. */
+	while ((child_node = g_queue_pop_head (&queue)) != NULL) {
+		ESource *child = E_SOURCE (child_node->data);
+		gboolean append_child_node = FALSE;
 
-		if (extension_name == NULL) {
-			if (e_source_get_enabled (source)) {
-				g_node_append (node, child);
-			} else {
-				g_object_unref (source);
-				g_node_destroy (child);
-			}
+		if (extension_name == NULL)
+			append_child_node = e_source_get_enabled (child);
 
-		} else if (e_source_has_extension (source, extension_name)) {
-			if (e_source_get_enabled (source)) {
-				g_node_append (node, child);
-			} else {
-				g_object_unref (source);
-				g_node_destroy (child);
-			}
+		else if (e_source_has_extension (child, extension_name))
+			append_child_node = e_source_get_enabled (child);
 
-		} else if (g_node_first_child (child) != NULL) {
-			g_node_append (node, child);
+		else if (g_node_first_child (child_node) != NULL)
+			append_child_node = e_source_get_enabled (child);
 
-		} else {
-			g_object_unref (source);
-			g_node_destroy (child);
-		}
+		if (append_child_node)
+			g_node_append (node, child_node);
+		else
+			e_source_registry_free_display_tree (child_node);
 	}
 
 	return FALSE;
