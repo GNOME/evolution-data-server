@@ -738,21 +738,32 @@ e_authentication_mediator_init (EAuthenticationMediator *mediator)
 		G_DBUS_INTERFACE_SKELETON (mediator->priv->interface),
 		G_DBUS_INTERFACE_SKELETON_FLAGS_HANDLE_METHOD_INVOCATIONS_IN_THREAD);
 
-	g_signal_connect (
+	/* These signal handlers run in separate threads, so
+	 * use g_signal_connect_object() to hopefully prevent
+	 * the signal handler from being dispatched after the
+	 * mediator is finalized.
+	 *
+	 * XXX Not certain if this is fully thread-safe. */
+
+	g_signal_connect_object (
 		mediator->priv->interface, "handle-ready",
-		G_CALLBACK (authentication_mediator_handle_ready), mediator);
+		G_CALLBACK (authentication_mediator_handle_ready),
+		mediator, 0);
 
-	g_signal_connect (
+	g_signal_connect_object (
 		mediator->priv->interface, "handle-cancel",
-		G_CALLBACK (authentication_mediator_handle_cancel), mediator);
+		G_CALLBACK (authentication_mediator_handle_cancel),
+		mediator, 0);
 
-	g_signal_connect (
+	g_signal_connect_object (
 		mediator->priv->interface, "handle-accepted",
-		G_CALLBACK (authentication_mediator_handle_accepted), mediator);
+		G_CALLBACK (authentication_mediator_handle_accepted),
+		mediator, 0);
 
-	g_signal_connect (
+	g_signal_connect_object (
 		mediator->priv->interface, "handle-rejected",
-		G_CALLBACK (authentication_mediator_handle_rejected), mediator);
+		G_CALLBACK (authentication_mediator_handle_rejected),
+		mediator, 0);
 }
 
 /**
