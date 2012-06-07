@@ -1201,6 +1201,17 @@ migrate_parse_url (ParseData *parse_data,
 		&url->params, (GDataForeachFunc)
 		migrate_parse_url_foreach, &foreach_data);
 
+	/* Local providers store their "path" as the url->path */
+	if (g_strcmp0 (url->protocol, "mh") == 0 ||
+	    g_strcmp0 (url->protocol, "mbox") == 0 ||
+	    g_strcmp0 (url->protocol, "maildir") == 0 ||
+	    g_strcmp0 (url->protocol, "spool") == 0 ||
+	    g_strcmp0 (url->protocol, "spooldir") == 0)
+		g_key_file_set_string (
+			backend_key_file,
+			group_name,
+			"Path", url->path);
+
 	uid = e_server_side_source_uid_from_file (backend_file, error);
 
 	if (uid != NULL) {
