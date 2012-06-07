@@ -266,15 +266,6 @@ camel_settings_load_from_url (CamelSettings *settings,
 			"user", url->user,
 			NULL);
 
-	/* Some CamelLocalSettings properties are read directly
-	 * from the CamelURL struct instead of from parameters. */
-
-	if (CAMEL_IS_LOCAL_SETTINGS (settings))
-		g_object_set (
-			settings,
-			"path", url->path,
-			NULL);
-
 	for (ii = 0; ii < n_properties; ii++) {
 		GParamSpec *pspec = properties[ii];
 		const gchar *string;
@@ -394,6 +385,15 @@ camel_settings_load_from_url (CamelSettings *settings,
 			g_value_unset (&value);
 		}
 	}
+
+	/* Some CamelLocalSettings properties are read directly
+	 * from the CamelURL struct instead of from parameters. */
+
+	if (CAMEL_IS_LOCAL_SETTINGS (settings))
+		g_object_set (
+			settings,
+			"path", url->path,
+			NULL);
 
 	g_object_thaw_notify (G_OBJECT (settings));
 
