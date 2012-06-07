@@ -2,7 +2,9 @@
 MARSHAL_GENERATED = e-data-server-ui-marshal.c e-data-server-ui-marshal.h
 @EVO_MARSHAL_RULE@
 
-CPPFLAGS = \
+lib_LTLIBRARIES = libedataserverui-3.0.la
+
+libedataserverui_3_0_la_CPPFLAGS = 		\
 	$(AM_CPPFLAGS)				\
 	-I$(top_srcdir)				\
 	-I$(top_srcdir)/addressbook		\
@@ -15,9 +17,9 @@ CPPFLAGS = \
 	$(E_DATA_SERVER_UI_CFLAGS)		\
 	$(GNOME_KEYRING_CFLAGS)			\
 	$(CAMEL_CFLAGS)				\
-	$(SOUP_CFLAGS)
-
-lib_LTLIBRARIES = libedataserverui-3.0.la
+	$(SOUP_CFLAGS)				\
+	$(CODE_COVERAGE_CFLAGS)			\
+	$(NULL)
 
 libedataserveruiinclude_HEADERS =	\
 	libedataserverui.h		\
@@ -72,11 +74,6 @@ libedataserverui_3_0_la_SOURCES =	\
 	e-source-combo-box.c		\
 	e-tree-model-generator.c	\
 	e-cell-renderer-color.c
-
-libedataserverui_3_0_la_CPPFLAGS = \
-	$(CPPFLAGS) \
-	$(CODE_COVERAGE_CFLAGS) \
-	$(NULL)
 
 libedataserverui_3_0_la_LIBADD = 				\
 	$(top_builddir)/addressbook/libebook/libebook-1.2.la	\
