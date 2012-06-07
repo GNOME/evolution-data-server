@@ -58,6 +58,7 @@ struct _EOnlineAccountsClass {
 #define KEYRING_ITEM_ATTRIBUTE_NAME	"e-source-uid"
 #define KEYRING_ITEM_DISPLAY_FORMAT	"Evolution Data Source %s"
 
+#ifdef HAVE_GOA_PASSWORD_BASED
 static GnomeKeyringPasswordSchema schema = {
 	GNOME_KEYRING_ITEM_GENERIC_SECRET,
 	{
@@ -66,6 +67,7 @@ static GnomeKeyringPasswordSchema schema = {
 		{ NULL, 0 }
 	}
 };
+#endif /* HAVE_GOA_PASSWORD_BASED */
 
 /* Module Entry Points */
 void e_module_load (GTypeModule *type_module);

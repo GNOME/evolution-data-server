@@ -53,6 +53,7 @@ typedef struct {
 	gchar *username;
 } AutodiscoverAuthData;
 
+#ifdef HAVE_GOA_PASSWORD_BASED
 static void
 ews_autodiscover_data_free (AutodiscoverData *data)
 {
@@ -356,6 +357,7 @@ ews_create_msg_for_url (const gchar *url,
 
 	return msg;
 }
+#endif /* HAVE_GOA_PASSWORD_BASED */
 
 void
 goa_ews_autodiscover (GoaObject *goa_object,
