@@ -140,7 +140,6 @@ libcamel_1_2_la_SOURCES = 			\
 	camel-sasl.c				\
 	camel-search-private.c			\
 	camel-search-sql-sexp.c			\
-	camel-search-sql.c			\
 	camel-service.c				\
 	camel-session.c				\
 	camel-settings.c			\
@@ -274,7 +273,6 @@ libcamelinclude_HEADERS =			\
 	camel-sasl.h				\
 	camel-search-private.h			\
 	camel-search-sql-sexp.h			\
-	camel-search-sql.h			\
 	camel-service.h				\
 	camel-session.h				\
 	camel-settings.h			\

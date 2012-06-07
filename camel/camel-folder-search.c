@@ -50,7 +50,6 @@
 #include "camel-store.h"
 #include "camel-vee-folder.h"
 #include "camel-string-utils.h"
-#include "camel-search-sql.h"
 #include "camel-search-sql-sexp.h"
 
 #define d(x)
@@ -462,10 +461,7 @@ camel_folder_search_count (CamelFolderSearch *search,
 		camel_folder_summary_save_to_db (search->folder->summary, error);
 
 		dd(printf ("sexp is : [%s]\n", expr));
-		if (g_getenv("SQL_SEARCH_OLD"))
-			sql_query = camel_sexp_to_sql (expr);
-		else
-			sql_query = camel_sexp_to_sql_sexp (expr);
+		sql_query = camel_sexp_to_sql_sexp (expr);
 		tmp1 = camel_db_sqlize_string (full_name);
 		tmp = g_strdup_printf ("SELECT COUNT (*) FROM %s %s %s", tmp1, sql_query ? "WHERE":"", sql_query?sql_query:"");
 		camel_db_free_sqlized_string (tmp1);
@@ -628,10 +624,7 @@ camel_folder_search_search (CamelFolderSearch *search,
 		camel_folder_summary_save_to_db (search->folder->summary, error);
 
 		dd(printf ("sexp is : [%s]\n", expr));
-		if (g_getenv("SQL_SEARCH_OLD"))
-			sql_query = camel_sexp_to_sql (expr);
-		else
-			sql_query = camel_sexp_to_sql_sexp (expr);
+		sql_query = camel_sexp_to_sql_sexp (expr);
 		tmp1 = camel_db_sqlize_string (full_name);
 		tmp = g_strdup_printf ("SELECT uid FROM %s %s %s", tmp1, sql_query ? "WHERE":"", sql_query?sql_query:"");
 		camel_db_free_sqlized_string (tmp1);
