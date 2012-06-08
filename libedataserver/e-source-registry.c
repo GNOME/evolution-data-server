@@ -2122,7 +2122,7 @@ e_source_registry_ref_source (ESourceRegistry *registry,
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: (transfer full): a sorted list of sources
+ * Returns: (element-type ESource) (transfer full): a sorted list of sources
  *
  * Since: 3.6
  **/
@@ -2326,7 +2326,8 @@ source_registry_prune_nodes (GNode *node,
  * For convenience, e_source_registry_free_display_tree() does all
  * that in one step.
  *
- * Returns: (transfer full): a tree of sources, arranged for display
+ * Returns: (element-type ESource) (transfer full): a tree of sources,
+ *          arranged for display
  *
  * Since: 3.6
  **/
