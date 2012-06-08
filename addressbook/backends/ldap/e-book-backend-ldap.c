@@ -5470,13 +5470,14 @@ e_book_backend_ldap_finalize (GObject *object)
 	g_static_rec_mutex_unlock (&priv->op_hash_mutex);
 	g_static_rec_mutex_free (&priv->op_hash_mutex);
 
+	/* Remove the timeout before unbinding to avoid a race. */
+	if (priv->poll_timeout > 0)
+		g_source_remove (priv->poll_timeout);
+
 	g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (priv->ldap)
 		ldap_unbind (priv->ldap);
 	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-
-	if (priv->poll_timeout > 0)
-		g_source_remove (priv->poll_timeout);
 
 	g_slist_foreach (priv->supported_fields, (GFunc) g_free, NULL);
 	g_slist_free (priv->supported_fields);
