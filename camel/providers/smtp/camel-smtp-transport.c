@@ -459,8 +459,6 @@ smtp_transport_authenticate_sync (CamelService *service,
 		return CAMEL_AUTHENTICATION_ERROR;
 	}
 
-	camel_operation_push_message (cancellable, _("SMTP Authentication"));
-
 	challenge = camel_sasl_challenge_base64_sync (
 		sasl, NULL, cancellable, error);
 	if (challenge) {
@@ -580,8 +578,6 @@ lose:
 	result = CAMEL_AUTHENTICATION_ERROR;
 
 exit:
-	camel_operation_pop_message (cancellable);
-
 	g_object_unref (sasl);
 	g_free (respbuf);
 
