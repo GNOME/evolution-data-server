@@ -1056,6 +1056,12 @@ migrate_parse_url_rename_params (CamelURL *url)
 			&url->params, "use-real-trash-path",
 			g_strdup ("true"), (GDestroyNotify) g_free);
 	}
+
+	/* Remove an empty "namespace" parameter (if present) to avoid
+	 * it being converted to "true" in migrate_parse_url_foreach(). */
+	param = g_datalist_get_data (&url->params, "namespace");
+	if (param != NULL && *param == '\0')
+		g_datalist_remove_data (&url->params, "namespace");
 }
 
 static void
