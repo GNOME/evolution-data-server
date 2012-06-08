@@ -638,6 +638,12 @@ migrate_parse_account (ParseData *parse_data,
 		E_SOURCE_GROUP_NAME,
 		"DisplayName", name);
 
+	/* Identity source gets the same enabled state. */
+	g_key_file_set_boolean (
+		parse_data->identity_key_file,
+		E_SOURCE_GROUP_NAME,
+		"Enabled", enabled);
+
 	/* Identity source is a child of the mail account. */
 	g_key_file_set_string (
 		parse_data->identity_key_file,
@@ -649,6 +655,15 @@ migrate_parse_account (ParseData *parse_data,
 		parse_data->transport_key_file,
 		E_SOURCE_GROUP_NAME,
 		"DisplayName", name);
+
+	/* Always enable the transport source, even if the mail account
+	 * is disabled.  Evolution does not currently honor the enabled
+	 * setting on transports, so disabling the transport would only
+	 * confuse matters should Evolution honor it in the future. */
+	g_key_file_set_boolean (
+		parse_data->transport_key_file,
+		E_SOURCE_GROUP_NAME,
+		"Enabled", "true");
 
 	/* Transport source is a child of the mail account. */
 	g_key_file_set_string (
