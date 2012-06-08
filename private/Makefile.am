@@ -7,7 +7,7 @@ $(GENERATED_DBUS_SOURCE) : Makefile.am org.gnome.evolution.dataserver.Source.xml
 	--c-generate-object-manager \
 	--generate-c-code e-dbus-source \
 	--generate-docbook e-dbus-source \
-	org.gnome.evolution.dataserver.Source.xml \
+	$(top_srcdir)/private/org.gnome.evolution.dataserver.Source.xml \
 	$(NULL)
 
 $(GENERATED_DBUS_SOURCE_MANAGER) : Makefile.am org.gnome.evolution.dataserver.SourceManager.xml
@@ -16,7 +16,7 @@ $(GENERATED_DBUS_SOURCE_MANAGER) : Makefile.am org.gnome.evolution.dataserver.So
 	--c-namespace E_DBus \
 	--generate-c-code e-dbus-source-manager \
 	--generate-docbook e-dbus-source-manager \
-	org.gnome.evolution.dataserver.SourceManager.xml \
+	$(top_srcdir)/private/org.gnome.evolution.dataserver.SourceManager.xml \
 	$(NULL)
 
 $(GENERATED_DBUS_AUTHENTICATOR) : Makefile.am org.gnome.evolution.dataserver.Authenticator.xml
@@ -25,7 +25,7 @@ $(GENERATED_DBUS_AUTHENTICATOR) : Makefile.am org.gnome.evolution.dataserver.Aut
 	--c-namespace E_DBus \
 	--generate-c-code e-dbus-authenticator \
 	--generate-docbook e-dbus-authenticator \
-	org.gnome.evolution.dataserver.Authenticator.xml \
+	$(top_srcdir)/private/org.gnome.evolution.dataserver.Authenticator.xml \
 	$(NULL)
 
 GENERATED_DBUS_SOURCE = \
