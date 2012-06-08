@@ -13,7 +13,8 @@ lib_LTLIBRARIES = libebackend-1.2.la
 libebackend_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)						\
 	-I$(top_srcdir)						\
-	-I$(top_srcdir)/private					\
+	-I$(top_builddir)					\
+	-I$(top_builddir)/private				\
 	-DLIBEBACKEND_COMPILATION				\
 	-DG_LOG_DOMAIN=\"libebackend\"				\
 	-DMODULE_DIRECTORY=\"$(moduledir)\"			\
