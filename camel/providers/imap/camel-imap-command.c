@@ -254,8 +254,10 @@ imap_command_start (CamelImapStore *store,
 	g_free (content);
 
 	if (nwritten == -1) {
+		/* do not pass cancellable, the connection is gone or
+		   the cancellable cancelled, thus there will be no I/O */
 		camel_service_disconnect_sync (
-			CAMEL_SERVICE (store), FALSE, cancellable, NULL);
+			CAMEL_SERVICE (store), FALSE, NULL, NULL);
 		return FALSE;
 	}
 
@@ -308,8 +310,10 @@ camel_imap_command_continuation (CamelImapStore *store,
 
 	if (camel_stream_write (store->ostream, cmd, cmdlen, cancellable, error) == -1 ||
 	    camel_stream_write (store->ostream, "\r\n", 2, cancellable, error) == -1) {
+		/* do not pass cancellable, the connection is gone or
+		   the cancellable cancelled, thus there will be no I/O */
 		camel_service_disconnect_sync (
-			CAMEL_SERVICE (store), FALSE, cancellable, NULL);
+			CAMEL_SERVICE (store), FALSE, NULL, NULL);
 		g_static_rec_mutex_unlock (&store->command_and_response_lock);
 		return NULL;
 	}
@@ -375,9 +379,10 @@ camel_imap_command_response (CamelImapStore *store,
 			if (!err || !*err)
 				err = g_strerror (104);
 
-			/* Connection was lost, no more data to fetch */
+			/* do not pass cancellable, the connection is gone or
+			   the cancellable cancelled, thus there will be no I/O */
 			camel_service_disconnect_sync (
-				service, FALSE, cancellable, NULL);
+				service, FALSE, NULL, NULL);
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_UNAVAILABLE,
@@ -579,9 +584,11 @@ imap_read_untagged (CamelImapStore *store,
 				length - nread,
 				cancellable, error);
 			if (n == -1) {
+				/* do not pass cancellable, the connection is gone or
+				   the cancellable cancelled, thus there will be no I/O */
 				camel_service_disconnect_sync (
 					CAMEL_SERVICE (store),
-					FALSE, cancellable, NULL);
+					FALSE, NULL, NULL);
 				g_string_free (str, TRUE);
 				goto lose;
 			}
@@ -594,9 +601,11 @@ imap_read_untagged (CamelImapStore *store,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_UNAVAILABLE,
 				_("Server response ended too soon."));
+			/* do not pass cancellable, the connection is gone or
+			   the cancellable cancelled, thus there will be no I/O */
 			camel_service_disconnect_sync (
 				CAMEL_SERVICE (store),
-				FALSE, cancellable, NULL);
+				FALSE, NULL, NULL);
 			g_string_free (str, TRUE);
 			goto lose;
 		}

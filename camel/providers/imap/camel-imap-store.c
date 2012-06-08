@@ -840,6 +840,9 @@ imap_store_connect_sync (CamelService *service,
 
 	if (!connect_to_server_wrapper (service, cancellable, error) ||
 	    !imap_auth_loop (service, cancellable, error)) {
+		/* reset cancellable, in case it is cancelled,
+		   thus the disconnect is run */
+		g_cancellable_reset (cancellable);
 		camel_service_disconnect_sync (
 			service, TRUE, cancellable, NULL);
 		return FALSE;
@@ -1014,6 +1017,9 @@ done:
 	camel_store_summary_save ((CamelStoreSummary *) store->summary);
 
 	if (local_error != NULL) {
+		/* reset cancellable, in case it is cancelled,
+		   thus the disconnect is run */
+		g_cancellable_reset (cancellable);
 		camel_service_disconnect_sync (
 			service, TRUE, cancellable, NULL);
 		g_propagate_error (error, local_error);
@@ -3257,8 +3263,10 @@ camel_imap_store_readline (CamelImapStore *store,
 			g_prefix_error (
 				error, _("Server unexpectedly disconnected: "));
 
+		/* do not pass cancellable, the connection is gone or
+		   the cancellable cancelled, thus there will be no I/O */
 		camel_service_disconnect_sync (
-			CAMEL_SERVICE (store), FALSE, cancellable, NULL);
+			CAMEL_SERVICE (store), FALSE, NULL, NULL);
 		g_byte_array_free (ba, TRUE);
 		return -1;
 	}
