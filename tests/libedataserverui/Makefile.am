@@ -1,4 +1,5 @@
 noinst_PROGRAMS = 							\
+	evolution-source-viewer						\
 	test-category-completion					\
 	test-source-combo-box						\
 	test-source-selector						\
@@ -25,6 +26,10 @@ TEST_EDATASERVERUI_LDFLAGS =						\
 	$(CAMEL_LIBS)							\
 	$(GNOME_KEYRING_LIBS)						\
 	$(E_DATA_SERVER_UI_LIBS)
+
+evolution_source_viewer_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
+evolution_source_viewer_SOURCES = evolution-source-viewer.c
+evolution_source_viewer_LDADD = $(TEST_EDATASERVERUI_LDFLAGS)
 
 test_category_completion_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)
 test_category_completion_SOURCES = test-category-completion.c
