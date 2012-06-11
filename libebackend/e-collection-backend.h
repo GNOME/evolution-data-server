@@ -70,6 +70,8 @@ struct _ECollectionBackendClass {
 
 	/* Methods */
 	void		(*populate)		(ECollectionBackend *backend);
+	gchar *		(*dup_resource_id)	(ECollectionBackend *backend,
+						 ESource *child_source);
 
 	/* Signals */
 	void		(*child_added)		(ECollectionBackend *backend,
