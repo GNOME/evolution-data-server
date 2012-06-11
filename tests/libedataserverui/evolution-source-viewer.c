@@ -16,9 +16,7 @@
  *
  */
 
-#if 0
 #include <config.h>
-#endif
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
@@ -782,11 +780,9 @@ main (gint argc,
 	GtkWidget *viewer;
 	GError *error = NULL;
 
-#if 0
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
-#endif
 
 	gtk_init (&argc, &argv);
 

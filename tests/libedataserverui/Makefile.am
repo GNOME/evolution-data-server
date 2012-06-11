@@ -11,6 +11,7 @@ TEST_EDATASERVERUI_CPPFLAGS=						\
 	-I$(top_srcdir)							\
 	-I$(top_srcdir)/addressbook					\
 	-I$(top_builddir)/addressbook					\
+	-DLOCALEDIR=\""$(localedir)"\"					\
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"				\
 	$(CAMEL_CFLAGS)							\
 	$(GNOME_KEYRING_CFLAGS)						\
