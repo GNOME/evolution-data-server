@@ -663,7 +663,7 @@ migrate_parse_account (ParseData *parse_data,
 	g_key_file_set_boolean (
 		parse_data->transport_key_file,
 		E_SOURCE_GROUP_NAME,
-		"Enabled", "true");
+		"Enabled", TRUE);
 
 	/* Transport source is a child of the mail account. */
 	g_key_file_set_string (
