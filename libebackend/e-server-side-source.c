@@ -54,6 +54,7 @@ struct _EServerSideSourcePrivate {
 	gchar *file_contents;
 
 	gboolean allow_auth_prompt;
+	gchar *write_directory;
 };
 
 struct _AsyncClosure {
@@ -69,7 +70,8 @@ enum {
 	PROP_REMOVABLE,
 	PROP_SERVER,
 	PROP_UID,
-	PROP_WRITABLE
+	PROP_WRITABLE,
+	PROP_WRITE_DIRECTORY
 };
 
 static GInitableIface *initable_parent_interface;
@@ -379,6 +381,12 @@ server_side_source_set_property (GObject *object,
 				E_SERVER_SIDE_SOURCE (object),
 				g_value_get_boolean (value));
 			return;
+
+		case PROP_WRITE_DIRECTORY:
+			e_server_side_source_set_write_directory (
+				E_SERVER_SIDE_SOURCE (object),
+				g_value_get_string (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -432,6 +440,13 @@ server_side_source_get_property (GObject *object,
 				e_source_get_writable (
 				E_SOURCE (object)));
 			return;
+
+		case PROP_WRITE_DIRECTORY:
+			g_value_set_string (
+				value,
+				e_server_side_source_get_write_directory (
+				E_SERVER_SIDE_SOURCE (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -470,6 +485,7 @@ server_side_source_finalize (GObject *object)
 
 	g_free (priv->uid);
 	g_free (priv->file_contents);
+	g_free (priv->write_directory);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_server_side_source_parent_class)->finalize (object);
@@ -672,9 +688,11 @@ server_side_source_write (ESource *source,
 	new_data = e_source_to_string (source, NULL);
 
 	/* When writing source data to disk, we always write to the
-	 * user directory even if the key file was originally in the
-	 * system-wide directory.  For that reason, we want to avoid
-	 * writing unmodified data from the system-wide directory. */
+	 * source's specified "write-directory" even if the key file
+	 * was originally read from a different directory.  To avoid
+	 * polluting the write directory with key files identical to
+	 * the original, we check that the data has actually changed
+	 * before writing a copy to disk. */
 
 	replace_file =
 		G_IS_FILE (priv->file) &&
@@ -682,11 +700,16 @@ server_side_source_write (ESource *source,
 
 	if (replace_file) {
 		GFile *file;
+		gchar *filename;
 		gchar *uid;
+
+		g_warn_if_fail (priv->write_directory != NULL);
 
 		uid = e_server_side_source_uid_from_file (priv->file, NULL);
 		g_warn_if_fail (uid != NULL);  /* this should never fail */
-		file = e_server_side_source_new_user_file (uid);
+		filename = g_build_filename (priv->write_directory, uid, NULL);
+		file = g_file_new_for_path (filename);
+		g_free (filename);
 		g_free (uid);
 
 		if (!g_file_equal (file, priv->file)) {
@@ -884,6 +907,19 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
+
+	/* Do not use G_PARAM_CONSTRUCT.  We initialize the
+	 * property ourselves in e_server_side_source_init(). */
+	g_object_class_install_property (
+		object_class,
+		PROP_WRITE_DIRECTORY,
+		g_param_spec_string (
+			"write-directory",
+			"Write Directory",
+			"Directory in which to write changes to disk",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -897,9 +933,14 @@ e_server_side_source_initable_init (GInitableIface *interface)
 static void
 e_server_side_source_init (EServerSideSource *source)
 {
+	const gchar *user_dir;
+
 	source->priv = E_SERVER_SIDE_SOURCE_GET_PRIVATE (source);
 
 	source->priv->node.data = source;
+
+	user_dir = e_server_side_source_get_user_dir ();
+	source->priv->write_directory = g_strdup (user_dir);
 }
 
 /**
@@ -1295,6 +1336,56 @@ e_server_side_source_set_allow_auth_prompt (EServerSideSource *source,
 	source->priv->allow_auth_prompt = allow_auth_prompt;
 
 	g_object_notify (G_OBJECT (source), "allow-auth-prompt");
+}
+
+/**
+ * e_server_side_source_get_write_directory:
+ * @source: an #EServerSideSource
+ *
+ * Returns the local directory path where changes to @source are written.
+ *
+ * By default, changes are written to the local directory path returned by
+ * e_server_side_source_get_user_dir(), but an #ECollectionBackend may wish
+ * to override this to use its own private cache directory for data sources
+ * it creates automatically.
+ *
+ * Returns: the directory where changes are written
+ *
+ * Since: 3.6
+ **/
+const gchar *
+e_server_side_source_get_write_directory (EServerSideSource *source)
+{
+	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE (source), NULL);
+
+	return source->priv->write_directory;
+}
+
+/**
+ * e_server_side_source_set_write_directory:
+ * @source: an #EServerSideSource
+ * @write_directory: the directory where changes are to be written
+ *
+ * Sets the local directory path where changes to @source are to be written.
+ *
+ * By default, changes are written to the local directory path returned by
+ * e_server_side_source_get_user_dir(), but an #ECollectionBackend may wish
+ * to override this to use its own private cache directory for data sources
+ * it creates automatically.
+ *
+ * Since: 3.6
+ **/
+void
+e_server_side_source_set_write_directory (EServerSideSource *source,
+                                          const gchar *write_directory)
+{
+	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
+	g_return_if_fail (write_directory != NULL);
+
+	g_free (source->priv->write_directory);
+	source->priv->write_directory = g_strdup (write_directory);
+
+	g_object_notify (G_OBJECT (source), "write-directory");
 }
 
 /**

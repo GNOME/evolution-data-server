@@ -96,6 +96,11 @@ gboolean	e_server_side_source_get_allow_auth_prompt
 void		e_server_side_source_set_allow_auth_prompt
 						(EServerSideSource *source,
 						 gboolean allow_auth_prompt);
+const gchar *	e_server_side_source_get_write_directory
+						(EServerSideSource *source);
+void		e_server_side_source_set_write_directory
+						(EServerSideSource *source,
+						 const gchar *write_directory);
 void		e_server_side_source_set_removable
 						(EServerSideSource *source,
 						 gboolean removable);
