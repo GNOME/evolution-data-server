@@ -54,6 +54,8 @@ struct _ECollectionBackendPrivate {
 	GWeakRef server;
 	GQueue children;
 
+	gchar *cache_dir;
+
 	/* Remembers memory-only data source UIDs
 	 * based on a server-assigned resource ID. */
 	gchar *collection_filename;
@@ -463,6 +465,8 @@ collection_backend_constructed (GObject *object)
 	ESourceRegistryServer *server;
 	ESource *source;
 	GNode *node;
+	const gchar *collection_uid;
+	const gchar *user_cache_dir;
 	gulong handler_id;
 
 	backend = E_COLLECTION_BACKEND (object);
@@ -471,11 +475,20 @@ collection_backend_constructed (GObject *object)
 	G_OBJECT_CLASS (e_collection_backend_parent_class)->
 		constructed (object);
 
+	source = e_backend_get_source (E_BACKEND (backend));
+
 	collection_backend_load_collection_file (backend);
+
+	/* Determine the backend's cache directory. */
+
+	user_cache_dir = e_get_user_cache_dir ();
+	collection_uid = e_source_get_uid (source);
+	backend->priv->cache_dir = g_build_filename (
+		user_cache_dir, "sources", collection_uid, NULL);
+	g_mkdir_with_parents (backend->priv->cache_dir, 0700);
 
 	/* Emit "child-added" signals for the children we already have. */
 
-	source = e_backend_get_source (E_BACKEND (backend));
 	node = e_server_side_source_get_node (E_SERVER_SIDE_SOURCE (source));
 	node = g_node_first_child (node);
 
@@ -701,6 +714,28 @@ e_collection_backend_ref_server (ECollectionBackend *backend)
 	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), NULL);
 
 	return g_weak_ref_get (&backend->priv->server);
+}
+
+/**
+ * e_collection_backend_get_cache_dir:
+ * @backend: an #ECollectionBackend
+ *
+ * Returns the private cache directory path for @backend, which is named
+ * after the #ESource:uid of @backend's collection #EBackend:source.
+ *
+ * The cache directory is meant to store key files for backend-created
+ * data sources.  See also: e_server_side_source_set_write_directory()
+ *
+ * Returns: the cache directory for @backend
+ *
+ * Since: 3.6
+ **/
+const gchar *
+e_collection_backend_get_cache_dir (ECollectionBackend *backend)
+{
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), NULL);
+
+	return backend->priv->cache_dir;
 }
 
 /**
