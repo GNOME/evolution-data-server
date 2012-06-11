@@ -72,6 +72,8 @@ enum {
 enum {
 	COLUMN_DISPLAY_NAME,
 	COLUMN_SOURCE_UID,
+	COLUMN_REMOVABLE,
+	COLUMN_WRITABLE,
 	COLUMN_SOURCE,
 	NUM_COLUMNS
 };
@@ -154,6 +156,8 @@ source_viewer_update_row (ESourceViewer *viewer,
 	GtkTreeIter iter;
 	const gchar *display_name;
 	const gchar *source_uid;
+	gboolean removable;
+	gboolean writable;
 
 	source_index = viewer->source_index;
 	reference = g_hash_table_lookup (source_index, source);
@@ -168,11 +172,15 @@ source_viewer_update_row (ESourceViewer *viewer,
 
 	source_uid = e_source_get_uid (source);
 	display_name = e_source_get_display_name (source);
+	removable = e_source_get_removable (source);
+	writable = e_source_get_writable (source);
 
 	gtk_tree_store_set (
 		GTK_TREE_STORE (model), &iter,
 		COLUMN_DISPLAY_NAME, display_name,
 		COLUMN_SOURCE_UID, source_uid,
+		COLUMN_REMOVABLE, removable,
+		COLUMN_WRITABLE, writable,
 		COLUMN_SOURCE, source,
 		-1);
 }
@@ -485,6 +493,30 @@ source_viewer_constructed (GObject *object)
 		column, renderer, "text", COLUMN_DISPLAY_NAME);
 
 	column = gtk_tree_view_column_new ();
+	gtk_tree_view_column_set_title (column, _("Flags"));
+	gtk_tree_view_append_column (GTK_TREE_VIEW (widget), column);
+
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	g_object_set (
+		renderer,
+		"stock-id", GTK_STOCK_EDIT,
+		"stock-size", GTK_ICON_SIZE_MENU,
+		NULL);
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_add_attribute (
+		column, renderer, "visible", COLUMN_WRITABLE);
+
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	g_object_set (
+		renderer,
+		"stock-id", GTK_STOCK_DELETE,
+		"stock-size", GTK_ICON_SIZE_MENU,
+		NULL);
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_add_attribute (
+		column, renderer, "visible", COLUMN_REMOVABLE);
+
+	column = gtk_tree_view_column_new ();
 	gtk_tree_view_column_set_title (column, _("Identity"));
 	gtk_tree_view_append_column (GTK_TREE_VIEW (widget), column);
 
@@ -597,6 +629,8 @@ e_source_viewer_init (ESourceViewer *viewer)
 		NUM_COLUMNS,
 		G_TYPE_STRING,		/* COLUMN_DISPLAY_NAME */
 		G_TYPE_STRING,		/* COLUMN_SOURCE_UID */
+		G_TYPE_BOOLEAN,		/* COLUMN_REMOVABLE */
+		G_TYPE_BOOLEAN,		/* COLUMN_WRITABLE */
 		E_TYPE_SOURCE);		/* COLUMN_SOURCE */
 
 	viewer->source_index = g_hash_table_new_full (
