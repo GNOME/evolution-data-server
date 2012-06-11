@@ -5360,8 +5360,7 @@ imapx_parser_thread (gpointer d)
 
 		if (is->parser_quit)
 			g_cancellable_cancel (cancellable);
-
-		if (g_cancellable_is_cancelled (cancellable)) {
+		else if (g_cancellable_is_cancelled (cancellable)) {
 			gint is_empty;
 
 			QUEUE_LOCK (is);
@@ -5399,7 +5398,6 @@ imapx_parser_thread (gpointer d)
 	QUEUE_UNLOCK (is);
 
 	is->parser_quit = FALSE;
-
 	g_signal_emit (is, signals[SHUTDOWN], 0);
 
 	return NULL;
