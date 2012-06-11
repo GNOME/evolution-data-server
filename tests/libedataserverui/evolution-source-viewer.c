@@ -434,6 +434,7 @@ source_viewer_constructed (GObject *object)
 	ESourceViewer *viewer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
+	GtkCellRenderer *renderer;
 	GtkWidget *container;
 	GtkWidget *paned;
 	GtkWidget *widget;
@@ -474,18 +475,23 @@ source_viewer_constructed (GObject *object)
 	viewer->tree_view = widget;  /* do not reference */
 	gtk_widget_show (widget);
 
-	column = gtk_tree_view_column_new_with_attributes (
-		_("Display Name"),
-		gtk_cell_renderer_text_new (),
-		"text", COLUMN_DISPLAY_NAME, NULL);
-	gtk_tree_view_column_set_expand (column, TRUE);
+	column = gtk_tree_view_column_new ();
+	gtk_tree_view_column_set_title (column, _("Display Name"));
 	gtk_tree_view_append_column (GTK_TREE_VIEW (widget), column);
 
-	column = gtk_tree_view_column_new_with_attributes (
-		_("Identity"),
-		gtk_cell_renderer_text_new (),
-		"text", COLUMN_SOURCE_UID, NULL);
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+	gtk_tree_view_column_add_attribute (
+		column, renderer, "text", COLUMN_DISPLAY_NAME);
+
+	column = gtk_tree_view_column_new ();
+	gtk_tree_view_column_set_title (column, _("Identity"));
 	gtk_tree_view_append_column (GTK_TREE_VIEW (widget), column);
+
+	renderer = gtk_cell_renderer_text_new ();
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_add_attribute (
+		column, renderer, "text", COLUMN_SOURCE_UID);
 
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget));
 
