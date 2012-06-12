@@ -1771,5 +1771,7 @@ camel_imapx_store_init (CamelIMAPXStore *istore)
 	istore->last_refresh_time = time (NULL) - (FINFO_REFRESH_INTERVAL + 10);
 	istore->dir_sep = '/';
 	istore->con_man = camel_imapx_conn_manager_new (CAMEL_STORE (istore));
+
+	imapx_utils_init ();
 }
 

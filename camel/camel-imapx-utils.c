@@ -1964,34 +1964,43 @@ guchar imapx_specials[256] = {
 #define token_specials "\n*()[]+"
 #define notid_specials "\x20\r\n()[]+"
 
-void imapx_utils_init (void)
+void
+imapx_utils_init (void)
 {
-	gint i;
-	guchar v;
+	static gsize imapx_utils_initialized = 0;
 
-	for (i = 0; i < 128; i++) {
-		v = 0;
-		if (i >= 1 && i <= 0x7f) {
-			v |= IMAPX_TYPE_CHAR;
-			if (i != 0x0a && i != 0x0d) {
-				v |= IMAPX_TYPE_TEXT_CHAR;
-				if (i != '"' && i != '\\')
-					v |= IMAPX_TYPE_QUOTED_CHAR;
+	if (g_once_init_enter (&imapx_utils_initialized)) {
+		gint i;
+		guchar v;
+
+		for (i = 0; i < 128; i++) {
+			v = 0;
+			if (i >= 1 && i <= 0x7f) {
+				v |= IMAPX_TYPE_CHAR;
+				if (i != 0x0a && i != 0x0d) {
+					v |= IMAPX_TYPE_TEXT_CHAR;
+					if (i != '"' && i != '\\')
+						v |= IMAPX_TYPE_QUOTED_CHAR;
+				}
+				if (i> 0x20 && i <0x7f && strchr (atom_specials, i) == NULL)
+					v |= IMAPX_TYPE_ATOM_CHAR;
+				if (strchr (token_specials, i) != NULL)
+					v |= IMAPX_TYPE_TOKEN_CHAR;
+				if (strchr (notid_specials, i) != NULL)
+					v |= IMAPX_TYPE_NOTID_CHAR;
 			}
-			if (i> 0x20 && i <0x7f && strchr (atom_specials, i) == NULL)
-				v |= IMAPX_TYPE_ATOM_CHAR;
-			if (strchr (token_specials, i) != NULL)
-				v |= IMAPX_TYPE_TOKEN_CHAR;
-			if (strchr (notid_specials, i) != NULL)
-				v |= IMAPX_TYPE_NOTID_CHAR;
+
+			imapx_specials[i] = v;
 		}
 
-		imapx_specials[i] = v;
+		camel_imapx_set_debug_flags ();
+
+		g_once_init_leave (&imapx_utils_initialized, 1);
 	}
-	camel_imapx_set_debug_flags ();
 }
 
-guchar imapx_is_mask (const gchar *p)
+guchar
+imapx_is_mask (const gchar *p)
 {
 	guchar v = 0xff;
 

@@ -115,9 +115,6 @@ camel_imapx_module_init (void)
 	imapx_provider.authtypes = g_list_prepend (imapx_provider.authtypes, &camel_imapx_password_authtype);
 	imapx_provider.translation_domain = GETTEXT_PACKAGE;
 
-	/* TEMPORARY */
-	imapx_utils_init ();
-
 	camel_provider_register (&imapx_provider);
 }
 
