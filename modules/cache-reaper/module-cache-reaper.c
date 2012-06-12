@@ -448,6 +448,7 @@ e_cache_reaper_init (ECacheReaper *extension)
 		"calendar",
 		"mail",
 		"memos",
+		"sources",
 		"tasks"
 	};
 
