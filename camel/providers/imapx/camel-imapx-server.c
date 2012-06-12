@@ -3548,7 +3548,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 			_("Error appending message"));
 		success = FALSE;
 
-	} else if (ic->status->condition == IMAPX_APPENDUID) {
+	} else if (ic->status && ic->status->condition == IMAPX_APPENDUID) {
 		c(is->tagprefix, "Got appenduid %d %d\n", (gint)ic->status->u.appenduid.uidvalidity, (gint)ic->status->u.appenduid.uid);
 		if (ic->status->u.appenduid.uidvalidity == ifolder->uidvalidity_on_server) {
 			CamelFolderChangeInfo *changes;
