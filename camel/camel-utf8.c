@@ -232,7 +232,7 @@ camel_utf7_utf8 (const gchar *ptr)
 			if (c == '&')
 				state = 1;
 			else
-				g_string_append_u (out, c);
+				g_string_append_c (out, c);
 			break;
 		case 1:
 			if (c == '-') {
