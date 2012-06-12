@@ -56,11 +56,9 @@ struct _ECollectionBackendPrivate {
 
 	gchar *cache_dir;
 
-	/* Remembers memory-only data source UIDs
-	 * based on a server-assigned resource ID. */
-	gchar *collection_filename;
-	GKeyFile *collection_key_file;
-	guint save_collection_idle_id;
+	/* Resource ID -> ESource */
+	GHashTable *unclaimed_resources;
+	GMutex *unclaimed_resources_lock;
 
 	gulong source_added_handler_id;
 	gulong source_removed_handler_id;
@@ -84,128 +82,167 @@ G_DEFINE_ABSTRACT_TYPE (
 	e_collection_backend,
 	E_TYPE_BACKEND)
 
-static void
-collection_backend_load_collection_file (ECollectionBackend *backend)
+static GFile *
+collection_backend_new_user_file (ECollectionBackend *backend)
 {
-	ESource *source;
-	const gchar *uid;
-	const gchar *cache_dir;
-	gchar *dirname;
+	GFile *file;
+	gchar *safe_uid;
 	gchar *basename;
 	gchar *filename;
-	GError *error = NULL;
+	const gchar *cache_dir;
 
-	cache_dir = e_get_user_cache_dir ();
-	source = e_backend_get_source (E_BACKEND (backend));
+	/* This is like e_server_side_source_new_user_file()
+	 * except that it uses the backend's cache directory. */
 
-	uid = e_source_get_uid (source);
-	dirname = g_build_filename (cache_dir, "sources", NULL);
-	basename = g_strconcat (uid, ".collection", NULL);
-	filename = g_build_filename (dirname, basename, NULL);
-	backend->priv->collection_filename = filename;  /* takes ownership */
-	g_mkdir_with_parents (dirname, 0700);
+	safe_uid = e_uid_new ();
+	e_filename_make_safe (safe_uid);
+
+	cache_dir = e_collection_backend_get_cache_dir (backend);
+	basename = g_strconcat (safe_uid, ".source", NULL);
+	filename = g_build_filename (cache_dir, basename, NULL);
+
+	file = g_file_new_for_path (filename);
+
 	g_free (basename);
-	g_free (dirname);
+	g_free (filename);
+	g_free (safe_uid);
 
-	g_key_file_load_from_file (
-		backend->priv->collection_key_file,
-		backend->priv->collection_filename,
-		G_KEY_FILE_KEEP_COMMENTS, &error);
-
-	/* Disregard "file not found" errors. */
-	if (g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
-		g_error_free (error);
-	} else if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
-	}
-}
-
-static void
-collection_backend_save_collection_file (ECollectionBackend *backend)
-{
-	gchar *contents;
-	gsize length;
-	GError *error = NULL;
-
-	contents = g_key_file_to_data (
-		backend->priv->collection_key_file, &length, NULL);
-
-	g_file_set_contents (
-		backend->priv->collection_filename,
-		contents, (gssize) length, &error);
-
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
-	}
-
-	g_free (contents);
-}
-
-static gboolean
-collection_backend_save_idle_cb (gpointer user_data)
-{
-	ECollectionBackend *backend;
-
-	backend = E_COLLECTION_BACKEND (user_data);
-	collection_backend_save_collection_file (backend);
-	backend->priv->save_collection_idle_id = 0;
-
-	return FALSE;
+	return file;
 }
 
 static ESource *
-collection_backend_register_resource (ECollectionBackend *backend,
-                                      const gchar *resource_id,
-                                      GError **error)
+collection_backend_new_source (ECollectionBackend *backend,
+                               GFile *file,
+                               GError **error)
 {
 	ESourceRegistryServer *server;
-	ESource *source;
-	gchar *group_name;
-	gchar *uid;
+	ESource *child_source;
+	ESource *collection_source;
+	const gchar *cache_dir;
+	const gchar *collection_uid;
 
 	server = e_collection_backend_ref_server (backend);
-	group_name = g_strdup_printf ("Resource %s", resource_id);
-
-	uid = g_key_file_get_string (
-		backend->priv->collection_key_file,
-		group_name, "SourceUid", NULL);
-
-	/* Verify the UID is not already in use.
-	 * If it is, we'll have to pick a new one. */
-	if (uid != NULL) {
-		source = e_source_registry_server_ref_source (server, uid);
-		if (source != NULL) {
-			g_object_unref (source);
-			g_free (uid);
-			uid = NULL;
-		}
-	}
-
-	if (uid == NULL)
-		uid = e_uid_new ();
-
-	g_key_file_set_string (
-		backend->priv->collection_key_file,
-		group_name, "SourceUid", uid);
-
-	if (backend->priv->save_collection_idle_id == 0) {
-		guint idle_id;
-
-		idle_id = g_idle_add_full (
-			G_PRIORITY_DEFAULT_IDLE,
-			collection_backend_save_idle_cb,
-			g_object_ref (backend),
-			(GDestroyNotify) g_object_unref);
-		backend->priv->save_collection_idle_id = idle_id;
-	}
-
-	source = e_server_side_source_new_memory_only (server, uid, error);
-
-	g_free (uid);
-	g_free (group_name);
+	child_source = e_server_side_source_new (server, file, error);
 	g_object_unref (server);
+
+	if (child_source == NULL)
+		return NULL;
+
+	/* Clients may change the source but may not remove it. */
+	e_server_side_source_set_writable (
+		E_SERVER_SIDE_SOURCE (child_source), TRUE);
+	e_server_side_source_set_removable (
+		E_SERVER_SIDE_SOURCE (child_source), FALSE);
+
+	/* Changes should be written back to the cache directory. */
+	cache_dir = e_collection_backend_get_cache_dir (backend);
+	e_server_side_source_set_write_directory (
+		E_SERVER_SIDE_SOURCE (child_source), cache_dir);
+
+	/* Configure the child source as a collection member. */
+	collection_source = e_backend_get_source (E_BACKEND (backend));
+	collection_uid = e_source_get_uid (collection_source);
+	e_source_set_parent (child_source, collection_uid);
+
+	return child_source;
+}
+
+static void
+collection_backend_load_resources (ECollectionBackend *backend)
+{
+	ESourceRegistryServer *server;
+	ECollectionBackendClass *class;
+	GDir *dir;
+	GFile *file;
+	const gchar *name;
+	const gchar *cache_dir;
+	GError *error = NULL;
+
+	/* This is based on e_source_registry_server_load_file()
+	 * and e_source_registry_server_load_directory(). */
+
+	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->dup_resource_id != NULL);
+
+	cache_dir = e_collection_backend_get_cache_dir (backend);
+
+	dir = g_dir_open (cache_dir, 0, &error);
+	if (error != NULL) {
+		g_warn_if_fail (dir == NULL);
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+		g_error_free (error);
+		return;
+	}
+
+	g_return_if_fail (dir != NULL);
+
+	file = g_file_new_for_path (cache_dir);
+	server = e_collection_backend_ref_server (backend);
+
+	g_mutex_lock (backend->priv->unclaimed_resources_lock);
+
+	while ((name = g_dir_read_name (dir)) != NULL) {
+		GFile *child;
+		ESource *source;
+		gchar *resource_id;
+
+		/* Ignore files with no ".source" suffix. */
+		if (!g_str_has_suffix (name, ".source"))
+			continue;
+
+		child = g_file_get_child (file, name);
+		source = collection_backend_new_source (backend, child, &error);
+		g_object_unref (child);
+
+		if (error != NULL) {
+			g_warn_if_fail (source == NULL);
+			g_warning ("%s: %s", G_STRFUNC, error->message);
+			g_error_free (error);
+			continue;
+		}
+
+		g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
+
+		resource_id = class->dup_resource_id (backend, source);
+
+		/* Hash table takes ownership of the resource ID. */
+		if (resource_id != NULL)
+			g_hash_table_insert (
+				backend->priv->unclaimed_resources,
+				resource_id, g_object_ref (source));
+
+		g_object_unref (source);
+	}
+
+	g_mutex_unlock (backend->priv->unclaimed_resources_lock);
+
+	g_object_unref (file);
+	g_object_unref (server);
+}
+
+static ESource *
+collection_backend_claim_resource (ECollectionBackend *backend,
+                                   const gchar *resource_id,
+                                   GError **error)
+{
+	GHashTable *unclaimed_resources;
+	ESource *source;
+
+	g_mutex_lock (backend->priv->unclaimed_resources_lock);
+
+	unclaimed_resources = backend->priv->unclaimed_resources;
+	source = g_hash_table_lookup (unclaimed_resources, resource_id);
+
+	if (source != NULL) {
+		g_object_ref (source);
+		g_hash_table_remove (unclaimed_resources, resource_id);
+	} else {
+		GFile *file = collection_backend_new_user_file (backend);
+		source = collection_backend_new_source (backend, file, error);
+		g_object_unref (file);
+	}
+
+	g_mutex_unlock (backend->priv->unclaimed_resources_lock);
 
 	return source;
 }
@@ -436,6 +473,10 @@ collection_backend_dispose (GObject *object)
 	while (!g_queue_is_empty (&priv->children))
 		g_object_unref (g_queue_pop_head (&priv->children));
 
+	g_mutex_lock (priv->unclaimed_resources_lock);
+	g_hash_table_remove_all (priv->unclaimed_resources);
+	g_mutex_unlock (priv->unclaimed_resources_lock);
+
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_collection_backend_parent_class)->dispose (object);
 }
@@ -447,12 +488,8 @@ collection_backend_finalize (GObject *object)
 
 	priv = E_COLLECTION_BACKEND_GET_PRIVATE (object);
 
-	g_free (priv->collection_filename);
-	g_key_file_free (priv->collection_key_file);
-
-	/* The idle source ID should be zero since the idle
-	 * source itself holds a reference on the backend. */
-	g_warn_if_fail (priv->save_collection_idle_id == 0);
+	g_hash_table_destroy (priv->unclaimed_resources);
+	g_mutex_free (priv->unclaimed_resources_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_collection_backend_parent_class)->finalize (object);
@@ -477,8 +514,6 @@ collection_backend_constructed (GObject *object)
 
 	source = e_backend_get_source (E_BACKEND (backend));
 
-	collection_backend_load_collection_file (backend);
-
 	/* Determine the backend's cache directory. */
 
 	user_cache_dir = e_get_user_cache_dir ();
@@ -486,6 +521,9 @@ collection_backend_constructed (GObject *object)
 	backend->priv->cache_dir = g_build_filename (
 		user_cache_dir, "sources", collection_uid, NULL);
 	g_mkdir_with_parents (backend->priv->cache_dir, 0700);
+
+	/* This requires the cache directory to be set. */
+	collection_backend_load_resources (backend);
 
 	/* Emit "child-added" signals for the children we already have. */
 
@@ -637,8 +675,17 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 static void
 e_collection_backend_init (ECollectionBackend *backend)
 {
+	GHashTable *unclaimed_resources;
+
+	unclaimed_resources = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) g_object_unref);
+
 	backend->priv = E_COLLECTION_BACKEND_GET_PRIVATE (backend);
-	backend->priv->collection_key_file = g_key_file_new ();
+	backend->priv->unclaimed_resources = unclaimed_resources;
+	backend->priv->unclaimed_resources_lock = g_mutex_new ();
 }
 
 /**
@@ -646,10 +693,10 @@ e_collection_backend_init (ECollectionBackend *backend)
  * @backend: an #ECollectionBackend
  * @resource_id: a stable and unique resource ID
  *
- * Creates a new memory-only #EServerSideSource as a child of the collection
+ * Creates a new #EServerSideSource as a child of the collection
  * #EBackend:source owned by @backend.  If possible, the #EServerSideSource
- * is assigned a previously used #ESource:uid based on @resource_id so that
- * locally cached data can be reused.
+ * is drawn from a cache of previously used sources indexed by @resource_id
+ * so that locally cached data from previous sessions can be reused.
  *
  * The returned data source should be passed to
  * e_source_registry_server_add_source() to export it over D-Bus.
@@ -664,16 +711,15 @@ e_collection_backend_new_child (ECollectionBackend *backend,
 {
 	ESource *collection_source;
 	ESource *child_source;
-	const gchar *collection_uid;
 	GError *error = NULL;
 
 	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), NULL);
 	g_return_val_if_fail (resource_id != NULL, NULL);
 
-	/* This being a memory-only data source, creating the instance
-	 * should never fail but we'll check for errors just the same.
+	/* This being a newly-created or existing data source, claiming
+	 * it should never fail but we'll check for errors just the same.
 	 * It's unlikely enough that we don't need a GError parameter. */
-	child_source = collection_backend_register_resource (
+	child_source = collection_backend_claim_resource (
 		backend, resource_id, &error);
 
 	if (error != NULL) {
@@ -684,8 +730,6 @@ e_collection_backend_new_child (ECollectionBackend *backend,
 	}
 
 	collection_source = e_backend_get_source (E_BACKEND (backend));
-	collection_uid = e_source_get_uid (collection_source);
-	e_source_set_parent (child_source, collection_uid);
 
 	g_print ("%s: Pairing %s with resource %s\n",
 		e_source_get_display_name (collection_source),
