@@ -47,9 +47,11 @@
 #define GOOGLE_CALENDAR_BACKEND_NAME	"caldav"
 #define GOOGLE_CALENDAR_HOST		"www.google.com"
 #define GOOGLE_CALENDAR_CALDAV_PATH	"/calendar/dav/%s/events"
+#define GOOGLE_CALENDAR_RESOURCE_ID	"Calendar"
 
 /* Contacts Configuration Details */
 #define GOOGLE_CONTACTS_BACKEND_NAME	"google"
+#define GOOGLE_CONTACTS_RESOURCE_ID	"Contacts"
 
 typedef struct _EGoogleBackend EGoogleBackend;
 typedef struct _EGoogleBackendClass EGoogleBackendClass;
@@ -102,6 +104,7 @@ google_backend_add_calendar (ECollectionBackend *backend)
 	const gchar *backend_name;
 	const gchar *extension_name;
 	const gchar *identity;
+	const gchar *resource_id;
 	gchar *path;
 
 	/* FIXME As a future enhancement, we should query Google
@@ -110,7 +113,8 @@ google_backend_add_calendar (ECollectionBackend *backend)
 
 	collection_source = e_backend_get_source (E_BACKEND (backend));
 
-	source = e_collection_backend_new_child (backend, "Calendar");
+	resource_id = GOOGLE_CALENDAR_RESOURCE_ID;
+	source = e_collection_backend_new_child (backend, resource_id);
 	e_source_set_display_name (source, _("Calendar"));
 
 	collection_extension = e_source_get_extension (
@@ -170,10 +174,12 @@ google_backend_add_contacts (ECollectionBackend *backend)
 	ESourceCollection *collection_extension;
 	const gchar *backend_name;
 	const gchar *extension_name;
+	const gchar *resource_id;
 
 	collection_source = e_backend_get_source (E_BACKEND (backend));
 
-	source = e_collection_backend_new_child (backend, "Contacts");
+	resource_id = GOOGLE_CONTACTS_RESOURCE_ID;
+	source = e_collection_backend_new_child (backend, resource_id);
 	e_source_set_display_name (source, _("Contacts"));
 
 	/* Add the address book source to the collection. */
@@ -229,6 +235,26 @@ google_backend_populate (ECollectionBackend *backend)
 	/* Chain up to parent's populate() method. */
 	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->
 		populate (backend);
+}
+
+static gchar *
+google_backend_dup_resource_id (ECollectionBackend *backend,
+                                ESource *child_source)
+{
+	const gchar *extension_name;
+
+	/* XXX This is trivial for now since we only
+	 *     add one calendar and one address book. */
+
+	extension_name = E_SOURCE_EXTENSION_CALENDAR;
+	if (e_source_has_extension (child_source, extension_name))
+		return g_strdup (GOOGLE_CALENDAR_RESOURCE_ID);
+
+	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
+	if (e_source_has_extension (child_source, extension_name))
+		return g_strdup (GOOGLE_CONTACTS_RESOURCE_ID);
+
+	return NULL;
 }
 
 static void
@@ -289,6 +315,7 @@ e_google_backend_class_init (EGoogleBackendClass *class)
 
 	backend_class = E_COLLECTION_BACKEND_CLASS (class);
 	backend_class->populate = google_backend_populate;
+	backend_class->dup_resource_id = google_backend_dup_resource_id;
 	backend_class->child_added = google_backend_child_added;
 }
 
