@@ -183,6 +183,11 @@ folder_summary_dispose (GObject *object)
 
 	priv = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (object);
 
+	if (priv->timeout_handle) {
+		g_source_remove (priv->timeout_handle);
+		priv->timeout_handle = 0;
+	}
+
 	if (priv->filter_index != NULL) {
 		g_object_unref (priv->filter_index);
 		priv->filter_index = NULL;
@@ -232,9 +237,6 @@ folder_summary_finalize (GObject *object)
 {
 	CamelFolderSummary *summary = CAMEL_FOLDER_SUMMARY (object);
 	CamelFolderSummaryPrivate *priv = summary->priv;
-
-	if (priv->timeout_handle)
-		g_source_remove (priv->timeout_handle);
 
 	g_hash_table_destroy (priv->uids);
 	g_hash_table_destroy (priv->loaded_infos);
