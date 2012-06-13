@@ -700,17 +700,17 @@ server_side_source_write (ESource *source,
 
 	if (replace_file) {
 		GFile *file;
+		gchar *basename;
 		gchar *filename;
-		gchar *uid;
 
 		g_warn_if_fail (priv->write_directory != NULL);
 
-		uid = e_server_side_source_uid_from_file (priv->file, NULL);
-		g_warn_if_fail (uid != NULL);  /* this should never fail */
-		filename = g_build_filename (priv->write_directory, uid, NULL);
+		basename = g_file_get_basename (priv->file);
+		filename = g_build_filename (
+			priv->write_directory, basename, NULL);
 		file = g_file_new_for_path (filename);
 		g_free (filename);
-		g_free (uid);
+		g_free (basename);
 
 		if (!g_file_equal (file, priv->file)) {
 			g_object_unref (priv->file);
