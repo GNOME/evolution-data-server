@@ -79,8 +79,6 @@ struct _CamelIMAPXServer {
 
 	CamelIMAPXNamespaceList *nsl;
 
-	IMAPXExtUntaggedResponseHander untagged_handler_func;
-
 	/* incoming jobs */
 	GQueue jobs;
 
@@ -239,10 +237,6 @@ gboolean	camel_imapx_server_rename_folder
 struct _IMAPXJobQueueInfo *
 		camel_imapx_server_get_job_queue_info
 						(CamelIMAPXServer *is);
-
-void		camel_imapx_server_set_extended_token_handler
-						(CamelIMAPXServer *is,
-						 IMAPXExtUntaggedResponseHander handler_func);
 
 G_END_DECLS
 
