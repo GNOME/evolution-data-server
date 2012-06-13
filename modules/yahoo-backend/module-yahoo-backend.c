@@ -47,6 +47,11 @@
 #define YAHOO_CALENDAR_BACKEND_NAME	"caldav"
 #define YAHOO_CALENDAR_HOST		"caldav.calendar.yahoo.com"
 #define YAHOO_CALENDAR_CALDAV_PATH	"/dav/%s/Calendar/%s"
+#define YAHOO_CALENDAR_RESOURCE_ID	"Calendar"
+
+/* Tasks Configuration Details
+ * (mostly the same as calendar) */
+#define YAHOO_TASKS_RESOURCE_ID		"Tasks"
 
 typedef struct _EYahooBackend EYahooBackend;
 typedef struct _EYahooBackendClass EYahooBackendClass;
@@ -176,6 +181,7 @@ yahoo_backend_add_calendar (ECollectionBackend *backend)
 	ESourceRegistryServer *server;
 	const gchar *backend_name;
 	const gchar *extension_name;
+	const gchar *resource_id;
 
 	/* XXX We could just stick a [Calendar] and [Task List] extension
 	 *     into the same ESource since all other settings are exactly
@@ -189,7 +195,8 @@ yahoo_backend_add_calendar (ECollectionBackend *backend)
 
 	/* Add Yahoo! Calendar */
 
-	source = e_collection_backend_new_child (backend, "Calendar");
+	resource_id = YAHOO_CALENDAR_RESOURCE_ID;
+	source = e_collection_backend_new_child (backend, resource_id);
 	e_source_set_display_name (source, _("Calendar"));
 
 	extension_name = E_SOURCE_EXTENSION_CALENDAR;
@@ -203,7 +210,8 @@ yahoo_backend_add_calendar (ECollectionBackend *backend)
 
 	/* Add Yahoo! Tasks */
 
-	source = e_collection_backend_new_child (backend, "Tasks");
+	resource_id = YAHOO_TASKS_RESOURCE_ID;
+	source = e_collection_backend_new_child (backend, resource_id);
 	e_source_set_display_name (source, _("Tasks"));
 
 	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
@@ -232,6 +240,26 @@ yahoo_backend_populate (ECollectionBackend *backend)
 	if (list == NULL)
 		yahoo_backend_add_calendar (backend);
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+}
+
+static gchar *
+yahoo_backend_dup_resource_id (ECollectionBackend *backend,
+                               ESource *child_source)
+{
+	const gchar *extension_name;
+
+	/* XXX This is trival for now since we only
+	 *     add one calendar and one task list. */
+
+	extension_name = E_SOURCE_EXTENSION_CALENDAR;
+	if (e_source_has_extension (child_source, extension_name))
+		return g_strdup (YAHOO_CALENDAR_RESOURCE_ID);
+
+	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
+	if (e_source_has_extension (child_source, extension_name))
+		return g_strdup (YAHOO_TASKS_RESOURCE_ID);
+
+	return NULL;
 }
 
 static void
@@ -302,6 +330,7 @@ e_yahoo_backend_class_init (EYahooBackendClass *class)
 
 	backend_class = E_COLLECTION_BACKEND_CLASS (class);
 	backend_class->populate = yahoo_backend_populate;
+	backend_class->dup_resource_id = yahoo_backend_dup_resource_id;
 	backend_class->child_added = yahoo_backend_child_added;
 }
 
