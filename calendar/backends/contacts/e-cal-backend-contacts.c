@@ -1346,7 +1346,6 @@ e_cal_backend_contacts_constructed (GObject *object)
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->
 		constructed (object);
-	setup_alarm (object, NULL);
 }
 
 /* Object initialization function for the contacts backend */
