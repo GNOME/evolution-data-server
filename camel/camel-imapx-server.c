@@ -167,7 +167,7 @@ enum {
 	LAST_SIGNAL
 };
 
-/* structs for the untagged response handling */
+/* untagged response handling */
 
 /* May need to turn this into separate,
  * subclassable GObject with proper getter/setter
@@ -196,6 +196,60 @@ struct _CamelIMAPXServerUntaggedContext {
 	struct _status_info *sinfo;
 };
 
+/* internal untagged handler prototypes */
+static gboolean imapx_untagged_bye (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_capability (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_exists (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_expunge (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_fetch (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_flags (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_list (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_lsub (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_namespace (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_ok_no_bad (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_preauth (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_recent (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_status (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+static gboolean imapx_untagged_vanished (CamelIMAPXServer *is, GCancellable *cancellable, GError **error);
+
+enum {
+	IMAPX_UNTAGGED_ID_BAD = 0,
+	IMAPX_UNTAGGED_ID_BYE,
+	IMAPX_UNTAGGED_ID_CAPABILITY,
+	IMAPX_UNTAGGED_ID_EXISTS,
+	IMAPX_UNTAGGED_ID_EXPUNGE,
+	IMAPX_UNTAGGED_ID_FETCH,
+	IMAPX_UNTAGGED_ID_FLAGS,
+	IMAPX_UNTAGGED_ID_LIST,
+	IMAPX_UNTAGGED_ID_LSUB,
+	IMAPX_UNTAGGED_ID_NAMESPACE,
+	IMAPX_UNTAGGED_ID_NO,
+	IMAPX_UNTAGGED_ID_OK,
+	IMAPX_UNTAGGED_ID_PREAUTH,
+	IMAPX_UNTAGGED_ID_RECENT,
+	IMAPX_UNTAGGED_ID_STATUS,
+	IMAPX_UNTAGGED_ID_VANISHED,
+	IMAPX_UNTAGGED_LAST_ID
+};
+
+static const CamelIMAPXUntaggedRespHandlerDesc _untagged_descr[] = {
+	{imapx_untagged_ok_no_bad, NULL, FALSE}, /* BAD */
+	{imapx_untagged_bye, NULL, FALSE}, /* BYE */
+	{imapx_untagged_capability, NULL, FALSE}, /* CAPABILITY */
+	{imapx_untagged_exists, NULL, TRUE}, /* EXISTS */
+	{imapx_untagged_expunge, NULL, TRUE}, /* EXPUNGE */
+	{imapx_untagged_fetch, NULL, TRUE}, /* FETCH */
+	{imapx_untagged_flags, NULL, TRUE}, /* FLAGS */
+	{imapx_untagged_list, NULL, TRUE}, /* LIST */
+	{imapx_untagged_lsub, CAMEL_IMAPX_UNTAGGED_LIST, TRUE /*overridden*/ }, /* LSUB */
+	{imapx_untagged_namespace, NULL, FALSE}, /* NAMESPACE */
+	{imapx_untagged_ok_no_bad, NULL, FALSE}, /* NO */
+	{imapx_untagged_ok_no_bad, NULL, FALSE}, /* OK */
+	{imapx_untagged_preauth, CAMEL_IMAPX_UNTAGGED_OK, TRUE /*overridden*/ }, /* PREAUTH */
+	{imapx_untagged_recent, NULL, TRUE}, /* RECENT */
+	{imapx_untagged_status, NULL, TRUE}, /* STATUS */
+	{imapx_untagged_vanished, NULL, TRUE}, /* VANISHED */
+};
 
 static guint signals[LAST_SIGNAL];
 
@@ -329,10 +383,80 @@ static gboolean imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolea
 typedef struct _CamelIMAPXServerPrivate CamelIMAPXServerPrivate;
 struct _CamelIMAPXServerPrivate {
 	CamelIMAPXServerUntaggedContext *context;
+	GHashTable *untagged_handlers;
 };
 
 #define CAMEL_IMAPX_SERVER_GET_PRIVATE(obj)  (G_TYPE_INSTANCE_GET_PRIVATE ((obj), CAMEL_TYPE_IMAPX_SERVER, CamelIMAPXServerPrivate))
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
+
+static const CamelIMAPXUntaggedRespHandlerDesc*
+replace_untagged_descriptor (GHashTable *untagged_handlers,
+                             const gchar* key,
+                             const CamelIMAPXUntaggedRespHandlerDesc *descr)
+{
+	const CamelIMAPXUntaggedRespHandlerDesc *prev = NULL;
+
+	g_assert (untagged_handlers != NULL);
+	g_assert (key != NULL);
+	/* descr may be NULL (to delete a handler) */
+
+	prev = g_hash_table_lookup (untagged_handlers, key);
+	g_hash_table_replace (untagged_handlers,
+	                      g_strdup (key),
+	                      (const gpointer) descr);
+	return prev;
+}
+
+static void
+add_initial_untagged_descriptor (GHashTable *untagged_handlers,
+                                 const gchar *key,
+                                 guint untagged_id)
+{
+	const CamelIMAPXUntaggedRespHandlerDesc *prev = NULL;
+	const CamelIMAPXUntaggedRespHandlerDesc *cur  = NULL;
+
+	g_assert (untagged_handlers != NULL);
+	g_assert (key != NULL);
+	g_assert (untagged_id < IMAPX_UNTAGGED_LAST_ID);
+
+	cur =  &(_untagged_descr[untagged_id]);
+	prev = replace_untagged_descriptor (untagged_handlers,
+	                                    key,
+	                                    cur);
+	/* there must not be any previous handler here */
+	g_assert (prev == NULL);
+}
+
+static GHashTable*
+create_initial_untagged_handler_table (void)
+{
+	GHashTable *uh = g_hash_table_new_full (g_str_hash,
+	                                        g_str_equal,
+	                                        g_free,
+	                                        NULL);
+
+	/* CamelIMAPXServer predefined handlers*/
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_BAD, IMAPX_UNTAGGED_ID_BAD);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_BYE, IMAPX_UNTAGGED_ID_BYE);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_CAPABILITY, IMAPX_UNTAGGED_ID_CAPABILITY);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_EXISTS, IMAPX_UNTAGGED_ID_EXISTS);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_EXPUNGE, IMAPX_UNTAGGED_ID_EXPUNGE);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_FETCH, IMAPX_UNTAGGED_ID_FETCH);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_FLAGS, IMAPX_UNTAGGED_ID_FLAGS);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_LIST, IMAPX_UNTAGGED_ID_LIST);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_LSUB, IMAPX_UNTAGGED_ID_LSUB);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_NAMESPACE, IMAPX_UNTAGGED_ID_NAMESPACE);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_NO, IMAPX_UNTAGGED_ID_NO);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_OK, IMAPX_UNTAGGED_ID_OK);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_PREAUTH, IMAPX_UNTAGGED_ID_PREAUTH);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_RECENT, IMAPX_UNTAGGED_ID_RECENT);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_STATUS, IMAPX_UNTAGGED_ID_STATUS);
+	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_VANISHED, IMAPX_UNTAGGED_ID_VANISHED);
+
+	g_assert (g_hash_table_size (uh) == IMAPX_UNTAGGED_LAST_ID);
+
+	return uh;
+}
 
 static void
 get_message_data_free (GetMessageData *data)
@@ -1783,6 +1907,7 @@ imapx_untagged (CamelIMAPXServer *is,
 	CamelService *service = NULL;
 	CamelSettings *settings = NULL;
 	guchar *p = NULL, c;
+	const gchar *token = NULL;
 	gboolean ok = FALSE;
 
 	service = CAMEL_SERVICE (is->store);
@@ -1829,71 +1954,45 @@ imapx_untagged (CamelIMAPXServer *is,
 	while ((c = *p))
 		*p++ = toupper((gchar) c);
 
-	switch (imapx_tokenise ((const gchar *) priv->context->token, priv->context->len)) {
-	case IMAPX_CAPABILITY:
-		ok = imapx_untagged_capability (is, cancellable, error);
-		goto exit;
-	case IMAPX_EXPUNGE:
-		ok = imapx_untagged_expunge (is, cancellable, error);
+	token = (const gchar*) priv->context->token; /* FIXME need 'guchar *token' here */
+	while (token != NULL) {
+		CamelIMAPXUntaggedRespHandlerDesc *desc = NULL;
+
+		desc = g_hash_table_lookup (priv->untagged_handlers,
+		                            token);
+		if (desc == NULL) {
+			/* unknown response, just ignore it */
+			c(is->tagprefix, "unknown token: %s\n", priv->context->token);
+			break;
+		}
+		if (desc->handler == NULL) {
+			/* no handler function, ignore token */
+			c(is->tagprefix, "no handler for token: %s\n", priv->context->token);
+			break;
+		}
+
+		/* call the handler function */
+		ok = desc->handler (is, cancellable, error);
 		if (! ok)
 			goto exit;
-		break;
-	case IMAPX_VANISHED:
-		ok = imapx_untagged_vanished (is, cancellable, error);
-		if (! ok)
+
+		/* is there another handler next-in-line? */
+		token = desc->next_response;
+		if (token != NULL) {
+			/* TODO do we need to update 'priv->context->token'
+			 *      to the value of 'token' here, before
+			 *      calling the handler next-in-line for this
+			 *      specific run of imapx_untagged()?
+			 *      It has not been done in the original code
+			 *      in the "fall through" situation in the
+			 *      token switch statement, which is what
+			 *      we're mimicking here
+			 */
+			continue;
+		}
+
+		if (! desc->skip_stream_when_done)
 			goto exit;
-		break;
-	case IMAPX_NAMESPACE:
-		ok = imapx_untagged_namespace (is, cancellable, error);
-		goto exit;
-	case IMAPX_EXISTS:
-		ok = imapx_untagged_exists (is, cancellable, error);
-		if (! ok)
-			goto exit;
-		break;
-	case IMAPX_FLAGS:
-		ok = imapx_untagged_flags (is, cancellable, error);
-		if (! ok)
-			goto exit;
-		break;
-	case IMAPX_FETCH:
-		ok = imapx_untagged_fetch (is, cancellable, error);
-		if (! ok)
-			goto exit;
-		break;
-	case IMAPX_LSUB:
-		ok = imapx_untagged_lsub (is, cancellable, error);
-		if (! ok)
-			goto exit;
-		/* fall through... */
-	case IMAPX_LIST:
-		ok = imapx_untagged_list (is, cancellable, error);
-		if (! ok)
-			goto exit;
-		break;
-	case IMAPX_RECENT:
-		ok = imapx_untagged_recent (is, cancellable, error);
-		if (! ok)
-			goto exit;
-		break;
-	case IMAPX_STATUS:
-		if (! imapx_untagged_status (is, cancellable, error))
-			return FALSE;
-		break;
-	case IMAPX_BYE:
-		ok = imapx_untagged_bye (is, cancellable, error);
-		goto exit;
-	case IMAPX_PREAUTH:
-		ok = imapx_untagged_preauth (is, cancellable, error);
-		if (! ok)
-			goto exit;
-		/* fall through... */
-	case IMAPX_OK: case IMAPX_NO: case IMAPX_BAD:
-		ok = imapx_untagged_ok_no_bad (is, cancellable, error);
-		goto exit;
-	default:
-		/* unknown response, just ignore it */
-		c(is->tagprefix, "unknown token: %s\n", priv->context->token);
 	}
 
 	ok = (camel_imapx_stream_skip (is->stream, cancellable, error) == 0);
@@ -5774,6 +5873,7 @@ imapx_server_finalize (GObject *object)
 
 	if (priv->context != NULL)
 		g_free (priv->context);
+	g_hash_table_destroy (priv->untagged_handlers);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
@@ -5843,6 +5943,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 {
 	CamelIMAPXServerPrivate *priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
 	priv->context = NULL;
+	priv->untagged_handlers = create_initial_untagged_handler_table ();
 
 	is->queue = camel_imapx_command_queue_new ();
 	is->active = camel_imapx_command_queue_new ();
