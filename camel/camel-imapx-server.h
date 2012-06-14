@@ -65,6 +65,25 @@ struct _IMAPXJobQueueInfo;
 typedef gboolean (*CamelIMAPXUntaggedRespHandler) (CamelIMAPXServer *server,
                                                    GCancellable *cancellable,
                                                    GError **error);
+
+/**
+ * CamelIMAPXUntaggedRespHandlerDesc:
+ * @handler: an untagged response handler function for #CamelIMAPXServer
+ * @next_response: the IMAP untagged code to call a registered
+ *                 handler for directly after successfully
+ *                 running @handler. If not NULL, @skip_stream_when_done
+ *                 for the current handler has no effect
+ * @skip_stream_when_done: whether or not to skip the current IMAP
+ *                         untagged response in the #CamelIMAPXStream.
+ *                         Set to TRUE if your handler does not eat
+ *                         the stream up to the next response token
+ *
+ * IMAP untagged response handler function descriptor. Use in conjunction
+ * with camel_imapx_server_register_untagged_handler() to register a new
+ * handler function for a given untagged response code
+ *
+ * Since: 3.6
+ */
 typedef struct _CamelIMAPXUntaggedRespHandlerDesc CamelIMAPXUntaggedRespHandlerDesc;
 struct _CamelIMAPXUntaggedRespHandlerDesc {
 	const CamelIMAPXUntaggedRespHandler handler;
