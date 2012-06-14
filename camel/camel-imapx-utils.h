@@ -77,6 +77,23 @@ typedef enum _camel_imapx_id_t {
 	IMAPX_VANISHED,
 } camel_imapx_id_t;
 
+#define CAMEL_IMAPX_UNTAGGED_BAD        "BAD"
+#define CAMEL_IMAPX_UNTAGGED_BYE        "BYE"
+#define CAMEL_IMAPX_UNTAGGED_CAPABILITY "CAPABILITY"
+#define CAMEL_IMAPX_UNTAGGED_EXISTS     "EXISTS"
+#define CAMEL_IMAPX_UNTAGGED_EXPUNGE    "EXPUNGE"
+#define CAMEL_IMAPX_UNTAGGED_FETCH      "FETCH"
+#define CAMEL_IMAPX_UNTAGGED_FLAGS      "FLAGS"
+#define CAMEL_IMAPX_UNTAGGED_LIST       "LIST"
+#define CAMEL_IMAPX_UNTAGGED_LSUB       "LSUB"
+#define CAMEL_IMAPX_UNTAGGED_NAMESPACE  "NAMESPACE"
+#define CAMEL_IMAPX_UNTAGGED_NO         "NO"
+#define CAMEL_IMAPX_UNTAGGED_OK         "OK"
+#define CAMEL_IMAPX_UNTAGGED_PREAUTH    "PREAUTH"
+#define CAMEL_IMAPX_UNTAGGED_RECENT     "RECENT"
+#define CAMEL_IMAPX_UNTAGGED_STATUS     "STATUS"
+#define CAMEL_IMAPX_UNTAGGED_VANISHED   "VANISHED"
+
 /* str MUST be in upper case, tokenised using gperf function */
 camel_imapx_id_t imapx_tokenise (register const gchar *str, register guint len);
 
