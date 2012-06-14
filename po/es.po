@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-06-12 11:51+0000\n"
-"PO-Revision-Date: 2012-06-12 17:23+0200\n"
+"POT-Creation-Date: 2012-06-14 08:42+0000\n"
+"PO-Revision-Date: 2012-06-14 13:45+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -30,11 +30,11 @@ msgstr ""
 #: ../addressbook/backends/file/e-book-backend-file.c:116
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:278
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:939
-#: ../addressbook/libebook/e-book-client.c:108
+#: ../addressbook/libebook/e-book-client.c:106
 #: ../addressbook/libedata-book/e-data-book.c:432
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:567
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:597
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:616
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:566
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:596
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:615
 #: ../calendar/libecal/e-cal.c:4029 ../calendar/libecal/e-cal-client.c:148
 #: ../camel/camel-imapx-command.c:594
 #: ../camel/providers/imap/camel-imap-command.c:521
@@ -202,34 +202,34 @@ msgstr "Falló al crear el DN para el usuario «%s»"
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "Falló al crear el recurso «%s» con el estado HTTP: %d (%s)"
 
-#: ../addressbook/libebook/e-book-client.c:97
+#: ../addressbook/libebook/e-book-client.c:95
 msgid "No such book"
 msgstr "No existe la libreta"
 
-#: ../addressbook/libebook/e-book-client.c:99
+#: ../addressbook/libebook/e-book-client.c:97
 #: ../addressbook/libedata-book/e-data-book.c:306
 msgid "Contact not found"
 msgstr "Contacto no encontrado"
 
-#: ../addressbook/libebook/e-book-client.c:101
+#: ../addressbook/libebook/e-book-client.c:99
 #: ../addressbook/libedata-book/e-data-book.c:307
 msgid "Contact ID already exists"
 msgstr "Ya existe el ID del contacto"
 
-#: ../addressbook/libebook/e-book-client.c:103
+#: ../addressbook/libebook/e-book-client.c:101
 msgid "No such source"
 msgstr "No existe la fuente"
 
-#: ../addressbook/libebook/e-book-client.c:105
+#: ../addressbook/libebook/e-book-client.c:103
 #: ../addressbook/libedata-book/e-data-book.c:323
 msgid "No space"
 msgstr "Sin espacio"
 
-#: ../addressbook/libebook/e-book-client.c:490
+#: ../addressbook/libebook/e-book-client.c:488
 msgid "Failed to run book factory"
 msgstr "Falló al ejecutar la fábrica de la libreta"
 
-#: ../addressbook/libebook/e-book-client.c:2281
+#: ../addressbook/libebook/e-book-client.c:2280
 #: ../calendar/libecal/e-cal-client.c:4616
 msgid "Cannot get connection to view"
 msgstr "No se puede obtener conexión para ver"
@@ -701,7 +701,7 @@ msgid "Birth Date"
 msgstr "Fecha de nacimiento"
 
 #: ../addressbook/libebook/e-contact.c:284
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:922
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:919
 msgid "Anniversary"
 msgstr "Aniversario"
 
@@ -1052,17 +1052,17 @@ msgstr "Falta el UID de la fuente"
 msgid "No such source for UID '%s'"
 msgstr "No existe una fuente para el UDI «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:565
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:564
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "No se puede llegar al servidor (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:595
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:594
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "Falló al conectar a un servidor usando SSL: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:600
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
 msgid ""
 "Failed to connect to a server using SSL. One possible reason is an invalid "
 "certificate being used by the server. If this is expected, like self-signed "
@@ -1075,13 +1075,13 @@ msgstr ""
 "validez del certificado seleccionando la opción «Ignorar el certificado SSL "
 "no válido» en las propiedades"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:613
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:612
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Se devolvió un código de estado HTTP %d inesperado (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2303
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2673
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2302
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2672
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1091,32 +1091,32 @@ msgstr ""
 "lectura.\n"
 "Mensaje de error: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3669
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3668
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV no soporta adiciones"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3771
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3770
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV no soporta modificaciones"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3939
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3938
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV no soporta eliminaciones"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4598
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4597
 msgid "Calendar doesn't support Free/Busy"
 msgstr "El calendario no soporta disponibilidad"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:924
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:921
 msgid "Birthday"
 msgstr "Cumpleaños"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:960
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:957
 #, c-format
 msgid "Birthday: %s"
 msgstr "Cumpleaños: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:991
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:988
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aniversario: %s"
@@ -1130,28 +1130,28 @@ msgstr "No se pueden guardar los datos del calendario: URI malformado."
 msgid "Cannot save calendar data"
 msgstr "No se pueden guardar los datos del calendario"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:481
+#: ../calendar/backends/http/e-cal-backend-http.c:480
 #, c-format
 msgid "Malformed URI: %s"
 msgstr "URI mal formado: %s"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:542
+#: ../calendar/backends/http/e-cal-backend-http.c:541
 #, c-format
 msgid "Redirected to Invalid URI"
 msgstr "Redirigido a un URI no válido"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:579
+#: ../calendar/backends/http/e-cal-backend-http.c:578
 #, c-format
 msgid "Bad file format."
 msgstr "Formato de archivo erróneo."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:589
+#: ../calendar/backends/http/e-cal-backend-http.c:588
 #, c-format
 msgid "Not a calendar."
 msgstr "No es un calendario."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:934
-#: ../calendar/backends/http/e-cal-backend-http.c:938
+#: ../calendar/backends/http/e-cal-backend-http.c:933
+#: ../calendar/backends/http/e-cal-backend-http.c:937
 #: ../calendar/backends/weather/e-cal-backend-weather.c:523
 msgid "Could not create cache file"
 msgstr "No se pudo crear el archivo de caché"
@@ -1751,10 +1751,10 @@ msgstr ""
 #: ../camel/camel-imapx-folder.c:721 ../camel/camel-imapx-store.c:273
 #: ../camel/camel-imapx-store.c:1363 ../camel/camel-imapx-store.c:1451
 #: ../camel/camel-imapx-store.c:1497
-#: ../camel/providers/imap/camel-imap-store.c:1244
-#: ../camel/providers/imap/camel-imap-store.c:2000
-#: ../camel/providers/imap/camel-imap-store.c:2467
-#: ../camel/providers/imap/camel-imap-store.c:3217
+#: ../camel/providers/imap/camel-imap-store.c:1246
+#: ../camel/providers/imap/camel-imap-store.c:2002
+#: ../camel/providers/imap/camel-imap-store.c:2469
+#: ../camel/providers/imap/camel-imap-store.c:3219
 #: ../camel/providers/pop3/camel-pop3-folder.c:525
 #: ../camel/providers/pop3/camel-pop3-folder.c:655
 #: ../camel/providers/pop3/camel-pop3-folder.c:838
@@ -2134,7 +2134,7 @@ msgid "IMAP server %s does not support %s authentication"
 msgstr "El servidor IMAP %s no soporta la autenticación %s"
 
 #: ../camel/camel-imapx-server.c:3028 ../camel/camel-session.c:483
-#: ../camel/providers/imap/camel-imap-store.c:1148
+#: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/pop3/camel-pop3-store.c:249
 #: ../camel/providers/pop3/camel-pop3-store.c:568
 #: ../camel/providers/smtp/camel-smtp-transport.c:458
@@ -2143,13 +2143,13 @@ msgid "No support for %s authentication"
 msgstr "No hay soporte para la autenticación %s"
 
 #: ../camel/camel-imapx-server.c:3047
-#: ../camel/providers/imap/camel-imap-store.c:1116
+#: ../camel/providers/imap/camel-imap-store.c:1118
 #: ../camel/providers/nntp/camel-nntp-store.c:494
 msgid "Cannot authenticate without a username"
 msgstr "No se pudo autenticar sin un nombre de usuario"
 
 #: ../camel/camel-imapx-server.c:3056
-#: ../camel/providers/imap/camel-imap-store.c:1124
+#: ../camel/providers/imap/camel-imap-store.c:1126
 #: ../camel/providers/nntp/camel-nntp-store.c:503
 #: ../camel/providers/pop3/camel-pop3-store.c:493
 #: ../camel/providers/pop3/camel-pop3-store.c:513
@@ -2286,8 +2286,8 @@ msgstr ""
 "plano."
 
 #: ../camel/camel-imapx-store.c:342
-#: ../camel/providers/imap/camel-imap-store.c:2031
-#: ../camel/providers/imap/camel-imap-store.c:2225
+#: ../camel/providers/imap/camel-imap-store.c:2033
+#: ../camel/providers/imap/camel-imap-store.c:2227
 #, c-format
 msgid "No such folder %s"
 msgstr "No existe la carpeta %s"
@@ -2295,7 +2295,7 @@ msgstr "No existe la carpeta %s"
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/camel-imapx-store.c:367 ../camel/camel-imapx-store.c:838
 #: ../camel/providers/imap/camel-imap-store.c:272
-#: ../camel/providers/imap/camel-imap-store.c:2638
+#: ../camel/providers/imap/camel-imap-store.c:2640
 #: ../camel/providers/local/camel-maildir-folder.c:474
 #: ../camel/providers/local/camel-maildir-store.c:301
 #: ../camel/providers/local/camel-maildir-store.c:679
@@ -2317,8 +2317,8 @@ msgid "No such folder: %s"
 msgstr "No existe la carpeta: %s"
 
 #: ../camel/camel-imapx-store.c:1384
-#: ../camel/providers/imap/camel-imap-store.c:2044
-#: ../camel/providers/imap/camel-imap-store.c:2482
+#: ../camel/providers/imap/camel-imap-store.c:2046
+#: ../camel/providers/imap/camel-imap-store.c:2484
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
@@ -2326,14 +2326,14 @@ msgstr ""
 "El nombre de la carpeta «%s» es no válido porque contiene el carácter «%c»"
 
 #: ../camel/camel-imapx-store.c:1395
-#: ../camel/providers/imap/camel-imap-store.c:2495
+#: ../camel/providers/imap/camel-imap-store.c:2497
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Carpeta raíz desconocida: %s"
 
 #: ../camel/camel-imapx-store.c:1405
-#: ../camel/providers/imap/camel-imap-store.c:2107
-#: ../camel/providers/imap/camel-imap-store.c:2546
+#: ../camel/providers/imap/camel-imap-store.c:2109
+#: ../camel/providers/imap/camel-imap-store.c:2548
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "No está permitido que la carpeta raíz contenga subcarpetas"
@@ -3476,7 +3476,7 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Para leer y almacenar correo en los servidores IMAP."
 
-#: ../camel/providers/imap/camel-imap-store.c:2156
+#: ../camel/providers/imap/camel-imap-store.c:2158
 #: ../camel/providers/local/camel-maildir-store.c:268
 #: ../camel/providers/local/camel-mbox-store.c:421
 #: ../camel/providers/local/camel-mh-store.c:558
@@ -3484,17 +3484,17 @@ msgstr "Para leer y almacenar correo en los servidores IMAP."
 msgid "Cannot create folder '%s': folder exists."
 msgstr "No se pudo crear la carpeta «%s»: la carpeta existe."
 
-#: ../camel/providers/imap/camel-imap-store.c:2919
+#: ../camel/providers/imap/camel-imap-store.c:2921
 #, c-format
 msgid "Retrieving list of folders at '%s'"
 msgstr "Obteniendo la lista de carpetas de «%s»"
 
-#: ../camel/providers/imap/camel-imap-store.c:3261
+#: ../camel/providers/imap/camel-imap-store.c:3263
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "El servidor se desconectó inesperadamente"
 
-#: ../camel/providers/imap/camel-imap-store.c:3264
+#: ../camel/providers/imap/camel-imap-store.c:3266
 msgid "Server unexpectedly disconnected: "
 msgstr "El servidor se desconectó inesperadamente: "
 
@@ -4712,6 +4712,42 @@ msgstr "El comando RSET ha fallado: "
 msgid "QUIT command failed: "
 msgstr "El comando QUIT ha fallado: "
 
+#: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
+#| msgid "Contact ID already exists"
+msgid "Contact UID of a user"
+msgstr "UID del contacto de un usuario"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
+msgid "Birthday and anniversary reminder"
+msgstr "Recordatorio de cumpleaños y aniversarios"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
+msgid "Whether to set a reminder for birthdays and anniversaries"
+msgstr ""
+"Indica si debe establecer un recordatorio para cumpleaños y aniversarios"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
+msgid "Birthday and anniversary reminder value"
+msgstr "Valor del recordatorio de cumpleaños y aniversarios"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
+msgid "Number of units for determining a birthday or anniversary reminder"
+msgstr ""
+"Número de unidades para determinar el recordatorio de un cumpleaños o "
+"aniversario"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
+msgid "Birthday and anniversary reminder units"
+msgstr "Unidades del recordatorio de cumpleaños y aniversarios"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
+msgid ""
+"Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
+"\"days\""
+msgstr ""
+"Unidades para el recordatorio de cumpleaños o aniversarios, «minutes», «hours» "
+"o «days»"
+
 #: ../libebackend/e-authentication-mediator.c:145
 #: ../libebackend/e-authentication-mediator.c:156
 #: ../libebackend/e-authentication-mediator.c:612
@@ -5294,7 +5330,7 @@ msgid "Address Book"
 msgstr "Libreta de direcciones"
 
 #: ../libedataserverui/e-name-selector-dialog.c:407
-#: ../modules/google-backend/module-google-backend.c:177
+#: ../modules/google-backend/module-google-backend.c:183
 msgid "Contacts"
 msgstr "Contactos"
 
@@ -5316,25 +5352,25 @@ msgid "Error loading address book: %s"
 msgstr "Error al cargar la libreta de direcciones: %s"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2907
+#: ../libedataserverui/e-name-selector-entry.c:2959
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "E_xpandir %s en línea"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2922
+#: ../libedataserverui/e-name-selector-entry.c:2974
 #, c-format
 msgid "Cop_y %s"
 msgstr "_Copiar %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2932
+#: ../libedataserverui/e-name-selector-entry.c:2984
 #, c-format
 msgid "C_ut %s"
 msgstr "Cor_tar %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2949
+#: ../libedataserverui/e-name-selector-entry.c:3001
 #, c-format
 msgid "_Edit %s"
 msgstr "_Editar %s"
@@ -5383,8 +5419,8 @@ msgstr "_Destino"
 msgid "Select destination"
 msgstr "Seleccione destino"
 
-#: ../modules/google-backend/module-google-backend.c:114
-#: ../modules/yahoo-backend/module-yahoo-backend.c:193
+#: ../modules/google-backend/module-google-backend.c:118
+#: ../modules/yahoo-backend/module-yahoo-backend.c:200
 msgid "Calendar"
 msgstr "Calendario"
 
@@ -5424,17 +5460,17 @@ msgstr "Falló al buscar el elemento «Account»"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Falló al buscar ASUrl y OABUrl en la respuesta de la autodetección"
 
-#: ../modules/yahoo-backend/module-yahoo-backend.c:207
+#: ../modules/yahoo-backend/module-yahoo-backend.c:215
 msgid "Tasks"
 msgstr "Tareas"
 
-#: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:49
-#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:53
+#: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:47
+#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:51
 msgid "Keep running after the last client is closed"
 msgstr "Mantener en ejecución después de cerrar el último cliente"
 
-#: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:51
-#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:55
+#: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:49
+#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:53
 msgid "Wait running until at least one client is connected"
 msgstr "Mantener en ejecución hasta que haya al menos un cliente conectado"
 
@@ -5443,7 +5479,6 @@ msgid "Evolution Source Viewer"
 msgstr "Visor de fuentes de Evolution"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:487
-#| msgid "Family Name"
 msgid "Display Name"
 msgstr "Mostrar nombre"
 
