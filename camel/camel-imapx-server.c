@@ -1914,8 +1914,12 @@ imapx_untagged (CamelIMAPXServer *is,
 	settings = camel_service_get_settings (service);
 	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
 
-	if (priv->context != NULL)
-		g_free (priv->context);
+	/* If priv->context is not NULL here, it basically means that
+	 * imapx_untagged() got called concurrently for the same
+	 * CamelIMAPXServer instance. Should this ever happen, then
+	 * we will need to protect this data structure with locks
+	 */
+	g_return_val_if_fail (priv->context == NULL, FALSE);
 	priv->context = g_new0 (CamelIMAPXServerUntaggedContext, 1);
 
 	priv->context->lsub = FALSE;
