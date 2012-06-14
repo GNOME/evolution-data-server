@@ -6963,3 +6963,50 @@ camel_imapx_server_get_job_queue_info (CamelIMAPXServer *is)
 
 	return jinfo;
 }
+
+/**
+ * camel_imapx_server_register_untagged_handler:
+ * @is: a #CamelIMAPXServer instance
+ * @untagged_response: a string representation of the IMAP
+ *                     untagged response code. Must be
+ *                     all-uppercase with underscores allowed
+ *                     (see RFC 3501)
+ * @desc: a #CamelIMAPXUntaggedRespHandlerDesc handler description
+ *        structure. The descriptor structure is expected to
+ *        remain stable over the lifetime of the #CamelIMAPXServer
+ *        instance it was registered with. It is the responsibility
+ *        of the caller to ensure this
+ *
+ * Register a new handler function for IMAP untagged responses.
+ * Pass in a NULL descriptor to delete an existing handler (the
+ * untagged response will remain known, but will no longer be acted
+ * upon if the handler is deleted). The return value is intended
+ * to be used in cases where e.g. an extension to existing handler
+ * code is implemented with just some new code to be run before
+ * or after the original handler code
+ *
+ * Returns: the #CamelIMAPXUntaggedRespHandlerDesc previously
+ *          registered for this untagged response, if any,
+ *          NULL otherwise.
+ *
+ * Since: 3.6
+ */
+const CamelIMAPXUntaggedRespHandlerDesc*
+camel_imapx_server_register_untagged_handler (CamelIMAPXServer *is,
+                                              const gchar *untagged_response,
+                                              const CamelIMAPXUntaggedRespHandlerDesc *desc)
+{
+	CamelIMAPXServerPrivate *priv = NULL;
+	const CamelIMAPXUntaggedRespHandlerDesc *previous = NULL;
+
+	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_assert (untagged_response != NULL);
+	/* desc may be NULL */
+
+	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
+
+	previous = replace_untagged_descriptor (priv->untagged_handlers,
+	                                        untagged_response,
+	                                        desc);
+	return previous;
+}

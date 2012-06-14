@@ -244,6 +244,13 @@ struct _IMAPXJobQueueInfo *
 		camel_imapx_server_get_job_queue_info
 						(CamelIMAPXServer *is);
 
+
+const CamelIMAPXUntaggedRespHandlerDesc*
+		camel_imapx_server_register_untagged_handler
+						(CamelIMAPXServer *is,
+						 const gchar *untagged_response,
+						 const CamelIMAPXUntaggedRespHandlerDesc *desc);
+
 G_END_DECLS
 
 #endif /* CAMEL_IMAPX_SERVER_H */
