@@ -61,10 +61,16 @@ typedef struct _CamelIMAPXServerClass CamelIMAPXServerClass;
 typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
 struct _IMAPXJobQueueInfo;
 
-typedef gboolean (*IMAPXExtUntaggedResponseHander)
-					(CamelIMAPXServer *server,
-					 GCancellable *cancellable,
-					 GError **error);
+/* untagged response handling */
+typedef gboolean (*CamelIMAPXUntaggedRespHandler) (CamelIMAPXServer *server,
+                                                   GCancellable *cancellable,
+                                                   GError **error);
+typedef struct _CamelIMAPXUntaggedRespHandlerDesc CamelIMAPXUntaggedRespHandlerDesc;
+struct _CamelIMAPXUntaggedRespHandlerDesc {
+	const CamelIMAPXUntaggedRespHandler handler;
+	const gchar *next_response;
+	gboolean skip_stream_when_done;
+};
 
 struct _CamelIMAPXServer {
 	CamelObject parent;
