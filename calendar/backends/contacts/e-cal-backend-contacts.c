@@ -31,7 +31,6 @@
 #include "e-cal-backend-contacts.h"
 
 #include <glib/gi18n-lib.h>
-#include <gconf/gconf-client.h>
 #include <libsoup/soup.h>
 
 #include <libebook/libebook.h>
@@ -69,10 +68,8 @@ struct _ECalBackendContactsPrivate {
 	GHashTable *zones;
 
 	/* properties related to track alarm settings for this backend */
-	GConfClient *conf_client;
-	guint notifyid1;
-	guint notifyid2;
-	guint notifyid3;
+	GSettings *settings;
+	guint notifyid;
 	guint update_alarms_id;
 	gboolean alarm_enabled;
 	gint alarm_interval;
@@ -743,15 +740,23 @@ update_tracked_alarms_cb (gpointer user_data)
 	return FALSE;
 }
 
+#define BA_CONF_ENABLED		"contacts-reminder-enabled"
+#define BA_CONF_INTERVAL	"contacts-reminder-interval"
+#define BA_CONF_UNITS		"contacts-reminder-units"
+
 static void
-alarm_config_changed_cb (GConfClient *client,
-                         guint cnxn_id,
-                         GConfEntry *entry,
+alarm_config_changed_cb (GSettings *settings,
+                         const gchar *key,
                          gpointer user_data)
 {
 	ECalBackendContacts *cbc = user_data;
 
 	g_return_if_fail (cbc != NULL);
+
+	if (g_strcmp0 (key, BA_CONF_ENABLED) != 0 &&
+	    g_strcmp0 (key, BA_CONF_INTERVAL) != 0 &&
+	    g_strcmp0 (key, BA_CONF_UNITS) != 0)
+		return;
 
 	setup_alarm (cbc, NULL);
 
@@ -773,23 +778,16 @@ setup_alarm (ECalBackendContacts *cbc,
 	if (!comp || cbc->priv->alarm_interval == -1) {
 		gchar *str;
 
-		#define BA_CONF_DIR		"/apps/evolution/calendar/other"
-		#define BA_CONF_ENABLED		BA_CONF_DIR "/use_ba_reminder"
-		#define BA_CONF_INTERVAL	BA_CONF_DIR "/ba_reminder_interval"
-		#define BA_CONF_UNITS		BA_CONF_DIR "/ba_reminder_units"
-
 		if (cbc->priv->alarm_interval == -1) {
 			/* initial setup, hook callback for changes too */
-			gconf_client_add_dir (cbc->priv->conf_client, BA_CONF_DIR, GCONF_CLIENT_PRELOAD_NONE, NULL);
-			cbc->priv->notifyid1 = gconf_client_notify_add (cbc->priv->conf_client, BA_CONF_ENABLED,  alarm_config_changed_cb, cbc, NULL, NULL);
-			cbc->priv->notifyid2 = gconf_client_notify_add (cbc->priv->conf_client, BA_CONF_INTERVAL, alarm_config_changed_cb, cbc, NULL, NULL);
-			cbc->priv->notifyid3 = gconf_client_notify_add (cbc->priv->conf_client, BA_CONF_UNITS,    alarm_config_changed_cb, cbc, NULL, NULL);
+			cbc->priv->notifyid = g_signal_connect (cbc->priv->settings,
+				"changed", G_CALLBACK (alarm_config_changed_cb), cbc);
 		}
 
-		cbc->priv->alarm_enabled = gconf_client_get_bool (cbc->priv->conf_client, BA_CONF_ENABLED, NULL);
-		cbc->priv->alarm_interval = gconf_client_get_int (cbc->priv->conf_client, BA_CONF_INTERVAL, NULL);
+		cbc->priv->alarm_enabled = g_settings_get_boolean (cbc->priv->settings, BA_CONF_ENABLED);
+		cbc->priv->alarm_interval = g_settings_get_int (cbc->priv->settings, BA_CONF_INTERVAL);
 
-		str = gconf_client_get_string (cbc->priv->conf_client, BA_CONF_UNITS, NULL);
+		str = g_settings_get_string (cbc->priv->settings, BA_CONF_UNITS);
 		if (str && !strcmp (str, "days"))
 			cbc->priv->alarm_units = CAL_DAYS;
 		else if (str && !strcmp (str, "hours"))
@@ -804,11 +802,6 @@ setup_alarm (ECalBackendContacts *cbc,
 
 		if (!comp)
 			return;
-
-		#undef BA_CONF_DIR
-		#undef BA_CONF_ENABLED
-		#undef BA_CONF_INTERVAL
-		#undef BA_CONF_UNITS
 	}
 
 	/* ensure no alarms left */
@@ -852,6 +845,10 @@ setup_alarm (ECalBackendContacts *cbc,
 	e_cal_component_add_alarm (comp, alarm);
 	e_cal_component_alarm_free (alarm);
 }
+
+#undef BA_CONF_ENABLED
+#undef BA_CONF_INTERVAL
+#undef BA_CONF_UNITS
 
 /* Contact -> Event creator */
 static ECalComponent *
@@ -1325,14 +1322,10 @@ e_cal_backend_contacts_finalize (GObject *object)
 	g_hash_table_destroy (priv->addressbooks);
 	g_hash_table_destroy (priv->tracked_contacts);
 	g_hash_table_destroy (priv->zones);
-	if (priv->notifyid1)
-		gconf_client_notify_remove (priv->conf_client, priv->notifyid1);
-	if (priv->notifyid2)
-		gconf_client_notify_remove (priv->conf_client, priv->notifyid2);
-	if (priv->notifyid3)
-		gconf_client_notify_remove (priv->conf_client, priv->notifyid3);
+	if (priv->notifyid)
+		g_signal_handler_disconnect (priv->settings, priv->notifyid);
 
-	g_object_unref (priv->conf_client);
+	g_object_unref (priv->settings);
 	g_mutex_free (priv->mutex);
 
 	/* Chain up to parent's finalize() method. */
@@ -1353,6 +1346,7 @@ e_cal_backend_contacts_constructed (GObject *object)
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->
 		constructed (object);
+	setup_alarm (object, NULL);
 }
 
 /* Object initialization function for the contacts backend */
@@ -1381,10 +1375,8 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) free_zone);
 
-	cbc->priv->conf_client = gconf_client_get_default ();
-	cbc->priv->notifyid1 = 0;
-	cbc->priv->notifyid2 = 0;
-	cbc->priv->notifyid3 = 0;
+	cbc->priv->settings = g_settings_new ("org.gnome.evolution-data-server.calendar");
+	cbc->priv->notifyid = 0;
 	cbc->priv->update_alarms_id = 0;
 	cbc->priv->alarm_enabled = FALSE;
 	cbc->priv->alarm_interval = -1;

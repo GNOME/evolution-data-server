@@ -21,8 +21,6 @@
 #include <stdlib.h>
 #include <glib/gi18n.h>
 
-#include <dbus/dbus-glib.h>
-
 #ifdef ENABLE_MAINTAINER_MODE
 #include <gtk/gtk.h>
 #endif
@@ -105,9 +103,6 @@ main (gint argc,
 #else
 	g_type_init ();
 #endif
-
-	/* this is to initialize threading for dbus-glib used by GConf */
-	dbus_g_thread_init ();
 
 	context = g_option_context_new (NULL);
 	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);

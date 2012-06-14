@@ -105,10 +105,8 @@ EBook_1_2_gir_INCLUDES = GObject-2.0 GLib-2.0 libxml2-2.0 \
 	Gio-2.0 \
 	$(NULL)
 libxml_include = `$(PKG_CONFIG) --cflags libxml-2.0`
-gconf_include = `$(PKG_CONFIG) --cflags gconf-2.0`
 EBook_1_2_gir_CFLAGS = $(INCLUDES) \
 		       $(libxml_include) \
-		       $(gconf_include) \
 		       -I$(top_srcdir) \
 		       -I$(top_builddir) \
 		       -I$(top_srcdir)/addressbook/ \

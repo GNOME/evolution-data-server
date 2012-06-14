@@ -179,6 +179,8 @@ camel/providers/sendmail/camel-sendmail-provider.c
 camel/providers/sendmail/camel-sendmail-transport.c
 camel/providers/smtp/camel-smtp-provider.c
 camel/providers/smtp/camel-smtp-transport.c
+data/org.gnome.evolution-data-server.addressbook.gschema.xml.in
+data/org.gnome.evolution-data-server.calendar.gschema.xml.in
 libebackend/e-authentication-mediator.c
 libebackend/e-authentication-session.c
 libebackend/e-server-side-source.c

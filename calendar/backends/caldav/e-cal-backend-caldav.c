@@ -25,7 +25,6 @@
 #include <config.h>
 #include <string.h>
 #include <unistd.h>
-#include <gconf/gconf-client.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 

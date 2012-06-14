@@ -24,7 +24,6 @@
 #include <config.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
-#include <gconf/gconf-client.h>
 
 #include <camel/camel.h>
 #include <libebackend/libebackend.h>
@@ -40,6 +39,8 @@
 struct _ENameSelectorEntryPrivate {
 
 	ESourceRegistry *registry;
+	gint minimum_query_length;
+	gboolean show_address;
 
 	PangoAttrList *attr_list;
 	EContactStore *contact_store;
@@ -71,7 +72,9 @@ struct _ENameSelectorEntryPrivate {
 
 enum {
 	PROP_0,
-	PROP_REGISTRY
+	PROP_REGISTRY,
+	PROP_MINIMUM_QUERY_LENGTH,
+	PROP_SHOW_ADDRESS
 };
 
 enum {
@@ -80,8 +83,6 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
-static guint COMPLETION_CUE_MIN_LEN = 0;
-static gboolean COMPLETION_FORCE_SHOW_ADDRESS = FALSE;
 #define ENS_DEBUG(x)
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -122,6 +123,18 @@ name_selector_entry_set_property (GObject *object,
 				E_NAME_SELECTOR_ENTRY (object),
 				g_value_get_object (value));
 			return;
+
+		case PROP_MINIMUM_QUERY_LENGTH:
+			e_name_selector_entry_set_minimum_query_length (
+				E_NAME_SELECTOR_ENTRY (object),
+				g_value_get_int (value));
+			return;
+
+		case PROP_SHOW_ADDRESS:
+			e_name_selector_entry_set_show_address (
+				E_NAME_SELECTOR_ENTRY (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -138,6 +151,20 @@ name_selector_entry_get_property (GObject *object,
 			g_value_set_object (
 				value,
 				e_name_selector_entry_get_registry (
+				E_NAME_SELECTOR_ENTRY (object)));
+			return;
+
+		case PROP_MINIMUM_QUERY_LENGTH:
+			g_value_set_int (
+				value,
+				e_name_selector_entry_get_minimum_query_length (
+				E_NAME_SELECTOR_ENTRY (object)));
+			return;
+
+		case PROP_SHOW_ADDRESS:
+			g_value_set_boolean (
+				value,
+				e_name_selector_entry_get_show_address (
 				E_NAME_SELECTOR_ENTRY (object)));
 			return;
 	}
@@ -308,6 +335,29 @@ e_name_selector_entry_class_init (ENameSelectorEntryClass *class)
 			E_TYPE_SOURCE_REGISTRY,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_MINIMUM_QUERY_LENGTH,
+		g_param_spec_int (
+			"minimum-query-length",
+			"Minimum Query Length",
+			NULL,
+			1, G_MAXINT,
+			3,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SHOW_ADDRESS,
+		g_param_spec_boolean (
+			"show-address",
+			"Show Address",
+			NULL,
+			FALSE,
+			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
 	signals[UPDATED] = g_signal_new (
@@ -818,7 +868,8 @@ build_textrep_for_contact (EContact *contact,
 }
 
 static gboolean
-contact_match_cue (EContact *contact,
+contact_match_cue (ENameSelectorEntry *name_selector_entry,
+		   EContact *contact,
                    const gchar *cue_str,
                    EContactField *matched_field,
                    gint *matched_field_rank)
@@ -834,7 +885,7 @@ contact_match_cue (EContact *contact,
 	g_assert (contact);
 	g_assert (cue_str);
 
-	if (g_utf8_strlen (cue_str, -1) < COMPLETION_CUE_MIN_LEN)
+	if (g_utf8_strlen (cue_str, -1) < name_selector_entry->priv->minimum_query_length)
 		return FALSE;
 
 	cue_len = strlen (cue_str);
@@ -916,7 +967,7 @@ find_existing_completion (ENameSelectorEntry *name_selector_entry,
 		if (!current_contact)
 			continue;
 
-		matches = contact_match_cue (current_contact, cue_str, &current_field, &current_field_rank);
+		matches = contact_match_cue (name_selector_entry, current_contact, cue_str, &current_field, &current_field_rank);
 		if (matches && current_field_rank < best_field_rank) {
 			best_contact    = current_contact;
 			best_field_rank = current_field_rank;
@@ -1025,7 +1076,7 @@ type_ahead_complete (ENameSelectorEntry *name_selector_entry)
 	text = gtk_entry_get_text (GTK_ENTRY (name_selector_entry));
 	get_range_at_position (text, cursor_pos, &range_start, &range_end);
 	range_len = range_end - range_start;
-	if (range_len < COMPLETION_CUE_MIN_LEN)
+	if (range_len < priv->minimum_query_length)
 		return;
 
 	destination = find_destination_at_position (name_selector_entry, cursor_pos);
@@ -1112,7 +1163,7 @@ update_completion_model (ENameSelectorEntry *name_selector_entry)
 	if (cursor_pos >= 0)
 		get_range_at_position (text, cursor_pos, &range_start, &range_end);
 
-	if (range_end - range_start >= COMPLETION_CUE_MIN_LEN && cursor_pos == range_end) {
+	if (range_end - range_start >= name_selector_entry->priv->minimum_query_length && cursor_pos == range_end) {
 		gchar *cue_str;
 
 		cue_str = get_entry_substring (name_selector_entry, range_start, range_end);
@@ -1196,9 +1247,10 @@ modify_destination_at_position (ENameSelectorEntry *name_selector_entry,
 }
 
 static gchar *
-get_destination_textrep (EDestination *destination)
+get_destination_textrep (ENameSelectorEntry *name_selector_entry,
+			 EDestination *destination)
 {
-	gboolean show_email = COMPLETION_FORCE_SHOW_ADDRESS;
+	gboolean show_email = e_name_selector_entry_get_show_address (name_selector_entry);
 	EContact *contact;
 
 	g_return_val_if_fail (destination != NULL, NULL);
@@ -1215,7 +1267,7 @@ get_destination_textrep (EDestination *destination)
 		}
 	}
 
-	/* do not show emails for contact lists even user forces it in gconf */
+	/* do not show emails for contact lists even user forces it */
 	if (show_email && contact && e_contact_get (contact, E_CONTACT_IS_LIST))
 		show_email = FALSE;
 
@@ -1245,7 +1297,7 @@ sync_destination_at_position (ENameSelectorEntry *name_selector_entry,
 		return;
 	}
 
-	address = get_destination_textrep (destination);
+	address = get_destination_textrep (name_selector_entry, destination);
 	address_len = g_utf8_strlen (address, -1);
 
 	if (cursor_pos) {
@@ -1718,7 +1770,7 @@ entry_activate (ENameSelectorEntry *name_selector_entry)
 		return;
 
 	range_len = range_end - range_start;
-	if (range_len < COMPLETION_CUE_MIN_LEN)
+	if (range_len < priv->minimum_query_length)
 		return;
 
 	destination = find_destination_at_position (name_selector_entry, cursor_pos);
@@ -1806,7 +1858,7 @@ sanitize_entry (ENameSelectorEntry *name_selector_entry)
 		else {
 			gchar *text;
 
-			text = get_destination_textrep (dest);
+			text = get_destination_textrep (name_selector_entry, dest);
 			if (text) {
 				if (str->str && str->str[0])
 					g_string_append (str, ", ");
@@ -1852,7 +1904,7 @@ user_focus_in (ENameSelectorEntry *name_selector_entry,
 		if (dest) {
 			gchar *text;
 
-			text = get_destination_textrep (dest);
+			text = get_destination_textrep (name_selector_entry, dest);
 			if (text) {
 				if (str->str && str->str[0])
 					g_string_append (str, ", ");
@@ -2240,7 +2292,7 @@ destination_row_changed (ENameSelectorEntry *name_selector_entry,
 
 	gtk_editable_delete_text (GTK_EDITABLE (name_selector_entry), range_start, range_end);
 
-	text = get_destination_textrep (destination);
+	text = get_destination_textrep (name_selector_entry, destination);
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), text, -1, &range_start);
 	g_free (text);
 
@@ -2294,7 +2346,7 @@ destination_row_inserted (ENameSelectorEntry *name_selector_entry,
 	if (comma_before)
 		gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), ", ", -1, &insert_pos);
 
-	text = get_destination_textrep (destination);
+	text = get_destination_textrep (name_selector_entry, destination);
 	gtk_editable_insert_text (GTK_EDITABLE (name_selector_entry), text, -1, &insert_pos);
 	g_free (text);
 
@@ -3068,22 +3120,14 @@ static void
 e_name_selector_entry_init (ENameSelectorEntry *name_selector_entry)
 {
 	GtkCellRenderer *renderer;
-	GConfClient *gconf;
 
 	name_selector_entry->priv =
 		E_NAME_SELECTOR_ENTRY_GET_PRIVATE (name_selector_entry);
 
 	g_queue_init (&name_selector_entry->priv->cancellables);
 
-	/* read minimum_query_length from gconf*/
-	gconf = gconf_client_get_default ();
-	if (COMPLETION_CUE_MIN_LEN == 0) {
-		if ((COMPLETION_CUE_MIN_LEN = gconf_client_get_int (gconf, MINIMUM_QUERY_LENGTH, NULL)))
-			;
-		else COMPLETION_CUE_MIN_LEN = 3;
-	}
-	COMPLETION_FORCE_SHOW_ADDRESS = gconf_client_get_bool (gconf, FORCE_SHOW_ADDRESS, NULL);
-	g_object_unref (G_OBJECT (gconf));
+	name_selector_entry->priv->minimum_query_length = 3;
+	name_selector_entry->priv->show_address = FALSE;
 
 	/* Edit signals */
 
@@ -3239,6 +3283,87 @@ e_name_selector_entry_set_registry (ENameSelectorEntry *name_selector_entry,
 	name_selector_entry->priv->registry = registry;
 
 	g_object_notify (G_OBJECT (name_selector_entry), "registry");
+}
+
+/**
+ * e_name_selector_entry_get_minimum_query_length:
+ * @name_selector_entry: an #ENameSelectorEntry
+ *
+ * Returns: Minimum length of query before completion starts
+ *
+ * Since: 3.6
+ **/
+gint
+e_name_selector_entry_get_minimum_query_length (ENameSelectorEntry *name_selector_entry)
+{
+	g_return_val_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry), -1);
+
+	return name_selector_entry->priv->minimum_query_length;
+}
+
+/**
+ * e_name_selector_entry_set_minimum_query_length:
+ * @name_selector_entry: an #ENameSelectorEntry
+ * @length: minimum query length
+ *
+ * Sets minimum length of query before completion starts.
+ *
+ * Since: 3.6
+ **/
+void
+e_name_selector_entry_set_minimum_query_length (ENameSelectorEntry *name_selector_entry,
+						gint length)
+{
+	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry));
+	g_return_if_fail (length > 0);
+
+	if (name_selector_entry->priv->minimum_query_length == length)
+		return;
+
+	name_selector_entry->priv->minimum_query_length = length;
+
+	g_object_notify (G_OBJECT (name_selector_entry), "minimum-query-length");
+}
+
+/**
+ * e_name_selector_entry_get_show_address:
+ * @name_selector_entry: an #ENameSelectorEntry
+ *
+ * Returns: Whether always show email address for an auto-completed contact.
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_name_selector_entry_get_show_address (ENameSelectorEntry *name_selector_entry)
+{
+	g_return_val_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry), FALSE);
+
+	return name_selector_entry->priv->show_address;
+}
+
+/**
+ * e_name_selector_entry_set_show_address:
+ * @name_selector_entry: an #ENameSelectorEntry
+ * @show: new value to set
+ *
+ * Sets whether always show email address for an auto-completed contact.
+ *
+ * Since: 3.6
+ **/
+void
+e_name_selector_entry_set_show_address (ENameSelectorEntry *name_selector_entry,
+					gboolean show)
+{
+	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry));
+
+	if ((name_selector_entry->priv->show_address ? 1 : 0) == (show ? 1 : 0))
+		return;
+
+	name_selector_entry->priv->show_address = show;
+
+	sanitize_entry (name_selector_entry);
+
+	g_object_notify (G_OBJECT (name_selector_entry), "show-address");
 }
 
 /**

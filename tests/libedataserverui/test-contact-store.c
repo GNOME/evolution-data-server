@@ -55,7 +55,7 @@ create_text_column_for_field (EContactField field_id)
 }
 
 static gint
-start_test (const gchar *gconf_path)
+start_test (const gchar *param)
 {
 	EContactStore *contact_store;
 	GtkTreeModel *model_sort;
@@ -117,16 +117,16 @@ gint
 main (gint argc,
       gchar **argv)
 {
-	const gchar *gconf_path;
+	const gchar *param;
 
 	gtk_init (&argc, &argv);
 
 	if (argc < 2)
-		gconf_path = "/apps/evolution/addressbook/sources";
+		param = "???";
 	else
-		gconf_path = argv[1];
+		param = argv[1];
 
-	g_idle_add ((GSourceFunc) start_test, (gpointer) gconf_path);
+	g_idle_add ((GSourceFunc) start_test, (gpointer) param);
 
 	gtk_main ();
 

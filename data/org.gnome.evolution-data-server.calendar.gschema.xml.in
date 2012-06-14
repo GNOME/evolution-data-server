@@ -1,0 +1,19 @@
+<schemalist>
+  <schema gettext-domain="evolution-data-server" id="org.gnome.evolution-data-server.calendar" path="/org/gnome/evolution-data-server/calendar/">
+    <key name="contacts-reminder-enabled" type="b">
+      <default>false</default>
+      <_summary>Birthday and anniversary reminder</_summary>
+      <_description>Whether to set a reminder for birthdays and anniversaries</_description>
+    </key>
+    <key name="contacts-reminder-interval" type="i">
+      <default>15</default>
+      <_summary>Birthday and anniversary reminder value</_summary>
+      <_description>Number of units for determining a birthday or anniversary reminder</_description>
+    </key>
+    <key name="contacts-reminder-units" type="s">
+      <default>'minutes'</default>
+      <_summary>Birthday and anniversary reminder units</_summary>
+      <_description>Units for a birthday or anniversary reminder, "minutes", "hours" or "days"</_description>
+    </key>
+  </schema>
+</schemalist>

@@ -54,15 +54,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_NAME_SELECTOR_ENTRY, ENameSelectorEntryClass))
 
-#define MINIMUM_QUERY_LENGTH "/apps/evolution/addressbook/completion/minimum_query_length"
-
-/**
- * FORCE_SHOW_ADDRESS:
- *
- * Since: 2.24
- **/
-#define FORCE_SHOW_ADDRESS   "/apps/evolution/addressbook/completion/show_address"
-
 G_BEGIN_DECLS
 
 typedef struct _ENameSelectorEntry ENameSelectorEntry;
@@ -92,6 +83,16 @@ ESourceRegistry *
 void		e_name_selector_entry_set_registry
 						(ENameSelectorEntry *name_selector_entry,
 						 ESourceRegistry *registry);
+gint		e_name_selector_entry_get_minimum_query_length
+						(ENameSelectorEntry *name_selector_entry);
+void		e_name_selector_entry_set_minimum_query_length
+						(ENameSelectorEntry *name_selector_entry,
+						 gint length);
+gboolean	e_name_selector_entry_get_show_address
+						(ENameSelectorEntry *name_selector_entry);
+void		e_name_selector_entry_set_show_address
+						(ENameSelectorEntry *name_selector_entry,
+						 gboolean show);
 EContactStore *	e_name_selector_entry_peek_contact_store
 						(ENameSelectorEntry *name_selector_entry);
 void		e_name_selector_entry_set_contact_store

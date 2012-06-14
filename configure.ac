@@ -35,7 +35,6 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 dnl Required Package Versions
 m4_define([glib_minimum_version], [2.32])
 m4_define([gtk_minimum_version], [3.2])
-m4_define([gconf_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([gcr_minimum_version], [3.4])
 m4_define([gnome_keyring_minimum_version], [2.20.1])
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
@@ -345,7 +344,6 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 	[gio-2.0 >= glib_minimum_version
 	gmodule-2.0 >= glib_minimum_version
 	gtk+-3.0 >= gtk_minimum_version
-	gconf-2.0 >= gconf_minimum_version
 	libxml-2.0 >= libxml_minimum_version
 	libsoup-2.4 >= libsoup_minimum_version
 	libgdata >= libgdata_minimum_version])
@@ -353,15 +351,6 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 if test x$os_win32 = xno; then
 	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
 fi
-
-dnl ******************************
-dnl DBus-glib stuff, to initialize thread for GConf, which is using it
-dnl this is returned back only temporarily and wil lbe removed as soon
-dnl as eds will stop using GConf completely
-dnl ******************************
-PKG_CHECK_MODULES(DBUS_GLIB, dbus-glib-1 >= 0.6)
-AC_SUBST(DBUS_GLIB_CFLAGS)
-AC_SUBST(DBUS_GLIB_LIBS)
 
 dnl *******************************
 dnl Check for GNOME Online Accounts
@@ -1312,7 +1301,7 @@ PKG_CHECK_MODULES(SQLITE3, [sqlite3 >= sqlite_minimum_version])
 dnl ******************************
 dnl libedataserver flags
 dnl ******************************
-E_DATA_SERVER_DEPS="gio-2.0 gmodule-2.0 gnome-keyring-1 libxml-2.0 libsoup-2.4 gconf-2.0 $mozilla_nspr"
+E_DATA_SERVER_DEPS="gio-2.0 gmodule-2.0 gnome-keyring-1 libxml-2.0 libsoup-2.4 $mozilla_nspr"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER, $E_DATA_SERVER_DEPS, $MANUAL_NSPR_CFLAGS, $MANUAL_NSPR_LIBS)
 AC_SUBST(E_DATA_SERVER_CFLAGS)
@@ -1321,7 +1310,7 @@ AC_SUBST(E_DATA_SERVER_LIBS)
 dnl ******************************
 dnl libedataserverui
 dnl ******************************
-E_DATA_SERVER_UI_DEPS="gtk+-3.0 libxml-2.0 gconf-2.0 libsoup-2.4"
+E_DATA_SERVER_UI_DEPS="gtk+-3.0 libxml-2.0 libsoup-2.4"
 
 EVO_SET_COMPILE_FLAGS(E_DATA_SERVER_UI, $E_DATA_SERVER_UI_DEPS, , )
 AC_SUBST(E_DATA_SERVER_UI_CFLAGS)
@@ -1334,7 +1323,7 @@ if test "x$enable_maintainer_mode" = "xyes" ; then
 	AC_SUBST(FACTORY_GTK_LIBS)
 fi
 
-E_BACKEND_DEPS="gio-2.0 gmodule-2.0 gnome-keyring-1 libsoup-2.4 libxml-2.0 gconf-2.0"
+E_BACKEND_DEPS="gio-2.0 gmodule-2.0 gnome-keyring-1 libsoup-2.4 libxml-2.0"
 
 dnl ******************************
 dnl libebackend flags
@@ -1346,7 +1335,7 @@ AC_SUBST(E_BACKEND_LIBS)
 dnl ******************************
 dnl evolution-addressbook flags
 dnl ******************************
-EVOLUTION_ADDRESSBOOK_DEPS="gio-2.0 libxml-2.0 gconf-2.0 libsoup-2.4 gnome-keyring-1"
+EVOLUTION_ADDRESSBOOK_DEPS="gio-2.0 libxml-2.0 libsoup-2.4 gnome-keyring-1"
 
 EVO_SET_COMPILE_FLAGS(EVOLUTION_ADDRESSBOOK, $EVOLUTION_ADDRESSBOOK_DEPS)
 AC_SUBST(EVOLUTION_ADDRESSBOOK_CFLAGS)
@@ -1355,7 +1344,7 @@ AC_SUBST(EVOLUTION_ADDRESSBOOK_LIBS)
 dnl ******************************
 dnl evolution-calendar flags
 dnl ******************************
-EVOLUTION_CALENDAR_DEPS="gio-2.0 libical >= libical_minimum_version libsoup-2.4 libxml-2.0 gconf-2.0 gnome-keyring-1"
+EVOLUTION_CALENDAR_DEPS="gio-2.0 libical >= libical_minimum_version libsoup-2.4 libxml-2.0 gnome-keyring-1"
 
 dnl *****
 dnl libical.pc from libical-0.43 has a bug in it's CFlags.
@@ -1528,12 +1517,6 @@ dnl *******************
 m4_pattern_allow([AM_V_GEN])
 EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; $(AM_V_GEN) sed -e "s|\@libexecdir\@|$(libexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" -e "s|\@SOURCES_DBUS_SERVICE_NAME\@|$(SOURCES_DBUS_SERVICE_NAME)|" $< > $@'
 AC_SUBST(EVO_SUBST_SERVICE_RULE)
-
-dnl ******************************
-dnl GConf stuff
-dnl ******************************
-AC_PATH_PROG(GCONFTOOL, gconftool-2, [no])
-AM_GCONF_SOURCE_2
 
 dnl ******************************
 dnl GLib stuff

@@ -26,8 +26,6 @@
 #include <glib/gi18n-lib.h>
 #include <gio/gio.h>
 
-#include <gconf/gconf-client.h>
-
 #include <libedataserver/libedataserver.h>
 #include <libedataserver/e-client-private.h>
 
@@ -550,7 +548,8 @@ e_book_client_new (ESource *source,
 	return client;
 }
 
-#define SELF_UID_KEY "/apps/evolution/addressbook/self/self_uid"
+#define SELF_UID_PATH_ID "org.gnome.evolution-data-server.addressbook"
+#define SELF_UID_KEY "self-contact-uid"
 
 static EContact *
 make_me_card (void)
@@ -611,7 +610,7 @@ e_book_client_get_self (ESourceRegistry *registry,
 {
 	ESource *source;
 	GError *local_error = NULL;
-	GConfClient *gconf;
+	GSettings *settings;
 	gchar *uid;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
@@ -635,9 +634,9 @@ e_book_client_get_self (ESourceRegistry *registry,
 		return FALSE;
 	}
 
-	gconf = gconf_client_get_default ();
-	uid = gconf_client_get_string (gconf, SELF_UID_KEY, NULL);
-	g_object_unref (gconf);
+	settings = g_settings_new (SELF_UID_PATH_ID);
+	uid = g_settings_get_string (settings, SELF_UID_KEY);
+	g_object_unref (settings);
 
 	if (uid) {
 		gboolean got;
@@ -688,15 +687,15 @@ e_book_client_set_self (EBookClient *client,
                         EContact *contact,
                         GError **error)
 {
-	GConfClient *gconf;
+	GSettings *settings;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
 	g_return_val_if_fail (contact != NULL, FALSE);
 	g_return_val_if_fail (e_contact_get_const (contact, E_CONTACT_UID) != NULL, FALSE);
 
-	gconf = gconf_client_get_default ();
-	gconf_client_set_string (gconf, SELF_UID_KEY, e_contact_get_const (contact, E_CONTACT_UID), NULL);
-	g_object_unref (gconf);
+	settings = g_settings_new (SELF_UID_PATH_ID);
+	g_settings_set_string (settings, SELF_UID_KEY, e_contact_get_const (contact, E_CONTACT_UID));
+	g_object_unref (settings);
 
 	return TRUE;
 }
@@ -714,15 +713,15 @@ e_book_client_set_self (EBookClient *client,
 gboolean
 e_book_client_is_self (EContact *contact)
 {
-	GConfClient *gconf;
+	GSettings *settings;
 	gchar *uid;
 	gboolean is_self;
 
 	g_return_val_if_fail (contact && E_IS_CONTACT (contact), FALSE);
 
-	gconf = gconf_client_get_default ();
-	uid = gconf_client_get_string (gconf, SELF_UID_KEY, NULL);
-	g_object_unref (gconf);
+	settings = g_settings_new (SELF_UID_PATH_ID);
+	uid = g_settings_get_string (settings, SELF_UID_KEY);
+	g_object_unref (settings);
 
 	is_self = uid && !g_strcmp0 (uid, e_contact_get_const (contact, E_CONTACT_UID));
 
