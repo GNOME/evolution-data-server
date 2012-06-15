@@ -119,8 +119,8 @@ gboolean __e_book_backend_google_debug__;
 
 static void data_book_error_from_gdata_error (GError **dest_err, const GError *error);
 
-static GDataEntry *_gdata_entry_new_from_e_contact (EBookBackend *backend, EContact *contact);
-static gboolean _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EContact *contact, gboolean ensure_personal_group);
+static GDataEntry *_gdata_entry_new_from_e_contact (EBookBackend *backend, EContact *contact, GCancellable *cancellable);
+static gboolean _gdata_entry_update_from_e_contact (EBookBackend *backend, GDataEntry *entry, EContact *contact, gboolean ensure_personal_group, GCancellable *cancellable);
 
 static EContact *_e_contact_new_from_gdata_entry (EBookBackend *backend, GDataEntry *entry);
 static void _e_contact_add_gdata_entry_xml (EContact *contact, GDataEntry *entry);
@@ -642,7 +642,7 @@ check_get_new_contacts_finished (GetContactsData *data)
 
 	__debug__ ("Proceeding with check_get_new_contacts_finished() for data: %p.", data);
 
-	finish_operation (data->backend, 0, data->gdata_error);
+	finish_operation (data->backend, -1, data->gdata_error);
 
 	/* Tidy up */
 	g_object_unref (data->cancellable);
@@ -876,7 +876,7 @@ get_new_contacts (EBookBackend *backend)
 	}
 
 	/* Query for new contacts asynchronously */
-	cancellable = start_operation (backend, 0, NULL, _("Querying for updated contacts…"));
+	cancellable = start_operation (backend, -1, NULL, _("Querying for updated contacts…"));
 
 	data = g_slice_new (GetContactsData);
 	data->backend = g_object_ref (backend);
@@ -1043,7 +1043,7 @@ get_groups_cb (GDataService *service,
 		g_get_current_time (&(priv->last_groups_update));
 	}
 
-	finish_operation (backend, 1, gdata_error);
+	finish_operation (backend, -2, gdata_error);
 
 	g_clear_error (&gdata_error);
 }
@@ -1068,7 +1068,7 @@ get_groups (EBookBackend *backend)
 	}
 
 	/* Run the query asynchronously */
-	cancellable = start_operation (backend, 1, NULL, _("Querying for updated groups…"));
+	cancellable = start_operation (backend, -2, NULL, _("Querying for updated groups…"));
 	gdata_contacts_service_query_groups_async (
 		GDATA_CONTACTS_SERVICE (priv->service),
 		query,
@@ -1080,6 +1080,37 @@ get_groups (EBookBackend *backend)
 		backend);
 
 	g_object_unref (cancellable);
+	g_object_unref (query);
+}
+
+static void
+get_groups_sync (EBookBackend *backend,
+		 GCancellable *cancellable)
+{
+	EBookBackendGooglePrivate *priv;
+	GDataQuery *query;
+	GDataFeed *feed;
+
+	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
+
+	__debug__ (G_STRFUNC);
+	g_return_if_fail (backend_is_authorized (backend));
+
+	/* Build our query, always fetch all of them */
+	query = GDATA_QUERY (gdata_contacts_query_new_with_limits (NULL, 0, G_MAXINT));
+
+	/* Run the query synchronously */
+	feed = gdata_contacts_service_query_groups (
+		GDATA_CONTACTS_SERVICE (priv->service),
+		query,
+		cancellable,
+		(GDataQueryProgressCallback) process_group,
+		backend,
+		NULL);
+
+	if (feed)
+		g_object_unref (feed);
+
 	g_object_unref (query);
 }
 
@@ -1510,7 +1541,7 @@ e_book_backend_google_create_contacts (EBookBackend *backend,
 
 	/* Build the GDataEntry from the vCard */
 	contact = e_contact_new_from_vcard (vcard_str);
-	entry = _gdata_entry_new_from_e_contact (backend, contact);
+	entry = _gdata_entry_new_from_e_contact (backend, contact, cancellable);
 	g_object_unref (contact);
 
 	/* Debug XML output */
@@ -1909,7 +1940,7 @@ e_book_backend_google_modify_contacts (EBookBackend *backend,
 	}
 
 	/* Update the old GDataEntry from the new contact */
-	_gdata_entry_update_from_e_contact (backend, entry, contact, FALSE);
+	_gdata_entry_update_from_e_contact (backend, entry, contact, FALSE, cancellable);
 
 	/* Output debug XML */
 	if (__e_book_backend_google_debug__) {
@@ -2752,11 +2783,12 @@ static gboolean is_known_google_im_protocol (const gchar *protocol);
 
 static GDataEntry *
 _gdata_entry_new_from_e_contact (EBookBackend *backend,
-                                 EContact *contact)
+                                 EContact *contact,
+				 GCancellable *cancellable)
 {
 	GDataEntry *entry = GDATA_ENTRY (gdata_contacts_contact_new (NULL));
 
-	if (_gdata_entry_update_from_e_contact (backend, entry, contact, TRUE))
+	if (_gdata_entry_update_from_e_contact (backend, entry, contact, TRUE, cancellable))
 		return entry;
 
 	g_object_unref (entry);
@@ -2792,7 +2824,8 @@ static gboolean
 _gdata_entry_update_from_e_contact (EBookBackend *backend,
                                     GDataEntry *entry,
                                     EContact *contact,
-                                    gboolean ensure_personal_group)
+                                    gboolean ensure_personal_group,
+				    GCancellable *cancellable)
 {
 	EBookBackendGooglePrivate *priv;
 	GList *attributes, *iter, *category_names;
@@ -2815,6 +2848,10 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 #endif
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
+
+	/* for cases when system groups were not fetched yet */
+	if (g_hash_table_size (priv->system_groups_by_id) == 0)
+		get_groups_sync (backend, cancellable);
 
 	attributes = e_vcard_get_attributes (E_VCARD (contact));
 
@@ -3073,8 +3110,8 @@ _gdata_entry_update_from_e_contact (EBookBackend *backend,
 
 			category_id = create_group (backend, category_name, &error);
 			if (category_id == NULL) {
-				g_warning ("Error creating group '%s': %s", category_name, error->message);
-				g_error_free (error);
+				g_warning ("Error creating group '%s': %s", category_name, error ? error->message : "Unknown error");
+				g_clear_error (&error);
 				continue;
 			}
 		}
