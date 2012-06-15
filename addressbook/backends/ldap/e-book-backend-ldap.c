@@ -5196,11 +5196,10 @@ e_book_backend_ldap_authenticate_user (EBookBackend *backend,
 		if (!bl->priv->connected || !bl->priv->ldap) {
 			GError *error;
 
-			g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-
 			error = e_book_backend_ldap_connect (bl);
 			if (error) {
 				e_book_backend_notify_opened (backend, error);
+				g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 				return;
 			}
 		}
