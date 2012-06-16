@@ -1,3 +1,5 @@
+SUBDIRS = . tests
+
 ebook_backend_LTLIBRARIES = libebookbackendgoogle.la
 
 if HAVE_GOA

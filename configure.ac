@@ -1593,6 +1593,7 @@ addressbook/backends/file/Makefile
 addressbook/backends/vcf/Makefile
 addressbook/backends/ldap/Makefile
 addressbook/backends/google/Makefile
+addressbook/backends/google/tests/Makefile
 addressbook/backends/webdav/Makefile
 art/Makefile
 calendar/Makefile
