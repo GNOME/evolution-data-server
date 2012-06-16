@@ -1278,7 +1278,7 @@ gdata_gd_email_address_from_attribute (EVCardAttribute *attr,
 	values = e_vcard_attribute_get_values (attr);
 	if (values) {
 		GList *types;
-		gchar *rel;
+		gchar *rel = NULL;
 		const gchar *label;
 		gboolean primary;
 
@@ -1288,7 +1288,8 @@ gdata_gd_email_address_from_attribute (EVCardAttribute *attr,
 		else
 			primary = FALSE;
 
-		rel = google_rel_from_types (types);
+		if (label == NULL) /* rel and label are mutually exclusive (bgo#675712) */
+			rel = google_rel_from_types (types);
 		email = gdata_gd_email_address_new (values->data, rel, label, primary);
 		g_free (rel);
 
@@ -1353,7 +1354,7 @@ gdata_gd_phone_number_from_attribute (EVCardAttribute *attr,
 	if (values) {
 		GList *types;
 		gboolean primary;
-		gchar *rel;
+		gchar *rel = NULL;
 		const gchar *label;
 
 		types = get_google_primary_type_label (attr, &primary, &label);
@@ -1362,7 +1363,8 @@ gdata_gd_phone_number_from_attribute (EVCardAttribute *attr,
 		else
 			primary = FALSE;
 
-		rel = google_rel_from_types_phone (types);
+		if (label == NULL) /* rel and label are mutually exclusive (bgo#675712) */
+			rel = google_rel_from_types_phone (types);
 		number = gdata_gd_phone_number_new (values->data, rel, label, NULL, primary);
 		g_free (rel);
 
@@ -1386,7 +1388,7 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr,
 	values = e_vcard_attribute_get_values (attr);
 	if (values && values->data) {
 		GList *types, *value;
-		gchar *rel;
+		gchar *rel = NULL;
 		const gchar *label;
 		gboolean primary;
 
@@ -1396,7 +1398,8 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr,
 		else
 			primary = FALSE;
 
-		rel = google_rel_from_types (types);
+		if (label == NULL) /* rel and label are mutually exclusive (bgo#675712) */
+			rel = google_rel_from_types (types);
 		address = gdata_gd_postal_address_new (rel, label, primary);
 		g_free (rel);
 
@@ -1458,7 +1461,7 @@ gdata_gd_organization_from_attribute (EVCardAttribute *attr,
 	if (values) {
 		GList *types;
 		gboolean primary;
-		gchar *rel;
+		gchar *rel = NULL;
 		const gchar *label;
 
 		types = get_google_primary_type_label (attr, &primary, &label);
@@ -1467,7 +1470,8 @@ gdata_gd_organization_from_attribute (EVCardAttribute *attr,
 		else
 			primary = FALSE;
 
-		rel = google_rel_from_types (types);
+		if (label == NULL) /* rel and label are mutually exclusive (bgo#675712) */
+			rel = google_rel_from_types (types);
 		org = gdata_gd_organization_new (values->data, NULL, rel, label, primary);
 		if (values->next != NULL && values->next->data != NULL && *((gchar *) values->next->data) != '\0')
 			gdata_gd_organization_set_department (org, values->next->data);
