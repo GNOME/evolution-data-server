@@ -1,3 +1,32 @@
+Evolution-Data-Server 3.4.3 2012-06-18
+--------------------------------------
+
+Bug Fixes:
+	Bug 667725 - imapx_untagged: code should not be reached
+	             (David Woodhouse)
+	Bug 668247 - Broken non-basic-latin folder name handling (Milan Crha)
+	Bug 671603 - Birthday calendar broken since 3.3.4 (Milan Crha)
+	Bug 673817 - Crash in e_book_backend_file_dispose() (Milan Crha)
+	Bug 673946 - Cannot delete search folders (Milan Crha)
+	Bug 674454 - Crash in e_book_backend_ldap_authenticate_user()
+	             (Milan Crha)
+	Bug 676108 - OpenBSD needs _XOPEN_SOURCE_EXTENDED for strptime(3)
+	             (Antoine Jacoutot)
+	Bug 676403 - imapx: Syncing folder after server-side deletion of
+	             many messages is *very* slow (David Woodhouse)
+	Bug 676506 - imapx: After QRESYNC leaves us out of sync, a "full
+	             resync" doesn't work either. (David Woodhouse)
+	Bug 677183 - maildir account doesn't open (Milan Crha)
+	Bug 677841 - Workaround for crash in
+	             imapx_command_append_message_done() (Milan Crha)
+	Bug 678069 - Crash in _gdata_entry_update_from_e_contact() (Milan Crha)
+	Bug 678255 - edata-cal missing libebackend-1.2 requirement
+	             (Jordi Mallach)
+
+Translations:
+	Nilamdyuti Goswami (as)
+
+
 Evolution-Data-Server 3.4.2 2012-05-14
 --------------------------------------
 
