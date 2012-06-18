@@ -8,6 +8,6 @@ privincludedir=@privincludedir@
 Name: libedataserverui
 Description: GUI utility library for Evolution Data Server
 Version: @VERSION@
-Requires: gtk+-3.0 libedataserver-@API_VERSION@ libebook-@API_VERSION@
+Requires: gtk+-3.0 libedataserver-1.2 libebook-1.2
 Libs: -L${libdir} -ledataserverui-3.0
 Cflags: -I${privincludedir}

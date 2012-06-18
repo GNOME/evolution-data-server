@@ -11,6 +11,6 @@ privincludedir=@privincludedir@
 Name: libedatabook
 Description: Backend library for evolution address books
 Version: @VERSION@
-Requires: libedataserver-1.2 libebook-1.2 gio-2.0
+Requires: libebackend-1.2 libebook-1.2
 Libs: -L${libdir} -ledata-book-1.2
 Cflags: -I${privincludedir}
