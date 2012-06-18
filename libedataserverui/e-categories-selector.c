@@ -383,6 +383,9 @@ e_categories_selector_set_items_checkable (ECategoriesSelector *selector,
 
 	g_return_if_fail (E_IS_CATEGORIES_SELECTOR (selector));
 
+	if ((selector->priv->checkable ? 1 : 0) == (checkable ? 1 : 0))
+		return;
+
 	selector->priv->checkable = checkable;
 
 	column = gtk_tree_view_get_column (

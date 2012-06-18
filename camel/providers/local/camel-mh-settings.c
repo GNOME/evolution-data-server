@@ -138,6 +138,9 @@ camel_mh_settings_set_use_dot_folders (CamelMhSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_MH_SETTINGS (settings));
 
+	if ((settings->priv->use_dot_folders ? 1 : 0) == (use_dot_folders ? 1 : 0))
+		return;
+
 	settings->priv->use_dot_folders = use_dot_folders;
 
 	g_object_notify (G_OBJECT (settings), "use-dot-folders");

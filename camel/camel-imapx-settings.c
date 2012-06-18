@@ -678,6 +678,9 @@ camel_imapx_settings_set_batch_fetch_count (CamelIMAPXSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
 
+	if (settings->priv->batch_fetch_count == batch_fetch_count)
+		return;
+
 	settings->priv->batch_fetch_count = batch_fetch_count;
 
 	g_object_notify (G_OBJECT (settings), "batch-fetch-count");
@@ -715,6 +718,9 @@ camel_imapx_settings_set_check_all (CamelIMAPXSettings *settings,
                                     gboolean check_all)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if ((settings->priv->check_all ? 1 : 0) == (check_all ? 1 : 0))
+		return;
 
 	settings->priv->check_all = check_all;
 
@@ -755,6 +761,9 @@ camel_imapx_settings_set_check_subscribed (CamelIMAPXSettings *settings,
                                            gboolean check_subscribed)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if ((settings->priv->check_subscribed ? 1 : 0) == (check_subscribed ? 1 : 0))
+		return;
 
 	settings->priv->check_subscribed = check_subscribed;
 
@@ -805,6 +814,9 @@ camel_imapx_settings_set_concurrent_connections (CamelIMAPXSettings *settings,
 		MIN_CONCURRENT_CONNECTIONS,
 		MAX_CONCURRENT_CONNECTIONS);
 
+	if (settings->priv->concurrent_connections == concurrent_connections)
+		return;
+
 	settings->priv->concurrent_connections = concurrent_connections;
 
 	g_object_notify (G_OBJECT (settings), "concurrent-connections");
@@ -845,6 +857,9 @@ camel_imapx_settings_set_fetch_order (CamelIMAPXSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
 
+	if (settings->priv->fetch_order == fetch_order)
+		return;
+
 	settings->priv->fetch_order = fetch_order;
 
 	g_object_notify (G_OBJECT (settings), "fetch-order");
@@ -882,6 +897,9 @@ camel_imapx_settings_set_filter_all (CamelIMAPXSettings *settings,
                                      gboolean filter_all)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if ((settings->priv->filter_all ? 1 : 0) == (filter_all ? 1 : 0))
+		return;
 
 	settings->priv->filter_all = filter_all;
 
@@ -923,6 +941,9 @@ camel_imapx_settings_set_filter_junk (CamelIMAPXSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
 
+	if ((settings->priv->filter_junk ? 1 : 0) == (filter_junk ? 1 : 0))
+		return;
+
 	settings->priv->filter_junk = filter_junk;
 
 	g_object_notify (G_OBJECT (settings), "filter-junk");
@@ -963,6 +984,9 @@ camel_imapx_settings_set_filter_junk_inbox (CamelIMAPXSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
 
+	if ((settings->priv->filter_junk_inbox ? 1 : 0) == (filter_junk_inbox ? 1 : 0))
+		return;
+
 	settings->priv->filter_junk_inbox = filter_junk_inbox;
 
 	g_object_notify (G_OBJECT (settings), "filter-junk-inbox");
@@ -1000,6 +1024,9 @@ camel_imapx_settings_set_mobile_mode (CamelIMAPXSettings *settings,
                                       gboolean mobile_mode)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if ((settings->priv->use_mobile_mode ? 1 : 0) == (mobile_mode ? 1 : 0))
+		return;
 
 	settings->priv->use_mobile_mode = mobile_mode;
 
@@ -1076,6 +1103,11 @@ camel_imapx_settings_set_namespace (CamelIMAPXSettings *settings,
 		namespace_ = "";
 
 	g_mutex_lock (settings->priv->property_lock);
+
+	if (g_strcmp0 (settings->priv->namespace, namespace_) == 0) {
+		g_mutex_unlock (settings->priv->property_lock);
+		return;
+	}
 
 	g_free (settings->priv->namespace);
 	settings->priv->namespace = g_strdup (namespace_);
@@ -1169,6 +1201,11 @@ camel_imapx_settings_set_shell_command (CamelIMAPXSettings *settings,
 
 	g_mutex_lock (settings->priv->property_lock);
 
+	if (g_strcmp0 (settings->priv->shell_command, shell_command) == 0) {
+		g_mutex_unlock (settings->priv->property_lock);
+		return;
+	}
+
 	g_free (settings->priv->shell_command);
 	settings->priv->shell_command = g_strdup (shell_command);
 
@@ -1212,6 +1249,9 @@ camel_imapx_settings_set_use_idle (CamelIMAPXSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
 
+	if ((settings->priv->use_idle ? 1 : 0) == (use_idle ? 1 : 0))
+		return;
+
 	settings->priv->use_idle = use_idle;
 
 	g_object_notify (G_OBJECT (settings), "use-idle");
@@ -1251,6 +1291,9 @@ camel_imapx_settings_set_use_namespace (CamelIMAPXSettings *settings,
                                         gboolean use_namespace)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if ((settings->priv->use_namespace ? 1 : 0) == (use_namespace ? 1 : 0))
+		return;
 
 	settings->priv->use_namespace = use_namespace;
 
@@ -1293,6 +1336,9 @@ camel_imapx_settings_set_use_qresync (CamelIMAPXSettings *settings,
                                       gboolean use_qresync)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if ((settings->priv->use_qresync ? 1 : 0) == (use_qresync ? 1 : 0))
+		return;
 
 	settings->priv->use_qresync = use_qresync;
 
@@ -1349,6 +1395,9 @@ camel_imapx_settings_set_use_shell_command (CamelIMAPXSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
 
+	if ((settings->priv->use_shell_command ? 1 : 0) == (use_shell_command ? 1 : 0))
+		return;
+
 	settings->priv->use_shell_command = use_shell_command;
 
 	g_object_notify (G_OBJECT (settings), "use-shell-command");
@@ -1388,6 +1437,9 @@ camel_imapx_settings_set_use_subscriptions (CamelIMAPXSettings *settings,
                                             gboolean use_subscriptions)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if ((settings->priv->use_subscriptions ? 1 : 0) == (use_subscriptions ? 1 : 0))
+		return;
 
 	settings->priv->use_subscriptions = use_subscriptions;
 

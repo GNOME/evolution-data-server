@@ -2003,6 +2003,9 @@ camel_folder_set_full_name (CamelFolder *folder,
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
+	if (g_strcmp0 (folder->priv->full_name, full_name) == 0)
+		return;
+
 	g_free (folder->priv->full_name);
 	folder->priv->full_name = g_strdup (full_name);
 
@@ -2042,6 +2045,9 @@ camel_folder_set_display_name (CamelFolder *folder,
                                const gchar *display_name)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	if (g_strcmp0 (folder->priv->display_name, display_name) == 0)
+		return;
 
 	g_free (folder->priv->display_name);
 	folder->priv->display_name = g_strdup (display_name);
@@ -2085,6 +2091,9 @@ camel_folder_set_description (CamelFolder *folder,
                               const gchar *description)
 {
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	if (g_strcmp0 (folder->priv->description, description) == 0)
+		return;
 
 	g_free (folder->priv->description);
 	folder->priv->description = g_strdup (description);

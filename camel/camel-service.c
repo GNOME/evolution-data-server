@@ -1303,6 +1303,9 @@ camel_service_set_display_name (CamelService *service,
 {
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
+	if (g_strcmp0 (service->priv->display_name, display_name) == 0)
+		return;
+
 	if (display_name != NULL)
 		g_return_if_fail (g_utf8_validate (display_name, -1, NULL));
 
@@ -1347,6 +1350,9 @@ camel_service_set_password (CamelService *service,
                             const gchar *password)
 {
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	if (g_strcmp0 (service->priv->password, password) == 0)
+		return;
 
 	g_free (service->priv->password);
 	service->priv->password = g_strdup (password);
@@ -1495,6 +1501,9 @@ camel_service_set_settings (CamelService *service,
 	CamelServiceClass *class;
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	if (service->priv->settings == settings)
+		return;
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
 

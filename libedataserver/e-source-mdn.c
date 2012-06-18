@@ -166,6 +166,9 @@ e_source_mdn_set_response_policy (ESourceMDN *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_MDN (extension));
 
+	if (extension->priv->response_policy == response_policy)
+		return;
+
 	extension->priv->response_policy = response_policy;
 
 	g_object_notify (G_OBJECT (extension), "response-policy");

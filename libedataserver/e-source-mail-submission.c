@@ -249,6 +249,11 @@ e_source_mail_submission_set_sent_folder (ESourceMailSubmission *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->sent_folder, sent_folder) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->sent_folder);
 	extension->priv->sent_folder = e_util_strdup_strip (sent_folder);
 
@@ -324,6 +329,11 @@ e_source_mail_submission_set_transport_uid (ESourceMailSubmission *extension,
 	g_return_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension));
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->transport_uid, transport_uid) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	g_free (extension->priv->transport_uid);
 	extension->priv->transport_uid = g_strdup (transport_uid);

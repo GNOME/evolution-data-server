@@ -327,6 +327,11 @@ e_source_authentication_set_host (ESourceAuthentication *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->host, host) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->host);
 	extension->priv->host = e_util_strdup_strip (host);
 
@@ -409,6 +414,11 @@ e_source_authentication_set_method (ESourceAuthentication *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->method, method) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->method);
 	extension->priv->method = e_util_strdup_strip (method);
 
@@ -452,6 +462,9 @@ e_source_authentication_set_port (ESourceAuthentication *extension,
                                   guint16 port)
 {
 	g_return_if_fail (E_SOURCE_AUTHENTICATION (extension));
+
+	if (extension->priv->port == port)
+		return;
 
 	extension->priv->port = port;
 
@@ -527,6 +540,11 @@ e_source_authentication_set_user (ESourceAuthentication *extension,
 	g_return_if_fail (E_IS_SOURCE_AUTHENTICATION (extension));
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->user, user) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	g_free (extension->priv->user);
 	extension->priv->user = e_util_strdup_strip (user);

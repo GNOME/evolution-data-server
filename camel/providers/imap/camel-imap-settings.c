@@ -667,6 +667,9 @@ camel_imap_settings_set_check_all (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
+	if ((settings->priv->check_all ? 1 : 0) == (check_all ? 1 : 0))
+		return;
+
 	settings->priv->check_all = check_all;
 
 	g_object_notify (G_OBJECT (settings), "check-all");
@@ -706,6 +709,9 @@ camel_imap_settings_set_check_subscribed (CamelImapSettings *settings,
                                           gboolean check_subscribed)
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
+
+	if ((settings->priv->check_subscribed ? 1 : 0) == (check_subscribed ? 1 : 0))
+		return;
 
 	settings->priv->check_subscribed = check_subscribed;
 
@@ -750,6 +756,9 @@ camel_imap_settings_set_fetch_headers (CamelImapSettings *settings,
                                        CamelFetchHeadersType fetch_headers)
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
+
+	if (settings->priv->fetch_headers == fetch_headers)
+		return;
 
 	settings->priv->fetch_headers = fetch_headers;
 
@@ -809,6 +818,23 @@ camel_imap_settings_dup_fetch_headers_extra (CamelImapSettings *settings)
 	return duplicate;
 }
 
+static gboolean
+fetch_headers_equal (const gchar * const *h1,
+		     const gchar * const *h2)
+{
+	gint ii;
+
+	if (!h1 || !h2)
+		return h1 == h2;
+
+	for (ii = 0; h1[ii] && h2[ii]; ii++) {
+		if (g_strcmp0 (h1[ii], h2[ii]) != 0)
+			return FALSE;
+	}
+
+	return !h1[ii] && h1[ii] == h2[ii];
+}
+
 /**
  * camel_imap_settings_set_fetch_headers_extra:
  * @settings: a #CamelImapSettings
@@ -829,6 +855,13 @@ camel_imap_settings_set_fetch_headers_extra (CamelImapSettings *settings,
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
 	g_mutex_lock (settings->priv->property_lock);
+
+	if (fetch_headers_equal (
+		(const gchar * const *) settings->priv->fetch_headers_extra,
+		fetch_headers_extra)) {
+		g_mutex_unlock (settings->priv->property_lock);
+		return;
+	}
 
 	g_strfreev (settings->priv->fetch_headers_extra);
 	settings->priv->fetch_headers_extra =
@@ -874,6 +907,9 @@ camel_imap_settings_set_filter_junk (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
+	if ((settings->priv->filter_junk ? 1 : 0) == (filter_junk ? 1 : 0))
+		return;
+
 	settings->priv->filter_junk = filter_junk;
 
 	g_object_notify (G_OBJECT (settings), "filter-junk");
@@ -911,6 +947,9 @@ camel_imap_settings_set_filter_all (CamelImapSettings *settings,
                                     gboolean filter_all)
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
+
+	if ((settings->priv->filter_all ? 1 : 0) == (filter_all ? 1 : 0))
+		return;
 
 	settings->priv->filter_all = filter_all;
 
@@ -951,6 +990,9 @@ camel_imap_settings_set_filter_junk_inbox (CamelImapSettings *settings,
                                            gboolean filter_junk_inbox)
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
+
+	if ((settings->priv->filter_junk_inbox ? 1 : 0) == (filter_junk_inbox ? 1 : 0))
+		return;
 
 	settings->priv->filter_junk_inbox = filter_junk_inbox;
 
@@ -1027,6 +1069,11 @@ camel_imap_settings_set_namespace (CamelImapSettings *settings,
 		namespace = "";
 
 	g_mutex_lock (settings->priv->property_lock);
+
+	if (g_strcmp0 (settings->priv->namespace, namespace) == 0) {
+		g_mutex_unlock (settings->priv->property_lock);
+		return;
+	}
 
 	g_free (settings->priv->namespace);
 	settings->priv->namespace = g_strdup (namespace);
@@ -1108,6 +1155,11 @@ camel_imap_settings_set_real_junk_path (CamelImapSettings *settings,
 
 	g_mutex_lock (settings->priv->property_lock);
 
+	if (g_strcmp0 (settings->priv->real_junk_path, real_junk_path) == 0) {
+		g_mutex_unlock (settings->priv->property_lock);
+		return;
+	}
+
 	g_free (settings->priv->real_junk_path);
 	settings->priv->real_junk_path = g_strdup (real_junk_path);
 
@@ -1187,6 +1239,11 @@ camel_imap_settings_set_real_trash_path (CamelImapSettings *settings,
 		real_trash_path = NULL;
 
 	g_mutex_lock (settings->priv->property_lock);
+
+	if (g_strcmp0 (settings->priv->real_trash_path, real_trash_path) == 0) {
+		g_mutex_unlock (settings->priv->property_lock);
+		return;
+	}
 
 	g_free (settings->priv->real_trash_path);
 	settings->priv->real_trash_path = g_strdup (real_trash_path);
@@ -1280,6 +1337,11 @@ camel_imap_settings_set_shell_command (CamelImapSettings *settings,
 
 	g_mutex_lock (settings->priv->property_lock);
 
+	if (g_strcmp0 (settings->priv->shell_command, shell_command) == 0) {
+		g_mutex_unlock (settings->priv->property_lock);
+		return;
+	}
+
 	g_free (settings->priv->shell_command);
 	settings->priv->shell_command = g_strdup (shell_command);
 
@@ -1323,6 +1385,9 @@ camel_imap_settings_set_use_namespace (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
+	if ((settings->priv->use_namespace ? 1 : 0) == (use_namespace ? 1 : 0))
+		return;
+
 	settings->priv->use_namespace = use_namespace;
 
 	g_object_notify (G_OBJECT (settings), "use-namespace");
@@ -1363,6 +1428,9 @@ camel_imap_settings_set_use_real_junk_path (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
+	if ((settings->priv->use_real_junk_path ? 1 : 0) == (use_real_junk_path ? 1 : 0))
+		return;
+
 	settings->priv->use_real_junk_path = use_real_junk_path;
 
 	g_object_notify (G_OBJECT (settings), "use-real-junk-path");
@@ -1402,6 +1470,9 @@ camel_imap_settings_set_use_real_trash_path (CamelImapSettings *settings,
                                              gboolean use_real_trash_path)
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
+
+	if ((settings->priv->use_real_trash_path ? 1 : 0) == (use_real_trash_path ? 1 : 0))
+		return;
 
 	settings->priv->use_real_trash_path = use_real_trash_path;
 
@@ -1458,6 +1529,9 @@ camel_imap_settings_set_use_shell_command (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
+	if ((settings->priv->use_shell_command ? 1 : 0) == (use_shell_command ? 1 : 0))
+		return;
+
 	settings->priv->use_shell_command = use_shell_command;
 
 	g_object_notify (G_OBJECT (settings), "use-shell-command");
@@ -1497,6 +1571,9 @@ camel_imap_settings_set_use_subscriptions (CamelImapSettings *settings,
                                            gboolean use_subscriptions)
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
+
+	if ((settings->priv->use_subscriptions ? 1 : 0) == (use_subscriptions ? 1 : 0))
+		return;
 
 	settings->priv->use_subscriptions = use_subscriptions;
 

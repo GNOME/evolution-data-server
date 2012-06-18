@@ -309,6 +309,9 @@ e_book_backend_set_cache_dir (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (cache_dir != NULL);
 
+	if (g_strcmp0 (backend->priv->cache_dir, cache_dir) == 0)
+		return;
+
 	g_free (backend->priv->cache_dir);
 	backend->priv->cache_dir = g_strdup (cache_dir);
 

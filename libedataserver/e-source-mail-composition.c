@@ -317,6 +317,23 @@ e_source_mail_composition_dup_bcc (ESourceMailComposition *extension)
 	return duplicate;
 }
 
+static gboolean
+strv_equal (const gchar * const *strv1,
+	    const gchar * const *strv2)
+{
+	gint ii;
+
+	if (!strv1 || !strv2)
+		return strv1 == strv2;
+
+	for (ii = 0; strv1[ii] && strv2[ii]; ii++) {
+		if (g_strcmp0 (strv1[ii], strv2[ii]) != 0)
+			return FALSE;
+	}
+
+	return !strv1[ii] && strv1[ii] == strv2[ii];
+}
+
 /**
  * e_source_mail_composition_set_bcc:
  * @extension: an #ESource
@@ -335,6 +352,11 @@ e_source_mail_composition_set_bcc (ESourceMailComposition *extension,
 	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (strv_equal ((const gchar * const *) extension->priv->bcc, bcc)) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	g_strfreev (extension->priv->bcc);
 	extension->priv->bcc = g_strdupv ((gchar **) bcc);
@@ -418,6 +440,11 @@ e_source_mail_composition_set_cc (ESourceMailComposition *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (strv_equal ((const gchar * const *) extension->priv->cc, cc)) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_strfreev (extension->priv->cc);
 	extension->priv->cc = g_strdupv ((gchar **) cc);
 
@@ -499,6 +526,11 @@ e_source_mail_composition_set_drafts_folder (ESourceMailComposition *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->drafts_folder, drafts_folder) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->drafts_folder);
 	extension->priv->drafts_folder = e_util_strdup_strip (drafts_folder);
 
@@ -543,6 +575,9 @@ e_source_mail_composition_set_sign_imip (ESourceMailComposition *extension,
                                          gboolean sign_imip)
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
+
+	if ((extension->priv->sign_imip ? 1 : 0) == (sign_imip ? 1 : 0))
+		return;
 
 	extension->priv->sign_imip = sign_imip;
 
@@ -621,6 +656,11 @@ e_source_mail_composition_set_templates_folder (ESourceMailComposition *extensio
 	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->templates_folder, templates_folder) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	g_free (extension->priv->templates_folder);
 	extension->priv->templates_folder = e_util_strdup_strip (templates_folder);

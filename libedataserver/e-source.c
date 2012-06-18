@@ -1476,6 +1476,11 @@ e_source_set_parent (ESource *source,
 
 	g_mutex_lock (source->priv->property_lock);
 
+	if (g_strcmp0 (source->priv->parent, parent) == 0) {
+		g_mutex_unlock (source->priv->property_lock);
+		return;
+	}
+
 	g_free (source->priv->parent);
 	source->priv->parent = e_util_strdup_strip (parent);
 
@@ -1525,7 +1530,7 @@ e_source_set_enabled (ESource *source,
 {
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	if (enabled == source->priv->enabled)
+	if ((enabled ? 1 : 0) == (source->priv->enabled ? 1 : 0))
 		return;
 
 	source->priv->enabled = enabled;
@@ -1824,6 +1829,11 @@ e_source_set_display_name (ESource *source,
 	g_return_if_fail (g_utf8_validate (display_name, -1, NULL));
 
 	g_mutex_lock (source->priv->property_lock);
+
+	if (g_strcmp0 (source->priv->display_name, display_name) == 0) {
+		g_mutex_unlock (source->priv->property_lock);
+		return;
+	}
 
 	g_free (source->priv->display_name);
 	source->priv->display_name = g_strdup (display_name);

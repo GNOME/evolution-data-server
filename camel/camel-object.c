@@ -502,6 +502,9 @@ camel_object_set_state_filename (CamelObject *object,
 {
 	g_return_if_fail (CAMEL_IS_OBJECT (object));
 
+	if (g_strcmp0 (object->priv->state_filename, state_filename) == 0)
+		return;
+
 	g_free (object->priv->state_filename);
 	object->priv->state_filename = g_strdup (state_filename);
 

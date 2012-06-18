@@ -3272,6 +3272,9 @@ e_name_selector_entry_set_registry (ENameSelectorEntry *name_selector_entry,
 {
 	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry));
 
+	if (name_selector_entry->priv->registry == registry)
+		return;
+
 	if (registry != NULL) {
 		g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
 		g_object_ref (registry);

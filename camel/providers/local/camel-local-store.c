@@ -797,6 +797,9 @@ camel_local_store_set_need_summary_check (CamelLocalStore *store,
 {
 	g_return_if_fail (CAMEL_IS_LOCAL_STORE (store));
 
+	if ((store->priv->need_summary_check ? 1 : 0) == (need_summary_check ? 1 : 0))
+		return;
+
 	store->priv->need_summary_check = need_summary_check;
 
 	g_object_notify (G_OBJECT (store), "need-summary-check");

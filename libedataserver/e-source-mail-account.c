@@ -215,6 +215,11 @@ e_source_mail_account_set_identity_uid (ESourceMailAccount *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->identity_uid, identity_uid) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->identity_uid);
 	extension->priv->identity_uid = g_strdup (identity_uid);
 

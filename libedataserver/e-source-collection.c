@@ -302,6 +302,11 @@ e_source_collection_set_identity (ESourceCollection *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->identity, identity) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->identity);
 	extension->priv->identity = e_util_strdup_strip (identity);
 
@@ -356,6 +361,9 @@ e_source_collection_set_calendar_enabled (ESourceCollection *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_COLLECTION (extension));
 
+	if ((extension->priv->calendar_enabled ? 1 : 0) == (calendar_enabled ? 1 : 0))
+		return;
+
 	extension->priv->calendar_enabled = calendar_enabled;
 
 	g_object_notify (G_OBJECT (extension), "calendar-enabled");
@@ -407,6 +415,9 @@ e_source_collection_set_contacts_enabled (ESourceCollection *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_COLLECTION (extension));
 
+	if ((extension->priv->contacts_enabled ? 1 : 0) == (contacts_enabled ? 1 : 0))
+		return;
+
 	extension->priv->contacts_enabled = contacts_enabled;
 
 	g_object_notify (G_OBJECT (extension), "contacts-enabled");
@@ -456,6 +467,9 @@ e_source_collection_set_mail_enabled (ESourceCollection *extension,
                                       gboolean mail_enabled)
 {
 	g_return_if_fail (E_IS_SOURCE_COLLECTION (extension));
+
+	if ((extension->priv->mail_enabled ? 1 : 0) == (mail_enabled ? 1 : 0))
+		return;
 
 	extension->priv->mail_enabled = mail_enabled;
 

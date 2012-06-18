@@ -333,6 +333,11 @@ e_source_mail_identity_set_address (ESourceMailIdentity *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->address, address) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->address);
 	extension->priv->address = e_util_strdup_strip (address);
 
@@ -410,6 +415,12 @@ e_source_mail_identity_set_name (ESourceMailIdentity *extension,
 	g_return_if_fail (E_IS_SOURCE_MAIL_IDENTITY (extension));
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (extension->priv->name != NULL &&
+	    g_strcmp0 (extension->priv->name, name) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	g_free (extension->priv->name);
 	extension->priv->name = e_util_strdup_strip (name);
@@ -492,6 +503,11 @@ e_source_mail_identity_set_organization (ESourceMailIdentity *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->organization, organization) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->organization);
 	extension->priv->organization = e_util_strdup_strip (organization);
 
@@ -571,6 +587,11 @@ e_source_mail_identity_set_reply_to (ESourceMailIdentity *extension,
 	g_return_if_fail (E_IS_SOURCE_MAIL_IDENTITY (extension));
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->reply_to, reply_to) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	g_free (extension->priv->reply_to);
 	extension->priv->reply_to = e_util_strdup_strip (reply_to);
@@ -658,6 +679,11 @@ e_source_mail_identity_set_signature_uid (ESourceMailIdentity *extension,
 		signature_uid = "none";
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->signature_uid, signature_uid) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	g_free (extension->priv->signature_uid);
 	extension->priv->signature_uid = g_strdup (signature_uid);

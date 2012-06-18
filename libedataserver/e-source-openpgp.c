@@ -294,6 +294,9 @@ e_source_openpgp_set_always_trust (ESourceOpenPGP *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
 
+	if ((extension->priv->always_trust ? 1 : 0) == (always_trust ? 1 : 0))
+		return;
+
 	extension->priv->always_trust = always_trust;
 
 	g_object_notify (G_OBJECT (extension), "always-trust");
@@ -331,6 +334,9 @@ e_source_openpgp_set_encrypt_to_self (ESourceOpenPGP *extension,
                                       gboolean encrypt_to_self)
 {
 	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
+
+	if ((extension->priv->encrypt_to_self ? 1 : 0) == (encrypt_to_self ? 1 : 0))
+		return;
 
 	extension->priv->encrypt_to_self = encrypt_to_self;
 
@@ -406,6 +412,11 @@ e_source_openpgp_set_key_id (ESourceOpenPGP *extension,
 	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->key_id, key_id) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	g_free (extension->priv->key_id);
 	extension->priv->key_id = e_util_strdup_strip (key_id);
@@ -487,6 +498,11 @@ e_source_openpgp_set_signing_algorithm (ESourceOpenPGP *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->signing_algorithm, signing_algorithm) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->signing_algorithm);
 	extension->priv->signing_algorithm =
 		e_util_strdup_strip (signing_algorithm);
@@ -530,6 +546,9 @@ e_source_openpgp_set_sign_by_default (ESourceOpenPGP *extension,
                                       gboolean sign_by_default)
 {
 	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
+
+	if ((extension->priv->sign_by_default ? 1 : 0) == (sign_by_default ? 1 : 0))
+		return;
 
 	extension->priv->sign_by_default = sign_by_default;
 

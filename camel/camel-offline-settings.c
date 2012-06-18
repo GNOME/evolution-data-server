@@ -140,6 +140,9 @@ camel_offline_settings_set_stay_synchronized (CamelOfflineSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_OFFLINE_SETTINGS (settings));
 
+	if ((settings->priv->stay_synchronized ? 1 : 0) == (stay_synchronized ? 1 : 0))
+		return;
+
 	settings->priv->stay_synchronized = stay_synchronized;
 
 	g_object_notify (G_OBJECT (settings), "stay-synchronized");

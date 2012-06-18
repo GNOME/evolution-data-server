@@ -205,6 +205,11 @@ e_source_backend_set_backend_name (ESourceBackend *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->backend_name, backend_name) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->backend_name);
 	extension->priv->backend_name = e_util_strdup_strip (backend_name);
 

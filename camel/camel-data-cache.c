@@ -219,6 +219,9 @@ camel_data_cache_set_path (CamelDataCache *cdc,
 	g_return_if_fail (CAMEL_IS_DATA_CACHE (cdc));
 	g_return_if_fail (path != NULL);
 
+	if (g_strcmp0 (cdc->priv->path, path) == 0)
+		return;
+
 	g_free (cdc->priv->path);
 	cdc->priv->path = g_strdup (path);
 

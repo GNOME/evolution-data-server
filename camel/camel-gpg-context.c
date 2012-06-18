@@ -2346,6 +2346,9 @@ camel_gpg_context_set_always_trust (CamelGpgContext *context,
 {
 	g_return_if_fail (CAMEL_IS_GPG_CONTEXT (context));
 
+	if ((context->priv->always_trust ? 1 : 0) == (always_trust ? 1 : 0))
+		return;
+
 	context->priv->always_trust = always_trust;
 
 	g_object_notify (G_OBJECT (context), "always-trust");

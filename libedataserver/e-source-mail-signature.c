@@ -337,6 +337,11 @@ e_source_mail_signature_set_mime_type (ESourceMailSignature *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->mime_type, mime_type) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->mime_type);
 	extension->priv->mime_type = e_util_strdup_strip (mime_type);
 

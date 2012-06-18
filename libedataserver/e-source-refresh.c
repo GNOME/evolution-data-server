@@ -420,7 +420,7 @@ e_source_refresh_set_enabled (ESourceRefresh *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_REFRESH (extension));
 
-	if (enabled == extension->priv->enabled)
+	if ((enabled ? 1 : 0) == (extension->priv->enabled ? 1 : 0))
 		return;
 
 	extension->priv->enabled = enabled;

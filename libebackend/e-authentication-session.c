@@ -953,6 +953,11 @@ e_authentication_session_set_prompt_title (EAuthenticationSession *session,
 
 	g_mutex_lock (session->priv->property_lock);
 
+	if (g_strcmp0 (session->priv->prompt_title, prompt_title) == 0) {
+		g_mutex_unlock (session->priv->property_lock);
+		return;
+	}
+
 	g_free (session->priv->prompt_title);
 	session->priv->prompt_title = g_strdup (prompt_title);
 
@@ -1028,6 +1033,11 @@ e_authentication_session_set_prompt_message (EAuthenticationSession *session,
 	g_return_if_fail (E_IS_AUTHENTICATION_SESSION (session));
 
 	g_mutex_lock (session->priv->property_lock);
+
+	if (g_strcmp0 (session->priv->prompt_message, prompt_message) == 0) {
+		g_mutex_unlock (session->priv->property_lock);
+		return;
+	}
 
 	g_free (session->priv->prompt_message);
 	session->priv->prompt_message = g_strdup (prompt_message);
@@ -1105,6 +1115,11 @@ e_authentication_session_set_prompt_description (EAuthenticationSession *session
 	g_return_if_fail (E_IS_AUTHENTICATION_SESSION (session));
 
 	g_mutex_lock (session->priv->property_lock);
+
+	if (g_strcmp0 (session->priv->prompt_description, prompt_description) == 0) {
+		g_mutex_unlock (session->priv->property_lock);
+		return;
+	}
 
 	g_free (session->priv->prompt_description);
 	session->priv->prompt_description = g_strdup (prompt_description);

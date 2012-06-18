@@ -359,6 +359,11 @@ e_source_smime_set_encryption_certificate (ESourceSMIME *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->encryption_certificate, encryption_certificate) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->encryption_certificate);
 	extension->priv->encryption_certificate =
 		e_util_strdup_strip (encryption_certificate);
@@ -403,6 +408,9 @@ e_source_smime_set_encrypt_by_default (ESourceSMIME *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_SMIME (extension));
 
+	if ((extension->priv->encrypt_by_default ? 1 : 0) == (encrypt_by_default ? 1 : 0))
+		return;
+
 	extension->priv->encrypt_by_default = encrypt_by_default;
 
 	g_object_notify (G_OBJECT (extension), "encrypt-by-default");
@@ -440,6 +448,9 @@ e_source_smime_set_encrypt_to_self (ESourceSMIME *extension,
                                     gboolean encrypt_to_self)
 {
 	g_return_if_fail (E_IS_SOURCE_SMIME (extension));
+
+	if ((extension->priv->encrypt_to_self ? 1 : 0) == (encrypt_to_self ? 1 : 0))
+		return;
 
 	extension->priv->encrypt_to_self = encrypt_to_self;
 
@@ -518,6 +529,11 @@ e_source_smime_set_signing_algorithm (ESourceSMIME *extension,
 	g_return_if_fail (E_IS_SOURCE_SMIME (extension));
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->signing_algorithm, signing_algorithm) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	g_free (extension->priv->signing_algorithm);
 	extension->priv->signing_algorithm =
@@ -599,6 +615,11 @@ e_source_smime_set_signing_certificate (ESourceSMIME *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->signing_certificate, signing_certificate) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->signing_certificate);
 	extension->priv->signing_certificate =
 		e_util_strdup_strip (signing_certificate);
@@ -642,6 +663,9 @@ e_source_smime_set_sign_by_default (ESourceSMIME *extension,
                                     gboolean sign_by_default)
 {
 	g_return_if_fail (E_IS_SOURCE_SMIME (extension));
+
+	if ((extension->priv->sign_by_default ? 1 : 0) == (sign_by_default ? 1 : 0))
+		return;
 
 	extension->priv->sign_by_default = sign_by_default;
 

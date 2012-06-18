@@ -116,6 +116,9 @@ static void
 medium_set_content (CamelMedium *medium,
                     CamelDataWrapper *content)
 {
+	if (medium->priv->content == content)
+		return;
+
 	if (content != NULL)
 		g_object_ref (content);
 

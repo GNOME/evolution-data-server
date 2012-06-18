@@ -487,6 +487,9 @@ e_source_combo_box_set_registry (ESourceComboBox *combo_box,
 {
 	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box));
 
+	if (combo_box->priv->registry == registry)
+		return;
+
 	if (registry != NULL) {
 		g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
 		g_object_ref (registry);
@@ -583,6 +586,9 @@ e_source_combo_box_set_extension_name (ESourceComboBox *combo_box,
 {
 	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box));
 
+	if (g_strcmp0 (combo_box->priv->extension_name, extension_name) == 0)
+		return;
+
 	g_free (combo_box->priv->extension_name);
 	combo_box->priv->extension_name = g_strdup (extension_name);
 
@@ -624,7 +630,7 @@ e_source_combo_box_set_show_colors (ESourceComboBox *combo_box,
 {
 	g_return_if_fail (E_IS_SOURCE_COMBO_BOX (combo_box));
 
-	if (show_colors == combo_box->priv->show_colors)
+	if ((show_colors ? 1 : 0) == (combo_box->priv->show_colors ? 1 : 0))
 		return;
 
 	combo_box->priv->show_colors = show_colors;

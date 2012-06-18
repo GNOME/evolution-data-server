@@ -171,6 +171,11 @@ e_source_vcf_set_path (ESourceVCF *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->path, path) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->path);
 	extension->priv->path = e_util_strdup_strip (path);
 

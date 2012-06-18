@@ -424,6 +424,10 @@ e_categories_editor_set_entry_visible (ECategoriesEditor *editor,
 {
 	g_return_if_fail (E_IS_CATEGORIES_EDITOR (editor));
 
+	if ((gtk_widget_get_visible (editor->priv->categories_entry) ? 1 : 0) ==
+	    (entry_visible ? 1 : 0))
+		return;
+
 	gtk_widget_set_visible (
 		editor->priv->categories_entry, entry_visible);
 	gtk_widget_set_visible (

@@ -211,6 +211,9 @@ e_source_alarms_set_include_me (ESourceAlarms *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_ALARMS (extension));
 
+	if ((extension->priv->include_me ? 1 : 0) == (include_me ? 1 : 0))
+		return;
+
 	extension->priv->include_me = include_me;
 
 	g_object_notify (G_OBJECT (extension), "include-me");
@@ -302,6 +305,11 @@ e_source_alarms_set_last_notified (ESourceAlarms *extension,
 	}
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->last_notified, last_notified) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	g_free (extension->priv->last_notified);
 	extension->priv->last_notified = g_strdup (last_notified);

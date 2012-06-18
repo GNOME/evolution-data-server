@@ -566,6 +566,9 @@ camel_imap_folder_set_check_folder (CamelImapFolder *imap_folder,
 
 	g_return_if_fail (CAMEL_IS_IMAP_FOLDER (imap_folder));
 
+	if ((imap_folder->priv->check_folder ? 1 : 0) == (check_folder ? 1 : 0))
+		return;
+
 	imap_folder->priv->check_folder = check_folder;
 
 	folder = CAMEL_FOLDER (imap_folder);

@@ -248,6 +248,12 @@ e_source_security_set_method (ESourceSecurity *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (extension->priv->method &&
+	    g_strcmp0 (extension->priv->method, method) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->method);
 	extension->priv->method = e_util_strdup_strip (method);
 

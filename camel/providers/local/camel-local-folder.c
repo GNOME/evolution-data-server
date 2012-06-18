@@ -667,6 +667,9 @@ camel_local_folder_set_index_body (CamelLocalFolder *local_folder,
 {
 	g_return_if_fail (CAMEL_IS_LOCAL_FOLDER (local_folder));
 
+	if (((local_folder->flags & CAMEL_STORE_FOLDER_BODY_INDEX) ? 1 : 0) == (index_body ? 1 : 0))
+		return;
+
 	if (index_body)
 		local_folder->flags |= CAMEL_STORE_FOLDER_BODY_INDEX;
 	else

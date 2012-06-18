@@ -136,6 +136,9 @@ camel_store_settings_set_filter_inbox (CamelStoreSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_STORE_SETTINGS (settings));
 
+	if ((settings->priv->filter_inbox ? 1 : 0) == (filter_inbox ? 1 : 0))
+		return;
+
 	settings->priv->filter_inbox = filter_inbox;
 
 	g_object_notify (G_OBJECT (settings), "filter-inbox");

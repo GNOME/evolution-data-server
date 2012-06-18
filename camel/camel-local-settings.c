@@ -186,6 +186,7 @@ camel_local_settings_set_path (CamelLocalSettings *settings,
                                const gchar *path)
 {
 	gsize length = 0;
+	gchar *new_path;
 
 	g_return_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings));
 
@@ -202,8 +203,16 @@ camel_local_settings_set_path (CamelLocalSettings *settings,
 
 	g_mutex_lock (settings->priv->property_lock);
 
+	new_path = g_strndup (path, length);
+
+	if (g_strcmp0 (settings->priv->path, new_path) == 0) {
+		g_mutex_unlock (settings->priv->property_lock);
+		g_free (new_path);
+		return;
+	}
+
 	g_free (settings->priv->path);
-	settings->priv->path = g_strndup (path, length);
+	settings->priv->path = new_path;
 
 	g_mutex_unlock (settings->priv->property_lock);
 

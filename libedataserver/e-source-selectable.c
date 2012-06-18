@@ -237,6 +237,11 @@ e_source_selectable_set_color (ESourceSelectable *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->color, color) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->color);
 	extension->priv->color = e_util_strdup_strip (color);
 
@@ -281,6 +286,9 @@ e_source_selectable_set_selected (ESourceSelectable *extension,
                                   gboolean selected)
 {
 	g_return_if_fail (E_IS_SOURCE_SELECTABLE (extension));
+
+	if ((extension->priv->selected ? 1 : 0) == (selected ? 1 : 0))
+		return;
 
 	extension->priv->selected = selected;
 

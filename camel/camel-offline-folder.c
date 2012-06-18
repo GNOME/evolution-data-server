@@ -369,6 +369,9 @@ camel_offline_folder_set_offline_sync (CamelOfflineFolder *folder,
 {
 	g_return_if_fail (CAMEL_IS_OFFLINE_FOLDER (folder));
 
+	if ((folder->priv->offline_sync ? 1 : 0) == (offline_sync ? 1 : 0))
+		return;
+
 	folder->priv->offline_sync = offline_sync;
 
 	g_object_notify (G_OBJECT (folder), "offline-sync");

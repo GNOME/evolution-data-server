@@ -1333,6 +1333,9 @@ e_server_side_source_set_allow_auth_prompt (EServerSideSource *source,
 {
 	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
 
+	if ((source->priv->allow_auth_prompt ? 1 : 0) == (allow_auth_prompt ? 1 : 0))
+		return;
+
 	source->priv->allow_auth_prompt = allow_auth_prompt;
 
 	g_object_notify (G_OBJECT (source), "allow-auth-prompt");
@@ -1381,6 +1384,9 @@ e_server_side_source_set_write_directory (EServerSideSource *source,
 {
 	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
 	g_return_if_fail (write_directory != NULL);
+
+	if (g_strcmp0 (source->priv->write_directory, write_directory) == 0)
+		return;
 
 	g_free (source->priv->write_directory);
 	source->priv->write_directory = g_strdup (write_directory);

@@ -225,7 +225,7 @@ e_backend_set_online (EBackend *backend,
 	g_return_if_fail (E_IS_BACKEND (backend));
 
 	/* Avoid unnecessary "notify" signals. */
-	if (online == backend->priv->online)
+	if ((online ? 1 : 0) == (backend->priv->online ? 1 : 0))
 		return;
 
 	backend->priv->online = online;

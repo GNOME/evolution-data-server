@@ -1531,7 +1531,7 @@ e_source_selector_set_show_colors (ESourceSelector *selector,
 {
 	g_return_if_fail (E_IS_SOURCE_SELECTOR (selector));
 
-	if (show_colors == selector->priv->show_colors)
+	if ((show_colors ? 1 : 0) == (selector->priv->show_colors ? 1 : 0))
 		return;
 
 	selector->priv->show_colors = show_colors;
@@ -1574,7 +1574,7 @@ e_source_selector_set_show_toggles (ESourceSelector *selector,
 {
 	g_return_if_fail (E_IS_SOURCE_SELECTOR (selector));
 
-	if (show_toggles == selector->priv->show_toggles)
+	if ((show_toggles ? 1 : 0) == (selector->priv->show_toggles ? 1 : 0))
 		return;
 
 	selector->priv->show_toggles = show_toggles;

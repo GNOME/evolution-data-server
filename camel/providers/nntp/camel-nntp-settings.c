@@ -290,6 +290,9 @@ camel_nntp_settings_set_filter_all (CamelNNTPSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_NNTP_SETTINGS (settings));
 
+	if ((settings->priv->filter_all ? 1 : 0) == (filter_all ? 1 : 0))
+		return;
+
 	settings->priv->filter_all = filter_all;
 
 	g_object_notify (G_OBJECT (settings), "filter-all");
@@ -336,6 +339,9 @@ camel_nntp_settings_set_folder_hierarchy_relative (CamelNNTPSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_NNTP_SETTINGS (settings));
 
+	if ((settings->priv->folder_hierarchy_relative ? 1 : 0) == (folder_hierarchy_relative ? 1 : 0))
+		return;
+
 	settings->priv->folder_hierarchy_relative = folder_hierarchy_relative;
 
 	g_object_notify (G_OBJECT (settings), "folder-hierarchy-relative");
@@ -375,6 +381,9 @@ camel_nntp_settings_set_short_folder_names (CamelNNTPSettings *settings,
                                             gboolean short_folder_names)
 {
 	g_return_if_fail (CAMEL_IS_NNTP_SETTINGS (settings));
+
+	if ((settings->priv->short_folder_names ? 1 : 0) == (short_folder_names ? 1 : 0))
+		return;
 
 	settings->priv->short_folder_names = short_folder_names;
 

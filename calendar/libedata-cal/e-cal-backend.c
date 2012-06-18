@@ -513,6 +513,9 @@ e_cal_backend_set_cache_dir (ECalBackend *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 	g_return_if_fail (cache_dir != NULL);
 
+	if (g_strcmp0 (backend->priv->cache_dir, cache_dir) == 0)
+		return;
+
 	g_free (backend->priv->cache_dir);
 	backend->priv->cache_dir = g_strdup (cache_dir);
 

@@ -661,6 +661,9 @@ e_source_webdav_set_avoid_ifmatch (ESourceWebdav *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 
+	if ((extension->priv->avoid_ifmatch ? 1 : 0) == (avoid_ifmatch ? 1 : 0))
+		return;
+
 	extension->priv->avoid_ifmatch = avoid_ifmatch;
 
 	g_object_notify (G_OBJECT (extension), "avoid-ifmatch");
@@ -697,6 +700,9 @@ e_source_webdav_set_calendar_auto_schedule (ESourceWebdav *extension,
                                             gboolean calendar_auto_schedule)
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
+
+	if ((extension->priv->calendar_auto_schedule ? 1 : 0) == (calendar_auto_schedule ? 1 : 0))
+		return;
 
 	extension->priv->calendar_auto_schedule = calendar_auto_schedule;
 
@@ -778,6 +784,11 @@ e_source_webdav_set_display_name (ESourceWebdav *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->display_name, display_name) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->display_name);
 	extension->priv->display_name = e_util_strdup_strip (display_name);
 
@@ -858,6 +869,11 @@ e_source_webdav_set_email_address (ESourceWebdav *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->email_address, email_address) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->email_address);
 	extension->priv->email_address = e_util_strdup_strip (email_address);
 
@@ -904,6 +920,9 @@ e_source_webdav_set_ignore_invalid_cert (ESourceWebdav *extension,
                                          gboolean ignore_invalid_cert)
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
+
+	if ((extension->priv->ignore_invalid_cert ? 1 : 0) == (ignore_invalid_cert ? 1 : 0))
+		return;
 
 	extension->priv->ignore_invalid_cert = ignore_invalid_cert;
 
@@ -981,6 +1000,11 @@ e_source_webdav_set_resource_path (ESourceWebdav *extension,
 
 	g_mutex_lock (extension->priv->property_lock);
 
+	if (g_strcmp0 (extension->priv->resource_path, resource_path) == 0) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
+
 	g_free (extension->priv->resource_path);
 	extension->priv->resource_path = e_util_strdup_strip (resource_path);
 
@@ -1038,6 +1062,11 @@ e_source_webdav_set_soup_uri (ESourceWebdav *extension,
 	g_return_if_fail (SOUP_URI_IS_VALID (uri));
 
 	g_mutex_lock (extension->priv->property_lock);
+
+	if (extension->priv->uri && soup_uri_equal (extension->priv->uri, uri)) {
+		g_mutex_unlock (extension->priv->property_lock);
+		return;
+	}
 
 	soup_uri_free (extension->priv->uri);
 	extension->priv->uri = soup_uri_copy (uri);
