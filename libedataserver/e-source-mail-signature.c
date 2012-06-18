@@ -248,7 +248,7 @@ e_source_mail_signature_init (ESourceMailSignature *extension)
  *
  * e_source_mail_signature_load() uses this to load the signature content.
  *
- * Returns: a #GFile
+ * Returns: (transfer none): a #GFile
  *
  * Since: 3.6
  **/

@@ -215,7 +215,7 @@ add_to_array_cb (gpointer key,
  * newly allocated string then this should be freed with g_strfreev() when no
  * longer needed.
  *
- * Returns: a %NULL-terminated array of key/value strings
+ * Returns: (transfer full): a %NULL-terminated array of key/value strings
  *
  * Since: 3.2
  **/
@@ -561,7 +561,8 @@ gather_key_names (gpointer key,
  * The key names are internal credentials values and should not be modified
  * or freed.  Free the list with g_slist_free() when no longer needed.
  *
- * Returns: a newly-allocated #GSList of key names
+ * Returns: (transfer container) (element-type utf8): a newly-allocated #GSList
+ * of key names
  *
  * Since: 3.2
  **/

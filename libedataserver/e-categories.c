@@ -490,9 +490,10 @@ initialize_categories (void)
  *
  * Returns a sorted list of all the category names currently configured.
  *
- * Returns: (transfer container): a sorted GList containing the names of the
- * categories.The list should be freed using g_list_free, but the names of
- * the categories should not be touched at all, they are internal strings.
+ * Returns: (transfer container) (element-type utf8): a sorted GList containing
+ * the names of the categories.The list should be freed using g_list_free(), but
+ * the names of the categories should not be touched at all, they are internal
+ * strings.
  */
 GList *
 e_categories_get_list (void)

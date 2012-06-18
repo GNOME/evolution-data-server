@@ -164,6 +164,11 @@ e_list_invalidate_iterators (EList *list,
 /* FIXME: This doesn't work properly if the iterator is the first
  * iterator in the list.  Well, the iterator doesn't continue on after
  * the next time next is called, at least. */
+/**
+ * e_list_remove_link: (skip)
+ * @list:
+ * @link:
+ */
 void
 e_list_remove_link (EList *list,
                     GList *link)

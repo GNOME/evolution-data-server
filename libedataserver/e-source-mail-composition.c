@@ -272,7 +272,7 @@ e_source_mail_composition_init (ESourceMailComposition *extension)
  * the form "Full Name <email-address>".  The returned array is owned
  * by @extension and should not be modified or freed.
  *
- * Returns: a %NULL-terminated string array of Bcc recipients
+ * Returns: (transfer none): a %NULL-terminated string array of Bcc recipients
  *
  * Since: 3.6
  **/
@@ -294,7 +294,8 @@ e_source_mail_composition_get_bcc (ESourceMailComposition *extension)
  * The returned string array should be freed with g_strfreev() when no
  * longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailComposition:bcc
+ * Returns: (transfer full): a newly-allocated copy of
+ * #ESourceMailComposition:bcc
  *
  * Since: 3.6
  **/
@@ -353,7 +354,7 @@ e_source_mail_composition_set_bcc (ESourceMailComposition *extension,
  * Name <email-address>".  The returned array is owned by @extension and
  * should not be modified or freed.
  *
- * Returns: a %NULL-terminated string array of Cc recipients
+ * Returns: (transfer none): a %NULL-terminated string array of Cc recipients
  *
  * Since: 3.6
  **/
@@ -375,7 +376,8 @@ e_source_mail_composition_get_cc (ESourceMailComposition *extension)
  * The returned string array should be freed with g_strfreev() when no
  * longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailComposition:cc
+ * Returns: (transfer full): a newly-allocated copy of
+ * #ESourceMailComposition:cc
  *
  * Since: 3.6
  **/

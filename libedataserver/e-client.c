@@ -76,7 +76,7 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_ABSTRACT_TYPE (EClient, e_client, G_TYPE_OBJECT)
 
-/**
+/*
  * Well-known client backend properties, which are common for each #EClient:
  * @CLIENT_BACKEND_PROPERTY_OPENED: Is set to "TRUE" or "FALSE" depending
  *   whether the backend is fully opened.
@@ -92,7 +92,7 @@ G_DEFINE_ABSTRACT_TYPE (EClient, e_client, G_TYPE_OBJECT)
  *   of	capabilities supported by the backend. Preferred method of retreiving
  *   and working with capabilities is e_client_get_capabilities() and
  *   e_client_check_capability().
- **/
+ */
 
 GQuark
 e_client_error_quark (void)
@@ -1456,14 +1456,14 @@ e_client_refresh_sync (EClient *client,
 
 /**
  * e_client_util_slist_to_strv:
- * @strings: a #GSList of strings (const gchar *)
+ * @strings: (element-type utf8): a #GSList of strings (const gchar *)
  *
- * Convert list of strings into NULL-terminates array of strings.
+ * Convert a list of strings into a %NULL-terminated array of strings.
  *
- * Returns: (transfer full): Newly allocated NULL-terminated array of strings.
- * Returned pointer should be freed with g_strfreev().
+ * Returns: (transfer full): Newly allocated %NULL-terminated array of strings.
+ * The returned pointer should be freed with g_strfreev().
  *
- * Note: Pair function for this is e_client_util_strv_to_slist().
+ * Note: Paired function for this is e_client_util_strv_to_slist().
  *
  * Since: 3.2
  **/
@@ -1475,14 +1475,15 @@ e_client_util_slist_to_strv (const GSList *strings)
 
 /**
  * e_client_util_strv_to_slist:
- * @strv: a NULL-terminated array of strings (const gchar *)
+ * @strv: a %NULL-terminated array of strings (const gchar *)
  *
- * Convert NULL-terminated array of strings to a list of strings.
+ * Convert a %NULL-terminated array of strings to a list of strings.
  *
- * Returns: (transfer full): Newly allocated #GSList of newly allocated strings.
- * Returned pointer should be freed with e_client_util_free_string_slist().
+ * Returns: (transfer full) (element-type utf8): Newly allocated #GSList of
+ * newly allocated strings. The returned pointer should be freed with
+ * e_client_util_free_string_slist().
  *
- * Note: Pair function for this is e_client_util_slist_to_strv().
+ * Note: Paired function for this is e_client_util_slist_to_strv().
  *
  * Since: 3.2
  **/
@@ -1494,13 +1495,13 @@ e_client_util_strv_to_slist (const gchar * const *strv)
 
 /**
  * e_client_util_copy_string_slist:
- * @copy_to: Where to copy; can be NULL
- * @strings: GSList of strings to be copied
+ * @copy_to: (element-type utf8) (allow-none): Where to copy; may be %NULL
+ * @strings: (element-type utf8): #GSList of strings to be copied
  *
- * Copies GSList of strings at the end of @copy_to.
+ * Copies the #GSList of strings to the end of @copy_to.
  *
- * Returns: (transfer full): New head of @copy_to.
- * Returned pointer can be freed with e_client_util_free_string_slist().
+ * Returns: (transfer full) (element-type utf8): New head of @copy_to.
+ * The returned pointer can be freed with e_client_util_free_string_slist().
  *
  * Since: 3.2
  **/
@@ -1513,13 +1514,13 @@ e_client_util_copy_string_slist (GSList *copy_to,
 
 /**
  * e_client_util_copy_object_slist:
- * @copy_to: Where to copy; can be NULL
- * @objects: GSList of GObject-s to be copied
+ * @copy_to: (element-type GObject) (allow-none): Where to copy; may be %NULL
+ * @objects: (element-type GObject): #GSList of #GObject<!-- -->s to be copied
  *
- * Copies GSList of GObject-s at the end of @copy_to.
+ * Copies a #GSList of #GObject<!-- -->s to the end of @copy_to.
  *
- * Returns: (transfer full): New head of @copy_to.
- * Returned pointer can be freed with e_client_util_free_object_slist().
+ * Returns: (transfer full) (element-type GObject): New head of @copy_to.
+ * The returned pointer can be freed with e_client_util_free_object_slist().
  *
  * Since: 3.2
  **/
@@ -1532,7 +1533,7 @@ e_client_util_copy_object_slist (GSList *copy_to,
 
 /**
  * e_client_util_free_string_slist:
- * @strings: a #GSList of strings (gchar *)
+ * @strings: (element-type utf8): a #GSList of strings (gchar *)
  *
  * Frees memory previously allocated by e_client_util_strv_to_slist().
  *
@@ -1546,10 +1547,10 @@ e_client_util_free_string_slist (GSList *strings)
 
 /**
  * e_client_util_free_object_slist:
- * @objects: a #GSList of #GObject-s
+ * @objects: (element-type GObject): a #GSList of #GObject<!-- -->s
  *
- * Calls g_object_unref() on each member of @objects and then frees
- * also @objects itself.
+ * Calls g_object_unref() on each member of @objects and then frees @objects
+ * itself.
  *
  * Since: 3.2
  **/
@@ -1565,9 +1566,9 @@ e_client_util_free_object_slist (GSList *objects)
  *
  * Parses comma-separated list of values into #GSList.
  *
- * Returns: (transfer full): Newly allocated #GSList of newly allocated strings
- * corresponding to values parsed from @strings.
- * Free returned pointer with e_client_util_free_string_slist().
+ * Returns: (transfer full) (element-type utf8): Newly allocated #GSList of
+ * newly allocated strings corresponding to values parsed from @strings.
+ * Free the returned pointer with e_client_util_free_string_slist().
  *
  * Since: 3.2
  **/

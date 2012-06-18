@@ -1022,7 +1022,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 	 * "org.gnome.Evolution.DefaultSources" GSettings schema. */
 
 	/**
-	 * ESourceRegistry:default-address-book
+	 * ESourceRegistry:default-address-book:
 	 *
 	 * The default address book #ESource.
 	 **/
@@ -1038,7 +1038,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * ESourceRegistry:default-calendar
+	 * ESourceRegistry:default-calendar:
 	 *
 	 * The default calendar #ESource.
 	 **/
@@ -1054,7 +1054,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * ESourceRegistry:default-mail-account
+	 * ESourceRegistry:default-mail-account:
 	 *
 	 * The default mail account #ESource.
 	 **/
@@ -1070,7 +1070,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * ESourceRegistry:default-mail-identity
+	 * ESourceRegistry:default-mail-identity:
 	 *
 	 * The default mail identity #ESource.
 	 **/
@@ -1086,7 +1086,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * ESourceRegistry:default-memo-list
+	 * ESourceRegistry:default-memo-list:
 	 *
 	 * The default memo list #ESource.
 	 **/
@@ -1102,7 +1102,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 			G_PARAM_STATIC_STRINGS));
 
 	/**
-	 * ESourceRegistry:default-task-list
+	 * ESourceRegistry:default-task-list:
 	 *
 	 * The default task list #ESource.
 	 **/
@@ -1135,7 +1135,7 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 		E_TYPE_SOURCE);
 
 	/**
-	 * ESourceRegistry::source-changed
+	 * ESourceRegistry::source-changed:
 	 * @registry: the #ESourceRegistry which emitted the signal
 	 * @source: the #ESource that changed
 	 *
@@ -1930,7 +1930,8 @@ source_registry_create_sources_thread (GSimpleAsyncResult *simple,
 /**
  * e_source_registry_create_sources_sync:
  * @registry: an #ESourceRegistry
- * @list_of_sources: a list of #ESource instances with no #GDBusObject
+ * @list_of_sources: (element-type ESource): a list of #ESource instances with
+ * no #GDBusObject
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1991,7 +1992,8 @@ e_source_registry_create_sources_sync (ESourceRegistry *registry,
 /**
  * e_source_registry_create_sources:
  * @registry: an #ESourceRegistry
- * @list_of_sources: a list of #ESource instances with no #GDBusObject
+ * @list_of_sources: (element-type ESource): a list of #ESource instances with
+ * no #GDBusObject
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: (scope async): a #GAsyncReadyCallback to call when the request
  *            is satisfied

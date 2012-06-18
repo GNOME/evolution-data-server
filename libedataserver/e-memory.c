@@ -101,7 +101,7 @@ e_memchunk_new (gint atomcount,
  * Allocate a new atom size block of memory from an #EMemChunk.
  * Free the returned atom with e_memchunk_free().
  *
- * Returns: an allocated block of memory
+ * Returns: (transfer full): an allocated block of memory
  **/
 gpointer
 e_memchunk_alloc (EMemChunk *memchunk)
@@ -139,7 +139,7 @@ e_memchunk_alloc (EMemChunk *memchunk)
  * and fill the memory with zeros.  Free the returned atom with
  * e_memchunk_free().
  *
- * Returns: an allocated block of memory
+ * Returns: (transfer full): an allocated block of memory
  **/
 gpointer
 e_memchunk_alloc0 (EMemChunk *memchunk)

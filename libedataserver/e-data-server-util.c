@@ -827,11 +827,11 @@ e_filename_mkdir_encoded (const gchar *basepath,
 
 /**
  * e_util_slist_to_strv:
- * @strings: a #GSList of strings (const gchar *)
+ * @strings: (element-type utf8): a #GSList of strings (const gchar *)
  *
  * Convert list of strings into NULL-terminates array of strings.
  *
- * Returns: (transfer full): Newly allocated NULL-terminated array of strings.
+ * Returns: (transfer full): Newly allocated %NULL-terminated array of strings.
  * Returned pointer should be freed with g_strfreev().
  *
  * Note: Pair function for this is e_util_strv_to_slist().
@@ -865,8 +865,9 @@ e_util_slist_to_strv (const GSList *strings)
  *
  * Convert NULL-terminated array of strings to a list of strings.
  *
- * Returns: (transfer full): Newly allocated #GSList of newly allocated strings.
- * Returned pointer should be freed with e_util_free_string_slist().
+ * Returns: (transfer full) (element-type utf8): Newly allocated #GSList of
+ * newly allocated strings. The returned pointer should be freed with
+ * e_util_free_string_slist().
  *
  * Note: Pair function for this is e_util_slist_to_strv().
  *
@@ -890,12 +891,12 @@ e_util_strv_to_slist (const gchar * const *strv)
 
 /**
  * e_util_copy_string_slist:
- * @copy_to: Where to copy; can be NULL
- * @strings: GSList of strings to be copied
+ * @copy_to: (element-type utf8) (allow-none): Where to copy; can be %NULL
+ * @strings: (element-type utf8): #GSList of strings to be copied
  *
- * Copies GSList of strings at the end of @copy_to.
+ * Copies #GSList of strings at the end of @copy_to.
  *
- * Returns: (transfer full): New head of @copy_to.
+ * Returns: (transfer full) (element-type utf8): New head of @copy_to.
  * Returned pointer can be freed with e_util_free_string_slist().
  *
  * Since: 3.4
@@ -920,12 +921,12 @@ e_util_copy_string_slist (GSList *copy_to,
 
 /**
  * e_util_copy_object_slist:
- * @copy_to: Where to copy; can be NULL
- * @objects: GSList of GObject-s to be copied
+ * @copy_to: (element-type GObject) (allow-none): Where to copy; can be %NULL
+ * @objects: (element-type GObject): #GSList of #GObject<!-- -->s to be copied
  *
- * Copies GSList of GObject-s at the end of @copy_to.
+ * Copies #GSList of #GObject<!-- -->s at the end of @copy_to.
  *
- * Returns: (transfer full): New head of @copy_to.
+ * Returns: (transfer full) (element-type GObject): New head of @copy_to.
  * Returned pointer can be freed with e_util_free_object_slist().
  *
  * Since: 3.4
@@ -950,7 +951,7 @@ e_util_copy_object_slist (GSList *copy_to,
 
 /**
  * e_util_free_string_slist:
- * @strings: a #GSList of strings (gchar *)
+ * @strings: (element-type utf8): a #GSList of strings (gchar *)
  *
  * Frees memory previously allocated by e_util_strv_to_slist().
  *
@@ -964,7 +965,7 @@ e_util_free_string_slist (GSList *strings)
 
 /**
  * e_util_free_object_slist:
- * @objects: a #GSList of #GObject-s
+ * @objects: (element-type GObject): a #GSList of #GObject<!-- -->s
  *
  * Calls g_object_unref() on each member of @objects and then frees
  * also @objects itself.
@@ -979,9 +980,9 @@ e_util_free_object_slist (GSList *objects)
 
 /**
  * e_util_free_nullable_object_slist:
- * @objects: a #GSList of nullable #GObject-s
+ * @objects: (element-type GObject): a #GSList of nullable #GObject<!-- -->s
  *
- * Calls g_object_unref() on each member of @objects if non-NULL and then frees
+ * Calls g_object_unref() on each member of @objects if non-%NULL and then frees
  * also @objects itself.
  *
  * Since: 3.6
@@ -1316,7 +1317,7 @@ e_async_closure_new (void)
  * This function can be called repeatedly on the same #EAsyncClosure to
  * easily string together multiple asynchronous operations.
  *
- * Returns: a #GAsyncResult
+ * Returns: (transfer none): a #GAsyncResult which is owned by the closure
  *
  * Since: 3.6
  **/

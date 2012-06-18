@@ -712,10 +712,17 @@ e_gdbus_async_op_keeper_default_init (EGdbusAsyncOpKeeperInterface *iface)
 {
 }
 
-/* Created hash table of pending async operations. This can be freed
- * with g_hash_table_destroy () in dispose. Interface asks for this
- * ponter by call of e_gdbus_async_op_keeper_create_pending_ops ().
-*/
+/**
+ * e_gdbus_async_op_keeper_create_pending_ops:
+ * @object: a #EGdbusAsyncOpKeeper
+ *
+ * Create a hash table of pending async operations. This can be freed
+ * with g_hash_table_unref() in dispose. The interface asks for this
+ * pointer by calling e_gdbus_async_op_keeper_create_pending_ops().
+ *
+ * Returns: (transfer full) (element-type gpointer gpointer): hash table of
+ * pending async operations; free with g_hash_table_unref()
+ */
 GHashTable *
 e_gdbus_async_op_keeper_create_pending_ops (EGdbusAsyncOpKeeper *object)
 {
@@ -725,18 +732,24 @@ e_gdbus_async_op_keeper_create_pending_ops (EGdbusAsyncOpKeeper *object)
 	return g_hash_table_new (g_direct_hash, g_direct_equal);
 }
 
-/* Returns hash table of pending async operations previously created
- * by e_gdbus_async_op_keeper_create_pending_ops ().
-*/
+/**
+ * e_gdbus_async_op_keeper_get_pending_ops:
+ * @object: a #EGdbusAsyncOpKeeper
+ *
+ * Get the hash table of pending async operations previously created
+ * by e_gdbus_async_op_keeper_create_pending_ops().
+ *
+ * Returns: (transfer none): hash table of pending async operations
+ */
 GHashTable *
 e_gdbus_async_op_keeper_get_pending_ops (EGdbusAsyncOpKeeper *object)
 {
 	EGdbusAsyncOpKeeperInterface *iface;
 
-	g_return_val_if_fail (E_IS_GDBUS_ASYNC_OP_KEEPER (object), 0);
+	g_return_val_if_fail (E_IS_GDBUS_ASYNC_OP_KEEPER (object), NULL);
 
 	iface = E_GDBUS_ASYNC_OP_KEEPER_GET_IFACE (object);
-	g_return_val_if_fail (iface->get_pending_ops != NULL, 0);
+	g_return_val_if_fail (iface->get_pending_ops != NULL, NULL);
 
 	return iface->get_pending_ops (object);
 }
@@ -1508,6 +1521,17 @@ e_gdbus_proxy_call_sync_void__void (GDBusProxy *proxy,
 	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_VOID, NULL);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_void__boolean:
+ * @proxy:
+ * @out_boolean:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_call_sync_void__boolean (GDBusProxy *proxy,
                                        gboolean *out_boolean,
@@ -1524,6 +1548,17 @@ e_gdbus_proxy_call_sync_void__boolean (GDBusProxy *proxy,
 	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_BOOLEAN, out_boolean);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_void__string:
+ * @proxy:
+ * @out_string:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_call_sync_void__string (GDBusProxy *proxy,
                                       gchar **out_string,
@@ -1540,6 +1575,17 @@ e_gdbus_proxy_call_sync_void__string (GDBusProxy *proxy,
 	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_STRING, out_string);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_void__strv:
+ * @proxy:
+ * @out_strv:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_call_sync_void__strv (GDBusProxy *proxy,
                                     gchar ***out_strv,
@@ -1556,6 +1602,17 @@ e_gdbus_proxy_call_sync_void__strv (GDBusProxy *proxy,
 	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_STRV, out_strv);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_void__uint:
+ * @proxy:
+ * @out_uint:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_call_sync_void__uint (GDBusProxy *proxy,
                                     guint *out_uint,
@@ -1587,6 +1644,17 @@ e_gdbus_proxy_call_sync_boolean__void (GDBusProxy *proxy,
 	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_BOOLEAN, &in_boolean, E_GDBUS_TYPE_VOID, NULL);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_string__void:
+ * @proxy:
+ * @in_string:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_call_sync_string__void (GDBusProxy *proxy,
                                       const gchar *in_string,
@@ -1619,6 +1687,17 @@ e_gdbus_proxy_call_sync_strv__void (GDBusProxy *proxy,
 	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRV, in_strv, E_GDBUS_TYPE_VOID, NULL);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_uint__void:
+ * @proxy:
+ * @in_uint:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_call_sync_uint__void (GDBusProxy *proxy,
                                     guint in_uint,
@@ -1652,6 +1731,16 @@ e_gdbus_proxy_call_sync_string__string (GDBusProxy *proxy,
 	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRING, in_string, E_GDBUS_TYPE_STRING, out_string);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_string__strv:
+ * @proxy:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_call_sync_string__strv (GDBusProxy *proxy,
                                       const gchar *in_string,
@@ -1688,6 +1777,18 @@ e_gdbus_proxy_call_sync_strv__string (GDBusProxy *proxy,
 	return e_gdbus_proxy_call_sync (proxy, cancellable, error, start_func, finish_func, E_GDBUS_TYPE_STRV, in_strv, E_GDBUS_TYPE_STRING, out_string);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_strv__strv:
+ * @proxy:
+ * @in_strv:
+ * @out_strv:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_call_sync_strv__strv (GDBusProxy *proxy,
                                     const gchar * const *in_strv,
@@ -1969,6 +2070,16 @@ proxy_method_call_sync (const gchar *method_name,
 	return process_result (G_STRFUNC, out_type, out_value, g_dbus_proxy_call_sync (G_DBUS_PROXY (proxy), method_name, params, G_DBUS_CALL_FLAGS_NONE, e_data_server_util_get_dbus_call_timeout (), cancellable, error));
 }
 
+/**
+ * e_gdbus_proxy_call_sync_void__void:
+ * @proxy:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_method_call_sync_void__void (const gchar *method_name,
                                            GDBusProxy *proxy,
@@ -1978,6 +2089,17 @@ e_gdbus_proxy_method_call_sync_void__void (const gchar *method_name,
 	return proxy_method_call_sync (method_name, E_GDBUS_TYPE_VOID, NULL, E_GDBUS_TYPE_VOID, NULL, proxy, cancellable, error);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_boolean__void:
+ * @proxy:
+ * @in_boolean:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_method_call_sync_boolean__void (const gchar *method_name,
                                               GDBusProxy *proxy,
@@ -1998,6 +2120,17 @@ e_gdbus_proxy_method_call_sync_string__void (const gchar *method_name,
 	return proxy_method_call_sync (method_name, E_GDBUS_TYPE_STRING, in_string, E_GDBUS_TYPE_VOID, NULL, proxy, cancellable, error);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_strv__void:
+ * @proxy:
+ * @in_strv:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_method_call_sync_strv__void (const gchar *method_name,
                                            GDBusProxy *proxy,
@@ -2018,6 +2151,18 @@ e_gdbus_proxy_method_call_sync_uint__void (const gchar *method_name,
 	return proxy_method_call_sync (method_name, E_GDBUS_TYPE_UINT, &in_uint, E_GDBUS_TYPE_VOID, NULL, proxy, cancellable, error);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_string__string:
+ * @proxy:
+ * @in_string:
+ * @out_string:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_method_call_sync_string__string (const gchar *method_name,
                                                GDBusProxy *proxy,
@@ -2029,6 +2174,18 @@ e_gdbus_proxy_method_call_sync_string__string (const gchar *method_name,
 	return proxy_method_call_sync (method_name, E_GDBUS_TYPE_STRING, in_string, E_GDBUS_TYPE_STRING, out_string, proxy, cancellable, error);
 }
 
+/**
+ * e_gdbus_proxy_call_sync_strv__string:
+ * @proxy:
+ * @in_strv:
+ * @out_string:
+ * @cancellable: (allow-none):
+ * @error:
+ * @start_func: (scope call):
+ * @finish_func: (scope call):
+ *
+ * Returns:
+ */
 gboolean
 e_gdbus_proxy_method_call_sync_strv__string (const gchar *method_name,
                                              GDBusProxy *proxy,
@@ -2040,7 +2197,13 @@ e_gdbus_proxy_method_call_sync_strv__string (const gchar *method_name,
 	return proxy_method_call_sync (method_name, E_GDBUS_TYPE_STRV, in_strv, E_GDBUS_TYPE_STRING, out_string, proxy, cancellable, error);
 }
 
-/* free returned pointer with g_strfreev() */
+/**
+ * e_gdbus_templates_encode_error:
+ * @in_error: (allow-none):
+ *
+ * Returns: (transfer full): a %NULL-terminated array of strings; free with
+ * g_strfreev()
+ */
 gchar **
 e_gdbus_templates_encode_error (const GError *in_error)
 {
@@ -2088,7 +2251,14 @@ e_gdbus_templates_decode_error (const gchar * const *in_strv,
 	return TRUE;
 }
 
-/* free returned pointer with g_strfreev() */
+/**
+ * e_gdbus_templates_encode_two_strings:
+ * @in_str1: (allow-none):
+ * @in_str2: (allow-none):
+ *
+ * Returns: (transfer full): a %NULL-terminated array of strings; free with
+ * g_strfreev()
+ */
 gchar **
 e_gdbus_templates_encode_two_strings (const gchar *in_str1,
                                       const gchar *in_str2)

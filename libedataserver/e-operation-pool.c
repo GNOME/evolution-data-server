@@ -30,7 +30,10 @@ struct _EOperationPool {
 };
 
 /**
- * e_operation_pool_new:
+ * e_operation_pool_new: (skip)
+ * @max_threads:
+ * @thread_func:
+ * @user_data:
  *
  * FIXME: Document me.
  *
