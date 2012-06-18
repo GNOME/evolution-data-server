@@ -29,7 +29,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/**
+/*
  * Matches a location to a system timezone definition via a fuzzy
  * search and returns the matching TZID, or NULL if none found.
  *
@@ -130,7 +130,7 @@ e_cal_match_tzid (const gchar *tzid)
 
  done:
 	if (systzid && !strcmp(systzid, "UTC")) {
-		/**
+		/*
 		 * UTC is special: it doesn't have a real VTIMEZONE in
 		 * EDS. Matching some pseudo VTTIMEZONE with UTC in the TZID
 		 * to our internal UTC "timezone" breaks
@@ -210,13 +210,13 @@ addsystemtz (gpointer key,
  *            VTIMEZONE and arbitrary other components, in
  *            arbitrary order: these other components are
  *            modified by this call
- * @comps:    a list of icalcomponent instances which
- *            also have to be patched; may be NULL
- * @tzlookup: a callback function which is called to retrieve
+ * @comps: (element-type icalcomponent) (allow-none): a list of #icalcomponent
+ * instances which also have to be patched; may be %NULL
+ * @tzlookup: (allow-none): a callback function which is called to retrieve
  *            a calendar's VTIMEZONE definition; the returned
  *            definition is *not* freed by e_cal_check_timezones()
  *            (to be compatible with e_cal_get_timezone());
- *            NULL indicates that no such timezone exists
+ *            %NULL indicates that no such timezone exists
  *            or an error occurred
  * @custom:   an arbitrary pointer which is passed through to
  *            the tzlookup function
@@ -531,8 +531,8 @@ e_cal_tzlookup_icomp (const gchar *tzid,
  *            VTIMEZONE and arbitrary other components, in
  *            arbitrary order: these other components are
  *            modified by this call
- * @comps:    a list of icalcomponent instances which
- *            also have to be patched; may be NULL
+ * @comps: (element-type icalcomponent) (allow-none): a list of #icalcomponent
+ * instances which also have to be patched; may be %NULL
  * @tzlookup: a callback function which is called to retrieve
  *            a calendar's VTIMEZONE definition; the returned
  *            definition is *not* freed by e_cal_client_check_timezones()
@@ -576,7 +576,7 @@ e_cal_tzlookup_icomp (const gchar *tzid,
  * the TZID. All items referencing the renamed TZID are adapted
  * accordingly.
  *
- * Returns: TRUE if successful, FALSE otherwise.
+ * Returns: %TRUE if successful, %FALSE otherwise.
  *
  * Since: 3.2
  **/

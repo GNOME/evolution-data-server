@@ -428,12 +428,12 @@ _e_cal_client_view_new (ECalClient *client,
 }
 
 /**
- * e_cal_client_view_get_client
+ * e_cal_client_view_get_client:
  * @view: A #ECalClientView object.
  *
  * Get the #ECalClient associated with this view.
  *
- * Returns: the associated client.
+ * Returns: (transfer none): the associated client.
  *
  * Since: 3.2
  **/
@@ -530,7 +530,8 @@ e_cal_client_view_stop (ECalClientView *view,
 /**
  * e_cal_client_view_set_fields_of_interest:
  * @view: An #ECalClientView object
- * @fields_of_interest: List of field names in which the client is interested
+ * @fields_of_interest: (element-type utf8) (allow-none): List of field names in
+ * which the client is interested, or %NULL to reset the fields of interest
  * @error: A #GError
  *
  * Client can instruct server to which fields it is interested in only, thus

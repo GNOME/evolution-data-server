@@ -65,7 +65,7 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (ECalClient, e_cal_client, E_TYPE_CLIENT)
 
-/**
+/*
  * Well-known calendar backend properties:
  * @CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS: Contains default calendar's email
  *   address suggested by the backend.
@@ -79,7 +79,7 @@ G_DEFINE_TYPE (ECalClient, e_cal_client, E_TYPE_CLIENT)
  * See also: @CLIENT_BACKEND_PROPERTY_OPENED, @CLIENT_BACKEND_PROPERTY_OPENING,
  *   @CLIENT_BACKEND_PROPERTY_ONLINE, @CLIENT_BACKEND_PROPERTY_READONLY
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
- **/
+ */
 
 /**
  * e_cal_client_source_type_enum_get_type:
@@ -169,7 +169,7 @@ e_cal_client_error_create (ECalClientError code,
 	return g_error_new_literal (E_CAL_CLIENT_ERROR, code, custom_msg ? custom_msg : e_cal_client_error_to_string (code));
 }
 
-/**
+/*
  * If the specified GError is a remote error, then create a new error
  * representing the remote error.  If the error is anything else, then
  * leave it alone.
@@ -701,7 +701,7 @@ e_cal_client_get_source_type (ECalClient *client)
 }
 
 /**
- * e_cal_client_get_local_attachment_store
+ * e_cal_client_get_local_attachment_store:
  * @client: A calendar client.
  *
  * Queries the URL where the calendar attachments are
@@ -907,10 +907,10 @@ e_cal_client_check_recurrences_no_master (ECalClient *client)
 
 /**
  * e_cal_client_free_icalcomp_slist:
- * @icalcomps: slist of icalcomponent objects
+ * @icalcomps: (element-type icalcomponent): list of icalcomponent objects
  *
- * Frees each element of @icalcomps list and the list itself.
- * Each element is an object of icalcomponent type.
+ * Frees each element of the @icalcomps list and the list itself.
+ * Each element is an object of type #icalcomponent.
  *
  * Since: 3.2
  **/
@@ -923,10 +923,10 @@ e_cal_client_free_icalcomp_slist (GSList *icalcomps)
 
 /**
  * e_cal_client_free_ecalcomp_slist:
- * @ecalcomps: list of ECalComponent objects
+ * @ecalcomps: (element-type ECalComponent): list of #ECalComponent objects
  *
- * Frees each element of @ecalcomps list and the list itself.
- * Each element is an object of ECalComponent type.
+ * Frees each element of the @ecalcomps list and the list itself.
+ * Each element is an object of type #ECalComponent.
  *
  * Since: 3.2
  **/
@@ -1655,17 +1655,17 @@ e_cal_client_generate_instances (ECalClient *client,
 
 /**
  * e_cal_client_generate_instances_sync:
- * @client: A calendar client.
- * @start: Start time for query.
- * @end: End time for query.
- * @cb: Callback for each generated instance.
- * @cb_data: Closure data for the callback.
+ * @client: A calendar client
+ * @start: Start time for query
+ * @end: End time for query
+ * @cb: (closure cb_data) (scope call): Callback for each generated instance
+ * @cb_data: (closure): Closure data for the callback
  *
- * Does a combination of #e_cal_client_get_object_list () and
- * #e_cal_client_recur_generate_instances().
+ * Does a combination of e_cal_client_get_object_list() and
+ * e_cal_client_recur_generate_instances().
  *
  * The callback function should do a g_object_ref() of the calendar component
- * it gets passed if it intends to keep it around, since it will be unref'ed
+ * it gets passed if it intends to keep it around, since it will be unreffed
  * as soon as the callback returns.
  *
  * Since: 3.2
@@ -1875,12 +1875,12 @@ e_cal_client_generate_instances_for_object (ECalClient *client,
 
 /**
  * e_cal_client_generate_instances_for_object_sync:
- * @client: A calendar client.
- * @icalcomp: Object to generate instances from.
- * @start: Start time for query.
- * @end: End time for query.
- * @cb: Callback for each generated instance.
- * @cb_data: Closure data for the callback.
+ * @client: A calendar client
+ * @icalcomp: Object to generate instances from
+ * @start: Start time for query
+ * @end: End time for query
+ * @cb: (closure cb_data) (scope call): Callback for each generated instance
+ * @cb_data: (closure): Closure data for the callback
  *
  * Does a combination of #e_cal_client_get_object_list () and
  * #e_cal_client_recur_generate_instances(), like #e_cal_client_generate_instances_sync(), but
@@ -2885,11 +2885,12 @@ complete_get_objects_for_uid (ECalClientSourceType source_type,
  * e_cal_client_get_objects_for_uid_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @ecalcomps: (out): Return value for the list of objects obtained from the backend
+ * @ecalcomps: (out) (transfer full) (element-type ECalComponent): Return value
+ * for the list of objects obtained from the backend
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_objects_for_uid() and
- * sets @ecalcomps to a list of #ECalComponent-s corresponding to
+ * sets @ecalcomps to a list of #ECalComponent<!-- -->s corresponding to
  * found components for a given uid of the same type as this client.
  * This list should be freed with e_cal_client_free_ecalcomp_slist().
  *
@@ -2917,8 +2918,9 @@ e_cal_client_get_objects_for_uid_finish (ECalClient *client,
  * e_cal_client_get_objects_for_uid_sync:
  * @client: an #ECalClient
  * @uid: Unique identifier for a calendar component
- * @ecalcomps: (out): Return value for the list of objects obtained from the backend
- * @cancellable: a #GCancellable; can be %NULL
+ * @ecalcomps: (out) (transfer full) (element-type ECalComponent): Return value
+ * for the list of objects obtained from the backend
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Queries a calendar for all calendar components with the given unique
@@ -3026,7 +3028,8 @@ complete_get_object_list (gboolean res,
  * e_cal_client_get_object_list_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @icalcomps: (out): list of matching #icalcomponent-s
+ * @icalcomps: (out) (element-type icalcomponent): list of matching
+ * #icalcomponent<!-- -->s
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_object_list() and
@@ -3057,8 +3060,9 @@ e_cal_client_get_object_list_finish (ECalClient *client,
  * e_cal_client_get_object_list_sync:
  * @client: an #ECalClient
  * @sexp: an S-expression representing the query
- * @icalcomps: (out): list of matching #icalcomponent-s
- * @cancellable: a #GCancellable; can be %NULL
+ * @icalcomps: (out) (element-type icalcomponent): list of matching
+ * #icalcomponent<!-- -->s
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Gets a list of objects from the calendar that match the query specified
@@ -3170,7 +3174,8 @@ complete_get_object_list_as_comps (gboolean res,
  * e_cal_client_get_object_list_as_comps_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @ecalcomps: (out): list of matching #ECalComponent-s
+ * @ecalcomps: (out) (element-type ECalComponent): list of matching
+ * #ECalComponent<!-- -->s
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_object_list_as_comps() and
@@ -3201,8 +3206,9 @@ e_cal_client_get_object_list_as_comps_finish (ECalClient *client,
  * e_cal_client_get_object_list_as_comps_sync:
  * @client: an #ECalClient
  * @sexp: an S-expression representing the query
- * @ecalcomps: (out): list of matching #ECalComponent-s
- * @cancellable: a #GCancellable; can be %NULL
+ * @ecalcomps: (out) (element-type ECalComponent): list of matching
+ * #ECalComponent<!-- -->s
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Gets a list of objects from the calendar that match the query specified
@@ -3244,8 +3250,8 @@ e_cal_client_get_object_list_as_comps_sync (ECalClient *client,
  * @client: an #ECalClient
  * @start: Start time for query
  * @end: End time for query
- * @users: List of users to retrieve free/busy information for
- * @cancellable: a #GCancellable; can be %NULL
+ * @users: (element-type utf8): List of users to retrieve free/busy information for
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -3306,8 +3312,8 @@ e_cal_client_get_free_busy_finish (ECalClient *client,
  * @client: an #ECalClient
  * @start: Start time for query
  * @end: End time for query
- * @users: List of users to retrieve free/busy information for
- * @cancellable: a #GCancellable; can be %NULL
+ * @users: (element-type utf8): List of users to retrieve free/busy information for
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Gets free/busy information from the calendar server.
@@ -3483,8 +3489,8 @@ e_cal_client_create_object_sync (ECalClient *client,
 /**
  * e_cal_client_create_objects:
  * @client: an #ECalClient
- * @icalcomps: The components to create
- * @cancellable: a #GCancellable; can be %NULL
+ * @icalcomps: (element-type icalcomponent): The components to create
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -3521,7 +3527,8 @@ e_cal_client_create_objects (ECalClient *client,
  * e_cal_client_create_objects_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @uids: (out): Return value for the UIDs assigned to the new components by the calendar backend
+ * @uids: (out) (element-type utf8): Return value for the UIDs assigned to the
+ * new components by the calendar backend
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_create_objects() and
@@ -3552,9 +3559,10 @@ e_cal_client_create_objects_finish (ECalClient *client,
 /**
  * e_cal_client_create_objects_sync:
  * @client: an #ECalClient
- * @icalcomps: The components to create
- * @uids: (out): Return value for the UIDs assigned to the new components by the calendar backend
- * @cancellable: a #GCancellable; can be %NULL
+ * @icalcomps: (element-type icalcomponent): The components to create
+ * @uids: (out) (element-type utf8): Return value for the UIDs assigned to the
+ * new components by the calendar backend
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Requests the calendar backend to create the objects specified by the @icalcomps
@@ -3714,9 +3722,9 @@ e_cal_client_modify_object_sync (ECalClient *client,
 /**
  * e_cal_client_modify_objects:
  * @client: an #ECalClient
- * @comps: Components to modify
+ * @comps: (element-type icalcomponent): Components to modify
  * @mod: Type of modification
- * @cancellable: a #GCancellable; can be %NULL
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -3783,9 +3791,9 @@ e_cal_client_modify_objects_finish (ECalClient *client,
 /**
  * e_cal_client_modify_objects_sync:
  * @client: an #ECalClient
- * @comps: Components to modify
+ * @comps: (element-type icalcomponent): Components to modify
  * @mod: Type of modification
- * @cancellable: a #GCancellable; can be %NULL
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Requests the calendar backend to modify existing objects. If an object
@@ -3953,7 +3961,8 @@ e_cal_client_remove_object_sync (ECalClient *client,
 /**
  * e_cal_client_remove_objects:
  * @client: an #ECalClient
- * @ids: A list of #ECalComponentId objects identifying the objects to remove
+ * @ids: (element-type ECalComponentId): A list of #ECalComponentId objects
+ * identifying the objects to remove
  * @mod: Type of the removal
  * @cancellable: a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
@@ -4013,9 +4022,10 @@ e_cal_client_remove_objects_finish (ECalClient *client,
 /**
  * e_cal_client_remove_objects_sync:
  * @client: an #ECalClient
- * @ids: A list of #ECalComponentId objects identifying the objects to remove
+ * @ids: (element-type ECalComponentId): A list of #ECalComponentId objects
+ * identifying the objects to remove
  * @mod: Type of the removal
- * @cancellable: a #GCancellable; can be %NULL
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * This function allows the removal of instances of recurrent
@@ -4234,7 +4244,8 @@ complete_send_objects (gboolean res,
  * e_cal_client_send_objects_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @users: (out): List of users to send the @modified_icalcomp to
+ * @users: (out) (element-type utf8): List of users to send
+ * the @modified_icalcomp to
  * @modified_icalcomp: (out): Return value for the icalcomponent to be sent
  * @error: (out): a #GError to set an error, if any
  *
@@ -4269,9 +4280,10 @@ e_cal_client_send_objects_finish (ECalClient *client,
  * e_cal_client_send_objects_sync:
  * @client: an #ECalClient
  * @icalcomp: An icalcomponent to be sent
- * @users: (out): List of users to send the @modified_icalcomp to
+ * @users: (out) (element-type utf8): List of users to send
+ * the @modified_icalcomp to
  * @modified_icalcomp: (out): Return value for the icalcomponent to be sent
- * @cancellable: a #GCancellable; can be %NULL
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Requests a calendar backend to send meeting information stored in @icalcomp.
@@ -4354,7 +4366,8 @@ e_cal_client_get_attachment_uris (ECalClient *client,
  * e_cal_client_get_attachment_uris_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @attachment_uris: (out:) Return the list of attachment uris
+ * @attachment_uris: (out) (element-type utf8): Return the list of attachment
+ * URIs
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_attachment_uris() and
@@ -4394,11 +4407,12 @@ e_cal_client_get_attachment_uris_finish (ECalClient *client,
  * @client: an #ECalClient
  * @uid: Unique identifier for a calendar component
  * @rid: Recurrence identifier
- * @attachment_uris: (out:) Return the list of attachment uris
- * @cancellable: a #GCancellable; can be %NULL
+ * @attachment_uris: (out) (element-type utf8): Return the list of attachment
+ * URIs
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
- * Queries a calendar for a specified component's object attachment uris.
+ * Queries a calendar for a specified component's object attachment URIs.
  * The list should be freed with e_client_util_free_string_slist().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.

@@ -199,7 +199,7 @@ e_calendar_error_quark (void)
 	return q;
 }
 
-/**
+/*
  * If the GError is a remote error, extract the EBookStatus embedded inside.
  * Otherwise return CORBA_EXCEPTION (I know this is DBus...).
  */
@@ -268,7 +268,7 @@ get_status_from_error (const GError *error)
 	}
 }
 
-/**
+/*
  * If the specified GError is a remote error, then create a new error
  * representing the remote error.  If the error is anything else, then leave it
  * alone.
@@ -1071,7 +1071,7 @@ open_calendar (ECal *ecal,
 }
 
 /**
- * e_cal_open
+ * e_cal_open:
  * @ecal: A calendar client.
  * @only_if_exists: FALSE if the calendar should be opened even if there
  * was no storage for it, i.e. to create a new calendar or load an existing
@@ -1269,7 +1269,7 @@ build_uri_list (GNOME_Evolution_Calendar_StringSeq *seq)
 #endif
 
 /**
- * e_cal_uri_list:
+ * e_cal_uri_list: (skip)
  * @ecal: A calendar client.
  * @mode: Mode of the URIs to get.
  *
@@ -1371,7 +1371,7 @@ e_cal_get_load_state (ECal *ecal)
 }
 
 /**
- * e_cal_get_source:
+ * e_cal_get_source: (skip)
  * @ecal: A calendar client.
  *
  * Queries the source that is open in a calendar client.
@@ -1394,7 +1394,7 @@ e_cal_get_source (ECal *ecal)
 }
 
 /**
- * e_cal_get_local_attachment_store
+ * e_cal_get_local_attachment_store:
  * @ecal: A calendar client.
  *
  * Queries the URL where the calendar attachments are
@@ -1752,7 +1752,7 @@ e_cal_get_refresh_supported (ECal *ecal)
 }
 
 /**
- * e_cal_set_mode:
+ * e_cal_set_mode: (skip)
  * @ecal: A calendar client.
  * @mode: Mode to switch to.
  *
@@ -1793,7 +1793,7 @@ struct _ECalGetTimezonesData {
 };
 
 /**
- * e_cal_get_default_object:
+ * e_cal_get_default_object: (skip)
  * @ecal: A calendar client.
  * @icalcomp: Return value for the default object.
  * @error: Placeholder for error information.
@@ -1845,7 +1845,7 @@ e_cal_get_default_object (ECal *ecal,
 }
 
 /**
- * e_cal_get_attachments_for_comp:
+ * e_cal_get_attachments_for_comp: (skip)
  * @ecal: A calendar client.
  * @uid: Unique identifier for a calendar component.
  * @rid: Recurrence identifier.
@@ -1905,7 +1905,7 @@ e_cal_get_attachments_for_comp (ECal *ecal,
 }
 
 /**
- * e_cal_get_object:
+ * e_cal_get_object: (skip)
  * @ecal: A calendar client.
  * @uid: Unique identifier for a calendar component.
  * @rid: Recurrence identifier.
@@ -1995,7 +1995,7 @@ e_cal_get_object (ECal *ecal,
 }
 
 /**
- * e_cal_get_objects_for_uid:
+ * e_cal_get_objects_for_uid: (skip)
  * @ecal: A calendar client.
  * @uid: Unique identifier for a calendar component.
  * @objects: Return value for the list of objects obtained from the backend.
@@ -2094,7 +2094,7 @@ e_cal_get_objects_for_uid (ECal *ecal,
 }
 
 /**
- * e_cal_resolve_tzid_cb:
+ * e_cal_resolve_tzid_cb: (skip)
  * @tzid: ID of the timezone to resolve.
  * @data: Closure data for the callback.
  *
@@ -2124,7 +2124,7 @@ e_cal_resolve_tzid_cb (const gchar *tzid,
 }
 
 /**
- * e_cal_get_changes:
+ * e_cal_get_changes: (skip)
  * @ecal: A calendar client.
  * @change_id: ID to use for comparing changes.
  * @changes: Return value for the list of changes.
@@ -2134,7 +2134,7 @@ e_cal_resolve_tzid_cb (const gchar *tzid,
  * is identified by the @change_id argument, which is used by the backend to
  * compute the changes done.
  *
- * Returns: TRUE if the call was successful, FALSE otherwise.
+ * Returns: %TRUE if the call was successful, %FALSE otherwise.
  *
  * Deprecated: 3.2: This function has been dropped completely.
  */
@@ -2157,10 +2157,10 @@ e_cal_get_changes (ECal *ecal,
 }
 
 /**
- * e_cal_free_change_list:
+ * e_cal_free_change_list: (skip)
  * @list: List of changes to be freed.
  *
- * Free a list of changes as returned by #e_cal_get_changes.
+ * Free a list of changes as returned by e_cal_get_changes().
  *
  * Deprecated: 3.2: Use () instead.
  */
@@ -2245,7 +2245,7 @@ e_cal_get_object_list (ECal *ecal,
 }
 
 /**
- * e_cal_get_object_list_as_comp:
+ * e_cal_get_object_list_as_comp: (skip)
  * @ecal: A calendar client.
  * @query: Query string.
  * @objects: Return value for list of objects.
@@ -2291,7 +2291,7 @@ e_cal_get_object_list_as_comp (ECal *ecal,
 }
 
 /**
- * e_cal_free_object_list:
+ * e_cal_free_object_list: (skip)
  * @objects: List of objects to be freed.
  *
  * Frees a list of objects as returned by #e_cal_get_object_list.
@@ -2310,7 +2310,7 @@ e_cal_free_object_list (GList *objects)
 }
 
 /**
- * e_cal_get_free_busy
+ * e_cal_get_free_busy: (skip)
  * @ecal: A calendar client.
  * @users: List of users to retrieve free/busy information for.
  * @start: Start time for query.
@@ -2769,7 +2769,7 @@ try_again:
 }
 
 /**
- * e_cal_generate_instances:
+ * e_cal_generate_instances: (skip)
  * @ecal: A calendar client.
  * @start: Start time for query.
  * @end: End time for query.
@@ -2808,7 +2808,7 @@ e_cal_generate_instances (ECal *ecal,
 }
 
 /**
- * e_cal_generate_instances_for_object:
+ * e_cal_generate_instances_for_object: (skip)
  * @ecal: A calendar client.
  * @icalcomp: Object to generate instances from.
  * @start: Start time for query.
@@ -2949,7 +2949,7 @@ build_component_alarms_list (ECal *ecal,
 }
 
 /**
- * e_cal_get_alarms_in_range:
+ * e_cal_get_alarms_in_range: (skip)
  * @ecal: A calendar client.
  * @start: Start time for query.
  * @end: End time for query.
@@ -3015,7 +3015,7 @@ e_cal_get_alarms_in_range (ECal *ecal,
 }
 
 /**
- * e_cal_free_alarms:
+ * e_cal_free_alarms: (skip)
  * @comp_alarms: A list of #ECalComponentAlarms structures.
  *
  * Frees a list of #ECalComponentAlarms structures as returned by
@@ -3102,7 +3102,7 @@ e_cal_get_alarms_for_object (ECal *ecal,
 }
 
 /**
- * e_cal_discard_alarm
+ * e_cal_discard_alarm:
  * @ecal: A calendar ecal.
  * @comp: The component to discard the alarm from.
  * @auid: Unique identifier of the alarm to be discarded.
@@ -3297,7 +3297,7 @@ e_cal_get_component_as_string_internal (ECal *ecal,
 }
 
 /**
- * e_cal_get_component_as_string:
+ * e_cal_get_component_as_string: (skip)
  * @ecal: A calendar client.
  * @icalcomp: A calendar component object.
  *
@@ -3317,7 +3317,7 @@ e_cal_get_component_as_string (ECal *ecal,
 }
 
 /**
- * e_cal_create_object:
+ * e_cal_create_object: (skip)
  * @ecal: A calendar client.
  * @icalcomp: The component to create.
  * @uid: Return value for the UID assigned to the new component by the calendar backend.
@@ -3381,7 +3381,7 @@ e_cal_create_object (ECal *ecal,
 }
 
 /**
- * e_cal_modify_object:
+ * e_cal_modify_object: (skip)
  * @ecal: A calendar client.
  * @icalcomp: Component to modify.
  * @mod: Type of modification.
@@ -3445,7 +3445,7 @@ e_cal_modify_object (ECal *ecal,
 }
 
 /**
- * e_cal_remove_object_with_mod:
+ * e_cal_remove_object_with_mod: (skip)
  * @ecal: A calendar client.
  * @uid: UID of the object to remove.
  * @rid: Recurrence ID of the specific recurrence to remove.
@@ -3564,7 +3564,7 @@ e_cal_remove_object (ECal *ecal,
 }
 
 /**
- * e_cal_receive_objects:
+ * e_cal_receive_objects: (skip)
  * @ecal:  A calendar client.
  * @icalcomp: An icalcomponent.
  * @error: Placeholder for error information.
@@ -3610,7 +3610,7 @@ e_cal_receive_objects (ECal *ecal,
 }
 
 /**
- * e_cal_send_objects:
+ * e_cal_send_objects: (skip)
  * @ecal: A calendar client.
  * @icalcomp: An icalcomponent.
  * @users: List of users to send the objects to.
@@ -3688,7 +3688,7 @@ e_cal_send_objects (ECal *ecal,
 }
 
 /**
- * e_cal_get_timezone:
+ * e_cal_get_timezone: (skip)
  * @ecal: A calendar client.
  * @tzid: ID of the timezone to retrieve.
  * @zone: Return value for the timezone.
@@ -3815,7 +3815,7 @@ e_cal_get_timezone (ECal *ecal,
 }
 
 /**
- * e_cal_add_timezone
+ * e_cal_add_timezone: (skip)
  * @ecal: A calendar client.
  * @izone: The timezone to add.
  * @error: Placeholder for error information.
@@ -3939,7 +3939,7 @@ e_cal_get_query (ECal *ecal,
 }
 
 /**
- * e_cal_set_default_timezone:
+ * e_cal_set_default_timezone: (skip)
  * @ecal: A calendar client.
  * @zone: A timezone object.
  * @error: Placeholder for error information.
@@ -3978,7 +3978,7 @@ e_cal_set_default_timezone (ECal *ecal,
 }
 
 /**
- * e_cal_get_error_message
+ * e_cal_get_error_message:
  * @status: A status code.
  *
  * Gets an error message for the given status code.

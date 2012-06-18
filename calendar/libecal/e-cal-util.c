@@ -556,23 +556,24 @@ compare_alarm_instance (gconstpointer a,
 }
 
 /**
- * e_cal_util_generate_alarms_for_comp
- * @comp: The #ECalComponent to generate alarms from.
- * @start: Start time.
- * @end: End time.
+ * e_cal_util_generate_alarms_for_comp:
+ * @comp: The #ECalComponent to generate alarms from
+ * @start: Start time
+ * @end: End time
  * @omit: Alarm types to omit
- * @resolve_tzid: Callback for resolving timezones
- * @user_data: Data to be passed to the resolve_tzid callback
+ * @resolve_tzid: (closure user_data) (scope call): Callback for resolving
+ * timezones
+ * @user_data: (closure): Data to be passed to the resolve_tzid callback
  * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME
  * values.
  *
  * Generates alarm instances for a calendar component.  Returns the instances
- * structure, or NULL if no alarm instances occurred in the specified time
+ * structure, or %NULL if no alarm instances occurred in the specified time
  * range.
  *
- * Returns: a list of all the alarms found for the given component on
- * the given time tange. The list of alarms should be freed by using the
- * #e_cal_component_free_alarm_list function.
+ * Returns: (allow-none) (transfer full): a list of all the alarms found for the
+ * given component in the given time range. The list of alarms should be freed
+ * by using e_cal_component_free_alarm_list().
  */
 ECalComponentAlarms *
 e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
@@ -625,21 +626,23 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 }
 
 /**
- * e_cal_util_generate_alarms_for_list
- * @comps: List of #ECalComponent's.
- * @start: Start time.
- * @end: End time.
+ * e_cal_util_generate_alarms_for_list:
+ * @comps: (element-type ECalComponent): List of #ECalComponent<!-- -->s
+ * @start: Start time
+ * @end: End time
  * @omit: Alarm types to omit
- * @comp_alarms: List to be returned
- * @resolve_tzid: Callback for resolving timezones
- * @user_data: Data to be passed to the resolve_tzid callback
+ * @comp_alarms: (out) (transfer full) (element-type ECalComponentAlarms): List
+ * to be returned
+ * @resolve_tzid: (closure user_data) (scope call): Callback for resolving
+ * timezones
+ * @user_data: (closure): Data to be passed to the resolve_tzid callback
  * @default_timezone: The timezone used to resolve DATE and floating DATE-TIME
  * values.
  *
  * Iterates through all the components in the @comps list and generates alarm
  * instances for them; putting them in the @comp_alarms list.
  *
- * Returns: the number of elements it added to the list.
+ * Returns: the number of elements it added to the list
  */
 gint
 e_cal_util_generate_alarms_for_list (GList *comps,
@@ -1213,6 +1216,13 @@ componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
 
 /**
  * e_cal_util_get_component_occur_times:
+ * @comp: an #ECalComponent
+ * @start: (out):
+ * @end: (out):
+ * @tz_cb: (closure tz_cb_data) (scope call):
+ * @tz_cb_data: (closure):
+ * @default_timezone:
+ * @kind:
  *
  * Find out when the component starts and stops, being careful about
  * recurrences.

@@ -409,12 +409,12 @@ _e_cal_view_new (ECal *ecal,
 }
 
 /**
- * e_cal_view_get_client
+ * e_cal_view_get_client: (skip)
  * @view: A #ECalView object.
  *
  * Get the #ECal associated with this view.
  *
- * Returns: the associated client.
+ * Returns: (transfer none): the associated client.
  *
  * Since: 2.22
  *

@@ -496,8 +496,8 @@ e_cal_component_new_from_icalcomponent (icalcomponent *icalcomp)
  * Creates a new calendar component object by copying the information from
  * another one.
  *
- * Returns: A newly-created calendar component with the same values as the
- * original one.
+ * Returns: (transfer full): A newly-created calendar component with the same
+ * values as the original one.
  **/
 ECalComponent *
 e_cal_component_clone (ECalComponent *comp)
@@ -1690,11 +1690,12 @@ set_attachment_list (icalcomponent *icalcomp,
 
 /**
  * e_cal_component_get_attachment_list:
- * @comp: A calendar component object.
- * @attachment_list: Return list of URLS to attachments.
+ * @comp: A calendar component object
+ * @attachment_list: (out) (transfer full) (element-type utf8): Return list of
+ * URIs to attachments
  *
  * Queries the attachment properties of the calendar component object. When done,
- * the @attachment_list should be freed by calling #g_slist_free.
+ * the @attachment_list should be freed by calling g_slist_free().
  **/
 void
 e_cal_component_get_attachment_list (ECalComponent *comp,
@@ -1714,10 +1715,10 @@ e_cal_component_get_attachment_list (ECalComponent *comp,
 
 /**
  * e_cal_component_set_attachment_list:
- * @comp: A calendar component object.
- * @attachment_list: list of urls to attachment pointers.
+ * @comp: A calendar component object
+ * @attachment_list: (element-type utf8): list of URIs to attachment pointers
  *
- * This currently handles only attachments that are urls
+ * This currently handles only attachments that are URIs
  * in the file system - not inline binaries.
  *
  * Sets the attachments of a calendar component object
@@ -1870,8 +1871,9 @@ e_cal_component_set_categories (ECalComponent *comp,
 /**
  * e_cal_component_get_categories_list:
  * @comp: A calendar component object.
- * @categ_list: Return value for the list of strings, where each string is a
- * category. This should be freed using e_cal_component_free_categories_list().
+ * @categ_list: (out) (transfer full) (element-type utf8): Return value for the
+ * list of strings, where each string is a category. This should be freed using
+ * e_cal_component_free_categories_list().
  *
  * Queries the list of categories of a calendar component object.  Each element
  * in the returned categ_list is a string with the corresponding category.
@@ -1951,7 +1953,7 @@ stringify_categories (GSList *categ_list)
 /**
  * e_cal_component_set_categories_list:
  * @comp: A calendar component object.
- * @categ_list: List of strings, one for each category.
+ * @categ_list: (element-type utf8): List of strings, one for each category.
  *
  * Sets the list of categories of a calendar component object.
  **/
@@ -2177,8 +2179,9 @@ set_text_list (ECalComponent *comp,
 /**
  * e_cal_component_get_comment_list:
  * @comp: A calendar component object.
- * @text_list: Return value for the comment properties and their parameters, as
- * a list of #ECalComponentText structures.  This should be freed using the
+ * @text_list: (out) (transfer full) (element-type ECalComponentText): Return
+ * value for the comment properties and their parameters, as a list of
+ * #ECalComponentText structures.  This should be freed using the
  * e_cal_component_free_text_list() function.
  *
  * Queries the comments of a calendar component object.  The comment property can
@@ -2204,7 +2207,8 @@ e_cal_component_get_comment_list (ECalComponent *comp,
 /**
  * e_cal_component_set_comment_list:
  * @comp: A calendar component object.
- * @text_list: List of #ECalComponentText structures.
+ * @text_list: (element-type ECalComponentText): List of #ECalComponentText
+ * structures.
  *
  * Sets the comments of a calendar component object.  The comment property can
  * appear several times inside a calendar component, and so a list of
@@ -2228,8 +2232,9 @@ e_cal_component_set_comment_list (ECalComponent *comp,
 /**
  * e_cal_component_get_contact_list:
  * @comp: A calendar component object.
- * @text_list: Return value for the contact properties and their parameters, as
- * a list of #ECalComponentText structures.  This should be freed using the
+ * @text_list: (out) (transfer full) (element-type ECalComponentText): Return
+ * value for the contact properties and their parameters, as a list of
+ * #ECalComponentText structures.  This should be freed using the
  * e_cal_component_free_text_list() function.
  *
  * Queries the contact of a calendar component object.  The contact property can
@@ -2255,7 +2260,8 @@ e_cal_component_get_contact_list (ECalComponent *comp,
 /**
  * e_cal_component_set_contact_list:
  * @comp: A calendar component object.
- * @text_list: List of #ECalComponentText structures.
+ * @text_list: (element-type ECalComponentText): List of #ECalComponentText
+ * structures.
  *
  * Sets the contact of a calendar component object.  The contact property can
  * appear several times inside a calendar component, and so a list of
@@ -2426,8 +2432,9 @@ e_cal_component_set_created (ECalComponent *comp,
 /**
  * e_cal_component_get_description_list:
  * @comp: A calendar component object.
- * @text_list: Return value for the description properties and their parameters,
- * as a list of #ECalComponentText structures.  This should be freed using the
+ * @text_list: (out) (transfer full) (element-type ECalComponentText): Return
+ * value for the description properties and their parameters, as a list of
+ * #ECalComponentText structures.  This should be freed using the
  * e_cal_component_free_text_list() function.
  *
  * Queries the description of a calendar component object.  Journal components
@@ -2454,7 +2461,8 @@ e_cal_component_get_description_list (ECalComponent *comp,
 /**
  * e_cal_component_set_description_list:
  * @comp: A calendar component object.
- * @text_list: List of #ECalComponentSummary structures.
+ * @text_list: (element-type ECalComponentSummary): List of
+ * #ECalComponentSummary structures.
  *
  * Sets the description of a calendar component object.  Journal components may
  * have more than one description, and as such this function takes in a list of
@@ -2988,7 +2996,8 @@ set_period_list (ECalComponent *comp,
 /**
  * e_cal_component_get_exdate_list:
  * @comp: A calendar component object.
- * @exdate_list: Return value for the list of exception dates, as a list of
+ * @exdate_list: (out) (transfer full) (element-type ECalComponentDateTime):
+ * Return value for the list of exception dates, as a list of
  * #ECalComponentDateTime structures.  This should be freed using the
  * e_cal_component_free_exdate_list() function.
  *
@@ -3035,7 +3044,8 @@ e_cal_component_get_exdate_list (ECalComponent *comp,
 /**
  * e_cal_component_set_exdate_list:
  * @comp: A calendar component object.
- * @exdate_list: List of #ECalComponentDateTime structures.
+ * @exdate_list: (element-type ECalComponentDateTime): List of
+ * #ECalComponentDateTime structures.
  *
  * Sets the list of exception dates in a calendar component object.
  **/
@@ -3192,9 +3202,9 @@ set_recur_list (ECalComponent *comp,
 /**
  * e_cal_component_get_exrule_list:
  * @comp: A calendar component object.
- * @recur_list: List of exception rules as struct #icalrecurrencetype
- * structures.  This should be freed using the e_cal_component_free_recur_list()
- * function.
+ * @recur_list: (out) (element-type icalrecurrencetype) (transfer full): List of
+ * exception rules as struct #icalrecurrencetype structures.  This should be
+ * freed using the e_cal_component_free_recur_list() function.
  *
  * Queries the list of exception rule properties of a calendar component
  * object.
@@ -3218,7 +3228,8 @@ e_cal_component_get_exrule_list (ECalComponent *comp,
 /**
  * e_cal_component_get_exrule_property_list:
  * @comp: A calendar component object.
- * @recur_list: Returns a list of exception rule properties.
+ * @recur_list: (out) (transfer none) (element-type icalrecurrencetype):
+ * Returns a list of exception rule properties
  *
  * Queries the list of exception rule properties of a calendar component object.
  **/
@@ -3241,7 +3252,8 @@ e_cal_component_get_exrule_property_list (ECalComponent *comp,
 /**
  * e_cal_component_set_exrule_list:
  * @comp: A calendar component object.
- * @recur_list: List of struct #icalrecurrencetype structures.
+ * @recur_list: (element-type icalrecurrencetype): List of struct
+ * #icalrecurrencetype structures.
  *
  * Sets the list of exception rules in a calendar component object.
  **/
@@ -3850,9 +3862,10 @@ e_cal_component_set_recurid (ECalComponent *comp,
 /**
  * e_cal_component_get_rdate_list:
  * @comp: A calendar component object.
- * @period_list: Return value for the list of recurrence dates, as a list of
- * #ECalComponentPeriod structures.  This should be freed using the
- * e_cal_component_free_period_list() function.
+ * @period_list: (out) (transfer full) (element-type ECalComponentPeriod):
+ * Return value for the list of recurrence dates, as a list of
+ * #ECalComponentPeriod structures.  This should be freed using
+ * e_cal_component_free_period_list()
  *
  * Queries the list of recurrence date properties in a calendar component
  * object.
@@ -3876,7 +3889,8 @@ e_cal_component_get_rdate_list (ECalComponent *comp,
 /**
  * e_cal_component_set_rdate_list:
  * @comp: A calendar component object.
- * @period_list: List of #ECalComponentPeriod structures.
+ * @period_list: (element-type ECalComponentPeriod): List of
+ * #ECalComponentPeriod structures
  *
  * Sets the list of recurrence dates in a calendar component object.
  **/
@@ -3923,9 +3937,9 @@ e_cal_component_has_rdates (ECalComponent *comp)
 /**
  * e_cal_component_get_rrule_list:
  * @comp: A calendar component object.
- * @recur_list: List of recurrence rules as struct #icalrecurrencetype
- * structures.  This should be freed using the e_cal_component_free_recur_list()
- * function.
+ * @recur_list: (out) (transfer full) (element-type icalrecurrencetype): List of
+ * recurrence rules as struct #icalrecurrencetype structures.  This should be
+ * freed using e_cal_component_free_recur_list().
  *
  * Queries the list of recurrence rule properties of a calendar component
  * object.
@@ -3949,7 +3963,8 @@ e_cal_component_get_rrule_list (ECalComponent *comp,
 /**
  * e_cal_component_get_rrule_property_list:
  * @comp: A calendar component object.
- * @recur_list: Returns a list of recurrence rule properties.
+ * @recur_list: (out) (transfer none) (element-type icalrecurrencetype): Returns
+ * a list of recurrence rule properties.
  *
  * Queries a list of recurrence rule properties of a calendar component object.
  **/
@@ -3972,7 +3987,8 @@ e_cal_component_get_rrule_property_list (ECalComponent *comp,
 /**
  * e_cal_component_set_rrule_list:
  * @comp: A calendar component object.
- * @recur_list: List of struct #icalrecurrencetype structures.
+ * @recur_list: (element-type icalrecurrencetype): List of struct
+ * #icalrecurrencetype structures.
  *
  * Sets the list of recurrence rules in a calendar component object.
  **/
@@ -4308,7 +4324,7 @@ e_cal_component_set_sequence (ECalComponent *comp,
 /**
  * e_cal_component_get_status:
  * @comp: A calendar component object.
- * @status: Return value for the status value.  It is set to #ICAL_STATUS_NONE
+ * @status: (out): Return value for the status value.  It is set to #ICAL_STATUS_NONE
  * if the component has no status property.
  *
  * Queries the status property of a calendar component object.
@@ -4828,9 +4844,9 @@ set_attendee_list (icalcomponent *icalcomp,
 /**
  * e_cal_component_get_attendee_list:
  * @comp: A calendar component object.
- * @attendee_list: Return value for the attendee property.
- * This should be freed using the e_cal_component_free_attendee_list ()
- * function.
+ * @attendee_list: (out) (transfer full) (element-type ECalComponentAttendee):
+ * Return value for the attendee property. This should be freed using
+ * e_cal_component_free_attendee_list().
  *
  * Queries the attendee properties of the calendar component object
  **/
@@ -4853,7 +4869,8 @@ e_cal_component_get_attendee_list (ECalComponent *comp,
 /**
  * e_cal_component_set_attendee_list:
  * @comp: A calendar component object.
- * @attendee_list: Values for attendee properties
+ * @attendee_list: (element-type ECalComponentAttendee): Values for attendee
+ * properties
  *
  * Sets the attendees of a calendar component object
  **/
@@ -4963,7 +4980,7 @@ e_cal_component_set_location (ECalComponent *comp,
 
 /**
  * e_cal_component_free_categories_list:
- * @categ_list: List of category strings.
+ * @categ_list: (element-type utf8): List of category strings
  *
  * Frees a list of category strings.
  **/
@@ -5012,7 +5029,8 @@ e_cal_component_free_range (ECalComponentRange *range)
 
 /**
  * e_cal_component_free_exdate_list:
- * @exdate_list: List of #ECalComponentDateTime structures.
+ * @exdate_list: (element-type ECalComponentDateTime): List of
+ * #ECalComponentDateTime structures
  *
  * Frees a list of #ECalComponentDateTime structures as returned by the
  * e_cal_component_get_exdate_list() function.
@@ -5100,7 +5118,8 @@ e_cal_component_free_priority (gint *priority)
 
 /**
  * e_cal_component_free_period_list:
- * @period_list: List of #ECalComponentPeriod structures.
+ * @period_list: (element-type ECalComponentPeriod): List of
+ * #ECalComponentPeriod structures
  *
  * Frees a list of #ECalComponentPeriod structures.
  **/
@@ -5113,7 +5132,8 @@ e_cal_component_free_period_list (GSList *period_list)
 
 /**
  * e_cal_component_free_recur_list:
- * @recur_list: List of struct #icalrecurrencetype structures.
+ * @recur_list: (element-type icalrecurrencetype): List of struct
+ * #icalrecurrencetype structures.
  *
  * Frees a list of struct #icalrecurrencetype structures.
  **/
@@ -5164,7 +5184,8 @@ e_cal_component_free_id (ECalComponentId *id)
 
 /**
  * e_cal_component_free_text_list:
- * @text_list: List of #ECalComponentText structures.
+ * @text_list: (element-type ECalComponentText): List of #ECalComponentText
+ * structures.
  *
  * Frees a list of #ECalComponentText structures.  This function should only be
  * used to free lists of text values as returned by the other getter functions
@@ -5179,7 +5200,7 @@ e_cal_component_free_text_list (GSList *text_list)
 
 /**
  * e_cal_component_free_attendee_list:
- * @attendee_list:  List of attendees.
+ * @attendee_list: (element-type ECalComponentAttendee): List of attendees
  *
  * Frees a list of #ECalComponentAttendee structures.
  *
@@ -5410,8 +5431,8 @@ make_alarm (icalcomponent *subcomp)
  * Builds a list of the unique identifiers of the alarm subcomponents inside a
  * calendar component.
  *
- * Returns: List of unique identifiers for alarms.  This should be freed
- * using cal_obj_uid_list_free().
+ * Returns: (element-type utf8) (transfer full): List of unique identifiers for
+ * alarms.  This should be freed using cal_obj_uid_list_free().
  **/
 GList *
 e_cal_component_get_alarm_uids (ECalComponent *comp)
@@ -6071,7 +6092,7 @@ e_cal_component_alarm_set_trigger (ECalComponentAlarm *alarm,
 /**
  * e_cal_component_alarm_get_attendee_list:
  * @alarm: An alarm.
- * @attendee_list: Return value for the list of attendees.
+ * @attendee_list: (out) (transfer full) (element-type ECalComponentAttendee): Return value for the list of attendees.
  *
  * Gets the list of attendees associated with an alarm.
  */
@@ -6087,7 +6108,7 @@ e_cal_component_alarm_get_attendee_list (ECalComponentAlarm *alarm,
 /**
  * e_cal_component_alarm_set_attendee_list:
  * @alarm: An alarm.
- * @attendee_list: List of attendees.
+ * @attendee_list: (element-type ECalComponentAttendee): List of attendees.
  *
  * Sets the list of attendees for an alarm.
  */
@@ -6121,7 +6142,7 @@ e_cal_component_alarm_has_attendees (ECalComponentAlarm *alarm)
 }
 
 /**
- * e_cal_component_alarm_get_icalcomponent
+ * e_cal_component_alarm_get_icalcomponent:
  * @alarm: An alarm.
  *
  * Get the icalcomponent associated with the given #ECalComponentAlarm.

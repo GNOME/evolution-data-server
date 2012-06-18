@@ -595,15 +595,15 @@ static ECalRecurVTable cal_obj_secondly_vtable = {
 
 /**
  * e_cal_recur_generate_instances:
- * @comp: A calendar component object.
- * @start: Range start time.
- * @end: Range end time.
- * @cb: Callback function.
- * @cb_data: Closure data for the callback function.
- * @tz_cb: Callback for retrieving timezones.
- * @tz_cb_data: Closure data for the timezone callback.
+ * @comp: A calendar component object
+ * @start: Range start time
+ * @end: Range end time
+ * @cb: (closure cb_data) (scope call): Callback function
+ * @cb_data: (closure): Closure data for the callback function
+ * @tz_cb: (closure tz_cb_data) (scope call): Callback for retrieving timezones
+ * @tz_cb_data: (closure): Closure data for the timezone callback
  * @default_timezone: Default timezone to use when a timezone cannot be
- * found.
+ * found
  *
  * Calls the given callback function for each occurrence of the event that
  * intersects the range between the given @start and @end times (the end time is
@@ -902,8 +902,8 @@ array_to_list (gshort *array,
 	return g_list_reverse (l);
 }
 
-/** 
- * e_cal_recur_get_enddate
+/**
+ * e_cal_recur_get_enddate:
  * @ir: RRULE or EXRULE recurrence 
  * @prop: An RRULE or EXRULE #icalproperty. 
  * @zone: The DTSTART timezone, used for converting the UNTIL property if it
@@ -3776,6 +3776,11 @@ cal_obj_time_to_string (CalObjTime *cotime)
 
 /**
  * e_cal_recur_ensure_end_dates:
+ * @comp: an #ECalComponent
+ * @refresh: %TRUE to recalculate all end dates
+ * @tz_cb: (closure tz_cb_data) (scope call): function to call to resolve
+ * timezones
+ * @tz_cb_data: (closure): data to pass to @tz_cb
  *
  * This recalculates the end dates for recurrence & exception rules which use
  * the COUNT property. If @refresh is %TRUE it will recalculate all enddates
@@ -3784,6 +3789,8 @@ cal_obj_time_to_string (CalObjTime *cotime)
  * was changed, i.e. if the component should be saved at some point.
  * We store the enddate in the "X-EVOLUTION-ENDDATE" parameter of the RRULE
  * or EXRULE.
+ *
+ * Returns: %TRUE if the component was changed, %FALSE otherwise
  *
  * Since: 2.32
  **/
