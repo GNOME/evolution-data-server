@@ -1545,23 +1545,24 @@ imapx_store_noop_sync (CamelStore *store,
                        GError **error)
 {
 	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
-	GList *servers = NULL, *l;
-	gboolean success = FALSE;
+	GList *list, *link;
+	gboolean success = TRUE;
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
 		return TRUE;
 
-	servers = camel_imapx_conn_manager_get_connections (istore->con_man);
+	list = camel_imapx_conn_manager_get_connections (istore->con_man);
 
-	for (l = servers; l != NULL; l = g_list_next (l)) {
-		CamelIMAPXServer *server = CAMEL_IMAPX_SERVER (l->data);
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		CamelIMAPXServer *server = CAMEL_IMAPX_SERVER (link->data);
 
 		/* we just return last noops value, technically not correct though */
 		success = camel_imapx_server_noop (server, NULL, cancellable, error);
-		g_object_unref (server);
+		if (!success)
+			break;
 	}
 
-	g_list_free (servers);
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	return success;
 }
