@@ -1603,7 +1603,7 @@ e_destination_export (const EDestination *dest)
 }
 
 /**
- * e_destination_import
+ * e_destination_import:
  * @str: an XML string
  *
  * Creates an #EDestination from an XML document.

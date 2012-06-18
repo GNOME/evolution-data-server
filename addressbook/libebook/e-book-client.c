@@ -50,7 +50,7 @@ struct _EBookClientPrivate {
 
 G_DEFINE_TYPE (EBookClient, e_book_client, E_TYPE_CLIENT)
 
-/**
+/*
  * Well-known book backend properties:
  * @BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS: Retrieves comma-separated list
  *   of required fields by the backend. Use e_client_util_parse_comma_strings()
@@ -68,7 +68,7 @@ G_DEFINE_TYPE (EBookClient, e_book_client, E_TYPE_CLIENT)
  * See also: @CLIENT_BACKEND_PROPERTY_OPENED, @CLIENT_BACKEND_PROPERTY_OPENING,
  *   @CLIENT_BACKEND_PROPERTY_ONLINE, @CLIENT_BACKEND_PROPERTY_READONLY
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
- **/
+ */
 
 GQuark
 e_book_client_error_quark (void)
@@ -127,7 +127,7 @@ e_book_client_error_create (EBookClientError code,
 	return g_error_new_literal (E_BOOK_CLIENT_ERROR, code, custom_msg ? custom_msg : e_book_client_error_to_string (code));
 }
 
-/**
+/*
  * If the specified GError is a remote error, then create a new error
  * representing the remote error.  If the error is anything else, then
  * leave it alone.
@@ -1152,8 +1152,8 @@ e_book_client_add_contact_sync (EBookClient *client,
 /**
  * e_book_client_add_contacts:
  * @client: an #EBookClient
- * @contacts: a #GSList of #EContact objects to add
- * @cancellable: a #GCancellable; can be %NULL
+ * @contacts: (element-type EContact): a #GSList of #EContact objects to add
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -1187,7 +1187,8 @@ e_book_client_add_contacts (EBookClient *client,
  * e_book_client_add_contacts_finish:
  * @client: an #EBookClient
  * @result: a #GAsyncResult
- * @added_uids: (out): UIDs of newly added contacts; can be %NULL
+ * @added_uids: (out) (element-type utf8) (allow-none): UIDs of newly added
+ * contacts; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_add_contacts() and
@@ -1229,8 +1230,9 @@ e_book_client_add_contacts_finish (EBookClient *client,
 /**
  * e_book_client_add_contacts_sync:
  * @client: an #EBookClient
- * @contacts: a #GSList of #EContact objects to add
- * @added_uids: (out): UIDs of newly added contacts; can be %NULL
+ * @contacts: (element-type EContact): a #GSList of #EContact objects to add
+ * @added_uids: (out) (element-type utf8) (allow-none): UIDs of newly added
+ * contacts; can be %NULL
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
@@ -1390,8 +1392,8 @@ e_book_client_modify_contact_sync (EBookClient *client,
 /**
  * e_book_client_modify_contacts:
  * @client: an #EBookClient
- * @contacts: a #GSList of #EContact objects
- * @cancellable: a #GCancellable; can be %NULL
+ * @contacts: (element-type EContact): a #GSList of #EContact objects
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -1444,8 +1446,8 @@ e_book_client_modify_contacts_finish (EBookClient *client,
 /**
  * e_book_client_modify_contacts_sync:
  * @client: an #EBookClient
- * @contacts: a #GSList of #EContact objects
- * @cancellable: a #GCancellable; can be %NULL
+ * @contacts: (element-type EContact): a #GSList of #EContact objects
+ * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Applies the changes made to @contacts to the stored versions in @client.

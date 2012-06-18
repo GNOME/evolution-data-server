@@ -1726,7 +1726,7 @@ e_contact_get_const (EContact *contact,
 }
 
 /**
- * e_contact_set;
+ * e_contact_set:
  * @contact: an #EContact
  * @field_id: an #EContactField
  * @value: a value whose type depends on the @field_id

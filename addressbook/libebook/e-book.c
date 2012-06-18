@@ -1176,7 +1176,7 @@ e_book_get_supported_auth_methods_async (EBook *book,
  * e_book_get_contact:
  * @book: an #EBook
  * @id: a unique string ID specifying the contact
- * @contact: (out) (transfer: full): an #EContact
+ * @contact: (out) (transfer full): an #EContact
  * @error: a #GError to set on failure
  *
  * Fills in @contact with the contents of the vcard in @book
@@ -2985,7 +2985,7 @@ e_book_new (ESource *source,
 	return book;
 }
 
-/**
+/*
  * If the GError is a remote error, extract the EBookStatus embedded inside.
  * Otherwise return DBUS_EXCEPTION (I know this is DBus...).
  */
@@ -3054,7 +3054,7 @@ get_status_from_error (GError *error)
 	}
 }
 
-/**
+/*
  * If the specified GError is a remote error, then create a new error
  * representing the remote error.  If the error is anything else, then leave it
  * alone.
@@ -3085,7 +3085,7 @@ unwrap_gerror (GError *error,
 	return FALSE;
 }
 
-/**
+/*
  * Turn a GList of strings into an array of strings. Free with g_strfreev().
  */
 static gchar **
@@ -3101,7 +3101,7 @@ flatten_stringlist (GList *list)
 	return array;
 }
 
-/**
+/*
  * Turn an array of strings into a GList.
  */
 static GList *

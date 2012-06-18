@@ -115,7 +115,7 @@ G_BEGIN_DECLS
 #define EVC_X_GOOGLE_TALK		"X-GOOGLE-TALK"
 
 /**
- * EVC_X_TWITTER
+ * EVC_X_TWITTER:
  * Twitter name(s).
  *
  * Since: 3.6
@@ -140,7 +140,7 @@ G_BEGIN_DECLS
 /* Constants for Evo contact lists only */
 
 /**
- * EVC_CONTACT_LIST
+ * EVC_CONTACT_LIST:
  *
  * Since: 3.2
  **/
