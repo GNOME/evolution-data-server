@@ -1600,7 +1600,8 @@ e_source_get_removable (ESource *source)
  * referenced directly.  Instead, reference the #ESource instance and
  * use this function to fetch the extension instance as needed.
  *
- * Returns: an instance of some #ESourceExtension subclass
+ * Returns: (type ESourceExtension) (transfer none): an instance of some
+ * #ESourceExtension subclass
  *
  * Since: 3.6
  **/
