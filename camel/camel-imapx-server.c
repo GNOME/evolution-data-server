@@ -3311,10 +3311,12 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 							&job->error, CAMEL_IMAPX_ERROR, 1,
 							"failed to copy the tmp file");
 					g_free (cache_file);
-				} else
+				} else {
 					g_prefix_error (
 						&job->error,
 						_("Closing tmp stream failed: "));
+					success = FALSE;
+				}
 
 				g_free (tmp);
 				g_object_unref (data->stream);
