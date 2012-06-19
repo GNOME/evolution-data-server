@@ -654,7 +654,9 @@ e_data_book_factory_init (EDataBookFactory *factory)
 			G_CALLBACK (data_book_factory_goa_account_removed_cb),
 			factory);
 	} else if (error != NULL) {
-		g_warning ("%s", error->message);
+		g_warning (
+			"Failed to connect to gnome-online-accounts: %s",
+			error->message);
 		g_error_free (error);
 	}
 #endif
