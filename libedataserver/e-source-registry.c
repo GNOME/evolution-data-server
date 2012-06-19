@@ -501,6 +501,43 @@ source_registry_source_notify_enabled_cb (ESource *source,
 	g_source_unref (idle_source);
 }
 
+static ESource *
+source_registry_new_source (ESourceRegistry *registry,
+                            GDBusObject *dbus_object)
+{
+	GMainContext *main_context;
+	ESource *source;
+	const gchar *object_path;
+	GError *error = NULL;
+
+	/* We don't want the ESource emitting "changed" signals from
+	 * the manager thread, so we pass it the same main context the
+	 * registry uses for scheduling signal emissions. */
+	main_context = registry->priv->main_context;
+	source = e_source_new (dbus_object, main_context, &error);
+	object_path = g_dbus_object_get_object_path (dbus_object);
+
+	/* The likelihood of an error here is slim, so it's
+	 * sufficient to just print a warning if one occurs. */
+	if (error != NULL) {
+		g_warn_if_fail (source == NULL);
+		g_critical (
+			"ESourceRegistry: Failed to create a "
+			"data source object for path '%s': %s",
+			object_path, error->message);
+		g_error_free (error);
+		return NULL;
+	}
+
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	/* Add the ESource to the object path table immediately. */
+	source_registry_object_path_table_insert (
+		registry, object_path, source);
+
+	return source;
+}
+
 static void
 source_registry_unref_source (ESource *source)
 {
@@ -577,38 +614,13 @@ source_registry_object_added_cb (GDBusObjectManager *object_manager,
                                  ESourceRegistry *registry)
 {
 	SourceClosure *closure;
-	GMainContext *main_context;
 	GSource *idle_source;
 	ESource *source;
-	const gchar *object_path;
-	GError *error = NULL;
 
 	g_return_if_fail (E_DBUS_IS_OBJECT (dbus_object));
 
-	/* We don't want the ESource emitting "changed" signals from
-	 * the manager thread, so we pass it the same main context the
-	 * registry uses for scheduling signal emissions. */
-	main_context = registry->priv->main_context;
-	source = e_source_new (dbus_object, main_context, &error);
-	object_path = g_dbus_object_get_object_path (dbus_object);
-
-	/* The likelihood of an error here is slim, so it's
-	 * sufficient to just print a warning if one occurs. */
-	if (error != NULL) {
-		g_warn_if_fail (source == NULL);
-		g_critical (
-			"ESourceRegistry: Failed to create a "
-			"data source object for path '%s': %s",
-			object_path, error->message);
-		g_error_free (error);
-		return;
-	}
-
-	g_return_if_fail (E_IS_SOURCE (source));
-
-	/* Add the ESource to the object path table immediately. */
-	source_registry_object_path_table_insert (
-		registry, object_path, source);
+	source = source_registry_new_source (registry, dbus_object);
+	g_return_if_fail (source != NULL);
 
 	/* Schedule a callback on the ESourceRegistry's GMainContext. */
 
