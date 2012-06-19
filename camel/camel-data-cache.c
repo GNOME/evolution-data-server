@@ -430,15 +430,20 @@ camel_data_cache_get (CamelDataCache *cdc,
 
 	real = data_cache_path (cdc, FALSE, path, key);
 	stream = camel_object_bag_reserve (cdc->priv->busy_bag, real);
-	if (!stream) {
+	if (stream == NULL) {
 		struct stat st;
 
-		/* Return NULL if the file is empty. */
-		if (g_stat (real, &st) == 0 && st.st_size > 0)
+		/* An empty cache file is useless.  Return an error. */
+		if (g_stat (real, &st) == 0 && st.st_size == 0) {
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				"%s: %s", _("Empty cache file"), real);
+		} else {
 			stream = camel_stream_fs_new_with_name (
 				real, O_RDWR, 0600, error);
+		}
 
-		if (stream)
+		if (stream != NULL)
 			camel_object_bag_add (cdc->priv->busy_bag, real, stream);
 		else
 			camel_object_bag_abort (cdc->priv->busy_bag, real);
