@@ -88,8 +88,7 @@ gint		camel_data_cache_remove		(CamelDataCache *cdc,
 						 GError **error);
 gchar *		camel_data_cache_get_filename	(CamelDataCache *cdc,
 						 const gchar *path,
-						 const gchar *key,
-						 GError **error);
+						 const gchar *key);
 void		camel_data_cache_clear		(CamelDataCache *cdc,
 						 const gchar *path);
 

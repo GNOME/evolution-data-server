@@ -453,7 +453,6 @@ camel_data_cache_get (CamelDataCache *cdc,
  * @cdc: A #CamelDataCache
  * @path: Path to the (sub) cache the item exists in.
  * @key: Key for the cache item.
- * @error: return location for a #GError, or %NULL
  *
  * Lookup the filename for an item in the cache
  *
@@ -464,14 +463,9 @@ camel_data_cache_get (CamelDataCache *cdc,
 gchar *
 camel_data_cache_get_filename (CamelDataCache *cdc,
                                const gchar *path,
-                               const gchar *key,
-                               GError **error)
+                               const gchar *key)
 {
-	gchar *real;
-
-	real = data_cache_path (cdc, FALSE, path, key);
-
-	return real;
+	return data_cache_path (cdc, FALSE, path, key);
 }
 
 /**

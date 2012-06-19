@@ -252,7 +252,7 @@ imapx_get_filename (CamelFolder *folder,
 {
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
 
-	return camel_data_cache_get_filename (ifolder->cache, "cache", uid, error);
+	return camel_data_cache_get_filename (ifolder->cache, "cache", uid);
 }
 
 /* Algorithm for selecting a folder:

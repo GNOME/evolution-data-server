@@ -280,7 +280,7 @@ nntp_get_filename (CamelFolder *folder,
 	}
 	*msgid++ = 0;
 
-	return camel_data_cache_get_filename (nntp_store->cache, "cache", msgid, error);
+	return camel_data_cache_get_filename (nntp_store->cache, "cache", msgid);
 }
 
 static CamelStream *

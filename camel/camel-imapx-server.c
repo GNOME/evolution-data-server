@@ -3296,10 +3296,10 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 			CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) job->folder;
 
 			if (stream) {
-				gchar *tmp = camel_data_cache_get_filename (ifolder->cache, "tmp", data->uid, NULL);
+				gchar *tmp = camel_data_cache_get_filename (ifolder->cache, "tmp", data->uid);
 
 				if (camel_stream_flush (stream, job->cancellable, &job->error) == 0 && camel_stream_close (stream, job->cancellable, &job->error) == 0) {
-					gchar *cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", data->uid, NULL);
+					gchar *cache_file = camel_data_cache_get_filename  (ifolder->cache, "cur", data->uid);
 					gchar *temp = g_strrstr (cache_file, "/"), *dir;
 
 					dir = g_strndup (cache_file, temp - cache_file);
@@ -3564,7 +3564,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 			data->appended_uid = g_strdup_printf ("%u", (guint) ic->status->u.appenduid.uid);
 			mi->uid = camel_pstring_add (data->appended_uid, FALSE);
 
-			cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid, NULL);
+			cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid);
 			g_rename (data->path, cur);
 
 			/* should we update the message count ? */
@@ -5769,7 +5769,7 @@ camel_imapx_server_sync_message (CamelIMAPXServer *is,
 
 	/* Check if the cache file already exists and is non-empty. */
 	cache_file = camel_data_cache_get_filename (
-		ifolder->cache, "cur", uid, NULL);
+		ifolder->cache, "cur", uid);
 	is_cached = (g_stat (cache_file, &st) == 0 && st.st_size > 0);
 	g_free (cache_file);
 
@@ -5871,7 +5871,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 		return FALSE;
 	}
 
-	path = camel_data_cache_get_filename (ifolder->cache, "new", uid, NULL);
+	path = camel_data_cache_get_filename (ifolder->cache, "new", uid);
 	info = camel_folder_summary_info_new_from_message ((CamelFolderSummary *) folder->summary, message, NULL);
 	info->uid = camel_pstring_strdup (uid);
 	if (mi)

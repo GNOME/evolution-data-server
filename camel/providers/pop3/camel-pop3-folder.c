@@ -449,7 +449,7 @@ pop3_folder_get_filename (CamelFolder *folder,
 	}
 
 	return camel_data_cache_get_filename (
-		pop3_store->cache, "cache", fi->uid, NULL);
+		pop3_store->cache, "cache", fi->uid);
 }
 
 static gboolean
