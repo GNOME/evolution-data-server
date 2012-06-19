@@ -743,11 +743,21 @@ source_registry_object_manager_thread (gpointer data)
 
 	list = g_dbus_object_manager_get_objects (object_manager);
 
-	for (link = list; link != NULL; link = g_list_next (link))
-		source_registry_object_added_cb (
-			object_manager,
-			G_DBUS_OBJECT (link->data),
-			closure->registry);
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		GDBusObject *dbus_object;
+		ESource *source;
+
+		dbus_object = G_DBUS_OBJECT (link->data);
+
+		source = source_registry_new_source (
+			closure->registry, dbus_object);
+
+		if (source != NULL) {
+			source_registry_add_source (
+				closure->registry, source);
+			g_object_unref (source);
+		}
+	}
 
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
@@ -994,11 +1004,8 @@ source_registry_initable_init (GInitable *initable,
 		G_IS_DBUS_OBJECT_MANAGER_CLIENT (
 		registry->priv->dbus_object_manager), FALSE);
 
-	/* The manager thread will have queued up a bunch of idle
-	 * sources on our GMainContext to populate the registry.
-	 * Iterate our GMainContext until they get dispatched. */
-	while (g_hash_table_size (registry->priv->sources) == 0)
-		g_main_context_iteration (registry->priv->main_context, TRUE);
+	/* The registry should now be populated with sources. */
+	g_warn_if_fail (g_hash_table_size (registry->priv->sources) > 0);
 
 	/* The EDBusSourceManagerProxy is just another D-Bus interface
 	 * that resides at the same object path.  It's unrelated to the
