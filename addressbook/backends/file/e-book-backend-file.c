@@ -1884,7 +1884,7 @@ e_book_backend_file_open (EBookBackendSync *backend,
 	dirname = e_book_backend_file_extract_path_from_source (
 		registry, source, GET_PATH_DB_DIR);
 
-	if (!g_file_test (dirname, G_FILE_TEST_IS_DIR)) {
+	if (only_if_exists && !g_file_test (dirname, G_FILE_TEST_IS_DIR)) {
 		g_free (dirname);
 		g_propagate_error (perror, EDB_ERROR (NO_SUCH_BOOK));
 		return;
