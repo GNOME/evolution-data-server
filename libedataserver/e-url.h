@@ -29,6 +29,8 @@
 #error "Only <libedataserver/libedataserver.h> should be included directly."
 #endif
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #ifndef E_URL_H
 #define E_URL_H
 
@@ -80,4 +82,6 @@ gboolean	e_url_equal			(const gchar *url1,
 G_END_DECLS
 
 #endif /* E_URL_H */
+
+#endif /* EDS_DISABLE_DEPRECATED */
 
