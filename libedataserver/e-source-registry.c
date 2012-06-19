@@ -1217,9 +1217,7 @@ e_source_registry_init (ESourceRegistry *registry)
 
 	/* This is so the object manager thread can schedule signal
 	 * emissions on the thread-default context for this thread. */
-	registry->priv->main_context = g_main_context_get_thread_default ();
-	if (registry->priv->main_context != NULL)
-		g_main_context_ref (registry->priv->main_context);
+	registry->priv->main_context = g_main_context_ref_thread_default ();
 
 	/* D-Bus object path -> ESource */
 	registry->priv->object_path_table =
