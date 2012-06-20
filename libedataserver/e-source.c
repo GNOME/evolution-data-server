@@ -265,6 +265,13 @@ source_set_key_file_from_property (GObject *object,
 		gboolean v_boolean = g_value_get_boolean (pvalue);
 		g_key_file_set_boolean (key_file, group_name, key, v_boolean);
 
+	/* Store UIN64 in hexa */
+	} else if (G_VALUE_HOLDS_UINT64 (pvalue)) {
+		gchar *v_str = g_strdup_printf ("%016" G_GINT64_MODIFIER "X", g_value_get_uint64 (pvalue));
+
+		g_key_file_set_string (key_file, group_name, key, v_str);
+		g_free (v_str);
+
 	/* String GValues may contain characters that need escaping. */
 	} else if (G_VALUE_HOLDS_STRING (pvalue)) {
 		const gchar *v_string = g_value_get_string (pvalue);
@@ -361,6 +368,31 @@ source_set_property_from_key_file (GObject *object,
 			g_value_set_int (value, v_int);
 		}
 
+	} else if (G_IS_PARAM_SPEC_INT64 (pspec)) {
+		gint64 v_int64;
+
+		v_int64 = g_key_file_get_int64 (
+			key_file, group_name, key, &error);
+		if (error == NULL) {
+			g_value_init (value, G_TYPE_INT64);
+			g_value_set_int64 (value, v_int64);
+		}
+
+	} else if (G_IS_PARAM_SPEC_UINT64 (pspec)) {
+		guint64 v_uint64;
+		gchar *v_str;
+
+		v_str = g_key_file_get_string (
+			key_file, group_name, key, &error);
+		if (error == NULL) {
+			v_uint64 = g_ascii_strtoull (v_str, NULL, 16);
+
+			g_value_init (value, G_TYPE_UINT64);
+			g_value_set_uint64 (value, v_uint64);
+		}
+
+		g_free (v_str);
+
 	} else if (G_IS_PARAM_SPEC_BOOLEAN (pspec)) {
 		gboolean v_boolean;
 
@@ -440,7 +472,7 @@ source_set_property_from_key_file (GObject *object,
 	} else {
 		g_warning (
 			"No GKeyFile-to-GValue converter defined "
-			"for type '%s'", G_VALUE_TYPE_NAME (value));
+			"for type '%s'", G_PARAM_SPEC_TYPE_NAME (pspec));
 	}
 
 	/* If a value could not be retrieved from the key
