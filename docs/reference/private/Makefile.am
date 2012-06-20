@@ -11,8 +11,8 @@ SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
 DOC_SOURCE_DIR = $(top_srcdir)/private
 
 # Used for dependencies. The docs will be rebuilt if any of these change.
-HFILE_GLOB = $(top_srcdir)/private/*.h
-CFILE_GLOB = $(top_srcdir)/private/*.c
+HFILE_GLOB = $(top_builddir)/private/*.h
+CFILE_GLOB = $(top_builddir)/private/*.c
 
 IGNORE_HFILES =
 

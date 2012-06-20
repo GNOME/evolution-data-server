@@ -1,5 +1,7 @@
 CPPFLAGS = \
 	$(AM_CPPFLAGS) \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
 	-I$(top_srcdir)/addressbook \
 	-I$(top_builddir)/addressbook \
 	-I$(top_srcdir)/addressbook/backends/google \

@@ -19,6 +19,7 @@ libecal_INCLUDES = \
 	-I$(top_srcdir)/calendar/libegdbus	\
 	-I$(top_srcdir)/calendar/libedata-cal	\
 	-I$(top_builddir)			\
+	-I$(top_builddir)/calendar		\
 	-I$(top_builddir)/calendar/libecal
 
 libecal_1_2_la_CPPFLAGS =			\

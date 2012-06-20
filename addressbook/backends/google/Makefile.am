@@ -69,6 +69,8 @@ libebook_google_utils_la_CFLAGS = \
 libebook_google_utils_la_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
 	-DG_LOG_DOMAIN=\"libebookbackendgoogle\" \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
 	-I$(top_srcdir)/addressbook \
 	-I$(top_builddir)/addressbook \
 	$(NULL)
