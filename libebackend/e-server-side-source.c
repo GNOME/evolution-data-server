@@ -508,6 +508,10 @@ server_side_source_changed (ESource *source)
 	gchar *new_data;
 	GError *error = NULL;
 
+	/* Do not write changes to disk until the source has been exported. */
+	if (!e_server_side_source_get_exported (E_SERVER_SIDE_SOURCE (source)))
+		return;
+
 	dbus_object = e_source_ref_dbus_object (source);
 	dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
 

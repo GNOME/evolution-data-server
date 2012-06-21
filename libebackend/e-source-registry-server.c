@@ -1276,6 +1276,11 @@ e_source_registry_server_add_source (ESourceRegistryServer *server,
 
 	g_signal_emit (server, signals[SOURCE_ADDED], 0, source);
 
+	/* This is to ensure the source data gets written to disk, since
+	 * the ESource is exported now.  Could be racy otherwise if this
+	 * function is called from a worker thread. */
+	e_source_changed (source);
+
 	/* Adopt any orphans that have been waiting for this object. */
 	source_registry_server_adopt_orphans (server, source);
 }
