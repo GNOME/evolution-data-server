@@ -975,6 +975,8 @@ source_registry_server_source_added (ESourceRegistryServer *server,
 		server->priv->object_manager,
 		G_DBUS_OBJECT_SKELETON (dbus_object));
 
+	g_object_notify (G_OBJECT (source), "exported");
+
 	uid = e_source_get_uid (source);
 
 	g_dbus_object = G_DBUS_OBJECT (dbus_object);
@@ -1006,6 +1008,8 @@ source_registry_server_source_removed (ESourceRegistryServer *server,
 
 	g_dbus_object_manager_server_unexport (
 		server->priv->object_manager, object_path);
+
+	g_object_notify (G_OBJECT (source), "exported");
 
 	g_object_unref (dbus_object);
 }

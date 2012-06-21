@@ -66,6 +66,7 @@ struct _AsyncClosure {
 enum {
 	PROP_0,
 	PROP_ALLOW_AUTH_PROMPT,
+	PROP_EXPORTED,
 	PROP_FILE,
 	PROP_REMOVABLE,
 	PROP_SERVER,
@@ -403,6 +404,13 @@ server_side_source_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_server_side_source_get_allow_auth_prompt (
+				E_SERVER_SIDE_SOURCE (object)));
+			return;
+
+		case PROP_EXPORTED:
+			g_value_set_boolean (
+				value,
+				e_server_side_source_get_exported (
 				E_SERVER_SIDE_SOURCE (object)));
 			return;
 
@@ -842,6 +850,17 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_EXPORTED,
+		g_param_spec_boolean (
+			"exported",
+			"Exported",
+			"Whether the source has been exported over D-Bus",
+			FALSE,
+			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -1339,6 +1358,45 @@ e_server_side_source_set_allow_auth_prompt (EServerSideSource *source,
 	source->priv->allow_auth_prompt = allow_auth_prompt;
 
 	g_object_notify (G_OBJECT (source), "allow-auth-prompt");
+}
+
+/**
+ * e_server_side_source_get_exported:
+ * @source: an #EServerSideSource
+ *
+ * Returns whether @source has been exported over D-Bus.
+ *
+ * The function returns %FALSE after @source is initially created, %TRUE
+ * after passing @source to e_source_registry_add_source() (provided that
+ * @source's #ESource:parent is also exported), and %FALSE after passing
+ * @source to e_source_registry_remove_source().
+ *
+ * Returns: whether @source has been exported
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_server_side_source_get_exported (EServerSideSource *source)
+{
+	ESourceRegistryServer *server;
+	ESource *exported_source;
+	gboolean exported = FALSE;
+	const gchar *uid;
+
+	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE (source), FALSE);
+
+	uid = e_source_get_uid (E_SOURCE (source));
+	server = e_server_side_source_get_server (source);
+
+	/* We're exported if we can look ourselves up in the registry. */
+
+	exported_source = e_source_registry_server_ref_source (server, uid);
+	if (exported_source != NULL) {
+		exported = TRUE;
+		g_object_unref (exported_source);
+	}
+
+	return exported;
 }
 
 /**
