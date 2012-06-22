@@ -135,6 +135,7 @@ struct _capability_info {
 
 struct _capability_info *imapx_parse_capability (struct _CamelIMAPXStream *stream, GCancellable *cancellable, GError **error);
 void imapx_free_capability (struct _capability_info *);
+guint32 imapx_register_capability (const gchar *capability);
 
 gboolean imapx_parse_param_list (struct _CamelIMAPXStream *is, struct _camel_header_param **plist, GCancellable *cancellable, GError **error) /* IO,PARSE */;
 struct _CamelContentDisposition *imapx_parse_ext_optional (struct _CamelIMAPXStream *is, GCancellable *cancellable, GError **error) /* IO,PARSE */;
