@@ -216,23 +216,38 @@ source_localized_hack (GKeyFile *key_file,
                        const gchar *new_value)
 {
 	const gchar * const *language_names;
-	gchar *localized_key;
+	gint ii;
 
 	/* XXX If we're changing a string key that has translations,
-	 *     set both "key" and "key[$CURRENT_LOCALE]" to the new
+	 *     set "key[$CURRENT_LOCALE]" (if available) to the new
 	 *     value so g_key_file_get_locale_string() will pick it
 	 *     up.  This is not a perfect solution however.  When a
 	 *     different locale is used the value may revert to its
 	 *     original localized string.  Good enough for now. */
 
 	language_names = g_get_language_names ();
-	localized_key = g_strdup_printf ("%s[%s]", key, language_names[0]);
 
-	if (g_key_file_has_key (key_file, group_name, localized_key, NULL))
-		g_key_file_set_string (
-			key_file, group_name, localized_key, new_value);
+	for (ii = 0; language_names[ii] != NULL; ii++) {
+		gboolean has_localized_key;
+		gchar *localized_key;
 
-	g_free (localized_key);
+		localized_key = g_strdup_printf (
+			"%s[%s]", key, language_names[ii]);
+		has_localized_key = g_key_file_has_key (
+			key_file, group_name, localized_key, NULL);
+
+		if (has_localized_key)
+			g_key_file_set_string (
+				key_file, group_name,
+				localized_key, new_value);
+
+		g_free (localized_key);
+
+		if (has_localized_key)
+			return;
+	}
+
+	g_key_file_set_string (key_file, group_name, key, new_value);
 }
 
 static void
@@ -284,7 +299,6 @@ source_set_key_file_from_property (GObject *object,
 
 		/* Special case for localized "DisplayName" keys. */
 		source_localized_hack (key_file, group_name, key, v_string);
-		g_key_file_set_string (key_file, group_name, key, v_string);
 
 	/* Transforming an enum GValue to a string results in
 	 * the GEnumValue name.  We want the shorter nickname. */
