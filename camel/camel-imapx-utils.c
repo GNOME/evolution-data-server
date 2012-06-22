@@ -354,7 +354,7 @@ imapx_update_store_summary (CamelFolder *folder)
 struct {
 	const gchar *name;
 	guint32 flag;
-} capa_table[] = {
+} capa_table[] = { /* used to create capa_htable only */
 	{ "IMAP4", IMAPX_CAPABILITY_IMAP4 },
 	{ "IMAP4REV1", IMAPX_CAPABILITY_IMAP4REV1 },
 	{ "STATUS",  IMAPX_CAPABILITY_STATUS } ,
@@ -369,14 +369,42 @@ struct {
 	{ "LIST-STATUS", IMAPX_CAPABILITY_LIST_STATUS },
 };
 
+static GMutex capa_htable_lock;         /* capabilities lookup table lock */
+static GHashTable *capa_htable = NULL;  /* capabilities lookup table (extensible) */
+
+static void
+create_initial_capabilities_table (void)
+{
+	gint i = 0;
+
+	/* call within g_init_once() only,
+	 * or require table lock
+	 */
+
+	/* TODO add imapx_utils_uninit()
+	 *      to free hash table
+	 */
+	capa_htable = g_hash_table_new_full (g_str_hash,
+	                                     g_str_equal,
+	                                     g_free,
+	                                     NULL);
+
+	for (i = 0; i < G_N_ELEMENTS (capa_table); i++) {
+		g_hash_table_insert (capa_htable,
+		                     g_strdup (capa_table[i].name),
+		                     GUINT_TO_POINTER (capa_table[i].flag));
+	}
+}
+
 struct _capability_info *
 imapx_parse_capability (CamelIMAPXStream *stream,
                         GCancellable *cancellable,
                         GError **error)
 {
-	gint tok, i;
+	gint tok;
 	guint len;
 	guchar *token, *p, c;
+	gpointer pp = NULL;
 	gboolean free_token = FALSE;
 	struct _capability_info * cinfo;
 	GError *local_error = NULL;
@@ -408,9 +436,14 @@ imapx_parse_capability (CamelIMAPXStream *stream,
 				}
 			case IMAPX_TOK_INT:
 				d(stream->tagprefix, " cap: '%s'\n", token);
-				for (i = 0; i < G_N_ELEMENTS (capa_table); i++)
-					if (!strcmp ((gchar *) token, capa_table[i].name))
-						cinfo->capa |= capa_table[i].flag;
+				g_mutex_lock (&capa_htable_lock);
+				pp = g_hash_table_lookup (capa_htable,
+				                          (gchar*) token);
+				g_mutex_unlock (&capa_htable_lock);
+				if (pp != NULL) {
+					guint32 capa_id = GPOINTER_TO_UINT (pp);
+					cinfo->capa |= capa_id;
+				}
 				if (free_token) {
 					g_free (token);
 					token = NULL;
@@ -436,6 +469,53 @@ void imapx_free_capability (struct _capability_info *cinfo)
 {
 	g_hash_table_destroy (cinfo->auth_types);
 	g_free (cinfo);
+}
+
+guint32
+imapx_register_capability (const gchar *capability)
+{
+	guint32 capa_id = 0;
+	guint64 check_id = 0;
+	GList *keys = NULL;
+	GList *tmp_keys = NULL;
+
+	g_assert (capability != NULL);
+
+	g_mutex_lock (&capa_htable_lock);
+
+	/* we rely on IMAP being the first flag, non-zero value
+	 * (1 << 0), so we can use GPOINTER_TO_UINT (NULL) as
+	 * invalid value
+	 */
+	capa_id = GPOINTER_TO_UINT (g_hash_table_lookup (capa_htable,
+	                                                 capability));
+	if (capa_id > 0)
+		goto exit;
+
+	/* not yet there, find biggest flag so far */
+	keys = g_hash_table_get_keys (capa_htable);
+	tmp_keys = keys;
+	while (tmp_keys != NULL) {
+		guint32 tmp_id = GPOINTER_TO_UINT (tmp_keys->data);
+		if (capa_id < tmp_id)
+			capa_id = tmp_id;
+		tmp_keys = g_list_next (tmp_keys);
+	}
+
+	/* shift-left biggest-so-far, sanity-check */
+	check_id = (capa_id << 1);
+	g_assert (check_id <= (guint64) G_MAXUINT32);
+	capa_id = (guint32) check_id;
+
+	/* insert */
+	g_hash_table_insert (capa_htable,
+	                     g_strdup (capability),
+	                     GUINT_TO_POINTER (capa_id));
+
+ exit:
+	g_mutex_unlock (&capa_htable_lock);
+
+	return capa_id;
 }
 
 struct _CamelIMAPXNamespaceList *
@@ -1993,6 +2073,7 @@ imapx_utils_init (void)
 			imapx_specials[i] = v;
 		}
 
+		create_initial_capabilities_table ();
 		camel_imapx_set_debug_flags ();
 
 		g_once_init_leave (&imapx_utils_initialized, 1);
