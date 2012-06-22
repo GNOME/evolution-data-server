@@ -7010,3 +7010,17 @@ camel_imapx_server_register_untagged_handler (CamelIMAPXServer *is,
 	                                        desc);
 	return previous;
 }
+
+gboolean
+camel_imapx_server_command_run (CamelIMAPXServer *is,
+                                CamelIMAPXCommand *ic,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_assert (CAMEL_IS_IMAPX_COMMAND (ic));
+	/* cancellable may be NULL */
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	return imapx_command_run (is, ic, cancellable, error);
+}
