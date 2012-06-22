@@ -98,8 +98,8 @@ typedef enum {
 
 #define CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT(provider) \
 	((provider != NULL) && \
-	((provider->object_types[CAMEL_PROVIDER_STORE] != G_TYPE_INVALID) && \
-	((provider->object_types[CAMEL_PROVIDER_TRANSPORT] != G_TYPE_INVALID)
+	(provider->object_types[CAMEL_PROVIDER_STORE] != G_TYPE_INVALID) && \
+	(provider->object_types[CAMEL_PROVIDER_TRANSPORT] != G_TYPE_INVALID))
 
 /* Generic extra config stuff */
 
