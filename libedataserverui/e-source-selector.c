@@ -1954,7 +1954,11 @@ e_source_selector_set_primary_selection (ESourceSelector *selector,
 		return;
 
 	extension_name = e_source_selector_get_extension_name (selector);
-	g_return_if_fail (e_source_has_extension (source, extension_name));
+
+	/* Return silently if attempting to select a parent node
+	 * lacking the expected extension (e.g. On This Computer). */
+	if (!e_source_has_extension (source, extension_name))
+		return;
 
 	/* We block the signal because this all needs to be atomic */
 	g_signal_handlers_block_matched (
