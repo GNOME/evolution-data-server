@@ -267,8 +267,11 @@ source_set_key_file_from_property (GObject *object,
 
 	/* Store UIN64 in hexa */
 	} else if (G_VALUE_HOLDS_UINT64 (pvalue)) {
-		gchar *v_str = g_strdup_printf ("%016" G_GINT64_MODIFIER "X", g_value_get_uint64 (pvalue));
+		gchar *v_str;
 
+		v_str = g_strdup_printf (
+			"%016" G_GINT64_MODIFIER "X",
+			g_value_get_uint64 (pvalue));
 		g_key_file_set_string (key_file, group_name, key, v_str);
 		g_free (v_str);
 
