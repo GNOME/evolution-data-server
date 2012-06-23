@@ -8,14 +8,15 @@
 # Krishnababu Krothapalli <kkrothap@redhat.com>, 2011, 2012.
 # Hari Krishna <hari@swecha.net>, 2011.
 # Sasi Bhushan Boddepalli <sasi@swecha.net>, 2012.
-# GVS.Giri<gvs.giri947@gmail.com>,2012.
+# GVS.Giri<gvs.giri947@gmail.com> <>,2012, 2012.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-28.te\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-06-11 22:40+0000\n"
-"PO-Revision-Date: 2012-06-12 20:11+0530\n"
+"POT-Creation-Date: 2012-06-19 21:48+0000\n"
+"PO-Revision-Date: 2012-06-22 16:23+0530\n"
 "Last-Translator: GVS.Giri<gvs.giri947@gmail.com>\n"
 "Language-Team: Telugu <indlinux-telugu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -30,11 +31,11 @@ msgstr ""
 #: ../addressbook/backends/file/e-book-backend-file.c:116
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:278
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:939
-#: ../addressbook/libebook/e-book-client.c:108
+#: ../addressbook/libebook/e-book-client.c:106
 #: ../addressbook/libedata-book/e-data-book.c:432
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:567
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:597
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:616
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:566
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:596
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:615
 #: ../calendar/libecal/e-cal.c:4029 ../calendar/libecal/e-cal-client.c:148
 #: ../camel/camel-imapx-command.c:594
 #: ../camel/providers/imap/camel-imap-command.c:521
@@ -80,35 +81,16 @@ msgid "Failed to build summary for an address book %s"
 msgstr "చిరునామా పుస్తకం %s కు సారాంశం నిర్మించుటలో విఫలమైంది"
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:879
+#: ../addressbook/backends/google/e-book-backend-google.c:861
 msgid "Querying for updated contacts…"
 msgstr "నవీకరించిన పరిచయాల కొరకు ప్రశ్నించుచున్నది..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:928
-msgid "Personal"
-msgstr "వ్యక్తిగత"
-
-#. System Group: My Contacts
-#: ../addressbook/backends/google/e-book-backend-google.c:929
-msgid "Friends"
-msgstr "స్నేహితులు"
-
-#. System Group: Friends
-#: ../addressbook/backends/google/e-book-backend-google.c:930
-msgid "Family"
-msgstr "కుటుంబం"
-
-#. System Group: Family
-#: ../addressbook/backends/google/e-book-backend-google.c:931
-msgid "Coworkers"
-msgstr "సహవుద్యోగులు"
-
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1071
+#: ../addressbook/backends/google/e-book-backend-google.c:986
 msgid "Querying for updated groups…"
 msgstr "నవీకరించిన సమూహాల కొరకు ప్రశ్నించుచున్నది..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1495
+#: ../addressbook/backends/google/e-book-backend-google.c:1449
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1655
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:287
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:326
@@ -116,21 +98,21 @@ msgid "The backend does not support bulk additions"
 msgstr "పెద్దమొత్తం చేర్పులు బాకెండ్‌చే తోడ్పాటునీయబడదు"
 
 #. Insert the entry on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1522
+#: ../addressbook/backends/google/e-book-backend-google.c:1481
 msgid "Creating new contact…"
 msgstr "కొత్త పరిచయాన్ని సృష్టించుచున్నది..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1611
+#: ../addressbook/backends/google/e-book-backend-google.c:1570
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:319
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:433
 msgid "The backend does not support bulk removals"
 msgstr "పెద్దమొత్తంలో తీసివేతలను బాకెండ్ తోడ్పాటునీయదు"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1639
+#: ../addressbook/backends/google/e-book-backend-google.c:1598
 msgid "Deleting contact…"
 msgstr "పరిచయాన్ని తొలగించుచున్నది..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1889
+#: ../addressbook/backends/google/e-book-backend-google.c:1848
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2312
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:367
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:487
@@ -138,13 +120,32 @@ msgid "The backend does not support bulk modifications"
 msgstr "పెద్దమొత్తం సవరింపులను బాకెండ్ తోడ్పాటునీయదు"
 
 #. Update the contact on the server asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:1922
+#: ../addressbook/backends/google/e-book-backend-google.c:1886
 msgid "Modifying contact…"
 msgstr "పరిచయాన్ని సవరించుచున్నది..."
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2130
+#: ../addressbook/backends/google/e-book-backend-google.c:2094
 msgid "Loading…"
 msgstr "నింపుచున్నది..."
+
+#: ../addressbook/backends/google/e-book-google-utils.c:1534
+msgid "Personal"
+msgstr "వ్యక్తిగత"
+
+#. System Group: My Contacts
+#: ../addressbook/backends/google/e-book-google-utils.c:1535
+msgid "Friends"
+msgstr "స్నేహితులు"
+
+#. System Group: Friends
+#: ../addressbook/backends/google/e-book-google-utils.c:1536
+msgid "Family"
+msgstr "కుటుంబం"
+
+#. System Group: Family
+#: ../addressbook/backends/google/e-book-google-utils.c:1537
+msgid "Coworkers"
+msgstr "సహవుద్యోగులు"
 
 #. Translators: An error message shown to a user when trying to do an operation on the LDAP address book which is not connected to the server
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:165
@@ -194,7 +195,6 @@ msgstr "పరిచయాల దిగుమతి(%d) ..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5567
 #, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to get the DN for user '%s'"
 msgstr "వినియోగదారునికి '%s' కొరకు DN పొందడంలో విఫలమైంది"
 
@@ -203,35 +203,35 @@ msgstr "వినియోగదారునికి '%s' కొరకు DN �
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "వనరు '%s'ను సృష్టించుట యీ HTTP  స్థితితో విఫలమైంది: %d (%s)"
 
-#: ../addressbook/libebook/e-book-client.c:97
+#: ../addressbook/libebook/e-book-client.c:95
 msgid "No such book"
 msgstr "అటువంటి పుస్తకం లేదు"
 
-#: ../addressbook/libebook/e-book-client.c:99
+#: ../addressbook/libebook/e-book-client.c:97
 #: ../addressbook/libedata-book/e-data-book.c:306
 msgid "Contact not found"
 msgstr "పరిచయం దొరకలేదు"
 
-#: ../addressbook/libebook/e-book-client.c:101
+#: ../addressbook/libebook/e-book-client.c:99
 #: ../addressbook/libedata-book/e-data-book.c:307
 msgid "Contact ID already exists"
 msgstr "పరిచయం ID ఇదివరకే కలిగివున్నది"
 
-#: ../addressbook/libebook/e-book-client.c:103
+#: ../addressbook/libebook/e-book-client.c:101
 msgid "No such source"
 msgstr "అటువంటి మూలం లేదు"
 
-#: ../addressbook/libebook/e-book-client.c:105
+#: ../addressbook/libebook/e-book-client.c:103
 #: ../addressbook/libedata-book/e-data-book.c:323
 msgid "No space"
 msgstr "జాగాలేదు"
 
-#: ../addressbook/libebook/e-book-client.c:490
+#: ../addressbook/libebook/e-book-client.c:488
 msgid "Failed to run book factory"
 msgstr "పుస్తకం ఫాక్టరీను నడుపుటకు విఫలమైంది"
 
-#: ../addressbook/libebook/e-book-client.c:2281
-#: ../calendar/libecal/e-cal-client.c:4616
+#: ../addressbook/libebook/e-book-client.c:2282
+#: ../calendar/libecal/e-cal-client.c:4630
 msgid "Cannot get connection to view"
 msgstr "దర్శించుటకు అనుసంధానం పొందలేకపోయింది"
 
@@ -702,7 +702,7 @@ msgid "Birth Date"
 msgstr "పుట్టిన తేది"
 
 #: ../addressbook/libebook/e-contact.c:284
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:922
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:919
 msgid "Anniversary"
 msgstr "వార్షికోత్సవం"
 
@@ -809,7 +809,6 @@ msgid "Google Talk Name List"
 msgstr "గూగుల్ టాక్  పేరు జాబితా"
 
 #: ../addressbook/libebook/e-contact.c:320
-#| msgid "Skype Name List"
 msgid "Twitter Name List"
 msgstr "ట్విట్టర్ పేరు జాబితా"
 
@@ -1034,7 +1033,6 @@ msgstr "పరిచయాలను తీసివేయలేదు: "
 #: ../addressbook/libedata-book/e-data-book-factory.c:103
 #: ../calendar/libedata-cal/e-data-cal-factory.c:114
 #, c-format
-#| msgid "No backend factory for '%s' of '%s'"
 msgid "No backend name in source '%s'"
 msgstr "మూలం '%s' లో కాదు నేపథ్య పేరు"
 
@@ -1046,29 +1044,26 @@ msgstr "చెల్లని నేపథ్య పేరు '%s' మూలం 
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:319
 #: ../calendar/libedata-cal/e-data-cal-factory.c:230
-#| msgid "POP Source UID"
 msgid "Missing source UID"
 msgstr "కనిపించలేదు UID మూలం"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:332
 #: ../calendar/libedata-cal/e-data-cal-factory.c:243
 #, c-format
-#| msgid "No such source"
 msgid "No such source for UID '%s'"
 msgstr "UID'%s' కోసం ఇటువంటి మూలం"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:565
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:564
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "సేవికను చేరుకొనుటలేదు (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:595
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:594
 #, c-format
-#| msgid "Failed to connect to POP server %s in secure mode: %s"
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "SSL ఉపయోగించి ఒక సర్వర్ కు అనుసంధానించ విఫలమైంది:% s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:600
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
 msgid ""
 "Failed to connect to a server using SSL. One possible reason is an invalid "
 "certificate being used by the server. If this is expected, like self-signed "
@@ -1080,13 +1075,13 @@ msgstr ""
 "గుణాలు లో ఎంపికను 'చెల్లని SSL సర్టిఫికేట్ విస్మరించు' ఎంచుకోవడం ద్వారా సర్టిఫికేట్ ప్రామాణికత పరీక్షలు "
 "సాధ్యం"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:613
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:612
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "ఊహించని HTTP స్థితి కోడ్ %d  (%s) యిచ్చింది"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2303
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2673
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2302
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2672
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1095,32 +1090,32 @@ msgstr ""
 "సేవికను చేరుకొనుటలేదు, కాలెండర్‌ చదువుటకు-మాత్రమే రీతినందు తెరువబడివుంది.\n"
 "దోష సందేశం: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3669
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3668
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV సమూహ అదనపు మద్దతు ఇవ్వదు "
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3771
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3770
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV సమూహ మార్పులు మద్దతు ఇవ్వదు "
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3939
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3938
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV సమూహ తొలగింపు మద్దతు ఇవ్వదు "
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4598
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4597
 msgid "Calendar doesn't support Free/Busy"
 msgstr "కాలెండర్‌ ఖాళీ/రద్దీ తోడ్పాటునిచ్చుటలేదు"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:924
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:921
 msgid "Birthday"
 msgstr "జన్మదినం"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:960
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:957
 #, c-format
 msgid "Birthday: %s"
 msgstr "జన్మదినం: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:991
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:988
 #, c-format
 msgid "Anniversary: %s"
 msgstr "వార్షికోత్సనం: %s"
@@ -1134,29 +1129,28 @@ msgstr "కాలెండర్‌ దత్తాంశం దాచలేమ�
 msgid "Cannot save calendar data"
 msgstr "కాలెండర్‌ దత్తాంశంను దాయలేదు"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:481
+#: ../calendar/backends/http/e-cal-backend-http.c:480
 #, c-format
-#| msgid "Malformed signature"
 msgid "Malformed URI: %s"
 msgstr "సరైన రూపంలో URI:%s"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:542
+#: ../calendar/backends/http/e-cal-backend-http.c:541
 #, c-format
 msgid "Redirected to Invalid URI"
 msgstr "నిస్సారమైన URI కి తిరిగివచ్చినది"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:579
+#: ../calendar/backends/http/e-cal-backend-http.c:578
 #, c-format
 msgid "Bad file format."
 msgstr "చెడ్డ ఫైల్ రూపలావణ్యం."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:589
+#: ../calendar/backends/http/e-cal-backend-http.c:588
 #, c-format
 msgid "Not a calendar."
 msgstr "కాలెండర్‌ కాదు."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:934
-#: ../calendar/backends/http/e-cal-backend-http.c:938
+#: ../calendar/backends/http/e-cal-backend-http.c:933
+#: ../calendar/backends/http/e-cal-backend-http.c:937
 #: ../calendar/backends/weather/e-cal-backend-weather.c:523
 msgid "Could not create cache file"
 msgstr "క్యాచి ఫైల్ సృష్టించలేవు"
@@ -1288,147 +1282,147 @@ msgstr "కాలెండర్ ఫాక్టరీను నడుపుట�
 msgid "Untitled appointment"
 msgstr "శీర్షికలేని నియామకము"
 
-#: ../calendar/libecal/e-cal-recur.c:3980
+#: ../calendar/libecal/e-cal-recur.c:3987
 msgid "1st"
 msgstr "1st"
 
-#: ../calendar/libecal/e-cal-recur.c:3981
+#: ../calendar/libecal/e-cal-recur.c:3988
 msgid "2nd"
 msgstr "2nd"
 
-#: ../calendar/libecal/e-cal-recur.c:3982
+#: ../calendar/libecal/e-cal-recur.c:3989
 msgid "3rd"
 msgstr "3rd"
 
-#: ../calendar/libecal/e-cal-recur.c:3983
+#: ../calendar/libecal/e-cal-recur.c:3990
 msgid "4th"
 msgstr "4th"
 
-#: ../calendar/libecal/e-cal-recur.c:3984
+#: ../calendar/libecal/e-cal-recur.c:3991
 msgid "5th"
 msgstr "5th"
 
-#: ../calendar/libecal/e-cal-recur.c:3985
+#: ../calendar/libecal/e-cal-recur.c:3992
 msgid "6th"
 msgstr "6th"
 
-#: ../calendar/libecal/e-cal-recur.c:3986
+#: ../calendar/libecal/e-cal-recur.c:3993
 msgid "7th"
 msgstr "7th"
 
-#: ../calendar/libecal/e-cal-recur.c:3987
+#: ../calendar/libecal/e-cal-recur.c:3994
 msgid "8th"
 msgstr "8th"
 
-#: ../calendar/libecal/e-cal-recur.c:3988
+#: ../calendar/libecal/e-cal-recur.c:3995
 msgid "9th"
 msgstr "9th"
 
-#: ../calendar/libecal/e-cal-recur.c:3989
+#: ../calendar/libecal/e-cal-recur.c:3996
 msgid "10th"
 msgstr "10th"
 
-#: ../calendar/libecal/e-cal-recur.c:3990
+#: ../calendar/libecal/e-cal-recur.c:3997
 msgid "11th"
 msgstr "11th"
 
-#: ../calendar/libecal/e-cal-recur.c:3991
+#: ../calendar/libecal/e-cal-recur.c:3998
 msgid "12th"
 msgstr "12th"
 
-#: ../calendar/libecal/e-cal-recur.c:3992
+#: ../calendar/libecal/e-cal-recur.c:3999
 msgid "13th"
 msgstr "13th"
 
-#: ../calendar/libecal/e-cal-recur.c:3993
+#: ../calendar/libecal/e-cal-recur.c:4000
 msgid "14th"
 msgstr "14th"
 
-#: ../calendar/libecal/e-cal-recur.c:3994
+#: ../calendar/libecal/e-cal-recur.c:4001
 msgid "15th"
 msgstr "15th"
 
-#: ../calendar/libecal/e-cal-recur.c:3995
+#: ../calendar/libecal/e-cal-recur.c:4002
 msgid "16th"
 msgstr "16th"
 
-#: ../calendar/libecal/e-cal-recur.c:3996
+#: ../calendar/libecal/e-cal-recur.c:4003
 msgid "17th"
 msgstr "17th"
 
-#: ../calendar/libecal/e-cal-recur.c:3997
+#: ../calendar/libecal/e-cal-recur.c:4004
 msgid "18th"
 msgstr "18th"
 
-#: ../calendar/libecal/e-cal-recur.c:3998
+#: ../calendar/libecal/e-cal-recur.c:4005
 msgid "19th"
 msgstr "19th"
 
-#: ../calendar/libecal/e-cal-recur.c:3999
+#: ../calendar/libecal/e-cal-recur.c:4006
 msgid "20th"
 msgstr "20th"
 
-#: ../calendar/libecal/e-cal-recur.c:4000
+#: ../calendar/libecal/e-cal-recur.c:4007
 msgid "21st"
 msgstr "21st"
 
-#: ../calendar/libecal/e-cal-recur.c:4001
+#: ../calendar/libecal/e-cal-recur.c:4008
 msgid "22nd"
 msgstr "22nd"
 
-#: ../calendar/libecal/e-cal-recur.c:4002
+#: ../calendar/libecal/e-cal-recur.c:4009
 msgid "23rd"
 msgstr "23rd"
 
-#: ../calendar/libecal/e-cal-recur.c:4003
+#: ../calendar/libecal/e-cal-recur.c:4010
 msgid "24th"
 msgstr "24th"
 
-#: ../calendar/libecal/e-cal-recur.c:4004
+#: ../calendar/libecal/e-cal-recur.c:4011
 msgid "25th"
 msgstr "25th"
 
-#: ../calendar/libecal/e-cal-recur.c:4005
+#: ../calendar/libecal/e-cal-recur.c:4012
 msgid "26th"
 msgstr "26th"
 
-#: ../calendar/libecal/e-cal-recur.c:4006
+#: ../calendar/libecal/e-cal-recur.c:4013
 msgid "27th"
 msgstr "27th"
 
-#: ../calendar/libecal/e-cal-recur.c:4007
+#: ../calendar/libecal/e-cal-recur.c:4014
 msgid "28th"
 msgstr "2th"
 
-#: ../calendar/libecal/e-cal-recur.c:4008
+#: ../calendar/libecal/e-cal-recur.c:4015
 msgid "29th"
 msgstr "29th"
 
-#: ../calendar/libecal/e-cal-recur.c:4009
+#: ../calendar/libecal/e-cal-recur.c:4016
 msgid "30th"
 msgstr "30th"
 
-#: ../calendar/libecal/e-cal-recur.c:4010
+#: ../calendar/libecal/e-cal-recur.c:4017
 msgid "31st"
 msgstr "31st"
 
-#: ../calendar/libecal/e-cal-util.c:693 ../calendar/libecal/e-cal-util.c:720
+#: ../calendar/libecal/e-cal-util.c:696 ../calendar/libecal/e-cal-util.c:723
 msgctxt "Priority"
 msgid "High"
 msgstr "అధిక"
 
-#: ../calendar/libecal/e-cal-util.c:695 ../calendar/libecal/e-cal-util.c:722
+#: ../calendar/libecal/e-cal-util.c:698 ../calendar/libecal/e-cal-util.c:725
 msgctxt "Priority"
 msgid "Normal"
 msgstr "సాధారణ"
 
-#: ../calendar/libecal/e-cal-util.c:697 ../calendar/libecal/e-cal-util.c:724
+#: ../calendar/libecal/e-cal-util.c:700 ../calendar/libecal/e-cal-util.c:727
 msgctxt "Priority"
 msgid "Low"
 msgstr "అల్ప"
 
 #. An empty string is the same as 'None'.
-#: ../calendar/libecal/e-cal-util.c:718
+#: ../calendar/libecal/e-cal-util.c:721
 msgctxt "Priority"
 msgid "Undefined"
 msgstr "నిర్వచించని"
@@ -1702,7 +1696,11 @@ msgstr "డిక్రిప్టుచేసిన సందేశం"
 msgid "Unable to create cache path"
 msgstr "క్యాచి పాత్ ను సృష్టించలేదు"
 
-#: ../camel/camel-data-cache.c:507
+#: ../camel/camel-data-cache.c:440
+msgid "Empty cache file"
+msgstr "ఖాళీ క్యాచి దస్త్రం "
+
+#: ../camel/camel-data-cache.c:509
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "క్యాచి ప్రవేశంను తీసివేయలేకపోయింది: %s: %s"
@@ -1754,10 +1752,10 @@ msgstr "ఆఫ్‌లైన్ కార్యము కొరకు సంచ
 #: ../camel/camel-imapx-folder.c:721 ../camel/camel-imapx-store.c:273
 #: ../camel/camel-imapx-store.c:1363 ../camel/camel-imapx-store.c:1451
 #: ../camel/camel-imapx-store.c:1497
-#: ../camel/providers/imap/camel-imap-store.c:1244
-#: ../camel/providers/imap/camel-imap-store.c:2000
-#: ../camel/providers/imap/camel-imap-store.c:2467
-#: ../camel/providers/imap/camel-imap-store.c:3217
+#: ../camel/providers/imap/camel-imap-store.c:1246
+#: ../camel/providers/imap/camel-imap-store.c:2002
+#: ../camel/providers/imap/camel-imap-store.c:2469
+#: ../camel/providers/imap/camel-imap-store.c:3219
 #: ../camel/providers/pop3/camel-pop3-folder.c:525
 #: ../camel/providers/pop3/camel-pop3-folder.c:655
 #: ../camel/providers/pop3/camel-pop3-folder.c:838
@@ -1887,12 +1885,12 @@ msgstr "సందేశాలను నకలు తీస్తున్నద�
 msgid "Quota information not supported for folder '%s'"
 msgstr "సంచంయం '%s' నకు కోటా సమాచారం తోడ్పాటులేదు"
 
-#: ../camel/camel-folder.c:3586
+#: ../camel/camel-folder.c:3595
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "సందేశం '%s' ను %s నందు తిరిగిపొందుచున్నది"
 
-#: ../camel/camel-folder.c:3735
+#: ../camel/camel-folder.c:3744
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "'%s' కొరకు కోటా సమాచారం తిరిగిపొందుచున్నది"
@@ -2135,7 +2133,7 @@ msgid "IMAP server %s does not support %s authentication"
 msgstr "ఐమాప్ సేవిక %s అనునది %s ధృవీకరణకు తోడ్పాటునీయదు"
 
 #: ../camel/camel-imapx-server.c:3028 ../camel/camel-session.c:483
-#: ../camel/providers/imap/camel-imap-store.c:1148
+#: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/pop3/camel-pop3-store.c:249
 #: ../camel/providers/pop3/camel-pop3-store.c:568
 #: ../camel/providers/smtp/camel-smtp-transport.c:458
@@ -2144,119 +2142,123 @@ msgid "No support for %s authentication"
 msgstr "%s ధృవీకరణ కొరకు సహకారంలేదు"
 
 #: ../camel/camel-imapx-server.c:3047
-#: ../camel/providers/imap/camel-imap-store.c:1116
+#: ../camel/providers/imap/camel-imap-store.c:1118
 #: ../camel/providers/nntp/camel-nntp-store.c:494
 msgid "Cannot authenticate without a username"
 msgstr "వాడుకరిపేరు లేకుండా ధృవీకరించలేదు"
 
 #: ../camel/camel-imapx-server.c:3056
-#: ../camel/providers/imap/camel-imap-store.c:1124
+#: ../camel/providers/imap/camel-imap-store.c:1126
 #: ../camel/providers/nntp/camel-nntp-store.c:503
 #: ../camel/providers/pop3/camel-pop3-store.c:493
 #: ../camel/providers/pop3/camel-pop3-store.c:513
 msgid "Authentication password not available"
 msgstr "ధృవీకరణ సంకేతపదం అందుబాటులోలేదు"
 
-#: ../camel/camel-imapx-server.c:3245
+#: ../camel/camel-imapx-server.c:3246
 msgid "Error fetching message"
 msgstr "సందేశాన్ని వెతికితెచ్చుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:3317
-msgid "Closing tmp stream failed: "
-msgstr "tmp స్ట్రీమ్ మూయుట విఫలమైంది: "
+#: ../camel/camel-imapx-server.c:3328
+msgid "Failed to copy the tmp file"
+msgstr "Tmp దస్త్రం నకలు చేయుటలో  విఫలమైం ది"
 
-#: ../camel/camel-imapx-server.c:3419
+#: ../camel/camel-imapx-server.c:3342
+msgid "Failed to close the tmp stream"
+msgstr "tmp ప్రవాహం మూసివేయుటలో విఫలమైం ది"
+
+#: ../camel/camel-imapx-server.c:3440
 msgid "Error copying messages"
 msgstr "సందేశాలను నకలుతీయుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:3554
+#: ../camel/camel-imapx-server.c:3575
 msgid "Error appending message"
 msgstr "సందేశంకు చేర్చుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:3741
+#: ../camel/camel-imapx-server.c:3762
 msgid "Error fetching message headers"
 msgstr "సందేశపు యెగువసూచీలను వెతికితెచ్చుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:3887
+#: ../camel/camel-imapx-server.c:3908
 msgid "Error retrieving message"
 msgstr "సందేశమును పొందుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4009 ../camel/camel-imapx-server.c:4214
-#: ../camel/providers/imap/camel-imap-folder.c:4002
-#: ../camel/providers/imap/camel-imap-folder.c:4082
+#: ../camel/camel-imapx-server.c:4030 ../camel/camel-imapx-server.c:4235
+#: ../camel/providers/imap/camel-imap-folder.c:4005
+#: ../camel/providers/imap/camel-imap-folder.c:4085
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s లో కొత్త సందేశాల కొరకు సంక్షింప్తమైన సమాచారాన్ని తీసుకువస్తున్నది"
 
-#: ../camel/camel-imapx-server.c:4068
-#: ../camel/providers/imap/camel-imap-folder.c:1124
+#: ../camel/camel-imapx-server.c:4089
+#: ../camel/providers/imap/camel-imap-folder.c:1127
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "%s లో మార్చబడిన సందేశాలను సంశోధించుచున్నది"
 
-#: ../camel/camel-imapx-server.c:4110
+#: ../camel/camel-imapx-server.c:4131
 msgid "Error fetching new messages"
 msgstr "కొత్త సందేశాలను వెతికితెచ్చుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4309
+#: ../camel/camel-imapx-server.c:4330
 msgid "Error while fetching messages"
 msgstr "సందేశాలను వెతికితెచ్చునప్పుడు దోషం"
 
-#: ../camel/camel-imapx-server.c:4317 ../camel/camel-imapx-server.c:4349
+#: ../camel/camel-imapx-server.c:4338 ../camel/camel-imapx-server.c:4370
 #, c-format
 msgid "Fetching summary information for %d message in %s"
 msgid_plural "Fetching summary information for %d messages in %s"
 msgstr[0] "%d సందేశం కొరకు %s నందు సారాంశ సమాచారం వెతికితెచ్చుచున్నది"
 msgstr[1] "%d సందేశాల కొరకు %s నందు సారాంశ సమాచారం వెతికితెచ్చుచున్నది"
 
-#: ../camel/camel-imapx-server.c:4474 ../camel/camel-imapx-server.c:4510
+#: ../camel/camel-imapx-server.c:4495 ../camel/camel-imapx-server.c:4531
 msgid "Error refreshing folder"
 msgstr "సంచయం తాజాపరచుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4603
+#: ../camel/camel-imapx-server.c:4624
 msgid "Error expunging message"
 msgstr "సందేశం యెక్సుపంజింగ్ దోషం"
 
-#: ../camel/camel-imapx-server.c:4692
+#: ../camel/camel-imapx-server.c:4713
 msgid "Error fetching folders"
 msgstr "సంచయాలను వెతికితెచ్చుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4771
+#: ../camel/camel-imapx-server.c:4792
 msgid "Error subscribing to folder"
 msgstr "సంచయంకు సబ్‌స్క్రైబ్ అగుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4828
+#: ../camel/camel-imapx-server.c:4849
 msgid "Error creating folder"
 msgstr "సంచయాన్ని సృష్టించుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4877
+#: ../camel/camel-imapx-server.c:4898
 msgid "Error deleting folder"
 msgstr "సంచయాన్ని తొలగించుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4931
+#: ../camel/camel-imapx-server.c:4952
 msgid "Error renaming folder"
 msgstr "సంచయానికి తిరిగిపేరు పెట్టుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:4986
+#: ../camel/camel-imapx-server.c:5007
 msgid "Error performing NOOP"
 msgstr "NOOP నిర్వర్తించటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:5084
+#: ../camel/camel-imapx-server.c:5105
 msgid "Error syncing changes"
 msgstr "మార్పులను సింక్ చేయుటలో దోషం"
 
-#: ../camel/camel-imapx-server.c:5695
-#: ../camel/providers/imap/camel-imap-folder.c:3470
+#: ../camel/camel-imapx-server.c:5716
+#: ../camel/providers/imap/camel-imap-folder.c:3473
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "సందేశము ID %sతో సందేశాన్ని పొందలేకపోయింది: %s"
 
-#: ../camel/camel-imapx-server.c:5696
-#: ../camel/providers/imap/camel-imap-folder.c:3471
+#: ../camel/camel-imapx-server.c:5717
+#: ../camel/providers/imap/camel-imap-folder.c:3474
 msgid "No such message available."
 msgstr "అటువంటి సందేశము అందుబాటులోలేదు."
 
-#: ../camel/camel-imapx-server.c:5851 ../camel/camel-imapx-server.c:5866
+#: ../camel/camel-imapx-server.c:5872 ../camel/camel-imapx-server.c:5887
 msgid "Cannot create spool file: "
 msgstr "స్పూల్ ఫైలును సృష్టించలేదు: "
 
@@ -2285,8 +2287,8 @@ msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "సాదాపాఠ్యము సంకేతపదంను ఉపయోగించి IMAP సేవికకు ఈ ఐచ్చికం అనుసంధానించబడుతుంది."
 
 #: ../camel/camel-imapx-store.c:342
-#: ../camel/providers/imap/camel-imap-store.c:2031
-#: ../camel/providers/imap/camel-imap-store.c:2225
+#: ../camel/providers/imap/camel-imap-store.c:2033
+#: ../camel/providers/imap/camel-imap-store.c:2227
 #, c-format
 msgid "No such folder %s"
 msgstr "%s లో ఎటువంటి సంచయం లేదు"
@@ -2294,7 +2296,7 @@ msgstr "%s లో ఎటువంటి సంచయం లేదు"
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/camel-imapx-store.c:367 ../camel/camel-imapx-store.c:838
 #: ../camel/providers/imap/camel-imap-store.c:272
-#: ../camel/providers/imap/camel-imap-store.c:2638
+#: ../camel/providers/imap/camel-imap-store.c:2640
 #: ../camel/providers/local/camel-maildir-folder.c:474
 #: ../camel/providers/local/camel-maildir-store.c:301
 #: ../camel/providers/local/camel-maildir-store.c:679
@@ -2316,22 +2318,22 @@ msgid "No such folder: %s"
 msgstr "అటువంటి సంచయం లేదు: %s"
 
 #: ../camel/camel-imapx-store.c:1384
-#: ../camel/providers/imap/camel-imap-store.c:2044
-#: ../camel/providers/imap/camel-imap-store.c:2482
+#: ../camel/providers/imap/camel-imap-store.c:2046
+#: ../camel/providers/imap/camel-imap-store.c:2484
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "ఆ సంచయపేరు \"%s\" సరికానిది ఎంచేతంటే ఇది అక్షరం \"%c\" ను కలిగిఉంటుంది."
 
 #: ../camel/camel-imapx-store.c:1395
-#: ../camel/providers/imap/camel-imap-store.c:2495
+#: ../camel/providers/imap/camel-imap-store.c:2497
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "తెలియని మూల సంచయం‌:%s"
 
 #: ../camel/camel-imapx-store.c:1405
-#: ../camel/providers/imap/camel-imap-store.c:2107
-#: ../camel/providers/imap/camel-imap-store.c:2546
+#: ../camel/providers/imap/camel-imap-store.c:2109
+#: ../camel/providers/imap/camel-imap-store.c:2548
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "ఉపసంచయాలు కలిగిఉండుటవలన మూలసంచయం అనుమతించబడదు"
@@ -3318,28 +3320,28 @@ msgstr "%s వివరంను సృష్టించలేము: %s"
 msgid "Could not load summary for %s"
 msgstr "%s కొరకు సంక్షింప్తమును నింపలేకపోయింది"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3433
+#: ../camel/providers/imap/camel-imap-folder.c:3436
 msgid "Unable to retrieve message: "
 msgstr "సందేశాన్ని తిరిగిపొందలేకపోయింది: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3544
-#: ../camel/providers/imap/camel-imap-folder.c:4414
+#: ../camel/providers/imap/camel-imap-folder.c:3547
+#: ../camel/providers/imap/camel-imap-folder.c:4417
 #: ../camel/providers/nntp/camel-nntp-folder.c:493
 #, c-format
 msgid "This message is not currently available"
 msgstr "ఈ సందేశం ప్రస్తుతం లభించలేదు"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4213
+#: ../camel/providers/imap/camel-imap-folder.c:4216
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "అసంపూర్ణమైన సేవిక ప్రత్యుత్తరము: %d సందేశం "
 
-#: ../camel/providers/imap/camel-imap-folder.c:4223
+#: ../camel/providers/imap/camel-imap-folder.c:4226
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "అసంపూర్ణమైన సేవిక ప్రత్యుత్తరము:%d కొరకు ఎటువంటి UID సందేశంను సిద్దంచేయలేదు"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4451
+#: ../camel/providers/imap/camel-imap-folder.c:4454
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "ఫెఛ్ఛ్ ప్రత్యుత్తరములో సందేశంయొక్క ముఖ్యభాగం వెతకలేకపోయిది. "
@@ -3452,7 +3454,7 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "ఐమాప్ సేవికలపై తపాలాలను చదువుటకు మరియు నిలువచేయుటకు."
 
-#: ../camel/providers/imap/camel-imap-store.c:2156
+#: ../camel/providers/imap/camel-imap-store.c:2158
 #: ../camel/providers/local/camel-maildir-store.c:268
 #: ../camel/providers/local/camel-mbox-store.c:421
 #: ../camel/providers/local/camel-mh-store.c:558
@@ -3460,18 +3462,17 @@ msgstr "ఐమాప్ సేవికలపై తపాలాలను చద
 msgid "Cannot create folder '%s': folder exists."
 msgstr "సంచయం '%s'ను సృష్టించలేము:సంచయం కలిగివున్నది."
 
-#: ../camel/providers/imap/camel-imap-store.c:2919
+#: ../camel/providers/imap/camel-imap-store.c:2921
 #, c-format
-#| msgid "Retrieving folder list for %s"
 msgid "Retrieving list of folders at '%s'"
 msgstr "%s వద్ద సంచయ జాబితా పొందటం"
 
-#: ../camel/providers/imap/camel-imap-store.c:3261
+#: ../camel/providers/imap/camel-imap-store.c:3263
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "సేవిక అనుకోకుండా అననుసంధానించబడింది"
 
-#: ../camel/providers/imap/camel-imap-store.c:3264
+#: ../camel/providers/imap/camel-imap-store.c:3266
 msgid "Server unexpectedly disconnected: "
 msgstr "సేవిక అనుకోకుండా అననుసంధానించబడింది: "
 
@@ -3515,7 +3516,7 @@ msgstr "%s (%s)"
 msgid "_Index message body data"
 msgstr "విషయసూచిక సందేశ ముఖ దత్తాంశం (_I)"
 
-#: ../camel/providers/local/camel-local-folder.c:723
+#: ../camel/providers/local/camel-local-folder.c:726
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -4673,6 +4674,38 @@ msgstr "RSET ఆదేశం విఫలమైంది: "
 msgid "QUIT command failed: "
 msgstr "QUIT ఆదేశం విఫలమైంది: "
 
+#: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
+#| msgid "Contact ID already exists"
+msgid "Contact UID of a user"
+msgstr "ఒక వినియోగదారుని యొక్క UID సంప్రదించండి"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
+msgid "Birthday and anniversary reminder"
+msgstr "పుట్టినరోజులు మరియు వార్షికోత్సవాలు సూచనగా"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
+msgid "Whether to set a reminder for birthdays and anniversaries"
+msgstr "పుట్టినరోజులు మరియు వార్షికోత్సవాలు ఒక సూచనగా ఏర్పాటు చెయ్యాలా"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
+msgid "Birthday and anniversary reminder value"
+msgstr "పుట్టినరోజులు మరియు వార్షికోత్సవాలు సూచనగా విలువ"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
+msgid "Number of units for determining a birthday or anniversary reminder"
+msgstr "ఒక పుట్టినరోజు లేదా వార్షికోత్సవం సూచనగా వివరించడానికి విభాగాలు సంఖ్య"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
+msgid "Birthday and anniversary reminder units"
+msgstr "పుట్టినరోజు మరియు వార్షికోత్సవం విభాగాలు సూచనగా"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
+msgid ""
+"Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
+"\"days\""
+msgstr ""
+"ఒక పుట్టినరోజు లేదా వార్షికోత్సవం సూచనగా, \"నిమిషాలు\", \"గంటలు\" లేదా \"రోజులు\" కోసం విభాగాలు"
+
 #: ../libebackend/e-authentication-mediator.c:145
 #: ../libebackend/e-authentication-mediator.c:156
 #: ../libebackend/e-authentication-mediator.c:612
@@ -4681,7 +4714,6 @@ msgid "Bus name vanished (client terminated?)"
 msgstr "బస్ పేరు అదృశ్యమయ్యాయి (కక్షిదారు ముగించబడుతుంది?)"
 
 #: ../libebackend/e-authentication-mediator.c:204
-#| msgid "No response from the server"
 msgid "No response from client"
 msgstr "కక్షిదారు నుండి స్పందన లేదు"
 
@@ -4689,7 +4721,6 @@ msgstr "కక్షిదారు నుండి స్పందన లేద
 #: ../libebackend/e-authentication-mediator.c:275
 #: ../libebackend/e-authentication-mediator.c:606
 #: ../libebackend/e-authentication-mediator.c:967
-#| msgid "Could not cancel operation"
 msgid "Client cancelled the operation"
 msgstr "కక్షిదారుని ఆపరేషన్ రద్దు"
 
@@ -4705,19 +4736,18 @@ msgstr "మీ కీ బరిలోకిఈ సంకేతపదము జ�
 msgid "Password was incorrect"
 msgstr "సంకేతపదము సరియైనది కాదు"
 
-#: ../libebackend/e-authentication-session.c:1307
-#: ../libebackend/e-authentication-session.c:1479
-#: ../libebackend/e-authentication-session.c:1658
-#| msgid "Operation cancelled"
+#: ../libebackend/e-authentication-session.c:1322
+#: ../libebackend/e-authentication-session.c:1494
+#: ../libebackend/e-authentication-session.c:1673
 msgid "Keyring operation was cancelled"
 msgstr "కీ వలయం చర్యను రద్దు చేయబడింది"
 
-#: ../libebackend/e-server-side-source.c:159
+#: ../libebackend/e-server-side-source.c:161
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "సమాచార మూలం ఒక [%s] గుంపు తప్పిపోయింది"
 
-#: ../libebackend/e-server-side-source.c:1004
+#: ../libebackend/e-server-side-source.c:1045
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "దస్రం '.మూలం' పొడిగింపు కలిగి ఉండాలి"
@@ -4858,65 +4888,54 @@ msgid "D-Bus error"
 msgstr "D-Bus దోషం"
 
 #: ../libedataserver/e-source-authenticator.c:166
-#| msgid "Authentication required"
 msgid "Address book authentication request"
 msgstr "చిరునామా పుస్తకం ప్రమాణీకరణ అభ్యర్థన"
 
 #: ../libedataserver/e-source-authenticator.c:171
-#| msgid "Authentication required"
 msgid "Calendar authentication request"
 msgstr "క్యాలెండర్ ధృవీకరణ అభ్యర్థన"
 
 #: ../libedataserver/e-source-authenticator.c:175
-#| msgid "Authentication required"
 msgid "Mail authentication request"
 msgstr "మెయిల్ ధృవీకరణ అభ్యర్థన"
 
 #. generic account prompt
 #: ../libedataserver/e-source-authenticator.c:178
-#| msgid "Authentication required"
 msgid "Authentication request"
 msgstr "ధృవీకరణ అభ్యర్థన"
 
 #: ../libedataserver/e-source-authenticator.c:188
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for address book \"%s\"."
 msgstr "చిరునామా పుస్తకం \"%s\" కోసం సంకేతపదంను దయచేసి ప్రవేశపెట్టండి."
 
 #: ../libedataserver/e-source-authenticator.c:194
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for calendar \"%s\"."
 msgstr "క్యాలెండర్ \"%s\" కోసం సంకేతపదంను దయచేసి ప్రవేశపెట్టండి."
 
 #: ../libedataserver/e-source-authenticator.c:200
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail account \"%s\"."
 msgstr "మెయిల్ ఖాతా \"% s\"కోసం సంకేతపదంను దయచేసి ప్రవేశపెట్టండి."
 
 #: ../libedataserver/e-source-authenticator.c:206
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail transport \"%s\"."
 msgstr "మెయిల్ రవాణా \"%s\"కోసం సంకేతపదంను దయచేసి ప్రవేశపెట్టండి."
 
 #: ../libedataserver/e-source-authenticator.c:212
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for memo list \"%s\"."
 msgstr "మెమో జాబితా \"%s\" కోసం సంకేతపదంను దయచేసి ప్రవేశపెట్టండి."
 
 #: ../libedataserver/e-source-authenticator.c:218
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for task list \"%s\"."
 msgstr "కార్యం జాబితా \"%s\" కోసం సంకేతపదంను దయచేసి ప్రవేశపెట్టండి."
 
 #: ../libedataserver/e-source-authenticator.c:224
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for account \"%s\"."
 msgstr "ఖాతా\"%s\" కోసం సంకేతపదంను దయచేసి ప్రవేశపెట్టండి."
 
@@ -4936,17 +4955,15 @@ msgid "Data source '%s' is not writable"
 msgstr "సమాచార మూలం '% s' రైటబుల్ కాదు "
 
 #: ../libedataserver/e-source.c:1083
-#| msgid "Unnamed List"
 msgid "Unnamed"
 msgstr "పేరులేని"
 
-#: ../libedataserver/e-source-mail-signature.c:480
+#: ../libedataserver/e-source-mail-signature.c:485
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "సంతకం లిపిలో ఒక స్థానిక దస్రం ఉండాలి"
 
-#: ../libedataserver/e-source-registry.c:1479
-#| msgid "Failed to authenticate.\n"
+#: ../libedataserver/e-source-registry.c:1496
 msgid "The user declined to authenticate"
 msgstr "వినియోగదారునికి అధికారం ఇవ్వడం తిరస్కరించారు"
 
@@ -5243,7 +5260,6 @@ msgid "Address B_ook:"
 msgstr "చిరునామా పుస్తకం(_o):"
 
 #: ../libedataserverui/e-name-selector-dialog.c:308
-#| msgid "Cate_gory:"
 msgid "Cat_egory:"
 msgstr "వర్గం(_e):"
 
@@ -5269,7 +5285,7 @@ msgid "Address Book"
 msgstr "చిరునామా పుస్తకం"
 
 #: ../libedataserverui/e-name-selector-dialog.c:407
-#: ../modules/google-backend/module-google-backend.c:177
+#: ../modules/google-backend/module-google-backend.c:183
 msgid "Contacts"
 msgstr "పరిచయాలు"
 
@@ -5291,25 +5307,25 @@ msgid "Error loading address book: %s"
 msgstr "చిరునామా పుస్తకం లోడుచేయుటలో దోషం: %s"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:2907
+#: ../libedataserverui/e-name-selector-entry.c:2959
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "ఇన్‌లైన్‌లో %s ను విస్తరించుము(_x)"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2922
+#: ../libedataserverui/e-name-selector-entry.c:2974
 #, c-format
 msgid "Cop_y %s"
 msgstr "నకలు %s(_y)"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:2932
+#: ../libedataserverui/e-name-selector-entry.c:2984
 #, c-format
 msgid "C_ut %s"
 msgstr "కోయుము %s(_u)"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:2949
+#: ../libedataserverui/e-name-selector-entry.c:3001
 #, c-format
 msgid "_Edit %s"
 msgstr "సరిచేయు %s(_E)"
@@ -5356,43 +5372,38 @@ msgstr "గమ్యము(_D)"
 msgid "Select destination"
 msgstr "గమ్యమును ఎంపికచేయుము"
 
-#: ../modules/google-backend/module-google-backend.c:114
-#: ../modules/yahoo-backend/module-yahoo-backend.c:193
+#: ../modules/google-backend/module-google-backend.c:118
+#: ../modules/yahoo-backend/module-yahoo-backend.c:200
 msgid "Calendar"
 msgstr "క్యాలెండర్"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:184
 #, c-format
-#| msgid "Unexpected response from IMAP server: %s"
 msgid "Code: %u - Unexpected response from server"
 msgstr "సంకేతం:%u-సేవికనుండి ఊహించని స్పందన"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:205
 #, c-format
-#| msgid "Failed to retrieve message"
 msgid "Failed to parse autodiscover response XML"
 msgstr "స్వీయ డిస్కవర్ స్పందన XML అన్వయించడం విఫలమైంది"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:214
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Autodiscover element"
 msgstr "ఆటో డిస్కవర్ మూలకం కనుగొనడంలో విఫలమైంది"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:226
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Response element"
 msgstr "మూలకం స్పందన కనుగొనడంలో విఫలమైంది"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:238
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Account element"
 msgstr "ఖాతా మూలకం కనుగొనడంలో విఫలమైంది"
 
@@ -5402,17 +5413,17 @@ msgstr "ఖాతా మూలకం కనుగొనడంలో విఫల
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "స్వీయ డిస్కవర్ స్పందనగా ASUrl మరియు OABUrl కనుగొనడంలో విఫలమైంది"
 
-#: ../modules/yahoo-backend/module-yahoo-backend.c:207
+#: ../modules/yahoo-backend/module-yahoo-backend.c:215
 msgid "Tasks"
 msgstr "కర్తవ్యాలు"
 
-#: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:49
-#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:53
+#: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:47
+#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:51
 msgid "Keep running after the last client is closed"
 msgstr "ఆఖరి క్లైంట్ మూసిన తరువాత నడుస్తూ వుండు"
 
-#: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:51
-#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:55
+#: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:49
+#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:53
 msgid "Wait running until at least one client is connected"
 msgstr "కనీసం వొక క్లైంట్ అనుసంధానమయ్యేవరకు నడుస్తూ వుండు"
 
@@ -5421,7 +5432,6 @@ msgid "Evolution Source Viewer"
 msgstr "మూలం పరిణామం  వీక్షకుడు"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:487
-#| msgid "Family Name"
 msgid "Display Name"
 msgstr "పేరు ప్రదర్శించు"
 
@@ -5432,6 +5442,9 @@ msgstr "జెండాలు"
 #: ../tests/libedataserverui/evolution-source-viewer.c:520
 msgid "Identity"
 msgstr "గుర్తింపు"
+
+#~ msgid "Closing tmp stream failed: "
+#~ msgstr "tmp స్ట్రీమ్ మూయుట విఫలమైంది: "
 
 #~ msgid "Authenticating with the server…"
 #~ msgstr "సేవికతో దృవీకరించుచున్నది..."
