@@ -2,7 +2,8 @@
 #include <libebook/libebook.h>
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 #if 0  /* ACCOUNT_MGMT */
 	GError *err = NULL;

@@ -998,7 +998,7 @@ get_groups (EBookBackend *backend)
 
 static void
 get_groups_sync (EBookBackend *backend,
-		 GCancellable *cancellable)
+                 GCancellable *cancellable)
 {
 	EBookBackendGooglePrivate *priv;
 	GDataQuery *query;

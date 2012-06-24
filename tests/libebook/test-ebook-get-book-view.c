@@ -114,7 +114,7 @@ main (gint argc,
 	loop = g_main_loop_new (NULL, TRUE);
 	g_main_loop_run (loop);
 
-        e_book_query_unref (query);
+	e_book_query_unref (query);
 
 	/*
 	 * Async version
@@ -128,7 +128,7 @@ main (gint argc,
 
 	g_main_loop_run (loop);
 
-        e_book_query_unref (query);
+	e_book_query_unref (query);
 
 	return 0;
 }

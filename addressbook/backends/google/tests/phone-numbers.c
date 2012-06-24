@@ -39,7 +39,9 @@ build_system_groups_by_id (void)
 }
 
 static gchar *
-create_group_null (const gchar *category_name, gpointer user_data, GError **error)
+create_group_null (const gchar *category_name,
+                   gpointer user_data,
+                   GError **error)
 {
 	/* Must never be reached. */
 	g_assert_not_reached ();
@@ -110,8 +112,9 @@ test_label_nor_type (void)
 	g_object_unref (entry);
 }
 
-int
-main (int argc, char **argv)
+gint
+main (gint argc,
+      gchar **argv)
 {
 	g_type_init ();
 	g_test_init (&argc, &argv, NULL);

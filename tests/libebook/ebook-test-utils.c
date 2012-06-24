@@ -115,16 +115,16 @@ ebook_test_utils_book_add_contact (EBook *book,
 {
 	GError *error = NULL;
 
-        if (!e_book_add_contact (book, contact, &error)) {
-                ESource *source;
-                const gchar *name;
+	if (!e_book_add_contact (book, contact, &error)) {
+		ESource *source;
+		const gchar *name;
 
-                source = e_book_get_source (book);
-                name = e_source_get_display_name (source);
+		source = e_book_get_source (book);
+		name = e_source_get_display_name (source);
                 g_warning ("failed to add contact to addressbook: `%s': %s",
-                                name, error->message);
-                exit (1);
-        }
+				name, error->message);
+		exit (1);
+	}
 
 	return e_contact_get_const (contact, E_CONTACT_UID);
 }
@@ -173,19 +173,19 @@ ebook_test_utils_book_commit_contact (EBook *book,
 {
 	GError *error = NULL;
 
-        if (!e_book_commit_contact (book, contact, &error)) {
-                ESource *source;
-                const gchar *name;
-                const gchar *uid;
+	if (!e_book_commit_contact (book, contact, &error)) {
+		ESource *source;
+		const gchar *name;
+		const gchar *uid;
 
-                uid = (const gchar *) e_contact_get_const (contact, E_CONTACT_UID);
+		uid = (const gchar *) e_contact_get_const (contact, E_CONTACT_UID);
 
-                source = e_book_get_source (book);
-                name = e_source_get_display_name (source);
+		source = e_book_get_source (book);
+		name = e_source_get_display_name (source);
                 g_warning ("failed to commit changes to contact '%s' to addressbook: `%s': %s",
-                                uid, name, error->message);
-                exit (1);
-        }
+				uid, name, error->message);
+		exit (1);
+	}
 }
 
 static void
@@ -232,16 +232,16 @@ ebook_test_utils_book_get_contact (EBook *book,
 	EContact *contact = NULL;
 	GError *error = NULL;
 
-        if (!e_book_get_contact (book, uid, &contact, &error)) {
-                ESource *source;
-                const gchar *name;
+	if (!e_book_get_contact (book, uid, &contact, &error)) {
+		ESource *source;
+		const gchar *name;
 
-                source = e_book_get_source (book);
-                name = e_source_get_display_name (source);
+		source = e_book_get_source (book);
+		name = e_source_get_display_name (source);
                 g_warning ("failed to get contact '%s' in addressbook: `%s': "
                                 "%s", uid, name, error->message);
-                exit (1);
-        }
+		exit (1);
+	}
 
 	return contact;
 }
@@ -295,16 +295,16 @@ ebook_test_utils_book_get_required_fields (EBook *book)
 	GList *fields = NULL;
 	GError *error = NULL;
 
-        if (!e_book_get_required_fields (book, &fields, &error)) {
-                ESource *source;
-                const gchar *name;
+	if (!e_book_get_required_fields (book, &fields, &error)) {
+		ESource *source;
+		const gchar *name;
 
-                source = e_book_get_source (book);
-                name = e_source_get_display_name (source);
+		source = e_book_get_source (book);
+		name = e_source_get_display_name (source);
                 g_warning ("failed to get required fields for addressbook "
                                 "`%s': %s", name, error->message);
-                exit (1);
-        }
+		exit (1);
+	}
 
 	return fields;
 }
@@ -355,16 +355,16 @@ ebook_test_utils_book_get_static_capabilities (EBook *book)
 	GError *error = NULL;
 	const gchar *caps;
 
-        if (!(caps = e_book_get_static_capabilities (book, &error))) {
-                ESource *source;
-                const gchar *name;
+	if (!(caps = e_book_get_static_capabilities (book, &error))) {
+		ESource *source;
+		const gchar *name;
 
-                source = e_book_get_source (book);
-                name = e_source_get_display_name (source);
+		source = e_book_get_source (book);
+		name = e_source_get_display_name (source);
                 g_warning ("failed to get capabilities for addressbook: `%s': "
                                 "%s", name, error->message);
-                exit (1);
-        }
+		exit (1);
+	}
 
 	return caps;
 }
@@ -375,16 +375,16 @@ ebook_test_utils_book_get_supported_auth_methods (EBook *book)
 	GList *fields = NULL;
 	GError *error = NULL;
 
-        if (!e_book_get_supported_auth_methods (book, &fields, &error)) {
-                ESource *source;
-                const gchar *name;
+	if (!e_book_get_supported_auth_methods (book, &fields, &error)) {
+		ESource *source;
+		const gchar *name;
 
-                source = e_book_get_source (book);
-                name = e_source_get_display_name (source);
+		source = e_book_get_source (book);
+		name = e_source_get_display_name (source);
                 g_warning ("failed to get supported auth methods for "
                                 "addressbook `%s': %s", name, error->message);
-                exit (1);
-        }
+		exit (1);
+	}
 
 	return fields;
 }
@@ -435,16 +435,16 @@ ebook_test_utils_book_get_supported_fields (EBook *book)
 	GList *fields = NULL;
 	GError *error = NULL;
 
-        if (!e_book_get_supported_fields (book, &fields, &error)) {
-                ESource *source;
-                const gchar *name;
+	if (!e_book_get_supported_fields (book, &fields, &error)) {
+		ESource *source;
+		const gchar *name;
 
-                source = e_book_get_source (book);
-                name = e_source_get_display_name (source);
+		source = e_book_get_source (book);
+		name = e_source_get_display_name (source);
                 g_warning ("failed to get supported fields for addressbook "
                                 "`%s': %s", name, error->message);
-                exit (1);
-        }
+		exit (1);
+	}
 
 	return fields;
 }
@@ -494,16 +494,16 @@ ebook_test_utils_book_remove_contact (EBook *book,
 {
 	GError *error = NULL;
 
-        if (!e_book_remove_contact (book, uid, &error)) {
-                ESource *source;
-                const gchar *name;
+	if (!e_book_remove_contact (book, uid, &error)) {
+		ESource *source;
+		const gchar *name;
 
-                source = e_book_get_source (book);
-                name = e_source_get_display_name (source);
+		source = e_book_get_source (book);
+		name = e_source_get_display_name (source);
                 g_warning ("failed to remove contact '%s' from addressbook: `%s': %s",
-                                uid, name, error->message);
-                exit (1);
-        }
+				uid, name, error->message);
+		exit (1);
+	}
 }
 
 static void
@@ -588,16 +588,16 @@ ebook_test_utils_book_remove_contacts (EBook *book,
 {
 	GError *error = NULL;
 
-        if (!e_book_remove_contacts (book, ids, &error)) {
-                ESource *source;
-                const gchar *name;
+	if (!e_book_remove_contacts (book, ids, &error)) {
+		ESource *source;
+		const gchar *name;
 
-                source = e_book_get_source (book);
-                name = e_source_get_display_name (source);
+		source = e_book_get_source (book);
+		name = e_source_get_display_name (source);
                 g_warning ("failed to remove contacts from addressbook: `%s': %s",
-                                name, error->message);
-                exit (1);
-        }
+				name, error->message);
+		exit (1);
+	}
 }
 
 static void
@@ -694,17 +694,17 @@ ebook_test_utils_book_get_book_view (EBook *book,
 {
 	GError *error = NULL;
 
-        if (!e_book_get_book_view (book, query, NULL, -1, view, &error)) {
-                ESource *source;
-                const gchar *name;
+	if (!e_book_get_book_view (book, query, NULL, -1, view, &error)) {
+		ESource *source;
+		const gchar *name;
 
-                source = e_book_get_source (book);
-                name = e_source_get_display_name (source);
+		source = e_book_get_source (book);
+		name = e_source_get_display_name (source);
 
                 g_warning ("failed to get view for addressbook: `%s': %s",
-                                name, error->message);
-                exit (1);
-        }
+				name, error->message);
+		exit (1);
+	}
 }
 
 static void

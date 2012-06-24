@@ -248,7 +248,7 @@ ews_autodiscover_response_cb (SoupSession *session,
 	if (!success) {
 		g_set_error (
 			&error, GOA_ERROR,
-			GOA_ERROR_FAILED, /* TODO: more specific*/
+			GOA_ERROR_FAILED, /* TODO: more specific */
 			_("Failed to find ASUrl and OABUrl in autodiscover response"));
 			goto out;
 	}
@@ -310,7 +310,8 @@ ews_create_autodiscover_xml (const gchar *email)
 }
 
 static void
-ews_post_restarted_cb (SoupMessage *msg, gpointer data)
+ews_post_restarted_cb (SoupMessage *msg,
+                       gpointer data)
 {
 	xmlOutputBuffer *buf = data;
 

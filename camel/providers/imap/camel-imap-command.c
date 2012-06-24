@@ -255,7 +255,7 @@ imap_command_start (CamelImapStore *store,
 
 	if (nwritten == -1) {
 		/* do not pass cancellable, the connection is gone or
-		   the cancellable cancelled, thus there will be no I/O */
+		 * the cancellable cancelled, thus there will be no I/O */
 		camel_service_disconnect_sync (
 			CAMEL_SERVICE (store), FALSE, NULL, NULL);
 		return FALSE;
@@ -311,7 +311,7 @@ camel_imap_command_continuation (CamelImapStore *store,
 	if (camel_stream_write (store->ostream, cmd, cmdlen, cancellable, error) == -1 ||
 	    camel_stream_write (store->ostream, "\r\n", 2, cancellable, error) == -1) {
 		/* do not pass cancellable, the connection is gone or
-		   the cancellable cancelled, thus there will be no I/O */
+		 * the cancellable cancelled, thus there will be no I/O */
 		camel_service_disconnect_sync (
 			CAMEL_SERVICE (store), FALSE, NULL, NULL);
 		g_static_rec_mutex_unlock (&store->command_and_response_lock);
@@ -380,7 +380,7 @@ camel_imap_command_response (CamelImapStore *store,
 				err = g_strerror (104);
 
 			/* do not pass cancellable, the connection is gone or
-			   the cancellable cancelled, thus there will be no I/O */
+			 * the cancellable cancelled, thus there will be no I/O */
 			camel_service_disconnect_sync (
 				service, FALSE, NULL, NULL);
 			g_set_error (
@@ -585,7 +585,7 @@ imap_read_untagged (CamelImapStore *store,
 				cancellable, error);
 			if (n == -1) {
 				/* do not pass cancellable, the connection is gone or
-				   the cancellable cancelled, thus there will be no I/O */
+				 * the cancellable cancelled, thus there will be no I/O */
 				camel_service_disconnect_sync (
 					CAMEL_SERVICE (store),
 					FALSE, NULL, NULL);
@@ -602,7 +602,7 @@ imap_read_untagged (CamelImapStore *store,
 				CAMEL_SERVICE_ERROR_UNAVAILABLE,
 				_("Server response ended too soon."));
 			/* do not pass cancellable, the connection is gone or
-			   the cancellable cancelled, thus there will be no I/O */
+			 * the cancellable cancelled, thus there will be no I/O */
 			camel_service_disconnect_sync (
 				CAMEL_SERVICE (store),
 				FALSE, NULL, NULL);

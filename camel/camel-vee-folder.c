@@ -1069,7 +1069,7 @@ vee_folder_remove_folder (CamelVeeFolder *vfolder,
 	camel_folder_thaw (v_folder);
 
 	/* do not notify about changes in vfolder which
-	   is removing its subfolders in dispose */
+	 * is removing its subfolders in dispose */
 	if (!vfolder->priv->destroyed &&
 	    camel_folder_change_info_changed (changes))
 		camel_folder_changed (CAMEL_FOLDER (vfolder), changes);

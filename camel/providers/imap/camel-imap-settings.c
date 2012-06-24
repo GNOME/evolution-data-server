@@ -820,7 +820,7 @@ camel_imap_settings_dup_fetch_headers_extra (CamelImapSettings *settings)
 
 static gboolean
 fetch_headers_equal (const gchar * const *h1,
-		     const gchar * const *h2)
+                     const gchar * const *h2)
 {
 	gint ii;
 

@@ -319,7 +319,7 @@ e_source_mail_composition_dup_bcc (ESourceMailComposition *extension)
 
 static gboolean
 strv_equal (const gchar * const *strv1,
-	    const gchar * const *strv2)
+            const gchar * const *strv2)
 {
 	gint ii;
 

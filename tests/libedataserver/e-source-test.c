@@ -225,7 +225,8 @@ test_single_source (TestFixture *fixture,
 }
 
 gint
-main (gint argc, gchar **argv)
+main (gint argc,
+      gchar **argv)
 {
 	g_type_init ();
 

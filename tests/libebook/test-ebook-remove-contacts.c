@@ -40,8 +40,8 @@ main (gint argc,
 
         test_print ("successfully added and removed contacts\n");
 
-        g_free (uid_1);
-        g_free (uid_2);
+	g_free (uid_1);
+	g_free (uid_2);
 	g_list_free (uids);
 
         /*
@@ -62,8 +62,8 @@ main (gint argc,
 
 	g_main_loop_run (loop);
 
-        g_free (uid_1);
-        g_free (uid_2);
+	g_free (uid_1);
+	g_free (uid_2);
 	g_list_free (uids);
 
 	return 0;

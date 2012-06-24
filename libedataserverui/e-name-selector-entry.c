@@ -869,7 +869,7 @@ build_textrep_for_contact (EContact *contact,
 
 static gboolean
 contact_match_cue (ENameSelectorEntry *name_selector_entry,
-		   EContact *contact,
+                   EContact *contact,
                    const gchar *cue_str,
                    EContactField *matched_field,
                    gint *matched_field_rank)
@@ -1248,7 +1248,7 @@ modify_destination_at_position (ENameSelectorEntry *name_selector_entry,
 
 static gchar *
 get_destination_textrep (ENameSelectorEntry *name_selector_entry,
-			 EDestination *destination)
+                         EDestination *destination)
 {
 	gboolean show_email = e_name_selector_entry_get_show_address (name_selector_entry);
 	EContact *contact;
@@ -3315,7 +3315,7 @@ e_name_selector_entry_get_minimum_query_length (ENameSelectorEntry *name_selecto
  **/
 void
 e_name_selector_entry_set_minimum_query_length (ENameSelectorEntry *name_selector_entry,
-						gint length)
+                                                gint length)
 {
 	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry));
 	g_return_if_fail (length > 0);
@@ -3355,7 +3355,7 @@ e_name_selector_entry_get_show_address (ENameSelectorEntry *name_selector_entry)
  **/
 void
 e_name_selector_entry_set_show_address (ENameSelectorEntry *name_selector_entry,
-					gboolean show)
+                                        gboolean show)
 {
 	g_return_if_fail (E_IS_NAME_SELECTOR_ENTRY (name_selector_entry));
 

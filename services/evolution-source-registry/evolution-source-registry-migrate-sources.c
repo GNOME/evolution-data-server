@@ -2463,7 +2463,6 @@ migrate_parse_weather_source (ParseData *parse_data)
 		g_free (location);
 	}
 
-
 	parse_data->property_func = migrate_parse_weather_property;
 }
 

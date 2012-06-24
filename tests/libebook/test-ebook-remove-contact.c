@@ -32,7 +32,7 @@ main (gint argc,
 	g_assert (contact_final == NULL);
         test_print ("successfully added and removed contact '%s'\n", uid);
 
-        g_free (uid);
+	g_free (uid);
 
         /*
          * Async version
