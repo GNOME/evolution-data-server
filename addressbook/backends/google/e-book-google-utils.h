@@ -36,7 +36,8 @@ gboolean gdata_entry_update_from_e_contact (GDataEntry *entry, EContact *contact
                                             GHashTable *system_groups_by_id,
                                             EContactGoogleCreateGroupFunc create_group, gpointer create_group_user_data);
 
-EContact *e_contact_new_from_gdata_entry (GDataEntry *entry, GHashTable *groups_by_id) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
+EContact *e_contact_new_from_gdata_entry (GDataEntry *entry, GHashTable *groups_by_id,
+                                          GHashTable *system_groups_by_entry_id) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
 void e_contact_add_gdata_entry_xml (EContact *contact, GDataEntry *entry);
 void e_contact_remove_gdata_entry_xml (EContact *contact);
 const gchar *e_contact_get_gdata_entry_xml (EContact *contact, const gchar **edit_uri);

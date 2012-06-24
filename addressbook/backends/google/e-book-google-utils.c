@@ -39,6 +39,8 @@
 #define GDATA_URIS_TYPE_PROFILE "X-PROFILE"
 #define GDATA_URIS_TYPE_FTP "X-FTP"
 
+#define GOOGLE_SYSTEM_GROUP_ATTR "X-GOOGLE-SYSTEM-GROUP-IDS"
+
 #define MULTIVALUE_ATTRIBUTE_SUFFIX "-MULTIVALUE"
 
 gboolean __e_book_google_utils_debug__;
@@ -509,10 +511,11 @@ foreach_extended_props_cb (const gchar *name,
 
 EContact *
 e_contact_new_from_gdata_entry (GDataEntry *entry,
-                                GHashTable *groups_by_id)
+                                GHashTable *groups_by_id,
+                                GHashTable *system_groups_by_entry_id)
 {
 	EVCard *vcard;
-	EVCardAttribute *attr;
+	EVCardAttribute *attr, *system_group_ids_attr;
 	EContactPhoto *photo;
 	const gchar *photo_etag;
 	GList *email_addresses, *im_addresses, *phone_numbers, *postal_addresses, *orgs, *category_names, *category_ids;
@@ -535,6 +538,9 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 	const gchar *file_as;
 #endif
 #endif
+
+	g_return_val_if_fail (system_groups_by_entry_id != NULL, NULL);
+	g_return_val_if_fail (g_hash_table_size (system_groups_by_entry_id) > 0, FALSE);
 
 	uid = gdata_entry_get_id (entry);
 	if (NULL == uid)
@@ -652,8 +658,11 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 	/* CATEGORIES */
 	category_ids = gdata_contacts_contact_get_groups (GDATA_CONTACTS_CONTACT (entry));
 	category_names = NULL;
+	system_group_ids_attr = e_vcard_attribute_new ("", GOOGLE_SYSTEM_GROUP_ATTR);
+
 	for (itr = category_ids; itr != NULL; itr = g_list_delete_link (itr, itr)) {
 		gchar *category_id, *category_name;
+		const gchar *system_group_id;
 
 		category_id = e_contact_sanitise_google_group_id (itr->data);
 		category_name = g_hash_table_lookup (groups_by_id, category_id);
@@ -664,11 +673,25 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 		} else
 			g_warning ("Couldn't find name for category with ID '%s'.", category_id);
 
+		/* Maintain a list of the IDs of the system groups the contact is in. */
+		system_group_id = g_hash_table_lookup (system_groups_by_entry_id, category_id);
+		if (system_group_id != NULL) {
+			e_vcard_attribute_add_value (system_group_ids_attr, system_group_id);
+		}
+
 		g_free (category_id);
 	}
 
 	e_contact_set (E_CONTACT (vcard), E_CONTACT_CATEGORY_LIST, category_names);
 	g_list_free (category_names);
+
+	/* Expose the IDs of the system groups the contact is in so that libfolks (and other clients) can use the information
+	 * without having to reverse-engineer it from the (localised) category names on the contact. */
+	if (e_vcard_attribute_get_values (system_group_ids_attr) != NULL) {
+		e_vcard_add_attribute (vcard, system_group_ids_attr);
+	} else {
+		e_vcard_attribute_free (system_group_ids_attr);
+	}
 
 	/* Extended properties */
 	extended_props = gdata_contacts_contact_get_extended_properties (GDATA_CONTACTS_CONTACT (entry));

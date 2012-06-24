@@ -83,6 +83,8 @@ struct _EBookBackendGooglePrivate {
 	GHashTable *groups_by_name;
 	/* Mapping system_group_id to entry ID */
 	GHashTable *system_groups_by_id;
+	/* Mapping entry ID to system_group_id */
+	GHashTable *system_groups_by_entry_id;
 	/* Time when the groups were last queried */
 	GTimeVal last_groups_update;
 
@@ -165,13 +167,13 @@ cache_add_contact (EBookBackend *backend,
 
 	switch (priv->cache_type) {
 	case ON_DISK_CACHE:
-		contact = e_contact_new_from_gdata_entry (entry, priv->groups_by_id);
+		contact = e_contact_new_from_gdata_entry (entry, priv->groups_by_id, priv->system_groups_by_entry_id);
 		e_contact_add_gdata_entry_xml (contact, entry);
 		e_book_backend_cache_add_contact (priv->cache.on_disk, contact);
 		e_contact_remove_gdata_entry_xml (contact);
 		return contact;
 	case IN_MEMORY_CACHE:
-		contact = e_contact_new_from_gdata_entry (entry, priv->groups_by_id);
+		contact = e_contact_new_from_gdata_entry (entry, priv->groups_by_id, priv->system_groups_by_entry_id);
 		uid = e_contact_get_const (contact, E_CONTACT_UID);
 		g_hash_table_insert (priv->cache.in_memory.contacts, g_strdup (uid), g_object_ref (contact));
 		g_hash_table_insert (priv->cache.in_memory.gdata_entries, g_strdup (uid), g_object_ref (entry));
@@ -904,10 +906,19 @@ process_group (GDataEntry *entry,
 	if (system_group_id) {
 		__debug__ ("Processing %ssystem group %s, %s", is_deleted ? "(deleted) " : "", system_group_id, uid);
 
-		if (is_deleted)
+		if (is_deleted) {
+			gchar *entry_id = g_hash_table_lookup (priv->system_groups_by_id, system_group_id);
+			g_hash_table_remove (priv->system_groups_by_entry_id, entry_id);
 			g_hash_table_remove (priv->system_groups_by_id, system_group_id);
-		else
-			g_hash_table_replace (priv->system_groups_by_id, g_strdup (system_group_id), e_contact_sanitise_google_group_id (uid));
+		} else {
+			gchar *entry_id, *system_group_id_dup;
+
+			entry_id = e_contact_sanitise_google_group_id (uid);
+			system_group_id_dup = g_strdup (system_group_id);
+
+			g_hash_table_replace (priv->system_groups_by_entry_id, entry_id, system_group_id_dup);
+			g_hash_table_replace (priv->system_groups_by_id, system_group_id_dup, entry_id);
+		}
 
 		g_free (name);
 
@@ -2208,6 +2219,7 @@ e_book_backend_google_open (EBookBackend *backend,
 		priv->groups_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 		priv->groups_by_name = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 		priv->system_groups_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+		priv->system_groups_by_entry_id = g_hash_table_new (g_str_hash, g_str_equal); /* shares keys and values with system_groups_by_id */
 		priv->cancellables = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 	}
 
@@ -2512,6 +2524,7 @@ e_book_backend_google_finalize (GObject *object)
 	if (priv->cancellables) {
 		g_hash_table_destroy (priv->groups_by_id);
 		g_hash_table_destroy (priv->groups_by_name);
+		g_hash_table_destroy (priv->system_groups_by_entry_id);
 		g_hash_table_destroy (priv->system_groups_by_id);
 		g_hash_table_destroy (priv->cancellables);
 	}
