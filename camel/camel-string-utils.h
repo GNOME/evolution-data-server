@@ -42,10 +42,10 @@ const gchar *camel_strdown (gchar *str);
 gchar camel_tolower (gchar c);
 gchar camel_toupper (gchar c);
 
-const gchar *camel_pstring_add (gchar *str, gboolean own);
-const gchar *camel_pstring_strdup (const gchar *s);
-void camel_pstring_free (const gchar *s);
-const gchar * camel_pstring_peek (const gchar *str);
+const gchar *camel_pstring_add (gchar *string, gboolean own);
+const gchar *camel_pstring_strdup (const gchar *string);
+void camel_pstring_free (const gchar *string);
+const gchar * camel_pstring_peek (const gchar *string);
 void camel_pstring_dump_stat (void);
 
 G_END_DECLS
