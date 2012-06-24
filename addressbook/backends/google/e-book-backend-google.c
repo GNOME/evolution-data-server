@@ -41,7 +41,7 @@
 
 #define CLIENT_ID "evolution-client-0.1.0"
 
-#define URI_GET_CONTACTS "://www.google.com/m8/feeds/contacts/default/full"
+#define URI_GET_CONTACTS "https://www.google.com/m8/feeds/contacts/default/full"
 
 #define EDB_ERROR(_code) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, NULL)
 #define EDB_ERROR_EX(_code, _msg) e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg)
@@ -92,7 +92,6 @@ struct _EBookBackendGooglePrivate {
 	GDataService *service;
 	EProxy *proxy;
 	guint refresh_interval;
-	gboolean use_ssl;
 
 	/* If views are open we will send out signals in an idle_handler */
 	guint idle_id;
@@ -1165,24 +1164,16 @@ proxy_settings_changed (EProxy *proxy,
 {
 	EBookBackendGooglePrivate *priv;
 	SoupURI *proxy_uri = NULL;
-	gchar *uri;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	if (!priv || !priv->service)
 		return;
 
-	/* Build the URI which libgdata would use to query contacts */
-	uri = g_strconcat (
-		priv->use_ssl ? "https" : "http",
-		URI_GET_CONTACTS, NULL);
-
 	/* use proxy if necessary */
-	if (e_proxy_require_proxy_for_uri (proxy, uri))
-		proxy_uri = e_proxy_peek_uri_for (proxy, uri);
+	if (e_proxy_require_proxy_for_uri (proxy, URI_GET_CONTACTS))
+		proxy_uri = e_proxy_peek_uri_for (proxy, URI_GET_CONTACTS);
 	gdata_service_set_proxy_uri (priv->service, proxy_uri);
-
-	g_free (uri);
 }
 
 static gboolean
@@ -2143,10 +2134,9 @@ e_book_backend_google_open (EBookBackend *backend,
 	EBookBackendGooglePrivate *priv;
 	ESourceOffline *offline_extension;
 	ESourceRefresh *refresh_extension;
-	ESourceSecurity *security_extension;
 	ESource *source;
 	guint interval_in_minutes;
-	gboolean use_ssl, use_cache;
+	gboolean use_cache;
 	const gchar *extension_name;
 	gboolean is_online;
 	GError *error = NULL;
@@ -2168,14 +2158,9 @@ e_book_backend_google_open (EBookBackend *backend,
 	extension_name = E_SOURCE_EXTENSION_REFRESH;
 	refresh_extension = e_source_get_extension (source, extension_name);
 
-	extension_name = E_SOURCE_EXTENSION_SECURITY;
-	security_extension = e_source_get_extension (source, extension_name);
-
 	interval_in_minutes =
 		e_source_refresh_get_enabled (refresh_extension) ?
 		e_source_refresh_get_interval_minutes (refresh_extension) : 0;
-
-	use_ssl = e_source_security_get_secure (security_extension);
 
 	use_cache = e_source_offline_get_stay_synchronized (offline_extension);
 
@@ -2189,7 +2174,6 @@ e_book_backend_google_open (EBookBackend *backend,
 	}
 
 	cache_init (backend, use_cache);
-	priv->use_ssl = use_ssl;
 	priv->refresh_interval = interval_in_minutes * 60;
 
 	/* Remove and re-add the timeout */

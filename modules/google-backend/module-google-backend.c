@@ -204,12 +204,6 @@ google_backend_add_contacts (ECollectionBackend *backend)
 		extension, "user",
 		G_BINDING_SYNC_CREATE);
 
-	extension_name = E_SOURCE_EXTENSION_SECURITY;
-	extension = e_source_get_extension (source, extension_name);
-
-	e_source_security_set_secure (
-		E_SOURCE_SECURITY (extension), TRUE);
-
 	server = e_collection_backend_ref_server (backend);
 	e_source_registry_server_add_source (server, source);
 	g_object_unref (server);
