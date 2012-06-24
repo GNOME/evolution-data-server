@@ -94,10 +94,7 @@ struct _EBookBackendGooglePrivate {
 	guint refresh_interval;
 	gboolean use_ssl;
 
-	/* Whether the backend is being used by a view at the moment; if it isn't, we don't need to do updates or send out notifications */
-	gboolean live_mode;
-
-	/* In live mode we will send out signals in an idle_handler */
+	/* If views are open we will send out signals in an idle_handler */
 	guint idle_id;
 
 	guint refresh_id;
@@ -491,9 +488,6 @@ on_contact_added (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	if (!priv->live_mode)
-		return;
-
 	for (iter = priv->bookviews; iter; iter = iter->next)
 		e_data_book_view_notify_update (E_DATA_BOOK_VIEW (iter->data), g_object_ref (contact));
 }
@@ -507,9 +501,6 @@ on_contact_removed (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	if (!priv->live_mode)
-		return;
-
 	for (iter = priv->bookviews; iter; iter = iter->next)
 		e_data_book_view_notify_remove (E_DATA_BOOK_VIEW (iter->data), g_strdup (uid));
 }
@@ -522,9 +513,6 @@ on_contact_changed (EBookBackend *backend,
 	GList *iter;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
-	if (!priv->live_mode)
-		return;
 
 	for (iter = priv->bookviews; iter; iter = iter->next)
 		e_data_book_view_notify_update (E_DATA_BOOK_VIEW (iter->data), g_object_ref (contact));
@@ -1105,7 +1093,7 @@ on_refresh_timeout (EBookBackend *backend)
 	__debug__ (G_STRFUNC);
 
 	priv->refresh_id = 0;
-	if (priv->live_mode)
+	if (priv->bookviews != NULL)
 		cache_refresh_if_needed (backend);
 
 	return FALSE;
@@ -1130,7 +1118,7 @@ cache_refresh_if_needed (EBookBackend *backend)
 		return TRUE;
 	}
 
-	install_timeout = (priv->live_mode && priv->refresh_interval > 0 && 0 == priv->refresh_id);
+	install_timeout = (priv->bookviews != NULL && priv->refresh_interval > 0 && 0 == priv->refresh_id);
 
 	if (cache_needs_update (backend, &remaining_secs)) {
 		/* Update the cache asynchronously and schedule a new timeout */
@@ -2060,31 +2048,6 @@ on_refresh_idle (EBookBackend *backend)
 }
 
 static void
-set_live_mode (EBookBackend *backend,
-               gboolean live_mode)
-{
-	EBookBackendGooglePrivate *priv;
-
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
-	__debug__ (G_STRFUNC);
-
-	if (priv->live_mode == live_mode)
-		return;
-
-	priv->live_mode = live_mode;
-
-	if (live_mode) {
-		/* Entering live mode, we need to refresh */
-		cache_refresh_if_needed (backend);
-	} else if (priv->refresh_id > 0) {
-		/* Leaving live mode, we can stop periodically refreshing */
-		g_source_remove (priv->refresh_id);
-		priv->refresh_id = 0;
-	}
-}
-
-static void
 e_book_backend_google_start_book_view (EBookBackend *backend,
                                        EDataBookView *bookview)
 {
@@ -2105,7 +2068,7 @@ e_book_backend_google_start_book_view (EBookBackend *backend,
 	e_data_book_view_notify_progress (bookview, -1, _("Loading…"));
 
 	/* Ensure that we're ready to support a view */
-	set_live_mode (backend, TRUE);
+	cache_refresh_if_needed (backend);
 
 	/* Update the cache if necessary */
 	if (cache_needs_update (backend, NULL)) {
@@ -2154,8 +2117,10 @@ e_book_backend_google_stop_book_view (EBookBackend *backend,
 	}
 
 	/* If there are no book views left, we can stop doing certain things, like refreshes */
-	if (!priv->bookviews)
-		set_live_mode (backend, FALSE);
+	if (!priv->bookviews && priv->refresh_id != 0) {
+		g_source_remove (priv->refresh_id);
+		priv->refresh_id = 0;
+	}
 }
 
 static void
