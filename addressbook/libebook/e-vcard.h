@@ -135,7 +135,7 @@ G_BEGIN_DECLS
 #define EVC_X_VIDEO_URL			"X-EVOLUTION-VIDEO-URL"
 #define EVC_X_WANTS_HTML		"X-MOZILLA-HTML"
 #define EVC_X_YAHOO			"X-YAHOO"
-#define EVC_X_BOOK_URI			"X-EVOLUTION-BOOK-URI"
+#define EVC_X_BOOK_UID			"X-EVOLUTION-BOOK-UID"
 
 /* Constants for Evo contact lists only */
 

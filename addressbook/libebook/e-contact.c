@@ -125,7 +125,7 @@ static const EContactFieldInfo field_info[] = {
 	 * preferred user's description (or display name) of the contact. Note 'File' is a verb here. */
 	GETSET_FIELD (E_CONTACT_FILE_AS,    EVC_X_FILE_AS, "file_as", N_("File Under"),    FALSE, fileas_getter, fileas_setter),
 	/* URI of the book to which the contact belongs to */
-	STRING_FIELD (E_CONTACT_BOOK_URI, EVC_X_BOOK_URI, "book_uri", N_("Book URI"), FALSE),
+	STRING_FIELD (E_CONTACT_BOOK_UID, EVC_X_BOOK_UID, "book_uid", N_("Book UID"), FALSE),
 
 	/* Name fields */
 	/* FN isn't really a structured field - we use a getter/setter
