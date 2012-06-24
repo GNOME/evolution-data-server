@@ -32,13 +32,13 @@
   <chapter>
     <title>Miscellaneous Utilities</title>
     <xi:include href="xml/e-file-cache.xml"/>
-    <xi:include href="xml/e-dbhash.xml"/>
     <xi:include href="xml/e-db3-utils.xml"/>
     <xi:include href="xml/e-sqlite3-vfs.xml"/>
   </chapter>
 
   <chapter>
     <title>Deprecated Classes</title>
+    <xi:include href="xml/e-dbhash.xml"/>
     <xi:include href="xml/e-offline-listener.xml"/>
   </chapter>
 

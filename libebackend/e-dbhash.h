@@ -12,6 +12,8 @@
 #error "Only <libebackend/libebackend.h> should be included directly."
 #endif
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 #ifndef E_DBHASH_H
 #define E_DBHASH_H
 
@@ -77,4 +79,6 @@ void		e_dbhash_destroy		(EDbHash *edbh);
 G_END_DECLS
 
 #endif /* E_DBHASH_H */
+
+#endif /* EDS_DISABLE_DEPRECATED */
 
