@@ -116,7 +116,9 @@ struct _ESourcePrivate {
 	GMutex *changed_lock;
 
 	GMutex *property_lock;
+
 	gchar *display_name;
+	gchar *collate_key;
 	gchar *parent;
 	gchar *uid;
 
@@ -839,6 +841,7 @@ source_finalize (GObject *object)
 	g_mutex_free (priv->property_lock);
 
 	g_free (priv->display_name);
+	g_free (priv->collate_key);
 	g_free (priv->parent);
 	g_free (priv->uid);
 
@@ -1892,6 +1895,10 @@ e_source_set_display_name (ESource *source,
 	/* Strip leading and trailing whitespace. */
 	g_strstrip (source->priv->display_name);
 
+	/* This is used in e_source_compare_by_display_name(). */
+	g_free (source->priv->collate_key);
+	source->priv->collate_key = g_utf8_collate_key (display_name, -1);
+
 	g_mutex_unlock (source->priv->property_lock);
 
 	g_object_notify (G_OBJECT (source), "display-name");
@@ -1915,13 +1922,9 @@ gint
 e_source_compare_by_display_name (ESource *source1,
                                   ESource *source2)
 {
-	const gchar *display_name1;
-	const gchar *display_name2;
-
-	display_name1 = e_source_get_display_name (source1);
-	display_name2 = e_source_get_display_name (source2);
-
-	return g_utf8_collate (display_name1, display_name2);
+	return g_strcmp0 (
+		source1->priv->collate_key,
+		source2->priv->collate_key);
 }
 
 /**
