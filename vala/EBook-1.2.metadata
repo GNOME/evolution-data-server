@@ -4,6 +4,9 @@ BookView.contacts_changed#signal.object type="GLib.List<weak void*>"
 BookClientView.objects_added#signal.object type="GLib.List<weak void*>"
 BookClientView.objects_removed#signal.object type="GLib.List<weak void*>"
 BookClientView.objects_modified#signal.object type="GLib.List<weak void*>"
+Contact.get skip
+Contact.get_const skip
+Contact.set skip
 ContactName.family unowned=false
 ContactName.given unowned=false
 ContactName.additional unowned=false
