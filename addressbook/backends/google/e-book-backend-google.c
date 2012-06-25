@@ -268,8 +268,6 @@ cache_set_last_update (EBookBackend *backend,
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	_time = g_time_val_to_iso8601 (tv);
-	/* FIXME: Work around a bug in EBookBackendCache */
-	e_file_cache_remove_object (E_FILE_CACHE (priv->cache), "last_update_time");
 	e_book_backend_cache_set_time (priv->cache, _time);
 	g_free (_time);
 }
