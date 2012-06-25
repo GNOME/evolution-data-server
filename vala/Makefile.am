@@ -11,6 +11,7 @@ dist_vapi_DATA = \
 
 EXTRA_DIST = \
 	EBook-1.2.metadata \
+	libebook-1.2-custom.vala \
 	ECalendar-1.2.metadata \
 	EDataServer-1.2.metadata \
 	$(NULL)
@@ -48,7 +49,7 @@ libecalendar-1.2.vapi: $(top_builddir)/calendar/libecal/ECalendar-1.2.gir libeda
 		$< \
 		$(NULL)
 
-libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedataserver-1.2.vapi
+libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedataserver-1.2.vapi libebook-1.2-custom.vala
 	$(VAPIGEN_V)$(VAPIGEN) \
 		--vapidir=. \
 		--girdir=$(top_builddir)/libedataserver \
@@ -57,6 +58,7 @@ libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedatase
 		--library libebook-1.2 \
 		--metadatadir=$(srcdir) \
 		$< \
+		libebook-1.2-custom.vala \
 		$(NULL)
 
 CLEANFILES = \
