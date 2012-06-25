@@ -1,3 +1,90 @@
+Evolution-Data-Server 3.5.3 2012-06-25
+--------------------------------------
+
+!!! MAJOR DESIGN CHANGES AND API BREAKS IN THIS RELEASE !!!
+
+* GConf dependency has been dropped.
+
+* Account data now resides in plain text files rather than GConf XML blobs.
+  As part of this effort, a good part of libedataserver was rewritten from
+  scratch.  For further details and links to documentation see:
+  https://mail.gnome.org/archives/evolution-list/2012-May/msg00214.html
+
+Bug Fixes:
+	Bug 668247 - Broken non-basic-latin folder name handling (Milan Crha)
+	Bug 673817 - Crash in e_book_backend_file_dispose() (Milan Crha)
+	Bug 676541 - Unreliable IMAP provider (Milan Crha)
+	Bug 677183 - maildir account doesn't open (Milan Crha)
+	Bug 677610 - Avoid modification of CPPFLAGS in Makefile.am (Milan Crha)
+	Bug 677642 - Critical warnings on vFolder change (Milan Crha)
+	Bug 677664 - Camel: Remove "SMTP Authentication" status message
+	             (Matthew Barnes)
+	Bug 677687 - Broken migration of "namespace" IMAP setting
+	             (Matthew Barnes)
+	Bug 677841 - Workaround for crash in
+	             imapx_command_append_message_done() (Milan Crha)
+	Bug 677933 - imapx_utils_init() called too early (Matthew Barnes)
+	Bug 678067 - Localized display names get stuck (Matthew Barnes)
+	Bug 678069 - Crash in _gdata_entry_update_from_e_contact() (Milan Crha)
+	Bug 678255 - edata-cal missing libebackend-1.2 requirement
+	             (Jordi Mallach)
+	Bug 678378 - ESourceRegistry causes deadlock in gnome-shell
+	             (Matthew Barnes)
+	Bug 678618 - Runtime warning when clicking on top-level sidebar item
+	             (Matthew Barnes)
+
+Other Changes:
+	* Remove camel_settings_load_from_url(). (Matthew Barnes)
+	* Remove camel_settings_save_to_url(). (Matthew Barnes)
+	* ldap: Avoid a race during finalize. (Matthew Barnes)
+	* imap[x]: Remove shell command option from user interfaces.
+	  (Matthew Barnes)
+	* Add 'evolution-source-viewer' test tool. (Matthew Barnes)
+	* Port remaining bits from GConf to GSettings (Milan Crha)
+	* Remove forgotten DBUS_GLIB_CFLAGS/LIBS, these are gone now
+	  (Milan Crha)
+	* Remove -Werror from AM_INIT_AUTOMAKE. (Matthew Barnes)
+	* google: Split conversion functions from Google backend into a util
+	  lib (Philip Withnall)
+	* google: Add some tests to Google address book backend
+	  (Philip Withnall)
+	* google: Make ‘rel’ and ‘label’ mutually exclusive for certain
+	  elements (Philip Withnall)
+	* Tighten up pkg-config files. (Matthew Barnes)
+	* build: Enable g-ir-scanner’s --warn-all option when building GIR
+	  files (Philip Withnall)
+	* Do not call g_object_notify() when property didn't change (Milan Crha)
+	* imapx_store_noop_sync: Don't return FALSE without setting a GError.
+	  (Matthew Barnes)
+	* Deprecate EUri. (Matthew Barnes)
+	* Updated Telugu Translation (Sasi Bhushan Boddepalli)
+	* imapx_command_fetch_message_done: Fix an error handling issue.
+	  (Matthew Barnes)
+	* camel_data_cache_get_filename: Remove unused GError parameter.
+	  (Matthew Barnes)
+	* e_book_backend_file_open: Fix directory existence test.
+	  (Matthew Barnes)
+	* camel_data_cache_get: Improve empty file handling. (Matthew Barnes)
+	* Improve imapx_command_fetch_message_done(). (Matthew Barnes)
+	* CAMEL_PROVIDER_IS_STORE_AND_TRANSPORT: Handle NULL gracefully.
+	  (Matthew Barnes)
+	* Updated Telugu Translation (Sasi Bhushan Boddepalli)
+	* Deprecate EDbHash. (Matthew Barnes)
+	* google: Add a new custom vCard property containing Google system
+	  groups (Philip Withnall)
+	* libebook: Reference address books by UID instead of URI.
+	  (Matthew Barnes)
+	* Camel string pool improvements. (Matthew Barnes)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Ihar Hrachyshka (be)
+	Daniel Mustieles (es)
+	Bruno Brouard (fr)
+	Fran Diéguez (gl)
+	Yuri Kozlov (ru)
+
+
 Evolution-Data-Server 3.5.2 2012-06-04
 --------------------------------------
 
