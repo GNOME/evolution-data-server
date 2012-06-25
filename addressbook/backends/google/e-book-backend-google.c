@@ -58,24 +58,10 @@ G_DEFINE_TYPE_WITH_CODE (
 		E_TYPE_SOURCE_AUTHENTICATOR,
 		e_book_backend_google_source_authenticator_init))
 
-typedef enum {
-	NO_CACHE,
-	ON_DISK_CACHE,
-	IN_MEMORY_CACHE
-} CacheType;
-
 struct _EBookBackendGooglePrivate {
 	GList *bookviews;
 
-	CacheType cache_type;
-	union {
-		EBookBackendCache *on_disk;
-		struct {
-			GHashTable *contacts;
-			GHashTable *gdata_entries;
-			GTimeVal last_updated;
-		} in_memory;
-	} cache;
+	EBookBackendCache *cache;
 
 	/* Mapping from group ID to (human readable) group name */
 	GHashTable *groups_by_id;
@@ -124,31 +110,20 @@ migrate_cache (EBookBackendCache *cache)
 }
 
 static void
-cache_init (EBookBackend *backend,
-            gboolean on_disk)
+cache_init (EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv;
 	const gchar *cache_dir;
+	gchar *filename;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
 	cache_dir = e_book_backend_get_cache_dir (backend);
+	filename = g_build_filename (cache_dir, "cache.xml", NULL);
+	priv->cache = e_book_backend_cache_new (filename);
+	g_free (filename);
 
-	if (on_disk) {
-		gchar *filename;
-
-		filename = g_build_filename (cache_dir, "cache.xml", NULL);
-		priv->cache_type = ON_DISK_CACHE;
-		priv->cache.on_disk = e_book_backend_cache_new (filename);
-		g_free (filename);
-
-		migrate_cache (priv->cache.on_disk);
-	} else {
-		priv->cache_type = IN_MEMORY_CACHE;
-		priv->cache.in_memory.contacts = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
-		priv->cache.in_memory.gdata_entries = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
-		memset (&priv->cache.in_memory.last_updated, 0, sizeof (GTimeVal));
-	}
+	migrate_cache (priv->cache);
 }
 
 static EContact *
@@ -157,29 +132,15 @@ cache_add_contact (EBookBackend *backend,
 {
 	EBookBackendGooglePrivate *priv;
 	EContact *contact;
-	const gchar *uid;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	switch (priv->cache_type) {
-	case ON_DISK_CACHE:
-		contact = e_contact_new_from_gdata_entry (entry, priv->groups_by_id, priv->system_groups_by_entry_id);
-		e_contact_add_gdata_entry_xml (contact, entry);
-		e_book_backend_cache_add_contact (priv->cache.on_disk, contact);
-		e_contact_remove_gdata_entry_xml (contact);
-		return contact;
-	case IN_MEMORY_CACHE:
-		contact = e_contact_new_from_gdata_entry (entry, priv->groups_by_id, priv->system_groups_by_entry_id);
-		uid = e_contact_get_const (contact, E_CONTACT_UID);
-		g_hash_table_insert (priv->cache.in_memory.contacts, g_strdup (uid), g_object_ref (contact));
-		g_hash_table_insert (priv->cache.in_memory.gdata_entries, g_strdup (uid), g_object_ref (entry));
-		return contact;
-	case NO_CACHE:
-	default:
-		break;
-	}
+	contact = e_contact_new_from_gdata_entry (entry, priv->groups_by_id, priv->system_groups_by_entry_id);
+	e_contact_add_gdata_entry_xml (contact, entry);
+	e_book_backend_cache_add_contact (priv->cache, contact);
+	e_contact_remove_gdata_entry_xml (contact);
 
-	return NULL;
+	return contact;
 }
 
 static gboolean
@@ -187,22 +148,10 @@ cache_remove_contact (EBookBackend *backend,
                       const gchar *uid)
 {
 	EBookBackendGooglePrivate *priv;
-	gboolean success = TRUE;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	switch (priv->cache_type) {
-	case ON_DISK_CACHE:
-		return e_book_backend_cache_remove_contact (priv->cache.on_disk, uid);
-	case IN_MEMORY_CACHE:
-		success = g_hash_table_remove (priv->cache.in_memory.contacts, uid);
-		return success && g_hash_table_remove (priv->cache.in_memory.gdata_entries, uid);
-	case NO_CACHE:
-	default:
-		break;
-	}
-
-	return FALSE;
+	return e_book_backend_cache_remove_contact (priv->cache, uid);
 }
 
 static gboolean
@@ -213,17 +162,7 @@ cache_has_contact (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	switch (priv->cache_type) {
-	case ON_DISK_CACHE:
-		return e_book_backend_cache_check_contact (priv->cache.on_disk, uid);
-	case IN_MEMORY_CACHE:
-		return g_hash_table_lookup (priv->cache.in_memory.contacts, uid) ? TRUE : FALSE;
-	case NO_CACHE:
-	default:
-		break;
-	}
-
-	return FALSE;
+	return e_book_backend_cache_check_contact (priv->cache, uid);
 }
 
 static EContact *
@@ -236,60 +175,25 @@ cache_get_contact (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	switch (priv->cache_type) {
-	case ON_DISK_CACHE:
-		contact = e_book_backend_cache_get_contact (priv->cache.on_disk, uid);
-		if (contact) {
-			if (entry) {
-				const gchar *entry_xml, *edit_uri = NULL;
-
-				entry_xml = e_contact_get_gdata_entry_xml (contact, &edit_uri);
-				*entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT, entry_xml, -1, NULL));
-
-				if (*entry) {
-					GDataLink *edit_link = gdata_link_new (edit_uri, GDATA_LINK_EDIT);
-					gdata_entry_add_link (*entry, edit_link);
-					g_object_unref (edit_link);
-				}
-			}
-
-			e_contact_remove_gdata_entry_xml (contact);
-		}
-		return contact;
-	case IN_MEMORY_CACHE:
-		contact = g_hash_table_lookup (priv->cache.in_memory.contacts, uid);
+	contact = e_book_backend_cache_get_contact (priv->cache, uid);
+	if (contact) {
 		if (entry) {
-			*entry = g_hash_table_lookup (priv->cache.in_memory.gdata_entries, uid);
-			if (*entry)
-				g_object_ref (*entry);
+			const gchar *entry_xml, *edit_uri = NULL;
+
+			entry_xml = e_contact_get_gdata_entry_xml (contact, &edit_uri);
+			*entry = GDATA_ENTRY (gdata_parsable_new_from_xml (GDATA_TYPE_CONTACTS_CONTACT, entry_xml, -1, NULL));
+
+			if (*entry) {
+				GDataLink *edit_link = gdata_link_new (edit_uri, GDATA_LINK_EDIT);
+				gdata_entry_add_link (*entry, edit_link);
+				g_object_unref (edit_link);
+			}
 		}
 
-		if (contact)
-			g_object_ref (contact);
-
-		return contact;
-	case NO_CACHE:
-	default:
-		break;
+		e_contact_remove_gdata_entry_xml (contact);
 	}
 
-	return NULL;
-}
-
-static GList *
-_g_hash_table_to_list (GHashTable *ht)
-{
-	GList *l = NULL;
-	GHashTableIter iter;
-	gpointer key, value;
-
-	g_hash_table_iter_init (&iter, ht);
-	while (g_hash_table_iter_next (&iter, &key, &value))
-		l = g_list_prepend (l, g_object_ref (G_OBJECT (value)));
-
-	l = g_list_reverse (l);
-
-	return l;
+	return contact;
 }
 
 static GList *
@@ -300,21 +204,11 @@ cache_get_contacts (EBookBackend *backend)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	switch (priv->cache_type) {
-	case ON_DISK_CACHE:
-		contacts = e_book_backend_cache_get_contacts (priv->cache.on_disk, "(contains \"x-evolution-any-field\" \"\")");
-		for (iter = contacts; iter; iter = iter->next)
-			e_contact_remove_gdata_entry_xml (iter->data);
+	contacts = e_book_backend_cache_get_contacts (priv->cache, "(contains \"x-evolution-any-field\" \"\")");
+	for (iter = contacts; iter; iter = iter->next)
+		e_contact_remove_gdata_entry_xml (iter->data);
 
-		return contacts;
-	case IN_MEMORY_CACHE:
-		return _g_hash_table_to_list (priv->cache.in_memory.contacts);
-	case NO_CACHE:
-	default:
-		break;
-	}
-
-	return NULL;
+	return contacts;
 }
 
 static void
@@ -324,8 +218,7 @@ cache_freeze (EBookBackend *backend)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	if (priv->cache_type == ON_DISK_CACHE)
-		e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache.on_disk));
+	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
 }
 
 static void
@@ -335,8 +228,7 @@ cache_thaw (EBookBackend *backend)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	if (priv->cache_type == ON_DISK_CACHE)
-		e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache.on_disk));
+	e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 }
 
 static gchar *
@@ -346,19 +238,7 @@ cache_get_last_update (EBookBackend *backend)
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	switch (priv->cache_type) {
-	case ON_DISK_CACHE:
-		return e_book_backend_cache_get_time (priv->cache.on_disk);
-	case IN_MEMORY_CACHE:
-		if (priv->cache.in_memory.contacts)
-			return g_time_val_to_iso8601 (&priv->cache.in_memory.last_updated);
-		break;
-	case NO_CACHE:
-	default:
-		break;
-	}
-
-	return NULL;
+	return e_book_backend_cache_get_time (priv->cache);
 }
 
 static gboolean
@@ -371,21 +251,11 @@ cache_get_last_update_tv (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	switch (priv->cache_type) {
-	case ON_DISK_CACHE:
-		last_update = e_book_backend_cache_get_time (priv->cache.on_disk);
-		rv = last_update ? g_time_val_from_iso8601 (last_update, tv) : FALSE;
-		g_free (last_update);
-		return rv;
-	case IN_MEMORY_CACHE:
-		memcpy (tv, &priv->cache.in_memory.last_updated, sizeof (GTimeVal));
-		return priv->cache.in_memory.contacts != NULL;
-	case NO_CACHE:
-	default:
-		break;
-	}
+	last_update = e_book_backend_cache_get_time (priv->cache);
+	rv = last_update ? g_time_val_from_iso8601 (last_update, tv) : FALSE;
+	g_free (last_update);
 
-	return FALSE;
+	return rv;
 }
 
 static void
@@ -397,20 +267,11 @@ cache_set_last_update (EBookBackend *backend,
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
-	switch (priv->cache_type) {
-	case ON_DISK_CACHE:
-		_time = g_time_val_to_iso8601 (tv);
-		/* Work around a bug in EBookBackendCache */
-		e_file_cache_remove_object (E_FILE_CACHE (priv->cache.on_disk), "last_update_time");
-		e_book_backend_cache_set_time (priv->cache.on_disk, _time);
-		g_free (_time);
-		return;
-	case IN_MEMORY_CACHE:
-		memcpy (&priv->cache.in_memory.last_updated, tv, sizeof (GTimeVal));
-	case NO_CACHE:
-	default:
-		break;
-	}
+	_time = g_time_val_to_iso8601 (tv);
+	/* FIXME: Work around a bug in EBookBackendCache */
+	e_file_cache_remove_object (E_FILE_CACHE (priv->cache), "last_update_time");
+	e_book_backend_cache_set_time (priv->cache, _time);
+	g_free (_time);
 }
 
 static gboolean
@@ -1133,29 +994,6 @@ cache_refresh_if_needed (EBookBackend *backend)
 	}
 
 	return TRUE;
-}
-
-static void
-cache_destroy (EBookBackend *backend)
-{
-	EBookBackendGooglePrivate *priv;
-
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
-	switch (priv->cache_type) {
-	case ON_DISK_CACHE:
-		g_object_unref (priv->cache.on_disk);
-		break;
-	case IN_MEMORY_CACHE:
-		g_hash_table_destroy (priv->cache.in_memory.contacts);
-		g_hash_table_destroy (priv->cache.in_memory.gdata_entries);
-		break;
-	case NO_CACHE:
-	default:
-		break;
-	}
-
-	priv->cache_type = NO_CACHE;
 }
 
 static void
@@ -2132,11 +1970,9 @@ e_book_backend_google_open (EBookBackend *backend,
                             gboolean only_if_exists)
 {
 	EBookBackendGooglePrivate *priv;
-	ESourceOffline *offline_extension;
 	ESourceRefresh *refresh_extension;
 	ESource *source;
 	guint interval_in_minutes;
-	gboolean use_cache;
 	const gchar *extension_name;
 	gboolean is_online;
 	GError *error = NULL;
@@ -2152,17 +1988,12 @@ e_book_backend_google_open (EBookBackend *backend,
 
 	source = e_backend_get_source (E_BACKEND (backend));
 
-	extension_name = E_SOURCE_EXTENSION_OFFLINE;
-	offline_extension = e_source_get_extension (source, extension_name);
-
 	extension_name = E_SOURCE_EXTENSION_REFRESH;
 	refresh_extension = e_source_get_extension (source, extension_name);
 
 	interval_in_minutes =
 		e_source_refresh_get_enabled (refresh_extension) ?
 		e_source_refresh_get_interval_minutes (refresh_extension) : 0;
-
-	use_cache = e_source_offline_get_stay_synchronized (offline_extension);
 
 	/* Set up our object */
 	if (!priv->cancellables) {
@@ -2173,7 +2004,7 @@ e_book_backend_google_open (EBookBackend *backend,
 		priv->cancellables = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 	}
 
-	cache_init (backend, use_cache);
+	cache_init (backend);
 	priv->refresh_interval = interval_in_minutes * 60;
 
 	/* Remove and re-add the timeout */
@@ -2456,7 +2287,7 @@ e_book_backend_google_dispose (GObject *object)
 		g_object_unref (priv->proxy);
 	priv->proxy = NULL;
 
-	cache_destroy (E_BOOK_BACKEND (object));
+	g_clear_object (&priv->cache);
 
 	G_OBJECT_CLASS (e_book_backend_google_parent_class)->dispose (object);
 }
