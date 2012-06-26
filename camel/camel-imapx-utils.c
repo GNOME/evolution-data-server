@@ -479,7 +479,7 @@ imapx_register_capability (const gchar *capability)
 	GList *keys = NULL;
 	GList *tmp_keys = NULL;
 
-	g_assert (capability != NULL);
+	g_return_val_if_fail (capability != NULL, 0);
 
 	g_mutex_lock (&capa_htable_lock);
 
@@ -504,7 +504,7 @@ imapx_register_capability (const gchar *capability)
 
 	/* shift-left biggest-so-far, sanity-check */
 	check_id = (capa_id << 1);
-	g_assert (check_id <= (guint64) G_MAXUINT32);
+	g_return_val_if_fail (check_id <= (guint64) G_MAXUINT32, 0);
 	capa_id = (guint32) check_id;
 
 	/* insert */
