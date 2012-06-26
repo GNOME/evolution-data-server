@@ -1502,7 +1502,7 @@ camel_service_set_settings (CamelService *service,
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	if (service->priv->settings == settings)
+	if (settings && service->priv->settings == settings)
 		return;
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
