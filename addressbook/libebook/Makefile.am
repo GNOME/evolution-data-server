@@ -1,4 +1,5 @@
 CLEANFILES=
+BUILT_SOURCES=
 
 include $(top_srcdir)/glib-gen.mak
 glib_enum_headers=e-book-types.h
@@ -83,7 +84,9 @@ libebookinclude_HEADERS =				\
 	 cp $< $@
 
 e-name-western-tables.h: e-name-western-tables.h.in
-	${srcdir}/gen-western-table.py < $< > $@
+	(${srcdir}/gen-western-table.py < $< > $@.tmp && mv $@.tmp $@) || rm -f $@.tmp
+
+BUILT_SOURCES += e-name-western-tables.h
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libebook-$(API_VERSION).pc
