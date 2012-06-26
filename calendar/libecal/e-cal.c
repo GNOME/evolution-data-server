@@ -2997,12 +2997,15 @@ add_instance (ECalComponent *comp,
 			ECalComponentRange *range;
 			ECalComponentDateTime datetime;
 
+			datetime.value = NULL;
+			datetime.tzid = NULL;
+
 			e_cal_component_get_dtstart (comp, &datetime);
 
 			if (instances_hold->start_zone)
-				itt = icaltime_from_timet_with_zone (start, datetime.value->is_date, instances_hold->start_zone);
+				itt = icaltime_from_timet_with_zone (start, datetime.value && datetime.value->is_date, instances_hold->start_zone);
 			else {
-				itt = icaltime_from_timet (start, datetime.value->is_date);
+				itt = icaltime_from_timet (start, datetime.value && datetime.value->is_date);
 
 				if (datetime.tzid) {
 					g_free ((gchar *) datetime.tzid);
@@ -3243,7 +3246,7 @@ try_again:
 			 * For DATE values and DATE-TIME values without a
 			 * TZID (i.e. floating times) we use the default
 			 * timezone. */
-			if (dtstart.tzid && !dtstart.value->is_date) {
+			if (dtstart.tzid && dtstart.value && !dtstart.value->is_date) {
 				start_zone = e_cal_resolve_tzid_cb (dtstart.tzid, ecal);
 				if (!start_zone)
 					start_zone = default_zone;
@@ -3251,7 +3254,7 @@ try_again:
 				start_zone = default_zone;
 			}
 
-			if (dtend.tzid && !dtend.value->is_date) {
+			if (dtend.tzid && dtend.value && !dtend.value->is_date) {
 				end_zone = e_cal_resolve_tzid_cb (dtend.tzid, ecal);
 				if (!end_zone)
 					end_zone = default_zone;
