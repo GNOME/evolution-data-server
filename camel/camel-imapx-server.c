@@ -396,8 +396,8 @@ replace_untagged_descriptor (GHashTable *untagged_handlers,
 {
 	const CamelIMAPXUntaggedRespHandlerDesc *prev = NULL;
 
-	g_assert (untagged_handlers != NULL);
-	g_assert (key != NULL);
+	g_return_val_if_fail (untagged_handlers != NULL, NULL);
+	g_return_val_if_fail (key != NULL, NULL);
 	/* descr may be NULL (to delete a handler) */
 
 	prev = g_hash_table_lookup (untagged_handlers, key);
@@ -415,16 +415,16 @@ add_initial_untagged_descriptor (GHashTable *untagged_handlers,
 	const CamelIMAPXUntaggedRespHandlerDesc *prev = NULL;
 	const CamelIMAPXUntaggedRespHandlerDesc *cur  = NULL;
 
-	g_assert (untagged_handlers != NULL);
-	g_assert (key != NULL);
-	g_assert (untagged_id < IMAPX_UNTAGGED_LAST_ID);
+	g_return_if_fail (untagged_handlers != NULL);
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (untagged_id < IMAPX_UNTAGGED_LAST_ID);
 
 	cur =  &(_untagged_descr[untagged_id]);
 	prev = replace_untagged_descriptor (untagged_handlers,
 	                                    key,
 	                                    cur);
 	/* there must not be any previous handler here */
-	g_assert (prev == NULL);
+	g_return_if_fail (prev == NULL);
 }
 
 static GHashTable*
@@ -453,7 +453,7 @@ create_initial_untagged_handler_table (void)
 	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_STATUS, IMAPX_UNTAGGED_ID_STATUS);
 	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_VANISHED, IMAPX_UNTAGGED_ID_VANISHED);
 
-	g_assert (g_hash_table_size (uh) == IMAPX_UNTAGGED_LAST_ID);
+	g_return_val_if_fail (g_hash_table_size (uh) == IMAPX_UNTAGGED_LAST_ID, NULL);
 
 	return uh;
 }
@@ -1230,7 +1230,7 @@ imapx_untagged_capability (CamelIMAPXServer *is,
                            GCancellable *cancellable,
                            GError **error)
 {
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1252,7 +1252,7 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 	guint32 expunge = 0;
 	CamelIMAPXJob *job = NULL;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1292,7 +1292,7 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 	guchar *token = NULL;
 	gint tok = 0;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1351,7 +1351,7 @@ imapx_untagged_namespace (CamelIMAPXServer *is,
 	CamelIMAPXStore *imapx_store = NULL;
 	CamelIMAPXStoreNamespace *ns = NULL;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1378,7 +1378,7 @@ imapx_untagged_exists (CamelIMAPXServer *is,
                        GError **error)
 {
 	CamelIMAPXServerPrivate *priv = NULL;
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1405,7 +1405,7 @@ imapx_untagged_flags (CamelIMAPXServer *is,
 {
 	guint32 flags;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1423,7 +1423,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 	CamelIMAPXServerPrivate *priv = NULL;
 	struct _fetch_info *finfo;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1660,7 +1660,7 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
 {
 	CamelIMAPXServerPrivate *priv = NULL;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1680,7 +1680,7 @@ imapx_untagged_list (CamelIMAPXServer *is,
 	CamelIMAPXJob *job = NULL;
 	ListData *data = NULL;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1722,7 +1722,7 @@ imapx_untagged_recent (CamelIMAPXServer *is,
 {
 	CamelIMAPXServerPrivate *priv = NULL;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1741,7 +1741,7 @@ imapx_untagged_status (CamelIMAPXServer *is,
 {
 	struct _state_info *sinfo = NULL;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1791,7 +1791,7 @@ imapx_untagged_bye (CamelIMAPXServer *is,
 {
 	guchar *token = NULL;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1810,7 +1810,7 @@ imapx_untagged_preauth (CamelIMAPXServer *is,
                         GCancellable *cancellable,
                         GError **error)
 {
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -1828,7 +1828,7 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 {
 	CamelIMAPXServerPrivate *priv = NULL;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
@@ -6999,8 +6999,8 @@ camel_imapx_server_register_untagged_handler (CamelIMAPXServer *is,
 	CamelIMAPXServerPrivate *priv = NULL;
 	const CamelIMAPXUntaggedRespHandlerDesc *previous = NULL;
 
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
-	g_assert (untagged_response != NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
+	g_return_val_if_fail (untagged_response != NULL, NULL);
 	/* desc may be NULL */
 
 	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
@@ -7017,8 +7017,8 @@ camel_imapx_server_command_run (CamelIMAPXServer *is,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	g_assert (CAMEL_IS_IMAPX_SERVER (is));
-	g_assert (CAMEL_IS_IMAPX_COMMAND (ic));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
