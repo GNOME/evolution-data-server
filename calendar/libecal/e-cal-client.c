@@ -1012,12 +1012,17 @@ add_instance (ECalComponent *comp,
 		ECalComponentDateTime dtstart, dtend;
 
 		/* update DTSTART */
+		dtstart.value = NULL;
+		dtstart.tzid = NULL;
+
 		e_cal_component_get_dtstart (comp, &dtstart);
 
-		if (instances_hold->start_zone)
-			itt = icaltime_from_timet_with_zone (start, dtstart.value->is_date, instances_hold->start_zone);
-		else {
-			itt = icaltime_from_timet (start, dtstart.value->is_date);
+		if (instances_hold->start_zone) {
+			itt = icaltime_from_timet_with_zone (start, dtstart.value && dtstart.value->is_date, instances_hold->start_zone);
+			g_free ((gchar *) dtstart.tzid);
+			dtstart.tzid = g_strdup (icaltimezone_get_tzid (instances_hold->start_zone));
+		} else {
+			itt = icaltime_from_timet (start, dtstart.value && dtstart.value->is_date);
 			if (dtstart.tzid) {
 				g_free ((gchar *) dtstart.tzid);
 				dtstart.tzid = NULL;
@@ -1039,12 +1044,17 @@ add_instance (ECalComponent *comp,
 		g_free ((gchar *) dtstart.tzid);
 
 		/* Update DTEND */
+		dtend.value = NULL;
+		dtend.tzid = NULL;
+
 		e_cal_component_get_dtend (comp, &dtend);
 
-		if (instances_hold->end_zone)
-			itt = icaltime_from_timet_with_zone (end, dtend.value->is_date, instances_hold->end_zone);
-		else {
-			itt = icaltime_from_timet (end, dtend.value->is_date);
+		if (instances_hold->end_zone) {
+			itt = icaltime_from_timet_with_zone (end, dtend.value && dtend.value->is_date, instances_hold->end_zone);
+			g_free ((gchar *) dtend.tzid);
+			dtend.tzid = g_strdup (icaltimezone_get_tzid (instances_hold->end_zone));
+		} else {
+			itt = icaltime_from_timet (end, dtend.value && dtend.value->is_date);
 			if (dtend.tzid) {
 				g_free ((gchar *) dtend.tzid);
 				dtend.tzid = NULL;
@@ -1231,7 +1241,7 @@ generate_instances (ECalClient *client,
 			 * For DATE values and DATE-TIME values without a
 			 * TZID (i.e. floating times) we use the default
 			 * timezone. */
-			if (dtstart.tzid && !dtstart.value->is_date) {
+			if (dtstart.tzid && dtstart.value && !dtstart.value->is_date) {
 				start_zone = e_cal_client_resolve_tzid_cb (dtstart.tzid, client);
 				if (!start_zone)
 					start_zone = default_zone;
@@ -1239,7 +1249,7 @@ generate_instances (ECalClient *client,
 				start_zone = default_zone;
 			}
 
-			if (dtend.tzid && !dtend.value->is_date) {
+			if (dtend.tzid && dtend.value && !dtend.value->is_date) {
 				end_zone = e_cal_client_resolve_tzid_cb (dtend.tzid, client);
 				if (!end_zone)
 					end_zone = default_zone;
