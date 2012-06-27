@@ -572,6 +572,25 @@ collection_backend_populate (ECollectionBackend *backend)
 	/* Placeholder so subclasses can safely chain up. */
 }
 
+static gchar *
+collection_backend_dup_resource_id (ECollectionBackend *backend,
+                                    ESource *source)
+{
+	const gchar *extension_name;
+	gchar *resource_id = NULL;
+
+	extension_name = E_SOURCE_EXTENSION_RESOURCE;
+
+	if (e_source_has_extension (source, extension_name)) {
+		ESourceResource *extension;
+
+		extension = e_source_get_extension (source, extension_name);
+		resource_id = e_source_resource_dup_identity (extension);
+	}
+
+	return resource_id;
+}
+
 static void
 collection_backend_child_added (ECollectionBackend *backend,
                                 ESource *child_source)
@@ -610,6 +629,7 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 	object_class->constructed = collection_backend_constructed;
 
 	class->populate = collection_backend_populate;
+	class->dup_resource_id = collection_backend_dup_resource_id;
 	class->child_added = collection_backend_child_added;
 	class->child_removed = collection_backend_child_removed;
 
