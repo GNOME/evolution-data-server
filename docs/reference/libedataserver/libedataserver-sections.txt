@@ -849,6 +849,27 @@ e_source_registry_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-source-resource</FILE>
+<TITLE>ESourceResource</TITLE>
+ESourceResource
+E_SOURCE_EXTENSION_RESOURCE
+e_source_resource_get_identity
+e_source_resource_dup_identity
+e_source_resource_set_identity
+<SUBSECTION Standard>
+E_SOURCE_RESOURCE
+E_IS_SOURCE_RESOURCE
+E_TYPE_SOURCE_RESOURCE
+E_SOURCE_RESOURCE_CLASS
+E_IS_SOURCE_RESOURCE_CLASS
+E_SOURCE_RESOURCE_GET_CLASS
+ESourceResourceClass
+<SUBSECTION Private>
+ESourceResourcePrivate
+e_source_resource_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-source-security</FILE>
 <TITLE>ESourceSecurity</TITLE>
 ESourceSecurity

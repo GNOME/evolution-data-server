@@ -79,6 +79,7 @@ libedataserver_1_2_la_SOURCES =		\
 	e-source-openpgp.c		\
 	e-source-refresh.c		\
 	e-source-registry.c		\
+	e-source-resource.c		\
 	e-source-security.c		\
 	e-source-selectable.c		\
 	e-source-smime.c		\
@@ -151,6 +152,7 @@ libedataserverinclude_HEADERS =		\
 	e-source-openpgp.h		\
 	e-source-refresh.h		\
 	e-source-registry.h		\
+	e-source-resource.h		\
 	e-source-security.h		\
 	e-source-selectable.h		\
 	e-source-smime.h		\

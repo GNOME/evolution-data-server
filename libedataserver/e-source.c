@@ -92,6 +92,7 @@
 #include "e-source-offline.h"
 #include "e-source-openpgp.h"
 #include "e-source-refresh.h"
+#include "e-source-resource.h"
 #include "e-source-security.h"
 #include "e-source-selectable.h"
 #include "e-source-smime.h"
@@ -1247,6 +1248,7 @@ e_source_class_init (ESourceClass *class)
 	REGISTER_TYPE (E_TYPE_SOURCE_OFFLINE);
 	REGISTER_TYPE (E_TYPE_SOURCE_OPENPGP);
 	REGISTER_TYPE (E_TYPE_SOURCE_REFRESH);
+	REGISTER_TYPE (E_TYPE_SOURCE_RESOURCE);
 	REGISTER_TYPE (E_TYPE_SOURCE_SECURITY);
 	REGISTER_TYPE (E_TYPE_SOURCE_SELECTABLE);
 	REGISTER_TYPE (E_TYPE_SOURCE_SMIME);

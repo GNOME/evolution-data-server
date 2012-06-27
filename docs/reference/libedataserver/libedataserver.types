@@ -27,6 +27,7 @@ e_source_offline_get_type
 e_source_openpgp_get_type
 e_source_refresh_get_type
 e_source_registry_get_type
+e_source_resource_get_type
 e_source_security_get_type
 e_source_selectable_get_type
 e_source_smime_get_type

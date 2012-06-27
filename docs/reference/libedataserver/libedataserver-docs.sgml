@@ -39,6 +39,7 @@
     <xi:include href="xml/e-source-offline.xml"/>
     <xi:include href="xml/e-source-openpgp.xml"/>
     <xi:include href="xml/e-source-refresh.xml"/>
+    <xi:include href="xml/e-source-resource.xml"/>
     <xi:include href="xml/e-source-security.xml"/>
     <xi:include href="xml/e-source-smime.xml"/>
     <xi:include href="xml/e-source-task-list.xml"/>
