@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <db.h>
+
 #include "e-book-backend-db-cache.h"
 #include "e-book-backend.h"
 #include "e-book-backend-sexp.h"

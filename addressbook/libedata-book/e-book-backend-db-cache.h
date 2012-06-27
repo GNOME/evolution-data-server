@@ -27,9 +27,11 @@
 #define E_BOOK_BACKEND_DB_CACHE_H
 
 #include <libebook/libebook.h>
-#include "db.h"
 
 G_BEGIN_DECLS
+
+/* Avoid including <db.h> in a public header file. */
+typedef struct __db DB;
 
 EContact * e_book_backend_db_cache_get_contact (DB *db, const gchar *uid);
 gchar *e_book_backend_db_cache_get_filename (DB *db);
