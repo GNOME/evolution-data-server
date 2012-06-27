@@ -388,6 +388,9 @@ session_add_service (CamelSession *session,
 	if (provider != NULL)
 		service_type = provider->object_types[type];
 
+	if (error && *error)
+		return NULL;
+
 	if (service_type == G_TYPE_INVALID) {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
