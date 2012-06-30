@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-06-26 13:40+0000\n"
-"PO-Revision-Date: 2012-06-30 09:57+0700\n"
+"PO-Revision-Date: 2012-06-30 10:10+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -184,10 +184,10 @@ msgid "Downloading contacts (%d)... "
 msgstr "Đang tải về các liên lạc (%d)... "
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5567
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to get the DN for user '%s'"
-msgstr "Lỗi tạo liên kết cứng đến tài nguyên '%s': %s"
+msgstr "Lỗi lấy DN cho người dùng '%s'"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:354
 #, c-format
@@ -241,10 +241,9 @@ msgstr "Ghi lưu là"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:128
-#, fuzzy
 #| msgid "Book URI"
 msgid "Book UID"
-msgstr "URI Sách"
+msgstr "UID Sách"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -687,10 +686,9 @@ msgstr "Danh sách"
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
 #: ../addressbook/libebook/e-contact.c:281
-#, fuzzy
 #| msgid "List Show Addresses"
 msgid "List Shows Addresses"
-msgstr "Danh sách: hiện địa chỉ"
+msgstr "Danh mục hiện địa chỉ"
 
 #: ../addressbook/libebook/e-contact.c:283
 msgid "Birth Date"
@@ -804,10 +802,9 @@ msgid "Google Talk Name List"
 msgstr "Danh sách tên Google Talk"
 
 #: ../addressbook/libebook/e-contact.c:320
-#, fuzzy
 #| msgid "Skype Name List"
 msgid "Twitter Name List"
-msgstr "Danh sách tên Skype"
+msgstr "Danh sách tên Twitter"
 
 #: ../addressbook/libebook/e-contact.c:1623
 #: ../addressbook/libebook/e-destination.c:879
@@ -1029,30 +1026,29 @@ msgstr "Không thể bỏ liên lạc: "
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:103
 #: ../calendar/libedata-cal/e-data-cal-factory.c:114
-#, fuzzy, c-format
+#, c-format
 #| msgid "No backend factory for '%s' of '%s'"
 msgid "No backend name in source '%s'"
-msgstr "Không có bộ tạo hậu phương cho '%s' của '%s'"
+msgstr "Không có mặt sau cho trong nguồn '%s'"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:115
 #: ../calendar/libedata-cal/e-data-cal-factory.c:127
 #, c-format
 msgid "Invalid backend name '%s' in source '%s'"
-msgstr ""
+msgstr "Tên mặt sau '%s' trong nguồn '%s' không hợp lệ"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:319
 #: ../calendar/libedata-cal/e-data-cal-factory.c:230
-#, fuzzy
 #| msgid "POP Source UID"
 msgid "Missing source UID"
-msgstr "UID nguồn POP"
+msgstr "Thiếu UID nguồn"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:332
 #: ../calendar/libedata-cal/e-data-cal-factory.c:243
-#, fuzzy, c-format
+#, c-format
 #| msgid "No such source"
 msgid "No such source for UID '%s'"
-msgstr "Không có nguồn như vậy"
+msgstr "Không có nguồn cho UID '%s'"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:564
 #, c-format
@@ -1060,10 +1056,10 @@ msgid "Server is unreachable (%s)"
 msgstr "Không thể tiếp cận máy chủ (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:594
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to connect to POP server %s in secure mode: %s"
 msgid "Failed to connect to a server using SSL: %s"
-msgstr "Lỗi kết nối tới máy phục vụ POP %s trong chế độ an toàn: %s"
+msgstr "Lỗi kết nối tới máy chủ dùng SSL: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
 msgid ""
@@ -1072,6 +1068,10 @@ msgid ""
 "certificate being used on the server, then disable certificate validity "
 "tests by selecting 'Ignore invalid SSL certificate' option in Properties"
 msgstr ""
+"Lỗi kết nối đến máy chủ dùng SSL. Một nguyên nhân có thể là máy chủ dùng "
+"chứng nhận không hợp lệ. Nếu điều này là bình thường, ví dụ máy chủ dùng "
+"chứng nhận tự ký, tắt kiểm tra chứng nhận bằng cách chọn tuỳ chọn \"Bỏ qua "
+"chứng nhận SSL không hợp lệ\" trong Thuộc tính."
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:612
 #, c-format
@@ -1089,22 +1089,19 @@ msgstr ""
 "Thông báo lỗi: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3668
-#, fuzzy
 #| msgid "The backend does not support bulk additions"
 msgid "CalDAV does not support bulk additions"
-msgstr "Mặt sau không hỗ trợ thêm hàng loạt"
+msgstr "CaldAV không hỗ trợ thêm hàng loạt"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3770
-#, fuzzy
 #| msgid "The backend does not support bulk modifications"
 msgid "CalDAV does not support bulk modifications"
-msgstr "Mặt sau không hỗ trợ sửa hàng loạt"
+msgstr "CalDAV không hỗ trợ sửa hàng loạt"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3938
-#, fuzzy
 #| msgid "The backend does not support bulk removals"
 msgid "CalDAV does not support bulk removals"
-msgstr "Mặt sau không hỗ trợ xoá hàng loạt"
+msgstr "CalDAV không hỗ trợ xoá hàng loạt"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4597
 msgid "Calendar doesn't support Free/Busy"
@@ -1134,10 +1131,10 @@ msgid "Cannot save calendar data"
 msgstr "Không thể lưu dữ liệu lịch"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:480
-#, fuzzy, c-format
+#, c-format
 #| msgid "Malformed signature"
 msgid "Malformed URI: %s"
-msgstr "Chữ ký dạng thức sai"
+msgstr "URI hư: %s"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:541
 #, c-format
@@ -2163,16 +2160,14 @@ msgid "Error fetching message"
 msgstr "Lỗi lấy thư"
 
 #: ../camel/camel-imapx-server.c:3328
-#, fuzzy
 #| msgid "Failed to cache %s: "
 msgid "Failed to copy the tmp file"
-msgstr "Lỗi lưu tạm %s: "
+msgstr "Lỗi chép tập tin tạm"
 
 #: ../camel/camel-imapx-server.c:3342
-#, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to close the tmp stream"
-msgstr "Lỗi biên mã dữ liệu"
+msgstr "Lỗi đóng luồng tạm"
 
 #: ../camel/camel-imapx-server.c:3440
 msgid "Error copying messages"
@@ -3236,7 +3231,7 @@ msgstr "Lỗi lưu '%s': "
 
 #: ../camel/camel-vee-folder.c:1156
 msgid "Automatically _update on change in source folders"
-msgstr ""
+msgstr "Tự động _cập nhật khi thay đổi trong thư thư mục nguồn"
 
 #. Translators: 'Unmatched' is a folder name under Search folders where are shown
 #. * all messages not belonging into any other configured search folder
@@ -3256,7 +3251,7 @@ msgstr "Không thể đổi tên thư mục: %s: không có thư mục như vậ
 
 #: ../camel/camel-vee-store.c:532
 msgid "Enable _Unmatched folder"
-msgstr ""
+msgstr "Bật thư mục _không khớp"
 
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
@@ -3485,10 +3480,10 @@ msgid "Cannot create folder '%s': folder exists."
 msgstr "Không thể tạo thư mục « %s »: thư mục đã có."
 
 #: ../camel/providers/imap/camel-imap-store.c:2921
-#, fuzzy, c-format
+#, c-format
 #| msgid "Retrieving folder list for %s"
 msgid "Retrieving list of folders at '%s'"
-msgstr "Đang lấy danh sách thư mục cho %s"
+msgstr "Đang lấy danh sách thư mục tại '%s'"
 
 #: ../camel/providers/imap/camel-imap-store.c:3263
 #, c-format
@@ -4705,10 +4700,9 @@ msgid "QUIT command failed: "
 msgstr "Lỗi lệnh QUIT: "
 
 #: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-#, fuzzy
 #| msgid "Contact ID already exists"
 msgid "Contact UID of a user"
-msgstr "ID liên lạc đã có rồi"
+msgstr "UID liên lạc của người dùng"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
 msgid "Birthday and anniversary reminder"
@@ -4741,42 +4735,39 @@ msgstr ""
 #: ../libebackend/e-authentication-mediator.c:612
 #: ../libebackend/e-authentication-mediator.c:973
 msgid "Bus name vanished (client terminated?)"
-msgstr ""
+msgstr "Tên tuyến biến mất (trình khách kết thúc?)"
 
 #: ../libebackend/e-authentication-mediator.c:204
-#, fuzzy
 #| msgid "No response from the server"
 msgid "No response from client"
-msgstr "Máy phục vụ không trả lời"
+msgstr "Máy khách không trả lời"
 
 #: ../libebackend/e-authentication-mediator.c:264
 #: ../libebackend/e-authentication-mediator.c:275
 #: ../libebackend/e-authentication-mediator.c:606
 #: ../libebackend/e-authentication-mediator.c:967
-#, fuzzy
 #| msgid "Could not cancel operation"
 msgid "Client cancelled the operation"
-msgstr "Không thể hủy bỏ tác vụ"
+msgstr "Máy khách huỷ thao tác"
 
 #: ../libebackend/e-authentication-mediator.c:334
 msgid "Client reports password was rejected"
-msgstr ""
+msgstr "Trình khác báo mật khẩu bị từ chối"
 
 #: ../libebackend/e-authentication-session.c:530
 msgid "Add this password to your keyring"
-msgstr ""
+msgstr "Thêm mật khẩu này vào vòng khoá"
 
 #: ../libebackend/e-authentication-session.c:593
 msgid "Password was incorrect"
-msgstr ""
+msgstr "Mật khẩu không đúng"
 
 #: ../libebackend/e-authentication-session.c:1322
 #: ../libebackend/e-authentication-session.c:1494
 #: ../libebackend/e-authentication-session.c:1673
-#, fuzzy
 #| msgid "Operation cancelled"
 msgid "Keyring operation was cancelled"
-msgstr "Thao tác bị hủy bỏ"
+msgstr "Thao tác vòng khoá bị hủy bỏ"
 
 #: ../libebackend/e-server-side-source.c:162
 #, c-format
@@ -4791,7 +4782,7 @@ msgstr ""
 #: ../libebackend/e-source-registry-server.c:598
 #, c-format
 msgid "UID '%s' is already in use"
-msgstr ""
+msgstr "UID '%s' đang dùng"
 
 #: ../libedataserver/e-categories.c:46
 msgctxt "CategoryName"
@@ -4924,71 +4915,67 @@ msgid "D-Bus error"
 msgstr "lỗi D-Bus"
 
 #: ../libedataserver/e-source-authenticator.c:166
-#, fuzzy
 #| msgid "Authentication required"
 msgid "Address book authentication request"
-msgstr "Cần thiết xác thực"
+msgstr "Yêu cầu xác thực sổ địa chỉ"
 
 #: ../libedataserver/e-source-authenticator.c:171
-#, fuzzy
 #| msgid "Authentication required"
 msgid "Calendar authentication request"
-msgstr "Cần thiết xác thực"
+msgstr "Yêu cầu xác thực lịch"
 
 #: ../libedataserver/e-source-authenticator.c:175
-#, fuzzy
 #| msgid "Authentication required"
 msgid "Mail authentication request"
-msgstr "Cần thiết xác thực"
+msgstr "Yêu cầu xác thực thư"
 
 #. generic account prompt
 #: ../libedataserver/e-source-authenticator.c:178
-#, fuzzy
 #| msgid "Authentication required"
 msgid "Authentication request"
-msgstr "Cần thiết xác thực"
+msgstr "Yêu cầu xác thực"
 
 #: ../libedataserver/e-source-authenticator.c:188
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for address book \"%s\"."
-msgstr "%sHãy gõ mật khẩu POP cho %s trên máy %s"
+msgstr "Hãy nhập mật khẩu cho sổ địa chỉ \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:194
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for calendar \"%s\"."
-msgstr "%sHãy gõ mật khẩu POP cho %s trên máy %s"
+msgstr "Hãy nhập mật khẩu cho lịch \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:200
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail account \"%s\"."
-msgstr "%sHãy gõ mật khẩu POP cho %s trên máy %s"
+msgstr "Hãy nhập mật khẩu cho tài khoản thư \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:206
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail transport \"%s\"."
-msgstr "%sHãy gõ mật khẩu POP cho %s trên máy %s"
+msgstr "Hãy nhập mật khẩu cho vận chuyển thư \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:212
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for memo list \"%s\"."
-msgstr "%sHãy gõ mật khẩu POP cho %s trên máy %s"
+msgstr "Hãy nhập mật khẩu cho danh mục ghi nhớ \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:218
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for task list \"%s\"."
-msgstr "%sHãy gõ mật khẩu POP cho %s trên máy %s"
+msgstr "Hãy nhập mật khẩu cho danh mục công việc \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:224
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for account \"%s\"."
-msgstr "%sHãy gõ mật khẩu POP cho %s trên máy %s"
+msgstr "Hãy nhập mật khẩu cho tài khoản \"%s\"."
 
 #: ../libedataserver/e-source.c:602
 #, c-format
@@ -5006,10 +4993,9 @@ msgid "Data source '%s' is not writable"
 msgstr ""
 
 #: ../libedataserver/e-source.c:1137
-#, fuzzy
 #| msgid "Unnamed List"
 msgid "Unnamed"
-msgstr "Danh sách vô danh"
+msgstr "Không tên"
 
 #: ../libedataserver/e-source-mail-signature.c:485
 #, c-format
@@ -5017,10 +5003,9 @@ msgid "Signature script must be a local file"
 msgstr ""
 
 #: ../libedataserver/e-source-registry.c:1496
-#, fuzzy
 #| msgid "Failed to authenticate.\n"
 msgid "The user declined to authenticate"
-msgstr "Lỗi xác thực.\n"
+msgstr "Người dùng từ chối xác thực"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -5313,7 +5298,6 @@ msgid "Address B_ook:"
 msgstr "_Sổ địa chỉ:"
 
 #: ../libedataserverui/e-name-selector-dialog.c:308
-#, fuzzy
 #| msgid "Cate_gory:"
 msgid "Cat_egory:"
 msgstr "L_oại:"
@@ -5435,38 +5419,38 @@ msgstr "Lịch"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:184
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unexpected response from IMAP server: %s"
 msgid "Code: %u - Unexpected response from server"
-msgstr "Tính hiệu trả lời không mong đợi từ máy phục vụ IMAP: %s"
+msgstr "Mã: %u - Tín hiệu trả lời không mong đợi từ máy chủ"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:205
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to retrieve message"
 msgid "Failed to parse autodiscover response XML"
-msgstr "Lỗi nhận thư"
+msgstr ""
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:214
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to find system calendar"
 msgid "Failed to find Autodiscover element"
-msgstr "Lỗi tìm lịch hệ thống"
+msgstr ""
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:226
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to find system calendar"
 msgid "Failed to find Response element"
-msgstr "Lỗi tìm lịch hệ thống"
+msgstr ""
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:238
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to find system calendar"
 msgid "Failed to find Account element"
-msgstr "Lỗi tìm lịch hệ thống"
+msgstr ""
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:252
@@ -5490,21 +5474,20 @@ msgstr ""
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:458
 msgid "Evolution Source Viewer"
-msgstr ""
+msgstr "Trình xem mã nguồn Evolution"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:487
-#, fuzzy
 #| msgid "Family Name"
 msgid "Display Name"
-msgstr "Họ"
+msgstr "Tên hiển thị"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:496
 msgid "Flags"
-msgstr ""
+msgstr "Cờ"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:520
 msgid "Identity"
-msgstr ""
+msgstr "Định danh"
 
 #~ msgid "Authenticating with the server…"
 #~ msgstr "Đang xác thực với máy chủ…"
