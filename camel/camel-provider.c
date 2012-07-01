@@ -337,10 +337,19 @@ camel_provider_list (gboolean load)
 		g_hash_table_foreach (module_table, add_to_list, &list);
 		for (w = list; w; w = w->next) {
 			CamelProviderModule *m = w->data;
+			GError *error = NULL;
 
 			if (!m->loaded) {
-				camel_provider_load (m->path, NULL);
+				camel_provider_load (m->path, &error);
 				m->loaded = 1;
+			}
+
+			if (error != NULL) {
+				g_critical (
+					"%s: %s: %s",
+					G_STRFUNC, m->path,
+					error->message);
+				g_error_free (error);
 			}
 		}
 		g_list_free (list);
