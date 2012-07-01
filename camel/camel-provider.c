@@ -346,8 +346,7 @@ camel_provider_list (gboolean load)
 
 			if (error != NULL) {
 				g_critical (
-					"%s: %s: %s",
-					G_STRFUNC, m->path,
+					"%s: %s", G_STRFUNC,
 					error->message);
 				g_error_free (error);
 			}
