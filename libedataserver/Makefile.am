@@ -23,6 +23,7 @@ lib_LTLIBRARIES = libedataserver-1.2.la
 libedataserver_1_2_la_CPPFLAGS = \
 	$(AM_CPPFLAGS)							\
 	-I$(top_srcdir)							\
+	-I$(top_srcdir)/private						\
 	-I$(top_builddir)						\
 	-I$(top_builddir)/private					\
 	-DLIBEDATASERVER_COMPILATION					\
