@@ -131,9 +131,8 @@ source_extension_notify (GObject *object,
 static void
 source_extension_constructed (GObject *object)
 {
-	/* This allows subclasses to chain up safely since GObject
-	 * does not implement this method, and we might want to do
-	 * something here in the future. */
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_source_extension_parent_class)->constructed (object);
 }
 
 static void
