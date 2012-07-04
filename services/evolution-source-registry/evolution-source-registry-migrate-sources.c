@@ -1871,6 +1871,12 @@ migrate_parse_account_xml_text (GMarkupParseContext *context,
 			break;
 
 		case PARSE_STATE_IN_MAIL_SOURCE_URL:
+			/* XXX Workaround for so-called "send-only"
+			 *     accounts, which have no source URL.
+			 *     Their backend name is "none". */
+			if (text != NULL && *text == '\0')
+				text = "none:";
+
 			migrate_parse_url (
 				parse_data,
 				parse_data->key_file,
