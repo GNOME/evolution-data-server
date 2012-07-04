@@ -503,15 +503,9 @@ summary_header_to_db (CamelFolderSummary *summary,
                       GError **error)
 {
 	CamelFIRecord * record = g_new0 (CamelFIRecord, 1);
-	CamelStore *parent_store;
-	CamelDB *db;
 	const gchar *table_name;
 
-	/* Though we are going to read, we do this during write,
-	 * so lets use it that way. */
 	table_name = camel_folder_get_full_name (summary->priv->folder);
-	parent_store = camel_folder_get_parent_store (summary->priv->folder);
-	db = parent_store->cdb_w;
 
 	io(printf("Savining header to db\n"));
 
@@ -523,27 +517,12 @@ summary_header_to_db (CamelFolderSummary *summary,
 	record->nextuid = summary->priv->nextuid;
 	record->time = summary->time;
 
-	if (!is_in_memory_summary (summary)) {
-		/* FIXME: Ever heard of Constructors and initializing ? */
-		if (camel_db_count_total_message_info (db, table_name, &(record->saved_count), NULL))
-			record->saved_count = 0;
-		if (camel_db_count_junk_message_info (db, table_name, &(record->junk_count), NULL))
-			record->junk_count = 0;
-		if (camel_db_count_deleted_message_info (db, table_name, &(record->deleted_count), NULL))
-			record->deleted_count = 0;
-		if (camel_db_count_unread_message_info (db, table_name, &(record->unread_count), NULL))
-			record->unread_count = 0;
-		if (camel_db_count_visible_message_info (db, table_name, &(record->visible_count), NULL))
-			record->visible_count = 0;
-		if (camel_db_count_junk_not_deleted_message_info (db, table_name, &(record->jnd_count), NULL))
-			record->jnd_count = 0;
-	}
-
-	summary->priv->unread_count = record->unread_count;
-	summary->priv->deleted_count = record->deleted_count;
-	summary->priv->junk_count = record->junk_count;
-	summary->priv->visible_count = record->visible_count;
-	summary->priv->junk_not_deleted_count = record->jnd_count;
+	record->saved_count = summary->priv->saved_count;
+	record->junk_count = summary->priv->junk_count;
+	record->deleted_count = summary->priv->deleted_count;
+	record->unread_count = summary->priv->unread_count;
+	record->visible_count = summary->priv->visible_count;
+	record->jnd_count = summary->priv->junk_not_deleted_count;
 
 	return record;
 }
@@ -2325,6 +2304,7 @@ camel_folder_summary_load_from_db (CamelFolderSummary *summary,
 	if (is_in_memory_summary (summary))
 		return TRUE;
 
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	camel_folder_summary_save_to_db (summary, NULL);
 
 	/* struct _db_pass_data data; */
@@ -2332,8 +2312,10 @@ camel_folder_summary_load_from_db (CamelFolderSummary *summary,
 
 	full_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
-	if (!camel_folder_summary_header_load_from_db (summary, parent_store, full_name, error))
+	if (!camel_folder_summary_header_load_from_db (summary, parent_store, full_name, error)) {
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		return FALSE;
+	}
 
 	cdb = parent_store->cdb_r;
 
@@ -2349,6 +2331,8 @@ camel_folder_summary_load_from_db (CamelFolderSummary *summary,
 		ret = camel_db_prepare_message_info_table (cdb, full_name, error);
 	} else if (local_error != NULL)
 		g_propagate_error (error, local_error);
+
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return ret == 0;
 }
@@ -2683,28 +2667,30 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
 
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
 	d(printf ("\ncamel_folder_summary_save_to_db called \n"));
 	if (summary->priv->need_preview && g_hash_table_size (summary->priv->preview_updates)) {
-		camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-
 		camel_db_begin_transaction (parent_store->cdb_w, NULL);
 		g_hash_table_foreach (summary->priv->preview_updates, (GHFunc) msg_save_preview, summary->priv->folder);
 		g_hash_table_remove_all (summary->priv->preview_updates);
 		camel_db_end_transaction (parent_store->cdb_w, NULL);
-
-		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	}
 
 	summary->flags &= ~CAMEL_FOLDER_SUMMARY_DIRTY;
 
 	count = cfs_count_dirty (summary);
-	if (!count)
-		return camel_folder_summary_header_save_to_db (summary, error);
+	if (!count) {
+		gboolean res = camel_folder_summary_header_save_to_db (summary, error);
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+		return res;
+	}
 
 	ret = save_message_infos_to_db (summary, FALSE, error);
 	if (ret != 0) {
 		/* Failed, so lets reset the flag */
 		summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		return FALSE;
 	}
 
@@ -2725,6 +2711,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 		ret = save_message_infos_to_db (summary, FALSE, error);
 		if (ret != 0) {
 			summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
+			camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 			return FALSE;
 		}
 	}
@@ -2732,6 +2719,7 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_to_db (summary, error);
 	if (!record) {
 		summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		return FALSE;
 	}
 
@@ -2744,10 +2732,12 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 	if (ret != 0) {
 		camel_db_abort_transaction (cdb, NULL);
 		summary->flags |= CAMEL_FOLDER_SUMMARY_DIRTY;
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		return FALSE;
 	}
 
 	camel_db_end_transaction (cdb, NULL);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return ret == 0;
 }
@@ -2771,11 +2761,13 @@ camel_folder_summary_header_save_to_db (CamelFolderSummary *summary,
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_w;
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	d(printf ("\ncamel_folder_summary_header_save_to_db called \n"));
 
 	record = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_to_db (summary, error);
 	if (!record) {
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		return FALSE;
 	}
 
@@ -2787,10 +2779,12 @@ camel_folder_summary_header_save_to_db (CamelFolderSummary *summary,
 
 	if (ret != 0) {
 		camel_db_abort_transaction (cdb, NULL);
+		camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 		return FALSE;
 	}
 
 	camel_db_end_transaction (cdb, NULL);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	return ret == 0;
 }
@@ -2815,6 +2809,7 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *summary,
 	if (is_in_memory_summary (summary))
 		return TRUE;
 
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 	camel_folder_summary_save_to_db (summary, NULL);
 
 	cdb = store->cdb_r;
@@ -2823,6 +2818,8 @@ camel_folder_summary_header_load_from_db (CamelFolderSummary *summary,
 	camel_db_read_folder_info_record (cdb, folder_name, record, error);
 
 	ret = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->summary_header_from_db (summary, record);
+
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 
 	g_free (record->folder_name);
 	g_free (record->bdata);
