@@ -3358,6 +3358,15 @@ migrate_remove_gconf_xml (const gchar *gconf_key,
 	}
 }
 
+static void
+migrate_handle_error (const GError *error)
+{
+	g_return_if_fail (error != NULL);
+
+	if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT))
+		g_printerr ("  FAILED: %s\n", error->message);
+}
+
 void
 evolution_source_registry_migrate_sources (void)
 {
@@ -3390,7 +3399,7 @@ evolution_source_registry_migrate_sources (void)
 		gconf_key = "/apps/evolution/mail/accounts";
 		migrate_remove_gconf_xml (gconf_key, gconf_xml);
 	} else {
-		g_printerr ("  FAILED: %s\n", error->message);
+		migrate_handle_error (error);
 		g_clear_error (&error);
 	}
 
@@ -3415,7 +3424,7 @@ evolution_source_registry_migrate_sources (void)
 		gconf_key = "/apps/evolution/addressbook/sources";
 		migrate_remove_gconf_xml (gconf_key, gconf_xml);
 	} else {
-		g_printerr ("  FAILED: %s\n", error->message);
+		migrate_handle_error (error);
 		g_clear_error (&error);
 	}
 
@@ -3440,7 +3449,7 @@ evolution_source_registry_migrate_sources (void)
 		gconf_key = "/apps/evolution/calendar/sources";
 		migrate_remove_gconf_xml (gconf_key, gconf_xml);
 	} else {
-		g_printerr ("  FAILED: %s\n", error->message);
+		migrate_handle_error (error);
 		g_clear_error (&error);
 	}
 
@@ -3465,7 +3474,7 @@ evolution_source_registry_migrate_sources (void)
 		gconf_key = "/apps/evolution/tasks/sources";
 		migrate_remove_gconf_xml (gconf_key, gconf_xml);
 	} else {
-		g_printerr ("  FAILED: %s\n", error->message);
+		migrate_handle_error (error);
 		g_clear_error (&error);
 	}
 
@@ -3490,7 +3499,7 @@ evolution_source_registry_migrate_sources (void)
 		gconf_key = "/apps/evolution/memos/sources";
 		migrate_remove_gconf_xml (gconf_key, gconf_xml);
 	} else {
-		g_printerr ("  FAILED: %s\n", error->message);
+		migrate_handle_error (error);
 		g_clear_error (&error);
 	}
 
