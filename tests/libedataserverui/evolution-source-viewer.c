@@ -56,12 +56,28 @@ struct _ESourceViewer {
 	GtkTreeStore *tree_store;
 	GHashTable *source_index;
 
+	GCancellable *delete_operation;
+
 	GtkWidget *tree_view;		/* not referenced */
 	GtkWidget *text_view;		/* not referenced */
+	GtkWidget *top_panel;		/* not referenced */
+
+	/* Viewing Page */
+	GtkWidget *viewing_label;	/* not referenced */
+	GtkWidget *delete_button;	/* not referenced */
+
+	/* Deleting Page */
+	GtkWidget *deleting_label;	/* not referenced */
+	GtkWidget *deleting_cancel;	/* not referenced */
 };
 
 struct _ESourceViewerClass {
 	GtkWindowClass parent_class;
+};
+
+enum {
+	PAGE_VIEWING,
+	PAGE_DELETING
 };
 
 enum {
@@ -373,13 +389,96 @@ source_viewer_selection_changed_cb (GtkTreeSelection *selection,
                                     ESourceViewer *viewer)
 {
 	ESource *source;
+	const gchar *uid = NULL;
+	gboolean removable = FALSE;
 
 	source = e_source_viewer_ref_selected (viewer);
 
 	source_viewer_set_text (viewer, source);
 
+	if (source != NULL) {
+		uid = e_source_get_uid (source);
+		removable = e_source_get_removable (source);
+	}
+
+	gtk_label_set_text (GTK_LABEL (viewer->viewing_label), uid);
+	gtk_widget_set_visible (viewer->delete_button, removable);
+
 	if (source != NULL)
 		g_object_unref (source);
+}
+
+static void
+source_viewer_delete_done_cb (GObject *source_object,
+                              GAsyncResult *result,
+                              gpointer user_data)
+{
+	ESource *source;
+	ESourceViewer *viewer;
+	GError *error = NULL;
+
+	source = E_SOURCE (source_object);
+	viewer = E_SOURCE_VIEWER (user_data);
+
+	e_source_remove_finish (source, result, &error);
+
+	/* Ignore cancellations. */
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_clear_error (&error);
+
+	/* FIXME Show an info bar with the error message. */
+	} else if (error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+		g_clear_error (&error);
+	}
+
+	gtk_notebook_set_current_page (
+		GTK_NOTEBOOK (viewer->top_panel), PAGE_VIEWING);
+	gtk_widget_set_sensitive (viewer->tree_view, TRUE);
+
+	g_object_unref (viewer->delete_operation);
+	viewer->delete_operation = NULL;
+
+	g_object_unref (viewer);
+}
+
+static void
+source_viewer_delete_button_clicked_cb (GtkButton *delete_button,
+                                        ESourceViewer *viewer)
+{
+	ESource *source;
+	const gchar *uid;
+
+	g_return_if_fail (viewer->delete_operation == NULL);
+
+	source = e_source_viewer_ref_selected (viewer);
+	g_return_if_fail (source != NULL);
+
+	uid = e_source_get_uid (source);
+	gtk_label_set_text (GTK_LABEL (viewer->deleting_label), uid);
+
+	gtk_notebook_set_current_page (
+		GTK_NOTEBOOK (viewer->top_panel), PAGE_DELETING);
+	gtk_widget_set_sensitive (viewer->tree_view, FALSE);
+
+	viewer->delete_operation = g_cancellable_new ();
+
+	e_source_remove (
+		source,
+		viewer->delete_operation,
+		source_viewer_delete_done_cb,
+		g_object_ref (viewer));
+
+	g_object_unref (source);
+}
+
+static void
+source_viewer_deleting_cancel_clicked_cb (GtkButton *deleting_cancel,
+                                          ESourceViewer *viewer)
+{
+	g_return_if_fail (viewer->delete_operation != NULL);
+
+	g_cancellable_cancel (viewer->delete_operation);
 }
 
 static void
@@ -421,6 +520,11 @@ source_viewer_dispose (GObject *object)
 
 	g_hash_table_remove_all (viewer->source_index);
 
+	if (viewer->delete_operation != NULL) {
+		g_object_unref (viewer->delete_operation);
+		viewer->delete_operation = NULL;
+	}
+
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_source_viewer_parent_class)->dispose (object);
 }
@@ -446,14 +550,21 @@ source_viewer_constructed (GObject *object)
 	GtkWidget *container;
 	GtkWidget *paned;
 	GtkWidget *widget;
+	PangoAttribute *attr;
+	PangoAttrList *bold;
 	PangoFontDescription *desc;
 	const gchar *title;
 	gchar *font_name;
+	gint page_num;
 
 	viewer = E_SOURCE_VIEWER (object);
 
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_source_viewer_parent_class)->constructed (object);
+
+	bold = pango_attr_list_new ();
+	attr = pango_attr_weight_new (PANGO_WEIGHT_BOLD);
+	pango_attr_list_insert (bold, attr);
 
 	title = _("Evolution Source Viewer");
 	gtk_window_set_title (GTK_WINDOW (viewer), title);
@@ -529,13 +640,29 @@ source_viewer_constructed (GObject *object)
 
 	/* Right panel */
 
+	widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_paned_add2 (GTK_PANED (paned), widget);
+	gtk_widget_show (widget);
+
+	container = widget;
+
+	widget = gtk_notebook_new ();
+	gtk_widget_set_margin_top (widget, 3);
+	gtk_widget_set_margin_right (widget, 3);
+	gtk_widget_set_margin_bottom (widget, 3);
+	/* leave left margin at zero */
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (widget), FALSE);
+	gtk_box_pack_start (GTK_BOX (container), widget, FALSE, FALSE, 0);
+	viewer->top_panel = widget;  /* do not reference */
+	gtk_widget_show (widget);
+
 	widget = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_policy (
 		GTK_SCROLLED_WINDOW (widget),
 		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (
 		GTK_SCROLLED_WINDOW (widget), GTK_SHADOW_IN);
-	gtk_paned_add2 (GTK_PANED (paned), widget);
+	gtk_box_pack_start (GTK_BOX (container), widget, TRUE, TRUE, 0);
 	gtk_widget_show (widget);
 
 	container = widget;
@@ -552,9 +679,77 @@ source_viewer_constructed (GObject *object)
 	pango_font_description_free (desc);
 	g_free (font_name);
 
+	/* Top panel: Viewing */
+
+	container = viewer->top_panel;
+
+	widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	page_num = gtk_notebook_append_page (
+		GTK_NOTEBOOK (container), widget, NULL);
+	g_warn_if_fail (page_num == PAGE_VIEWING);
+	gtk_widget_show (widget);
+
+	container = widget;
+
+	widget = gtk_label_new ("UID:");
+	gtk_box_pack_start (GTK_BOX (container), widget, FALSE, FALSE, 0);
+	gtk_widget_show (widget);
+
+	widget = gtk_label_new (NULL);
+	gtk_label_set_attributes (GTK_LABEL (widget), bold);
+	gtk_label_set_ellipsize (GTK_LABEL (widget), PANGO_ELLIPSIZE_END);
+	gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (container), widget, TRUE, TRUE, 0);
+	viewer->viewing_label = widget;  /* do not reference */
+	gtk_widget_show (widget);
+
+	widget = gtk_button_new_from_stock (GTK_STOCK_DELETE);
+	gtk_box_pack_end (GTK_BOX (container), widget, FALSE, FALSE, 0);
+	viewer->delete_button = widget;  /* do not reference */
+	gtk_widget_hide (widget);
+
+	/* Top panel: Deleting */
+
+	container = viewer->top_panel;
+
+	widget = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	page_num = gtk_notebook_append_page (
+		GTK_NOTEBOOK (container), widget, NULL);
+	g_warn_if_fail (page_num == PAGE_DELETING);
+	gtk_widget_show (widget);
+
+	container = widget;
+
+	widget = gtk_label_new ("Deleting");
+	gtk_box_pack_start (GTK_BOX (container), widget, FALSE, FALSE, 0);
+	gtk_widget_show (widget);
+
+	widget = gtk_label_new (NULL);
+	gtk_label_set_attributes (GTK_LABEL (widget), bold);
+	gtk_label_set_ellipsize (GTK_LABEL (widget), PANGO_ELLIPSIZE_END);
+	gtk_misc_set_alignment (GTK_MISC (widget), 0.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (container), widget, TRUE, TRUE, 0);
+	viewer->deleting_label = widget;  /* do not reference */
+	gtk_widget_show (widget);
+
+	widget = gtk_button_new_from_stock (GTK_STOCK_CANCEL);
+	gtk_box_pack_end (GTK_BOX (container), widget, FALSE, FALSE, 0);
+	viewer->deleting_cancel = widget;  /* do not reference */
+	gtk_widget_show (widget);
+
+	pango_attr_list_unref (bold);
+
 	g_signal_connect (
 		selection, "changed",
 		G_CALLBACK (source_viewer_selection_changed_cb), viewer);
+
+	g_signal_connect (
+		viewer->delete_button, "clicked",
+		G_CALLBACK (source_viewer_delete_button_clicked_cb), viewer);
+
+	g_signal_connect (
+		viewer->deleting_cancel, "clicked",
+		G_CALLBACK (source_viewer_deleting_cancel_clicked_cb), viewer);
 }
 
 static gboolean
