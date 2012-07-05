@@ -627,6 +627,10 @@ source_viewer_constructed (GObject *object)
 	gtk_tree_view_column_add_attribute (
 		column, renderer, "visible", COLUMN_REMOVABLE);
 
+	/* Append an empty pixbuf renderer to fill leftover space. */
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	gtk_tree_view_column_pack_start (column, renderer, TRUE);
+
 	column = gtk_tree_view_column_new ();
 	gtk_tree_view_column_set_title (column, _("Identity"));
 	gtk_tree_view_append_column (GTK_TREE_VIEW (widget), column);
