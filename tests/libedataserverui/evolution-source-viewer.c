@@ -691,7 +691,7 @@ source_viewer_constructed (GObject *object)
 
 	container = widget;
 
-	widget = gtk_label_new ("UID:");
+	widget = gtk_label_new ("Identity:");
 	gtk_box_pack_start (GTK_BOX (container), widget, FALSE, FALSE, 0);
 	gtk_widget_show (widget);
 
