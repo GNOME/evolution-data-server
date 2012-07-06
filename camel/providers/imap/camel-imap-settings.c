@@ -506,7 +506,7 @@ camel_imap_settings_class_init (CamelImapSettingsClass *class)
 			"namespace",
 			"Namespace",
 			"Custom IMAP namespace",
-			NULL,
+			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
