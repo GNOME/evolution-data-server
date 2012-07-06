@@ -632,9 +632,6 @@ camel_imap_settings_init (CamelImapSettings *settings)
 {
 	settings->priv = CAMEL_IMAP_SETTINGS_GET_PRIVATE (settings);
 	settings->priv->property_lock = g_mutex_new ();
-
-	/* The default namespace is an empty string. */
-	settings->priv->namespace = g_strdup ("");
 }
 
 /**

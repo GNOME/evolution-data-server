@@ -115,7 +115,6 @@ struct _ESourcePrivate {
 
 	GSource *changed;
 	GMutex *changed_lock;
-	guint ignore_changed_signal;
 
 	GMutex *property_lock;
 
@@ -1045,10 +1044,6 @@ source_initable_init (GInitable *initable,
 		EDBusObject *dbus_object;
 		EDBusSource *dbus_source;
 
-		g_mutex_lock (source->priv->changed_lock);
-		source->priv->ignore_changed_signal++;
-		g_mutex_unlock (source->priv->changed_lock);
-
 		dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
 
 		/* An EDBusObject lacking an EDBusSource
@@ -1091,19 +1086,11 @@ source_initable_init (GInitable *initable,
 
 		g_object_unref (dbus_source);
 
-		g_mutex_lock (source->priv->changed_lock);
-		source->priv->ignore_changed_signal--;
-		g_mutex_unlock (source->priv->changed_lock);
-
 	/* No D-Bus object implies we're configuring a new source,
 	 * so generate a new unique identifier (UID) for it. */
 	} else {
 		source->priv->uid = e_uid_new ();
 	}
-
-	/* if this is set on class_init, then it is invoked each
-	   time during construction, which is not desired */
-	G_OBJECT_GET_CLASS (source)->notify = source_notify;
 
 	return success;
 }
@@ -1120,6 +1107,7 @@ e_source_class_init (ESourceClass *class)
 	object_class->get_property = source_get_property;
 	object_class->dispose = source_dispose;
 	object_class->finalize = source_finalize;
+	object_class->notify = source_notify;
 
 	class->remove_sync = source_remove_sync;
 	class->remove = source_remove;
@@ -1296,10 +1284,6 @@ e_source_init (ESource *source)
 	source->priv->key_file = g_key_file_new ();
 	source->priv->extensions = extensions;
 
-	/* changed signal is disabled by default,
-	   to avoid notifications during creation */
-	source->priv->ignore_changed_signal = 1;
-
 	g_static_rec_mutex_init (&source->priv->lock);
 }
 
@@ -1330,26 +1314,14 @@ e_source_new (GDBusObject *dbus_object,
               GMainContext *main_context,
               GError **error)
 {
-	ESource *source;
-
 	if (dbus_object != NULL)
 		g_return_val_if_fail (E_DBUS_IS_OBJECT (dbus_object), NULL);
 
-	source = g_initable_new (
+	return g_initable_new (
 		E_TYPE_SOURCE, NULL, error,
 		"dbus-object", dbus_object,
 		"main-context", main_context,
 		NULL);
-
-	/* changed signal is disabled by default,
-	   to avoid notifications during creation;
-	   unlock it here
-	*/
-	g_mutex_lock (source->priv->changed_lock);
-	source->priv->ignore_changed_signal--;
-	g_mutex_unlock (source->priv->changed_lock);
-
-	return source;
 }
 
 /**
@@ -1424,8 +1396,7 @@ e_source_changed (ESource *source)
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	g_mutex_lock (source->priv->changed_lock);
-	if (!source->priv->ignore_changed_signal &&
-	    source->priv->changed == NULL) {
+	if (source->priv->changed == NULL) {
 		source->priv->changed = g_idle_source_new ();
 		g_source_set_callback (
 			source->priv->changed,
@@ -1720,10 +1691,6 @@ e_source_get_extension (ESource *source,
 
 	/* Create a new instance of the appropriate GType. */
 	if (class != NULL) {
-		g_mutex_lock (source->priv->changed_lock);
-		source->priv->ignore_changed_signal++;
-		g_mutex_unlock (source->priv->changed_lock);
-
 		extension = g_object_new (
 			G_TYPE_FROM_CLASS (class),
 			"source", source, NULL);
@@ -1734,10 +1701,6 @@ e_source_get_extension (ESource *source,
 		g_hash_table_insert (
 			source->priv->extensions,
 			g_strdup (extension_name), extension);
-
-		g_mutex_lock (source->priv->changed_lock);
-		source->priv->ignore_changed_signal--;
-		g_mutex_unlock (source->priv->changed_lock);
 	} else {
 		/* XXX Tie this into a debug setting for ESources. */
 #ifdef DEBUG
