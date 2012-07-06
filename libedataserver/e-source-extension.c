@@ -129,14 +129,6 @@ source_extension_notify (GObject *object,
 }
 
 static void
-source_extension_constructed (GObject *object)
-{
-	/* This allows subclasses to chain up safely since GObject
-	 * does not implement this method, and we might want to do
-	 * something here in the future. */
-}
-
-static void
 e_source_extension_class_init (ESourceExtensionClass *class)
 {
 	GObjectClass *object_class;
@@ -148,7 +140,6 @@ e_source_extension_class_init (ESourceExtensionClass *class)
 	object_class->get_property = source_extension_get_property;
 	object_class->dispose = source_extension_dispose;
 	object_class->notify = source_extension_notify;
-	object_class->constructed = source_extension_constructed;
 
 	g_object_class_install_property (
 		object_class,
