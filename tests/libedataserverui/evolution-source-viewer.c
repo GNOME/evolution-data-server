@@ -994,10 +994,10 @@ e_source_viewer_build_display_tree (ESourceViewer *viewer)
 			parent_node = root;
 		} else {
 			parent_node = g_hash_table_lookup (index, parent_uid);
-			g_warn_if_fail (parent_node != NULL);
 		}
 
-		/* Should never be NULL, but just to be safe. */
+		/* This could be NULL if the registry service was
+		 * shutdown or reloaded.  All sources will vanish. */
 		if (parent_node != NULL)
 			g_node_append (parent_node, source_node);
 	}
