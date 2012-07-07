@@ -1386,9 +1386,25 @@ source_registry_authenticate_respond_cb (AuthContext *auth_context)
 	 * session will either time out on its own or the authentication
 	 * dialog will eventually be dismissed by the user. */
 
+	/* If we were cancelled from our side, we have a bit of a dilemma.
+	 * We need to tell the server to cancel the authentication session,
+	 * but that involves making a synchronous D-Bus call, which we are
+	 * not supposed to do if we know we've been cancelled.  But if we
+	 * don't tell the server, the authentication session will be left
+	 * to timeout on its own (which may take minutes), and meanwhile
+	 * all other authentication requests are blocked.  So choose the
+	 * lesser evil and make the synchronous call but without passing
+	 * the already-cancelled GCancellable. */
+	if (g_cancellable_is_cancelled (auth_context->cancellable)) {
+		e_dbus_authenticator_call_cancel_sync (
+			auth_context->dbus_auth,
+			NULL, &non_fatal_error);
+		g_main_loop_quit (auth_context->main_loop);
+		auth_context->success = FALSE;
+
 	/* If an error occurred while attempting to authenticate,
 	 * tell the server to cancel the authentication session. */
-	if (auth_result == E_SOURCE_AUTHENTICATION_ERROR) {
+	} else if (auth_result == E_SOURCE_AUTHENTICATION_ERROR) {
 		e_dbus_authenticator_call_cancel_sync (
 			auth_context->dbus_auth,
 			auth_context->cancellable,
