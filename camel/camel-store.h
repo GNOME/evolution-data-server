@@ -143,7 +143,7 @@ struct _CamelStoreClass {
 	CamelServiceClass parent_class;
 
 	GHashFunc hash_folder_name;
-	GCompareFunc compare_folder_name;
+	GEqualFunc equal_folder_name;
 
 	/* Non-Blocking Methods */
 	gboolean	(*can_refresh_folder)	(CamelStore *store,

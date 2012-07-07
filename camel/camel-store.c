@@ -286,11 +286,11 @@ store_constructed (GObject *object)
 	class = CAMEL_STORE_GET_CLASS (store);
 
 	g_return_if_fail (class->hash_folder_name != NULL);
-	g_return_if_fail (class->compare_folder_name != NULL);
+	g_return_if_fail (class->equal_folder_name != NULL);
 
 	store->folders = camel_object_bag_new (
 		class->hash_folder_name,
-		class->compare_folder_name,
+		class->equal_folder_name,
 		(CamelCopyFunc) g_strdup, g_free);
 }
 
@@ -1143,7 +1143,7 @@ camel_store_class_init (CamelStoreClass *class)
 	service_class->settings_type = CAMEL_TYPE_STORE_SETTINGS;
 
 	class->hash_folder_name = g_str_hash;
-	class->compare_folder_name = g_str_equal;
+	class->equal_folder_name = g_str_equal;
 	class->can_refresh_folder = store_can_refresh_folder;
 
 	class->get_inbox_folder_sync = store_get_inbox_folder_sync;

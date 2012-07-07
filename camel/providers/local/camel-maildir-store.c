@@ -659,8 +659,8 @@ maildir_store_hash_folder_name (gconstpointer a)
 }
 
 static gboolean
-maildir_store_compare_folder_name (gconstpointer a,
-                                   gconstpointer b)
+maildir_store_equal_folder_name (gconstpointer a,
+                                 gconstpointer b)
 {
 	return g_str_equal (md_canon_name (a), md_canon_name (b));
 }
@@ -818,7 +818,7 @@ camel_maildir_store_class_init (CamelMaildirStoreClass *class)
 
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->hash_folder_name = maildir_store_hash_folder_name;
-	store_class->compare_folder_name = maildir_store_compare_folder_name;
+	store_class->equal_folder_name = maildir_store_equal_folder_name;
 	store_class->create_folder_sync = maildir_store_create_folder_sync;
 	store_class->free_folder_info = camel_store_free_folder_info_full;
 	store_class->get_folder_sync = maildir_store_get_folder_sync;

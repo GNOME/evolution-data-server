@@ -71,7 +71,7 @@ static gboolean imap_store_noop_sync (CamelStore *store, GCancellable *cancellab
 static CamelFolder *imap_store_get_junk_folder_sync (CamelStore *store, GCancellable *cancellable, GError **error);
 static CamelFolder *imap_store_get_trash_folder_sync (CamelStore *store, GCancellable *cancellable, GError **error);
 static guint hash_folder_name (gconstpointer key);
-static gint compare_folder_name (gconstpointer a, gconstpointer b);
+static gboolean equal_folder_name (gconstpointer a, gconstpointer b);
 
 static CamelFolderInfo *imap_store_create_folder_sync (CamelStore *store, const gchar *parent_name, const gchar *folder_name, GCancellable *cancellable, GError **error);
 static gboolean imap_store_delete_folder_sync (CamelStore *store, const gchar *folder_name, GCancellable *cancellable, GError **error);
@@ -1502,7 +1502,7 @@ camel_imap_store_class_init (CamelImapStoreClass *class)
 
 	store_class = CAMEL_STORE_CLASS (class);
 	store_class->hash_folder_name = hash_folder_name;
-	store_class->compare_folder_name = compare_folder_name;
+	store_class->equal_folder_name = equal_folder_name;
 	store_class->can_refresh_folder = imap_can_refresh_folder;
 	store_class->free_folder_info = camel_store_free_folder_info_full;
 	store_class->get_folder_sync = imap_store_get_folder_sync;
@@ -1849,9 +1849,9 @@ hash_folder_name (gconstpointer key)
 		return g_str_hash (key);
 }
 
-static gint
-compare_folder_name (gconstpointer a,
-                     gconstpointer b)
+static gboolean
+equal_folder_name (gconstpointer a,
+                   gconstpointer b)
 {
 	gconstpointer aname = a, bname = b;
 
