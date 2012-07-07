@@ -573,7 +573,6 @@ server_side_source_remove (ESource *source,
 	ESourceRegistryServer *server;
 	GQueue queue = G_QUEUE_INIT;
 	GList *list, *link;
-	gboolean success = TRUE;
 	GError *error = NULL;
 
 	/* XXX Yes we block here.  We do this operation
@@ -609,9 +608,21 @@ server_side_source_remove (ESource *source,
 		file = e_server_side_source_get_file (child);
 
 		if (file != NULL)
-			success = g_file_delete (file, cancellable, &error);
+			g_file_delete (file, cancellable, &error);
 
-		if (!success)
+		/* XXX Even though e_source_registry_server_remove_source()
+		 *     is called first, the object path is unexported from
+		 *     an idle callback some time after we have deleted the
+		 *     key file.  That creates a small window of time where
+		 *     the file is deleted but the object is still exported.
+		 *
+		 *     If a client calls e_source_remove() during that small
+		 *     window of time, we still want to report a successful
+		 *     removal, so disregard G_IO_ERROR_NOT_FOUND. */
+		if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
+			g_clear_error (&error);
+
+		if (error != NULL)
 			goto exit;
 	}
 
