@@ -3351,6 +3351,8 @@ camel_folder_expunge_sync (CamelFolder *folder,
                            GError **error)
 {
 	CamelFolderClass *class;
+	const gchar *display_name;
+	const gchar *message;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
@@ -3366,10 +3368,16 @@ camel_folder_expunge_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
+	message = _("Expunging folder '%s'");
+	display_name = camel_folder_get_display_name (folder);
+	camel_operation_push_message (cancellable, message, display_name);
+
 	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)) {
 		success = class->expunge_sync (folder, cancellable, error);
 		CAMEL_CHECK_GERROR (folder, expunge_sync, success, error);
 	}
+
+	camel_operation_pop_message (cancellable);
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 
