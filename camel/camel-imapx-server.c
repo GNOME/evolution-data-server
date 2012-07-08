@@ -4414,7 +4414,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 			camel_operation_push_message (
 				job->cancellable,
-				_("Fetching summary information for new messages in %s"),
+				_("Fetching summary information for new messages in '%s'"),
 				camel_folder_get_display_name (job->folder));
 
 			imapx_uidset_init (&data->uidset, uidset_size, 0);
@@ -4473,7 +4473,7 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 
 	camel_operation_push_message (
 		job->cancellable,
-		_("Scanning for changed messages in %s"),
+		_("Scanning for changed messages in '%s'"),
 		camel_folder_get_display_name (job->folder));
 
 	e('E', "Scanning from %s in %s\n", uid ? uid : "start",
@@ -4619,7 +4619,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 
 	camel_operation_push_message (
 		job->cancellable,
-		_("Fetching summary information for new messages in %s"),
+		_("Fetching summary information for new messages in '%s'"),
 		camel_folder_get_display_name (folder));
 
 	//printf("Fetch order: %d/%d\n", fetch_order, CAMEL_SORT_DESCENDING);
@@ -4721,10 +4721,13 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 		}
 
 		camel_operation_push_message (
-			job->cancellable,
-			ngettext ("Fetching summary information for %d message in %s",
-				  "Fetching summary information for %d messages in %s", data->fetch_msg_limit),
-			data->fetch_msg_limit, camel_folder_get_full_name (folder));
+			job->cancellable, ngettext (
+			"Fetching summary information for %d message in '%s'",
+			"Fetching summary information for %d messages in '%s'",
+			data->fetch_msg_limit),
+			data->fetch_msg_limit,
+			camel_folder_get_display_name (folder));
+
 		/* New account and fetching old messages, we would return just the limited number of newest messages */
 		ic = camel_imapx_command_new (
 			is, "FETCH", job->folder,
@@ -4747,27 +4750,29 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 		imapx_command_queue (is, ic);
 
 	} else if (ftype == CAMEL_FETCH_OLD_MESSAGES && total > 0) {
-			guint64 uidl;
-			start_uid = imapx_get_uid_from_index (folder->summary, 0);
-			uidl = strtoull (start_uid, NULL, 10);
-			end_uid = g_strdup_printf ("%" G_GINT64_MODIFIER "d", (((int)uidl)-fetch_limit > 0) ? (uidl-fetch_limit) : 1);
+		guint64 uidl;
+		start_uid = imapx_get_uid_from_index (folder->summary, 0);
+		uidl = strtoull (start_uid, NULL, 10);
+		end_uid = g_strdup_printf ("%" G_GINT64_MODIFIER "d", (((int)uidl)-fetch_limit > 0) ? (uidl-fetch_limit) : 1);
 
-			camel_operation_push_message (
-				job->cancellable,
-				ngettext ("Fetching summary information for %d message in %s",
-					  "Fetching summary information for %d messages in %s", data->fetch_msg_limit),
-				data->fetch_msg_limit, camel_folder_get_full_name (folder));
+		camel_operation_push_message (
+			job->cancellable, ngettext (
+			"Fetching summary information for %d message in '%s'",
+			"Fetching summary information for %d messages in '%s'",
+			data->fetch_msg_limit),
+			data->fetch_msg_limit,
+			camel_folder_get_display_name (folder));
 
-			ic = camel_imapx_command_new (is, "FETCH", job->folder,
-						"UID FETCH %s:%s (RFC822.SIZE RFC822.HEADER FLAGS)", start_uid, end_uid);
-			ic->pri = job->pri;
-			ic->complete = imapx_command_fetch_new_messages_done;
+		ic = camel_imapx_command_new (is, "FETCH", job->folder,
+					"UID FETCH %s:%s (RFC822.SIZE RFC822.HEADER FLAGS)", start_uid, end_uid);
+		ic->pri = job->pri;
+		ic->complete = imapx_command_fetch_new_messages_done;
 
-			g_free (start_uid);
-			g_free (end_uid);
+		g_free (start_uid);
+		g_free (end_uid);
 
-			camel_imapx_command_set_job (ic, job);
-			imapx_command_queue (is, ic);
+		camel_imapx_command_set_job (ic, job);
+		imapx_command_queue (is, ic);
 
 	} else {
 		g_error ("Shouldn't reach here. Incorrect fetch type");

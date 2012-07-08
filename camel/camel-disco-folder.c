@@ -409,12 +409,14 @@ disco_prepare_for_offline (CamelDiscoFolder *disco_folder,
 {
 	CamelFolder *folder = CAMEL_FOLDER (disco_folder);
 	GPtrArray *uids;
+	const gchar *display_name;
+	const gchar *message;
 	gint i;
 	gboolean success = TRUE;
 
-	camel_operation_push_message (
-		cancellable, _("Preparing folder '%s' for offline"),
-		camel_folder_get_full_name (folder));
+	message = _("Preparing folder '%s' for offline");
+	display_name = camel_folder_get_display_name (folder);
+	camel_operation_push_message (cancellable, message, display_name);
 
 	if (expression)
 		uids = camel_folder_search_by_expression (folder, expression, cancellable, error);

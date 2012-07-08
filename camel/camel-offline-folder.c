@@ -200,11 +200,13 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 {
 	CamelFolder *folder = (CamelFolder *) offline;
 	GPtrArray *uids, *uncached_uids = NULL;
+	const gchar *display_name;
+	const gchar *message;
 	gint i;
 
-	camel_operation_push_message (
-		cancellable, _("Syncing messages in folder '%s' to disk"),
-		camel_folder_get_full_name (folder));
+	message = _("Syncing messages in folder '%s' to disk");
+	display_name = camel_folder_get_display_name (folder);
+	camel_operation_push_message (cancellable, message, display_name);
 
 	if (expression)
 		uids = camel_folder_search_by_expression (folder, expression, cancellable, NULL);

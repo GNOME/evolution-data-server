@@ -475,14 +475,15 @@ vee_folder_process_changes (CamelSession *session,
 	FolderChangedData *data;
 	GAsyncQueue *change_queue;
 	const gchar *display_name;
+	const gchar *message;
 
 	folder = CAMEL_FOLDER (vee_folder);
-	display_name = camel_folder_get_display_name (folder);
 
 	change_queue = vee_folder->priv->change_queue;
 
-	camel_operation_push_message (
-		cancellable, _("Updating %s folder"), display_name);
+	message = _("Updating folder '%s'");
+	display_name = camel_folder_get_display_name (folder);
+	camel_operation_push_message (cancellable, message, display_name);
 
 	while ((data = g_async_queue_try_pop (change_queue)) != NULL) {
 		vee_folder_subfolder_changed (vee_folder, data->subfolder, data->changes, cancellable, error);
