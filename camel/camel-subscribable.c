@@ -18,6 +18,9 @@
 
 #include "camel-subscribable.h"
 
+#include <config.h>
+#include <glib/gi18n-lib.h>
+
 #include "camel-debug.h"
 #include "camel-session.h"
 #include "camel-vtrash-folder.h"
@@ -355,6 +358,7 @@ camel_subscribable_subscribe_folder_sync (CamelSubscribable *subscribable,
                                           GError **error)
 {
 	CamelSubscribableInterface *interface;
+	const gchar *message;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable), FALSE);
@@ -375,10 +379,15 @@ camel_subscribable_subscribe_folder_sync (CamelSubscribable *subscribable,
 		return FALSE;
 	}
 
+	message = _("Subscribing to folder '%s'");
+	camel_operation_push_message (cancellable, message, folder_name);
+
 	success = interface->subscribe_folder_sync (
 		subscribable, folder_name, cancellable, error);
 	CAMEL_CHECK_GERROR (
 		subscribable, subscribe_folder_sync, success, error);
+
+	camel_operation_pop_message (cancellable);
 
 	camel_store_unlock (
 		CAMEL_STORE (subscribable),
@@ -475,6 +484,7 @@ camel_subscribable_unsubscribe_folder_sync (CamelSubscribable *subscribable,
                                             GError **error)
 {
 	CamelSubscribableInterface *interface;
+	const gchar *message;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable), FALSE);
@@ -496,6 +506,9 @@ camel_subscribable_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 		return FALSE;
 	}
 
+	message = _("Unsubscribing from folder '%s'");
+	camel_operation_push_message (cancellable, message, folder_name);
+
 	success = interface->unsubscribe_folder_sync (
 		subscribable, folder_name, cancellable, error);
 	CAMEL_CHECK_GERROR (
@@ -504,6 +517,8 @@ camel_subscribable_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 	if (success)
 		subscribable_delete_cached_folder (
 			CAMEL_STORE (subscribable), folder_name);
+
+	camel_operation_pop_message (cancellable);
 
 	camel_store_unlock (
 		CAMEL_STORE (subscribable),
