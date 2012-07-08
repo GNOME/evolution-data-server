@@ -373,11 +373,15 @@ camel_subscribable_subscribe_folder_sync (CamelSubscribable *subscribable,
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (
-			CAMEL_STORE (subscribable),
-			CAMEL_STORE_FOLDER_LOCK);
-		return FALSE;
+		success = FALSE;
+		goto exit;
 	}
+
+	/* Need to establish a connection before subscribing. */
+	success = camel_service_connect_sync (
+		CAMEL_SERVICE (subscribable), cancellable, error);
+	if (!success)
+		goto exit;
 
 	message = _("Subscribing to folder '%s'");
 	camel_operation_push_message (cancellable, message, folder_name);
@@ -389,6 +393,7 @@ camel_subscribable_subscribe_folder_sync (CamelSubscribable *subscribable,
 
 	camel_operation_pop_message (cancellable);
 
+exit:
 	camel_store_unlock (
 		CAMEL_STORE (subscribable),
 		CAMEL_STORE_FOLDER_LOCK);
@@ -500,11 +505,15 @@ camel_subscribable_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 
 	/* Check for cancellation after locking. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		camel_store_unlock (
-			CAMEL_STORE (subscribable),
-			CAMEL_STORE_FOLDER_LOCK);
-		return FALSE;
+		success = FALSE;
+		goto exit;
 	}
+
+	/* Need to establish a connection before unsubscribing. */
+	success = camel_service_connect_sync (
+		CAMEL_SERVICE (subscribable), cancellable, error);
+	if (!success)
+		goto exit;
 
 	message = _("Unsubscribing from folder '%s'");
 	camel_operation_push_message (cancellable, message, folder_name);
@@ -520,6 +529,7 @@ camel_subscribable_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 
 	camel_operation_pop_message (cancellable);
 
+exit:
 	camel_store_unlock (
 		CAMEL_STORE (subscribable),
 		CAMEL_STORE_FOLDER_LOCK);
