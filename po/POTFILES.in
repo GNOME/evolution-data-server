@@ -124,6 +124,7 @@ camel/camel-stream-mem.c
 camel/camel-stream-null.c
 camel/camel-stream-process.c
 camel/camel-string-utils.c
+camel/camel-subscribable.c
 camel/camel-tcp-stream.c
 camel/camel-tcp-stream-raw.c
 camel/camel-tcp-stream-ssl.c
