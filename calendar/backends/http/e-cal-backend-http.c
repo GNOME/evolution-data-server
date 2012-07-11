@@ -169,6 +169,7 @@ e_cal_backend_http_constructed (GObject *object)
 	G_OBJECT_CLASS (e_cal_backend_http_parent_class)->constructed (object);
 
 	soup_session = soup_session_sync_new ();
+	g_object_set (soup_session, SOUP_SESSION_TIMEOUT, 90, NULL);
 
 	backend = E_CAL_BACKEND_HTTP (object);
 	backend->priv->soup_session = soup_session;

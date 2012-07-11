@@ -1294,6 +1294,7 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	g_free (filename);
 
 	session = soup_session_sync_new ();
+	g_object_set (session, SOUP_SESSION_TIMEOUT, 90, NULL);
 
 	g_object_bind_property (
 		webdav_extension, "ignore-invalid-cert",

@@ -418,7 +418,9 @@ goa_ews_autodiscover (GoaObject *goa_object,
 	data->msgs[1] = ews_create_msg_for_url (url2, buf);
 	data->session = soup_session_async_new_with_options (
 		SOUP_SESSION_USE_NTLM, TRUE,
-		SOUP_SESSION_USE_THREAD_CONTEXT, TRUE, NULL);
+		SOUP_SESSION_USE_THREAD_CONTEXT, TRUE,
+		SOUP_SESSION_TIMEOUT, 90,
+		NULL);
 	if (G_IS_CANCELLABLE (cancellable)) {
 		data->cancellable = g_object_ref (cancellable);
 		data->cancellable_id = g_cancellable_connect (
