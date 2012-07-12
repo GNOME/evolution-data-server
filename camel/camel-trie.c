@@ -307,7 +307,7 @@ camel_trie_add (CamelTrie *trie,
 		}
 	}
 
-	d(fprintf (stderr, "\nafter adding pattern '%s' to trie %p:\n", pattern, trie));
+	d (fprintf (stderr, "\nafter adding pattern '%s' to trie %p:\n", pattern, trie));
 	d (dump_trie (&trie->root, 0));
 }
 

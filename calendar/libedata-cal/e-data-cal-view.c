@@ -442,7 +442,7 @@ impl_DataCalView_start (EGdbusCalView *object,
 
 	if (!priv->started) {
 		priv->started = TRUE;
-		e_debug_log(FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES, "---;%p;VIEW-START;%s;%s", view, e_data_cal_view_get_text (view), G_OBJECT_TYPE_NAME(priv->backend));
+		e_debug_log (FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES, "---;%p;VIEW-START;%s;%s", view, e_data_cal_view_get_text (view), G_OBJECT_TYPE_NAME (priv->backend));
 		e_cal_backend_start_view (priv->backend, view);
 	}
 

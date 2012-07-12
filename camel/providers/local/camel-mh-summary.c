@@ -105,9 +105,9 @@ camel_mh_summary_new (CamelFolder *folder,
 		CamelStore *parent_store;
 
 		parent_store = camel_folder_get_parent_store (folder);
-		camel_db_set_collate (parent_store->cdb_r, "uid", "mh_uid_sort", (CamelDBCollate)camel_local_frompos_sort);
-		((CamelFolderSummary *)o)->sort_by = "uid";
-		((CamelFolderSummary *)o)->collate = "mh_uid_sort";
+		camel_db_set_collate (parent_store->cdb_r, "uid", "mh_uid_sort", (CamelDBCollate) camel_local_frompos_sort);
+		((CamelFolderSummary *) o)->sort_by = "uid";
+		((CamelFolderSummary *) o)->collate = "mh_uid_sort";
 	}
 
 	camel_local_summary_construct ((CamelLocalSummary *) o, mhdir, index);
@@ -133,7 +133,7 @@ mh_summary_next_uid_string (CamelFolderSummary *s)
 		/* else scan for one - and create it too, to make sure */
 		do {
 			uid = camel_folder_summary_next_uid (s);
-			name = g_strdup_printf("%s/%u", cls->folder_path, uid);
+			name = g_strdup_printf ("%s/%u", cls->folder_path, uid);
 			/* O_EXCL isn't guaranteed, sigh.  Oh well, bad luck, mh has problems anyway */
 			fd = open (name, O_WRONLY | O_CREAT | O_EXCL | O_LARGEFILE, 0600);
 			g_free (name);
@@ -142,7 +142,7 @@ mh_summary_next_uid_string (CamelFolderSummary *s)
 		if (fd != -1)
 			close (fd);
 
-		uidstr = g_strdup_printf("%u", uid);
+		uidstr = g_strdup_printf ("%u", uid);
 	}
 
 	return uidstr;
@@ -155,11 +155,11 @@ camel_mh_summary_add (CamelLocalSummary *cls,
                       GCancellable *cancellable)
 {
 	CamelMhSummary *mhs = (CamelMhSummary *) cls;
-	gchar *filename = g_strdup_printf("%s/%s", cls->folder_path, name);
+	gchar *filename = g_strdup_printf ("%s/%s", cls->folder_path, name);
 	gint fd;
 	CamelMimeParser *mp;
 
-	d(printf("summarising: %s\n", name));
+	d (printf ("summarising: %s\n", name));
 
 	fd = open (filename, O_RDONLY | O_LARGEFILE);
 	if (fd == -1) {
@@ -171,7 +171,7 @@ camel_mh_summary_add (CamelLocalSummary *cls,
 	camel_mime_parser_scan_from (mp, FALSE);
 	camel_mime_parser_init_with_fd (mp, fd);
 	if (cls->index && (forceindex || !camel_index_has_name (cls->index, name))) {
-		d(printf("forcing indexing of message content\n"));
+		d (printf ("forcing indexing of message content\n"));
 		camel_folder_summary_set_index ((CamelFolderSummary *) mhs, cls->index);
 	} else {
 		camel_folder_summary_set_index ((CamelFolderSummary *) mhs, NULL);
@@ -190,7 +190,7 @@ remove_summary (gchar *key,
                 CamelMessageInfo *info,
                 CamelLocalSummary *cls)
 {
-	d(printf("removing message %s from summary\n", key));
+	d (printf ("removing message %s from summary\n", key));
 	if (cls->index)
 		camel_index_delete_name (cls->index, camel_message_info_uid (info));
 	camel_folder_summary_remove ((CamelFolderSummary *) cls, info);
@@ -215,7 +215,7 @@ mh_summary_check (CamelLocalSummary *cls,
 
 	/* FIXME: Handle changeinfo */
 
-	d(printf("checking summary ...\n"));
+	d (printf ("checking summary ...\n"));
 
 	/* scan the directory, check for mail files not in the index, or index entries that
 	 * no longer exist */
@@ -297,7 +297,7 @@ mh_summary_sync (CamelLocalSummary *cls,
 	gchar *name;
 	const gchar *uid;
 
-	d(printf("summary_sync(expunge=%s)\n", expunge?"true":"false"));
+	d (printf ("summary_sync(expunge=%s)\n", expunge?"true":"false"));
 
 	/* we could probably get away without this ... but why not use it, esp if we're going to
 	 * be doing any significant io already */
@@ -313,8 +313,8 @@ mh_summary_sync (CamelLocalSummary *cls,
 		g_assert (info);
 		if (expunge && (info->info.flags & CAMEL_MESSAGE_DELETED)) {
 			uid = camel_message_info_uid (info);
-			name = g_strdup_printf("%s/%s", cls->folder_path, uid);
-			d(printf("deleting %s\n", name));
+			name = g_strdup_printf ("%s/%s", cls->folder_path, uid);
+			d (printf ("deleting %s\n", name));
 			if (unlink (name) == 0 || errno == ENOENT) {
 
 				/* FIXME: put this in folder_summary::remove()? */

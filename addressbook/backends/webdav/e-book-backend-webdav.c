@@ -151,13 +151,13 @@ download_contact (EBookBackendWebdav *webdav,
 
 	status = soup_session_send_message (webdav->priv->session, message);
 	if (status != 200) {
-		g_warning("Couldn't load '%s' (http status %d)", uri, status);
+		g_warning ("Couldn't load '%s' (http status %d)", uri, status);
 		g_object_unref (message);
 		return NULL;
 	}
 
 	if (message->response_body == NULL) {
-		g_message("no response body after requesting '%s'", uri);
+		g_message ("no response body after requesting '%s'", uri);
 		g_object_unref (message);
 		return NULL;
 	}
@@ -167,12 +167,12 @@ download_contact (EBookBackendWebdav *webdav,
 		return NULL;
 	}
 
-	etag = soup_message_headers_get(message->response_headers, "ETag");
+	etag = soup_message_headers_get (message->response_headers, "ETag");
 
 	/* we use our URI as UID */
 	contact = e_contact_new_from_vcard_with_uid (message->response_body->data, uri);
 	if (contact == NULL) {
-		g_warning("Invalid vcard at '%s'", uri);
+		g_warning ("Invalid vcard at '%s'", uri);
 		g_object_unref (message);
 		return NULL;
 	}
@@ -211,7 +211,7 @@ upload_contact (EBookBackendWebdav *webdav,
 
 	uri = e_contact_get (contact, E_CONTACT_UID);
 	if (uri == NULL) {
-		g_warning("can't upload contact without UID");
+		g_warning ("can't upload contact without UID");
 		return 400;
 	}
 
@@ -230,7 +230,7 @@ upload_contact (EBookBackendWebdav *webdav,
 			soup_message_headers_append (message->request_headers,
 						    "If-None-Match", "*");
 		} else if (etag[0] == 'W' && etag[1] == '/') {
-			g_warning("we only have a weak ETag, don't use If-Match synchronisation");
+			g_warning ("we only have a weak ETag, don't use If-Match synchronisation");
 		} else {
 			soup_message_headers_append (message->request_headers,
 						    "If-Match", etag);
@@ -243,11 +243,11 @@ upload_contact (EBookBackendWebdav *webdav,
 	e_contact_set (contact, E_CONTACT_UID, NULL);
 	e_contact_set (contact, E_CONTACT_REV, NULL);
 	request = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
-	soup_message_set_request(message, "text/vcard", SOUP_MEMORY_TEMPORARY,
+	soup_message_set_request (message, "text/vcard", SOUP_MEMORY_TEMPORARY,
 				 request, strlen (request));
 
 	status   = soup_session_send_message (webdav->priv->session, message);
-	new_etag = soup_message_headers_get(message->response_headers, "ETag");
+	new_etag = soup_message_headers_get (message->response_headers, "ETag");
 
 	redir_uri = soup_message_headers_get (message->response_headers, "Location");
 
@@ -323,7 +323,7 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 	if (vcards->next != NULL) {
 		e_data_book_respond_create_contacts (book, opid,
 						     EDB_ERROR_EX (NOT_SUPPORTED,
-		                                     _("The backend does not support bulk additions")),
+						     _("The backend does not support bulk additions")),
 						     NULL);
 		return;
 	}
@@ -335,7 +335,7 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 
 	/* do 3 rand() calls to construct a unique ID... poor way but should be
 	 * good enough for us */
-	uid = g_strdup_printf("%s%08X-%08X-%08X.vcf", priv->uri, rand(), rand(),
+	uid = g_strdup_printf ("%s%08X-%08X-%08X.vcf", priv->uri, rand (), rand (),
 			      rand ());
 
 	contact = e_contact_new_from_vcard_with_uid (vcard, uid);
@@ -351,7 +351,7 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 		} else {
 			e_data_book_respond_create_contacts (book, opid,
 					e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-				        _("Create resource '%s' failed with HTTP status: %d (%s)"), uid, status, status_reason),
+					_("Create resource '%s' failed with HTTP status: %d (%s)"), uid, status, status_reason),
 					NULL);
 		}
 		g_free (uid);
@@ -366,7 +366,7 @@ e_book_backend_webdav_create_contacts (EBookBackend *backend,
 		const gchar *new_uid;
 		EContact *new_contact;
 
-		g_warning("Server didn't return etag for new address resource");
+		g_warning ("Server didn't return etag for new address resource");
 		new_uid = e_contact_get_const (contact, E_CONTACT_UID);
 		new_contact = download_contact (webdav, new_uid);
 		g_object_unref (contact);
@@ -430,7 +430,7 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 	if (id_list->next != NULL) {
 		e_data_book_respond_remove_contacts (book, opid,
 						     EDB_ERROR_EX (NOT_SUPPORTED,
-		                                     _("The backend does not support bulk removals")),
+						     _("The backend does not support bulk removals")),
 						     NULL);
 		return;
 	}
@@ -441,10 +441,10 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 			e_data_book_respond_remove_contacts (book, opid,
 							     webdav_handle_auth_request (webdav), NULL);
 		} else {
-			g_warning("DELETE failed with HTTP status %d", status);
+			g_warning ("DELETE failed with HTTP status %d", status);
 			e_data_book_respond_remove_contacts (book, opid,
 							     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-						                         "DELETE failed with HTTP status %d", status),
+									 "DELETE failed with HTTP status %d", status),
 							     NULL);
 		}
 		return;
@@ -484,7 +484,7 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 	if (vcards->next != NULL) {
 		e_data_book_respond_modify_contacts (book, opid,
 						     EDB_ERROR_EX (NOT_SUPPORTED,
-		                                     _("The backend does not support bulk modifications")),
+						     _("The backend does not support bulk modifications")),
 						     NULL);
 		return;
 	}
@@ -529,7 +529,7 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 	if (etag == NULL || (etag[0] == 'W' && etag[1] == '/')) {
 		EContact *new_contact;
 
-		g_warning("Server didn't return etag for modified address resource");
+		g_warning ("Server didn't return etag for modified address resource");
 		new_contact = download_contact (webdav, uid);
 		if (new_contact != NULL) {
 			contact = new_contact;
@@ -653,7 +653,7 @@ parse_response_tag (const parser_strings_t *strings,
 	}
 
 	if (href == NULL) {
-		g_warning("webdav returned response element without href");
+		g_warning ("webdav returned response element without href");
 		return NULL;
 	}
 
@@ -673,13 +673,13 @@ parse_propfind_response (xmlTextReaderPtr reader)
 	/* get internalized versions of some strings to avoid strcmp while
 	 * parsing */
 	strings.multistatus
-		= xmlTextReaderConstString(reader, BAD_CAST "multistatus");
-	strings.dav         = xmlTextReaderConstString(reader, BAD_CAST "DAV:");
-	strings.href        = xmlTextReaderConstString(reader, BAD_CAST "href");
-	strings.response    = xmlTextReaderConstString(reader, BAD_CAST "response");
-	strings.propstat    = xmlTextReaderConstString(reader, BAD_CAST "propstat");
-	strings.prop        = xmlTextReaderConstString(reader, BAD_CAST "prop");
-	strings.getetag     = xmlTextReaderConstString(reader, BAD_CAST "getetag");
+		= xmlTextReaderConstString (reader, BAD_CAST "multistatus");
+	strings.dav         = xmlTextReaderConstString (reader, BAD_CAST "DAV:");
+	strings.href        = xmlTextReaderConstString (reader, BAD_CAST "href");
+	strings.response    = xmlTextReaderConstString (reader, BAD_CAST "response");
+	strings.propstat    = xmlTextReaderConstString (reader, BAD_CAST "propstat");
+	strings.prop        = xmlTextReaderConstString (reader, BAD_CAST "prop");
+	strings.getetag     = xmlTextReaderConstString (reader, BAD_CAST "getetag");
 
 	while (xmlTextReaderRead (reader)
 			&& xmlTextReaderNodeType (reader) != XML_READER_TYPE_ELEMENT) {
@@ -687,7 +687,7 @@ parse_propfind_response (xmlTextReaderPtr reader)
 
 	if (xmlTextReaderConstLocalName (reader) != strings.multistatus
 			|| xmlTextReaderConstNamespaceUri (reader) != strings.dav) {
-		g_warning("webdav PROPFIND result is not <DAV:multistatus>");
+		g_warning ("webdav PROPFIND result is not <DAV:multistatus>");
 		return NULL;
 	}
 
@@ -727,8 +727,8 @@ send_propfind (EBookBackendWebdav *webdav)
 	message = soup_message_new (SOUP_METHOD_PROPFIND, priv->uri);
 	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
 	soup_message_headers_append (message->request_headers, "Connection", "close");
-	soup_message_headers_append(message->request_headers, "Depth", "1");
-	soup_message_set_request(message, "text/xml", SOUP_MEMORY_TEMPORARY,
+	soup_message_headers_append (message->request_headers, "Depth", "1");
+	soup_message_set_request (message, "text/xml", SOUP_MEMORY_TEMPORARY,
 			(gchar *) request, strlen (request));
 
 	soup_session_send_message (priv->session, message);
@@ -853,7 +853,7 @@ check_addressbook_changed (EBookBackendWebdav *webdav,
 				if (txt && *txt) {
 					gint len = strlen (txt);
 
-					if (*txt == '\"' && len > 2 && txt [len - 1] == '\"') {
+					if (*txt == '\"' && len > 2 && txt[len - 1] == '\"') {
 						/* dequote */
 						*new_ctag = g_strndup (txt + 1, len - 2);
 					} else {
@@ -943,7 +943,7 @@ download_contacts (EBookBackendWebdav *webdav,
 		return error;
 	}
 	if (message->response_body == NULL) {
-		g_warning("No response body in webdav PROPFIND result");
+		g_warning ("No response body in webdav PROPFIND result");
 		g_object_unref (message);
 		g_free (new_ctag);
 		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "No response body in webdav PROPFIND result");
@@ -977,7 +977,7 @@ download_contacts (EBookBackendWebdav *webdav,
 		if (book_view != NULL) {
 			gfloat percent = 100.0 / count * i;
 			gchar buf[100];
-			snprintf(buf, sizeof(buf), "Loading Contacts (%d%%)", (gint)percent);
+			snprintf (buf, sizeof (buf), "Loading Contacts (%d%%)", (gint) percent);
 			e_data_book_view_notify_progress (book_view, -1, buf);
 		}
 

@@ -161,7 +161,7 @@ create_directory (const gchar *dirname,
 		else
 			g_propagate_error (error,
 					   e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-									 _("Failed to make directory %s: %s"), 
+									 _("Failed to make directory %s: %s"),
 									 dirname, g_strerror (errno)));
 		return FALSE;
 	}
@@ -267,7 +267,7 @@ maybe_delete_uri (EBookBackendFile *bf,
 	if (bf->priv->photo_dirname &&
 	    !strncmp (bf->priv->photo_dirname, filename, strlen (bf->priv->photo_dirname))) {
 
-		d(g_print ("Deleting uri file: %s\n", filename));
+		d (g_print ("Deleting uri file: %s\n", filename));
 
 		/* Deleting uris should not cause the backend to fail to update
 		 * a contact so the best we can do from here is log warnings
@@ -534,7 +534,7 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
 
 			e_contact_set (contact, field, new_photo);
 
-			d(g_print ("Backend modified incomming binary blob to be %s:\n", uri));
+			d (g_print ("Backend modified incomming binary blob to be %s:\n", uri));
 
 			status = STATUS_MODIFIED;
 
@@ -609,7 +609,7 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
 
 				e_contact_set (contact, field, new_photo);
 
-				d(g_print ("Backend modified incomming shared uri to be %s:\n", new_uri));
+				d (g_print ("Backend modified incomming shared uri to be %s:\n", new_uri));
 
 				e_contact_photo_free (new_photo);
 				status = STATUS_MODIFIED;
@@ -755,7 +755,7 @@ e_book_backend_file_create_unique_id (void)
 	 * it's doubtful 2^32 id's will be created in a second, so we
 	 * should be okay. */
 	static guint c = 0;
-	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", time(NULL), c++);
+	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", time (NULL), c++);
 }
 
 static gchar *
@@ -1281,7 +1281,7 @@ e_book_backend_file_get_contact_list (EBookBackendSync *backend,
 	gboolean searched_summary = FALSE;
 	gboolean with_all_required_fields = FALSE;
 
-	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
+	d (printf ("e_book_backend_file_get_contact_list (%s)\n", search));
 
 	if (!db) {
 		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
@@ -1403,7 +1403,7 @@ e_book_backend_file_get_contact_list_uids (EBookBackendSync *backend,
 	GSList *uids = NULL;
 	gboolean searched = FALSE;
 
-	d(printf ("e_book_backend_file_get_contact_list (%s)\n", search));
+	d (printf ("e_book_backend_file_get_contact_list (%s)\n", search));
 
 	if (!db) {
 		g_propagate_error (perror, EDB_NOT_OPENED_ERROR);
@@ -1484,7 +1484,7 @@ typedef struct {
 static void
 closure_destroy (FileBackendSearchClosure *closure)
 {
-	d(printf ("destroying search closure\n"));
+	d (printf ("destroying search closure\n"));
 	e_flag_free (closure->running);
 	g_free (closure);
 }
@@ -1549,7 +1549,7 @@ book_view_thread (gpointer data)
 	}
 	bf = closure->bf;
 
-	d(printf ("starting initial population of book view\n"));
+	d (printf ("starting initial population of book view\n"));
 
 	/* ref the book view because it'll be removed and unrefed
 	 * when/if it's stopped */
@@ -1573,7 +1573,7 @@ book_view_thread (gpointer data)
 		allcontacts = FALSE;
 	}
 
-	d(printf ("signalling parent thread\n"));
+	d (printf ("signalling parent thread\n"));
 	e_flag_set (closure->running);
 
 	summary_list = e_book_backend_sqlitedb_search (bf->priv->sqlitedb,
@@ -1660,7 +1660,7 @@ book_view_thread (gpointer data)
 
 	e_data_book_view_unref (book_view);
 
-	d(printf ("finished population of book view\n"));
+	d (printf ("finished population of book view\n"));
 
 	return NULL;
 }
@@ -1671,13 +1671,13 @@ e_book_backend_file_start_book_view (EBookBackend *backend,
 {
 	FileBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_FILE (backend));
 
-	d(printf ("starting book view thread\n"));
+	d (printf ("starting book view thread\n"));
 	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
 
 	e_flag_wait (closure->running);
 
 	/* at this point we know the book view thread is actually running */
-	d(printf ("returning from start_book_view\n"));
+	d (printf ("returning from start_book_view\n"));
 }
 
 static void
@@ -1690,7 +1690,7 @@ e_book_backend_file_stop_book_view (EBookBackend *backend,
 	if (!closure)
 		return;
 
-	d(printf ("stopping query\n"));
+	d (printf ("stopping query\n"));
 	need_join = e_flag_is_set (closure->running);
 	e_flag_clear (closure->running);
 

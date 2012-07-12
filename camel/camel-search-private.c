@@ -57,7 +57,7 @@ camel_search_build_match_regex (regex_t *pattern,
                                 struct _CamelSExpResult **argv,
                                 GError **error)
 {
-	GString *match = g_string_new("");
+	GString *match = g_string_new ("");
 	gint c, i, count = 0, err;
 	gchar *word;
 	gint flags;
@@ -89,7 +89,7 @@ camel_search_build_match_regex (regex_t *pattern,
 			}
 			count++;
 		} else {
-			g_warning("Invalid type passed to body-contains match function");
+			g_warning ("Invalid type passed to body-contains match function");
 		}
 	}
 	if (argc > 1)
@@ -114,7 +114,7 @@ camel_search_build_match_regex (regex_t *pattern,
 
 		regfree (pattern);
 	}
-	d(printf("Built regex: '%s'\n", match->str));
+	d (printf ("Built regex: '%s'\n", match->str));
 	g_string_free (match, TRUE);
 
 	return err;
@@ -176,7 +176,7 @@ header_soundex (const gchar *header,
 	/* FIXME: Should this convert to utf8, and split based on that, and what not?
 	 * soundex only makes sense for us-ascii though ... */
 
-	word = g_string_new("");
+	word = g_string_new ("");
 	p = header;
 	do {
 		c = *p++;
@@ -523,8 +523,8 @@ camel_search_message_body_contains (CamelDataWrapper *object,
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
 		/* for messages we only look at its contents */
 		truth = camel_search_message_body_contains ((CamelDataWrapper *) containee, pattern);
-	} else if (camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "text", "*")
-		|| camel_content_type_is(CAMEL_DATA_WRAPPER (containee)->mime_type, "x-evolution", "evolution-rss-feed")) {
+	} else if (camel_content_type_is (CAMEL_DATA_WRAPPER (containee)->mime_type, "text", "*")
+		|| camel_content_type_is (CAMEL_DATA_WRAPPER (containee)->mime_type, "x-evolution", "evolution-rss-feed")) {
 		/* for all other text parts, we look inside, otherwise we dont care */
 		CamelStream *stream;
 		GByteArray *byte_array;
@@ -590,7 +590,7 @@ camel_search_words_split (const guchar *in)
 	gint inquote = 0;
 
 	words = g_malloc0 (sizeof (*words));
-	w = g_string_new("");
+	w = g_string_new ("");
 
 	do {
 		c = camel_utf8_getc (&in);

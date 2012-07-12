@@ -63,11 +63,11 @@ nntp_address_encode (CamelAddress *address)
 	if (address->addresses->len == 0)
 		return NULL;
 
-	out = g_string_new("");
+	out = g_string_new ("");
 
 	for (i = 0; i < address->addresses->len; i++) {
 		if (i != 0)
-			g_string_append(out, ", ");
+			g_string_append (out, ", ");
 
 		g_string_append (out, g_ptr_array_index (address->addresses, i));
 	}

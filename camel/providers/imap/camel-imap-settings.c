@@ -670,7 +670,7 @@ camel_imap_settings_set_check_all (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	if ((settings->priv->check_all ? 1 : 0) == (check_all ? 1 : 0))
+	if (settings->priv->check_all == check_all)
 		return;
 
 	settings->priv->check_all = check_all;
@@ -713,7 +713,7 @@ camel_imap_settings_set_check_subscribed (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	if ((settings->priv->check_subscribed ? 1 : 0) == (check_subscribed ? 1 : 0))
+	if (settings->priv->check_subscribed == check_subscribed)
 		return;
 
 	settings->priv->check_subscribed = check_subscribed;
@@ -910,7 +910,7 @@ camel_imap_settings_set_filter_junk (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	if ((settings->priv->filter_junk ? 1 : 0) == (filter_junk ? 1 : 0))
+	if (settings->priv->filter_junk == filter_junk)
 		return;
 
 	settings->priv->filter_junk = filter_junk;
@@ -951,7 +951,7 @@ camel_imap_settings_set_filter_all (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	if ((settings->priv->filter_all ? 1 : 0) == (filter_all ? 1 : 0))
+	if (settings->priv->filter_all == filter_all)
 		return;
 
 	settings->priv->filter_all = filter_all;
@@ -994,7 +994,7 @@ camel_imap_settings_set_filter_junk_inbox (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	if ((settings->priv->filter_junk_inbox ? 1 : 0) == (filter_junk_inbox ? 1 : 0))
+	if (settings->priv->filter_junk_inbox == filter_junk_inbox)
 		return;
 
 	settings->priv->filter_junk_inbox = filter_junk_inbox;
@@ -1388,7 +1388,7 @@ camel_imap_settings_set_use_namespace (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	if ((settings->priv->use_namespace ? 1 : 0) == (use_namespace ? 1 : 0))
+	if (settings->priv->use_namespace == use_namespace)
 		return;
 
 	settings->priv->use_namespace = use_namespace;
@@ -1431,7 +1431,7 @@ camel_imap_settings_set_use_real_junk_path (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	if ((settings->priv->use_real_junk_path ? 1 : 0) == (use_real_junk_path ? 1 : 0))
+	if (settings->priv->use_real_junk_path == use_real_junk_path)
 		return;
 
 	settings->priv->use_real_junk_path = use_real_junk_path;
@@ -1474,7 +1474,7 @@ camel_imap_settings_set_use_real_trash_path (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	if ((settings->priv->use_real_trash_path ? 1 : 0) == (use_real_trash_path ? 1 : 0))
+	if (settings->priv->use_real_trash_path == use_real_trash_path)
 		return;
 
 	settings->priv->use_real_trash_path = use_real_trash_path;
@@ -1532,7 +1532,7 @@ camel_imap_settings_set_use_shell_command (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	if ((settings->priv->use_shell_command ? 1 : 0) == (use_shell_command ? 1 : 0))
+	if (settings->priv->use_shell_command == use_shell_command)
 		return;
 
 	settings->priv->use_shell_command = use_shell_command;
@@ -1575,7 +1575,7 @@ camel_imap_settings_set_use_subscriptions (CamelImapSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_IMAP_SETTINGS (settings));
 
-	if ((settings->priv->use_subscriptions ? 1 : 0) == (use_subscriptions ? 1 : 0))
+	if (settings->priv->use_subscriptions == use_subscriptions)
 		return;
 
 	settings->priv->use_subscriptions = use_subscriptions;

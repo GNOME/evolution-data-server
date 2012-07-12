@@ -170,7 +170,7 @@ summary_header_from_db (CamelFolderSummary *s,
 	ims->validity = bdata_extract_digit (&part);
 
 	if (ims->version > CAMEL_IMAP_SUMMARY_VERSION) {
-		g_warning("Unkown summary version\n");
+		g_warning ("Unkown summary version\n");
 		errno = EINVAL;
 		return FALSE;
 	}
@@ -270,12 +270,12 @@ content_info_to_db (CamelFolderSummary *s,
 	gchar *oldr;
 	if (info->type) {
 		oldr = mir->cinfo;
-		mir->cinfo = oldr ? g_strdup_printf("%s 1", oldr) : g_strdup ("1");
+		mir->cinfo = oldr ? g_strdup_printf ("%s 1", oldr) : g_strdup ("1");
 		g_free (oldr);
 		return CAMEL_FOLDER_SUMMARY_CLASS (camel_imap_summary_parent_class)->content_info_to_db (s, info, mir);
 	} else {
 		oldr = mir->cinfo;
-		mir->cinfo = oldr ? g_strdup_printf("%s 0", oldr) : g_strdup ("0");
+		mir->cinfo = oldr ? g_strdup_printf ("%s 0", oldr) : g_strdup ("0");
 		g_free (oldr);
 		return TRUE;
 	}

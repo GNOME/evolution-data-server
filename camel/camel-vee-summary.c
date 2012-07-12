@@ -143,7 +143,7 @@ vee_info_user_tag (const CamelMessageInfo *mi,
 	CamelMessageInfo *rmi = camel_folder_summary_get (((CamelVeeMessageInfo *) mi)->orig_summary, mi->uid + 8);
 	const gchar *ret;
 
-	HANDLE_NULL_INFO("");
+	HANDLE_NULL_INFO ("");
 	ret = camel_message_info_user_tag (rmi, id);
 	camel_message_info_free (rmi);
 
@@ -289,7 +289,7 @@ message_info_from_uid (CamelFolderSummary *s,
 		 * Otherwise, the first byte itself would return in strcmp, saving the CPU.
 		 */
 		if (!camel_folder_summary_check_uid (s, uid)) {
-			d(g_message ("Unable to find %s in the summary of %s", uid,
+			d (g_message ("Unable to find %s in the summary of %s", uid,
 				camel_folder_get_full_name (camel_folder_summary_get_folder (s->folder))));
 			return NULL;
 		}
@@ -447,7 +447,7 @@ camel_vee_summary_add (CamelVeeSummary *s,
 	vmi = (CamelVeeMessageInfo *) camel_folder_summary_peek_loaded (&s->summary, vuid);
 	if (vmi) {
 		/* Possible that the entry is loaded, see if it has the summary */
-		d(g_message ("%s - already there\n", vuid));
+		d (g_message ("%s - already there\n", vuid));
 		if (!vmi->orig_summary)
 			vmi->orig_summary = g_object_ref (orig_folder->summary);
 
@@ -511,7 +511,7 @@ camel_vee_summary_remove (CamelVeeSummary *summary,
 
 	if (mi) {
 		/* under twice, the first for camel_folder_summary_peek_loaded(),
-		   the second to actually free the mi */
+		 * the second to actually free the mi */
 		camel_message_info_free (mi);
 		camel_message_info_free (mi);
 	}

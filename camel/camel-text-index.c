@@ -405,7 +405,7 @@ static void tmp_name (const gchar *in, gchar *o)
 	s = strrchr (in, '/');
 	if (s) {
 		memcpy (o, in, s - in + 1);
-		memcpy (o+(s-in+1), ".#", 2);
+		memcpy (o + (s - in + 1), ".#", 2);
 		strcpy (o + (s - in + 3), s + 1);
 	} else {
 		sprintf (o, ".#%s", in);
@@ -452,7 +452,7 @@ text_index_compress_nosync (CamelIndex *idx)
 	savepath = alloca (i);
 
 	strcpy (oldpath, idx->path);
-	oldpath[strlen (oldpath)-strlen (".index")] = 0;
+	oldpath[strlen (oldpath) - strlen (".index")] = 0;
 
 	tmp_name (oldpath, newpath);
 	sprintf (savepath, "%s~", oldpath);
@@ -515,7 +515,7 @@ text_index_compress_nosync (CamelIndex *idx)
 	 * have to do 1 at a time and its cheap */
 	oldkeyid = 0;
 	while ((oldkeyid = camel_key_table_next (oldp->word_index, oldkeyid, &name, &flags, &data))) {
-		io(printf ("copying word '%s'\n", name));
+		io (printf ("copying word '%s'\n", name));
 		newdata = 0;
 		newcount = 0;
 		if (data) {
@@ -524,7 +524,7 @@ text_index_compress_nosync (CamelIndex *idx)
 		}
 		while (data) {
 			if (camel_key_file_read (oldp->links, &data, &count, &records) == -1) {
-				io (printf ("could not read from old keys at %d for word '%s'\n", (gint)data, name));
+				io (printf ("could not read from old keys at %d for word '%s'\n", (gint) data, name));
 				goto fail;
 			}
 			for (i = 0; i < count; i++) {
@@ -1419,7 +1419,7 @@ camel_text_index_validate (CamelTextIndex *idx)
 				printf ("Warning, read failed for word '%s', at data '%u'\n", word, data);
 				data = 0;
 			} else {
-				printf ("(%d)\n", (gint)count);
+				printf ("(%d)\n", (gint) count);
 				g_free (records);
 			}
 		}
@@ -1890,7 +1890,7 @@ main (gint argc,
 
 	camel_init (NULL, 0);
 
-	idx = (CamelIndex *)camel_text_index_new ("textindex", O_CREAT|O_RDWR|O_TRUNC);
+	idx = (CamelIndex *) camel_text_index_new ("textindex", O_CREAT | O_RDWR | O_TRUNC);
 
 #if 1
 	camel_index_compress (idx);

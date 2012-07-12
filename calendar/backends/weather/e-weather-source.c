@@ -26,7 +26,7 @@ G_DEFINE_TYPE (EWeatherSource, e_weather_source, G_TYPE_OBJECT)
 
 static void
 parse_done (GWeatherInfo *info,
-            gpointer      data)
+            gpointer data)
 {
 	EWeatherSource *source = (EWeatherSource *) data;
 
@@ -42,9 +42,9 @@ parse_done (GWeatherInfo *info,
 }
 
 void
-e_weather_source_parse (EWeatherSource         *source,
-			EWeatherSourceFinished  done,
-			gpointer                data)
+e_weather_source_parse (EWeatherSource *source,
+                        EWeatherSourceFinished done,
+                        gpointer data)
 {
 	source->finished_data = data;
 	source->done = done;
@@ -60,7 +60,7 @@ e_weather_source_parse (EWeatherSource         *source,
 static void
 e_weather_source_finalize (GObject *object)
 {
-	EWeatherSource *self = (EWeatherSource*) object;
+	EWeatherSource *self = (EWeatherSource *) object;
 
 	if (self->location)
 		gweather_location_unref (self->location);
@@ -88,7 +88,7 @@ e_weather_source_new (const gchar *location)
 {
 	GWeatherLocation *world, *glocation;
 	EWeatherSource *source;
-	char **tokens;
+	gchar **tokens;
 
 	/* Old location is formatted as ccf/AAA[/BBB] - AAA is the 3-letter station
 	 * code for identifying the providing station (subdirectory within the crh data

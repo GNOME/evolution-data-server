@@ -1002,7 +1002,7 @@ e_cal_recur_from_icalproperty (icalproperty *prop,
 	r->freq = ir.freq;
 
 	if (G_UNLIKELY (ir.interval < 1)) {
-		g_warning("Invalid interval in rule %s - using 1\n",
+		g_warning ("Invalid interval in rule %s - using 1\n",
 			icalrecurrencetype_as_string (&ir));
 		r->interval = 1;
 	} else {

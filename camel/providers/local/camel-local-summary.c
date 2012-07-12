@@ -142,7 +142,7 @@ local_summary_load (CamelLocalSummary *cls,
                     gint forceindex,
                     GError **error)
 {
-	d(g_print ("\nlocal_summary_load called \n"));
+	d (g_print ("\nlocal_summary_load called \n"));
 	return camel_folder_summary_load_from_db ((CamelFolderSummary *) cls, error);
 }
 
@@ -154,13 +154,13 @@ camel_local_summary_load (CamelLocalSummary *cls,
 {
 	CamelLocalSummaryClass *class;
 
-	d(printf("Loading summary ...\n"));
+	d (printf ("Loading summary ...\n"));
 
 	class = CAMEL_LOCAL_SUMMARY_GET_CLASS (cls);
 
 	if ((forceindex && class->need_index ())
 	    || !class->load (cls, forceindex, error)) {
-		w(g_warning("Could not load summary: flags may be reset"));
+		w (g_warning ("Could not load summary: flags may be reset"));
 		camel_folder_summary_clear ((CamelFolderSummary *) cls, NULL);
 		return FALSE;
 	}
@@ -299,13 +299,13 @@ camel_local_summary_check (CamelLocalSummary *cls,
 		}
 		camel_folder_summary_free_array (known_uids);
 
-		printf("\nMemory used by summary:\n\n");
-		printf("Total of %d messages\n", camel_folder_summary_count(s));
-		printf("Total: %d bytes (ave %f)\n", stats.citotal + stats.mitotal,
+		printf ("\nMemory used by summary:\n\n");
+		printf ("Total of %d messages\n", camel_folder_summary_count (s));
+		printf ("Total: %d bytes (ave %f)\n", stats.citotal + stats.mitotal,
 		       (double)(stats.citotal + stats.mitotal) / (double) camel_folder_summary_count (s));
-		printf("Message Info: %d (ave %f)\n", stats.mitotal, (double)stats.mitotal/(double)stats.micount);
-		printf("Content Info; %d (ave %f) count %d\n", stats.citotal, (double)stats.citotal/(double)stats.cicount, stats.cicount);
-		printf("message id's: %d (ave %f) count %d\n", stats.msgid, (double)stats.msgid/(double)stats.msgcount, stats.msgcount);
+		printf ("Message Info: %d (ave %f)\n", stats.mitotal, (double) stats.mitotal / (double) stats.micount);
+		printf ("Content Info; %d (ave %f) count %d\n", stats.citotal, (double) stats.citotal / (double) stats.cicount, stats.cicount);
+		printf ("message id's: %d (ave %f) count %d\n", stats.msgid, (double) stats.msgid / (double) stats.msgcount, stats.msgcount);
 	}
 #endif
 	return ret;
@@ -370,7 +370,7 @@ camel_local_summary_write_headers (gint fd,
 	if (newfd == -1)
 		return -1;
 
-	out = fdopen(newfd, "w");
+	out = fdopen (newfd, "w");
 	if (out == NULL) {
 		close (newfd);
 		errno = EINVAL;
@@ -378,10 +378,10 @@ camel_local_summary_write_headers (gint fd,
 	}
 
 	while (header) {
-		if (strcmp(header->name, "X-Evolution") != 0
-		    && (status == NULL || strcmp(header->name, "Status") != 0)
-		    && (xstatus == NULL || strcmp(header->name, "X-Status") != 0)) {
-			len = fprintf(out, "%s:%s\n", header->name, header->value);
+		if (strcmp (header->name, "X-Evolution") != 0
+		    && (status == NULL || strcmp (header->name, "Status") != 0)
+		    && (xstatus == NULL || strcmp (header->name, "X-Status") != 0)) {
+			len = fprintf (out, "%s:%s\n", header->name, header->value);
 			if (len == -1) {
 				fclose (out);
 				return -1;
@@ -392,7 +392,7 @@ camel_local_summary_write_headers (gint fd,
 	}
 
 	if (status) {
-		len = fprintf(out, "Status: %s\n", status);
+		len = fprintf (out, "Status: %s\n", status);
 		if (len == -1) {
 			fclose (out);
 			return -1;
@@ -401,7 +401,7 @@ camel_local_summary_write_headers (gint fd,
 	}
 
 	if (xstatus) {
-		len = fprintf(out, "X-Status: %s\n", xstatus);
+		len = fprintf (out, "X-Status: %s\n", xstatus);
 		if (len == -1) {
 			fclose (out);
 			return -1;
@@ -410,7 +410,7 @@ camel_local_summary_write_headers (gint fd,
 	}
 
 	if (xevline) {
-		len = fprintf(out, "X-Evolution: %s\n", xevline);
+		len = fprintf (out, "X-Evolution: %s\n", xevline);
 		if (len == -1) {
 			fclose (out);
 			return -1;
@@ -418,7 +418,7 @@ camel_local_summary_write_headers (gint fd,
 		outlen += len;
 	}
 
-	len = fprintf(out, "\n");
+	len = fprintf (out, "\n");
 	if (len == -1) {
 		fclose (out);
 		return -1;
@@ -481,7 +481,7 @@ local_summary_add (CamelLocalSummary *cls,
 	CamelLocalMessageInfo *mi;
 	gchar *xev;
 
-	d(printf("Adding message to summary\n"));
+	d (printf ("Adding message to summary\n"));
 
 	mi = (CamelLocalMessageInfo *) camel_folder_summary_add_from_message ((CamelFolderSummary *) cls, msg);
 	if (mi) {
@@ -517,11 +517,11 @@ local_summary_add (CamelLocalSummary *cls,
 
 		mi->info.flags &= ~(CAMEL_MESSAGE_FOLDER_NOXEV);
 		xev = camel_local_summary_encode_x_evolution (cls, mi);
-		camel_medium_set_header((CamelMedium *)msg, "X-Evolution", xev);
+		camel_medium_set_header ((CamelMedium *) msg, "X-Evolution", xev);
 		g_free (xev);
 		camel_folder_change_info_add_uid (ci, camel_message_info_uid (mi));
 	} else {
-		d(printf("Failed!\n"));
+		d (printf ("Failed!\n"));
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Unable to add message to summary: unknown reason"));
@@ -533,7 +533,7 @@ static gchar *
 local_summary_encode_x_evolution (CamelLocalSummary *cls,
                                   const CamelLocalMessageInfo *mi)
 {
-	GString *out = g_string_new("");
+	GString *out = g_string_new ("");
 	struct _camel_header_param *params = NULL;
 	CamelFlag *flag = mi->info.user_flags;
 	CamelTag *tag = mi->info.user_tags;
@@ -601,10 +601,10 @@ local_summary_decode_x_evolution (CamelLocalSummary *cls,
 
 	/* check for uid/flags */
 	header = camel_header_token_decode (xev);
-	if (header && strlen(header) == strlen("00000000-0000")
-	    && sscanf(header, "%08x-%04x", &uid, &flags) == 2) {
+	if (header && strlen (header) == strlen ("00000000-0000")
+	    && sscanf (header, "%08x-%04x", &uid, &flags) == 2) {
 		if (mi)
-			sprintf(uidstr, "%u", uid);
+			sprintf (uidstr, "%u", uid);
 	} else {
 		g_free (header);
 		return -1;
@@ -620,14 +620,14 @@ local_summary_decode_x_evolution (CamelLocalSummary *cls,
 		params = camel_header_param_list_decode (header + 1);
 		scan = params;
 		while (scan) {
-			if (!g_ascii_strcasecmp(scan->name, "flags")) {
-				gchar **flagv = g_strsplit(scan->value, ",", 1000);
+			if (!g_ascii_strcasecmp (scan->name, "flags")) {
+				gchar **flagv = g_strsplit (scan->value, ",", 1000);
 
 				for (i = 0; flagv[i]; i++)
 					camel_message_info_set_user_flag ((CamelMessageInfo *) mi, flagv[i], TRUE);
 				g_strfreev (flagv);
-			} else if (!g_ascii_strcasecmp(scan->name, "tags")) {
-				gchar **tagv = g_strsplit(scan->value, ",", 10000);
+			} else if (!g_ascii_strcasecmp (scan->name, "tags")) {
+				gchar **tagv = g_strsplit (scan->value, ",", 10000);
 				gchar *val;
 
 				for (i = 0; tagv[i]; i++) {
@@ -704,7 +704,7 @@ message_info_new_from_header (CamelFolderSummary *s,
 		const gchar *xev;
 		gint doindex = FALSE;
 
-		xev = camel_header_raw_find(&h, "X-Evolution", NULL);
+		xev = camel_header_raw_find (&h, "X-Evolution", NULL);
 		if (xev == NULL || camel_local_summary_decode_x_evolution (cls, xev, mi) == -1) {
 			/* to indicate it has no xev header */
 			mi->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED | CAMEL_MESSAGE_FOLDER_NOXEV;
@@ -720,10 +720,10 @@ message_info_new_from_header (CamelFolderSummary *s,
 		    && (doindex
 			|| cls->index_force
 			|| !camel_index_has_name (cls->index, camel_message_info_uid (mi)))) {
-			d(printf("Am indexing message %s\n", camel_message_info_uid(mi)));
+			d (printf ("Am indexing message %s\n", camel_message_info_uid (mi)));
 			camel_folder_summary_set_index (s, cls->index);
 		} else {
-			d(printf("Not indexing message %s\n", camel_message_info_uid(mi)));
+			d (printf ("Not indexing message %s\n", camel_message_info_uid (mi)));
 			camel_folder_summary_set_index (s, NULL);
 		}
 	}

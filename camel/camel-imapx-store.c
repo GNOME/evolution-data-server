@@ -76,8 +76,8 @@ G_DEFINE_TYPE_WITH_CODE (
 static guint
 imapx_name_hash (gconstpointer key)
 {
-	if (g_ascii_strcasecmp(key, "INBOX") == 0)
-		return g_str_hash("INBOX");
+	if (g_ascii_strcasecmp (key, "INBOX") == 0)
+		return g_str_hash ("INBOX");
 	else
 		return g_str_hash (key);
 }
@@ -88,9 +88,9 @@ imapx_name_equal (gconstpointer a,
 {
 	gconstpointer aname = a, bname = b;
 
-	if (g_ascii_strcasecmp(a, "INBOX") == 0)
+	if (g_ascii_strcasecmp (a, "INBOX") == 0)
 		aname = "INBOX";
-	if (g_ascii_strcasecmp(b, "INBOX") == 0)
+	if (g_ascii_strcasecmp (b, "INBOX") == 0)
 		bname = "INBOX";
 	return g_str_equal (aname, bname);
 }
@@ -430,7 +430,7 @@ folder_hash (gconstpointer ap)
 {
 	const gchar *a = ap;
 
-	if (g_ascii_strcasecmp(a, "INBOX") == 0)
+	if (g_ascii_strcasecmp (a, "INBOX") == 0)
 		a = "INBOX";
 
 	return g_str_hash (a);
@@ -443,9 +443,9 @@ folder_eq (gconstpointer ap,
 	const gchar *a = ap;
 	const gchar *b = bp;
 
-	if (g_ascii_strcasecmp(a, "INBOX") == 0)
+	if (g_ascii_strcasecmp (a, "INBOX") == 0)
 		a = "INBOX";
-	if (g_ascii_strcasecmp(b, "INBOX") == 0)
+	if (g_ascii_strcasecmp (b, "INBOX") == 0)
 		b = "INBOX";
 
 	return g_str_equal (a, b);
@@ -657,7 +657,7 @@ rename_folder_info (CamelIMAPXStore *istore,
 		path = camel_store_info_path (istore->summary, si);
 		if (strncmp (path, old_name, olen) == 0) {
 			if (strlen (path) > olen)
-				npath = g_strdup_printf("%s/%s", new_name, path+olen+1);
+				npath = g_strdup_printf ("%s/%s", new_name, path + olen + 1);
 			else
 				npath = g_strdup (new_name);
 			nfull = camel_imapx_store_summary_path_to_full (istore->summary, npath, istore->dir_sep);
@@ -728,7 +728,7 @@ get_folder_info_offline (CamelStore *store,
 			name = g_strdup (imapx_store->summary->namespaces->personal->full_name);
 			top = imapx_store->summary->namespaces->personal->path;
 		} else
-			name = g_strdup("");
+			name = g_strdup ("");
 
 		g_free (namespace);
 	} else {
@@ -737,7 +737,7 @@ get_folder_info_offline (CamelStore *store,
 			name = camel_imapx_store_summary_path_to_full (imapx_store->summary, top, imapx_store->dir_sep);
 	}
 
-	pattern = imapx_concat(imapx_store, name, "*");
+	pattern = imapx_concat (imapx_store, name, "*");
 
 	/* folder_info_build will insert parent nodes as necessary and mark
 	 * them as noselect, which is information we actually don't have at
@@ -780,7 +780,7 @@ get_folder_info_offline (CamelStore *store,
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
 
 			/* blah, this gets lost somewhere, i can't be bothered finding out why */
-			if (!g_ascii_strcasecmp(fi->full_name, "inbox")) {
+			if (!g_ascii_strcasecmp (fi->full_name, "inbox")) {
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_INBOX;
 				fi->flags |= CAMEL_FOLDER_SYSTEM;
 			}
@@ -846,7 +846,7 @@ add_folders_to_summary (CamelIMAPXStore *istore,
 
 		fi = camel_folder_info_new ();
 		fi->full_name = g_strdup (camel_store_info_path (istore->summary, si));
-		if (!g_ascii_strcasecmp(fi->full_name, "inbox")) {
+		if (!g_ascii_strcasecmp (fi->full_name, "inbox")) {
 			li->flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 			fi->display_name = g_strdup (_("Inbox"));
 		} else
@@ -1107,7 +1107,7 @@ discover_inbox (CamelStore *store,
 	CamelStoreInfo *si;
 	CamelIMAPXStore *istore = (CamelIMAPXStore *) store;
 
-	si = camel_store_summary_path((CamelStoreSummary *) istore->summary, "INBOX");
+	si = camel_store_summary_path ((CamelStoreSummary *) istore->summary, "INBOX");
 	if (si == NULL || (si->flags & CAMEL_FOLDER_SUBSCRIBED) == 0) {
 		if (imapx_subscribe_folder (store, "INBOX", FALSE, cancellable, NULL) && !si)
 			sync_folders (istore, "INBOX", TRUE, cancellable, NULL);
@@ -1526,7 +1526,7 @@ imapx_store_rename_folder_sync (CamelStore *store,
 
 	/* Use INBOX connection as the implementation would try to select inbox to ensure
 	 * we are not selected on the folder being renamed */
-	server = camel_imapx_store_get_server(istore, "INBOX", cancellable, error);
+	server = camel_imapx_store_get_server (istore, "INBOX", cancellable, error);
 	if (server) {
 		success = camel_imapx_server_rename_folder (
 			server, old, new, cancellable, error);

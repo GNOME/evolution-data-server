@@ -285,7 +285,7 @@ e_category_editor_create_category (ECategoryEditor *editor)
 				GTK_WINDOW (editor),
 				0, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
 				_("There is already a category '%s' in the "
-				  "configuration. Please use another name"),
+				"configuration. Please use another name"),
 				category_name);
 
 			gtk_dialog_run (GTK_DIALOG (error_dialog));

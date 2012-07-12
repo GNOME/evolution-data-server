@@ -25,7 +25,7 @@ gint main (gint argc, gchar **argv)
 	camel_test_provider_init (1, local_drivers);
 
 	/* clear out any camel-test data */
-	system("/bin/rm -rf /tmp/camel-test");
+	system ("/bin/rm -rf /tmp/camel-test");
 
 	session = camel_test_session_new ("/tmp/camel-test");
 
@@ -33,7 +33,7 @@ gint main (gint argc, gchar **argv)
 	/* todo: subscriptions? */
 	/* todo: work out how to do imap/pop/nntp tests */
 	for (i = 0; i < G_N_ELEMENTS (local_providers); i++) {
-		path = g_strdup_printf("%s:///tmp/camel-test/%s", local_providers[i], local_providers[i]);
+		path = g_strdup_printf ("%s:///tmp/camel-test/%s", local_providers[i], local_providers[i]);
 
 		test_folder_basic (session, path, TRUE, FALSE);
 

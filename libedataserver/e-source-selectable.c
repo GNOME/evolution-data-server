@@ -287,7 +287,7 @@ e_source_selectable_set_selected (ESourceSelectable *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_SELECTABLE (extension));
 
-	if ((extension->priv->selected ? 1 : 0) == (selected ? 1 : 0))
+	if (extension->priv->selected == selected)
 		return;
 
 	extension->priv->selected = selected;

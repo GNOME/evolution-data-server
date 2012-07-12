@@ -166,23 +166,25 @@ e_contact_store_class_init (EContactStoreClass *class)
 	object_class->dispose = contact_store_dispose;
 	object_class->finalize = contact_store_finalize;
 
-	signals[START_CLIENT_VIEW] =
-		g_signal_new ("start-client-view",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EContactStoreClass, start_client_view),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__OBJECT,
-			      G_TYPE_NONE, 1, E_TYPE_BOOK_CLIENT_VIEW);
+	signals[START_CLIENT_VIEW] = g_signal_new (
+		"start-client-view",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EContactStoreClass, start_client_view),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		E_TYPE_BOOK_CLIENT_VIEW);
 
-	signals[STOP_CLIENT_VIEW] =
-		g_signal_new ("stop-client-view",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EContactStoreClass, stop_client_view),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__OBJECT,
-			      G_TYPE_NONE, 1, E_TYPE_BOOK_CLIENT_VIEW);
+	signals[STOP_CLIENT_VIEW] = g_signal_new (
+		"stop-client-view",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EContactStoreClass, stop_client_view),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__OBJECT,
+		G_TYPE_NONE, 1,
+		E_TYPE_BOOK_CLIENT_VIEW);
 }
 
 static void
@@ -721,14 +723,18 @@ start_view (EContactStore *contact_store,
 {
 	g_signal_emit (contact_store, signals[START_CLIENT_VIEW], 0, view);
 
-	g_signal_connect_swapped (view, "objects-added",
-				  G_CALLBACK (view_contacts_added), contact_store);
-	g_signal_connect_swapped (view, "objects-removed",
-				  G_CALLBACK (view_contacts_removed), contact_store);
-	g_signal_connect_swapped (view, "objects-modified",
-				  G_CALLBACK (view_contacts_modified), contact_store);
-	g_signal_connect_swapped (view, "complete",
-				  G_CALLBACK (view_complete), contact_store);
+	g_signal_connect_swapped (
+		view, "objects-added",
+		G_CALLBACK (view_contacts_added), contact_store);
+	g_signal_connect_swapped (
+		view, "objects-removed",
+		G_CALLBACK (view_contacts_removed), contact_store);
+	g_signal_connect_swapped (
+		view, "objects-modified",
+		G_CALLBACK (view_contacts_modified), contact_store);
+	g_signal_connect_swapped (
+		view, "complete",
+		G_CALLBACK (view_complete), contact_store);
 
 	e_book_client_view_start (view, NULL);
 }
@@ -739,8 +745,9 @@ stop_view (EContactStore *contact_store,
 {
 	e_book_client_view_stop (view, NULL);
 
-	g_signal_handlers_disconnect_matched (view, G_SIGNAL_MATCH_DATA,
-					      0, 0, NULL, NULL, contact_store);
+	g_signal_handlers_disconnect_matched (
+		view, G_SIGNAL_MATCH_DATA,
+		0, 0, NULL, NULL, contact_store);
 
 	g_signal_emit (contact_store, signals[STOP_CLIENT_VIEW], 0, view);
 }

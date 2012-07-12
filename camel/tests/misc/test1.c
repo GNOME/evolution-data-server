@@ -32,20 +32,20 @@ main (gint argc,
 
 	camel_test_init (argc, argv);
 
-	camel_test_start("references decoding");
+	camel_test_start ("references decoding");
 
 	for (i = 0; i < G_N_ELEMENTS (test1); i++) {
 		struct _camel_header_references *head, *node;
 
-		camel_test_push("references decoding[%d] '%s'", i, test1[i].header);
+		camel_test_push ("references decoding[%d] '%s'", i, test1[i].header);
 		head = camel_header_references_decode (test1[i].header);
 		node = head;
 		for (j = 0; test1[i].values[j]; j++) {
-			check_msg(node != NULL, "didn't find all references");
+			check_msg (node != NULL, "didn't find all references");
 			check (strcmp (test1[i].values[j], node->id) == 0);
 			node = node->next;
 		}
-		check_msg(node == NULL, "found more references than should have");
+		check_msg (node == NULL, "found more references than should have");
 		camel_header_references_list_clear (&head);
 		camel_test_pull ();
 	}

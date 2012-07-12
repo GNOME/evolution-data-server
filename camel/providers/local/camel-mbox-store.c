@@ -41,7 +41,15 @@
 G_DEFINE_TYPE (CamelMboxStore, camel_mbox_store, CAMEL_TYPE_LOCAL_STORE)
 
 static const gchar *extensions[] = {
-	".msf", ".ev-summary", ".ev-summary-meta", ".ibex.index", ".ibex.index.data", ".cmeta", ".lock", ".db", ".journal"
+	".msf",
+	".ev-summary",
+	".ev-summary-meta",
+	".ibex.index",
+	".ibex.index.data",
+	".cmeta",
+	".lock",
+	".db",
+	".journal"
 };
 
 /* used to find out where we've visited already */
@@ -92,7 +100,7 @@ ignore_file (const gchar *filename,
 			return TRUE;
 	}
 
-	if (sbd && flen > 4 && !strcmp(filename + flen - 4, ".sbd"))
+	if (sbd && flen > 4 && !strcmp (filename + flen - 4, ".sbd"))
 		return TRUE;
 
 	return FALSE;
@@ -122,15 +130,19 @@ fill_fi (CamelStore *store,
 
 		local_store = CAMEL_LOCAL_STORE (store);
 
-		/* This should be fast enough not to have to test for INFO_FAST */
+		/* This should be fast enough not
+		 * to have to test for INFO_FAST. */
 		folderpath = camel_local_store_get_full_path (
 			local_store, fi->full_name);
 
-		mbs = (CamelMboxSummary *) camel_mbox_summary_new (NULL, folderpath, NULL);
+		mbs = (CamelMboxSummary *) camel_mbox_summary_new (
+			NULL, folderpath, NULL);
 		/* FIXME[disk-summary] track exception */
 		if (camel_folder_summary_header_load_from_db ((CamelFolderSummary *) mbs, store, fi->full_name, NULL)) {
-			fi->unread = camel_folder_summary_get_unread_count ((CamelFolderSummary *) mbs);
-			fi->total = camel_folder_summary_get_saved_count ((CamelFolderSummary *) mbs);
+			fi->unread = camel_folder_summary_get_unread_count (
+				(CamelFolderSummary *) mbs);
+			fi->total = camel_folder_summary_get_saved_count (
+				(CamelFolderSummary *) mbs);
 		}
 
 		g_object_unref (mbs);
@@ -139,8 +151,10 @@ fill_fi (CamelStore *store,
 
 	if (camel_local_store_is_main_store (CAMEL_LOCAL_STORE (store)) && fi->full_name
 	    && (fi->flags & CAMEL_FOLDER_TYPE_MASK) == CAMEL_FOLDER_TYPE_NORMAL)
-		fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK)
-			    | camel_local_store_get_folder_type_by_full_name (CAMEL_LOCAL_STORE (store), fi->full_name);
+		fi->flags =
+			(fi->flags & ~CAMEL_FOLDER_TYPE_MASK) |
+			camel_local_store_get_folder_type_by_full_name (
+			CAMEL_LOCAL_STORE (store), fi->full_name);
 }
 
 static CamelFolderInfo *
@@ -178,7 +192,7 @@ scan_dir (CamelStore *store,
 		if (ignore_file (dent, FALSE))
 			continue;
 
-		path = g_strdup_printf("%s/%s", root, dent);
+		path = g_strdup_printf ("%s/%s", root, dent);
 		if (g_stat (path, &st) == -1) {
 			g_free (path);
 			continue;
@@ -194,11 +208,11 @@ scan_dir (CamelStore *store,
 		}
 #endif
 		short_name = g_strdup (dent);
-		if ((ext = strrchr(short_name, '.')) && !strcmp(ext, ".sbd"))
+		if ((ext = strrchr (short_name, '.')) && !strcmp (ext, ".sbd"))
 			*ext = '\0';
 
 		if (name != NULL)
-			full_name = g_strdup_printf("%s/%s", name, short_name);
+			full_name = g_strdup_printf ("%s/%s", name, short_name);
 		else
 			full_name = g_strdup (short_name);
 
@@ -207,7 +221,7 @@ scan_dir (CamelStore *store,
 			g_free (full_name);
 
 			if (S_ISDIR (st.st_mode)) {
-				fi->flags =(fi->flags & ~CAMEL_FOLDER_NOCHILDREN) | CAMEL_FOLDER_CHILDREN;
+				fi->flags = (fi->flags & ~CAMEL_FOLDER_NOCHILDREN) | CAMEL_FOLDER_CHILDREN;
 			} else {
 				fi->flags &= ~CAMEL_FOLDER_NOSELECT;
 			}
@@ -250,7 +264,7 @@ scan_dir (CamelStore *store,
 				if ((fi->child = scan_dir (store, visited, fi, path, fi->full_name, flags, error)))
 					fi->flags |= CAMEL_FOLDER_CHILDREN;
 				else
-					fi->flags =(fi->flags & ~CAMEL_FOLDER_CHILDREN) | CAMEL_FOLDER_NOCHILDREN;
+					fi->flags = (fi->flags & ~CAMEL_FOLDER_CHILDREN) | CAMEL_FOLDER_NOCHILDREN;
 			}
 		}
 
@@ -395,7 +409,14 @@ mbox_store_get_folder_sync (CamelStore *store,
 
 		g_free (dirname);
 
-		fd = g_open (name, O_LARGEFILE | O_WRONLY | O_CREAT | O_APPEND | O_BINARY, 0666);
+		fd = g_open (
+			name,
+			O_LARGEFILE |
+			O_WRONLY |
+			O_CREAT |
+			O_APPEND |
+			O_BINARY, 0666);
+
 		if (fd == -1) {
 			g_set_error (
 				error, G_IO_ERROR,
@@ -476,7 +497,7 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 
 	/* requesting scan of specific folder */
 	if (g_stat (path, &st) == -1 || !S_ISREG (st.st_mode)) {
-		char *test_if_subdir = g_strdup_printf("%s.sbd", path);
+		gchar *test_if_subdir = g_strdup_printf ("%s.sbd", path);
 
 		if (g_stat (test_if_subdir, &st) == -1) {
 			g_free (path);
@@ -499,7 +520,7 @@ mbox_store_get_folder_info_sync (CamelStore *store,
 
 	fill_fi (store, fi, flags);
 
-	subdir = g_strdup_printf("%s.sbd", path);
+	subdir = g_strdup_printf ("%s.sbd", path);
 	if (g_stat (subdir, &st) == 0) {
 		if  (S_ISDIR (st.st_mode))
 			fi->child = scan_dir (store, visited, fi, subdir, top, flags, error);
@@ -526,8 +547,10 @@ mbox_store_create_folder_sync (CamelStore *store,
                                GCancellable *cancellable,
                                GError **error)
 {
-	/* FIXME: this is almost an exact copy of CamelLocalStore::create_folder() except that we use
-	 * different path schemes... need to find a way to share parent's code? */
+	/* FIXME This is almost an exact copy of
+	 *       CamelLocalStore::create_folder() except that we use
+	 *       different path schemes - need to find a way to share
+	 *       parent's code? */
 	CamelLocalSettings *local_settings;
 	CamelLocalStore *local_store;
 	CamelFolderInfo *info = NULL;
@@ -627,7 +650,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 
 	local_store = CAMEL_LOCAL_STORE (store);
 	name = camel_local_store_get_full_path (local_store, folder_name);
-	path = g_strdup_printf("%s.sbd", name);
+	path = g_strdup_printf ("%s.sbd", name);
 
 	if (g_rmdir (path) == -1 && errno != ENOENT) {
 		g_set_error (
@@ -825,29 +848,30 @@ mbox_store_rename_folder_sync (CamelStore *store,
 			goto ibex_failed;
 		}
 	} else {
-		/* TODO: camel_text_index_rename should find out if we have an active index itself? */
+		/* TODO camel_text_index_rename should find out
+		 *      if we have an active index itself? */
 		if (camel_text_index_rename (oldibex, newibex) == -1 && errno != ENOENT) {
 			errnosav = errno;
 			goto ibex_failed;
 		}
 	}
 
-	if (xrename(store, old, new, ".ev-summary", TRUE) == -1) {
+	if (xrename (store, old, new, ".ev-summary", TRUE) == -1) {
 		errnosav = errno;
 		goto summary_failed;
 	}
 
-	if (xrename(store, old, new, ".ev-summary-meta", TRUE) == -1) {
+	if (xrename (store, old, new, ".ev-summary-meta", TRUE) == -1) {
 		errnosav = errno;
 		goto summary_failed;
 	}
 
-	if (xrename(store, old, new, ".cmeta", TRUE) == -1) {
+	if (xrename (store, old, new, ".cmeta", TRUE) == -1) {
 		errnosav = errno;
 		goto cmeta_failed;
 	}
 
-	if (xrename(store, old, new, ".sbd", TRUE) == -1) {
+	if (xrename (store, old, new, ".sbd", TRUE) == -1) {
 		errnosav = errno;
 		goto subdir_failed;
 	}
@@ -866,12 +890,12 @@ mbox_store_rename_folder_sync (CamelStore *store,
 	return TRUE;
 
 base_failed:
-	xrename(store, new, old, ".sbd", TRUE);
+	xrename (store, new, old, ".sbd", TRUE);
 subdir_failed:
-	xrename(store, new, old, ".cmeta", TRUE);
+	xrename (store, new, old, ".cmeta", TRUE);
 cmeta_failed:
-	xrename(store, new, old, ".ev-summary", TRUE);
-	xrename(store, new, old, ".ev-summary-meta", TRUE);
+	xrename (store, new, old, ".ev-summary", TRUE);
+	xrename (store, new, old, ".ev-summary-meta", TRUE);
 summary_failed:
 	if (folder) {
 		if (folder->index)
@@ -958,7 +982,10 @@ mbox_store_get_meta_path (CamelLocalStore *ls,
 
 	name = g_alloca (strlen (full_name) + strlen (ext) + 2);
 	if ((slash = strrchr (full_name, '/')))
-		sprintf (name, "%.*s.%s%s", slash - full_name + 1, full_name, slash + 1, ext);
+		sprintf (
+			name, "%.*s.%s%s",
+			slash - full_name + 1,
+			full_name, slash + 1, ext);
 	else
 		sprintf (name, ".%s%s", full_name, ext);
 

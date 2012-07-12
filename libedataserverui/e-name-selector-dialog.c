@@ -299,25 +299,31 @@ name_selector_dialog_constructed (GObject *object)
 
 	AddressBookLabel = gtk_label_new_with_mnemonic (_("Address B_ook:"));
 	gtk_widget_show (AddressBookLabel);
-	gtk_table_attach (GTK_TABLE (show_contacts_table), AddressBookLabel, 0, 1, 0, 1,
-			  (GtkAttachOptions) (GTK_FILL),
-			  (GtkAttachOptions) (0), 0, 0);
+	gtk_table_attach (
+		GTK_TABLE (show_contacts_table),
+		AddressBookLabel, 0, 1, 0, 1,
+		(GtkAttachOptions) (GTK_FILL),
+		(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify (GTK_LABEL (AddressBookLabel), GTK_JUSTIFY_CENTER);
 	gtk_misc_set_alignment (GTK_MISC (AddressBookLabel), 0, 0.5);
 
 	label31 = gtk_label_new_with_mnemonic (_("Cat_egory:"));
 	gtk_widget_show (label31);
-	gtk_table_attach (GTK_TABLE (show_contacts_table), label31, 0, 1, 1, 2,
-			  (GtkAttachOptions) (GTK_FILL),
-			  (GtkAttachOptions) (0), 0, 0);
+	gtk_table_attach (
+		GTK_TABLE (show_contacts_table),
+		label31, 0, 1, 1, 2,
+		(GtkAttachOptions) (GTK_FILL),
+		(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify (GTK_LABEL (label31), GTK_JUSTIFY_CENTER);
 	gtk_misc_set_alignment (GTK_MISC (label31), 0, 0.5);
 
 	hbox1 = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox1);
-	gtk_table_attach (GTK_TABLE (show_contacts_table), hbox1, 1, 2, 2, 3,
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+	gtk_table_attach (
+		GTK_TABLE (show_contacts_table),
+		hbox1, 1, 2, 2, 3,
+		(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+		(GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
 
 	search = gtk_entry_new ();
 	gtk_widget_show (search);
@@ -325,28 +331,36 @@ name_selector_dialog_constructed (GObject *object)
 
 	label39 = gtk_label_new_with_mnemonic (_("_Search:"));
 	gtk_widget_show (label39);
-	gtk_table_attach (GTK_TABLE (show_contacts_table), label39, 0, 1, 2, 3,
-			  (GtkAttachOptions) (GTK_FILL),
-			  (GtkAttachOptions) (0), 0, 0);
+	gtk_table_attach (
+		GTK_TABLE (show_contacts_table),
+		label39, 0, 1, 2, 3,
+		(GtkAttachOptions) (GTK_FILL),
+		(GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (label39), 0, 0.5);
 
 	source_menu_box = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (source_menu_box);
-	gtk_table_attach (GTK_TABLE (show_contacts_table), source_menu_box, 1, 2, 0, 1,
-			  (GtkAttachOptions) (GTK_FILL),
-			  (GtkAttachOptions) (GTK_FILL), 0, 0);
+	gtk_table_attach (
+		GTK_TABLE (show_contacts_table),
+		source_menu_box, 1, 2, 0, 1,
+		(GtkAttachOptions) (GTK_FILL),
+		(GtkAttachOptions) (GTK_FILL), 0, 0);
 
 	combobox_category = gtk_combo_box_text_new ();
 	gtk_widget_show (combobox_category);
-	gtk_table_attach (GTK_TABLE (show_contacts_table), combobox_category, 1, 2, 1, 2,
-			  (GtkAttachOptions) (GTK_FILL),
-			  (GtkAttachOptions) (GTK_FILL), 0, 0);
-	gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (combobox_category), _("Any Category"));
+	gtk_table_attach (
+		GTK_TABLE (show_contacts_table),
+		combobox_category, 1, 2, 1, 2,
+		(GtkAttachOptions) (GTK_FILL),
+		(GtkAttachOptions) (GTK_FILL), 0, 0);
+	gtk_combo_box_text_append_text (
+		GTK_COMBO_BOX_TEXT (combobox_category), _("Any Category"));
 
 	tmp_str = g_strconcat ("<b>", _("Co_ntacts"), "</b>", NULL);
 	label36 = gtk_label_new_with_mnemonic (tmp_str);
 	gtk_widget_show (label36);
-	gtk_box_pack_start (GTK_BOX (name_selector_box), label36, FALSE, FALSE, 0);
+	gtk_box_pack_start (
+		GTK_BOX (name_selector_box), label36, FALSE, FALSE, 0);
 	gtk_label_set_use_markup (GTK_LABEL (label36), TRUE);
 	gtk_misc_set_alignment (GTK_MISC (label36), 0, 0.5);
 	g_free (tmp_str);
@@ -354,16 +368,17 @@ name_selector_dialog_constructed (GObject *object)
 	scrolledwindow0 = gtk_scrolled_window_new (NULL, NULL);
 	priv->contact_window = scrolledwindow0;
 	gtk_widget_show (scrolledwindow0);
-	gtk_box_pack_start (GTK_BOX (name_selector_box), scrolledwindow0,
-			    TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow0),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start (
+		GTK_BOX (name_selector_box), scrolledwindow0,
+		TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy (
+		GTK_SCROLLED_WINDOW (scrolledwindow0),
+		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	hbox3 = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox3);
-	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW
-					       (scrolledwindow0), hbox3);
+	gtk_scrolled_window_add_with_viewport (
+		GTK_SCROLLED_WINDOW (scrolledwindow0), hbox3);
 
 	label38 = gtk_label_new ("");
 	gtk_widget_show (label38);
@@ -372,14 +387,19 @@ name_selector_dialog_constructed (GObject *object)
 	scrolledwindow1 = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (scrolledwindow1);
 	gtk_box_pack_start (GTK_BOX (hbox3), scrolledwindow1, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_policy (
+		GTK_SCROLLED_WINDOW (scrolledwindow1),
+		GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (
+		GTK_SCROLLED_WINDOW (scrolledwindow1), GTK_SHADOW_IN);
 
 	source_tree_view = gtk_tree_view_new ();
 	gtk_widget_show (source_tree_view);
 	gtk_container_add (GTK_CONTAINER (scrolledwindow1), source_tree_view);
-	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW (source_tree_view), FALSE);
-	gtk_tree_view_set_enable_search (GTK_TREE_VIEW (source_tree_view), FALSE);
+	gtk_tree_view_set_headers_visible (
+		GTK_TREE_VIEW (source_tree_view), FALSE);
+	gtk_tree_view_set_enable_search (
+		GTK_TREE_VIEW (source_tree_view), FALSE);
 
 	destination_box = gtk_vbox_new (TRUE, 6);
 	gtk_widget_show (destination_box);
@@ -413,7 +433,9 @@ name_selector_dialog_constructed (GObject *object)
 	g_object_unref (G_OBJECT (tmp_relation));
 	g_object_unref (G_OBJECT (tmp_relation_set));
 
-	gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))), name_selector_box, TRUE, TRUE, 0);
+	gtk_box_pack_start (
+		GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (object))),
+		name_selector_box, TRUE, TRUE, 0);
 
 	/* Store pointers to relevant widgets */
 
@@ -509,7 +531,8 @@ name_selector_dialog_constructed (GObject *object)
 	 * 600 pixels seems to be a good lower bound resolution to allow room
 	 * above or below for other UI (window manager's?)
 	 */
-	gtk_window_set_default_size (GTK_WINDOW (object), 700,
+	gtk_window_set_default_size (
+		GTK_WINDOW (object), 700,
 		gdk_screen_height () >= 600 ? 512 : -1);
 
 	gtk_dialog_set_default_response (
@@ -763,9 +786,10 @@ make_tree_view_for_section (ENameSelectorDialog *name_selector_dialog,
 	column = gtk_tree_view_column_new ();
 	cell_renderer = GTK_CELL_RENDERER (gtk_cell_renderer_text_new ());
 	gtk_tree_view_column_pack_start (column, cell_renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func (column, cell_renderer,
-						 (GtkTreeCellDataFunc) destination_column_formatter,
-						 name_selector_dialog, NULL);
+	gtk_tree_view_column_set_cell_data_func (
+		column, cell_renderer,
+		(GtkTreeCellDataFunc) destination_column_formatter,
+		name_selector_dialog, NULL);
 	gtk_tree_view_append_column (tree_view, column);
 	gtk_tree_view_set_headers_visible (tree_view, FALSE);
 	gtk_tree_view_set_model (tree_view, GTK_TREE_MODEL (destination_store));
@@ -853,8 +877,9 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	}
 
 	/* Set up transfer button */
-	g_signal_connect_swapped (section.transfer_button, "clicked",
-				  G_CALLBACK (transfer_button_clicked), name_selector_dialog);
+	g_signal_connect_swapped (
+		section.transfer_button, "clicked",
+		G_CALLBACK (transfer_button_clicked), name_selector_dialog);
 
 	/*data for the remove callback*/
 	data = g_malloc0 (sizeof (SelData));
@@ -862,10 +887,11 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	data->dlg_ptr = name_selector_dialog;
 
 	/*Associate to an object destroy so that it gets freed*/
-	g_object_set_data_full ((GObject *)section.destination_view, "sel-remove-data", data, g_free);
+	g_object_set_data_full ((GObject *) section.destination_view, "sel-remove-data", data, g_free);
 
-	g_signal_connect(section.remove_button, "clicked",
-				  G_CALLBACK (remove_button_clicked), data);
+	g_signal_connect (
+		section.remove_button, "clicked",
+		G_CALLBACK (remove_button_clicked), data);
 
 	/* Alignment and vbox for the add/remove buttons */
 
@@ -910,25 +936,29 @@ add_section (ENameSelectorDialog *name_selector_dialog,
 	data = g_malloc0 (sizeof (SelData));
 	data->view = section.destination_view;
 	data->button = section.remove_button;
-	g_object_set_data_full ((GObject *)section.destination_view, "sel-change-data", data, g_free);
+	g_object_set_data_full ((GObject *) section.destination_view, "sel-change-data", data, g_free);
 	selection = gtk_tree_view_get_selection (section.destination_view);
 	gtk_tree_selection_set_mode (selection, GTK_SELECTION_MULTIPLE);
 
-	g_signal_connect(selection, "changed",
-				  G_CALLBACK (selection_changed), data);
+	g_signal_connect (
+		selection, "changed",
+		G_CALLBACK (selection_changed), data);
 
-	g_signal_connect_swapped (section.destination_view, "row-activated",
-				  G_CALLBACK (destination_activated), name_selector_dialog);
-	g_signal_connect_swapped (section.destination_view, "key-press-event",
-				  G_CALLBACK (destination_key_press), name_selector_dialog);
+	g_signal_connect_swapped (
+		section.destination_view, "row-activated",
+		G_CALLBACK (destination_activated), name_selector_dialog);
+	g_signal_connect_swapped (
+		section.destination_view, "key-press-event",
+		G_CALLBACK (destination_key_press), name_selector_dialog);
 
 	/* Done! */
 
 	gtk_widget_show_all (GTK_WIDGET (section.section_box));
 
 	/* Pack this section's box into the dialog */
-	gtk_box_pack_start (name_selector_dialog->priv->destination_box,
-			    GTK_WIDGET (section.section_box), TRUE, TRUE, 0);
+	gtk_box_pack_start (
+		name_selector_dialog->priv->destination_box,
+		GTK_WIDGET (section.section_box), TRUE, TRUE, 0);
 
 	g_array_append_val (name_selector_dialog->priv->sections, section);
 
@@ -1588,9 +1618,10 @@ contact_column_formatter (GtkTreeViewColumn *column,
 			full_name_str = e_contact_get (contact, E_CONTACT_FILE_AS);
 		string = g_strdup_printf ("%s", full_name_str ? full_name_str : "?");
 	} else {
-		string = g_strdup_printf ("%s%s<%s>", full_name_str ? full_name_str : "",
-					  full_name_str ? " " : "",
-					  email_str ? email_str : "");
+		string = g_strdup_printf (
+			"%s%s<%s>", full_name_str ? full_name_str : "",
+			full_name_str ? " " : "",
+			email_str ? email_str : "");
 	}
 
 	g_free (full_name_str);

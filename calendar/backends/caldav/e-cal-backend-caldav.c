@@ -170,7 +170,7 @@ add_debug_key (const gchar *start,
 			     debug_key,
 			     debug_value);
 
-	d(g_debug ("Adding %s to enabled debugging keys", debug_key));
+	d (g_debug ("Adding %s to enabled debugging keys", debug_key));
 }
 
 static gpointer
@@ -183,7 +183,7 @@ caldav_debug_init_once (gpointer data)
 	if (dbg) {
 		const gchar *ptr;
 
-		d(g_debug ("Got debug env variable: [%s]", dbg));
+		d (g_debug ("Got debug env variable: [%s]", dbg));
 
 		caldav_debug_table = g_hash_table_new (g_str_hash,
 						       g_str_equal);
@@ -608,7 +608,7 @@ status_code_to_result (SoupMessage *message,
 		break;
 
 	default:
-		d(g_debug ("CalDAV:%s: Unhandled status code %d\n", G_STRFUNC, status_code));
+		d (g_debug ("CalDAV:%s: Unhandled status code %d\n", G_STRFUNC, status_code));
 		g_propagate_error (perror,
 			e_data_cal_create_error_fmt (
 				OtherError,
@@ -942,7 +942,7 @@ parse_propfind_response (SoupMessage *message,
 		if (txt && *txt) {
 			gint len = strlen (txt);
 
-			if (*txt == '\"' && len > 2 && txt [len - 1] == '\"') {
+			if (*txt == '\"' && len > 2 && txt[len - 1] == '\"') {
 				/* dequote */
 				*value = g_strndup (txt + 1, len - 2);
 			} else {
@@ -1168,7 +1168,7 @@ caldav_unref_in_thread (ECalBackendCalDAV *cbdav)
 
 static gboolean
 caldav_authenticate (ECalBackendCalDAV *cbdav,
-		     gboolean ref_cbdav,
+                     gboolean ref_cbdav,
                      GCancellable *cancellable,
                      GError **error)
 {
@@ -4654,7 +4654,7 @@ caldav_get_free_busy (ECalBackendSync *backend,
 
 	for (u = users; u; u = u->next) {
 		ECalComponentAttendee *ca;
-		gchar *temp = g_strconcat ("mailto:", (const gchar *)u->data, NULL);
+		gchar *temp = g_strconcat ("mailto:", (const gchar *) u->data, NULL);
 
 		ca = g_new0 (ECalComponentAttendee, 1);
 

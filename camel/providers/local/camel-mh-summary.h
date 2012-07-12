@@ -57,8 +57,11 @@ struct _CamelMhSummaryClass {
 	CamelLocalSummaryClass parent_class;
 };
 
-GType	 camel_mh_summary_get_type	(void);
-CamelMhSummary	*camel_mh_summary_new (struct _CamelFolder *, const gchar *mhdir, CamelIndex *index);
+GType		camel_mh_summary_get_type	(void);
+CamelMhSummary *
+		camel_mh_summary_new		(CamelFolder *folder,
+						 const gchar *mhdir,
+						 CamelIndex *index);
 
 G_END_DECLS
 

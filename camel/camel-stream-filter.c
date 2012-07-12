@@ -139,9 +139,9 @@ stream_filter_read (CamelStream *stream,
 			priv->filtered = priv->buffer;
 			priv->filteredlen = size;
 
-			d(printf ("\n\nOriginal content (%s): '", ((CamelObject *)priv->source)->class->name));
+			d (printf ("\n\nOriginal content (%s): '", ((CamelObject *) priv->source)->class->name));
 			d (fwrite (priv->filtered, sizeof (gchar), priv->filteredlen, stdout));
-			d(printf("'\n"));
+			d (printf ("'\n"));
 
 			while (f) {
 				camel_mime_filter_filter (
@@ -149,9 +149,9 @@ stream_filter_read (CamelStream *stream,
 					&priv->filtered, &priv->filteredlen, &presize);
 				g_check (priv->realbuffer);
 
-				d(printf ("Filtered content (%s): '", ((CamelObject *)f->filter)->class->name));
+				d (printf ("Filtered content (%s): '", ((CamelObject *) f->filter)->class->name));
 				d (fwrite (priv->filtered, sizeof (gchar), priv->filteredlen, stdout));
-				d(printf("'\n"));
+				d (printf ("'\n"));
 
 				f = f->next;
 			}
@@ -187,9 +187,9 @@ stream_filter_write (CamelStream *stream,
 
 	priv->last_was_read = FALSE;
 
-	d(printf ("\n\nWriting: Original content (%s): '", ((CamelObject *)priv->source)->class->name));
+	d (printf ("\n\nWriting: Original content (%s): '", ((CamelObject *) priv->source)->class->name));
 	d (fwrite (buf, sizeof (gchar), n, stdout));
-	d(printf("'\n"));
+	d (printf ("'\n"));
 
 	g_check (priv->realbuffer);
 
@@ -208,9 +208,9 @@ stream_filter_write (CamelStream *stream,
 
 			g_check (priv->realbuffer);
 
-			d(printf ("Filtered content (%s): '", ((CamelObject *)f->filter)->class->name));
+			d (printf ("Filtered content (%s): '", ((CamelObject *) f->filter)->class->name));
 			d (fwrite (buffer, sizeof (gchar), len, stdout));
-			d(printf("'\n"));
+			d (printf ("'\n"));
 
 			f = f->next;
 		}
@@ -245,16 +245,16 @@ stream_filter_flush (CamelStream *stream,
 	presize = 0;
 	f = priv->filters;
 
-	d(printf ("\n\nFlushing: Original content (%s): '", ((CamelObject *)priv->source)->class->name));
+	d (printf ("\n\nFlushing: Original content (%s): '", ((CamelObject *) priv->source)->class->name));
 	d (fwrite (buffer, sizeof (gchar), len, stdout));
-	d(printf("'\n"));
+	d (printf ("'\n"));
 
 	while (f) {
 		camel_mime_filter_complete (f->filter, buffer, len, presize, &buffer, &len, &presize);
 
-		d(printf ("Filtered content (%s): '", ((CamelObject *)f->filter)->class->name));
+		d (printf ("Filtered content (%s): '", ((CamelObject *) f->filter)->class->name));
 		d (fwrite (buffer, sizeof (gchar), len, stdout));
-		d(printf("'\n"));
+		d (printf ("'\n"));
 
 		f = f->next;
 	}

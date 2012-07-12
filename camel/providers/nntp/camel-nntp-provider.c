@@ -45,7 +45,8 @@ static CamelProviderConfEntry nntp_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
 	  N_("Folders") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "short-folder-names", NULL,
-	  N_("_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"), "1" },
+	  N_("_Show folders in short notation (e.g. c.o.linux rather "
+	  "than comp.os.linux)"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "folder-hierarchy-relative", NULL,
 	  N_("In the subscription _dialog, show relative folder names"), "1" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },

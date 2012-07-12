@@ -185,7 +185,7 @@ imap_entry_load (CamelOfflineJournal *journal,
 {
 	CamelIMAPJournalEntry *entry;
 
-	d(g_print ("DEBUG: Loading to  the journal \n"));
+	d (g_print ("DEBUG: Loading to  the journal \n"));
 
 	entry = g_malloc0 (sizeof (CamelIMAPJournalEntry));
 
@@ -254,7 +254,7 @@ imap_entry_write (CamelOfflineJournal *journal,
 	if (camel_file_util_encode_uint32 (out, imap_entry->type) == -1)
 		return -1;
 
-	d(g_print ("DEBUG: Writing to  the journal \n"));
+	d (g_print ("DEBUG: Writing to  the journal \n"));
 	switch (imap_entry->type) {
 	case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
 		uids = imap_entry->uids;
@@ -328,7 +328,7 @@ imap_entry_play (CamelOfflineJournal *journal,
 {
 	CamelIMAPJournalEntry *imap_entry = entry;
 
-	d(g_print ("DEBUG: PLaying the journal \n"));
+	d (g_print ("DEBUG: PLaying the journal \n"));
 
 	switch (imap_entry->type) {
 	case CAMEL_IMAP_JOURNAL_ENTRY_EXPUNGE:
@@ -373,7 +373,7 @@ imap_entry_play (CamelOfflineJournal *journal,
 			(CamelIMAPJournal *) journal,
 			imap_entry->dest_folder_name, cancellable);
 		if (!destination) {
-			d(g_print ("Destination folder not found \n"));
+			d (g_print ("Destination folder not found \n"));
 			return -1;
 		}
 
@@ -391,7 +391,7 @@ imap_entry_play (CamelOfflineJournal *journal,
 			}
 			g_ptr_array_free (ret_uids, TRUE);
 		}
-		d(g_print ("Replay success \n"));
+		d (g_print ("Replay success \n"));
 		return 0;
 	}
 	default:
@@ -408,7 +408,7 @@ camel_imap_journal_new (CamelImapFolder *folder,
 
 	g_return_val_if_fail (CAMEL_IS_IMAP_FOLDER (folder), NULL);
 
-	d(g_print ("Creating the journal \n"));
+	d (g_print ("Creating the journal \n"));
 	journal = g_object_new (CAMEL_TYPE_IMAP_JOURNAL, NULL);
 	camel_offline_journal_construct (journal, (CamelFolder *) folder, filename);
 
@@ -429,7 +429,7 @@ camel_imap_journal_log (CamelOfflineJournal *journal,
 	entry = g_new0 (CamelIMAPJournalEntry, 1);
 	entry->type = action;
 
-	d(g_print ("logging the journal \n"));
+	d (g_print ("logging the journal \n"));
 
 	va_start (ap, action);
 	switch (entry->type) {

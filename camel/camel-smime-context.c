@@ -659,7 +659,7 @@ sm_verify_cmsg (CamelCipherContext *context,
 					em = NSS_CMSSignerInfo_GetSignerEmailAddress (si);
 
 					g_string_append_printf (description, _("Signer: %s <%s>: %s\n"),
-							       cn?cn:"<unknown>", em?em:"<unknown>",
+							       cn ? cn:"<unknown>", em ? em:"<unknown>",
 							       sm_status_description (status));
 
 					camel_cipher_validity_add_certinfo_ex (

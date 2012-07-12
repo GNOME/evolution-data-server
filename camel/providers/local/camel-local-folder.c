@@ -323,7 +323,7 @@ local_folder_rename (CamelFolder *folder,
 	parent_store = camel_folder_get_parent_store (folder);
 	ls = CAMEL_LOCAL_STORE (parent_store);
 
-	d(printf("renaming local folder paths to '%s'\n", newname));
+	d (printf ("renaming local folder paths to '%s'\n", newname));
 
 	/* Sync? */
 
@@ -331,8 +331,8 @@ local_folder_rename (CamelFolder *folder,
 	g_free (lf->index_path);
 
 	lf->folder_path = camel_local_store_get_full_path (ls, newname);
-	lf->index_path = camel_local_store_get_meta_path(ls, newname, ".ibex");
-	statepath = camel_local_store_get_meta_path(ls, newname, ".cmeta");
+	lf->index_path = camel_local_store_get_meta_path (ls, newname, ".ibex");
+	statepath = camel_local_store_get_meta_path (ls, newname, ".cmeta");
 	camel_object_set_state_filename (CAMEL_OBJECT (lf), statepath);
 	g_free (statepath);
 
@@ -425,7 +425,7 @@ local_folder_synchronize_sync (CamelFolder *folder,
 	CamelLocalFolder *lf = CAMEL_LOCAL_FOLDER (folder);
 	gboolean success;
 
-	d(printf("local sync '%s' , expunge=%s\n", folder->full_name, expunge?"true":"false"));
+	d (printf ("local sync '%s' , expunge=%s\n", folder->full_name, expunge?"true":"false"));
 
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
 		return FALSE;
@@ -563,8 +563,8 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	need_summary_check = camel_local_store_get_need_summary_check (ls);
 
 	lf->folder_path = camel_local_store_get_full_path (ls, full_name);
-	lf->index_path = camel_local_store_get_meta_path(ls, full_name, ".ibex");
-	statepath = camel_local_store_get_meta_path(ls, full_name, ".cmeta");
+	lf->index_path = camel_local_store_get_meta_path (ls, full_name, ".ibex");
+	statepath = camel_local_store_get_meta_path (ls, full_name, ".cmeta");
 
 	camel_object_set_state_filename (CAMEL_OBJECT (lf), statepath);
 	g_free (statepath);
@@ -618,7 +618,7 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 		lf->index = (CamelIndex *) camel_text_index_new (lf->index_path, flag);
 		if (lf->index == NULL) {
 			/* yes, this isn't fatal at all */
-			g_warning("Could not open/create index file: %s: indexing not performed", g_strerror (errno));
+			g_warning ("Could not open/create index file: %s: indexing not performed", g_strerror (errno));
 			forceindex = FALSE;
 			/* record that we dont have an index afterall */
 			lf->flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
@@ -670,9 +670,6 @@ camel_local_folder_set_index_body (CamelLocalFolder *local_folder,
                                    gboolean index_body)
 {
 	g_return_if_fail (CAMEL_IS_LOCAL_FOLDER (local_folder));
-
-	if (((local_folder->flags & CAMEL_STORE_FOLDER_BODY_INDEX) ? 1 : 0) == (index_body ? 1 : 0))
-		return;
 
 	if (index_body)
 		local_folder->flags |= CAMEL_STORE_FOLDER_BODY_INDEX;

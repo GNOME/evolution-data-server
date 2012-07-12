@@ -144,7 +144,7 @@ camel_imapx_summary_new (CamelFolder *folder)
 
 	/* Don't do DB sort. Its pretty slow to load */
 	if (folder && 0) {
-		camel_db_set_collate (parent_store->cdb_r, "uid", "imapx_uid_sort", (CamelDBCollate)sort_uid_cmp);
+		camel_db_set_collate (parent_store->cdb_r, "uid", "imapx_uid_sort", (CamelDBCollate) sort_uid_cmp);
 		summary->sort_by = "uid";
 		summary->collate = "imapx_uid_sort";
 	}
@@ -188,7 +188,7 @@ summary_header_from_db (CamelFolderSummary *s,
 	}
 
 	if (ims->version > CAMEL_IMAPX_SUMMARY_VERSION) {
-		g_warning("Unknown summary version\n");
+		g_warning ("Unknown summary version\n");
 		errno = EINVAL;
 		return FALSE;
 	}
@@ -314,12 +314,12 @@ content_info_to_db (CamelFolderSummary *s,
 
 	if (info->type) {
 		oldr = mir->cinfo;
-		mir->cinfo = oldr ? g_strdup_printf("%s 1", oldr) : g_strdup ("1");
+		mir->cinfo = oldr ? g_strdup_printf ("%s 1", oldr) : g_strdup ("1");
 		g_free (oldr);
 		return folder_summary_class->content_info_to_db (s, info, mir);
 	} else {
 		oldr = mir->cinfo;
-		mir->cinfo = oldr ? g_strdup_printf("%s 0", oldr) : g_strdup ("0");
+		mir->cinfo = oldr ? g_strdup_printf ("%s 0", oldr) : g_strdup ("0");
 		g_free (oldr);
 		return TRUE;
 	}

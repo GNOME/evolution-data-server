@@ -156,7 +156,9 @@ connect_to_server (CamelService *service,
 		goto stls_exception;
 	}
 
-	pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, cancellable, error, "STLS\r\n");
+	pc = camel_pop3_engine_command_new (
+		store->engine, 0, NULL, NULL,
+		cancellable, error, "STLS\r\n");
 	while (camel_pop3_engine_iterate (store->engine, NULL, cancellable, NULL) > 0)
 		;
 
@@ -169,7 +171,8 @@ connect_to_server (CamelService *service,
 		tmp = get_valid_utf8_error ((gchar *) store->engine->line);
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			/* Translators: Last %s is an optional explanation beginning with ": " separator */
+			/* Translators: Last %s is an optional
+			 * explanation beginning with ": " separator. */
 			_("Failed to connect to POP server %s in secure mode%s"),
 			host, (tmp != NULL) ? tmp : "");
 		g_free (tmp);
@@ -197,10 +200,13 @@ connect_to_server (CamelService *service,
 	goto exit;
 
 stls_exception:
-	/* as soon as we send a STLS command, all hope is lost of a clean QUIT if problems arise */
+	/* As soon as we send a STLS command, all hope
+	 * is lost of a clean QUIT if problems arise. */
 	/* if (clean_quit) {
 		/ * try to disconnect cleanly * /
-		pc = camel_pop3_engine_command_new (store->engine, 0, NULL, NULL, cancellable, NULL, "QUIT\r\n");
+		pc = camel_pop3_engine_command_new (
+			store->engine, 0, NULL, NULL,
+			cancellable, NULL, "QUIT\r\n");
 		while (camel_pop3_engine_iterate (store->engine, NULL, cancellable, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (store->engine, pc);
@@ -280,7 +286,7 @@ try_sasl (CamelPOP3Store *store,
 		/* If we dont get continuation, or the sasl object's run out
 		 * of work, or we dont get a challenge, its a protocol error,
 		 * so fail, and try reset the server. */
-		if (strncmp((gchar *) line, "+ ", 2) != 0
+		if (strncmp ((gchar *) line, "+ ", 2) != 0
 		    || camel_sasl_get_authenticated (sasl)
 		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line + 2, cancellable, NULL)) == NULL) {
 			camel_stream_write_string (
@@ -328,9 +334,8 @@ pop3_store_finalize (GObject *object)
 {
 	CamelPOP3Store *pop3_store = CAMEL_POP3_STORE (object);
 
-	/* force disconnect so we dont have it run later, after we've cleaned up some stuff */
-	/* SIGH */
-
+	/* Force disconnect so we dont have it run
+	 * later, after we've cleaned up some stuff. */
 	camel_service_disconnect_sync (
 		CAMEL_SERVICE (pop3_store), TRUE, NULL, NULL);
 
@@ -453,7 +458,9 @@ pop3_store_disconnect_sync (CamelService *service,
 	if (clean) {
 		CamelPOP3Command *pc;
 
-		pc = camel_pop3_engine_command_new(store->engine, 0, NULL, NULL, cancellable, error, "QUIT\r\n");
+		pc = camel_pop3_engine_command_new (
+			store->engine, 0, NULL, NULL,
+			cancellable, error, "QUIT\r\n");
 		while (camel_pop3_engine_iterate (store->engine, NULL, cancellable, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (store->engine, pc);
@@ -813,8 +820,11 @@ camel_pop3_store_expunge (CamelPOP3Store *store,
                           GError **error)
 {
 	CamelPOP3Command *pc;
+	CamelServiceConnectionStatus status;
 
-	if (camel_service_get_connection_status (CAMEL_SERVICE (store)) != CAMEL_SERVICE_CONNECTED) {
+	status = camel_service_get_connection_status (CAMEL_SERVICE (store));
+
+	if (status != CAMEL_SERVICE_CONNECTED) {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,

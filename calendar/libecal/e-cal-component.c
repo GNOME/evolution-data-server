@@ -3824,14 +3824,14 @@ e_cal_component_get_recurid_as_string (ECalComponent *comp)
 	e_cal_component_get_recurid (comp, &range);
 	if (!range.datetime.value) {
 		e_cal_component_free_range (&range);
-                return g_strdup ("0");
+		return g_strdup ("0");
 	}
 
 	tt = *range.datetime.value;
 	e_cal_component_free_range (&range);
 
 	return icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt) ?
-                icaltime_as_ical_string_r (tt) : g_strdup ("0");
+		icaltime_as_ical_string_r (tt) : g_strdup ("0");
 }
 
 /**

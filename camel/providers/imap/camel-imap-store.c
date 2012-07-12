@@ -345,10 +345,10 @@ connect_to_server (CamelService *service,
 		goto exit;
 	}
 
-	if (!strncmp(buf, "* PREAUTH", 9))
+	if (!strncmp (buf, "* PREAUTH", 9))
 		store->preauthed = TRUE;
 
-	if (strstr (buf, "Courier-IMAP") || getenv("CAMEL_IMAP_BRAINDAMAGED")) {
+	if (strstr (buf, "Courier-IMAP") || getenv ("CAMEL_IMAP_BRAINDAMAGED")) {
 		/* Courier-IMAP is braindamaged. So far this flag only
 		 * works around the fact that Courier-IMAP is known to
 		 * give invalid BODY responses seemingly because its
@@ -548,22 +548,22 @@ connect_to_server_process (CamelService *service,
 	/* Put full details in the environment, in case the connection
 	 * program needs them */
 	buf = camel_url_to_string (&url, 0);
-	child_env[i++] = g_strdup_printf("URL=%s", buf);
+	child_env[i++] = g_strdup_printf ("URL=%s", buf);
 	g_free (buf);
 
-	child_env[i++] = g_strdup_printf("URLHOST=%s", host);
+	child_env[i++] = g_strdup_printf ("URLHOST=%s", host);
 	if (port)
-		child_env[i++] = g_strdup_printf("URLPORT=%d", port);
+		child_env[i++] = g_strdup_printf ("URLPORT=%d", port);
 	if (user)
-		child_env[i++] = g_strdup_printf("URLUSER=%s", user);
+		child_env[i++] = g_strdup_printf ("URLUSER=%s", user);
 	if (password)
-		child_env[i++] = g_strdup_printf("URLPASSWD=%s", password);
+		child_env[i++] = g_strdup_printf ("URLPASSWD=%s", password);
 	child_env[i] = NULL;
 
 	/* Now do %h, %u, etc. substitution in cmd */
 	buf = cmd_copy = g_strdup (cmd);
 
-	full_cmd = g_strdup("");
+	full_cmd = g_strdup ("");
 
 	for (;;) {
 		gchar *pc;
@@ -574,7 +574,7 @@ connect_to_server_process (CamelService *service,
 		pc = strchr (buf, '%');
 	ignore:
 		if (!pc) {
-			tmp = g_strdup_printf("%s%s", full_cmd, buf);
+			tmp = g_strdup_printf ("%s%s", full_cmd, buf);
 			g_free (full_cmd);
 			full_cmd = tmp;
 			break;
@@ -598,7 +598,7 @@ connect_to_server_process (CamelService *service,
 			pc = strchr (pc + 1, '%');
 			goto ignore;
 		}
-		tmp = g_strdup_printf("%s%.*s%s", full_cmd, len, buf, var);
+		tmp = g_strdup_printf ("%s%.*s%s", full_cmd, len, buf, var);
 		g_free (full_cmd);
 		full_cmd = tmp;
 		buf = pc + 2;
@@ -649,7 +649,7 @@ connect_to_server_process (CamelService *service,
 		return FALSE;
 	}
 
-	if (!strncmp(buf, "* PREAUTH", 9))
+	if (!strncmp (buf, "* PREAUTH", 9))
 		store->preauthed = TRUE;
 	g_free (buf);
 
@@ -734,7 +734,7 @@ imap_auth_loop (CamelService *service,
 
 	if (store->preauthed) {
 		if (camel_verbose_debug)
-			fprintf(stderr, "Server %s has preauthenticated us.\n",
+			fprintf (stderr, "Server %s has preauthenticated us.\n",
 				host);
 		goto exit;
 	}
@@ -1012,7 +1012,7 @@ imap_store_connect_sync (CamelService *service,
 			goto done;
 
 		/* Make sure INBOX is present/subscribed */
-		si = camel_store_summary_path((CamelStoreSummary *)store->summary, "INBOX");
+		si = camel_store_summary_path ((CamelStoreSummary *) store->summary, "INBOX");
 		if (si == NULL || (si->flags & CAMEL_FOLDER_SUBSCRIBED) == 0) {
 			response = camel_imap_command (store, NULL, cancellable, &local_error, "SUBSCRIBE INBOX");
 			if (response != NULL) {
@@ -1022,7 +1022,7 @@ imap_store_connect_sync (CamelService *service,
 				camel_store_summary_info_free ((CamelStoreSummary *) store->summary, si);
 			if (local_error != NULL)
 				goto done;
-			get_folders_sync(store, "INBOX", cancellable, &local_error);
+			get_folders_sync (store, "INBOX", cancellable, &local_error);
 		}
 
 		store->refresh_stamp = time (NULL);
@@ -1673,7 +1673,7 @@ imap_forget_folder (CamelImapStore *imap_store,
 	camel_db_delete_folder (((CamelStore *) imap_store)->cdb_w, folder_name, NULL);
 	camel_imap_message_cache_delete (folder_dir, NULL);
 
-	state_file = g_strdup_printf("%s/subfolders", folder_dir);
+	state_file = g_strdup_printf ("%s/subfolders", folder_dir);
 	g_rmdir (state_file);
 	g_free (state_file);
 
@@ -2284,7 +2284,7 @@ imap_store_delete_folder_sync (CamelStore *store,
 	/* no need to actually create a CamelFolder for INBOX */
 	imap_store->current_folder = NULL;
 
-	response = camel_imap_command(imap_store, NULL, cancellable, error, "DELETE %F", folder_name);
+	response = camel_imap_command (imap_store, NULL, cancellable, error, "DELETE %F", folder_name);
 	if (response) {
 		camel_imap_response_free (imap_store, response);
 		imap_forget_folder (imap_store, folder_name, NULL);
@@ -2345,7 +2345,7 @@ rename_folder_info (CamelImapStore *imap_store,
 		path = camel_store_info_path (imap_store->summary, si);
 		if (strncmp (path, old_name, olen) == 0) {
 			if (strlen (path) > olen)
-				npath = g_strdup_printf("%s/%s", new_name, path+olen+1);
+				npath = g_strdup_printf ("%s/%s", new_name, path + olen + 1);
 			else
 				npath = g_strdup (new_name);
 			nfull = camel_imap_store_summary_path_to_full (imap_store->summary, npath, imap_store->dir_sep);
@@ -2668,7 +2668,7 @@ parse_list_response_as_folder_info (CamelImapStore *imap_store,
 
 	fi = camel_folder_info_new ();
 	fi->full_name = g_strdup (camel_store_info_path (imap_store->summary, si));
-	if (!g_ascii_strcasecmp(fi->full_name, "inbox")) {
+	if (!g_ascii_strcasecmp (fi->full_name, "inbox")) {
 		flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 		fi->display_name = g_strdup (_("Inbox"));
 	} else
@@ -2723,7 +2723,7 @@ static guint folder_hash (gconstpointer ap)
 {
 	const gchar *a = ap;
 
-	if (g_ascii_strcasecmp(a, "INBOX") == 0)
+	if (g_ascii_strcasecmp (a, "INBOX") == 0)
 		a = "INBOX";
 
 	return g_str_hash (a);
@@ -2734,9 +2734,9 @@ static gint folder_eq (gconstpointer ap, gconstpointer bp)
 	const gchar *a = ap;
 	const gchar *b = bp;
 
-	if (g_ascii_strcasecmp(a, "INBOX") == 0)
+	if (g_ascii_strcasecmp (a, "INBOX") == 0)
 		a = "INBOX";
-	if (g_ascii_strcasecmp(b, "INBOX") == 0)
+	if (g_ascii_strcasecmp (b, "INBOX") == 0)
 		b = "INBOX";
 
 	return g_str_equal (a, b);
@@ -2791,7 +2791,7 @@ get_folders_sync (CamelImapStore *imap_store,
 
 			for (j = 0; j < 2; j++) {
 				response = camel_imap_command (imap_store, NULL, cancellable, first_namespace ? error : NULL,
-								"%s \"\" %G", j==1 ? "LSUB" : "LIST",
+								"%s \"\" %G", j == 1 ? "LSUB" : "LIST",
 								pattern);
 				if (!response) {
 					/* do not worry if checking in some namespace fails */
@@ -2905,7 +2905,7 @@ dumpfi (CamelFolderInfo *fi)
 	}
 
 	while (fi) {
-		printf("%-25s %-25s %*s\n", fi->name, fi->full_name, (gint)(depth*2+strlen(fi->uri)), fi->uri);
+		printf ("%-25s %-25s %*s\n", fi->name, fi->full_name, (gint)(depth * 2 + strlen (fi->uri)), fi->uri);
 		if (fi->child)
 			dumpfi (fi->child);
 		fi = fi->next;
@@ -2969,7 +2969,7 @@ refresh_refresh (CamelSession *session,
 			goto done;
 	} else {
 		/* this can fail on some servers, thus just try it, but do not skip
-		   look in all namespaces, unless the operation was cancelled */
+		 * look in all namespaces, unless the operation was cancelled */
 		if (!get_folders_sync (store, "*", cancellable, NULL) &&
 		    g_cancellable_is_cancelled (cancellable))
 			goto done;
@@ -3008,8 +3008,8 @@ imap_store_get_folder_info_sync (CamelStore *store,
 	if (top == NULL)
 		top = "";
 
-	if (camel_debug("imap:folder_info"))
-		printf("get folder info online\n");
+	if (camel_debug ("imap:folder_info"))
+		printf ("get folder info online\n");
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
 		tree = get_folder_info_offline (store, top, flags, error);
@@ -3096,8 +3096,8 @@ get_folder_info_offline (CamelStore *store,
 	gchar *junk_path;
 	gchar *trash_path;
 
-	if (camel_debug("imap:folder_info"))
-		printf("get folder info offline\n");
+	if (camel_debug ("imap:folder_info"))
+		printf ("get folder info offline\n");
 
 	service = CAMEL_SERVICE (store);
 
@@ -3133,7 +3133,7 @@ get_folder_info_offline (CamelStore *store,
 
 	/* get starting point */
 	if (top[0] == 0) {
-		name = g_strdup("");
+		name = g_strdup ("");
 	} else {
 		name = camel_imap_store_summary_full_from_path (imap_store->summary, top);
 		if (name == NULL)
@@ -3141,7 +3141,7 @@ get_folder_info_offline (CamelStore *store,
 	}
 
 	main_ns = camel_imap_store_summary_get_main_namespace (imap_store->summary);
-	pattern = imap_concat(imap_store, name, "*");
+	pattern = imap_concat (imap_store, name, "*");
 
 	/* folder_info_build will insert parent nodes as necessary and mark
 	 * them as noselect, which is information we actually don't have at
@@ -3185,7 +3185,7 @@ get_folder_info_offline (CamelStore *store,
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_NOINFERIORS) | CAMEL_FOLDER_NOCHILDREN;
 
 			/* blah, this gets lost somewhere, i can't be bothered finding out why */
-			if (!g_ascii_strcasecmp(fi->full_name, "inbox"))
+			if (!g_ascii_strcasecmp (fi->full_name, "inbox"))
 				fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) | CAMEL_FOLDER_TYPE_INBOX;
 
 			folder_is_trash =

@@ -49,7 +49,7 @@ objects_added_cb (GObject *object,
 	GList *l;
 
 	for (l = objects; l; l = l->next)
-                test_print ("Object added %s\n", icalcomponent_get_uid (l->data));
+		test_print ("Object added %s\n", icalcomponent_get_uid (l->data));
 
 	subtest_passed (SUBTEST_OBJECTS_ADDED);
 }
@@ -62,7 +62,7 @@ objects_modified_cb (GObject *object,
 	GList *l;
 
 	for (l = objects; l; l = l->next)
-                test_print ("Object modified %s\n", icalcomponent_get_uid (l->data));
+		test_print ("Object modified %s\n", icalcomponent_get_uid (l->data));
 
 	subtest_passed (SUBTEST_OBJECTS_MODIFIED);
 }
@@ -77,7 +77,7 @@ objects_removed_cb (GObject *object,
 	for (l = objects; l; l = l->next) {
 		ECalComponentId *id = l->data;
 
-                test_print ("Object removed: uid: %s, rid: %s\n", id->uid,
+		test_print ("Object removed: uid: %s, rid: %s\n", id->uid,
 				id->rid);
 	}
 
@@ -90,7 +90,7 @@ view_complete_cb (GObject *object,
                   const gchar *error_msg,
                   gpointer data)
 {
-        test_print ("View complete (status: %d, error_msg:%s\n", status, error_msg ? error_msg : "NULL");
+	test_print ("View complete (status: %d, error_msg:%s\n", status, error_msg ? error_msg : "NULL");
 
 	g_source_remove (complete_timeout_id);
 
@@ -100,7 +100,7 @@ view_complete_cb (GObject *object,
 static void
 complete_timeout_cb (gpointer user_data)
 {
-        g_error ("failed to complete all the pieces of the test in time");
+	g_error ("failed to complete all the pieces of the test in time");
 }
 
 static gboolean

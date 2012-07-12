@@ -136,7 +136,7 @@ camel_spool_settings_set_use_xstatus_headers (CamelSpoolSettings *settings,
 {
 	g_return_if_fail (CAMEL_IS_SPOOL_SETTINGS (settings));
 
-	if ((settings->priv->use_xstatus_headers ? 1 : 0) == (use_xstatus_headers ? 1 : 0))
+	if (settings->priv->use_xstatus_headers == use_xstatus_headers)
 		return;
 
 	settings->priv->use_xstatus_headers = use_xstatus_headers;

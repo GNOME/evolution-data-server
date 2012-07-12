@@ -267,7 +267,7 @@ gboolean	camel_imapx_server_rename_folder
 struct _IMAPXJobQueueInfo *
 		camel_imapx_server_get_job_queue_info
 						(CamelIMAPXServer *is);
-const CamelIMAPXUntaggedRespHandlerDesc*
+const CamelIMAPXUntaggedRespHandlerDesc *
 		camel_imapx_server_register_untagged_handler
 						(CamelIMAPXServer *is,
 						 const gchar *untagged_response,

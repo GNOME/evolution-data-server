@@ -74,7 +74,7 @@ xrename (const gchar *oldp,
 	new = g_build_filename (prefix, basename, NULL);
 	g_free (basename);
 
-	d(printf("renaming %s%s to %s%s\n", oldp, suffix, newp, suffix));
+	d (printf ("renaming %s%s to %s%s\n", oldp, suffix, newp, suffix));
 
 	if (g_stat (old, &st) == -1) {
 		if (missingok && errno == ENOENT) {
@@ -275,7 +275,7 @@ local_store_get_folder_info_sync (CamelStore *store,
 	 * there before.
 	 */
 
-	d(printf("-- LOCAL STORE -- get folder info: %s\n", top));
+	d (printf ("-- LOCAL STORE -- get folder info: %s\n", top));
 
 	return NULL;
 }
@@ -385,9 +385,9 @@ local_store_create_folder_sync (CamelStore *store,
 	}
 
 	if (parent_name && *parent_name)
-		name = g_strdup_printf("%s/%s/%s", path, parent_name, folder_name);
+		name = g_strdup_printf ("%s/%s/%s", path, parent_name, folder_name);
 	else
-		name = g_strdup_printf("%s/%s", path, folder_name);
+		name = g_strdup_printf ("%s/%s", path, folder_name);
 
 	if (g_stat (name, &st) == 0 || errno != ENOENT) {
 		g_set_error (
@@ -401,9 +401,9 @@ local_store_create_folder_sync (CamelStore *store,
 	g_free (name);
 
 	if (parent_name && *parent_name)
-		name = g_strdup_printf("%s/%s", parent_name, folder_name);
+		name = g_strdup_printf ("%s/%s", parent_name, folder_name);
 	else
-		name = g_strdup_printf("%s", folder_name);
+		name = g_strdup_printf ("%s", folder_name);
 
 	folder = CAMEL_STORE_GET_CLASS (store)->get_folder_sync (
 		store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
@@ -542,28 +542,29 @@ local_store_rename_folder_sync (CamelStore *store,
 
 	/* try to rollback failures, has obvious races */
 
-	d(printf("local rename folder '%s' '%s'\n", old, new));
+	d (printf ("local rename folder '%s' '%s'\n", old, new));
 
 	folder = camel_object_bag_get (store->folders, old);
 	if (folder && folder->index) {
 		if (camel_index_rename (folder->index, newibex) == -1)
 			goto ibex_failed;
 	} else {
-		/* TODO: camel_text_index_rename should find out if we have an active index itself? */
+		/* TODO camel_text_index_rename() should find
+		 *      out if we have an active index itself? */
 		if (camel_text_index_rename (oldibex, newibex) == -1)
 			goto ibex_failed;
 	}
 
-	if (xrename(old, new, path, ".ev-summary", TRUE, error))
+	if (xrename (old, new, path, ".ev-summary", TRUE, error))
 		goto summary_failed;
 
-	if (xrename(old, new, path, ".ev-summary-meta", TRUE, error))
+	if (xrename (old, new, path, ".ev-summary-meta", TRUE, error))
 		goto summary_failed;
 
-	if (xrename(old, new, path, ".cmeta", TRUE, error))
+	if (xrename (old, new, path, ".cmeta", TRUE, error))
 		goto cmeta_failed;
 
-	if (xrename(old, new, path, "", FALSE, error))
+	if (xrename (old, new, path, "", FALSE, error))
 		goto base_failed;
 
 	g_free (newibex);
@@ -577,11 +578,11 @@ local_store_rename_folder_sync (CamelStore *store,
 	/* The (f)utility of this recovery effort is quesitonable */
 
 base_failed:
-	xrename(new, old, path, ".cmeta", TRUE, NULL);
+	xrename (new, old, path, ".cmeta", TRUE, NULL);
 
 cmeta_failed:
-	xrename(new, old, path, ".ev-summary", TRUE, NULL);
-	xrename(new, old, path, ".ev-summary-meta", TRUE, NULL);
+	xrename (new, old, path, ".ev-summary", TRUE, NULL);
+	xrename (new, old, path, ".ev-summary-meta", TRUE, NULL);
 summary_failed:
 	if (folder) {
 		if (folder->index)
@@ -817,7 +818,7 @@ camel_local_store_set_need_summary_check (CamelLocalStore *store,
 {
 	g_return_if_fail (CAMEL_IS_LOCAL_STORE (store));
 
-	if ((store->priv->need_summary_check ? 1 : 0) == (need_summary_check ? 1 : 0))
+	if (store->priv->need_summary_check == need_summary_check)
 		return;
 
 	store->priv->need_summary_check = need_summary_check;

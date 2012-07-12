@@ -84,7 +84,7 @@ mime_filter_html_run (CamelMimeFilter *mime_filter,
 
 	priv = CAMEL_MIME_FILTER_HTML_GET_PRIVATE (mime_filter);
 
-	d(printf("converting html:\n%.*s\n", (gint)inlen, in));
+	d (printf ("converting html:\n%.*s\n", (gint) inlen, in));
 
 	/* We should generally shrink the data, but this'll do */
 	camel_mime_filter_set_size (mime_filter, inlen * 2 + 256, FALSE);
@@ -116,7 +116,7 @@ mime_filter_html_run (CamelMimeFilter *mime_filter,
 	*outlenptr = outp - mime_filter->outbuf;
 	*outprespace = mime_filter->outbuf - mime_filter->outreal;
 
-	d(printf("converted html end:\n%.*s\n", (gint)*outlenptr, *out));
+	d (printf ("converted html end:\n%.*s\n", (gint) * outlenptr, *out));
 }
 
 static void

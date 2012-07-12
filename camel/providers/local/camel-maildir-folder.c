@@ -160,7 +160,7 @@ maildir_folder_append_message_sync (CamelFolder *folder,
 	gchar *name, *dest = NULL;
 	gboolean success = TRUE, has_attachment;
 
-	d(printf("Appending message\n"));
+	d (printf ("Appending message\n"));
 
 	/* If we can't lock, don't do anything */
 	if (!lf || camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
@@ -181,10 +181,10 @@ maildir_folder_append_message_sync (CamelFolder *folder,
 
 	mdi = (CamelMaildirMessageInfo *) mi;
 
-	d(printf("Appending message: uid is %s filename is %s\n", camel_message_info_uid(mi), mdi->filename));
+	d (printf ("Appending message: uid is %s filename is %s\n", camel_message_info_uid (mi), mdi->filename));
 
 	/* write it out to tmp, use the uid we got from the summary */
-	name = g_strdup_printf ("%s/tmp/%s", lf->folder_path, camel_message_info_uid(mi));
+	name = g_strdup_printf ("%s/tmp/%s", lf->folder_path, camel_message_info_uid (mi));
 	output_stream = camel_stream_fs_new_with_name (
 		name, O_WRONLY | O_CREAT, 0600, error);
 	if (output_stream == NULL)
@@ -196,7 +196,7 @@ maildir_folder_append_message_sync (CamelFolder *folder,
 		goto fail_write;
 
 	/* now move from tmp to cur (bypass new, does it matter?) */
-	dest = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
+	dest = g_strdup_printf ("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
 	if (g_rename (name, dest) == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
@@ -257,7 +257,7 @@ maildir_folder_get_message_sync (CamelFolder *folder,
 	CamelMimeMessage *message = NULL;
 	gchar *name = NULL;
 
-	d(printf("getting message: %s\n", uid));
+	d (printf ("getting message: %s\n", uid));
 
 	if (!lf || camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
 		return NULL;
@@ -340,7 +340,7 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 			new_filename = camel_maildir_summary_info_to_name (mdi);
 
 			d_filename = g_strdup_printf ("%s/cur/%s", df->folder_path, new_filename);
-			s_filename = g_strdup_printf("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
+			s_filename = g_strdup_printf ("%s/cur/%s", lf->folder_path, camel_maildir_info_filename (mdi));
 
 			if (g_rename (s_filename, d_filename) != 0) {
 				if (errno == EXDEV) {
@@ -467,7 +467,7 @@ camel_maildir_folder_new (CamelStore *parent_store,
 	gboolean filter_inbox;
 	gchar *basename;
 
-	d(printf("Creating maildir folder: %s\n", full_name));
+	d (printf ("Creating maildir folder: %s\n", full_name));
 
 	if (g_strcmp0 (full_name, ".") == 0)
 		basename = g_strdup (_("Inbox"));

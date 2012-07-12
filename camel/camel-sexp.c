@@ -299,7 +299,7 @@ term_eval_and (CamelSExp *sexp,
 	gint i;
 	const gchar *oper;
 
-	r(printf("( and\n"));
+	r (printf ("( and\n"));
 
 	result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_UNDEFINED);
 
@@ -314,7 +314,7 @@ term_eval_and (CamelSExp *sexp,
 			camel_sexp_result_free (sexp, result);
 			camel_sexp_result_free (sexp, r1);
 			g_hash_table_destroy (ht);
-			camel_sexp_fatal_error(sexp, "Invalid types in AND");
+			camel_sexp_fatal_error (sexp, "Invalid types in AND");
 		} else if (r1->type == CAMEL_SEXP_RES_ARRAY_PTR) {
 			gchar **a1;
 			gint l1, j;
@@ -365,7 +365,7 @@ term_eval_or (CamelSExp *sexp,
 	gint i;
 	const gchar *oper;
 
-	r(printf("(or \n"));
+	r (printf ("(or \n"));
 
 	oper = "OR";
 	sexp->operators = g_slist_prepend (sexp->operators, (gpointer) oper);
@@ -380,7 +380,7 @@ term_eval_or (CamelSExp *sexp,
 			camel_sexp_result_free (sexp, result);
 			camel_sexp_result_free (sexp, r1);
 			g_hash_table_destroy (ht);
-			camel_sexp_fatal_error(sexp, "Invalid types in OR");
+			camel_sexp_fatal_error (sexp, "Invalid types in OR");
 		} else if (r1->type == CAMEL_SEXP_RES_ARRAY_PTR) {
 			gchar **a1;
 			gint l1, j;
@@ -450,7 +450,7 @@ term_eval_lt (CamelSExp *sexp,
 			camel_sexp_result_free (sexp, r1);
 			camel_sexp_result_free (sexp, r2);
 			camel_sexp_result_free (sexp, result);
-			camel_sexp_fatal_error(sexp, "Incompatible types in compare <");
+			camel_sexp_fatal_error (sexp, "Incompatible types in compare <");
 		} else if (r1->type == CAMEL_SEXP_RES_INT) {
 			result->type = CAMEL_SEXP_RES_BOOL;
 			result->value.boolean = r1->value.number < r2->value.number;
@@ -485,7 +485,7 @@ term_eval_gt (CamelSExp *sexp,
 			camel_sexp_result_free (sexp, r1);
 			camel_sexp_result_free (sexp, r2);
 			camel_sexp_result_free (sexp, result);
-			camel_sexp_fatal_error(sexp, "Incompatible types in compare >");
+			camel_sexp_fatal_error (sexp, "Incompatible types in compare >");
 		} else if (r1->type == CAMEL_SEXP_RES_INT) {
 			result->type = CAMEL_SEXP_RES_BOOL;
 			result->value.boolean = r1->value.number > r2->value.number;
@@ -553,7 +553,7 @@ term_eval_plus (CamelSExp *sexp,
 			}
 			if (i < argc) {
 				camel_sexp_resultv_free (sexp, argc, argv);
-				camel_sexp_fatal_error(sexp, "Invalid types in (+ ints)");
+				camel_sexp_fatal_error (sexp, "Invalid types in (+ ints)");
 			}
 			result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_INT);
 			result->value.number = total;
@@ -565,7 +565,7 @@ term_eval_plus (CamelSExp *sexp,
 			}
 			if (i < argc) {
 				camel_sexp_resultv_free (sexp, argc, argv);
-				camel_sexp_fatal_error(sexp, "Invalid types in (+ strings)");
+				camel_sexp_fatal_error (sexp, "Invalid types in (+ strings)");
 			}
 			result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_STRING);
 			result->value.string = string->str;
@@ -618,7 +618,7 @@ term_eval_sub (CamelSExp *sexp,
 			}
 			if (i < argc) {
 				camel_sexp_resultv_free (sexp, argc, argv);
-				camel_sexp_fatal_error(sexp, "Invalid types in -");
+				camel_sexp_fatal_error (sexp, "Invalid types in -");
 			}
 			result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_INT);
 			result->value.number = total;
@@ -659,7 +659,7 @@ term_eval_castint (CamelSExp *sexp,
 	CamelSExpResult *result;
 
 	if (argc != 1)
-		camel_sexp_fatal_error(sexp, "Incorrect argument count to (gint )");
+		camel_sexp_fatal_error (sexp, "Incorrect argument count to (gint )");
 
 	result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_INT);
 	switch (argv[0]->type) {
@@ -674,7 +674,7 @@ term_eval_castint (CamelSExp *sexp,
 		break;
 	default:
 		camel_sexp_result_free (sexp, result);
-		camel_sexp_fatal_error(sexp, "Invalid type in (cast-int )");
+		camel_sexp_fatal_error (sexp, "Invalid type in (cast-int )");
 	}
 
 	return result;
@@ -690,22 +690,22 @@ term_eval_caststring (CamelSExp *sexp,
 	CamelSExpResult *result;
 
 	if (argc != 1)
-		camel_sexp_fatal_error(sexp, "Incorrect argument count to (cast-string )");
+		camel_sexp_fatal_error (sexp, "Incorrect argument count to (cast-string )");
 
 	result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_STRING);
 	switch (argv[0]->type) {
 	case CAMEL_SEXP_RES_INT:
-		result->value.string = g_strdup_printf("%d", argv[0]->value.number);
+		result->value.string = g_strdup_printf ("%d", argv[0]->value.number);
 		break;
 	case CAMEL_SEXP_RES_BOOL:
-		result->value.string = g_strdup_printf("%d", argv[0]->value.boolean != 0);
+		result->value.string = g_strdup_printf ("%d", argv[0]->value.boolean != 0);
 		break;
 	case CAMEL_SEXP_RES_STRING:
 		result->value.string = g_strdup (argv[0]->value.string);
 		break;
 	default:
 		camel_sexp_result_free (sexp, result);
-		camel_sexp_fatal_error(sexp, "Invalid type in (gint )");
+		camel_sexp_fatal_error (sexp, "Invalid type in (gint )");
 	}
 
 	return result;
@@ -772,28 +772,28 @@ camel_sexp_term_eval (CamelSExp *sexp,
 
 	g_return_val_if_fail (term != NULL, NULL);
 
-	r(printf("eval term :\n"));
+	r (printf ("eval term :\n"));
 	r (parse_dump_term (term, 0));
 
 	switch (term->type) {
 	case CAMEL_SEXP_TERM_STRING:
-		r(printf(" (string \"%s\")\n", term->value.string));
+		r (printf (" (string \"%s\")\n", term->value.string));
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_STRING);
 		/* erk, this shoul;dn't need to strdup this ... */
 		result->value.string = g_strdup (term->value.string);
 		break;
 	case CAMEL_SEXP_TERM_INT:
-		r(printf(" (gint %d)\n", term->value.number));
+		r (printf (" (gint %d)\n", term->value.number));
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_INT);
 		result->value.number = term->value.number;
 		break;
 	case CAMEL_SEXP_TERM_BOOL:
-		r(printf(" (gint %d)\n", term->value.number));
+		r (printf (" (gint %d)\n", term->value.number));
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
 		result->value.boolean = term->value.boolean;
 		break;
 	case CAMEL_SEXP_TERM_TIME:
-		r(printf(" (time_t %ld)\n", term->value.time));
+		r (printf (" (time_t %ld)\n", term->value.time));
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_TIME);
 		result->value.time = term->value.time;
 		break;
@@ -814,7 +814,7 @@ camel_sexp_term_eval (CamelSExp *sexp,
 		camel_sexp_resultv_free (sexp, term->value.func.termcount, argv);
 		break;
 	default:
-		camel_sexp_fatal_error(sexp, "Unknown type in parse tree: %d", term->type);
+		camel_sexp_fatal_error (sexp, "Unknown type in parse tree: %d", term->type);
 	}
 
 	if (result == NULL)
@@ -831,34 +831,34 @@ eval_dump_result (CamelSExpResult *result,
 	gint i;
 
 	if (result == NULL) {
-		printf("null result???\n");
+		printf ("null result???\n");
 		return;
 	}
 
 	for (i = 0; i < depth; i++)
-		printf("   ");
+		printf ("   ");
 
 	switch (result->type) {
 	case CAMEL_SEXP_RES_ARRAY_PTR:
-		printf("array pointers\n");
+		printf ("array pointers\n");
 		break;
 	case CAMEL_SEXP_RES_INT:
-		printf("int: %d\n", result->value.number);
+		printf ("int: %d\n", result->value.number);
 		break;
 	case CAMEL_SEXP_RES_STRING:
-		printf("string: '%s'\n", result->value.string);
+		printf ("string: '%s'\n", result->value.string);
 		break;
 	case CAMEL_SEXP_RES_BOOL:
-		printf("bool: %c\n", result->value.boolean?'t':'f');
+		printf ("bool: %c\n", result->value.boolean ? 't':'f');
 		break;
 	case CAMEL_SEXP_RES_TIME:
-		printf("time_t: %ld\n", (glong) result->value.time);
+		printf ("time_t: %ld\n", (glong) result->value.time);
 		break;
 	case CAMEL_SEXP_RES_UNDEFINED:
-		printf(" <undefined>\n");
+		printf (" <undefined>\n");
 		break;
 	}
-	printf("\n");
+	printf ("\n");
 }
 #endif
 
@@ -870,45 +870,45 @@ parse_dump_term (CamelSExpTerm *term,
 	gint i;
 
 	if (t == NULL) {
-		printf("null term??\n");
+		printf ("null term??\n");
 		return;
 	}
 
 	for (i = 0; i < depth; i++)
-		printf("   ");
+		printf ("   ");
 
 	switch (term->type) {
 	case CAMEL_SEXP_TERM_STRING:
-		printf(" \"%s\"", term->value.string);
+		printf (" \"%s\"", term->value.string);
 		break;
 	case CAMEL_SEXP_TERM_INT:
-		printf(" %d", term->value.number);
+		printf (" %d", term->value.number);
 		break;
 	case CAMEL_SEXP_TERM_BOOL:
-		printf(" #%c", term->value.boolean?'t':'f');
+		printf (" #%c", term->value.boolean ? 't':'f');
 		break;
 	case CAMEL_SEXP_TERM_TIME:
-		printf(" %ld", (glong) term->value.time);
+		printf (" %ld", (glong) term->value.time);
 		break;
 	case CAMEL_SEXP_TERM_IFUNC:
 	case CAMEL_SEXP_TERM_FUNC:
-		printf(" (function %s\n", term->value.func.sym->name);
+		printf (" (function %s\n", term->value.func.sym->name);
 		/*printf(" [%d] ", term->value.func.termcount);*/
 		for (i = 0; i < term->value.func.termcount; i++) {
 			parse_dump_term (term->value.func.terms[i], depth + 1);
 		}
 		for (i = 0; i < depth; i++)
-			printf("   ");
-		printf(" )");
+			printf ("   ");
+		printf (" )");
 		break;
 	case CAMEL_SEXP_TERM_VAR:
-		printf(" (variable %s )\n", term->value.var->name);
+		printf (" (variable %s )\n", term->value.var->name);
 		break;
 	default:
-		printf("unknown type: %d\n", term->type);
+		printf ("unknown type: %d\n", term->type);
 	}
 
-	printf("\n");
+	printf ("\n");
 }
 #endif
 
@@ -1127,13 +1127,13 @@ camel_sexp_term_evaluate_occur_times (CamelSExp *sexp,
 	g_return_val_if_fail (end != NULL, NULL);
 
 	/*
-	printf("eval term :\n");
+	printf ("eval term :\n");
 	parse_dump_term (t, 0);
 	*/
 
 	switch (term->type) {
 	case CAMEL_SEXP_TERM_STRING:
-		r(printf(" (string \"%s\")\n", term->value.string));
+		r (printf (" (string \"%s\")\n", term->value.string));
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_STRING);
 		result->value.string = g_strdup (term->value.string);
 		break;
@@ -1143,7 +1143,7 @@ camel_sexp_term_evaluate_occur_times (CamelSExp *sexp,
 		CamelSGeneratorFunc *generator = NULL;
 		CamelSOperatorFunc *operator = NULL;
 
-		r(printf(" (function \"%s\"\n", term->value.func.sym->name));
+		r (printf (" (function \"%s\"\n", term->value.func.sym->name));
 
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_UNDEFINED);
 		argc = term->value.func.termcount;
@@ -1184,7 +1184,7 @@ camel_sexp_term_evaluate_occur_times (CamelSExp *sexp,
 	}
 
 	if (!ok)
-		camel_sexp_fatal_error(sexp, "Error in parse tree");
+		camel_sexp_fatal_error (sexp, "Error in parse tree");
 
 	if (result == NULL)
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_UNDEFINED);
@@ -1238,7 +1238,7 @@ parse_term_free (CamelSExp *sexp,
 		break;
 
 	default:
-		printf("parse_term_free: unknown type: %d\n", term->type);
+		printf ("parse_term_free: unknown type: %d\n", term->type);
 	}
 	camel_memchunk_free (sexp->term_chunks, term);
 }
@@ -1253,7 +1253,7 @@ parse_values (CamelSExp *sexp,
 	GScanner *gs = sexp->scanner;
 	GSList *list = NULL, *l;
 
-	p(printf("parsing values\n"));
+	p (printf ("parsing values\n"));
 
 	while ( (token = g_scanner_peek_next_token (gs)) != G_TOKEN_EOF
 		&& token != ')') {
@@ -1272,10 +1272,10 @@ parse_values (CamelSExp *sexp,
 	}
 	g_slist_free (list);
 
-	p(printf("found %d subterms\n", size));
+	p (printf ("found %d subterms\n", size));
 	*len = size;
 
-	p(printf("done parsing values\n"));
+	p (printf ("done parsing values\n"));
 	return terms;
 }
 
@@ -1298,22 +1298,22 @@ parse_value (CamelSExp *sexp)
 	GScanner *gs = sexp->scanner;
 	CamelSExpSymbol *sym;
 
-	p(printf("parsing value\n"));
+	p (printf ("parsing value\n"));
 
 	token = g_scanner_get_next_token (gs);
 	switch (token) {
 	case G_TOKEN_EOF:
 		break;
 	case G_TOKEN_LEFT_PAREN:
-		p(printf("got brace, its a list!\n"));
+		p (printf ("got brace, its a list!\n"));
 		return parse_list (sexp, TRUE);
 	case G_TOKEN_STRING:
-		p(printf("got string '%s'\n", g_scanner_cur_value(gs).v_string));
+		p (printf ("got string '%s'\n", g_scanner_cur_value (gs).v_string));
 		term = parse_term_new (sexp, CAMEL_SEXP_TERM_STRING);
 		term->value.string = g_strdup (g_scanner_cur_value (gs).v_string);
 		break;
 	case '-':
-		p(printf ("got negative int?\n"));
+		p (printf ("got negative int?\n"));
 		token = g_scanner_get_next_token (gs);
 		if (token != G_TOKEN_INT) {
 			camel_sexp_fatal_error (sexp, "Invalid format for a integer value");
@@ -1327,12 +1327,12 @@ parse_value (CamelSExp *sexp)
 		term->value.number = g_scanner_cur_value (gs).v_int;
 		if (negative)
 			term->value.number = -term->value.number;
-		p(printf("got gint %d\n", term->value.number));
+		p (printf ("got gint %d\n", term->value.number));
 		break;
 	case '#': {
 		gchar *str;
 
-		p(printf("got bool?\n"));
+		p (printf ("got bool?\n"));
 		token = g_scanner_get_next_token (gs);
 		if (token != G_TOKEN_IDENTIFIER) {
 			camel_sexp_fatal_error (sexp, "Invalid format for a boolean value");
@@ -1352,7 +1352,7 @@ parse_value (CamelSExp *sexp)
 		break; }
 	case G_TOKEN_SYMBOL:
 		sym = g_scanner_cur_value (gs).v_symbol;
-		p(printf("got symbol '%s'\n", sym->name));
+		p (printf ("got symbol '%s'\n", sym->name));
 		switch (sym->type) {
 		case CAMEL_SEXP_TERM_FUNC:
 		case CAMEL_SEXP_TERM_IFUNC:
@@ -1367,17 +1367,17 @@ parse_value (CamelSExp *sexp)
 			term->value.var = sym;
 			break;
 		default:
-			camel_sexp_fatal_error(sexp, "Invalid symbol type: %s: %d", sym->name, sym->type);
+			camel_sexp_fatal_error (sexp, "Invalid symbol type: %s: %d", sym->name, sym->type);
 		}
 		break;
 	case G_TOKEN_IDENTIFIER:
-		p(printf("got unknown identifider '%s'\n", g_scanner_cur_value(gs).v_identifier));
-		camel_sexp_fatal_error(sexp, "Unknown identifier: %s", g_scanner_cur_value(gs).v_identifier);
+		p (printf ("got unknown identifider '%s'\n", g_scanner_cur_value (gs).v_identifier));
+		camel_sexp_fatal_error (sexp, "Unknown identifier: %s", g_scanner_cur_value (gs).v_identifier);
 		break;
 	default:
-		camel_sexp_fatal_error(sexp, "Unexpected token encountered: %d", token);
+		camel_sexp_fatal_error (sexp, "Unexpected token encountered: %d", token);
 	}
-	p(printf("done parsing value\n"));
+	p (printf ("done parsing value\n"));
 
 	return term;
 }
@@ -1391,7 +1391,7 @@ parse_list (CamelSExp *sexp,
 	CamelSExpTerm *term = NULL;
 	GScanner *gs = sexp->scanner;
 
-	p(printf("parsing list\n"));
+	p (printf ("parsing list\n"));
 	if (gotbrace)
 		token = '(';
 	else
@@ -1403,9 +1403,9 @@ parse_list (CamelSExp *sexp,
 			CamelSExpSymbol *sym;
 
 			sym = g_scanner_cur_value (gs).v_symbol;
-			p(printf("got funciton: %s\n", sym->name));
+			p (printf ("got funciton: %s\n", sym->name));
 			term = parse_term_new (sexp, sym->type);
-			p(printf("created new list %p\n", t));
+			p (printf ("created new list %p\n", t));
 			/* if we have a variable, find out its base type */
 			while (sym->type == CAMEL_SEXP_TERM_VAR) {
 				sym = ((CamelSExpTerm *)(sym->data))->value.var;
@@ -1416,26 +1416,26 @@ parse_list (CamelSExp *sexp,
 				term->value.func.terms = parse_values (sexp, &term->value.func.termcount);
 			} else {
 				parse_term_free (sexp, term);
-				camel_sexp_fatal_error(sexp, "Trying to call variable as function: %s", sym->name);
+				camel_sexp_fatal_error (sexp, "Trying to call variable as function: %s", sym->name);
 			}
 			break; }
 		case G_TOKEN_IDENTIFIER:
-			camel_sexp_fatal_error(sexp, "Unknown identifier: %s", g_scanner_cur_value(gs).v_identifier);
+			camel_sexp_fatal_error (sexp, "Unknown identifier: %s", g_scanner_cur_value (gs).v_identifier);
 			break;
 		case G_TOKEN_LEFT_PAREN:
 			return parse_list (sexp, TRUE);
 		default:
-			camel_sexp_fatal_error(sexp, "Unexpected token encountered: %d", token);
+			camel_sexp_fatal_error (sexp, "Unexpected token encountered: %d", token);
 		}
 		token = g_scanner_get_next_token (gs);
 		if (token != ')') {
-			camel_sexp_fatal_error(sexp, "Missing ')'");
+			camel_sexp_fatal_error (sexp, "Missing ')'");
 		}
 	} else {
-		camel_sexp_fatal_error(sexp, "Missing '('");
+		camel_sexp_fatal_error (sexp, "Missing '('");
 	}
 
-	p(printf("returning list %p\n", term));
+	p (printf ("returning list %p\n", term));
 
 	return term;
 }
@@ -1699,7 +1699,7 @@ camel_sexp_parse (CamelSExp *sexp)
 	g_return_val_if_fail (CAMEL_IS_SEXP (sexp), -1);
 
 	if (setjmp (sexp->failenv)) {
-		g_warning("Error in parsing: %s", sexp->error);
+		g_warning ("Error in parsing: %s", sexp->error);
 		return -1;
 	}
 
@@ -1723,7 +1723,7 @@ camel_sexp_eval (CamelSExp *sexp)
 	g_return_val_if_fail (sexp->tree != NULL, NULL);
 
 	if (setjmp (sexp->failenv)) {
-		g_warning("Error in execution: %s", sexp->error);
+		g_warning ("Error in execution: %s", sexp->error);
 		return NULL;
 	}
 
@@ -1755,7 +1755,7 @@ camel_sexp_evaluate_occur_times (CamelSExp *sexp,
 	*start = *end = -1;
 
 	if (setjmp (sexp->failenv)) {
-		g_warning("Error in execution: %s", sexp->error);
+		g_warning ("Error in execution: %s", sexp->error);
 		return FALSE;
 	}
 
@@ -1852,7 +1852,7 @@ main (gint argc,
 	if (result) {
 		eval_dump_result (result, 0);
 	} else {
-		printf("no result?|\n");
+		printf ("no result?|\n");
 	}
 
 	return 0;

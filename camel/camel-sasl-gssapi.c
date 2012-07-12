@@ -315,7 +315,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		if (ai == NULL)
 			goto exit;
 
-		str = g_strdup_printf("%s@%s", service_name, ai->ai_canonname);
+		str = g_strdup_printf ("%s@%s", service_name, ai->ai_canonname);
 		camel_freeaddrinfo (ai);
 
 		inbuf.value = str;

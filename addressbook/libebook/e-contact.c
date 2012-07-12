@@ -463,7 +463,7 @@ photo_getter (EContact *contact,
 
 			values = e_vcard_attribute_get_param (attr, EVC_TYPE);
 			if (values && values->data)
-				photo->data.inlined.mime_type = g_strdup_printf("image/%s", (gchar *)values->data);
+				photo->data.inlined.mime_type = g_strdup_printf ("image/%s", (gchar *) values->data);
 			return photo;
 		}
 	}
@@ -696,7 +696,7 @@ n_setter (EContact *contact,
 		if (name->given && *name->given)
 			*(stringptr++) = name->given;
 		*stringptr = NULL;
-		string = g_strjoinv(", ", strings);
+		string = g_strjoinv (", ", strings);
 
 		e_vcard_attribute_add_value (attr, string);
 		g_free (string);
@@ -1029,7 +1029,7 @@ e_contact_set_property (GObject *object,
 				if (!sval || !*sval)
 					return;
 
-				d(printf ("adding new %s\n", info->vcard_field_name));
+				d (printf ("adding new %s\n", info->vcard_field_name));
 
 				attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 				e_vcard_append_attribute (E_VCARD (contact), attr);
@@ -1079,7 +1079,7 @@ e_contact_set_property (GObject *object,
 						e_vcard_attribute_add_value (attr, str);
 				}
 				else {
-					d(printf ("removing %s\n", info->vcard_field_name));
+					d (printf ("removing %s\n", info->vcard_field_name));
 
 					e_vcard_remove_attribute (E_VCARD (contact), attr);
 				}
@@ -1098,7 +1098,7 @@ e_contact_set_property (GObject *object,
 		if (attr) {
 			if ((info->t & E_CONTACT_FIELD_TYPE_STRUCT && data)
 			    || (data && *(gchar *) data)) {
-				d(printf ("overwriting existing %s\n", info->vcard_field_name));
+				d (printf ("overwriting existing %s\n", info->vcard_field_name));
 				/* remove all existing values and parameters.
 				 * the setter will add the correct ones */
 				e_vcard_attribute_remove_values (attr);
@@ -1107,14 +1107,14 @@ e_contact_set_property (GObject *object,
 				info->struct_setter (contact, attr, data);
 			}
 			else {
-				d(printf ("removing %s\n", info->vcard_field_name));
+				d (printf ("removing %s\n", info->vcard_field_name));
 
 				e_vcard_remove_attribute (E_VCARD (contact), attr);
 			}
 		}
 		else if ((info->t & E_CONTACT_FIELD_TYPE_STRUCT && data)
 			 || (data && *(gchar *) data)) {
-			d(printf ("adding new %s\n", info->vcard_field_name));
+			d (printf ("adding new %s\n", info->vcard_field_name));
 			attr = e_vcard_attribute_new (NULL, info->vcard_field_name);
 
 			e_vcard_append_attribute (E_VCARD (contact), attr);
@@ -1128,7 +1128,7 @@ e_contact_set_property (GObject *object,
 		/* first we search for an attribute we can overwrite */
 		attr = e_vcard_get_attribute (E_VCARD (contact), info->vcard_field_name);
 		if (attr) {
-			d(printf ("setting %s to `%s'\n", info->vcard_field_name, g_value_get_string (value)));
+			d (printf ("setting %s to `%s'\n", info->vcard_field_name, g_value_get_string (value)));
 			e_vcard_attribute_remove_values (attr);
 			e_vcard_attribute_add_value (attr, g_value_get_boolean (value) ? "TRUE" : "FALSE");
 		}
@@ -1155,13 +1155,13 @@ e_contact_set_property (GObject *object,
 		}
 
 		if (attr) {
-			d(printf ("setting %s to `%s'\n", info->vcard_field_name, sval));
+			d (printf ("setting %s to `%s'\n", info->vcard_field_name, sval));
 			e_vcard_attribute_remove_values (attr);
 			if (sval) {
 				e_vcard_attribute_add_value (attr, sval);
 			}
 			else {
-				d(printf ("removing %s\n", info->vcard_field_name));
+				d (printf ("removing %s\n", info->vcard_field_name));
 
 				e_vcard_remove_attribute (E_VCARD (contact), attr);
 			}
@@ -1519,7 +1519,7 @@ e_contact_get (EContact *contact,
 
 		if (attr) {
 			GList *v = e_vcard_attribute_get_values (attr);
-			rv = v && v->data && !g_ascii_strcasecmp ((gchar *)v->data, "true");
+			rv = v && v->data && !g_ascii_strcasecmp ((gchar *) v->data, "true");
 			return rv ? (gpointer) "1" : NULL;
 		}
 	}
@@ -1738,7 +1738,7 @@ e_contact_set (EContact *contact,
                EContactField field_id,
                gconstpointer value)
 {
-	d(printf ("e_contact_set (%p, %d, %p)\n", contact, field_id, value));
+	d (printf ("e_contact_set (%p, %d, %p)\n", contact, field_id, value));
 
 	g_return_if_fail (contact && E_IS_CONTACT (contact));
 	g_return_if_fail (field_id >= 1 && field_id < E_CONTACT_FIELD_LAST);
@@ -1860,7 +1860,7 @@ e_contact_name_to_string (const EContactName *name)
 	if (name->suffixes && *name->suffixes)
 		*(stringptr++) = name->suffixes;
 	*stringptr = NULL;
-	return g_strjoinv(" ", strings);
+	return g_strjoinv (" ", strings);
 }
 
 /**

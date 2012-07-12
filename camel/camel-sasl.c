@@ -645,7 +645,7 @@ camel_sasl_set_authenticated (CamelSasl *sasl,
 {
 	g_return_if_fail (CAMEL_IS_SASL (sasl));
 
-	if ((sasl->priv->authenticated ? 1 : 0) == (authenticated ? 1 : 0))
+	if (sasl->priv->authenticated == authenticated)
 		return;
 
 	sasl->priv->authenticated = authenticated;

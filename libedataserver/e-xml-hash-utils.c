@@ -62,8 +62,8 @@ e_xml_to_hash (xmlDoc *doc,
 			continue;
 
 		if (type == E_XML_HASH_TYPE_OBJECT_UID &&
-		    !strcmp ((gchar *)node->name, "object"))
-			key = xmlGetProp (node, (xmlChar*)"uid");
+		    !strcmp ((gchar *) node->name, "object"))
+			key = xmlGetProp (node, (xmlChar *)"uid");
 		else
 			key = xmlStrdup (node->name);
 
@@ -79,7 +79,10 @@ e_xml_to_hash (xmlDoc *doc,
 			continue;
 		}
 
-		g_hash_table_insert (hash, g_strdup ((gchar *) key), g_strdup ((gchar *) value));
+		g_hash_table_insert (
+			hash, g_strdup ((gchar *) key),
+			g_strdup ((gchar *) value));
+
 		xmlFree (key);
 		xmlFree (value);
 	}
@@ -103,8 +106,8 @@ foreach_save_func (gpointer key,
 	xmlChar *enc;
 
 	if (sd->type == E_XML_HASH_TYPE_OBJECT_UID) {
-		new_node = xmlNewNode (NULL, (xmlChar*)"object");
-		xmlNewProp (new_node, (xmlChar*)"uid", (const xmlChar *) key);
+		new_node = xmlNewNode (NULL, (xmlChar *)"object");
+		xmlNewProp (new_node, (xmlChar *)"uid", (const xmlChar *) key);
 	} else
 		new_node = xmlNewNode (NULL, (const xmlChar *) key);
 
@@ -134,8 +137,8 @@ e_xml_from_hash (GHashTable *hash,
 	xmlDoc *doc;
 	struct save_data sd;
 
-	doc = xmlNewDoc ((xmlChar*)"1.0");
-	doc->encoding = xmlStrdup ((xmlChar*)"UTF-8");
+	doc = xmlNewDoc ((xmlChar *)"1.0");
+	doc->encoding = xmlStrdup ((xmlChar *)"UTF-8");
 	sd.type = type;
 	sd.doc = doc;
 	sd.root = xmlNewDocNode (doc, NULL, (xmlChar *) root_name, NULL);

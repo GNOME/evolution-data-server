@@ -330,7 +330,7 @@ data_cache_path (CamelDataCache *cdc,
 	hash = g_str_hash (key);
 	hash = (hash >> 5) &CAMEL_DATA_CACHE_MASK;
 	dir = alloca (strlen (cdc->priv->path) + strlen (path) + 8);
-	sprintf(dir, "%s/%s/%02x", cdc->priv->path, path, hash);
+	sprintf (dir, "%s/%s/%02x", cdc->priv->path, path, hash);
 
 	if (g_access (dir, F_OK) == -1) {
 		if (create)
@@ -347,7 +347,7 @@ data_cache_path (CamelDataCache *cdc,
 	}
 
 	tmp = camel_file_util_safe_filename (key);
-	real = g_strdup_printf("%s/%s", dir, tmp);
+	real = g_strdup_printf ("%s/%s", dir, tmp);
 	g_free (tmp);
 
 	return real;

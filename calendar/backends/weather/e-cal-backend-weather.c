@@ -339,8 +339,8 @@ create_weather (ECalBackendWeather *cbw,
 
 	/* use timezone of the location to determine date for which this is set */
 	location = gweather_info_get_location (report);
-	if (location && (w_timezone = gweather_location_get_timezone ((GWeatherLocation *)location)))
-		update_zone = icaltimezone_get_builtin_timezone (gweather_timezone_get_tzid ((GWeatherTimezone*)w_timezone));
+	if (location && (w_timezone = gweather_location_get_timezone ((GWeatherLocation *) location)))
+		update_zone = icaltimezone_get_builtin_timezone (gweather_timezone_get_tzid ((GWeatherTimezone *) w_timezone));
 
 	if (!update_zone)
 		update_zone = icaltimezone_get_utc_timezone ();

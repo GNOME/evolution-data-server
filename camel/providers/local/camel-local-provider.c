@@ -135,7 +135,7 @@ make_can_path (gchar *p,
 {
 	gchar c, last, *start = o;
 
-	d(printf("canonical '%s' = ", p));
+	d (printf ("canonical '%s' = ", p));
 
 	last = 0;
 	while ((c = *p++)) {
@@ -149,7 +149,7 @@ make_can_path (gchar *p,
 	else
 		*o = 0;
 
-	d(printf("'%s'\n", start));
+	d (printf ("'%s'\n", start));
 
 	return start;
 }

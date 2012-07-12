@@ -120,7 +120,7 @@ camel_disco_diary_log (CamelDiscoDiary *diary,
 	va_list ap;
 	gint status;
 
-	d(printf("diary log: %s\n", diary->file?"ok":"no file!"));
+	d (printf ("diary log: %s\n", diary->file?"ok":"no file!"));
 
 	/* You may already be a loser. */
 	if (!diary || !diary->file)
@@ -138,7 +138,7 @@ camel_disco_diary_log (CamelDiscoDiary *diary,
 		GPtrArray *uids = va_arg (ap, GPtrArray *);
 		const gchar *full_name;
 
-		d(printf(" folder expunge '%s'\n", folder->full_name));
+		d (printf (" folder expunge '%s'\n", folder->full_name));
 
 		full_name = camel_folder_get_full_name (folder);
 		status = camel_file_util_encode_string (diary->file, full_name);
@@ -153,7 +153,7 @@ camel_disco_diary_log (CamelDiscoDiary *diary,
 		gchar *uid = va_arg (ap, gchar *);
 		const gchar *full_name;
 
-		d(printf(" folder append '%s'\n", folder->full_name));
+		d (printf (" folder append '%s'\n", folder->full_name));
 
 		full_name = camel_folder_get_full_name (folder);
 		status = camel_file_util_encode_string (diary->file, full_name);
@@ -299,7 +299,7 @@ camel_disco_diary_replay (CamelDiscoDiary *diary,
 	goffset size;
 	GError *local_error = NULL;
 
-	d(printf("disco diary replay\n"));
+	d (printf ("disco diary replay\n"));
 
 	fseek (diary->file, 0, SEEK_END);
 	size = ftell (diary->file);
@@ -445,7 +445,7 @@ camel_disco_diary_new (CamelDiscoStore *store,
 	diary = g_object_new (CAMEL_TYPE_DISCO_DIARY, NULL);
 	diary->store = store;
 
-	d(printf("diary log file '%s'\n", filename));
+	d (printf ("diary log file '%s'\n", filename));
 
 	/* Note that the linux man page says:
 	 *
@@ -473,7 +473,7 @@ camel_disco_diary_new (CamelDiscoStore *store,
 
 	fseek (diary->file, 0, SEEK_END);
 
-	d(printf(" is at %ld\n", ftell(diary->file)));
+	d (printf (" is at %ld\n", ftell (diary->file)));
 
 	return diary;
 }

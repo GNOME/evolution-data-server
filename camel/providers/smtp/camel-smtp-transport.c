@@ -136,10 +136,12 @@ connect_to_server (CamelService *service,
 	transport->connected = TRUE;
 
 	/* get the localaddr - needed later by smtp_helo */
-	transport->localaddr = camel_tcp_stream_get_local_address (CAMEL_TCP_STREAM (tcp_stream), &transport->localaddrlen);
+	transport->localaddr = camel_tcp_stream_get_local_address (
+		CAMEL_TCP_STREAM (tcp_stream), &transport->localaddrlen);
 
 	transport->ostream = tcp_stream;
-	transport->istream = camel_stream_buffer_new (tcp_stream, CAMEL_STREAM_BUFFER_READ);
+	transport->istream = camel_stream_buffer_new (
+		tcp_stream, CAMEL_STREAM_BUFFER_READ);
 
 	/* Read the greeting, note whether the server is ESMTP or not. */
 	do {
@@ -186,7 +188,8 @@ connect_to_server (CamelService *service,
 		}
 	}
 
-	/* clear any EHLO/HELO exception and assume that any SMTP errors encountered were non-fatal */
+	/* Clear any EHLO/HELO exception and assume that
+	 * any SMTP errors encountered were non-fatal. */
 	g_clear_error (error);
 
 	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT)
@@ -201,7 +204,7 @@ connect_to_server (CamelService *service,
 		goto exception_cleanup;
 	}
 
-	d(fprintf (stderr, "sending : STARTTLS\r\n"));
+	d (fprintf (stderr, "sending : STARTTLS\r\n"));
 	if (camel_stream_write (
 		tcp_stream, "STARTTLS\r\n", 10, cancellable, error) == -1) {
 		g_prefix_error (error, _("STARTTLS command failed: "));
@@ -477,7 +480,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 			"AUTH %s\r\n", mechanism);
 	}
 
-	d(fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "sending : %s", cmdbuf));
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf,
 		cancellable, error) == -1) {
@@ -512,11 +515,14 @@ smtp_transport_authenticate_sync (CamelService *service,
 
 		if (FALSE) {
 		broken_smtp_server:
-			d(fprintf (stderr, "Your SMTP server's implementation of the %s SASL\n"
-				   "authentication mechanism is broken. Please report this to the\n"
-				   "appropriate vendor and suggest that they re-read rfc2554 again\n"
-				   "for the first time (specifically Section 4).\n",
-				   mechanism));
+			d (fprintf (
+				stderr, "Your SMTP server's implementation "
+				"of the %s SASL\nauthentication mechanism is "
+				"broken. Please report this to the\n"
+				"appropriate vendor and suggest that they "
+				"re-read rfc2554 again\nfor the first time "
+				"(specifically Section 4).\n",
+				mechanism));
 		}
 
 		/* eat whtspc */
@@ -532,7 +538,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 		/* send our challenge */
 		cmdbuf = g_strdup_printf ("%s\r\n", challenge);
 		g_free (challenge);
-		d(fprintf (stderr, "sending : %s", cmdbuf));
+		d (fprintf (stderr, "sending : %s", cmdbuf));
 		if (camel_stream_write_string (
 			transport->ostream, cmdbuf,
 			cancellable, error) == -1) {
@@ -574,11 +580,11 @@ smtp_transport_authenticate_sync (CamelService *service,
 
 break_and_lose:
 	/* Get the server out of "waiting for continuation data" mode. */
-	d(fprintf (stderr, "sending : *\n"));
+	d (fprintf (stderr, "sending : *\n"));
 	camel_stream_write (transport->ostream, "*\r\n", 3, cancellable, NULL);
 	respbuf = camel_stream_buffer_read_line (
 		CAMEL_STREAM_BUFFER (transport->istream), cancellable, NULL);
-	d(fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
+	d (fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
 
 lose:
 	result = CAMEL_AUTHENTICATION_ERROR;
@@ -864,7 +870,7 @@ esmtp_get_authtypes (const guchar *buffer)
 	start = buffer;
 
 	/* make sure there is at least one delimiter
-	   character in the AUTH response */
+	 * character in the AUTH response */
 	if (!isspace ((gint) *start) && *start != '=')
 		return NULL;
 
@@ -1121,12 +1127,12 @@ smtp_helo (CamelSmtpTransport *transport,
 
 	token = (transport->flags & CAMEL_SMTP_TRANSPORT_IS_ESMTP) ? "EHLO" : "HELO";
 	if (numeric)
-		cmdbuf = g_strdup_printf("%s [%s%s]\r\n", token, numeric, name);
+		cmdbuf = g_strdup_printf ("%s [%s%s]\r\n", token, numeric, name);
 	else
-		cmdbuf = g_strdup_printf("%s %s\r\n", token, name);
+		cmdbuf = g_strdup_printf ("%s %s\r\n", token, name);
 	g_free (name);
 
-	d(fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "sending : %s", cmdbuf));
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
 		g_free (cmdbuf);
@@ -1226,7 +1232,7 @@ smtp_mail (CamelSmtpTransport *transport,
 	else
 		cmdbuf = g_strdup_printf ("MAIL FROM:<%s>\r\n", sender);
 
-	d(fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "sending : %s", cmdbuf));
 
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
@@ -1278,7 +1284,7 @@ smtp_rcpt (CamelSmtpTransport *transport,
 
 	cmdbuf = g_strdup_printf ("RCPT TO:<%s>\r\n", recipient);
 
-	d(fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "sending : %s", cmdbuf));
 
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
@@ -1343,11 +1349,12 @@ smtp_data (CamelSmtpTransport *transport,
 	/* Changes the encoding of all mime parts to fit within our required
 	 * encoding type and also force any text parts with long lines (longer
 	 * than 998 octets) to wrap by QP or base64 encoding them. */
-	camel_mime_message_set_best_encoding (message, CAMEL_BESTENC_GET_ENCODING, enctype);
+	camel_mime_message_set_best_encoding (
+		message, CAMEL_BESTENC_GET_ENCODING, enctype);
 
 	cmdbuf = g_strdup ("DATA\r\n");
 
-	d(fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "sending : %s", cmdbuf));
 
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
@@ -1448,7 +1455,7 @@ smtp_data (CamelSmtpTransport *transport,
 
 	/* terminate the message body */
 
-	d(fprintf (stderr, "sending : \\r\\n.\\r\\n\n"));
+	d (fprintf (stderr, "sending : \\r\\n.\\r\\n\n"));
 
 	if (camel_stream_write (
 		transport->ostream, "\r\n.\r\n", 5,
@@ -1496,7 +1503,7 @@ smtp_rset (CamelSmtpTransport *transport,
 
 	cmdbuf = g_strdup ("RSET\r\n");
 
-	d(fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "sending : %s", cmdbuf));
 
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
@@ -1545,7 +1552,7 @@ smtp_quit (CamelSmtpTransport *transport,
 
 	cmdbuf = g_strdup ("QUIT\r\n");
 
-	d(fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "sending : %s", cmdbuf));
 
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
@@ -1562,7 +1569,7 @@ smtp_quit (CamelSmtpTransport *transport,
 			CAMEL_STREAM_BUFFER (transport->istream),
 			cancellable, error);
 
-		d(fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
+		d (fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("QUIT command failed: "));
 			transport->connected = FALSE;

@@ -266,7 +266,7 @@ vee_store_get_folder_info_sync (CamelStore *store,
 	GHashTable *infos_hash;
 	gint i;
 
-	d (printf ("Get folder info '%s'\n", top?top:"<null>"));
+	d (printf ("Get folder info '%s'\n", top ? top:"<null>"));
 
 	infos_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	folders = camel_object_bag_list (store->folders);
@@ -595,7 +595,7 @@ camel_vee_store_set_unmatched_enabled (CamelVeeStore *vstore,
 
 	g_return_if_fail (CAMEL_IS_VEE_STORE (vstore));
 
-	if ((vstore->priv->unmatched_enabled ? 1 : 0) == (is_enabled ? 1 : 0))
+	if (vstore->priv->unmatched_enabled == is_enabled)
 		return;
 
 	vstore->priv->unmatched_enabled = is_enabled;

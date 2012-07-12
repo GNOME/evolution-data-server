@@ -755,7 +755,8 @@ e_filename_make_safe (gchar *string)
 		 * achieve, and whether it does that as currently
 		 * written?
 		 */
-		if (!g_unichar_isprint (c) || ( c < 0xff && strchr (unsafe_chars, c&0xff ))) {
+		if (!g_unichar_isprint (c) ||
+			(c < 0xff && strchr (unsafe_chars, c & 0xff))) {
 			while (ts < p)
 				*ts++ = '_';
 		}
@@ -932,10 +933,12 @@ e_util_copy_object_slist (GSList *copy_to,
 		GSList *objects_copy = NULL;
 		/* Make deep copy of objects */
 		for (iter = objects; iter; iter = iter->next)
-			objects_copy = g_slist_prepend (objects_copy, g_object_ref (iter->data));
+			objects_copy = g_slist_prepend (
+				objects_copy, g_object_ref (iter->data));
 
 		/* Concatenate the two lists */
-		return g_slist_concat (copy_to, g_slist_reverse (objects_copy));
+		return g_slist_concat (
+			copy_to, g_slist_reverse (objects_copy));
 	}
 
 	return copy_to;
@@ -1420,15 +1423,17 @@ e_util_replace_prefix (const gchar *configure_time_prefix,
                        const gchar *runtime_prefix,
                        const gchar *configure_time_path)
 {
-	gchar *c_t_prefix_slash = g_strconcat (configure_time_prefix, "/",
-					      NULL);
+	gchar *c_t_prefix_slash;
 	gchar *retval;
+
+	c_t_prefix_slash = g_strconcat (configure_time_prefix, "/", NULL);
 
 	if (runtime_prefix &&
 	    g_str_has_prefix (configure_time_path, c_t_prefix_slash)) {
-		retval = g_strconcat (runtime_prefix,
-				      configure_time_path + strlen (configure_time_prefix),
-				      NULL);
+		retval = g_strconcat (
+			runtime_prefix,
+			configure_time_path + strlen (configure_time_prefix),
+			NULL);
 	} else
 		retval = g_strdup (configure_time_path);
 

@@ -76,7 +76,8 @@ extension_set_extensible (EExtension *extension,
 
 	/* Verify the EExtensible object is the type we want. */
 	if (!g_type_is_a (extensible_type, class->extensible_type)) {
-		g_warning ("%s is meant to extend %s but was given an %s",
+		g_warning (
+			"%s is meant to extend %s but was given an %s",
 			G_OBJECT_TYPE_NAME (extension),
 			g_type_name (class->extensible_type),
 			g_type_name (extensible_type));

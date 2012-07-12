@@ -51,7 +51,8 @@
 #define CAMEL_SMTP_TRANSPORT_ENHANCEDSTATUSCODES    (1 << 2)
 #define CAMEL_SMTP_TRANSPORT_STARTTLS               (1 << 3)
 
-#define CAMEL_SMTP_TRANSPORT_AUTH_EQUAL             (1 << 4)  /* set if we are using authtypes from a broken AUTH= */
+/* set if we are using authtypes from a broken AUTH= */
+#define CAMEL_SMTP_TRANSPORT_AUTH_EQUAL             (1 << 4)
 
 #ifdef G_OS_WIN32
 #define socklen_t int

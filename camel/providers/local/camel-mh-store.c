@@ -104,7 +104,7 @@ folders_update (const gchar *root,
 			    && (line[flen] == 0 || line[flen] == '/')) {
 				if (camel_stream_write (out, new, strlen (new), cancellable, NULL) == -1
 				    || camel_stream_write (out, line + flen, strlen (line) - flen, cancellable, NULL) == -1
-				    || camel_stream_write(out, "\n", 1, cancellable, NULL) == -1)
+				    || camel_stream_write (out, "\n", 1, cancellable, NULL) == -1)
 					goto fail;
 				copy = FALSE;
 			}
@@ -330,8 +330,8 @@ recursive_scan (CamelStore *store,
 		/* Look for subdirectories to add and scan. */
 		while ((d = readdir (dp)) != NULL) {
 			/* Skip current and parent directory. */
-			if (strcmp(d->d_name, ".") == 0
-			    || strcmp(d->d_name, "..") == 0)
+			if (strcmp (d->d_name, ".") == 0
+			    || strcmp (d->d_name, "..") == 0)
 				continue;
 
 			/* skip fully-numerical entries (i.e. mh messages) */
@@ -342,7 +342,7 @@ recursive_scan (CamelStore *store,
 			/* Otherwise, treat at potential node, and recurse,
 			 * a bit more expensive than needed, but tough! */
 			if (path[0]) {
-				tmp = g_strdup_printf("%s/%s", path, d->d_name);
+				tmp = g_strdup_printf ("%s/%s", path, d->d_name);
 				recursive_scan (
 					store, &fi->child, fi, visited,
 					root, tmp, flags, cancellable);
@@ -432,7 +432,7 @@ folders_scan (CamelStore *store,
 		tmp = g_strdup (line);
 		g_hash_table_insert (visited, tmp, tmp);
 
-		path = g_strdup_printf("%s/%s", root, line);
+		path = g_strdup_printf ("%s/%s", root, line);
 		if (g_stat (path, &st) == 0 && S_ISDIR (st.st_mode)) {
 			fi = folder_info_new (
 				store, root, line, flags, cancellable);

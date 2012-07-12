@@ -158,7 +158,7 @@ imap_folder_set_apply_filters (CamelImapFolder *folder,
 	g_return_if_fail (folder != NULL);
 	g_return_if_fail (CAMEL_IS_IMAP_FOLDER (folder));
 
-	if ((folder->priv->apply_filters ? 1 : 0) == (apply_filters ? 1 : 0))
+	if (folder->priv->apply_filters == apply_filters)
 		return;
 
 	folder->priv->apply_filters = apply_filters;
@@ -574,7 +574,7 @@ camel_imap_folder_set_check_folder (CamelImapFolder *imap_folder,
 
 	g_return_if_fail (CAMEL_IS_IMAP_FOLDER (imap_folder));
 
-	if ((imap_folder->priv->check_folder ? 1 : 0) == (check_folder ? 1 : 0))
+	if (imap_folder->priv->check_folder == check_folder)
 		return;
 
 	imap_folder->priv->check_folder = check_folder;
@@ -1237,7 +1237,7 @@ imap_rescan (CamelFolder *folder,
 
 		info = camel_folder_summary_get (folder->summary, uid);
 		if (!info) {
-			if (g_getenv("CRASH_IMAP")) { /* Debug logs to tackle on hard to get imap crasher */
+			if (g_getenv ("CRASH_IMAP")) { /* Debug logs to tackle on hard to get imap crasher */
 				printf ("CRASH: %s: %s",
 					camel_folder_get_full_name (folder), uid);
 				g_assert (0);
@@ -3252,7 +3252,7 @@ get_content (CamelImapFolder *imap_folder,
 
 	part_spec = content_info_get_part_spec (ci);
 
-	d(printf("get content '%s' '%s' (frommsg = %d)\n", part_spec, camel_content_type_format(ci->type), frommsg));
+	d (printf ("get content '%s' '%s' (frommsg = %d)\n", part_spec, camel_content_type_format (ci->type), frommsg));
 
 	/* There are three cases: multipart/signed, multipart, message/rfc822, and "other" */
 	if (camel_content_type_is (ci->type, "multipart", "signed")) {
@@ -3270,7 +3270,7 @@ get_content (CamelImapFolder *imap_folder,
 
 		spec = g_alloca (strlen (part_spec) + 6);
 		if (frommsg)
-			sprintf(spec, part_spec[0] ? "%s.TEXT" : "TEXT", part_spec);
+			sprintf (spec, part_spec[0] ? "%s.TEXT" : "TEXT", part_spec);
 		else
 			strcpy (spec, part_spec);
 		g_free (part_spec);
@@ -3300,7 +3300,7 @@ get_content (CamelImapFolder *imap_folder,
 		/* need to set this so it grabs the boundary and other info about the multipart */
 		/* we assume that part->content_type is more accurate/full than ci->type */
 		camel_data_wrapper_set_mime_type_field (CAMEL_DATA_WRAPPER (body_mp), CAMEL_DATA_WRAPPER (part)->mime_type);
-		isdigest = camel_content_type_is(((CamelDataWrapper *)part)->mime_type, "multipart", "digest");
+		isdigest = camel_content_type_is (((CamelDataWrapper *) part)->mime_type, "multipart", "digest");
 
 		speclen = strlen (part_spec);
 		child_spec = g_malloc (speclen + 17); /* dot + 10 + dot + MIME + nul */
@@ -3337,19 +3337,19 @@ get_content (CamelImapFolder *imap_folder,
 				return NULL;
 			}
 
-			if (camel_debug("imap:folder")) {
+			if (camel_debug ("imap:folder")) {
 				gchar *ct = camel_content_type_format (camel_mime_part_get_content_type ((CamelMimePart *) part));
 				gchar *ct2 = camel_content_type_format (ci->type);
 
-				printf("Setting part content type to '%s' contentinfo type is '%s'\n", ct, ct2);
+				printf ("Setting part content type to '%s' contentinfo type is '%s'\n", ct, ct2);
 				g_free (ct);
 				g_free (ct2);
 			}
 
 			/* if we had no content-type header on a multipart/digest sub-part, then we need to
 			 * treat it as message/rfc822 instead */
-			if (isdigest && camel_medium_get_header((CamelMedium *)part, "content-type") == NULL) {
-				CamelContentType *ct = camel_content_type_new("message", "rfc822");
+			if (isdigest && camel_medium_get_header ((CamelMedium *) part, "content-type") == NULL) {
+				CamelContentType *ct = camel_content_type_new ("message", "rfc822");
 
 				camel_data_wrapper_set_mime_type_field (content, ct);
 				camel_content_type_unref (ct);
@@ -3380,9 +3380,9 @@ get_content (CamelImapFolder *imap_folder,
 		/* NB: we need this differently to multipart/signed case above on purpose */
 		spec = g_alloca (strlen (part_spec) + 6);
 		if (frommsg)
-			sprintf(spec, part_spec[0] ? "%s.1" : "1", part_spec);
+			sprintf (spec, part_spec[0] ? "%s.1" : "1", part_spec);
 		else
-			strcpy(spec, part_spec[0]?part_spec:"1");
+			strcpy (spec, part_spec[0]?part_spec:"1");
 
 		enc = ci->encoding ? camel_transfer_encoding_from_string (ci->encoding) : CAMEL_TRANSFER_ENCODING_DEFAULT;
 		content = camel_imap_wrapper_new (imap_folder, ci->type, enc, uid, spec, part);
@@ -3412,7 +3412,7 @@ get_message (CamelImapFolder *imap_folder,
 	store = CAMEL_IMAP_STORE (parent_store);
 
 	part_spec = content_info_get_part_spec (ci);
-	d(printf("get message '%s'\n", part_spec));
+	d (printf ("get message '%s'\n", part_spec));
 	section_text = g_strdup_printf ("%s%s%s", part_spec, *part_spec ? "." : "",
 					store->server_level >= IMAP_LEVEL_IMAP4REV1 ? "HEADER" : "0");
 
@@ -3437,11 +3437,11 @@ get_message (CamelImapFolder *imap_folder,
 		return NULL;
 	}
 
-	if (camel_debug("imap:folder")) {
+	if (camel_debug ("imap:folder")) {
 		gchar *ct = camel_content_type_format (camel_mime_part_get_content_type ((CamelMimePart *) msg));
 		gchar *ct2 = camel_content_type_format (ci->type);
 
-		printf("Setting message content type to '%s' contentinfo type is '%s'\n", ct, ct2);
+		printf ("Setting message content type to '%s' contentinfo type is '%s'\n", ct, ct2);
 		g_free (ct);
 		g_free (ct2);
 	}
@@ -3627,8 +3627,8 @@ imap_get_message_sync (CamelFolder *folder,
 				}
 			}
 
-			if (camel_debug_start("imap:folder")) {
-				printf("Folder get message '%s' folder info ->\n", uid);
+			if (camel_debug_start ("imap:folder")) {
+				printf ("Folder get message '%s' folder info ->\n", uid);
 				camel_message_info_dump ((CamelMessageInfo *) mi);
 				camel_debug_end ();
 			}
@@ -3725,7 +3725,7 @@ imap_synchronize_message_sync (CamelFolder *folder,
 	 */
 	/* If its cached in full, just get it as is, this is only a shortcut,
 	 * since we get stuff from the cache anyway.  It affects a busted connection though. */
-	if ((stream = camel_imap_folder_fetch_data(imap_folder, uid, "", TRUE, cancellable, NULL))) {
+	if ((stream = camel_imap_folder_fetch_data (imap_folder, uid, "", TRUE, cancellable, NULL))) {
 		g_object_unref (stream);
 		return TRUE;
 	}
@@ -4017,7 +4017,7 @@ imap_update_summary (CamelFolder *folder,
 
 	g_strfreev (extra_headers);
 
-	d(printf("Header is : %s", header_spec->str));
+	d (printf ("Header is : %s", header_spec->str));
 
 	/* Figure out if any of the new messages are already cached (which
 	 * may be the case if we're re-syncing after disconnected operation).
@@ -4273,7 +4273,7 @@ imap_update_summary (CamelFolder *folder,
 		}
 		uid = (gchar *) camel_message_info_uid (mi);
 		if (uid[0] == 0) {
-			g_warning("Server provided no uid: message %d", i + first);
+			g_warning ("Server provided no uid: message %d", i + first);
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Incomplete server response: "
@@ -4759,7 +4759,7 @@ imap_get_quota_info_sync (CamelFolder *folder,
 					}
 
 					if (skipped)
-						g_debug ("Unexpected quota response '%s'; skipping it...", (const gchar *)response->untagged->pdata[i]);
+						g_debug ("Unexpected quota response '%s'; skipping it...", (const gchar *) response->untagged->pdata[i]);
 				}
 			}
 			camel_imap_response_free (imap_store, response);

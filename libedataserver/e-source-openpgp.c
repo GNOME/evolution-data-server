@@ -294,7 +294,7 @@ e_source_openpgp_set_always_trust (ESourceOpenPGP *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
 
-	if ((extension->priv->always_trust ? 1 : 0) == (always_trust ? 1 : 0))
+	if (extension->priv->always_trust == always_trust)
 		return;
 
 	extension->priv->always_trust = always_trust;
@@ -335,7 +335,7 @@ e_source_openpgp_set_encrypt_to_self (ESourceOpenPGP *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
 
-	if ((extension->priv->encrypt_to_self ? 1 : 0) == (encrypt_to_self ? 1 : 0))
+	if (extension->priv->encrypt_to_self == encrypt_to_self)
 		return;
 
 	extension->priv->encrypt_to_self = encrypt_to_self;
@@ -547,7 +547,7 @@ e_source_openpgp_set_sign_by_default (ESourceOpenPGP *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
 
-	if ((extension->priv->sign_by_default ? 1 : 0) == (sign_by_default ? 1 : 0))
+	if (extension->priv->sign_by_default == sign_by_default)
 		return;
 
 	extension->priv->sign_by_default = sign_by_default;

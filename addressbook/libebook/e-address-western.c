@@ -203,7 +203,7 @@ e_address_western_extract_locality (gchar *line)
 	gint index;
 
 	/* Everything before the comma is the locality. */
-	index = strcspn(line, ",");
+	index = strcspn (line, ",");
 
 	if (index == 0)
 		return NULL;

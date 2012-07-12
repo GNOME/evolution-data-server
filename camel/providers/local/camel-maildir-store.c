@@ -125,7 +125,7 @@ maildir_store_create_folder_sync (CamelStore *store,
 
 	if (parent_name && *parent_name) {
 		gchar *dir_name = maildir_full_name_to_dir_name (parent_name);
-		name = g_strdup_printf("%s/%s.%s", path, dir_name, folder_name);
+		name = g_strdup_printf ("%s/%s.%s", path, dir_name, folder_name);
 		g_free (dir_name);
 	} else
 		name = maildir_full_name_to_dir_name (folder_name);
@@ -143,9 +143,9 @@ maildir_store_create_folder_sync (CamelStore *store,
 	name = NULL;
 
 	if (parent_name && *parent_name)
-		name = g_strdup_printf("%s/%s", parent_name, folder_name);
+		name = g_strdup_printf ("%s/%s", parent_name, folder_name);
 	else
-		name = g_strdup_printf("%s", folder_name);
+		name = g_strdup_printf ("%s", folder_name);
 
 	folder = maildir_store_get_folder_sync (
 		store, name, CAMEL_STORE_FOLDER_CREATE, cancellable, error);
@@ -354,9 +354,9 @@ maildir_store_delete_folder_sync (CamelStore *store,
 				while ((d = readdir (dir))) {
 					gchar *name = d->d_name, *file;
 
-					if (!strcmp(name, ".") || !strcmp(name, ".."))
+					if (!strcmp (name, ".") || !strcmp (name, ".."))
 						continue;
-					file = g_strdup_printf("%s/%s", tmp, name);
+					file = g_strdup_printf ("%s/%s", tmp, name);
 					unlink (file);
 					g_free (file);
 				}
@@ -491,7 +491,7 @@ scan_fi (CamelStore *store,
 		fi->flags = CAMEL_FOLDER_NOCHILDREN;
 
 	dir_name = maildir_full_name_to_dir_name (fi->full_name);
-	d(printf("Adding maildir info: '%s' '%s' '%s'\n", fi->name, dir_name, fi->uri));
+	d (printf ("Adding maildir info: '%s' '%s' '%s'\n", fi->name, dir_name, fi->uri));
 
 	tmp = g_build_filename (path, dir_name, "tmp", NULL);
 	cur = g_build_filename (path, dir_name, "cur", NULL);
@@ -603,12 +603,12 @@ scan_dirs (CamelStore *store,
 		CamelFolderInfo *fi;
 		struct stat st;
 
-		if (strcmp(d->d_name, "tmp") == 0
-				|| strcmp(d->d_name, "cur") == 0
-				|| strcmp(d->d_name, "new") == 0
-				|| strcmp(d->d_name, ".#evolution") == 0
-				|| strcmp(d->d_name, ".") == 0
-				|| strcmp(d->d_name, "..") == 0
+		if (strcmp (d->d_name, "tmp") == 0
+				|| strcmp (d->d_name, "cur") == 0
+				|| strcmp (d->d_name, "new") == 0
+				|| strcmp (d->d_name, ".#evolution") == 0
+				|| strcmp (d->d_name, ".") == 0
+				|| strcmp (d->d_name, "..") == 0
 				|| !g_str_has_prefix (d->d_name, "."))
 
 				continue;
@@ -626,12 +626,12 @@ scan_dirs (CamelStore *store,
 		else
 			short_name++;
 
-		if ((g_ascii_strcasecmp ((*topfi)->full_name, "Inbox") != 0 
+		if ((g_ascii_strcasecmp ((*topfi)->full_name, "Inbox") != 0
 		    && (!g_str_has_prefix (full_name, (*topfi)->full_name) ||
 			(full_name[strlen ((*topfi)->full_name)] != '\0' &&
 			 full_name[strlen ((*topfi)->full_name)] != '/')))
 		    || (!can_inbox_sibling
-		    && g_ascii_strcasecmp ((*topfi)->full_name, "Inbox") == 0 
+		    && g_ascii_strcasecmp ((*topfi)->full_name, "Inbox") == 0
 		    && (!g_str_has_prefix (full_name, (*topfi)->full_name) ||
 			(full_name[strlen ((*topfi)->full_name)] != '\0' &&
 			 full_name[strlen ((*topfi)->full_name)] != '/')))) {
@@ -696,13 +696,13 @@ maildir_store_get_folder_info_sync (CamelStore *store,
 
 	if (top == NULL || top[0] == 0) {
 		/* create a dummy "." parent inbox, use to scan, then put back at the top level */
-		fi = scan_fi(store, flags, "Inbox", _("Inbox"), cancellable);
+		fi = scan_fi (store, flags, "Inbox", _("Inbox"), cancellable);
 		if (scan_dirs (store, flags, TRUE, &fi, cancellable, error) == -1)
 			goto fail;
 
 		fi->flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
-	} else if (!strcmp(top, ".")) {
-		fi = scan_fi(store, flags, "Inbox", _("Inbox"), cancellable);
+	} else if (!strcmp (top, ".")) {
+		fi = scan_fi (store, flags, "Inbox", _("Inbox"), cancellable);
 		fi->flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 	} else {
 		const gchar *name = strrchr (top, '/');
@@ -781,7 +781,7 @@ maildir_store_rename_folder_sync (CamelStore *store,
 	gchar *old_dir, *new_dir;
 	CamelFolderInfo *subfolders;
 
-	if (strcmp(old, ".") == 0) {
+	if (strcmp (old, ".") == 0) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
@@ -989,7 +989,7 @@ scan_old_dir_info (CamelStore *store,
 
 		last = (CamelFolderInfo *) &sn->fi->child;
 
-		if (!strcmp(sn->fi->full_name, "."))
+		if (!strcmp (sn->fi->full_name, "."))
 			name = g_strdup (path);
 		else
 			name = g_build_filename (path, sn->fi->full_name, NULL);
@@ -1006,12 +1006,12 @@ scan_old_dir_info (CamelStore *store,
 		}
 
 		while ((d = readdir (dir))) {
-			if (strcmp(d->d_name, "tmp") == 0
-			    || strcmp(d->d_name, "cur") == 0
-			    || strcmp(d->d_name, "new") == 0
-			    || strcmp(d->d_name, ".#evolution") == 0
-			    || strcmp(d->d_name, ".") == 0
-			    || strcmp(d->d_name, "..") == 0)
+			if (strcmp (d->d_name, "tmp") == 0
+			    || strcmp (d->d_name, "cur") == 0
+			    || strcmp (d->d_name, "new") == 0
+			    || strcmp (d->d_name, ".#evolution") == 0
+			    || strcmp (d->d_name, ".") == 0
+			    || strcmp (d->d_name, "..") == 0)
 				continue;
 
 			tmp = g_build_filename (name, d->d_name, NULL);
@@ -1030,10 +1030,10 @@ scan_old_dir_info (CamelStore *store,
 					snew->dnode = in.dnode;
 					snew->inode = in.inode;
 
-					if (!strcmp(sn->fi->full_name, "."))
+					if (!strcmp (sn->fi->full_name, "."))
 						full = g_strdup (d->d_name);
 					else
-						full = g_strdup_printf("%s/%s", sn->fi->full_name, d->d_name);
+						full = g_strdup_printf ("%s/%s", sn->fi->full_name, d->d_name);
 
 					fi = camel_folder_info_new ();
 					fi->full_name = full;
@@ -1096,7 +1096,7 @@ traverse_rename_folder_info (CamelMaildirStore *mstore,
 		if (fi->child)
 			traverse_rename_folder_info (mstore, fi->child, cancellable, error);
 
-		if (strcmp (fi->full_name, ".") && ((!g_str_has_prefix (fi->full_name, ".") && (!fi->parent || !strcmp(fi->parent->full_name, "."))) || 
+		if (strcmp (fi->full_name, ".") && ((!g_str_has_prefix (fi->full_name, ".") && (!fi->parent || !strcmp (fi->parent->full_name, "."))) ||
 					(fi->parent && strcmp (fi->parent->full_name, "."))))
 			maildir_rename_old_folder (mstore, fi, cancellable, error);
 

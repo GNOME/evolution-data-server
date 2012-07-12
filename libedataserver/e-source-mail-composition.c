@@ -576,7 +576,7 @@ e_source_mail_composition_set_sign_imip (ESourceMailComposition *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
 
-	if ((extension->priv->sign_imip ? 1 : 0) == (sign_imip ? 1 : 0))
+	if (extension->priv->sign_imip == sign_imip)
 		return;
 
 	extension->priv->sign_imip = sign_imip;

@@ -21,7 +21,7 @@ main (gint argc,
 	cal = ecal_test_utils_cal_new_temp (&uri, E_CAL_SOURCE_TYPE_EVENT);
 	ecal_test_utils_cal_open (cal, FALSE);
 
-        ecal_test_utils_create_component (cal, "20040109T090000Z", "UTC",
+	ecal_test_utils_create_component (cal, "20040109T090000Z", "UTC",
 			"20040109T103000", "UTC", "meeting request",
 			&e_component, &uid);
 

@@ -698,7 +698,7 @@ update_capslock_state (GtkDialog *dialog,
 	/* The space acts as a vertical placeholder. */
 	markup = g_markup_printf_escaped (
 		"<small>%s</small>", (mask & GDK_LOCK_MASK) ?
-		 _("You have the Caps Lock key on.") : " ");
+		_("You have the Caps Lock key on.") : " ");
 	gtk_label_set_markup (GTK_LABEL (label), markup);
 	g_free (markup);
 
@@ -820,13 +820,13 @@ ep_ask_password (EPassMsg *msg)
 				(type == E_PASSWORDS_REMEMBER_FOREVER)
 				? _("_Remember this passphrase")
 				: _("_Remember this passphrase for"
-				    " the remainder of this session"));
+				" the remainder of this session"));
 		} else {
 			widget = gtk_check_button_new_with_mnemonic (
 				(type == E_PASSWORDS_REMEMBER_FOREVER)
 				? _("_Remember this password")
 				: _("_Remember this password for"
-				    " the remainder of this session"));
+				" the remainder of this session"));
 		}
 
 		gtk_toggle_button_set_active (

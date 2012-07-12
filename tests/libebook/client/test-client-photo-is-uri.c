@@ -78,7 +78,7 @@ objects_removed (EBookClientView *book_view,
 	GSList *l;
 
 	for (l = (GSList *) ids; l; l = l->next) {
-		g_print ("Removed contact: %s\n", (gchar *)l->data);
+		g_print ("Removed contact: %s\n", (gchar *) l->data);
 	}
 }
 

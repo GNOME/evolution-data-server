@@ -96,7 +96,7 @@ mbox_folder_get_filename (CamelFolder *folder,
 	goffset frompos;
 	gchar *filename = NULL;
 
-	d(printf("Getting message %s\n", uid));
+	d (printf ("Getting message %s\n", uid));
 
 	/* lock the folder first, burn if we can't, need write lock for summary check */
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
@@ -159,7 +159,7 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
 		return FALSE;
 
-	d(printf("Appending message\n"));
+	d (printf ("Appending message\n"));
 
 	/* first, check the summary is correct (updates folder_size too) */
 	retval = camel_local_summary_check ((CamelLocalSummary *) folder->summary, lf->changes, cancellable, error);
@@ -171,7 +171,7 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 	if (mi == NULL)
 		goto fail;
 
-	d(printf("Appending message: uid is %s\n", camel_message_info_uid(mi)));
+	d (printf ("Appending message: uid is %s\n", camel_message_info_uid (mi)));
 
 	has_attachment = camel_mime_message_has_attachment (message);
 	if (((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
@@ -195,7 +195,7 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 	xev = camel_local_summary_encode_x_evolution ((CamelLocalSummary *) folder->summary, mi);
 	if (xev) {
 		/* the x-ev header should match the 'current' flags, no problem, so store as much */
-		camel_medium_set_header((CamelMedium *)message, "X-Evolution", xev);
+		camel_medium_set_header ((CamelMedium *) message, "X-Evolution", xev);
 		mi->flags &= ~ CAMEL_MESSAGE_FOLDER_NOXEV | CAMEL_MESSAGE_FOLDER_FLAGGED;
 		g_free (xev);
 	}
@@ -307,7 +307,7 @@ mbox_folder_get_message_sync (CamelFolder *folder,
 	gint retried = FALSE;
 	goffset frompos;
 
-	d(printf("Getting message %s\n", uid));
+	d (printf ("Getting message %s\n", uid));
 
 	/* lock the folder first, burn if we can't, need write lock for summary check */
 	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
@@ -360,8 +360,8 @@ retry:
 	if (camel_mime_parser_step (parser, NULL, NULL) != CAMEL_MIME_PARSER_STATE_FROM
 	    || camel_mime_parser_tell_start_from (parser) != frompos) {
 
-		g_warning("Summary doesn't match the folder contents!  eek!\n"
-			  "  expecting offset %ld got %ld, state = %d", (glong)frompos,
+		g_warning ("Summary doesn't match the folder contents!  eek!\n"
+			  "  expecting offset %ld got %ld, state = %d", (glong) frompos,
 			  (glong) camel_mime_parser_tell_start_from (parser),
 			  camel_mime_parser_state (parser));
 
@@ -394,7 +394,7 @@ retry:
 		goto fail;
 	}
 
-	camel_medium_remove_header((CamelMedium *)message, "X-Evolution");
+	camel_medium_remove_header ((CamelMedium *) message, "X-Evolution");
 
 fail:
 	/* and unlock now we're finished with it */

@@ -31,7 +31,7 @@ test_add_message (CamelFolder *folder,
 	push ("creating message %d\n", j);
 	msg = test_message_create_simple ();
 	content = g_strdup_printf ("Test message %08x contents\n\n", j);
-	test_message_set_content_simple ((CamelMimePart *)msg, 0, "text/plain",
+	test_message_set_content_simple ((CamelMimePart *) msg, 0, "text/plain",
 							content, strlen (content));
 	test_free (content);
 	subject = g_strdup_printf ("Test message %08x subject", j);
@@ -68,9 +68,9 @@ worker (gpointer d)
 	for (i = 0; i < MAX_MESSAGES; i++) {
 		test_add_message (info->folder, id + i);
 
-		sub = g_strdup_printf ("(match-all (header-contains \"subject\" \"message %08x subject\"))", id+i);
+		sub = g_strdup_printf ("(match-all (header-contains \"subject\" \"message %08x subject\"))", id + i);
 
-		push ("searching for message %d\n\tusing: %s", id+i, sub);
+		push ("searching for message %d\n\tusing: %s", id + i, sub);
 		res = camel_folder_search_by_expression (info->folder, sub, NULL, &error);
 		check_msg (error == NULL, "%s", error->message);
 		check_msg (res->len == 1, "res->len = %d", res->len);
@@ -84,7 +84,7 @@ worker (gpointer d)
 		g_clear_error (&error);
 		pull ();
 
-		content = g_strdup_printf ("Test message %08x contents\n\n", id+i);
+		content = g_strdup_printf ("Test message %08x contents\n\n", id + i);
 		push ("comparing content '%s': '%s'", res->pdata[0], content);
 		test_message_compare_content (camel_medium_get_content ((CamelMedium *) msg), content, strlen (content));
 		test_free (content);

@@ -97,9 +97,9 @@ component_key (const gchar *uid,
                const gchar *rid)
 {
 	if (rid)
-		return	g_strdup_printf("%s_%s", uid, rid);
+		return	g_strdup_printf ("%s_%s", uid, rid);
 	else
-		return g_strdup_printf("%s", uid);
+		return g_strdup_printf ("%s", uid);
 }
 
 /**
@@ -607,8 +607,8 @@ e_intervaltree_node_dump (EIntervalTree *tree,
  *
 	localtime_r (&node->start, &tm_start_time);
 	localtime_r (&node->end, &tm_end_time);
-	strftime(start_time, sizeof (start_time), "%Y-%m-%d T%H:%M:%S", &tm_start_time);
-	strftime(end_time, sizeof (end_time), "%Y-%m-%d T%H:%M:%S", &tm_end_time);
+	strftime (start_time, sizeof (start_time), "%Y-%m-%d T%H:%M:%S", &tm_start_time);
+	strftime (end_time, sizeof (end_time), "%Y-%m-%d T%H:%M:%S", &tm_end_time);
 	g_print ("%*s[%s - %s]\n", indent, "", start_time, end_time);
 	*/
 	EIntervalTreePrivate *priv = tree->priv;
@@ -617,7 +617,7 @@ e_intervaltree_node_dump (EIntervalTree *tree,
 				node->end, node->min, node->max, node->red);
 	else
 	{
-		g_print ("%*s[ - ]\n", indent, ""); 
+		g_print ("%*s[ - ]\n", indent, "");
 		return;
 	}
 

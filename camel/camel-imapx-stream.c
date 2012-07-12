@@ -59,10 +59,10 @@ imapx_stream_fill (CamelIMAPXStream *is,
 			cancellable, error);
 		if (left > 0) {
 			is->end += left;
-			io(is->tagprefix, "camel_imapx_read: buffer is '%.*s'\n", (gint)(is->end - is->ptr), is->ptr);
+			io (is->tagprefix, "camel_imapx_read: buffer is '%.*s'\n", (gint)(is->end - is->ptr), is->ptr);
 			return is->end - is->ptr;
 		} else {
-			io(is->tagprefix, "camel_imapx_read: -1\n");
+			io (is->tagprefix, "camel_imapx_read: -1\n");
 			/* If returning zero, camel_stream_read() doesn't consider
 			 * that to be an error. But we do -- we should only be here
 			 * if we *know* there are data to receive. So set the error
@@ -74,7 +74,7 @@ imapx_stream_fill (CamelIMAPXStream *is,
 		}
 	}
 
-	io(is->tagprefix, "camel_imapx_read: -1\n");
+	io (is->tagprefix, "camel_imapx_read: -1\n");
 
 	g_set_error (
 		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -135,7 +135,7 @@ imapx_stream_read (CamelStream *stream,
 			return max;
 	}
 
-	io(is->tagprefix, "camel_imapx_read(literal): '%.*s'\n", (gint)max, buffer);
+	io (is->tagprefix, "camel_imapx_read(literal): '%.*s'\n", (gint) max, buffer);
 
 	is->literal -= max;
 
@@ -152,9 +152,9 @@ imapx_stream_write (CamelStream *stream,
 	CamelIMAPXStream *is = (CamelIMAPXStream *) stream;
 
 	if (g_strstr_len (buffer, n, "LOGIN")) {
-		io(is->tagprefix, "camel_imapx_write: 'LOGIN...'\n");
+		io (is->tagprefix, "camel_imapx_write: 'LOGIN...'\n");
 	} else {
-		io(is->tagprefix, "camel_imapx_write: '%.*s'\n", (gint)n, buffer);
+		io (is->tagprefix, "camel_imapx_write: '%.*s'\n", (gint) n, buffer);
 	}
 
 	return camel_stream_write (is->source, buffer, n, cancellable, error);
@@ -222,7 +222,7 @@ static void camel_imapx_stream_grow (CamelIMAPXStream *is, guint len, guchar **b
 		is->bufsize <<= 1;
 	} while (is->bufsize <= len);
 
-	io(is->tagprefix, "Grow imapx buffers to %d bytes\n", is->bufsize);
+	io (is->tagprefix, "Grow imapx buffers to %d bytes\n", is->bufsize);
 
 	is->tokenbuf = g_realloc (is->tokenbuf, is->bufsize + 1);
 	if (tokptr)
@@ -230,11 +230,11 @@ static void camel_imapx_stream_grow (CamelIMAPXStream *is, guint len, guchar **b
 	if (is->unget)
 		is->unget_token = is->tokenbuf + (is->unget_token - oldtok);
 
-	//io(is->tagprefix, "buf was %p, ptr %p end %p\n", is->buf, is->ptr, is->end);
+	//io (is->tagprefix, "buf was %p, ptr %p end %p\n", is->buf, is->ptr, is->end);
 	is->buf = g_realloc (is->buf, is->bufsize + 1);
 	is->ptr = is->buf + (is->ptr - oldbuf);
 	is->end = is->buf + (is->end - oldbuf);
-	//io(is->tagprefix, "buf now %p, ptr %p end %p\n", is->buf, is->ptr, is->end);
+	//io (is->tagprefix, "buf now %p, ptr %p end %p\n", is->buf, is->ptr, is->end);
 	if (bufptr)
 		*bufptr = is->buf + (*bufptr - oldbuf);
 }
@@ -338,7 +338,7 @@ camel_imapx_stream_atom (CamelIMAPXStream *is,
 			g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting atom");
 		else
 			g_propagate_error (error, local_error);
-		io(is->tagprefix, "expecting atom!\n");
+		io (is->tagprefix, "expecting atom!\n");
 		return IMAPX_TOK_PROTOCOL;
 	}
 }
@@ -385,7 +385,7 @@ camel_imapx_stream_astring (CamelIMAPXStream *is,
 			g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting astring");
 		else
 			g_propagate_error (error, local_error);
-		io(is->tagprefix, "expecting astring!\n");
+		io (is->tagprefix, "expecting astring!\n");
 		return IMAPX_TOK_PROTOCOL;
 	}
 }
@@ -531,7 +531,7 @@ camel_imapx_stream_text (CamelIMAPXStream *is,
 			case IMAPX_TOK_STRING:
 			case IMAPX_TOK_INT:
 				g_byte_array_append (build, (guint8 *) is->unget_token, is->unget_len);
-				g_byte_array_append(build, (guint8 *) " ", 1);
+				g_byte_array_append (build, (guint8 *) " ", 1);
 			default: /* invalid, but we'll ignore */
 				break;
 		}
@@ -549,7 +549,7 @@ camel_imapx_stream_text (CamelIMAPXStream *is,
 			g_byte_array_append (build, token, len);
 	} while (tok > 0);
 
-	g_byte_array_append(build, (guint8 *) "", 1);
+	g_byte_array_append (build, (guint8 *) "", 1);
 	*text = build->data;
 	g_byte_array_free (build, FALSE);
 
@@ -579,7 +579,7 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 	}
 
 	if (is->literal > 0)
-		g_warning("stream_token called with literal %d", is->literal);
+		g_warning ("stream_token called with literal %d", is->literal);
 
 	p = is->ptr;
 	e = is->end;
@@ -599,7 +599,7 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 	/*strchr("\n*()[]+", c)*/
 	if (imapx_is_token_char (c)) {
 		is->ptr = p;
-		t(is->tagprefix, "token '%c'\n", c);
+		t (is->tagprefix, "token '%c'\n", c);
 		return c;
 	} else if (c == '{') {
 		literal = 0;
@@ -617,7 +617,7 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 								*len = literal;
 								is->ptr = p;
 								is->literal = literal;
-								t(is->tagprefix, "token LITERAL %d\n", literal);
+								t (is->tagprefix, "token LITERAL %d\n", literal);
 								return IMAPX_TOK_LITERAL;
 							}
 						}
@@ -629,9 +629,9 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 					}
 				} else {
 					if (isdigit (c)) {
-						io(is->tagprefix, "Protocol error: literal too big\n");
+						io (is->tagprefix, "Protocol error: literal too big\n");
 					} else {
-						io(is->tagprefix, "Protocol error: literal contains invalid gchar %02x '%c'\n", c, isprint(c)?c:c);
+						io (is->tagprefix, "Protocol error: literal contains invalid gchar %02x '%c'\n", c, isprint (c) ? c : c);
 					}
 					goto protocol_error;
 				}
@@ -662,11 +662,11 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 					*o = 0;
 					*data = is->tokenbuf;
 					*len = o - is->tokenbuf;
-					t(is->tagprefix, "token STRING '%s'\n", is->tokenbuf);
+					t (is->tagprefix, "token STRING '%s'\n", is->tokenbuf);
 					return IMAPX_TOK_STRING;
 				}
 				if (c == '\n' || c == '\r') {
-					io(is->tagprefix, "Protocol error: truncated string\n");
+					io (is->tagprefix, "Protocol error: truncated string\n");
 					goto protocol_error;
 				}
 				if (o >= oe) {
@@ -699,7 +699,7 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 					*o = 0;
 					*data = is->tokenbuf;
 					*len = o - is->tokenbuf;
-					t(is->tagprefix, "token TOKEN '%s'\n", is->tokenbuf);
+					t (is->tagprefix, "token TOKEN '%s'\n", is->tokenbuf);
 					return digits ? IMAPX_TOK_INT : IMAPX_TOK_TOKEN;
 				}
 
@@ -721,7 +721,7 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 
 	/* Protocol error, skip until next lf? */
 protocol_error:
-	io(is->tagprefix, "Got protocol error\n");
+	io (is->tagprefix, "Got protocol error\n");
 
 	if (c == '\n')
 		is->ptr = p - 1;
@@ -829,7 +829,7 @@ camel_imapx_stream_skip (CamelIMAPXStream *is,
 		if (tok == IMAPX_TOK_LITERAL) {
 			camel_imapx_stream_set_literal (is, len);
 			while ((tok = camel_imapx_stream_getl (is, &token, &len, cancellable, error)) > 0) {
-				io(is->tagprefix, "Skip literal data '%.*s'\n", (gint)len, token);
+				io (is->tagprefix, "Skip literal data '%.*s'\n", (gint) len, token);
 			}
 		}
 	} while (tok != '\n' && tok >= 0);

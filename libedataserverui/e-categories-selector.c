@@ -137,7 +137,8 @@ category_toggled_cb (GtkCellRenderer *renderer,
 		gchar *category;
 		gboolean active;
 
-		gtk_tree_model_get (model, &iter,
+		gtk_tree_model_get (
+			model, &iter,
 			COLUMN_ACTIVE, &active,
 			COLUMN_CATEGORY, &category, -1);
 
@@ -465,7 +466,8 @@ e_categories_selector_set_checked (ECategoriesSelector *selector,
 			gchar *category_name;
 			gboolean found;
 
-			gtk_tree_model_get (model, &iter,
+			gtk_tree_model_get (
+				model, &iter,
 				COLUMN_CATEGORY, &category_name,
 				-1);
 			found = (g_hash_table_lookup (
@@ -516,7 +518,8 @@ e_categories_selector_delete_selection (ECategoriesSelector *selector)
 		gchar *category;
 
 		gtk_tree_model_get_iter (model, &iter, path);
-		gtk_tree_model_get (model, &iter,
+		gtk_tree_model_get (
+			model, &iter,
 			COLUMN_CATEGORY, &category, -1);
 		gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 		e_categories_remove (category);
@@ -568,7 +571,8 @@ e_categories_selector_get_selected (ECategoriesSelector *selector)
 		gchar *category;
 
 		gtk_tree_model_get_iter (model, &iter, path);
-		gtk_tree_model_get (model, &iter,
+		gtk_tree_model_get (
+			model, &iter,
 			COLUMN_CATEGORY, &category, -1);
 		if (str->len == 0)
 			g_string_assign (str, category);

@@ -27,7 +27,7 @@ gint main (gint argc, gchar **argv)
 	camel_test_provider_init (1, local_drivers);
 
 	/* clear out any camel-test data */
-	system("/bin/rm -rf /tmp/camel-test");
+	system ("/bin/rm -rf /tmp/camel-test");
 
 	session = camel_test_session_new ("/tmp/camel-test");
 
@@ -35,12 +35,12 @@ gint main (gint argc, gchar **argv)
 	for (i = 0; i < G_N_ELEMENTS (stores); i++) {
 		gchar *name = stores[i];
 
-		test_folder_message_ops(session, name, TRUE, "testbox");
+		test_folder_message_ops (session, name, TRUE, "testbox");
 	}
 
 	/* create a pseudo-spool file, and check that */
-	creat("/tmp/camel-test/testbox", 0600);
-	test_folder_message_ops(session, "spool:///tmp/camel-test/testbox", TRUE, "INBOX");
+	creat ("/tmp/camel-test/testbox", 0600);
+	test_folder_message_ops (session, "spool:///tmp/camel-test/testbox", TRUE, "INBOX");
 
 	check_unref (session, 1);
 

@@ -456,7 +456,7 @@ camel_pop3_settings_set_delete_expunged (CamelPOP3Settings *settings,
 {
 	g_return_if_fail (CAMEL_IS_POP3_SETTINGS (settings));
 
-	if ((settings->priv->delete_expunged ? 1 : 0) == (delete_expunged ? 1 : 0))
+	if (settings->priv->delete_expunged == delete_expunged)
 		return;
 
 	settings->priv->delete_expunged = delete_expunged;
@@ -501,7 +501,7 @@ camel_pop3_settings_set_disable_extensions (CamelPOP3Settings *settings,
 {
 	g_return_if_fail (CAMEL_IS_POP3_SETTINGS (settings));
 
-	if ((settings->priv->disable_extensions ? 1 : 0) == (disable_extensions ? 1 : 0))
+	if (settings->priv->disable_extensions == disable_extensions)
 		return;
 
 	settings->priv->disable_extensions = disable_extensions;
@@ -544,7 +544,7 @@ camel_pop3_settings_set_keep_on_server (CamelPOP3Settings *settings,
 {
 	g_return_if_fail (CAMEL_IS_POP3_SETTINGS (settings));
 
-	if ((settings->priv->keep_on_server ? 1 : 0) == (keep_on_server ? 1 : 0))
+	if (settings->priv->keep_on_server == keep_on_server)
 		return;
 
 	settings->priv->keep_on_server = keep_on_server;
@@ -585,7 +585,7 @@ camel_pop3_settings_set_auto_fetch (CamelPOP3Settings *settings,
 {
 	g_return_if_fail (CAMEL_IS_POP3_SETTINGS (settings));
 
-	if ((settings->priv->auto_fetch ? 1 : 0) == (auto_fetch ? 1 : 0))
+	if (settings->priv->auto_fetch == auto_fetch)
 		return;
 
 	settings->priv->auto_fetch = auto_fetch;
@@ -626,7 +626,7 @@ camel_pop3_settings_set_mobile_mode (CamelPOP3Settings *settings,
 {
 	g_return_if_fail (CAMEL_IS_POP3_SETTINGS (settings));
 
-	if ((settings->priv->mobile_mode ? 1 : 0) == (mobile_mode ? 1 : 0))
+	if (settings->priv->mobile_mode == mobile_mode)
 		return;
 
 	settings->priv->mobile_mode = mobile_mode;
@@ -667,7 +667,7 @@ camel_pop3_settings_set_batch_fetch_count (CamelPOP3Settings *settings,
 {
 	g_return_if_fail (CAMEL_IS_POP3_SETTINGS (settings));
 
-	if ((settings->priv->batch_fetch_count ? 1 : 0) == (batch_fetch_count ? 1 : 0))
+	if (settings->priv->batch_fetch_count == batch_fetch_count)
 		return;
 
 	settings->priv->batch_fetch_count = batch_fetch_count;

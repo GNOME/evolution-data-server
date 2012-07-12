@@ -37,16 +37,15 @@
 gchar *
 e_uid_new (void)
 {
-	static gint serial;
-	static gchar *hostname;
+	static gint serial = 0;
+	static gchar *hostname = NULL;
 
-	if (!hostname) {
+	if (hostname == NULL)
 		hostname = (gchar *) g_get_host_name ();
-	}
 
-	return g_strdup_printf ("%lu.%lu.%d@%s",
-				(gulong) time (NULL),
-				(gulong) getpid (),
-				serial++,
-				hostname);
+	return g_strdup_printf (
+		"%lu.%lu.%d@%s",
+		(gulong) time (NULL),
+		(gulong) getpid (),
+		serial++, hostname);
 }

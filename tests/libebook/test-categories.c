@@ -44,9 +44,9 @@ main (gint argc,
 	if (g_list_length (category_list) != 3)
 	  printf ("failed conversion from string to list\n");
 	else {
-	  if (!strcmp ("Birthday", (gchar *)g_list_nth_data (category_list, 0)) &&
-	      !strcmp ("Business", (gchar *)g_list_nth_data (category_list, 1)) &&
-	      !strcmp ("Competition", (gchar *)g_list_nth_data (category_list, 2)))
+	  if (!strcmp ("Birthday", (gchar *) g_list_nth_data (category_list, 0)) &&
+	      !strcmp ("Business", (gchar *) g_list_nth_data (category_list, 1)) &&
+	      !strcmp ("Competition", (gchar *) g_list_nth_data (category_list, 2)))
 	    printf ("passed conversion from string to list\n");
 	  else
 	    printf ("failed conversion from string to list\n");

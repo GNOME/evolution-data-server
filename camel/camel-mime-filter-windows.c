@@ -81,7 +81,7 @@ mime_filter_windows_filter (CamelMimeFilter *mime_filter,
 			register guchar c = *inptr++;
 
 			if (c >= 128 && c <= 159) {
-				w(g_warning ("Encountered Windows charset masquerading as %s",
+				w (g_warning ("Encountered Windows charset masquerading as %s",
 					     priv->claimed_charset));
 				priv->is_windows = TRUE;
 				break;

@@ -376,7 +376,7 @@ camel_imap_command_response (CamelImapStore *store,
 		if (!g_ascii_strncasecmp (respbuf, "* BYE", 5)) {
 			const gchar *err = NULL;
 
-			if (respbuf [5] && g_ascii_strncasecmp (respbuf + 6, "[ALERT] ", 8) == 0)
+			if (respbuf[5] && g_ascii_strncasecmp (respbuf + 6, "[ALERT] ", 8) == 0)
 				err = respbuf + 14;
 
 			if (!err || !*err)
@@ -502,7 +502,7 @@ imap_read_response (CamelImapStore *store,
 	/* We should never get BAD, or anything else but +, OK, or NO
 	 * for that matter.  Well, we could get BAD, treat as NO.
 	 */
-	if (!p || (g_ascii_strncasecmp(p, " NO", 3) != 0 && g_ascii_strncasecmp(p, " BAD", 4)) ) {
+	if (!p || (g_ascii_strncasecmp (p, " NO", 3) != 0 && g_ascii_strncasecmp (p, " BAD", 4)) ) {
 		g_warning ("Unexpected response from IMAP server: %s",
 			   respbuf);
 		g_set_error (
@@ -614,10 +614,10 @@ imap_read_untagged (CamelImapStore *store,
 		}
 		str->str[length + 1] = '\0';
 
-		if (camel_debug("imap")) {
-			printf("Literal: -->");
+		if (camel_debug ("imap")) {
+			printf ("Literal: -->");
 			fwrite (str->str + 1, 1, length, stdout);
-			printf("<--\n");
+			printf ("<--\n");
 		}
 
 		/* Fix up the literal, turning CRLFs into LF. Also, if
@@ -667,7 +667,7 @@ imap_read_untagged (CamelImapStore *store,
 			/* MAJOR HACK ALERT, gropuwise sometimes sends an extra blank line after literals, check that here
 			 * But only do it if we're inside an sexpression */
 			if (line[0] == 0 && sexp > 0)
-				g_warning("Server sent empty line after a literal, assuming in error");
+				g_warning ("Server sent empty line after a literal, assuming in error");
 		} while (line[0] == 0 && sexp > 0);
 	}
 
@@ -718,7 +718,7 @@ camel_imap_response_free (CamelImapStore *store,
 			if (!g_ascii_strcasecmp (p, " EXISTS")) {
 				exists = number;
 			} else if (!g_ascii_strcasecmp (p, " EXPUNGE")
-				   || !g_ascii_strcasecmp(p, " XGWMOVE")) {
+				   || !g_ascii_strcasecmp (p, " XGWMOVE")) {
 				/* XGWMOVE response is the same as an EXPUNGE response */
 				if (!expunged) {
 					expunged = g_array_new (FALSE, FALSE,

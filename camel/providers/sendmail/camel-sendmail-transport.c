@@ -66,9 +66,13 @@ sendmail_send_to_sync (CamelTransport *transport,
 	CamelMimeFilter *crlf;
 	sigset_t mask, omask;
 	CamelStream *out;
+	gboolean success;
 	pid_t pid;
 
-	if (!camel_internet_address_get (CAMEL_INTERNET_ADDRESS (from), 0, NULL, &from_addr))
+	success = camel_internet_address_get (
+		CAMEL_INTERNET_ADDRESS (from), 0, NULL, &from_addr);
+
+	if (!success)
 		return FALSE;
 
 	len = camel_address_length (recipients);
@@ -80,7 +84,10 @@ sendmail_send_to_sync (CamelTransport *transport,
 	argv[4] = "--";
 
 	for (i = 0; i < len; i++) {
-		if (!camel_internet_address_get (CAMEL_INTERNET_ADDRESS (recipients), i, NULL, &addr)) {
+		success = camel_internet_address_get (
+			CAMEL_INTERNET_ADDRESS (recipients), i, NULL, &addr);
+
+		if (!success) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Could not parse recipient list"));
@@ -169,9 +176,12 @@ sendmail_send_to_sync (CamelTransport *transport,
 	close (fd[0]);
 	out = camel_stream_fs_new_with_fd (fd[1]);
 
-	/* workaround for lame sendmail implementations that can't handle CRLF eoln sequences */
+	/* XXX Workaround for lame sendmail implementations
+	 *     that can't handle CRLF eoln sequences. */
 	filter = camel_stream_filter_new (out);
-	crlf = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_DECODE, CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
+	crlf = camel_mime_filter_crlf_new (
+		CAMEL_MIME_FILTER_CRLF_DECODE,
+		CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
 	camel_stream_filter_add (CAMEL_STREAM_FILTER (filter), crlf);
 	g_object_unref (crlf);
 	g_object_unref (out);

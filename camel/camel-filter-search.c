@@ -214,7 +214,7 @@ check_header (struct _CamelSExp *f,
 		for (i = 1; i < argc && !matched; i++)
 			matched = argv[i]->type == CAMEL_SEXP_RES_STRING && argv[i]->value.string[0] == 0;
 
-		if (g_ascii_strcasecmp(name, "x-camel-mlist") == 0) {
+		if (g_ascii_strcasecmp (name, "x-camel-mlist") == 0) {
 			const gchar *list = camel_message_info_mlist (fms->info);
 
 			if (list) {
@@ -235,7 +235,7 @@ check_header (struct _CamelSExp *f,
 			mime_part = CAMEL_MIME_PART (message);
 
 			/* FIXME: what about Resent-To, Resent-Cc and Resent-From? */
-			if (g_ascii_strcasecmp("to", name) == 0 || g_ascii_strcasecmp("cc", name) == 0 || g_ascii_strcasecmp("from", name) == 0)
+			if (g_ascii_strcasecmp ("to", name) == 0 || g_ascii_strcasecmp ("cc", name) == 0 || g_ascii_strcasecmp ("from", name) == 0)
 				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
 			else if (message) {
 				ct = camel_mime_part_get_content_type (mime_part);
@@ -509,7 +509,7 @@ system_flag (struct _CamelSExp *f,
 	CamelSExpResult *r;
 
 	if (argc != 1 || argv[0]->type != CAMEL_SEXP_RES_STRING)
-		camel_sexp_fatal_error(f, _("Invalid arguments to (system-flag)"));
+		camel_sexp_fatal_error (f, _("Invalid arguments to (system-flag)"));
 
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
 	r->value.boolean = camel_system_flag_get (camel_message_info_flags (fms->info), argv[0]->value.string);
@@ -527,7 +527,7 @@ user_tag (struct _CamelSExp *f,
 	const gchar *tag;
 
 	if (argc != 1 || argv[0]->type != CAMEL_SEXP_RES_STRING)
-		camel_sexp_fatal_error(f, _("Invalid arguments to (user-tag)"));
+		camel_sexp_fatal_error (f, _("Invalid arguments to (user-tag)"));
 
 	tag = camel_message_info_user_tag (fms->info, argv[0]->value.string);
 
@@ -846,7 +846,7 @@ junk_test (struct _CamelSExp *f,
 
 	junk_filter = camel_session_get_junk_filter (fms->session);
 
-	d(printf("doing junk test for message from '%s'\n", camel_message_info_from (fms->info)));
+	d (printf ("doing junk test for message from '%s'\n", camel_message_info_from (fms->info)));
 	if (junk_filter != NULL && (camel_message_info_flags (info) & (CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_NOTJUNK)) == 0) {
 		const GHashTable *ht = camel_session_get_junk_headers (fms->session);
 		const struct _camel_header_param *node = camel_message_info_headers (info);
@@ -854,7 +854,7 @@ junk_test (struct _CamelSExp *f,
 		while (node && !retval) {
 			if (node->name) {
 				gchar *value = (gchar *) g_hash_table_lookup ((GHashTable *) ht, node->name);
-				d(printf("JunkCheckMatch: %s %s %s\n", node->name, node->value, value));
+				d (printf ("JunkCheckMatch: %s %s %s\n", node->name, node->value, value));
 				if (value)
 					retval = camel_strstrcase (node->value, value) != NULL;
 
@@ -862,18 +862,18 @@ junk_test (struct _CamelSExp *f,
 			node = node->next;
 		}
 		if (camel_debug ("junk"))
-			printf("filtered based on junk header ? %d\n", retval);
+			printf ("filtered based on junk header ? %d\n", retval);
 		if (!retval) {
 			retval = camel_session_lookup_addressbook (fms->session, camel_message_info_from (info)) != TRUE;
 			if (camel_debug ("junk"))
-				printf("Sender '%s' in book? %d\n", camel_message_info_from (info), !retval);
+				printf ("Sender '%s' in book? %d\n", camel_message_info_from (info), !retval);
 
 			if (retval) /* Not in book. Could be spam. So check for it */ {
 				CamelMimeMessage *message;
 				CamelJunkStatus status;
 				gboolean success;
 
-				d(printf("filtering message\n"));
+				d (printf ("filtering message\n"));
 				message = camel_filter_search_get_message (fms, f);
 				success = camel_junk_filter_classify (junk_filter, message, &status, NULL, NULL);
 				retval = success && (status == CAMEL_JUNK_STATUS_MESSAGE_IS_JUNK);
@@ -881,7 +881,7 @@ junk_test (struct _CamelSExp *f,
 		}
 
 		if (camel_debug ("junk"))
-			printf("junk filter => %s\n", retval ? "*JUNK*" : "clean");
+			printf ("junk filter => %s\n", retval ? "*JUNK*" : "clean");
 	} else if (junk_filter != NULL && camel_debug ("junk")) {
 		if (camel_message_info_flags (info) & CAMEL_MESSAGE_JUNK)
 			printf ("Message has a Junk flag set already, skipping junk test...\n");

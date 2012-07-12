@@ -110,7 +110,7 @@ multipart_signed_skip_content (CamelMimeParser *cmp)
 			multipart_signed_skip_content (cmp);
 		break;
 	default:
-		g_warning("Invalid state encountered???: %u", camel_mime_parser_state (cmp));
+		g_warning ("Invalid state encountered???: %u", camel_mime_parser_state (cmp));
 	}
 
 	return 0;
@@ -165,7 +165,7 @@ multipart_signed_parse_content (CamelMultipartSigned *mps)
 			if (mps->end1 > mps->start1 && byte_array->data[mps->end1 - 1] == '\r')
 				mps->end1--;
 		} else {
-			g_warning("multipart/signed has more than 2 parts, remaining parts ignored");
+			g_warning ("multipart/signed has more than 2 parts, remaining parts ignored");
 			state = CAMEL_MIME_PARSER_STATE_MULTIPART_END;
 			break;
 		}
@@ -250,11 +250,11 @@ multipart_signed_set_mime_type_field (CamelDataWrapper *data_wrapper,
 	if (mime_type) {
 		const gchar *micalg, *protocol;
 
-		protocol = camel_content_type_param(mime_type, "protocol");
+		protocol = camel_content_type_param (mime_type, "protocol");
 		g_free (mps->protocol);
 		mps->protocol = g_strdup (protocol);
 
-		micalg = camel_content_type_param(mime_type, "micalg");
+		micalg = camel_content_type_param (mime_type, "micalg");
 		g_free (mps->micalg);
 		mps->micalg = g_strdup (micalg);
 	}
@@ -415,7 +415,7 @@ static void
 multipart_signed_add_part (CamelMultipart *multipart,
                            CamelMimePart *part)
 {
-	g_warning("Cannot add parts to a signed part using add_part");
+	g_warning ("Cannot add parts to a signed part using add_part");
 }
 
 static void
@@ -423,21 +423,21 @@ multipart_signed_add_part_at (CamelMultipart *multipart,
                               CamelMimePart *part,
                               guint index)
 {
-	g_warning("Cannot add parts to a signed part using add_part_at");
+	g_warning ("Cannot add parts to a signed part using add_part_at");
 }
 
 static void
 multipart_signed_remove_part (CamelMultipart *multipart,
                               CamelMimePart *part)
 {
-	g_warning("Cannot remove parts from a signed part using remove_part");
+	g_warning ("Cannot remove parts from a signed part using remove_part");
 }
 
 static CamelMimePart *
 multipart_signed_remove_part_at (CamelMultipart *multipart,
                                  guint index)
 {
-	g_warning("Cannot remove parts from a signed part using remove_part");
+	g_warning ("Cannot remove parts from a signed part using remove_part");
 
 	return NULL;
 }
@@ -465,7 +465,7 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		} else if (mps->start1 == -1
 			   && multipart_signed_parse_content (mps) == -1
 			   && byte_array->len == 0) {
-			g_warning("Trying to get content on an invalid multipart/signed");
+			g_warning ("Trying to get content on an invalid multipart/signed");
 			return NULL;
 		} else if (byte_array->len == 0) {
 			return NULL;
@@ -489,7 +489,7 @@ multipart_signed_get_part (CamelMultipart *multipart,
 			return mps->signature;
 		if (mps->start1 == -1
 		    && multipart_signed_parse_content (mps) == -1) {
-			g_warning("Trying to get signature on invalid multipart/signed");
+			g_warning ("Trying to get signature on invalid multipart/signed");
 			return NULL;
 		} else if (byte_array->len == 0) {
 			return NULL;
@@ -505,7 +505,7 @@ multipart_signed_get_part (CamelMultipart *multipart,
 		g_object_unref (stream);
 		return mps->signature;
 	default:
-		g_warning("trying to get object out of bounds for multipart");
+		g_warning ("trying to get object out of bounds for multipart");
 	}
 
 	return NULL;
@@ -554,7 +554,7 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 
 	/* All we do is copy it to a memstream */
 	content_type = camel_mime_parser_content_type (mp);
-	camel_multipart_set_boundary(multipart, camel_content_type_param(content_type, "boundary"));
+	camel_multipart_set_boundary (multipart, camel_content_type_param (content_type, "boundary"));
 
 	data_wrapper = CAMEL_DATA_WRAPPER (multipart);
 	byte_array = camel_data_wrapper_get_byte_array (data_wrapper);

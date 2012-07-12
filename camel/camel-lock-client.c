@@ -141,7 +141,7 @@ lock_helper_init (GError **error)
 		close (lock_stdout_pipe[1]);
 		for (i = 3; i < 255; i++)
 			     close (i);
-		execl(CAMEL_LIBEXECDIR "/camel-lock-helper-" API_VERSION, "camel-lock-helper", NULL);
+		execl (CAMEL_LIBEXECDIR "/camel-lock-helper-" API_VERSION, "camel-lock-helper", NULL);
 		/* it'll pick this up when it tries to use us */
 		exit (255);
 	default:
@@ -204,7 +204,7 @@ again:
 		if (msg->magic != CAMEL_LOCK_HELPER_RETURN_MAGIC
 		    || msg->seq > lock_sequence) {
 			res = CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
-			d(printf("lock child protocol error\n"));
+			d (printf ("lock child protocol error\n"));
 			g_set_error (
 				error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
@@ -217,7 +217,7 @@ again:
 	if (msg->seq == lock_sequence) {
 		switch (msg->id) {
 		case CAMEL_LOCK_HELPER_STATUS_OK:
-			d(printf("lock child locked ok, id is %d\n", msg->data));
+			d (printf ("lock child locked ok, id is %d\n", msg->data));
 			res = msg->data;
 			break;
 		default:
@@ -225,11 +225,11 @@ again:
 				error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
 				_("Could not lock '%s'"), path);
-			d(printf("locking failed ! status = %d\n", msg->id));
+			d (printf ("locking failed ! status = %d\n", msg->id));
 			break;
 		}
 	} else if (retry > 0) {
-		d(printf("sequence failure, lost message? retry?\n"));
+		d (printf ("sequence failure, lost message? retry?\n"));
 		retry--;
 		goto again;
 	} else {
@@ -255,7 +255,7 @@ gint camel_lock_helper_unlock (gint lockid)
 	gint retry = 3;
 	gint len;
 
-	d(printf("unlocking lock id %d\n", lockid));
+	d (printf ("unlocking lock id %d\n", lockid));
 
 	LOCK ();
 
@@ -299,15 +299,15 @@ again:
 	if (msg->seq == lock_sequence) {
 		switch (msg->id) {
 		case CAMEL_LOCK_HELPER_STATUS_OK:
-			d(printf("lock child unlocked ok\n"));
+			d (printf ("lock child unlocked ok\n"));
 			res = 0;
 			break;
 		default:
-			d(printf("locking failed !\n"));
+			d (printf ("locking failed !\n"));
 			break;
 		}
 	} else if (retry > 0) {
-		d(printf("sequence failure, lost message? retry?\n"));
+		d (printf ("sequence failure, lost message? retry?\n"));
 		lock_sequence++;
 		retry--;
 		goto again;
@@ -326,22 +326,22 @@ gint main (gint argc, gchar **argv)
 {
 	gint id1, id2;
 
-	d(printf("locking started\n"));
+	d (printf ("locking started\n"));
 	lock_helper_init ();
 
-	id1 = camel_lock_helper_lock("1 path 1");
+	id1 = camel_lock_helper_lock ("1 path 1");
 	if (id1 != -1) {
-		d(printf("lock ok, unlock\n"));
+		d (printf ("lock ok, unlock\n"));
 		camel_lock_helper_unlock (id1);
 	}
 
-	id1 = camel_lock_helper_lock("2 path 1");
-	id2 = camel_lock_helper_lock("2 path 2");
+	id1 = camel_lock_helper_lock ("2 path 1");
+	id2 = camel_lock_helper_lock ("2 path 2");
 	camel_lock_helper_unlock (id2);
 	camel_lock_helper_unlock (id1);
 
-	id1 = camel_lock_helper_lock("3 path 1");
-	id2 = camel_lock_helper_lock("3 path 2");
+	id1 = camel_lock_helper_lock ("3 path 1");
+	id2 = camel_lock_helper_lock ("3 path 2");
 	camel_lock_helper_unlock (id1);
 }
 #endif

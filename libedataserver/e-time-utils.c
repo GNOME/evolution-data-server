@@ -1573,7 +1573,8 @@ locale_supports_12_hour_format (void)
 static gboolean
 has_correct_date (const struct tm *value)
 {
-	const gint days_in_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	const gint days_in_month[12] = {
+		31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	gint days, year;
 
 	g_return_val_if_fail (value != NULL, FALSE);
@@ -1581,7 +1582,9 @@ has_correct_date (const struct tm *value)
 
 	year = value->tm_year  + 1900;
 	days = days_in_month[value->tm_mon];
-	if (value->tm_mon == 1 && ((year <= 1752) ? (!(year % 4)) : ((!(year % 4) && (year % 100)) || !(year % 400))))
+	if (value->tm_mon == 1 &&
+		((year <= 1752) ? (!(year % 4)) :
+		((!(year % 4) && (year % 100)) || !(year % 400))))
 		days++;
 
 	return value->tm_mday >= 1 && value->tm_mday <= days;
@@ -1786,16 +1789,16 @@ e_time_parse_date_ex (const gchar *value,
 	g_return_val_if_fail (result != NULL, E_TIME_PARSE_INVALID);
 
 	/* according to the current locale */
-	format [0] = ("%x");
+	format[0] = ("%x");
 
 	/* according to the current locale with forced 4-digit year*/
 	format[1] = e_time_get_d_fmt_with_4digit_year ();
 
 	/* strptime format of a weekday and a date. */
-	format [2] = _("%a %m/%d/%Y");
+	format[2] = _("%a %m/%d/%Y");
 
 	/* This is the preferred date format for the locale. */
-	format [3] = _("%m/%d/%Y");
+	format[3] = _("%m/%d/%Y");
 
 	if (two_digit_year) {
 		/* when we need to know about two digit year, then always first try
@@ -1881,7 +1884,8 @@ e_time_parse_time (const gchar *value,
 	/* strptime format for time of day, without seconds 24-hour format. */
 	format[num_formats++] = _("%H:%M");
 
-	/* strptime format for time of day, without seconds 24-hour format, and no colon. */
+	/* strptime format for time of day, without seconds 24-hour format,
+	 * and no colon. */
 	format[num_formats++] = _("%H%M");
 
 	if (use_12_hour_formats) {
@@ -2088,34 +2092,42 @@ e_time_get_d_fmt_with_4digit_year (void)
 #if defined(HAVE_NL_LANGINFO)
 	res = g_strdup (nl_langinfo (D_FMT) );
 #elif defined(G_OS_WIN32)
-  #define GET_LOCALE_INFO(str, len) GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, str, len)
+#define GET_LOCALE_INFO(str, len) \
+	GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, str, len)
 	gint format_string_length = GET_LOCALE_INFO (NULL, 0);
-	if (format_string_length > 0)
-	{
-		gsize format_bytes_read, format_bytes_written;
-		gchar *format_string = g_strnfill (format_string_length + 1, '\0');
+	if (format_string_length > 0) {
+		gsize format_bytes_read;
+		gsize format_bytes_written;
+		gchar *format_string;
+
+		format_string = g_strnfill (format_string_length + 1, '\0');
 		GET_LOCALE_INFO (format_string, format_string_length);
-		res = g_locale_to_utf8 (format_string, format_string_length, &format_bytes_read, &format_bytes_written, NULL);
+		res = g_locale_to_utf8 (
+			format_string,
+			format_string_length,
+			&format_bytes_read,
+			&format_bytes_written,
+			NULL);
 		g_free (format_string);
+
 		/* now, convert the res to format of nl_langinfo */
-		_e_string_replace(&res, "\\bd\\b", "%#d");	/* d -> %#d */
-		_e_string_replace(&res, "\\bdd\\b", "%d");	/* dd -> %d */
-		_e_string_replace(&res, "\\bddd\\b", "%a");	/* ddd -> %a */
-		_e_string_replace(&res, "\\bdddd\\b", "%A");	/* dddd -> %A */
-		_e_string_replace(&res, "\\bM\\b", "%#m");	/* M -> %#m */
-		_e_string_replace(&res, "\\bMM\\b", "%m");	/* MM -> %m */
-		_e_string_replace(&res, "\\bMMM\\b", "%b");	/* MMM -> %b */
-		_e_string_replace(&res, "\\bMMMM\\b", "%B");	/* MMMM -> %B */
-		_e_string_replace(&res, "\\by\\b", "%#y");	/* y -> %y */
-		_e_string_replace(&res, "\\byy\\b", "%y");	/* yy -> %y*/
-		_e_string_replace(&res, "\\byyyy\\b", "%Y");	/* yyyy -> %Y */
-		_e_string_replace(&res, "\\byyyyy\\b", "%Y");	/* yyyyy -> %Y */
+		_e_string_replace (&res, "\\bd\\b", "%#d");	/* d -> %#d */
+		_e_string_replace (&res, "\\bdd\\b", "%d");	/* dd -> %d */
+		_e_string_replace (&res, "\\bddd\\b", "%a");	/* ddd -> %a */
+		_e_string_replace (&res, "\\bdddd\\b", "%A");	/* dddd -> %A */
+		_e_string_replace (&res, "\\bM\\b", "%#m");	/* M -> %#m */
+		_e_string_replace (&res, "\\bMM\\b", "%m");	/* MM -> %m */
+		_e_string_replace (&res, "\\bMMM\\b", "%b");	/* MMM -> %b */
+		_e_string_replace (&res, "\\bMMMM\\b", "%B");	/* MMMM -> %B */
+		_e_string_replace (&res, "\\by\\b", "%#y");	/* y -> %y */
+		_e_string_replace (&res, "\\byy\\b", "%y");	/* yy -> %y */
+		_e_string_replace (&res, "\\byyyy\\b", "%Y");	/* yyyy -> %Y */
+		_e_string_replace (&res, "\\byyyyy\\b", "%Y");	/* yyyyy -> %Y */
 	}
-  #undef GET_LOCALE_INFO
-	/**TODO** implement this for other systems
-	*/
+#undef GET_LOCALE_INFO
+	/* TODO Implement this for other systems. */
 #else
-		/* this will not work for other systems */
+	/* This will not work for other systems. */
 	res = g_strdup ("%x");
 #endif
 

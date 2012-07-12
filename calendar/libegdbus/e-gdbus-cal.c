@@ -193,35 +193,161 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
 	_signal_name_to_type = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* GObject signals definitions for D-Bus signals: */
-	E_INIT_GDBUS_SIGNAL_STRING		(EGdbusCalIface, "backend_error",	backend_error,	__BACKEND_ERROR_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_BOOLEAN		(EGdbusCalIface, "readonly",		readonly,	__READONLY_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_BOOLEAN		(EGdbusCalIface, "online",		online,		__ONLINE_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusCalIface, "opened", 		opened,		__OPENED_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusCalIface, "free_busy_data", 	free_busy_data,	__FREE_BUSY_DATA_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusCalIface, "backend_property_changed", 	backend_property_changed,	__BACKEND_PROPERTY_CHANGED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRING (
+		EGdbusCalIface,
+		"backend_error",
+		backend_error,
+		__BACKEND_ERROR_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_BOOLEAN (
+		EGdbusCalIface,
+		"readonly",
+		readonly,
+		__READONLY_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_BOOLEAN (
+		EGdbusCalIface,
+		"online",
+		online,
+		__ONLINE_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV (
+		EGdbusCalIface,
+		"opened",
+		opened,
+		__OPENED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV (
+		EGdbusCalIface,
+		"free_busy_data",
+		free_busy_data,
+		__FREE_BUSY_DATA_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV (
+		EGdbusCalIface,
+		"backend_property_changed",
+		backend_property_changed,
+		__BACKEND_PROPERTY_CHANGED_SIGNAL)
 
 	/* GObject signals definitions for D-Bus methods: */
-	E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__VOID	(EGdbusCalIface, "open",			open, __OPEN_METHOD, __OPEN_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID	(EGdbusCalIface, "remove",			remove, __REMOVE_METHOD, __REMOVE_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID	(EGdbusCalIface, "refresh",			refresh, __REFRESH_METHOD, __REFRESH_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusCalIface, "get_backend_property",	get_backend_property, __GET_BACKEND_PROPERTY_METHOD, __GET_BACKEND_PROPERTY_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusCalIface, "set_backend_property",	set_backend_property, __SET_BACKEND_PROPERTY_METHOD, __SET_BACKEND_PROPERTY_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__STRING	(EGdbusCalIface, "get_object",			get_object, __GET_OBJECT_METHOD, __GET_OBJECT_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV	(EGdbusCalIface, "get_object_list",		get_object_list, __GET_OBJECT_LIST_METHOD, __GET_OBJECT_LIST_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusCalIface, "get_free_busy",		get_free_busy, __GET_FREE_BUSY_METHOD, __GET_FREE_BUSY_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__STRV	(EGdbusCalIface, "create_objects",		create_objects, __CREATE_OBJECTS_METHOD, __CREATE_OBJECTS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusCalIface, "modify_objects",		modify_objects, __MODIFY_OBJECTS_METHOD, __MODIFY_OBJECTS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusCalIface, "remove_objects",		remove_objects, __REMOVE_OBJECTS_METHOD, __REMOVE_OBJECTS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__VOID	(EGdbusCalIface, "receive_objects",		receive_objects, __RECEIVE_OBJECTS_METHOD, __RECEIVE_OBJECTS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV	(EGdbusCalIface, "send_objects",		send_objects, __SEND_OBJECTS_METHOD, __SEND_OBJECTS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__STRV	(EGdbusCalIface, "get_attachment_uris",		get_attachment_uris, __GET_ATTACHMENT_URIS_METHOD, __GET_ATTACHMENT_URIS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusCalIface, "discard_alarm",		discard_alarm, __DISCARD_ALARM_METHOD, __DISCARD_ALARM_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusCalIface, "get_view",			get_view, __GET_VIEW_METHOD, __GET_VIEW_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusCalIface, "get_timezone",		get_timezone, __GET_TIMEZONE_METHOD, __GET_TIMEZONE_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__VOID	(EGdbusCalIface, "add_timezone",		add_timezone, __ADD_TIMEZONE_METHOD, __ADD_TIMEZONE_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_UINT		(EGdbusCalIface, "cancel_operation",		cancel_operation, __CANCEL_OPERATION_METHOD)
-	E_INIT_GDBUS_METHOD_VOID		(EGdbusCalIface, "cancel_all",			cancel_all, __CANCEL_ALL_METHOD)
-	E_INIT_GDBUS_METHOD_VOID		(EGdbusCalIface, "close",			close, __CLOSE_METHOD)
+	E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__VOID (
+		EGdbusCalIface,
+		"open",
+		open,
+		__OPEN_METHOD,
+		__OPEN_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID (
+		EGdbusCalIface,
+		"remove",
+		remove,
+		__REMOVE_METHOD,
+		__REMOVE_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID (
+		EGdbusCalIface,
+		"refresh",
+		refresh,
+		__REFRESH_METHOD,
+		__REFRESH_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING (
+		EGdbusCalIface,
+		"get_backend_property",
+		get_backend_property,
+		__GET_BACKEND_PROPERTY_METHOD,
+		__GET_BACKEND_PROPERTY_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID (
+		EGdbusCalIface,
+		"set_backend_property",
+		set_backend_property,
+		__SET_BACKEND_PROPERTY_METHOD,
+		__SET_BACKEND_PROPERTY_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__STRING (
+		EGdbusCalIface,
+		"get_object",
+		get_object,
+		__GET_OBJECT_METHOD,
+		__GET_OBJECT_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV (
+		EGdbusCalIface,
+		"get_object_list",
+		get_object_list,
+		__GET_OBJECT_LIST_METHOD,
+		__GET_OBJECT_LIST_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID (
+		EGdbusCalIface,
+		"get_free_busy",
+		get_free_busy,
+		__GET_FREE_BUSY_METHOD,
+		__GET_FREE_BUSY_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__STRV (
+		EGdbusCalIface,
+		"create_objects",
+		create_objects,
+		__CREATE_OBJECTS_METHOD,
+		__CREATE_OBJECTS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID (
+		EGdbusCalIface,
+		"modify_objects",
+		modify_objects,
+		__MODIFY_OBJECTS_METHOD,
+		__MODIFY_OBJECTS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID (
+		EGdbusCalIface,
+		"remove_objects",
+		remove_objects,
+		__REMOVE_OBJECTS_METHOD,
+		__REMOVE_OBJECTS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__VOID (
+		EGdbusCalIface,
+		"receive_objects",
+		receive_objects,
+		__RECEIVE_OBJECTS_METHOD,
+		__RECEIVE_OBJECTS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV (
+		EGdbusCalIface,
+		"send_objects",
+		send_objects,
+		__SEND_OBJECTS_METHOD,
+		__SEND_OBJECTS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__STRV (
+		EGdbusCalIface,
+		"get_attachment_uris",
+		get_attachment_uris,
+		__GET_ATTACHMENT_URIS_METHOD,
+		__GET_ATTACHMENT_URIS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID (
+		EGdbusCalIface,
+		"discard_alarm",
+		discard_alarm,
+		__DISCARD_ALARM_METHOD,
+		__DISCARD_ALARM_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING (
+		EGdbusCalIface,
+		"get_view",
+		get_view,
+		__GET_VIEW_METHOD,
+		__GET_VIEW_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING (
+		EGdbusCalIface,
+		"get_timezone",
+		get_timezone,
+		__GET_TIMEZONE_METHOD,
+		__GET_TIMEZONE_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__VOID (
+		EGdbusCalIface,
+		"add_timezone",
+		add_timezone,
+		__ADD_TIMEZONE_METHOD,
+		__ADD_TIMEZONE_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_UINT (
+		EGdbusCalIface,
+		"cancel_operation",
+		cancel_operation,
+		__CANCEL_OPERATION_METHOD)
+	E_INIT_GDBUS_METHOD_VOID (
+		EGdbusCalIface,
+		"cancel_all",
+		cancel_all,
+		__CANCEL_ALL_METHOD)
+	E_INIT_GDBUS_METHOD_VOID (
+		EGdbusCalIface,
+		"close",
+		close,
+		__CLOSE_METHOD)
 }
 
 void
@@ -1233,35 +1359,120 @@ e_gdbus_cal_emit_backend_property_changed (EGdbusCal *object,
 	g_signal_emit (object, signals[__BACKEND_PROPERTY_CHANGED_SIGNAL], 0, arg_name_value);
 }
 
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, backend_error, message, "s")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, readonly, is_readonly, "b")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, online, is_online, "b")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, opened, error, "as")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, free_busy_data, free_busy_data, "as")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal, backend_property_changed, name_value, "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal,
+                                 backend_error,
+                                 message,
+                                 "s")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal,
+                                 readonly,
+                                 is_readonly,
+                                 "b")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal,
+                                 online,
+                                 is_online,
+                                 "b")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal,
+                                 opened,
+                                 error,
+                                 "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal,
+                                 free_busy_data,
+                                 free_busy_data,
+                                 "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (cal,
+                                 backend_property_changed,
+                                 name_value,
+                                 "as")
 
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, open, only_if_exists, "b")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (cal,
+                                  open,
+                                  only_if_exists,
+                                  "b")
 E_DECLARE_GDBUS_ASYNC_METHOD_0 (cal,
                                 remove)
 E_DECLARE_GDBUS_ASYNC_METHOD_0 (cal,
                                 refresh)
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_backend_property, propname, "s", propvalue, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, set_backend_property, propnamevalue, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_object, uid_rid, "as", object, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_object_list, sexp, "s", objects, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, get_free_busy, start_stop_users, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, create_objects, objects, "as", uids, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, modify_objects, object_mod, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, remove_objects, mod_ids, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, receive_objects, object, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, send_objects, object, "s", object_users, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_attachment_uris, uid_rid, "as", attachments, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, discard_alarm, uid_rid_auid, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_view, sexp, "s", view_path, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(cal, get_timezone, tzid, "s", tzobject, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(cal, add_timezone, tzobject, "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (cal,
+                                            get_backend_property,
+                                            propname,
+                                            "s",
+                                            propvalue,
+                                            "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (cal,
+                                  set_backend_property,
+                                  propnamevalue,
+                                  "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (cal,
+                                            get_object,
+                                            uid_rid,
+                                            "as",
+                                            object,
+                                            "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (cal,
+                                            get_object_list,
+                                            sexp,
+                                            "s",
+                                            objects,
+                                            "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (cal,
+                                  get_free_busy,
+                                  start_stop_users,
+                                  "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (cal,
+                                            create_objects,
+                                            objects,
+                                            "as",
+                                            uids,
+                                            "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (cal,
+                                  modify_objects,
+                                  object_mod,
+                                  "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (cal,
+                                  remove_objects,
+                                  mod_ids,
+                                  "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (cal,
+                                  receive_objects,
+                                  object,
+                                  "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (cal,
+                                            send_objects,
+                                            object,
+                                            "s",
+                                            object_users,
+                                            "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (cal,
+                                            get_attachment_uris,
+                                            uid_rid,
+                                            "as",
+                                            attachments,
+                                            "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (cal,
+                                  discard_alarm,
+                                  uid_rid_auid,
+                                  "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (cal,
+                                            get_view,
+                                            sexp,
+                                            "s",
+                                            view_path,
+                                            "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (cal,
+                                            get_timezone,
+                                            tzid,
+                                            "s",
+                                            tzobject,
+                                            "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (cal,
+                                  add_timezone,
+                                  tzobject,
+                                  "s")
 
-E_DECLARE_GDBUS_SYNC_METHOD_1			(cal, cancel_operation, opid, "u")
+E_DECLARE_GDBUS_SYNC_METHOD_1 (cal,
+                                 cancel_operation,
+                                 opid,
+                                 "u")
 E_DECLARE_GDBUS_SYNC_METHOD_0 (cal,
                                cancel_all)
 E_DECLARE_GDBUS_SYNC_METHOD_0 (cal,

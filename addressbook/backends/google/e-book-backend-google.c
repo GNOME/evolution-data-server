@@ -1272,7 +1272,7 @@ e_book_backend_google_create_contacts (EBookBackend *backend,
 	if (vcards->next != NULL) {
 		e_data_book_respond_create_contacts (book, opid,
 						     EDB_ERROR_EX (NOT_SUPPORTED,
-		                                     _("The backend does not support bulk additions")),
+						     _("The backend does not support bulk additions")),
 						     NULL);
 		return;
 	}
@@ -1393,7 +1393,7 @@ e_book_backend_google_remove_contacts (EBookBackend *backend,
 	if (id_list->next != NULL) {
 		e_data_book_respond_remove_contacts (book, opid,
 						     EDB_ERROR_EX (NOT_SUPPORTED,
-		                                     _("The backend does not support bulk removals")),
+						     _("The backend does not support bulk removals")),
 						     NULL);
 		return;
 	}
@@ -1671,7 +1671,7 @@ e_book_backend_google_modify_contacts (EBookBackend *backend,
 	if (vcards->next != NULL) {
 		e_data_book_respond_modify_contacts (book, opid,
 						     EDB_ERROR_EX (NOT_SUPPORTED,
-		                                     _("The backend does not support bulk modifications")),
+						     _("The backend does not support bulk modifications")),
 						     NULL);
 		return;
 	}

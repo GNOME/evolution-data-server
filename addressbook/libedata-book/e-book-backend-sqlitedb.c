@@ -259,7 +259,7 @@ book_backend_sql_exec (sqlite3 *db,
 	}
 
 	if (ret != SQLITE_OK) {
-		d(g_print ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
+		d (g_print ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
 		g_set_error (
 			error, E_BOOK_SDB_ERROR,
 			0, "%s", errmsg);
@@ -456,7 +456,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	 * rely on this. Assuming that the frequency of matching on these would be higher than
 	 * on the other fields like email_2, surname etc. email_1 should be the primary email */
 	if (!err) {
-		tmp = g_strdup_printf("FNINDEX-%s", folderid);
+		tmp = g_strdup_printf ("FNINDEX-%s", folderid);
 		stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (full_name)", tmp, folderid);
 		ret = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 		g_free (tmp);
@@ -464,7 +464,7 @@ create_contacts_table (EBookBackendSqliteDB *ebsdb,
 	}
 
 	if (!err) {
-		tmp = g_strdup_printf("EMINDEX-%s", folderid);
+		tmp = g_strdup_printf ("EMINDEX-%s", folderid);
 		stmt = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (email_1)", tmp, folderid);
 		ret = book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, &err);
 		g_free (tmp);
@@ -501,7 +501,7 @@ book_backend_sqlitedb_load (EBookBackendSqliteDB *ebsdb,
 		} else {
 			const gchar *errmsg;
 			errmsg = sqlite3_errmsg (priv->db);
-			d(g_print("Can't open database %s: %s\n", path, errmsg));
+			d (g_print ("Can't open database %s: %s\n", path, errmsg));
 			g_set_error (
 				error, E_BOOK_SDB_ERROR,
 				0, "%s", errmsg);
@@ -566,7 +566,7 @@ e_book_backend_sqlitedb_new (const gchar *path,
 		}
 	}
 
-	ebsdb = g_object_new	(E_TYPE_BOOK_BACKEND_SQLITEDB, NULL);
+	ebsdb = g_object_new (E_TYPE_BOOK_BACKEND_SQLITEDB, NULL);
 	ebsdb->priv->path = g_strdup (path);
 	ebsdb->priv->store_vcard = store_vcard;
 	if (g_mkdir_with_parents (path, 0777) < 0) {
@@ -1202,7 +1202,7 @@ func_and (ESExp *f,
 	GString *string;
 	gint i;
 
-	string = g_string_new("( ");
+	string = g_string_new ("( ");
 	for (i = 0; i < argc; i++) {
 		r1 = e_sexp_term_eval (f, argv[i]);
 
@@ -1211,14 +1211,14 @@ func_and (ESExp *f,
 			continue;
 		}
 		if (r1->value.string && *r1->value.string)
-			g_string_append_printf(string, "%s%s", r1->value.string, ((argc>1) && (i != argc-1)) ?  " AND ":"");
+			g_string_append_printf (string, "%s%s", r1->value.string, ((argc > 1) && (i != argc - 1)) ?  " AND ":"");
 		e_sexp_result_free (f, r1);
 	}
-	g_string_append(string, " )");
+	g_string_append (string, " )");
 	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 
 	if (strlen (string->str) == 4) {
-		r->value.string = g_strdup("");
+		r->value.string = g_strdup ("");
 		g_string_free (string, TRUE);
 	} else {
 		r->value.string = g_string_free (string, FALSE);
@@ -1237,7 +1237,7 @@ func_or (ESExp *f,
 	GString *string;
 	gint i;
 
-	string = g_string_new("( ");
+	string = g_string_new ("( ");
 	for (i = 0; i < argc; i++) {
 		r1 = e_sexp_term_eval (f, argv[i]);
 
@@ -1246,14 +1246,14 @@ func_or (ESExp *f,
 			continue;
 		}
 		if (r1->value.string && *r1->value.string)
-			g_string_append_printf(string, "%s%s", r1->value.string, ((argc>1) && (i != argc-1)) ?  " OR ":"");
+			g_string_append_printf (string, "%s%s", r1->value.string, ((argc > 1) && (i != argc - 1)) ?  " OR ":"");
 		e_sexp_result_free (f, r1);
 	}
-	g_string_append(string, " )");
+	g_string_append (string, " )");
 
 	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	if (strlen (string->str) == 4) {
-		r->value.string = g_strdup("");
+		r->value.string = g_strdup ("");
 		g_string_free (string, TRUE);
 	} else {
 		r->value.string = g_string_free (string, FALSE);
@@ -1302,10 +1302,10 @@ convert_match_exp (struct _ESExp *f,
 			if (!strcmp (field, "full_name")) {
 				gchar *full, *sur, *given, *nick;
 
-				full = g_strdup_printf("(full_name IS NOT NULL AND full_name LIKE %s)",value);
-				sur = g_strdup_printf("(family_name IS NOT NULL AND family_name LIKE %s)",value);
-				given = g_strdup_printf("(given_name IS NOT NULL AND given_name LIKE %s)",value);
-				nick = g_strdup_printf("(nickname IS NOT NULL AND nickname LIKE %s)",value);
+				full = g_strdup_printf ("(full_name IS NOT NULL AND full_name LIKE %s)",value);
+				sur = g_strdup_printf ("(family_name IS NOT NULL AND family_name LIKE %s)",value);
+				given = g_strdup_printf ("(given_name IS NOT NULL AND given_name LIKE %s)",value);
+				nick = g_strdup_printf ("(nickname IS NOT NULL AND nickname LIKE %s)",value);
 
 				str = g_strdup_printf (" %s OR %s OR %s OR %s ", full, sur, given, nick);
 
@@ -1326,7 +1326,7 @@ convert_match_exp (struct _ESExp *f,
 				str = emails->str;
 				g_string_free (emails, FALSE);
 			} else
-				str = g_strdup_printf("(%s IS NOT NULL AND %s LIKE %s)", field, field, value);
+				str = g_strdup_printf ("(%s IS NOT NULL AND %s LIKE %s)", field, field, value);
 			g_free (value);
 		}
 	}
@@ -1509,7 +1509,7 @@ store_data_to_vcard (gpointer ref,
 		if (found)
 			continue;
 
-		if (!strcmp (name [i], "bdata"))
+		if (!strcmp (name[i], "bdata"))
 			search_data->bdata = g_strdup (cols[i]);
 	}
 
@@ -1754,7 +1754,7 @@ get_uids_and_rev_cb (gpointer user_data,
 	GHashTable *uids_and_rev = user_data;
 
 	if (col == 2 && cols[0])
-		g_hash_table_insert (uids_and_rev, g_strdup (cols [0]), g_strdup (cols [1] ? cols [1] : ""));
+		g_hash_table_insert (uids_and_rev, g_strdup (cols[0]), g_strdup (cols[1] ? cols[1] : ""));
 
 	return 0;
 }

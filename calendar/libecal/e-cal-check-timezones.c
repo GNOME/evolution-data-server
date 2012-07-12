@@ -129,7 +129,7 @@ e_cal_match_tzid (const gchar *tzid)
 	/* TODO: lookup table for Exchange TZIDs */
 
  done:
-	if (systzid && !strcmp(systzid, "UTC")) {
+	if (systzid && !strcmp (systzid, "UTC")) {
 		/*
 		 * UTC is special: it doesn't have a real VTIMEZONE in
 		 * EDS. Matching some pseudo VTTIMEZONE with UTC in the TZID
@@ -330,7 +330,7 @@ e_cal_check_timezones (icalcomponent *comp,
 
 						if (counter) {
 							g_free (value);
-							value = g_strdup_printf("%s %d", tzid, counter);
+							value = g_strdup_printf ("%s %d", tzid, counter);
 						}
 						existing_zone = tzlookup (
 							counter ? value : tzid,
@@ -346,8 +346,8 @@ e_cal_check_timezones (icalcomponent *comp,
 						buffer = icalcomponent_as_ical_string_r (icaltimezone_get_component (existing_zone));
 
 						if (counter) {
-							gchar *fulltzid = g_strdup_printf("TZID:%s", value);
-							gsize baselen = strlen("TZID:") + strlen(tzid);
+							gchar *fulltzid = g_strdup_printf ("TZID:%s", value);
+							gsize baselen = strlen ("TZID:") + strlen (tzid);
 							gsize fulllen = strlen (fulltzid);
 							gchar *tzidprop;
 							/*
@@ -385,7 +385,7 @@ e_cal_check_timezones (icalcomponent *comp,
 						icalproperty *prop = icalcomponent_get_first_property (
 							subcomp, ICAL_TZID_PROPERTY);
 						while (prop) {
-							icalproperty_set_value_from_string(prop, value, "NO");
+							icalproperty_set_value_from_string (prop, value, "NO");
 							prop = icalcomponent_get_next_property (
 								subcomp, ICAL_ANY_PROPERTY);
 						}
@@ -437,7 +437,7 @@ e_cal_check_timezones (icalcomponent *comp,
 	/* set gerror for "out of memory" if possible, otherwise abort via g_error() */
 	*error = g_error_new(E_CALENDAR_ERROR, E_CALENDAR_STATUS_OTHER_ERROR, "out of memory");
 	if (!*error) {
-		g_error("e_cal_check_timezones(): out of memory, cannot proceed - sorry!");
+		g_error ("e_cal_check_timezones(): out of memory, cannot proceed - sorry!");
 	}
  failed:
 	/* gerror should have been set already */
@@ -650,7 +650,7 @@ e_cal_client_check_timezones (icalcomponent *comp,
 
 						if (counter) {
 							g_free (value);
-							value = g_strdup_printf("%s %d", tzid, counter);
+							value = g_strdup_printf ("%s %d", tzid, counter);
 						}
 						existing_zone = tzlookup (counter ? value : tzid, ecalclient, cancellable, error);
 						if (!existing_zone) {
@@ -664,8 +664,8 @@ e_cal_client_check_timezones (icalcomponent *comp,
 						buffer = icalcomponent_as_ical_string_r (icaltimezone_get_component (existing_zone));
 
 						if (counter) {
-							gchar *fulltzid = g_strdup_printf("TZID:%s", value);
-							gsize baselen = strlen("TZID:") + strlen(tzid);
+							gchar *fulltzid = g_strdup_printf ("TZID:%s", value);
+							gsize baselen = strlen ("TZID:") + strlen (tzid);
 							gsize fulllen = strlen (fulltzid);
 							gchar *tzidprop;
 							/*
@@ -701,7 +701,7 @@ e_cal_client_check_timezones (icalcomponent *comp,
 						/* timezone renamed */
 						icalproperty *prop = icalcomponent_get_first_property (subcomp, ICAL_TZID_PROPERTY);
 						while (prop) {
-							icalproperty_set_value_from_string(prop, value, "NO");
+							icalproperty_set_value_from_string (prop, value, "NO");
 							prop = icalcomponent_get_next_property (subcomp, ICAL_ANY_PROPERTY);
 						}
 						g_free (key);
@@ -749,7 +749,7 @@ e_cal_client_check_timezones (icalcomponent *comp,
 	/* set gerror for "out of memory" if possible, otherwise abort via g_error() */
 	*error = g_error_new (E_CLIENT_ERROR, E_CLIENT_ERROR_OTHER_ERROR, "out of memory");
 	if (!*error) {
-		g_error("e_cal_check_timezones(): out of memory, cannot proceed - sorry!");
+		g_error ("e_cal_check_timezones(): out of memory, cannot proceed - sorry!");
 	}
  failed:
 	/* gerror should have been set already */

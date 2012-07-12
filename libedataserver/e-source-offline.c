@@ -162,7 +162,7 @@ e_source_offline_set_stay_synchronized (ESourceOffline *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_OFFLINE (extension));
 
-	if ((extension->priv->stay_synchronized ? 1 : 0) == (stay_synchronized ? 1 : 0))
+	if (extension->priv->stay_synchronized == stay_synchronized)
 		return;
 
 	extension->priv->stay_synchronized = stay_synchronized;

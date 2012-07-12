@@ -103,18 +103,58 @@ e_gdbus_book_view_default_init (EGdbusBookViewIface *iface)
 	_signal_name_to_type = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* GObject signals definitions for D-Bus signals: */
-	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusBookViewIface, "objects_added",		objects_added, __OBJECTS_ADDED_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusBookViewIface, "objects_modified",	objects_modified, __OBJECTS_MODIFIED_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusBookViewIface, "objects_removed",	objects_removed, __OBJECTS_REMOVED_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_UINT_STRING	(EGdbusBookViewIface, "progress",		progress, __PROGRESS_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV	(EGdbusBookViewIface, "complete",		complete, __COMPLETE_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV (
+		EGdbusBookViewIface,
+		"objects_added",
+		objects_added,
+		__OBJECTS_ADDED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV (
+		EGdbusBookViewIface,
+		"objects_modified",
+		objects_modified,
+		__OBJECTS_MODIFIED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV (
+		EGdbusBookViewIface,
+		"objects_removed",
+		objects_removed,
+		__OBJECTS_REMOVED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_UINT_STRING (
+		EGdbusBookViewIface,
+		"progress",
+		progress,
+		__PROGRESS_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV (
+		EGdbusBookViewIface,
+		"complete",
+		complete,
+		__COMPLETE_SIGNAL)
 
 	/* GObject signals definitions for D-Bus methods: */
-	E_INIT_GDBUS_METHOD_VOID        (EGdbusBookViewIface, "start",                  start, __START_METHOD)
-	E_INIT_GDBUS_METHOD_VOID        (EGdbusBookViewIface, "stop",                   stop, __STOP_METHOD)
-	E_INIT_GDBUS_METHOD_VOID        (EGdbusBookViewIface, "dispose",                dispose, __DISPOSE_METHOD)
-	E_INIT_GDBUS_METHOD_UINT	(EGdbusBookViewIface, "set_flags",	        set_flags, __SET_FLAGS_METHOD)
-	E_INIT_GDBUS_METHOD_STRV	(EGdbusBookViewIface, "set_fields_of_interest",	set_fields_of_interest, __SET_FIELDS_OF_INTEREST_METHOD)
+	E_INIT_GDBUS_METHOD_VOID (
+		EGdbusBookViewIface,
+		"start",
+		start,
+		__START_METHOD)
+	E_INIT_GDBUS_METHOD_VOID (
+		EGdbusBookViewIface,
+		"stop",
+		stop,
+		__STOP_METHOD)
+	E_INIT_GDBUS_METHOD_VOID (
+		EGdbusBookViewIface,
+		"dispose",
+		dispose,
+		__DISPOSE_METHOD)
+	E_INIT_GDBUS_METHOD_UINT (
+		EGdbusBookViewIface,
+		"set_flags",
+		set_flags,
+		__SET_FLAGS_METHOD)
+	E_INIT_GDBUS_METHOD_STRV (
+		EGdbusBookViewIface,
+		"set_fields_of_interest",
+		set_fields_of_interest,
+		__SET_FIELDS_OF_INTEREST_METHOD)
 }
 
 void
@@ -174,7 +214,7 @@ e_gdbus_book_view_call_set_flags (GDBusProxy *proxy,
                                   GAsyncReadyCallback callback,
                                   gpointer user_data)
 {
-        e_gdbus_proxy_method_call_uint ("set_flags", proxy, in_flags, cancellable, callback, user_data);
+	e_gdbus_proxy_method_call_uint ("set_flags", proxy, in_flags, cancellable, callback, user_data);
 }
 
 gboolean
@@ -282,11 +322,28 @@ e_gdbus_book_view_emit_complete (EGdbusBookView *object,
 	g_signal_emit (object, signals[__COMPLETE_SIGNAL], 0, arg_error);
 }
 
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book_view, objects_added, objects, "as")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book_view, objects_modified, objects, "as")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book_view, objects_removed, uids, "as")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_2 (book_view, progress, percent, "u", message, "s")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book_view, complete, error, "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book_view,
+                                 objects_added,
+                                 objects,
+                                 "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book_view,
+                                 objects_modified,
+                                 objects,
+                                 "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book_view,
+                                 objects_removed,
+                                 uids,
+                                 "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_2 (book_view,
+                                 progress,
+                                 percent,
+                                 "u",
+                                 message,
+                                 "s")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book_view,
+                                 complete,
+                                 error,
+                                 "as")
 
 E_DECLARE_GDBUS_SYNC_METHOD_0 (book_view,
                                start)
@@ -294,8 +351,14 @@ E_DECLARE_GDBUS_SYNC_METHOD_0 (book_view,
                                stop)
 E_DECLARE_GDBUS_SYNC_METHOD_0 (book_view,
                                dispose)
-E_DECLARE_GDBUS_SYNC_METHOD_1 (book_view, set_flags, flags, "u")
-E_DECLARE_GDBUS_SYNC_METHOD_1	(book_view, set_fields_of_interest, fields_of_interest, "as")
+E_DECLARE_GDBUS_SYNC_METHOD_1 (book_view,
+                               set_flags,
+                               flags,
+                               "u")
+E_DECLARE_GDBUS_SYNC_METHOD_1 (book_view,
+                               set_fields_of_interest,
+                               fields_of_interest,
+                               "as")
 
 static const GDBusMethodInfo * const e_gdbus_book_view_method_info_pointers[] =
 {

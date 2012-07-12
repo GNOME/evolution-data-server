@@ -58,14 +58,14 @@ main (gint argc,
 
 	camel_test_init (argc, argv);
 
-	camel_test_start("Search splitting");
+	camel_test_start ("Search splitting");
 
 	for (i = 0; i < G_N_ELEMENTS (split_tests); i++) {
-		camel_test_push("split %d '%s'", i, split_tests[i].word);
+		camel_test_push ("split %d '%s'", i, split_tests[i].word);
 
 		words = camel_search_words_split (split_tests[i].word);
 		check (words != NULL);
-		check_msg(words->len == split_tests[i].count, "words->len = %d, count = %d", words->len, split_tests[i].count);
+		check_msg (words->len == split_tests[i].count, "words->len = %d, count = %d", words->len, split_tests[i].count);
 
 		for (j = 0; j < words->len; j++) {
 			check_msg (strcmp (split_tests[i].splits[j].word, words->words[j]->word) == 0,
@@ -79,17 +79,17 @@ main (gint argc,
 
 	camel_test_end ();
 
-	camel_test_start("Search splitting - simple");
+	camel_test_start ("Search splitting - simple");
 
 	for (i = 0; i < G_N_ELEMENTS (simple_tests); i++) {
-		camel_test_push("simple split %d '%s'", i, simple_tests[i].word);
+		camel_test_push ("simple split %d '%s'", i, simple_tests[i].word);
 
 		tmp = camel_search_words_split (simple_tests[i].word);
 		check (tmp != NULL);
 
 		words = camel_search_words_simple (tmp);
 		check (words != NULL);
-		check_msg(words->len == simple_tests[i].count, "words->len = %d, count = %d", words->len, simple_tests[i].count);
+		check_msg (words->len == simple_tests[i].count, "words->len = %d, count = %d", words->len, simple_tests[i].count);
 
 		for (j = 0; j < words->len; j++) {
 			check_msg (strcmp (simple_tests[i].splits[j].word, words->words[j]->word) == 0,

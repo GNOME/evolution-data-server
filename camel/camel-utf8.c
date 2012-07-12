@@ -224,7 +224,7 @@ camel_utf7_utf8 (const gchar *ptr)
 	gint state = 0;
 	gchar *ret;
 
-	out = g_string_new("");
+	out = g_string_new ("");
 	do {
 		c = *p++;
 		switch (state) {
@@ -244,7 +244,7 @@ camel_utf7_utf8 (const gchar *ptr)
 				state = 2;
 			} else {
 				/* invalid */
-				g_string_append(out, "&-");
+				g_string_append (out, "&-");
 				state = 0;
 			}
 			break;
@@ -305,7 +305,7 @@ camel_utf8_utf7 (const gchar *ptr)
 	gint i = 0;
 	gchar *ret;
 
-	out = g_string_new("");
+	out = g_string_new ("");
 
 	while ((c = camel_utf8_getc (&p))) {
 		if (c >= 0x20 && c <= 0x7e) {
@@ -315,7 +315,7 @@ camel_utf8_utf7 (const gchar *ptr)
 				i = 0;
 			}
 			if (c == '&')
-				g_string_append(out, "&-");
+				g_string_append (out, "&-");
 			else
 				g_string_append_c (out, c);
 		} else {
@@ -367,7 +367,7 @@ camel_utf8_ucs2 (const gchar *pptr)
 		g_byte_array_append (work, (guchar *) &s, 2);
 	}
 
-	g_byte_array_append(work, (guchar *) "\000\000", 2);
+	g_byte_array_append (work, (guchar *) "\000\000", 2);
 	out = g_malloc (work->len);
 	memcpy (out, work->data, work->len);
 	g_byte_array_free (work, TRUE);
@@ -388,7 +388,7 @@ gchar *camel_ucs2_utf8 (const gchar *ptr)
 {
 	guint16 *ucs = (guint16 *) ptr;
 	guint32 c;
-	GString *work = g_string_new("");
+	GString *work = g_string_new ("");
 	gchar *out;
 
 	while ((c = *ucs++))

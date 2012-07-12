@@ -122,13 +122,13 @@ print_contact (EContact *contact)
 {
 	GList *emails, *e;
 
-	g_print ("Contact: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_FULL_NAME));
-	g_print ("UID: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_UID));
+	g_print ("Contact: %s\n", (gchar *) e_contact_get_const (contact, E_CONTACT_FULL_NAME));
+	g_print ("UID: %s\n", (gchar *) e_contact_get_const (contact, E_CONTACT_UID));
 	g_print ("Email addresses:\n");
 
 	emails = e_contact_get (contact, E_CONTACT_EMAIL);
 	for (e = emails; e; e = e->next) {
-		g_print ("\t%s\n",  (gchar *)e->data);
+		g_print ("\t%s\n",  (gchar *) e->data);
 	}
 	g_list_foreach (emails, (GFunc) g_free, NULL);
 	g_list_free (emails);

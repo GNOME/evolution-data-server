@@ -17,18 +17,18 @@ static CamelSession *session;
 /* FIXME: flags aren't really right yet */
 /* ASCII sorted on full_name */
 static CamelFolderInfo fi_list_1[] = {
-	{ NULL, NULL, NULL, ".", "Inbox", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, ".#evolution/Junk", "Junk", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, ".#evolution/Trash", "Trash", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".", "Inbox", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".#evolution/Junk", "Junk", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".#evolution/Trash", "Trash", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 	{ NULL, NULL, NULL, "testbox", "testbox", CAMEL_FOLDER_CHILDREN, -1, -1 },
 	{ NULL, NULL, NULL, "testbox/foo", "foo", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 	{ NULL, NULL, NULL, "testbox2", "testbox2", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 };
 
 static CamelFolderInfo fi_list_2[] = {
-	{ NULL, NULL, NULL, ".", "Inbox", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, ".#evolution/Junk", "Junk", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, ".#evolution/Trash", "Trash", CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".", "Inbox", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".#evolution/Junk", "Junk", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, ".#evolution/Trash", "Trash", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 	{ NULL, NULL, NULL, "testbox", "testbox", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 	{ NULL, NULL, NULL, "testbox2", "testbox2", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 };

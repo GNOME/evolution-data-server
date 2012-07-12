@@ -21,7 +21,7 @@ gint main (gint argc, gchar **argv)
 	camel_test_provider_init (1, imap_drivers);
 
 	/* clear out any camel-test data */
-	system("/bin/rm -rf /tmp/camel-test");
+	system ("/bin/rm -rf /tmp/camel-test");
 
 	session = camel_test_session_new ("/tmp/camel-test");
 
@@ -31,8 +31,8 @@ gint main (gint argc, gchar **argv)
 		path = getenv (remote_providers[i]);
 
 		if (path == NULL) {
-			printf("Aborted (ignored).\n");
-			printf("Set '%s', to re-run test.\n", remote_providers[i]);
+			printf ("Aborted (ignored).\n");
+			printf ("Set '%s', to re-run test.\n", remote_providers[i]);
 			/* tells make check to ignore us in the total count */
 			_exit (77);
 		}

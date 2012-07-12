@@ -171,7 +171,7 @@ e_book_backend_db_cache_add_contact (DB *db,
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	if (!uid) {
 		printf ("no uid\n");
-		printf("name:%s, email:%s\n",
+		printf ("name:%s, email:%s\n",
 			(gchar *) e_contact_get (contact, E_CONTACT_GIVEN_NAME),
 			(gchar *) e_contact_get (contact, E_CONTACT_EMAIL_1));
 		return FALSE;

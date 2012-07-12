@@ -527,7 +527,7 @@ camel_disco_folder_set_offline_sync (CamelDiscoFolder *disco_folder,
 {
 	g_return_if_fail (CAMEL_IS_DISCO_FOLDER (disco_folder));
 
-	if ((disco_folder->priv->offline_sync ? 1 : 0) == (offline_sync ? 1 : 0))
+	if (disco_folder->priv->offline_sync == offline_sync)
 		return;
 
 	disco_folder->priv->offline_sync = offline_sync;

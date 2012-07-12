@@ -263,7 +263,8 @@ e_categories_editor_init (ECategoriesEditor *editor)
 	gtk_tree_view_set_headers_visible (
 		GTK_TREE_VIEW (categories_list), FALSE);
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (categories_list), TRUE);
-	g_signal_connect (G_OBJECT (categories_list), "category-checked",
+	g_signal_connect (
+		G_OBJECT (categories_list), "category-checked",
 		G_CALLBACK (category_checked_cb), editor);
 
 	hbuttonbox1 = gtk_hbutton_box_new ();

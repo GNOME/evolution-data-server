@@ -66,7 +66,7 @@ nntp_folder_set_apply_filters (CamelNNTPFolder *folder,
 	g_return_if_fail (folder != NULL);
 	g_return_if_fail (CAMEL_IS_NNTP_FOLDER (folder));
 
-	if ((folder->priv->apply_filters ? 1 : 0) == (apply_filters ? 1 : 0))
+	if (folder->priv->apply_filters == apply_filters)
 		return;
 
 	folder->priv->apply_filters = apply_filters;

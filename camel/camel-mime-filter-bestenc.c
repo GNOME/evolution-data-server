@@ -86,7 +86,7 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 		    && (priv->fromcount > 0 || priv->startofline)) {
 			if (priv->fromcount + len >=5) {
 				memcpy (&priv->fromsave[priv->fromcount], in, 5 - priv->fromcount);
-				priv->hadfrom = strncmp(priv->fromsave, "From ", 5) == 0;
+				priv->hadfrom = strncmp (priv->fromsave, "From ", 5) == 0;
 				priv->fromcount = 0;
 			} else {
 				memcpy (&priv->fromsave[priv->fromcount], in, len);
@@ -125,7 +125,7 @@ mime_filter_bestenc_filter (CamelMimeFilter *mime_filter,
 					/* Check for "^From " lines */
 					if ((priv->flags & CAMEL_BESTENC_NO_FROM) && !priv->hadfrom) {
 						if (pend - p >= 5) {
-							priv->hadfrom = strncmp((gchar *) p, (gchar *) "From ", 5) == 0;
+							priv->hadfrom = strncmp ((gchar *) p, (gchar *) "From ", 5) == 0;
 						} else if (pend - p == 0) {
 							priv->startofline = TRUE;
 						} else {
@@ -263,9 +263,9 @@ camel_mime_filter_bestenc_get_best_encoding (CamelMimeFilterBestenc *filter,
 	required = required & ~CAMEL_BESTENC_TEXT;
 
 #if 0
-	printf("count0 = %d, count8 = %d, total = %d\n", priv->count0, priv->count8, priv->total);
-	printf("maxline = %d, crlfnoorder = %s\n", priv->maxline, priv->crlfnoorder?"TRUE":"FALSE");
-	printf(" %d%% require encoding?\n", (priv->count0+priv->count8)*100 / priv->total);
+	printf ("count0 = %d, count8 = %d, total = %d\n", priv->count0, priv->count8, priv->total);
+	printf ("maxline = %d, crlfnoorder = %s\n", priv->maxline, priv->crlfnoorder?"TRUE":"FALSE");
+	printf (" %d%% require encoding?\n", (priv->count0 + priv->count8) * 100 / priv->total);
 #endif
 
 	/* if we're not allowed to have From lines and we had one, use an encoding

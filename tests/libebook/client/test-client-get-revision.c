@@ -16,7 +16,7 @@ get_revision_compare_cycle (EBookClient *client)
        GError   *error = NULL;
 
        if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION, &revision_before, NULL, &error))
-               g_error ("Error getting book revision: %s", error->message);
+	       g_error ("Error getting book revision: %s", error->message);
 
 	if (!add_contact_from_test_case_verify (client, "simple-1", &contact)) {
 		g_object_unref (client);
@@ -29,7 +29,7 @@ get_revision_compare_cycle (EBookClient *client)
 	g_object_unref (contact);
 
        if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION, &revision_after, NULL, &error))
-               g_error ("Error getting book revision: %s", error->message);
+	       g_error ("Error getting book revision: %s", error->message);
 
        g_assert (revision_before);
        g_assert (revision_after);

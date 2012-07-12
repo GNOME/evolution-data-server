@@ -1,5 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; fill-column: 160 -*-
- *
+/*
  *  Copyright (C) 2008 Novell, Inc. (www.novell.com)
  *
  *  Authors: Srinivsa Ragavan <sragavan@novell.com>

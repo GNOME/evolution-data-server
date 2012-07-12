@@ -78,14 +78,14 @@ cmd_uidl (CamelPOP3Engine *pe,
 		if (ret >= 0) {
 			if (strlen ((gchar *) line) > 1024)
 				line[1024] = 0;
-			if (sscanf((gchar *) line, "%u %s", &id, uid) == 2) {
+			if (sscanf ((gchar *) line, "%u %s", &id, uid) == 2) {
 				fi = g_hash_table_lookup (folder->uids_id, GINT_TO_POINTER (id));
 				if (fi) {
 					camel_operation_progress (NULL, (fi->index + 1) * 100 / folder->uids->len);
 					fi->uid = g_strdup (uid);
 					g_hash_table_insert (folder->uids_fi, fi->uid, fi);
 				} else {
-					g_warning("ID %u (uid: %s) not in previous LIST output", id, uid);
+					g_warning ("ID %u (uid: %s) not in previous LIST output", id, uid);
 				}
 			}
 		}
@@ -122,8 +122,8 @@ cmd_builduid (CamelPOP3Engine *pe,
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		h = camel_mime_parser_headers_raw (mp);
 		while (h) {
-			if (g_ascii_strcasecmp(h->name, "status") != 0
-			    && g_ascii_strcasecmp(h->name, "x-status") != 0) {
+			if (g_ascii_strcasecmp (h->name, "status") != 0
+			    && g_ascii_strcasecmp (h->name, "x-status") != 0) {
 				g_checksum_update (checksum, (guchar *) h->name, -1);
 				g_checksum_update (checksum, (guchar *) h->value, -1);
 			}
@@ -138,7 +138,7 @@ cmd_builduid (CamelPOP3Engine *pe,
 
 	fi->uid = g_base64_encode ((guchar *) digest, length);
 
-	d(printf("building uid for id '%d' = '%s'\n", fi->id, fi->uid));
+	d (printf ("building uid for id '%d' = '%s'\n", fi->id, fi->uid));
 }
 
 static void
@@ -175,13 +175,13 @@ cmd_list (CamelPOP3Engine *pe,
 	do {
 		ret = camel_pop3_stream_line (stream, &line, &len, cancellable, NULL);
 		if (ret >= 0) {
-			if (sscanf((gchar *) line, "%u %u", &id, &size) == 2) {
+			if (sscanf ((gchar *) line, "%u %u", &id, &size) == 2) {
 				fi = g_malloc0 (sizeof (*fi));
 				fi->size = size;
 				fi->id = id;
 				fi->index = ((CamelPOP3Folder *) folder)->uids->len;
 				if ((pop3_store->engine->capa & CAMEL_POP3_CAP_UIDL) == 0)
-					fi->cmd = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_builduid, fi, cancellable, NULL, "TOP %u 0\r\n", id);
+					fi->cmd = camel_pop3_engine_command_new (pe, CAMEL_POP3_COMMAND_MULTI, cmd_builduid, fi, cancellable, NULL, "TOP %u 0\r\n", id);
 				g_ptr_array_add (pop3_folder->uids, fi);
 				g_hash_table_insert (pop3_folder->uids_id, GINT_TO_POINTER (id), fi);
 			}
@@ -204,7 +204,7 @@ cmd_list (CamelPOP3Engine *pe,
 				/* First time downloading the POP folder, lets just download only a batch. */
 				last_uid = -1;
 			}
-			d(printf("Last stored' first uid: %d\n", last_uid));
+			d (printf ("Last stored' first uid: %d\n", last_uid));
 		}
 
 		if (last_uid == -1)
@@ -225,9 +225,9 @@ cmd_list (CamelPOP3Engine *pe,
 			/* Lets pull another window of old messages */
 			save_uid = TRUE;
 			/* Decrement 'i' by another batch count or till we reach the first message */
-			d(printf("Fetch more (%d): from %d", pop3_folder->fetch_more, i));
+			d (printf ("Fetch more (%d): from %d", pop3_folder->fetch_more, i));
 			for (k = 0; k< pop3_folder->fetch_more && i>= 0; k++, i--);
-			d(printf(" to %d\n", i));
+			d (printf (" to %d\n", i));
 
 			/* Don't load messages newer than the latest we already had. We had to just get old messages and not 
 			 * new messages. */
@@ -269,7 +269,7 @@ cmd_list (CamelPOP3Engine *pe,
 				free_fi (pop3_folder, fi);
 			}
 			g_ptr_array_remove_range (pop3_folder->uids, 0, i);
-			d(printf("Removing %d uids that are old\n", i));
+			d (printf ("Removing %d uids that are old\n", i));
 
 		}
 
@@ -300,7 +300,7 @@ cmd_list (CamelPOP3Engine *pe,
 			g_key_file_load_from_file (pop3_folder->key_file, path, G_KEY_FILE_NONE, NULL);
 			g_free (contents);
 			g_free (path);
-			d(printf("Saving last uid %d\n", fi->id));
+			d (printf ("Saving last uid %d\n", fi->id));
 
 		}
 
@@ -552,18 +552,18 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 
 	/* check to see if we have safely written flag set */
 	if (pop3_store->cache == NULL
-	    || (stream = camel_data_cache_get(pop3_store->cache, "cache", fi->uid, NULL)) == NULL
+	    || (stream = camel_data_cache_get (pop3_store->cache, "cache", fi->uid, NULL)) == NULL
 	    || camel_stream_read (stream, buffer, 1, cancellable, NULL) != 1
 	    || buffer[0] != '#') {
 
 		/* Initiate retrieval, if disk backing fails, use a memory backing */
 		if (pop3_store->cache == NULL
-		    || (stream = camel_data_cache_add(pop3_store->cache, "cache", fi->uid, NULL)) == NULL)
+		    || (stream = camel_data_cache_add (pop3_store->cache, "cache", fi->uid, NULL)) == NULL)
 			stream = camel_stream_mem_new ();
 
 		/* ref it, the cache storage routine unref's when done */
 		fi->stream = g_object_ref (stream);
-		pcr = camel_pop3_engine_command_new(pop3_store->engine, CAMEL_POP3_COMMAND_MULTI, cmd_tocache, fi, cancellable, NULL, "RETR %u\r\n", fi->id);
+		pcr = camel_pop3_engine_command_new (pop3_store->engine, CAMEL_POP3_COMMAND_MULTI, cmd_tocache, fi, cancellable, NULL, "RETR %u\r\n", fi->id);
 
 		/* Also initiate retrieval of some of the following messages, assume we'll be receiving them */
 		if (auto_fetch && pop3_store->cache != NULL) {
@@ -575,7 +575,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 				CamelPOP3FolderInfo *pfi = pop3_folder->uids->pdata[i];
 
 				if (pfi->uid && pfi->cmd == NULL) {
-					pfi->stream = camel_data_cache_add(pop3_store->cache, "cache", pfi->uid, NULL);
+					pfi->stream = camel_data_cache_add (pop3_store->cache, "cache", pfi->uid, NULL);
 					if (pfi->stream) {
 						pfi->cmd = camel_pop3_engine_command_new (pop3_store->engine, CAMEL_POP3_COMMAND_MULTI,
 											 cmd_tocache, pfi, cancellable, NULL, "RETR %u\r\n", pfi->id);
@@ -697,9 +697,9 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 	/* only used during setup */
 	pop3_folder->uids_id = g_hash_table_new (NULL, NULL);
 
-	pcl = camel_pop3_engine_command_new(pop3_store->engine, CAMEL_POP3_COMMAND_MULTI, cmd_list, folder, cancellable, &local_error, "LIST\r\n");
+	pcl = camel_pop3_engine_command_new (pop3_store->engine, CAMEL_POP3_COMMAND_MULTI, cmd_list, folder, cancellable, &local_error, "LIST\r\n");
 	if (!local_error && (pop3_store->engine->capa & CAMEL_POP3_CAP_UIDL) != 0)
-		pcu = camel_pop3_engine_command_new(pop3_store->engine, CAMEL_POP3_COMMAND_MULTI, cmd_uidl, folder, cancellable, &local_error, "UIDL\r\n");
+		pcu = camel_pop3_engine_command_new (pop3_store->engine, CAMEL_POP3_COMMAND_MULTI, cmd_uidl, folder, cancellable, &local_error, "UIDL\r\n");
 	while ((i = camel_pop3_engine_iterate (pop3_store->engine, NULL, cancellable, error)) > 0)
 		;
 
@@ -869,7 +869,7 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 
 			/* also remove from cache */
 			if (pop3_store->cache && fi->uid)
-				camel_data_cache_remove(pop3_store->cache, "cache", fi->uid, NULL);
+				camel_data_cache_remove (pop3_store->cache, "cache", fi->uid, NULL);
 		}
 	}
 
@@ -931,7 +931,7 @@ camel_pop3_folder_new (CamelStore *parent,
 
 	service = CAMEL_SERVICE (parent);
 
-	d(printf("opening pop3 INBOX folder\n"));
+	d (printf ("opening pop3 INBOX folder\n"));
 
 	folder = g_object_new (
 		CAMEL_TYPE_POP3_FOLDER,
@@ -1051,7 +1051,7 @@ camel_pop3_delete_old (CamelFolder *folder,
 	pop3_store = CAMEL_POP3_STORE (parent_store);
 	temp = time (&temp);
 
-	d(printf("%s(%d): pop3_folder->uids->len=[%d]\n", __FILE__, __LINE__, pop3_folder->uids->len));
+	d (printf ("%s(%d): pop3_folder->uids->len=[%d]\n", __FILE__, __LINE__, pop3_folder->uids->len));
 	for (i = 0; i < pop3_folder->uids->len; i++) {
 		message_time = 0;
 		fi = pop3_folder->uids->pdata[i];
@@ -1069,9 +1069,9 @@ camel_pop3_delete_old (CamelFolder *folder,
 		if (!fi->uid)
 			continue;
 
-		d(printf("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
+		d (printf ("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
 		if (!pop3_get_message_time_from_cache (folder, fi->uid, &message_time)) {
-			d(printf("could not get message time from cache, trying from pop3\n"));
+			d (printf ("could not get message time from cache, trying from pop3\n"));
 			message = pop3_folder_get_message_sync (
 				folder, fi->uid, cancellable, error);
 			if (message) {
@@ -1084,8 +1084,8 @@ camel_pop3_delete_old (CamelFolder *folder,
 			gdouble time_diff = difftime (temp,message_time);
 			gint day_lag = time_diff / (60 * 60 * 24);
 
-			d(printf("%s(%d): message_time= [%ld]\n", __FILE__, __LINE__, message_time));
-			d(printf("%s(%d): day_lag=[%d] \t days_to_delete=[%d]\n",
+			d (printf ("%s(%d): message_time= [%ld]\n", __FILE__, __LINE__, message_time));
+			d (printf ("%s(%d): day_lag=[%d] \t days_to_delete=[%d]\n",
 				__FILE__, __LINE__, day_lag, days_to_delete));
 
 			if (day_lag > days_to_delete) {
@@ -1097,7 +1097,7 @@ camel_pop3_delete_old (CamelFolder *folder,
 					camel_pop3_engine_command_free (pop3_store->engine, fi->cmd);
 					fi->cmd = NULL;
 				}
-				d(printf("%s(%d): Deleting old messages\n", __FILE__, __LINE__));
+				d (printf ("%s(%d): Deleting old messages\n", __FILE__, __LINE__));
 				fi->cmd = camel_pop3_engine_command_new (pop3_store->engine,
 									0,
 									NULL,
@@ -1107,7 +1107,7 @@ camel_pop3_delete_old (CamelFolder *folder,
 									fi->id);
 				/* also remove from cache */
 				if (pop3_store->cache && fi->uid) {
-					camel_data_cache_remove(pop3_store->cache, "cache", fi->uid, NULL);
+					camel_data_cache_remove (pop3_store->cache, "cache", fi->uid, NULL);
 				}
 			}
 		}

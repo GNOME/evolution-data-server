@@ -1459,8 +1459,8 @@ dump_fi (CamelFolderInfo *fi,
 	s[depth] = 0;
 
 	while (fi) {
-		printf("%sfull_name: %s\n", s, fi->full_name);
-		printf("%sflags: %08x\n", s, fi->flags);
+		printf ("%sfull_name: %s\n", s, fi->full_name);
+		printf ("%sflags: %08x\n", s, fi->flags);
 		dump_fi (fi->child, depth + 2);
 		fi = fi->next;
 	}
@@ -2075,21 +2075,21 @@ camel_store_get_folder_info_sync (CamelStore *store,
 	if (info && (top == NULL || *top == '\0') && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
 		if (store->flags & CAMEL_STORE_VTRASH)
 			/* the name of the Trash folder, used for deleted messages */
-			add_special_info (store, info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_TRASH);
+			add_special_info (store, info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL | CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_VTRASH | CAMEL_FOLDER_TYPE_TRASH);
 		if (store->flags & CAMEL_STORE_VJUNK)
 			/* the name of the Junk folder, used for spam messages */
-			add_special_info (store, info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_JUNK);
+			add_special_info (store, info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL | CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_VTRASH | CAMEL_FOLDER_TYPE_JUNK);
 	} else if (!info && top && (flags & CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL) == 0) {
 		CamelFolderInfo *root_info = NULL;
 
 		if ((store->flags & CAMEL_STORE_VTRASH) != 0 && g_str_equal (top, CAMEL_VTRASH_NAME)) {
 			root_info = class->get_folder_info_sync (store, NULL, flags & (~CAMEL_STORE_FOLDER_INFO_RECURSIVE), cancellable, error);
 			if (root_info)
-				add_special_info (store, root_info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_TRASH);
+				add_special_info (store, root_info, CAMEL_VTRASH_NAME, _("Trash"), FALSE, CAMEL_FOLDER_VIRTUAL | CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_VTRASH | CAMEL_FOLDER_TYPE_TRASH);
 		} else if ((store->flags & CAMEL_STORE_VJUNK) != 0 && g_str_equal (top, CAMEL_VJUNK_NAME)) {
 			root_info = class->get_folder_info_sync (store, NULL, flags & (~CAMEL_STORE_FOLDER_INFO_RECURSIVE), cancellable, error);
 			if (root_info)
-				add_special_info (store, root_info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL|CAMEL_FOLDER_SYSTEM|CAMEL_FOLDER_VTRASH|CAMEL_FOLDER_TYPE_JUNK);
+				add_special_info (store, root_info, CAMEL_VJUNK_NAME, _("Junk"), TRUE, CAMEL_FOLDER_VIRTUAL | CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_VTRASH | CAMEL_FOLDER_TYPE_JUNK);
 		}
 
 		if (root_info) {
@@ -2104,7 +2104,7 @@ camel_store_get_folder_info_sync (CamelStore *store,
 
 	camel_operation_pop_message (cancellable);
 
-	if (camel_debug_start("store:folder_info")) {
+	if (camel_debug_start ("store:folder_info")) {
 		const gchar *uid;
 
 		uid = camel_service_get_uid (CAMEL_SERVICE (store));
@@ -2873,7 +2873,7 @@ camel_store_rename_folder_sync (CamelStore *store,
 				folder = folders->pdata[i];
 				full_name = camel_folder_get_full_name (folder);
 
-				new = g_strdup_printf("%s%s", new_name, full_name + strlen(old_name));
+				new = g_strdup_printf ("%s%s", new_name, full_name + strlen (old_name));
 				camel_object_bag_rekey (store->folders, folder, new);
 				camel_folder_rename (folder, new);
 				g_free (new);

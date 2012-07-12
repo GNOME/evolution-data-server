@@ -166,7 +166,12 @@ e_gdbus_cal_factory_complete_get_cal (EGdbusCalFactory *object,
 	e_gdbus_complete_sync_method_string (object, invocation, out_path, error);
 }
 
-E_DECLARE_GDBUS_SYNC_METHOD_1_WITH_RETURN (cal_factory, get_cal, source_type, "as", path, "s")
+E_DECLARE_GDBUS_SYNC_METHOD_1_WITH_RETURN (cal_factory,
+                                           get_cal,
+                                           source_type,
+                                           "as",
+                                           path,
+                                           "s")
 
 static const GDBusMethodInfo * const e_gdbus_cal_factory_method_info_pointers[] =
 {

@@ -119,7 +119,7 @@ camel_provider_init (void)
 
 	dir = g_dir_open (CAMEL_PROVIDERDIR, 0, NULL);
 	if (!dir) {
-		g_warning("Could not open camel provider directory (%s): %s",
+		g_warning ("Could not open camel provider directory (%s): %s",
 			  CAMEL_PROVIDERDIR, g_strerror (errno));
 		return;
 	}
@@ -240,7 +240,7 @@ camel_provider_register (CamelProvider *provider)
 	LOCK ();
 
 	if (g_hash_table_lookup (provider_table, provider->protocol) != NULL) {
-		g_warning("Trying to re-register camel provider for protocol '%s'", provider->protocol);
+		g_warning ("Trying to re-register camel provider for protocol '%s'", provider->protocol);
 		UNLOCK ();
 		return;
 	}

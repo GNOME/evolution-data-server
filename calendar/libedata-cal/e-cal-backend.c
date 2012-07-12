@@ -2078,7 +2078,7 @@ e_cal_backend_empty_cache (ECalBackend *backend,
 
 		e_cal_backend_cache_remove_component (cache, id->uid, id->rid);
 
-		e_cal_backend_notify_component_removed	(backend, id, comp, NULL);
+		e_cal_backend_notify_component_removed (backend, id, comp, NULL);
 
 		e_cal_component_free_id (id);
 		g_object_unref (comp);

@@ -65,13 +65,13 @@ nss_has_system_db (void)
 	FILE *f;
 	gchar buf[80];
 
-	f = fopen(NSS_SYSTEM_DB "/pkcs11.txt", "r");
+	f = fopen (NSS_SYSTEM_DB "/pkcs11.txt", "r");
 	if (!f)
 		return FALSE;
 
 	/* Check whether the system NSS db is actually enabled */
 	while (fgets (buf, 80, f) && !found) {
-		if (!strcmp(buf, "library=libnsssysinit.so\n"))
+		if (!strcmp (buf, "library=libnsssysinit.so\n"))
 			found = TRUE;
 	}
 	fclose (f);
@@ -132,7 +132,7 @@ camel_init (const gchar *configdir,
 			gchar *user_nss_dir = g_build_filename ( g_get_home_dir (),
 								 ".pki/nssdb", NULL );
 			if (g_mkdir_with_parents (user_nss_dir, 0700))
-				g_warning("Failed to create SQL database directory %s: %s\n",
+				g_warning ("Failed to create SQL database directory %s: %s\n",
 					  user_nss_dir, strerror (errno));
 
 			nss_sql_configdir = g_strconcat ("sql:", user_nss_dir, NULL);

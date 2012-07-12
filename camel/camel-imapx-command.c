@@ -261,7 +261,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 
 	g_return_if_fail (CAMEL_IS_IMAPX_COMMAND (ic));
 
-	c(ic->is->tagprefix, "adding command, format = '%s'\n", format);
+	c (ic->is->tagprefix, "adding command, format = '%s'\n", format);
 
 	buffer = ((CamelIMAPXRealCommand *) ic)->buffer;
 
@@ -311,17 +311,17 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				break;
 			case 'S': /* stream */
 				S = va_arg (ap, CamelStream *);
-				c(ic->is->tagprefix, "got stream '%p'\n", S);
+				c (ic->is->tagprefix, "got stream '%p'\n", S);
 				camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_STREAM, S);
 				break;
 			case 'D': /* datawrapper */
 				D = va_arg (ap, CamelDataWrapper *);
-				c(ic->is->tagprefix, "got data wrapper '%p'\n", D);
+				c (ic->is->tagprefix, "got data wrapper '%p'\n", D);
 				camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_DATAWRAPPER, D);
 				break;
 			case 'P': /* filename path */
 				P = va_arg (ap, gchar *);
-				c(ic->is->tagprefix, "got file path '%s'\n", P);
+				c (ic->is->tagprefix, "got file path '%s'\n", P);
 				camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_FILE, P);
 				break;
 			case 't': /* token */
@@ -330,7 +330,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				break;
 			case 's': /* simple string */
 				s = va_arg (ap, gchar *);
-				c(ic->is->tagprefix, "got string '%s'\n", g_str_has_prefix (format, "LOGIN") ? "***" : s);
+				c (ic->is->tagprefix, "got string '%s'\n", g_str_has_prefix (format, "LOGIN") ? "***" : s);
 			output_string:
 				if (s && *s) {
 					guchar mask = imapx_is_mask (s);
@@ -366,7 +366,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 			case 'f': /* imap folder name */
 				folder = va_arg (ap, CamelFolder *);
 				full_name = camel_folder_get_full_name (folder);
-				c(ic->is->tagprefix, "got folder '%s'\n", full_name);
+				c (ic->is->tagprefix, "got folder '%s'\n", full_name);
 				parent_store = camel_folder_get_parent_store (folder);
 				fname = camel_imapx_store_summary_full_from_path (((CamelIMAPXStore *) parent_store)->summary, full_name);
 				if (fname) {
@@ -396,19 +396,19 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 			case 'u':
 				if (llong == 1) {
 					l = va_arg (ap, glong);
-					c(ic->is->tagprefix, "got glong '%d'\n", (gint)l);
+					c (ic->is->tagprefix, "got glong '%d'\n", (gint) l);
 					memcpy (literal_format, start, p - start);
 					literal_format[p - start] = 0;
 					g_string_append_printf (buffer, literal_format, l);
 				} else if (llong == 2) {
 					guint64 i64 = va_arg (ap, guint64);
-					c(ic->is->tagprefix, "got guint64 '%d'\n", (gint)i64);
+					c (ic->is->tagprefix, "got guint64 '%d'\n", (gint) i64);
 					memcpy (literal_format, start, p - start);
 					literal_format[p - start] = 0;
 					g_string_append_printf (buffer, literal_format, i64);
 				} else {
 					d = va_arg (ap, gint);
-					c(ic->is->tagprefix, "got gint '%d'\n", d);
+					c (ic->is->tagprefix, "got gint '%d'\n", d);
 					memcpy (literal_format, start, p - start);
 					literal_format[p - start] = 0;
 					g_string_append_printf (buffer, literal_format, d);
@@ -535,9 +535,9 @@ camel_imapx_command_close (CamelIMAPXCommand *ic)
 	buffer = ((CamelIMAPXRealCommand *) ic)->buffer;
 
 	if (buffer->len > 5 && g_ascii_strncasecmp (buffer->str, "LOGIN", 5) == 0) {
-		c(ic->is->tagprefix, "completing command buffer is [%d] 'LOGIN...'\n", (gint) buffer->len);
+		c (ic->is->tagprefix, "completing command buffer is [%d] 'LOGIN...'\n", (gint) buffer->len);
 	} else {
-		c(ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", (gint) buffer->len, (gint) buffer->len, buffer->str);
+		c (ic->is->tagprefix, "completing command buffer is [%d] '%.*s'\n", (gint) buffer->len, (gint) buffer->len, buffer->str);
 	}
 	if (buffer->len > 0)
 		camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_SIMPLE, NULL);

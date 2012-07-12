@@ -483,14 +483,14 @@ camel_vee_data_cache_get_subfolder_data (CamelVeeDataCache *data_cache,
 }
 
 /* Returns whether data_cache contains certain UID for certain folder;
-   instead of camel_vee_data_cache_get_message_info_data() only
-   returns FALSE if not, while camel_vee_data_cache_get_message_info_data()
-   auto-adds it to data_cache.
+ * instead of camel_vee_data_cache_get_message_info_data() only
+ * returns FALSE if not, while camel_vee_data_cache_get_message_info_data()
+ * auto-adds it to data_cache.
 */
 gboolean
 camel_vee_data_cache_contains_message_info_data (CamelVeeDataCache *data_cache,
-						 CamelFolder *folder,
-						 const gchar *orig_message_uid)
+                                                 CamelFolder *folder,
+                                                 const gchar *orig_message_uid)
 {
 	gboolean res;
 	VeeData vdata;

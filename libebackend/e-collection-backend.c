@@ -967,7 +967,8 @@ e_collection_backend_new_child (ECollectionBackend *backend,
 
 	collection_source = e_backend_get_source (E_BACKEND (backend));
 
-	g_print ("%s: Pairing %s with resource %s\n",
+	g_print (
+		"%s: Pairing %s with resource %s\n",
 		e_source_get_display_name (collection_source),
 		e_source_get_uid (child_source), resource_id);
 

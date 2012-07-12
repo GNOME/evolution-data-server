@@ -196,12 +196,12 @@ scan_dir (CamelStore *store,
 	gchar from[80];
 	FILE *fp;
 
-	d(printf("checking dir '%s' part '%s' for mbox content\n", root, path));
+	d (printf ("checking dir '%s' part '%s' for mbox content\n", root, path));
 
 	/* look for folders matching the right structure, recursively */
 	if (path) {
 		name = alloca (strlen (root) + strlen (path) + 2);
-		sprintf(name, "%s/%s", root, path);
+		sprintf (name, "%s/%s", root, path);
 	} else
 		name = (gchar *) root;  /* XXX casting away const */
 
@@ -242,11 +242,11 @@ scan_dir (CamelStore *store,
 	}
 
 	while ((d = readdir (dir))) {
-		if (strcmp(d->d_name, ".") == 0
-		    || strcmp(d->d_name, "..") == 0)
+		if (strcmp (d->d_name, ".") == 0
+		    || strcmp (d->d_name, "..") == 0)
 			continue;
 
-		tmp = g_strdup_printf("%s/%s", name, d->d_name);
+		tmp = g_strdup_printf ("%s/%s", name, d->d_name);
 		if (g_stat (tmp, &st) == 0) {
 			if (path)
 				fname = g_strdup_printf (
@@ -261,11 +261,11 @@ scan_dir (CamelStore *store,
 				folder = camel_object_bag_peek (
 					store->folders, fname);
 				if (folder == NULL) {
-					fp = fopen(tmp, "r");
+					fp = fopen (tmp, "r");
 					if (fp != NULL) {
 						isfolder = (st.st_size == 0
 							    || (fgets (from, sizeof (from), fp) != NULL
-								&& strncmp(from, "From ", 5) == 0));
+								&& strncmp (from, "From ", 5) == 0));
 						fclose (fp);
 					}
 				}
@@ -466,7 +466,7 @@ spool_store_get_folder_sync (CamelStore *store,
 	gchar *name;
 	gchar *path;
 
-	d(printf("opening folder %s on path %s\n", folder_name, path));
+	d (printf ("opening folder %s on path %s\n", folder_name, path));
 
 	spool_store = CAMEL_SPOOL_STORE (store);
 	type = spool_store_get_type (spool_store, error);
@@ -485,7 +485,7 @@ spool_store_get_folder_sync (CamelStore *store,
 
 	/* we only support an 'INBOX' in mbox mode */
 	if (type == CAMEL_SPOOL_STORE_MBOX) {
-		if (strcmp(folder_name, "INBOX") != 0) {
+		if (strcmp (folder_name, "INBOX") != 0) {
 			g_set_error (
 				error, CAMEL_STORE_ERROR,
 				CAMEL_STORE_ERROR_NO_FOLDER,

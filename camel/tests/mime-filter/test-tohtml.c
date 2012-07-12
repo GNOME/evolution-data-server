@@ -29,9 +29,9 @@ test_filter (CamelMimeFilter *f,
 	GByteArray *byte_array_out;
 	gint id;
 
-	camel_test_push("Data file '%s'", inname);
+	camel_test_push ("Data file '%s'", inname);
 
-	camel_test_push("setup");
+	camel_test_push ("setup");
 
 	indisk = camel_stream_fs_new_with_name (inname, O_RDONLY, 0, NULL);
 	check (indisk);
@@ -44,7 +44,7 @@ test_filter (CamelMimeFilter *f,
 
 	camel_test_pull ();
 
-	camel_test_push("reading through filter stream");
+	camel_test_push ("reading through filter stream");
 
 	byte_array_in = g_byte_array_new ();
 	in = camel_stream_mem_new_with_byte_array (byte_array_in);
@@ -74,7 +74,7 @@ test_filter (CamelMimeFilter *f,
 	check (g_seekable_seek (
 		G_SEEKABLE (indisk), 0, G_SEEK_SET, NULL, NULL));
 
-	camel_test_push("writing through filter stream");
+	camel_test_push ("writing through filter stream");
 
 	byte_array_in = g_byte_array_new ();
 	in = camel_stream_mem_new_with_byte_array (byte_array_in);
@@ -110,15 +110,15 @@ main (gint argc,
 
 	camel_test_init (argc, argv);
 
-	camel_test_start("HTML Stream filtering");
+	camel_test_start ("HTML Stream filtering");
 
 	for (i = 0; i < 100; i++) {
 		gchar inname[32], outname[32];
 		CamelMimeFilter *f;
 		struct stat st;
 
-		sprintf(inname, "data/html.%d.in", i);
-		sprintf(outname, "data/html.%d.out", i);
+		sprintf (inname, "data/html.%d.in", i);
+		sprintf (outname, "data/html.%d.out", i);
 
 		if (g_stat (inname, &st) == -1)
 			break;

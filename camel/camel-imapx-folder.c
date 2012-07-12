@@ -66,7 +66,7 @@ camel_imapx_folder_new (CamelStore *store,
 	gboolean filter_junk;
 	gboolean filter_junk_inbox;
 
-	d("opening imap folder '%s'\n", folder_dir);
+	d ("opening imap folder '%s'\n", folder_dir);
 
 	service = CAMEL_SERVICE (store);
 
@@ -164,7 +164,7 @@ imapx_folder_set_apply_filters (CamelIMAPXFolder *folder,
 	g_return_if_fail (folder != NULL);
 	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
 
-	if ((folder->apply_filters ? 1 : 0) == (apply_filters ? 1 : 0))
+	if (folder->apply_filters == apply_filters)
 		return;
 
 	folder->apply_filters = apply_filters;

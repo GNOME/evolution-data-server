@@ -482,7 +482,7 @@ cs_waitinfo (gpointer (worker)(gpointer),
 		polls[1].fd = cancel_fd;
 		polls[1].events = G_IO_IN;
 
-		d(printf("waiting for name return/cancellation in main process\n"));
+		d (printf ("waiting for name return/cancellation in main process\n"));
 		do {
 			polls[0].revents = 0;
 			polls[1].revents = 0;
@@ -524,16 +524,16 @@ cs_waitinfo (gpointer (worker)(gpointer),
 
 			/* We cancel so if the thread impl is decent it causes immediate exit.
 			 * We check the reply port incase we had a reply in the mean time, which we free later */
-			d(printf("Canceling lookup thread and leaving it\n"));
+			d (printf ("Canceling lookup thread and leaving it\n"));
 			msg->cancelled = 1;
 			g_thread_join (thread);
 			cancel = 1;
 		} else {
 			struct _addrinfo_msg *reply;
 
-			d(printf("waiting for child to exit\n"));
+			d (printf ("waiting for child to exit\n"));
 			g_thread_join (thread);
-			d(printf("child done\n"));
+			d (printf ("child done\n"));
 
 			reply = (struct _addrinfo_msg *) camel_msgport_try_pop (reply_port);
 			if (reply != msg)
@@ -665,9 +665,9 @@ cs_getaddrinfo (gpointer data)
 	 * Use the port as the service name directly. */
 	if (info->result && info->service) {
 		if (strcmp (info->service, "http") == 0)
-			info->result = getaddrinfo(info->name, "80", info->hints, info->res);
+			info->result = getaddrinfo (info->name, "80", info->hints, info->res);
 		else if (strcmp (info->service, "https") == 0)
-			info->result = getaddrinfo(info->name, "443", info->hints, info->res);
+			info->result = getaddrinfo (info->name, "443", info->hints, info->res);
 	}
 
 	if (!info->cancelled)
@@ -800,13 +800,13 @@ cs_getnameinfo (gpointer data)
 			guchar *in = (guchar *) &sin->sin_addr;
 
 			/* sin_addr is always network order which is big-endian */
-			msg->host = g_strdup_printf("%u.%u.%u.%u", in[0], in[1], in[2], in[3]);
+			msg->host = g_strdup_printf ("%u.%u.%u.%u", in[0], in[1], in[2], in[3]);
 		}
 	}
 
 	/* we never actually use this anyway */
 	if (msg->serv)
-		sprintf(msg->serv, "%d", sin->sin_port);
+		sprintf (msg->serv, "%d", sin->sin_port);
 
 	if (!msg->cancelled)
 		camel_msgport_reply ((CamelMsg *) msg);

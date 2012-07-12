@@ -96,14 +96,14 @@ static guint changed_listener_signals[LAST_SIGNAL];
 static void
 e_changed_listener_class_init (EChangedListenerClass *class)
 {
-	changed_listener_signals[CHANGED] =
-		g_signal_new ("changed",
-			      G_TYPE_FROM_CLASS (class),
-			      G_SIGNAL_RUN_FIRST,
-			      G_STRUCT_OFFSET (EChangedListenerClass, changed),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
+	changed_listener_signals[CHANGED] = g_signal_new (
+		"changed",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (EChangedListenerClass, changed),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
 }
 
 static void
@@ -230,7 +230,7 @@ idle_saver_cb (gpointer user_data)
 
 	filename = build_categories_filename ();
 
-	d(g_debug ("Saving categories to \"%s\"", filename));
+	d (g_debug ("Saving categories to \"%s\"", filename));
 
 	/* Build the file contents. */
 	buffer = g_string_new ("<categories>\n");
@@ -391,7 +391,7 @@ load_categories (void)
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS))
 		goto exit;
 
-	d(g_debug ("Loading categories from \"%s\"", filename));
+	d (g_debug ("Loading categories from \"%s\"", filename));
 
 	if (!g_file_get_contents (filename, &contents, &length, &error)) {
 		g_warning ("Unable to load categories: %s", error->message);
@@ -475,13 +475,13 @@ initialize_categories (void)
 
 	n_added = load_categories ();
 	if (n_added > 0) {
-		d(g_debug ("Loaded %d categories", n_added));
+		d (g_debug ("Loaded %d categories", n_added));
 		save_is_pending = FALSE;
 		return;
 	}
 
 	load_default_categories ();
-	d(g_debug ("Loaded default categories"));
+	d (g_debug ("Loaded default categories"));
 	save_categories ();
 }
 

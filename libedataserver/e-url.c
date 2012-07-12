@@ -265,8 +265,9 @@ e_uri_new (const gchar *uri_string)
 					value = g_strdup ("");
 				}
 				uri_decode (name);
-				g_datalist_set_data_full (&uri->params, name,
-							  value, g_free);
+				g_datalist_set_data_full (
+					&uri->params, name,
+					value, g_free);
 				g_free (name);
 			}
 		}
@@ -400,18 +401,18 @@ e_uri_to_string (EUri *uri,
 			uri->query ? uri->query : "");
 	else
 		str_uri = g_strdup_printf (
-                        "%s://%s%s%s%s%s%s%s%s%s%s",
+			"%s://%s%s%s%s%s%s%s%s%s%s",
 			uri->protocol,
-                        uri->user ? uri->user : "",
-                        uri->authmech ? ";auth=" : "",
-                        uri->authmech ? uri->authmech : "",
-                        uri->passwd && show_password ? ":" : "",
-                        uri->passwd && show_password ? uri->passwd : "",
-                        uri->user ? "@" : "",
-                        uri->host ? uri->host : "",
-                        uri->path ? uri->path : "",
-                        uri->query ? "?" : "",
-                        uri->query ? uri->query : "");
+			uri->user ? uri->user : "",
+			uri->authmech ? ";auth=" : "",
+			uri->authmech ? uri->authmech : "",
+			uri->passwd && show_password ? ":" : "",
+			uri->passwd && show_password ? uri->passwd : "",
+			uri->user ? "@" : "",
+			uri->host ? uri->host : "",
+			uri->path ? uri->path : "",
+			uri->query ? "?" : "",
+			uri->query ? uri->query : "");
 
 	return str_uri;
 }

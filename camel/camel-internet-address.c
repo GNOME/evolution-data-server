@@ -75,14 +75,14 @@ internet_address_encode (CamelAddress *a)
 	if (a->addresses->len == 0)
 		return NULL;
 
-	out = g_string_new("");
+	out = g_string_new ("");
 
 	for (i = 0; i < a->addresses->len; i++) {
 		struct _address *addr = g_ptr_array_index (a->addresses, i);
 		gchar *enc;
 
 		if (i != 0)
-			g_string_append(out, ", ");
+			g_string_append (out, ", ");
 
 		enc = camel_internet_address_encode_address (&len, addr->name, addr->address);
 		g_string_append (out, enc);
@@ -106,7 +106,7 @@ internet_address_unformat (CamelAddress *a,
 	if (raw == NULL)
 		return 0;
 
-	d(printf("unformatting address: %s\n", raw));
+	d (printf ("unformatting address: %s\n", raw));
 
 	/* we copy, so we can modify as we go */
 	buffer = g_strdup (raw);
@@ -148,7 +148,7 @@ internet_address_unformat (CamelAddress *a,
 				name = g_strstrip (name);
 			addr = g_strstrip (addr);
 			if (addr[0]) {
-				d(printf("found address: '%s' <%s>\n", name, addr));
+				d (printf ("found address: '%s' <%s>\n", name, addr));
 				camel_internet_address_add ((CamelInternetAddress *) a, name, addr);
 			}
 			name = NULL;
@@ -172,14 +172,14 @@ internet_address_format (CamelAddress *a)
 	if (a->addresses->len == 0)
 		return NULL;
 
-	out = g_string_new("");
+	out = g_string_new ("");
 
 	for (i = 0; i < a->addresses->len; i++) {
 		struct _address *addr = g_ptr_array_index (a->addresses, i);
 		gchar *enc;
 
 		if (i != 0)
-			g_string_append(out, ", ");
+			g_string_append (out, ", ");
 
 		enc = camel_internet_address_format_address (addr->name, addr->address);
 		g_string_append (out, enc);
@@ -442,7 +442,7 @@ camel_internet_address_encode_address (gint *inlen,
 	gchar *name = camel_header_encode_phrase ((const guchar *) real);
 	gchar *ret = NULL;
 	gint len = 0;
-	GString *out = g_string_new("");
+	GString *out = g_string_new ("");
 
 	g_assert (addr);
 
@@ -472,17 +472,17 @@ camel_internet_address_encode_address (gint *inlen,
 	 * that will probably not handle this case, we will just move
 	 * the whole address to its own line. */
 	if (inlen != NULL && (strlen (addr) + len) > CAMEL_FOLD_SIZE) {
-		g_string_append(out, "\n\t");
+		g_string_append (out, "\n\t");
 		len = 1;
 	}
 
 	len -= out->len;
 
 	if (name && name[0])
-		g_string_append_printf(out, " <");
+		g_string_append_printf (out, " <");
 	cia_encode_addrspec (out, addr);
 	if (name && name[0])
-		g_string_append_printf(out, ">");
+		g_string_append_printf (out, ">");
 
 	len += out->len;
 
@@ -527,12 +527,12 @@ camel_internet_address_format_address (const gchar *name,
 					if (c != '\"')
 						*o++ = c;
 				*o++ = '\"';
-				sprintf(o, " <%s>", addr);
-				d(printf("encoded '%s' => '%s'\n", name, ret));
+				sprintf (o, " <%s>", addr);
+				d (printf ("encoded '%s' => '%s'\n", name, ret));
 				return ret;
 			}
 		}
-		ret = g_strdup_printf("%s <%s>", name, addr);
+		ret = g_strdup_printf ("%s <%s>", name, addr);
 	} else
 		ret = g_strdup (addr);
 

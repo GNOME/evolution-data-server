@@ -885,7 +885,7 @@ create_component (ECalBackendContacts *cbc,
 	e_cal_component_set_icalcomponent (cal_comp, ical_comp);
 
 	/* Set uid */
-	d(g_message ("Creating UID: %s", uid));
+	d (g_message ("Creating UID: %s", uid));
 	e_cal_component_set_uid (cal_comp, uid);
 
 	/* Set all-day event's date from contact data */
@@ -1068,18 +1068,18 @@ e_cal_backend_contacts_get_object (ECalBackendSync *backend,
 	if (record->comp_birthday && g_str_has_suffix (uid, BIRTHDAY_UID_EXT)) {
 		*object = e_cal_component_get_as_string (record->comp_birthday);
 
-		d(g_message ("Return birthday: %s", *object));
+		d (g_message ("Return birthday: %s", *object));
 		return;
 	}
 
 	if (record->comp_anniversary && g_str_has_suffix (uid, ANNIVERSARY_UID_EXT)) {
 		*object = e_cal_component_get_as_string (record->comp_anniversary);
 
-		d(g_message ("Return anniversary: %s", *object));
+		d (g_message ("Return anniversary: %s", *object));
 		return;
 	}
 
-	d(g_message ("Returning nothing for uid: %s", uid));
+	d (g_message ("Returning nothing for uid: %s", uid));
 
 	g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
 }

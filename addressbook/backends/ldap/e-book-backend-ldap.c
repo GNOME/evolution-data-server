@@ -385,30 +385,30 @@ static struct prop_info {
 
 	/* addresses */
 	COMPLEX_PROP  (E_CONTACT_ADDRESS_LABEL_WORK, "postalAddress", work_address_populate, work_address_ber, work_address_compare),
-	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_WORK, "l", work_city_populate),
-	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_WORK, "st", work_state_populate),
-	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_WORK, "postofficebox", work_po_populate),
-	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_WORK, "postalcode", work_zip_populate),
-	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_WORK, "c", work_country_populate),
+	ADDRESS_STRING_PROP (E_CONTACT_ADDRESS_WORK, "l", work_city_populate),
+	ADDRESS_STRING_PROP (E_CONTACT_ADDRESS_WORK, "st", work_state_populate),
+	ADDRESS_STRING_PROP (E_CONTACT_ADDRESS_WORK, "postofficebox", work_po_populate),
+	ADDRESS_STRING_PROP (E_CONTACT_ADDRESS_WORK, "postalcode", work_zip_populate),
+	ADDRESS_STRING_PROP (E_CONTACT_ADDRESS_WORK, "c", work_country_populate),
 
 	COMPLEX_PROP  (E_CONTACT_ADDRESS_LABEL_HOME, "homePostalAddress", home_address_populate, home_address_ber, home_address_compare),
-	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_HOME, "mozillaHomeLocalityName", home_city_populate),
-	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_HOME, "mozillaHomeState", home_state_populate),
-	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_HOME, "mozillaHomePostalCode", home_zip_populate),
-	ADDRESS_STRING_PROP(E_CONTACT_ADDRESS_HOME, "mozillaHomeCountryName", home_country_populate),
+	ADDRESS_STRING_PROP (E_CONTACT_ADDRESS_HOME, "mozillaHomeLocalityName", home_city_populate),
+	ADDRESS_STRING_PROP (E_CONTACT_ADDRESS_HOME, "mozillaHomeState", home_state_populate),
+	ADDRESS_STRING_PROP (E_CONTACT_ADDRESS_HOME, "mozillaHomePostalCode", home_zip_populate),
+	ADDRESS_STRING_PROP (E_CONTACT_ADDRESS_HOME, "mozillaHomeCountryName", home_country_populate),
 
-	E_COMPLEX_PROP(E_CONTACT_ADDRESS_LABEL_OTHER, "otherPostalAddress", other_address_populate, other_address_ber, other_address_compare),
+	E_COMPLEX_PROP (E_CONTACT_ADDRESS_LABEL_OTHER, "otherPostalAddress", other_address_populate, other_address_ber, other_address_compare),
 
 	/* photos */
 	BINARY_PROP  (E_CONTACT_PHOTO,       "jpegPhoto", photo_populate, photo_ber, photo_compare),
 
 	/* certificate foo. */
-	BINARY_PROP  (E_CONTACT_X509_CERT,   "userCertificate", cert_populate, NULL/*XXX*/, NULL/*XXX*/),
+	BINARY_PROP  (E_CONTACT_X509_CERT,   "userCertificate", cert_populate, NULL/*XXX */, NULL/*XXX */),
 #if 0
 	/* hm, which do we use?  the inetOrgPerson schema says that
 	 * userSMIMECertificate should be used in favor of
 	 * userCertificate for S/MIME applications. */
-	BINARY_PROP  (E_CONTACT_X509_CERT,   "userSMIMECertificate", cert_populate, NULL/*XXX*/, NULL/*XXX*/),
+	BINARY_PROP  (E_CONTACT_X509_CERT,   "userSMIMECertificate", cert_populate, NULL/*XXX */, NULL/*XXX */),
 #endif
 
 	/* misc fields */
@@ -1021,7 +1021,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 				g_get_current_time (&end);
 				diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 				diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-				printf("e_book_backend_ldap_connect took %ld.%03ld seconds\n",
+				printf ("e_book_backend_ldap_connect took %ld.%03ld seconds\n",
 					diff / 1000,diff % 1000);
 			}
 			return TRUE;
@@ -1110,7 +1110,7 @@ e_book_backend_ldap_reconnect (EBookBackendLDAP *bl,
 			g_get_current_time (&end);
 			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-			printf("e_book_backend_ldap_reconnect took %ld.%03ld seconds\n",
+			printf ("e_book_backend_ldap_reconnect took %ld.%03ld seconds\n",
 				diff / 1000,diff % 1000);
 		}
 
@@ -1652,7 +1652,7 @@ e_book_backend_ldap_create_contacts (EBookBackend *backend,
 	if (vcards->next != NULL) {
 		e_data_book_respond_create_contacts (book, opid,
 						     EDB_ERROR_EX (NOT_SUPPORTED,
-		                                     _("The backend does not support bulk additions")),
+						     _("The backend does not support bulk additions")),
 						     NULL);
 		return;
 	}
@@ -2019,7 +2019,7 @@ modify_contact_search_handler (LDAPOp *op,
 		if (!e) {
 			e_data_book_respond_modify_contacts (op->book,
 							     op->opid,
-						             e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "%s: NULL returned from ldap_first_entry", G_STRFUNC),
+							     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "%s: NULL returned from ldap_first_entry", G_STRFUNC),
 							     NULL);
 			ldap_op_finished (op);
 			return;
@@ -2309,7 +2309,7 @@ e_book_backend_ldap_modify_contacts (EBookBackend *backend,
 	if (vcards->next != NULL) {
 		e_data_book_respond_modify_contacts (book, opid,
 						     EDB_ERROR_EX (NOT_SUPPORTED,
-		                                     _("The backend does not support bulk modifications")),
+						     _("The backend does not support bulk modifications")),
 						     NULL);
 		return;
 	}
@@ -2509,7 +2509,7 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 	}
 
 	if (enable_debug) {
-		printf("e_book_backend_ldap_get_contact ... \n");
+		printf ("e_book_backend_ldap_get_contact ... \n");
 		g_get_current_time (&start);
 	}
 
@@ -2518,7 +2518,7 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
 		e_data_book_respond_get_contact (book, opid, EDB_ERROR_NOT_CONNECTED (), NULL);
 		if (enable_debug)
-			printf("e_book_backend_ldap_get_contact ... ldap handler is NULL\n");
+			printf ("e_book_backend_ldap_get_contact ... ldap handler is NULL\n");
 		return;
 	}
 	g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
@@ -2543,11 +2543,11 @@ e_book_backend_ldap_get_contact (EBookBackend *backend,
 			     get_contact_handler, get_contact_dtor);
 
 		if (enable_debug) {
-			printf("e_book_backend_ldap_get_contact invoked get_contact_handler\n");
+			printf ("e_book_backend_ldap_get_contact invoked get_contact_handler\n");
 			g_get_current_time (&end);
 			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-			printf("and took %ld.%03ld seconds\n",
+			printf ("and took %ld.%03ld seconds\n",
 						diff / 1000, diff % 1000);
 		}
 	} else {
@@ -2662,7 +2662,7 @@ contact_list_handler (LDAPOp *op,
 			g_get_current_time (&end);
 			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-			printf("and took %ld.%03ld seconds\n", diff/1000, diff%1000);
+			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
 		}
 	}
 	else {
@@ -2777,7 +2777,7 @@ e_book_backend_ldap_get_contact_list (EBookBackend *backend,
 			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
 
 			printf ("e_book_backend_ldap_get_contact_list invoked contact_list_handler ");
-			printf ("and took %ld.%03ld seconds\n", diff/1000, diff%1000);
+			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
 		}
 	} else {
 		e_data_book_respond_get_contact_list (book,
@@ -2876,7 +2876,7 @@ contact_list_uids_handler (LDAPOp *op,
 			g_get_current_time (&end);
 			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-			printf("and took %ld.%03ld seconds\n", diff/1000, diff%1000);
+			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
 		}
 	}
 	else {
@@ -2989,7 +2989,7 @@ e_book_backend_ldap_get_contact_list_uids (EBookBackend *backend,
 			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
 
 			printf ("e_book_backend_ldap_get_contact_list_uids invoked contact_list_uids_handler ");
-			printf ("and took %ld.%03ld seconds\n", diff/1000, diff%1000);
+			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
 		}
 	} else {
 		e_data_book_respond_get_contact_list_uids (book, opid, ldap_error_to_response (ldap_error), NULL);
@@ -3089,7 +3089,7 @@ member_populate (EContact *contact,
 	for (i = 0; values[i]; i++) {
 		EVCardAttribute *attr;
 
-		member_info = g_strsplit (values [i], ";", -1);
+		member_info = g_strsplit (values[i], ";", -1);
 
 		attr = e_vcard_attribute_new (NULL, EVC_EMAIL);
 		e_vcard_attribute_add_param_with_value (attr, e_vcard_attribute_param_new (EVC_X_DEST_CONTACT_UID), member_info[1]);
@@ -3098,10 +3098,10 @@ member_populate (EContact *contact,
 			gint len = strlen (member_info[2]);
 			gchar *value;
 
-			if (member_info [2][0] == '\"' && member_info [2][len - 1] == '\"')
-				value = g_strdup_printf ("%s <%s>", member_info [2], member_info [0]);
+			if (member_info[2][0] == '\"' && member_info[2][len - 1] == '\"')
+				value = g_strdup_printf ("%s <%s>", member_info[2], member_info[0]);
 			else
-				value = g_strdup_printf ("\"%s\" <%s>", member_info [2], member_info [0]);
+				value = g_strdup_printf ("\"%s\" <%s>", member_info[2], member_info[0]);
 
 			e_vcard_attribute_add_value (attr, value);
 			g_free (value);
@@ -3970,7 +3970,7 @@ func_and (struct _ESExp *f,
 
 		strings = g_new0 (gchar *, argc + 3);
 		strings[0] = g_strdup ("(&");
-		strings[argc+3 - 2] = g_strdup (")");
+		strings[argc + 3 - 2] = g_strdup (")");
 
 		empty = 0;
 		for (i = 0; i < argc; i++) {
@@ -4016,7 +4016,7 @@ func_or (struct _ESExp *f,
 
 		strings = g_new0 (gchar *, argc + 3);
 		strings[0] = g_strdup ("(|");
-		strings[argc+3 - 2] = g_strdup (")");
+		strings[argc + 3 - 2] = g_strdup (")");
 
 		empty = 0;
 		for (i = 0; i < argc; i++) {
@@ -4059,7 +4059,7 @@ func_not (struct _ESExp *f,
 	/* just replace the head of the list with the NOT of it. */
 	if (argc > 0) {
 		gchar *term = ldap_data->list->data;
-		ldap_data->list->data = g_strdup_printf("(!%s)", term);
+		ldap_data->list->data = g_strdup_printf ("(!%s)", term);
 		g_free (term);
 	}
 
@@ -4107,7 +4107,7 @@ func_contains (struct _ESExp *f,
 			query_length = 3; /* strlen ("(|") + strlen (")") */
 
 			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
-				query_length += 1 /* strlen ("(") */ + strlen(prop_info[i].ldap_attr) + strlen (match_str);
+				query_length += 1 /* strlen ("(") */ + strlen (prop_info[i].ldap_attr) + strlen (match_str);
 			}
 
 			big_query = g_malloc0 (query_length + 1);
@@ -4128,7 +4128,7 @@ func_contains (struct _ESExp *f,
 
 			if (ldap_attr)
 				ldap_data->list = g_list_prepend (ldap_data->list,
-								 g_strdup_printf("(%s=*%s%s)",
+								 g_strdup_printf ("(%s=*%s%s)",
 										 ldap_attr,
 										 str,
 										 one_star ? "" : "*"));
@@ -4161,13 +4161,13 @@ func_is (struct _ESExp *f,
 
 		if (ldap_attr)
 			ldap_data->list = g_list_prepend (ldap_data->list,
-							 g_strdup_printf("(%s=%s)",
+							 g_strdup_printf ("(%s=%s)",
 									 ldap_attr, str));
 		else {
 			g_warning ("unknown query property\n");
 			/* we want something that'll always be false */
 			ldap_data->list = g_list_prepend (ldap_data->list,
-							 g_strdup("objectClass=MyBarnIsBiggerThanYourBarn"));
+							 g_strdup ("objectClass=MyBarnIsBiggerThanYourBarn"));
 		}
 
 		g_free (str);
@@ -4218,15 +4218,15 @@ func_beginswith (struct _ESExp *f,
 			else if (!strcmp (ldap_attr, "fileAs")) {
 				if (ldap_data->bl->priv->evolutionPersonSupported)
 					ldap_data->list = g_list_prepend (ldap_data->list,
-								 g_strdup_printf("(|(fileAs=%s*)(&(!(fileAs=*))(sn=%s*)))",
+								 g_strdup_printf ("(|(fileAs=%s*)(&(!(fileAs=*))(sn=%s*)))",
 										 str, str));
 				else
 					ldap_data->list = g_list_prepend (ldap_data->list,
-									 g_strdup_printf("(sn=%s*)", str));
+									 g_strdup_printf ("(sn=%s*)", str));
 			}
 			else {
 				ldap_data->list = g_list_prepend (ldap_data->list,
-								 g_strdup_printf("(%s=%s*)",
+								 g_strdup_printf ("(%s=%s*)",
 										 ldap_attr,
 										 str));
 			}
@@ -4259,7 +4259,7 @@ func_endswith (struct _ESExp *f,
 
 		if (ldap_attr)
 			ldap_data->list = g_list_prepend (ldap_data->list,
-							 g_strdup_printf("(%s=*%s)",
+							 g_strdup_printf ("(%s=*%s)",
 									 ldap_attr,
 									 str));
 		g_free (str);
@@ -4290,12 +4290,12 @@ func_exists (struct _ESExp *f,
 			gchar *big_query;
 			gchar *match_str;
 
-			match_str = g_strdup("=*)");
+			match_str = g_strdup ("=*)");
 
 			query_length = 3; /* strlen ("(|") + strlen (")") */
 
 			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
-				query_length += 1 /* strlen ("(") */ + strlen(prop_info[i].ldap_attr) + strlen (match_str);
+				query_length += 1 /* strlen ("(") */ + strlen (prop_info[i].ldap_attr) + strlen (match_str);
 			}
 
 			big_query = g_malloc0 (query_length + 1);
@@ -4316,7 +4316,7 @@ func_exists (struct _ESExp *f,
 
 			if (ldap_attr)
 				ldap_data->list = g_list_prepend (ldap_data->list,
-								 g_strdup_printf("(%s=*)", ldap_attr));
+								 g_strdup_printf ("(%s=*)", ldap_attr));
 		}
 	}
 
@@ -4560,7 +4560,7 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 								/* get the email id for the given dn */
 								/* set base to DN and scope to base */
 								if (enable_debug)
-									printf ("value (dn) = %s \n", values [j]);
+									printf ("value (dn) = %s \n", values[j]);
 								do {
 									g_static_rec_mutex_lock (&eds_ldap_handler_lock);
 									if ((ldap_error = ldap_search_ext_s (bl->priv->ldap,
@@ -4684,7 +4684,7 @@ poll_ldap (EBookBackendLDAP *bl)
 			g_static_rec_mutex_lock (&bl->priv->op_hash_mutex);
 			op = g_hash_table_lookup (bl->priv->id_to_op, &msgid);
 
-			d(printf ("looked up msgid %d, got op %p\n", msgid, op));
+			d (printf ("looked up msgid %d, got op %p\n", msgid, op));
 
 			if (op && op->handler)
 				op->handler (op, res);
@@ -4714,7 +4714,7 @@ ldap_search_handler (LDAPOp *op,
 	GTimeVal start, end;
 	gulong diff;
 
-	d(printf ("ldap_search_handler (%p)\n", view));
+	d (printf ("ldap_search_handler (%p)\n", view));
 	if (enable_debug)
 		g_get_current_time (&start);
 
@@ -4794,7 +4794,7 @@ ldap_search_handler (LDAPOp *op,
 			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
 			printf ("ldap_search_handler... completed with error code %d  ", ldap_error);
-			printf ("and took %ld.%03ld seconds\n", diff/1000, diff%1000);
+			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
 		}
 	}
 	else {
@@ -4811,7 +4811,7 @@ ldap_search_dtor (LDAPOp *op)
 {
 	LDAPSearchOp *search_op = (LDAPSearchOp *) op;
 
-	d(printf ("ldap_search_dtor (%p)\n", search_op->view));
+	d (printf ("ldap_search_dtor (%p)\n", search_op->view));
 
 	/* unhook us from our EDataBookView */
 	g_object_set_data (G_OBJECT (search_op->view), "EBookBackendLDAP.BookView::search_op", NULL);
@@ -4909,7 +4909,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 		} else {
 			LDAPSearchOp *op = g_new0 (LDAPSearchOp, 1);
 
-			d(printf ("adding search_op (%p, %d)\n", view, search_msgid));
+			d (printf ("adding search_op (%p, %d)\n", view, search_msgid));
 
 			op->view = view;
 			op->aborted = FALSE;
@@ -4924,7 +4924,7 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 				g_get_current_time (&end);
 				diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 				diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-				printf("and took  %ld.%03ld seconds\n", diff/1000,diff%1000);
+				printf ("and took  %ld.%03ld seconds\n", diff / 1000,diff % 1000);
 			}
 
 			g_object_set_data (G_OBJECT (view), "EBookBackendLDAP.BookView::search_op", op);
@@ -4944,7 +4944,7 @@ e_book_backend_ldap_start_book_view (EBookBackend *backend,
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 
-	d(printf ("start_book_view (%p)\n", view));
+	d (printf ("start_book_view (%p)\n", view));
 
 	e_book_backend_ldap_search (bl, NULL /* XXX ugh */, view);
 }
@@ -4955,7 +4955,7 @@ e_book_backend_ldap_stop_book_view (EBookBackend *backend,
 {
 	LDAPSearchOp *op;
 
-	d(printf ("stop_book_view (%p)\n", view));
+	d (printf ("stop_book_view (%p)\n", view));
 
 	op = g_object_get_data (G_OBJECT (view), "EBookBackendLDAP.BookView::search_op");
 	if (op) {
@@ -5109,7 +5109,7 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 			g_get_current_time (&end);
 			diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 			diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-			printf("and took %ld.%03ld seconds\n", diff/1000, diff%1000);
+			printf ("and took %ld.%03ld seconds\n", diff / 1000, diff % 1000);
 		}
 	} else {
 		generate_cache_dtor ((LDAPOp *) contact_list_op);

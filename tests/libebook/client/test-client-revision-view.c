@@ -67,9 +67,9 @@ setup_book (EBookClient **book_out)
 static void
 print_contact (EContact *contact)
 {
-	g_print ("Contact: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_FULL_NAME));
-	g_print ("UID: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_UID));
-	g_print ("REV: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_REV));
+	g_print ("Contact: %s\n", (gchar *) e_contact_get_const (contact, E_CONTACT_FULL_NAME));
+	g_print ("UID: %s\n", (gchar *) e_contact_get_const (contact, E_CONTACT_UID));
+	g_print ("REV: %s\n", (gchar *) e_contact_get_const (contact, E_CONTACT_REV));
 	g_print ("\n");
 }
 

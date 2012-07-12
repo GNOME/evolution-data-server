@@ -194,26 +194,26 @@ cmd_capa (CamelPOP3Engine *pe,
 	gint i;
 	CamelServiceAuthType *auth;
 
-	dd(printf("cmd_capa\n"));
+	dd (printf ("cmd_capa\n"));
 
 	g_return_if_fail (pe != NULL);
 
 	do {
 		ret = camel_pop3_stream_line (stream, &line, &len, cancellable, NULL);
 		if (ret >= 0) {
-			if (strncmp((gchar *) line, "SASL ", 5) == 0) {
+			if (strncmp ((gchar *) line, "SASL ", 5) == 0) {
 				tok = line + 5;
-				dd(printf("scanning tokens '%s'\n", tok));
+				dd (printf ("scanning tokens '%s'\n", tok));
 				while (tok) {
 					next = (guchar *) strchr ((gchar *) tok, ' ');
 					if (next)
 						*next++ = 0;
 					auth = camel_sasl_authtype ((const gchar *) tok);
 					if (auth) {
-						dd(printf("got auth type '%s'\n", tok));
+						dd (printf ("got auth type '%s'\n", tok));
 						pe->auth = g_list_prepend (pe->auth, auth);
 					} else {
-						dd(printf("unsupported auth type '%s'\n", tok));
+						dd (printf ("unsupported auth type '%s'\n", tok));
 					}
 					tok = next;
 				}
@@ -236,7 +236,7 @@ get_capabilities (CamelPOP3Engine *pe,
 	g_return_if_fail (pe != NULL);
 
 	if (!(pe->flags & CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS)) {
-		pc = camel_pop3_engine_command_new(pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, cancellable, NULL, "CAPA\r\n");
+		pc = camel_pop3_engine_command_new (pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, cancellable, NULL, "CAPA\r\n");
 		while (camel_pop3_engine_iterate (pe, pc, cancellable, NULL) > 0)
 			;
 		camel_pop3_engine_command_free (pe, pc);
@@ -318,7 +318,7 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 	p = pe->line;
 	switch (p[0]) {
 	case '+':
-		dd(printf("Got + response\n"));
+		dd (printf ("Got + response\n"));
 		if (pc->flags & CAMEL_POP3_COMMAND_MULTI) {
 			pc->state = CAMEL_POP3_COMMAND_DATA;
 			camel_pop3_stream_set_mode (pe->stream, CAMEL_POP3_STREAM_DATA);
@@ -339,7 +339,7 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 		break;
 	default:
 		/* what do we do now?  f'knows! */
-		g_warning("Bad server response: %s\n", p);
+		g_warning ("Bad server response: %s\n", p);
 		pc->state = CAMEL_POP3_COMMAND_ERR;
 		break;
 	}

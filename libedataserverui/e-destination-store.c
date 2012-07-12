@@ -278,16 +278,18 @@ static void
 start_destination (EDestinationStore *destination_store,
                    EDestination *destination)
 {
-	g_signal_connect_swapped (destination, "changed",
-				  G_CALLBACK (destination_changed), destination_store);
+	g_signal_connect_swapped (
+		destination, "changed",
+		G_CALLBACK (destination_changed), destination_store);
 }
 
 static void
 stop_destination (EDestinationStore *destination_store,
                   EDestination *destination)
 {
-	g_signal_handlers_disconnect_matched (destination, G_SIGNAL_MATCH_DATA,
-					      0, 0, NULL, NULL, destination_store);
+	g_signal_handlers_disconnect_matched (
+		destination, G_SIGNAL_MATCH_DATA,
+		0, 0, NULL, NULL, destination_store);
 }
 
 /* --------------- *
@@ -402,9 +404,10 @@ e_destination_store_insert_destination (EDestinationStore *destination_store,
 	g_ptr_array_set_size (array, array->len + 1);
 
 	if (array->len - 1 - index > 0) {
-		memmove (array->pdata + index + 1,
-			 array->pdata + index,
-			 (array->len - 1 - index) * sizeof (gpointer));
+		memmove (
+			array->pdata + index + 1,
+			array->pdata + index,
+			(array->len - 1 - index) * sizeof (gpointer));
 	}
 
 	array->pdata[index] = destination;
@@ -711,7 +714,7 @@ e_destination_store_get_value (GtkTreeModel *tree_model,
 				if (e_contact_get (contact, E_CONTACT_IS_LIST)) {
 					string = e_destination_get_name (destination);
 					string_new = g_string_new (string);
-					string_new = g_string_append(string_new, " mailing list");
+					string_new = g_string_append (string_new, " mailing list");
 					g_value_set_string (value, string_new->str);
 					g_string_free (string_new, TRUE);
 				}

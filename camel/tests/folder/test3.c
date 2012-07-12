@@ -71,12 +71,12 @@ static struct {
 	{ { 100, 50, 0 }, "(body-contains \"Content\")" },
 
 	{ { 0, 0, 0 }, "(user-flag \"every7\")" },
-	{ { 100/13+1, 50/13+1, 0 }, "(user-flag \"every13\")" },
+	{ { 100 / 13 + 1, 50 / 13 + 1, 0 }, "(user-flag \"every13\")" },
 	{ { 1, 1, 0 }, "(= \"7tag1\" (user-tag \"every7\"))" },
-	{ { 100/11+1, 50/11+1, 0 }, "(= \"11tag\" (user-tag \"every11\"))" },
+	{ { 100 / 11 + 1, 50 / 11 + 1, 0 }, "(= \"11tag\" (user-tag \"every11\"))" },
 
-	{ { 100/13 + 100/17 + 1, 50/13 + 50/17 + 2, 0 }, "(user-flag \"every13\" \"every17\")" },
-	{ { 100/13 + 100/17 + 1, 50/13 + 50/17 + 2, 0 }, "(or (user-flag \"every13\") (user-flag \"every17\"))" },
+	{ { 100 / 13 + 100 / 17 + 1, 50 / 13 + 50 / 17 + 2, 0 }, "(user-flag \"every13\" \"every17\")" },
+	{ { 100 / 13 + 100 / 17 + 1, 50 / 13 + 50 / 17 + 2, 0 }, "(or (user-flag \"every13\") (user-flag \"every17\"))" },
 	{ { 1, 0, 0 }, "(and (user-flag \"every13\") (user-flag \"every17\"))" },
 
 	{ { 0, 0, 0 }, "(and (header-contains \"subject\" \"Test1\") (header-contains \"subject\" \"Test2\"))" },
@@ -93,20 +93,20 @@ static struct {
 	{ { 11, 6, 0 }, "(or (header-contains \"subject\" \"Test1\") (header-contains \"subject\" \"message99\"))" },
 
 	/* 72000 is 24*60*100 == half the 'sent date' of the messages */
-	{ { 100/2, 50/2, 0 }, "(> 72000 (get-sent-date))" },
-	{ { 100/2-1, 50/2, 0 }, "(< 72000 (get-sent-date))" },
+	{ { 100 / 2, 50 / 2, 0 }, "(> 72000 (get-sent-date))" },
+	{ { 100 / 2 - 1, 50 / 2, 0 }, "(< 72000 (get-sent-date))" },
 	{ { 1, 0, 0 }, "(= 72000 (get-sent-date))" },
 	{ { 0, 0, 0 }, "(= 72001 (get-sent-date))" },
 
-	{ { (100/2-1)/17+1, (50/2-1)/17+1, 0 }, "(and (user-flag \"every17\") (< 72000 (get-sent-date)))" },
-	{ { (100/2-1)/17+1, (50/2-1)/17, 0 }, "(and (user-flag \"every17\") (> 72000 (get-sent-date)))" },
-	{ { (100/2-1)/13+1, (50/2-1)/13+1, 0 }, "(and (user-flag \"every13\") (< 72000 (get-sent-date)))" },
-	{ { (100/2-1)/13+1, (50/2-1)/13+1, 0 }, "(and (user-flag \"every13\") (> 72000 (get-sent-date)))" },
+	{ { (100 / 2 - 1) / 17 + 1, (50 / 2 - 1) / 17 + 1, 0 }, "(and (user-flag \"every17\") (< 72000 (get-sent-date)))" },
+	{ { (100 / 2 - 1) / 17 + 1, (50 / 2 - 1) / 17, 0 }, "(and (user-flag \"every17\") (> 72000 (get-sent-date)))" },
+	{ { (100 / 2 - 1) / 13 + 1, (50 / 2 - 1) / 13 + 1, 0 }, "(and (user-flag \"every13\") (< 72000 (get-sent-date)))" },
+	{ { (100 / 2 - 1) / 13 + 1, (50 / 2 - 1) / 13 + 1, 0 }, "(and (user-flag \"every13\") (> 72000 (get-sent-date)))" },
 
-	{ { 100/2+100/2/17, 50/2+50/2/17, 0 }, "(or (user-flag \"every17\") (< 72000 (get-sent-date)))" },
-	{ { 100/2+100/2/17+1, 50/2+50/2/17+1, 0 }, "(or (user-flag \"every17\") (> 72000 (get-sent-date)))" },
-	{ { 100/2+100/2/13, 50/2+50/2/13+1, 0 }, "(or (user-flag \"every13\") (< 72000 (get-sent-date)))" },
-	{ { 100/2+100/2/13+1, 50/2+50/2/13+1, 0 }, "(or (user-flag \"every13\") (> 72000 (get-sent-date)))" },
+	{ { 100 / 2 + 100 / 2 / 17, 50 / 2 + 50 / 2 / 17, 0 }, "(or (user-flag \"every17\") (< 72000 (get-sent-date)))" },
+	{ { 100 / 2 + 100 / 2 / 17 + 1, 50 / 2 + 50 / 2 / 17 + 1, 0 }, "(or (user-flag \"every17\") (> 72000 (get-sent-date)))" },
+	{ { 100 / 2 + 100 / 2 / 13, 50 / 2 + 50 / 2 / 13 + 1, 0 }, "(or (user-flag \"every13\") (< 72000 (get-sent-date)))" },
+	{ { 100 / 2 + 100 / 2 / 13 + 1, 50 / 2 + 50 / 2 / 13 + 1, 0 }, "(or (user-flag \"every13\") (> 72000 (get-sent-date)))" },
 };
 
 static void
@@ -211,10 +211,10 @@ main (gint argc,
 				push ("creating test message");
 				msg = test_message_create_simple ();
 				content = g_strdup_printf ("data%d content\n", j);
-				test_message_set_content_simple ((CamelMimePart *)msg, 0, "text/plain",
+				test_message_set_content_simple ((CamelMimePart *) msg, 0, "text/plain",
 								content, strlen (content));
 				test_free (content);
-				subject = g_strdup_printf ("Test%d message%d subject", j, 100-j);
+				subject = g_strdup_printf ("Test%d message%d subject", j, 100 - j);
 				camel_mime_message_set_subject (msg, subject);
 
 				camel_mime_message_set_date (msg, j * 60 * 24, 0);
@@ -246,7 +246,7 @@ main (gint argc,
 					camel_folder_set_message_user_flag (folder, uid, "every17", TRUE);
 				}
 				if ((j / 7) * 7 == j) {
-					gchar *tag = g_strdup_printf ("7tag%d", j/7);
+					gchar *tag = g_strdup_printf ("7tag%d", j / 7);
 					camel_folder_set_message_user_tag (folder, uid, "every7", tag);
 					test_free (tag);
 				}

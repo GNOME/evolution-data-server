@@ -248,7 +248,7 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s,
 	gint len;
 	gchar *full_name;
 
-	d(printf("adding full name '%s' '%c'\n", full, dir_sep));
+	d (printf ("adding full name '%s' '%c'\n", full, dir_sep));
 
 	len = strlen (full);
 	full_name = g_alloca (len + 1);
@@ -259,7 +259,7 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s,
 	info = camel_nntp_store_summary_full_name (s, full_name);
 	if (info) {
 		camel_store_summary_info_free ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
-		d(printf("  already there\n"));
+		d (printf ("  already there\n"));
 		return info;
 	}
 
@@ -267,10 +267,10 @@ camel_nntp_store_summary_add_from_full (CamelNNTPStoreSummary *s,
 
 	info = (CamelNNTPStoreInfo *) camel_store_summary_add_from_path ((CamelStoreSummary *) s, pathu8);
 	if (info) {
-		d(printf("  '%s' -> '%s'\n", pathu8, full_name));
+		d (printf ("  '%s' -> '%s'\n", pathu8, full_name));
 		camel_store_info_set_string ((CamelStoreSummary *) s, (CamelStoreInfo *) info, CAMEL_NNTP_STORE_INFO_FULL_NAME, full_name);
 	} else {
-		d(printf("  failed\n"));
+		d (printf ("  failed\n"));
 	}
 
 	return info;
@@ -290,7 +290,7 @@ summary_header_load (CamelStoreSummary *s,
 	is->version = version;
 
 	if (version < CAMEL_NNTP_STORE_SUMMARY_VERSION_0) {
-		g_warning("Store summary header version too low");
+		g_warning ("Store summary header version too low");
 		return -1;
 	}
 
@@ -398,7 +398,7 @@ store_info_set_string (CamelStoreSummary *s,
 
 	switch (type) {
 	case CAMEL_NNTP_STORE_INFO_FULL_NAME:
-		d(printf("Set full name %s -> %s\n", nsi->full_name, str));
+		d (printf ("Set full name %s -> %s\n", nsi->full_name, str));
 		camel_store_summary_lock (s, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 		g_free (nsi->full_name);
 		nsi->full_name = g_strdup (str);

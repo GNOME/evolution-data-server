@@ -129,7 +129,7 @@ struct _CamelVeeMessageInfoDataClass {
 GType		camel_vee_message_info_data_get_type
 						(void) G_GNUC_CONST;
 CamelVeeMessageInfoData *
-		camel_vee_message_info_data_new	
+		camel_vee_message_info_data_new
 						(CamelVeeSubfolderData *subfolder_data,
 						 const gchar *orig_message_uid);
 CamelVeeSubfolderData *

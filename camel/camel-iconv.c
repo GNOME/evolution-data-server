@@ -298,7 +298,7 @@ camel_iconv_charset_name (const gchar *charset)
 	}
 
 	/* Unknown, try canonicalise some basic charset types to something that should work */
-	if (strncmp(name, "iso", 3) == 0) {
+	if (strncmp (name, "iso", 3) == 0) {
 		/* Convert iso-nnnn-n or isonnnn-n or iso_nnnn-n to iso-nnnn-n or isonnnn-n */
 		gint iso, codepage;
 		gchar *p;
@@ -332,18 +332,18 @@ camel_iconv_charset_name (const gchar *charset)
 				ret = g_strdup_printf (ICONV_ISO_S_FORMAT, iso, p);
 			}
 		}
-	} else if (strncmp(name, "windows-", 8) == 0) {
+	} else if (strncmp (name, "windows-", 8) == 0) {
 		/* Convert windows-nnnnn or windows-cpnnnnn to cpnnnn */
 		tmp = name + 8;
-		if (!strncmp(tmp, "cp", 2))
+		if (!strncmp (tmp, "cp", 2))
 			tmp+=2;
-		ret = g_strdup_printf("CP%s", tmp);
-	} else if (strncmp(name, "microsoft-", 10) == 0) {
+		ret = g_strdup_printf ("CP%s", tmp);
+	} else if (strncmp (name, "microsoft-", 10) == 0) {
 		/* Convert microsoft-nnnnn or microsoft-cpnnnnn to cpnnnn */
 		tmp = name + 10;
-		if (!strncmp(tmp, "cp", 2))
+		if (!strncmp (tmp, "cp", 2))
 			tmp+=2;
-		ret = g_strdup_printf("CP%s", tmp);
+		ret = g_strdup_printf ("CP%s", tmp);
 	} else {
 		/* Just assume its ok enough as is, case and all */
 		ret = g_strdup (charset);
@@ -392,7 +392,7 @@ camel_iconv_open (const gchar *oto,
 	to = camel_iconv_charset_name (oto);
 	from = camel_iconv_charset_name (ofrom);
 	tofrom = g_alloca (strlen (to) + strlen (from) + 2);
-	sprintf(tofrom, "%s%%%s", to, from);
+	sprintf (tofrom, "%s%%%s", to, from);
 
 	G_LOCK (iconv);
 
@@ -411,7 +411,7 @@ camel_iconv_open (const gchar *oto,
 			in = g_queue_peek_head (&ic->open);
 
 			if (in != NULL && !in->busy) {
-				cd(printf("Flushing iconv converter '%s'\n", ic->conv));
+				cd (printf ("Flushing iconv converter '%s'\n", ic->conv));
 				g_queue_delete_link (&iconv_cache_list, link);
 				g_hash_table_remove (iconv_cache, ic->conv);
 				flush_entry (ic);
@@ -425,7 +425,7 @@ camel_iconv_open (const gchar *oto,
 		ic->conv = g_strdup (tofrom);
 		g_hash_table_insert (iconv_cache, ic->conv, ic);
 
-		cd(printf("Creating iconv converter '%s'\n", ic->conv));
+		cd (printf ("Creating iconv converter '%s'\n", ic->conv));
 	}
 
 	g_queue_push_head (&iconv_cache_list, ic);
@@ -433,7 +433,7 @@ camel_iconv_open (const gchar *oto,
 	/* If we have a free iconv, use it */
 	in = g_queue_peek_tail (&ic->open);
 	if (in != NULL && !in->busy) {
-		cd(printf("using existing iconv converter '%s'\n", ic->conv));
+		cd (printf ("using existing iconv converter '%s'\n", ic->conv));
 		ip = in->ip;
 		if (ip != (iconv_t) - 1) {
 			/* work around some broken iconv implementations
@@ -449,7 +449,7 @@ camel_iconv_open (const gchar *oto,
 			g_queue_push_head (&ic->open, in);
 		}
 	} else {
-		cd(printf("creating new iconv converter '%s'\n", ic->conv));
+		cd (printf ("creating new iconv converter '%s'\n", ic->conv));
 		ip = iconv_open (to, from);
 		in = g_malloc (sizeof (*in));
 		in->ip = ip;
@@ -460,7 +460,7 @@ camel_iconv_open (const gchar *oto,
 			in->busy = TRUE;
 		} else {
 			errnosav = errno;
-			g_warning("Could not open converter for '%s' to '%s' charset", from, to);
+			g_warning ("Could not open converter for '%s' to '%s' charset", from, to);
 			in->busy = FALSE;
 			errno = errnosav;
 		}
@@ -492,12 +492,12 @@ camel_iconv_close (iconv_t ip)
 	G_LOCK (iconv);
 	in = g_hash_table_lookup (iconv_cache_open, ip);
 	if (in) {
-		cd(printf("closing iconv converter '%s'\n", in->parent->conv));
+		cd (printf ("closing iconv converter '%s'\n", in->parent->conv));
 		g_queue_remove (&in->parent->open, in);
 		in->busy = FALSE;
 		g_queue_push_tail (&in->parent->open, in);
 	} else {
-		g_warning("trying to close iconv i dont know about: %p", ip);
+		g_warning ("trying to close iconv i dont know about: %p", ip);
 		iconv_close (ip);
 	}
 	G_UNLOCK (iconv);

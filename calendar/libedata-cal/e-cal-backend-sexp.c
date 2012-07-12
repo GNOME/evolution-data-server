@@ -362,7 +362,7 @@ resolve_tzid (const gchar *tzid,
 
 	if (!tzid || !tzid[0])
 		return NULL;
-        else if (!strcmp (tzid, "UTC"))
+	else if (!strcmp (tzid, "UTC"))
 		return icaltimezone_get_utc_timezone ();
 
 	return e_cal_backend_internal_get_timezone (ctx->backend, tzid);
@@ -1356,7 +1356,7 @@ entry_compare (SearchContext *ctx,
 
 		propname = argv[0]->value.string;
 
-		any_field = !strcmp(propname, "x-evolution-any-field");
+		any_field = !strcmp (propname, "x-evolution-any-field");
 		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i++) {
 			if (any_field
 			    || !strcmp (prop_info_table[i].query_prop, propname)) {
@@ -1372,7 +1372,7 @@ entry_compare (SearchContext *ctx,
 					if (prop && compare (prop, argv[1]->value.string)) {
 						truth = TRUE;
 					}
-					if ((!prop) && compare("", argv[1]->value.string)) {
+					if ((!prop) && compare ("", argv[1]->value.string)) {
 						truth = TRUE;
 					}
 					g_free (prop);
@@ -1389,7 +1389,7 @@ entry_compare (SearchContext *ctx,
 					if (prop && compare (prop, argv[1]->value.string)) {
 						truth = TRUE;
 					}
-					if ((!prop) && compare("", argv[1]->value.string)) {
+					if ((!prop) && compare ("", argv[1]->value.string)) {
 						truth = TRUE;
 					}
 				}

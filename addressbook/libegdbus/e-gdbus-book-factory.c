@@ -107,7 +107,12 @@ e_gdbus_book_factory_complete_get_book (EGdbusBookFactory *object,
 	e_gdbus_complete_sync_method_string (object, invocation, out_path, error);
 }
 
-E_DECLARE_GDBUS_SYNC_METHOD_1_WITH_RETURN (book_factory, get_book, source, "s", path, "s")
+E_DECLARE_GDBUS_SYNC_METHOD_1_WITH_RETURN (book_factory,
+                                           get_book,
+                                           source,
+                                           "s",
+                                           path,
+                                           "s")
 
 static const GDBusMethodInfo * const e_gdbus_book_factory_method_info_pointers[] =
 {

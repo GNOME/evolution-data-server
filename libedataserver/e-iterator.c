@@ -26,14 +26,14 @@ e_iterator_class_init (EIteratorClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 
-	e_iterator_signals[INVALIDATE] =
-		g_signal_new ("invalidate",
-			      G_OBJECT_CLASS_TYPE (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EIteratorClass, invalidate),
-			      NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
+	e_iterator_signals[INVALIDATE] = g_signal_new (
+		"invalidate",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EIteratorClass, invalidate),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
 }
 
 /**

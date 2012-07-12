@@ -34,7 +34,7 @@ test_address_compare (CamelInternetAddress *addr,
 		check (e1 != NULL && e2 != NULL);
 
 	if (e1 != NULL) {
-		check_msg(string_equal(e1, e2), "e1 = '%s' e2 = '%s'", e1, e2);
+		check_msg (string_equal (e1, e2), "e1 = '%s' e2 = '%s'", e1, e2);
 		test_free (e1);
 		test_free (e2);
 	}
@@ -48,7 +48,7 @@ test_address_compare (CamelInternetAddress *addr,
 		check (f1 != NULL && f2 != NULL);
 
 	if (f1 != NULL) {
-		check_msg(string_equal(f1, f2), "f1 = '%s' f2 = '%s'", f1, f2);
+		check_msg (string_equal (f1, f2), "f1 = '%s' f2 = '%s'", f1, f2);
 		test_free (f1);
 		test_free (f2);
 	}

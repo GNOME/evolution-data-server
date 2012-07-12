@@ -12,13 +12,13 @@ print_contact (EContact *contact)
 {
 	GList *emails, *e;
 
-	test_print ("Contact: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_FULL_NAME));
-	test_print ("UID: %s\n", (gchar *)e_contact_get_const (contact, E_CONTACT_UID));
+	test_print ("Contact: %s\n", (gchar *) e_contact_get_const (contact, E_CONTACT_FULL_NAME));
+	test_print ("UID: %s\n", (gchar *) e_contact_get_const (contact, E_CONTACT_UID));
 	test_print ("Email addresses:\n");
 
 	emails = e_contact_get (contact, E_CONTACT_EMAIL);
 	for (e = emails; e; e = e->next) {
-		test_print ("\t%s\n",  (gchar *)e->data);
+		test_print ("\t%s\n",  (gchar *) e->data);
 	}
 	g_list_foreach (emails, (GFunc) g_free, NULL);
 	g_list_free (emails);
@@ -44,7 +44,7 @@ contacts_removed (EBookView *book_view,
 	GList *l;
 
 	for (l = (GList *) ids; l; l = l->next) {
-		test_print ("Removed contact: %s\n", (gchar *)l->data);
+		test_print ("Removed contact: %s\n", (gchar *) l->data);
 	}
 }
 

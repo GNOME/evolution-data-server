@@ -44,17 +44,17 @@ dump_action (GThread *thread,
 {
 	struct _stack *node;
 
-	printf("\nThread %p:\n", thread);
+	printf ("\nThread %p:\n", thread);
 
 	node = s->state;
 	if (node) {
-		printf("Current action:\n");
+		printf ("Current action:\n");
 		while (node) {
-			printf("\t%s%s\n", node->fatal?"":"[nonfatal]", node->what);
+			printf ("\t%s%s\n", node->fatal?"":"[nonfatal]", node->what);
 			node = node->next;
 		}
 	}
-	printf("\tTest: %s\n", s->test);
+	printf ("\tTest: %s\n", s->test);
 }
 
 static void G_GNUC_NORETURN
@@ -64,11 +64,11 @@ die (gint sig)
 
 	if (!indie) {
 		indie = 1;
-		printf("\n\nReceived fatal signal %d\n", sig);
+		printf ("\n\nReceived fatal signal %d\n", sig);
 		g_hash_table_foreach (info_table, (GHFunc) dump_action, 0);
 
 		if (camel_test_verbose > 2) {
-			printf("Attach debugger to pid %d to debug\n", getpid());
+			printf ("Attach debugger to pid %d to debug\n", getpid ());
 			sleep (1000);
 		}
 	}
@@ -155,7 +155,7 @@ void camel_test_start (const gchar *what)
 	s->test = g_strdup (what);
 
 	if (camel_test_verbose > 0) {
-		printf("Test: %s ... ", what);
+		printf ("Test: %s ... ", what);
 		fflush (stdout);
 	}
 
@@ -178,7 +178,7 @@ void camel_test_push (const gchar *what, ...)
 	va_end (ap);
 
 	if (camel_test_verbose > 3)
-		printf("Start step: %s\n", text);
+		printf ("Start step: %s\n", text);
 
 	node = g_malloc (sizeof (*node));
 	node->what = text;
@@ -201,7 +201,7 @@ void camel_test_pull (void)
 	g_assert (s->state);
 
 	if (camel_test_verbose > 3)
-		printf("Finish step: %s\n", s->state->what);
+		printf ("Finish step: %s\n", s->state->what);
 
 	node = s->state;
 	s->state = node->next;
@@ -242,7 +242,7 @@ void camel_test_failv (const gchar *why, va_list ap)
 
 	if ((s->nonfatal == 0 && camel_test_verbose > 0)
 	    || (s->nonfatal && camel_test_verbose > 1)) {
-		printf("Failed.\n%s\n", text);
+		printf ("Failed.\n%s\n", text);
 		camel_test_break ();
 	}
 
@@ -258,7 +258,7 @@ void camel_test_failv (const gchar *why, va_list ap)
 	} else {
 		ok = 0;
 		if (camel_test_verbose > 1) {
-			printf("Known problem (ignored):\n");
+			printf ("Known problem (ignored):\n");
 			dump_action (CAMEL_TEST_ID, s, 0);
 		}
 	}
@@ -282,7 +282,7 @@ void camel_test_nonfatal (const gchar *what, ...)
 	va_end (ap);
 
 	if (camel_test_verbose > 3)
-		printf("Start nonfatal: %s\n", text);
+		printf ("Start nonfatal: %s\n", text);
 
 	node = g_malloc (sizeof (*node));
 	node->what = text;
@@ -303,9 +303,9 @@ void camel_test_end (void)
 {
 	if (camel_test_verbose > 0) {
 		if (ok)
-			printf("Ok\n");
+			printf ("Ok\n");
 		else
-			printf("Partial success\n");
+			printf ("Partial success\n");
 	}
 
 	fflush (stdout);

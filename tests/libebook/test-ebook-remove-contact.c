@@ -30,7 +30,7 @@ main (gint argc,
 	e_book_get_contact (book, uid, &contact_final, NULL);
 
 	g_assert (contact_final == NULL);
-        test_print ("successfully added and removed contact '%s'\n", uid);
+	test_print ("successfully added and removed contact '%s'\n", uid);
 
 	g_free (uid);
 

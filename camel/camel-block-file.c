@@ -82,15 +82,15 @@ block_file_validate_root (CamelBlockFile *bs)
 
 	retval = fstat (bs->fd, &st);
 
-	d(printf("Validate root: '%s'\n", bs->path));
-	d(printf("version: %.8s (%.8s)\n", bs->root->version, bs->version));
-	d(printf("block size: %d (%d)%s\n", br->block_size, bs->block_size,
+	d (printf ("Validate root: '%s'\n", bs->path));
+	d (printf ("version: %.8s (%.8s)\n", bs->root->version, bs->version));
+	d (printf ("block size: %d (%d)%s\n", br->block_size, bs->block_size,
 		br->block_size != bs->block_size ? " BAD":" OK"));
-	d(printf("free: %ld (%d add size < %ld)%s\n", (glong)br->free, br->free / bs->block_size * bs->block_size, (glong)st.st_size,
+	d (printf ("free: %ld (%d add size < %ld)%s\n", (glong) br->free, br->free / bs->block_size * bs->block_size, (glong) st.st_size,
 		(br->free > st.st_size) || (br->free % bs->block_size) != 0 ? " BAD":" OK"));
-	d(printf("last: %ld (%d and size: %ld)%s\n", (glong)br->last, br->last / bs->block_size * bs->block_size, (glong)st.st_size,
+	d (printf ("last: %ld (%d and size: %ld)%s\n", (glong) br->last, br->last / bs->block_size * bs->block_size, (glong) st.st_size,
 		(br->last != st.st_size) || ((br->last % bs->block_size) != 0) ? " BAD": " OK"));
-	d(printf("flags: %s\n", (br->flags & CAMEL_BLOCK_FILE_SYNC)?"SYNC":"unSYNC"));
+	d (printf ("flags: %s\n", (br->flags & CAMEL_BLOCK_FILE_SYNC)?"SYNC":"unSYNC"));
 
 	if (br->last == 0
 	    || memcmp (bs->root->version, bs->version, 8) != 0
@@ -103,15 +103,15 @@ block_file_validate_root (CamelBlockFile *bs)
 	    || (br->flags & CAMEL_BLOCK_FILE_SYNC) == 0) {
 #if 0
 		if (retval != -1 && st.st_size > 0) {
-			g_warning("Invalid root: '%s'", bs->path);
-			g_warning("version: %.8s (%.8s)", bs->root->version, bs->version);
-			g_warning("block size: %d (%d)%s", br->block_size, bs->block_size,
+			g_warning ("Invalid root: '%s'", bs->path);
+			g_warning ("version: %.8s (%.8s)", bs->root->version, bs->version);
+			g_warning ("block size: %d (%d)%s", br->block_size, bs->block_size,
 				  br->block_size != bs->block_size ? " BAD":" OK");
-			g_warning("free: %ld (%d add size < %ld)%s", (glong)br->free, br->free / bs->block_size * bs->block_size, (glong)st.st_size,
+			g_warning ("free: %ld (%d add size < %ld)%s", (glong) br->free, br->free / bs->block_size * bs->block_size, (glong) st.st_size,
 				  (br->free > st.st_size) || (br->free % bs->block_size) != 0 ? " BAD":" OK");
-			g_warning("last: %ld (%d and size: %ld)%s", (glong)br->last, br->last / bs->block_size * bs->block_size, (glong)st.st_size,
+			g_warning ("last: %ld (%d and size: %ld)%s", (glong) br->last, br->last / bs->block_size * bs->block_size, (glong) st.st_size,
 				  (br->last != st.st_size) || ((br->last % bs->block_size) != 0) ? " BAD": " OK");
-			g_warning("flags: %s", (br->flags & CAMEL_BLOCK_FILE_SYNC)?"SYNC":"unSYNC");
+			g_warning ("flags: %s", (br->flags & CAMEL_BLOCK_FILE_SYNC)?"SYNC":"unSYNC");
 		}
 #endif
 		return -1;
@@ -160,7 +160,7 @@ block_file_finalize (GObject *object)
 
 	while ((bl = g_queue_pop_head (&bs->block_cache)) != NULL) {
 		if (bl->refcount != 0)
-			g_warning("Block '%u' still referenced", bl->id);
+			g_warning ("Block '%u' still referenced", bl->id);
 		g_free (bl);
 	}
 
@@ -250,7 +250,7 @@ block_file_use (CamelBlockFile *bs)
 		errno = ENOENT;
 		return -1;
 	} else {
-		d(printf("Turning block file online: %s\n", bs->path));
+		d (printf ("Turning block file online: %s\n", bs->path));
 	}
 
 	if ((bs->fd = g_open (bs->path, bs->flags | O_BINARY, 0600)) == -1) {
@@ -283,7 +283,7 @@ block_file_use (CamelBlockFile *bs)
 			if (CAMEL_BLOCK_FILE_TRYLOCK (bf, root_lock)) {
 				if (CAMEL_BLOCK_FILE_TRYLOCK (bf, cache_lock)) {
 					if (CAMEL_BLOCK_FILE_TRYLOCK (bf, io_lock)) {
-						d(printf("[%d] Turning block file offline: %s\n", block_file_count-1, bf->path));
+						d (printf ("[%d] Turning block file offline: %s\n", block_file_count - 1, bf->path));
 						sync_nolock (bf);
 						close (bf->fd);
 						bf->fd = -1;
@@ -370,7 +370,7 @@ camel_block_file_new (const gchar *path,
 
 	/* Do we need to init the root block? */
 	if (class->validate_root (bs) == -1) {
-		d(printf("Initialise root block: %.8s\n", version));
+		d (printf ("Initialise root block: %.8s\n", version));
 
 		class->init_root (bs);
 		camel_block_file_touch_block (bs, bs->root_block);
@@ -553,7 +553,7 @@ camel_block_file_get_block (CamelBlockFile *bs,
 
 	bl = g_hash_table_lookup (bs->blocks, GUINT_TO_POINTER (id));
 
-	d(printf("Get  block %08x: %s\n", id, bl?"cached":"must read"));
+	d (printf ("Get  block %08x: %s\n", id, bl?"cached":"must read"));
 
 	if (bl == NULL) {
 		GQueue trash = G_QUEUE_INIT;
@@ -612,7 +612,7 @@ camel_block_file_get_block (CamelBlockFile *bs,
 
 	CAMEL_BLOCK_FILE_UNLOCK (bs, cache_lock);
 
-	d(printf("Got  block %08x\n", id));
+	d (printf ("Got  block %08x\n", id));
 
 	return bl;
 }
@@ -687,7 +687,7 @@ camel_block_file_touch_block (CamelBlockFile *bs,
 	bl->flags |= CAMEL_BLOCK_DIRTY;
 
 	if ((bs->root->flags & CAMEL_BLOCK_FILE_SYNC) && bl != bs->root_block) {
-		d(printf("turning off sync flag\n"));
+		d (printf ("turning off sync flag\n"));
 		bs->root->flags &= ~CAMEL_BLOCK_FILE_SYNC;
 		bs->root_block->flags |= CAMEL_BLOCK_DIRTY;
 		camel_block_file_sync_block (bs, bs->root_block);
@@ -729,7 +729,7 @@ static gint
 sync_block_nolock (CamelBlockFile *bs,
                    CamelBlock *bl)
 {
-	d(printf("Sync block %08x: %s\n", bl->id, (bl->flags & CAMEL_BLOCK_DIRTY)?"dirty":"clean"));
+	d (printf ("Sync block %08x: %s\n", bl->id, (bl->flags & CAMEL_BLOCK_DIRTY)?"dirty":"clean"));
 
 	if (bl->flags & CAMEL_BLOCK_DIRTY) {
 		if (lseek (bs->fd, bl->id, SEEK_SET) == -1
@@ -765,7 +765,7 @@ sync_nolock (CamelBlockFile *bs)
 	    && (bs->root->flags & CAMEL_BLOCK_FILE_SYNC) != 0)
 		return 0;
 
-	d(printf("turning on sync flag\n"));
+	d (printf ("turning on sync flag\n"));
 
 	bs->root->flags |= CAMEL_BLOCK_FILE_SYNC;
 	bs->root_block->flags |= CAMEL_BLOCK_DIRTY;
@@ -938,7 +938,7 @@ key_file_use (CamelKeyFile *bs)
 		errno = ENOENT;
 		return -1;
 	} else {
-		d(printf("Turning key file online: '%s'\n", bs->path));
+		d (printf ("Turning key file online: '%s'\n", bs->path));
 	}
 
 	if ((bs->flags & O_ACCMODE) == O_RDONLY)
@@ -976,7 +976,7 @@ key_file_use (CamelKeyFile *bs)
 			/* Need to trylock, as any of these lock levels might be trying
 			 * to lock the key_file_lock, so we need to check and abort if so */
 			if (CAMEL_BLOCK_FILE_TRYLOCK (bf, lock)) {
-				d(printf("Turning key file offline: %s\n", bf->path));
+				d (printf ("Turning key file offline: %s\n", bf->path));
 				fclose (bf->fp);
 				bf->fp = NULL;
 				key_file_count--;
@@ -1029,7 +1029,7 @@ camel_key_file_new (const gchar *path,
 	goffset last;
 	gint err;
 
-	d(printf("New key file '%s'\n", path));
+	d (printf ("New key file '%s'\n", path));
 
 	kf = g_object_new (CAMEL_TYPE_KEY_FILE, NULL);
 	kf->path = g_strdup (path);
@@ -1149,10 +1149,10 @@ camel_key_file_write (CamelKeyFile *kf,
 	g_return_val_if_fail (parent != NULL, -1);
 	g_return_val_if_fail (records != NULL, -1);
 
-	d(printf("write key %08x len = %d\n", *parent, len));
+	d (printf ("write key %08x len = %d\n", *parent, len));
 
 	if (len == 0) {
-		d(printf(" new parent = %08x\n", *parent));
+		d (printf (" new parent = %08x\n", *parent));
 		return 0;
 	}
 
@@ -1180,7 +1180,7 @@ camel_key_file_write (CamelKeyFile *kf,
 	/* UNLOCK */
 	key_file_unuse (kf);
 
-	d(printf(" new parent = %08x\n", *parent));
+	d (printf (" new parent = %08x\n", *parent));
 
 	return ret;
 }

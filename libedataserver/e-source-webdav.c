@@ -661,7 +661,7 @@ e_source_webdav_set_avoid_ifmatch (ESourceWebdav *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 
-	if ((extension->priv->avoid_ifmatch ? 1 : 0) == (avoid_ifmatch ? 1 : 0))
+	if (extension->priv->avoid_ifmatch == avoid_ifmatch)
 		return;
 
 	extension->priv->avoid_ifmatch = avoid_ifmatch;
@@ -701,7 +701,7 @@ e_source_webdav_set_calendar_auto_schedule (ESourceWebdav *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 
-	if ((extension->priv->calendar_auto_schedule ? 1 : 0) == (calendar_auto_schedule ? 1 : 0))
+	if (extension->priv->calendar_auto_schedule == calendar_auto_schedule)
 		return;
 
 	extension->priv->calendar_auto_schedule = calendar_auto_schedule;
@@ -921,7 +921,7 @@ e_source_webdav_set_ignore_invalid_cert (ESourceWebdav *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 
-	if ((extension->priv->ignore_invalid_cert ? 1 : 0) == (ignore_invalid_cert ? 1 : 0))
+	if (extension->priv->ignore_invalid_cert == ignore_invalid_cert)
 		return;
 
 	extension->priv->ignore_invalid_cert = ignore_invalid_cert;

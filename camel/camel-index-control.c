@@ -23,10 +23,10 @@ extern gint camel_init (const gchar *certdb_dir, gboolean nss_init);
 G_GNUC_NORETURN static void
 do_usage (gchar *argv0)
 {
-	fprintf(stderr, "Usage: %s [ compress | dump | info ] file(s) ...\n", argv0);
-	fprintf(stderr, " compress - compress (an) index file(s)\n");
-	fprintf(stderr, " dump - dump (an) index file's content to stdout\n");
-	fprintf(stderr, " info - dump summary info to stdout\n");
+	fprintf (stderr, "Usage: %s [ compress | dump | info ] file(s) ...\n", argv0);
+	fprintf (stderr, " compress - compress (an) index file(s)\n");
+	fprintf (stderr, " dump - dump (an) index file's content to stdout\n");
+	fprintf (stderr, " info - dump summary info to stdout\n");
 	exit (1);
 }
 
@@ -38,17 +38,17 @@ do_compress (gint argc,
 	CamelIndex *idx;
 
 	for (i = 2; i < argc; i++) {
-		printf("Opening index file: %s\n", argv[i]);
+		printf ("Opening index file: %s\n", argv[i]);
 		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDWR);
 		if (idx) {
-			printf(" Compressing ...\n");
+			printf (" Compressing ...\n");
 			if (camel_index_compress (idx) == -1) {
 				g_object_unref (idx);
 				return 1;
 			}
 			g_object_unref (idx);
 		} else {
-			printf(" Failed: %s\n", g_strerror (errno));
+			printf (" Failed: %s\n", g_strerror (errno));
 			return 1;
 		}
 	}
@@ -63,14 +63,14 @@ do_dump (gint argc,
 	CamelIndex *idx;
 
 	for (i = 2; i < argc; i++) {
-		printf("Opening index file: %s\n", argv[i]);
+		printf ("Opening index file: %s\n", argv[i]);
 		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDONLY);
 		if (idx) {
-			printf(" Dumping ...\n");
+			printf (" Dumping ...\n");
 			camel_text_index_dump ((CamelTextIndex *) idx);
 			g_object_unref (idx);
 		} else {
-			printf(" Failed: %s\n", g_strerror (errno));
+			printf (" Failed: %s\n", g_strerror (errno));
 			return 1;
 		}
 	}
@@ -85,13 +85,13 @@ do_info (gint argc,
 	CamelIndex *idx;
 
 	for (i = 2; i < argc; i++) {
-		printf("Opening index file: %s\n", argv[i]);
+		printf ("Opening index file: %s\n", argv[i]);
 		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDONLY);
 		if (idx) {
 			camel_text_index_info ((CamelTextIndex *) idx);
 			g_object_unref (idx);
 		} else {
-			printf(" Failed: %s\n", g_strerror (errno));
+			printf (" Failed: %s\n", g_strerror (errno));
 			return 0;
 		}
 	}
@@ -106,13 +106,13 @@ do_check (gint argc,
 	CamelIndex *idx;
 
 	for (i = 2; i < argc; i++) {
-		printf("Opening index file: %s\n", argv[i]);
+		printf ("Opening index file: %s\n", argv[i]);
 		idx = (CamelIndex *) camel_text_index_new (argv[i], O_RDONLY);
 		if (idx) {
 			camel_text_index_validate ((CamelTextIndex *) idx);
 			g_object_unref (idx);
 		} else {
-			printf(" Failed: %s\n", g_strerror (errno));
+			printf (" Failed: %s\n", g_strerror (errno));
 			return 0;
 		}
 	}
@@ -128,15 +128,15 @@ gint main (gint argc, gchar **argv)
 
 	camel_init (NULL, 0);
 
-	if (!strcmp(argv[1], "compress"))
+	if (!strcmp (argv[1], "compress"))
 		return do_compress (argc, argv);
-	else if (!strcmp(argv[1], "dump"))
+	else if (!strcmp (argv[1], "dump"))
 		return do_dump (argc, argv);
-	else if (!strcmp(argv[1], "info"))
+	else if (!strcmp (argv[1], "info"))
 		return do_info (argc, argv);
-	else if (!strcmp(argv[1], "check"))
+	else if (!strcmp (argv[1], "check"))
 		return do_check (argc, argv);
-	else if (!strcmp(argv[1], "perf"))
+	else if (!strcmp (argv[1], "perf"))
 		return do_perf (argc, argv);
 
 	do_usage (argv[0]);
@@ -164,14 +164,14 @@ do_perf (gint argc,
 
 	dir = opendir (path);
 	if (dir == NULL) {
-		perror("open dir");
+		perror ("open dir");
 		return 1;
 	}
 
 	idx = (CamelIndex *) camel_text_index_new (
-		"/tmp/index", O_TRUNC|O_CREAT|O_RDWR);
+		"/tmp/index", O_TRUNC | O_CREAT | O_RDWR);
 	if (idx == NULL) {
-		perror("open index");
+		perror ("open index");
 		closedir (dir);
 		return 1;
 	}
@@ -183,12 +183,12 @@ do_perf (gint argc,
 	camel_stream_filter_add ((CamelStreamFilter *) filter, filter_index);
 
 	while ((d = readdir (dir))) {
-		printf("indexing '%s'\n", d->d_name);
+		printf ("indexing '%s'\n", d->d_name);
 
 		idn = camel_index_add_name (idx, d->d_name);
 		camel_mime_filter_index_set_name (
 			CAMEL_MIME_FILTER_INDEX (filter_index), idn);
-		name = g_strdup_printf("%s/%s", path, d->d_name);
+		name = g_strdup_printf ("%s/%s", path, d->d_name);
 		stream = camel_stream_fs_new_with_name (name, O_RDONLY, 0, NULL);
 		camel_stream_write_to_stream (stream, filter, NULL, NULL);
 		g_object_unref (stream);

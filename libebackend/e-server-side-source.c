@@ -943,7 +943,7 @@ server_side_source_remote_create_sync (ESource *source,
 			error, G_IO_ERROR,
 			G_IO_ERROR_NOT_SUPPORTED,
 			_("Data source '%s' does not "
-			  "support creating remote resources"),
+			"support creating remote resources"),
 			e_source_get_display_name (source));
 		return FALSE;
 	}
@@ -957,7 +957,7 @@ server_side_source_remote_create_sync (ESource *source,
 			error, G_IO_ERROR,
 			G_IO_ERROR_NOT_SUPPORTED,
 			_("Data source '%s' has no collection "
-			  "backend to create the remote resource"),
+			"backend to create the remote resource"),
 			e_source_get_display_name (source));
 		return FALSE;
 	}
@@ -985,7 +985,7 @@ server_side_source_remote_delete_sync (ESource *source,
 			error, G_IO_ERROR,
 			G_IO_ERROR_NOT_SUPPORTED,
 			_("Data source '%s' does not "
-			  "support deleting remote resources"),
+			"support deleting remote resources"),
 			e_source_get_display_name (source));
 		return FALSE;
 	}
@@ -999,7 +999,7 @@ server_side_source_remote_delete_sync (ESource *source,
 			error, G_IO_ERROR,
 			G_IO_ERROR_NOT_SUPPORTED,
 			_("Data source '%s' has no collection "
-			  "backend to delete the remote resource"),
+			"backend to delete the remote resource"),
 			e_source_get_display_name (source));
 		return FALSE;
 	}

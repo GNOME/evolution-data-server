@@ -112,41 +112,41 @@ main (gint argc,
 
 	setup ();
 
-	camel_test_start("Simple memory-based content creation");
+	camel_test_start ("Simple memory-based content creation");
 
 	/* test all ways of setting simple content for a message (i.e. memory based) */
 	for (j = 0; j < MAX_TEXTS; j++) {
-		push("testing text number %d", j);
+		push ("testing text number %d", j);
 		text = texts[j].text;
 		len = texts[j].len;
 		for (i = 0; i < SET_CONTENT_WAYS; i++) {
-			push("create simple message %d", i);
+			push ("create simple message %d", i);
 			msg = test_message_create_simple ();
 
-			push("set simple content");
-			test_message_set_content_simple((CamelMimePart *)msg, i, "text/plain", text, len);
+			push ("set simple content");
+			test_message_set_content_simple ((CamelMimePart *) msg, i, "text/plain", text, len);
 			pull ();
 
-			push("compare original content");
+			push ("compare original content");
 			test_message_compare_content (camel_medium_get_content ((CamelMedium *) msg), text, len);
 			pull ();
 
-			push("save message to test1.msg");
-			unlink("test1.msg");
-			test_message_write_file(msg, "test1.msg");
+			push ("save message to test1.msg");
+			unlink ("test1.msg");
+			test_message_write_file (msg, "test1.msg");
 			check_unref (msg, 1);
 			pull ();
 
-			push("read from test1.msg");
-			msg2 = test_message_read_file("test1.msg");
+			push ("read from test1.msg");
+			msg2 = test_message_read_file ("test1.msg");
 			pull ();
 
-			push("compare read with original content");
+			push ("compare read with original content");
 			test_message_compare_content (camel_medium_get_content ((CamelMedium *) msg2), text, len);
 			check_unref (msg2, 1);
 			pull ();
 
-			unlink("test1.msg");
+			unlink ("test1.msg");
 			pull ();
 		}
 		pull ();
@@ -154,38 +154,38 @@ main (gint argc,
 
 	camel_test_end ();
 
-	camel_test_start("Different encodings");
+	camel_test_start ("Different encodings");
 	for (j = 0; j < MAX_TEXTS; j++) {
-		push("testing text number %d", j);
+		push ("testing text number %d", j);
 		text = texts[j].text;
 		len = texts[j].len;
 		for (i = 0; i < CAMEL_TRANSFER_NUM_ENCODINGS; i++) {
 
-			push("test simple message, encoding %s", camel_transfer_encoding_to_string(i));
+			push ("test simple message, encoding %s", camel_transfer_encoding_to_string (i));
 			msg = test_message_create_simple ();
 
-			push("set simple content");
-			test_message_set_content_simple((CamelMimePart *)msg, 0, "text/plain", text, len);
+			push ("set simple content");
+			test_message_set_content_simple ((CamelMimePart *) msg, 0, "text/plain", text, len);
 			pull ();
 
 			camel_mime_part_set_encoding ((CamelMimePart *) msg, i);
 
-			push("save message to test1.msg");
-			unlink("test1.msg");
-			test_message_write_file(msg, "test1.msg");
+			push ("save message to test1.msg");
+			unlink ("test1.msg");
+			test_message_write_file (msg, "test1.msg");
 			check_unref (msg, 1);
 			pull ();
 
-			push("read from test1.msg");
-			msg2 = test_message_read_file("test1.msg");
+			push ("read from test1.msg");
+			msg2 = test_message_read_file ("test1.msg");
 			pull ();
 
-			push("compare read with original content");
+			push ("compare read with original content");
 			test_message_compare_content (camel_medium_get_content ((CamelMedium *) msg2), text, len);
 			check_unref (msg2, 1);
 			pull ();
 
-			unlink("test1.msg");
+			unlink ("test1.msg");
 			pull ();
 		}
 		pull ();

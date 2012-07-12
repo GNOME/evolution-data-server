@@ -367,7 +367,7 @@ e_source_collection_set_calendar_enabled (ESourceCollection *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_COLLECTION (extension));
 
-	if ((extension->priv->calendar_enabled ? 1 : 0) == (calendar_enabled ? 1 : 0))
+	if (extension->priv->calendar_enabled == calendar_enabled)
 		return;
 
 	extension->priv->calendar_enabled = calendar_enabled;
@@ -421,7 +421,7 @@ e_source_collection_set_contacts_enabled (ESourceCollection *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_COLLECTION (extension));
 
-	if ((extension->priv->contacts_enabled ? 1 : 0) == (contacts_enabled ? 1 : 0))
+	if (extension->priv->contacts_enabled == contacts_enabled)
 		return;
 
 	extension->priv->contacts_enabled = contacts_enabled;
@@ -474,7 +474,7 @@ e_source_collection_set_mail_enabled (ESourceCollection *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_COLLECTION (extension));
 
-	if ((extension->priv->mail_enabled ? 1 : 0) == (mail_enabled ? 1 : 0))
+	if (extension->priv->mail_enabled == mail_enabled)
 		return;
 
 	extension->priv->mail_enabled = mail_enabled;

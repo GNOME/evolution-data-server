@@ -659,9 +659,9 @@ parse (EVCard *evc,
 
 	buf = make_valid_utf8 (str);
 
-	d(printf ("BEFORE FOLDING:\n"));
+	d (printf ("BEFORE FOLDING:\n"));
 	d (printf (str));
-	d(printf ("\n\nAFTER FOLDING:\n"));
+	d (printf ("\n\nAFTER FOLDING:\n"));
 	d (printf (buf));
 
 	p = buf;
@@ -935,7 +935,7 @@ e_vcard_qp_encode (const gchar *txt)
 			count = 1; /* 1 for space needed for folding */
 		}
 
-		g_string_append_printf (escaped, "=%2.2X", (unsigned char) *p++);
+		g_string_append_printf (escaped, "=%2.2X", (guchar) *p++);
 		count += 3;
 	}
 
@@ -1309,7 +1309,7 @@ e_vcard_dump_structure (EVCard *evc)
 		}
 		printf ("    +- values=\n");
 		for (v = attr->values, i = 0; v; v = v->next, i++) {
-			printf ("        [%d] = `%s'\n", i, (gchar *)v->data);
+			printf ("        [%d] = `%s'\n", i, (gchar *) v->data);
 		}
 	}
 }
@@ -1668,8 +1668,8 @@ e_vcard_attribute_add_value_decoded (EVCardAttribute *attr,
 		/* make sure the decoded list is up to date */
 		e_vcard_attribute_get_values_decoded (attr);
 
-		d(printf ("base64 encoded value: %s\n", b64_data));
-		d(printf ("original length: %d\n", len));
+		d (printf ("base64 encoded value: %s\n", b64_data));
+		d (printf ("original length: %d\n", len));
 
 		attr->values = g_list_append (attr->values, b64_data);
 		attr->decoded_values = g_list_append (attr->decoded_values, decoded);
@@ -1965,8 +1965,8 @@ e_vcard_attribute_add_param (EVCardAttribute *attr,
 		}
 
 		if (param->values && param->values->data) {
-			if (!g_ascii_strcasecmp ((gchar *)param->values->data, "b") ||
-			    !g_ascii_strcasecmp ((gchar *)param->values->data, "BASE64"))
+			if (!g_ascii_strcasecmp ((gchar *) param->values->data, "b") ||
+			    !g_ascii_strcasecmp ((gchar *) param->values->data, "BASE64"))
 				attr->encoding = EVC_ENCODING_BASE64;
 			else if (!g_ascii_strcasecmp ((gchar *) param->values->data, EVC_QUOTEDPRINTABLE))
 				attr->encoding = EVC_ENCODING_QP;

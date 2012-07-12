@@ -870,7 +870,7 @@ camel_key_table_set_flags (CamelKeyTable *ki,
 	kb = (CamelKeyBlock *) &bl->data;
 
 	if (kb->used >=127 || index >= kb->used) {
-		g_warning("Block %x: Invalid index or content: index %d used %d\n", blockid, index, kb->used);
+		g_warning ("Block %x: Invalid index or content: index %d used %d\n", blockid, index, kb->used);
 		return FALSE;
 	}
 
@@ -919,7 +919,7 @@ camel_key_table_lookup (CamelKeyTable *ki,
 	kb = (CamelKeyBlock *) &bl->data;
 
 	if (kb->used >=127 || index >= kb->used) {
-		g_warning("Block %x: Invalid index or content: index %d used %d\n", blockid, index, kb->used);
+		g_warning ("Block %x: Invalid index or content: index %d used %d\n", blockid, index, kb->used);
 		return 0;
 	}
 

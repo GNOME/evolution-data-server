@@ -59,7 +59,7 @@ camel_debug_init (void)
 {
 	gchar *d;
 
-	d = g_strdup(getenv("CAMEL_DEBUG"));
+	d = g_strdup (getenv ("CAMEL_DEBUG"));
 	if (d) {
 		gchar *p;
 
@@ -74,7 +74,7 @@ camel_debug_init (void)
 			d = p;
 		}
 
-		if (g_hash_table_lookup(debug_table, "all"))
+		if (g_hash_table_lookup (debug_table, "all"))
 			camel_verbose_debug = 1;
 	}
 }
@@ -138,7 +138,7 @@ camel_debug_start (const gchar *mode)
 {
 	if (camel_debug (mode)) {
 		g_static_mutex_lock (&debug_lock);
-		printf ("Thread %p >\n", g_thread_self());
+		printf ("Thread %p >\n", g_thread_self ());
 		return TRUE;
 	}
 
@@ -154,7 +154,7 @@ camel_debug_start (const gchar *mode)
 void
 camel_debug_end (void)
 {
-	printf ("< %p >\n", g_thread_self());
+	printf ("< %p >\n", g_thread_self ());
 	g_static_mutex_unlock (&debug_lock);
 }
 
@@ -603,7 +603,7 @@ dump_left_at_exit_cb (void)
  **/
 void
 camel_pointer_tracker_track_with_info (gpointer ptr,
-				       const gchar *info)
+                                       const gchar *info)
 {
 	struct pt_data *ptd;
 

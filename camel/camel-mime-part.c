@@ -534,7 +534,7 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 	gssize count;
 	gint errnosav;
 
-	d(printf("mime_part::write_to_stream\n"));
+	d (printf ("mime_part::write_to_stream\n"));
 
 	/* FIXME: something needs to be done about this ... */
 	/* TODO: content-languages header? */
@@ -542,7 +542,7 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 	if (mp->headers) {
 		struct _camel_header_raw *h = mp->headers;
 		gchar *val;
-		gssize		(*writefn)	(CamelStream *stream,
+		gssize (*writefn)	(CamelStream *stream,
 						 const gchar *name,
 						 const gchar *value,
 						 GCancellable *cancellable,
@@ -553,7 +553,7 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 		while (h) {
 			val = h->value;
 			if (val == NULL) {
-				g_warning("h->value is NULL here for %s", h->name);
+				g_warning ("h->value is NULL here for %s", h->name);
 				count = 0;
 			} else if ((writefn = g_hash_table_lookup (header_formatted_table, h->name)) == NULL) {
 				val = camel_header_fold (val, strlen (h->name));
@@ -693,7 +693,7 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 			total += count;
 		}
 	} else {
-		g_warning("No content for medium, nothing to write");
+		g_warning ("No content for medium, nothing to write");
 	}
 
 	return total;
@@ -708,7 +708,7 @@ mime_part_construct_from_stream_sync (CamelDataWrapper *dw,
 	CamelMimeParser *parser;
 	gboolean success;
 
-	d(printf("mime_part::construct_from_stream()\n"));
+	d (printf ("mime_part::construct_from_stream()\n"));
 
 	parser = camel_mime_parser_new ();
 	if (camel_mime_parser_init_with_stream (parser, stream, error) == -1) {
@@ -748,14 +748,14 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 		headers = camel_mime_parser_headers_raw (parser);
 
 		/* if content-type exists, process it first, set for fallback charset in headers */
-		content = camel_header_raw_find(&headers, "content-type", NULL);
+		content = camel_header_raw_find (&headers, "content-type", NULL);
 		if (content)
-			mime_part_process_header((CamelMedium *)dw, "content-type", content);
+			mime_part_process_header ((CamelMedium *) dw, "content-type", content);
 
 		while (headers) {
-			if (g_ascii_strcasecmp(headers->name, "content-type") == 0
+			if (g_ascii_strcasecmp (headers->name, "content-type") == 0
 			    && headers->value != content)
-				camel_medium_add_header((CamelMedium *)dw, "X-Invalid-Content-Type", headers->value);
+				camel_medium_add_header ((CamelMedium *) dw, "X-Invalid-Content-Type", headers->value);
 			else
 				camel_medium_add_header ((CamelMedium *) dw, headers->name, headers->value);
 			headers = headers->next;
@@ -765,7 +765,7 @@ mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 			mime_part, parser, cancellable, error);
 		break;
 	default:
-		g_warning("Invalid state encountered???: %u", camel_mime_parser_state(parser));
+		g_warning ("Invalid state encountered???: %u", camel_mime_parser_state (parser));
 	}
 
 	err = camel_mime_parser_errno (parser);
@@ -1381,7 +1381,7 @@ camel_mime_part_set_filename (CamelMimePart *mime_part,
 
 	if (mime_part->priv->disposition == NULL)
 		mime_part->priv->disposition =
-			camel_content_disposition_decode("attachment");
+			camel_content_disposition_decode ("attachment");
 
 	camel_header_set_param (
 		&mime_part->priv->disposition->params, "filename", filename);

@@ -403,7 +403,7 @@ cdb_sql_exec (sqlite3 *db,
 	gchar *errmsg = NULL;
 	gint   ret = -1;
 
-	d(g_print("Camel SQL Exec:\n%s\n", stmt));
+	d (g_print ("Camel SQL Exec:\n%s\n", stmt));
 
 	ret = sqlite3_exec (db, stmt, callback, data, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED || ret == -1) {
@@ -415,7 +415,7 @@ cdb_sql_exec (sqlite3 *db,
 	}
 
 	if (ret != SQLITE_OK) {
-		d(g_print ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
+		d (g_print ("Error in SQL EXEC statement: %s [%s].\n", stmt, errmsg));
 		g_set_error (
 			error, CAMEL_ERROR,
 			CAMEL_ERROR_GENERIC, "%s", errmsg);
@@ -504,7 +504,7 @@ camel_db_open (const gchar *path,
 		} else {
 			const gchar *errmsg;
 			errmsg = sqlite3_errmsg (db);
-			d(g_print("Can't open database %s: %s\n", path, errmsg));
+			d (g_print ("Can't open database %s: %s\n", path, errmsg));
 			g_set_error (
 				error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC, "%s", errmsg);
@@ -519,22 +519,22 @@ camel_db_open (const gchar *path,
 	cdb->priv->file_name = g_strdup (path);
 	g_static_rw_lock_init (&cdb->priv->rwlock);
 	cdb->priv->timer = NULL;
-	d(g_print ("\nDatabase succesfully opened  \n"));
+	d (g_print ("\nDatabase succesfully opened  \n"));
 
 	sqlite3_create_function (db, "MATCH", 2, SQLITE_UTF8, NULL, cdb_match_func, NULL, NULL);
 
 	/* Which is big / costlier ? A Stack frame or a pointer */
-	if (g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE")!=NULL) {
+	if (g_getenv ("CAMEL_SQLITE_DEFAULT_CACHE_SIZE") != NULL) {
 		gchar *cache = NULL;
 
-		cache = g_strdup_printf ("PRAGMA cache_size=%s", g_getenv("CAMEL_SQLITE_DEFAULT_CACHE_SIZE"));
+		cache = g_strdup_printf ("PRAGMA cache_size=%s", g_getenv ("CAMEL_SQLITE_DEFAULT_CACHE_SIZE"));
 		camel_db_command (cdb, cache, NULL);
 		g_free (cache);
 	}
 
 	camel_db_command (cdb, "ATTACH DATABASE ':memory:' AS mem", NULL);
 
-	if (g_getenv("CAMEL_SQLITE_IN_MEMORY") != NULL) {
+	if (g_getenv ("CAMEL_SQLITE_IN_MEMORY") != NULL) {
 		/* Optionally turn off Journaling, this gets over fsync issues, but could be risky */
 		camel_db_command (cdb, "PRAGMA main.journal_mode = off", NULL);
 		camel_db_command (cdb, "PRAGMA temp_store = memory", NULL);
@@ -571,7 +571,7 @@ camel_db_close (CamelDB *cdb)
 		g_free (cdb->priv->file_name);
 		g_free (cdb->priv);
 		g_free (cdb);
-		d(g_print ("\nDatabase succesfully closed \n"));
+		d (g_print ("\nDatabase succesfully closed \n"));
 	}
 }
 
@@ -592,7 +592,7 @@ camel_db_set_collate (CamelDB *cdb,
 			return 0;
 
 		WRITER_LOCK (cdb);
-		d(g_print("Creating Collation %s on %s with %p\n", collate, col, (gpointer) func));
+		d (g_print ("Creating Collation %s on %s with %p\n", collate, col, (gpointer) func));
 		if (collate && func)
 			ret = sqlite3_create_collation (cdb->db, collate, SQLITE_UTF8,  NULL, func);
 		WRITER_UNLOCK (cdb);
@@ -639,7 +639,7 @@ camel_db_begin_transaction (CamelDB *cdb,
 		return -1;
 
 	WRITER_LOCK (cdb);
-	STARTTS("BEGIN");
+	STARTTS ("BEGIN");
 
 	cdb->priv->transaction_is_on = TRUE;
 
@@ -725,7 +725,7 @@ camel_db_transaction_command (CamelDB *cdb,
 
 	WRITER_LOCK (cdb);
 
-	STARTTS("BEGIN");
+	STARTTS ("BEGIN");
 	ret = cdb_sql_exec (cdb->db, "BEGIN", NULL, NULL, error);
 	if (ret)
 		goto end;
@@ -754,7 +754,7 @@ count_cb (gpointer data,
 	gint i;
 
 	for (i = 0; i < argc; i++) {
-		if (strstr(azColName[i], "COUNT")) {
+		if (strstr (azColName[i], "COUNT")) {
 			*(guint32 *)data = argv [i] ? strtoul (argv [i], NULL, 10) : 0;
 		}
 	}
@@ -981,7 +981,7 @@ camel_db_select (CamelDB *cdb,
 	if (!cdb)
 		return ret;
 
-	d(g_print ("\n%s:\n%s \n", G_STRFUNC, stmt));
+	d (g_print ("\n%s:\n%s \n", G_STRFUNC, stmt));
 	READER_LOCK (cdb);
 
 	START (stmt);
@@ -1044,7 +1044,7 @@ camel_db_get_folder_uids (CamelDB *db,
 	 gchar *sel_query;
 	 gint ret;
 
-	 sel_query = sqlite3_mprintf("SELECT uid,flags FROM %Q%s%s%s%s", folder_name, sort_by ? " order by " : "", sort_by ? sort_by: "", (sort_by && collate) ? " collate " : "", (sort_by && collate) ? collate : "");
+	 sel_query = sqlite3_mprintf ("SELECT uid,flags FROM %Q%s%s%s%s", folder_name, sort_by ? " order by " : "", sort_by ? sort_by: "", (sort_by && collate) ? " collate " : "", (sort_by && collate) ? collate : "");
 
 	 ret = camel_db_select (db, sel_query, read_uids_to_hash_callback, hash, error);
 	 sqlite3_free (sel_query);
@@ -1066,7 +1066,7 @@ camel_db_get_folder_junk_uids (CamelDB *db,
 	 gint ret;
 	 GPtrArray *array = g_ptr_array_new ();
 
-	 sel_query = sqlite3_mprintf("SELECT uid FROM %Q where junk=1", folder_name);
+	 sel_query = sqlite3_mprintf ("SELECT uid FROM %Q where junk=1", folder_name);
 
 	 ret = camel_db_select (db, sel_query, read_uids_callback, array, error);
 
@@ -1093,7 +1093,7 @@ camel_db_get_folder_deleted_uids (CamelDB *db,
 	 gint ret;
 	 GPtrArray *array = g_ptr_array_new ();
 
-	 sel_query = sqlite3_mprintf("SELECT uid FROM %Q where deleted=1", folder_name);
+	 sel_query = sqlite3_mprintf ("SELECT uid FROM %Q where deleted=1", folder_name);
 
 	 ret = camel_db_select (db, sel_query, read_uids_callback, array, error);
 	 sqlite3_free (sel_query);
@@ -1194,7 +1194,7 @@ camel_db_write_preview_record (CamelDB *db,
 	gchar *query;
 	gint ret;
 
-	query = sqlite3_mprintf("INSERT OR REPLACE INTO '%q_preview' VALUES(%Q,%Q)", folder_name, uid, msg);
+	query = sqlite3_mprintf ("INSERT OR REPLACE INTO '%q_preview' VALUES(%Q,%Q)", folder_name, uid, msg);
 
 	ret = camel_db_add_to_transaction (db, query, error);
 	sqlite3_free (query);
@@ -1239,35 +1239,35 @@ camel_db_create_message_info_table (CamelDB *cdb,
 	sqlite3_free (table_creation_query);
 
 	/* FIXME: sqlize folder_name before you create the index */
-	safe_index = g_strdup_printf("SINDEX-%s", folder_name);
+	safe_index = g_strdup_printf ("SINDEX-%s", folder_name);
 	table_creation_query = sqlite3_mprintf ("DROP INDEX IF EXISTS %Q", safe_index);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
 
 	/* INDEX on preview */
-	safe_index = g_strdup_printf("SINDEX-%s-preview", folder_name);
+	safe_index = g_strdup_printf ("SINDEX-%s-preview", folder_name);
 	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON '%q_preview' (uid, preview)", safe_index, folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
 
 	/* Index on deleted*/
-	safe_index = g_strdup_printf("DELINDEX-%s", folder_name);
+	safe_index = g_strdup_printf ("DELINDEX-%s", folder_name);
 	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (deleted)", safe_index, folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
 
 	/* Index on Junk*/
-	safe_index = g_strdup_printf("JUNKINDEX-%s", folder_name);
+	safe_index = g_strdup_printf ("JUNKINDEX-%s", folder_name);
 	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (junk)", safe_index, folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
 
 	/* Index on unread*/
-	safe_index = g_strdup_printf("READINDEX-%s", folder_name);
+	safe_index = g_strdup_printf ("READINDEX-%s", folder_name);
 	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON %Q (read)", safe_index, folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	g_free (safe_index);
@@ -1642,7 +1642,7 @@ read_fir_callback (gpointer ref,
 	struct ReadFirData *rfd = ref;
 	gint i;
 
-	d(g_print ("\nread_fir_callback called \n"));
+	d (g_print ("\nread_fir_callback called \n"));
 
 	for (i = 0; i < ncol; ++i) {
 		if (!name[i] || !cols[i])
@@ -1872,7 +1872,7 @@ cdb_delete_ids (CamelDB *cdb,
 	iterator = uids;
 
 	while (iterator) {
-		gchar *foo = g_strdup_printf("%s%s", uid_prefix, (gchar *) iterator->data);
+		gchar *foo = g_strdup_printf ("%s%s", uid_prefix, (gchar *) iterator->data);
 		tmp = sqlite3_mprintf ("%Q", foo);
 		g_free (foo);
 		iterator = iterator->next;

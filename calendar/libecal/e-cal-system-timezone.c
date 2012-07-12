@@ -85,11 +85,11 @@ system_timezone_read_etc_timezone (GHashTable *ical_zones)
 	GString *reading;
 	gint      c;
 
-        etc_timezone = g_fopen (ETC_TIMEZONE, "r");
+	etc_timezone = g_fopen (ETC_TIMEZONE, "r");
 	if (!etc_timezone)
 		return NULL;
 
-        reading = g_string_new ("");
+	reading = g_string_new ("");
 
 	c = fgetc (etc_timezone);
         /* only get the first line, we'll validate the value later */
@@ -122,11 +122,11 @@ system_timezone_read_key_file (const gchar *filename,
 	if (!g_file_test (filename, G_FILE_TEST_IS_REGULAR))
 		return NULL;
 
-        channel = g_io_channel_new_file (filename, "r", NULL);
+	channel = g_io_channel_new_file (filename, "r", NULL);
 	if (!channel)
 		return NULL;
 
-        key_eq = g_strdup_printf ("%s=", key);
+	key_eq = g_strdup_printf ("%s=", key);
 	retval = NULL;
 
 	while (g_io_channel_read_line (channel, &line, NULL,
@@ -172,7 +172,7 @@ static gchar *
 system_timezone_read_etc_sysconfig_clock (GHashTable *ical_zones)
 {
 	return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
-                                              "ZONE");
+					      "ZONE");
 }
 
 /* This works for openSUSE */
@@ -180,7 +180,7 @@ static gchar *
 system_timezone_read_etc_sysconfig_clock_alt (GHashTable *ical_zones)
 {
 	return system_timezone_read_key_file (ETC_SYSCONFIG_CLOCK,
-                                              "TIMEZONE");
+					      "TIMEZONE");
 }
 
 /* This works for Solaris/OpenSolaris */
@@ -188,7 +188,7 @@ static gchar *
 system_timezone_read_etc_TIMEZONE (GHashTable *ical_zones)
 {
 	return system_timezone_read_key_file (ETC_TIMEZONE_MAJ,
-                                              "TZ");
+					      "TZ");
 }
 
 /* This works for Arch Linux */
@@ -196,7 +196,7 @@ static gchar *
 system_timezone_read_etc_rc_conf (GHashTable *ical_zones)
 {
 	return system_timezone_read_key_file (ETC_RC_CONF,
-                                              "TIMEZONE");
+					      "TIMEZONE");
 }
 
 /* This works for old Gentoo */
@@ -204,7 +204,7 @@ static gchar *
 system_timezone_read_etc_conf_d_clock (GHashTable *ical_zones)
 {
 	return system_timezone_read_key_file (ETC_CONF_D_CLOCK,
-                                              "TIMEZONE");
+					      "TIMEZONE");
 }
 
 static void
@@ -557,8 +557,8 @@ system_timezone_find (void)
 	config_tz = NULL;
 
 	/* read correct timezone name from config file; checking
-	   on /etc/localtime content can pick wrong timezone name,
-	   even the file is same
+	 * on /etc/localtime content can pick wrong timezone name,
+	 * even the file is same
 	 */
 	for (ii = 0; get_system_timezone_methods_config[ii] != NULL; ii++) {
 		config_tz = get_system_timezone_methods_config[ii] (ical_zones);
@@ -597,8 +597,8 @@ system_timezone_find (void)
 				g_hash_table_destroy (ical_zones);
 
 				/* corresponding file name to config_tz matches /etc/localtime,
-				   thus that's the correct one - return it as system timezone;
-				   bonus is that it might match configured system timezone name too
+				 * thus that's the correct one - return it as system timezone;
+				 * bonus is that it might match configured system timezone name too
 				*/
 				return config_tz;
 			}
@@ -835,7 +835,7 @@ system_timezone_win32_query_registry (void)
 	res = RegOpenKeyExA (HKEY_LOCAL_MACHINE,
 		"SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation", 0, KEY_READ, &reg_key);
 	if (res != ERROR_SUCCESS) {
-		g_debug("Could not find system timezone! (1)\n");
+		g_debug ("Could not find system timezone! (1)\n");
 		return NULL;
 	}
 
@@ -926,7 +926,7 @@ e_cal_system_timezone_get_location (void)
 	g_free (windows_timezone_string);
 	if (!olson_timezone_string)
 		return NULL;
-	g_debug("Olson Timezone String: %s\n", olson_timezone_string);
+	g_debug ("Olson Timezone String: %s\n", olson_timezone_string);
 	return olson_timezone_string;
 #endif
 }

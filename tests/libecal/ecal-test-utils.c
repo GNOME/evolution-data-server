@@ -108,15 +108,15 @@ open_ex_cb (ECal *cal,
 		test_print ("calendar server is busy; waiting...");
 		return;
 	} else if (error) {
-                g_warning ("failed to asynchronously remove the calendar: "
-                                "status %d (%s)", error->code, error->message);
+		g_warning ("failed to asynchronously remove the calendar: "
+				"status %d (%s)", error->code, error->message);
 		exit (1);
 	}
 
 	closure->cal = cal;
 
-        test_print ("successfully asynchronously removed the temporary "
-                        "calendar\n");
+	test_print ("successfully asynchronously removed the temporary "
+			"calendar\n");
 	if (closure->cb)
 		(*closure->cb) (closure);
 
@@ -147,10 +147,10 @@ ecal_test_utils_cal_get_alarm_email_address (ECal *cal)
 	gchar *address = NULL;
 
 	if (!e_cal_get_alarm_email_address (cal, &address, &error)) {
-                g_warning ("failed to get alarm email address; %s\n", error->message);
+		g_warning ("failed to get alarm email address; %s\n", error->message);
 		exit (1);
 	}
-        test_print ("successfully got the alarm email address\n");
+	test_print ("successfully got the alarm email address\n");
 
 	return address;
 }
@@ -162,10 +162,10 @@ ecal_test_utils_cal_get_cal_address (ECal *cal)
 	gchar *address = NULL;
 
 	if (!e_cal_get_cal_address (cal, &address, &error)) {
-                g_warning ("failed to get calendar address; %s\n", error->message);
+		g_warning ("failed to get calendar address; %s\n", error->message);
 		exit (1);
 	}
-        test_print ("successfully got the calendar address\n");
+	test_print ("successfully got the calendar address\n");
 
 	return address;
 }
@@ -177,10 +177,10 @@ ecal_test_utils_cal_get_ldap_attribute (ECal *cal)
 	gchar *attr = NULL;
 
 	if (!e_cal_get_ldap_attribute (cal, &attr, &error)) {
-                g_warning ("failed to get ldap attribute; %s\n", error->message);
+		g_warning ("failed to get ldap attribute; %s\n", error->message);
 		exit (1);
 	}
-        test_print ("successfully got the ldap attribute\n");
+	test_print ("successfully got the ldap attribute\n");
 
 	return attr;
 }
@@ -188,38 +188,38 @@ ecal_test_utils_cal_get_ldap_attribute (ECal *cal)
 static const gchar *
 b2s (gboolean value)
 {
-        return value ? "true" : "false";
+	return value ? "true" : "false";
 }
 
 void
 ecal_test_utils_cal_get_capabilities (ECal *cal)
 {
-        test_print ("calendar capabilities:\n");
-        test_print ("        One alarm only:                  %s\n"
-                 "        Organizers must attend meetings: %s\n"
-                 "        Organizers must accept meetings: %s\n"
-                 "        Master object for recurrences:   %s\n"
-                 "        Can save schedules:              %s\n"
-                 "        No alarm repeat:                 %s\n"
-                 "        No audio alarms:                 %s\n"
-                 "        No display alarms:               %s\n"
-                 "        No email alarms:                 %s\n"
-                 "        No procedure alarms:             %s\n"
-                 "        No task assignment:              %s\n"
-                 "        No 'this and future':            %s\n"
-                 "        No 'this and prior':             %s\n"
-                 "        No transparency:                 %s\n"
-                 "        Organizer not email address:     %s\n"
-                 "        Remove alarms:                   %s\n"
-                 "        Create messages:                 %s\n"
-                 "        No conv. to assigned task:       %s\n"
-                 "        No conv. to recurring:           %s\n"
-                 "        No general options:              %s\n"
-                 "        Requires send options:           %s\n"
-                 "        Delegate supported:              %s\n"
-                 "        No organizer required:           %s\n"
-                 "        Delegate to many:                %s\n"
-                 "        Has unaccepted meeting:          %s\n"
+	test_print ("calendar capabilities:\n");
+	test_print ("        One alarm only:                  %s\n"
+		 "        Organizers must attend meetings: %s\n"
+		 "        Organizers must accept meetings: %s\n"
+		 "        Master object for recurrences:   %s\n"
+		 "        Can save schedules:              %s\n"
+		 "        No alarm repeat:                 %s\n"
+		 "        No audio alarms:                 %s\n"
+		 "        No display alarms:               %s\n"
+		 "        No email alarms:                 %s\n"
+		 "        No procedure alarms:             %s\n"
+		 "        No task assignment:              %s\n"
+		 "        No 'this and future':            %s\n"
+		 "        No 'this and prior':             %s\n"
+		 "        No transparency:                 %s\n"
+		 "        Organizer not email address:     %s\n"
+		 "        Remove alarms:                   %s\n"
+		 "        Create messages:                 %s\n"
+		 "        No conv. to assigned task:       %s\n"
+		 "        No conv. to recurring:           %s\n"
+		 "        No general options:              %s\n"
+		 "        Requires send options:           %s\n"
+		 "        Delegate supported:              %s\n"
+		 "        No organizer required:           %s\n"
+		 "        Delegate to many:                %s\n"
+		 "        Has unaccepted meeting:          %s\n"
 		 ,
 		 b2s (e_cal_get_one_alarm_only (cal)),
 		 b2s (e_cal_get_organizer_must_attend (cal)),
@@ -287,7 +287,7 @@ ecal_test_utils_cal_assert_objects_equal_shallow (icalcomponent *a,
 	uid_a = icalcomponent_get_uid (a);
 	uid_b = icalcomponent_get_uid (b);
 	if (g_strcmp0 (uid_a, uid_b)) {
-                g_error ("icomponents not equal:\n"
+		g_error ("icomponents not equal:\n"
 			 "        uid A: '%s'\n"
 			 "        uid b: '%s'\n",
 			 uid_a, uid_b);
@@ -323,14 +323,14 @@ ecal_test_utils_cal_get_object (ECal *cal,
 	icalcomponent *component = NULL;
 
 	if (!e_cal_get_object (cal, uid, NULL, &component, &error)) {
-                g_warning ("failed to get icalcomponent object '%s'; %s\n", uid, error->message);
+		g_warning ("failed to get icalcomponent object '%s'; %s\n", uid, error->message);
 		exit (1);
 	}
 	if (!icalcomponent_is_valid (component)) {
-                g_warning ("retrieved icalcomponent is invalid\n");
+		g_warning ("retrieved icalcomponent is invalid\n");
 		exit (1);
 	}
-        test_print ("successfully got the icalcomponent object '%s'\n", uid);
+	test_print ("successfully got the icalcomponent object '%s'\n", uid);
 
 	return component;
 }
@@ -343,14 +343,14 @@ ecal_test_utils_cal_modify_object (ECal *cal,
 	GError *error = NULL;
 
 	if (!icalcomponent_is_valid (component)) {
-                g_warning (G_STRLOC ": icalcomponent argument is invalid\n");
+		g_warning (G_STRLOC ": icalcomponent argument is invalid\n");
 		exit (1);
 	}
 	if (!e_cal_modify_object (cal, component, mod_type, &error)) {
-                g_warning ("failed to modify icalcomponent object; %s\n", error->message);
+		g_warning ("failed to modify icalcomponent object; %s\n", error->message);
 		exit (1);
 	}
-        test_print ("successfully modified the icalcomponent object\n");
+	test_print ("successfully modified the icalcomponent object\n");
 }
 
 void
@@ -360,10 +360,10 @@ ecal_test_utils_cal_remove_object (ECal *cal,
 	GError *error = NULL;
 
 	if (!e_cal_remove_object (cal, uid, &error)) {
-                g_warning ("failed to remove icalcomponent object '%s'; %s\n", uid, error->message);
+		g_warning ("failed to remove icalcomponent object '%s'; %s\n", uid, error->message);
 		exit (1);
 	}
-        test_print ("successfully remoed the icalcomponent object '%s'\n", uid);
+	test_print ("successfully remoed the icalcomponent object '%s'\n", uid);
 }
 
 icalcomponent *
@@ -373,14 +373,14 @@ ecal_test_utils_cal_get_default_object (ECal *cal)
 	icalcomponent *component = NULL;
 
 	if (!e_cal_get_default_object (cal, &component, &error)) {
-                g_warning ("failed to get default icalcomponent object; %s\n", error->message);
+		g_warning ("failed to get default icalcomponent object; %s\n", error->message);
 		exit (1);
 	}
 	if (!icalcomponent_is_valid (component)) {
-                g_warning ("default icalcomponent is invalid\n");
+		g_warning ("default icalcomponent is invalid\n");
 		exit (1);
 	}
-        test_print ("successfully got the default icalcomponent object\n");
+	test_print ("successfully got the default icalcomponent object\n");
 
 	return component;
 }
@@ -393,10 +393,10 @@ ecal_test_utils_cal_get_object_list (ECal *cal,
 	GList *objects = NULL;
 
 	if (!e_cal_get_object_list (cal, query, &objects, &error)) {
-                g_warning ("failed to get list of icalcomponent objects for query '%s'; %s\n", query, error->message);
+		g_warning ("failed to get list of icalcomponent objects for query '%s'; %s\n", query, error->message);
 		exit (1);
 	}
-        test_print ("successfully got list of icalcomponent objects for the query '%s'\n", query);
+	test_print ("successfully got list of icalcomponent objects for the query '%s'\n", query);
 
 	return objects;
 }
@@ -409,10 +409,10 @@ ecal_test_utils_cal_get_objects_for_uid (ECal *cal,
 	GList *objects = NULL;
 
 	if (!e_cal_get_objects_for_uid (cal, uid, &objects, &error)) {
-                g_warning ("failed to get icalcomponent objects for UID '%s'; %s\n", uid, error->message);
+		g_warning ("failed to get icalcomponent objects for UID '%s'; %s\n", uid, error->message);
 		exit (1);
 	}
-        test_print ("successfully got objects for the icalcomponent with UID '%s'\n", uid);
+	test_print ("successfully got objects for the icalcomponent with UID '%s'\n", uid);
 
 	return objects;
 }
@@ -426,17 +426,17 @@ ecal_test_utils_cal_create_object (ECal *cal,
 	gchar *ical_string = NULL;
 
 	if (!icalcomponent_is_valid (component)) {
-                g_warning ("supplied icalcomponent is invalid\n");
+		g_warning ("supplied icalcomponent is invalid\n");
 		exit (1);
 	}
 
 	if (!e_cal_create_object (cal, component, &uid, &error)) {
-                g_warning ("failed to get create an icalcomponent object; %s\n", error->message);
+		g_warning ("failed to get create an icalcomponent object; %s\n", error->message);
 		exit (1);
 	}
 
 	ical_string = icalcomponent_as_ical_string (component);
-        test_print ("successfully created icalcomponent object '%s'\n%s\n", uid,
+	test_print ("successfully created icalcomponent object '%s'\n%s\n", uid,
 			ical_string);
 	g_free (ical_string);
 
@@ -454,14 +454,14 @@ cal_set_mode_cb (ECal *cal,
 		test_print ("calendar server is busy; waiting...");
 		return;
 	} else if (status != E_CALENDAR_STATUS_OK) {
-                g_warning ("failed to asynchronously remove the calendar: "
-                                "status %d", status);
+		g_warning ("failed to asynchronously remove the calendar: "
+				"status %d", status);
 		exit (1);
 	}
 
 	closure->mode = mode;
 
-        test_print ("successfully set the calendar mode to %d\n", mode);
+	test_print ("successfully set the calendar mode to %d\n", mode);
 	if (closure->cb)
 		(*closure->cb) (closure);
 
@@ -533,7 +533,7 @@ ecal_test_utils_cal_component_set_icalcomponent (ECalComponent *e_component,
                                                  icalcomponent *component)
 {
 	if (!e_cal_component_set_icalcomponent (e_component, component)) {
-                g_error ("Could not set icalcomponent\n");
+		g_error ("Could not set icalcomponent\n");
 	}
 }
 
@@ -545,10 +545,10 @@ ecal_test_utils_cal_get_timezone (ECal *cal,
 	icaltimezone *zone = NULL;
 
 	if (!e_cal_get_timezone (cal, tzid, &zone, &error)) {
-                g_warning ("failed to get icaltimezone* for ID '%s'; %s\n", tzid, error->message);
+		g_warning ("failed to get icaltimezone* for ID '%s'; %s\n", tzid, error->message);
 		exit (1);
 	}
-        test_print ("successfully got icaltimezone* for ID '%s'\n", tzid);
+	test_print ("successfully got icaltimezone* for ID '%s'\n", tzid);
 
 	return zone;
 }
@@ -563,10 +563,10 @@ ecal_test_utils_cal_add_timezone (ECal *cal,
 	name = icaltimezone_get_display_name (zone);
 
 	if (!e_cal_add_timezone (cal, zone, &error)) {
-                g_warning ("failed to add icaltimezone '%s'; %s\n", name, error->message);
+		g_warning ("failed to add icaltimezone '%s'; %s\n", name, error->message);
 		exit (1);
 	}
-        test_print ("successfully added icaltimezone '%s'\n", name);
+	test_print ("successfully added icaltimezone '%s'\n", name);
 }
 
 void
@@ -579,10 +579,10 @@ ecal_test_utils_cal_set_default_timezone (ECal *cal,
 	name = icaltimezone_get_display_name (zone);
 
 	if (!e_cal_set_default_timezone (cal, zone, &error)) {
-                g_warning ("failed to set default icaltimezone '%s'; %s\n", name, error->message);
+		g_warning ("failed to set default icaltimezone '%s'; %s\n", name, error->message);
 		exit (1);
 	}
-        test_print ("successfully set default icaltimezone '%s'\n", name);
+	test_print ("successfully set default icaltimezone '%s'\n", name);
 }
 
 GList *

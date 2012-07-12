@@ -142,12 +142,15 @@ tree_model_generator_set_property (GObject *object,
 			tree_model_generator->priv->root_nodes =
 				build_node_map (tree_model_generator, NULL, NULL, -1);
 
-			g_signal_connect_swapped (tree_model_generator->priv->child_model, "row-changed",
-						  G_CALLBACK (child_row_changed), tree_model_generator);
-			g_signal_connect_swapped (tree_model_generator->priv->child_model, "row-deleted",
-						  G_CALLBACK (child_row_deleted), tree_model_generator);
-			g_signal_connect_swapped (tree_model_generator->priv->child_model, "row-inserted",
-						  G_CALLBACK (child_row_inserted), tree_model_generator);
+			g_signal_connect_swapped (
+				tree_model_generator->priv->child_model, "row-changed",
+				G_CALLBACK (child_row_changed), tree_model_generator);
+			g_signal_connect_swapped (
+				tree_model_generator->priv->child_model, "row-deleted",
+				G_CALLBACK (child_row_deleted), tree_model_generator);
+			g_signal_connect_swapped (
+				tree_model_generator->priv->child_model, "row-inserted",
+				G_CALLBACK (child_row_inserted), tree_model_generator);
 			break;
 
 		default:
@@ -182,9 +185,10 @@ tree_model_generator_finalize (GObject *object)
 	ETreeModelGenerator *tree_model_generator = E_TREE_MODEL_GENERATOR (object);
 
 	if (tree_model_generator->priv->child_model) {
-		g_signal_handlers_disconnect_matched (tree_model_generator->priv->child_model,
-						      G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL,
-						      tree_model_generator);
+		g_signal_handlers_disconnect_matched (
+			tree_model_generator->priv->child_model,
+			G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL,
+			tree_model_generator);
 		g_object_unref (tree_model_generator->priv->child_model);
 	}
 
@@ -521,9 +525,10 @@ create_node_at_child_path (ETreeModelGenerator *tree_model_generator,
 	if (group->len - 1 - index > 0) {
 		gint i;
 
-		memmove ((Node *) group->data + index + 1,
-			 (Node *) group->data + index,
-			 (group->len - 1 - index) * sizeof (Node));
+		memmove (
+			(Node *) group->data + index + 1,
+			(Node *) group->data + index,
+			(group->len - 1 - index) * sizeof (Node));
 
 		/* Update parent pointers */
 		for (i = index + 1; i < group->len; i++) {
@@ -548,8 +553,9 @@ create_node_at_child_path (ETreeModelGenerator *tree_model_generator,
 	node->n_generated  = 0;
 	node->child_nodes  = NULL;
 
-	ETMG_DEBUG (g_print ("Created node at offset %d, parent_group = %p, parent_index = %d\n",
-			     index, node->parent_group, node->parent_index));
+	ETMG_DEBUG (
+		g_print ("Created node at offset %d, parent_group = %p, parent_index = %d\n",
+		index, node->parent_group, node->parent_index));
 
 	return node;
 }
@@ -565,8 +571,9 @@ dump_group (GArray *group)
 
 	for (i = 0; i < group->len; i++) {
 		Node *node = &g_array_index (group, Node, i);
-		g_print ("  %04d: pgroup=%p, pindex=%d, n_generated=%d, child_nodes=%p\n",
-			 i, node->parent_group, node->parent_index, node->n_generated, node->child_nodes);
+		g_print (
+			"  %04d: pgroup=%p, pindex=%d, n_generated=%d, child_nodes=%p\n",
+			i, node->parent_group, node->parent_index, node->n_generated, node->child_nodes);
 	}
 }
 
@@ -742,8 +749,9 @@ e_tree_model_generator_new (GtkTreeModel *child_model)
 {
 	g_return_val_if_fail (GTK_IS_TREE_MODEL (child_model), NULL);
 
-	return E_TREE_MODEL_GENERATOR (g_object_new (E_TYPE_TREE_MODEL_GENERATOR,
-						     "child-model", child_model, NULL));
+	return E_TREE_MODEL_GENERATOR (
+		g_object_new (E_TYPE_TREE_MODEL_GENERATOR,
+		"child-model", child_model, NULL));
 }
 
 /**
@@ -1321,8 +1329,9 @@ e_tree_model_generator_get_value (GtkTreeModel *tree_model,
 	g_return_if_fail (E_IS_TREE_MODEL_GENERATOR (tree_model));
 	g_return_if_fail (ITER_IS_VALID (tree_model_generator, iter));
 
-	e_tree_model_generator_convert_iter_to_child_iter (tree_model_generator, &child_iter,
-							   &permutation_n, iter);
+	e_tree_model_generator_convert_iter_to_child_iter (
+		tree_model_generator, &child_iter,
+		&permutation_n, iter);
 
 	if (tree_model_generator->priv->modify_func) {
 		tree_model_generator->priv->modify_func (tree_model_generator->priv->child_model,

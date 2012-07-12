@@ -511,7 +511,7 @@ cal_backend_http_load (ECalBackendHttp *backend,
 		newuri = soup_message_headers_get (
 			soup_message->response_headers, "Location");
 
-		d(g_message ("Redirected from %s to %s\n", async_context->uri, newuri));
+		d (g_message ("Redirected from %s to %s\n", async_context->uri, newuri));
 
 		if (newuri != NULL) {
 			gchar *redirected_uri;
@@ -749,7 +749,7 @@ begin_retrieval_cb (GIOSchedulerJob *job,
 	if (backend->priv->is_loading)
 		return FALSE;
 
-	d(g_message ("Starting retrieval...\n"));
+	d (g_message ("Starting retrieval...\n"));
 
 	backend->priv->is_loading = TRUE;
 
@@ -774,7 +774,7 @@ begin_retrieval_cb (GIOSchedulerJob *job,
 		g_error_free (error);
 	}
 
-	d(g_message ("Retrieval really done.\n"));
+	d (g_message ("Retrieval really done.\n"));
 
 	return FALSE;
 }
@@ -789,7 +789,7 @@ reload_cb (ECalBackendHttp *cbhttp)
 	if (priv->is_loading)
 		return TRUE;
 
-	d(g_message ("Reload!\n"));
+	d (g_message ("Reload!\n"));
 
 	priv->reload_timeout_id = 0;
 
@@ -813,7 +813,7 @@ maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
 
 	priv = cbhttp->priv;
 
-	d(g_message ("Setting reload timeout.\n"));
+	d (g_message ("Setting reload timeout.\n"));
 
 	if (priv->reload_timeout_id)
 		return;
@@ -1162,7 +1162,7 @@ e_cal_backend_http_start_view (ECalBackend *backend,
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
 
-	d(g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query)));
+	d (g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query)));
 
 	if (!priv->store) {
 		GError *error = EDC_ERROR (NoSuchCal);
@@ -1283,7 +1283,7 @@ create_user_free_busy (ECalBackendHttp *cbhttp,
         /* add all objects in the given interval */
 	iso_start = isodate_from_time_t (start);
 	iso_end = isodate_from_time_t (end);
-        query = g_strdup_printf ("occur-in-time-range? (make-time \"%s\") (make-time \"%s\")",
+	query = g_strdup_printf ("occur-in-time-range? (make-time \"%s\") (make-time \"%s\")",
 				 iso_start, iso_end);
 	obj_sexp = e_cal_backend_sexp_new (query);
 	g_free (query);

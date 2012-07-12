@@ -114,7 +114,7 @@ static gint lock_path (const gchar *path, guint32 *lockid)
 	gint res = CAMEL_LOCK_HELPER_STATUS_OK;
 	struct stat st;
 
-	d(fprintf(stderr, "locking path '%s' id = %d\n", path, lock_id));
+	d (fprintf (stderr, "locking path '%s' id = %d\n", path, lock_id));
 
 	/* check to see if we have it locked already, make the lock 'recursive' */
 	/* we could also error i suppose, but why bother */
@@ -180,11 +180,11 @@ static gint lock_path (const gchar *path, guint32 *lockid)
 
 	lock_id++;
 
-	d(fprintf(stderr, "lock ok\n"));
+	d (fprintf (stderr, "lock ok\n"));
 
 	return res;
 fail:
-	d(fprintf(stderr, "lock failed\n"));
+	d (fprintf (stderr, "lock failed\n"));
 
 	if (info)
 		free (info);
@@ -196,13 +196,13 @@ static gint unlock_id (guint32 lockid)
 {
 	struct _lock_info *info, *p;
 
-	d(fprintf(stderr, "unlocking id '%d'\n", lockid));
+	d (fprintf (stderr, "unlocking id '%d'\n", lockid));
 
 	p = (struct _lock_info *) &lock_info_list;
 	info = p->next;
 	while (info) {
 		if (info->id == lockid) {
-			d(fprintf(stderr, "found id %d path '%s'\n", lockid, info->path));
+			d (fprintf (stderr, "found id %d path '%s'\n", lockid, info->path));
 			info->depth--;
 			if (info->depth <= 0) {
 #ifdef SETEUID_SAVES
@@ -224,7 +224,7 @@ static gint unlock_id (guint32 lockid)
 		info = info->next;
 	}
 
-	d(fprintf(stderr, "unknown id asked to be unlocked %d\n", lockid));
+	d (fprintf (stderr, "unknown id asked to be unlocked %d\n", lockid));
 	return CAMEL_LOCK_HELPER_STATUS_PROTOCOL;
 }
 
@@ -235,9 +235,9 @@ static void lock_touch (const gchar *path)
 	/* we could also check that we haven't had our lock stolen from us here */
 
 	name = alloca (strlen (path) + 10);
-	sprintf(name, "%s.lock", path);
+	sprintf (name, "%s.lock", path);
 
-	d(fprintf(stderr, "Updating lock %s\n", name));
+	d (fprintf (stderr, "Updating lock %s\n", name));
 	utime (name, NULL);
 }
 
@@ -306,7 +306,7 @@ gint main (gint argc, gchar **argv)
 			tv.tv_usec = 0;
 		}
 
-		d(fprintf(stderr, "lock helper waiting for input\n"));
+		d (fprintf (stderr, "lock helper waiting for input\n"));
 		if (select (STDIN_FILENO + 1, &rset, NULL, NULL, lock_info_list ? &tv : NULL) == -1) {
 			if (errno == EINTR)
 				break;
@@ -319,7 +319,7 @@ gint main (gint argc, gchar **argv)
 			time_t now = time (NULL);
 			time_t left;
 
-			d(fprintf(stderr, "Got a timeout, checking locks\n"));
+			d (fprintf (stderr, "Got a timeout, checking locks\n"));
 
 			info = lock_info_list;
 			while (info) {
@@ -360,13 +360,13 @@ gint main (gint argc, gchar **argv)
 				break;
 			}
 		}
-		d(fprintf(stderr, "returning result %d\n", res));
+		d (fprintf (stderr, "returning result %d\n", res));
 		msg.id = res;
 		msg.magic = CAMEL_LOCK_HELPER_RETURN_MAGIC;
 		write_n (STDOUT_FILENO, &msg, sizeof (msg));
 	} while (1);
 
-	d(fprintf(stderr, "parent exited, clsoing down remaining id's\n"));
+	d (fprintf (stderr, "parent exited, clsoing down remaining id's\n"));
 	while (lock_info_list)
 		unlock_id (lock_info_list->id);
 

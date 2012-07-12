@@ -17,7 +17,7 @@ print_email (EContact *contact)
 	printf ("Email addresses:\n");
 	emails = e_contact_get (contact, E_CONTACT_EMAIL);
 	for (e = emails; e; e = e->next) {
-		printf ("\t%s\n",  (gchar *)e->data);
+		printf ("\t%s\n",  (gchar *) e->data);
 	}
 	g_list_foreach (emails, (GFunc) g_free, NULL);
 	g_list_free (emails);

@@ -397,7 +397,7 @@ entry_compare (SearchContext *ctx,
 
 		propname = argv[0]->value.string;
 
-		any_field = !strcmp(propname, "x-evolution-any-field");
+		any_field = !strcmp (propname, "x-evolution-any-field");
 		for (i = 0; i < G_N_ELEMENTS (prop_info_table); i++) {
 			if (any_field
 			    || !strcmp (prop_info_table[i].query_prop, propname)) {
@@ -420,7 +420,7 @@ entry_compare (SearchContext *ctx,
 					if (prop && compare (prop, argv[1]->value.string)) {
 						truth = TRUE;
 					}
-					if ((!prop) && compare("", argv[1]->value.string)) {
+					if ((!prop) && compare ("", argv[1]->value.string)) {
 						truth = TRUE;
 					}
 				}

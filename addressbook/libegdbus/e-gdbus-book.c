@@ -159,28 +159,120 @@ e_gdbus_book_default_init (EGdbusBookIface *iface)
 	_signal_name_to_type = g_hash_table_new (g_str_hash, g_str_equal);
 
 	/* GObject signals definitions for D-Bus signals: */
-	E_INIT_GDBUS_SIGNAL_STRING		(EGdbusBookIface, "backend_error",	backend_error,	__BACKEND_ERROR_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_BOOLEAN		(EGdbusBookIface, "readonly",		readonly,	__READONLY_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_BOOLEAN		(EGdbusBookIface, "online",		online,		__ONLINE_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusBookIface, "opened", 		opened,		__OPENED_SIGNAL)
-	E_INIT_GDBUS_SIGNAL_STRV   		(EGdbusBookIface, "backend_property_changed", 	backend_property_changed,	__BACKEND_PROPERTY_CHANGED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRING (
+		EGdbusBookIface,
+		"backend_error",
+		backend_error,
+		__BACKEND_ERROR_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_BOOLEAN (
+		EGdbusBookIface,
+		"readonly",
+		readonly,
+		__READONLY_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_BOOLEAN (
+		EGdbusBookIface,
+		"online",
+		online,
+		__ONLINE_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV (
+		EGdbusBookIface,
+		"opened",
+		opened,
+		__OPENED_SIGNAL)
+	E_INIT_GDBUS_SIGNAL_STRV (
+		EGdbusBookIface,
+		"backend_property_changed",
+		backend_property_changed,
+		__BACKEND_PROPERTY_CHANGED_SIGNAL)
 
 	/* GObject signals definitions for D-Bus methods: */
-	E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__VOID	(EGdbusBookIface, "open",			open, __OPEN_METHOD, __OPEN_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID	(EGdbusBookIface, "remove",			remove, __REMOVE_METHOD, __REMOVE_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID	(EGdbusBookIface, "refresh",			refresh, __REFRESH_METHOD, __REFRESH_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "get_contact",		get_contact, __GET_CONTACT_METHOD, __GET_CONTACT_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV	(EGdbusBookIface, "get_contact_list",		get_contact_list, __GET_CONTACT_LIST_METHOD, __GET_CONTACT_LIST_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV	(EGdbusBookIface, "get_contact_list_uids",	get_contact_list_uids, __GET_CONTACT_LIST_UIDS_METHOD, __GET_CONTACT_LIST_UIDS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__STRV    (EGdbusBookIface, "add_contacts",		add_contacts, __ADD_CONTACTS_METHOD, __ADD_CONTACTS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "remove_contacts",		remove_contacts, __REMOVE_CONTACTS_METHOD, __REMOVE_CONTACTS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "modify_contacts",		modify_contacts, __MODIFY_CONTACTS_METHOD, __MODIFY_CONTACTS_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "get_backend_property",	get_backend_property, __GET_BACKEND_PROPERTY_METHOD, __GET_BACKEND_PROPERTY_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID	(EGdbusBookIface, "set_backend_property",	set_backend_property, __SET_BACKEND_PROPERTY_METHOD, __SET_BACKEND_PROPERTY_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING(EGdbusBookIface, "get_view",			get_view, __GET_VIEW_METHOD, __GET_VIEW_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_UINT		(EGdbusBookIface, "cancel_operation",		cancel_operation, __CANCEL_OPERATION_METHOD)
-	E_INIT_GDBUS_METHOD_VOID		(EGdbusBookIface, "cancel_all",			cancel_all, __CANCEL_ALL_METHOD)
-	E_INIT_GDBUS_METHOD_VOID		(EGdbusBookIface, "close",			close, __CLOSE_METHOD)
+	E_INIT_GDBUS_METHOD_ASYNC_BOOLEAN__VOID (
+		EGdbusBookIface,
+		"open",
+		open,
+		__OPEN_METHOD,
+		__OPEN_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID (
+		EGdbusBookIface,
+		"remove",
+		remove,
+		__REMOVE_METHOD,
+		__REMOVE_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID (
+		EGdbusBookIface,
+		"refresh",
+		refresh,
+		__REFRESH_METHOD,
+		__REFRESH_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING (
+		EGdbusBookIface,
+		"get_contact",
+		get_contact,
+		__GET_CONTACT_METHOD,
+		__GET_CONTACT_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV (
+		EGdbusBookIface,
+		"get_contact_list",
+		get_contact_list,
+		__GET_CONTACT_LIST_METHOD,
+		__GET_CONTACT_LIST_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRV (
+		EGdbusBookIface,
+		"get_contact_list_uids",
+		get_contact_list_uids,
+		__GET_CONTACT_LIST_UIDS_METHOD,
+		__GET_CONTACT_LIST_UIDS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__STRV (
+		EGdbusBookIface,
+		"add_contacts",
+		add_contacts,
+		__ADD_CONTACTS_METHOD,
+		__ADD_CONTACTS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID (
+		EGdbusBookIface,
+		"remove_contacts",
+		remove_contacts,
+		__REMOVE_CONTACTS_METHOD,
+		__REMOVE_CONTACTS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID (
+		EGdbusBookIface,
+		"modify_contacts",
+		modify_contacts,
+		__MODIFY_CONTACTS_METHOD,
+		__MODIFY_CONTACTS_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING (
+		EGdbusBookIface,
+		"get_backend_property",
+		get_backend_property,
+		__GET_BACKEND_PROPERTY_METHOD,
+		__GET_BACKEND_PROPERTY_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRV__VOID (
+		EGdbusBookIface,
+		"set_backend_property",
+		set_backend_property,
+		__SET_BACKEND_PROPERTY_METHOD,
+		__SET_BACKEND_PROPERTY_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_ASYNC_STRING__STRING (
+		EGdbusBookIface,
+		"get_view",
+		get_view,
+		__GET_VIEW_METHOD,
+		__GET_VIEW_DONE_SIGNAL)
+	E_INIT_GDBUS_METHOD_UINT (
+		EGdbusBookIface,
+		"cancel_operation",
+		cancel_operation,
+		__CANCEL_OPERATION_METHOD)
+	E_INIT_GDBUS_METHOD_VOID (
+		EGdbusBookIface,
+		"cancel_all",
+		cancel_all,
+		__CANCEL_ALL_METHOD)
+	E_INIT_GDBUS_METHOD_VOID (
+		EGdbusBookIface,
+		"close",
+		close,
+		__CLOSE_METHOD)
 }
 
 void
@@ -716,28 +808,88 @@ e_gdbus_book_emit_backend_property_changed (EGdbusBook *object,
 	g_signal_emit (object, signals[__BACKEND_PROPERTY_CHANGED_SIGNAL], 0, arg_name_value);
 }
 
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, backend_error, message, "s")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, readonly, is_readonly, "b")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, online, is_online, "b")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, opened, error, "as")
-E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book, backend_property_changed, name_value, "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book,
+                                 backend_error,
+                                 message,
+                                 "s")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book,
+                                 readonly,
+                                 is_readonly,
+                                 "b")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book,
+                                 online,
+                                 is_online,
+                                 "b")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book,
+                                 opened,
+                                 error,
+                                 "as")
+E_DECLARE_GDBUS_NOTIFY_SIGNAL_1 (book,
+                                 backend_property_changed,
+                                 name_value,
+                                 "as")
 
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, open, only_if_exists, "b")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (book,
+                                  open,
+                                  only_if_exists,
+                                  "b")
 E_DECLARE_GDBUS_ASYNC_METHOD_0 (book,
                                 remove)
 E_DECLARE_GDBUS_ASYNC_METHOD_0 (book,
                                 refresh)
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_contact, uid, "s", vcard, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_contact_list, query, "s", vcards, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_contact_list_uids, query, "s", uids, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, add_contacts, vcards, "as", uids, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, remove_contacts, list, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, modify_contacts, vcard, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_backend_property, prop_name, "s", prop_value, "s")
-E_DECLARE_GDBUS_ASYNC_METHOD_1			(book, set_backend_property, prop_name_value, "as")
-E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN	(book, get_view, query, "s", view, "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (book,
+                                            get_contact,
+                                            uid,
+                                            "s",
+                                            vcard,
+                                            "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (book,
+                                            get_contact_list,
+                                            query,
+                                            "s",
+                                            vcards,
+                                            "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (book,
+                                            get_contact_list_uids,
+                                            query,
+                                            "s",
+                                            uids,
+                                            "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (book,
+                                            add_contacts,
+                                            vcards,
+                                            "as",
+                                            uids,
+                                            "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (book,
+                                  remove_contacts,
+                                  list,
+                                  "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (book,
+                                  modify_contacts,
+                                  vcard,
+                                  "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (book,
+                                            get_backend_property,
+                                            prop_name,
+                                            "s",
+                                            prop_value,
+                                            "s")
+E_DECLARE_GDBUS_ASYNC_METHOD_1 (book,
+                                  set_backend_property,
+                                  prop_name_value,
+                                  "as")
+E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (book,
+                                            get_view,
+                                            query,
+                                            "s",
+                                            view,
+                                            "s")
 
-E_DECLARE_GDBUS_SYNC_METHOD_1			(book, cancel_operation, opid, "u")
+E_DECLARE_GDBUS_SYNC_METHOD_1 (book,
+                                 cancel_operation,
+                                 opid,
+                                 "u")
 E_DECLARE_GDBUS_SYNC_METHOD_0 (book,
                                cancel_all)
 E_DECLARE_GDBUS_SYNC_METHOD_0 (book,

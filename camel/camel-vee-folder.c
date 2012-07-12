@@ -166,7 +166,7 @@ static void
 vee_folder_note_unmatch_uid (CamelVeeFolder *vfolder,
                              CamelVeeSummary *vsummary,
                              CamelFolder *subfolder,
-			     CamelVeeDataCache *data_cache,
+                             CamelVeeDataCache *data_cache,
                              CamelVeeMessageInfoData *unmatched_mi_data,
                              CamelFolderChangeInfo *changes)
 {
@@ -204,8 +204,8 @@ vee_folder_remove_unmatched (CamelVeeFolder *vfolder,
 
 	if (is_orig_message_uid) {
 		/* camel_vee_data_cache_get_message_info_data() auto-adds items if not there,
-		   thus check whether the cache has it already, and if not, then skip the action.
-		   This can happen for virtual Junk/Trash folders.
+		 * thus check whether the cache has it already, and if not, then skip the action.
+		 * This can happen for virtual Junk/Trash folders.
 		*/
 		if (!camel_vee_data_cache_contains_message_info_data (data_cache, subfolder, orig_message_uid))
 			return;
@@ -1281,7 +1281,7 @@ camel_vee_folder_new (CamelStore *parent_store,
 		camel_vee_folder_construct (vf, flags);
 	}
 
-	d (printf ("returning folder %s %p, count = %d\n", full, vf, camel_folder_get_message_count ((CamelFolder *)vf)));
+	d (printf ("returning folder %s %p, count = %d\n", full, vf, camel_folder_get_message_count ((CamelFolder *) vf)));
 
 	return (CamelFolder *) vf;
 }
@@ -1619,7 +1619,7 @@ camel_vee_folder_set_auto_update (CamelVeeFolder *vfolder,
 {
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
 
-	if ((vfolder->priv->auto_update ? 1 : 0) == (auto_update ? 1 : 0))
+	if (vfolder->priv->auto_update == auto_update)
 		return;
 
 	vfolder->priv->auto_update = auto_update;

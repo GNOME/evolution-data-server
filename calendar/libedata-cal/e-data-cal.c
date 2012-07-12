@@ -156,7 +156,7 @@ static gchar *
 construct_calview_path (void)
 {
 	static guint counter = 1;
-	return g_strdup_printf ("/org/gnome/evolution/dataserver/CalendarView/%d/%d", getpid(), counter++);
+	return g_strdup_printf ("/org/gnome/evolution/dataserver/CalendarView/%d/%d", getpid (), counter++);
 }
 
 static void

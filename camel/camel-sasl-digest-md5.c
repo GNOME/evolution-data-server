@@ -252,10 +252,10 @@ decode_value (const gchar **in)
 
 	decode_lwsp (&inptr);
 	if (*inptr == '"') {
-		d(printf ("decoding quoted string token\n"));
+		d (printf ("decoding quoted string token\n"));
 		return decode_quoted_string (in);
 	} else {
-		d(printf ("decoding string token\n"));
+		d (printf ("decoding string token\n"));
 		return decode_token (in);
 	}
 }

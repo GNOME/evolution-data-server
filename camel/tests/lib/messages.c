@@ -283,7 +283,7 @@ message_dump_rec (CamelMimeMessage *msg,
 	printf ("%sPart <%s>\n", s, G_OBJECT_TYPE_NAME (part));
 	printf ("%sContent-Type: %s\n", s, mime_type);
 	g_free (mime_type);
-	printf ("%s encoding: %s\n", s, camel_transfer_encoding_to_string (((CamelDataWrapper *)part)->encoding));
+	printf ("%s encoding: %s\n", s, camel_transfer_encoding_to_string (((CamelDataWrapper *) part)->encoding));
 	printf ("%s part encoding: %s\n", s, camel_transfer_encoding_to_string (camel_mime_part_get_encoding (part)));
 
 	containee = camel_medium_get_content (CAMEL_MEDIUM (part));
@@ -295,7 +295,7 @@ message_dump_rec (CamelMimeMessage *msg,
 	printf ("%sContent <%s>\n", s, G_OBJECT_TYPE_NAME (containee));
 	printf ("%sContent-Type: %s\n", s, mime_type);
 	g_free (mime_type);
-	printf ("%s encoding: %s\n", s, camel_transfer_encoding_to_string (((CamelDataWrapper *)containee)->encoding));
+	printf ("%s encoding: %s\n", s, camel_transfer_encoding_to_string (((CamelDataWrapper *) containee)->encoding));
 
 	/* using the object types is more accurate than using the mime/types */
 	if (CAMEL_IS_MULTIPART (containee)) {

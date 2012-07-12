@@ -119,13 +119,13 @@ checkmem (gpointer p)
 
 		switch (status) {
 		case MCHECK_HEAD:
-			printf("Memory underrun at %p\n", p);
+			printf ("Memory underrun at %p\n", p);
 			abort ();
 		case MCHECK_TAIL:
-			printf("Memory overrun at %p\n", p);
+			printf ("Memory overrun at %p\n", p);
 			abort ();
 		case MCHECK_FREE:
-			printf("Double free %p\n", p);
+			printf ("Double free %p\n", p);
 			abort ();
 		}
 	}

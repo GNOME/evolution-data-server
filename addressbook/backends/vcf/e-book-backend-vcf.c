@@ -75,7 +75,7 @@ e_book_backend_vcf_create_unique_id (void)
 	 * it's doubtful 2^32 id's will be created in a second, so we
 	 * should be okay. */
 	static guint c = 0;
-	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", time(NULL), c++);
+	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", time (NULL), c++);
 }
 
 static void
@@ -178,7 +178,7 @@ save_file (EBookBackendVCF *vcf)
 	}
 
 	if (0 > g_rename (new_path, vcf->priv->filename)) {
-		g_warning ("Failed to rename %s: %s\n", vcf->priv->filename, g_strerror(errno));
+		g_warning ("Failed to rename %s: %s\n", vcf->priv->filename, g_strerror (errno));
 		g_unlink (new_path);
 		goto out;
 	}
@@ -284,7 +284,7 @@ e_book_backend_vcf_create_contacts (EBookBackendSync *backend,
 	if (vcards->next != NULL) {
 		g_propagate_error (perror,
 				   EDB_ERROR_EX (NOT_SUPPORTED,
-		                   _("The backend does not support bulk additions")));
+				   _("The backend does not support bulk additions")));
 		return;
 	}
 
@@ -316,7 +316,7 @@ e_book_backend_vcf_remove_contacts (EBookBackendSync *backend,
 	if (id_list->next != NULL) {
 		g_propagate_error (perror,
 				   EDB_ERROR_EX (NOT_SUPPORTED,
-		                   _("The backend does not support bulk removals")));
+				   _("The backend does not support bulk removals")));
 		return;
 	}
 
@@ -364,7 +364,7 @@ e_book_backend_vcf_modify_contacts (EBookBackendSync *backend,
 	if (vcards->next != NULL) {
 		g_propagate_error (perror,
 				   EDB_ERROR_EX (NOT_SUPPORTED,
-		                   _("The backend does not support bulk modifications")));
+				   _("The backend does not support bulk modifications")));
 		return;
 	}
 
@@ -462,7 +462,7 @@ typedef struct {
 static void
 closure_destroy (VCFBackendSearchClosure *closure)
 {
-	d(printf ("destroying search closure\n"));
+	d (printf ("destroying search closure\n"));
 	e_flag_free (closure->running);
 	g_free (closure);
 }
@@ -509,7 +509,7 @@ book_view_thread (gpointer data)
 	else
 		e_data_book_view_notify_progress (book_view, -1, _("Searching..."));
 
-	d(printf ("signalling parent thread\n"));
+	d (printf ("signalling parent thread\n"));
 	e_flag_set (closure->running);
 
 	for (l = closure->bvcf->priv->contact_list; l; l = l->next) {
@@ -528,7 +528,7 @@ book_view_thread (gpointer data)
 	/* unref the book view */
 	e_data_book_view_unref (book_view);
 
-	d(printf ("finished initial population of book view\n"));
+	d (printf ("finished initial population of book view\n"));
 
 	return NULL;
 }
@@ -539,13 +539,13 @@ e_book_backend_vcf_start_book_view (EBookBackend *backend,
 {
 	VCFBackendSearchClosure *closure = init_closure (book_view, E_BOOK_BACKEND_VCF (backend));
 
-	d(printf ("starting book view thread\n"));
+	d (printf ("starting book view thread\n"));
 	closure->thread = g_thread_create (book_view_thread, book_view, TRUE, NULL);
 
 	e_flag_wait (closure->running);
 
 	/* at this point we know the book view thread is actually running */
-	d(printf ("returning from start_book_view\n"));
+	d (printf ("returning from start_book_view\n"));
 
 }
 
@@ -556,7 +556,7 @@ e_book_backend_vcf_stop_book_view (EBookBackend *backend,
 	VCFBackendSearchClosure *closure = get_closure (book_view);
 	gboolean need_join;
 
-	d(printf ("stopping query\n"));
+	d (printf ("stopping query\n"));
 	need_join = e_flag_is_set (closure->running);
 	e_flag_clear (closure->running);
 
@@ -638,7 +638,7 @@ e_book_backend_vcf_open (EBookBackendSync *backend,
 
 	if (fd == -1) {
 		g_warning ("Failed to open addressbook at `%s'", dirname);
-		g_warning ("error == %s", g_strerror(errno));
+		g_warning ("error == %s", g_strerror (errno));
 		g_propagate_error (
 			perror, e_data_book_create_error_fmt (
 			E_DATA_BOOK_STATUS_OTHER_ERROR,

@@ -39,7 +39,7 @@ objects_added_cb (GObject *object,
 	const GSList *l;
 
 	for (l = objects; l; l = l->next)
-                g_print ("Object added %s (%s)\n", icalcomponent_get_uid (l->data), icalcomponent_get_summary (l->data));
+		g_print ("Object added %s (%s)\n", icalcomponent_get_uid (l->data), icalcomponent_get_summary (l->data));
 
 	subtest_passed (SUBTEST_OBJECTS_ADDED);
 }
@@ -52,7 +52,7 @@ objects_modified_cb (GObject *object,
 	const GSList *l;
 
 	for (l = objects; l; l = l->next)
-                g_print ("Object modified %s (%s)\n", icalcomponent_get_uid (l->data), icalcomponent_get_summary (l->data));
+		g_print ("Object modified %s (%s)\n", icalcomponent_get_uid (l->data), icalcomponent_get_summary (l->data));
 
 	subtest_passed (SUBTEST_OBJECTS_MODIFIED);
 }
@@ -67,7 +67,7 @@ objects_removed_cb (GObject *object,
 	for (l = objects; l; l = l->next) {
 		ECalComponentId *id = l->data;
 
-                g_print ("Object removed: uid: %s, rid: %s\n", id->uid, id->rid);
+		g_print ("Object removed: uid: %s, rid: %s\n", id->uid, id->rid);
 	}
 
 	subtest_passed (SUBTEST_OBJECTS_REMOVED);
@@ -78,7 +78,7 @@ complete_cb (GObject *object,
              const GError *error,
              gpointer data)
 {
-        g_print ("View complete (status: %d, error_msg:%s)\n", error ? error->code : 0, error ? error->message : "NULL");
+	g_print ("View complete (status: %d, error_msg:%s)\n", error ? error->code : 0, error ? error->message : "NULL");
 
 	subtest_passed (SUBTEST_VIEW_DONE);
 }

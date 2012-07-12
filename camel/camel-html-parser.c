@@ -459,8 +459,8 @@ static CamelHTMLParserPrivate *tokenize_init (void)
 	p->attr = 0;
 	p->attrs = g_ptr_array_new ();
 	p->values = g_ptr_array_new ();
-	p->tag = g_string_new("");
-	p->ent = g_string_new("");
+	p->tag = g_string_new ("");
+	p->ent = g_string_new ("");
 	p->charset = NULL;
 
 	if (entities == NULL)
@@ -505,10 +505,10 @@ static void dump_tag (CamelHTMLParserPrivate *p)
 {
 	gint i;
 
-	printf("got tag: %s\n", p->tag->str);
-	printf("%d attributes:\n", p->attr);
+	printf ("got tag: %s\n", p->tag->str);
+	printf ("%d attributes:\n", p->attr);
 	for (i = 0; i < p->attr; i++) {
-		printf(" %s = '%s'\n", ((GString *)p->attrs->pdata[i])->str, ((GString *)p->values->pdata[i])->str);
+		printf (" %s = '%s'\n", ((GString *) p->attrs->pdata[i])->str, ((GString *) p->values->pdata[i])->str);
 	}
 }
 #endif
@@ -521,7 +521,7 @@ static gint tokenize_step (CamelHTMLParserPrivate *p, gchar **datap, gint *lenp)
 	gint state = p->state, ret, len;
 	gchar *start = p->inptr;
 
-	d(printf("Tokenise step\n"));
+	d (printf ("Tokenise step\n"));
 
 	while (in < inend) {
 		c = *in++;
@@ -532,7 +532,7 @@ static gint tokenize_step (CamelHTMLParserPrivate *p, gchar **datap, gint *lenp)
 				state = CAMEL_HTML_PARSER_TAG;
 				p->attr = 0;
 				g_string_truncate (p->tag, 0);
-				d(printf("got data '%.*s'\n", in-start-1, start));
+				d (printf ("got data '%.*s'\n", in - start - 1, start));
 				*datap = start;
 				*lenp = in-start-1;
 				goto done;
@@ -541,7 +541,7 @@ static gint tokenize_step (CamelHTMLParserPrivate *p, gchar **datap, gint *lenp)
 				state = CAMEL_HTML_PARSER_ENT;
 				g_string_truncate (p->ent, 0);
 				g_string_append_c (p->ent, c);
-				d(printf("got data '%.*s'\n", in-start-1, start));
+				d (printf ("got data '%.*s'\n", in - start - 1, start));
 				*datap = start;
 				*lenp = in-start-1;
 				goto done;
@@ -558,7 +558,7 @@ static gint tokenize_step (CamelHTMLParserPrivate *p, gchar **datap, gint *lenp)
 					*lenp = p->ent->len;
 					goto done;
 				} else {
-					d(printf("got entity: %s = %s\n", p->ent->str, p->ent_utf8));
+					d (printf ("got entity: %s = %s\n", p->ent->str, p->ent_utf8));
 					ret = state;
 					state = CAMEL_HTML_PARSER_DATA;
 					*datap = p->ent_utf8;
@@ -637,8 +637,8 @@ static gint tokenize_step (CamelHTMLParserPrivate *p, gchar **datap, gint *lenp)
 			} else if (c == ' ' || c == '\n' || c == '\t') {
 			} else {
 				if (p->attrs->len <= p->attr) {
-					g_ptr_array_add(p->attrs, g_string_new(""));
-					g_ptr_array_add(p->values, g_string_new(""));
+					g_ptr_array_add (p->attrs, g_string_new (""));
+					g_ptr_array_add (p->values, g_string_new (""));
 				} else {
 					g_string_truncate (p->attrs->pdata[p->attr], 0);
 					g_string_truncate (p->values->pdata[p->attr], 0);
@@ -664,7 +664,7 @@ static gint tokenize_step (CamelHTMLParserPrivate *p, gchar **datap, gint *lenp)
 			break;
 		case CAMEL_HTML_PARSER_VAL0:
 			if (c == '>') {
-				d(printf("value truncated\n"));
+				d (printf ("value truncated\n"));
 				d (dump_tag (p));
 				ret = CAMEL_HTML_PARSER_ELEMENT;
 				state = CAMEL_HTML_PARSER_DATA;
@@ -683,7 +683,7 @@ static gint tokenize_step (CamelHTMLParserPrivate *p, gchar **datap, gint *lenp)
 		do_val:
 			if (p->quote) {
 				if (c == '>') {
-					d(printf("value truncated\n"));
+					d (printf ("value truncated\n"));
 					d (dump_tag (p));
 					ret = CAMEL_HTML_PARSER_ELEMENT;
 					state = CAMEL_HTML_PARSER_DATA;
@@ -723,7 +723,7 @@ static gint tokenize_step (CamelHTMLParserPrivate *p, gchar **datap, gint *lenp)
 					g_string_append (p->values->pdata[p->attr], p->ent->str);
 					g_string_append_c (p->values->pdata[p->attr], ';');
 				} else {
-					d(printf("got entity: %s = %s\n", p->ent->str, p->ent_utf8));
+					d (printf ("got entity: %s = %s\n", p->ent->str, p->ent_utf8));
 					g_string_append_len (p->values->pdata[p->attr], p->ent_utf8, len);
 				}
 			} else if (isalnum (c) || c=='#') { /* FIXME: right type */

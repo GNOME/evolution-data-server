@@ -50,7 +50,8 @@ typedef struct _CamelPOP3Engine CamelPOP3Engine;
 typedef struct _CamelPOP3EngineClass CamelPOP3EngineClass;
 typedef struct _CamelPOP3Command CamelPOP3Command;
 
-/* pop 3 connection states, actually since we're given a connected socket, we always start in auth state */
+/* POP3 connection states, actually since we're given
+ * a connected socket, we always start in auth state. */
 typedef enum {
 	CAMEL_POP3_ENGINE_DISCONNECT = 0,
 	CAMEL_POP3_ENGINE_AUTH,
@@ -90,7 +91,10 @@ enum {
 	CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS = 1 << 0
 };
 
-typedef void (*CamelPOP3CommandFunc)(CamelPOP3Engine *pe, CamelPOP3Stream *stream, GCancellable *cancellable, gpointer data);
+typedef void	(*CamelPOP3CommandFunc)		(CamelPOP3Engine *pe,
+						 CamelPOP3Stream *stream,
+						 GCancellable *cancellable,
+						 gpointer data);
 
 struct _CamelPOP3Command {
 	guint32 flags;

@@ -36,7 +36,7 @@ static void
 time_start (const gchar *desc)
 {
 	gettimeofday (&timeit_start, NULL);
-	printf("starting: %s\n", desc);
+	printf ("starting: %s\n", desc);
 }
 
 static void
@@ -48,7 +48,7 @@ time_end (const gchar *desc)
 	gettimeofday (&end, NULL);
 	diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 	diff -= timeit_start.tv_sec * 1000 + timeit_start.tv_usec / 1000;
-	printf("%s took %ld.%03ld seconds\n",
+	printf ("%s took %ld.%03ld seconds\n",
 	       desc, diff / 1000, diff % 1000);
 }
 #else
@@ -294,7 +294,7 @@ camel_memchunk_clean (CamelMemChunk *memchunk)
 		if (ci) {
 			ci->count += f->atoms;
 		} else {
-			g_warning("error, can't find free node in memory block\n");
+			g_warning ("error, can't find free node in memory block\n");
 		}
 		f = f->next;
 	}
@@ -369,45 +369,45 @@ main ()
 	struct _EStrv *s;
 
 	s = strv_new (8);
-	s = strv_set(s, 1, "Testing 1");
-	s = strv_set(s, 2, "Testing 2");
-	s = strv_set(s, 3, "Testing 3");
-	s = strv_set(s, 4, "Testing 4");
-	s = strv_set(s, 5, "Testing 5");
-	s = strv_set(s, 6, "Testing 7");
+	s = strv_set (s, 1, "Testing 1");
+	s = strv_set (s, 2, "Testing 2");
+	s = strv_set (s, 3, "Testing 3");
+	s = strv_set (s, 4, "Testing 4");
+	s = strv_set (s, 5, "Testing 5");
+	s = strv_set (s, 6, "Testing 7");
 
 	for (i = 0; i < 8; i++) {
-		printf("s[%d] = %s\n", i, strv_get(s, i));
+		printf ("s[%d] = %s\n", i, strv_get (s, i));
 	}
 
 	s (sleep (5));
 
-	printf("packing ...\n");
+	printf ("packing ...\n");
 	s = strv_pack (s);
 
 	for (i = 0; i < 8; i++) {
-		printf("s[%d] = %s\n", i, strv_get(s, i));
+		printf ("s[%d] = %s\n", i, strv_get (s, i));
 	}
 
-	printf("setting ...\n");
+	printf ("setting ...\n");
 
-	s = strv_set_ref(s, 1, "Testing 1 x");
+	s = strv_set_ref (s, 1, "Testing 1 x");
 
 	for (i = 0; i < 8; i++) {
-		printf("s[%d] = %s\n", i, strv_get(s, i));
+		printf ("s[%d] = %s\n", i, strv_get (s, i));
 	}
 
-	printf("packing ...\n");
+	printf ("packing ...\n");
 	s = strv_pack (s);
 
 	for (i = 0; i < 8; i++) {
-		printf("s[%d] = %s\n", i, strv_get(s, i));
+		printf ("s[%d] = %s\n", i, strv_get (s, i));
 	}
 
 	strv_free (s);
 
 #if 0
-	time_start("Using memchunks");
+	time_start ("Using memchunks");
 	mc = memchunk_new (CHUNK_COUNT, CHUNK_SIZE);
 	for (i = 0; i < 1000000; i++) {
 		mem = memchunk_alloc (mc);
@@ -416,10 +416,10 @@ main ()
 	}
 	s (sleep (10));
 	memchunk_destroy (mc);
-	time_end("allocating 1000000 memchunks, freeing 500k");
+	time_end ("allocating 1000000 memchunks, freeing 500k");
 
-	time_start("Using gmemchunks");
-	gmc = g_mem_chunk_new("memchunk", CHUNK_SIZE, CHUNK_SIZE*CHUNK_COUNT, G_ALLOC_AND_FREE);
+	time_start ("Using gmemchunks");
+	gmc = g_mem_chunk_new ("memchunk", CHUNK_SIZE, CHUNK_SIZE * CHUNK_COUNT, G_ALLOC_AND_FREE);
 	for (i = 0; i < 1000000; i++) {
 		mem = g_mem_chunk_alloc (gmc);
 		if ((i & 1) == 0)
@@ -427,31 +427,31 @@ main ()
 	}
 	s (sleep (10));
 	g_mem_chunk_destroy (gmc);
-	time_end("allocating 1000000 gmemchunks, freeing 500k");
+	time_end ("allocating 1000000 gmemchunks, freeing 500k");
 
-	time_start("Using memchunks");
+	time_start ("Using memchunks");
 	mc = memchunk_new (CHUNK_COUNT, CHUNK_SIZE);
 	for (i = 0; i < 1000000; i++) {
 		mem = memchunk_alloc (mc);
 	}
 	s (sleep (10));
 	memchunk_destroy (mc);
-	time_end("allocating 1000000 memchunks");
+	time_end ("allocating 1000000 memchunks");
 
-	time_start("Using gmemchunks");
-	gmc = g_mem_chunk_new("memchunk", CHUNK_SIZE, CHUNK_COUNT*CHUNK_SIZE, G_ALLOC_ONLY);
+	time_start ("Using gmemchunks");
+	gmc = g_mem_chunk_new ("memchunk", CHUNK_SIZE, CHUNK_COUNT * CHUNK_SIZE, G_ALLOC_ONLY);
 	for (i = 0; i < 1000000; i++) {
 		mem = g_mem_chunk_alloc (gmc);
 	}
 	s (sleep (10));
 	g_mem_chunk_destroy (gmc);
-	time_end("allocating 1000000 gmemchunks");
+	time_end ("allocating 1000000 gmemchunks");
 
-	time_start("Using malloc");
+	time_start ("Using malloc");
 	for (i = 0; i < 1000000; i++) {
 		malloc (CHUNK_SIZE);
 	}
-	time_end("allocating 1000000 malloc");
+	time_end ("allocating 1000000 malloc");
 #endif
 
 }

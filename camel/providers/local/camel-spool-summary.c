@@ -91,9 +91,9 @@ camel_spool_summary_new (CamelFolder *folder,
 		CamelStore *parent_store;
 
 		parent_store = camel_folder_get_parent_store (folder);
-		camel_db_set_collate (parent_store->cdb_r, "bdata", "spool_frompos_sort", (CamelDBCollate)camel_local_frompos_sort);
-		((CamelFolderSummary *)new)->sort_by = "bdata";
-		((CamelFolderSummary *)new)->collate = "spool_frompos_sort";
+		camel_db_set_collate (parent_store->cdb_r, "bdata", "spool_frompos_sort", (CamelDBCollate) camel_local_frompos_sort);
+		((CamelFolderSummary *) new)->sort_by = "bdata";
+		((CamelFolderSummary *) new)->collate = "spool_frompos_sort";
 	}
 	camel_local_summary_construct ((CamelLocalSummary *) new, mbox_name, NULL);
 	camel_folder_summary_load_from_db ((CamelFolderSummary *) new, NULL);
@@ -127,7 +127,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	struct stat st;
 	guint32 flags = (expunge ? 1 : 0);
 
-	d(printf("performing full summary/sync\n"));
+	d (printf ("performing full summary/sync\n"));
 
 	camel_operation_push_message (cancellable, _("Storing folder"));
 
@@ -146,7 +146,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	sprintf (tmpname, "/tmp/spool.camel.XXXXXX");
 	fdout = g_mkstemp (tmpname);
 
-	d(printf("Writing tmp file to %s\n", tmpname));
+	d (printf ("Writing tmp file to %s\n", tmpname));
 	if (fdout == -1) {
 		g_set_error (
 			error, G_IO_ERROR,
@@ -163,7 +163,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 
 	/* sync out content */
 	if (fsync (fdout) == -1) {
-		g_warning("Cannot synchronize temporary folder: %s", g_strerror (errno));
+		g_warning ("Cannot synchronize temporary folder: %s", g_strerror (errno));
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
@@ -175,7 +175,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 
 	/* see if we can write this much to the spool file */
 	if (fstat (fd, &st) == -1) {
-		g_warning("Cannot synchronize temporary folder: %s", g_strerror (errno));
+		g_warning ("Cannot synchronize temporary folder: %s", g_strerror (errno));
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
@@ -187,7 +187,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	spoollen = st.st_size;
 
 	if (fstat (fdout, &st) == -1) {
-		g_warning("Cannot synchronize temporary folder: %s", g_strerror (errno));
+		g_warning ("Cannot synchronize temporary folder: %s", g_strerror (errno));
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
@@ -201,11 +201,11 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	/* I think this is the right way to do this - checking that the file will fit the new data */
 	if (outlen > 0
 	    && (lseek (fd, outlen - 1, SEEK_SET) == -1
-		|| write(fd, "", 1) != 1
+		|| write (fd, "", 1) != 1
 		|| fsync (fd) == -1
 		|| lseek (fd, 0, SEEK_SET) == -1
 		|| lseek (fdout, 0, SEEK_SET) == -1)) {
-		g_warning("Cannot synchronize spool folder: %s", g_strerror (errno));
+		g_warning ("Cannot synchronize spool folder: %s", g_strerror (errno));
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
@@ -254,7 +254,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 
 	g_free (buffer);
 
-	d(printf("Closing folders\n"));
+	d (printf ("Closing folders\n"));
 
 	if (ftruncate (fd, outlen) == -1) {
 		g_set_error (
@@ -269,7 +269,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 	}
 
 	if (close (fd) == -1) {
-		g_warning("Cannot close source folder: %s", g_strerror (errno));
+		g_warning ("Cannot close source folder: %s", g_strerror (errno));
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
@@ -334,7 +334,7 @@ spool_summary_check (CamelLocalSummary *cls,
 
 	/* if we do, then write out the headers using sync_full, etc */
 	if (work) {
-		d(printf("Have to add new headers, re-syncing from the start to accomplish this\n"));
+		d (printf ("Have to add new headers, re-syncing from the start to accomplish this\n"));
 		if (CAMEL_MBOX_SUMMARY_GET_CLASS (cls)->sync_full (
 			CAMEL_MBOX_SUMMARY (cls), FALSE,
 			changeinfo, cancellable, error) == -1)

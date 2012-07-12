@@ -287,7 +287,7 @@ camel_mime_filter_charset_new (const gchar *from_charset,
 
 	priv->ic = camel_iconv_open (to_charset, from_charset);
 	if (priv->ic == (iconv_t) -1) {
-		w(g_warning ("Cannot create charset conversion from %s to %s: %s",
+		w (g_warning ("Cannot create charset conversion from %s to %s: %s",
 			     from_charset ? from_charset : "(null)",
 			     to_charset ? to_charset : "(null)",
 			     g_strerror (errno)));

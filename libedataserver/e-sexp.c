@@ -102,15 +102,23 @@
 G_DEFINE_TYPE (ESExp, e_sexp, G_TYPE_OBJECT)
 #endif
 
-static struct _ESExpTerm * parse_list (ESExp *f, gint gotbrace);
-static struct _ESExpTerm * parse_value (ESExp *f);
+static struct _ESExpTerm *
+			parse_list		(ESExp *f,
+						 gint gotbrace);
+static struct _ESExpTerm *
+			parse_value		(ESExp *f);
 
 #ifdef TESTER
-static void parse_dump_term (struct _ESExpTerm *t, gint depth);
+static void		parse_dump_term		(struct _ESExpTerm *t,
+						 gint depth);
 #endif
 
-typedef gboolean (ESGeneratorFunc) (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r);
-typedef gboolean (ESOperatorFunc) (gint argc, struct _ESExpResult **argv, struct _ESExpResult *r);
+typedef gboolean	(ESGeneratorFunc)	(gint argc,
+						 struct _ESExpResult **argv,
+						 struct _ESExpResult *r);
+typedef gboolean	(ESOperatorFunc)	(gint argc,
+						 struct _ESExpResult **argv,
+						 struct _ESExpResult *r);
 
 /* FIXME: constant _TIME_MAX used in different files, move it somewhere */
 #define _TIME_MAX	((time_t) INT_MAX)	/* Max valid time_t	*/
@@ -269,7 +277,7 @@ term_eval_and (struct _ESExp *f,
 	gint i;
 	const gchar *oper;
 
-	r(printf("( and\n"));
+	r (printf ("( and\n"));
 
 	r = e_sexp_result_new (f, ESEXP_RES_UNDEFINED);
 
@@ -284,7 +292,7 @@ term_eval_and (struct _ESExp *f,
 			e_sexp_result_free (f, r);
 			e_sexp_result_free (f, r1);
 			g_hash_table_destroy (ht);
-			e_sexp_fatal_error(f, "Invalid types in AND");
+			e_sexp_fatal_error (f, "Invalid types in AND");
 		} else if (r1->type == ESEXP_RES_ARRAY_PTR) {
 			gchar **a1;
 			gint l1, j;
@@ -335,7 +343,7 @@ term_eval_or (struct _ESExp *f,
 	gint i;
 	const gchar *oper;
 
-	r(printf("(or \n"));
+	r (printf ("(or \n"));
 
 	oper = "OR";
 	f->operators = g_slist_prepend (f->operators, (gpointer) oper);
@@ -350,7 +358,7 @@ term_eval_or (struct _ESExp *f,
 			e_sexp_result_free (f, r);
 			e_sexp_result_free (f, r1);
 			g_hash_table_destroy (ht);
-			e_sexp_fatal_error(f, "Invalid types in OR");
+			e_sexp_fatal_error (f, "Invalid types in OR");
 		} else if (r1->type == ESEXP_RES_ARRAY_PTR) {
 			gchar **a1;
 			gint l1, j;
@@ -419,7 +427,7 @@ term_eval_lt (struct _ESExp *f,
 			e_sexp_result_free (f, r1);
 			e_sexp_result_free (f, r2);
 			e_sexp_result_free (f, r);
-			e_sexp_fatal_error(f, "Incompatible types in compare <");
+			e_sexp_fatal_error (f, "Incompatible types in compare <");
 		} else if (r1->type == ESEXP_RES_INT) {
 			r->type = ESEXP_RES_BOOL;
 			r->value.boolean = r1->value.number < r2->value.number;
@@ -454,7 +462,7 @@ term_eval_gt (struct _ESExp *f,
 			e_sexp_result_free (f, r1);
 			e_sexp_result_free (f, r2);
 			e_sexp_result_free (f, r);
-			e_sexp_fatal_error(f, "Incompatible types in compare >");
+			e_sexp_fatal_error (f, "Incompatible types in compare >");
 		} else if (r1->type == ESEXP_RES_INT) {
 			r->type = ESEXP_RES_BOOL;
 			r->value.boolean = r1->value.number > r2->value.number;
@@ -522,7 +530,7 @@ term_eval_plus (struct _ESExp *f,
 			}
 			if (i < argc) {
 				e_sexp_resultv_free (f, argc, argv);
-				e_sexp_fatal_error(f, "Invalid types in (+ ints)");
+				e_sexp_fatal_error (f, "Invalid types in (+ ints)");
 			}
 			r = e_sexp_result_new (f, ESEXP_RES_INT);
 			r->value.number = total;
@@ -534,7 +542,7 @@ term_eval_plus (struct _ESExp *f,
 			}
 			if (i < argc) {
 				e_sexp_resultv_free (f, argc, argv);
-				e_sexp_fatal_error(f, "Invalid types in (+ strings)");
+				e_sexp_fatal_error (f, "Invalid types in (+ strings)");
 			}
 			r = e_sexp_result_new (f, ESEXP_RES_STRING);
 			r->value.string = s->str;
@@ -586,7 +594,7 @@ term_eval_sub (struct _ESExp *f,
 			}
 			if (i < argc) {
 				e_sexp_resultv_free (f, argc, argv);
-				e_sexp_fatal_error(f, "Invalid types in -");
+				e_sexp_fatal_error (f, "Invalid types in -");
 			}
 			r = e_sexp_result_new (f, ESEXP_RES_INT);
 			r->value.number = total;
@@ -627,7 +635,7 @@ term_eval_castint (struct _ESExp *f,
 	struct _ESExpResult *r;
 
 	if (argc != 1)
-		e_sexp_fatal_error(f, "Incorrect argument count to (gint )");
+		e_sexp_fatal_error (f, "Incorrect argument count to (gint )");
 
 	r = e_sexp_result_new (f, ESEXP_RES_INT);
 	switch (argv[0]->type) {
@@ -642,7 +650,7 @@ term_eval_castint (struct _ESExp *f,
 		break;
 	default:
 		e_sexp_result_free (f, r);
-		e_sexp_fatal_error(f, "Invalid type in (cast-int )");
+		e_sexp_fatal_error (f, "Invalid type in (cast-int )");
 	}
 
 	return r;
@@ -658,22 +666,22 @@ term_eval_caststring (struct _ESExp *f,
 	struct _ESExpResult *r;
 
 	if (argc != 1)
-		e_sexp_fatal_error(f, "Incorrect argument count to (cast-string )");
+		e_sexp_fatal_error (f, "Incorrect argument count to (cast-string )");
 
 	r = e_sexp_result_new (f, ESEXP_RES_STRING);
 	switch (argv[0]->type) {
 	case ESEXP_RES_INT:
-		r->value.string = g_strdup_printf("%d", argv[0]->value.number);
+		r->value.string = g_strdup_printf ("%d", argv[0]->value.number);
 		break;
 	case ESEXP_RES_BOOL:
-		r->value.string = g_strdup_printf("%d", argv[0]->value.boolean != 0);
+		r->value.string = g_strdup_printf ("%d", argv[0]->value.boolean != 0);
 		break;
 	case ESEXP_RES_STRING:
 		r->value.string = g_strdup (argv[0]->value.string);
 		break;
 	default:
 		e_sexp_result_free (f, r);
-		e_sexp_fatal_error(f, "Invalid type in (gint )");
+		e_sexp_fatal_error (f, "Invalid type in (gint )");
 	}
 
 	return r;
@@ -734,34 +742,36 @@ e_sexp_term_eval (struct _ESExp *f,
 
 	g_return_val_if_fail (t != NULL, NULL);
 
-	r(printf("eval term :\n"));
+	r (printf ("eval term :\n"));
 	r (parse_dump_term (t, 0));
 
 	switch (t->type) {
 	case ESEXP_TERM_STRING:
-		r(printf(" (string \"%s\")\n", t->value.string));
+		r (printf (" (string \"%s\")\n", t->value.string));
 		r = e_sexp_result_new (f, ESEXP_RES_STRING);
 		/* erk, this shoul;dn't need to strdup this ... */
 		r->value.string = g_strdup (t->value.string);
 		break;
 	case ESEXP_TERM_INT:
-		r(printf(" (gint %d)\n", t->value.number));
+		r (printf (" (gint %d)\n", t->value.number));
 		r = e_sexp_result_new (f, ESEXP_RES_INT);
 		r->value.number = t->value.number;
 		break;
 	case ESEXP_TERM_BOOL:
-		r(printf(" (gint %d)\n", t->value.number));
+		r (printf (" (gint %d)\n", t->value.number));
 		r = e_sexp_result_new (f, ESEXP_RES_BOOL);
 		r->value.boolean = t->value.boolean;
 		break;
 	case ESEXP_TERM_TIME:
-		r(printf(" (time_t %ld)\n", t->value.time));
+		r (printf (" (time_t %ld)\n", t->value.time));
 		r = e_sexp_result_new (f, ESEXP_RES_TIME);
 		r->value.time = t->value.time;
 		break;
 	case ESEXP_TERM_IFUNC:
 		if (t->value.func.sym && t->value.func.sym->f.ifunc)
-			r = t->value.func.sym->f.ifunc (f, t->value.func.termcount, t->value.func.terms, t->value.func.sym->data);
+			r = t->value.func.sym->f.ifunc (
+				f, t->value.func.termcount,
+				t->value.func.terms, t->value.func.sym->data);
 		break;
 	case ESEXP_TERM_FUNC:
 		/* first evaluate all arguments to result types */
@@ -771,12 +781,14 @@ e_sexp_term_eval (struct _ESExp *f,
 		}
 		/* call the function */
 		if (t->value.func.sym->f.func)
-			r = t->value.func.sym->f.func (f, t->value.func.termcount, argv, t->value.func.sym->data);
+			r = t->value.func.sym->f.func (
+				f, t->value.func.termcount,
+				argv, t->value.func.sym->data);
 
 		e_sexp_resultv_free (f, t->value.func.termcount, argv);
 		break;
 	default:
-		e_sexp_fatal_error(f, "Unknown type in parse tree: %d", t->type);
+		e_sexp_fatal_error (f, "Unknown type in parse tree: %d", t->type);
 	}
 
 	if (r == NULL)
@@ -793,34 +805,34 @@ eval_dump_result (ESExpResult *r,
 	gint i;
 
 	if (r == NULL) {
-		printf("null result???\n");
+		printf ("null result???\n");
 		return;
 	}
 
 	for (i = 0; i < depth; i++)
-		printf("   ");
+		printf ("   ");
 
 	switch (r->type) {
 	case ESEXP_RES_ARRAY_PTR:
-		printf("array pointers\n");
+		printf ("array pointers\n");
 		break;
 	case ESEXP_RES_INT:
-		printf("int: %d\n", r->value.number);
+		printf ("int: %d\n", r->value.number);
 		break;
 	case ESEXP_RES_STRING:
-		printf("string: '%s'\n", r->value.string);
+		printf ("string: '%s'\n", r->value.string);
 		break;
 	case ESEXP_RES_BOOL:
-		printf("bool: %c\n", r->value.boolean?'t':'f');
+		printf ("bool: %c\n", r->value.boolean ? 't':'f');
 		break;
 	case ESEXP_RES_TIME:
-		printf("time_t: %ld\n", (glong) r->value.time);
+		printf ("time_t: %ld\n", (glong) r->value.time);
 		break;
 	case ESEXP_RES_UNDEFINED:
-		printf(" <undefined>\n");
+		printf (" <undefined>\n");
 		break;
 	}
-	printf("\n");
+	printf ("\n");
 }
 #endif
 
@@ -832,45 +844,45 @@ parse_dump_term (struct _ESExpTerm *t,
 	gint i;
 
 	if (t == NULL) {
-		printf("null term??\n");
+		printf ("null term??\n");
 		return;
 	}
 
 	for (i = 0; i < depth; i++)
-		printf("   ");
+		printf ("   ");
 
 	switch (t->type) {
 	case ESEXP_TERM_STRING:
-		printf(" \"%s\"", t->value.string);
+		printf (" \"%s\"", t->value.string);
 		break;
 	case ESEXP_TERM_INT:
-		printf(" %d", t->value.number);
+		printf (" %d", t->value.number);
 		break;
 	case ESEXP_TERM_BOOL:
-		printf(" #%c", t->value.boolean?'t':'f');
+		printf (" #%c", t->value.boolean ? 't':'f');
 		break;
 	case ESEXP_TERM_TIME:
-		printf(" %ld", (glong) t->value.time);
+		printf (" %ld", (glong) t->value.time);
 		break;
 	case ESEXP_TERM_IFUNC:
 	case ESEXP_TERM_FUNC:
-		printf(" (function %s\n", t->value.func.sym->name);
+		printf (" (function %s\n", t->value.func.sym->name);
 		/*printf(" [%d] ", t->value.func.termcount);*/
 		for (i = 0; i < t->value.func.termcount; i++) {
 			parse_dump_term (t->value.func.terms[i], depth + 1);
 		}
 		for (i = 0; i < depth; i++)
-			printf("   ");
-		printf(" )");
+			printf ("   ");
+		printf (" )");
 		break;
 	case ESEXP_TERM_VAR:
-		printf(" (variable %s )\n", t->value.var->name);
+		printf (" (variable %s )\n", t->value.var->name);
 		break;
 	default:
-		printf("unknown type: %d\n", t->type);
+		printf ("unknown type: %d\n", t->type);
 	}
 
-	printf("\n");
+	printf ("\n");
 }
 #endif
 
@@ -1089,13 +1101,13 @@ e_sexp_term_evaluate_occur_times (struct _ESExp *f,
 	g_return_val_if_fail (end != NULL, NULL);
 
 	/*
-	printf("eval term :\n");
+	printf ("eval term :\n");
 	parse_dump_term (t, 0);
 	*/
 
 	switch (t->type) {
 	case ESEXP_TERM_STRING:
-		r(printf(" (string \"%s\")\n", t->value.string));
+		r (printf (" (string \"%s\")\n", t->value.string));
 		r = e_sexp_result_new (f, ESEXP_RES_STRING);
 		r->value.string = g_strdup (t->value.string);
 		break;
@@ -1105,15 +1117,15 @@ e_sexp_term_evaluate_occur_times (struct _ESExp *f,
 		ESGeneratorFunc *generator = NULL;
 		ESOperatorFunc *operator = NULL;
 
-		r(printf(" (function \"%s\"\n", t->value.func.sym->name));
+		r (printf (" (function \"%s\"\n", t->value.func.sym->name));
 
 		r = e_sexp_result_new (f, ESEXP_RES_UNDEFINED);
 		argc = t->value.func.termcount;
 		argv = alloca (sizeof (argv[0]) * argc);
 
 		for (i = 0; i < t->value.func.termcount; i++) {
-			argv[i] = e_sexp_term_evaluate_occur_times (f, t->value.func.terms[i],
-								    start, end);
+			argv[i] = e_sexp_term_evaluate_occur_times (
+				f, t->value.func.terms[i], start, end);
 		}
 
 		if (is_time_function (t->value.func.sym->name)) {
@@ -1146,7 +1158,7 @@ e_sexp_term_evaluate_occur_times (struct _ESExp *f,
 	}
 
 	if (!ok)
-		e_sexp_fatal_error(f, "Error in parse tree");
+		e_sexp_fatal_error (f, "Error in parse tree");
 
 	if (r == NULL)
 		r = e_sexp_result_new (f, ESEXP_RES_UNDEFINED);
@@ -1197,7 +1209,7 @@ parse_term_free (struct _ESExp *f,
 		break;
 
 	default:
-		printf("parse_term_free: unknown type: %d\n", t->type);
+		printf ("parse_term_free: unknown type: %d\n", t->type);
 	}
 	e_memchunk_free (f->term_chunks, t);
 }
@@ -1212,7 +1224,7 @@ parse_values (ESExp *f,
 	GScanner *gs = f->scanner;
 	GSList *list = NULL, *l;
 
-	p(printf("parsing values\n"));
+	p (printf ("parsing values\n"));
 
 	while ( (token = g_scanner_peek_next_token (gs)) != G_TOKEN_EOF
 		&& token != ')') {
@@ -1231,10 +1243,10 @@ parse_values (ESExp *f,
 	}
 	g_slist_free (list);
 
-	p(printf("found %d subterms\n", size));
+	p (printf ("found %d subterms\n", size));
 	*len = size;
 
-	p(printf("done parsing values\n"));
+	p (printf ("done parsing values\n"));
 	return terms;
 }
 
@@ -1257,25 +1269,28 @@ parse_value (ESExp *f)
 	GScanner *gs = f->scanner;
 	struct _ESExpSymbol *s;
 
-	p(printf("parsing value\n"));
+	p (printf ("parsing value\n"));
 
 	token = g_scanner_get_next_token (gs);
 	switch (token) {
 	case G_TOKEN_EOF:
 		break;
 	case G_TOKEN_LEFT_PAREN:
-		p(printf("got brace, its a list!\n"));
+		p (printf ("got brace, its a list!\n"));
 		return parse_list (f, TRUE);
 	case G_TOKEN_STRING:
-		p(printf("got string '%s'\n", g_scanner_cur_value(gs).v_string));
+		p (printf (
+			"got string '%s'\n",
+			g_scanner_cur_value (gs).v_string));
 		t = parse_term_new (f, ESEXP_TERM_STRING);
 		t->value.string = g_strdup (g_scanner_cur_value (gs).v_string);
 		break;
 	case '-':
-		p(printf ("got negative int?\n"));
+		p (printf ("got negative int?\n"));
 		token = g_scanner_get_next_token (gs);
 		if (token != G_TOKEN_INT) {
-			e_sexp_fatal_error (f, "Invalid format for a integer value");
+			e_sexp_fatal_error (
+				f, "Invalid format for a integer value");
 			return NULL;
 		}
 
@@ -1286,15 +1301,16 @@ parse_value (ESExp *f)
 		t->value.number = g_scanner_cur_value (gs).v_int;
 		if (negative)
 			t->value.number = -t->value.number;
-		p(printf("got gint %d\n", t->value.number));
+		p (printf ("got gint %d\n", t->value.number));
 		break;
 	case '#': {
 		gchar *str;
 
-		p(printf("got bool?\n"));
+		p (printf ("got bool?\n"));
 		token = g_scanner_get_next_token (gs);
 		if (token != G_TOKEN_IDENTIFIER) {
-			e_sexp_fatal_error (f, "Invalid format for a boolean value");
+			e_sexp_fatal_error (
+				f, "Invalid format for a boolean value");
 			return NULL;
 		}
 
@@ -1302,7 +1318,8 @@ parse_value (ESExp *f)
 
 		g_assert (str != NULL);
 		if (!(strlen (str) == 1 && (str[0] == 't' || str[0] == 'f'))) {
-			e_sexp_fatal_error (f, "Invalid format for a boolean value");
+			e_sexp_fatal_error (
+				f, "Invalid format for a boolean value");
 			return NULL;
 		}
 
@@ -1311,32 +1328,40 @@ parse_value (ESExp *f)
 		break; }
 	case G_TOKEN_SYMBOL:
 		s = g_scanner_cur_value (gs).v_symbol;
-		p(printf("got symbol '%s'\n", s->name));
+		p (printf ("got symbol '%s'\n", s->name));
 		switch (s->type) {
 		case ESEXP_TERM_FUNC:
 		case ESEXP_TERM_IFUNC:
-				/* this is basically invalid, since we can't use function
-				 * pointers, but let the runtime catch it ... */
+			/* this is basically invalid, since we can't use
+			 * function pointers, but let the runtime catch it */
 			t = parse_term_new (f, s->type);
 			t->value.func.sym = s;
-			t->value.func.terms = parse_values (f, &t->value.func.termcount);
+			t->value.func.terms = parse_values (
+				f, &t->value.func.termcount);
 			break;
 		case ESEXP_TERM_VAR:
 			t = parse_term_new (f, s->type);
 			t->value.var = s;
 			break;
 		default:
-			e_sexp_fatal_error(f, "Invalid symbol type: %s: %d", s->name, s->type);
+			e_sexp_fatal_error (
+				f, "Invalid symbol type: %s: %d",
+				s->name, s->type);
 		}
 		break;
 	case G_TOKEN_IDENTIFIER:
-		p(printf("got unknown identifider '%s'\n", g_scanner_cur_value(gs).v_identifier));
-		e_sexp_fatal_error(f, "Unknown identifier: %s", g_scanner_cur_value(gs).v_identifier);
+		p (printf (
+			"got unknown identifider '%s'\n",
+			g_scanner_cur_value (gs).v_identifier));
+		e_sexp_fatal_error (
+			f, "Unknown identifier: %s",
+			g_scanner_cur_value (gs).v_identifier);
 		break;
 	default:
-		e_sexp_fatal_error(f, "Unexpected token encountered: %d", token);
+		e_sexp_fatal_error (
+			f, "Unexpected token encountered: %d", token);
 	}
-	p(printf("done parsing value\n"));
+	p (printf ("done parsing value\n"));
 	return t;
 }
 
@@ -1349,7 +1374,7 @@ parse_list (ESExp *f,
 	struct _ESExpTerm *t = NULL;
 	GScanner *gs = f->scanner;
 
-	p(printf("parsing list\n"));
+	p (printf ("parsing list\n"));
 	if (gotbrace)
 		token = '(';
 	else
@@ -1361,9 +1386,9 @@ parse_list (ESExp *f,
 			struct _ESExpSymbol *s;
 
 			s = g_scanner_cur_value (gs).v_symbol;
-			p(printf("got funciton: %s\n", s->name));
+			p (printf ("got funciton: %s\n", s->name));
 			t = parse_term_new (f, s->type);
-			p(printf("created new list %p\n", t));
+			p (printf ("created new list %p\n", t));
 			/* if we have a variable, find out its base type */
 			while (s->type == ESEXP_TERM_VAR) {
 				s = ((ESExpTerm *)(s->data))->value.var;
@@ -1371,29 +1396,34 @@ parse_list (ESExp *f,
 			if (s->type == ESEXP_TERM_FUNC
 			    || s->type == ESEXP_TERM_IFUNC) {
 				t->value.func.sym = s;
-				t->value.func.terms = parse_values (f, &t->value.func.termcount);
+				t->value.func.terms = parse_values (
+					f, &t->value.func.termcount);
 			} else {
 				parse_term_free (f, t);
-				e_sexp_fatal_error(f, "Trying to call variable as function: %s", s->name);
+				e_sexp_fatal_error (
+					f, "Trying to call variable "
+					"as function: %s", s->name);
 			}
 			break; }
 		case G_TOKEN_IDENTIFIER:
-			e_sexp_fatal_error(f, "Unknown identifier: %s", g_scanner_cur_value(gs).v_identifier);
+			e_sexp_fatal_error (
+				f, "Unknown identifier: %s",
+				g_scanner_cur_value (gs).v_identifier);
 			break;
 		case G_TOKEN_LEFT_PAREN:
 			return parse_list (f, TRUE);
 		default:
-			e_sexp_fatal_error(f, "Unexpected token encountered: %d", token);
+			e_sexp_fatal_error (f, "Unexpected token encountered: %d", token);
 		}
 		token = g_scanner_get_next_token (gs);
 		if (token != ')') {
-			e_sexp_fatal_error(f, "Missing ')'");
+			e_sexp_fatal_error (f, "Missing ')'");
 		}
 	} else {
-		e_sexp_fatal_error(f, "Missing '('");
+		e_sexp_fatal_error (f, "Missing '('");
 	}
 
-	p(printf("returning list %p\n", t));
+	p (printf ("returning list %p\n", t));
 	return t;
 }
 
@@ -1416,18 +1446,18 @@ static const struct {
 	gint type;		/* set to 1 if a function can perform shortcut evaluation, or
 				   doesn't execute everything, 0 otherwise */
 } symbols[] = {
-	{ "and", (ESExpFunc *)term_eval_and, 1 },
-	{ "or", (ESExpFunc *)term_eval_or, 1 },
-	{ "not", (ESExpFunc *)term_eval_not, 0 },
-	{ "<", (ESExpFunc *)term_eval_lt, 1 },
-	{ ">", (ESExpFunc *)term_eval_gt, 1 },
-	{ "=", (ESExpFunc *)term_eval_eq, 1 },
-	{ "+", (ESExpFunc *)term_eval_plus, 0 },
-	{ "-", (ESExpFunc *)term_eval_sub, 0 },
-	{ "cast-int", (ESExpFunc *)term_eval_castint, 0 },
-	{ "cast-string", (ESExpFunc *)term_eval_caststring, 0 },
-	{ "if", (ESExpFunc *)term_eval_if, 1 },
-	{ "begin", (ESExpFunc *)term_eval_begin, 1 },
+	{ "and", (ESExpFunc *) term_eval_and, 1 },
+	{ "or", (ESExpFunc *) term_eval_or, 1 },
+	{ "not", (ESExpFunc *) term_eval_not, 0 },
+	{ "<", (ESExpFunc *) term_eval_lt, 1 },
+	{ ">", (ESExpFunc *) term_eval_gt, 1 },
+	{ "=", (ESExpFunc *) term_eval_eq, 1 },
+	{ "+", (ESExpFunc *) term_eval_plus, 0 },
+	{ "-", (ESExpFunc *) term_eval_sub, 0 },
+	{ "cast-int", (ESExpFunc *) term_eval_castint, 0 },
+	{ "cast-string", (ESExpFunc *) term_eval_caststring, 0 },
+	{ "if", (ESExpFunc *) term_eval_if, 1 },
+	{ "begin", (ESExpFunc *) term_eval_begin, 1 },
 };
 
 static void
@@ -1474,9 +1504,17 @@ e_sexp_init (ESExp *s)
 	/* load in builtin symbols? */
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].type == 1) {
-			e_sexp_add_ifunction (s, 0, symbols[i].name, (ESExpIFunc *) symbols[i].func, (gpointer) &symbols[i]);
+			e_sexp_add_ifunction (
+				s, 0,
+				symbols[i].name,
+				(ESExpIFunc *) symbols[i].func,
+				(gpointer) &symbols[i]);
 		} else {
-			e_sexp_add_function (s, 0, symbols[i].name, symbols[i].func, (gpointer) &symbols[i]);
+			e_sexp_add_function (
+				s, 0,
+				symbols[i].name,
+				symbols[i].func,
+				(gpointer) &symbols[i]);
 		}
 	}
 
@@ -1635,7 +1673,7 @@ e_sexp_parse (ESExp *f)
 	g_return_val_if_fail (IS_E_SEXP (f), -1);
 
 	if (setjmp (f->failenv)) {
-		g_warning("Error in parsing: %s", f->error);
+		g_warning ("Error in parsing: %s", f->error);
 		return -1;
 	}
 
@@ -1655,7 +1693,7 @@ e_sexp_eval (ESExp *f)
 	g_return_val_if_fail (f->tree != NULL, NULL);
 
 	if (setjmp (f->failenv)) {
-		g_warning("Error in execution: %s", f->error);
+		g_warning ("Error in execution: %s", f->error);
 		return NULL;
 	}
 
@@ -1687,7 +1725,7 @@ e_sexp_evaluate_occur_times (ESExp *f,
 	*start = *end = -1;
 
 	if (setjmp (f->failenv)) {
-		g_warning("Error in execution: %s", f->error);
+		g_warning ("Error in execution: %s", f->error);
 		return FALSE;
 	}
 
@@ -1717,9 +1755,9 @@ e_sexp_encode_bool (GString *s,
                     gboolean state)
 {
 	if (state)
-		g_string_append(s, " #t");
+		g_string_append (s, " #t");
 	else
-		g_string_append(s, " #f");
+		g_string_append (s, " #f");
 }
 
 /**
@@ -1742,13 +1780,13 @@ e_sexp_encode_string (GString *s,
 		p = "";
 	else
 		p = string;
-	g_string_append(s, " \"");
+	g_string_append (s, " \"");
 	while ((c = *p++)) {
 		if (c == '\\' || c == '\"' || c == '\'')
 			g_string_append_c (s, '\\');
 		g_string_append_c (s, c);
 	}
-	g_string_append(s, "\"");
+	g_string_append (s, "\"");
 }
 
 #ifdef TESTER
@@ -1762,7 +1800,7 @@ gint main (gint argc, gchar **argv)
 
 	f = e_sexp_new ();
 
-	e_sexp_add_variable(f, 0, "test", NULL);
+	e_sexp_add_variable (f, 0, "test", NULL);
 
 	if (argc < 2 || !argv[1])
 		return;
@@ -1778,7 +1816,7 @@ gint main (gint argc, gchar **argv)
 	if (r) {
 		eval_dump_result (r, 0);
 	} else {
-		printf("no result?|\n");
+		printf ("no result?|\n");
 	}
 
 	return 0;

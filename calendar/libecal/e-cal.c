@@ -923,7 +923,7 @@ e_cal_new (ESource *source,
 
 	if (!e_cal_activate (&error)) {
 		unwrap_gerror (&error);
-		g_warning("Cannot activate ECal: %s\n", error ? error->message : "Unknown error");
+		g_warning ("Cannot activate ECal: %s\n", error ? error->message : "Unknown error");
 		if (error)
 			g_error_free (error);
 		return NULL;
@@ -3788,7 +3788,7 @@ e_cal_get_timezone (ECal *ecal,
 								ICAL_ANY_PROPERTY);
 			while (!found && prop) {
 				if (icalproperty_isa (prop) == ICAL_TZID_PROPERTY) {
-					icalproperty_set_value_from_string(prop, tzid, "NO");
+					icalproperty_set_value_from_string (prop, tzid, "NO");
 					found = TRUE;
 				}
 				prop = icalcomponent_get_next_property (icalcomp,

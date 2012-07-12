@@ -52,7 +52,8 @@ static CamelProvider sendmail_provider = {
 void
 camel_provider_module_init (void)
 {
-	sendmail_provider.object_types[CAMEL_PROVIDER_TRANSPORT] = camel_sendmail_transport_get_type ();
+	sendmail_provider.object_types[CAMEL_PROVIDER_TRANSPORT] =
+		CAMEL_TYPE_SENDMAIL_TRANSPORT;
 
 	sendmail_provider.url_hash = camel_url_hash;
 	sendmail_provider.url_equal = camel_url_equal;

@@ -355,7 +355,7 @@ test_folder_message_ops (CamelSession *session,
 	max = local ? 2 : 1;
 
 	for (indexed = 0; indexed < max; indexed++) {
-		gchar *what = g_strdup_printf ("folder ops: %s %s", name, local?(indexed?"indexed":"non-indexed"):"");
+		gchar *what = g_strdup_printf ("folder ops: %s %s", name, local ? (indexed?"indexed":"non-indexed"):"");
 		gint flags;
 
 		camel_test_start (what);
@@ -402,7 +402,7 @@ test_folder_message_ops (CamelSession *session,
 			push ("creating test message");
 			msg = test_message_create_simple ();
 			content = g_strdup_printf ("Test message %d contents\n\n", j);
-			test_message_set_content_simple ((CamelMimePart *)msg, 0, "text/plain",
+			test_message_set_content_simple ((CamelMimePart *) msg, 0, "text/plain",
 							content, strlen (content));
 			test_free (content);
 			subject = g_strdup_printf ("Test message %d", j);
@@ -516,7 +516,7 @@ test_folder_message_ops (CamelSession *session,
 		check (uids != NULL);
 		check (uids->len == 9);
 		for (j = 0; j < 9; j++) {
-			gchar *subject = g_strdup_printf ("Test message %d", j+1);
+			gchar *subject = g_strdup_printf ("Test message %d", j + 1);
 
 			push ("verify after expunge of %s", subject);
 			test_folder_message (folder, uids->pdata[j]);
@@ -546,7 +546,7 @@ test_folder_message_ops (CamelSession *session,
 		check (uids != NULL);
 		check (uids->len == 8);
 		for (j = 0; j < 8; j++) {
-			gchar *subject = g_strdup_printf ("Test message %d", j+1);
+			gchar *subject = g_strdup_printf ("Test message %d", j + 1);
 
 			push ("verify after expunge of %s", subject);
 			test_folder_message (folder, uids->pdata[j]);

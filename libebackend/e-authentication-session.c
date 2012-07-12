@@ -616,8 +616,13 @@ exit:
 
 	switch (session_result) {
 		case E_AUTHENTICATION_SESSION_ERROR:
-			authentication_session_msg (
-				session, "Complete (ERROR - %s)", error && *error ? (*error)->message : "Uknown/Unset error");
+			if (error != NULL && *error != NULL)
+				authentication_session_msg (
+					session, "Complete (ERROR - %s)",
+					(*error)->message);
+			else
+				authentication_session_msg (
+					session, "Complete (ERROR)");
 			break;
 		case E_AUTHENTICATION_SESSION_SUCCESS:
 			authentication_session_msg (

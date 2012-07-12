@@ -86,8 +86,8 @@ mime_filter_canon_run (CamelMimeFilter *mime_filter,
 		if (priv->flags & CAMEL_MIME_FILTER_CANON_FROM && c == 'F') {
 			inptr++;
 			if (inptr < inend - 4) {
-				if (strncmp((gchar *)inptr, "rom ", 4) == 0) {
-					strcpy(o, "=46rom ");
+				if (strncmp ((gchar *) inptr, "rom ", 4) == 0) {
+					strcpy (o, "=46rom ");
 					inptr+=4;
 					o+= 7;
 				} else

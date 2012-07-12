@@ -228,9 +228,9 @@ mime_message_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	if (mm->from == NULL) {
 		/* FIXME: should we just abort?  Should we make one up? */
 		g_warning ("No from set for message");
-		camel_medium_set_header ((CamelMedium *)mm, "From", "");
+		camel_medium_set_header ((CamelMedium *) mm, "From", "");
 	}
-	if (!camel_medium_get_header ((CamelMedium *)mm, "Date"))
+	if (!camel_medium_get_header ((CamelMedium *) mm, "Date"))
 		camel_mime_message_set_date (mm, CAMEL_MESSAGE_DATE_CURRENT, 0);
 
 	if (mm->subject == NULL)
@@ -241,8 +241,8 @@ mime_message_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 
 	/* FIXME: "To" header needs to be set explicitly as well ... */
 
-	if (!camel_medium_get_header ((CamelMedium *)mm, "Mime-Version"))
-		camel_medium_set_header ((CamelMedium *)mm, "Mime-Version", "1.0");
+	if (!camel_medium_get_header ((CamelMedium *) mm, "Mime-Version"))
+		camel_medium_set_header ((CamelMedium *) mm, "Mime-Version", "1.0");
 
 	/* Chain up to parent's write_to_stream_sync() method. */
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (
@@ -439,7 +439,7 @@ camel_mime_message_set_date (CamelMimeMessage *message,
 	message->date_offset = offset;
 
 	datestr = camel_header_format_date (date, offset);
-	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header ((CamelMedium *)message, "Date", datestr);
+	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header ((CamelMedium *) message, "Date", datestr);
 	g_free (datestr);
 }
 
@@ -478,7 +478,7 @@ camel_mime_message_get_date_received (CamelMimeMessage *msg,
 	if (msg->date_received == CAMEL_MESSAGE_DATE_CURRENT) {
 		const gchar *received;
 
-		received = camel_medium_get_header ((CamelMedium *)msg, "received");
+		received = camel_medium_get_header ((CamelMedium *) msg, "received");
 		if (received)
 			received = strrchr (received, ';');
 		if (received)
@@ -663,13 +663,13 @@ camel_mime_message_set_from (CamelMimeMessage *msg,
 	}
 
 	if (from == NULL || camel_address_length ((CamelAddress *) from) == 0) {
-		CAMEL_MEDIUM_CLASS(camel_mime_message_parent_class)->remove_header(CAMEL_MEDIUM(msg), "From");
+		CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->remove_header (CAMEL_MEDIUM (msg), "From");
 		return;
 	}
 
 	msg->from = (CamelInternetAddress *) camel_address_new_clone ((CamelAddress *) from);
 	addr = camel_address_encode ((CamelAddress *) msg->from);
-	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header(CAMEL_MEDIUM(msg), "From", addr);
+	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (CAMEL_MEDIUM (msg), "From", addr);
 	g_free (addr);
 }
 
@@ -898,7 +898,7 @@ find_best_encoding (CamelMimePart *part,
 	 * not have to read the whole lot into memory - although i have a feeling
 	 * it would make things a fair bit simpler to do so ... */
 
-	d(printf("starting to check part\n"));
+	d (printf ("starting to check part\n"));
 
 	content = camel_medium_get_content ((CamelMedium *) part);
 	if (content == NULL) {
@@ -939,7 +939,7 @@ find_best_encoding (CamelMimePart *part,
 	bestenc = camel_mime_filter_bestenc_new (flags);
 	idb = camel_stream_filter_add (
 		CAMEL_STREAM_FILTER (filter), bestenc);
-	d(printf("writing to checking stream\n"));
+	d (printf ("writing to checking stream\n"));
 	camel_data_wrapper_decode_to_stream_sync (content, filter, NULL, NULL);
 	camel_stream_filter_remove (CAMEL_STREAM_FILTER (filter), idb);
 	if (idc != -1) {
@@ -951,7 +951,7 @@ find_best_encoding (CamelMimePart *part,
 	if (istext && (required & CAMEL_BESTENC_GET_CHARSET) != 0) {
 		charsetin = camel_mime_filter_bestenc_get_best_charset (
 			CAMEL_MIME_FILTER_BESTENC (bestenc));
-		d(printf("best charset = %s\n", charsetin ? charsetin : "(null)"));
+		d (printf ("best charset = %s\n", charsetin ? charsetin : "(null)"));
 		charset = g_strdup (charsetin);
 
 		charsetin = camel_content_type_param (content->mime_type, "charset");
@@ -961,7 +961,7 @@ find_best_encoding (CamelMimePart *part,
 
 	/* if we have US-ASCII, or we're not doing text, we dont need to bother with the rest */
 	if (istext && charsetin && charset && (required & CAMEL_BESTENC_GET_CHARSET) != 0) {
-		d(printf("have charset, trying conversion/etc\n"));
+		d (printf ("have charset, trying conversion/etc\n"));
 
 		/* now that 'bestenc' has told us what the best encoding is, we can use that to create
 		 * a charset conversion filter as well, and then re-add the bestenc to filter the
@@ -997,7 +997,7 @@ find_best_encoding (CamelMimePart *part,
 	g_object_unref (bestenc);
 	g_object_unref (null);
 
-	d(printf("done, best encoding = %d\n", encoding));
+	d (printf ("done, best encoding = %d\n", encoding));
 
 	if (charsetp)
 		*charsetp = charset;
@@ -1042,7 +1042,7 @@ best_encoding (CamelMimeMessage *msg,
 							       charset ? charset : "us-ascii");
 				newct = camel_content_type_format (((CamelDataWrapper *) part)->mime_type);
 				if (newct) {
-					d(printf("Setting content-type to %s\n", newct));
+					d (printf ("Setting content-type to %s\n", newct));
 
 					camel_mime_part_set_content_type (part, newct);
 					g_free (newct);
@@ -1170,7 +1170,7 @@ gchar *
 camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 {
 	struct _camel_header_raw *header = ((CamelMimePart *) message)->headers;
-	GString *out = g_string_new("From ");
+	GString *out = g_string_new ("From ");
 	gchar *ret;
 	const gchar *tmp;
 	time_t thetime;
@@ -1283,16 +1283,16 @@ cmm_dump_rec (CamelMimeMessage *msg,
 	memset (s, ' ', depth);
 	s[depth] = 0;
 	/* yes this leaks, so what its only debug stuff */
-	printf("%sclass: %s\n", s, G_OBJECT_TYPE_NAME (part));
-	printf("%smime-type: %s\n", s, camel_content_type_format(((CamelDataWrapper *)part)->mime_type));
+	printf ("%sclass: %s\n", s, G_OBJECT_TYPE_NAME (part));
+	printf ("%smime-type: %s\n", s, camel_content_type_format (((CamelDataWrapper *) part)->mime_type));
 
 	containee = camel_medium_get_content ((CamelMedium *) part);
 
 	if (containee == NULL)
 		return;
 
-	printf("%scontent class: %s\n", s, G_OBJECT_TYPE_NAME (containee));
-	printf("%scontent mime-type: %s\n", s, camel_content_type_format(((CamelDataWrapper *)containee)->mime_type));
+	printf ("%scontent class: %s\n", s, G_OBJECT_TYPE_NAME (containee));
+	printf ("%scontent mime-type: %s\n", s, camel_content_type_format (((CamelDataWrapper *) containee)->mime_type));
 
 	/* using the object types is more accurate than using the mime/types */
 	if (CAMEL_IS_MULTIPART (containee)) {

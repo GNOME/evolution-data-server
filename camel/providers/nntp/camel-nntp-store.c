@@ -199,10 +199,10 @@ xover_setup (CamelNNTPStore *store,
 	struct _xover_header *xover, *last;
 
 	/* manual override */
-	if (store->xover || getenv("CAMEL_NNTP_DISABLE_XOVER") != NULL)
+	if (store->xover || getenv ("CAMEL_NNTP_DISABLE_XOVER") != NULL)
 		return 0;
 
-	ret = camel_nntp_raw_command_auth(store, cancellable, error, &line, "list overview.fmt");
+	ret = camel_nntp_raw_command_auth (store, cancellable, error, &line, "list overview.fmt");
 	if (ret == -1) {
 		return -1;
 	} else if (ret != 215)
@@ -223,7 +223,7 @@ xover_setup (CamelNNTPStore *store,
 				for (i = 0; i < G_N_ELEMENTS (headers); i++) {
 					if (strcmp (line, headers[i].name) == 0) {
 						xover->name = headers[i].name;
-						if (strncmp((gchar *) p, "full", 4) == 0)
+						if (strncmp ((gchar *) p, "full", 4) == 0)
 							xover->skip = strlen (xover->name) + 1;
 						else
 							xover->skip = 0;
@@ -656,7 +656,7 @@ nntp_store_info_update (CamelNNTPStore *store,
 		si = (CamelNNTPStoreInfo *) camel_store_summary_info_new (summ);
 
 		relpath = g_alloca (strlen (line) + 2);
-		sprintf(relpath, "/%s", line);
+		sprintf (relpath, "/%s", line);
 
 		si->info.path = g_strdup (line);
 		si->full_name = g_strdup (line); /* why do we keep this? */
@@ -675,7 +675,7 @@ nntp_store_info_update (CamelNNTPStore *store,
 		}
 	}
 
-	dd(printf("store info update '%s' first '%u' last '%u'\n", line, first, last));
+	dd (printf ("store info update '%s' first '%u' last '%u'\n", line, first, last));
 
 	if (si->last) {
 		if (last > si->last)
@@ -869,7 +869,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 	GHashTable *known; /* folder name to folder info */
 	gboolean folder_hierarchy_relative;
 	gchar *tmpname;
-	gchar *top = g_strconcat(orig_top?orig_top:"", ".", NULL);
+	gchar *top = g_strconcat (orig_top ? orig_top:"", ".", NULL);
 	gint toplen = strlen (top);
 
 	service = CAMEL_SERVICE (store);
@@ -979,7 +979,7 @@ nntp_get_date (CamelNNTPStore *nntp_store,
                GError **error)
 {
 	guchar *line;
-	gint ret = camel_nntp_command(nntp_store, cancellable, error, NULL, (gchar **)&line, "date");
+	gint ret = camel_nntp_command (nntp_store, cancellable, error, NULL, (gchar **) &line, "date");
 	gchar *ptr;
 
 	nntp_store->summary->last_newslist[0] = 0;
@@ -1048,7 +1048,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			/* at first, we do a DATE to find out the last load occasion */
 			nntp_get_date (nntp_store, cancellable, NULL);
 		do_complete_list_nodate:
-			ret = camel_nntp_command (nntp_store, cancellable, error, NULL, (gchar **)&line, "list");
+			ret = camel_nntp_command (nntp_store, cancellable, error, NULL, (gchar **) &line, "list");
 			if (ret == -1)
 				goto error;
 			else if (ret != 215) {
@@ -1097,12 +1097,12 @@ nntp_get_folder_info (CamelStore *store,
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelFolderInfo *first = NULL;
 
-	dd(printf("g_f_i: fast %d subscr %d recursive %d online %d top \"%s\"\n",
+	dd (printf ("g_f_i: fast %d subscr %d recursive %d online %d top \"%s\"\n",
 		flags & CAMEL_STORE_FOLDER_INFO_FAST,
 		flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED,
 		flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE,
 		online,
-		top?top:""));
+		top ? top:""));
 
 	if (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED)
 		first = nntp_store_get_subscribed_folder_info (
@@ -1585,7 +1585,7 @@ camel_nntp_raw_commandv (CamelNNTPStore *store,
 					strval = g_strdup_printf ("%u-%u", u, u2);
 				break;
 			default:
-				g_warning("Passing unknown format to nntp_command: %c\n", c);
+				g_warning ("Passing unknown format to nntp_command: %c\n", c);
 				g_assert (0);
 			}
 
@@ -1725,7 +1725,7 @@ camel_nntp_command (CamelNNTPStore *store,
 
 		/* Check for unprocessed data, !*/
 		if (store->stream && store->stream->mode == CAMEL_NNTP_STREAM_DATA) {
-			g_warning("Unprocessed data left in stream, flushing");
+			g_warning ("Unprocessed data left in stream, flushing");
 			while (camel_nntp_stream_getd (store->stream, (guchar **) &p, &u, cancellable, error) > 0)
 				;
 		}
@@ -1733,7 +1733,7 @@ camel_nntp_command (CamelNNTPStore *store,
 
 		if (folder != NULL
 		    && (store->current_folder == NULL || strcmp (store->current_folder, full_name) != 0)) {
-			ret = camel_nntp_raw_command_auth(store, cancellable, &local_error, line, "group %s", full_name);
+			ret = camel_nntp_raw_command_auth (store, cancellable, &local_error, line, "group %s", full_name);
 			if (ret == 211) {
 				g_free (store->current_folder);
 				store->current_folder = g_strdup (full_name);

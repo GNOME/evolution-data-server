@@ -212,12 +212,12 @@ camel_imapx_store_summary_path_to_full (CamelIMAPXStoreSummary *s,
 	/* merge old path part if required */
 	f = full;
 	if (si) {
-		full = g_strdup_printf("%s%s", camel_imapx_store_info_full_name(s, si), f);
+		full = g_strdup_printf ("%s%s", camel_imapx_store_info_full_name (s, si), f);
 		g_free (f);
 		camel_store_summary_info_free ((CamelStoreSummary *) s, si);
 		f = full;
 	} else if (ns) {
-		full = g_strdup_printf("%s%s", ns->full_name, f);
+		full = g_strdup_printf ("%s%s", ns->full_name, f);
 		g_free (f);
 		f = full;
 	}
@@ -236,7 +236,7 @@ camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
 	gchar *full_name;
 	CamelIMAPXStoreNamespace *ns;
 
-	d("adding full name '%s' '%c'\n", full, dir_sep);
+	d ("adding full name '%s' '%c'\n", full, dir_sep);
 
 	len = strlen (full);
 	full_name = alloca (len + 1);
@@ -247,13 +247,13 @@ camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
 	info = camel_imapx_store_summary_full_name (s, full_name);
 	if (info) {
 		camel_store_summary_info_free ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
-		d("  already there\n");
+		d ("  already there\n");
 		return info;
 	}
 
 	ns = camel_imapx_store_summary_namespace_find_full (s, full_name);
 	if (ns) {
-		d("(found namespace for '%s' ns '%s') ", full_name, ns->path);
+		d ("(found namespace for '%s' ns '%s') ", full_name, ns->path);
 		len = strlen (ns->full_name);
 		if (len >= strlen (full_name)) {
 			pathu8 = g_strdup (ns->path);
@@ -269,21 +269,21 @@ camel_imapx_store_summary_add_from_full (CamelIMAPXStoreSummary *s,
 				pathu8 = prefix;
 			}
 		}
-		d(" (pathu8 = '%s')", pathu8);
+		d (" (pathu8 = '%s')", pathu8);
 	} else {
-		d("(Cannot find namespace for '%s')\n", full_name);
+		d ("(Cannot find namespace for '%s')\n", full_name);
 		pathu8 = camel_imapx_store_summary_full_to_path (s, full_name, dir_sep);
 	}
 
 	info = (CamelIMAPXStoreInfo *) camel_store_summary_add_from_path ((CamelStoreSummary *) s, pathu8);
 	if (info) {
-		d("  '%s' -> '%s'\n", pathu8, full_name);
+		d ("  '%s' -> '%s'\n", pathu8, full_name);
 		camel_store_info_set_string ((CamelStoreSummary *) s, (CamelStoreInfo *) info, CAMEL_IMAPX_STORE_INFO_FULL_NAME, full_name);
 
-		if (!g_ascii_strcasecmp(full_name, "inbox"))
+		if (!g_ascii_strcasecmp (full_name, "inbox"))
 			info->info.flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 	} else {
-		d("  failed\n");
+		d ("  failed\n");
 	}
 
 	g_free (pathu8);
@@ -304,7 +304,7 @@ camel_imapx_store_summary_full_from_path (CamelIMAPXStoreSummary *s,
 	if (ns)
 		name = camel_imapx_store_summary_path_to_full (s, path, ns->sep);
 
-	d("looking up path %s -> %s\n", path, name?name:"not found");
+	d ("looking up path %s -> %s\n", path, name ? name:"not found");
 
 	return name;
 }
@@ -341,7 +341,7 @@ camel_imapx_store_summary_namespace_new (CamelIMAPXStoreSummary *s,
 
 void camel_imapx_store_summary_namespace_set (CamelIMAPXStoreSummary *s, CamelIMAPXStoreNamespace *ns)
 {
-	d("Setting namesapce to '%s' '%c' -> '%s'\n", ns->full_name, ns->sep, ns->path);
+	d ("Setting namesapce to '%s' '%c' -> '%s'\n", ns->full_name, ns->sep, ns->path);
 
 	/* CHEN not needed  */
 	camel_store_summary_touch ((CamelStoreSummary *) s);
@@ -383,7 +383,7 @@ camel_imapx_store_summary_namespace_find_full (CamelIMAPXStoreSummary *s,
 	while (ns) {
 		if (ns->full_name)
 			len = strlen (ns->full_name);
-		d("find_full: comparing namespace '%s' to name '%s'\n", ns->full_name, full);
+		d ("find_full: comparing namespace '%s' to name '%s'\n", ns->full_name, full);
 		if (len == 0
 		    || (strncmp (ns->full_name, full, len) == 0
 			&& (full[len] == ns->sep || full[len] == 0)))
@@ -523,7 +523,7 @@ summary_header_load (CamelStoreSummary *s,
 	is->version = version;
 
 	if (version < CAMEL_IMAPX_STORE_SUMMARY_VERSION_0) {
-		g_warning("Store summary header version too low");
+		g_warning ("Store summary header version too low");
 		return -1;
 	}
 
@@ -575,7 +575,7 @@ store_info_load (CamelStoreSummary *s,
 			mi = NULL;
 		} else {
 			/* NB: this is done again for compatability */
-			if (g_ascii_strcasecmp(mi->full_name, "inbox") == 0)
+			if (g_ascii_strcasecmp (mi->full_name, "inbox") == 0)
 				mi->info.flags |= CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_TYPE_INBOX;
 		}
 	}
@@ -649,7 +649,7 @@ store_info_set_string (CamelStoreSummary *s,
 
 	switch (type) {
 	case CAMEL_IMAPX_STORE_INFO_FULL_NAME:
-		d("Set full name %s -> %s\n", isi->full_name, str);
+		d ("Set full name %s -> %s\n", isi->full_name, str);
 		camel_store_summary_lock (s, CAMEL_STORE_SUMMARY_SUMMARY_LOCK);
 		g_free (isi->full_name);
 		isi->full_name = g_strdup (str);

@@ -58,7 +58,7 @@ objects_added_cb (GObject *object,
 		struct icaltimetype recurrence    = icalcomponent_get_recurrenceid (component);
 		struct icaltimetype last_modified = get_last_modified (component);
 
-                g_print ("Object added %s (recurrence id:%s, last-modified:%s)\n", 
+		g_print ("Object added %s (recurrence id:%s, last-modified:%s)\n",
 			 icalcomponent_get_uid (component),
 			 icaltime_as_ical_string (recurrence),
 			 icaltime_as_ical_string (last_modified));
@@ -81,7 +81,7 @@ objects_modified_cb (GObject *object,
 		struct icaltimetype recurrence    = icalcomponent_get_recurrenceid (component);
 		struct icaltimetype last_modified = get_last_modified (component);
 
-                g_print ("Object modified %s (recurrence id:%s, last-modified:%s)\n", 
+		g_print ("Object modified %s (recurrence id:%s, last-modified:%s)\n",
 			 icalcomponent_get_uid (component),
 			 icaltime_as_ical_string (recurrence),
 			 icaltime_as_ical_string (last_modified));
@@ -102,7 +102,7 @@ objects_removed_cb (GObject *object,
 	for (l = objects; l; l = l->next) {
 		ECalComponentId *id = l->data;
 
-                g_print ("Object removed: uid: %s, rid: %s\n", id->uid, id->rid);
+		g_print ("Object removed: uid: %s, rid: %s\n", id->uid, id->rid);
 	}
 
 	subtest_passed (SUBTEST_OBJECTS_REMOVED);
@@ -113,7 +113,7 @@ complete_cb (GObject *object,
              const GError *error,
              gpointer data)
 {
-        g_print ("View complete (status: %d, error_msg:%s)\n", error ? error->code : 0, error ? error->message : "NULL");
+	g_print ("View complete (status: %d, error_msg:%s)\n", error ? error->code : 0, error ? error->message : "NULL");
 
 	subtest_passed (SUBTEST_VIEW_DONE);
 }
@@ -195,7 +195,7 @@ async_get_view_ready (GObject *source_object,
 
 	g_object_set_data_full (G_OBJECT (cal_client), "cal-view", view, g_object_unref);
 
-	field_list = g_slist_prepend (NULL, (gpointer) "UID"); 
+	field_list = g_slist_prepend (NULL, (gpointer) "UID");
 	field_list = g_slist_prepend (field_list, (gpointer) "RECURRENCE-ID");
 	field_list = g_slist_prepend (field_list, (gpointer) "LAST-MODIFIED");
 
@@ -253,7 +253,7 @@ main (gint argc,
 	g_signal_connect (view, "objects_removed", G_CALLBACK (objects_removed_cb), cal_client);
 	g_signal_connect (view, "complete", G_CALLBACK (complete_cb), cal_client);
 
-	field_list = g_slist_prepend (NULL, (gpointer) "UID"); 
+	field_list = g_slist_prepend (NULL, (gpointer) "UID");
 	field_list = g_slist_prepend (field_list, (gpointer) "RECURRENCE-ID");
 	field_list = g_slist_prepend (field_list, (gpointer) "LAST-MODIFIED");
 

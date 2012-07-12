@@ -81,9 +81,10 @@ e_name_selector_model_init (ENameSelectorModel *name_selector_model)
 
 	name_selector_model->priv->contact_filter =
 		e_tree_model_generator_new (GTK_TREE_MODEL (name_selector_model->priv->contact_store));
-	e_tree_model_generator_set_generate_func (name_selector_model->priv->contact_filter,
-						  (ETreeModelGeneratorGenerateFunc) generate_contact_rows,
-						  name_selector_model, NULL);
+	e_tree_model_generator_set_generate_func (
+		name_selector_model->priv->contact_filter,
+		(ETreeModelGeneratorGenerateFunc) generate_contact_rows,
+		name_selector_model, NULL);
 	e_tree_model_generator_set_modify_func (name_selector_model->priv->contact_filter,
 						(ETreeModelGeneratorModifyFunc) override_email_address,
 						name_selector_model, NULL);
@@ -312,9 +313,12 @@ destinations_changed (ENameSelectorModel *name_selector_model)
 
 			destination_uid = e_destination_get_contact_uid (destination);
 			if (destination_uid)
-				g_hash_table_insert (destination_uid_hash_new,
-						     g_strdup_printf ("%s:%d", destination_uid, e_destination_get_email_num (destination)),
-						     GINT_TO_POINTER (TRUE));
+				g_hash_table_insert (
+					destination_uid_hash_new,
+					g_strdup_printf (
+						"%s:%d", destination_uid,
+						e_destination_get_email_num (destination)),
+					GINT_TO_POINTER (TRUE));
 		}
 
 		g_list_free (destinations);
@@ -326,13 +330,17 @@ destinations_changed (ENameSelectorModel *name_selector_model)
 	hash_compare.name_selector_model = name_selector_model;
 
 	hash_compare.other_hash = destination_uid_hash_old;
-	g_hash_table_foreach (destination_uid_hash_new, (GHFunc) emit_destination_uid_changes_cb,
-			      &hash_compare);
+	g_hash_table_foreach (
+		destination_uid_hash_new,
+		(GHFunc) emit_destination_uid_changes_cb,
+		&hash_compare);
 
 	if (destination_uid_hash_old) {
 		hash_compare.other_hash = destination_uid_hash_new;
-		g_hash_table_foreach (destination_uid_hash_old, (GHFunc) emit_destination_uid_changes_cb,
-				      &hash_compare);
+		g_hash_table_foreach (
+			destination_uid_hash_old,
+			(GHFunc) emit_destination_uid_changes_cb,
+			&hash_compare);
 
 		g_hash_table_destroy (destination_uid_hash_old);
 	}
@@ -349,8 +357,9 @@ free_section (ENameSelectorModel *name_selector_model,
 
 	section = &g_array_index (name_selector_model->priv->sections, Section, n);
 
-	g_signal_handlers_disconnect_matched (section->destination_store, G_SIGNAL_MATCH_DATA,
-					      0, 0, NULL, NULL, name_selector_model);
+	g_signal_handlers_disconnect_matched (
+		section->destination_store, G_SIGNAL_MATCH_DATA,
+		0, 0, NULL, NULL, name_selector_model);
 
 	g_free (section->name);
 	g_free (section->pretty_name);
@@ -478,12 +487,15 @@ e_name_selector_model_add_section (ENameSelectorModel *name_selector_model,
 	else
 		section.destination_store = e_destination_store_new ();
 
-	g_signal_connect_swapped (section.destination_store, "row-changed",
-				  G_CALLBACK (destinations_changed), name_selector_model);
-	g_signal_connect_swapped (section.destination_store, "row-deleted",
-				  G_CALLBACK (destinations_changed), name_selector_model);
-	g_signal_connect_swapped (section.destination_store, "row-inserted",
-				  G_CALLBACK (destinations_changed), name_selector_model);
+	g_signal_connect_swapped (
+		section.destination_store, "row-changed",
+		G_CALLBACK (destinations_changed), name_selector_model);
+	g_signal_connect_swapped (
+		section.destination_store, "row-deleted",
+		G_CALLBACK (destinations_changed), name_selector_model);
+	g_signal_connect_swapped (
+		section.destination_store, "row-inserted",
+		G_CALLBACK (destinations_changed), name_selector_model);
 
 	g_array_append_val (name_selector_model->priv->sections, section);
 

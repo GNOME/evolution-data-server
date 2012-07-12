@@ -464,7 +464,7 @@ imapx_conn_update_select (CamelIMAPXServer *is,
 		jinfo = camel_imapx_server_get_job_queue_info (is);
 		if (!g_hash_table_lookup (jinfo->folders, old_selected_folder)) {
 			connection_info_remove_folder_name (cinfo, old_selected_folder);
-			c(is->tagprefix, "Removed folder %s from connection folder list - select changed \n", old_selected_folder);
+			c (is->tagprefix, "Removed folder %s from connection folder list - select changed \n", old_selected_folder);
 		}
 		camel_imapx_destroy_job_queue_info (jinfo);
 
@@ -628,7 +628,7 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 	con_man->priv->connections = g_list_prepend (
 		con_man->priv->connections, cinfo);
 
-	c(is->tagprefix, "Created new connection for %s and total connections %d \n", folder_name, g_list_length (con_man->priv->connections));
+	c (is->tagprefix, "Created new connection for %s and total connections %d \n", folder_name, g_list_length (con_man->priv->connections));
 
 	return is;
 }
@@ -718,7 +718,7 @@ camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man,
 	jinfo = camel_imapx_server_get_job_queue_info (cinfo->is);
 	if (!g_hash_table_lookup (jinfo->folders, folder_name)) {
 		connection_info_remove_folder_name (cinfo, folder_name);
-		c(is->tagprefix, "Removed folder %s from connection folder list - op done \n", folder_name);
+		c (is->tagprefix, "Removed folder %s from connection folder list - op done \n", folder_name);
 	}
 	camel_imapx_destroy_job_queue_info (jinfo);
 

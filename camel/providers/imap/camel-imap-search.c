@@ -231,14 +231,14 @@ save_match (CamelImapSearch *is,
 	if (is->cache == NULL)
 		return -1;
 
-	stream = camel_data_cache_add(is->cache, "search/body-contains", mr->hash, NULL);
+	stream = camel_data_cache_add (is->cache, "search/body-contains", mr->hash, NULL);
 	if (stream == NULL)
 		return -1;
 
-	d(printf("Saving search cache entry to '%s': %s\n", mr->hash, mr->terms[0]));
+	d (printf ("Saving search cache entry to '%s': %s\n", mr->hash, mr->terms[0]));
 
 	/* we write the whole thing, then re-write the header magic, saves fancy sync code */
-	memcpy(&header.mark, "    ", 4);
+	memcpy (&header.mark, "    ", 4);
 	header.termcount = 0;
 	header.matchcount = mr->matches->len;
 	header.lastuid = mr->lastuid;
@@ -248,8 +248,8 @@ save_match (CamelImapSearch *is,
 	    || camel_stream_write (stream, mr->matches->data, mr->matches->len * sizeof (guint32), NULL, NULL) != mr->matches->len * sizeof (guint32)
 	    || !g_seekable_seek (G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL)
 	    || camel_stream_write (stream, (gchar *) &mark, sizeof (mark), NULL, NULL) != sizeof (mark)) {
-		d(printf(" saving failed, removing cache entry\n"));
-		camel_data_cache_remove(is->cache, "search/body-contains", mr->hash, NULL);
+		d (printf (" saving failed, removing cache entry\n"));
+		camel_data_cache_remove (is->cache, "search/body-contains", mr->hash, NULL);
 		ret = -1;
 	}
 
@@ -280,11 +280,11 @@ load_match (CamelImapSearch *is,
 		}
 	}
 
-	d(printf("Loading search cache entry to '%s': %s\n", mr->hash, mr->terms[0]));
+	d (printf ("Loading search cache entry to '%s': %s\n", mr->hash, mr->terms[0]));
 
 	memset (&header, 0, sizeof (header));
 	if (is->cache)
-		stream = camel_data_cache_get(is->cache, "search/body-contains", mr->hash, NULL);
+		stream = camel_data_cache_get (is->cache, "search/body-contains", mr->hash, NULL);
 	if (stream != NULL) {
 		/* 'cause i'm gonna be lazy, i'm going to have the termcount == 0 for now,
 		 * and not load or save them since i can't think of a nice way to do it, the hash
@@ -295,18 +295,18 @@ load_match (CamelImapSearch *is,
 		    && header.validity == is->validity
 		    && header.mark == MATCH_MARK
 		    && header.termcount == 0) {
-			d(printf(" found %d matches\n", header.matchcount));
+			d (printf (" found %d matches\n", header.matchcount));
 			g_array_set_size (mr->matches, header.matchcount);
 			if (camel_stream_read (stream, mr->matches->data, sizeof (guint32) * header.matchcount, NULL, NULL) == -1) {
 				memset (&header, 0, sizeof (header));
 			}
 		} else {
-			d(printf(" file format invalid/validity changed\n"));
+			d (printf (" file format invalid/validity changed\n"));
 			memset (&header, 0, sizeof (header));
 		}
 		g_object_unref (stream);
 	} else {
-		d(printf(" no cache entry found\n"));
+		d (printf (" no cache entry found\n"));
 	}
 
 	mr->validity = header.validity;
@@ -338,7 +338,7 @@ sync_match (CamelImapSearch *is,
 	if (mr->lastuid >= is->lastuid && mr->validity == is->validity)
 		return 0;
 
-	d(printf ("updating match record for uid's %d:%d\n", mr->lastuid+1, is->lastuid));
+	d (printf ("updating match record for uid's %d:%d\n", mr->lastuid + 1, is->lastuid));
 
 	/* TODO: Handle multiple search terms */
 
@@ -407,7 +407,7 @@ get_match (CamelImapSearch *is,
 		while (is->matches_count >= MATCH_CACHE_SIZE) {
 			mr = g_queue_pop_tail (&is->matches);
 			if (mr) {
-				printf("expiring match '%s' (%s)\n", mr->hash, mr->terms[0]);
+				printf ("expiring match '%s' (%s)\n", mr->hash, mr->terms[0]);
 				g_hash_table_remove (is->matches_hash, mr->hash);
 				free_match (is, mr);
 				is->matches_count--;
@@ -451,7 +451,7 @@ imap_body_contains (struct _CamelSExp *f,
 	parent_store = camel_folder_get_parent_store (s->folder);
 	store = CAMEL_IMAP_STORE (parent_store);
 
-	d(printf("Performing body search '%s'\n", argv[0]->value.string));
+	d (printf ("Performing body search '%s'\n", argv[0]->value.string));
 
 	/* TODO: Cache offline searches too? */
 

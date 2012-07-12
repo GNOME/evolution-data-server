@@ -114,7 +114,7 @@ camel_url_new_with_base (CamelURL *base,
 		return url;
 
 #ifdef G_OS_WIN32
-	if (url->protocol && !strcmp(url->protocol, "file")) {
+	if (url->protocol && !strcmp (url->protocol, "file")) {
 		url->path = g_filename_from_uri (start, &url->host, NULL);
 		return url;
 	}
@@ -356,7 +356,7 @@ camel_url_to_string (CamelURL *url,
 	 */
 
 #ifdef G_OS_WIN32
-	if (url->protocol && !strcmp(url->protocol, "file"))
+	if (url->protocol && !strcmp (url->protocol, "file"))
 		return g_filename_to_uri (url->path, url->host, NULL);
 #endif /* G_OS_WIN32 */
 
@@ -647,7 +647,7 @@ append_url_encoded (GString *str,
 	while (*s) {
 		if (url_encoded_char[*s] ||
 		    (extra_enc_chars && strchr (extra_enc_chars, *s)))
-			g_string_append_printf (str, "%%%02x", (gint)*s++);
+			g_string_append_printf (str, "%%%02x", (gint) * s++);
 		else
 			g_string_append_c (str, *s++);
 	}

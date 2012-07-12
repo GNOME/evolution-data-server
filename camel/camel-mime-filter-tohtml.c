@@ -170,7 +170,7 @@ writeln (CamelMimeFilter *mime_filter,
 		u = camel_utf8_getc_limit (&inptr, inend);
 		switch (u) {
 		case 0xffff:
-			g_warning("Truncated utf8 buffer");
+			g_warning ("Truncated utf8 buffer");
 			return outptr;
 		case '<':
 			outptr = g_stpcpy (outptr, "&lt;");
@@ -213,7 +213,7 @@ writeln (CamelMimeFilter *mime_filter,
 				if (priv->flags & CAMEL_MIME_FILTER_TOHTML_ESCAPE_8BIT)
 					*outptr++ = '?';
 				else
-					outptr += sprintf(outptr, "&#%u;", u);
+					outptr += sprintf (outptr, "&#%u;", u);
 			}
 			priv->column++;
 			break;
@@ -290,7 +290,7 @@ html_convert (CamelMimeFilter *mime_filter,
 				/* FIXME: we could easily support multiple color depths here */
 
 				outptr = check_size (mime_filter, outptr, &outend, 25);
-				outptr += sprintf(outptr, "<font color=\"#%06x\">", (priv->color & 0xffffff));
+				outptr += sprintf (outptr, "<font color=\"#%06x\">", (priv->color & 0xffffff));
 			}
 #if FOOLISHLY_UNMUNGE_FROM
 			else if (*start == '>') {

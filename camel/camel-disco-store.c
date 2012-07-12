@@ -109,7 +109,7 @@ disco_store_connect_sync (CamelService *service,
 		if (!store->diary)
 			return TRUE;
 
-		d(printf(" diary is %s\n", camel_disco_diary_empty(store->diary)?"empty":"not empty"));
+		d (printf (" diary is %s\n", camel_disco_diary_empty (store->diary)?"empty":"not empty"));
 		if (camel_disco_diary_empty (store->diary))
 			return TRUE;
 

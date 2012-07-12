@@ -526,7 +526,7 @@ resolve_tzid (const gchar *tzid,
 
 	if (!tzid || !tzid[0])
 		return NULL;
-        else if (!strcmp (tzid, "UTC"))
+	else if (!strcmp (tzid, "UTC"))
 		return icaltimezone_get_utc_timezone ();
 
 	zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
@@ -576,7 +576,7 @@ check_dup_uid (ECalBackendFile *cbfile,
 			goto done;
 	}
 
-	d(g_message (G_STRLOC ": Got object with duplicated UID `%s' and rid `%s', changing it...",
+	d (g_message (G_STRLOC ": Got object with duplicated UID `%s' and rid `%s', changing it...",
 		     uid,
 		     rid ? rid : ""));
 
@@ -1630,7 +1630,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	d(g_message (G_STRLOC ": Getting object list (%s)", sexp));
+	d (g_message (G_STRLOC ": Getting object list (%s)", sexp));
 
 	match_data.search_needed = TRUE;
 	match_data.query = sexp;
@@ -1816,7 +1816,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	d(g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query)));
+	d (g_message (G_STRLOC ": Starting query (%s)", e_data_cal_view_get_text (query)));
 
 	/* try to match all currently existing objects */
 	match_data.search_needed = TRUE;
@@ -1849,7 +1849,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 		g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) match_object_sexp,
 				      &match_data);
 
-		e_debug_log(FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,  "---;%p;QUERY-ITEMS;%s;%s;%d", query,
+		e_debug_log (FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,  "---;%p;QUERY-ITEMS;%s;%s;%d", query,
 			    e_data_cal_view_get_text (query), G_OBJECT_TYPE_NAME (backend),
 			    g_hash_table_size (priv->comp_uid_hash));
 	} else {
@@ -1860,7 +1860,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 		g_list_foreach (objs_occuring_in_tw, (GFunc) match_object_sexp_to_component,
 			       &match_data);
 
-		e_debug_log(FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,  "---;%p;QUERY-ITEMS;%s;%s;%d", query,
+		e_debug_log (FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES,  "---;%p;QUERY-ITEMS;%s;%s;%d", query,
 			    e_data_cal_view_get_text (query), G_OBJECT_TYPE_NAME (backend),
 			    g_list_length (objs_occuring_in_tw));
 	}
@@ -3612,8 +3612,8 @@ get_difference_of_lists (ECalBackendFile *cbfile,
 						   icaltimezone_get_utc_timezone (),
 						   e_cal_backend_get_kind (E_CAL_BACKEND (cbfile)));
 
-			d (printf ("start %s\n", asctime(gmtime(&time_start))));
-			d (printf ("end %s\n", asctime(gmtime(&time_end))));
+			d (printf ("start %s\n", asctime (gmtime (&time_start))));
+			d (printf ("end %s\n", asctime (gmtime (&time_end))));
 		}
 
 		g_object_unref (comp);
@@ -3772,7 +3772,7 @@ main (gint argc,
 		exit (1);
 	}
 
-	calendar_fname = g_strdup("calendar.ics");
+	calendar_fname = g_strdup ("calendar.ics");
 
 	if (!calendar_fname)
 	{

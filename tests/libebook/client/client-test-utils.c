@@ -30,7 +30,7 @@ print_email (EContact *contact)
 	g_print ("   Email addresses:\n");
 	emails = e_contact_get (contact, E_CONTACT_EMAIL);
 	for (e = emails; e; e = e->next) {
-		g_print ("\t%s\n",  (gchar *)e->data);
+		g_print ("\t%s\n",  (gchar *) e->data);
 	}
 	g_list_foreach (emails, (GFunc) g_free, NULL);
 	g_list_free (emails);
@@ -338,11 +338,11 @@ new_vcard_from_test_case (const gchar *case_name)
 	GError *error = NULL;
 	gchar *vcard;
 
-        case_filename = g_strdup_printf ("%s.vcf", case_name);
+	case_filename = g_strdup_printf ("%s.vcf", case_name);
 	filename = g_build_filename (SRCDIR, "..", "data", "vcards", case_filename, NULL);
 	file = g_file_new_for_path (filename);
 	if (!g_file_load_contents (file, NULL, &vcard, NULL, NULL, &error)) {
-                g_warning ("failed to read test contact file '%s': %s",
+		g_warning ("failed to read test contact file '%s': %s",
 				filename, error->message);
 		exit (1);
 	}

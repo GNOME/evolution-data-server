@@ -1,5 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8; fill-column: 160 -*-
- *
+/*
  * Author:
  *  Michael Zucchi <notzed@ximian.com>
  *
@@ -83,7 +82,6 @@ stream_fill (CamelPOP3Stream *is,
 			CAMEL_POP3_STREAM_SIZE - (is->end - is->buf),
 			cancellable, &local_error);
 		if (local_error) {
-			dd (printf ("POP3_STREAM_FILL: Failed to read bytes: %s\n", local_error->message));
 			g_propagate_error (error, local_error);
 		}
 
@@ -136,7 +134,6 @@ stream_read (CamelStream *stream,
 				is->ptr = p + 3;
 				is->mode = CAMEL_POP3_STREAM_EOD;
 				is->state = 0;
-				dd (printf ("POP3_STREAM_READ (%d):\n%.*s\n", (gint)(o-buffer), (gint)(o-buffer), buffer));
 				return o - buffer;
 			}
 			p++;
@@ -169,8 +166,6 @@ stream_read (CamelStream *stream,
 	is->ptr = p;
 	is->state = state;
 
-	dd (printf ("POP3_STREAM_READ (%d):\n%.*s\n", (gint)(o-buffer), (gint)(o-buffer), buffer));
-
 	return o - buffer;
 }
 
@@ -184,9 +179,9 @@ stream_write (CamelStream *stream,
 	CamelPOP3Stream *is = (CamelPOP3Stream *) stream;
 
 	if (strncmp (buffer, "PASS ", 5) != 0)
-		dd (printf ("POP3_STREAM_WRITE (%d):\n%.*s\n", (gint)n, (gint)n, buffer));
+		dd (printf ("POP3_STREAM_WRITE (%d):\n%.*s\n", (gint) n, (gint) n, buffer));
 	else
-		dd (printf ("POP3_STREAM_WRITE (%d):\nPASS xxxxxxxx\n", (gint)n));
+		dd (printf ("POP3_STREAM_WRITE (%d):\nPASS xxxxxxxx\n", (gint) n));
 
 	return camel_stream_write (is->source, buffer, n, cancellable, error);
 }
@@ -292,7 +287,8 @@ camel_pop3_stream_line (CamelPOP3Stream *is,
 	p = is->ptr;
 	e = is->end;
 
-	/* Data mode, convert leading '..' to '.', and stop when we reach a solitary '.' */
+	/* Data mode, convert leading '..' to '.',
+	 * and stop when we reach a solitary '.' */
 	if (is->mode == CAMEL_POP3_STREAM_DATA) {
 		/* need at least 3 chars in buffer */
 		while (e - p < 3) {
@@ -412,12 +408,11 @@ camel_pop3_stream_getd (CamelPOP3Stream *is,
 					is->mode = CAMEL_POP3_STREAM_EOD;
 					is->state = 0;
 
-					dd (printf ("POP3_STREAM_GETD (%s,%d): '%.*s'\n", "last", *len, (gint)*len, *start));
-
 					return 0;
 				}
 
-				/* If at start, just skip '.', else return data upto '.' but skip it */
+				/* If at start, just skip '.', else
+				 * return data upto '.' but skip it. */
 				if (p == s) {
 					s++;
 					p++;
@@ -426,8 +421,6 @@ camel_pop3_stream_getd (CamelPOP3Stream *is,
 					*len = p-s;
 					*start = s;
 					is->state = 1;
-
-					dd (printf ("POP3_STREAM_GETD (%s,%d): '%.*s'\n", "more", *len, (gint)*len, *start));
 
 					return 1;
 				}
@@ -451,8 +444,6 @@ camel_pop3_stream_getd (CamelPOP3Stream *is,
 	is->ptr = p;
 	*len = p-s;
 	*start = s;
-
-	dd (printf ("POP3_STREAM_GETD (%s,%d): '%.*s'\n", "more", *len, (gint)*len, *start));
 
 	return 1;
 }

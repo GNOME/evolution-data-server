@@ -242,7 +242,7 @@ imap_parse_namespace_response (const gchar *response)
 	struct _namespaces *namespaces;
 	const gchar *inptr;
 
-	d(printf ("parsing: %s\n", response));
+	d (printf ("parsing: %s\n", response));
 
 	if (*response != '*')
 		return NULL;
@@ -585,17 +585,17 @@ imap_parse_flag_list (gchar **flag_list_p,
 			flags |= CAMEL_MESSAGE_SEEN;
 		else if (!g_ascii_strncasecmp (flag_list, "\\Recent", len))
 			flags |= CAMEL_IMAP_MESSAGE_RECENT;
-		else if (!g_ascii_strncasecmp(flag_list, "\\*", len))
+		else if (!g_ascii_strncasecmp (flag_list, "\\*", len))
 			flags |= CAMEL_MESSAGE_USER | CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_NOTJUNK;
-		else if (!g_ascii_strncasecmp(flag_list, "Junk", len))
+		else if (!g_ascii_strncasecmp (flag_list, "Junk", len))
 			flags |= CAMEL_MESSAGE_JUNK;
-		else if (!g_ascii_strncasecmp(flag_list, "NotJunk", len))
+		else if (!g_ascii_strncasecmp (flag_list, "NotJunk", len))
 			flags |= CAMEL_MESSAGE_NOTJUNK;
-		else if (!g_ascii_strncasecmp(flag_list, "$Label1", len) ||
-			 !g_ascii_strncasecmp(flag_list, "$Label2", len) ||
-			 !g_ascii_strncasecmp(flag_list, "$Label3", len) ||
-			 !g_ascii_strncasecmp(flag_list, "$Label4", len) ||
-			 !g_ascii_strncasecmp(flag_list, "$Label5", len)) {
+		else if (!g_ascii_strncasecmp (flag_list, "$Label1", len) ||
+			 !g_ascii_strncasecmp (flag_list, "$Label2", len) ||
+			 !g_ascii_strncasecmp (flag_list, "$Label3", len) ||
+			 !g_ascii_strncasecmp (flag_list, "$Label4", len) ||
+			 !g_ascii_strncasecmp (flag_list, "$Label5", len)) {
 			if (custom_flags) {
 				g_string_append (custom_flags, rename_label_flag (flag_list, len, TRUE));
 				g_string_append_c (custom_flags, ' ');
@@ -1439,7 +1439,7 @@ imap_path_to_physical (const gchar *prefix,
 	p = vpath;
 	while ((c = *p++)) {
 		if (c == '/') {
-			g_string_append(out, "/" SUBFOLDER_DIR_NAME "/");
+			g_string_append (out, "/" SUBFOLDER_DIR_NAME "/");
 			while (*p == '/')
 				p++;
 		} else
