@@ -481,9 +481,15 @@ summary_header_to_db (CamelFolderSummary *summary,
                       GError **error)
 {
 	CamelFIRecord * record = g_new0 (CamelFIRecord, 1);
+	CamelStore *parent_store;
+	CamelDB *db;
 	const gchar *table_name;
 
+	/* Though we are going to read, we do this during write,
+	 * so lets use it that way. */
 	table_name = camel_folder_get_full_name (summary->priv->folder);
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	db = parent_store->cdb_w;
 
 	io(printf("Savining header to db\n"));
 
@@ -495,12 +501,27 @@ summary_header_to_db (CamelFolderSummary *summary,
 	record->nextuid = summary->priv->nextuid;
 	record->time = summary->time;
 
-	record->saved_count = summary->priv->saved_count;
-	record->junk_count = summary->priv->junk_count;
-	record->deleted_count = summary->priv->deleted_count;
-	record->unread_count = summary->priv->unread_count;
-	record->visible_count = summary->priv->visible_count;
-	record->jnd_count = summary->priv->junk_not_deleted_count;
+	if (!is_in_memory_summary (summary)) {
+		/* FIXME: Ever heard of Constructors and initializing ? */
+		if (camel_db_count_total_message_info (db, table_name, &(record->saved_count), NULL))
+			record->saved_count = 0;
+		if (camel_db_count_junk_message_info (db, table_name, &(record->junk_count), NULL))
+			record->junk_count = 0;
+		if (camel_db_count_deleted_message_info (db, table_name, &(record->deleted_count), NULL))
+			record->deleted_count = 0;
+		if (camel_db_count_unread_message_info (db, table_name, &(record->unread_count), NULL))
+			record->unread_count = 0;
+		if (camel_db_count_visible_message_info (db, table_name, &(record->visible_count), NULL))
+			record->visible_count = 0;
+		if (camel_db_count_junk_not_deleted_message_info (db, table_name, &(record->jnd_count), NULL))
+			record->jnd_count = 0;
+	}
+
+	summary->priv->unread_count = record->unread_count;
+	summary->priv->deleted_count = record->deleted_count;
+	summary->priv->junk_count = record->junk_count;
+	summary->priv->visible_count = record->visible_count;
+	summary->priv->junk_not_deleted_count = record->jnd_count;
 
 	return record;
 }
