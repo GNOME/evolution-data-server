@@ -118,6 +118,7 @@ collection_backend_new_source (ECollectionBackend *backend,
 	ESourceRegistryServer *server;
 	ESource *child_source;
 	ESource *collection_source;
+	EServerSideSource *server_side_source;
 	const gchar *cache_dir;
 	const gchar *collection_uid;
 
@@ -128,16 +129,16 @@ collection_backend_new_source (ECollectionBackend *backend,
 	if (child_source == NULL)
 		return NULL;
 
+	server_side_source = E_SERVER_SIDE_SOURCE (child_source);
+
 	/* Clients may change the source but may not remove it. */
-	e_server_side_source_set_writable (
-		E_SERVER_SIDE_SOURCE (child_source), TRUE);
-	e_server_side_source_set_removable (
-		E_SERVER_SIDE_SOURCE (child_source), FALSE);
+	e_server_side_source_set_writable (server_side_source, TRUE);
+	e_server_side_source_set_removable (server_side_source, FALSE);
 
 	/* Changes should be written back to the cache directory. */
 	cache_dir = e_collection_backend_get_cache_dir (backend);
 	e_server_side_source_set_write_directory (
-		E_SERVER_SIDE_SOURCE (child_source), cache_dir);
+		server_side_source, cache_dir);
 
 	/* Configure the child source as a collection member. */
 	collection_source = e_backend_get_source (E_BACKEND (backend));
