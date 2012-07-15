@@ -1,3 +1,52 @@
+Evolution-Data-Server 3.5.4 2012-07-16
+--------------------------------------
+
+Bug Fixes:
+	Bug 559391 - Wrong number of unread mails in folder tree (Milan Crha)
+	Bug 578240 - Impossible to cancel search in search folders (Milan Crha)
+	Bug 677697 - Huge memory leaks (Milan Crha)
+	Bug 677886 - Runtime warning from ESourceAlarms (Milan Crha)
+	Bug 678602 - Inform server of client-side auth cancellations.
+	             (Matthew Barnes)
+	Bug 678856 - Crash in add_instance() at e-cal-client.c (Milan Crha)
+	Bug 678903 - GConf migration omits so-called "send-only" accounts
+	             (Matthew Barnes)
+
+Other Changes:
+	* Rework CamelIMAPXServer to be subclassed and extended more
+	  easily. (Christian Hilberg)
+	* google: Remove the option to not cache Google Contacts data locally
+	  (Philip Withnall)
+	* Fix install failure in google backend. (Matthew Barnes)
+	* Add ESourceResource extension type. (Matthew Barnes)
+	* weather: update for newer GWeather (Giovanni Campagna)
+	* libedata-book.pc.in: Add a 'libexecdir' variable. (Matthew Barnes)
+	* libedata-cal.pc.in: Add a 'libexecdir' variable. (Matthew Barnes)
+	* camel_provider_list(): Emit CRITICAL if camel_provider_load() fails.
+	  (Matthew Barnes)
+	* Disregard G_FILE_ERROR_NOENT during GConf migration. (Matthew Barnes)
+	* evolution-source-viewer: Add delete capability. (Matthew Barnes)
+	* CamelStoreClass: Rename compare_folder_name to equal_folder_name.
+	  (Matthew Barnes)
+	* server_side_source_remove(): Disregard G_IO_ERROR_NOT_FOUND.
+	  (Matthew Barnes)
+	* Camel: Use folder display name in status messages when possible.
+	  (Matthew Barnes)
+	* Preset timeout on SoupSession-s to 90 seconds (Milan Crha)
+	* online-accounts: Mail sources need to be writable. (Matthew Barnes)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Ihar Hrachyshka (be)
+	Alexander Shopov (bg)
+	Dimitris Spingos (el)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Kjartan Maraas (nb)
+	Nguyễn Thái Ngọc Duy (vi)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.5.3 2012-06-25
 --------------------------------------
 
