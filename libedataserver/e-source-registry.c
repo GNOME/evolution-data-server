@@ -2831,7 +2831,7 @@ source_registry_ref_any_mail_identity (ESourceRegistry *registry)
 	}
 
 	if (source == NULL && list != NULL)
-		source = g_object_ref (link->data);
+		source = g_object_ref (list->data);
 
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
