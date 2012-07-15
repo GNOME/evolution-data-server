@@ -428,12 +428,19 @@ online_accounts_config_mail_account (EOnlineAccounts *extension,
                                      ESource *source,
                                      GoaObject *goa_object)
 {
+	EServerSideSource *server_side_source;
+
 	online_accounts_config_oauth (extension, source, goa_object);
 
 	/* XXX Need to defer the network security settings to the
 	 *     provider-specific module since "imap-use-tls" tells
 	 *     us neither the port number, nor whether to use IMAP
 	 *     over SSL versus STARTTLS.  The module will know. */
+
+	/* Clients may change the source by may not remove it. */
+	server_side_source = E_SERVER_SIDE_SOURCE (source);
+	e_server_side_source_set_writable (server_side_source, TRUE);
+	e_server_side_source_set_removable (server_side_source, FALSE);
 }
 
 static void
@@ -443,6 +450,7 @@ online_accounts_config_mail_identity (EOnlineAccounts *extension,
 {
 	GoaMail *goa_mail;
 	ESourceExtension *source_extension;
+	EServerSideSource *server_side_source;
 	const gchar *extension_name;
 
 	goa_mail = goa_object_get_mail (goa_object);
@@ -457,6 +465,11 @@ online_accounts_config_mail_identity (EOnlineAccounts *extension,
 		G_BINDING_SYNC_CREATE);
 
 	g_object_unref (goa_mail);
+
+	/* Clients may change the source by may not remove it. */
+	server_side_source = E_SERVER_SIDE_SOURCE (source);
+	e_server_side_source_set_writable (server_side_source, TRUE);
+	e_server_side_source_set_removable (server_side_source, FALSE);
 }
 
 static void
@@ -464,12 +477,19 @@ online_accounts_config_mail_transport (EOnlineAccounts *extension,
                                        ESource *source,
                                        GoaObject *goa_object)
 {
+	EServerSideSource *server_side_source;
+
 	online_accounts_config_oauth (extension, source, goa_object);
 
 	/* XXX Need to defer the network security settings to the
 	 *     provider-specific module since "smtp-use-tls" tells
 	 *     us neither the port number, nor whether to use SMTP
 	 *     over SSL versus STARTTLS.  The module will know. */
+
+	/* Clients may change the source by may not remove it. */
+	server_side_source = E_SERVER_SIDE_SOURCE (source);
+	e_server_side_source_set_writable (server_side_source, TRUE);
+	e_server_side_source_set_removable (server_side_source, FALSE);
 }
 
 static void
