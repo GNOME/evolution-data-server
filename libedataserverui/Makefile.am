@@ -15,7 +15,7 @@ libedataserverui_3_0_la_CPPFLAGS = 		\
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"	\
 	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\"	\
 	$(E_DATA_SERVER_UI_CFLAGS)		\
-	$(GNOME_KEYRING_CFLAGS)			\
+	$(LIBSECRET_CFLAGS)			\
 	$(CAMEL_CFLAGS)				\
 	$(SOUP_CFLAGS)				\
 	$(CODE_COVERAGE_CFLAGS)			\
@@ -82,7 +82,7 @@ libedataserverui_3_0_la_LIBADD = 				\
 	$(top_builddir)/libebackend/libebackend-1.2.la		\
 	$(top_builddir)/camel/libcamel-1.2.la			\
 	$(E_DATA_SERVER_UI_LIBS)				\
-	$(GNOME_KEYRING_LIBS)					\
+	$(LIBSECRET_LIBS)					\
 	$(CAMEL_LIBS)						\
 	$(SOUP_LIBS)
 

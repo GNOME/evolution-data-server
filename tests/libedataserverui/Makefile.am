@@ -14,7 +14,7 @@ TEST_EDATASERVERUI_CPPFLAGS=						\
 	-DLOCALEDIR=\""$(localedir)"\"					\
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"				\
 	$(CAMEL_CFLAGS)							\
-	$(GNOME_KEYRING_CFLAGS)						\
+	$(LIBSECRET_CFLAGS)						\
 	$(E_DATA_SERVER_UI_CFLAGS)
 
 TEST_EDATASERVERUI_LDFLAGS =						\
@@ -25,7 +25,7 @@ TEST_EDATASERVERUI_LDFLAGS =						\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(top_builddir)/libedataserverui/libedataserverui-3.0.la	\
 	$(CAMEL_LIBS)							\
-	$(GNOME_KEYRING_LIBS)						\
+	$(LIBSECRET_LIBS)						\
 	$(E_DATA_SERVER_UI_LIBS)
 
 evolution_source_viewer_CPPFLAGS = $(TEST_EDATASERVERUI_CPPFLAGS)

@@ -17,8 +17,8 @@ evolution_source_registry_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"evolution-source-registry\" \
 	-DLOCALEDIR=\"$(localedir)\" \
 	$(E_DATA_SERVER_CFLAGS) \
-	$(GNOME_KEYRING_CFLAGS) \
 	$(FACTORY_GTK_CFLAGS) \
+	$(LIBSECRET_CFLAGS) \
 	$(CAMEL_CFLAGS) \
 	$(SOUP_CFLAGS) \
 	$(NULL)
@@ -34,8 +34,8 @@ evolution_source_registry_LDADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/camel/libcamel-1.2.la \
 	$(E_DATA_SERVER_LIBS) \
-	$(GNOME_KEYRING_LIBS) \
 	$(FACTORY_GTK_LIBS) \
+	$(LIBSECRET_LIBS) \
 	$(CAMEL_LIBS) \
 	$(SOUP_LIBS) \
 	$(NULL)

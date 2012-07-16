@@ -21,7 +21,7 @@
 
 #include <config.h>
 #include <goa/goa.h>
-#include <gnome-keyring.h>
+#include <libsecret/secret.h>
 
 #include <libebackend/libebackend.h>
 
@@ -59,11 +59,14 @@ struct _EOnlineAccountsClass {
 #define KEYRING_ITEM_DISPLAY_FORMAT	"Evolution Data Source %s"
 
 #ifdef HAVE_GOA_PASSWORD_BASED
-static GnomeKeyringPasswordSchema schema = {
-	GNOME_KEYRING_ITEM_GENERIC_SECRET,
+/* XXX Probably want to share this with
+ *     evolution-source-registry-migrate-sources.c */
+static SecretSchema schema = {
+	"org.gnome.Evolution.DataSource",
+	SECRET_SCHEMA_DONT_MATCH_NAME,
 	{
 		{ KEYRING_ITEM_ATTRIBUTE_NAME,
-		  GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
+		  SECRET_SCHEMA_ATTRIBUTE_STRING },
 		{ NULL, 0 }
 	}
 };
@@ -273,7 +276,6 @@ online_accounts_config_password (EOnlineAccounts *extension,
 #ifdef HAVE_GOA_PASSWORD_BASED
 	GoaAccount *goa_account;
 	GoaPasswordBased *goa_password_based;
-	GnomeKeyringResult keyring_result;
 	EAsyncClosure *closure;
 	GAsyncResult *result;
 	const gchar *uid;
@@ -322,24 +324,25 @@ online_accounts_config_password (EOnlineAccounts *extension,
 	uid = e_source_get_uid (source);
 	display_name = g_strdup_printf (KEYRING_ITEM_DISPLAY_FORMAT, uid);
 
-	/* XXX Just call gnome-keyring synchronously.  I know it's
-	 *     evil, but I want to know the password has been stored
-	 *     before returning from this function.  We'll be moving
-	 *     to libsecret soon anyway, which is more GIO-based, so
-	 *     we could then reuse the EAsyncClosure here. */
-	keyring_result = gnome_keyring_store_password_sync (
-		&schema, GNOME_KEYRING_DEFAULT, display_name,
-		password, KEYRING_ITEM_ATTRIBUTE_NAME, uid, NULL);
+	secret_password_store (
+		&schema, SECRET_COLLECTION_DEFAULT,
+		display_name, password, NULL,
+		e_async_closure_callback, closure,
+		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
+		NULL);
+
+	result = e_async_closure_wait (closure);
+
+	secret_password_store_finish (result, &error);
 
 	g_free (display_name);
 
 	/* If we fail to store the password, we'll just end up prompting
 	 * for a password like normal.  Annoying, maybe, but not the end
 	 * of the world.  Still leave a breadcrumb for debugging though. */
-	if (keyring_result != GNOME_KEYRING_RESULT_OK) {
-		const gchar *message;
-		message = gnome_keyring_result_to_message (keyring_result);
-		g_warning ("%s: %s", G_STRFUNC, message);
+	if (error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+		g_error_free (error);
 	}
 
 exit:

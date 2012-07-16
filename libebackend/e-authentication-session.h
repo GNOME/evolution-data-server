@@ -25,10 +25,6 @@
 
 #include <gio/gio.h>
 
-/* This needs to be in the public header since we're
- * reusing the GnomeKeyringResult enum for error codes. */
-#include <gnome-keyring.h>
-
 #include <libedataserver/libedataserver.h>
 
 #include <libebackend/e-backend-enums.h>
@@ -55,9 +51,9 @@
 /**
  * E_AUTHENTICATION_SESSION_KEYRING_ERROR:
  *
- * Error domain for password storage and retrieval.  Error codes in this
- * domain are defined by the #GnomeKeyringResult enumeration.  See #GError
- * for information on error domains.
+ * Error domain for password storage and retrieval.
+ *
+ * No longer used.
  *
  * Since: 3.6
  **/
