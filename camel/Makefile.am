@@ -32,11 +32,13 @@ camellibexec_PROGRAMS =	$(LOCK_HELPER) camel-index-control-1.2
 
 lib_LTLIBRARIES = libcamel-1.2.la
 
-include $(top_srcdir)/camel/glib-gen.mak
-glib_enum_headers=camel-enums.h
-glib_enum_output=camel-enumtypes
-glib_enum_define=CAMEL
-glib_enum_prefix=camel
+ENUM_TYPES = camel-enums.h
+
+camel-enumtypes.h: camel-enumtypes.h.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template camel-enumtypes.h.template $(ENUM_TYPES)) > $@
+
+camel-enumtypes.c: camel-enumtypes.c.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template camel-enumtypes.c.template $(ENUM_TYPES)) > $@
 
 ENUM_GENERATED = camel-enumtypes.h camel-enumtypes.c camel-imapx-tokenise.h
 
@@ -419,6 +421,8 @@ BUILT_SOURCES =					\
 
 EXTRA_DIST =					\
 	$(pkgconfig_in_files)	 		\
+	camel-enumtypes.h.template		\
+	camel-enumtypes.c.template		\
 	camel-imapx-tokens.txt			\
 	camel-marshal.list			\
 	gentables.pl				\

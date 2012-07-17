@@ -1,8 +1,10 @@
-include $(top_srcdir)/glib-gen.mak
-glib_enum_headers=e-cal-types.h
-glib_enum_output=e-cal-enumtypes
-glib_enum_define=E_CAL
-glib_enum_prefix=e_cal
+ENUM_TYPES = e-cal-types.h
+
+e-cal-enumtypes.h: e-cal-enumtypes.h.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-cal-enumtypes.h.template $(ENUM_TYPES)) > $@
+
+e-cal-enumtypes.c: e-cal-enumtypes.c.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-cal-enumtypes.c.template $(ENUM_TYPES)) > $@
 
 ENUM_GENERATED = e-cal-enumtypes.h e-cal-enumtypes.c
 
@@ -117,8 +119,10 @@ CLEANFILES += $(gir_DATA) $(typelib_DATA)
 endif
 
 EXTRA_DIST = 						\
-	e-cal-marshal.list				\
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
+	e-cal-enumtypes.h.template			\
+	e-cal-enumtypes.c.template			\
+	e-cal-marshal.list
 
 dist-hook:
 	cd $(distdir); rm -f $(BUILT_SOURCES)

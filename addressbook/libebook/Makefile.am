@@ -1,11 +1,13 @@
 CLEANFILES=
 BUILT_SOURCES=
 
-include $(top_srcdir)/glib-gen.mak
-glib_enum_headers=e-book-types.h
-glib_enum_output=e-book-enumtypes
-glib_enum_define=E_BOOK
-glib_enum_prefix=e_book
+ENUM_TYPES = e-book-types.h
+
+e-book-enumtypes.h: e-book-enumtypes.h.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-book-enumtypes.h.template $(ENUM_TYPES)) > $@
+
+e-book-enumtypes.c: e-book-enumtypes.c.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-book-enumtypes.c.template $(ENUM_TYPES)) > $@
 
 ENUM_GENERATED = e-book-enumtypes.h e-book-enumtypes.c
 
@@ -141,8 +143,10 @@ CLEANFILES    += $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
 EXTRA_DIST = 						\
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
+	e-book-enumtypes.h.template			\
+	e-book-enumtypes.c.template			\
 	e-book-marshal.list				\
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)     \
 	e-name-western-tables.h.in                      \
 	gen-western-table.py
 

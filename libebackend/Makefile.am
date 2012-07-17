@@ -1,8 +1,10 @@
-include $(top_srcdir)/glib-gen.mak
-glib_enum_headers=e-backend-enums.h
-glib_enum_output=e-backend-enumtypes
-glib_enum_define=E
-glib_enum_prefix=e
+ENUM_TYPES = e-backend-enums.h
+
+e-backend-enumtypes.h: e-backend-enumtypes.h.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-backend-enumtypes.h.template $(ENUM_TYPES)) > $@
+
+e-backend-enumtypes.c: e-backend-enumtypes.c.template $(ENUM_TYPES)
+	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template e-backend-enumtypes.c.template $(ENUM_TYPES)) > $@
 
 ENUM_GENERATED = e-backend-enumtypes.h e-backend-enumtypes.c
 
@@ -105,7 +107,9 @@ gsettings_SCHEMAS = \
 
 EXTRA_DIST = 						\
 	$(gsettings_SCHEMAS)				\
-	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)
+	$(pkgconfig_DATA:-$(API_VERSION).pc=.pc.in)	\
+	e-backend-enumtypes.h.template			\
+	e-backend-enumtypes.c.template
 
 CLEANFILES = $(gsettings_SCHEMAS:.xml=.valid)
 
