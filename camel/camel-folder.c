@@ -3965,6 +3965,8 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
                                 GError **error)
 {
 	CamelFolderClass *class;
+	const gchar *display_name;
+	const gchar *message;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
@@ -3980,8 +3982,14 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
+	message = _("Refreshing folder '%s'");
+	display_name = camel_folder_get_display_name (folder);
+	camel_operation_push_message (cancellable, message, display_name);
+
 	success = class->refresh_info_sync (folder, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, refresh_info_sync, success, error);
+
+	camel_operation_pop_message (cancellable);
 
 	camel_folder_unlock (folder, CAMEL_FOLDER_REC_LOCK);
 
