@@ -53,8 +53,8 @@
 
 #define d(x)
 
-#define IO_TIMEOUT (PR_TicksPerSecond() * 4 * 60)
-#define CONNECT_TIMEOUT (PR_TicksPerSecond () * 4 * 60)
+#define IO_TIMEOUT (PR_TicksPerSecond() * 1 * 60)
+#define CONNECT_TIMEOUT (PR_TicksPerSecond () * 1 * 60)
 
 typedef struct _CamelTcpStreamRawPrivate {
 	PRFileDesc *sockfd;
@@ -329,7 +329,7 @@ read_from_prfd (PRFileDesc *fd,
 			PR_GetCurrentThread (), (GDestroyNotify) NULL);
 
 	do {
-		bytes_read = PR_Read (fd, buffer, n);
+		bytes_read = PR_Recv (fd, buffer, n, 0, IO_TIMEOUT);
 	} while (bytes_read == -1 && PR_GetError () == PR_IO_PENDING_ERROR);
 
 	if (cancel_id > 0)
@@ -377,9 +377,9 @@ write_to_prfd (PRFileDesc *fd,
 
 	do {
 		do {
-			bytes_written = PR_Write (
+			bytes_written = PR_Send (
 				fd, buffer + total_written,
-				size - total_written);
+				size - total_written, 0, IO_TIMEOUT);
 		} while (bytes_written == -1 && PR_GetError () == PR_IO_PENDING_ERROR);
 
 		if (bytes_written > 0)
@@ -525,7 +525,7 @@ socket_connect (struct addrinfo *host,
 			cancellable, G_CALLBACK (tcp_stream_cancelled),
 			PR_GetCurrentThread (), (GDestroyNotify) NULL);
 
-	status = PR_Connect (fd, &netaddr, PR_INTERVAL_NO_TIMEOUT);
+	status = PR_Connect (fd, &netaddr, CONNECT_TIMEOUT);
 
 	if (cancel_id > 0)
 		g_cancellable_disconnect (cancellable, cancel_id);
