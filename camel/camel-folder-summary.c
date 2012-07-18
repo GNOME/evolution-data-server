@@ -501,21 +501,19 @@ summary_header_to_db (CamelFolderSummary *summary,
 	record->nextuid = summary->priv->nextuid;
 	record->time = summary->time;
 
-	if (!is_in_memory_summary (summary)) {
-		/* FIXME: Ever heard of Constructors and initializing ? */
-		if (camel_db_count_total_message_info (db, table_name, &(record->saved_count), NULL))
-			record->saved_count = 0;
-		if (camel_db_count_junk_message_info (db, table_name, &(record->junk_count), NULL))
-			record->junk_count = 0;
-		if (camel_db_count_deleted_message_info (db, table_name, &(record->deleted_count), NULL))
-			record->deleted_count = 0;
-		if (camel_db_count_unread_message_info (db, table_name, &(record->unread_count), NULL))
-			record->unread_count = 0;
-		if (camel_db_count_visible_message_info (db, table_name, &(record->visible_count), NULL))
-			record->visible_count = 0;
-		if (camel_db_count_junk_not_deleted_message_info (db, table_name, &(record->jnd_count), NULL))
-			record->jnd_count = 0;
-	}
+	/* FIXME: Ever heard of Constructors and initializing ? */
+	if (camel_db_count_total_message_info (db, table_name, &(record->saved_count), NULL))
+		record->saved_count = 0;
+	if (camel_db_count_junk_message_info (db, table_name, &(record->junk_count), NULL))
+		record->junk_count = 0;
+	if (camel_db_count_deleted_message_info (db, table_name, &(record->deleted_count), NULL))
+		record->deleted_count = 0;
+	if (camel_db_count_unread_message_info (db, table_name, &(record->unread_count), NULL))
+		record->unread_count = 0;
+	if (camel_db_count_visible_message_info (db, table_name, &(record->visible_count), NULL))
+		record->visible_count = 0;
+	if (camel_db_count_junk_not_deleted_message_info (db, table_name, &(record->jnd_count), NULL))
+		record->jnd_count = 0;
 
 	summary->priv->unread_count = record->unread_count;
 	summary->priv->deleted_count = record->deleted_count;
