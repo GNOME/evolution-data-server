@@ -105,7 +105,9 @@ spool_summary_load (CamelLocalSummary *cls,
                     gint forceindex,
                     GError **error)
 {
-	g_warning("spool summary - not loading anything\n");
+	/* if not loading, then rescan mbox file content */
+	camel_local_summary_check_force (cls);
+
 	return 0;
 }
 
