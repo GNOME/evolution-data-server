@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.3.91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-12 09:03+0800\n"
-"PO-Revision-Date: 2012-07-09 06:33+0800\n"
+"POT-Creation-Date: 2012-07-18 19:30+0800\n"
+"PO-Revision-Date: 2012-07-18 10:19+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (traditional)\n"
 "Language: zh_TW\n"
@@ -187,10 +187,9 @@ msgid "Downloading contacts (%d)... "
 msgstr "正在下載連絡人 (%d)…"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5567
-#, fuzzy, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
+#, c-format
 msgid "Failed to get the DN for user '%s'"
-msgstr "無法擷取 IOR 給客戶端：%s"
+msgstr "無法擷取 DN 給使用者「%s」"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:354
 #, c-format
@@ -1688,9 +1687,8 @@ msgid "Unable to create cache path"
 msgstr "無法建構快取路徑"
 
 #: ../camel/camel-data-cache.c:440
-#, fuzzy
 msgid "Empty cache file"
-msgstr "新增空白檔案"
+msgstr "清空快取檔案"
 
 #: ../camel/camel-data-cache.c:509
 #, c-format
@@ -1875,10 +1873,9 @@ msgid "Quota information not supported for folder '%s'"
 msgstr "資料夾「%s」不支援限額資訊"
 
 #: ../camel/camel-folder.c:3371
-#, fuzzy, c-format
-#| msgid "Opening folder '%s'"
+#, c-format
 msgid "Expunging folder '%s'"
-msgstr "開啟資料夾「%s」"
+msgstr "刪除資料夾「%s」"
 
 #: ../camel/camel-folder.c:3603
 #, c-format
@@ -1890,7 +1887,12 @@ msgstr "接收 %2$s 中的郵件「%1$s」"
 msgid "Retrieving quota information for '%s'"
 msgstr "取得「%s」的用量限額資訊"
 
-#: ../camel/camel-folder-search.c:414 ../camel/camel-folder-search.c:575
+#: ../camel/camel-folder.c:3985
+#, c-format
+msgid "Refreshing folder '%s'"
+msgstr "重新整理資料夾「%s」"
+
+#: ../camel/camel-folder-search.c:417 ../camel/camel-folder-search.c:581
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1899,7 +1901,7 @@ msgstr ""
 "不能分析搜尋詞句：%s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:426 ../camel/camel-folder-search.c:587
+#: ../camel/camel-folder-search.c:429 ../camel/camel-folder-search.c:593
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1909,31 +1911,31 @@ msgstr ""
 "%s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:800 ../camel/camel-folder-search.c:843
+#: ../camel/camel-folder-search.c:811 ../camel/camel-folder-search.c:854
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) 需要單一布林值結果"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:904
+#: ../camel/camel-folder-search.c:921
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) 不允許放在 %s 裡面"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:911 ../camel/camel-folder-search.c:919
+#: ../camel/camel-folder-search.c:928 ../camel/camel-folder-search.c:936
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) 需要相符類型字串"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:947
+#: ../camel/camel-folder-search.c:964
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) 期望陣列結果"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:957
+#: ../camel/camel-folder-search.c:974
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) 需要資料夾設定"
@@ -2178,16 +2180,14 @@ msgid "Error retrieving message"
 msgstr "取回郵件時發生錯誤"
 
 #: ../camel/camel-imapx-server.c:4417 ../camel/camel-imapx-server.c:4622
-#, fuzzy, c-format
-#| msgid "Fetching summary information for new messages in %s"
+#, c-format
 msgid "Fetching summary information for new messages in '%s'"
-msgstr "正取得 %s 中新郵件的摘要資訊"
+msgstr "正取得「%s」中新郵件的摘要資訊"
 
 #: ../camel/camel-imapx-server.c:4476
-#, fuzzy, c-format
-#| msgid "Scanning for changed messages in %s"
+#, c-format
 msgid "Scanning for changed messages in '%s'"
-msgstr "掃描 %s 中變更過的郵件"
+msgstr "掃描「%s」中變更過的郵件"
 
 #: ../camel/camel-imapx-server.c:4518
 msgid "Error fetching new messages"
@@ -2198,12 +2198,10 @@ msgid "Error while fetching messages"
 msgstr "當取回郵件時發生錯誤"
 
 #: ../camel/camel-imapx-server.c:4725 ../camel/camel-imapx-server.c:4760
-#, fuzzy, c-format
-#| msgid "Fetching summary information for %d message in %s"
-#| msgid_plural "Fetching summary information for %d messages in %s"
+#, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
-msgstr[0] "正取得 %2$s 中 %1$d 封郵件的摘要資訊"
+msgstr[0] "正取得「%2$s」中 %1$d 封郵件的摘要資訊"
 
 #: ../camel/camel-imapx-server.c:4887 ../camel/camel-imapx-server.c:4923
 msgid "Error refreshing folder"
@@ -3013,16 +3011,14 @@ msgid "Could not connect with command \"%s\": %s"
 msgstr "無法以指令「%s」連線： %s"
 
 #: ../camel/camel-subscribable.c:386
-#, fuzzy, c-format
-#| msgid "Error subscribing to folder"
+#, c-format
 msgid "Subscribing to folder '%s'"
-msgstr "訂閱到資料夾時發生錯誤"
+msgstr "訂閱到資料夾「%s」"
 
 #: ../camel/camel-subscribable.c:518
-#, fuzzy, c-format
-#| msgid "Error subscribing to folder"
+#, c-format
 msgid "Unsubscribing from folder '%s'"
-msgstr "訂閱到資料夾時發生錯誤"
+msgstr "取消訂閱資料夾「%s」"
 
 #: ../camel/camel-tcp-stream-raw.c:310
 #, c-format
@@ -3196,10 +3192,9 @@ msgid "Could not parse URL '%s'"
 msgstr "無法解析 URL「%s」"
 
 #: ../camel/camel-vee-folder.c:484
-#, fuzzy, c-format
-#| msgid "Creating folder '%s'"
+#, c-format
 msgid "Updating folder '%s'"
-msgstr "正在建立資料夾「%s」"
+msgstr "更新資料夾「%s」"
 
 #: ../camel/camel-vee-folder.c:843 ../camel/camel-vee-folder.c:953
 #, c-format
@@ -5420,7 +5415,7 @@ msgstr "找不到帳號元素"
 #: ../modules/online-accounts/goaewsclient.c:252
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
-msgstr ""
+msgstr "在自動探索回應中找不到 ASUrl 與 OABUrl"
 
 #: ../modules/yahoo-backend/module-yahoo-backend.c:215
 msgid "Tasks"
