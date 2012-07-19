@@ -57,3 +57,41 @@
     <arg name="data" direction="in" type="s"/>
   </method>
 </interface>
+
+<!--
+    org.gnome.evolution.dataserver.Source.RemoteCreatable:
+    @short_description: Create remote resources
+
+    This interface is used to create resources on a remote server.
+-->
+<interface name="org.gnome.evolution.dataserver.Source.RemoteCreatable">
+  <!--
+      Create:
+      @uid: Unique identifier for the new data source
+      @data: Raw key file data describing the resource to create
+
+      Creates a remote resource according to details in @data.
+      The newly-created resource will be proxied by a new data
+      source with a unique identifier of @uid.
+  -->
+  <method name="Create">
+    <arg name="uid" direction="in" type="s"/>
+    <arg name="data" direction="in" type="s"/>
+  </method>
+</interface>
+
+<!--
+    org.gnome.evolution.dataserver.Source.RemoteDeletable:
+    @short_description: Delete remote resources
+
+    This interface is used to delete resources from a remote server.
+-->
+<interface name="org.gnome.evolution.dataserver.Source.RemoteDeletable">
+  <!--
+      Delete:
+
+      Deletes the remote resource being proxied by this data source.
+  -->
+  <method name="Delete"/>
+</interface>
+
