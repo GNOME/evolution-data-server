@@ -295,7 +295,7 @@ imapx_conn_manager_remove_info (CamelIMAPXConnManager *con_man,
 	link = g_list_find (list, cinfo);
 
 	if (link != NULL) {
-		list = g_list_remove_link (list, link);
+		list = g_list_delete_link (list, link);
 		connection_info_unref (cinfo);
 		removed = TRUE;
 	}
