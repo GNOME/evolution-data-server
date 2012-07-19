@@ -309,9 +309,29 @@ get_message_data_free (GetMessageData *data)
 }
 
 static void
+refresh_info_data_infos_free (RefreshInfoData *data)
+{
+	gint ii;
+
+	if (!data || !data->infos)
+		return;
+
+	for (ii = 0; ii < data->infos->len; ii++) {
+		struct _refresh_info *r = &g_array_index (data->infos, struct _refresh_info, ii);
+
+		camel_flag_list_free (&r->server_user_flags);
+		g_free (r->uid);
+	}
+
+	g_array_free (data->infos, TRUE);
+	data->infos = NULL;
+}
+
+static void
 refresh_info_data_free (RefreshInfoData *data)
 {
 	camel_folder_change_info_free (data->changes);
+	refresh_info_data_infos_free (data);
 
 	g_slice_free (RefreshInfoData, data);
 }
@@ -978,6 +998,7 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
                                 gboolean unsolicited)
 {
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) is->select_folder;
+	CamelMessageInfo *mi;
 
 	if (unsolicited && ifolder->exists_on_server)
 		ifolder->exists_on_server--;
@@ -985,7 +1006,12 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 	if (is->changes == NULL)
 		is->changes = camel_folder_change_info_new ();
 
-	camel_folder_summary_remove_uid (is->select_folder->summary, uid);
+	mi = camel_folder_summary_get (is->select_folder->summary, uid);
+	if (mi) {
+		camel_folder_summary_remove (is->select_folder->summary, mi);
+		camel_message_info_free (mi);
+	}
+
 	is->expunged = g_list_prepend (is->expunged, uid);
 
 	camel_folder_change_info_remove_uid (is->changes, uid);
@@ -1198,6 +1224,8 @@ imapx_untagged (CamelIMAPXServer *is,
 			CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) is->store;
 			CamelIMAPXStoreNamespace *ns;
 
+			if (imapx_store->summary->namespaces)
+				camel_imapx_namespace_list_clear (imapx_store->summary->namespaces);
 			imapx_store->summary->namespaces = nsl;
 			camel_store_summary_touch ((CamelStoreSummary *) imapx_store->summary);
 
@@ -1444,6 +1472,8 @@ imapx_untagged (CamelIMAPXServer *is,
 
 						cnt = (camel_folder_summary_count (job->folder->summary) * 100 ) / ifolder->exists_on_server;
 						camel_operation_progress (job->cancellable, cnt ? cnt : 1);
+					} else {
+						camel_message_info_free (mi);
 					}
 
 					if (free_user_flags && server_user_flags)
@@ -3807,13 +3837,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	isum->uidnext = ifolder->uidnext_on_server;
 
  cleanup:
-	for (i = 0; i < data->infos->len; i++) {
-		struct _refresh_info *r = &g_array_index (data->infos, struct _refresh_info, i);
-
-		camel_flag_list_free (&r->server_user_flags);
-		g_free (r->uid);
-	}
-	g_array_free (data->infos, TRUE);
+	refresh_info_data_infos_free (data);
 
 	imapx_unregister_job (is, job);
 	camel_imapx_command_unref (ic);
@@ -3856,7 +3880,6 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 	CamelSettings *settings;
 	RefreshInfoData *data;
 	guint uidset_size;
-	gint i;
 	gboolean success = TRUE;
 	gboolean mobile_mode;
 
@@ -4012,12 +4035,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 		}
 	}
 
-	for (i = 0; i < data->infos->len; i++) {
-		struct _refresh_info *r = &g_array_index (data->infos, struct _refresh_info, i);
-
-		camel_flag_list_free (&r->server_user_flags);
-		g_free (r->uid);
-	}
+	refresh_info_data_infos_free (data);
 
 	/* There's no sane way to get the server-side unseen count on the
 	 * select mailbox. So just work it out from the flags if its not in
@@ -4027,7 +4045,6 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 	if (!mobile_mode)
 		((CamelIMAPXFolder *) job->folder)->unread_on_server = camel_folder_summary_get_unread_count (job->folder->summary);
 
-	g_array_free (data->infos, TRUE);
 	imapx_unregister_job (is, job);
 	camel_imapx_command_unref (ic);
 
@@ -4074,6 +4091,7 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 
 	data->scan_changes = TRUE;
 	ic->pri = job->pri;
+	refresh_info_data_infos_free (data);
 	data->infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 	imapx_command_queue (is, ic);
 	g_free (uid);
@@ -4215,6 +4233,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 			is, "FETCH", job->folder,
 			"UID FETCH %s:* (UID FLAGS)", uid);
 		imapx_uidset_init (&data->uidset, uidset_size, 0);
+		refresh_info_data_infos_free (data);
 		data->infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 		ic->pri = job->pri;
 
@@ -4318,6 +4337,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 			"UID FETCH %s:* (UID FLAGS)", uid);
 
 		imapx_uidset_init (&data->uidset, uidset_size, 0);
+		refresh_info_data_infos_free (data);
 		data->infos = g_array_new (0, 0, sizeof (struct _refresh_info));
 		ic->pri = job->pri;
 
@@ -4618,8 +4638,14 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 			changes = camel_folder_change_info_new ();
 			for (i = 0; i < uids->len; i++) {
 				gchar *uid = uids->pdata[i];
+				CamelMessageInfo *mi;
 
-				camel_folder_summary_remove_uid (folder->summary, uid);
+				mi = camel_folder_summary_get (folder->summary, uid);
+				if (mi) {
+					camel_folder_summary_remove (folder->summary, mi);
+					camel_message_info_free (mi);
+				}
+
 				camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
 				removed = g_list_prepend (removed, (gpointer) uids->pdata[i]);
 			}
@@ -5453,6 +5479,14 @@ static void
 imapx_server_finalize (GObject *object)
 {
 	CamelIMAPXServer *is = CAMEL_IMAPX_SERVER (object);
+
+	camel_imapx_command_queue_free (is->queue);
+	camel_imapx_command_queue_free (is->active);
+	camel_imapx_command_queue_free (is->done);
+
+	is->queue = NULL;
+	is->active = NULL;
+	is->done = NULL;
 
 	g_static_rec_mutex_free (&is->queue_lock);
 	g_static_rec_mutex_free (&is->ostream_lock);

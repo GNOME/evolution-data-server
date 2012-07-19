@@ -3283,9 +3283,16 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 		gpointer ptr_uid = NULL, ptr_flags = NULL;
 		if (g_hash_table_lookup_extended (summary->priv->uids, l->data, &ptr_uid, &ptr_flags)) {
 			const gchar *uid_copy = camel_pstring_strdup (l->data);
+			CamelMessageInfo *mi;
+
 			folder_summary_update_counts_by_flags (summary, GPOINTER_TO_UINT (ptr_flags), TRUE);
 			g_hash_table_remove (summary->priv->uids, uid_copy);
+
+			mi = g_hash_table_lookup (summary->priv->loaded_infos, uid_copy);
 			g_hash_table_remove (summary->priv->loaded_infos, uid_copy);
+
+			if (mi)
+				camel_message_info_free (mi);
 			camel_pstring_free (uid_copy);
 		}
 	}
@@ -3366,6 +3373,8 @@ content_info_new_from_parser (CamelFolderSummary *summary,
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
 		ci = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->content_info_new_from_header (summary, camel_mime_parser_headers_raw (mp));
 		if (ci) {
+			if (ci->type)
+				camel_content_type_unref (ci->type);
 			ci->type = camel_mime_parser_content_type (mp);
 			camel_content_type_ref (ci->type);
 		}
