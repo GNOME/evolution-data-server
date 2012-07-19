@@ -219,8 +219,7 @@ maildir_folder_append_message_sync (CamelFolder *folder,
  fail_write:
 
 	/* remove the summary info so we are not out-of-sync with the mh folder */
-	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (folder->summary),
-					 camel_message_info_uid (mi));
+	camel_folder_summary_remove (CAMEL_FOLDER_SUMMARY (folder->summary), mi);
 
 	g_prefix_error (
 		error, _("Cannot append message to maildir folder: %s: "),

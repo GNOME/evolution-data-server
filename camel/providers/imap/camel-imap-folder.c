@@ -1896,7 +1896,15 @@ imap_expunge_uids_offline (CamelFolder *folder,
 	changes = camel_folder_change_info_new ();
 
 	for (i = 0; i < uids->len; i++) {
-		camel_folder_summary_remove_uid (folder->summary, uids->pdata[i]);
+		CamelMessageInfo *mi = camel_folder_summary_peek_loaded (folder->summary, uids->pdata[i]);
+
+		if (mi) {
+			camel_folder_summary_remove (folder->summary, mi);
+			camel_message_info_free (mi);
+		} else {
+			camel_folder_summary_remove_uid (folder->summary, uids->pdata[i]);
+		}
+
 		camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
 		list = g_list_prepend (list, (gpointer) uids->pdata[i]);
 		/* We intentionally don't remove it from the cache because
@@ -1991,7 +1999,15 @@ imap_expunge_uids_online (CamelFolder *folder,
 
 	changes = camel_folder_change_info_new ();
 	for (i = 0; i < uids->len; i++) {
-		camel_folder_summary_remove_uid (folder->summary, uids->pdata[i]);
+		CamelMessageInfo *mi = camel_folder_summary_peek_loaded (folder->summary, uids->pdata[i]);
+
+		if (mi) {
+			camel_folder_summary_remove (folder->summary, mi);
+			camel_message_info_free (mi);
+		} else {
+			camel_folder_summary_remove_uid (folder->summary, uids->pdata[i]);
+		}
+
 		camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
 		list = g_list_prepend (list, (gpointer) uids->pdata[i]);
 		/* We intentionally don't remove it from the cache because
@@ -4311,6 +4327,8 @@ camel_imap_folder_changed (CamelFolder *folder,
 		known_uids = camel_folder_summary_get_array (folder->summary);
 		camel_folder_sort_uids (folder, known_uids);
 		for (i = 0; i < expunged->len; i++) {
+			CamelMessageInfo *mi;
+
 			id = g_array_index (expunged, int, i);
 			uid = id - 1 + i >= 0 && id - 1 + i < known_uids->len ? g_ptr_array_index (known_uids, id - 1 + i) : NULL;
 			if (uid == NULL) {
@@ -4324,7 +4342,14 @@ camel_imap_folder_changed (CamelFolder *folder,
 			CAMEL_IMAP_FOLDER_REC_LOCK (imap_folder, cache_lock);
 			camel_imap_message_cache_remove (imap_folder->cache, uid);
 			CAMEL_IMAP_FOLDER_REC_UNLOCK (imap_folder, cache_lock);
-			camel_folder_summary_remove_uid (folder->summary, uid);
+
+			mi = camel_folder_summary_peek_loaded (folder->summary, uid);
+			if (mi) {
+				camel_folder_summary_remove (folder->summary, mi);
+				camel_message_info_free (mi);
+			} else {
+				camel_folder_summary_remove_uid (folder->summary, uid);
+			}
 		}
 
 		/* Delete all in one transaction */
