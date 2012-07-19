@@ -462,6 +462,8 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 				n = strtoul (uid, NULL, 10);
 
 				if (n < f || n > l) {
+					CamelMessageInfo *mi;
+
 					dd (printf ("nntp_summary: %u is lower/higher than lowest/highest article, removed\n", n));
 					/* Since we use a global cache this could prematurely remove
 					 * a cached message that might be in another folder - not that important as
@@ -471,7 +473,14 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 						camel_data_cache_remove (store->cache, "cache", msgid + 1, NULL);
 					camel_folder_change_info_remove_uid (changes, uid);
 					del = g_list_prepend (del, (gpointer) camel_pstring_strdup (uid));
-					camel_folder_summary_remove_uid (s, uid);
+
+					mi = camel_folder_summary_peek_loaded (s, uid);
+					if (mi) {
+						camel_folder_summary_remove (s, mi);
+						camel_message_info_free (mi);
+					} else {
+						camel_folder_summary_remove_uid (s, uid);
+					}
 				}
 			}
 			camel_folder_summary_free_array (known_uids);

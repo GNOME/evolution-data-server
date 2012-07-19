@@ -272,7 +272,7 @@ fail_write:
 	g_free (fromline);
 
 	/* remove the summary info so we are not out-of-sync with the mbox */
-	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (mbs), camel_message_info_uid (mi));
+	camel_folder_summary_remove (CAMEL_FOLDER_SUMMARY (mbs), mi);
 
 	/* and tell the summary it's up-to-date */
 	if (g_stat (lf->folder_path, &st) == 0) {

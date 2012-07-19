@@ -701,7 +701,14 @@ nntp_folder_expunge_uids_offline (CamelFolder *folder,
 
 	changes = camel_folder_change_info_new ();
 	for (ii = 0; ii < uids->len; ii++) {
-		camel_folder_summary_remove_uid (folder->summary, uids->pdata[ii]);
+		CamelMessageInfo *mi = camel_folder_summary_peek_loaded (folder->summary, uids->pdata[ii]);
+		if (mi) {
+			camel_folder_summary_remove (folder->summary, mi);
+			camel_message_info_free (mi);
+		} else {
+			camel_folder_summary_remove_uid (folder->summary, uids->pdata[ii]);
+		}
+
 		camel_folder_change_info_remove_uid (changes, uids->pdata[ii]);
 	}
 

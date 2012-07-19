@@ -514,7 +514,8 @@ summary_update (CamelLocalSummary *cls,
 			if (changeinfo)
 				camel_folder_change_info_remove_uid (changeinfo, uid);
 			del = g_list_prepend (del, (gpointer) camel_pstring_strdup (uid));
-			camel_folder_summary_remove_uid (s, uid);
+			if (mi)
+				camel_folder_summary_remove (s, (CamelMessageInfo *) mi);
 		}
 
 		if (mi)
@@ -1135,7 +1136,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 
 			/* remove it from the change list */
 			camel_folder_change_info_remove_uid (changeinfo, uid);
-			camel_folder_summary_remove_uid (s, uid);
+			camel_folder_summary_remove (s, (CamelMessageInfo *) info);
 			del = g_list_prepend (del, (gpointer) camel_pstring_strdup (uid));
 			camel_message_info_free ((CamelMessageInfo *) info);
 			info = NULL;
