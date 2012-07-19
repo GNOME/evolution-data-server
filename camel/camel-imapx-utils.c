@@ -476,8 +476,8 @@ imapx_register_capability (const gchar *capability)
 {
 	guint32 capa_id = 0;
 	guint64 check_id = 0;
-	GList *keys = NULL;
-	GList *tmp_keys = NULL;
+	GList *vals = NULL;
+	GList *tmp_vals = NULL;
 
 	g_return_val_if_fail (capability != NULL, 0);
 
@@ -493,14 +493,15 @@ imapx_register_capability (const gchar *capability)
 		goto exit;
 
 	/* not yet there, find biggest flag so far */
-	keys = g_hash_table_get_keys (capa_htable);
-	tmp_keys = keys;
-	while (tmp_keys != NULL) {
-		guint32 tmp_id = GPOINTER_TO_UINT (tmp_keys->data);
+	vals = g_hash_table_get_values (capa_htable);
+	tmp_vals = vals;
+	while (tmp_vals != NULL) {
+		guint32 tmp_id = GPOINTER_TO_UINT (tmp_vals->data);
 		if (capa_id < tmp_id)
 			capa_id = tmp_id;
-		tmp_keys = g_list_next (tmp_keys);
+		tmp_vals = g_list_next (tmp_vals);
 	}
+	g_list_free (vals);
 
 	/* shift-left biggest-so-far, sanity-check */
 	check_id = (capa_id << 1);
