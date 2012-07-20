@@ -2169,6 +2169,8 @@ imap_store_get_folder_sync (CamelStore *store,
 	new_folder = camel_imap_folder_new (store, folder_name, folder_dir, error);
 	g_free (folder_dir);
 	if (new_folder) {
+		if (imap_store->current_folder)
+			g_object_unref (imap_store->current_folder);
 		imap_store->current_folder = g_object_ref (new_folder);
 		if (!camel_imap_folder_selected (
 			new_folder, response, cancellable, error)) {
