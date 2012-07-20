@@ -1442,6 +1442,7 @@ get_matching (CamelFolder *folder,
 
 			if (count1 != count2) {
 				g_list_free (list2);
+				camel_message_info_free ((CamelMessageInfo *) info);
 				close_range ();
 				continue;
 			}
@@ -1453,6 +1454,7 @@ get_matching (CamelFolder *folder,
 
 			if (cmp) {
 				g_list_free (list2);
+				camel_message_info_free ((CamelMessageInfo *) info);
 				close_range ();
 				continue;
 			}
@@ -1657,19 +1659,13 @@ imap_synchronize_sync (CamelFolder *folder,
 	/* deleted_uids is NULL when not using real trash */
 	folder_path = camel_imap_settings_dup_real_trash_path (
 		CAMEL_IMAP_SETTINGS (settings));
-	if (folder_path != NULL) {
+	if (folder_path != NULL && *folder_path) {
 		if ((folder->folder_flags & CAMEL_FOLDER_IS_TRASH) != 0) {
 			/* syncing the trash, expunge deleted when found any */
 			real_trash = g_object_ref (folder);
 		} else {
 			real_trash = camel_store_get_trash_folder_sync (
 				parent_store, cancellable, NULL);
-
-			if (folder_path == NULL && real_trash) {
-				/* failed to open real trash */
-				g_object_unref (real_trash);
-				real_trash = NULL;
-			}
 		}
 	}
 	g_free (folder_path);
@@ -1680,7 +1676,7 @@ imap_synchronize_sync (CamelFolder *folder,
 	/* junked_uids is NULL when not using real junk */
 	folder_path = camel_imap_settings_dup_real_junk_path (
 		CAMEL_IMAP_SETTINGS (settings));
-	if (folder_path != NULL) {
+	if (folder_path != NULL && *folder_path) {
 		if ((folder->folder_flags & CAMEL_FOLDER_IS_JUNK) != 0) {
 			/* syncing the junk, but cannot move
 			 * messages to itself, thus do nothing */
@@ -1688,12 +1684,6 @@ imap_synchronize_sync (CamelFolder *folder,
 		} else {
 			real_junk = camel_store_get_junk_folder_sync (
 				parent_store, cancellable, NULL);
-
-			if (folder_path == NULL && real_junk) {
-				/* failed to open real junk */
-				g_object_unref (real_junk);
-				real_junk = NULL;
-			}
 		}
 	}
 	g_free (folder_path);
@@ -1736,6 +1726,8 @@ imap_synchronize_sync (CamelFolder *folder,
 		if (!camel_imap_store_connected (store, NULL)) {
 			g_free (set);
 			camel_message_info_free (info);
+			g_ptr_array_foreach (matches, (GFunc) camel_message_info_free, NULL);
+			g_ptr_array_free (matches, TRUE);
 			break;
 		}
 
@@ -1805,10 +1797,7 @@ imap_synchronize_sync (CamelFolder *folder,
 			camel_folder_summary_touch (folder->summary);
 		}
 
-		for (j = 0; j < matches->len; j++) {
-			info = matches->pdata[j];
-			camel_message_info_free (&info->info);
-		}
+		g_ptr_array_foreach (matches, (GFunc) camel_message_info_free, NULL);
 		g_ptr_array_free (matches, TRUE);
 
 		/* We unlock here so that other threads can have a chance to grab the connect_lock */
@@ -1829,6 +1818,10 @@ imap_synchronize_sync (CamelFolder *folder,
 				g_object_unref (real_trash);
 			if (real_junk)
 				g_object_unref (real_junk);
+
+			g_ptr_array_foreach (summary, (GFunc) camel_pstring_free, NULL);
+			g_ptr_array_free (summary, TRUE);
+
 			return FALSE;
 		}
 

@@ -167,6 +167,37 @@ enum {
 
 G_DEFINE_TYPE (CamelFolderSummary, camel_folder_summary, CAMEL_TYPE_OBJECT)
 
+static gboolean
+remove_each_item (gpointer uid,
+		  gpointer mi,
+		  gpointer user_data)
+{
+	GSList **to_remove_infos = user_data;
+
+	*to_remove_infos = g_slist_prepend (*to_remove_infos, mi);
+
+	return TRUE;
+}
+
+static void
+remove_all_loaded (CamelFolderSummary *summary)
+{
+	GSList *to_remove_infos = NULL;
+
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
+
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+
+	camel_folder_summary_lock (summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
+	g_hash_table_foreach_remove (summary->priv->loaded_infos, remove_each_item, &to_remove_infos);
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_REF_LOCK);
+
+	g_slist_foreach (to_remove_infos, (GFunc) camel_message_info_free, NULL);
+	g_slist_free (to_remove_infos);
+
+	camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+}
+
 static void
 free_o_name (gpointer key,
              gpointer value,
@@ -184,6 +215,8 @@ folder_summary_dispose (GObject *object)
 	priv = CAMEL_FOLDER_SUMMARY_GET_PRIVATE (object);
 
 	if (priv->timeout_handle) {
+		/* this should not happen, because the release timer
+		   holds a reference on object */
 		g_source_remove (priv->timeout_handle);
 		priv->timeout_handle = 0;
 	}
@@ -228,6 +261,11 @@ folder_summary_dispose (GObject *object)
 		priv->index = NULL;
 	}
 
+	if (priv->folder) {
+		g_object_weak_unref (G_OBJECT (priv->folder), (GWeakNotify) g_nullify_pointer, &priv->folder);
+		priv->folder = NULL;
+	}
+
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_folder_summary_parent_class)->dispose (object);
 }
@@ -239,6 +277,7 @@ folder_summary_finalize (GObject *object)
 	CamelFolderSummaryPrivate *priv = summary->priv;
 
 	g_hash_table_destroy (priv->uids);
+	remove_all_loaded (summary);
 	g_hash_table_destroy (priv->loaded_infos);
 
 	g_hash_table_foreach (priv->filter_charset, free_o_name, NULL);
@@ -265,6 +304,8 @@ folder_summary_set_folder (CamelFolderSummary *summary,
 	/* folder can be NULL in certain cases, see maildir-store */
 
 	summary->priv->folder = folder;
+	if (folder)
+		g_object_weak_ref (G_OBJECT (folder), (GWeakNotify) g_nullify_pointer, &summary->priv->folder);
 }
 
 static void
@@ -1961,6 +2002,8 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 	if (!summary->priv->folder || !g_hash_table_size (summary->priv->loaded_infos)) {
 		summary->priv->cache_load_time = 0;
 		summary->priv->timeout_handle = 0;
+		g_object_unref (summary);
+
 		return FALSE;
 	}
 
@@ -1993,8 +2036,10 @@ cfs_schedule_info_release_timer (CamelFolderSummary *summary)
 		}
 
 		/* FIXME[disk-summary] LRU please and not timeouts */
-		if (can_do)
-			summary->priv->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP, (GSourceFunc) cfs_try_release_memory, summary);
+		if (can_do) {
+			summary->priv->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP,
+				(GSourceFunc) cfs_try_release_memory, g_object_ref (summary));
+		}
 	}
 
 	/* update also cache load time to the actual, to not release something just loaded */
@@ -3151,6 +3196,7 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 	}
 
 	g_hash_table_remove_all (summary->priv->uids);
+	remove_all_loaded (summary);
 	g_hash_table_remove_all (summary->priv->loaded_infos);
 
 	summary->priv->saved_count = 0;
@@ -4426,6 +4472,7 @@ camel_message_info_free (gpointer o)
 		if (mi->summary->priv->build_content
 		    && ((CamelMessageInfoBase *) mi)->content) {
 			camel_folder_summary_content_info_free (mi->summary, ((CamelMessageInfoBase *) mi)->content);
+			((CamelMessageInfoBase *) mi)->content = NULL;
 		}
 
 		CAMEL_FOLDER_SUMMARY_GET_CLASS (mi->summary)->message_info_free (mi->summary, mi);
