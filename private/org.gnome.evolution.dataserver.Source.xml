@@ -48,7 +48,7 @@
 <interface name="org.gnome.evolution.dataserver.Source.Writable">
   <!--
       Write:
-      @data: Raw key file data describing the source.
+      @data: Raw key file data describing the source
 
       Submits new key file data for the source, which is written
       to disk and then reflected in the Data property.
