@@ -7060,10 +7060,26 @@ camel_imapx_server_command_run (CamelIMAPXServer *is,
                                 GCancellable *cancellable,
                                 GError **error)
 {
+	gboolean ok = FALSE;
+	CamelIMAPXJob *job = NULL;
+	gboolean local_job = FALSE;
+
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_COMMAND (ic), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	return imapx_command_run (is, ic, cancellable, error);
+	job = camel_imapx_command_get_job (ic);
+	if (job == NULL) {
+		job = camel_imapx_job_new (cancellable);
+		camel_imapx_command_set_job (ic, job);
+		local_job = TRUE;
+	}
+
+	ok = imapx_command_run_sync (is, ic, cancellable, error);
+
+	if (local_job)
+		camel_imapx_command_set_job (ic, NULL);
+
+	return ok;
 }
