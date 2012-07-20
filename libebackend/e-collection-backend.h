@@ -79,7 +79,35 @@ struct _ECollectionBackendClass {
 	void		(*child_removed)	(ECollectionBackend *backend,
 						 ESource *child_source);
 
-	gpointer reserved[16];
+	/* More Methods (grouped separately to preserve the ABI) */
+	gboolean	(*create_resource_sync)	(ECollectionBackend *backend,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+	void		(*create_resource)	(ECollectionBackend *backend,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*create_resource_finish)
+						(ECollectionBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+	gboolean	(*delete_resource_sync)	(ECollectionBackend *backend,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+	void		(*delete_resource)	(ECollectionBackend *backend,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*delete_resource_finish)
+						(ECollectionBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+
+	gpointer reserved[10];
 };
 
 GType		e_collection_backend_get_type	(void) G_GNUC_CONST;
@@ -95,6 +123,36 @@ GList *		e_collection_backend_list_contacts_sources
 						(ECollectionBackend *backend);
 GList *		e_collection_backend_list_mail_sources
 						(ECollectionBackend *backend);
+gboolean	e_collection_backend_create_resource_sync
+						(ECollectionBackend *backend,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_collection_backend_create_resource
+						(ECollectionBackend *backend,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_collection_backend_create_resource_finish
+						(ECollectionBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_collection_backend_delete_resource_sync
+						(ECollectionBackend *backend,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_collection_backend_delete_resource
+						(ECollectionBackend *backend,
+						 ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_collection_backend_delete_resource_finish
+						(ECollectionBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
 
 G_END_DECLS
 

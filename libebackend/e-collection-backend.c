@@ -41,6 +41,9 @@
 
 #include "e-collection-backend.h"
 
+#include <config.h>
+#include <glib/gi18n-lib.h>
+
 #include <libedataserver/libedataserver.h>
 
 #include <libebackend/e-server-side-source.h>
@@ -690,6 +693,124 @@ collection_backend_child_removed (ECollectionBackend *backend,
 	collection_backend_children_remove (backend, child_source);
 }
 
+static gboolean
+collection_backend_create_resource_sync (ECollectionBackend *backend,
+                                         ESource *source,
+                                         GCancellable *cancellable,
+                                         GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	closure = e_async_closure_new ();
+
+	e_collection_backend_create_resource (
+		backend, source, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_collection_backend_create_resource_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+static void
+collection_backend_create_resource (ECollectionBackend *backend,
+                                    ESource *source,
+                                    GCancellable *cancellable,
+                                    GAsyncReadyCallback callback,
+                                    gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new_error (
+		G_OBJECT (backend), callback, user_data,
+		G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("%s does not support creating remote resources"),
+		G_OBJECT_TYPE_NAME (backend));
+
+	g_simple_async_result_complete_in_idle (simple);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+collection_backend_create_resource_finish (ECollectionBackend *backend,
+                                           GAsyncResult *result,
+                                           GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static gboolean
+collection_backend_delete_resource_sync (ECollectionBackend *backend,
+                                         ESource *source,
+                                         GCancellable *cancellable,
+                                         GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	closure = e_async_closure_new ();
+
+	e_collection_backend_delete_resource (
+		backend, source, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_collection_backend_delete_resource_finish (
+		backend, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+static void
+collection_backend_delete_resource (ECollectionBackend *backend,
+                                    ESource *source,
+                                    GCancellable *cancellable,
+                                    GAsyncReadyCallback callback,
+                                    gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new_error (
+		G_OBJECT (backend), callback, user_data,
+		G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("%s does not support deleting remote resources"),
+		G_OBJECT_TYPE_NAME (backend));
+
+	g_simple_async_result_complete_in_idle (simple);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+collection_backend_delete_resource_finish (ECollectionBackend *backend,
+                                           GAsyncResult *result,
+                                           GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
 static void
 e_collection_backend_class_init (ECollectionBackendClass *class)
 {
@@ -712,6 +833,12 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 	class->dup_resource_id = collection_backend_dup_resource_id;
 	class->child_added = collection_backend_child_added;
 	class->child_removed = collection_backend_child_removed;
+	class->create_resource_sync = collection_backend_create_resource_sync;
+	class->create_resource = collection_backend_create_resource;
+	class->create_resource_finish = collection_backend_create_resource_finish;
+	class->delete_resource_sync = collection_backend_delete_resource_sync;
+	class->delete_resource = collection_backend_delete_resource;
+	class->delete_resource_finish = collection_backend_delete_resource_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -1018,5 +1145,135 @@ e_collection_backend_list_mail_sources (ECollectionBackend *backend)
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	return g_list_reverse (result_list);
+}
+
+/**
+ * e_collection_backend_create_resource_sync
+ * @backend: an #ECollectionBackend
+ * @source: an #ESource
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a server-side resource described by @source.  For example, if
+ * @source describes a new calendar, an equivalent calendar is created on
+ * the server.
+ *
+ * It is the implementor's responsibility to examine @source and determine
+ * what the equivalent server-side resource would be.  If this cannot be
+ * determined without ambiguity, the function must return an error.
+ *
+ * After the server-side resource is successfully created, the implementor
+ * must also add an #ESource to @backend's #ECollectionBackend:server.  This
+ * can either be done immediately or in response to some "resource created"
+ * notification from the server.  The added #ESource can be @source itself
+ * or a different #ESource instance that describes the new resource.
+ * implementor's responsibility to add an #ESource to.
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_collection_backend_create_resource_sync (ECollectionBackend *backend,
+                                           ESource *source,
+                                           GCancellable *cancellable,
+                                           GError **error)
+{
+	ECollectionBackendClass *class;
+
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class->create_resource_sync != NULL, FALSE);
+
+	return class->create_resource_sync (
+		backend, source, cancellable, error);
+}
+
+void
+e_collection_backend_create_resource (ECollectionBackend *backend,
+                                      ESource *source,
+                                      GCancellable *cancellable,
+                                      GAsyncReadyCallback callback,
+                                      gpointer user_data)
+{
+	ECollectionBackendClass *class;
+
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->create_resource != NULL);
+
+	class->create_resource (
+		backend, source, cancellable, callback, user_data);
+}
+
+gboolean
+e_collection_backend_create_resource_finish (ECollectionBackend *backend,
+                                             GAsyncResult *result,
+                                             GError **error)
+{
+	ECollectionBackendClass *class;
+
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class->create_resource_finish != NULL, FALSE);
+
+	return class->create_resource_finish (backend, result, error);
+}
+
+gboolean
+e_collection_backend_delete_resource_sync (ECollectionBackend *backend,
+                                           ESource *source,
+                                           GCancellable *cancellable,
+                                           GError **error)
+{
+	ECollectionBackendClass *class;
+
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class->delete_resource_sync != NULL, FALSE);
+
+	return class->delete_resource_sync (
+		backend, source, cancellable, error);
+}
+
+void
+e_collection_backend_delete_resource (ECollectionBackend *backend,
+                                      ESource *source,
+                                      GCancellable *cancellable,
+                                      GAsyncReadyCallback callback,
+                                      gpointer user_data)
+{
+	ECollectionBackendClass *class;
+
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->delete_resource != NULL);
+
+	return class->delete_resource (
+		backend, source, cancellable, callback, user_data);
+}
+
+gboolean
+e_collection_backend_delete_resource_finish (ECollectionBackend *backend,
+                                             GAsyncResult *result,
+                                             GError **error)
+{
+	ECollectionBackendClass *class;
+
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class->delete_resource_finish != NULL, FALSE);
+
+	return class->delete_resource_finish (backend, result, error);
 }
 
