@@ -1168,10 +1168,12 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 	if (is->changes == NULL)
 		is->changes = camel_folder_change_info_new ();
 
-	mi = camel_folder_summary_get (is->select_folder->summary, uid);
+	mi = camel_folder_summary_peek_loaded (is->select_folder->summary, uid);
 	if (mi) {
 		camel_folder_summary_remove (is->select_folder->summary, mi);
 		camel_message_info_free (mi);
+	} else {
+		camel_folder_summary_remove_uid (is->select_folder->summary, uid);
 	}
 
 	is->expunged = g_list_prepend (is->expunged, uid);
@@ -5058,10 +5060,12 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 				gchar *uid = uids->pdata[i];
 				CamelMessageInfo *mi;
 
-				mi = camel_folder_summary_get (folder->summary, uid);
+				mi = camel_folder_summary_peek_loaded (folder->summary, uid);
 				if (mi) {
 					camel_folder_summary_remove (folder->summary, mi);
 					camel_message_info_free (mi);
+				} else {
+					camel_folder_summary_remove_uid (folder->summary, uid);
 				}
 
 				camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
