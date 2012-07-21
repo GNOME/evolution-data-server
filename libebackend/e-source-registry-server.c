@@ -661,8 +661,9 @@ source_registry_server_create_sources_cb (EDBusSourceManager *interface,
 
 	if (error != NULL)
 		g_dbus_method_invocation_take_error (invocation, error);
-
-	e_dbus_source_manager_complete_create_sources (interface, invocation);
+	else
+		e_dbus_source_manager_complete_create_sources (
+			interface, invocation);
 
 	return TRUE;
 }
