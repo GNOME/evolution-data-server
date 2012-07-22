@@ -125,7 +125,7 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
                                    EContactGoogleCreateGroupFunc create_group,
                                    gpointer create_group_user_data)
 {
-	GList *attributes, *iter, *category_names;
+	GList *attributes, *iter, *category_names, *extended_property_names;
 	EContactName *name_struct = NULL;
 	EContactPhoto *photo;
 	gboolean have_email_primary = FALSE;
@@ -206,6 +206,11 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 	category_names = gdata_contacts_contact_get_groups (GDATA_CONTACTS_CONTACT (entry));
 	for (iter = category_names; iter != NULL; iter = g_list_delete_link (iter, iter))
 		gdata_contacts_contact_remove_group (GDATA_CONTACTS_CONTACT (entry), iter->data);
+
+	extended_property_names = g_hash_table_get_keys (gdata_contacts_contact_get_extended_properties (GDATA_CONTACTS_CONTACT (entry)));
+	for (iter = extended_property_names; iter != NULL; iter = g_list_delete_link (iter, iter)) {
+		gdata_contacts_contact_set_extended_property (GDATA_CONTACTS_CONTACT (entry), iter->data, NULL);
+	}
 
 	/* We walk them in reverse order, so we can find
 	 * the correct primaries */
