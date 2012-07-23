@@ -41,8 +41,6 @@
 
 #define PRIMARY_GROUP_NAME	"Data Source"
 
-typedef struct _AsyncClosure AsyncClosure;
-
 struct _EServerSideSourcePrivate {
 	gpointer server;  /* weak pointer */
 
@@ -88,57 +86,6 @@ G_DEFINE_TYPE_WITH_CODE (
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_server_side_source_initable_init))
-
-static AsyncClosure *
-async_closure_new (void)
-{
-	AsyncClosure *closure;
-
-	closure = g_slice_new0 (AsyncClosure);
-	closure->context = g_main_context_new ();
-	closure->loop = g_main_loop_new (closure->context, FALSE);
-
-	g_main_context_push_thread_default (closure->context);
-
-	return closure;
-}
-
-static GAsyncResult *
-async_closure_wait (AsyncClosure *closure)
-{
-	g_main_loop_run (closure->loop);
-
-	return closure->result;
-}
-
-static void
-async_closure_free (AsyncClosure *closure)
-{
-	g_main_context_pop_thread_default (closure->context);
-
-	g_main_loop_unref (closure->loop);
-	g_main_context_unref (closure->context);
-
-	if (closure->result != NULL)
-		g_object_unref (closure->result);
-
-	g_slice_free (AsyncClosure, closure);
-}
-
-static void
-async_closure_callback (GObject *object,
-                        GAsyncResult *result,
-                        gpointer user_data)
-{
-	AsyncClosure *closure = user_data;
-
-	/* Replace any previous result. */
-	if (closure->result != NULL)
-		g_object_unref (closure->result);
-	closure->result = g_object_ref (result);
-
-	g_main_loop_quit (closure->loop);
-}
 
 static gboolean
 server_side_source_parse_data (GKeyFile *key_file,
@@ -544,20 +491,20 @@ server_side_source_remove_sync (ESource *source,
                                 GCancellable *cancellable,
                                 GError **error)
 {
-	AsyncClosure *closure;
+	EAsyncClosure *closure;
 	GAsyncResult *result;
 	gboolean success;
 
-	closure = async_closure_new ();
+	closure = e_async_closure_new ();
 
 	e_source_remove (
-		source, cancellable, async_closure_callback, closure);
+		source, cancellable, e_async_closure_callback, closure);
 
-	result = async_closure_wait (closure);
+	result = e_async_closure_wait (closure);
 
 	success = e_source_remove_finish (source, result, error);
 
-	async_closure_free (closure);
+	e_async_closure_free (closure);
 
 	return success;
 }
@@ -660,20 +607,20 @@ server_side_source_write_sync (ESource *source,
                                GCancellable *cancellable,
                                GError **error)
 {
-	AsyncClosure *closure;
+	EAsyncClosure *closure;
 	GAsyncResult *result;
 	gboolean success;
 
-	closure = async_closure_new ();
+	closure = e_async_closure_new ();
 
 	e_source_write (
-		source, cancellable, async_closure_callback, closure);
+		source, cancellable, e_async_closure_callback, closure);
 
-	result = async_closure_wait (closure);
+	result = e_async_closure_wait (closure);
 
 	success = e_source_write_finish (source, result, error);
 
-	async_closure_free (closure);
+	e_async_closure_free (closure);
 
 	return success;
 }
