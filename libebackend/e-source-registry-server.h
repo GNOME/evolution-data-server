@@ -28,6 +28,7 @@
 #include <libebackend/e-authentication-session.h>
 #include <libebackend/e-backend-enums.h>
 #include <libebackend/e-data-factory.h>
+#include <libebackend/e-collection-backend.h>
 #include <libebackend/e-collection-backend-factory.h>
 
 /* Standard GObject macros */
@@ -124,6 +125,10 @@ ESource *	e_source_registry_server_ref_source
 GList *		e_source_registry_server_list_sources
 						(ESourceRegistryServer *server,
 						 const gchar *extension_name);
+ECollectionBackend *
+		e_source_registry_server_ref_backend
+						(ESourceRegistryServer *server,
+						 ESource *source);
 ECollectionBackendFactory *
 		e_source_registry_server_ref_backend_factory
 						(ESourceRegistryServer *server,

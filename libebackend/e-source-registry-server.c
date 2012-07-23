@@ -1867,6 +1867,74 @@ e_source_registry_server_list_sources (ESourceRegistryServer *server,
 }
 
 /**
+ * e_source_registry_server_ref_backend:
+ * @server: an #ESourceRegistryServer
+ * @source: an #ESource
+ *
+ * Returns the #ECollectionBackend associated with @source, or %NULL if
+ * there is no #ECollectionBackend associated with @source.
+ *
+ * An #ESource is associated with an #ECollectionBackend if the #ESource has
+ * an #ESourceCollection extension, or if it is a hierarchical descendant of
+ * another #ESource which has an #ESourceCollection extension.
+ *
+ * The returned #ECollectionBackend is referenced for thread-safety.
+ * Unreference the #ECollectionBackend with g_object_unref() when finished
+ * with it.
+ *
+ * Returns: the #ECollectionBackend for @source, or %NULL
+ *
+ * Since: 3.6
+ **/
+ECollectionBackend *
+e_source_registry_server_ref_backend (ESourceRegistryServer *server,
+                                      ESource *source)
+{
+	ECollectionBackend *backend = NULL;
+	const gchar *extension_name;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	/* XXX If ESourceRegistryServer ever grows a function similar to
+	 *     e_source_registry_find_extension() then we could just use
+	 *     that, but despite this use case I think the need for such
+	 *     a function is not sufficiently strong yet. */
+
+	extension_name = E_SOURCE_EXTENSION_COLLECTION;
+
+	g_object_ref (source);
+
+	while (!e_source_has_extension (source, extension_name)) {
+		gchar *uid;
+
+		uid = e_source_dup_parent (source);
+
+		g_object_unref (source);
+		source = NULL;
+
+		if (uid != NULL) {
+			source = e_source_registry_server_ref_source (
+				server, uid);
+			g_free (uid);
+		}
+
+		if (source == NULL)
+			break;
+	}
+
+	if (source != NULL) {
+		backend = g_object_get_data (
+			G_OBJECT (source), BACKEND_DATA_KEY);
+		if (backend != NULL)
+			g_object_ref (backend);
+		g_object_unref (source);
+	}
+
+	return backend;
+}
+
+/**
  * e_source_registry_server_ref_backend_factory:
  * @server: an #ESourceRegistryServer
  * @source: an #ESource
