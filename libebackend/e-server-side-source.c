@@ -55,12 +55,6 @@ struct _EServerSideSourcePrivate {
 	gchar *write_directory;
 };
 
-struct _AsyncClosure {
-	GMainLoop *loop;
-	GMainContext *context;
-	GAsyncResult *result;
-};
-
 enum {
 	PROP_0,
 	PROP_ALLOW_AUTH_PROMPT,
