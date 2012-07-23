@@ -3362,6 +3362,7 @@ e_cal_create_object (ECal *ecal,
 	if (!e_gdbus_cal_call_create_objects_sync (priv->gdbus_cal, strv, &muids, NULL, error)) {
 		g_free (obj);
 		g_free (gdbus_obj);
+		g_strfreev (muids);
 
 		E_CALENDAR_CHECK_STATUS (E_CALENDAR_STATUS_DBUS_EXCEPTION, error);
 	}
