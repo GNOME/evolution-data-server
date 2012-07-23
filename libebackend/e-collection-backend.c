@@ -52,7 +52,10 @@
 
 struct _ECollectionBackendPrivate {
 	GWeakRef server;
-	GQueue children;
+
+	/* Set of ESources */
+	GHashTable *children;
+	GMutex *children_lock;
 
 	gchar *cache_dir;
 
@@ -81,6 +84,64 @@ G_DEFINE_ABSTRACT_TYPE (
 	ECollectionBackend,
 	e_collection_backend,
 	E_TYPE_BACKEND)
+
+static void
+collection_backend_children_insert (ECollectionBackend *backend,
+                                    ESource *source)
+{
+	g_mutex_lock (backend->priv->children_lock);
+
+	g_hash_table_add (backend->priv->children, g_object_ref (source));
+
+	g_mutex_unlock (backend->priv->children_lock);
+}
+
+static gboolean
+collection_backend_children_remove (ECollectionBackend *backend,
+                                    ESource *source)
+{
+	gboolean removed;
+
+	g_mutex_lock (backend->priv->children_lock);
+
+	removed = g_hash_table_remove (backend->priv->children, source);
+
+	g_mutex_unlock (backend->priv->children_lock);
+
+	return removed;
+}
+
+static gboolean
+collection_backend_children_contains (ECollectionBackend *backend,
+                                      ESource *source)
+{
+	gboolean contains;
+
+	g_mutex_lock (backend->priv->children_lock);
+
+	contains = g_hash_table_contains (backend->priv->children, source);
+
+	g_mutex_unlock (backend->priv->children_lock);
+
+	return contains;
+}
+
+static GList *
+collection_backend_children_list (ECollectionBackend *backend)
+{
+	GList *list, *link;
+
+	g_mutex_lock (backend->priv->children_lock);
+
+	list = g_hash_table_get_keys (backend->priv->children);
+
+	for (link = list; link != NULL; link = g_list_next (link))
+		g_object_ref (link->data);
+
+	g_mutex_unlock (backend->priv->children_lock);
+
+	return list;
+}
 
 static GFile *
 collection_backend_new_user_file (ECollectionBackend *backend)
@@ -471,8 +532,9 @@ collection_backend_dispose (GObject *object)
 		g_object_unref (server);
 	}
 
-	while (!g_queue_is_empty (&priv->children))
-		g_object_unref (g_queue_pop_head (&priv->children));
+	g_mutex_lock (priv->children_lock);
+	g_hash_table_remove_all (priv->children);
+	g_mutex_unlock (priv->children_lock);
 
 	g_mutex_lock (priv->unclaimed_resources_lock);
 	g_hash_table_remove_all (priv->unclaimed_resources);
@@ -488,6 +550,9 @@ collection_backend_finalize (GObject *object)
 	ECollectionBackendPrivate *priv;
 
 	priv = E_COLLECTION_BACKEND_GET_PRIVATE (object);
+
+	g_hash_table_destroy (priv->children);
+	g_mutex_free (priv->children_lock);
 
 	g_hash_table_destroy (priv->unclaimed_resources);
 	g_mutex_free (priv->unclaimed_resources_lock);
@@ -596,11 +661,8 @@ static void
 collection_backend_child_added (ECollectionBackend *backend,
                                 ESource *child_source)
 {
+	collection_backend_children_insert (backend, child_source);
 	collection_backend_bind_child_enabled (backend, child_source);
-
-	g_queue_push_tail (
-		&backend->priv->children,
-		g_object_ref (child_source));
 
 	/* Collection children are not removable. */
 	e_server_side_source_set_removable (
@@ -611,8 +673,7 @@ static void
 collection_backend_child_removed (ECollectionBackend *backend,
                                   ESource *child_source)
 {
-	if (g_queue_remove (&backend->priv->children, child_source))
-		g_object_unref (child_source);
+	collection_backend_children_remove (backend, child_source);
 }
 
 static void
@@ -696,7 +757,14 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 static void
 e_collection_backend_init (ECollectionBackend *backend)
 {
+	GHashTable *children;
 	GHashTable *unclaimed_resources;
+
+	children = g_hash_table_new_full (
+		(GHashFunc) e_source_hash,
+		(GEqualFunc) e_source_equal,
+		(GDestroyNotify) g_object_unref,
+		(GDestroyNotify) NULL);
 
 	unclaimed_resources = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -705,6 +773,8 @@ e_collection_backend_init (ECollectionBackend *backend)
 		(GDestroyNotify) g_object_unref);
 
 	backend->priv = E_COLLECTION_BACKEND_GET_PRIVATE (backend);
+	backend->priv->children = children;
+	backend->priv->children_lock = g_mutex_new ();
 	backend->priv->unclaimed_resources = unclaimed_resources;
 	backend->priv->unclaimed_resources_lock = g_mutex_new ();
 }
@@ -832,7 +902,7 @@ e_collection_backend_list_calendar_sources (ECollectionBackend *backend)
 
 	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), NULL);
 
-	list = g_queue_peek_head_link (&backend->priv->children);
+	list = collection_backend_children_list (backend);
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		ESource *child_source = E_SOURCE (link->data);
@@ -840,6 +910,8 @@ e_collection_backend_list_calendar_sources (ECollectionBackend *backend)
 			result_list = g_list_prepend (
 				result_list, g_object_ref (child_source));
 	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	return g_list_reverse (result_list);
 }
@@ -873,7 +945,7 @@ e_collection_backend_list_contacts_sources (ECollectionBackend *backend)
 
 	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), NULL);
 
-	list = g_queue_peek_head_link (&backend->priv->children);
+	list = collection_backend_children_list (backend);
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		ESource *child_source = E_SOURCE (link->data);
@@ -881,6 +953,8 @@ e_collection_backend_list_contacts_sources (ECollectionBackend *backend)
 			result_list = g_list_prepend (
 				result_list, g_object_ref (child_source));
 	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	return g_list_reverse (result_list);
 }
@@ -914,7 +988,7 @@ e_collection_backend_list_mail_sources (ECollectionBackend *backend)
 
 	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), NULL);
 
-	list = g_queue_peek_head_link (&backend->priv->children);
+	list = collection_backend_children_list (backend);
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		ESource *child_source = E_SOURCE (link->data);
@@ -922,6 +996,8 @@ e_collection_backend_list_mail_sources (ECollectionBackend *backend)
 			result_list = g_list_prepend (
 				result_list, g_object_ref (child_source));
 	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	return g_list_reverse (result_list);
 }
