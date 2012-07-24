@@ -1136,6 +1136,12 @@ imap_rescan (CamelFolder *folder,
 		return TRUE;
 	}
 
+	if (!camel_imap_store_connected (CAMEL_IMAP_STORE (parent_store), error)) {
+		camel_operation_pop_message (cancellable);
+		camel_folder_summary_free_array (known_uids);
+		return FALSE;
+	}
+
 	ok = camel_imap_command_start (
 		store, folder, cancellable, error,
 		"UID FETCH 1:%s (FLAGS)", uid);
@@ -1941,6 +1947,9 @@ imap_expunge_uids_online (CamelFolder *folder,
 	store = CAMEL_IMAP_STORE (parent_store);
 	full_expunge = (store->capabilities & IMAP_CAPABILITY_UIDPLUS) == 0;
 
+	if (!camel_imap_store_connected (store, error))
+		return FALSE;
+
 	if ((store->capabilities & IMAP_CAPABILITY_UIDPLUS) == 0) {
 		if (!CAMEL_FOLDER_GET_CLASS (folder)->synchronize_sync (
 			folder, 0, cancellable, error)) {
@@ -2090,6 +2099,9 @@ camel_imap_expunge_uids_resyncing (CamelFolder *folder,
 
 	if (imap_folder->read_only)
 		return TRUE;
+
+	if (!camel_imap_store_connected (store, error))
+		return FALSE;
 
 	if (store->capabilities & IMAP_CAPABILITY_UIDPLUS)
 		return imap_expunge_uids_online (
@@ -2465,6 +2477,9 @@ imap_append_online (CamelFolder *folder,
 			folder, message, info, appended_uid, error);
 	}
 
+	if (!camel_imap_store_connected (store, error))
+		return FALSE;
+
 	count = camel_folder_summary_count (folder->summary);
 	response = do_append (folder, message, info, &uid, cancellable, error);
 	if (!response)
@@ -2807,6 +2822,9 @@ do_copy (CamelFolder *source,
 
 	parent_store = camel_folder_get_parent_store (source);
 	store = CAMEL_IMAP_STORE (parent_store);
+
+	if (!camel_imap_store_connected (store, error))
+		return FALSE;
 
 	service = CAMEL_SERVICE (parent_store);
 	settings = camel_service_get_settings (service);
@@ -3503,9 +3521,12 @@ imap_get_message_sync (CamelFolder *folder,
 	parent_store = camel_folder_get_parent_store (folder);
 	store = CAMEL_IMAP_STORE (parent_store);
 
+	if (!camel_imap_store_connected (store, error))
+		return NULL;
+
 	mi = imap_folder_summary_uid_or_error (folder->summary, uid, error);
 	if (!mi)
-	  return NULL;
+		return NULL;
 
 	/* If its cached in full, just get it as is, this is only a shortcut,
 	 * since we get stuff from the cache anyway.  It affects a busted
@@ -3935,6 +3956,9 @@ imap_update_summary (CamelFolder *folder,
 	store = CAMEL_IMAP_STORE (parent_store);
 	service = CAMEL_SERVICE (parent_store);
 	settings = camel_service_get_settings (service);
+
+	if (!camel_imap_store_connected (store, error))
+		return FALSE;
 
 	fetch_headers = camel_imap_settings_get_fetch_headers (
 		CAMEL_IMAP_SETTINGS (settings));
@@ -4405,6 +4429,9 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 	store = CAMEL_IMAP_STORE (parent_store);
+
+	if (!camel_imap_store_connected (store, error))
+		return NULL;
 
 	/* EXPUNGE responses have to modify the cache, which means
 	 * they have to grab the cache_lock while holding the
