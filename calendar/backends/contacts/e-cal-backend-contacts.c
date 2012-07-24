@@ -67,7 +67,7 @@ typedef enum
 struct _ECalBackendContactsPrivate {
         ESourceList  *addressbook_sources;
 
-	GMutex *mutex;			/* guards 'addressbooks' and 'credentials' */
+	GRecMutex rec_mutex;			/* guards 'addressbooks' and 'credentials' */
 	GHashTable   *addressbooks;	/* UID -> BookRecord */
 	GHashTable   *credentials;	/* UID -> ECredentials to use in "authenticate" handler */
 	gboolean      loaded;
@@ -138,7 +138,7 @@ book_client_authenticate_cb (EClient *client,
 	source_uid = e_source_peek_uid (source);
 	g_return_val_if_fail (source_uid != NULL, FALSE);
 
-	g_mutex_lock (cbc->priv->mutex);
+	g_rec_mutex_lock (&cbc->priv->rec_mutex);
 	use_credentials = g_hash_table_lookup (cbc->priv->credentials, source_uid);
 
 	if (use_credentials &&
@@ -160,12 +160,12 @@ book_client_authenticate_cb (EClient *client,
 		e_credentials_set (use_credentials, CBC_CREDENTIALS_KEY_ALREADY_USED, "1");
 		g_slist_free (keys);
 
-		g_mutex_unlock (cbc->priv->mutex);
+		g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 
 		return TRUE;
 	}
 
-	g_mutex_unlock (cbc->priv->mutex);
+	g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 
 	/* write properties on a copy of original credentials */
 	credentials = e_credentials_new_clone (credentials);
@@ -339,14 +339,14 @@ book_client_opened_cb (EBookClient *book_client,
 	source_uid = e_source_peek_uid (source);
 	g_return_if_fail (source_uid != NULL);
 
-	g_mutex_lock (cbc->priv->mutex);
+	g_rec_mutex_lock (&cbc->priv->rec_mutex);
 
 	br = g_hash_table_lookup (cbc->priv->addressbooks, source_uid);
 	if (br && br->book_client != book_client)
 		br = NULL;
 
 	if (!br) {
-		g_mutex_unlock (cbc->priv->mutex);
+		g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 		return;
 	}
 
@@ -393,7 +393,7 @@ book_client_opened_cb (EBookClient *book_client,
 		br->book_view = book_view;
 	}
 
-	g_mutex_unlock (cbc->priv->mutex);
+	g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 }
 
 static void
@@ -415,14 +415,14 @@ e_cal_backend_contacts_authenticate_user (ECalBackendSync *backend,
 	source_uid = e_credentials_peek (credentials, CBC_CREDENTIALS_KEY_SOURCE_UID);
 	g_return_if_fail (source_uid != NULL);
 
-	g_mutex_lock (cbc->priv->mutex);
+	g_rec_mutex_lock (&cbc->priv->rec_mutex);
 
 	br = g_hash_table_lookup (cbc->priv->addressbooks, source_uid);
 	if (!br || !br->book_client ||
 	    /* no username means user cancelled password prompt */
 	    !e_credentials_has_key (credentials, E_CREDENTIALS_KEY_USERNAME)) {
 		g_hash_table_remove (cbc->priv->credentials, source_uid);
-		g_mutex_unlock (cbc->priv->mutex);
+		g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 		return;
 	}
 
@@ -430,7 +430,7 @@ e_cal_backend_contacts_authenticate_user (ECalBackendSync *backend,
 
 	cbc_reopen_book_client (cbc, br->book_client);
 
-	g_mutex_unlock (cbc->priv->mutex);
+	g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 }
 
 /* BookRecord methods */
@@ -461,9 +461,9 @@ create_book_record (ECalBackendContacts *cbc,
 	br->book_client = book_client;
 	br->book_view = NULL;
 
-	g_mutex_lock (cbc->priv->mutex);
+	g_rec_mutex_lock (&cbc->priv->rec_mutex);
 	g_hash_table_insert (cbc->priv->addressbooks, g_strdup (uid), br);
-	g_mutex_unlock (cbc->priv->mutex);
+	g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 
 	if (!e_client_open_sync (E_CLIENT (book_client), TRUE, NULL, &error) || error) {
 		g_signal_handlers_disconnect_by_func (book_client, G_CALLBACK (book_client_authenticate_cb), cbc);
@@ -473,13 +473,13 @@ create_book_record (ECalBackendContacts *cbc,
 			g_error_free (error);
 		}
 
-		g_mutex_lock (cbc->priv->mutex);
+		g_rec_mutex_lock (&cbc->priv->rec_mutex);
 
 		/* removal also frees the 'br' struct */
 		g_hash_table_remove (cbc->priv->addressbooks, uid);
 		g_hash_table_remove (cbc->priv->credentials, uid);
 
-		g_mutex_unlock (cbc->priv->mutex);
+		g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 	}
 }
 
@@ -666,12 +666,12 @@ source_removed_cb (ESourceGroup *group,
 
 	g_return_if_fail (cbc);
 
-	g_mutex_lock (cbc->priv->mutex);
+	g_rec_mutex_lock (&cbc->priv->rec_mutex);
 
 	g_hash_table_remove (cbc->priv->addressbooks, uid);
 	g_hash_table_remove (cbc->priv->credentials, uid);
 
-	g_mutex_unlock (cbc->priv->mutex);
+	g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 }
 
 static void
@@ -700,7 +700,7 @@ source_list_changed_cb (ESourceList *source_list,
 			if (!uid)
 				continue;
 
-			g_mutex_lock (cbc->priv->mutex);
+			g_rec_mutex_lock (&cbc->priv->rec_mutex);
 
 			if (is_source_usable (source, group)) {
 				if (!g_hash_table_lookup (cbc->priv->addressbooks, uid))
@@ -709,7 +709,7 @@ source_list_changed_cb (ESourceList *source_list,
 				source_removed_cb (group, source, cbc);
 			}
 
-			g_mutex_unlock (cbc->priv->mutex);
+			g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 		}
 	}
 }
@@ -744,7 +744,7 @@ source_group_removed_cb (ESourceList *source_list,
 
 	g_return_if_fail (cbc);
 
-	g_mutex_lock (cbc->priv->mutex);
+	g_rec_mutex_lock (&cbc->priv->rec_mutex);
 
         /* Unload all address books from this group */
 	for (i = e_source_group_peek_sources (group); i; i = i->next) {
@@ -755,7 +755,7 @@ source_group_removed_cb (ESourceList *source_list,
 		g_hash_table_remove (cbc->priv->credentials, uid);
 	}
 
-	g_mutex_unlock (cbc->priv->mutex);
+	g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 }
 
 /************************************************************************************/
@@ -1551,7 +1551,7 @@ e_cal_backend_contacts_finalize (GObject *object)
 		gconf_client_notify_remove (priv->conf_client, priv->notifyid3);
 
 	g_object_unref (priv->conf_client);
-	g_mutex_free (priv->mutex);
+	g_rec_mutex_clear (&priv->rec_mutex);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->finalize (object);
@@ -1566,7 +1566,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 	if (!e_book_client_get_sources (&cbc->priv->addressbook_sources, NULL))
 		cbc->priv->addressbook_sources = NULL;
 
-	cbc->priv->mutex = g_mutex_new ();
+	g_rec_mutex_init (&cbc->priv->rec_mutex);
 
 	cbc->priv->addressbooks = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
