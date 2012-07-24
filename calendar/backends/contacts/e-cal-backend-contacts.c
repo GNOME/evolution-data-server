@@ -58,7 +58,7 @@ typedef enum
 /* Private part of the ECalBackendContacts structure */
 struct _ECalBackendContactsPrivate {
 
-	GMutex *mutex;			/* guards 'addressbooks' */
+	GRecMutex rec_mutex;			/* guards 'addressbooks' */
 	GHashTable   *addressbooks;	/* UID -> BookRecord */
 	gboolean      addressbook_loaded;
 
@@ -210,14 +210,14 @@ cal_backend_contacts_insert_book_record (ECalBackendContacts *cbc,
                                          ESource *source,
                                          BookRecord *br)
 {
-	g_mutex_lock (cbc->priv->mutex);
+	g_rec_mutex_lock (&cbc->priv->rec_mutex);
 
 	g_hash_table_insert (
 		cbc->priv->addressbooks,
 		g_object_ref (source),
 		book_record_ref (br));
 
-	g_mutex_unlock (cbc->priv->mutex);
+	g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 }
 
 static gboolean
@@ -226,11 +226,11 @@ cal_backend_contacts_remove_book_record (ECalBackendContacts *cbc,
 {
 	gboolean removed;
 
-	g_mutex_lock (cbc->priv->mutex);
+	g_rec_mutex_lock (&cbc->priv->rec_mutex);
 
 	removed = g_hash_table_remove (cbc->priv->addressbooks, source);
 
-	g_mutex_unlock (cbc->priv->mutex);
+	g_rec_mutex_unlock (&cbc->priv->rec_mutex);
 
 	return removed;
 }
@@ -1326,7 +1326,7 @@ e_cal_backend_contacts_finalize (GObject *object)
 		g_signal_handler_disconnect (priv->settings, priv->notifyid);
 
 	g_object_unref (priv->settings);
-	g_mutex_free (priv->mutex);
+	g_rec_mutex_clear (&priv->rec_mutex);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->finalize (object);
@@ -1354,7 +1354,7 @@ e_cal_backend_contacts_init (ECalBackendContacts *cbc)
 {
 	cbc->priv = E_CAL_BACKEND_CONTACTS_GET_PRIVATE (cbc);
 
-	cbc->priv->mutex = g_mutex_new ();
+	g_rec_mutex_init (&cbc->priv->rec_mutex);
 
 	cbc->priv->addressbooks = g_hash_table_new_full (
 		(GHashFunc) e_source_hash,
