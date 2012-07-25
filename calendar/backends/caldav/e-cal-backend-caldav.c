@@ -124,6 +124,9 @@ struct _ECalBackendCalDAVPrivate {
 	 * necessary parts in it, but this will give us more freedom, as also direct
 	 * caldav calendars can profit from this. */
 	gboolean is_google;
+
+	/* set to true if thread for ESource::changed is invoked */
+	gboolean updating_source;
 };
 
 /* ************************************************************************* */
@@ -1144,20 +1147,49 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 	return FALSE;
 }
 
+static gpointer
+caldav_unref_thread (gpointer cbdav)
+{
+	g_object_unref (cbdav);
+
+	return NULL;
+}
+
+static void
+caldav_unref_in_thread (ECalBackendCalDAV *cbdav)
+{
+	GThread *thread;
+
+	g_return_if_fail (cbdav != NULL);
+
+	thread = g_thread_new (NULL, caldav_unref_thread, cbdav);
+	g_thread_unref (thread);
+}
+
 static gboolean
 caldav_authenticate (ECalBackendCalDAV *cbdav,
+		     gboolean ref_cbdav,
                      GCancellable *cancellable,
                      GError **error)
 {
 	ESource *source;
 	ESourceRegistry *registry;
+	gboolean res;
 
 	source = e_backend_get_source (E_BACKEND (cbdav));
 	registry = e_cal_backend_get_registry (E_CAL_BACKEND (cbdav));
 
-	return e_source_registry_authenticate_sync (
+	if (ref_cbdav)
+		g_object_ref (cbdav);
+
+	res = e_source_registry_authenticate_sync (
 		registry, source, E_SOURCE_AUTHENTICATOR (cbdav),
 		cancellable, error);
+
+	if (ref_cbdav)
+		caldav_unref_in_thread (cbdav);
+
+	return res;
 }
 
 /* Returns whether calendar changed on the server. This works only when server
@@ -1217,7 +1249,7 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 
 	/* Check the result */
 	if (message->status_code == 401) {
-		caldav_authenticate (cbdav, NULL, NULL);
+		caldav_authenticate (cbdav, TRUE, NULL, NULL);
 	} else if (message->status_code != 207) {
 		/* does not support it, but report calendar changed to update cache */
 		cbdav->priv->ctag_supported = FALSE;
@@ -1375,7 +1407,7 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 				E_CAL_BACKEND (cbdav), cbdav->priv->read_only);
 			break;
 		case 401:
-			caldav_authenticate (cbdav, NULL, NULL);
+			caldav_authenticate (cbdav, TRUE, NULL, NULL);
 			break;
 		default:
 			g_warning ("Server did not response with 207, but with code %d (%s)", message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
@@ -1420,7 +1452,7 @@ caldav_server_download_attachment (ECalBackendCalDAV *cbdav,
 		status_code_to_result (message, cbdav, FALSE, error);
 
 		if (message->status_code == 401)
-			caldav_authenticate (cbdav, NULL, NULL);
+			caldav_authenticate (cbdav, FALSE, NULL, NULL);
 
 		g_object_unref (message);
 		return FALSE;
@@ -1462,7 +1494,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav,
 		status_code_to_result (message, cbdav, FALSE, perror);
 
 		if (message->status_code == 401)
-			caldav_authenticate (cbdav, NULL, NULL);
+			caldav_authenticate (cbdav, FALSE, NULL, NULL);
 		else
 			g_warning ("Could not fetch object '%s' from server, status:%d (%s)", uri, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
 		g_object_unref (message);
@@ -1528,7 +1560,7 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav,
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		status_code_to_result (message, cbdav, FALSE, error);
 		if (message->status_code == 401)
-			caldav_authenticate (cbdav, NULL, NULL);
+			caldav_authenticate (cbdav, FALSE, NULL, NULL);
 		else
 			g_warning ("Could not post free/busy request to '%s', status:%d (%s)", url, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
 
@@ -1715,7 +1747,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 			g_propagate_error (perror, local_error);
 		}
 	} else if (message->status_code == 401) {
-		caldav_authenticate (cbdav, NULL, NULL);
+		caldav_authenticate (cbdav, FALSE, NULL, NULL);
 	}
 
 	g_object_unref (message);
@@ -1754,7 +1786,7 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav,
 	status_code_to_result (message, cbdav, FALSE, perror);
 
 	if (message->status_code == 401)
-		caldav_authenticate (cbdav, NULL, NULL);
+		caldav_authenticate (cbdav, FALSE, NULL, NULL);
 
 	g_object_unref (message);
 }
@@ -1869,7 +1901,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav)
 		xmlOutputBufferClose (buf);
 		xmlFreeDoc (doc);
 	} else if (message->status_code == 401) {
-		caldav_authenticate (cbdav, NULL, NULL);
+		caldav_authenticate (cbdav, FALSE, NULL, NULL);
 	}
 
 	if (message)
@@ -2726,7 +2758,7 @@ caldav_do_open (ECalBackendSync *backend,
 		if (g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationRequired) || g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed)) {
 			g_clear_error (&local_error);
 			opened = caldav_authenticate (
-				cbdav, cancellable, perror);
+				cbdav, FALSE, cancellable, perror);
 		}
 
 		if (local_error != NULL)
@@ -4806,15 +4838,14 @@ caldav_internal_get_timezone (ECalBackend *backend,
 	return zone;
 }
 
-static void
-caldav_source_changed_cb (ESource *source,
-                          ECalBackendCalDAV *cbdav)
+static gpointer
+caldav_source_changed_thread (gpointer data)
 {
+	ECalBackendCalDAV *cbdav = data;
 	SlaveCommand old_slave_cmd;
 	gboolean old_slave_busy;
 
-	g_return_if_fail (source != NULL);
-	g_return_if_fail (cbdav != NULL);
+	g_return_val_if_fail (cbdav != NULL, NULL);
 
 	old_slave_cmd = cbdav->priv->slave_cmd;
 	old_slave_busy = cbdav->priv->slave_busy;
@@ -4832,6 +4863,30 @@ caldav_source_changed_cb (ESource *source,
 		update_slave_cmd (cbdav->priv, old_slave_cmd);
 		g_mutex_unlock (cbdav->priv->busy_lock);
 	}
+
+	cbdav->priv->updating_source = FALSE;
+
+	g_object_unref (cbdav);
+
+	return NULL;
+}
+
+static void
+caldav_source_changed_cb (ESource *source,
+                          ECalBackendCalDAV *cbdav)
+{
+	GThread *thread;
+
+	g_return_if_fail (source != NULL);
+	g_return_if_fail (cbdav != NULL);
+
+	if (cbdav->priv->updating_source)
+		return;
+
+	cbdav->priv->updating_source = TRUE;
+
+	thread = g_thread_new (NULL, caldav_source_changed_thread, g_object_ref (cbdav));
+	g_thread_unref (thread);
 }
 
 static ESourceAuthenticationResult
