@@ -101,9 +101,31 @@ struct _ESourceClass {
 	gboolean	(*write_finish)		(ESource *source,
 						 GAsyncResult *result,
 						 GError **error);
+	gboolean	(*remote_create_sync)	(ESource *source,
+						 ESource *scratch_source,
+						 GCancellable *cancellable,
+						 GError **error);
+	void		(*remote_create)	(ESource *source,
+						 ESource *scratch_source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*remote_create_finish)	(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
+	gboolean	(*remote_delete_sync)	(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+	void		(*remote_delete)	(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*remote_delete_finish)	(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
 
 	/* Reserved slots. */
-	gpointer reserved[16];
+	gpointer reserved[10];
 };
 
 GType		e_source_get_type		(void) G_GNUC_CONST;
@@ -125,6 +147,8 @@ void		e_source_set_enabled		(ESource *source,
 						 gboolean enabled);
 gboolean	e_source_get_writable		(ESource *source);
 gboolean	e_source_get_removable		(ESource *source);
+gboolean	e_source_get_remote_creatable	(ESource *source);
+gboolean	e_source_get_remote_deletable	(ESource *source);
 gpointer	e_source_get_extension		(ESource *source,
 						 const gchar *extension_name);
 gboolean	e_source_has_extension		(ESource *source,
@@ -159,6 +183,28 @@ void		e_source_write			(ESource *source,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
 gboolean	e_source_write_finish		(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_source_remote_create_sync	(ESource *source,
+						 ESource *scratch_source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_remote_create		(ESource *source,
+						 ESource *scratch_source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_remote_create_finish	(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_source_remote_delete_sync	(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_remote_delete		(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_remote_delete_finish	(ESource *source,
 						 GAsyncResult *result,
 						 GError **error);
 

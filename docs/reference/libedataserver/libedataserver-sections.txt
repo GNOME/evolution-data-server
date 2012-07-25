@@ -252,6 +252,8 @@ e_source_get_enabled
 e_source_set_enabled
 e_source_get_writable
 e_source_get_removable
+e_source_get_remote_creatable
+e_source_get_remote_deletable
 e_source_get_extension
 e_source_has_extension
 e_source_ref_dbus_object
@@ -268,6 +270,12 @@ e_source_remove_finish
 e_source_write_sync
 e_source_write
 e_source_write_finish
+e_source_remote_create_sync
+e_source_remote_create
+e_source_remote_create_finish
+e_source_remote_delete_sync
+e_source_remote_delete
+e_source_remote_delete_finish
 <SUBSECTION Standard>
 E_SOURCE
 E_IS_SOURCE

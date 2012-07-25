@@ -37,6 +37,12 @@
 
 #include "e-source-collection.h"
 
+#include <config.h>
+#include <glib/gi18n-lib.h>
+
+/* Private D-Bus classes. */
+#include <e-dbus-source.h>
+
 #include <libedataserver/e-data-server-util.h>
 
 #define E_SOURCE_COLLECTION_GET_PRIVATE(obj) \

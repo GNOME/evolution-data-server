@@ -109,6 +109,8 @@
 
 #define PRIMARY_GROUP_NAME	"Data Source"
 
+typedef struct _AsyncContext AsyncContext;
+
 struct _ESourcePrivate {
 	GDBusObject *dbus_object;
 	GMainContext *main_context;
@@ -132,6 +134,10 @@ struct _ESourcePrivate {
 	gboolean enabled;
 };
 
+struct _AsyncContext {
+	ESource *scratch_source;
+};
+
 enum {
 	PROP_0,
 	PROP_DBUS_OBJECT,
@@ -139,6 +145,8 @@ enum {
 	PROP_ENABLED,
 	PROP_MAIN_CONTEXT,
 	PROP_PARENT,
+	PROP_REMOTE_CREATABLE,
+	PROP_REMOTE_DELETABLE,
 	PROP_REMOVABLE,
 	PROP_UID,
 	PROP_WRITABLE
@@ -161,6 +169,15 @@ G_DEFINE_TYPE_WITH_CODE (
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_source_initable_init))
+
+static void
+async_context_free (AsyncContext *async_context)
+{
+	if (async_context->scratch_source != NULL)
+		g_object_unref (async_context->scratch_source);
+
+	g_slice_free (AsyncContext, async_context);
+}
 
 static void
 source_find_extension_classes_rec (GType parent_type,
@@ -764,6 +781,18 @@ source_get_property (GObject *object,
 				E_SOURCE (object)));
 			return;
 
+		case PROP_REMOTE_CREATABLE:
+			g_value_set_boolean (
+				value, e_source_get_remote_creatable (
+				E_SOURCE (object)));
+			return;
+
+		case PROP_REMOTE_DELETABLE:
+			g_value_set_boolean (
+				value, e_source_get_remote_deletable (
+				E_SOURCE (object)));
+			return;
+
 		case PROP_REMOVABLE:
 			g_value_set_boolean (
 				value, e_source_get_removable (
@@ -1030,6 +1059,205 @@ source_write_finish (ESource *source,
 }
 
 static gboolean
+source_remote_create_sync (ESource *source,
+                           ESource *scratch_source,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	EDBusSourceRemoteCreatable *dbus_interface = NULL;
+	GDBusObject *dbus_object;
+	gchar *uid, *data;
+	gboolean success;
+
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		dbus_interface =
+			e_dbus_object_get_source_remote_creatable (
+			E_DBUS_OBJECT (dbus_object));
+		g_object_unref (dbus_object);
+	}
+
+	if (dbus_interface == NULL) {
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_NOT_SUPPORTED,
+			_("Data source '%s' does not "
+			  "support creating remote resources"),
+			e_source_get_display_name (source));
+		return FALSE;
+	}
+
+	uid = e_source_dup_uid (scratch_source);
+	data = e_source_to_string (scratch_source, NULL);
+
+	success = e_dbus_source_remote_creatable_call_create_sync (
+		dbus_interface, uid, data, cancellable, error);
+
+	g_free (data);
+	g_free (uid);
+
+	g_object_unref (dbus_interface);
+
+	return success;
+}
+
+/* Helper for source_remote_create() */
+static void
+source_remote_create_thread (GSimpleAsyncResult *simple,
+                             GObject *object,
+                             GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	e_source_remote_create_sync (
+		E_SOURCE (object),
+		async_context->scratch_source,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+source_remote_create (ESource *source,
+                      ESource *scratch_source,
+                      GCancellable *cancellable,
+                      GAsyncReadyCallback callback,
+                      gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->scratch_source = g_object_ref (scratch_source);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (source), callback,
+		user_data, source_remote_create);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, source_remote_create_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+source_remote_create_finish (ESource *source,
+                             GAsyncResult *result,
+                             GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (source), source_remote_create), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static gboolean
+source_remote_delete_sync (ESource *source,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	EDBusSourceRemoteDeletable *dbus_interface = NULL;
+	GDBusObject *dbus_object;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		dbus_interface =
+			e_dbus_object_get_source_remote_deletable (
+			E_DBUS_OBJECT (dbus_object));
+		g_object_unref (dbus_object);
+	}
+
+	if (dbus_interface == NULL) {
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_NOT_SUPPORTED,
+			_("Data source '%s' does not "
+			  "support deleting remote resources"),
+			e_source_get_display_name (source));
+		return FALSE;
+	}
+
+	success = e_dbus_source_remote_deletable_call_delete_sync (
+		dbus_interface, cancellable, error);
+
+	g_object_unref (dbus_interface);
+
+	return success;
+}
+
+/* Helper for source_remote_delete() */
+static void
+source_remote_delete_thread (GSimpleAsyncResult *simple,
+                             GObject *object,
+                             GCancellable *cancellable)
+{
+	GError *error = NULL;
+
+	e_source_remote_delete_sync (
+		E_SOURCE (object), cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+source_remote_delete (ESource *source,
+                      GCancellable *cancellable,
+                      GAsyncReadyCallback callback,
+                      gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (source), callback,
+		user_data, source_remote_delete);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_run_in_thread (
+		simple, source_remote_delete_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+source_remote_delete_finish (ESource *source,
+                             GAsyncResult *result,
+                             GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (source), source_remote_delete), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static gboolean
 source_initable_init (GInitable *initable,
                       GCancellable *cancellable,
                       GError **error)
@@ -1115,6 +1343,12 @@ e_source_class_init (ESourceClass *class)
 	class->write_sync = source_write_sync;
 	class->write = source_write;
 	class->write_finish = source_write_finish;
+	class->remote_create_sync = source_remote_create_sync;
+	class->remote_create = source_remote_create;
+	class->remote_create_finish = source_remote_create_finish;
+	class->remote_delete_sync = source_remote_delete_sync;
+	class->remote_delete = source_remote_delete;
+	class->remote_delete_finish = source_remote_delete_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -1177,6 +1411,30 @@ e_source_class_init (ESourceClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS |
 			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REMOTE_CREATABLE,
+		g_param_spec_boolean (
+			"remote-creatable",
+			"Remote Creatable",
+			"Whether the data source "
+			"can create remote resources",
+			FALSE,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REMOTE_DELETABLE,
+		g_param_spec_boolean (
+			"remote-deletable",
+			"Remote Deletable",
+			"Whether the data source "
+			"can delete remote resources",
+			FALSE,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -1645,6 +1903,67 @@ e_source_get_removable (ESource *source)
 }
 
 /**
+ * e_source_get_remote_creatable:
+ * @source: an #ESource
+ *
+ * Returns whether new resources can be created on a remote server by
+ * calling e_source_remote_create() on @source.
+ *
+ * Generally this is only %TRUE if @source has an #ESourceCollection
+ * extension, which means there is an #ECollectionBackend in the D-Bus
+ * service that can handle create requests.  If @source does not have
+ * this capability, calls to e_source_remote_create() will fail.
+ *
+ * Returns: whether @source can create remote resources
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_source_get_remote_creatable (ESource *source)
+{
+	EDBusObject *dbus_object;
+	EDBusSourceRemoteCreatable *dbus_source;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
+	dbus_source = e_dbus_object_peek_source_remote_creatable (dbus_object);
+
+	return (dbus_source != NULL);
+}
+
+/**
+ * e_source_get_remote_deletable:
+ * @source: an #ESource
+ *
+ * Returns whether the resource represented by @source can be deleted
+ * from a remote server by calling e_source_remote_delete().
+ *
+ * Generally this is only %TRUE if @source is a child of an #ESource
+ * which has an #ESourceCollection extension, which means there is an
+ * #ECollectionBackend in the D-Bus service that can handle delete
+ * requests.  If @source does not have this capability, calls to
+ * e_source_remote_delete() will fail.
+ *
+ * Returns: whether @source can delete remote resources
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_source_get_remote_deletable (ESource *source)
+{
+	EDBusObject *dbus_object;
+	EDBusSourceRemoteDeletable *dbus_source;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
+	dbus_source = e_dbus_object_peek_source_remote_deletable (dbus_object);
+
+	return (dbus_source != NULL);
+}
+
+/**
  * e_source_get_extension:
  * @source: an #ESource
  * @extension_name: an extension name
@@ -2015,8 +2334,10 @@ e_source_parameter_to_key (const gchar *param_name)
  * @error: return location for a #GError, or %NULL
  *
  * Requests the D-Bus service to delete the key files for @source and all of
- * its descendants and broadcast their removal to all clients.  If an error
- * occurs, the functon will set @error and return %FALSE.
+ * its descendants and broadcast their removal to all clients.  The @source
+ * must be #ESource:removable.
+ *
+ * If an error occurs, the functon will set @error and return %FALSE.
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
@@ -2046,7 +2367,8 @@ e_source_remove_sync (ESource *source,
  * @user_data: (closure): data to pass to the callback function
  *
  * Asynchronously requests the D-Bus service to delete the key files for
- * @source all of its descendants and broadcast their removal to all clients.
+ * @source and all of its descendants and broadcast their removal to all
+ * clients.  The @source must be #ESource:removable.
  *
  * When the operation is finished, @callback will be called.  You can then
  * call e_source_remove_finish() to get the result of the operation.
@@ -2105,8 +2427,10 @@ e_source_remove_finish (ESource *source,
  * @error: return location for a #GError, or %NULL
  *
  * Submits the current contents of @source to the D-Bus service to be
- * written to disk and broadcast to other clients.  This can only be
- * called on #ESource:writable data sources.
+ * written to disk and broadcast to other clients.  The @source must
+ * be #ESource:writable.
+ *
+ * If an error occurs, the functon will set @error and return %FALSE.
  *
  * Returns: %TRUE on success, %FALSE on failure
  *
@@ -2136,8 +2460,8 @@ e_source_write_sync (ESource *source,
  * @user_data: (closure): data to pass to the callback function
  *
  * Asynchronously submits the current contents of @source to the D-Bus
- * service to be written to disk and broadcast to other clients.  This
- * can only be called on #ESource:writable data sources.
+ * service to be written to disk and broadcast to other clients.  The
+ * @source must be #ESource:writable.
  *
  * When the operation is finished, @callback will be called.  You can then
  * call e_source_write_finish() to get the result of the operation.
@@ -2187,5 +2511,210 @@ e_source_write_finish (ESource *source,
 	g_return_val_if_fail (class->write_finish != NULL, FALSE);
 
 	return class->write_finish (source, result, error);
+}
+
+/**
+ * e_source_remote_create_sync:
+ * @source: an #ESource
+ * @scratch_source: an #ESource describing the resource to create
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new remote resource by picking out relevant details from
+ * @scratch_source.  The @scratch_source must be an #ESource with no
+ * #GDBusObject.  The @source must be #ESource:remote-creatable.
+ *
+ * The details required to create the resource vary by #ECollectionBackend,
+ * but in most cases the @scratch_source need only define the resource type
+ * (address book, calendar, etc.), a display name for the resource, and
+ * possibly a server-side path or ID for the resource.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_source_remote_create_sync (ESource *source,
+                             ESource *scratch_source,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	ESourceClass *class;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (scratch_source), FALSE);
+
+	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class->remote_create_sync != NULL, FALSE);
+
+	return class->remote_create_sync (
+		source, scratch_source, cancellable, error);
+}
+
+/**
+ * e_source_remote_create:
+ * @source: an #ESource
+ * @scratch_source: an #ESource describing the resource to create
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to the callback function
+ *
+ * Asynchronously creates a new remote resource by picking out relevant
+ * details from @scratch_source.  The @scratch_source must be an #ESource
+ * with no #GDBusObject.  The @source must be #ESource:remote-creatable.
+ *
+ * The details required to create the resource vary by #ECollectionBackend,
+ * but in most cases the @scratch_source need only define the resource type
+ * (address book, calendar, etc.), a display name for the resource, and
+ * possibly a server-side path or ID for the resource.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call 3_source_remote_create_finish() to get the result of the operation.
+ *
+ * Since: 3.6
+ **/
+void
+e_source_remote_create (ESource *source,
+                        ESource *scratch_source,
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
+{
+	ESourceClass *class;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (E_IS_SOURCE (scratch_source));
+
+	class = E_SOURCE_GET_CLASS (source);
+	g_return_if_fail (class->remote_create != NULL);
+
+	class->remote_create (
+		source, scratch_source,
+		cancellable, callback, user_data);
+}
+
+/**
+ * e_source_remote_create_finish:
+ * @source: an #ESource
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_remote_create().  If
+ * an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_source_remote_create_finish (ESource *source,
+                               GAsyncResult *result,
+                               GError **error)
+{
+	ESourceClass *class;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class->remote_create_finish != NULL, FALSE);
+
+	return class->remote_create_finish (source, result, error);
+}
+
+/**
+ * e_source_remote_delete_sync:
+ * @source: an #ESource
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes the resource represented by @source from a remote server.
+ * The @source must be #ESource:remote-deletable.  This will also delete
+ * the key file for @source and broadcast its removal to all clients,
+ * similar to e_source_remove_sync().
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_source_remote_delete_sync (ESource *source,
+                             GCancellable *cancellable,
+                             GError **error)
+{
+	ESourceClass *class;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class->remote_delete_sync != NULL, FALSE);
+
+	return class->remote_delete_sync (source, cancellable, error);
+}
+
+/**
+ * e_source_remote_delete:
+ * @source: an #ESource
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to the callback function
+ *
+ * Asynchronously deletes the resource represented by @source from a remote
+ * server.  The @source must be #ESource:remote-deletable.  This will also
+ * delete the key file for @source and broadcast its removal to all clients,
+ * similar to e_source_remove().
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_source_remote_delete_finish() to get the result of the operation.
+ *
+ * Since: 3.6
+ **/
+void
+e_source_remote_delete (ESource *source,
+                        GCancellable *cancellable,
+                        GAsyncReadyCallback callback,
+                        gpointer user_data)
+{
+	ESourceClass *class;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	class = E_SOURCE_GET_CLASS (source);
+	g_return_if_fail (class->remote_delete != NULL);
+
+	class->remote_delete (source, cancellable, callback, user_data);
+}
+
+/**
+ * e_source_remote_delete_finish:
+ * @source: an #ESource
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_remote_delete().  If
+ * an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_source_remote_delete_finish (ESource *source,
+                               GAsyncResult *result,
+                               GError **error)
+{
+	ESourceClass *class;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class->remote_delete_finish != NULL, FALSE);
+
+	return class->remote_delete_finish (source, result, error);
 }
 
