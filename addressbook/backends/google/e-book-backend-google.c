@@ -1041,6 +1041,7 @@ get_groups_cb (GDataService *service,
 	}
 
 	finish_operation (backend, -2, gdata_error);
+	g_object_unref (backend);
 
 	g_clear_error (&gdata_error);
 }
@@ -1063,6 +1064,8 @@ get_groups (EBookBackend *backend)
 		gdata_query_set_updated_min (query, priv->last_groups_update.tv_sec);
 		gdata_contacts_query_set_show_deleted (GDATA_CONTACTS_QUERY (query), TRUE);
 	}
+
+	g_object_ref (backend);
 
 	/* Run the query asynchronously */
 	cancellable = start_operation (backend, -2, NULL, _("Querying for updated groups…"));
