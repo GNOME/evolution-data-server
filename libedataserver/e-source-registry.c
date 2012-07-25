@@ -1824,7 +1824,9 @@ source_registry_commit_source_thread (GSimpleAsyncResult *simple,
  *
  * If @source does NOT have a #GDBusObject (implying it's a scratch
  * #ESource), its contents are submitted to the D-Bus service through
- * e_source_registry_create_sources_sync().
+ * either e_source_remote_create_sync() if @source is to be a collection
+ * member, or e_source_registry_create_sources_sync() if @source to be an
+ * independent data source.
  *
  * If an error occurs, the function will set @error and return %FALSE.
  *
@@ -1839,6 +1841,8 @@ e_source_registry_commit_source_sync (ESourceRegistry *registry,
                                       GError **error)
 {
 	GDBusObject *dbus_object;
+	ESource *collection_source;
+	gboolean collection_member;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
@@ -1846,15 +1850,30 @@ e_source_registry_commit_source_sync (ESourceRegistry *registry,
 
 	dbus_object = e_source_ref_dbus_object (source);
 
+	collection_source = e_source_registry_find_extension (
+		registry, source, E_SOURCE_EXTENSION_COLLECTION);
+
+	collection_member =
+		(collection_source != NULL) &&
+		(collection_source != source);
+
 	if (dbus_object != NULL) {
 		success = e_source_write_sync (source, cancellable, error);
 		g_object_unref (dbus_object);
+
+	} else if (collection_member) {
+		success = e_source_remote_create_sync (
+			collection_source, source, cancellable, error);
+
 	} else {
 		GList *list = g_list_prepend (NULL, source);
 		success = e_source_registry_create_sources_sync (
 			registry, list, cancellable, error);
 		g_list_free (list);
 	}
+
+	if (collection_source != NULL)
+		g_object_unref (collection_source);
 
 	return success;
 }
