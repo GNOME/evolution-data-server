@@ -40,7 +40,7 @@ struct _CamelMimeFilterBestencPrivate {
 	guint total;	/* total characters read */
 
 	guint lastc;	/* the last character read */
-	gint crlfnoorder;	/* if crlf's occured where they shouldn't have */
+	gint crlfnoorder;	/* if crlf's occurred where they shouldn't have */
 
 	gint startofline;	/* are we at the start of a new line? */
 

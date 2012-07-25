@@ -457,7 +457,7 @@ camel_block_file_delete (CamelBlockFile *bs)
  * Allocate a new block, return a pointer to it.  Old blocks
  * may be flushed to disk during this call.
  *
- * Returns: The block, or NULL if an error occured.
+ * Returns: The block, or NULL if an error occurred.
  **/
 CamelBlock *
 camel_block_file_new_block (CamelBlockFile *bs)
@@ -530,7 +530,7 @@ camel_block_file_free_block (CamelBlockFile *bs,
  * Retreive a block @id.
  *
  * Returns: The block, or NULL if blockid is invalid or a file error
- * occured.
+ * occurred.
  **/
 CamelBlock *
 camel_block_file_get_block (CamelBlockFile *bs,

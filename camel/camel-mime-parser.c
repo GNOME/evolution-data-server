@@ -896,7 +896,7 @@ camel_mime_parser_fd (CamelMimeParser *parser)
 	return s->fd;
 }
 
-/* Return errno of the parser, incase any error occured during processing */
+/* Return errno of the parser, incase any error occurred during processing */
 gint
 camel_mime_parser_errno (CamelMimeParser *parser)
 {

@@ -2076,7 +2076,7 @@ e_source_remove (ESource *source,
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_remove().  If an
- * error occured, the function will set @error and return %FALSE.
+ * error occurred, the function will set @error and return %FALSE.
  *
  * Returns: %TRUE on success, %FALSE of failure
  *

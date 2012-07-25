@@ -601,7 +601,7 @@ error:
  * @summary: a #CamelStoreSummary object
  *
  * Writes the summary to disk.  The summary is only written if changes
- * have occured.
+ * have occurred.
  *
  * Returns: %0 on succes or %-1 on fail
  **/
