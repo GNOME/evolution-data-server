@@ -276,6 +276,13 @@ vee_folder_merge_matching (CamelVeeFolder *vfolder,
 		g_object_unref (mi_data);
 	}
 
+	/* Not a real search folder influencing Unmatched folder, thus skip it.
+	   The removal requires CamelVeeMessageInfoData, which is added on demand
+	   to CamelVeeDataCache, thus even the virtual trash/junk folder doesn't
+	   need it, it is left in the data_cache since then on */
+	if (!vfolder->priv->parent_vee_store)
+		return;
+
 	rud.vfolder = vfolder;
 	rud.vsummary = vsummary;
 	rud.subfolder = subfolder;
