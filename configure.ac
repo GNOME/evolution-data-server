@@ -558,7 +558,7 @@ LIBS="$save_LIBS"
 
 AC_ARG_ENABLE([backtraces],
 	[AS_HELP_STRING([--enable-backtraces],
-	[enable backtraces for e_pointer_tracker (default=no)])],
+	[enable backtraces for camel_pointer_tracker (default=no)])],
 	[enable_backtraces=$enableval], [enable_backtraces=no])
 
 if test "x$enable_backtraces" = xyes; then

@@ -329,7 +329,8 @@ libcamel_1_2_la_LIBADD =				\
 	$(CAMEL_LIBS)					\
 	$(SOCKET_LIBS)					\
 	$(ICONV_LIBS)					\
-	$(REGEX_LIBS)
+	$(REGEX_LIBS)					\
+	$(LIBDWFL_LIBS)
 
 camel_lock_helper_1_2_CPPFLAGS = \
 	$(AM_CPPFLAGS)						\

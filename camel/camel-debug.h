@@ -79,6 +79,29 @@ void camel_debug_end (void);
 	} \
 	} G_STMT_END
 
+/**
+ * camel_pointer_tracker_track:
+ * @ptr: pointer to add to pointer tracker
+ *
+ * Adds pointer 'ptr' to pointer tracker. Usual use case is to add object
+ * to the tracker in GObject::init and remove it from tracker within
+ * GObject::finalize. Since the tracker's functions are called, the application
+ * prints summary of the pointers on console on exit. If everything gone right
+ * then it prints message about all tracked pointers were removed. Otherwise
+ * it prints summary of left pointers in the tracker. Added pointer should
+ * be removed with pair function camel_pointer_tracker_untrack().
+ *
+ * See camel_pointer_tracker_dump(), camel_pointer_tracker_track_with_info().
+ *
+ * Since: 3.6
+ **/
+#define camel_pointer_tracker_track(ptr) \
+	(camel_pointer_tracker_track_with_info ((ptr), G_STRFUNC))
+
+void		camel_pointer_tracker_track_with_info (gpointer ptr, const gchar *info);
+void		camel_pointer_tracker_untrack (gpointer ptr);
+void		camel_pointer_tracker_dump (void);
+
 G_END_DECLS
 
 #endif /* CAMEL_DEBUG_H */

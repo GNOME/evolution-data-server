@@ -105,8 +105,7 @@ libedataserver_1_2_la_LIBADD =				\
 	$(GIO_UNIX_LIBS)				\
 	$(ICONV_LIBS)					\
 	$(SOCKET_LIBS)					\
-	$(SOUP_LIBS)					\
-	$(LIBDWFL_LIBS)
+	$(SOUP_LIBS)
 
 libedataserver_1_2_la_LDFLAGS = \
 	-version-info $(LIBEDATASERVER_CURRENT):$(LIBEDATASERVER_REVISION):$(LIBEDATASERVER_AGE) $(NO_UNDEFINED) \
