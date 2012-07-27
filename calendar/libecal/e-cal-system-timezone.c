@@ -412,10 +412,10 @@ system_timezone_read_etc_localtime_content (GHashTable *ical_zones)
 	static gchar *last_timezone = NULL;
 	static GStaticRecMutex mutex = G_STATIC_REC_MUTEX_INIT;
 
-	struct stat  stat_localtime;
-	gchar	*localtime_content = NULL;
-	gsize	localtime_content_len = -1;
-	gchar	*retval, *fallback = NULL;
+	struct stat stat_localtime;
+	gchar *localtime_content = NULL;
+	gsize localtime_content_len = -1;
+	gchar *retval, *fallback = NULL;
 
 	if (g_stat (ETC_LOCALTIME, &stat_localtime) != 0)
 		return NULL;
@@ -478,13 +478,7 @@ system_timezone_read_etc_localtime_content (GHashTable *ical_zones)
 typedef gchar * (*GetSystemTimezone) (GHashTable *ical_zones);
 /* The order of the functions here define the priority of the methods used
  * to find the timezone. First method has higher priority. */
-static GetSystemTimezone get_system_timezone_methods[] = {
-	/* cheap and "more correct" than data from a config file */
-	system_timezone_read_etc_localtime_softlink,
-	/* reading /etc/timezone directly. Expensive since we have to stat
-	 * many files, but it returns always correct values, even on KDE */
-	system_timezone_read_etc_localtime_content,
-	system_timezone_read_etc_localtime_hardlink,
+static GetSystemTimezone get_system_timezone_methods_config[] = {
 	/* reading various config files */
 	system_timezone_read_etc_timezone,
 	system_timezone_read_etc_sysconfig_clock,
@@ -493,6 +487,14 @@ static GetSystemTimezone get_system_timezone_methods[] = {
 	system_timezone_read_etc_rc_conf,
 	/* reading deprecated config files */
 	system_timezone_read_etc_conf_d_clock,
+	NULL
+};
+
+static GetSystemTimezone get_system_timezone_methods_slow[] = {
+	/* reading /etc/timezone directly. Expensive since we have to stat
+	 * many files, but it returns always correct values, even on KDE */
+	system_timezone_read_etc_localtime_content,
+	system_timezone_read_etc_localtime_hardlink,
 	NULL
 };
 
@@ -523,7 +525,7 @@ system_timezone_find (void)
 	GHashTable *ical_zones;
 	icalarray *builtin_timezones;
 	gint ii;
-	gchar *tz;
+	gchar *tz, *config_tz = NULL;
 
 	/* return only timezones known to libical */
 	ical_zones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -543,11 +545,74 @@ system_timezone_find (void)
 			g_hash_table_insert (ical_zones, g_strdup (location), GINT_TO_POINTER (1));
 	}
 
-	for (ii = 0; get_system_timezone_methods[ii] != NULL; ii++) {
-		tz = get_system_timezone_methods[ii] (ical_zones);
+	/* softlink is the best option, it points to the correct file */
+	tz = system_timezone_read_etc_localtime_softlink (ical_zones);
+	if (system_timezone_is_valid (tz, ical_zones)) {
+		g_hash_table_destroy (ical_zones);
+		return tz;
+	}
+
+	g_free (tz);
+
+	config_tz = NULL;
+
+	/* read correct timezone name from config file; checking
+	   on /etc/localtime content can pick wrong timezone name,
+	   even the file is same
+	 */
+	for (ii = 0; get_system_timezone_methods_config[ii] != NULL; ii++) {
+		config_tz = get_system_timezone_methods_config[ii] (ical_zones);
+
+		if (system_timezone_is_valid (config_tz, ical_zones)) {
+			break;
+		}
+
+		g_free (config_tz);
+		config_tz = NULL;
+	}
+
+	if (config_tz) {
+		struct stat stat_localtime;
+		gchar *localtime_content = NULL;
+		gsize localtime_content_len = -1;
+
+		if (g_stat (ETC_LOCALTIME, &stat_localtime) == 0 &&
+		    S_ISREG (stat_localtime.st_mode) &&
+		    g_file_get_contents (ETC_LOCALTIME,
+					 &localtime_content,
+					 &localtime_content_len,
+					 NULL)) {
+			struct stat stat_config_tz;
+			gchar *filename = g_build_filename (SYSTEM_ZONEINFODIR, config_tz, NULL);
+
+			if (filename &&
+			    g_stat (filename, &stat_config_tz) == 0 &&
+			    files_are_identical_content (&stat_localtime,
+				&stat_config_tz,
+				localtime_content,
+				localtime_content_len,
+				filename)) {
+				g_free (filename);
+				g_free (localtime_content);
+
+				/* corresponding file name to config_tz matches /etc/localtime,
+				   thus that's the correct one - return it as system timezone;
+				   bonus is that it might match configured system timezone name too
+				*/
+				return config_tz;
+			}
+			g_free (filename);
+		}
+
+		g_free (localtime_content);
+	}
+
+	for (ii = 0; get_system_timezone_methods_slow[ii] != NULL; ii++) {
+		tz = get_system_timezone_methods_slow[ii] (ical_zones);
 
 		if (system_timezone_is_valid (tz, ical_zones)) {
 			g_hash_table_destroy (ical_zones);
+			g_free (config_tz);
 			return tz;
 		}
 
@@ -556,7 +621,7 @@ system_timezone_find (void)
 
 	g_hash_table_destroy (ical_zones);
 
-	return NULL;
+	return config_tz;
 }
 
 #else /* G_OS_WIN32 */
