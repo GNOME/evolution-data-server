@@ -70,10 +70,8 @@ struct _ESourceRegistryServerPrivate {
 
 	/* In pseudo-Python notation:
 	 *
-	 * auth_queue = [ UID, ... ]
-	 * auth_table = { UID : [ authenticator, ... ] }
-	 * active_auth_table_queue = auth_table[auth_queue[0]]
-	 * active_auth = active_auth_table_queue[0]
+	 * auth_table = { UID : [ EAuthenticationSession, ... ] }
+	 * active_auths = { UID : EAuthenticationSession }
 	 *
 	 * We process all authenticators for a given source UID at once.
 	 * The thought being after the first authenticator for a given UID
@@ -83,10 +81,9 @@ struct _ESourceRegistryServerPrivate {
 	 * the user decides not to cache the secret at all, in which case
 	 * he gets what he asked for: lots of annoying prompts.
 	 */
-	GQueue *auth_queue;
+	GMutex *auth_lock;
 	GHashTable *auth_table;
-	GQueue *active_auth_table_queue;
-	EAuthenticationSession *active_auth;
+	GHashTable *active_auths;
 	GCancellable *auth_cancellable;
 
 	guint authentication_count;
@@ -102,7 +99,8 @@ enum {
 
 /* Forward Declarations */
 static void	source_registry_server_maybe_start_auth_session
-						(ESourceRegistryServer *server);
+						(ESourceRegistryServer *server,
+						 const gchar *uid);
 
 static guint signals[LAST_SIGNAL];
 
@@ -310,6 +308,8 @@ source_registry_server_auth_table_lookup (ESourceRegistryServer *server,
 	GHashTable *hash_table;
 	GQueue *queue;
 
+	/* This MUST be called with the auth_lock acquired. */
+
 	hash_table = server->priv->auth_table;
 	queue = g_hash_table_lookup (hash_table, uid);
 
@@ -329,7 +329,6 @@ source_registry_server_auth_session_cb (GObject *source_object,
 	EAuthenticationSession *session;
 	ESourceRegistryServer *server;
 	EAuthenticationSessionResult auth_result;
-	GQueue *queue;
 	const gchar *uid;
 	GError *error = NULL;
 
@@ -371,71 +370,52 @@ source_registry_server_auth_session_cb (GObject *source_object,
 		}
 	}
 
-	queue = source_registry_server_auth_table_lookup (server, uid);
+	/* Remove the UID from the active authentication set. */
+	g_mutex_lock (server->priv->auth_lock);
+	g_hash_table_remove (server->priv->active_auths, uid);
+	g_mutex_unlock (server->priv->auth_lock);
 
-	/* Remove the completed auth session from its queue. */
-	if (g_queue_remove (queue, session))
-		g_object_unref (session);
-
-	/* If the completed auth session was the active one,
-	 * clear the active pointer for the next auth session. */
-	if (session == server->priv->active_auth)
-		server->priv->active_auth = NULL;
-
-	source_registry_server_maybe_start_auth_session (server);
+	source_registry_server_maybe_start_auth_session (server, uid);
 
 	g_object_unref (server);
 }
 
 static void
-source_registry_server_maybe_start_auth_session (ESourceRegistryServer *server)
+source_registry_server_maybe_start_auth_session (ESourceRegistryServer *server,
+                                                 const gchar *uid)
 {
+	EAuthenticationSession *session;
 	GQueue *queue;
-
-	if (server->priv->active_auth != NULL)
-		return;
 
 	if (g_cancellable_is_cancelled (server->priv->auth_cancellable))
 		return;
 
-	/* Check if there's any authenticators left in the active
-	 * auth table queue.  If the user provided a valid secret
-	 * and elected to save it in the keyring, or if the user
-	 * dismissed the authentication prompt, then we should be
-	 * able to process the remaining authenticators quickly. */
-	if (server->priv->active_auth_table_queue != NULL &&
-	    !g_queue_is_empty (server->priv->active_auth_table_queue)) {
-		queue = server->priv->active_auth_table_queue;
-		server->priv->active_auth = g_queue_peek_head (queue);
+	g_mutex_lock (server->priv->auth_lock);
 
-	/* Otherwise find the next non-empty auth table queue to
-	 * be processed, according to the UIDs in the auth queue. */
-	} else while (!g_queue_is_empty (server->priv->auth_queue)) {
-		gchar *uid;
+	/* If we're already busy processing an authentication request
+	 * for this UID, the new request will have to wait in the queue. */
+	if (g_hash_table_contains (server->priv->active_auths, uid))
+		goto exit;
 
-		uid = g_queue_pop_head (server->priv->auth_queue);
-		queue = source_registry_server_auth_table_lookup (server, uid);
-		g_free (uid);
+	queue = source_registry_server_auth_table_lookup (server, uid);
+	session = g_queue_pop_head (queue);
 
-		if (!g_queue_is_empty (queue)) {
-			server->priv->active_auth_table_queue = queue;
-			server->priv->active_auth = g_queue_peek_head (queue);
-			break;
-		}
-	}
-
-	/* Initiate the new active authenicator.  This signals it to
+	/* Execute the new active auth session.  This signals it to
 	 * respond with a cached secret in the keyring if it can, or
 	 * else show an authentication prompt and wait for input. */
-	if (server->priv->active_auth != NULL)
+	if (session != NULL) {
+		g_hash_table_insert (
+			server->priv->active_auths,
+			g_strdup (uid), g_object_ref (session));
 		e_authentication_session_execute (
-			server->priv->active_auth,
-			G_PRIORITY_DEFAULT,
+			session, G_PRIORITY_DEFAULT,
 			server->priv->auth_cancellable,
 			source_registry_server_auth_session_cb,
 			g_object_ref (server));
-	else
-		server->priv->active_auth_table_queue = NULL;
+	}
+
+exit:
+	g_mutex_unlock (server->priv->auth_lock);
 }
 
 static void
@@ -841,6 +821,7 @@ source_registry_server_dispose (GObject *object)
 	g_hash_table_remove_all (priv->monitors);
 
 	g_hash_table_remove_all (priv->auth_table);
+	g_hash_table_remove_all (priv->active_auths);
 
 	if (priv->auth_cancellable != NULL) {
 		g_object_unref (priv->auth_cancellable);
@@ -866,8 +847,9 @@ source_registry_server_finalize (GObject *object)
 	g_mutex_free (priv->sources_lock);
 	g_mutex_free (priv->orphans_lock);
 
-	g_queue_free_full (priv->auth_queue, (GDestroyNotify) g_free);
+	g_mutex_free (priv->auth_lock);
 	g_hash_table_destroy (priv->auth_table);
+	g_hash_table_destroy (priv->active_auths);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_registry_server_parent_class)->
@@ -1123,6 +1105,7 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 	GHashTable *orphans;
 	GHashTable *monitors;
 	GHashTable *auth_table;
+	GHashTable *active_auths;
 	const gchar *object_path;
 
 	object_path = E_SOURCE_REGISTRY_SERVER_OBJECT_PATH;
@@ -1156,6 +1139,12 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) free_auth_queue);
 
+	active_auths = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) g_object_unref);
+
 	server->priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (server);
 	server->priv->object_manager = object_manager;
 	server->priv->source_manager = source_manager;
@@ -1164,8 +1153,9 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 	server->priv->monitors = monitors;
 	server->priv->sources_lock = g_mutex_new ();
 	server->priv->orphans_lock = g_mutex_new ();
-	server->priv->auth_queue = g_queue_new ();
+	server->priv->auth_lock = g_mutex_new ();
 	server->priv->auth_table = auth_table;
+	server->priv->active_auths = active_auths;
 	server->priv->auth_cancellable = g_cancellable_new ();
 
 	g_signal_connect (
@@ -1375,14 +1365,15 @@ e_source_registry_server_queue_auth_session (ESourceRegistryServer *server,
 	uid = e_authentication_session_get_source_uid (session);
 	g_return_if_fail (uid != NULL);
 
+	g_mutex_lock (server->priv->auth_lock);
+
 	/* Add the session to the appropriate queue. */
 	queue = source_registry_server_auth_table_lookup (server, uid);
 	g_queue_push_tail (queue, g_object_ref (session));
 
-	/* Blindly push the UID onto the processing queue. */
-	g_queue_push_tail (server->priv->auth_queue, g_strdup (uid));
+	g_mutex_unlock (server->priv->auth_lock);
 
-	source_registry_server_maybe_start_auth_session (server);
+	source_registry_server_maybe_start_auth_session (server, uid);
 }
 
 /**
