@@ -101,9 +101,6 @@ void		e_source_registry_server_add_source
 void		e_source_registry_server_remove_source
 						(ESourceRegistryServer *server,
 						 ESource *source);
-void		e_source_registry_server_queue_auth_session
-						(ESourceRegistryServer *server,
-						 EAuthenticationSession *session);
 gboolean	e_source_registry_server_load_all
 						(ESourceRegistryServer *server,
 						 GError **error);
@@ -131,6 +128,21 @@ ECollectionBackendFactory *
 		e_source_registry_server_ref_backend_factory
 						(ESourceRegistryServer *server,
 						 ESource *source);
+gboolean	e_source_registry_server_authenticate_sync
+						(ESourceRegistryServer *server,
+						 EAuthenticationSession *session,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_registry_server_authenticate
+						(ESourceRegistryServer *server,
+						 EAuthenticationSession *session,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_registry_server_authenticate_finish
+						(ESourceRegistryServer *server,
+						 GAsyncResult *result,
+						 GError **error);
 
 G_END_DECLS
 

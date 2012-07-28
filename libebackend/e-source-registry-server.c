@@ -57,6 +57,8 @@
  * sources with a [Collection] extension. */
 #define BACKEND_DATA_KEY "__e_collection_backend__"
 
+typedef struct _AuthRequest AuthRequest;
+
 struct _ESourceRegistryServerPrivate {
 	GDBusObjectManagerServer *object_manager;
 	EDBusSourceManager *source_manager;
@@ -70,8 +72,8 @@ struct _ESourceRegistryServerPrivate {
 
 	/* In pseudo-Python notation:
 	 *
-	 * auth_table = { UID : [ EAuthenticationSession, ... ] }
-	 * active_auths = { UID : EAuthenticationSession }
+	 * running_auths = { UID : AuthRequest }
+	 * waiting_auths = { UID : [ AuthRequest, ... ] }
 	 *
 	 * We process all authenticators for a given source UID at once.
 	 * The thought being after the first authenticator for a given UID
@@ -82,11 +84,18 @@ struct _ESourceRegistryServerPrivate {
 	 * he gets what he asked for: lots of annoying prompts.
 	 */
 	GMutex *auth_lock;
-	GHashTable *auth_table;
-	GHashTable *active_auths;
-	GCancellable *auth_cancellable;
+	GHashTable *running_auths;
+	GHashTable *waiting_auths;
 
 	guint authentication_count;
+};
+
+struct _AuthRequest {
+	volatile gint ref_count;
+	EAuthenticationSession *session;
+	GSimpleAsyncResult *simple;
+	ESource *source;  /* may be NULL */
+	GCancellable *cancellable;
 };
 
 enum {
@@ -109,6 +118,65 @@ G_DEFINE_TYPE (
 	e_source_registry_server,
 	E_TYPE_DATA_FACTORY)
 
+static AuthRequest *
+auth_request_new (EAuthenticationSession *session,
+                  GSimpleAsyncResult *simple,
+                  GCancellable *cancellable)
+{
+	ESourceRegistryServer *server;
+	AuthRequest *request;
+	const gchar *uid;
+
+	server = e_authentication_session_get_server (session);
+	uid = e_authentication_session_get_source_uid (session);
+
+	request = g_slice_new0 (AuthRequest);
+	request->ref_count = 1;
+	request->session = g_object_ref (session);
+	request->simple = g_object_ref (simple);
+
+	/* This will return NULL if the authenticating data source
+	 * has not yet been submitted to the D-Bus registry server. */
+	request->source = e_source_registry_server_ref_source (server, uid);
+
+	if (G_IS_CANCELLABLE (cancellable))
+		request->cancellable = g_object_ref (cancellable);
+
+	return request;
+}
+
+static AuthRequest *
+auth_request_ref (AuthRequest *request)
+{
+	g_return_val_if_fail (request != NULL, NULL);
+	g_return_val_if_fail (request->ref_count > 0, NULL);
+
+	g_atomic_int_inc (&request->ref_count);
+
+	return request;
+}
+
+static void
+auth_request_unref (AuthRequest *request)
+{
+	g_return_if_fail (request != NULL);
+	g_return_if_fail (request->ref_count > 0);
+
+	if (g_atomic_int_dec_and_test (&request->ref_count)) {
+
+		g_object_unref (request->session);
+		g_object_unref (request->simple);
+
+		if (request->source != NULL)
+			g_object_unref (request->source);
+
+		if (request->cancellable != NULL)
+			g_object_unref (request->cancellable);
+
+		g_slice_free (AuthRequest, request);
+	}
+}
+
 /* GDestroyNotify callback for 'sources' values */
 static void
 unref_data_source (ESource *source)
@@ -118,7 +186,7 @@ unref_data_source (ESource *source)
 	g_object_unref (source);
 }
 
-/* GDestroyNotify callback for 'auth_table' values */
+/* GDestroyNotify callback for 'waiting_auths' values */
 static void
 free_auth_queue (GQueue *queue)
 {
@@ -301,24 +369,107 @@ source_registry_server_orphans_steal (ESourceRegistryServer *server,
 	return array;
 }
 
-static GQueue *
-source_registry_server_auth_table_lookup (ESourceRegistryServer *server,
-                                          const gchar *uid)
+static void
+source_request_server_auth_request_cancel_all (ESourceRegistryServer *server)
 {
-	GHashTable *hash_table;
+	GHashTableIter iter;
+	gpointer value;
+
+	g_mutex_lock (server->priv->auth_lock);
+
+	g_hash_table_iter_init (&iter, server->priv->waiting_auths);
+
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
+		GQueue *queue = value;
+		GList *list, *link;
+
+		list = g_queue_peek_head_link (queue);
+
+		for (link = list; link != NULL; link = g_list_next (link)) {
+			AuthRequest *request = link->data;
+			g_cancellable_cancel (request->cancellable);
+		}
+	}
+
+	g_hash_table_iter_init (&iter, server->priv->running_auths);
+
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
+		AuthRequest *request = value;
+		g_cancellable_cancel (request->cancellable);
+	}
+
+	g_mutex_unlock (server->priv->auth_lock);
+}
+
+static void
+source_registry_server_auth_request_push (ESourceRegistryServer *server,
+                                          const gchar *uid,
+                                          AuthRequest *request)
+{
 	GQueue *queue;
 
-	/* This MUST be called with the auth_lock acquired. */
+	g_return_if_fail (uid != NULL);
 
-	hash_table = server->priv->auth_table;
-	queue = g_hash_table_lookup (hash_table, uid);
+	g_mutex_lock (server->priv->auth_lock);
+
+	queue = g_hash_table_lookup (server->priv->waiting_auths, uid);
 
 	if (queue == NULL) {
 		queue = g_queue_new ();
-		g_hash_table_insert (hash_table, g_strdup (uid), queue);
+		g_hash_table_insert (
+			server->priv->waiting_auths,
+			g_strdup (uid), queue);
 	}
 
-	return queue;
+	g_queue_push_tail (queue, auth_request_ref (request));
+
+	g_mutex_unlock (server->priv->auth_lock);
+}
+
+static AuthRequest *
+source_registry_server_auth_request_next (ESourceRegistryServer *server,
+                                          const gchar *uid)
+{
+	AuthRequest *request = NULL;
+
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	g_mutex_lock (server->priv->auth_lock);
+
+	/* If we're already busy processing an authentication request
+	 * for this UID, the next request will have to wait in line. */
+	if (!g_hash_table_contains (server->priv->running_auths, uid)) {
+		GQueue *queue;
+
+		queue = g_hash_table_lookup (
+			server->priv->waiting_auths, uid);
+
+		if (queue != NULL)
+			request = g_queue_pop_head (queue);
+
+		if (request != NULL)
+			g_hash_table_insert (
+				server->priv->running_auths,
+				g_strdup (uid),
+				auth_request_ref (request));
+	}
+
+	g_mutex_unlock (server->priv->auth_lock);
+
+	return request;
+}
+
+static void
+source_registry_server_auth_request_done (ESourceRegistryServer *server,
+                                          const gchar *uid)
+{
+	g_return_if_fail (uid != NULL);
+
+	g_mutex_lock (server->priv->auth_lock);
+
+	g_hash_table_remove (server->priv->running_auths, uid);
+
+	g_mutex_unlock (server->priv->auth_lock);
 }
 
 static void
@@ -326,30 +477,27 @@ source_registry_server_auth_session_cb (GObject *source_object,
                                         GAsyncResult *result,
                                         gpointer user_data)
 {
-	EAuthenticationSession *session;
 	ESourceRegistryServer *server;
+	EAuthenticationSession *session;
 	EAuthenticationSessionResult auth_result;
+	AuthRequest *request;
 	const gchar *uid;
 	GError *error = NULL;
 
 	session = E_AUTHENTICATION_SESSION (source_object);
-	server = E_SOURCE_REGISTRY_SERVER (user_data);
+	request = (AuthRequest *) user_data;
 
 	auth_result = e_authentication_session_execute_finish (
 		session, result, &error);
 
 	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		g_error_free (error);
+		g_warn_if_fail (auth_result == E_AUTHENTICATION_SESSION_ERROR);
+		g_simple_async_result_take_error (request->simple, error);
 	}
 
-	uid = e_authentication_session_get_source_uid (session);
-	g_return_if_fail (uid != NULL);
-
-	/* Authentication dismissals may require additional handling. */
+	/* Authentication dismissals require additional handling. */
 	if (auth_result == E_AUTHENTICATION_SESSION_DISMISSED) {
 		ESourceAuthenticator *authenticator;
-		ESource *source;
 
 		/* If the authenticator is an EAuthenticationMediator,
 		 * have it emit a "dismissed" signal to the client. */
@@ -359,63 +507,70 @@ source_registry_server_auth_session_cb (GObject *source_object,
 			e_authentication_mediator_dismiss (
 				E_AUTHENTICATION_MEDIATOR (authenticator));
 
-		/* This will return NULL if the authenticating data source
-		 * has not yet been submitted to the D-Bus registry service. */
-		source = e_source_registry_server_ref_source (server, uid);
-		if (source != NULL) {
-			/* Prevent further user interruptions. */
+		/* Prevent further user interruptions. */
+		if (request->source != NULL)
 			e_server_side_source_set_allow_auth_prompt (
-				E_SERVER_SIDE_SOURCE (source), FALSE);
-			g_object_unref (source);
-		}
+				E_SERVER_SIDE_SOURCE (request->source), FALSE);
+
+		/* e_source_registry_server_authenticate_finish() should
+		 * return an error since authentication did not complete. */
+		g_simple_async_result_set_error (
+			request->simple,
+			G_IO_ERROR, G_IO_ERROR_CANCELLED,
+			_("The user declined to authenticate"));
 	}
 
-	/* Remove the UID from the active authentication set. */
-	g_mutex_lock (server->priv->auth_lock);
-	g_hash_table_remove (server->priv->active_auths, uid);
-	g_mutex_unlock (server->priv->auth_lock);
+	g_simple_async_result_complete_in_idle (request->simple);
 
+	server = e_authentication_session_get_server (session);
+	uid = e_authentication_session_get_source_uid (session);
+
+	source_registry_server_auth_request_done (server, uid);
 	source_registry_server_maybe_start_auth_session (server, uid);
 
-	g_object_unref (server);
+	auth_request_unref (request);
 }
 
 static void
 source_registry_server_maybe_start_auth_session (ESourceRegistryServer *server,
                                                  const gchar *uid)
 {
-	EAuthenticationSession *session;
-	GQueue *queue;
+	AuthRequest *request;
 
-	if (g_cancellable_is_cancelled (server->priv->auth_cancellable))
-		return;
-
-	g_mutex_lock (server->priv->auth_lock);
-
-	/* If we're already busy processing an authentication request
-	 * for this UID, the new request will have to wait in the queue. */
-	if (g_hash_table_contains (server->priv->active_auths, uid))
-		goto exit;
-
-	queue = source_registry_server_auth_table_lookup (server, uid);
-	session = g_queue_pop_head (queue);
+	/* We own the returned reference, unless we get NULL. */
+	request = source_registry_server_auth_request_next (server, uid);
 
 	/* Execute the new active auth session.  This signals it to
 	 * respond with a cached secret in the keyring if it can, or
 	 * else show an authentication prompt and wait for input. */
-	if (session != NULL) {
-		g_hash_table_insert (
-			server->priv->active_auths,
-			g_strdup (uid), g_object_ref (session));
+	if (request != NULL) {
 		e_authentication_session_execute (
-			session, G_PRIORITY_DEFAULT,
-			server->priv->auth_cancellable,
+			request->session,
+			G_PRIORITY_DEFAULT,
+			request->cancellable,
 			source_registry_server_auth_session_cb,
-			g_object_ref (server));
+			request);  /* takes ownership */
 	}
+}
 
-exit:
-	g_mutex_unlock (server->priv->auth_lock);
+static void
+source_registry_server_authenticate_done_cb (GObject *source_object,
+                                             GAsyncResult *result,
+                                             gpointer user_data)
+{
+	GError *error = NULL;
+
+	e_source_registry_server_authenticate_finish (
+		E_SOURCE_REGISTRY_SERVER (source_object), result, &error);
+
+	/* Ignore cancellations. */
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_error_free (error);
+
+	} else if (error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+		g_error_free (error);
+	}
 }
 
 static void
@@ -436,9 +591,18 @@ source_registry_server_wait_for_client_cb (GObject *source_object,
 	if (error == NULL) {
 		ESourceRegistryServer *server;
 
-		/* This references the session and adds it to a queue. */
 		server = e_authentication_session_get_server (session);
-		e_source_registry_server_queue_auth_session (server, session);
+
+		/* Client is ready and waiting to test passwords, so
+		 * execute the authentication session as soon as all
+		 * other authentication sessions for this same data
+		 * source are finished.
+		 *
+		 * XXX Note this asynchronous operation is not cancellable
+		 *     but it does time out on its own after a few minutes. */
+		e_source_registry_server_authenticate (
+			server, session, NULL,
+			source_registry_server_authenticate_done_cb, NULL);
 
 	} else {
 		/* Most likely the client went dark and the operation
@@ -820,13 +984,8 @@ source_registry_server_dispose (GObject *object)
 	g_hash_table_remove_all (priv->orphans);
 	g_hash_table_remove_all (priv->monitors);
 
-	g_hash_table_remove_all (priv->auth_table);
-	g_hash_table_remove_all (priv->active_auths);
-
-	if (priv->auth_cancellable != NULL) {
-		g_object_unref (priv->auth_cancellable);
-		priv->auth_cancellable = NULL;
-	}
+	g_hash_table_remove_all (priv->running_auths);
+	g_hash_table_remove_all (priv->waiting_auths);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_source_registry_server_parent_class)->
@@ -848,8 +1007,8 @@ source_registry_server_finalize (GObject *object)
 	g_mutex_free (priv->orphans_lock);
 
 	g_mutex_free (priv->auth_lock);
-	g_hash_table_destroy (priv->auth_table);
-	g_hash_table_destroy (priv->active_auths);
+	g_hash_table_destroy (priv->running_auths);
+	g_hash_table_destroy (priv->waiting_auths);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_registry_server_parent_class)->
@@ -892,8 +1051,8 @@ source_registry_server_quit_server (EDBusServer *server,
 
 	priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (server);
 
-	/* Cancel any active authentication session. */
-	g_cancellable_cancel (priv->auth_cancellable);
+	source_request_server_auth_request_cancel_all (
+		E_SOURCE_REGISTRY_SERVER (server));
 
 	/* This makes the object manager unexport all objects. */
 	g_dbus_object_manager_server_set_connection (
@@ -1104,8 +1263,8 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 	GHashTable *sources;
 	GHashTable *orphans;
 	GHashTable *monitors;
-	GHashTable *auth_table;
-	GHashTable *active_auths;
+	GHashTable *running_auths;
+	GHashTable *waiting_auths;
 	const gchar *object_path;
 
 	object_path = E_SOURCE_REGISTRY_SERVER_OBJECT_PATH;
@@ -1133,17 +1292,17 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 		(GDestroyNotify) g_object_unref,
 		(GDestroyNotify) g_object_unref);
 
-	auth_table = g_hash_table_new_full (
+	running_auths = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) auth_request_unref);
+
+	waiting_auths = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) free_auth_queue);
-
-	active_auths = g_hash_table_new_full (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) g_object_unref);
 
 	server->priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (server);
 	server->priv->object_manager = object_manager;
@@ -1154,9 +1313,8 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 	server->priv->sources_lock = g_mutex_new ();
 	server->priv->orphans_lock = g_mutex_new ();
 	server->priv->auth_lock = g_mutex_new ();
-	server->priv->auth_table = auth_table;
-	server->priv->active_auths = active_auths;
-	server->priv->auth_cancellable = g_cancellable_new ();
+	server->priv->waiting_auths = waiting_auths;
+	server->priv->running_auths = running_auths;
 
 	g_signal_connect (
 		source_manager, "handle-authenticate",
@@ -1339,41 +1497,6 @@ e_source_registry_server_remove_source (ESourceRegistryServer *server,
 
 	/* The removed source should be in the orphan table now. */
 	source_registry_server_orphans_remove (server, source);
-}
-
-/**
- * e_source_registry_server_queue_auth_session:
- * @server: an #ESourceRegistryServer
- * @session: an #EDBusSourceAuthenticator
- *
- * Queues an authentication session.  When its turn comes, and if necessary,
- * the user will be prompted for a secret.  Sessions are queued this way to
- * prevent user prompts from piling up on the screen.
- *
- * Since: 3.6
- **/
-void
-e_source_registry_server_queue_auth_session (ESourceRegistryServer *server,
-                                             EAuthenticationSession *session)
-{
-	const gchar *uid;
-	GQueue *queue;
-
-	g_return_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server));
-	g_return_if_fail (E_IS_AUTHENTICATION_SESSION (session));
-
-	uid = e_authentication_session_get_source_uid (session);
-	g_return_if_fail (uid != NULL);
-
-	g_mutex_lock (server->priv->auth_lock);
-
-	/* Add the session to the appropriate queue. */
-	queue = source_registry_server_auth_table_lookup (server, uid);
-	g_queue_push_tail (queue, g_object_ref (session));
-
-	g_mutex_unlock (server->priv->auth_lock);
-
-	source_registry_server_maybe_start_auth_session (server, uid);
 }
 
 /**
@@ -1795,5 +1918,136 @@ e_source_registry_server_ref_backend_factory (ESourceRegistryServer *server,
 	/* The factory *should* be an ECollectionBackendFactory.
 	 * We specify this in source_registry_server_class_init(). */
 	return E_COLLECTION_BACKEND_FACTORY (factory);
+}
+
+/**
+ * e_source_registry_server_authenticate_sync:
+ * @server: an #ESourceRegistryServer
+ * @session: an #EAuthenticationSession
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Queues the @session behind any ongoing or pending authentication
+ * sessions for the same data source, and eventually executes @session
+ * (see e_authentication_session_execute_sync() for more details).
+ *
+ * This function blocks until @session is finished executing.  For a
+ * non-blocking variation see e_source_registry_server_authenticate().
+ *
+ * If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_source_registry_server_authenticate_sync (ESourceRegistryServer *server,
+                                            EAuthenticationSession *session,
+                                            GCancellable *cancellable,
+                                            GError **error)
+{
+	EAsyncClosure *closure;
+	GAsyncResult *result;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), FALSE);
+	g_return_val_if_fail (E_IS_AUTHENTICATION_SESSION (session), FALSE);
+
+	closure = e_async_closure_new ();
+
+	e_source_registry_server_authenticate (
+		server, session, cancellable,
+		e_async_closure_callback, closure);
+
+	result = e_async_closure_wait (closure);
+
+	success = e_source_registry_server_authenticate_finish (
+		server, result, error);
+
+	e_async_closure_free (closure);
+
+	return success;
+}
+
+/**
+ * e_source_registry_server_authenticate:
+ * @server: an #ESourceRegistryServer
+ * @session: an #EAuthenticationSession
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Queues the @session behind any ongoing or pending authentication
+ * sessions for the same data source, and eventually executes @session
+ * (see e_authentication_session_execute_sync() for more details).
+ *
+ * This function returns immediately after enqueuing @session.  When
+ * @session is finished executing, @callback will be called.  You can
+ * then call e_source_registry_server_authenticate_finish() to get the
+ * result of the operation.
+ *
+ * Since: 3.6
+ **/
+void
+e_source_registry_server_authenticate (ESourceRegistryServer *server,
+                                       EAuthenticationSession *session,
+                                       GCancellable *cancellable,
+                                       GAsyncReadyCallback callback,
+                                       gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AuthRequest *request;
+	const gchar *uid;
+
+	g_return_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server));
+	g_return_if_fail (E_IS_AUTHENTICATION_SESSION (session));
+
+	uid = e_authentication_session_get_source_uid (session);
+	g_return_if_fail (uid != NULL);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (server), callback, user_data,
+		e_source_registry_server_authenticate);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	request = auth_request_new (session, simple, cancellable);
+	source_registry_server_auth_request_push (server, uid, request);
+	auth_request_unref (request);
+
+	source_registry_server_maybe_start_auth_session (server, uid);
+
+	g_object_unref (simple);
+}
+
+/**
+ * e_source_registry_server_authenticate_finish:
+ * @server: an #ESourceRegistryServer
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_registry_server_authenticate().
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
+gboolean
+e_source_registry_server_authenticate_finish (ESourceRegistryServer *server,
+                                              GAsyncResult *result,
+                                              GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (server),
+		e_source_registry_server_authenticate), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
 }
 

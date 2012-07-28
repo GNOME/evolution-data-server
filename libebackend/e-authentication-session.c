@@ -38,10 +38,10 @@
  * interface themselves.
  *
  * The #EAuthenticationSession is then handed to #ESourceRegistryServer
- * through e_source_registry_server_queue_auth_session() where it waits
- * in line behind other previously added authentication sessions.  When
- * its turn comes, the server calls e_authentication_session_execute()
- * to begin the interactive authentication session.
+ * through e_source_registry_server_authenticate() where it waits in line
+ * behind other previously added authentication sessions.  When its turn
+ * comes, the server calls e_authentication_session_execute() to begin
+ * the interactive authentication session.
  **/
 
 #include "e-authentication-session.h"
