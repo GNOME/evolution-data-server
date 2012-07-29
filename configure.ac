@@ -222,13 +222,6 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AM_PROG_LEX
-AC_PROG_YACC
-case $YACC in
-*yacc*)
-	AC_MSG_ERROR([You need bison to build evolution-data-server])
-	;;
-esac
 
 dnl GCC 4.4 got more aggressive in its aliasing optimizations, changing
 dnl behavior that -- according to the C99 standard -- is supposed to be
