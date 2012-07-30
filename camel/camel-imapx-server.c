@@ -233,22 +233,22 @@ enum {
 };
 
 static const CamelIMAPXUntaggedRespHandlerDesc _untagged_descr[] = {
-	{imapx_untagged_ok_no_bad, NULL, FALSE}, /* BAD */
-	{imapx_untagged_bye, NULL, FALSE}, /* BYE */
-	{imapx_untagged_capability, NULL, FALSE}, /* CAPABILITY */
-	{imapx_untagged_exists, NULL, TRUE}, /* EXISTS */
-	{imapx_untagged_expunge, NULL, TRUE}, /* EXPUNGE */
-	{imapx_untagged_fetch, NULL, TRUE}, /* FETCH */
-	{imapx_untagged_flags, NULL, TRUE}, /* FLAGS */
-	{imapx_untagged_list, NULL, TRUE}, /* LIST */
-	{imapx_untagged_lsub, CAMEL_IMAPX_UNTAGGED_LIST, TRUE /*overridden*/ }, /* LSUB */
-	{imapx_untagged_namespace, NULL, FALSE}, /* NAMESPACE */
-	{imapx_untagged_ok_no_bad, NULL, FALSE}, /* NO */
-	{imapx_untagged_ok_no_bad, NULL, FALSE}, /* OK */
-	{imapx_untagged_preauth, CAMEL_IMAPX_UNTAGGED_OK, TRUE /*overridden*/ }, /* PREAUTH */
-	{imapx_untagged_recent, NULL, TRUE}, /* RECENT */
-	{imapx_untagged_status, NULL, TRUE}, /* STATUS */
-	{imapx_untagged_vanished, NULL, TRUE}, /* VANISHED */
+	{CAMEL_IMAPX_UNTAGGED_BAD, imapx_untagged_ok_no_bad, NULL, FALSE},
+	{CAMEL_IMAPX_UNTAGGED_BYE, imapx_untagged_bye, NULL, FALSE},
+	{CAMEL_IMAPX_UNTAGGED_CAPABILITY, imapx_untagged_capability, NULL, FALSE},
+	{CAMEL_IMAPX_UNTAGGED_EXISTS, imapx_untagged_exists, NULL, TRUE},
+	{CAMEL_IMAPX_UNTAGGED_EXPUNGE, imapx_untagged_expunge, NULL, TRUE},
+	{CAMEL_IMAPX_UNTAGGED_FETCH, imapx_untagged_fetch, NULL, TRUE},
+	{CAMEL_IMAPX_UNTAGGED_FLAGS, imapx_untagged_flags, NULL, TRUE},
+	{CAMEL_IMAPX_UNTAGGED_LIST, imapx_untagged_list, NULL, TRUE},
+	{CAMEL_IMAPX_UNTAGGED_LSUB, imapx_untagged_lsub, CAMEL_IMAPX_UNTAGGED_LIST, TRUE /*overridden*/ },
+	{CAMEL_IMAPX_UNTAGGED_NAMESPACE, imapx_untagged_namespace, NULL, FALSE},
+	{CAMEL_IMAPX_UNTAGGED_NO, imapx_untagged_ok_no_bad, NULL, FALSE},
+	{CAMEL_IMAPX_UNTAGGED_OK, imapx_untagged_ok_no_bad, NULL, FALSE},
+	{CAMEL_IMAPX_UNTAGGED_PREAUTH, imapx_untagged_preauth, CAMEL_IMAPX_UNTAGGED_OK, TRUE /*overridden*/ },
+	{CAMEL_IMAPX_UNTAGGED_RECENT, imapx_untagged_recent, NULL, TRUE},
+	{CAMEL_IMAPX_UNTAGGED_STATUS, imapx_untagged_status, NULL, TRUE},
+	{CAMEL_IMAPX_UNTAGGED_VANISHED, imapx_untagged_vanished, NULL, TRUE},
 };
 
 static guint signals[LAST_SIGNAL];
@@ -409,19 +409,17 @@ replace_untagged_descriptor (GHashTable *untagged_handlers,
 
 static void
 add_initial_untagged_descriptor (GHashTable *untagged_handlers,
-                                 const gchar *key,
                                  guint untagged_id)
 {
 	const CamelIMAPXUntaggedRespHandlerDesc *prev = NULL;
 	const CamelIMAPXUntaggedRespHandlerDesc *cur  = NULL;
 
 	g_return_if_fail (untagged_handlers != NULL);
-	g_return_if_fail (key != NULL);
 	g_return_if_fail (untagged_id < IMAPX_UNTAGGED_LAST_ID);
 
 	cur =  &(_untagged_descr[untagged_id]);
 	prev = replace_untagged_descriptor (untagged_handlers,
-	                                    key,
+	                                    cur->untagged_response,
 	                                    cur);
 	/* there must not be any previous handler here */
 	g_return_if_fail (prev == NULL);
@@ -434,24 +432,11 @@ create_initial_untagged_handler_table (void)
 	                                        g_str_equal,
 	                                        g_free,
 	                                        NULL);
+	guint32 ii = 0;
 
 	/* CamelIMAPXServer predefined handlers*/
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_BAD, IMAPX_UNTAGGED_ID_BAD);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_BYE, IMAPX_UNTAGGED_ID_BYE);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_CAPABILITY, IMAPX_UNTAGGED_ID_CAPABILITY);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_EXISTS, IMAPX_UNTAGGED_ID_EXISTS);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_EXPUNGE, IMAPX_UNTAGGED_ID_EXPUNGE);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_FETCH, IMAPX_UNTAGGED_ID_FETCH);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_FLAGS, IMAPX_UNTAGGED_ID_FLAGS);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_LIST, IMAPX_UNTAGGED_ID_LIST);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_LSUB, IMAPX_UNTAGGED_ID_LSUB);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_NAMESPACE, IMAPX_UNTAGGED_ID_NAMESPACE);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_NO, IMAPX_UNTAGGED_ID_NO);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_OK, IMAPX_UNTAGGED_ID_OK);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_PREAUTH, IMAPX_UNTAGGED_ID_PREAUTH);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_RECENT, IMAPX_UNTAGGED_ID_RECENT);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_STATUS, IMAPX_UNTAGGED_ID_STATUS);
-	add_initial_untagged_descriptor (uh, CAMEL_IMAPX_UNTAGGED_VANISHED, IMAPX_UNTAGGED_ID_VANISHED);
+	for (ii = 0; ii < IMAPX_UNTAGGED_LAST_ID; ii++)
+		add_initial_untagged_descriptor (uh, ii);
 
 	g_return_val_if_fail (g_hash_table_size (uh) == IMAPX_UNTAGGED_LAST_ID, NULL);
 

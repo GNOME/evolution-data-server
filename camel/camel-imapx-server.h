@@ -68,6 +68,10 @@ typedef gboolean (*CamelIMAPXUntaggedRespHandler) (CamelIMAPXServer *server,
 
 /**
  * CamelIMAPXUntaggedRespHandlerDesc:
+ * @untagged_response: a string representation of the IMAP
+ *                     untagged response code. Must be
+ *                     all-uppercase with underscores allowed
+ *                     (see RFC 3501)
  * @handler: an untagged response handler function for #CamelIMAPXServer
  * @next_response: the IMAP untagged code to call a registered
  *                 handler for directly after successfully
@@ -86,6 +90,7 @@ typedef gboolean (*CamelIMAPXUntaggedRespHandler) (CamelIMAPXServer *server,
  */
 typedef struct _CamelIMAPXUntaggedRespHandlerDesc CamelIMAPXUntaggedRespHandlerDesc;
 struct _CamelIMAPXUntaggedRespHandlerDesc {
+	const gchar *untagged_response;
 	const CamelIMAPXUntaggedRespHandler handler;
 	const gchar *next_response;
 	gboolean skip_stream_when_done;
