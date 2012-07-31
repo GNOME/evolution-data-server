@@ -632,6 +632,35 @@ collection_backend_constructed (GObject *object)
 		(GDestroyNotify) g_object_unref);
 }
 
+static gboolean
+collection_backend_authenticate_sync (EBackend *backend,
+                                      ESourceAuthenticator *auth,
+                                      GCancellable *cancellable,
+                                      GError **error)
+{
+	ECollectionBackend *collection_backend;
+	ESourceRegistryServer *server;
+	EAuthenticationSession *session;
+	ESource *source;
+	const gchar *uid;
+	gboolean success;
+
+	source = e_backend_get_source (backend);
+	uid = e_source_get_uid (source);
+
+	collection_backend = E_COLLECTION_BACKEND (backend);
+	server = e_collection_backend_ref_server (collection_backend);
+	session = e_authentication_session_new (server, auth, uid);
+
+	success = e_source_registry_server_authenticate_sync (
+		server, session, cancellable, error);
+
+	g_object_unref (session);
+	g_object_unref (server);
+
+	return success;
+}
+
 static void
 collection_backend_populate (ECollectionBackend *backend)
 {
@@ -680,6 +709,7 @@ static void
 e_collection_backend_class_init (ECollectionBackendClass *class)
 {
 	GObjectClass *object_class;
+	EBackendClass *backend_class;
 
 	g_type_class_add_private (class, sizeof (ECollectionBackendPrivate));
 
@@ -689,6 +719,9 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 	object_class->dispose = collection_backend_dispose;
 	object_class->finalize = collection_backend_finalize;
 	object_class->constructed = collection_backend_constructed;
+
+	backend_class = E_BACKEND_CLASS (class);
+	backend_class->authenticate_sync = collection_backend_authenticate_sync;
 
 	class->populate = collection_backend_populate;
 	class->dup_resource_id = collection_backend_dup_resource_id;
