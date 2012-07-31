@@ -273,10 +273,29 @@ cal_backend_constructed (GObject *object)
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->constructed (object);
 }
 
+static gboolean
+cal_backend_authenticate_sync (EBackend *backend,
+                               ESourceAuthenticator *auth,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	ECalBackend *cal_backend;
+	ESourceRegistry *registry;
+	ESource *source;
+
+	cal_backend = E_CAL_BACKEND (backend);
+	registry = e_cal_backend_get_registry (cal_backend);
+	source = e_backend_get_source (backend);
+
+	return e_source_registry_authenticate_sync (
+		registry, source, auth, cancellable, error);
+}
+
 static void
 e_cal_backend_class_init (ECalBackendClass *class)
 {
 	GObjectClass *object_class;
+	EBackendClass *backend_class;
 
 	g_type_class_add_private (class, sizeof (ECalBackendPrivate));
 
@@ -286,6 +305,9 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	object_class->dispose = cal_backend_dispose;
 	object_class->finalize = cal_backend_finalize;
 	object_class->constructed = cal_backend_constructed;
+
+	backend_class = E_BACKEND_CLASS (class);
+	backend_class->authenticate_sync = cal_backend_authenticate_sync;
 
 	class->get_backend_property = cal_backend_get_backend_property;
 	class->set_backend_property = cal_backend_set_backend_property;
