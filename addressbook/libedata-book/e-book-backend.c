@@ -203,6 +203,24 @@ book_backend_finalize (GObject *object)
 }
 
 static gboolean
+book_backend_authenticate_sync (EBackend *backend,
+                                ESourceAuthenticator *auth,
+                                GCancellable *cancellable,
+                                GError **error)
+{
+	EBookBackend *book_backend;
+	ESourceRegistry *registry;
+	ESource *source;
+
+	book_backend = E_BOOK_BACKEND (backend);
+	registry = e_book_backend_get_registry (book_backend);
+	source = e_backend_get_source (backend);
+
+	return e_source_registry_authenticate_sync (
+		registry, source, auth, cancellable, error);
+}
+
+static gboolean
 view_notify_update (EDataBookView *view,
                     gpointer contact)
 {
@@ -222,6 +240,7 @@ static void
 e_book_backend_class_init (EBookBackendClass *class)
 {
 	GObjectClass *object_class;
+	EBackendClass *backend_class;
 
 	g_type_class_add_private (class, sizeof (EBookBackendPrivate));
 
@@ -230,6 +249,9 @@ e_book_backend_class_init (EBookBackendClass *class)
 	object_class->get_property = book_backend_get_property;
 	object_class->dispose = book_backend_dispose;
 	object_class->finalize = book_backend_finalize;
+
+	backend_class = E_BACKEND_CLASS (class);
+	backend_class->authenticate_sync = book_backend_authenticate_sync;
 
 	class->get_backend_property = book_backend_get_backend_property;
 	class->set_backend_property = book_backend_set_backend_property;
