@@ -1172,24 +1172,20 @@ caldav_authenticate (ECalBackendCalDAV *cbdav,
                      GCancellable *cancellable,
                      GError **error)
 {
-	ESource *source;
-	ESourceRegistry *registry;
-	gboolean res;
-
-	source = e_backend_get_source (E_BACKEND (cbdav));
-	registry = e_cal_backend_get_registry (E_CAL_BACKEND (cbdav));
+	gboolean success;
 
 	if (ref_cbdav)
 		g_object_ref (cbdav);
 
-	res = e_source_registry_authenticate_sync (
-		registry, source, E_SOURCE_AUTHENTICATOR (cbdav),
+	success = e_backend_authenticate_sync (
+		E_BACKEND (cbdav),
+		E_SOURCE_AUTHENTICATOR (cbdav),
 		cancellable, error);
 
 	if (ref_cbdav)
 		caldav_unref_in_thread (cbdav);
 
-	return res;
+	return success;
 }
 
 /* Returns whether calendar changed on the server. This works only when server

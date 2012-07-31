@@ -1246,7 +1246,6 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	ESourceAuthentication     *auth_extension;
 	ESourceOffline            *offline_extension;
 	ESourceWebdav             *webdav_extension;
-	ESourceRegistry           *registry;
 	ESource                   *source;
 	const gchar               *extension_name;
 	const gchar               *cache_dir;
@@ -1257,8 +1256,6 @@ e_book_backend_webdav_open (EBookBackend *backend,
 
 	/* will try fetch ctag for the first time, if it fails then sets this to FALSE */
 	priv->supports_getctag = TRUE;
-
-	registry = e_book_backend_get_registry (backend);
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	cache_dir = e_book_backend_get_cache_dir (backend);
@@ -1319,8 +1316,8 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	e_book_backend_notify_readonly (backend, FALSE);
 
 	if (e_source_authentication_required (auth_extension))
-		e_source_registry_authenticate_sync (
-			registry, source,
+		e_backend_authenticate_sync (
+			E_BACKEND (backend),
 			E_SOURCE_AUTHENTICATOR (backend),
 			cancellable, &error);
 

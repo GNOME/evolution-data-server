@@ -738,8 +738,6 @@ begin_retrieval_cb (GIOSchedulerJob *job,
                     GCancellable *cancellable,
                     ECalBackendHttp *backend)
 {
-	ESource *source;
-	ESourceRegistry *registry;
 	const gchar *uri;
 	GError *error = NULL;
 
@@ -755,16 +753,13 @@ begin_retrieval_cb (GIOSchedulerJob *job,
 
 	backend->priv->is_loading = TRUE;
 
-	source = e_backend_get_source (E_BACKEND (backend));
-	registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
-
 	uri = cal_backend_http_ensure_uri (backend);
 	cal_backend_http_load (backend, cancellable, uri, &error);
 
 	if (g_error_matches (error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 		g_clear_error (&error);
-		e_source_registry_authenticate_sync (
-			registry, source,
+		e_backend_authenticate_sync (
+			E_BACKEND (backend),
 			E_SOURCE_AUTHENTICATOR (backend),
 			cancellable, &error);
 	}

@@ -1021,12 +1021,8 @@ request_authorization (EBookBackend *backend,
                        GError **error)
 {
 	EBookBackendGooglePrivate *priv;
-	ESourceRegistry *registry;
-	ESource *source;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-	source = e_backend_get_source (E_BACKEND (backend));
-	registry = e_book_backend_get_registry (backend);
 
 	/* Make sure we have the GDataService configured
 	 * before requesting authorization. */
@@ -1073,8 +1069,9 @@ request_authorization (EBookBackend *backend,
 #endif
 
 	/* Otherwise it's up to us to obtain a login secret. */
-	return e_source_registry_authenticate_sync (
-		registry, source, E_SOURCE_AUTHENTICATOR (backend),
+	return e_backend_authenticate_sync (
+		E_BACKEND (backend),
+		E_SOURCE_AUTHENTICATOR (backend),
 		cancellable, error);
 }
 

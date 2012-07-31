@@ -5152,7 +5152,6 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	ESourceAuthentication *auth_extension;
 	ESourceLDAP *ldap_extension;
 	ESourceOffline *offline_extension;
-	ESourceRegistry *registry;
 	ESource *source;
 	const gchar *extension_name;
 	const gchar *cache_dir;
@@ -5167,8 +5166,6 @@ e_book_backend_ldap_open (EBookBackend *backend,
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	cache_dir = e_book_backend_get_cache_dir (backend);
-
-	registry = e_book_backend_get_registry (backend);
 
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	auth_extension = e_source_get_extension (source, extension_name);
@@ -5251,8 +5248,8 @@ e_book_backend_ldap_open (EBookBackend *backend,
 	}
 
 	if (auth_required && error == NULL)
-		e_source_registry_authenticate_sync (
-			registry, source,
+		e_backend_authenticate_sync (
+			E_BACKEND (backend),
 			E_SOURCE_AUTHENTICATOR (backend),
 			cancellable, &error);
 
