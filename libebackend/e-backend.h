@@ -66,7 +66,21 @@ struct _EBackend {
 struct _EBackendClass {
 	GObjectClass parent_class;
 
-	gpointer reserved[16];
+	/* Methods */
+	gboolean	(*authenticate_sync)	(EBackend *backend,
+						 ESourceAuthenticator *auth,
+						 GCancellable *cancellable,
+						 GError **error);
+	void		(*authenticate)		(EBackend *backend,
+						 ESourceAuthenticator *auth,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*authenticate_finish)	(EBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
+
+	gpointer reserved[13];
 };
 
 GType		e_backend_get_type		(void) G_GNUC_CONST;
@@ -74,6 +88,18 @@ gboolean	e_backend_get_online		(EBackend *backend);
 void		e_backend_set_online		(EBackend *backend,
 						 gboolean online);
 ESource *	e_backend_get_source		(EBackend *backend);
+gboolean	e_backend_authenticate_sync	(EBackend *backend,
+						 ESourceAuthenticator *auth,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_backend_authenticate		(EBackend *backend,
+						 ESourceAuthenticator *auth,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_backend_authenticate_finish	(EBackend *backend,
+						 GAsyncResult *result,
+						 GError **error);
 
 G_END_DECLS
 

@@ -76,6 +76,9 @@ EBackend
 e_backend_get_online
 e_backend_set_online
 e_backend_get_source
+e_backend_authenticate_sync
+e_backend_authenticate
+e_backend_authenticate_finish
 <SUBSECTION Standard>
 E_BACKEND
 E_IS_BACKEND
