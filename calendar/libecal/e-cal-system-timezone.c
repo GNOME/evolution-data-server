@@ -594,6 +594,7 @@ system_timezone_find (void)
 				filename)) {
 				g_free (filename);
 				g_free (localtime_content);
+				g_hash_table_destroy (ical_zones);
 
 				/* corresponding file name to config_tz matches /etc/localtime,
 				   thus that's the correct one - return it as system timezone;
