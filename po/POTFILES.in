@@ -185,6 +185,7 @@ data/org.gnome.evolution-data-server.addressbook.gschema.xml.in
 data/org.gnome.evolution-data-server.calendar.gschema.xml.in
 libebackend/e-authentication-mediator.c
 libebackend/e-authentication-session.c
+libebackend/e-backend.c
 libebackend/e-server-side-source.c
 libebackend/e-source-registry-server.c
 libedataserver/e-categories.c
