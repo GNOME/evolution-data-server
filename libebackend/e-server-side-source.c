@@ -41,6 +41,8 @@
 
 #define PRIMARY_GROUP_NAME	"Data Source"
 
+typedef struct _AsyncContext AsyncContext;
+
 struct _EServerSideSourcePrivate {
 	gpointer server;  /* weak pointer */
 
@@ -55,11 +57,19 @@ struct _EServerSideSourcePrivate {
 	gchar *write_directory;
 };
 
+struct _AsyncContext {
+	EDBusSourceRemoteCreatable *remote_creatable;
+	EDBusSourceRemoteDeletable *remote_deletable;
+	GDBusMethodInvocation *invocation;
+};
+
 enum {
 	PROP_0,
 	PROP_ALLOW_AUTH_PROMPT,
 	PROP_EXPORTED,
 	PROP_FILE,
+	PROP_REMOTE_CREATABLE,
+	PROP_REMOTE_DELETABLE,
 	PROP_REMOVABLE,
 	PROP_SERVER,
 	PROP_UID,
@@ -80,6 +90,21 @@ G_DEFINE_TYPE_WITH_CODE (
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_server_side_source_initable_init))
+
+static void
+async_context_free (AsyncContext *async_context)
+{
+	if (async_context->remote_creatable != NULL)
+		g_object_unref (async_context->remote_creatable);
+
+	if (async_context->remote_deletable != NULL)
+		g_object_unref (async_context->remote_deletable);
+
+	if (async_context->invocation != NULL)
+		g_object_unref (async_context->invocation);
+
+	g_slice_free (AsyncContext, async_context);
+}
 
 static gboolean
 server_side_source_parse_data (GKeyFile *key_file,
@@ -244,6 +269,149 @@ server_side_source_write_cb (EDBusSourceWritable *interface,
 	return TRUE;
 }
 
+/* Helper for server_side_source_remote_create_cb() */
+static void
+server_side_source_remote_create_done_cb (GObject *source_object,
+                                          GAsyncResult *result,
+                                          gpointer user_data)
+{
+	ESource *source;
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	source = E_SOURCE (source_object);
+	async_context = (AsyncContext *) user_data;
+
+	e_source_remote_create_finish (source, result, &error);
+
+	if (error != NULL)
+		g_dbus_method_invocation_take_error (
+			async_context->invocation, error);
+	else
+		e_dbus_source_remote_creatable_complete_create (
+			async_context->remote_creatable,
+			async_context->invocation);
+
+	async_context_free (async_context);
+}
+
+static gboolean
+server_side_source_remote_create_cb (EDBusSourceRemoteCreatable *interface,
+                                     GDBusMethodInvocation *invocation,
+                                     const gchar *uid,
+                                     const gchar *data,
+                                     ESource *source)
+{
+	EServerSideSource *server_side_source;
+	ESourceRegistryServer *server;
+	AsyncContext *async_context;
+	ESource *scratch_source;
+	GDBusObject *dbus_object;
+	EDBusSource *dbus_source;
+	GKeyFile *key_file;
+	GFile *file;
+	GError *error = NULL;
+
+	/* Create a new EServerSideSource from 'uid' and 'data' but
+	 * DO NOT add it to the ESourceRegistryServer yet.  It's up
+	 * to the ECollectionBackend whether to use source as given
+	 * or create its own equivalent EServerSideSource, possibly
+	 * in response to a notification from a remote server. */
+
+	/* Validate the raw data. */
+	key_file = g_key_file_new ();
+	server_side_source_parse_data (key_file, data, strlen (data), &error);
+	g_key_file_free (key_file);
+
+	if (error != NULL) {
+		g_dbus_method_invocation_take_error (invocation, error);
+		return TRUE;
+	}
+
+	server_side_source = E_SERVER_SIDE_SOURCE (source);
+	server = e_server_side_source_get_server (server_side_source);
+
+	file = e_server_side_source_new_user_file (uid);
+	scratch_source = e_server_side_source_new (server, file, &error);
+	g_object_unref (file);
+
+	/* Sanity check. */
+	g_warn_if_fail (
+		((scratch_source != NULL) && (error == NULL)) ||
+		((scratch_source == NULL) && (error != NULL)));
+
+	if (error != NULL) {
+		g_dbus_method_invocation_take_error (invocation, error);
+		return TRUE;
+	}
+
+	dbus_object = e_source_ref_dbus_object (scratch_source);
+	dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
+
+	e_dbus_source_set_data (dbus_source, data);
+
+	g_object_unref (dbus_object);
+	g_object_unref (dbus_source);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->remote_creatable = g_object_ref (interface);
+	async_context->invocation = g_object_ref (invocation);
+
+	e_source_remote_create (
+		source, scratch_source, NULL,
+		server_side_source_remote_create_done_cb,
+		async_context);
+
+	g_object_unref (scratch_source);
+
+	return TRUE;
+}
+
+/* Helper for server_side_source_remote_delete_cb() */
+static void
+server_side_source_remote_delete_done_cb (GObject *source_object,
+                                          GAsyncResult *result,
+                                          gpointer user_data)
+{
+	ESource *source;
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	source = E_SOURCE (source_object);
+	async_context = (AsyncContext *) user_data;
+
+	e_source_remote_delete_finish (source, result, &error);
+
+	if (error != NULL)
+		g_dbus_method_invocation_take_error (
+			async_context->invocation, error);
+	else
+		e_dbus_source_remote_deletable_complete_delete (
+			async_context->remote_deletable,
+			async_context->invocation);
+
+	async_context_free (async_context);
+}
+
+static gboolean
+server_side_source_remote_delete_cb (EDBusSourceRemoteDeletable *interface,
+                                     GDBusMethodInvocation *invocation,
+                                     ESource *source)
+{
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->remote_deletable = g_object_ref (interface);
+	async_context->invocation = g_object_ref (invocation);
+
+	e_source_remote_delete (
+		source, NULL,
+		server_side_source_remote_delete_done_cb,
+		async_context);
+
+	return TRUE;
+}
+
 static void
 server_side_source_set_file (EServerSideSource *source,
                              GFile *file)
@@ -298,6 +466,18 @@ server_side_source_set_property (GObject *object,
 			server_side_source_set_file (
 				E_SERVER_SIDE_SOURCE (object),
 				g_value_get_object (value));
+			return;
+
+		case PROP_REMOTE_CREATABLE:
+			e_server_side_source_set_remote_creatable (
+				E_SERVER_SIDE_SOURCE (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_REMOTE_DELETABLE:
+			e_server_side_source_set_remote_deletable (
+				E_SERVER_SIDE_SOURCE (object),
+				g_value_get_boolean (value));
 			return;
 
 		case PROP_REMOVABLE:
@@ -360,6 +540,20 @@ server_side_source_get_property (GObject *object,
 				value,
 				e_server_side_source_get_file (
 				E_SERVER_SIDE_SOURCE (object)));
+			return;
+
+		case PROP_REMOTE_CREATABLE:
+			g_value_set_boolean (
+				value,
+				e_source_get_remote_creatable (
+				E_SOURCE (object)));
+			return;
+
+		case PROP_REMOTE_DELETABLE:
+			g_value_set_boolean (
+				value,
+				e_source_get_remote_deletable (
+				E_SOURCE (object)));
 			return;
 
 		case PROP_REMOVABLE:
@@ -727,6 +921,91 @@ server_side_source_write_finish (ESource *source,
 }
 
 static gboolean
+server_side_source_remote_create_sync (ESource *source,
+                                       ESource *scratch_source,
+                                       GCancellable *cancellable,
+                                       GError **error)
+{
+	ECollectionBackend *backend;
+	ESourceRegistryServer *server;
+	EServerSideSource *server_side_source;
+	gboolean success;
+
+	if (!e_source_get_remote_creatable (source)) {
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_NOT_SUPPORTED,
+			_("Data source '%s' does not "
+			  "support creating remote resources"),
+			e_source_get_display_name (source));
+		return FALSE;
+	}
+
+	server_side_source = E_SERVER_SIDE_SOURCE (source);
+	server = e_server_side_source_get_server (server_side_source);
+	backend = e_source_registry_server_ref_backend (server, source);
+
+	if (backend == NULL) {
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_NOT_SUPPORTED,
+			_("Data source '%s' has no collection "
+			  "backend to create the remote resource"),
+			e_source_get_display_name (source));
+		return FALSE;
+	}
+
+	success = e_collection_backend_create_resource_sync (
+		backend, scratch_source, cancellable, error);
+
+	g_object_unref (backend);
+
+	return success;
+}
+
+static gboolean
+server_side_source_remote_delete_sync (ESource *source,
+                                       GCancellable *cancellable,
+                                       GError **error)
+{
+	ECollectionBackend *backend;
+	ESourceRegistryServer *server;
+	EServerSideSource *server_side_source;
+	gboolean success;
+
+	if (!e_source_get_remote_deletable (source)) {
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_NOT_SUPPORTED,
+			_("Data source '%s' does not "
+			  "support deleting remote resources"),
+			e_source_get_display_name (source));
+		return FALSE;
+	}
+
+	server_side_source = E_SERVER_SIDE_SOURCE (source);
+	server = e_server_side_source_get_server (server_side_source);
+	backend = e_source_registry_server_ref_backend (server, source);
+
+	if (backend == NULL) {
+		g_set_error (
+			error, G_IO_ERROR,
+			G_IO_ERROR_NOT_SUPPORTED,
+			_("Data source '%s' has no collection "
+			  "backend to delete the remote resource"),
+			e_source_get_display_name (source));
+		return FALSE;
+	}
+
+	success = e_collection_backend_delete_resource_sync (
+		backend, source, cancellable, error);
+
+	g_object_unref (backend);
+
+	return success;
+}
+
+static gboolean
 server_side_source_initable_init (GInitable *initable,
                                   GCancellable *cancellable,
                                   GError **error)
@@ -794,6 +1073,8 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 	source_class->write_sync = server_side_source_write_sync;
 	source_class->write = server_side_source_write;
 	source_class->write_finish = server_side_source_write_finish;
+	source_class->remote_create_sync = server_side_source_remote_create_sync;
+	source_class->remote_delete_sync = server_side_source_remote_delete_sync;
 
 	g_object_class_install_property (
 		object_class,
@@ -829,6 +1110,34 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			G_TYPE_FILE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	/* This overrides the "remote-creatable" property
+	 * in ESourceClass with a writable version. */
+	g_object_class_install_property (
+		object_class,
+		PROP_REMOTE_CREATABLE,
+		g_param_spec_boolean (
+			"remote-creatable",
+			"Remote Creatable",
+			"Whether the data source "
+			"can create remote resources",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
+
+	/* This overrides the "remote-deletable" property
+	 * in ESourceClass with a writable version. */
+	g_object_class_install_property (
+		object_class,
+		PROP_REMOTE_DELETABLE,
+		g_param_spec_boolean (
+			"remote-deletable",
+			"Remote Deletable",
+			"Whether the data source "
+			"can delete remote resources",
+			FALSE,
+			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 
 	/* This overrides the "removable" property
@@ -1428,7 +1737,7 @@ void
 e_server_side_source_set_removable (EServerSideSource *source,
                                     gboolean removable)
 {
-	EDBusSourceRemovable *dbus_source_removable = NULL;
+	EDBusSourceRemovable *dbus_interface = NULL;
 	GDBusObject *dbus_object;
 	gboolean currently_removable;
 
@@ -1440,21 +1749,21 @@ e_server_side_source_set_removable (EServerSideSource *source,
 		return;
 
 	if (removable) {
-		dbus_source_removable =
+		dbus_interface =
 			e_dbus_source_removable_skeleton_new ();
 
 		g_signal_connect (
-			dbus_source_removable, "handle-remove",
+			dbus_interface, "handle-remove",
 			G_CALLBACK (server_side_source_remove_cb), source);
 	}
 
 	dbus_object = e_source_ref_dbus_object (E_SOURCE (source));
 	e_dbus_object_skeleton_set_source_removable (
-		E_DBUS_OBJECT_SKELETON (dbus_object), dbus_source_removable);
+		E_DBUS_OBJECT_SKELETON (dbus_object), dbus_interface);
 	g_object_unref (dbus_object);
 
-	if (dbus_source_removable != NULL)
-		g_object_unref (dbus_source_removable);
+	if (dbus_interface != NULL)
+		g_object_unref (dbus_interface);
 
 	g_object_notify (G_OBJECT (source), "removable");
 }
@@ -1479,7 +1788,7 @@ void
 e_server_side_source_set_writable (EServerSideSource *source,
                                    gboolean writable)
 {
-	EDBusSourceWritable *dbus_source_writable = NULL;
+	EDBusSourceWritable *dbus_interface = NULL;
 	GDBusObject *dbus_object;
 	gboolean currently_writable;
 
@@ -1491,22 +1800,135 @@ e_server_side_source_set_writable (EServerSideSource *source,
 		return;
 
 	if (writable) {
-		dbus_source_writable =
+		dbus_interface =
 			e_dbus_source_writable_skeleton_new ();
 
 		g_signal_connect (
-			dbus_source_writable, "handle-write",
+			dbus_interface, "handle-write",
 			G_CALLBACK (server_side_source_write_cb), source);
 	}
 
 	dbus_object = e_source_ref_dbus_object (E_SOURCE (source));
 	e_dbus_object_skeleton_set_source_writable (
-		E_DBUS_OBJECT_SKELETON (dbus_object), dbus_source_writable);
+		E_DBUS_OBJECT_SKELETON (dbus_object), dbus_interface);
 	g_object_unref (dbus_object);
 
-	if (dbus_source_writable != NULL)
-		g_object_unref (dbus_source_writable);
+	if (dbus_interface != NULL)
+		g_object_unref (dbus_interface);
 
 	g_object_notify (G_OBJECT (source), "writable");
+}
+
+/**
+ * e_server_side_source_set_remote_creatable:
+ * @source: an #EServerSideSource
+ * @remote_creatable: whether to export the RemoteCreatable interface
+ *
+ * Indicates whether @source can be used to create resources on a remote
+ * server.  Typically this is only set to %TRUE for collection sources.
+ *
+ * If %TRUE, the RemoteCreatable D-Bus interface is exported at the object
+ * path for @source.  If %FALSE, the RemoteCreatable D-Bus interface is
+ * unexported at the object path for @source, and any attempt by clients
+ * to call e_source_remote_create() will fail.
+ *
+ * Unlike the #ESource:removable and #ESource:writable properties, this
+ * is enforced for both clients of the registry D-Bus service and within
+ * the registry D-Bus service itself.
+ *
+ * Since: 3.6
+ **/
+void
+e_server_side_source_set_remote_creatable (EServerSideSource *source,
+                                           gboolean remote_creatable)
+{
+	EDBusSourceRemoteCreatable *dbus_interface = NULL;
+	GDBusObject *dbus_object;
+	gboolean currently_remote_creatable;
+
+	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
+
+	currently_remote_creatable =
+		e_source_get_remote_creatable (E_SOURCE (source));
+
+	if (remote_creatable == currently_remote_creatable)
+		return;
+
+	if (remote_creatable) {
+		dbus_interface =
+			e_dbus_source_remote_creatable_skeleton_new ();
+
+		g_signal_connect (
+			dbus_interface, "handle-create",
+			G_CALLBACK (server_side_source_remote_create_cb),
+			source);
+	}
+
+	dbus_object = e_source_ref_dbus_object (E_SOURCE (source));
+	e_dbus_object_skeleton_set_source_remote_creatable (
+		E_DBUS_OBJECT_SKELETON (dbus_object), dbus_interface);
+	g_object_unref (dbus_object);
+
+	if (dbus_interface != NULL)
+		g_object_unref (dbus_interface);
+
+	g_object_notify (G_OBJECT (source), "remote-creatable");
+}
+
+/**
+ * e_server_side_source_set_remote_deletable:
+ * @source: an #EServerSideSource
+ * @remote_deletable: whether to export the RemoteDeletable interface
+ *
+ * Indicates whether @source can be used to delete resources on a remote
+ * server.  Typically this is only set to %TRUE for sources created by an
+ * #ECollectionBackend to represent a remote resource.
+ *
+ * If %TRUE, the RemoteDeletable D-Bus interface is exported at the object
+ * path for @source.  If %FALSE, the RemoteDeletable D-Bus interface is
+ * unexported at the object path for @source, and any attempt by clients
+ * to call e_source_remote_delete() will fail.
+ *
+ * Unlike the #ESource:removable and #ESource:writable properties, this
+ * is enforced for both clients of the registry D-Bus server and within
+ * the registry D-Bus service itself.
+ *
+ * Since: 3.6
+ **/
+void
+e_server_side_source_set_remote_deletable (EServerSideSource *source,
+                                           gboolean remote_deletable)
+{
+	EDBusSourceRemoteDeletable *dbus_interface = NULL;
+	GDBusObject *dbus_object;
+	gboolean currently_remote_deletable;
+
+	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
+
+	currently_remote_deletable =
+		e_source_get_remote_deletable (E_SOURCE (source));
+
+	if (remote_deletable == currently_remote_deletable)
+		return;
+
+	if (remote_deletable) {
+		dbus_interface =
+			e_dbus_source_remote_deletable_skeleton_new ();
+
+		g_signal_connect (
+			dbus_interface, "handle-delete",
+			G_CALLBACK (server_side_source_remote_delete_cb),
+			source);
+	}
+
+	dbus_object = e_source_ref_dbus_object (E_SOURCE (source));
+	e_dbus_object_skeleton_set_source_remote_deletable (
+		E_DBUS_OBJECT_SKELETON (dbus_object), dbus_interface);
+	g_object_unref (dbus_object);
+
+	if (dbus_interface != NULL)
+		g_object_unref (dbus_interface);
+
+	g_object_notify (G_OBJECT (source), "remote-deletable");
 }
 

@@ -109,6 +109,12 @@ void		e_server_side_source_set_removable
 void		e_server_side_source_set_writable
 						(EServerSideSource *source,
 						 gboolean writable);
+void		e_server_side_source_set_remote_creatable
+						(EServerSideSource *source,
+						 gboolean remote_creatable);
+void		e_server_side_source_set_remote_deletable
+						(EServerSideSource *source,
+						 gboolean remote_deletable);
 
 G_END_DECLS
 
