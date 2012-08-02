@@ -111,21 +111,6 @@ collection_backend_children_remove (ECollectionBackend *backend,
 	return removed;
 }
 
-static gboolean
-collection_backend_children_contains (ECollectionBackend *backend,
-                                      ESource *source)
-{
-	gboolean contains;
-
-	g_mutex_lock (backend->priv->children_lock);
-
-	contains = g_hash_table_contains (backend->priv->children, source);
-
-	g_mutex_unlock (backend->priv->children_lock);
-
-	return contains;
-}
-
 static GList *
 collection_backend_children_list (ECollectionBackend *backend)
 {
