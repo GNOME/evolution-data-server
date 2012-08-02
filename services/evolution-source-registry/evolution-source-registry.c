@@ -21,6 +21,10 @@
 #include <stdlib.h>
 #include <glib/gi18n.h>
 
+#ifdef ENABLE_MAINTAINER_MODE
+#include <gtk/gtk.h>
+#endif
+
 #include <libebackend/libebackend.h>
 
 /* Forward Declarations */
@@ -39,7 +43,15 @@ main (gint argc,
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
+#ifdef ENABLE_MAINTAINER_MODE
+	/* This is only to load gtk-modules, like
+	 * bug-buddy's gnomesegvhandler, if possible */
+	gtk_init_check (&argc, &argv);
+#else
 	g_type_init ();
+#endif
+
+	e_gdbus_templates_init_main_thread ();
 
 reload:
 	/* Migrate user data from ~/.evolution to XDG base directories. */
