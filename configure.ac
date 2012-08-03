@@ -381,10 +381,6 @@ if `$PKG_CONFIG --atleast-version=3.5 goa-1.0`; then
 	AC_DEFINE(HAVE_GOA_PASSWORD_BASED,1,[Have GoaPasswordBased in goa-1.0])
 fi
 
-if test x$os_win32 = xno; then
-	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
-fi
-
 dnl ***********************************
 dnl Check for GNOME Keyring.
 dnl ***********************************
