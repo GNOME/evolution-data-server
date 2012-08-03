@@ -90,6 +90,8 @@ enum {
 	COLUMN_SOURCE_UID,
 	COLUMN_REMOVABLE,
 	COLUMN_WRITABLE,
+	COLUMN_REMOTE_CREATABLE,
+	COLUMN_REMOTE_DELETABLE,
 	COLUMN_SOURCE,
 	NUM_COLUMNS
 };
@@ -115,6 +117,48 @@ G_DEFINE_TYPE_WITH_CODE (
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE,
 		e_source_viewer_initable_init));
+
+static GIcon *
+source_view_new_remote_creatable_icon (void)
+{
+	GEmblem *emblem;
+	GIcon *emblem_icon;
+	GIcon *folder_icon;
+	GIcon *icon;
+
+	emblem_icon = g_themed_icon_new ("emblem-new");
+	folder_icon = g_themed_icon_new ("folder-remote");
+
+	emblem = g_emblem_new (emblem_icon);
+	icon = g_emblemed_icon_new (folder_icon, emblem);
+	g_object_unref (emblem);
+
+	g_object_unref (folder_icon);
+	g_object_unref (emblem_icon);
+
+	return icon;
+}
+
+static GIcon *
+source_view_new_remote_deletable_icon (void)
+{
+	GEmblem *emblem;
+	GIcon *emblem_icon;
+	GIcon *folder_icon;
+	GIcon *icon;
+
+	emblem_icon = g_themed_icon_new ("edit-delete");
+	folder_icon = g_themed_icon_new ("folder-remote");
+
+	emblem = g_emblem_new (emblem_icon);
+	icon = g_emblemed_icon_new (folder_icon, emblem);
+	g_object_unref (emblem);
+
+	g_object_unref (folder_icon);
+	g_object_unref (emblem_icon);
+
+	return icon;
+}
 
 static gchar *
 source_viewer_get_monospace_font_name (void)
@@ -174,6 +218,8 @@ source_viewer_update_row (ESourceViewer *viewer,
 	const gchar *source_uid;
 	gboolean removable;
 	gboolean writable;
+	gboolean remote_creatable;
+	gboolean remote_deletable;
 
 	source_index = viewer->source_index;
 	reference = g_hash_table_lookup (source_index, source);
@@ -190,6 +236,8 @@ source_viewer_update_row (ESourceViewer *viewer,
 	display_name = e_source_get_display_name (source);
 	removable = e_source_get_removable (source);
 	writable = e_source_get_writable (source);
+	remote_creatable = e_source_get_remote_creatable (source);
+	remote_deletable = e_source_get_remote_deletable (source);
 
 	gtk_tree_store_set (
 		GTK_TREE_STORE (model), &iter,
@@ -197,6 +245,8 @@ source_viewer_update_row (ESourceViewer *viewer,
 		COLUMN_SOURCE_UID, source_uid,
 		COLUMN_REMOVABLE, removable,
 		COLUMN_WRITABLE, writable,
+		COLUMN_REMOTE_CREATABLE, remote_creatable,
+		COLUMN_REMOTE_DELETABLE, remote_deletable,
 		COLUMN_SOURCE, source,
 		-1);
 }
@@ -553,6 +603,7 @@ source_viewer_constructed (GObject *object)
 	PangoAttribute *attr;
 	PangoAttrList *bold;
 	PangoFontDescription *desc;
+	GIcon *icon;
 	const gchar *title;
 	gchar *font_name;
 	gint page_num;
@@ -626,6 +677,30 @@ source_viewer_constructed (GObject *object)
 	gtk_tree_view_column_pack_start (column, renderer, FALSE);
 	gtk_tree_view_column_add_attribute (
 		column, renderer, "visible", COLUMN_REMOVABLE);
+
+	icon = source_view_new_remote_creatable_icon ();
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	g_object_set (
+		renderer,
+		"gicon", icon,
+		"stock-size", GTK_ICON_SIZE_MENU,
+		NULL);
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_add_attribute (
+		column, renderer, "visible", COLUMN_REMOTE_CREATABLE);
+	g_object_unref (icon);
+
+	icon = source_view_new_remote_deletable_icon ();
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	g_object_set (
+		renderer,
+		"gicon", icon,
+		"stock-size", GTK_ICON_SIZE_MENU,
+		NULL);
+	gtk_tree_view_column_pack_start (column, renderer, FALSE);
+	gtk_tree_view_column_add_attribute (
+		column, renderer, "visible", COLUMN_REMOTE_DELETABLE);
+	g_object_unref (icon);
 
 	/* Append an empty pixbuf renderer to fill leftover space. */
 	renderer = gtk_cell_renderer_pixbuf_new ();
@@ -830,6 +905,8 @@ e_source_viewer_init (ESourceViewer *viewer)
 		G_TYPE_STRING,		/* COLUMN_SOURCE_UID */
 		G_TYPE_BOOLEAN,		/* COLUMN_REMOVABLE */
 		G_TYPE_BOOLEAN,		/* COLUMN_WRITABLE */
+		G_TYPE_BOOLEAN,		/* COLUMN_REMOTE_CREATABLE */
+		G_TYPE_BOOLEAN,		/* COLUMN_REMOTE_DELETABLE */
 		E_TYPE_SOURCE);		/* COLUMN_SOURCE */
 
 	viewer->source_index = g_hash_table_new_full (
