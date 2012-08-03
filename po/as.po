@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-07-09 14:12+0000\n"
-"PO-Revision-Date: 2012-07-13 17:41+0530\n"
+"POT-Creation-Date: 2012-08-01 13:47+0000\n"
+"PO-Revision-Date: 2012-08-03 14:27+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -26,9 +26,9 @@ msgstr ""
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:939
 #: ../addressbook/libebook/e-book-client.c:106
 #: ../addressbook/libedata-book/e-data-book.c:432
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:566
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:596
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:615
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:569
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
 #: ../calendar/libecal/e-cal.c:4032 ../calendar/libecal/e-cal-client.c:148
 #: ../camel/camel-imapx-command.c:594
 #: ../camel/providers/imap/camel-imap-command.c:521
@@ -79,7 +79,7 @@ msgid "Querying for updated contacts…"
 msgstr "আপডেইটেড পৰিচয়সমূহৰ বাবে প্ৰশ্ন কৰা হৈছে..."
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:843
+#: ../addressbook/backends/google/e-book-backend-google.c:846
 msgid "Querying for updated groups…"
 msgstr "আপডেইটেড দলসমূহৰ বাবে প্ৰশ্ন কৰা হৈছে..."
 
@@ -121,22 +121,22 @@ msgstr "পৰিচয় সলনি কৰা হৈছে…"
 msgid "Loading…"
 msgstr "ল'ড কৰা হৈছে…"
 
-#: ../addressbook/backends/google/e-book-google-utils.c:1557
+#: ../addressbook/backends/google/e-book-google-utils.c:1562
 msgid "Personal"
 msgstr "ব্যক্তিগত"
 
 #. System Group: My Contacts
-#: ../addressbook/backends/google/e-book-google-utils.c:1558
+#: ../addressbook/backends/google/e-book-google-utils.c:1563
 msgid "Friends"
 msgstr "বন্ধুসকল"
 
 #. System Group: Friends
-#: ../addressbook/backends/google/e-book-google-utils.c:1559
+#: ../addressbook/backends/google/e-book-google-utils.c:1564
 msgid "Family"
 msgstr "পৰিয়াল"
 
 #. System Group: Family
-#: ../addressbook/backends/google/e-book-google-utils.c:1560
+#: ../addressbook/backends/google/e-book-google-utils.c:1565
 msgid "Coworkers"
 msgstr "সহকৰ্মী"
 
@@ -186,7 +186,7 @@ msgstr "সন্ধানৰ সময়ত ত্ৰুটি"
 msgid "Downloading contacts (%d)... "
 msgstr "পৰিচয়সমূহ ডাউনল'ড কৰা হৈছে (%d)... "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5567
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5564
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "ব্যৱহাৰকাৰী '%s' ৰ বাবে DN প্ৰাপ্ত কৰিবলে ব্যৰ্থ"
@@ -1046,17 +1046,17 @@ msgstr "সন্ধানহিন উৎস UID"
 msgid "No such source for UID '%s'"
 msgstr "UID '%s' ৰ বাবে এনেধৰণৰ কোনো উৎস নাই"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:564
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:567
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "চাৰ্ভাৰ প্ৰাপ্ত কৰিব নোৱাৰি (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:594
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:597
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "SSL ব্যৱহাৰ কৰি এটা চাৰ্ভাৰৰ সৈতে সংযোগ কৰিবলে ব্যৰ্থ: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:602
 msgid ""
 "Failed to connect to a server using SSL. One possible reason is an invalid "
 "certificate being used by the server. If this is expected, like self-signed "
@@ -1068,13 +1068,13 @@ msgstr ""
 "স্বাক্ষৰিত প্ৰমাণপত্ৰ চাৰ্ভাৰত ব্যৱহৃত, তেন্তে বৈশিষ্টসমূহত 'অবৈধ SSL প্ৰমাণপত্ৰ উপেক্ষা "
 "কৰক' বিকল্প নিৰ্বাচন কৰি প্ৰমাণপত্ৰ বৈধতা পৰিক্ষাসমূহ অসামৰ্থবান কৰক"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:612
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:615
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "অপ্ৰত্যাশীত HTTP অৱস্থা ক'ড %d ঘুৰাই দিয়া হৈছে (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2302
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2672
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2330
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2700
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1083,19 +1083,19 @@ msgstr ""
 "চাৰ্ভাৰ প্ৰাপ্ত কৰিব নোৱাৰি, কেলেন্ডাৰ কেৱল-পঢ়িব পৰা অৱস্থাত খোলা আছে।\n"
 "ত্ৰুটি বাৰ্তা: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3668
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3696
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV এ বৃহত সংযোজন সমৰ্থন নকৰে"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3770
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3798
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV এ বৃহত পৰিবৰ্তন সমৰ্থন নকৰে"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3938
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3966
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV এ বৃহত আতৰোৱা সমৰ্থন নকৰে"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4597
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4625
 msgid "Calendar doesn't support Free/Busy"
 msgstr "কেলেন্ডাৰ মুক্ত/ব্যস্ত সমৰ্থন নকৰে"
 
@@ -1122,28 +1122,28 @@ msgstr "কেলেন্ডাৰৰ তথ্য সংৰক্ষণ কৰ
 msgid "Cannot save calendar data"
 msgstr "কেলেন্ডাৰৰ তথ্য সংৰক্ষণ কৰোতে ব্যৰ্থ"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:480
+#: ../calendar/backends/http/e-cal-backend-http.c:481
 #, c-format
 msgid "Malformed URI: %s"
 msgstr "ক্ষতিগ্ৰস্থ URI: %s"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:541
+#: ../calendar/backends/http/e-cal-backend-http.c:542
 #, c-format
 msgid "Redirected to Invalid URI"
 msgstr "অবৈধ URI লৈ নিৰ্দেশ কৰা হৈছে"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:578
+#: ../calendar/backends/http/e-cal-backend-http.c:579
 #, c-format
 msgid "Bad file format."
 msgstr "নথিপত্ৰৰ বিন্যাস সঠিক নহয়।"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:588
+#: ../calendar/backends/http/e-cal-backend-http.c:589
 #, c-format
 msgid "Not a calendar."
 msgstr "কেলেন্ডাৰ নহয়।"
 
+#: ../calendar/backends/http/e-cal-backend-http.c:929
 #: ../calendar/backends/http/e-cal-backend-http.c:933
-#: ../calendar/backends/http/e-cal-backend-http.c:937
 #: ../calendar/backends/weather/e-cal-backend-weather.c:511
 msgid "Could not create cache file"
 msgstr "ক্যাশ নথিপত্ৰ সৃষ্টি কৰোঁতে ব্যৰ্থ"
@@ -1744,12 +1744,12 @@ msgstr "অফ-লাইন কৰ্মৰ বাবে ফোল্ডাৰ�
 #: ../camel/camel-imapx-folder.c:535 ../camel/camel-imapx-folder.c:611
 #: ../camel/camel-imapx-folder.c:645 ../camel/camel-imapx-folder.c:685
 #: ../camel/camel-imapx-folder.c:721 ../camel/camel-imapx-store.c:273
-#: ../camel/camel-imapx-store.c:1363 ../camel/camel-imapx-store.c:1451
-#: ../camel/camel-imapx-store.c:1497
+#: ../camel/camel-imapx-store.c:1364 ../camel/camel-imapx-store.c:1452
+#: ../camel/camel-imapx-store.c:1498
 #: ../camel/providers/imap/camel-imap-store.c:1246
 #: ../camel/providers/imap/camel-imap-store.c:2002
-#: ../camel/providers/imap/camel-imap-store.c:2469
-#: ../camel/providers/imap/camel-imap-store.c:3219
+#: ../camel/providers/imap/camel-imap-store.c:2471
+#: ../camel/providers/imap/camel-imap-store.c:3221
 #: ../camel/providers/pop3/camel-pop3-folder.c:525
 #: ../camel/providers/pop3/camel-pop3-folder.c:655
 #: ../camel/providers/pop3/camel-pop3-folder.c:838
@@ -1866,7 +1866,7 @@ msgstr[0] "'%s' ' ত নতুন বাৰ্তা পৰিস্ৰাৱ�
 msgstr[1] "'%s' ত নতুন বাৰ্তাসমূহ পৰিস্ৰাৱন কৰা হৈছে"
 
 #: ../camel/camel-folder.c:930
-#: ../camel/providers/local/camel-maildir-folder.c:322
+#: ../camel/providers/local/camel-maildir-folder.c:321
 msgid "Moving messages"
 msgstr "বাৰ্তা স্থানান্তৰণ কৰা হৈছে"
 
@@ -1881,7 +1881,6 @@ msgstr "ফোল্ডাৰ '%s' ৰ বাবে কুটা তথ্য �
 
 #: ../camel/camel-folder.c:3371
 #, c-format
-#| msgid "Opening folder '%s'"
 msgid "Expunging folder '%s'"
 msgstr "ফোল্ডাৰ '%s' এক্সপাঞ্জ কৰা হৈ আছে"
 
@@ -1895,7 +1894,13 @@ msgstr "'%s' ত '%s' ৰ বাবে বাৰ্তা উদ্ধাৰ ক
 msgid "Retrieving quota information for '%s'"
 msgstr "'%s' ৰ বাবে কুটা তথ্য উদ্ধাৰ কৰা হৈছে"
 
-#: ../camel/camel-folder-search.c:414 ../camel/camel-folder-search.c:575
+#: ../camel/camel-folder.c:3985
+#, c-format
+#| msgid "Creating folder '%s'"
+msgid "Refreshing folder '%s'"
+msgstr "ফোল্ডাৰ '%s' ক সতেজ কৰা হৈছে"
+
+#: ../camel/camel-folder-search.c:417 ../camel/camel-folder-search.c:581
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1904,7 +1909,7 @@ msgstr ""
 "সন্ধানৰ বাবে অভিব্যক্তি বিশ্লেষণ কৰোঁতে ব্যৰ্থ: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:426 ../camel/camel-folder-search.c:587
+#: ../camel/camel-folder-search.c:429 ../camel/camel-folder-search.c:593
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1914,31 +1919,31 @@ msgstr ""
 "%s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:800 ../camel/camel-folder-search.c:843
+#: ../camel/camel-folder-search.c:811 ../camel/camel-folder-search.c:854
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) ৰ ক্ষেত্ৰত এটা বুলিয়ান ফলাফল আবশ্যক"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:904
+#: ../camel/camel-folder-search.c:921
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s), %s ৰ মাজত ব্যৱহাৰ কৰা নাযাব"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:911 ../camel/camel-folder-search.c:919
+#: ../camel/camel-folder-search.c:928 ../camel/camel-folder-search.c:936
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) ৰ এটা ধৰণ পৰীক্ষাৰ স্ট্ৰিংৰ প্ৰয়োজন"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:947
+#: ../camel/camel-folder-search.c:964
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) এ এটা অ্যাৰে ফলাফল প্ৰত্যাশা কৰে"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:957
+#: ../camel/camel-folder-search.c:974
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) ৰ ফোল্ডাৰ সংহতিৰ প্ৰয়োজন"
@@ -2086,53 +2091,53 @@ msgstr "%s ৰ বাবে ক্যাশ সৃষ্টি কৰিব ন�
 
 #: ../camel/camel-imapx-folder.c:791
 #: ../camel/providers/imap/camel-imap-folder.c:359
-#: ../camel/providers/nntp/camel-nntp-folder.c:731
+#: ../camel/providers/nntp/camel-nntp-folder.c:738
 msgid "Apply message _filters to this folder"
 msgstr "এই ফোল্ডাৰত বাৰ্তা পৰিস্ৰাৱকসমূহ প্ৰয়োগ কৰক (_f)"
 
-#: ../camel/camel-imapx-server.c:1015
+#: ../camel/camel-imapx-server.c:1020
 msgid "Server disconnected"
 msgstr "চাৰ্ভাৰ বিচ্ছিন্নিত"
 
-#: ../camel/camel-imapx-server.c:1457
+#: ../camel/camel-imapx-server.c:1472
 msgid "Error writing to cache stream: "
 msgstr "ক্যাশ স্ৰোতলে লিখোতে ত্ৰুটি:"
 
-#: ../camel/camel-imapx-server.c:2384
+#: ../camel/camel-imapx-server.c:2401
 #, c-format
 msgid "Not authenticated"
 msgstr "প্ৰমাণীত নহয়"
 
-#: ../camel/camel-imapx-server.c:2453
+#: ../camel/camel-imapx-server.c:2470
 msgid "Error performing IDLE"
 msgstr "IDLE পৰিৱেশন কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:3297
+#: ../camel/camel-imapx-server.c:3314
 #: ../camel/providers/imap/camel-imap-store.c:409
 #: ../camel/providers/imap/camel-imap-store.c:463
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "সুৰক্ষিত অৱস্থাত IMAP চাৰ্ভাৰ %s ৰ সৈতে সংযোগ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/camel-imapx-server.c:3298
+#: ../camel/camel-imapx-server.c:3315
 #: ../camel/providers/imap/camel-imap-store.c:410
 #: ../camel/providers/smtp/camel-smtp-transport.c:197
 msgid "STARTTLS not supported"
 msgstr "STARTTLS সমৰ্থিত নহয়"
 
-#: ../camel/camel-imapx-server.c:3337
+#: ../camel/camel-imapx-server.c:3354
 #: ../camel/providers/imap/camel-imap-store.c:435
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "IMAP চাৰ্ভাৰ %s লে সুৰক্ষিত অৱস্থাত সংযোগ কৰিবলে ব্যৰ্থ: "
 
-#: ../camel/camel-imapx-server.c:3404
+#: ../camel/camel-imapx-server.c:3421
 #: ../camel/providers/imap/camel-imap-store.c:734
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP চাৰ্ভাৰ %s এ %s প্ৰমাণীকৰণ সমৰ্থন নকৰে"
 
-#: ../camel/camel-imapx-server.c:3415 ../camel/camel-session.c:486
+#: ../camel/camel-imapx-server.c:3432 ../camel/camel-session.c:486
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/pop3/camel-pop3-store.c:249
 #: ../camel/providers/pop3/camel-pop3-store.c:568
@@ -2141,13 +2146,13 @@ msgstr "IMAP চাৰ্ভাৰ %s এ %s প্ৰমাণীকৰণ স�
 msgid "No support for %s authentication"
 msgstr "%s প্ৰমাণীকৰণ বাবে কোনো সমৰ্থন নাই"
 
-#: ../camel/camel-imapx-server.c:3434
+#: ../camel/camel-imapx-server.c:3451
 #: ../camel/providers/imap/camel-imap-store.c:1118
 #: ../camel/providers/nntp/camel-nntp-store.c:494
 msgid "Cannot authenticate without a username"
 msgstr "এটা ব্যৱহাৰকাৰী নামৰ বাহিৰে প্ৰমাণীত কৰিব নোৱাৰি"
 
-#: ../camel/camel-imapx-server.c:3443
+#: ../camel/camel-imapx-server.c:3460
 #: ../camel/providers/imap/camel-imap-store.c:1126
 #: ../camel/providers/nntp/camel-nntp-store.c:503
 #: ../camel/providers/pop3/camel-pop3-store.c:493
@@ -2155,111 +2160,107 @@ msgstr "এটা ব্যৱহাৰকাৰী নামৰ বাহিৰ
 msgid "Authentication password not available"
 msgstr "প্ৰমাণীকৰণ পাছৱাৰ্ড উপলব্ধ নহয়"
 
-#: ../camel/camel-imapx-server.c:3633
+#: ../camel/camel-imapx-server.c:3650
 msgid "Error fetching message"
 msgstr "বাৰ্তা প্ৰাপ্ত কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:3715
+#: ../camel/camel-imapx-server.c:3732
 msgid "Failed to copy the tmp file"
 msgstr "tmp নথিপত্ৰ কপি কৰিবলে ব্যৰ্থ"
 
-#: ../camel/camel-imapx-server.c:3729
+#: ../camel/camel-imapx-server.c:3746
 msgid "Failed to close the tmp stream"
 msgstr "tmp স্ৰোত বন্ধ কৰিবলে ব্যৰ্থ"
 
-#: ../camel/camel-imapx-server.c:3827
+#: ../camel/camel-imapx-server.c:3844
 msgid "Error copying messages"
 msgstr "বাৰ্তাসমূহ কপি কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:3962
+#: ../camel/camel-imapx-server.c:3979
 msgid "Error appending message"
 msgstr "বাৰ্তা সংযোজন কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:4149
+#: ../camel/camel-imapx-server.c:4166
 msgid "Error fetching message headers"
 msgstr "বাৰ্তা হেডাৰসমূহ প্ৰাপ্ত কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:4295
+#: ../camel/camel-imapx-server.c:4305
 msgid "Error retrieving message"
 msgstr "বাৰ্তা উদ্ধাৰ কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:4417 ../camel/camel-imapx-server.c:4622
+#: ../camel/camel-imapx-server.c:4427 ../camel/camel-imapx-server.c:4627
 #, c-format
-#| msgid "Fetching summary information for new messages in %s"
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "'%s' ত নতুন বাৰ্তাৰসমূহৰ সাৰাংশ তথ্য প্ৰাপ্ত কৰা হৈছে"
 
-#: ../camel/camel-imapx-server.c:4476
+#: ../camel/camel-imapx-server.c:4480
 #, c-format
-#| msgid "Scanning for changed messages in %s"
 msgid "Scanning for changed messages in '%s'"
 msgstr "'%s' ত পৰিবৰ্তীত বাৰ্তাসমূহৰ বাবে স্কেন কৰা হৈছে"
 
-#: ../camel/camel-imapx-server.c:4518
+#: ../camel/camel-imapx-server.c:4523
 msgid "Error fetching new messages"
 msgstr "নতুন বাৰ্তা উদ্ধাৰ কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:4717
+#: ../camel/camel-imapx-server.c:4723
 msgid "Error while fetching messages"
 msgstr "বাৰ্তাসমূহ উদ্ধাৰ কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:4725 ../camel/camel-imapx-server.c:4760
+#: ../camel/camel-imapx-server.c:4731 ../camel/camel-imapx-server.c:4767
 #, c-format
-#| msgid "Fetching summary information for %d message in %s"
-#| msgid_plural "Fetching summary information for %d messages in %s"
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "সাৰাংশ তথ্য প্ৰাপ্ত কৰা হৈছে %d বাৰ্তা '%s'"
 msgstr[1] "সাৰাংশ তথ্য প্ৰাপ্ত কৰা হৈছে %d বাৰ্তাসমূহ '%s'"
 
-#: ../camel/camel-imapx-server.c:4887 ../camel/camel-imapx-server.c:4923
+#: ../camel/camel-imapx-server.c:4894 ../camel/camel-imapx-server.c:4930
 msgid "Error refreshing folder"
 msgstr "ফোল্ডাৰ সতেজ কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:5016
+#: ../camel/camel-imapx-server.c:5023
 msgid "Error expunging message"
 msgstr "বাৰ্তা মচি পেলাওতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:5105
+#: ../camel/camel-imapx-server.c:5120
 msgid "Error fetching folders"
 msgstr "ফোল্ডাৰসমূহ প্ৰাপ্ত কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:5184
+#: ../camel/camel-imapx-server.c:5199
 msgid "Error subscribing to folder"
 msgstr "ফোল্ডাৰলে স্বাক্ষৰ কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:5241
+#: ../camel/camel-imapx-server.c:5256
 msgid "Error creating folder"
 msgstr "ফোল্ডাৰ সৃষ্টি কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:5290
+#: ../camel/camel-imapx-server.c:5305
 msgid "Error deleting folder"
 msgstr "ফোল্ডাৰ মচি পেলাওতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:5344
+#: ../camel/camel-imapx-server.c:5359
 msgid "Error renaming folder"
 msgstr "ফোল্ডাৰ পুনৰনামৰৰণ কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:5399
+#: ../camel/camel-imapx-server.c:5414
 msgid "Error performing NOOP"
 msgstr "NOOP পৰিৱেশন কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:5497
+#: ../camel/camel-imapx-server.c:5512
 msgid "Error syncing changes"
 msgstr "পৰিৱৰ্তনসমূহ সংমিহলি কৰোতে ত্ৰুটি"
 
-#: ../camel/camel-imapx-server.c:6119
-#: ../camel/providers/imap/camel-imap-folder.c:3473
+#: ../camel/camel-imapx-server.c:6142
+#: ../camel/providers/imap/camel-imap-folder.c:3500
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "%s ID সহ বাৰ্তা প্ৰাপ্ত কৰোতে ব্যৰ্থ: %s"
 
-#: ../camel/camel-imapx-server.c:6120
-#: ../camel/providers/imap/camel-imap-folder.c:3474
+#: ../camel/camel-imapx-server.c:6143
+#: ../camel/providers/imap/camel-imap-folder.c:3501
 msgid "No such message available."
 msgstr "এই ধৰণৰ কোনো বাৰ্তা উপস্থিত নাই।"
 
-#: ../camel/camel-imapx-server.c:6275 ../camel/camel-imapx-server.c:6290
+#: ../camel/camel-imapx-server.c:6298 ../camel/camel-imapx-server.c:6313
 msgid "Cannot create spool file: "
 msgstr "স্পুল নথিপত্ৰ সৃষ্টি কৰিব নোৱাৰি: "
 
@@ -2291,7 +2292,7 @@ msgstr ""
 
 #: ../camel/camel-imapx-store.c:342
 #: ../camel/providers/imap/camel-imap-store.c:2033
-#: ../camel/providers/imap/camel-imap-store.c:2227
+#: ../camel/providers/imap/camel-imap-store.c:2229
 #, c-format
 msgid "No such folder %s"
 msgstr "%s ৰ অনুৰূপ কোনো ফোল্ডাৰ উপস্থিত নাই"
@@ -2299,8 +2300,8 @@ msgstr "%s ৰ অনুৰূপ কোনো ফোল্ডাৰ উপস�
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/camel-imapx-store.c:367 ../camel/camel-imapx-store.c:838
 #: ../camel/providers/imap/camel-imap-store.c:272
-#: ../camel/providers/imap/camel-imap-store.c:2640
-#: ../camel/providers/local/camel-maildir-folder.c:474
+#: ../camel/providers/imap/camel-imap-store.c:2642
+#: ../camel/providers/local/camel-maildir-folder.c:473
 #: ../camel/providers/local/camel-maildir-store.c:301
 #: ../camel/providers/local/camel-maildir-store.c:679
 #: ../camel/providers/local/camel-maildir-store.c:685
@@ -2309,33 +2310,33 @@ msgstr "%s ৰ অনুৰূপ কোনো ফোল্ডাৰ উপস�
 msgid "Inbox"
 msgstr "ইনবক্স"
 
-#: ../camel/camel-imapx-store.c:1070
+#: ../camel/camel-imapx-store.c:1071
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "%s ৰ বাবে ফোল্ডাৰ তালিকা উদ্ধাৰ কৰা"
 
-#: ../camel/camel-imapx-store.c:1171
+#: ../camel/camel-imapx-store.c:1172
 #: ../camel/providers/nntp/camel-nntp-store.c:1749
 #, c-format
 msgid "No such folder: %s"
 msgstr "এই ধৰণৰ ফোল্ডাৰ উপস্থিত নাই: %s"
 
-#: ../camel/camel-imapx-store.c:1384
+#: ../camel/camel-imapx-store.c:1385
 #: ../camel/providers/imap/camel-imap-store.c:2046
-#: ../camel/providers/imap/camel-imap-store.c:2484
+#: ../camel/providers/imap/camel-imap-store.c:2486
 #, c-format
 msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "\"%s\" ফোল্ডাৰৰ নামৰ মাজত অবৈধ আখৰ \"%c\" উপস্থিত থকাৰ ফলস্বৰূপ ই বৈধ নহয়"
 
-#: ../camel/camel-imapx-store.c:1395
-#: ../camel/providers/imap/camel-imap-store.c:2497
+#: ../camel/camel-imapx-store.c:1396
+#: ../camel/providers/imap/camel-imap-store.c:2499
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "উপধায়ক ফোল্ডাৰ ‍অজ্ঞাত: %s"
 
-#: ../camel/camel-imapx-store.c:1405
+#: ../camel/camel-imapx-store.c:1406
 #: ../camel/providers/imap/camel-imap-store.c:2109
-#: ../camel/providers/imap/camel-imap-store.c:2548
+#: ../camel/providers/imap/camel-imap-store.c:2550
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "উপধায়ক ফোল্ডাৰটোৰ মাজত উপফোল্ডাৰ সৃষ্টি কৰা নাযাব"
@@ -3027,13 +3028,11 @@ msgstr "\"%s\" কমান্ড সহযোগে সংযোগ কৰো�
 
 #: ../camel/camel-subscribable.c:386
 #, c-format
-#| msgid "Error subscribing to folder"
 msgid "Subscribing to folder '%s'"
 msgstr "ফোল্ডাৰ '%s' লে স্বাক্ষৰ কৰা হৈছে"
 
 #: ../camel/camel-subscribable.c:518
 #, c-format
-#| msgid "Error subscribing to folder"
 msgid "Unsubscribing from folder '%s'"
 msgstr "ফোল্ডাৰ '%s' ৰ পৰা অস্বাক্ষৰ কৰা হৈছে"
 
@@ -3208,28 +3207,27 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "URL '%s' বিশ্লেষণ কৰোতে ব্যৰ্থ"
 
-#: ../camel/camel-vee-folder.c:484
+#: ../camel/camel-vee-folder.c:491
 #, c-format
-#| msgid "Creating folder '%s'"
 msgid "Updating folder '%s'"
 msgstr "ফোল্ডাৰ '%s' আপডেইট কৰা হৈছে"
 
-#: ../camel/camel-vee-folder.c:843 ../camel/camel-vee-folder.c:953
+#: ../camel/camel-vee-folder.c:850 ../camel/camel-vee-folder.c:960
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "ভাৰছুৱেল ফোল্ডাৰৰ মাজত বাৰ্তা কপি অথবা স্থানান্তৰ কৰা সম্ভৱ নহয়"
 
-#: ../camel/camel-vee-folder.c:876
+#: ../camel/camel-vee-folder.c:883
 #, c-format
 msgid "No such message %s in %s"
 msgstr "%s ৰ অনুৰূপ কোনো বাৰ্তা %s ৰ মাজত নাই"
 
-#: ../camel/camel-vee-folder.c:929
+#: ../camel/camel-vee-folder.c:936
 #, c-format
 msgid "Error storing '%s': "
 msgstr "'%s' সংৰক্ষণ কৰোতে ত্ৰুটি: "
 
-#: ../camel/camel-vee-folder.c:1157
+#: ../camel/camel-vee-folder.c:1164
 msgid "Automatically _update on change in source folders"
 msgstr "উৎস ফোল্ডাৰসমূহত পৰিবৰ্তন হলে স্বচালিতভাৱে আপডেইট কৰিব (_u)"
 
@@ -3340,34 +3338,34 @@ msgstr "%s ৰ সংক্ষিপ্ত তথ্য ল'ড কৰোঁত�
 msgid "Scanning for changed messages in %s"
 msgstr "%s ৰ মাজত পৰিবৰ্তিত বাৰ্তা পৰীক্ষা কৰা হৈছে"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3436
+#: ../camel/providers/imap/camel-imap-folder.c:3463
 msgid "Unable to retrieve message: "
 msgstr "বাৰ্তা উদ্ধাৰ কৰিবলে অক্ষম: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3547
-#: ../camel/providers/imap/camel-imap-folder.c:4417
+#: ../camel/providers/imap/camel-imap-folder.c:3577
+#: ../camel/providers/imap/camel-imap-folder.c:4462
 #: ../camel/providers/nntp/camel-nntp-folder.c:493
 #, c-format
 msgid "This message is not currently available"
 msgstr "চিহ্নিত বাৰ্তা বৰ্তমানে উপলব্ধ নহয়"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4005
-#: ../camel/providers/imap/camel-imap-folder.c:4085
+#: ../camel/providers/imap/camel-imap-folder.c:4038
+#: ../camel/providers/imap/camel-imap-folder.c:4118
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "%s ৰ মাজত উপস্থিত নতুন বাৰ্তাৰ সংক্ষিপ্ত তথ্য প্ৰাপ্ত কৰা হৈছে"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4216
+#: ../camel/providers/imap/camel-imap-folder.c:4249
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "চাৰ্ভাৰৰ প্ৰতিক্ৰিয়া অসম্পূৰ্ণ: বাৰ্তা %d কোনো তথ্য উপস্থিত নাই"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4226
+#: ../camel/providers/imap/camel-imap-folder.c:4259
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "চাৰ্ভাৰৰ প্ৰতিক্ৰিয়া অসম্পূৰ্ণ: বাৰ্তা %d ৰ UID উপস্থিত নাই"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4454
+#: ../camel/providers/imap/camel-imap-folder.c:4499
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "FETCH কৰ্মৰ প্ৰতিক্ৰিয়াৰ মাজত বাৰ্তাৰ প্ৰধান অংশ অনুপস্থিত।"
@@ -3489,17 +3487,17 @@ msgstr "IMAP চাৰ্ভাৰৰ মেইল পঢ়া আৰু সংৰ
 msgid "Cannot create folder '%s': folder exists."
 msgstr "`%s' ফোল্ডাৰ সৃষ্টি কৰোঁতে ব্যৰ্থ: ফোল্ডাৰ বৰ্তমানে উপস্থিত।"
 
-#: ../camel/providers/imap/camel-imap-store.c:2921
+#: ../camel/providers/imap/camel-imap-store.c:2923
 #, c-format
 msgid "Retrieving list of folders at '%s'"
 msgstr "'%s' ত ফোল্ডাৰসমূহৰ তালিকা উদ্ধাৰ কৰা হৈছে"
 
-#: ../camel/providers/imap/camel-imap-store.c:3263
+#: ../camel/providers/imap/camel-imap-store.c:3265
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "চাৰ্ভাৰৰ সৈতে অপ্ৰত্যাশিত ভাবে সংযোগ বিচ্ছিন্ন কৰা হৈছে"
 
-#: ../camel/providers/imap/camel-imap-store.c:3266
+#: ../camel/providers/imap/camel-imap-store.c:3268
 msgid "Server unexpectedly disconnected: "
 msgstr "চাৰ্ভাৰ অপ্ৰত্যাশিতভাৱে বিচ্ছিন্ন হল: "
 
@@ -3671,28 +3669,28 @@ msgid "Unable to add message to summary: unknown reason"
 msgstr "সাৰাংশ তথ্যৰ মাজত বাৰ্তা যোগ কৰোঁতে ব্যৰ্থ: ‍অজ্ঞাত কাৰণ"
 
 #: ../camel/providers/local/camel-maildir-folder.c:100
-#: ../camel/providers/local/camel-maildir-folder.c:336
+#: ../camel/providers/local/camel-maildir-folder.c:335
 #: ../camel/providers/local/camel-mbox-folder.c:117
 #: ../camel/providers/local/camel-mbox-folder.c:329
-#: ../camel/providers/local/camel-mh-folder.c:160
+#: ../camel/providers/local/camel-mh-folder.c:159
 msgid "No such message"
 msgstr "এই ধৰণৰ কোনো বাৰ্তা উপস্থিত নাই"
 
-#: ../camel/providers/local/camel-maildir-folder.c:226
+#: ../camel/providers/local/camel-maildir-folder.c:225
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr "maildir ফোল্ডাৰ: %s লে বাৰ্তা সংযোজন কৰিব নোৱাৰি: "
 
-#: ../camel/providers/local/camel-maildir-folder.c:274
-#: ../camel/providers/local/camel-maildir-folder.c:284
+#: ../camel/providers/local/camel-maildir-folder.c:273
+#: ../camel/providers/local/camel-maildir-folder.c:283
 #: ../camel/providers/local/camel-mbox-folder.c:390
-#: ../camel/providers/local/camel-mh-folder.c:172
-#: ../camel/providers/local/camel-mh-folder.c:182
+#: ../camel/providers/local/camel-mh-folder.c:171
+#: ../camel/providers/local/camel-mh-folder.c:181
 #, c-format
 msgid "Cannot get message %s from folder %s: "
 msgstr "ফোল্ডাৰ %s ৰ পৰা বাৰ্তা %s প্ৰাপ্ত কৰিব নোৱাৰি: "
 
-#: ../camel/providers/local/camel-maildir-folder.c:354
+#: ../camel/providers/local/camel-maildir-folder.c:353
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "বাৰ্তাক গন্তব্য ফোল্ডাৰ: %s লে স্থানান্তৰ কৰিব নোৱাৰি"
@@ -3775,9 +3773,9 @@ msgstr "নতুন বাৰ্তাৰ উপস্থিতি পৰীক
 
 #: ../camel/providers/local/camel-maildir-summary.c:746
 #: ../camel/providers/local/camel-mbox-summary.c:418
-#: ../camel/providers/local/camel-mbox-summary.c:649
-#: ../camel/providers/local/camel-mbox-summary.c:793
-#: ../camel/providers/local/camel-spool-summary.c:130
+#: ../camel/providers/local/camel-mbox-summary.c:650
+#: ../camel/providers/local/camel-mbox-summary.c:794
+#: ../camel/providers/local/camel-spool-summary.c:132
 msgid "Storing folder"
 msgstr "ফোল্ডাৰ সংৰক্ষণ কৰা হৈছে"
 
@@ -3878,48 +3876,48 @@ msgstr "ফোল্ডাৰ খোলোঁতে ব্যৰ্থ: %s: %s"
 msgid "Fatal mail parser error near position %s in folder %s"
 msgstr "ফোল্ডাৰ %s ত অৱস্থান %s ৰ উচৰত মাৰাত্মক মেইল বিশ্লেষণ ত্ৰুটি"
 
-#: ../camel/providers/local/camel-mbox-summary.c:574
+#: ../camel/providers/local/camel-mbox-summary.c:575
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "ফোল্ডাৰ পৰীক্ষা কৰা নাযায়: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:662
-#: ../camel/providers/local/camel-mbox-summary.c:802
-#: ../camel/providers/local/camel-spool-summary.c:137
+#: ../camel/providers/local/camel-mbox-summary.c:663
+#: ../camel/providers/local/camel-mbox-summary.c:803
+#: ../camel/providers/local/camel-spool-summary.c:139
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "নথিপত্ৰ খোলোঁতে ব্যৰ্থ: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:676
-#: ../camel/providers/local/camel-spool-summary.c:152
+#: ../camel/providers/local/camel-mbox-summary.c:677
+#: ../camel/providers/local/camel-spool-summary.c:154
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "অস্থায়ী মেইলবাকচ খোলোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:693
-#: ../camel/providers/local/camel-mbox-summary.c:918
+#: ../camel/providers/local/camel-mbox-summary.c:694
+#: ../camel/providers/local/camel-mbox-summary.c:919
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "উৎস ফোল্ডাৰ %s বন্ধ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:704
+#: ../camel/providers/local/camel-mbox-summary.c:705
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "অস্থায়ী ফোল্ডাৰ বন্ধ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:721
+#: ../camel/providers/local/camel-mbox-summary.c:722
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "ফোল্ডাৰৰ পুনৰনামৰৰণ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:816
-#: ../camel/providers/local/camel-mbox-summary.c:1084
+#: ../camel/providers/local/camel-mbox-summary.c:817
+#: ../camel/providers/local/camel-mbox-summary.c:1085
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "ফোল্ডাৰ সংৰক্ষণ কৰোঁতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:855
-#: ../camel/providers/local/camel-mbox-summary.c:1115
+#: ../camel/providers/local/camel-mbox-summary.c:856
+#: ../camel/providers/local/camel-mbox-summary.c:1116
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
@@ -3928,30 +3926,30 @@ msgstr ""
 "MBOX নথিপত্ৰ ক্ষতিগ্ৰস্থ, অনুগ্ৰহ কৰি ইয়াক ঠিক কৰক। (এটা পৰা শাৰী আশা কৰা হৈছিল, "
 "কিন্তু পোৱা নগল।)"
 
-#: ../camel/providers/local/camel-mbox-summary.c:864
-#: ../camel/providers/local/camel-mbox-summary.c:1124
+#: ../camel/providers/local/camel-mbox-summary.c:865
+#: ../camel/providers/local/camel-mbox-summary.c:1125
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "সংক্ষিপ্ত তথ্য আৰু ফোল্ডাৰ অমিল, সুসংগতিৰ (sync) পিছতও"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1029
-#: ../camel/providers/local/camel-spool-summary.c:345
+#: ../camel/providers/local/camel-mbox-summary.c:1030
+#: ../camel/providers/local/camel-spool-summary.c:347
 #, c-format
 msgid "Unknown error: %s"
 msgstr "‍অজ্ঞাত ত্ৰুটি: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1182
-#: ../camel/providers/local/camel-mbox-summary.c:1212
+#: ../camel/providers/local/camel-mbox-summary.c:1183
+#: ../camel/providers/local/camel-mbox-summary.c:1213
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "অস্থায়ী মেইলবাকচলে লিখোতে ব্যৰ্থ: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1201
+#: ../camel/providers/local/camel-mbox-summary.c:1202
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "অস্থায়ী মেইলবাকচলে লিখোতে ব্যৰ্থ: %s: %s"
 
-#: ../camel/providers/local/camel-mh-folder.c:119
+#: ../camel/providers/local/camel-mh-folder.c:118
 #, c-format
 msgid "Cannot append message to mh folder: %s: "
 msgstr "mh ফোল্ডাৰ: %s লে বাৰ্তা সংযোজন কৰিব নোৱাৰি: "
@@ -4043,21 +4041,21 @@ msgstr "স্পুল ফোল্ডাৰ মচি পেলোৱা ন�
 msgid "Spool folders cannot be renamed"
 msgstr "স্পুল ফোল্ডাৰৰ পুনৰনামৰৰণ কৰা সম্ভৱ নহয়"
 
-#: ../camel/providers/local/camel-spool-summary.c:168
-#: ../camel/providers/local/camel-spool-summary.c:180
-#: ../camel/providers/local/camel-spool-summary.c:192
+#: ../camel/providers/local/camel-spool-summary.c:170
+#: ../camel/providers/local/camel-spool-summary.c:182
+#: ../camel/providers/local/camel-spool-summary.c:194
 #, c-format
 msgid "Could not synchronize temporary folder %s: %s"
 msgstr "অস্থায়ী ফোল্ডাৰ %s সংমিহলি কৰিব নোৱাৰি: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:210
+#: ../camel/providers/local/camel-spool-summary.c:212
 #, c-format
 msgid "Could not synchronize spool folder %s: %s"
 msgstr "স্পুল ফোল্ডাৰ %s সংমিহলি কৰিব নোৱাৰি: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:242
-#: ../camel/providers/local/camel-spool-summary.c:261
-#: ../camel/providers/local/camel-spool-summary.c:274
+#: ../camel/providers/local/camel-spool-summary.c:244
+#: ../camel/providers/local/camel-spool-summary.c:263
+#: ../camel/providers/local/camel-spool-summary.c:276
 #, c-format
 msgid ""
 "Could not synchronize spool folder %s: %s\n"
@@ -4774,17 +4772,28 @@ msgstr "পাছৱাৰ্ড ভুল আছিল"
 msgid "Keyring operation was cancelled"
 msgstr "কি'ৰিং কাৰ্য্য বাতিল কৰা হৈছিল"
 
-#: ../libebackend/e-server-side-source.c:162
+#: ../libebackend/e-backend.c:190
+#, c-format
+#| msgid "IMAP server %s does not support %s authentication"
+msgid "%s does not support authentication"
+msgstr "%s এ প্ৰমাণীকৰণ সমৰ্থন নকৰে"
+
+#: ../libebackend/e-server-side-source.c:103
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "তথ্যৰ উৎসত এটা [%s] দল সন্ধানহিন"
 
-#: ../libebackend/e-server-side-source.c:1079
+#: ../libebackend/e-server-side-source.c:1020
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "নথিপত্ৰৰ এটা '.source' সম্প্ৰসাৰন থাকিব লাগিব"
 
-#: ../libebackend/e-source-registry-server.c:598
+#: ../libebackend/e-source-registry-server.c:520
+#: ../libedataserver/e-source-registry.c:1512
+msgid "The user declined to authenticate"
+msgstr "ব্যৱহাৰকাৰীজনে প্ৰমাণীকৰণ কৰিবলে মান্তি নহল"
+
+#: ../libebackend/e-source-registry-server.c:742
 #, c-format
 msgid "UID '%s' is already in use"
 msgstr "UID '%s' ইতিমধ্যে ব্যৱহৃত"
@@ -4994,10 +5003,6 @@ msgstr "নাম নহোৱা"
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "স্বাক্ষৰ লিপি এটা স্থানীয় নথিপত্ৰ হব লাগিব"
-
-#: ../libedataserver/e-source-registry.c:1512
-msgid "The user declined to authenticate"
-msgstr "ব্যৱহাৰকাৰীজনে প্ৰমাণীকৰণ কৰিবলে মান্তি নহল"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
