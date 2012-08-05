@@ -1,3 +1,54 @@
+Evolution-Data-Server 3.5.5 2012-08-06
+--------------------------------------
+
+Bug Fixes:
+	Bug 551788 - Hangs when network changes (Milan Crha)
+	Bug 674696 - Crash from finish_operation, get_groups_cb in Google
+	             backend (Milan Crha)
+	Bug 677530 - Memory leaks in imapx code (Milan Crha)
+	Bug 678893 - Allow concurrent authentication sessions (Matthew Barnes)
+	Bug 679017 - Broken spool mbox file accounts (Milan Crha)
+	Bug 679808 - e_source_selector_set_primary_selection() has side-effects
+	             (Matthew Barnes)
+	Bug 680013 - Deadlock in CalDAV calendar (Milan Crha)
+	Bug 680106 - Missing status message in camel_folder_refresh_info_sync()
+	             (Matthew Barnes)
+	Bug 680211 - Memory usage increases on each folder select (Milan Crha)
+	Bug 680502 - Deadlock in contacts backend (Milan Crha)
+	Bug 680687 - System timezone name differs from set in Gnome
+	             (Milan Crha)
+
+Other Changes:
+	* Support creating/deleting remote resources. (Matthew Barnes)
+	* Use template files to generate GEnumClass types. (Matthew Barnes)
+	* google: Fix removal of custom vCard attributes in Google address
+	  books (Philip Withnall)
+	* Make sure IMAP is connected before doing online operations
+	  (Milan Crha)
+	* Move e_pointer_tracker to camel (Milan Crha)
+	* Replace e_source_registry_server_queue_auth_session().
+	  (Matthew Barnes)
+	* CamelIMAPXServer: fixed API function for running custom commands
+	  (Christian Hilberg)
+	* Fix a memory leak in e-cal-system-timezone.c (Dan Vrátil)
+	* Conditionally enable bug-buddy/gtk+ also for
+	  evolution-source-registry (Milan Crha)
+	* libecal: fix memory leak after failed object creation (Patrick Ohly)
+	* e_source_registry_commit_source_sync(): Handle collection members.
+	  (Matthew Barnes)
+
+Translations:
+	Andika Triwidada (id)
+	Chao-Hsiung Liao (zh_HK)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Sweta Kothari (gu)
+	Kjartan Maraas (nb)
+	Nilamdyuti Goswami (as)
+	Tom Tryfonidis (el)
+	Мирослав Николић (sr)
+
+
 Evolution-Data-Server 3.5.4 2012-07-16
 --------------------------------------
 
