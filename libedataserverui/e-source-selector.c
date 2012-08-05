@@ -1986,7 +1986,8 @@ e_source_selector_set_primary_selection (ESourceSelector *selector,
 	} else {
 		selector->priv->saved_primary_selection =
 			gtk_tree_row_reference_copy (reference);
-		g_signal_emit (selector, signals[SELECTION_CHANGED], 0);
+		g_signal_emit (selector, signals[PRIMARY_SELECTION_CHANGED], 0);
+		g_object_notify (G_OBJECT (selector), "primary-selection");
 	}
 
 	gtk_tree_path_free (child_path);
