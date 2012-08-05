@@ -1931,7 +1931,7 @@ e_source_selector_ref_primary_selection (ESourceSelector *selector)
  *
  * Do not confuse this function with e_source_selector_select_source(),
  * which activates the check box next to an #ESource's display name in
- * @selector.  This funtion does not alter the check box.
+ * @selector.  This function does not alter the check box.
  **/
 void
 e_source_selector_set_primary_selection (ESourceSelector *selector,
