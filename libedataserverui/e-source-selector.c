@@ -1926,7 +1926,12 @@ e_source_selector_ref_primary_selection (ESourceSelector *selector)
  * @selector: an #ESourceSelector widget
  * @source: an #ESource to select
  *
- * Set the primary selected source.
+ * Highlights @source in @selector.  The highlighted #ESource is called
+ * the primary selection.
+ *
+ * Do not confuse this function with e_source_selector_select_source(),
+ * which activates the check box next to an #ESource's display name in
+ * @selector.  This funtion does not alter the check box.
  **/
 void
 e_source_selector_set_primary_selection (ESourceSelector *selector,
@@ -1979,19 +1984,9 @@ e_source_selector_set_primary_selection (ESourceSelector *selector,
 	if (gtk_tree_view_row_expanded (tree_view, parent_path)) {
 		gtk_tree_selection_select_path (selection, child_path);
 	} else {
-		ESourceSelectorClass *class;
-
-		class = E_SOURCE_SELECTOR_GET_CLASS (selector);
-		g_return_if_fail (class->set_source_selected != NULL);
-
 		selector->priv->saved_primary_selection =
 			gtk_tree_row_reference_copy (reference);
-
-		class->set_source_selected (selector, source, TRUE);
-
 		g_signal_emit (selector, signals[SELECTION_CHANGED], 0);
-		g_signal_emit (selector, signals[PRIMARY_SELECTION_CHANGED], 0);
-		g_object_notify (G_OBJECT (selector), "primary-selection");
 	}
 
 	gtk_tree_path_free (child_path);
