@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: gu\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-08-01 13:47+0000\n"
-"PO-Revision-Date: 2012-08-03 12:01+0530\n"
+"POT-Creation-Date: 2012-08-03 15:40+0000\n"
+"PO-Revision-Date: 2012-08-06 11:43+0530\n"
 "Last-Translator: \n"
 "Language-Team: gu_IN <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -53,7 +53,7 @@ msgstr ""
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:569
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
-#: ../calendar/libecal/e-cal.c:4032 ../calendar/libecal/e-cal-client.c:148
+#: ../calendar/libecal/e-cal.c:4033 ../calendar/libecal/e-cal-client.c:148
 #: ../camel/camel-imapx-command.c:594
 #: ../camel/providers/imap/camel-imap-command.c:521
 #: ../camel/providers/imap/camel-imap-store.c:464
@@ -212,7 +212,6 @@ msgstr "સંપર્કો ડાઉનલોડ કરી રહ્યા �
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5564
 #, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to get the DN for user '%s'"
 msgstr "વપરાશકર્તા '%s' માટે DN ને મેળવવામાં નિષ્ફળતા"
 
@@ -268,7 +267,6 @@ msgstr "ફાઈલ હેઠળ"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:128
-#| msgid "Book URI"
 msgid "Book UID"
 msgstr "બુક UID"
 
@@ -713,7 +711,6 @@ msgstr "યાદી"
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
 #: ../addressbook/libebook/e-contact.c:281
-#| msgid "List Show Addresses"
 msgid "List Shows Addresses"
 msgstr "યાદી સરનામાઓ બતાવે છે"
 
@@ -829,7 +826,6 @@ msgid "Google Talk Name List"
 msgstr "Google Talk નામ યાદી"
 
 #: ../addressbook/libebook/e-contact.c:320
-#| msgid "Skype Name List"
 msgid "Twitter Name List"
 msgstr "Twitter નામ યાદી"
 
@@ -876,7 +872,7 @@ msgid "Success"
 msgstr "સફળતા"
 
 #: ../addressbook/libedata-book/e-data-book.c:303
-#: ../calendar/libecal/e-cal.c:4000 ../calendar/libedata-cal/e-data-cal.c:416
+#: ../calendar/libecal/e-cal.c:4001 ../calendar/libedata-cal/e-data-cal.c:416
 #: ../libedataserver/e-client.c:122
 msgid "Backend is busy"
 msgstr "પાશ્વ ભાગ વ્યસ્ત છે"
@@ -887,7 +883,7 @@ msgid "Repository offline"
 msgstr "રીપોઝીટરી ઓફલાઈન"
 
 #: ../addressbook/libedata-book/e-data-book.c:305
-#: ../calendar/libecal/e-cal.c:4014 ../calendar/libedata-cal/e-data-cal.c:418
+#: ../calendar/libecal/e-cal.c:4015 ../calendar/libedata-cal/e-data-cal.c:418
 #: ../libedataserver/e-client.c:138
 msgid "Permission denied"
 msgstr "પરવાનગી નથી"
@@ -963,14 +959,14 @@ msgid "Invalid server version"
 msgstr "અયોગ્ય સર્વર આવૃત્તિ"
 
 #: ../addressbook/libedata-book/e-data-book.c:324
-#: ../calendar/libecal/e-cal.c:3998 ../calendar/libedata-cal/e-data-cal.c:439
+#: ../calendar/libecal/e-cal.c:3999 ../calendar/libedata-cal/e-data-cal.c:439
 #: ../libedataserver/e-client.c:120
 msgid "Invalid argument"
 msgstr "અયોગ્ય દલીલ"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:326
-#: ../calendar/libecal/e-cal.c:4037 ../calendar/libedata-cal/e-data-cal.c:441
+#: ../calendar/libecal/e-cal.c:4038 ../calendar/libedata-cal/e-data-cal.c:441
 #: ../libedataserver/e-client.c:144
 msgid "Not supported"
 msgstr "આધારભૂત નથી"
@@ -1054,7 +1050,6 @@ msgstr "સંપર્કોને દૂર કરી શકાતુ નથ�
 #: ../addressbook/libedata-book/e-data-book-factory.c:103
 #: ../calendar/libedata-cal/e-data-cal-factory.c:114
 #, c-format
-#| msgid "No backend factory for '%s' of '%s'"
 msgid "No backend name in source '%s'"
 msgstr "સ્ત્રોત '%s' માં બેકએન્ડ નામ નથી"
 
@@ -1066,14 +1061,12 @@ msgstr "સ્ત્રોત '%s' માં અમાન્ય બૅકએન�
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:319
 #: ../calendar/libedata-cal/e-data-cal-factory.c:230
-#| msgid "POP Source UID"
 msgid "Missing source UID"
 msgstr "ગુમ થયેલ સ્ત્રોત UID"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:332
 #: ../calendar/libedata-cal/e-data-cal-factory.c:243
 #, c-format
-#| msgid "No such source"
 msgid "No such source for UID '%s'"
 msgstr "UID '%s' માટે આવો સ્ત્રોત નથી"
 
@@ -1084,7 +1077,6 @@ msgstr "સર્વર પહોંચેલ નથી (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:597
 #, c-format
-#| msgid "Failed to connect to POP server %s in secure mode: %s"
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "SSL ની મદદથી સર્વર સાથે જોડાવામાં નિષ્ફળતા: %s"
 
@@ -1095,10 +1087,10 @@ msgid ""
 "certificate being used on the server, then disable certificate validity "
 "tests by selecting 'Ignore invalid SSL certificate' option in Properties"
 msgstr ""
-"SSL ની મદદથી સર્વર સાથે જોડવામાં નિષ્ફળતા. એક શક્ય કારણ એ છે કે સર્વર દ્દારા વાપરેલ અમાન્ય "
-"પ્રમાણપત્ર છે. જો આ ધારણા હોય તો, જેમ કે પોતાની જાતે હસ્તાક્ષર થયેલ પ્રમાણપત્ર સર્વર પર "
-"વાપરેલ છે, પછી ગુણધર્મોમાં 'અમાન્ય SSL પ્રમાણપત્ર ને અવગણો' પસંદ કરવા દ્દારા પ્રમાણપત્ર "
-"માન્ય ચકાસણીને નિષ્ક્રિય કરે છે"
+"SSL ની મદદથી સર્વર સાથે જોડવામાં નિષ્ફળતા. એક શક્ય કારણ એ છે કે સર્વર દ્દારા વાપરેલ "
+"અમાન્ય પ્રમાણપત્ર છે. જો આ ધારણા હોય તો, જેમ કે પોતાની જાતે હસ્તાક્ષર થયેલ પ્રમાણપત્ર "
+"સર્વર પર વાપરેલ છે, પછી ગુણધર્મોમાં 'અમાન્ય SSL પ્રમાણપત્ર ને અવગણો' પસંદ કરવા દ્દારા "
+"પ્રમાણપત્ર માન્ય ચકાસણીને નિષ્ક્રિય કરે છે"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:615
 #, c-format
@@ -1116,17 +1108,14 @@ msgstr ""
 "ભૂલ સંદેશો: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3696
-#| msgid "The backend does not support bulk additions"
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV જથ્થાબંધ ઉમેરાઓને આધાર આપતુ નથી"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3798
-#| msgid "The backend does not support bulk modifications"
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV જથ્થાબંધ બદલાવોને આધાર આપતુ નથી"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3966
-#| msgid "The backend does not support bulk removals"
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV જથ્થાબંધ નિરાકરણને આધાર આપતુ નથી"
 
@@ -1159,7 +1148,6 @@ msgstr "કેલેન્ડર માહિતી સંગ્રહી શક
 
 #: ../calendar/backends/http/e-cal-backend-http.c:481
 #, c-format
-#| msgid "Malformed signature"
 msgid "Malformed URI: %s"
 msgstr "મેલફોર્મ થયેલ URI: %s"
 
@@ -1228,68 +1216,68 @@ msgstr "હવામાન: વાવાઝોડિયું"
 msgid "Forecast"
 msgstr "અંદાજ"
 
-#: ../calendar/libecal/e-cal.c:4002
+#: ../calendar/libecal/e-cal.c:4003
 msgid "Repository is offline"
 msgstr "રીપોઝીટરી ઓફલાઈન છે"
 
-#: ../calendar/libecal/e-cal.c:4004 ../calendar/libecal/e-cal-client.c:135
+#: ../calendar/libecal/e-cal.c:4005 ../calendar/libecal/e-cal-client.c:135
 msgid "No such calendar"
 msgstr "આવુ કોઈ કેલેન્ડર જ નથી"
 
-#: ../calendar/libecal/e-cal.c:4006 ../calendar/libecal/e-cal-client.c:137
+#: ../calendar/libecal/e-cal.c:4007 ../calendar/libecal/e-cal-client.c:137
 #: ../calendar/libedata-cal/e-data-cal.c:420
 msgid "Object not found"
 msgstr "ઓબ્જેક્ટ મળ્યો નથી"
 
-#: ../calendar/libecal/e-cal.c:4008 ../calendar/libecal/e-cal-client.c:139
+#: ../calendar/libecal/e-cal.c:4009 ../calendar/libecal/e-cal-client.c:139
 #: ../calendar/libedata-cal/e-data-cal.c:421
 msgid "Invalid object"
 msgstr "અયોગ્ય ઓબ્જેક્ટ"
 
-#: ../calendar/libecal/e-cal.c:4010
+#: ../calendar/libecal/e-cal.c:4011
 msgid "URI not loaded"
 msgstr "URI લવાઈ નથી"
 
-#: ../calendar/libecal/e-cal.c:4012
+#: ../calendar/libecal/e-cal.c:4013
 msgid "URI already loaded"
 msgstr "URI પહેલેથી જ લવાઈ ગઈ છે"
 
-#: ../calendar/libecal/e-cal.c:4016
+#: ../calendar/libecal/e-cal.c:4017
 msgid "Unknown User"
 msgstr "અજ્ઞાત વપરાશકર્તા"
 
-#: ../calendar/libecal/e-cal.c:4018 ../calendar/libecal/e-cal-client.c:143
+#: ../calendar/libecal/e-cal.c:4019 ../calendar/libecal/e-cal-client.c:143
 #: ../calendar/libedata-cal/e-data-cal.c:422
 msgid "Object ID already exists"
 msgstr "ઓબ્જેક્ટ ID પહેલાથી જ હાજર છે"
 
-#: ../calendar/libecal/e-cal.c:4020
+#: ../calendar/libecal/e-cal.c:4021
 msgid "Protocol not supported"
 msgstr "પ્રોટોકોલને આધાર નથી"
 
-#: ../calendar/libecal/e-cal.c:4022
+#: ../calendar/libecal/e-cal.c:4023
 msgid "Operation has been canceled"
 msgstr "પ્રક્રિયા રદ થઈ ગઈ"
 
-#: ../calendar/libecal/e-cal.c:4024
+#: ../calendar/libecal/e-cal.c:4025
 msgid "Could not cancel operation"
 msgstr "પ્રક્રિયા નકારી શકાતી નથી"
 
-#: ../calendar/libecal/e-cal.c:4026 ../libedataserver/e-client.c:128
+#: ../calendar/libecal/e-cal.c:4027 ../libedataserver/e-client.c:128
 msgid "Authentication failed"
 msgstr "સત્તાધિકાર નિષ્ફળ"
 
-#: ../calendar/libecal/e-cal.c:4028
+#: ../calendar/libecal/e-cal.c:4029
 #: ../camel/providers/smtp/camel-smtp-transport.c:845
 #: ../libedataserver/e-client.c:130
 msgid "Authentication required"
 msgstr "સત્તાધિકારની જરુરિયાત છે"
 
-#: ../calendar/libecal/e-cal.c:4030
+#: ../calendar/libecal/e-cal.c:4031
 msgid "A D-Bus exception has occurred"
 msgstr "D-Bus અપવાદ ઉદ્ભવ્યો"
 
-#: ../calendar/libecal/e-cal.c:4034
+#: ../calendar/libecal/e-cal.c:4035
 msgid "No error"
 msgstr "કોઈ ભૂલ નથી"
 
@@ -1916,7 +1904,6 @@ msgstr "ફોલ્ડર '%s' માટે ક્વોટા જાણકા�
 
 #: ../camel/camel-folder.c:3371
 #, c-format
-#| msgid "Opening folder '%s'"
 msgid "Expunging folder '%s'"
 msgstr "ફોલ્ડર '%s' ને છેકી રહ્યા છે"
 
@@ -1932,7 +1919,6 @@ msgstr "'%s' માટે ક્વોટા જાણકારીને પુ�
 
 #: ../camel/camel-folder.c:3985
 #, c-format
-#| msgid "Creating folder '%s'"
 msgid "Refreshing folder '%s'"
 msgstr "ફોલ્ડર '%s' તાજુ કરી રહ્યા છે"
 
@@ -2201,12 +2187,10 @@ msgid "Error fetching message"
 msgstr "સંદેશાને લાવી રહ્યા હોય ત્યારે ભૂલ"
 
 #: ../camel/camel-imapx-server.c:3732
-#| msgid "Failed to cache %s: "
 msgid "Failed to copy the tmp file"
 msgstr "tmp ફાઇલની નકલ કરવામાં નિષ્ફળતા"
 
 #: ../camel/camel-imapx-server.c:3746
-#| msgid "Failed to encode data"
 msgid "Failed to close the tmp stream"
 msgstr "tmp સ્ટ્રીમને બંધ કરવામાં નિષ્ફળતા"
 
@@ -2228,13 +2212,11 @@ msgstr "સંદેશાને પ્રાપ્ત કરી રહ્યા
 
 #: ../camel/camel-imapx-server.c:4427 ../camel/camel-imapx-server.c:4627
 #, c-format
-#| msgid "Fetching summary information for new messages in %s"
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "'%s' માં નવા સંદેશા માટે સાર જાણકારીને લાવી રહ્યા છે"
 
 #: ../camel/camel-imapx-server.c:4480
 #, c-format
-#| msgid "Scanning for changed messages in %s"
 msgid "Scanning for changed messages in '%s'"
 msgstr "'%s' માં બદલાયેલ સંદેશા માટે સ્કેન કરી રહ્યા છે"
 
@@ -2248,8 +2230,6 @@ msgstr "જ્યારે સંદેશાઓને લાવી રહ્ય
 
 #: ../camel/camel-imapx-server.c:4731 ../camel/camel-imapx-server.c:4767
 #, c-format
-#| msgid "Fetching summary information for %d message in %s"
-#| msgid_plural "Fetching summary information for %d messages in %s"
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "%d સંદેશા માટે '%s' માં સાર જાણકારીને લાવી રહ્યા છે"
@@ -3066,13 +3046,11 @@ msgstr "આદેશ \"%s\" સાથે જોડાઈ શક્યા નહ�
 
 #: ../camel/camel-subscribable.c:386
 #, c-format
-#| msgid "Error subscribing to folder"
 msgid "Subscribing to folder '%s'"
 msgstr "ફોલ્ડર '%s' માં ઉમેદવારી કરી રહ્યા છે"
 
 #: ../camel/camel-subscribable.c:518
 #, c-format
-#| msgid "Error subscribing to folder"
 msgid "Unsubscribing from folder '%s'"
 msgstr "ફોલ્ડર '%s' માંથી ઉમેદવારી દૂર કરી રહ્યા છે"
 
@@ -3249,7 +3227,6 @@ msgstr "URL '%s' નું પદચ્છેદ કરી શક્યા ન�
 
 #: ../camel/camel-vee-folder.c:491
 #, c-format
-#| msgid "Creating folder '%s'"
 msgid "Updating folder '%s'"
 msgstr "ફોલ્ડર '%s' સુધારી રહ્યા છે"
 
@@ -3529,7 +3506,6 @@ msgstr "ફોલ્ડર '%s' બનાવી શકતા નથી: ફો�
 
 #: ../camel/providers/imap/camel-imap-store.c:2923
 #, c-format
-#| msgid "Retrieving folder list for %s"
 msgid "Retrieving list of folders at '%s'"
 msgstr "'%s' પર ફોલ્ડરોની યાદીને પ્રાપ્ત કરી રહ્યા છે"
 
@@ -4739,7 +4715,6 @@ msgid "QUIT command failed: "
 msgstr "QUIT આદેશ નિષ્ફળ: "
 
 #: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-#| msgid "Contact ID already exists"
 msgid "Contact UID of a user"
 msgstr "વપરાશકર્તાની સંપર્ક UID"
 
@@ -4779,7 +4754,6 @@ msgid "Bus name vanished (client terminated?)"
 msgstr "બસ નામ નષ્ઠ થઇ ગઇ (શુ ક્લાયન્ટ બંધ થઇ ગયુ?)"
 
 #: ../libebackend/e-authentication-mediator.c:204
-#| msgid "No response from the server"
 msgid "No response from client"
 msgstr "ક્લાયન્ટમાંથી પ્રત્યુત્તર નથી"
 
@@ -4787,7 +4761,6 @@ msgstr "ક્લાયન્ટમાંથી પ્રત્યુત્ત�
 #: ../libebackend/e-authentication-mediator.c:275
 #: ../libebackend/e-authentication-mediator.c:606
 #: ../libebackend/e-authentication-mediator.c:967
-#| msgid "Could not cancel operation"
 msgid "Client cancelled the operation"
 msgstr "ક્લાયન્ટ એ પ્રક્રિયા રદ કરી"
 
@@ -4806,29 +4779,60 @@ msgstr "પાસવર્ડ અયોગ્ય છે"
 #: ../libebackend/e-authentication-session.c:1322
 #: ../libebackend/e-authentication-session.c:1494
 #: ../libebackend/e-authentication-session.c:1673
-#| msgid "Operation cancelled"
 msgid "Keyring operation was cancelled"
 msgstr "કીરીંગ ક્રિયા રદ થયેલ હતી"
 
 #: ../libebackend/e-backend.c:190
 #, c-format
-#| msgid "IMAP server %s does not support %s authentication"
 msgid "%s does not support authentication"
 msgstr "%s સત્તાધિકરણને આધાર આપતુ નથી"
 
-#: ../libebackend/e-server-side-source.c:103
+#: ../libebackend/e-collection-backend.c:734
+#, c-format
+#| msgid "%s does not support authentication"
+msgid "%s does not support creating remote resources"
+msgstr "%s એ દૂરસ્થ સ્ત્રોતને બનાવવા માટે આધાર આપતુ નથી"
+
+#: ../libebackend/e-collection-backend.c:793
+#, c-format
+#| msgid "%s does not support authentication"
+msgid "%s does not support deleting remote resources"
+msgstr "%s દૂરસ્થ સ્ત્રોતને કાઢવા માટે આધાર આપતુ નથી"
+
+#: ../libebackend/e-server-side-source.c:128
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "સ્ત્રોત ફાઇલ એ ગુમ થયેલ [%s] જૂથ છે"
 
-#: ../libebackend/e-server-side-source.c:1020
+#: ../libebackend/e-server-side-source.c:938 ../libedataserver/e-source.c:1084
+#, c-format
+#| msgid "Data source '%s' is not removable"
+msgid "Data source '%s' does not support creating remote resources"
+msgstr "માહિતી સ્ત્રોત '%s' દૂરસ્થ સ્ત્રોતને બનાવવા માટે આધાર આપતુ નથી"
+
+#: ../libebackend/e-server-side-source.c:952
+#, c-format
+msgid "Data source '%s' has no collection backend to create the remote resource"
+msgstr "માહિતી સ્ત્રોત '%s' પાસે દૂરસ્થ સ્ત્રોતને બનાવવા માટે બેકઍન્ડ સંગ્રહ નથી"
+
+#: ../libebackend/e-server-side-source.c:980 ../libedataserver/e-source.c:1193
+#, c-format
+#| msgid "Data source '%s' is not removable"
+msgid "Data source '%s' does not support deleting remote resources"
+msgstr "માહિતી સ્ત્રોત '%s' દૂરસ્થ સ્ત્રોતને કાઢવા આધાર આપતુ નથી"
+
+#: ../libebackend/e-server-side-source.c:994
+#, c-format
+msgid "Data source '%s' has no collection backend to delete the remote resource"
+msgstr "માહિતી સ્ત્રોત '%s' પાસે દૂરસ્થ સ્ત્રોતને કાઢવા માટે બેકઍન્ડ સંગ્રહ નથી"
+
+#: ../libebackend/e-server-side-source.c:1329
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "ફાઇલ પાસે '.source' ઍક્સટેન્શન હોવુ જ જોઇએ"
 
 #: ../libebackend/e-source-registry-server.c:520
 #: ../libedataserver/e-source-registry.c:1512
-#| msgid "Failed to authenticate.\n"
 msgid "The user declined to authenticate"
 msgstr "સત્તાધિકારણ કરવા માટે વપરાશકર્તાએ અસ્વીકાર કર્યો"
 
@@ -4968,85 +4972,73 @@ msgid "D-Bus error"
 msgstr "D-Bus ભૂલ"
 
 #: ../libedataserver/e-source-authenticator.c:166
-#| msgid "Authentication required"
 msgid "Address book authentication request"
 msgstr "સરનામા પોથી સત્તાધિકરણ માંગણી"
 
 #: ../libedataserver/e-source-authenticator.c:171
-#| msgid "Authentication required"
 msgid "Calendar authentication request"
 msgstr "કૅલેન્ડર સત્તાધિકરણ માંગણી"
 
 #: ../libedataserver/e-source-authenticator.c:175
-#| msgid "Authentication required"
 msgid "Mail authentication request"
 msgstr "મેઇલ સત્તાધિકરણ માંગણી"
 
 #. generic account prompt
 #: ../libedataserver/e-source-authenticator.c:178
-#| msgid "Authentication required"
 msgid "Authentication request"
 msgstr "સત્તાધિકરણ માંગણી"
 
 #: ../libedataserver/e-source-authenticator.c:188
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for address book \"%s\"."
 msgstr "મહેરબાની કરીને સરનામાં પોથી \"%s\" માટે પાસવર્ડને દાખલ કરો."
 
 #: ../libedataserver/e-source-authenticator.c:194
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for calendar \"%s\"."
 msgstr "મહેરબાની કરીને કૅલેન્ડર \"%s\" માટે પાસવર્ડને દાખલ કરો."
 
 #: ../libedataserver/e-source-authenticator.c:200
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail account \"%s\"."
 msgstr "મહેરબાની કરીને મેઇલ ખાતુ \"%s\" માટે પાસવર્ડ દાખલ કરો."
 
 #: ../libedataserver/e-source-authenticator.c:206
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail transport \"%s\"."
 msgstr "મહેરબાની કરીને મેઇલ પરિવહન \"%s\" માટે પાસવર્ડને દાખલ કરો."
 
 #: ../libedataserver/e-source-authenticator.c:212
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for memo list \"%s\"."
 msgstr "મહેરબાની કરીને મેમો યાદી \"%s\" માટે પાસવર્ડ દાખલ કરો."
 
 #: ../libedataserver/e-source-authenticator.c:218
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for task list \"%s\"."
 msgstr "મહેરબાની કરીને કાર્ય યાદી \"%s\" માટે પાસવર્ડને દાખલ કરો."
 
 #: ../libedataserver/e-source-authenticator.c:224
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for account \"%s\"."
 msgstr "મહેરબાની કરીને ખાતુ \"%s\" માટે પાસવર્ડ દાખલ કરો."
 
-#: ../libedataserver/e-source.c:603
+#: ../libedataserver/e-source.c:620
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "સ્ત્રોત ફાઇલ એ ગુમ થયેલ [%s] જૂથ છે"
 
-#: ../libedataserver/e-source.c:882
+#: ../libedataserver/e-source.c:911
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "માહિતી સ્ત્રોત '%s' દૂર કરી શકાય તેમ નથી"
 
-#: ../libedataserver/e-source.c:964
+#: ../libedataserver/e-source.c:993
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "માહિતી સ્ત્રોત '%s' લખી શકાય તેમ નથી"
 
-#: ../libedataserver/e-source.c:1138
-#| msgid "Unnamed List"
+#: ../libedataserver/e-source.c:1372
 msgid "Unnamed"
 msgstr "નામ વગરનું"
 
@@ -5348,7 +5340,6 @@ msgid "Address B_ook:"
 msgstr "સરનામા પોથી (_o):"
 
 #: ../libedataserverui/e-name-selector-dialog.c:308
-#| msgid "Cate_gory:"
 msgid "Cat_egory:"
 msgstr "વર્ગ (_e):"
 
@@ -5469,35 +5460,30 @@ msgstr "કેલેન્ડર"
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:184
 #, c-format
-#| msgid "Unexpected response from IMAP server: %s"
 msgid "Code: %u - Unexpected response from server"
 msgstr "કોડ: %u - સર્વર માંથી અનિચ્છનીય પ્રત્યુત્તર"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:205
 #, c-format
-#| msgid "Failed to retrieve message"
 msgid "Failed to parse autodiscover response XML"
 msgstr "autodiscover પ્રત્યુત્તર XML નું પદચ્છેદન કરતી વખતે નિષ્ફળતા"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:214
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Autodiscover element"
 msgstr "Autodiscover ઘટકને શોધવામાં નિષ્ફળતા"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:226
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Response element"
 msgstr "પ્રત્યુત્તર ઘટકને શોધવામાં નિષ્ફળતા"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:238
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Account element"
 msgstr "ખાતા ઘટકને શોધવામાં નિષ્ફળતા"
 
@@ -5526,7 +5512,6 @@ msgid "Evolution Source Viewer"
 msgstr "Evolution સ્ત્રોત દર્શક"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:598
-#| msgid "Family Name"
 msgid "Display Name"
 msgstr "દર્શાવ નામ"
 
