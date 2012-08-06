@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: as\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-08-01 13:47+0000\n"
-"PO-Revision-Date: 2012-08-03 14:27+0530\n"
+"POT-Creation-Date: 2012-08-03 15:40+0000\n"
+"PO-Revision-Date: 2012-08-06 08:45+0530\n"
 "Last-Translator: Nilamdyuti Goswami <ngoswami@redhat.com>\n"
 "Language-Team: as_IN <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -29,7 +29,7 @@ msgstr ""
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:569
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
-#: ../calendar/libecal/e-cal.c:4032 ../calendar/libecal/e-cal-client.c:148
+#: ../calendar/libecal/e-cal.c:4033 ../calendar/libecal/e-cal-client.c:148
 #: ../camel/camel-imapx-command.c:594
 #: ../camel/providers/imap/camel-imap-command.c:521
 #: ../camel/providers/imap/camel-imap-store.c:464
@@ -848,7 +848,7 @@ msgid "Success"
 msgstr "সফলতা"
 
 #: ../addressbook/libedata-book/e-data-book.c:303
-#: ../calendar/libecal/e-cal.c:4000 ../calendar/libedata-cal/e-data-cal.c:416
+#: ../calendar/libecal/e-cal.c:4001 ../calendar/libedata-cal/e-data-cal.c:416
 #: ../libedataserver/e-client.c:122
 msgid "Backend is busy"
 msgstr "ব্যাকএন্ড বৰ্তমানে ব্যস্ত"
@@ -859,7 +859,7 @@ msgid "Repository offline"
 msgstr "ভঁৰাল অফলাইন"
 
 #: ../addressbook/libedata-book/e-data-book.c:305
-#: ../calendar/libecal/e-cal.c:4014 ../calendar/libedata-cal/e-data-cal.c:418
+#: ../calendar/libecal/e-cal.c:4015 ../calendar/libedata-cal/e-data-cal.c:418
 #: ../libedataserver/e-client.c:138
 msgid "Permission denied"
 msgstr "অনুমতি নাকচ কৰা হৈছে"
@@ -935,14 +935,14 @@ msgid "Invalid server version"
 msgstr "অবৈধ চাৰ্ভাৰ সংস্কৰণ"
 
 #: ../addressbook/libedata-book/e-data-book.c:324
-#: ../calendar/libecal/e-cal.c:3998 ../calendar/libedata-cal/e-data-cal.c:439
+#: ../calendar/libecal/e-cal.c:3999 ../calendar/libedata-cal/e-data-cal.c:439
 #: ../libedataserver/e-client.c:120
 msgid "Invalid argument"
 msgstr "অবৈধ তৰ্ক"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:326
-#: ../calendar/libecal/e-cal.c:4037 ../calendar/libedata-cal/e-data-cal.c:441
+#: ../calendar/libecal/e-cal.c:4038 ../calendar/libedata-cal/e-data-cal.c:441
 #: ../libedataserver/e-client.c:144
 msgid "Not supported"
 msgstr "সমৰ্থিত নহয়"
@@ -1192,68 +1192,68 @@ msgstr "বতৰ: বাত বিদ্যুৎ"
 msgid "Forecast"
 msgstr "পূৰ্বাভাস"
 
-#: ../calendar/libecal/e-cal.c:4002
+#: ../calendar/libecal/e-cal.c:4003
 msgid "Repository is offline"
 msgstr "ভঁৰাল বৰ্তমানে অন-লাইন অৱস্থাত নাই"
 
-#: ../calendar/libecal/e-cal.c:4004 ../calendar/libecal/e-cal-client.c:135
+#: ../calendar/libecal/e-cal.c:4005 ../calendar/libecal/e-cal-client.c:135
 msgid "No such calendar"
 msgstr "এই ধৰণৰ কেলেন্ডাৰ উপস্থিত নাই"
 
-#: ../calendar/libecal/e-cal.c:4006 ../calendar/libecal/e-cal-client.c:137
+#: ../calendar/libecal/e-cal.c:4007 ../calendar/libecal/e-cal-client.c:137
 #: ../calendar/libedata-cal/e-data-cal.c:420
 msgid "Object not found"
 msgstr "বস্তু পোৱা নাযায়"
 
-#: ../calendar/libecal/e-cal.c:4008 ../calendar/libecal/e-cal-client.c:139
+#: ../calendar/libecal/e-cal.c:4009 ../calendar/libecal/e-cal-client.c:139
 #: ../calendar/libedata-cal/e-data-cal.c:421
 msgid "Invalid object"
 msgstr "অবৈধ বস্তু"
 
-#: ../calendar/libecal/e-cal.c:4010
+#: ../calendar/libecal/e-cal.c:4011
 msgid "URI not loaded"
 msgstr "URI বৰ্তমানে ল'ড কৰা নহয়"
 
-#: ../calendar/libecal/e-cal.c:4012
+#: ../calendar/libecal/e-cal.c:4013
 msgid "URI already loaded"
 msgstr "URI পূৰ্বে ল'ড কৰা হৈছে"
 
-#: ../calendar/libecal/e-cal.c:4016
+#: ../calendar/libecal/e-cal.c:4017
 msgid "Unknown User"
 msgstr "‍অজ্ঞাত ব্যৱহাৰকাৰী"
 
-#: ../calendar/libecal/e-cal.c:4018 ../calendar/libecal/e-cal-client.c:143
+#: ../calendar/libecal/e-cal.c:4019 ../calendar/libecal/e-cal-client.c:143
 #: ../calendar/libedata-cal/e-data-cal.c:422
 msgid "Object ID already exists"
 msgstr "বস্তু ID বৰ্তমানে উপস্থিত"
 
-#: ../calendar/libecal/e-cal.c:4020
+#: ../calendar/libecal/e-cal.c:4021
 msgid "Protocol not supported"
 msgstr "অসমৰ্থিত প্ৰটোকল"
 
-#: ../calendar/libecal/e-cal.c:4022
+#: ../calendar/libecal/e-cal.c:4023
 msgid "Operation has been canceled"
 msgstr "কৰ্ম বাতিল কৰা হৈছে"
 
-#: ../calendar/libecal/e-cal.c:4024
+#: ../calendar/libecal/e-cal.c:4025
 msgid "Could not cancel operation"
 msgstr "কৰ্ম বাতিল কৰোঁতে ব্যৰ্থ"
 
-#: ../calendar/libecal/e-cal.c:4026 ../libedataserver/e-client.c:128
+#: ../calendar/libecal/e-cal.c:4027 ../libedataserver/e-client.c:128
 msgid "Authentication failed"
 msgstr "প্ৰমাণীকৰণ ব্যৰ্থ"
 
-#: ../calendar/libecal/e-cal.c:4028
+#: ../calendar/libecal/e-cal.c:4029
 #: ../camel/providers/smtp/camel-smtp-transport.c:845
 #: ../libedataserver/e-client.c:130
 msgid "Authentication required"
 msgstr "প্ৰমাণীকৰণ আৱশ্যক"
 
-#: ../calendar/libecal/e-cal.c:4030
+#: ../calendar/libecal/e-cal.c:4031
 msgid "A D-Bus exception has occurred"
 msgstr "এটা D-Bus ব্যতিক্ৰম দেখা দিছে"
 
-#: ../calendar/libecal/e-cal.c:4034
+#: ../calendar/libecal/e-cal.c:4035
 msgid "No error"
 msgstr "কোনো ত্ৰুটি হোৱা নাই"
 
@@ -1896,7 +1896,6 @@ msgstr "'%s' ৰ বাবে কুটা তথ্য উদ্ধাৰ ক�
 
 #: ../camel/camel-folder.c:3985
 #, c-format
-#| msgid "Creating folder '%s'"
 msgid "Refreshing folder '%s'"
 msgstr "ফোল্ডাৰ '%s' ক সতেজ কৰা হৈছে"
 
@@ -4774,16 +4773,49 @@ msgstr "কি'ৰিং কাৰ্য্য বাতিল কৰা হৈ�
 
 #: ../libebackend/e-backend.c:190
 #, c-format
-#| msgid "IMAP server %s does not support %s authentication"
 msgid "%s does not support authentication"
 msgstr "%s এ প্ৰমাণীকৰণ সমৰ্থন নকৰে"
 
-#: ../libebackend/e-server-side-source.c:103
+#: ../libebackend/e-collection-backend.c:734
+#, c-format
+#| msgid "%s does not support authentication"
+msgid "%s does not support creating remote resources"
+msgstr "%s এ দূৰৱৰ্তী সম্পদসমূহ সৃষ্টি কৰাটো সমৰ্থন নকৰে"
+
+#: ../libebackend/e-collection-backend.c:793
+#, c-format
+#| msgid "%s does not support authentication"
+msgid "%s does not support deleting remote resources"
+msgstr "%s এ দূৰৱৰ্তী সম্পদসমূহ মচি পেলোৱাটো সমৰ্থন নকৰে"
+
+#: ../libebackend/e-server-side-source.c:128
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "তথ্যৰ উৎসত এটা [%s] দল সন্ধানহিন"
 
-#: ../libebackend/e-server-side-source.c:1020
+#: ../libebackend/e-server-side-source.c:938 ../libedataserver/e-source.c:1084
+#, c-format
+#| msgid "Data source '%s' is not removable"
+msgid "Data source '%s' does not support creating remote resources"
+msgstr "তথ্য উৎস '%s' এ দূৰৱৰ্তী সম্পদসমূহ সৃষ্টি কৰাটো সমৰ্থন নকৰে"
+
+#: ../libebackend/e-server-side-source.c:952
+#, c-format
+msgid "Data source '%s' has no collection backend to create the remote resource"
+msgstr "তথ্য উৎস '%s' ৰ দূৰৱৰ্তী সম্পদ সৃষ্টি কৰিবলে কোনো সংগ্ৰহ বেকএন্ড নাই"
+
+#: ../libebackend/e-server-side-source.c:980 ../libedataserver/e-source.c:1193
+#, c-format
+#| msgid "Data source '%s' is not removable"
+msgid "Data source '%s' does not support deleting remote resources"
+msgstr "তথ্য উৎস '%s' এ দূৰৱৰ্তী সম্পদসমূহ মচি পেলোৱাটো সমৰ্থন নকৰে"
+
+#: ../libebackend/e-server-side-source.c:994
+#, c-format
+msgid "Data source '%s' has no collection backend to delete the remote resource"
+msgstr "তথ্য উৎস '%s' ৰ দূৰৱৰ্তী সম্পদ মচি পেলাবলে কোনো সংগ্ৰহ বেকএন্ড নাই"
+
+#: ../libebackend/e-server-side-source.c:1329
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "নথিপত্ৰৰ এটা '.source' সম্প্ৰসাৰন থাকিব লাগিব"
@@ -4980,22 +5012,22 @@ msgstr "অনুগ্ৰহ কৰি কাৰ্য্য তালিকা
 msgid "Please enter the password for account \"%s\"."
 msgstr "অনুগ্ৰহ কৰি একাওন্ট \"%s\" ৰ বাবে পাছৱাৰ্ড সুমুৱাওক।"
 
-#: ../libedataserver/e-source.c:603
+#: ../libedataserver/e-source.c:620
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "উৎস নথিপত্ৰত এটা [%s] দল সন্ধানহিন"
 
-#: ../libedataserver/e-source.c:882
+#: ../libedataserver/e-source.c:911
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "তথ্য উৎস '%s' আতৰাব নোৱাৰি"
 
-#: ../libedataserver/e-source.c:964
+#: ../libedataserver/e-source.c:993
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "তথ্য উৎস '%s' লিখিব পৰা নহয়"
 
-#: ../libedataserver/e-source.c:1138
+#: ../libedataserver/e-source.c:1372
 msgid "Unnamed"
 msgstr "নাম নহোৱা"
 
