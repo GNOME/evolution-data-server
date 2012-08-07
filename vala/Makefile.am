@@ -52,13 +52,15 @@ libecalendar-1.2.vapi: $(top_builddir)/calendar/libecal/ECalendar-1.2.gir libeda
 libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedataserver-1.2.vapi libebook-1.2-custom.vala
 	$(VAPIGEN_V)$(VAPIGEN) \
 		--vapidir=. \
+		--vapidir=$(srcdir) \
 		--girdir=$(top_builddir)/libedataserver \
 		--pkg libedataserver-1.2 \
 		--pkg gio-2.0 \
+		--pkg libxml-2.0 \
 		--library libebook-1.2 \
 		--metadatadir=$(srcdir) \
 		$< \
-		libebook-1.2-custom.vala \
+		$(srcdir)/libebook-1.2-custom.vala \
 		$(NULL)
 
 CLEANFILES = \
