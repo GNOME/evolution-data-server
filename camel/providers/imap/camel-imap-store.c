@@ -762,6 +762,10 @@ imap_store_dispose (GObject *object)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (object);
 
+	/* This frees current_folder, folders, authtypes, streams, and namespace. */
+	camel_service_disconnect_sync (
+		CAMEL_SERVICE (imap_store), TRUE, NULL, NULL);
+
 	if (imap_store->summary != NULL) {
 		camel_store_summary_save (
 			CAMEL_STORE_SUMMARY (imap_store->summary));
@@ -777,10 +781,6 @@ static void
 imap_store_finalize (GObject *object)
 {
 	CamelImapStore *imap_store = CAMEL_IMAP_STORE (object);
-
-	/* This frees current_folder, folders, authtypes, streams, and namespace. */
-	camel_service_disconnect_sync (
-		CAMEL_SERVICE (imap_store), TRUE, NULL, NULL);
 
 	g_static_rec_mutex_free (&imap_store->command_and_response_lock);
 	g_hash_table_destroy (imap_store->known_alerts);
