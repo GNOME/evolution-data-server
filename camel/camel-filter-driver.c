@@ -1654,6 +1654,16 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 	if (message != NULL && camel_mime_message_get_source (message) == NULL)
 		camel_mime_message_set_source (message, original_store_uid);
 
+	if (g_strcmp0 (store_uid, "local") == 0 ||
+	    g_strcmp0 (store_uid, "vfolder") == 0) {
+		store_uid = NULL;
+	}
+
+	if (g_strcmp0 (original_store_uid, "local") == 0 ||
+	    g_strcmp0 (original_store_uid, "vfolder") == 0) {
+		original_store_uid = NULL;
+	}
+
 	list = g_queue_peek_head_link (&driver->priv->rules);
 	result = CAMEL_SEARCH_NOMATCH;
 
