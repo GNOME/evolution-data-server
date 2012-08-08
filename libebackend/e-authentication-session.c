@@ -122,6 +122,8 @@ G_DEFINE_TYPE (
 	e_authentication_session,
 	G_TYPE_OBJECT)
 
+G_LOCK_DEFINE_STATIC (gnome_keyring);
+
 static void
 async_context_free (AsyncContext *async_context)
 {
@@ -1311,6 +1313,8 @@ e_authentication_session_store_password_sync (EAuthenticationSession *session,
 	uid = e_authentication_session_get_source_uid (session);
 	display_name = g_strdup_printf (KEYRING_ITEM_DISPLAY_FORMAT, uid);
 
+	G_LOCK (gnome_keyring);
+
 	result = gnome_keyring_store_password_sync (
 		&schema, keyring, display_name, password,
 		KEYRING_ITEM_ATTRIBUTE_NAME, uid, NULL);
@@ -1326,6 +1330,8 @@ e_authentication_session_store_password_sync (EAuthenticationSession *session,
 			error, E_AUTHENTICATION_SESSION_KEYRING_ERROR,
 			result, gnome_keyring_result_to_message (result));
 	}
+
+	G_UNLOCK (gnome_keyring);
 
 	g_free (display_name);
 
@@ -1478,6 +1484,8 @@ e_authentication_session_lookup_password_sync (EAuthenticationSession *session,
 
 	uid = e_authentication_session_get_source_uid (session);
 
+	G_LOCK (gnome_keyring);
+
 	result = gnome_keyring_find_password_sync (
 		&schema, &temp, KEYRING_ITEM_ATTRIBUTE_NAME, uid, NULL);
 
@@ -1509,6 +1517,8 @@ e_authentication_session_lookup_password_sync (EAuthenticationSession *session,
 
 	if (temp != NULL)
 		gnome_keyring_free_password (temp);
+
+	G_UNLOCK (gnome_keyring);
 
 	return (result == GNOME_KEYRING_RESULT_OK);
 }
@@ -1659,6 +1669,8 @@ e_authentication_session_delete_password_sync (EAuthenticationSession *session,
 
 	uid = e_authentication_session_get_source_uid (session);
 
+	G_LOCK (gnome_keyring);
+
 	result = gnome_keyring_delete_password_sync (
 		&schema, KEYRING_ITEM_ATTRIBUTE_NAME, uid, NULL);
 
@@ -1677,6 +1689,8 @@ e_authentication_session_delete_password_sync (EAuthenticationSession *session,
 			error, E_AUTHENTICATION_SESSION_KEYRING_ERROR,
 			result, gnome_keyring_result_to_message (result));
 	}
+
+	G_UNLOCK (gnome_keyring);
 
 	return (result == GNOME_KEYRING_RESULT_OK);
 }
