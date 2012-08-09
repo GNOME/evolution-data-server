@@ -482,6 +482,38 @@ camel_vee_data_cache_get_subfolder_data (CamelVeeDataCache *data_cache,
 	return res;
 }
 
+/* Returns whether data_cache contains certain UID for certain folder;
+   instead of camel_vee_data_cache_get_message_info_data() only
+   returns FALSE if not, while camel_vee_data_cache_get_message_info_data()
+   auto-adds it to data_cache.
+*/
+gboolean
+camel_vee_data_cache_contains_message_info_data (CamelVeeDataCache *data_cache,
+						 CamelFolder *folder,
+						 const gchar *orig_message_uid)
+{
+	gboolean res;
+	VeeData vdata;
+
+	g_return_val_if_fail (CAMEL_IS_VEE_DATA_CACHE (data_cache), FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (orig_message_uid != NULL, FALSE);
+
+	g_mutex_lock (data_cache->priv->mi_mutex);
+
+	/* make sure the orig_message_uid comes from the string pool */
+	vdata.folder = folder;
+	vdata.orig_message_uid = camel_pstring_strdup (orig_message_uid);
+
+	res = g_hash_table_lookup (data_cache->priv->orig_message_uid_hash, &vdata) != NULL;
+
+	camel_pstring_free (vdata.orig_message_uid);
+
+	g_mutex_unlock (data_cache->priv->mi_mutex);
+
+	return res;
+}
+
 CamelVeeMessageInfoData *
 camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
                                             CamelFolder *folder,
@@ -625,6 +657,8 @@ camel_vee_data_cache_remove_message_info_data (CamelVeeDataCache *data_cache,
 
 	g_mutex_lock (data_cache->priv->mi_mutex);
 
+	g_object_ref (mi_data);
+
 	sf_data = camel_vee_message_info_data_get_subfolder_data (mi_data);
 
 	vdata.folder = camel_vee_subfolder_data_get_folder (sf_data);
@@ -633,6 +667,8 @@ camel_vee_data_cache_remove_message_info_data (CamelVeeDataCache *data_cache,
 
 	g_hash_table_remove (data_cache->priv->vee_message_uid_hash, vuid);
 	g_hash_table_remove (data_cache->priv->orig_message_uid_hash, &vdata);
+
+	g_object_unref (mi_data);
 
 	g_mutex_unlock (data_cache->priv->mi_mutex);
 }

@@ -166,6 +166,7 @@ static void
 vee_folder_note_unmatch_uid (CamelVeeFolder *vfolder,
                              CamelVeeSummary *vsummary,
                              CamelFolder *subfolder,
+			     CamelVeeDataCache *data_cache,
                              CamelVeeMessageInfoData *unmatched_mi_data,
                              CamelFolderChangeInfo *changes)
 {
@@ -182,6 +183,8 @@ vee_folder_note_unmatch_uid (CamelVeeFolder *vfolder,
 
 		if (vfolder->priv->parent_vee_store)
 			camel_vee_store_note_vuid_unused (vfolder->priv->parent_vee_store, unmatched_mi_data, vfolder);
+		else
+			camel_vee_data_cache_remove_message_info_data (data_cache, unmatched_mi_data);
 
 		g_object_unref (unmatched_mi_data);
 	}
@@ -199,15 +202,22 @@ vee_folder_remove_unmatched (CamelVeeFolder *vfolder,
 {
 	CamelVeeMessageInfoData *mi_data;
 
-	if (is_orig_message_uid)
+	if (is_orig_message_uid) {
+		/* camel_vee_data_cache_get_message_info_data() auto-adds items if not there,
+		   thus check whether the cache has it already, and if not, then skip the action.
+		   This can happen for virtual Junk/Trash folders.
+		*/
+		if (!camel_vee_data_cache_contains_message_info_data (data_cache, subfolder, orig_message_uid))
+			return;
+
 		mi_data = camel_vee_data_cache_get_message_info_data (data_cache, subfolder, orig_message_uid);
-	else
+	} else
 		mi_data = camel_vee_data_cache_get_message_info_data_by_vuid (data_cache, orig_message_uid);
 
 	if (!mi_data)
 		return;
 
-	vee_folder_note_unmatch_uid (vfolder, vsummary, subfolder, mi_data, changes);
+	vee_folder_note_unmatch_uid (vfolder, vsummary, subfolder, data_cache, mi_data, changes);
 
 	g_object_unref (mi_data);
 }
@@ -275,13 +285,6 @@ vee_folder_merge_matching (CamelVeeFolder *vfolder,
 
 		g_object_unref (mi_data);
 	}
-
-	/* Not a real search folder influencing Unmatched folder, thus skip it.
-	   The removal requires CamelVeeMessageInfoData, which is added on demand
-	   to CamelVeeDataCache, thus even the virtual trash/junk folder doesn't
-	   need it, it is left in the data_cache since then on */
-	if (!vfolder->priv->parent_vee_store)
-		return;
 
 	rud.vfolder = vfolder;
 	rud.vsummary = vsummary;
@@ -662,8 +665,10 @@ vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
 		gpointer pkey, pvalue;
 		CamelVeeSummary *vsummary;
 		CamelFolder *v_folder;
+		CamelVeeDataCache *data_cache;
 
 		changes = camel_folder_change_info_new ();
+		data_cache = vee_folder_get_data_cache (vf);
 		v_folder = CAMEL_FOLDER (vf);
 		vsummary = CAMEL_VEE_SUMMARY (v_folder->summary);
 
@@ -676,7 +681,7 @@ vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
 
 			sf_data = camel_vee_message_info_data_get_subfolder_data (mi_data);
 			subfolder = camel_vee_subfolder_data_get_folder (sf_data);
-			vee_folder_note_unmatch_uid (vf, vsummary, subfolder, mi_data, changes);
+			vee_folder_note_unmatch_uid (vf, vsummary, subfolder, data_cache, mi_data, changes);
 		}
 		g_hash_table_remove_all (vf->priv->unmatched_remove_changed);
 
@@ -1502,6 +1507,7 @@ camel_vee_folder_remove_vuid (CamelVeeFolder *vfolder,
 {
 	CamelVeeSummary *vsummary;
 	CamelVeeSubfolderData *sf_data;
+	CamelVeeDataCache *data_cache;
 	CamelFolder *subfolder;
 
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
@@ -1535,7 +1541,8 @@ camel_vee_folder_remove_vuid (CamelVeeFolder *vfolder,
 	camel_vee_folder_unlock (vfolder, CAMEL_VEE_FOLDER_CHANGED_LOCK);
 
 	vsummary = CAMEL_VEE_SUMMARY (CAMEL_FOLDER (vfolder)->summary);
-	vee_folder_note_unmatch_uid (vfolder, vsummary, subfolder, mi_data, changes);
+	data_cache = vee_folder_get_data_cache (vfolder);
+	vee_folder_note_unmatch_uid (vfolder, vsummary, subfolder, data_cache, mi_data, changes);
 }
 
 /**

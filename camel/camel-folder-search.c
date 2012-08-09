@@ -391,6 +391,9 @@ camel_folder_search_count (CamelFolderSearch *search,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto fail;
 
+	if (!expr || !*expr)
+		expr = "(match-all)";
+
 	p = search->priv;
 
 	g_assert (search->folder);
@@ -543,6 +546,9 @@ camel_folder_search_search (CamelFolderSearch *search,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto fail;
 
+	if (!expr || !*expr)
+		expr = "(match-all)";
+
 	p = search->priv;
 
 	g_assert (search->folder);
@@ -684,8 +690,13 @@ fail:
 	return matches;
 }
 
-void camel_folder_search_free_result (CamelFolderSearch *search, GPtrArray *result)
+void
+camel_folder_search_free_result (CamelFolderSearch *search,
+				 GPtrArray *result)
 {
+	if (!result)
+		return;
+
 	g_ptr_array_foreach (result, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (result, TRUE);
 }

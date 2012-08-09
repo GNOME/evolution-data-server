@@ -154,6 +154,10 @@ void				camel_vee_data_cache_remove_subfolder	(CamelVeeDataCache *data_cache,
 									 CamelFolder *subfolder);
 CamelVeeSubfolderData *		camel_vee_data_cache_get_subfolder_data	(CamelVeeDataCache *data_cache, /* returned is reffed */
 									 CamelFolder *folder);
+gboolean			camel_vee_data_cache_contains_message_info_data
+									(CamelVeeDataCache *data_cache,
+									 CamelFolder *folder,
+									 const gchar *orig_message_uid);
 CamelVeeMessageInfoData *	camel_vee_data_cache_get_message_info_data				/* returned is reffed */
 									(CamelVeeDataCache *data_cache,
 									 CamelFolder *folder,
