@@ -855,8 +855,14 @@ esmtp_get_authtypes (const guchar *buffer)
 	const guchar *start, *end;
 	GHashTable *table = NULL;
 
-	/* advance to the first token */
 	start = buffer;
+
+	/* make sure there is at least one delimiter
+	   character in the AUTH response */
+	if (!isspace ((gint) *start) && *start != '=')
+		return NULL;
+
+	/* advance to the first token */
 	while (isspace ((gint) *start) || *start == '=')
 		start++;
 
@@ -1180,7 +1186,7 @@ smtp_helo (CamelSmtpTransport *transport,
 						transport->flags &= ~CAMEL_SMTP_TRANSPORT_AUTH_EQUAL;
 
 					/* parse for supported AUTH types */
-					token += 5;
+					token += 4;
 
 					if (transport->authtypes) {
 						g_hash_table_foreach (transport->authtypes, authtypes_free, NULL);
