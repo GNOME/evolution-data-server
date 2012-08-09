@@ -881,6 +881,7 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
                                     CamelMessageInfo *info)
 {
 	guint32 old_flags, new_flags, added_flags, removed_flags;
+	gboolean is_junk_folder = FALSE, is_trash_folder = FALSE;
 	GObject *summary_object;
 	gboolean changed = FALSE;
 
@@ -905,6 +906,13 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 		return FALSE;
 	}
 
+	if (summary->priv->folder && CAMEL_IS_VTRASH_FOLDER (summary->priv->folder)) {
+		CamelVTrashFolder *vtrash = CAMEL_VTRASH_FOLDER (summary->priv->folder);
+
+		is_junk_folder = vtrash && vtrash->type == CAMEL_VTRASH_FOLDER_JUNK;
+		is_trash_folder = vtrash && vtrash->type == CAMEL_VTRASH_FOLDER_TRASH;
+	}
+
 	added_flags = new_flags & (~(old_flags & new_flags));
 	removed_flags = old_flags & (~(old_flags & new_flags));
 
@@ -913,6 +921,15 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 		 * of the flag, thus if it wasn't changed, then simply set it
 		 * in added/removed, thus there are no false notifications
 		 * on unread counts */
+		added_flags |= CAMEL_MESSAGE_SEEN;
+		removed_flags |= CAMEL_MESSAGE_SEEN;
+	} else if ((!is_junk_folder && (new_flags & CAMEL_MESSAGE_JUNK) != 0 &&
+		   (old_flags & CAMEL_MESSAGE_JUNK) == (new_flags & CAMEL_MESSAGE_JUNK)) ||
+		   (!is_trash_folder && (new_flags & CAMEL_MESSAGE_DELETED) != 0 &&
+		   (old_flags & CAMEL_MESSAGE_DELETED) == (new_flags & CAMEL_MESSAGE_DELETED))) {
+		/* The message was set read or unread, but it is a junk or deleted message,
+		 * in a non-Junk/non-Trash folder, thus it doesn't influence an unread count
+		 * there, thus pretend unread didn't change */
 		added_flags |= CAMEL_MESSAGE_SEEN;
 		removed_flags |= CAMEL_MESSAGE_SEEN;
 	}
