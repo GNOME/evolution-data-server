@@ -702,9 +702,11 @@ source_registry_server_create_source (ESourceRegistryServer *server,
 {
 	ESource *source = NULL;
 	GFile *file;
+	GFile *parent;
 	GKeyFile *key_file;
 	gboolean success;
 	gsize length;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -746,6 +748,20 @@ source_registry_server_create_source (ESourceRegistryServer *server,
 
 	file = e_server_side_source_new_user_file (uid);
 
+	/* Create the directory where we'll be writing. */
+
+	parent = g_file_get_parent (file);
+	g_file_make_directory_with_parents (parent, NULL, &local_error);
+	g_object_unref (parent);
+
+	if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+		g_clear_error (&local_error);
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		success = FALSE;
+	}
+
 	/* Write the data to disk.  The file monitor should eventually
 	 * notice the new file and call e_source_registry_server_load_file()
 	 * per design, but we're going to beat it to the punch since we
@@ -754,9 +770,10 @@ source_registry_server_create_source (ESourceRegistryServer *server,
 	 * it will simply get back the EDBusSourceObject we've already
 	 * created and exported. */
 
-	success = g_file_replace_contents (
-		file, data, length, NULL, FALSE,
-		G_FILE_CREATE_PRIVATE, NULL, NULL, error);
+	if (success)
+		success = g_file_replace_contents (
+			file, data, length, NULL, FALSE,
+			G_FILE_CREATE_PRIVATE, NULL, NULL, error);
 
 	if (success) {
 		ESourcePermissionFlags flags;
