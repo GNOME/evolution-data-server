@@ -36,7 +36,7 @@
 #include "camel-pop3-store.h"
 #include "camel-pop3-settings.h"
 
-#define d(x) if (camel_debug("pop")) x;
+#define d(x) if (camel_debug("pop3")) x;
 
 G_DEFINE_TYPE (CamelPOP3Folder, camel_pop3_folder, CAMEL_TYPE_FOLDER)
 
