@@ -858,16 +858,14 @@ server_side_source_write (ESource *source,
 
 	if (replace_file) {
 		GFile *file;
+		GFile *write_directory;
 		gchar *basename;
-		gchar *filename;
 
 		g_warn_if_fail (priv->write_directory != NULL);
 
 		basename = g_file_get_basename (priv->file);
-		filename = g_build_filename (
-			priv->write_directory, basename, NULL);
-		file = g_file_new_for_path (filename);
-		g_free (filename);
+		write_directory = g_file_new_for_path (priv->write_directory);
+		file = g_file_get_child (write_directory, basename);
 		g_free (basename);
 
 		if (!g_file_equal (file, priv->file)) {
@@ -877,9 +875,17 @@ server_side_source_write (ESource *source,
 
 		server_side_source_print_diff (source, old_data, new_data);
 
-		g_file_replace_contents (
-			file, new_data, strlen (new_data), NULL, FALSE,
-			G_FILE_CREATE_NONE, NULL, cancellable, &error);
+		g_file_make_directory_with_parents (
+			write_directory, cancellable, &error);
+
+		if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+			g_clear_error (&error);
+
+		if (error == NULL)
+			g_file_replace_contents (
+				file, new_data, strlen (new_data),
+				NULL, FALSE, G_FILE_CREATE_NONE,
+				NULL, cancellable, &error);
 
 		if (error == NULL) {
 			g_free (priv->file_contents);
@@ -887,6 +893,7 @@ server_side_source_write (ESource *source,
 			new_data = NULL;
 		}
 
+		g_object_unref (write_directory);
 		g_object_unref (file);
 	}
 
