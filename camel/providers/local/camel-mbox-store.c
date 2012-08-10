@@ -904,10 +904,9 @@ mbox_store_get_full_path (CamelLocalStore *ls,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
-	const gchar *inptr = full_name;
-	gint subdirs = 0;
+	GString *full_path;
 	gchar *root_path;
-	gchar *path, *p;
+	const gchar *cp;
 
 	service = CAMEL_SERVICE (ls);
 	settings = camel_service_get_settings (service);
@@ -916,35 +915,29 @@ mbox_store_get_full_path (CamelLocalStore *ls,
 	root_path = camel_local_settings_dup_path (local_settings);
 	g_return_val_if_fail (root_path != NULL, NULL);
 
-	while (*inptr != '\0') {
-		if (G_IS_DIR_SEPARATOR (*inptr))
-			subdirs++;
-		inptr++;
-	}
+	full_path = g_string_new (root_path);
 
-	path = g_malloc (strlen (root_path) + (inptr - full_name) + (4 * subdirs) + 1);
-	p = g_stpcpy (path, root_path);
+	/* Root path may or may not have a trailing separator. */
+	if (!g_str_has_suffix (root_path, G_DIR_SEPARATOR_S))
+		g_string_append_c (full_path, G_DIR_SEPARATOR);
 
-	g_free (root_path);
+	cp = full_name;
+	while (*cp != '\0') {
+		if (G_IS_DIR_SEPARATOR (*cp)) {
+			g_string_append (full_path, ".sbd");
+			g_string_append_c (full_path, *cp++);
 
-	inptr = full_name;
-	while (*inptr != '\0') {
-		while (!G_IS_DIR_SEPARATOR (*inptr) && *inptr != '\0')
-			*p++ = *inptr++;
-
-		if (G_IS_DIR_SEPARATOR (*inptr)) {
-			p = g_stpcpy (p, ".sbd/");
-			inptr++;
-
-			/* strip extranaeous '/'s */
-			while (G_IS_DIR_SEPARATOR (*inptr))
-				inptr++;
+			/* Skip extranaeous separators. */
+			while (G_IS_DIR_SEPARATOR (*cp))
+				cp++;
+		} else {
+			g_string_append_c (full_path, *cp++);
 		}
 	}
 
-	*p = '\0';
+	g_free (root_path);
 
-	return path;
+	return g_string_free (full_path, FALSE);
 }
 
 static gchar *
