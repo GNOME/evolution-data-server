@@ -86,20 +86,19 @@
 G_BEGIN_DECLS
 
 typedef struct _CamelVeeSubfolderData CamelVeeSubfolderData;
-typedef struct _CamelVeeSubfolderDataPrivate CamelVeeSubfolderDataPrivate;
 typedef struct _CamelVeeSubfolderDataClass CamelVeeSubfolderDataClass;
+typedef struct _CamelVeeSubfolderDataPrivate CamelVeeSubfolderDataPrivate;
 
 typedef struct _CamelVeeMessageInfoData CamelVeeMessageInfoData;
-typedef struct _CamelVeeMessageInfoDataPrivate CamelVeeMessageInfoDataPrivate;
 typedef struct _CamelVeeMessageInfoDataClass CamelVeeMessageInfoDataClass;
+typedef struct _CamelVeeMessageInfoDataPrivate CamelVeeMessageInfoDataPrivate;
 
 typedef struct _CamelVeeDataCache CamelVeeDataCache;
-typedef struct _CamelVeeDataCachePrivate CamelVeeDataCachePrivate;
 typedef struct _CamelVeeDataCacheClass CamelVeeDataCacheClass;
+typedef struct _CamelVeeDataCachePrivate CamelVeeDataCachePrivate;
 
 struct _CamelVeeSubfolderData {
 	GObject parent;
-
 	CamelVeeSubfolderDataPrivate *priv;
 };
 
@@ -107,16 +106,19 @@ struct _CamelVeeSubfolderDataClass {
 	GObjectClass parent_class;
 };
 
-GType			camel_vee_subfolder_data_get_type	(void);
-CamelVeeSubfolderData *	camel_vee_subfolder_data_new		(CamelFolder *folder);
-CamelFolder *		camel_vee_subfolder_data_get_folder	(CamelVeeSubfolderData *data); /* returned not reffed */
-const gchar *		camel_vee_subfolder_data_get_folder_id	(CamelVeeSubfolderData *data);
+GType		camel_vee_subfolder_data_get_type
+						(void) G_GNUC_CONST;
+CamelVeeSubfolderData *
+		camel_vee_subfolder_data_new	(CamelFolder *folder);
+CamelFolder *	camel_vee_subfolder_data_get_folder
+						(CamelVeeSubfolderData *data);
+const gchar *	camel_vee_subfolder_data_get_folder_id
+						(CamelVeeSubfolderData *data);
 
 /* ----------------------------------------------------------------------- */
 
 struct _CamelVeeMessageInfoData {
 	GObject parent;
-
 	CamelVeeMessageInfoDataPrivate *priv;
 };
 
@@ -124,21 +126,24 @@ struct _CamelVeeMessageInfoDataClass {
 	GObjectClass parent_class;
 };
 
-GType				camel_vee_message_info_data_get_type	(void);
-CamelVeeMessageInfoData *	camel_vee_message_info_data_new		(CamelVeeSubfolderData *subfolder_data,
-									 const gchar *orig_message_uid);
-CamelVeeSubfolderData *		camel_vee_message_info_data_get_subfolder_data
-									(CamelVeeMessageInfoData *data); /* returned not reffed */
-const gchar *			camel_vee_message_info_data_get_orig_message_uid
-									(CamelVeeMessageInfoData *data);
-const gchar *			camel_vee_message_info_data_get_vee_message_uid
-									(CamelVeeMessageInfoData *data);
+GType		camel_vee_message_info_data_get_type
+						(void) G_GNUC_CONST;
+CamelVeeMessageInfoData *
+		camel_vee_message_info_data_new	
+						(CamelVeeSubfolderData *subfolder_data,
+						 const gchar *orig_message_uid);
+CamelVeeSubfolderData *
+		camel_vee_message_info_data_get_subfolder_data
+						(CamelVeeMessageInfoData *data);
+const gchar *	camel_vee_message_info_data_get_orig_message_uid
+						(CamelVeeMessageInfoData *data);
+const gchar *	camel_vee_message_info_data_get_vee_message_uid
+						(CamelVeeMessageInfoData *data);
 
 /* ----------------------------------------------------------------------- */
 
 struct _CamelVeeDataCache {
 	GObject parent;
-
 	CamelVeeDataCachePrivate *priv;
 };
 
@@ -146,35 +151,42 @@ struct _CamelVeeDataCacheClass {
 	GObjectClass parent_class;
 };
 
-GType				camel_vee_data_cache_get_type		(void);
-CamelVeeDataCache *		camel_vee_data_cache_new		(void);
-void				camel_vee_data_cache_add_subfolder	(CamelVeeDataCache *data_cache,
-									 CamelFolder *subfolder);
-void				camel_vee_data_cache_remove_subfolder	(CamelVeeDataCache *data_cache,
-									 CamelFolder *subfolder);
-CamelVeeSubfolderData *		camel_vee_data_cache_get_subfolder_data	(CamelVeeDataCache *data_cache, /* returned is reffed */
-									 CamelFolder *folder);
-gboolean			camel_vee_data_cache_contains_message_info_data
-									(CamelVeeDataCache *data_cache,
-									 CamelFolder *folder,
-									 const gchar *orig_message_uid);
-CamelVeeMessageInfoData *	camel_vee_data_cache_get_message_info_data				/* returned is reffed */
-									(CamelVeeDataCache *data_cache,
-									 CamelFolder *folder,
-									 const gchar *orig_message_uid);
-CamelVeeMessageInfoData *	camel_vee_data_cache_get_message_info_data_by_vuid			/* returned is reffed */
-									(CamelVeeDataCache *data_cache,
-									 const gchar *vee_message_uid);
-void				camel_vee_data_cache_foreach_message_info_data
-									(CamelVeeDataCache *data_cache,
-									 CamelFolder *fromfolder,
-									 void (* func) (CamelVeeMessageInfoData *mi_data,
-											CamelFolder *subfolder,
-											gpointer user_data),
-									 gpointer user_data);
-void				camel_vee_data_cache_remove_message_info_data
-									(CamelVeeDataCache *data_cache,
-									 CamelVeeMessageInfoData *mi_data);
+GType		camel_vee_data_cache_get_type	(void) G_GNUC_CONST;
+CamelVeeDataCache *
+		camel_vee_data_cache_new	(void);
+void		camel_vee_data_cache_add_subfolder
+						(CamelVeeDataCache *data_cache,
+						 CamelFolder *subfolder);
+void		camel_vee_data_cache_remove_subfolder
+						(CamelVeeDataCache *data_cache,
+						 CamelFolder *subfolder);
+CamelVeeSubfolderData *
+		camel_vee_data_cache_get_subfolder_data
+						(CamelVeeDataCache *data_cache,
+						 CamelFolder *folder);
+gboolean	camel_vee_data_cache_contains_message_info_data
+						(CamelVeeDataCache *data_cache,
+						 CamelFolder *folder,
+						 const gchar *orig_message_uid);
+CamelVeeMessageInfoData *
+		camel_vee_data_cache_get_message_info_data
+						(CamelVeeDataCache *data_cache,
+						 CamelFolder *folder,
+						 const gchar *orig_message_uid);
+CamelVeeMessageInfoData *
+		camel_vee_data_cache_get_message_info_data_by_vuid
+						(CamelVeeDataCache *data_cache,
+						 const gchar *vee_message_uid);
+void		camel_vee_data_cache_foreach_message_info_data
+						(CamelVeeDataCache *data_cache,
+						 CamelFolder *fromfolder,
+						 void (* func) (CamelVeeMessageInfoData *mi_data,
+						 CamelFolder *subfolder,
+						 gpointer user_data),
+						 gpointer user_data);
+void		camel_vee_data_cache_remove_message_info_data
+						(CamelVeeDataCache *data_cache,
+						 CamelVeeMessageInfoData *mi_data);
 
 G_END_DECLS
 

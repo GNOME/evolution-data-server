@@ -1151,10 +1151,6 @@ e_util_get_localedir
 e_util_replace_prefix
 e_data_server_util_get_dbus_call_timeout
 e_data_server_util_set_dbus_call_timeout
-e_pointer_tracker_track
-e_pointer_tracker_track_with_info
-e_pointer_tracker_untrack
-e_pointer_tracker_dump
 </SECTION>
 
 <SECTION>

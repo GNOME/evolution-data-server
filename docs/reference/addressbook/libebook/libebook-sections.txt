@@ -388,7 +388,7 @@ EVC_X_TTYTDD
 EVC_X_VIDEO_URL
 EVC_X_WANTS_HTML
 EVC_X_YAHOO
-EVC_X_BOOK_URI
+EVC_X_BOOK_UID
 EVC_CONTACT_LIST
 EVC_PARENT_CL
 EVC_CL_UID
@@ -442,6 +442,7 @@ e_book_query_get_type
 E_BOOK_ERROR
 e_book_error_quark
 EBookStatus
+EDataBookStatus
 E_BOOK_ERROR_CORBA_EXCEPTION
 EBookViewStatus
 EBookChangeType

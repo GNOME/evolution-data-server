@@ -98,9 +98,11 @@ void camel_debug_end (void);
 #define camel_pointer_tracker_track(ptr) \
 	(camel_pointer_tracker_track_with_info ((ptr), G_STRFUNC))
 
-void		camel_pointer_tracker_track_with_info (gpointer ptr, const gchar *info);
-void		camel_pointer_tracker_untrack (gpointer ptr);
-void		camel_pointer_tracker_dump (void);
+void		camel_pointer_tracker_track_with_info
+						(gpointer ptr,
+						 const gchar *info);
+void		camel_pointer_tracker_untrack	(gpointer ptr);
+void		camel_pointer_tracker_dump	(void);
 
 G_END_DECLS
 

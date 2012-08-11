@@ -15,6 +15,7 @@ HFILE_GLOB = $(top_srcdir)/calendar/libecal/*.h
 CFILE_GLOB = $(top_srcdir)/calendar/libecal/*.c
 
 IGNORE_HFILES = \
+	e-cal-enumtypes.h					\
 	e-cal-marshal.h						\
 	e-data-cal-bindings.h					\
 	e-data-cal-factory-bindings.h				\

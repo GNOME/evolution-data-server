@@ -849,7 +849,10 @@ camel_imapx_server_create_folder
 camel_imapx_server_delete_folder
 camel_imapx_server_rename_folder
 camel_imapx_server_get_job_queue_info
-camel_imapx_server_set_extended_token_handler
+CamelIMAPXUntaggedRespHandler
+CamelIMAPXUntaggedRespHandlerDesc
+camel_imapx_server_register_untagged_handler
+camel_imapx_server_command_run
 <SUBSECTION Standard>
 CAMEL_IMAPX_SERVER
 CAMEL_IS_IMAPX_SERVER
@@ -2227,11 +2230,6 @@ camel_sasl_get_type
 </SECTION>
 
 <SECTION>
-<FILE>camel-search-sql</FILE>
-camel_sexp_to_sql
-</SECTION>
-
-<SECTION>
 <FILE>camel-search-sql-sexp</FILE>
 camel_sexp_to_sql_sexp
 </SECTION>
@@ -2930,6 +2928,7 @@ camel_vee_data_cache_new
 camel_vee_data_cache_add_subfolder
 camel_vee_data_cache_remove_subfolder
 camel_vee_data_cache_get_subfolder_data
+camel_vee_data_cache_contains_message_info_data
 camel_vee_data_cache_get_message_info_data
 camel_vee_data_cache_get_message_info_data_by_vuid
 camel_vee_data_cache_foreach_message_info_data
@@ -3112,6 +3111,10 @@ camel_debug
 camel_debug_start
 camel_debug_end
 CAMEL_CHECK_GERROR
+camel_pointer_tracker_track
+camel_pointer_tracker_track_with_info
+camel_pointer_tracker_untrack
+camel_pointer_tracker_dump
 </SECTION>
 
 <SECTION>

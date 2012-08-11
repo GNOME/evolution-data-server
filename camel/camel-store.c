@@ -1567,14 +1567,14 @@ folder_info_cmp (gconstpointer ap,
 /**
  * camel_folder_info_build:
  * @folders: an array of #CamelFolderInfo
- * @namespace: an ignorable prefix on the folder names
+ * @namespace_: an ignorable prefix on the folder names
  * @separator: the hieararchy separator character
  * @short_names: %TRUE if the (short) name of a folder is the part after
  * the last @separator in the full name. %FALSE if it is the full name.
  *
  * This takes an array of folders and attaches them together according
  * to the hierarchy described by their full_names and @separator. If
- * @namespace is non-%NULL, then it will be ignored as a full_name
+ * @namespace_ is non-%NULL, then it will be ignored as a full_name
  * prefix, for purposes of comparison. If necessary,
  * camel_folder_info_build() will create additional #CamelFolderInfo with
  * %NULL urls to fill in gaps in the tree. The value of @short_names
@@ -1587,7 +1587,7 @@ folder_info_cmp (gconstpointer ap,
  **/
 CamelFolderInfo *
 camel_folder_info_build (GPtrArray *folders,
-                         const gchar *namespace,
+                         const gchar *namespace_,
                          gchar separator,
                          gboolean short_names)
 {
@@ -1596,9 +1596,9 @@ camel_folder_info_build (GPtrArray *folders,
 	gchar *p, *pname;
 	gint i, nlen;
 
-	if (!namespace)
-		namespace = "";
-	nlen = strlen (namespace);
+	if (namespace_ == NULL)
+		namespace_ = "";
+	nlen = strlen (namespace_);
 
 	qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), folder_info_cmp);
 
@@ -1612,7 +1612,7 @@ camel_folder_info_build (GPtrArray *folders,
 	/* Now find parents. */
 	for (i = 0; i < folders->len; i++) {
 		fi = folders->pdata[i];
-		if (!strncmp (namespace, fi->full_name, nlen)
+		if (!strncmp (namespace_, fi->full_name, nlen)
 		    && (p = strrchr (fi->full_name + nlen, separator))) {
 			pname = g_strndup (fi->full_name, p - fi->full_name);
 			pfi = g_hash_table_lookup (hash, pname);

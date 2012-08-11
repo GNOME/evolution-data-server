@@ -190,7 +190,6 @@
       <xi:include href="xml/camel-movemail.xml"/>
       <xi:include href="xml/camel-msgport.xml"/>
       <xi:include href="xml/camel-net-utils.xml"/>
-      <xi:include href="xml/camel-search-sql.xml"/>
       <xi:include href="xml/camel-search-sql-sexp.xml"/>
       <xi:include href="xml/camel-sexp.xml"/>
       <xi:include href="xml/camel-string-utils.xml"/>

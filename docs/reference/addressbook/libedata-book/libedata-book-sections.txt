@@ -92,7 +92,6 @@ e_book_backend_cache_get_type
 <SECTION>
 <FILE>e-book-backend-db-cache</FILE>
 e_book_backend_db_cache_get_contact
-string_to_dbt
 e_book_backend_db_cache_get_filename
 e_book_backend_db_cache_set_filename
 e_book_backend_db_cache_add_contact
