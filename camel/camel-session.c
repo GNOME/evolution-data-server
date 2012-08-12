@@ -1098,7 +1098,7 @@ camel_session_get_service_by_url (CamelSession *session,
 			break;
 	}
 
-	g_list_free (list);
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	return match;
 }
@@ -1108,7 +1108,17 @@ camel_session_get_service_by_url (CamelSession *session,
  * @session: a #CamelSession
  *
  * Returns a list of all #CamelService objects previously added using
- * camel_session_add_service().  Free the returned list using g_list_free().
+ * camel_session_add_service().
+ *
+ * The services returned in the list are referenced for thread-safety.
+ * They must each be unreferenced with g_object_unref() when finished
+ * with them.  Free the returned list itself with g_list_free().
+ *
+ * An easy way to free the list property in one step is as follows:
+ *
+ * |[
+ *   g_list_free_full (list, g_object_unref);
+ * ]|
  *
  * Returns: an unsorted list of #CamelService objects
  *
@@ -1124,6 +1134,8 @@ camel_session_list_services (CamelSession *session)
 	g_mutex_lock (session->priv->services_lock);
 
 	list = g_hash_table_get_values (session->priv->services);
+
+	g_list_foreach (list, (GFunc) g_object_ref, NULL);
 
 	g_mutex_unlock (session->priv->services_lock);
 
