@@ -209,10 +209,13 @@ fill_fi (CamelStore *store,
 		gchar *path;
 
 		service = CAMEL_SERVICE (store);
-		settings = camel_service_get_settings (service);
+
+		settings = camel_service_ref_settings (service);
 
 		local_settings = CAMEL_LOCAL_SETTINGS (settings);
 		path = camel_local_settings_dup_path (local_settings);
+
+		g_object_unref (settings);
 
 		/* This should be fast enough not to have to test for INFO_FAST */
 
@@ -498,13 +501,16 @@ mh_store_get_folder_sync (CamelStore *store,
 		return NULL;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
 
 	use_dot_folders = camel_mh_settings_get_use_dot_folders (
 		CAMEL_MH_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	name = g_build_filename (path, folder_name, NULL);
 
@@ -585,13 +591,16 @@ mh_store_get_folder_info_sync (CamelStore *store,
 	gchar *path;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
 
 	use_dot_folders = camel_mh_settings_get_use_dot_folders (
 		CAMEL_MH_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	/* use .folders if we are supposed to */
 	if (use_dot_folders) {
@@ -653,13 +662,16 @@ mh_store_delete_folder_sync (CamelStore *store,
 	gchar *path;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
 
 	use_dot_folders = camel_mh_settings_get_use_dot_folders (
 		CAMEL_MH_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	/* remove folder directory - will fail if not empty */
 	name = g_build_filename (path, folder_name, NULL);
@@ -705,13 +717,16 @@ mh_store_rename_folder_sync (CamelStore *store,
 	gchar *path;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
 
 	use_dot_folders = camel_mh_settings_get_use_dot_folders (
 		CAMEL_MH_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	/* Chain up to parent's rename_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_mh_store_parent_class);

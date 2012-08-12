@@ -89,10 +89,13 @@ maildir_store_create_folder_sync (CamelStore *store,
 	/* This is a pretty hacky version of create folder, but should basically work */
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	if (!g_path_is_absolute (path)) {
 		g_set_error (
@@ -176,10 +179,13 @@ maildir_store_get_folder_sync (CamelStore *store,
 	CamelFolder *folder = NULL;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	folder_name = md_canon_name (folder_name);
 	dir_name = maildir_full_name_to_dir_name (folder_name);
@@ -303,10 +309,13 @@ maildir_store_delete_folder_sync (CamelStore *store,
 	}
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	/* maildir++ directory names start with a '.' */
 	dir_name = maildir_full_name_to_dir_name (folder_name);
@@ -410,10 +419,13 @@ fill_fi (CamelStore *store,
 		gchar *root;
 
 		service = CAMEL_SERVICE (store);
-		settings = camel_service_get_settings (service);
+
+		settings = camel_service_ref_settings (service);
 
 		local_settings = CAMEL_LOCAL_SETTINGS (settings);
 		root = camel_local_settings_dup_path (local_settings);
+
+		g_object_unref (settings);
 
 		/* This should be fast enough not to have to test for INFO_FAST */
 		dir_name = maildir_full_name_to_dir_name (fi->full_name);
@@ -457,10 +469,14 @@ scan_fi (CamelStore *store,
 	struct stat st;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
+
 	g_return_val_if_fail (path != NULL, NULL);
 
 	fi = camel_folder_info_new ();
@@ -551,10 +567,14 @@ scan_dirs (CamelStore *store,
 	gchar *path;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
+
 	g_return_val_if_fail (path != NULL, -1);
 
 	folders = g_ptr_array_new ();
@@ -849,10 +869,13 @@ maildir_get_full_path (CamelLocalStore *ls,
 	gchar *path;
 
 	service = CAMEL_SERVICE (ls);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	dir_name = maildir_full_name_to_dir_name (full_name);
 	filename = g_build_filename (path, dir_name, NULL);
@@ -877,10 +900,13 @@ maildir_get_meta_path (CamelLocalStore *ls,
 	gchar *tmp;
 
 	service = CAMEL_SERVICE (ls);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	dir_name = maildir_full_name_to_dir_name (full_name);
 	tmp = g_build_filename (path, dir_name, NULL);
@@ -938,10 +964,13 @@ scan_old_dir_info (CamelStore *store,
 	gint res = -1;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	visited = g_hash_table_new (scan_hash, scan_equal);
 

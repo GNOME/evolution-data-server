@@ -177,13 +177,16 @@ camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 	store = camel_folder_get_parent_store (CAMEL_FOLDER (imap_folder));
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	sync_offline =
 		camel_offline_settings_get_stay_synchronized (
 			CAMEL_OFFLINE_SETTINGS (settings)) ||
 		camel_offline_folder_get_offline_sync (
 			CAMEL_OFFLINE_FOLDER (imap_folder));
+
+	g_object_unref (settings);
 
 	imap_wrapper = g_object_new (CAMEL_TYPE_IMAP_WRAPPER, NULL);
 	camel_data_wrapper_set_mime_type_field (CAMEL_DATA_WRAPPER (imap_wrapper), type);

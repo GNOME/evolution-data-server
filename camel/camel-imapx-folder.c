@@ -69,7 +69,8 @@ camel_imapx_folder_new (CamelStore *store,
 	d("opening imap folder '%s'\n", folder_dir);
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	g_object_get (
 		settings,
@@ -78,6 +79,8 @@ camel_imapx_folder_new (CamelStore *store,
 		"filter-junk", &filter_junk,
 		"filter-junk-inbox", &filter_junk_inbox,
 		NULL);
+
+	g_object_unref (settings);
 
 	short_name = strrchr (folder_name, '/');
 	if (short_name)

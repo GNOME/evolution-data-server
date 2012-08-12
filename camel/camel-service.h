@@ -185,7 +185,7 @@ gchar *		camel_service_get_name		(CamelService *service,
 CamelProvider *	camel_service_get_provider	(CamelService *service);
 struct _CamelSession *
 		camel_service_get_session	(CamelService *service);
-CamelSettings *	camel_service_get_settings	(CamelService *service);
+CamelSettings *	camel_service_ref_settings	(CamelService *service);
 void		camel_service_set_settings	(CamelService *service,
 						 CamelSettings *settings);
 const gchar *	camel_service_get_uid		(CamelService *service);

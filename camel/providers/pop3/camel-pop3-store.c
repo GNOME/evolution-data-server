@@ -103,10 +103,16 @@ connect_to_server (CamelService *service,
 	guint32 flags = 0;
 	gint ret;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
+	method = camel_network_settings_get_security_method (network_settings);
+
+	disable_extensions = camel_pop3_settings_get_disable_extensions (
+		CAMEL_POP3_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	tcp_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
@@ -124,9 +130,6 @@ connect_to_server (CamelService *service,
 		goto exit;
 	}
 
-	disable_extensions = camel_pop3_settings_get_disable_extensions (
-		CAMEL_POP3_SETTINGS (settings));
-
 	if (disable_extensions)
 		flags |= CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS;
 
@@ -139,8 +142,6 @@ connect_to_server (CamelService *service,
 		success = FALSE;
 		goto exit;
 	}
-
-	g_object_get (settings, "security-method", &method, NULL);
 
 	if (method != CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
 		g_object_unref (tcp_stream);
@@ -236,10 +237,13 @@ try_sasl (CamelPOP3Store *store,
 	gint ret;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
+
+	g_object_unref (settings);
 
 	sasl = camel_sasl_new ("pop", mechanism, service);
 	if (sasl == NULL) {
@@ -349,11 +353,13 @@ pop3_store_get_name (CamelService *service,
 	gchar *user;
 	gchar *name;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
+
+	g_object_unref (settings);
 
 	if (brief)
 		name = g_strdup_printf (
@@ -381,11 +387,14 @@ pop3_store_connect_sync (CamelService *service,
 	gchar *mechanism;
 
 	session = camel_service_get_session (service);
-	settings = camel_service_get_settings (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
+
+	settings = camel_service_ref_settings (service);
 
 	mechanism = camel_network_settings_dup_auth_mechanism (
 		CAMEL_NETWORK_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	if (!camel_session_get_online (session)) {
 		g_set_error (
@@ -479,11 +488,14 @@ pop3_store_authenticate_sync (CamelService *service,
 	gint status;
 
 	password = camel_service_get_password (service);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
+
+	g_object_unref (settings);
 
 	if (mechanism == NULL) {
 		if (password == NULL) {
@@ -637,10 +649,12 @@ pop3_store_query_auth_types_sync (CamelService *service,
 		return NULL;
 	}
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
+
+	g_object_unref (settings);
 
 	if (connect_to_server (service, cancellable, NULL)) {
 		types = g_list_concat (types, g_list_copy (store->engine->auth));

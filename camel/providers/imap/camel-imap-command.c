@@ -356,11 +356,14 @@ camel_imap_command_response (CamelImapStore *store,
 
 	service = CAMEL_SERVICE (store);
 	session = camel_service_get_session (service);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
+
+	g_object_unref (settings);
 
 	if (camel_imap_store_readline (store, &respbuf, cancellable, error) < 0) {
 		g_static_rec_mutex_unlock (&store->command_and_response_lock);

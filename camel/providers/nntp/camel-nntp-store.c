@@ -261,12 +261,15 @@ connect_to_server (CamelService *service,
 	gchar *user;
 
 	session = camel_service_get_session (service);
-	settings = camel_service_get_settings (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
+
+	g_object_unref (settings);
 
 	tcp_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
@@ -447,10 +450,12 @@ nntp_store_get_name (CamelService *service,
 	gchar *host;
 	gchar *name;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
+
+	g_object_unref (settings);
 
 	if (brief)
 		name = g_strdup_printf ("%s", host);
@@ -482,10 +487,13 @@ nntp_store_authenticate_sync (CamelService *service,
 	store = CAMEL_NNTP_STORE (service);
 
 	password = camel_service_get_password (service);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	user = camel_network_settings_dup_user (network_settings);
+
+	g_object_unref (settings);
 
 	if (user == NULL) {
 		g_set_error_literal (
@@ -709,10 +717,13 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *store,
 		return NULL;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	short_folder_names = camel_nntp_settings_get_short_folder_names (
 		CAMEL_NNTP_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	for (i = 0; i < camel_store_summary_count ((CamelStoreSummary *) store->summary); i++) {
 		si = camel_store_summary_index ((CamelStoreSummary *) store->summary, i);
@@ -862,11 +873,14 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *store,
 	gint toplen = strlen (top);
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	folder_hierarchy_relative =
 		camel_nntp_settings_get_folder_hierarchy_relative (
 		CAMEL_NNTP_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	known = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -1358,10 +1372,13 @@ nntp_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 	gboolean success = TRUE;
 
 	service = CAMEL_SERVICE (subscribable);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	short_folder_names = camel_nntp_settings_get_short_folder_names (
 		CAMEL_NNTP_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	si = camel_store_summary_path (CAMEL_STORE_SUMMARY (nntp_store->summary), folder_name);
 	if (!si) {
@@ -1402,10 +1419,13 @@ nntp_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 	gboolean success = TRUE;
 
 	service = CAMEL_SERVICE (subscribable);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	short_folder_names = camel_nntp_settings_get_short_folder_names (
 		CAMEL_NNTP_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	fitem = camel_store_summary_path (CAMEL_STORE_SUMMARY (nntp_store->summary), folder_name);
 

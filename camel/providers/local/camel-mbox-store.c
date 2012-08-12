@@ -541,10 +541,13 @@ mbox_store_create_folder_sync (CamelStore *store,
 	struct stat st;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	root_path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	local_store = CAMEL_LOCAL_STORE (store);
 
@@ -909,10 +912,14 @@ mbox_store_get_full_path (CamelLocalStore *ls,
 	const gchar *cp;
 
 	service = CAMEL_SERVICE (ls);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	root_path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
+
 	g_return_val_if_fail (root_path != NULL, NULL);
 
 	full_path = g_string_new (root_path);

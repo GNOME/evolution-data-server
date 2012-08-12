@@ -492,11 +492,14 @@ imapx_find_connection_unlocked (CamelIMAPXConnManager *con_man,
 	/* Caller must be holding CON_WRITE_LOCK. */
 
 	service = CAMEL_SERVICE (con_man->priv->store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	concurrent_connections =
 		camel_imapx_settings_get_concurrent_connections (
 		CAMEL_IMAPX_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	/* XXX Have a dedicated connection for INBOX ? */
 

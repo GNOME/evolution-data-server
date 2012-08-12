@@ -164,9 +164,13 @@ cmd_list (CamelPOP3Engine *pe,
 	pop3_store = CAMEL_POP3_STORE (parent_store);
 	pop3_folder = (CamelPOP3Folder *) folder;
 	service = (CamelService *) parent_store;
-	settings = camel_service_get_settings (service);
 
-	batch_fetch_count = camel_pop3_settings_get_batch_fetch_count (CAMEL_POP3_SETTINGS (settings));
+	settings = camel_service_ref_settings (service);
+
+	batch_fetch_count = camel_pop3_settings_get_batch_fetch_count (
+		CAMEL_POP3_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	do {
 		ret = camel_pop3_stream_line (stream, &line, &len, cancellable, NULL);
@@ -188,14 +192,6 @@ cmd_list (CamelPOP3Engine *pe,
 	if (pop3_folder->mobile_mode && pop3_folder->uids->len) {
 		gint y = 0;
 		gboolean save_uid = FALSE;
-		CamelNetworkSettings *network_settings;
-		const gchar *host;
-
-		network_settings = CAMEL_NETWORK_SETTINGS (settings);
-		host = camel_network_settings_get_host (network_settings);
-
-		d(printf("*********** Mobile mode *************\n"));
-		d(printf("Total Count: %s: %d\n", host, pop3_folder->uids->len));
 
 		/* Preserve the first message's ID */
 		fi = pop3_folder->uids->pdata[0];
@@ -502,12 +498,15 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	pop3_store = CAMEL_POP3_STORE (parent_store);
 
 	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	g_object_get (
 		settings,
 		"auto-fetch", &auto_fetch,
 		NULL);
+
+	g_object_unref (settings);
 
 	fi = g_hash_table_lookup (pop3_folder->uids_fi, uid);
 	if (fi == NULL) {
@@ -758,9 +757,13 @@ pop3_fetch_messages_sync (CamelFolder *folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 	service = (CamelService *) parent_store;
-	settings = camel_service_get_settings (service);
 
-	batch_fetch_count = camel_pop3_settings_get_batch_fetch_count (CAMEL_POP3_SETTINGS (settings));
+	settings = camel_service_ref_settings (service);
+
+	batch_fetch_count = camel_pop3_settings_get_batch_fetch_count (
+		CAMEL_POP3_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	old_len = pop3_folder->uids->len;
 
@@ -808,8 +811,9 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 	pop3_store = CAMEL_POP3_STORE (parent_store);
 
 	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
 	is_online = camel_service_get_connection_status (service) == CAMEL_SERVICE_CONNECTED;
+
+	settings = camel_service_ref_settings (service);
 
 	g_object_get (
 		settings,
@@ -817,6 +821,8 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 		"delete-expunged", &delete_expunged,
 		"keep-on-server", &keep_on_server,
 		NULL);
+
+	g_object_unref (settings);
 
 	if (is_online && delete_after_days > 0 && !expunge) {
 		camel_operation_push_message (
@@ -924,7 +930,6 @@ camel_pop3_folder_new (CamelStore *parent,
 	CamelPOP3Folder *pop3_folder;
 
 	service = CAMEL_SERVICE (parent);
-	settings = camel_service_get_settings (service);
 
 	d(printf("opening pop3 INBOX folder\n"));
 
@@ -933,8 +938,13 @@ camel_pop3_folder_new (CamelStore *parent,
 		"full-name", "inbox", "display-name", "inbox",
 		"parent-store", parent, NULL);
 
+	settings = camel_service_ref_settings (service);
+
 	pop3_folder = (CamelPOP3Folder *) folder;
-	pop3_folder->mobile_mode = camel_pop3_settings_get_mobile_mode (CAMEL_POP3_SETTINGS (settings));
+	pop3_folder->mobile_mode = camel_pop3_settings_get_mobile_mode (
+		CAMEL_POP3_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	pop3_folder->fetch_more = 0;
 	if (pop3_folder->mobile_mode) {

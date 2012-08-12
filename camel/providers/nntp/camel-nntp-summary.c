@@ -186,10 +186,13 @@ add_range_xover (CamelNNTPSummary *cns,
 		(camel_folder_summary_get_folder (s)->folder_flags & CAMEL_FOLDER_FILTER_RECENT) != 0;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
+
+	g_object_unref (settings);
 
 	camel_operation_push_message (
 		cancellable, _("%s: Scanning new messages"), host);
@@ -313,10 +316,13 @@ add_range_head (CamelNNTPSummary *cns,
 	mp = camel_mime_parser_new ();
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
+
+	g_object_unref (settings);
 
 	camel_operation_push_message (
 		cancellable, _("%s: Scanning new messages"), host);

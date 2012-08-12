@@ -72,10 +72,13 @@ spool_store_get_type (CamelSpoolStore *spool_store,
 	gchar *path;
 
 	service = CAMEL_SERVICE (spool_store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	/* Check the path for validity while we have the opportunity. */
 
@@ -346,10 +349,13 @@ get_folder_info_elm (CamelStore *store,
 	gchar *path;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	visited = g_hash_table_new (inode_hash, inode_equal);
 
@@ -402,10 +408,13 @@ spool_store_get_name (CamelService *service,
 	gchar *path;
 
 	spool_store = CAMEL_SPOOL_STORE (service);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	if (brief)
 		return path;
@@ -466,10 +475,13 @@ spool_store_get_folder_sync (CamelStore *store,
 		return NULL;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	/* we only support an 'INBOX' in mbox mode */
 	if (type == CAMEL_SPOOL_STORE_MBOX) {
@@ -632,10 +644,13 @@ spool_store_get_full_path (CamelLocalStore *local_store,
 	gchar *path;
 
 	service = CAMEL_SERVICE (local_store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	spool_store = CAMEL_SPOOL_STORE (local_store);
 

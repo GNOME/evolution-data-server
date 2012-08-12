@@ -149,7 +149,7 @@ imap_store_update_store_flags (CamelStore *store)
 	 *     to take effect. */
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 	imap_settings = CAMEL_IMAP_SETTINGS (settings);
 
 	real_path = camel_imap_settings_dup_real_junk_path (imap_settings);
@@ -174,6 +174,8 @@ imap_store_update_store_flags (CamelStore *store)
 		store->flags |= CAMEL_STORE_VTRASH;
 
 	g_free (real_path);
+
+	g_object_unref (settings);
 }
 
 static void
@@ -300,11 +302,13 @@ connect_to_server (CamelService *service,
 	if (tcp_stream == NULL)
 		return FALSE;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	method = camel_network_settings_get_security_method (network_settings);
+
+	g_object_unref (settings);
 
 	store->ostream = tcp_stream;
 	store->istream = camel_stream_buffer_new (tcp_stream, CAMEL_STREAM_BUFFER_READ);
@@ -526,12 +530,15 @@ connect_to_server_process (CamelService *service,
 
 	password = camel_service_get_password (service);
 	provider = camel_service_get_provider (service);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	port = camel_network_settings_get_port (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
+
+	g_object_unref (settings);
 
 	camel_url_set_protocol (&url, provider->protocol);
 	camel_url_set_host (&url, host);
@@ -678,11 +685,14 @@ connect_to_server_wrapper (CamelService *service,
 	gboolean use_shell_command;
 	gboolean success;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
+
 	shell_command = camel_imap_settings_dup_shell_command (
 		CAMEL_IMAP_SETTINGS (settings));
 	use_shell_command = camel_imap_settings_get_use_shell_command (
 		CAMEL_IMAP_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 #ifndef G_OS_WIN32
 	if (use_shell_command && shell_command != NULL)
@@ -713,11 +723,14 @@ imap_auth_loop (CamelService *service,
 	gboolean success = TRUE;
 
 	session = camel_service_get_session (service);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	mechanism = camel_network_settings_dup_auth_mechanism (network_settings);
+
+	g_object_unref (settings);
 
 	if (store->preauthed) {
 		if (camel_verbose_debug)
@@ -799,11 +812,13 @@ imap_store_get_name (CamelService *service,
 	gchar *user;
 	gchar *name;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
+
+	g_object_unref (settings);
 
 	if (brief)
 		name = g_strdup_printf (
@@ -832,9 +847,6 @@ imap_store_connect_sync (CamelService *service,
 	const gchar *namespace;
 	GError *local_error = NULL;
 
-	settings = camel_service_get_settings (service);
-	imap_settings = CAMEL_IMAP_SETTINGS (settings);
-
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
 		return TRUE;
 
@@ -848,6 +860,9 @@ imap_store_connect_sync (CamelService *service,
 			service, TRUE, cancellable, NULL);
 		return FALSE;
 	}
+
+	settings = camel_service_ref_settings (service);
+	imap_settings = CAMEL_IMAP_SETTINGS (settings);
 
 	/* Get namespace and hierarchy separator */
 	if (store->capabilities & IMAP_CAPABILITY_NAMESPACE) {
@@ -1014,6 +1029,8 @@ imap_store_connect_sync (CamelService *service,
 	}
 
 done:
+	g_object_unref (settings);
+
 	/* save any changes we had */
 	camel_store_summary_save ((CamelStoreSummary *) store->summary);
 
@@ -1040,9 +1057,6 @@ imap_store_disconnect_sync (CamelService *service,
 	CamelImapStore *store = CAMEL_IMAP_STORE (service);
 	CamelSettings *settings;
 	CamelImapSettings *imap_settings;
-
-	settings = camel_service_get_settings (service);
-	imap_settings = CAMEL_IMAP_SETTINGS (settings);
 
 	if (camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)) && clean) {
 		CamelImapResponse *response;
@@ -1078,8 +1092,13 @@ imap_store_disconnect_sync (CamelService *service,
 
 	g_hash_table_remove_all (store->known_alerts);
 
+	settings = camel_service_ref_settings (service);
+	imap_settings = CAMEL_IMAP_SETTINGS (settings);
+
 	if (camel_imap_settings_get_use_namespace (imap_settings))
 		camel_imap_settings_set_namespace (imap_settings, NULL);
+
+	g_object_unref (settings);
 
 	return TRUE;
 }
@@ -1106,10 +1125,13 @@ imap_store_authenticate_sync (CamelService *service,
 		gchar *user;
 
 		password = camel_service_get_password (service);
-		settings = camel_service_get_settings (service);
+
+		settings = camel_service_ref_settings (service);
 
 		network_settings = CAMEL_NETWORK_SETTINGS (settings);
 		user = camel_network_settings_dup_user (network_settings);
+
+		g_object_unref (settings);
 
 		if (user == NULL) {
 			g_set_error_literal (
@@ -1756,8 +1778,9 @@ imap_store_get_trash_folder_sync (CamelStore *store,
 	gchar *trash_path;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	settings = camel_service_ref_settings (service);
 
 	trash_path = camel_imap_settings_dup_real_trash_path (
 		CAMEL_IMAP_SETTINGS (settings));
@@ -1769,6 +1792,8 @@ imap_store_get_trash_folder_sync (CamelStore *store,
 				CAMEL_IMAP_SETTINGS (settings), NULL);
 	}
 	g_free (trash_path);
+
+	g_object_unref (settings);
 
 	if (folder)
 		return folder;
@@ -1804,8 +1829,9 @@ imap_store_get_junk_folder_sync (CamelStore *store,
 	gchar *junk_path;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	settings = camel_service_ref_settings (service);
 
 	junk_path = camel_imap_settings_dup_real_junk_path (
 		CAMEL_IMAP_SETTINGS (settings));
@@ -1817,6 +1843,8 @@ imap_store_get_junk_folder_sync (CamelStore *store,
 				CAMEL_IMAP_SETTINGS (settings), NULL);
 	}
 	g_free (junk_path);
+
+	g_object_unref (settings);
 
 	if (folder)
 		return folder;
@@ -2360,11 +2388,14 @@ imap_store_rename_folder_sync (CamelStore *store,
 	gboolean success = TRUE;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	settings = camel_service_ref_settings (service);
 
 	use_subscriptions = camel_imap_settings_get_use_subscriptions (
 		CAMEL_IMAP_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	if (!camel_imap_store_connected (imap_store, error)) {
 		success = FALSE;
@@ -2914,10 +2945,13 @@ refresh_refresh (CamelSession *session,
 	gchar *namespace;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	namespace = camel_imap_settings_dup_namespace (
 		CAMEL_IMAP_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	camel_operation_push_message (cancellable,
 		_("Retrieving list of folders at '%s'"),
@@ -3059,7 +3093,8 @@ get_folder_info_offline (CamelStore *store,
 		printf("get folder info offline\n");
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	use_subscriptions = camel_imap_settings_get_use_subscriptions (
 		CAMEL_IMAP_SETTINGS (settings));
@@ -3067,12 +3102,14 @@ get_folder_info_offline (CamelStore *store,
 	junk_path = camel_imap_settings_dup_real_junk_path (
 		CAMEL_IMAP_SETTINGS (settings));
 
+	trash_path = camel_imap_settings_dup_real_trash_path (
+		CAMEL_IMAP_SETTINGS (settings));
+
+	g_object_unref (settings);
+
 	/* So we can safely compare strings. */
 	if (junk_path == NULL)
 		junk_path = g_strdup ("");
-
-	trash_path = camel_imap_settings_dup_real_trash_path (
-		CAMEL_IMAP_SETTINGS (settings));
 
 	/* So we can safely compare strings. */
 	if (trash_path == NULL)
@@ -3309,13 +3346,16 @@ imap_can_refresh_folder (CamelStore *store,
 	GError *local_error = NULL;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	check_all = camel_imap_settings_get_check_all (
 		CAMEL_IMAP_SETTINGS (settings));
 
 	check_subscribed = camel_imap_settings_get_check_subscribed (
 		CAMEL_IMAP_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	subscribed = ((info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
 

@@ -768,13 +768,16 @@ camel_nntp_folder_new (CamelStore *parent,
 	gboolean filter_all;
 
 	service = CAMEL_SERVICE (parent);
-	settings = camel_service_get_settings (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	settings = camel_service_ref_settings (service);
 
 	g_object_get (
 		settings,
 		"filter-all", &filter_all,
 		NULL);
+
+	g_object_unref (settings);
 
 	folder = g_object_new (
 		CAMEL_TYPE_NNTP_FOLDER,

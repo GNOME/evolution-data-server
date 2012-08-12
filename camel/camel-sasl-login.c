@@ -79,11 +79,14 @@ sasl_login_challenge_sync (CamelSasl *sasl,
 
 	service = camel_sasl_get_service (sasl);
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	user = camel_network_settings_dup_user (network_settings);
+
+	g_object_unref (settings);
+
 	g_return_val_if_fail (user != NULL, NULL);
 
 	password = camel_service_get_password (service);

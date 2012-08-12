@@ -285,25 +285,31 @@ imap_folder_constructed (GObject *object)
 	CamelFolder *folder;
 	CamelStore *parent_store;
 	const gchar *full_name;
-	const gchar *host;
-	const gchar *user;
 	gchar *description;
+	gchar *host;
+	gchar *user;
 
 	folder = CAMEL_FOLDER (object);
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
 	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_get_host (network_settings);
-	user = camel_network_settings_get_user (network_settings);
+	host = camel_network_settings_dup_host (network_settings);
+	user = camel_network_settings_dup_user (network_settings);
+
+	g_object_unref (settings);
 
 	description = g_strdup_printf (
 		"%s@%s:%s", user, host, full_name);
 	camel_folder_set_description (folder, description);
 	g_free (description);
+
+	g_free (host);
+	g_free (user);
 }
 
 static void
@@ -479,7 +485,7 @@ camel_imap_folder_new (CamelStore *parent,
 	}
 
 	service = CAMEL_SERVICE (parent);
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	g_object_get (
 		settings,
@@ -538,6 +544,8 @@ camel_imap_folder_new (CamelStore *parent,
 		g_free (junk_path);
 		g_free (trash_path);
 	}
+
+	g_object_unref (settings);
 
 	imap_folder->search = camel_imap_search_new (folder_dir);
 
@@ -1568,10 +1576,13 @@ is_google_account (CamelStore *store)
 	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
+
+	g_object_unref (settings);
 
 	is_google =
 		(host != NULL) && (
@@ -1635,7 +1646,6 @@ imap_synchronize_sync (CamelFolder *folder,
 	is_gmail = is_google_account (parent_store);
 
 	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
 
 	if (folder->permanent_flags == 0 || !camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
 		if (expunge) {
@@ -1656,6 +1666,8 @@ imap_synchronize_sync (CamelFolder *folder,
 	camel_folder_sort_uids (folder, summary);
 	max = summary->len;
 
+	settings = camel_service_ref_settings (service);
+
 	/* deleted_uids is NULL when not using real trash */
 	folder_path = camel_imap_settings_dup_real_trash_path (
 		CAMEL_IMAP_SETTINGS (settings));
@@ -1669,9 +1681,6 @@ imap_synchronize_sync (CamelFolder *folder,
 		}
 	}
 	g_free (folder_path);
-
-	if (real_trash)
-		deleted_uids = g_ptr_array_new ();
 
 	/* junked_uids is NULL when not using real junk */
 	folder_path = camel_imap_settings_dup_real_junk_path (
@@ -1687,6 +1696,11 @@ imap_synchronize_sync (CamelFolder *folder,
 		}
 	}
 	g_free (folder_path);
+
+	g_object_unref (settings);
+
+	if (real_trash)
+		deleted_uids = g_ptr_array_new ();
 
 	if (real_junk)
 		junked_uids = g_ptr_array_new ();
@@ -2827,10 +2841,13 @@ do_copy (CamelFolder *source,
 		return FALSE;
 
 	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	trash_path = camel_imap_settings_dup_real_trash_path (
 		CAMEL_IMAP_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	mark_moved = is_google_account (parent_store) && trash_path != NULL;
 
@@ -3955,16 +3972,19 @@ imap_update_summary (CamelFolder *folder,
 	parent_store = camel_folder_get_parent_store (folder);
 	store = CAMEL_IMAP_STORE (parent_store);
 	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
 
 	if (!camel_imap_store_connected (store, error))
 		return FALSE;
+
+	settings = camel_service_ref_settings (service);
 
 	fetch_headers = camel_imap_settings_get_fetch_headers (
 		CAMEL_IMAP_SETTINGS (settings));
 
 	extra_headers = camel_imap_settings_dup_fetch_headers_extra (
 		CAMEL_IMAP_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	if (store->server_level >= IMAP_LEVEL_IMAP4REV1) {
 		if (fetch_headers == CAMEL_FETCH_HEADERS_ALL)

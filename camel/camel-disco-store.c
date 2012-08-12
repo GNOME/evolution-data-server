@@ -284,14 +284,17 @@ disco_store_set_status (CamelDiscoStore *disco_store,
 	store = CAMEL_STORE (disco_store);
 	service = CAMEL_SERVICE (disco_store);
 	session = camel_service_get_session (service);
-	settings = camel_service_get_settings (service);
 
 	network_available = camel_session_get_network_available (session);
 	store_is_online = (disco_store->status == CAMEL_DISCO_STORE_ONLINE);
 	going_offline = (status == CAMEL_DISCO_STORE_OFFLINE);
 
+	settings = camel_service_ref_settings (service);
+
 	sync_store = camel_offline_settings_get_stay_synchronized (
 		CAMEL_OFFLINE_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	if (network_available) {
 		if (store_is_online && going_offline && store->folders != NULL) {
@@ -485,7 +488,6 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 	store = CAMEL_STORE (disco_store);
 	service = CAMEL_SERVICE (disco_store);
 	session = camel_service_get_session (service);
-	settings = camel_service_get_settings (service);
 
 	/* We can't prepare for offline if we're already offline. */
 	if (!camel_session_get_network_available (session))
@@ -494,8 +496,12 @@ camel_disco_store_prepare_for_offline (CamelDiscoStore *disco_store,
 	/* Sync the folder fully if we've been told to
 	 * sync offline for this store or this folder. */
 
+	settings = camel_service_ref_settings (service);
+
 	sync_store = camel_offline_settings_get_stay_synchronized (
 		CAMEL_OFFLINE_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	store_is_online = (disco_store->status == CAMEL_DISCO_STORE_ONLINE);
 

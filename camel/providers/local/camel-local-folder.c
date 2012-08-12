@@ -161,9 +161,9 @@ local_folder_constructed (GObject *object)
 	CamelFolder *folder;
 	CamelStore *parent_store;
 	const gchar *full_name;
-	const gchar *root_path;
 	const gchar *tmp;
 	gchar *description;
+	gchar *root_path;
 	gchar *path;
 
 	folder = CAMEL_FOLDER (object);
@@ -172,10 +172,13 @@ local_folder_constructed (GObject *object)
 
 	service = CAMEL_SERVICE (parent_store);
 	provider = camel_service_get_provider (service);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	root_path = camel_local_settings_get_path (local_settings);
+	root_path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	if (root_path == NULL)
 		return;
@@ -222,6 +225,7 @@ local_folder_constructed (GObject *object)
 	camel_folder_set_description (folder, description);
 
 	g_free (description);
+	g_free (root_path);
 	g_free (path);
 }
 
@@ -540,7 +544,6 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	CamelLocalStore *ls;
 	CamelStore *parent_store;
 	const gchar *full_name;
-	const gchar *path;
 	gboolean need_summary_check;
 
 	folder = CAMEL_FOLDER (lf);
@@ -548,15 +551,16 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	parent_store = camel_folder_get_parent_store (folder);
 
 	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
-	path = camel_local_settings_get_path (local_settings);
+	lf->base_path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	ls = CAMEL_LOCAL_STORE (parent_store);
 	need_summary_check = camel_local_store_get_need_summary_check (ls);
-
-	lf->base_path = g_strdup (path);
 
 	lf->folder_path = camel_local_store_get_full_path (ls, full_name);
 	lf->index_path = camel_local_store_get_meta_path(ls, full_name, ".ibex");

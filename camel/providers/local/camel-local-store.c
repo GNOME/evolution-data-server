@@ -167,10 +167,12 @@ local_store_get_name (CamelService *service,
 	gchar *path;
 	gchar *name;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	if (brief)
 		name = g_strdup (path);
@@ -206,10 +208,13 @@ local_store_get_folder_sync (CamelStore *store,
 	gchar *path;
 
 	service = CAMEL_SERVICE (store);
-	settings= camel_service_get_settings (service);
+
+	settings= camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	if (!g_path_is_absolute (path)) {
 		g_set_error (
@@ -361,10 +366,13 @@ local_store_create_folder_sync (CamelStore *store,
 	struct stat st;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	/* This is a pretty hacky version of create folder, but should basically work */
 
@@ -430,10 +438,13 @@ local_store_delete_folder_sync (CamelStore *store,
 	gboolean success = TRUE;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	/* remove metadata only */
 	name = g_build_filename (path, folder_name, NULL);
@@ -512,10 +523,13 @@ local_store_rename_folder_sync (CamelStore *store,
 	gboolean success = TRUE;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	old_basename = g_strdup_printf ("%s.ibex", old);
 	new_basename = g_strdup_printf ("%s.ibex", new);
@@ -606,10 +620,13 @@ local_store_get_full_path (CamelLocalStore *ls,
 	gchar *path;
 
 	service = CAMEL_SERVICE (ls);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	filename = g_build_filename (path, full_name, NULL);
 
@@ -631,10 +648,13 @@ local_store_get_meta_path (CamelLocalStore *ls,
 	gchar *path;
 
 	service = CAMEL_SERVICE (ls);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	path = camel_local_settings_dup_path (local_settings);
+
+	g_object_unref (settings);
 
 	basename = g_strconcat (full_name, ext, NULL);
 	filename = g_build_filename (path, basename, NULL);

@@ -117,11 +117,13 @@ connect_to_server (CamelService *service,
 	transport->flags = 0;
 	transport->authtypes = NULL;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	method = camel_network_settings_get_security_method (network_settings);
+
+	g_object_unref (settings);
 
 	tcp_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (service), cancellable, error);
@@ -284,10 +286,12 @@ smtp_transport_get_name (CamelService *service,
 	gchar *host;
 	gchar *name;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
+
+	g_object_unref (settings);
 
 	if (brief)
 		name = g_strdup_printf (
@@ -314,11 +318,13 @@ smtp_transport_connect_sync (CamelService *service,
 	gboolean auth_required;
 	gboolean success = TRUE;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	mechanism = camel_network_settings_dup_auth_mechanism (network_settings);
+
+	g_object_unref (settings);
 
 	/* We (probably) need to check popb4smtp before we connect ... */
 	if (g_strcmp0 (mechanism, "POPB4SMTP") == 0) {

@@ -144,11 +144,13 @@ imapx_get_name (CamelService *service,
 	gchar *user;
 	gchar *name;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
+
+	g_object_unref (settings);
 
 	if (brief)
 		name = g_strdup_printf (
@@ -390,9 +392,12 @@ fill_fi (CamelStore *store,
 	CamelSettings *settings;
 	gboolean mobile_mode;
 
-	settings = camel_service_get_settings (service);
+	settings = camel_service_ref_settings (service);
+
 	mobile_mode = camel_imapx_settings_get_mobile_mode (
 		CAMEL_IMAPX_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	folder = camel_object_bag_peek (store->folders, fi->full_name);
 	if (folder) {
@@ -686,13 +691,16 @@ get_folder_info_offline (CamelStore *store,
 	gint i;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	use_namespace = camel_imapx_settings_get_use_namespace (
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	use_subscriptions = camel_imapx_settings_get_use_subscriptions (
 		CAMEL_IMAPX_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	/* FIXME: obey other flags */
 
@@ -707,9 +715,14 @@ get_folder_info_offline (CamelStore *store,
 	if (top[0] == 0) {
 		gchar *namespace = NULL;
 
-		if (use_namespace)
+		if (use_namespace) {
+			settings = camel_service_ref_settings (service);
+
 			namespace = camel_imapx_settings_dup_namespace (
 				CAMEL_IMAPX_SETTINGS (settings));
+
+			g_object_unref (settings);
+		}
 
 		if (namespace != NULL) {
 			name = g_strdup (imapx_store->summary->namespaces->personal->full_name);
@@ -1121,13 +1134,16 @@ imapx_can_refresh_folder (CamelStore *store,
 	store_class = CAMEL_STORE_CLASS (camel_imapx_store_parent_class);
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	check_all = camel_imapx_settings_get_check_all (
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	check_subscribed = camel_imapx_settings_get_check_subscribed (
 		CAMEL_IMAPX_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	subscribed = ((info->flags & CAMEL_FOLDER_SUBSCRIBED) != 0);
 
@@ -1194,10 +1210,13 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 
 	service = CAMEL_SERVICE (store);
 	session = camel_service_get_session (service);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	use_subscriptions = camel_imapx_settings_get_use_subscriptions (
 		CAMEL_IMAPX_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	if (top == NULL)
 		top = "";
@@ -1485,11 +1504,14 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	gboolean success = FALSE;
 
 	service = CAMEL_SERVICE (store);
-	settings = camel_service_get_settings (service);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
+
+	settings = camel_service_ref_settings (service);
 
 	use_subscriptions = camel_imapx_settings_get_use_subscriptions (
 		CAMEL_IMAPX_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
 		g_set_error (

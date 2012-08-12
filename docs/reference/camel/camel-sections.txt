@@ -2254,7 +2254,7 @@ camel_service_get_user_cache_dir
 camel_service_get_name
 camel_service_get_provider
 camel_service_get_session
-camel_service_get_settings
+camel_service_ref_settings
 camel_service_set_settings
 camel_service_get_uid
 camel_service_connect_sync

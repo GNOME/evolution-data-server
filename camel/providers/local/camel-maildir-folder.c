@@ -482,10 +482,13 @@ camel_maildir_folder_new (CamelStore *parent_store,
 		NULL);
 
 	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	filter_inbox = camel_store_settings_get_filter_inbox (
 		CAMEL_STORE_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	if (filter_inbox && strcmp (full_name, ".") == 0)
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;

@@ -318,9 +318,13 @@ imapx_update_store_summary (CamelFolder *folder)
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
+
 	mobile_mode = camel_imapx_settings_get_mobile_mode (
 		CAMEL_IMAPX_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	si = camel_store_summary_path ((CamelStoreSummary *) ((CamelIMAPXStore *) parent_store)->summary, full_name);
 	if (si) {

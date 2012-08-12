@@ -58,6 +58,8 @@ struct _CamelServicePrivate {
 	gpointer session;  /* weak pointer */
 
 	CamelSettings *settings;
+	GMutex *settings_lock;
+
 	CamelProvider *provider;
 
 	gchar *display_name;
@@ -617,8 +619,8 @@ service_get_property (GObject *object,
 			return;
 
 		case PROP_SETTINGS:
-			g_value_set_object (
-				value, camel_service_get_settings (
+			g_value_take_object (
+				value, camel_service_ref_settings (
 				CAMEL_SERVICE (object)));
 			return;
 
@@ -664,6 +666,8 @@ service_finalize (GObject *object)
 	if (priv->status == CAMEL_SERVICE_CONNECTED)
 		CAMEL_SERVICE_GET_CLASS (object)->disconnect_sync (
 			CAMEL_SERVICE (object), TRUE, NULL, NULL);
+
+	g_mutex_free (priv->settings_lock);
 
 	g_free (priv->display_name);
 	g_free (priv->user_data_dir);
@@ -1133,6 +1137,7 @@ camel_service_init (CamelService *service)
 {
 	service->priv = CAMEL_SERVICE_GET_PRIVATE (service);
 
+	service->priv->settings_lock = g_mutex_new ();
 	service->priv->connection_lock = g_mutex_new ();
 	service->priv->status = CAMEL_SERVICE_DISCONNECTED;
 }
@@ -1204,9 +1209,9 @@ camel_service_new_camel_url (CamelService *service)
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
 	provider = camel_service_get_provider (service);
-	settings = camel_service_get_settings (service);
-
 	g_return_val_if_fail (provider != NULL, NULL);
+
+	settings = camel_service_ref_settings (service);
 
 	/* Allocate as camel_url_new_with_base() does. */
 	url = g_new0 (CamelURL, 1);
@@ -1236,6 +1241,8 @@ camel_service_new_camel_url (CamelService *service)
 	g_free (host);
 	g_free (user);
 	g_free (path);
+
+	g_object_unref (settings);
 
 	return url;
 }
@@ -1461,24 +1468,35 @@ camel_service_get_session (CamelService *service)
 }
 
 /**
- * camel_service_get_settings:
+ * camel_service_ref_settings:
  * @service: a #CamelService
  *
  * Returns the #CamelSettings instance associated with the service.
  *
+ * The returned #CamelSettings is referenced for thread-safety and must
+ * be unreferenced with g_object_unref() when finished with it.
+ *
  * Returns: the #CamelSettings
  *
- * Since: 3.2
+ * Since: 3.6
  **/
 CamelSettings *
-camel_service_get_settings (CamelService *service)
+camel_service_ref_settings (CamelService *service)
 {
+	CamelSettings *settings;
+
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
 	/* Every service should have a settings object. */
-	g_warn_if_fail (service->priv->settings != NULL);
+	g_return_val_if_fail (service->priv->settings != NULL, NULL);
 
-	return service->priv->settings;
+	g_mutex_lock (service->priv->settings_lock);
+
+	settings = g_object_ref (service->priv->settings);
+
+	g_mutex_unlock (service->priv->settings_lock);
+
+	return settings;
 }
 
 /**
@@ -1502,9 +1520,6 @@ camel_service_set_settings (CamelService *service,
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	if (settings && service->priv->settings == settings)
-		return;
-
 	class = CAMEL_SERVICE_GET_CLASS (service);
 
 	if (settings != NULL) {
@@ -1522,10 +1537,14 @@ camel_service_set_settings (CamelService *service,
 		settings = g_object_new (class->settings_type, NULL);
 	}
 
+	g_mutex_lock (service->priv->settings_lock);
+
 	if (service->priv->settings != NULL)
 		g_object_unref (service->priv->settings);
 
-	service->priv->settings = settings;
+	service->priv->settings = settings;  /* takes ownership */
+
+	g_mutex_unlock (service->priv->settings_lock);
 
 	g_object_notify (G_OBJECT (service), "settings");
 }

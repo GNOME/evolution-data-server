@@ -145,13 +145,16 @@ camel_spool_folder_new (CamelStore *parent_store,
 	gchar *basename;
 
 	service = CAMEL_SERVICE (parent_store);
-	settings = camel_service_get_settings (service);
+
+	settings = camel_service_ref_settings (service);
 
 	filter_inbox = camel_store_settings_get_filter_inbox (
 		CAMEL_STORE_SETTINGS (settings));
 
 	use_xstatus_headers = camel_spool_settings_get_use_xstatus_headers (
 		CAMEL_SPOOL_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	basename = g_path_get_basename (full_name);
 

@@ -125,13 +125,16 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 
 	service = CAMEL_SERVICE (store);
 	session = camel_service_get_session (service);
-	settings = camel_service_get_settings (service);
 
 	network_available = camel_session_get_network_available (session);
 	store_is_online = camel_offline_store_get_online (store);
 
+	settings = camel_service_ref_settings (service);
+
 	sync_store = camel_offline_settings_get_stay_synchronized (
 		CAMEL_OFFLINE_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	/* Returning to online mode is the simpler case. */
 	if (!store_is_online) {
@@ -201,13 +204,16 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
 
 	service = CAMEL_SERVICE (store);
 	session = camel_service_get_session (service);
-	settings = camel_service_get_settings (service);
 
 	network_available = camel_session_get_network_available (session);
 	store_is_online = camel_offline_store_get_online (store);
 
+	settings = camel_service_ref_settings (service);
+
 	sync_store = camel_offline_settings_get_stay_synchronized (
 		CAMEL_OFFLINE_SETTINGS (settings));
+
+	g_object_unref (settings);
 
 	if (network_available && store_is_online) {
 		GPtrArray *folders;
