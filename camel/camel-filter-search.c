@@ -605,14 +605,14 @@ get_relative_months (struct _CamelSExp *f,
 }
 
 static CamelService *
-get_service_for_source (CamelSession *session,
+ref_service_for_source (CamelSession *session,
                         const gchar *src)
 {
 	CamelService *service = NULL;
 
 	/* Source strings are now CamelService UIDs. */
 	if (src != NULL)
-		service = camel_session_get_service (session, src);
+		service = camel_session_ref_service (session, src);
 
 	/* For backward-compability, also handle CamelService URLs. */
 	if (service == NULL && src != NULL) {
@@ -621,11 +621,11 @@ get_service_for_source (CamelSession *session,
 		url = camel_url_new (src, NULL);
 
 		if (service == NULL && url != NULL)
-			service = camel_session_get_service_by_url (
+			service = camel_session_ref_service_by_url (
 				session, url, CAMEL_PROVIDER_STORE);
 
 		if (service == NULL && url != NULL)
-			service = camel_session_get_service_by_url (
+			service = camel_session_ref_service_by_url (
 				session, url, CAMEL_PROVIDER_TRANSPORT);
 
 		if (url != NULL)
@@ -655,16 +655,26 @@ header_source (struct _CamelSExp *f,
 	}
 
 	if (src)
-		msg_source = get_service_for_source (fms->session, src);
+		msg_source = ref_service_for_source (fms->session, src);
 
-	if (msg_source) {
+	if (msg_source != NULL) {
 		gint ii;
 
 		for (ii = 0; ii < argc && !truth; ii++) {
 			if (argv[ii]->type == CAMEL_SEXP_RES_STRING) {
-				truth = msg_source == get_service_for_source (fms->session, argv[ii]->value.string);
+				CamelService *candidate;
+
+				candidate = ref_service_for_source (
+					fms->session,
+					argv[ii]->value.string);
+				if (candidate != NULL) {
+					truth = (msg_source == candidate);
+					g_object_unref (candidate);
+				}
 			}
 		}
+
+		g_object_unref (msg_source);
 	}
 
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);

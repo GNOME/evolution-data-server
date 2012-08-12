@@ -85,7 +85,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 		"popb4smtp_uid", 0, error);
 
 	if (pop_uid != NULL)
-		service = camel_session_get_service (session, pop_uid);
+		service = camel_session_ref_service (session, pop_uid);
 	else
 		service = NULL;
 
@@ -107,8 +107,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("POP Before SMTP authentication attempted "
 			  "with a %s service"), type_name);
-		g_free (pop_uid);
-		return NULL;
+		goto exit;
 	}
 
 	if (strstr (type_name, "POP") == NULL) {
@@ -117,8 +116,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("POP Before SMTP authentication attempted "
 			  "with a %s service"), type_name);
-		g_free (pop_uid);
-		return NULL;
+		goto exit;
 	}
 
 	/* check if we've done it before recently in this session */
@@ -127,13 +125,13 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 	/* need to lock around the whole thing until finished with timep */
 
 	POPB4SMTP_LOCK (lock);
+
 	timep = g_hash_table_lookup (poplast, pop_uid);
 	if (timep) {
 		if ((*timep + POPB4SMTP_TIMEOUT) > now) {
 			camel_sasl_set_authenticated (sasl, TRUE);
 			POPB4SMTP_UNLOCK (lock);
-			g_free (pop_uid);
-			return NULL;
+			goto exit;
 		}
 	} else {
 		timep = g_malloc0 (sizeof (*timep));
@@ -151,6 +149,8 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 
 	POPB4SMTP_UNLOCK (lock);
 
+exit:
+	g_object_unref (service);
 	g_free (pop_uid);
 
 	return NULL;

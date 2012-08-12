@@ -387,7 +387,7 @@ session_add_service (CamelSession *session,
 	CamelProvider *provider;
 	GType service_type = G_TYPE_INVALID;
 
-	service = camel_session_get_service (session, uid);
+	service = camel_session_ref_service (session, uid);
 	if (CAMEL_IS_SERVICE (service))
 		return service;
 
@@ -1001,17 +1001,20 @@ camel_session_remove_service (CamelSession *session,
 }
 
 /**
- * camel_session_get_service:
+ * camel_session_ref_service:
  * @session: a #CamelSession
  * @uid: a unique identifier string
  *
  * Looks up a #CamelService by its unique identifier string.  The service
  * must have been previously added using camel_session_add_service().
  *
+ * The returned #CamelService is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
  * Returns: a #CamelService instance, or %NULL
  **/
 CamelService *
-camel_session_get_service (CamelSession *session,
+camel_session_ref_service (CamelSession *session,
                            const gchar *uid)
 {
 	CamelService *service;
@@ -1023,13 +1026,16 @@ camel_session_get_service (CamelSession *session,
 
 	service = g_hash_table_lookup (session->priv->services, uid);
 
+	if (service != NULL)
+		g_object_ref (service);
+
 	g_mutex_unlock (session->priv->services_lock);
 
 	return service;
 }
 
 /**
- * camel_session_get_service_by_url:
+ * camel_session_ref_service_by_url:
  * @session: a #CamelSession
  * @url: a #CamelURL
  * @type: a #CamelProviderType
@@ -1039,14 +1045,17 @@ camel_session_get_service (CamelSession *session,
  * The service must have been previously added using
  * camel_session_add_service().
  *
- * Note this function is significantly slower than camel_session_get_service().
+ * The returned #CamelService is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
+ *
+ * Note this function is significantly slower than camel_session_ref_service().
  *
  * Returns: a #CamelService instance, or %NULL
  *
  * Since: 3.2
  **/
 CamelService *
-camel_session_get_service_by_url (CamelSession *session,
+camel_session_ref_service_by_url (CamelSession *session,
                                   CamelURL *url,
                                   CamelProviderType type)
 {
@@ -1083,11 +1092,11 @@ camel_session_get_service_by_url (CamelSession *session,
 		switch (type) {
 			case CAMEL_PROVIDER_STORE:
 				if (CAMEL_IS_STORE (service))
-					match = service;
+					match = g_object_ref (service);
 				break;
 			case CAMEL_PROVIDER_TRANSPORT:
 				if (CAMEL_IS_TRANSPORT (service))
-					match = service;
+					match = g_object_ref (service);
 				break;
 			default:
 				g_warn_if_reached ();

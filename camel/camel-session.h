@@ -187,9 +187,9 @@ CamelService *	camel_session_add_service	(CamelSession *session,
 						 GError **error);
 void		camel_session_remove_service	(CamelSession *session,
 						 CamelService *service);
-CamelService *	camel_session_get_service	(CamelSession *session,
+CamelService *	camel_session_ref_service	(CamelSession *session,
 						 const gchar *uid);
-CamelService *	camel_session_get_service_by_url
+CamelService *	camel_session_ref_service_by_url
 						(CamelSession *session,
 						 CamelURL *url,
 						 CamelProviderType type);
