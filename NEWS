@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.4.4 2012-08-13
+--------------------------------------
+
+Bug Fixes:
+	Bug 551788 - Hangs when network changes (Milan Crha)
+	Bug 559391 - Wrong number of unread mails in folder tree (Milan Crha)
+	Bug 674696 - Crash from finish_operation, get_groups_cb in Google
+	             backend (Milan Crha)
+	Bug 677530 - Memory leaks in imapx code (Milan Crha)
+	Bug 678856 - Crash in add_instance() at e-cal-client.c (Milan Crha)
+	Bug 679017 - Broken spool mbox file accounts (Milan Crha)
+	Bug 679245 - Local address book not created (Milan Crha)
+	Bug 679488 - Unable to send mail using SMTP (Milan Crha)
+	Bug 680211 - Memory usage increases on each folder select (Milan Crha)
+	Bug 680502 - Deadlock in contacts backend (Milan Crha)
+	Bug 681318 - Filter by Source account doesn't match in local folders
+	             (Milan Crha)
+
+
 Evolution-Data-Server 3.4.3 2012-06-18
 --------------------------------------
 
