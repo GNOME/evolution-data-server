@@ -422,13 +422,13 @@ session_add_service (CamelSession *session,
 		"provider", provider, "session",
 		session, "uid", uid, NULL);
 
-	/* The hash table takes ownership of the new CamelService. */
 	if (service != NULL) {
 		g_mutex_lock (session->priv->services_lock);
 
 		g_hash_table_insert (
 			session->priv->services,
-			g_strdup (uid), service);
+			g_strdup (uid),
+			g_object_ref (service));
 
 		g_mutex_unlock (session->priv->services_lock);
 	}
@@ -942,6 +942,9 @@ camel_session_get_user_cache_dir (CamelSession *session)
  * If no #CamelProvider is available to handle the given @protocol, or
  * if the #CamelProvider does not specify a valid #GType for @type, the
  * function sets @error and returns %NULL.
+ *
+ * The returned #CamelService is referenced for thread-safety and must be
+ * unreferenced with g_object_unref() when finished with it.
  *
  * Returns: a #CamelService instance, or %NULL
  *
