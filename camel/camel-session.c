@@ -79,7 +79,10 @@ struct _CamelSessionPrivate {
 };
 
 struct _AsyncContext {
+	CamelFolder *folder;
+	CamelMimeMessage *message;
 	CamelService *service;
+	gchar *address;
 	gchar *auth_mechanism;
 };
 
@@ -115,9 +118,16 @@ G_DEFINE_TYPE (CamelSession, camel_session, CAMEL_TYPE_OBJECT)
 static void
 async_context_free (AsyncContext *async_context)
 {
+	if (async_context->folder != NULL)
+		g_object_unref (async_context->folder);
+
+	if (async_context->message != NULL)
+		g_object_unref (async_context->message);
+
 	if (async_context->service != NULL)
 		g_object_unref (async_context->service);
 
+	g_free (async_context->address);
 	g_free (async_context->auth_mechanism);
 
 	g_slice_free (AsyncContext, async_context);
@@ -568,8 +578,10 @@ session_authenticate_thread (GSimpleAsyncResult *simple,
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	camel_session_authenticate_sync (
-		CAMEL_SESSION (object), async_context->service,
-		async_context->auth_mechanism, cancellable, &error);
+		CAMEL_SESSION (object),
+		async_context->service,
+		async_context->auth_mechanism,
+		cancellable, &error);
 
 	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
@@ -622,6 +634,91 @@ session_authenticate_finish (CamelSession *session,
 	return !g_simple_async_result_propagate_error (simple, error);
 }
 
+static gboolean
+session_forward_to_sync (CamelSession *session,
+                         CamelFolder *folder,
+                         CamelMimeMessage *message,
+                         const gchar *address,
+                         GCancellable *cancellable,
+                         GError **error)
+{
+	g_set_error_literal (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		_("Forwarding messages is not supported"));
+
+	return FALSE;
+}
+
+static void
+session_forward_to_thread (GSimpleAsyncResult *simple,
+                           GObject *object,
+                           GCancellable *cancellable)
+{
+	AsyncContext *async_context;
+	GError *error = NULL;
+
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+	camel_session_forward_to_sync (
+		CAMEL_SESSION (object),
+		async_context->folder,
+		async_context->message,
+		async_context->address,
+		cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+session_forward_to (CamelSession *session,
+                    CamelFolder *folder,
+                    CamelMimeMessage *message,
+                    const gchar *address,
+                    gint io_priority,
+                    GCancellable *cancellable,
+                    GAsyncReadyCallback callback,
+                    gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->folder = g_object_ref (folder);
+	async_context->message = g_object_ref (message);
+	async_context->address = g_strdup (address);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (session), callback, user_data, session_forward_to);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gpointer (
+		simple, async_context, (GDestroyNotify) async_context_free);
+
+	g_simple_async_result_run_in_thread (
+		simple, session_forward_to_thread, io_priority, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+session_forward_to_finish (CamelSession *session,
+                           GAsyncResult *result,
+                           GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (session), session_forward_to), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
 static void
 camel_session_class_init (CamelSessionClass *class)
 {
@@ -640,9 +737,12 @@ camel_session_class_init (CamelSessionClass *class)
 	class->get_socks_proxy = session_get_socks_proxy;
 
 	class->authenticate_sync = session_authenticate_sync;
+	class->forward_to_sync = session_forward_to_sync;
 
 	class->authenticate = session_authenticate;
 	class->authenticate_finish = session_authenticate_finish;
+	class->forward_to = session_forward_to;
+	class->forward_to_finish = session_forward_to_finish;
 
 	g_object_class_install_property (
 		object_class,
@@ -1575,41 +1675,6 @@ camel_session_get_junk_headers (CamelSession *session)
 }
 
 /**
- * camel_session_forward_to:
- * Forwards message to some address(es) in a given type. The meaning of the forward_type defines session itself.
- * @session #CameSession.
- * @folder #CamelFolder where is @message located.
- * @message Message to forward.
- * @address Where forward to.
- * @ex Exception.
- *
- * Since: 2.26
- **/
-gboolean
-camel_session_forward_to (CamelSession *session,
-                          CamelFolder *folder,
-                          CamelMimeMessage *message,
-                          const gchar *address,
-                          GError **error)
-{
-	CamelSessionClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
-	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
-	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
-	g_return_val_if_fail (address != NULL, FALSE);
-
-	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (class->forward_to != NULL, FALSE);
-
-	success = class->forward_to (session, folder, message, address, error);
-	CAMEL_CHECK_GERROR (session, forward_to, success, error);
-
-	return success;
-}
-
-/**
  * camel_session_lock:
  * @session: a #CamelSession
  * @lock: lock type to lock
@@ -1740,6 +1805,49 @@ camel_session_authenticate_sync (CamelSession *session,
 }
 
 /**
+ * camel_session_forward_to_sync:
+ * @session: a #CamelSession
+ * @folder: the #CamelFolder where @message is located
+ * @message: the #CamelMimeMessage to forward
+ * @address: the recipient's email address
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Forwards @message in @folder to the email address(es) given by @address.
+ *
+ * If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
+gboolean
+camel_session_forward_to_sync (CamelSession *session,
+                               CamelFolder *folder,
+                               CamelMimeMessage *message,
+                               const gchar *address,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	CamelSessionClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
+	g_return_val_if_fail (address != NULL, FALSE);
+
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->forward_to_sync != NULL, FALSE);
+
+	success = class->forward_to_sync (
+		session, folder, message, address, cancellable, error);
+	CAMEL_CHECK_GERROR (session, forward_to_sync, success, error);
+
+	return success;
+}
+
+/**
  * camel_session_authenticate:
  * @session: a #CamelSession
  * @service: a #CamelService
@@ -1812,5 +1920,80 @@ camel_session_authenticate_finish (CamelSession *session,
 	g_return_val_if_fail (class->authenticate_finish != NULL, FALSE);
 
 	return class->authenticate_finish (session, result, error);
+}
+
+/**
+ * camel_session_forward_to:
+ * @session: a #CamelSession
+ * @folder: the #CamelFolder where @message is located
+ * @message: the #CamelMimeMessage to forward
+ * @address: the recipient's email address
+ * @io_priority: the I/O priority for the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously forwards @message in @folder to the email address(s)
+ * given by @address.
+ *
+ * When the operation is finished, @callback will be called.  You can
+ * then call camel_session_forward_to_finish() to get the result of the
+ * operation.
+ *
+ * Since: 3.6
+ **/
+void
+camel_session_forward_to (CamelSession *session,
+                          CamelFolder *folder,
+                          CamelMimeMessage *message,
+                          const gchar *address,
+                          gint io_priority,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
+{
+	CamelSessionClass *class;
+
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+	g_return_if_fail (CAMEL_IS_MIME_MESSAGE (message));
+	g_return_if_fail (address != NULL);
+
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_if_fail (class->forward_to != NULL);
+
+	class->forward_to (
+		session, folder, message, address,
+		io_priority, cancellable, callback, user_data);
+}
+
+/**
+ * camel_session_forward_to_finish:
+ * @session: a #CamelSession
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_session_forward_to().
+ *
+ * If an error occurred, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
+gboolean
+camel_session_forward_to_finish (CamelSession *session,
+                                 GAsyncResult *result,
+                                 GError **error)
+{
+	CamelSessionClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+
+	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class->forward_to_finish != NULL, FALSE);
+
+	return class->forward_to_finish (session, result, error);
 }
 

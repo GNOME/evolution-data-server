@@ -132,11 +132,6 @@ struct _CamelSessionClass {
 						 GError **error);
 	gboolean	(*lookup_addressbook)	(CamelSession *session,
 						 const gchar *name);
-	gboolean	(*forward_to)		(CamelSession *session,
-						 CamelFolder *folder,
-						 CamelMimeMessage *message,
-						 const gchar *address,
-						 GError **error);
 	void		(*get_socks_proxy)	(CamelSession *session,
 						 const gchar *for_host,
 						 gchar **host_ret,
@@ -146,6 +141,12 @@ struct _CamelSessionClass {
 	gboolean	(*authenticate_sync)	(CamelSession *session,
 						 CamelService *service,
 						 const gchar *mechanism,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(*forward_to_sync)	(CamelSession *session,
+						 CamelFolder *folder,
+						 CamelMimeMessage *message,
+						 const gchar *address,
 						 GCancellable *cancellable,
 						 GError **error);
 
@@ -158,6 +159,17 @@ struct _CamelSessionClass {
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
 	gboolean	(*authenticate_finish)	(CamelSession *session,
+						 GAsyncResult *result,
+						 GError **error);
+	void		(*forward_to)		(CamelSession *session,
+						 CamelFolder *folder,
+						 CamelMimeMessage *message,
+						 const gchar *address,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	gboolean	(*forward_to_finish)	(CamelSession *session,
 						 GAsyncResult *result,
 						 GError **error);
 
@@ -247,11 +259,6 @@ void		camel_session_set_junk_headers	(CamelSession *session,
 						 gint len);
 gboolean	camel_session_lookup_addressbook (CamelSession *session,
 						 const gchar *name);
-gboolean	camel_session_forward_to	(CamelSession *session,
-						 CamelFolder *folder,
-						 CamelMimeMessage *message,
-						 const gchar *address,
-						 GError **error);
 void		camel_session_lock		(CamelSession *session,
 						 CamelSessionLock lock);
 void		camel_session_unlock		(CamelSession *session,
@@ -271,6 +278,23 @@ void		camel_session_authenticate	(CamelSession *session,
 						 gpointer user_data);
 gboolean	camel_session_authenticate_finish
 						(CamelSession *session,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	camel_session_forward_to_sync	(CamelSession *session,
+						 CamelFolder *folder,
+						 CamelMimeMessage *message,
+						 const gchar *address,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_session_forward_to	(CamelSession *session,
+						 CamelFolder *folder,
+						 CamelMimeMessage *message,
+						 const gchar *address,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_session_forward_to_finish	(CamelSession *session,
 						 GAsyncResult *result,
 						 GError **error);
 

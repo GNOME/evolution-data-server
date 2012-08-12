@@ -494,11 +494,13 @@ do_forward_to (struct _CamelSExp *f,
 		"Forward message to '%s'",
 		argv[0]->value.string);
 
-	camel_session_forward_to (
+	/* XXX Not cancellable. */
+	camel_session_forward_to_sync (
 		driver->priv->session,
 		driver->priv->source,
 		driver->priv->message,
 		argv[0]->value.string,
+		NULL,
 		&driver->priv->error);
 
 	return NULL;
