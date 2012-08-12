@@ -69,16 +69,6 @@ enum {
 	CAMEL_SESSION_PASSPHRASE = 1 << 4
 };
 
-/**
- * CamelSessionLock:
- *
- * Since: 2.32
- **/
-typedef enum {
-	CAMEL_SESSION_SESSION_LOCK,
-	CAMEL_SESSION_THREAD_LOCK
-} CamelSessionLock;
-
 struct _CamelSession {
 	CamelObject parent;
 	CamelSessionPrivate *priv;
@@ -259,10 +249,6 @@ void		camel_session_set_junk_headers	(CamelSession *session,
 						 gint len);
 gboolean	camel_session_lookup_addressbook (CamelSession *session,
 						 const gchar *name);
-void		camel_session_lock		(CamelSession *session,
-						 CamelSessionLock lock);
-void		camel_session_unlock		(CamelSession *session,
-						 CamelSessionLock lock);
 
 gboolean	camel_session_authenticate_sync	(CamelSession *session,
 						 CamelService *service,

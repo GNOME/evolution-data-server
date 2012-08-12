@@ -61,9 +61,6 @@ typedef struct _AsyncContext AsyncContext;
 typedef struct _JobData JobData;
 
 struct _CamelSessionPrivate {
-	GMutex *lock;		/* for locking everything basically */
-	GMutex *thread_lock;	/* locking threads */
-
 	gchar *user_data_dir;
 	gchar *user_cache_dir;
 
@@ -367,9 +364,6 @@ session_finalize (GObject *object)
 
 	if (priv->main_context != NULL)
 		g_main_context_unref (priv->main_context);
-
-	g_mutex_free (priv->lock);
-	g_mutex_free (priv->thread_lock);
 
 	g_mutex_free (priv->services_lock);
 
@@ -865,8 +859,6 @@ camel_session_init (CamelSession *session)
 
 	session->priv = CAMEL_SESSION_GET_PRIVATE (session);
 
-	session->priv->lock = g_mutex_new ();
-	session->priv->thread_lock = g_mutex_new ();
 	session->priv->services = services;
 	session->priv->services_lock = g_mutex_new ();
 	session->priv->junk_headers = NULL;
@@ -1677,60 +1669,6 @@ camel_session_get_junk_headers (CamelSession *session)
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
 	return session->priv->junk_headers;
-}
-
-/**
- * camel_session_lock:
- * @session: a #CamelSession
- * @lock: lock type to lock
- *
- * Locks @session's @lock. Unlock it with camel_session_unlock().
- *
- * Since: 2.32
- **/
-void
-camel_session_lock (CamelSession *session,
-                    CamelSessionLock lock)
-{
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-
-	switch (lock) {
-		case CAMEL_SESSION_SESSION_LOCK:
-			g_mutex_lock (session->priv->lock);
-			break;
-		case CAMEL_SESSION_THREAD_LOCK:
-			g_mutex_lock (session->priv->thread_lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
-}
-
-/**
- * camel_session_unlock:
- * @session: a #CamelSession
- * @lock: lock type to unlock
- *
- * Unlocks @session's @lock, previously locked with camel_session_lock().
- *
- * Since: 2.32
- **/
-void
-camel_session_unlock (CamelSession *session,
-                      CamelSessionLock lock)
-{
-	g_return_if_fail (CAMEL_IS_SESSION (session));
-
-	switch (lock) {
-		case CAMEL_SESSION_SESSION_LOCK:
-			g_mutex_unlock (session->priv->lock);
-			break;
-		case CAMEL_SESSION_THREAD_LOCK:
-			g_mutex_unlock (session->priv->thread_lock);
-			break;
-		default:
-			g_return_if_reached ();
-	}
 }
 
 /**
