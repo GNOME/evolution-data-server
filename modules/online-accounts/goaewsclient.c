@@ -309,22 +309,37 @@ ews_create_autodiscover_xml (const gchar *email)
 	return doc;
 }
 
+static gconstpointer
+compat_libxml_output_buffer_get_content (xmlOutputBufferPtr buf,
+                                         gsize *out_len)
+{
+#ifdef LIBXML2_NEW_BUFFER
+	*out_len = xmlOutputBufferGetSize (buf);
+	return xmlOutputBufferGetContent (buf);
+#else
+	*out_len = buf->buffer->use;
+	return buf->buffer->content;
+#endif
+}
+
 static void
 ews_post_restarted_cb (SoupMessage *msg,
                        gpointer data)
 {
 	xmlOutputBuffer *buf = data;
+	gconstpointer buf_content;
+	gsize buf_size;
 
 	/* In violation of RFC2616, libsoup will change a
 	 * POST request to a GET on receiving a 302 redirect. */
 	g_debug ("Working around libsoup bug with redirect");
 	g_object_set (msg, SOUP_MESSAGE_METHOD, "POST", NULL);
 
+	buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
 	soup_message_set_request (
 		msg, "text/xml; charset=utf-8",
 		SOUP_MEMORY_COPY,
-		(gchar *) buf->buffer->content,
-		buf->buffer->use);
+		buf_content, buf_size);
 }
 
 static SoupMessage *
@@ -332,17 +347,19 @@ ews_create_msg_for_url (const gchar *url,
                         xmlOutputBuffer *buf)
 {
 	SoupMessage *msg;
+	gconstpointer buf_content;
+	gsize buf_size;
 
 	msg = soup_message_new (buf != NULL ? "POST" : "GET", url);
 	soup_message_headers_append (
 		msg->request_headers, "User-Agent", "libews/0.1");
 
 	if (buf != NULL) {
+		buf_content = compat_libxml_output_buffer_get_content (buf, &buf_size);
 		soup_message_set_request (
 			msg, "text/xml; charset=utf-8",
 			SOUP_MEMORY_COPY,
-			(gchar *) buf->buffer->content,
-			buf->buffer->use);
+			buf_content, buf_size);
 		g_signal_connect (
 			msg, "restarted",
 			G_CALLBACK (ews_post_restarted_cb), buf);
