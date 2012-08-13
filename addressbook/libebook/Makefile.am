@@ -86,7 +86,7 @@ libebookinclude_HEADERS =				\
 	 cp $< $@
 
 e-name-western-tables.h: e-name-western-tables.h.in
-	(${srcdir}/gen-western-table.py < $< > $@.tmp && mv $@.tmp $@) || rm -f $@.tmp
+	$(AM_V_GEN) ($(PYTHON) ${srcdir}/gen-western-table.py < $< > $@.tmp && mv $@.tmp $@) || rm -f $@.tmp
 
 BUILT_SOURCES += e-name-western-tables.h
 

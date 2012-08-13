@@ -223,6 +223,9 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
+dnl For gen-western-table.py
+AM_PATH_PYTHON
+
 dnl GCC 4.4 got more aggressive in its aliasing optimizations, changing
 dnl behavior that -- according to the C99 standard -- is supposed to be
 dnl undefined.  We may still have aliasing abuses lying around that rely
