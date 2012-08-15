@@ -665,7 +665,7 @@ authentication_mediator_initable_init (GInitable *initable,
 	closure->main_context = g_main_context_new ();
 	/* It's important to pass 'is_running=FALSE' here because
 	 * we wait for the main loop to start running as a way of
-	 * synchronizing with the manager thread. */
+	 * synchronizing with the authenticator thread. */
 	closure->main_loop = g_main_loop_new (closure->main_context, FALSE);
 	closure->main_loop_cond = g_cond_new ();
 	closure->main_loop_mutex = g_mutex_new ();
