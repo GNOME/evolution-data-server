@@ -1019,6 +1019,55 @@ e_collection_backend_get_cache_dir (ECollectionBackend *backend)
 }
 
 /**
+ * e_collection_backend_claim_all_resources:
+ * @backend: an #ECollectionBackend
+ *
+ * Claims all previously used sources that have not yet been claimed by
+ * e_collection_backend_new_child() and returns them in a #GList.  Note
+ * that previously used sources can only be claimed once, so subsequent
+ * calls to this function for @backend will return %NULL.
+ *
+ * The @backend is then expected to compare the returned list with a
+ * current list of resources from a remote server, create new #ESource
+ * instances as needed with e_collection_backend_new_child(), discard
+ * unneeded #ESource instances with e_source_remove(), and export the
+ * remaining instances with e_source_registry_server_add_source().
+ *
+ * The sources returned in the list are referenced for thread-safety.
+ * They must each be unreferenced with g_object_unref() when finished
+ * with them.  Free the returned #GList itself with g_list_free().
+ *
+ * An easy way to free the list properly in one step is as follows:
+ *
+ * |[
+ *   g_list_free_full (list, g_object_unref);
+ * ]|
+ *
+ * Returns: a list of previously used sources
+ *
+ * Since: 3.6
+ **/
+GList *
+e_collection_backend_claim_all_resources (ECollectionBackend *backend)
+{
+	GHashTable *unclaimed_resources;
+	GList *resources;
+
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), NULL);
+
+	g_mutex_lock (backend->priv->unclaimed_resources_lock);
+
+	unclaimed_resources = backend->priv->unclaimed_resources;
+	resources = g_hash_table_get_values (unclaimed_resources);
+	g_list_foreach (resources, (GFunc) g_object_ref, NULL);
+	g_hash_table_remove_all (unclaimed_resources);
+
+	g_mutex_unlock (backend->priv->unclaimed_resources_lock);
+
+	return resources;
+}
+
+/**
  * e_collection_backend_list_calendar_sources:
  * @backend: an #ECollectionBackend
  *
