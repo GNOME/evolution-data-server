@@ -551,27 +551,6 @@ e_cal_backend_weather_refresh (ECalBackendSync *backend,
 }
 
 static void
-e_cal_backend_weather_remove (ECalBackendSync *backend,
-                              EDataCal *cal,
-                              GCancellable *cancellable,
-                              GError **perror)
-{
-	ECalBackendWeather *cbw;
-	ECalBackendWeatherPrivate *priv;
-
-	cbw = E_CAL_BACKEND_WEATHER (backend);
-	priv = cbw->priv;
-
-	if (!priv->store) {
-		/* lie here a bit, but otherwise the calendar will not be removed, even it should */
-		g_print (G_STRLOC ": Doesn't have a cache?!?");
-		return;
-	}
-
-	e_cal_backend_store_remove (priv->store);
-}
-
-static void
 e_cal_backend_weather_receive_objects (ECalBackendSync *backend,
                                        EDataCal *cal,
                                        GCancellable *cancellable,
@@ -880,7 +859,6 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	sync_class->get_backend_property_sync	= e_cal_backend_weather_get_backend_property;
 	sync_class->open_sync			= e_cal_backend_weather_open;
 	sync_class->refresh_sync		= e_cal_backend_weather_refresh;
-	sync_class->remove_sync			= e_cal_backend_weather_remove;
 	sync_class->receive_objects_sync	= e_cal_backend_weather_receive_objects;
 	sync_class->get_object_sync		= e_cal_backend_weather_get_object;
 	sync_class->get_object_list_sync	= e_cal_backend_weather_get_object_list;
