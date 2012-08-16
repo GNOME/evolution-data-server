@@ -1328,15 +1328,6 @@ e_book_backend_webdav_open (EBookBackend *backend,
 }
 
 static void
-e_book_backend_webdav_remove (EBookBackend *backend,
-                              EDataBook *book,
-                              guint32 opid,
-                              GCancellable *cancellable)
-{
-	e_data_book_respond_remove (book, opid, EDB_ERROR (SUCCESS));
-}
-
-static void
 e_book_backend_webdav_notify_online_cb (EBookBackend *backend,
                                         GParamSpec *pspec)
 {
@@ -1484,7 +1475,6 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 	backend_class->get_contact_list_uids	= e_book_backend_webdav_get_contact_list_uids;
 	backend_class->start_book_view		= e_book_backend_webdav_start_book_view;
 	backend_class->stop_book_view		= e_book_backend_webdav_stop_book_view;
-	backend_class->remove			= e_book_backend_webdav_remove;
 
 	object_class->dispose			= e_book_backend_webdav_dispose;
 }
