@@ -1951,16 +1951,6 @@ e_book_backend_google_stop_book_view (EBookBackend *backend,
 }
 
 static void
-e_book_backend_google_remove (EBookBackend *backend,
-                              EDataBook *book,
-                              guint32 opid,
-                              GCancellable *cancellable)
-{
-	__debug__ (G_STRFUNC);
-	e_data_book_respond_remove (book, opid, NULL);
-}
-
-static void
 e_book_backend_google_open (EBookBackend *backend,
                             EDataBook *book,
                             guint opid,
@@ -2380,7 +2370,6 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *class)
 	backend_class->get_backend_property	= e_book_backend_google_get_backend_property;
 	backend_class->start_book_view		= e_book_backend_google_start_book_view;
 	backend_class->stop_book_view		= e_book_backend_google_stop_book_view;
-	backend_class->remove			= e_book_backend_google_remove;
 	backend_class->create_contacts		= e_book_backend_google_create_contacts;
 	backend_class->remove_contacts		= e_book_backend_google_remove_contacts;
 	backend_class->modify_contacts		= e_book_backend_google_modify_contacts;
