@@ -2822,47 +2822,6 @@ caldav_refresh (ECalBackendSync *backend,
 }
 
 static void
-caldav_remove (ECalBackendSync *backend,
-               EDataCal *cal,
-               GCancellable *cancellable,
-               GError **perror)
-{
-	ECalBackendCalDAV        *cbdav;
-	gboolean                  online;
-
-	cbdav = E_CAL_BACKEND_CALDAV (backend);
-
-	/* first tell it to die, then wait for its lock */
-	update_slave_cmd (cbdav->priv, SLAVE_SHOULD_DIE);
-
-	g_mutex_lock (cbdav->priv->busy_lock);
-
-	if (!cbdav->priv->loaded) {
-		g_mutex_unlock (cbdav->priv->busy_lock);
-		return;
-	}
-
-	if (!check_state (cbdav, &online, NULL)) {
-		/* lie here a bit, but otherwise the calendar will not be removed, even it should */
-		g_print (G_STRLOC ": Failed to check state");
-	}
-
-	e_cal_backend_store_remove (cbdav->priv->store);
-	cbdav->priv->store = NULL;
-	cbdav->priv->loaded = FALSE;
-	cbdav->priv->opened = FALSE;
-
-	if (cbdav->priv->synch_slave) {
-		g_cond_signal (cbdav->priv->cond);
-
-		/* wait until the slave died */
-		g_cond_wait (cbdav->priv->slave_gone_cond, cbdav->priv->busy_lock);
-	}
-
-	g_mutex_unlock (cbdav->priv->busy_lock);
-}
-
-static void
 remove_comp_from_cache_cb (gpointer value,
                            gpointer user_data)
 {
@@ -5113,7 +5072,6 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 
 	sync_class->open_sync			= caldav_do_open;
 	sync_class->refresh_sync		= caldav_refresh;
-	sync_class->remove_sync			= caldav_remove;
 
 	sync_class->create_objects_sync		= caldav_create_objects;
 	sync_class->modify_objects_sync		= caldav_modify_objects;
