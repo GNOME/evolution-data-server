@@ -2136,103 +2136,6 @@ e_book_backend_file_open (EBookBackendSync *backend,
 }
 
 static gboolean
-select_changes (const gchar *name)
-{
-	gchar *p;
-
-	if (strlen (name) < strlen (CHANGES_DB_SUFFIX))
-		return FALSE;
-
-	p = strstr (name, CHANGES_DB_SUFFIX);
-	if (!p)
-		return FALSE;
-
-	if (strlen (p) != strlen (CHANGES_DB_SUFFIX))
-		return FALSE;
-
-	return TRUE;
-}
-
-static void
-remove_photos (const gchar *dirname)
-{
-	GDir *dir;
-
-	if (!dirname)
-		return;
-
-	dir = g_dir_open (dirname, 0, NULL);
-	if (dir) {
-		const gchar *name;
-
-		while ((name = g_dir_read_name (dir))) {
-			gchar *full_path = g_build_filename (dirname, name, NULL);
-			if (-1 == g_unlink (full_path)) {
-				g_warning ("failed to remove photo file %s: %s",
-					   full_path, g_strerror (errno));
-			}
-			g_free (full_path);
-		}
-
-		g_dir_close (dir);
-	}
-}
-
-static void
-e_book_backend_file_remove (EBookBackendSync *backend,
-                            EDataBook *book,
-                            GCancellable *cancellable,
-                            GError **perror)
-{
-	EBookBackendFile *bf = E_BOOK_BACKEND_FILE (backend);
-	GDir *dir;
-
-	if (!remove_file (bf->priv->filename, perror))
-		return;
-
-	if (!e_book_backend_sqlitedb_remove (bf->priv->sqlitedb, perror))
-		return;
-
-	/* unref the sqlitedb before we remove the file so it's not written out again */
-	g_object_unref (bf->priv->sqlitedb);
-	bf->priv->sqlitedb = NULL;
-
-	if (bf->priv->dirname) {
-		dir = g_dir_open (bf->priv->dirname, 0, NULL);
-		if (dir) {
-			const gchar *name;
-
-			while ((name = g_dir_read_name (dir))) {
-				if (select_changes (name)) {
-					gchar *full_path = g_build_filename (bf->priv->dirname, name, NULL);
-					if (g_unlink (full_path) == -1) {
-						g_warning ("failed to remove change db `%s': %s", full_path, g_strerror (errno));
-					}
-					g_free (full_path);
-				}
-			}
-
-			g_dir_close (dir);
-		}
-	}
-
-	/* Remove photos and the photo directory */
-	remove_photos (bf->priv->photo_dirname);
-	if (-1 == g_rmdir (bf->priv->photo_dirname))
-		g_warning ("failed to remove directory `%s`: %s", bf->priv->photo_dirname, g_strerror (errno));
-
-	/* Try removing the base directory now */
-	if (-1 == g_rmdir (bf->priv->dirname))
-		g_warning ("failed to remove directory `%s`: %s", bf->priv->dirname, g_strerror (errno));
-
-	/* we may not have actually succeeded in removing the
-	 * backend's files/dirs, but there's nothing we can do about
-	 * it here..  the only time we should return failure is if we
-	 * failed to remove the actual data.  a failure should mean
-	 * that the addressbook is still valid */
-}
-
-static gboolean
 e_book_backend_file_get_backend_property (EBookBackendSync *backend,
                                           EDataBook *book,
                                           GCancellable *cancellable,
@@ -2465,7 +2368,6 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 	backend_class->notify_update            = e_book_backend_file_notify_update;
 
 	sync_class->open_sync			= e_book_backend_file_open;
-	sync_class->remove_sync			= e_book_backend_file_remove;
 	sync_class->get_backend_property_sync	= e_book_backend_file_get_backend_property;
 	sync_class->create_contacts_sync	= e_book_backend_file_create_contacts;
 	sync_class->remove_contacts_sync	= e_book_backend_file_remove_contacts;
