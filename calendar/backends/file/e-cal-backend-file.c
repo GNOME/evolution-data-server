@@ -1394,100 +1394,6 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 }
 
 static void
-e_cal_backend_file_remove (ECalBackendSync *backend,
-                           EDataCal *cal,
-                           GCancellable *cancellable,
-                           GError **perror)
-{
-	ECalBackendFile *cbfile;
-	ECalBackendFilePrivate *priv;
-	ESourceLocal *extension;
-	ESource *source;
-	gchar *str_uri = NULL, *dirname = NULL;
-	gchar *full_path = NULL;
-	const gchar *extension_name;
-	const gchar *fname;
-	GDir *dir = NULL;
-	GError *local_error = NULL;
-	GError *err = NULL;
-
-	cbfile = E_CAL_BACKEND_FILE (backend);
-	priv = cbfile->priv;
-	g_static_rec_mutex_lock (&priv->idle_save_rmutex);
-
-	str_uri = get_uri_string (E_CAL_BACKEND (backend));
-	if (!str_uri) {
-		err = EDC_ERROR_NO_URI ();
-		goto done;
-	}
-
-	extension_name = E_SOURCE_EXTENSION_LOCAL_BACKEND;
-	source = e_backend_get_source (E_BACKEND (backend));
-	extension = e_source_get_extension (source, extension_name);
-
-	if (e_source_local_get_custom_file (extension) != NULL) {
-		/* skip file and directory removal for custom calendars */
-		goto done;
-	}
-
-	if (g_access (str_uri, W_OK) != 0) {
-		err = EDC_ERROR (PermissionDenied);
-		goto done;
-	}
-
-	/* remove all files in the directory */
-	dirname = g_path_get_dirname (str_uri);
-	dir = g_dir_open (dirname, 0, &local_error);
-	if (!dir) {
-		err = e_data_cal_create_error (
-			PermissionDenied, local_error->message);
-		goto done;
-	}
-
-	while ((fname = g_dir_read_name (dir))) {
-		full_path = g_build_filename (dirname, fname, NULL);
-		if (g_unlink (full_path) != 0) {
-			err = EDC_ERROR (OtherError);
-			goto done;
-		}
-
-		g_free (full_path);
-		full_path = NULL;
-	}
-
-	if (dir) {
-		g_dir_close (dir);
-		dir = NULL;
-	}
-
-	/* remove the directory itself */
-	if (g_rmdir (dirname) != 0) {
-		err = EDC_ERROR (OtherError);
-	}
-
-  done:
-	if (dir) {
-		g_dir_close (dir);
-		dir = NULL;
-	}
-
-	/* lie here a bit, but otherwise the calendar will not be removed, even it should */
-	if (err) {
-		g_print (G_STRLOC ": %s on dir '%s' from uri '%s'\n", err->message, dirname, str_uri);
-		g_error_free (err);
-	}
-
-	g_free (str_uri);
-	g_free (dirname);
-	g_free (full_path);
-
-	g_static_rec_mutex_unlock (&priv->idle_save_rmutex);
-
-	if (local_error)
-		g_error_free (local_error);
-}
-
-static void
 add_detached_recur_to_vcalendar (gpointer key,
                                  gpointer value,
                                  gpointer user_data)
@@ -3517,7 +3423,6 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 
 	sync_class->get_backend_property_sync	= e_cal_backend_file_get_backend_property;
 	sync_class->open_sync			= e_cal_backend_file_open;
-	sync_class->remove_sync			= e_cal_backend_file_remove;
 	sync_class->create_objects_sync		= e_cal_backend_file_create_objects;
 	sync_class->modify_objects_sync		= e_cal_backend_file_modify_objects;
 	sync_class->remove_objects_sync		= e_cal_backend_file_remove_objects;
