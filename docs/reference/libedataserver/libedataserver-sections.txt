@@ -50,9 +50,6 @@ e_client_set_backend_property_sync
 e_client_open
 e_client_open_finish
 e_client_open_sync
-e_client_remove
-e_client_remove_finish
-e_client_remove_sync
 e_client_refresh
 e_client_refresh_finish
 e_client_refresh_sync
@@ -68,6 +65,9 @@ e_client_util_free_object_slist
 e_client_util_parse_comma_strings
 EClientErrorsList
 e_client_util_unwrap_dbus_error
+e_client_remove
+e_client_remove_finish
+e_client_remove_sync
 <SUBSECTION Standard>
 E_CLIENT
 E_IS_CLIENT

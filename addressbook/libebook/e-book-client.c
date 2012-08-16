@@ -935,44 +935,6 @@ book_client_open_sync (EClient *client,
 }
 
 static void
-book_client_remove (EClient *client,
-                    GCancellable *cancellable,
-                    GAsyncReadyCallback callback,
-                    gpointer user_data)
-{
-	e_client_proxy_call_void (client, cancellable, callback, user_data, book_client_remove,
-			e_gdbus_book_call_remove,
-			e_gdbus_book_call_remove_finish, NULL, NULL, NULL, NULL);
-}
-
-static gboolean
-book_client_remove_finish (EClient *client,
-                           GAsyncResult *result,
-                           GError **error)
-{
-	return e_client_proxy_call_finish_void (client, result, error, book_client_remove);
-}
-
-static gboolean
-book_client_remove_sync (EClient *client,
-                         GCancellable *cancellable,
-                         GError **error)
-{
-	EBookClient *book_client;
-
-	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
-
-	book_client = E_BOOK_CLIENT (client);
-
-	if (!book_client->priv->gdbus_book) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
-	return e_client_proxy_call_sync_void__void (client, cancellable, error, e_gdbus_book_call_remove_sync);
-}
-
-static void
 book_client_refresh (EClient *client,
                      GCancellable *cancellable,
                      GAsyncReadyCallback callback,
@@ -2481,9 +2443,6 @@ e_book_client_class_init (EBookClientClass *class)
 	client_class->open				= book_client_open;
 	client_class->open_finish			= book_client_open_finish;
 	client_class->open_sync				= book_client_open_sync;
-	client_class->remove				= book_client_remove;
-	client_class->remove_finish			= book_client_remove_finish;
-	client_class->remove_sync			= book_client_remove_sync;
 	client_class->refresh				= book_client_refresh;
 	client_class->refresh_finish			= book_client_refresh_finish;
 	client_class->refresh_sync			= book_client_refresh_sync;

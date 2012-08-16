@@ -243,10 +243,6 @@ void		e_client_open				(EClient *client, gboolean only_if_exists, GCancellable *
 gboolean	e_client_open_finish			(EClient *client, GAsyncResult *result, GError **error);
 gboolean	e_client_open_sync			(EClient *client, gboolean only_if_exists, GCancellable *cancellable, GError **error);
 
-void		e_client_remove				(EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-gboolean	e_client_remove_finish			(EClient *client, GAsyncResult *result, GError **error);
-gboolean	e_client_remove_sync			(EClient *client, GCancellable *cancellable, GError **error);
-
 void		e_client_refresh			(EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_client_refresh_finish			(EClient *client, GAsyncResult *result, GError **error);
 gboolean	e_client_refresh_sync			(EClient *client, GCancellable *cancellable, GError **error);
@@ -263,6 +259,12 @@ GSList *	e_client_util_copy_object_slist		(GSList *copy_to, const GSList *object
 void		e_client_util_free_string_slist		(GSList *strings);
 void		e_client_util_free_object_slist		(GSList *objects);
 GSList *	e_client_util_parse_comma_strings	(const gchar *strings);
+
+#ifndef EDS_DISABLE_DEPRECATED
+void		e_client_remove				(EClient *client, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
+gboolean	e_client_remove_finish			(EClient *client, GAsyncResult *result, GError **error);
+gboolean	e_client_remove_sync			(EClient *client, GCancellable *cancellable, GError **error);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 typedef struct _EClientErrorsList EClientErrorsList;
 

@@ -313,6 +313,68 @@ client_get_property (GObject *object,
 }
 
 static void
+client_remove_thread (GSimpleAsyncResult *simple,
+                      GObject *object,
+                      GCancellable *cancellable)
+{
+	GError *error = NULL;
+
+	e_client_remove_sync (E_CLIENT (object), cancellable, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+}
+
+static void
+client_remove (EClient *client,
+               GCancellable *cancellable,
+               GAsyncReadyCallback callback,
+               gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback, user_data, client_remove);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_run_in_thread (
+		simple, client_remove_thread,
+		G_PRIORITY_DEFAULT, cancellable);
+
+	g_object_unref (simple);
+}
+
+static gboolean
+client_remove_finish (EClient *client,
+                      GAsyncResult *result,
+                      GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (
+		g_simple_async_result_is_valid (
+		result, G_OBJECT (client), client_remove), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	/* Assume success unless a GError is set. */
+	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+static gboolean
+client_remove_sync (EClient *client,
+                    GCancellable *cancellable,
+                    GError **error)
+{
+	ESource *source;
+
+	source = e_client_get_source (client);
+
+	return e_source_remove_sync (source, cancellable, error);
+}
+
+static void
 e_client_class_init (EClientClass *class)
 {
 	GObjectClass *object_class;
@@ -324,6 +386,10 @@ e_client_class_init (EClientClass *class)
 	object_class->get_property = client_get_property;
 	object_class->dispose = client_dispose;
 	object_class->finalize = client_finalize;
+
+	class->remove = client_remove;
+	class->remove_finish = client_remove_finish;
+	class->remove_sync = client_remove_sync;
 
 	g_object_class_install_property (
 		object_class,
@@ -1290,6 +1356,8 @@ e_client_open_sync (EClient *client,
  * The call is finished by e_client_remove_finish() from the @callback.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.6: Use e_source_remove() instead.
  **/
 void
 e_client_remove (EClient *client,
@@ -1320,6 +1388,8 @@ e_client_remove (EClient *client,
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.6: Use e_source_remove_finish() instead.
  **/
 gboolean
 e_client_remove_finish (EClient *client,
@@ -1349,6 +1419,8 @@ e_client_remove_finish (EClient *client,
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.6: Use e_source_remove_sync() instead.
  **/
 gboolean
 e_client_remove_sync (EClient *client,

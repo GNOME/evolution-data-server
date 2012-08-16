@@ -2311,44 +2311,6 @@ cal_client_open_sync (EClient *client,
 }
 
 static void
-cal_client_remove (EClient *client,
-                   GCancellable *cancellable,
-                   GAsyncReadyCallback callback,
-                   gpointer user_data)
-{
-	e_client_proxy_call_void (client, cancellable, callback, user_data, cal_client_remove,
-			e_gdbus_cal_call_remove,
-			e_gdbus_cal_call_remove_finish, NULL, NULL, NULL, NULL);
-}
-
-static gboolean
-cal_client_remove_finish (EClient *client,
-                          GAsyncResult *result,
-                          GError **error)
-{
-	return e_client_proxy_call_finish_void (client, result, error, cal_client_remove);
-}
-
-static gboolean
-cal_client_remove_sync (EClient *client,
-                        GCancellable *cancellable,
-                        GError **error)
-{
-	ECalClient *cal_client;
-
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-
-	cal_client = E_CAL_CLIENT (client);
-
-	if (!cal_client->priv->gdbus_cal) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
-	return e_client_proxy_call_sync_void__void (client, cancellable, error, e_gdbus_cal_call_remove_sync);
-}
-
-static void
 cal_client_refresh (EClient *client,
                     GCancellable *cancellable,
                     GAsyncReadyCallback callback,
@@ -5241,9 +5203,6 @@ e_cal_client_class_init (ECalClientClass *class)
 	client_class->open				= cal_client_open;
 	client_class->open_finish			= cal_client_open_finish;
 	client_class->open_sync				= cal_client_open_sync;
-	client_class->remove				= cal_client_remove;
-	client_class->remove_finish			= cal_client_remove_finish;
-	client_class->remove_sync			= cal_client_remove_sync;
 	client_class->refresh				= cal_client_refresh;
 	client_class->refresh_finish			= cal_client_refresh_finish;
 	client_class->refresh_sync			= cal_client_refresh_sync;
