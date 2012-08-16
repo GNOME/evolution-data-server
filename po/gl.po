@@ -1,12 +1,9 @@
-# translation of evolution-data-server-master-po-gl-71644.po to Galician
-# Galician translation of Evolution.
+# Galician translation of evolution-data-server
 # Copyright (C) 2000 Jesús Bravo Álvarez.
 # Copyright (C) 2001 Manuel A. Fernández Montecelo.
 #
 # Proxecto Trasno - Adaptación do software libre á lingua galega:  Se desexas
 # colaborar connosco, podes atopar máis información en http://www.trasno.net
-#
-# First Version: 2000-04-07 22:14+0200
 #
 # Jesús Bravo Álvarez <jba@pobox.com>, 2000.
 # Manuel A. Fernández Montecelo <manuel@sindominio.net>, 2001.
@@ -15,23 +12,22 @@
 # Ignacio Casal Quinteiro <icq@svn.gnome.org>, 2007, 2008.
 # Mancomún - Centro de Referencia e Servizos de Software Libre <g11n@mancomun.org>, 2009.
 # Antón Méixome <meixome@mancomun.org>, 2009.
-# Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011.
-# Fran Dieguez <frandieguez@gnome.org>, 2010, 2011, 2012.
-#
+# Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011, 2012.
+# Leandro Regueiro <leandro.regueiro@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-30 02:39+0200\n"
-"PO-Revision-Date: 2012-07-30 02:40+0200\n"
-"Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
-"Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
+"POT-Creation-Date: 2012-08-16 23:26+0200\n"
+"PO-Revision-Date: 2012-08-15 20:10+0100\n"
+"Last-Translator: Leandro Regueiro <leandro.regueiro@gmail.com>\n"
+"Language-Team: Galego <kde-i18n-doc@kde.org>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Gtranslator 2.91.5\n"
+"X-Generator: Lokalize 1.0\n"
 "X-Poedit-Language: Galician\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:116
@@ -53,17 +49,17 @@ msgstr "Erro descoñecido"
 #: ../addressbook/backends/file/e-book-backend-file.c:141
 #, c-format
 msgid "Failed to remove file '%s': %s"
-msgstr "Produciuse un fallo ao elimianr o ficheiro «%s»: %s"
+msgstr "Produciuse un erro ao retirar o ficheiro «%s»: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:164
 #, c-format
 msgid "Failed to make directory %s: %s"
-msgstr "Produciuse un fallo ao crear o cartafol %s: %s"
+msgstr "Produciuse un erro ao crear o cartafol %s: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:459
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
-msgstr "Produciuse un fallo ao crear unha ligazón dura para o recurso «%s»: %s"
+msgstr "Produciuse un erro ao crear unha ligazón dura para o recurso «%s»: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:561
 #: ../addressbook/backends/file/e-book-backend-file.c:1127
@@ -85,7 +81,7 @@ msgstr "Buscando…"
 #, c-format
 msgid "Failed to build summary for an address book %s"
 msgstr ""
-"Produciuse un fallo ao construir o resumo para unha libreta de enderezos %s"
+"Produciuse un erro ao construír o resumo para unha libreta de enderezos %s"
 
 #. Query for new contacts asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:709
@@ -102,7 +98,7 @@ msgstr "Solicitando actualización de grupos…"
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:287
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:326
 msgid "The backend does not support bulk additions"
-msgstr "Este motor non admite engadir en lote"
+msgstr "A infraestrutura non permite adicións en lote"
 
 #. Insert the entry on the server asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:1310
@@ -113,7 +109,7 @@ msgstr "Creando un contacto novo…"
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:319
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:433
 msgid "The backend does not support bulk removals"
-msgstr "Este motor non admite eliminacións en lote"
+msgstr "A infraestrutura non permite retiradas en lote"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1427
 msgid "Deleting contact…"
@@ -124,7 +120,7 @@ msgstr "Eliminando contacto…"
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:367
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:487
 msgid "The backend does not support bulk modifications"
-msgstr "Este motor non admite modificacións en lote"
+msgstr "A infraestrutura non permite modificacións en lote"
 
 #. Update the contact on the server asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:1715
@@ -181,7 +177,7 @@ msgstr "Engadindo o contacto ao servidor LDAP…"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1885
 msgid "Removing contact from LDAP server..."
-msgstr "Eliminando o contacto do servidor LDAP…"
+msgstr "Retirando o contacto do servidor LDAP…"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2334
 msgid "Modifying contact from LDAP server..."
@@ -203,12 +199,12 @@ msgstr "Descargando os contactos (%d)… "
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5567
 #, c-format
 msgid "Failed to get the DN for user '%s'"
-msgstr "Produciuse un fallo ao obter o DN para o usuario «%s»"
+msgstr "Produciuse un erro ao obter o DN para o usuario «%s»"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:354
 #, c-format
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
-msgstr "Produciuse un fallo ao crear o recurso «%s» co estado HTTP: %d (%s)"
+msgstr "A creación do recurso «%s» fallou con estado HTTP: %d (%s)"
 
 #: ../addressbook/libebook/e-book-client.c:95
 msgid "No such book"
@@ -235,7 +231,7 @@ msgstr "Sen espazos"
 
 #: ../addressbook/libebook/e-book-client.c:488
 msgid "Failed to run book factory"
-msgstr "Produciuse un fallo ao executar a fábrica do caderno"
+msgstr "Produciuse un erro ao executar a fábrica do caderno"
 
 #: ../addressbook/libebook/e-book-client.c:2282
 #: ../calendar/libecal/e-cal-client.c:4640
@@ -826,7 +822,7 @@ msgstr "Lista sen nome"
 
 #: ../addressbook/libedata-book/e-book-backend.c:17
 msgid "Cannot process, book backend is opening"
-msgstr "Non é posíbel procesar, estase abrindo a compatibilidade de cadernos"
+msgstr "Non é posíbel procesar, estase abrindo a infraestrutura de cadernos"
 
 #: ../addressbook/libedata-book/e-book-backend.c:90
 #, c-format
@@ -909,7 +905,7 @@ msgstr "Non existe a axenda de enderezos"
 
 #: ../addressbook/libedata-book/e-data-book.c:314
 msgid "Book removed"
-msgstr "Eliminouse o libro"
+msgstr "Retirouse o caderno"
 
 #: ../addressbook/libedata-book/e-data-book.c:315
 #: ../calendar/libedata-cal/e-data-cal.c:431
@@ -964,7 +960,7 @@ msgstr "Non é compatíbel"
 #: ../addressbook/libedata-book/e-data-book.c:327
 #: ../calendar/libedata-cal/e-data-cal.c:442 ../libedataserver/e-client.c:162
 msgid "Backend is not opened yet"
-msgstr "O backend aínda non está aberto"
+msgstr "A infraestrutura aínda non está aberta"
 
 #: ../addressbook/libedata-book/e-data-book.c:335
 #: ../calendar/libecal/e-cal-client.c:619
@@ -1004,23 +1000,23 @@ msgstr "Non é posíbel abrir o caderno: "
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:812
 msgid "Cannot remove book: "
-msgstr "Non é posíbel eliminar o caderno: "
+msgstr "Non é posíbel retirar o caderno: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:839
 msgid "Cannot refresh address book: "
-msgstr "Non é posíbel actualizar o calendario: "
+msgstr "Non é posíbel actualizar a libreta de enderezos: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:865
 msgid "Cannot get backend property: "
-msgstr "Non é posíbel obter a propiedade do «backend»:"
+msgstr "Non é posíbel obter a propiedade da infraestrutura:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:890
 #: ../calendar/libedata-cal/e-data-cal.c:1016
 msgid "Cannot set backend property: "
-msgstr "Non é posíbel estabelecer a propiedade do «backend»:"
+msgstr "Non é posíbel estabelecer a propiedade da infraestrutura:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:927
@@ -1035,19 +1031,19 @@ msgstr "Non é posíbel obter a lista de UID dos contactos:"
 #. Translators: This is prefix to a detailed error message
 #: ../addressbook/libedata-book/e-data-book.c:1066
 msgid "Cannot remove contacts: "
-msgstr "Non é posíbel quitar os contactos:"
+msgstr "Non é posíbel retirar os contactos:"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:103
 #: ../calendar/libedata-cal/e-data-cal-factory.c:114
 #, c-format
 msgid "No backend name in source '%s'"
-msgstr "Non hai ningún nome de «backend»  na orixe «%s»"
+msgstr "Non hai ningún nome de infraestrutura na orixe «%s»"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:115
 #: ../calendar/libedata-cal/e-data-cal-factory.c:127
 #, c-format
 msgid "Invalid backend name '%s' in source '%s'"
-msgstr "Nome «%s» de «backend» non válido na orixe «%s»"
+msgstr "Nome de infraestrutura «%s» non válido na orixe «%s»"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:319
 #: ../calendar/libedata-cal/e-data-cal-factory.c:230
@@ -1068,7 +1064,7 @@ msgstr "Non é posíbel chegar ao servidor (%s)"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:597
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
-msgstr "Produciuse un fallo ao conectar co servidor SSL: %s"
+msgstr "Produciuse un erro ao conectar co servidor SSL: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:602
 msgid ""
@@ -1077,7 +1073,7 @@ msgid ""
 "certificate being used on the server, then disable certificate validity "
 "tests by selecting 'Ignore invalid SSL certificate' option in Properties"
 msgstr ""
-"Produciuse un fallo ao conectase ao servidor usando SSL. Unha das posíbeis "
+"Produciuse un erro ao conectar ao servidor usando SSL. Unha das posíbeis "
 "razóns é o servidor estea usando un certificado non válido. Se isto é o que "
 "se agardaba, como o uso no servidor dun certificado autoasinado, desactive a "
 "comprobación da validez do certificado seleccionando a opción «Ignorar "
@@ -1101,15 +1097,15 @@ msgstr ""
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3700
 msgid "CalDAV does not support bulk additions"
-msgstr "CalDAV non admite adicións en lote"
+msgstr "CalDAV non permite adicións en lote"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3802
 msgid "CalDAV does not support bulk modifications"
-msgstr "CalDAV non admite modificacións en lote"
+msgstr "CalDAV non permite modificacións en lote"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3970
 msgid "CalDAV does not support bulk removals"
-msgstr "CalDAV non admite eliminacións en lote"
+msgstr "CalDAV non permite retiradas en lote"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4629
 msgid "Calendar doesn't support Free/Busy"
@@ -1286,7 +1282,7 @@ msgstr "O intervalo non é válido"
 
 #: ../calendar/libecal/e-cal-client.c:610
 msgid "Failed to run calendar factory"
-msgstr "Produciuse un fallo ao executar a fábrica do calendario"
+msgstr "Produciuse un erro ao executar a fábrica da axenda"
 
 #: ../calendar/libecal/e-cal-component.c:1339
 msgid "Untitled appointment"
@@ -1439,7 +1435,7 @@ msgstr "Sen definir"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:36
 msgid "Cannot process, calendar backend is opening"
-msgstr "Non se pode procesar, estase abrindo a asistencia do calendario"
+msgstr "Non é posíbel procesar, estase abrindo a infraestrutura da axenda"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:135
 #, c-format
@@ -1545,8 +1541,8 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
+"«%s» espera que o primeiro argumento sexa \"any\", \"summary\", ou "
+"\"description\", ou \"location\", ou \"attendee\", ou \"organizer\", ou "
 "\"classification\""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1084
@@ -1579,17 +1575,17 @@ msgstr "Non é posíbel abrir o calendario:"
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:934
 msgid "Cannot remove calendar: "
-msgstr "Non é posíbel quitar o calendario:"
+msgstr "Non é posíbel retirar a axenda:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:961
 msgid "Cannot refresh calendar: "
-msgstr "Non é posíbel actualizar o calendario:"
+msgstr "Non é posíbel actualizar a axenda:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:990
 msgid "Cannot retrieve backend property: "
-msgstr "Non é posíbel obter a propiedade do «backend»:"
+msgstr "Non é posíbel obter a propiedade da infraestrutura: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1045
@@ -1619,7 +1615,7 @@ msgstr "Non é posíbel modificar o obxecto do calendario: "
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1217
 msgid "Cannot remove calendar object: "
-msgstr "Non é posíbel eliminar o obxecto do calendario: "
+msgstr "Non é posíbel retirar o obxecto da axenda: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1254
@@ -1715,7 +1711,7 @@ msgstr "Baleirar caché de ficheiros"
 #: ../camel/camel-data-cache.c:509
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
-msgstr "Non foi posíbel eliminar a entrada da caché: %s: %s"
+msgstr "Non foi posíbel retirar a entrada da caché: %s: %s"
 
 #: ../camel/camel-disco-diary.c:201
 #, c-format
@@ -1849,7 +1845,7 @@ msgstr "Fallou na mensaxe %d de %d"
 
 #: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
-msgstr "Produciuse un fallo ao obter a mensaxe"
+msgstr "Produciuse un erro ao obter a mensaxe"
 
 #: ../camel/camel-filter-search.c:512
 msgid "Invalid arguments to (system-flag)"
@@ -1971,7 +1967,7 @@ msgstr "(%s) require un conxunto de cartafoles"
 #: ../camel/camel-gpg-context.c:1327
 #, c-format
 msgid "Failed to execute gpg: %s"
-msgstr "Produciuse un fallo ao executar gpg: %s"
+msgstr "Produciuse un erro ao executar gpg: %s"
 
 #: ../camel/camel-gpg-context.c:668
 #: ../camel/providers/smtp/camel-smtp-transport.c:848
@@ -1992,12 +1988,12 @@ msgstr ""
 #: ../camel/camel-gpg-context.c:769
 #, c-format
 msgid "Failed to parse gpg userid hint."
-msgstr "Produciuse un fallo ao analizar a suxestión de id de usuario gpg."
+msgstr "Produciuse un erro ao analizar a suxestión de id de usuario gpg."
 
 #: ../camel/camel-gpg-context.c:794 ../camel/camel-gpg-context.c:809
 #, c-format
 msgid "Failed to parse gpg passphrase request."
-msgstr "Produciuse un fallo ao analizar a solicitude de frase de paso gpg."
+msgstr "Produciuse un erro ao analizar a solicitude de frase de paso gpg."
 
 #: ../camel/camel-gpg-context.c:830
 #, c-format
@@ -2043,7 +2039,7 @@ msgstr "Cancelado"
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
-"Produciuse un fallo ao desbloquear a chave secreta: especificáronse 3 frases "
+"Produciuse un erro ao desbloquear a chave secreta: especificáronse 3 frases "
 "de paso incorrectas."
 
 #: ../camel/camel-gpg-context.c:913
@@ -2055,7 +2051,7 @@ msgstr "Resposta inesperada do GnuPG: %s"
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr ""
-"Produciuse un fallo ao cifrar: non se especificou ningún destinatario "
+"Produciuse un erro ao cifrar: non se especificou ningún destinatario "
 "correcto."
 
 #: ../camel/camel-gpg-context.c:1591 ../camel/camel-smime-context.c:831
@@ -2066,7 +2062,7 @@ msgstr "Non foi posíbel xerar os datos da sinatura: "
 #: ../camel/camel-gpg-context.c:1954 ../camel/camel-gpg-context.c:2101
 #: ../camel/camel-gpg-context.c:2201 ../camel/camel-gpg-context.c:2249
 msgid "Failed to execute gpg."
-msgstr "Produciuse un fallo ao executar gpg."
+msgstr "Produciuse un erro ao executar gpg."
 
 #: ../camel/camel-gpg-context.c:1719 ../camel/camel-gpg-context.c:1727
 #: ../camel/camel-gpg-context.c:1735 ../camel/camel-gpg-context.c:1755
@@ -2099,7 +2095,7 @@ msgstr "Non é posíbel descifrar a mensaxe: o formato da mensaxe non é válido
 #: ../camel/camel-gpg-context.c:2051
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr "Produciuse un fallo ao descifrar a parte MIME: erro de protocolo"
+msgstr "Produciuse un erro ao descifrar a parte MIME: erro de protocolo"
 
 #: ../camel/camel-gpg-context.c:2142 ../camel/camel-smime-context.c:1268
 msgid "Encrypted content"
@@ -2127,7 +2123,7 @@ msgstr "Servidor desconectado"
 
 #: ../camel/camel-imapx-server.c:1487
 msgid "Error writing to cache stream: "
-msgstr "Produciuse un erro de escritura ao fluxo da caché: %s"
+msgstr "Produciuse un erro ao escribir no fluxo da caché: %s"
 
 #: ../camel/camel-imapx-server.c:2416
 #, c-format
@@ -2156,7 +2152,7 @@ msgstr "O STARTTLS non é compatíbel"
 #: ../camel/providers/imap/camel-imap-store.c:435
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
-msgstr "Produciuse un fallo ao conectarse co servidor IMAP %s en modo seguro:"
+msgstr "Produciuse un erro ao conectar co servidor IMAP %s en modo seguro:"
 
 #: ../camel/camel-imapx-server.c:3436
 #: ../camel/providers/imap/camel-imap-store.c:734
@@ -2193,11 +2189,11 @@ msgstr "Produciuse un erro ao obter a mensaxe"
 
 #: ../camel/camel-imapx-server.c:3747
 msgid "Failed to copy the tmp file"
-msgstr "Produciuse un fallo ao copiar o ficheiro temporal"
+msgstr "Produciuse un erro ao copiar o ficheiro temporal"
 
 #: ../camel/camel-imapx-server.c:3761
 msgid "Failed to close the tmp stream"
-msgstr "Produciuse un fallo ao pechar o fluxo temporal"
+msgstr "Produciuse un erro ao pechar o fluxo temporal"
 
 #: ../camel/camel-imapx-server.c:3859
 msgid "Error copying messages"
@@ -2497,12 +2493,12 @@ msgstr "Resolvendo: %s"
 
 #: ../camel/camel-net-utils.c:726
 msgid "Host lookup failed"
-msgstr "Produciuse un fallo ao buscar o servidor"
+msgstr "Produciuse un erro ao buscar o servidor"
 
 #: ../camel/camel-net-utils.c:732
 #, c-format
 msgid "Host lookup failed: %s: %s"
-msgstr "Produciuse un fallo ao buscar o servidor: %s: %s"
+msgstr "Produciuse un erro ao buscar o servidor: %s: %s"
 
 #: ../camel/camel-net-utils.c:853
 msgid "Resolving address"
@@ -2510,12 +2506,12 @@ msgstr "Resolvendo enderezo"
 
 #: ../camel/camel-net-utils.c:874
 msgid "Name lookup failed"
-msgstr "Produciuse un fallo ao buscar o nome"
+msgstr "Produciuse un erro ao buscar o nome"
 
 #: ../camel/camel-net-utils.c:880
 #, c-format
 msgid "Name lookup failed: %s"
-msgstr "Produciuse un fallo ao buscar o nome: %s"
+msgstr "Produciuse un erro ao buscar o nome: %s"
 
 #: ../camel/camel-network-service.c:112
 #, c-format
@@ -2709,7 +2705,7 @@ msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
 msgstr ""
-"As credenciais dispoñíbeis non son correctas para a inicialización do "
+"As credenciais fornecidas non son correctas para a inicialización do "
 "contexto ou o manipulador de credenciais non indicou ningunha credencial."
 
 #: ../camel/camel-sasl-gssapi.c:160
@@ -2960,7 +2956,7 @@ msgstr "Non foi posíbel engadir datos ao codificador CMS"
 
 #: ../camel/camel-smime-context.c:853 ../camel/camel-smime-context.c:1147
 msgid "Failed to encode data"
-msgstr "Produciuse un fallo ao codificar os datos"
+msgstr "Produciuse un erro ao codificar os datos"
 
 #: ../camel/camel-smime-context.c:996 ../camel/camel-smime-context.c:1243
 msgid "Decoder failed"
@@ -2968,7 +2964,7 @@ msgstr "O descodificador fallou"
 
 #: ../camel/camel-smime-context.c:1065
 msgid "Cannot find common bulk encryption algorithm"
-msgstr "Non é posíbel atopar un algoritmo de codificación en bloque común"
+msgstr "Non é posíbel atopar un algoritmo de cifrado en bloque común"
 
 #: ../camel/camel-smime-context.c:1073
 msgid "Cannot allocate slot for encryption bulk key"
@@ -3000,7 +2996,7 @@ msgstr "Non é posíbel engadir información do destinatario CMS"
 
 #: ../camel/camel-smime-context.c:1141
 msgid "Failed to add data to encoder"
-msgstr "Produciuse un fallo ao engadir os datos ao codificador"
+msgstr "Produciuse un erro ao engadir os datos ao codificador"
 
 #: ../camel/camel-smime-context.c:1250
 msgid "S/MIME Decrypt: No encrypted content found"
@@ -3427,17 +3423,17 @@ msgstr "Non foi posíbel abrir o directorio da caché: "
 #: ../camel/providers/imap/camel-imap-message-cache.c:331
 #, c-format
 msgid "Failed to cache message %s: %s"
-msgstr "Produciuse un fallo ao facer a caché da mensaxe %s: %s"
+msgstr "Produciuse un erro ao crear a caché da mensaxe %s: %s"
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:397
 #, c-format
 msgid "Failed to cache message %s: "
-msgstr "Produciuse un fallo ao crear a caché da mensaxe %s: "
+msgstr "Produciuse un erro ao crear a caché da mensaxe %s: "
 
 #: ../camel/providers/imap/camel-imap-message-cache.c:539
 #, c-format
 msgid "Failed to cache %s: "
-msgstr "Produciuse un fallo ao crear a caché %s: "
+msgstr "Produciuse un erro ao crear a caché %s: "
 
 #: ../camel/providers/imap/camel-imap-provider.c:40
 #: ../camel/providers/imapx/camel-imapx-provider.c:38
@@ -3553,7 +3549,7 @@ msgstr "O servidor desconectouse inesperadamente: "
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Use _Quick Resync if the server supports it"
-msgstr "Usar a resincronización _rápida se o servido o admite"
+msgstr "Usar a resincronización _rápida se o servidor o permite"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:46
 msgid "_Listen for server change notifications"
@@ -4090,7 +4086,7 @@ msgstr "O almacenamento non permite unha caixa de entrada"
 #: ../camel/providers/local/camel-spool-store.c:603
 #, c-format
 msgid "Spool folders cannot be deleted"
-msgstr "Non é posíbel elminar os cartafoles de spool"
+msgstr "Non é posíbel eliminar os cartafoles de spool"
 
 #: ../camel/providers/local/camel-spool-store.c:618
 #, c-format
@@ -4243,7 +4239,7 @@ msgstr "Non pode renomear o cartafol nun almacenamento de noticias."
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
-"Non pode eliminar un cartafol nun almacenamento de noticias: en vez diso "
+"Non é posíbel retirar un cartafol nun almacenamento de novas: en vez diso "
 "elimine a subscrición."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1371
@@ -4264,9 +4260,9 @@ msgid ""
 "\n"
 "newsgroup does not exist!"
 msgstr ""
-"Non pode eliminar a subscrición a este grupo de noticias: \n"
+"Non pode eliminar a subscrición a este grupo de novas: \n"
 "\n"
-"o grupo de noticias non existe"
+"o grupo de novas non existe"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1606
 msgid "NNTP Command failed: "
@@ -4672,7 +4668,7 @@ msgstr "A acción de correo solicitada terminou correctamente"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:815
 msgid "User not local; will forward to <forward-path>"
-msgstr "O usuario non é local; reencamiñarase a <forward-path>"
+msgstr "O usuario non é local; reenviarase a <forward-path>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:817
 msgid "Requested mail action not taken: mailbox unavailable"
@@ -4687,7 +4683,7 @@ msgstr ""
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:821
 msgid "Requested action aborted: error in processing"
-msgstr "Cancelouse a acción solicitada: produciuse un erro no procesamento"
+msgstr "Interrompeuse a acción solicitada: produciuse un erro no procesamento"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:823
 msgid "User not local; please try <forward-path>"
@@ -4702,12 +4698,12 @@ msgstr ""
 #: ../camel/providers/smtp/camel-smtp-transport.c:827
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr ""
-"Cancelouse a acción solicitada: excedeuse a asignación de almacenamento"
+"Interrompeuse a acción solicitada: excedeuse a asignación de almacenamento"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:829
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr ""
-"A acción pedida non se realizou: o nome da caixa de correo non se admite"
+"A acción solicitada non se realizou: o nome da caixa de correo non se admite"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:831
 msgid "Start mail input; end with <CRLF>.<CRLF>"
@@ -4767,7 +4763,7 @@ msgstr "Produciuse un fallo na orde RCPT TO <%s>: "
 #: ../camel/providers/smtp/camel-smtp-transport.c:1458
 #: ../camel/providers/smtp/camel-smtp-transport.c:1467
 msgid "DATA command failed: "
-msgstr "Produciuse un fallo na orde DATA: "
+msgstr "Produciuse un erro na orde DATA: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1492
 #: ../camel/providers/smtp/camel-smtp-transport.c:1507
@@ -4818,7 +4814,7 @@ msgstr "Unidades para os avisos de aniversario, «minutos», «horas» ou «día
 #: ../libebackend/e-authentication-mediator.c:612
 #: ../libebackend/e-authentication-mediator.c:973
 msgid "Bus name vanished (client terminated?)"
-msgstr "O nome do bus desapareceu (¿o cliente pechou a conexión?)"
+msgstr "O nome do bus desapareceu (terminou o cliente a conexión?)"
 
 #: ../libebackend/e-authentication-mediator.c:204
 msgid "No response from client"
@@ -4852,7 +4848,7 @@ msgstr "A operación do anel de chaves cancelou"
 #: ../libebackend/e-server-side-source.c:103
 #, c-format
 msgid "Data source is missing a [%s] group"
-msgstr "Falta [%s] grupo no orixe de datos"
+msgstr "Falta [%s] grupo na orixe de datos"
 
 #: ../libebackend/e-server-side-source.c:1020
 #, c-format
@@ -5059,12 +5055,12 @@ msgstr "Falta [%s] grupo no ficheiro de orixe"
 #: ../libedataserver/e-source.c:882
 #, c-format
 msgid "Data source '%s' is not removable"
-msgstr "O orixe de datos «%s» non se pode eliminar:"
+msgstr "A orixe de datos «%s» non se pode retirar"
 
 #: ../libedataserver/e-source.c:964
 #, c-format
 msgid "Data source '%s' is not writable"
-msgstr "O orixe de datos «%s» non é escribíbel:"
+msgstr "A orixe de datos «%s» non é escribíbel:"
 
 #: ../libedataserver/e-source.c:1138
 msgid "Unnamed"
@@ -5408,7 +5404,7 @@ msgstr "_Engadir"
 
 #: ../libedataserverui/e-name-selector-dialog.c:884
 msgid "_Remove"
-msgstr "E_liminar"
+msgstr "_Retirar"
 
 #: ../libedataserverui/e-name-selector-dialog.c:1056
 #, c-format
@@ -5498,32 +5494,32 @@ msgstr "Código: %u: resposta non agardada do servidor"
 #: ../modules/online-accounts/goaewsclient.c:205
 #, c-format
 msgid "Failed to parse autodiscover response XML"
-msgstr "Produciuse un fallo ao analizar a resposta XML da autodetección"
+msgstr "Produciuse un erro ao analizar a resposta XML da autodetección"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:214
 #, c-format
 msgid "Failed to find Autodiscover element"
-msgstr "Produciuse un fallo ao buscar o elemento «Autodiscover»"
+msgstr "Produciuse un erro ao buscar o elemento «Autodiscover»"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:226
 #, c-format
 msgid "Failed to find Response element"
-msgstr "Produciuse un fallo ao buscar o elemento «Response»"
+msgstr "Produciuse un erro ao buscar o elemento «Response»"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:238
 #, c-format
 msgid "Failed to find Account element"
-msgstr "Produciuse un fallo ao buscar o elemento «Account»"
+msgstr "Produciuse un erro ao buscar o elemento «Account»"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:252
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr ""
-"Produciuse un fallo ao buscar «ASUrl» e «AOBUrl» na resposta da autodetección"
+"Produciuse un erro ao buscar «ASUrl» e «AOBUrl» na resposta da autodetección"
 
 #: ../modules/yahoo-backend/module-yahoo-backend.c:215
 msgid "Tasks"
@@ -5554,6 +5550,36 @@ msgstr "Bandeiras"
 #: ../tests/libedataserverui/evolution-source-viewer.c:635
 msgid "Identity"
 msgstr "Identidade"
+
+#~ msgid "Forwarding messages is not supported"
+#~ msgstr "Non se permite o reenvío de mensaxes"
+
+#~ msgid "%s does not support authentication"
+#~ msgstr "%s non permite a autenticación"
+
+#~ msgid "%s does not support creating remote resources"
+#~ msgstr "%s non permite a creación de recursos remotos"
+
+#~ msgid "%s does not support deleting remote resources"
+#~ msgstr "%s non permite a eliminación de recursos remotos"
+
+#~ msgid "Data source '%s' does not support creating remote resources"
+#~ msgstr "A orixe de datos «%s» non permite a creación de recursos remotos"
+
+#~ msgid ""
+#~ "Data source '%s' has no collection backend to create the remote resource"
+#~ msgstr ""
+#~ "A orixe de datos «%s» non ten infraestrutura de colección para crear o "
+#~ "recurso remoto"
+
+#~ msgid "Data source '%s' does not support deleting remote resources"
+#~ msgstr "A orixe de datos «%s» non permite a eliminación de recursos remotos"
+
+#~ msgid ""
+#~ "Data source '%s' has no collection backend to delete the remote resource"
+#~ msgstr ""
+#~ "A orixe de datos «%s» non ten infraestrutura de colección para eliminar o "
+#~ "recurso remoto"
 
 #~ msgid "Updating %s folder"
 #~ msgstr "Actualizando o cartafol %s"
