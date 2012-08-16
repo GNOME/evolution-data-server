@@ -995,24 +995,6 @@ e_cal_backend_http_refresh (ECalBackendSync *backend,
 	priv->reload_timeout_id = g_timeout_add (1000, (GSourceFunc) reload_cb, cbhttp);
 }
 
-static void
-e_cal_backend_http_remove (ECalBackendSync *backend,
-                           EDataCal *cal,
-                           GCancellable *cancellable,
-                           GError **perror)
-{
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
-
-	if (!priv->store)
-		return;
-
-	e_cal_backend_store_remove (priv->store);
-}
-
 /* Set_mode handler for the http backend */
 static void
 e_cal_backend_http_notify_online_cb (ECalBackend *backend,
@@ -1564,7 +1546,6 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	sync_class->get_backend_property_sync	= e_cal_backend_http_get_backend_property;
 	sync_class->open_sync			= e_cal_backend_http_open;
 	sync_class->refresh_sync		= e_cal_backend_http_refresh;
-	sync_class->remove_sync			= e_cal_backend_http_remove;
 	sync_class->create_objects_sync		= e_cal_backend_http_create_objects;
 	sync_class->modify_objects_sync		= e_cal_backend_http_modify_objects;
 	sync_class->remove_objects_sync		= e_cal_backend_http_remove_objects;
