@@ -31,14 +31,28 @@
 	(G_TYPE_CHECK_INSTANCE_CAST \
 	((obj), E_TYPE_CACHE_REAPER, ECacheReaper))
 
-/* Where abandoned cache directories go to die. */
+/* Where abandoned directories go to die. */
 #define TRASH_DIRECTORY_NAME "trash"
 
 /* XXX These intervals are rather arbitrary and prone to bikeshedding.
  *     It's just what I decided on.  On startup we wait an hour to reap
- *     abandoned cache directories, and thereafter repeat every 24 hours. */
+ *     abandoned directories, and thereafter repeat every 24 hours. */
 #define INITIAL_INTERVAL_SECONDS  ( 1 * (60 * 60))
 #define REGULAR_INTERVAL_SECONDS  (24 * (60 * 60))
+
+/* XXX Similarly, these expiry times are rather arbitrary and prone to
+ *     bikeshedding.  Most importantly, the expiry for data directories
+ *     should be far more conservative (longer) than cache directories.
+ *     Cache directories are disposable, data directories are not, so
+ *     we want to let abandoned data directories linger longer. */
+
+/* Minimum days for a data directory
+ * to live in trash before reaping it. */
+#define DATA_EXPIRY_IN_DAYS 28
+
+/* Minimum days for a cache directory
+ * to live in trash before reaping it. */
+#define CACHE_EXPIRY_IN_DAYS 7
 
 typedef struct _ECacheReaper ECacheReaper;
 typedef struct _ECacheReaperClass ECacheReaperClass;
@@ -46,9 +60,13 @@ typedef struct _ECacheReaperClass ECacheReaperClass;
 struct _ECacheReaper {
 	EExtension parent;
 
-	guint n_directories;
+	guint n_data_directories;
+	GFile **data_directories;
+	GFile **data_trash_directories;
+
+	guint n_cache_directories;
 	GFile **cache_directories;
-	GFile **trash_directories;
+	GFile **cache_trash_directories;
 
 	guint reaping_timeout_id;
 };
@@ -77,6 +95,38 @@ cache_reaper_get_server (ECacheReaper *extension)
 	extensible = e_extension_get_extensible (E_EXTENSION (extension));
 
 	return E_SOURCE_REGISTRY_SERVER (extensible);
+}
+
+static gboolean
+cache_reaper_make_directory_and_parents (GFile *directory,
+                                         GCancellable *cancellable,
+                                         GError **error)
+{
+	gboolean success;
+	GError *local_error = NULL;
+
+	/* XXX Maybe add some function like this to libedataserver.
+	 *     It's annoying to always have to check for and clear
+	 *     G_IO_ERROR_EXISTS when ensuring a directory exists. */
+
+	success = g_file_make_directory_with_parents (
+		directory, cancellable, &local_error);
+
+	if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+		g_clear_error (&local_error);
+
+	if (local_error != NULL) {
+		gchar *path;
+
+		g_propagate_error (error, local_error);
+
+		path = g_file_get_path (directory);
+		g_prefix_error (
+			error, "Failed to make directory '%s': ", path);
+		g_free (path);
+	}
+
+	return success;
 }
 
 static void
@@ -112,11 +162,22 @@ cache_reaper_reap_trash_directories (gpointer user_data)
 	ECacheReaper *extension = E_CACHE_REAPER (user_data);
 	guint ii;
 
+	g_message ("Reaping abandoned data directories");
+
+	for (ii = 0; ii < extension->n_data_directories; ii++)
+		e_reap_trash_directory (
+			extension->data_trash_directories[ii],
+			DATA_EXPIRY_IN_DAYS,
+			G_PRIORITY_LOW, NULL,
+			cache_reaper_trash_directory_reaped,
+			NULL);
+
 	g_message ("Reaping abandoned cache directories");
 
-	for (ii = 0; ii < extension->n_directories; ii++)
+	for (ii = 0; ii < extension->n_cache_directories; ii++)
 		e_reap_trash_directory (
-			extension->trash_directories[ii],
+			extension->cache_trash_directories[ii],
+			CACHE_EXPIRY_IN_DAYS,
 			G_PRIORITY_LOW, NULL,
 			cache_reaper_trash_directory_reaped,
 			NULL);
@@ -178,9 +239,9 @@ cache_reaper_move_directory (GFile *source_directory,
 }
 
 static void
-cache_reaper_scan_cache_directory (ECacheReaper *extension,
-                                   GFile *cache_directory,
-                                   GFile *trash_directory)
+cache_reaper_scan_directory (ECacheReaper *extension,
+                             GFile *base_directory,
+                             GFile *trash_directory)
 {
 	GFileEnumerator *file_enumerator;
 	ESourceRegistryServer *server;
@@ -190,7 +251,7 @@ cache_reaper_scan_cache_directory (ECacheReaper *extension,
 	server = cache_reaper_get_server (extension);
 
 	file_enumerator = g_file_enumerate_children (
-		cache_directory,
+		base_directory,
 		G_FILE_ATTRIBUTE_STANDARD_NAME,
 		G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
 		NULL, &error);
@@ -222,7 +283,7 @@ cache_reaper_scan_cache_directory (ECacheReaper *extension,
 			GFile *target_directory;
 
 			source_directory = g_file_get_child (
-				cache_directory, name);
+				base_directory, name);
 			target_directory = g_file_get_child (
 				trash_directory, name);
 
@@ -248,7 +309,7 @@ exit:
 	if (error != NULL) {
 		gchar *path;
 
-		path = g_file_get_path (cache_directory);
+		path = g_file_get_path (base_directory);
 		g_warning ("Failed to scan '%s': %s", path, error->message);
 		g_free (path);
 
@@ -257,29 +318,48 @@ exit:
 }
 
 static void
+cache_reaper_scan_data_directories (ECacheReaper *extension)
+{
+	guint ii;
+
+	/* Scan the base data directories for unrecognized subdirectories.
+	 * The subdirectories are named after data source UIDs, so compare
+	 * their names to registered data sources and move any unrecognized
+	 * subdirectories to the "trash" subdirectory to be reaped later. */
+
+	g_message ("Scanning data directories");
+
+	for (ii = 0; ii < extension->n_data_directories; ii++)
+		cache_reaper_scan_directory (
+			extension,
+			extension->data_directories[ii],
+			extension->data_trash_directories[ii]);
+}
+
+static void
 cache_reaper_scan_cache_directories (ECacheReaper *extension)
 {
 	guint ii;
 
-	/* Scan the base cache directories for unregnized subdirectories.
+	/* Scan the base cache directories for unrecognized subdirectories.
 	 * The subdirectories are named after data source UIDs, so compare
 	 * their names to registered data sources and move any unrecognized
 	 * subdirectories to the "trash" subdirectory to be reaped later. */
 
 	g_message ("Scanning cache directories");
 
-	for (ii = 0; ii < extension->n_directories; ii++)
-		cache_reaper_scan_cache_directory (
+	for (ii = 0; ii < extension->n_cache_directories; ii++)
+		cache_reaper_scan_directory (
 			extension,
 			extension->cache_directories[ii],
-			extension->trash_directories[ii]);
+			extension->cache_trash_directories[ii]);
 }
 
 static void
-cache_reaper_move_cache_to_trash (ECacheReaper *extension,
-                                  ESource *source,
-                                  GFile *cache_directory,
-                                  GFile *trash_directory)
+cache_reaper_move_to_trash (ECacheReaper *extension,
+                            ESource *source,
+                            GFile *base_directory,
+                            GFile *trash_directory)
 {
 	GFile *source_directory;
 	GFile *target_directory;
@@ -287,7 +367,7 @@ cache_reaper_move_cache_to_trash (ECacheReaper *extension,
 
 	uid = e_source_get_uid (source);
 
-	source_directory = g_file_get_child (cache_directory, uid);
+	source_directory = g_file_get_child (base_directory, uid);
 	target_directory = g_file_get_child (trash_directory, uid);
 
 	/* This is a no-op if the source directory does not exist. */
@@ -298,10 +378,10 @@ cache_reaper_move_cache_to_trash (ECacheReaper *extension,
 }
 
 static void
-cache_reaper_recover_cache_from_trash (ECacheReaper *extension,
-                                       ESource *source,
-                                       GFile *cache_directory,
-                                       GFile *trash_directory)
+cache_reaper_recover_from_trash (ECacheReaper *extension,
+                                 ESource *source,
+                                 GFile *base_directory,
+                                 GFile *trash_directory)
 {
 	GFile *source_directory;
 	GFile *target_directory;
@@ -310,7 +390,7 @@ cache_reaper_recover_cache_from_trash (ECacheReaper *extension,
 	uid = e_source_get_uid (source);
 
 	source_directory = g_file_get_child (trash_directory, uid);
-	target_directory = g_file_get_child (cache_directory, uid);
+	target_directory = g_file_get_child (base_directory, uid);
 
 	/* This is a no-op if the source directory does not exist. */
 	cache_reaper_move_directory (source_directory, target_directory);
@@ -323,6 +403,7 @@ static void
 cache_reaper_files_loaded_cb (ESourceRegistryServer *server,
                               ECacheReaper *extension)
 {
+	cache_reaper_scan_data_directories (extension);
 	cache_reaper_scan_cache_directories (extension);
 
 	/* Schedule the initial reaping. */
@@ -343,12 +424,19 @@ cache_reaper_source_added_cb (ESourceRegistryServer *server,
 
 	/* The Cache Reaper is not too proud to dig through the
 	 * trash on the off chance the newly-added source has a
-	 * recoverable cache directory. */
-	for (ii = 0; ii < extension->n_directories; ii++)
-		cache_reaper_recover_cache_from_trash (
+	 * recoverable data or cache directory. */
+
+	for (ii = 0; ii < extension->n_data_directories; ii++)
+		cache_reaper_recover_from_trash (
+			extension, source,
+			extension->data_directories[ii],
+			extension->data_trash_directories[ii]);
+
+	for (ii = 0; ii < extension->n_cache_directories; ii++)
+		cache_reaper_recover_from_trash (
 			extension, source,
 			extension->cache_directories[ii],
-			extension->trash_directories[ii]);
+			extension->cache_trash_directories[ii]);
 }
 
 static void
@@ -358,13 +446,22 @@ cache_reaper_source_removed_cb (ESourceRegistryServer *server,
 {
 	guint ii;
 
-	/* Stage the removed source's cache directory for
-	 * reaping by moving it to the "trash" directory. */
-	for (ii = 0; ii < extension->n_directories; ii++)
-		cache_reaper_move_cache_to_trash (
+	/* Stage the removed source's cache directory for reaping
+	 * by moving it to the "trash" directory.
+	 *
+	 * Do NOT do this for data directories.  Cache directories
+	 * are disposable and can be regenerated from the canonical
+	 * data source, but data directories ARE the canonical data
+	 * source so we want to be more conservative with them.  If
+	 * the removed source has a data directory, we will move it
+	 * to the "trash" directory on next registry startup, which
+	 * may correspond with the next desktop session startup. */
+
+	for (ii = 0; ii < extension->n_cache_directories; ii++)
+		cache_reaper_move_to_trash (
 			extension, source,
 			extension->cache_directories[ii],
-			extension->trash_directories[ii]);
+			extension->cache_trash_directories[ii]);
 }
 
 static void
@@ -375,13 +472,21 @@ cache_reaper_finalize (GObject *object)
 
 	extension = E_CACHE_REAPER (object);
 
-	for (ii = 0; ii < extension->n_directories; ii++) {
+	for (ii = 0; ii < extension->n_data_directories; ii++) {
+		g_object_unref (extension->data_directories[ii]);
+		g_object_unref (extension->data_trash_directories[ii]);
+	}
+
+	g_free (extension->data_directories);
+	g_free (extension->data_trash_directories);
+
+	for (ii = 0; ii < extension->n_cache_directories; ii++) {
 		g_object_unref (extension->cache_directories[ii]);
-		g_object_unref (extension->trash_directories[ii]);
+		g_object_unref (extension->cache_trash_directories[ii]);
 	}
 
 	g_free (extension->cache_directories);
-	g_free (extension->trash_directories);
+	g_free (extension->cache_trash_directories);
 
 	if (extension->reaping_timeout_id > 0)
 		g_source_remove (extension->reaping_timeout_id);
@@ -438,12 +543,23 @@ static void
 e_cache_reaper_init (ECacheReaper *extension)
 {
 	GFile *base_directory;
+	const gchar *user_data_dir;
 	const gchar *user_cache_dir;
 	guint n_directories, ii;
 
 	/* These are component names from which
+	 * the data directory arrays are built. */
+	const gchar *data_component_names[] = {
+		"addressbook",
+		"calendar",
+		"mail",
+		"memos",
+		"tasks"
+	};
+
+	/* These are component names from which
 	 * the cache directory arrays are built. */
-	const gchar *component_names[] = {
+	const gchar *cache_component_names[] = {
 		"addressbook",
 		"calendar",
 		"mail",
@@ -452,11 +568,50 @@ e_cache_reaper_init (ECacheReaper *extension)
 		"tasks"
 	};
 
-	n_directories = G_N_ELEMENTS (component_names);
+	/* Setup base directories for data. */
 
-	extension->n_directories = n_directories;
+	n_directories = G_N_ELEMENTS (data_component_names);
+
+	extension->n_data_directories = n_directories;
+	extension->data_directories = g_new0 (GFile *, n_directories);
+	extension->data_trash_directories = g_new0 (GFile *, n_directories);
+
+	user_data_dir = e_get_user_data_dir ();
+	base_directory = g_file_new_for_path (user_data_dir);
+
+	for (ii = 0; ii < n_directories; ii++) {
+		GFile *data_directory;
+		GFile *trash_directory;
+		GError *error = NULL;
+
+		data_directory = g_file_get_child (
+			base_directory, data_component_names[ii]);
+		trash_directory = g_file_get_child (
+			data_directory, TRASH_DIRECTORY_NAME);
+
+		/* Data directory is a parent of the trash
+		 * directory so this is sufficient for both. */
+		cache_reaper_make_directory_and_parents (
+			trash_directory, NULL, &error);
+
+		if (error != NULL) {
+			g_warning ("%s: %s", G_STRFUNC, error->message);
+			g_error_free (error);
+		}
+
+		extension->data_directories[ii] = data_directory;
+		extension->data_trash_directories[ii] = trash_directory;
+	}
+
+	g_object_unref (base_directory);
+
+	/* Setup base directories for cache. */
+
+	n_directories = G_N_ELEMENTS (cache_component_names);
+
+	extension->n_cache_directories = n_directories;
 	extension->cache_directories = g_new0 (GFile *, n_directories);
-	extension->trash_directories = g_new0 (GFile *, n_directories);
+	extension->cache_trash_directories = g_new0 (GFile *, n_directories);
 
 	user_cache_dir = e_get_user_cache_dir ();
 	base_directory = g_file_new_for_path (user_cache_dir);
@@ -467,32 +622,22 @@ e_cache_reaper_init (ECacheReaper *extension)
 		GError *error = NULL;
 
 		cache_directory = g_file_get_child (
-			base_directory, component_names[ii]);
+			base_directory, cache_component_names[ii]);
 		trash_directory = g_file_get_child (
 			cache_directory, TRASH_DIRECTORY_NAME);
 
 		/* Cache directory is a parent of the trash
 		 * directory so this is sufficient for both. */
-		g_file_make_directory_with_parents (
+		cache_reaper_make_directory_and_parents (
 			trash_directory, NULL, &error);
 
-		if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
-			g_clear_error (&error);
-
 		if (error != NULL) {
-			gchar *path;
-
-			path = g_file_get_path (trash_directory);
-			g_warning (
-				"Failed to make directory '%s': %s",
-				path, error->message);
-			g_free (path);
-
+			g_warning ("%s: %s", G_STRFUNC, error->message);
 			g_error_free (error);
 		}
 
 		extension->cache_directories[ii] = cache_directory;
-		extension->trash_directories[ii] = trash_directory;
+		extension->cache_trash_directories[ii] = trash_directory;
 	}
 
 	g_object_unref (base_directory);

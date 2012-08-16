@@ -22,17 +22,21 @@
 
 #define REAPING_DIRECTORY_NAME ".reaping"
 
-#define MINIMUM_DAYS_OLD_TO_REAP 5
-
 /* Helper for e_reap_trash_directory() */
 static void
 reap_trash_directory_thread (GSimpleAsyncResult *simple,
                              GObject *object,
                              GCancellable *cancellable)
 {
+	gssize expiry_in_days;
 	GError *error = NULL;
 
-	e_reap_trash_directory_sync (G_FILE (object), cancellable, &error);
+	expiry_in_days = g_simple_async_result_get_op_res_gssize (simple);
+
+	e_reap_trash_directory_sync (
+		G_FILE (object),
+		(gint) expiry_in_days,
+		cancellable, &error);
 
 	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
@@ -40,6 +44,7 @@ reap_trash_directory_thread (GSimpleAsyncResult *simple,
 
 gboolean
 e_reap_trash_directory_sync (GFile *trash_directory,
+                             gint expiry_in_days,
                              GCancellable *cancellable,
                              GError **error)
 {
@@ -52,6 +57,7 @@ e_reap_trash_directory_sync (GFile *trash_directory,
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (G_IS_FILE (trash_directory), FALSE);
+	g_return_val_if_fail (expiry_in_days > 0, FALSE);
 
 	reaping_directory = g_file_get_child (
 		trash_directory, REAPING_DIRECTORY_NAME);
@@ -96,7 +102,7 @@ e_reap_trash_directory_sync (GFile *trash_directory,
 
 		reap_it =
 			(file_type == G_FILE_TYPE_DIRECTORY) &&
-			(days_old >= MINIMUM_DAYS_OLD_TO_REAP);
+			(days_old >= expiry_in_days);
 
 		if (reap_it) {
 			GFile *child;
@@ -156,6 +162,7 @@ e_reap_trash_directory_sync (GFile *trash_directory,
 
 void
 e_reap_trash_directory (GFile *trash_directory,
+                        gint expiry_in_days,
                         gint io_priority,
                         GCancellable *cancellable,
                         GAsyncReadyCallback callback,
@@ -164,10 +171,15 @@ e_reap_trash_directory (GFile *trash_directory,
 	GSimpleAsyncResult *simple;
 
 	g_return_if_fail (G_IS_FILE (trash_directory));
+	g_return_if_fail (expiry_in_days > 0);
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (trash_directory), callback,
 		user_data, e_reap_trash_directory);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	g_simple_async_result_set_op_res_gssize (simple, expiry_in_days);
 
 	g_simple_async_result_run_in_thread (
 		simple, reap_trash_directory_thread,
