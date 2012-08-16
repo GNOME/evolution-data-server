@@ -5263,18 +5263,6 @@ e_book_backend_ldap_open (EBookBackend *backend,
 }
 
 static void
-e_book_backend_ldap_remove (EBookBackend *backend,
-                            EDataBook *book,
-                            guint32 opid,
-                            GCancellable *cancellable)
-{
-	/* if we ever add caching, we'll remove it here, but for now,
-	 * just report back Success */
-
-	e_data_book_respond_remove (book, opid, EDB_ERROR (SUCCESS));
-}
-
-static void
 e_book_backend_ldap_get_backend_property (EBookBackend *backend,
                                           EDataBook *book,
                                           guint32 opid,
@@ -5740,7 +5728,6 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 
 	/* Set the virtual methods. */
 	parent_class->open			= e_book_backend_ldap_open;
-	parent_class->remove			= e_book_backend_ldap_remove;
 	parent_class->get_backend_property	= e_book_backend_ldap_get_backend_property;
 
 	parent_class->create_contacts		= e_book_backend_ldap_create_contacts;
