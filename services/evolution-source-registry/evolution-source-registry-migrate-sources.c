@@ -3162,7 +3162,7 @@ migrate_parse_gconf_xml_start_element (GMarkupParseContext *context,
 		if (success && g_strcmp0 (name, "accounts") == 0)
 			parse_data->state = PARSE_STATE_IN_ACCOUNTS_ENTRY;
 
-		if (success && g_strcmp0 (name, "signatues") == 0)
+		if (success && g_strcmp0 (name, "signatures") == 0)
 			parse_data->state = PARSE_STATE_IN_SIGNATURES_ENTRY;
 
 		if (success && g_strcmp0 (name, "sources") == 0)
