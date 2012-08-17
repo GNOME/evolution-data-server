@@ -276,6 +276,13 @@ cache_reaper_scan_directory (ECacheReaper *extension,
 		if (g_strcmp0 (name, TRASH_DIRECTORY_NAME) == 0)
 			goto next;
 
+		/* Also skip directories named "system".  For backward
+		 * compatibility, data directories for built-in sources
+		 * are named "system" instead of "system-address-book"
+		 * or "system-calendar" or what have you. */
+		if (g_strcmp0 (name, "system") == 0)
+			goto next;
+
 		source = e_source_registry_server_ref_source (server, name);
 
 		if (source == NULL) {
