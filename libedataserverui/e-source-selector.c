@@ -1760,7 +1760,7 @@ e_source_selector_select_exclusive (ESourceSelector *selector,
 
 	while (g_hash_table_iter_next (&iter, &key, NULL)) {
 		gboolean selected = e_source_equal (key, source);
-		class->set_source_selected (selector, source, selected);
+		class->set_source_selected (selector, key, selected);
 	}
 
 	g_signal_emit (selector, signals[SELECTION_CHANGED], 0);
