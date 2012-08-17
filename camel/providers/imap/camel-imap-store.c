@@ -2794,6 +2794,10 @@ get_folders_sync (CamelImapStore *imap_store,
 								"%s \"\" %G", j==1 ? "LSUB" : "LIST",
 								pattern);
 				if (!response) {
+					/* do not worry if checking in some namespace fails */
+					if (!ppattern)
+						continue;
+
 					success = FALSE;
 					g_free (tmp);
 					goto fail;
@@ -2964,7 +2968,10 @@ refresh_refresh (CamelSession *session,
 		if (!get_folders_sync (store, "INBOX", cancellable, error))
 			goto done;
 	} else {
-		if (!get_folders_sync (store, "*", cancellable, error))
+		/* this can fail on some servers, thus just try it, but do not skip
+		   look in all namespaces, unless the operation was cancelled */
+		if (!get_folders_sync (store, "*", cancellable, NULL) &&
+		    g_cancellable_is_cancelled (cancellable))
 			goto done;
 	}
 
