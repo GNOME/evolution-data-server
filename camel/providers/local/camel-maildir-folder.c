@@ -490,7 +490,7 @@ camel_maildir_folder_new (CamelStore *parent_store,
 
 	g_object_unref (settings);
 
-	if (filter_inbox && strcmp (full_name, ".") == 0)
+	if (filter_inbox && (g_str_equal (full_name, ".") || g_ascii_strcasecmp (full_name, "Inbox") == 0))
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
 
 	folder = (CamelFolder *) camel_local_folder_construct (
