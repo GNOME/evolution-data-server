@@ -1,4 +1,4 @@
-CPPFLAGS = \
+phone_numbers_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
@@ -7,7 +7,7 @@ CPPFLAGS = \
 	-I$(top_srcdir)/addressbook/backends/google \
 	-DG_LOG_DOMAIN=\"evolution-tests\" \
 	$(NULL)
-CFLAGS = \
+phone_numbers_CFLAGS = \
 	$(AM_CFLAGS) \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(GDATA_CFLAGS) \
