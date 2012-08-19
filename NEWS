@@ -1,3 +1,53 @@
+Evolution-Data-Server 3.5.90 2012-08-20
+---------------------------------------
+
+Bug Fixes:
+	Bug 678289 - Filters are not applied automatically to local maildir
+	             Inbox (Milan Crha)
+	Bug 679488 - Unable to send mail using SMTP (Milan Crha)
+	Bug 680744 - IMAP: Does not update folder structure (Milan Crha)
+	Bug 681046 - Occasional crash of evolution-source-registry (Milan Crha)
+	Bug 681318 - Filter by Source account doesn't match in local folders
+	             (Milan Crha)
+	Bug 681321 - Support both old and new-buf libxml2 APIs (Colin Walters)
+	Bug 681466 - Virtual Trash/Junk not updated on change (Milan Crha)
+	Bug 681640 - Check for Python interpreter in configure.ac
+	             (Matthew Barnes)
+	Bug 681679 - Typo in migration causes signatures to be dropped
+	             (Matthew Barnes)
+	Bug 682038 - "Show only this calendar" broken (Milan Crha)
+	Bug 682102 - Upstream Debian's 20_gettext_intltool.patch
+	             (Matthew Barnes)
+	Bug 682103 - -fPIC build fix (Fabien Tassin)
+
+Other Changes:
+	* Do not update unread count in source folder for junk/deleted
+	  messages. (Milan Crha)
+	* e-book-backend-db-cache.h: Avoid DB typedef. (Matthew Barnes)
+	* CamelSession: Make forward_to() method asynchronous. (Matthew Barnes)
+	* CamelSession: Remove camel_session_lock/unlock(). (Matthew Barnes)
+	* CamelSession: Have add_service() return a new reference.
+	  (Matthew Barnes)
+	* Have camel_session_list_services() return new references.
+	  (Matthew Barnes)
+	* Rename camel_session_get_service(). (Matthew Barnes)
+	* Rename camel_service_get_settings(). (Matthew Barnes)
+	* Add e_collection_backend_claim_all_resources(). (Matthew Barnes)
+	* cache-reaper: Clean up abandoned data directories. (Matthew Barnes)
+	* Deprecate e_client_remove_sync(). (Matthew Barnes)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Sweta Kothari (gu)
+	Aurimas Černius (lt)
+	Sandeep Sheshrao Shedmake (mr)
+	Мирослав Николић (sr)
+	Krishnababu Krothapalli (te)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.5.5 2012-08-06
 --------------------------------------
 
