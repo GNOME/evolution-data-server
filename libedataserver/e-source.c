@@ -132,6 +132,7 @@ struct _ESourcePrivate {
 	GHashTable *extensions;
 
 	gboolean enabled;
+	gboolean initialized;
 };
 
 struct _AsyncContext {
@@ -664,6 +665,13 @@ static gboolean
 source_idle_changed_cb (gpointer user_data)
 {
 	ESource *source = E_SOURCE (user_data);
+
+	/* If the ESource is still initializing itself in a different
+	 * thread, skip the signal emission and try again on the next
+	 * main loop iteration.  This is a busy wait but it should be
+	 * a very short wait. */
+	if (!source->priv->initialized)
+		return TRUE;
 
 	g_mutex_lock (source->priv->changed_lock);
 	if (source->priv->changed != NULL) {
@@ -1303,15 +1311,6 @@ source_initable_init (GInitable *initable,
 
 		success = source_parse_dbus_data (source, error);
 
-		/* Avoid a spurious "changed" emission. */
-		g_mutex_lock (source->priv->changed_lock);
-		if (source->priv->changed != NULL) {
-			g_source_destroy (source->priv->changed);
-			g_source_unref (source->priv->changed);
-			source->priv->changed = NULL;
-		}
-		g_mutex_unlock (source->priv->changed_lock);
-
 		g_object_unref (dbus_source);
 
 	/* No D-Bus object implies we're configuring a new source,
@@ -1319,6 +1318,17 @@ source_initable_init (GInitable *initable,
 	} else {
 		source->priv->uid = e_uid_new ();
 	}
+
+	/* Try to avoid a spurious "changed" emission. */
+	g_mutex_lock (source->priv->changed_lock);
+	if (source->priv->changed != NULL) {
+		g_source_destroy (source->priv->changed);
+		g_source_unref (source->priv->changed);
+		source->priv->changed = NULL;
+	}
+	g_mutex_unlock (source->priv->changed_lock);
+
+	source->priv->initialized = TRUE;
 
 	return success;
 }
