@@ -1020,6 +1020,58 @@ e_collection_backend_get_cache_dir (ECollectionBackend *backend)
 }
 
 /**
+ * e_collection_backend_dup_resource_id:
+ * @backend: an #ECollectionBackend
+ * @child_source: an #ESource managed by @backend
+ *
+ * Extracts the resource ID for @child_source, which is supposed to be a
+ * stable and unique server-assigned identifier for the remote resource
+ * described by @child_source.  If @child_source is not actually a child
+ * of the collection #EBackend:source owned by @backend, the function
+ * returns %NULL.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated resource ID for @child_source, or %NULL
+ *
+ * Since: 3.6
+ **/
+gchar *
+e_collection_backend_dup_resource_id (ECollectionBackend *backend,
+                                      ESource *child_source)
+{
+	ECollectionBackend *backend_for_child_source;
+	ECollectionBackendClass *class;
+	ESourceRegistryServer *server;
+	gboolean child_is_ours = FALSE;
+
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (child_source), NULL);
+
+	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class->dup_resource_id != NULL, NULL);
+
+	/* Make sure the ESource belongs to the ECollectionBackend to
+	 * avoid accidentally creating a new extension while trying to
+	 * extract a resource ID that isn't there.  Better to test this
+	 * up front than rely on ECollectionBackend subclasses to do it. */
+	server = e_collection_backend_ref_server (backend);
+	backend_for_child_source =
+		e_source_registry_server_ref_backend (server, child_source);
+	g_object_unref (server);
+
+	if (backend_for_child_source != NULL) {
+		child_is_ours = (backend_for_child_source == backend);
+		g_object_unref (backend_for_child_source);
+	}
+
+	if (!child_is_ours)
+		return NULL;
+
+	return class->dup_resource_id (backend, child_source);
+}
+
+/**
  * e_collection_backend_claim_all_resources:
  * @backend: an #ECollectionBackend
  *

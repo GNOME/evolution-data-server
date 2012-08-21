@@ -117,6 +117,9 @@ struct _ESourceRegistryServer *
 		e_collection_backend_ref_server	(ECollectionBackend *backend);
 const gchar *	e_collection_backend_get_cache_dir
 						(ECollectionBackend *backend);
+gchar *		e_collection_backend_dup_resource_id
+						(ECollectionBackend *backend,
+						 ESource *child_source);
 GList *		e_collection_backend_claim_all_resources
 						(ECollectionBackend *backend);
 GList *		e_collection_backend_list_calendar_sources
