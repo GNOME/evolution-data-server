@@ -403,7 +403,7 @@ replace_untagged_descriptor (GHashTable *untagged_handlers,
 	prev = g_hash_table_lookup (untagged_handlers, key);
 	g_hash_table_replace (untagged_handlers,
 			      g_strdup (key),
-			      (gconstpointer) descr);
+			      (gpointer) descr);
 	return prev;
 }
 
