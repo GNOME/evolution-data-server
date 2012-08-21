@@ -388,13 +388,13 @@ camel_folder_search_count (CamelFolderSearch *search,
 
 	g_return_val_if_fail (search != NULL, 0);
 
+	p = search->priv;
+
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto fail;
 
 	if (!expr || !*expr)
 		expr = "(match-all)";
-
-	p = search->priv;
 
 	g_assert (search->folder);
 
@@ -543,13 +543,13 @@ camel_folder_search_search (CamelFolderSearch *search,
 
 	g_return_val_if_fail (search != NULL, NULL);
 
+	p = search->priv;
+
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto fail;
 
 	if (!expr || !*expr)
 		expr = "(match-all)";
-
-	p = search->priv;
 
 	g_assert (search->folder);
 
