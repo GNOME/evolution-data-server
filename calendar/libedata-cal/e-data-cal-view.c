@@ -431,6 +431,18 @@ notify_complete (EDataCalView *view,
 	g_strfreev (error_strv);
 }
 
+static gpointer
+calview_start_thread (gpointer data)
+{
+	EDataCalView *view = data;
+
+	if (view->priv->started && !view->priv->stopped)
+		e_cal_backend_start_view (view->priv->backend, view);
+	g_object_unref (view);
+
+	return NULL;
+}
+
 static gboolean
 impl_DataCalView_start (EGdbusCalView *object,
                         GDBusMethodInvocation *invocation,
@@ -441,14 +453,30 @@ impl_DataCalView_start (EGdbusCalView *object,
 	priv = view->priv;
 
 	if (!priv->started) {
+		GThread *thread;
+
 		priv->started = TRUE;
 		e_debug_log (FALSE, E_DEBUG_LOG_DOMAIN_CAL_QUERIES, "---;%p;VIEW-START;%s;%s", view, e_data_cal_view_get_text (view), G_OBJECT_TYPE_NAME (priv->backend));
-		e_cal_backend_start_view (priv->backend, view);
+
+		thread = g_thread_new (NULL, calview_start_thread, g_object_ref (view));
+		g_thread_unref (thread);
 	}
 
 	e_gdbus_cal_view_complete_start (object, invocation, NULL);
 
 	return TRUE;
+}
+
+static gpointer
+calview_stop_thread (gpointer data)
+{
+	EDataCalView *view = data;
+
+	if (view->priv->stopped)
+		e_cal_backend_stop_view (view->priv->backend, view);
+	g_object_unref (view);
+
+	return NULL;
 }
 
 static gboolean
@@ -457,13 +485,16 @@ impl_DataCalView_stop (EGdbusCalView *object,
                        EDataCalView *view)
 {
 	EDataCalViewPrivate *priv;
+	GThread *thread;
 
 	priv = view->priv;
 
 	priv->stopped = TRUE;
 
+	thread = g_thread_new (NULL, calview_stop_thread, g_object_ref (view));
+	g_thread_unref (thread);
+
 	e_gdbus_cal_view_complete_stop (object, invocation, NULL);
-	e_cal_backend_stop_view (priv->backend, view);
 
 	return TRUE;
 }

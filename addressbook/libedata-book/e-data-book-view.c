@@ -63,7 +63,6 @@ struct _EDataBookViewPrivate {
 	GArray *removes;
 
 	GHashTable *ids;
-	guint idle_id;
 
 	guint flush_id;
 
@@ -640,18 +639,16 @@ e_data_book_view_new (EDataBook *book,
 	return view;
 }
 
-static gboolean
-bookview_idle_start (gpointer data)
+static gpointer
+bookview_start_thread (gpointer data)
 {
 	EDataBookView *book_view = data;
 
-	book_view->priv->running = TRUE;
-	book_view->priv->complete = FALSE;
-	book_view->priv->idle_id = 0;
+	if (book_view->priv->running)
+		e_book_backend_start_book_view (book_view->priv->backend, book_view);
+	g_object_unref (book_view);
 
-	e_book_backend_start_book_view (book_view->priv->backend, book_view);
-
-	return FALSE;
+	return NULL;
 }
 
 static gboolean
@@ -659,25 +656,29 @@ impl_DataBookView_start (EGdbusBookView *object,
                          GDBusMethodInvocation *invocation,
                          EDataBookView *book_view)
 {
-	book_view->priv->idle_id = g_idle_add (bookview_idle_start, book_view);
+	GThread *thread;
+
+	book_view->priv->running = TRUE;
+	book_view->priv->complete = FALSE;
+
+	thread = g_thread_new (NULL, bookview_start_thread, g_object_ref (book_view));
+	g_thread_unref (thread);
 
 	e_gdbus_book_view_complete_start (object, invocation, NULL);
 
 	return TRUE;
 }
 
-static gboolean
-bookview_idle_stop (gpointer data)
+static gpointer
+bookview_stop_thread (gpointer data)
 {
 	EDataBookView *book_view = data;
 
-	e_book_backend_stop_book_view (book_view->priv->backend, book_view);
+	if (!book_view->priv->running)
+		e_book_backend_stop_book_view (book_view->priv->backend, book_view);
+	g_object_unref (book_view);
 
-	book_view->priv->running = FALSE;
-	book_view->priv->complete = FALSE;
-	book_view->priv->idle_id = 0;
-
-	return FALSE;
+	return NULL;
 }
 
 static gboolean
@@ -685,10 +686,13 @@ impl_DataBookView_stop (EGdbusBookView *object,
                         GDBusMethodInvocation *invocation,
                         EDataBookView *book_view)
 {
-	if (book_view->priv->idle_id)
-		g_source_remove (book_view->priv->idle_id);
+	GThread *thread;
 
-	book_view->priv->idle_id = g_idle_add (bookview_idle_stop, book_view);
+	book_view->priv->running = FALSE;
+	book_view->priv->complete = FALSE;
+
+	thread = g_thread_new (NULL, bookview_stop_thread, g_object_ref (book_view));
+	g_thread_unref (thread);
 
 	e_gdbus_book_view_complete_stop (object, invocation, NULL);
 
@@ -790,11 +794,6 @@ e_data_book_view_dispose (GObject *object)
 	if (priv->card_sexp) {
 		g_object_unref (priv->card_sexp);
 		priv->card_sexp = NULL;
-	}
-
-	if (priv->idle_id) {
-		g_source_remove (priv->idle_id);
-		priv->idle_id = 0;
 	}
 
 	g_mutex_lock (priv->pending_mutex);
