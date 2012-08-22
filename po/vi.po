@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-08-17 23:30+0000\n"
-"PO-Revision-Date: 2012-08-22 08:32+0700\n"
+"PO-Revision-Date: 2012-08-22 08:46+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "Language: vi\n"
@@ -219,7 +219,7 @@ msgstr "Hết chỗ chứa"
 
 #: ../addressbook/libebook/e-book-client.c:488
 msgid "Failed to run book factory"
-msgstr ""
+msgstr "Lỗi chạy book factory"
 
 #: ../addressbook/libebook/e-book-client.c:2244
 #: ../calendar/libecal/e-cal-client.c:4602
@@ -1267,7 +1267,7 @@ msgstr "Phạm vi không hợp lệ"
 
 #: ../calendar/libecal/e-cal-client.c:610
 msgid "Failed to run calendar factory"
-msgstr ""
+msgstr "Lỗi chạy calendar factory"
 
 #: ../calendar/libecal/e-cal-component.c:1339
 msgid "Untitled appointment"
@@ -1690,7 +1690,7 @@ msgstr "Không thể tạo đường dẫn nhớ tạm"
 
 #: ../camel/camel-data-cache.c:440
 msgid "Empty cache file"
-msgstr ""
+msgstr "Tập tin cache rỗng"
 
 #: ../camel/camel-data-cache.c:509
 #, c-format
@@ -1877,10 +1877,10 @@ msgid "Quota information not supported for folder '%s'"
 msgstr "Không hỗ trợ thông tin chỉ tiêu cho thư mục '%s'"
 
 #: ../camel/camel-folder.c:3371
-#, fuzzy, c-format
+#, c-format
 #| msgid "Opening folder '%s'"
 msgid "Expunging folder '%s'"
-msgstr "Mở thư mục '%s'"
+msgstr "Đang xoá dọn thư mục '%s'"
 
 #: ../camel/camel-folder.c:3603
 #, c-format
@@ -1893,10 +1893,10 @@ msgid "Retrieving quota information for '%s'"
 msgstr "Đang lấy thông tin chỉ tiêu cho '%s'"
 
 #: ../camel/camel-folder.c:3985
-#, fuzzy, c-format
+#, c-format
 #| msgid "Creating folder '%s'"
 msgid "Refreshing folder '%s'"
-msgstr "Đang tạo thư mục '%s'"
+msgstr "Đang nạp lại thư mục '%s'"
 
 #: ../camel/camel-folder-search.c:420 ../camel/camel-folder-search.c:587
 #, c-format
@@ -2006,6 +2006,8 @@ msgid ""
 "Note the encrypted content doesn't contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
+"Chú ý rằng nội dung mã hoá không chứa thông tin người nhận nên sẽ hỏi mật "
+"khẩu cho từng khoá riêng."
 
 #: ../camel/camel-gpg-context.c:879 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
@@ -2185,16 +2187,16 @@ msgid "Error retrieving message"
 msgstr "Lỗi nhận thư"
 
 #: ../camel/camel-imapx-server.c:4450 ../camel/camel-imapx-server.c:4657
-#, fuzzy, c-format
+#, c-format
 #| msgid "Fetching summary information for new messages in %s"
 msgid "Fetching summary information for new messages in '%s'"
-msgstr "Đang lấy thông tin tóm tắt cho các thư mới trong %s"
+msgstr "Đang lấy thông tin tóm tắt cho các thư mới trong '%s'"
 
 #: ../camel/camel-imapx-server.c:4507
-#, fuzzy, c-format
+#, c-format
 #| msgid "Scanning for changed messages in %s"
 msgid "Scanning for changed messages in '%s'"
-msgstr "Đang quét tìm các thư thay đổi trong %s"
+msgstr "Đang quét tìm các thư thay đổi trong '%s'"
 
 #: ../camel/camel-imapx-server.c:4550
 msgid "Error fetching new messages"
@@ -2205,12 +2207,12 @@ msgid "Error while fetching messages"
 msgstr "Lỗi khi lấy thư"
 
 #: ../camel/camel-imapx-server.c:4764 ../camel/camel-imapx-server.c:4800
-#, fuzzy, c-format
+#, c-format
 #| msgid "Fetching summary information for %d message in %s"
 #| msgid_plural "Fetching summary information for %d messages in %s"
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
-msgstr[0] "Đang lấy thông tin tóm tắt cho %d thư mới trong %s"
+msgstr[0] "Đang lấy thông tin tóm tắt cho %d thư mới trong '%s'"
 
 #: ../camel/camel-imapx-server.c:4931 ../camel/camel-imapx-server.c:4967
 msgid "Error refreshing folder"
@@ -2261,7 +2263,7 @@ msgstr "Không có thư như vậy."
 
 #: ../camel/camel-imapx-server.c:6339 ../camel/camel-imapx-server.c:6354
 msgid "Cannot create spool file: "
-msgstr ""
+msgstr "Không thể tạo tập tin spool: "
 
 #: ../camel/camel-imapx-store.c:157
 #: ../camel/providers/imap/camel-imap-store.c:825
@@ -2344,7 +2346,7 @@ msgstr "Thư mục mẹ không được phép chứa các thư mục con"
 #: ../camel/camel-imapx-stream.c:72
 #, c-format
 msgid "Source stream returned no data"
-msgstr ""
+msgstr "Luồng nguồn không trả về dữ liệu"
 
 #: ../camel/camel-imapx-stream.c:81
 #, c-format
@@ -2766,7 +2768,7 @@ msgstr "Biên dịch biểu thức chính quy thất bại: %s: %s"
 #: ../camel/camel-session.c:415
 #, c-format
 msgid "Invalid GType registered for protocol '%s'"
-msgstr ""
+msgstr "GType không hợp lệ đăng ký cho giao thức '%s'"
 
 #: ../camel/camel-session.c:509
 #, c-format
@@ -2774,10 +2776,9 @@ msgid "%s authentication failed"
 msgstr "Xác thực %s thất bại"
 
 #: ../camel/camel-session.c:645
-#, fuzzy
 #| msgid "Operation not supported"
 msgid "Forwarding messages is not supported"
-msgstr "Không hỗ trợ thao tác này"
+msgstr "Không hỗ trợ chuyển tiếp thư"
 
 #: ../camel/camel-session.c:1360
 #, c-format
@@ -3045,16 +3046,16 @@ msgid "Could not connect with command \"%s\": %s"
 msgstr "Không thể kết nối bằng lệnh \"%s\": %s"
 
 #: ../camel/camel-subscribable.c:386
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error subscribing to folder"
 msgid "Subscribing to folder '%s'"
-msgstr "Lỗi đă_ng ký thư mục"
+msgstr "Đang đăng ký thư mục '%s'"
 
 #: ../camel/camel-subscribable.c:518
-#, fuzzy, c-format
+#, c-format
 #| msgid "Error subscribing to folder"
 msgid "Unsubscribing from folder '%s'"
-msgstr "Lỗi đă_ng ký thư mục"
+msgstr "Đang huỷ đăng ký thư mục '%s'"
 
 #: ../camel/camel-tcp-stream-raw.c:310
 #, c-format
@@ -3228,10 +3229,10 @@ msgid "Could not parse URL '%s'"
 msgstr "Không thể phân tích URL '%s'"
 
 #: ../camel/camel-vee-folder.c:494
-#, fuzzy, c-format
+#, c-format
 #| msgid "Creating folder '%s'"
 msgid "Updating folder '%s'"
-msgstr "Đang tạo thư mục '%s'"
+msgstr "Đang cập nhật thư mục '%s'"
 
 #: ../camel/camel-vee-folder.c:855 ../camel/camel-vee-folder.c:965
 #, c-format
@@ -4012,7 +4013,7 @@ msgstr "Cây thư mục hàng đợi ghi %s"
 
 #: ../camel/providers/local/camel-spool-store.c:432
 msgid "Invalid spool"
-msgstr ""
+msgstr "Spool không hợp lệ"
 
 #: ../camel/providers/local/camel-spool-store.c:492
 #, c-format
@@ -4734,29 +4735,31 @@ msgstr "UID liên lạc của người dùng"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
 msgid "Birthday and anniversary reminder"
-msgstr ""
+msgstr "Nhắc nhở ngày sinh nhật và kỉ niệm"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
 msgid "Whether to set a reminder for birthdays and anniversaries"
-msgstr ""
+msgstr "Có nhắc nhở ngày sinh nhật và kỉ niệm không"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
 msgid "Birthday and anniversary reminder value"
-msgstr ""
+msgstr "Giá trị nhắc nhở ngày sinh nhật và kỉ niệm"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
 msgid "Number of units for determining a birthday or anniversary reminder"
-msgstr ""
+msgstr "Số đơn vị để xác định nhắc nhở ngày sinh nhật và kỉ niệm"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
 msgid "Birthday and anniversary reminder units"
-msgstr ""
+msgstr "Đơn vị nhắc nhở ngày sinh nhật và kỉ niệm"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
 msgid ""
 "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
 "\"days\""
 msgstr ""
+"Đơn vị nhắc nhở ngày sinh nhật và kỉ niệm, \"minutes\" (phút), \"hours"
+"\" (giờ) hoặc \"days\" (ngày)"
 
 #: ../libebackend/e-authentication-mediator.c:145
 #: ../libebackend/e-authentication-mediator.c:156
@@ -4795,53 +4798,53 @@ msgid "Keyring operation was cancelled"
 msgstr "Thao tác vòng khoá bị hủy bỏ"
 
 #: ../libebackend/e-backend.c:190
-#, fuzzy, c-format
+#, c-format
 #| msgid "IMAP server %s does not support %s authentication"
 msgid "%s does not support authentication"
-msgstr "Máy phục vụ IMAP %s không hỗ trợ xác thực %s"
+msgstr "%s không hỗ trợ xác thực"
 
 #: ../libebackend/e-collection-backend.c:734
 #, c-format
 msgid "%s does not support creating remote resources"
-msgstr ""
+msgstr "%s không hỗ trợ tạo tài nguyên ở xa"
 
 #: ../libebackend/e-collection-backend.c:793
-#, fuzzy, c-format
+#, c-format
 #| msgid "CalDAV does not support bulk removals"
 msgid "%s does not support deleting remote resources"
-msgstr "CalDAV không hỗ trợ xoá hàng loạt"
+msgstr "%s không hỗ trợ xoá tài nguyên ở xa"
 
 #: ../libebackend/e-server-side-source.c:128
 #, c-format
 msgid "Data source is missing a [%s] group"
-msgstr ""
+msgstr "Nguồn dữ liệu thiếu nhóm [%s]"
 
 #: ../libebackend/e-server-side-source.c:945 ../libedataserver/e-source.c:1084
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
-msgstr ""
+msgstr "Nguồn dữ liệu '%s' không hỗ trợ tạo tài nguyên ở xa"
 
 #: ../libebackend/e-server-side-source.c:959
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
-msgstr ""
+msgstr "Nguồn dữ liệu '%s' không có collection backend để tạo tài nguyên ở xa"
 
 #: ../libebackend/e-server-side-source.c:987 ../libedataserver/e-source.c:1193
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
-msgstr ""
+msgstr "Nguồn dữ liệu '%s' không hỗ trợ xoá tài nguyên ở xa"
 
 #: ../libebackend/e-server-side-source.c:1001
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
-msgstr ""
+msgstr "Nguồn dữ liệu '%s' không có collection backend để xoá tài nguyên ở xa"
 
 #: ../libebackend/e-server-side-source.c:1336
 #, c-format
 msgid "File must have a '.source' extension"
-msgstr ""
+msgstr "Tập tin phải có phần mở rộng '.source'"
 
 #: ../libebackend/e-source-registry-server.c:520
 #: ../libedataserver/e-source-registry.c:1512
@@ -5038,17 +5041,17 @@ msgstr "Hãy nhập mật khẩu cho tài khoản \"%s\"."
 #: ../libedataserver/e-source.c:620
 #, c-format
 msgid "Source file is missing a [%s] group"
-msgstr ""
+msgstr "Tập tin nguồn thiếu nhóm [%s]"
 
 #: ../libedataserver/e-source.c:911
 #, c-format
 msgid "Data source '%s' is not removable"
-msgstr ""
+msgstr "Nguồn dữ liệu '%s' không di chuyển được"
 
 #: ../libedataserver/e-source.c:993
 #, c-format
 msgid "Data source '%s' is not writable"
-msgstr ""
+msgstr "Nguồn dữ liệu '%s' không ghi được"
 
 #: ../libedataserver/e-source.c:1372
 msgid "Unnamed"
@@ -5057,7 +5060,7 @@ msgstr "Không tên"
 #: ../libedataserver/e-source-mail-signature.c:485
 #, c-format
 msgid "Signature script must be a local file"
-msgstr ""
+msgstr "Văn lệnh chữ ký phải là tập tin cục bộ"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -5196,6 +5199,8 @@ msgid ""
 "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" "
 "means manual proxy."
 msgstr ""
+"Loại uỷ nhiệm cần dùng. \"0\" là hệ thống, \"1\" là không uỷ nhiệm, \"2\" là "
+"uỷ nhiệm thủ công."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "Whether to use http-proxy"
@@ -5203,11 +5208,11 @@ msgstr "Có dùng http-proxy không"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
 msgid "Whether to use proxy for HTTP requests."
-msgstr ""
+msgstr "Có dùng uỷ nhiệm cho yêu cầu HTTP không."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
 msgid "Whether proxy server requires authentication"
-msgstr ""
+msgstr "Máy chủ uỷ nhiệm có cần xác thực không"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
 msgid "Whether authentication is required to access proxy server."
@@ -5235,7 +5240,7 @@ msgstr "Tên người dùng xác thực uỷ nhiệm"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
 msgid "User name to use to authenticate against proxy server."
-msgstr ""
+msgstr "Tên người dùng để xác thực với máy chủ uỷ nhiệm."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
 msgid "Proxy authentication password"
@@ -5243,7 +5248,7 @@ msgstr "Mật khẩu xác thực uỷ nhiệm"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
 msgid "Password to use to authenticate against proxy server."
-msgstr ""
+msgstr "Mật mã để xác thực với máy chủ uỷ nhiệm."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:15
 msgid "List of hosts to connect to without proxy"
@@ -5291,7 +5296,7 @@ msgstr "URL cấu hình uỷ nhiệm tự động"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:26
 msgid "Where to read automatic proxy configuration from."
-msgstr ""
+msgstr "Nơi đọc cấu hình uỷ nhiệm tự động."
 
 #: ../libedataserverui/e-categories-editor.c:230
 msgid "Currently _used categories:"
@@ -5478,31 +5483,31 @@ msgstr "Mã: %u - Tín hiệu trả lời không mong đợi từ máy chủ"
 #: ../modules/online-accounts/goaewsclient.c:205
 #, c-format
 msgid "Failed to parse autodiscover response XML"
-msgstr ""
+msgstr "Lỗi phân tích phản hồi XML autodiscover"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:214
 #, c-format
 msgid "Failed to find Autodiscover element"
-msgstr ""
+msgstr "Không tìm thấy phần tử Autodiscover"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:226
 #, c-format
 msgid "Failed to find Response element"
-msgstr ""
+msgstr "Không tìm thấy phần tử Response"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:238
 #, c-format
 msgid "Failed to find Account element"
-msgstr ""
+msgstr "Không tìm thấy phần tử Account"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:252
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
-msgstr ""
+msgstr "Không tìm thấy ASUrl và OABUrl trong phản hồi autodiscover"
 
 #: ../modules/yahoo-backend/module-yahoo-backend.c:215
 msgid "Tasks"
@@ -5511,12 +5516,12 @@ msgstr "Tác vụ"
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:47
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:51
 msgid "Keep running after the last client is closed"
-msgstr ""
+msgstr "Tiếp tục chạy sau khi đóng trình khách cuối cùng"
 
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:49
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:53
 msgid "Wait running until at least one client is connected"
-msgstr ""
+msgstr "Chờ cho đến khi ít nhất một trình khách kết nối"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:620
 msgid "Evolution Source Viewer"
