@@ -3968,6 +3968,7 @@ imap_update_summary (CamelFolder *folder,
 	gchar *uid, *resp, *tempuid;
 	GData *data;
 	gint k = 0, ct;
+	gboolean success = TRUE;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	store = CAMEL_IMAP_STORE (parent_store);
@@ -4104,7 +4105,8 @@ imap_update_summary (CamelFolder *folder,
 
 	if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
 		g_string_free (header_spec, TRUE);
-		goto lose;
+		success = FALSE;
+		goto finish;
 	}
 
 	/* Free the final tagged response */
@@ -4144,10 +4146,10 @@ imap_update_summary (CamelFolder *folder,
 						       "UID FETCH %s BODYSTRUCTURE BODY.PEEK[%s]",
 						       uidset, header_spec->str)) {
 				g_ptr_array_free (needheaders, TRUE);
-				camel_operation_pop_message (cancellable);
 				g_free (uidset);
 				g_string_free (header_spec, TRUE);
-				goto lose;
+				success = FALSE;
+				break;
 			}
 			g_free (uidset);
 
@@ -4173,9 +4175,9 @@ imap_update_summary (CamelFolder *folder,
 			if (type == CAMEL_IMAP_RESPONSE_ERROR || camel_application_is_exiting) {
 				g_ptr_array_free (needheaders, TRUE);
 				g_string_free (header_spec, TRUE);
-				camel_operation_pop_message (cancellable);
+				success = FALSE;
 
-				goto lose;
+				break;
 			}
 		}
 		camel_operation_pop_message (cancellable);
@@ -4184,6 +4186,7 @@ imap_update_summary (CamelFolder *folder,
 	g_ptr_array_free (needheaders, TRUE);
 	g_string_free (header_spec, TRUE);
 
+ finish:
 	/* Now finish up summary entries (fix UIDs, set flags and size) */
 	for (i = 0; i < fetch_data->len; i++) {
 		struct _junk_data jdata;
@@ -4269,7 +4272,7 @@ imap_update_summary (CamelFolder *folder,
 				_("Incomplete server response: "
 				  "no information provided for message %d"),
 				i + first);
-			break;
+			continue;
 		}
 		uid = (gchar *) camel_message_info_uid (mi);
 		if (uid[0] == 0) {
@@ -4279,7 +4282,7 @@ imap_update_summary (CamelFolder *folder,
 				_("Incomplete server response: "
 				  "no UID provided for message %d"),
 				i + first);
-			break;
+			continue;
 		}
 
 		/* FIXME: If it enters if (info) it will always match the exception. So stupid */
@@ -4313,7 +4316,7 @@ imap_update_summary (CamelFolder *folder,
 		imap_folder->priv->ignore_recent = NULL;
 	}
 
-	return TRUE;
+	return success;
 
  lose:
 	if (fetch_data) {
