@@ -8,10 +8,11 @@ msgstr ""
 "Project-Id-Version: evolution-data-server GNOME TRUNK\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-06-26 13:40+0000\n"
-"PO-Revision-Date: 2012-06-30 10:10+0700\n"
+"POT-Creation-Date: 2012-08-17 23:30+0000\n"
+"PO-Revision-Date: 2012-08-22 08:32+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,13 +24,13 @@ msgstr ""
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:939
 #: ../addressbook/libebook/e-book-client.c:106
 #: ../addressbook/libedata-book/e-data-book.c:432
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:566
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:596
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:615
-#: ../calendar/libecal/e-cal.c:4032 ../calendar/libecal/e-cal-client.c:148
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:569
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
+#: ../calendar/libecal/e-cal.c:4033 ../calendar/libecal/e-cal-client.c:148
 #: ../camel/camel-imapx-command.c:594
-#: ../camel/providers/imap/camel-imap-command.c:521
-#: ../camel/providers/imap/camel-imap-store.c:464
+#: ../camel/providers/imap/camel-imap-command.c:524
+#: ../camel/providers/imap/camel-imap-store.c:468
 #: ../libedataserver/e-client.c:165
 msgid "Unknown error"
 msgstr "Không biết lỗi"
@@ -76,7 +77,7 @@ msgid "Querying for updated contacts…"
 msgstr "Đang truy vấn cho liên lạc được cập nhật…"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:843
+#: ../addressbook/backends/google/e-book-backend-google.c:846
 msgid "Querying for updated groups…"
 msgstr "Truy vấn nhóm đã cập nhật…"
 
@@ -118,22 +119,22 @@ msgstr "Sửa liên lạc…"
 msgid "Loading…"
 msgstr "Đang nạp…"
 
-#: ../addressbook/backends/google/e-book-google-utils.c:1557
+#: ../addressbook/backends/google/e-book-google-utils.c:1562
 msgid "Personal"
 msgstr "Cá nhân"
 
 #. System Group: My Contacts
-#: ../addressbook/backends/google/e-book-google-utils.c:1558
+#: ../addressbook/backends/google/e-book-google-utils.c:1563
 msgid "Friends"
 msgstr "Bạn bè"
 
 #. System Group: Friends
-#: ../addressbook/backends/google/e-book-google-utils.c:1559
+#: ../addressbook/backends/google/e-book-google-utils.c:1564
 msgid "Family"
 msgstr "Gia đình"
 
 #. System Group: Family
-#: ../addressbook/backends/google/e-book-google-utils.c:1560
+#: ../addressbook/backends/google/e-book-google-utils.c:1565
 msgid "Coworkers"
 msgstr "Đồng nghiệp"
 
@@ -183,9 +184,8 @@ msgstr "Gặp lỗi khi tìm kiếm"
 msgid "Downloading contacts (%d)... "
 msgstr "Đang tải về các liên lạc (%d)... "
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5567
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5552
 #, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to get the DN for user '%s'"
 msgstr "Lỗi lấy DN cho người dùng '%s'"
 
@@ -221,8 +221,8 @@ msgstr "Hết chỗ chứa"
 msgid "Failed to run book factory"
 msgstr ""
 
-#: ../addressbook/libebook/e-book-client.c:2282
-#: ../calendar/libecal/e-cal-client.c:4640
+#: ../addressbook/libebook/e-book-client.c:2244
+#: ../calendar/libecal/e-cal-client.c:4602
 msgid "Cannot get connection to view"
 msgstr "Không thể lấy kết nối để xem"
 
@@ -241,7 +241,6 @@ msgstr "Ghi lưu là"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:128
-#| msgid "Book URI"
 msgid "Book UID"
 msgstr "UID Sách"
 
@@ -686,7 +685,6 @@ msgstr "Danh sách"
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
 #: ../addressbook/libebook/e-contact.c:281
-#| msgid "List Show Addresses"
 msgid "List Shows Addresses"
 msgstr "Danh mục hiện địa chỉ"
 
@@ -802,7 +800,6 @@ msgid "Google Talk Name List"
 msgstr "Danh sách tên Google Talk"
 
 #: ../addressbook/libebook/e-contact.c:320
-#| msgid "Skype Name List"
 msgid "Twitter Name List"
 msgstr "Danh sách tên Twitter"
 
@@ -849,7 +846,7 @@ msgid "Success"
 msgstr "Thành công"
 
 #: ../addressbook/libedata-book/e-data-book.c:303
-#: ../calendar/libecal/e-cal.c:4000 ../calendar/libedata-cal/e-data-cal.c:416
+#: ../calendar/libecal/e-cal.c:4001 ../calendar/libedata-cal/e-data-cal.c:416
 #: ../libedataserver/e-client.c:122
 msgid "Backend is busy"
 msgstr "Hậu phương quá bận"
@@ -860,7 +857,7 @@ msgid "Repository offline"
 msgstr "Kho ngoại tuyến"
 
 #: ../addressbook/libedata-book/e-data-book.c:305
-#: ../calendar/libecal/e-cal.c:4014 ../calendar/libedata-cal/e-data-cal.c:418
+#: ../calendar/libecal/e-cal.c:4015 ../calendar/libedata-cal/e-data-cal.c:418
 #: ../libedataserver/e-client.c:138
 msgid "Permission denied"
 msgstr "Không đủ quyền truy cập"
@@ -936,14 +933,14 @@ msgid "Invalid server version"
 msgstr "Phiên bản trình phục vụ không hợp lệ"
 
 #: ../addressbook/libedata-book/e-data-book.c:324
-#: ../calendar/libecal/e-cal.c:3998 ../calendar/libedata-cal/e-data-cal.c:439
+#: ../calendar/libecal/e-cal.c:3999 ../calendar/libedata-cal/e-data-cal.c:439
 #: ../libedataserver/e-client.c:120
 msgid "Invalid argument"
 msgstr "Đối số không hợp lệ"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:326
-#: ../calendar/libecal/e-cal.c:4037 ../calendar/libedata-cal/e-data-cal.c:441
+#: ../calendar/libecal/e-cal.c:4038 ../calendar/libedata-cal/e-data-cal.c:441
 #: ../libedataserver/e-client.c:144
 msgid "Not supported"
 msgstr "Chưa hỗ trợ"
@@ -1027,7 +1024,6 @@ msgstr "Không thể bỏ liên lạc: "
 #: ../addressbook/libedata-book/e-data-book-factory.c:103
 #: ../calendar/libedata-cal/e-data-cal-factory.c:114
 #, c-format
-#| msgid "No backend factory for '%s' of '%s'"
 msgid "No backend name in source '%s'"
 msgstr "Không có mặt sau cho trong nguồn '%s'"
 
@@ -1039,29 +1035,26 @@ msgstr "Tên mặt sau '%s' trong nguồn '%s' không hợp lệ"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:319
 #: ../calendar/libedata-cal/e-data-cal-factory.c:230
-#| msgid "POP Source UID"
 msgid "Missing source UID"
 msgstr "Thiếu UID nguồn"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:332
 #: ../calendar/libedata-cal/e-data-cal-factory.c:243
 #, c-format
-#| msgid "No such source"
 msgid "No such source for UID '%s'"
 msgstr "Không có nguồn cho UID '%s'"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:564
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:567
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Không thể tiếp cận máy chủ (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:594
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:597
 #, c-format
-#| msgid "Failed to connect to POP server %s in secure mode: %s"
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "Lỗi kết nối tới máy chủ dùng SSL: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:599
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:602
 msgid ""
 "Failed to connect to a server using SSL. One possible reason is an invalid "
 "certificate being used by the server. If this is expected, like self-signed "
@@ -1073,13 +1066,13 @@ msgstr ""
 "chứng nhận tự ký, tắt kiểm tra chứng nhận bằng cách chọn tuỳ chọn \"Bỏ qua "
 "chứng nhận SSL không hợp lệ\" trong Thuộc tính."
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:612
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:615
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Nhận được mã trạng thái HTTP không mong đợi %d (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2302
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2672
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2349
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2719
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1088,22 +1081,19 @@ msgstr ""
 "Không thể tiếp cận máy chủ, lịch mở trong chế độ chỉ đọc.\n"
 "Thông báo lỗi: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3668
-#| msgid "The backend does not support bulk additions"
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3674
 msgid "CalDAV does not support bulk additions"
 msgstr "CaldAV không hỗ trợ thêm hàng loạt"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3770
-#| msgid "The backend does not support bulk modifications"
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3776
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV không hỗ trợ sửa hàng loạt"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3938
-#| msgid "The backend does not support bulk removals"
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3944
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV không hỗ trợ xoá hàng loạt"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4597
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4603
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Lịch không hỗ trợ Bận/Rảnh"
 
@@ -1130,30 +1120,29 @@ msgstr "Không thể lưu dữ liệu lịch: URI dạng sai."
 msgid "Cannot save calendar data"
 msgstr "Không thể lưu dữ liệu lịch"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:480
+#: ../calendar/backends/http/e-cal-backend-http.c:481
 #, c-format
-#| msgid "Malformed signature"
 msgid "Malformed URI: %s"
 msgstr "URI hư: %s"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:541
+#: ../calendar/backends/http/e-cal-backend-http.c:542
 #, c-format
 msgid "Redirected to Invalid URI"
 msgstr "Tái định hướng đến URI không hợp lệ"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:578
+#: ../calendar/backends/http/e-cal-backend-http.c:579
 #, c-format
 msgid "Bad file format."
 msgstr "Định dạng tập tin sai."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:588
+#: ../calendar/backends/http/e-cal-backend-http.c:589
 #, c-format
 msgid "Not a calendar."
 msgstr "Không phải lịch."
 
+#: ../calendar/backends/http/e-cal-backend-http.c:929
 #: ../calendar/backends/http/e-cal-backend-http.c:933
-#: ../calendar/backends/http/e-cal-backend-http.c:937
-#: ../calendar/backends/weather/e-cal-backend-weather.c:523
+#: ../calendar/backends/weather/e-cal-backend-weather.c:511
 msgid "Could not create cache file"
 msgstr "Không thể tạo tập tin nhớ tạm"
 
@@ -1197,72 +1186,72 @@ msgstr "Thời tiết: trời nắng"
 msgid "Weather: Thunderstorms"
 msgstr "Thời tiết: bão kèm sấm"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:429
+#: ../calendar/backends/weather/e-cal-backend-weather.c:408
 msgid "Forecast"
 msgstr "Dự báo"
 
-#: ../calendar/libecal/e-cal.c:4002
+#: ../calendar/libecal/e-cal.c:4003
 msgid "Repository is offline"
 msgstr "Kho ngoại tuyến"
 
-#: ../calendar/libecal/e-cal.c:4004 ../calendar/libecal/e-cal-client.c:135
+#: ../calendar/libecal/e-cal.c:4005 ../calendar/libecal/e-cal-client.c:135
 msgid "No such calendar"
 msgstr "Không có lịch như vậy."
 
-#: ../calendar/libecal/e-cal.c:4006 ../calendar/libecal/e-cal-client.c:137
+#: ../calendar/libecal/e-cal.c:4007 ../calendar/libecal/e-cal-client.c:137
 #: ../calendar/libedata-cal/e-data-cal.c:420
 msgid "Object not found"
 msgstr "Không tìm thấy đối tượng"
 
-#: ../calendar/libecal/e-cal.c:4008 ../calendar/libecal/e-cal-client.c:139
+#: ../calendar/libecal/e-cal.c:4009 ../calendar/libecal/e-cal-client.c:139
 #: ../calendar/libedata-cal/e-data-cal.c:421
 msgid "Invalid object"
 msgstr "Đối tượng không hợp lệ"
 
-#: ../calendar/libecal/e-cal.c:4010
+#: ../calendar/libecal/e-cal.c:4011
 msgid "URI not loaded"
 msgstr "URI chưa được tải"
 
-#: ../calendar/libecal/e-cal.c:4012
+#: ../calendar/libecal/e-cal.c:4013
 msgid "URI already loaded"
 msgstr "URI đã được tải"
 
-#: ../calendar/libecal/e-cal.c:4016
+#: ../calendar/libecal/e-cal.c:4017
 msgid "Unknown User"
 msgstr "Không biết người dùng"
 
-#: ../calendar/libecal/e-cal.c:4018 ../calendar/libecal/e-cal-client.c:143
+#: ../calendar/libecal/e-cal.c:4019 ../calendar/libecal/e-cal-client.c:143
 #: ../calendar/libedata-cal/e-data-cal.c:422
 msgid "Object ID already exists"
 msgstr "ID đối tượng đã tồn tại"
 
-#: ../calendar/libecal/e-cal.c:4020
+#: ../calendar/libecal/e-cal.c:4021
 msgid "Protocol not supported"
 msgstr "Chưa hỗ trợ giao thức này"
 
-#: ../calendar/libecal/e-cal.c:4022
+#: ../calendar/libecal/e-cal.c:4023
 msgid "Operation has been canceled"
 msgstr "Thao tác bị hủy bỏ"
 
-#: ../calendar/libecal/e-cal.c:4024
+#: ../calendar/libecal/e-cal.c:4025
 msgid "Could not cancel operation"
 msgstr "Không thể hủy bỏ tác vụ"
 
-#: ../calendar/libecal/e-cal.c:4026 ../libedataserver/e-client.c:128
+#: ../calendar/libecal/e-cal.c:4027 ../libedataserver/e-client.c:128
 msgid "Authentication failed"
 msgstr "Xác thực thất bại"
 
-#: ../calendar/libecal/e-cal.c:4028
-#: ../camel/providers/smtp/camel-smtp-transport.c:845
+#: ../calendar/libecal/e-cal.c:4029
+#: ../camel/providers/smtp/camel-smtp-transport.c:851
 #: ../libedataserver/e-client.c:130
 msgid "Authentication required"
 msgstr "Cần thiết xác thực"
 
-#: ../calendar/libecal/e-cal.c:4030
+#: ../calendar/libecal/e-cal.c:4031
 msgid "A D-Bus exception has occurred"
 msgstr "Một lỗi ngoại lệ D-Bus đã xảy ra"
 
-#: ../calendar/libecal/e-cal.c:4034
+#: ../calendar/libecal/e-cal.c:4035
 msgid "No error"
 msgstr "Không có lỗi"
 
@@ -1739,34 +1728,34 @@ msgstr "Đang tái đồng bộ với máy phục vụ"
 msgid "Downloading new messages for offline mode"
 msgstr "Đang tải về các thư cho chế độ ngoại tuyến"
 
-#: ../camel/camel-disco-folder.c:416
+#: ../camel/camel-disco-folder.c:420
 #, c-format
 msgid "Preparing folder '%s' for offline"
 msgstr "Đang chuẩn bị thư mục '%s' để dùng ngoại tuyến"
 
-#: ../camel/camel-disco-folder.c:482 ../camel/camel-offline-folder.c:329
+#: ../camel/camel-disco-folder.c:487 ../camel/camel-offline-folder.c:334
 msgid "Copy folder content locally for _offline operation"
 msgstr ""
 "Sao chép nội dung thư mục về máy địa phương để phục vụ các thao tác _ngoại "
 "tuyến"
 
-#: ../camel/camel-disco-store.c:466 ../camel/camel-imapx-folder.c:410
-#: ../camel/camel-imapx-folder.c:443 ../camel/camel-imapx-folder.c:479
-#: ../camel/camel-imapx-folder.c:535 ../camel/camel-imapx-folder.c:611
-#: ../camel/camel-imapx-folder.c:645 ../camel/camel-imapx-folder.c:685
-#: ../camel/camel-imapx-folder.c:721 ../camel/camel-imapx-store.c:273
-#: ../camel/camel-imapx-store.c:1363 ../camel/camel-imapx-store.c:1451
-#: ../camel/camel-imapx-store.c:1497
-#: ../camel/providers/imap/camel-imap-store.c:1246
-#: ../camel/providers/imap/camel-imap-store.c:2002
-#: ../camel/providers/imap/camel-imap-store.c:2469
-#: ../camel/providers/imap/camel-imap-store.c:3219
-#: ../camel/providers/pop3/camel-pop3-folder.c:525
-#: ../camel/providers/pop3/camel-pop3-folder.c:655
-#: ../camel/providers/pop3/camel-pop3-folder.c:838
-#: ../camel/providers/pop3/camel-pop3-folder.c:1036
-#: ../camel/providers/pop3/camel-pop3-store.c:394
-#: ../camel/providers/pop3/camel-pop3-store.c:807
+#: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:413
+#: ../camel/camel-imapx-folder.c:446 ../camel/camel-imapx-folder.c:482
+#: ../camel/camel-imapx-folder.c:538 ../camel/camel-imapx-folder.c:614
+#: ../camel/camel-imapx-folder.c:648 ../camel/camel-imapx-folder.c:688
+#: ../camel/camel-imapx-folder.c:724 ../camel/camel-imapx-store.c:275
+#: ../camel/camel-imapx-store.c:1383 ../camel/camel-imapx-store.c:1471
+#: ../camel/camel-imapx-store.c:1520
+#: ../camel/providers/imap/camel-imap-store.c:1268
+#: ../camel/providers/imap/camel-imap-store.c:2030
+#: ../camel/providers/imap/camel-imap-store.c:2502
+#: ../camel/providers/imap/camel-imap-store.c:3265
+#: ../camel/providers/pop3/camel-pop3-folder.c:524
+#: ../camel/providers/pop3/camel-pop3-folder.c:654
+#: ../camel/providers/pop3/camel-pop3-folder.c:844
+#: ../camel/providers/pop3/camel-pop3-folder.c:1046
+#: ../camel/providers/pop3/camel-pop3-store.c:403
+#: ../camel/providers/pop3/camel-pop3-store.c:821
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "Bạn phải đang hoạt động trực tuyến mới có thể hoàn tất thao tác này."
@@ -1776,64 +1765,64 @@ msgstr "Bạn phải đang hoạt động trực tuyến mới có thể hoàn t
 msgid "Canceled"
 msgstr "Bị thôi"
 
-#: ../camel/camel-filter-driver.c:895 ../camel/camel-filter-search.c:762
+#: ../camel/camel-filter-driver.c:897 ../camel/camel-filter-search.c:772
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Lỗi tạo tiến trình con '%s': %s"
 
-#: ../camel/camel-filter-driver.c:943
+#: ../camel/camel-filter-driver.c:945
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Nhận luồng thư không hợp lệ từ %s: %s"
 
-#: ../camel/camel-filter-driver.c:1139 ../camel/camel-filter-driver.c:1146
+#: ../camel/camel-filter-driver.c:1141 ../camel/camel-filter-driver.c:1148
 msgid "Syncing folders"
 msgstr "Đang đồng bộ những thư mục"
 
-#: ../camel/camel-filter-driver.c:1240 ../camel/camel-filter-driver.c:1695
+#: ../camel/camel-filter-driver.c:1242 ../camel/camel-filter-driver.c:1707
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Lỗi phân tích bộ lọc: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1251 ../camel/camel-filter-driver.c:1706
+#: ../camel/camel-filter-driver.c:1253 ../camel/camel-filter-driver.c:1718
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Lỗi thực hiện bộ lọc: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1347
+#: ../camel/camel-filter-driver.c:1349
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Không thể mở thư mục hàng đợi"
 
-#: ../camel/camel-filter-driver.c:1359
+#: ../camel/camel-filter-driver.c:1361
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Không thể xử lý thư mục hàng đợi"
 
-#: ../camel/camel-filter-driver.c:1377
+#: ../camel/camel-filter-driver.c:1379
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Đang lấy thông diệp %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1384 ../camel/camel-filter-driver.c:1406
+#: ../camel/camel-filter-driver.c:1386 ../camel/camel-filter-driver.c:1408
 #, c-format
 msgid "Failed on message %d"
 msgstr "Lỗi trên thư %d"
 
-#: ../camel/camel-filter-driver.c:1421 ../camel/camel-filter-driver.c:1527
+#: ../camel/camel-filter-driver.c:1423 ../camel/camel-filter-driver.c:1529
 msgid "Syncing folder"
 msgstr "Đang đồng bộ thư mục"
 
-#: ../camel/camel-filter-driver.c:1426 ../camel/camel-filter-driver.c:1533
+#: ../camel/camel-filter-driver.c:1428 ../camel/camel-filter-driver.c:1535
 msgid "Complete"
 msgstr "Hoàn tất"
 
-#: ../camel/camel-filter-driver.c:1485
+#: ../camel/camel-filter-driver.c:1487
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Đang lấy thư %d trên %d"
 
-#: ../camel/camel-filter-driver.c:1503
+#: ../camel/camel-filter-driver.c:1505
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Lỗi tại thư %d trên %d"
@@ -1850,7 +1839,7 @@ msgstr "Đối số không hợp lệ đối với (system-flag: cờ hệ thố
 msgid "Invalid arguments to (user-tag)"
 msgstr "Đối số không hợp lệ đối với (user-tag: thẻ người dùng)"
 
-#: ../camel/camel-filter-search.c:939 ../camel/camel-filter-search.c:948
+#: ../camel/camel-filter-search.c:949 ../camel/camel-filter-search.c:958
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Lỗi thực hiện tìm kiếm bộ lọc: %s: %s"
@@ -1874,7 +1863,7 @@ msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "Lọc thư mới trong '%s'"
 
 #: ../camel/camel-folder.c:930
-#: ../camel/providers/local/camel-maildir-folder.c:322
+#: ../camel/providers/local/camel-maildir-folder.c:321
 msgid "Moving messages"
 msgstr "Đang di chuyển thư"
 
@@ -1887,17 +1876,29 @@ msgstr "Đang chép thư"
 msgid "Quota information not supported for folder '%s'"
 msgstr "Không hỗ trợ thông tin chỉ tiêu cho thư mục '%s'"
 
-#: ../camel/camel-folder.c:3595
+#: ../camel/camel-folder.c:3371
+#, fuzzy, c-format
+#| msgid "Opening folder '%s'"
+msgid "Expunging folder '%s'"
+msgstr "Mở thư mục '%s'"
+
+#: ../camel/camel-folder.c:3603
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Đang nhận thư '%s' trong %s"
 
-#: ../camel/camel-folder.c:3744
+#: ../camel/camel-folder.c:3753
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Đang lấy thông tin chỉ tiêu cho '%s'"
 
-#: ../camel/camel-folder-search.c:414 ../camel/camel-folder-search.c:575
+#: ../camel/camel-folder.c:3985
+#, fuzzy, c-format
+#| msgid "Creating folder '%s'"
+msgid "Refreshing folder '%s'"
+msgstr "Đang tạo thư mục '%s'"
+
+#: ../camel/camel-folder-search.c:420 ../camel/camel-folder-search.c:587
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -1906,7 +1907,7 @@ msgstr ""
 "Không thể phân tích biểu thức tìm kiếm: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:426 ../camel/camel-folder-search.c:587
+#: ../camel/camel-folder-search.c:432 ../camel/camel-folder-search.c:599
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -1916,31 +1917,31 @@ msgstr ""
 "%s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:800 ../camel/camel-folder-search.c:843
+#: ../camel/camel-folder-search.c:822 ../camel/camel-folder-search.c:865
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) cần thiết một kết quả đúng/sai riêng lẻ"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:904
+#: ../camel/camel-folder-search.c:932
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) không được phép bên trong %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:911 ../camel/camel-folder-search.c:919
+#: ../camel/camel-folder-search.c:939 ../camel/camel-folder-search.c:947
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) cần thiết một chuỗi khớp kiểu (match type)"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:947
+#: ../camel/camel-folder-search.c:975
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) mong đợi một kết quả mảng"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:957
+#: ../camel/camel-folder-search.c:985
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) cần thiết đặt thư mục"
@@ -1952,7 +1953,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "Lỗi thực hiện GPG: %s"
 
 #: ../camel/camel-gpg-context.c:668
-#: ../camel/providers/smtp/camel-smtp-transport.c:848
+#: ../camel/providers/smtp/camel-smtp-transport.c:854
 msgid "Unknown"
 msgstr "Không biết"
 
@@ -2008,7 +2009,7 @@ msgstr ""
 
 #: ../camel/camel-gpg-context.c:879 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
-#: ../camel/providers/nntp/camel-nntp-summary.c:382
+#: ../camel/providers/nntp/camel-nntp-summary.c:388
 #: ../libedataserver/e-client.c:140
 #, c-format
 msgid "Cancelled"
@@ -2074,269 +2075,268 @@ msgstr "Lỗi giải mật mã phần MIME: lỗi giao thức"
 msgid "Encrypted content"
 msgstr "Nội dung bị mật mã hóa"
 
-#: ../camel/camel-imapx-folder.c:101
+#: ../camel/camel-imapx-folder.c:104
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Không thể tạo tóm tắt thư mục cho %s"
 
-#: ../camel/camel-imapx-folder.c:109
+#: ../camel/camel-imapx-folder.c:112
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Không thể tạo vùng lưu trữ tạm (cache) cho %s: "
 
-#: ../camel/camel-imapx-folder.c:791
-#: ../camel/providers/imap/camel-imap-folder.c:359
-#: ../camel/providers/nntp/camel-nntp-folder.c:731
+#: ../camel/camel-imapx-folder.c:794
+#: ../camel/providers/imap/camel-imap-folder.c:365
+#: ../camel/providers/nntp/camel-nntp-folder.c:738
 msgid "Apply message _filters to this folder"
 msgstr "_Lọc thư cho thư mục này"
 
-#: ../camel/camel-imapx-server.c:855
+#: ../camel/camel-imapx-server.c:1020
 msgid "Server disconnected"
 msgstr "Máy chủ ngắt kết nối"
 
-#: ../camel/camel-imapx-server.c:1264
+#: ../camel/camel-imapx-server.c:1472
 msgid "Error writing to cache stream: "
 msgstr "Lỗi ghi vào luồng trữ tạm (cache): "
 
-#: ../camel/camel-imapx-server.c:1997
+#: ../camel/camel-imapx-server.c:2404
 #, c-format
 msgid "Not authenticated"
 msgstr "Chưa xác thực"
 
-#: ../camel/camel-imapx-server.c:2066
+#: ../camel/camel-imapx-server.c:2473
 msgid "Error performing IDLE"
 msgstr "Lỗi thực hiện IDLE"
 
-#: ../camel/camel-imapx-server.c:2910
-#: ../camel/providers/imap/camel-imap-store.c:409
-#: ../camel/providers/imap/camel-imap-store.c:463
+#: ../camel/camel-imapx-server.c:3325
+#: ../camel/providers/imap/camel-imap-store.c:413
+#: ../camel/providers/imap/camel-imap-store.c:467
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Lỗi kết nối tới máy phục vụ IMAP %s trong chế độ an toàn: %s"
 
-#: ../camel/camel-imapx-server.c:2911
-#: ../camel/providers/imap/camel-imap-store.c:410
-#: ../camel/providers/smtp/camel-smtp-transport.c:197
+#: ../camel/camel-imapx-server.c:3326
+#: ../camel/providers/imap/camel-imap-store.c:414
+#: ../camel/providers/smtp/camel-smtp-transport.c:199
 msgid "STARTTLS not supported"
 msgstr "Chưa hỗ trợ STARTTLS"
 
-#: ../camel/camel-imapx-server.c:2950
-#: ../camel/providers/imap/camel-imap-store.c:435
+#: ../camel/camel-imapx-server.c:3365
+#: ../camel/providers/imap/camel-imap-store.c:439
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Lỗi kết nối tới máy phục vụ IMAP %s trong chế độ an toàn: "
 
-#: ../camel/camel-imapx-server.c:3017
-#: ../camel/providers/imap/camel-imap-store.c:734
+#: ../camel/camel-imapx-server.c:3435
+#: ../camel/providers/imap/camel-imap-store.c:747
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Máy phục vụ IMAP %s không hỗ trợ xác thực %s"
 
-#: ../camel/camel-imapx-server.c:3028 ../camel/camel-session.c:483
-#: ../camel/providers/imap/camel-imap-store.c:1150
-#: ../camel/providers/pop3/camel-pop3-store.c:249
-#: ../camel/providers/pop3/camel-pop3-store.c:568
-#: ../camel/providers/smtp/camel-smtp-transport.c:458
+#: ../camel/camel-imapx-server.c:3446 ../camel/camel-session.c:494
+#: ../camel/providers/imap/camel-imap-store.c:1172
+#: ../camel/providers/pop3/camel-pop3-store.c:253
+#: ../camel/providers/pop3/camel-pop3-store.c:580
+#: ../camel/providers/smtp/camel-smtp-transport.c:464
 #, c-format
 msgid "No support for %s authentication"
 msgstr "Không hỗ trợ xác thực %s"
 
-#: ../camel/camel-imapx-server.c:3047
-#: ../camel/providers/imap/camel-imap-store.c:1118
-#: ../camel/providers/nntp/camel-nntp-store.c:494
+#: ../camel/camel-imapx-server.c:3465
+#: ../camel/providers/imap/camel-imap-store.c:1140
+#: ../camel/providers/nntp/camel-nntp-store.c:502
 msgid "Cannot authenticate without a username"
 msgstr "Không thể xác thực mà không có tên người dùng"
 
-#: ../camel/camel-imapx-server.c:3056
-#: ../camel/providers/imap/camel-imap-store.c:1126
-#: ../camel/providers/nntp/camel-nntp-store.c:503
-#: ../camel/providers/pop3/camel-pop3-store.c:493
-#: ../camel/providers/pop3/camel-pop3-store.c:513
+#: ../camel/camel-imapx-server.c:3474
+#: ../camel/providers/imap/camel-imap-store.c:1148
+#: ../camel/providers/nntp/camel-nntp-store.c:511
+#: ../camel/providers/pop3/camel-pop3-store.c:505
+#: ../camel/providers/pop3/camel-pop3-store.c:525
 msgid "Authentication password not available"
 msgstr "Không có mật khẩu xác thực"
 
-#: ../camel/camel-imapx-server.c:3246
+#: ../camel/camel-imapx-server.c:3667
 msgid "Error fetching message"
 msgstr "Lỗi lấy thư"
 
-#: ../camel/camel-imapx-server.c:3328
-#| msgid "Failed to cache %s: "
+#: ../camel/camel-imapx-server.c:3749
 msgid "Failed to copy the tmp file"
 msgstr "Lỗi chép tập tin tạm"
 
-#: ../camel/camel-imapx-server.c:3342
-#| msgid "Failed to encode data"
+#: ../camel/camel-imapx-server.c:3763
 msgid "Failed to close the tmp stream"
 msgstr "Lỗi đóng luồng tạm"
 
-#: ../camel/camel-imapx-server.c:3440
+#: ../camel/camel-imapx-server.c:3861
 msgid "Error copying messages"
 msgstr "Lỗi chép thư"
 
-#: ../camel/camel-imapx-server.c:3575
+#: ../camel/camel-imapx-server.c:3996
 msgid "Error appending message"
 msgstr "Lỗi nối thư"
 
-#: ../camel/camel-imapx-server.c:3762
+#: ../camel/camel-imapx-server.c:4186
 msgid "Error fetching message headers"
 msgstr "Lỗi lấy dòng đầu thư"
 
-#: ../camel/camel-imapx-server.c:3908
+#: ../camel/camel-imapx-server.c:4328
 msgid "Error retrieving message"
 msgstr "Lỗi nhận thư"
 
-#: ../camel/camel-imapx-server.c:4030 ../camel/camel-imapx-server.c:4235
-#: ../camel/providers/imap/camel-imap-folder.c:4005
-#: ../camel/providers/imap/camel-imap-folder.c:4085
-#, c-format
-msgid "Fetching summary information for new messages in %s"
+#: ../camel/camel-imapx-server.c:4450 ../camel/camel-imapx-server.c:4657
+#, fuzzy, c-format
+#| msgid "Fetching summary information for new messages in %s"
+msgid "Fetching summary information for new messages in '%s'"
 msgstr "Đang lấy thông tin tóm tắt cho các thư mới trong %s"
 
-#: ../camel/camel-imapx-server.c:4089
-#: ../camel/providers/imap/camel-imap-folder.c:1127
-#, c-format
-msgid "Scanning for changed messages in %s"
+#: ../camel/camel-imapx-server.c:4507
+#, fuzzy, c-format
+#| msgid "Scanning for changed messages in %s"
+msgid "Scanning for changed messages in '%s'"
 msgstr "Đang quét tìm các thư thay đổi trong %s"
 
-#: ../camel/camel-imapx-server.c:4131
+#: ../camel/camel-imapx-server.c:4550
 msgid "Error fetching new messages"
 msgstr "Lỗi lấy thư mới"
 
-#: ../camel/camel-imapx-server.c:4330
+#: ../camel/camel-imapx-server.c:4756
 msgid "Error while fetching messages"
 msgstr "Lỗi khi lấy thư"
 
-#: ../camel/camel-imapx-server.c:4338 ../camel/camel-imapx-server.c:4370
-#, c-format
-msgid "Fetching summary information for %d message in %s"
-msgid_plural "Fetching summary information for %d messages in %s"
+#: ../camel/camel-imapx-server.c:4764 ../camel/camel-imapx-server.c:4800
+#, fuzzy, c-format
+#| msgid "Fetching summary information for %d message in %s"
+#| msgid_plural "Fetching summary information for %d messages in %s"
+msgid "Fetching summary information for %d message in '%s'"
+msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "Đang lấy thông tin tóm tắt cho %d thư mới trong %s"
 
-#: ../camel/camel-imapx-server.c:4495 ../camel/camel-imapx-server.c:4531
+#: ../camel/camel-imapx-server.c:4931 ../camel/camel-imapx-server.c:4967
 msgid "Error refreshing folder"
 msgstr "Lỗi nạp lại thư mục"
 
-#: ../camel/camel-imapx-server.c:4624
+#: ../camel/camel-imapx-server.c:5060
 msgid "Error expunging message"
 msgstr "Lỗi xóa hẳn thư cũ"
 
-#: ../camel/camel-imapx-server.c:4713
+#: ../camel/camel-imapx-server.c:5157
 msgid "Error fetching folders"
 msgstr "Lỗi lấy thư mục"
 
-#: ../camel/camel-imapx-server.c:4792
+#: ../camel/camel-imapx-server.c:5236
 msgid "Error subscribing to folder"
 msgstr "Lỗi đă_ng ký thư mục"
 
-#: ../camel/camel-imapx-server.c:4849
+#: ../camel/camel-imapx-server.c:5293
 msgid "Error creating folder"
 msgstr "Lỗi tạo thư mục"
 
-#: ../camel/camel-imapx-server.c:4898
+#: ../camel/camel-imapx-server.c:5342
 msgid "Error deleting folder"
 msgstr "Lỗi xoá thư mục"
 
-#: ../camel/camel-imapx-server.c:4952
+#: ../camel/camel-imapx-server.c:5396
 msgid "Error renaming folder"
 msgstr "Lỗi đổi tên thư mục"
 
-#: ../camel/camel-imapx-server.c:5007
+#: ../camel/camel-imapx-server.c:5451
 msgid "Error performing NOOP"
 msgstr "Lỗi thực hiện NOOP"
 
-#: ../camel/camel-imapx-server.c:5105
+#: ../camel/camel-imapx-server.c:5553
 msgid "Error syncing changes"
 msgstr "Lỗi đồng bộ thay đổi"
 
-#: ../camel/camel-imapx-server.c:5716
-#: ../camel/providers/imap/camel-imap-folder.c:3473
+#: ../camel/camel-imapx-server.c:6183
+#: ../camel/providers/imap/camel-imap-folder.c:3517
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Không thể lấy thư có mã số thư %s: %s"
 
-#: ../camel/camel-imapx-server.c:5717
-#: ../camel/providers/imap/camel-imap-folder.c:3474
+#: ../camel/camel-imapx-server.c:6184
+#: ../camel/providers/imap/camel-imap-folder.c:3518
 msgid "No such message available."
 msgstr "Không có thư như vậy."
 
-#: ../camel/camel-imapx-server.c:5872 ../camel/camel-imapx-server.c:5887
+#: ../camel/camel-imapx-server.c:6339 ../camel/camel-imapx-server.c:6354
 msgid "Cannot create spool file: "
 msgstr ""
 
-#: ../camel/camel-imapx-store.c:155
-#: ../camel/providers/imap/camel-imap-store.c:810
+#: ../camel/camel-imapx-store.c:157
+#: ../camel/providers/imap/camel-imap-store.c:825
 #, c-format
 msgid "IMAP server %s"
 msgstr "Máy phục vụ IMAP %s"
 
-#: ../camel/camel-imapx-store.c:158
-#: ../camel/providers/imap/camel-imap-store.c:813
+#: ../camel/camel-imapx-store.c:160
+#: ../camel/providers/imap/camel-imap-store.c:828
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "Dịch vụ IMAP cho %s trên %s"
 
-#: ../camel/camel-imapx-store.c:249
+#: ../camel/camel-imapx-store.c:251
 #: ../camel/providers/imap/camel-imap-provider.c:98
 #: ../camel/providers/nntp/camel-nntp-provider.c:84
 #: ../camel/providers/pop3/camel-pop3-provider.c:82
 msgid "Password"
 msgstr "Mật khẩu"
 
-#: ../camel/camel-imapx-store.c:251
+#: ../camel/camel-imapx-store.c:253
 #: ../camel/providers/imap/camel-imap-provider.c:100
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Tùy chọn này sẽ kết nối tới máy phục vụ IMAP bằng mật khẩu thô (không mật "
 "mã)."
 
-#: ../camel/camel-imapx-store.c:342
-#: ../camel/providers/imap/camel-imap-store.c:2033
-#: ../camel/providers/imap/camel-imap-store.c:2227
+#: ../camel/camel-imapx-store.c:344
+#: ../camel/providers/imap/camel-imap-store.c:2061
+#: ../camel/providers/imap/camel-imap-store.c:2257
 #, c-format
 msgid "No such folder %s"
 msgstr "Không có thư mục %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:367 ../camel/camel-imapx-store.c:838
-#: ../camel/providers/imap/camel-imap-store.c:272
-#: ../camel/providers/imap/camel-imap-store.c:2640
-#: ../camel/providers/local/camel-maildir-folder.c:474
-#: ../camel/providers/local/camel-maildir-store.c:301
-#: ../camel/providers/local/camel-maildir-store.c:679
-#: ../camel/providers/local/camel-maildir-store.c:685
-#: ../camel/providers/local/camel-maildir-store.c:769
-#: ../camel/providers/local/camel-spool-store.c:387
+#: ../camel/camel-imapx-store.c:369 ../camel/camel-imapx-store.c:851
+#: ../camel/providers/imap/camel-imap-store.c:274
+#: ../camel/providers/imap/camel-imap-store.c:2673
+#: ../camel/providers/local/camel-maildir-folder.c:473
+#: ../camel/providers/local/camel-maildir-store.c:307
+#: ../camel/providers/local/camel-maildir-store.c:699
+#: ../camel/providers/local/camel-maildir-store.c:705
+#: ../camel/providers/local/camel-maildir-store.c:789
+#: ../camel/providers/local/camel-spool-store.c:393
 msgid "Inbox"
 msgstr "Hộp nhận"
 
-#: ../camel/camel-imapx-store.c:1070
+#: ../camel/camel-imapx-store.c:1084
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Đang lấy danh sách thư mục cho %s"
 
-#: ../camel/camel-imapx-store.c:1171
-#: ../camel/providers/nntp/camel-nntp-store.c:1749
+#: ../camel/camel-imapx-store.c:1188
+#: ../camel/providers/nntp/camel-nntp-store.c:1769
 #, c-format
 msgid "No such folder: %s"
 msgstr "Không có thư mục như vậy: %s"
 
-#: ../camel/camel-imapx-store.c:1384
-#: ../camel/providers/imap/camel-imap-store.c:2046
-#: ../camel/providers/imap/camel-imap-store.c:2484
+#: ../camel/camel-imapx-store.c:1404
+#: ../camel/providers/imap/camel-imap-store.c:2074
+#: ../camel/providers/imap/camel-imap-store.c:2517
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Tên thư mục « %s » không hợp lệ vì chứa ký tự « %c »."
 
-#: ../camel/camel-imapx-store.c:1395
-#: ../camel/providers/imap/camel-imap-store.c:2497
+#: ../camel/camel-imapx-store.c:1415
+#: ../camel/providers/imap/camel-imap-store.c:2530
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Thư mục cha lạ: %s"
 
-#: ../camel/camel-imapx-store.c:1405
-#: ../camel/providers/imap/camel-imap-store.c:2109
-#: ../camel/providers/imap/camel-imap-store.c:2548
+#: ../camel/camel-imapx-store.c:1425
+#: ../camel/providers/imap/camel-imap-store.c:2137
+#: ../camel/providers/imap/camel-imap-store.c:2581
 #, c-format
 msgid "The parent folder is not allowed to contain subfolders"
 msgstr "Thư mục mẹ không được phép chứa các thư mục con"
@@ -2487,12 +2487,12 @@ msgstr "Lỗi tra cứu máy phục vụ tên"
 msgid "Name lookup failed: %s"
 msgstr "Lỗi tra cứu máy phục vụ tên: %s"
 
-#: ../camel/camel-network-service.c:112
+#: ../camel/camel-network-service.c:114
 #, c-format
 msgid "Could not connect to %s: "
 msgstr "Không thể kết nối tới %s: "
 
-#: ../camel/camel-offline-folder.c:206
+#: ../camel/camel-offline-folder.c:210
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "Đang đồng bộ thư trong thư mục `%s' vào đĩa"
@@ -2525,7 +2525,7 @@ msgstr "Không thể tải %s: %s"
 msgid "Could not load %s: No initialization code in module."
 msgstr "Không thể tải %s: không có mã khởi động trong mô đun"
 
-#: ../camel/camel-provider.c:402 ../camel/camel-session.c:395
+#: ../camel/camel-provider.c:410 ../camel/camel-session.c:406
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "Không có bên nào cung cấp giao thức `%s'"
@@ -2594,34 +2594,34 @@ msgstr ""
 "Tùy chọn này sẽ kết nối tới máy phục vụ bằng mật khẩu an toàn DIGEST-MD5, "
 "nếu máy phục vụ có hỗ trợ."
 
-#: ../camel/camel-sasl-digest-md5.c:850
+#: ../camel/camel-sasl-digest-md5.c:853
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
 msgstr "Lệnh thách thức máy phục vụ quá dài (trên 2048 octet)."
 
-#: ../camel/camel-sasl-digest-md5.c:861
+#: ../camel/camel-sasl-digest-md5.c:864
 #, c-format
 msgid "Server challenge invalid\n"
 msgstr "Lệnh thách thức máy phục vụ không hợp lệ.\n"
 
-#: ../camel/camel-sasl-digest-md5.c:869
+#: ../camel/camel-sasl-digest-md5.c:872
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
 "Lệnh thách thức máy phục vụ chứa hiệu bài « Quality of Protection » (mức bảo "
 "vệ) không hợp lệ."
 
-#: ../camel/camel-sasl-digest-md5.c:902
+#: ../camel/camel-sasl-digest-md5.c:905
 #, c-format
 msgid "Server response did not contain authorization data"
 msgstr "Hồi đáp của máy phục vụ không chứa dữ liệu để xác thực."
 
-#: ../camel/camel-sasl-digest-md5.c:923
+#: ../camel/camel-sasl-digest-md5.c:926
 #, c-format
 msgid "Server response contained incomplete authorization data"
 msgstr "Hồi đáp của máy phục vụ chứa dữ liệu xác thực không hoàn chỉnh."
 
-#: ../camel/camel-sasl-digest-md5.c:936
+#: ../camel/camel-sasl-digest-md5.c:939
 #, c-format
 msgid "Server response does not match"
 msgstr "Hồi đáp của máy phục vụ không khớp."
@@ -2696,14 +2696,14 @@ msgstr ""
 msgid "The referenced credentials have expired."
 msgstr "Đã tham chiếu đến thông tin xác thực đã hết hạn."
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:337
-#: ../camel/camel-sasl-gssapi.c:381 ../camel/camel-sasl-gssapi.c:398
-#: ../camel/providers/smtp/camel-smtp-transport.c:563
+#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:340
+#: ../camel/camel-sasl-gssapi.c:384 ../camel/camel-sasl-gssapi.c:401
+#: ../camel/providers/smtp/camel-smtp-transport.c:569
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Trả lời xác thực sai từ máy phục vụ."
 
-#: ../camel/camel-sasl-gssapi.c:410
+#: ../camel/camel-sasl-gssapi.c:413
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Tầng bảo mật chưa được hỗ trợ."
@@ -2716,7 +2716,7 @@ msgstr "Đăng nhập"
 msgid "This option will connect to the server using a simple password."
 msgstr "Tùy chọn này sẽ kết nối tới máy phục vụ bằng mật khẩu đơn giản."
 
-#: ../camel/camel-sasl-login.c:107
+#: ../camel/camel-sasl-login.c:110
 #, c-format
 msgid "Unknown authentication state."
 msgstr "Trạng thái xác thực lạ."
@@ -2753,7 +2753,7 @@ msgstr "UID nguồn POP"
 msgid "POP Before SMTP authentication using an unknown transport"
 msgstr "Xác thực POP trước SMTP dùng truyền tải lạ"
 
-#: ../camel/camel-sasl-popb4smtp.c:108 ../camel/camel-sasl-popb4smtp.c:118
+#: ../camel/camel-sasl-popb4smtp.c:108 ../camel/camel-sasl-popb4smtp.c:117
 #, c-format
 msgid "POP Before SMTP authentication attempted with a %s service"
 msgstr "Đã thử xác thực POP trước SMTP với dịch vụ %s"
@@ -2763,17 +2763,23 @@ msgstr "Đã thử xác thực POP trước SMTP với dịch vụ %s"
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "Biên dịch biểu thức chính quy thất bại: %s: %s"
 
-#: ../camel/camel-session.c:404
+#: ../camel/camel-session.c:415
 #, c-format
 msgid "Invalid GType registered for protocol '%s'"
 msgstr ""
 
-#: ../camel/camel-session.c:498
+#: ../camel/camel-session.c:509
 #, c-format
 msgid "%s authentication failed"
 msgstr "Xác thực %s thất bại"
 
-#: ../camel/camel-session.c:1236
+#: ../camel/camel-session.c:645
+#, fuzzy
+#| msgid "Operation not supported"
+msgid "Forwarding messages is not supported"
+msgstr "Không hỗ trợ thao tác này"
+
+#: ../camel/camel-session.c:1360
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "%sHãy gõ mật khẩu POP cho %s trên máy %s"
@@ -3009,13 +3015,13 @@ msgid "Creating folder '%s'"
 msgstr "Đang tạo thư mục '%s'"
 
 #: ../camel/camel-store.c:2672 ../camel/camel-vee-store.c:410
-#: ../camel/providers/local/camel-maildir-store.c:300
+#: ../camel/providers/local/camel-maildir-store.c:306
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Không thể xoá thư mục: %s: thao tác không hợp lệ"
 
 #: ../camel/camel-store.c:2815 ../camel/camel-vee-store.c:460
-#: ../camel/providers/local/camel-maildir-store.c:768
+#: ../camel/providers/local/camel-maildir-store.c:788
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Không thể đổi tên thư mục: %s: thao tác không hợp lệ"
@@ -3037,6 +3043,18 @@ msgstr "Kết nối bị hủy bỏ"
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Không thể kết nối bằng lệnh \"%s\": %s"
+
+#: ../camel/camel-subscribable.c:386
+#, fuzzy, c-format
+#| msgid "Error subscribing to folder"
+msgid "Subscribing to folder '%s'"
+msgstr "Lỗi đă_ng ký thư mục"
+
+#: ../camel/camel-subscribable.c:518
+#, fuzzy, c-format
+#| msgid "Error subscribing to folder"
+msgid "Unsubscribing from folder '%s'"
+msgstr "Lỗi đă_ng ký thư mục"
 
 #: ../camel/camel-tcp-stream-raw.c:310
 #, c-format
@@ -3209,27 +3227,28 @@ msgstr ""
 msgid "Could not parse URL '%s'"
 msgstr "Không thể phân tích URL '%s'"
 
-#: ../camel/camel-vee-folder.c:485
-#, c-format
-msgid "Updating %s folder"
-msgstr "Đang cập nhật thư mục %s"
+#: ../camel/camel-vee-folder.c:494
+#, fuzzy, c-format
+#| msgid "Creating folder '%s'"
+msgid "Updating folder '%s'"
+msgstr "Đang tạo thư mục '%s'"
 
-#: ../camel/camel-vee-folder.c:842 ../camel/camel-vee-folder.c:952
+#: ../camel/camel-vee-folder.c:855 ../camel/camel-vee-folder.c:965
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Không thể sao chép hoặc di chuyển thư vào thư mục Ảo"
 
-#: ../camel/camel-vee-folder.c:875
+#: ../camel/camel-vee-folder.c:888
 #, c-format
 msgid "No such message %s in %s"
 msgstr "Không có thư %s trong %s"
 
-#: ../camel/camel-vee-folder.c:928
+#: ../camel/camel-vee-folder.c:941
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Lỗi lưu '%s': "
 
-#: ../camel/camel-vee-folder.c:1156
+#: ../camel/camel-vee-folder.c:1169
 msgid "Automatically _update on change in source folders"
 msgstr "Tự động _cập nhật khi thay đổi trong thư thư mục nguồn"
 
@@ -3273,12 +3292,12 @@ msgstr "Không có luồng kết xuất"
 msgid "No input stream"
 msgstr "Không có luồng nhập liệu"
 
-#: ../camel/providers/imap/camel-imap-command.c:389
+#: ../camel/providers/imap/camel-imap-command.c:392
 #, c-format
 msgid "Server unexpectedly disconnected: %s"
 msgstr "Máy chủ đã ngắt kết nối bất ngờ: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:422
+#: ../camel/providers/imap/camel-imap-command.c:425
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s in folder %s:\n"
@@ -3287,7 +3306,7 @@ msgstr ""
 "Báo động từ máy phục vụ IMAP %s@%s trong thư mục %s:\n"
 "%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:426
+#: ../camel/providers/imap/camel-imap-command.c:429
 #, c-format
 msgid ""
 "Alert from IMAP server %s@%s:\n"
@@ -3296,67 +3315,78 @@ msgstr ""
 "Báo động từ máy phục vụ IMAP %s@%s:\n"
 "%s"
 
-#: ../camel/providers/imap/camel-imap-command.c:508
+#: ../camel/providers/imap/camel-imap-command.c:511
 #, c-format
 msgid "Unexpected response from IMAP server: %s"
 msgstr "Tính hiệu trả lời không mong đợi từ máy phục vụ IMAP: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:520
+#: ../camel/providers/imap/camel-imap-command.c:523
 #, c-format
 msgid "IMAP command failed: %s"
 msgstr "Lỗi lệnh IMAP: %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:603
+#: ../camel/providers/imap/camel-imap-command.c:606
 #, c-format
 msgid "Server response ended too soon."
 msgstr "Tính hiệu trả lời của máy phục vụ kết thúc quá sớm."
 
-#: ../camel/providers/imap/camel-imap-command.c:818
+#: ../camel/providers/imap/camel-imap-command.c:821
 #, c-format
 msgid "IMAP server response did not contain %s information"
 msgstr "Tín hiệu trả lời của máy phục vụ IMAP không chứa thông tin %s"
 
-#: ../camel/providers/imap/camel-imap-command.c:856
+#: ../camel/providers/imap/camel-imap-command.c:859
 #, c-format
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Tín hiệu trả lời «Đồng ý» không mong đợi từ máy phục vụ IMAP: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:348
+#: ../camel/providers/imap/camel-imap-folder.c:354
 msgid "Always check for _new mail in this folder"
 msgstr "Luôn luôn kiểm tra tìm thư _mới trong thư mục này"
 
-#: ../camel/providers/imap/camel-imap-folder.c:439
+#: ../camel/providers/imap/camel-imap-folder.c:445
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "Không thể tạo thư mục %s: %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:460
+#: ../camel/providers/imap/camel-imap-folder.c:466
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Không thể tải tóm tắt cho %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3436
+#: ../camel/providers/imap/camel-imap-folder.c:1135
+#, c-format
+msgid "Scanning for changed messages in %s"
+msgstr "Đang quét tìm các thư thay đổi trong %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:3480
 msgid "Unable to retrieve message: "
 msgstr "Không thể lấy thư: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3547
-#: ../camel/providers/imap/camel-imap-folder.c:4417
+#: ../camel/providers/imap/camel-imap-folder.c:3594
+#: ../camel/providers/imap/camel-imap-folder.c:4482
 #: ../camel/providers/nntp/camel-nntp-folder.c:493
 #, c-format
 msgid "This message is not currently available"
 msgstr "Thư này hiện thời chưa sẵn sàng"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4216
+#: ../camel/providers/imap/camel-imap-folder.c:4058
+#: ../camel/providers/imap/camel-imap-folder.c:4138
+#, c-format
+msgid "Fetching summary information for new messages in %s"
+msgstr "Đang lấy thông tin tóm tắt cho các thư mới trong %s"
+
+#: ../camel/providers/imap/camel-imap-folder.c:4269
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Tín hiệu trả lời chưa hoàn tắt: chưa nhận thông tin cho thư %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4226
+#: ../camel/providers/imap/camel-imap-folder.c:4279
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Tín hiệu trả lời chưa hoàn tắt: chưa nhận UID cho thư %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4454
+#: ../camel/providers/imap/camel-imap-folder.c:4519
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Không thể tìm thấy phần thân thư trong tín hiệu trả lời FETCH (lấy)"
@@ -3471,26 +3501,25 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Để đọc và lưu thư trên máy phục vụ IMAP."
 
-#: ../camel/providers/imap/camel-imap-store.c:2158
-#: ../camel/providers/local/camel-maildir-store.c:268
+#: ../camel/providers/imap/camel-imap-store.c:2186
+#: ../camel/providers/local/camel-maildir-store.c:274
 #: ../camel/providers/local/camel-mbox-store.c:421
-#: ../camel/providers/local/camel-mh-store.c:558
+#: ../camel/providers/local/camel-mh-store.c:564
 #, c-format
 msgid "Cannot create folder '%s': folder exists."
 msgstr "Không thể tạo thư mục « %s »: thư mục đã có."
 
-#: ../camel/providers/imap/camel-imap-store.c:2921
+#: ../camel/providers/imap/camel-imap-store.c:2961
 #, c-format
-#| msgid "Retrieving folder list for %s"
 msgid "Retrieving list of folders at '%s'"
 msgstr "Đang lấy danh sách thư mục tại '%s'"
 
-#: ../camel/providers/imap/camel-imap-store.c:3263
+#: ../camel/providers/imap/camel-imap-store.c:3309
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "Máy chủ ngắt kết nối bất ngờ"
 
-#: ../camel/providers/imap/camel-imap-store.c:3266
+#: ../camel/providers/imap/camel-imap-store.c:3312
 msgid "Server unexpectedly disconnected: "
 msgstr "Máy chủ đã ngắt kết nối bất ngờ: "
 
@@ -3514,27 +3543,27 @@ msgstr "Cổng IMAP mặc định"
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/local/camel-local-folder.c:191
+#: ../camel/providers/local/camel-local-folder.c:194
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:201
-#: ../camel/providers/local/camel-local-folder.c:210
+#: ../camel/providers/local/camel-local-folder.c:204
+#: ../camel/providers/local/camel-local-folder.c:213
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "hộp thư: %s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:219
+#: ../camel/providers/local/camel-local-folder.c:222
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:495
+#: ../camel/providers/local/camel-local-folder.c:499
 msgid "_Index message body data"
 msgstr "Đánh _chỉ mục nội dung thư"
 
-#: ../camel/providers/local/camel-local-folder.c:726
+#: ../camel/providers/local/camel-local-folder.c:730
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3607,51 +3636,51 @@ msgstr "Thư mục hàng đợi mbox UNIX chuẩn"
 msgid "Could not rename folder %s to %s: %s"
 msgstr "Không thể đổi tên thư mục %s thành %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:178
+#: ../camel/providers/local/camel-local-store.c:180
 #, c-format
 msgid "Local mail file %s"
 msgstr "Tập tin thư cục bộ %s"
 
-#: ../camel/providers/local/camel-local-store.c:218
-#: ../camel/providers/local/camel-local-store.c:375
-#: ../camel/providers/local/camel-maildir-store.c:101
-#: ../camel/providers/local/camel-mbox-store.c:555
-#: ../camel/providers/local/camel-spool-store.c:86
+#: ../camel/providers/local/camel-local-store.c:223
+#: ../camel/providers/local/camel-local-store.c:383
+#: ../camel/providers/local/camel-maildir-store.c:104
+#: ../camel/providers/local/camel-mbox-store.c:558
+#: ../camel/providers/local/camel-spool-store.c:89
 #, c-format
 msgid "Store root %s is not an absolute path"
 msgstr "Gốc lưu %s không phải là đường dẫn tuyệt đối"
 
-#: ../camel/providers/local/camel-local-store.c:227
+#: ../camel/providers/local/camel-local-store.c:232
 #, c-format
 msgid "Store root %s is not a regular directory"
 msgstr "Gốc lưu %s không phải là thư mục bình thường"
 
-#: ../camel/providers/local/camel-local-store.c:239
-#: ../camel/providers/local/camel-local-store.c:249
-#: ../camel/providers/local/camel-local-store.c:388
-#: ../camel/providers/local/camel-maildir-store.c:134
+#: ../camel/providers/local/camel-local-store.c:244
+#: ../camel/providers/local/camel-local-store.c:254
+#: ../camel/providers/local/camel-local-store.c:396
+#: ../camel/providers/local/camel-maildir-store.c:137
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "Không thể lấy thư mục: %s: %s"
 
-#: ../camel/providers/local/camel-local-store.c:286
+#: ../camel/providers/local/camel-local-store.c:291
 #, c-format
 msgid "Local stores do not have an inbox"
 msgstr "Bộ lưu trữ cục bộ chưa có thư mục Hộp nhận"
 
-#: ../camel/providers/local/camel-local-store.c:445
-#: ../camel/providers/local/camel-mbox-store.c:722
+#: ../camel/providers/local/camel-local-store.c:456
+#: ../camel/providers/local/camel-mbox-store.c:725
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
 msgstr "Không thể xoá tập tin chỉ mục thư mục « %s »: %s"
 
-#: ../camel/providers/local/camel-local-store.c:473
-#: ../camel/providers/local/camel-mbox-store.c:752
+#: ../camel/providers/local/camel-local-store.c:484
+#: ../camel/providers/local/camel-mbox-store.c:755
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
 msgstr "Không thể xoá siêu tập tin của thư mục « %s »: %s"
 
-#: ../camel/providers/local/camel-local-store.c:581
+#: ../camel/providers/local/camel-local-store.c:595
 #, c-format
 msgid "Could not rename '%s': %s"
 msgstr "Không thể đổi tên '%s': %s"
@@ -3662,90 +3691,90 @@ msgid "Unable to add message to summary: unknown reason"
 msgstr "Không thể thêm thư vào bảng tóm tắt: không biết sao"
 
 #: ../camel/providers/local/camel-maildir-folder.c:100
-#: ../camel/providers/local/camel-maildir-folder.c:336
+#: ../camel/providers/local/camel-maildir-folder.c:335
 #: ../camel/providers/local/camel-mbox-folder.c:117
 #: ../camel/providers/local/camel-mbox-folder.c:329
-#: ../camel/providers/local/camel-mh-folder.c:160
+#: ../camel/providers/local/camel-mh-folder.c:159
 msgid "No such message"
 msgstr "Không có thư như vậy"
 
-#: ../camel/providers/local/camel-maildir-folder.c:226
+#: ../camel/providers/local/camel-maildir-folder.c:225
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr "Không thể nối thư vào cuối thư mục maildir: %s: "
 
-#: ../camel/providers/local/camel-maildir-folder.c:274
-#: ../camel/providers/local/camel-maildir-folder.c:284
+#: ../camel/providers/local/camel-maildir-folder.c:273
+#: ../camel/providers/local/camel-maildir-folder.c:283
 #: ../camel/providers/local/camel-mbox-folder.c:390
-#: ../camel/providers/local/camel-mh-folder.c:172
-#: ../camel/providers/local/camel-mh-folder.c:182
+#: ../camel/providers/local/camel-mh-folder.c:171
+#: ../camel/providers/local/camel-mh-folder.c:181
 #, c-format
 msgid "Cannot get message %s from folder %s: "
 msgstr "Không thể lấy thư %s từ thư mục %s: "
 
-#: ../camel/providers/local/camel-maildir-folder.c:354
+#: ../camel/providers/local/camel-maildir-folder.c:353
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "Không thể truyền thư đến thư mục đích: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:109
+#: ../camel/providers/local/camel-maildir-store.c:112
 #, c-format
 msgid "Cannot create folder: %s: Folder name cannot contain a dot"
 msgstr "Không thể tạo thư mục: %s: tên thư mục không được chứa dấu chấm"
 
-#: ../camel/providers/local/camel-maildir-store.c:119
-#: ../camel/providers/local/camel-maildir-store.c:786
+#: ../camel/providers/local/camel-maildir-store.c:122
+#: ../camel/providers/local/camel-maildir-store.c:806
 #, c-format
 msgid "Folder %s already exists"
 msgstr "Thư mục %s đã có"
 
-#: ../camel/providers/local/camel-maildir-store.c:215
-#: ../camel/providers/local/camel-maildir-store.c:246
+#: ../camel/providers/local/camel-maildir-store.c:221
+#: ../camel/providers/local/camel-maildir-store.c:252
 #: ../camel/providers/local/camel-mbox-store.c:389
 #: ../camel/providers/local/camel-mbox-store.c:403
 #, c-format
 msgid "Cannot create folder '%s': %s"
 msgstr "Không thể tạo thư mục « %s »: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:230
+#: ../camel/providers/local/camel-maildir-store.c:236
 #: ../camel/providers/local/camel-mbox-store.c:355
-#: ../camel/providers/local/camel-mh-store.c:516
+#: ../camel/providers/local/camel-mh-store.c:522
 #, c-format
 msgid "Cannot get folder '%s': %s"
 msgstr "Không thể lấy thư mục « %s »: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:236
+#: ../camel/providers/local/camel-maildir-store.c:242
 #: ../camel/providers/local/camel-mbox-store.c:365
-#: ../camel/providers/local/camel-mh-store.c:525
+#: ../camel/providers/local/camel-mh-store.c:531
 #, c-format
 msgid "Cannot get folder '%s': folder does not exist."
 msgstr "Không thể lấy thư mục « %s »: thư mục không tồn tại."
 
-#: ../camel/providers/local/camel-maildir-store.c:263
+#: ../camel/providers/local/camel-maildir-store.c:269
 #, c-format
 msgid "Cannot get folder '%s': not a maildir directory."
 msgstr "Không thể lấy thư mục « %s »: không phải thư mục maildir."
 
-#: ../camel/providers/local/camel-maildir-store.c:329
-#: ../camel/providers/local/camel-maildir-store.c:369
-#: ../camel/providers/local/camel-mh-store.c:670
+#: ../camel/providers/local/camel-maildir-store.c:338
+#: ../camel/providers/local/camel-maildir-store.c:378
+#: ../camel/providers/local/camel-mh-store.c:682
 #, c-format
 msgid "Could not delete folder '%s': %s"
 msgstr "Không thể xoá thư mục « %s »: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:331
+#: ../camel/providers/local/camel-maildir-store.c:340
 msgid "not a maildir directory"
 msgstr "không phải là thư mục dạng Maildir"
 
-#: ../camel/providers/local/camel-maildir-store.c:569
-#: ../camel/providers/local/camel-maildir-store.c:974
-#: ../camel/providers/local/camel-spool-store.c:209
-#: ../camel/providers/local/camel-spool-store.c:228
+#: ../camel/providers/local/camel-maildir-store.c:589
+#: ../camel/providers/local/camel-maildir-store.c:1003
+#: ../camel/providers/local/camel-spool-store.c:212
+#: ../camel/providers/local/camel-spool-store.c:231
 #, c-format
 msgid "Could not scan folder '%s': %s"
 msgstr "Không thể quét thư mục « %s »: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:777
+#: ../camel/providers/local/camel-maildir-store.c:797
 #, c-format
 msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
 msgstr "Không thể đổi tên thư mục: %s: tên thư mục không được chứa dấu chấm "
@@ -3766,9 +3795,9 @@ msgstr "Đang kiểm tra tìm thư mới"
 
 #: ../camel/providers/local/camel-maildir-summary.c:746
 #: ../camel/providers/local/camel-mbox-summary.c:418
-#: ../camel/providers/local/camel-mbox-summary.c:649
-#: ../camel/providers/local/camel-mbox-summary.c:793
-#: ../camel/providers/local/camel-spool-summary.c:130
+#: ../camel/providers/local/camel-mbox-summary.c:650
+#: ../camel/providers/local/camel-mbox-summary.c:794
+#: ../camel/providers/local/camel-spool-summary.c:132
 msgid "Storing folder"
 msgstr "Đang lưu thư mục"
 
@@ -3793,7 +3822,7 @@ msgid "Cannot create folder lock on %s: %s"
 msgstr "Không thể tạo khóa thư mục trên %s: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:377
-#: ../camel/providers/local/camel-mbox-store.c:563
+#: ../camel/providers/local/camel-mbox-store.c:566
 #, c-format
 msgid "Cannot create a folder by this name."
 msgstr "Không thể tạo thư mục với tên đó"
@@ -3803,23 +3832,23 @@ msgstr "Không thể tạo thư mục với tên đó"
 msgid "Cannot get folder '%s': not a regular file."
 msgstr "Không thể lấy thư mục « %s »: không phải là tập tin bình thường."
 
-#: ../camel/providers/local/camel-mbox-store.c:579
+#: ../camel/providers/local/camel-mbox-store.c:582
 #, c-format
 msgid "Cannot create directory '%s': %s."
 msgstr "Không thể tạo thư mục « %s »: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:591
+#: ../camel/providers/local/camel-mbox-store.c:594
 #, c-format
 msgid "Cannot create folder: %s: %s"
 msgstr "Không thể tạo thư mục: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:593
+#: ../camel/providers/local/camel-mbox-store.c:596
 msgid "Folder already exists"
 msgstr "Thư mục đã có"
 
-#: ../camel/providers/local/camel-mbox-store.c:633
-#: ../camel/providers/local/camel-mbox-store.c:646
-#: ../camel/providers/local/camel-mbox-store.c:675
+#: ../camel/providers/local/camel-mbox-store.c:636
+#: ../camel/providers/local/camel-mbox-store.c:649
+#: ../camel/providers/local/camel-mbox-store.c:678
 #, c-format
 msgid ""
 "Could not delete folder '%s':\n"
@@ -3828,33 +3857,33 @@ msgstr ""
 "Không thể xoá thư mục « %s »:\n"
 "%s"
 
-#: ../camel/providers/local/camel-mbox-store.c:656
+#: ../camel/providers/local/camel-mbox-store.c:659
 #, c-format
 msgid "'%s' is not a regular file."
 msgstr "« %s » không phải là tập tin bình thường."
 
-#: ../camel/providers/local/camel-mbox-store.c:665
+#: ../camel/providers/local/camel-mbox-store.c:668
 #, c-format
 msgid "Folder '%s' is not empty. Not deleted."
 msgstr "Thư mục « %s » không rỗng nên chưa xoá."
 
-#: ../camel/providers/local/camel-mbox-store.c:692
-#: ../camel/providers/local/camel-mbox-store.c:707
+#: ../camel/providers/local/camel-mbox-store.c:695
+#: ../camel/providers/local/camel-mbox-store.c:710
 #, c-format
 msgid "Could not delete folder summary file '%s': %s"
 msgstr "Không thể xoá tập tin tóm tắt thư mục « %s »: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:789
+#: ../camel/providers/local/camel-mbox-store.c:792
 #, c-format
 msgid "The new folder name is illegal."
 msgstr "Tên thư mục mới không được phép"
 
-#: ../camel/providers/local/camel-mbox-store.c:805
+#: ../camel/providers/local/camel-mbox-store.c:808
 #, c-format
 msgid "Could not rename '%s': '%s': %s"
 msgstr "Không thể đổi tên « %s »: « %s »: %s"
 
-#: ../camel/providers/local/camel-mbox-store.c:888
+#: ../camel/providers/local/camel-mbox-store.c:891
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Không thể đổi tên « %s » thành %s: %s"
@@ -3869,89 +3898,89 @@ msgstr "Không thể mở thư mục: %s: %s"
 msgid "Fatal mail parser error near position %s in folder %s"
 msgstr "Lỗi nghiêm trọng khi phân tích thư gần vị trí %s trong thư mục %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:574
+#: ../camel/providers/local/camel-mbox-summary.c:575
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Không thể kiểm tra thư mục: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:662
-#: ../camel/providers/local/camel-mbox-summary.c:802
-#: ../camel/providers/local/camel-spool-summary.c:137
+#: ../camel/providers/local/camel-mbox-summary.c:663
+#: ../camel/providers/local/camel-mbox-summary.c:803
+#: ../camel/providers/local/camel-spool-summary.c:139
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Không thể mở tập tin: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:676
-#: ../camel/providers/local/camel-spool-summary.c:152
+#: ../camel/providers/local/camel-mbox-summary.c:677
+#: ../camel/providers/local/camel-spool-summary.c:154
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Không thể mở hộp thư tạm: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:693
-#: ../camel/providers/local/camel-mbox-summary.c:918
+#: ../camel/providers/local/camel-mbox-summary.c:694
+#: ../camel/providers/local/camel-mbox-summary.c:919
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Không thể đóng thư mục nguồn %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:704
+#: ../camel/providers/local/camel-mbox-summary.c:705
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Không thể đóng thư mục tạm: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:721
+#: ../camel/providers/local/camel-mbox-summary.c:722
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Không thể đổi tên thư mục: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:816
-#: ../camel/providers/local/camel-mbox-summary.c:1084
+#: ../camel/providers/local/camel-mbox-summary.c:817
+#: ../camel/providers/local/camel-mbox-summary.c:1085
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Không thể lưu thư mục: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:855
-#: ../camel/providers/local/camel-mbox-summary.c:1115
+#: ../camel/providers/local/camel-mbox-summary.c:856
+#: ../camel/providers/local/camel-mbox-summary.c:1116
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
 "it.)"
 msgstr "Tập tin MBOX bị hư, vui lòng sửa lại. (Cần dòng From nhưng không có)"
 
-#: ../camel/providers/local/camel-mbox-summary.c:864
-#: ../camel/providers/local/camel-mbox-summary.c:1124
+#: ../camel/providers/local/camel-mbox-summary.c:865
+#: ../camel/providers/local/camel-mbox-summary.c:1125
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr ""
 "Bản tóm tắt và thư mục không tương ứng với nhau, ngay cả sau khi đồng bộ"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1029
-#: ../camel/providers/local/camel-spool-summary.c:345
+#: ../camel/providers/local/camel-mbox-summary.c:1030
+#: ../camel/providers/local/camel-spool-summary.c:347
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Lỗi không rõ : %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1182
-#: ../camel/providers/local/camel-mbox-summary.c:1212
+#: ../camel/providers/local/camel-mbox-summary.c:1183
+#: ../camel/providers/local/camel-mbox-summary.c:1213
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Lỗi ghi vào hộp thư tạm: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1201
+#: ../camel/providers/local/camel-mbox-summary.c:1202
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Lỗi ghi vào hộp thư tạm: %s: %s"
 
-#: ../camel/providers/local/camel-mh-folder.c:119
+#: ../camel/providers/local/camel-mh-folder.c:118
 #, c-format
 msgid "Cannot append message to mh folder: %s: "
 msgstr "Không thể nối thư vào đuôi thư mục dạng mh: %s: "
 
-#: ../camel/providers/local/camel-mh-store.c:535
+#: ../camel/providers/local/camel-mh-store.c:541
 #, c-format
 msgid "Could not create folder '%s': %s"
 msgstr "Không thể tạo thư mục '%s': %s"
 
-#: ../camel/providers/local/camel-mh-store.c:551
+#: ../camel/providers/local/camel-mh-store.c:557
 #, c-format
 msgid "Cannot get folder '%s': not a directory."
 msgstr "Không thể lấy thư mục « %s »: không phải là thư mục."
@@ -3961,36 +3990,36 @@ msgstr "Không thể lấy thư mục « %s »: không phải là thư mục."
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "Không thể mở đường dẫn thư mục dạng MH: %s: %s"
 
-#: ../camel/providers/local/camel-spool-store.c:94
+#: ../camel/providers/local/camel-spool-store.c:97
 #, c-format
 msgid "Spool '%s' cannot be opened: %s"
 msgstr "Không thể mở hàng đợi ghi « %s »: %s"
 
-#: ../camel/providers/local/camel-spool-store.c:108
+#: ../camel/providers/local/camel-spool-store.c:111
 #, c-format
 msgid "Spool '%s' is not a regular file or directory"
 msgstr "Hàng đợi ghi « %s » không phải là tập tin hay thư mục bình thường"
 
-#: ../camel/providers/local/camel-spool-store.c:416
+#: ../camel/providers/local/camel-spool-store.c:425
 #, c-format
 msgid "Spool mail file %s"
 msgstr "Tập tin thư tín hàng đợi ghi %s"
 
-#: ../camel/providers/local/camel-spool-store.c:420
+#: ../camel/providers/local/camel-spool-store.c:429
 #, c-format
 msgid "Spool folder tree %s"
 msgstr "Cây thư mục hàng đợi ghi %s"
 
-#: ../camel/providers/local/camel-spool-store.c:423
+#: ../camel/providers/local/camel-spool-store.c:432
 msgid "Invalid spool"
 msgstr ""
 
-#: ../camel/providers/local/camel-spool-store.c:480
+#: ../camel/providers/local/camel-spool-store.c:492
 #, c-format
 msgid "Folder '%s/%s' does not exist."
 msgstr "Thư mục « %s/%s » không tồn tại"
 
-#: ../camel/providers/local/camel-spool-store.c:493
+#: ../camel/providers/local/camel-spool-store.c:505
 #, c-format
 msgid ""
 "Could not open folder '%s':\n"
@@ -3999,12 +4028,12 @@ msgstr ""
 "Không thể mở thư mục « %s »:\n"
 "%s"
 
-#: ../camel/providers/local/camel-spool-store.c:499
+#: ../camel/providers/local/camel-spool-store.c:511
 #, c-format
 msgid "Folder '%s' does not exist."
 msgstr "Thư mục « %s » không tồn tại."
 
-#: ../camel/providers/local/camel-spool-store.c:507
+#: ../camel/providers/local/camel-spool-store.c:519
 #, c-format
 msgid ""
 "Could not create folder '%s':\n"
@@ -4013,41 +4042,41 @@ msgstr ""
 "Không thể tạo thư mục « %s »\n"
 "%s"
 
-#: ../camel/providers/local/camel-spool-store.c:520
+#: ../camel/providers/local/camel-spool-store.c:532
 #, c-format
 msgid "'%s' is not a mailbox file."
 msgstr "« %s » không phải là tập tin hộp thư."
 
-#: ../camel/providers/local/camel-spool-store.c:584
+#: ../camel/providers/local/camel-spool-store.c:596
 #, c-format
 msgid "Store does not support an INBOX"
 msgstr "Store không hỗ trợ hộp Thư Đến"
 
-#: ../camel/providers/local/camel-spool-store.c:603
+#: ../camel/providers/local/camel-spool-store.c:615
 #, c-format
 msgid "Spool folders cannot be deleted"
 msgstr "Không thể xoá thư mục hàng đợi ghi"
 
-#: ../camel/providers/local/camel-spool-store.c:618
+#: ../camel/providers/local/camel-spool-store.c:630
 #, c-format
 msgid "Spool folders cannot be renamed"
 msgstr "Không thể thay đổi tên của thư mục hàng đợi ghi"
 
-#: ../camel/providers/local/camel-spool-summary.c:168
-#: ../camel/providers/local/camel-spool-summary.c:180
-#: ../camel/providers/local/camel-spool-summary.c:192
+#: ../camel/providers/local/camel-spool-summary.c:170
+#: ../camel/providers/local/camel-spool-summary.c:182
+#: ../camel/providers/local/camel-spool-summary.c:194
 #, c-format
 msgid "Could not synchronize temporary folder %s: %s"
 msgstr "Không thể đồng bộ thư mục tạm %s: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:210
+#: ../camel/providers/local/camel-spool-summary.c:212
 #, c-format
 msgid "Could not synchronize spool folder %s: %s"
 msgstr "Không thể đồng bộ thư mục hàng đợi ghi: %s: %s"
 
-#: ../camel/providers/local/camel-spool-summary.c:242
-#: ../camel/providers/local/camel-spool-summary.c:261
-#: ../camel/providers/local/camel-spool-summary.c:274
+#: ../camel/providers/local/camel-spool-summary.c:244
+#: ../camel/providers/local/camel-spool-summary.c:263
+#: ../camel/providers/local/camel-spool-summary.c:276
 #, c-format
 msgid ""
 "Could not synchronize spool folder %s: %s\n"
@@ -4065,17 +4094,17 @@ msgstr "Lỗi nội bộ : UID có định dạng không hợp lệ: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:328
 #: ../camel/providers/nntp/camel-nntp-folder.c:332
-#: ../camel/providers/pop3/camel-pop3-folder.c:611
-#: ../camel/providers/pop3/camel-pop3-folder.c:995
+#: ../camel/providers/pop3/camel-pop3-folder.c:610
+#: ../camel/providers/pop3/camel-pop3-folder.c:1005
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Không thể lấy thư %s: %s"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:339
 #: ../camel/providers/nntp/camel-nntp-folder.c:504
-#: ../camel/providers/pop3/camel-pop3-folder.c:549
-#: ../camel/providers/pop3/camel-pop3-folder.c:601
-#: ../camel/providers/pop3/camel-pop3-folder.c:620
+#: ../camel/providers/pop3/camel-pop3-folder.c:548
+#: ../camel/providers/pop3/camel-pop3-folder.c:600
+#: ../camel/providers/pop3/camel-pop3-folder.c:619
 #, c-format
 msgid "Cannot get message %s: "
 msgstr "Không thể lấy thư %s: "
@@ -4134,22 +4163,22 @@ msgstr ""
 "Tùy chọn này sẽ xác thực với máy phục vụ NNTP bằng mật khẩu thô (không mã "
 "hóa)"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:283
+#: ../camel/providers/nntp/camel-nntp-store.c:286
 #, c-format
 msgid "Could not read greeting from %s: "
 msgstr "Không thể đọc lời chào mừng từ %s: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:295
+#: ../camel/providers/nntp/camel-nntp-store.c:298
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "Máy phục vụ NNTP %s trả về mã lỗi %d: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:458
+#: ../camel/providers/nntp/camel-nntp-store.c:463
 #, c-format
 msgid "USENET News via %s"
 msgstr "Tin tức USENET thông qua %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1044
+#: ../camel/providers/nntp/camel-nntp-store.c:1058
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4160,22 +4189,22 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1136
+#: ../camel/providers/nntp/camel-nntp-store.c:1150
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Bạn không thể tạo thư mục trong kho tin tức: hãy đăng ký thay vào đó."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1152
+#: ../camel/providers/nntp/camel-nntp-store.c:1166
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Không thể đổi tên thư mục trong kho tin tức."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1175
+#: ../camel/providers/nntp/camel-nntp-store.c:1189
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "Không thể loại bỏ thư mục trong kho tin tức: hãy đăng ký thay vào đó."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1371
+#: ../camel/providers/nntp/camel-nntp-store.c:1388
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4186,7 +4215,7 @@ msgstr ""
 "\n"
 "Không có nhóm tin như vậy. Mục được chọn có lẽ là thư mục mẹ."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1416
+#: ../camel/providers/nntp/camel-nntp-store.c:1436
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4197,64 +4226,64 @@ msgstr ""
 "\n"
 "Không có nhóm tin như vậy!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1606
+#: ../camel/providers/nntp/camel-nntp-store.c:1626
 msgid "NNTP Command failed: "
 msgstr "Lỗi lệnh NNTP: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1691
+#: ../camel/providers/nntp/camel-nntp-store.c:1711
 #, c-format
 msgid "Not connected."
 msgstr "Chưa kết nối."
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:195
-#: ../camel/providers/nntp/camel-nntp-summary.c:322
+#: ../camel/providers/nntp/camel-nntp-summary.c:198
+#: ../camel/providers/nntp/camel-nntp-summary.c:328
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: Đang quét tìm thư mới"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:213
+#: ../camel/providers/nntp/camel-nntp-summary.c:216
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "Tín hiệu trả lời không mong đợi từ xover: %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:340
+#: ../camel/providers/nntp/camel-nntp-summary.c:346
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "Tín hiệu trả lời không mong đợi từ đầu (head): %s"
 
-#: ../camel/providers/nntp/camel-nntp-summary.c:387
+#: ../camel/providers/nntp/camel-nntp-summary.c:393
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Thao tác thất bại: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:447
-#: ../camel/providers/pop3/camel-pop3-folder.c:517
+#: ../camel/providers/pop3/camel-pop3-folder.c:443
+#: ../camel/providers/pop3/camel-pop3-folder.c:516
 #, c-format
 msgid "No message with UID %s"
 msgstr "Không có thư vời UID %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:533
+#: ../camel/providers/pop3/camel-pop3-folder.c:532
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "Đang lấy thư POP %d"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:612
+#: ../camel/providers/pop3/camel-pop3-folder.c:611
 msgid "Unknown reason"
 msgstr "Không biết sao"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:660
+#: ../camel/providers/pop3/camel-pop3-folder.c:659
 msgid "Retrieving POP summary"
 msgstr "Đang lấy tóm tắt POP"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:711
+#: ../camel/providers/pop3/camel-pop3-folder.c:710
 msgid "Cannot get POP summary: "
 msgstr "Không thể lấy bản tóm tắt POP: "
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:823
+#: ../camel/providers/pop3/camel-pop3-folder.c:829
 msgid "Expunging old messages"
 msgstr "Đang xóa hẳn các thư cũ"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:843
+#: ../camel/providers/pop3/camel-pop3-folder.c:849
 msgid "Expunging deleted messages"
 msgstr "Đang xóa hẳn các thư bị xóa bỏ"
 
@@ -4319,52 +4348,52 @@ msgstr ""
 msgid ": "
 msgstr ": "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:136
+#: ../camel/providers/pop3/camel-pop3-store.c:139
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "Lỗi đọc lời chào mừng hợp lệ từ máy phục vụ POP %s."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:153
+#: ../camel/providers/pop3/camel-pop3-store.c:154
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr "Lỗi kết nối tới máy phục vụ POP %s trong chế độ an toàn: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:154
+#: ../camel/providers/pop3/camel-pop3-store.c:155
 msgid "STLS not supported by server"
 msgstr "Máy phục vụ không hỗ trợ STLS"
 
 #. Translators: Last %s is an optional explanation beginning with ": " separator
-#: ../camel/providers/pop3/camel-pop3-store.c:172
+#: ../camel/providers/pop3/camel-pop3-store.c:173
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
 msgstr "Lỗi kết nối tới máy phục vụ POP %s trong chế độ an toàn%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:185
+#: ../camel/providers/pop3/camel-pop3-store.c:186
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: "
 msgstr "Lỗi kết nối tới máy phục vụ POP %s trong chế độ an toàn: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:288
+#: ../camel/providers/pop3/camel-pop3-store.c:292
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr "Không thể đăng nhập vào máy phục vụ POP %s: lỗi giao thức SASL"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:310
+#: ../camel/providers/pop3/camel-pop3-store.c:314
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
 msgstr "Không thể xác thực tại máy phục vụ POP %s: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:360
+#: ../camel/providers/pop3/camel-pop3-store.c:366
 #, c-format
 msgid "POP3 server %s"
 msgstr "Máy phục vụ POP3 %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:363
+#: ../camel/providers/pop3/camel-pop3-store.c:369
 #, c-format
 msgid "POP3 server for %s on %s"
 msgstr "Máy chủ IMAP cho %s trên %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:527
+#: ../camel/providers/pop3/camel-pop3-store.c:539
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4374,7 +4403,7 @@ msgstr ""
 "hợp lệ: có thể bị tấn công kiểu mạo nhận là người dùng hợp lệ. Hãy liên lạc "
 "với quản trị."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:579
+#: ../camel/providers/pop3/camel-pop3-store.c:591
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4385,7 +4414,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../camel/providers/pop3/camel-pop3-store.c:594
+#: ../camel/providers/pop3/camel-pop3-store.c:606
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4394,17 +4423,17 @@ msgstr ""
 "Không thể kết nối tới máy phục vụ POP %s.\n"
 "Lỗi gửi tên người dùng%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:652
+#: ../camel/providers/pop3/camel-pop3-store.c:666
 #, c-format
 msgid "Could not connect to POP server %s"
 msgstr "Không thể kết nối tới máy phục vụ POP %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:680
+#: ../camel/providers/pop3/camel-pop3-store.c:694
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Không có thư mục như vậy « %s »."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:697
+#: ../camel/providers/pop3/camel-pop3-store.c:711
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "Kho POP3 không hỗ trợ thư mục phân cấp"
@@ -4484,223 +4513,222 @@ msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
 "Để gửi thư bằng cách kết nối tới thiết bị trung tâm mạng thư từ xa dùng SMTP."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:150
-#: ../camel/providers/smtp/camel-smtp-transport.c:158
+#: ../camel/providers/smtp/camel-smtp-transport.c:152
+#: ../camel/providers/smtp/camel-smtp-transport.c:160
 msgid "Welcome response error: "
 msgstr "Lỗi hồi đáp chào mừng: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:196
+#: ../camel/providers/smtp/camel-smtp-transport.c:198
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "Không thể kết nối tới máy phục vụ SMTP %s trong chế độ bảo mật: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:205
-#: ../camel/providers/smtp/camel-smtp-transport.c:218
-#: ../camel/providers/smtp/camel-smtp-transport.c:225
+#: ../camel/providers/smtp/camel-smtp-transport.c:207
+#: ../camel/providers/smtp/camel-smtp-transport.c:220
+#: ../camel/providers/smtp/camel-smtp-transport.c:227
 msgid "STARTTLS command failed: "
 msgstr "Lỗi lệnh STARTTLS: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:236
+#: ../camel/providers/smtp/camel-smtp-transport.c:238
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "Không thể kết nối tới máy phục vụ SMTP %s trong chế độ bảo mật: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:294
+#: ../camel/providers/smtp/camel-smtp-transport.c:298
 #, c-format
 msgid "SMTP server %s"
 msgstr "Máy phục vụ SMTP %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:297
+#: ../camel/providers/smtp/camel-smtp-transport.c:301
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "Gửi thư (SMTP) thông qua %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:369
+#: ../camel/providers/smtp/camel-smtp-transport.c:375
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "Máy phục vụ SMTP %s không hỗ trợ xác thực %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:449
+#: ../camel/providers/smtp/camel-smtp-transport.c:455
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Chưa xác định cơ chế SASL"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:479
-#: ../camel/providers/smtp/camel-smtp-transport.c:490
-#: ../camel/providers/smtp/camel-smtp-transport.c:503
+#: ../camel/providers/smtp/camel-smtp-transport.c:485
+#: ../camel/providers/smtp/camel-smtp-transport.c:496
+#: ../camel/providers/smtp/camel-smtp-transport.c:509
 msgid "AUTH command failed: "
 msgstr "Lỗi lệnh AUTH: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:642
+#: ../camel/providers/smtp/camel-smtp-transport.c:648
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Không thể gửi thư: chưa kết nối dịch vụ."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:649
+#: ../camel/providers/smtp/camel-smtp-transport.c:655
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Không thể gửi thư: địa chỉ người gửi không hợp lệ."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:653
+#: ../camel/providers/smtp/camel-smtp-transport.c:659
 msgid "Sending message"
 msgstr "Đang gửi thư"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:678
+#: ../camel/providers/smtp/camel-smtp-transport.c:684
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Không thể gửi thư: chưa gõ người nhận."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:691
+#: ../camel/providers/smtp/camel-smtp-transport.c:697
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Không thể gửi thư: có một hoặc vài người nhận không hợp lệ"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:795
+#: ../camel/providers/smtp/camel-smtp-transport.c:801
 msgid "Syntax error, command unrecognized"
 msgstr "Lỗi cú pháp, không nhận ra lệnh"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:797
+#: ../camel/providers/smtp/camel-smtp-transport.c:803
 msgid "Syntax error in parameters or arguments"
 msgstr "Lỗi cú pháp trong tham số hoặc đối số"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:799
+#: ../camel/providers/smtp/camel-smtp-transport.c:805
 msgid "Command not implemented"
 msgstr "Lệnh chưa được thi công"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:801
+#: ../camel/providers/smtp/camel-smtp-transport.c:807
 msgid "Command parameter not implemented"
 msgstr "Tham số lệnh chưa được thi công"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:803
+#: ../camel/providers/smtp/camel-smtp-transport.c:809
 msgid "System status, or system help reply"
 msgstr "Trạng thái hệ thống, hoặc trả lời trợ giúp hệ thống"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:805
+#: ../camel/providers/smtp/camel-smtp-transport.c:811
 msgid "Help message"
 msgstr "Thư trợ giúp"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:807
+#: ../camel/providers/smtp/camel-smtp-transport.c:813
 msgid "Service ready"
 msgstr "Dịch vụ sẵn sàng"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:809
+#: ../camel/providers/smtp/camel-smtp-transport.c:815
 msgid "Service closing transmission channel"
 msgstr "Dịch vụ đang đóng kênh truyền"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:811
+#: ../camel/providers/smtp/camel-smtp-transport.c:817
 msgid "Service not available, closing transmission channel"
 msgstr "Dịch vụ chưa sẵn sàng, đang đóng kênh truyền thông"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:813
+#: ../camel/providers/smtp/camel-smtp-transport.c:819
 msgid "Requested mail action okay, completed"
 msgstr "Hành động thư tín yêu cầu đã xong"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:815
+#: ../camel/providers/smtp/camel-smtp-transport.c:821
 msgid "User not local; will forward to <forward-path>"
 msgstr "Không phải người dùng cục bộ; đang chuyển tiếp tới <forward-path>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:817
+#: ../camel/providers/smtp/camel-smtp-transport.c:823
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "Không thực hiện hành động thư tín yêu cầu: hộp thư không sẵn sàng"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:819
+#: ../camel/providers/smtp/camel-smtp-transport.c:825
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "Không thực hiện hành động yêu cầu: hộp thư không sẵn sàng"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:821
+#: ../camel/providers/smtp/camel-smtp-transport.c:827
 msgid "Requested action aborted: error in processing"
 msgstr "Đã ngừng hành động yêu cầu: lỗi khi thực hiện"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:823
+#: ../camel/providers/smtp/camel-smtp-transport.c:829
 msgid "User not local; please try <forward-path>"
 msgstr "Không phải người dùng cục bộ; hãy thử <forward-path>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:825
+#: ../camel/providers/smtp/camel-smtp-transport.c:831
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Không thực hiện hành động yêu cầu: không đủ chỗ chứa"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:827
+#: ../camel/providers/smtp/camel-smtp-transport.c:833
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Không thực hiện hành động thư tín yêu cầu: quá hạn sức chứa được gán"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:829
+#: ../camel/providers/smtp/camel-smtp-transport.c:835
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Không thực hiện hành động yêu cầu: không cho phép tên hộp thư ấy"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:831
+#: ../camel/providers/smtp/camel-smtp-transport.c:837
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Bắt đầu gõ thư; kết thúc bằng <Xuống dòng>.<Xuống dòng>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:833
+#: ../camel/providers/smtp/camel-smtp-transport.c:839
 msgid "Transaction failed"
 msgstr "Giao dịch thất bại"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:837
+#: ../camel/providers/smtp/camel-smtp-transport.c:843
 msgid "A password transition is needed"
 msgstr "Cần chuyển tiếp mật khẩu"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:839
+#: ../camel/providers/smtp/camel-smtp-transport.c:845
 msgid "Authentication mechanism is too weak"
 msgstr "Cơ chế xác thực quá yếu"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:841
+#: ../camel/providers/smtp/camel-smtp-transport.c:847
 msgid "Encryption required for requested authentication mechanism"
 msgstr "Cơ chế xác thực yêu cầu cần phải được mã hoá"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:843
+#: ../camel/providers/smtp/camel-smtp-transport.c:849
 msgid "Temporary authentication failure"
 msgstr "Lỗi xác thực tạm"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1094
+#: ../camel/providers/smtp/camel-smtp-transport.c:1106
 msgid "SMTP Greeting"
 msgstr "Chào hỏi của SMTP"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1121
-#: ../camel/providers/smtp/camel-smtp-transport.c:1139
-#: ../camel/providers/smtp/camel-smtp-transport.c:1147
+#: ../camel/providers/smtp/camel-smtp-transport.c:1133
+#: ../camel/providers/smtp/camel-smtp-transport.c:1151
+#: ../camel/providers/smtp/camel-smtp-transport.c:1159
 msgid "HELO command failed: "
 msgstr "Lỗi lệnh HELO: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1222
-#: ../camel/providers/smtp/camel-smtp-transport.c:1237
-#: ../camel/providers/smtp/camel-smtp-transport.c:1247
+#: ../camel/providers/smtp/camel-smtp-transport.c:1234
+#: ../camel/providers/smtp/camel-smtp-transport.c:1249
+#: ../camel/providers/smtp/camel-smtp-transport.c:1259
 msgid "MAIL FROM command failed: "
 msgstr "Lỗi lệnh MAIL FROM: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1274
+#: ../camel/providers/smtp/camel-smtp-transport.c:1286
 msgid "RCPT TO command failed: "
 msgstr "Lỗi lệnh RCPT TO: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1291
-#: ../camel/providers/smtp/camel-smtp-transport.c:1301
+#: ../camel/providers/smtp/camel-smtp-transport.c:1303
+#: ../camel/providers/smtp/camel-smtp-transport.c:1313
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> thất bại: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1343
-#: ../camel/providers/smtp/camel-smtp-transport.c:1354
-#: ../camel/providers/smtp/camel-smtp-transport.c:1365
-#: ../camel/providers/smtp/camel-smtp-transport.c:1424
-#: ../camel/providers/smtp/camel-smtp-transport.c:1444
-#: ../camel/providers/smtp/camel-smtp-transport.c:1458
-#: ../camel/providers/smtp/camel-smtp-transport.c:1467
+#: ../camel/providers/smtp/camel-smtp-transport.c:1355
+#: ../camel/providers/smtp/camel-smtp-transport.c:1366
+#: ../camel/providers/smtp/camel-smtp-transport.c:1377
+#: ../camel/providers/smtp/camel-smtp-transport.c:1436
+#: ../camel/providers/smtp/camel-smtp-transport.c:1456
+#: ../camel/providers/smtp/camel-smtp-transport.c:1470
+#: ../camel/providers/smtp/camel-smtp-transport.c:1479
 msgid "DATA command failed: "
 msgstr "Lỗi lệnh DATA: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1492
-#: ../camel/providers/smtp/camel-smtp-transport.c:1507
-#: ../camel/providers/smtp/camel-smtp-transport.c:1516
+#: ../camel/providers/smtp/camel-smtp-transport.c:1504
+#: ../camel/providers/smtp/camel-smtp-transport.c:1519
+#: ../camel/providers/smtp/camel-smtp-transport.c:1528
 msgid "RSET command failed: "
 msgstr "Lỗi lệnh RSET: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1541
-#: ../camel/providers/smtp/camel-smtp-transport.c:1555
-#: ../camel/providers/smtp/camel-smtp-transport.c:1562
+#: ../camel/providers/smtp/camel-smtp-transport.c:1553
+#: ../camel/providers/smtp/camel-smtp-transport.c:1567
+#: ../camel/providers/smtp/camel-smtp-transport.c:1574
 msgid "QUIT command failed: "
 msgstr "Lỗi lệnh QUIT: "
 
 #: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-#| msgid "Contact ID already exists"
 msgid "Contact UID of a user"
 msgstr "UID liên lạc của người dùng"
 
@@ -4738,7 +4766,6 @@ msgid "Bus name vanished (client terminated?)"
 msgstr "Tên tuyến biến mất (trình khách kết thúc?)"
 
 #: ../libebackend/e-authentication-mediator.c:204
-#| msgid "No response from the server"
 msgid "No response from client"
 msgstr "Máy khách không trả lời"
 
@@ -4746,7 +4773,6 @@ msgstr "Máy khách không trả lời"
 #: ../libebackend/e-authentication-mediator.c:275
 #: ../libebackend/e-authentication-mediator.c:606
 #: ../libebackend/e-authentication-mediator.c:967
-#| msgid "Could not cancel operation"
 msgid "Client cancelled the operation"
 msgstr "Máy khách huỷ thao tác"
 
@@ -4754,32 +4780,75 @@ msgstr "Máy khách huỷ thao tác"
 msgid "Client reports password was rejected"
 msgstr "Trình khác báo mật khẩu bị từ chối"
 
-#: ../libebackend/e-authentication-session.c:530
+#: ../libebackend/e-authentication-session.c:532
 msgid "Add this password to your keyring"
 msgstr "Thêm mật khẩu này vào vòng khoá"
 
-#: ../libebackend/e-authentication-session.c:593
+#: ../libebackend/e-authentication-session.c:595
 msgid "Password was incorrect"
 msgstr "Mật khẩu không đúng"
 
-#: ../libebackend/e-authentication-session.c:1322
-#: ../libebackend/e-authentication-session.c:1494
-#: ../libebackend/e-authentication-session.c:1673
-#| msgid "Operation cancelled"
+#: ../libebackend/e-authentication-session.c:1326
+#: ../libebackend/e-authentication-session.c:1502
+#: ../libebackend/e-authentication-session.c:1685
 msgid "Keyring operation was cancelled"
 msgstr "Thao tác vòng khoá bị hủy bỏ"
 
-#: ../libebackend/e-server-side-source.c:162
+#: ../libebackend/e-backend.c:190
+#, fuzzy, c-format
+#| msgid "IMAP server %s does not support %s authentication"
+msgid "%s does not support authentication"
+msgstr "Máy phục vụ IMAP %s không hỗ trợ xác thực %s"
+
+#: ../libebackend/e-collection-backend.c:734
+#, c-format
+msgid "%s does not support creating remote resources"
+msgstr ""
+
+#: ../libebackend/e-collection-backend.c:793
+#, fuzzy, c-format
+#| msgid "CalDAV does not support bulk removals"
+msgid "%s does not support deleting remote resources"
+msgstr "CalDAV không hỗ trợ xoá hàng loạt"
+
+#: ../libebackend/e-server-side-source.c:128
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr ""
 
-#: ../libebackend/e-server-side-source.c:1068
+#: ../libebackend/e-server-side-source.c:945 ../libedataserver/e-source.c:1084
+#, c-format
+msgid "Data source '%s' does not support creating remote resources"
+msgstr ""
+
+#: ../libebackend/e-server-side-source.c:959
+#, c-format
+msgid ""
+"Data source '%s' has no collection backend to create the remote resource"
+msgstr ""
+
+#: ../libebackend/e-server-side-source.c:987 ../libedataserver/e-source.c:1193
+#, c-format
+msgid "Data source '%s' does not support deleting remote resources"
+msgstr ""
+
+#: ../libebackend/e-server-side-source.c:1001
+#, c-format
+msgid ""
+"Data source '%s' has no collection backend to delete the remote resource"
+msgstr ""
+
+#: ../libebackend/e-server-side-source.c:1336
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr ""
 
-#: ../libebackend/e-source-registry-server.c:598
+#: ../libebackend/e-source-registry-server.c:520
+#: ../libedataserver/e-source-registry.c:1512
+msgid "The user declined to authenticate"
+msgstr "Người dùng từ chối xác thực"
+
+#: ../libebackend/e-source-registry-server.c:744
 #, c-format
 msgid "UID '%s' is already in use"
 msgstr "UID '%s' đang dùng"
@@ -4915,85 +4984,73 @@ msgid "D-Bus error"
 msgstr "lỗi D-Bus"
 
 #: ../libedataserver/e-source-authenticator.c:166
-#| msgid "Authentication required"
 msgid "Address book authentication request"
 msgstr "Yêu cầu xác thực sổ địa chỉ"
 
 #: ../libedataserver/e-source-authenticator.c:171
-#| msgid "Authentication required"
 msgid "Calendar authentication request"
 msgstr "Yêu cầu xác thực lịch"
 
 #: ../libedataserver/e-source-authenticator.c:175
-#| msgid "Authentication required"
 msgid "Mail authentication request"
 msgstr "Yêu cầu xác thực thư"
 
 #. generic account prompt
 #: ../libedataserver/e-source-authenticator.c:178
-#| msgid "Authentication required"
 msgid "Authentication request"
 msgstr "Yêu cầu xác thực"
 
 #: ../libedataserver/e-source-authenticator.c:188
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for address book \"%s\"."
 msgstr "Hãy nhập mật khẩu cho sổ địa chỉ \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:194
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for calendar \"%s\"."
 msgstr "Hãy nhập mật khẩu cho lịch \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:200
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail account \"%s\"."
 msgstr "Hãy nhập mật khẩu cho tài khoản thư \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:206
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail transport \"%s\"."
 msgstr "Hãy nhập mật khẩu cho vận chuyển thư \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:212
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for memo list \"%s\"."
 msgstr "Hãy nhập mật khẩu cho danh mục ghi nhớ \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:218
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for task list \"%s\"."
 msgstr "Hãy nhập mật khẩu cho danh mục công việc \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:224
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for account \"%s\"."
 msgstr "Hãy nhập mật khẩu cho tài khoản \"%s\"."
 
-#: ../libedataserver/e-source.c:602
+#: ../libedataserver/e-source.c:620
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr ""
 
-#: ../libedataserver/e-source.c:881
+#: ../libedataserver/e-source.c:911
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr ""
 
-#: ../libedataserver/e-source.c:963
+#: ../libedataserver/e-source.c:993
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr ""
 
-#: ../libedataserver/e-source.c:1137
-#| msgid "Unnamed List"
+#: ../libedataserver/e-source.c:1372
 msgid "Unnamed"
 msgstr "Không tên"
 
@@ -5001,11 +5058,6 @@ msgstr "Không tên"
 #, c-format
 msgid "Signature script must be a local file"
 msgstr ""
-
-#: ../libedataserver/e-source-registry.c:1496
-#| msgid "Failed to authenticate.\n"
-msgid "The user declined to authenticate"
-msgstr "Người dùng từ chối xác thực"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -5298,7 +5350,6 @@ msgid "Address B_ook:"
 msgstr "_Sổ địa chỉ:"
 
 #: ../libedataserverui/e-name-selector-dialog.c:308
-#| msgid "Cate_gory:"
 msgid "Cat_egory:"
 msgstr "L_oại:"
 
@@ -5420,35 +5471,30 @@ msgstr "Lịch"
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:184
 #, c-format
-#| msgid "Unexpected response from IMAP server: %s"
 msgid "Code: %u - Unexpected response from server"
 msgstr "Mã: %u - Tín hiệu trả lời không mong đợi từ máy chủ"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:205
 #, c-format
-#| msgid "Failed to retrieve message"
 msgid "Failed to parse autodiscover response XML"
 msgstr ""
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:214
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Autodiscover element"
 msgstr ""
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:226
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Response element"
 msgstr ""
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:238
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Account element"
 msgstr ""
 
@@ -5472,22 +5518,24 @@ msgstr ""
 msgid "Wait running until at least one client is connected"
 msgstr ""
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:458
+#: ../tests/libedataserverui/evolution-source-viewer.c:620
 msgid "Evolution Source Viewer"
 msgstr "Trình xem mã nguồn Evolution"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:487
-#| msgid "Family Name"
+#: ../tests/libedataserverui/evolution-source-viewer.c:649
 msgid "Display Name"
 msgstr "Tên hiển thị"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:496
+#: ../tests/libedataserverui/evolution-source-viewer.c:658
 msgid "Flags"
 msgstr "Cờ"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:520
+#: ../tests/libedataserverui/evolution-source-viewer.c:710
 msgid "Identity"
 msgstr "Định danh"
+
+#~ msgid "Updating %s folder"
+#~ msgstr "Đang cập nhật thư mục %s"
 
 #~ msgid "Authenticating with the server…"
 #~ msgstr "Đang xác thực với máy chủ…"
@@ -6392,9 +6440,6 @@ msgstr "Định danh"
 
 #~ msgid "Function not implemented in this storage"
 #~ msgstr "Chức năng này chưa được thực hiện trong kho lưu này"
-
-#~ msgid "Operation not supported"
-#~ msgstr "Không hỗ trợ thao tác này"
 
 #~ msgid "The specified type is not supported in this storage"
 #~ msgstr "Kho lưu này chưa hộ trợ kiểu đã xác định"
