@@ -77,10 +77,6 @@ struct _EBookBackendGooglePrivate {
 	GDataAuthorizer *authorizer;
 	GDataService *service;
 	EProxy *proxy;
-	guint refresh_interval;
-
-	/* If views are open we will send out signals in an idle_handler */
-	guint idle_id;
 
 	guint refresh_id;
 
@@ -241,23 +237,6 @@ cache_get_last_update (EBookBackend *backend)
 	return e_book_backend_cache_get_time (priv->cache);
 }
 
-static gboolean
-cache_get_last_update_tv (EBookBackend *backend,
-                          GTimeVal *tv)
-{
-	EBookBackendGooglePrivate *priv;
-	gchar *last_update;
-	gint rv;
-
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
-	last_update = e_book_backend_cache_get_time (priv->cache);
-	rv = last_update ? g_time_val_from_iso8601 (last_update, tv) : FALSE;
-	g_free (last_update);
-
-	return rv;
-}
-
 static void
 cache_set_last_update (EBookBackend *backend,
                        GTimeVal *tv)
@@ -270,49 +249,6 @@ cache_set_last_update (EBookBackend *backend,
 	_time = g_time_val_to_iso8601 (tv);
 	e_book_backend_cache_set_time (priv->cache, _time);
 	g_free (_time);
-}
-
-static gboolean
-cache_needs_update (EBookBackend *backend,
-                    guint *remaining_secs)
-{
-	EBookBackendGooglePrivate *priv;
-	GTimeVal last, current;
-	guint diff;
-	gboolean rv;
-
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
-	if (remaining_secs)
-		*remaining_secs = G_MAXUINT;
-
-	/* We never want to update in offline mode */
-	if (!e_backend_get_online (E_BACKEND (backend)))
-		return FALSE;
-
-	rv = cache_get_last_update_tv (backend, &last);
-
-	if (!rv)
-		return TRUE;
-
-	g_get_current_time (&current);
-	if (last.tv_sec > current.tv_sec) {
-		g_warning ("last update is in the feature?");
-
-		/* Do an update so we can fix this */
-		return TRUE;
-	}
-	diff = current.tv_sec - last.tv_sec;
-
-	if (diff >= priv->refresh_interval)
-		return TRUE;
-
-	if (remaining_secs)
-		*remaining_secs = priv->refresh_interval - diff;
-
-	__debug__ ("No update needed. Next update needed in %d secs", priv->refresh_interval - diff);
-
-	return FALSE;
 }
 
 static gboolean
@@ -942,30 +878,22 @@ _create_group (const gchar *category_name,
 	return create_group (E_BOOK_BACKEND (user_data), category_name, error);
 }
 
-static gboolean cache_refresh_if_needed (EBookBackend *backend);
-
-static gboolean
-on_refresh_timeout (EBookBackend *backend)
+static void
+refresh_local_cache_cb (ESource *source,
+			gpointer user_data)
 {
-	EBookBackendGooglePrivate *priv;
+	EBookBackend *backend = user_data;
 
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
+	__debug__ ("Invoking cache refresh");
 
-	__debug__ (G_STRFUNC);
-
-	priv->refresh_id = 0;
-	if (priv->bookviews != NULL)
-		cache_refresh_if_needed (backend);
-
-	return FALSE;
+	get_groups (backend);
+	get_new_contacts (backend);
 }
 
-static gboolean
+static void
 cache_refresh_if_needed (EBookBackend *backend)
 {
 	EBookBackendGooglePrivate *priv;
-	guint remaining_secs;
-	gboolean install_timeout;
 	gboolean is_online;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
@@ -976,25 +904,24 @@ cache_refresh_if_needed (EBookBackend *backend)
 
 	if (!is_online || !backend_is_authorized (backend)) {
 		__debug__ ("We are not connected to Google%s.", (!is_online) ? " (offline mode)" : "");
-		return TRUE;
+		return;
 	}
 
-	install_timeout = (priv->bookviews != NULL && priv->refresh_interval > 0 && 0 == priv->refresh_id);
+	if (!priv->refresh_id) {
+		/* Update the cache asynchronously */
+		refresh_local_cache_cb (NULL, backend);
 
-	if (cache_needs_update (backend, &remaining_secs)) {
-		/* Update the cache asynchronously and schedule a new timeout */
+		priv->refresh_id = e_source_refresh_add_timeout (
+			e_backend_get_source (E_BACKEND (backend)),
+			NULL,
+			refresh_local_cache_cb,
+			backend,
+			NULL);
+	} else if (g_hash_table_size (priv->system_groups_by_id) == 0) {
 		get_groups (backend);
-		get_new_contacts (backend);
-		remaining_secs = priv->refresh_interval;
-	} else if (g_hash_table_size (priv->system_groups_by_id) == 0)
-		get_groups (backend);
-
-	if (install_timeout) {
-		__debug__ ("Installing timeout with %d seconds", remaining_secs);
-		priv->refresh_id = g_timeout_add_seconds (remaining_secs, (GSourceFunc) on_refresh_timeout, backend);
 	}
 
-	return TRUE;
+	return;
 }
 
 static void
@@ -1861,19 +1788,6 @@ e_book_backend_google_get_contact_list_uids (EBookBackend *backend,
 	g_slist_free (filtered_uids);
 }
 
-static gboolean
-on_refresh_idle (EBookBackend *backend)
-{
-	EBookBackendGooglePrivate *priv;
-
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
-	priv->idle_id = 0;
-	cache_refresh_if_needed (backend);
-
-	return FALSE;
-}
-
 static void
 e_book_backend_google_start_book_view (EBookBackend *backend,
                                        EDataBookView *bookview)
@@ -1897,19 +1811,6 @@ e_book_backend_google_start_book_view (EBookBackend *backend,
 	/* Ensure that we're ready to support a view */
 	cache_refresh_if_needed (backend);
 
-	/* Update the cache if necessary */
-	if (cache_needs_update (backend, NULL)) {
-		/* XXX We ought to be authorized by now, I would think.
-		 *     Not sure when we wouldn't be or how to handle it. */
-		if (!backend_is_authorized (backend)) {
-			error = EDB_ERROR (AUTHENTICATION_REQUIRED);
-			goto exit;
-		} else {
-			/* Update in an idle function, so that this call doesn't block */
-			priv->idle_id = g_idle_add ((GSourceFunc) on_refresh_idle, backend);
-		}
-	}
-
 	/* Get the contacts */
 	cached_contacts = cache_get_contacts (backend);
 	__debug__ ("%d contacts found in cache", g_list_length (cached_contacts));
@@ -1921,7 +1822,6 @@ e_book_backend_google_start_book_view (EBookBackend *backend,
 		g_object_unref (contact);
 	}
 
-exit:
 	/* This function frees the GError passed to it. */
 	e_data_book_view_notify_complete (bookview, error);
 }
@@ -1942,12 +1842,6 @@ e_book_backend_google_stop_book_view (EBookBackend *backend,
 		priv->bookviews = g_list_delete_link (priv->bookviews, view);
 		e_data_book_view_unref (bookview);
 	}
-
-	/* If there are no book views left, we can stop doing certain things, like refreshes */
-	if (!priv->bookviews && priv->refresh_id != 0) {
-		g_source_remove (priv->refresh_id);
-		priv->refresh_id = 0;
-	}
 }
 
 static void
@@ -1958,10 +1852,6 @@ e_book_backend_google_open (EBookBackend *backend,
                             gboolean only_if_exists)
 {
 	EBookBackendGooglePrivate *priv;
-	ESourceRefresh *refresh_extension;
-	ESource *source;
-	guint interval_in_minutes;
-	const gchar *extension_name;
 	gboolean is_online;
 	GError *error = NULL;
 
@@ -1974,15 +1864,6 @@ e_book_backend_google_open (EBookBackend *backend,
 		return;
 	}
 
-	source = e_backend_get_source (E_BACKEND (backend));
-
-	extension_name = E_SOURCE_EXTENSION_REFRESH;
-	refresh_extension = e_source_get_extension (source, extension_name);
-
-	interval_in_minutes =
-		e_source_refresh_get_enabled (refresh_extension) ?
-		e_source_refresh_get_interval_minutes (refresh_extension) : 0;
-
 	/* Set up our object */
 	if (!priv->cancellables) {
 		priv->groups_by_id = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -1993,13 +1874,6 @@ e_book_backend_google_open (EBookBackend *backend,
 	}
 
 	cache_init (backend);
-	priv->refresh_interval = interval_in_minutes * 60;
-
-	/* Remove and re-add the timeout */
-	if (priv->refresh_id != 0 && priv->refresh_interval > 0) {
-		g_source_remove (priv->refresh_id);
-		priv->refresh_id = g_timeout_add_seconds (priv->refresh_interval, (GSourceFunc) on_refresh_timeout, backend);
-	}
 
 	/* Set up ready to be interacted with */
 	is_online = e_backend_get_online (E_BACKEND (backend));
@@ -2015,8 +1889,11 @@ e_book_backend_google_open (EBookBackend *backend,
 	}
 
 	if (!is_online || backend_is_authorized (backend)) {
-		if (is_online)
+		if (is_online) {
 			e_book_backend_notify_readonly (backend, FALSE);
+			cache_refresh_if_needed (backend);
+		}
+
 		e_book_backend_notify_opened (backend, NULL /* Success */);
 	}
 
@@ -2258,9 +2135,11 @@ e_book_backend_google_dispose (GObject *object)
 		priv->bookviews = g_list_delete_link (priv->bookviews, priv->bookviews);
 	}
 
-	if (priv->idle_id) {
-		g_source_remove (priv->idle_id);
-		priv->idle_id = 0;
+	if (priv->refresh_id) {
+		e_source_refresh_remove_timeout (
+			e_backend_get_source (E_BACKEND (object)),
+			priv->refresh_id);
+		priv->refresh_id = 0;
 	}
 
 	if (priv->service)

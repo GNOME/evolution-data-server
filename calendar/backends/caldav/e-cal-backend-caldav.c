@@ -90,7 +90,6 @@ struct _ECalBackendCalDAVPrivate {
 	const GThread *synch_slave; /* just for a reference, whether thread exists */
 	SlaveCommand slave_cmd;
 	gboolean slave_busy; /* whether is slave working */
-	GTimeVal refresh_time;
 
 	/* The main soup session  */
 	SoupSession *session;
@@ -127,6 +126,8 @@ struct _ECalBackendCalDAVPrivate {
 
 	/* set to true if thread for ESource::changed is invoked */
 	gboolean updating_source;
+
+	guint refresh_id;
 };
 
 /* ************************************************************************* */
@@ -2294,12 +2295,23 @@ is_google_uri (const gchar *uri)
 	return res;
 }
 
+static void
+time_to_refresh_caldav_calendar_cb (ESource *source,
+				    gpointer user_data)
+{
+	ECalBackendCalDAV *cbdav = user_data;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
+
+	g_cond_signal (cbdav->priv->cond);
+}
+
 /* ************************************************************************* */
 
 static gpointer
 caldav_synch_slave_loop (gpointer data)
 {
-	ECalBackendCalDAV        *cbdav;
+	ECalBackendCalDAV *cbdav;
 	time_t now;
 	icaltimezone *utc = icaltimezone_get_utc_timezone ();
 	gboolean know_unreachable;
@@ -2311,7 +2323,6 @@ caldav_synch_slave_loop (gpointer data)
 	know_unreachable = !cbdav->priv->opened;
 
 	while (cbdav->priv->slave_cmd != SLAVE_SHOULD_DIE) {
-		GTimeVal alarm_clock;
 		if (cbdav->priv->slave_cmd == SLAVE_SHOULD_SLEEP) {
 			/* just sleep until we get woken up again */
 			g_cond_wait (cbdav->priv->cond, cbdav->priv->busy_lock);
@@ -2390,12 +2401,7 @@ caldav_synch_slave_loop (gpointer data)
 		cbdav->priv->slave_busy = FALSE;
 
 		/* puhh that was hard, get some rest :) */
-		g_get_current_time (&alarm_clock);
-		alarm_clock.tv_sec += cbdav->priv->refresh_time.tv_sec;
-		g_cond_timed_wait (cbdav->priv->cond,
-				   cbdav->priv->busy_lock,
-				   &alarm_clock);
-
+		g_cond_wait (cbdav->priv->cond, cbdav->priv->busy_lock);
 	}
 
 	/* signal we are done */
@@ -2542,7 +2548,6 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 {
 	ESourceAuthentication    *auth_extension;
 	ESourceOffline           *offline_extension;
-	ESourceRefresh           *refresh_extension;
 	ESourceWebdav            *webdav_extension;
 	ECalBackend              *backend;
 	SoupURI                  *soup_uri;
@@ -2550,7 +2555,6 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	gsize                     len;
 	const gchar              *cache_dir;
 	const gchar              *extension_name;
-	guint                     interval_in_minutes;
 
 	backend = E_CAL_BACKEND (cbdav);
 	cache_dir = e_cal_backend_get_cache_dir (backend);
@@ -2561,9 +2565,6 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 
 	extension_name = E_SOURCE_EXTENSION_OFFLINE;
 	offline_extension = e_source_get_extension (source, extension_name);
-
-	extension_name = E_SOURCE_EXTENSION_REFRESH;
-	refresh_extension = e_source_get_extension (source, extension_name);
 
 	extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
 	webdav_extension = e_source_get_extension (source, extension_name);
@@ -2648,15 +2649,6 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 		return FALSE;
 	}
 
-	/* FIXME Not honoring ESourceRefresh:enabled. */
-	interval_in_minutes =
-		e_source_refresh_get_interval_minutes (refresh_extension);
-
-	if (interval_in_minutes == 0)
-		cbdav->priv->refresh_time.tv_sec = DEFAULT_REFRESH_TIME;
-	else
-		cbdav->priv->refresh_time.tv_sec = interval_in_minutes * 60;
-
 	if (!cbdav->priv->synch_slave) {
 		GThread *slave;
 
@@ -2668,6 +2660,11 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 		}
 
 		cbdav->priv->synch_slave = slave;
+	}
+
+	if (cbdav->priv->refresh_id == 0) {
+		cbdav->priv->refresh_id = e_source_refresh_add_timeout (
+			source, NULL, time_to_refresh_caldav_calendar_cb, cbdav, NULL);
 	}
 
 	return TRUE;
@@ -4932,8 +4929,14 @@ e_cal_backend_caldav_dispose (GObject *object)
 	}
 
 	source = e_backend_get_source (E_BACKEND (object));
-	if (source)
+	if (source) {
 		g_signal_handlers_disconnect_by_func (G_OBJECT (source), caldav_source_changed_cb, object);
+
+		if (priv->refresh_id) {
+			e_source_refresh_remove_timeout	(source, priv->refresh_id);
+			priv->refresh_id = 0;
+		}
+	}
 
 	/* stop the slave  */
 	if (priv->synch_slave) {
@@ -5035,8 +5038,6 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	/* Slave control ... */
 	cbdav->priv->slave_cmd = SLAVE_SHOULD_SLEEP;
 	cbdav->priv->slave_busy = FALSE;
-	cbdav->priv->refresh_time.tv_usec = 0;
-	cbdav->priv->refresh_time.tv_sec  = DEFAULT_REFRESH_TIME;
 
 	g_signal_connect (cbdav->priv->session, "authenticate",
 			  G_CALLBACK (soup_authenticate), cbdav);

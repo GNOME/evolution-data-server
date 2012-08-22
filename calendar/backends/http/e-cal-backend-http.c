@@ -114,7 +114,8 @@ e_cal_backend_http_dispose (GObject *object)
 	priv = cbhttp->priv;
 
 	if (priv->reload_timeout_id) {
-		g_source_remove (priv->reload_timeout_id);
+		ESource *source = e_backend_get_source (E_BACKEND (cbhttp));
+		e_source_refresh_remove_timeout (source, priv->reload_timeout_id);
 		priv->reload_timeout_id = 0;
 	}
 
@@ -731,8 +732,6 @@ cal_backend_http_ensure_uri (ECalBackendHttp *backend)
 	return backend->priv->uri;
 }
 
-static void     maybe_start_reload_timeout (ECalBackendHttp *cbhttp);
-
 static gboolean
 begin_retrieval_cb (GIOSchedulerJob *job,
                     GCancellable *cancellable,
@@ -743,8 +742,6 @@ begin_retrieval_cb (GIOSchedulerJob *job,
 
 	if (!e_backend_get_online (E_BACKEND (backend)))
 		return FALSE;
-
-	maybe_start_reload_timeout (backend);
 
 	if (backend->priv->is_loading)
 		return FALSE;
@@ -779,64 +776,6 @@ begin_retrieval_cb (GIOSchedulerJob *job,
 	return FALSE;
 }
 
-static gboolean
-reload_cb (ECalBackendHttp *cbhttp)
-{
-	ECalBackendHttpPrivate *priv;
-
-	priv = cbhttp->priv;
-
-	if (priv->is_loading)
-		return TRUE;
-
-	d (g_message ("Reload!\n"));
-
-	priv->reload_timeout_id = 0;
-
-	g_io_scheduler_push_job (
-		(GIOSchedulerJobFunc) begin_retrieval_cb,
-		g_object_ref (cbhttp),
-		(GDestroyNotify) g_object_unref,
-		G_PRIORITY_DEFAULT, NULL);
-
-	return FALSE;
-}
-
-static void
-maybe_start_reload_timeout (ECalBackendHttp *cbhttp)
-{
-	ECalBackendHttpPrivate *priv;
-	ESource *source;
-	ESourceRefresh *extension;
-	const gchar *extension_name;
-	guint interval_in_minutes = 0;
-
-	priv = cbhttp->priv;
-
-	d (g_message ("Setting reload timeout.\n"));
-
-	if (priv->reload_timeout_id)
-		return;
-
-	source = e_backend_get_source (E_BACKEND (cbhttp));
-	if (!source) {
-		g_warning ("Could not get source for ECalBackendHttp reload.");
-		return;
-	}
-
-	extension_name = E_SOURCE_EXTENSION_REFRESH;
-	extension = e_source_get_extension (source, extension_name);
-
-	if (e_source_refresh_get_enabled (extension))
-		interval_in_minutes =
-			e_source_refresh_get_interval_minutes (extension);
-
-	if (interval_in_minutes > 0)
-		priv->reload_timeout_id = g_timeout_add_seconds (
-			interval_in_minutes * 60,
-			(GSourceFunc) reload_cb, cbhttp);
-}
-
 static void
 source_changed_cb (ESource *source,
                    ECalBackendHttp *cbhttp)
@@ -866,6 +805,24 @@ source_changed_cb (ESource *source,
 
 		g_free (old_uri);
 	}
+}
+
+static void
+http_cal_reload_cb (ESource *source,
+		    gpointer user_data)
+{
+	ECalBackendHttp *cbhttp = user_data;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_HTTP (cbhttp));
+
+	if (!e_backend_get_online (E_BACKEND (cbhttp)))
+		return;
+
+	g_io_scheduler_push_job (
+		(GIOSchedulerJobFunc) begin_retrieval_cb,
+		g_object_ref (cbhttp),
+		(GDestroyNotify) g_object_unref,
+		G_PRIORITY_DEFAULT, NULL);
 }
 
 /* Open handler for the file backend */
@@ -967,8 +924,12 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 			g_propagate_error (perror, local_error);
 	}
 
-	if (opened)
+	if (opened) {
 		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
+
+		if (!priv->reload_timeout_id)
+			priv->reload_timeout_id = e_source_refresh_add_timeout (source, NULL, http_cal_reload_cb, backend, NULL);
+	}
 }
 
 static void
@@ -979,6 +940,7 @@ e_cal_backend_http_refresh (ECalBackendSync *backend,
 {
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
+	ESource *source;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
@@ -987,12 +949,10 @@ e_cal_backend_http_refresh (ECalBackendSync *backend,
 	    priv->is_loading)
 		return;
 
-	if (priv->reload_timeout_id)
-		g_source_remove (priv->reload_timeout_id);
-	priv->reload_timeout_id = 0;
+	source = e_backend_get_source (E_BACKEND (cbhttp));
+	g_return_if_fail (source != NULL);
 
-	/* wait a second, then start reloading */
-	priv->reload_timeout_id = g_timeout_add (1000, (GSourceFunc) reload_cb, cbhttp);
+	e_source_refresh_force_timeout (source);
 }
 
 /* Set_mode handler for the http backend */
@@ -1000,30 +960,18 @@ static void
 e_cal_backend_http_notify_online_cb (ECalBackend *backend,
                                      GParamSpec *pspec)
 {
-	ECalBackendHttp *cbhttp;
-	ECalBackendHttpPrivate *priv;
 	gboolean loaded;
 	gboolean online;
-
-	cbhttp = E_CAL_BACKEND_HTTP (backend);
-	priv = cbhttp->priv;
 
 	online = e_backend_get_online (E_BACKEND (backend));
 	loaded = e_cal_backend_is_opened (backend);
 
-	if (!online) {
-		if (loaded && priv->reload_timeout_id) {
-			g_source_remove (priv->reload_timeout_id);
-			priv->reload_timeout_id = 0;
-		}
-	} else {
-		if (loaded)
-			g_io_scheduler_push_job (
-				(GIOSchedulerJobFunc) begin_retrieval_cb,
-				g_object_ref (backend),
-				(GDestroyNotify) g_object_unref,
-				G_PRIORITY_DEFAULT, NULL);
-	}
+	if (online && loaded)
+		g_io_scheduler_push_job (
+			(GIOSchedulerJobFunc) begin_retrieval_cb,
+			g_object_ref (backend),
+			(GDestroyNotify) g_object_unref,
+			G_PRIORITY_DEFAULT, NULL);
 
 	if (loaded)
 		e_cal_backend_notify_online (backend, online);
