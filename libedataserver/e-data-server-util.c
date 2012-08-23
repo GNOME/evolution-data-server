@@ -469,18 +469,35 @@ e_util_utf8_remove_accents (const gchar *str)
 gchar *
 e_util_utf8_make_valid (const gchar *str)
 {
+	return e_util_utf8_data_make_valid (str, strlen (str));
+}
+
+/**
+ * e_util_utf8_data_make_valid:
+ * @data: UTF-8 binary data
+ * @data_bytes: length of the binary data
+ *
+ * Returns a newly-allocated NULL-terminated string with invalid characters
+ * replaced by Unicode replacement characters (U+FFFD).
+ *
+ * Returns: a newly-allocated string
+ *
+ * Since: 3.6
+ */
+gchar *
+e_util_utf8_data_make_valid (const gchar *data,
+			     gsize data_bytes)
+{
 	/* almost identical copy of glib's _g_utf8_make_valid() */
 	GString *string;
 	const gchar *remainder, *invalid;
-	gint remaining_bytes, valid_bytes, total_bytes;
+	gint remaining_bytes, valid_bytes;
 
-	g_return_val_if_fail (str != NULL, NULL);
+	g_return_val_if_fail (data != NULL, NULL);
 
 	string = NULL;
-	remainder = str;
-	remaining_bytes = strlen (str);
-
-	total_bytes = remaining_bytes;
+	remainder = (gchar *) data,
+	remaining_bytes = data_bytes;
 
 	while (remaining_bytes != 0) {
 		if (g_utf8_validate (remainder, remaining_bytes, &invalid))
@@ -499,11 +516,11 @@ e_util_utf8_make_valid (const gchar *str)
 	}
 
 	if (string == NULL)
-		return g_strndup (str, total_bytes);
+		return g_strndup ((gchar *) data, data_bytes);
 
 	g_string_append (string, remainder);
 
-	g_assert (g_utf8_validate (string->str, -1, NULL));
+	g_warn_if_fail (g_utf8_validate (string->str, -1, NULL));
 
 	return g_string_free (string, FALSE);
 }

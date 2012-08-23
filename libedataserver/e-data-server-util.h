@@ -50,6 +50,8 @@ gint		e_util_utf8_strcasecmp		(const gchar *s1,
 						 const gchar *s2);
 gchar *		e_util_utf8_remove_accents	(const gchar *str);
 gchar *		e_util_utf8_make_valid		(const gchar *str);
+gchar *		e_util_utf8_data_make_valid	(const gchar *data,
+						 gsize bytes);
 const gchar *   e_util_ensure_gdbus_string	(const gchar *str,
 						 gchar **gdbus_str);
 guint64		e_util_gthread_id		(GThread *thread);
