@@ -486,7 +486,7 @@ e_util_utf8_make_valid (const gchar *str)
  */
 gchar *
 e_util_utf8_data_make_valid (const gchar *data,
-			     gsize data_bytes)
+                             gsize data_bytes)
 {
 	/* almost identical copy of glib's _g_utf8_make_valid() */
 	GString *string;
