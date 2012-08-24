@@ -464,7 +464,10 @@ authentication_mediator_authenticator_thread (gpointer data)
 	mediator = g_weak_ref_get (&closure->mediator);
 	g_return_val_if_fail (mediator != NULL, NULL);
 
-	interface = G_DBUS_INTERFACE_SKELETON (mediator->priv->interface);
+	/* Keep our own reference to the GDBusInterfaceSkeleton so
+	 * we can clean up signals after the mediator is disposed. */
+	interface = g_object_ref (mediator->priv->interface);
+
 	connection = e_authentication_mediator_get_connection (mediator);
 	object_path = e_authentication_mediator_get_object_path (mediator);
 
@@ -518,7 +521,8 @@ authentication_mediator_authenticator_thread (gpointer data)
 	g_source_unref (idle_source);
 
 	/* Unreference this before starting the main loop since
-	 * the mediator's dispose() method tells us when to quit. */
+	 * the mediator's dispose() method tells us when to quit.
+	 * If we don't do this then dispose() will never run. */
 	g_object_unref (mediator);
 
 	/* Now we mostly idle here until authentication is complete. */
@@ -533,6 +537,8 @@ authentication_mediator_authenticator_thread (gpointer data)
 	g_signal_handler_disconnect (interface, handle_rejected_id);
 
 	g_main_context_pop_thread_default (closure->main_context);
+
+	g_object_unref (interface);
 
 	thread_closure_unref (closure);
 
