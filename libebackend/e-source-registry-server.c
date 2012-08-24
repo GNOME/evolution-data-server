@@ -60,6 +60,8 @@
 typedef struct _AuthRequest AuthRequest;
 
 struct _ESourceRegistryServerPrivate {
+	GMainContext *main_context;
+
 	GDBusObjectManagerServer *object_manager;
 	EDBusSourceManager *source_manager;
 
@@ -531,6 +533,24 @@ source_registry_server_auth_session_cb (GObject *source_object,
 	auth_request_unref (request);
 }
 
+static gboolean
+source_registry_server_start_auth_session_idle_cb (gpointer user_data)
+{
+	AuthRequest *request = user_data;
+
+	/* Execute the new active auth session.  This signals it to
+	 * respond with a cached secret in the keyring if it can, or
+	 * else show an authentication prompt and wait for input. */
+	e_authentication_session_execute (
+		request->session,
+		G_PRIORITY_DEFAULT,
+		request->cancellable,
+		source_registry_server_auth_session_cb,
+		auth_request_ref (request));
+
+	return FALSE;
+}
+
 static void
 source_registry_server_maybe_start_auth_session (ESourceRegistryServer *server,
                                                  const gchar *uid)
@@ -540,16 +560,22 @@ source_registry_server_maybe_start_auth_session (ESourceRegistryServer *server,
 	/* We own the returned reference, unless we get NULL. */
 	request = source_registry_server_auth_request_next (server, uid);
 
-	/* Execute the new active auth session.  This signals it to
-	 * respond with a cached secret in the keyring if it can, or
-	 * else show an authentication prompt and wait for input. */
 	if (request != NULL) {
-		e_authentication_session_execute (
-			request->session,
-			G_PRIORITY_DEFAULT,
-			request->cancellable,
-			source_registry_server_auth_session_cb,
-			request);  /* takes ownership */
+		GSource *idle_source;
+
+		/* Process the next AuthRequest from an idle callback
+		 * on our own GMainContext, since the current thread-
+		 * default GMainContext may only be temporary. */
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (
+			idle_source,
+			source_registry_server_start_auth_session_idle_cb,
+			auth_request_ref (request),
+			(GDestroyNotify) auth_request_unref);
+		g_source_attach (idle_source, server->priv->main_context);
+		g_source_unref (idle_source);
+
+		auth_request_unref (request);
 	}
 }
 
@@ -987,6 +1013,11 @@ source_registry_server_dispose (GObject *object)
 
 	priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (object);
 
+	if (priv->main_context != NULL) {
+		g_main_context_unref (priv->main_context);
+		priv->main_context = NULL;
+	}
+
 	if (priv->object_manager != NULL) {
 		g_object_unref (priv->object_manager);
 		priv->object_manager = NULL;
@@ -1322,6 +1353,7 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 		(GDestroyNotify) free_auth_queue);
 
 	server->priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (server);
+	server->priv->main_context = g_main_context_ref_thread_default ();
 	server->priv->object_manager = object_manager;
 	server->priv->source_manager = source_manager;
 	server->priv->sources = sources;
