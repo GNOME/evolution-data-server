@@ -52,6 +52,13 @@ typedef enum {
 	E_BOOK_ERROR_NOT_SUPPORTED
 } EBookStatus;
 
+/**
+ * EDataBookStatus:
+ *
+ * XXX Document me!
+ *
+ * Since: 3.6
+ **/
 typedef enum {
 	E_DATA_BOOK_STATUS_SUCCESS,
 	E_DATA_BOOK_STATUS_BUSY,

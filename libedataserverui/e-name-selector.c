@@ -375,6 +375,16 @@ e_name_selector_new (ESourceRegistry *registry)
 		"registry", registry, NULL);
 }
 
+/**
+ * e_name_selector_get_registry:
+ * @name_selector: an #ENameSelector
+ *
+ * Returns the #ESourceRegistry passed to e_name_selector_new().
+ *
+ * Returns: the #ESourceRegistry
+ *
+ * Since: 3.6
+ **/
 ESourceRegistry *
 e_name_selector_get_registry (ENameSelector *name_selector)
 {

@@ -398,6 +398,13 @@ get_uids_for_subfolder (gpointer key,
 	g_hash_table_insert (user_data, (gpointer) camel_pstring_strdup (key), GINT_TO_POINTER (1));
 }
 
+/**
+ * camel_vee_summary_get_uids_for_subfolder:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 GHashTable *
 camel_vee_summary_get_uids_for_subfolder (CamelVeeSummary *summary,
                                           CamelFolder *subfolder)
@@ -484,6 +491,13 @@ camel_vee_summary_add (CamelVeeSummary *s,
 	return vmi;
 }
 
+/**
+ * camel_vee_summary_remove:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_summary_remove (CamelVeeSummary *summary,
                           const gchar *vuid,
@@ -527,6 +541,8 @@ camel_vee_summary_remove (CamelVeeSummary *summary,
  * Makes sure @summary flags on @uid corresponds to those 
  * in the subfolder of vee-folder, and updates internal counts
  * on @summary as well.
+ *
+ * Since: 3.6
  **/
 void
 camel_vee_summary_replace_flags (CamelVeeSummary *summary,

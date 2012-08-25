@@ -671,6 +671,16 @@ e_data_book_factory_new (GCancellable *cancellable,
 		cancellable, error, NULL);
 }
 
+/**
+ * e_data_book_factory_get_registry:
+ * @factory: an #EDataBookFactory
+ *
+ * Returns the #ESourceRegistry owned by @factory.
+ *
+ * Returns: the #ESourceRegistry
+ *
+ * Since: 3.6
+ **/
 ESourceRegistry *
 e_data_book_factory_get_registry (EDataBookFactory *factory)
 {

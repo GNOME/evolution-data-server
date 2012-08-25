@@ -560,6 +560,13 @@ camel_vee_store_new (void)
 	return g_object_new (CAMEL_TYPE_VEE_STORE, NULL);
 }
 
+/**
+ * camel_vee_store_get_vee_data_cache:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelVeeDataCache *
 camel_vee_store_get_vee_data_cache (CamelVeeStore *vstore)
 {
@@ -568,6 +575,13 @@ camel_vee_store_get_vee_data_cache (CamelVeeStore *vstore)
 	return vstore->priv->vee_data_cache;
 }
 
+/**
+ * camel_vee_store_get_unmatched_folder:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelVeeFolder *
 camel_vee_store_get_unmatched_folder (CamelVeeStore *vstore)
 {
@@ -579,6 +593,13 @@ camel_vee_store_get_unmatched_folder (CamelVeeStore *vstore)
 	return vstore->priv->unmatched_folder;
 }
 
+/**
+ * camel_vee_store_get_unmatched_enabled:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 gboolean
 camel_vee_store_get_unmatched_enabled (CamelVeeStore *vstore)
 {
@@ -587,6 +608,13 @@ camel_vee_store_get_unmatched_enabled (CamelVeeStore *vstore)
 	return vstore->priv->unmatched_enabled;
 }
 
+/**
+ * camel_vee_store_set_unmatched_enabled:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_store_set_unmatched_enabled (CamelVeeStore *vstore,
                                        gboolean is_enabled)
@@ -613,8 +641,7 @@ camel_vee_store_set_unmatched_enabled (CamelVeeStore *vstore,
 	camel_folder_info_free (fi_unmatched);
 }
 
-struct AddToUnmatchedData
-{
+struct AddToUnmatchedData {
 	CamelVeeFolder *unmatched_folder;
 	CamelFolderChangeInfo *changes;
 	gboolean unmatched_enabled;
@@ -639,6 +666,13 @@ add_to_unmatched_folder_cb (CamelVeeMessageInfoData *mi_data,
 		camel_vee_folder_add_vuid (atud->unmatched_folder, mi_data, atud->changes);
 }
 
+/**
+ * camel_vee_store_note_subfolder_used:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_store_note_subfolder_used (CamelVeeStore *vstore,
                                      CamelFolder *subfolder,
@@ -709,6 +743,13 @@ remove_vuid_count_record_cb (CamelVeeMessageInfoData *mi_data,
 	g_hash_table_remove (vuid_usage_counts, camel_vee_message_info_data_get_vee_message_uid (mi_data));
 }
 
+/**
+ * camel_vee_store_note_subfolder_unused:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_store_note_subfolder_unused (CamelVeeStore *vstore,
                                        CamelFolder *subfolder,
@@ -749,6 +790,13 @@ camel_vee_store_note_subfolder_unused (CamelVeeStore *vstore,
 	g_mutex_unlock (vstore->priv->sf_counts_mutex);
 }
 
+/**
+ * camel_vee_store_note_vuid_used:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_store_note_vuid_used (CamelVeeStore *vstore,
                                 CamelVeeMessageInfoData *mi_data,
@@ -797,6 +845,13 @@ camel_vee_store_note_vuid_used (CamelVeeStore *vstore,
 	g_mutex_unlock (vstore->priv->vu_counts_mutex);
 }
 
+/**
+ * camel_vee_store_note_vuid_unused:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_store_note_vuid_unused (CamelVeeStore *vstore,
                                   CamelVeeMessageInfoData *mi_data,
@@ -851,8 +906,7 @@ camel_vee_store_note_vuid_unused (CamelVeeStore *vstore,
 	g_mutex_unlock (vstore->priv->vu_counts_mutex);
 }
 
-struct RebuildUnmatchedData
-{
+struct RebuildUnmatchedData {
 	CamelVeeDataCache *data_cache;
 	CamelVeeFolder *unmatched_folder;
 	CamelFolderChangeInfo *changes;
@@ -932,6 +986,13 @@ vee_store_rebuild_unmatched_folder (CamelSession *session,
 	g_cancellable_set_error_if_cancelled (cancellable, error);
 }
 
+/**
+ * camel_vee_store_rebuild_unmatched_folder:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_store_rebuild_unmatched_folder (CamelVeeStore *vstore,
                                           GCancellable *cancellable,

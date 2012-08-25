@@ -77,6 +77,11 @@ struct _ESourceRefreshClass {
 	ESourceExtensionClass parent_class;
 };
 
+/**
+ * ESourceRefreshFunc:
+ *
+ * Since: 3.6
+ **/
 typedef void	(*ESourceRefreshFunc)		(ESource *source,
 						 gpointer user_data);
 

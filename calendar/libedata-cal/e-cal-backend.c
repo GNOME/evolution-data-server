@@ -1077,6 +1077,8 @@ e_cal_backend_get_free_busy (ECalBackend *backend,
  *
  * Calls the create_object method on the given backend.
  * This might be finished with e_data_cal_respond_create_objects().
+ *
+ * Since: 3.6
  **/
 void
 e_cal_backend_create_objects (ECalBackend *backend,
@@ -1110,6 +1112,8 @@ e_cal_backend_create_objects (ECalBackend *backend,
  *
  * Calls the modify_objects method on the given backend.
  * This might be finished with e_data_cal_respond_modify_objects().
+ *
+ * Since: 3.6
  **/
 void
 e_cal_backend_modify_objects (ECalBackend *backend,
@@ -1145,6 +1149,8 @@ e_cal_backend_modify_objects (ECalBackend *backend,
  * Removes objects in a calendar backend.  The backend will notify all of its
  * clients about the change.
  * This might be finished with e_data_cal_respond_remove_objects().
+ *
+ * Since: 3.6
  **/
 void
 e_cal_backend_remove_objects (ECalBackend *backend,

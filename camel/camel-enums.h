@@ -311,6 +311,21 @@ typedef enum {
 	CAMEL_SASL_ANON_TRACE_EMPTY
 } CamelSaslAnonTraceType;
 
+/**
+ * CamelServiceConnectionStatus:
+ * @CAMEL_SERVICE_DISCONNECTED:
+ *   #CamelService is disconnected from a remote server.
+ * @CAMEL_SERVICE_CONNECTING:
+ *   #CamelService is connecting to a remote server.
+ * @CAMEL_SERVICE_CONNECTED:
+ *   #CamelService is connected to a remote server.
+ * @CAMEL_SERVICE_DISCONNECTING:
+ *   #CamelService is disconnecting from a remote server.
+ *
+ * Connection status returned by camel_service_get_connection_status().
+ *
+ * Since: 3.6
+ **/
 typedef enum {
 	CAMEL_SERVICE_DISCONNECTED,
 	CAMEL_SERVICE_CONNECTING,

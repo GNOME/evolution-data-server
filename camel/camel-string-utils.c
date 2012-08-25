@@ -357,6 +357,8 @@ camel_pstring_free (const gchar *string)
  * camel_pstring_dump_stat:
  *
  * Dumps to stdout memory statistic about the string pool.
+ *
+ * Since: 3.6
  **/
 void
 camel_pstring_dump_stat (void)

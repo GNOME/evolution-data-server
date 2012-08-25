@@ -442,6 +442,13 @@ camel_certdb_touch (CamelCertDB *certdb)
 	certdb->flags |= CAMEL_CERTDB_DIRTY;
 }
 
+/**
+ * camel_certdb_get_host:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelCert *
 camel_certdb_get_host (CamelCertDB *certdb,
                        const gchar *hostname)
@@ -461,6 +468,13 @@ camel_certdb_get_host (CamelCertDB *certdb,
 	return cert;
 }
 
+/**
+ * camel_certdb_put:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_certdb_put (CamelCertDB *certdb,
                   CamelCert *cert)
@@ -488,6 +502,13 @@ camel_certdb_put (CamelCertDB *certdb,
 	camel_certdb_unlock (certdb, CAMEL_CERTDB_DB_LOCK);
 }
 
+/**
+ * camel_certdb_remove_host:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_certdb_remove_host (CamelCertDB *certdb,
                           const gchar *hostname)

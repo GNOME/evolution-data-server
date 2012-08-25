@@ -1293,6 +1293,13 @@ camel_vee_folder_set_expression (CamelVeeFolder *vfolder,
 	CAMEL_VEE_FOLDER_GET_CLASS (vfolder)->set_expression (vfolder, expr);
 }
 
+/**
+ * camel_vee_folder_get_expression:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 const gchar *
 camel_vee_folder_get_expression (CamelVeeFolder *vfolder)
 {
@@ -1457,6 +1464,13 @@ camel_vee_folder_set_folders (CamelVeeFolder *vf,
 	camel_folder_thaw (CAMEL_FOLDER (vf));
 }
 
+/**
+ * camel_vee_folder_add_vuid:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_folder_add_vuid (CamelVeeFolder *vfolder,
                            CamelVeeMessageInfoData *mi_data,
@@ -1500,6 +1514,13 @@ camel_vee_folder_add_vuid (CamelVeeFolder *vfolder,
 	vee_folder_note_added_uid (vfolder, vsummary, mi_data, changes, FALSE);
 }
 
+/**
+ * camel_vee_folder_remove_vuid:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_folder_remove_vuid (CamelVeeFolder *vfolder,
                               CamelVeeMessageInfoData *mi_data,
@@ -1586,6 +1607,13 @@ camel_vee_folder_get_location (CamelVeeFolder *vf,
 	}
 }
 
+/**
+ * camel_vee_folder_get_vee_uid_folder:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelFolder *
 camel_vee_folder_get_vee_uid_folder (CamelVeeFolder *vf,
                                      const gchar *vee_message_uid)
@@ -1613,6 +1641,13 @@ camel_vee_folder_get_vee_uid_folder (CamelVeeFolder *vf,
 	return res;
 }
 
+/**
+ * camel_vee_folder_set_auto_update:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_folder_set_auto_update (CamelVeeFolder *vfolder,
                                   gboolean auto_update)
@@ -1627,6 +1662,13 @@ camel_vee_folder_set_auto_update (CamelVeeFolder *vfolder,
 	g_object_notify (G_OBJECT (vfolder), "auto-update");
 }
 
+/**
+ * camel_vee_folder_get_auto_update:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 gboolean
 camel_vee_folder_get_auto_update (CamelVeeFolder *vfolder)
 {

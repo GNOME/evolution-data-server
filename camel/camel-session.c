@@ -1012,6 +1012,8 @@ camel_session_remove_service (CamelSession *session,
  * unreferenced with g_object_unref() when finished with it.
  *
  * Returns: a #CamelService instance, or %NULL
+ *
+ * Since: 3.6
  **/
 CamelService *
 camel_session_ref_service (CamelSession *session,
@@ -1052,7 +1054,7 @@ camel_session_ref_service (CamelSession *session,
  *
  * Returns: a #CamelService instance, or %NULL
  *
- * Since: 3.2
+ * Since: 3.6
  **/
 CamelService *
 camel_session_ref_service_by_url (CamelSession *session,

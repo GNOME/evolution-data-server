@@ -49,6 +49,11 @@ G_BEGIN_DECLS
 typedef struct _ESourceAuthenticator ESourceAuthenticator;
 typedef struct _ESourceAuthenticatorInterface ESourceAuthenticatorInterface;
 
+/**
+ * ESourceAuthenticatorInterface:
+ *
+ * Since: 3.6
+ **/
 struct _ESourceAuthenticatorInterface {
 	GTypeInterface parent_interface;
 

@@ -44,6 +44,13 @@ typedef enum {
 	E_CAL_CHANGE_DELETED = 1 << 2
 } ECalChangeType;
 
+/**
+ * ECalChange:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 typedef struct {
 	ECalComponent *comp;
 	ECalChangeType type;
@@ -76,6 +83,13 @@ typedef enum {
 #define E_CALENDAR_STATUS_CORBA_EXCEPTION E_CALENDAR_STATUS_DBUS_EXCEPTION
 #endif
 
+/**
+ * EDataCalCallStatus:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 typedef enum {
 	Success,
 	Busy,
@@ -112,6 +126,13 @@ typedef enum {
 	NotOpened
 } EDataCalCallStatus;
 
+/**
+ * EDataCalObjType:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 typedef enum {
 	Event = 1 << 0,
 	Todo = 1 << 1,
@@ -119,6 +140,13 @@ typedef enum {
 	AnyType = 0x07
 } EDataCalObjType;
 
+/**
+ * EDataCalObjModType:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 typedef enum {
 	This = 1 << 0,
 	ThisAndPrior = 1 << 1,

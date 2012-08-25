@@ -600,6 +600,17 @@ e_name_selector_dialog_new (ESourceRegistry *registry)
 		"registry", registry, NULL);
 }
 
+/**
+ * e_name_selector_dialog_get_registry:
+ * @name_selector_dialog: an #ENameSelectorDialog
+ *
+ * Returns the #ESourceRegistry that was passed to
+ * e_name_selector_dialog_new().
+ *
+ * Returns: the #ESourceRegistry
+ *
+ * Since: 3.6
+ **/
 ESourceRegistry *
 e_name_selector_dialog_get_registry (ENameSelectorDialog *name_selector_dialog)
 {

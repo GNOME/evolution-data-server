@@ -566,6 +566,16 @@ e_data_cal_factory_new (GCancellable *cancellable,
 		cancellable, error, NULL);
 }
 
+/**
+ * e_data_cal_factory_get_registry:
+ * @factory: an #EDataCalFactory
+ *
+ * Returns the #ESourceRegistry owned by @factory.
+ *
+ * Returns: the #ESourceRegistry
+ *
+ * Since: 3.6
+ **/
 ESourceRegistry *
 e_data_cal_factory_get_registry (EDataCalFactory *factory)
 {

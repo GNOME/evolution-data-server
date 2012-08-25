@@ -3443,7 +3443,7 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
  *
  * Returns: Whether the @uid was found and removed from the @summary.
  *
- * Since: 3.4.3
+ * Since: 3.6
  **/
 gboolean
 camel_folder_summary_remove_uids (CamelFolderSummary *summary,

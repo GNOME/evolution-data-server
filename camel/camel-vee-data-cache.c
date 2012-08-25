@@ -27,8 +27,7 @@
 
 #include "camel-vee-data-cache.h"
 
-struct _CamelVeeSubfolderDataPrivate
-{
+struct _CamelVeeSubfolderDataPrivate {
 	CamelFolder *folder;
 	const gchar *folder_id; /* stored in string pool */
 };
@@ -111,6 +110,13 @@ vee_subfolder_data_hash_folder (CamelFolder *folder,
 	}
 }
 
+/**
+ * camel_vee_subfolder_data_new:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelVeeSubfolderData *
 camel_vee_subfolder_data_new (CamelFolder *folder)
 {
@@ -130,6 +136,13 @@ camel_vee_subfolder_data_new (CamelFolder *folder)
 	return data;
 }
 
+/**
+ * camel_vee_subfolder_data_get_folder:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelFolder *
 camel_vee_subfolder_data_get_folder (CamelVeeSubfolderData *data)
 {
@@ -138,6 +151,13 @@ camel_vee_subfolder_data_get_folder (CamelVeeSubfolderData *data)
 	return data->priv->folder;
 }
 
+/**
+ * camel_vee_subfolder_data_get_folder_id:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 const gchar *
 camel_vee_subfolder_data_get_folder_id (CamelVeeSubfolderData *data)
 {
@@ -148,8 +168,7 @@ camel_vee_subfolder_data_get_folder_id (CamelVeeSubfolderData *data)
 
 /* ----------------------------------------------------------------------- */
 
-struct _CamelVeeMessageInfoDataPrivate
-{
+struct _CamelVeeMessageInfoDataPrivate {
 	CamelVeeSubfolderData *subfolder_data;
 	const gchar *orig_message_uid; /* stored in string pool */
 	const gchar *vee_message_uid; /* stored in string pool */
@@ -198,6 +217,13 @@ camel_vee_message_info_data_init (CamelVeeMessageInfoData *data)
 	data->priv = G_TYPE_INSTANCE_GET_PRIVATE (data, CAMEL_TYPE_VEE_MESSAGE_INFO_DATA, CamelVeeMessageInfoDataPrivate);
 }
 
+/**
+ * camel_vee_message_info_data_new:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelVeeMessageInfoData *
 camel_vee_message_info_data_new (CamelVeeSubfolderData *subfolder_data,
                                  const gchar *orig_message_uid)
@@ -219,6 +245,13 @@ camel_vee_message_info_data_new (CamelVeeSubfolderData *subfolder_data,
 	return data;
 }
 
+/**
+ * camel_vee_message_info_data_get_subfolder_data:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelVeeSubfolderData *
 camel_vee_message_info_data_get_subfolder_data (CamelVeeMessageInfoData *data)
 {
@@ -227,6 +260,13 @@ camel_vee_message_info_data_get_subfolder_data (CamelVeeMessageInfoData *data)
 	return data->priv->subfolder_data;
 }
 
+/**
+ * camel_vee_message_info_data_get_orig_message_uid:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 const gchar *
 camel_vee_message_info_data_get_orig_message_uid (CamelVeeMessageInfoData *data)
 {
@@ -235,6 +275,13 @@ camel_vee_message_info_data_get_orig_message_uid (CamelVeeMessageInfoData *data)
 	return data->priv->orig_message_uid;
 }
 
+/**
+ * camel_vee_message_info_data_get_vee_message_uid:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 const gchar *
 camel_vee_message_info_data_get_vee_message_uid (CamelVeeMessageInfoData *data)
 {
@@ -245,8 +292,7 @@ camel_vee_message_info_data_get_vee_message_uid (CamelVeeMessageInfoData *data)
 
 /* ----------------------------------------------------------------------- */
 
-struct _CamelVeeDataCachePrivate
-{
+struct _CamelVeeDataCachePrivate {
 	GMutex *sf_mutex; /* guards subfolder_hash */
 	GHashTable *subfolder_hash; /* CamelFolder * => CamelVeeSubfolderData * */
 
@@ -257,8 +303,7 @@ struct _CamelVeeDataCachePrivate
 
 G_DEFINE_TYPE (CamelVeeDataCache, camel_vee_data_cache, G_TYPE_OBJECT)
 
-typedef struct _VeeData
-{
+typedef struct _VeeData {
 	CamelFolder *folder;
 	const gchar *orig_message_uid;
 } VeeData;
@@ -346,12 +391,26 @@ camel_vee_data_cache_init (CamelVeeDataCache *data_cache)
 	data_cache->priv->vee_message_uid_hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
 }
 
+/**
+ * camel_vee_data_cache_new:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelVeeDataCache *
 camel_vee_data_cache_new (void)
 {
 	return g_object_new (CAMEL_TYPE_VEE_DATA_CACHE, NULL);
 }
 
+/**
+ * camel_vee_data_cache_add_subfolder:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_data_cache_add_subfolder (CamelVeeDataCache *data_cache,
                                     CamelFolder *subfolder)
@@ -440,6 +499,13 @@ remove_orig_by_folder_cb (gpointer key,
 	return vee_data && vee_data->folder == folder;
 }
 
+/**
+ * camel_vee_data_cache_remove_subfolder:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_data_cache_remove_subfolder (CamelVeeDataCache *data_cache,
                                        CamelFolder *subfolder)
@@ -458,6 +524,13 @@ camel_vee_data_cache_remove_subfolder (CamelVeeDataCache *data_cache,
 	g_mutex_unlock (data_cache->priv->mi_mutex);
 }
 
+/**
+ * camel_vee_data_cache_get_subfolder_data:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelVeeSubfolderData *
 camel_vee_data_cache_get_subfolder_data (CamelVeeDataCache *data_cache,
                                          CamelFolder *folder)
@@ -482,11 +555,16 @@ camel_vee_data_cache_get_subfolder_data (CamelVeeDataCache *data_cache,
 	return res;
 }
 
-/* Returns whether data_cache contains certain UID for certain folder;
+/**
+ * camel_vee_data_cache_contains_message_info_data:
+ *
+ * Returns whether data_cache contains certain UID for certain folder;
  * instead of camel_vee_data_cache_get_message_info_data() only
  * returns FALSE if not, while camel_vee_data_cache_get_message_info_data()
  * auto-adds it to data_cache.
-*/
+ *
+ * Since: 3.6
+ */
 gboolean
 camel_vee_data_cache_contains_message_info_data (CamelVeeDataCache *data_cache,
                                                  CamelFolder *folder,
@@ -514,6 +592,13 @@ camel_vee_data_cache_contains_message_info_data (CamelVeeDataCache *data_cache,
 	return res;
 }
 
+/**
+ * camel_vee_data_cache_get_message_info_data:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelVeeMessageInfoData *
 camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
                                             CamelFolder *folder,
@@ -568,6 +653,13 @@ camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
 	return res;
 }
 
+/**
+ * camel_vee_data_cache_get_message_info_data_by_vuid:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 CamelVeeMessageInfoData *
 camel_vee_data_cache_get_message_info_data_by_vuid (CamelVeeDataCache *data_cache,
                                                     const gchar *vee_message_uid)
@@ -594,8 +686,7 @@ camel_vee_data_cache_get_message_info_data_by_vuid (CamelVeeDataCache *data_cach
 	return res;
 }
 
-struct ForeachMiData
-{
+struct ForeachMiData {
 	CamelFolder *fromfolder;
 	void (* func) (CamelVeeMessageInfoData *mi_data,
 			CamelFolder *subfolder,
@@ -620,6 +711,13 @@ cvdc_foreach_mi_data_cb (gpointer key,
 		fmd->func (mi_data, vdata->folder, fmd->user_data);
 }
 
+/**
+ * camel_vee_data_cache_foreach_message_info_data:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_data_cache_foreach_message_info_data (CamelVeeDataCache *data_cache,
                                                 CamelFolder *fromfolder,
@@ -644,6 +742,13 @@ camel_vee_data_cache_foreach_message_info_data (CamelVeeDataCache *data_cache,
 	g_mutex_unlock (data_cache->priv->mi_mutex);
 }
 
+/**
+ * camel_vee_data_cache_remove_message_info_data:
+ *
+ * FIXME Document me!
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_data_cache_remove_message_info_data (CamelVeeDataCache *data_cache,
                                                CamelVeeMessageInfoData *mi_data)

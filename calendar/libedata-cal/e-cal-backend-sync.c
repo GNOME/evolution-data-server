@@ -296,6 +296,8 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
  * @error: Out parameter for a #GError.
  *
  * Calls the create_objects_sync method on the given backend.
+ *
+ * Since: 3.6
  */
 void
 e_cal_backend_sync_create_objects (ECalBackendSync *backend,
@@ -326,16 +328,18 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
  * @error: Out parameter for a #GError.
  *
  * Calls the modify_objects_sync method on the given backend.
+ *
+ * Since: 3.6
  */
 void
 e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
-                                                                   EDataCal *cal,
-                                                                   GCancellable *cancellable,
-                                                                   const GSList *calobjs,
-                                                                   CalObjModType mod,
-                                                                   GSList **old_components,
-                                                                   GSList **new_components,
-                                                                   GError **error)
+                                   EDataCal *cal,
+                                   GCancellable *cancellable,
+                                   const GSList *calobjs,
+                                   CalObjModType mod,
+                                   GSList **old_components,
+                                   GSList **new_components,
+                                   GError **error)
 {
 	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
 	e_return_data_cal_error_if_fail (E_CAL_BACKEND_SYNC_GET_CLASS (backend)->modify_objects_sync != NULL, UnsupportedMethod);
@@ -358,6 +362,8 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
  * @error: Out parameter for a #GError.
  *
  * Calls the remove_objects_sync method on the given backend.
+ *
+ * Since: 3.6
  */
 void
 e_cal_backend_sync_remove_objects (ECalBackendSync *backend,

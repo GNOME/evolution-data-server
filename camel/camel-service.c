@@ -1759,6 +1759,8 @@ camel_service_connect_finish (CamelService *service,
  * they will be cancelled.
  *
  * Returns: %TRUE if the connection was severed or %FALSE otherwise
+ *
+ * Since: 3.6
  **/
 gboolean
 camel_service_disconnect_sync (CamelService *service,

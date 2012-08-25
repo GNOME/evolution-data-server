@@ -167,6 +167,8 @@ e_source_extension_init (ESourceExtension *extension)
  * Returns the #ESource instance to which @extension belongs.
  *
  * Returns: (transfer none): the #ESource instance
+ *
+ * Since: 3.6
  **/
 ESource *
 e_source_extension_get_source (ESourceExtension *extension)

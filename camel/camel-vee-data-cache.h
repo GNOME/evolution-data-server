@@ -97,6 +97,11 @@ typedef struct _CamelVeeDataCache CamelVeeDataCache;
 typedef struct _CamelVeeDataCacheClass CamelVeeDataCacheClass;
 typedef struct _CamelVeeDataCachePrivate CamelVeeDataCachePrivate;
 
+/**
+ * CamelVeeSubfolderData:
+ *
+ * Since: 3.6
+ **/
 struct _CamelVeeSubfolderData {
 	GObject parent;
 	CamelVeeSubfolderDataPrivate *priv;
@@ -117,6 +122,11 @@ const gchar *	camel_vee_subfolder_data_get_folder_id
 
 /* ----------------------------------------------------------------------- */
 
+/**
+ * CamelVeeMessageInfoData:
+ *
+ * Since: 3.6
+ **/
 struct _CamelVeeMessageInfoData {
 	GObject parent;
 	CamelVeeMessageInfoDataPrivate *priv;
@@ -142,6 +152,11 @@ const gchar *	camel_vee_message_info_data_get_vee_message_uid
 
 /* ----------------------------------------------------------------------- */
 
+/**
+ * CamelVeeDataCache:
+ *
+ * Since: 3.6
+ **/
 struct _CamelVeeDataCache {
 	GObject parent;
 	CamelVeeDataCachePrivate *priv;

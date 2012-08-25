@@ -488,6 +488,25 @@ e_source_collection_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-source-extension</FILE>
+<TITLE>ESourceExtension</TITLE>
+ESourceExtension
+E_SOURCE_PARAM_SETTING
+e_source_extension_get_source
+<SUBSECTION Standard>
+E_SOURCE_EXTENSION
+E_IS_SOURCE_EXTENSION
+E_TYPE_SOURCE_EXTENSION
+E_SOURCE_EXTENSION_CLASS
+E_IS_SOURCE_EXTENSION_CLASS
+E_SOURCE_EXTENSION_GET_CLASS
+ESourceExtensionClass
+<SUBSECTION Private>
+ESourceExtensionPrivate
+e_source_extension_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-source-goa</FILE>
 <TITLE>ESourceGoa</TITLE>
 ESourceGoa
@@ -506,25 +525,6 @@ ESourceGoaClass
 <SUBSECTION Private>
 ESourceGoaPrivate
 e_source_goa_get_type
-</SECTION>
-
-<SECTION>
-<FILE>e-source-extension</FILE>
-<TITLE>ESourceExtension</TITLE>
-ESourceExtension
-E_SOURCE_PARAM_SETTING
-e_source_extension_get_source
-<SUBSECTION Standard>
-E_SOURCE_EXTENSION
-E_IS_SOURCE_EXTENSION
-E_TYPE_SOURCE_EXTENSION
-E_SOURCE_EXTENSION_CLASS
-E_IS_SOURCE_EXTENSION_CLASS
-E_SOURCE_EXTENSION_GET_CLASS
-ESourceExtensionClass
-<SUBSECTION Private>
-ESourceExtensionPrivate
-e_source_extension_get_type
 </SECTION>
 
 <SECTION>
