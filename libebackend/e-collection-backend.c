@@ -1269,7 +1269,10 @@ e_collection_backend_list_mail_sources (ECollectionBackend *backend)
  * can either be done immediately or in response to some "resource created"
  * notification from the server.  The added #ESource can be @source itself
  * or a different #ESource instance that describes the new resource.
- * implementor's responsibility to add an #ESource to.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
  *
  * Since: 3.6
  **/
@@ -1291,6 +1294,34 @@ e_collection_backend_create_resource_sync (ECollectionBackend *backend,
 		backend, source, cancellable, error);
 }
 
+/**
+ * e_collection_backend_create_resource:
+ * @backend: an #ECollectionBackend
+ * @source: an #ESource
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously creates a server-side resource described by @source.
+ * For example, if @source describes a new calendar, an equivalent calendar
+ * is created on the server.
+ *
+ * It is the implementor's responsibility to examine @source and determine
+ * what the equivalent server-side resource would be.  If this cannot be
+ * determined without ambiguity, the function must return an error.
+ *
+ * After the server-side resource is successfully created, the implementor
+ * must also add an #ESource to @backend's #ECollectionBackend:server.  This
+ * can either be done immediately or in response to some "resource created"
+ * notification from the server.  The added #ESource can be @source itself
+ * or a different #ESource instance that describes the new resource.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_collection_backend_create_resource_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.6
+ **/
 void
 e_collection_backend_create_resource (ECollectionBackend *backend,
                                       ESource *source,
@@ -1310,6 +1341,20 @@ e_collection_backend_create_resource (ECollectionBackend *backend,
 		backend, source, cancellable, callback, user_data);
 }
 
+/**
+ * e_collection_backend_create_resource_finish:
+ * @backend: an #ECollectionBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_collection_backend_create_resource().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
 gboolean
 e_collection_backend_create_resource_finish (ECollectionBackend *backend,
                                              GAsyncResult *result,
@@ -1326,6 +1371,27 @@ e_collection_backend_create_resource_finish (ECollectionBackend *backend,
 	return class->create_resource_finish (backend, result, error);
 }
 
+/**
+ * e_collection_backend_delete_resource_sync:
+ * @backend: an #ECollectionBackend
+ * @source: an #ESource
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes a server-side resource described by @source.  The @source must
+ * be a child of @backend's collection #EBackend:source.
+ *
+ * After the server-side resource is successfully deleted, the implementor
+ * must also remove @source from the @backend's #ECollectionBackend:server.
+ * This can either be done immediately or in response to some "resource
+ * deleted" notification from the server.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
 gboolean
 e_collection_backend_delete_resource_sync (ECollectionBackend *backend,
                                            ESource *source,
@@ -1344,6 +1410,28 @@ e_collection_backend_delete_resource_sync (ECollectionBackend *backend,
 		backend, source, cancellable, error);
 }
 
+/**
+ * e_collection_backend_delete_resource:
+ * @backend: an #ECollectionBackend
+ * @source: an #ESource
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously deletes a server-side resource described by @source.
+ * The @source must be a child of @backend's collection #EBackend:source.
+ *
+ * After the server-side resource is successfully deleted, the implementor
+ * must also remove @source from the @backend's #ECollectionBackend:server.
+ * This can either be done immediately or in response to some "resource
+ * deleted" notification from the server.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_collection_backend_delete_resource_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.6
+ **/
 void
 e_collection_backend_delete_resource (ECollectionBackend *backend,
                                       ESource *source,
@@ -1363,6 +1451,20 @@ e_collection_backend_delete_resource (ECollectionBackend *backend,
 		backend, source, cancellable, callback, user_data);
 }
 
+/**
+ * e_collection_backend_delete_resource_finish:
+ * @backend: an #ECollectionBackend
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_collection_backend_delete_resource().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on failure
+ *
+ * Since: 3.6
+ **/
 gboolean
 e_collection_backend_delete_resource_finish (ECollectionBackend *backend,
                                              GAsyncResult *result,
