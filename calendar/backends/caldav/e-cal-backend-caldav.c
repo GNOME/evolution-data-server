@@ -2297,7 +2297,7 @@ is_google_uri (const gchar *uri)
 
 static void
 time_to_refresh_caldav_calendar_cb (ESource *source,
-				    gpointer user_data)
+                                    gpointer user_data)
 {
 	ECalBackendCalDAV *cbdav = user_data;
 
@@ -4933,7 +4933,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 		g_signal_handlers_disconnect_by_func (G_OBJECT (source), caldav_source_changed_cb, object);
 
 		if (priv->refresh_id) {
-			e_source_refresh_remove_timeout	(source, priv->refresh_id);
+			e_source_refresh_remove_timeout (source, priv->refresh_id);
 			priv->refresh_id = 0;
 		}
 	}

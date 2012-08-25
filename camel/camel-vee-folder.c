@@ -1498,7 +1498,8 @@ camel_vee_folder_add_vuid (CamelVeeFolder *vfolder,
 		if (g_list_find (vfolder->priv->subfolders, subfolder)) {
 			/* postpone addition to the Unmatched folder, if the change was done
 			 * in the Unmatched folder itself or auto-update is disabled */
-			g_hash_table_insert (vfolder->priv->unmatched_add_changed,
+			g_hash_table_insert (
+				vfolder->priv->unmatched_add_changed,
 				g_object_ref (mi_data), GINT_TO_POINTER (1));
 		}
 
@@ -1549,7 +1550,8 @@ camel_vee_folder_remove_vuid (CamelVeeFolder *vfolder,
 		if (g_list_find (vfolder->priv->subfolders, subfolder)) {
 			/* postpone removal from the Unmatched folder, if the change was done
 			 * in the Unmatched folder itself or auto-update is disabled */
-			g_hash_table_insert (vfolder->priv->unmatched_remove_changed,
+			g_hash_table_insert (
+				vfolder->priv->unmatched_remove_changed,
 				g_object_ref (mi_data), GINT_TO_POINTER (1));
 		}
 

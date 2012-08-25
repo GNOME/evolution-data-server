@@ -138,8 +138,8 @@ camel_url_new_with_base (CamelURL *base,
 			semi = strchr (url_string, ';');
 			if (semi && semi < colon &&
 			    !g_ascii_strncasecmp (semi, ";auth=", 6)) {
-				url->authmech = g_strndup (semi + 6,
-							   colon - semi - 6);
+				url->authmech = g_strndup (
+					semi + 6, colon - semi - 6);
 				camel_url_decode (url->authmech);
 			} else {
 				url->authmech = NULL;
@@ -170,8 +170,8 @@ camel_url_new_with_base (CamelURL *base,
 	question = memchr (url_string, '?', end - url_string);
 	if (question) {
 		if (question[1]) {
-			url->query = g_strndup (question + 1,
-						end - (question + 1));
+			url->query = g_strndup (
+				question + 1, end - (question + 1));
 			camel_url_decode (url->query);
 		}
 		end = question;
@@ -198,8 +198,8 @@ camel_url_new_with_base (CamelURL *base,
 					value = g_strdup ("");
 				}
 				camel_url_decode (name);
-				g_datalist_set_data_full (&url->params, name,
-							  value, g_free);
+				g_datalist_set_data_full (
+					&url->params, name, value, g_free);
 				g_free (name);
 			}
 		}
@@ -241,10 +241,11 @@ camel_url_new_with_base (CamelURL *base,
 			 * i.e. like "http://example.com" (this expected only "http://example.com/") */
 			last = base->path ? strrchr (base->path, '/') : NULL;
 			if (last) {
-				newpath = g_strdup_printf ("%.*s/%s",
-							   (gint)(last - base->path),
-							   base->path,
-							   url->path);
+				newpath = g_strdup_printf (
+					"%.*s/%s",
+					(gint)(last - base->path),
+					base->path,
+					url->path);
 			} else
 				newpath = g_strdup_printf ("/%s", url->path);
 

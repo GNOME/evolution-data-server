@@ -456,7 +456,8 @@ camel_vee_data_cache_add_subfolder (CamelVeeDataCache *data_cache,
 					hash_data->orig_message_uid = camel_vee_message_info_data_get_orig_message_uid (mi_data);
 
 					g_hash_table_insert (data_cache->priv->orig_message_uid_hash, hash_data, mi_data);
-					g_hash_table_insert (data_cache->priv->vee_message_uid_hash,
+					g_hash_table_insert (
+						data_cache->priv->vee_message_uid_hash,
 						(gpointer) camel_vee_message_info_data_get_vee_message_uid (mi_data),
 						mi_data);
 				}
@@ -640,7 +641,8 @@ camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
 		hash_data->orig_message_uid = camel_vee_message_info_data_get_orig_message_uid (res);
 
 		g_hash_table_insert (data_cache->priv->orig_message_uid_hash, hash_data, res);
-		g_hash_table_insert (data_cache->priv->vee_message_uid_hash,
+		g_hash_table_insert (
+			data_cache->priv->vee_message_uid_hash,
 			(gpointer) camel_vee_message_info_data_get_vee_message_uid (res),
 			res);
 	}

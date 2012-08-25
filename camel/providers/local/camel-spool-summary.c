@@ -242,7 +242,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
 				_("Could not synchronize spool folder %s: %s\n"
-				  "Folder may be corrupt, copy saved in '%s'"),
+				"Folder may be corrupt, copy saved in '%s'"),
 				((CamelLocalSummary *) cls)->folder_path,
 				g_strerror (errno), tmpname);
 			/* so we dont delete it */
@@ -261,7 +261,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Could not synchronize spool folder %s: %s\n"
-			  "Folder may be corrupt, copy saved in '%s'"),
+			"Folder may be corrupt, copy saved in '%s'"),
 			((CamelLocalSummary *) cls)->folder_path,
 			g_strerror (errno), tmpname);
 		tmpname[0] = '\0';
@@ -274,7 +274,7 @@ spool_summary_sync_full (CamelMboxSummary *cls,
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Could not synchronize spool folder %s: %s\n"
-			  "Folder may be corrupt, copy saved in '%s'"),
+			"Folder may be corrupt, copy saved in '%s'"),
 			((CamelLocalSummary *) cls)->folder_path,
 			g_strerror (errno), tmpname);
 		tmpname[0] = '\0';

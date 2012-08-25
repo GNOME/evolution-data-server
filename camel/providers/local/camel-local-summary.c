@@ -300,12 +300,28 @@ camel_local_summary_check (CamelLocalSummary *cls,
 		camel_folder_summary_free_array (known_uids);
 
 		printf ("\nMemory used by summary:\n\n");
-		printf ("Total of %d messages\n", camel_folder_summary_count (s));
-		printf ("Total: %d bytes (ave %f)\n", stats.citotal + stats.mitotal,
-		       (double)(stats.citotal + stats.mitotal) / (double) camel_folder_summary_count (s));
-		printf ("Message Info: %d (ave %f)\n", stats.mitotal, (double) stats.mitotal / (double) stats.micount);
-		printf ("Content Info; %d (ave %f) count %d\n", stats.citotal, (double) stats.citotal / (double) stats.cicount, stats.cicount);
-		printf ("message id's: %d (ave %f) count %d\n", stats.msgid, (double) stats.msgid / (double) stats.msgcount, stats.msgcount);
+		printf (
+			"Total of %d messages\n",
+			camel_folder_summary_count (s));
+		printf (
+			"Total: %d bytes (ave %f)\n",
+			stats.citotal + stats.mitotal,
+			(gdouble) (stats.citotal + stats.mitotal) /
+			(gdouble) camel_folder_summary_count (s));
+		printf (
+			"Message Info: %d (ave %f)\n",
+			stats.mitotal,
+			(gdouble) stats.mitotal / (gdouble) stats.micount);
+		printf (
+			"Content Info; %d (ave %f) count %d\n",
+			stats.citotal,
+			(gdouble) stats.citotal / (gdouble) stats.cicount,
+			stats.cicount);
+		printf (
+			"message id's: %d (ave %f) count %d\n",
+			stats.msgid,
+			(gdouble) stats.msgid / (gdouble) stats.msgcount,
+			stats.msgcount);
 	}
 #endif
 	return ret;

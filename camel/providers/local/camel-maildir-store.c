@@ -110,7 +110,7 @@ maildir_store_create_folder_sync (CamelStore *store,
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
 			_("Cannot create folder: %s: "
-			  "Folder name cannot contain a dot"),
+			"Folder name cannot contain a dot"),
 			folder_name);
 		goto exit;
 	}

@@ -658,9 +658,10 @@ sm_verify_cmsg (CamelCipherContext *context,
 					cn = NSS_CMSSignerInfo_GetSignerCommonName (si);
 					em = NSS_CMSSignerInfo_GetSignerEmailAddress (si);
 
-					g_string_append_printf (description, _("Signer: %s <%s>: %s\n"),
-							       cn ? cn:"<unknown>", em ? em:"<unknown>",
-							       sm_status_description (status));
+					g_string_append_printf (
+						description, _("Signer: %s <%s>: %s\n"),
+						cn ? cn:"<unknown>", em ? em:"<unknown>",
+						sm_status_description (status));
 
 					camel_cipher_validity_add_certinfo_ex (
 						valid, CAMEL_CIPHER_VALIDITY_SIGN, cn, em,
@@ -832,12 +833,13 @@ smime_context_sign_sync (CamelCipherContext *context,
 		goto fail;
 	}
 
-	enc = NSS_CMSEncoder_Start (cmsg,
-				   sm_write_stream, ostream, /* DER output callback  */
-				   NULL, NULL,     /* destination storage  */
-				   NULL, NULL,	   /* password callback    */
-				   NULL, NULL,     /* decrypt key callback */
-				   NULL, NULL );   /* detached digests    */
+	enc = NSS_CMSEncoder_Start (
+		cmsg,
+		sm_write_stream, ostream, /* DER output callback  */
+		NULL, NULL,     /* destination storage  */
+		NULL, NULL,	   /* password callback    */
+		NULL, NULL,     /* decrypt key callback */
+		NULL, NULL );   /* detached digests    */
 	if (!enc) {
 		set_nss_error (error, _("Cannot create encoder context"));
 		goto fail;
@@ -955,7 +957,7 @@ smime_context_verify_sync (CamelCipherContext *context,
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot verify message signature: "
-				  "Incorrect message format"));
+				"Incorrect message format"));
 			goto fail;
 		}
 
@@ -969,7 +971,7 @@ smime_context_verify_sync (CamelCipherContext *context,
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot verify message signature: "
-				  "Incorrect message format"));
+				"Incorrect message format"));
 			goto fail;
 		}
 	} else if (camel_content_type_is (ct, "application", "x-pkcs7-mime")) {
@@ -978,14 +980,15 @@ smime_context_verify_sync (CamelCipherContext *context,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot verify message signature: "
-			  "Incorrect message format"));
+			"Incorrect message format"));
 		goto fail;
 	}
 
-	dec = NSS_CMSDecoder_Start (NULL,
-				   NULL, NULL, /* content callback     */
-				   NULL, NULL,	/* password callback    */
-				   NULL, NULL); /* decrypt key callback */
+	dec = NSS_CMSDecoder_Start (
+		NULL,
+		NULL, NULL, /* content callback     */
+		NULL, NULL,	/* password callback    */
+		NULL, NULL); /* decrypt key callback */
 
 	camel_data_wrapper_decode_to_stream_sync (
 		camel_medium_get_content (
@@ -1120,12 +1123,13 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 
 	/* dump it out */
 	ostream = camel_stream_mem_new ();
-	enc = NSS_CMSEncoder_Start (cmsg,
-				   sm_write_stream, ostream,
-				   NULL, NULL,
-				   NULL, NULL,
-				   sm_decrypt_key, bulkkey,
-				   NULL, NULL);
+	enc = NSS_CMSEncoder_Start (
+		cmsg,
+		sm_write_stream, ostream,
+		NULL, NULL,
+		NULL, NULL,
+		sm_decrypt_key, bulkkey,
+		NULL, NULL);
 	if (enc == NULL) {
 		set_nss_error (error, _("Cannot create encoder context"));
 		goto fail;
@@ -1226,10 +1230,11 @@ smime_context_decrypt_sync (CamelCipherContext *context,
 
 	g_seekable_seek (G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
 
-	dec = NSS_CMSDecoder_Start (NULL,
-				   sm_write_stream, ostream, /* content callback     */
-				   NULL, NULL,
-				   NULL, NULL); /* decrypt key callback */
+	dec = NSS_CMSDecoder_Start (
+		NULL,
+		sm_write_stream, ostream, /* content callback     */
+		NULL, NULL,
+		NULL, NULL); /* decrypt key callback */
 
 	if (NSS_CMSDecoder_Update (dec, (gchar *) buffer->data, buffer->len) != SECSuccess) {
 		cmsg = NULL;
@@ -1381,10 +1386,11 @@ camel_smime_context_describe_part (CamelSMIMEContext *context,
 		g_seekable_seek (
 			G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
 
-		dec = NSS_CMSDecoder_Start (NULL,
-					   NULL, NULL,
-					   NULL, NULL,	/* password callback    */
-					   NULL, NULL); /* decrypt key callback */
+		dec = NSS_CMSDecoder_Start (
+			NULL,
+			NULL, NULL,
+			NULL, NULL,	/* password callback    */
+			NULL, NULL); /* decrypt key callback */
 
 		NSS_CMSDecoder_Update (dec, (gchar *) buffer->data, buffer->len);
 		g_object_unref (istream);

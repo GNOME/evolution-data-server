@@ -168,14 +168,15 @@ ssl_get_client_auth (gpointer data,
 		CERTCertNicknames *names;
 		gint i;
 
-		names = CERT_GetCertNicknames (CERT_GetDefaultCertDB (),
-					       SEC_CERT_NICKNAMES_USER,
-					       proto_win);
+		names = CERT_GetCertNicknames (
+			CERT_GetDefaultCertDB (),
+			SEC_CERT_NICKNAMES_USER,
+			proto_win);
 
 		if (names != NULL) {
 			for (i = 0; i < names->numnicknames; i++) {
-				cert = PK11_FindCertFromNickname (names->nicknames[i],
-								  proto_win);
+				cert = PK11_FindCertFromNickname (
+					names->nicknames[i], proto_win);
 				if (!cert)
 					continue;
 
@@ -224,8 +225,9 @@ ssl_auth_cert (gpointer data,
 
 	cert = SSL_PeerCertificate (sockfd);
 	pinarg = SSL_RevealPinArg (sockfd);
-	status = CERT_VerifyCertNow ((CERTCertDBHandle *) data, cert,
-				     checksig, certUsageSSLClient, pinarg);
+	status = CERT_VerifyCertNow (
+		(CERTCertDBHandle *) data, cert,
+		checksig, certUsageSSLClient, pinarg);
 
 	if (status != SECSuccess)
 		return SECFailure;
@@ -499,18 +501,23 @@ ssl_bad_cert (gpointer data,
 
 		status = CERT_VerifyCertNow (cert->dbhandle, cert, TRUE, certUsageSSLClient, NULL);
 		fingerprint = cert_fingerprint (cert);
-		cert_str = g_strdup_printf (_("   Issuer:       %s\n"
-					      "   Subject:      %s\n"
-					      "   Fingerprint:  %s\n"
-					      "   Signature:    %s"),
-					    CERT_NameToAscii (&cert->issuer),
-					    CERT_NameToAscii (&cert->subject),
-					    fingerprint, status == SECSuccess?_("GOOD"):_("BAD"));
+		cert_str = g_strdup_printf (_(
+			"   Issuer:       %s\n"
+			"   Subject:      %s\n"
+			"   Fingerprint:  %s\n"
+			"   Signature:    %s"),
+			CERT_NameToAscii (&cert->issuer),
+			CERT_NameToAscii (&cert->subject),
+			fingerprint,
+			status == SECSuccess ? _("GOOD") : _("BAD"));
 		g_free (fingerprint);
 
 		/* construct our user prompt */
-		prompt = g_strdup_printf (_("SSL Certificate for '%s' is not trusted. Do you wish to accept it?\n\nDetailed information about the certificate:\n%s"),
-					  ssl->priv->expected_host, cert_str);
+		prompt = g_strdup_printf (
+			_("SSL Certificate for '%s' is not trusted. "
+			"Do you wish to accept it?\n\n"
+			"Detailed information about the certificate:\n%s"),
+			ssl->priv->expected_host, cert_str);
 		g_free (cert_str);
 
 		button_captions = g_slist_append (button_captions, _("_Reject"));
@@ -804,9 +811,9 @@ tcp_stream_ssl_connect (CamelTcpStream *stream,
 	CamelTcpStreamSSL *ssl = CAMEL_TCP_STREAM_SSL (stream);
 	gint retval;
 
-	retval = CAMEL_TCP_STREAM_CLASS (camel_tcp_stream_ssl_parent_class)->
-		connect (stream, host, service,
-		fallback_port, cancellable, error);
+	retval = CAMEL_TCP_STREAM_CLASS (
+		camel_tcp_stream_ssl_parent_class)->connect (
+		stream, host, service, fallback_port, cancellable, error);
 	if (retval != 0)
 		return retval;
 

@@ -251,13 +251,15 @@ text_index_add_name_to_word (CamelIndex *idx,
 			data = 0;
 			wordid = camel_key_table_add (p->word_index, word, 0, 0);
 			if (wordid == 0) {
-				g_warning ("Could not create key entry for word '%s': %s\n",
-					   word, g_strerror (errno));
+				g_warning (
+					"Could not create key entry for word '%s': %s\n",
+					word, g_strerror (errno));
 				return;
 			}
 			if (camel_partition_table_add (p->word_hash, word, wordid) == -1) {
-				g_warning ("Could not create hash entry for word '%s': %s\n",
-					   word, g_strerror (errno));
+				g_warning (
+					"Could not create hash entry for word '%s': %s\n",
+					word, g_strerror (errno));
 				return;
 			}
 			rb->words++;
@@ -265,8 +267,9 @@ text_index_add_name_to_word (CamelIndex *idx,
 		} else {
 			data = camel_key_table_lookup (p->word_index, wordid, NULL, NULL);
 			if (data == 0) {
-				g_warning ("Could not find key entry for word '%s': %s\n",
-					   word, g_strerror (errno));
+				g_warning (
+					"Could not find key entry for word '%s': %s\n",
+					word, g_strerror (errno));
 				return;
 			}
 		}
@@ -1205,9 +1208,10 @@ dump_raw (GHashTable *map,
 				else
 					len = k->u.keys[i - 1].offset;
 				len -= k->u.keys[i].offset;
-				printf ("[%03d]: %08x %5d %06x %3d '%.*s'\n", i,
-				       k->u.keys[i].data, k->u.keys[i].offset, k->u.keys[i].flags,
-				       len, len, k->u.keydata + k->u.keys[i].offset);
+				printf (
+					"[%03d]: %08x %5d %06x %3d '%.*s'\n", i,
+					k->u.keys[i].data, k->u.keys[i].offset, k->u.keys[i].flags,
+					len, len, k->u.keydata + k->u.keys[i].offset);
 			}
 		} break;
 		case PARTITION_MAP: {

@@ -113,12 +113,15 @@ gint main (gint argc, gchar **argv)
 	check_msg (mp2->postface == NULL || strlen (mp2->postface) == 0, "postface: '%s'", mp2->postface);
 	camel_test_fatal ();
 
-	test_message_compare_content (camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 0))),
-				     "content part 1", strlen ("content part 1"));
-	test_message_compare_content (camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 1))),
-				     "content part 3", strlen ("content part 3"));
-	test_message_compare_content (camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 2))),
-				     "content part 2", strlen ("content part 2"));
+	test_message_compare_content (
+		camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 0))),
+		"content part 1", strlen ("content part 1"));
+	test_message_compare_content (
+		camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 1))),
+		"content part 3", strlen ("content part 3"));
+	test_message_compare_content (
+		camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 2))),
+		"content part 2", strlen ("content part 2"));
 	pull ();
 
 	push ("writing again, & re-reading");
@@ -137,12 +140,15 @@ gint main (gint argc, gchar **argv)
 
 	check_msg (mp2->postface == NULL || strlen (mp2->postface) == 0, "postface: '%s'", mp2->postface);
 
-	test_message_compare_content (camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 0))),
-				     "content part 1", strlen ("content part 1"));
-	test_message_compare_content (camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 1))),
-				     "content part 3", strlen ("content part 3"));
-	test_message_compare_content (camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 2))),
-				     "content part 2", strlen ("content part 2"));
+	test_message_compare_content (
+		camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 0))),
+		"content part 1", strlen ("content part 1"));
+	test_message_compare_content (
+		camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 1))),
+		"content part 3", strlen ("content part 3"));
+	test_message_compare_content (
+		camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 2))),
+		"content part 2", strlen ("content part 2"));
 	pull ();
 	pull ();
 
@@ -169,12 +175,15 @@ gint main (gint argc, gchar **argv)
 	check (strcmp (camel_multipart_get_boundary (mp2), "_=,.XYZ_Kangaroo_Meat_is_!_ABADF00D") == 0);
 	check (mp2->preface && strcmp (mp2->preface, "pre-text\nLines.") == 0);
 	check (mp2->postface && strcmp (mp2->postface, "post-text, no lines.\nOne line.\n") == 0);
-	test_message_compare_content (camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 0))),
-					   "content part 1", strlen ("content part 1"));
-	test_message_compare_content (camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 1))),
-				     "content part 3", strlen ("content part 3"));
-	test_message_compare_content (camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 2))),
-				     "content part 2", strlen ("content part 2"));
+	test_message_compare_content (
+		camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 0))),
+		"content part 1", strlen ("content part 1"));
+	test_message_compare_content (
+		camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 1))),
+		"content part 3", strlen ("content part 3"));
+	test_message_compare_content (
+		camel_medium_get_content (CAMEL_MEDIUM (camel_multipart_get_part (mp2, 2))),
+		"content part 2", strlen ("content part 2"));
 	pull ();
 	check_unref (msg2, 1);
 	pull ();

@@ -1515,41 +1515,50 @@ write_mir (CamelDB *cdb,
 
 	/* NB: UGLIEST Hack. We can't modify the schema now. We are using dirty (an unsed one to notify of FLAGGED/Dirty infos */
 
-	ins_query = sqlite3_mprintf ("INSERT OR REPLACE INTO %Q VALUES (%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %lld, %lld, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, strftime(\"%%s\", 'now'), strftime(\"%%s\", 'now') )",
-			folder_name, record->uid, record->flags,
-			record->msg_type, record->read, record->deleted, record->replied,
-			record->important, record->junk, record->attachment, record->dirty,
-			record->size, (gint64) record->dsent, (gint64) record->dreceived,
-			record->subject, record->from, record->to,
-			record->cc, record->mlist, record->followup_flag,
-			record->followup_completed_on, record->followup_due_by,
-			record->part, record->labels, record->usertags,
-			record->cinfo, record->bdata);
+	ins_query = sqlite3_mprintf (
+		"INSERT OR REPLACE INTO %Q VALUES ("
+		"%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, "
+		"%lld, %lld, %Q, %Q, %Q, %Q, %Q, %Q, %Q, %Q, "
+		"%Q, %Q, %Q, %Q, %Q, "
+		"strftime(\"%%s\", 'now'), "
+		"strftime(\"%%s\", 'now') )",
+		folder_name,
+		record->uid,
+		record->flags,
+		record->msg_type,
+		record->read,
+		record->deleted,
+		record->replied,
+		record->important,
+		record->junk,
+		record->attachment,
+		record->dirty,
+		record->size,
+		(gint64) record->dsent,
+		(gint64) record->dreceived,
+		record->subject,
+		record->from,
+		record->to,
+		record->cc,
+		record->mlist,
+		record->followup_flag,
+		record->followup_completed_on,
+		record->followup_due_by,
+		record->part,
+		record->labels,
+		record->usertags,
+		record->cinfo,
+		record->bdata);
 
-	/* if (delete_old_record)
-			del_query = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder_name, record->uid); */
-
-#if 0
-	gchar *upd_query;
-
-	upd_query = g_strdup_printf ("IMPLEMENT AND THEN TRY");
-	camel_db_command (cdb, upd_query, ex);
-	g_free (upd_query);
-#else
-
-	/* if (delete_old_record)
-			ret = camel_db_add_to_transaction (cdb, del_query, ex); */
 	ret = camel_db_add_to_transaction (cdb, ins_query, error);
 
-#endif
-
-	/* if (delete_old_record)
-			sqlite3_free (del_query); */
 	sqlite3_free (ins_query);
 
 	if (ret == 0) {
-		ins_query = sqlite3_mprintf ("INSERT OR REPLACE INTO '%q_bodystructure' VALUES (%Q, %Q )",
-				folder_name, record->uid, record->bodystructure);
+		ins_query = sqlite3_mprintf (
+			"INSERT OR REPLACE INTO "
+			"'%q_bodystructure' VALUES (%Q, %Q )",
+			folder_name, record->uid, record->bodystructure);
 		ret = camel_db_add_to_transaction (cdb, ins_query, error);
 		sqlite3_free (ins_query);
 	}
@@ -1600,26 +1609,28 @@ camel_db_write_folder_info_record (CamelDB *cdb,
 	gchar *del_query;
 	gchar *ins_query;
 
-	ins_query = sqlite3_mprintf ("INSERT INTO folders VALUES ( %Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %Q ) ",
-			record->folder_name, record->version,
-								 record->flags, record->nextuid, record->time,
-			record->saved_count, record->unread_count,
-								 record->deleted_count, record->junk_count, record->visible_count, record->jnd_count, record->bdata);
+	ins_query = sqlite3_mprintf (
+		"INSERT INTO folders VALUES ("
+		"%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %Q ) ",
+		record->folder_name,
+		record->version,
+		record->flags,
+		record->nextuid,
+		record->time,
+		record->saved_count,
+		record->unread_count,
+		record->deleted_count,
+		record->junk_count,
+		record->visible_count,
+		record->jnd_count,
+		record->bdata);
 
-	del_query = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", record->folder_name);
-
-#if 0
-	gchar *upd_query;
-
-	upd_query = g_strdup_printf ("UPDATE folders SET version = %d, flags = %d, nextuid = %d, time = 143, saved_count = %d, unread_count = %d, deleted_count = %d, junk_count = %d, bdata = %s, WHERE folder_name = %Q", record->version, record->flags, record->nextuid, record->saved_count, record->unread_count, record->deleted_count, record->junk_count, "PROVIDER SPECIFIC DATA", record->folder_name );
-	camel_db_command (cdb, upd_query, ex);
-	g_free (upd_query);
-#else
+	del_query = sqlite3_mprintf (
+		"DELETE FROM folders WHERE folder_name = %Q",
+		record->folder_name);
 
 	ret = camel_db_add_to_transaction (cdb, del_query, error);
 	ret = camel_db_add_to_transaction (cdb, ins_query, error);
-
-#endif
 
 	sqlite3_free (del_query);
 	sqlite3_free (ins_query);
@@ -1627,8 +1638,7 @@ camel_db_write_folder_info_record (CamelDB *cdb,
 	return ret;
 }
 
-struct ReadFirData
-{
+struct ReadFirData {
 	GHashTable *columns_hash;
 	CamelFIRecord *record;
 };

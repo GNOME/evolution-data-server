@@ -1493,8 +1493,8 @@ find_folders_recursive (const gchar *physical_path,
 		if (dirent == NULL)
 			break;
 
-		file_path = g_strdup_printf ("%s/%s", subfolder_directory_path,
-					     dirent);
+		file_path = g_strdup_printf (
+			"%s/%s", subfolder_directory_path, dirent);
 
 		if (g_stat (file_path, &file_stat) < 0 ||
 		    !S_ISDIR (file_stat.st_mode)) {

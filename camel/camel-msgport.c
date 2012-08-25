@@ -214,7 +214,8 @@ msgport_sync_with_pipe (gint fd)
 		if (MP_READ (fd, buffer, 1) > 0)
 			break;
 		else if (!MP_IS_STATUS_INTR ()) {
-			g_warning ("%s: Failed to read from pipe: %s",
+			g_warning (
+				"%s: Failed to read from pipe: %s",
 				G_STRFUNC, g_strerror (errno));
 			break;
 		}
@@ -232,7 +233,8 @@ msgport_sync_with_prpipe (PRFileDesc *prfd)
 		else if (PR_GetError () != PR_PENDING_INTERRUPT_ERROR) {
 			gchar *text = g_alloca (PR_GetErrorTextLength ());
 			PR_GetErrorText (text);
-			g_warning ("%s: Failed to read from NSPR pipe: %s",
+			g_warning (
+				"%s: Failed to read from NSPR pipe: %s",
 				G_STRFUNC, text);
 			break;
 		}
@@ -349,7 +351,8 @@ camel_msgport_push (CamelMsgPort *msgport,
 			msg->flags |= MSG_FLAG_SYNC_WITH_PIPE;
 			break;
 		} else if (!MP_IS_STATUS_INTR ()) {
-			g_warning ("%s: Failed to write to pipe: %s",
+			g_warning (
+				"%s: Failed to write to pipe: %s",
 				G_STRFUNC, g_strerror (errno));
 			break;
 		}
@@ -363,7 +366,8 @@ camel_msgport_push (CamelMsgPort *msgport,
 		} else if (PR_GetError () != PR_PENDING_INTERRUPT_ERROR) {
 			gchar *text = g_alloca (PR_GetErrorTextLength ());
 			PR_GetErrorText (text);
-			g_warning ("%s: Failed to write to NSPR pipe: %s",
+			g_warning (
+				"%s: Failed to write to NSPR pipe: %s",
 				G_STRFUNC, text);
 			break;
 		}

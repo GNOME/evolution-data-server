@@ -1038,8 +1038,9 @@ best_encoding (CamelMimeMessage *msg,
 				gchar *newct;
 
 				/* FIXME: ick, the part content_type interface needs fixing bigtime */
-				camel_content_type_set_param (((CamelDataWrapper *) part)->mime_type, "charset",
-							       charset ? charset : "us-ascii");
+				camel_content_type_set_param (
+					((CamelDataWrapper *) part)->mime_type, "charset",
+					charset ? charset : "us-ascii");
 				newct = camel_content_type_format (((CamelDataWrapper *) part)->mime_type);
 				if (newct) {
 					d (printf ("Setting content-type to %s\n", newct));
@@ -1211,10 +1212,15 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 	thetime = camel_header_decode_date (tmp, &offset);
 	thetime += ((offset / 100) * (60 * 60)) + (offset % 100) * 60;
 	gmtime_r (&thetime, &tm);
-	g_string_append_printf (out, " %s %s %2d %02d:%02d:%02d %4d\n",
-				tz_days[tm.tm_wday], tz_months[tm.tm_mon],
-				tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec,
-				tm.tm_year + 1900);
+	g_string_append_printf (
+		out, " %s %s %2d %02d:%02d:%02d %4d\n",
+		tz_days[tm.tm_wday],
+		tz_months[tm.tm_mon],
+		tm.tm_mday,
+		tm.tm_hour,
+		tm.tm_min,
+		tm.tm_sec,
+		tm.tm_year + 1900);
 
 	ret = out->str;
 	g_string_free (out, FALSE);

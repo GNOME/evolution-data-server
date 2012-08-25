@@ -599,9 +599,11 @@ generate_response (struct _DigestChallenge *challenge,
 	resp->nonce = g_strdup (challenge->nonce);
 
 	/* generate the cnonce */
-	bgen = g_strdup_printf ("%p:%lu:%lu", (gpointer) resp,
-				(gulong) getpid (),
-				(gulong) time (NULL));
+	bgen = g_strdup_printf (
+		"%p:%lu:%lu",
+		(gpointer) resp,
+		(gulong) getpid (),
+		(gulong) time (NULL));
 	checksum = g_checksum_new (G_CHECKSUM_MD5);
 	g_checksum_update (checksum, (guchar *) bgen, -1);
 	g_checksum_get_digest (checksum, digest, &length);
@@ -870,7 +872,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server challenge contained invalid "
-				  "\"Quality of Protection\" token"));
+				"\"Quality of Protection\" token"));
 			goto exit;
 		}
 
@@ -903,7 +905,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server response did not contain "
-				  "authorization data"));
+				"authorization data"));
 			goto exit;
 		}
 
@@ -924,7 +926,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server response contained incomplete "
-				  "authorization data"));
+				"authorization data"));
 			goto exit;
 		}
 

@@ -63,8 +63,9 @@ void
 test_message_info (CamelMimeMessage *msg,
                    const CamelMessageInfo *info)
 {
-	check_msg (safe_strcmp (camel_message_info_subject (info), camel_mime_message_get_subject (msg)) == 0,
-		  "info->subject = '%s', get_subject () = '%s'", camel_message_info_subject (info), camel_mime_message_get_subject (msg));
+	check_msg (
+		safe_strcmp (camel_message_info_subject (info), camel_mime_message_get_subject (msg)) == 0,
+		"info->subject = '%s', get_subject () = '%s'", camel_message_info_subject (info), camel_mime_message_get_subject (msg));
 
 	/* FIXME: testing from/cc/to, etc is more tricky */
 
@@ -402,7 +403,8 @@ test_folder_message_ops (CamelSession *session,
 			push ("creating test message");
 			msg = test_message_create_simple ();
 			content = g_strdup_printf ("Test message %d contents\n\n", j);
-			test_message_set_content_simple ((CamelMimePart *) msg, 0, "text/plain",
+			test_message_set_content_simple (
+				(CamelMimePart *) msg, 0, "text/plain",
 							content, strlen (content));
 			test_free (content);
 			subject = g_strdup_printf ("Test message %d", j);
@@ -443,8 +445,9 @@ test_folder_message_ops (CamelSession *session,
 			if (uids->len > j) {
 				info = camel_folder_get_message_info (folder, uids->pdata[j]);
 				check (info != NULL);
-				check_msg (strcmp (camel_message_info_subject (info), subject) == 0,
-					  "info->subject %s", camel_message_info_subject (info));
+				check_msg (
+					strcmp (camel_message_info_subject (info), subject) == 0,
+					"info->subject %s", camel_message_info_subject (info));
 				camel_folder_free_message_info (folder, info);
 			}
 			camel_folder_free_uids (folder, uids);
@@ -494,8 +497,9 @@ test_folder_message_ops (CamelSession *session,
 			test_folder_message (folder, uids->pdata[j]);
 
 			info = camel_folder_get_message_info (folder, uids->pdata[j]);
-			check_msg (strcmp (camel_message_info_subject (info), subject) == 0,
-				  "info->subject %s", camel_message_info_subject (info));
+			check_msg (
+				strcmp (camel_message_info_subject (info), subject) == 0,
+				"info->subject %s", camel_message_info_subject (info));
 			test_free (subject);
 			camel_folder_free_message_info (folder, info);
 			pull ();
@@ -522,8 +526,9 @@ test_folder_message_ops (CamelSession *session,
 			test_folder_message (folder, uids->pdata[j]);
 
 			info = camel_folder_get_message_info (folder, uids->pdata[j]);
-			check_msg (strcmp (camel_message_info_subject (info), subject) == 0,
-				  "info->subject %s", camel_message_info_subject (info));
+			check_msg (
+				strcmp (camel_message_info_subject (info), subject) == 0,
+				"info->subject %s", camel_message_info_subject (info));
 			test_free (subject);
 			camel_folder_free_message_info (folder, info);
 			pull ();
@@ -552,8 +557,9 @@ test_folder_message_ops (CamelSession *session,
 			test_folder_message (folder, uids->pdata[j]);
 
 			info = camel_folder_get_message_info (folder, uids->pdata[j]);
-			check_msg (strcmp (camel_message_info_subject (info), subject) == 0,
-				  "info->subject %s", camel_message_info_subject (info));
+			check_msg (
+				strcmp (camel_message_info_subject (info), subject) == 0,
+				"info->subject %s", camel_message_info_subject (info));
 			test_free (subject);
 			camel_folder_free_message_info (folder, info);
 			pull ();

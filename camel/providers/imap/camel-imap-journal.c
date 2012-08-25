@@ -304,13 +304,19 @@ journal_decode_folder (CamelIMAPJournal *journal,
 		folder = camel_store_get_folder_sync (
 			parent_store, name, 0, cancellable, &local_error);
 		if (folder)
-			g_hash_table_insert (journal->folders, (gchar *) name, folder);
+			g_hash_table_insert (
+				journal->folders,
+				(gchar *) name, folder);
 		else {
-			msg = g_strdup_printf (_("Could not open '%s':\n%s\nChanges made to this folder will not be resynchronized."),
-					       name, local_error->message);
+			msg = g_strdup_printf (
+				_("Could not open '%s':\n%s\n"
+				"Changes made to this folder "
+				"will not be resynchronized."),
+				name, local_error->message);
 			g_clear_error (&local_error);
 			camel_session_alert_user (
-				camel_service_get_session (CAMEL_SERVICE (parent_store)),
+				camel_service_get_session (
+				CAMEL_SERVICE (parent_store)),
 				CAMEL_SESSION_ALERT_WARNING,
 				msg, NULL);
 			g_free (msg);
@@ -491,8 +497,10 @@ camel_imap_journal_uidmap_add (CamelIMAPJournal *journal,
                                const gchar *old_uid,
                                const gchar *new_uid)
 {
-	g_hash_table_insert (journal->uidmap, g_strdup (old_uid),
-			     g_strdup (new_uid));
+	g_hash_table_insert (
+		journal->uidmap,
+		g_strdup (old_uid),
+		g_strdup (new_uid));
 }
 
 const gchar *

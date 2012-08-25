@@ -109,9 +109,11 @@ prune_empty (CamelFolderThread *thread,
 		c = lastc->next;
 		prune_empty (thread, &c->child);
 
-		d (printf ("checking message %p %p (%08x%08x)\n", c,
-			 c->message, c->message ? c->message->message_id.id.part.hi : 0,
-			 c->message ? c->message->message_id.id.part.lo : 0));
+		d (printf (
+			"checking message %p %p (%08x%08x)\n", c,
+			c->message,
+			c->message ? c->message->message_id.id.part.hi : 0,
+			c->message ? c->message->message_id.id.part.lo : 0));
 		if (c->message == NULL) {
 			if (c->child == NULL) {
 				d (printf ("removing empty node\n"));
@@ -340,8 +342,12 @@ dump_tree_rec (struct _tree_info *info,
 			g_hash_table_insert (info->visited, c, c);
 		}
 		if (c->message) {
-			printf ("%s %p Subject: %s <%08x%08x>\n", p, (gpointer) c, camel_message_info_subject (c->message),
-			       camel_message_info_message_id (c->message)->id.part.hi, camel_message_info_message_id (c->message)->id.part.lo);
+			printf (
+				"%s %p Subject: %s <%08x%08x>\n",
+				p, (gpointer) c,
+				camel_message_info_subject (c->message),
+				camel_message_info_message_id (c->message)->id.part.hi,
+				camel_message_info_message_id (c->message)->id.part.lo);
 			count += 1;
 		} else {
 			printf ("%s %p <empty>\n", p, (gpointer) c);
@@ -589,8 +595,9 @@ thread_summary (CamelFolderThread *thread,
 	gettimeofday (&end, NULL);
 	diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 	diff -= start.tv_sec * 1000 + start.tv_usec / 1000;
-	printf ("Message threading %d messages took %ld.%03ld seconds\n",
-	       summary->len, diff / 1000, diff % 1000);
+	printf (
+		"Message threading %d messages took %ld.%03ld seconds\n",
+		summary->len, diff / 1000, diff % 1000);
 #endif
 }
 

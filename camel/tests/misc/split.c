@@ -68,8 +68,9 @@ main (gint argc,
 		check_msg (words->len == split_tests[i].count, "words->len = %d, count = %d", words->len, split_tests[i].count);
 
 		for (j = 0; j < words->len; j++) {
-			check_msg (strcmp (split_tests[i].splits[j].word, words->words[j]->word) == 0,
-				  "'%s' != '%s'", split_tests[i].splits[j].word, words->words[j]->word);
+			check_msg (
+				strcmp (split_tests[i].splits[j].word, words->words[j]->word) == 0,
+				"'%s' != '%s'", split_tests[i].splits[j].word, words->words[j]->word);
 			check (split_tests[i].splits[j].type == words->words[j]->type);
 		}
 
@@ -92,8 +93,9 @@ main (gint argc,
 		check_msg (words->len == simple_tests[i].count, "words->len = %d, count = %d", words->len, simple_tests[i].count);
 
 		for (j = 0; j < words->len; j++) {
-			check_msg (strcmp (simple_tests[i].splits[j].word, words->words[j]->word) == 0,
-				  "'%s' != '%s'", simple_tests[i].splits[j].word, words->words[j]->word);
+			check_msg (
+				strcmp (simple_tests[i].splits[j].word, words->words[j]->word) == 0,
+				"'%s' != '%s'", simple_tests[i].splits[j].word, words->words[j]->word);
 			check (simple_tests[i].splits[j].type == words->words[j]->type);
 		}
 

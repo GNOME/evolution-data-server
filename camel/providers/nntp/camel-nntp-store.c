@@ -1097,7 +1097,8 @@ nntp_get_folder_info (CamelStore *store,
 	CamelNNTPStore *nntp_store = CAMEL_NNTP_STORE (store);
 	CamelFolderInfo *first = NULL;
 
-	dd (printf ("g_f_i: fast %d subscr %d recursive %d online %d top \"%s\"\n",
+	dd (printf (
+		"g_f_i: fast %d subscr %d recursive %d online %d top \"%s\"\n",
 		flags & CAMEL_STORE_FOLDER_INFO_FAST,
 		flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED,
 		flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE,
@@ -1108,7 +1109,8 @@ nntp_get_folder_info (CamelStore *store,
 		first = nntp_store_get_subscribed_folder_info (
 			nntp_store, top, flags, cancellable, error);
 	else
-		first = nntp_store_get_folder_info_all (nntp_store, top, flags, online, cancellable, error);
+		first = nntp_store_get_folder_info_all (
+			nntp_store, top, flags, online, cancellable, error);
 
 	return first;
 }
@@ -1148,7 +1150,7 @@ nntp_store_create_folder_sync (CamelStore *store,
 		error, CAMEL_FOLDER_ERROR,
 		CAMEL_FOLDER_ERROR_INVALID,
 		_("You cannot create a folder in a News store: "
-		  "subscribe instead."));
+		"subscribe instead."));
 
 	return NULL;
 }
@@ -1187,7 +1189,7 @@ nntp_store_delete_folder_sync (CamelStore *store,
 		error, CAMEL_FOLDER_ERROR,
 		CAMEL_FOLDER_ERROR_INVALID,
 		_("You cannot remove a folder in a News store: "
-		  "unsubscribe instead."));
+		"unsubscribe instead."));
 
 	return FALSE;
 }
@@ -1386,8 +1388,8 @@ nntp_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID,
 			_("You cannot subscribe to this newsgroup:\n\n"
-			  "No such newsgroup. The selected item is a "
-			  "probably a parent folder."));
+			"No such newsgroup. The selected item is a "
+			"probably a parent folder."));
 		success = FALSE;
 	} else {
 		if (!(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)) {
@@ -1434,7 +1436,7 @@ nntp_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID,
 			_("You cannot unsubscribe to this newsgroup:\n\n"
-			  "newsgroup does not exist!"));
+			"newsgroup does not exist!"));
 		success = FALSE;
 	} else {
 		if (fitem->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {

@@ -696,8 +696,9 @@ camel_imap_message_cache_filter_cached (CamelImapMessageCache *cache,
 			 * read the message).
 			 */
 			part_find.found = 0;
-			part_find.disk_part_name = g_strdup_printf ("%s" BASE_PART_SUFFIX,
-								   (gchar *) uids->pdata[i]);
+			part_find.disk_part_name = g_strdup_printf (
+				"%s" BASE_PART_SUFFIX,
+				(gchar *) uids->pdata[i]);
 			g_ptr_array_foreach (parts_list, _match_part, &part_find);
 			g_free (part_find.disk_part_name);
 			if (part_find.found)

@@ -370,7 +370,8 @@ camel_object_bag_add (CamelObjectBag *bag,
 		g_hash_table_insert (bag->object_table, copied_key, object);
 		object_bag_unreserve (bag, key);
 
-		g_object_add_toggle_ref (G_OBJECT (object),
+		g_object_add_toggle_ref (
+			G_OBJECT (object),
 			object_bag_toggle_notify, bag);
 	}
 

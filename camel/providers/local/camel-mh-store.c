@@ -529,7 +529,7 @@ mh_store_get_folder_sync (CamelStore *store,
 				error, CAMEL_STORE_ERROR,
 				CAMEL_STORE_ERROR_NO_FOLDER,
 				_("Cannot get folder '%s': "
-				  "folder does not exist."),
+				"folder does not exist."),
 				folder_name);
 			goto exit;
 		}

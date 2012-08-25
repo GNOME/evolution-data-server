@@ -1162,9 +1162,11 @@ rfc2047_decode_word (const gchar *in,
 		charset = camel_iconv_charset_name (charset);
 
 	if (!charset[0] || (cd = camel_iconv_open ("UTF-8", charset)) == (iconv_t) -1) {
-		w (g_warning ("Cannot convert from %s to UTF-8, header display may "
-			     "be corrupt: %s", charset[0] ? charset : "unspecified charset",
-			     g_strerror (errno)));
+		w (g_warning (
+			"Cannot convert from %s to UTF-8, "
+			"header display may be corrupt: %s",
+			charset[0] ? charset : "unspecified charset",
+			g_strerror (errno)));
 
 		return decode_8bit ((gchar *) decoded, declen, default_charset);
 	}
@@ -1175,8 +1177,9 @@ rfc2047_decode_word (const gchar *in,
 	if (buf != NULL)
 		return buf;
 
-	w (g_warning ("Failed to convert \"%.*s\" to UTF-8, display may be "
-		     "corrupt: %s", declen, decoded, g_strerror (errno)));
+	w (g_warning (
+		"Failed to convert \"%.*s\" to UTF-8, display may be "
+		"corrupt: %s", declen, decoded, g_strerror (errno)));
 
 	return decode_8bit ((gchar *) decoded, declen, charset);
 }
@@ -1575,8 +1578,10 @@ header_encode_string_rfc2047 (const guchar *in,
 		newinptr = g_utf8_next_char (inptr);
 		c = g_utf8_get_char ((gchar *) inptr);
 		if (newinptr == NULL || !g_unichar_validate (c)) {
-			w (g_warning ("Invalid UTF-8 sequence encountered (pos %d, gchar '%c'): %s",
-				     (inptr - in), inptr[0], in));
+			w (g_warning (
+				"Invalid UTF-8 sequence encountered "
+				"(pos %d, gchar '%c'): %s",
+				(inptr - in), inptr[0], in));
 			inptr++;
 			continue;
 		}
@@ -1755,8 +1760,10 @@ header_encode_phrase_get_words (const guchar *in)
 		c = g_utf8_get_char ((gchar *) inptr);
 
 		if (!g_unichar_validate (c)) {
-			w (g_warning ("Invalid UTF-8 sequence encountered (pos %d, gchar '%c'): %s",
-				     (inptr - in), inptr[0], in));
+			w (g_warning (
+				"Invalid UTF-8 sequence encountered "
+				"(pos %d, gchar '%c'): %s",
+				(inptr - in), inptr[0], in));
 			inptr++;
 			continue;
 		}
@@ -2324,13 +2331,13 @@ camel_content_type_is (CamelContentType *ct,
 	if (ct == NULL || (ct->type == NULL && ct->subtype == NULL)) {
 		return (!g_ascii_strcasecmp (type, "text")
 			&& (!g_ascii_strcasecmp (subtype, "plain")
-			    || !strcmp (subtype, "*")));
+			|| !strcmp (subtype, "*")));
 	}
 
 	return (ct->type != NULL
 		&& (!g_ascii_strcasecmp (ct->type, type)
-		    && ((ct->subtype != NULL
-			 && !g_ascii_strcasecmp (ct->subtype, subtype))
+		&& ((ct->subtype != NULL
+		&& !g_ascii_strcasecmp (ct->subtype, subtype))
 			|| !strcmp ("*", subtype))));
 }
 
@@ -3866,12 +3873,16 @@ camel_header_format_date (time_t date,
 
 	gmtime_r (&date, &tm);
 
-	return g_strdup_printf ("%s, %02d %s %04d %02d:%02d:%02d %+05d",
-			       tm_days[tm.tm_wday],
-			       tm.tm_mday, tm_months[tm.tm_mon],
-			       tm.tm_year + 1900,
-			       tm.tm_hour, tm.tm_min, tm.tm_sec,
-			       tz_offset);
+	return g_strdup_printf (
+		"%s, %02d %s %04d %02d:%02d:%02d %+05d",
+		tm_days[tm.tm_wday],
+		tm.tm_mday,
+		tm_months[tm.tm_mon],
+		tm.tm_year + 1900,
+		tm.tm_hour,
+		tm.tm_min,
+		tm.tm_sec,
+		tz_offset);
 }
 
 /* This is where it gets ugly... */

@@ -200,9 +200,10 @@ camel_imap_wrapper_new (CamelImapFolder *imap_folder,
 	/* Don't ref this, it's our parent. */
 	imap_wrapper->part = part;
 
-	/* Download the attachments if sync_offline is set, else skip them by checking only in cache */
-	stream = camel_imap_folder_fetch_data (imap_folder, uid, part_spec,
-			!sync_offline, NULL, NULL);
+	/* Download the attachments if sync_offline is
+	 * set, else skip them by checking only in cache. */
+	stream = camel_imap_folder_fetch_data (
+		imap_folder, uid, part_spec, !sync_offline, NULL, NULL);
 
 	if (stream) {
 		imap_wrapper_hydrate (imap_wrapper, stream, NULL, NULL);

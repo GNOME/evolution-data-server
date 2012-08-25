@@ -659,8 +659,10 @@ add_to_unmatched_folder_cb (CamelVeeMessageInfoData *mi_data,
 	g_return_if_fail (atud != NULL);
 
 	vuid = camel_vee_message_info_data_get_vee_message_uid (mi_data);
-	g_hash_table_insert (atud->vuid_usage_counts,
-		(gpointer) camel_pstring_strdup (vuid), GINT_TO_POINTER (0));
+	g_hash_table_insert (
+		atud->vuid_usage_counts,
+		(gpointer) camel_pstring_strdup (vuid),
+		GINT_TO_POINTER (0));
 
 	if (atud->unmatched_enabled)
 		camel_vee_folder_add_vuid (atud->unmatched_folder, mi_data, atud->changes);
@@ -693,7 +695,9 @@ camel_vee_store_note_subfolder_used (CamelVeeStore *vstore,
 
 	counts = GPOINTER_TO_INT (g_hash_table_lookup (vstore->priv->subfolder_usage_counts, subfolder));
 	counts++;
-	g_hash_table_insert (vstore->priv->subfolder_usage_counts, subfolder, GINT_TO_POINTER (counts));
+	g_hash_table_insert (
+		vstore->priv->subfolder_usage_counts,
+		subfolder, GINT_TO_POINTER (counts));
 
 	if (counts == 1) {
 		struct AddToUnmatchedData atud;
@@ -784,7 +788,9 @@ camel_vee_store_note_subfolder_unused (CamelVeeStore *vstore,
 
 		camel_vee_data_cache_remove_subfolder (vstore->priv->vee_data_cache, subfolder);
 	} else {
-		g_hash_table_insert (vstore->priv->subfolder_usage_counts, subfolder, GINT_TO_POINTER (counts));
+		g_hash_table_insert (
+			vstore->priv->subfolder_usage_counts,
+			subfolder, GINT_TO_POINTER (counts));
 	}
 
 	g_mutex_unlock (vstore->priv->sf_counts_mutex);
@@ -827,8 +833,10 @@ camel_vee_store_note_vuid_used (CamelVeeStore *vstore,
 
 	counts = GPOINTER_TO_INT (g_hash_table_lookup (vstore->priv->vuid_usage_counts, vuid));
 	counts++;
-	g_hash_table_insert (vstore->priv->vuid_usage_counts,
-		(gpointer) camel_pstring_strdup (vuid), GINT_TO_POINTER (counts));
+	g_hash_table_insert (
+		vstore->priv->vuid_usage_counts,
+		(gpointer) camel_pstring_strdup (vuid),
+		GINT_TO_POINTER (counts));
 
 	if (counts == 1 && camel_vee_store_get_unmatched_enabled (vstore)) {
 		CamelFolderChangeInfo *changes;
@@ -888,8 +896,10 @@ camel_vee_store_note_vuid_unused (CamelVeeStore *vstore,
 		return;
 	}
 
-	g_hash_table_insert (vstore->priv->vuid_usage_counts,
-		(gpointer) camel_pstring_strdup (vuid), GINT_TO_POINTER (counts));
+	g_hash_table_insert (
+		vstore->priv->vuid_usage_counts,
+		(gpointer) camel_pstring_strdup (vuid),
+		GINT_TO_POINTER (counts));
 
 	if (counts == 0 && camel_vee_store_get_unmatched_enabled (vstore)) {
 		CamelFolderChangeInfo *changes;

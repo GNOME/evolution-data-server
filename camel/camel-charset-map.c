@@ -156,9 +156,10 @@ gint main (gint argc, gchar **argv)
 				inbuf++;
 				inleft--;
 			} else {
-				g_warning ("iconv (%s->UCS4, ..., %d, ..., %d): %s",
-					   tables[j].name, inleft, outleft,
-					   g_strerror (errno));
+				g_warning (
+					"iconv (%s->UCS4, ..., %d, ..., %d): %s",
+					tables[j].name, inleft, outleft,
+					g_strerror (errno));
 				exit (1);
 			}
 		}
@@ -276,9 +277,15 @@ gint main (gint argc, gchar **argv)
 	}
 	printf ("\n};\n\n");
 
-	printf ("static const struct {\n\tconst gchar *name;\n\tguint bit;\n} camel_charinfo[] = {\n");
+	printf (
+		"static const struct {\n"
+		"\tconst gchar *name;\n"
+		"\tguint bit;\n"
+		"} camel_charinfo[] = {\n");
 	for (j = 0; tables[j].name; j++)
-		printf ("\t{ \"%s\", 0x%08x },\n", tables[j].name, tables[j].bit);
+		printf (
+			"\t{ \"%s\", 0x%08x },\n",
+			tables[j].name, tables[j].bit);
 	printf ("};\n\n");
 
 	printf ("#define charset_mask(x) \\\n");
@@ -288,7 +295,9 @@ gint main (gint argc, gchar **argv)
 		else
 			printf ("\t");
 
-		printf ("(camel_charmap[(x) >> 8].bits%d ? camel_charmap[(x) >> 8].bits%d[(x) & 0xff] << %d : 0)",
+		printf (
+			"(camel_charmap[(x) >> 8].bits%d ? "
+			"camel_charmap[(x) >> 8].bits%d[(x) & 0xff] << %d : 0)",
 			k, k, k * 8);
 
 		if (k < bytes - 1)

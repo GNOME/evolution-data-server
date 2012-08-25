@@ -543,10 +543,10 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 		struct _camel_header_raw *h = mp->headers;
 		gchar *val;
 		gssize (*writefn)	(CamelStream *stream,
-						 const gchar *name,
-						 const gchar *value,
-						 GCancellable *cancellable,
-						 GError **error);
+					 const gchar *name,
+					 const gchar *value,
+					 GCancellable *cancellable,
+					 GError **error);
 
 		/* fold/write the headers.   But dont fold headers that are already formatted
 		 * (e.g. ones with parameter-lists, that we know about, and have created) */
@@ -647,8 +647,9 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 
 			/* we only re-do crlf on encoded blocks */
 			if (filter && camel_content_type_is (dw->mime_type, "text", "*")) {
-				CamelMimeFilter *crlf = camel_mime_filter_crlf_new (CAMEL_MIME_FILTER_CRLF_ENCODE,
-										   CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
+				CamelMimeFilter *crlf = camel_mime_filter_crlf_new (
+					CAMEL_MIME_FILTER_CRLF_ENCODE,
+					CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
 
 				camel_stream_filter_add (
 					CAMEL_STREAM_FILTER (filter_stream), crlf);

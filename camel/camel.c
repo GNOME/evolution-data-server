@@ -127,15 +127,19 @@ camel_init (const gchar *configdir,
 			 * to prevent camel from bailing out on first run. */
 #ifdef G_OS_WIN32
 			g_mkdir_with_parents (configdir, 0700);
-			nss_sql_configdir = g_strconcat ("sql:", nss_configdir, NULL);
+			nss_sql_configdir = g_strconcat (
+				"sql:", nss_configdir, NULL);
 #else
-			gchar *user_nss_dir = g_build_filename ( g_get_home_dir (),
-								 ".pki/nssdb", NULL );
+			gchar *user_nss_dir = g_build_filename (
+				 g_get_home_dir (), ".pki/nssdb", NULL );
 			if (g_mkdir_with_parents (user_nss_dir, 0700))
-				g_warning ("Failed to create SQL database directory %s: %s\n",
-					  user_nss_dir, strerror (errno));
+				g_warning (
+					"Failed to create SQL "
+					"database directory %s: %s\n",
+					user_nss_dir, strerror (errno));
 
-			nss_sql_configdir = g_strconcat ("sql:", user_nss_dir, NULL);
+			nss_sql_configdir = g_strconcat (
+				"sql:", user_nss_dir, NULL);
 			g_free (user_nss_dir);
 #endif
 		}
@@ -155,8 +159,9 @@ camel_init (const gchar *configdir,
 			0);			/* flags */
 
 		if (status == SECFailure) {
-			g_warning ("Failed to initialize NSS SQL database in %s: NSS error %d",
-				   nss_sql_configdir, PORT_GetError ());
+			g_warning (
+				"Failed to initialize NSS SQL database in %s: NSS error %d",
+				nss_sql_configdir, PORT_GetError ());
 			/* Fall back to opening the old DBM database */
 		}
 #endif

@@ -880,7 +880,7 @@ _create_group (const gchar *category_name,
 
 static void
 refresh_local_cache_cb (ESource *source,
-			gpointer user_data)
+                        gpointer user_data)
 {
 	EBookBackend *backend = user_data;
 

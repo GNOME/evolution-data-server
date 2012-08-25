@@ -940,7 +940,8 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 	changed = folder_summary_update_counts_by_flags (summary, added_flags, UPDATE_COUNTS_ADD_WITHOUT_TOTAL) || changed;
 
 	/* update current flags on the summary */
-	g_hash_table_insert (summary->priv->uids,
+	g_hash_table_insert (
+		summary->priv->uids,
 		(gpointer) camel_pstring_strdup (camel_message_info_uid (info)),
 		GUINT_TO_POINTER (new_flags));
 
@@ -1904,13 +1905,17 @@ message_info_from_uid (CamelFolderSummary *summary,
 		folder_name = camel_folder_get_full_name (summary->priv->folder);
 
 		if (is_in_memory_summary (summary)) {
-			camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
-			g_warning ("%s: Tried to load uid '%s' from DB on in-memory summary of '%s'",
+			camel_folder_summary_unlock (
+				summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			g_warning (
+				"%s: Tried to load uid '%s' "
+				"from DB on in-memory summary of '%s'",
 				G_STRFUNC, uid, folder_name);
 			return NULL;
 		}
 
-		parent_store = camel_folder_get_parent_store (summary->priv->folder);
+		parent_store =
+			camel_folder_get_parent_store (summary->priv->folder);
 		cdb = parent_store->cdb_r;
 
 		data.columns_hash = NULL;
@@ -1924,7 +1929,8 @@ message_info_from_uid (CamelFolderSummary *summary,
 			g_hash_table_destroy (data.columns_hash);
 
 		if (ret != 0) {
-			camel_folder_summary_unlock (summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
+			camel_folder_summary_unlock (
+				summary, CAMEL_FOLDER_SUMMARY_SUMMARY_LOCK);
 			return NULL;
 		}
 
@@ -2145,8 +2151,10 @@ cfs_schedule_info_release_timer (CamelFolderSummary *summary)
 
 		/* FIXME[disk-summary] LRU please and not timeouts */
 		if (can_do) {
-			summary->priv->timeout_handle = g_timeout_add_seconds (SUMMARY_CACHE_DROP,
-				(GSourceFunc) cfs_try_release_memory, g_object_ref (summary));
+			summary->priv->timeout_handle = g_timeout_add_seconds (
+				SUMMARY_CACHE_DROP,
+				(GSourceFunc) cfs_try_release_memory,
+				g_object_ref (summary));
 		}
 	}
 
@@ -2982,7 +2990,8 @@ camel_folder_summary_add (CamelFolderSummary *summary,
 	base_info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 	base_info->dirty = TRUE;
 
-	g_hash_table_insert (summary->priv->uids,
+	g_hash_table_insert (
+		summary->priv->uids,
 		(gpointer) camel_pstring_strdup (camel_message_info_uid (info)),
 		GUINT_TO_POINTER (camel_message_info_flags (info)));
 
@@ -3018,7 +3027,8 @@ camel_folder_summary_insert (CamelFolderSummary *summary,
 		base_info->flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 		base_info->dirty = TRUE;
 
-		g_hash_table_insert (summary->priv->uids,
+		g_hash_table_insert (
+			summary->priv->uids,
 			(gpointer) camel_pstring_strdup (camel_message_info_uid (info)),
 			GUINT_TO_POINTER (camel_message_info_flags (info)));
 
@@ -4819,12 +4829,18 @@ camel_content_info_dump (CamelMessageContentInfo *ci,
 	}
 
 	if (ci->type)
-		printf ("%scontent-type: %s/%s\n", p, ci->type->type ? ci->type->type : "(null)",
+		printf (
+			"%scontent-type: %s/%s\n",
+			p, ci->type->type ? ci->type->type : "(null)",
 			ci->type->subtype ? ci->type->subtype : "(null)");
 	else
 		printf ("%scontent-type: <unset>\n", p);
-	printf ("%scontent-transfer-encoding: %s\n", p, ci->encoding ? ci->encoding : "(null)");
-	printf ("%scontent-description: %s\n", p, ci->description ? ci->description : "(null)");
+	printf (
+		"%scontent-transfer-encoding: %s\n",
+		p, ci->encoding ? ci->encoding : "(null)");
+	printf (
+		"%scontent-description: %s\n",
+		p, ci->description ? ci->description : "(null)");
 	printf ("%ssize: %lu\n", p, (gulong) ci->size);
 	ci = ci->childs;
 	while (ci) {

@@ -112,8 +112,9 @@ gint main (gint argc, gchar **argv)
 	stream2 = camel_stream_mem_new ();
 
 	camel_test_push ("PKCS7 signing");
-	camel_smime_sign (ctx, "smime@xtorshun.org", CAMEL_CIPHER_HASH_SHA1,
-			  stream1, stream2, ex);
+	camel_smime_sign (
+		ctx, "smime@xtorshun.org", CAMEL_CIPHER_HASH_SHA1,
+		stream1, stream2, ex);
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
 	camel_test_pull ();
 
@@ -143,8 +144,9 @@ gint main (gint argc, gchar **argv)
 	camel_test_push ("PKCS7 encrypt");
 	recipients = g_ptr_array_new ();
 	g_ptr_array_add (recipients, "smime@xtorshun.org");
-	camel_smime_encrypt (ctx, FALSE, "smime@xtorshun.org", recipients,
-			     stream1, stream2, ex);
+	camel_smime_encrypt (
+		ctx, FALSE, "smime@xtorshun.org", recipients,
+		stream1, stream2, ex);
 	check_msg (!camel_exception_is_set (ex), "%s", camel_exception_get_description (ex));
 	g_ptr_array_free (recipients, TRUE);
 	camel_test_pull ();

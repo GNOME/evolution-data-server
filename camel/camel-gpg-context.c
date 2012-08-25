@@ -828,11 +828,11 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		if (!strncmp ((gchar *) status, "passphrase.pin.ask", 18)) {
 			prompt = g_markup_printf_escaped (
 				_("You need a PIN to unlock the key for your\n"
-				  "SmartCard: \"%s\""), name);
+				"SmartCard: \"%s\""), name);
 		} else if (!strncmp ((gchar *) status, "passphrase.enter", 16)) {
 			prompt = g_markup_printf_escaped (
 				_("You need a passphrase to unlock the key for\n"
-				  "user: \"%s\""), name);
+				"user: \"%s\""), name);
 		} else {
 			next_token ((gchar *) status, &prompt);
 			g_set_error (
@@ -846,9 +846,13 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		if (gpg->anonymous_recipient) {
 			gchar *tmp = prompt;
 
-			prompt = g_strconcat (tmp, "\n",
-				_("Note the encrypted content doesn't contain information about a recipient,"
-				  " thus there will be a password prompt for each of stored private key."), NULL);
+			/* FIXME Reword prompt message. */
+			prompt = g_strconcat (
+				tmp, "\n",
+				_("Note the encrypted content doesn't contain "
+				"information about a recipient, thus there "
+				"will be a password prompt for each of stored "
+				"private key."), NULL);
 
 			g_free (tmp);
 		}
@@ -898,7 +902,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 					error, CAMEL_SERVICE_ERROR,
 					CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 					_("Failed to unlock secret key: "
-					  "3 bad passphrases given."));
+					"3 bad passphrases given."));
 				return -1;
 			}
 		}
@@ -1717,7 +1721,7 @@ gpg_verify_sync (CamelCipherContext *context,
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot verify message signature: "
-				  "Incorrect message format"));
+				"Incorrect message format"));
 			return NULL;
 		}
 
@@ -1725,7 +1729,7 @@ gpg_verify_sync (CamelCipherContext *context,
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot verify message signature: "
-				  "Incorrect message format"));
+				"Incorrect message format"));
 			return NULL;
 		}
 
@@ -1733,7 +1737,7 @@ gpg_verify_sync (CamelCipherContext *context,
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot verify message signature: "
-				  "Incorrect message format"));
+				"Incorrect message format"));
 			g_object_unref (istream);
 			return NULL;
 		}
@@ -1753,7 +1757,7 @@ gpg_verify_sync (CamelCipherContext *context,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot verify message signature: "
-			  "Incorrect message format"));
+			"Incorrect message format"));
 		return NULL;
 	}
 
@@ -2049,7 +2053,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Failed to decrypt MIME part: "
-				  "protocol error"));
+				"protocol error"));
 			return NULL;
 		}
 

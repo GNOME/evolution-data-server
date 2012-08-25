@@ -488,7 +488,7 @@ summary_update (CamelLocalSummary *cls,
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Fatal mail parser error near position %s "
-				  "in folder %s"), pos_str, cls->folder_path);
+				"in folder %s"), pos_str, cls->folder_path);
 			g_free (pos_str);
 			ok = -1;
 			break;
@@ -858,8 +858,9 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 		}
 
 		if (camel_mime_parser_tell_start_from (mp) != info->frompos) {
-			g_warning ("Didn't get the next message where I expected (%d) got %d instead",
-				  (gint) info->frompos, (gint) camel_mime_parser_tell_start_from (mp));
+			g_warning (
+				"Didn't get the next message where I expected (%d) got %d instead",
+				(gint) info->frompos, (gint) camel_mime_parser_tell_start_from (mp));
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Summary and folder mismatch, even after a sync"));
@@ -1104,22 +1105,32 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 		if (!info)
 			continue;
 
-		d (printf ("Looking at message %s\n", camel_message_info_uid (info)));
+		d (printf (
+			"Looking at message %s\n",
+			camel_message_info_uid (info)));
 
-		d (printf ("seeking (%s) to %d\n", ((CamelMessageInfo *) info)->uid, (gint) info->frompos));
+		d (printf (
+			"seeking (%s) to %d\n",
+			((CamelMessageInfo *) info)->uid,
+			(gint) info->frompos));
+
 		if (lastdel)
 			camel_mime_parser_seek (mp, info->frompos, SEEK_SET);
 
 		if (camel_mime_parser_step (mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_FROM) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("MBOX file is corrupted, please fix it. (Expected a From line, but didn't get it.)"));
+				_("MBOX file is corrupted, please fix it. "
+				"(Expected a From line, but didn't get it.)"));
 			goto error;
 		}
 
 		if (camel_mime_parser_tell_start_from (mp) != info->frompos) {
-			g_warning ("Didn't get the next message where I expected (%d) got %d instead",
-				  (gint) info->frompos, (gint) camel_mime_parser_tell_start_from (mp));
+			g_warning (
+				"Didn't get the next message where "
+				"I expected (%d) got %d instead",
+				(gint) info->frompos,
+				(gint) camel_mime_parser_tell_start_from (mp));
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Summary and folder mismatch, even after a sync"));
@@ -1215,8 +1226,10 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 				goto error;
 			}
 
-			d (printf ("we are now at %d, from = %d\n", (gint) camel_mime_parser_tell (mp),
-				 (gint) camel_mime_parser_tell_start_from (mp)));
+			d (printf (
+				"we are now at %d, from = %d\n",
+				(gint) camel_mime_parser_tell (mp),
+				(gint) camel_mime_parser_tell_start_from (mp)));
 			camel_mime_parser_unstep (mp);
 			camel_message_info_free ((CamelMessageInfo *) info);
 			info = NULL;

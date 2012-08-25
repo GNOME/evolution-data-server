@@ -48,8 +48,9 @@ time_end (const gchar *desc)
 	gettimeofday (&end, NULL);
 	diff = end.tv_sec * 1000 + end.tv_usec / 1000;
 	diff -= timeit_start.tv_sec * 1000 + timeit_start.tv_usec / 1000;
-	printf ("%s took %ld.%03ld seconds\n",
-	       desc, diff / 1000, diff % 1000);
+	printf (
+		"%s took %ld.%03ld seconds\n",
+		desc, diff / 1000, diff % 1000);
 }
 #else
 #define time_start(x)

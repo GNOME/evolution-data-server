@@ -65,8 +65,9 @@ static gchar *convert (const gchar *in, const gchar *from, const gchar *to)
 
 	/* and lets see what camel thinks out optimal charset is */
 	{
-		printf ("Camel thinks the best encoding of '%s' is %s, although we converted from %s\n",
-		       in, camel_charset_best (out, strlen (out)), from);
+		printf (
+			"Camel thinks the best encoding of '%s' is %s, although we converted from %s\n",
+			in, camel_charset_best (out, strlen (out)), from);
 	}
 fail:
 #endif

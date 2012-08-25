@@ -94,7 +94,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("POP Before SMTP authentication "
-			  "using an unknown transport"));
+			"using an unknown transport"));
 		g_free (pop_uid);
 		return NULL;
 	}
@@ -106,7 +106,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("POP Before SMTP authentication attempted "
-			  "with a %s service"), type_name);
+			"with a %s service"), type_name);
 		goto exit;
 	}
 
@@ -115,7 +115,7 @@ sasl_popb4smtp_challenge_sync (CamelSasl *sasl,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("POP Before SMTP authentication attempted "
-			  "with a %s service"), type_name);
+			"with a %s service"), type_name);
 		goto exit;
 	}
 

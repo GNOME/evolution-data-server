@@ -754,10 +754,11 @@ camel_key_table_add (CamelKeyTable *ki,
 	if (kblast->used > 0) {
 		/*left = &kblast->u.keydata[kblast->u.keys[kblast->used-1].offset] - (gchar *)(&kblast->u.keys[kblast->used+1]);*/
 		left = kblast->u.keys[kblast->used - 1].offset - sizeof (kblast->u.keys[0]) * (kblast->used + 1);
-		d (printf ("key '%s' used = %d (%d), filled = %d, left = %d  len = %d?\n",
-			 key, kblast->used, kblast->used * sizeof (kblast->u.keys[0]),
-			 sizeof (kblast->u.keydata) - kblast->u.keys[kblast->used - 1].offset,
-			 left, len));
+		d (printf (
+			"key '%s' used = %d (%d), filled = %d, left = %d  len = %d?\n",
+			key, kblast->used, kblast->used * sizeof (kblast->u.keys[0]),
+			sizeof (kblast->u.keydata) - kblast->u.keys[kblast->used - 1].offset,
+			left, len));
 		if (left < len) {
 			next = camel_block_file_new_block (ki->blocks);
 			if (next == NULL) {

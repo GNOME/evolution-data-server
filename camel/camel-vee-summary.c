@@ -41,9 +41,13 @@
 
 #define d(x)
 
-struct _CamelVeeSummaryPrivate
-{
-	GHashTable *vuids_by_subfolder; /* CamelFolder * => GHashTable * of gchar *vuid */
+#define CAMEL_VEE_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_VEE_SUMMARY, CamelVeeSummaryPrivate))
+
+struct _CamelVeeSummaryPrivate {
+	/* CamelFolder * => GHashTable * of gchar *vuid */
+	GHashTable *vuids_by_subfolder;
 };
 
 G_DEFINE_TYPE (CamelVeeSummary, camel_vee_summary, CAMEL_TYPE_FOLDER_SUMMARY)
@@ -289,7 +293,8 @@ message_info_from_uid (CamelFolderSummary *s,
 		 * Otherwise, the first byte itself would return in strcmp, saving the CPU.
 		 */
 		if (!camel_folder_summary_check_uid (s, uid)) {
-			d (g_message ("Unable to find %s in the summary of %s", uid,
+			d (
+				g_message ("Unable to find %s in the summary of %s", uid,
 				camel_folder_get_full_name (camel_folder_summary_get_folder (s->folder))));
 			return NULL;
 		}
@@ -318,9 +323,11 @@ message_info_from_uid (CamelFolderSummary *s,
 static void
 vee_summary_finalize (GObject *object)
 {
-	CamelVeeSummary *vsummary = CAMEL_VEE_SUMMARY (object);
+	CamelVeeSummaryPrivate *priv;
 
-	g_hash_table_destroy (vsummary->priv->vuids_by_subfolder);
+	priv = CAMEL_VEE_SUMMARY_GET_PRIVATE (object);
+
+	g_hash_table_destroy (priv->vuids_by_subfolder);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_vee_summary_parent_class)->finalize (object);
@@ -356,11 +363,13 @@ camel_vee_summary_class_init (CamelVeeSummaryClass *class)
 static void
 camel_vee_summary_init (CamelVeeSummary *vee_summary)
 {
-	vee_summary->priv = G_TYPE_INSTANCE_GET_PRIVATE (vee_summary,
-		CAMEL_TYPE_VEE_SUMMARY, CamelVeeSummaryPrivate);
+	vee_summary->priv = CAMEL_VEE_SUMMARY_GET_PRIVATE (vee_summary);
 
-	vee_summary->priv->vuids_by_subfolder =
-		g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify) g_hash_table_destroy);
+	vee_summary->priv->vuids_by_subfolder = g_hash_table_new_full (
+		(GHashFunc) g_direct_hash,
+		(GEqualFunc) g_direct_equal,
+		(GDestroyNotify) NULL,
+		(GDestroyNotify) g_hash_table_destroy);
 }
 
 /**

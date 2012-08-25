@@ -1696,9 +1696,10 @@ folder_changed (CamelFolder *folder,
 
 	if ((folder->folder_flags & (CAMEL_FOLDER_FILTER_RECENT | CAMEL_FOLDER_FILTER_JUNK))
 	    && p->uid_filter->len > 0)
-		driver = camel_session_get_filter_driver (session,
-							 (folder->folder_flags & CAMEL_FOLDER_FILTER_RECENT)
-							 ? "incoming":"junktest", NULL);
+		driver = camel_session_get_filter_driver (
+			session,
+			(folder->folder_flags & CAMEL_FOLDER_FILTER_RECENT)
+			? "incoming" : "junktest", NULL);
 
 	if (driver) {
 		recents = g_ptr_array_new ();
@@ -3645,7 +3646,8 @@ camel_folder_get_message_sync (CamelFolder *folder,
 	camel_operation_pop_message (cancellable);
 
 	if (message != NULL && camel_debug_start (":folder")) {
-		printf ("CamelFolder:get_message ('%s', '%s') =\n",
+		printf (
+			"CamelFolder:get_message ('%s', '%s') =\n",
 			camel_folder_get_full_name (folder), message_uid);
 		camel_mime_message_dump (message, FALSE);
 		camel_debug_end ();

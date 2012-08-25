@@ -1402,8 +1402,6 @@ folder_scan_content (struct _header_scan_state *s,
 				}
 			}
 
-			c (printf ("ran out of input, dumping what i have (%d) bytes midline = %s\n",
-				inptr - start, s->midline?"TRUE":"FALSE"));
 			goto content;
 		}
 		newatleast = 1;
@@ -1709,8 +1707,10 @@ tail_recurse:
 
 			if (*datalength > 0) {
 				while (f) {
-					camel_mime_filter_filter (f->filter, *databuffer, *datalength, presize,
-								 databuffer, datalength, &presize);
+					camel_mime_filter_filter (
+						f->filter,
+						*databuffer, *datalength, presize,
+						databuffer, datalength, &presize);
 					d (fwrite (*databuffer, sizeof (gchar), *datalength, stdout));
 					d (printf ("'\n"));
 					f = f->next;
@@ -1721,8 +1721,9 @@ tail_recurse:
 
 		/* check for any filter completion data */
 		while (f) {
-			camel_mime_filter_complete (f->filter, *databuffer, *datalength, presize,
-						   databuffer, datalength, &presize);
+			camel_mime_filter_complete (
+				f->filter, *databuffer, *datalength, presize,
+				databuffer, datalength, &presize);
 			f = f->next;
 		}
 
@@ -1748,8 +1749,10 @@ tail_recurse:
 				if (*datalength > 0) {
 					/* instead of a new state, we'll just store it locally and provide
 					 * an accessor function */
-					d (printf ("Multipart %s Content %p: '%.*s'\n",
-						 h->prestage > 0?"post":"pre", h, *datalength, *databuffer));
+					d (printf (
+						"Multipart %s Content %p: '%.*s'\n",
+						h->prestage > 0 ? "post" : "pre",
+						h, *datalength, *databuffer));
 					if (h->prestage > 0) {
 						if (h->posttext == NULL)
 							h->posttext = g_byte_array_new ();

@@ -107,8 +107,8 @@ main (gint argc,
 
 				if (delta == 0) {
 					camel_test_fail ("Chunks are different sizes: correct is %d, "
-							 "filter is %d, %d bytes into stream",
-							 comp_correct_chunk, comp_filter_chunk, comp_progress);
+						"filter is %d, %d bytes into stream",
+						comp_correct_chunk, comp_filter_chunk, comp_progress);
 				}
 
 				comp_filter_chunk += delta;
@@ -117,10 +117,10 @@ main (gint argc,
 			for (i = 0; i < comp_filter_chunk; i++) {
 				if (comp_correct[i] != comp_filter[i]) {
 					camel_test_fail ("Difference: correct is %c, filter is %c, "
-							 "%d bytes into stream",
-							 comp_correct[i],
-							 comp_filter[i],
-							 comp_progress + i);
+						"%d bytes into stream",
+						comp_correct[i],
+						comp_filter[i],
+						comp_progress + i);
 				}
 			}
 

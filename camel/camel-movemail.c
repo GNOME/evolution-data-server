@@ -391,14 +391,16 @@ camel_movemail_copy_filter (gint fromfd,
                 /* check for 'end of file' */
 		if (towrite == 0) {
 			d (printf ("end of file?\n"));
-			camel_mime_filter_complete (filter, buffer + PRE_SIZE, towrite, PRE_SIZE,
-						   &filterbuffer, &filterlen, &filterpre);
+			camel_mime_filter_complete (
+				filter, buffer + PRE_SIZE, towrite, PRE_SIZE,
+				&filterbuffer, &filterlen, &filterpre);
 			towrite = filterlen;
 			if (towrite == 0)
 				break;
 		} else {
-			camel_mime_filter_filter (filter, buffer + PRE_SIZE, towrite, PRE_SIZE,
-						 &filterbuffer, &filterlen, &filterpre);
+			camel_mime_filter_filter (
+				filter, buffer + PRE_SIZE, towrite, PRE_SIZE,
+				&filterbuffer, &filterlen, &filterpre);
 			towrite = filterlen;
 		}
 

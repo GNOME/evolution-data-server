@@ -200,8 +200,9 @@ multipart_remove_part_at (CamelMultipart *multipart,
 
 	link = g_list_nth (multipart->parts, index);
 	if (link == NULL) {
-		g_warning ("CamelMultipart::remove_part_at: "
-			   "part to remove is NULL\n");
+		g_warning (
+			"CamelMultipart::remove_part_at: "
+			"part to remove is NULL\n");
 		return NULL;
 	}
 	removed_part = CAMEL_MIME_PART (link->data);
@@ -255,9 +256,11 @@ multipart_set_boundary (CamelMultipart *multipart,
 		GChecksum *checksum;
 
 		/* Generate a fairly random boundary string. */
-		bgen = g_strdup_printf ("%p:%lu:%lu", (gpointer) multipart,
-					(gulong) getpid (),
-					(gulong) time (NULL));
+		bgen = g_strdup_printf (
+			"%p:%lu:%lu",
+			(gpointer) multipart,
+			(gulong) getpid (),
+			(gulong) time (NULL));
 
 		checksum = g_checksum_new (G_CHECKSUM_MD5);
 		g_checksum_update (checksum, (guchar *) bgen, -1);
@@ -303,8 +306,9 @@ multipart_construct_from_parser (CamelMultipart *multipart,
 	d (printf ("Creating multi-part\n"));
 
 	content_type = camel_mime_parser_content_type (mp);
-	camel_multipart_set_boundary (multipart,
-				     camel_content_type_param (content_type, "boundary"));
+	camel_multipart_set_boundary (
+		multipart,
+		camel_content_type_param (content_type, "boundary"));
 
 	while (camel_mime_parser_step (mp, &buf, &len) != CAMEL_MIME_PARSER_STATE_MULTIPART_END) {
 		camel_mime_parser_unstep (mp);

@@ -119,8 +119,9 @@ camel_provider_init (void)
 
 	dir = g_dir_open (CAMEL_PROVIDERDIR, 0, NULL);
 	if (!dir) {
-		g_warning ("Could not open camel provider directory (%s): %s",
-			  CAMEL_PROVIDERDIR, g_strerror (errno));
+		g_warning (
+			"Could not open camel provider directory (%s): %s",
+			CAMEL_PROVIDERDIR, g_strerror (errno));
 		return;
 	}
 
@@ -134,8 +135,9 @@ camel_provider_init (void)
 		name = g_strdup_printf ("%s/%s", CAMEL_PROVIDERDIR, entry);
 		fp = g_fopen (name, "r");
 		if (!fp) {
-			g_warning ("Could not read provider info file %s: %s",
-				   name, g_strerror (errno));
+			g_warning (
+				"Could not read provider info file %s: %s",
+				name, g_strerror (errno));
 			g_free (name);
 			continue;
 		}
@@ -191,7 +193,7 @@ camel_provider_load (const gchar *path,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Could not load %s: Module loading "
-			  "not supported on this system."), path);
+			"not supported on this system."), path);
 		return FALSE;
 	}
 
@@ -209,7 +211,7 @@ camel_provider_load (const gchar *path,
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Could not load %s: No initialization "
-			  "code in module."), path);
+			"code in module."), path);
 		g_module_close (module);
 		return FALSE;
 	}

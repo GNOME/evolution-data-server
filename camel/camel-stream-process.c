@@ -93,8 +93,10 @@ stream_process_close (CamelStream *object,
 	CamelStreamProcess *stream = CAMEL_STREAM_PROCESS (object);
 
 	if (camel_verbose_debug)
-		fprintf (stderr, "Process stream close. sockfd %d, childpid %d\n",
-			 stream->sockfd, stream->childpid);
+		fprintf (
+			stderr,
+			"Process stream close. sockfd %d, childpid %d\n",
+			stream->sockfd, stream->childpid);
 
 	if (stream->sockfd != -1) {
 		close (stream->sockfd);
@@ -106,21 +108,27 @@ stream_process_close (CamelStream *object,
 		for (i = 0; i < 4; i++) {
 			ret = waitpid (stream->childpid, NULL, WNOHANG);
 			if (camel_verbose_debug)
-				fprintf (stderr, "waitpid() for pid %d returned %d (errno %d)\n",
-					 stream->childpid, ret, ret == -1 ? errno : 0);
+				fprintf (
+					stderr,
+					"waitpid() for pid %d returned %d (errno %d)\n",
+					stream->childpid, ret, ret == -1 ? errno : 0);
 			if (ret == stream->childpid || errno == ECHILD)
 				break;
 			switch (i) {
 			case 0:
 				if (camel_verbose_debug)
-					fprintf (stderr, "Sending SIGTERM to pid %d\n",
-						 stream->childpid);
+					fprintf (
+						stderr,
+						"Sending SIGTERM to pid %d\n",
+						stream->childpid);
 				kill (stream->childpid, SIGTERM);
 				break;
 			case 2:
 				if (camel_verbose_debug)
-					fprintf (stderr, "Sending SIGKILL to pid %d\n",
-						 stream->childpid);
+					fprintf (
+						stderr,
+						"Sending SIGKILL to pid %d\n",
+						stream->childpid);
 				kill (stream->childpid, SIGKILL);
 				break;
 			case 1:

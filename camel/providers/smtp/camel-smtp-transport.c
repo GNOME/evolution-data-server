@@ -376,7 +376,7 @@ smtp_transport_connect_sync (CamelService *service,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("SMTP server %s does not support %s "
-				  "authentication"), host, mechanism);
+				"authentication"), host, mechanism);
 			success = FALSE;
 		}
 
@@ -701,7 +701,7 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Cannot send message: "
-				  "one or more invalid recipients"));
+				"one or more invalid recipients"));
 			camel_operation_pop_message (cancellable);
 			smtp_transport->need_rset = TRUE;
 			return FALSE;

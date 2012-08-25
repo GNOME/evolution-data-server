@@ -643,8 +643,10 @@ connect_to_socks4_proxy (CamelTcpStreamRaw *raw,
 	d (g_print ("  reading SOCKS4 reply\n"));
 	if (read_from_prfd (fd, reply, sizeof (reply), cancellable, error) != sizeof (reply)) {
 		d (g_print ("  failed: %d\n", errno));
-		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
-			     _("The proxy host does not support SOCKS4"));
+		g_set_error (
+			error, CAMEL_PROXY_ERROR,
+			CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
+			_("The proxy host does not support SOCKS4"));
 		goto error;
 	}
 
@@ -654,8 +656,10 @@ connect_to_socks4_proxy (CamelTcpStreamRaw *raw,
 #else
 		errno = ECONNREFUSED;
 #endif
-		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
-			     _("The proxy host does not support SOCKS4"));
+		g_set_error (
+			error, CAMEL_PROXY_ERROR,
+			CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
+			_("The proxy host does not support SOCKS4"));
 		goto error;
 	}
 
@@ -665,9 +669,11 @@ connect_to_socks4_proxy (CamelTcpStreamRaw *raw,
 #else
 		errno = ECONNREFUSED;
 #endif
-		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_CANT_AUTHENTICATE,
-			     _("The proxy host denied our request: code %d"),
-			     reply[1]);
+		g_set_error (
+			error, CAMEL_PROXY_ERROR,
+			CAMEL_PROXY_ERROR_CANT_AUTHENTICATE,
+			_("The proxy host denied our request: code %d"),
+			reply[1]);
 		goto error;
 	}
 
@@ -761,21 +767,27 @@ socks5_initiate_and_request_authentication (CamelTcpStreamRaw *raw,
 	if (read_from_prfd (fd, reply, sizeof (reply), cancellable, error) != sizeof (reply)) {
 		d (g_print ("  failed: %d\n", errno));
 		g_clear_error (error);
-		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
-			     _("The proxy host does not support SOCKS5"));
+		g_set_error (
+			error, CAMEL_PROXY_ERROR,
+			CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
+			_("The proxy host does not support SOCKS5"));
 		return FALSE;
 	}
 
 	if (reply[0] != 5) {		/* server supports SOCKS5 */
-		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
-			     _("The proxy host does not support SOCKS5"));
+		g_set_error (
+			error, CAMEL_PROXY_ERROR,
+			CAMEL_PROXY_ERROR_PROXY_NOT_SUPPORTED,
+			_("The proxy host does not support SOCKS5"));
 		return FALSE;
 	}
 
 	if (reply[1] != 0) {		/* and it grants us no authentication (see request[2]) */
-		g_set_error (error, CAMEL_PROXY_ERROR, CAMEL_PROXY_ERROR_CANT_AUTHENTICATE,
-			     _("Could not find a suitable authentication type: code 0x%x"),
-			     reply[1]);
+		g_set_error (
+			error, CAMEL_PROXY_ERROR,
+			CAMEL_PROXY_ERROR_CANT_AUTHENTICATE,
+			_("Could not find a suitable authentication type: code 0x%x"),
+			reply[1]);
 		return FALSE;
 	}
 

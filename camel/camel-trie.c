@@ -207,8 +207,9 @@ dump_trie (struct _trie_state *s,
 	memset (p, ' ', depth * 2);
 	p[depth * 2] = '\0';
 
-	fprintf (stderr, "%s[state] %p: final=%d; pattern-id=%d; fail=%p\n",
-		 p, s, s->final, s->id, s->fail);
+	fprintf (
+		stderr, "%s[state] %p: final=%d; pattern-id=%d; fail=%p\n",
+		p, s, s->final, s->id, s->fail);
 	m = s->match;
 	while (m) {
 		fprintf (stderr, " %s'%c' -> %p\n", p, m->c, m->state);

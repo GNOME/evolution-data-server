@@ -743,10 +743,13 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 			string = g_strdup_printf ("TT %s\n", type2);
 			if (camel_stream_write_string (
 				priv->helper_stream, string, NULL, NULL) >= 0 &&
-			   (s = camel_stream_read (priv->helper_stream, buf,
-				   sizeof (buf), cancellable, NULL)) > 4 &&
-			   buf[0] == 'K' && buf[1] == 'K' && buf[2] == ' ' &&
-			   buf[s - 1] == '\n') {
+				(s = camel_stream_read (
+					priv->helper_stream, buf,
+					sizeof (buf), cancellable, NULL)) > 4 &&
+				buf[0] == 'K' &&
+				buf[1] == 'K' &&
+				buf[2] == ' ' &&
+				buf[s - 1] == '\n') {
 				buf[s - 1] = 0;
 				data = g_base64_decode (buf + 3, &length);
 				g_byte_array_append (ret, data, length);
@@ -793,7 +796,8 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 		memset (lm_resp + 8, 0, 16);
 
 		/* Session nonce is client nonce + server nonce */
-		memcpy (sess_nonce.srv,
+		memcpy (
+			sess_nonce.srv,
 			token->data + NTLM_CHALLENGE_NONCE_OFFSET, 8);
 
 		/* Take MD5 of session nonce */
@@ -832,24 +836,31 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 	/* Don't jump to 'fail' label after this point. */
 	g_byte_array_set_size (ret, NTLM_RESPONSE_BASE_SIZE);
 	memset (ret->data, 0, NTLM_RESPONSE_BASE_SIZE);
-	memcpy (ret->data, NTLM_RESPONSE_HEADER,
+	memcpy (
+		ret->data, NTLM_RESPONSE_HEADER,
 		sizeof (NTLM_RESPONSE_HEADER) - 1);
-	memcpy (ret->data + NTLM_RESPONSE_FLAGS_OFFSET,
+	memcpy (
+		ret->data + NTLM_RESPONSE_FLAGS_OFFSET,
 		NTLM_RESPONSE_FLAGS, sizeof (NTLM_RESPONSE_FLAGS) - 1);
 	/* Mask in the NTLM2SESSION flag */
 	ret->data[NTLM_RESPONSE_FLAGS_OFFSET + 2] |=
 		token->data[NTLM_CHALLENGE_FLAGS_OFFSET + 2] & 8;
 
-	ntlm_set_string (ret, NTLM_RESPONSE_DOMAIN_OFFSET,
-			 domain->str, domain->len);
-	ntlm_set_string (ret, NTLM_RESPONSE_USER_OFFSET,
-			 real_user, strlen (real_user));
-	ntlm_set_string (ret, NTLM_RESPONSE_HOST_OFFSET,
-			 "UNKNOWN", sizeof ("UNKNOWN") - 1);
-	ntlm_set_string (ret, NTLM_RESPONSE_LM_RESP_OFFSET,
-			 (const gchar *) lm_resp, sizeof (lm_resp));
-	ntlm_set_string (ret, NTLM_RESPONSE_NT_RESP_OFFSET,
-			 (const gchar *) nt_resp, sizeof (nt_resp));
+	ntlm_set_string (
+		ret, NTLM_RESPONSE_DOMAIN_OFFSET,
+		domain->str, domain->len);
+	ntlm_set_string (
+		ret, NTLM_RESPONSE_USER_OFFSET,
+		real_user, strlen (real_user));
+	ntlm_set_string (
+		ret, NTLM_RESPONSE_HOST_OFFSET,
+		"UNKNOWN", sizeof ("UNKNOWN") - 1);
+	ntlm_set_string (
+		ret, NTLM_RESPONSE_LM_RESP_OFFSET,
+		(const gchar *) lm_resp, sizeof (lm_resp));
+	ntlm_set_string (
+		ret, NTLM_RESPONSE_NT_RESP_OFFSET,
+		(const gchar *) nt_resp, sizeof (nt_resp));
 
 	camel_sasl_set_authenticated (sasl, TRUE);
 
@@ -860,8 +871,9 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 fail:
 	/* If the challenge is malformed, restart authentication.
 	 * XXX A malicious server could make this loop indefinitely. */
-	g_byte_array_append (ret, (guint8 *) NTLM_REQUEST,
-			     sizeof (NTLM_REQUEST) - 1);
+	g_byte_array_append (
+		ret, (guint8 *) NTLM_REQUEST,
+		sizeof (NTLM_REQUEST) - 1);
 
 exit:
 	g_free (user);

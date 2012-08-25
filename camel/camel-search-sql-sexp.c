@@ -161,8 +161,8 @@ func_not (CamelSExp *f,
 		if (g_strcmp0 (r1->value.string, "( (usertags LIKE '%completed-on 0%' AND usertags LIKE '%completed-on%') )") == 0)
 			r->value.string = g_strdup ("( (not (usertags LIKE '%completed-on 0%')) AND usertags LIKE '%completed-on%' )");
 		else
-			r->value.string = g_strdup_printf ("(NOT (%s))",
-							   r1->value.string);
+			r->value.string = g_strdup_printf (
+				"(NOT (%s))", r1->value.string);
 	}
 	camel_sexp_result_free (f, r1);
 
@@ -724,8 +724,9 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 			camel_sexp_add_ifunction (sexp, 0, symbols[i].name,
 					     (CamelSExpIFunc) symbols[i].func, NULL);
 		else
-			camel_sexp_add_function (sexp, 0, symbols[i].name,
-					    symbols[i].func, NULL);
+			camel_sexp_add_function (
+				sexp, 0, symbols[i].name,
+				symbols[i].func, NULL);
 	}
 
 	camel_sexp_input_text (sexp, sql, strlen (sql));

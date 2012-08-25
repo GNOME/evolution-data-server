@@ -503,8 +503,9 @@ imap_read_response (CamelImapStore *store,
 	 * for that matter.  Well, we could get BAD, treat as NO.
 	 */
 	if (!p || (g_ascii_strncasecmp (p, " NO", 3) != 0 && g_ascii_strncasecmp (p, " BAD", 4)) ) {
-		g_warning ("Unexpected response from IMAP server: %s",
-			   respbuf);
+		g_warning (
+			"Unexpected response from IMAP server: %s",
+			respbuf);
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,
@@ -721,8 +722,8 @@ camel_imap_response_free (CamelImapStore *store,
 				   || !g_ascii_strcasecmp (p, " XGWMOVE")) {
 				/* XGWMOVE response is the same as an EXPUNGE response */
 				if (!expunged) {
-					expunged = g_array_new (FALSE, FALSE,
-								sizeof (gint));
+					expunged = g_array_new (
+						FALSE, FALSE, sizeof (gint));
 				}
 				g_array_append_val (expunged, number);
 			}
@@ -819,7 +820,7 @@ camel_imap_response_extract (CamelImapStore *store,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("IMAP server response did not "
-			  "contain %s information"), type);
+			"contain %s information"), type);
 	}
 
 	camel_imap_response_free (store, response);
@@ -929,8 +930,9 @@ imap_command_strdup_vprintf (CamelImapStore *store,
 			start = p;
 			break;
 		default:
-			g_warning ("camel-imap-command is not printf. I don't "
-				   "know what '%%%c' means.", *p);
+			g_warning (
+				"camel-imap-command is not printf. "
+				"I don't know what '%%%c' means.", *p);
 			start = *p ? p + 1 : p;
 			break;
 		}

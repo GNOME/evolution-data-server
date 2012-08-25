@@ -346,11 +346,15 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		input_token = &inbuf;
 
 	challenge:
-		major = gss_init_sec_context (&minor, GSS_C_NO_CREDENTIAL, &priv->ctx, priv->target,
-					      GSS_C_OID_KRBV5_DES, GSS_C_MUTUAL_FLAG |
-					      GSS_C_REPLAY_FLAG | GSS_C_SEQUENCE_FLAG,
-					      0, GSS_C_NO_CHANNEL_BINDINGS,
-					      input_token, &mech, &outbuf, &flags, &time);
+		major = gss_init_sec_context (
+			&minor, GSS_C_NO_CREDENTIAL,
+			&priv->ctx, priv->target,
+			GSS_C_OID_KRBV5_DES,
+			GSS_C_MUTUAL_FLAG |
+			GSS_C_REPLAY_FLAG |
+			GSS_C_SEQUENCE_FLAG,
+			0, GSS_C_NO_CHANNEL_BINDINGS,
+			input_token, &mech, &outbuf, &flags, &time);
 
 		switch (major) {
 		case GSS_S_COMPLETE:

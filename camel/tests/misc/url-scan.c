@@ -111,7 +111,8 @@ gint main (gint argc, gchar **argv)
 
 		if ((url && (!url_tests[i].url || strcmp (url, url_tests[i].url) != 0)) ||
 		    (!url && url_tests[i].url)) {
-			printf ("FAILED on \"%s\" -> %s\n  (got %s)\n\n",
+			printf (
+				"FAILED on \"%s\" -> %s\n  (got %s)\n\n",
 				url_tests[i].text,
 				url_tests[i].url ? url_tests[i].url : "(nothing)",
 				url ? url : "(nothing)");

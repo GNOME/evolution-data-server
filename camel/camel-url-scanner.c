@@ -544,7 +544,8 @@ gint main (gint argc, gchar **argv)
 
 	printf ("static guchar url_scanner_table[256] = {");
 	for (i = 0; i < 256; i++) {
-		printf ("%s%3d%s", (i % 16) ? "" : "\n\t",
+		printf (
+			"%s%3d%s", (i % 16) ? "" : "\n\t",
 			url_scanner_table[i], i != 255 ? "," : "\n");
 	}
 	printf ("};\n\n");

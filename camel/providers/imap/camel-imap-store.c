@@ -187,9 +187,10 @@ parse_capability (CamelImapStore *store,
 
 	for (capa = strtok_r (capa, " ", &lasts); capa; capa = strtok_r (NULL, " ", &lasts)) {
 		if (!strncmp (capa, "AUTH=", 5)) {
-			g_hash_table_insert (store->authtypes,
-					     g_strdup (capa + 5),
-					     GINT_TO_POINTER (1));
+			g_hash_table_insert (
+				store->authtypes,
+				g_strdup (capa + 5),
+				GINT_TO_POINTER (1));
 			continue;
 		}
 		for (i = 0; capabilities[i].name; i++) {
@@ -734,7 +735,8 @@ imap_auth_loop (CamelService *service,
 
 	if (store->preauthed) {
 		if (camel_verbose_debug)
-			fprintf (stderr, "Server %s has preauthenticated us.\n",
+			fprintf (
+				stderr, "Server %s has preauthenticated us.\n",
 				host);
 		goto exit;
 	}
@@ -745,7 +747,7 @@ imap_auth_loop (CamelService *service,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("IMAP server %s does not support %s "
-				  "authentication"), host, mechanism);
+				"authentication"), host, mechanism);
 			success = FALSE;
 			goto exit;
 		}
@@ -1445,8 +1447,9 @@ imap_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 	if (!camel_imap_store_connected (imap_store, error))
 		return FALSE;
 
-	response = camel_imap_command (imap_store, NULL, cancellable, error,
-				       "SUBSCRIBE %F", folder_name);
+	response = camel_imap_command (
+		imap_store, NULL, cancellable, error,
+		"SUBSCRIBE %F", folder_name);
 	if (!response)
 		return FALSE;
 
@@ -1492,8 +1495,9 @@ imap_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 	if (!camel_imap_store_connected (imap_store, error))
 		return FALSE;
 
-	response = camel_imap_command (imap_store, NULL, cancellable, error,
-				       "UNSUBSCRIBE %F", folder_name);
+	response = camel_imap_command (
+		imap_store, NULL, cancellable, error,
+		"UNSUBSCRIBE %F", folder_name);
 	if (!response)
 		return FALSE;
 
@@ -1697,8 +1701,8 @@ imap_check_folder_still_extant (CamelImapStore *imap_store,
 {
 	CamelImapResponse *response;
 
-	response = camel_imap_command (imap_store, NULL, NULL, NULL, "LIST \"\" %F",
-				       full_name);
+	response = camel_imap_command (
+		imap_store, NULL, NULL, NULL, "LIST \"\" %F", full_name);
 
 	if (response) {
 		gboolean stillthere = response->untagged->len != 0;
@@ -1920,10 +1924,9 @@ get_folder_status (CamelImapStore *imap_store,
 
 	/* FIXME: we assume the server is STATUS-capable */
 
-	response = camel_imap_command (imap_store, NULL, NULL, NULL,
-				       "STATUS %F (%s)",
-				       folder_name,
-				       type);
+	response = camel_imap_command (
+		imap_store, NULL, NULL, NULL,
+		"STATUS %F (%s)", folder_name, type);
 
 	if (!response) {
 		if (imap_check_folder_still_extant (imap_store, folder_name, NULL) == FALSE) {
@@ -2150,8 +2153,10 @@ imap_store_get_folder_sync (CamelStore *store,
 
 				/* add the dirsep to the end of parent_name */
 				name = g_strdup_printf ("%s%c", parent_real, imap_store->dir_sep);
-				response = camel_imap_command (imap_store, NULL, cancellable, error, "CREATE %G",
-							       name);
+				response = camel_imap_command (
+					imap_store, NULL,
+					cancellable, error,
+					"CREATE %G", name);
 				g_free (name);
 
 				if (!response) {
@@ -2446,8 +2451,10 @@ imap_store_rename_folder_sync (CamelStore *store,
 
 	/* So do we care if this didn't work?  Its just a cache? */
 	if (g_rename (oldpath, newpath) == -1) {
-		g_warning ("Could not rename message cache '%s' to '%s': %s: cache reset",
-			   oldpath, newpath, g_strerror (errno));
+		g_warning (
+			"Could not rename message cache "
+			"'%s' to '%s': %s: cache reset",
+			oldpath, newpath, g_strerror (errno));
 	}
 
 	if (CAMEL_STORE (imap_store)->folders) {
@@ -2532,8 +2539,9 @@ imap_store_create_folder_sync (CamelStore *store,
 	}
 
 	need_convert = FALSE;
-	response = camel_imap_command (imap_store, NULL, cancellable, error, "LIST \"\" %G",
-				       parent_real);
+	response = camel_imap_command (
+		imap_store, NULL, cancellable, error,
+		"LIST \"\" %G", parent_real);
 	if (!response) /* whoa, this is bad */ {
 		g_free (parent_real);
 		return NULL;
@@ -2589,8 +2597,9 @@ imap_store_create_folder_sync (CamelStore *store,
 
 		/* add the dirsep to the end of parent_name */
 		name = g_strdup_printf ("%s%c", parent_real, imap_store->dir_sep);
-		response = camel_imap_command (imap_store, NULL, cancellable, error, "CREATE %G",
-					       name);
+		response = camel_imap_command (
+			imap_store, NULL, cancellable, error,
+			"CREATE %G", name);
 		g_free (name);
 
 		if (!response) {
@@ -2606,7 +2615,9 @@ imap_store_create_folder_sync (CamelStore *store,
 	real_name = camel_imap_store_summary_path_to_full (imap_store->summary, folder_name, imap_store->dir_sep);
 	full_name = imap_concat (imap_store, parent_real, real_name);
 	g_free (real_name);
-	response = camel_imap_command (imap_store, NULL, cancellable, error, "CREATE %G", full_name);
+	response = camel_imap_command (
+		imap_store, NULL, cancellable, error,
+		"CREATE %G", full_name);
 
 	if (response) {
 		CamelImapStoreInfo *si;
@@ -2790,9 +2801,12 @@ get_folders_sync (CamelImapStore *imap_store,
 			}
 
 			for (j = 0; j < 2; j++) {
-				response = camel_imap_command (imap_store, NULL, cancellable, first_namespace ? error : NULL,
-								"%s \"\" %G", j == 1 ? "LSUB" : "LIST",
-								pattern);
+				response = camel_imap_command (
+					imap_store, NULL, cancellable,
+					first_namespace ? error : NULL,
+					"%s \"\" %G",
+					j == 1 ? "LSUB" : "LIST",
+					pattern);
 				if (!response) {
 					/* do not worry if checking in some namespace fails */
 					if (!ppattern)
@@ -2957,7 +2971,8 @@ refresh_refresh (CamelSession *session,
 
 	g_object_unref (settings);
 
-	camel_operation_push_message (cancellable,
+	camel_operation_push_message (
+		cancellable,
 		_("Retrieving list of folders at '%s'"),
 		camel_service_get_display_name (service));
 
@@ -3263,7 +3278,7 @@ camel_imap_store_connected (CamelImapStore *store,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("You must be working online "
-			  "to complete this operation"));
+			"to complete this operation"));
 
 	return FALSE;
 }

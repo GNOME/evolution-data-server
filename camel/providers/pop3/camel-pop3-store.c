@@ -296,7 +296,7 @@ try_sasl (CamelPOP3Store *store,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Cannot login to POP server %s: "
-				  "SASL Protocol error"), host);
+				"SASL Protocol error"), host);
 			result = CAMEL_AUTHENTICATION_ERROR;
 			goto exit;
 		}
@@ -544,8 +544,8 @@ pop3_store_authenticate_sync (CamelService *service,
 					error, CAMEL_SERVICE_ERROR,
 					CAMEL_SERVICE_ERROR_URL_INVALID,
 					_("Unable to connect to POP server %s:	"
-					  "Invalid APOP ID received. Impersonation "
-					  "attack suspected. Please contact your admin."),
+					"Invalid APOP ID received. Impersonation "
+					"attack suspected. Please contact your admin."),
 					host);
 
 				result = CAMEL_AUTHENTICATION_ERROR;
@@ -596,7 +596,7 @@ pop3_store_authenticate_sync (CamelService *service,
 		g_prefix_error (
 			error,
 			_("Unable to connect to POP server %s.\n"
-			  "Error sending password: "), host);
+			"Error sending password: "), host);
 		result = CAMEL_AUTHENTICATION_ERROR;
 
 	} else if (pcu && pcu->state != CAMEL_POP3_COMMAND_OK) {
@@ -611,7 +611,7 @@ pop3_store_authenticate_sync (CamelService *service,
 			/* Translators: Last %s is an optional explanation
 			 * beginning with ": " separator. */
 			_("Unable to connect to POP server %s.\n"
-			  "Error sending username%s"),
+			"Error sending username%s"),
 			host, (tmp != NULL) ? tmp : "");
 		g_free (tmp);
 		result = CAMEL_AUTHENTICATION_ERROR;

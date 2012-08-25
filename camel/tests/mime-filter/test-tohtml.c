@@ -56,9 +56,9 @@ test_filter (CamelMimeFilter *f,
 
 	check (camel_stream_write_to_stream (filter, in, NULL, NULL) > 0);
 	check_msg (byte_array_in->len == byte_array_out->len
-		  && memcmp (byte_array_in->data, byte_array_out->data, byte_array_in->len) == 0,
-		  "Buffer content mismatch, %d != %d, in = '%.*s' != out = '%.*s'", byte_array_in->len, byte_array_out->len,
-		  byte_array_in->len, byte_array_in->data, byte_array_out->len, byte_array_out->data);
+		&& memcmp (byte_array_in->data, byte_array_out->data, byte_array_in->len) == 0,
+		"Buffer content mismatch, %d != %d, in = '%.*s' != out = '%.*s'", byte_array_in->len, byte_array_out->len,
+		byte_array_in->len, byte_array_in->data, byte_array_out->len, byte_array_out->data);
 
 	camel_test_pull ();
 
@@ -86,9 +86,9 @@ test_filter (CamelMimeFilter *f,
 	check (camel_stream_write_to_stream (indisk, filter, NULL, NULL) > 0);
 	check (camel_stream_flush (filter, NULL, NULL) == 0);
 	check_msg (byte_array_in->len == byte_array_out->len
-		  && memcmp (byte_array_in->data, byte_array_out->data, byte_array_in->len) == 0,
-		  "Buffer content mismatch, %d != %d, in = '%.*s' != out = '%.*s'", byte_array_in->len, byte_array_out->len,
-		  byte_array_in->len, byte_array_in->data, byte_array_out->len, byte_array_out->data);
+		&& memcmp (byte_array_in->data, byte_array_out->data, byte_array_in->len) == 0,
+		"Buffer content mismatch, %d != %d, in = '%.*s' != out = '%.*s'", byte_array_in->len, byte_array_out->len,
+		byte_array_in->len, byte_array_in->data, byte_array_out->len, byte_array_out->data);
 
 	camel_stream_filter_remove ((CamelStreamFilter *) filter, id);
 	check_unref (filter, 1);

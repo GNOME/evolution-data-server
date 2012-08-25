@@ -196,8 +196,7 @@ stream_mem_seek (GSeekable *seekable,
 	if (position > priv->buffer->len) {
 		gint oldlen = priv->buffer->len;
 		g_byte_array_set_size (priv->buffer, position);
-		memset (priv->buffer->data + oldlen, 0,
-			position - oldlen);
+		memset (priv->buffer->data + oldlen, 0, position - oldlen);
 	}
 
 	priv->position = position;

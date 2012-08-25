@@ -124,7 +124,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Could not create pipe to sendmail: %s: "
-			  "mail not sent"), g_strerror (errno));
+			"mail not sent"), g_strerror (errno));
 
 		/* restore the bcc headers */
 		header->next = savedbcc;
@@ -146,7 +146,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Could not fork sendmail: %s: "
-			  "mail not sent"), g_strerror (errno));
+			"mail not sent"), g_strerror (errno));
 		close (fd[0]);
 		close (fd[1]);
 		sigprocmask (SIG_SETMASK, &omask, NULL);
@@ -232,7 +232,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("sendmail exited with status %d: "
-				  "mail not sent."),
+				"mail not sent."),
 				WEXITSTATUS (wstat));
 		}
 		return FALSE;

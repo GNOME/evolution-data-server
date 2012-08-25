@@ -31,7 +31,8 @@ test_add_message (CamelFolder *folder,
 	push ("creating message %d\n", j);
 	msg = test_message_create_simple ();
 	content = g_strdup_printf ("Test message %08x contents\n\n", j);
-	test_message_set_content_simple ((CamelMimePart *) msg, 0, "text/plain",
+	test_message_set_content_simple (
+		(CamelMimePart *) msg, 0, "text/plain",
 							content, strlen (content));
 	test_free (content);
 	subject = g_strdup_printf ("Test message %08x subject", j);

@@ -239,9 +239,10 @@ test_message_compare (CamelMimeMessage *msg)
 
 	check_unref (msg2, 1);
 
-	check_msg (byte_array1->len == byte_array2->len,
-		   "byte_array1->len = %d, byte_array2->len = %d",
-		   byte_array1->len, byte_array2->len);
+	check_msg (
+		byte_array1->len == byte_array2->len,
+		"byte_array1->len = %d, byte_array2->len = %d",
+		byte_array1->len, byte_array2->len);
 
 	check_msg (memcmp (byte_array1->data, byte_array2->data, byte_array1->len) == 0, "msg/stream compare");
 

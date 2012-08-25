@@ -196,16 +196,21 @@ camel_disco_diary_log (CamelDiscoDiary *diary,
 
  lose:
 	if (status == -1) {
+		CamelService *service;
+		CamelSession *session;
 		gchar *msg;
 
-		msg = g_strdup_printf (_("Could not write log entry: %s\n"
-					 "Further operations on this server "
-					 "will not be replayed when you\n"
-					 "reconnect to the network."),
-				       g_strerror (errno));
-		camel_session_alert_user (camel_service_get_session (CAMEL_SERVICE (diary->store)),
-					  CAMEL_SESSION_ALERT_ERROR,
-					  msg, NULL);
+		service = CAMEL_SERVICE (diary->store);
+		session = camel_service_get_session (service);
+
+		msg = g_strdup_printf (
+			_("Could not write log entry: %s\n"
+			"Further operations on this server "
+			"will not be replayed when you\n"
+			"reconnect to the network."),
+			g_strerror (errno));
+		camel_session_alert_user (
+			session, CAMEL_SESSION_ALERT_ERROR, msg, NULL);
 		g_free (msg);
 
 		fclose (diary->file);
@@ -264,8 +269,8 @@ diary_decode_folder (CamelDiscoDiary *diary,
 		else {
 			msg = g_strdup_printf (
 				_("Could not open '%s':\n%s\n"
-				  "Changes made to this folder "
-				  "will not be resynchronized."),
+				"Changes made to this folder "
+				"will not be resynchronized."),
 				name, error->message);
 			g_error_free (error);
 			camel_session_alert_user (
@@ -489,8 +494,10 @@ camel_disco_diary_uidmap_add (CamelDiscoDiary *diary,
                               const gchar *old_uid,
                               const gchar *new_uid)
 {
-	g_hash_table_insert (diary->uidmap, g_strdup (old_uid),
-			     g_strdup (new_uid));
+	g_hash_table_insert (
+		diary->uidmap,
+		g_strdup (old_uid),
+		g_strdup (new_uid));
 }
 
 const gchar *

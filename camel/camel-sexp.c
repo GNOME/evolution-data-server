@@ -1150,8 +1150,8 @@ camel_sexp_term_evaluate_occur_times (CamelSExp *sexp,
 		argv = alloca (sizeof (argv[0]) * argc);
 
 		for (i = 0; i < term->value.func.termcount; i++) {
-			argv[i] = camel_sexp_term_evaluate_occur_times (sexp, term->value.func.terms[i],
-								    start, end);
+			argv[i] = camel_sexp_term_evaluate_occur_times (
+				sexp, term->value.func.terms[i], start, end);
 		}
 
 		if (is_time_function (term->value.func.sym->name)) {

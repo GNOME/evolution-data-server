@@ -2093,7 +2093,7 @@ e_time_get_d_fmt_with_4digit_year (void)
 	res = g_strdup (nl_langinfo (D_FMT) );
 #elif defined(G_OS_WIN32)
 #define GET_LOCALE_INFO(str, len) \
-	GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, str, len)
+	GetLocaleInfoA (LOCALE_USER_DEFAULT, LOCALE_SLONGDATE, str, len)
 	gint format_string_length = GET_LOCALE_INFO (NULL, 0);
 	if (format_string_length > 0) {
 		gsize format_bytes_read;
