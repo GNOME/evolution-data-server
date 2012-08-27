@@ -115,9 +115,16 @@ gchar *		e_source_webdav_dup_resource_path
 void		e_source_webdav_set_resource_path
 						(ESourceWebdav *extension,
 						 const gchar *resource_path);
+const gchar *	e_source_webdav_get_resource_query
+						(ESourceWebdav *extension);
+gchar *		e_source_webdav_dup_resource_query
+						(ESourceWebdav *extension);
+void		e_source_webdav_set_resource_query
+						(ESourceWebdav *extension,
+						 const gchar *resource_query);
 SoupURI *	e_source_webdav_dup_soup_uri	(ESourceWebdav *extension);
 void		e_source_webdav_set_soup_uri	(ESourceWebdav *extension,
-						 SoupURI *uri);
+						 SoupURI *soup_uri);
 
 G_END_DECLS
 

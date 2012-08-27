@@ -2254,6 +2254,12 @@ migrate_parse_caldav_source (ParseData *parse_data)
 			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
 			"ResourcePath", parse_data->soup_uri->path);
 
+	if (parse_data->soup_uri->query != NULL)
+		g_key_file_set_string (
+			parse_data->key_file,
+			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
+			"ResourceQuery", parse_data->soup_uri->query);
+
 	parse_data->property_func = migrate_parse_caldav_property;
 }
 
@@ -2502,6 +2508,12 @@ migrate_parse_webcal_source (ParseData *parse_data)
 			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
 			"ResourcePath", parse_data->soup_uri->path);
 
+	if (parse_data->soup_uri->query != NULL)
+		g_key_file_set_string (
+			parse_data->key_file,
+			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
+			"ResourceQuery", parse_data->soup_uri->query);
+
 	/* Webcal Backend has no special properties to parse. */
 }
 
@@ -2545,6 +2557,12 @@ migrate_parse_webdav_source (ParseData *parse_data)
 			parse_data->key_file,
 			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
 			"ResourcePath", parse_data->soup_uri->path);
+
+	if (parse_data->soup_uri->query != NULL)
+		g_key_file_set_string (
+			parse_data->key_file,
+			E_SOURCE_EXTENSION_WEBDAV_BACKEND,
+			"ResourceQuery", parse_data->soup_uri->query);
 
 	parse_data->property_func = migrate_parse_webdav_property;
 }
