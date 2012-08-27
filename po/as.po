@@ -40,7 +40,7 @@ msgstr "‍অজ্ঞাত ত্ৰুটি"
 #: ../addressbook/backends/file/e-book-backend-file.c:141
 #, c-format
 msgid "Failed to remove file '%s': %s"
-msgstr "নথিপত্ৰ '%s' আতৰাওতে ত্ৰুটি: %s"
+msgstr "ফাইল '%s' আতৰাওতে ত্ৰুটি: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:164
 #, c-format
@@ -110,7 +110,7 @@ msgstr "পৰিচয় মচি পেলোৱা হৈছে…"
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:367
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:487
 msgid "The backend does not support bulk modifications"
-msgstr "বেকএণ্ডে বৃহত পৰিৱৰ্তন সমৰ্থন নকৰে"
+msgstr "বেকএণ্ডে বৃহত পৰিবৰ্তন সমৰ্থন নকৰে"
 
 #. Update the contact on the server asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:1712
@@ -239,7 +239,7 @@ msgstr "অবিকল্প ID"
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
 #: ../addressbook/libebook/e-contact.c:126
 msgid "File Under"
-msgstr "চিহ্নিত স্থানত নথিপত্ৰ"
+msgstr "চিহ্নিত স্থানত ফাইল"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:128
@@ -1135,7 +1135,7 @@ msgstr "অবৈধ URI লৈ নিৰ্দেশ কৰা হৈছে"
 #: ../calendar/backends/http/e-cal-backend-http.c:579
 #, c-format
 msgid "Bad file format."
-msgstr "নথিপত্ৰৰ বিন্যাস সঠিক নহয়।"
+msgstr "ফাইলৰ বিন্যাস সঠিক নহয়।"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:589
 #, c-format
@@ -1146,7 +1146,7 @@ msgstr "কেলেন্ডাৰ নহয়।"
 #: ../calendar/backends/http/e-cal-backend-http.c:933
 #: ../calendar/backends/weather/e-cal-backend-weather.c:511
 msgid "Could not create cache file"
-msgstr "ক্যাশ নথিপত্ৰ সৃষ্টি কৰোঁতে ব্যৰ্থ"
+msgstr "ক্যাশ ফাইল সৃষ্টি কৰোঁতে ব্যৰ্থ"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:171
 msgid "Could not retrieve weather data"
@@ -1692,7 +1692,7 @@ msgstr "ক্যাশ পথ সৃষ্টি কৰিবলে অক্�
 
 #: ../camel/camel-data-cache.c:440
 msgid "Empty cache file"
-msgstr "ক্যাশ নথিপত্ৰ ৰিক্ত কৰক"
+msgstr "ক্যাশ ফাইল ৰিক্ত কৰক"
 
 #: ../camel/camel-data-cache.c:509
 #, c-format
@@ -2165,7 +2165,7 @@ msgstr "বাৰ্তা প্ৰাপ্ত কৰোতে ত্ৰুট
 
 #: ../camel/camel-imapx-server.c:3749
 msgid "Failed to copy the tmp file"
-msgstr "tmp নথিপত্ৰ কপি কৰিবলে ব্যৰ্থ"
+msgstr "tmp ফাইল কপি কৰিবলে ব্যৰ্থ"
 
 #: ../camel/camel-imapx-server.c:3763
 msgid "Failed to close the tmp stream"
@@ -2246,7 +2246,7 @@ msgstr "NOOP পৰিৱেশন কৰোতে ত্ৰুটি"
 
 #: ../camel/camel-imapx-server.c:5553
 msgid "Error syncing changes"
-msgstr "পৰিৱৰ্তনসমূহ সংমিহলি কৰোতে ত্ৰুটি"
+msgstr "পৰিবৰ্তনসমূহ সংমিহলি কৰোতে ত্ৰুটি"
 
 #: ../camel/camel-imapx-server.c:6183
 #: ../camel/providers/imap/camel-imap-folder.c:3517
@@ -2261,7 +2261,7 @@ msgstr "এই ধৰণৰ কোনো বাৰ্তা উপস্থি�
 
 #: ../camel/camel-imapx-server.c:6339 ../camel/camel-imapx-server.c:6354
 msgid "Cannot create spool file: "
-msgstr "স্পুল নথিপত্ৰ সৃষ্টি কৰিব নোৱাৰি: "
+msgstr "স্পুল ফাইল সৃষ্টি কৰিব নোৱাৰি: "
 
 #: ../camel/camel-imapx-store.c:157
 #: ../camel/providers/imap/camel-imap-store.c:825
@@ -2353,7 +2353,7 @@ msgstr "উৎস স্ৰোত উপলব্ধ নহয়"
 #: ../camel/camel-lock.c:102
 #, c-format
 msgid "Could not create lock file for %s: %s"
-msgstr "%s ৰ বাবে লক নথিপত্ৰ সৃষ্টি কৰোঁতে ব্যৰ্থ: %s"
+msgstr "%s ৰ বাবে লক ফাইল সৃষ্টি কৰোঁতে ব্যৰ্থ: %s"
 
 #: ../camel/camel-lock.c:145
 #, c-format
@@ -2393,22 +2393,22 @@ msgstr "'%s' লক কৰোঁতে ব্যৰ্থ"
 #: ../camel/camel-movemail.c:105
 #, c-format
 msgid "Could not check mail file %s: %s"
-msgstr "মেইল নথিপত্ৰ %s পৰীক্ষা কৰোঁতে ব্যৰ্থ: %s"
+msgstr "মেইল ফাইল %s পৰীক্ষা কৰোঁতে ব্যৰ্থ: %s"
 
 #: ../camel/camel-movemail.c:119
 #, c-format
 msgid "Could not open mail file %s: %s"
-msgstr "মেইল নথিপত্ৰ %s খোলোঁতে ব্যৰ্থ: %s"
+msgstr "মেইল ফাইল %s খোলোঁতে ব্যৰ্থ: %s"
 
 #: ../camel/camel-movemail.c:129
 #, c-format
 msgid "Could not open temporary mail file %s: %s"
-msgstr "অস্থায়ী মেইল নথিপত্ৰ %s খোলোঁতে ব্যৰ্থ: %s"
+msgstr "অস্থায়ী মেইল ফাইল %s খোলোঁতে ব্যৰ্থ: %s"
 
 #: ../camel/camel-movemail.c:159
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr "অস্থায়ী নথিপত্ৰ %s ৰ মাজত মেইল সংৰক্ষণ কৰোঁতে ব্যৰ্থ: %s"
+msgstr "অস্থায়ী ফাইল %s ৰ মাজত মেইল সংৰক্ষণ কৰোঁতে ব্যৰ্থ: %s"
 
 #: ../camel/camel-movemail.c:193
 #, c-format
@@ -2432,17 +2432,17 @@ msgstr "(‍অজ্ঞাত ত্ৰুটি)"
 #: ../camel/camel-movemail.c:273
 #, c-format
 msgid "Error reading mail file: %s"
-msgstr "মেইল নথিপত্ৰ পঢ়োতে ত্ৰুটি: %s"
+msgstr "মেইল ফাইল পঢ়োতে ত্ৰুটি: %s"
 
 #: ../camel/camel-movemail.c:286
 #, c-format
 msgid "Error writing mail temp file: %s"
-msgstr "অস্থায়ী মেইল নথিপত্ৰ লিখোতে ব্যৰ্থ: %s"
+msgstr "অস্থায়ী মেইল ফাইল লিখোতে ব্যৰ্থ: %s"
 
 #: ../camel/camel-movemail.c:491 ../camel/camel-movemail.c:560
 #, c-format
 msgid "Error copying mail temp file: %s"
-msgstr "অস্থায়ী মেইল নথিপত্ৰ কপি কৰোঁতে ব্যৰ্থ: %s"
+msgstr "অস্থায়ী মেইল ফাইল কপি কৰোঁতে ব্যৰ্থ: %s"
 
 #: ../camel/camel-multipart-signed.c:297
 #, c-format
@@ -3510,7 +3510,7 @@ msgstr "দ্ৰুত পুনৰসংমিহলি ব্যৱহাৰ 
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:46
 msgid "_Listen for server change notifications"
-msgstr "চাৰ্ভাৰ পৰিৱৰ্তন অধিসূচনাসমূহ শুনক (_L)"
+msgstr "চাৰ্ভাৰ পৰিবৰ্তন অধিসূচনাসমূহ শুনক (_L)"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:56
 msgid "Namespace:"
@@ -3555,7 +3555,7 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:43
 msgid "_Use the '.folders' folder summary file (exmh)"
-msgstr "'.folders' ফোল্ডাৰ সাৰাংশ নথিপত্ৰ ব্যবহাৰ কৰা হ'ব (exmh) (_U)"
+msgstr "'.folders' ফোল্ডাৰ সাৰাংশ ফাইল ব্যবহাৰ কৰা হ'ব (exmh) (_U)"
 
 #: ../camel/providers/local/camel-local-provider.c:50
 msgid "MH-format mail directories"
@@ -3596,7 +3596,7 @@ msgstr "অবস্থাসূচক হেডাৰ Elm/Pine/Mutt বিন�
 
 #: ../camel/providers/local/camel-local-provider.c:107
 msgid "Standard Unix mbox spool file"
-msgstr "প্ৰামাণিক Unix mbox স্পুল নথিপত্ৰ"
+msgstr "প্ৰামাণিক Unix mbox স্পুল ফাইল"
 
 #: ../camel/providers/local/camel-local-provider.c:108
 #: ../camel/providers/local/camel-local-provider.c:120
@@ -3604,7 +3604,7 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"বহিৰ্তম প্ৰামাণিক mbox স্পুল নথিপত্ৰৰ মাজত স্থানীয় মেইল নথিপত্ৰ পঢ়া আৰু সংৰক্ষণৰ "
+"বহিৰ্তম প্ৰামাণিক mbox স্পুল ফাইলৰ মাজত স্থানীয় মেইল ফাইল পঢ়া আৰু সংৰক্ষণৰ "
 "বাবে।\n"
 "Elm, Pine অথবা Mutt বিন্যাসৰ ফোল্ডাৰৰ ট্ৰি পঢ়াৰ বাবেও ব্যৱহাৰ কৰা যাব।"
 
@@ -3620,7 +3620,7 @@ msgstr "ফোল্ডাৰৰ নাম %s ৰ পৰা %s লে পৰি�
 #: ../camel/providers/local/camel-local-store.c:180
 #, c-format
 msgid "Local mail file %s"
-msgstr "স্থানীয় মেইল নথিপত্ৰ %s"
+msgstr "স্থানীয় মেইল ফাইল %s"
 
 #: ../camel/providers/local/camel-local-store.c:223
 #: ../camel/providers/local/camel-local-store.c:383
@@ -3653,13 +3653,13 @@ msgstr "স্থানীয় সংগ্ৰহস্থলৰ মাজত ই
 #: ../camel/providers/local/camel-mbox-store.c:725
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
-msgstr "ফোল্ডাৰ সূচী নথিপত্ৰ '%s' মচি পেলাওতে ব্যৰ্থ: %s"
+msgstr "ফোল্ডাৰ সূচী ফাইল '%s' মচি পেলাওতে ব্যৰ্থ: %s"
 
 #: ../camel/providers/local/camel-local-store.c:484
 #: ../camel/providers/local/camel-mbox-store.c:755
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
-msgstr "ফোল্ডাৰৰ মিটা নথিপত্ৰ '%s' মচি পেলাওতে ব্যৰ্থ: %s"
+msgstr "ফোল্ডাৰৰ মিটা ফাইল '%s' মচি পেলাওতে ব্যৰ্থ: %s"
 
 #: ../camel/providers/local/camel-local-store.c:595
 #, c-format
@@ -3790,7 +3790,7 @@ msgstr "মেইলবাকচ: %s খোলিব নোৱাৰি:"
 #: ../camel/providers/local/camel-mbox-folder.c:253
 #, c-format
 msgid "Cannot append message to mbox file: %s: "
-msgstr "mbox নথিপত্ৰ: %s লে বাৰ্তা সংযোজন কৰিব নোৱাৰি: "
+msgstr "mbox ফাইল: %s লে বাৰ্তা সংযোজন কৰিব নোৱাৰি: "
 
 #: ../camel/providers/local/camel-mbox-folder.c:382
 msgid "The folder appears to be irrecoverably corrupted."
@@ -3811,7 +3811,7 @@ msgstr "চিহ্নিত নাম সহযোগে ফোল্ডাৰ
 #: ../camel/providers/local/camel-mbox-store.c:414
 #, c-format
 msgid "Cannot get folder '%s': not a regular file."
-msgstr "'%s' ফোল্ডাৰ প্ৰাপ্ত কৰা নাযায়: স্বাভাবিক নথিপত্ৰ নহয়।"
+msgstr "'%s' ফোল্ডাৰ প্ৰাপ্ত কৰা নাযায়: স্বাভাবিক ফাইল নহয়।"
 
 #: ../camel/providers/local/camel-mbox-store.c:582
 #, c-format
@@ -3841,7 +3841,7 @@ msgstr ""
 #: ../camel/providers/local/camel-mbox-store.c:659
 #, c-format
 msgid "'%s' is not a regular file."
-msgstr "'%s' স্বাভাবিক নথিপত্ৰ নহয়।"
+msgstr "'%s' স্বাভাবিক ফাইল নহয়।"
 
 #: ../camel/providers/local/camel-mbox-store.c:668
 #, c-format
@@ -3852,7 +3852,7 @@ msgstr "ফোল্ডাৰ '%s' ৰিক্ত নহয়। মচি পে
 #: ../camel/providers/local/camel-mbox-store.c:710
 #, c-format
 msgid "Could not delete folder summary file '%s': %s"
-msgstr "ফোল্ডাৰ সাৰাংশ নথিপত্ৰ '%s' মচি পেলাওতে ব্যৰ্থ: %s"
+msgstr "ফোল্ডাৰ সাৰাংশ ফাইল '%s' মচি পেলাওতে ব্যৰ্থ: %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:792
 #, c-format
@@ -3889,7 +3889,7 @@ msgstr "ফোল্ডাৰ পৰীক্ষা কৰা নাযায়: %
 #: ../camel/providers/local/camel-spool-summary.c:139
 #, c-format
 msgid "Could not open file: %s: %s"
-msgstr "নথিপত্ৰ খোলোঁতে ব্যৰ্থ: %s: %s"
+msgstr "ফাইল খোলোঁতে ব্যৰ্থ: %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:677
 #: ../camel/providers/local/camel-spool-summary.c:154
@@ -3926,7 +3926,7 @@ msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
 "it.)"
 msgstr ""
-"MBOX নথিপত্ৰ ক্ষতিগ্ৰস্থ, অনুগ্ৰহ কৰি ইয়াক ঠিক কৰক। (এটা পৰা শাৰী আশা কৰা হৈছিল, "
+"MBOX ফাইল ক্ষতিগ্ৰস্থ, অনুগ্ৰহ কৰি ইয়াক ঠিক কৰক। (এটা পৰা শাৰী আশা কৰা হৈছিল, "
 "কিন্তু পোৱা নগল।)"
 
 #: ../camel/providers/local/camel-mbox-summary.c:865
@@ -3980,12 +3980,12 @@ msgstr "স্পুল '%s' খোলিবলে ব্যৰ্থ: %s"
 #: ../camel/providers/local/camel-spool-store.c:111
 #, c-format
 msgid "Spool '%s' is not a regular file or directory"
-msgstr "স্পুল '%s' স্বাভাবিক নথিপত্ৰ অথবা ডাইৰেকটৰি নহয়"
+msgstr "স্পুল '%s' স্বাভাবিক ফাইল অথবা ডাইৰেকটৰি নহয়"
 
 #: ../camel/providers/local/camel-spool-store.c:425
 #, c-format
 msgid "Spool mail file %s"
-msgstr "স্পুল মেইল নথিপত্ৰ %s"
+msgstr "স্পুল মেইল ফাইল %s"
 
 #: ../camel/providers/local/camel-spool-store.c:429
 #, c-format
@@ -4027,7 +4027,7 @@ msgstr ""
 #: ../camel/providers/local/camel-spool-store.c:532
 #, c-format
 msgid "'%s' is not a mailbox file."
-msgstr "'%s' মেইলবাকচ নথিপত্ৰ নহয়।"
+msgstr "'%s' মেইলবাকচ ফাইল নহয়।"
 
 #: ../camel/providers/local/camel-spool-store.c:596
 #, c-format
@@ -4818,7 +4818,7 @@ msgstr "তথ্য উৎস '%s' ৰ দূৰৱৰ্তী সম্পদ
 #: ../libebackend/e-server-side-source.c:1336
 #, c-format
 msgid "File must have a '.source' extension"
-msgstr "নথিপত্ৰৰ এটা '.source' সম্প্ৰসাৰন থাকিব লাগিব"
+msgstr "ফাইলৰ এটা '.source' সম্প্ৰসাৰন থাকিব লাগিব"
 
 #: ../libebackend/e-source-registry-server.c:520
 #: ../libedataserver/e-source-registry.c:1512
@@ -5015,7 +5015,7 @@ msgstr "অনুগ্ৰহ কৰি একাওন্ট \"%s\" ৰ বা�
 #: ../libedataserver/e-source.c:620
 #, c-format
 msgid "Source file is missing a [%s] group"
-msgstr "উৎস নথিপত্ৰত এটা [%s] দল সন্ধানহিন"
+msgstr "উৎস ফাইলত এটা [%s] দল সন্ধানহিন"
 
 #: ../libedataserver/e-source.c:911
 #, c-format
@@ -5034,7 +5034,7 @@ msgstr "নাম নহোৱা"
 #: ../libedataserver/e-source-mail-signature.c:485
 #, c-format
 msgid "Signature script must be a local file"
-msgstr "স্বাক্ষৰ লিপি এটা স্থানীয় নথিপত্ৰ হব লাগিব"
+msgstr "স্বাক্ষৰ লিপি এটা স্থানীয় ফাইল হব লাগিব"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
