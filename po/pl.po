@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-23 01:53+0200\n"
-"PO-Revision-Date: 2012-08-23 01:54+0200\n"
+"POT-Creation-Date: 2012-08-28 19:03+0200\n"
+"PO-Revision-Date: 2012-08-28 19:04+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -22,8 +22,10 @@ msgstr ""
 "X-Poedit-Country: Poland\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:116
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1232
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4785
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:278
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:939
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:931
 #: ../addressbook/libebook/e-book-client.c:106
 #: ../addressbook/libedata-book/e-data-book.c:432
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:570
@@ -43,6 +45,7 @@ msgid "Failed to remove file '%s': %s"
 msgstr "Usunięcie pliku \"%s\" się nie powiodło: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:164
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:616
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "Utworzenie katalogu %s się nie powiodło: %s"
@@ -153,6 +156,10 @@ msgstr "Użycie wyróżnionej nazwy (DN)"
 msgid "Using Email Address"
 msgstr "Użycie adresu e-mail"
 
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:969
+msgid "Failed to bind using either v3 or v2 binds"
+msgstr "Dowiązanie używając wersji 3 lub 2 się nie powiodło"
+
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1090
 msgid "Reconnecting to LDAP server..."
 msgstr "Ponowne łączenie się z serwerem LDAP..."
@@ -160,6 +167,12 @@ msgstr "Ponowne łączenie się z serwerem LDAP..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1216
 msgid "Invalid DN syntax"
 msgstr "Nieprawidłowa składnia DN"
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1231
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4784
+#, c-format
+msgid "LDAP error 0x%x (%s)"
+msgstr "Błąd LDAP 0x%x (%s)"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1754
 msgid "Adding contact to LDAP server..."
@@ -169,9 +182,27 @@ msgstr "Dodawanie kontaktu na serwerze LDAP..."
 msgid "Removing contact from LDAP server..."
 msgstr "Usuwanie kontaktu na serwerze LDAP..."
 
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2022
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2405
+#, c-format
+msgid "%s: NULL returned from ldap_first_entry"
+msgstr "%s: ldap_first_entry zwróciło wartość NULL"
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2265
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2456
+#, c-format
+msgid "%s: Unhandled result type %d returned"
+msgstr "%s: zwrócono nieobsługiwany typ wyniku %d"
+
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2334
 msgid "Modifying contact from LDAP server..."
 msgstr "Modyfikowanie kontaktu na serwerze LDAP..."
+
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2673
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2886
+#, c-format
+msgid "%s: Unhandled search result type %d returned"
+msgstr "%s: zwrócono nieobsługiwany typ wyniku wyszukiwania %d"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4736
 msgid "Receiving LDAP search results..."
@@ -191,10 +222,51 @@ msgstr "Pobieranie kontaktów (%d)... "
 msgid "Failed to get the DN for user '%s'"
 msgstr "Uzyskanie DN dla użytkownika \"%s\" się nie powiodło"
 
+#: ../addressbook/backends/vcf/e-book-backend-vcf.c:645
+#, c-format
+msgid "Failed to open addressbook at '%s': %s"
+msgstr "Otwarcie książki adresowej w \"%s\" się nie powiodło: %s"
+
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:354
 #, c-format
 msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "Utworzenie zasobu \"%s\" się nie powiodło ze stanem HTTP: %d (%s)"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:447
+#, c-format
+msgid "DELETE failed with HTTP status %d"
+msgstr "Usunięcie się nie powiodło ze stanem HTTP %d"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:507
+msgid "Contact on server changed -> not modifying"
+msgstr "Kontakt na serwerze został zmieniony -> bez modyfikowania"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:515
+#, c-format
+msgid "Modify contact failed with HTTP status: %d (%s)"
+msgstr "Zmodyfikowanie kontaktu się nie powiodło ze stanem HTTP: %d (%s)"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:912
+msgid "Loading Addressbook summary..."
+msgstr "Wczytywanie podsumowania książki adresowej..."
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:928
+#, c-format
+msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
+msgstr "PROPFIND na WebDAV się nie powiodło ze stanem HTTP %d (%s)"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:949
+msgid "No response body in webdav PROPFIND result"
+msgstr "Brak treści odpowiedzi w wyniku PROPFIND WebDAV"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:980
+#, c-format
+msgid "Loading Contacts (%d%%)"
+msgstr "Wczytywanie kontaktów (%d%%)"
+
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1287
+msgid "Cannot transform SoupURI to string"
+msgstr "Nie można przekształcić adresu URI biblioteki Soup na ciąg"
 
 #: ../addressbook/libebook/e-book-client.c:95
 msgid "No such book"
@@ -1074,6 +1146,14 @@ msgstr ""
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Zwrócono nieoczekiwany kod stanu HTTP %d (%s)"
 
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:635
+msgid "CalDAV backend is not loaded yet"
+msgstr "Mechanizm CalDAV nie został jeszcze wczytany"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1017
+msgid "Invalid Redirect URL"
+msgstr "Nieprawidłowy adres URL przekierowania"
+
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2360
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2716
 #, c-format
@@ -1084,6 +1164,19 @@ msgstr ""
 "Nie można połączyć się z serwerem. Kalendarz został otwarty w trybie tylko "
 "do odczytu.\n"
 "Komunikat błędu: %s"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2639
+msgid "Cannot create local store"
+msgstr "Nie można utworzyć lokalnej przechowalni"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2648
+#, c-format
+msgid "Cannot create local cache folder '%s'"
+msgstr "Nie można utworzyć lokalnego katalogu bufora \"%s\""
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2659
+msgid "Could not create synch slave thread"
+msgstr "Nie można utworzyć wątku podrzędnego synchronizacji"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3671
 msgid "CalDAV does not support bulk additions"
@@ -1100,6 +1193,14 @@ msgstr "CalDAV nie obsługuje usuwania całości"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4600
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalendarz nie obsługuje zajętości"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4608
+msgid "Schedule outbox url not found"
+msgstr "Nie odnaleziono adresu URL terminarza wychodzącego"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4707
+msgid "Unexpected result in schedule-response"
+msgstr "Nieoczekiwany wynik w odpowiedzi terminarza"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:921
 msgid "Birthday"
@@ -2798,7 +2899,7 @@ msgstr "Uwierzytelnienie %s się nie powiodło"
 msgid "Forwarding messages is not supported"
 msgstr "Przekazywanie wiadomości nie jest obsługiwane"
 
-#: ../camel/camel-session.c:1360
+#: ../camel/camel-session.c:1362
 #, c-format
 msgid "Please enter the %s password for %s on host %s."
 msgstr "Proszę podać hasło %s dla %s na serwerze %s."
@@ -4801,25 +4902,25 @@ msgstr ""
 "Jednostki dla przypominania o urodzinach i rocznicach, \"minutes\" (minuty), "
 "\"hours\" (godziny) lub \"days\" (dni)"
 
-#: ../libebackend/e-authentication-mediator.c:145
-#: ../libebackend/e-authentication-mediator.c:156
-#: ../libebackend/e-authentication-mediator.c:612
-#: ../libebackend/e-authentication-mediator.c:973
+#: ../libebackend/e-authentication-mediator.c:205
+#: ../libebackend/e-authentication-mediator.c:216
+#: ../libebackend/e-authentication-mediator.c:849
+#: ../libebackend/e-authentication-mediator.c:1179
 msgid "Bus name vanished (client terminated?)"
 msgstr "Nazwa magistrali zniknęła (klient został zakończony?)"
 
-#: ../libebackend/e-authentication-mediator.c:204
+#: ../libebackend/e-authentication-mediator.c:264
 msgid "No response from client"
 msgstr "Brak odpowiedzi od klienta"
 
-#: ../libebackend/e-authentication-mediator.c:264
-#: ../libebackend/e-authentication-mediator.c:275
-#: ../libebackend/e-authentication-mediator.c:606
-#: ../libebackend/e-authentication-mediator.c:967
+#: ../libebackend/e-authentication-mediator.c:334
+#: ../libebackend/e-authentication-mediator.c:345
+#: ../libebackend/e-authentication-mediator.c:843
+#: ../libebackend/e-authentication-mediator.c:1173
 msgid "Client cancelled the operation"
 msgstr "Klient anulował działanie"
 
-#: ../libebackend/e-authentication-mediator.c:334
+#: ../libebackend/e-authentication-mediator.c:416
 msgid "Client reports password was rejected"
 msgstr "Klient zgłasza, że hasło zostało odrzucone"
 
@@ -4888,12 +4989,12 @@ msgstr ""
 msgid "File must have a '.source' extension"
 msgstr "Plik musi mieć rozszerzenie \".source\""
 
-#: ../libebackend/e-source-registry-server.c:520
+#: ../libebackend/e-source-registry-server.c:522
 #: ../libedataserver/e-source-registry.c:1512
 msgid "The user declined to authenticate"
 msgstr "Użytkownik odmówił uwierzytelnienia"
 
-#: ../libebackend/e-source-registry-server.c:744
+#: ../libebackend/e-source-registry-server.c:770
 #, c-format
 msgid "UID '%s' is already in use"
 msgstr "UID \"%s\" jest już używany"
@@ -5407,7 +5508,7 @@ msgid "_Search:"
 msgstr "Wys_zukiwanie:"
 
 #: ../libedataserverui/e-name-selector-dialog.c:357
-#: ../libedataserverui/e-name-selector-dialog.c:1171
+#: ../libedataserverui/e-name-selector-dialog.c:1182
 msgid "Any Category"
 msgstr "Dowolna kategoria"
 
@@ -5432,15 +5533,15 @@ msgstr "Kontakty"
 msgid "Select Contacts from Address Book"
 msgstr "Wybór kontaktów z książki adresowej"
 
-#: ../libedataserverui/e-name-selector-dialog.c:906
+#: ../libedataserverui/e-name-selector-dialog.c:917
 msgid "_Add"
 msgstr "_Dodaj"
 
-#: ../libedataserverui/e-name-selector-dialog.c:910
+#: ../libedataserverui/e-name-selector-dialog.c:921
 msgid "_Remove"
 msgstr "_Usuń"
 
-#: ../libedataserverui/e-name-selector-dialog.c:1086
+#: ../libedataserverui/e-name-selector-dialog.c:1097
 #, c-format
 msgid "Error loading address book: %s"
 msgstr "Błąd podczas wczytywania książki adresowej: %s"
