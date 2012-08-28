@@ -889,6 +889,7 @@ download_contacts (EBookBackendWebdav *webdav,
                   EDataBookView *book_view)
 {
 	EBookBackendWebdavPrivate *priv = webdav->priv;
+	EBookBackend		  *book_backend;
 	SoupMessage               *message;
 	guint                      status;
 	xmlTextReaderPtr           reader;
@@ -900,22 +901,11 @@ download_contacts (EBookBackendWebdav *webdav,
 	gchar                     *new_ctag = NULL;
 
 	if (!check_addressbook_changed (webdav, &new_ctag)) {
-		if (book_view) {
-			GList *contact_list, *cl;
-
-			contact_list = e_book_backend_cache_get_contacts (priv->cache, e_data_book_view_get_card_query (book_view));
-			for (cl = contact_list; cl != NULL; cl = g_list_next (cl)) {
-				EContact *contact = cl->data;
-
-				e_data_book_view_notify_update (book_view, contact);
-
-				g_object_unref (contact);
-			}
-			g_list_free (contact_list);
-		}
 		g_free (new_ctag);
 		return EDB_ERROR (SUCCESS);
 	}
+
+	book_backend = E_BOOK_BACKEND (webdav);
 
 	if (book_view != NULL) {
 		e_data_book_view_notify_progress (book_view, -1,
@@ -928,6 +918,8 @@ download_contacts (EBookBackendWebdav *webdav,
 	if (status == 401 || status == 407) {
 		g_object_unref (message);
 		g_free (new_ctag);
+		if (book_view)
+			e_data_book_view_notify_progress (book_view, -1, NULL);
 		return webdav_handle_auth_request (webdav);
 	}
 	if (status != 207) {
@@ -940,12 +932,20 @@ download_contacts (EBookBackendWebdav *webdav,
 
 		g_object_unref (message);
 		g_free (new_ctag);
+
+		if (book_view)
+			e_data_book_view_notify_progress (book_view, -1, NULL);
+
 		return error;
 	}
 	if (message->response_body == NULL) {
 		g_warning ("No response body in webdav PROPFIND result");
 		g_object_unref (message);
 		g_free (new_ctag);
+
+		if (book_view)
+			e_data_book_view_notify_progress (book_view, -1, NULL);
+
 		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "No response body in webdav PROPFIND result");
 	}
 
@@ -1002,16 +1002,14 @@ download_contacts (EBookBackendWebdav *webdav,
 		contact = e_book_backend_cache_get_contact (priv->cache, complete_uri);
 		/* download contact if it is not cached or its ETag changed */
 		if (contact == NULL || etag == NULL ||
-				strcmp (e_contact_get_const (contact, E_CONTACT_REV),etag) != 0) {
+		    strcmp (e_contact_get_const (contact, E_CONTACT_REV), etag) != 0) {
 			contact = download_contact (webdav, complete_uri);
 			if (contact != NULL) {
-				e_book_backend_cache_remove_contact (priv->cache, complete_uri);
+				if (e_book_backend_cache_remove_contact (priv->cache, complete_uri))
+					e_book_backend_notify_remove (book_backend, complete_uri);
 				e_book_backend_cache_add_contact (priv->cache, contact);
+				e_book_backend_notify_update (book_backend, contact);
 			}
-		}
-
-		if (contact != NULL && book_view != NULL) {
-			e_data_book_view_notify_update (book_view, contact);
 		}
 
 		g_free (complete_uri);
@@ -1035,6 +1033,9 @@ download_contacts (EBookBackendWebdav *webdav,
 	}
 	g_free (new_ctag);
 
+	if (book_view)
+		e_data_book_view_notify_progress (book_view, -1, NULL);
+
 	return EDB_ERROR (SUCCESS);
 }
 
@@ -1054,12 +1055,11 @@ book_view_thread (gpointer data)
 
 	error = download_contacts (webdav, closure->running, book_view);
 
-	/* report back status if query wasn't aborted */
-	e_data_book_view_notify_complete (book_view, error);
 	e_data_book_view_unref (book_view);
 
 	if (error)
 		g_error_free (error);
+
 	return NULL;
 }
 
@@ -1069,6 +1069,20 @@ e_book_backend_webdav_start_book_view (EBookBackend *backend,
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EBookBackendWebdavPrivate *priv   = webdav->priv;
+	const gchar *query = e_data_book_view_get_card_query (book_view);
+	GList *contacts = e_book_backend_cache_get_contacts (priv->cache, query);
+	GList *l;
+
+	for (l = contacts; l != NULL; l = g_list_next (l)) {
+		EContact *contact = l->data;
+		e_data_book_view_notify_update (book_view, contact);
+		g_object_unref (contact);
+	}
+	g_list_free (contacts);
+
+	/* this way the UI is notified about cached contacts immediately,
+	   and the update thread notifies about possible changes only */
+	e_data_book_view_notify_complete (book_view, NULL /* Success */);
 
 	if (e_backend_get_online (E_BACKEND (backend))) {
 		WebdavBackendSearchClosure *closure
@@ -1078,18 +1092,6 @@ e_book_backend_webdav_start_book_view (EBookBackend *backend,
 			= g_thread_create (book_view_thread, book_view, TRUE, NULL);
 
 		e_flag_wait (closure->running);
-	} else {
-		const gchar *query = e_data_book_view_get_card_query (book_view);
-		GList *contacts = e_book_backend_cache_get_contacts (priv->cache, query);
-		GList *l;
-
-		for (l = contacts; l != NULL; l = g_list_next (l)) {
-			EContact *contact = l->data;
-			e_data_book_view_notify_update (book_view, contact);
-			g_object_unref (contact);
-		}
-		g_list_free (contacts);
-		e_data_book_view_notify_complete (book_view, NULL /* Success */);
 	}
 }
 
