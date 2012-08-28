@@ -632,7 +632,7 @@ check_state (ECalBackendCalDAV *cbdav,
 	*online = FALSE;
 
 	if (!cbdav->priv->loaded) {
-		g_propagate_error (perror, EDC_ERROR_EX (OtherError, "Not loaded"));
+		g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("CalDAV backend is not loaded yet")));
 		return FALSE;
 	}
 
@@ -1014,7 +1014,7 @@ redirect_handler (SoupMessage *msg,
 		if (!new_uri) {
 			soup_message_set_status_full (msg,
 						      SOUP_STATUS_MALFORMED,
-						      "Invalid Redirect URL");
+						      _("Invalid Redirect URL"));
 			return;
 		}
 
@@ -2636,7 +2636,7 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 		cbdav->priv->store = e_cal_backend_file_store_new (cache_dir);
 
 		if (cbdav->priv->store == NULL) {
-			g_propagate_error (perror, EDC_ERROR_EX (OtherError, "Cannot create local store"));
+			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Cannot create local store")));
 			return FALSE;
 		}
 
@@ -2645,7 +2645,7 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 
 	/* Set the local attachment store */
 	if (g_mkdir_with_parents (cache_dir, 0700) < 0) {
-		g_propagate_error (perror, EDC_ERROR_EX (OtherError, "mkdir failed"));
+		g_propagate_error (perror, e_data_cal_create_error_fmt (OtherError, _("Cannot create local cache folder '%s'"), cache_dir));
 		return FALSE;
 	}
 
@@ -2656,7 +2656,7 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 		slave = g_thread_create (caldav_synch_slave_loop, cbdav, FALSE, NULL);
 
 		if (slave == NULL) {
-			g_propagate_error (perror, EDC_ERROR_EX (OtherError, "Could not create synch slave"));
+			g_propagate_error (perror, EDC_ERROR_EX (OtherError, _("Could not create synch slave thread")));
 		}
 
 		cbdav->priv->synch_slave = slave;
@@ -4605,7 +4605,7 @@ caldav_get_free_busy (ECalBackendSync *backend,
 		caldav_receive_schedule_outbox_url (cbdav);
 		if (!cbdav->priv->schedule_outbox_url) {
 			cbdav->priv->calendar_schedule = FALSE;
-			g_propagate_error (error, EDC_ERROR_EX (OtherError, "Schedule outbox url not found"));
+			g_propagate_error (error, EDC_ERROR_EX (OtherError, _("Schedule outbox url not found")));
 			return;
 		}
 	}
@@ -4704,7 +4704,7 @@ caldav_get_free_busy (ECalBackendSync *backend,
 			result = xpath_eval (xpctx, "/C:schedule-response/C:response");
 
 			if (result == NULL || result->type != XPATH_NODESET) {
-				err = EDC_ERROR_EX (OtherError, "Unexpected result in schedule-response");
+				err = EDC_ERROR_EX (OtherError, _("Unexpected result in schedule-response"));
 			} else {
 				gint i, n;
 

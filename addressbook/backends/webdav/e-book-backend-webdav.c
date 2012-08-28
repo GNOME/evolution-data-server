@@ -444,7 +444,7 @@ e_book_backend_webdav_remove_contacts (EBookBackend *backend,
 			g_warning ("DELETE failed with HTTP status %d", status);
 			e_data_book_respond_remove_contacts (book, opid,
 							     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-									 "DELETE failed with HTTP status %d", status),
+									 _("DELETE failed with HTTP status %d"), status),
 							     NULL);
 		}
 		return;
@@ -504,7 +504,7 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 			/* too bad no special error code in evolution for this... */
 			e_data_book_respond_modify_contacts (book, opid,
 					e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-					"Contact on server changed -> not modifying"),
+					_("Contact on server changed -> not modifying")),
 					NULL);
 			g_free (status_reason);
 			return;
@@ -512,7 +512,7 @@ e_book_backend_webdav_modify_contacts (EBookBackend *backend,
 
 		e_data_book_respond_modify_contacts (book, opid,
 				e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-				"Modify contact failed with HTTP status: %d (%s)", status, status_reason),
+				_("Modify contact failed with HTTP status: %d (%s)"), status, status_reason),
 				NULL);
 		g_free (status_reason);
 		return;
@@ -909,7 +909,7 @@ download_contacts (EBookBackendWebdav *webdav,
 
 	if (book_view != NULL) {
 		e_data_book_view_notify_progress (book_view, -1,
-				"Loading Addressbook summary...");
+				_("Loading Addressbook summary..."));
 	}
 
 	message = send_propfind (webdav);
@@ -925,7 +925,7 @@ download_contacts (EBookBackendWebdav *webdav,
 	if (status != 207) {
 		GError *error;
 
-		error = e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "PROPFIND on webdav failed with HTTP status %d (%s)",
+		error = e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, _("PROPFIND on webdav failed with HTTP status %d (%s)"),
 			status,
 			message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
 			(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error")));
@@ -946,7 +946,7 @@ download_contacts (EBookBackendWebdav *webdav,
 		if (book_view)
 			e_data_book_view_notify_progress (book_view, -1, NULL);
 
-		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "No response body in webdav PROPFIND result");
+		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, _("No response body in webdav PROPFIND result"));
 	}
 
 	/* parse response */
@@ -977,7 +977,7 @@ download_contacts (EBookBackendWebdav *webdav,
 		if (book_view != NULL) {
 			gfloat percent = 100.0 / count * i;
 			gchar buf[100];
-			snprintf (buf, sizeof (buf), "Loading Contacts (%d%%)", (gint) percent);
+			snprintf (buf, sizeof (buf), _("Loading Contacts (%d%%)"), (gint) percent);
 			e_data_book_view_notify_progress (book_view, -1, buf);
 		}
 
@@ -1284,7 +1284,7 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	priv->uri = soup_uri_to_string (suri, FALSE);
 	if (!priv->uri) {
 		soup_uri_free (suri);
-		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, "Cannot transform SoupURI to string"));
+		e_book_backend_respond_opened (backend, book, opid, EDB_ERROR_EX (OTHER_ERROR, _("Cannot transform SoupURI to string")));
 		return;
 	}
 

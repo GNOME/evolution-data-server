@@ -613,7 +613,7 @@ e_book_backend_vcf_open (EBookBackendSync *backend,
 				if (errno == EACCES || errno == EPERM) {
 					g_propagate_error (perror, EDB_ERROR (PERMISSION_DENIED));
 				} else {
-					g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "Failed to make directory %s: %s", dirname, g_strerror (errno)));
+					g_propagate_error (perror, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Failed to make directory %s: %s"), dirname, g_strerror (errno)));
 				}
 				goto exit;
 			}
@@ -642,7 +642,7 @@ e_book_backend_vcf_open (EBookBackendSync *backend,
 		g_propagate_error (
 			perror, e_data_book_create_error_fmt (
 			E_DATA_BOOK_STATUS_OTHER_ERROR,
-			"Failed to open addressbook at '%s': %s",
+			_("Failed to open addressbook at '%s': %s"),
 			dirname, g_strerror (errno)));
 		goto exit;
 	}

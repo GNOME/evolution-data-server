@@ -966,7 +966,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 			g_propagate_error (
 				error, e_data_book_create_error (
 				E_DATA_BOOK_STATUS_OTHER_ERROR,
-				"Failed to bind using either v3 or v2 binds"));
+				_("Failed to bind using either v3 or v2 binds")));
 			return FALSE;
 
 		} else if (ldap_error == LDAP_SERVER_DOWN) {
@@ -1228,8 +1228,8 @@ ldap_error_to_response (gint ldap_error)
 		return EDB_ERROR (CONTACTID_ALREADY_EXISTS);
 	else
 		return e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-				"LDAP error 0x%x (%s)", ldap_error,
-				ldap_err2string (ldap_error) ? ldap_err2string (ldap_error) : "Unknown error");
+				_("LDAP error 0x%x (%s)"), ldap_error,
+				ldap_err2string (ldap_error) ? ldap_err2string (ldap_error) : _("Unknown error"));
 }
 
 static const gchar *
@@ -2019,7 +2019,7 @@ modify_contact_search_handler (LDAPOp *op,
 		if (!e) {
 			e_data_book_respond_modify_contacts (op->book,
 							     op->opid,
-							     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "%s: NULL returned from ldap_first_entry", G_STRFUNC),
+							     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, _("%s: NULL returned from ldap_first_entry"), G_STRFUNC),
 							     NULL);
 			ldap_op_finished (op);
 			return;
@@ -2262,7 +2262,7 @@ modify_contact_rename_handler (LDAPOp *op,
 		e_data_book_respond_modify_contacts (op->book,
 						     op->opid,
 						     e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-						     "%s: Unhandled result type %d returned", G_STRFUNC, ldap_msgtype (res)),
+						     _("%s: Unhandled result type %d returned"), G_STRFUNC, ldap_msgtype (res)),
 						     NULL);
 		ldap_op_finished (op);
 	}
@@ -2402,7 +2402,7 @@ get_contact_handler (LDAPOp *op,
 		if (!e) {
 			e_data_book_respond_get_contact (op->book,
 							 op->opid,
-							 e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, "%s: NULL returned from ldap_first_entry", G_STRFUNC),
+							 e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR, _("%s: NULL returned from ldap_first_entry"), G_STRFUNC),
 							 NULL);
 			ldap_op_finished (op);
 			return;
@@ -2453,7 +2453,7 @@ get_contact_handler (LDAPOp *op,
 		e_data_book_respond_get_contact (op->book,
 						 op->opid,
 						 e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-							"%s: Unhandled result type %d returned", G_STRFUNC, msg_type),
+							_("%s: Unhandled result type %d returned"), G_STRFUNC, msg_type),
 						 NULL);
 		ldap_op_finished (op);
 	}
@@ -2670,7 +2670,7 @@ contact_list_handler (LDAPOp *op,
 		e_data_book_respond_get_contact_list (op->book,
 						      op->opid,
 						      e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-							    "%s: Unhandled search result type %d returned", G_STRFUNC, msg_type),
+							    _("%s: Unhandled search result type %d returned"), G_STRFUNC, msg_type),
 						      NULL);
 		ldap_op_finished (op);
 	}
@@ -2883,7 +2883,7 @@ contact_list_uids_handler (LDAPOp *op,
 		g_warning ("unhandled search result type %d returned", msg_type);
 		e_data_book_respond_get_contact_list_uids (op->book, op->opid,
 							   e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-							      "%s: Unhandled search result type %d returned", G_STRFUNC, msg_type),
+							      _("%s: Unhandled search result type %d returned"), G_STRFUNC, msg_type),
 							   NULL);
 		ldap_op_finished (op);
 	}
@@ -4781,8 +4781,8 @@ ldap_search_handler (LDAPOp *op,
 			edb_err = EDB_ERROR (SUCCESS);
 		else
 			edb_err = e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_OTHER_ERROR,
-				"LDAP error 0x%x (%s)", ldap_error,
-				ldap_err2string (ldap_error) ? ldap_err2string (ldap_error) : "Unknown error");
+				_("LDAP error 0x%x (%s)"), ldap_error,
+				ldap_err2string (ldap_error) ? ldap_err2string (ldap_error) : _("Unknown error"));
 
 		e_data_book_view_notify_complete (view, edb_err);
 		if (edb_err)
