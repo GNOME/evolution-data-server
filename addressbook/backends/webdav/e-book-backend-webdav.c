@@ -1324,7 +1324,7 @@ e_book_backend_webdav_open (EBookBackend *backend,
 	soup_uri_free (suri);
 
 	/* This function frees the GError passed to it. */
-	e_data_book_respond_open (book, opid, error);
+	e_book_backend_respond_opened (backend, book, opid, error);
 }
 
 static void
@@ -1427,6 +1427,7 @@ book_backend_webdav_try_password_sync (ESourceAuthenticator *authenticator,
 
 	switch (message->status_code) {
 		case SOUP_STATUS_OK:
+		case SOUP_STATUS_MULTI_STATUS:
 			result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 			break;
 
