@@ -213,7 +213,11 @@ camel_imapx_stream_init (CamelIMAPXStream *is)
 	is->tokenbuf = g_malloc (is->bufsize + 1);
 }
 
-static void camel_imapx_stream_grow (CamelIMAPXStream *is, guint len, guchar **bufptr, guchar **tokptr)
+static void
+camel_imapx_stream_grow (CamelIMAPXStream *is,
+                         guint len,
+                         guchar **bufptr,
+                         guchar **tokptr)
 {
 	guchar *oldtok = is->tokenbuf;
 	guchar *oldbuf = is->buf;
@@ -230,11 +234,9 @@ static void camel_imapx_stream_grow (CamelIMAPXStream *is, guint len, guchar **b
 	if (is->unget)
 		is->unget_token = is->tokenbuf + (is->unget_token - oldtok);
 
-	//io (is->tagprefix, "buf was %p, ptr %p end %p\n", is->buf, is->ptr, is->end);
 	is->buf = g_realloc (is->buf, is->bufsize + 1);
 	is->ptr = is->buf + (is->ptr - oldbuf);
 	is->end = is->buf + (is->end - oldbuf);
-	//io (is->tagprefix, "buf now %p, ptr %p end %p\n", is->buf, is->ptr, is->end);
 	if (bufptr)
 		*bufptr = is->buf + (*bufptr - oldbuf);
 }
@@ -251,6 +253,8 @@ CamelStream *
 camel_imapx_stream_new (CamelStream *source)
 {
 	CamelIMAPXStream *is;
+
+	g_return_val_if_fail (CAMEL_IS_STREAM (source), NULL);
 
 	is = g_object_new (CAMEL_TYPE_IMAPX_STREAM, NULL);
 	is->source = g_object_ref (source);
@@ -275,39 +279,10 @@ camel_imapx_error_quark (void)
 gint
 camel_imapx_stream_buffered (CamelIMAPXStream *is)
 {
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), 0);
+
 	return is->end - is->ptr;
 }
-
-#if 0
-
-static gint
-skip_ws (CamelIMAPXStream *is,
-         guchar *pp,
-         guchar *pe)
-{
-	register guchar c, *p;
-	guchar *e;
-
-	p = is->ptr;
-	e = is->end;
-
-	do {
-		while (p >= e ) {
-			is->ptr = p;
-			if (imapx_stream_fill (is, NULL) == IMAPX_TOK_ERROR)
-				return IMAPX_TOK_ERROR;
-			p = is->ptr;
-			e = is->end;
-		}
-		c = *p++;
-	} while (c == ' ' || c == '\r');
-
-	is->ptr = p;
-	is->end = e;
-
-	return c;
-}
-#endif
 
 /* FIXME: these should probably handle it themselves,
  * and get rid of the token interface? */
@@ -320,6 +295,10 @@ camel_imapx_stream_atom (CamelIMAPXStream *is,
 {
 	guchar *p, c;
 	GError *local_error = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), IMAPX_TOK_ERROR);
+	g_return_val_if_fail (data != NULL, IMAPX_TOK_ERROR);
+	g_return_val_if_fail (lenp != NULL, IMAPX_TOK_ERROR);
 
 	/* this is only 'approximate' atom */
 	switch (camel_imapx_stream_token (is, data, lenp, cancellable, &local_error)) {
@@ -354,6 +333,9 @@ camel_imapx_stream_astring (CamelIMAPXStream *is,
 	guint len, inlen;
 	gint ret;
 	GError *local_error = NULL;
+
+	g_return_val_if_fail (CAMEL_IMAPX_STREAM (is), IMAPX_TOK_ERROR);
+	g_return_val_if_fail (data != NULL, IMAPX_TOK_ERROR);
 
 	switch (camel_imapx_stream_token (is, data, &len, cancellable, &local_error)) {
 	case IMAPX_TOK_TOKEN:
@@ -402,6 +384,9 @@ camel_imapx_stream_nstring (CamelIMAPXStream *is,
 	gint ret;
 	GError *local_error = NULL;
 
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), IMAPX_TOK_ERROR);
+	g_return_val_if_fail (data != NULL, IMAPX_TOK_ERROR);
+
 	switch (camel_imapx_stream_token (is, data, &len, cancellable, &local_error)) {
 	case IMAPX_TOK_STRING:
 		return 0;
@@ -447,13 +432,15 @@ camel_imapx_stream_nstring_stream (CamelIMAPXStream *is,
                                    CamelStream **stream,
                                    GCancellable *cancellable,
                                    GError **error)
-/* throws IO,PARSE exception */
 {
 	guchar *token;
 	guint len;
 	gint ret = 0;
 	CamelStream * mem = NULL;
 	GError *local_error = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), -1);
+	g_return_val_if_fail (stream != NULL, -1);
 
 	*stream = NULL;
 
@@ -503,6 +490,8 @@ camel_imapx_stream_number (CamelIMAPXStream *is,
 	guint len;
 	GError *local_error = NULL;
 
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), 0);
+
 	if (camel_imapx_stream_token (is, &token, &len, cancellable, &local_error) != IMAPX_TOK_INT) {
 		if (local_error == NULL)
 			g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting number");
@@ -524,6 +513,9 @@ camel_imapx_stream_text (CamelIMAPXStream *is,
 	guchar *token;
 	guint len;
 	gint tok;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), -1);
+	g_return_val_if_fail (text != NULL, -1);
 
 	while (is->unget > 0) {
 		switch (is->unget_tok) {
@@ -558,7 +550,6 @@ camel_imapx_stream_text (CamelIMAPXStream *is,
 
 /* Get one token from the imap stream */
 camel_imapx_token_t
-/* throws IO,PARSE exception */
 camel_imapx_stream_token (CamelIMAPXStream *is,
                           guchar **data,
                           guint *len,
@@ -570,11 +561,14 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 	guint literal;
 	gint digits;
 
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), IMAPX_TOK_ERROR);
+	g_return_val_if_fail (data != NULL, IMAPX_TOK_ERROR);
+	g_return_val_if_fail (len != NULL, IMAPX_TOK_ERROR);
+
 	if (is->unget > 0) {
 		is->unget--;
 		*data = is->unget_token;
 		*len = is->unget_len;
-		/*printf("token UNGET '%c' %s\n", is->unget_tok, is->unget_token);*/
 		return is->unget_tok;
 	}
 
@@ -738,7 +732,8 @@ camel_imapx_stream_ungettoken (CamelIMAPXStream *is,
                                guchar *token,
                                guint len)
 {
-	/*printf("ungettoken: '%c' '%s'\n", tok, token);*/
+	g_return_if_fail (CAMEL_IS_IMAPX_STREAM (is));
+
 	is->unget_tok = tok;
 	is->unget_token = token;
 	is->unget_len = len;
@@ -755,6 +750,10 @@ camel_imapx_stream_gets (CamelIMAPXStream *is,
 {
 	gint max;
 	guchar *end;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), -1);
+	g_return_val_if_fail (start != NULL, -1);
+	g_return_val_if_fail (len != NULL, -1);
 
 	*len = 0;
 
@@ -776,8 +775,12 @@ camel_imapx_stream_gets (CamelIMAPXStream *is,
 	return end == NULL ? 1 : 0;
 }
 
-void camel_imapx_stream_set_literal (CamelIMAPXStream *is, guint literal)
+void
+camel_imapx_stream_set_literal (CamelIMAPXStream *is,
+                                guint literal)
 {
+	g_return_if_fail (CAMEL_IS_IMAPX_STREAM (is));
+
 	is->literal = literal;
 }
 
@@ -790,6 +793,10 @@ camel_imapx_stream_getl (CamelIMAPXStream *is,
                          GError **error)
 {
 	gint max;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), -1);
+	g_return_val_if_fail (start != NULL, -1);
+	g_return_val_if_fail (len != NULL, -1);
 
 	*len = 0;
 
@@ -824,6 +831,8 @@ camel_imapx_stream_skip (CamelIMAPXStream *is,
 	guchar *token;
 	guint len;
 
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), -1);
+
 	do {
 		tok = camel_imapx_stream_token (is, &token, &len, cancellable, error);
 		if (tok == IMAPX_TOK_LITERAL) {
@@ -839,3 +848,4 @@ camel_imapx_stream_skip (CamelIMAPXStream *is,
 
 	return 0;
 }
+

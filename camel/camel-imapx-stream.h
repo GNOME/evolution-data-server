@@ -71,7 +71,6 @@ struct _CamelIMAPXStream {
 	CamelStream *source;
 	gchar tagprefix; /* For debugging output */
 
-	/*int state;*/
 	guchar *buf, *ptr, *end;
 	guint literal;
 
@@ -93,7 +92,6 @@ GQuark		camel_imapx_error_quark		(void) G_GNUC_CONST;
 CamelStream *	camel_imapx_stream_new		(CamelStream *source);
 gint		camel_imapx_stream_buffered	(CamelIMAPXStream *is);
 
-/* throws IO,PARSE exception */
 camel_imapx_token_t
 		camel_imapx_stream_token	(CamelIMAPXStream *is,
 						 guchar **start,
@@ -117,8 +115,6 @@ gint		 camel_imapx_stream_getl	(CamelIMAPXStream *is,
 						 guint *len,
 						 GCancellable *cancellable,
 						 GError **error);
-
-/* all throw IO,PARSE exceptions */
 
 /* gets an atom, upper-cases */
 gint		camel_imapx_stream_atom		(CamelIMAPXStream *is,
