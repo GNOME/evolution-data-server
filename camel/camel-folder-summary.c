@@ -3478,7 +3478,7 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 		}
 	}
 
-	if (is_in_memory_summary (summary)) {
+	if (!is_in_memory_summary (summary)) {
 		full_name = camel_folder_get_full_name (summary->priv->folder);
 		parent_store = camel_folder_get_parent_store (summary->priv->folder);
 		if (camel_db_delete_uids (parent_store->cdb_w, full_name, uids, NULL) != 0)
