@@ -408,7 +408,6 @@ imapx_parse_capability (CamelIMAPXStream *stream,
 	gint tok;
 	guint len;
 	guchar *token, *p, c;
-	gpointer pp = NULL;
 	gboolean free_token = FALSE;
 	struct _capability_info * cinfo;
 	GError *local_error = NULL;
@@ -440,14 +439,7 @@ imapx_parse_capability (CamelIMAPXStream *stream,
 				}
 			case IMAPX_TOK_INT:
 				d (stream->tagprefix, " cap: '%s'\n", token);
-				g_mutex_lock (&capa_htable_lock);
-				pp = g_hash_table_lookup (capa_htable,
-							  (gchar *) token);
-				g_mutex_unlock (&capa_htable_lock);
-				if (pp != NULL) {
-					guint32 capa_id = GPOINTER_TO_UINT (pp);
-					cinfo->capa |= capa_id;
-				}
+				cinfo->capa |= imapx_lookup_capability ((gchar *) token);
 				if (free_token) {
 					g_free (token);
 					token = NULL;
@@ -521,6 +513,22 @@ imapx_register_capability (const gchar *capability)
 	g_mutex_unlock (&capa_htable_lock);
 
 	return capa_id;
+}
+
+guint32
+imapx_lookup_capability (const gchar *capability)
+{
+	gpointer data;
+
+	g_return_val_if_fail (capability != NULL, 0);
+
+	g_mutex_lock (&capa_htable_lock);
+
+	data = g_hash_table_lookup (capa_htable, capability);
+
+	g_mutex_unlock (&capa_htable_lock);
+
+	return GPOINTER_TO_UINT (data);
 }
 
 struct _CamelIMAPXNamespaceList *
