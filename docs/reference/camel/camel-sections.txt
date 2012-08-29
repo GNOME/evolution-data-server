@@ -978,6 +978,7 @@ camel_imapx_token_t
 CamelIMAPXStream
 camel_imapx_error_quark
 camel_imapx_stream_new
+camel_imapx_stream_ref_source
 camel_imapx_stream_buffered
 camel_imapx_stream_token
 camel_imapx_stream_ungettoken

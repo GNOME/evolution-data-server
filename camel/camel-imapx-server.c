@@ -5815,9 +5815,12 @@ imapx_parser_thread (gpointer d)
 #ifndef G_OS_WIN32
 		if (is->is_process_stream)	{
 			GPollFD fds[2] = { {0, 0, 0}, {0, 0, 0} };
+			CamelStream *source;
 			gint res;
 
-			fds[0].fd = ((CamelStreamProcess *) is->stream->source)->sockfd;
+			source = camel_imapx_stream_ref_source (is->stream);
+
+			fds[0].fd = CAMEL_STREAM_PROCESS (source)->sockfd;
 			fds[0].events = G_IO_IN;
 			fds[1].fd = g_cancellable_get_fd (cancellable);
 			fds[1].events = G_IO_IN;
@@ -5829,6 +5832,8 @@ imapx_parser_thread (gpointer d)
 			else if (fds[0].revents & G_IO_IN)
 				parse_contents (is, cancellable, &local_error);
 			g_cancellable_release_fd (cancellable);
+
+			g_object_unref (source);
 		} else
 #endif
 		{
@@ -6068,8 +6073,12 @@ imapx_disconnect (CamelIMAPXServer *is)
 	g_static_rec_mutex_lock (&is->ostream_lock);
 
 	if (is->stream) {
-		if (camel_stream_close (is->stream->source, NULL, NULL) == -1)
+		CamelStream *source;
+
+		source = camel_imapx_stream_ref_source (is->stream);
+		if (camel_stream_close (source, NULL, NULL) == -1)
 			ret = FALSE;
+		g_object_unref (source);
 
 		g_object_unref (is->stream);
 		is->stream = NULL;

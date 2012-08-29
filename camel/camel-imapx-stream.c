@@ -44,6 +44,8 @@
 #define io(...) camel_imapx_debug(io, __VA_ARGS__)
 
 struct _CamelIMAPXStreamPrivate {
+	CamelStream *source;
+
 	guchar *buf, *ptr, *end;
 	guint literal;
 
@@ -56,6 +58,11 @@ struct _CamelIMAPXStreamPrivate {
 	guint bufsize;
 };
 
+enum {
+	PROP_0,
+	PROP_SOURCE
+};
+
 G_DEFINE_TYPE (CamelIMAPXStream, camel_imapx_stream, CAMEL_TYPE_STREAM)
 
 static gint
@@ -65,13 +72,14 @@ imapx_stream_fill (CamelIMAPXStream *is,
 {
 	gint left = 0;
 
-	if (is->source) {
+	if (is->priv->source != NULL) {
 		left = is->priv->end - is->priv->ptr;
 		memcpy (is->priv->buf, is->priv->ptr, left);
 		is->priv->end = is->priv->buf + left;
 		is->priv->ptr = is->priv->buf;
 		left = camel_stream_read (
-			is->source, (gchar *) is->priv->end,
+			is->priv->source,
+			(gchar *) is->priv->end,
 			is->priv->bufsize - (is->priv->end - is->priv->buf),
 			cancellable, error);
 		if (left > 0) {
@@ -101,13 +109,58 @@ imapx_stream_fill (CamelIMAPXStream *is,
 }
 
 static void
+imapx_stream_set_source (CamelIMAPXStream *stream,
+                         CamelStream *source)
+{
+	g_return_if_fail (CAMEL_IS_STREAM (source));
+	g_return_if_fail (stream->priv->source == NULL);
+
+	stream->priv->source = g_object_ref (source);
+}
+
+static void
+imapx_stream_set_property (GObject *object,
+                           guint property_id,
+                           const GValue *value,
+                           GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SOURCE:
+			imapx_stream_set_source (
+				CAMEL_IMAPX_STREAM (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+imapx_stream_get_property (GObject *object,
+                           guint property_id,
+                           GValue *value,
+                           GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_SOURCE:
+			g_value_take_object (
+				value,
+				camel_imapx_stream_ref_source (
+				CAMEL_IMAPX_STREAM (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 imapx_stream_dispose (GObject *object)
 {
 	CamelIMAPXStream *stream = CAMEL_IMAPX_STREAM (object);
 
-	if (stream->source != NULL) {
-		g_object_unref (stream->source);
-		stream->source = NULL;
+	if (stream->priv->source != NULL) {
+		g_object_unref (stream->priv->source);
+		stream->priv->source = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -147,7 +200,9 @@ imapx_stream_read (CamelStream *stream,
 		is->priv->ptr += max;
 	} else {
 		max = MIN (is->priv->literal, n);
-		max = camel_stream_read (is->source, buffer, max, cancellable, error);
+		max = camel_stream_read (
+			is->priv->source,
+			buffer, max, cancellable, error);
 		if (max <= 0)
 			return max;
 	}
@@ -174,7 +229,9 @@ imapx_stream_write (CamelStream *stream,
 		io (is->tagprefix, "camel_imapx_write: '%.*s'\n", (gint) n, buffer);
 	}
 
-	return camel_stream_write (is->source, buffer, n, cancellable, error);
+	return camel_stream_write (
+		is->priv->source,
+		buffer, n, cancellable, error);
 }
 
 static gint
@@ -212,6 +269,8 @@ camel_imapx_stream_class_init (CamelIMAPXStreamClass *class)
 	g_type_class_add_private (class, sizeof (CamelIMAPXStreamPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = imapx_stream_set_property;
+	object_class->get_property = imapx_stream_get_property;
 	object_class->dispose = imapx_stream_dispose;
 	object_class->finalize = imapx_stream_finalize;
 
@@ -221,6 +280,18 @@ camel_imapx_stream_class_init (CamelIMAPXStreamClass *class)
 	stream_class->close = imapx_stream_close;
 	stream_class->flush = imapx_stream_flush;
 	stream_class->eos = imapx_stream_eos;
+
+	g_object_class_install_property (
+		object_class,
+		PROP_SOURCE,
+		g_param_spec_object (
+			"source",
+			"Source",
+			"Source stream",
+			CAMEL_TYPE_STREAM,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -267,27 +338,6 @@ camel_imapx_stream_grow (CamelIMAPXStream *is,
 		*bufptr = is->priv->buf + (*bufptr - oldbuf);
 }
 
-/**
- * camel_imapx_stream_new:
- *
- * Returns a NULL stream.  A null stream is always at eof, and
- * always returns success for all reads and writes.
- *
- * Returns: the stream
- **/
-CamelStream *
-camel_imapx_stream_new (CamelStream *source)
-{
-	CamelIMAPXStream *is;
-
-	g_return_val_if_fail (CAMEL_IS_STREAM (source), NULL);
-
-	is = g_object_new (CAMEL_TYPE_IMAPX_STREAM, NULL);
-	is->source = g_object_ref (source);
-
-	return (CamelStream *) is;
-}
-
 GQuark
 camel_imapx_error_quark (void)
 {
@@ -299,6 +349,32 @@ camel_imapx_error_quark (void)
 	}
 
 	return quark;
+}
+
+/**
+ * camel_imapx_stream_new:
+ *
+ * Returns a NULL stream.  A null stream is always at eof, and
+ * always returns success for all reads and writes.
+ *
+ * Returns: the stream
+ **/
+CamelStream *
+camel_imapx_stream_new (CamelStream *source)
+{
+	g_return_val_if_fail (CAMEL_IS_STREAM (source), NULL);
+
+	return g_object_new (
+		CAMEL_TYPE_IMAPX_STREAM,
+		"source", source, NULL);
+}
+
+CamelStream *
+camel_imapx_stream_ref_source (CamelIMAPXStream *is)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), NULL);
+
+	return g_object_ref (is->priv->source);
 }
 
 /* Returns if there is any data buffered that is ready for processing */

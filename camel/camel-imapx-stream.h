@@ -70,7 +70,6 @@ struct _CamelIMAPXStream {
 	CamelStream parent;
 	CamelIMAPXStreamPrivate *priv;
 
-	CamelStream *source;
 	gchar tagprefix; /* For debugging output */
 };
 
@@ -81,6 +80,7 @@ struct _CamelIMAPXStreamClass {
 GType		camel_imapx_stream_get_type	(void);
 GQuark		camel_imapx_error_quark		(void) G_GNUC_CONST;
 CamelStream *	camel_imapx_stream_new		(CamelStream *source);
+CamelStream *	camel_imapx_stream_ref_source	(CamelIMAPXStream *is);
 gint		camel_imapx_stream_buffered	(CamelIMAPXStream *is);
 
 camel_imapx_token_t
