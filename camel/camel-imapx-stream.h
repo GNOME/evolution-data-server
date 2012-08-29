@@ -72,17 +72,6 @@ struct _CamelIMAPXStream {
 
 	CamelStream *source;
 	gchar tagprefix; /* For debugging output */
-
-	guchar *buf, *ptr, *end;
-	guint literal;
-
-	guint unget;
-	camel_imapx_token_t unget_tok;
-	guchar *unget_token;
-	guint unget_len;
-
-	guchar *tokenbuf;
-	guint bufsize;
 };
 
 struct _CamelIMAPXStreamClass {

@@ -44,7 +44,16 @@
 #define io(...) camel_imapx_debug(io, __VA_ARGS__)
 
 struct _CamelIMAPXStreamPrivate {
-	gint placeholder;
+	guchar *buf, *ptr, *end;
+	guint literal;
+
+	guint unget;
+	camel_imapx_token_t unget_tok;
+	guchar *unget_token;
+	guint unget_len;
+
+	guchar *tokenbuf;
+	guint bufsize;
 };
 
 G_DEFINE_TYPE (CamelIMAPXStream, camel_imapx_stream, CAMEL_TYPE_STREAM)
@@ -57,18 +66,18 @@ imapx_stream_fill (CamelIMAPXStream *is,
 	gint left = 0;
 
 	if (is->source) {
-		left = is->end - is->ptr;
-		memcpy (is->buf, is->ptr, left);
-		is->end = is->buf + left;
-		is->ptr = is->buf;
+		left = is->priv->end - is->priv->ptr;
+		memcpy (is->priv->buf, is->priv->ptr, left);
+		is->priv->end = is->priv->buf + left;
+		is->priv->ptr = is->priv->buf;
 		left = camel_stream_read (
-			is->source, (gchar *) is->end,
-			is->bufsize - (is->end - is->buf),
+			is->source, (gchar *) is->priv->end,
+			is->priv->bufsize - (is->priv->end - is->priv->buf),
 			cancellable, error);
 		if (left > 0) {
-			is->end += left;
-			io (is->tagprefix, "camel_imapx_read: buffer is '%.*s'\n", (gint)(is->end - is->ptr), is->ptr);
-			return is->end - is->ptr;
+			is->priv->end += left;
+			io (is->tagprefix, "camel_imapx_read: buffer is '%.*s'\n", (gint)(is->priv->end - is->priv->ptr), is->priv->ptr);
+			return is->priv->end - is->priv->ptr;
 		} else {
 			io (is->tagprefix, "camel_imapx_read: -1\n");
 			/* If returning zero, camel_stream_read() doesn't consider
@@ -110,8 +119,8 @@ imapx_stream_finalize (GObject *object)
 {
 	CamelIMAPXStream *stream = CAMEL_IMAPX_STREAM (object);
 
-	g_free (stream->buf);
-	g_free (stream->tokenbuf);
+	g_free (stream->priv->buf);
+	g_free (stream->priv->tokenbuf);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_stream_parent_class)->finalize (object);
@@ -127,17 +136,17 @@ imapx_stream_read (CamelStream *stream,
 	CamelIMAPXStream *is = (CamelIMAPXStream *) stream;
 	gssize max;
 
-	if (is->literal == 0 || n == 0)
+	if (is->priv->literal == 0 || n == 0)
 		return 0;
 
-	max = is->end - is->ptr;
+	max = is->priv->end - is->priv->ptr;
 	if (max > 0) {
-		max = MIN (max, is->literal);
+		max = MIN (max, is->priv->literal);
 		max = MIN (max, n);
-		memcpy (buffer, is->ptr, max);
-		is->ptr += max;
+		memcpy (buffer, is->priv->ptr, max);
+		is->priv->ptr += max;
 	} else {
-		max = MIN (is->literal, n);
+		max = MIN (is->priv->literal, n);
 		max = camel_stream_read (is->source, buffer, max, cancellable, error);
 		if (max <= 0)
 			return max;
@@ -145,7 +154,7 @@ imapx_stream_read (CamelStream *stream,
 
 	io (is->tagprefix, "camel_imapx_read(literal): '%.*s'\n", (gint) max, buffer);
 
-	is->literal -= max;
+	is->priv->literal -= max;
 
 	return max;
 }
@@ -191,7 +200,7 @@ imapx_stream_eos (CamelStream *stream)
 {
 	CamelIMAPXStream *is = (CamelIMAPXStream *) stream;
 
-	return is->literal == 0;
+	return is->priv->literal == 0;
 }
 
 static void
@@ -220,9 +229,10 @@ camel_imapx_stream_init (CamelIMAPXStream *is)
 	is->priv = CAMEL_IMAPX_STREAM_GET_PRIVATE (is);
 
 	/* +1 is room for appending a 0 if we need to for a token */
-	is->bufsize = 4096;
-	is->ptr = is->end = is->buf = g_malloc (is->bufsize + 1);
-	is->tokenbuf = g_malloc (is->bufsize + 1);
+	is->priv->bufsize = 4096;
+	is->priv->buf = g_malloc (is->priv->bufsize + 1);
+	is->priv->ptr = is->priv->end = is->priv->buf;
+	is->priv->tokenbuf = g_malloc (is->priv->bufsize + 1);
 }
 
 static void
@@ -231,26 +241,30 @@ camel_imapx_stream_grow (CamelIMAPXStream *is,
                          guchar **bufptr,
                          guchar **tokptr)
 {
-	guchar *oldtok = is->tokenbuf;
-	guchar *oldbuf = is->buf;
+	guchar *oldtok = is->priv->tokenbuf;
+	guchar *oldbuf = is->priv->buf;
 
 	do {
-		is->bufsize <<= 1;
-	} while (is->bufsize <= len);
+		is->priv->bufsize <<= 1;
+	} while (is->priv->bufsize <= len);
 
-	io (is->tagprefix, "Grow imapx buffers to %d bytes\n", is->bufsize);
+	io (is->tagprefix, "Grow imapx buffers to %d bytes\n", is->priv->bufsize);
 
-	is->tokenbuf = g_realloc (is->tokenbuf, is->bufsize + 1);
+	is->priv->tokenbuf = g_realloc (
+		is->priv->tokenbuf,
+		is->priv->bufsize + 1);
 	if (tokptr)
-		*tokptr = is->tokenbuf + (*tokptr - oldtok);
-	if (is->unget)
-		is->unget_token = is->tokenbuf + (is->unget_token - oldtok);
+		*tokptr = is->priv->tokenbuf + (*tokptr - oldtok);
+	if (is->priv->unget)
+		is->priv->unget_token =
+			is->priv->tokenbuf +
+			(is->priv->unget_token - oldtok);
 
-	is->buf = g_realloc (is->buf, is->bufsize + 1);
-	is->ptr = is->buf + (is->ptr - oldbuf);
-	is->end = is->buf + (is->end - oldbuf);
+	is->priv->buf = g_realloc (is->priv->buf, is->priv->bufsize + 1);
+	is->priv->ptr = is->priv->buf + (is->priv->ptr - oldbuf);
+	is->priv->end = is->priv->buf + (is->priv->end - oldbuf);
 	if (bufptr)
-		*bufptr = is->buf + (*bufptr - oldbuf);
+		*bufptr = is->priv->buf + (*bufptr - oldbuf);
 }
 
 /**
@@ -293,7 +307,7 @@ camel_imapx_stream_buffered (CamelIMAPXStream *is)
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), 0);
 
-	return is->end - is->ptr;
+	return is->priv->end - is->priv->ptr;
 }
 
 /* FIXME: these should probably handle it themselves,
@@ -355,9 +369,9 @@ camel_imapx_stream_astring (CamelIMAPXStream *is,
 	case IMAPX_TOK_STRING:
 		return 0;
 	case IMAPX_TOK_LITERAL:
-		if (len >= is->bufsize)
+		if (len >= is->priv->bufsize)
 			camel_imapx_stream_grow (is, len, NULL, NULL);
-		p = is->tokenbuf;
+		p = is->priv->tokenbuf;
 		camel_imapx_stream_set_literal (is, len);
 		do {
 			ret = camel_imapx_stream_getl (is, &start, &inlen, cancellable, error);
@@ -367,7 +381,7 @@ camel_imapx_stream_astring (CamelIMAPXStream *is,
 			p += inlen;
 		} while (ret > 0);
 		*p = 0;
-		*data = is->tokenbuf;
+		*data = is->priv->tokenbuf;
 		return 0;
 	case IMAPX_TOK_ERROR:
 		/* wont get unless no exception hanlder*/
@@ -403,9 +417,9 @@ camel_imapx_stream_nstring (CamelIMAPXStream *is,
 	case IMAPX_TOK_STRING:
 		return 0;
 	case IMAPX_TOK_LITERAL:
-		if (len >= is->bufsize)
+		if (len >= is->priv->bufsize)
 			camel_imapx_stream_grow (is, len, NULL, NULL);
-		p = is->tokenbuf;
+		p = is->priv->tokenbuf;
 		camel_imapx_stream_set_literal (is, len);
 		do {
 			ret = camel_imapx_stream_getl (is, &start, &inlen, cancellable, error);
@@ -415,7 +429,7 @@ camel_imapx_stream_nstring (CamelIMAPXStream *is,
 			p += inlen;
 		} while (ret > 0);
 		*p = 0;
-		*data = is->tokenbuf;
+		*data = is->priv->tokenbuf;
 		return 0;
 	case IMAPX_TOK_TOKEN:
 		p = *data;
@@ -529,17 +543,21 @@ camel_imapx_stream_text (CamelIMAPXStream *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), -1);
 	g_return_val_if_fail (text != NULL, -1);
 
-	while (is->unget > 0) {
-		switch (is->unget_tok) {
+	while (is->priv->unget > 0) {
+		switch (is->priv->unget_tok) {
 			case IMAPX_TOK_TOKEN:
 			case IMAPX_TOK_STRING:
 			case IMAPX_TOK_INT:
-				g_byte_array_append (build, (guint8 *) is->unget_token, is->unget_len);
-				g_byte_array_append (build, (guint8 *) " ", 1);
+				g_byte_array_append (
+					build, (guint8 *)
+					is->priv->unget_token,
+					is->priv->unget_len);
+				g_byte_array_append (
+					build, (guint8 *) " ", 1);
 			default: /* invalid, but we'll ignore */
 				break;
 		}
-		is->unget--;
+		is->priv->unget--;
 	}
 
 	do {
@@ -577,34 +595,36 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 	g_return_val_if_fail (data != NULL, IMAPX_TOK_ERROR);
 	g_return_val_if_fail (len != NULL, IMAPX_TOK_ERROR);
 
-	if (is->unget > 0) {
-		is->unget--;
-		*data = is->unget_token;
-		*len = is->unget_len;
-		return is->unget_tok;
+	if (is->priv->unget > 0) {
+		is->priv->unget--;
+		*data = is->priv->unget_token;
+		*len = is->priv->unget_len;
+		return is->priv->unget_tok;
 	}
 
-	if (is->literal > 0)
-		g_warning ("stream_token called with literal %d", is->literal);
+	if (is->priv->literal > 0)
+		g_warning (
+			"stream_token called with literal %d",
+			is->priv->literal);
 
-	p = is->ptr;
-	e = is->end;
+	p = is->priv->ptr;
+	e = is->priv->end;
 
 	/* skip whitespace/prefill buffer */
 	do {
 		while (p >= e ) {
-			is->ptr = p;
+			is->priv->ptr = p;
 			if (imapx_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
 				return IMAPX_TOK_ERROR;
-			p = is->ptr;
-			e = is->end;
+			p = is->priv->ptr;
+			e = is->priv->end;
 		}
 		c = *p++;
 	} while (c == ' ' || c == '\r');
 
 	/*strchr("\n*()[]+", c)*/
 	if (imapx_is_token_char (c)) {
-		is->ptr = p;
+		is->priv->ptr = p;
 		t (is->tagprefix, "token '%c'\n", c);
 		return c;
 	} else if (c == '{') {
@@ -621,17 +641,17 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 							c = *p++;
 							if (c == '\n') {
 								*len = literal;
-								is->ptr = p;
-								is->literal = literal;
+								is->priv->ptr = p;
+								is->priv->literal = literal;
 								t (is->tagprefix, "token LITERAL %d\n", literal);
 								return IMAPX_TOK_LITERAL;
 							}
 						}
-						is->ptr = p;
+						is->priv->ptr = p;
 						if (imapx_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
 							return IMAPX_TOK_ERROR;
-						p = is->ptr;
-						e = is->end;
+						p = is->priv->ptr;
+						e = is->priv->end;
 					}
 				} else {
 					if (isdigit (c)) {
@@ -642,33 +662,33 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 					goto protocol_error;
 				}
 			}
-			is->ptr = p;
+			is->priv->ptr = p;
 			if (imapx_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
 				return IMAPX_TOK_ERROR;
-			p = is->ptr;
-			e = is->end;
+			p = is->priv->ptr;
+			e = is->priv->end;
 		}
 	} else if (c == '"') {
-		o = is->tokenbuf;
-		oe = is->tokenbuf + is->bufsize - 1;
+		o = is->priv->tokenbuf;
+		oe = is->priv->tokenbuf + is->priv->bufsize - 1;
 		while (1) {
 			while (p < e) {
 				c = *p++;
 				if (c == '\\') {
 					while (p >= e) {
-						is->ptr = p;
+						is->priv->ptr = p;
 						if (imapx_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
 							return IMAPX_TOK_ERROR;
-						p = is->ptr;
-						e = is->end;
+						p = is->priv->ptr;
+						e = is->priv->end;
 					}
 					c = *p++;
 				} else if (c == '\"') {
-					is->ptr = p;
+					is->priv->ptr = p;
 					*o = 0;
-					*data = is->tokenbuf;
-					*len = o - is->tokenbuf;
-					t (is->tagprefix, "token STRING '%s'\n", is->tokenbuf);
+					*data = is->priv->tokenbuf;
+					*len = o - is->priv->tokenbuf;
+					t (is->tagprefix, "token STRING '%s'\n", is->priv->tokenbuf);
 					return IMAPX_TOK_STRING;
 				}
 				if (c == '\n' || c == '\r') {
@@ -677,20 +697,20 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 				}
 				if (o >= oe) {
 					camel_imapx_stream_grow (is, 0, &p, &o);
-					oe = is->tokenbuf + is->bufsize - 1;
-					e = is->end;
+					oe = is->priv->tokenbuf + is->priv->bufsize - 1;
+					e = is->priv->end;
 				}
 				*o++ = c;
 			}
-			is->ptr = p;
+			is->priv->ptr = p;
 			if (imapx_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
 				return IMAPX_TOK_ERROR;
-			p = is->ptr;
-			e = is->end;
+			p = is->priv->ptr;
+			e = is->priv->end;
 		}
 	} else {
-		o = is->tokenbuf;
-		oe = is->tokenbuf + is->bufsize - 1;
+		o = is->priv->tokenbuf;
+		oe = is->priv->tokenbuf + is->priv->bufsize - 1;
 		digits = isdigit (c);
 		*o++ = c;
 		while (1) {
@@ -699,29 +719,29 @@ camel_imapx_stream_token (CamelIMAPXStream *is,
 				/*if (strchr(" \r\n*()[]+", c) != NULL) {*/
 				if (imapx_is_notid_char (c)) {
 					if (c == ' ' || c == '\r')
-						is->ptr = p;
+						is->priv->ptr = p;
 					else
-						is->ptr = p - 1;
+						is->priv->ptr = p - 1;
 					*o = 0;
-					*data = is->tokenbuf;
-					*len = o - is->tokenbuf;
-					t (is->tagprefix, "token TOKEN '%s'\n", is->tokenbuf);
+					*data = is->priv->tokenbuf;
+					*len = o - is->priv->tokenbuf;
+					t (is->tagprefix, "token TOKEN '%s'\n", is->priv->tokenbuf);
 					return digits ? IMAPX_TOK_INT : IMAPX_TOK_TOKEN;
 				}
 
 				if (o >= oe) {
 					camel_imapx_stream_grow (is, 0, &p, &o);
-					oe = is->tokenbuf + is->bufsize - 1;
-					e = is->end;
+					oe = is->priv->tokenbuf + is->priv->bufsize - 1;
+					e = is->priv->end;
 				}
 				digits &= isdigit (c);
 				*o++ = c;
 			}
-			is->ptr = p;
+			is->priv->ptr = p;
 			if (imapx_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
 				return IMAPX_TOK_ERROR;
-			p = is->ptr;
-			e = is->end;
+			p = is->priv->ptr;
+			e = is->priv->end;
 		}
 	}
 
@@ -730,9 +750,9 @@ protocol_error:
 	io (is->tagprefix, "Got protocol error\n");
 
 	if (c == '\n')
-		is->ptr = p - 1;
+		is->priv->ptr = p - 1;
 	else
-		is->ptr = p;
+		is->priv->ptr = p;
 
 	g_set_error (error, CAMEL_IMAPX_ERROR, 1, "protocol error");
 	return IMAPX_TOK_PROTOCOL;
@@ -746,10 +766,10 @@ camel_imapx_stream_ungettoken (CamelIMAPXStream *is,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_STREAM (is));
 
-	is->unget_tok = tok;
-	is->unget_token = token;
-	is->unget_len = len;
-	is->unget++;
+	is->priv->unget_tok = tok;
+	is->priv->unget_token = token;
+	is->priv->unget_len = len;
+	is->priv->unget++;
 }
 
 /* returns -1 on error, 0 if last lot of data, >0 if more remaining */
@@ -769,20 +789,20 @@ camel_imapx_stream_gets (CamelIMAPXStream *is,
 
 	*len = 0;
 
-	max = is->end - is->ptr;
+	max = is->priv->end - is->priv->ptr;
 	if (max == 0) {
 		max = imapx_stream_fill (is, cancellable, error);
 		if (max <= 0)
 			return max;
 	}
 
-	*start = is->ptr;
-	end = memchr (is->ptr, '\n', max);
+	*start = is->priv->ptr;
+	end = memchr (is->priv->ptr, '\n', max);
 	if (end)
-		max = (end - is->ptr) + 1;
-	*start = is->ptr;
+		max = (end - is->priv->ptr) + 1;
+	*start = is->priv->ptr;
 	*len = max;
-	is->ptr += max;
+	is->priv->ptr += max;
 
 	return end == NULL ? 1 : 0;
 }
@@ -793,7 +813,7 @@ camel_imapx_stream_set_literal (CamelIMAPXStream *is,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_STREAM (is));
 
-	is->literal = literal;
+	is->priv->literal = literal;
 }
 
 /* returns -1 on erorr, 0 if last data, >0 if more data left */
@@ -812,22 +832,22 @@ camel_imapx_stream_getl (CamelIMAPXStream *is,
 
 	*len = 0;
 
-	if (is->literal > 0) {
-		max = is->end - is->ptr;
+	if (is->priv->literal > 0) {
+		max = is->priv->end - is->priv->ptr;
 		if (max == 0) {
 			max = imapx_stream_fill (is, cancellable, error);
 			if (max <= 0)
 				return max;
 		}
 
-		max = MIN (max, is->literal);
-		*start = is->ptr;
+		max = MIN (max, is->priv->literal);
+		*start = is->priv->ptr;
 		*len = max;
-		is->ptr += max;
-		is->literal -= max;
+		is->priv->ptr += max;
+		is->priv->literal -= max;
 	}
 
-	if (is->literal > 0)
+	if (is->priv->literal > 0)
 		return 1;
 
 	return 0;
