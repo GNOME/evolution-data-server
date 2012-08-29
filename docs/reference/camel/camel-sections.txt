@@ -1000,6 +1000,7 @@ CAMEL_IS_IMAPX_STREAM_CLASS
 CAMEL_IMAPX_STREAM_GET_CLASS
 CamelIMAPXStreamClass
 <SUBSECTION Private>
+CamelIMAPXStreamPrivate
 camel_imapx_stream_get_type
 </SECTION>
 

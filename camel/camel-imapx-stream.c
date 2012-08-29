@@ -36,8 +36,16 @@
 #include "camel-imapx-utils.h"
 #include "camel-imapx-stream.h"
 
+#define CAMEL_IMAPX_STREAM_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_IMAPX_STREAM, CamelIMAPXStreamPrivate))
+
 #define t(...) camel_imapx_debug(token, __VA_ARGS__)
 #define io(...) camel_imapx_debug(io, __VA_ARGS__)
+
+struct _CamelIMAPXStreamPrivate {
+	gint placeholder;
+};
 
 G_DEFINE_TYPE (CamelIMAPXStream, camel_imapx_stream, CAMEL_TYPE_STREAM)
 
@@ -192,6 +200,8 @@ camel_imapx_stream_class_init (CamelIMAPXStreamClass *class)
 	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 
+	g_type_class_add_private (class, sizeof (CamelIMAPXStreamPrivate));
+
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = imapx_stream_dispose;
 	object_class->finalize = imapx_stream_finalize;
@@ -207,6 +217,8 @@ camel_imapx_stream_class_init (CamelIMAPXStreamClass *class)
 static void
 camel_imapx_stream_init (CamelIMAPXStream *is)
 {
+	is->priv = CAMEL_IMAPX_STREAM_GET_PRIVATE (is);
+
 	/* +1 is room for appending a 0 if we need to for a token */
 	is->bufsize = 4096;
 	is->ptr = is->end = is->buf = g_malloc (is->bufsize + 1);

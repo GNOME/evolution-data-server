@@ -55,6 +55,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelIMAPXStream CamelIMAPXStream;
 typedef struct _CamelIMAPXStreamClass CamelIMAPXStreamClass;
+typedef struct _CamelIMAPXStreamPrivate CamelIMAPXStreamPrivate;
 
 typedef enum {
 	IMAPX_TOK_PROTOCOL = -2,
@@ -67,6 +68,7 @@ typedef enum {
 
 struct _CamelIMAPXStream {
 	CamelStream parent;
+	CamelIMAPXStreamPrivate *priv;
 
 	CamelStream *source;
 	gchar tagprefix; /* For debugging output */
