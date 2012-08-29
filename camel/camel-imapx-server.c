@@ -1381,8 +1381,11 @@ imapx_untagged_namespace (CamelIMAPXServer *is,
 
 	/* TODO Need to remove imapx_store->dir_sep to support multiple namespaces */
 	ns = nsl->personal;
-	if (ns)
+	if (ns) {
 		imapx_store->dir_sep = ns->sep;
+		if (!imapx_store->dir_sep)
+			imapx_store->dir_sep = '/';
+	}
 
 	return TRUE;
 }

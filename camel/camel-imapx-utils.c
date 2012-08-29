@@ -2129,12 +2129,16 @@ imapx_concat (CamelIMAPXStore *imapx_store,
               const gchar *suffix)
 {
 	gsize len;
+	gchar dir_sep = imapx_store->dir_sep;
+
+	if (!dir_sep)
+		dir_sep = '/';
 
 	len = strlen (prefix);
-	if (len == 0 || prefix[len - 1] == imapx_store->dir_sep)
+	if (len == 0 || prefix[len - 1] == dir_sep)
 		return g_strdup_printf ("%s%s", prefix, suffix);
 	else
-		return g_strdup_printf ("%s%c%s", prefix, imapx_store->dir_sep, suffix);
+		return g_strdup_printf ("%s%c%s", prefix, dir_sep, suffix);
 }
 
 static void

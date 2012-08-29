@@ -319,6 +319,7 @@ get_folder_offline (CamelStore *store,
 	if (si) {
 		gchar *folder_dir, *storage_path;
 
+		storage_path = g_build_filename (user_cache_dir, "folders", NULL);
 		/* Note: Although the INBOX is defined to be case-insensitive in the IMAP RFC
 		 * it is still up to the server how to acutally name it in a LIST response. Since
 		 * we stored the name as the server provided it us in the summary we take that name
@@ -326,13 +327,10 @@ get_folder_offline (CamelStore *store,
 		 * But for the on-disk cache we do always capitalize the Inbox no matter what the
 		 * server provided.
 		 */
-		if (!g_ascii_strcasecmp (folder_name, "INBOX"))
-			folder_name = "INBOX";
-
-		storage_path = g_build_filename (user_cache_dir, "folders", NULL);
-		folder_dir = imapx_path_to_physical (storage_path, folder_name);
+		folder_dir = imapx_path_to_physical (storage_path,
+			g_ascii_strcasecmp (folder_name, "INBOX") == 0 ? "INBOX" : folder_name);
 		g_free (storage_path);
-		/* FIXME */
+
 		new_folder = camel_imapx_folder_new (store, folder_dir, folder_name, error);
 
 		g_free (folder_dir);
@@ -462,6 +460,8 @@ imapx_match_pattern (CamelIMAPXStoreNamespace *ns,
 		return TRUE;
 
 	dir_sep = ns->sep;
+	if (!dir_sep)
+		dir_sep = '/';
 	p = *pattern++;
 	n = *name++;
 	while (n && p) {
@@ -1373,7 +1373,7 @@ imapx_store_create_folder_sync (CamelStore *store,
 	CamelIMAPXServer *server;
 	gchar *real_name, *full_name, *parent_real;
 	CamelFolderInfo *fi = NULL;
-	gchar dir_sep;
+	gchar dir_sep = 0;
 	gboolean success;
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
@@ -1394,7 +1394,8 @@ imapx_store_create_folder_sync (CamelStore *store,
 	ns = camel_imapx_store_summary_namespace_find_path (istore->summary, parent_name);
 	if (ns)
 		dir_sep = ns->sep;
-	else
+
+	if (!dir_sep)
 		dir_sep = '/';
 
 	if (strchr (folder_name, dir_sep)) {
