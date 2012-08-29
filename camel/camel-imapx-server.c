@@ -6073,12 +6073,10 @@ imapx_disconnect (CamelIMAPXServer *is)
 	g_static_rec_mutex_lock (&is->ostream_lock);
 
 	if (is->stream) {
-		CamelStream *source;
+		CamelStream *stream = CAMEL_STREAM (is->stream);
 
-		source = camel_imapx_stream_ref_source (is->stream);
-		if (camel_stream_close (source, NULL, NULL) == -1)
+		if (camel_stream_close (stream, NULL, NULL) == -1)
 			ret = FALSE;
-		g_object_unref (source);
 
 		g_object_unref (is->stream);
 		is->stream = NULL;

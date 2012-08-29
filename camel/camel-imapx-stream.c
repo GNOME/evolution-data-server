@@ -239,8 +239,9 @@ imapx_stream_close (CamelStream *stream,
                     GCancellable *cancellable,
                     GError **error)
 {
-	/* nop? */
-	return 0;
+	CamelIMAPXStream *is = (CamelIMAPXStream *) stream;
+
+	return camel_stream_close (is->priv->source, cancellable, error);
 }
 
 static gint
