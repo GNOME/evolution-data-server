@@ -747,8 +747,6 @@ imapx_command_start (CamelIMAPXServer *is,
 
 	camel_imapx_command_queue_push_tail (is->active, ic);
 
-	g_static_rec_mutex_lock (&is->ostream_lock);
-
 	stream = camel_imapx_server_ref_stream (is);
 
 	if (stream == NULL) {
@@ -803,8 +801,6 @@ err:
 exit:
 	if (stream != NULL)
 		g_object_unref (stream);
-
-	g_static_rec_mutex_unlock (&is->ostream_lock);
 
 	return success;
 }
@@ -6152,7 +6148,6 @@ imapx_server_finalize (GObject *object)
 	is->done = NULL;
 
 	g_static_rec_mutex_free (&is->queue_lock);
-	g_static_rec_mutex_free (&is->ostream_lock);
 	g_mutex_free (is->fetch_mutex);
 	g_cond_free (is->fetch_cond);
 
@@ -6268,7 +6263,6 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	is->job_timeout = 29 * 60 * 1000 * 1000;
 
 	g_static_rec_mutex_init (&is->queue_lock);
-	g_static_rec_mutex_init (&is->ostream_lock);
 
 	is->state = IMAPX_DISCONNECTED;
 
@@ -6335,8 +6329,6 @@ imapx_disconnect (CamelIMAPXServer *is)
 {
 	gboolean ret = TRUE;
 
-	g_static_rec_mutex_lock (&is->ostream_lock);
-
 	g_mutex_lock (&is->priv->stream_lock);
 
 	if (is->priv->stream != NULL) {
@@ -6369,8 +6361,6 @@ imapx_disconnect (CamelIMAPXServer *is)
 
 	is->state = IMAPX_DISCONNECTED;
 
-	g_static_rec_mutex_unlock (&is->ostream_lock);
-
 	g_object_notify (G_OBJECT (is), "stream");
 
 	return ret;
@@ -6382,8 +6372,6 @@ camel_imapx_server_connect (CamelIMAPXServer *is,
                             GCancellable *cancellable,
                             GError **error)
 {
-	gboolean success;
-
 	if (is->state == IMAPX_SHUTDOWN) {
 		g_set_error (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE, "Shutting down");
 		return FALSE;
@@ -6392,14 +6380,11 @@ camel_imapx_server_connect (CamelIMAPXServer *is,
 	if (is->state >= IMAPX_INITIALISED)
 		return TRUE;
 
-	g_static_rec_mutex_lock (&is->ostream_lock);
-	success = imapx_reconnect (is, cancellable, error);
-	g_static_rec_mutex_unlock (&is->ostream_lock);
-
-	if (!success)
+	if (!imapx_reconnect (is, cancellable, error))
 		return FALSE;
 
 	is->parser_thread = g_thread_create ((GThreadFunc) imapx_parser_thread, is, TRUE, NULL);
+
 	return TRUE;
 }
 

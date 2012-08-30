@@ -149,9 +149,6 @@ struct _CamelIMAPXServer {
 	GList *expunged;
 
 	GThread *parser_thread;
-	/* Protects the output stream between parser thread (which can disconnect from server) and other threads that issue
-	 * commands. Input stream does not require a lock since only parser_thread can operate on it */
-	GStaticRecMutex ostream_lock;
 	/* Used for canceling operations as well as signaling parser thread to disconnnect/quit */
 	GCancellable *cancellable;
 	gboolean parser_quit;
