@@ -573,19 +573,18 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 {
 	CamelIMAPXServer *is = NULL;
 	CamelIMAPXStore *imapx_store;
-	CamelStore *store = con_man->priv->store;
 	ConnectionInfo *cinfo = NULL;
 	gboolean success;
 
 	/* Caller must be holding CON_WRITE_LOCK. */
 
-	imapx_store = CAMEL_IMAPX_STORE (store);
+	imapx_store = CAMEL_IMAPX_STORE (con_man->priv->store);
 
 	/* Check if we got cancelled while we were waiting. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return NULL;
 
-	is = camel_imapx_server_new (store);
+	is = camel_imapx_server_new (imapx_store);
 
 	/* XXX As part of the connect operation the CamelIMAPXServer will
 	 *     have to call camel_session_authenticate_sync(), but it has

@@ -832,6 +832,7 @@ uidset_state
 <TITLE>CamelIMAPXServer</TITLE>
 CamelIMAPXServer
 camel_imapx_server_new
+camel_imapx_server_ref_store
 camel_imapx_server_ref_stream
 camel_imapx_server_connect
 camel_imapx_server_authenticate

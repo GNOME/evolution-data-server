@@ -277,7 +277,7 @@ imapx_query_auth_types_sync (CamelService *service,
 		return NULL;
 	}
 
-	server = camel_imapx_server_new (CAMEL_STORE (istore));
+	server = camel_imapx_server_new (istore);
 
 	stream = camel_imapx_server_ref_stream (server);
 	if (stream != NULL) {

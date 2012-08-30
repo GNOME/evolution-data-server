@@ -292,6 +292,8 @@ static const CamelIMAPXUntaggedRespHandlerDesc _untagged_descr[] = {
 };
 
 struct _CamelIMAPXServerPrivate {
+	GWeakRef store;
+
 	CamelIMAPXServerUntaggedContext *context;
 	GHashTable *untagged_handlers;
 
@@ -301,7 +303,8 @@ struct _CamelIMAPXServerPrivate {
 
 enum {
 	PROP_0,
-	PROP_STREAM
+	PROP_STREAM,
+	PROP_STORE
 };
 
 enum {
@@ -1437,8 +1440,8 @@ imapx_untagged_namespace (CamelIMAPXServer *is,
                           GError **error)
 {
 	CamelIMAPXNamespaceList *nsl = NULL;
-	CamelIMAPXStore *imapx_store = NULL;
 	CamelIMAPXStoreNamespace *ns = NULL;
+	CamelIMAPXStore *store;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
@@ -1448,20 +1451,22 @@ imapx_untagged_namespace (CamelIMAPXServer *is,
 	if (nsl == NULL)
 		return FALSE;
 
-	imapx_store = (CamelIMAPXStore *) is->store;
+	store = camel_imapx_server_ref_store (is);
 
-	if (imapx_store->summary->namespaces)
-		camel_imapx_namespace_list_clear (imapx_store->summary->namespaces);
-	imapx_store->summary->namespaces = nsl;
-	camel_store_summary_touch ((CamelStoreSummary *) imapx_store->summary);
+	if (store->summary->namespaces)
+		camel_imapx_namespace_list_clear (store->summary->namespaces);
+	store->summary->namespaces = nsl;
+	camel_store_summary_touch (CAMEL_STORE_SUMMARY (store->summary));
 
-	/* TODO Need to remove imapx_store->dir_sep to support multiple namespaces */
+	/* TODO Need to remove store->dir_sep to support multiple namespaces */
 	ns = nsl->personal;
 	if (ns) {
-		imapx_store->dir_sep = ns->sep;
-		if (!imapx_store->dir_sep)
-			imapx_store->dir_sep = '/';
+		store->dir_sep = ns->sep;
+		if (!store->dir_sep)
+			store->dir_sep = '/';
 	}
+
+	g_object_unref (store);
 
 	return TRUE;
 }
@@ -1826,18 +1831,21 @@ imapx_untagged_status (CamelIMAPXServer *is,
                        GCancellable *cancellable,
                        GError **error)
 {
+	CamelIMAPXStore *store;
 	struct _state_info *sinfo = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
+	store = camel_imapx_server_ref_store (is);
+
 	sinfo = imapx_parse_status_info (stream, cancellable, error);
 
 	if (sinfo) {
-		CamelIMAPXStoreSummary *s = ((CamelIMAPXStore *) is->store)->summary;
+		CamelIMAPXStoreSummary *s = store->summary;
 		CamelIMAPXStoreNamespace *ns;
-		CamelIMAPXFolder *ifolder = NULL;;
+		CamelFolder *folder = NULL;
 
 		ns = camel_imapx_store_summary_namespace_find_full (s, sinfo->name);
 		if (ns) {
@@ -1846,19 +1854,22 @@ imapx_untagged_status (CamelIMAPXServer *is,
 			path_name = camel_imapx_store_summary_full_to_path (s, sinfo->name, ns->sep);
 			c (is->tagprefix, "Got folder path '%s' for full '%s'\n", path_name, sinfo->name);
 			if (path_name) {
-				ifolder = (gpointer) camel_store_get_folder_sync (is->store, path_name, 0, cancellable, error);
+				folder = camel_store_get_folder_sync (
+					CAMEL_STORE (store),
+					path_name, 0, cancellable, error);
 				g_free (path_name);
 			}
 		}
-		if (ifolder) {
-			CamelFolder *cfolder = CAMEL_FOLDER (ifolder);
+		if (folder != NULL) {
+			CamelIMAPXFolder *ifolder;
 
+			ifolder = CAMEL_IMAPX_FOLDER (folder);
 			ifolder->unread_on_server = sinfo->unseen;
 			ifolder->exists_on_server = sinfo->messages;
 			ifolder->modseq_on_server = sinfo->highestmodseq;
 			ifolder->uidnext_on_server = sinfo->uidnext;
 			ifolder->uidvalidity_on_server = sinfo->uidvalidity;
-			if (sinfo->uidvalidity && sinfo->uidvalidity != ((CamelIMAPXSummary *) cfolder->summary)->validity)
+			if (sinfo->uidvalidity && sinfo->uidvalidity != ((CamelIMAPXSummary *) folder->summary)->validity)
 				invalidate_local_cache (ifolder, sinfo->uidvalidity);
 		} else {
 			c (is->tagprefix, "Received STATUS for unknown folder '%s'\n", sinfo->name);
@@ -1867,6 +1878,8 @@ imapx_untagged_status (CamelIMAPXServer *is,
 		g_free (sinfo->name);
 		g_free (sinfo);
 	}
+
+	g_object_unref (store);
 
 	return TRUE;
 }
@@ -1992,13 +2005,11 @@ imapx_untagged (CamelIMAPXServer *is,
                 GCancellable *cancellable,
                 GError **error)
 {
-	CamelService *service = NULL;
-	CamelSettings *settings = NULL;
+	CamelIMAPXStore *store;
+	CamelSettings *settings;
 	guchar *p = NULL, c;
 	const gchar *token = NULL;
 	gboolean ok = FALSE;
-
-	service = CAMEL_SERVICE (is->store);
 
 	/* If is->priv->context is not NULL here, it basically means
 	 * that imapx_untagged() got called concurrently for the same
@@ -2008,13 +2019,15 @@ imapx_untagged (CamelIMAPXServer *is,
 	g_return_val_if_fail (is->priv->context == NULL, FALSE);
 	is->priv->context = g_new0 (CamelIMAPXServerUntaggedContext, 1);
 
-	settings = camel_service_ref_settings (service);
+	store = camel_imapx_server_ref_store (is);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	is->priv->context->lsub = FALSE;
 	is->priv->context->fetch_order = camel_imapx_settings_get_fetch_order (
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
+	g_object_unref (store);
 
 	e (is->tagprefix, "got untagged response\n");
 	is->priv->context->id = 0;
@@ -3163,7 +3176,7 @@ connect_to_server_process (CamelIMAPXServer *is,
 	CamelSettings *settings;
 	CamelStream *cmd_stream;
 	CamelStream *imapx_stream;
-	CamelService *service;
+	CamelIMAPXStore *store;
 	CamelURL url;
 	gint ret, i = 0;
 	gchar *buf;
@@ -3177,18 +3190,16 @@ connect_to_server_process (CamelIMAPXServer *is,
 
 	memset (&url, 0, sizeof (CamelURL));
 
-	service = CAMEL_SERVICE (is->store);
-	password = camel_service_get_password (service);
-	provider = camel_service_get_provider (service);
+	store = camel_imapx_server_ref_store (is);
 
-	settings = camel_service_ref_settings (service);
+	password = camel_service_get_password (CAMEL_SERVICE (store));
+	provider = camel_service_get_provider (CAMEL_SERVICE (store));
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	port = camel_network_settings_get_port (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
-
-	g_object_unref (settings);
 
 	/* Put full details in the environment, in case the connection
 	 * program needs them */
@@ -3208,6 +3219,9 @@ connect_to_server_process (CamelIMAPXServer *is,
 	if (password)
 		child_env[i++] = g_strdup_printf ("URLPASSWD=%s", password);
 	child_env[i] = NULL;
+
+	g_object_unref (settings);
+	g_object_unref (store);
 
 	/* Now do %h, %u, etc. substitution in cmd */
 	buf = cmd_copy = g_strdup (cmd);
@@ -3302,8 +3316,8 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	CamelStream *tcp_stream = NULL;
 	CamelStream *imapx_stream = NULL;
 	CamelSockOptData sockopt;
+	CamelIMAPXStore *store;
 	CamelSettings *settings;
-	CamelService *service;
 	guint len;
 	guchar *token;
 	gint tok;
@@ -3317,9 +3331,9 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	gchar *shell_command = NULL;
 #endif
 
-	service = CAMEL_SERVICE (is->store);
+	store = camel_imapx_server_ref_store (is);
 
-	settings = camel_service_ref_settings (service);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
@@ -3353,7 +3367,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 #endif
 
 	tcp_stream = camel_network_service_connect_sync (
-		CAMEL_NETWORK_SERVICE (is->store), cancellable, error);
+		CAMEL_NETWORK_SERVICE (store), cancellable, error);
 
 	if (tcp_stream == NULL) {
 		success = FALSE;
@@ -3531,6 +3545,8 @@ exit:
 
 	g_free (host);
 
+	g_object_unref (store);
+
 	return success;
 }
 
@@ -3541,10 +3557,11 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
                                  GError **error)
 {
 	CamelNetworkSettings *network_settings;
+	CamelIMAPXStore *store;
+	CamelService *service;
 	CamelSettings *settings;
 	CamelAuthenticationResult result;
 	CamelIMAPXCommand *ic;
-	CamelService *service;
 	CamelSasl *sasl = NULL;
 	gchar *host;
 	gchar *user;
@@ -3553,8 +3570,9 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 		CAMEL_IS_IMAPX_SERVER (is),
 		CAMEL_AUTHENTICATION_REJECTED);
 
-	service = CAMEL_SERVICE (is->store);
+	store = camel_imapx_server_ref_store (is);
 
+	service = CAMEL_SERVICE (store);
 	settings = camel_service_ref_settings (service);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
@@ -3646,6 +3664,8 @@ exit:
 	g_free (host);
 	g_free (user);
 
+	g_object_unref (store);
+
 	return result;
 }
 
@@ -3657,12 +3677,16 @@ imapx_reconnect (CamelIMAPXServer *is,
 	CamelIMAPXCommand *ic;
 	CamelService *service;
 	CamelSession *session;
+	CamelIMAPXStore *store;
 	CamelSettings *settings;
 	gchar *mechanism;
 	gboolean use_idle;
 	gboolean use_qresync;
+	gboolean success = FALSE;
 
-	service = CAMEL_SERVICE (is->store);
+	store = camel_imapx_server_ref_store (is);
+
+	service = CAMEL_SERVICE (store);
 	session = camel_service_get_session (service);
 
 	settings = camel_service_ref_settings (service);
@@ -3734,10 +3758,9 @@ imapx_reconnect (CamelIMAPXServer *is,
 	} else
 		is->use_qresync = FALSE;
 
-	if (((CamelIMAPXStore *) is->store)->summary->namespaces == NULL) {
+	if (store->summary->namespaces == NULL) {
 		CamelIMAPXNamespaceList *nsl = NULL;
 		CamelIMAPXStoreNamespace *ns = NULL;
-		CamelIMAPXStore *imapx_store = (CamelIMAPXStore *) is->store;
 
 		/* set a default namespace */
 		nsl = g_malloc0 (sizeof (CamelIMAPXNamespaceList));
@@ -3747,16 +3770,17 @@ imapx_reconnect (CamelIMAPXServer *is,
 		ns->full_name = g_strdup ("");
 		ns->sep = '/';
 		nsl->personal = ns;
-		imapx_store->summary->namespaces = nsl;
+
+		store->summary->namespaces = nsl;
 		/* FIXME needs to be identified from list response */
-		imapx_store->dir_sep = ns->sep;
+		store->dir_sep = ns->sep;
 	}
 
 	is->state = IMAPX_INITIALISED;
 
-	g_free (mechanism);
+	success = TRUE;
 
-	return TRUE;
+	goto exit;
 
 exception:
 
@@ -3767,9 +3791,12 @@ exception:
 		is->cinfo = NULL;
 	}
 
+exit:
 	g_free (mechanism);
 
-	return FALSE;
+	g_object_unref (store);
+
+	return success;
 }
 
 /* ********************************************************************** */
@@ -4286,8 +4313,8 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	RefreshInfoData *data;
 	gint i;
 	gboolean success = TRUE;
+	CamelIMAPXStore *store;
 	CamelSettings *settings;
-	CamelService *service;
 	guint batch_count;
 	gboolean mobile_mode;
 
@@ -4302,9 +4329,8 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	ifolder = (CamelIMAPXFolder *) job->folder;
 	isum = (CamelIMAPXSummary *) job->folder->summary;
 
-	service = CAMEL_SERVICE (is->store);
-
-	settings = camel_service_ref_settings (service);
+	store = camel_imapx_server_ref_store (is);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	batch_count = camel_imapx_settings_get_batch_fetch_count (
 		CAMEL_IMAPX_SETTINGS (settings));
@@ -4312,6 +4338,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
+	g_object_unref (store);
 
 	i = data->index;
 
@@ -4432,7 +4459,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
                              GError **error)
 {
 	CamelIMAPXJob *job;
-	CamelService *service;
+	CamelIMAPXStore *store;
 	CamelSettings *settings;
 	RefreshInfoData *data;
 	guint uidset_size;
@@ -4447,9 +4474,8 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 	data->scan_changes = FALSE;
 
-	service = CAMEL_SERVICE (is->store);
-
-	settings = camel_service_ref_settings (service);
+	store = camel_imapx_server_ref_store (is);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	uidset_size = camel_imapx_settings_get_batch_fetch_count (
 		CAMEL_IMAPX_SETTINGS (settings));
@@ -4457,6 +4483,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
+	g_object_unref (store);
 
 	if (camel_imapx_command_set_error_if_failed (ic, error)) {
 		g_prefix_error (
@@ -4616,19 +4643,19 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 {
 	CamelIMAPXCommand *ic;
 	RefreshInfoData *data;
-	CamelService *service;
+	CamelIMAPXStore *store;
 	CamelSettings *settings;
 	gboolean mobile_mode;
 	gchar *uid = NULL;
 
-	service = CAMEL_SERVICE (is->store);
-
-	settings = camel_service_ref_settings (service);
+	store = camel_imapx_server_ref_store (is);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	mobile_mode = camel_imapx_settings_get_mobile_mode (
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
+	g_object_unref (store);
 
 	if (mobile_mode)
 		uid = imapx_get_uid_from_index (job->folder->summary, 0);
@@ -4751,7 +4778,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder = job->folder;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
-	CamelService *service;
+	CamelIMAPXStore *store;
 	CamelSettings *settings;
 	CamelSortType fetch_order;
 	RefreshInfoData *data;
@@ -4762,9 +4789,8 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 	data = camel_imapx_job_get_data (job);
 	g_return_if_fail (data != NULL);
 
-	service = CAMEL_SERVICE (is->store);
-
-	settings = camel_service_ref_settings (service);
+	store = camel_imapx_server_ref_store (is);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	fetch_order = camel_imapx_settings_get_fetch_order (
 		CAMEL_IMAPX_SETTINGS (settings));
@@ -4773,6 +4799,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
+	g_object_unref (store);
 
 	total = camel_folder_summary_count (folder->summary);
 	diff = ifolder->exists_on_server - total;
@@ -4833,7 +4860,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 	CamelFetchType ftype;
 	gint fetch_limit;
 	CamelSortType fetch_order;
-	CamelService *service;
+	CamelIMAPXStore *store;
 	CamelSettings *settings;
 	guint uidset_size;
 	RefreshInfoData *data;
@@ -4841,9 +4868,8 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 	data = camel_imapx_job_get_data (job);
 	g_return_if_fail (data != NULL);
 
-	service = CAMEL_SERVICE (is->store);
-
-	settings = camel_service_ref_settings (service);
+	store = camel_imapx_server_ref_store (is);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	fetch_order = camel_imapx_settings_get_fetch_order (
 		CAMEL_IMAPX_SETTINGS (settings));
@@ -4857,6 +4883,7 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
+	g_object_unref (store);
 
 	if (ftype == CAMEL_FETCH_NEW_MESSAGES ||
 		(ftype ==  CAMEL_FETCH_OLD_MESSAGES && total <=0 )) {
@@ -4967,18 +4994,18 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 	gboolean need_rescan = FALSE;
 	gboolean is_selected = FALSE;
 	gboolean can_qresync = FALSE;
-	CamelService *service;
+	CamelIMAPXStore *store;
 	CamelSettings *settings;
 	gboolean mobile_mode;
 
-	service = CAMEL_SERVICE (is->store);
-
-	settings = camel_service_ref_settings (service);
+	store = camel_imapx_server_ref_store (is);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	mobile_mode = camel_imapx_settings_get_mobile_mode (
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
+	g_object_unref (store);
 
 	full_name = camel_folder_get_full_name (folder);
 
@@ -5384,15 +5411,17 @@ imapx_job_manage_subscription_start (CamelIMAPXJob *job,
                                      CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
+	CamelIMAPXStore *store;
 	ManageSubscriptionsData *data;
 	gchar *encoded_fname = NULL;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_if_fail (data != NULL);
 
-	encoded_fname = imapx_encode_folder_name (
-		(CamelIMAPXStore *) is->store,
-		data->folder_name);
+	store = camel_imapx_server_ref_store (is);
+
+	encoded_fname = imapx_encode_folder_name (store, data->folder_name);
+
 	if (data->subscribe)
 		ic = camel_imapx_command_new (
 			is, "SUBSCRIBE", NULL,
@@ -5408,6 +5437,8 @@ imapx_job_manage_subscription_start (CamelIMAPXJob *job,
 	imapx_command_queue (is, ic);
 
 	g_free (encoded_fname);
+
+	g_object_unref (store);
 }
 
 /* ********************************************************************** */
@@ -5490,18 +5521,23 @@ imapx_job_delete_folder_start (CamelIMAPXJob *job,
                                CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
+	CamelIMAPXStore *store;
 	DeleteFolderData *data;
 	gchar *encoded_fname = NULL;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_if_fail (data != NULL);
 
-	encoded_fname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, data->folder_name);
+	store = camel_imapx_server_ref_store (is);
+
+	encoded_fname = imapx_encode_folder_name (store, data->folder_name);
 
 	job->folder = camel_store_get_folder_sync (
-		is->store, "INBOX", 0, job->cancellable, &job->error);
+		CAMEL_STORE (store), "INBOX", 0,
+		job->cancellable, &job->error);
 
-	/* make sure to-be-deleted folder is not selected by selecting INBOX for this operation */
+	/* Make sure the to-be-deleted folder is not
+	 * selected by selecting INBOX for this operation. */
 	ic = camel_imapx_command_new (
 		is, "DELETE", job->folder,
 		"DELETE %s", encoded_fname);
@@ -5511,6 +5547,8 @@ imapx_job_delete_folder_start (CamelIMAPXJob *job,
 	imapx_command_queue (is, ic);
 
 	g_free (encoded_fname);
+
+	g_object_unref (store);
 }
 
 /* ********************************************************************** */
@@ -5544,17 +5582,21 @@ imapx_job_rename_folder_start (CamelIMAPXJob *job,
                                CamelIMAPXServer *is)
 {
 	CamelIMAPXCommand *ic;
+	CamelIMAPXStore *store;
 	RenameFolderData *data;
 	gchar *en_ofname = NULL, *en_nfname = NULL;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_if_fail (data != NULL);
 
-	job->folder = camel_store_get_folder_sync (
-		is->store, "INBOX", 0, job->cancellable, &job->error);
+	store = camel_imapx_server_ref_store (is);
 
-	en_ofname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, data->old_folder_name);
-	en_nfname = imapx_encode_folder_name ((CamelIMAPXStore *) is->store, data->new_folder_name);
+	job->folder = camel_store_get_folder_sync (
+		CAMEL_STORE (store), "INBOX", 0,
+		job->cancellable, &job->error);
+
+	en_ofname = imapx_encode_folder_name (store, data->old_folder_name);
+	en_nfname = imapx_encode_folder_name (store, data->new_folder_name);
 
 	ic = camel_imapx_command_new (
 		is, "RENAME", job->folder,
@@ -5566,6 +5608,8 @@ imapx_job_rename_folder_start (CamelIMAPXJob *job,
 
 	g_free (en_ofname);
 	g_free (en_nfname);
+
+	g_object_unref (store);
 }
 
 /* ********************************************************************** */
@@ -5648,8 +5692,8 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	CamelStore *parent_store;
 	SyncChangesData *data;
 	const gchar *full_name;
-	CamelService *service;
 	CamelSettings *settings;
+	CamelIMAPXStore *store;
 	gboolean mobile_mode;
 	gboolean success = TRUE;
 
@@ -5659,14 +5703,14 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
-	service = CAMEL_SERVICE (is->store);
-
-	settings = camel_service_ref_settings (service);
+	store = camel_imapx_server_ref_store (is);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
 	mobile_mode = camel_imapx_settings_get_mobile_mode (
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
+	g_object_unref (store);
 
 	job->commands--;
 
@@ -6057,6 +6101,32 @@ join_helper (gpointer thread)
 }
 
 static void
+imapx_server_set_store (CamelIMAPXServer *server,
+                        CamelIMAPXStore *store)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (store));
+
+	g_weak_ref_set (&server->priv->store, store);
+}
+
+static void
+imapx_server_set_property (GObject *object,
+                           guint property_id,
+                           const GValue *value,
+                           GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_STORE:
+			imapx_server_set_store (
+				CAMEL_IMAPX_SERVER (object),
+				g_value_get_object (value));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
 imapx_server_get_property (GObject *object,
                            guint property_id,
                            GValue *value,
@@ -6067,6 +6137,13 @@ imapx_server_get_property (GObject *object,
 			g_value_take_object (
 				value,
 				camel_imapx_server_ref_stream (
+				CAMEL_IMAPX_SERVER (object)));
+			return;
+
+		case PROP_STORE:
+			g_value_take_object (
+				value,
+				camel_imapx_server_ref_store (
 				CAMEL_IMAPX_SERVER (object)));
 			return;
 	}
@@ -6104,10 +6181,7 @@ imapx_server_dispose (GObject *object)
 
 	imapx_disconnect (server);
 
-	if (server->session != NULL) {
-		g_object_unref (server->session);
-		server->session = NULL;
-	}
+	g_weak_ref_set (&server->priv->store, NULL);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->dispose (object);
@@ -6165,6 +6239,7 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 	g_type_class_add_private (class, sizeof (CamelIMAPXServerPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->set_property = imapx_server_set_property;
 	object_class->get_property = imapx_server_get_property;
 	object_class->finalize = imapx_server_finalize;
 	object_class->dispose = imapx_server_dispose;
@@ -6182,6 +6257,18 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 			"IMAP network stream",
 			CAMEL_TYPE_IMAPX_STREAM,
 			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_STORE,
+		g_param_spec_object (
+			"store",
+			"Store",
+			"IMAPX store for this server",
+			CAMEL_TYPE_IMAPX_STORE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
 	/**
@@ -6245,20 +6332,21 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 }
 
 CamelIMAPXServer *
-camel_imapx_server_new (CamelStore *store)
+camel_imapx_server_new (CamelIMAPXStore *store)
 {
-	CamelService *service;
-	CamelSession *session;
-	CamelIMAPXServer *is;
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (store), NULL);
 
-	service = CAMEL_SERVICE (store);
-	session = camel_service_get_session (service);
+	return g_object_new (
+		CAMEL_TYPE_IMAPX_SERVER,
+		"store", store, NULL);
+}
 
-	is = g_object_new (CAMEL_TYPE_IMAPX_SERVER, NULL);
-	is->session = g_object_ref (session);
-	is->store = store;
+CamelIMAPXStore *
+camel_imapx_server_ref_store (CamelIMAPXServer *server)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (server), NULL);
 
-	return is;
+	return g_weak_ref_get (&server->priv->store);
 }
 
 CamelIMAPXStream *
