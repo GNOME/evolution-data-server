@@ -2005,8 +2005,8 @@ imapx_untagged (CamelIMAPXServer *is,
                 GCancellable *cancellable,
                 GError **error)
 {
-	CamelIMAPXStore *store;
-	CamelSettings *settings;
+	CamelIMAPXSettings *settings;
+	CamelSortType fetch_order;
 	guchar *p = NULL, c;
 	const gchar *token = NULL;
 	gboolean ok = FALSE;
@@ -2019,15 +2019,12 @@ imapx_untagged (CamelIMAPXServer *is,
 	g_return_val_if_fail (is->priv->context == NULL, FALSE);
 	is->priv->context = g_new0 (CamelIMAPXServerUntaggedContext, 1);
 
-	store = camel_imapx_server_ref_store (is);
-	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+	settings = camel_imapx_server_ref_settings (is);
+	fetch_order = camel_imapx_settings_get_fetch_order (settings);
+	g_object_unref (settings);
 
 	is->priv->context->lsub = FALSE;
-	is->priv->context->fetch_order = camel_imapx_settings_get_fetch_order (
-		CAMEL_IMAPX_SETTINGS (settings));
-
-	g_object_unref (settings);
-	g_object_unref (store);
+	is->priv->context->fetch_order = fetch_order;
 
 	e (is->tagprefix, "got untagged response\n");
 	is->priv->context->id = 0;
@@ -4313,8 +4310,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	RefreshInfoData *data;
 	gint i;
 	gboolean success = TRUE;
-	CamelIMAPXStore *store;
-	CamelSettings *settings;
+	CamelIMAPXSettings *settings;
 	guint batch_count;
 	gboolean mobile_mode;
 
@@ -4329,16 +4325,10 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	ifolder = (CamelIMAPXFolder *) job->folder;
 	isum = (CamelIMAPXSummary *) job->folder->summary;
 
-	store = camel_imapx_server_ref_store (is);
-	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
-
-	batch_count = camel_imapx_settings_get_batch_fetch_count (
-		CAMEL_IMAPX_SETTINGS (settings));
-	mobile_mode = camel_imapx_settings_get_mobile_mode (
-		CAMEL_IMAPX_SETTINGS (settings));
-
+	settings = camel_imapx_server_ref_settings (is);
+	batch_count = camel_imapx_settings_get_batch_fetch_count (settings);
+	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
-	g_object_unref (store);
 
 	i = data->index;
 
@@ -4459,8 +4449,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
                              GError **error)
 {
 	CamelIMAPXJob *job;
-	CamelIMAPXStore *store;
-	CamelSettings *settings;
+	CamelIMAPXSettings *settings;
 	RefreshInfoData *data;
 	guint uidset_size;
 	gboolean success = TRUE;
@@ -4474,16 +4463,10 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 	data->scan_changes = FALSE;
 
-	store = camel_imapx_server_ref_store (is);
-	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
-
-	uidset_size = camel_imapx_settings_get_batch_fetch_count (
-		CAMEL_IMAPX_SETTINGS (settings));
-	mobile_mode = camel_imapx_settings_get_mobile_mode (
-		CAMEL_IMAPX_SETTINGS (settings));
-
+	settings = camel_imapx_server_ref_settings (is);
+	uidset_size = camel_imapx_settings_get_batch_fetch_count (settings);
+	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
-	g_object_unref (store);
 
 	if (camel_imapx_command_set_error_if_failed (ic, error)) {
 		g_prefix_error (
@@ -4643,19 +4626,13 @@ imapx_job_scan_changes_start (CamelIMAPXJob *job,
 {
 	CamelIMAPXCommand *ic;
 	RefreshInfoData *data;
-	CamelIMAPXStore *store;
-	CamelSettings *settings;
+	CamelIMAPXSettings *settings;
 	gboolean mobile_mode;
 	gchar *uid = NULL;
 
-	store = camel_imapx_server_ref_store (is);
-	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
-
-	mobile_mode = camel_imapx_settings_get_mobile_mode (
-		CAMEL_IMAPX_SETTINGS (settings));
-
+	settings = camel_imapx_server_ref_settings (is);
+	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
-	g_object_unref (store);
 
 	if (mobile_mode)
 		uid = imapx_get_uid_from_index (job->folder->summary, 0);
@@ -4778,8 +4755,7 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder = job->folder;
 	CamelIMAPXFolder *ifolder = (CamelIMAPXFolder *) folder;
-	CamelIMAPXStore *store;
-	CamelSettings *settings;
+	CamelIMAPXSettings *settings;
 	CamelSortType fetch_order;
 	RefreshInfoData *data;
 	guint32 total, diff;
@@ -4789,17 +4765,10 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 	data = camel_imapx_job_get_data (job);
 	g_return_if_fail (data != NULL);
 
-	store = camel_imapx_server_ref_store (is);
-	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
-
-	fetch_order = camel_imapx_settings_get_fetch_order (
-		CAMEL_IMAPX_SETTINGS (settings));
-
-	uidset_size = camel_imapx_settings_get_batch_fetch_count (
-		CAMEL_IMAPX_SETTINGS (settings));
-
+	settings = camel_imapx_server_ref_settings (is);
+	fetch_order = camel_imapx_settings_get_fetch_order (settings);
+	uidset_size = camel_imapx_settings_get_batch_fetch_count (settings);
 	g_object_unref (settings);
-	g_object_unref (store);
 
 	total = camel_folder_summary_count (folder->summary);
 	diff = ifolder->exists_on_server - total;
@@ -4860,30 +4829,22 @@ imapx_job_fetch_messages_start (CamelIMAPXJob *job,
 	CamelFetchType ftype;
 	gint fetch_limit;
 	CamelSortType fetch_order;
-	CamelIMAPXStore *store;
-	CamelSettings *settings;
+	CamelIMAPXSettings *settings;
 	guint uidset_size;
 	RefreshInfoData *data;
 
 	data = camel_imapx_job_get_data (job);
 	g_return_if_fail (data != NULL);
 
-	store = camel_imapx_server_ref_store (is);
-	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
-
-	fetch_order = camel_imapx_settings_get_fetch_order (
-		CAMEL_IMAPX_SETTINGS (settings));
+	settings = camel_imapx_server_ref_settings (is);
+	fetch_order = camel_imapx_settings_get_fetch_order (settings);
+	uidset_size = camel_imapx_settings_get_batch_fetch_count (settings);
+	g_object_unref (settings);
 
 	total = camel_folder_summary_count (folder->summary);
 
 	ftype = data->fetch_type;
 	fetch_limit = data->fetch_msg_limit;
-
-	uidset_size = camel_imapx_settings_get_batch_fetch_count (
-		CAMEL_IMAPX_SETTINGS (settings));
-
-	g_object_unref (settings);
-	g_object_unref (store);
 
 	if (ftype == CAMEL_FETCH_NEW_MESSAGES ||
 		(ftype ==  CAMEL_FETCH_OLD_MESSAGES && total <=0 )) {
@@ -4994,18 +4955,12 @@ imapx_job_refresh_info_start (CamelIMAPXJob *job,
 	gboolean need_rescan = FALSE;
 	gboolean is_selected = FALSE;
 	gboolean can_qresync = FALSE;
-	CamelIMAPXStore *store;
-	CamelSettings *settings;
+	CamelIMAPXSettings *settings;
 	gboolean mobile_mode;
 
-	store = camel_imapx_server_ref_store (is);
-	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
-
-	mobile_mode = camel_imapx_settings_get_mobile_mode (
-		CAMEL_IMAPX_SETTINGS (settings));
-
+	settings = camel_imapx_server_ref_settings (is);
+	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
-	g_object_unref (store);
 
 	full_name = camel_folder_get_full_name (folder);
 
@@ -5692,8 +5647,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	CamelStore *parent_store;
 	SyncChangesData *data;
 	const gchar *full_name;
-	CamelSettings *settings;
-	CamelIMAPXStore *store;
+	CamelIMAPXSettings *settings;
 	gboolean mobile_mode;
 	gboolean success = TRUE;
 
@@ -5703,14 +5657,9 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	data = camel_imapx_job_get_data (job);
 	g_return_val_if_fail (data != NULL, FALSE);
 
-	store = camel_imapx_server_ref_store (is);
-	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
-
-	mobile_mode = camel_imapx_settings_get_mobile_mode (
-		CAMEL_IMAPX_SETTINGS (settings));
-
+	settings = camel_imapx_server_ref_settings (is);
+	mobile_mode = camel_imapx_settings_get_mobile_mode (settings);
 	g_object_unref (settings);
-	g_object_unref (store);
 
 	job->commands--;
 
@@ -6347,6 +6296,21 @@ camel_imapx_server_ref_store (CamelIMAPXServer *server)
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (server), NULL);
 
 	return g_weak_ref_get (&server->priv->store);
+}
+
+CamelIMAPXSettings *
+camel_imapx_server_ref_settings (CamelIMAPXServer *server)
+{
+	CamelIMAPXStore *store;
+	CamelSettings *settings;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (server), NULL);
+
+	store = camel_imapx_server_ref_store (server);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+	g_object_unref (store);
+
+	return CAMEL_IMAPX_SETTINGS (settings);
 }
 
 CamelIMAPXStream *

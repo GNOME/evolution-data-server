@@ -57,6 +57,7 @@ G_BEGIN_DECLS
 
 /* Avoid a circular reference. */
 struct _CamelIMAPXStore;
+struct _CamelIMAPXSettings;
 
 typedef struct _CamelIMAPXServer CamelIMAPXServer;
 typedef struct _CamelIMAPXServerClass CamelIMAPXServerClass;
@@ -183,6 +184,8 @@ CamelIMAPXServer *
 		camel_imapx_server_new		(struct _CamelIMAPXStore *store);
 struct _CamelIMAPXStore *
 		camel_imapx_server_ref_store	(CamelIMAPXServer *is);
+struct _CamelIMAPXSettings *
+		camel_imapx_server_ref_settings	(CamelIMAPXServer *is);
 CamelIMAPXStream *
 		camel_imapx_server_ref_stream	(CamelIMAPXServer *is);
 gboolean	camel_imapx_server_connect	(CamelIMAPXServer *is,
