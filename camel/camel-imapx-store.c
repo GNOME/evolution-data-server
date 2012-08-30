@@ -265,8 +265,9 @@ imapx_query_auth_types_sync (CamelService *service,
 	CamelIMAPXStore *istore = CAMEL_IMAPX_STORE (service);
 	CamelServiceAuthType *authtype;
 	GList *sasl_types, *t, *next;
-	gboolean connected;
 	CamelIMAPXServer *server;
+	CamelIMAPXStream *stream;
+	gboolean connected;
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (istore))) {
 		g_set_error (
@@ -278,9 +279,15 @@ imapx_query_auth_types_sync (CamelService *service,
 
 	server = camel_imapx_server_new (CAMEL_STORE (istore));
 
-	connected = server->stream != NULL;
-	if (!connected)
-		connected = imapx_connect_to_server (server, cancellable, error);
+	stream = camel_imapx_server_ref_stream (server);
+	if (stream != NULL) {
+		connected = TRUE;
+		g_object_unref (stream);
+	} else {
+		connected = imapx_connect_to_server (
+			server, cancellable, error);
+	}
+
 	if (!connected)
 		return NULL;
 

@@ -63,9 +63,12 @@ typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
 struct _IMAPXJobQueueInfo;
 
 /* untagged response handling */
-typedef gboolean (*CamelIMAPXUntaggedRespHandler) (CamelIMAPXServer *server,
-                                                   GCancellable *cancellable,
-                                                   GError **error);
+typedef gboolean
+		(*CamelIMAPXUntaggedRespHandler)
+						(CamelIMAPXServer *server,
+						 CamelIMAPXStream *stream,
+						 GCancellable *cancellable,
+						 GError **error);
 
 /**
  * CamelIMAPXUntaggedRespHandlerDesc:
@@ -105,7 +108,6 @@ struct _CamelIMAPXServer {
 	CamelSession *session;
 
 	/* Info about the current connection */
-	CamelIMAPXStream *stream;
 	struct _capability_info *cinfo;
 	gboolean is_process_stream;
 
@@ -179,6 +181,8 @@ struct _CamelIMAPXServerClass {
 GType		camel_imapx_server_get_type	(void);
 CamelIMAPXServer *
 		camel_imapx_server_new		(CamelStore *store);
+CamelIMAPXStream *
+		camel_imapx_server_ref_stream	(CamelIMAPXServer *is);
 gboolean	camel_imapx_server_connect	(CamelIMAPXServer *is,
 						 GCancellable *cancellable,
 						 GError **error);
