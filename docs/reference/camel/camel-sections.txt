@@ -865,6 +865,7 @@ CamelIMAPXServerClass
 IMAPX_MODE_READ
 IMAPX_MODE_WRITE
 CamelIMAPXIdle
+CamelIMAPXServerPrivate
 camel_imapx_server_get_type
 imapx_connect_to_server
 </SECTION>

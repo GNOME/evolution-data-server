@@ -50,6 +50,10 @@
 #include <ws2tcpip.h>
 #endif
 
+#define CAMEL_IMAPX_SERVER_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), CAMEL_TYPE_IMAPX_SERVER, CamelIMAPXServerPrivate))
+
 #define c(...) camel_imapx_debug(command, __VA_ARGS__)
 #define e(...) camel_imapx_debug(extra, __VA_ARGS__)
 
@@ -161,12 +165,6 @@ struct _DeleteFolderData {
 	gchar *folder_name;
 };
 
-enum {
-	SELECT_CHANGED,
-	SHUTDOWN,
-	LAST_SIGNAL
-};
-
 /* untagged response handling */
 
 /* May need to turn this into separate,
@@ -249,6 +247,17 @@ static const CamelIMAPXUntaggedRespHandlerDesc _untagged_descr[] = {
 	{CAMEL_IMAPX_UNTAGGED_RECENT, imapx_untagged_recent, NULL, TRUE},
 	{CAMEL_IMAPX_UNTAGGED_STATUS, imapx_untagged_status, NULL, TRUE},
 	{CAMEL_IMAPX_UNTAGGED_VANISHED, imapx_untagged_vanished, NULL, TRUE},
+};
+
+struct _CamelIMAPXServerPrivate {
+	CamelIMAPXServerUntaggedContext *context;
+	GHashTable *untagged_handlers;
+};
+
+enum {
+	SELECT_CHANGED,
+	SHUTDOWN,
+	LAST_SIGNAL
 };
 
 static guint signals[LAST_SIGNAL];
@@ -380,13 +389,6 @@ enum {
 
 static gboolean imapx_select (CamelIMAPXServer *is, CamelFolder *folder, gboolean force, GCancellable *cancellable, GError **error);
 
-typedef struct _CamelIMAPXServerPrivate CamelIMAPXServerPrivate;
-struct _CamelIMAPXServerPrivate {
-	CamelIMAPXServerUntaggedContext *context;
-	GHashTable *untagged_handlers;
-};
-
-#define CAMEL_IMAPX_SERVER_GET_PRIVATE(obj)  (G_TYPE_INSTANCE_GET_PRIVATE ((obj), CAMEL_TYPE_IMAPX_SERVER, CamelIMAPXServerPrivate))
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, CAMEL_TYPE_OBJECT)
 
 static const CamelIMAPXUntaggedRespHandlerDesc *
@@ -1261,7 +1263,6 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
                         GCancellable *cancellable,
                         GError **error)
 {
-	CamelIMAPXServerPrivate *priv = NULL;
 	guint32 expunge = 0;
 	CamelIMAPXJob *job = NULL;
 
@@ -1269,16 +1270,14 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
-
-	expunge = priv->context->id;
+	expunge = is->priv->context->id;
 	job = imapx_match_active_job (is, IMAPX_JOB_EXPUNGE, NULL);
 
 	/* If there is a job running, let it handle the deletion */
 	if (job)
 		return TRUE;
 
-	c (is->tagprefix, "expunged: %d\n", priv->context->id);
+	c (is->tagprefix, "expunged: %d\n", is->priv->context->id);
 	if (is->select_folder) {
 		gchar *uid = NULL;
 
@@ -1395,21 +1394,18 @@ imapx_untagged_exists (CamelIMAPXServer *is,
                        GCancellable *cancellable,
                        GError **error)
 {
-	CamelIMAPXServerPrivate *priv = NULL;
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
-
-	c (is->tagprefix, "exists: %d\n", priv->context->id);
-	is->exists = priv->context->id;
+	c (is->tagprefix, "exists: %d\n", is->priv->context->id);
+	is->exists = is->priv->context->id;
 
 	if (is->select_folder)
-		((CamelIMAPXFolder *) is->select_folder)->exists_on_server = priv->context->id;
+		((CamelIMAPXFolder *) is->select_folder)->exists_on_server = is->priv->context->id;
 
 	if (imapx_idle_supported (is) && imapx_in_idle (is)) {
-		if (camel_folder_summary_count (is->select_folder->summary) < priv->context->id)
+		if (camel_folder_summary_count (is->select_folder->summary) < is->priv->context->id)
 			imapx_stop_idle (is, error);
 	}
 
@@ -1438,14 +1434,11 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
                       GCancellable *cancellable,
                       GError **error)
 {
-	CamelIMAPXServerPrivate *priv = NULL;
 	struct _fetch_info *finfo;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
 
 	finfo = imapx_parse_fetch (is->stream, cancellable, error);
 	if (finfo == NULL) {
@@ -1507,13 +1500,13 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			g_object_ref (is->select_folder);
 			folder = is->select_folder;
 
-			c (is->tagprefix, "flag changed: %d\n", priv->context->id);
+			c (is->tagprefix, "flag changed: %d\n", is->priv->context->id);
 
 			if (finfo->got & FETCH_UID) {
 				uid = finfo->uid;
 				finfo->uid = NULL;
 			} else {
-				uid = imapx_get_uid_from_index (folder->summary, priv->context->id - 1);
+				uid = imapx_get_uid_from_index (folder->summary, is->priv->context->id - 1);
 			}
 
 			if (uid) {
@@ -1594,7 +1587,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 						mid = (min + max) / 2;
 						r = &g_array_index (data->infos, struct _refresh_info, mid);
-						cmp = imapx_refresh_info_uid_cmp (finfo->uid, r->uid, priv->context->fetch_order == CAMEL_SORT_ASCENDING);
+						cmp = imapx_refresh_info_uid_cmp (finfo->uid, r->uid, is->priv->context->fetch_order == CAMEL_SORT_ASCENDING);
 
 						if (cmp > 0)
 							min = mid + 1;
@@ -1678,15 +1671,12 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
                      GCancellable *cancellable,
                      GError **error)
 {
-	CamelIMAPXServerPrivate *priv = NULL;
-
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
+	is->priv->context->lsub = TRUE;
 
-	priv->context->lsub = TRUE;
 	return TRUE;
 }
 
@@ -1695,7 +1685,6 @@ imapx_untagged_list (CamelIMAPXServer *is,
                      GCancellable *cancellable,
                      GError **error)
 {
-	CamelIMAPXServerPrivate *priv = NULL;
 	struct _list_info *linfo = NULL;
 	CamelIMAPXJob *job = NULL;
 	ListData *data = NULL;
@@ -1703,8 +1692,6 @@ imapx_untagged_list (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
 
 	linfo = imapx_parse_list (is->stream, cancellable, error);
 	if (!linfo)
@@ -1724,7 +1711,7 @@ imapx_untagged_list (CamelIMAPXServer *is,
 	}
 
 	if (job && g_hash_table_lookup (data->folders, linfo->name) == NULL) {
-		if (priv->context->lsub)
+		if (is->priv->context->lsub)
 			linfo->flags |= CAMEL_FOLDER_SUBSCRIBED;
 		g_hash_table_insert (data->folders, linfo->name, linfo);
 	} else {
@@ -1740,16 +1727,12 @@ imapx_untagged_recent (CamelIMAPXServer *is,
                        GCancellable *cancellable,
                        GError **error)
 {
-	CamelIMAPXServerPrivate *priv = NULL;
-
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
-
-	c (is->tagprefix, "recent: %d\n", priv->context->id);
-	is->recent = priv->context->id;
+	c (is->tagprefix, "recent: %d\n", is->priv->context->id);
+	is->recent = is->priv->context->id;
 
 	return TRUE;
 }
@@ -1846,24 +1829,20 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
                           GCancellable *cancellable,
                           GError **error)
 {
-	CamelIMAPXServerPrivate *priv = NULL;
-
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	/* cancellable may be NULL */
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
-
 	/* TODO: validate which ones of these can happen as unsolicited responses */
 	/* TODO: handle bye/preauth differently */
 	camel_imapx_stream_ungettoken (is->stream,
-				       priv->context->tok,
-				       priv->context->token,
-				       priv->context->len);
-	priv->context->sinfo = imapx_parse_status (is->stream, cancellable, error);
-	if (priv->context->sinfo == NULL)
+				       is->priv->context->tok,
+				       is->priv->context->token,
+				       is->priv->context->len);
+	is->priv->context->sinfo = imapx_parse_status (is->stream, cancellable, error);
+	if (is->priv->context->sinfo == NULL)
 		return FALSE;
-	switch (priv->context->sinfo->condition) {
+	switch (is->priv->context->sinfo->condition) {
 	case IMAPX_CLOSED:
 		c (is->tagprefix, "previously selected folder is now closed\n");
 		if (is->select_pending && !is->select_folder) {
@@ -1879,31 +1858,31 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 		c (is->tagprefix, "folder is read-only\n");
 		break;
 	case IMAPX_UIDVALIDITY:
-		is->uidvalidity = priv->context->sinfo->u.uidvalidity;
+		is->uidvalidity = is->priv->context->sinfo->u.uidvalidity;
 		break;
 	case IMAPX_UNSEEN:
-		is->unseen = priv->context->sinfo->u.unseen;
+		is->unseen = is->priv->context->sinfo->u.unseen;
 		break;
 	case IMAPX_HIGHESTMODSEQ:
-		is->highestmodseq = priv->context->sinfo->u.highestmodseq;
+		is->highestmodseq = is->priv->context->sinfo->u.highestmodseq;
 		break;
 	case IMAPX_PERMANENTFLAGS:
-		is->permanentflags = priv->context->sinfo->u.permanentflags;
+		is->permanentflags = is->priv->context->sinfo->u.permanentflags;
 		break;
 	case IMAPX_UIDNEXT:
-		is->uidnext = priv->context->sinfo->u.uidnext;
+		is->uidnext = is->priv->context->sinfo->u.uidnext;
 		break;
 	case IMAPX_ALERT:
-		c (is->tagprefix, "ALERT!: %s\n", priv->context->sinfo->text);
+		c (is->tagprefix, "ALERT!: %s\n", is->priv->context->sinfo->text);
 		break;
 	case IMAPX_PARSE:
-		c (is->tagprefix, "PARSE: %s\n", priv->context->sinfo->text);
+		c (is->tagprefix, "PARSE: %s\n", is->priv->context->sinfo->text);
 		break;
 	case IMAPX_CAPABILITY:
-		if (priv->context->sinfo->u.cinfo) {
+		if (is->priv->context->sinfo->u.cinfo) {
 			struct _capability_info *cinfo = is->cinfo;
-			is->cinfo = priv->context->sinfo->u.cinfo;
-			priv->context->sinfo->u.cinfo = NULL;
+			is->cinfo = is->priv->context->sinfo->u.cinfo;
+			is->priv->context->sinfo->u.cinfo = NULL;
 			if (cinfo)
 				imapx_free_capability (cinfo);
 			c (is->tagprefix, "got capability flags %08x\n", is->cinfo->capa);
@@ -1912,7 +1891,7 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 	default:
 		break;
 	}
-	imapx_free_status (priv->context->sinfo);
+	imapx_free_status (is->priv->context->sinfo);
 
 	return TRUE;
 }
@@ -1923,7 +1902,6 @@ imapx_untagged (CamelIMAPXServer *is,
                 GCancellable *cancellable,
                 GError **error)
 {
-	CamelIMAPXServerPrivate *priv = NULL;
 	CamelService *service = NULL;
 	CamelSettings *settings = NULL;
 	guchar *p = NULL, c;
@@ -1931,70 +1909,70 @@ imapx_untagged (CamelIMAPXServer *is,
 	gboolean ok = FALSE;
 
 	service = CAMEL_SERVICE (is->store);
-	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
 
-	/* If priv->context is not NULL here, it basically means that
-	 * imapx_untagged() got called concurrently for the same
+	/* If is->priv->context is not NULL here, it basically means
+	 * that imapx_untagged() got called concurrently for the same
 	 * CamelIMAPXServer instance. Should this ever happen, then
 	 * we will need to protect this data structure with locks
 	 */
-	g_return_val_if_fail (priv->context == NULL, FALSE);
-	priv->context = g_new0 (CamelIMAPXServerUntaggedContext, 1);
+	g_return_val_if_fail (is->priv->context == NULL, FALSE);
+	is->priv->context = g_new0 (CamelIMAPXServerUntaggedContext, 1);
 
 	settings = camel_service_ref_settings (service);
 
-	priv->context->lsub = FALSE;
-	priv->context->fetch_order = camel_imapx_settings_get_fetch_order (
+	is->priv->context->lsub = FALSE;
+	is->priv->context->fetch_order = camel_imapx_settings_get_fetch_order (
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
 
 	e (is->tagprefix, "got untagged response\n");
-	priv->context->id = 0;
-	priv->context->tok = camel_imapx_stream_token (is->stream,
-						       &(priv->context->token),
-						       &(priv->context->len),
-						       cancellable,
-						       error);
-	if (priv->context->tok < 0)
+	is->priv->context->id = 0;
+	is->priv->context->tok = camel_imapx_stream_token (
+		is->stream,
+		&(is->priv->context->token),
+		&(is->priv->context->len),
+		cancellable, error);
+	if (is->priv->context->tok < 0)
 		goto exit;
 
-	if (priv->context->tok == IMAPX_TOK_INT) {
-		priv->context->id = strtoul ((gchar *) priv->context->token, NULL, 10);
-		priv->context->tok = camel_imapx_stream_token (is->stream,
-							       &(priv->context->token),
-							       &(priv->context->len),
+	if (is->priv->context->tok == IMAPX_TOK_INT) {
+		is->priv->context->id = strtoul (
+			(gchar *) is->priv->context->token, NULL, 10);
+		is->priv->context->tok = camel_imapx_stream_token (
+			is->stream,
+			&(is->priv->context->token),
+			&(is->priv->context->len),
 							       cancellable,
 							       error);
-		if (priv->context->tok < 0)
+		if (is->priv->context->tok < 0)
 			goto exit;
 	}
 
-	if (priv->context->tok == '\n') {
+	if (is->priv->context->tok == '\n') {
 		g_set_error (error, CAMEL_IMAPX_ERROR, 1,
 			"truncated server response");
 		goto exit;
 	}
 
-	e (is->tagprefix, "Have token '%s' id %d\n", priv->context->token, priv->context->id);
-	p = priv->context->token;
+	e (is->tagprefix, "Have token '%s' id %d\n", is->priv->context->token, is->priv->context->id);
+	p = is->priv->context->token;
 	while ((c = *p))
 		*p++ = toupper((gchar) c);
 
-	token = (const gchar *) priv->context->token; /* FIXME need 'guchar *token' here */
+	token = (const gchar *) is->priv->context->token; /* FIXME need 'guchar *token' here */
 	while (token != NULL) {
 		CamelIMAPXUntaggedRespHandlerDesc *desc = NULL;
 
-		desc = g_hash_table_lookup (priv->untagged_handlers,
-					    token);
+		desc = g_hash_table_lookup (is->priv->untagged_handlers, token);
 		if (desc == NULL) {
 			/* unknown response, just ignore it */
-			c (is->tagprefix, "unknown token: %s\n", priv->context->token);
+			c (is->tagprefix, "unknown token: %s\n", is->priv->context->token);
 			break;
 		}
 		if (desc->handler == NULL) {
 			/* no handler function, ignore token */
-			c (is->tagprefix, "no handler for token: %s\n", priv->context->token);
+			c (is->tagprefix, "no handler for token: %s\n", is->priv->context->token);
 			break;
 		}
 
@@ -2024,8 +2002,8 @@ imapx_untagged (CamelIMAPXServer *is,
 
 	ok = (camel_imapx_stream_skip (is->stream, cancellable, error) == 0);
  exit:
-	g_free (priv->context);
-	priv->context = NULL;
+	g_free (is->priv->context);
+	is->priv->context = NULL;
 
 	return ok;
 }
@@ -5935,7 +5913,6 @@ static void
 imapx_server_finalize (GObject *object)
 {
 	CamelIMAPXServer *is = CAMEL_IMAPX_SERVER (object);
-	CamelIMAPXServerPrivate *priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
 
 	camel_imapx_command_queue_free (is->queue);
 	camel_imapx_command_queue_free (is->active);
@@ -5952,9 +5929,8 @@ imapx_server_finalize (GObject *object)
 
 	camel_folder_change_info_free (is->changes);
 
-	if (priv->context != NULL)
-		g_free (priv->context);
-	g_hash_table_destroy (priv->untagged_handlers);
+	g_free (is->priv->context);
+	g_hash_table_destroy (is->priv->untagged_handlers);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
@@ -5980,6 +5956,8 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 {
 	GObjectClass *object_class;
 
+	g_type_class_add_private (class, sizeof (CamelIMAPXServerPrivate));
+
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = imapx_server_finalize;
 	object_class->constructed = imapx_server_constructed;
@@ -5987,8 +5965,6 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 
 	class->select_changed = NULL;
 	class->shutdown = NULL;
-
-	g_type_class_add_private (class, sizeof (CamelIMAPXServerPrivate));
 
 	/**
 	 * CamelIMAPXServer::select_changed
@@ -6022,9 +5998,9 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 static void
 camel_imapx_server_init (CamelIMAPXServer *is)
 {
-	CamelIMAPXServerPrivate *priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
-	priv->context = NULL;
-	priv->untagged_handlers = create_initial_untagged_handler_table ();
+	is->priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
+
+	is->priv->untagged_handlers = create_initial_untagged_handler_table ();
 
 	is->queue = camel_imapx_command_queue_new ();
 	is->active = camel_imapx_command_queue_new ();
@@ -7075,18 +7051,16 @@ camel_imapx_server_register_untagged_handler (CamelIMAPXServer *is,
                                               const gchar *untagged_response,
                                               const CamelIMAPXUntaggedRespHandlerDesc *desc)
 {
-	CamelIMAPXServerPrivate *priv = NULL;
 	const CamelIMAPXUntaggedRespHandlerDesc *previous = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
 	g_return_val_if_fail (untagged_response != NULL, NULL);
 	/* desc may be NULL */
 
-	priv = CAMEL_IMAPX_SERVER_GET_PRIVATE (is);
+	previous = replace_untagged_descriptor (
+		is->priv->untagged_handlers,
+		untagged_response, desc);
 
-	previous = replace_untagged_descriptor (priv->untagged_handlers,
-						untagged_response,
-						desc);
 	return previous;
 }
 

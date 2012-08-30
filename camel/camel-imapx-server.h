@@ -57,6 +57,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelIMAPXServer CamelIMAPXServer;
 typedef struct _CamelIMAPXServerClass CamelIMAPXServerClass;
+typedef struct _CamelIMAPXServerPrivate CamelIMAPXServerPrivate;
 
 typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
 struct _IMAPXJobQueueInfo;
@@ -98,6 +99,7 @@ struct _CamelIMAPXUntaggedRespHandlerDesc {
 
 struct _CamelIMAPXServer {
 	CamelObject parent;
+	CamelIMAPXServerPrivate *priv;
 
 	CamelStore *store;
 	CamelSession *session;
