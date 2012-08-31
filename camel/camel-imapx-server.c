@@ -6626,8 +6626,11 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	path = camel_data_cache_get_filename (ifolder->cache, "new", uid);
 	info = camel_folder_summary_info_new_from_message ((CamelFolderSummary *) folder->summary, message, NULL);
 	info->uid = camel_pstring_strdup (uid);
-	if (mi)
+	if (mi) {
 		((CamelMessageInfoBase *) info)->flags = ((CamelMessageInfoBase *) mi)->flags;
+		((CamelMessageInfoBase *) info)->size = ((CamelMessageInfoBase *) mi)->size;
+	}
+
 	g_free (uid);
 
 	/* So, we actually just want to let the server loop that
