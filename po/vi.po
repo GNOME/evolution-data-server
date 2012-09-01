@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-08-28 13:07+0000\n"
-"PO-Revision-Date: 2012-09-01 13:10+0700\n"
+"PO-Revision-Date: 2012-09-01 13:16+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "Language: vi\n"
@@ -156,7 +156,7 @@ msgstr "Dùng địa chỉ thư"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:969
 msgid "Failed to bind using either v3 or v2 binds"
-msgstr ""
+msgstr "Lỗi gắn kết (bind) cả phiên bản 2 và 3"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1090
 msgid "Reconnecting to LDAP server..."
@@ -170,7 +170,7 @@ msgstr "Cú pháp DN không hợp lệ"
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4784
 #, c-format
 msgid "LDAP error 0x%x (%s)"
-msgstr ""
+msgstr "Lỗi LDAP 0x%x (%s)"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1754
 msgid "Adding contact to LDAP server..."
@@ -184,13 +184,13 @@ msgstr "Đang gỡ bỏ liên lạc khỏi máy phục vụ LDAP..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2405
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
-msgstr ""
+msgstr "%s: ldap_first_entry trả về NULL"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2265
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2456
 #, c-format
 msgid "%s: Unhandled result type %d returned"
-msgstr ""
+msgstr "%s: trả về loại kết quả không xử lý %d"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2334
 msgid "Modifying contact from LDAP server..."
@@ -200,7 +200,7 @@ msgstr "Đang sửa đổi liên lạc từ máy phục vụ LDAP..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2886
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
-msgstr ""
+msgstr "%s: trả về loại tìm kiếm không xử lý %d"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4736
 msgid "Receiving LDAP search results..."
@@ -221,10 +221,10 @@ msgid "Failed to get the DN for user '%s'"
 msgstr "Lỗi lấy DN cho người dùng '%s'"
 
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:645
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to remove file '%s': %s"
 msgid "Failed to open addressbook at '%s': %s"
-msgstr "Lỗi loại bỏ tập tin '%s': %s"
+msgstr "Lỗi mở sổ địa chỉ tại '%s': %s"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:354
 #, c-format
@@ -232,48 +232,46 @@ msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "Lỗi tạo tài nguyên '%s' với mã trạng thái HTTP: %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:447
-#, fuzzy, c-format
+#, c-format
 #| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgid "DELETE failed with HTTP status %d"
-msgstr "Lỗi tạo tài nguyên '%s' với mã trạng thái HTTP: %d (%s)"
+msgstr "Lỗi HTTP DELETE, mã trạng thái %d"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:507
-#, fuzzy
 #| msgid "_Listen for server change notifications"
 msgid "Contact on server changed -> not modifying"
-msgstr "_Lắng nghe thông báo thay đổi máy chủ"
+msgstr "Liên lạc trên máy chủ thay đổi -> không sửa"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:515
-#, fuzzy, c-format
+#, c-format
 #| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgid "Modify contact failed with HTTP status: %d (%s)"
-msgstr "Lỗi tạo tài nguyên '%s' với mã trạng thái HTTP: %d (%s)"
+msgstr "Lỗi thay đổi liên lạc với mã HTTP: %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:912
-#, fuzzy
 #| msgid "Error loading address book: %s"
 msgid "Loading Addressbook summary..."
-msgstr "Lỗi nạp sổ địa chỉ: %s"
+msgstr "Nạp tóm tắt sổ địa chỉ..."
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:928
-#, fuzzy, c-format
+#, c-format
 #| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
-msgstr "Lỗi tạo tài nguyên '%s' với mã trạng thái HTTP: %d (%s)"
+msgstr "Lỗi HTTP PROPFIND, mã trạng thái %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:949
 msgid "No response body in webdav PROPFIND result"
-msgstr ""
+msgstr "Không có phần thân trả lời trong kết quả webdav PROPFIND"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:980
-#, fuzzy, c-format
+#, c-format
 #| msgid "Downloading contacts (%d)... "
 msgid "Loading Contacts (%d%%)"
-msgstr "Đang tải về các liên lạc (%d)... "
+msgstr "Đang nạp liên lạc (%d%%)... "
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1287
 msgid "Cannot transform SoupURI to string"
-msgstr ""
+msgstr "Không thể chuyển SoupURI sang chuỗi"
 
 #: ../addressbook/libebook/e-book-client.c:95
 msgid "No such book"
@@ -1153,16 +1151,14 @@ msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Nhận được mã trạng thái HTTP không mong đợi %d (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:635
-#, fuzzy
 #| msgid "Backend is not opened yet"
 msgid "CalDAV backend is not loaded yet"
-msgstr "Hậu phương chưa mở"
+msgstr "Chưa nạp mặt sau CalDAV"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:1017
-#, fuzzy
 #| msgid "Invalid object"
 msgid "Invalid Redirect URL"
-msgstr "Đối tượng không hợp lệ"
+msgstr "URL tái định hướng không hợp lệ"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2360
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2716
@@ -1175,22 +1171,20 @@ msgstr ""
 "Thông báo lỗi: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2639
-#, fuzzy
 #| msgid "Cannot create calendar object: "
 msgid "Cannot create local store"
-msgstr "Không thể tạo đối tượng lịch: "
+msgstr "Không thể tạo kho lưu trữ cục bộ"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2648
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create folder '%s': %s"
 msgid "Cannot create local cache folder '%s'"
-msgstr "Không thể tạo thư mục « %s »: %s"
+msgstr "Không thể tạo thư mục cache cục bộ: '%s'"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2659
-#, fuzzy
 #| msgid "Could not create cache file"
 msgid "Could not create synch slave thread"
-msgstr "Không thể tạo tập tin nhớ tạm"
+msgstr "Không thể tạo synch slave thread"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3671
 msgid "CalDAV does not support bulk additions"
@@ -1210,11 +1204,11 @@ msgstr "Lịch không hỗ trợ Bận/Rảnh"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4608
 msgid "Schedule outbox url not found"
-msgstr ""
+msgstr "Không tìm thấy URL schedule outbox"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4707
 msgid "Unexpected result in schedule-response"
-msgstr ""
+msgstr "Kết quả bất thường trong schedule-response"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:921
 msgid "Birthday"
