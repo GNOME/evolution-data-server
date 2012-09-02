@@ -3159,7 +3159,7 @@ imapx_select (CamelIMAPXServer *is,
 
 /* Using custom commands to connect to IMAP servers is not supported on Win32 */
 
-static gboolean
+static CamelStream *
 connect_to_server_process (CamelIMAPXServer *is,
                            const gchar *cmd,
                            GError **error)
@@ -3277,7 +3277,7 @@ connect_to_server_process (CamelIMAPXServer *is,
 	if (ret == -1) {
 		g_object_unref (cmd_stream);
 		g_free (full_cmd);
-		return FALSE;
+		return NULL;
 	}
 
 	g_free (full_cmd);
@@ -3295,7 +3295,7 @@ connect_to_server_process (CamelIMAPXServer *is,
 
 	g_object_notify (G_OBJECT (is), "stream");
 
-	return TRUE;
+	return imapx_stream;
 }
 #endif /* G_OS_WIN32 */
 
@@ -3345,14 +3345,12 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 
 #ifndef G_OS_WIN32
 	if (shell_command != NULL) {
-		gboolean success;
-
-		success = connect_to_server_process (
+		imapx_stream = connect_to_server_process (
 			is, shell_command, &local_error);
 
 		g_free (shell_command);
 
-		if (success)
+		if (imapx_stream != NULL)
 			goto connected;
 		else
 			goto exit;
