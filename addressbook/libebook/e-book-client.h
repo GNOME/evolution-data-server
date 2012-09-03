@@ -121,7 +121,14 @@ GError *	e_book_client_error_create	(EBookClientError code,
 						 const gchar *custom_msg);
 
 GType		e_book_client_get_type		(void) G_GNUC_CONST;
-EBookClient *	e_book_client_new		(ESource *source,
+EClient *	e_book_client_connect_sync	(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_book_client_connect		(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+EClient *	e_book_client_connect_finish	(GAsyncResult *result,
 						 GError **error);
 gboolean	e_book_client_get_self		(ESourceRegistry *registry,
 						 EContact **out_contact,
@@ -302,7 +309,10 @@ gboolean	e_book_client_get_view_sync	(EBookClient *client,
  * Deprecated: 3.8: The property is no longer supported.
  **/
 #define BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS	"supported-auth-methods"
-#endif /* EDS_DISABLE_DEPRECATED */
+
+EBookClient *	e_book_client_new		(ESource *source,
+						 GError **error);
+#endif /* E_BOOK_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

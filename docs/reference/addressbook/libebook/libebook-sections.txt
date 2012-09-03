@@ -118,7 +118,9 @@ EBookClientError
 e_book_client_error_to_string
 e_book_client_error_create
 EBookClient
-e_book_client_new
+e_book_client_connect_sync
+e_book_client_connect
+e_book_client_connect_finish
 e_book_client_get_self
 e_book_client_set_self
 e_book_client_is_self
@@ -157,6 +159,7 @@ e_book_client_get_view_finish
 e_book_client_get_view_sync
 <SUBSECTION Deprecated>
 BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS
+e_book_client_new
 <SUBSECTION Standard>
 E_BOOK_CLIENT
 E_IS_BOOK_CLIENT
