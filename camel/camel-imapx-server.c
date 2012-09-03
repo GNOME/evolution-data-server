@@ -6625,8 +6625,29 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	info = camel_folder_summary_info_new_from_message ((CamelFolderSummary *) folder->summary, message, NULL);
 	info->uid = camel_pstring_strdup (uid);
 	if (mi) {
-		((CamelMessageInfoBase *) info)->flags = ((CamelMessageInfoBase *) mi)->flags;
-		((CamelMessageInfoBase *) info)->size = ((CamelMessageInfoBase *) mi)->size;
+		CamelMessageInfoBase *base_info = (CamelMessageInfoBase *) info;
+
+		base_info->flags = camel_message_info_flags (mi);
+		base_info->size = camel_message_info_size (mi);
+
+		if ((is->permanentflags & CAMEL_MESSAGE_USER) != 0) {
+			const CamelFlag *flag;
+			const CamelTag *tag;
+
+			flag = camel_message_info_user_flags (mi);
+			while (flag) {
+				if (flag->name && *flag->name)
+					camel_flag_set (&base_info->user_flags, flag->name, TRUE);
+				flag = flag->next;
+			}
+
+			tag = camel_message_info_user_tags (mi);
+			while (tag) {
+				if (tag->name && *tag->name)
+					camel_tag_set (&base_info->user_tags, tag->name, tag->value);
+				tag = tag->next;
+			}
+		}
 	}
 
 	g_free (uid);
