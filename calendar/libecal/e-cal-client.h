@@ -139,8 +139,16 @@ GError *	e_cal_client_error_create	(ECalClientError code,
 						 const gchar *custom_msg);
 
 GType		e_cal_client_get_type		(void) G_GNUC_CONST;
-ECalClient *	e_cal_client_new		(ESource *source,
+EClient *	e_cal_client_connect_sync	(ESource *source,
 						 ECalClientSourceType source_type,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_cal_client_connect		(ESource *source,
+						 ECalClientSourceType source_type,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+EClient *	e_cal_client_connect_finish	(GAsyncResult *result,
 						 GError **error);
 ECalClientSourceType
 		e_cal_client_get_source_type	(ECalClient *client);
@@ -501,6 +509,12 @@ gboolean	e_cal_client_add_timezone_sync	(ECalClient *client,
 						 icaltimezone *zone,
 						 GCancellable *cancellable,
 						 GError **error);
+
+#ifndef E_CAL_DISABLE_DEPRECATED
+ECalClient *	e_cal_client_new		(ESource *source,
+						 ECalClientSourceType source_type,
+						 GError **error);
+#endif /* E_CAL_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

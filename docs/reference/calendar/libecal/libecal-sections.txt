@@ -99,7 +99,9 @@ E_CAL_CLIENT_ERROR
 ECalClientError
 e_cal_client_error_to_string
 e_cal_client_error_create
-e_cal_client_new
+e_cal_client_connect_sync
+e_cal_client_connect
+e_cal_client_connect_finish
 e_cal_client_get_source_type
 e_cal_client_get_local_attachment_store
 e_cal_client_set_default_timezone
@@ -175,6 +177,8 @@ e_cal_client_get_timezone_sync
 e_cal_client_add_timezone
 e_cal_client_add_timezone_finish
 e_cal_client_add_timezone_sync
+<SUBSECTION Deprecated>
+e_cal_client_new
 <SUBSECTION Standard>
 E_CAL_CLIENT
 E_IS_CAL_CLIENT

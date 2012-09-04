@@ -1503,6 +1503,224 @@ e_cal_client_init (ECalClient *client)
 }
 
 /**
+ * e_cal_client_connect_sync:
+ * @source: an #ESource
+ * @source_type: source type of the calendar
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new #ECalClient for @source and @source_type.  If an error
+ * occurs, the function will set @error and return %FALSE.
+ *
+ * Unlike with e_cal_client_new(), there is no need to call
+ * e_client_open_sync() after obtaining the #ECalClient.
+ *
+ * Returns: a new #ECalClient, or %NULL
+ *
+ * Since: 3.8
+ **/
+EClient *
+e_cal_client_connect_sync (ESource *source,
+                           ECalClientSourceType source_type,
+                           GCancellable *cancellable,
+                           GError **error)
+{
+	ECalClient *client;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+	g_return_val_if_fail (
+		source_type == E_CAL_CLIENT_SOURCE_TYPE_EVENTS ||
+		source_type == E_CAL_CLIENT_SOURCE_TYPE_TASKS ||
+		source_type == E_CAL_CLIENT_SOURCE_TYPE_MEMOS, NULL);
+
+	client = g_object_new (
+		E_TYPE_CAL_CLIENT,
+		"source", source,
+		"source-type", source_type, NULL);
+
+	success = g_initable_init (
+		G_INITABLE (client), cancellable, error);
+
+	if (success)
+		success = e_dbus_calendar_call_open_sync (
+			client->priv->dbus_proxy, cancellable, error);
+
+	if (!success) {
+		g_object_unref (client);
+		return NULL;
+	}
+
+	return E_CLIENT (client);
+}
+
+/* Helper for e_cal_client_connect() */
+static void
+cal_client_connect_open_cb (GObject *source_object,
+                            GAsyncResult *result,
+                            gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	GError *error = NULL;
+
+	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	e_dbus_calendar_call_open_finish (
+		E_DBUS_CALENDAR (source_object), result, &error);
+
+	if (error != NULL)
+		g_simple_async_result_take_error (simple, error);
+
+	g_simple_async_result_complete (simple);
+
+	g_object_unref (simple);
+}
+
+/* Helper for e_cal_client_connect() */
+static void
+cal_client_connect_init_cb (GObject *source_object,
+                            GAsyncResult *result,
+                            gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	GCancellable *cancellable;
+	ECalClientPrivate *priv;
+	GError *error = NULL;
+
+	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	g_async_initable_init_finish (
+		G_ASYNC_INITABLE (source_object), result, &error);
+
+	if (error != NULL) {
+		g_simple_async_result_take_error (simple, error);
+		g_simple_async_result_complete (simple);
+		goto exit;
+	}
+
+	/* Note, we're repurposing some function parameters. */
+
+	result = G_ASYNC_RESULT (simple);
+	source_object = g_async_result_get_source_object (result);
+	cancellable = g_simple_async_result_get_op_res_gpointer (simple);
+
+	priv = E_CAL_CLIENT_GET_PRIVATE (source_object);
+
+	e_dbus_calendar_call_open (
+		priv->dbus_proxy, cancellable,
+		cal_client_connect_open_cb,
+		g_object_ref (simple));
+
+	g_object_unref (source_object);
+
+exit:
+	g_object_unref (simple);
+}
+
+/**
+ * e_cal_client_connect:
+ * @source: an #ESource
+ * @source_type: source tpe of the calendar
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to the callback function
+ *
+ * Asynchronously creates a new #ECalClient for @source and @source_type.
+ *
+ * Unlike with e_cal_client_new(), there is no need to call e_client_open()
+ * after obtaining the #ECalClient.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_cal_client_connect_finish() to get the result of the operation.
+ *
+ * Since: 3.8
+ **/
+void
+e_cal_client_connect (ESource *source,
+                      ECalClientSourceType source_type,
+                      GCancellable *cancellable,
+                      GAsyncReadyCallback callback,
+                      gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+	ECalClient *client;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (
+		source_type == E_CAL_CLIENT_SOURCE_TYPE_EVENTS ||
+		source_type == E_CAL_CLIENT_SOURCE_TYPE_TASKS ||
+		source_type == E_CAL_CLIENT_SOURCE_TYPE_MEMOS);
+
+	/* Two things with this: 1) instantiate the client object
+	 * immediately to make sure the thread-default GMainContext
+	 * gets plucked, and 2) do not call the D-Bus open() method
+	 * from our designated D-Bus thread -- it may take a long
+	 * time and block other clients from receiving signals. */
+
+	client = g_object_new (
+		E_TYPE_CAL_CLIENT,
+		"source", source,
+		"source-type", source_type, NULL);
+
+	simple = g_simple_async_result_new (
+		G_OBJECT (client), callback,
+		user_data, e_cal_client_connect);
+
+	g_simple_async_result_set_check_cancellable (simple, cancellable);
+
+	if (G_IS_CANCELLABLE (cancellable)) {
+		/* XXX Stuff the GCancellable in the GSimpleAsyncResult
+		 *     so we don't have to carry an AsyncContext struct. */
+		g_simple_async_result_set_op_res_gpointer (
+			simple, g_object_ref (cancellable),
+			(GDestroyNotify) g_object_unref);
+	}
+
+	g_async_initable_init_async (
+		G_ASYNC_INITABLE (client),
+		G_PRIORITY_DEFAULT, cancellable,
+		cal_client_connect_init_cb,
+		g_object_ref (simple));
+
+	g_object_unref (simple);
+	g_object_unref (client);
+}
+
+/**
+ * e_cal_client_connect_finish:
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_cal_client_connect().  If an
+ * error occurs in connecting to the D-Bus service, the function sets
+ * @error and returns %NULL.
+ *
+ * Returns: a new #ECalClient, or %NULL
+ *
+ * Since: 3.8
+ **/
+EClient *
+e_cal_client_connect_finish (GAsyncResult *result,
+                             GError **error)
+{
+	GSimpleAsyncResult *simple;
+	gpointer source_tag;
+
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (result), NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	source_tag = g_simple_async_result_get_source_tag (simple);
+	g_return_val_if_fail (source_tag == e_cal_client_connect, NULL);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return E_CLIENT (g_async_result_get_source_object (result));
+}
+
+/**
  * e_cal_client_new:
  * @source: An #ESource pointer
  * @source_type: source type of the calendar
@@ -1515,6 +1733,11 @@ e_cal_client_init (ECalClient *client)
  * Returns: a new but unopened #ECalClient.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: It covertly makes synchronous D-Bus calls, with no
+ *                  way to cancel.  Use e_cal_client_connect() instead,
+ *                  which combines e_cal_client_new() and e_client_open()
+ *                  into one step.
  **/
 ECalClient *
 e_cal_client_new (ESource *source,
@@ -1529,7 +1752,8 @@ e_cal_client_new (ESource *source,
 
 	return g_initable_new (
 		E_TYPE_CAL_CLIENT, NULL, error,
-		"source", source, "source-type", source_type, NULL);
+		"source", source,
+		"source-type", source_type, NULL);
 }
 
 /**
