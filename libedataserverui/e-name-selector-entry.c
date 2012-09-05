@@ -2169,6 +2169,41 @@ ensure_type_ahead_complete_on_timeout (ENameSelectorEntry *name_selector_entry)
 		type_ahead_complete_on_timeout_cb, name_selector_entry);
 }
 
+static gboolean
+is_source_enabled_with_parents (ESourceRegistry *registry,
+				ESource *source)
+{
+	ESource *parent;
+	const gchar *parent_uid;
+
+	g_return_val_if_fail (registry != NULL, FALSE);
+	g_return_val_if_fail (source != NULL, FALSE);
+
+	if (!e_source_get_enabled (source))
+		return FALSE;
+
+	parent = g_object_ref (source);
+	while (parent_uid = e_source_get_parent (parent), parent_uid) {
+		ESource *next = e_source_registry_ref_source (registry, parent_uid);
+
+		if (!next)
+			break;
+
+		g_object_unref (parent);
+
+		if (!e_source_get_enabled (next)) {
+			g_object_unref (next);
+			return FALSE;
+		}
+
+		parent = next;
+	}
+
+	g_object_unref (parent);
+
+	return TRUE;
+}
+
 static void
 setup_contact_store (ENameSelectorEntry *name_selector_entry)
 {
@@ -2275,7 +2310,7 @@ setup_default_contact_store (ENameSelectorEntry *name_selector_entry)
 		extension = e_source_get_extension (source, extension_name);
 
 		/* Skip disabled address books. */
-		if (!e_source_get_enabled (source))
+		if (!is_source_enabled_with_parents (registry, source))
 			continue;
 
 		/* Skip non-completion address books. */
