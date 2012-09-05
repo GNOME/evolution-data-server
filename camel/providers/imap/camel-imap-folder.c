@@ -86,6 +86,7 @@ static GPtrArray * imap_get_uncached_uids (CamelFolder *folder, GPtrArray * uids
 static gchar * imap_get_filename (CamelFolder *folder, const gchar *uid, GError **error);
 
 /* message manipulation */
+static CamelMimeMessage *imap_get_message_cached (CamelFolder *folder, const gchar *message_uid, GCancellable *cancellable);
 static CamelMimeMessage *imap_get_message_sync (CamelFolder *folder, const gchar *uid, GCancellable *cancellable,
 					   GError **error);
 static gboolean imap_synchronize_message_sync (CamelFolder *folder, const gchar *uid, GCancellable *cancellable,
@@ -338,6 +339,7 @@ camel_imap_folder_class_init (CamelImapFolderClass *class)
 	folder_class->get_filename = imap_get_filename;
 	folder_class->append_message_sync = imap_append_online;
 	folder_class->expunge_sync = imap_expunge_sync;
+	folder_class->get_message_cached = imap_get_message_cached;
 	folder_class->get_message_sync = imap_get_message_sync;
 	folder_class->get_quota_info_sync = imap_get_quota_info_sync;
 	folder_class->refresh_info_sync = imap_refresh_info_sync;
@@ -3538,6 +3540,22 @@ imap_folder_summary_uid_or_error (CamelFolderSummary *summary,
 	return mi;
 }
 
+CamelMimeMessage *
+imap_get_message_cached (CamelFolder *folder,
+			 const gchar *message_uid,
+			 GCancellable *cancellable)
+{
+	CamelImapFolder *imap_folder = CAMEL_IMAP_FOLDER (folder);
+	CamelMimeMessage *msg = NULL;
+	CamelStream *stream;
+
+	stream = camel_imap_folder_fetch_data (imap_folder, message_uid, "", TRUE, cancellable, NULL);
+	if (stream != NULL)
+		msg = get_message_simple (imap_folder, message_uid, stream, cancellable, NULL);
+
+	return msg;
+}
+
 static CamelMimeMessage *
 imap_get_message_sync (CamelFolder *folder,
                        const gchar *uid,
@@ -3549,15 +3567,11 @@ imap_get_message_sync (CamelFolder *folder,
 	CamelImapStore *store;
 	CamelImapMessageInfo *mi;
 	CamelMimeMessage *msg = NULL;
-	CamelStream *stream = NULL;
 	gint retry;
 	GError *local_error = NULL;
 
 	parent_store = camel_folder_get_parent_store (folder);
 	store = CAMEL_IMAP_STORE (parent_store);
-
-	if (!camel_imap_store_connected (store, error))
-		return NULL;
 
 	mi = imap_folder_summary_uid_or_error (folder->summary, uid, error);
 	if (!mi)
@@ -3566,12 +3580,12 @@ imap_get_message_sync (CamelFolder *folder,
 	/* If its cached in full, just get it as is, this is only a shortcut,
 	 * since we get stuff from the cache anyway.  It affects a busted
 	 * connection though. */
-	stream = camel_imap_folder_fetch_data (imap_folder, uid, "", TRUE, cancellable, NULL);
-	if (stream != NULL) {
-		msg = get_message_simple (imap_folder, uid, stream, cancellable, NULL);
-		if (msg != NULL)
-			goto done;
-	}
+	msg = imap_get_message_cached (folder, uid, cancellable);
+	if (msg != NULL)
+		goto done;
+
+	if (!camel_imap_store_connected (store, error))
+		return NULL;
 
 	/* All this mess is so we silently retry a fetch if we fail with
 	 * service_unavailable, without an (equivalent) mess of gotos */
@@ -4472,7 +4486,7 @@ camel_imap_folder_fetch_data (CamelImapFolder *imap_folder,
 	parent_store = camel_folder_get_parent_store (folder);
 	store = CAMEL_IMAP_STORE (parent_store);
 
-	if (!camel_imap_store_connected (store, error))
+	if (!cache_only && !camel_imap_store_connected (store, error))
 		return NULL;
 
 	/* EXPUNGE responses have to modify the cache, which means
