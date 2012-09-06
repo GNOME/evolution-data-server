@@ -2777,6 +2777,9 @@ get_folders_sync (CamelImapStore *imap_store,
 	CamelImapStoreNamespace *ns;
 	gboolean success = TRUE, first_namespace = TRUE;
 
+	if (g_cancellable_is_cancelled (cancellable))
+		return FALSE;
+
 	/* We do a LIST followed by LSUB, and merge the results.  LSUB may not be a strict
 	 * subset of LIST for some servers, so we can't use either or separately */
 	present = g_hash_table_new (folder_hash, folder_eq);
@@ -2784,7 +2787,9 @@ get_folders_sync (CamelImapStore *imap_store,
 	if (!pattern)
 		pattern = "";
 
-	for (ns = imap_store->summary->namespace; ns; ns = ns->next, first_namespace = FALSE) {
+	for (ns = imap_store->summary->namespace;
+	     ns && !g_cancellable_is_cancelled (cancellable);
+	     ns = ns->next, first_namespace = FALSE) {
 		for (k = 0; k < 2; k++) {
 			gchar *tmp = NULL;
 
@@ -2849,6 +2854,9 @@ get_folders_sync (CamelImapStore *imap_store,
 				break;
 		}
 	}
+
+	if (g_cancellable_is_cancelled (cancellable))
+		goto fail;
 
 	/* Sync summary to match */
 
@@ -2993,7 +3001,8 @@ refresh_refresh (CamelSession *session,
 	/* look in all namespaces */
 	get_folders_sync (store, NULL, cancellable, error);
 
-	camel_store_summary_save (CAMEL_STORE_SUMMARY (store->summary));
+	if (!g_cancellable_is_cancelled (cancellable))
+		camel_store_summary_save (CAMEL_STORE_SUMMARY (store->summary));
 
 done:
 	camel_operation_pop_message (cancellable);
