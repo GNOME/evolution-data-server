@@ -124,12 +124,14 @@ camel_imapx_store_summary_full_name (CamelIMAPXStoreSummary *s,
 {
 	gint count, i;
 	CamelIMAPXStoreInfo *info;
+	gboolean is_inbox = g_ascii_strcasecmp (full_name, "INBOX") == 0;
 
 	count = camel_store_summary_count ((CamelStoreSummary *) s);
 	for (i = 0; i < count; i++) {
 		info = (CamelIMAPXStoreInfo *) camel_store_summary_index ((CamelStoreSummary *) s, i);
 		if (info) {
-			if (strcmp (info->full_name, full_name) == 0)
+			if (strcmp (info->full_name, full_name) == 0 ||
+			    (is_inbox && g_ascii_strcasecmp (info->full_name, full_name) == 0))
 				return info;
 			camel_store_summary_info_free ((CamelStoreSummary *) s, (CamelStoreInfo *) info);
 		}

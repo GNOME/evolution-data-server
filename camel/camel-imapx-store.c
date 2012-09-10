@@ -323,6 +323,8 @@ get_folder_offline (CamelStore *store,
 	user_cache_dir = camel_service_get_user_cache_dir (service);
 
 	si = camel_store_summary_path ((CamelStoreSummary *) imapx_store->summary, folder_name);
+	if (!si && g_ascii_strcasecmp (folder_name, "INBOX") == 0)
+		si = (CamelStoreInfo *) camel_imapx_store_summary_full_name (imapx_store->summary, folder_name);
 	if (si) {
 		gchar *folder_dir, *storage_path;
 
@@ -562,6 +564,9 @@ imapx_subscribe_folder (CamelStore *store,
 	if (!server)
 		return FALSE;
 
+	if (folder_name && *folder_name == '/')
+		folder_name++;
+
 	success = camel_imapx_server_manage_subscription (
 		server, folder_name, TRUE, cancellable, error);
 	g_object_unref (server);
@@ -589,6 +594,9 @@ imapx_unsubscribe_folder (CamelStore *store,
 	server = camel_imapx_store_get_server (istore, NULL, cancellable, error);
 	if (!server)
 		return FALSE;
+
+	if (folder_name && *folder_name == '/')
+		folder_name++;
 
 	success = camel_imapx_server_manage_subscription (
 		server, folder_name, FALSE, cancellable, error);
@@ -1707,6 +1715,9 @@ imapx_store_folder_is_subscribed (CamelSubscribable *subscribable,
 	CamelIMAPXStore *istore = CAMEL_IMAPX_STORE (subscribable);
 	CamelStoreInfo *si;
 	gint is_subscribed = FALSE;
+
+	if (folder_name && *folder_name == '/')
+		folder_name++;
 
 	si = camel_store_summary_path ((CamelStoreSummary *) istore->summary, folder_name);
 	if (si) {
