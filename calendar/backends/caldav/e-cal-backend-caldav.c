@@ -2542,6 +2542,24 @@ caldav_get_backend_property (ECalBackendSync *backend,
 	return processed;
 }
 
+static void
+proxy_settings_changed (EProxy *proxy,
+                        gpointer user_data)
+{
+	SoupURI *proxy_uri = NULL;
+	ECalBackendCalDAVPrivate *priv = (ECalBackendCalDAVPrivate *) user_data;
+
+	if (!priv || !priv->uri || !priv->session)
+		return;
+
+	/* use proxy if necessary */
+	if (e_proxy_require_proxy_for_uri (proxy, priv->uri)) {
+		proxy_uri = e_proxy_peek_uri_for (proxy, priv->uri);
+	}
+
+	g_object_set (priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
+}
+
 static gboolean
 initialize_backend (ECalBackendCalDAV *cbdav,
                     GError **perror)
@@ -2602,11 +2620,15 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 		g_free (path);
 	}
 
+	g_signal_handlers_block_by_func (cbdav->priv->proxy, proxy_settings_changed, cbdav);
+
 	g_free (cbdav->priv->uri);
 	cbdav->priv->uri = soup_uri_to_string (soup_uri, FALSE);
 
 	soup_uri_free (soup_uri);
 
+	if (!cbdav->priv->uri)
+		g_signal_handlers_unblock_by_func (cbdav->priv->proxy, proxy_settings_changed, cbdav);
 	g_return_val_if_fail (cbdav->priv->uri != NULL, FALSE);
 
 	/* remove trailing slashes... */
@@ -2629,6 +2651,8 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 
 		g_free (tmp);
 	}
+
+	g_signal_handlers_unblock_by_func (cbdav->priv->proxy, proxy_settings_changed, cbdav);
 
 	if (cbdav->priv->store == NULL) {
 		/* remove the old cache while migrating to ECalBackendStore */
@@ -2668,24 +2692,6 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	}
 
 	return TRUE;
-}
-
-static void
-proxy_settings_changed (EProxy *proxy,
-                        gpointer user_data)
-{
-	SoupURI *proxy_uri = NULL;
-	ECalBackendCalDAVPrivate *priv = (ECalBackendCalDAVPrivate *) user_data;
-
-	if (!priv || !priv->uri || !priv->session)
-		return;
-
-	/* use proxy if necessary */
-	if (e_proxy_require_proxy_for_uri (proxy, priv->uri)) {
-		proxy_uri = e_proxy_peek_uri_for (proxy, priv->uri);
-	}
-
-	g_object_set (priv->session, SOUP_SESSION_PROXY_URI, proxy_uri, NULL);
 }
 
 static gboolean
