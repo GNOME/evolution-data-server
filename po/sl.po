@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-09-09 00:11+0000\n"
-"PO-Revision-Date: 2012-09-10 15:44+0100\n"
+"PO-Revision-Date: 2012-09-11 18:49+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -160,7 +160,7 @@ msgstr "Z uporabo elektronskega naslova"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:969
 msgid "Failed to bind using either v3 or v2 binds"
-msgstr ""
+msgstr "Povezovanje je spodletelo z vezmi različice v2 in v3"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1090
 msgid "Reconnecting to LDAP server..."
@@ -188,7 +188,7 @@ msgstr "Odstranjujem stik iz strežnika LDAP ..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2405
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
-msgstr ""
+msgstr "%s: vrnjena je prazna vrednost (NULL) predmeta ldap_first_entry"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2265
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2456
@@ -204,7 +204,7 @@ msgstr "Spreminjam stik na strežniku LDAP ..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2886
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
-msgstr ""
+msgstr "%s: vrnjena je neupravljana vrsta iskanja %d"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4736
 msgid "Receiving LDAP search results..."
@@ -264,9 +264,9 @@ msgid "No response body in webdav PROPFIND result"
 msgstr ""
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:980
-#, fuzzy, c-format
+#, c-format
 msgid "Loading Contacts (%d%%)"
-msgstr "Stiki Evolution "
+msgstr "Nalaganje stikov (%d%%)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1287
 #, fuzzy
@@ -320,9 +320,8 @@ msgstr "Uredi pod"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:128
-#, fuzzy
 msgid "Book UID"
-msgstr "Največji UID:"
+msgstr "UID knjige"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -1179,14 +1178,13 @@ msgstr ""
 "Sporočilo napake: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2639
-#, fuzzy
 msgid "Cannot create local store"
-msgstr "Ni mogoče ustvariti začasne datoteke"
+msgstr "Ni mogoče ustvariti krajevne zaloge"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2648
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot create local cache folder '%s'"
-msgstr "Ni mogoče najti mape v krajevnem predpomnilniku"
+msgstr "Ni mogoče ustvariti krajevne mape predpomnilnika '%s'"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2659
 #, fuzzy
@@ -1241,9 +1239,9 @@ msgid "Cannot save calendar data"
 msgstr "Ni mogoče shraniti podatkov koledarja"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:482
-#, fuzzy, c-format
+#, c-format
 msgid "Malformed URI: %s"
-msgstr "Vnesite URI"
+msgstr "Nepravilno oblikovan naslov URI: %s"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:543
 #, c-format
@@ -1807,9 +1805,8 @@ msgid "Unable to create cache path"
 msgstr "Ni mogoče ustvariti poti predpomnilnika"
 
 #: ../camel/camel-data-cache.c:440
-#, fuzzy
 msgid "Empty cache file"
-msgstr "Nova prazna datoteka"
+msgstr "Izprazni datoteko predpomnilnika"
 
 #: ../camel/camel-data-cache.c:509
 #, c-format
@@ -2019,7 +2016,7 @@ msgid "Quota information not supported for folder '%s'"
 msgstr "Podatki količinske omejitve za mapo '%s' niso podprti."
 
 #: ../camel/camel-folder.c:3372
-#, fuzzy, c-format
+#, c-format
 msgid "Expunging folder '%s'"
 msgstr "Uničevanje mape '%s'"
 
@@ -2034,7 +2031,7 @@ msgid "Retrieving quota information for '%s'"
 msgstr "Pridobivanje podatkov količinske omejitve porabe za '%s'"
 
 #: ../camel/camel-folder.c:3987
-#, fuzzy, c-format
+#, c-format
 msgid "Refreshing folder '%s'"
 msgstr "Osveževanje mape '%s'"
 
@@ -2316,14 +2313,12 @@ msgid "Error fetching message"
 msgstr "Napaka med pridobivanjem sporočila"
 
 #: ../camel/camel-imapx-server.c:3903
-#, fuzzy
 msgid "Failed to copy the tmp file"
-msgstr "Napaka med kopiranjem piškotkov iz Mozille"
+msgstr "Kopiranje datoteke tmp je spodletelo"
 
 #: ../camel/camel-imapx-server.c:3917
-#, fuzzy
 msgid "Failed to close the tmp stream"
-msgstr "Ustvarjanje izhodnega pretoka je spodletelo"
+msgstr "Zapiranje pretoka tmp je spodletelo"
 
 #: ../camel/camel-imapx-server.c:4015
 msgid "Error copying messages"
@@ -3184,14 +3179,14 @@ msgid "Could not connect with command \"%s\": %s"
 msgstr "Ni se mogoče povezati z ukazom \"%s\": %s"
 
 #: ../camel/camel-subscribable.c:386
-#, fuzzy, c-format
+#, c-format
 msgid "Subscribing to folder '%s'"
-msgstr "Napaka naročanja na mapo"
+msgstr "Naročanje na mapo '%s'"
 
 #: ../camel/camel-subscribable.c:518
-#, fuzzy, c-format
+#, c-format
 msgid "Unsubscribing from folder '%s'"
-msgstr "Preklicevanje naročnine na mapo '%s'"
+msgstr "Preklic naročnine na mapo '%s'"
 
 #: ../camel/camel-tcp-stream-raw.c:310
 #, c-format
@@ -3367,9 +3362,9 @@ msgid "Could not parse URL '%s'"
 msgstr "Ni mogoče razčleniti naslova URL '%s'"
 
 #: ../camel/camel-vee-folder.c:494
-#, fuzzy, c-format
+#, c-format
 msgid "Updating folder '%s'"
-msgstr "Posodabljanje mape %s"
+msgstr "Posodabljanje mape '%s'"
 
 #: ../camel/camel-vee-folder.c:855
 #: ../camel/camel-vee-folder.c:965
@@ -4839,39 +4834,32 @@ msgid "QUIT command failed: "
 msgstr "Ukaz QUIT je spodletel:"
 
 #: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-#, fuzzy
 msgid "Contact UID of a user"
-msgstr "Ni vrednosti UID stika"
+msgstr "Vrednost UID stika"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
-#, fuzzy
 msgid "Birthday and anniversary reminder"
 msgstr "Opomnik rojstnih dni in obletnic"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
-#, fuzzy
 msgid "Whether to set a reminder for birthdays and anniversaries"
-msgstr "Ali naj se nastavi  opomnik za rojstne dneve in obletnice."
+msgstr "Ali naj se nastavi opomnik za rojstne dneve in obletnice."
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
-#, fuzzy
 msgid "Birthday and anniversary reminder value"
 msgstr "Vrednost opomnika rojstnih dni in obletnic"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
-#, fuzzy
 msgid "Number of units for determining a birthday or anniversary reminder"
 msgstr "Število enot za določanje opomnika za rojstni dan ali obletnico."
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
-#, fuzzy
 msgid "Birthday and anniversary reminder units"
 msgstr "Enote opomnika rojstnih dni in obletnic"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
-#, fuzzy
 msgid "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or \"days\""
-msgstr "Enote opomnika za rojstni dan ali obletnico: \"minute\", \"ure\" ali \"dnevi\"."
+msgstr "Enote opomnika za rojstni dan ali obletnico so \"minute\", \"ure\" ali \"dnevi\"."
 
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
