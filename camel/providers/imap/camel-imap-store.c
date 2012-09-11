@@ -475,8 +475,8 @@ connect_to_server (CamelService *service,
 exception:
 
 	if (clean_quit && store->connected) {
-		/* try to disconnect cleanly */
-		response = camel_imap_command (store, NULL, cancellable, error, "LOGOUT");
+		/* try to disconnect cleanly; error is already set here */
+		response = camel_imap_command (store, NULL, cancellable, NULL, "LOGOUT");
 		if (response)
 			camel_imap_response_free_without_processing (store, response);
 	}
@@ -3302,6 +3302,7 @@ camel_imap_store_readline (CamelImapStore *store,
 	gchar linebuf[1024] = {0};
 	GByteArray *ba;
 	gssize nread;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAP_STORE (store), -1);
 	g_return_val_if_fail (dest, -1);
@@ -3319,21 +3320,23 @@ camel_imap_store_readline (CamelImapStore *store,
 	stream = CAMEL_STREAM_BUFFER (store->istream);
 
 	ba = g_byte_array_new ();
-	while ((nread = camel_stream_buffer_gets (stream, linebuf, sizeof (linebuf), cancellable, error)) > 0) {
+	while ((nread = camel_stream_buffer_gets (stream, linebuf, sizeof (linebuf), cancellable, &local_error)) > 0) {
 		g_byte_array_append (ba, (const guint8 *) linebuf, nread);
 		if (linebuf[nread - 1] == '\n')
 			break;
 	}
 
-	if (nread <= 0) {
-		if (nread == 0)
+	if (nread <= 0 || local_error) {
+		if (!local_error)
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_UNAVAILABLE,
 				_("Server unexpectedly disconnected"));
-		else
+		else {
+			g_propagate_error (error, local_error);
 			g_prefix_error (
 				error, _("Server unexpectedly disconnected: "));
+		}
 
 		/* do not pass cancellable, the connection is gone or
 		 * the cancellable cancelled, thus there will be no I/O */

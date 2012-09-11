@@ -829,6 +829,7 @@ tcp_stream_ssl_connect (CamelTcpStream *stream,
 
 		if (!ssl_fd) {
 			d (g_print ("  could not enable SSL\n"));
+			return -1;
 		} else {
 			d (g_print ("  re-handshaking SSL\n"));
 

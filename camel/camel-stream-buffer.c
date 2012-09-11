@@ -499,6 +499,7 @@ camel_stream_buffer_gets (CamelStreamBuffer *sbf,
 {
 	register gchar *outptr, *inptr, *inend, c, *outend;
 	gint bytes_read;
+	GError *local_error = NULL;
 
 	outptr = buf;
 	inptr = (gchar *) sbf->priv->ptr;
@@ -520,11 +521,13 @@ camel_stream_buffer_gets (CamelStreamBuffer *sbf,
 
 		bytes_read = camel_stream_read (
 			sbf->priv->stream, (gchar *) sbf->priv->buf,
-			sbf->priv->size, cancellable, error);
+			sbf->priv->size, cancellable, &local_error);
 		if (bytes_read == -1) {
-			if (buf == outptr)
+			if (buf == outptr) {
+				if (local_error)
+					g_propagate_error (error, local_error);
 				return -1;
-			else
+			} else
 				bytes_read = 0;
 		}
 		sbf->priv->ptr = sbf->priv->buf;
@@ -535,6 +538,8 @@ camel_stream_buffer_gets (CamelStreamBuffer *sbf,
 
 	sbf->priv->ptr = (guchar *) inptr;
 	*outptr = 0;
+
+	g_clear_error (&local_error);
 
 	return (gint)(outptr - buf);
 }
@@ -559,16 +564,19 @@ camel_stream_buffer_read_line (CamelStreamBuffer *sbf,
 {
 	guchar *p;
 	gint nread;
+	GError *local_error = NULL;
 
 	p = sbf->priv->linebuf;
 
 	while (1) {
 		nread = camel_stream_buffer_gets (
 			sbf, (gchar *) p, sbf->priv->linesize -
-			(p - sbf->priv->linebuf), cancellable, error);
+			(p - sbf->priv->linebuf), cancellable, &local_error);
 		if (nread <=0) {
 			if (p > sbf->priv->linebuf)
 				break;
+			if (local_error)
+				g_propagate_error (error, local_error);
 			return NULL;
 		}
 
@@ -587,6 +595,8 @@ camel_stream_buffer_read_line (CamelStreamBuffer *sbf,
 	if (p > sbf->priv->linebuf && p[-1] == '\r')
 		p--;
 	p[0] = 0;
+
+	g_clear_error (&local_error);
 
 	return g_strdup ((gchar *) sbf->priv->linebuf);
 }
