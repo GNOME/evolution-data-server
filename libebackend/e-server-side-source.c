@@ -48,7 +48,6 @@ struct _EServerSideSourcePrivate {
 
 	GNode node;
 	GFile *file;
-	gchar *uid;
 
 	/* For comparison. */
 	gchar *file_contents;
@@ -72,7 +71,6 @@ enum {
 	PROP_REMOTE_DELETABLE,
 	PROP_REMOVABLE,
 	PROP_SERVER,
-	PROP_UID,
 	PROP_WRITABLE,
 	PROP_WRITE_DIRECTORY
 };
@@ -437,19 +435,6 @@ server_side_source_set_server (EServerSideSource *source,
 }
 
 static void
-server_side_source_set_uid (EServerSideSource *source,
-                            const gchar *uid)
-{
-	g_return_if_fail (source->priv->uid == NULL);
-
-	/* It's okay for this to be NULL, in fact if we're given a
-	 * GFile the UID is derived from its basename anyway.  This
-	 * is just for memory-only sources in a collection backend,
-	 * which don't have a GFile. */
-	source->priv->uid = g_strdup (uid);
-}
-
-static void
 server_side_source_set_property (GObject *object,
                                  guint property_id,
                                  const GValue *value,
@@ -490,12 +475,6 @@ server_side_source_set_property (GObject *object,
 			server_side_source_set_server (
 				E_SERVER_SIDE_SOURCE (object),
 				g_value_get_object (value));
-			return;
-
-		case PROP_UID:
-			server_side_source_set_uid (
-				E_SERVER_SIDE_SOURCE (object),
-				g_value_get_string (value));
 			return;
 
 		case PROP_WRITABLE:
@@ -570,13 +549,6 @@ server_side_source_get_property (GObject *object,
 				E_SERVER_SIDE_SOURCE (object)));
 			return;
 
-		case PROP_UID:
-			g_value_take_string (
-				value,
-				e_source_dup_uid (
-				E_SOURCE (object)));
-			return;
-
 		case PROP_WRITABLE:
 			g_value_set_boolean (
 				value,
@@ -626,7 +598,6 @@ server_side_source_finalize (GObject *object)
 
 	g_node_unlink (&priv->node);
 
-	g_free (priv->uid);
 	g_free (priv->file_contents);
 	g_free (priv->write_directory);
 
@@ -1020,25 +991,17 @@ server_side_source_initable_init (GInitable *initable,
 	EServerSideSource *source;
 	GDBusObject *dbus_object;
 	EDBusSource *dbus_source;
-	GFile *file;
+	gchar *uid;
 
 	source = E_SERVER_SIDE_SOURCE (initable);
-	file = e_server_side_source_get_file (source);
-
-	if (file != NULL) {
-		g_warn_if_fail (source->priv->uid == NULL);
-		source->priv->uid =
-			e_server_side_source_uid_from_file (file, error);
-		if (source->priv->uid == NULL)
-			return FALSE;
-	}
-
-	if (source->priv->uid == NULL)
-		source->priv->uid = e_uid_new ();
 
 	dbus_source = e_dbus_source_skeleton_new ();
 
-	e_dbus_source_set_uid (dbus_source, source->priv->uid);
+	uid = e_source_dup_uid (E_SOURCE (source));
+	if (uid == NULL)
+		uid = e_uid_new ();
+	e_dbus_source_set_uid (dbus_source, uid);
+	g_free (uid);
 
 	dbus_object = e_source_ref_dbus_object (E_SOURCE (source));
 	e_dbus_object_skeleton_set_source (
@@ -1168,20 +1131,6 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 			"Server",
 			"The server to which the data source belongs",
 			E_TYPE_SOURCE_REGISTRY_SERVER,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT_ONLY |
-			G_PARAM_STATIC_STRINGS));
-
-	/* This overrides the "uid" property in
-	 * ESourceClass with a construct-only version. */
-	g_object_class_install_property (
-		object_class,
-		PROP_UID,
-		g_param_spec_string (
-			"uid",
-			"UID",
-			"The unique identity of the data source",
-			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
@@ -1363,9 +1312,17 @@ e_server_side_source_new (ESourceRegistryServer *server,
 {
 	EDBusObjectSkeleton *dbus_object;
 	ESource *source;
+	gchar *uid = NULL;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), NULL);
 	g_return_val_if_fail (file == NULL || G_IS_FILE (file), NULL);
+
+	/* Extract a UID from the GFile, if we were given one. */
+	if (file != NULL) {
+		uid = e_server_side_source_uid_from_file (file, error);
+		if (uid == NULL)
+			return NULL;
+	}
 
 	/* XXX This is an awkward way of initializing the "dbus-object"
 	 *     property, but e_source_ref_dbus_object() needs to work. */
@@ -1374,7 +1331,8 @@ e_server_side_source_new (ESourceRegistryServer *server,
 	source = g_initable_new (
 		E_TYPE_SERVER_SIDE_SOURCE, NULL, error,
 		"dbus-object", dbus_object,
-		"file", file, "server", server, NULL);
+		"file", file, "server", server,
+		"uid", uid, NULL);
 
 	g_object_unref (dbus_object);
 

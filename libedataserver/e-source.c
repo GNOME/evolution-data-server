@@ -712,6 +712,19 @@ source_set_main_context (ESource *source,
 }
 
 static void
+source_set_uid (ESource *source,
+                const gchar *uid)
+{
+	/* The "uid" argument will usually be NULL unless called
+	 * from e_source_new_with_uid().  If NULL, we'll pick up
+	 * a UID in source_initable_init(). */
+
+	g_return_if_fail (source->priv->uid == NULL);
+
+	source->priv->uid = g_strdup (uid);
+}
+
+static void
 source_set_property (GObject *object,
                      guint property_id,
                      const GValue *value,
@@ -744,6 +757,12 @@ source_set_property (GObject *object,
 
 		case PROP_PARENT:
 			e_source_set_parent (
+				E_SOURCE (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_UID:
+			source_set_uid (
 				E_SOURCE (object),
 				g_value_get_string (value));
 			return;
@@ -1302,7 +1321,13 @@ source_initable_init (GInitable *initable,
 			e_dbus_source_call_allow_auth_prompt_sync (
 				dbus_source, cancellable, NULL);
 
-		/* The UID never changes, so we can cache a copy. */
+		/* The UID never changes, so we can cache a copy.
+		 *
+		 * XXX Note, EServerSideSource may have already set this
+		 *     by way of the "uid" construct-only property, hence
+		 *     the g_free() call.  Not a problem, we'll just free
+		 *     our UID string and set it to the same value again. */
+		g_free (source->priv->uid);
 		source->priv->uid = e_dbus_source_dup_uid (dbus_source);
 
 		g_signal_connect (
@@ -1314,8 +1339,9 @@ source_initable_init (GInitable *initable,
 		g_object_unref (dbus_source);
 
 	/* No D-Bus object implies we're configuring a new source,
-	 * so generate a new unique identifier (UID) for it. */
-	} else {
+	 * so generate a new unique identifier (UID) unless one was
+	 * explicitly provided through e_source_new_with_uid(). */
+	} else if (source->priv->uid == NULL) {
 		source->priv->uid = e_uid_new ();
 	}
 
@@ -1465,7 +1491,8 @@ e_source_class_init (ESourceClass *class)
 			"UID",
 			"The unique identity of the data source",
 			NULL,
-			G_PARAM_READABLE |
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -1590,6 +1617,35 @@ e_source_new (GDBusObject *dbus_object,
 		"dbus-object", dbus_object,
 		"main-context", main_context,
 		NULL);
+}
+
+/**
+ * e_source_new_with_uid:
+ * @uid: a new unique identifier string
+ * @main_context: (allow-none): a #GMainContext or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new "scratch" #ESource with a predetermined unique identifier.
+ *
+ * The #ESource::changed signal will be emitted from @main_context if given,
+ * or else from the thread-default #GMainContext at the time this function is
+ * called.
+ *
+ * Returns: a new scratch #ESource, or %NULL on error
+ *
+ * Since: 3.6
+ **/
+ESource *
+e_source_new_with_uid (const gchar *uid,
+                       GMainContext *main_context,
+                       GError **error)
+{
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	return g_initable_new (
+		E_TYPE_SOURCE, NULL, error,
+		"main-context", main_context,
+		"uid", uid, NULL);
 }
 
 /**

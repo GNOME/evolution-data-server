@@ -240,6 +240,7 @@ e_proxy_get_type
 <TITLE>ESource</TITLE>
 ESource
 e_source_new
+e_source_new_with_uid
 e_source_hash
 e_source_equal
 e_source_changed

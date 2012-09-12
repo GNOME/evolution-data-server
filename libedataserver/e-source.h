@@ -132,6 +132,9 @@ GType		e_source_get_type		(void) G_GNUC_CONST;
 ESource *	e_source_new			(GDBusObject *dbus_object,
 						 GMainContext *main_context,
 						 GError **error);
+ESource *	e_source_new_with_uid		(const gchar *uid,
+						 GMainContext *main_context,
+						 GError **error);
 guint		e_source_hash			(ESource *source);
 gboolean	e_source_equal			(ESource *source1,
 						 ESource *source2);
