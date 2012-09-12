@@ -1269,6 +1269,67 @@ typedef enum {
 	MATCH_ENDS_WITH
 } match_type;
 
+static gchar *
+convert_string_value (const gchar *value,
+                      match_type match)
+{
+	GString *str;
+	size_t len;
+	gchar c;
+	gboolean escape_modifier_needed = FALSE;
+	const gchar *escape_modifier = " ESCAPE '^'";
+
+	g_return_val_if_fail (value != NULL, NULL);
+
+	/* Just assume each character must be escaped. The result of this function
+	 * is discarded shortly after calling this function. Therefore it's
+	 * acceptable to possibly allocate twice the memory needed.
+	 */
+	len = strlen (value);
+	str = g_string_sized_new (2 * len + 4 + strlen (escape_modifier) - 1);
+	g_string_append_c (str, '\'');
+
+	switch (match) {
+	case MATCH_CONTAINS:
+	case MATCH_ENDS_WITH:
+		g_string_append_c (str, '%');
+		break;
+
+	case MATCH_BEGINS_WITH:
+	case MATCH_IS:
+		break;
+	}
+
+	while ((c = *value++)) {
+		if (c == '\'') {
+			g_string_append_c (str, '\'');
+		} else if (c == '%' || c == '^') {
+			g_string_append_c (str, '^');
+			escape_modifier_needed = TRUE;
+		}
+
+		g_string_append_c (str, c);
+	}
+
+	switch (match) {
+	case MATCH_CONTAINS:
+	case MATCH_BEGINS_WITH:
+		g_string_append_c (str, '%');
+		break;
+
+	case MATCH_ENDS_WITH:
+	case MATCH_IS:
+		break;
+	}
+
+	g_string_append_c (str, '\'');
+
+	if (escape_modifier_needed)
+		g_string_append (str, escape_modifier);
+
+	return g_string_free (str, FALSE);
+}
+
 static ESExpResult *
 convert_match_exp (struct _ESExp *f,
                    gint argc,
@@ -1287,17 +1348,7 @@ convert_match_exp (struct _ESExp *f,
 		field = argv[0]->value.string;
 
 		if (argv[1]->type == ESEXP_RES_STRING && argv[1]->value.string[0] != 0) {
-			gchar *value = NULL;
-
-			if (match == MATCH_CONTAINS) {
-				value = g_strdup_printf ("'%%%s%%'", argv[1]->value.string);
-			} else if (match == MATCH_ENDS_WITH) {
-				value = g_strdup_printf ("'%%%s'", argv[1]->value.string);
-			} else if (match == MATCH_BEGINS_WITH) {
-				value = g_strdup_printf ("'%s%%'", argv[1]->value.string);
-			} else if (match == MATCH_IS) {
-				value = g_strdup_printf ("'%%%s%%'", argv[1]->value.string);
-			}
+			gchar *value = convert_string_value (argv[1]->value.string, match);
 
 			if (!strcmp (field, "full_name")) {
 				gchar *full, *sur, *given, *nick;
