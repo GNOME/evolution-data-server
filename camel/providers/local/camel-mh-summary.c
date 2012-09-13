@@ -254,7 +254,13 @@ mh_summary_check (CamelLocalSummary *cls,
 			if (info == NULL || (cls->index && (!camel_index_has_name (cls->index, d->d_name)))) {
 				/* need to add this file to the summary */
 				if (info != NULL) {
-					g_hash_table_remove (left, camel_message_info_uid (info));
+					CamelMessageInfo *old = g_hash_table_lookup (left, camel_message_info_uid (info));
+
+					if (old) {
+						g_hash_table_remove (left, camel_message_info_uid (info));
+						camel_message_info_free (old);
+					}
+
 					camel_folder_summary_remove ((CamelFolderSummary *) cls, info);
 					camel_message_info_free (info);
 				}
@@ -264,8 +270,8 @@ mh_summary_check (CamelLocalSummary *cls,
 				CamelMessageInfo *old = g_hash_table_lookup (left, uid);
 
 				if (old) {
-					camel_message_info_free (old);
 					g_hash_table_remove (left, uid);
+					camel_message_info_free (old);
 				}
 				camel_message_info_free (info);
 			}
@@ -330,6 +336,8 @@ mh_summary_sync (CamelLocalSummary *cls,
 		}
 		camel_message_info_free (info);
 	}
+
+	camel_folder_summary_free_array (known_uids);
 
 	/* Chain up to parent's sync() method. */
 	local_summary_class = CAMEL_LOCAL_SUMMARY_CLASS (camel_mh_summary_parent_class);
