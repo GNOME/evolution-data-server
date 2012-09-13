@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-08-28 13:07+0000\n"
-"PO-Revision-Date: 2012-09-01 13:16+0700\n"
+"PO-Revision-Date: 2012-09-13 20:34+0700\n"
 "Last-Translator: Nguyễn Thái Ngọc Duy <pclouds@gmail.com>\n"
 "Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
 "Language: vi\n"
@@ -1638,9 +1638,9 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"« %s » cần đến đối số thứ nhất là « any » (bất kỳ), « summary » (tóm tắt), « "
-"description » (mô tả), « location » (vị trí), « attendee » (người tham dự), "
-"« organizer » (người tổ chức) hoặc « classification » (phân loại)."
+"\"%s\" cần đến đối số thứ nhất là \"any\" (bất kỳ), \"summary\" (tóm tắt), \""
+"description\" (mô tả), \"location\" (vị trí), \"attendee\" (người tham dự), "
+"\"organizer\" (người tổ chức) hoặc \"classification\" (phân loại)."
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1084
 #, c-format
@@ -2096,7 +2096,7 @@ msgid ""
 "SmartCard: \"%s\""
 msgstr ""
 "Bạn cần một mã PIN để mở khóa cho\n"
-"thẻ thông minh của bạn: « %s »"
+"thẻ thông minh của bạn: \"%s\""
 
 #: ../camel/camel-gpg-context.c:834
 #, c-format
@@ -2110,7 +2110,7 @@ msgstr ""
 #: ../camel/camel-gpg-context.c:840
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
-msgstr "Nhận yêu cầu không mong đợi từ GnuPG cho « %s »"
+msgstr "Nhận yêu cầu không mong đợi từ GnuPG cho \"%s\""
 
 #: ../camel/camel-gpg-context.c:850
 msgid ""
@@ -2435,7 +2435,7 @@ msgstr "Không có thư mục như vậy: %s"
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
-msgstr "Tên thư mục « %s » không hợp lệ vì chứa ký tự « %c »."
+msgstr "Tên thư mục \"%s\" không hợp lệ vì chứa ký tự \"%c\"."
 
 #: ../camel/camel-imapx-store.c:1415
 #: ../camel/providers/imap/camel-imap-store.c:2530
@@ -2717,7 +2717,7 @@ msgstr "Lệnh thách thức máy phục vụ không hợp lệ.\n"
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
-"Lệnh thách thức máy phục vụ chứa hiệu bài « Quality of Protection » (mức bảo "
+"Lệnh thách thức máy phục vụ chứa hiệu bài \"Quality of Protection\" (mức bảo "
 "vệ) không hợp lệ."
 
 #: ../camel/camel-sasl-digest-md5.c:905
@@ -3611,7 +3611,7 @@ msgstr "Để đọc và lưu thư trên máy phục vụ IMAP."
 #: ../camel/providers/local/camel-mh-store.c:564
 #, c-format
 msgid "Cannot create folder '%s': folder exists."
-msgstr "Không thể tạo thư mục « %s »: thư mục đã có."
+msgstr "Không thể tạo thư mục \"%s\": thư mục đã có."
 
 #: ../camel/providers/imap/camel-imap-store.c:2961
 #, c-format
@@ -3678,7 +3678,7 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:43
 msgid "_Use the '.folders' folder summary file (exmh)"
-msgstr "_Dùng tập tin tóm tắt thư mục « .folders » (exmh)"
+msgstr "_Dùng tập tin tóm tắt thư mục \".folders\" (exmh)"
 
 #: ../camel/providers/local/camel-local-provider.c:50
 msgid "MH-format mail directories"
@@ -3776,13 +3776,13 @@ msgstr "Bộ lưu trữ cục bộ chưa có thư mục Hộp nhận"
 #: ../camel/providers/local/camel-mbox-store.c:748
 #, c-format
 msgid "Could not delete folder index file '%s': %s"
-msgstr "Không thể xoá tập tin chỉ mục thư mục « %s »: %s"
+msgstr "Không thể xoá tập tin chỉ mục thư mục \"%s\": %s"
 
 #: ../camel/providers/local/camel-local-store.c:484
 #: ../camel/providers/local/camel-mbox-store.c:778
 #, c-format
 msgid "Could not delete folder meta file '%s': %s"
-msgstr "Không thể xoá siêu tập tin của thư mục « %s »: %s"
+msgstr "Không thể xoá siêu tập tin của thư mục \"%s\": %s"
 
 #: ../camel/providers/local/camel-local-store.c:596
 #, c-format
@@ -3838,33 +3838,33 @@ msgstr "Thư mục %s đã có"
 #: ../camel/providers/local/camel-mbox-store.c:424
 #, c-format
 msgid "Cannot create folder '%s': %s"
-msgstr "Không thể tạo thư mục « %s »: %s"
+msgstr "Không thể tạo thư mục \"%s\": %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:236
 #: ../camel/providers/local/camel-mbox-store.c:369
 #: ../camel/providers/local/camel-mh-store.c:522
 #, c-format
 msgid "Cannot get folder '%s': %s"
-msgstr "Không thể lấy thư mục « %s »: %s"
+msgstr "Không thể lấy thư mục \"%s\": %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:242
 #: ../camel/providers/local/camel-mbox-store.c:379
 #: ../camel/providers/local/camel-mh-store.c:531
 #, c-format
 msgid "Cannot get folder '%s': folder does not exist."
-msgstr "Không thể lấy thư mục « %s »: thư mục không tồn tại."
+msgstr "Không thể lấy thư mục \"%s\": thư mục không tồn tại."
 
 #: ../camel/providers/local/camel-maildir-store.c:269
 #, c-format
 msgid "Cannot get folder '%s': not a maildir directory."
-msgstr "Không thể lấy thư mục « %s »: không phải thư mục maildir."
+msgstr "Không thể lấy thư mục \"%s\": không phải thư mục maildir."
 
 #: ../camel/providers/local/camel-maildir-store.c:338
 #: ../camel/providers/local/camel-maildir-store.c:378
 #: ../camel/providers/local/camel-mh-store.c:682
 #, c-format
 msgid "Could not delete folder '%s': %s"
-msgstr "Không thể xoá thư mục « %s »: %s"
+msgstr "Không thể xoá thư mục \"%s\": %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:340
 msgid "not a maildir directory"
@@ -3876,7 +3876,7 @@ msgstr "không phải là thư mục dạng Maildir"
 #: ../camel/providers/local/camel-spool-store.c:231
 #, c-format
 msgid "Could not scan folder '%s': %s"
-msgstr "Không thể quét thư mục « %s »: %s"
+msgstr "Không thể quét thư mục \"%s\": %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:797
 #, c-format
@@ -3934,12 +3934,12 @@ msgstr "Không thể tạo thư mục với tên đó"
 #: ../camel/providers/local/camel-mbox-store.c:435
 #, c-format
 msgid "Cannot get folder '%s': not a regular file."
-msgstr "Không thể lấy thư mục « %s »: không phải là tập tin bình thường."
+msgstr "Không thể lấy thư mục \"%s\": không phải là tập tin bình thường."
 
 #: ../camel/providers/local/camel-mbox-store.c:605
 #, c-format
 msgid "Cannot create directory '%s': %s."
-msgstr "Không thể tạo thư mục « %s »: %s"
+msgstr "Không thể tạo thư mục \"%s\": %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:617
 #, c-format
@@ -3958,24 +3958,24 @@ msgid ""
 "Could not delete folder '%s':\n"
 "%s"
 msgstr ""
-"Không thể xoá thư mục « %s »:\n"
+"Không thể xoá thư mục \"%s\":\n"
 "%s"
 
 #: ../camel/providers/local/camel-mbox-store.c:682
 #, c-format
 msgid "'%s' is not a regular file."
-msgstr "« %s » không phải là tập tin bình thường."
+msgstr "\"%s\" không phải là tập tin bình thường."
 
 #: ../camel/providers/local/camel-mbox-store.c:691
 #, c-format
 msgid "Folder '%s' is not empty. Not deleted."
-msgstr "Thư mục « %s » không rỗng nên chưa xoá."
+msgstr "Thư mục \"%s\" không rỗng nên chưa xoá."
 
 #: ../camel/providers/local/camel-mbox-store.c:718
 #: ../camel/providers/local/camel-mbox-store.c:733
 #, c-format
 msgid "Could not delete folder summary file '%s': %s"
-msgstr "Không thể xoá tập tin tóm tắt thư mục « %s »: %s"
+msgstr "Không thể xoá tập tin tóm tắt thư mục \"%s\": %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:815
 #, c-format
@@ -3985,12 +3985,12 @@ msgstr "Tên thư mục mới không được phép"
 #: ../camel/providers/local/camel-mbox-store.c:831
 #, c-format
 msgid "Could not rename '%s': '%s': %s"
-msgstr "Không thể đổi tên « %s »: « %s »: %s"
+msgstr "Không thể đổi tên \"%s\": \"%s\": %s"
 
 #: ../camel/providers/local/camel-mbox-store.c:915
 #, c-format
 msgid "Could not rename '%s' to %s: %s"
-msgstr "Không thể đổi tên « %s » thành %s: %s"
+msgstr "Không thể đổi tên \"%s\" thành %s: %s"
 
 #: ../camel/providers/local/camel-mbox-summary.c:428
 #, c-format
@@ -4087,7 +4087,7 @@ msgstr "Không thể tạo thư mục '%s': %s"
 #: ../camel/providers/local/camel-mh-store.c:557
 #, c-format
 msgid "Cannot get folder '%s': not a directory."
-msgstr "Không thể lấy thư mục « %s »: không phải là thư mục."
+msgstr "Không thể lấy thư mục \"%s\": không phải là thư mục."
 
 #: ../camel/providers/local/camel-mh-summary.c:227
 #, c-format
@@ -4097,12 +4097,12 @@ msgstr "Không thể mở đường dẫn thư mục dạng MH: %s: %s"
 #: ../camel/providers/local/camel-spool-store.c:97
 #, c-format
 msgid "Spool '%s' cannot be opened: %s"
-msgstr "Không thể mở hàng đợi ghi « %s »: %s"
+msgstr "Không thể mở hàng đợi ghi \"%s\": %s"
 
 #: ../camel/providers/local/camel-spool-store.c:111
 #, c-format
 msgid "Spool '%s' is not a regular file or directory"
-msgstr "Hàng đợi ghi « %s » không phải là tập tin hay thư mục bình thường"
+msgstr "Hàng đợi ghi \"%s\" không phải là tập tin hay thư mục bình thường"
 
 #: ../camel/providers/local/camel-spool-store.c:425
 #, c-format
@@ -4121,7 +4121,7 @@ msgstr "Spool không hợp lệ"
 #: ../camel/providers/local/camel-spool-store.c:492
 #, c-format
 msgid "Folder '%s/%s' does not exist."
-msgstr "Thư mục « %s/%s » không tồn tại"
+msgstr "Thư mục \"%s/%s\" không tồn tại"
 
 #: ../camel/providers/local/camel-spool-store.c:505
 #, c-format
@@ -4129,13 +4129,13 @@ msgid ""
 "Could not open folder '%s':\n"
 "%s"
 msgstr ""
-"Không thể mở thư mục « %s »:\n"
+"Không thể mở thư mục \"%s\":\n"
 "%s"
 
 #: ../camel/providers/local/camel-spool-store.c:511
 #, c-format
 msgid "Folder '%s' does not exist."
-msgstr "Thư mục « %s » không tồn tại."
+msgstr "Thư mục \"%s\" không tồn tại."
 
 #: ../camel/providers/local/camel-spool-store.c:519
 #, c-format
@@ -4143,13 +4143,13 @@ msgid ""
 "Could not create folder '%s':\n"
 "%s"
 msgstr ""
-"Không thể tạo thư mục « %s »\n"
+"Không thể tạo thư mục \"%s\"\n"
 "%s"
 
 #: ../camel/providers/local/camel-spool-store.c:532
 #, c-format
 msgid "'%s' is not a mailbox file."
-msgstr "« %s » không phải là tập tin hộp thư."
+msgstr "\"%s\" không phải là tập tin hộp thư."
 
 #: ../camel/providers/local/camel-spool-store.c:596
 #, c-format
@@ -4537,7 +4537,7 @@ msgstr "Không thể kết nối tới máy phục vụ POP %s"
 #: ../camel/providers/pop3/camel-pop3-store.c:701
 #, c-format
 msgid "No such folder '%s'."
-msgstr "Không có thư mục như vậy « %s »."
+msgstr "Không có thư mục như vậy \"%s\"."
 
 #: ../camel/providers/pop3/camel-pop3-store.c:718
 #, c-format
@@ -5421,7 +5421,7 @@ msgstr "Loại:"
 #: ../libedataserverui/e-category-completion.c:300
 #, c-format
 msgid "Create category \"%s\""
-msgstr "Tạo loại « %s »"
+msgstr "Tạo loại \"%s\""
 
 #: ../libedataserverui/e-category-editor.c:137
 msgid "Category Icon"
@@ -5448,7 +5448,7 @@ msgstr "Thuộc tính loại"
 msgid ""
 "There is already a category '%s' in the configuration. Please use another "
 "name"
-msgstr "Loại « %s » đã có trong cấu hình. Hãy sử dụng tên khác."
+msgstr "Loại \"%s\" đã có trong cấu hình. Hãy sử dụng tên khác."
 
 #: ../libedataserverui/e-name-selector-dialog.c:278
 msgid "Show Contacts"
