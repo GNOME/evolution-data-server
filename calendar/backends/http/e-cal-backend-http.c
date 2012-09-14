@@ -844,6 +844,7 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	gboolean opened = TRUE;
 	gboolean online;
 	gchar *tmp;
+	GError *local_error = NULL;
 
 	cbhttp = E_CAL_BACKEND_HTTP (backend);
 	priv = cbhttp->priv;
@@ -899,7 +900,6 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 
 	if (online) {
 		const gchar *uri;
-		GError *local_error = NULL;
 
 		uri = cal_backend_http_ensure_uri (cbhttp);
 
@@ -921,15 +921,15 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 		}
 
 		if (local_error != NULL)
-			g_propagate_error (perror, local_error);
+			g_propagate_error (perror, g_error_copy (local_error));
 	}
 
 	if (opened) {
-		e_cal_backend_notify_opened (E_CAL_BACKEND (backend), NULL);
-
 		if (!priv->reload_timeout_id)
 			priv->reload_timeout_id = e_source_refresh_add_timeout (source, NULL, http_cal_reload_cb, backend, NULL);
 	}
+
+	e_cal_backend_notify_opened (E_CAL_BACKEND (backend), local_error);
 }
 
 static void
