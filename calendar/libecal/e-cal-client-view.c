@@ -309,6 +309,7 @@ cal_client_view_finalize (GObject *object)
 		priv->gdbus_calview = NULL;
 
 		if (error) {
+			g_dbus_error_strip_remote_error (error);
 			g_warning ("Failed to dispose cal view: %s", error->message);
 			g_error_free (error);
 		}
