@@ -2667,7 +2667,7 @@ imap_transfer_offline (CamelFolder *source,
 	return TRUE;
 }
 
-/* Call with lock held on destination folder cache */
+/* Call with lock held on destination and source folder cache */
 static void
 handle_copyuid (CamelImapResponse *response,
                 CamelFolder *source,
@@ -2698,11 +2698,6 @@ handle_copyuid (CamelImapResponse *response,
 	dest = imap_uid_set_to_array (destination->summary, destset);
 
 	if (src && dest && src->len == dest->len) {
-		/* We don't have to worry about deadlocking on the
-		 * cache locks here, because we've got the store's
-		 * command lock too, so no one else could be here.
-		 */
-		CAMEL_IMAP_FOLDER_REC_LOCK (source, cache_lock);
 		for (i = 0; i < src->len; i++) {
 			camel_imap_message_cache_copy (
 				scache, src->pdata[i],
@@ -2710,7 +2705,6 @@ handle_copyuid (CamelImapResponse *response,
 
 			imap_folder_add_ignore_recent (CAMEL_IMAP_FOLDER (destination), dest->pdata[i]);
 		}
-		CAMEL_IMAP_FOLDER_REC_UNLOCK (source, cache_lock);
 
 		imap_uid_array_free (src);
 		imap_uid_array_free (dest);
@@ -2725,7 +2719,7 @@ handle_copyuid (CamelImapResponse *response,
 	g_warning ("Bad COPYUID response from server");
 }
 
-/* Call with lock held on destination folder cache */
+/* Call with lock held on destination and source folder cache */
 static void
 handle_copyuid_copy_user_tags (CamelImapResponse *response,
                                CamelFolder *source,
@@ -2767,7 +2761,6 @@ handle_copyuid_copy_user_tags (CamelImapResponse *response,
 	dest = imap_uid_set_to_array (destination->summary, destset);
 
 	if (src && dest && src->len == dest->len) {
-		CAMEL_IMAP_FOLDER_REC_LOCK (source, cache_lock);
 		for (i = 0; i < src->len; i++) {
 			CamelMessageInfo *mi = camel_folder_get_message_info (source, src->pdata[i]);
 
@@ -2782,7 +2775,6 @@ handle_copyuid_copy_user_tags (CamelImapResponse *response,
 				camel_folder_free_message_info (source, mi);
 			}
 		}
-		CAMEL_IMAP_FOLDER_REC_UNLOCK (source, cache_lock);
 
 		imap_uid_array_free (src);
 		imap_uid_array_free (dest);
@@ -2882,6 +2874,7 @@ do_copy (CamelFolder *source,
 			/* returns only 'A00012 OK UID XGWMOVE completed' '* 2 XGWMOVE' so nothing useful */
 			camel_imap_response_free (store, response);
 		} else {
+			CAMEL_IMAP_FOLDER_REC_LOCK (source, cache_lock);
 			CAMEL_IMAP_FOLDER_REC_LOCK (destination, cache_lock);
 			response = camel_imap_command (
 				store, source, cancellable, &local_error,
@@ -2894,6 +2887,7 @@ do_copy (CamelFolder *source,
 					cancellable);
 			camel_imap_response_free (store, response);
 			CAMEL_IMAP_FOLDER_REC_UNLOCK (destination, cache_lock);
+			CAMEL_IMAP_FOLDER_REC_UNLOCK (source, cache_lock);
 		}
 
 		if (local_error == NULL && delete_originals && (mark_moved || !trash_path)) {
