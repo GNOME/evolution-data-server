@@ -646,6 +646,7 @@ source_viewer_constructed (GObject *object)
 	gtk_widget_show (widget);
 
 	column = gtk_tree_view_column_new ();
+	/* Translators: The name that is displayed in the user interface */
 	gtk_tree_view_column_set_title (column, _("Display Name"));
 	gtk_tree_view_append_column (GTK_TREE_VIEW (widget), column);
 
