@@ -1,3 +1,55 @@
+Evolution-Data-Server 3.5.92 2012-09-17
+---------------------------------------
+
+Bug Fixes:
+	Bug 677393 - [IMAP] Deadlock when moving message and checking new mail
+	             (Alban Browaeys)
+	Bug 677685 - WebCal backend doesn't stop opening phase on error
+	             (Milan Crha)
+	Bug 677871 - EBookBackendSqliteDB - Escape SQL strings
+	             (Mathias Hasselmann)
+	Bug 679219 - IMAP+ fails to show newly created top-level folders
+	             (Milan Crha)
+	Bug 682398 - GError reuse during IMAP connect routine (Milan Crha)
+	Bug 683785 - Add e_source_new_with_uid() (Matthew Barnes)
+
+Other Changes:
+	* CamelIMAPXServer: Fix shell command connections (Yanko Kaneti)
+	* IMAPX - Copy also user flags/tags on message append, if server can
+	  save them (Milan Crha)
+	* IMAP - Be able to read messages from cache in offline mode
+	  (Milan Crha)
+	* Skip sources with disabled parents from completion lookup
+	  (Milan Crha)
+	* IMAP - Do not update folder list when the operation was cancelled
+	  (Milan Crha)
+	* ESourceRegistry: Work around GType deadlock. (Matthew Barnes)
+	* [CalDAV] Block EProxy::changed when changing priv::uri (Milan Crha)
+	* Fix a memory leak from MH-format camel provider (Milan Crha)
+	* Unwrap GDBus error in generic EClient operations (Milan Crha)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Ihar Hrachyshka (be)
+	Mario Blättermann (de)
+	Tom Tryfonidis (el)
+	Daniel Mustieles (es)
+	Alexandre Franke (fr)
+	Sweta Kothari (gu)
+	Gabor Kelemen (hu)
+	Andika Triwidada (id)
+	Seong-ho Cho (ko)
+	Rūdolfs Mazurs (lv)
+	Sandeep Sheshrao Shedmake (mr)
+	Piotr Drąg (pl)
+	Duarte Loreto (pt)
+	Yuri Myasoedov (ru)
+	Matej Urbančič (sl)
+	Мирослав Николић (sr)
+	Nguyễn Thái Ngọc Duy (vi)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.5.91 2012-09-03
 ---------------------------------------
 
