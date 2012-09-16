@@ -12,9 +12,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lv\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-03 10:15+0300\n"
-"PO-Revision-Date: 2012-09-08 02:27+0300\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
+"POT-Creation-Date: 2012-09-11 06:49+0000\n"
+"PO-Revision-Date: 2012-09-15 21:10+0300\n"
 "Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "Language: lv\n"
@@ -361,7 +362,7 @@ msgstr "E-pasts 4"
 
 #: ../addressbook/libebook/e-contact.c:145
 msgid "Mailer"
-msgstr "Sūtītājs"
+msgstr "Pastnieks"
 
 #. Address Labels
 #: ../addressbook/libebook/e-contact.c:148
@@ -383,15 +384,15 @@ msgstr "Asistenta tālrunis"
 
 #: ../addressbook/libebook/e-contact.c:154
 msgid "Business Phone"
-msgstr "Darījumu tālrunis"
+msgstr "Darba tālrunis"
 
 #: ../addressbook/libebook/e-contact.c:155
 msgid "Business Phone 2"
-msgstr "Darījumu tālrunis 2"
+msgstr "Darba tālrunis 2"
 
 #: ../addressbook/libebook/e-contact.c:156
 msgid "Business Fax"
-msgstr "Fakss darījumiem"
+msgstr "Darba fakss"
 
 #: ../addressbook/libebook/e-contact.c:157
 msgid "Callback Phone"
@@ -1159,7 +1160,7 @@ msgid "Invalid Redirect URL"
 msgstr "Nederīgs pāradresēšanas URL"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2360
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2716
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2722
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1168,40 +1169,40 @@ msgstr ""
 "Serveris nav sasniedzams, kalendārs ir atvērts tikai lasīšanas režīmā.\n"
 "Kļūdas ziņojums — %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2639
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2663
 msgid "Cannot create local store"
 msgstr "Nevar izveidot lokālu krātuvi"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2648
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2672
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Nevar izveidot lokālu kešatmiņas mapi “%s”"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2659
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2683
 msgid "Could not create synch slave thread"
 msgstr "Neizdevās izveidot sinhronizācijas sekotāja pavedienu"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3671
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3677
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV neatbalsta masveida pievienošanu"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3773
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3779
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV neatbalsta masveida izmaiņas"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3941
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3947
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV neatbalsta masveida izņemšanu"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4600
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4606
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalendārs neatbalsta brīvs/aizņemts"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4608
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4614
 msgid "Schedule outbox url not found"
 msgstr "Grafika izsūtnes url nav atrasts"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4707
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4713
 msgid "Unexpected result in schedule-response"
 msgstr "Negaidīta rezultāts grafika atbildē"
 
@@ -1633,9 +1634,8 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"“%s” gaida, ka pirmais parametrs būs viens no sekojošiem: “any”, "
-"“summary”, “description”, “location”, “attendee”, “organizer” vai "
-"\"classification\""
+"“%s” gaida, ka pirmais parametrs būs viens no sekojošiem: “any”, “summary”, "
+"“description”, “location”, “attendee”, “organizer” vai \"classification\""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1084
 #, c-format
@@ -1850,12 +1850,12 @@ msgstr "K_opēt mapes saturu lokāli, lai varētu darboties nesaistē"
 #: ../camel/camel-imapx-folder.c:538 ../camel/camel-imapx-folder.c:614
 #: ../camel/camel-imapx-folder.c:648 ../camel/camel-imapx-folder.c:688
 #: ../camel/camel-imapx-folder.c:724 ../camel/camel-imapx-store.c:276
-#: ../camel/camel-imapx-store.c:1390 ../camel/camel-imapx-store.c:1479
-#: ../camel/camel-imapx-store.c:1528
+#: ../camel/camel-imapx-store.c:1398 ../camel/camel-imapx-store.c:1487
+#: ../camel/camel-imapx-store.c:1536
 #: ../camel/providers/imap/camel-imap-store.c:1270
 #: ../camel/providers/imap/camel-imap-store.c:2033
 #: ../camel/providers/imap/camel-imap-store.c:2509
-#: ../camel/providers/imap/camel-imap-store.c:3280
+#: ../camel/providers/imap/camel-imap-store.c:3289
 #: ../camel/providers/pop3/camel-pop3-folder.c:531
 #: ../camel/providers/pop3/camel-pop3-folder.c:674
 #: ../camel/providers/pop3/camel-pop3-folder.c:874
@@ -1921,7 +1921,7 @@ msgstr "Sinhronizē mapi"
 
 #: ../camel/camel-filter-driver.c:1468 ../camel/camel-filter-driver.c:1581
 msgid "Complete"
-msgstr "Izpildīts"
+msgstr "Pabeigts"
 
 #: ../camel/camel-filter-driver.c:1529
 #, c-format
@@ -2116,7 +2116,7 @@ msgid ""
 "Note the encrypted content doesn't contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
-"Ņemiet vērā, ka šifrētais saturs nesatur informāciju par saņēmēju, tāpēc "
+"Ņemiet vērā, ka šifrētais saturs nesatur informāciju par adresātu, tāpēc "
 "katrai saglabātajai privātajai atslēgai tiks prasīta parole."
 
 #: ../camel/camel-gpg-context.c:883 ../camel/camel-net-utils.c:523
@@ -2198,7 +2198,7 @@ msgid "Could not create cache for %s: "
 msgstr "Neizdevās izveidot %s kešu: "
 
 #: ../camel/camel-imapx-folder.c:794
-#: ../camel/providers/imap/camel-imap-folder.c:365
+#: ../camel/providers/imap/camel-imap-folder.c:367
 #: ../camel/providers/nntp/camel-nntp-folder.c:738
 msgid "Apply message _filters to this folder"
 msgstr "Šai mapei attiecināt vēstuļu _filtrus"
@@ -2359,13 +2359,13 @@ msgid "Error syncing changes"
 msgstr "Kļūda, sinhronizējot izmaiņas"
 
 #: ../camel/camel-imapx-server.c:6447
-#: ../camel/providers/imap/camel-imap-folder.c:3535
+#: ../camel/providers/imap/camel-imap-folder.c:3537
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nevar saņemt vēstuli ar vēstules ID %s — %s"
 
 #: ../camel/camel-imapx-server.c:6448
-#: ../camel/providers/imap/camel-imap-folder.c:3536
+#: ../camel/providers/imap/camel-imap-folder.c:3538
 msgid "No such message available."
 msgstr "Tāda vēstule nav pieejama."
 
@@ -2397,7 +2397,7 @@ msgstr "Parole"
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "Šī opcija savienos ar IMAP serveri, lietojot atklāta teksta paroli."
 
-#: ../camel/camel-imapx-store.c:349
+#: ../camel/camel-imapx-store.c:351
 #: ../camel/providers/imap/camel-imap-store.c:2064
 #: ../camel/providers/imap/camel-imap-store.c:2262
 #, c-format
@@ -2405,7 +2405,7 @@ msgid "No such folder %s"
 msgstr "Nav tādas mapes %s"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:374 ../camel/camel-imapx-store.c:858
+#: ../camel/camel-imapx-store.c:376 ../camel/camel-imapx-store.c:866
 #: ../camel/providers/imap/camel-imap-store.c:275
 #: ../camel/providers/imap/camel-imap-store.c:2684
 #: ../camel/providers/local/camel-maildir-folder.c:473
@@ -2417,18 +2417,18 @@ msgstr "Nav tādas mapes %s"
 msgid "Inbox"
 msgstr "Iesūtne"
 
-#: ../camel/camel-imapx-store.c:1091
+#: ../camel/camel-imapx-store.c:1099
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Saņem %s mapju sarakstu"
 
-#: ../camel/camel-imapx-store.c:1195
+#: ../camel/camel-imapx-store.c:1203
 #: ../camel/providers/nntp/camel-nntp-store.c:1771
 #, c-format
 msgid "No such folder: %s"
 msgstr "Nav tādas mapes — %s"
 
-#: ../camel/camel-imapx-store.c:1412
+#: ../camel/camel-imapx-store.c:1420
 #: ../camel/providers/imap/camel-imap-store.c:2077
 #: ../camel/providers/imap/camel-imap-store.c:2524
 #, c-format
@@ -2436,13 +2436,13 @@ msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Mapes nosaukums “%s” ir nederīgs, jo satur rakstzīmi “%c”"
 
-#: ../camel/camel-imapx-store.c:1423
+#: ../camel/camel-imapx-store.c:1431
 #: ../camel/providers/imap/camel-imap-store.c:2537
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Nezināma vecāka mape — %s"
 
-#: ../camel/camel-imapx-store.c:1433
+#: ../camel/camel-imapx-store.c:1441
 #: ../camel/providers/imap/camel-imap-store.c:2140
 #: ../camel/providers/imap/camel-imap-store.c:2589
 #, c-format
@@ -2641,7 +2641,7 @@ msgstr "Nav pieejams piegādātājs protokolam “%s”"
 
 #: ../camel/camel-sasl-anonymous.c:35
 msgid "Anonymous"
-msgstr "Anonīms"
+msgstr "Anonīmi"
 
 #: ../camel/camel-sasl-anonymous.c:37
 msgid "This option will connect to the server using an anonymous login."
@@ -3063,11 +3063,11 @@ msgstr "Nevar piesaistīt CMS aploksnes datu objektus"
 
 #: ../camel/camel-smime-context.c:1114
 msgid "Cannot create CMS Recipient information"
-msgstr "Nevar izveidot CMS saņēmēju informāciju"
+msgstr "Nevar izveidot CMS adresātu informāciju"
 
 #: ../camel/camel-smime-context.c:1119
 msgid "Cannot add CMS Recipient information"
-msgstr "Nevar pievienot CMS saņēmēju informāciju"
+msgstr "Nevar pievienot CMS adresātu informāciju"
 
 #: ../camel/camel-smime-context.c:1145
 msgid "Failed to add data to encoder"
@@ -3102,7 +3102,7 @@ msgstr "Miskaste"
 #: ../camel/camel-store.c:2081 ../camel/camel-store.c:2092
 #: ../camel/camel-vtrash-folder.c:50
 msgid "Junk"
-msgstr "Mēstules"
+msgstr "Mēstule"
 
 #: ../camel/camel-store.c:2540
 #, c-format
@@ -3436,53 +3436,53 @@ msgstr "IMAP servera atbilde nesaturēja %s informāciju"
 msgid "Unexpected OK response from IMAP server: %s"
 msgstr "Negaidīta OK atbilde no IMAP servera — %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:354
+#: ../camel/providers/imap/camel-imap-folder.c:356
 msgid "Always check for _new mail in this folder"
 msgstr "Vienmēr pārbaudīt jau_no pastu šajā mapē"
 
-#: ../camel/providers/imap/camel-imap-folder.c:445
+#: ../camel/providers/imap/camel-imap-folder.c:447
 #, c-format
 msgid "Could not create directory %s: %s"
 msgstr "Neizdevās izveidot mapi %s — %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:466
+#: ../camel/providers/imap/camel-imap-folder.c:468
 #, c-format
 msgid "Could not load summary for %s"
 msgstr "Nevar ielādēt %s kopsavilkumu"
 
-#: ../camel/providers/imap/camel-imap-folder.c:1135
+#: ../camel/providers/imap/camel-imap-folder.c:1137
 #, c-format
 msgid "Scanning for changed messages in %s"
 msgstr "Meklē izmainītās vēstules mapē %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3498
+#: ../camel/providers/imap/camel-imap-folder.c:3500
 msgid "Unable to retrieve message: "
 msgstr "Neizdevās saņemt vēstuli: "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3612
-#: ../camel/providers/imap/camel-imap-folder.c:4504
+#: ../camel/providers/imap/camel-imap-folder.c:3626
+#: ../camel/providers/imap/camel-imap-folder.c:4518
 #: ../camel/providers/nntp/camel-nntp-folder.c:493
 #, c-format
 msgid "This message is not currently available"
 msgstr "Šī vēstule šobrīd nav pieejama"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4077
-#: ../camel/providers/imap/camel-imap-folder.c:4159
+#: ../camel/providers/imap/camel-imap-folder.c:4091
+#: ../camel/providers/imap/camel-imap-folder.c:4173
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Saņem kopsavilkuma informāciju par jaunām vēstulēm uz %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4291
+#: ../camel/providers/imap/camel-imap-folder.c:4305
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Nepilnīga servera atbilde — par vēstuli %d nav informācijas"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4301
+#: ../camel/providers/imap/camel-imap-folder.c:4315
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Nepilnīga servera atbilde — vēstulei %d nav UID"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4541
+#: ../camel/providers/imap/camel-imap-folder.c:4555
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Nevarēja atrast vēstules ķermeni FETCH atbildē."
@@ -3510,7 +3510,7 @@ msgstr "Neizdevās kešot %s: "
 #: ../camel/providers/imap/camel-imap-provider.c:40
 #: ../camel/providers/imapx/camel-imapx-provider.c:38
 msgid "Checking for New Mail"
-msgstr "Pārbauda jauno pastu"
+msgstr "Jauna pasta pārbaudīšana"
 
 #: ../camel/providers/imap/camel-imap-provider.c:42
 #: ../camel/providers/imapx/camel-imapx-provider.c:40
@@ -3603,17 +3603,17 @@ msgstr "Lai lasītu un glabātu pastu uz IMAP serveriem."
 msgid "Cannot create folder '%s': folder exists."
 msgstr "Nevar izveidot mapi “%s” — mape jau eksistē."
 
-#: ../camel/providers/imap/camel-imap-store.c:2976
+#: ../camel/providers/imap/camel-imap-store.c:2984
 #, c-format
 msgid "Retrieving list of folders at '%s'"
 msgstr "Saņem sarakstu ar “%s” mapēm"
 
-#: ../camel/providers/imap/camel-imap-store.c:3324
+#: ../camel/providers/imap/camel-imap-store.c:3334
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "Serveris negaidīti atvienojās"
 
-#: ../camel/providers/imap/camel-imap-store.c:3327
+#: ../camel/providers/imap/camel-imap-store.c:3338
 msgid "Server unexpectedly disconnected: "
 msgstr "Serveris negaidīti atvienojās: "
 
@@ -3668,7 +3668,7 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:43
 msgid "_Use the '.folders' folder summary file (exmh)"
-msgstr "Izmantot “.folders” mapes kopsavilkuma fail_u (exmh)"
+msgstr "_Izmantot “.folders” mapes kopsavilkuma datni (exmh)"
 
 #: ../camel/providers/local/camel-local-provider.c:50
 msgid "MH-format mail directories"
@@ -4424,8 +4424,8 @@ msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
-"Šī opcija savienos jūs ar POP serveri, izmantojot atklāta teksta paroli. "
-"Tā ir vienīgā opcija, kas ir atbalstīta daudzos POP serveros."
+"Šī opcija savienos jūs ar POP serveri, izmantojot atklāta teksta paroli. Tā "
+"ir vienīgā opcija, kas ir atbalstīta daudzos POP serveros."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:95
 msgid ""
@@ -4670,7 +4670,7 @@ msgstr "Sūta vēstuli"
 #: ../camel/providers/smtp/camel-smtp-transport.c:690
 #, c-format
 msgid "Cannot send message: no recipients defined."
-msgstr "Nevar nosūtīt vēstuli — nav norādīti saņēmēji."
+msgstr "Nevar nosūtīt vēstuli — nav norādīti adresāti."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:703
 #, c-format
@@ -4853,8 +4853,8 @@ msgid ""
 "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
 "\"days\""
 msgstr ""
-"Dzimšanas dienu un gadadienu atgādinātāja vienības “minūtes”, “stundas” vai "
-"“dienas”"
+"Dzimšanas dienu un gadadienu atgādinātāja vienības, “minutes”, “hours” vai "
+"“days”"
 
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
@@ -4942,7 +4942,7 @@ msgid "File must have a '.source' extension"
 msgstr "Datnei jābūt “.source” paplašinājumam"
 
 #: ../libebackend/e-source-registry-server.c:522
-#: ../libedataserver/e-source-registry.c:1512
+#: ../libedataserver/e-source-registry.c:1523
 msgid "The user declined to authenticate"
 msgstr "Lietotājs atteicās autentificēties"
 
@@ -4964,7 +4964,7 @@ msgstr "Dzimšanas diena"
 #: ../libedataserver/e-categories.c:48
 msgctxt "CategoryName"
 msgid "Business"
-msgstr "Darījumi"
+msgstr "Darbs"
 
 #: ../libedataserver/e-categories.c:49
 msgctxt "CategoryName"
@@ -5295,8 +5295,8 @@ msgid ""
 "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" "
 "means manual proxy."
 msgstr ""
-"Kādu starpnieku izmantot. “0” nozīmē sistēmas, “1” — bez starpnieka, "
-"“2” — ar roku norādīts starpnieks."
+"Kādu starpnieku izmantot. “0” nozīmē sistēmas, “1” — bez starpnieka, “2” — "
+"ar roku norādīts starpnieks."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "Whether to use http-proxy"
@@ -5499,25 +5499,25 @@ msgid "Error loading address book: %s"
 msgstr "Kļūda, ielādējot adrešu grāmatu — %s"
 
 #. To Translators: This would be similiar to "Expand MyList Inline" where MyList is a Contact List
-#: ../libedataserverui/e-name-selector-entry.c:3008
+#: ../libedataserverui/e-name-selector-entry.c:3043
 #, c-format
 msgid "E_xpand %s Inline"
 msgstr "Izvērst %s iekļauti"
 
 #. Copy Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:3024
+#: ../libedataserverui/e-name-selector-entry.c:3059
 #, c-format
 msgid "Cop_y %s"
 msgstr "Ko_pēt %s"
 
 #. Cut Contact Item
-#: ../libedataserverui/e-name-selector-entry.c:3035
+#: ../libedataserverui/e-name-selector-entry.c:3070
 #, c-format
 msgid "C_ut %s"
 msgstr "I_zgriezt %s"
 
 #. Edit Contact item
-#: ../libedataserverui/e-name-selector-entry.c:3053
+#: ../libedataserverui/e-name-selector-entry.c:3088
 #, c-format
 msgid "_Edit %s"
 msgstr "R_ediģēt %s"
