@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-09-09 00:11+0000\n"
-"PO-Revision-Date: 2012-09-11 18:49+0100\n"
+"POT-Creation-Date: 2012-09-16 20:33+0000\n"
+"PO-Revision-Date: 2012-09-17 21:57+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -194,7 +194,7 @@ msgstr "%s: vrnjena je prazna vrednost (NULL) predmeta ldap_first_entry"
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2456
 #, fuzzy, c-format
 msgid "%s: Unhandled result type %d returned"
-msgstr "Način `%s' je vrnil vrsto `%s', pričakovana pa je vrsta `%s'"
+msgstr "%s: vrnjena je neupravljana vrsta iskanja %d"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2334
 msgid "Modifying contact from LDAP server..."
@@ -269,9 +269,8 @@ msgid "Loading Contacts (%d%%)"
 msgstr "Nalaganje stikov (%d%%)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1287
-#, fuzzy
 msgid "Cannot transform SoupURI to string"
-msgstr "Zahtevano je preoblikovanje funkcije G_TYPE_STRING v %s!\n"
+msgstr "Naslova SoupURI ni mogoče preoblikovati v niz"
 
 #: ../addressbook/libebook/e-book-client.c:95
 msgid "No such book"
@@ -1128,13 +1127,12 @@ msgstr "Ime izvornega ozadnjega programa (privzeto je to 'pidgin')"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:319
 #: ../calendar/libedata-cal/e-data-cal-factory.c:230
-#, fuzzy
 msgid "Missing source UID"
-msgstr "UID vira POP"
+msgstr "Manjka vrednost UID vira"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:332
 #: ../calendar/libedata-cal/e-data-cal-factory.c:243
-#, fuzzy, c-format
+#, c-format
 msgid "No such source for UID '%s'"
 msgstr "Za UID '%s' ni mogoče najti podatkovnega vira"
 
@@ -1158,17 +1156,15 @@ msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Odgovor HTTP je vrnil napačno kodo stanja %d (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:635
-#, fuzzy
 msgid "CalDAV backend is not loaded yet"
-msgstr "Ozadnji program še ni odprt"
+msgstr "Ozadnji program CalDAV še ni naložen"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:1017
-#, fuzzy
 msgid "Invalid Redirect URL"
-msgstr "Neveljaven URL postaje"
+msgstr "Neveljaven preusmeritveni naslov URL"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2360
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2716
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2722
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1177,43 +1173,42 @@ msgstr ""
 "Strežnik ni dosegljiv; koledar je odprt v načinu le za branje. \n"
 "Sporočilo napake: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2639
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2663
 msgid "Cannot create local store"
 msgstr "Ni mogoče ustvariti krajevne zaloge"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2648
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2672
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Ni mogoče ustvariti krajevne mape predpomnilnika '%s'"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2659
-#, fuzzy
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2683
 msgid "Could not create synch slave thread"
-msgstr "Iskalne niti CD-ja ni mogoče ustvariti"
+msgstr "Podrejene niti usklajevanja ni mogoče ustvariti"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3671
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3677
 msgid "CalDAV does not support bulk additions"
 msgstr "Sistem CalDAV ne podpira množičnega dodajanja"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3773
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3779
 msgid "CalDAV does not support bulk modifications"
 msgstr "Sistem CalDAV ne podpira množičnega spreminjanja"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3941
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3947
 msgid "CalDAV does not support bulk removals"
 msgstr "Sistem CalDAV ne podpira množičnega odstranjevanja"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4600
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4606
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Koledar ne podpira možnosti prostosti/zasedenosti"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4608
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4614
 msgid "Schedule outbox url not found"
 msgstr ""
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4707
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4713
 msgid "Unexpected result in schedule-response"
-msgstr ""
+msgstr "Nepričakovan rezultat v odzivu"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:921
 msgid "Birthday"
@@ -1258,8 +1253,8 @@ msgstr "Napačna oblika datoteke."
 msgid "Not a calendar."
 msgstr "Ni koledar."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:886
-#: ../calendar/backends/http/e-cal-backend-http.c:890
+#: ../calendar/backends/http/e-cal-backend-http.c:887
+#: ../calendar/backends/http/e-cal-backend-http.c:891
 #: ../calendar/backends/weather/e-cal-backend-weather.c:511
 msgid "Could not create cache file"
 msgstr "Ni mogoče ustvariti datoteke predpomnilnika"
@@ -1865,9 +1860,9 @@ msgstr "Krajevno kopiraj vsebino mape za delo _brez povezave"
 #: ../camel/camel-imapx-folder.c:688
 #: ../camel/camel-imapx-folder.c:724
 #: ../camel/camel-imapx-store.c:276
-#: ../camel/camel-imapx-store.c:1390
-#: ../camel/camel-imapx-store.c:1479
-#: ../camel/camel-imapx-store.c:1528
+#: ../camel/camel-imapx-store.c:1398
+#: ../camel/camel-imapx-store.c:1487
+#: ../camel/camel-imapx-store.c:1536
 #: ../camel/providers/imap/camel-imap-store.c:1270
 #: ../camel/providers/imap/camel-imap-store.c:2033
 #: ../camel/providers/imap/camel-imap-store.c:2509
@@ -2338,14 +2333,14 @@ msgstr "Napaka med pridobivanjem sporočila"
 
 #: ../camel/camel-imapx-server.c:4590
 #: ../camel/camel-imapx-server.c:4783
-#, fuzzy, c-format
+#, c-format
 msgid "Fetching summary information for new messages in '%s'"
-msgstr "Prenašanje povzetkov novih sporočil v %s"
+msgstr "Pridobivanje podatkov povzetka za nova sporočila v '%s'."
 
 #: ../camel/camel-imapx-server.c:4641
-#, fuzzy, c-format
+#, c-format
 msgid "Scanning for changed messages in '%s'"
-msgstr "Preiskovanje spremenjenih sporočil v %s"
+msgstr "Preiskovanje spremenjenih sporočil v '%s'"
 
 #: ../camel/camel-imapx-server.c:4684
 msgid "Error fetching new messages"
@@ -2355,16 +2350,15 @@ msgstr "Napaka med pridobivanjem novih sporočil"
 msgid "Error while fetching messages"
 msgstr "Napaka med pridobivanjem sporočil"
 
-# multiple plural!
 #: ../camel/camel-imapx-server.c:4882
 #: ../camel/camel-imapx-server.c:4918
-#, fuzzy, c-format
+#, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
-msgstr[0] "Pridobivanje podatkov povzetka za %d novih sporočil v %s"
-msgstr[1] "Pridobivanje podatkov povzetka za %d novo sporočilo v %s"
-msgstr[2] "Pridobivanje podatkov povzetka za %d novi sporočili v %s"
-msgstr[3] "Pridobivanje podatkov povzetka za %d nova sporočila v %s"
+msgstr[0] "Pridobivanje podatkov povzetka za %d novih sporočil v '%s'."
+msgstr[1] "Pridobivanje podatkov povzetka za %d novo sporočilo v '%s'."
+msgstr[2] "Pridobivanje podatkov povzetka za %d novi sporočili v '%s'."
+msgstr[3] "Pridobivanje podatkov povzetka za %d nova sporočila v '%s'."
 
 #: ../camel/camel-imapx-server.c:5043
 #: ../camel/camel-imapx-server.c:5079
@@ -2404,13 +2398,13 @@ msgid "Error syncing changes"
 msgstr "Napaka med usklajevanjem sprememb"
 
 #: ../camel/camel-imapx-server.c:6447
-#: ../camel/providers/imap/camel-imap-folder.c:3537
+#: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Ni mogoče dobiti sporočila zID %s: %s"
 
 #: ../camel/camel-imapx-server.c:6448
-#: ../camel/providers/imap/camel-imap-folder.c:3538
+#: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "Na voljo ni takšnega sporočila."
 
@@ -2443,7 +2437,7 @@ msgstr "Geslo"
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "Ta možnost bo vzpostavila povezavo s strežnikom IMAP z nešifriranim geslom."
 
-#: ../camel/camel-imapx-store.c:349
+#: ../camel/camel-imapx-store.c:351
 #: ../camel/providers/imap/camel-imap-store.c:2064
 #: ../camel/providers/imap/camel-imap-store.c:2262
 #, c-format
@@ -2451,8 +2445,8 @@ msgid "No such folder %s"
 msgstr "Mapa %s ne obstaja"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:374
-#: ../camel/camel-imapx-store.c:858
+#: ../camel/camel-imapx-store.c:376
+#: ../camel/camel-imapx-store.c:866
 #: ../camel/providers/imap/camel-imap-store.c:275
 #: ../camel/providers/imap/camel-imap-store.c:2684
 #: ../camel/providers/local/camel-maildir-folder.c:473
@@ -2464,31 +2458,31 @@ msgstr "Mapa %s ne obstaja"
 msgid "Inbox"
 msgstr "Dohodna pošta"
 
-#: ../camel/camel-imapx-store.c:1091
+#: ../camel/camel-imapx-store.c:1099
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Pridobivanje seznama map za %s"
 
-#: ../camel/camel-imapx-store.c:1195
+#: ../camel/camel-imapx-store.c:1203
 #: ../camel/providers/nntp/camel-nntp-store.c:1771
 #, c-format
 msgid "No such folder: %s"
 msgstr "Ni takšne mape: %s"
 
-#: ../camel/camel-imapx-store.c:1412
+#: ../camel/camel-imapx-store.c:1420
 #: ../camel/providers/imap/camel-imap-store.c:2077
 #: ../camel/providers/imap/camel-imap-store.c:2524
 #, c-format
 msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Ime mape \"%s\" je neveljavno, ker vsebuje znak \"%c\""
 
-#: ../camel/camel-imapx-store.c:1423
+#: ../camel/camel-imapx-store.c:1431
 #: ../camel/providers/imap/camel-imap-store.c:2537
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Neznana nadrejena mapa: %s"
 
-#: ../camel/camel-imapx-store.c:1433
+#: ../camel/camel-imapx-store.c:1441
 #: ../camel/providers/imap/camel-imap-store.c:2140
 #: ../camel/providers/imap/camel-imap-store.c:2589
 #, c-format
@@ -3384,7 +3378,7 @@ msgstr "Napaka med shranjevanjem '%s':"
 
 #: ../camel/camel-vee-folder.c:1169
 msgid "Automatically _update on change in source folders"
-msgstr ""
+msgstr "Samodejno _posodobi ob vsaki spremembi izvorne mape"
 
 #. Translators: 'Unmatched' is a folder name under Search folders where are shown
 #. * all messages not belonging into any other configured search folder
@@ -3403,9 +3397,8 @@ msgid "Cannot rename folder: %s: No such folder"
 msgstr "Ni mogoče preimenovati mape: %s: mapa ne obstaja"
 
 #: ../camel/camel-vee-store.c:532
-#, fuzzy
 msgid "Enable _Unmatched folder"
-msgstr "Uvozi iz mape"
+msgstr "_Omogoči neujemajoče iskalne mape"
 
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
@@ -3494,34 +3487,34 @@ msgstr "Ni mogoče naložiti povzetka za %s"
 msgid "Scanning for changed messages in %s"
 msgstr "Preiskovanje spremenjenih sporočil v %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3500
+#: ../camel/providers/imap/camel-imap-folder.c:3494
 msgid "Unable to retrieve message: "
 msgstr "Ni mogoče pridobiti sporočila:"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3626
-#: ../camel/providers/imap/camel-imap-folder.c:4518
+#: ../camel/providers/imap/camel-imap-folder.c:3620
+#: ../camel/providers/imap/camel-imap-folder.c:4512
 #: ../camel/providers/nntp/camel-nntp-folder.c:493
 #, c-format
 msgid "This message is not currently available"
 msgstr "To sporočilo trenutno ni na voljo"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4091
-#: ../camel/providers/imap/camel-imap-folder.c:4173
+#: ../camel/providers/imap/camel-imap-folder.c:4085
+#: ../camel/providers/imap/camel-imap-folder.c:4167
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Prenašanje povzetkov novih sporočil v %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4305
+#: ../camel/providers/imap/camel-imap-folder.c:4299
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr "Nepopoln odziv strežnika: za sporočilo %d ni ponujenih podatkov"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4315
+#: ../camel/providers/imap/camel-imap-folder.c:4309
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Nepopoln odziv strežnika: za sporočilo %d ni ponujen UID"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4555
+#: ../camel/providers/imap/camel-imap-folder.c:4549
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Ni mogoče najti telesa sporočila v odzivu FETCH."
@@ -3647,12 +3640,12 @@ msgstr "Ni mogoče ustvariti mape '%s': mapa že obstaja."
 msgid "Retrieving list of folders at '%s'"
 msgstr "Pridobivanje seznama map na '%s'"
 
-#: ../camel/providers/imap/camel-imap-store.c:3333
+#: ../camel/providers/imap/camel-imap-store.c:3334
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "Povezava s strežnikom je nepričakovano prekinjena"
 
-#: ../camel/providers/imap/camel-imap-store.c:3336
+#: ../camel/providers/imap/camel-imap-store.c:3338
 msgid "Server unexpectedly disconnected: "
 msgstr "Povezava s strežnikom je nepričakovano prekinjena:"
 
@@ -4912,34 +4905,34 @@ msgstr "Vir %s ne podpira ustvarjanja oddaljenih virov"
 msgid "%s does not support deleting remote resources"
 msgstr "Vir %s ne podpira brisanja oddaljenih virov"
 
-#: ../libebackend/e-server-side-source.c:128
+#: ../libebackend/e-server-side-source.c:126
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "Viru podatkov manjka navedba skupine [%s]"
 
-#: ../libebackend/e-server-side-source.c:945
-#: ../libedataserver/e-source.c:1092
+#: ../libebackend/e-server-side-source.c:916
+#: ../libedataserver/e-source.c:1111
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "Podatkovni vir '%s' ne podpira ustvarjanja oddaljenih virov"
 
-#: ../libebackend/e-server-side-source.c:959
+#: ../libebackend/e-server-side-source.c:930
 #, c-format
 msgid "Data source '%s' has no collection backend to create the remote resource"
 msgstr ""
 
-#: ../libebackend/e-server-side-source.c:987
-#: ../libedataserver/e-source.c:1201
+#: ../libebackend/e-server-side-source.c:958
+#: ../libedataserver/e-source.c:1220
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "Podatkovni vir '%s' ne podpira ustvarjanja oddaljenih virov"
 
-#: ../libebackend/e-server-side-source.c:1001
+#: ../libebackend/e-server-side-source.c:972
 #, c-format
 msgid "Data source '%s' has no collection backend to delete the remote resource"
 msgstr ""
 
-#: ../libebackend/e-server-side-source.c:1336
+#: ../libebackend/e-server-side-source.c:1285
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "Pripona datoteke mora biti '.source'"
@@ -5141,17 +5134,17 @@ msgstr "Vnesite geslo za račun \"%s\"."
 msgid "Source file is missing a [%s] group"
 msgstr "Viru podatkov manjka navedba skupine [%s]"
 
-#: ../libedataserver/e-source.c:919
+#: ../libedataserver/e-source.c:938
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "Podatkovnega vira '%s' ni mogoče odstraniti"
 
-#: ../libedataserver/e-source.c:1001
+#: ../libedataserver/e-source.c:1020
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "Podatkovni vir '%s' ni zapisliv"
 
-#: ../libedataserver/e-source.c:1382
+#: ../libedataserver/e-source.c:1408
 msgid "Unnamed"
 msgstr "Neimenovano"
 
@@ -5629,15 +5622,16 @@ msgstr "Nadaljuj izvajanje dokler je povezan vsaj en odjemalec"
 msgid "Evolution Source Viewer"
 msgstr "Pregledovalnik virov Evolution"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:649
+#. Translators: The name that is displayed in the user interface
+#: ../tests/libedataserverui/evolution-source-viewer.c:650
 msgid "Display Name"
 msgstr "Pojavno ime"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:658
+#: ../tests/libedataserverui/evolution-source-viewer.c:659
 msgid "Flags"
 msgstr "Zastavice"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:710
+#: ../tests/libedataserverui/evolution-source-viewer.c:711
 msgid "Identity"
 msgstr "Istovetnost"
 
