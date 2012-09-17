@@ -44,6 +44,8 @@ static CamelProvider sendmail_provider = {
 
 	0, /* url_flags */
 
+	NULL,  /* conf entries */
+
 	NULL,  /* port entries */
 
 	/* ... */

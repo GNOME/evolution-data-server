@@ -15,6 +15,8 @@ libcamelsendmail_la_CPPFLAGS = \
 	$(NULL)
 
 libcamelsendmail_la_SOURCES = 			\
+	camel-sendmail-settings.h		\
+	camel-sendmail-settings.c		\
 	camel-sendmail-provider.c		\
 	camel-sendmail-transport.c
 

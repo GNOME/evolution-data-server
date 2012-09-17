@@ -35,6 +35,7 @@
 
 #include <glib/gi18n-lib.h>
 
+#include "camel-sendmail-settings.h"
 #include "camel-sendmail-transport.h"
 
 G_DEFINE_TYPE (
@@ -66,6 +67,9 @@ sendmail_send_to_sync (CamelTransport *transport,
 	CamelMimeFilter *crlf;
 	sigset_t mask, omask;
 	CamelStream *out;
+	CamelSendmailSettings *settings;
+	const gchar *binary = SENDMAIL_PATH;
+	gchar *custom_binary = NULL;
 	gboolean success;
 	pid_t pid;
 
@@ -75,9 +79,19 @@ sendmail_send_to_sync (CamelTransport *transport,
 	if (!success)
 		return FALSE;
 
+	settings = CAMEL_SENDMAIL_SETTINGS (camel_service_ref_settings (CAMEL_SERVICE (transport)));
+
+	if (camel_sendmail_settings_get_use_custom_binary (settings)) {
+		custom_binary = camel_sendmail_settings_dup_custom_binary (settings);
+		if (custom_binary && *custom_binary)
+			binary = custom_binary;
+	}
+
+	g_object_unref (settings);
+
 	len = camel_address_length (recipients);
 	argv = g_malloc ((len + 6) * sizeof (gchar *));
-	argv[0] = "sendmail";
+	argv[0] = binary;
 	argv[1] = "-i";
 	argv[2] = "-f";
 	argv[3] = from_addr;
@@ -123,11 +137,12 @@ sendmail_send_to_sync (CamelTransport *transport,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not create pipe to sendmail: %s: "
-			"mail not sent"), g_strerror (errno));
+			_("Could not create pipe to '%s': %s: "
+			"mail not sent"), binary, g_strerror (errno));
 
 		/* restore the bcc headers */
 		header->next = savedbcc;
+		g_free (custom_binary);
 
 		return FALSE;
 	}
@@ -145,8 +160,8 @@ sendmail_send_to_sync (CamelTransport *transport,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not fork sendmail: %s: "
-			"mail not sent"), g_strerror (errno));
+			_("Could not fork '%s': %s: "
+			"mail not sent"), binary, g_strerror (errno));
 		close (fd[0]);
 		close (fd[1]);
 		sigprocmask (SIG_SETMASK, &omask, NULL);
@@ -154,6 +169,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 
 		/* restore the bcc headers */
 		header->next = savedbcc;
+		g_free (custom_binary);
 
 		return FALSE;
 	case 0:
@@ -167,7 +183,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 		}
 		close (fd[1]);
 
-		execv (SENDMAIL_PATH, (gchar **) argv);
+		execv (binary, (gchar **) argv);
 		_exit (255);
 	}
 	g_free (argv);
@@ -201,6 +217,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 
 		/* restore the bcc headers */
 		header->next = savedbcc;
+		g_free (custom_binary);
 
 		return FALSE;
 	}
@@ -219,24 +236,28 @@ sendmail_send_to_sync (CamelTransport *transport,
 	if (!WIFEXITED (wstat)) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("sendmail exited with signal %s: mail not sent."),
-			g_strsignal (WTERMSIG (wstat)));
+			_("'%s' exited with signal %s: mail not sent."),
+			binary, g_strsignal (WTERMSIG (wstat)));
+		g_free (custom_binary);
 		return FALSE;
 	} else if (WEXITSTATUS (wstat) != 0) {
 		if (WEXITSTATUS (wstat) == 255) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Could not execute %s: mail not sent."),
-				SENDMAIL_PATH);
+				_("Could not execute '%s': mail not sent."),
+				binary);
 		} else {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("sendmail exited with status %d: "
+				_("'%s' exited with status %d: "
 				"mail not sent."),
-				WEXITSTATUS (wstat));
+				binary, WEXITSTATUS (wstat));
 		}
+		g_free (custom_binary);
 		return FALSE;
 	}
+
+	g_free (custom_binary);
 
 	return TRUE;
 }
@@ -249,6 +270,7 @@ camel_sendmail_transport_class_init (CamelSendmailTransportClass *class)
 
 	service_class = CAMEL_SERVICE_CLASS (class);
 	service_class->get_name = sendmail_get_name;
+	service_class->settings_type = CAMEL_TYPE_SENDMAIL_SETTINGS;
 
 	transport_class = CAMEL_TRANSPORT_CLASS (class);
 	transport_class->send_to_sync = sendmail_send_to_sync;
