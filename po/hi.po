@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product"
 "=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-09-17 16:36+0000\n"
-"PO-Revision-Date: 2012-09-18 12:40+0530\n"
+"POT-Creation-Date: 2012-09-18 07:13+0000\n"
+"PO-Revision-Date: 2012-09-18 12:45+0530\n"
 "Last-Translator: rajesh <rajeshkajha@yahoo.com>\n"
 "Language-Team: Hindi <kde-i18n-doc@kde.org>\n"
 "Language: hi\n"
@@ -220,13 +220,11 @@ msgstr "संपर्क डाउनलोड कर रहा है (%d)...
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5552
 #, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to get the DN for user '%s'"
 msgstr "DN को उपयोक्ता '%s' के लिए पाने में विफल"
 
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:645
 #, c-format
-#| msgid "Failed to remove file '%s': %s"
 msgid "Failed to open addressbook at '%s': %s"
 msgstr "'%s' पर पता पुस्तिता खोलने में विफल: %s"
 
@@ -237,29 +235,24 @@ msgstr "संसाधन '%s' बनाने में विफल HTTP स�
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:447
 #, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgid "DELETE failed with HTTP status %d"
 msgstr "HTTP स्थिति %d के साथ मिटाना विफल"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:507
-#| msgid "_Listen for server change notifications"
 msgid "Contact on server changed -> not modifying"
 msgstr "परिवर्तित सर्वर पर संपर्क -> बदल नहीं रहा है"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:515
 #, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgid "Modify contact failed with HTTP status: %d (%s)"
 msgstr "HTTP प्रस्तिथि के साथ संपर्क विफल: %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:912
-#| msgid "Error loading address book: %s"
 msgid "Loading Addressbook summary..."
 msgstr "पता पुस्तिका सारांश लोड कर रहा है..."
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:928
 #, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr "HTTP स्थिति %d (%s) के साथ webdav पर PROPFIND"
 
@@ -269,7 +262,6 @@ msgstr "webdav PROPFIND परिणाम में कोई अनुक्�
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:980
 #, c-format
-#| msgid "Downloading contacts (%d)... "
 msgid "Loading Contacts (%d%%)"
 msgstr "संपर्क (%d%%) लोड कर रहा है"
 
@@ -324,7 +316,6 @@ msgstr "इसके अंतर्गत फाइल करें"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:128
-#| msgid "Book URI"
 msgid "Book UID"
 msgstr "पुस्तक UID"
 
@@ -769,7 +760,6 @@ msgstr "सूची"
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
 #: ../addressbook/libebook/e-contact.c:281
-#| msgid "List Show Addresses"
 msgid "List Shows Addresses"
 msgstr "पानेवाले की सूची दिखाएँ"
 
@@ -885,7 +875,6 @@ msgid "Google Talk Name List"
 msgstr "गूगल टाक नाम सूची"
 
 #: ../addressbook/libebook/e-contact.c:320
-#| msgid "Skype Name List"
 msgid "Twitter Name List"
 msgstr "ट्विटर नाम सूची"
 
@@ -1121,14 +1110,12 @@ msgstr "अवैध बैकेंड नाम '%s' '%s' स्रोत म�
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:319
 #: ../calendar/libedata-cal/e-data-cal-factory.c:230
-#| msgid "POP Source UID"
 msgid "Missing source UID"
 msgstr "गुम स्रोत UID"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:332
 #: ../calendar/libedata-cal/e-data-cal-factory.c:243
 #, c-format
-#| msgid "No such source"
 msgid "No such source for UID '%s'"
 msgstr "कोई ऐसा स्रोत UID '%s' के लिए नहीं"
 
@@ -1139,7 +1126,6 @@ msgstr "सर्वर तक पहुँच सम्भव नहीं ह�
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:598
 #, c-format
-#| msgid "Failed to connect to POP server %s in secure mode: %s"
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "SSL के उपयोग में कनेक्ट करने में विफल: %s"
 
@@ -1151,10 +1137,12 @@ msgid ""
 "tests by selecting 'Ignore invalid SSL certificate' option in Properties"
 msgstr ""
 "SSL के उपयोग से सर्वर से कनेक्ट करने में विफल. एक संभावित कारण है कि यह एक "
-"अवैध प्रमाणपत्र है जो कि सर्वर के द्वारा प्रयोग किया जाता है. यदि यह "
-"प्रत्याशित है, जैसा कि स्व हस्ताक्षरित प्रमाणपत्र जो सर्वर पर प्रयोग किया "
-"जाता है, तब 'अमान्य SSL प्रमाणपत्र अनदेखा करें' विकल्प को गुण में चुनकर "
-"प्रमाणपत्र वैधता जाँच निष्क्रिय करें."
+"अवैध प्रमाणपत्र "
+"है जो कि सर्वर के द्वारा प्रयोग किया जाता है. यदि यह प्रत्याशित है, जैसा कि "
+"स्व "
+"हस्ताक्षरित प्रमाणपत्र जो सर्वर पर प्रयोग किया जाता है, तब 'अमान्य SSL "
+"प्रमाणपत्र "
+"अनदेखा करें' विकल्प को गुण में चुनकर प्रमाणपत्र वैधता जाँच निष्क्रिय करें."
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:616
 #, c-format
@@ -1162,12 +1150,10 @@ msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "अप्रत्याशित HTTP स्थिति कोड %d लौटा (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:635
-#| msgid "Backend is not opened yet"
 msgid "CalDAV backend is not loaded yet"
 msgstr "CalDAV बैकेंड अबतक लोड नहीं है"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:1017
-#| msgid "Invalid object"
 msgid "Invalid Redirect URL"
 msgstr "अवैध पुनर्निदेशित URL"
 
@@ -1182,33 +1168,27 @@ msgstr ""
 "त्रुटि संदेश: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2663
-#| msgid "Cannot create calendar object: "
 msgid "Cannot create local store"
 msgstr "स्थानीय स्टोर नहीं बना सकता है"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2672
 #, c-format
-#| msgid "Cannot create folder '%s': %s"
 msgid "Cannot create local cache folder '%s'"
 msgstr "'%s' स्थानी कैश फोल्डर नहीं बना सकता है"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2683
-#| msgid "Could not create cache file"
 msgid "Could not create synch slave thread"
 msgstr "सिंक स्लेव लड़ी नहीं बना सका"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3677
-#| msgid "The backend does not support bulk additions"
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV बड़ी मात्रा में योग का समर्थन नहीं करता है"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3779
-#| msgid "The backend does not support bulk modifications"
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV बल्क योग का समर्थन नहीं करता है"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3947
-#| msgid "The backend does not support bulk removals"
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV बड़ी मात्रा में हटाने का समर्थन नहीं करता है"
 
@@ -1249,7 +1229,6 @@ msgstr "पंचांग डाटा सहेज नहीं सका"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:482
 #, c-format
-#| msgid "Malformed signature"
 msgid "Malformed URI: %s"
 msgstr "विरूपित URI: %s"
 
@@ -2011,7 +1990,6 @@ msgstr "फ़ोल्डर '%s' के लिए कोटा जानका
 
 #: ../camel/camel-folder.c:3372
 #, c-format
-#| msgid "Opening folder '%s'"
 msgid "Expunging folder '%s'"
 msgstr "'%s' फ़ोल्डर पूर्ण विलोपित कर रहा है"
 
@@ -2027,7 +2005,6 @@ msgstr "'%s' के लिए कोटा जानकारी की पु�
 
 #: ../camel/camel-folder.c:3987
 #, c-format
-#| msgid "Creating folder '%s'"
 msgid "Refreshing folder '%s'"
 msgstr "'%s' फ़ोल्डर ताज़ा कर रहा है"
 
@@ -2297,12 +2274,10 @@ msgid "Error fetching message"
 msgstr "ला रहे संदेश में त्रुटि"
 
 #: ../camel/camel-imapx-server.c:3903
-#| msgid "Failed to cache %s: "
 msgid "Failed to copy the tmp file"
 msgstr "टेंप फ़ाइल की नक़ल लेने में विफल"
 
 #: ../camel/camel-imapx-server.c:3917
-#| msgid "Failed to encode data"
 msgid "Failed to close the tmp stream"
 msgstr "tmp स्ट्रीम बंद करने में विफल"
 
@@ -2324,13 +2299,11 @@ msgstr "संदेश पाने में त्रुटि"
 
 #: ../camel/camel-imapx-server.c:4590 ../camel/camel-imapx-server.c:4783
 #, c-format
-#| msgid "Fetching summary information for new messages in %s"
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "'%s' में नए संदेश के लिए सार सूचना ले रहा है"
 
 #: ../camel/camel-imapx-server.c:4641
 #, c-format
-#| msgid "Scanning for changed messages in %s"
 msgid "Scanning for changed messages in '%s'"
 msgstr "'%s' में परिवर्तित संदेश के लिये स्कैनिंग"
 
@@ -2344,8 +2317,6 @@ msgstr "संदेश को लाने के दौरान त्रु�
 
 #: ../camel/camel-imapx-server.c:4882 ../camel/camel-imapx-server.c:4918
 #, c-format
-#| msgid "Fetching summary information for %d message in %s"
-#| msgid_plural "Fetching summary information for %d messages in %s"
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
 msgstr[0] "%d संदेश के लिये  '%s' में सारांश सूचना ला रहा है"
@@ -2914,7 +2885,6 @@ msgid "%s authentication failed"
 msgstr "%s सत्यापन असफल"
 
 #: ../camel/camel-session.c:645
-#| msgid "Operation not supported"
 msgid "Forwarding messages is not supported"
 msgstr "संदेश का अग्रसारण समर्थित नहीं है"
 
@@ -3182,13 +3152,11 @@ msgstr "\"%s\" कमांड से नहीं जुड़ सका: %s"
 
 #: ../camel/camel-subscribable.c:386
 #, c-format
-#| msgid "Error subscribing to folder"
 msgid "Subscribing to folder '%s'"
 msgstr "'%s' की सदस्यता ले रहा है"
 
 #: ../camel/camel-subscribable.c:518
 #, c-format
-#| msgid "Error subscribing to folder"
 msgid "Unsubscribing from folder '%s'"
 msgstr "'%s' फ़ोल्डर से सदस्यता वापस ले रहा है"
 
@@ -3364,7 +3332,6 @@ msgstr "'%s' URL का विश्लेषण नहीं कर सका"
 
 #: ../camel/camel-vee-folder.c:494
 #, c-format
-#| msgid "Creating folder '%s'"
 msgid "Updating folder '%s'"
 msgstr "%s' फ़ोल्डर अद्यतन कर रहा है"
 
@@ -3644,7 +3611,6 @@ msgstr "'%s' फ़ोल्डर नहीं निर्मित कर स
 
 #: ../camel/providers/imap/camel-imap-store.c:2984
 #, c-format
-#| msgid "Retrieving folder list for %s"
 msgid "Retrieving list of folders at '%s'"
 msgstr "'%s' पर फ़ोल्डर की सूची पा रहा है"
 
@@ -4595,52 +4561,52 @@ msgid ""
 "system."
 msgstr "स्थानीय सिस्टम पर \"sendmail\" में भेजकर मेल देने के लिये."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:50
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:49
 msgid "sendmail"
 msgstr "sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:52
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:51
 msgid "Mail delivery via the sendmail program"
 msgstr "डाक भेजें प्रोग्राम के द्वारा डाक डेलिवरी"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:107
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:93
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "प्राप्तकर्ता सूची का विश्लेषण नहीं कर सकता"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:140
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:126
 #, c-format
-#| msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgid "Could not create pipe to '%s': %s: mail not sent"
-msgstr "'%s' में पाइप बना नहीं सका: %s: डाक नहीं भेजा गया"
+#| msgid "Could not create pipe to '%s': %s: mail not sent"
+msgid "Could not create pipe to sendmail: %s: mail not sent"
+msgstr "सेंडमेल में पाइप बना नहीं सका: %s: डाक नहीं भेजा गया"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:163
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:148
 #, c-format
-#| msgid "Could not fork sendmail: %s: mail not sent"
-msgid "Could not fork '%s': %s: mail not sent"
-msgstr "'%s' बाँट नहीं सका: %s: डाक नहीं भेजा गया"
+#| msgid "Could not fork '%s': %s: mail not sent"
+msgid "Could not fork sendmail: %s: mail not sent"
+msgstr "सेंडमेल बाँट नहीं सका: %s: डाक नहीं भेजा गया"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:210
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:194
 msgid "Could not send message: "
 msgstr "संदेश नहीं भेज सका: "
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:239
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:222
 #, c-format
-#| msgid "sendmail exited with signal %s: mail not sent."
-msgid "'%s' exited with signal %s: mail not sent."
-msgstr "'%s' %s संकेत के साथ बाहर निकल गया: डाक नहीं भेजा गया."
+#| msgid "'%s' exited with signal %s: mail not sent."
+msgid "sendmail exited with signal %s: mail not sent."
+msgstr "%s संकेत के साथ सेंडमेल बाहर निकल गया: डाक नहीं भेजा गया."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:247
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:229
 #, c-format
-#| msgid "Could not execute %s: mail not sent."
-msgid "Could not execute '%s': mail not sent."
-msgstr "'%s' का निष्पादन नहीं कर सकता: डाक नहीं भेजा गया."
+#| msgid "Could not execute '%s': mail not sent."
+msgid "Could not execute %s: mail not sent."
+msgstr "%s का निष्पादन नहीं कर सकता: डाक नहीं भेजा गया."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:252
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
-#| msgid "sendmail exited with status %d: mail not sent."
-msgid "'%s' exited with status %d: mail not sent."
-msgstr "'%s' अवस्थिति %d से बाहर निकल गया: डाक नहीं भेजा गया."
+#| msgid "'%s' exited with status %d: mail not sent."
+msgid "sendmail exited with status %d: mail not sent."
+msgstr "सेंडमेल अवस्थिति %d से बाहर निकल गया: डाक नहीं भेजा गया."
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:42
 msgid "Default SMTP port"
@@ -4879,7 +4845,6 @@ msgid "QUIT command failed: "
 msgstr "QUIT कमांड असफल:"
 
 #: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-#| msgid "Contact ID already exists"
 msgid "Contact UID of a user"
 msgstr "उपयोक्ता का संपर्क UID"
 
@@ -4891,7 +4856,6 @@ msgid "Bus name vanished (client terminated?)"
 msgstr "बस नाम समाप्त (क्लाइंट समाप्त?)"
 
 #: ../libebackend/e-authentication-mediator.c:264
-#| msgid "No response from the server"
 msgid "No response from client"
 msgstr "क्लाइंट से कोई अनुक्रिया नहीं"
 
@@ -4899,7 +4863,6 @@ msgstr "क्लाइंट से कोई अनुक्रिया न�
 #: ../libebackend/e-authentication-mediator.c:345
 #: ../libebackend/e-authentication-mediator.c:843
 #: ../libebackend/e-authentication-mediator.c:1173
-#| msgid "Could not cancel operation"
 msgid "Client cancelled the operation"
 msgstr "क्लाइंट ने ऑपरेशन रद्द कर दिया"
 
@@ -4918,13 +4881,11 @@ msgstr "कूटशब्द गलत था"
 #: ../libebackend/e-authentication-session.c:1331
 #: ../libebackend/e-authentication-session.c:1507
 #: ../libebackend/e-authentication-session.c:1690
-#| msgid "Operation cancelled"
 msgid "Keyring operation was cancelled"
 msgstr "कीरिंग ऑपरेशन रद्द किया गया था"
 
 #: ../libebackend/e-backend.c:190
 #, c-format
-#| msgid "IMAP server %s does not support %s authentication"
 msgid "%s does not support authentication"
 msgstr "%s प्रमाणीकरण समर्थित नहीं करता है"
 
@@ -4975,7 +4936,6 @@ msgstr "फ़ाइल का जरूर '.source' विस्तार ह�
 
 #: ../libebackend/e-source-registry-server.c:522
 #: ../libedataserver/e-source-registry.c:1523
-#| msgid "Failed to authenticate.\n"
 msgid "The user declined to authenticate"
 msgstr "उपयोक्ता प्रमाणीकरण से मना किया"
 
@@ -5115,65 +5075,54 @@ msgid "D-Bus error"
 msgstr "D-Bus त्रुटि "
 
 #: ../libedataserver/e-source-authenticator.c:166
-#| msgid "Authentication required"
 msgid "Address book authentication request"
 msgstr "पता पुस्तिका सत्यापन आग्रह"
 
 #: ../libedataserver/e-source-authenticator.c:171
-#| msgid "Authentication required"
 msgid "Calendar authentication request"
 msgstr "पंचांग सत्यापन आग्रह"
 
 #: ../libedataserver/e-source-authenticator.c:175
-#| msgid "Authentication required"
 msgid "Mail authentication request"
 msgstr "डाक सत्यापन आग्रह"
 
 #. generic account prompt
 #: ../libedataserver/e-source-authenticator.c:178
-#| msgid "Authentication required"
 msgid "Authentication request"
 msgstr "प्रमाणीकरण आग्रह"
 
 #: ../libedataserver/e-source-authenticator.c:188
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for address book \"%s\"."
 msgstr "पता पुस्तिका \"%s\" के लिए कृपया कूटशब्द दाखिल करें."
 
 #: ../libedataserver/e-source-authenticator.c:194
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for calendar \"%s\"."
 msgstr "पंचांग \"%s\" के लिए कृपया कूटशब्द दाखिल करें."
 
 #: ../libedataserver/e-source-authenticator.c:200
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail account \"%s\"."
 msgstr "डाक खाता \"%s\" के लिए कृपया कूटशब्द दाखिल करें."
 
 #: ../libedataserver/e-source-authenticator.c:206
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail transport \"%s\"."
 msgstr "डाक परिवहन \"%s\" के लिए कृपया कूटशब्द दाखिल करें."
 
 #: ../libedataserver/e-source-authenticator.c:212
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for memo list \"%s\"."
 msgstr "मेमो लिस्ट \"%s\" के लिए कृपया कूटशब्द दाखिल करें."
 
 #: ../libedataserver/e-source-authenticator.c:218
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for task list \"%s\"."
 msgstr "कार्य सूची \"%s\" के लिए कृपया कूटशब्द दाखिल करें."
 
 #: ../libedataserver/e-source-authenticator.c:224
 #, c-format
-#| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for account \"%s\"."
 msgstr "खाता \"%s\" के लिए कृपया कूटशब्द दाखिल करें."
 
@@ -5193,7 +5142,6 @@ msgid "Data source '%s' is not writable"
 msgstr "आँकड़ा स्रोत '%s' लेखन योग्य नहीं है"
 
 #: ../libedataserver/e-source.c:1408
-#| msgid "Unnamed List"
 msgid "Unnamed"
 msgstr "बेनाम"
 
@@ -5498,7 +5446,6 @@ msgid "Address B_ook:"
 msgstr "पता पुस्तिका (_o):"
 
 #: ../libedataserverui/e-name-selector-dialog.c:310
-#| msgid "Cate_gory:"
 msgid "Cat_egory:"
 msgstr "श्रेणी (_e):"
 
@@ -5619,35 +5566,30 @@ msgstr "पंचांग"
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:184
 #, c-format
-#| msgid "Unexpected response from IMAP server: %s"
 msgid "Code: %u - Unexpected response from server"
 msgstr "कोड: %u - सर्वर से अप्रत्याशित अनुक्रिया"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:205
 #, c-format
-#| msgid "Failed to retrieve message"
 msgid "Failed to parse autodiscover response XML"
 msgstr "स्वतःखोज अनुक्रिया XML विश्लेषण में विफल"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:214
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Autodiscover element"
 msgstr "स्वतः खोज तत्व ढूँढ़ने में विफल"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:226
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Response element"
 msgstr "अनुक्रिया तत्व ढूढ़ने में विफल"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:238
 #, c-format
-#| msgid "Failed to find system calendar"
 msgid "Failed to find Account element"
 msgstr "खाता तत्व ढूँढ़ने में विफल"
 
@@ -5677,7 +5619,6 @@ msgstr "एवोल्यूशन स्रोत प्रदर्शक"
 
 #. Translators: The name that is displayed in the user interface
 #: ../tests/libedataserverui/evolution-source-viewer.c:650
-#| msgid "Family Name"
 msgid "Display Name"
 msgstr "प्रदर्शित नाम"
 
