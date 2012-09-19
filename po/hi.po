@@ -8,10 +8,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product"
-"=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-09-18 07:13+0000\n"
-"PO-Revision-Date: 2012-09-18 12:45+0530\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
+"POT-Creation-Date: 2012-09-18 07:16+0000\n"
+"PO-Revision-Date: 2012-09-19 17:48+0530\n"
 "Last-Translator: rajesh <rajeshkajha@yahoo.com>\n"
 "Language-Team: Hindi <kde-i18n-doc@kde.org>\n"
 "Language: hi\n"
@@ -4576,13 +4576,11 @@ msgstr "प्राप्तकर्ता सूची का विश्ल
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:126
 #, c-format
-#| msgid "Could not create pipe to '%s': %s: mail not sent"
 msgid "Could not create pipe to sendmail: %s: mail not sent"
 msgstr "सेंडमेल में पाइप बना नहीं सका: %s: डाक नहीं भेजा गया"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:148
 #, c-format
-#| msgid "Could not fork '%s': %s: mail not sent"
 msgid "Could not fork sendmail: %s: mail not sent"
 msgstr "सेंडमेल बाँट नहीं सका: %s: डाक नहीं भेजा गया"
 
@@ -4592,19 +4590,16 @@ msgstr "संदेश नहीं भेज सका: "
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:222
 #, c-format
-#| msgid "'%s' exited with signal %s: mail not sent."
 msgid "sendmail exited with signal %s: mail not sent."
 msgstr "%s संकेत के साथ सेंडमेल बाहर निकल गया: डाक नहीं भेजा गया."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:229
 #, c-format
-#| msgid "Could not execute '%s': mail not sent."
 msgid "Could not execute %s: mail not sent."
 msgstr "%s का निष्पादन नहीं कर सकता: डाक नहीं भेजा गया."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
-#| msgid "'%s' exited with status %d: mail not sent."
 msgid "sendmail exited with status %d: mail not sent."
 msgstr "सेंडमेल अवस्थिति %d से बाहर निकल गया: डाक नहीं भेजा गया."
 
@@ -4847,6 +4842,34 @@ msgstr "QUIT कमांड असफल:"
 #: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
 msgid "Contact UID of a user"
 msgstr "उपयोक्ता का संपर्क UID"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
+msgid "Birthday and anniversary reminder"
+msgstr "जन्मदिन और वर्षगांठ संसूचक"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
+msgid "Whether to set a reminder for birthdays and anniversaries"
+msgstr "क्या जन्मदिन व वर्षगांठ के लिए तयशुदा अनुस्मारक सेट करना है."
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
+msgid "Birthday and anniversary reminder value"
+msgstr "जन्मदिन और वर्षगांठ संसूचक मान"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
+msgid "Number of units for determining a birthday or anniversary reminder"
+msgstr "जन्मदिन और वर्षगांठ संसूचक के लिए इकाइयों की संख्या"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
+msgid "Birthday and anniversary reminder units"
+msgstr "जन्मदिन और वर्षगांठ संसूचक इकाई"
+
+#: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
+msgid ""
+"Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
+"\"days\""
+msgstr ""
+"जन्मदिन और वर्षगांठ संसूचक के लिए ईकाई, \"मिनट\", \"घंटे\" या "
+"\"दिन\"."
 
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
