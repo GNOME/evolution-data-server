@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-09-16 20:33+0000\n"
-"PO-Revision-Date: 2012-09-17 21:57+0100\n"
+"PO-Revision-Date: 2012-09-19 15:22+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -192,7 +192,7 @@ msgstr "%s: vrnjena je prazna vrednost (NULL) predmeta ldap_first_entry"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2265
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2456
-#, fuzzy, c-format
+#, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: vrnjena je neupravljana vrsta iskanja %d"
 
@@ -220,14 +220,14 @@ msgid "Downloading contacts (%d)... "
 msgstr "Prejemanje stikov (%d) ..."
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5552
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to get the DN for user '%s'"
-msgstr "Ni mogoče odpreti shrambe za uporabnika '%s'"
+msgstr "Pridobivanje razločnega imena (DN) za uporabnika '%s' je spodletelo."
 
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:645
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to open addressbook at '%s': %s"
-msgstr "Vira '%s' ni mogoče razširiti"
+msgstr "Odpiranje imenika na '%s' je spodletelo: %s"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:354
 #, c-format
@@ -235,33 +235,31 @@ msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "Ustvarjanje vira '%s' je spodletelo s stanjem HTTP: %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:447
-#, fuzzy, c-format
+#, c-format
 msgid "DELETE failed with HTTP status %d"
-msgstr "Ustvarjanje vira '%s' je spodletelo s stanjem HTTP: %d (%s)"
+msgstr "Ukaz DELETE je spodletel s stanjem HTTP %d"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:507
-#, fuzzy
 msgid "Contact on server changed -> not modifying"
-msgstr "_Prisluhni opozorilom sprememb na strežniku"
+msgstr "Stik na strežniku je spremenjen -> spremembe ne bodo uveljavljene"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:515
-#, fuzzy, c-format
+#, c-format
 msgid "Modify contact failed with HTTP status: %d (%s)"
-msgstr "Ustvarjanje vira '%s' je spodletelo s stanjem HTTP: %d (%s)"
+msgstr "Ukaz spreminjanja stika je spodletel s stanjem HTTP %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:912
-#, fuzzy
 msgid "Loading Addressbook summary..."
-msgstr "Dostopen povzetek razpredelnice"
+msgstr "Nalaganje povzetka imenika ..."
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:928
-#, fuzzy, c-format
+#, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
-msgstr "Ustvarjanje vira '%s' je spodletelo s stanjem HTTP: %d (%s)"
+msgstr "Ukaz PROPFIND je na webdav spodletel s stanjem HTTP %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:949
 msgid "No response body in webdav PROPFIND result"
-msgstr ""
+msgstr "Ni telesa odziva med razultati ukaza webdav PROPFIND"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:980
 #, c-format
@@ -1115,15 +1113,15 @@ msgstr "Ni mogoče odstraniti stika:"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:103
 #: ../calendar/libedata-cal/e-data-cal-factory.c:114
-#, fuzzy, c-format
+#, c-format
 msgid "No backend name in source '%s'"
-msgstr "Ime izvornega ozadnjega programa (privzeto je to 'pidgin')"
+msgstr "Ni imena ozadnjega programa v viru '%s'"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:115
 #: ../calendar/libedata-cal/e-data-cal-factory.c:127
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid backend name '%s' in source '%s'"
-msgstr "Ime izvornega ozadnjega programa (privzeto je to 'pidgin')"
+msgstr "Neveljavno ime ozadnjega programa '%s'  vira '%s'"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:319
 #: ../calendar/libedata-cal/e-data-cal-factory.c:230
@@ -1204,7 +1202,7 @@ msgstr "Koledar ne podpira možnosti prostosti/zasedenosti"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4614
 msgid "Schedule outbox url not found"
-msgstr ""
+msgstr "Naslova URL odhodnega predala ni mogoče najti"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4713
 msgid "Unexpected result in schedule-response"
@@ -4874,7 +4872,7 @@ msgstr "Dejanje je bilo preklicano."
 
 #: ../libebackend/e-authentication-mediator.c:416
 msgid "Client reports password was rejected"
-msgstr ""
+msgstr "Geslo poročila odjemalcev je zavrnjeno"
 
 #: ../libebackend/e-authentication-session.c:532
 msgid "Add this password to your keyring"
@@ -4919,7 +4917,7 @@ msgstr "Podatkovni vir '%s' ne podpira ustvarjanja oddaljenih virov"
 #: ../libebackend/e-server-side-source.c:930
 #, c-format
 msgid "Data source '%s' has no collection backend to create the remote resource"
-msgstr ""
+msgstr "Podatkovni vir '%s' nima določenega ozadnjega zbiranja za ustvarjanje oddaljenih virov"
 
 #: ../libebackend/e-server-side-source.c:958
 #: ../libedataserver/e-source.c:1220
@@ -4930,7 +4928,7 @@ msgstr "Podatkovni vir '%s' ne podpira ustvarjanja oddaljenih virov"
 #: ../libebackend/e-server-side-source.c:972
 #, c-format
 msgid "Data source '%s' has no collection backend to delete the remote resource"
-msgstr ""
+msgstr "Podatkovni vir '%s' nima določenega ozadnjega zbiranja za izbris oddaljenih virov"
 
 #: ../libebackend/e-server-side-source.c:1285
 #, c-format
