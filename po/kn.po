@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-09-16 16:58+0000\n"
-"PO-Revision-Date: 2012-09-20 18:04+0530\n"
+"PO-Revision-Date: 2012-09-20 22:17+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: Kannada <kde-i18n-doc@kde.org>\n"
 "Language: kn\n"
@@ -2152,6 +2152,9 @@ msgid ""
 "Note the encrypted content doesn't contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
+"ಗೂಢಲಿಪೀಕರಿಸಲಾದ ವಿಷಯವು ಸ್ವೀಕರಿಸುವವರ ಕುರಿತಾದ ಮಾಹಿತಿಯನ್ನು ಹೊಂದಿರುವುದಿಲ್ಲ "
+"ಎನ್ನುವುದನ್ನು ನೆನಪಿಡಿ, ಅಂದರೆ ಶೇಖರಿಸಿ ಇಡಲಾದ ಪ್ರತಿಯೊಂದು ಖಾಸಗಿ ಕೀಲಿಗಾಗಿ ಒಂದು "
+"ಗುಪ್ತಪದದ ಪ್ರಾಂಪ್ಟ್‍ ಇರುತ್ತದೆ."
 
 #: ../camel/camel-gpg-context.c:883 ../camel/camel-net-utils.c:523
 #: ../camel/camel-tcp-stream-raw.c:268
@@ -2286,8 +2289,7 @@ msgstr ""
 #, c-format
 #| msgid "IMAP server %s does not support requested authentication type %s"
 msgid "IMAP server %s does not support %s authentication"
-msgstr ""
-"%s ಎಂಬ IMAP ಪೂರೈಕೆಗಣಕವು ಮನವಿ ಸಲ್ಲಿಸಲಾದ %s ಎಂಬ ದೃಢೀಕರಣವನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
+msgstr "%s ಎಂಬ IMAP ಪೂರೈಕೆಗಣಕವು %s ಎಂಬ ದೃಢೀಕರಣವನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../camel/camel-imapx-server.c:3591 ../camel/camel-session.c:494
 #: ../camel/providers/imap/camel-imap-store.c:1174
@@ -3242,16 +3244,15 @@ msgid "Subscribing to folder '%s'"
 msgstr "'%s' ಪತ್ರಕೋಶಗಳಿಗೆ ಚಂದಾದಾರವಾಗಿಸಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-subscribable.c:518
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot unsubscribe from folder '%s': Bad command"
 msgid "Unsubscribing from folder '%s'"
-msgstr ""
-"ಫೋಲ್ಡರ್ '%s' ನ ಚಂದಾದಾರಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: ಸರಿಯಲ್ಲದ ಆಜ್ಞೆ"
+msgstr "'%s' ಪತ್ರಕೋಶದ ಚಂದಾದಾರಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-tcp-stream-raw.c:310
 #, c-format
 msgid "NSPR error code %d"
-msgstr ""
+msgstr "NSPR ದೋಷ ಸಂಕೇತ %d"
 
 #: ../camel/camel-tcp-stream-raw.c:649 ../camel/camel-tcp-stream-raw.c:662
 #, c-format
@@ -3333,7 +3334,7 @@ msgid "Invalid reply from proxy server"
 msgstr "ಪ್ರಾಕ್ಸಿ ಪರಿಚಾರಕದಿಂದ ಅಮಾನ್ಯವಾದ ಪ್ರತ್ಯುತ್ತರ"
 
 #: ../camel/camel-tcp-stream-ssl.c:505
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Issuer:            %s\n"
 #| "Subject:           %s\n"
@@ -3345,10 +3346,10 @@ msgid ""
 "   Fingerprint:  %s\n"
 "   Signature:    %s"
 msgstr ""
-"ಒದಗಿಸಿದವರು:            %s\n"
-"ವಿಷಯ:           %s\n"
-"ಫಿಂಗರ್‌ಪ್ರಿಂಟ್:       %s\n"
-"ಸಹಿ:         %s"
+"   ಒದಗಿಸಿದವರು:       %s\n"
+"   ವಿಷಯ:      %s\n"
+"   ಫಿಂಗರ್‌ಪ್ರಿಂಟ್:  %s\n"
+"   ಸಹಿ:    %s"
 
 #: ../camel/camel-tcp-stream-ssl.c:512
 msgid "GOOD"
@@ -3366,18 +3367,23 @@ msgid ""
 "Detailed information about the certificate:\n"
 "%s"
 msgstr ""
+"'%s' ಎಂಬುದಕ್ಕಾಗಿನ SSL ಪ್ರಮಾಣಪತ್ರವನ್ನು ನಂಬಲಾಗಿಲ್ಲ. ನೀವಿದನ್ನು ಅಂಗೀಕರಿಸಲು "
+"ಬಯಸುತ್ತೀರೆ?\n"
+"\n"
+"ಪ್ರಮಾಣಪತ್ರದ ಕುರಿತಾದ ವಿವರವಾದ ಮಾಹಿತಿ:\n"
+"%s"
 
 #: ../camel/camel-tcp-stream-ssl.c:523
 msgid "_Reject"
-msgstr ""
+msgstr "ತಿರಸ್ಕರಿಸು (_R)"
 
 #: ../camel/camel-tcp-stream-ssl.c:524
 msgid "Accept _Temporarily"
-msgstr ""
+msgstr "ತಾತ್ಕಾಲಿಕವಾಗಿ ಅಂಗೀಕರಿಸು (_T)"
 
 #: ../camel/camel-tcp-stream-ssl.c:525
 msgid "_Accept Permanently"
-msgstr ""
+msgstr "ಶಾಶ್ವತವಾಗಿ ಅಂಗೀಕರಿಸು (_A)"
 
 #: ../camel/camel-tcp-stream-ssl.c:586
 #, c-format
@@ -3421,10 +3427,10 @@ msgid "Could not parse URL '%s'"
 msgstr "'%s' URL ಅನ್ನು ಪಾರ್ಸ್ ಮಾಡಲಾಗಿಲ್ಲ"
 
 #: ../camel/camel-vee-folder.c:494
-#, fuzzy, c-format
+#, c-format
 #| msgid "Creating folder '%s'"
 msgid "Updating folder '%s'"
-msgstr "'%s' ಫೋಲ್ಡರನ್ನು ರಚಿಸಲಾಗುತ್ತಿದೆ"
+msgstr "'%s' ಪತ್ರಕೋಶವನ್ನು ಅಪ್‌ಡೇಟ್‌ ಮಾಡಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/camel-vee-folder.c:855 ../camel/camel-vee-folder.c:965
 #, c-format
@@ -3444,7 +3450,7 @@ msgstr "'%s' ಅನ್ನು ಶೇಖರಿಸಿಡುವಲ್ಲಿ ದೋ�
 
 #: ../camel/camel-vee-folder.c:1169
 msgid "Automatically _update on change in source folders"
-msgstr ""
+msgstr "ಆಕರ ಪತ್ರಕೋಶಗಳಲ್ಲಿ ಬದಲಾವಣೆಯಾದಾಗ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಅಪ್‌ಡೇಟ್ ಮಾಡು (_u)"
 
 #. Translators: 'Unmatched' is a folder name under Search folders where are shown
 #. * all messages not belonging into any other configured search folder
@@ -3464,7 +3470,7 @@ msgstr "ಫೋಲ್ಡರಿನ ಹೆಸರನ್ನು ಬದಲಾಯಿಸ�
 
 #: ../camel/camel-vee-store.c:532
 msgid "Enable _Unmatched folder"
-msgstr ""
+msgstr "ಹೊಂದಿಕೆಯಾಗದ ಪತ್ರಕೋಶಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸು (_U)"
 
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
@@ -3492,7 +3498,7 @@ msgid "Server unexpectedly disconnected: %s"
 msgstr "ಪರಿಚಾರಕದಿಂದ ಅನಿರೀಕ್ಷಿತವಾಗಿ ಸಂಪರ್ಕ ಕಡಿದು ಹೋಗಿದೆ: %s"
 
 #: ../camel/providers/imap/camel-imap-command.c:425
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Alert from IMAP server %s@%s:\n"
 #| "%s"
@@ -3500,7 +3506,7 @@ msgid ""
 "Alert from IMAP server %s@%s in folder %s:\n"
 "%s"
 msgstr ""
-"%s@%s IMAP ಪರಿಚಾರಕದಿಂದ ಎಚ್ಚರಿಕೆ ಬಂದಿದೆ:\n"
+"%s@%s IMAP ಪರಿಚಾರಕದಿಂದ (%s ಪತ್ರಕೋಶದಲ್ಲಿರುವ) ಎಚ್ಚರಿಕೆ ಬಂದಿದೆ:\n"
 "%s"
 
 #: ../camel/providers/imap/camel-imap-command.c:429
@@ -3538,10 +3544,9 @@ msgid "Unexpected OK response from IMAP server: %s"
 msgstr "IMAP ಪರಿಚಾರಕದಿಮದ ಅನಿರೀಕ್ಷಿತ 'ಸರಿ' ಸಂದೇಶ: %s"
 
 #: ../camel/providers/imap/camel-imap-folder.c:356
-#, fuzzy
 #| msgid "Always check for new mail in this folder"
 msgid "Always check for _new mail in this folder"
-msgstr "ಯಾವಾಗಲೂ ಈ ಫೋಲ್ಡರಿನಲ್ಲಿ ಹೊಸ ಮೈಲಿಗಾಗಿ ಹುಡುಕಿ"
+msgstr "ಯಾವಾಗಲೂ ಈ ಪತ್ರಕೋಶದಲ್ಲಿ ಹೊಸ ಮೈಲಿಗಾಗಿ ಹುಡುಕು (_n)"
 
 #: ../camel/providers/imap/camel-imap-folder.c:447
 #, c-format
@@ -3659,10 +3664,9 @@ msgstr "ಆಯ್ಕೆಗಳು"
 #: ../camel/providers/imap/camel-imap-provider.c:57
 #: ../camel/providers/imapx/camel-imapx-provider.c:61
 #: ../camel/providers/nntp/camel-nntp-provider.c:43
-#, fuzzy
 #| msgid "_Apply filters to new messages in INBOX"
 msgid "Apply _filters to new messages in all folders"
-msgstr "INBOX ನಲ್ಲಿನ ಹೊಸ ಸಂದೇಶಗಳಿಗೆ ಫಿಲ್ಟರುಗಳನ್ನು ಅನ್ವಯಿಸು(_A)"
+msgstr "ಎಲ್ಲಾ ಪತ್ರಕೋಶಗಳಲ್ಲಿನ ಹೊಸ ಸಂದೇಶಕ್ಕಾಗಿ ಅನ್ವಯಿಸು (_f)"
 
 #: ../camel/providers/imap/camel-imap-provider.c:59
 #: ../camel/providers/imapx/camel-imapx-provider.c:63
@@ -3711,10 +3715,10 @@ msgid "Cannot create folder '%s': folder exists."
 msgstr "'%s' ಫೋಲ್ಡರನ್ನು ನಿರ್ಮಿಸಲಾಗಿಲ್ಲ: ಫೋಲ್ಡರ್ ಈಗಾಗಲೆ ಇದೆ."
 
 #: ../camel/providers/imap/camel-imap-store.c:2984
-#, fuzzy, c-format
+#, c-format
 #| msgid "Retrieving quota information for '%s'"
 msgid "Retrieving list of folders at '%s'"
-msgstr "'%s' ನಲ್ಲಿನ ಕೋಟಾ ಮಾಹಿತಿಯನ್ನು ಪಡೆದುಕೊಳ್ಳಲಾಗುತ್ತಿದೆ"
+msgstr "'%s' ನಲ್ಲಿನ ಪತ್ರಕೋಶಗಳ ಪಟ್ಟಿಯನ್ನು ಮರಳಿ ಪಡೆಯಲಾಗುತ್ತಿದೆ"
 
 #: ../camel/providers/imap/camel-imap-store.c:3334
 #, c-format
@@ -3731,7 +3735,7 @@ msgstr "ಪರಿಚಾರಕವು ಬೆಂಬಲಿಸುವಂತಿದ್�
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:46
 msgid "_Listen for server change notifications"
-msgstr ""
+msgstr "ಪರಿಚಾರಕದ ಬದಲಾವಣೆಯ ಸೂಚನೆಗಳಿಗಾಗಿ ಆಲಿಸು (_L)"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:56
 msgid "Namespace:"
@@ -3762,10 +3766,9 @@ msgid "%s (%s)"
 msgstr "%s (%s)"
 
 #: ../camel/providers/local/camel-local-folder.c:499
-#, fuzzy
 #| msgid "Index message body data"
 msgid "_Index message body data"
-msgstr "ಸೂಚಿ ಸಂದೇಶದ ಮುಖ್ಯ ಭಾಗದ ದತ್ತಾಂಶ"
+msgstr "ಸೂಚಿ ಸಂದೇಶದ ಮುಖ್ಯ ಭಾಗದ ದತ್ತಾಂಶ (_I)"
 
 #: ../camel/providers/local/camel-local-folder.c:727
 #, c-format
@@ -3802,10 +3805,9 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:79
 #: ../camel/providers/local/camel-local-provider.c:99
-#, fuzzy
 #| msgid "_Apply filters to new messages in INBOX"
 msgid "_Apply filters to new messages in Inbox"
-msgstr "INBOX ನಲ್ಲಿನ ಹೊಸ ಸಂದೇಶಗಳಿಗೆ ಫಿಲ್ಟರುಗಳನ್ನು ಅನ್ವಯಿಸು(_A)"
+msgstr "ಒಳಪೆಟ್ಟಿಗೆಯಲ್ಲಿನ ಹೊಸ ಸಂದೇಶಗಳಿಗೆ ಸೋಸುಗಗಳನ್ನು (ಫಿಲ್ಟರ್) ಅನ್ವಯಿಸು (_A)"
 
 #: ../camel/providers/local/camel-local-provider.c:86
 msgid "Maildir-format mail directories"
@@ -3923,10 +3925,10 @@ msgid "Cannot transfer message to destination folder: %s"
 msgstr "ನಿರ್ದೇಶಿತ ಫೋಲ್ಡರಿಗೆ ಸಂದೇಶವನ್ನು ಕಾಪಿ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:112
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create folder: %s : Folder name cannot contain a dot"
 msgid "Cannot create folder: %s: Folder name cannot contain a dot"
-msgstr "ಫೋಲ್ಡರ್ ನಿರ್ಮಿಸಲಾಗಿಲ್ಲ: %s: ಫೋಲ್ಡರ್ ಹೆಸರಿನಲ್ಲಿ ಚುಕ್ಕಿಯು ಇರುವಂತಿಲ್ಲ"
+msgstr "ಪತ್ರಕೋಶದ ರಚಿಸಲಾಗಿಲ್ಲ: %s: ಪತ್ರಕೋಶದ ಹೆಸರಿನಲ್ಲಿ ಚುಕ್ಕಿಯು ಇರುವಂತಿಲ್ಲ"
 
 #: ../camel/providers/local/camel-maildir-store.c:122
 #: ../camel/providers/local/camel-maildir-store.c:806
@@ -4220,10 +4222,9 @@ msgid "Spool folder tree %s"
 msgstr "ಸ್ಪೂಲ್ ಫೋಲ್ಡರ್ ವೃಕ್ಷ %s"
 
 #: ../camel/providers/local/camel-spool-store.c:432
-#, fuzzy
 #| msgid "Invalid source"
 msgid "Invalid spool"
-msgstr "ಅಮಾನ್ಯವಾದ ಆಕರ"
+msgstr "ಅಮಾನ್ಯವಾದ ಸ್ಪೂಲ್"
 
 #: ../camel/providers/local/camel-spool-store.c:492
 #, c-format
@@ -4774,15 +4775,15 @@ msgid "SMTP mail delivery via %s"
 msgstr "%s ಮೂಲಕ SMTP ಮೈಲ್ ರವಾನೆ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:378
-#, fuzzy, c-format
+#, c-format
 #| msgid "SMTP server %s does not support requested authentication type %s."
 msgid "SMTP server %s does not support %s authentication"
-msgstr "%s SMTP ಪರಿಚಾರಕವು ಮನವಿ ಸಲ್ಲಿಸಲಾದ %s ಬಗೆಯ ದೃಢೀಕರಣವನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ."
+msgstr "%s ಎಂಬ SMTP ಪೂರೈಕೆಗಣಕವು %s ಎಂಬ ದೃಢೀಕರಣವನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:458
 #, c-format
 msgid "No SASL mechanism was specified"
-msgstr ""
+msgstr "ಯಾವುದೇ SASL ರಚನಾವಿನ್ಯಾಸವನ್ನು ಸೂಚಿಸಲಾಗಿಲ್ಲ"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:488
 #: ../camel/providers/smtp/camel-smtp-transport.c:499
@@ -4969,138 +4970,138 @@ msgid "QUIT command failed: "
 msgstr "QUIT ಆಜ್ಞೆ ವಿಫಲಗೊಂಡಿದೆ: "
 
 #: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-#, fuzzy
 #| msgid "Contact ID already exists"
 msgid "Contact UID of a user"
-msgstr "ಸಂಪರ್ಕ ಐಡಿಯು ಈಗಾಗಲೆ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ"
+msgstr "ಒಬ್ಬ ಬಳಕೆದಾರನ ಸಂಪರ್ಕ UID"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
 msgid "Birthday and anniversary reminder"
-msgstr ""
+msgstr "ಹುಟ್ಟುಹಬ್ಬಗಳು ಹಾಗು ವಾರ್ಷಿಕೋತ್ಸವದ ಜ್ಞಾಪನೆ"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
 msgid "Whether to set a reminder for birthdays and anniversaries"
-msgstr ""
+msgstr "ಜನ್ಮದಿನಗಳಿಗೆ ಮತ್ತು ವಾರ್ಷಿಕೋತ್ಸವಗಳನ್ನು ಜ್ಞಾಪಿಸುವಂತೆ ಸೂಚಿಸಬೇಕೆ"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
 msgid "Birthday and anniversary reminder value"
-msgstr ""
+msgstr "ಹುಟ್ಟುಹಬ್ಬಗಳು ಹಾಗು ವಾರ್ಷಿಕೋತ್ಸವಗಳ ಜ್ಞಾಪನೆಯ ಮೌಲ್ಯ"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
 msgid "Number of units for determining a birthday or anniversary reminder"
-msgstr ""
+msgstr "ಜನ್ಮದಿನ ಅಥವ ವಾರ್ಷಿಕೋತ್ಸವದ ಜ್ಞಾಪನೆಯನ್ನು ನಿರ್ಧರಿಸಲು ಘಟಕಗಳ ಸಂಖ್ಯೆ"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
 msgid "Birthday and anniversary reminder units"
-msgstr ""
+msgstr "ಹುಟ್ಟುಹಬ್ಬಗಳು ಹಾಗು ವಾರ್ಷಿಕೋತ್ಸವಗಳ ಜ್ಞಾಪನೆಯ ಘಟಕಗಳು"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
 msgid ""
 "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
 "\"days\""
 msgstr ""
+"ಜನ್ಮದಿನ ಅಥವ ವಾರ್ಷಿಕೋತ್ಸವದ ಜ್ಞಾಪನೆಗಾಗಿನ ಘಟಕಗಳು, \"ನಿಮಿಷಗಳು\", \"ಗಂಟೆಗಳು\" ಅಥವ "
+"\"ದಿನಗಳು\""
 
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
 #: ../libebackend/e-authentication-mediator.c:849
 #: ../libebackend/e-authentication-mediator.c:1179
 msgid "Bus name vanished (client terminated?)"
-msgstr ""
+msgstr "ಬಸ್ ಹೆಸರು ಕಣ್ಮರೆಯಾಗಿದೆ (ಕಕ್ಷಿಯು ಅಂತ್ಯಗೊಂಡಿದೆ?)"
 
 #: ../libebackend/e-authentication-mediator.c:264
-#, fuzzy
 #| msgid "No response from the server"
 msgid "No response from client"
-msgstr "ಪರಿಚಾರಕದಿಂದ ಯಾವುದೆ ಪ್ರತ್ಯುತ್ತರ ಇಲ್ಲ"
+msgstr "ಕಕ್ಷಿಯಿಂದ (ಕ್ಲೈಂಟ್) ಯಾವುದೆ ಪ್ರತ್ಯುತ್ತರ ಇಲ್ಲ"
 
 #: ../libebackend/e-authentication-mediator.c:334
 #: ../libebackend/e-authentication-mediator.c:345
 #: ../libebackend/e-authentication-mediator.c:843
 #: ../libebackend/e-authentication-mediator.c:1173
-#, fuzzy
 msgid "Client cancelled the operation"
-msgstr "ಬಳಕೆದಾರನನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ"
+msgstr "ಕಕ್ಷಿಯು (ಕ್ಲೈಂಟ್) ಕಾರ್ಯಾಚರಣೆಯನ್ನು ರದ್ದುಗೊಳಿಸಿದ್ದಾರೆ"
 
 #: ../libebackend/e-authentication-mediator.c:416
 msgid "Client reports password was rejected"
-msgstr ""
+msgstr "ಕಕ್ಷಿಯ (ಕ್ಲೈಂಟ್) ವರದಿಗಳ ಗುಪ್ತಪದವನ್ನು ನಿರಾಕರಿಸಲಾಗಿದೆ"
 
 #: ../libebackend/e-authentication-session.c:532
 msgid "Add this password to your keyring"
-msgstr ""
+msgstr "ನಿಮ್ಮ ಕೀರಿಂಗ್‌ಗೆ ಈ ಗುಪ್ತಪದವನ್ನು ಸೇರಿಸು"
 
 #: ../libebackend/e-authentication-session.c:595
 msgid "Password was incorrect"
-msgstr ""
+msgstr "ಗುಪ್ತಪದವು ಸರಿಯಾಗಿಲ್ಲ"
 
 #: ../libebackend/e-authentication-session.c:1331
 #: ../libebackend/e-authentication-session.c:1507
 #: ../libebackend/e-authentication-session.c:1690
-#, fuzzy
 #| msgid "Operation cancelled"
 msgid "Keyring operation was cancelled"
-msgstr "ಕಾರ್ಯವು ರದ್ದು ಮಾಡಲ್ಪಟ್ಟಿದೆ"
+msgstr "ಕೀರಿಂಗ್ ಕಾರ್ಯವು ರದ್ದು ಮಾಡಲ್ಪಟ್ಟಿದೆ"
 
 #: ../libebackend/e-backend.c:190
-#, fuzzy, c-format
+#, c-format
 #| msgid "IMAP server %s does not support requested authentication type %s"
 msgid "%s does not support authentication"
-msgstr ""
-"IMAP ಪರಿಚಾರಕ %s ಮನವಿ ಸಲ್ಲಿಸಲಾದ ದೃಢೀಕರಣದ ಬೆಂಬಲದ ಬಗೆ %s ಅನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
+msgstr "%s ಪೂರೈಕೆಗಣಕವು ದೃಢೀಕರಣವನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../libebackend/e-collection-backend.c:734
 #, c-format
 msgid "%s does not support creating remote resources"
-msgstr ""
+msgstr "ದೂರಸ್ಥ ಸಂಪನ್ಮೂಲಗಳನ್ನು ರಚಿಸುವುದನ್ನು %s ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../libebackend/e-collection-backend.c:793
 #, c-format
 msgid "%s does not support deleting remote resources"
-msgstr ""
+msgstr "ದೂರಸ್ಥ ಸಂಪನ್ಮೂಲಗಳನ್ನು ಅಳಿಸುವುದನ್ನು %s ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../libebackend/e-server-side-source.c:126
 #, c-format
 msgid "Data source is missing a [%s] group"
-msgstr ""
+msgstr "ಒಂದು [%s] ಗುಂಪಿನಲ್ಲಿ ದತ್ತಾಂಶ ಆಕರವು ಕಾಣಿಸುತ್ತಿಲ್ಲ"
 
 #: ../libebackend/e-server-side-source.c:916 ../libedataserver/e-source.c:1111
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
-msgstr ""
+msgstr "ದೂರಸ್ಥ ಸಂಪನ್ಮೂಲಗಳನ್ನು ರಚಿಸುವುದನ್ನು '%s' ದತ್ತ ಆಕರವು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../libebackend/e-server-side-source.c:930
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
 msgstr ""
+"ದೂರಸ್ಥ ಸಂಪನ್ಮೂಲವನ್ನು ರಚಿಸಲು '%s' ದತ್ತ ಆಕರವು ಯಾವುದೆ ಸಂಗ್ರಹ ಬ್ಯಾಕೆಂಡ್ ಅನ್ನು "
+"ಹೊಂದಿಲ್ಲ"
 
 #: ../libebackend/e-server-side-source.c:958 ../libedataserver/e-source.c:1220
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
-msgstr ""
+msgstr "ದೂರಸ್ಥ ಸಂಪನ್ಮೂಲಗಳನ್ನು ಅಳಿಸುವುದನ್ನು '%s' ದತ್ತ ಆಕರವು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../libebackend/e-server-side-source.c:972
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
 msgstr ""
+"ದೂರಸ್ಥ ಸಂಪನ್ಮೂಲವನ್ನು ಅಳಿಸಲು '%s' ದತ್ತ ಆಕರವು ಯಾವುದೆ ಸಂಗ್ರಹ ಬ್ಯಾಕೆಂಡ್ ಅನ್ನು "
+"ಹೊಂದಿಲ್ಲ"
 
 #: ../libebackend/e-server-side-source.c:1285
 #, c-format
 msgid "File must have a '.source' extension"
-msgstr ""
+msgstr "ಒಂದು '.source' ವಿಸ್ತರಣೆಯನ್ನು ಹೊಂದಿರಬೇಕು"
 
 #: ../libebackend/e-source-registry-server.c:522
 #: ../libedataserver/e-source-registry.c:1523
-#, fuzzy
 #| msgid "Failed to authenticate.\n"
 msgid "The user declined to authenticate"
-msgstr "ದೃಢೀಕರಿಸುವಲ್ಲಿ ವಿಫಲವಾಗಿದೆ.\n"
+msgstr "ಬಳಕೆದಾರರು ದೃಢೀಕರಿಸಲು ನಿರಾಕರಿಸಿದ್ದಾರೆ"
 
 #: ../libebackend/e-source-registry-server.c:770
 #, c-format
 msgid "UID '%s' is already in use"
-msgstr ""
+msgstr "UID '%s' ಈಗಾಗಲೆ ಬಳಕೆಯಲ್ಲಿದೆ"
 
 #: ../libedataserver/e-categories.c:46
 msgctxt "CategoryName"
@@ -5233,97 +5234,92 @@ msgid "D-Bus error"
 msgstr "ಡಿ-ಬಸ್ ದೋಷ"
 
 #: ../libedataserver/e-source-authenticator.c:166
-#, fuzzy
 #| msgid "Authentication required"
 msgid "Address book authentication request"
-msgstr "ದೃಢೀಕರಣದ ಅಗತ್ಯವಿದೆ"
+msgstr "ವಿಳಾಸ ಪುಸ್ತಕದ ದೃಢೀಕರಣದ ಮನವಿ"
 
 #: ../libedataserver/e-source-authenticator.c:171
-#, fuzzy
 #| msgid "Authentication required"
 msgid "Calendar authentication request"
-msgstr "ದೃಢೀಕರಣದ ಅಗತ್ಯವಿದೆ"
+msgstr "ಕ್ಯಾಲೆಂಡರ್ ದೃಢೀಕರಣದ ಮನವಿ"
 
 #: ../libedataserver/e-source-authenticator.c:175
-#, fuzzy
 #| msgid "Authentication required"
 msgid "Mail authentication request"
-msgstr "ದೃಢೀಕರಣದ ಅಗತ್ಯವಿದೆ"
+msgstr "ಅಂಚೆ ದೃಢೀಕರಣದ ಮನವಿ"
 
 #. generic account prompt
 #: ../libedataserver/e-source-authenticator.c:178
-#, fuzzy
 #| msgid "Authentication required"
 msgid "Authentication request"
-msgstr "ದೃಢೀಕರಣದ ಅಗತ್ಯವಿದೆ"
+msgstr "ದೃಢೀಕರಣದ ಮನವಿ"
 
 #: ../libedataserver/e-source-authenticator.c:188
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for address book \"%s\"."
-msgstr "ದಯವಿಟ್ಟು %s ನ ಗುಪ್ತಪದವನ್ನು %s ಗಾಗಿ %s ಅತಿಥೇಯದಲ್ಲಿ ನಮೂದಿಸಿ."
+msgstr "ದಯವಿಟ್ಟು \"%s\" ವಿಳಾಸಪುಸ್ತಕಕ್ಕಾಗಿ ಒಂದು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ."
 
 #: ../libedataserver/e-source-authenticator.c:194
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for calendar \"%s\"."
-msgstr "ದಯವಿಟ್ಟು %s ನ ಗುಪ್ತಪದವನ್ನು %s ಗಾಗಿ %s ಅತಿಥೇಯದಲ್ಲಿ ನಮೂದಿಸಿ."
+msgstr "ದಯವಿಟ್ಟು \"%s\" ಕ್ಯಾಲೆಂಡರಿಗಾಗಿ ಒಂದು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ."
 
 #: ../libedataserver/e-source-authenticator.c:200
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail account \"%s\"."
-msgstr "ದಯವಿಟ್ಟು %s ನ ಗುಪ್ತಪದವನ್ನು %s ಗಾಗಿ %s ಅತಿಥೇಯದಲ್ಲಿ ನಮೂದಿಸಿ."
+msgstr "ದಯವಿಟ್ಟು \"%s\" ಅಂಚೆ ಖಾತೆಗಾಗಿ ಒಂದು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ."
 
 #: ../libedataserver/e-source-authenticator.c:206
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for mail transport \"%s\"."
-msgstr "ದಯವಿಟ್ಟು %s ನ ಗುಪ್ತಪದವನ್ನು %s ಗಾಗಿ %s ಅತಿಥೇಯದಲ್ಲಿ ನಮೂದಿಸಿ."
+msgstr "\"%s\" ಅಂಚೆ ವರ್ಗಾವಣೆಗಾಗಿ ಒಂದು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ."
 
 #: ../libedataserver/e-source-authenticator.c:212
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for memo list \"%s\"."
-msgstr "ದಯವಿಟ್ಟು %s ನ ಗುಪ್ತಪದವನ್ನು %s ಗಾಗಿ %s ಅತಿಥೇಯದಲ್ಲಿ ನಮೂದಿಸಿ."
+msgstr "ದಯವಿಟ್ಟು \"%s\" ಖಾತೆಗಾಗಿ ಒಂದು ಮೆಮೊ ಪಟ್ಟಿಯನ್ನು ನಮೂದಿಸಿ."
 
 #: ../libedataserver/e-source-authenticator.c:218
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for task list \"%s\"."
-msgstr "ದಯವಿಟ್ಟು %s ನ ಗುಪ್ತಪದವನ್ನು %s ಗಾಗಿ %s ಅತಿಥೇಯದಲ್ಲಿ ನಮೂದಿಸಿ."
+msgstr "ದಯವಿಟ್ಟು \"%s\" ಖಾತೆಗಾಗಿ ಒಂದು ಕಾರ್ಯದ ಪಟ್ಟಿಯನ್ನು ನಮೂದಿಸಿ."
 
 #: ../libedataserver/e-source-authenticator.c:224
-#, fuzzy, c-format
+#, c-format
 #| msgid "Please enter the %s password for %s on host %s."
 msgid "Please enter the password for account \"%s\"."
-msgstr "ದಯವಿಟ್ಟು %s ನ ಗುಪ್ತಪದವನ್ನು %s ಗಾಗಿ %s ಅತಿಥೇಯದಲ್ಲಿ ನಮೂದಿಸಿ."
+msgstr "ದಯವಿಟ್ಟು \"%s\" ಖಾತೆಗಾಗಿ ಒಂದು ಗುಪ್ತಪದವನ್ನು ನಮೂದಿಸಿ."
 
 #: ../libedataserver/e-source.c:621
 #, c-format
 msgid "Source file is missing a [%s] group"
-msgstr ""
+msgstr "ಆಕರ ಕಡತದಲ್ಲಿ ಒಂದು [%s] ಗುಂಪು ಕಾಣಿಸುತ್ತಿಲ್ಲ"
 
 #: ../libedataserver/e-source.c:938
 #, c-format
 msgid "Data source '%s' is not removable"
-msgstr ""
+msgstr "'%s' ಎಂಬ ದತ್ತಾಂಶದ ಆಕರವನ್ನು ತೆಗೆದುಹಾಕಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../libedataserver/e-source.c:1020
 #, c-format
 msgid "Data source '%s' is not writable"
-msgstr ""
+msgstr "'%s' ಎಂಬ ದತ್ತಾಂಶದ ಆಕರಕ್ಕೆ ಬರೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #: ../libedataserver/e-source.c:1408
-#, fuzzy
 #| msgid "Unnamed List"
 msgid "Unnamed"
-msgstr "ಹೆಸರಿಡದ ಪಟ್ಟಿ"
+msgstr "ಹೆಸರಿಡದ"
 
 #: ../libedataserver/e-source-mail-signature.c:485
 #, c-format
 msgid "Signature script must be a local file"
-msgstr ""
+msgstr "ಸಹಿಯ ಸ್ಕ್ರಿಪ್ಟ್‍ ಒಂದು ಸ್ಥಳೀಯ ಕಡತವಾಗಿರಬೇಕು"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -5456,127 +5452,121 @@ msgstr "%I %p"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "Proxy type to use"
-msgstr ""
+msgstr "ಬಳಸಬೇಕಿರುವ ಪ್ರಾಕ್ಸಿಯ ಬಗೆ"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
 msgid ""
 "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" "
 "means manual proxy."
 msgstr ""
+"ಯಾವ ಪ್ರಾಕ್ಸಿಯನ್ನು ಬಳಸಬೇಕು. \"0\" ಅಂದರೆ ವ್ಯವಸ್ಥೆ, \"1\" ಅಂದರೆ ಯಾವುದೆ ಪ್ರಾಕ್ಸಿ "
+"ಇಲ್ಲ, \"2\" "
+"ಎಂದರೆ ಮ್ಯಾನುವಲ್ ಪ್ರಾಕ್ಸಿ."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "Whether to use http-proxy"
-msgstr ""
+msgstr "http-proxy ಪ್ರಾಕ್ಸಿಯನ್ನು ಬಳಸಬೇಕೆ"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
 msgid "Whether to use proxy for HTTP requests."
-msgstr ""
+msgstr "HTTP ಮನವಿಗಳಿಗಾಗಿ ಪ್ರಾಕ್ಸಿಯನ್ನು ಬಳಸಬೇಕೆ."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
 msgid "Whether proxy server requires authentication"
-msgstr ""
+msgstr "ಪ್ರಾಕ್ಸಿ ಪೂರೈಕೆಗಣಕಕ್ಕೆ ದೃಢೀಕರಣದ ಅಗತ್ಯವಿದೆಯೆ"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
-#, fuzzy
 #| msgid "Bad authentication response from server."
 msgid "Whether authentication is required to access proxy server."
-msgstr "ಪರಿಚಾರಕದಿಂದ ಸರಿಯಲ್ಲದ ಧೃಡೀಕರಣ ಪ್ರತಿಕ್ರಿಯೆ."
+msgstr "ಪ್ರಾಕ್ಸಿ ಪೂರೈಕೆಗಣಕವನ್ನು ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಧೃಡೀಕರಣದ ಅಗತ್ಯವಿದೆಯೆ."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
 msgid "Host name for HTTP requests"
-msgstr ""
+msgstr "HTTP ಮನವಿಗಳಿಗಾಗಿನ ಆತಿಥೇಯಗಣಕದ ಹೆಸರು"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
 msgid "Host name to use for HTTP requests."
-msgstr ""
+msgstr "HTTP ಮನವಿಗಳಿಗಾಗಿ ಬಳಸಬೇಕಿರುವ ಆತಿಥೇಯಗಣಕದ ಹೆಸರು."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
 msgid "Port number for HTTP requests"
-msgstr ""
+msgstr "HTTP ಮನವಿಗಳಿಗಾಗಿನ ಸಂಪರ್ಕಸ್ಥಾನದ ಸಂಖ್ಯೆ"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
 msgid "Port number to use for HTTP requests."
-msgstr ""
+msgstr "HTTP ಮನವಿಗಳಿಗಾಗಿ ಬಳಸಬೇಕಿರುವ ಸಂಪರ್ಕಸ್ಥಾನದ ಸಂಖ್ಯೆ."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
-#, fuzzy
 #| msgid "Cannot authenticate user: "
 msgid "Proxy authentication user name"
-msgstr "ಬಳಕೆದಾರನನ್ನು ದೃಡೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: "
+msgstr "ಪ್ರಾಕ್ಸಿ ದೃಢೀಕರಣ ಬಳಕೆದಾರ ಹೆಸರು"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
-#, fuzzy
 #| msgid ""
 #| "Unable to authenticate to IMAP server.\n"
 #| "%s\n"
 #| "\n"
 msgid "User name to use to authenticate against proxy server."
-msgstr ""
-"IMAP ಪರಿಚಾರಕವನ್ನು ದೃಢಿಕರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ.\n"
-"%s\n"
-"\n"
+msgstr "ಪ್ರಾಕ್ಸಿ ಪೂರೈಕೆಗಣಕದ ವಿರುದ್ಧ ದೃಢೀಕರಿಸಲು ಬಳಸಬೇಕಿರುವ ಬಳಕೆದಾರ ಹೆಸರು."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
-#, fuzzy
 #| msgid "Temporary authentication failure"
 msgid "Proxy authentication password"
-msgstr "ತಾತ್ಕಾಲಿಕ ದೃಢೀಕರಣ ವಿಫಲತೆ"
+msgstr "ಪ್ರಾಕ್ಸಿ ದೃಢೀಕರಣ ಗುಪ್ತಪದ"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-#, fuzzy
 #| msgid "Cannot authenticate to server: %s"
 msgid "Password to use to authenticate against proxy server."
-msgstr "ಪರಿಚಾರಕಕ್ಕೆ ದೃಡೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
+msgstr "ಪ್ರಾಕ್ಸಿ ಪೂರೈಕೆಗಣಕದ ವಿರುದ್ಧ ದೃಢೀಕರಿಸಲು ಬಳಸಬೇಕಿರುವ ಗುಪ್ತಪದ."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:15
 msgid "List of hosts to connect to without proxy"
-msgstr ""
+msgstr "ಪ್ರಾಕ್ಸಿಯನ್ನು ಬಳಸದೆ ಸಂಪರ್ಕಸಾಧಿಸಬೇಕಿರುವ ಆತಿಥೇಯಗಣಕಗಳ ಪಟ್ಟಿ"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:16
 msgid "List of hosts for which do not use proxy."
-msgstr ""
+msgstr "ಪ್ರಾಕ್ಸಿಯನ್ನು ಬಳಸದೆ ಇರುವ ಆತಿಥೇಯಗಣಕಗಳ ಪಟ್ಟಿ."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:17
 msgid "Host name for HTTPS requests"
-msgstr ""
+msgstr "HTTPS ಮನವಿಗಳಿಗಾಗಿನ ಆತಿಥೇಯಗಣಕದ ಹೆಸರು"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:18
 msgid "Host name to use for HTTPS requests."
-msgstr ""
+msgstr "HTTPS ಮನವಿಗಳಿಗಾಗಿ ಬಳಸಬೇಕಿರುವ ಆತಿಥೇಯಗಣಕದ ಹೆಸರು."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:19
 msgid "Port number for HTTPS requests"
-msgstr ""
+msgstr "HTTPS ಮನವಿಗಳಿಗಾಗಿನ ಸಂಪರ್ಕಸ್ಥಾನದ ಸಂಖ್ಯೆ"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:20
 msgid "Port number to use for HTTPS requests."
-msgstr ""
+msgstr "HTTPS ಮನವಿಗಳಿಗಾಗಿ ಬಳಸಬೇಕಿರುವ ಸಂಪರ್ಕಸ್ಥಾನದ ಸಂಖ್ಯೆ."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:21
-#, fuzzy
 #| msgid "Host is unreachable from SOCKS server"
 msgid "Host name for SOCKS requests"
-msgstr "SOCKS ಪರಿಚಾರಕದಿಂದ ಆತಿಥೇಯವನ್ನು ತಲುಪಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
+msgstr "SOCKS ಮನವಿಗಳಿಗಾಗಿನ ಆತಿಥೇಯಗಣಕದ ಹೆಸರು"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:22
 msgid "Host name to use for SOCKS requests."
-msgstr ""
+msgstr "SOCKS ಮನವಿಗಳಿಗಾಗಿ ಬಳಸಬೇಕಿರುವ ಆತಿಥೇಯಗಣಕದ ಹೆಸರು."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:23
 msgid "Port number for SOCKS requests"
-msgstr ""
+msgstr "SOCKS ಮನವಿಗಳಿಗಾಗಿ ಸಂಪರ್ಕಸ್ಥಾನದ ಸಂಖ್ಯೆ"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:24
 msgid "Port number to use for SOCKS requests."
-msgstr ""
+msgstr "SOCKS ಮನವಿಗಳಿಗಾಗಿ ಬಳಸಬೇಕಿರುವ ಸಂಪರ್ಕಸ್ಥಾನದ ಸಂಖ್ಯೆ."
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:25
 msgid "Automatic proxy configuration URL"
-msgstr ""
+msgstr "ಸ್ವಯಂಚಾಲಿತ ಪ್ರಾಕ್ಸಿ ಸಂರಚನೆಯ URL"
 
 #: ../libedataserver/org.gnome.evolution.shell.network-config.gschema.xml.in.h:26
 msgid "Where to read automatic proxy configuration from."
-msgstr ""
+msgstr "ಸ್ವಯಂಚಾಲಿತ ಪ್ರಾಕ್ಸಿ ಸಂರಚನೆಯನ್ನು ಎಲ್ಲಿಂದ ಓದಬೇಕು."
 
 #: ../libedataserverui/e-categories-editor.c:230
 msgid "Currently _used categories:"
@@ -5635,10 +5625,9 @@ msgid "Address B_ook:"
 msgstr "ವಿಳಾಸ ಪುಸ್ತಕ(_o):"
 
 #: ../libedataserverui/e-name-selector-dialog.c:310
-#, fuzzy
 #| msgid "Cate_gory:"
 msgid "Cat_egory:"
-msgstr "ವರ್ಗ(_g):"
+msgstr "ವರ್ಗ (_e):"
 
 #: ../libedataserverui/e-name-selector-dialog.c:332
 msgid "_Search:"
@@ -5756,44 +5745,45 @@ msgstr "ಕ್ಯಾಲೆಂಡರ್"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:184
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unexpected response from IMAP server: %s"
 msgid "Code: %u - Unexpected response from server"
-msgstr "IMAP ಸರ್ವರಿನಿಂದ ಅನಿರೀಕ್ಷಿತವಾದ ಪ್ರತಿಕ್ರಿಯೆ : %s"
+msgstr "ಸಂಕೇತ: %u - ಪೂರೈಕೆಗಣಕದಿಂದ ಅನಿರೀಕ್ಷಿತವಾದ ಪ್ರತಿಕ್ರಿಯೆ ಬಂದಿದೆ"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:205
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to retrieve message"
 msgid "Failed to parse autodiscover response XML"
-msgstr "ಸಂದೇಶವನ್ನು ಮರಳಿ ಪಡೆಯುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
+msgstr "ಸ್ವಯಂಪತ್ತೆ ಪ್ರತಿಕ್ರಿಯೆ XML ಅನ್ನು ಪಾರ್ಸ್ ಮಾಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:214
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to find system calendar"
 msgid "Failed to find Autodiscover element"
-msgstr "ವ್ಯವಸ್ಥೆಯ ಕ್ಯಾಲೆಂಡರನ್ನು ಪತ್ತೆ ಮಾಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
+msgstr "ಸ್ವಯಂಪತ್ತೆ ಘಟಕವನ್ನು ಪತ್ತೆ ಮಾಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:226
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to find system calendar"
 msgid "Failed to find Response element"
-msgstr "ವ್ಯವಸ್ಥೆಯ ಕ್ಯಾಲೆಂಡರನ್ನು ಪತ್ತೆ ಮಾಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
+msgstr "ಪ್ರತಿಕ್ರಿಯೆಯ ಘಟಕವನ್ನು ಪತ್ತೆ ಮಾಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:238
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to find system calendar"
 msgid "Failed to find Account element"
-msgstr "ವ್ಯವಸ್ಥೆಯ ಕ್ಯಾಲೆಂಡರನ್ನು ಪತ್ತೆ ಮಾಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
+msgstr "ಖಾತೆಯ ಘಟಕವನ್ನು ಪತ್ತೆ ಮಾಡುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:252
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr ""
+"ASUrl ಮತ್ತು OABUrl ಅನ್ನು ಸ್ವಯಂಪತ್ತೆ ಪ್ರತಿಕ್ರಿಯೆಯಲ್ಲಿ ಪತ್ತೆಮಾಡಲು ವಿಫಲಗೊಂಡಿದೆ"
 
 #: ../modules/yahoo-backend/module-yahoo-backend.c:215
 msgid "Tasks"
@@ -5802,31 +5792,30 @@ msgstr "ಕಾರ್ಯಗಳು"
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:47
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:51
 msgid "Keep running after the last client is closed"
-msgstr ""
+msgstr "ಕೊನೆಯ ಕಕ್ಷಿಯು ಮುಚ್ಚಿದ ನಂತರವೂ ಚಾಲನೆಯಲ್ಲಿರು"
 
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:49
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:53
 msgid "Wait running until at least one client is connected"
-msgstr ""
+msgstr "ಒಂದು ಕಕ್ಷಿಯು (ಕ್ಲೈಂಟ್) ಸಂಪರ್ಕಿತಗೊಳ್ಳುವವರೆಗೆ ಚಾಲನೆಗೊಳ್ಳುತ್ತಿರು"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:620
 msgid "Evolution Source Viewer"
-msgstr ""
+msgstr "Evolution ಆಕರದ ವೀಕ್ಷಕ"
 
 #. Translators: The name that is displayed in the user interface
 #: ../tests/libedataserverui/evolution-source-viewer.c:650
-#, fuzzy
 #| msgid "Family Name"
 msgid "Display Name"
-msgstr "ಕುಟುಂಬದ ಹೆಸರು"
+msgstr "ತೋರಿಸಲಾಗುವ ಹೆಸರು"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:659
 msgid "Flags"
-msgstr ""
+msgstr "ಫ್ಲ್ಯಾಗ್‌ಗಳು"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:711
 msgid "Identity"
-msgstr ""
+msgstr "ಗುರುತು"
 
 #~ msgid "Authenticating with the server…"
 #~ msgstr "ಪರಿಚಾರಕದೊಂದಿಗೆ ದೃಢೀಕಕರಿಸಲಾಗುತ್ತಿದೆ..."
