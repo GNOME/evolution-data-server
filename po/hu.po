@@ -101,7 +101,7 @@ msgstr "Új névjegy létrehozása…"
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:319
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:433
 msgid "The backend does not support bulk removals"
-msgstr "A naptár nem támogatja a tömeges eltávolításokat"
+msgstr "A háttérprogram nem támogatja a tömeges eltávolításokat"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1351
 msgid "Deleting contact…"
@@ -112,7 +112,7 @@ msgstr "Névjegy törlése…"
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:367
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:487
 msgid "The backend does not support bulk modifications"
-msgstr "A naptár nem támogatja a tömeges módosításokat"
+msgstr "A háttérprogram nem támogatja a tömeges módosításokat"
 
 #. Update the contact on the server asynchronously
 #: ../addressbook/backends/google/e-book-backend-google.c:1639
