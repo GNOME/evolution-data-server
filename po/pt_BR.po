@@ -9,26 +9,26 @@
 # Fabrício Godoy <skarllot@gmail.com>, 2008.
 # Vladimir Melo <vmelo@gnome.org>, 2008, 2009.
 # Andre Gondim <andregondim@ubuntu.com>, 2009.
-# Djavan Fagundes <djavan@comum.org>, 2009.
+# Djavan Fagundes <djavan@comum.org>, 2009, 2012.
 # Antonio Fernandes C. Neto <fernandesn@gnome.org>, 2010, 2011.
 # Jonh Wendell <jwendell@gnome.org>, 2012.
-#
+# Rafael Ferreira <rafael.f.f1@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product"
+"=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-09-17 16:36+0000\n"
-"PO-Revision-Date: 2012-02-29 16:10-0300\n"
-"Last-Translator: Jonh Wendell <jwendell@gnome.org>\n"
+"PO-Revision-Date: 2012-09-21 15:00-0200\n"
+"Last-Translator: Djavan Fagundes <djavan@comum.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Portuguese\n"
-"X-Poedit-Country: BRAZIL\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
+"X-Project-Style: gnome\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:116
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1232
@@ -167,7 +167,7 @@ msgstr "Usando endereço de e-mail"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:969
 msgid "Failed to bind using either v3 or v2 binds"
-msgstr ""
+msgstr "Falha ao associar usando tanto associações v3 e v2"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1090
 msgid "Reconnecting to LDAP server..."
@@ -181,7 +181,7 @@ msgstr "Sintaxe DN inválida"
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4784
 #, c-format
 msgid "LDAP error 0x%x (%s)"
-msgstr ""
+msgstr "Erro LDAP 0x%x (%s)"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1754
 msgid "Adding contact to LDAP server..."
@@ -195,13 +195,13 @@ msgstr "Removendo contato do servidor LDAP..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2405
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
-msgstr ""
+msgstr "%s: Retornado NULL de ldap_first_entry"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2265
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2456
 #, c-format
 msgid "%s: Unhandled result type %d returned"
-msgstr ""
+msgstr "%s: Retornou um tipo de resultado não manipulado %d"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2334
 msgid "Modifying contact from LDAP server..."
@@ -211,7 +211,7 @@ msgstr "Modificando contato do servidor LDAP..."
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2886
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
-msgstr ""
+msgstr "%s: Retornou um tipo de pesquisa não manipulada %d"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4736
 msgid "Receiving LDAP search results..."
@@ -227,16 +227,14 @@ msgid "Downloading contacts (%d)... "
 msgstr "Baixando contatos (%d)... "
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5552
-#, fuzzy, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
+#, c-format
 msgid "Failed to get the DN for user '%s'"
-msgstr "Falha ao criar o hardlink para o recurso \"%s\": %s"
+msgstr "Falha ao adquirir o DN para o usuário \"%s\""
 
 #: ../addressbook/backends/vcf/e-book-backend-vcf.c:645
-#, fuzzy, c-format
-#| msgid "Failed to remove file '%s': %s"
+#, c-format
 msgid "Failed to open addressbook at '%s': %s"
-msgstr "Falha ao remover o arquivo \"%s\": %s"
+msgstr "Falha ao abrir o catálogo de endereços em \"%s\": %s"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:354
 #, c-format
@@ -244,48 +242,40 @@ msgid "Create resource '%s' failed with HTTP status: %d (%s)"
 msgstr "Falha ao criar recurso \"%s\" com status HTTP: %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:447
-#, fuzzy, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
+#, c-format
 msgid "DELETE failed with HTTP status %d"
-msgstr "Falha ao criar recurso \"%s\" com status HTTP: %d (%s)"
+msgstr "Falha ao EXCLUIR com status HTTP: %d"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:507
-#, fuzzy
-#| msgid "_Listen for server change notifications"
 msgid "Contact on server changed -> not modifying"
-msgstr "_Ser notificado de mudanças no servidor"
+msgstr "Contato no servidor alterado -> não modificando"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:515
-#, fuzzy, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
+#, c-format
 msgid "Modify contact failed with HTTP status: %d (%s)"
-msgstr "Falha ao criar recurso \"%s\" com status HTTP: %d (%s)"
+msgstr "Falha ao modificar contato com status HTTP: %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:912
-#, fuzzy
-#| msgid "Error loading address book: %s"
 msgid "Loading Addressbook summary..."
-msgstr "Erro ao carregar catálogo de endereço: %s"
+msgstr "Carregando sumário do catálogo de endereços..."
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:928
-#, fuzzy, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
+#, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
-msgstr "Falha ao criar recurso \"%s\" com status HTTP: %d (%s)"
+msgstr "Falha ao PROPFIND no webdav com status HTTP: %d (%s)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:949
 msgid "No response body in webdav PROPFIND result"
-msgstr ""
+msgstr "Nenhum conteúdo de reposta no resultado de PROPFIND do webdar"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:980
-#, fuzzy, c-format
-#| msgid "Downloading contacts (%d)... "
+#, c-format
 msgid "Loading Contacts (%d%%)"
-msgstr "Baixando contatos (%d)... "
+msgstr "Baixando contatos (%d%%)"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1287
 msgid "Cannot transform SoupURI to string"
-msgstr ""
+msgstr "Não foi possível transformar SoupURI em string"
 
 #: ../addressbook/libebook/e-book-client.c:95
 msgid "No such book"
@@ -334,10 +324,8 @@ msgstr "Arquivar como"
 
 #. URI of the book to which the contact belongs to
 #: ../addressbook/libebook/e-contact.c:128
-#, fuzzy
-#| msgid "Book URI"
 msgid "Book UID"
-msgstr "URI do catálogo"
+msgstr "UID do catálogo"
 
 #. Name fields
 #. FN isn't really a structured field - we use a getter/setter
@@ -780,8 +768,6 @@ msgstr "Lista"
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
 #: ../addressbook/libebook/e-contact.c:281
-#, fuzzy
-#| msgid "List Show Addresses"
 msgid "List Shows Addresses"
 msgstr "Listar endereços de exibição"
 
@@ -897,10 +883,8 @@ msgid "Google Talk Name List"
 msgstr "Lista de nomes do Google Talk"
 
 #: ../addressbook/libebook/e-contact.c:320
-#, fuzzy
-#| msgid "Skype Name List"
 msgid "Twitter Name List"
-msgstr "Lista de nomes do Skype"
+msgstr "Lista de nomes do Twitter"
 
 #: ../addressbook/libebook/e-contact.c:1623
 #: ../addressbook/libebook/e-destination.c:879
@@ -1122,30 +1106,26 @@ msgstr "Não é possível remover contatos: "
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:103
 #: ../calendar/libedata-cal/e-data-cal-factory.c:114
-#, fuzzy, c-format
-#| msgid "No backend factory for '%s' of '%s'"
+#, c-format
 msgid "No backend name in source '%s'"
-msgstr "Sem fábrica de backend para \"%s\" de \"%s\""
+msgstr "Sem nome de backend na fonte \"%s\""
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:115
 #: ../calendar/libedata-cal/e-data-cal-factory.c:127
 #, c-format
 msgid "Invalid backend name '%s' in source '%s'"
-msgstr ""
+msgstr "Nome de backend inválido \"%s\" na fonte \"%s\""
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:319
 #: ../calendar/libedata-cal/e-data-cal-factory.c:230
-#, fuzzy
-#| msgid "POP Source UID"
 msgid "Missing source UID"
-msgstr "UID da fonte POP"
+msgstr "Falta UID da fonte"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:332
 #: ../calendar/libedata-cal/e-data-cal-factory.c:243
-#, fuzzy, c-format
-#| msgid "No such source"
+#, c-format
 msgid "No such source for UID '%s'"
-msgstr "Não existe a fonte"
+msgstr "Não existe a fonte para o UID \"%s\""
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:568
 #, c-format
@@ -1153,10 +1133,9 @@ msgid "Server is unreachable (%s)"
 msgstr "O servidor está inacessível (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:598
-#, fuzzy, c-format
-#| msgid "Failed to connect to POP server %s in secure mode: %s"
+#, c-format
 msgid "Failed to connect to a server using SSL: %s"
-msgstr "Falha ao conectar ao servidor POP %s em modo seguro: %s"
+msgstr "Falha ao conectar a um servidor usando SSL: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:603
 msgid ""
@@ -1165,6 +1144,11 @@ msgid ""
 "certificate being used on the server, then disable certificate validity "
 "tests by selecting 'Ignore invalid SSL certificate' option in Properties"
 msgstr ""
+"Falha ao conectar a um servidor usando SSL. Uma possível razão é um "
+"certificado inválido sendo pelo servidor. Se isso já era esperado, como um "
+"certificado auto-assinado sendo usado no servidor, então desabilite os "
+"testes de validação de certificado selecionando a opção \"Ignorar "
+"certificado SSL inválido\" em Propriedades"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:616
 #, c-format
@@ -1172,16 +1156,12 @@ msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Retornou um status inesperado do HTTP código %d (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:635
-#, fuzzy
-#| msgid "Backend is not opened yet"
 msgid "CalDAV backend is not loaded yet"
-msgstr "O backend ainda não está aberto"
+msgstr "O backend CalDAV ainda não está carregado"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:1017
-#, fuzzy
-#| msgid "Invalid server URI"
 msgid "Invalid Redirect URL"
-msgstr "URI de servidor inválida"
+msgstr "URI de redirecionamento inválida"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2360
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2722
@@ -1194,52 +1174,43 @@ msgstr ""
 "Mensagem de erro: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2663
-#, fuzzy
-#| msgid "Cannot create calendar object: "
 msgid "Cannot create local store"
-msgstr "Não é possível criar o objeto na agenda: "
+msgstr "Não é possível criar o repositório local "
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2672
-#, fuzzy, c-format
-#| msgid "Cannot create folder '%s': %s"
+#, c-format
 msgid "Cannot create local cache folder '%s'"
-msgstr "Não foi possível criar a pasta \"%s\": %s"
+msgstr "Não foi possível criar a pasta cache local \"%s\""
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2683
-#, fuzzy
-#| msgid "Could not create cache file"
 msgid "Could not create synch slave thread"
-msgstr "Não foi possível criar arquivo de cache"
+msgstr "Não foi possível criar thread de sincronização escrava"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3677
-#, fuzzy
-#| msgid "The backend does not support bulk additions"
 msgid "CalDAV does not support bulk additions"
-msgstr "O backend não suporta adição em massa"
+msgstr "CalDAV não suporta adição em massa"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3779
-#, fuzzy
-#| msgid "The backend does not support bulk modifications"
 msgid "CalDAV does not support bulk modifications"
-msgstr "O backend não suporta alterações em massa"
+msgstr "CalDAV não suporta alterações em massa"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3947
-#, fuzzy
-#| msgid "The backend does not support bulk removals"
 msgid "CalDAV does not support bulk removals"
-msgstr "O backend não suporta remoção em massa"
+msgstr "CalDAV não suporta remoção em massa"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4606
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Agenda não suporta livre/ocupado"
 
+# Schedule outbox = caixa de saíde de agendamento? (ou talvez "de agenda" ou "de reunião"?)
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4614
 msgid "Schedule outbox url not found"
-msgstr ""
+msgstr "URL de caixa de saída de agendamento não encontrada"
 
+# Vendo pelo código fonte, "schedule-response" parece ser algum tipo campo, e não meramente uma "resposta de agendamento"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4713
 msgid "Unexpected result in schedule-response"
-msgstr ""
+msgstr "Resultado inesperado no schedule-response"
 
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:921
 msgid "Birthday"
@@ -1265,10 +1236,9 @@ msgid "Cannot save calendar data"
 msgstr "Não é possível salvar dados da agenda"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:482
-#, fuzzy, c-format
-#| msgid "Malformed signature"
+#, c-format
 msgid "Malformed URI: %s"
-msgstr "Assinatura mal formada"
+msgstr "URI mal formada: %s"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:543
 #, c-format
@@ -1836,7 +1806,7 @@ msgstr "Não foi possível criar caminho do cache"
 
 #: ../camel/camel-data-cache.c:440
 msgid "Empty cache file"
-msgstr ""
+msgstr "arquivo cache vazio"
 
 #: ../camel/camel-data-cache.c:509
 #, c-format
@@ -2024,10 +1994,9 @@ msgid "Quota information not supported for folder '%s'"
 msgstr "Não tem suporte a informação de cota para a pasta \"%s\""
 
 #: ../camel/camel-folder.c:3372
-#, fuzzy, c-format
-#| msgid "Opening folder '%s'"
+#, c-format
 msgid "Expunging folder '%s'"
-msgstr "Abrindo pasta \"%s\""
+msgstr "Excluindo pasta \"%s\""
 
 #: ../camel/camel-folder.c:3604
 #, c-format
@@ -2040,10 +2009,9 @@ msgid "Retrieving quota information for '%s'"
 msgstr "Recuperando informação de cota para \"%s\""
 
 #: ../camel/camel-folder.c:3987
-#, fuzzy, c-format
-#| msgid "Creating folder '%s'"
+#, c-format
 msgid "Refreshing folder '%s'"
-msgstr "Criando pasta \"%s\""
+msgstr "Atualizando pasta \"%s\""
 
 #: ../camel/camel-folder-search.c:420 ../camel/camel-folder-search.c:587
 #, c-format
@@ -2315,16 +2283,12 @@ msgid "Error fetching message"
 msgstr "Erro ao obter a mensagem"
 
 #: ../camel/camel-imapx-server.c:3903
-#, fuzzy
-#| msgid "Failed to cache %s: "
 msgid "Failed to copy the tmp file"
-msgstr "Falha no cache %s:"
+msgstr "Falha ao copiar o arquivo temporário"
 
 #: ../camel/camel-imapx-server.c:3917
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to close the tmp stream"
-msgstr "Falha ao codificar dados"
+msgstr "Falha ao fechar o fluxo temporário"
 
 #: ../camel/camel-imapx-server.c:4015
 msgid "Error copying messages"
@@ -2343,16 +2307,14 @@ msgid "Error retrieving message"
 msgstr "Erro ao recuperar a mensagem"
 
 #: ../camel/camel-imapx-server.c:4590 ../camel/camel-imapx-server.c:4783
-#, fuzzy, c-format
-#| msgid "Fetching summary information for new messages in %s"
+#, c-format
 msgid "Fetching summary information for new messages in '%s'"
-msgstr "Obtendo informação de resumo para novas mensagens em %s"
+msgstr "Obtendo informação de resumo para novas mensagens em \"%s\""
 
 #: ../camel/camel-imapx-server.c:4641
-#, fuzzy, c-format
-#| msgid "Scanning for changed messages in %s"
+#, c-format
 msgid "Scanning for changed messages in '%s'"
-msgstr "Procurando por mensagens alteradas em %s"
+msgstr "Procurando por mensagens alteradas em \"%s\""
 
 #: ../camel/camel-imapx-server.c:4684
 msgid "Error fetching new messages"
@@ -2363,13 +2325,11 @@ msgid "Error while fetching messages"
 msgstr "Erro ao recuperar as mensagens"
 
 #: ../camel/camel-imapx-server.c:4882 ../camel/camel-imapx-server.c:4918
-#, fuzzy, c-format
-#| msgid "Fetching summary information for %d message in %s"
-#| msgid_plural "Fetching summary information for %d messages in %s"
+#, c-format
 msgid "Fetching summary information for %d message in '%s'"
 msgid_plural "Fetching summary information for %d messages in '%s'"
-msgstr[0] "Obtendo resumo para %d nova mensagem em %s"
-msgstr[1] "Obtendo resumo para %d novas mensagens em %s"
+msgstr[0] "Obtendo resumo para %d nova mensagem em \"%s\""
+msgstr[1] "Obtendo resumo para %d novas mensagens em \"%s\""
 
 #: ../camel/camel-imapx-server.c:5043 ../camel/camel-imapx-server.c:5079
 msgid "Error refreshing folder"
@@ -2942,7 +2902,7 @@ msgstr "A autenticação %s falhou"
 
 #: ../camel/camel-session.c:645
 msgid "Forwarding messages is not supported"
-msgstr ""
+msgstr "Encaminhamento de mensagens não é suportado"
 
 #: ../camel/camel-session.c:1362
 #, c-format
@@ -3211,16 +3171,14 @@ msgid "Could not connect with command \"%s\": %s"
 msgstr "Não foi possível conectar com o comando \"%s\": %s"
 
 #: ../camel/camel-subscribable.c:386
-#, fuzzy, c-format
-#| msgid "Error subscribing to folder"
+#, c-format
 msgid "Subscribing to folder '%s'"
-msgstr "Erro ao se inscrever na pasta"
+msgstr "Inscrevendo na pasta \"%s\""
 
 #: ../camel/camel-subscribable.c:518
-#, fuzzy, c-format
-#| msgid "Error subscribing to folder"
+#, c-format
 msgid "Unsubscribing from folder '%s'"
-msgstr "Erro ao se inscrever na pasta"
+msgstr "Desinscrevendo da pasta \"%s\""
 
 #: ../camel/camel-tcp-stream-raw.c:310
 #, c-format
@@ -3393,10 +3351,9 @@ msgid "Could not parse URL '%s'"
 msgstr "Não foi possível analisar URL \"%s\""
 
 #: ../camel/camel-vee-folder.c:494
-#, fuzzy, c-format
-#| msgid "Creating folder '%s'"
+#, c-format
 msgid "Updating folder '%s'"
-msgstr "Criando pasta \"%s\""
+msgstr "Atualizando pasta \"%s\""
 
 #: ../camel/camel-vee-folder.c:855 ../camel/camel-vee-folder.c:965
 #, c-format
@@ -3415,7 +3372,7 @@ msgstr "Erro ao armazenar \"%s\":"
 
 #: ../camel/camel-vee-folder.c:1169
 msgid "Automatically _update on change in source folders"
-msgstr ""
+msgstr "_Atualizar automaticamente caso haja modificações nas pastas de origem"
 
 #. Translators: 'Unmatched' is a folder name under Search folders where are shown
 #. * all messages not belonging into any other configured search folder
@@ -3435,7 +3392,7 @@ msgstr "Não foi possível renomear pasta: %s: Não existe tal pasta"
 
 #: ../camel/camel-vee-store.c:532
 msgid "Enable _Unmatched folder"
-msgstr ""
+msgstr "Habilitar pastas _não combinadas"
 
 #: ../camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
@@ -3676,10 +3633,9 @@ msgid "Cannot create folder '%s': folder exists."
 msgstr "Não foi possível criar a pasta \"%s\": a pasta existe."
 
 #: ../camel/providers/imap/camel-imap-store.c:2984
-#, fuzzy, c-format
-#| msgid "Retrieving folder list for %s"
+#, c-format
 msgid "Retrieving list of folders at '%s'"
-msgstr "Recuperando a lista de pastas para %s"
+msgstr "Recuperando a lista de pastas em \"%s\""
 
 #: ../camel/providers/imap/camel-imap-store.c:3334
 #, c-format
@@ -4640,39 +4596,38 @@ msgid "Could not parse recipient list"
 msgstr "Não foi possível analisar a lista de destinatários"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:140
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not create pipe to sendmail: %s: mail not sent"
 msgid "Could not create pipe to '%s': %s: mail not sent"
-msgstr ""
-"Não foi possível criar pipe para o sendmail: %s: a mensagem não foi enviada"
+msgstr "Não foi possível criar pipe para \"%s\" : %s: a mensagem não foi enviada"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:163
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not fork sendmail: %s: mail not sent"
 msgid "Could not fork '%s': %s: mail not sent"
-msgstr "Não foi possível bifurcar o sendmail: %s: a mensagem não foi enviada"
+msgstr "Não foi possível bifurcar \"%s\": %s: a mensagem não foi enviada"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:210
 msgid "Could not send message: "
 msgstr "Não foi possível enviar mensagem:"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:239
-#, fuzzy, c-format
+#, c-format
 #| msgid "sendmail exited with signal %s: mail not sent."
 msgid "'%s' exited with signal %s: mail not sent."
-msgstr "sendmail terminou com sinal %s: a mensagem não foi enviada."
+msgstr "\"%s\" terminou com sinal %s: a mensagem não foi enviada."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:247
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not execute %s: mail not sent."
 msgid "Could not execute '%s': mail not sent."
-msgstr "Não foi possível executar %s: a mensagem não foi enviada."
+msgstr "Não foi possível executar \"%s\": a mensagem não foi enviada."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:252
-#, fuzzy, c-format
+#, c-format
 #| msgid "sendmail exited with status %d: mail not sent."
 msgid "'%s' exited with status %d: mail not sent."
-msgstr "sendmail terminou com estado %d: a mensagem não foi enviada."
+msgstr "\"%s\" terminou com estado %d: a mensagem não foi enviada."
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:42
 msgid "Default SMTP port"
@@ -4911,136 +4866,135 @@ msgid "QUIT command failed: "
 msgstr "O comando QUIT falhou:"
 
 #: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
-#, fuzzy
-#| msgid "Contact ID already exists"
 msgid "Contact UID of a user"
-msgstr "O ID do contato já existe"
+msgstr "O ID do contato de um usuário"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
 msgid "Birthday and anniversary reminder"
-msgstr ""
+msgstr "Lembrete de aniversário e bodas"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
 msgid "Whether to set a reminder for birthdays and anniversaries"
-msgstr ""
+msgstr "Se é para definir um lembrete para aniversários e bodas"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
 msgid "Birthday and anniversary reminder value"
-msgstr ""
+msgstr "Valor do lembrete de aniversário e bodas"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
 msgid "Number of units for determining a birthday or anniversary reminder"
 msgstr ""
+"Número de Número de unidades para determinar o lembrete de aniversário e "
+"bodas"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
 msgid "Birthday and anniversary reminder units"
-msgstr ""
+msgstr "Unidades de lembrete de aniversário e bodas"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
 msgid ""
 "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
 "\"days\""
 msgstr ""
+"Unidades para o lembrete de aniversário e bodas, \"minutos\", \"horas\" ou "
+"\"dias\""
 
 #: ../libebackend/e-authentication-mediator.c:205
 #: ../libebackend/e-authentication-mediator.c:216
 #: ../libebackend/e-authentication-mediator.c:849
 #: ../libebackend/e-authentication-mediator.c:1179
 msgid "Bus name vanished (client terminated?)"
-msgstr ""
+msgstr "Nome do barramento desapareceu (cliente terminou?)"
 
 #: ../libebackend/e-authentication-mediator.c:264
 msgid "No response from client"
-msgstr ""
+msgstr "Nenhuma resposta do cliente"
 
 #: ../libebackend/e-authentication-mediator.c:334
 #: ../libebackend/e-authentication-mediator.c:345
 #: ../libebackend/e-authentication-mediator.c:843
 #: ../libebackend/e-authentication-mediator.c:1173
-#, fuzzy
-#| msgid "Could not cancel operation"
 msgid "Client cancelled the operation"
-msgstr "Não foi possível cancelar a operação"
+msgstr "O cliente cancelou a operação"
 
 #: ../libebackend/e-authentication-mediator.c:416
 msgid "Client reports password was rejected"
-msgstr ""
+msgstr "Cliente relata que a senha foi rejeitada"
 
 #: ../libebackend/e-authentication-session.c:532
 msgid "Add this password to your keyring"
-msgstr ""
+msgstr "Adicionar esta senha ao chaveiro"
 
 #: ../libebackend/e-authentication-session.c:595
 msgid "Password was incorrect"
-msgstr ""
+msgstr "Senha estava incorreta"
 
 #: ../libebackend/e-authentication-session.c:1331
 #: ../libebackend/e-authentication-session.c:1507
 #: ../libebackend/e-authentication-session.c:1690
-#, fuzzy
-#| msgid "Operation has been canceled"
 msgid "Keyring operation was cancelled"
-msgstr "A operação foi cancelada"
+msgstr "A operação do chaveiro foi cancelada"
 
 #: ../libebackend/e-backend.c:190
-#, fuzzy, c-format
-#| msgid "IMAP server %s does not support %s authentication"
+#, c-format
 msgid "%s does not support authentication"
-msgstr "O servidor IMAP %s não suporta a autenticação %s"
+msgstr "%s não suporta autenticação"
 
 #: ../libebackend/e-collection-backend.c:734
 #, c-format
 msgid "%s does not support creating remote resources"
-msgstr ""
+msgstr "%s não suporta criação de recursos remotos"
 
 #: ../libebackend/e-collection-backend.c:793
 #, c-format
 msgid "%s does not support deleting remote resources"
-msgstr ""
+msgstr "%s não suporta exclusão de recursos remotos"
 
 #: ../libebackend/e-server-side-source.c:126
 #, c-format
 msgid "Data source is missing a [%s] group"
-msgstr ""
+msgstr "Fonte de dados está com um grupo [%s] faltando"
 
 #: ../libebackend/e-server-side-source.c:916 ../libedataserver/e-source.c:1111
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
-msgstr ""
+msgstr "Fonte de dados \"%s\" não suporta criação de recursos remotos"
 
 #: ../libebackend/e-server-side-source.c:930
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
 msgstr ""
+"Fonte de dados \"%s\" não possui coleção de backend para criação de recursos "
+"remotos"
 
 #: ../libebackend/e-server-side-source.c:958 ../libedataserver/e-source.c:1220
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
-msgstr ""
+msgstr "Fonte de dados \"%s\" não suporta exclusão de recursos remotos"
 
 #: ../libebackend/e-server-side-source.c:972
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
 msgstr ""
+"Fonte de dados \"%s\" não possui coleção de backend para exclusão de "
+"recursos remotos"
 
 #: ../libebackend/e-server-side-source.c:1285
 #, c-format
 msgid "File must have a '.source' extension"
-msgstr ""
+msgstr "Arquivo deve ter uma extensão \".source\""
 
 #: ../libebackend/e-source-registry-server.c:522
 #: ../libedataserver/e-source-registry.c:1523
-#, fuzzy
-#| msgid "Failed to authenticate.\n"
 msgid "The user declined to authenticate"
-msgstr "Falha ao autenticar.\n"
+msgstr "O usuário se recusou a autenticar."
 
 #: ../libebackend/e-source-registry-server.c:770
 #, c-format
 msgid "UID '%s' is already in use"
-msgstr ""
+msgstr "UID '%s' já está em uso"
 
 #: ../libedataserver/e-categories.c:46
 msgctxt "CategoryName"
@@ -5173,97 +5127,80 @@ msgid "D-Bus error"
 msgstr "Erro D-Bus"
 
 #: ../libedataserver/e-source-authenticator.c:166
-#, fuzzy
-#| msgid "Authentication required"
 msgid "Address book authentication request"
-msgstr "Autenticação exigida"
+msgstr "Requisição de autenticação de catálogo de endereços"
 
 #: ../libedataserver/e-source-authenticator.c:171
-#, fuzzy
-#| msgid "Authentication required"
 msgid "Calendar authentication request"
-msgstr "Autenticação exigida"
+msgstr "Requisição de autenticação de calendário"
 
 #: ../libedataserver/e-source-authenticator.c:175
-#, fuzzy
-#| msgid "Authentication required"
 msgid "Mail authentication request"
-msgstr "Autenticação exigida"
+msgstr "Requisição de autenticação de correio"
 
 #. generic account prompt
 #: ../libedataserver/e-source-authenticator.c:178
-#, fuzzy
-#| msgid "Authentication required"
 msgid "Authentication request"
-msgstr "Autenticação exigida"
+msgstr "Requisição de autenticação"
 
 #: ../libedataserver/e-source-authenticator.c:188
-#, fuzzy, c-format
-#| msgid "Please enter the %s password for %s on host %s."
+#, c-format
 msgid "Please enter the password for address book \"%s\"."
-msgstr "Por favor, entre com a senha de %s para %s no servidor %s."
+msgstr "Por favor, entre com a senha para o catálogo de endereços de \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:194
-#, fuzzy, c-format
-#| msgid "Please enter the %s password for %s on host %s."
+#, c-format
 msgid "Please enter the password for calendar \"%s\"."
-msgstr "Por favor, entre com a senha de %s para %s no servidor %s."
+msgstr "Por favor, entre com a senha para o calendário de \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:200
-#, fuzzy, c-format
-#| msgid "Please enter the %s password for %s on host %s."
+#, c-format
 msgid "Please enter the password for mail account \"%s\"."
-msgstr "Por favor, entre com a senha de %s para %s no servidor %s."
+msgstr "Por favor, entre com a senha para a conta de e-mail de \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:206
-#, fuzzy, c-format
-#| msgid "Please enter the %s password for %s on host %s."
+#, c-format
 msgid "Please enter the password for mail transport \"%s\"."
-msgstr "Por favor, entre com a senha de %s para %s no servidor %s."
+msgstr "Por favor, entre com a senha para o transporte de mensagens de \"%s\""
 
 #: ../libedataserver/e-source-authenticator.c:212
-#, fuzzy, c-format
-#| msgid "Please enter the %s password for %s on host %s."
+#, c-format
 msgid "Please enter the password for memo list \"%s\"."
-msgstr "Por favor, entre com a senha de %s para %s no servidor %s."
+msgstr "Por favor, entre com a senha para a lista de memorandos de \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:218
-#, fuzzy, c-format
-#| msgid "Please enter the %s password for %s on host %s."
+#, c-format
 msgid "Please enter the password for task list \"%s\"."
-msgstr "Por favor, entre com a senha de %s para %s no servidor %s."
+msgstr "Por favor, entre com a senha para a lista de tarefas de \"%s\"."
 
 #: ../libedataserver/e-source-authenticator.c:224
-#, fuzzy, c-format
-#| msgid "Please enter the %s password for %s on host %s."
+#, c-format
 msgid "Please enter the password for account \"%s\"."
-msgstr "Por favor, entre com a senha de %s para %s no servidor %s."
+msgstr "Por favor, entre com a senha para a conta de \"%s\"."
 
 #: ../libedataserver/e-source.c:621
 #, c-format
 msgid "Source file is missing a [%s] group"
-msgstr ""
+msgstr "Arquivo fonte está com um grupo [%s] faltando"
 
 #: ../libedataserver/e-source.c:938
 #, c-format
 msgid "Data source '%s' is not removable"
-msgstr ""
+msgstr "Fonte de dados \"%s\" não pode ser exluído"
 
 #: ../libedataserver/e-source.c:1020
 #, c-format
 msgid "Data source '%s' is not writable"
-msgstr ""
+msgstr "Fonte de dados \"%s\" não pode ser gravado"
 
 #: ../libedataserver/e-source.c:1408
-#, fuzzy
-#| msgid "Unnamed List"
 msgid "Unnamed"
-msgstr "Lista sem nome"
+msgstr "Sem nome"
 
 #: ../libedataserver/e-source-mail-signature.c:485
 #, c-format
 msgid "Signature script must be a local file"
-msgstr ""
+msgstr "Script de assinatura de ser um arquivo local"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format.
@@ -5560,8 +5497,6 @@ msgid "Address B_ook:"
 msgstr "Catálogo de endereç_os:"
 
 #: ../libedataserverui/e-name-selector-dialog.c:310
-#, fuzzy
-#| msgid "Cate_gory:"
 msgid "Cat_egory:"
 msgstr "Cate_goria:"
 
@@ -5681,48 +5616,43 @@ msgstr "Agenda"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:184
-#, fuzzy, c-format
-#| msgid "Unexpected response from IMAP server: %s"
+#, c-format
 msgid "Code: %u - Unexpected response from server"
-msgstr "Resposta inesperada do servidor IMAP: %s"
+msgstr "Código: %u - Resposta inesperada do servidor"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:205
-#, fuzzy, c-format
-#| msgid "Failed to retrieve message"
+#, c-format
 msgid "Failed to parse autodiscover response XML"
-msgstr "Falha ao buscar mensagem"
+msgstr "Falha ao analista XML de resposta de auto-detecção"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:214
-#, fuzzy, c-format
-#| msgid "Failed to find system calendar"
+#, c-format
 msgid "Failed to find Autodiscover element"
-msgstr "Falha ao localizar sistema de agenda"
+msgstr "Falha ao localizar elemento de auto-detecção"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:226
-#, fuzzy, c-format
-#| msgid "Failed to find system calendar"
+#, c-format
 msgid "Failed to find Response element"
-msgstr "Falha ao localizar sistema de agenda"
+msgstr "Falha ao localizar elemento de resposta"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:238
-#, fuzzy, c-format
-#| msgid "Failed to find system calendar"
+#, c-format
 msgid "Failed to find Account element"
-msgstr "Falha ao localizar sistema de agenda"
+msgstr "Falha ao localizar elemento da conta"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:252
 #, c-format
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
-msgstr ""
+msgstr "Falha ao localizar ASUrl e OABUrl na reposta de auto-detecção"
 
 #: ../modules/yahoo-backend/module-yahoo-backend.c:215
 msgid "Tasks"
-msgstr ""
+msgstr "Tarefas"
 
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:47
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:51
@@ -5736,22 +5666,20 @@ msgstr "Aguarda a execução até que pelo menos um cliente esteja conectado"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:620
 msgid "Evolution Source Viewer"
-msgstr ""
+msgstr "Visualizador de fonte do Evolution"
 
 #. Translators: The name that is displayed in the user interface
 #: ../tests/libedataserverui/evolution-source-viewer.c:650
-#, fuzzy
-#| msgid "Family Name"
 msgid "Display Name"
-msgstr "Sobrenome"
+msgstr "Nome de exibição"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:659
 msgid "Flags"
-msgstr ""
+msgstr "Sinalizadores"
 
 #: ../tests/libedataserverui/evolution-source-viewer.c:711
 msgid "Identity"
-msgstr ""
+msgstr "Identidade"
 
 #~ msgid "Authenticating with the server…"
 #~ msgstr "Autenticação com o servidor..."
