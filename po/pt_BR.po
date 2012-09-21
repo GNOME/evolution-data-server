@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product"
 "=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-09-17 16:36+0000\n"
-"PO-Revision-Date: 2012-09-21 15:00-0200\n"
+"POT-Creation-Date: 2012-09-21 18:00+0000\n"
+"PO-Revision-Date: 2012-09-21 15:06-0200\n"
 "Last-Translator: Djavan Fagundes <djavan@comum.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -4582,52 +4582,53 @@ msgstr ""
 "Para entregar correio passando-o para o programa \"sendmail\" no sistema "
 "local."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:50
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:49
 msgid "sendmail"
 msgstr "sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:52
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:51
 msgid "Mail delivery via the sendmail program"
 msgstr "Entrega de correio usando o programa sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:107
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:93
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "Não foi possível analisar a lista de destinatários"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:140
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:126
 #, c-format
-#| msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgid "Could not create pipe to '%s': %s: mail not sent"
-msgstr "Não foi possível criar pipe para \"%s\" : %s: a mensagem não foi enviada"
+#| msgid "Could not create pipe to '%s': %s: mail not sent"
+msgid "Could not create pipe to sendmail: %s: mail not sent"
+msgstr ""
+"Não foi possível criar pipe para sendmail: %s: a mensagem não foi enviada"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:163
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:148
 #, c-format
-#| msgid "Could not fork sendmail: %s: mail not sent"
-msgid "Could not fork '%s': %s: mail not sent"
-msgstr "Não foi possível bifurcar \"%s\": %s: a mensagem não foi enviada"
+#| msgid "Could not fork '%s': %s: mail not sent"
+msgid "Could not fork sendmail: %s: mail not sent"
+msgstr "Não foi possível bifurcar sendmail %s: a mensagem não foi enviada"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:210
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:194
 msgid "Could not send message: "
 msgstr "Não foi possível enviar mensagem:"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:239
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:222
 #, c-format
-#| msgid "sendmail exited with signal %s: mail not sent."
-msgid "'%s' exited with signal %s: mail not sent."
-msgstr "\"%s\" terminou com sinal %s: a mensagem não foi enviada."
+#| msgid "'%s' exited with signal %s: mail not sent."
+msgid "sendmail exited with signal %s: mail not sent."
+msgstr "sendmail terminou com sinal %s: a mensagem não foi enviada."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:247
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:229
 #, c-format
-#| msgid "Could not execute %s: mail not sent."
-msgid "Could not execute '%s': mail not sent."
-msgstr "Não foi possível executar \"%s\": a mensagem não foi enviada."
+#| msgid "Could not execute '%s': mail not sent."
+msgid "Could not execute %s: mail not sent."
+msgstr "Não foi possível executar %s: a mensagem não foi enviada."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:252
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:234
 #, c-format
-#| msgid "sendmail exited with status %d: mail not sent."
-msgid "'%s' exited with status %d: mail not sent."
-msgstr "\"%s\" terminou com estado %d: a mensagem não foi enviada."
+#| msgid "'%s' exited with status %d: mail not sent."
+msgid "sendmail exited with status %d: mail not sent."
+msgstr "sendmail terminou com estado %d: a mensagem não foi enviada."
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:42
 msgid "Default SMTP port"
