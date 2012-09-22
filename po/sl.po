@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-09-16 20:33+0000\n"
-"PO-Revision-Date: 2012-09-19 15:22+0100\n"
+"POT-Creation-Date: 2012-09-22 09:51+0000\n"
+"PO-Revision-Date: 2012-09-22 22:25+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: \n"
@@ -4546,47 +4546,47 @@ msgstr "Sendmail"
 msgid "For delivering mail by passing it to the \"sendmail\" program on the local system."
 msgstr "Za dostavljanje pošte preko programa \"sendmail\" na krajevnem sistemu."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:49
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:50
 msgid "sendmail"
 msgstr "sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:51
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:52
 msgid "Mail delivery via the sendmail program"
 msgstr "Dostava pošte preko programa sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:93
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:107
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "Ni mogoče razčleniti seznama prejemnikov"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:126
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:140
 #, c-format
-msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgstr "Ni mogoče ustvariti cevi do programa sendmail: %s: pošta ni poslana."
+msgid "Could not create pipe to '%s': %s: mail not sent"
+msgstr "Ni mogoče ustvariti cevi do programa  '%s': %s: elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:148
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:163
 #, c-format
-msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "Ni mogoče razvejiti programa sendmail: %s: pošta ni poslana."
+msgid "Could not fork '%s': %s: mail not sent"
+msgstr "Ni mogoče razvejiti programa '%s': %s: elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:194
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:210
 msgid "Could not send message: "
 msgstr "Ni mogoče poslati sporočila:"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:222
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:239
 #, c-format
-msgid "sendmail exited with signal %s: mail not sent."
-msgstr "program sendmail je zaključen s signalom %s: pošta ni poslana."
+msgid "'%s' exited with signal %s: mail not sent."
+msgstr "program '%s' je zaključen s signalom %s: elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:229
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:247
 #, c-format
-msgid "Could not execute %s: mail not sent."
-msgstr "Ni mogoče izvršiti %s: pošta ni poslana."
+msgid "Could not execute '%s': mail not sent."
+msgstr "Ni mogoče izvesti '%s': elektronska pošta ni poslana."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:234
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:252
 #, c-format
-msgid "sendmail exited with status %d: mail not sent."
-msgstr "program sendmail je zaključen s stanjem %d: pošta ni poslana."
+msgid "'%s' exited with status %d: mail not sent."
+msgstr "program '%s' je zaključen s stanjem %d: elektronska pošta ni poslana."
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:42
 msgid "Default SMTP port"
