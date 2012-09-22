@@ -11,7 +11,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-09-16 16:58+0000\n"
-"PO-Revision-Date: 2012-09-22 01:38+0000\n"
+"PO-Revision-Date: 2012-09-22 15:16+0000\n"
 "Last-Translator: Ani Peter <apeter@redhat.com>\n"
 "Language-Team: Malayalam <discuss@lists.smc.org.in>\n"
 "Language: \n"
@@ -54,10 +54,10 @@ msgid "Failed to make directory %s: %s"
 msgstr "ഡയറക്ടറി %s ഉണ്ടാക്കുവാന്‍ സാധ്യമായില്ല: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:459
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to create child process '%s': %s"
 msgid "Failed to create hardlink for resource '%s': %s"
-msgstr "ചൈള്‍ഡ് പ്രക്രിയ '%s' നിര്‍മ്മിക്കുന്നതില്‍ പരാജയം: %s"
+msgstr "ഉറവിടത്തിനു് ഹാര്‍ഡ്‌ലിങ്കു്  '%s' നിര്‍മ്മിക്കുന്നതില്‍ പരാജയം: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:561
 #: ../addressbook/backends/file/e-book-backend-file.c:1127
@@ -200,7 +200,7 @@ msgstr "%s: NULL ldap_first_entry-ല്‍ നിന്നും തിരി�
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2456
 #, c-format
 msgid "%s: Unhandled result type %d returned"
-msgstr ""
+msgstr "%s: അപരിചിതമായ ഫലത്തിന്റെ തരം %d തിരികെ"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2334
 msgid "Modifying contact from LDAP server..."
@@ -210,7 +210,7 @@ msgstr "LDAP സര്‍വറിലുളള വിലാസത്തില്
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:2886
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
-msgstr ""
+msgstr "%s: അപരിചിതമായ തെരച്ചില്‍ ഫലത്തിന്റെ തരം %d തിരികെ"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4736
 msgid "Receiving LDAP search results..."
@@ -245,7 +245,7 @@ msgstr ""
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:447
 #, c-format
 msgid "DELETE failed with HTTP status %d"
-msgstr ""
+msgstr "HTTP അവസ്ഥ %d-യ്ക്കു് DELETE പരാജയപ്പെട്ടു"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:507
 msgid "Contact on server changed -> not modifying"
@@ -277,7 +277,7 @@ msgstr "വിലാസങ്ങള്‍ ലഭ്യമാക്കുന്�
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1287
 msgid "Cannot transform SoupURI to string"
-msgstr ""
+msgstr "SoupURI-നെ സ്ട്രിങായി മാറ്റുവാന്‍ സാധ്യമല്ല"
 
 #: ../addressbook/libebook/e-book-client.c:95
 #| msgid "No such folder %s"
@@ -308,10 +308,9 @@ msgid "No space"
 msgstr "സ്ഥലമില്ല"
 
 #: ../addressbook/libebook/e-book-client.c:488
-#, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to run book factory"
-msgstr "ഡേറ്റാ എന്‍കോഡ് ചെയ്യുവാന്‍ സാധ്യമായില്ല"
+msgstr "പുസ്തക ഫാക്ടറി നടപ്പിലാക്കുന്നതില്‍ പരാജയപ്പെട്ടു"
 
 #: ../addressbook/libebook/e-book-client.c:2244
 #: ../calendar/libecal/e-cal-client.c:4602
