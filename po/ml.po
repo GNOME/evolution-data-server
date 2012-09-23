@@ -11,7 +11,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2012-09-16 16:58+0000\n"
-"PO-Revision-Date: 2012-09-22 15:16+0000\n"
+"PO-Revision-Date: 2012-09-23 16:06+0000\n"
 "Last-Translator: Ani Peter <apeter@redhat.com>\n"
 "Language-Team: Malayalam <discuss@lists.smc.org.in>\n"
 "Language: \n"
@@ -267,7 +267,7 @@ msgstr ""
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:949
 msgid "No response body in webdav PROPFIND result"
-msgstr ""
+msgstr "webdav PROPFIND ഫലത്തില്‍ മറുപടിയില്ല"
 
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:980
 #, c-format
@@ -943,10 +943,10 @@ msgid "Unknown book property '%s'"
 msgstr "അപരിചിതമായ പുസ്തക വിശേഷത '%s'"
 
 #: ../addressbook/libedata-book/e-book-backend.c:107
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create folder '%s': %s"
 msgid "Cannot change value of book property '%s'"
-msgstr "ഫോള്‍ഡര്‍ `%s' ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല: %s"
+msgstr "പുസ്തക വിശേഷത `%s' മാറ്റുവാന്‍ സാധ്യമല്ല"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:500
 #: ../camel/camel-db.c:503
@@ -1221,13 +1221,12 @@ msgstr ""
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:635
 msgid "CalDAV backend is not loaded yet"
-msgstr ""
+msgstr "CalDAV ബാക്കന്‍ഡ് ലഭ്യമാക്കിയിട്ടില്ല"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:1017
-#, fuzzy
 #| msgid "Invalid server URI"
 msgid "Invalid Redirect URL"
-msgstr "അസാധുവായ സര്‍വര്‍ URI "
+msgstr "തെറ്റായ റീഡയറക്ട് URL"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2360
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2722
@@ -1238,34 +1237,32 @@ msgid ""
 msgstr ""
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2663
-#, fuzzy
 #| msgid "cannot create thread"
 msgid "Cannot create local store"
-msgstr "ത്രെഡ് നിര്‍മ്മിക്കുവാന്‍ സാധ്യമായില്ല"
+msgstr "ലോക്കല്‍ സ്റ്റോര്‍ തയ്യാറാക്കുവാന്‍ സാധ്യമായില്ല"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2672
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create folder '%s': %s"
 msgid "Cannot create local cache folder '%s'"
-msgstr "ഫോള്‍ഡര്‍ `%s' ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല: %s"
+msgstr "സിസ്റ്റത്തില്‍ കാഷ് ഫോള്‍ഡര്‍ '%s' തയ്യാറാക്കുവാന്‍ സാധ്യമല്ല"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2683
-#, fuzzy
 #| msgid "Could not create cache file"
 msgid "Could not create synch slave thread"
-msgstr "cache ഫയല്‍ നിര്‍മ്മിക്കുവാന്‍ സാധ്യമായില്ല"
+msgstr "സിന്‍ക് സ്ലേവ് ത്രെഡ് തയ്യാറാക്കുവാന്‍ സാധ്യമായില്ല"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3677
 msgid "CalDAV does not support bulk additions"
-msgstr ""
+msgstr "അധികമായവ CalDAV പിന്തുണയ്ക്കുന്നില്ല"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3779
 msgid "CalDAV does not support bulk modifications"
-msgstr ""
+msgstr "അധികമായ മാറ്റം വരുത്തലുകള്‍ CalDAV പിന്തുണയ്ക്കുന്നില്ല"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:3947
 msgid "CalDAV does not support bulk removals"
-msgstr ""
+msgstr "അധികമായ നീക്കം ചെയ്യലുകള്‍ CalDAV പിന്തുണയ്ക്കുന്നില്ല"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4606
 msgid "Calendar doesn't support Free/Busy"
@@ -1303,10 +1300,10 @@ msgid "Cannot save calendar data"
 msgstr "കലണ്ടറിലുളള ഡേറ്റാ സൂക്ഷിക്കുവാന്‍ സാധ്യമല്ല"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:482
-#, fuzzy, c-format
+#, c-format
 #| msgid "Malformed signature"
 msgid "Malformed URI: %s"
-msgstr "തകരാറുളള ഒപ്പ്"
+msgstr "തകരാറുള്ള യുആര്‍ഐ: %s"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:543
 #, c-format
@@ -1431,10 +1428,9 @@ msgid "Authentication required"
 msgstr "ആധികാരികത ഉറപ്പ് വരുത്തല്‍ ആവശ്യമുണ്ട്"
 
 #: ../calendar/libecal/e-cal.c:4031
-#, fuzzy
 #| msgid "A CORBA exception has occurred"
 msgid "A D-Bus exception has occurred"
-msgstr "ഒരു CORBA എക്സപ്ഷന്‍ സംഭവിച്ചിരിക്കുന്നു"
+msgstr "ഒരു ഡി-ബസ് എക്സപ്ഷന്‍ സംഭവിച്ചിരിക്കുന്നു"
 
 #: ../calendar/libecal/e-cal.c:4035
 msgid "No error"
@@ -1442,10 +1438,9 @@ msgstr "പ്രശ്നം ഇല്ല"
 
 #: ../calendar/libecal/e-cal-client.c:141
 #: ../calendar/libedata-cal/e-data-cal.c:430
-#, fuzzy
 #| msgid "Unknown User"
 msgid "Unknown user"
-msgstr "അപരിചിതമായ ഉപയോഗിക്കുന്ന ആള്‍"
+msgstr "അപരിചിതമായ ഉപയോക്താവു്"
 
 #: ../calendar/libecal/e-cal-client.c:145
 #: ../calendar/libedata-cal/e-data-cal.c:419
@@ -1587,21 +1582,18 @@ msgid "31st"
 msgstr "31"
 
 #: ../calendar/libecal/e-cal-util.c:696 ../calendar/libecal/e-cal-util.c:723
-#, fuzzy
 #| msgid "High"
 msgctxt "Priority"
 msgid "High"
 msgstr "ഉയര്‍ന്ന"
 
 #: ../calendar/libecal/e-cal-util.c:698 ../calendar/libecal/e-cal-util.c:725
-#, fuzzy
 #| msgid "Normal"
 msgctxt "Priority"
 msgid "Normal"
 msgstr "സാധാരണ"
 
 #: ../calendar/libecal/e-cal-util.c:700 ../calendar/libecal/e-cal-util.c:727
-#, fuzzy
 #| msgid "Low"
 msgctxt "Priority"
 msgid "Low"
@@ -1609,7 +1601,6 @@ msgstr "കുറഞ്ഞ"
 
 #. An empty string is the same as 'None'.
 #: ../calendar/libecal/e-cal-util.c:721
-#, fuzzy
 #| msgid "Undefined"
 msgctxt "Priority"
 msgid "Undefined"
@@ -1617,19 +1608,19 @@ msgstr "വ്യക്തമല്ലാത്തത്"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:36
 msgid "Cannot process, calendar backend is opening"
-msgstr ""
+msgstr "നടപ്പിലാക്കുവാന്‍ സാധ്യമല്ല, കലണ്ടര്‍ ബാക്കെന്‍ഡ് തുറക്കുന്നു"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:135
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unknown error: %s"
 msgid "Unknown calendar property '%s'"
-msgstr "അപരിചിതമായ പിശക്: %s"
+msgstr "അപരിചിതമായ കലണ്ടര്‍ വിശേഷത '%s'"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:152
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot save calendar data"
 msgid "Cannot change value of calendar property '%s'"
-msgstr "കലണ്ടറിലുളള ഡേറ്റാ സൂക്ഷിക്കുവാന്‍ സാധ്യമല്ല"
+msgstr "കലണ്ടര്‍ വിശേഷത '%s'-യ്ക്കുള്ള മൂല്ല്യം മാറ്റുവാന്‍ സാധ്യമല്ല"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:77
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:817
@@ -1692,10 +1683,10 @@ msgid "\"%s\" expects the second argument to be an integer"
 msgstr "രണ്ടാമത്തെ ആര്‍ഗ്യുമെന്‍റ് ഒരു ഇന്‍റിജര്‍ ആയിരിക്കുമെന്ന് \"%s\" പ്രതീക്ഷിക്കുന്നു"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:395
-#, fuzzy, c-format
+#, c-format
 #| msgid "\"%s\" expects two arguments"
 msgid "\"%s\" expects two or three arguments"
-msgstr "\"%s\" രണ്ട് ആര്‍ഗ്യുമെന്‍റുകള്‍ പ്രതീക്ഷിക്കുന്നു"
+msgstr "\"%s\" രണ്ടോ മൂന്നോ ആര്‍ഗ്യുമെന്‍റുകള്‍ പ്രതീക്ഷിക്കുന്നു"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:409
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:490
@@ -1712,10 +1703,10 @@ msgid "\"%s\" expects the third argument to be a string"
 msgstr "ആദ്യത്തെ ആര്‍ഗ്യുമെന്‍റ് സ്ടിങ് ആയിരിക്കുമെന്ന് \"%s\" പ്രതീക്ഷിക്കുന്നു"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:478
-#, fuzzy, c-format
+#, c-format
 #| msgid "\"%s\" expects two arguments"
 msgid "\"%s\" expects none or two arguments"
-msgstr "\"%s\" രണ്ട് ആര്‍ഗ്യുമെന്‍റുകള്‍ പ്രതീക്ഷിക്കുന്നു"
+msgstr "\"%s\" രണ്ട് ആര്‍ഗ്യുമെന്‍റുകള്‍ അല്ലെങ്കില്‍ ഒന്നും പ്രതീക്ഷിക്കുന്നില്ല"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:892
 #, c-format
@@ -1750,17 +1741,15 @@ msgid "Unsupported method"
 msgstr "പിന്തുണയില്ലാത്ത മാര്‍ഗ്ഗം"
 
 #: ../calendar/libedata-cal/e-data-cal.c:429
-#, fuzzy
 #| msgid "Folder '%s' does not exist."
 msgid "Calendar does not exist"
-msgstr "ഫോള്‍ഡര്‍ `%s' നിലവിലില്ല."
+msgstr "കലണ്ടര്‍ നിലവിലില്ല"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:909
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot open calendar: "
-msgstr "കലണ്ടറിലുളള ഡേറ്റാ സൂക്ഷിക്കുവാന്‍ സാധ്യമല്ല"
+msgstr "കലണ്ടര്‍ തുറക്കുവാന്‍ സാധ്യമല്ല:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:934
@@ -1771,15 +1760,14 @@ msgstr "കലണ്ടറിലുളള ഡേറ്റാ സൂക്ഷി�
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:961
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot refresh calendar: "
-msgstr "കലണ്ടറിലുളള ഡേറ്റാ സൂക്ഷിക്കുവാന്‍ സാധ്യമല്ല"
+msgstr "കലണ്ടര്‍ പുതുക്കുവാന്‍ സാധ്യമല്ല"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:990
 msgid "Cannot retrieve backend property: "
-msgstr ""
+msgstr "ബാക്കെന്‍ഡ് വിശേഷത ലഭ്യമാക്കുവാന്‍ സാധ്യമല്ല:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1045
@@ -1818,24 +1806,21 @@ msgstr "കലണ്ടറിലുളള ഡേറ്റാ സൂക്ഷി�
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1217
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot remove calendar object: "
-msgstr "കലണ്ടറിലുളള ഡേറ്റാ സൂക്ഷിക്കുവാന്‍ സാധ്യമല്ല"
+msgstr "കലണ്ടര്‍ വസ്തു നീക്കം ചെയ്യുവാന്‍ സാധ്യമല്ല:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1254
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot receive calendar objects: "
-msgstr "കലണ്ടറിലുളള ഡേറ്റാ സൂക്ഷിക്കുവാന്‍ സാധ്യമല്ല"
+msgstr "കലണ്ടര്‍ വസ്തുക്കള്‍ ലഭ്യമാക്കുവാന്‍ സാധ്യമല്ല"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1285
-#, fuzzy
 #| msgid "Cannot save calendar data"
 msgid "Cannot send calendar objects: "
-msgstr "കലണ്ടറിലുളള ഡേറ്റാ സൂക്ഷിക്കുവാന്‍ സാധ്യമല്ല"
+msgstr "കലണ്ടര്‍ വസ്തുക്കള്‍ അയയ്ക്കുവാന്‍ സാധ്യമല്ല:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1317
@@ -1846,10 +1831,9 @@ msgstr "കാലാവസ്ഥ സംബന്ധിച്ചുളള വി�
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1345
-#, fuzzy
 #| msgid "Could not store folder: %s"
 msgid "Could not discard reminder: "
-msgstr "ഫോള്‍ഡര്‍ സൂക്ഷിക്കുവാന്‍ സാധ്യമായില്ല: %s"
+msgstr "റിമയിന്റര്‍ വേണ്ടെന്നു് വയ്ക്കുവാന്‍ സാധ്യമല്ല:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1374
@@ -1860,23 +1844,21 @@ msgstr "എന്‍ക്രിപ്റ്റിങ് ഡേറ്റാ ഉ�
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1404
-#, fuzzy
 #| msgid "Could not retrieve weather data"
 msgid "Could not retrieve calendar time zone: "
-msgstr "കാലാവസ്ഥ സംബന്ധിച്ചുളള വിവരങ്ങള്‍ ലഭ്യമായില്ല"
+msgstr "കലണ്ടറിന്റെ സമയമേഘല ലഭ്യമാക്കുവാന്‍ സാധ്യമല്ല:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1430
-#, fuzzy
 #| msgid "Could not rename folder: %s"
 msgid "Could not add calendar time zone: "
-msgstr "ഫോള്‍ഡറിന്‍റെ പേര് മാറ്റുവാന്‍ സാധ്യമായില്ല: %s"
+msgstr "കലണ്ടറിന്റെ സമയമേഘല ചേര്‍ക്കുവാന്‍ സാധ്യമല്ല:"
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:220
-#, fuzzy, c-format
+#, c-format
 #| msgid "Invalid range"
 msgid "Invalid call"
-msgstr "അസാധുവായ പരിധി"
+msgstr "അസാധുവായ കോള്‍"
 
 #: ../camel/camel-cipher-context.c:206
 #, c-format
@@ -1927,7 +1909,7 @@ msgstr "cache-നുളള പാഥ് നിര്‍മ്മിക്കു�
 
 #: ../camel/camel-data-cache.c:440
 msgid "Empty cache file"
-msgstr ""
+msgstr "കാലിയായ കാഷ് ഫയല്‍"
 
 #: ../camel/camel-data-cache.c:509
 #, c-format
@@ -1971,10 +1953,9 @@ msgid "Preparing folder '%s' for offline"
 msgstr "ഓഫ് ലൈനിലായി '%s' തയ്യാറാക്കുന്നു"
 
 #: ../camel/camel-disco-folder.c:487 ../camel/camel-offline-folder.c:334
-#, fuzzy
 #| msgid "Copy folder content locally for offline operation"
 msgid "Copy folder content locally for _offline operation"
-msgstr "ഓഫ് ലൈന്‍ പ്രക്രിയയ്ക്കായി ഫോള്‍ഡറിലുളളവ ലോക്കലായി പകര്‍ത്തുക"
+msgstr "_ഓഫ്‌ലൈന്‍ പ്രക്രിയയ്ക്കായി ഫോള്‍ഡറിലുളളവ സിസ്റ്റത്തിലേക്കു് പകര്‍ത്തുക"
 
 #: ../camel/camel-disco-store.c:469 ../camel/camel-imapx-folder.c:413
 #: ../camel/camel-imapx-folder.c:446 ../camel/camel-imapx-folder.c:482
@@ -2117,7 +2098,7 @@ msgstr "സന്ദേശങ്ങള്‍ പകര്‍ത്തുന്�
 #: ../camel/camel-folder.c:1253
 #, c-format
 msgid "Quota information not supported for folder '%s'"
-msgstr ""
+msgstr "ഫോള്‍ഡര്‍ '%s'-നുള്ള കോട്ടാ വിവരം പിന്തുണയ്ക്കുന്നില്ല"
 
 #: ../camel/camel-folder.c:3372
 #, fuzzy, c-format
@@ -2132,16 +2113,16 @@ msgid "Retrieving message '%s' in %s"
 msgstr "POP സന്ദേശം %d ലഭ്യമാക്കുന്നു"
 
 #: ../camel/camel-folder.c:3755
-#, fuzzy, c-format
+#, c-format
 #| msgid "Fetching summary information for new messages in %s"
 msgid "Retrieving quota information for '%s'"
-msgstr "പുതിയ സന്ദേശങ്ങള്‍ക്കുളള സമ്മറി വിവരം %s-ല്‍ നിന്നും ലഭ്യമാക്കുന്നു"
+msgstr "'%s'-നുള്ള കോട്ടാ വിവരം ലഭ്യമാക്കുന്നു"
 
 #: ../camel/camel-folder.c:3987
-#, fuzzy, c-format
+#, c-format
 #| msgid "No such folder '%s'."
 msgid "Refreshing folder '%s'"
-msgstr "`%s' എന്ന ഫോള്‍ഡര്‍ നിലവിലില്ല."
+msgstr "'%s' ഫോള്‍ഡര്‍ പുതുക്കുന്നു"
 
 #: ../camel/camel-folder-search.c:420 ../camel/camel-folder-search.c:587
 #, c-format
@@ -2256,7 +2237,7 @@ msgstr ""
 #: ../camel/camel-tcp-stream-raw.c:268
 #: ../camel/providers/nntp/camel-nntp-summary.c:388
 #: ../libedataserver/e-client.c:140
-#, fuzzy, c-format
+#, c-format
 #| msgid "Canceled"
 msgid "Cancelled"
 msgstr "റദ്ദാക്കപ്പെട്ടു "
@@ -2303,10 +2284,9 @@ msgid "Cannot verify message signature: "
 msgstr "സന്ദേശത്തിന്റെ ഒപ്പ് പരിശോധിക്കുവാന്‍ സാധ്യമല്ല: തെറ്റായ സന്ദേശ മാതൃക"
 
 #: ../camel/camel-gpg-context.c:1924
-#, fuzzy
 #| msgid "Could not generate encrypting data: %s"
 msgid "Could not generate encrypting data: "
-msgstr "എന്‍ക്രിപ്റ്റിങ് ഡേറ്റാ ഉണ്ടാക്കുവാന്‍ സാധ്യമായില്ല: %s"
+msgstr "എന്‍ക്രിപ്റ്റ് ചെയ്യുന്ന ഡേറ്റാ ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/camel-gpg-context.c:1977
 msgid "This is a digitally encrypted message part"
@@ -2316,7 +2296,7 @@ msgstr "ഇതു് ഡിജിറ്റലായി എന്‍ക്രി�
 #: ../camel/camel-gpg-context.c:2067
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr ""
+msgstr "സന്ദേശം ഡീക്രിപ്റ്റ് ചെയ്യുവാന്‍ സാധ്യമല്ല: തെറ്റായ സന്ദേശ ശൈലി"
 
 #: ../camel/camel-gpg-context.c:2055
 #, c-format
@@ -2334,10 +2314,10 @@ msgid "Could not create folder summary for %s"
 msgstr "%s-നുളള സമ്മറി ലോഡ് ചെയ്യുവാനായില്ല"
 
 #: ../camel/camel-imapx-folder.c:112
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not create cache file"
 msgid "Could not create cache for %s: "
-msgstr "cache ഫയല്‍ നിര്‍മ്മിക്കുവാന്‍ സാധ്യമായില്ല"
+msgstr "%s-നുള്ള കാഷ് തയ്യാറാക്കുവാന്‍ സാധ്യമായില്ല: "
 
 #: ../camel/camel-imapx-folder.c:794
 #: ../camel/providers/imap/camel-imap-folder.c:367
@@ -2348,10 +2328,9 @@ msgid "Apply message _filters to this folder"
 msgstr "ചവറ്റുകുട്ടയിലേക്ക് സന്ദേശങ്ങള്‍ പകര്‍ത്തുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/camel-imapx-server.c:1094
-#, fuzzy
 #| msgid "Server unexpectedly disconnected: %s"
 msgid "Server disconnected"
-msgstr "അപ്രതീക്ഷിതമായി സര്‍വറിന്‍റെ കണക്ഷന്‍ വേര്‍പ്പെട്ടു: %s"
+msgstr "സര്‍വര്‍ വിഛേദിച്ചിരിയ്ക്കുന്നു"
 
 #: ../camel/camel-imapx-server.c:1549
 #, fuzzy
@@ -2360,16 +2339,15 @@ msgid "Error writing to cache stream: "
 msgstr "മെയില്‍ ടെംപ് ഫയല്‍ എഴുതുന്നതില്‍ പിശക്: %s"
 
 #: ../camel/camel-imapx-server.c:2500
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to authenticate.\n"
 msgid "Not authenticated"
-msgstr "ആധികാരികത ഉറപ്പ് വരുത്തല്‍ പരാജയപ്പെട്ടു.\n"
+msgstr "ആധികാരികത ഉറപ്പ് വരുത്തിയിട്ടില്ല"
 
 #: ../camel/camel-imapx-server.c:2580
-#, fuzzy
 #| msgid "Error performing search"
 msgid "Error performing IDLE"
-msgstr "തിരച്ചിലില്‍ തകരാറ്"
+msgstr "IDLE നടപ്പിലാക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:3462
 #: ../camel/providers/imap/camel-imap-store.c:414
@@ -2386,14 +2364,14 @@ msgstr "STARTTLS പിന്തുണയ്ക്കിന്നില്ല"
 
 #: ../camel/camel-imapx-server.c:3502
 #: ../camel/providers/imap/camel-imap-store.c:440
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgid "Failed to connect to IMAP server %s in secure mode: "
-msgstr "സുരക്ഷിത മോഡില്‍ IMAP സര്‍വര്‍ %s-ലേക്ക് കണക്ട് ചെയ്യുവാന്‍ സാധ്യമായില്ല: %s"
+msgstr "സുരക്ഷിത മോഡില്‍ IMAP സര്‍വര്‍ %s-ലേക്ക് കണക്ട് ചെയ്യുന്നതില്‍ പരാജയപ്പെട്ടു:"
 
 #: ../camel/camel-imapx-server.c:3580
 #: ../camel/providers/imap/camel-imap-store.c:749
-#, fuzzy, c-format
+#, c-format
 #| msgid "IMAP server %s does not support requested authentication type %s"
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP സര്‍വര്‍ %s-ല്‍ %s എന്ന ആധികാരികത ഉറപ്പുവരുത്തല്‍ സംവിധാനത്തിന് പിന്തുണ ലഭ്യമല്ല"
@@ -2403,7 +2381,7 @@ msgstr "IMAP സര്‍വര്‍ %s-ല്‍ %s എന്ന ആധിക�
 #: ../camel/providers/pop3/camel-pop3-store.c:259
 #: ../camel/providers/pop3/camel-pop3-store.c:587
 #: ../camel/providers/smtp/camel-smtp-transport.c:467
-#, fuzzy, c-format
+#, c-format
 #| msgid "No support for authentication type %s"
 msgid "No support for %s authentication"
 msgstr "%s എന്ന ആധികാരികത ഉറപ്പുവരുത്തല്‍ സംവിധാനത്തിന് പിന്തുണ ലഭ്യമല്ല"
@@ -2411,32 +2389,28 @@ msgstr "%s എന്ന ആധികാരികത ഉറപ്പുവരു�
 #: ../camel/camel-imapx-server.c:3610
 #: ../camel/providers/imap/camel-imap-store.c:1142
 #: ../camel/providers/nntp/camel-nntp-store.c:502
-#, fuzzy
 #| msgid "Cannot authenticate to server: %s"
 msgid "Cannot authenticate without a username"
-msgstr "സര്‍വറിലേക്ക് ആധികാരികത ഉറപ്പ് വരുത്തുവാന്‍ സാധ്യമല്ല: %s"
+msgstr "ഉപയോക്തൃനാമമില്ലാതെ ആധികാരികത ഉറപ്പാക്കുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/camel-imapx-server.c:3619
 #: ../camel/providers/imap/camel-imap-store.c:1150
 #: ../camel/providers/nntp/camel-nntp-store.c:511
 #: ../camel/providers/pop3/camel-pop3-store.c:512
 #: ../camel/providers/pop3/camel-pop3-store.c:532
-#, fuzzy
 #| msgid "Authentication failed"
 msgid "Authentication password not available"
-msgstr "ആധികാരകത ഉറപ്പാക്കല്‍ പരാജയപ്പെട്ടു"
+msgstr "ആധികാരകത ഉറപ്പാക്കുന്നതിനുള്ള രഹസ്യവാക്ക് ലഭ്യമല്ല"
 
 #: ../camel/camel-imapx-server.c:3821
-#, fuzzy
 #| msgid "Encrypting message"
 msgid "Error fetching message"
-msgstr "സന്ദേശം രഹസ്യഭാഷയിലാക്കുന്നു"
+msgstr "സന്ദേശം ലഭ്യമാക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:3903
-#, fuzzy
 #| msgid "Failed to authenticate.\n"
 msgid "Failed to copy the tmp file"
-msgstr "ആധികാരികത ഉറപ്പ് വരുത്തല്‍ പരാജയപ്പെട്ടു.\n"
+msgstr "tmp ഫയല്‍ പകര്‍ത്തുന്നതില്‍ പരാജയപ്പെട്ടു"
 
 #: ../camel/camel-imapx-server.c:3917
 #, fuzzy
@@ -2445,10 +2419,9 @@ msgid "Failed to close the tmp stream"
 msgstr "ഡേറ്റാ എന്‍കോഡ് ചെയ്യുവാന്‍ സാധ്യമായില്ല"
 
 #: ../camel/camel-imapx-server.c:4015
-#, fuzzy
 #| msgid "Copying messages"
 msgid "Error copying messages"
-msgstr "സന്ദേശങ്ങള്‍ പകര്‍ത്തുന്നു"
+msgstr "സന്ദേശങ്ങള്‍ പകര്‍ത്തുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:4150
 #, fuzzy
@@ -2458,19 +2431,15 @@ msgstr "സന്ദേശം അയയ്ക്കുന്നു"
 
 #: ../camel/camel-imapx-server.c:4333
 msgid "Error fetching message headers"
-msgstr ""
+msgstr "സന്ദേശത്തിന്റെ തലക്കെട്ടുകള്‍ ലഭ്യമാക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:4468
-#, fuzzy
 #| msgid ""
 #| "Error retrieving newsgroups:\n"
 #| "\n"
 #| "%s"
 msgid "Error retrieving message"
-msgstr ""
-"വാര്‍ത്താഗ്രൂപ്പുകള്‍ ലഭ്യമാക്കുന്നതില്‍ പിശക്:\n"
-"\n"
-"%s"
+msgstr "സന്ദേശം ലഭ്യമാക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:4590 ../camel/camel-imapx-server.c:4783
 #, fuzzy, c-format
@@ -2485,16 +2454,14 @@ msgid "Scanning for changed messages in '%s'"
 msgstr "%s-ല്‍ മാറ്റം വന്നിരിക്കുന്ന സന്ദേശങ്ങള്‍ക്കായി പരിശോധിക്കുന്നു"
 
 #: ../camel/camel-imapx-server.c:4684
-#, fuzzy
 #| msgid "%s: Scanning new messages"
 msgid "Error fetching new messages"
-msgstr "%s: പുതിയ മെയിലുകള്‍ പരിശോധിക്കുന്നു"
+msgstr "പുതിയ സന്ദേശങ്ങള്‍ ലഭ്യമാക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:4874
-#, fuzzy
 #| msgid "Verifying message"
 msgid "Error while fetching messages"
-msgstr "സന്ദേശം ഉറപ്പ് വരുത്തുന്നു"
+msgstr "സന്ദേശം ലഭ്യമാക്കുമ്പോള്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:4882 ../camel/camel-imapx-server.c:4918
 #, fuzzy, c-format
@@ -2505,10 +2472,9 @@ msgstr[0] "പുതിയ സന്ദേശങ്ങള്‍ക്കുള�
 msgstr[1] "പുതിയ സന്ദേശങ്ങള്‍ക്കുളള സമ്മറി വിവരം %s-ല്‍ നിന്നും ലഭ്യമാക്കുന്നു"
 
 #: ../camel/camel-imapx-server.c:5043 ../camel/camel-imapx-server.c:5079
-#, fuzzy
 #| msgid "Error performing search"
 msgid "Error refreshing folder"
-msgstr "തിരച്ചിലില്‍ തകരാറ്"
+msgstr "ഫോള്‍ഡര്‍ പുതുക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:5172
 #, fuzzy
@@ -2517,10 +2483,9 @@ msgid "Error expunging message"
 msgstr "പഴയ സന്ദേശങ്ങള്‍ എടുത്ത് കളയുന്നു"
 
 #: ../camel/camel-imapx-server.c:5269
-#, fuzzy
 #| msgid "Storing folder"
 msgid "Error fetching folders"
-msgstr "ഫോള്‍ഡര്‍ സൂക്ഷിക്കുന്നു"
+msgstr "ഫോള്‍ഡറുകള്‍ ലഭ്യമാക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:5348
 #, fuzzy
@@ -2529,32 +2494,28 @@ msgid "Error subscribing to folder"
 msgstr "അംഗത്വമുളള ഫോള്‍ഡറുകള്‍ മാത്രം കാണിക്കുക (_S)"
 
 #: ../camel/camel-imapx-server.c:5409
-#, fuzzy
 #| msgid "Storing folder"
 msgid "Error creating folder"
-msgstr "ഫോള്‍ഡര്‍ സൂക്ഷിക്കുന്നു"
+msgstr "ഫോള്‍ഡര്‍ തയ്യാറാക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:5458
-#, fuzzy
 #| msgid "Storing folder"
 msgid "Error deleting folder"
-msgstr "ഫോള്‍ഡര്‍ സൂക്ഷിക്കുന്നു"
+msgstr "ഫോള്‍ഡര്‍ വെട്ടി നീക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:5519
-#, fuzzy
 #| msgid "Storing folder"
 msgid "Error renaming folder"
-msgstr "ഫോള്‍ഡര്‍ സൂക്ഷിക്കുന്നു"
+msgstr "ഫോള്‍ഡറിന്റെ പേരു് മാറ്റുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:5580
-#, fuzzy
 #| msgid "Error performing search"
 msgid "Error performing NOOP"
-msgstr "തിരച്ചിലില്‍ തകരാറ്"
+msgstr "NOOP നടപ്പിലാക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:5676
 msgid "Error syncing changes"
-msgstr ""
+msgstr "മാറ്റങ്ങള്‍ സിന്‍ക് ചെയ്യുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-imapx-server.c:6447
 #: ../camel/providers/imap/camel-imap-folder.c:3531
@@ -2568,10 +2529,9 @@ msgid "No such message available."
 msgstr "അത്തരം സന്ദേശം ലഭ്യമല്ല"
 
 #: ../camel/camel-imapx-server.c:6603 ../camel/camel-imapx-server.c:6618
-#, fuzzy
 #| msgid "Cannot create message: %s"
 msgid "Cannot create spool file: "
-msgstr "സന്ദേശം ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല: %s"
+msgstr "സ്പൂള്‍ ഫയല്‍ തയ്യാറാക്കുവാന്‍ സാധ്യമല്ല:"
 
 #: ../camel/camel-imapx-store.c:157
 #: ../camel/providers/imap/camel-imap-store.c:827
@@ -2655,10 +2615,10 @@ msgid "Source stream returned no data"
 msgstr ""
 
 #: ../camel/camel-imapx-stream.c:106
-#, fuzzy, c-format
+#, c-format
 #| msgid "service unavailable"
 msgid "Source stream unavailable"
-msgstr "സേവനം ലഭ്യമല്ല"
+msgstr "സോഴ്സ് സ്ട്രീം ലഭ്യമല്ല"
 
 #: ../camel/camel-lock.c:102
 #, c-format
@@ -2756,16 +2716,16 @@ msgid "Error copying mail temp file: %s"
 msgstr "മെയില്‍ ടെംപ് ഫയല്‍ പകര്‍ത്തുന്നതില്‍ പിശക്: %s"
 
 #: ../camel/camel-multipart-signed.c:297
-#, fuzzy, c-format
+#, c-format
 #| msgid "No description available"
 msgid "No content available"
-msgstr "വിവരണം ലഭ്യമല്ല "
+msgstr "ഉള്ളടക്കമില്ല"
 
 #: ../camel/camel-multipart-signed.c:305
-#, fuzzy, c-format
+#, c-format
 #| msgid "No description available"
 msgid "No signature available"
-msgstr "വിവരണം ലഭ്യമല്ല "
+msgstr "ഒപ്പു് ലഭ്യമല്ല"
 
 #: ../camel/camel-multipart-signed.c:689
 #, c-format
@@ -2800,10 +2760,10 @@ msgid "Name lookup failed: %s"
 msgstr "പേര് തിരച്ചില്‍ പരാജയപ്പെട്ടു: %s"
 
 #: ../camel/camel-network-service.c:114
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not connect to %s: %s"
 msgid "Could not connect to %s: "
-msgstr "%s-ലേക്ക് കണക്ട് ചെയ്യുവാന്‍ സാധ്യമല്ല: %s"
+msgstr "%s-ലേക്ക് കണക്ട് ചെയ്യുവാന്‍ സാധ്യമല്ല:"
 
 #: ../camel/camel-offline-folder.c:210
 #, c-format
@@ -3045,10 +3005,9 @@ msgid "This option will authorise a POP connection before attempting SMTP"
 msgstr "SMTP ശ്രമിക്കുന്നതിന് മുന്പ് ഒരു POP കണക്ഷനെ ഈ ഉപാധി അധികാരപ്പെടുത്തുന്നു"
 
 #: ../camel/camel-sasl-popb4smtp.c:84
-#, fuzzy
 #| msgid "POP Source URI"
 msgid "POP Source UID"
-msgstr "POP Source URI"
+msgstr "പോപ്പ് സോഴ്സ് യുഐഡി"
 
 #: ../camel/camel-sasl-popb4smtp.c:96
 #, fuzzy, c-format
@@ -3073,16 +3032,15 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "സമ്പ്രദായം `%s'-നുളള പ്രൊവൈഡര്‍ ലഭ്യമല്ല"
 
 #: ../camel/camel-session.c:509
-#, fuzzy, c-format
+#, c-format
 #| msgid "Authentication failed"
 msgid "%s authentication failed"
-msgstr "ആധികാരകത ഉറപ്പാക്കല്‍ പരാജയപ്പെട്ടു"
+msgstr "%s ആധികാരകത ഉറപ്പാക്കല്‍ പരാജയപ്പെട്ടു"
 
 #: ../camel/camel-session.c:645
-#, fuzzy
 #| msgid "Operation not supported"
 msgid "Forwarding messages is not supported"
-msgstr "പ്രക്രിയ പിന്തുണയ്ക്കപ്പെടുന്നില്ല"
+msgstr "സന്ദേശങ്ങള്‍ ഫോര്‍വേഡ് ചെയ്യുന്നതു് പിന്തുണയ്ക്കുന്നതു്"
 
 #: ../camel/camel-session.c:1362
 #, c-format
@@ -3112,11 +3070,11 @@ msgstr "CMS ഡേറ്റാ ചേര്‍ക്കുവാന്‍ സാ
 
 #: ../camel/camel-smime-context.c:403
 msgid "Cannot create CMS Signer information"
-msgstr ""
+msgstr "സിഎംഎസ് സൈനര്‍ വിവരം തയ്യാറാക്കുന്നതില്‍ പിശക്"
 
 #: ../camel/camel-smime-context.c:409
 msgid "Cannot find certificate chain"
-msgstr ""
+msgstr "സമ്മതപത്ര ചെയിന്‍ കണ്ടുപിടിയ്ക്കുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/camel-smime-context.c:415
 msgid "Cannot add CMS Signing time"
@@ -3125,7 +3083,7 @@ msgstr "CMS ഒപ്പ് വയ്ക്കുന്ന സമയം ചേ�
 #: ../camel/camel-smime-context.c:439 ../camel/camel-smime-context.c:454
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
-msgstr ""
+msgstr "'%s'-നുള്ള എന്‍ക്രിപ്ഷന്‍ സമ്മതപത്രം നിലവിലില്ല"
 
 #: ../camel/camel-smime-context.c:461
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
@@ -3137,11 +3095,11 @@ msgstr "MS SMIMEEncKeyPrefs വിശേഷത ചേര്‍ക്കുവാ
 
 #: ../camel/camel-smime-context.c:471
 msgid "Cannot add encryption certificate"
-msgstr ""
+msgstr "എന്‍ക്രിപ്ഷന്‍ സമ്മതപത്രം ചേര്‍ക്കുവാന്‍ സാധ്യമല്ല"
 
 #: ../camel/camel-smime-context.c:477
 msgid "Cannot add CMS Signer information"
-msgstr ""
+msgstr "സിഎംഎസ് സൈനര്‍ വിവരം ചേര്‍ക്കുവാന്‍ സാധ്യമല്ല"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
 #: ../camel/camel-smime-context.c:510
@@ -3285,16 +3243,16 @@ msgid "Cannot create folder '%s': folder exists"
 msgstr "ഫോള്‍ഡര്‍ `%s'  ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല: ഫോള്‍ഡര്‍ നിലവിലുണ്ടു്"
 
 #: ../camel/camel-store.c:1881
-#, fuzzy, c-format
+#, c-format
 #| msgid "Syncing folders"
 msgid "Opening folder '%s'"
-msgstr "ഫോള്‍ഡറുകള്‍ സിന്‍ക് ചെയ്യുന്നു"
+msgstr "'%s' ഫോള്‍ഡര്‍ തുറക്കുന്നു"
 
 #: ../camel/camel-store.c:2066
-#, fuzzy, c-format
+#, c-format
 #| msgid "Scanning for changed messages in %s"
 msgid "Scanning folders in '%s'"
-msgstr "%s-ല്‍ മാറ്റം വന്നിരിക്കുന്ന സന്ദേശങ്ങള്‍ക്കായി പരിശോധിക്കുന്നു"
+msgstr "'%s'-ലുള്ള ഫോള്‍ഡറുകള്‍ പരിശോധിയ്ക്കുന്നു"
 
 #. the name of the Trash folder, used for deleted messages
 #: ../camel/camel-store.c:2078 ../camel/camel-store.c:2088
@@ -3314,10 +3272,10 @@ msgid "Cannot create folder: %s: folder exists"
 msgstr "ഫോള്‍ഡര്‍ ഉണ്ടാക്കുവാന്‍ സാധ്യമല്ല: %s: ഫോള്‍ഡര്‍ നിലവിലുണ്ട്"
 
 #: ../camel/camel-store.c:2554
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot get folder '%s': %s"
 msgid "Creating folder '%s'"
-msgstr "ഫോള്‍ഡര്‍ `%s' ലഭ്യമല്ല: %s"
+msgstr "'%s' ഫോള്‍ഡര്‍ തയ്യാറാക്കുന്നു"
 
 #: ../camel/camel-store.c:2672 ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:306
