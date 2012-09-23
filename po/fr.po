@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2012-09-07 11:43+0000\n"
-"PO-Revision-Date: 2012-09-07 20:55+0200\n"
+"POT-Creation-Date: 2012-09-17 16:36+0000\n"
+"PO-Revision-Date: 2012-09-23 22:30+0200\n"
 "Last-Translator: Pierre Henry <pierrehenry73@yahoo.fr>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: \n"
@@ -307,7 +307,7 @@ msgstr "Pas d'espace"
 
 #: ../addressbook/libebook/e-book-client.c:488
 msgid "Failed to run book factory"
-msgstr "Échec de lancement de l'usine de carnet d'adresses"
+msgstr "Échec de lancement de la fabrique de carnet d'adresses"
 
 #: ../addressbook/libebook/e-book-client.c:2244
 #: ../calendar/libecal/e-cal-client.c:4602
@@ -511,7 +511,7 @@ msgstr "Catégories"
 #. Collaboration fields
 #: ../addressbook/libebook/e-contact.c:191
 msgid "Calendar URI"
-msgstr "URI du calendrier"
+msgstr "URI de l'agenda"
 
 #: ../addressbook/libebook/e-contact.c:192
 msgid "Free/Busy URL"
@@ -519,7 +519,7 @@ msgstr "URL Libre/Occupé"
 
 #: ../addressbook/libebook/e-contact.c:193
 msgid "ICS Calendar"
-msgstr "Calendrier ICS"
+msgstr "Agenda ICS"
 
 #: ../addressbook/libebook/e-contact.c:194
 msgid "Video Conferencing URL"
@@ -1172,50 +1172,49 @@ msgid "Invalid Redirect URL"
 msgstr "URL de redirection non valide"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2360
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2716
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2722
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
 "Error message: %s"
 msgstr ""
-"Le serveur est inaccessible, le calendrier est ouvert en mode lecture "
-"seule.\n"
+"Le serveur est inaccessible, l'agenda est ouvert en mode lecture seule.\n"
 "Message d'erreur : %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2639
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2663
 msgid "Cannot create local store"
 msgstr "Impossible de créer le stockage local"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2648
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2672
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Impossible de créer le dossier de cache local « %s »"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2659
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2683
 msgid "Could not create synch slave thread"
 msgstr "Impossible de créer le processus esclave de synchronisation"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3671
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3677
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV ne prend pas en charge les ajouts en masse"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3773
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3779
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV ne prend pas en charge les modifications en masse"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3941
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3947
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV ne prend pas en charge les suppressions en masse"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4600
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4606
 msgid "Calendar doesn't support Free/Busy"
-msgstr "Le calendrier ne prend pas en charge les informations Libre/Occupé"
+msgstr "L'agenda ne prend pas en charge les informations Libre/Occupé"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4608
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4614
 msgid "Schedule outbox url not found"
-msgstr "URL de la boîte d'envoi de calendrier non trouvée"
+msgstr "URL de la boîte d'envoi d'agenda non trouvée"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4707
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4713
 msgid "Unexpected result in schedule-response"
 msgstr "Réponse inattendue dans schedule-response"
 
@@ -1235,12 +1234,12 @@ msgstr "Anniversaire : %s"
 
 #: ../calendar/backends/file/e-cal-backend-file.c:235
 msgid "Cannot save calendar data: Malformed URI."
-msgstr "Impossible d'enregistrer les données du calendrier : URI erroné."
+msgstr "Impossible d'enregistrer les données de l'agenda : URI erroné."
 
 #: ../calendar/backends/file/e-cal-backend-file.c:242
 #: ../calendar/backends/file/e-cal-backend-file.c:248
 msgid "Cannot save calendar data"
-msgstr "Impossible d'enregistrer les données du calendrier"
+msgstr "Impossible d'enregistrer les données de l'agenda"
 
 #: ../calendar/backends/http/e-cal-backend-http.c:482
 #, c-format
@@ -1260,10 +1259,10 @@ msgstr "Mauvais format de fichier."
 #: ../calendar/backends/http/e-cal-backend-http.c:590
 #, c-format
 msgid "Not a calendar."
-msgstr "Ce n'est pas un calendrier."
+msgstr "Ce n'est pas un agenda."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:886
-#: ../calendar/backends/http/e-cal-backend-http.c:890
+#: ../calendar/backends/http/e-cal-backend-http.c:887
+#: ../calendar/backends/http/e-cal-backend-http.c:891
 #: ../calendar/backends/weather/e-cal-backend-weather.c:511
 msgid "Could not create cache file"
 msgstr "Impossible de créer le fichier cache"
@@ -1318,7 +1317,7 @@ msgstr "Le dépôt est hors ligne"
 
 #: ../calendar/libecal/e-cal.c:4005 ../calendar/libecal/e-cal-client.c:135
 msgid "No such calendar"
-msgstr "Calendrier inexistant"
+msgstr "Agenda inexistant"
 
 #: ../calendar/libecal/e-cal.c:4007 ../calendar/libecal/e-cal-client.c:137
 #: ../calendar/libedata-cal/e-data-cal.c:420
@@ -1389,7 +1388,7 @@ msgstr "Plage non valide"
 
 #: ../calendar/libecal/e-cal-client.c:610
 msgid "Failed to run calendar factory"
-msgstr "Échec de lancement de l'usine du calendrier"
+msgstr "Échec de lancement de la fabrique d'agenda"
 
 #: ../calendar/libecal/e-cal-component.c:1339
 msgid "Untitled appointment"
@@ -1543,18 +1542,18 @@ msgstr "Indéfinie"
 #: ../calendar/libedata-cal/e-cal-backend.c:36
 msgid "Cannot process, calendar backend is opening"
 msgstr ""
-"Impossible de continuer, le moteur de traitement de calendrier est en train "
-"de s'ouvrir"
+"Impossible de continuer, le moteur de traitement d'agenda est en train de "
+"s'ouvrir"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:135
 #, c-format
 msgid "Unknown calendar property '%s'"
-msgstr "Propriété de calendrier « %s » inconnue"
+msgstr "Propriété d'agenda « %s » inconnue"
 
 #: ../calendar/libedata-cal/e-cal-backend.c:152
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
-msgstr "Impossible de changer la valeur de la propriété de calendrier « %s »"
+msgstr "Impossible de changer la valeur de la propriété d'agenda « %s »"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:77
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:817
@@ -1675,22 +1674,22 @@ msgstr "Méthode non prise en charge"
 
 #: ../calendar/libedata-cal/e-data-cal.c:429
 msgid "Calendar does not exist"
-msgstr "Le calendrier n'existe pas"
+msgstr "L'agenda n'existe pas"
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:909
 msgid "Cannot open calendar: "
-msgstr "Impossible d'ouvrir le calendrier : "
+msgstr "Impossible d'ouvrir l'agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:934
 msgid "Cannot remove calendar: "
-msgstr "Impossible de supprimer le calendrier : "
+msgstr "Impossible de supprimer l'agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:961
 msgid "Cannot refresh calendar: "
-msgstr "Impossible d'actualiser le calendrier : "
+msgstr "Impossible d'actualiser l'agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:990
@@ -1700,42 +1699,42 @@ msgstr "Impossible de récupérer la propriété du moteur de traitement : "
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1045
 msgid "Cannot retrieve calendar object path: "
-msgstr "Impossible de récupérer le chemin de l'objet calendrier : "
+msgstr "Impossible de récupérer le chemin de l'objet agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1075
 msgid "Cannot retrieve calendar object list: "
-msgstr "Impossible de récupérer la liste d'objets calendrier : "
+msgstr "Impossible de récupérer la liste d'objets agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1104
 msgid "Cannot retrieve calendar free/busy list: "
-msgstr "Impossible de récupérer la liste des disponibilités du calendrier : "
+msgstr "Impossible de récupérer la liste des disponibilités de l'agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1142
 msgid "Cannot create calendar object: "
-msgstr "Impossible de créer l'objet calendrier : "
+msgstr "Impossible de créer l'objet agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1177
 msgid "Cannot modify calendar object: "
-msgstr "Impossible de modifier l'objet calendrier : "
+msgstr "Impossible de modifier l'objet agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1217
 msgid "Cannot remove calendar object: "
-msgstr "Impossible de supprimer l'objet calendrier : "
+msgstr "Impossible de supprimer l'objet agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1254
 msgid "Cannot receive calendar objects: "
-msgstr "Impossible de recevoir les objets du calendrier : "
+msgstr "Impossible de recevoir les objets de l'agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1285
 msgid "Cannot send calendar objects: "
-msgstr "Impossible d'envoyer les objets du calendrier : "
+msgstr "Impossible d'envoyer les objets de l'agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1317
@@ -1750,17 +1749,17 @@ msgstr "Impossible d'annuler le rappel : "
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1374
 msgid "Could not get calendar view path: "
-msgstr "Impossible d'obtenir le chemin de la vue du calendrier : "
+msgstr "Impossible d'obtenir le chemin de la vue de l'agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1404
 msgid "Could not retrieve calendar time zone: "
-msgstr "Impossible de récupérer le fuseau horaire du calendrier : "
+msgstr "Impossible de récupérer le fuseau horaire de l'agenda : "
 
 #. Translators: This is prefix to a detailed error message
 #: ../calendar/libedata-cal/e-data-cal.c:1430
 msgid "Could not add calendar time zone: "
-msgstr "Impossible d'ajouter le fuseau horaire du calendrier : "
+msgstr "Impossible d'ajouter le fuseau horaire de l'agenda : "
 
 #: ../calendar/libedata-cal/e-data-cal-factory.c:220
 #, c-format
@@ -1868,8 +1867,8 @@ msgstr "Copier le c_ontenu du dossier en local pour les opérations hors ligne"
 #: ../camel/camel-imapx-folder.c:538 ../camel/camel-imapx-folder.c:614
 #: ../camel/camel-imapx-folder.c:648 ../camel/camel-imapx-folder.c:688
 #: ../camel/camel-imapx-folder.c:724 ../camel/camel-imapx-store.c:276
-#: ../camel/camel-imapx-store.c:1390 ../camel/camel-imapx-store.c:1479
-#: ../camel/camel-imapx-store.c:1528
+#: ../camel/camel-imapx-store.c:1398 ../camel/camel-imapx-store.c:1487
+#: ../camel/camel-imapx-store.c:1536
 #: ../camel/providers/imap/camel-imap-store.c:1270
 #: ../camel/providers/imap/camel-imap-store.c:2033
 #: ../camel/providers/imap/camel-imap-store.c:2509
@@ -2381,13 +2380,13 @@ msgid "Error syncing changes"
 msgstr "Erreur lors de la synchronisation des modifications"
 
 #: ../camel/camel-imapx-server.c:6447
-#: ../camel/providers/imap/camel-imap-folder.c:3537
+#: ../camel/providers/imap/camel-imap-folder.c:3531
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Impossible d'obtenir le message qui a pour identificateur « %s » : %s"
 
 #: ../camel/camel-imapx-server.c:6448
-#: ../camel/providers/imap/camel-imap-folder.c:3538
+#: ../camel/providers/imap/camel-imap-folder.c:3532
 msgid "No such message available."
 msgstr "Aucun message correspondant."
 
@@ -2421,7 +2420,7 @@ msgstr ""
 "Cette option utilisera un mot de passe en clair pour se connecter au serveur "
 "IMAP."
 
-#: ../camel/camel-imapx-store.c:349
+#: ../camel/camel-imapx-store.c:351
 #: ../camel/providers/imap/camel-imap-store.c:2064
 #: ../camel/providers/imap/camel-imap-store.c:2262
 #, c-format
@@ -2429,7 +2428,7 @@ msgid "No such folder %s"
 msgstr "Pas de dossier « %s »"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/camel-imapx-store.c:374 ../camel/camel-imapx-store.c:858
+#: ../camel/camel-imapx-store.c:376 ../camel/camel-imapx-store.c:866
 #: ../camel/providers/imap/camel-imap-store.c:275
 #: ../camel/providers/imap/camel-imap-store.c:2684
 #: ../camel/providers/local/camel-maildir-folder.c:473
@@ -2441,18 +2440,18 @@ msgstr "Pas de dossier « %s »"
 msgid "Inbox"
 msgstr "Boîte de réception"
 
-#: ../camel/camel-imapx-store.c:1091
+#: ../camel/camel-imapx-store.c:1099
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Récupération de la liste des dossiers pour %s"
 
-#: ../camel/camel-imapx-store.c:1195
+#: ../camel/camel-imapx-store.c:1203
 #: ../camel/providers/nntp/camel-nntp-store.c:1771
 #, c-format
 msgid "No such folder: %s"
 msgstr "Dossier non trouvé : %s"
 
-#: ../camel/camel-imapx-store.c:1412
+#: ../camel/camel-imapx-store.c:1420
 #: ../camel/providers/imap/camel-imap-store.c:2077
 #: ../camel/providers/imap/camel-imap-store.c:2524
 #, c-format
@@ -2461,13 +2460,13 @@ msgid ""
 msgstr ""
 "Le nom de dossier « %s » n'est pas valide car il contient le caractère « %c »"
 
-#: ../camel/camel-imapx-store.c:1423
+#: ../camel/camel-imapx-store.c:1431
 #: ../camel/providers/imap/camel-imap-store.c:2537
 #, c-format
 msgid "Unknown parent folder: %s"
 msgstr "Dossier parent inconnu : %s"
 
-#: ../camel/camel-imapx-store.c:1433
+#: ../camel/camel-imapx-store.c:1441
 #: ../camel/providers/imap/camel-imap-store.c:2140
 #: ../camel/providers/imap/camel-imap-store.c:2589
 #, c-format
@@ -3506,35 +3505,35 @@ msgstr "Impossible de charger le résumé pour %s"
 msgid "Scanning for changed messages in %s"
 msgstr "Examen des messages modifiés dans %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:3500
+#: ../camel/providers/imap/camel-imap-folder.c:3494
 msgid "Unable to retrieve message: "
 msgstr "Impossible de récupérer le message : "
 
-#: ../camel/providers/imap/camel-imap-folder.c:3626
-#: ../camel/providers/imap/camel-imap-folder.c:4518
+#: ../camel/providers/imap/camel-imap-folder.c:3620
+#: ../camel/providers/imap/camel-imap-folder.c:4512
 #: ../camel/providers/nntp/camel-nntp-folder.c:493
 #, c-format
 msgid "This message is not currently available"
 msgstr "Ce message n'est pas disponible"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4091
-#: ../camel/providers/imap/camel-imap-folder.c:4173
+#: ../camel/providers/imap/camel-imap-folder.c:4085
+#: ../camel/providers/imap/camel-imap-folder.c:4167
 #, c-format
 msgid "Fetching summary information for new messages in %s"
 msgstr "Récupération des informations de résumé des nouveaux messages dans %s"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4305
+#: ../camel/providers/imap/camel-imap-folder.c:4299
 #, c-format
 msgid "Incomplete server response: no information provided for message %d"
 msgstr ""
 "Réponse du serveur incomplète : pas d'information fournie pour le message %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4315
+#: ../camel/providers/imap/camel-imap-folder.c:4309
 #, c-format
 msgid "Incomplete server response: no UID provided for message %d"
 msgstr "Réponse du serveur incomplète : aucun UID fourni pour le message %d"
 
-#: ../camel/providers/imap/camel-imap-folder.c:4555
+#: ../camel/providers/imap/camel-imap-folder.c:4549
 #, c-format
 msgid "Could not find message body in FETCH response."
 msgstr "Impossible de trouver le corps du message dans la réponse FETCH."
@@ -3662,12 +3661,12 @@ msgstr "Impossible de créer le dossier « %s » : le dossier existe."
 msgid "Retrieving list of folders at '%s'"
 msgstr "Récupération de la liste des dossiers à « %s »"
 
-#: ../camel/providers/imap/camel-imap-store.c:3333
+#: ../camel/providers/imap/camel-imap-store.c:3334
 #, c-format
 msgid "Server unexpectedly disconnected"
 msgstr "Déconnecté du serveur de manière inattendue"
 
-#: ../camel/providers/imap/camel-imap-store.c:3336
+#: ../camel/providers/imap/camel-imap-store.c:3338
 msgid "Server unexpectedly disconnected: "
 msgstr "Déconnecté du serveur de manière inattendue : "
 
@@ -4627,47 +4626,47 @@ msgid ""
 msgstr ""
 "Pour distribuer le courriel via le programme « sendmail » du système local."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:49
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:50
 msgid "sendmail"
 msgstr "sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:51
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:52
 msgid "Mail delivery via the sendmail program"
 msgstr "Distribution du courriel via le programme sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:93
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:107
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "Impossible d'analyser la liste des destinataires"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:126
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:140
 #, c-format
-msgid "Could not create pipe to sendmail: %s: mail not sent"
-msgstr "Impossible de créer un tube vers sendmail : %s : courriel non envoyé"
+msgid "Could not create pipe to '%s': %s: mail not sent"
+msgstr "Impossible de créer un tube vers « %s » : %s : courriel non envoyé"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:148
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:163
 #, c-format
-msgid "Could not fork sendmail: %s: mail not sent"
-msgstr "Impossible de cloner sendmail : %s : courriel non envoyé"
+msgid "Could not fork '%s': %s: mail not sent"
+msgstr "Impossible de cloner « %s » : %s : courriel non envoyé"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:194
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:210
 msgid "Could not send message: "
 msgstr "Impossible d'envoyer le message : "
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:222
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:239
 #, c-format
-msgid "sendmail exited with signal %s: mail not sent."
-msgstr "sendmail s'est terminé avec le signal %s : courriel non envoyé."
+msgid "'%s' exited with signal %s: mail not sent."
+msgstr "« %s » s'est terminé avec le signal %s : courriel non envoyé."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:229
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:247
 #, c-format
-msgid "Could not execute %s: mail not sent."
-msgstr "Impossible d'exécuter %s : courriel non envoyé."
+msgid "Could not execute '%s': mail not sent."
+msgstr "Impossible d'exécuter « %s » : courriel non envoyé."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:234
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:252
 #, c-format
-msgid "sendmail exited with status %d: mail not sent."
-msgstr "sendmail s'est terminé avec le statut %d : courriel non envoyé."
+msgid "'%s' exited with status %d: mail not sent."
+msgstr "« %s » s'est terminé avec le statut %d : courriel non envoyé."
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:42
 msgid "Default SMTP port"
@@ -4999,18 +4998,18 @@ msgstr "%s ne gère pas la création de ressources distantes"
 msgid "%s does not support deleting remote resources"
 msgstr "%s ne prend pas en charge la suppression de ressources distantes"
 
-#: ../libebackend/e-server-side-source.c:128
+#: ../libebackend/e-server-side-source.c:126
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "Un groupe [%s] manque à la source de données"
 
-#: ../libebackend/e-server-side-source.c:945 ../libedataserver/e-source.c:1092
+#: ../libebackend/e-server-side-source.c:916 ../libedataserver/e-source.c:1111
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr ""
 "La source de données « %s » ne gère pas la création de ressources distantes"
 
-#: ../libebackend/e-server-side-source.c:959
+#: ../libebackend/e-server-side-source.c:930
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
@@ -5018,14 +5017,14 @@ msgstr ""
 "La source de données « %s » n'a pas de moteur pour créer la ressource "
 "distante"
 
-#: ../libebackend/e-server-side-source.c:987 ../libedataserver/e-source.c:1201
+#: ../libebackend/e-server-side-source.c:958 ../libedataserver/e-source.c:1220
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr ""
 "La source de données « %s » ne gère pas la suppression de ressources "
 "distantes"
 
-#: ../libebackend/e-server-side-source.c:1001
+#: ../libebackend/e-server-side-source.c:972
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
@@ -5033,7 +5032,7 @@ msgstr ""
 "La source de données « %s » n'a pas de moteur pour supprimer la ressource "
 "distante"
 
-#: ../libebackend/e-server-side-source.c:1336
+#: ../libebackend/e-server-side-source.c:1285
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "Le fichier doit avoir une extension « .source »"
@@ -5185,7 +5184,7 @@ msgstr "Requête d'authentification pour le carnet d'adresses"
 
 #: ../libedataserver/e-source-authenticator.c:171
 msgid "Calendar authentication request"
-msgstr "Requête d'authentification pour le calendrier"
+msgstr "Requête d'authentification pour l'agenda"
 
 #: ../libedataserver/e-source-authenticator.c:175
 msgid "Mail authentication request"
@@ -5206,7 +5205,7 @@ msgstr "Saisissez le mot de passe pour le carnet d'adresses « %s »."
 #: ../libedataserver/e-source-authenticator.c:194
 #, c-format
 msgid "Please enter the password for calendar \"%s\"."
-msgstr "Saisissez le mot de passe pour le calendrier « %s »."
+msgstr "Saisissez le mot de passe pour l'agenda « %s »."
 
 # Le premier argument est le type.
 #: ../libedataserver/e-source-authenticator.c:200
@@ -5243,17 +5242,17 @@ msgstr "Saisissez le mot de passe pour le compte « %s »."
 msgid "Source file is missing a [%s] group"
 msgstr "Un groupe [%s] manque au fichier source"
 
-#: ../libedataserver/e-source.c:919
+#: ../libedataserver/e-source.c:938
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "La source de données « %s » n'est pas supprimable"
 
-#: ../libedataserver/e-source.c:1001
+#: ../libedataserver/e-source.c:1020
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "La source de données « %s » n'est pas modifiable"
 
-#: ../libedataserver/e-source.c:1382
+#: ../libedataserver/e-source.c:1408
 msgid "Unnamed"
 msgstr "Sans nom"
 
@@ -5681,7 +5680,7 @@ msgstr "Sélectionnez la destination"
 #: ../modules/google-backend/module-google-backend.c:118
 #: ../modules/yahoo-backend/module-yahoo-backend.c:200
 msgid "Calendar"
-msgstr "Calendrier"
+msgstr "Agenda"
 
 #. TODO: more specific
 #: ../modules/online-accounts/goaewsclient.c:184
@@ -5738,15 +5737,16 @@ msgstr ""
 msgid "Evolution Source Viewer"
 msgstr "Visualisation de source Evolution"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:649
+#. Translators: The name that is displayed in the user interface
+#: ../tests/libedataserverui/evolution-source-viewer.c:650
 msgid "Display Name"
 msgstr "Nom affiché"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:658
+#: ../tests/libedataserverui/evolution-source-viewer.c:659
 msgid "Flags"
 msgstr "Drapeaux"
 
-#: ../tests/libedataserverui/evolution-source-viewer.c:710
+#: ../tests/libedataserverui/evolution-source-viewer.c:711
 msgid "Identity"
 msgstr "Identité"
 
