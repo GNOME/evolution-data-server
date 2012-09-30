@@ -57,7 +57,7 @@ test_intervaltree_coverage_LDADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
 	$(EVOLUTION_CALENDAR_LIBS)					\
 	$(CAMEL_LIBS)							\
-	-lgcov
+	$(CODE_COVERAGE_LDFLAGS)
 
 .PHONY: coverage
 coverage: 
