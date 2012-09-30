@@ -3523,8 +3523,10 @@ exit:
 	} else {
 		g_mutex_lock (&is->priv->stream_lock);
 
-		g_object_unref (is->priv->stream);
-		is->priv->stream = NULL;
+		if (is->priv->stream != NULL) {
+			g_object_unref (is->priv->stream);
+			is->priv->stream = NULL;
+		}
 
 		if (is->cinfo != NULL) {
 			imapx_free_capability (is->cinfo);
