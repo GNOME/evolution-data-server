@@ -840,57 +840,128 @@ junk_test (struct _CamelSExp *f,
            FilterMessageSearch *fms)
 {
 	CamelSExpResult *r;
-	gboolean retval = FALSE;
 	CamelMessageInfo *info = fms->info;
 	CamelJunkFilter *junk_filter;
+	CamelMessageFlags flags;
+	CamelMimeMessage *message;
+	CamelJunkStatus status;
+	const GHashTable *ht;
+	const struct _camel_header_param *node;
+	gboolean sender_is_known;
+	gboolean message_is_junk = FALSE;
+	GError *error = NULL;
 
 	junk_filter = camel_session_get_junk_filter (fms->session);
+	if (junk_filter == NULL)
+		goto exit;
 
-	d (printf ("doing junk test for message from '%s'\n", camel_message_info_from (fms->info)));
-	if (junk_filter != NULL && (camel_message_info_flags (info) & (CAMEL_MESSAGE_JUNK | CAMEL_MESSAGE_NOTJUNK)) == 0) {
-		const GHashTable *ht = camel_session_get_junk_headers (fms->session);
-		const struct _camel_header_param *node = camel_message_info_headers (info);
+	/* Check if the message is already classified. */
 
-		while (node && !retval) {
-			if (node->name) {
-				gchar *value = (gchar *) g_hash_table_lookup ((GHashTable *) ht, node->name);
-				d (printf ("JunkCheckMatch: %s %s %s\n", node->name, node->value, value));
-				if (value)
-					retval = camel_strstrcase (node->value, value) != NULL;
+	flags = camel_message_info_flags (info);
 
-			}
-			node = node->next;
-		}
+	if (flags & CAMEL_MESSAGE_JUNK) {
 		if (camel_debug ("junk"))
-			printf ("filtered based on junk header ? %d\n", retval);
-		if (!retval) {
-			retval = camel_session_lookup_addressbook (fms->session, camel_message_info_from (info)) != TRUE;
-			if (camel_debug ("junk"))
-				printf ("Sender '%s' in book? %d\n", camel_message_info_from (info), !retval);
-
-			if (retval) /* Not in book. Could be spam. So check for it */ {
-				CamelMimeMessage *message;
-				CamelJunkStatus status;
-				gboolean success;
-
-				d (printf ("filtering message\n"));
-				message = camel_filter_search_get_message (fms, f);
-				success = camel_junk_filter_classify (junk_filter, message, &status, NULL, NULL);
-				retval = success && (status == CAMEL_JUNK_STATUS_MESSAGE_IS_JUNK);
-			}
-		}
-
-		if (camel_debug ("junk"))
-			printf ("junk filter => %s\n", retval ? "*JUNK*" : "clean");
-	} else if (junk_filter != NULL && camel_debug ("junk")) {
-		if (camel_message_info_flags (info) & CAMEL_MESSAGE_JUNK)
-			printf ("Message has a Junk flag set already, skipping junk test...\n");
-		else if (camel_message_info_flags (info) & CAMEL_MESSAGE_NOTJUNK)
-			printf ("Message has a NotJunk flag set already, skipping junk test...\n");
+			printf (
+				"Message has a Junk flag set already, "
+				"skipping junk test...\n");
+		goto exit;
 	}
 
+	if (flags & CAMEL_MESSAGE_NOTJUNK) {
+		if (camel_debug ("junk"))
+			printf (
+				"Message has a NotJunk flag set already, "
+				"skipping junk test...\n");
+		goto exit;
+	}
+
+	/* Check the headers for a junk designation. */
+
+	ht = camel_session_get_junk_headers (fms->session);
+	node = camel_message_info_headers (info);
+
+	while (node != NULL) {
+		const gchar *value = NULL;
+
+		if (node->name != NULL)
+			value = g_hash_table_lookup (
+				(GHashTable *) ht, node->name);
+
+		message_is_junk =
+			(value != NULL) &&
+			(camel_strstrcase (node->value, value) != NULL);
+
+		if (message_is_junk) {
+			if (camel_debug ("junk"))
+				printf (
+					"Message contains \"%s: %s\"",
+					node->name, value);
+			goto done;
+		}
+
+		node = node->next;
+	}
+
+	/* If the sender is known, the message is not junk. */
+
+	sender_is_known = camel_session_lookup_addressbook (
+		fms->session, camel_message_info_from (info));
+	if (camel_debug ("junk"))
+		printf (
+			"Sender '%s' in book? %d\n",
+			camel_message_info_from (info),
+			sender_is_known);
+	if (sender_is_known)
+		goto done;
+
+	/* Consult 3rd party junk filtering software. */
+
+	message = camel_filter_search_get_message (fms, f);
+	camel_junk_filter_classify (
+		junk_filter, message, &status, NULL, &error);
+
+	if (error == NULL) {
+		const gchar *status_desc;
+
+		switch (status) {
+			case CAMEL_JUNK_STATUS_INCONCLUSIVE:
+				status_desc = "inconclusive";
+				message_is_junk = FALSE;
+				break;
+			case CAMEL_JUNK_STATUS_MESSAGE_IS_JUNK:
+				status_desc = "junk";
+				message_is_junk = TRUE;
+				break;
+			case CAMEL_JUNK_STATUS_MESSAGE_IS_NOT_JUNK:
+				status_desc = "not junk";
+				message_is_junk = FALSE;
+				break;
+			default:
+				g_warn_if_reached ();
+				status_desc = "invalid";
+				message_is_junk = FALSE;
+				break;
+		}
+
+		if (camel_debug ("junk"))
+			g_print (
+				"Junk filter classification: %s\n",
+				status_desc);
+	} else {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+		g_error_free (error);
+		message_is_junk = FALSE;
+	}
+
+done:
+	if (camel_debug ("junk"))
+		printf (
+			"Message is determined to be %s\n",
+			message_is_junk ? "*JUNK*" : "clean");
+
+exit:
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
-	r->value.number = retval;
+	r->value.number = message_is_junk;
 
 	return r;
 }
