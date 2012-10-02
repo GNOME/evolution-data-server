@@ -10,6 +10,6 @@ privincludedir=@privincludedir@
 Name: libedataserver
 Description: Utility library for Evolution Data Server
 Version: @VERSION@
-Requires: gio-2.0 gmodule-2.0 camel-1.2 gnome-keyring-1 libxml-2.0 libsoup-2.4
+Requires: gio-2.0 gmodule-2.0 camel-1.2 libsecret-1 libxml-2.0 libsoup-2.4
 Libs: -L${libdir} -ledataserver-@API_VERSION@
 Cflags: -I${privincludedir}
