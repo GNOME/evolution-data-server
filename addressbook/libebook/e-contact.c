@@ -390,6 +390,13 @@ e_contact_class_init (EContactClass *class)
 				(field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE) |
 				G_PARAM_STATIC_NICK |
 				G_PARAM_STATIC_BLURB);
+		else if (field_info[i].t & E_CONTACT_FIELD_TYPE_MULTI)
+			pspec = g_param_spec_boxed (field_info[i].field_name,
+						    _(field_info[i].pretty_name),
+						    field_info[i].pretty_name,
+						    E_TYPE_CONTACT_ATTR_LIST,
+						    (field_info[i].read_only ? G_PARAM_READABLE : G_PARAM_READWRITE)
+						    | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
 		else
 			pspec = g_param_spec_pointer (
 				field_info[i].field_name,
@@ -857,7 +864,7 @@ e_contact_set_property (GObject *object,
 	info = &field_info[prop_id];
 
 	if (info->t & E_CONTACT_FIELD_TYPE_MULTI) {
-		GList *new_values = g_value_get_pointer (value);
+		GList *new_values = g_value_get_boxed (value);
 		GList *l;
 
 		/* first we remove all attributes of the type we're
@@ -1308,7 +1315,9 @@ e_contact_get_property (GObject *object,
 	info = &field_info[prop_id];
 	data = e_contact_get (E_CONTACT (object), prop_id);
 
-	if (info->t & E_CONTACT_FIELD_TYPE_BOOLEAN) {
+	if (info->t & E_CONTACT_FIELD_TYPE_MULTI) {
+		g_value_take_boxed (value, data);
+	} else if (info->t & E_CONTACT_FIELD_TYPE_BOOLEAN) {
 		g_value_set_boolean (value, data != NULL);
 	} else if (info->t & E_CONTACT_FIELD_TYPE_LIST) {
 		g_value_set_pointer (value, data);
@@ -1407,6 +1416,37 @@ e_contact_duplicate (EContact *contact)
 	g_free (vcard);
 
 	return c;
+}
+
+/**
+ * e_contact_field_type:
+ * @field_id: an #EContactField
+ *
+ * Gets the #GType used for this contact field, this indicates
+ * what kind of value can be passed to e_contact_set().
+ *
+ * Returns: The #GType used for @field_id, or %G_TYPE_INVALID if it doesn't exist.
+ **/
+GType
+e_contact_field_type (EContactField field_id)
+{
+	GTypeClass  *class;
+	GParamSpec  *pspec;
+	const gchar *field_name;
+	GType       type = G_TYPE_INVALID;
+
+	g_return_val_if_fail (field_id >= 1 && field_id < E_CONTACT_FIELD_LAST, G_TYPE_INVALID);
+
+	field_name = e_contact_field_name (field_id);
+	class      = g_type_class_ref (E_TYPE_CONTACT);
+	pspec      = g_object_class_find_property (G_OBJECT_CLASS (class), field_name);
+
+	if (pspec)
+		type = G_PARAM_SPEC_VALUE_TYPE (pspec);
+
+	g_type_class_unref (class);
+
+	return type;
 }
 
 /**
@@ -2548,3 +2588,27 @@ e_contact_cert_copy (EContactCert *cert)
 }
 
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_cert, "EContactCert")
+
+GList *
+e_contact_attr_list_copy (GList *list)
+{
+	GList *dup_list = NULL, *l;
+
+	for (l = list; l; l = l->next) {
+		gchar *str = g_strdup ((gchar *)l->data);
+
+		dup_list = g_list_prepend (dup_list, str);
+	}
+
+	return g_list_reverse (dup_list);
+}
+
+void
+e_contact_attr_list_free (GList *list)
+{
+	g_list_foreach (list, (GFunc)g_free, NULL);
+	g_list_free (list);
+}
+
+typedef GList EContactAttrList;
+G_DEFINE_BOXED_TYPE (EContactAttrList, e_contact_attr_list, e_contact_attr_list_copy, e_contact_attr_list_free);
