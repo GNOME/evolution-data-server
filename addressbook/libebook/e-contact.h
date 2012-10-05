@@ -31,6 +31,7 @@ G_BEGIN_DECLS
 #define E_TYPE_CONTACT_PHOTO      (e_contact_photo_get_type ())
 #define E_TYPE_CONTACT_CERT       (e_contact_cert_get_type ())
 #define E_TYPE_CONTACT_ADDRESS    (e_contact_address_get_type ())
+#define E_TYPE_CONTACT_ATTR_LIST  (e_contact_attr_list_get_type ())
 
 typedef struct _EContact EContact;
 typedef struct _EContactClass EContactClass;
@@ -368,6 +369,11 @@ EContactAddress *        e_contact_address_new      (void);
 GType                   e_contact_address_get_type (void);
 void                    e_contact_address_free     (EContactAddress *address);
 
+GList                  *e_contact_attr_list_copy     (GList *list);
+void                    e_contact_attr_list_free     (GList *list);
+GType                   e_contact_attr_list_get_type (void);
+
+GType                     e_contact_field_type       (EContactField field_id);
 const gchar *             e_contact_field_name       (EContactField field_id);
 const gchar *             e_contact_pretty_name      (EContactField field_id);
 const gchar *             e_contact_vcard_attribute  (EContactField field_id);
