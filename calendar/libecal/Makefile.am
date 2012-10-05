@@ -29,7 +29,6 @@ libecal_1_2_la_CPPFLAGS =			\
 	$(libecal_INCLUDES)			\
 	-DLIBECAL_COMPILATION			\
 	-DG_LOG_DOMAIN=\"libecal\"		\
-	$(LIBICAL_CFLAGS)			\
 	$(EVOLUTION_CALENDAR_CFLAGS)		\
 	$(CAMEL_CFLAGS)				\
 	$(CODE_COVERAGE_CFLAGS)			\
@@ -55,7 +54,6 @@ libecal_1_2_la_SOURCES =			\
 libecal_1_2_la_LIBADD = 					\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
 	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la	\
-	$(LIBICAL_LIBS)						\
 	$(EVOLUTION_CALENDAR_LIBS)				\
 	$(CAMEL_LIBS)
 
@@ -104,8 +102,8 @@ introspection_sources = \
 
 ECalendar-1.2.gir: libecal-1.2.la
 ECalendar_1_2_gir_INCLUDES = GObject-2.0 EDataServer-1.2 GLib-2.0
-ECalendar_1_2_gir_CFLAGS = $(libecal_INCLUDES) -DLIBECAL_COMPILATION $(LIBICAL_CFLAGS) $(EVOLUTION_CALENDAR_CFLAGS) $(CAMEL_CFLAGS)
-ECalendar_1_2_gir_LIBS = libecal-1.2.la $(top_builddir)/calendar/libegdbus/libegdbus-cal.la $(top_builddir)/libedataserver/libedataserver-1.2.la $(top_builddir)/camel/libcamel-1.2.la $(LIBICAL_LIBS)
+ECalendar_1_2_gir_CFLAGS = $(libecal_INCLUDES) -DLIBECAL_COMPILATION $(EVOLUTION_CALENDAR_CFLAGS) $(CAMEL_CFLAGS)
+ECalendar_1_2_gir_LIBS = libecal-1.2.la $(top_builddir)/calendar/libegdbus/libegdbus-cal.la $(top_builddir)/libedataserver/libedataserver-1.2.la $(top_builddir)/camel/libcamel-1.2.la
 ECalendar_1_2_gir_FILES = $(introspection_sources)
 INTROSPECTION_GIRS += ECalendar-1.2.gir
 
