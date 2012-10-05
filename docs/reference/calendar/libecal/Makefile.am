@@ -27,7 +27,6 @@ GTKDOC_CFLAGS = \
 	-I$(top_builddir)					\
 	-I$(top_builddir)/calendar				\
 	-I$(top_builddir)/calendar/libecal			\
-	$(LIBICAL_CFLAGS)					\
 	$(EVOLUTION_CALENDAR_CFLAGS)				\
 	$(CAMEL_CFLAGS)
 

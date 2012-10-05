@@ -12,7 +12,6 @@ libecal_test_utils_la_CPPFLAGS = \
 	-I$(top_builddir)				\
 	-I$(top_srcdir)/calendar			\
 	-I$(top_builddir)/calendar			\
-	$(LIBICAL_CFLAGS)				\
 	$(EVOLUTION_CALENDAR_CFLAGS)                    \
 	$(CAMEL_CFLAGS)					\
 	$(NULL)
@@ -122,7 +121,6 @@ test_ecal_INCLUDES =			\
 test_ecal_LDADD =							\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-	$(LIBICAL_LIBS)							\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 test_recur_SOURCES = test-recur.c
@@ -133,7 +131,6 @@ test_recur_INCLUDES =			\
 test_recur_LDADD =							\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-	$(LIBICAL_LIBS)							\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 test_search_SOURCES = test-search.c
@@ -144,7 +141,6 @@ test_search_INCLUDES =			\
 test_search_LDADD =							\
 	$(top_builddir)/calendar/libecal/libecal-1.2.la			\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la		\
-	$(LIBICAL_LIBS)							\
 	$(EVOLUTION_CALENDAR_LIBS)
 
 endif

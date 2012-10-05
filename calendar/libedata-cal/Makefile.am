@@ -11,7 +11,6 @@ libedata_cal_1_2_la_CPPFLAGS = 			\
 	-I$(top_srcdir)/calendar/libegdbus	\
 	-I$(top_builddir)			\
 	-I$(top_builddir)/calendar		\
-	$(LIBICAL_CFLAGS)			\
 	$(EVOLUTION_CALENDAR_CFLAGS)		\
 	$(CAMEL_CFLAGS)				\
 	$(CODE_COVERAGE_CFLAGS)			\
@@ -36,7 +35,6 @@ libedata_cal_1_2_la_LIBADD =					\
 	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la	\
 	$(top_builddir)/libedataserver/libedataserver-1.2.la 	\
 	$(top_builddir)/libebackend/libebackend-1.2.la 		\
-	$(LIBICAL_LIBS)						\
 	$(EVOLUTION_CALENDAR_LIBS)				\
 	$(CAMEL_LIBS)
 
