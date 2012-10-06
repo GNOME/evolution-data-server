@@ -65,6 +65,12 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (ECalClient, e_cal_client, E_TYPE_CLIENT)
 
+static void
+free_zone_cb (gpointer zone)
+{
+	icaltimezone_free (zone, 1);
+}
+
 /*
  * Well-known calendar backend properties:
  * @CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS: Contains default calendar's email
@@ -228,46 +234,46 @@ set_proxy_gone_error (GError **error)
 }
 
 static guint active_cal_clients = 0, cal_connection_closed_id = 0;
-static EGdbusCalFactory *cal_factory_proxy = NULL;
-static GStaticRecMutex cal_factory_proxy_lock = G_STATIC_REC_MUTEX_INIT;
-#define LOCK_FACTORY()   g_static_rec_mutex_lock (&cal_factory_proxy_lock)
-#define UNLOCK_FACTORY() g_static_rec_mutex_unlock (&cal_factory_proxy_lock)
+static EGdbusCalFactory *cal_factory = NULL;
+static GStaticRecMutex cal_factory_lock = G_STATIC_REC_MUTEX_INIT;
+#define LOCK_FACTORY()   g_static_rec_mutex_lock (&cal_factory_lock)
+#define UNLOCK_FACTORY() g_static_rec_mutex_unlock (&cal_factory_lock)
 
-static void gdbus_cal_factory_proxy_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data);
+static void gdbus_cal_factory_closed_cb (GDBusConnection *connection, gboolean remote_peer_vanished, GError *error, gpointer user_data);
 
 static void
-gdbus_cal_factory_proxy_disconnect (GDBusConnection *connection)
+gdbus_cal_factory_disconnect (GDBusConnection *connection)
 {
 	LOCK_FACTORY ();
 
-	if (!connection && cal_factory_proxy)
-		connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy));
+	if (!connection && cal_factory)
+		connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory));
 
 	if (connection && cal_connection_closed_id) {
 		g_dbus_connection_signal_unsubscribe (connection, cal_connection_closed_id);
-		g_signal_handlers_disconnect_by_func (connection, gdbus_cal_factory_proxy_closed_cb, NULL);
+		g_signal_handlers_disconnect_by_func (connection, gdbus_cal_factory_closed_cb, NULL);
 	}
 
-	if (cal_factory_proxy)
-		g_object_unref (cal_factory_proxy);
+	if (cal_factory != NULL)
+		g_object_unref (cal_factory);
 
 	cal_connection_closed_id = 0;
-	cal_factory_proxy = NULL;
+	cal_factory = NULL;
 
 	UNLOCK_FACTORY ();
 }
 
 static void
-gdbus_cal_factory_proxy_closed_cb (GDBusConnection *connection,
-                                   gboolean remote_peer_vanished,
-                                   GError *error,
-                                   gpointer user_data)
+gdbus_cal_factory_closed_cb (GDBusConnection *connection,
+                             gboolean remote_peer_vanished,
+                             GError *error,
+                             gpointer user_data)
 {
 	GError *err = NULL;
 
 	LOCK_FACTORY ();
 
-	gdbus_cal_factory_proxy_disconnect (connection);
+	gdbus_cal_factory_disconnect (connection);
 
 	if (error)
 		unwrap_dbus_error (g_error_copy (error), &err);
@@ -293,36 +299,37 @@ gdbus_cal_factory_connection_gone_cb (GDBusConnection *connection,
 {
 	/* signal subscription takes care of correct parameters,
 	 * thus just do what is to be done here */
-	gdbus_cal_factory_proxy_closed_cb (connection, TRUE, NULL, user_data);
+	gdbus_cal_factory_closed_cb (connection, TRUE, NULL, user_data);
 }
 
 static gboolean
-gdbus_cal_factory_activate (GError **error)
+gdbus_cal_factory_activate (GCancellable *cancellable,
+                            GError **error)
 {
 	GDBusConnection *connection;
 
 	LOCK_FACTORY ();
 
-	if (G_LIKELY (cal_factory_proxy)) {
+	if (G_LIKELY (cal_factory != NULL)) {
 		UNLOCK_FACTORY ();
 		return TRUE;
 	}
 
-	cal_factory_proxy = e_gdbus_cal_factory_proxy_new_for_bus_sync (
+	cal_factory = e_gdbus_cal_factory_proxy_new_for_bus_sync (
 		G_BUS_TYPE_SESSION,
 		G_DBUS_PROXY_FLAGS_NONE,
 		CALENDAR_DBUS_SERVICE_NAME,
 		"/org/gnome/evolution/dataserver/CalendarFactory",
-		NULL,
-		error);
+		cancellable, error);
 
-	if (!cal_factory_proxy) {
+	if (cal_factory == NULL) {
 		UNLOCK_FACTORY ();
 		return FALSE;
 	}
 
-	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy));
-	cal_connection_closed_id = g_dbus_connection_signal_subscribe (connection,
+	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory));
+	cal_connection_closed_id = g_dbus_connection_signal_subscribe (
+		connection,
 		NULL,						/* sender */
 		"org.freedesktop.DBus",				/* interface */
 		"NameOwnerChanged",				/* member */
@@ -331,7 +338,9 @@ gdbus_cal_factory_activate (GError **error)
 		G_DBUS_SIGNAL_FLAGS_NONE,
 		gdbus_cal_factory_connection_gone_cb, NULL, NULL);
 
-	g_signal_connect (connection, "closed", G_CALLBACK (gdbus_cal_factory_proxy_closed_cb), NULL);
+	g_signal_connect (
+		connection, "closed",
+		G_CALLBACK (gdbus_cal_factory_closed_cb), NULL);
 
 	UNLOCK_FACTORY ();
 
@@ -569,6 +578,407 @@ icalcomponent_slist_to_string_slist (GSList *icalcomponents)
 	return g_slist_reverse (strings);
 }
 
+static gboolean
+cal_client_get_backend_property_from_cache_finish (EClient *client,
+                                                   GAsyncResult *result,
+                                                   gchar **prop_value,
+                                                   GError **error)
+{
+	GSimpleAsyncResult *simple;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+	g_return_val_if_fail (result != NULL, FALSE);
+	g_return_val_if_fail (prop_value != NULL, FALSE);
+	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (client), cal_client_get_backend_property_from_cache_finish), FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (result);
+
+	if (g_simple_async_result_propagate_error (simple, &local_error)) {
+		e_client_unwrap_dbus_error (client, local_error, error);
+		return FALSE;
+	}
+
+	*prop_value = g_strdup (g_simple_async_result_get_op_res_gpointer (simple));
+
+	return *prop_value != NULL;
+}
+
+static void
+cal_client_dispose (GObject *object)
+{
+	EClient *client;
+
+	client = E_CLIENT (object);
+
+	e_client_cancel_all (client);
+
+	gdbus_cal_client_disconnect (E_CAL_CLIENT (client));
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_cal_client_parent_class)->dispose (object);
+}
+
+static void
+cal_client_finalize (GObject *object)
+{
+	ECalClient *client;
+	ECalClientPrivate *priv;
+
+	client = E_CAL_CLIENT (object);
+
+	priv = client->priv;
+
+	g_free (priv->cache_dir);
+	priv->cache_dir = NULL;
+
+	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ())
+		icaltimezone_free (priv->default_zone, 1);
+	priv->default_zone = NULL;
+
+	g_mutex_lock (priv->zone_cache_lock);
+	g_hash_table_destroy (priv->zone_cache);
+	priv->zone_cache = NULL;
+	g_mutex_unlock (priv->zone_cache_lock);
+	g_mutex_free (priv->zone_cache_lock);
+	priv->zone_cache_lock = NULL;
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_cal_client_parent_class)->finalize (object);
+
+	LOCK_FACTORY ();
+	active_cal_clients--;
+	if (!active_cal_clients)
+		gdbus_cal_factory_disconnect (NULL);
+	UNLOCK_FACTORY ();
+}
+
+static GDBusProxy *
+cal_client_get_dbus_proxy (EClient *client)
+{
+	ECalClient *cal_client;
+
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
+
+	cal_client = E_CAL_CLIENT (client);
+
+	return cal_client->priv->gdbus_cal;
+}
+
+static void
+cal_client_unwrap_dbus_error (EClient *client,
+                              GError *dbus_error,
+                              GError **out_error)
+{
+	unwrap_dbus_error (dbus_error, out_error);
+}
+
+static void
+cal_client_retrieve_capabilities (EClient *client,
+                                  GCancellable *cancellable,
+                                  GAsyncReadyCallback callback,
+                                  gpointer user_data)
+{
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
+
+	e_client_get_backend_property (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, cancellable, callback, user_data);
+}
+
+static gboolean
+cal_client_retrieve_capabilities_finish (EClient *client,
+                                         GAsyncResult *result,
+                                         gchar **capabilities,
+                                         GError **error)
+{
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+
+	return e_client_get_backend_property_finish (client, result, capabilities, error);
+}
+
+static gboolean
+cal_client_retrieve_capabilities_sync (EClient *client,
+                                       gchar **capabilities,
+                                       GCancellable *cancellable,
+                                       GError **error)
+{
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+
+	return e_client_get_backend_property_sync (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, capabilities, cancellable, error);
+}
+
+static void
+cal_client_get_backend_property (EClient *client,
+                                 const gchar *prop_name,
+                                 GCancellable *cancellable,
+                                 GAsyncReadyCallback callback,
+                                 gpointer user_data)
+{
+	gchar *prop_value;
+
+	prop_value = e_client_get_backend_property_from_cache (client, prop_name);
+	if (prop_value) {
+		e_client_finish_async_without_dbus (client, cancellable, callback, user_data, cal_client_get_backend_property_from_cache_finish, prop_value, g_free);
+	} else {
+		e_client_proxy_call_string_with_res_op_data (client, prop_name, cancellable, callback, user_data, cal_client_get_backend_property, prop_name,
+			e_gdbus_cal_call_get_backend_property,
+			NULL, NULL, e_gdbus_cal_call_get_backend_property_finish, NULL, NULL);
+	}
+}
+
+static gboolean
+cal_client_get_backend_property_finish (EClient *client,
+                                        GAsyncResult *result,
+                                        gchar **prop_value,
+                                        GError **error)
+{
+	gchar *str = NULL;
+	gboolean res;
+
+	g_return_val_if_fail (prop_value != NULL, FALSE);
+
+	if (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)) == cal_client_get_backend_property_from_cache_finish) {
+		res = cal_client_get_backend_property_from_cache_finish (client, result, &str, error);
+	} else {
+		res = e_client_proxy_call_finish_string (client, result, &str, error, cal_client_get_backend_property);
+		if (res && str) {
+			const gchar *prop_name = g_object_get_data (G_OBJECT (result), "res-op-data");
+
+			if (prop_name && *prop_name)
+				e_client_update_backend_property_cache (client, prop_name, str);
+		}
+	}
+
+	*prop_value = str;
+
+	return res;
+}
+
+static gboolean
+cal_client_get_backend_property_sync (EClient *client,
+                                      const gchar *prop_name,
+                                      gchar **prop_value,
+                                      GCancellable *cancellable,
+                                      GError **error)
+{
+	ECalClient *cal_client;
+	gchar *prop_val;
+	gboolean res;
+
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+
+	cal_client = E_CAL_CLIENT (client);
+
+	if (!cal_client->priv->gdbus_cal) {
+		set_proxy_gone_error (error);
+		return FALSE;
+	}
+
+	prop_val = e_client_get_backend_property_from_cache (client, prop_name);
+	if (prop_val) {
+		g_return_val_if_fail (prop_value != NULL, FALSE);
+
+		*prop_value = prop_val;
+
+		return TRUE;
+	}
+
+	res = e_client_proxy_call_sync_string__string (client, prop_name, prop_value, cancellable, error, e_gdbus_cal_call_get_backend_property_sync);
+
+	if (res && prop_value)
+		e_client_update_backend_property_cache (client, prop_name, *prop_value);
+
+	return res;
+}
+
+static void
+cal_client_set_backend_property (EClient *client,
+                                 const gchar *prop_name,
+                                 const gchar *prop_value,
+                                 GCancellable *cancellable,
+                                 GAsyncReadyCallback callback,
+                                 gpointer user_data)
+{
+	gchar **prop_name_value;
+
+	prop_name_value = e_gdbus_cal_encode_set_backend_property (prop_name, prop_value);
+
+	e_client_proxy_call_strv (client, (const gchar * const *) prop_name_value, cancellable, callback, user_data, cal_client_set_backend_property,
+			e_gdbus_cal_call_set_backend_property,
+			e_gdbus_cal_call_set_backend_property_finish, NULL, NULL, NULL, NULL);
+
+	g_strfreev (prop_name_value);
+}
+
+static gboolean
+cal_client_set_backend_property_finish (EClient *client,
+                                        GAsyncResult *result,
+                                        GError **error)
+{
+	return e_client_proxy_call_finish_void (client, result, error, cal_client_set_backend_property);
+}
+
+static gboolean
+cal_client_set_backend_property_sync (EClient *client,
+                                      const gchar *prop_name,
+                                      const gchar *prop_value,
+                                      GCancellable *cancellable,
+                                      GError **error)
+{
+	ECalClient *cal_client;
+	gboolean res;
+	gchar **prop_name_value;
+
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+
+	cal_client = E_CAL_CLIENT (client);
+
+	if (!cal_client->priv->gdbus_cal) {
+		set_proxy_gone_error (error);
+		return FALSE;
+	}
+
+	prop_name_value = e_gdbus_cal_encode_set_backend_property (prop_name, prop_value);
+	res = e_client_proxy_call_sync_strv__void (client, (const gchar * const *) prop_name_value, cancellable, error, e_gdbus_cal_call_set_backend_property_sync);
+	g_strfreev (prop_name_value);
+
+	return res;
+}
+
+static void
+cal_client_open (EClient *client,
+                 gboolean only_if_exists,
+                 GCancellable *cancellable,
+                 GAsyncReadyCallback callback,
+                 gpointer user_data)
+{
+	e_client_proxy_call_boolean (client, only_if_exists, cancellable, callback, user_data, cal_client_open,
+			e_gdbus_cal_call_open,
+			e_gdbus_cal_call_open_finish, NULL, NULL, NULL, NULL);
+}
+
+static gboolean
+cal_client_open_finish (EClient *client,
+                        GAsyncResult *result,
+                        GError **error)
+{
+	return e_client_proxy_call_finish_void (client, result, error, cal_client_open);
+}
+
+static gboolean
+cal_client_open_sync (EClient *client,
+                      gboolean only_if_exists,
+                      GCancellable *cancellable,
+                      GError **error)
+{
+	ECalClient *cal_client;
+
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+
+	cal_client = E_CAL_CLIENT (client);
+
+	if (!cal_client->priv->gdbus_cal) {
+		set_proxy_gone_error (error);
+		return FALSE;
+	}
+
+	return e_client_proxy_call_sync_boolean__void (client, only_if_exists, cancellable, error, e_gdbus_cal_call_open_sync);
+}
+
+static void
+cal_client_refresh (EClient *client,
+                    GCancellable *cancellable,
+                    GAsyncReadyCallback callback,
+                    gpointer user_data)
+{
+	e_client_proxy_call_void (client, cancellable, callback, user_data, cal_client_refresh,
+			e_gdbus_cal_call_refresh,
+			e_gdbus_cal_call_refresh_finish, NULL, NULL, NULL, NULL);
+}
+
+static gboolean
+cal_client_refresh_finish (EClient *client,
+                           GAsyncResult *result,
+                           GError **error)
+{
+	return e_client_proxy_call_finish_void (client, result, error, cal_client_refresh);
+}
+
+static gboolean
+cal_client_refresh_sync (EClient *client,
+                         GCancellable *cancellable,
+                         GError **error)
+{
+	ECalClient *cal_client;
+
+	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
+
+	cal_client = E_CAL_CLIENT (client);
+
+	if (!cal_client->priv->gdbus_cal) {
+		set_proxy_gone_error (error);
+		return FALSE;
+	}
+
+	return e_client_proxy_call_sync_void__void (client, cancellable, error, e_gdbus_cal_call_refresh_sync);
+}
+
+static void
+e_cal_client_class_init (ECalClientClass *class)
+{
+	GObjectClass *object_class;
+	EClientClass *client_class;
+
+	g_type_class_add_private (class, sizeof (ECalClientPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = cal_client_dispose;
+	object_class->finalize = cal_client_finalize;
+
+	client_class = E_CLIENT_CLASS (class);
+	client_class->get_dbus_proxy			= cal_client_get_dbus_proxy;
+	client_class->unwrap_dbus_error			= cal_client_unwrap_dbus_error;
+	client_class->retrieve_capabilities		= cal_client_retrieve_capabilities;
+	client_class->retrieve_capabilities_finish	= cal_client_retrieve_capabilities_finish;
+	client_class->retrieve_capabilities_sync	= cal_client_retrieve_capabilities_sync;
+	client_class->get_backend_property		= cal_client_get_backend_property;
+	client_class->get_backend_property_finish	= cal_client_get_backend_property_finish;
+	client_class->get_backend_property_sync		= cal_client_get_backend_property_sync;
+	client_class->set_backend_property		= cal_client_set_backend_property;
+	client_class->set_backend_property_finish	= cal_client_set_backend_property_finish;
+	client_class->set_backend_property_sync		= cal_client_set_backend_property_sync;
+	client_class->open				= cal_client_open;
+	client_class->open_finish			= cal_client_open_finish;
+	client_class->open_sync				= cal_client_open_sync;
+	client_class->refresh				= cal_client_refresh;
+	client_class->refresh_finish			= cal_client_refresh_finish;
+	client_class->refresh_sync			= cal_client_refresh_sync;
+
+	signals[FREE_BUSY_DATA] = g_signal_new (
+		"free-busy-data",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (ECalClientClass, free_busy_data),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__POINTER,
+		G_TYPE_NONE, 1,
+		G_TYPE_POINTER);
+}
+
+static void
+e_cal_client_init (ECalClient *client)
+{
+	LOCK_FACTORY ();
+	active_cal_clients++;
+	UNLOCK_FACTORY ();
+
+	client->priv = E_CAL_CLIENT_GET_PRIVATE (client);
+	client->priv->source_type = E_CAL_CLIENT_SOURCE_TYPE_LAST;
+	client->priv->default_zone = icaltimezone_get_utc_timezone ();
+	client->priv->cache_dir = NULL;
+	client->priv->zone_cache_lock = g_mutex_new ();
+	client->priv->zone_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone_cb);
+}
+
 /**
  * e_cal_client_new:
  * @source: An #ESource pointer
@@ -593,13 +1003,17 @@ e_cal_client_new (ESource *source,
 	GDBusConnection *connection;
 	const gchar *uid;
 	gchar **strv;
-	gchar *path = NULL;
+	gchar *object_path = NULL;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
-	g_return_val_if_fail (source_type == E_CAL_CLIENT_SOURCE_TYPE_EVENTS || source_type == E_CAL_CLIENT_SOURCE_TYPE_TASKS || source_type == E_CAL_CLIENT_SOURCE_TYPE_MEMOS, NULL);
+	g_return_val_if_fail (
+		source_type == E_CAL_CLIENT_SOURCE_TYPE_EVENTS ||
+		source_type == E_CAL_CLIENT_SOURCE_TYPE_TASKS ||
+		source_type == E_CAL_CLIENT_SOURCE_TYPE_MEMOS, NULL);
 
 	LOCK_FACTORY ();
-	if (!gdbus_cal_factory_activate (&err)) {
+	/* XXX Oops, e_cal_client_new() forgot to take a GCancellable. */
+	if (!gdbus_cal_factory_activate (NULL, &err)) {
 		UNLOCK_FACTORY ();
 		if (err) {
 			unwrap_dbus_error (err, &err);
@@ -625,42 +1039,50 @@ e_cal_client_new (ESource *source,
 
 	UNLOCK_FACTORY ();
 
-	if (!e_gdbus_cal_factory_call_get_cal_sync (G_DBUS_PROXY (cal_factory_proxy), (const gchar * const *) strv, &path, NULL, &err)) {
-		unwrap_dbus_error (err, &err);
-		g_strfreev (strv);
-		g_warning ("%s: Cannot get calendar from factory: %s", G_STRFUNC, err ? err->message : "[no error]");
-		if (err)
-			g_propagate_error (error, err);
-		g_object_unref (client);
-
-		return NULL;
-	}
+	e_gdbus_cal_factory_call_get_cal_sync (
+		G_DBUS_PROXY (cal_factory),
+		(const gchar * const *) strv,
+		&object_path, NULL, &err);
 
 	g_strfreev (strv);
 
-	client->priv->gdbus_cal = G_DBUS_PROXY (e_gdbus_cal_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
-						      G_DBUS_PROXY_FLAGS_NONE,
-						      CALENDAR_DBUS_SERVICE_NAME,
-						      path,
-						      NULL,
-						      &err));
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((object_path != NULL) && (err == NULL)) ||
+		((object_path == NULL) && (err != NULL)), NULL);
 
-	if (!client->priv->gdbus_cal) {
-		g_free (path);
+	if (err != NULL) {
 		unwrap_dbus_error (err, &err);
-		g_warning ("%s: Cannot create calendar proxy: %s", G_STRFUNC, err ? err->message : "Unknown error");
-		if (err)
-			g_propagate_error (error, err);
-
+		g_propagate_error (error, err);
 		g_object_unref (client);
-
 		return NULL;
 	}
 
-	g_free (path);
+	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory));
 
-	connection = g_dbus_proxy_get_connection (G_DBUS_PROXY (client->priv->gdbus_cal));
-	client->priv->gone_signal_id = g_dbus_connection_signal_subscribe (connection,
+	client->priv->gdbus_cal = G_DBUS_PROXY (e_gdbus_cal_proxy_new_sync (
+		connection,
+		G_DBUS_PROXY_FLAGS_NONE,
+		CALENDAR_DBUS_SERVICE_NAME,
+		object_path,
+		NULL, &err));
+
+	g_free (object_path);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((object_path != NULL) && (err == NULL)) ||
+		((object_path == NULL) && (err != NULL)), NULL);
+
+	if (err != NULL) {
+		unwrap_dbus_error (err, &err);
+		g_propagate_error (error, err);
+		g_object_unref (client);
+		return NULL;
+	}
+
+	client->priv->gone_signal_id = g_dbus_connection_signal_subscribe (
+		connection,
 		"org.freedesktop.DBus",				/* sender */
 		"org.freedesktop.DBus",				/* interface */
 		"NameOwnerChanged",				/* member */
@@ -669,14 +1091,33 @@ e_cal_client_new (ESource *source,
 		G_DBUS_SIGNAL_FLAGS_NONE,
 		gdbus_cal_client_connection_gone_cb, client, NULL);
 
-	g_signal_connect (connection, "closed", G_CALLBACK (gdbus_cal_client_closed_cb), client);
+	g_signal_connect (
+		connection, "closed",
+		G_CALLBACK (gdbus_cal_client_closed_cb), client);
 
-	g_signal_connect (client->priv->gdbus_cal, "backend_error", G_CALLBACK (backend_error_cb), client);
-	g_signal_connect (client->priv->gdbus_cal, "readonly", G_CALLBACK (readonly_cb), client);
-	g_signal_connect (client->priv->gdbus_cal, "online", G_CALLBACK (online_cb), client);
-	g_signal_connect (client->priv->gdbus_cal, "opened", G_CALLBACK (opened_cb), client);
-	g_signal_connect (client->priv->gdbus_cal, "free-busy-data", G_CALLBACK (free_busy_data_cb), client);
-	g_signal_connect (client->priv->gdbus_cal, "backend-property-changed", G_CALLBACK (backend_property_changed_cb), client);
+	g_signal_connect (
+		client->priv->gdbus_cal, "backend_error",
+		G_CALLBACK (backend_error_cb), client);
+
+	g_signal_connect (
+		client->priv->gdbus_cal, "readonly",
+		G_CALLBACK (readonly_cb), client);
+
+	g_signal_connect (
+		client->priv->gdbus_cal, "online",
+		G_CALLBACK (online_cb), client);
+
+	g_signal_connect (
+		client->priv->gdbus_cal, "opened",
+		G_CALLBACK (opened_cb), client);
+
+	g_signal_connect (
+		client->priv->gdbus_cal, "free-busy-data",
+		G_CALLBACK (free_busy_data_cb), client);
+
+	g_signal_connect (
+		client->priv->gdbus_cal, "backend-property-changed",
+		G_CALLBACK (backend_property_changed_cb), client);
 
 	return client;
 }
@@ -2104,248 +2545,6 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	g_hash_table_destroy (timezone_hash);
 
 	return obj_string;
-}
-
-static gboolean
-cal_client_get_backend_property_from_cache_finish (EClient *client,
-                                                   GAsyncResult *result,
-                                                   gchar **prop_value,
-                                                   GError **error)
-{
-	GSimpleAsyncResult *simple;
-	GError *local_error = NULL;
-
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-	g_return_val_if_fail (result != NULL, FALSE);
-	g_return_val_if_fail (prop_value != NULL, FALSE);
-	g_return_val_if_fail (g_simple_async_result_is_valid (result, G_OBJECT (client), cal_client_get_backend_property_from_cache_finish), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	if (g_simple_async_result_propagate_error (simple, &local_error)) {
-		e_client_unwrap_dbus_error (client, local_error, error);
-		return FALSE;
-	}
-
-	*prop_value = g_strdup (g_simple_async_result_get_op_res_gpointer (simple));
-
-	return *prop_value != NULL;
-}
-
-static void
-cal_client_get_backend_property (EClient *client,
-                                 const gchar *prop_name,
-                                 GCancellable *cancellable,
-                                 GAsyncReadyCallback callback,
-                                 gpointer user_data)
-{
-	gchar *prop_value;
-
-	prop_value = e_client_get_backend_property_from_cache (client, prop_name);
-	if (prop_value) {
-		e_client_finish_async_without_dbus (client, cancellable, callback, user_data, cal_client_get_backend_property_from_cache_finish, prop_value, g_free);
-	} else {
-		e_client_proxy_call_string_with_res_op_data (client, prop_name, cancellable, callback, user_data, cal_client_get_backend_property, prop_name,
-			e_gdbus_cal_call_get_backend_property,
-			NULL, NULL, e_gdbus_cal_call_get_backend_property_finish, NULL, NULL);
-	}
-}
-
-static gboolean
-cal_client_get_backend_property_finish (EClient *client,
-                                        GAsyncResult *result,
-                                        gchar **prop_value,
-                                        GError **error)
-{
-	gchar *str = NULL;
-	gboolean res;
-
-	g_return_val_if_fail (prop_value != NULL, FALSE);
-
-	if (g_simple_async_result_get_source_tag (G_SIMPLE_ASYNC_RESULT (result)) == cal_client_get_backend_property_from_cache_finish) {
-		res = cal_client_get_backend_property_from_cache_finish (client, result, &str, error);
-	} else {
-		res = e_client_proxy_call_finish_string (client, result, &str, error, cal_client_get_backend_property);
-		if (res && str) {
-			const gchar *prop_name = g_object_get_data (G_OBJECT (result), "res-op-data");
-
-			if (prop_name && *prop_name)
-				e_client_update_backend_property_cache (client, prop_name, str);
-		}
-	}
-
-	*prop_value = str;
-
-	return res;
-}
-
-static gboolean
-cal_client_get_backend_property_sync (EClient *client,
-                                      const gchar *prop_name,
-                                      gchar **prop_value,
-                                      GCancellable *cancellable,
-                                      GError **error)
-{
-	ECalClient *cal_client;
-	gchar *prop_val;
-	gboolean res;
-
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-
-	cal_client = E_CAL_CLIENT (client);
-
-	if (!cal_client->priv->gdbus_cal) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
-	prop_val = e_client_get_backend_property_from_cache (client, prop_name);
-	if (prop_val) {
-		g_return_val_if_fail (prop_value != NULL, FALSE);
-
-		*prop_value = prop_val;
-
-		return TRUE;
-	}
-
-	res = e_client_proxy_call_sync_string__string (client, prop_name, prop_value, cancellable, error, e_gdbus_cal_call_get_backend_property_sync);
-
-	if (res && prop_value)
-		e_client_update_backend_property_cache (client, prop_name, *prop_value);
-
-	return res;
-}
-
-static void
-cal_client_set_backend_property (EClient *client,
-                                 const gchar *prop_name,
-                                 const gchar *prop_value,
-                                 GCancellable *cancellable,
-                                 GAsyncReadyCallback callback,
-                                 gpointer user_data)
-{
-	gchar **prop_name_value;
-
-	prop_name_value = e_gdbus_cal_encode_set_backend_property (prop_name, prop_value);
-
-	e_client_proxy_call_strv (client, (const gchar * const *) prop_name_value, cancellable, callback, user_data, cal_client_set_backend_property,
-			e_gdbus_cal_call_set_backend_property,
-			e_gdbus_cal_call_set_backend_property_finish, NULL, NULL, NULL, NULL);
-
-	g_strfreev (prop_name_value);
-}
-
-static gboolean
-cal_client_set_backend_property_finish (EClient *client,
-                                        GAsyncResult *result,
-                                        GError **error)
-{
-	return e_client_proxy_call_finish_void (client, result, error, cal_client_set_backend_property);
-}
-
-static gboolean
-cal_client_set_backend_property_sync (EClient *client,
-                                      const gchar *prop_name,
-                                      const gchar *prop_value,
-                                      GCancellable *cancellable,
-                                      GError **error)
-{
-	ECalClient *cal_client;
-	gboolean res;
-	gchar **prop_name_value;
-
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-
-	cal_client = E_CAL_CLIENT (client);
-
-	if (!cal_client->priv->gdbus_cal) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
-	prop_name_value = e_gdbus_cal_encode_set_backend_property (prop_name, prop_value);
-	res = e_client_proxy_call_sync_strv__void (client, (const gchar * const *) prop_name_value, cancellable, error, e_gdbus_cal_call_set_backend_property_sync);
-	g_strfreev (prop_name_value);
-
-	return res;
-}
-
-static void
-cal_client_open (EClient *client,
-                 gboolean only_if_exists,
-                 GCancellable *cancellable,
-                 GAsyncReadyCallback callback,
-                 gpointer user_data)
-{
-	e_client_proxy_call_boolean (client, only_if_exists, cancellable, callback, user_data, cal_client_open,
-			e_gdbus_cal_call_open,
-			e_gdbus_cal_call_open_finish, NULL, NULL, NULL, NULL);
-}
-
-static gboolean
-cal_client_open_finish (EClient *client,
-                        GAsyncResult *result,
-                        GError **error)
-{
-	return e_client_proxy_call_finish_void (client, result, error, cal_client_open);
-}
-
-static gboolean
-cal_client_open_sync (EClient *client,
-                      gboolean only_if_exists,
-                      GCancellable *cancellable,
-                      GError **error)
-{
-	ECalClient *cal_client;
-
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-
-	cal_client = E_CAL_CLIENT (client);
-
-	if (!cal_client->priv->gdbus_cal) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
-	return e_client_proxy_call_sync_boolean__void (client, only_if_exists, cancellable, error, e_gdbus_cal_call_open_sync);
-}
-
-static void
-cal_client_refresh (EClient *client,
-                    GCancellable *cancellable,
-                    GAsyncReadyCallback callback,
-                    gpointer user_data)
-{
-	e_client_proxy_call_void (client, cancellable, callback, user_data, cal_client_refresh,
-			e_gdbus_cal_call_refresh,
-			e_gdbus_cal_call_refresh_finish, NULL, NULL, NULL, NULL);
-}
-
-static gboolean
-cal_client_refresh_finish (EClient *client,
-                           GAsyncResult *result,
-                           GError **error)
-{
-	return e_client_proxy_call_finish_void (client, result, error, cal_client_refresh);
-}
-
-static gboolean
-cal_client_refresh_sync (EClient *client,
-                         GCancellable *cancellable,
-                         GError **error)
-{
-	ECalClient *cal_client;
-
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-
-	cal_client = E_CAL_CLIENT (client);
-
-	if (!cal_client->priv->gdbus_cal) {
-		set_proxy_gone_error (error);
-		return FALSE;
-	}
-
-	return e_client_proxy_call_sync_void__void (client, cancellable, error, e_gdbus_cal_call_refresh_sync);
 }
 
 static gboolean
@@ -4572,11 +4771,11 @@ complete_get_view (ECalClient *client,
 {
 	g_return_val_if_fail (view != NULL, FALSE);
 
-	if (view_path && res && cal_factory_proxy) {
+	if (view_path && res && cal_factory) {
 		EGdbusCalView *gdbus_calview;
 		GError *local_error = NULL;
 
-		gdbus_calview = e_gdbus_cal_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory_proxy)),
+		gdbus_calview = e_gdbus_cal_view_proxy_new_sync (g_dbus_proxy_get_connection (G_DBUS_PROXY (cal_factory)),
 								G_DBUS_PROXY_FLAGS_NONE,
 								CALENDAR_DBUS_SERVICE_NAME,
 								view_path,
@@ -5053,167 +5252,3 @@ e_cal_client_add_timezone_sync (ECalClient *client,
 	return res;
 }
 
-static GDBusProxy *
-cal_client_get_dbus_proxy (EClient *client)
-{
-	ECalClient *cal_client;
-
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), NULL);
-
-	cal_client = E_CAL_CLIENT (client);
-
-	return cal_client->priv->gdbus_cal;
-}
-
-static void
-cal_client_unwrap_dbus_error (EClient *client,
-                              GError *dbus_error,
-                              GError **out_error)
-{
-	unwrap_dbus_error (dbus_error, out_error);
-}
-
-static void
-cal_client_retrieve_capabilities (EClient *client,
-                                  GCancellable *cancellable,
-                                  GAsyncReadyCallback callback,
-                                  gpointer user_data)
-{
-	g_return_if_fail (E_IS_CAL_CLIENT (client));
-
-	cal_client_get_backend_property (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, cancellable, callback, user_data);
-}
-
-static gboolean
-cal_client_retrieve_capabilities_finish (EClient *client,
-                                         GAsyncResult *result,
-                                         gchar **capabilities,
-                                         GError **error)
-{
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-
-	return cal_client_get_backend_property_finish (client, result, capabilities, error);
-}
-
-static gboolean
-cal_client_retrieve_capabilities_sync (EClient *client,
-                                       gchar **capabilities,
-                                       GCancellable *cancellable,
-                                       GError **error)
-{
-	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
-
-	return cal_client_get_backend_property_sync (client, CLIENT_BACKEND_PROPERTY_CAPABILITIES, capabilities, cancellable, error);
-}
-
-static void
-free_zone_cb (gpointer zone)
-{
-	icaltimezone_free (zone, 1);
-}
-
-static void
-e_cal_client_init (ECalClient *client)
-{
-	LOCK_FACTORY ();
-	active_cal_clients++;
-	UNLOCK_FACTORY ();
-
-	client->priv = E_CAL_CLIENT_GET_PRIVATE (client);
-	client->priv->source_type = E_CAL_CLIENT_SOURCE_TYPE_LAST;
-	client->priv->default_zone = icaltimezone_get_utc_timezone ();
-	client->priv->cache_dir = NULL;
-	client->priv->zone_cache_lock = g_mutex_new ();
-	client->priv->zone_cache = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_zone_cb);
-}
-
-static void
-cal_client_dispose (GObject *object)
-{
-	EClient *client;
-
-	client = E_CLIENT (object);
-
-	e_client_cancel_all (client);
-
-	gdbus_cal_client_disconnect (E_CAL_CLIENT (client));
-
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (e_cal_client_parent_class)->dispose (object);
-}
-
-static void
-cal_client_finalize (GObject *object)
-{
-	ECalClient *client;
-	ECalClientPrivate *priv;
-
-	client = E_CAL_CLIENT (object);
-
-	priv = client->priv;
-
-	g_free (priv->cache_dir);
-	priv->cache_dir = NULL;
-
-	if (priv->default_zone && priv->default_zone != icaltimezone_get_utc_timezone ())
-		icaltimezone_free (priv->default_zone, 1);
-	priv->default_zone = NULL;
-
-	g_mutex_lock (priv->zone_cache_lock);
-	g_hash_table_destroy (priv->zone_cache);
-	priv->zone_cache = NULL;
-	g_mutex_unlock (priv->zone_cache_lock);
-	g_mutex_free (priv->zone_cache_lock);
-	priv->zone_cache_lock = NULL;
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (e_cal_client_parent_class)->finalize (object);
-
-	LOCK_FACTORY ();
-	active_cal_clients--;
-	if (!active_cal_clients)
-		gdbus_cal_factory_proxy_disconnect (NULL);
-	UNLOCK_FACTORY ();
-}
-
-static void
-e_cal_client_class_init (ECalClientClass *class)
-{
-	GObjectClass *object_class;
-	EClientClass *client_class;
-
-	g_type_class_add_private (class, sizeof (ECalClientPrivate));
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->dispose = cal_client_dispose;
-	object_class->finalize = cal_client_finalize;
-
-	client_class = E_CLIENT_CLASS (class);
-	client_class->get_dbus_proxy			= cal_client_get_dbus_proxy;
-	client_class->unwrap_dbus_error			= cal_client_unwrap_dbus_error;
-	client_class->retrieve_capabilities		= cal_client_retrieve_capabilities;
-	client_class->retrieve_capabilities_finish	= cal_client_retrieve_capabilities_finish;
-	client_class->retrieve_capabilities_sync	= cal_client_retrieve_capabilities_sync;
-	client_class->get_backend_property		= cal_client_get_backend_property;
-	client_class->get_backend_property_finish	= cal_client_get_backend_property_finish;
-	client_class->get_backend_property_sync		= cal_client_get_backend_property_sync;
-	client_class->set_backend_property		= cal_client_set_backend_property;
-	client_class->set_backend_property_finish	= cal_client_set_backend_property_finish;
-	client_class->set_backend_property_sync		= cal_client_set_backend_property_sync;
-	client_class->open				= cal_client_open;
-	client_class->open_finish			= cal_client_open_finish;
-	client_class->open_sync				= cal_client_open_sync;
-	client_class->refresh				= cal_client_refresh;
-	client_class->refresh_finish			= cal_client_refresh_finish;
-	client_class->refresh_sync			= cal_client_refresh_sync;
-
-	signals[FREE_BUSY_DATA] = g_signal_new (
-		"free-busy-data",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (ECalClientClass, free_busy_data),
-		NULL, NULL,
-		g_cclosure_marshal_VOID__POINTER,
-		G_TYPE_NONE, 1,
-		G_TYPE_POINTER);
-}
