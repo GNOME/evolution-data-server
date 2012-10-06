@@ -44,11 +44,20 @@ typedef enum {
 	E_CLIENT_SOURCE_TYPE_LAST
 } EClientSourceType;
 
-EClient	*	e_client_utils_new			(ESource *source, EClientSourceType source_type, GError **error);
+EClient	*	e_client_utils_new		(ESource *source,
+						 EClientSourceType source_type,
+						 GError **error);
 
-void		e_client_utils_open_new			(ESource *source, EClientSourceType source_type, gboolean only_if_exists, GCancellable *cancellable,
-							 GAsyncReadyCallback async_cb, gpointer async_cb_user_data);
-gboolean	e_client_utils_open_new_finish		(ESource *source, GAsyncResult *result, EClient **client, GError **error);
+void		e_client_utils_open_new		(ESource *source,
+						 EClientSourceType source_type,
+						 gboolean only_if_exists,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_client_utils_open_new_finish	(ESource *source,
+						 GAsyncResult *result,
+						 EClient **client,
+						 GError **error);
 
 G_END_DECLS
 

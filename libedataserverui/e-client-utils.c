@@ -73,10 +73,9 @@ e_client_utils_new (ESource *source,
 	return res;
 }
 
-typedef struct _EClientUtilsAsyncOpData
-{
-	GAsyncReadyCallback async_cb;
-	gpointer async_cb_user_data;
+typedef struct _EClientUtilsAsyncOpData {
+	GAsyncReadyCallback callback;
+	gpointer user_data;
 	GCancellable *cancellable;
 	ESource *source;
 	EClient *client;
@@ -131,14 +130,14 @@ complete_async_op_in_idle_cb (gpointer user_data)
 	return FALSE;
 }
 
-#define return_async_error_if_fail(expr, async_cb, async_cb_user_data, src, source_tag) G_STMT_START {	\
+#define return_async_error_if_fail(expr, callback, user_data, src, source_tag) G_STMT_START {	\
 	if (G_LIKELY ((expr))) { } else {								\
 		GError *error;										\
 													\
 		error = g_error_new (E_CLIENT_ERROR, E_CLIENT_ERROR_INVALID_ARG,			\
 				"%s: assertion '%s' failed", G_STRFUNC, #expr);				\
 													\
-		return_async_error (error, async_cb, async_cb_user_data, src, source_tag);		\
+		return_async_error (error, callback, user_data, src, source_tag);		\
 		g_error_free (error);									\
 		return;											\
 	}												\
@@ -146,8 +145,8 @@ complete_async_op_in_idle_cb (gpointer user_data)
 
 static void
 return_async_error (const GError *error,
-                    GAsyncReadyCallback async_cb,
-                    gpointer async_cb_user_data,
+                    GAsyncReadyCallback callback,
+                    gpointer user_data,
                     ESource *source,
                     gpointer source_tag)
 {
@@ -156,7 +155,7 @@ return_async_error (const GError *error,
 	g_return_if_fail (error != NULL);
 	g_return_if_fail (source_tag != NULL);
 
-	simple = g_simple_async_result_new (G_OBJECT (source), async_cb, async_cb_user_data, source_tag);
+	simple = g_simple_async_result_new (G_OBJECT (source), callback, user_data, source_tag);
 	g_simple_async_result_set_from_error (simple, error);
 
 	g_object_set_data (G_OBJECT (simple), "run-main-depth", GINT_TO_POINTER (g_main_depth ()));
@@ -187,7 +186,7 @@ client_utils_get_backend_property_cb (GObject *source_object,
 			return;
 	}
 
-	simple = g_simple_async_result_new (G_OBJECT (async_data->source), async_data->async_cb, async_data->async_cb_user_data, e_client_utils_open_new);
+	simple = g_simple_async_result_new (G_OBJECT (async_data->source), async_data->callback, async_data->user_data, e_client_utils_open_new);
 	g_simple_async_result_set_op_res_gpointer (simple, g_object_ref (async_data->client), g_object_unref);
 
 	g_object_set_data (G_OBJECT (simple), "run-main-depth", GINT_TO_POINTER (g_main_depth ()));
@@ -265,7 +264,7 @@ finish_or_retry_open (EClientUtilsAsyncOpData *async_data,
 		async_data->open_finished = FALSE;
 		async_data->retry_open_id = g_timeout_add (500, client_utils_retry_open_timeout_cb, async_data);
 	} else if (error) {
-		return_async_error (error, async_data->async_cb, async_data->async_cb_user_data, async_data->source, e_client_utils_open_new);
+		return_async_error (error, async_data->callback, async_data->user_data, async_data->source, e_client_utils_open_new);
 		free_client_utils_async_op_data (async_data);
 	} else {
 		client_utils_open_new_done (async_data);
@@ -305,7 +304,7 @@ client_utils_open_new_async_cb (GObject *source_object,
 	g_return_if_fail (source_object != NULL);
 	g_return_if_fail (result != NULL);
 	g_return_if_fail (async_data != NULL);
-	g_return_if_fail (async_data->async_cb != NULL);
+	g_return_if_fail (async_data->callback != NULL);
 	g_return_if_fail (async_data->client == E_CLIENT (source_object));
 
 	async_data->open_finished = TRUE;
@@ -355,15 +354,15 @@ client_utils_retry_open_timeout_cb (gpointer user_data)
  * @source_type: an #EClientSourceType of the @source
  * @only_if_exists: if %TRUE, fail if this client doesn't already exist, otherwise create it first
  * @cancellable: a #GCancellable; can be %NULL
- * @async_cb: callback to call when a result is ready
- * @async_cb_user_data: user data for the @async_cb
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
  *
  * Begins asynchronous opening of a new #EClient corresponding
  * to the @source of type @source_type. The resulting #EClient
  * is fully opened and authenticated client, ready to be used.
  * The opened client has also fetched capabilities.
  * This call is finished by e_client_utils_open_new_finish()
- * from the @async_cb.
+ * from the @callback.
  *
  * Since: 3.2
  **/
@@ -372,27 +371,27 @@ e_client_utils_open_new (ESource *source,
                          EClientSourceType source_type,
                          gboolean only_if_exists,
                          GCancellable *cancellable,
-                         GAsyncReadyCallback async_cb,
-                         gpointer async_cb_user_data)
+                         GAsyncReadyCallback callback,
+                         gpointer user_data)
 {
 	EClient *client;
 	GError *error = NULL;
 	EClientUtilsAsyncOpData *async_data;
 
-	g_return_if_fail (async_cb != NULL);
-	return_async_error_if_fail (source != NULL, async_cb, async_cb_user_data, source, e_client_utils_open_new);
-	return_async_error_if_fail (E_IS_SOURCE (source), async_cb, async_cb_user_data, source, e_client_utils_open_new);
+	g_return_if_fail (callback != NULL);
+	return_async_error_if_fail (source != NULL, callback, user_data, source, e_client_utils_open_new);
+	return_async_error_if_fail (E_IS_SOURCE (source), callback, user_data, source, e_client_utils_open_new);
 
 	client = e_client_utils_new (source, source_type, &error);
 	if (!client) {
-		return_async_error (error, async_cb, async_cb_user_data, source, e_client_utils_open_new);
+		return_async_error (error, callback, user_data, source, e_client_utils_open_new);
 		g_error_free (error);
 		return;
 	}
 
 	async_data = g_new0 (EClientUtilsAsyncOpData, 1);
-	async_data->async_cb = async_cb;
-	async_data->async_cb_user_data = async_cb_user_data;
+	async_data->callback = callback;
+	async_data->user_data = user_data;
 	async_data->source = g_object_ref (source);
 	async_data->client = client;
 	async_data->open_finished = FALSE;
