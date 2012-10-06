@@ -41,6 +41,10 @@
 
 G_BEGIN_DECLS
 
+struct _ECalBackend;
+
+typedef struct _ECalBackendSExp ECalBackendSExp;
+typedef struct _ECalBackendSExpClass ECalBackendSExpClass;
 typedef struct _ECalBackendSExpPrivate ECalBackendSExpPrivate;
 
 struct _ECalBackendSExp {
@@ -60,10 +64,10 @@ const gchar      *e_cal_backend_sexp_text         (ECalBackendSExp *sexp);
 
 gboolean         e_cal_backend_sexp_match_object (ECalBackendSExp *sexp,
 						  const gchar      *object,
-						  ECalBackend     *backend);
+						  struct _ECalBackend *backend);
 gboolean         e_cal_backend_sexp_match_comp   (ECalBackendSExp *sexp,
 						  ECalComponent   *comp,
-						  ECalBackend     *backend);
+						  struct _ECalBackend *backend);
 
 /* Default implementations of time functions for use by subclasses */
 

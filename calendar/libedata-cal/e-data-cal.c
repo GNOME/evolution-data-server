@@ -34,6 +34,8 @@
 
 #include "e-data-cal.h"
 #include "e-gdbus-cal.h"
+#include "e-cal-backend.h"
+#include "e-cal-backend-sexp.h"
 
 #define E_DATA_CAL_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

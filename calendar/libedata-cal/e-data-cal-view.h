@@ -27,9 +27,6 @@
 
 #include <libecal/libecal.h>
 
-#include <libedata-cal/e-data-cal-common.h>
-#include <libedata-cal/e-cal-backend-sexp.h>
-
 G_BEGIN_DECLS
 
 
@@ -39,6 +36,11 @@ G_BEGIN_DECLS
 #define E_DATA_CAL_VIEW_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_DATA_CAL_VIEW_TYPE, EDataCalViewClass))
 #define E_IS_DATA_CAL_VIEW(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_DATA_CAL_VIEW_TYPE))
 
+struct _ECalBackend;
+struct _ECalBackendSExp;
+
+typedef struct _EDataCalView EDataCalView;
+typedef struct _EDataCalViewClass EDataCalViewClass;
 typedef struct _EDataCalViewPrivate EDataCalViewPrivate;
 
 struct _EDataCalView {
@@ -51,10 +53,11 @@ struct _EDataCalViewClass {
 };
 
 GType			e_data_cal_view_get_type			(void);
-EDataCalView *		e_data_cal_view_new				(ECalBackend *backend, ECalBackendSExp *sexp);
+EDataCalView *		e_data_cal_view_new				(struct _ECalBackend *backend, struct _ECalBackendSExp *sexp);
 guint			e_data_cal_view_register_gdbus_object		(EDataCalView *view, GDBusConnection *connection, const gchar *object_path, GError **error);
 const gchar *		e_data_cal_view_get_text			(EDataCalView *view);
-ECalBackendSExp *	e_data_cal_view_get_object_sexp			(EDataCalView *view);
+struct _ECalBackendSExp *
+			e_data_cal_view_get_object_sexp			(EDataCalView *view);
 gboolean		e_data_cal_view_object_matches			(EDataCalView *view, const gchar *object);
 gboolean		e_data_cal_view_component_matches		(EDataCalView *view, ECalComponent *component);
 gboolean		e_data_cal_view_is_started			(EDataCalView *view);

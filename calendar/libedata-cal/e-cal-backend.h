@@ -30,8 +30,6 @@
 #include <libecal/libecal.h>
 #include <libebackend/libebackend.h>
 
-#include "e-data-cal-common.h"
-#include <libedata-cal/e-data-cal-common.h>
 #include <libedata-cal/e-data-cal.h>
 
 G_BEGIN_DECLS
@@ -139,6 +137,8 @@ G_BEGIN_DECLS
 
 struct _ECalBackendCache;
 
+typedef struct _ECalBackend ECalBackend;
+typedef struct _ECalBackendClass ECalBackendClass;
 typedef struct _ECalBackendPrivate ECalBackendPrivate;
 
 struct _ECalBackend {

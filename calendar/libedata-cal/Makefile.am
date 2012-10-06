@@ -55,7 +55,6 @@ libedata_calinclude_HEADERS = 		\
 	e-cal-backend-util.h		\
 	e-cal-backend-sexp.h		\
 	e-data-cal.h			\
-	e-data-cal-common.h		\
 	e-data-cal-factory.h		\
 	e-cal-backend-store.h		\
 	e-cal-backend-file-store.h	\

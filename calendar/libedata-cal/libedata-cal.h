@@ -33,7 +33,6 @@
 #include <libedata-cal/e-cal-backend-store.h>
 #include <libedata-cal/e-cal-backend-sync.h>
 #include <libedata-cal/e-cal-backend-util.h>
-#include <libedata-cal/e-data-cal-common.h>
 #include <libedata-cal/e-data-cal-factory.h>
 #include <libedata-cal/e-data-cal.h>
 #include <libedata-cal/e-data-cal-view.h>
