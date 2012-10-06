@@ -29,14 +29,26 @@
 
 #include <libedataserver/libedataserver.h>
 
-G_BEGIN_DECLS
+/* Standard GObject macros */
+#define E_TYPE_DATA_BOOK \
+	(e_data_book_get_type ())
+#define E_DATA_BOOK(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_DATA_BOOK, EDataBook))
+#define E_DATA_BOOK_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_DATA_BOOK, EDataBookClass))
+#define E_IS_DATA_BOOK(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_DATA_BOOK))
+#define E_IS_DATA_BOOK_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_DATA_BOOK))
+#define E_DATA_BOOK_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_DATA_BOOK, EDataBookClass))
 
-#define E_TYPE_DATA_BOOK        (e_data_book_get_type ())
-#define E_DATA_BOOK(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_DATA_BOOK, EDataBook))
-#define E_DATA_BOOK_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST ((k), E_TYPE_DATA_BOOK, EDataBookClass))
-#define E_IS_DATA_BOOK(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_DATA_BOOK))
-#define E_IS_DATA_BOOK_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_DATA_BOOK))
-#define E_DATA_BOOK_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), E_TYPE_DATA_BOOK, EDataBookClass))
+G_BEGIN_DECLS
 
 struct _EBookBackend;
 
@@ -46,12 +58,11 @@ typedef struct _EDataBookPrivate EDataBookPrivate;
 
 struct _EDataBook {
 	GObject parent;
-
 	EDataBookPrivate *priv;
 };
 
 struct _EDataBookClass {
-	GObjectClass parent;
+	GObjectClass parent_class;
 };
 
 GQuark e_data_book_error_quark (void);
@@ -73,7 +84,8 @@ GQuark e_data_book_error_quark (void);
  *          or a newly allocated GError, which should be freed
  *          with g_error_free() call.
  **/
-GError *e_data_book_create_error (EDataBookStatus status, const gchar *custom_msg);
+GError *	e_data_book_create_error	(EDataBookStatus status,
+						 const gchar *custom_msg);
 
 /**
  * e_data_book_create_error_fmt:
@@ -81,9 +93,11 @@ GError *e_data_book_create_error (EDataBookStatus status, const gchar *custom_ms
  * Similar as e_data_book_create_error(), only here, instead of custom_msg,
  * is used a printf() format to create a custom_msg for the error.
  **/
-GError *e_data_book_create_error_fmt (EDataBookStatus status, const gchar *custom_msg_fmt, ...) G_GNUC_PRINTF (2, 3);
+GError *	e_data_book_create_error_fmt	(EDataBookStatus status,
+						 const gchar *custom_msg_fmt,
+						 ...) G_GNUC_PRINTF (2, 3);
 
-const gchar *e_data_book_status_to_string (EDataBookStatus status);
+const gchar *	e_data_book_status_to_string	(EDataBookStatus status);
 
 /**
  * e_return_data_book_error_if_fail:
@@ -127,32 +141,80 @@ const gchar *e_data_book_status_to_string (EDataBookStatus status);
 		}								\
 	} G_STMT_END
 
-GType		e_data_book_get_type				(void);
-EDataBook *	e_data_book_new					(struct _EBookBackend *backend);
+GType		e_data_book_get_type		(void) G_GNUC_CONST;
+EDataBook *	e_data_book_new			(struct _EBookBackend *backend);
 struct _EBookBackend *
-		e_data_book_get_backend				(EDataBook *book);
+		e_data_book_get_backend		(EDataBook *book);
 
-guint		e_data_book_register_gdbus_object		(EDataBook *cal, GDBusConnection *connection, const gchar *object_path, GError **error);
+guint		e_data_book_register_gdbus_object
+						(EDataBook *cal,
+						 GDBusConnection *connection,
+						 const gchar *object_path,
+						 GError **error);
 
-void		e_data_book_respond_open			(EDataBook *book, guint32 opid, GError *error);
-void		e_data_book_respond_remove			(EDataBook *book, guint32 opid, GError *error);
-void		e_data_book_respond_refresh			(EDataBook *book, guint32 opid, GError *error);
-void		e_data_book_respond_get_backend_property	(EDataBook *book, guint32 opid, GError *error, const gchar *prop_value);
-void		e_data_book_respond_set_backend_property	(EDataBook *book, guint32 opid, GError *error);
-void		e_data_book_respond_create_contacts		(EDataBook *book, guint32 opid, GError *error, const GSList *contacts);
-void		e_data_book_respond_remove_contacts		(EDataBook *book, guint32 opid, GError *error, const GSList *ids);
-void		e_data_book_respond_modify_contacts		(EDataBook *book, guint32 opid, GError *error, const GSList *contacts);
-void		e_data_book_respond_get_contact			(EDataBook *book, guint32 opid, GError *error, const gchar *vcard);
-void		e_data_book_respond_get_contact_list		(EDataBook *book, guint32 opid, GError *error, const GSList *cards);
-void		e_data_book_respond_get_contact_list_uids	(EDataBook *book, guint32 opid, GError *error, const GSList *uids);
+void		e_data_book_respond_open	(EDataBook *book,
+						 guint32 opid,
+						 GError *error);
+void		e_data_book_respond_remove	(EDataBook *book,
+						 guint32 opid,
+						 GError *error);
+void		e_data_book_respond_refresh	(EDataBook *book,
+						 guint32 opid,
+						 GError *error);
+void		e_data_book_respond_get_backend_property
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error,
+						 const gchar *prop_value);
+void		e_data_book_respond_set_backend_property
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error);
+void		e_data_book_respond_create_contacts
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *contacts);
+void		e_data_book_respond_remove_contacts
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *ids);
+void		e_data_book_respond_modify_contacts
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *contacts);
+void		e_data_book_respond_get_contact	(EDataBook *book,
+						 guint32 opid,
+						 GError *error,
+						 const gchar *vcard);
+void		e_data_book_respond_get_contact_list
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *cards);
+void		e_data_book_respond_get_contact_list_uids
+						(EDataBook *book,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *uids);
 
-void		e_data_book_report_error			(EDataBook *book, const gchar *message);
-void		e_data_book_report_readonly			(EDataBook *book, gboolean readonly);
-void		e_data_book_report_online			(EDataBook *book, gboolean is_online);
-void		e_data_book_report_opened			(EDataBook *book, const GError *error);
-void		e_data_book_report_backend_property_changed	(EDataBook *book, const gchar *prop_name, const gchar *prop_value);
+void		e_data_book_report_error	(EDataBook *book,
+						 const gchar *message);
+void		e_data_book_report_readonly	(EDataBook *book,
+						 gboolean readonly);
+void		e_data_book_report_online	(EDataBook *book,
+						 gboolean is_online);
+void		e_data_book_report_opened	(EDataBook *book,
+						 const GError *error);
+void		e_data_book_report_backend_property_changed
+						(EDataBook *book,
+						 const gchar *prop_name,
+						 const gchar *prop_value);
 
-gchar *		e_data_book_string_slist_to_comma_string	(const GSList *strings);
+gchar *		e_data_book_string_slist_to_comma_string
+						(const GSList *strings);
 
 G_END_DECLS
 
