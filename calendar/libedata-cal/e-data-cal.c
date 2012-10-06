@@ -454,6 +454,13 @@ e_data_cal_status_to_string (EDataCalCallStatus status)
 
 /**
  * e_data_cal_create_error:
+ * @status: #EDataCalStatus code
+ * @custom_msg: Custom message to use for the error. When NULL,
+ *              then uses a default message based on the @status code.
+ *
+ * Returns: NULL, when the @status is Success,
+ *          or a newly allocated GError, which should be freed
+ *          with g_error_free() call.
  *
  * Since: 2.32
  **/
@@ -469,6 +476,9 @@ e_data_cal_create_error (EDataCalCallStatus status,
 
 /**
  * e_data_cal_create_error_fmt:
+ *
+ * Similar as e_data_cal_create_error(), only here, instead of custom_msg,
+ * is used a printf() format to create a custom_msg for the error.
  *
  * Since: 2.32
  **/

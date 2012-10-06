@@ -30,17 +30,24 @@
 #include <gio/gio.h>
 #include <libedata-cal/e-data-cal-view.h>
 
-G_BEGIN_DECLS
-
-
-
-#define E_TYPE_DATA_CAL            (e_data_cal_get_type ())
-#define E_DATA_CAL(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_DATA_CAL, EDataCal))
-#define E_DATA_CAL_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), E_TYPE_DATA_CAL, EDataCalClass))
-#define E_IS_DATA_CAL(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_DATA_CAL))
-#define E_IS_DATA_CAL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), E_TYPE_DATA_CAL))
-
-GQuark e_data_cal_error_quark (void);
+/* Standard GObject macros */
+#define E_TYPE_DATA_CAL \
+	(e_data_cal_get_type ())
+#define E_DATA_CAL(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_DATA_CAL, EDataCal))
+#define E_DATA_CAL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_DATA_CAL, EDataCalClass))
+#define E_IS_DATA_CAL(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_DATA_CAL))
+#define E_IS_DATA_CAL_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_DATA_CAL))
+#define E_DATA_CAL_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_DATA_CAL, EDataCalClass))
 
 /**
  * E_DATA_CAL_ERROR:
@@ -49,27 +56,7 @@ GQuark e_data_cal_error_quark (void);
  **/
 #define E_DATA_CAL_ERROR e_data_cal_error_quark ()
 
-/**
- * e_data_cal_create_error:
- * @status: #EDataCalStatus code
- * @custom_msg: Custom message to use for the error. When NULL,
- *              then uses a default message based on the @status code.
- *
- * Returns: NULL, when the @status is Success,
- *          or a newly allocated GError, which should be freed
- *          with g_error_free() call.
- **/
-GError *e_data_cal_create_error (EDataCalCallStatus status, const gchar *custom_msg);
-
-/**
- * e_data_cal_create_error_fmt:
- *
- * Similar as e_data_cal_create_error(), only here, instead of custom_msg,
- * is used a printf() format to create a custom_msg for the error.
- **/
-GError *e_data_cal_create_error_fmt (EDataCalCallStatus status, const gchar *custom_msg_fmt, ...) G_GNUC_PRINTF (2, 3);
-
-const gchar *e_data_cal_status_to_string (EDataCalCallStatus status);
+G_BEGIN_DECLS
 
 /**
  * e_return_data_cal_error_if_fail:
@@ -128,39 +115,118 @@ struct _EDataCalClass {
 	GObjectClass parent_class;
 };
 
-GType e_data_cal_get_type (void);
+GQuark		e_data_cal_error_quark		(void);
+GError *	e_data_cal_create_error		(EDataCalCallStatus status,
+						 const gchar *custom_msg);
+GError *	e_data_cal_create_error_fmt	(EDataCalCallStatus status,
+						 const gchar *custom_msg_fmt,
+						 ...) G_GNUC_PRINTF (2, 3);
+const gchar *	e_data_cal_status_to_string	(EDataCalCallStatus status);
 
-EDataCal *	e_data_cal_new					(struct _ECalBackend *backend);
+GType		e_data_cal_get_type		(void) G_GNUC_CONST;
+EDataCal *	e_data_cal_new			(struct _ECalBackend *backend);
 struct _ECalBackend *
-		e_data_cal_get_backend				(EDataCal *cal);
-guint		e_data_cal_register_gdbus_object		(EDataCal *cal, GDBusConnection *connection, const gchar *object_path, GError **error);
-
-void		e_data_cal_respond_open				(EDataCal *cal, guint32 opid, GError *error);
-void		e_data_cal_respond_remove			(EDataCal *cal, guint32 opid, GError *error);
-void		e_data_cal_respond_refresh			(EDataCal *cal, guint32 opid, GError *error);
-void		e_data_cal_respond_get_backend_property		(EDataCal *cal, guint32 opid, GError *error, const gchar *prop_value);
-void		e_data_cal_respond_set_backend_property		(EDataCal *cal, guint32 opid, GError *error);
-void		e_data_cal_respond_get_object			(EDataCal *cal, guint32 opid, GError *error, const gchar *object);
-void		e_data_cal_respond_get_object_list		(EDataCal *cal, guint32 opid, GError *error, const GSList *objects);
-void		e_data_cal_respond_get_free_busy		(EDataCal *cal, guint32 opid, GError *error);
-void		e_data_cal_respond_create_objects		(EDataCal *cal, guint32 opid, GError *error, const GSList *uids, /*const */ GSList *new_components);
-void		e_data_cal_respond_modify_objects		(EDataCal *cal, guint32 opid, GError *error, /* const */ GSList *old_components, /* const */ GSList *new_components);
-void		e_data_cal_respond_remove_objects		(EDataCal *cal, guint32 opid, GError *error, const GSList *ids, /* const */ GSList *old_components, /* const */ GSList *new_components);
-void		e_data_cal_respond_receive_objects		(EDataCal *cal, guint32 opid, GError *error);
-void		e_data_cal_respond_send_objects			(EDataCal *cal, guint32 opid, GError *error, const GSList *users, const gchar *calobj);
-void		e_data_cal_respond_get_attachment_uris		(EDataCal *cal, guint32 opid, GError *error, const GSList *attachment_uris);
-void		e_data_cal_respond_discard_alarm		(EDataCal *cal, guint32 opid, GError *error);
-void		e_data_cal_respond_get_view			(EDataCal *cal, guint32 opid, GError *error, const gchar *view_path);
-void		e_data_cal_respond_get_timezone			(EDataCal *cal, guint32 opid, GError *error, const gchar *tzobject);
-void		e_data_cal_respond_add_timezone			(EDataCal *cal, guint32 opid, GError *error);
-
-void		e_data_cal_report_error				(EDataCal *cal, const gchar *message);
-void		e_data_cal_report_readonly			(EDataCal *cal, gboolean is_readonly);
-void		e_data_cal_report_online			(EDataCal *cal, gboolean is_online);
-void		e_data_cal_report_opened			(EDataCal *cal, const GError *error);
-void		e_data_cal_report_free_busy_data		(EDataCal *cal, const GSList *freebusy);
-void		e_data_cal_report_backend_property_changed	(EDataCal *cal, const gchar *prop_name, const gchar *prop_value);
+		e_data_cal_get_backend		(EDataCal *cal);
+guint		e_data_cal_register_gdbus_object
+						(EDataCal *cal,
+						 GDBusConnection *connection,
+						 const gchar *object_path,
+						 GError **error);
+void		e_data_cal_respond_open		(EDataCal *cal,
+						 guint32 opid,
+						 GError *error);
+void		e_data_cal_respond_remove	(EDataCal *cal,
+						 guint32 opid,
+						 GError *error);
+void		e_data_cal_respond_refresh	(EDataCal *cal,
+						 guint32 opid,
+						 GError *error);
+void		e_data_cal_respond_get_backend_property
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error,
+						 const gchar *prop_value);
+void		e_data_cal_respond_set_backend_property
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error);
+void		e_data_cal_respond_get_object	(EDataCal *cal,
+						 guint32 opid,
+						 GError *error,
+						 const gchar *object);
+void		e_data_cal_respond_get_object_list
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *objects);
+void		e_data_cal_respond_get_free_busy
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error);
+void		e_data_cal_respond_create_objects
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *uids,
+						 GSList *new_components);
+void		e_data_cal_respond_modify_objects
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error,
+						 GSList *old_components,
+						 GSList *new_components);
+void		e_data_cal_respond_remove_objects
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *ids,
+						 GSList *old_components,
+						 GSList *new_components);
+void		e_data_cal_respond_receive_objects
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error);
+void		e_data_cal_respond_send_objects	(EDataCal *cal,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *users,
+						 const gchar *calobj);
+void		e_data_cal_respond_get_attachment_uris
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error,
+						 const GSList *attachment_uris);
+void		e_data_cal_respond_discard_alarm
+						(EDataCal *cal,
+						 guint32 opid,
+						 GError *error);
+void		e_data_cal_respond_get_view	(EDataCal *cal,
+						 guint32 opid,
+						 GError *error,
+						 const gchar *view_path);
+void		e_data_cal_respond_get_timezone	(EDataCal *cal,
+						 guint32 opid,
+						 GError *error,
+						 const gchar *tzobject);
+void		e_data_cal_respond_add_timezone	(EDataCal *cal,
+						 guint32 opid,
+						 GError *error);
+void		e_data_cal_report_error		(EDataCal *cal,
+						 const gchar *message);
+void		e_data_cal_report_readonly	(EDataCal *cal,
+						 gboolean is_readonly);
+void		e_data_cal_report_online	(EDataCal *cal,
+						 gboolean is_online);
+void		e_data_cal_report_opened	(EDataCal *cal,
+						 const GError *error);
+void		e_data_cal_report_free_busy_data
+						(EDataCal *cal,
+						 const GSList *freebusy);
+void		e_data_cal_report_backend_property_changed
+						(EDataCal *cal,
+						 const gchar *prop_name,
+						 const gchar *prop_value);
 
 G_END_DECLS
 
-#endif
+#endif /* E_DATA_CAL_H */
