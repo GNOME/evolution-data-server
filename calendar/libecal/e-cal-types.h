@@ -84,6 +84,20 @@ typedef enum {
 #endif
 
 /**
+ * ECalClientSourceType:
+ *
+ * FIXME: Document me!
+ *
+ * Since: 3.2
+ **/
+typedef enum {
+	E_CAL_CLIENT_SOURCE_TYPE_EVENTS,
+	E_CAL_CLIENT_SOURCE_TYPE_TASKS,
+	E_CAL_CLIENT_SOURCE_TYPE_MEMOS,
+	E_CAL_CLIENT_SOURCE_TYPE_LAST  /*< skip >*/
+} ECalClientSourceType;
+
+/**
  * EDataCalCallStatus:
  *
  * FIXME Document me!

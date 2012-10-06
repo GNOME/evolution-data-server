@@ -30,6 +30,7 @@
 
 #include <libecal/e-cal-client-view.h>
 #include <libecal/e-cal-recur.h>
+#include <libecal/e-cal-types.h>
 #include <libecal/e-cal-util.h>
 
 /* Standard GObject macros */
@@ -77,25 +78,6 @@
  * Since: 3.2
  **/
 #define CAL_BACKEND_PROPERTY_DEFAULT_OBJECT		"default-object"
-
-/**
- * ECalClientSourceType:
- *
- * FIXME: Document me.
- *
- * Since: 3.2
- **/
-typedef enum {
-	E_CAL_CLIENT_SOURCE_TYPE_EVENTS,
-	E_CAL_CLIENT_SOURCE_TYPE_TASKS,
-	E_CAL_CLIENT_SOURCE_TYPE_MEMOS,
-	E_CAL_CLIENT_SOURCE_TYPE_LAST
-} ECalClientSourceType;
-
-#define E_TYPE_CAL_CLIENT_SOURCE_TYPE \
-	(e_cal_client_source_type_enum_get_type ())
-
-GType e_cal_client_source_type_enum_get_type (void);
 
 /**
  * E_CAL_CLIENT_ERROR:

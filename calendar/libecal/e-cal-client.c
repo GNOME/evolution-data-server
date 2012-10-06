@@ -87,35 +87,6 @@ free_zone_cb (gpointer zone)
  *   @CLIENT_BACKEND_PROPERTY_CACHE_DIR, @CLIENT_BACKEND_PROPERTY_CAPABILITIES
  */
 
-/**
- * e_cal_client_source_type_enum_get_type:
- *
- * Registers the #ECalClientSourceTypeEnum type with glib.
- *
- * Returns: the ID of the #ECalClientSourceTypeEnum type.
- */
-GType
-e_cal_client_source_type_enum_get_type (void)
-{
-	static volatile gsize enum_type__volatile = 0;
-
-	if (g_once_init_enter (&enum_type__volatile)) {
-		GType enum_type;
-		static GEnumValue values[] = {
-			{ E_CAL_CLIENT_SOURCE_TYPE_EVENTS, "Events",  "Events"  },
-			{ E_CAL_CLIENT_SOURCE_TYPE_TASKS,  "Tasks",   "Tasks"   },
-			{ E_CAL_CLIENT_SOURCE_TYPE_MEMOS,  "Memos",   "Memos"   },
-			{ E_CAL_CLIENT_SOURCE_TYPE_LAST,   "Invalid", "Invalid" },
-			{ -1, NULL, NULL}
-		};
-
-		enum_type = g_enum_register_static ("ECalClientSourceTypeEnum", values);
-		g_once_init_leave (&enum_type__volatile, enum_type);
-	}
-
-	return enum_type__volatile;
-}
-
 GQuark
 e_cal_client_error_quark (void)
 {
