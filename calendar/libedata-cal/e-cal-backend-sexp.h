@@ -25,19 +25,31 @@
 #error "Only <libedata-cal/libedata-cal.h> should be included directly."
 #endif
 
-#ifndef __E_CAL_BACKEND_SEXP_H__
-#define __E_CAL_BACKEND_SEXP_H__
+#ifndef E_CAL_BACKEND_SEXP_H
+#define E_CAL_BACKEND_SEXP_H
 
 #include <libecal/libecal.h>
 
 #include <libedata-cal/e-cal-backend.h>
 
-#define E_TYPE_CAL_BACKEND_SEXP        (e_cal_backend_sexp_get_type ())
-#define E_CAL_BACKEND_SEXP(o)          (G_TYPE_CHECK_INSTANCE_CAST ((o), E_TYPE_CAL_BACKEND_SEXP, ECalBackendSExp))
-#define E_CAL_BACKEND_SEXP_CLASS(k)    (G_TYPE_CHECK_CLASS_CAST((k), E_CAL_BACKEND_TYPE, ECalBackendSExpClass))
-#define E_IS_CAL_BACKEND_SEXP(o)       (G_TYPE_CHECK_INSTANCE_TYPE ((o), E_TYPE_CAL_BACKEND_SEXP))
-#define E_IS_CAL_BACKEND_SEXP_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), E_TYPE_CAL_BACKEND_SEXP))
-#define E_CAL_BACKEND_SEXP_GET_CLASS(k) (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_CAL_BACKEND_SEXP, CALBackendSExpClass))
+/* Standard GObject macros */
+#define E_TYPE_CAL_BACKEND_SEXP \
+	(e_cal_backend_sexp_get_type ())
+#define E_CAL_BACKEND_SEXP(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_CAL_BACKEND_SEXP, ECalBackendSExp))
+#define E_CAL_BACKEND_SEXP_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_CAL_BACKEND_SEXP, ECalBackendSExpClass))
+#define E_IS_CAL_BACKEND_SEXP(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_CAL_BACKEND_SEXP))
+#define E_IS_CAL_BACKEND_SEXP_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_CAL_BACKEND_SEXP))
+#define E_CAL_BACKEND_SEXP_GET_CLASS(cls) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_CAL_BACKEND_SEXP, CALBackendSExpClass))
 
 G_BEGIN_DECLS
 
@@ -48,8 +60,7 @@ typedef struct _ECalBackendSExpClass ECalBackendSExpClass;
 typedef struct _ECalBackendSExpPrivate ECalBackendSExpPrivate;
 
 struct _ECalBackendSExp {
-	GObject parent_object;
-
+	GObject parent;
 	ECalBackendSExpPrivate *priv;
 };
 
@@ -57,27 +68,50 @@ struct _ECalBackendSExpClass {
 	GObjectClass parent_class;
 };
 
-GType            e_cal_backend_sexp_get_type     (void);
+GType		e_cal_backend_sexp_get_type	(void) G_GNUC_CONST;
+ECalBackendSExp *
+		e_cal_backend_sexp_new		(const gchar *text);
+const gchar *	e_cal_backend_sexp_text		(ECalBackendSExp *sexp);
 
-ECalBackendSExp *e_cal_backend_sexp_new          (const gchar      *text);
-const gchar      *e_cal_backend_sexp_text         (ECalBackendSExp *sexp);
-
-gboolean         e_cal_backend_sexp_match_object (ECalBackendSExp *sexp,
-						  const gchar      *object,
-						  struct _ECalBackend *backend);
-gboolean         e_cal_backend_sexp_match_comp   (ECalBackendSExp *sexp,
-						  ECalComponent   *comp,
-						  struct _ECalBackend *backend);
+gboolean	e_cal_backend_sexp_match_object	(ECalBackendSExp *sexp,
+						 const gchar *object,
+						 struct _ECalBackend *backend);
+gboolean	e_cal_backend_sexp_match_comp	(ECalBackendSExp *sexp,
+						 ECalComponent *comp,
+						 struct _ECalBackend *backend);
 
 /* Default implementations of time functions for use by subclasses */
 
-ESExpResult *e_cal_backend_sexp_func_time_now       (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
-ESExpResult *e_cal_backend_sexp_func_make_time      (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
-ESExpResult *e_cal_backend_sexp_func_time_add_day   (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
-ESExpResult *e_cal_backend_sexp_func_time_day_begin (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
-ESExpResult *e_cal_backend_sexp_func_time_day_end   (ESExp *esexp, gint argc, ESExpResult **argv, gpointer data);
-gboolean	e_cal_backend_sexp_evaluate_occur_times	(ECalBackendSExp *sexp, time_t *start, time_t *end);
+ESExpResult *	e_cal_backend_sexp_func_time_now
+						(ESExp *esexp,
+						 gint argc,
+						 ESExpResult **argv,
+						 gpointer data);
+ESExpResult *	e_cal_backend_sexp_func_make_time
+						(ESExp *esexp,
+						 gint argc,
+						 ESExpResult **argv,
+						 gpointer data);
+ESExpResult *	e_cal_backend_sexp_func_time_add_day
+						(ESExp *esexp,
+						 gint argc,
+						 ESExpResult **argv,
+						 gpointer data);
+ESExpResult *	e_cal_backend_sexp_func_time_day_begin
+						(ESExp *esexp,
+						 gint argc,
+						 ESExpResult **argv,
+						 gpointer data);
+ESExpResult *	e_cal_backend_sexp_func_time_day_end
+						(ESExp *esexp,
+						 gint argc,
+						 ESExpResult **argv,
+						 gpointer data);
+gboolean	e_cal_backend_sexp_evaluate_occur_times
+						(ECalBackendSExp *sexp,
+						 time_t *start,
+						 time_t *end);
 
 G_END_DECLS
 
-#endif /* __E_CAL_BACKEND_SEXP_H__ */
+#endif /* E_CAL_BACKEND_SEXP_H */
