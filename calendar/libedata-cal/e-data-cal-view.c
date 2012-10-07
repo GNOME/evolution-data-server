@@ -33,7 +33,7 @@
 
 #define E_DATA_CAL_VIEW_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_DATA_CAL_VIEW_TYPE, EDataCalViewPrivate))
+	((obj), E_TYPE_DATA_CAL_VIEW, EDataCalViewPrivate))
 
 static void ensure_pending_flush_timeout (EDataCalView *view);
 
@@ -166,7 +166,7 @@ e_data_cal_view_new (ECalBackend *backend,
 {
 	EDataCalView *view;
 
-	view = g_object_new (E_DATA_CAL_VIEW_TYPE, "backend", backend, "sexp", sexp, NULL);
+	view = g_object_new (E_TYPE_DATA_CAL_VIEW, "backend", backend, "sexp", sexp, NULL);
 
 	return view;
 }

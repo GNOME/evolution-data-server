@@ -28,23 +28,23 @@
 #include <libecal/libecal.h>
 
 /* Standard GObject macros */
-#define E_DATA_CAL_VIEW_TYPE \
+#define E_TYPE_DATA_CAL_VIEW \
 	(e_data_cal_view_get_type ())
 #define E_DATA_CAL_VIEW(obj) \
 	(G_TYPE_CHECK_INSTANCE_CAST \
-	((obj), E_DATA_CAL_VIEW_TYPE, EDataCalView))
+	((obj), E_TYPE_DATA_CAL_VIEW, EDataCalView))
 #define E_DATA_CAL_VIEW_CLASS(klass) \
 	(G_TYPE_CHECK_CLASS_CAST \
-	((klass), E_DATA_CAL_VIEW_TYPE, EDataCalViewClass))
+	((klass), E_TYPE_DATA_CAL_VIEW, EDataCalViewClass))
 #define E_IS_DATA_CAL_VIEW(obj) \
 	(G_TYPE_CHECK_INSTANCE_TYPE \
-	((obj), E_DATA_CAL_VIEW_TYPE))
+	((obj), E_TYPE_DATA_CAL_VIEW))
 #define E_IS_DATA_CAL_VIEW_CLASS(cls) \
 	(G_TYPE_CHECK_CLASS_TYPE \
-	((cls), E_DATA_CAL_VIEW_TYPE))
+	((cls), E_TYPE_DATA_CAL_VIEW))
 #define E_DATA_CAL_VIEW_GET_CLASS(obj) \
 	(G_TYPE_INSTANCE_GET_CLASS \
-	((obj), E_DATA_CAL_VIEW_TYPE, EDataCalViewClass))
+	((obj), E_TYPE_DATA_CAL_VIEW, EDataCalViewClass))
 
 G_BEGIN_DECLS
 
