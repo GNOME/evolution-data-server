@@ -879,21 +879,19 @@ e_book_backend_foreach_view (EBookBackend *backend,
                                                    gpointer user_data),
                              gpointer user_data)
 {
-	GList *views;
-	EDataBookView *view;
-	gboolean stop = FALSE;
+	GList *list, *link;
 
-	g_return_if_fail (backend != NULL);
+	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (callback != NULL);
 
-	g_mutex_lock (backend->priv->views_mutex);
+	list = e_book_backend_list_views (backend);
 
-	for (views = backend->priv->views; views && !stop; views = views->next) {
-		view = E_DATA_BOOK_VIEW (views->data);
-		stop = !callback (view, user_data);
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		if (!callback (E_DATA_BOOK_VIEW (link->data), user_data))
+			break;
 	}
 
-	g_mutex_unlock (backend->priv->views_mutex);
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
 /**
