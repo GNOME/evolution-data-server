@@ -291,10 +291,6 @@ void		e_cal_backend_add_view		(ECalBackend *backend,
 void		e_cal_backend_remove_view	(ECalBackend *backend,
 						 EDataCalView *view);
 GList *		e_cal_backend_list_views	(ECalBackend *backend);
-void		e_cal_backend_foreach_view	(ECalBackend *backend,
-						 gboolean (*callback) (EDataCalView *view,
-						                       gpointer user_data),
-						                       gpointer user_data);
 
 void		e_cal_backend_set_notification_proxy
 						(ECalBackend *backend,
@@ -437,6 +433,13 @@ void		e_cal_backend_respond_opened	(ECalBackend *backend,
 						 EDataCal *cal,
 						 guint32 opid,
 						 GError *error);
+
+#ifndef EDS_DISABLE_DEPRECATED
+void		e_cal_backend_foreach_view	(ECalBackend *backend,
+						 gboolean (*callback) (EDataCalView *view,
+						                       gpointer user_data),
+						                       gpointer user_data);
+#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

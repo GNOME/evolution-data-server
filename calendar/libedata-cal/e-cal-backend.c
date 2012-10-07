@@ -807,6 +807,8 @@ e_cal_backend_list_views (ECalBackend *backend)
  * @callback returns %FALSE to stop further processing.
  *
  * Since: 3.2
+ *
+ * Deprecated: 3.8: Use e_cal_backend_list_views() instead.
  **/
 void
 e_cal_backend_foreach_view (ECalBackend *backend,

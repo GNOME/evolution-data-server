@@ -26,7 +26,6 @@ e_cal_backend_remove_client
 e_cal_backend_add_view
 e_cal_backend_remove_view
 e_cal_backend_list_views
-e_cal_backend_foreach_view
 e_cal_backend_set_notification_proxy
 e_cal_backend_get_backend_property
 e_cal_backend_set_backend_property
@@ -58,6 +57,7 @@ e_cal_backend_notify_property_changed
 e_cal_backend_empty_cache
 e_cal_backend_set_is_removed
 e_cal_backend_respond_opened
+e_cal_backend_foreach_view
 <SUBSECTION Standard>
 E_CAL_BACKEND
 E_IS_CAL_BACKEND
