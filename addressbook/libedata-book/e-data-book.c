@@ -215,7 +215,7 @@ operation_thread (gpointer data,
 				break;
 			}
 
-			e_book_backend_add_book_view (backend, book_view);
+			e_book_backend_add_view (backend, book_view);
 
 			e_gdbus_book_emit_get_view_done (op->book->priv->gdbus_object, op->id, NULL, path);
 

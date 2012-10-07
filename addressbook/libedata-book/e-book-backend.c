@@ -730,15 +730,15 @@ e_book_backend_stop_view (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_add_book_view:
+ * e_book_backend_add_view:
  * @backend: an #EBookBackend
  * @view: an #EDataBookView
  *
  * Adds @view to @backend for querying.
  **/
 void
-e_book_backend_add_book_view (EBookBackend *backend,
-                              EDataBookView *view)
+e_book_backend_add_view (EBookBackend *backend,
+                         EDataBookView *view)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
