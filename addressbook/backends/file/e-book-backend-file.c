@@ -2198,16 +2198,11 @@ e_book_backend_file_sync (EBookBackend *backend)
 	}
 }
 
-typedef struct {
-	EContact         *contact;
-	EBookBackendFile *bf;
-} NotifyData;
-
-static gboolean
-view_notify_update (EDataBookView *view,
-                    gpointer data)
+static void
+view_notify_update (EBookBackendFile *backend,
+                    EDataBookView *view,
+                    EContact *contact)
 {
-	NotifyData *ndata    = data;
 	GHashTable *fields   = e_data_book_view_get_fields_of_interest (view);
 	gboolean    notified = FALSE;
 	gboolean    with_all_required_fields = FALSE;
@@ -2215,12 +2210,13 @@ view_notify_update (EDataBookView *view,
 	if (e_book_backend_sqlitedb_is_summary_query (e_data_book_view_get_card_query (view)) &&
 	    e_book_backend_sqlitedb_is_summary_fields (fields)) {
 
-		const gchar *uid = e_contact_get_const (ndata->contact, E_CONTACT_UID);
+		const gchar *uid = e_contact_get_const (contact, E_CONTACT_UID);
 		gchar       *vcard;
 
-		vcard = e_book_backend_sqlitedb_get_vcard_string (ndata->bf->priv->sqlitedb,
-								  SQLITEDB_FOLDER_ID, uid,
-								  fields, &with_all_required_fields, NULL);
+		vcard = e_book_backend_sqlitedb_get_vcard_string (
+			backend->priv->sqlitedb,
+			SQLITEDB_FOLDER_ID, uid,
+			fields, &with_all_required_fields, NULL);
 
 		if (vcard) {
 			if (with_all_required_fields) {
@@ -2232,18 +2228,24 @@ view_notify_update (EDataBookView *view,
 	}
 
 	if (!notified)
-		e_data_book_view_notify_update (view, ndata->contact);
-
-	return TRUE;
+		e_data_book_view_notify_update (view, contact);
 }
 
 static void
 e_book_backend_file_notify_update (EBookBackend *backend,
                                    const EContact *contact)
 {
-	NotifyData data = { (EContact *) contact, E_BOOK_BACKEND_FILE (backend) };
+	GList *list, *link;
 
-	e_book_backend_foreach_view (backend, view_notify_update, &data);
+	list = e_book_backend_list_views (backend);
+
+	for (link = list; link != NULL; link = g_list_next (link))
+		view_notify_update (
+			E_BOOK_BACKEND_FILE (backend),
+			E_DATA_BOOK_VIEW (link->data),
+			(EContact *) contact);
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
 static void
