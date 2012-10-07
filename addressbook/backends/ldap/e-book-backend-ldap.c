@@ -1686,21 +1686,6 @@ e_book_backend_ldap_create_contacts (EBookBackend *backend,
 	mod_array = build_mods_from_contacts (bl, NULL, create_op->new_contact, NULL, new_uid);
 	g_free (new_uid);
 
-#if 0
-	if (!mod_array) {
-		/* there's an illegal field in there.  report
-		 * UnsupportedAttribute back */
-		e_data_book_respond_create (book,
-					    EDB_ERROR (UNSUPPORTED_FIELD),
-					    NULL);
-
-		g_free (create_op->dn);
-		g_object_unref (create_op->new_contact);
-		g_free (create_op);
-		return;
-	}
-#endif
-
 	/* remove the NULL at the end */
 	g_ptr_array_remove (mod_array, NULL);
 
@@ -4672,12 +4657,7 @@ poll_ldap (EBookBackendLDAP *bl)
 				g_warning ("%s: Failed to reconnect to LDAP server", G_STRFUNC);
 				return FALSE;
 			}
-#if 0
-			if (bl->priv->connected)
-				restart_ops (bl);
-#endif
-		}
-		else {
+		} else {
 			gint msgid = ldap_msgid (res);
 			LDAPOp *op;
 
@@ -5319,60 +5299,11 @@ e_book_backend_ldap_get_backend_property (EBookBackend *backend,
 	}
 }
 
-#if 0
-
-struct call_data {
-	EBookBackend *backend;
-	static void (* func) (EBookBackend  *backend, EDataBookView *view);
-};
-
-static gboolean
-call_cb (EDataBookView *view,
-         gpointer user_data)
-{
-	struct call_data *cd = user_data;
-
-	g_return_val_if_fail (user_data != NULL, FALSE);
-	g_return_val_if_fail (cd->func != NULL, FALSE);
-	g_return_val_if_fail (cd->backend != NULL, FALSE);
-
-	(* cd->func) (cd->backend, view);
-
-	return TRUE;
-}
-
-static void
-stop_views (EBookBackend *backend)
-{
-	struct call_data cd;
-
-	cd.backend = backend;
-	cd.func = e_book_backend_ldap_stop_view;
-
-	e_book_backend_foreach_view (backend, call_cb, &cd);
-}
-
-static void
-start_views (EBookBackend *backend)
-{
-	struct call_data cd;
-
-	cd.backend = backend;
-	cd.func = e_book_backend_ldap_start_view;
-
-	e_book_backend_foreach_view (backend, call_cb, &cd);
-}
-#endif
-
 static void
 e_book_backend_ldap_notify_online_cb (EBookBackend *backend,
                                       GParamSpec *pspec)
 {
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
-
-#if 0
-	stop_views (backend);
-#endif
 
 	/* Cancel all running operations */
 	ldap_cancel_all_operations (backend);
@@ -5383,21 +5314,7 @@ e_book_backend_ldap_notify_online_cb (EBookBackend *backend,
 		e_book_backend_notify_readonly (backend, TRUE);
 		e_book_backend_notify_online (backend, FALSE);
 
-#if 0
-		g_static_rec_mutex_lock (&eds_ldap_handler_lock);
-		if (bl->priv->ldap) {
-			ldap_unbind (bl->priv->ldap);
-			bl->priv->ldap = NULL;
-		}
-		g_static_rec_mutex_unlock (&eds_ldap_handler_lock);
-#endif
-
 		bl->priv->connected = FALSE;
-
-#if 0
-		if (e_book_backend_is_opened (backend))
-			start_views (backend);
-#endif
 	} else {
 		/* Go online */
 
@@ -5412,10 +5329,6 @@ e_book_backend_ldap_notify_online_cb (EBookBackend *backend,
 					backend, error->message);
 				g_error_free (error);
 			}
-
-#if 0
-			start_views (backend);
-#endif
 
 			if (bl->priv->marked_for_offline && bl->priv->cache)
 				generate_cache (bl);
