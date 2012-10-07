@@ -290,6 +290,7 @@ void		e_cal_backend_add_view		(ECalBackend *backend,
 						 EDataCalView *view);
 void		e_cal_backend_remove_view	(ECalBackend *backend,
 						 EDataCalView *view);
+GList *		e_cal_backend_list_views	(ECalBackend *backend);
 void		e_cal_backend_foreach_view	(ECalBackend *backend,
 						 gboolean (*callback) (EDataCalView *view,
 						                       gpointer user_data),

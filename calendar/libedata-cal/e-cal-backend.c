@@ -759,6 +759,45 @@ e_cal_backend_remove_view (ECalBackend *backend,
 }
 
 /**
+ * e_cal_backend_list_views:
+ * @backend: an #ECalBackend
+ *
+ * Returns a list of #ECalBookView instances added with
+ * e_cal_backend_add_view().
+ *
+ * The views returned in the list are referenced for thread-safety.
+ * They must each be unreferenced with g_object_unref() when finished
+ * with them.  Free the returned list itself with g_list_free().
+ *
+ * An easy way to free the list properly in one step is as follows:
+ *
+ * |[
+ *   g_list_free_full (list, g_object_unref);
+ * ]|
+ *
+ * Returns: a list of cal views
+ *
+ * Since: 3.8
+ **/
+GList *
+e_cal_backend_list_views (ECalBackend *backend)
+{
+	GList *list;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+
+	g_mutex_lock (backend->priv->views_mutex);
+
+	/* XXX Use g_list_copy_deep() once we require GLib >= 2.34. */
+	list = g_list_copy (backend->priv->views);
+	g_list_foreach (list, (GFunc) g_object_ref, NULL);
+
+	g_mutex_unlock (backend->priv->views_mutex);
+
+	return list;
+}
+
+/**
  * e_cal_backend_foreach_view:
  * @backend: an #ECalBackend
  * @callback: callback to call
