@@ -2474,39 +2474,37 @@ gboolean
 e_book_remove (EBook *book,
                GError **error)
 {
-	GError *err = NULL;
-
+	ESource *source;
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
 
-	e_return_error_if_fail (
-		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
+	source = e_book_get_source (book);
 
-	e_gdbus_book_call_remove_sync (book->priv->gdbus_book, NULL, &err);
-
-	return unwrap_gerror (err, error);
+	return e_source_remove_sync (source, NULL, error);
 }
 
 static void
-remove_reply (GObject *gdbus_book,
-              GAsyncResult *res,
+remove_reply (GObject *source_object,
+              GAsyncResult *result,
               gpointer user_data)
 {
-	GError *err = NULL, *error = NULL;
 	AsyncData *data = user_data;
 	EBookAsyncCallback excb = data->excallback;
 	EBookCallback cb = data->callback;
+	GError *error = NULL;
 
-	e_gdbus_book_call_remove_finish (G_DBUS_PROXY (gdbus_book), res, &error);
+	e_source_remove_finish (E_SOURCE (source_object), result, &error);
 
-	unwrap_gerror (error, &err);
+	if (cb != NULL && error == NULL)
+		cb (data->book, E_BOOK_ERROR_OK, data->closure);
 
-	if (cb)
-		cb (data->book, err ? err->code : E_BOOK_ERROR_OK, data->closure);
-	if (excb)
-		excb (data->book, err, data->closure);
+	if (cb != NULL && error != NULL)
+		cb (data->book, error->code, data->closure);
 
-	if (err)
-		g_error_free (err);
+	if (excb != NULL)
+		excb (data->book, error, data->closure);
+
+	if (error != NULL)
+		g_error_free (error);
 
 	g_object_unref (data->book);
 	g_slice_free (AsyncData, data);
@@ -2530,19 +2528,19 @@ e_book_async_remove (EBook *book,
                      EBookCallback cb,
                      gpointer closure)
 {
+	ESource *source;
 	AsyncData *data;
 
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
-
-	e_return_async_error_if_fail (
-		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->callback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_remove (book->priv->gdbus_book, NULL, remove_reply, data);
+	source = e_book_get_source (book);
+
+	e_source_remove (source, NULL, remove_reply, data);
 
 	return TRUE;
 }
@@ -2567,19 +2565,19 @@ e_book_remove_async (EBook *book,
                      EBookAsyncCallback cb,
                      gpointer closure)
 {
+	ESource *source;
 	AsyncData *data;
 
 	g_return_val_if_fail (E_IS_BOOK (book), FALSE);
-
-	e_return_ex_async_error_if_fail (
-		book->priv->gdbus_book, E_BOOK_ERROR_REPOSITORY_OFFLINE);
 
 	data = g_slice_new0 (AsyncData);
 	data->book = g_object_ref (book);
 	data->excallback = cb;
 	data->closure = closure;
 
-	e_gdbus_book_call_remove (book->priv->gdbus_book, NULL, remove_reply, data);
+	source = e_book_get_source (book);
+
+	e_source_remove (source, NULL, remove_reply, data);
 
 	return TRUE;
 }
