@@ -751,15 +751,15 @@ e_book_backend_add_view (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_remove_book_view:
+ * e_book_backend_remove_view:
  * @backend: an #EBookBackend
  * @view: an #EDataBookView
  *
  * Removes @view from @backend.
  **/
 void
-e_book_backend_remove_book_view (EBookBackend *backend,
-                                 EDataBookView *view)
+e_book_backend_remove_view (EBookBackend *backend,
+                            EDataBookView *view)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 

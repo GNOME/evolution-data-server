@@ -303,7 +303,7 @@ void		e_book_backend_stop_view	(EBookBackend *backend,
 						 EDataBookView *view);
 void		e_book_backend_add_view		(EBookBackend *backend,
 						 EDataBookView *view);
-void		e_book_backend_remove_book_view	(EBookBackend *backend,
+void		e_book_backend_remove_view	(EBookBackend *backend,
 						 EDataBookView *view);
 void		e_book_backend_foreach_view	(EBookBackend *backend,
 						 gboolean (*callback) (EDataBookView *view,
