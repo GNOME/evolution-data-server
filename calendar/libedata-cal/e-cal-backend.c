@@ -1441,18 +1441,6 @@ e_cal_backend_stop_view (ECalBackend *backend,
 	(* E_CAL_BACKEND_GET_CLASS (backend)->stop_view) (backend, view);
 }
 
-static gboolean
-component_created_cb (EDataCalView *view,
-                      gpointer data)
-{
-	ECalComponent *comp = data;
-
-	if (e_data_cal_view_component_matches (view, comp))
-		e_data_cal_view_notify_components_added_1 (view, comp);
-
-	return TRUE;
-}
-
 /**
  * e_cal_backend_notify_component_created:
  * @backend: an #ECalBackend
@@ -1469,18 +1457,29 @@ component_created_cb (EDataCalView *view,
  **/
 void
 e_cal_backend_notify_component_created (ECalBackend *backend,
-                                        /* const */ ECalComponent *component)
+                                        ECalComponent *component)
 {
-	ECalBackendPrivate *priv;
+	GList *list, *link;
 
-	priv = backend->priv;
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (E_IS_CAL_COMPONENT (component));
 
-	if (priv->notification_proxy) {
-		e_cal_backend_notify_component_created (priv->notification_proxy, component);
+	if (backend->priv->notification_proxy != NULL) {
+		e_cal_backend_notify_component_created (
+			backend->priv->notification_proxy, component);
 		return;
 	}
 
-	e_cal_backend_foreach_view (backend, component_created_cb, component);
+	list = e_cal_backend_list_views (backend);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		EDataCalView *view = E_DATA_CAL_VIEW (link->data);
+
+		if (e_data_cal_view_component_matches (view, component))
+			e_data_cal_view_notify_components_added_1 (view, component);
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
 static void
@@ -1509,25 +1508,6 @@ match_view_and_notify_component (EDataCalView *view,
 	}
 }
 
-struct component_call_data {
-	ECalComponent         *old_component;
-	ECalComponent         *new_component;
-	const ECalComponentId *id;
-};
-
-static gboolean
-call_match_and_notify_component (EDataCalView *view,
-                                 gpointer user_data)
-{
-	struct component_call_data *cd = user_data;
-
-	g_return_val_if_fail (user_data != NULL, FALSE);
-
-	match_view_and_notify_component (view, cd->old_component, cd->new_component);
-
-	return TRUE;
-}
-
 /**
  * e_cal_backend_notify_component_modified:
  * @backend: an #ECalBackend
@@ -1545,43 +1525,30 @@ call_match_and_notify_component (EDataCalView *view,
  **/
 void
 e_cal_backend_notify_component_modified (ECalBackend *backend,
-                                         /* const */ ECalComponent *old_component,
-                                         /* const */ ECalComponent *new_component)
+                                         ECalComponent *old_component,
+                                         ECalComponent *new_component)
 {
-	ECalBackendPrivate *priv;
-	struct component_call_data cd;
+	GList *list, *link;
 
-	priv = backend->priv;
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (E_IS_CAL_COMPONENT (old_component));
+	g_return_if_fail (E_IS_CAL_COMPONENT (new_component));
 
-	if (priv->notification_proxy) {
-		e_cal_backend_notify_component_modified (priv->notification_proxy, old_component, new_component);
+	if (backend->priv->notification_proxy != NULL) {
+		e_cal_backend_notify_component_modified (
+			backend->priv->notification_proxy,
+			old_component, new_component);
 		return;
 	}
 
-	cd.old_component = old_component;
-	cd.new_component = new_component;
-	cd.id            = NULL;
+	list = e_cal_backend_list_views (backend);
 
-	e_cal_backend_foreach_view (backend, call_match_and_notify_component, &cd);
-}
+	for (link = list; link != NULL; link = g_list_next (link))
+		match_view_and_notify_component (
+			E_DATA_CAL_VIEW (link->data),
+			old_component, new_component);
 
-static gboolean
-component_removed_cb (EDataCalView *view,
-                      gpointer user_data)
-{
-	struct component_call_data *cd = user_data;
-
-	g_return_val_if_fail (user_data != NULL, FALSE);
-
-	if (cd->new_component == NULL) {
-		/* if object == NULL, it means the object has been completely
-		 * removed from the backend */
-		if (!cd->old_component || e_data_cal_view_component_matches (view, cd->old_component))
-			e_data_cal_view_notify_objects_removed_1 (view, cd->id);
-	} else
-		match_view_and_notify_component (view, cd->old_component, cd->new_component);
-
-	return TRUE;
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
 /**
@@ -1605,24 +1572,44 @@ component_removed_cb (EDataCalView *view,
 void
 e_cal_backend_notify_component_removed (ECalBackend *backend,
                                         const ECalComponentId *id,
-                                        /* const */ ECalComponent *old_component,
-                                        /* const */ ECalComponent *new_component)
+                                        ECalComponent *old_component,
+                                        ECalComponent *new_component)
 {
-	ECalBackendPrivate *priv;
-	struct component_call_data cd;
+	GList *list, *link;
 
-	priv = backend->priv;
+	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (id != NULL);
 
-	if (priv->notification_proxy) {
-		e_cal_backend_notify_component_removed (priv->notification_proxy, id, old_component, new_component);
+	if (old_component != NULL)
+		g_return_if_fail (E_IS_CAL_COMPONENT (old_component));
+
+	if (new_component != NULL)
+		g_return_if_fail (E_IS_CAL_COMPONENT (new_component));
+
+	if (backend->priv->notification_proxy != NULL) {
+		e_cal_backend_notify_component_removed (
+			backend->priv->notification_proxy,
+			id, old_component, new_component);
 		return;
 	}
 
-	cd.old_component = old_component;
-	cd.new_component = new_component;
-	cd.id            = id;
+	list = e_cal_backend_list_views (backend);
 
-	e_cal_backend_foreach_view (backend, component_removed_cb, &cd);
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		EDataCalView *view = E_DATA_CAL_VIEW (link->data);
+
+		if (new_component != NULL)
+			match_view_and_notify_component (
+				view, old_component, new_component);
+
+		else if (old_component == NULL)
+			e_data_cal_view_notify_objects_removed_1 (view, id);
+
+		else if (e_data_cal_view_component_matches (view, old_component))
+			e_data_cal_view_notify_objects_removed_1 (view, id);
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 }
 
 /**
