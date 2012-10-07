@@ -39,11 +39,11 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_DATA_BOOK, EDataBookPrivate))
 
-struct _EDataBookPrivate
-{
+struct _EDataBookPrivate {
+	GDBusConnection *connection;
 	EGdbusBook *gdbus_object;
-
 	EBookBackend *backend;
+	gchar *object_path;
 
 	GStaticRecMutex pending_ops_lock;
 	GHashTable *pending_ops; /* opid to GCancellable for still running operations */
@@ -51,7 +51,9 @@ struct _EDataBookPrivate
 
 enum {
 	PROP_0,
-	PROP_BACKEND
+	PROP_BACKEND,
+	PROP_CONNECTION,
+	PROP_OBJECT_PATH
 };
 
 static EOperationPool *ops_pool = NULL;
@@ -109,7 +111,16 @@ typedef struct {
 	} d;
 } OperationData;
 
-G_DEFINE_TYPE (EDataBook, e_data_book, G_TYPE_OBJECT)
+/* Forward Declarations */
+static void	e_data_book_initable_init	(GInitableIface *interface);
+
+G_DEFINE_TYPE_WITH_CODE (
+	EDataBook,
+	e_data_book,
+	G_TYPE_OBJECT,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_data_book_initable_init))
 
 static gchar *
 construct_bookview_path (void)
@@ -1143,27 +1154,6 @@ e_data_book_report_backend_property_changed (EDataBook *book,
 	g_strfreev (strv);
 }
 
-/**
- * e_data_book_register_gdbus_object:
- *
- * Registers GDBus object of this EDataBook.
- *
- * Since: 2.32
- **/
-guint
-e_data_book_register_gdbus_object (EDataBook *book,
-                                   GDBusConnection *connection,
-                                   const gchar *object_path,
-                                   GError **error)
-{
-	g_return_val_if_fail (book != NULL, 0);
-	g_return_val_if_fail (E_IS_DATA_BOOK (book), 0);
-	g_return_val_if_fail (connection != NULL, 0);
-	g_return_val_if_fail (object_path != NULL, 0);
-
-	return e_gdbus_book_register_object (book->priv->gdbus_object, connection, object_path, error);
-}
-
 static void
 data_book_set_backend (EDataBook *book,
                        EBookBackend *backend)
@@ -1172,6 +1162,26 @@ data_book_set_backend (EDataBook *book,
 	g_return_if_fail (book->priv->backend == NULL);
 
 	book->priv->backend = g_object_ref (backend);
+}
+
+static void
+data_book_set_connection (EDataBook *book,
+                          GDBusConnection *connection)
+{
+	g_return_if_fail (G_IS_DBUS_CONNECTION (connection));
+	g_return_if_fail (book->priv->connection == NULL);
+
+	book->priv->connection = g_object_ref (connection);
+}
+
+static void
+data_book_set_object_path (EDataBook *book,
+                           const gchar *object_path)
+{
+	g_return_if_fail (object_path != NULL);
+	g_return_if_fail (book->priv->object_path == NULL);
+
+	book->priv->object_path = g_strdup (object_path);
 }
 
 static void
@@ -1185,6 +1195,18 @@ data_book_set_property (GObject *object,
 			data_book_set_backend (
 				E_DATA_BOOK (object),
 				g_value_get_object (value));
+			return;
+
+		case PROP_CONNECTION:
+			data_book_set_connection (
+				E_DATA_BOOK (object),
+				g_value_get_object (value));
+			return;
+
+		case PROP_OBJECT_PATH:
+			data_book_set_object_path (
+				E_DATA_BOOK (object),
+				g_value_get_string (value));
 			return;
 	}
 
@@ -1204,6 +1226,20 @@ data_book_get_property (GObject *object,
 				e_data_book_get_backend (
 				E_DATA_BOOK (object)));
 			return;
+
+		case PROP_CONNECTION:
+			g_value_set_object (
+				value,
+				e_data_book_get_connection (
+				E_DATA_BOOK (object)));
+			return;
+
+		case PROP_OBJECT_PATH:
+			g_value_set_string (
+				value,
+				e_data_book_get_object_path (
+				E_DATA_BOOK (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1216,7 +1252,12 @@ data_book_dispose (GObject *object)
 
 	priv = E_DATA_BOOK_GET_PRIVATE (object);
 
-	if (priv->backend) {
+	if (priv->connection != NULL) {
+		g_object_unref (priv->connection);
+		priv->connection = NULL;
+	}
+
+	if (priv->backend != NULL) {
 		g_object_unref (priv->backend);
 		priv->backend = NULL;
 	}
@@ -1232,6 +1273,8 @@ data_book_finalize (GObject *object)
 
 	priv = E_DATA_BOOK_GET_PRIVATE (object);
 
+	g_free (priv->object_path);
+
 	if (priv->pending_ops) {
 		g_hash_table_destroy (priv->pending_ops);
 		priv->pending_ops = NULL;
@@ -1246,6 +1289,22 @@ data_book_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_parent_class)->finalize (object);
+}
+
+static gboolean
+data_book_initable_init (GInitable *initable,
+                         GCancellable *cancellable,
+                         GError **error)
+{
+	EDataBook *book;
+
+	book = E_DATA_BOOK (initable);
+
+	return e_gdbus_book_register_object (
+		book->priv->gdbus_object,
+		book->priv->connection,
+		book->priv->object_path,
+		error);
 }
 
 static void
@@ -1273,8 +1332,40 @@ e_data_book_class_init (EDataBookClass *class)
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
+	g_object_class_install_property (
+		object_class,
+		PROP_CONNECTION,
+		g_param_spec_object (
+			"connection",
+			"Connection",
+			"The GDBusConnection on which to "
+			"export the address book interface",
+			G_TYPE_DBUS_CONNECTION,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_OBJECT_PATH,
+		g_param_spec_string (
+			"object-path",
+			"Object Path",
+			"The object path at which to "
+			"export the address book interface",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
+			G_PARAM_STATIC_STRINGS));
+
 	if (!ops_pool)
 		ops_pool = e_operation_pool_new (10, operation_thread, NULL);
+}
+
+static void
+e_data_book_initable_init (GInitableIface *interface)
+{
+	interface->init = data_book_initable_init;
 }
 
 static void
@@ -1334,19 +1425,90 @@ e_data_book_init (EDataBook *ebook)
 		G_CALLBACK (impl_Book_close), ebook);
 }
 
+/**
+ * e_data_book_new:
+ * @backend: an #EBookBackend
+ * @connection: a #GDBusConnection
+ * @object_path: object path for the D-Bus interface
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new #EDataBook and exports the AddressBook D-Bus interface
+ * on @connection at @object_path.  The #EDataBook handles incoming remote
+ * method invocations and forwards them to the @backend.  If the AddressBook
+ * interface fails to export, the function sets @error and returns %NULL.
+ *
+ * Returns: an #EDataBook, or %NULL on error
+ **/
 EDataBook *
-e_data_book_new (EBookBackend *backend)
+e_data_book_new (EBookBackend *backend,
+                 GDBusConnection *connection,
+                 const gchar *object_path,
+                 GError **error)
 {
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
+	g_return_val_if_fail (object_path != NULL, NULL);
 
-	return g_object_new (E_TYPE_DATA_BOOK, "backend", backend, NULL);
+	return g_initable_new (
+		E_TYPE_DATA_BOOK, NULL, error,
+		"backend", backend,
+		"connection", connection,
+		"object-path", object_path,
+		NULL);
 }
 
+/**
+ * e_data_book_get_backend:
+ * @book: an #EDataBook
+ *
+ * Returns the #EBookBackend to which incoming remote method invocations
+ * are being forwarded.
+ *
+ * Returns: the #EBookBackend
+ **/
 EBookBackend *
 e_data_book_get_backend (EDataBook *book)
 {
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
 
 	return book->priv->backend;
+}
+
+/**
+ * e_data_book_get_connection:
+ * @book: an #EDataBook
+ *
+ * Returns the #GDBusConnection on which the AddressBook D-Bus interface
+ * is exported.
+ *
+ * Returns: the #GDBusConnection
+ *
+ * Since: 3.8
+ **/
+GDBusConnection *
+e_data_book_get_connection (EDataBook *book)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
+
+	return book->priv->connection;
+}
+
+/**
+ * e_data_book_get_object_path:
+ * @book: an #EDataBook
+ *
+ * Returns the object path at which the AddressBook D-Bus interface is
+ * exported.
+ *
+ * Returns: the object path
+ *
+ * Since: 3.8
+ **/
+const gchar *
+e_data_book_get_object_path (EDataBook *book)
+{
+	g_return_val_if_fail (E_IS_DATA_BOOK (book), NULL);
+
+	return book->priv->object_path;
 }
 

@@ -142,15 +142,15 @@ const gchar *	e_data_book_status_to_string	(EDataBookStatus status);
 	} G_STMT_END
 
 GType		e_data_book_get_type		(void) G_GNUC_CONST;
-EDataBook *	e_data_book_new			(struct _EBookBackend *backend);
-struct _EBookBackend *
-		e_data_book_get_backend		(EDataBook *book);
-
-guint		e_data_book_register_gdbus_object
-						(EDataBook *cal,
+EDataBook *	e_data_book_new			(struct _EBookBackend *backend,
 						 GDBusConnection *connection,
 						 const gchar *object_path,
 						 GError **error);
+struct _EBookBackend *
+		e_data_book_get_backend		(EDataBook *book);
+GDBusConnection *
+		e_data_book_get_connection	(EDataBook *book);
+const gchar *	e_data_book_get_object_path	(EDataBook *book);
 
 void		e_data_book_respond_open	(EDataBook *book,
 						 guint32 opid,

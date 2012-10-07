@@ -302,7 +302,7 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 	GDBusConnection *connection;
 	ESourceRegistry *registry;
 	ESource *source;
-	gchar *path;
+	gchar *object_path;
 	const gchar *sender;
 	GList *list;
 	GError *error = NULL;
@@ -357,33 +357,42 @@ impl_BookFactory_get_book (EGdbusBookFactory *object,
 	book_backend_factory_match_goa_object (factory, backend);
 #endif
 
-	path = construct_book_factory_path ();
-	book = e_data_book_new (E_BOOK_BACKEND (backend));
-	g_hash_table_insert (priv->books, g_strdup (path), book);
-	e_book_backend_add_client (E_BOOK_BACKEND (backend), book);
-	e_data_book_register_gdbus_object (book, connection, path, &error);
-	g_object_weak_ref (
-		G_OBJECT (book), (GWeakNotify)
-		book_freed_cb, factory);
+	object_path = construct_book_factory_path ();
+
+	book = e_data_book_new (
+		E_BOOK_BACKEND (backend),
+		connection, object_path, &error);
+
+	if (book != NULL) {
+		g_mutex_lock (priv->books_lock);
+		g_hash_table_insert (
+			priv->books, g_strdup (object_path), book);
+		g_mutex_unlock (priv->books_lock);
+
+		e_book_backend_add_client (E_BOOK_BACKEND (backend), book);
+
+		g_object_weak_ref (
+			G_OBJECT (book), (GWeakNotify)
+			book_freed_cb, factory);
+
+		/* Update the hash of open connections. */
+		g_mutex_lock (priv->connections_lock);
+		list = g_hash_table_lookup (priv->connections, sender);
+		list = g_list_prepend (list, book);
+		g_hash_table_insert (
+			priv->connections, g_strdup (sender), list);
+		g_mutex_unlock (priv->connections_lock);
+	}
 
 	g_object_unref (backend);
 
-	/* Update the hash of open connections. */
-	g_mutex_lock (priv->connections_lock);
-	list = g_hash_table_lookup (priv->connections, sender);
-	list = g_list_prepend (list, book);
-	g_hash_table_insert (priv->connections, g_strdup (sender), list);
-	g_mutex_unlock (priv->connections_lock);
-
-	g_mutex_unlock (priv->books_lock);
-
 	e_gdbus_book_factory_complete_get_book (
-		object, invocation, path, error);
+		object, invocation, object_path, error);
 
-	if (error)
+	if (error != NULL)
 		g_error_free (error);
 
-	g_free (path);
+	g_free (object_path);
 
 	return TRUE;
 }
