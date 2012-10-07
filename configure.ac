@@ -56,6 +56,8 @@ m4_define([libical_minimum_version], [0.43])
 dnl Optional Packages
 m4_define([goa_minimum_version], [3.2])
 m4_define([gweather_minimum_version], [3.5.0])
+m4_define([libaccounts_glib_minimum_version], [1.4])
+m4_define([libsignon_glib_minimum_version], [1.8])
 
 AC_SUBST([BASE_VERSION],[base_version])
 AC_SUBST([API_VERSION],[api_version])
@@ -431,6 +433,58 @@ dnl GoaPasswordBased was introduced in version 3.5.
 if `$PKG_CONFIG --atleast-version=3.5 goa-1.0`; then
 	AC_DEFINE(HAVE_GOA_PASSWORD_BASED,1,[Have GoaPasswordBased in goa-1.0])
 fi
+
+dnl ********************************
+dnl Check for Ubuntu Online Accounts
+dnl ********************************
+AC_ARG_ENABLE([uoa],
+	[AS_HELP_STRING([--enable-uoa],
+	[enable Ubuntu Online Accounts support (default=yes)])],
+	[enable_uoa=$enableval], [enable_uoa=yes])
+AC_MSG_CHECKING([if Ubuntu Online Accounts support is enabled])
+AC_MSG_RESULT([$enable_uoa])
+if test "x$enable_uoa" = xyes; then
+	PKG_CHECK_MODULES([LIBACCOUNTS_GLIB],
+		[libaccounts-glib >= libaccounts_glib_minimum_version],,
+		[AC_MSG_ERROR([
+
+	libaccounts-glib not found (or version < libaccounts_glib_minimum_version)
+
+	If you want to disable Ubuntu Online Accounts support,
+	please append --disable-uoa to configure.
+	])])
+
+	PKG_CHECK_MODULES([LIBSIGNON_GLIB],
+		[libsignon-glib >= libsignon_glib_minimum_version],,
+		[AC_MSG_ERROR([
+
+	libsignon-glib not found (or version < libsignon_glib_minimum_version)
+
+	If you want to disable Ubuntu Online Accounts support,
+	please append --disable-uoa to configure.
+	])])
+
+	PKG_CHECK_MODULES([JSON_GLIB], [json-glib-1.0],,
+		[AC_MSG_ERROR([
+
+	json-glib-1.0 not found
+
+	If you want to disable Ubuntu Online Accounts support,
+	please append --disable-uoa to configure.
+	])])
+
+	PKG_CHECK_MODULES([REST], [rest-0.7],,
+		[AC_MSG_ERROR([
+
+	librest-0.7 not found
+
+	If you want to disable Ubuntu Online Accounts support,
+	please append --disable-uoa to configure.
+	])])
+
+	AC_DEFINE(HAVE_UOA, 1, [Have libaccounts-glib])
+fi
+AM_CONDITIONAL(HAVE_UOA, [test x$enable_uoa = xyes])
 
 dnl ***********************************
 dnl Check for GNOME Keyring.
@@ -1692,6 +1746,7 @@ echo "
 	Introspection:		$enable_introspection
 	Vala bindings:		$enable_vala_bindings
 	GNOME Online Accounts	$enable_goa
+	Ubuntu Online Accounts	$enable_uoa
 	Google Contacts		$enable_google
 	GTK+:  			$enable_gtk
 	Code coverage (gcov):	$enable_code_coverage
