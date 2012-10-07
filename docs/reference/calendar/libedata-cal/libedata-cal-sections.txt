@@ -30,7 +30,6 @@ e_cal_backend_set_notification_proxy
 e_cal_backend_get_backend_property
 e_cal_backend_set_backend_property
 e_cal_backend_open
-e_cal_backend_remove
 e_cal_backend_refresh
 e_cal_backend_get_object
 e_cal_backend_get_object_list
@@ -214,7 +213,6 @@ e_cal_backend_sexp_get_type
 ECalBackendSync
 e_cal_backend_sync_set_lock
 e_cal_backend_sync_open
-e_cal_backend_sync_remove
 e_cal_backend_sync_refresh
 e_cal_backend_sync_get_backend_property
 e_cal_backend_sync_set_backend_property
@@ -264,7 +262,6 @@ e_data_cal_new
 e_data_cal_get_backend
 e_data_cal_register_gdbus_object
 e_data_cal_respond_open
-e_data_cal_respond_remove
 e_data_cal_respond_refresh
 e_data_cal_respond_get_backend_property
 e_data_cal_respond_set_backend_property

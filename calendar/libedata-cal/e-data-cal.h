@@ -135,9 +135,6 @@ guint		e_data_cal_register_gdbus_object
 void		e_data_cal_respond_open		(EDataCal *cal,
 						 guint32 opid,
 						 GError *error);
-void		e_data_cal_respond_remove	(EDataCal *cal,
-						 guint32 opid,
-						 GError *error);
 void		e_data_cal_respond_refresh	(EDataCal *cal,
 						 guint32 opid,
 						 GError *error);

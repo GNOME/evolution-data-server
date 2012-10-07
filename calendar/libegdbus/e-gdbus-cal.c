@@ -45,8 +45,6 @@ enum
 	__BACKEND_PROPERTY_CHANGED_SIGNAL,
 	__OPEN_METHOD,
 	__OPEN_DONE_SIGNAL,
-	__REMOVE_METHOD,
-	__REMOVE_DONE_SIGNAL,
 	__REFRESH_METHOD,
 	__REFRESH_DONE_SIGNAL,
 	__GET_BACKEND_PROPERTY_METHOD,
@@ -149,8 +147,6 @@ E_DECLARE_GDBUS_SIGNAL_EMISSION_HOOK_STRV (GDBUS_CAL_INTERFACE_NAME,
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
                                                       open)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
-                                                      remove)
-E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_VOID (GDBUS_CAL_INTERFACE_NAME,
                                                       refresh)
 E_DECLARE_GDBUS_METHOD_DONE_EMISSION_HOOK_ASYNC_STRING (GDBUS_CAL_INTERFACE_NAME,
                                                         get_backend_property)
@@ -231,12 +227,6 @@ e_gdbus_cal_default_init (EGdbusCalIface *iface)
 		open,
 		__OPEN_METHOD,
 		__OPEN_DONE_SIGNAL)
-	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID (
-		EGdbusCalIface,
-		"remove",
-		remove,
-		__REMOVE_METHOD,
-		__REMOVE_DONE_SIGNAL)
 	E_INIT_GDBUS_METHOD_ASYNC_VOID__VOID (
 		EGdbusCalIface,
 		"refresh",
@@ -377,33 +367,6 @@ e_gdbus_cal_call_open_sync (GDBusProxy *proxy,
 	return e_gdbus_proxy_call_sync_boolean__void (proxy, in_only_if_exists, cancellable, error,
 		e_gdbus_cal_call_open,
 		e_gdbus_cal_call_open_finish);
-}
-
-void
-e_gdbus_cal_call_remove (GDBusProxy *proxy,
-                         GCancellable *cancellable,
-                         GAsyncReadyCallback callback,
-                         gpointer user_data)
-{
-	e_gdbus_proxy_call_void ("remove", e_gdbus_cal_call_remove, E_GDBUS_ASYNC_OP_KEEPER (proxy), cancellable, callback, user_data);
-}
-
-gboolean
-e_gdbus_cal_call_remove_finish (GDBusProxy *proxy,
-                                GAsyncResult *result,
-                                GError **error)
-{
-	return e_gdbus_proxy_finish_call_void (E_GDBUS_ASYNC_OP_KEEPER (proxy), result, error, e_gdbus_cal_call_remove);
-}
-
-gboolean
-e_gdbus_cal_call_remove_sync (GDBusProxy *proxy,
-                              GCancellable *cancellable,
-                              GError **error)
-{
-	return e_gdbus_proxy_call_sync_void__void (proxy, cancellable, error,
-		e_gdbus_cal_call_remove,
-		e_gdbus_cal_call_remove_finish);
 }
 
 void
@@ -1271,8 +1234,6 @@ e_gdbus_cal_emit_ ## _mname ## _done (EGdbusCal *object, guint arg_opid, const G
 
 DECLARE_EMIT_DONE_SIGNAL_0 (open,
                             __OPEN_DONE_SIGNAL)
-DECLARE_EMIT_DONE_SIGNAL_0 (remove,
-                            __REMOVE_DONE_SIGNAL)
 DECLARE_EMIT_DONE_SIGNAL_0 (refresh,
                             __REFRESH_DONE_SIGNAL)
 DECLARE_EMIT_DONE_SIGNAL_1 (get_backend_property,
@@ -1389,8 +1350,6 @@ E_DECLARE_GDBUS_ASYNC_METHOD_1 (cal,
                                   only_if_exists,
                                   "b")
 E_DECLARE_GDBUS_ASYNC_METHOD_0 (cal,
-                                remove)
-E_DECLARE_GDBUS_ASYNC_METHOD_0 (cal,
                                 refresh)
 E_DECLARE_GDBUS_ASYNC_METHOD_1_WITH_RETURN (cal,
                                             get_backend_property,
@@ -1481,7 +1440,6 @@ E_DECLARE_GDBUS_SYNC_METHOD_0 (cal,
 static const GDBusMethodInfo * const e_gdbus_cal_method_info_pointers[] =
 {
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal, open),
-	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal, remove),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal, refresh),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal, get_backend_property),
 	&E_DECLARED_GDBUS_METHOD_INFO_NAME (cal, set_backend_property),
@@ -1514,7 +1472,6 @@ static const GDBusSignalInfo * const e_gdbus_cal_signal_info_pointers[] =
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, backend_property_changed),
 
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, open_done),
-	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, remove_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, refresh_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, get_backend_property_done),
 	&E_DECLARED_GDBUS_SIGNAL_INFO_NAME (cal, set_backend_property_done),
@@ -1753,7 +1710,6 @@ e_gdbus_cal_proxy_init (EGdbusCalProxy *proxy)
 	proxy->priv->pending_ops = e_gdbus_async_op_keeper_create_pending_ops (E_GDBUS_ASYNC_OP_KEEPER (proxy));
 
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (open);
-	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (remove);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (refresh);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_STRING (get_backend_property);
 	E_GDBUS_CONNECT_METHOD_DONE_SIGNAL_VOID   (set_backend_property);

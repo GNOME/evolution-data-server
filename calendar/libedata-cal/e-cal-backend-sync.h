@@ -50,10 +50,6 @@ struct _ECalBackendSyncClass {
 						 GCancellable *cancellable,
 						 gboolean only_if_exists,
 						 GError **error);
-	void		(*remove_sync)		(ECalBackendSync *backend,
-						 EDataCal *cal,
-						 GCancellable *cancellable,
-						 GError **error);
 	void		(*refresh_sync)		(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
@@ -163,10 +159,6 @@ void		e_cal_backend_sync_open		(ECalBackendSync *backend,
 						 EDataCal *cal,
 						 GCancellable *cancellable,
 						 gboolean only_if_exists,
-						 GError **error);
-void		e_cal_backend_sync_remove	(ECalBackendSync *backend,
-						 EDataCal *cal,
-						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_sync_refresh	(ECalBackendSync *backend,
 						 EDataCal *cal,

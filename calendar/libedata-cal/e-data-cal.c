@@ -62,7 +62,6 @@ static EOperationPool *ops_pool = NULL;
 
 typedef enum {
 	OP_OPEN,
-	OP_REMOVE,
 	OP_REFRESH,
 	OP_GET_BACKEND_PROPERTY,
 	OP_SET_BACKEND_PROPERTY,
@@ -144,7 +143,6 @@ typedef struct {
 			gchar *prop_value;
 		} sbp;
 
-		/* OP_REMOVE */
 		/* OP_REFRESH */
 		/* OP_CANCEL_ALL */
 		/* OP_CLOSE */
@@ -183,9 +181,6 @@ operation_thread (gpointer data,
 	switch (op->op) {
 	case OP_OPEN:
 		e_cal_backend_open (backend, op->cal, op->id, op->cancellable, op->d.only_if_exists);
-		break;
-	case OP_REMOVE:
-		e_cal_backend_remove (backend, op->cal, op->id, op->cancellable);
 		break;
 	case OP_REFRESH:
 		e_cal_backend_refresh (backend, op->cal, op->id, op->cancellable);
@@ -538,21 +533,6 @@ impl_Cal_open (EGdbusCal *object,
 	op->d.only_if_exists = in_only_if_exists;
 
 	e_gdbus_cal_complete_open (cal->priv->gdbus_object, invocation, op->id);
-	e_operation_pool_push (ops_pool, op);
-
-	return TRUE;
-}
-
-static gboolean
-impl_Cal_remove (EGdbusCal *object,
-                 GDBusMethodInvocation *invocation,
-                 EDataCal *cal)
-{
-	OperationData *op;
-
-	op = op_new (OP_REMOVE, cal);
-
-	e_gdbus_cal_complete_remove (cal->priv->gdbus_object, invocation, op->id);
 	e_operation_pool_push (ops_pool, op);
 
 	return TRUE;
@@ -924,33 +904,6 @@ e_data_cal_respond_open (EDataCal *cal,
 
 	if (error)
 		g_error_free (error);
-}
-
-/**
- * e_data_cal_respond_remove:
- * @cal: A calendar client interface.
- * @error: Operation error, if any, automatically freed if passed it.
- *
- * Notifies listeners of the completion of the remove method call.
- *
- * Since: 3.2
- */
-void
-e_data_cal_respond_remove (EDataCal *cal,
-                           guint32 opid,
-                           GError *error)
-{
-	op_complete (cal, opid);
-
-	/* Translators: This is prefix to a detailed error message */
-	g_prefix_error (&error, "%s", _("Cannot remove calendar: "));
-
-	e_gdbus_cal_emit_remove_done (cal->priv->gdbus_object, opid, error);
-
-	if (error)
-		g_error_free (error);
-	else
-		e_cal_backend_set_is_removed (cal->priv->backend, TRUE);
 }
 
 /**
@@ -1697,9 +1650,6 @@ e_data_cal_init (EDataCal *ecal)
 	g_signal_connect (
 		gdbus_object, "handle-open",
 		G_CALLBACK (impl_Cal_open), ecal);
-	g_signal_connect (
-		gdbus_object, "handle-remove",
-		G_CALLBACK (impl_Cal_remove), ecal);
 	g_signal_connect (
 		gdbus_object, "handle-refresh",
 		G_CALLBACK (impl_Cal_refresh), ecal);

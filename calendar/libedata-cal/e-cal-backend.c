@@ -906,32 +906,6 @@ e_cal_backend_open (ECalBackend *backend,
 }
 
 /**
- * e_cal_backend_remove:
- * @backend: an #ECalBackend
- * @cal: an #EDataCal
- * @opid: the ID to use for this operation
- * @cancellable: a #GCancellable for the operation
- *
- * Removes the calendar being accessed by the given backend.
- * This might be finished with e_data_cal_respond_remove().
- **/
-void
-e_cal_backend_remove (ECalBackend *backend,
-                      EDataCal *cal,
-                      guint32 opid,
-                      GCancellable *cancellable)
-{
-	g_return_if_fail (backend != NULL);
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->remove != NULL);
-
-	if (e_cal_backend_is_opening (backend))
-		e_data_cal_respond_remove (cal, opid, EDC_OPENING_ERROR);
-	else
-		(* E_CAL_BACKEND_GET_CLASS (backend)->remove) (backend, cal, opid, cancellable);
-}
-
-/**
  * e_cal_backend_refresh:
  * @backend: an #ECalBackend
  * @cal: an #EDataCal

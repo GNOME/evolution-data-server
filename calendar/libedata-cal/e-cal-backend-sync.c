@@ -90,26 +90,6 @@ e_cal_backend_sync_open (ECalBackendSync *backend,
 }
 
 /**
- * e_cal_backend_sync_remove:
- * @backend: An ECalBackendSync object.
- * @cal: An EDataCal object.
- * @cancellable: a #GCancellable for the operation
- * @error: Out parameter for a #GError.
- *
- * Calls the remove_sync method on the given backend.
- */
-void
-e_cal_backend_sync_remove (ECalBackendSync *backend,
-                           EDataCal *cal,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	e_return_data_cal_error_if_fail (backend && E_IS_CAL_BACKEND_SYNC (backend), InvalidArg);
-
-	LOCK_WRAPPER (remove_sync, (backend, cal, cancellable, error));
-}
-
-/**
  * e_cal_backend_sync_refresh:
  * @backend: An ECalBackendSync object.
  * @cal: An EDataCal object.
@@ -581,19 +561,6 @@ cal_backend_open (ECalBackend *backend,
 }
 
 static void
-cal_backend_remove (ECalBackend *backend,
-                    EDataCal *cal,
-                    guint32 opid,
-                    GCancellable *cancellable)
-{
-	GError *error = NULL;
-
-	e_cal_backend_sync_remove (E_CAL_BACKEND_SYNC (backend), cal, cancellable, &error);
-
-	e_data_cal_respond_remove (cal, opid, error);
-}
-
-static void
 cal_backend_refresh (ECalBackend *backend,
                      EDataCal *cal,
                      guint32 opid,
@@ -1012,7 +979,6 @@ e_cal_backend_sync_class_init (ECalBackendSyncClass *class)
 
 	backend_class = E_CAL_BACKEND_CLASS (class);
 	backend_class->open			= cal_backend_open;
-	backend_class->remove			= cal_backend_remove;
 	backend_class->refresh			= cal_backend_refresh;
 	backend_class->get_backend_property	= cal_backend_get_backend_property;
 	backend_class->set_backend_property	= cal_backend_set_backend_property;

@@ -112,9 +112,6 @@ struct _EGdbusCalIface
 	gboolean (*handle_open)				(EGdbusCal *object, GDBusMethodInvocation *invocation, gboolean in_only_if_exists);
 	void	 (*open_done)				(EGdbusCal *object, guint arg_opid, const GError *arg_error);
 
-	gboolean (*handle_remove)			(EGdbusCal *object, GDBusMethodInvocation *invocation);
-	void	 (*remove_done)				(EGdbusCal *object, guint arg_opid, const GError *arg_error);
-
 	gboolean (*handle_refresh)			(EGdbusCal *object, GDBusMethodInvocation *invocation);
 	void	 (*refresh_done)			(EGdbusCal *object, guint arg_opid, const GError *arg_error);
 
@@ -172,10 +169,6 @@ struct _EGdbusCalIface
 void		e_gdbus_cal_call_open				(GDBusProxy *proxy, gboolean in_only_if_exists, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_gdbus_cal_call_open_finish			(GDBusProxy *proxy, GAsyncResult *result, GError **error);
 gboolean	e_gdbus_cal_call_open_sync			(GDBusProxy *proxy, gboolean in_only_if_exists, GCancellable *cancellable, GError **error);
-
-void		e_gdbus_cal_call_remove				(GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
-gboolean	e_gdbus_cal_call_remove_finish			(GDBusProxy *proxy, GAsyncResult *result, GError **error);
-gboolean	e_gdbus_cal_call_remove_sync			(GDBusProxy *proxy, GCancellable *cancellable, GError **error);
 
 void		e_gdbus_cal_call_refresh			(GDBusProxy *proxy, GCancellable *cancellable, GAsyncReadyCallback callback, gpointer user_data);
 gboolean	e_gdbus_cal_call_refresh_finish			(GDBusProxy *proxy, GAsyncResult *result, GError **error);
@@ -271,7 +264,6 @@ gboolean	e_gdbus_cal_call_close_sync			(GDBusProxy *proxy, GCancellable *cancell
 
 /* D-Bus Methods Completion Helpers */
 #define e_gdbus_cal_complete_open			e_gdbus_complete_async_method
-#define e_gdbus_cal_complete_remove			e_gdbus_complete_async_method
 #define e_gdbus_cal_complete_refresh			e_gdbus_complete_async_method
 #define e_gdbus_cal_complete_get_backend_property	e_gdbus_complete_async_method
 #define e_gdbus_cal_complete_set_backend_property	e_gdbus_complete_async_method
@@ -293,7 +285,6 @@ gboolean	e_gdbus_cal_call_close_sync			(GDBusProxy *proxy, GCancellable *cancell
 #define e_gdbus_cal_complete_close			e_gdbus_complete_sync_method_void
 
 void e_gdbus_cal_emit_open_done				(EGdbusCal *object, guint arg_opid, const GError *arg_error);
-void e_gdbus_cal_emit_remove_done			(EGdbusCal *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_cal_emit_refresh_done			(EGdbusCal *object, guint arg_opid, const GError *arg_error);
 void e_gdbus_cal_emit_get_backend_property_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error, const gchar *out_prop_value);
 void e_gdbus_cal_emit_set_backend_property_done		(EGdbusCal *object, guint arg_opid, const GError *arg_error);
