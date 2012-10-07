@@ -708,21 +708,25 @@ e_book_backend_start_view (EBookBackend *backend,
 }
 
 /**
- * e_book_backend_stop_book_view:
+ * e_book_backend_stop_view:
  * @backend: an #EBookBackend
  * @view: the #EDataBookView to stop
  *
  * Stops running the query specified by @view, emitting no more signals.
  **/
 void
-e_book_backend_stop_book_view (EBookBackend *backend,
-                               EDataBookView *view)
+e_book_backend_stop_view (EBookBackend *backend,
+                          EDataBookView *view)
 {
+	EBookBackendClass *class;
+
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
-	g_return_if_fail (E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view);
 
-	(* E_BOOK_BACKEND_GET_CLASS (backend)->stop_book_view) (backend, view);
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->stop_view != NULL);
+
+	class->stop_view (backend, view);
 }
 
 /**

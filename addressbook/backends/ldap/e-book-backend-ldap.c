@@ -4426,7 +4426,7 @@ typedef struct {
 	LDAPOp op;
 	EDataBookView *view;
 
-	/* used to detect problems with start/stop_book_view racing */
+	/* used to detect problems with start/stop_view racing */
 	gboolean aborted;
 	/* used by search_handler to only send the status messages once */
 	gboolean notified_receiving_results;
@@ -4950,12 +4950,12 @@ e_book_backend_ldap_start_view (EBookBackend *backend,
 }
 
 static void
-e_book_backend_ldap_stop_book_view (EBookBackend *backend,
-                                    EDataBookView *view)
+e_book_backend_ldap_stop_view (EBookBackend *backend,
+                               EDataBookView *view)
 {
 	LDAPSearchOp *op;
 
-	d (printf ("stop_book_view (%p)\n", view));
+	d (printf ("stop_view (%p)\n", view));
 
 	op = g_object_get_data (G_OBJECT (view), "EBookBackendLDAP.BookView::search_op");
 	if (op) {
@@ -5347,7 +5347,7 @@ stop_views (EBookBackend *backend)
 	struct call_data cd;
 
 	cd.backend = backend;
-	cd.func = e_book_backend_ldap_stop_book_view;
+	cd.func = e_book_backend_ldap_stop_view;
 
 	e_book_backend_foreach_view (backend, call_cb, &cd);
 }
@@ -5737,7 +5737,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 	parent_class->get_contact_list		= e_book_backend_ldap_get_contact_list;
 	parent_class->get_contact_list_uids	= e_book_backend_ldap_get_contact_list_uids;
 	parent_class->start_view		= e_book_backend_ldap_start_view;
-	parent_class->stop_book_view		= e_book_backend_ldap_stop_book_view;
+	parent_class->stop_view			= e_book_backend_ldap_stop_view;
 
 	object_class->finalize = e_book_backend_ldap_finalize;
 

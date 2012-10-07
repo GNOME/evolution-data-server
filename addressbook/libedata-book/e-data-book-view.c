@@ -154,7 +154,7 @@ book_destroyed_cb (gpointer data,
 
 	/* If the view is running stop it here. */
 	if (priv->running) {
-		e_book_backend_stop_book_view (priv->backend, view);
+		e_book_backend_stop_view (priv->backend, view);
 		priv->running = FALSE;
 		priv->complete = FALSE;
 	}
@@ -675,7 +675,7 @@ bookview_stop_thread (gpointer data)
 	EDataBookView *book_view = data;
 
 	if (!book_view->priv->running)
-		e_book_backend_stop_book_view (book_view->priv->backend, book_view);
+		e_book_backend_stop_view (book_view->priv->backend, book_view);
 	g_object_unref (book_view);
 
 	return NULL;
@@ -719,7 +719,7 @@ impl_DataBookView_dispose (EGdbusBookView *object,
 {
 	e_gdbus_book_view_complete_dispose (object, invocation, NULL);
 
-	e_book_backend_stop_book_view (book_view->priv->backend, book_view);
+	e_book_backend_stop_view (book_view->priv->backend, book_view);
 	book_view->priv->running = FALSE;
 	e_book_backend_remove_book_view (book_view->priv->backend, book_view);
 

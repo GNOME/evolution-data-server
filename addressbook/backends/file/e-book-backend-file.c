@@ -1681,8 +1681,8 @@ e_book_backend_file_start_view (EBookBackend *backend,
 }
 
 static void
-e_book_backend_file_stop_book_view (EBookBackend *backend,
-                                    EDataBookView *book_view)
+e_book_backend_file_stop_view (EBookBackend *backend,
+                               EDataBookView *book_view)
 {
 	FileBackendSearchClosure *closure = get_closure (book_view);
 	gboolean need_join;
@@ -2363,7 +2363,7 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 
 	/* Set the virtual methods. */
 	backend_class->start_view		= e_book_backend_file_start_view;
-	backend_class->stop_book_view		= e_book_backend_file_stop_book_view;
+	backend_class->stop_view		= e_book_backend_file_stop_view;
 	backend_class->sync			= e_book_backend_file_sync;
 	backend_class->notify_update            = e_book_backend_file_notify_update;
 

@@ -214,7 +214,7 @@ struct _EBookBackendClass {
 
 	void		(*start_view)		(EBookBackend *backend,
 						 EDataBookView *book_view);
-	void		(*stop_book_view)	(EBookBackend *backend,
+	void		(*stop_view)		(EBookBackend *backend,
 						 EDataBookView *book_view);
 
 	void		(*notify_update)	(EBookBackend *backend,
@@ -299,7 +299,7 @@ void		e_book_backend_get_contact_list_uids
 
 void		e_book_backend_start_view	(EBookBackend *backend,
 						 EDataBookView *view);
-void		e_book_backend_stop_book_view	(EBookBackend *backend,
+void		e_book_backend_stop_view	(EBookBackend *backend,
 						 EDataBookView *view);
 void		e_book_backend_add_book_view	(EBookBackend *backend,
 						 EDataBookView *view);

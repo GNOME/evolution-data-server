@@ -550,8 +550,8 @@ e_book_backend_vcf_start_view (EBookBackend *backend,
 }
 
 static void
-e_book_backend_vcf_stop_book_view (EBookBackend *backend,
-                                   EDataBookView *book_view)
+e_book_backend_vcf_stop_view (EBookBackend *backend,
+                              EDataBookView *book_view)
 {
 	VCFBackendSearchClosure *closure = get_closure (book_view);
 	gboolean need_join;
@@ -744,7 +744,7 @@ e_book_backend_vcf_class_init (EBookBackendVCFClass *class)
 
 	/* Set the virtual methods. */
 	backend_class->start_view		= e_book_backend_vcf_start_view;
-	backend_class->stop_book_view		= e_book_backend_vcf_stop_book_view;
+	backend_class->stop_view		= e_book_backend_vcf_stop_view;
 
 	sync_class->open_sync			= e_book_backend_vcf_open;
 	sync_class->get_backend_property_sync	= e_book_backend_vcf_get_backend_property;
