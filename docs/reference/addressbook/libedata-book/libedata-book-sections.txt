@@ -35,6 +35,7 @@ e_book_backend_start_view
 e_book_backend_stop_view
 e_book_backend_add_view
 e_book_backend_remove_view
+e_book_backend_list_views
 e_book_backend_foreach_view
 e_book_backend_notify_update
 e_book_backend_notify_remove

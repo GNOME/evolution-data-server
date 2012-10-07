@@ -305,6 +305,7 @@ void		e_book_backend_add_view		(EBookBackend *backend,
 						 EDataBookView *view);
 void		e_book_backend_remove_view	(EBookBackend *backend,
 						 EDataBookView *view);
+GList *		e_book_backend_list_views	(EBookBackend *backend);
 void		e_book_backend_foreach_view	(EBookBackend *backend,
 						 gboolean (*callback) (EDataBookView *view,
 						                       gpointer user_data),
