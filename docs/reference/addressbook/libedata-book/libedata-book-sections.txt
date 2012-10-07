@@ -48,7 +48,6 @@ e_book_backend_notify_property_changed
 e_book_backend_sync
 e_book_backend_set_is_removed
 e_book_backend_respond_opened
-EBookBackendClass
 <SUBSECTION Standard>
 E_BOOK_BACKEND
 E_IS_BOOK_BACKEND
@@ -56,6 +55,7 @@ E_TYPE_BOOK_BACKEND
 E_BOOK_BACKEND_CLASS
 E_IS_BOOK_BACKEND_CLASS
 E_BOOK_BACKEND_GET_CLASS
+EBookBackendClass
 <SUBSECTION Private>
 EBookBackendPrivate
 e_book_backend_get_type
