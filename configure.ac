@@ -356,14 +356,22 @@ AC_MSG_CHECKING([if GNOME Online Accounts support is enabled])
 AC_MSG_RESULT([$enable_goa])
 if test "x$enable_goa" = xyes; then
 	PKG_CHECK_MODULES([GOA], [goa-1.0 >= goa_minimum_version],,
-	[AC_MSG_ERROR([goa-1.0 not found (or version < goa_minimum_version),
+	[AC_MSG_ERROR([
+
+	goa-1.0 not found (or version < goa_minimum_version)
+
 	If you want to disable GNOME Online Accounts support,
-	please append --disable-goa to configure.])])
+	please append --disable-goa to configure.
+	])])
 
 	PKG_CHECK_MODULES([OAUTH], [oauth >= oauth_minimum_version],,
-	[AC_MSG_ERROR([oauth not found (or version < oauth_minimum_version),
+	[AC_MSG_ERROR([
+
+	oauth not found (or version < oauth_minimum_version)
+
 	If you want to disable GNOME Online Accounts support,
-	please append --disable-goa to configure.])])
+	please append --disable-goa to configure.
+	])])
 
 	AC_DEFINE(HAVE_GOA, 1, [Define to 1 if you have the goa-1.0 package.])
 fi
